@@ -161,12 +161,11 @@ iostream *SSLSocket::DoMakeStream()
 	if ( verifyCallbackWasSet ) {
 		appData["SSLSocketArgs"] = (IFAObject *) &fSSLSocketArgs;
 		appData.Append(sslinfo);
-	}
-//	theIndex =    SSL_get_ex_new_index(0, (void *) "theIndex", NULL, NULL, NULL);
-	if ( SSL_set_ex_data(ssl, Thread::MyId(), &appData) == false ) {
-		String logMsg("SSL error: Setting application specific data failed.");
-		SysLog::Error(logMsg);
-		return NULL;
+		if ( SSL_set_ex_data(ssl, Thread::MyId(), &appData) == false ) {
+			String logMsg("SSL error: Setting application specific data failed.");
+			SysLog::Error(logMsg);
+			return NULL;
+		}
 	}
 	if (GetTimeout() > 0) {
 		Socket::SetToNonBlocking(GetFd());
