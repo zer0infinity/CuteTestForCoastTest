@@ -49,7 +49,7 @@ class Queue : public IFAObject
 {
 public:
 	//--- constructors
-	Queue(long lQueueSize = LONG_MAX, Allocator *pAlloc = Storage::Global());
+	Queue(const char *name, long lQueueSize = LONG_MAX, Allocator *pAlloc = Storage::Global());
 	~Queue();
 
 	/*! further explanation of the purpose of the method
@@ -85,6 +85,7 @@ private:
 	long IntGetSize();
 	void IntEmptyQueue(Anything &anyElements);
 
+	String		fName;
 	Allocator	*fAllocator;
 	Semaphore	fSemaFullSlots, fSemaEmptySlots;
 	ul_long		fPutCount, fGetCount;

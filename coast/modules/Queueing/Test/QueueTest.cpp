@@ -146,7 +146,7 @@ void QueueTest::tearDown ()
 void QueueTest::SimplePutGetTest()
 {
 	StartTrace(QueueTest.SimplePutGetTest);
-	Queue Q1(1);
+	Queue Q1("Q1", 1);
 	t_assert(Q1.GetSize() == 0L);
 	Anything anyTest1, anyTest2;
 	anyTest1["Guguseli"] = 1;
@@ -173,7 +173,7 @@ void QueueTest::DoMultiProducerSingleConsumerTest(long lQueueSize)
 {
 	StartTrace1(QueueTest.DoMultiProducerSingleConsumerTest, "QueueSize:" << lQueueSize);
 	{
-		Queue aProductQueue(lQueueSize);
+		Queue aProductQueue("aProductQueue", lQueueSize);
 		TestProducer aProd4(aProductQueue, 4L, 1500L), aProd5(aProductQueue, 5L, 2000L), aProd10(aProductQueue, 10L, 1000L);
 		TestConsumer aConsumer(aProductQueue, 19L);
 		Anything anyCons, anyProd;
@@ -195,7 +195,7 @@ void QueueTest::DoMultiProducerSingleConsumerTest(long lQueueSize)
 		TraceAny(anyStat, "statistics");
 	}
 	{
-		Queue aProductQueue(lQueueSize);
+		Queue aProductQueue("aProductQueue", lQueueSize);
 		TestProducer aProd4(aProductQueue, 4L), aProd5(aProductQueue, 5L), aProd10(aProductQueue, 10L);
 		TestConsumer aConsumer(aProductQueue, 19L);
 		Anything anyCons, anyProd;
@@ -230,7 +230,7 @@ void QueueTest::DoSingleProducerMultiConsumerTest(long lQueueSize)
 {
 	StartTrace(QueueTest.DoSingleProducerMultiConsumerTest);
 	{
-		Queue aProductQueue(lQueueSize);
+		Queue aProductQueue("aProductQueue", lQueueSize);
 		TestConsumer aCons4(aProductQueue, 4L, 1500L), aCons5(aProductQueue, 5L, 2000L), aCons10(aProductQueue, 10L, 1000L);
 		TestProducer aProducer(aProductQueue, 19L);
 		Anything anyCons, anyProd;
@@ -256,7 +256,7 @@ void QueueTest::DoSingleProducerMultiConsumerTest(long lQueueSize)
 		TraceAny(anyStat, "statistics");
 	}
 	{
-		Queue aProductQueue(lQueueSize);
+		Queue aProductQueue("aProductQueue", lQueueSize);
 		TestConsumer aCons4(aProductQueue, 4L), aCons5(aProductQueue, 5L), aCons10(aProductQueue, 10L);
 		TestProducer aProducer(aProductQueue, 19L);
 		Anything anyCons, anyProd;
@@ -294,7 +294,7 @@ void QueueTest::SingleProducerMultiConsumerTest()
 void QueueTest::ConsumerTerminationTest()
 {
 	StartTrace(QueueTest.ConsumerTerminationTest);
-	Queue *pProductQueue = new Queue(2);
+	Queue *pProductQueue = new Queue("pProductQueue", 2);
 	ConsumerTerminationThread aConsumer(*pProductQueue);
 	{
 		Anything anyProduct;

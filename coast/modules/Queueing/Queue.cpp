@@ -49,8 +49,9 @@ private:
 };
 
 //---- Queue ----------------------------------------------------------------
-Queue::Queue(long lQueueSize, Allocator *pAlloc)
-	: fAllocator(pAlloc)
+Queue::Queue(const char *name, long lQueueSize, Allocator *pAlloc)
+	: fName(name, -1, pAlloc)
+	, fAllocator(pAlloc)
 	, fSemaFullSlots(0L)
 	, fSemaEmptySlots(lQueueSize)
 	, fPutCount(0L)
@@ -89,9 +90,10 @@ Queue::~Queue()
 
 	long lSize = 0L;
 	if ( (lSize = IntGetSize()) > 0L ) {
-		SYSWARNING("Destruction of non-empty queue! still " << lSize << " Elements in Queue!");
+		SYSWARNING("Destruction of non-empty queue [" << fName << "]! still " << lSize << " Elements in Queue!");
 		Anything anyElements;
 		IntEmptyQueue(anyElements);
+		TraceAny(anyElements, "still in queue");
 	}
 	// release potentially waiting putters
 	{

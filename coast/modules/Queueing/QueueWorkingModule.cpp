@@ -150,7 +150,7 @@ void QueueWorkingModule::IntInitQueue(ROAnything roaConfig)
 {
 	StartTrace(QueueWorkingModule.IntInitQueue);
 	long lQueueSize = roaConfig["QueueSize"].AsLong(100L);
-	fpQueue = new Queue(lQueueSize);
+	fpQueue = new Queue(GetName(), lQueueSize);
 	fFailedPutbackMessages = Anything();
 }
 
