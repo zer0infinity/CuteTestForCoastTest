@@ -98,8 +98,33 @@ Test *ROAnyConfNamedObjectLookupAdapterTest::suite ()
 
 	ADD_CASE(testSuite, ROAnyConfNamedObjectLookupAdapterTest, testCase);
 	ADD_CASE(testSuite, ROAnyConfNamedObjectLookupAdapterTest, testLookup);
+	ADD_CASE(testSuite, ROAnyConfNamedObjectLookupAdapterTest, testNoConfNamedObject);
 
 	return testSuite;
+}
+
+void ROAnyConfNamedObjectLookupAdapterTest::testNoConfNamedObject()
+{
+	StartTrace(ROAnyConfNamedObjectLookupAdapterTest.testNoConfNamedObject);
+
+	Anything base;
+
+	base["hank"] = "bar";
+	base["long"] = 31416L;
+	base["compo"]["site"] = "bar";
+
+	ROAnything robase(base);
+	ROAnyConfNamedObjectLookupAdapter la(robase, NULL);
+
+	//Test ROAnyLookupAdapter functionality
+	assertEquals("bar", la.Lookup("hank", "X"));
+	assertEquals("bar", la.Lookup("compo@site", "X", '@'));
+	t_assert(31416L == la.Lookup("long", 0L));
+	assertEquals("X", la.Lookup("fox", "X"));
+
+	//Test lookups aiming at the ConfiguredNamedObject's config
+	assertEquals("XXXX", la.Lookup("FromConfigString", "XXXX"));
+	assertEquals(4L, la.Lookup("FromConfigLong", 4L));
 }
 
 //---- TestConfNamedObj ----------------------------------------------------------------
