@@ -229,7 +229,7 @@ iostream *SSLSocket::DoMakeStream()
 		TraceAny(sslinfo, "SSL  info");
 	}
 //	SSL_set_shutdown(ssl, SSL_SENT_SHUTDOWN|SSL_RECEIVED_SHUTDOWN);
-	return new(GetAllocator()) SSLSocketStream(ssl, this);
+	return new(GetAllocator()) SSLSocketStream(ssl, this, GetTimeout());
 }
 
 void SSLSocket::DoCheckPeerCertificate(Anything &sslinfo, SSL *ssl)
