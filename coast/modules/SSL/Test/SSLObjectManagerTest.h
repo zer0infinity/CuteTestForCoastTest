@@ -46,7 +46,10 @@ public:
 	void GetDefaultCtxTest();
 	void SessionIdTest();
 	void SessionResumptionTest();
+	void SessionResumptionWithMinimumConfigTest();
 	void NoSessionResumptionTest();
+	void UsePassedInCtxTest();
+	void ReUseCreatedCtxTest();
 };
 
 #endif
