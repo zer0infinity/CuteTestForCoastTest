@@ -10,6 +10,7 @@
 #define _ROAnyLookupAdapter_H
 
 #include "LookupInterface.h"
+#include "IFAConfObject.h"
 
 //---- ROAnyLookupAdapter ----------------------------------------------------------
 //! <B>Wraps ROAnything in a LookupInterface (as needed eg. by Context::Push())</B>
@@ -26,4 +27,26 @@ protected:
 	}
 };
 
+class ROAnyConfNamedObjectLookupAdapter : public ROAnyLookupAdapter
+{
+public:
+	ROAnyConfNamedObjectLookupAdapter(ROAnything ro, ConfNamedObject *cfno): ROAnyLookupAdapter(ro) {
+		fCfno = cfno;
+	}
+	~ROAnyConfNamedObjectLookupAdapter() {}
+protected:
+	ConfNamedObject *fCfno;
+
+	virtual bool DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const {
+		if ( !ROAnyLookupAdapter::DoLookup(key, result, delim, indexdelim) ) {
+			if ( fCfno != (ConfNamedObject *) NULL ) {
+				return fCfno->Lookup(key, result, delim, indexdelim);
+			} else {
+				return false;
+			}
+		}
+		return true;
+
+	}
+};
 #endif
