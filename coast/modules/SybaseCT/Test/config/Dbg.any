@@ -13,11 +13,12 @@
 	/DumpAnythings  1		# print full Anythings
 
 	/SybCT {
-		/MainSwitch						10
-		/EnableAll						0
+		/MainSwitch						0
+		/EnableAll						10
 		/SybCT_clientmsg_handler		10
 		/SybCT_csmsg_handler			10
 		/SybCT_servermsg_handler		10
+		/SqlExec						10
 	}
 	/SybCTTest {
 		/MainSwitch						0
@@ -46,8 +47,10 @@
 		/EnableAll						10
 	}
 	/SybCTGenericDAImpl {
-		/MainSwitch						0
-		/EnableAll						10
+		/MainSwitch						10
+		/EnableAll						0
+		/PutResults						10
+		/PutMessages					10
 	}
 	/WorkerPoolManager {
 		/MainSwitch						0
