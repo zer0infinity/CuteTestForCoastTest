@@ -168,12 +168,17 @@ public:
 	SSLConnector(ConnectorArgs &connectorArgs, SSL_CTX *ctx = 0, const char *srcIpAdr = 0, long srcPort = 0, bool threadLocal = 0);
 	//! If no SSL_CTX is provided by the caller and the sslModuleCfg  is NULL, a new default client SSL_CTX will be created.
 	//! If SSL_CTX  is NULL and sslModuleCfg is not NULL,  a new client SSL_CTX is created considering the sslModuleCfg settings.
+	//! In both cases the created SSL_CTX is stored by SSLObjectManager for later reuse.
+	//! If you pass in a SSL_CTX (not NULL) this SSL_CTX is used. It will not be deleted.
 	//! Use this  method when you need a specialized SSL_CTX which  corresponds  to your SSLSocketArgs
 	SSLConnector(ConnectorArgs &connectorArgs, SSLSocketArgs sslSocketArgs, ROAnything sslModuleCfg = 0, SSL_CTX *ctx = 0, const char *srcIpAdr = 0, long srcPort = 0, bool threadLocal = 0);
-	//! Use this constructor if you  have created a specialized SSL_CTX.
-	SSLConnector(ConnectorArgs &connectorArgs, SSLSocketArgs sslSocketArgs, SSL_CTX *ctx = 0, const char *srcIpAdr = 0, long srcPort = 0, bool threadLocal = 0);
 	//! pass socket parameters as anything, use /Address, /Port, /Timeout like AcceptorFactory config
+	//! Use this constructor if you want SSLObjectManager to store the created SSL_CTX for later reuse
 	SSLConnector(ROAnything config);
+	//! pass socket parameters as anything, if SSL_CTX is null the created SSL_CTX will be deleted in SSLConnector destuctor.
+	//! Use this constructor if you want to keep control over the SSL_CTX
+	SSLConnector(ROAnything config, SSL_CTX *, bool deleteCtx = true);
+
 	virtual ~SSLConnector();
 	//! Application queries the overall outcome of the ssl handshake. The returncode
 	//! depends on the settings given to SSLModule (used for SSL_CTX creation)

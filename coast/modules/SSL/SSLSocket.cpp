@@ -529,13 +529,6 @@ SSLConnector::SSLConnector(ConnectorArgs &connectorArgs, SSL_CTX *ctx, const cha
 {
 	fDeleteCtx = (ctx == 0);
 }
-SSLConnector::SSLConnector(ConnectorArgs &connectorArgs, SSLSocketArgs sslSocketArgs, SSL_CTX *ctx, const char *srcIpAdr, long srcPort, bool threadLocal)
-	:	Connector(connectorArgs, srcIpAdr, srcPort, threadLocal),
-		fContext((ctx) ? ctx : SSL_CTX_new(SSLv23_client_method())),
-		fSSLSocketArgs(sslSocketArgs)
-{
-	fDeleteCtx = (ctx == 0);
-}
 
 SSLConnector::SSLConnector(ConnectorArgs &connectorArgs,
 						   SSLSocketArgs sslSocketArgs,
@@ -558,7 +551,9 @@ SSLConnector::SSLConnector(ROAnything config)
 				config["SrcAddress"].AsCharPtr(0),
 				config["SrcPort"].AsLong(0L),
 				config["UseThreadLocalMemory"].AsLong(0L)),
-	fContext(SSLModule::GetSSLClientCtx(config)),
+	fContext(SSLObjectManager::SSLOBJMGR()->GetCtx(config["Address"].AsCharPtr("127.0.0.1"),
+			 config["Port"].AsCharPtr("443"),
+			 config)),
 	fSSLSocketArgs(config["VerifyCertifiedEntity"].AsBool(0),
 				   config["CertVerifyString"].AsString(),
 				   config["CertVerifyStringIsFilter"].AsBool(0),
@@ -566,7 +561,25 @@ SSLConnector::SSLConnector(ROAnything config)
 {
 	StartTrace(SSLConnector.SSLConnector);
 	TraceAny(config, "config used");
-	fDeleteCtx = (fContext != 0);
+	fDeleteCtx = false;
+}
+
+SSLConnector::SSLConnector(ROAnything config, SSL_CTX *ctx, bool deleteCtx)
+	: Connector(config["Address"].AsCharPtr("127.0.0.1"),
+				config["Port"].AsLong(443L),
+				config["Timeout"].AsLong(0L),
+				config["SrcAddress"].AsCharPtr(0),
+				config["SrcPort"].AsLong(0L),
+				config["UseThreadLocalMemory"].AsLong(0L)),
+	fContext((ctx) ? ctx : SSLModule::GetSSLClientCtx(config)),
+	fSSLSocketArgs(config["VerifyCertifiedEntity"].AsBool(0),
+				   config["CertVerifyString"].AsString(),
+				   config["CertVerifyStringIsFilter"].AsBool(0),
+				   config["SessionResumption"].AsBool(0))
+{
+	StartTrace(SSLConnector.SSLConnector);
+	TraceAny(config, "config used");
+	fDeleteCtx = deleteCtx;
 }
 
 SSLConnector::~SSLConnector()
