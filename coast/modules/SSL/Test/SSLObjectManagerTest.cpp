@@ -54,7 +54,7 @@ void SSLObjectManagerTest::testCase()
 void SSLObjectManagerTest::UsePassedInCtxTest()
 {
 	StartTrace(SSLObjectManagerTest.UsePassedInCtxTest);
-	FOREACH_ENTRY("GetCtxTest", cConfig, cName) {
+	FOREACH_ENTRY("UsePassedInCtxTest", cConfig, cName) {
 		Trace("At entry: " << i);
 		SSLObjectManager::SSLOBJMGR()->RemoveCtx(cConfig["Config"]["Address"].AsString(), cConfig["Config"]["Port"].AsString());
 		TraceAny(cConfig, "cConfig");
@@ -93,7 +93,7 @@ void SSLObjectManagerTest::UsePassedInCtxTest()
 void SSLObjectManagerTest::ReUseCreatedCtxTest()
 {
 	StartTrace(SSLObjectManagerTest.ReUseCreatedCtxTest);
-	FOREACH_ENTRY("GetCtxTest", cConfig, cName) {
+	FOREACH_ENTRY("ReUseCreatedCtxTest", cConfig, cName) {
 		Trace("At entry: " << i);
 		SSLObjectManager::SSLOBJMGR()->RemoveCtx(cConfig["Config"]["Address"].AsString(), cConfig["Config"]["Port"].AsString());
 		TraceAny(cConfig, "cConfig");

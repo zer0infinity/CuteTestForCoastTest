@@ -5,10 +5,10 @@
 # This library/application is free software; you can redistribute and/or modify it under the terms of
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
-
 {
 
-	/GetCtxTest
+	/ReUseCreatedCtxTest	%UsePassedInCtxTest
+	/UsePassedInCtxTest
 	{
 		{
 			/Config
@@ -37,6 +37,26 @@
 			}
 		}
 	}
+	/SessionResumptionWithMinimalConfigTest
+	{
+		{
+			/Config
+			{
+				/Address	"dylan"
+####												  -cert servercert.pem -key serverkey.pem -Verify 4 -CAfile fullchain.pem -debug
+####												  and type "HTTP" as the server's response in GetCtxTest.
+				/Port		22222
+				/SessionResumption 			1
+				/NoCertAndPrivateKey		1
+			}
+			/Results
+			{
+				/SSLCertVerifyStatus		0
+				/AppLevelCertVerifyStatus	0
+				/IsCertCheckPassed			0
+			}
+		}
+	}
 	/SessionResumptionTest
 	{
 		{
@@ -44,7 +64,6 @@
 			{
 				/Address	"localhost"
 				/Port		443
-####			/Port		4433					# Use opensll s_server with options
 ####												  -cert servercert.pem -key serverkey.pem -Verify 4 -CAfile fullchain.pem -debug
 ####												  and type "HTTP" as the server's response in GetCtxTest.
 				/UseThreadLocalMemoryMemory		1
@@ -75,7 +94,6 @@
 			{
 				/Address	"localhost"
 				/Port		443
-####			/Port		4433					# Use opensll s_server with options
 ####												  -cert servercert.pem -key serverkey.pem -Verify 4 -CAfile fullchain.pem -debug
 ####												  and type "HTTP" as the server's response in GetCtxTest.
 				/UseThreadLocalMemoryMemory		1
@@ -105,7 +123,6 @@
 		{
 			/Address	"localhost"
 			/Port		443
-####		/Port		4433					# Use opensll s_server with options
 ####											  -cert servercert.pem -key serverkey.pem -Verify 4 -CAfile fullchain.pem -debug
 ####											  and type "HTTP" as the server's response in GetCtxTest.
 			/SSLClientSessionTimeout	1
