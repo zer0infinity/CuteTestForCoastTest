@@ -20,10 +20,10 @@ void	AnyVisitor::VisitArray(const ROAnything value, const AnyImpl *id, long inde
 	// template method for convenient forward iteration when visiting
 	ArrayBefore(value, id, index, slotname);
 	for (long i = 0; i < value.GetSize(); i ++) {
-		const String &slotname = value.VisitSlotName(i);
-		ArrayBeforeElement(i, slotname);
-		value[i].Accept(*this, i, slotname);
-		ArrayAfterElement(i, slotname);
+		const String &strSlotname = value.VisitSlotName(i);
+		ArrayBeforeElement(i, strSlotname);
+		value[i].Accept(*this, i, strSlotname);
+		ArrayAfterElement(i, strSlotname);
 	}
 	ArrayAfter(value, id, index, slotname);
 }
