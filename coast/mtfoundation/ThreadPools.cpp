@@ -254,11 +254,6 @@ WorkerThread::~WorkerThread()
 {
 }
 
-void WorkerThread::DoInit(ROAnything workerInit)
-{
-	// initialize your worker here
-}
-
 void WorkerThread::Init(WorkerPoolManager *manager, ROAnything workerInit)
 {
 	StartTrace(WorkerThread.Init);
@@ -369,7 +364,7 @@ int WorkerPoolManager::InitPool(bool usePoolStorage, long poolStorageSize, int n
 			// use different memory manager for each thread
 			wt->Start(MT_Storage::MakePoolAllocator(poolStorageSize, numOfPoolBucketSizes), args);
 		} else {
-			wt->Start(Storage::Global());
+			wt->Start(Storage::Global(), args);
 		}
 		Trace("Start done");
 		wt->CheckState(Thread::eRunning);
