@@ -54,33 +54,39 @@ void URLUtilsTest::CheckUrlEncodingTest()
 	ret = URLUtils::CheckUrlEncoding(arguments);
 	assertEqual(true, ret);
 
-	arguments = "$-_.+/?%";
+	// ~ is not allowed
+	arguments = "$-_.+/?%~";
 	ret = URLUtils::CheckUrlEncoding(arguments);
-	assertEqual(true, ret);
+	assertEqual(false, ret);
 
 	// empty override string
-	arguments = "$-_.+/?%";
+	arguments = "$-_.+/?%~";
 	String override;
 	ret = URLUtils::CheckUrlEncoding(arguments, override);
+	assertEqual(false, ret);
+
+	// --- test with override
+	arguments = "$-_.+/?%{}";
+	ret = URLUtils::CheckUrlEncoding(arguments, "{}");
 	assertEqual(true, ret);
 
 	// --- test with override
-	// "% is not contained in override set
-	arguments = "$-_.+/?%";
-	ret = URLUtils::CheckUrlEncoding(arguments, "$-_.+/?");
+	// "# is not contained in override set
+	arguments = "$-_.+/?%~#";
+	ret = URLUtils::CheckUrlEncoding(arguments, "~");
 	assertEqual(false, ret);
 
 	arguments = "bubu^bubu";
-	ret = URLUtils::CheckUrlEncoding(arguments, "$-_.+/?");
+	ret = URLUtils::CheckUrlEncoding(arguments, "{}");
 	assertEqual(false, ret);
 
 	// ! is additionally defined
 	arguments = "$-_.+/?%!";
-	ret = URLUtils::CheckUrlEncoding(arguments, "$-_.+/?%!");
+	ret = URLUtils::CheckUrlEncoding(arguments, "{}!");
 	assertEqual(true, ret);
 
 	arguments = "bubu!bubu";
-	ret = URLUtils::CheckUrlEncoding(arguments, "$-_.+/?!");
+	ret = URLUtils::CheckUrlEncoding(arguments, "!");
 	assertEqual(true, ret);
 }
 
@@ -820,9 +826,15 @@ void URLUtilsTest::urlEncodeTest()
 {
 
 	String Request = "Dies ist\n \"%&?/\\#{}einTestString";
-	String Answer = URLUtils::urlEncode( Request );
-	assertCharPtrEqual( "Dies%20ist%20%22%25%26%3F%2F%5C%23%7B%7DeinTestString", Answer );
+	String Answer;
 
+	Answer = URLUtils::urlEncode( Request );
+	assertCharPtrEqual( "Dies%20ist%0A%20%22%25&%3F%2F%5C%23%7B%7DeinTestString", Answer );
+
+	String exclusionSet;
+	exclusionSet = "?\\";
+	Answer = URLUtils::urlEncode( Request, exclusionSet );
+	assertCharPtrEqual( "Dies%20ist%0A%20%22%25&?%2F\\%23%7B%7DeinTestString", Answer );
 }
 
 void URLUtilsTest::PairTest()

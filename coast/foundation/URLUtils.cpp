@@ -356,93 +356,68 @@ char URLUtils::DecodeSpecialChars(const String &str, char c, long &lPos, long of
 	return c;
 }
 
-// encode the given char *p into res by expanding problematic characters into %XX escapes
-String URLUtils::urlEncode(const String &str)
+String URLUtils::urlEncode(const String &str, const String exclusionSet)
 {
 	StartTrace(URLUtils.urlEncode);
-	String result;
-	char c;
+	String encoded;
+	DoUrlEncode(str, exclusionSet, encoded, false);
+	return encoded;
+}
 
-	if (str.Length() > 0) {
-		for (long l = 0; l < str.Length(); l++) {
-			switch (c = str[l]) {
-				case '\n':
-					break;
-				case ' ':
-				case '"':
-				case '%':
-				case '&':
-				case '?':
-				case '/':
-				case '\\':
-				case '#':
-				case '{':
-				case '}':
-					result.Append('%');
-					result.AppendAsHex(c);
-					break;
-				default:
-					result.Append(c);
-					break;
-			}
-		}
-	}
-	return result;
+bool URLUtils::CheckUrlEncoding(const String &str, const String exclusionSet)
+{
+	StartTrace(URLUtils.urlEncode);
+	String encoded;
+	String exclusionSetModified(exclusionSet);
+	exclusionSetModified.Append("%;?/");
+	return DoUrlEncode(str, exclusionSetModified, encoded, true);
 }
 
 // encode the given char *p into res by expanding problematic characters into %XX escapes
 // encode all chars except a-Z, 0-9,  the RFC1808 safe "$-_.+" ones and the chars passed in
 // the exclusion set
-String URLUtils::urlEncode(const String &str, String &exclusionSet)
+bool URLUtils::DoUrlEncode(const String &str, const String exclusionSet, String &encoded, bool doCheck)
 {
-	StartTrace(URLUtils.urlEncode);
-	String result;
+	StartTrace(URLUtils.DoUrlEncode);
 	char c;
 
 	// check for a-Z
 	if (str.Length() > 0) {
 		for (long l = 0; l < str.Length(); l++) {
 			unsigned int ui  = c = str[l];
-			if ( (ui >= 65 && ui <= 90)   || // A-Z
-				 (ui >= 97 && ui <= 122)  || // a-z
-				 (ui >= 48 && ui <= 57)   || // 0-9
-				 c == '$' ||				// RFC1808 safe chars
-				 c == '-' ||
-				 c == '_' ||
-				 c == '.' ||
-				 c == '+'  ) {
-				result.Append(c);
-				continue;
+			if ( ui <= 0x20 ||
+				 ui >= 0x7F ||
+				 ui == '"'  ||
+				 ui == '#'  ||
+				 ui == '%'  ||
+				 ui == ';'  ||
+				 ui == '<'  ||
+				 ui == '>'  ||
+				 ui == '?'  ||
+				 ui == '['  ||
+				 ui == '\\' ||
+				 ui == ']'  ||
+				 ui == '^'  ||
+				 ui == '`'  ||
+				 ui == '{'  ||
+				 ui == '/'  ||
+				 ui == '}'  ||
+				 ui == '~'
+			   ) {
+				if ( (exclusionSet.StrChr(c) == -1L) ) {
+					if ( doCheck ) {
+						return false;
+					}
+					encoded.Append('%');
+					encoded.AppendAsHex(c);
+					continue;
+				}
 			}
-			if (exclusionSet.StrChr(c) != -1L ) {
-				result.Append(c);
-				continue;
-			}
-			if (c != '\n') {		// possible vulnerability: fake header fields
-				result.Append('%');
-				result.AppendAsHex(c);
-			}
+			encoded.Append(c);
 		}
 	}
-	Trace("Result: " << result << " ExclusionSet: " << exclusionSet);
-	return result;
-}
-
-// Check URL for chars which should be encoded according to RF1738
-bool URLUtils::CheckUrlEncoding(String &str, const String override)
-{
-	StartTrace(URLUtils.CheckUrlEncoding);
-	String base("ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-				"abcdefghijklmnopqrstuvwxyz"
-				"0123456789");
-	String overrideDefault("$-_.+/?%");
-	if ( override.Length() == 0L ) {
-		base.Append(overrideDefault);
-	} else {
-		base.Append(override);
-	}
-	return (str.LastCharOf(base) == str.Length() ||
-			str.Length() == 0);
+	Trace("Result: " << encoded << " ExclusionSet: " << exclusionSet);
+	return true;
 }
 
 // Check URL for chars which should be encoded according to RFC1738

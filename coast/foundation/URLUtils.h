@@ -37,10 +37,8 @@ public:
 	//! PS: use char for delim2
 	static void Split(const char *buf, char delim, Anything &out, char delim2 = '=', NormalizeTag norm = URLUtils::eUntouched);
 
-	//! encodes the given string by expanding problematic characters into %XX escapes
-	static String urlEncode(const String &str);
 	//! RFC1808 compliant url encoder, allows chars to be excluded from escaping
-	static String urlEncode(const String &str, String &exclusionSet);
+	static String urlEncode(const String &str, String exclusionSet = String());
 
 	//! URL decodes the given string, (%xx, %uxxxx) Only values <= xFF are valid
 	static String urlDecode(const String &str, URLUtils::URLCheckStatus &eUrlCheckStatus, bool replacePlusByBlank = true);
@@ -60,7 +58,7 @@ public:
 	static void DecodeAll(Anything &a);
 
 	//! check URL Path Encoding according to RFC1738
-	static bool CheckUrlEncoding(String &str, const String override = String());
+	static bool CheckUrlEncoding(const String &str, const String override = String());
 
 	//! check URL Args Encoding according to RFC1738
 	static bool CheckUrlArgEncoding(String &str, const String override = String());
@@ -118,7 +116,7 @@ private:
 	static void DecodeSpecialHTMLChars(const String &str, String &res, long &lPos);
 	static void ExtractDecimal(const String &str, String &res, long &lPos, long delta);
 	static void ExtractHex(const String &str, String &res, long &lPos, long delta);
-
+	static bool DoUrlEncode(const String &str, String exclusionSet, String &encoded, bool doCheck);
 };
 
 #endif

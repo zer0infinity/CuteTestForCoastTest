@@ -302,7 +302,7 @@
 		# 28
 		# Wrong path encodings, 4 cases basing on same url
 		{
-				/RequestLine 	"GET /ftimage!/image.gif HTTP/1.0\r\n"
+				/RequestLine 	"GET /ftimage~/image.gif HTTP/1.0\r\n"
 				/ExpectedRequest		""
 				/HasErrors			 1
 				/Reason				"Not all unsave chars URL encoded"
@@ -310,7 +310,7 @@
 		# 29
 		# Same, without url-decoding
 		{
-				/RequestLine 	"GET /ftimage!/image.gif HTTP/1.0\r\n"
+				/RequestLine 	"GET /ftimage~/image.gif HTTP/1.0\r\n"
 				/ExpectedRequest		""
 				/HasErrors			 1
 				/Reason				"Not all unsave chars URL encoded"
@@ -840,19 +840,19 @@
 				/Reason				"Encoded char above 0x255 detected"
 		}
 		# 93
-		# Normally we accept $-_.+/?% as unencoded chars in a URL
-		# Now we allow = to be unencoded
+		# We accept $-_.+/?%= as unencoded chars in a URL
+		# Now we allow ] to be unencoded
 		{
 				/RequestLine 	"GET /ftimage/my=equals.gif HTTP/1.0\r\n"
-				/CheckUrlEncodingOverride	"$-_.+/?%="
+				/CheckUrlEncodingOverride	"]"
 				/ExpectedRequest		"/ftimage/my=equals.gif"
 				/HasErrors			 0
 				/Reason				""
 		}
 		# 94
-		# With the default $-_.+/?% the request is invalid
+		# but with ] the request is invalid
 		{
-				/RequestLine 	"GET /ftimage/my=equals.gif HTTP/1.0\r\n"
+				/RequestLine 	"GET /ftimage/my]equals.gif HTTP/1.0\r\n"
 				/ExpectedRequest	""
 				/HasErrors			 1
 				/Reason				"Not all unsave chars URL encoded"
