@@ -47,6 +47,7 @@ void SSLListenerPoolTest::PoolTest()
 	config.Append("TCP5017");
 	config.Append("TCP5018");
 	config.Append("TCP5019");
+	config.Append("TCP5020");
 
 	TestCallBackFactory *tcbf = new TestCallBackFactory;
 	ListenerPool lpToTest(tcbf);
@@ -68,6 +69,7 @@ void SSLListenerPoolTest::PoolTest()
 			t_assert(result.Contains("5011_timeout_2000"));
 			t_assert(result.Contains("5016_timeout_1000"));
 			t_assert(result.Contains("5017_timeout_1000"));
+			t_assert(result.Contains("5020_timeout_0"));
 		}
 	}
 	Anything failures = tcbf->GetFailures();
