@@ -318,7 +318,7 @@ void URLFilterTest::HandleMultipleCookiesTest()
 		env["WDCookies"] = cookieState;
 
 		cookieSpec.Append(slotName1);
-		t_assert(urlFilter.HandleCookie(query, env, cookieSpec, ctx) == false);
+		t_assert(urlFilter.HandleCookie(query, env, cookieSpec, ctx) == true);
 		// more then one cookie for a given name, blank out
 		assertEqual("", query[slotName1].AsString());
 		TraceAny(env, "environment");
@@ -364,10 +364,33 @@ void URLFilterTest::HandleMultipleCookiesTest()
 		env["WDCookies"] = cookieState;
 
 		// Look for a cookie which is not there
+		// Still return true because there where cookies.
 		cookieSpec.Append(slotName2);
 		t_assert(urlFilter.HandleCookie(query, env, cookieSpec, ctx) == true);
 		TraceAny(env, "environment");
 		TraceAny(query, "query");
+		assertEqual(0, env["NrOfCookies"][slotName2].AsLong(3));
+	}
+	{
+		Anything env;
+		Anything query;
+		Anything cookieState;
+		Anything cookieSpec;
+		URLFilter urlFilter("Test");
+		Context ctx(env, query, 0, 0, 0, 0);
+
+		// setting up the data
+		String slotName1 = "NotThere";
+		String slotName2 = "NotThereToo";
+
+		// No cookies at all, still we want NrOfCookies to be set to 0 for the cookies
+		// we request in cookieSpec
+		cookieSpec.Append(slotName1);
+		cookieSpec.Append(slotName2);
+		t_assert(urlFilter.HandleCookie(query, env, cookieSpec, ctx) == false);
+		TraceAny(env, "environment");
+		TraceAny(query, "query");
+		assertEqual(0, env["NrOfCookies"][slotName1].AsLong(3));
 		assertEqual(0, env["NrOfCookies"][slotName2].AsLong(3));
 	}
 	{
@@ -394,7 +417,7 @@ void URLFilterTest::HandleMultipleCookiesTest()
 		// HandleCookie extract all cookies, it does not stop if it finds more then one
 		// cookies for a given name. Thus the valid cookies are handled as usual, only the
 		// returncode is set to false.
-		t_assert(urlFilter.HandleCookie(query, env, cookieSpec, ctx) == false);
+		t_assert(urlFilter.HandleCookie(query, env, cookieSpec, ctx) == true);
 		assertEqual("first", query[slotName1].AsString());
 		// more then one cookie for a given name, blank out
 		assertEqual("", query[slotName2].AsString());

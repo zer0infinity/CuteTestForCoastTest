@@ -76,6 +76,9 @@ public:
 	//! \return returns true if the slot is there and successfully unscrambled or the slot is not there, returns false in case of unscrambling error or null
 	virtual bool DoUnscrambleState(Anything &query, const char *slotName, Context &ctx);
 
+	//! Render a filter value
+	void RenderFilterVal(String &filterVal, const ROAnything &filterCookieConf, Context &ctx);
+
 private:
 	//! empty constructor is forbidden
 	URLFilter();

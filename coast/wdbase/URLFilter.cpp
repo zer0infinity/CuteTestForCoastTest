@@ -23,32 +23,24 @@ bool URLFilter::HandleCookie(Anything &query, Anything &env, const ROAnything &f
 	SubTraceAny(query, query, "Query: ");
 	SubTraceAny(env, env, "Env: ");
 	SubTraceAny(filterCookieConf, filterCookieConf, "Filter configuration: ");
-	bool ret = false;
 	// default implementation copies cookie tags
 	// defined in the filter into the query
 	// if they are not already there
 	Anything cookies;
+	bool ret = true;
 	if ( env.LookupPath(cookies, "WDCookies") ) {
-		ret = true;
 		long numOfFilters = filterCookieConf.GetSize();
 		for (long i = 0; i < numOfFilters; i++) {
-			ROAnything filter(filterCookieConf[i]);
 			String filterVal;
-			if (filter.GetType() != Anything::eCharPtr) {
-				// assume renderer specification
-				Renderer::RenderOnString(filterVal, ctx, filter);
-			} else {
-				filterVal = filter.AsCharPtr(0);
-			}
-
+			RenderFilterVal(filterVal, filterCookieConf[i], ctx);
 			const char *slotName = filterVal;
-			env["NrOfCookies"][slotName] = 0;
+			env["NrOfCookies"][slotName] = 0L;
 			if ( cookies.IsDefined(slotName) &&
 				 !query.IsDefined(slotName) ) {
 				if ( cookies[slotName].GetType() != Anything::eArray ) {
 					// don't override existing tags
 					query[slotName] = cookies[slotName];
-					env["NrOfCookies"][slotName] = 1;
+					env["NrOfCookies"][slotName] = 1L;
 					//	cookies.Remove(slotName); // no duplicates
 				} else {
 					long size = cookies[slotName].GetSize();
@@ -57,14 +49,34 @@ bool URLFilter::HandleCookie(Anything &query, Anything &env, const ROAnything &f
 					errMsg << slotName << "> was sent <" << size << "> times. " << slotName << " set to blank.";
 					SysLog::Error(errMsg);
 					env["NrOfCookies"][slotName] = size;
-					ret = false;
 				}
 				Trace("query[" << slotName << "]= " << cookies[slotName].AsCharPtr(""));
 			}
 		}
 		SubTraceAny(query, query, "Query after: ");
+	} else {
+		long numOfFilters = filterCookieConf.GetSize();
+		for (long i = 0; i < numOfFilters; i++) {
+			String filterVal;
+			RenderFilterVal(filterVal, filterCookieConf[i], ctx);
+			env["NrOfCookies"][filterVal] = 0L;
+		}
+		ret = false;
 	}
 	return ret;
+}
+
+void URLFilter::RenderFilterVal(String &filterVal, const ROAnything &filterCookieConf, Context &ctx)
+{
+	StartTrace(URLFilter.RenderFilterVal);
+	ROAnything filter(filterCookieConf);
+	if (filter.GetType() != Anything::eCharPtr) {
+		// assume renderer specification
+		Renderer::RenderOnString(filterVal, ctx, filter);
+	} else {
+		filterVal = filter.AsCharPtr(0);
+	}
+	return;
 }
 
 bool URLFilter::HandleQuery(Anything &query, const ROAnything &filterQueryConf, Context &ctx)
