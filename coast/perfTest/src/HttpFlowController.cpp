@@ -660,6 +660,12 @@ void HttpFlowController::DoCommand(Context &ctx, ROAnything commandConfig)
 	}
 }
 
+bool HttpFlowController::PrepareRequest(Context &ctx)
+{
+	StartTrace(HttpFlowController.PrepareRequest);
+	return FlowController::PrepareRequest(ctx);
+}
+
 // False returned when the last run is completed
 bool HttpFlowController::PrepareRequest(Context &ctx, bool &bPrepareRequestSucceeded)
 {
@@ -840,14 +846,14 @@ bool HttpFlowController::PrepareRequest(Context &ctx, bool &bPrepareRequestSucce
 void HttpFlowController::SetupSSLCtx(Anything &sslModuleCfg, Context &ctx)
 {
 	StartTrace(HttpFlowController.SetupSSLCtx);
-	sslModuleCfg["SSLVerifyPeerCert"]			= ctx.Lookup("SSLVerifyPeerCert", 0L);
-	sslModuleCfg["SSLVerifyFailIfNoPeerCert"]	= ctx.Lookup("SSLVerifyFailIfNoPeerCert", 0L);
-	sslModuleCfg["SSLUseAppCallback"] 			= ctx.Lookup("SSLUseAppCallback", 0L);
-	sslModuleCfg["SSLVerifyDepth"] 				= ctx.Lookup("SSLVerifyDepth", 0L);
-	sslModuleCfg["SSLPeerCAFile"] 				= ctx.Lookup("SSLPeerCAFile", "");
-	sslModuleCfg["SSLVerifyPath"] 				= ctx.Lookup("SSLVerifyPath", "");
-	sslModuleCfg["KeyFileClient"] 				= ctx.Lookup("KeyFileClient", "");
-	sslModuleCfg["CertFileClient"] 				= ctx.Lookup("CertFileClient", "");
+	sslModuleCfg["SSLVerifyPeerCert"]			= 0L;
+	sslModuleCfg["SSLVerifyFailIfNoPeerCert"]	= 0L;
+	sslModuleCfg["SSLUseAppCallback"] 			= 0L;
+	sslModuleCfg["SSLVerifyDepth"] 				= 0L;
+	sslModuleCfg["SSLPeerCAFile"] 				= "";
+	sslModuleCfg["SSLVerifyPath"] 				= "";
+	sslModuleCfg["KeyFileClient"] 				= "";
+	sslModuleCfg["CertFileClient"] 				= "";
 	sslModuleCfg["NoCertAndPrivateKey"]			= 1L;
 }
 
@@ -862,10 +868,10 @@ void HttpFlowController::PrepareSSL(Context &ctx)
 	SetupSSLCtx(sslModuleCfg, ctx);
 
 	toPush["SSLModuleCfg"] 				= sslModuleCfg;
-	toPush["VerifyCertifiedEntity"] 	= ctx.Lookup("VerifyCertifiedEntity", 0L);
-	toPush["CertVerifyString"]			= ctx.Lookup("CertVerifyString", "");
-	toPush["CertVerifyStringIsFilter"]  = ctx.Lookup("CertVerifyStringIsFilter", 0L);
-	toPush["SessionResumption"] 		= ctx.Lookup("SessionResumption", 1L);
+	toPush["VerifyCertifiedEntity"] 	= 0L;
+	toPush["CertVerifyString"]			= "";
+	toPush["CertVerifyStringIsFilter"]  = 0L;
+	toPush["SessionResumption"] 		= 1L;
 	String name("SSLData");
 	ctx.PushStore(name, toPush);
 }

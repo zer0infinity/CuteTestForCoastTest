@@ -27,8 +27,8 @@ public:
 	//!Input data for the DataAccess are placed into the context.
 	//! \param ctx Context of the stress run
 	//! \return true if a DataAccess is to be executed - false if the series is finished
+	virtual bool PrepareRequest(Context &ctx);
 	virtual bool PrepareRequest(Context &ctx, bool &bPrepareRequestSucceeded);
-
 	virtual bool AnalyseReply(Context &ctx, Anything &result) {
 		return FlowController::AnalyseReply(ctx, result);
 	};
