@@ -103,6 +103,7 @@ Test *ROAnyConfNamedObjectLookupAdapterTest::suite ()
 	ADD_CASE(testSuite, ROAnyConfNamedObjectLookupAdapterTest, testCase);
 	ADD_CASE(testSuite, ROAnyConfNamedObjectLookupAdapterTest, testLookup);
 	ADD_CASE(testSuite, ROAnyConfNamedObjectLookupAdapterTest, testNoConfNamedObject);
+	ADD_CASE(testSuite, ROAnyConfNamedObjectLookupAdapterTest, testNothingAtAll);
 
 	return testSuite;
 }
@@ -124,13 +125,25 @@ void ROAnyConfNamedObjectLookupAdapterTest::testNoConfNamedObject()
 	assertEquals("bar", la.Lookup("hank", "X"));
 	assertEquals("bar", la.Lookup("compo@site", "X", '@'));
 	t_assert(31416L == la.Lookup("long", 0L));
-	cerr << "NOtestNoConfNamedObject" << "1" << endl;
 	assertEquals("X", la.Lookup("fox", "X"));
-	cerr << "NOtestNoConfNamedObject" << "2" << endl;
 
 	//Test lookups aiming at the ConfiguredNamedObject's config
 	assertEquals("XXXX", la.Lookup("FromConfigString", "XXXX"));
 	assertEquals(4L, la.Lookup("FromConfigLong", 4L));
+}
+
+void ROAnyConfNamedObjectLookupAdapterTest::testNothingAtAll()
+{
+	StartTrace(ROAnyConfNamedObjectLookupAdapterTest.testNothingAtAll);
+
+	Anything base;
+	ROAnything robase(base);
+	ROAnyConfNamedObjectLookupAdapter la(robase, NULL);
+
+	//Test ROAnyLookupAdapter functionality
+	assertEquals("X", la.Lookup("hank", "X"));
+	assertEquals("X", la.Lookup("compo@site", "X", '@'));
+	t_assert(0L == la.Lookup("long", 0L));
 }
 
 //---- TestConfNamedObj ----------------------------------------------------------------

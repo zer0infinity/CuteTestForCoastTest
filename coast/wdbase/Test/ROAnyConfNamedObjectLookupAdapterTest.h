@@ -49,6 +49,7 @@ public:
 
 	void testLookup();
 	void testNoConfNamedObject();
+	void testNothingAtAll();
 };
 
 class TestConfNamedObj : public ConfNamedObject
