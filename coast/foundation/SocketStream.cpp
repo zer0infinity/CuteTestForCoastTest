@@ -294,7 +294,7 @@ long SocketStreamBuf::DoRead(char *buf, long len) const
 				SysLog::Error(msg);
 				Ios->clear(ios::badbit);
 			} else if ( bytesRead == 0 ) {
-				String msg("0 bytes read from ");
+				String msg("Socket:    end of data (read)              on file descriptor: ");
 				msg << fSocket->GetFd();
 				SysLog::Info(msg);
 				// socket is closed, stream recognizes this via

@@ -86,7 +86,7 @@ public:
 	//! this allows for non-blocking socket io with SSL
 	//! \param ssl the ssl structure if available
 	//! \param res the return value of the previous SSL_xxx call
-	bool ShouldRetry(SSL *ssl, int res);
+	bool ShouldRetry(SSL *ssl, int res, bool handshake = false);
 
 	//!returns amount of bytes read from belonging iostream:
 	virtual long GetReadCount() const;

@@ -89,7 +89,7 @@ long SSLSocketStreamBuf::DoWrite(const char *buf, long len)
 			AddWriteCount( bytesSent );
 		}
 	} while (bytesSent < 1 && len > 0
-			 && ((SSLSocket *)fSocket)->ShouldRetry(fContext, bytesSent));
+			 && ((SSLSocket *)fSocket)->ShouldRetry(fContext, bytesSent, false));
 
 	SetStreamState(bytesSent);
 	return bytesSent;
@@ -108,7 +108,7 @@ long SSLSocketStreamBuf::DoRead(char *buf, long len) const
 		//}
 		// -> moved this to SocketStreamBuf
 	} while (bytesRead < 1 && len > 0
-			 && ((SSLSocket *)fSocket)->ShouldRetry(fContext, bytesRead));
+			 && ((SSLSocket *)fSocket)->ShouldRetry(fContext, bytesRead, false));
 
 	SetStreamState(bytesRead);
 	return bytesRead;

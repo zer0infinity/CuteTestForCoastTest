@@ -91,7 +91,7 @@ Anything SSLSocket::ReportSSLError(Anything &errAny, unsigned long err)
 	return errAny;
 }
 
-bool SSLSocket::ShouldRetry(SSL *ssl, int res)
+bool SSLSocket::ShouldRetry(SSL *ssl, int res, bool handshake)
 {
 	StartTrace(SSLSocket.ReportSSLError);
 	Trace("res = " << long(res) << " ssl = " << (long) ssl);
@@ -104,11 +104,10 @@ bool SSLSocket::ShouldRetry(SSL *ssl, int res)
 	} else if (SSL_ERROR_WANT_WRITE == err) {
 		return IsReadyForWriting();
 	} else if (SSL_ERROR_ZERO_RETURN) { // clean  way to handle peer did not send data
-		int zeroReadRet = SSL_shutdown(ssl);
-		if (!zeroReadRet) {
-			ShutDownWriting();
-			zeroReadRet = SSL_shutdown(ssl);
-		}
+		// Do not report SSL error
+		String msg("SSLSocket: end of data (connection closed) on file descriptor: ");
+		msg << GetFd() << (handshake) ? " at Handshake" : " at normal r/w";
+		SysLog::Info(msg);
 		return false;
 	}
 	ReportSSLError(err);
@@ -179,7 +178,7 @@ iostream *SSLSocket::DoMakeStream()
 	Trace("---- connect sequence");
 	do {
 		res = PrepareSocket(ssl);
-	} while (ShouldRetry(ssl, res));
+	} while (ShouldRetry(ssl, res, true));
 	if ( res < 0 ) { //res != 1 )
 		// SOP slight semantic change, was ==-1, but 0 seems to be an error as well
 		// return value was not guaranteed to be -1 when below zero
