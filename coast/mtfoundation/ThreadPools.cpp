@@ -269,26 +269,19 @@ void WorkerThread::Run()
 	while ( IsRunning() ) {
 		// wait for the next working request or for termination
 		Trace("Entering working loop, now checking running state to be working ...");
-		CheckRunningState(eWorking);
-		Trace("checking if thread is running");
-		if ( !IsRunning() ) {
-			Trace("failure: workerthread not running anymore");
-			return;
+		if ( CheckRunningState(eWorking) && IsRunning() ) {
+			Trace("processing workload");
+			// work for the next request
+			DoProcessWorkload();
+
+			// example: the socket communication could be done now
+			if ( IsRunning() ) {
+				Trace("signalling Ready state");
+				SetReady();
+			}
 		}
-
-		Trace("processing workload");
-		// work for the next request
-		DoProcessWorkload();
-
-		// the socket communication should be done now
-		if ( !IsRunning() ) {
-			Trace("failure: workerthread not running anymore");
-			return;
-		}
-
-		Trace("signalling Ready state");
-		SetReady();
 	}
+	Trace("not running anymore, sniff");
 }
 
 void WorkerThread::DoReadyHook(ROAnything)
