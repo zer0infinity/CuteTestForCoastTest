@@ -286,20 +286,23 @@ void Queue::GetStatistics(Anything &anyStatistics)
 {
 	StartTrace(Queue.GetStatistics);
 	if ( !IsBlocked() ) {
+		long lCurSec(0L), lCurUSec(0L);
 		{
 			MutexEntry me(fQueueLock);
 			me.Use();
 			// must pass a DeepClone because of reference counting
 			anyStatistics = fAnyStatistics.DeepClone();
+			// this Anything uses Storage::Current as default allocator so we must take care
+			// when we use a Thread specific PoolAllocator because the Pool access is not locked
+			Anything anyTime;
+			DateTime::GetTimeOfDay(anyTime);
+			lCurSec = anyTime["sec"].AsLong(0L);
+			lCurUSec = anyTime["usec"].AsLong(0L);
 		}
 		anyStatistics["MaxLoad"] = fMaxLoad;
 		anyStatistics["PutCount"] = (long)fPutCount;
 		anyStatistics["GetCount"] = (long)fGetCount;
 		anyStatistics["CurrentSize"] = IntGetSize();
-
-		Anything anyTime;
-		DateTime::GetTimeOfDay(anyTime);
-		long lCurSec(anyTime["sec"].AsLong(0L)), lCurUSec(anyTime["usec"].AsLong(0L));
 		anyStatistics["StatisticTime"]["sec"] = lCurSec;
 		anyStatistics["StatisticTime"]["usec"] = lCurUSec;
 
