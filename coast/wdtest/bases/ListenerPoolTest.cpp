@@ -18,6 +18,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
 #include "Dbg.h"
+#include "Socket.h"
 
 class TestCallBack : public AcceptorCallBack
 {
