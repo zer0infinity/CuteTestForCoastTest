@@ -1,8 +1,12 @@
 #!/bin/ksh
-cp clientcrt_bondo.pem clientcrt.pem
-cp clientkey_bondo.pem clientkey.pem
-cp servercrt_dylan.hank.com.pem servercrt.pem
-cp serverkey_dylan.hank.com.pem serverkey.pem
-cp fullchain_dylan.hank.com.pem fullchain.pem
-cp serverchain_dylan.hank.com.pem serverchain.pem
+# Use this script to install new generated certificates.
+cp /tmp/mkca/ca-hierarchy/ucerts/* .
+clienthost=dylan.hank.com
+serverhost=dylan.hank.com
+cp clientcrt_${clienthost}.pem clientcrt.pem
+cp clientkey_${clienthost}com.pem clientkey.pem
+cp servercrt_${serverhost}.pem servercrt.pem
+cp serverkey_${serverhost}.pem serverkey.pem
+cp fullchain_${serverhost}.pem fullchain.pem
+cp serverchain_${serverhost}.pem serverchain.pem
 
