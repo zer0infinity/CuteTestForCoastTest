@@ -352,6 +352,7 @@
 		{
 			/DoSendReceiveWithFailure	1
 			/IOSGoodAfterSend			1
+			/IOSGoodBeforeSend	1
 			/SSLConnector		0
 			/PortToUse			5012
 			/TimeoutToUse		2000
@@ -367,22 +368,8 @@
 #	# a SSL Connector to an non-SSL-Acceptor
 		{
 			/DoSendReceiveWithFailure 1
-			/IOSGoodAfterSend			0
-			/SSLConnector		1
-			/PortToUse			5011
-			/TimeoutToUse		1000
-			/Data
-			{
-				/MessageToSend	"5011_timeout_1000"
-				/ChecksToDo
-				{
-				}
-			}
-		}
-		{
-			/DoSendReceiveWithFailure 1
-			/IOSGoodAfterSend			0
-
+			/IOSGoodAfterSend	0
+			/IOSGoodBeforeSend	0
 			/SSLConnector		1
 			/PortToUse			5011
 			/TimeoutToUse		1000

@@ -92,14 +92,18 @@ void SSLListenerPoolTest::DoTestConnect()
 				}
 				SSLConnector sc(connectorConfig);
 				if ( cConfig["DoSendReceiveWithFailure"].AsLong(0) ) {
-					DoSendReceiveWithFailure(&sc, cConfig["Data"].DeepClone(), cConfig["IOSGoodAfterSend"].AsLong(0));
+					DoSendReceiveWithFailure(&sc, cConfig["Data"].DeepClone(),
+											 cConfig["IOSGoodAfterSend"].AsLong(0),
+											 cConfig["IOSGoodBeforeSend"].AsLong(1));
 				} else {
 					DoSendReceive(&sc, cConfig["Data"].DeepClone());
 				}
 			} else {
 				SSLConnector sc("localhost", cConfig["PortToUse"].AsLong(0), cConfig["TimeoutToUse"].AsLong(0));
 				if ( cConfig["DoSendReceiveWithFailure"].AsLong(0) ) {
-					DoSendReceiveWithFailure(&sc, cConfig["Data"].DeepClone(), cConfig["IOSGoodAfterSend"].AsLong(0));
+					DoSendReceiveWithFailure(&sc, cConfig["Data"].DeepClone(),
+											 cConfig["IOSGoodAfterSend"].AsLong(0),
+											 cConfig["IOSGoodBeforeSend"].AsLong(1));
 				} else {
 					DoSendReceive(&sc, cConfig["Data"].DeepClone());
 				}
@@ -108,7 +112,9 @@ void SSLListenerPoolTest::DoTestConnect()
 			Trace("Using configured NON SSL connector");
 			Connector c("localhost", cConfig["PortToUse"].AsLong(0L), cConfig["TimeoutToUse"].AsLong(0L));
 			if ( cConfig["DoSendReceiveWithFailure"].AsLong(0) ) {
-				DoSendReceiveWithFailure(&c, cConfig["Data"].DeepClone(), cConfig["IOSGoodAfterSend"].AsLong(0));
+				DoSendReceiveWithFailure(&c, cConfig["Data"].DeepClone(),
+										 cConfig["IOSGoodAfterSend"].AsLong(0),
+										 cConfig["IOSGoodBeforeSend"].AsLong(1));
 			} else {
 				DoSendReceive(&c, cConfig["Data"].DeepClone());
 			}

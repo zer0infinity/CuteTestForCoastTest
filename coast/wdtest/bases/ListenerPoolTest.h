@@ -52,8 +52,8 @@ protected:
 	virtual void DoTestConnect() = 0;
 	virtual void DoSendReceive(Connector *c, String msg);
 	virtual void DoSendReceive(Connector *c, Anything toSend);
-	virtual void DoSendReceiveWithFailure(Connector *c, String msg, bool iosGoodAfterSend);
-	virtual void DoSendReceiveWithFailure(Connector *c, Anything toSend, bool iosGoodAfterSend);
+	virtual void DoSendReceiveWithFailure(Connector *c, String msg, bool iosGoodAfterSend, bool iosGoodBeforeSend);
+	virtual void DoSendReceiveWithFailure(Connector *c, Anything toSend, bool iosGoodAfterSend, bool iosGoodBeforeSend);
 };
 
 class TestReceiver

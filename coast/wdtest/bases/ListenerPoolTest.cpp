@@ -203,11 +203,15 @@ void ListenerPoolTest::DoSendReceive(Connector *c, Anything toSend)
 	}
 }
 
-void ListenerPoolTest::DoSendReceiveWithFailure(Connector *c, String msg, bool iosGoodAfterSend)
+void ListenerPoolTest::DoSendReceiveWithFailure(Connector *c, String msg, bool iosGoodAfterSend, bool iosGoodBeforeSend)
 {
 	StartTrace(ListenerPoolTest.DoSendReceive);
 	iostream *Ios = c->GetStream();
-	t_assertm(Ios != 0, "Expected iostream not to be 0");
+	if ( iosGoodBeforeSend ) {
+		t_assertm(Ios != (iostream *) NULL, "Expected iostream not to be 0");
+	} else {
+		t_assertm(Ios == (iostream *) NULL, "Expected iostream to be 0");
+	}
 	if (Ios) {
 		*Ios << msg << endl;
 		if (iosGoodAfterSend) {
@@ -221,11 +225,15 @@ void ListenerPoolTest::DoSendReceiveWithFailure(Connector *c, String msg, bool i
 	}
 }
 
-void ListenerPoolTest::DoSendReceiveWithFailure(Connector *c, Anything toSend, bool iosGoodAfterSend)
+void ListenerPoolTest::DoSendReceiveWithFailure(Connector *c, Anything toSend, bool iosGoodAfterSend, bool iosGoodBeforeSend)
 {
 	StartTrace(ListenerPoolTest.DoSendReceive);
 	iostream *Ios = c->GetStream();
-	t_assertm(Ios != 0, "Expected iostream not to be 0");
+	if ( iosGoodBeforeSend ) {
+		t_assertm(Ios != (iostream *) NULL, "Expected iostream not to be 0");
+	} else {
+		t_assertm(Ios == (iostream *) NULL, "Expected iostream to be 0");
+	}
 	if (Ios) {
 		toSend.Export(*Ios);
 		if (iosGoodAfterSend) {
