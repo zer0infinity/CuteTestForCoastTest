@@ -49,8 +49,7 @@ void URLEncoderTest::EncodeTest()
 	String Request = "Dies ist\n \"%&?/\\#{}einTestString";
 	String Answer;
 	encoder.DoEncode(Answer, Request);
-	// \n gets removed!
-	assertEqual( "Dies%20ist%20%22%25%26%3F%2F%5C%23%7B%7DeinTestString", Answer );
+	assertEqual( "Dies%20ist%0A%20%22%25&%3F%2F%5C%23%7B%7DeinTestString", Answer );
 }
 
 void URLEncoderTest::DecodeTest()
@@ -92,20 +91,15 @@ void URLEncoderTest::EncodeDecodeTest()
 	}
 
 	// encode decode with URLEncoder
-	// which removes \n in encoded string
 	// and changes '+' to ' ' in decoded string
 	encoder.DoEncode( EncodedString, OriginalString);
 	encoder.DoDecode( DecodedString, EncodedString);
-	// \n (0x0A) removed in Encoded string, adjust expected
-	expected = OriginalString.SubString(0L, 10L);
-	expected << OriginalString.SubString(11L);
+	expected = OriginalString;
 	// '+' gets converted to a space also
-	expected.PutAt(long('+') - 1, ' ');
+	expected.PutAt(long('+'), ' ');
 	// assert strings are equal
-	t_assert( 	memcmp( (const char *)expected,
-						(const char *)DecodedString,
-						expected.Length() ) == 0 );
-	t_assert( expected.Length() == DecodedString.Length() );
+	assertEqualRaw(expected, DecodedString);
+	assertEqual( expected.Length(), DecodedString.Length() );
 
 	assertEqual( expected, DecodedString );
 	assertEqual( expected.Length(), DecodedString.Length() );
@@ -146,7 +140,7 @@ void URLEncoderTest::EncodeDecodeTest()
 	assertCharPtrEqual( OriginalString, DecodedString );
 	t_assert( OriginalString == DecodedString );
 
-	assertCharPtrEqual( "\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09", EncodedString );
+	assertCharPtrEqual( "%00%01%02%03%04%05%06%07%08%09", EncodedString );
 
 	// One Printable Char, unscrambled
 	OriginalString = "M";
@@ -177,7 +171,7 @@ void URLEncoderTest::EncodeDecodeTest()
 	// String::IntPrintOn:  05     -> \x05
 	// URLUtils::urlEncode: \x05   -> %5Cx05
 	// URLUtils::urlEncode: %5Cx05 -> %255Cx05
-	assertCharPtrEqual( "\x05", EncodedString );
+	assertCharPtrEqual( "%05", EncodedString );
 
 	// Only Printable Chars, scrambled
 	OriginalString = "ABC";
@@ -214,7 +208,7 @@ void URLEncoderTest::EncodeDecodeTest()
 	assertCharPtrEqual( OriginalString, DecodedString );
 	t_assert( OriginalString == DecodedString );
 
-	assertCharPtrEqual( "\x00\x01\x02", EncodedString );
+	assertCharPtrEqual( "%00%01%02", EncodedString );
 
 	// One Printable Char, scrambled
 	OriginalString = "M";
@@ -245,5 +239,5 @@ void URLEncoderTest::EncodeDecodeTest()
 	assertCharPtrEqual( OriginalString, DecodedString );
 	t_assert( OriginalString == DecodedString );
 
-	assertCharPtrEqual( "\x05", EncodedString );
+	assertCharPtrEqual( "%05", EncodedString );
 }
