@@ -266,7 +266,7 @@ void LDAPConnection::TransformResult(LDAPMessage *ldapResult, Anything &result, 
 
 		// extract data
 		LDAPMessage *entry = ldap_first_entry(fHandle, ldapResult);
-		String valStr;
+		String valStr, attrString, dn;
 		struct berval **vals;
 		BerElement *ber;
 		int count = 0;
@@ -275,13 +275,12 @@ void LDAPConnection::TransformResult(LDAPMessage *ldapResult, Anything &result, 
 
 		// step through all entries
 		while (entry) {
-			String dn;
+			dn.Trim(0L);
 			char *ptrToDn = ldap_get_dn(fHandle, entry);
 			if ( ptrToDn != ( char * ) NULL ) {
 				dn = ptrToDn;
 				ldap_memfree( ptrToDn );
 			}
-
 			char *attr = ldap_first_attribute(fHandle, entry, &ber);
 			//
 			// kgu: might want to add dn ass attribute to each
@@ -291,7 +290,7 @@ void LDAPConnection::TransformResult(LDAPMessage *ldapResult, Anything &result, 
 
 			// step through all attributes
 			while ( attr != (char *) NULL ) {
-				String attrString(attr);
+				attrString = attr;
 				// normalize all attributes to lowercase
 				attrString.ToLower();
 
