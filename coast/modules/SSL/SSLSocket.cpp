@@ -156,10 +156,12 @@ iostream *SSLSocket::DoMakeStream()
 		return NULL;
 	}
 
+	bool verifyCallbackWasSet = SSL_CTX_get_verify_callback(fContext) != NULL;
 	Anything appData;
-	appData["SSLSocketArgs"] = (IFAObject *) &fSSLSocketArgs;
-	appData.Append(sslinfo);
-
+	if ( verifyCallbackWasSet ) {
+		appData["SSLSocketArgs"] = (IFAObject *) &fSSLSocketArgs;
+		appData.Append(sslinfo);
+	}
 //	theIndex =    SSL_get_ex_new_index(0, (void *) "theIndex", NULL, NULL, NULL);
 	if ( SSL_set_ex_data(ssl, Thread::MyId(), &appData) == false ) {
 		String logMsg("SSL error: Setting application specific data failed.");
@@ -194,8 +196,10 @@ iostream *SSLSocket::DoMakeStream()
 	Trace("SSL connection using " << SSL_get_cipher (ssl));
 	String sessionID = GetSessionID(ssl);
 	sslinfo["SessionId"] = String().AppendAsHex((const unsigned char *)(const char *)sessionID, sessionID.Length());
-	// This data will be filled if /SSLUseAppCallBack was given in SSLModule
-	sslinfo["PreVerify"] = appData["Chain"];
+	if ( verifyCallbackWasSet ) {
+		// This data will be filled if /SSLUseAppCallBack was given in SSLModule
+		sslinfo["PreVerify"] = appData["Chain"];
+	}
 	sslinfo["Cipher"] = String(SSL_get_cipher(ssl));
 	sslinfo["SessionIsResumed"] = SSL_session_reused(ssl);
 
