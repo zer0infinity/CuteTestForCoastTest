@@ -580,6 +580,7 @@ void SystemTest::getFilePathTest()
 
 void SystemTest::dirFileListTest()
 {
+	StartTrace(SystemTest.dirFileListTest);
 	Anything dir(System::DirFileList("."));
 
 	assertEqual( 0L, dir.GetSize() );
@@ -589,6 +590,10 @@ void SystemTest::dirFileListTest()
 
 	dir = System::DirFileList(".", "h");
 	t_assert( dir.GetSize() > 0L );
+
+	dir = System::DirFileList("..", "");
+	t_assert( dir.GetSize() > 0L );
+	TraceAny(dir, "entries of [..]");
 }
 
 void SystemTest::GetProcessEnvironmentTest()
