@@ -67,26 +67,33 @@ public:
 
 	//! check if user exists in AcceptUsers list
 	virtual bool Validate(String uid);
+	virtual bool Validate(Context &ctx, String uid);
 
 	//! perform weak authentication with uid + password
 	//! \return true, if the uid/pwd pair is found in config of this AM
 	virtual bool AuthenticateWeak(String uid, String passwd, String &newRole);
+	virtual bool AuthenticateWeak(Context &ctx, String uid, String passwd, String &newRole);
 
 	//! perform strong authentication with uid, password + otp
 	//! \return true, if authentication was successful
 	virtual bool AuthenticateStrong(String uid, String passwd, String otp, long window, String &newRole);
+	virtual bool AuthenticateStrong(Context &ctx, String uid, String passwd, String otp, long window, String &newRole);
 
 	//! change password (in memory only), old password must be correct
 	virtual bool ChangePassword(String uid, String newpwd, String oldpwd = "");
+	virtual bool ChangePassword(Context &ctx, String uid, String newpwd, String oldpwd = "");
 
 	//! reset password to username (in memory only)
 	virtual bool ResetPassword(String uid);
+	virtual bool ResetPassword(Context &ctx, String uid);
 
 	//! get rights for user/group/role (who must not be a list)
 	virtual bool GetAllowedEntitiesFor(Anything who, Anything &allowed);
+	virtual bool GetAllowedEntitiesFor(Context &ctx, Anything who, Anything &allowed);
 
 	//! check if user/group/role is allowed to do something
 	virtual bool IsAllowed(String who, String right);
+	virtual bool IsAllowed(Context &ctx, String who, String entity);
 
 private:
 	Anything &GetData() {

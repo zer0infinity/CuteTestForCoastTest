@@ -52,6 +52,7 @@ public:
 	/*!	\param uid user id to check
 		\return true if user id is accepted */
 	virtual bool Validate(String uid);
+	virtual bool Validate(Context &ctx, String uid);
 
 	//! authenticate given user with password
 	/*!	\param uid user id to check
@@ -59,6 +60,7 @@ public:
 		\param newRole role assigned after successful or failing authentication
 		\return true if authentication was successful, false otherwise */
 	virtual bool AuthenticateWeak(String uid, String passwd, String &newRole);
+	virtual bool AuthenticateWeak(Context &ctx, String uid, String passwd, String &newRole);
 
 	//! authenticate given user with password, otp and window
 	/*!	\param uid user id to check
@@ -68,6 +70,7 @@ public:
 		\param newRole role assigned after successful or failing authentication
 		\return true if authentication was successful, false otherwise */
 	virtual bool AuthenticateStrong(String uid, String passwd, String otp, long window, String &newRole);
+	virtual bool AuthenticateStrong(Context &ctx, String uid, String passwd, String otp, long window, String &newRole);
 
 	//! change password of the given user
 	/*!	\param uid user id to change password for
@@ -75,23 +78,27 @@ public:
 		\param oldpwd old password for the given user
 		\return true, if the change was successful */
 	virtual bool ChangePassword(String uid, String newpwd, String oldpwd = "");
+	virtual bool ChangePassword(Context &ctx, String uid, String newpwd, String oldpwd = "");
 
 	//! reset password of the given user (if supported) to a value defined by the behavior of the utilized UserDataAccessManager
 	/*!	\param uid user id to reset password for
 		\return true, if the reset was successful */
 	virtual bool ResetPassword(String uid);
+	virtual bool ResetPassword(Context &ctx, String uid);
 
 	//! check if permission can be given for entity
 	/*! \param who uid, role or group name
 		\param entity to be allowed: can be a role, a service or a permissible entity or something similar
 		\return true if the entity is allowed for the given 'who' */
 	virtual bool IsAllowed(String who, String entity);
+	virtual bool IsAllowed(Context &ctx, String who, String entity);
 
 	//! return all ressources (permissible entitites, services, ...) that a specific user, role, group or set of groups is allowed to use
 	/*! \param who uid, role, group name or set of group names to get allowed entities for
 		\param allowed allowed entities for the given who
 		\return false if either the given 'who' is not valid or if no entities were found, true otherwise */
 	virtual bool GetAllowedEntitiesFor(Anything who, Anything &allowed);
+	virtual bool GetAllowedEntitiesFor(Context &ctx, Anything who, Anything &allowed);
 
 protected:
 	virtual UserDataAccessController *GetUdac();

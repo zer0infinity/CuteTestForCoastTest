@@ -31,6 +31,12 @@ bool MockAccessManager::Validate(String uid)
 	return ret;
 }
 
+bool MockAccessManager::Validate(Context &ctx, String uid)
+{
+	StartTrace(MockAccessManager.Validate);
+	return Validate(uid);
+}
+
 bool MockAccessManager::AuthenticateWeak(String uid, String passwd, String &newRole)
 {
 	StartTrace(MockAccessManager.AuthenticateWeak);
@@ -44,6 +50,12 @@ bool MockAccessManager::AuthenticateWeak(String uid, String passwd, String &newR
 
 	Trace("weak authentication = " << (ret ? "successful." : "failed.") << " new role = " << newRole);
 	return ret;
+}
+
+bool MockAccessManager::AuthenticateWeak(Context &ctx, String uid, String passwd, String &newRole)
+{
+	StartTrace(MockAccessManager.AuthenticateWeak);
+	return AuthenticateWeak(uid, passwd, newRole);
 }
 
 bool MockAccessManager::AuthenticateStrong(String uid, String passwd, String otp, long window, String &newRole)
@@ -60,6 +72,12 @@ bool MockAccessManager::AuthenticateStrong(String uid, String passwd, String otp
 
 	Trace("strong authentication = " << (ret ? "successful." : "failed.") << " new role = " << newRole);
 	return ret;
+}
+
+bool MockAccessManager::AuthenticateStrong(Context &ctx, String uid, String passwd, String otp, long window, String &newRole)
+{
+	StartTrace(MockAccessManager.AuthenticateStrong);
+	return AuthenticateStrong(uid, passwd, otp, window, newRole);
 }
 
 bool MockAccessManager::ChangePassword(String uid, String newpwd, String oldpwd)
@@ -85,6 +103,12 @@ bool MockAccessManager::ChangePassword(String uid, String newpwd, String oldpwd)
 	return false;
 }
 
+bool MockAccessManager::ChangePassword(Context &ctx, String uid, String newpwd, String oldpwd)
+{
+	StartTrace(MockAccessManager::ChangePassword);
+	return ChangePassword(uid, newpwd, oldpwd);
+}
+
 bool MockAccessManager::ResetPassword(String uid)
 {
 	StartTrace(MockAccessManager.ResetPassword);
@@ -103,6 +127,12 @@ bool MockAccessManager::ResetPassword(String uid)
 	}
 	Trace("User unknown.");
 	return false;
+}
+
+bool MockAccessManager::ResetPassword(Context &ctx, String uid)
+{
+	StartTrace(MockAccessManager.ResetPassword);
+	return ResetPassword(uid);
 }
 
 bool MockAccessManager::GetAllowedEntitiesFor(Anything who, Anything &allowed)
@@ -124,6 +154,12 @@ bool MockAccessManager::GetAllowedEntitiesFor(Anything who, Anything &allowed)
 	}
 }
 
+bool MockAccessManager::GetAllowedEntitiesFor(Context &ctx, Anything who, Anything &allowed)
+{
+	StartTrace(MockAccessManager.GetAllowedEntitiesFor);
+	return GetAllowedEntitiesFor(who, allowed);
+}
+
 bool MockAccessManager::IsAllowed(String who, String right)
 {
 	StartTrace(MockAccessManager.IsAllowed);
@@ -135,4 +171,10 @@ bool MockAccessManager::IsAllowed(String who, String right)
 	bool ret = roData["Rights"][who].Contains(right);
 	Trace("Right " << (ret ? "granted." : "denied."));
 	return ret;
+}
+
+bool MockAccessManager::IsAllowed(Context &ctx, String who, String entity)
+{
+	StartTrace(MockAccessManager.IsAllowed);
+	return IsAllowed(who, entity);
 }

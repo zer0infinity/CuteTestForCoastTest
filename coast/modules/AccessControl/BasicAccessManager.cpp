@@ -35,6 +35,12 @@ bool BasicAccessManager::Validate(String uid)
 	return false;
 }
 
+bool BasicAccessManager::Validate(Context &ctx, String uid)
+{
+	StartTrace(BasicAccessManager.Validate);
+	return Validate(uid);
+}
+
 bool BasicAccessManager::AuthenticateWeak(String uid, String passwd, String &newRole)
 {
 	StartTrace(BasicAccessManager.AuthenticateWeak);
@@ -54,6 +60,12 @@ bool BasicAccessManager::AuthenticateWeak(String uid, String passwd, String &new
 
 	Trace("weak authentication FAILED. New role = " << newRole);
 	return false;
+}
+
+bool BasicAccessManager::AuthenticateWeak(Context &ctx, String uid, String passwd, String &newRole)
+{
+	StartTrace(BasicAccessManager.AuthenticateWeak);
+	return AuthenticateWeak(uid, passwd, newRole);
 }
 
 bool BasicAccessManager::AuthenticateStrong(String uid, String passwd, String otp, long window, String &newRole)
@@ -88,6 +100,12 @@ bool BasicAccessManager::AuthenticateStrong(String uid, String passwd, String ot
 	return false;
 }
 
+bool BasicAccessManager::AuthenticateStrong(Context &ctx, String uid, String passwd, String otp, long window, String &newRole)
+{
+	StartTrace(BasicAccessManager.AuthenticateStrong);
+	return AuthenticateStrong(uid, passwd, otp, window, newRole);
+}
+
 bool BasicAccessManager::ChangePassword(String uid, String newpwd, String oldpwd)
 {
 	StartTrace(BasicAccessManager.ChangePassword);
@@ -112,6 +130,12 @@ bool BasicAccessManager::ChangePassword(String uid, String newpwd, String oldpwd
 	return false;
 }
 
+bool BasicAccessManager::ChangePassword(Context &ctx, String uid, String newpwd, String oldpwd)
+{
+	StartTrace(BasicAccessManager.ChangePassword);
+	return ChangePassword(uid, newpwd, oldpwd);
+}
+
 bool BasicAccessManager::ResetPassword(String uid)
 {
 	StartTrace(BasicAccessManager.ResetPassword);
@@ -128,6 +152,12 @@ bool BasicAccessManager::ResetPassword(String uid)
 	return false;
 }
 
+bool BasicAccessManager::ResetPassword(Context &ctx, String uid)
+{
+	StartTrace(BasicAccessManager.ResetPassword);
+	return ResetPassword(uid);
+}
+
 bool BasicAccessManager::IsAllowed(String who, String right)
 {
 	StartTrace(BasicAccessManager.IsAllowed);
@@ -140,6 +170,12 @@ bool BasicAccessManager::IsAllowed(String who, String right)
 		return false;
 	}
 	return allowed.Contains(right);
+}
+
+bool BasicAccessManager::IsAllowed(Context &ctx, String who, String entity)
+{
+	StartTrace(BasicAccessManager.IsAllowed);
+	return IsAllowed(who, entity);
 }
 
 bool BasicAccessManager::GetAllowedEntitiesFor(Anything who, Anything &allowed)
@@ -170,6 +206,12 @@ bool BasicAccessManager::GetAllowedEntitiesFor(Anything who, Anything &allowed)
 	}
 	// must be a role or group (or not defined) then...
 	return edac->GetAllowedEntitiesForGroup(who.AsCharPtr(), allowed);
+}
+
+bool BasicAccessManager::GetAllowedEntitiesFor(Context &ctx, Anything who, Anything &allowed)
+{
+	StartTrace(BasicAccessManager.GetAllowedEntitiesFor);
+	return GetAllowedEntitiesFor(who, allowed);
 }
 
 // ----------------------- protected helpers -----------------------------
