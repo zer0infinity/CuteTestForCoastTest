@@ -843,7 +843,7 @@ void HttpFlowController::SetupSSLCtx(Anything &sslModuleCfg, Context &ctx)
 	sslModuleCfg["SSLVerifyPeerCert"]			= ctx.Lookup("SSLVerifyPeerCert", 0L);
 	sslModuleCfg["SSLVerifyFailIfNoPeerCert"]	= ctx.Lookup("SSLVerifyFailIfNoPeerCert", 0L);
 	sslModuleCfg["SSLUseAppCallback"] 			= ctx.Lookup("SSLUseAppCallback", 0L);
-	sslModuleCfg["SSLVerifyDepth"] 				= ctx.Lookup("SSLVerifyDepth", 99L);
+	sslModuleCfg["SSLVerifyDepth"] 				= ctx.Lookup("SSLVerifyDepth", 0L);
 	sslModuleCfg["SSLPeerCAFile"] 				= ctx.Lookup("SSLPeerCAFile", "");
 	sslModuleCfg["SSLVerifyPath"] 				= ctx.Lookup("SSLVerifyPath", "");
 	sslModuleCfg["KeyFileClient"] 				= ctx.Lookup("KeyFileClient", "");
@@ -857,7 +857,6 @@ void HttpFlowController::PrepareSSL(Context &ctx)
 	// write the action code here - you don't have to override DoAction anymore
 	StartTrace(HttpFlowController.PrepareSSL);
 	Anything toPush;
-	toPush["CurrentServer"]["UseSSL"] = 1L;
 	toPush["CurrentServer"]["UseThreadLocalMemory"] = 1L;
 	Anything sslModuleCfg;
 	SetupSSLCtx(sslModuleCfg, ctx);
