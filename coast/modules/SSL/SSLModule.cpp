@@ -376,10 +376,10 @@ void SSLModule::SetSSLCtxVerifyParameters(SSL_CTX *ctx, LookupInterface *object)
 		if ( sslVerifyPath.Length() == 0L ) {
 			sslVerifyPath = (const char *) NULL;
 		}
-		Trace("load SSL verify locations from: " << NotNull(pcafn) << "\n path=" << NotNull(sslVerifyPath));
+		Trace("load SSL verify locations from: " <<  NotNull(pcafn) << "\n path=" << sslVerifyPath);
 		if (1 != (ret = SSL_CTX_load_verify_locations(ctx, pcafn, sslVerifyPath))) {
 			SSLSocket::ReportSSLError(SSLSocket::GetSSLError(0, ret));
-			Trace("couldn't load verify locations from" << peerCAFileName << NotNull(sslVerifyPath));
+			Trace("couldn't load verify locations from" << peerCAFileName << sslVerifyPath );
 		}
 	}
 }
