@@ -1,0 +1,531 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/RunOnly {
+	}
+	/RunTestCases {
+		/SybSearchTest {
+			/TheAction {
+				/CallDA 	SybSearchTest
+			}
+			/Result {
+				/TmpStore {
+					/SybSearchTest {
+						/Query	"select au_fname, au_lname from authors where au_lname='Bennet'"
+						/QueryCount 1
+						/QueryResult	{
+							/"0" {
+								/au_fname	"Abraham"
+								/au_lname	"Bennet"
+							}
+						}
+						/QuerySource	"HIKU_INT2"
+					}
+				}
+			}
+		}
+		/SybPoolSearchTest {
+			/TheAction {
+				/CallDA 	SybPoolSearchTest
+			}
+			/Result {
+				/TmpStore {
+					/SybPoolSearchTest {
+						/Query	"select au_fname, au_lname from authors where au_lname='Bennet'"
+						/QueryCount 1
+						/QueryResult	{
+							/"0" {
+								/au_fname	"Abraham"
+								/au_lname	"Bennet"
+							}
+						}
+						/QuerySource	"HIKU_INT2"
+					}
+				}
+			}
+		}
+		/SybLimitedSearchTest {
+			/TheAction {
+				/CallDA 	SybLimitedSearchTest
+			}
+			/ExpectedResult	0
+			/Result {
+				/TmpStore {
+					/SybLimitedSearchTest {
+						/Query	"select * from authors"
+						/MainMsgErr "SybLimitedSearchTest: Query aborted! Query would exceed memory limit of 4 kB!"
+						/MainMsgErrNumber "49152"
+					}
+				}
+			}
+		}
+		/SybLimitedSearchByParamTest {
+			/TheAction {
+				/CallDA {
+					SybLimitedSearchByParam
+					/Parameters {
+						/SybDBMaxResultSize	4
+					}
+				}
+			}
+			/ExpectedResult	0
+			/Result {
+				/TmpStore {
+					/SybLimitedSearchByParam {
+						/Query	"select * from authors"
+						/MainMsgErr "SybLimitedSearchByParam: Query aborted! Query would exceed memory limit of 4 kB!"
+						/MainMsgErrNumber "49152"
+					}
+				}
+			}
+		}
+		/SybLimitedSearchByParamOverrideTest {
+			/TheAction {
+				/CallDA {
+					SybLimitedSearchByParamOverride
+					/Parameters {
+						/SybDBMaxResultSize	6
+					}
+				}
+			}
+			/ExpectedResult	0
+			/Result {
+				/TmpStore {
+					/SybLimitedSearchByParamOverride {
+						/Query	"select * from authors"
+						/MainMsgErr "SybLimitedSearchByParamOverride: Query aborted! Query would exceed memory limit of 6 kB!"
+						/MainMsgErrNumber "49152"
+					}
+				}
+			}
+		}
+		/SybShowDatabases {
+			/TmpStore {
+				/DesiredFields "name,crdate"
+			}
+			/TheAction {
+				/CallDA 	SybShowDatabases
+			}
+			/Result {
+				/TmpStore {
+					/SybShowDatabases {
+						/Query	"SELECT name,crdate FROM master..sysdatabases where name='master'"
+						/QueryCount 1
+						/QueryResult	{
+							/"0" {
+								/name "master"
+								/crdate "Jan  1 1900 12:00AM"
+							}
+						}
+						/QuerySource	"HIKU_INT2"
+					}
+				}
+			}
+		}
+		/SybPoolShowDatabases {
+			/TmpStore {
+				/DesiredFields "name,crdate"
+			}
+			/TheAction {
+				/CallDA 	SybPoolShowDatabases
+			}
+			/Result {
+				/TmpStore {
+					/SybPoolShowDatabases {
+						/Query	"SELECT name,crdate FROM master..sysdatabases where name='master'"
+						/QueryCount 1
+						/QueryResult	{
+							/"0" {
+								/name "master"
+								/crdate "Jan  1 1900 12:00AM"
+							}
+						}
+						/QuerySource	"HIKU_INT2"
+					}
+				}
+			}
+		}
+		/SybInsertDatabases {
+			/TheAction {
+				/CallDA 	SybInsertDatabases
+			}
+			/Result {
+				/TmpStore {
+					/SybInsertDatabases {
+						/Query "INSERT INTO pub2..au_pix VALUES ( 'cirp',NULL,NULL,NULL,NULL,NULL)"
+						/QueryCount 0
+						/QueryResult *
+					}
+				}
+			}
+		}
+		/SybPoolInsertDatabases {
+			/TheAction {
+				/CallDA 	SybPoolInsertDatabases
+			}
+			/Result {
+				/TmpStore {
+					/SybPoolInsertDatabases {
+						/Query "INSERT INTO pub2..au_pix VALUES ( 'cirp',NULL,NULL,NULL,NULL,NULL)"
+						/QueryCount 0
+						/QueryResult *
+					}
+				}
+			}
+		}
+		/SybDeleteFromDatabase {
+			/TheAction {
+				/CallDA 	SybDeleteFromDatabase
+			}
+			/Result {
+				/TmpStore {
+					/SybDeleteFromDatabase {
+						/Query "DELETE FROM pub2..au_pix where au_id='cirp'"
+						/QueryCount 0
+						/QueryResult *
+					}
+				}
+			}
+		}
+		/SybPoolDeleteFromDatabase {
+			/TheAction {
+				/CallDA 	SybPoolDeleteFromDatabase
+			}
+			/Result {
+				/TmpStore {
+					/SybPoolDeleteFromDatabase {
+						/Query "DELETE FROM pub2..au_pix where au_id='cirp'"
+						/QueryCount 0
+						/QueryResult *
+					}
+				}
+			}
+		}
+#		/SybTestTypeConversions {
+#			/TheAction {
+#				/CallDA 	SybTestTypeConversions
+#			}
+#			/Result {
+#				/TmpStore {
+#					/SybTestTypeConversions {
+#						/Query	"set rowcount 1 SELECT * FROM pub2.guest.TestTypeTable"
+#						/QueryCount 1
+#						/QueryResult	{
+#							/"0" {
+#							/Fbinary "40"
+#							/Fbit "1"
+#							/Fchar "gagas"
+#							/Fdatetime "Apr 15 1997 12:00AM"
+#							/Fdecimal "12345"
+#							/Ffloat "1.2345000505447388"
+#							/Fid "id"
+#							/Fimage "fe5434"
+#							/Fint "12345"
+#							/Fmoney "10.00"
+#							/Fnchar "aless"
+#							/Fnumeric "12345"
+#							/Fnvarchar "1234"
+#							/Freal "1.2345000505447388"
+#							/Fsmalldatetime "Apr 15 1998 12:00AM"
+#							/Fsmallint "1"
+#							/Fsmallmoney "1.00"
+#							/Ftext "text"
+#							/Ftid "tid"
+#							/Ftinyint "1"
+#							/Fvarbinary "33"
+#							/Fvarchar "abc"
+#							}
+#						}
+#					}
+#				}
+#			}
+#		}
+#		/SybPoolTestTypeConversions {
+#			/TheAction {
+#				/CallDA 	SybPoolTestTypeConversions
+#			}
+#			/Result {
+#				/TmpStore {
+#					/SybPoolTestTypeConversions {
+#						/Query	"set rowcount 1 SELECT * FROM pub2.guest.TestTypeTable"
+#						/QueryCount 1
+#						/QueryResult	{
+#							/"0" {
+#							/Fbinary "40"
+#							/Fbit "1"
+#							/Fchar "gagas"
+#							/Fdatetime "Apr 15 1997 12:00AM"
+#							/Fdecimal "12345"
+#							/Ffloat "1.2345000505447388"
+#							/Fid "id"
+#							/Fimage "fe5434"
+#							/Fint "12345"
+#							/Fmoney "10.00"
+#							/Fnchar "aless"
+#							/Fnumeric "12345"
+#							/Fnvarchar "1234"
+#							/Freal "1.2345000505447388"
+#							/Fsmalldatetime "Apr 15 1998 12:00AM"
+#							/Fsmallint "1"
+#							/Fsmallmoney "1.00"
+#							/Ftext "text"
+#							/Ftid "tid"
+#							/Ftinyint "1"
+#							/Fvarbinary "33"
+#							/Fvarchar "abc"
+#							}
+#						}
+#					}
+#				}
+#			}
+#		}
+		/SybErrorTest {
+			/TheAction {
+				/CallDA 	SybErrorTest
+			}
+			/ExpectedResult	0
+			/Result {
+				/TmpStore {
+					/SybErrorTest {
+						/Query "INSERT INTO GaGaTable VALUES (NULL,'Hallo')"
+						/MainMsgErr "SybErrorTest: [GaGaTable not found. Specify owner.objectname or use sp_help to check whether the object exists (sp_help may produce lots of output).]"
+					}
+				}
+			}
+		}
+		/SybPoolErrorTest {
+			/TheAction {
+				/CallDA 	SybPoolErrorTest
+			}
+			/ExpectedResult	0
+			/Result {
+				/TmpStore {
+					/SybPoolErrorTest {
+						/Query "INSERT INTO GaGaTable VALUES (NULL,'Hallo')"
+						/MainMsgErr "SybPoolErrorTest: [GaGaTable not found. Specify owner.objectname or use sp_help to check whether the object exists (sp_help may produce lots of output).]"
+					}
+				}
+			}
+		}
+		/SybSingleRowForSingleSelects {
+			/TheAction {
+				/CallDA 	SybSingleRowForSingleSelects
+			}
+			/Result {
+				/TmpStore {
+					/SybSingleRowForSingleSelects {
+						/Query	"select min(au_id) Rmin, count(*) Rcount, max(au_id) Rmax from authors"
+						/QueryCount	1
+						/QueryResult {
+							/"0" {
+								/Rmin	"172-32-1176"
+								/Rcount	"23"
+								/Rmax	"998-72-3567"
+							}
+						}
+					}
+				}
+			}
+		}
+		/SybPoolSingleRowForSingleSelects {
+			/TheAction {
+				/CallDA 	SybPoolSingleRowForSingleSelects
+			}
+			/Result {
+				/TmpStore {
+					/SybPoolSingleRowForSingleSelects {
+						/Query	"select min(au_id) Rmin, count(*) Rcount, max(au_id) Rmax from authors"
+						/QueryCount	1
+						/QueryResult {
+							/"0" {
+								/Rmin	"172-32-1176"
+								/Rcount	"23"
+								/Rmax	"998-72-3567"
+							}
+						}
+					}
+				}
+			}
+		}
+		/SybPoolSeparatedTitlesFromRows {
+			/TheAction {
+				/CallDA 	SybPoolSeparatedTitlesFromRows
+			}
+			/Result {
+				/TmpStore {
+					/SybPoolSeparatedTitlesFromRows {
+						/Query	"select min(au_id) Rmin from authors select count(*) Rcount from authors select max(au_id) Rmax from authors"
+						/QueryCount	3
+						/QueryTitles {
+							/Rmin	0
+							/Rcount	0
+							/Rmax	0
+						}
+						/QueryResult {
+							{
+								"172-32-1176"
+							}
+							{
+								"23"
+							}
+							{
+								"998-72-3567"
+							}
+						}
+					}
+				}
+			}
+		}
+		/SybMultipleRowsForMultipleSelects {
+			/TheAction {
+				/CallDA 	SybMultipleRowsForMultipleSelects
+			}
+			/Result {
+				/TmpStore {
+					/SybMultipleRowsForMultipleSelects {
+						/Query	"select min(au_id) Rmin from authors select count(*) Rcount from authors select max(au_id) Rmax from authors"
+						/QueryCount	3
+						/QueryResult {
+							/"0" {
+								/Rmin	"172-32-1176"
+							}
+							/"1" {
+								/Rcount	"23"
+							}
+							/"2" {
+								/Rmax	"998-72-3567"
+							}
+						}
+					}
+				}
+			}
+		}
+		/SybPoolMultipleRowsForMultipleSelects {
+			/TheAction {
+				/CallDA 	SybPoolMultipleRowsForMultipleSelects
+			}
+			/Result {
+				/TmpStore {
+					/SybPoolMultipleRowsForMultipleSelects %RunTestCases.SybMultipleRowsForMultipleSelects.Result.TmpStore.SybMultipleRowsForMultipleSelects
+				}
+			}
+		}
+		/SybDeleteStoredProcedureTest {
+			/TheAction {
+				/CallDA 	SybDeleteStoredProcedureTest
+			}
+			/Result {
+				/TmpStore {
+					/SybDeleteStoredProcedureTest {
+					}
+				}
+			}
+		}
+		/SybPoolDeleteStoredProcedureTest {
+			/TheAction {
+				/CallDA 	SybPoolDeleteStoredProcedureTest
+			}
+			/Result {
+				/TmpStore {
+					/SybPoolDeleteStoredProcedureTest {
+					}
+				}
+			}
+		}
+		/SybCreateStoredProcedureTest {
+			/TheAction {
+				/CallDA 	SybCreateStoredProcedureTest
+			}
+			/Result {
+				/TmpStore {
+					/SybCreateStoredProcedureTest {
+					}
+				}
+			}
+		}
+		# this one must fail because stored procedure already exists
+		/SybPoolCreateStoredProcedureTest {
+			/TheAction {
+				/CallDA 	SybPoolCreateStoredProcedureTest
+			}
+			/ExpectedResult	0
+			/Result {
+				/TmpStore {
+					/SybPoolCreateStoredProcedureTest {
+					}
+				}
+			}
+		}
+		/SybExecuteStoredProcedureTest {
+			/TheAction {
+				/CallDA 	SybExecuteStoredProcedureTest
+			}
+			/Result {
+				/TmpStore {
+					/SybExecuteStoredProcedureTest {
+						/Query	"declare @intvar int, @sintparam smallint, @floatparam float, @moneyparam money, @dateparam datetime, @charparam char(20), @binaryparam binary(20) select @intvar = 2, @sintparam = 234, @floatparam = 0.12,  @moneyparam = convert(money, '300.90'), @dateparam = '08 Aug 2001 04:10PM', @binaryparam = 0xff EXEC sample_rpc @intvar, @sintparam out, @floatparam out, @moneyparam out, @dateparam out, @charparam out, @binaryparam out"
+						/QueryCount	2
+						/QueryResult {
+							/"0" {
+								"2"
+								"234"
+								".12"
+								"300.90"
+								"Aug  8 2001  4:10PM"
+								""
+								"ff00000000000000000000000000000000000000"
+							}
+							/"1" {
+								"236"
+								"2.1200000000000001"
+								"302.90"
+								"Aug  9 2001  5:10PM"
+								"The char parameters "
+								"ff00000000000000000000000000000000000000"
+							}
+						}
+					}
+				}
+			}
+		}
+		/SybPoolExecuteStoredProcedureTest {
+			/TheAction {
+				/CallDA 	SybPoolExecuteStoredProcedureTest
+			}
+			/Result {
+				/TmpStore {
+					/SybPoolExecuteStoredProcedureTest %RunTestCases.SybExecuteStoredProcedureTest.Result.TmpStore.SybExecuteStoredProcedureTest
+				}
+			}
+		}
+		/SybDeleteStoredProcedureTest2 {
+			/TheAction {
+				/CallDA 	SybDeleteStoredProcedureTest
+			}
+			/Result {
+				/TmpStore {
+					/SybDeleteStoredProcedureTest {
+					}
+				}
+			}
+		}
+		/SybPoolDeleteStoredProcedureTest2 {
+			/TheAction {
+				/CallDA 	SybPoolDeleteStoredProcedureTest
+			}
+			/Result {
+				/TmpStore {
+					/SybPoolDeleteStoredProcedureTest {
+					}
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,295 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/TestAnySorter
+	{
+		{
+			/SortKey crit
+			/Mode asc
+			/SortCritIsNumber 1
+			/TestArray {
+				  "gugus"
+				  "dada"
+				  {
+					/value 40
+					/crit  40
+				  }
+				  {
+					/value 20
+					/crit  20
+				  }
+				  {
+					/value 1first
+					/crit  1
+				  }
+				  "alibaba"
+				  {
+					/value 1second
+					/crit  1
+				  }
+				  {
+					/value 0first
+					/crit  0
+				  }
+				  {
+					/value 0second
+					/crit  0
+				  }
+				  {
+					/value 3
+					/crit  3
+				  }
+				  "KimDojo"
+			}
+			/ExpectedResult
+			{
+				  {
+					/value 0first
+					/crit  0
+				  }
+				  {
+					/value 0second
+					/crit  0
+				  }
+				  {
+					/value 1first
+					/crit  1
+				  }
+				  {
+					/value 1second
+					/crit  1
+				  }
+				  {
+					/value 3
+					/crit  3
+				  }
+				  {
+					/value 20
+					/crit  20
+				  }
+				  {
+					/value 40
+					/crit  40
+				  }
+				  "gugus"
+				  "dada"
+				  "alibaba"
+				  "KimDojo"
+			}
+		}
+		{
+			/SortKey crit
+			/Mode desc
+			/SortCritIsNumber 1
+			/TestArray {
+				  "gugus"
+				  "dada"
+				  {
+					/value 40
+					/crit  40
+				  }
+				  {
+					/value 20
+					/crit  20
+				  }
+				  {
+					/value 1first
+					/crit  1
+				  }
+				  "alibaba"
+				  {
+					/value 1second
+					/crit  1
+				  }
+				  {
+					/value 0first
+					/crit  0
+				  }
+				  {
+					/value 0second
+					/crit  0
+				  }
+				  {
+					/value 3
+					/crit  3
+				  }
+				  "KimDojo"
+			}
+			/ExpectedResult
+			{
+				  {
+					/value 40
+					/crit  40
+				  }
+				  {
+					/value 20
+					/crit  20
+				  }
+				  {
+					/value 3
+					/crit  3
+				  }
+				  # we sort in a stable way, now (SOP)
+				  {
+					/value 1first
+					/crit  1
+				  }
+				  {
+					/value 1second
+					/crit  1
+				  }
+				  {
+					/value 0first
+					/crit  0
+				  }
+				  {
+					/value 0second
+					/crit  0
+				  }
+				  "gugus"
+				  "dada"
+				  "alibaba"
+				  "KimDojo"
+			}
+		}
+		{
+			/SortKey crit
+			/Mode asc
+			/SortCritIsNumber 0
+			/TestArray {
+				  "gugus"
+				  "dada"
+				  {
+					/value 4
+					/crit  4
+				  }
+				  {
+					/value 6
+					/nocrit  6
+				  }
+				  {
+					/value 1
+					/crit  1
+				  }
+				  {
+					/value 3
+					/crit  3
+				  }
+				  "alibaba"
+				  {
+					/value 2
+					/crit  2
+				  }
+				  {
+					/value 5
+					/nocrit  5
+				  }
+				  "KimDojo"
+			}
+			/ExpectedResult
+			{
+				  {
+					/value 1
+					/crit  1
+				  }
+				  {
+					/value 2
+					/crit  2
+				  }
+				  {
+					/value 3
+					/crit  3
+				  }
+				  {
+					/value 4
+					/crit  4
+				  }
+				  "gugus"
+				  "dada"
+				  {
+					/value 6
+					/nocrit  6
+				  }
+				  "alibaba"
+				  {
+					/value 5
+					/nocrit  5
+				  }
+				  "KimDojo"
+			}
+		}
+		{
+			/SortKey crit
+			/Mode desc
+			/SortCritIsNumber 0
+			/TestArray {
+				  "gugus"
+				  "dada"
+				  {
+					/value 1
+					/crit  1
+				  }
+				  {
+					/value 6
+					/nocrit  6
+				  }
+				  {
+					/value 4
+					/crit  4
+				  }
+				  {
+					/value 2
+					/crit  2
+				  }
+				  "alibaba"
+				  {
+					/value 3
+					/crit  3
+				  }
+				  {
+					/value 5
+					/nocrit  5
+				  }
+				  "KimDojo"
+			}
+			/ExpectedResult
+			{
+				  {
+					/value 4
+					/crit  4
+				  }
+				  {
+					/value 3
+					/crit  3
+				  }
+				  {
+					/value 2
+					/crit  2
+				  }
+				  {
+					/value 1
+					/crit  1
+				  }
+				  "gugus"
+				  "dada"
+				  {
+					/value 6
+					/nocrit  6
+				  }
+				  "alibaba"
+				  {
+					/value 5
+					/nocrit  5
+				  }
+				  "KimDojo"
+			}
+		}
+	}
+}

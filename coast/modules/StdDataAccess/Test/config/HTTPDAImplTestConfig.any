@@ -1,0 +1,173 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/SSLTests
+	{
+		{
+			/Config
+			{
+				/CurrentServer
+				{
+					/Server	"localhost"
+					/Port		443
+					/UseSSL		1
+					/Timeout	30
+				}
+				/SSLModuleCfg
+				{
+					/SSLVerifyDepth 3
+					/KeyFile	"cert_files/clientkey.pem"
+					/CertFile	"cert_files/clientcrt.pem"
+					/SSLVerifyFailIfNoPeerCert 0
+					/SSLUseAppCallback		0
+					/SSLVerifyPeerCert		1
+					/SSLPeerCAFile "cert_files/rootCA1.pem"
+				}
+				/VerifyCertifiedEntity 1
+				/CertVerifyStringIsFilter 0
+				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+			}
+			/Results
+			{
+				/SSLCertVerifyStatus		1
+				/AppLevelCertVerifyStatus	1
+				/HTTPDAImplRet				1
+			}
+
+		}
+		{
+			/Config
+			{
+				/CurrentServer
+				{
+					/Server	"localhost"
+					/Port		443
+					/UseSSL		1
+					/Timeout	30
+				}
+				/SSLModuleCfg
+				{
+					/SSLVerifyDepth 1
+					/KeyFile	"cert_files/clientkey.pem"
+					/CertFile	"cert_files/clientcrt.pem"
+					/SSLVerifyFailIfNoPeerCert 0
+					/SSLUseAppCallback		0
+					/SSLVerifyPeerCert		1
+					/SSLPeerCAFile "cert_files/rootCA1.pem"
+				}
+				/VerifyCertifiedEntity 1
+				/CertVerifyStringIsFilter 0
+				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+			}
+			/Results
+			{
+				/SSLCertVerifyStatus		0
+				/AppLevelCertVerifyStatus	0
+				/HTTPDAImplRet				0
+			}
+
+		}
+		{
+			/Config
+			{
+				/CurrentServer
+				{
+					/Server	"localhost"
+					/Port		443
+					/UseSSL		1
+					/Timeout	30
+				}
+				/SSLModuleCfg
+				{
+					/SSLVerifyDepth 3
+					/KeyFile	"cert_files/clientkey.pem"
+					/CertFile	"cert_files/clientcrt.pem"
+					/SSLVerifyFailIfNoPeerCert 0
+					/SSLUseAppCallback		0
+					/SSLVerifyPeerCert		1
+					/SSLPeerCAFile "cert_files/rootCA1.pem"
+				}
+				/VerifyCertifiedEntity 1
+				/CertVerifyStringIsFilter 0
+				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,xCN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+			}
+			/Results
+			{
+				/SSLCertVerifyStatus		1
+				/AppLevelCertVerifyStatus	0
+				/HTTPDAImplRet				0
+			}
+
+		}
+		{
+			/Config
+			{
+				/CurrentServer
+				{
+					/Server	"localhost"
+					/Port		443
+					/UseSSL		1
+					/Timeout	30
+				}
+				/SSLModuleCfg
+				{
+					/SSLVerifyDepth 3
+					/KeyFile	"cert_files/clientkey.pem"
+					/CertFile	"cert_files/clientcrt.pem"
+					/SSLVerifyFailIfNoPeerCert 0
+					/SSLUseAppCallback		0
+					/SSLVerifyPeerCert		1
+					/SSLPeerCAFile "cert_files/rootCA1.pem"
+				}
+				/VerifyCertifiedEntity 1
+				/CertVerifyStringIsFilter 1
+				/CertVerifyString		"xCN=zuoz.hsr.ch"
+			}
+			/Results
+			{
+				/SSLCertVerifyStatus		1
+				/AppLevelCertVerifyStatus	0
+				/HTTPDAImplRet				0
+			}
+
+		}
+		{
+			/Config
+			{
+				/CurrentServer
+				{
+					/Server	"localhost"
+					/Port		443
+					/UseSSL		1
+					/Timeout	30
+				}
+				/SSLModuleCfg
+				{
+					/SSLVerifyDepth 3
+					/KeyFile	"cert_files/clientkey.pem"
+					/CertFile	"cert_files/clientcrt.pem"
+					/SSLVerifyFailIfNoPeerCert 0
+					/SSLUseAppCallback		0
+					/SSLVerifyPeerCert		1
+					/SSLPeerCAFile "cert_files/rootCA1.pem"
+				}
+				/VerifyCertifiedEntity 1
+				/CertVerifyStringIsFilter 1
+				/CertVerifyString		"CN=zuoz.hsr.ch"
+			}
+			/Results
+			{
+				/SSLCertVerifyStatus		1
+				/AppLevelCertVerifyStatus	1
+				/HTTPDAImplRet				1
+			}
+		}
+	}
+}

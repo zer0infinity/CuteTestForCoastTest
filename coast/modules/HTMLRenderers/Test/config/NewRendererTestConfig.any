@@ -1,0 +1,60 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/EnvForAllCases {
+	}
+	/RunOnly {
+	}
+	/TestCases {
+		/TestName {
+			/Env {
+			}
+			/Renderer {
+				"234"
+			}
+			/Expected "234"
+		}
+		/MultiFuncBoxHeaderTest {
+			/TmpStore {
+				/BoxInputData			!"OptionBoxTestConfig.any?TestData"
+				/BoxColumns				!"OptionBoxTestConfig.any?MultifunctionListBoxRendererTest.List"
+				/myRenderer {
+					"<form name=test>"
+					/MultifunctionListBoxRenderer {
+						/Name 			MyBox
+						/Size			10
+						/ColList		BoxColumns
+						/PlainList		BoxInputData
+						/ValueRenderer { /Lookup BoxColumns.Value }
+						/EditableList	1
+					}
+					"</form>"
+				}
+			}
+			/TheAction {
+				/CallDataAccessAction {
+					/DataAccess	SortedTagDA
+					/Parameters {
+						/transfer {
+							/RenderedSlot	MyOutputTree
+						}
+						/DataType StringStream
+					}
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore {
+					/Mapper *
+				}
+			}
+		}
+	}
+}

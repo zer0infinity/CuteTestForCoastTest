@@ -1,0 +1,118 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+#! Defines how requests to backends are composed. Use hacc as
+#! template when new backends are added.
+{
+
+	/TestDA1Action %TestDA1
+	/TestDA1
+	{
+		/Filter {  #-- defines a ldap query ----
+			"(objectclass=*)"
+		}
+		/InputParams
+		{
+			/LDAPParamMapper {  #-- defines ldap basic input parameters ----
+				/Base "ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch" # search base
+#				/Attributes *  # attribute we would like to compare
+				/Timeout	30	# query timeout in seconds
+				/SizeLimit	200	# result size limit
+			}
+		}
+	}
+
+	/TestDA2Action %TestDA2
+	/TestDA2
+	{
+		/Filter {  #-- defines a ldap query ----
+			"(objectclass=*)"
+		}
+		/InputParams
+		{
+			/LDAPParamMapper {  #-- defines ldap basic input parameters ----
+				/Base "uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch" # search base
+#				/Attributes *  # attribute we would like to compare
+				/Timeout	30	# query timeout in seconds
+				/SizeLimit	200	# result size limit
+			}
+		}
+	}
+
+	/TestDA3Action %TestDA3
+	/TestDA3
+	{
+		/Filter {  #-- defines a ldap query ----
+			"(objectclass=*)"
+		}
+		/InputParams
+		{
+			/LDAPParamMapper {  #-- defines ldap basic input parameters ----
+				/Base "uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch" # search base
+#				/Attributes *  # attribute we would like to compare
+				/Timeout	30	# query timeout in seconds
+				/SizeLimit	200	# result size limit
+				/Scope		base
+			}
+		}
+	}
+	# Returns one data entry (String) -> NormalMapper
+	/TestDA4Action %TestDA4
+	/TestDA4
+	{
+		/Filter {  #-- defines a ldap query ----
+			"(uid=tkgae)"
+		}
+		/InputParams
+		{
+			/LDAPParamMapper {  #-- defines ldap basic input parameters ----
+				/Base "ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch" # search base
+#				/Attributes "dn"  # attribute we would like to compare
+				/Timeout	30	# query timeout in seconds
+				/SizeLimit	200	# result size limit
+				/Scope		sub
+			}
+		}
+	}
+	# Returns one data entry (Anything) -> LDAPListMapper
+	/TestDA5Action %TestDA5
+	/TestDA5
+	{
+		/Filter {  #-- defines a ldap query ----
+			"(uid=tkgae)"
+		}
+		/InputParams
+		{
+			/LDAPParamMapper {  #-- defines ldap basic input parameters ----
+				/Base "ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch" # search base
+				/Attributes "dn"  # attribute we would like to compare
+				/Timeout	30	# query timeout in seconds
+				/SizeLimit	200	# result size limit
+				/Scope		sub
+			}
+		}
+	}
+	# Produces no data and therefore causes failure of module initialisation.
+	/NoDataDAAction	%NoDataDA
+	/NoDataDA
+	{
+		/Filter {  #-- defines a ldap query ----
+			"(objectclass=notexistent)"
+		}
+		/InputParams
+		{
+			/LDAPParamMapper {  #-- defines ldap basic input parameters ----
+				/Base "uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch" # search base
+#				/Attributes *  # attribute we would like to compare
+				/Timeout	30	# query timeout in seconds
+				/SizeLimit	200	# result size limit
+				/Scope		base
+			}
+		}
+	}
+}

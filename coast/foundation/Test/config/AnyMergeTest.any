@@ -1,0 +1,557 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+	/SimpleNullEqualTest {
+		/Master	*
+		/ToMerge *
+		/OverwriteSlots	0
+		/Expected *
+	}
+	/SimpleValueEqualTest {
+		/Master	A
+		/ToMerge A
+		/OverwriteSlots	0
+		/Expected A
+	}
+	/SimpleValueMasterNullUnequalTest {
+		/Master	*
+		/ToMerge A
+		/OverwriteSlots	0
+		/Expected *
+	}
+	/SimpleValueMasterNullUnequalOverwriteTest {
+		/Master	*
+		/ToMerge A
+		/OverwriteSlots	1
+		/Expected A
+	}
+	/MasterNullTest {
+		/Master	*
+		/ToMerge {
+			/A	B
+		}
+		/OverwriteSlots 0
+		/Expected {
+			/A	B
+		}
+	}
+	/EmptyToMergeTest {
+		/Master {
+			/A { 123 }
+			B
+		}
+		/ToMerge {
+		}
+		/OverwriteSlots	0
+		/Expected {
+			/A { 123 }
+			B
+		}
+	}
+	/EmptyMasterMergeTest {
+		/Master {
+		}
+		/ToMerge {
+			A
+		}
+		/OverwriteSlots	0
+		/Expected {
+			A
+		}
+	}
+	/EmptyMasterMultiMergeTest {
+		/Master {
+		}
+		/ToMerge {
+			A
+			B
+			{
+				CDE
+			}
+		}
+		/OverwriteSlots	0
+		/Expected {
+			A
+			B
+			{
+				CDE
+			}
+		}
+	}
+	/SimpleAppendTest {
+		/Master {
+			A
+		}
+		/ToMerge {
+			B
+		}
+		/OverwriteSlots	0
+		/Expected {
+			A
+			B
+		}
+	}
+	/SimpleMultiAppendTest {
+		/Master {
+			A
+		}
+		/ToMerge {
+			B
+			{
+				CDE
+			}
+		}
+		/OverwriteSlots	0
+		/Expected {
+			A
+			B
+			{
+				CDE
+			}
+		}
+	}
+	/SimpleFullMatchTest {
+		/Master {
+			A
+			B
+		}
+		/ToMerge {
+			A
+			B
+		}
+		/OverwriteSlots	0
+		/Expected {
+			A
+			B
+		}
+	}
+	/ArrayMatchTest {
+		/Master {
+			{ A }
+		}
+		/ToMerge {
+			{ A }
+		}
+		/OverwriteSlots	0
+		/Expected {
+			{ A }
+		}
+	}
+	/ArrayAppendTest {
+		/Master {
+			{ A }
+		}
+		/ToMerge {
+			{ A B }
+		}
+		/OverwriteSlots	0
+		/Expected {
+			{ A B }
+		}
+	}
+	/ArrayAppendSecondTest {
+		/Master {
+			{ A }
+		}
+		/ToMerge {
+			{ /A A }
+		}
+		/OverwriteSlots	0
+		/Expected {
+			{ A /A A }
+		}
+	}
+	/EmptyMasterDeepMergeTest {
+		/Master {
+		}
+		/ToMerge {
+			A
+			/B {
+				/c {
+					123
+					/B 123
+				}
+			}
+			/D 3
+			GH
+		}
+		/OverwriteSlots	0
+		/Expected {
+			A
+			/B {
+				/c {
+					123
+					/B 123
+				}
+			}
+			/D 3
+			GH
+		}
+	}
+	/SubSlotAppendTest {
+		/Master {
+			/SubSlot {
+				Already
+				Here
+			}
+		}
+		/ToMerge {
+			/SubSlot {
+				Me
+				Too
+			}
+		}
+		/OverwriteSlots	0
+		/Expected {
+			/SubSlot {
+				Already
+				Here
+				Me
+				Too
+			}
+		}
+	}
+	/FirstUnnamedModifiedTest {
+		/Master {
+			{
+				Already
+			}
+			{
+				Here
+			}
+		}
+		/ToMerge {
+			{
+				Me
+			}
+		}
+		/OverwriteSlots	0
+		/Expected {
+			{
+				Already
+				Me
+			}
+			{
+				Here
+			}
+		}
+	}
+	/DoubleTroubleUnnamedTest {
+		/Master {
+			{
+				Already
+			}
+			{
+				Here
+			}
+		}
+		/ToMerge {
+			{
+				Me
+			}
+			{
+				Too
+			}
+		}
+		/OverwriteSlots	0
+		/Expected {
+			{
+				Already
+				Me
+			}
+			{
+				Here
+				Too
+			}
+		}
+	}
+	/UnnamedFirstMatchTest {
+		/Master {
+			{
+				Already
+			}
+			{
+				Here
+			}
+		}
+		/ToMerge {
+			{
+				Already
+				Me
+			}
+			{
+				Too
+			}
+		}
+		/OverwriteSlots	0
+		/Expected {
+			{
+				Already
+				Me
+			}
+			{
+				Here
+				Too
+			}
+		}
+	}
+	/UnnamedHitrateTest {
+		/Master {
+			{
+				Already
+			}
+			{
+				Here
+			}
+		}
+		/ToMerge {
+			{
+				Here
+				Me
+			}
+			{
+				Already
+				Too
+			}
+		}
+		/OverwriteSlots	0
+		/Expected {
+			{
+				Already
+				Too
+			}
+			{
+				Here
+				Me
+			}
+		}
+	}
+	/NamedUnnamedTest {
+		/Master {
+			{
+				Already
+			}
+			/Whatever {
+				abc
+			}
+			{
+				Here
+			}
+		}
+		/ToMerge {
+			{
+				Here
+				Me
+			}
+		}
+		/OverwriteSlots	0
+		/Expected {
+			{
+				Already
+			}
+			/Whatever {
+				abc
+			}
+			{
+				Here
+				Me
+			}
+		}
+	}
+	/MultipleUnnamedTest {
+		/Master {
+			{
+				Already
+			}
+			{
+				Already
+			}
+			{
+				Here
+			}
+		}
+		/ToMerge {
+			{
+				FirstOne
+			}
+			{
+				SecondOne
+			}
+			{
+				Guguseli
+			}
+		}
+		/OverwriteSlots	0
+		/Expected {
+			{
+				Already
+				FirstOne
+			}
+			{
+				Already
+				SecondOne
+			}
+			{
+				Here
+				Guguseli
+			}
+		}
+	}
+	/MultipleUnnamedMixedTest {
+		/Master {
+			{
+				Already
+			}
+			{
+				Already
+			}
+			{
+				Here
+			}
+		}
+		/ToMerge {
+			{
+				FirstOne
+			}
+			{
+				SecondOne
+			}
+			{
+				Already
+				Guguseli
+			}
+		}
+		/OverwriteSlots	0
+		/Expected {
+			{
+				Already
+				FirstOne
+				Guguseli
+			}
+			{
+				Already
+				SecondOne
+			}
+			{
+				Here
+			}
+		}
+	}
+	/MoreRealisticConfigTest {
+		/Master {
+			/DLL {
+				renderer
+				actions
+				dataaccess
+			}
+			/Modules {
+				RolesModule
+				PagesModule
+				RenderersModule
+				AcceptorFactoriesModule
+				DataAccessImplsModule
+			}
+			/DataAccessImpls {
+				/LoopBackDAImpl {
+					LoopBackDATest daTest CallDAOkTest CallDANotOkTest
+				}
+				/MapperTestDAImpl {
+					MyTestInputMapperConfig
+					MyTestHardCodedInputMapperConfig
+					MyTestDAImplMetaConfig
+				}
+			}
+			/Mappers {
+				/Input {
+					/Mapper {
+						MapperTestDAImpl daTest LoopBackDATest CallDAOkTest CallDANotOkTest
+					}
+				}
+				/Output {
+					/NameUsingOutputMapper {
+						MapperTestDAImpl daTest LoopBackDATest CallDAOkTest CallDANotOkTest
+					}
+				}
+			}
+		}
+		/ToMerge {
+			/DLL {
+				additionals
+			}
+			/Modules {
+				AdditionalsModule
+			}
+			/DataAccessImpls {
+				/LoopBackDAImpl {
+					AdditionalTest
+				}
+			}
+			/Mappers {
+				/Input {
+					/MySpecialMapper {
+						AdditionalTest
+					}
+				}
+				/Output {
+					/NameUsingOutputMapper {
+						AdditionalTest
+					}
+				}
+			}
+			/AdditionalsModule {
+				Additional
+			}
+		}
+		/OverwriteSlots	0
+		/Expected {
+			/DLL {
+				renderer
+				actions
+				dataaccess
+				additionals
+			}
+			/Modules {
+				RolesModule
+				PagesModule
+				RenderersModule
+				AcceptorFactoriesModule
+				DataAccessImplsModule
+				AdditionalsModule
+			}
+			/DataAccessImpls {
+				/LoopBackDAImpl {
+					LoopBackDATest daTest CallDAOkTest CallDANotOkTest AdditionalTest
+				}
+				/MapperTestDAImpl {
+					MyTestInputMapperConfig
+					MyTestHardCodedInputMapperConfig
+					MyTestDAImplMetaConfig
+				}
+			}
+			/Mappers {
+				/Input {
+					/Mapper {
+						MapperTestDAImpl daTest LoopBackDATest CallDAOkTest CallDANotOkTest
+					}
+					/MySpecialMapper {
+						AdditionalTest
+					}
+				}
+				/Output {
+					/NameUsingOutputMapper {
+						MapperTestDAImpl daTest LoopBackDATest CallDAOkTest CallDANotOkTest AdditionalTest
+					}
+				}
+			}
+			/AdditionalsModule {
+				Additional
+			}
+		}
+	}
+}

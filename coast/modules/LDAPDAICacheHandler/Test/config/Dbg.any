@@ -1,0 +1,67 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/LowerBound	00
+	/UpperBound	211
+	/DumpAnythings  1		# print full Anythings
+
+	/Registry {
+		/MainSwitch	0
+		/EnableAll	0
+	}
+	/HierarchyInstaller {
+		/MainSwitch	0
+		/EnableAll	0
+	}
+	/LDAPDAICachePolicyModule {
+		/MainSwitch	210
+		/EnableAll	210
+	}
+	/LDAPAbstractDAI {
+		/MainSwitch	210
+		/EnableAll	210
+	}
+	/LDAPSearchDAI {
+		/MainSwitch	210
+		/EnableAll	210
+	}
+	/CallLDAPDAICacheAction {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/LDAPDAIDataAccessTestAction {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/CallDataAccessAction {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/LdapDAIActionLoader {
+		/MainSwitch	210
+		/EnableAll	210
+	}
+	/LDAPDAIDataAcccessLoader {
+		/MainSwitch	210
+		/EnableAll	210
+	}
+	/LDAPDAICacheGetter {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/AnyUtils {
+		/MainSwitch	10
+		/EnableAll	0
+	}
+	/Action {
+		/MainSwitch	00
+		/EnableAll	10
+	}
+}

@@ -1,0 +1,141 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/LDAPServer		"marvin.hsr.loc"
+	/LDAPPort		"49999"
+	/LDAPBind		"cn=Directory Manager"
+	/LDAPBindPW		"ifaifaifa"
+	/LDAPTimeout	10
+	/LDAPConnectionTimeout 5
+
+	/ConnectionTest {
+
+		/WrongServer {
+			/LDAPServer		"nonexisting.server.loc"
+			/LDAPPort		%LDAPPort
+			/LDAPTimeout	%LDAPTimeout
+			/LDAPConnectionTimeout	%LDAPConnectionTimeout
+			/LDAPBindName	%LDAPBind
+			/LDAPBindPW		%LDAPBindPW
+			/Expected 	0
+			/Error {
+				/Msg 		"Binding request failed. [Server: 'nonexisting.server.loc', Port: '49999']  (Authorized bind.)"
+				/LdapCode	91
+				/LdapMsg	"Can't connect to the LDAP server"
+				/LdapConnectionParams {
+					/Server "nonexisting.server.loc"
+					/Port 49999
+					/Timeout 10
+					/ConnectionTimeout 5
+					/BindName "cn=Directory Manager"
+					/BindPW "ifaifaifa"
+
+				}
+			}
+		}
+
+# -----------------------------------------------------------------------------------
+# kgu: Removed, because it seemed to produce different results on different machines
+# (due to different ldaplib versions?)
+# if re-enabling, don't forget to re-insert the config switches (see other tests)
+# -----------------------------------------------------------------------------------
+#		/WrongPort {
+#			/LDAPServer		%LDAPServer
+#			/LDAPPort		1234
+#			/LDAPTimeout	%LDAPTimeout
+#			/LDAPConnectionTimeout	%LDAPConnectionTimeout
+#			/LDAPBindName	%LDAPBind
+#			/LDAPBindPW		%LDAPBindPW
+#			/Expected 	0
+#			/Error {
+#				/Msg		"Binding request failed. [Server: 'marvin.hsr.loc', Port: '1234']  (Authorized bind.)"
+#				/Msg		"Binding request failed. [Server: 'vivian.hank.com', Port: '1234']  (Authorized bind.)"
+#				/LdapCode	81
+#				/LdapMsg	"Can't contact LDAP server"
+#				/LdapConnectionParams {
+#					/Server "marvin.hsr.loc"
+#					/Server "vivian.hank.com"
+#					/Port 1234
+#					/Timeout 10
+#					/ConnectionTimeout 5
+#					/BindName "cn=Directory Manager"
+#					/BindPW "ifaifaifa"
+#					/BindPW "hankhank"
+#				}
+#			}
+#		}
+
+		/AnonymousBind {
+			/LDAPServer		%LDAPServer
+			/LDAPPort		%LDAPPort
+			/LDAPTimeout	%LDAPTimeout
+			/LDAPConnectionTimeout	%LDAPConnectionTimeout
+			/LDAPBindName	""
+			/LDAPBindPW		""
+			/Expected 	1		# success, no error
+		}
+
+		/WrongBindName {
+			/LDAPServer		%LDAPServer
+			/LDAPPort		%LDAPPort
+			/LDAPTimeout	%LDAPTimeout
+			/LDAPConnectionTimeout	%LDAPConnectionTimeout
+			/LDAPBindName	"cn=WrongBindName"
+			/LDAPBindPW		%LDAPBindPW
+			/Expected 	0
+			/Error {
+				/Msg "LDAP request failed."
+				/LdapCode 32
+				/LdapMsg "No such object"
+				/LdapConnectionParams {
+					/Server "marvin.hsr.loc"
+					/Port 49999
+					/Timeout 10
+					/ConnectionTimeout 5
+					/BindName "cn=WrongBindName"
+					/BindPW "ifaifaifa"
+				}
+			}
+		}
+
+		/WrongBindPW {
+			/LDAPServer		%LDAPServer
+			/LDAPPort		%LDAPPort
+			/LDAPTimeout	%LDAPTimeout
+			/LDAPConnectionTimeout	%LDAPConnectionTimeout
+			/LDAPBindName	%LDAPBind
+			/LDAPBindPW		"SillyNonexistingBindPW"
+			/Expected 	0
+			/Error {
+				/Msg "LDAP request failed."
+				/LdapCode 49
+				/LdapMsg "Invalid credentials"
+				/LdapConnectionParams {
+					/Server "marvin.hsr.loc"
+					/Port 49999
+					/Timeout 10
+					/ConnectionTimeout 5
+					/BindName "cn=Directory Manager"
+					/BindPW "SillyNonexistingBindPW"
+				}
+			}
+		}
+
+		/CorrectBind {
+			/LDAPServer		%LDAPServer
+			/LDAPPort		%LDAPPort
+			/LDAPTimeout	%LDAPTimeout
+			/LDAPConnectionTimeout	%LDAPConnectionTimeout
+			/LDAPBindName	%LDAPBind
+			/LDAPBindPW		%LDAPBindPW
+			/Expected 	1		# success, no error
+		}
+	}
+}

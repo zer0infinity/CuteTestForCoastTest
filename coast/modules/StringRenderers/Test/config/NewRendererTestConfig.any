@@ -1,0 +1,718 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/EnvForAllCases {
+	}
+	/RunOnly {
+	}
+	/TestCases {
+## ComputeRenderer-Tests
+		/ComputeRendererSimpleAddition {
+			/Env { }
+			/Renderer {
+				{ /ComputeRenderer {
+					/Number1	"12"
+					/Number2	"21"
+					/Operator	"+"
+				} }
+			}
+			/Expected	"33"
+		}
+		/ComputeRendererAddition {
+			/Env {
+				/InNumber1		"-28"
+				/InNumber2		"32"
+				/InOperator		"+"
+			}
+			/Renderer {
+				{ /ComputeRenderer {
+					/Number1	{ /Lookup InNumber1 }
+					/Number2	{ /Lookup InNumber2 }
+					/Operator	{ /Lookup InOperator }
+				} }
+			}
+			/Expected	"4"
+		}
+		/ComputeRendererSubtraction {
+			/Env {
+				/InNumber1		"421"
+				/InNumber2		"99"
+				/InOperator		"-"
+			}
+			/Renderer {
+				{ /ComputeRenderer {
+					/Number1	{ /Lookup InNumber1 }
+					/Number2	{ /Lookup InNumber2 }
+					/Operator	{ /Lookup InOperator }
+				} }
+			}
+			/Expected	"322"
+		}
+		/ComputeRendererMultiplication {
+			/Env {
+				/InNumber1		"123"
+				/InNumber2		"-456"
+				/InOperator		"*"
+			}
+			/Renderer {
+				{ /ComputeRenderer {
+					/Number1	{ /Lookup InNumber1 }
+					/Number2	{ /Lookup InNumber2 }
+					/Operator	{ /Lookup InOperator }
+				} }
+			}
+			/Expected	"-56088"
+		}
+		/ComputeRendererDivision {
+			/Env {
+				/InNumber1		"987654"
+				/InNumber2		"3210"
+				/InOperator		"/"
+			}
+			/Renderer {
+				{ /ComputeRenderer {
+					/Number1	{ /Lookup InNumber1 }
+					/Number2	{ /Lookup InNumber2 }
+					/Operator	{ /Lookup InOperator }
+				} }
+			}
+			/Expected	"307"
+		}
+		/ComputeRendererModulo {
+			/Env {
+				/InNumber1		"111111"
+				/InNumber2		"2222"
+				/InOperator		"%"
+			}
+			/Renderer {
+				{ /ComputeRenderer {
+					/Number1	{ /Lookup InNumber1 }
+					/Number2	{ /Lookup InNumber2 }
+					/Operator	{ /Lookup InOperator }
+				} }
+			}
+			/Expected	"11"
+		}
+		/ComputeRendererGreaterThen {
+			/Env {
+				/InNumber1		"321"
+				/InNumber2		"123"
+				/InOperator		">"
+			}
+			/Renderer {
+				{ /ComputeRenderer {
+					/Number1	{ /Lookup InNumber1 }
+					/Number2	{ /Lookup InNumber2 }
+					/Operator	{ /Lookup InOperator }
+				} }
+			}
+			/Expected	"1"
+		}
+		/ComputeRendererGreaterEqualThen {
+			/Env {
+				/InNumber1		"321"
+				/InNumber2		"321"
+				/InOperator		">="
+			}
+			/Renderer {
+				{ /ComputeRenderer {
+					/Number1	{ /Lookup InNumber1 }
+					/Number2	{ /Lookup InNumber2 }
+					/Operator	{ /Lookup InOperator }
+				} }
+			}
+			/Expected	"1"
+		}
+		/ComputeRendererGreaterEqualThenFalse {
+			/Env {
+				/InNumber1		"321"
+				/InNumber2		"322"
+				/InOperator		">="
+			}
+			/Renderer {
+				{ /ComputeRenderer {
+					/Number1	{ /Lookup InNumber1 }
+					/Number2	{ /Lookup InNumber2 }
+					/Operator	{ /Lookup InOperator }
+				} }
+			}
+			/Expected	"0"
+		}
+		/ComputeRendererLessThen {
+			/Env {
+				/InNumber1		"444444"
+				/InNumber2		"666666"
+				/InOperator		"<"
+			}
+			/Renderer {
+				{ /ComputeRenderer {
+					/Number1	{ /Lookup InNumber1 }
+					/Number2	{ /Lookup InNumber2 }
+					/Operator	{ /Lookup InOperator }
+				} }
+			}
+			/Expected	"1"
+		}
+		/ComputeRendererLessEqualThen {
+			/Env {
+				/InNumber1		"444444"
+				/InNumber2		"444444"
+				/InOperator		"<="
+			}
+			/Renderer {
+				{ /ComputeRenderer {
+					/Number1	{ /Lookup InNumber1 }
+					/Number2	{ /Lookup InNumber2 }
+					/Operator	{ /Lookup InOperator }
+				} }
+			}
+			/Expected	"1"
+		}
+		/ComputeRendererEqualThen {
+			/Env {
+				/InNumber1		"666"
+				/InNumber2		"666"
+				/InOperator		"="
+			}
+			/Renderer {
+				{ /ComputeRenderer {
+					/Number1	{ /Lookup InNumber1 }
+					/Number2	{ /Lookup InNumber2 }
+					/Operator	{ /Lookup InOperator }
+				} }
+			}
+			/Expected	"1"
+		}
+		/ComputeRendererEqualThenFalse {
+			/Env {
+				/InNumber1		"666"
+				/InNumber2		"333"
+				/InOperator		"="
+			}
+			/Renderer {
+				{ /ComputeRenderer {
+					/Number1	{ /Lookup InNumber1 }
+					/Number2	{ /Lookup InNumber2 }
+					/Operator	{ /Lookup InOperator }
+				} }
+			}
+			/Expected	"0"
+		}
+		/ComputeRendererMinResult {
+			/Env {
+				/InNumber1		"1"
+				/InNumber2		"1"
+				/InOperator		"+"
+			}
+			/Renderer {
+				{ /ComputeRenderer {
+					/Number1	{ /Lookup InNumber1 }
+					/Number2	{ /Lookup InNumber2 }
+					/Operator	{ /Lookup InOperator }
+					/Minimum	"1000000"
+				} }
+			}
+			/Expected	"1000000"
+		}
+		/ComputeRendererMaxResult {
+			/Env {
+				/InNumber1		"111111111"
+				/InNumber2		"222222222"
+				/InOperator		"+"
+			}
+			/Renderer {
+				{ /ComputeRenderer {
+					/Number1	{ /Lookup InNumber1 }
+					/Number2	{ /Lookup InNumber2 }
+					/Operator	{ /Lookup InOperator }
+					/Maximum	"1"
+				} }
+			}
+			/Expected	"1"
+		}
+## CompareValuesRenderer-Tests
+		/CompareValuesRendererGreaterEqualTrueTest {
+			/Env {
+				/InValue1			"Test1"
+				/InValue2			"Test"
+				/InOperator			">="
+				/InTrue				"Yes"
+				/InFalse			"No"
+				/InError			"Idiot"
+			}
+			/Renderer {
+				/CompareValuesRenderer {
+
+					/Value1			{ /Lookup InValue1 }
+					/Value2			{ /Lookup InValue2 }
+					/Operator		{ /Lookup InOperator }
+					/True			{ /Lookup InTrue }
+					/False			{ /Lookup InFalse }
+					/Error			{ /Lookup InError }
+				}
+			}
+			/Expected	"Yes"
+
+		}
+		/CompareValuesRendererGreaterEqualFalseTest {
+			/Env {
+				/InValue1			"5"
+				/InValue2			"10"
+				/InOperator			">="
+				/InTrue				"Yes"
+				/InFalse			"No"
+				/InError			"Idiot"
+			}
+			/Renderer {
+				/CompareValuesRenderer {
+
+					/Value1			{ /Lookup InValue1 }
+					/Value2			{ /Lookup InValue2 }
+					/Operator		{ /Lookup InOperator }
+					/True			{ /Lookup InTrue }
+					/False			{ /Lookup InFalse }
+					/Error			{ /Lookup InError }
+				}
+			}
+			/Expected	"No"
+
+		}
+		/CompareValuesRendererLessEqualTrueTest {
+			/Env {
+				/InValue1			"Test"
+				/InValue2			"Test"
+				/InOperator			"<="
+				/InTrue				"Yes"
+				/InFalse			"No"
+				/InError			"Idiot"
+			}
+			/Renderer {
+				/CompareValuesRenderer {
+
+					/Value1			{ /Lookup InValue1 }
+					/Value2			{ /Lookup InValue2 }
+					/Operator		{ /Lookup InOperator }
+					/True			{ /Lookup InTrue }
+					/False			{ /Lookup InFalse }
+					/Error			{ /Lookup InError }
+				}
+			}
+			/Expected	"Yes"
+
+		}
+		/CompareValuesRendererLessEqualFalseTest {
+			/Env {
+				/InValue1			"10"
+				/InValue2			"5"
+				/InOperator			"<="
+				/InTrue				"Yes"
+				/InFalse			"No"
+				/InError			"Idiot"
+			}
+			/Renderer {
+				/CompareValuesRenderer {
+
+					/Value1			{ /Lookup InValue1 }
+					/Value2			{ /Lookup InValue2 }
+					/Operator		{ /Lookup InOperator }
+					/True			{ /Lookup InTrue }
+					/False			{ /Lookup InFalse }
+					/Error			{ /Lookup InError }
+				}
+			}
+			/Expected	"No"
+
+		}
+		/CompareValuesRendererLessTrueTest {
+			/Env {
+				/InValue1			"5"
+				/InValue2			"10"
+				/InOperator			"<"
+				/InTrue				"Yes"
+				/InFalse			"No"
+				/InError			"Idiot"
+			}
+			/Renderer {
+				/CompareValuesRenderer {
+
+					/Value1			{ /Lookup InValue1 }
+					/Value2			{ /Lookup InValue2 }
+					/Operator		{ /Lookup InOperator }
+					/True			{ /Lookup InTrue }
+					/False			{ /Lookup InFalse }
+					/Error			{ /Lookup InError }
+				}
+			}
+			/Expected	"Yes"
+
+		}
+		/CompareValuesRendererLessFalseTest {
+			/Env {
+				/InValue1			"10"
+				/InValue2			"5"
+				/InOperator			"<"
+				/InTrue				"Yes"
+				/InFalse			"No"
+				/InError			"Idiot"
+			}
+			/Renderer {
+				/CompareValuesRenderer {
+
+					/Value1			{ /Lookup InValue1 }
+					/Value2			{ /Lookup InValue2 }
+					/Operator		{ /Lookup InOperator }
+					/True			{ /Lookup InTrue }
+					/False			{ /Lookup InFalse }
+					/Error			{ /Lookup InError }
+				}
+			}
+			/Expected	"No"
+
+		}
+		/CompareValuesRendererGreaterTrueTest {
+			/Env {
+				/InValue1			"111"
+				/InValue2			"11"
+				/InOperator			">"
+				/InTrue				"Yes"
+				/InFalse			"No"
+				/InError			"Idiot"
+			}
+			/Renderer {
+				/CompareValuesRenderer {
+
+					/Value1			{ /Lookup InValue1 }
+					/Value2			{ /Lookup InValue2 }
+					/Operator		{ /Lookup InOperator }
+					/True			{ /Lookup InTrue }
+					/False			{ /Lookup InFalse }
+					/Error			{ /Lookup InError }
+				}
+			}
+			/Expected	"Yes"
+
+		}
+		/CompareValuesRendererGreaterFalseTest {
+			/Env {
+				/InValue1			"10"
+				/InValue2			"111"
+				/InOperator			">"
+				/InTrue				"Yes"
+				/InFalse			"No"
+				/InError			"Idiot"
+			}
+			/Renderer {
+				/CompareValuesRenderer {
+
+					/Value1			{ /Lookup InValue1 }
+					/Value2			{ /Lookup InValue2 }
+					/Operator		{ /Lookup InOperator }
+					/True			{ /Lookup InTrue }
+					/False			{ /Lookup InFalse }
+					/Error			{ /Lookup InError }
+				}
+			}
+			/Expected	"No"
+
+		}
+		/CompareValuesRendererNotEqualTrueTest {
+			/Env {
+				/InValue1			"111"
+				/InValue2			"11"
+				/InOperator			"!="
+				/InTrue				"Yes"
+				/InFalse			"No"
+				/InError			"Idiot"
+			}
+			/Renderer {
+				/CompareValuesRenderer {
+
+					/Value1			{ /Lookup InValue1 }
+					/Value2			{ /Lookup InValue2 }
+					/Operator		{ /Lookup InOperator }
+					/True			{ /Lookup InTrue }
+					/False			{ /Lookup InFalse }
+					/Error			{ /Lookup InError }
+				}
+			}
+			/Expected	"Yes"
+
+		}
+		/CompareValuesRendererNotEqualFalseTest {
+			/Env {
+				/InValue1			"111"
+				/InValue2			"111"
+				/InOperator			"!="
+				/InTrue				"Yes"
+				/InFalse			"No"
+				/InError			"Idiot"
+			}
+			/Renderer {
+				/CompareValuesRenderer {
+
+					/Value1			{ /Lookup InValue1 }
+					/Value2			{ /Lookup InValue2 }
+					/Operator		{ /Lookup InOperator }
+					/True			{ /Lookup InTrue }
+					/False			{ /Lookup InFalse }
+					/Error			{ /Lookup InError }
+				}
+			}
+			/Expected	"No"
+
+		}
+		/CompareValuesRendererErrorTest {
+			/Env {
+				/InValue1			"5"
+				/InValue2			"10"
+				/InOperator			"=="
+				/InTrue				"Yes"
+				/InFalse			"No"
+				/InError			"Idiot"
+			}
+			/Renderer {
+				/CompareValuesRenderer {
+
+					/Value1			{ /Lookup InValue1 }
+					/Value2			{ /Lookup InValue2 }
+					/True			{ /Lookup InTrue }
+					/False			{ /Lookup InFalse }
+					/Error			{ /Lookup InError }
+				}
+			}
+			/Expected	"Idiot"
+		}
+## StringUpperLowerRenderer-Tests
+		/StringUpperLowerRendererUpperTest {
+			/Env {
+				/InValue			"aea1aaGxx%"
+				/InMode				"upper"
+			}
+			/Renderer {
+				/StringUpperLowerRenderer {
+
+					/Value			{ /Lookup InValue }
+					/Mode			{ /Lookup InMode }
+				}
+			}
+			/Expected	"AEA1AAGXX%"
+		}
+		/StringUpperLowerRendererLowerTest {
+			/Env {
+				/InValue			"AEa1AAgXX%"
+				/InMode				"lower"
+			}
+			/Renderer {
+				/StringUpperLowerRenderer {
+
+					/Value			{ /Lookup InValue }
+					/Mode			{ /Lookup InMode }
+				}
+			}
+			/Expected	"aea1aagxx%"
+		}
+		/StringUpperLowerRendererNotOkTest {
+			/Env {
+				/InValue			"aea1aaGxx%"
+				/InMode				"upper"
+			}
+			/Renderer {
+				/StringUpperLowerRenderer {
+
+					/Value			{ /Lookup InValue }
+				}
+			}
+			/Expected	""
+		}
+## FormattedDateRenderer-Tests
+		/FormattedDateRendererDateOkTest {
+			/Env {
+				/InValue			"Jul 01 2003 11:30AM"
+			}
+			/Renderer {
+				/FormattedDateRenderer {
+					/Value			{ /Lookup InValue }
+				}
+			}
+			/Expected	"01 Jul 2003"
+		}
+		/FormattedDateRendererDateWrongDateFormatTest {
+			/Env {
+				/InValue			"07 31 2003 11:30AM"
+			}
+			/Renderer {
+				/FormattedDateRenderer {
+					/Value			{ /Lookup InValue }
+				}
+			}
+			/Expected	""
+		}
+## FormattedStringRenderer-Tests
+		/FormattedStringRendererOkTest {
+			/Env {
+				/InValue			"Kurt ist zu Dumm fuer diese Arbeit"
+				/InWidth			"50"
+				/InFiller			" "
+				/InAlign			"center"
+				/InSpacesForTab		"5"
+			}
+			/Renderer {
+				/FormattedStringRenderer {
+
+					/Value			{ /Lookup InValue }
+					/Width			{ /Lookup InWidth }
+					/Filler			{ /Lookup InFiller }
+					/Align			{ /Lookup InAlign }
+					/SpacesForTab	{ /Lookup InSpacesForTab }
+				}
+			}
+			/Expected	"        Kurt ist zu Dumm fuer diese Arbeit        "
+#                        01234567890123456789012345678901234567890123456789
+		}
+		/FormattedStringRendererRightTest {
+			/Env {
+				/InValue			"Kurt ist zu Dumm fuer diese Arbeit"
+				/InWidth			"50"
+				/InFiller			" "
+				/InAlign			"right"
+				/InSpacesForTab		"5"
+			}
+			/Renderer {
+				/FormattedStringRenderer {
+
+					/Value			{ /Lookup InValue }
+					/Width			{ /Lookup InWidth }
+					/Filler			{ /Lookup InFiller }
+					/Align			{ /Lookup InAlign }
+					/SpacesForTab	{ /Lookup InSpacesForTab }
+				}
+			}
+			/Expected	"                Kurt ist zu Dumm fuer diese Arbeit"
+#                        01234567890123456789012345678901234567890123456789
+		}
+		/FormattedStringRendererLeftTest {
+			/Env {
+				/InValue			"Kurt ist zu Dumm fuer diese Arbeit"
+				/InWidth			"50"
+				/InFiller			" "
+				/InAlign			"left"
+				/InSpacesForTab		"5"
+			}
+			/Renderer {
+				/FormattedStringRenderer {
+
+					/Value			{ /Lookup InValue }
+					/Width			{ /Lookup InWidth }
+					/Filler			{ /Lookup InFiller }
+					/Align			{ /Lookup InAlign }
+					/SpacesForTab	{ /Lookup InSpacesForTab }
+				}
+			}
+			/Expected	"Kurt ist zu Dumm fuer diese Arbeit                "
+#                        01234567890123456789012345678901234567890123456789
+		}
+		/FormattedStringRendererTabTest {
+			/Env {
+				/InValue			"Kurt ist zu Dumm 	 fuer diese Arbeit"
+				/InWidth			"50"
+				/InFiller			" "
+				/InAlign			"left"
+				/InSpacesForTab		"5"
+			}
+			/Renderer {
+				/FormattedStringRenderer {
+
+					/Value			{ /Lookup InValue }
+					/Width			{ /Lookup InWidth }
+					/Filler			{ /Lookup InFiller }
+					/Align			{ /Lookup InAlign }
+					/SpacesForTab	{ /Lookup InSpacesForTab }
+				}
+			}
+			/Expected	"Kurt ist zu Dumm       fuer diese Arbeit              "
+#                        01234567890123456789012345678901234567890123456789x123456789
+		}
+		/FormattedStringRendererLeftNbspTest {
+			/Env {
+				/InValue			"Kurt ist zu Dumm fuer diese Arbeit"
+				/InWidth			"36"
+				/InFiller			"&nbsp;"
+				/InAlign			"left"
+				/InSpacesForTab		"5"
+			}
+			/Renderer {
+				/FormattedStringRenderer {
+
+					/Value			{ /Lookup InValue }
+					/Width			{ /Lookup InWidth }
+					/Filler			{ /Lookup InFiller }
+					/Align			{ /Lookup InAlign }
+					/SpacesForTab	{ /Lookup InSpacesForTab }
+				}
+			}
+			/Expected	"Kurt&nbsp;ist&nbsp;zu&nbsp;Dumm&nbsp;fuer&nbsp;diese&nbsp;Arbeit&nbsp;&nbsp;"
+#                        01234567890123456789012345678901234567890123456789x123456789
+		}
+		/FormattedStringRendererRightNbspTest {
+			/Env {
+				/InValue			"Kurt ist zu Dumm fuer diese Arbeit"
+				/InWidth			"36"
+				/InFiller			"&nbsp;"
+				/InAlign			"right"
+				/InSpacesForTab		"5"
+			}
+			/Renderer {
+				/FormattedStringRenderer {
+
+					/Value			{ /Lookup InValue }
+					/Width			{ /Lookup InWidth }
+					/Filler			{ /Lookup InFiller }
+					/Align			{ /Lookup InAlign }
+					/SpacesForTab	{ /Lookup InSpacesForTab }
+				}
+			}
+			/Expected	"&nbsp;&nbsp;Kurt&nbsp;ist&nbsp;zu&nbsp;Dumm&nbsp;fuer&nbsp;diese&nbsp;Arbeit"
+#                        01234567890123456789012345678901234567890123456789x123456789
+		}
+		/FormattedStringRendererCenterPositionTest {
+			/Env {
+				/InValue			"Kurt ist zu Dumm fuer diese Arbeit"
+				/InWidth			"49"
+				/InFiller			" "
+				/InAlign			"center"
+				/InSpacesForTab		"5"
+			}
+			/Renderer {
+				/FormattedStringRenderer {
+
+					/Value			{ /Lookup InValue }
+					/Width			{ /Lookup InWidth }
+					/Filler			{ /Lookup InFiller }
+					/Align			{ /Lookup InAlign }
+					/SpacesForTab	{ /Lookup InSpacesForTab }
+				}
+			}
+			/Expected	"       Kurt ist zu Dumm fuer diese Arbeit        "
+#                        01234567890123456789012345678901234567890123456789
+		}
+		/HTTPStringEncodeRendererEncodeTest {
+			/Env {
+				/InString			"Kurt ist zu Dumm / fuer diese Arbeit"
+			}
+			/Renderer {
+				/HTTPStringEncodeRenderer {
+					/String			{ /Lookup InString }
+				}
+			}
+			/Expected	"Kurt%20ist%20zu%20Dumm%20%2F%20fuer%20diese%20Arbeit"
+#                        01234567890123456789012345678901234567890123456789x123456789
+		}
+	}
+}

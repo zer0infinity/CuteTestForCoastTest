@@ -1,0 +1,172 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/Roles {
+		/Role {
+			/RTGuest {
+				RTCustomer
+			}
+		}
+	}
+	/Pages {
+		/Page {
+			Home BannerPage CustomerHome GuestPage ErrorPage
+		}
+	}
+	/InsertAction {
+		/Home GoBanner
+	}
+	/InsertedPages {
+		/BannerPage Login
+	}
+	/Modules { # just install one module
+		RolesModule
+		CacheHandlerModule
+		PagesModule
+		RenderersModule
+	}
+	/Renderers { }
+	/RoleChanges
+	{
+		/LoginOk "RTCustomer"
+		/Logoff  { /RTCustomer RTGuest /RTGuest Role }
+	}
+
+	/VerifyTest
+	{
+		{
+			/Env
+			{
+			}
+			/Session
+			{
+			}
+			/ExpectedResult	1
+		}
+		{
+			/Env
+			{
+				/"HTTP_USER_AGENT"	"test agent"
+				/"REMOTE_ADDR"		"127.0.0.1"
+			}
+			/Session
+			{
+			}
+			/ExpectedResult	0
+		}
+		{
+			/Env
+			{
+				/"HTTP_USER_AGENT"	"test agent"
+				/"REMOTE_ADDR"		"127.0.0.1"
+			}
+			/Session
+			{
+				/"HTTP_USER_AGENT"	"test agent"
+				/"REMOTE_ADDR"		"127.0.0.1"
+			}
+			/ExpectedResult	1
+		}
+		{
+			/Env
+			{
+				/"HTTP_USER_AGENT"	"test agent"
+				/"REMOTE_ADDR"		"127.0.0.1"
+			}
+			/Session
+			{
+				/"HTTP_USER_AGENT"	*
+				/"REMOTE_ADDR"		"127.0.0.1"
+			}
+			/ExpectedResult	0
+		}
+		{
+			/Env
+			{
+				/InstableUserAgent	1
+				/"HTTP_USER_AGENT"	"test agent"
+				/"REMOTE_ADDR"		"127.0.0.1"
+			}
+			/Session
+			{
+				/"HTTP_USER_AGENT"	*
+				/"REMOTE_ADDR"		"127.0.0.1"
+			}
+			/ExpectedResult	1
+		}
+		{
+			/Env
+			{
+				/"HTTP_USER_AGENT"	"test agent"
+				/"REMOTE_ADDR"		"127.0.0.1"
+			}
+			/Session
+			{
+				/"HTTP_USER_AGENT"	"test agent"
+				/"REMOTE_ADDR"		*
+			}
+			/ExpectedResult	0
+		}
+		{
+			/Env
+			{
+				/"HTTP_USER_AGENT"	"test agent"
+				/"REMOTE_ADDR"		"127.0.0.1"
+			}
+			/Session
+			{
+				/"HTTP_USER_AGENT"	"new test agent"
+				/"REMOTE_ADDR"		"127.0.0.1"
+			}
+			/ExpectedResult	0
+		}
+		{
+			/Env
+			{
+				/"HTTP_USER_AGENT"	"test agent"
+				/"REMOTE_ADDR"		"127.0.0.1"
+			}
+			/Session
+			{
+				/"HTTP_USER_AGENT"	"test agent"
+				/"REMOTE_ADDR"		"127.0.0.2"
+			}
+			/ExpectedResult	0
+		}
+		{
+			/Env
+			{
+				/"HTTP_USER_AGENT"	"test agent"
+				/"REMOTE_ADDR"		"127.0.0.1"
+				/InstableUserAgent	1
+			}
+			/Session
+			{
+				/"HTTP_USER_AGENT"	"new test agent"
+				/"REMOTE_ADDR"		"127.0.0.1"
+			}
+			/ExpectedResult	1
+		}
+		{
+			/Env
+			{
+				/"HTTP_USER_AGENT"	"test agent"
+				/"REMOTE_ADDR"		"127.0.0.1"
+				/InstableRemoteAdress	1
+			}
+			/Session
+			{
+				/"HTTP_USER_AGENT"	"test agent"
+				/"REMOTE_ADDR"		"127.0.0.2"
+			}
+			/ExpectedResult	1
+		}
+	}
+}

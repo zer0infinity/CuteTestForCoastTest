@@ -1,0 +1,193 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/testmapper {	#mapper for test purposes
+		/testitem1	"foo"
+		/testitem2  "bah"
+	}
+
+	/MapperTest {
+		/AKeyInConfig   1.9
+		/ATrueInConfig	1
+		/AFalseInConfig	0
+	}
+
+	/testmi {
+		/testmi1 testmi1
+	}
+
+	/renderertestmapper {
+		/NotRelevant {
+			# renderer sample used for RendererMapperTest
+			# mapper name - now fully moved to Renderer world...
+			# render GET line...
+			"Get "
+			{ /ContextLookupRenderer URI }
+			" http/1.0\r\n\r\n"
+		}
+	}
+
+	/anotherMapper {
+		/Input "Foo"
+	}
+
+	/lookupMapperTest {
+		/Input {
+			/LookupMapper anotherMapper
+		}
+	}
+
+	/HTTPHardCodedMapperTest {
+		/Input {
+			"GET "
+			"/finVAL/XS.ISA?Action=Login "
+			"HTTP/1.1\n"
+			"testcase: foobah\nContent-length: 0\n\n"
+		}
+	}
+
+	/NestedMapperHardConfiguredMapper {
+		/AKey {
+				%testmapper
+				/bar "bar"
+		}
+	}
+
+	/HostDAInputMapperTest {
+		/Msg {
+			/HostProg 			"A1B7L007"
+			/HostProgOption		"GET-HOMEDIR*****"
+			/Empfaenger	{
+				/UpperCaseMapper {
+					/"trxinput.data.vorname" {
+						/FixedSizeMapper {
+							/Length	20
+						}
+					}
+					" "
+					/"trxinput.data.nachname" {
+						/FixedSizeMapper {
+							/Length	20
+						}
+					}
+				}
+			}
+			":"
+			/"trxinput.data.server"	{
+				/FixedSizeMapper {
+					/Length	20
+				}
+			}
+			":"
+			/"trxinput.data.geb"	{
+				/FixedSizeMapper {
+					/Length	20
+				}
+			}
+			":"
+			/"trxinput.data.cvks" *
+		}
+		/FixedSize {
+			/"trxinput.data.server"	{
+				/FixedSizeMapper {
+					/Length	20
+				}
+			}
+		}
+	}
+
+	/MapperTestDAImpl {
+		/Key	"KeyInInputMapperMeta"
+	}
+
+	/MyTestInputMapperConfig {
+		/In	InputMapperConfig
+	}
+
+	/HardCodedMapper {
+		/Foo {
+			"foo"
+			"-"
+			"bar"
+		}
+		/Bar { "is the bar" }
+	}
+
+	/MyTestHardCodedInputMapperConfig
+	{
+		/In {
+			 /Foo { /HardCodedMapper  *  }
+			 /Bar { /HardCodedMapper  *  }
+		}
+	}
+
+	/MyTestRendererDA	{
+		/In {
+			/RendererMapper {
+				{ /ContextLookupRenderer A }
+				{ /ContextLookupRenderer {
+					/ContextLookupRenderer B
+				} }
+				"Gugus"
+			}
+		}
+	}
+	/RenameSlotWithConfigGetTest {
+		/Kaspar { /Peter * }
+	}
+
+	/ParameterMapperTest {
+		/any {
+			/aKey *
+		}
+		/string {
+			/sKey *
+		}
+		/bool {
+			/bKey *
+		}
+		/long {
+			/lKey *
+		}
+		/double {
+			/dKey *
+		}
+	}
+
+	/EagerParameterMapperTest {
+		/RetrieveList {
+			/SubScript1 {
+				"curiosity"
+			}
+			/SubScript2 {
+				/InnerScript {
+					"kills"
+				}
+				"the"
+			}
+			/PlainValue {
+				"cat"
+			}
+			/StoredValue {
+				/someKey *
+			}
+		}
+		/PlainValueOnly {
+			"really"
+		}
+		/FromContext {
+			/anotherKey *
+		}
+	}
+
+	/DynamicFetcher {
+		/SourceSlot "Mapper.foo.bar"
+	}
+}

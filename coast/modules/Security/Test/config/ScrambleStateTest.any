@@ -1,0 +1,75 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+#        /Version    "$Id$"
+# should be the first thing here:
+        /State1 {
+			/first	foo
+			/second	bah
+			/third	ist
+
+        }
+
+        /Config1 {
+			/Scrambler	Scrambler
+			/Encoder	Encoder
+			/Signer		Signer
+        }
+
+        /Config2 {
+			/Scrambler	BlowfishScrambler
+			/Encoder	Base64
+			/Signer		MD5
+			/SecurityItems {
+				/Signer { /MD5Signer MD5 }
+				/Encoder { /Base64 b64 }
+				/Scrambler { /BlowfishScrambler bs }
+			}
+        }
+
+        /Config3 {
+			/Scrambler	BlowfishScrambler
+			/Encoder	Encoder
+			/Signer		Signer
+        }
+        # this is the reference configuration with fixed scrambled state
+        /Config4 {
+			/Scrambler	Scrambler
+			/Encoder	Encoder
+			/Signer		MD5Signer
+        }
+		/Config5 {
+			/Scrambler	BlowfishCBCScrambler
+			/Encoder	myb64
+			/Signer		Signer
+			/SecurityItems {
+				/Scrambler { /BlowfishScrambler BlowfishCBCScrambler }
+				/Encoder { /Base64 { /Base64Regular myb64 }}
+			}
+        }
+		/ConfigWithItems {
+			/SecurityItems {
+				/Scrambler {
+					/BlowfishScrambler {
+						mybs
+						mybs0
+						/BlowfischCBCScrambler { mybc }
+					}
+				}
+				/Encoder myenc
+				/Signer {
+					/MD5Signer mysign
+				}
+			}
+			/Scrambler	mybc
+			/Encoder	myenc
+			/Signer		mysign
+        }
+
+}

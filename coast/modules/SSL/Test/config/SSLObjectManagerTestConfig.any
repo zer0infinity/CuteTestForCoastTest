@@ -1,0 +1,113 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/GetCtxTest
+	{
+		{
+			/Config
+			{
+				/Address	"localhost"
+				/Port		443
+####			/Port		4433					# Use opensll s_server with options
+####												  -cert servercert.pem -key serverkey.pem -Verify 4 -CAfile fullchain.pem -debug
+####												  and type "HTTP" as the server's response in GetCtxTest.
+				/SSLVerifyDepth 3
+				/KeyFileClient	"cert_files/clientkey.pem"
+				/CertFileClient	"cert_files/clientcrt.pem"
+				/SSLVerifyFailIfNoPeerCert 0
+				/SSLUseAppCallback		1
+				/SSLPeerCAFile "cert_files/rootCA1.pem"
+				/VerifyCertifiedEntity 1
+				/SessionResumption 1
+				/CertVerifyStringIsFilter 0
+				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+			}
+			/Results
+			{
+				/SSLCertVerifyStatus		1
+				/AppLevelCertVerifyStatus	1
+				/IsCertCheckPassed			1
+			}
+		}
+	}
+	/SessionResumptionTest
+	{
+		{
+			/Config
+			{
+				/Port		443
+####			/Port		4433					# Use opensll s_server with options
+####												  -cert servercert.pem -key serverkey.pem -Verify 4 -CAfile fullchain.pem -debug
+####												  and type "HTTP" as the server's response in GetCtxTest.
+				/SSLClientSessionTimeout	1
+			/SSLVerifyDepth 3
+				/KeyFileClient	"cert_files/clientkey.pem"
+				/CertFileClient	"cert_files/clientcrt.pem"
+			/SSLVerifyFailIfNoPeerCert 0
+			/SSLUseAppCallback		1
+			/SSLPeerCAFile "cert_files/rootCA1.pem"
+			/VerifyCertifiedEntity 1
+				/SessionResumption 1
+			/CertVerifyStringIsFilter 0
+					/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+			}
+			/Results
+			{
+				/SSLCertVerifyStatus		1
+				/AppLevelCertVerifyStatus	1
+				/IsCertCheckPassed			1
+			}
+		}
+		}
+	}
+	/SessionResumptionTest
+	{
+		{
+			/Address	"localhost"
+			/Port		443
+####		/Port		4433					# Use opensll s_server with options
+####											  -cert servercert.pem -key serverkey.pem -Verify 4 -CAfile fullchain.pem -debug
+####											  and type "HTTP" as the server's response in GetCtxTest.
+			/SSLClientSessionTimeout	1
+			/SSLVerifyDepth 3
+			/KeyFile	"cert_files/clientkey.pem"
+			/CertFile	"cert_files/clientcrt.pem"
+			/SSLVerifyFailIfNoPeerCert 0
+			/SSLUseAppCallback		1
+			/SSLPeerCAFile "cert_files/rootCA1.pem"
+			/VerifyCertifiedEntity 1
+			/SessionResumption 1
+			/CertVerifyStringIsFilter 0
+				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+		}
+	}
+	/GetDefaultCtxTest
+	{
+		{
+			/Address	"localhost"
+			/Port		443
+				/Version 1111
+		{
+			/Address "gugus"
+			/Port	 "443"
+				/Version 2222
+		}
+		{
+			/Address "dada"
+			/Port	 "443"
+				/Version 3333
+		}
+		{
+			/Address "gugus"
+			/Port	 "9999"
+				/Version 4444
+			}
+	}
+}

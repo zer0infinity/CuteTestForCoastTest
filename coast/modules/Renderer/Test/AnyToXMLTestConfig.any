@@ -1,0 +1,188 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	# Internal representation of
+	# <!--   DTD for Availability Output  -->
+	# <!ELEMENT Itinerary (Flight+,Time)>
+	# <!ELEMENT Flight (Airline,  Class)>
+	# <!ELEMENT Class (Designator, Status)+>
+	#
+	# <!ELEMENT Time (#PCDATA)>
+	# <!ELEMENT Airline (#PCDATA)>
+	# <!ELEMENT Designator (#PCDATA)>
+	# <!ELEMENT Status (#PCDATA)>
+	/AVDTDInternal {
+		/Itinerary {
+			/Single {
+				/Flight		Iteration
+				/Time		Single
+			}
+		}
+		/Flight {
+			/Single {
+				/Airline	Single
+				/Class		Single
+			}
+		}
+		/Time		Tag
+		/Airline	Tag
+		/Class {
+			/Iteration {
+				/Designator	Tag
+				/Status			Tag
+			}
+		}
+	}
+
+	# Anything input
+	/AVInput {
+		/Itinerary {
+			/Flight {
+				{
+					/Airline	SR
+					/Class {
+						{
+							/Designator	M
+							/Status			9
+						}
+						{
+							/Designator	R
+							/Status			3
+						}
+					}
+				}
+				{
+					/Airline	AUA
+					/Class {
+						{
+							/Designator	X
+							/Status			1
+						}
+						{
+							/Designator	L
+							/Status			"-"
+						}
+					}
+				}
+				{
+					/Airline	SWX
+					/Class {
+						{
+							/Designator	L
+							/Status			"-"
+						}
+					}
+				}
+			}
+			/Time		2342
+		}
+	}
+
+	/XMLOutput  "<Itinerary><Flight><Airline>SR</Airline><Class><Designator>M</Designator><Status>9</Status></Class>\
+<Class><Designator>R</Designator><Status>3</Status></Class></Flight><Flight><Airline>AUA</Airline><Class><Designator>X\
+</Designator><Status>1</Status></Class><Class><Designator>L</Designator><Status>-</Status></Class></Flight><Flight><Airline>SWX</Airline>\
+<Class><Designator>L</Designator><Status>-</Status></Class></Flight><Time>2342</Time></Itinerary>"
+
+	/EmptyOutput	""
+
+	/Test1 {
+		/Input	AVInput
+	}
+
+	/Test2 {
+		/Input	{ "AV" "Input" }
+	}
+
+	/BadTest1 {
+		# Lookup for Input fails
+		/Input	Nowhere
+	}
+
+	/BadTest2 {
+		# Input is empty
+		/Input		EmptyInput
+	}
+	/EmptyInput	{ }
+
+	/BadTest3 {
+		# Input-slot is missing
+		/NoInput	Nowhere
+	}
+
+	/BadTest4 {
+		# Input's first solt has no slotname
+		/Input	FirstNoSlotName
+	}
+	/FirstNoSlotName {
+		Hello
+		/Flight "No Flight"
+	}
+
+	/FirstSlotWithUnnamedChildsTest {
+		# Input's first slot has unnamed childs - XML does not allow Element sequence on top level
+		/Input	FirstSlotWithUnnamedChilds
+	}
+	/FirstSlotWithUnnamedChilds {
+		/FirstSlot {
+			NoNamedChild1
+			NoNamedChild2
+			NoNamedChild3
+		}
+	}
+
+	/UnnamedWithinNamedTest {
+		/Input	UnnamedWithinNamed
+	}
+	/UnnamedWithinNamed {
+		/FirstSlot {
+			/Named1	NamedChild1
+			NoNamedChild
+			/Named2	NamedChild2
+		}
+	}
+	/UnnamedWithinNamedOutput "<FirstSlot><Named1>NamedChild1</Named1>\
+<Named2>NamedChild2</Named2></FirstSlot>"
+
+	/NamedWithinUnnamedTest {
+		/Input	NamedWithinUnnamed
+	}
+	/NamedWithinUnnamed {
+		/FirstSlot {
+			/UnNamed	{
+				UnnamedChild1
+				/Named	NamedChild
+				UnnamedChild2
+			}
+		}
+	}
+	/NamedWithinUnnamedOutput "<FirstSlot><UnNamed>UnnamedChild1</UnNamed>\
+<UnNamed>NamedChild</UnNamed><UnNamed>UnnamedChild2</UnNamed></FirstSlot>"
+
+	/UnnamedChildWithUnnamedChildsTest {
+		# a unnamed child should not have an unnamed child list
+		/Input	UnnamedChildWithUnnamedChilds
+	}
+	/UnnamedChildWithUnnamedChilds {
+		/FirstSlot {
+			/UnNamed	{
+				{ /Named	NamedChildOfAnUnnamedChild }
+				{
+					UnnamedChildOfAnUnnamedChild1
+					UnnamedChildOfAnUnnamedChild2
+				}
+				UnnamedChild3
+				UnnamedChild4
+			}
+		}
+	}
+	/UnnamedChildWithUnnamedChildsOutput "<FirstSlot><UnNamed><Named>NamedChildOfAnUnnamedChild\
+</Named></UnNamed><UnNamed>UnnamedChild3</UnNamed><UnNamed>UnnamedChild4</UnNamed></FirstSlot>"
+
+}

@@ -1,0 +1,174 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+	/DLL {
+		"libldapdataaccess.so"
+	}
+
+#--- Modules ------------------------------------
+	/Modules {
+		DataAccessImplsModule
+		MappersModule
+		ActionsModule
+		RenderersModule
+	}
+	/Renderers {
+		/ContextLookupRenderer Lookup
+	}
+	/Actions {
+		/CallDataAccessAction	{ CallDA }
+		/ConditionalAction	{ Cond }
+	}
+
+	/DataAccessImpls {
+
+		/LDAPDAImpl {
+			"ldapDaImplTest"
+			#"ldapSearchTest"
+
+			"ldapNirvanaTestCfg"
+			"ldapWrongBindDNTestCfg"
+			"ldapWrongBindPWTestCfg"
+			"ldapDaImplEnvTestCfg"
+			"ldapSearchTestCfg"
+			"ldapSearchTest2Cfg"
+			"ldapQueryCodedInConfiguration"
+			"SearchForGivenService"
+			"ldapEmptySearch"
+			"TimeLimitExceededTest"
+			"ldapDASearchESID"
+			"ldapDASearchHEXID"
+			"ldapDASearchUID"
+			"ldapDASearchOUuser"
+			"ldapDASearchC"
+			"ldapDASearchOUcontainer"
+			"ldapDASearchSID"
+			"ldapDASearchPEID"
+			"ldapDASearchOUcluster"
+			"ldapDASearchOTID"
+			"ldapDASearchUserGAGA"
+			/"ldapDASearchO"
+			{
+				"ldapDASearchONoMapping"
+				"ldapDASearchOPlainBinary"
+			}
+		}
+		/LDAPCompareDAImpl {
+			"ldapCompareTest"
+			"ldapCompareTest1"
+			"ldapDACompareUserGAGA"
+		}
+		/LDAPModifyDAImpl {
+			"ldapModifyTest"
+			"ldapModifyUIDTest"
+			"ldapDAModifyUserGAGA"
+		}
+		/LDAPAddDAImpl {
+			"ldapAddTest"
+			"ldapDAAddUserGAGA"
+		}
+		/LDAPDelDAImpl {
+			"ldapDelTest"
+			"ldapDADelUserGAGA"
+		}
+		/MapperTestDAImpl {
+			"ListMapperTestDA"
+		}
+	}
+
+	/Mappers {
+		/Input {
+			/Mapper {
+				"ldapNirvanaTestCfg"
+				"ldapWrongBindDNTestCfg"
+				"ldapWrongBindPWTestCfg"
+				"ldapSearchTestCfg"
+				"ldapSearchTest2Cfg"
+				"ldapQueryCodedInConfiguration"
+				"SearchForGivenService"
+				"TimeLimitExceededTest"
+				"ldapCompareTest"
+				"ldapCompareTest1"
+				"ldapModifyTest"
+				"ldapAddTest"
+				"ldapDelTest"
+				"ldapDASearchESID"
+				"ldapDASearchHEXID"
+				"ldapDASearchUID"
+				"ldapDASearchOUuser"
+				"ldapDASearchO"
+				"ldapDASearchONoMapping"
+				"ldapDASearchOPlainBinary"
+				"ldapDASearchC"
+				"ldapDASearchOUcontainer"
+				"ldapDASearchSID"
+				"ldapDASearchPEID"
+				"ldapDASearchOUcluster"
+				"ldapDASearchOTID"
+				"ldapModifyUIDTest"
+				"ldapDADelUserGAGA"
+				"ldapDASearchUserGAGA"
+				"ldapDAAddUserGAGA"
+				"ldapDAModifyUserGAGA"
+				"ldapDACompareUserGAGA"
+				"ListMapperTestDA"
+			}
+			/LDAPParamMapper {
+				"ldapDaImplEnvTestCfg"
+				"ldapEmptySearch"
+			}
+		}
+		/Output {
+			/Mapper {
+				"ldapNirvanaTestCfg"
+				"ldapWrongBindDNTestCfg"
+				"ldapWrongBindPWTestCfg"
+				"ldapAddTest"
+				"ldapDelTest"
+				"ldapDADelUserGAGA"
+				"ldapDAAddUserGAGA"
+			}
+			/LDAPListMapper {
+				"ldapDaImplEnvTestCfg"
+				"ldapSearchTestCfg"
+				"ldapSearchTest2Cfg"
+				"ldapQueryCodedInConfiguration"
+				"SearchForGivenService"
+				"ldapEmptySearch"
+				"ldapCompareTest"
+				"ldapCompareTest1"
+				"ldapModifyTest"
+				"ldapDASearchESID"
+				"ldapDASearchHEXID"
+				"ldapDASearchUID"
+				"ldapDASearchOUuser"
+				"ldapDASearchO"
+				"ldapDASearchONoMapping"
+				"ldapDASearchOPlainBinary"
+				"ldapDASearchC"
+				"ldapDASearchOUcontainer"
+				"ldapDASearchSID"
+				"ldapDASearchPEID"
+				"ldapDASearchOUcluster"
+				"ldapDASearchOTID"
+				"ldapModifyUIDTest"
+				"ldapDASearchUserGAGA"
+				"ldapDAModifyUserGAGA"
+				"ldapDACompareUserGAGA"
+			}
+			/LDAPListWithPrimaryKeyMapper
+			{
+				"ListMapperTestDA"
+			}
+			/NameUsingOutputMapper {
+				TimeLimitExceededTest
+			}
+		}
+	}
+}

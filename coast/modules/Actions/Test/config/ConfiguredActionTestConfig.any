@@ -1,0 +1,1468 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/RunOnly {
+	}
+	/RunTestCases {
+		/DispatchTest {
+			/SessionStore {
+				/XY			Test
+				/Redirect	SwitchAction1
+				/SwitchOnXY {
+					/Switch {
+						/ContextLookupName	"XY"
+						/Case	{
+							/Test		"OkAction"
+						}
+						/Default	"NotOKAction"
+					}
+				}
+				/OkAction	{
+					"TestActionOk"
+				}
+				/NotOkAction {
+					"WrongResult"
+				}
+			}
+			/TheAction {
+				{ /RDispatch {
+					/Renderer	{ /Lookup SwitchOnXY }
+				} }
+			}
+			/ExpectedToken	TestActionOk
+		}
+
+		/CallRDActionWithoutConfig {
+			/Query {
+				/fields {
+					/TheTestField	"hank"
+				}
+			}
+			/SessionStore {
+				/XY			Test
+				/Redirect	SwitchAction1
+				/SwitchOnXY {
+					/Switch {
+						/ContextLookupName	"XY"
+						/Case	{
+							/Test		"CheckNotEmpty"
+						}
+						/Default	"NotOKAction"
+					}
+				}
+
+				/NotOkAction {
+					"WrongResult"
+				}
+			}
+			/TheAction {
+				{ /RDispatch {
+					/Renderer	{ /Lookup SwitchOnXY }
+				} }
+			}
+			/ExpectedToken	CheckNotEmpty  # This is set by RendererDispatchAction
+			/ExpectedResult 0			   # If there is no config available.
+		}
+
+		/DispatchTestTokenIsNeverChangedHandling {
+			/UseConfig DispatchTest
+			/Replace {
+				/SessionStore.OkAction {
+					{ /StoreAction {
+						/Destination {
+							/Slot    Test
+						}
+						/Value TestOk
+					} }
+				}
+				/ExpectedToken	TheAction
+				/Result {
+					/TmpStore {
+						/Test TestOk
+					}
+				}
+			}
+		}
+		/TokenDispatchingTest {
+			/SessionStore {
+				/XY			Test
+				/SwitchOnXY {
+					/Switch {
+						/ContextLookupName	"XY"
+						/Case	{
+							/Test		"GoOkPage"
+						}
+						/Default	"GoNotOkPage"
+					}
+				}
+			}
+			/TheAction {
+				/RDispatch { { /Lookup SwitchOnXY } }
+			}
+			/ExpectedToken		GoOkPage
+		}
+		/CompactDispatchingTest {
+			/SessionStore {
+				/XY			Test
+				/DoTheAction {
+					/RDispatch {
+						{ /Switch {
+							/ContextLookupName	"XY"
+							/Case	{
+								/Test		"GoOkPage"
+							}
+							/Default	"GoNotOkPage"
+						} }
+					}
+				}
+			}
+			/TheAction {
+				/RDispatch { DoTheAction }
+			}
+			/ExpectedToken		GoOkPage
+		}
+		/ConditionalActionTrue {
+			/TheAction {
+				{ /Condition {
+					/Call	{
+						/ConfiguredTestAction {
+							/ActionToken	"Hello"
+							/RetValue		1
+						}
+					}
+					/True {
+						/ConfiguredTestAction {
+							/ActionToken	"ActionOk"
+							/RetValue		1
+						}
+					}
+					/False { ActionNotOk }
+				} }
+			}
+			/ExpectedToken	ActionOk
+		}
+		/ConditionalActionTrueWithJustAToken {
+			/TheAction {
+				{ /Condition {
+					/Call	{
+						/ConfiguredTestAction {
+							/ActionToken	"Hello"
+							/RetValue		1
+						}
+					}
+					/True {	ActionOk }
+					/False { ActionNotOk }
+				} }
+			}
+			/ExpectedToken	ActionOk
+		}
+		/ConditionalActionTrueReturnsFalse {
+			/TheAction {
+				{ /Condition {
+					/Call	{
+						/ConfiguredTestAction {
+							/ActionToken	"Hello"
+							/RetValue		1
+						}
+					}
+					/True {
+						/ConfiguredTestAction {
+							/ActionToken	"ActionOk"
+							/RetValue		0
+						}
+					}
+					/False { ActionNotOk }
+				} }
+			}
+			/ExpectedToken	ActionOk
+			/ExpectedResult	0
+		}
+		/ConditionalActionTrueNotDefined {
+			/TheAction {
+				{ /Condition {
+					/Call	{
+						/ConfiguredTestAction {
+							/ActionToken	"Hello"
+							/RetValue		1
+						}
+					}
+					/False { ActionNotOk }
+				} }
+			}
+			/ExpectedToken	Hello
+		}
+		/ConditionalActionFalse {
+			/TheAction {
+				{ /Condition {
+					/Call	{
+						/ConfiguredTestAction {
+							/ActionToken	"Hello"
+							/RetValue		0
+						}
+					}
+					/True {	ActionOk }
+					/False {
+						/ConfiguredTestAction {
+							/ActionToken	"ActionNotOk"
+							/RetValue		1
+						}
+					}
+				} }
+			}
+			/ExpectedToken	ActionNotOk
+		}
+		/ConditionalActionFalseWithJustAToken {
+			/TheAction {
+				{ /Condition {
+					/Call	{
+						/ConfiguredTestAction {
+							/ActionToken	"Hello"
+							/RetValue		0
+						}
+					}
+					/True {	ActionOk }
+					/False { ActionNotOk }
+				} }
+			}
+			/ExpectedToken	ActionNotOk
+		}
+		/ConditionalActionFalseReturnsFalse {
+			/TheAction {
+				{ /Condition {
+					/Call	{
+						/ConfiguredTestAction {
+							/ActionToken	"Hello"
+							/RetValue		0
+						}
+					}
+					/True {	ActionOk }
+					/False {
+						/ConfiguredTestAction {
+							/ActionToken	"ActionNotOk"
+							/RetValue		0
+						}
+					}
+				} }
+			}
+			/ExpectedToken	ActionNotOk
+			/ExpectedResult	0
+		}
+		/ConditionalActionFalseNotDefined {
+		# Returns true even if the Actionscript in /Call returns false
+			/TheAction {
+				{ /Condition {
+					/Call	{
+						/ConfiguredTestAction {
+							/ActionToken	"Hello"
+							/RetValue		0
+						}
+					}
+					/True {	ActionOk }
+				} }
+			}
+			/ExpectedToken	Hello
+		}
+		/NotEmptyCheckActionTestFails {
+			/Query {
+				/fields {
+					/TheTestField	"  "
+				}
+			}
+			/TheAction {
+				/CheckNotEmpty {
+					/FieldName	TheTestField
+				}
+			}
+			/ExpectedResult 0
+			/Result {
+				/TmpStore {
+					/Error	NotEmptyCheckAction
+					/ErrorData	TheTestField
+				}
+			}
+		}
+		/NotEmptyCheckActionTestWithSearchBaseFails {
+			/SessionStore {
+				/Path {
+					/TheTestField	"  "
+				}
+			}
+			/TheAction {
+				/CheckNotEmpty {
+					/FieldName	TheTestField
+					/SearchBase	"Path"
+				}
+			}
+			/ExpectedResult 0
+			/Result {
+				/TmpStore {
+					/Error	NotEmptyCheckAction
+					/ErrorData	TheTestField
+				}
+			}
+		}
+		/NotEmptyCheckActionTestWithSearchBaseSucceeds {
+			/SessionStore {
+				/Path {
+					/IsStill {
+						/Longer {
+							/TheOtherField	"abc"
+						}
+					}
+				}
+			}
+			/TheAction {
+				/CheckNotEmpty {
+					/FieldName	TheOtherField
+					/SearchBase	"Path.IsStill.Longer"
+				}
+			}
+			/ExpectedResult 1
+		}
+		/NotEmptyCheckActionTestWithSearchBaseFailsAgain {
+			/SessionStore {
+				/Path {
+					/IsStill {
+						/Longer {
+							/TheOtherField	""
+						}
+					}
+				}
+			}
+			/TheAction {
+				/CheckNotEmpty {
+					/FieldName	TheOtherField
+					/SearchBase	"Path.IsStill.Longer"
+				}
+			}
+			/ExpectedResult 0
+			/Result {
+				/TmpStore {
+					/Error	NotEmptyCheckAction
+					/ErrorData	TheOtherField
+				}
+			}
+		}
+		/NotEmptyCheckActionTestWithRenderedSearchBaseFails {
+			/SessionStore {
+				/Path {
+					/IsStill {
+						/Longer {
+							/TheOtherField	""
+						}
+					}
+				}
+				/BaseName	"Path.IsStill.Longer"
+			}
+			/TheAction {
+				/CheckNotEmpty {
+					/FieldName	TheOtherField
+					/SearchBase	{ /Lookup BaseName }
+				}
+			}
+			/ExpectedResult 0
+			/Result {
+				/TmpStore {
+					/Error	NotEmptyCheckAction
+					/ErrorData	TheOtherField
+				}
+			}
+		}
+		/NotEmptyCheckActionTestWithRenderedSearchBaseSucceeds {
+			/SessionStore {
+				/Path {
+					/IsStill {
+						/Longer {
+							/TheOtherField	"u"
+						}
+					}
+				}
+				/BaseName	"Path.IsStill.Longer"
+			}
+			/TheAction {
+				/CheckNotEmpty {
+					/FieldName	TheOtherField
+					/SearchBase	{ /Lookup BaseName }
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+			}
+		}
+		/NotEmptyCheckActionTestWithRenderedFieldNameFails {
+			/SessionStore {
+				/Path {
+					/IsStill {
+						/Longer {
+							/TheOtherField	""
+						}
+					}
+				}
+				/FieldName	TheOtherField
+			}
+			/TheAction {
+				/CheckNotEmpty {
+					/FieldName	{ /Lookup FieldName }
+					/SearchBase	"Path.IsStill.Longer"
+				}
+			}
+			/ExpectedResult 0
+			/Result {
+				/TmpStore {
+					/Error	NotEmptyCheckAction
+					/ErrorData	TheOtherField
+				}
+			}
+		}
+		/NotEmptyCheckActionTestWithRenderedFieldNameSucceeds {
+			/SessionStore {
+				/Path {
+					/IsStill {
+						/Longer {
+							/TheOtherField	"u"
+						}
+					}
+				}
+				/FieldName	TheOtherField
+			}
+			/TheAction {
+				/CheckNotEmpty {
+					/FieldName	{ /Lookup FieldName }
+					/SearchBase	"Path.IsStill.Longer"
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+			}
+		}
+		/NotEmptyCheckActionTestFailsBecauseWrongFieldName {
+			/Query {
+				/fields {
+					/TheTestField	"X"
+				}
+			}
+			/TheAction {
+				/CheckNotEmpty {
+					/FieldName	TheTestfield
+				}
+			}
+			/ExpectedResult 0
+			/Result {
+				/TmpStore {
+					/Error	NotEmptyCheckAction
+					/ErrorData	TheTestfield
+				}
+			}
+		}
+		/NotEmptyCheckActionTestSucceeds {
+			/Query {
+				/fields {
+					/TheTestField	"X"
+				}
+			}
+			/TheAction {
+				/CheckNotEmpty {
+					/FieldName	TheTestField
+				}
+			}
+			/Result {
+			}
+		}
+		/NotEmptyCheckActionTestDontFallBack {
+			/Query {
+				/fields {
+					/TheTestField	"X"
+				}
+			}
+			/SessionStore {
+				/RoleStore {
+				}
+			}
+			/TheAction {
+				/CheckNotEmpty {
+					/FieldName	TheTestField
+					/SearchBase	RoleStore.TheTestField
+				}
+			}
+			/ExpectedResult 0
+			/Result {
+				/TmpStore {
+					/Error	NotEmptyCheckAction
+					/ErrorData	TheTestField
+				}
+			}
+		}
+		/CheckEmailAddressSucceeds1 {
+			/Query {
+				/fields {
+					/Email	"X.Y@y.x "
+				}
+			}
+			/TheAction {
+				/CheckEmailAddress {
+					/FieldName	Email
+				}
+			}
+			/Result {
+			}
+		}
+		/CheckEmailAddressSucceeds2 {
+			/Query {
+				/fields {
+					/Email	"XY@y.x   "
+				}
+			}
+			/TheAction {
+				/CheckEmailAddress {
+					/FieldName	Email
+				}
+			}
+			/Result {
+			}
+		}
+		/CheckEmailAddressSucceeds3 {
+			/Query {
+				/fields {
+					/Email	"X@y.z"
+				}
+			}
+			/TheAction {
+				/CheckEmailAddress {
+					/FieldName	Email
+				}
+			}
+			/Result {
+			}
+		}
+		/CheckEmailAddressFails1 {
+			/Query {
+				/fields {
+					/Email	"Xx.x"
+				}
+			}
+			/TheAction {
+				/CheckEmailAddress {
+					/FieldName	Email
+				}
+			}
+			/Result {
+				/TmpStore {
+					/Error	EmailAddressCheckAction
+					/ErrorData	Email
+				}
+			}
+			/ExpectedResult 0
+		}
+		/CheckEmailAddressFails2 {
+			/Query {
+				/fields {
+					/Email	"X@xx"
+				}
+			}
+			/TheAction {
+				/CheckEmailAddress {
+					/FieldName	Email
+				}
+			}
+			/Result {
+				/TmpStore {
+					/Error	EmailAddressCheckAction
+					/ErrorData	Email
+				}
+			}
+			/ExpectedResult 0
+		}
+		/CheckEmailAddressFails3 {
+			/Query {
+				/fields {
+					/Email	"@."
+				}
+			}
+			/TheAction {
+				/CheckEmailAddress {
+					/FieldName	Email
+				}
+			}
+			/Result {
+				/TmpStore {
+					/Error	EmailAddressCheckAction
+					/ErrorData	Email
+				}
+			}
+			/ExpectedResult 0
+		}
+		/CheckEmailAddressFails4 {
+			/Query {
+				/fields {
+					/Email	"A Name@a.b"
+				}
+			}
+			/TheAction {
+				/CheckEmailAddress {
+					/FieldName	Email
+				}
+			}
+			/Result {
+				/TmpStore {
+					/Error	EmailAddressCheckAction
+					/ErrorData	Email
+				}
+			}
+			/ExpectedResult 0
+		}
+		/CheckEmailAddressFails5 {
+			/Query {
+				/fields {
+					/Email	"A.Name@a .b"
+				}
+			}
+			/TheAction {
+				/CheckEmailAddress {
+					/FieldName	Email
+				}
+			}
+			/Result {
+				/TmpStore {
+					/Error	EmailAddressCheckAction
+					/ErrorData	Email
+				}
+			}
+			/ExpectedResult 0
+		}
+		/CheckEmailAddressFails6 {
+			/Query {
+				/fields {
+					/Email	"A.Name@a. b"
+				}
+			}
+			/TheAction {
+				/CheckEmailAddress {
+					/FieldName	Email
+				}
+			}
+			/Result {
+				/TmpStore {
+					/Error	EmailAddressCheckAction
+					/ErrorData	Email
+				}
+			}
+			/ExpectedResult 0
+		}
+		/CheckEmailAddressFails7 {
+			/Query {
+				/fields {
+					/Email	"A.Name@.a.b"
+				}
+			}
+			/TheAction {
+				/CheckEmailAddress {
+					/FieldName	Email
+				}
+			}
+			/Result {
+				/TmpStore {
+					/Error	EmailAddressCheckAction
+					/ErrorData	Email
+				}
+			}
+			/ExpectedResult 0
+		}
+		/CheckEmailAddressFails8 {
+			/Query {
+				/fields {
+					/Email	"A.Name@."
+				}
+			}
+			/TheAction {
+				/CheckEmailAddress {
+					/FieldName	Email
+				}
+			}
+			/Result {
+				/TmpStore {
+					/Error	EmailAddressCheckAction
+					/ErrorData	Email
+				}
+			}
+			/ExpectedResult 0
+		}
+		/StoreActionTest {
+			/TheAction {
+				{ /StoreAction {
+					/Destination {
+						/Slot    Test
+					}
+					/Value { Test  It Now }
+				} }
+				{ /StoreAction {
+					/Destination {
+						/Store   Session
+						/Slot    Test
+					}
+					/Value {
+						This is rendered
+					}
+				} }
+			}
+			/Result {
+				/TmpStore {
+					/Test   TestItNow
+				}
+				/SessionStore {
+					/RoleStore *
+					/Test Thisisrendered
+				}
+			}
+			/ExpectedResult 1
+		}
+		/StoreActionFail1Test {
+			/TheAction {
+				{ /StoreAction {
+					/Value { Test  It Now }
+				} }
+			}
+			/Result {
+			}
+			/ExpectedResult 0
+		}
+		/StoreActionFail2Test {
+			/TheAction {
+				{ /StoreAction {
+					/Destination {
+						/Store   Session
+						/Slot    Test
+					}
+				} }
+			}
+			/Result {
+			}
+			/ExpectedResult 0
+		}
+		/ListActionTest {
+			/SessionStore {
+				/NameTheList	TheList
+				/TheList	{ 2 13 31 -17 5 }
+				/ListEntry LoopIndex
+			}
+			/TheAction {
+				{ /List {
+					/ListData	{ /Lookup	NameTheList }
+					/EntryStore	{ /Lookup	ListEntry }
+					/EntryAction	{
+						{ /LoopTestAction * }
+					}
+				} }
+			}
+			/Result {
+				/TmpStore {
+					/LoopIndex	5
+					/LoopResult	{ 2 13 31 -17 5 }
+				}
+			}
+		}
+		/ListActionTestWithIndexAndSlotname {
+			/SessionStore {
+				/NameTheList	TheList
+				/TheList	{
+					/A	2
+					/B	13
+					/C	-17
+				}
+				/ListEntry LoopIndex
+			}
+			/TheAction {
+				{ /List {
+					/ListData	{ /Lookup	NameTheList }
+					/EntryStore	{ /Lookup	ListEntry }
+					/SlotnameSlot	EntryKey
+					/IndexSlot		EntryIndex
+					/EntryAction	{
+						{ /Copy {
+							/Destination {
+								/Slot	{ "ActionResult" { /Lookup EntryKey } }
+							}
+							/CopyList {
+								/EntryIndex		Index
+								/LoopIndex		Value
+							}
+						} }
+					}
+				} }
+			}
+			/Result {
+				/TmpStore {
+					/LoopIndex	-17
+					/ActionResultA	{
+						/Index	0
+						/Value	2
+					}
+					/ActionResultB	{
+						/Index	1
+						/Value	13
+					}
+					/ActionResultC	{
+						/Index	2
+						/Value	-17
+					}
+				}
+			}
+		}
+		/LoopActionTest {
+			/SessionStore {
+				/LoopStart	-4
+				/LoopEnd	3
+			}
+			/TheAction {
+				{ /Loop {
+					/Start	{ /Lookup	LoopStart }
+					/End	{ /Lookup	LoopEnd }
+					/IndexSlot	{ Loop Index }
+					/Action	{
+						{ /LoopTestAction * }
+					}
+				} }
+			}
+			/Result {
+				/TmpStore {
+					/LoopIndex	3
+					/LoopResult	{
+						-4 -3 -2 -1 0 1 2 3
+					}
+				}
+			}
+		}
+		/LoopActionWithDontBreakoutTest {
+			/SessionStore {
+				/LoopStart	0
+				/LoopEnd	6
+			}
+			/TheAction {
+				{ /Loop {
+					/BreakOutOfLoop	0
+					/Start	{ /Lookup	LoopStart }
+					/End	{ /Lookup	LoopEnd }
+					/IndexSlot	{ Loop Index }
+					/Action	{
+						{ /FailLoopTestAction * }
+					}
+				} }
+			}
+			/Result {
+				/TmpStore {
+					/LoopIndex	6
+					/LoopResult	{
+						0 1 2 3 4 5
+					}
+				}
+			}
+		}
+		/LoopActionWithDoBreakoutTest {
+			/SessionStore {
+				/LoopStart	5
+				/LoopEnd	10
+			}
+			/TheAction {
+				{ /Loop {
+					/BreakOutOfLoop	1
+					/Start	{ /Lookup	LoopStart }
+					/End	{ /Lookup	LoopEnd }
+					/IndexSlot	{ Loop Index }
+					/Action	{
+						{ /FailLoopTestAction * }
+					}
+				} }
+			}
+			/ExpectedResult 0
+			/Result {
+				/TmpStore {
+					/LoopIndex	8
+					/LoopResult	{
+						5 6 7
+					}
+				}
+			}
+		}
+		/ReverseLoopActionTest {
+			/SessionStore {
+				/LoopStart	3
+				/LoopEnd	-4
+			}
+			/TheAction {
+				{ /Loop {
+					/Start	{ /Lookup	LoopStart }
+					/End	{ /Lookup	LoopEnd }
+					/IndexSlot	{ Loop Index }
+					/Action	{
+						{ /LoopTestAction * }
+					}
+				} }
+			}
+			/Result {
+				/TmpStore {
+					/LoopIndex	-4
+					/LoopResult	{
+						3 2 1 0 -1 -2 -3 -4
+					}
+				}
+			}
+		}
+		/RemoveActionFailNoSlotTest {
+			/TheAction {
+				{ /Remove {
+				} }
+			}
+			/ExpectedResult	0
+			/Result {
+			}
+		}
+		/RemoveActionFailNoSlotButStoreTest {
+			/RoleStore {
+			}
+			/TheAction {
+				{ /Remove {
+					/Store	Role
+				} }
+			}
+			/ExpectedResult	0
+			/Result {
+			}
+		}
+		/RemoveActionTest {
+			/TmpStore	{
+				/Stay	here
+				/Remove	me
+				/List {
+					/Remove	me
+					/Stay	here
+				}
+				/List2 {
+					/Remove	me
+				}
+				/List3 {
+					/Stays "here"
+					/Remove "me too"
+				}
+			}
+			/RoleStore {
+				/Remove	me
+				/Stay	here
+				/List {
+					/Remove	me
+					/Stay	here
+				}
+				/RemoveMe	too
+				/List2 {
+					/"Sub 1" {
+						/Remove	me
+					}
+				}
+				/"Remove me"	three
+			}
+			/TheAction {
+				{ /Remove {
+					/Slot	List.Remove
+				} }
+				{ /Remove {
+					/Slot	List2.Remove
+				} }
+				{ /Remove {
+					/Slot	Remove
+				} }
+				{ /Remove {
+					/Slot	NotExisting
+				} }
+				{ /Remove {
+					/Slot	Beware.Of.Automatic.Construction.Of.NotExisting
+				} }
+				{ /Remove {
+					/Store	Role
+					/Slot	List.Remove
+				} }
+				{ /Remove {
+					/Store	Role
+					/Slot	RemoveMe
+				} }
+				{ /Remove {
+					/Store	Role
+					/Slot	Remove
+				} }
+				{ /Remove {
+					/Store	Role
+					/Slot	"Remove me"
+				} }
+				{ /Remove {
+					/Store	Role
+					/Slot	"List2.Sub 1.Remove"
+				} }
+				{ /Remove {
+					/Slot { List3 "." Remove } # Render this
+				} }
+			}
+			/Result {
+				/TmpStore {
+					/Stay	here
+					/List {
+						/Stay	here
+					}
+					/List2 {
+					}
+					/List3 {
+						/Stays 	here
+					}
+				}
+				/RoleStore {
+					/Stay	here
+					/List {
+						/Stay	here
+					}
+					/List2 {
+						/"Sub 1" {
+						}
+					}
+				}
+			}
+		}
+		/RemoveActionIndexedTest {
+			/TmpStore	{
+				/Stay	here		# index 0
+				/Remove	me			# index 1
+				/List {				# index 2
+					/Remove	me		# index 2.0
+					RemoveMeToo		# index 2.1
+					/Stay	here	# index 2.2
+					/RemoveMeToo a	# index 2.3
+				}
+				RemoveMeAlso		# index 3
+			}
+			/TheAction {
+				{ /Remove {
+					/Slot	":3"
+				} }
+				{ /Remove {
+					/Slot	":2:1"
+				} }
+				{ /Remove {
+					/Slot	"List:0"
+				} }
+				{ /Remove {
+					/Slot	":2.RemoveMeToo"
+				} }
+				{ /Remove {
+					/Slot	":1"
+				} }
+			}
+			/Result {
+				/TmpStore {
+					/Stay	here		# index 0
+					/List {				# index 2
+						/Stay	here	# index 2.1
+					}
+				}
+			}
+		}
+		/CopyActionTests {
+			/TmpStore	{
+				/TSource	   ValueTempStoreSource
+				/TTop {
+					/Slot1		ValueTempStoreLevel2
+					/Slot2 {
+						abc
+						/Level3		ValueTempStoreLevel3
+						def
+					}
+				}
+				/"1 Jan 2000 12:00AM" {
+					/"a.b:c:0"	22
+				}
+			}
+			/RoleStore {
+				/RSource	   ValueRoleStoreSource
+				/RTop {
+					/Slot1		ValueRoleStoreLevel2
+				}
+			}
+			/TheAction {
+				{ /CopyContextAction	{
+					/Destination {
+						/Slot			Context2TempStoreResult
+					}
+					/CopyList {
+						/TSource		FromTempStore
+						/RSource		FromRoleStore
+						/TTop.Slot1		Level2FromTempStore
+						/RTop.Slot1		Level2FromRoleStore
+						/NotThere		NotThere
+					}
+				} }
+				{ /CopyContextAction	{
+					/Destination {
+						/Slot			DefaultDelimIndexDelimTest
+					}
+					/CopyList {
+						/"TTop.Slot2:1"	Level3FromTempStore
+					}
+					/Delim				"."
+					/IndexDelim			":"
+				} }
+				{ /CopyContextAction	{
+					/Destination {
+						/Slot			DelimTest
+					}
+					/CopyList {
+						/"1 Jan 2000 12:00AM/a.b:c:0"	DateTest
+					}
+					/Delim		"/"
+					/IndexDelim	"#"
+				} }
+			}
+			/Result {
+				/TmpStore {
+					/Context2TempStoreResult {
+						/FromTempStore			ValueTempStoreSource
+						/FromRoleStore			ValueRoleStoreSource
+						/Level2FromTempStore	ValueTempStoreLevel2
+						/Level2FromRoleStore	ValueRoleStoreLevel2
+						/NotThere				*
+					}
+					/DefaultDelimIndexDelimTest {
+						/Level3FromTempStore	ValueTempStoreLevel3
+					}
+					/DelimTest {
+						/DateTest				22
+					}
+				}
+			}
+		}
+		/TransitionDispatchActionSuccessTest {
+			/TmpStore {
+				/TransitionSlot {
+					TransitionToDispatch
+				}
+				/TransitionToDispatch {
+					/StoreAction {
+						/Destination {
+							/Slot	foo
+						}
+						/Value		Bar
+					}
+				}
+			}
+			/TheAction {
+				/RDispatch {
+					TransitionSlot
+				}
+				/TransitionDispatchAction *
+			}
+			/ExpectedToken	TransitionToDispatch
+			/ExpectedResult	1
+			/Result {
+				/TmpStore {
+					/foo	Bar
+				}
+			}
+		}
+		/TransitionDispatchActionFailTest {
+			/TmpStore {
+			}
+			/TheAction {
+				/TransitionDispatchAction *
+			}
+			/ExpectedToken	TheAction
+			/ExpectedResult	0
+		}
+
+		/ExistsCheckActionTest_Suceess {
+			/TmpStore {
+				/Basement {
+					/ToolCase {
+						/ScrewDriver "Phillips"
+					}
+				}
+				/Place	"ToolCase"
+				/Tool	"ScrewDriver"
+			}
+			/TheAction {
+				/ExistsCheckAction {
+					"Basement."
+					{ /ContextLookupRenderer Place } "."
+					{ /ContextLookupRenderer Tool }
+				}
+			}
+			/ExpectedResult 1
+		}
+
+		# The following will fail, because the rendered slot does not exist
+		/ExistsCheckActionTest_Failure {
+			/TmpStore {
+				/Basement {
+					/ToolCase {
+						/ScrewDriver "Phillips"
+					}
+				}
+				/Place	"ToolCase"
+				/Tool	"ScrewDriver"
+			}
+			/TheAction {
+				/ExistsCheckAction {
+					"Basement."
+					{ /ContextLookupRenderer Place } "."
+					{ /ContextLookupRenderer Tool } ".Phillips"
+				}
+			}
+			/ExpectedResult 0
+		}
+
+		/CompareActionTest_LiteralStringSuccess {
+			/TmpStore {
+				/Basement {
+					/ToolCase {
+						/ScrewDriver "Phillips"
+					}
+				}
+			}
+			/TheAction {
+				/CompareAction {
+					/RenderVal1		{ /ContextLookupRenderer Basement.ToolCase.ScrewDriver }
+					/RenderVal2		"Phillips"
+				}
+			}
+			/ExpectedResult 1
+		}
+
+		/CompareActionTest_LiteralStringFailure {
+			/TmpStore {
+				/Name		Phil
+				/BodyPart	ears
+				/Brand		Phillips
+			}
+			/TheAction {
+				/CompareAction {
+					/RenderVal1		{ { /ContextLookupRenderer Name } { /ContextLookupRenderer BodyPart } }
+					/RenderVal2		{ /ContextLookupRenderer Brand }
+				}
+			}
+			/ExpectedResult 0
+		}
+
+		/CompareActionTest_LookupDoubleSuccess {
+			/TmpStore {
+				/NumBag		MyNumbers
+				/MyNumbers {
+					/MyPi	3.1415
+				}
+				/Pi		3.1415
+			}
+			/TheAction {
+				/CompareAction {
+					/LookupPath1	{ { /ContextLookupRenderer NumBag } ".MyPi" }
+					/LookupPath2	Pi
+					/CompareAs		Double
+				}
+			}
+			/ExpectedResult 1
+		}
+
+		/CompareActionTest_LookupDoubleFailure {
+			/TmpStore {
+				/MyDouble	12.3942020
+				/YourNumbers{
+					/YourDouble	29.2394034
+				}
+			}
+			/TheAction {
+				/CompareAction {
+					/LookupPath1	MyDouble
+					/LookupPath2	YourNumbers.YourDouble
+					/CompareAs		Double
+				}
+			}
+			/ExpectedResult 0
+		}
+
+		/CompareActionTest_LookupLongSuccess {
+			/TmpStore {
+				/NumBag		MyNumbers
+				/MyNumbers {
+					/MyLong	399020
+				}
+				/SomeOtherLong 399020
+			}
+			/TheAction {
+				/CompareAction {
+					/LookupPath1	SomeOtherLong
+					/LookupPath2	{ { /ContextLookupRenderer NumBag } ".MyLong" }
+					/CompareAs		Long
+				}
+			}
+			/ExpectedResult 1
+		}
+
+		/CompareActionTest_LookupLongFailure {
+			/TmpStore {
+				/A	22
+				/B	23
+			}
+			/TheAction {
+				/CompareAction {
+					/LookupPath1	A
+					/LookupPath2	B
+					/CompareAs		Long
+				}
+			}
+			/ExpectedResult 0
+		}
+
+		/CompareActionTest_LookupBoolSuccess {
+			/TmpStore {
+				/MyFalseBool	false
+				/YourBools {
+					/one		true
+					/two		false
+				}
+			}
+			/TheAction {
+				/CompareAction {
+					/LookupPath1	MyFalseBool
+					/LookupPath2	YourBools.two
+					/CompareAs		Bool
+				}
+			}
+			/ExpectedResult 1
+		}
+
+		/CompareActionTest_LookupBoolFailure {
+			/TmpStore {
+				/MyTrueBool		1
+				/YourBools {
+					/one		true
+					/two		false
+				}
+			}
+			/TheAction {
+				/CompareAction {
+					/LookupPath1	MyTrueBool
+					/LookupPath2	YourBools.one
+					/CompareAs		Bool
+				}
+			}
+			/ExpectedResult 0
+		}
+
+		/CompareActionTest_LookupAnySuccess {
+			/TmpStore {
+				/MyAny {
+					/Inner {
+						/A	1
+						/B	hello
+						/C	{ "a" "b" "c" }
+					}
+				}
+				/YourAny {
+					/Outer {
+						/A	1
+						/B	hello
+						/C	{ "a" "b" "c" }
+					}
+				}
+
+				/Where	Outer
+			}
+			/TheAction {
+				/CompareAction {
+					/LookupPath1	MyAny.Inner
+					/LookupPath2	{ "YourAny." { /ContextLookupRenderer Where } }
+					/CompareAs		Anything
+				}
+			}
+			/ExpectedResult 1
+		}
+
+		/CompareActionTest_LookupAnyFailure {
+			/TmpStore {
+				/MyAny {
+					/Inner {
+						/A	1
+						/B	hello
+						/C	{ "a" "b" "c" }
+					}
+				}
+				/SomeAnyInWrongOrder {
+					/A	1
+					/B	hello
+					/C	{ "a" "c" "b" }
+				}
+			}
+			/TheAction {
+				/CompareAction {
+					/LookupPath1	MyAny.Inner
+					/LookupPath2	SomeAnyInWrongOrder
+					/CompareAs		Anything
+				}
+			}
+			/ExpectedResult 0
+		}
+
+		/StoreActionTest_RenderValue {
+			/TmpStore {
+				/SpellPart	"abra"
+			}
+			/TheAction {
+				/StoreAction {
+					/Destination {
+						/Slot	Spell
+					}
+					/Value {
+						{ /ContextLookupRenderer SpellPart }
+						"kad"
+						{ /ContextLookupRenderer SpellPart }
+					}
+					# Rendering is default
+					# /DoRender 1
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore {
+					/Spell	"abrakadabra"
+				}
+			}
+		}
+
+		/StoreActionTest_StoreAsIs {
+			/TheAction {
+				/StoreAction {
+					/Destination {
+						/Slot	MyClone
+					}
+					/Value {
+						/A	"One"
+						/B {
+							/C 2
+						}
+						"Three"
+					}
+					/DoRender 0
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore {
+					/MyClone {
+						/A	"One"
+						/B {
+							/C 2
+						}
+						"Three"
+					}
+				}
+			}
+		}
+	}
+}

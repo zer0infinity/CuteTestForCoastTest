@@ -1,0 +1,46 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/simpleDNS2IPTest {
+		/ip-plus {
+			/name	"ns1.ip-plus.net"
+			/ip		"164.128.36.34"
+		}
+		/fortify {
+			/name	"www.fortify.net"
+			/ip		"198.65.143.195"
+		}
+		/noHostToBeFound {
+			/name	"NotExisting.Nowhere.NoDomain"
+			/ip		"127.0.0.1"
+			/ip		"172.16.2.5"
+		}
+	}
+	/simpleIP2DNSTest {
+		/hsr {
+			/name	"www.hsr.ch"
+			/ip		"152.96.37.60"
+		}
+# a bit unreliable
+#		/ubs {
+#			/name	"www.ubs.com"
+#			/ip		"194.69.181.46"
+#		}
+		/swisscom {
+			/name	"www.swisscom.com"
+			/ip		"138.190.1.60"
+		}
+		/fortify	%simpleDNS2IPTest.fortify
+		/localhost {
+			/name	"localhost"
+			/ip		"127.0.0.1"
+		}
+	}
+}

@@ -1,0 +1,68 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+#################################################################################
+#
+#	Module List definition
+#	List of modules that are getting configured during GlobalInit and ReInit
+#
+#################################################################################
+	/DLL {
+		"libdataaccess.so"
+	}
+
+	/Modules {
+		DataAccessImplsModule
+		MappersModule
+		ActionsModule
+	}
+
+	/Actions {
+		/CallDataAccessAction	{ CallDA }
+	}
+
+	/DataAccessImpls {
+		/SybDBDAImpl {
+			/SybLocalSa {
+				SybShowDatabases
+				SybDeleteFromDatabase
+			}
+			/SybLocalTest {
+				SybSearchTest
+				SybInsertDatabases
+				SybTestTypeConversions
+				SQLErrorTest
+			}
+		}
+	}
+
+	/Mappers {
+		/Input {
+			/Mapper {
+				SybSearchTest
+				SybShowDatabases
+				SybInsertDatabases
+				SybDeleteFromDatabase
+				SybTestTypeConversions
+				SQLErrorTest
+			}
+		}
+		/Output {
+			/NameUsingOutputMapper {
+				SybSearchTest
+				SybShowDatabases
+				SybInsertDatabases
+				SybDeleteFromDatabase
+				SybTestTypeConversions
+				SQLErrorTest
+			}
+		}
+	}
+}

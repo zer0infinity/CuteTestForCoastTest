@@ -1,0 +1,114 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/ParseDNTest
+	{
+		{
+			/DN "emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+			/Result
+			{
+				/emailAddress "zuoz.hsr.ch@wildplanet.com"
+				/CN "zuoz.hsr.ch"
+				/OU "CertIssueing"
+				/O "ServerSite"
+				/L "ZH"
+				/ST "ZH"
+				/C "CH"
+			}
+          }
+	}
+	/VerifyDNTest
+	{
+		{
+			/DNFilter "emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+			/DNParts
+			{
+				/emailAddress "zuoz.hsr.ch@wildplanet.com"
+				/CN "zuoz.hsr.ch"
+				/OU "CertIssueing"
+				/O "ServerSite"
+				/L "ZH"
+				/ST "ZH"
+				/C "CH"
+			}
+			/Result	1
+        }
+		{
+			/DNFilter "emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=xCH"
+			/DNParts
+			{
+				/emailAddress "zuoz.hsr.ch@wildplanet.com"
+				/CN "zuoz.hsr.ch"
+				/OU "CertIssueing"
+				/O "ServerSite"
+				/L "ZH"
+				/ST "ZH"
+				/C "CH"
+			}
+			/Result	0
+        }
+		{
+			/DNFilter "emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.chxxxxxxxxxxxx,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=xCH"
+			/DNParts
+			{
+				/emailAddress "zuoz.hsr.ch@wildplanet.com"
+				/CN "zuoz.hsr.ch"
+				/OU "CertIssueing"
+				/O "ServerSite"
+				/L "ZH"
+				/ST "ZH"
+				/C "CH"
+			}
+			/Result	0
+        }
+		{
+			/DNFilter "emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,O=ServerSite,L=ZH,ST=ZH,C=xCH"
+			/DNParts
+			{
+				/emailAddress "zuoz.hsr.ch@wildplanet.com"
+				/CN "zuoz.hsr.ch"
+				/OU "CertIssueing"
+				/O "ServerSite"
+				/L "ZH"
+				/ST "ZH"
+				/C "CH"
+			}
+			/Result	0
+        }
+		{
+			/DNFilter ""
+			/DNParts
+			{
+				/emailAddress "zuoz.hsr.ch@wildplanet.com"
+				/CN "zuoz.hsr.ch"
+				/OU "CertIssueing"
+				/O "ServerSite"
+				/L "ZH"
+				/ST "ZH"
+				/C "CH"
+			}
+			/Result	1
+        }
+		{
+			/DNFilter ""
+			/DNParts
+			{
+			}
+			/Result	1
+        }
+		{
+			/DNFilter "emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+			/DNParts
+			{
+			}
+			/Result	0
+        }
+	}
+}

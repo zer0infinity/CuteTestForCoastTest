@@ -1,0 +1,61 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/LowerBound 0
+	/UpperBound	40
+	/DumpAnythings 1
+
+	/AppLogTest {
+		/MainSwitch	30
+		/EnableAll	40
+	}
+
+	/AppLogModule {
+		/MainSwitch	30
+		/EnableAll	40
+	}
+	/AppLogChannel {
+		/MainSwitch	30
+		/EnableAll	40
+	}
+
+	/AppLog {
+		/MainSwitch	10
+		/EnableAll	20
+	}
+	/LoggingAction {
+		/MainSwitch	30
+		/EnableAll	40
+	}
+	/Registry {
+		/MainSwitch	0
+		/EnableAll	40
+	}
+	/AliasInstaller {
+		/MainSwitch	0
+		/EnableAll	40
+	}
+	/Server {
+		/MainSwitch	0
+		/EnableAll	40
+	}
+	/AppBooter {
+		/MainSwitch	0
+		/EnableAll	40
+	}
+	/TimeLogger {
+		/MainSwitch	30
+		/EnableAll	40
+	}
+	/TimeLoggingAction {
+		/MainSwitch	30
+		/EnableAll	40
+	}
+}

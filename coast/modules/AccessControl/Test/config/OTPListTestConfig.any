@@ -1,0 +1,105 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/Config
+	{
+		/Modules {
+			OTPListsModule
+#			AccessControllersModule
+#			DataAccessImplsModule
+		}
+
+		/OTPLists {
+			/MockOTPList	{ MockOtp AlwaysTrueOtp }
+		}
+
+		/AccessControllers {
+			# might need this for file based OtpLists
+		}
+
+		/DataAccessImpls {
+			# might need this for file based OtpLists
+		}
+	}
+
+	/Tests {
+		/MockOtp {
+			/Token1_Code1 {
+				/TokId			"000100038"
+				/Code			"2234"
+				/Window			1
+				/ValidResult	0
+				/CountResult	1
+			}
+
+			/Token1_WrongCode {
+				/TokId			"000100038"
+				/Code			"2234"		# issue same code again
+				/Window			1
+				/ValidResult	-1
+				/CountResult	1
+			}
+
+			/Token1_Code2 {
+				/TokId			"000100038"
+				/Code			"0438"
+				/Window			1
+				/ValidResult	0
+				/CountResult	2
+			}
+
+			/Token1_WindowTooSmall {
+				/TokId			"000100038"
+				/Code			"8737"
+				/Window			1
+				/ValidResult	-1
+				/CountResult	2
+			}
+
+			/Token1_WindowSync {
+				/TokId			"000100038"
+				/Code			"8737"	# try same code again, with larger window
+				/Window			2
+				/ValidResult	1
+				/CountResult	4
+			}
+
+			/Token2_Code1 {
+				/TokId			"000100223"
+				/Code			"0384"
+				/Window			1
+				/ValidResult	0
+				/CountResult	3
+			}
+
+			/Token2_NoMoreCodes {
+				/TokId			"000100223"
+				/Code			"0384"
+				/Window			1
+				/ValidResult	-1
+				/CountResult	3
+			}
+
+		}
+
+		/AlwaysTrueOtp {
+			/Token1_Code1	%Tests.MockOtp.Token1_Code1
+
+			/Token2_Code1	%Tests.MockOtp.Token2_Code1
+
+			/FantasyValues {
+				/TokId			"NotATokenId"
+				/Code			"NotACode"
+				/Window			-2939
+				/ValidResult	0
+			}
+		}
+	}
+}

@@ -1,0 +1,240 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/Query {
+		/action		CopyTest
+		/fields		{
+			/AField				AValue
+			/AnotherField		AnotherValue
+			/EmptyField1		""
+			/EmptyField2		""
+		}
+	}
+
+	/Results {
+#		/SessionStore {
+#			/NotEmptyCopied	{
+#				/Empty1			""
+#				/Empty2			""
+#				/NotEmpty		AnotherValue
+#			}
+#		}
+		/SessionStore {
+		  /RoleStore {
+			/RSource "ValueRoleStoreSource"
+			/RTop {
+			  /Slot1 "ValueRoleStoreLevel2"
+			}
+			/Context2RoleStoreResult {
+			  /FromTempStore "ValueTempStoreSource"
+			  /FromRoleStore "ValueRoleStoreSource"
+			  /Level2FromTempStore "ValueTempStoreLevel2"
+			  /Level2FromRoleStore "ValueRoleStoreLevel2"
+			  /NotThere *
+			}
+			/Query2RoleStoreResult {
+			  /QueryAction "CopyTest"
+			  /QueryFields {
+				/AField "AValue"
+				/AnotherField "AnotherValue"
+				/EmptyField1 ""
+				/EmptyField2 ""
+			  }
+			  /SpecialField %"Results.SessionStore.RoleStore.Query2RoleStoreResult.QueryFields.AnotherField"
+			}
+			/Copy5Top {
+			  /Slot1 "ValueTempStoreLevel2"
+			}
+			/NotEmptyCopied {
+			  /Empty1 %"Results.SessionStore.RoleStore.Query2RoleStoreResult.QueryFields.EmptyField1"
+			  /Empty2 %"Results.SessionStore.RoleStore.Query2RoleStoreResult.QueryFields.EmptyField2"
+			  /NotEmpty %"Results.SessionStore.RoleStore.Query2RoleStoreResult.QueryFields.AnotherField"
+			}
+		  }
+		  /NotEmptyCopied {
+			/Empty1 %"Results.SessionStore.RoleStore.Query2RoleStoreResult.QueryFields.EmptyField1"
+			/Empty2 %"Results.SessionStore.RoleStore.Query2RoleStoreResult.QueryFields.EmptyField2"
+			/NotEmpty %"Results.SessionStore.RoleStore.Query2RoleStoreResult.QueryFields.AnotherField"
+		  }
+		}
+		/TempStoreCopyResult {
+			/Context2TempStoreResult	{
+				/FromTempStore		ValueTempStoreSource
+				/FromRoleStore		ValueRoleStoreSource
+				/Level2FromTempStore		ValueTempStoreLevel2
+				/Level2FromRoleStore		ValueRoleStoreLevel2
+				/NotThere *
+			}
+			/Query2TempStoreResult {
+				/QueryAction		CopyTest
+				/QueryFields		{
+					/AField			AValue
+					/AnotherField	AnotherValue
+					/EmptyField1		""
+					/EmptyField2		""
+				}
+				/SpecialField		%"Results.TempStoreCopyResult.Query2TempStoreResult.QueryFields.AnotherField"
+			}
+		}
+		/Copy6Result {
+			/AField			AValue
+			/AnotherField	AnotherValue
+			/EmptyField1		""
+			/EmptyField2		""
+		}
+	}
+
+	/RoleStore {
+		/RSource	   ValueRoleStoreSource
+		/RTop {
+			/Slot1		ValueRoleStoreLevel2
+		}
+	}
+	/TempStore {
+		/TSource	   ValueTempStoreSource
+		/TTop {
+			/Slot1		ValueTempStoreLevel2
+		}
+		/Copy1 {
+			/CopyContextAction	{
+				/Destination {
+					/Slot			CopyResult.Context2TempStoreResult
+				}
+				/CopyList {
+					/TSource		FromTempStore
+					/RSource		FromRoleStore
+					/TTop.Slot1		Level2FromTempStore
+					/RTop.Slot1		Level2FromRoleStore
+					/NotThere		NotThere
+				}
+			}
+		}
+		/Copy2 {
+			/CopyQueryAction {
+				/Destination {
+					/Slot			CopyResult.Query2TempStoreResult
+				}
+				/CopyList	{
+					/action			QueryAction
+					/fields			QueryFields
+					/fields.AnotherField		SpecialField
+					/NotThere		NotThere
+				}
+			}
+		}
+		/Copy3 {
+			/CopyContextAction	{
+				/Destination {
+					/Slot	Context2RoleStoreResult
+					/Store				Role
+				}
+				/CopyList {
+					/TSource		FromTempStore
+					/RSource		FromRoleStore
+					/TTop.Slot1		Level2FromTempStore
+					/RTop.Slot1		Level2FromRoleStore
+					/NotThere		NotThere
+				}
+			}
+		}
+		/Copy4 {
+			/CopyQueryAction {
+				/Destination {
+					/Store				Role
+					/Slot			Query2RoleStoreResult
+				}
+				/CopyList	{
+					/action			QueryAction
+					/fields			QueryFields
+					/fields.AnotherField		SpecialField
+					/NotThere		NotThere
+				}
+			}
+		}
+		/Copy5 {
+			/CopyContextAction	{
+				/Destination {
+					/Store 			Role
+				}
+				/CopyList {
+					/TTop			Copy5Top
+				}
+			}
+		}
+		/Copy6 {
+			/CopyQueryAction {
+				/Destination {
+				}
+				/CopyList {
+					/fields			Copy6Fields
+					/NotThere		Copy6Fields
+				}
+			}
+		}
+		/Copy7 {
+			/CopyQueryIfNotEmptyAction {
+				/Destination {
+					/Store 	Role
+					/Slot	NotEmptyCopied
+				}
+				/CopyList {
+					/fields.EmptyField1			Empty1
+					/fields.EmptyField2			Empty2
+					/fields.NotThereField2		NotThere
+					/fields.AnotherField		NotEmpty
+				}
+			}
+		}
+		/Copy8 {
+			/CopyQueryIfNotEmptyAction {
+				/Destination {
+					/Store 	Role
+					/Slot	EmptyCopied
+				}
+				/CopyList {
+					/fields.EmptyField1			Empty1
+					/fields.EmptyField2			Empty2
+					/fields.NotThereField2		NotThere
+				}
+			}
+		}
+		/Copy9 {
+			/CopyQueryIfNotEmptyAction {
+				/Destination {
+					/Store 	Session
+					/Slot	NotEmptyCopied
+				}
+				/CopyList {
+					/fields.EmptyField1			Empty1
+					/fields.EmptyField2			Empty2
+					/fields.NotThereField2		NotThere
+					/fields.AnotherField		NotEmpty
+				}
+			}
+		}
+		/CopyWrongConfig1 {
+			/CopyQueryAction {
+				/CopyList	{
+					/action			Copy6Fields
+					/fields			CopyResult
+				}
+			}
+		}
+		/CopyWrongConfig2 {
+			/CopyContextAction	{
+				/CopyList	{
+					/TTop.Slot1		Copy6Fields
+					/RTop.Slot1		CopyResult
+				}
+			}
+		}
+	}
+}
+

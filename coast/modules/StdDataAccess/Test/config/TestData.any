@@ -1,0 +1,153 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+        /TestFDPost {
+			/HTTPHeader {
+			  /CONNECTION "Keep-Alive"
+			  /USER-AGENT "Mozilla/4.51 [en] (WinNT; U)"
+			  /ACCEPT {
+				"image/gif"
+				"image/x-xbitmap"
+				"image/jpeg"
+				"image/pjpeg"
+				"image/png"
+				"*/*"
+			  }
+			  /ACCEPT-ENCODING "gzip"
+			  /ACCEPT-LANGUAGE "de-CH"
+			  /ACCEPT-CHARSET {
+				"iso-8859-1"
+				"*"
+				"utf-8"
+			  }
+			  /COOKIE {
+				/FINXSCUSTNO "CH12246"
+				/FDState	 "foobaz"
+			  }
+			  /CONTENT-TYPE "application/x-www-form-urlencoded"
+			  /CONTENT-LENGTH 84
+			}
+			/URI "/finVAL/XS.ISA?Action=Login"
+			/Method "POST"
+			/HTTPVersion "HTTP/1.0"
+			/HTTPBody "Password=gaef&Login+%21=+++L+O+G+I+N+++&JSCRIPTACTIVE=Enabled&UserID=tkgae2&CustNo=CH12246"
+	  }
+
+        /TestFDPost1 {
+			/HTTPHeader {
+			  /CONNECTION "Keep-Alive"
+			  /USER-AGENT "Mozilla/4.51 [en] (WinNT; U)"
+			  /ACCEPT {
+				"image/gif"
+				"image/x-xbitmap"
+				"image/jpeg"
+				"image/pjpeg"
+				"image/png"
+				"*/*"
+			  }
+			  /ACCEPT-ENCODING "gzip"
+			  /ACCEPT-LANGUAGE "de-CH"
+			  /ACCEPT-CHARSET {
+				"iso-8859-1"
+				"*"
+				"utf-8"
+			  }
+			  /COOKIE {
+				/FINXSCUSTNO "CH12246"
+			  }
+			  /CONTENT-TYPE "application/x-www-form-urlencoded"
+			  /CONTENT-LENGTH 84
+			}
+			/URI "/finVAL/XS.ISA?Action=Login"
+			/Method "POST"
+			/HTTPVersion "HTTP/1.0"
+			/HTTPBody "Password=gaef&Login+%21=+++L+O+G+I+N+++&JSCRIPTACTIVE=Enabled&UserID=tkgae2&CustNo=CH12246"
+	  }
+
+	  /TestFDPost2 {
+		/ClientInfo {
+		  /REMOTE_ADDR "193.247.78.6"
+		  /REMOTE_PORT 2377
+		}
+		/query {
+		  /postparams "Password=gaef&Login+%21=+++L+O+G+I+N+++&JSCRIPTACTIVE=Enabled&UserID=tkgae2&CustNo=CH12246"
+		  /Action "Login"
+		  /AppPref "/finVAL/XS.ISA"
+		}
+		/env {
+		  /REQUEST_METHOD "POST"
+		  /REQUEST_URI "/finVAL/XS.ISA?Action=Login"
+		  /SERVER_PROTOCOL "HTTP/1.0"
+		  /header {
+			/REFERER "http://sentosa.ifa.ch:1919/finVAL/"
+			/CONNECTION "Keep-Alive"
+			/USER-AGENT "Mozilla/4.51 [en] (WinNT; U)"
+			/HOST "sentosa.ifa.ch:1919"
+			/ACCEPT {
+			  "image/gif"
+			  "image/x-xbitmap"
+			  "image/jpeg"
+			  "image/pjpeg"
+			  "image/png"
+			  "*/*"
+			}
+			/ACCEPT-ENCODING "gzip"
+			/ACCEPT-LANGUAGE "de-CH"
+			/ACCEPT-CHARSET {
+			  "iso-8859-1"
+			  "*"
+			  "utf-8"
+			}
+			/AUTHORIZATION "Basic YmlycmVyOmJpYTE5"
+			  /COOKIE {
+				/FINXSCUSTNO "CH12246"
+			  }
+			/CONTENT-TYPE "application/x-www-form-urlencoded"
+			/CONTENT-LENGTH "90"
+			/REMOTE_ADDR "193.247.78.6"
+			/REMOTE_HOST "paris.hsr.loc"
+		  }
+		}
+	}
+	/TestFDPost3 {
+		/query {
+			"finVAL"
+			/AppPref "/finVAL"
+			/URI_PARAM "/"
+		}
+		/env {
+			/REQUEST_METHOD "GET"
+			/REQUEST_URI "/finVAL/"
+			/SERVER_PROTOCOL "HTTP/1.0"
+			/header {
+				/CONNECTION "Keep-Alive"
+				/USER-AGENT "Mozilla/4.51 [en] (WinNT; U)"
+				/ACCEPT {
+					"image/gif"
+					"image/x-xbitmap"
+					"image/jpeg"
+					"image/pjpeg"
+					"image/png"
+					"*/*"
+				}
+				/ACCEPT-ENCODING "gzip"
+				/ACCEPT-LANGUAGE "de-CH"
+				/ACCEPT-CHARSET {
+					"iso-8859-1"
+					"*"
+					"utf-8"
+				}
+			  /COOKIE {
+				/FINXSCUSTNO "CH12246"
+			  }
+			}
+		}
+	}
+}

@@ -1,0 +1,236 @@
+/*
+ * Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+ * All rights reserved.
+ *
+ * This library/application is free software; you can redistribute and/or modify it under the terms of
+ * the license that is included with this library/application in the file license.txt.
+ */
+
+/****
+  Purpose_Begin
+    Definition of a root class for data access implementation.
+    It manages all the implementation subclasses in a registry.
+    This class defines the protocol for getting data in and out of a
+    persistency layer.
+  Purpose_End
+
+  Paramters_Begin
+    insert your comment here !!
+  Paramters_End
+
+  Concurrency_Begin
+	DataAccessImpls are used in a MT-Environment. One thread per request.
+    If a DataAccessImpl holds state in order to process a single request,
+    it is not thread safe.
+    Therefore it has to be allocated and deleted on a request basis.
+  Concurrency_End
+
+  Collaborations_Begin
+    An DataAccessImpl is called from the DataAccess object.
+    It calls mapper in order to move the data in and out.
+  Collaborations_End
+
+  Errorhandling_Begin
+    Errorhandling is implicit e.g. via parameters moved in and out by the mappers
+  Errorhandling_End
+
+  Assumptions_Begin
+    The transaction name is unique in the system.
+  Assumptions_End
+****/
+
+//--- interface include --------------------------------------------------------
+#include "DataAccessImpl.h"
+
+//--- standard modules used ----------------------------------------------------
+#include "Registry.h"
+#include "StringStream.h"
+#include "SysLog.h"
+#include "Dbg.h"
+
+//---- DataAccessImplsModule -----------------------------------------------------------
+RegisterModule(DataAccessImplsModule);
+
+DataAccessImplsModule::DataAccessImplsModule(const char *name) : WDModule(name)
+{
+}
+
+DataAccessImplsModule::~DataAccessImplsModule()
+{
+}
+
+bool DataAccessImplsModule::Init(const Anything &config)
+{
+	// installation of transaction implementation objects for the different backends
+	// data provider
+	if (config.IsDefined("DataAccessImpls")) {
+		HierarchyInstaller hi("DataAccessImpl");
+		return RegisterableObject::Install(config["DataAccessImpls"], "DataAccessImpl", &hi);
+	}
+	return false;
+}
+
+bool DataAccessImplsModule::ResetFinis(const Anything &config)
+{
+	AliasTerminator at("DataAccessImpl");
+	return RegisterableObject::ResetTerminate("DataAccessImpl", &at);
+}
+
+bool DataAccessImplsModule::Finis()
+{
+	return StdFinis("DataAccessImpl", "DataAccessImpls");
+}
+
+//--- DataAccessImpl --------------------------------------------------
+RegCacheImpl(DataAccessImpl);
+
+DataAccessImpl::DataAccessImpl(const char *name) : HierarchConfNamed(name)
+{
+}
+
+DataAccessImpl::~DataAccessImpl()
+{
+}
+
+IFAObject *DataAccessImpl::Clone() const
+{
+	Assert(false);
+	return new DataAccessImpl(fName);
+}
+
+//--- Send/Receive
+bool DataAccessImpl::Exec(Context &c, InputMapper *input, OutputMapper *output)
+{
+	StartTrace(DataAccessImpl.Exec);	// support for tracing
+
+	Assert(false); // should not be called
+	// use input and output mapper to define trx input and output needs
+	// implement this method to do whatever necesary
+	// this implementation never succeeds
+	return false;
+}
+
+bool DataAccessImpl::DoLoadConfig(const char *category)
+{
+	if ( HierarchConfNamed::DoLoadConfig(category) && fConfig.IsDefined(fName) ) {
+		StartTrace(DataAccessImpl.DoLoadConfig);
+		// trx impls use only a subset of the whole configuration file
+		fConfig = fConfig[fName];
+		TraceAny(fConfig, "Config:");
+		Assert(!fConfig.IsNull());
+		return (!fConfig.IsNull());
+	}
+	return false;
+}
+
+bool DataAccessImpl::DoGetConfigName(const char *category, const char *objName, String &configFileName)
+{
+	configFileName = "DataAccessImplMeta";
+	return true;
+}
+
+//---- LoopBackDAImpl ------------------------------------------------------
+RegisterDataAccessImpl(LoopBackDAImpl);
+
+LoopBackDAImpl::LoopBackDAImpl(const char *name) : DataAccessImpl(name) { }
+LoopBackDAImpl::~LoopBackDAImpl() { }
+
+//:factory method to create a generic data access object, not very useful
+IFAObject *LoopBackDAImpl::Clone() const
+{
+	return new LoopBackDAImpl(fName);
+}
+
+bool LoopBackDAImpl::Exec(Context &c, InputMapper *input, OutputMapper *output)
+{
+	StartTrace1(LoopBackDAImpl.Exec, "Name: " << fName);
+	ROAnything config;
+	TraceAny(fConfig, "fConfig: ");
+	long streaming = Lookup("Streaming", 0L);
+
+	if (Lookup("transfer", config)) {
+		TraceAny(config, "Config: ");
+		for (long i = 0; i < config.GetSize(); i++) {
+			const char *slotname = config.SlotName(i);
+			if (slotname) {
+				String inputStr;
+				bool bGetCode, bPutCode = false;
+				if (streaming == 1) {
+					StringStream Ios(inputStr);
+					bGetCode = input->DoGetStream(slotname, Ios, c, ROAnything());
+					//FIXME bGetCode = input->Get(slotname, Ios, c, ROAnything());
+					Ios << flush;
+					if (bGetCode) {
+						bPutCode = output->Put(config[i].AsCharPtr(), inputStr, c);
+					}
+				} else if (streaming == 2) {
+					StringStream Ios(inputStr);
+					bGetCode = input->Get(slotname, inputStr, c);
+					Ios << flush;
+					if (bGetCode) {
+						bPutCode = output->DoPutStream(config[i].AsCharPtr(), Ios, c, ROAnything());
+					}
+				} else if (streaming == 3) {
+					StringStream Ios(inputStr);
+					bGetCode = input->DoGetStream(slotname, Ios, c, ROAnything());
+					Ios << flush;
+					if (bGetCode) {
+						bPutCode = output->DoPutStream(config[i].AsCharPtr(), Ios, c, ROAnything());
+					}
+				} else {
+					bGetCode = input->Get(slotname, inputStr, c);
+					if (bGetCode) {
+						bPutCode = output->Put(config[i].AsCharPtr(), inputStr, c);
+					}
+				}
+				if (bGetCode) {
+					Trace("From [" << slotname << "] to [" << config[i].AsCharPtr() << "]: <" << inputStr << ">");
+				}
+				Trace("GetCode: " << (bGetCode ? "true" : "false") << " PutCode: " << (bPutCode ? "true" : "false"));
+			}
+		}
+		Trace("ret: true");
+		return true;
+	}
+	Trace("ret: false");
+	return false;
+}
+
+void DataAccessImpl::HandleError(Context &context, const String &mapperName, const char *file, long line, const String &msg)
+{
+	String logMsg(file);
+	logMsg << ":" << line << msg << " for " << mapperName;
+	SysLog::Error(logMsg);
+	Anything tmpStore(context.GetTmpStore());
+	tmpStore["DataAccess"][mapperName]["Error"].Append(logMsg);
+}
+
+InputMapper *DataAccessImpl::GetInputMapper(Context &context)
+{
+	StartTrace(DataAccessImpl.GetInputMapper);
+	// first look into my own config
+	String theName(this->Lookup("InputMapper", fName));
+	Trace("using Mapper :" << theName);
+	InputMapper *mapper = InputMapper::FindInputMapper(theName);
+	Assert(mapper);
+	if (!mapper) {
+		HandleError(context, theName, __FILE__, __LINE__, "InputMapper::FindInputMapper returned 0");
+	}
+	return mapper;
+}
+
+OutputMapper *DataAccessImpl::GetOutputMapper(Context &context)
+{
+	StartTrace(DataAccessImpl.GetOutputMapper);
+	// first look into my own config
+	String theName(this->Lookup("OutputMapper", fName));
+	Trace("using Mapper :" << theName);
+	OutputMapper *mapper = OutputMapper::FindOutputMapper(theName);
+	Assert(mapper);	// we expect a mapper to be configured for this trx
+	if (!mapper) {
+		HandleError(context, theName, __FILE__, __LINE__, "OutputMapper::FindOutputMapper returned 0");
+	}
+	return mapper;
+}
+
+RegisterDataAccessImpl(DataAccessImpl);

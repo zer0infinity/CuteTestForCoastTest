@@ -1,0 +1,60 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+#-- User data  ----------------------
+	/SybSearchTest {
+		/SQL	{
+			/RendererMapper {
+				"select au_fname, au_lname from authors where au_lname='Bennet'"
+			}
+		}
+	}
+	/SybShowDatabases {
+		/SQL	{
+			/RendererMapper {
+				"SELECT "
+				{ /ContextLookupRenderer DesiredFields }
+				" FROM master..sysdatabases where name='master'"
+			}
+		}
+	}
+
+	/SybInsertDatabases {
+		/SQL	{
+			/RendererMapper {
+				"INSERT INTO pubs2..au_pix VALUES ( 'cirp',NULL,NULL,NULL,NULL,NULL)"
+			}
+		}
+	}
+
+	/SybDeleteFromDatabase {
+		/SQL	{
+			/RendererMapper {
+				"DELETE FROM pubs2..au_pix where au_id='cirp'"
+			}
+		}
+	}
+
+	/SybTestTypeConversions {
+		/SQL	{
+			"set rowcount 1 SELECT * FROM pubs2.guest.TestTypeTable"
+		}
+	}
+
+	/SQLErrorTest {
+		/SQL	{
+			/RendererMapper {
+				"INSERT INTO GaGaTable "
+				"VALUES (NULL,'Hallo')"
+			}
+		}
+	}
+
+}

@@ -1,0 +1,153 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/BasicFunctionTest {
+		/AnyToPut {
+			{
+				/ACategory Kat1
+				/AKey Value1
+				/Data XY
+			}
+			{
+				/ACategory Kat2
+				/AKey Value1
+				/Data XYZ
+			}
+			{
+				/ACategory Kat1
+				/AKey Value2
+				/Data XxYy
+			}
+			{
+				/ACategory Kat2
+				/AKey Value2
+				/Data XxYyZz
+			}
+			{
+				/ACategory Kat1
+				/AKey Value3
+				/Data XxxYyy
+			}
+		}
+		/Result {
+			/SessionStore {
+				/AnyWithSlotnames {
+					/Kat1	{
+						/Value1 {
+							/ACategory Kat1
+							/AKey Value1
+							/Data XY
+						}
+						/Value2 {
+							/ACategory Kat1
+							/AKey Value2
+							/Data XxYy
+						}
+						/Value3 {
+							/ACategory Kat1
+							/AKey Value3
+							/Data XxxYyy
+						}
+					}
+					/Kat2	{
+						/Value1 {
+							/ACategory Kat2
+							/AKey Value1
+							/Data XYZ
+						}
+						/Value2 {
+							/ACategory Kat2
+							/AKey Value2
+							/Data XxYyZz
+						}
+					}
+				}
+			}
+		}
+	}
+	/OverwriteOrAppendTest {
+		/AnyToPut {
+			{
+				{
+					/ACategory Kat1
+					/AKey Value1
+					/Data XY
+				}
+				{
+					/ACategory Kat2
+					/AKey Value1
+					/Data XYZ
+				}
+				{
+					/ACategory Kat1
+					/AKey Value2
+					/Data XxYy
+				}
+				{
+					/ACategory Kat2
+					/AKey Value2
+					/Data XxYyZz
+				}
+				{
+					/ACategory Kat1
+					/AKey Value3
+					/Data XxxYyy
+				}
+			}
+			{
+				{
+					/ACategory Kat1
+					/AKey Value1
+					/Data AB
+				}
+				{
+					/ACategory Kat2
+					/AKey Value1
+					/Data ABC
+				}
+			}
+		}
+		/Result {
+			/SessionStore {
+				/AnyWithSlotnames {
+					/Kat1	{
+						/Value1 {
+							/ACategory Kat1
+							/AKey Value1
+							/Data AB
+						}
+						/Value2 {
+							/ACategory Kat1
+							/AKey Value2
+							/Data XxYy
+						}
+						/Value3 {
+							/ACategory Kat1
+							/AKey Value3
+							/Data XxxYyy
+						}
+					}
+					/Kat2	{
+						/Value1 {
+							/ACategory Kat2
+							/AKey Value1
+							/Data ABC
+						}
+						/Value2 {
+							/ACategory Kat2
+							/AKey Value2
+							/Data XxYyZz
+						}
+					}
+				}
+			}
+		}
+	}
+}

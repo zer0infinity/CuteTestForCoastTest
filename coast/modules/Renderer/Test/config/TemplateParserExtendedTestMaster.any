@@ -1,0 +1,101 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+  {
+    /FormRenderer {
+      /Method "post"
+      /Action "PageInternalActionScript"
+      /Options {
+        /name "ActionFoundInPageAny"
+      }
+      /Layout {
+        "\n<input type=\"text\" value=\"abc\" size=\"5\" name=\"fld_dummyfield\">\n"
+      }
+    }
+  }
+  {
+    /FormRenderer {
+      /Method "post"
+      /Action "GoBanner"
+      /Options {
+        /name "ActionFoundInRoleAny"
+      }
+      /Layout {
+        "\n<input type=\"text\" value=\"abc\" size=\"5\" name=\"fld_dummyfield\">\n"
+      }
+    }
+  }
+  {
+    /FormRenderer {
+      /Method "post"
+      /Action "PageSpecificActionToken"
+      /Options {
+        /name "PageSpecificActionFoundInRoleAny"
+      }
+      /Layout {
+        "\n<input type=\"text\" value=\"abc\" size=\"5\" name=\"fld_dummyfield\">\n"
+      }
+    }
+  }
+  {
+    /FormRenderer {
+      /Method "post"
+      /Action "StayOnTemplateParserExtendedTest"
+      /Options {
+        /name "PageSpecificStayOnSamePageTokenFoundInRoleAny"
+      }
+      /Layout {
+        "\n<input type=\"text\" value=\"abc\" size=\"5\" name=\"fld_dummyfield\">\n"
+      }
+    }
+  }
+  "<form method=\"post\" name=\"ActionNotFoundInRoleAny\" action=\"GoNoWhere\">\n<input type=\"text\" value=\"abc\" size=\"5\" name=\"dummyfield\">\n</form>"
+  {
+    /FormRenderer {
+      /Method "post"
+      /Action "PageRoleSpecificActionToken"
+      /Options {
+        /name "ActionFoundInRTCustomerAny"
+      }
+      /Layout {
+        "\n<input type=\"text\" value=\"abc\" size=\"5\" name=\"fld_dummyfield\">\n"
+      }
+    }
+  }
+  {
+    /FormRenderer {
+      /Method "post"
+      /Action "GoBanner"
+      /BaseAddr "https://mytest:443/test1"
+      /Options {
+        /name "ActionFoundInRoleAny"
+      }
+      /Layout {
+        "\n<input type=\"text\" value=\"abc\" size=\"5\" name=\"fld_dummyfield\">\n"
+      }
+    }
+  }
+  {
+    /FormRenderer {
+      /Method "post"
+      /Action "GoBanner"
+      /BaseAddr {
+		  /ContextLookupRenderer {
+			  SecureBaseAddr
+		  }
+	  }
+      /Options {
+        /name "ActionFoundInRoleAny"
+      }
+      /Layout {
+        "\n<input type=\"text\" value=\"abc\" size=\"5\" name=\"fld_dummyfield\">\n"
+      }
+    }
+  }
+}

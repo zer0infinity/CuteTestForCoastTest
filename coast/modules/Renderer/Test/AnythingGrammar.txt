@@ -1,0 +1,59 @@
+Grammar for the external Anything format
+
+Format (similar to BNF):
+	::=		defines
+	'xyz'	use xyz as a literal
+	(a|b|c)	choose one of a, b or c
+	{ x }	repeat x for 0 or more times
+	< ... >	plain text description of intended contents
+
+-------------------------------------------------------------------------------
+
+Anything ::= (SequenceAny | SimpleAny)
+SimpleAny ::= (NullAny | StringAny | DecimalAny | OctalAny | HexAny | FloatAny
+				| BinaryAny | ObjectAny)
+NullAny ::= '*'
+StringAny ::= ( QuotedString | UnquotedString )
+QuotedString ::= '"' { EscapedChar | NormalChar } '"'
+EscapedChar ::= '\' ( '\' | '"' | 'n' | LineFeed | CarriageReturn | HexChars
+						  | OctalChars )
+						  # should probably include \r
+HexChars ::= 'x' HexDigit [HexDigit]
+OctalChars ::= OctDigit [ OctDigit ] [ OctDigit ]
+NormalChar ::= <everything except escape sequence or unmasked newline>
+
+UnquotedString ::= StartChar { NonBreakChar } 
+			<char which is invalid for all number formats> { NonBreakChar }
+NonBreakChar ::= <everything except whitespace, '#', '{' and '}'>
+StartChar ::= <NonBreakChar without '/', '*', '&', or '['>
+	# currently the first char may be '}' even though it is a delimiter later on
+
+OctalAny ::= '0'{ '0',.., '7' }				# never written, only decimals written
+UnsignedDecimal ::= ('1',.., '9'){ '0',.., '9' } # or leading '0' and an '8' or '9'
+DecimalAny ::= ['+'|'-'] UnisgnedDecimal
+HexAny ::= '0' ['x', 'X'] { HexDigit }		# never written
+FloatAny ::= ['+'|'-']({ '0',.., '9' }'.'{ '0',.., '9' }['e'|'E']{ '0',.., '9' }
+				  | { '0',.., '9' }['.']{ '0',.., '9' }('e'|'E'){ '0',.., '9' })
+			 # either '.', 'e' or 'E' must be present
+ObjectAny ::= '&' UnsignedDecimal
+BinaryAny ::= '[' <C++-long> ';' <"Length" bytes of data> ']'
+				# Length in C++-long, should be positive
+
+SequenceAny ::= '{' { KeyValueAny | SimpleAny } '}'
+KeyValueAny ::= ( '/' QuotedString { WhiteSpace } Anything
+				| '/' UnquotedString WhiteSpace { WhiteSpace } SimpleAny
+				| '/' UnquotedString SequenceAny )
+
+#################################################################################
+Problems:
+
+Whitespace handling is still a bit of a mystery. After quoted strings there
+need not be whitespace. After a number there must be whitespace if it is in a
+sequence (otherwise it becomes a string).
+
+Handling of /, {, }, # and escape sequences in Slotnames is somewhat inconsistent
+(quotes are omitted for the above and a written Anything cannot be read correctly,
+ -> adapt Anything writer)
+ 
+Add \r to escape sequences
+	(as it terminates a string otherwise, \x0D should work though).

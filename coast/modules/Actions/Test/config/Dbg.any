@@ -1,0 +1,136 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/LowerBound		0
+	/UpperBound		10
+	/DumpAnythings	1
+
+	/CompareAction {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/RegisterableObject {
+		/MainSwitch	10
+		/EnableAll	20
+	}
+	/Action {
+		/MainSwitch	100
+		/EnableAll	100
+	}
+	/RemoveAction{
+		/MainSwitch	33
+		/EnableAll	33
+	}
+	/EmailAddressCheckAction {
+		/MainSwitch	10000
+		/EnableAll	10000
+	}
+	/NotEmptyCheckAction {
+		/MainSwitch	1260
+		/EnableAll	1260
+	}
+	/TestAction {
+		/MainSwitch	100
+		/EnableAll	100
+	}
+	/ConfiguredTestAction {
+		/MainSwitch	100
+		/EnableAll	100
+	}
+	/ConfiguredActionTest {
+		/MainSwitch		103
+		/EnableAll		0
+		/DoCheckStores	103
+	}
+	/AcceptorFactory {
+		/MainSwitch	200
+		/EnableAll	200
+	}
+	/ListenerThread {
+		/MainSwitch	200
+		/EnableAll	200
+	}
+	/ThreadPoolManager {
+		/MainSwitch	200
+		/EnableAll	200
+	}
+	/ListenerPool {
+		/MainSwitch	200
+		/EnableAll	200
+	}
+	/AcceptorFactoriesModule {
+		/MainSwitch	200
+		/EnableAll	200
+	}
+	/InterruptHandler {
+		/MainSwitch	300
+		/EnableAll	300
+	}
+	/MIMEHeader {
+		/MainSwitch	400
+		/EnableAll	400
+	}
+	/SlotPutter {
+		/MainSwitch	1020
+		/EnableAll	1030
+	}
+	/StoreFinder {
+		/MainSwitch	1020
+		/EnableAll	1030
+	}
+	/StoreCopier {
+		/MainSwitch	33
+		/EnableAll	33
+	}
+	/CopyAction {
+		/MainSwitch	33
+		/EnableAll	33
+	}
+	/CopyContextAction {
+		/MainSwitch	33
+		/EnableAll	33
+	}
+	/Context {
+		/MainSwitch	1000
+		/EnableAll	1010
+	}
+	/Server {
+		/MainSwitch	1200
+		/EnableAll	1230
+	}
+	/ConfNamedObject {
+		/MainSwitch	1000
+		/EnableAll	1010
+	}
+	/HierarchConfNamed {
+		/MainSwitch	1000
+		/EnableAll	1010
+	}
+	/LookupInterface {
+		/MainSwitch	1000
+		/EnableAll	1010
+	}
+	/LoopbackProcessor {
+		/MainSwitch	1200
+		/EnableAll	1210
+	}
+	/SessionListManager {
+		/MainSwitch	1220
+		/EnableAll	1230
+	}
+	/PeriodicAction {
+		/MainSwitch	1220
+		/EnableAll	1230
+	}
+	/Registry {
+		/MainSwitch	1250
+		/EnableAll	1260
+	}
+}

@@ -1,0 +1,441 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/TestData {
+	  /"0" {
+		/marketCode "4"
+		/currencyCode "1"
+		/valorNumber "1203203"
+		/titleName "UBS N"
+		/date "Apr 12 2001 12:00AM"
+		/groupCode "33"
+		/ergonomicSymbol ""
+		/activFlag "0"
+		/dateBegin ""
+		/dateEnd ""
+		/titleKind "1"
+		/fimsFlag "0"
+	  }
+	  /"1" {
+		/marketCode "13"
+		/currencyCode "814"
+		/valorNumber "1203203"
+		/titleName "UBS N"
+		/date "Jun 25 2001  2:35PM"
+		/groupCode "32"
+		/ergonomicSymbol "914830"
+		/activFlag "0"
+		/dateBegin "Jul 16 2001 12:00AM"
+		/dateEnd "Jun  6 2079 12:00AM"
+		/titleKind "1"
+		/fimsFlag "1"
+	  }
+	  /"2" {
+		/marketCode "14"
+		/currencyCode "814"
+		/valorNumber "1203203"
+		/titleName "UBS N"
+		/date "Jul 14 2001 12:00AM"
+		/groupCode "32"
+		/ergonomicSymbol "914830"
+		/activFlag "0"
+		/dateBegin ""
+		/dateEnd ""
+		/titleKind "1"
+		/fimsFlag "0"
+	  }
+	  /"3" {
+		/marketCode "15"
+		/currencyCode "814"
+		/valorNumber "1203203"
+		/titleName "UBS N"
+		/date "Jul 14 2001 12:00AM"
+		/groupCode "32"
+		/ergonomicSymbol "914830"
+		/activFlag "0"
+		/dateBegin ""
+		/dateEnd ""
+		/titleKind "1"
+		/fimsFlag "0"
+	  }
+	}
+	/BoxColumnsSimpleTest {
+		/List {
+			{
+				/Name	MC
+				/Align	right
+				/Width	4
+				/Value	{
+					/Lookup SelectBoxOption.marketCode
+				}
+			}
+			{
+				/Name	CC
+				/Align	right
+				/Width	4
+				/Value	{
+					/Lookup SelectBoxOption.currencyCode
+				}
+			}
+			{
+				/Name	Valor
+				/Align	right
+				/Width	8
+				/Value	{
+					/Lookup SelectBoxOption.valorNumber
+				}
+			}
+			{
+				/Name	Titelname
+				/Align	left
+				/Width	20
+				/Value	{
+					/Lookup SelectBoxOption.titleName
+				}
+			}
+			{
+				/Name	FIMS
+				/Align	right
+				/Width	4
+				/Value	{
+					/Lookup SelectBoxOption.fimsFlag
+				}
+			}
+			{
+				/Name	newest
+				/Align	right
+				/Width	6
+				/Value	{
+					/Lookup SelectBoxOption.newestFlag
+				}
+			}
+		}
+		/ValueRenderer {
+			{ /ListRenderer {
+				/ListData		BoxColumns.List
+				/EntryStore		ValueEntry
+				/EntryFooter	";"
+				/EFSuppressLast	1
+				/EntryRenderer {
+					/Lookup ValueEntry.Value
+				}
+			} }
+		}
+		/SelectedRenderer {
+			0
+		}
+		/Name			ExtListingsBox
+		/Size			20
+		/PlainList		BoxInputData
+		/ColSep			"&nbsp;&nbsp;"
+		/ColSepWidth	2
+		/FormName		ValorsucheForm
+	}
+	/OptionBoxSimpleTestOutput "\n<!-- here we go with the listbox, create the background table -->\n<table width=\"10%\" border=0><tbody><tr><td>\n<!-- put everything into a nested table -->\n<table width=\"10%\" border=0 cellspacing=\"2\" cellpadding=\"1\">\n<!-- lets insert another table for the column header -->\n<tr bgcolor=''>\n<th class=\"SelectBoxHeader\">&nbsp;MC&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;CC&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;&nbsp;Valor&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Titelname&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">FIMS&nbsp;</th>\n<th class=\"SelectBoxHeader\">newest&nbsp;</th>\n<th>&nbsp;&nbsp;</th>\n</tr>\n\n<!-- now do the box itself -->\n<tr><td colspan=7>\n<span class=\"SelectBoxSuchen\">\n<SELECT NAME=\"fld_ExtListingsBox\" SIZE=\"20\" class=\"SelectBoxSuchen\" OnChange=\"OnChangeExtListingsBox(this)\">\n<OPTION VALUE=\"4;1;1203203;UBS N;0;\">&nbsp;&nbsp;&nbsp;4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"13;814;1203203;UBS N;1;\">&nbsp;&nbsp;13&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"14;814;1203203;UBS N;0;\">&nbsp;&nbsp;14&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"15;814;1203203;UBS N;0;\">&nbsp;&nbsp;15&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n</SELECT>\n</span>\n</td></tr>\n<!-- here we go with some edit fields if required -->\n\n<tr>\n<td align=center class=\"SelectBoxFooter\">&nbsp;</td>\n<td align=center class=\"SelectBoxFooter\">&nbsp;</td>\n<td align=center class=\"SelectBoxFooter\">&nbsp;</td>\n<td align=center class=\"SelectBoxFooter\">&nbsp;</td>\n<td align=center class=\"SelectBoxFooter\">&nbsp;</td>\n<td align=center class=\"SelectBoxFooter\">&nbsp;</td>\n<td>&nbsp;</td>\n</tr>\n\n<!-- here we have filter fields if required -->\n\n<!-- and now the navigation -->\n\n</table></td></tr></tbody></table>\n<script language='JavaScript1.2'>function ClearEditFields(myform)\n{\n\x09return false; /* do not submit the form*/\n}\nfunction ProcessEditFieldScripts(myform)\n{\n\x09return true;\n}\nfunction OnChangeExtListingsBox(selbox)\n{\nreturn true;\n}\nfunction OnChangeEditField(field, column)\n{\nlistbox=field.form.elements[\"fld_ExtListingsBox\"];\nrow=listbox.selectedIndex;\nreturn true;\n}\nfunction OnChangePulldown(field, index)\n{\nreturn true;\n}\n</script>"
+
+	/BoxColumnsSimpleTestWithEditFields {
+		/List {
+			{
+				/Name	MC
+				/Align	right
+				/Width	4
+				/Value	{
+					/Lookup SelectBoxOption.marketCode
+				}
+				/Editable 1
+			}
+			{
+				/Name	CC
+				/Align	right
+				/Width	4
+				/Value	{
+					/Lookup SelectBoxOption.currencyCode
+				}
+			}
+			{
+				/Name	Valor
+				/Align	right
+				/Width	8
+				/Value	{
+					/Lookup SelectBoxOption.valorNumber
+				}
+				/Editable 1
+			}
+			{
+				/Name	Titelname
+				/Align	left
+				/Width	20
+				/Value	{
+					/Lookup SelectBoxOption.titleName
+				}
+			}
+			{
+				/Name	FIMS
+				/Align	right
+				/Width	4
+				/Value	{
+					/Lookup SelectBoxOption.fimsFlag
+				}
+			}
+			{
+				/Name	newest
+				/Align	right
+				/Width	6
+				/Value	{
+					/Lookup SelectBoxOption.newestFlag
+				}
+			}
+		}
+		/ValueRenderer {
+			{ /ListRenderer {
+				/ListData		BoxColumns.List
+				/EntryStore		ValueEntry
+				/EntryFooter	";"
+				/EFSuppressLast	1
+				/EntryRenderer {
+					/Lookup ValueEntry.Value
+				}
+			} }
+		}
+		/SelectedRenderer {
+			0
+		}
+		/Name			ExtListingsBox
+		/Size			20
+		/PlainList		BoxInputData
+		/ColSep			"&nbsp;&nbsp;"
+		/ColSepWidth	2
+		/FormName		ValorsucheForm
+	}
+	/BoxColumnsSimpleTestWithEditFieldsOutput "\n<!-- here we go with the listbox, create the background table -->\n<table width=\"10%\" border=0><tbody><tr><td>\n<!-- put everything into a nested table -->\n<table width=\"10%\" border=0 cellspacing=\"2\" cellpadding=\"1\">\n<!-- lets insert another table for the column header -->\n<tr bgcolor=''>\n<th class=\"SelectBoxHeader\">&nbsp;MC&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;CC&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;&nbsp;Valor&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Titelname&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">FIMS&nbsp;</th>\n<th class=\"SelectBoxHeader\">newest&nbsp;</th>\n<th>&nbsp;&nbsp;</th>\n</tr>\n\n<!-- now do the box itself -->\n<tr><td colspan=7>\n<span class=\"SelectBoxSuchen\">\n<SELECT NAME=\"fld_ExtListingsBox\" SIZE=\"20\" class=\"SelectBoxSuchen\" OnChange=\"OnChangeExtListingsBox(this)\">\n<OPTION VALUE=\"4;1;1203203;UBS N;0;\">&nbsp;&nbsp;&nbsp;4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"13;814;1203203;UBS N;1;\">&nbsp;&nbsp;13&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"14;814;1203203;UBS N;0;\">&nbsp;&nbsp;14&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"15;814;1203203;UBS N;0;\">&nbsp;&nbsp;15&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n</SELECT>\n</span>\n</td></tr>\n<!-- here we go with some edit fields if required -->\n\n<tr>\n<td align=center><INPUT TYPE=\"TEXT\" NAME=\"fld_edtMC\" SIZE=\"4\" MAXLENGTH=\"4\" class=\"SelectBoxFooter\" OnChange=\"OnChangeEditField(this, 0)\"></td>\n<td align=center class=\"SelectBoxFooter\">&nbsp;</td>\n<td align=center><INPUT TYPE=\"TEXT\" NAME=\"fld_edtValor\" SIZE=\"8\" MAXLENGTH=\"8\" class=\"SelectBoxFooter\" OnChange=\"OnChangeEditField(this, 2)\"></td>\n<td align=center class=\"SelectBoxFooter\">&nbsp;</td>\n<td align=center class=\"SelectBoxFooter\">&nbsp;</td>\n<td align=center class=\"SelectBoxFooter\">&nbsp;</td>\n<td>&nbsp;</td>\n</tr>\n\n<!-- here we have filter fields if required -->\n\n<!-- and now the navigation -->\n\n</table></td></tr></tbody></table>\n<script language='JavaScript1.2'>function ClearEditFields(myform)\n{\n\x09myform.fld_edtMC.value = \"\";\n\x09myform.fld_edtValor.value = \"\";\n\x09return false; /* do not submit the form*/\n}\nfunction ProcessEditFieldScripts(myform)\n{\n\x09return true;\n}\nfunction OnChangeExtListingsBox(selbox)\n{\nreturn true;\n}\nfunction OnChangeEditField(field, column)\n{\nlistbox=field.form.elements[\"fld_ExtListingsBox\"];\nrow=listbox.selectedIndex;\nreturn true;\n}\nfunction OnChangePulldown(field, index)\n{\nreturn true;\n}\n</script>"
+
+	/MultifunctionListBoxRendererTest {
+		/List {
+			{
+				/Name		MC
+				/Editable	1
+				/Align		right
+				/Width		4
+				/Value		{ /Lookup SelectBoxOption.marketCode	}
+			}
+			{
+				/Name	CC
+				/Align	right
+				/Width	4
+				/Value	{
+					/Lookup SelectBoxOption.currencyCode
+				}
+			}
+			{
+				/Name	Valor
+				/Align	right
+				/Width	8
+				/Value	{
+					/Lookup SelectBoxOption.valorNumber
+				}
+			}
+			{
+				/Name	Titelname
+				/Align	left
+				/Width	20
+				/Value	{
+					/Lookup SelectBoxOption.titleName
+				}
+			}
+			{
+				/Name	FIMS
+				/Align	right
+				/Width	4
+				/Value	{
+					/Lookup SelectBoxOption.fimsFlag
+				}
+			}
+			{
+				/Name	newest
+				/Align	right
+				/Width	6
+				/Value	{
+					/Lookup SelectBoxOption.newestFlag
+				}
+			}
+		}
+	}
+	/MultifunctionListBoxRendererTestOutput "<table width=\"10%\" border=4 bgcolor='#000000'><tbody>\n<tr><td>\n<table width=\"10%\" border=1 cellspacing=\"2\" cellpadding=\"1\">\n\n<!-- lets insert a row for the column header -->\n<tr bgcolor='#0000cc'>\n<th class=\"SelectBoxHeader\">&nbsp;MC&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;CC&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;&nbsp;Valor&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Titelname&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">FIMS&nbsp;</th>\n<th class=\"SelectBoxHeader\">newest&nbsp;</th>\n<th>&nbsp;&nbsp;</th>\n</tr>\n\n<!-- now do the box itself -->\n<tr bgcolor='#cc0000'><td colspan=7>\n<span class=\"SelectBoxSuchen\">\n<SELECT NAME=\"fld_ExtListingsBox\" SIZE=\"20\" class=\"SelectBoxSuchen\">\n<OPTION VALUE=\"4;1;1203203;UBS N;0;\">&nbsp;&nbsp;&nbsp;4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"13;814;1203203;UBS N;1;\">&nbsp;&nbsp;13&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"14;814;1203203;UBS N;0;\">&nbsp;&nbsp;14&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"15;814;1203203;UBS N;0;\">&nbsp;&nbsp;15&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n</SELECT>\n</span>\n</td></tr>\n\n<!-- here we go with some edit fields if required -->\n\n<!-- here we have filter fields if required -->\n\n<!-- and now the navigation -->\n</table>\n</td></tr></tbody>\n</table>\n"
+
+	/MultifunctionListBoxRendererTestWithSelectedOutput "<table width=\"10%\" border=4 bgcolor='#000000'><tbody>\n<tr><td>\n<table width=\"10%\" border=1 cellspacing=\"2\" cellpadding=\"1\">\n\n<!-- lets insert a row for the column header -->\n<tr bgcolor='#0000cc'>\n<th class=\"SelectBoxHeader\">&nbsp;MC&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;CC&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;&nbsp;Valor&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Titelname&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">FIMS&nbsp;</th>\n<th class=\"SelectBoxHeader\">newest&nbsp;</th>\n<th>&nbsp;&nbsp;</th>\n</tr>\n\n<!-- now do the box itself -->\n<tr bgcolor='#cc0000'><td colspan=7>\n<span class=\"SelectBoxSuchen\">\n<SELECT NAME=\"fld_ExtListingsBox\" SIZE=\"20\" class=\"SelectBoxSuchen\">\n<OPTION VALUE=\"4;1;1203203;UBS N;0;\" SELECTED>&nbsp;&nbsp;&nbsp;4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"13;814;1203203;UBS N;1;\">&nbsp;&nbsp;13&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"14;814;1203203;UBS N;0;\">&nbsp;&nbsp;14&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"15;814;1203203;UBS N;0;\">&nbsp;&nbsp;15&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n</SELECT>\n</span>\n</td></tr>\n\n<!-- here we go with some edit fields if required -->\n\n<!-- here we have filter fields if required -->\n\n<!-- and now the navigation -->\n</table>\n</td></tr></tbody>\n</table>\n"
+
+	/MultifunctionListBoxRendererTestWidthEditOutput "<table width=\"10%\" border=4 bgcolor='#000000'><tbody>\n<tr><td>\n<table width=\"10%\" border=1 cellspacing=\"2\" cellpadding=\"1\">\n\n<!-- lets insert a row for the column header -->\n<tr bgcolor='#0000cc'>\n<th class=\"SelectBoxHeader\">&nbsp;MC&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;CC&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;&nbsp;Valor&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Titelname&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">FIMS&nbsp;</th>\n<th class=\"SelectBoxHeader\">newest&nbsp;</th>\n<th>&nbsp;&nbsp;</th>\n</tr>\n\n<!-- now do the box itself -->\n<tr bgcolor='#cc0000'><td colspan=7>\n<span class=\"SelectBoxSuchen\">\n<SELECT NAME=\"fld_ExtListingsBox\" SIZE=\"20\" class=\"SelectBoxSuchen\">\n<OPTION VALUE=\"4;1;1203203;UBS N;0;\">&nbsp;&nbsp;&nbsp;4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"13;814;1203203;UBS N;1;\">&nbsp;&nbsp;13&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"14;814;1203203;UBS N;0;\">&nbsp;&nbsp;14&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"15;814;1203203;UBS N;0;\">&nbsp;&nbsp;15&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n</SELECT>\n</span>\n</td></tr>\n\n<!-- here we go with some edit fields if required -->\n<tr bgcolor='#00cc00'>\n<td align=center><INPUT TYPE=\"TEXT\" NAME=\"fld_edtMC\" SIZE=\"4\" MAXLENGTH=\"4\" class=\"SelectBoxFooter\" OnChange=\"OnChangeEditField(this, 0)\"></td>\n<td align=center class=\"SelectBoxFooter\">&nbsp;</td>\n<td align=center><INPUT TYPE=\"TEXT\" NAME=\"fld_edtValor\" SIZE=\"8\" MAXLENGTH=\"8\" class=\"SelectBoxFooter\" OnChange=\"OnChangeEditField(this, 2)\"></td>\n<td align=center class=\"SelectBoxFooter\">&nbsp;</td>\n<td align=center class=\"SelectBoxFooter\">&nbsp;</td>\n<td align=center class=\"SelectBoxFooter\">&nbsp;</td>\n<td>&nbsp;&nbsp;</td>\n</tr>\n\n<!-- here we have filter fields if required -->\n\n<!-- and now the navigation -->\n</table>\n</td></tr></tbody>\n</table>\n\n<script language='JavaScript1.2'>\n  <!-- hide from old browsers\n  function ClearEditFields(myform)\n  {\n    myform.fld_edtMC.value = \"\";\n    myform.fld_edtValor.value = \"\";\n    return false; /* do not submit the form*/\n  }\n  function ProcessEditFieldScripts(myform)\n  {\n    return true;\n  }\n\n  function OnChangeEditField(field, column)\n  {\n    listbox=field.form.elements[\"fld_ExtListingsBox\"];\n    row=listbox.selectedIndex;\n    return true;\n  }\n\n  //-->\n</script>\n"
+
+	/MultifunctionListBoxRendererTestWidthEditDefaultOutput "<table width=\"10%\" border=4 bgcolor='#000000'><tbody>\n<tr><td>\n<table width=\"10%\" border=1 cellspacing=\"2\" cellpadding=\"1\">\n\n<!-- lets insert a row for the column header -->\n<tr bgcolor='#0000cc'>\n<th class=\"SelectBoxHeader\">&nbsp;MC&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;CC&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;&nbsp;Valor&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Titelname&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">FIMS&nbsp;</th>\n<th class=\"SelectBoxHeader\">newest&nbsp;</th>\n<th>&nbsp;&nbsp;</th>\n</tr>\n\n<!-- now do the box itself -->\n<tr bgcolor='#cc0000'><td colspan=7>\n<span class=\"SelectBoxSuchen\">\n<SELECT NAME=\"fld_ExtListingsBox\" SIZE=\"20\" class=\"SelectBoxSuchen\">\n<OPTION VALUE=\"4;1;1203203;UBS N;0;\">&nbsp;&nbsp;&nbsp;4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"13;814;1203203;UBS N;1;\">&nbsp;&nbsp;13&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"14;814;1203203;UBS N;0;\">&nbsp;&nbsp;14&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"15;814;1203203;UBS N;0;\">&nbsp;&nbsp;15&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n</SELECT>\n</span>\n</td></tr>\n\n<!-- here we go with some edit fields if required -->\n<tr bgcolor='#00cc00'>\n<td align=center><INPUT TYPE=\"TEXT\" NAME=\"fld_edtMC\" SIZE=\"4\" MAXLENGTH=\"4\" class=\"SelectBoxFooter\" OnChange=\"OnChangeEditField(this, 0)\"></td>\n<td align=center class=\"SelectBoxFooter\">&nbsp;</td>\n<td align=center><INPUT TYPE=\"TEXT\" NAME=\"fld_edtValor\" VALUE=\"123456\" SIZE=\"8\" MAXLENGTH=\"8\" class=\"SelectBoxFooter\" OnChange=\"OnChangeEditField(this, 2)\"></td>\n<td align=center class=\"SelectBoxFooter\">&nbsp;</td>\n<td align=center class=\"SelectBoxFooter\">&nbsp;</td>\n<td align=center class=\"SelectBoxFooter\">&nbsp;</td>\n<td>&nbsp;&nbsp;</td>\n</tr>\n\n<!-- here we have filter fields if required -->\n\n<!-- and now the navigation -->\n</table>\n</td></tr></tbody>\n</table>\n\n<script language='JavaScript1.2'>\n  <!-- hide from old browsers\n  function ClearEditFields(myform)\n  {\n    myform.fld_edtMC.value = \"\";\n    myform.fld_edtValor.value = \"\";\n    return false; /* do not submit the form*/\n  }\n  function ProcessEditFieldScripts(myform)\n  {\n    return true;\n  }\n\n  function OnChangeEditField(field, column)\n  {\n    listbox=field.form.elements[\"fld_ExtListingsBox\"];\n    row=listbox.selectedIndex;\n    return true;\n  }\n\n  //-->\n</script>\n"
+
+	/MultifunctionListBoxSimpleTestWithFiltersOutput "<table width=\"10%\" border=4 bgcolor='#000000'><tbody>\n<tr><td>\n<table width=\"10%\" border=1 cellspacing=\"2\" cellpadding=\"1\">\n\n<!-- lets insert a row for the column header -->\n<tr bgcolor='#0000cc'>\n<th class=\"SelectBoxHeader\">&nbsp;MC&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;CC&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;&nbsp;Valor&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Titelname&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">FIMS&nbsp;</th>\n<th class=\"SelectBoxHeader\">newest&nbsp;</th>\n<th>&nbsp;&nbsp;</th>\n</tr>\n\n<!-- now do the box itself -->\n<tr bgcolor='#cc0000'><td colspan=7>\n<span class=\"SelectBoxSuchen\">\n<SELECT NAME=\"fld_ExtListingsBox\" SIZE=\"20\" class=\"SelectBoxSuchen\">\n<OPTION VALUE=\"4;1;1203203;UBS N;0;\">&nbsp;&nbsp;&nbsp;4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"13;814;1203203;UBS N;1;\">&nbsp;&nbsp;13&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"14;814;1203203;UBS N;0;\">&nbsp;&nbsp;14&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"15;814;1203203;UBS N;0;\">&nbsp;&nbsp;15&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n</SELECT>\n</span>\n</td></tr>\n\n<!-- here we go with some edit fields if required -->\n\n<!-- here we have filter fields if required -->\n<tr><td colspan=7><INPUT TYPE=\"SUBMIT\" NAME=\"b_Hallo\" VALUE=\"gugus\"></td></tr>\n\n<!-- and now the navigation -->\n</table>\n</td></tr></tbody>\n</table>\n"
+
+	/MultifunctionListBoxSimpleTestWithNavigationOutput "<table width=\"10%\" border=4 bgcolor='#000000'><tbody>\n<tr><td>\n<table width=\"10%\" border=1 cellspacing=\"2\" cellpadding=\"1\">\n\n<!-- lets insert a row for the column header -->\n<tr bgcolor='#0000cc'>\n<th class=\"SelectBoxHeader\">&nbsp;MC&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;CC&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;&nbsp;Valor&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Titelname&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">FIMS&nbsp;</th>\n<th class=\"SelectBoxHeader\">newest&nbsp;</th>\n<th>&nbsp;&nbsp;</th>\n</tr>\n\n<!-- now do the box itself -->\n<tr bgcolor='#cc0000'><td colspan=7>\n<span class=\"SelectBoxSuchen\">\n<SELECT NAME=\"fld_ExtListingsBox\" SIZE=\"20\" class=\"SelectBoxSuchen\">\n<OPTION VALUE=\"4;1;1203203;UBS N;0;\">&nbsp;&nbsp;&nbsp;4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"13;814;1203203;UBS N;1;\">&nbsp;&nbsp;13&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"14;814;1203203;UBS N;0;\">&nbsp;&nbsp;14&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"15;814;1203203;UBS N;0;\">&nbsp;&nbsp;15&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n</SELECT>\n</span>\n</td></tr>\n\n<!-- here we go with some edit fields if required -->\n\n<!-- here we have filter fields if required -->\n\n<!-- and now the navigation -->\n<tr><td colspan=7><table border=0 cellpadding=0 cellspacing=1 width=\"100%\"><tr><td align=center><INPUT TYPE=\"SUBMIT\" NAME=\"b_ExtListingsBoxPrev\" VALUE=\"  <  \"></td><td align=center><INPUT TYPE=\"SUBMIT\" NAME=\"b_ExtListingsBoxRefresh\" VALUE=\"Suchen\" OnClick=\"return ProcessEditFieldScripts(this.form);\"></td><td align=center><INPUT TYPE=\"SUBMIT\" NAME=\"b_ExtListingsBoxNext\" VALUE=\"  >  \"></td><td align=center><INPUT TYPE=\"SUBMIT\" NAME=\"b_ExtListingsBoxClear\" VALUE=\"Clear\" OnClick=\"return ClearEditFields(this.form);\"></td><td align=right width=\"90%\">&nbsp;</td></tr>\n</table>\n</td></tr>\n</table>\n</td></tr></tbody>\n</table>\n"
+
+	/MultifunctionListBoxSimpleTestWithStatusMessageOutput "<table width=\"10%\" border=4 bgcolor='#000000'><tbody>\n<tr><td>\n<table width=\"10%\" border=1 cellspacing=\"2\" cellpadding=\"1\">\n\n<!-- lets insert a row for the column header -->\n<tr bgcolor='#0000cc'>\n<th class=\"SelectBoxHeader\">&nbsp;MC&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;CC&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;&nbsp;Valor&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Titelname&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">FIMS&nbsp;</th>\n<th class=\"SelectBoxHeader\">newest&nbsp;</th>\n<th>&nbsp;&nbsp;</th>\n</tr>\n\n<!-- now do the box itself -->\n<tr bgcolor='#cc0000'><td colspan=7>\n<span class=\"SelectBoxSuchen\">\n<SELECT NAME=\"fld_ExtListingsBox\" SIZE=\"20\" class=\"SelectBoxSuchen\">\n<OPTION VALUE=\"4;1;1203203;UBS N;0;\">&nbsp;&nbsp;&nbsp;4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"13;814;1203203;UBS N;1;\">&nbsp;&nbsp;13&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"14;814;1203203;UBS N;0;\">&nbsp;&nbsp;14&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"15;814;1203203;UBS N;0;\">&nbsp;&nbsp;15&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n</SELECT>\n</span>\n</td></tr>\n\n<!-- here we go with some edit fields if required -->\n\n<!-- here we have filter fields if required -->\n\n<!-- and now the navigation -->\n<tr><td align=right colspan=7>Number of visible columns in List:6</td></tr>\n</table>\n</td></tr></tbody>\n</table>\n"
+
+	/MultifunctionListBoxSimpleTestWithStatusMessageAndNavigationOutput "<table width=\"10%\" border=4 bgcolor='#000000'><tbody>\n<tr><td>\n<table width=\"10%\" border=1 cellspacing=\"2\" cellpadding=\"1\">\n\n<!-- lets insert a row for the column header -->\n<tr bgcolor='#0000cc'>\n<th class=\"SelectBoxHeader\">&nbsp;MC&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;CC&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;&nbsp;Valor&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Titelname&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">FIMS&nbsp;</th>\n<th class=\"SelectBoxHeader\">newest&nbsp;</th>\n<th>&nbsp;&nbsp;</th>\n</tr>\n\n<!-- now do the box itself -->\n<tr bgcolor='#cc0000'><td colspan=7>\n<span class=\"SelectBoxSuchen\">\n<SELECT NAME=\"fld_ExtListingsBox\" SIZE=\"20\" class=\"SelectBoxSuchen\">\n<OPTION VALUE=\"4;1;1203203;UBS N;0;\">&nbsp;&nbsp;&nbsp;4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"13;814;1203203;UBS N;1;\">&nbsp;&nbsp;13&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"14;814;1203203;UBS N;0;\">&nbsp;&nbsp;14&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"15;814;1203203;UBS N;0;\">&nbsp;&nbsp;15&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n</SELECT>\n</span>\n</td></tr>\n\n<!-- here we go with some edit fields if required -->\n\n<!-- here we have filter fields if required -->\n\n<!-- and now the navigation -->\n<tr><td colspan=7><table border=0 cellpadding=0 cellspacing=1 width=\"100%\"><tr><td align=center><INPUT TYPE=\"SUBMIT\" NAME=\"b_ExtListingsBoxPrev\" VALUE=\"  <  \"></td><td align=center><INPUT TYPE=\"SUBMIT\" NAME=\"b_ExtListingsBoxRefresh\" VALUE=\"Suchen\" OnClick=\"return ProcessEditFieldScripts(this.form);\"></td><td align=center><INPUT TYPE=\"SUBMIT\" NAME=\"b_ExtListingsBoxNext\" VALUE=\"  >  \"></td><td align=center><INPUT TYPE=\"SUBMIT\" NAME=\"b_ExtListingsBoxClear\" VALUE=\"Clear\" OnClick=\"return ClearEditFields(this.form);\"></td><td align=right width=\"90%\">Number of visible columns in List:6</td></tr>\n</table>\n</td></tr>\n</table>\n</td></tr></tbody>\n</table>\n"
+
+	/BoxColumnsSimpleTestWithPulldown {
+		/List {
+			{
+				/Name	MC
+				/Align	right
+				/Width	4
+				/Value	{
+					/Lookup SelectBoxOption.marketCode
+				}
+				/Editable 0
+				/Default	"J"
+				/Pulldown {
+					/PlainList { Column.Pulldown.List }
+					/List {
+						{ /Text "*" }
+						{ /Text "J" }
+						{ /Text "N" }
+						{ /Text "?" }
+					}
+					/TextRenderer {
+						/Lookup	SelectBoxOption.Text
+					}
+					/ValueRenderer {
+						/Lookup SelectBoxOption.Text
+					}
+					/SelectedRenderer {
+						/StringCompareRenderer {
+							/String1 {
+								/Lookup {
+									/Lookup {
+										"fields.cbo"
+										{ /Lookup Column.Name }
+									}
+								}
+							}
+							/String2	{ /Lookup SelectBoxOption.Text }
+							/Equal		{ Column.Width }
+							/Unequal	{ 0 }
+						}
+					}
+					/Options			{
+						/class		SelectBoxFooter
+						/OnChange {
+							"OnChangePulldown(this, "
+							{ /Lookup ColumnIndex }
+							")"
+						}
+					}
+				}
+			}
+			{
+				/Name	CC
+				/Align	right
+				/Width	4
+				/Value	{
+					/Lookup SelectBoxOption.currencyCode
+				}
+			}
+			{
+				/Name	Valor
+				/Align	right
+				/Width	8
+				/Value	{
+					/Lookup SelectBoxOption.valorNumber
+				}
+				/Editable 1
+			}
+			{
+				/Name	Titelname
+				/Align	left
+				/Width	20
+				/Value	{
+					/Lookup SelectBoxOption.titleName
+				}
+			}
+			{
+				/Name	FIMS
+				/Align	right
+				/Width	4
+				/Value	{
+					/Lookup SelectBoxOption.fimsFlag
+				}
+			}
+			{
+				/Name	newest
+				/Align	right
+				/Width	6
+				/Value	{
+					/Lookup SelectBoxOption.newestFlag
+				}
+			}
+		}
+	}
+	/MultifunctionListBoxRendererTestPulldownOutput "<table width=\"10%\" border=4 bgcolor='#000000'><tbody>\n<tr><td>\n<table width=\"10%\" border=1 cellspacing=\"2\" cellpadding=\"1\">\n\n<!-- lets insert a row for the column header -->\n<tr bgcolor='#0000cc'>\n<th class=\"SelectBoxHeader\">&nbsp;MC&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;CC&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;&nbsp;Valor&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Titelname&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">FIMS&nbsp;</th>\n<th class=\"SelectBoxHeader\">newest&nbsp;</th>\n<th>&nbsp;&nbsp;</th>\n</tr>\n\n<!-- now do the box itself -->\n<tr bgcolor='#cc0000'><td colspan=7>\n<span class=\"SelectBoxSuchen\">\n<SELECT NAME=\"fld_ExtListingsBox\" SIZE=\"20\" class=\"SelectBoxSuchen\">\n<OPTION VALUE=\"4;1;1203203;UBS N;0;\">&nbsp;&nbsp;&nbsp;4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"13;814;1203203;UBS N;1;\">&nbsp;&nbsp;13&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"14;814;1203203;UBS N;0;\">&nbsp;&nbsp;14&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"15;814;1203203;UBS N;0;\">&nbsp;&nbsp;15&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n</SELECT>\n</span>\n</td></tr>\n\n<!-- here we go with some edit fields if required -->\n<tr bgcolor='#00cc00'>\n<td align=center><span class=\"SelectBoxFooter\"><SELECT NAME=\"fld_cboMC\" SIZE='1' class=\"SelectBoxFooter\" OnChange=\"OnChangePulldown(this, 0)\">\n<OPTION VALUE=\"*\">*\n<OPTION VALUE=\"J\">J\n<OPTION VALUE=\"N\">N\n<OPTION VALUE=\"?\">?\n</SELECT>\n</span></td>\n<td align=center class=\"SelectBoxFooter\">&nbsp;</td>\n<td align=center><INPUT TYPE=\"TEXT\" NAME=\"fld_edtValor\" SIZE=\"8\" MAXLENGTH=\"8\" class=\"SelectBoxFooter\" OnChange=\"OnChangeEditField(this, 2)\"></td>\n<td align=center class=\"SelectBoxFooter\">&nbsp;</td>\n<td align=center class=\"SelectBoxFooter\">&nbsp;</td>\n<td align=center class=\"SelectBoxFooter\">&nbsp;</td>\n<td>&nbsp;&nbsp;</td>\n</tr>\n\n<!-- here we have filter fields if required -->\n\n<!-- and now the navigation -->\n</table>\n</td></tr></tbody>\n</table>\n\n<script language='JavaScript1.2'>\n  <!-- hide from old browsers\n  function ClearEditFields(myform)\n  {\n    myform.fld_cboMC.selectedIndex = -1;\n    myform.fld_edtValor.value = \"\";\n    return false; /* do not submit the form*/\n  }\n  function ProcessEditFieldScripts(myform)\n  {\n    return true;\n  }\n\n  function OnChangeEditField(field, column)\n  {\n    listbox=field.form.elements[\"fld_ExtListingsBox\"];\n    row=listbox.selectedIndex;\n    return true;\n  }\n\n  function OnChangePulldown(field, column)\n  {\n    listbox=field.form.elements[\"fld_ExtListingsBox\"];\n    row=listbox.selectedIndex;\n    return true;\n  }\n\n  //-->\n</script>\n"
+
+	/MultifunctionListBoxRendererTestPulldownAndNavigationOutput "<table width=\"10%\" border=4 bgcolor='#000000'><tbody>\n<tr><td>\n<table width=\"10%\" border=1 cellspacing=\"2\" cellpadding=\"1\">\n\n<!-- lets insert a row for the column header -->\n<tr bgcolor='#0000cc'>\n<th class=\"SelectBoxHeader\">&nbsp;MC&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;CC&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;&nbsp;Valor&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Titelname&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">FIMS&nbsp;</th>\n<th class=\"SelectBoxHeader\">newest&nbsp;</th>\n<th>&nbsp;&nbsp;</th>\n</tr>\n\n<!-- now do the box itself -->\n<tr bgcolor='#cc0000'><td colspan=7>\n<span class=\"SelectBoxSuchen\">\n<SELECT NAME=\"fld_ExtListingsBox\" SIZE=\"20\" class=\"SelectBoxSuchen\">\n<OPTION VALUE=\"4;1;1203203;UBS N;0;\">&nbsp;&nbsp;&nbsp;4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"13;814;1203203;UBS N;1;\">&nbsp;&nbsp;13&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"14;814;1203203;UBS N;0;\">&nbsp;&nbsp;14&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION VALUE=\"15;814;1203203;UBS N;0;\">&nbsp;&nbsp;15&nbsp;&nbsp;&nbsp;814&nbsp;&nbsp;&nbsp;1203203&nbsp;&nbsp;UBS&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n</SELECT>\n</span>\n</td></tr>\n\n<!-- here we go with some edit fields if required -->\n<tr bgcolor='#00cc00'>\n<td align=center><span class=\"SelectBoxFooter\"><SELECT NAME=\"fld_cboMC\" SIZE='1' class=\"SelectBoxFooter\" OnChange=\"OnChangePulldown(this, 0)\">\n<OPTION VALUE=\"*\">*\n<OPTION VALUE=\"J\">J\n<OPTION VALUE=\"N\">N\n<OPTION VALUE=\"?\">?\n</SELECT>\n</span></td>\n<td align=center class=\"SelectBoxFooter\">&nbsp;</td>\n<td align=center><INPUT TYPE=\"TEXT\" NAME=\"fld_edtValor\" SIZE=\"8\" MAXLENGTH=\"8\" class=\"SelectBoxFooter\" OnChange=\"OnChangeEditField(this, 2)\"></td>\n<td align=center class=\"SelectBoxFooter\">&nbsp;</td>\n<td align=center class=\"SelectBoxFooter\">&nbsp;</td>\n<td align=center class=\"SelectBoxFooter\">&nbsp;</td>\n<td>&nbsp;&nbsp;</td>\n</tr>\n\n<!-- here we have filter fields if required -->\n\n<!-- and now the navigation -->\n<tr><td colspan=7><table border=0 cellpadding=0 cellspacing=1 width=\"100%\"><tr><td align=center><INPUT TYPE=\"SUBMIT\" NAME=\"b_ExtListingsBoxPrev\" VALUE=\"  <  \"></td><td align=center><INPUT TYPE=\"SUBMIT\" NAME=\"b_ExtListingsBoxRefresh\" VALUE=\"Suchen\" OnClick=\"return ProcessEditFieldScripts(this.form);\"></td><td align=center><INPUT TYPE=\"SUBMIT\" NAME=\"b_ExtListingsBoxNext\" VALUE=\"  >  \"></td><td align=center><INPUT TYPE=\"SUBMIT\" NAME=\"b_ExtListingsBoxClear\" VALUE=\"Clear\" OnClick=\"return ClearEditFields(this.form);\"></td><td align=right width=\"90%\">&nbsp;</td></tr>\n</table>\n</td></tr>\n</table>\n</td></tr></tbody>\n</table>\n\n<script language='JavaScript1.2'>\n  <!-- hide from old browsers\n  function ClearEditFields(myform)\n  {\n    myform.fld_cboMC.selectedIndex = -1;\n    myform.fld_edtValor.value = \"\";\n    return false; /* do not submit the form*/\n  }\n  function ProcessEditFieldScripts(myform)\n  {\n    return true;\n  }\n\n  function OnChangeEditField(field, column)\n  {\n    listbox=field.form.elements[\"fld_ExtListingsBox\"];\n    row=listbox.selectedIndex;\n    return true;\n  }\n\n  function OnChangePulldown(field, column)\n  {\n    listbox=field.form.elements[\"fld_ExtListingsBox\"];\n    row=listbox.selectedIndex;\n    return true;\n  }\n\n  //-->\n</script>\n"
+
+	/MultifunctionListBoxRendererAlignTest {
+		/TestData {
+		  /"0" {
+			/Column1	"1"
+			/Column2	"2"
+			/Column3	"3"
+			/Column4	"4"
+			/Column5	"5"
+		  }
+		  /"1" {
+			/Column1	"1"
+			/Column2	"2"
+			/Column3	"3"
+			/Column4	"4"
+			/Column5	"5"
+		  }
+		}
+		/List {
+			{
+				/Name			Column1
+				/Align			"center"
+				/HeaderAlign	"right"
+				/EditfieldAlign	"left"
+				/Width			12
+				/Editable		1
+			}
+			{
+				/Name			Column2
+				/Align			"right"
+				/HeaderAlign	"left"
+				/EditfieldAlign	"center"
+				/Width			12
+				/Editable		1
+			}
+			{
+				/Name			Column3
+				/Align			"left"
+				/HeaderAlign	"center"
+				/EditfieldAlign	"right"
+				/Width			12
+				/Editable		1
+			}
+			{
+				/Name			Column4
+				/Align			"left"
+				/HeaderAlign	"right"
+				/Width			12
+				/Editable		1
+			}
+			{
+				/Name			Column5
+				/Align			"center"
+				/Width			12
+				/Editable		1
+			}
+		}
+		/Output		"\n<!-- BEGIN [MyBox] -->\n<!-- specific styles -->\n\n<style type=\"text/css\">\n<!--\n.SelectBoxHeader {\n  font-family : \"Courier New\",Courier,monospace;font-size : 9pt;font-weight:bold;color: white;\n}\n.SelectBoxSuchen, .SelectBoxFooter {\n  font-family : \"Courier New\",Courier,monospace;font-size : 9pt;font-weight:normal;color: black;\n}\n//-->\n</style>\n<!-- begin of backgroundtable -->\n<table width=\"10%\" border=0><tbody>\n<tr><td>\n<!-- begin of innertable -->\n<table width=\"10%\" border=0 cellspacing=\"2\" cellpadding=\"1\">\n\n<!-- lets insert a row for the column header -->\n<tr>\n<th class=\"SelectBoxHeader\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Column1</th>\n<th class=\"SelectBoxHeader\">Column2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;&nbsp;&nbsp;Column3&nbsp;&nbsp;&nbsp;</th>\n<th class=\"SelectBoxHeader\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Column4</th>\n<th class=\"SelectBoxHeader\">&nbsp;&nbsp;&nbsp;Column5&nbsp;&nbsp;&nbsp;</th>\n<th>&nbsp;&nbsp;</th>\n</tr>\n\n<!-- now do the box itself -->\n<tr><td colspan=6>\n<span class=\"SelectBoxSuchen\">\n<SELECT NAME=\"fld_MyBox\" SIZE=\"1\" class=\"SelectBoxSuchen\">\n<OPTION>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<OPTION>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n</SELECT>\n</span>\n</td></tr>\n\n<!-- here we go with some edit fields if required -->\n<tr>\n<td align=left class=\"SelectBoxFooter\"><span class=\"SelectBoxFooter\"><INPUT TYPE=\"TEXT\" NAME=\"fld_edtMyBox_Column1\" SIZE=\"12\" MAXLENGTH=\"12\" OnChange=\"MyBox_OnChangeEditField(this, 0, 1)\" class=\"SelectBoxFooter\"></span></td>\n<td align=center class=\"SelectBoxFooter\"><span class=\"SelectBoxFooter\"><INPUT TYPE=\"TEXT\" NAME=\"fld_edtMyBox_Column2\" SIZE=\"12\" MAXLENGTH=\"12\" OnChange=\"MyBox_OnChangeEditField(this, 1, 1)\" class=\"SelectBoxFooter\"></span></td>\n<td align=right class=\"SelectBoxFooter\"><span class=\"SelectBoxFooter\"><INPUT TYPE=\"TEXT\" NAME=\"fld_edtMyBox_Column3\" SIZE=\"12\" MAXLENGTH=\"12\" OnChange=\"MyBox_OnChangeEditField(this, 2, 1)\" class=\"SelectBoxFooter\"></span></td>\n<td align=left class=\"SelectBoxFooter\"><span class=\"SelectBoxFooter\"><INPUT TYPE=\"TEXT\" NAME=\"fld_edtMyBox_Column4\" SIZE=\"12\" MAXLENGTH=\"12\" OnChange=\"MyBox_OnChangeEditField(this, 3, 1)\" class=\"SelectBoxFooter\"></span></td>\n<td align=center class=\"SelectBoxFooter\"><span class=\"SelectBoxFooter\"><INPUT TYPE=\"TEXT\" NAME=\"fld_edtMyBox_Column5\" SIZE=\"12\" MAXLENGTH=\"12\" OnChange=\"MyBox_OnChangeEditField(this, 4, 1)\" class=\"SelectBoxFooter\"></span></td>\n<td>&nbsp;&nbsp;</td>\n</tr>\n\n<!-- here we have filter fields if required -->\n\n<!-- and now the StatusMessage -->\n</table>\n<!-- end of innertable -->\n</td></tr></tbody>\n</table>\n<!-- end of backgroundtable -->\n\n<!-- and now the navigation -->\n<!-- hidden fields for editable box -->\n\n<!-- Scripts for [MyBox] -->\n\n<script language='JavaScript1.2' type='text/javascript'>\n  <!-- hide from old browsers\n  function MyBox_ClearEditFields(myform)\n  {\n    myform.fld_MyBox.selectedIndex = -1;\n    myform.fld_edtMyBox_Column1.value = \"\";\n    myform.fld_edtMyBox_Column2.value = \"\";\n    myform.fld_edtMyBox_Column3.value = \"\";\n    myform.fld_edtMyBox_Column4.value = \"\";\n    myform.fld_edtMyBox_Column5.value = \"\";\n    return false; /* do not submit the form*/\n  }\n  function MyBox_ProcessEditFieldScripts(myform)\n  {\n    return true;\n  }\n\n  function MyBox_OnChangeEditField(field, column, changeable, datatype)\n  {\n    listbox=field.form.elements[\"fld_MyBox\"];\n    row=listbox.selectedIndex;\n    var bDoChange = false;\n    if (bDoChange == true && changeable == 0) \n    { \n    	 bDoChange = false; \n    } \n    if ((bDoChange == true && changeable == 1) && (row == -1 || listbox.options[row].value.length == 0)) \n    { \n    	 bDoChange = false; \n    } \n    if (bDoChange)\n    {\n        ChangeField( MyBoxProperties.Changes, row, column, field.value );\n        UpdateField(listbox, row, column, MyBoxProperties);\n    }\n    return true;\n  }\n\n  //-->\n</script>\n<!-- END [MyBox] -->\n"
+	}
+}

@@ -1,0 +1,91 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+	/LowerBound		0
+	/UpperBound		100
+	/DumpAnythings  1		# print full Anythings
+
+	/ResultMapper {
+		/MainSwitch						0
+		/EnableAll						0
+		/DoFinalPutAny					400
+	}
+	/ConfigMapper {
+		/MainSwitch						0
+		/EnableAll						400
+	}
+	/ParameterMapper {
+		/MainSwitch						0
+		/EnableAll						400
+	}
+	/EagerParameterMapper {
+		/MainSwitch						0
+		/EnableAll						400
+	}
+	/CallDataAccesss {
+		/MainSwitch						0
+		/EnableAll						400
+	}
+	/Action {
+		/MainSwitch						0
+		/EnableAll						400
+	}
+	/ConfiguredActionTest {
+		/MainSwitch						400
+		/EnableAll						400
+	}
+	/ErrorHandlerTest {
+		/MainSwitch						400
+		/EnableAll						400
+	}
+#-----
+	/LDAPAbstractDAI {
+		/MainSwitch						400
+		/EnableAll						400
+	}
+	/LDAPModifyDAI {
+		/MainSwitch						400
+		/EnableAll						400
+	}
+	/LDAPAddDAI {
+		/MainSwitch						400
+		/EnableAll						400
+	}
+	/LDAPDeleteDAI {
+		/MainSwitch						400
+		/EnableAll						400
+	}
+	/LDAPCompareDAI {
+		/MainSwitch						400
+		/EnableAll						400
+	}
+	/LDAPSearchDAI {
+		/MainSwitch						400
+		/EnableAll						400
+	}
+	/LDAPConnectionTest {
+		/MainSwitch						400
+		/EnableAll						400
+	}
+	/LDAPConnection {
+		/MainSwitch						400
+		/EnableAll						0
+		/WaitForResult					400
+		/Bind							400
+		/TransformResult				400
+	}
+	/LDAPErrorHandler {
+		/MainSwitch						400
+		/EnableAll						400
+	}
+	/ConditionalAction {
+		/MainSwitch						100
+		/EnableAll						100
+	}
+}

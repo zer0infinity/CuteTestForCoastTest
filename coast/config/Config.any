@@ -1,0 +1,122 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+#--- Server configuration ----------------------------------------------------
+	/Server				{ "Server"}
+
+	/DLL {
+		# names of dynamically loaded libraries
+	}
+
+#--- Modules ------------------------------------
+	/Modules {
+		CacheHandlerModule
+		SecurityModule
+		RolesModule
+		PagesModule
+		ActionsModule
+		RenderersModule
+		TemplatesCacheModule
+		TRXImplsModule
+		MappersModule
+	}
+
+	/SecurityModule {
+		/Scrambler BlowfishScrambler
+		/Encoder Base64
+		/Signer	 MD5Signer
+	}
+
+#--- Role Changes and Role configurations ------------------------------------------
+
+	/RoleChanges {
+	}
+
+	/Roles {
+		/Role {
+		}
+	}
+
+#--- Pages objects and their aliases --------------------------------------------
+
+	/Pages {
+		/Page {
+			# sub pages for "Page"
+			"HelloWorldPage"
+		}
+	}
+
+#--- Renderer objects and their aliases --------------------------------------------
+
+	/Renderers {					# aliases for Renderers
+		/TableRenderer { 			# aliases for TableRenderer
+			"Table"
+		}
+		/AppletRenderer {
+			"JavaTable"
+		}
+		/FormRenderer {
+			"Form"
+		}
+		/ItemRenderer {
+			"Item"
+		}
+		/HTMLTemplateRenderer {
+			"HTML"
+		}
+		/ContextLookupRenderer {
+			"ContextLookup"
+			"Render"
+		}
+		/PageRelatedLookupRenderer {
+			"PRender"
+		}
+		/LinkRenderer {
+			"Link"
+		}
+		/URLRenderer {
+			"URL" "URLRenderer"
+		}
+		/ImageRenderer {
+			"Image"
+		}
+		/StringRenderer {
+			"String"
+		}
+		/TextAreaRenderer {
+			"TextArea"
+		}
+		/ConditionalRenderer {
+			"ConditionalRenderer" Condition
+		}
+		/HiddenFieldRenderer {
+			"Hidden"
+		}
+
+		/TextFieldRenderer {
+			Text
+		}
+
+		/ButtonRenderer {
+			Button
+		}
+
+		/ListRenderer {
+			List
+		}
+
+	}
+
+#--- Action objects and their aliases --------------------------------------------
+
+	/Actions {
+		# aliases for "Actions"
+	}
+}
+

@@ -1,0 +1,62 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+	/NumberOfRuns	1 #20000 # - how many times to loop through complete Run below
+	/Run	{ # number of steps in run given by number of slots in this anything
+		{	# initial address
+			/CurrentServer {
+				/ServerName	"sentosa.hsr.loc"
+				/Path		"/"
+				/Port		"1922"
+			}
+		}
+		#-----------------------------------------------------------------------------------------------------------------
+		# Login, ChangePassword to new value, Logout
+		{
+			#fill out form - i.e. Login
+			# fill out HTTPS FDS login form
+			/Form {
+				/slotNr		0
+				/buttonPressed "Login"		# will also do a "Force Login" since "Login" is in the same string
+				/formContents {
+					/"Customer Number:" "CH10677"
+					/Cust { /Lookup { { "UserList." {/Lookup Id} ".cuid" } }  } # Cust without "" equally valid
+					/fld_TKUserID 					{ /Lookup { { "UserList." {/Lookup Id} ".uid"  } }  }
+					/fld_TKPassword					{ /Lookup { { "UserList." {/Lookup Id} ".pw"   } }  }
+				}
+			}
+		}
+		{
+			/Link
+			{
+				/slotName "Change password" # must be exact match, change in future (?)
+			}
+		}
+		{
+			#fill out form - i.e. change password
+			/Form {
+				/slotNr		0
+				/buttonPressed "Change"
+				/formContents {
+					/fld_oldpassword { /Lookup { { "UserList." {/Lookup Id} ".pw"   } }  }
+					/fld_newpassword1 "newpasswd"
+					/fld_newpassword2 "newpasswd"
+				}
+			}
+		}
+		{
+			/Link
+			{
+				/slotName "Logoff"
+			}
+		}
+		#-----------------------------------------------------------------------------------------------------------------
+	}
+}
+

@@ -1,0 +1,161 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+#################################################################################
+#
+#	Module List definition
+#	List of modules that are getting configured during GlobalInit and ReInit
+#
+#################################################################################
+	/DLL {
+		dataaccess
+	}
+
+	/Modules {
+		DataAccessImplsModule
+		MappersModule
+		ActionsModule
+		SybaseModule
+	}
+
+	/Actions {
+		/CallDataAccessAction	{ CallDA }
+	}
+
+	/SybaseModule {
+		/ParallelSybCTDAImpls		20
+		/InterfacesPathName			"config/interfaces"
+		/Servers {
+			/HIKU_INT2 {
+				/ParallelQueries	5
+				/InterfacesPathName	"config/interfaces"
+			}
+			/SYB_FKISQA {
+				/ParallelQueries	20
+				/InterfacesPathName	"config/interfaces"
+			}
+		}
+	}
+
+	/DataAccessImpls {
+		/SybCTDAImpl {
+			/SybLocalSa {
+				SybShowDatabases
+				SybDeleteFromDatabase
+			}
+			/SybLocalTest {
+				SybSearchTest
+				SybLimitedSearchTest
+				SybLimitedSearchByParam
+				SybLimitedSearchByParamOverride
+				SybInsertDatabases
+#				SybTestTypeConversions
+				SybErrorTest
+				SybDeleteStoredProcedureTest
+				SybCreateStoredProcedureTest
+				SybExecuteStoredProcedureTest
+				SybSingleRowForSingleSelects
+				SybMultipleRowsForMultipleSelects
+			}
+		}
+		/SybCTPoolDAImpl {
+			/SybPoolLocalSa {
+				SybPoolShowDatabases
+				SybPoolDeleteFromDatabase
+			}
+			/SybPoolLocalTest {
+				SybPoolSearchTest
+				SybPoolInsertDatabases
+#				SybPoolTestTypeConversions
+				SybPoolErrorTest
+				SybPoolDeleteStoredProcedureTest
+				SybPoolCreateStoredProcedureTest
+				SybPoolExecuteStoredProcedureTest
+				SybPoolSingleRowForSingleSelects
+				SybPoolMultipleRowsForMultipleSelects
+				SybPoolSeparatedTitlesFromRows
+			}
+			/SybTestThreadDA {
+				SybTestThreadWithErrorDA
+			}
+		}
+	}
+
+	/Mappers {
+		/Input {
+			/SybCTParamMapper {
+				SybSearchTest
+				SybLimitedSearchTest
+				SybLimitedSearchByParam
+				SybLimitedSearchByParamOverride
+				SybShowDatabases
+				SybInsertDatabases
+				SybDeleteFromDatabase
+#				SybTestTypeConversions
+				SybErrorTest
+				SybDeleteStoredProcedureTest
+				SybCreateStoredProcedureTest
+				SybExecuteStoredProcedureTest
+				SybSingleRowForSingleSelects
+				SybMultipleRowsForMultipleSelects
+
+				SybPoolSearchTest
+				SybPoolShowDatabases
+				SybPoolInsertDatabases
+				SybPoolDeleteFromDatabase
+#				SybPoolTestTypeConversions
+				SybPoolErrorTest
+				SybPoolDeleteStoredProcedureTest
+				SybPoolCreateStoredProcedureTest
+				SybPoolExecuteStoredProcedureTest
+				SybPoolSingleRowForSingleSelects
+				SybPoolMultipleRowsForMultipleSelects
+				SybPoolSeparatedTitlesFromRows
+
+				SybTestThreadDA
+				SybTestThreadWithErrorDA
+			}
+		}
+		/Output {
+			/NameUsingOutputMapper {
+				SybSearchTest
+				SybLimitedSearchTest
+				SybLimitedSearchByParam
+				SybLimitedSearchByParamOverride
+				SybShowDatabases
+				SybInsertDatabases
+				SybDeleteFromDatabase
+#				SybTestTypeConversions
+				SybErrorTest
+				SybDeleteStoredProcedureTest
+				SybCreateStoredProcedureTest
+				SybExecuteStoredProcedureTest
+				SybSingleRowForSingleSelects
+				SybMultipleRowsForMultipleSelects
+
+				SybPoolSearchTest
+				SybPoolShowDatabases
+				SybPoolInsertDatabases
+				SybPoolDeleteFromDatabase
+#				SybPoolTestTypeConversions
+				SybPoolErrorTest
+				SybPoolDeleteStoredProcedureTest
+				SybPoolCreateStoredProcedureTest
+				SybPoolExecuteStoredProcedureTest
+				SybPoolSingleRowForSingleSelects
+				SybPoolMultipleRowsForMultipleSelects
+				SybPoolSeparatedTitlesFromRows
+
+				SybTestThreadDA
+				SybTestThreadWithErrorDA
+			}
+		}
+	}
+}

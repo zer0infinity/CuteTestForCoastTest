@@ -1,0 +1,29 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	# the host given here must have an accessible http-server listening on port 80
+	/Localhost {
+		/ip		"127.0.0.1"
+		/port	80
+	}
+	/Testhost {
+		/ip		"172.16.2.3"
+
+		/port	80
+	}
+	/Testhost2 {
+		/name	"www.hsr.ch"
+		/port	80
+	}
+	/Testhost3 {
+		/name	"www.microsoft.com"
+		/port	8081
+	}
+}

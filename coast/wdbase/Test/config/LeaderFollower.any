@@ -1,0 +1,30 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	#--- Acceptor pool definitions
+
+	# ports used by this server
+	/ListenerPool {
+		TCP5010 TCP5011
+	}
+
+	/TCP5010 {
+		/Port 55010
+	}
+	/TCP5011 {
+		/Port 55011
+	}
+
+	#---- Worker pool configurations
+	/ThreadPoolSize			10							# number of parallel pending requests
+#	/UsePoolStorage			0							# use preallocated memory
+#	/PoolStorageSize		1000
+#	/NumOfPoolBucketSizes	20
+}

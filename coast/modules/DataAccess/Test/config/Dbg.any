@@ -1,0 +1,175 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/LowerBound		0	# debugging on or off
+	/UpperBound		1100	# override switch: turns everything on
+	/DumpAnythings  1		# print full Anythings
+
+	/DataAccess {
+		/MainSwitch 1100
+		/EnableAll	1100
+	}
+	/DataAccessImpl {
+		/MainSwitch 1100
+		/EnableAll	1100
+	}
+	/MapperTestDAImpl {
+		/MainSwitch 1100
+		/EnableAll	1100
+	}
+	/Action {
+		/MainSwitch 0
+		/EnableAll	0
+	}
+	/CallDataAccessAction {
+		/MainSwitch 0
+		/EnableAll	0
+	}
+	/ReadXMLFileDAImpl {
+		/MainSwitch 1000
+		/EnableAll	1000
+	}
+	/XMLMapper {
+		/MainSwitch 1000
+		/EnableAll	1000
+	}
+	/LoopBackDAImpl {
+		/MainSwitch 11
+		/EnableAll	11
+	}
+	/DataAccessTest {
+		/MainSwitch 10
+		/EnableAll	20
+	}
+	/LoopBackDAImplTest {
+		/MainSwitch 11
+		/EnableAll	11
+	}
+	/RegisterableObject {
+		/MainSwitch 0
+		/EnableAll	20
+	}
+	/AliasInstaller {
+		/MainSwitch 0
+		/EnableAll	20
+	}
+	/Registry {
+		/MainSwitch 0
+		/EnableAll	20
+	}
+	/HierarchConfNamed {
+		/MainSwitch 0
+		/EnableAll	10
+	}
+	/ConfNamedObject {
+		/MainSwitch 0
+		/EnableAll	10
+	}
+	/MappersModule {
+		/MainSwitch 0
+		/EnableAll	0
+	}
+	/NameUsingOutputMapperTest {
+		/MainSwitch 11002
+		/EnableAll	0
+		/DoPut		11002
+	}
+	/DataMapperTest {
+		/MainSwitch 10
+		/EnableAll	10
+	}
+	/SimpleDAServiceTest {
+		/MainSwitch 10
+		/EnableAll	10
+	}
+	/SimpleDataAccessService {
+		/MainSwitch 10
+		/EnableAll	10
+	}
+	/WebAppService {
+		/MainSwitch 10
+		/EnableAll	10
+	}
+	/ServiceDispatcher {
+		/MainSwitch 10
+		/EnableAll	10
+	}
+	/FileDAImpl {
+		/MainSwitch 10
+		/EnableAll	10
+	}
+	/ReadFileDAImpl {
+		/MainSwitch 10
+		/EnableAll	10
+	}
+	/ReadFileDAImplTest {
+		/MainSwitch 10
+		/EnableAll	10
+	}
+	/WriteFileDAImpl {
+		/MainSwitch	1000
+		/EnableAll	1000
+	}
+	/WriteFileDAImplTest {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/AnyUtils {
+		/MainSwitch	11
+		/EnableAll	0
+	}
+	/ConfiguredActionTest {
+		/MainSwitch	0
+		/EnableAll	0
+		/DoTestWithContext	1000
+	}
+	/ParameterMapper {
+		/MainSwitch 1100
+		/EnableAll 1100
+		/DoGetAny 1100
+		/DoGetStream 1100
+	}
+	/ParameterMapperTest {
+		/MainSwitch 1100
+		/EnableAll 1100
+	}
+	/ResultMapper {
+		/MainSwitch 1100
+		/EnableAll 1100
+	}
+	/EagerResultMapper {
+		/MainSwitch 1100
+		/EnableAll 1100
+	}
+	/RootMapper {
+		/MainSwitch 1100
+		/EnableAll 1100
+	}
+	/ResultMapperTest {
+		/MainSwitch 1100
+		/EnableAll 1100
+	}
+	/RendererMapper {
+		/MainSwitch 1100
+		/EnableAll 1100
+	}
+	/NameUsingOutputMapper {
+		/MainSwitch		1100
+		/EnableAll		1100
+	}
+	/StreamToAnythingMapper {
+		/MainSwitch		1100
+		/EnableAll		1100
+	}
+	/AnythingToStreamMapper {
+		/MainSwitch		1100
+		/EnableAll		1100
+	}
+}

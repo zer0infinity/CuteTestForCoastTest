@@ -1,0 +1,83 @@
+/*
+ * Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+ * All rights reserved.
+ *
+ * This library/application is free software; you can redistribute and/or modify it under the terms of
+ * the license that is included with this library/application in the file license.txt.
+ */
+
+#ifndef _TemplateParser_H
+#define _TemplateParser_H
+
+#include "config_renderer.h"
+#include "Anything.h"
+
+//---- TemplateParser ----------------------------------------------------------
+//! <B>Used to parse HTML-Templates during TemplatesCache initialization</B>
+class EXPORTDECL_RENDERER TemplateParser
+{
+public:
+	TemplateParser() {}
+	virtual ~TemplateParser() {}
+	Anything Parse(istream &reader, const char *filename = "NO_FILE", long startline = 1L, Allocator *a = Storage::Current());
+
+protected:
+	virtual void DoParse();
+	Anything OldStyleComment();
+	Anything Macro();
+
+	bool ParseTag(String &tag, Anything &attributes);
+	Anything ParseValue();
+	bool ParseAttribute(String &name, Anything &value);
+	virtual Anything ProcessTag(const String &tagName, Anything &tagAttributes);
+	virtual Anything ProcessSpecialTag(String &tagName, Anything &tagAttributes, bool mustrender);
+	virtual Anything ProcessFormTag(const String &tagName, Anything &tagAttributes, const String &body, long startline);
+	virtual Anything ProcessScriptTag(const String &tagName, Anything &tagAttributes, const String &body, long startline);
+	Anything RenderTagAsLiteral(String &tagName, Anything &tagAttributes);
+//	bool ProcessEndTag(String &tagName);
+	virtual bool IsSpecialTag(String &tagName, Anything &tagAttributes);
+	void ParseAnything(int endChar);
+	bool IsEmptyOrWd();
+	String ReadHTMLAsString(int &endChar);
+	String ParseAsStringUpToEndTag(String &tagName);
+	void Error(const char *msg);
+
+	Anything ProcessArgs(const String &renderer, const String &args);
+	virtual void Store(String &htmlBlock);
+	void StoreInto(Anything &cache, String &htmlBlock);
+	virtual void Store(const Anything &args);
+	void CompactHTMLBlocks(Anything &cache);
+
+	String ParseName();
+	String ParseUpToWhitespaceOrMacroEnd();
+	void SkipWhitespace();
+	bool IsValidNameChar(int c);
+
+	int Get();
+	int Peek();
+	bool IsGood();
+	void PutBack(char c);
+	Anything fCache;
+	istream *fReader;
+	String	fFileName;
+	long	fLine;
+};
+
+//---- FormTemplateParser ----------------------------------------------------------
+//! <B>Used to parse Form-specific HTML-Template content</B>
+class EXPORTDECL_RENDERER FormTemplateParser: public TemplateParser
+{
+protected:
+	bool IsSpecialTag(String &tagName, Anything &tagAttributes);
+	Anything ProcessSpecialTag(String &tagName, Anything &tagAttributes, bool mustrender);
+};
+
+//---- ScriptTemplateParser ----------------------------------------------------------
+//! <B>Used to parse script-specific HTML-Template content</B>
+class EXPORTDECL_RENDERER ScriptTemplateParser: public TemplateParser
+{
+protected:
+	void DoParse();
+};
+
+#endif

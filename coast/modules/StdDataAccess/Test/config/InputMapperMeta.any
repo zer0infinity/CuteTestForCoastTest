@@ -1,0 +1,167 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+    /ExecTestIn
+    {
+		/cgiextensions	{ sh cgi pl }
+    }
+    /CgiExecTest
+    {
+		/cgiextensions	{ sh cgi pl }
+    }
+	/fdputargs
+	{
+		/Method				GET
+		/HTTPVersion		"HTTP/1.0"
+	}
+	/fdputargs2
+	{
+		/Method				POST
+		/HTTPVersion		"HTTP/1.0"
+	}
+
+	/HeaderSuppressTestMapper {	#mapper for test purposes
+		/Header	{
+			/HTTPHeaderParameterMapper {
+				/Suppress {
+					{ test1 Test2 }
+					test3
+				}
+			}
+		}
+	}
+
+	/HTTPHardCodedMapperTest {
+		/MethodMapper 	"GET"
+		/URI			"/finVAL/XS.ISA?Action=Login"
+		/HTTPVersion	"HTTP/1.1"
+		/ReqHeader		"testcase: foobah\nContent-length: 0\n"
+	}
+
+	/HTTPWebAppTest {
+		/MethodMapper 	"GET"
+		/URI			"/finVAL/XS.ISA?Action=Login"
+		/HTTPVersion	"HTTP/1.1"
+		/ReqHeader		"testcase: foobah\nContent-length: 0\n"
+	}
+
+	/webappputargs {
+		/Method		GET
+		/URI		"/udb/udbdemo"
+		/HTTPVersion	"HTTP/1.0"
+		/Authorization		"Basic AAAAAA=="
+		/SingleParams {
+			/cmd	ModUser
+			pid
+			password
+		}
+	}
+
+	/lfmTest {
+		/login		{
+			/LDAPFieldMapper {
+				/DataFormat	Base64
+			}
+		}
+		":"
+		/passwd	{
+			/LDAPFieldMapper {
+				/DataFormat	PWD
+			}
+		}
+		":"
+		/plaintext	*
+	}
+	/finvalstatic
+	{
+		/Method				*
+		/URI				*
+		/HTTPVersion		"HTTP/1.0"
+	}
+
+	/finvalstatic1
+	{
+		/Input {
+			/Method				*
+			" "
+			/URI				*
+			" "
+			/HTTPVersion		"HTTP/1.0"
+			"\n"
+			/HTTPHeader {
+				/HTTPHeaderParameterMapper	*
+			}
+			"\n"
+			/HTTPBody {
+				/HTTPBodyMapper	*
+			}
+		}
+	}
+
+	/finvalstatic2
+	{
+		/Input {
+			/env.REQUEST_METHOD		*
+			" "
+			/env.REQUEST_URI		*
+			" "
+			/env.SERVER_PROTOCOL	*
+			"\n"
+			/env.header {
+					/HTTPHeaderParameterMapper *
+			}
+			"\n"
+			/query.postparams {
+				/HTTPBodyMapper	*
+			}
+		}
+	}
+
+	/finvalstatic3
+	{
+		/Input {
+			/REQUEST_METHOD				*
+			" "
+			/URI_PARAM					*
+			" "
+			/SERVER_PROTOCOL			*
+			"\n"
+			/header {
+					/HTTPHeaderParameterMapper 	*
+			}
+			"\n"
+			/postparams {
+				/HTTPBodyMapper	*
+			}
+		}
+	}
+
+	/useSSL {
+		/Input {
+			"GET / HTTP/1.0\r\n"
+			"Connection: Keep-Alive\r\n"
+			"User/Agent: Mozilla/4.61 [en] (X11; U; Linux 2.2.10 i686\r\n"
+			"Host: zaphod.hsr.loc\r\n"
+			"\r\n"
+		}
+	}
+
+	/SSLTests
+	{
+		/Input {
+			"GET / HTTP/1.0\r\n"
+			"Connection: Close\r\n"
+			"User/Agent: Mozilla/4.61 [en] (X11; U; Linux 2.2.10 i686\r\n"
+			"Host: zaphod.hsr.ch\r\n"
+			"\r\n"
+		}
+	}
+}
+

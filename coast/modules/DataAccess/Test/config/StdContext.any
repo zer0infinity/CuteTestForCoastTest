@@ -1,0 +1,43 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/testInt	10
+	/testBool	0
+	/testLong	123
+	/testFloat	1.23
+	/testDouble 2.46
+	/testString	"foo baz"
+	/testAny {
+		/foo	baz
+	}
+	/URI "www.muc.de/~kenny"
+
+	/ArrayTestConfig {
+		/testInt	10
+		/testBool	0
+		/testLong	123
+		/testFloat	1.23
+		/testDouble 2.46
+		/testString	"foo baz"
+	}
+
+	/Mappers {
+		/Input {
+			/Mapper {
+				testmi1 testmi2 testmi3
+			}
+		}
+		/Output {
+			/Mapper {
+				testmo1 testmo2 testmo3
+			}
+		}
+	}
+}

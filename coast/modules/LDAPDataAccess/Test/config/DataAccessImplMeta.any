@@ -1,0 +1,206 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/ldapNirvanaTestCfg {
+		/Server		"XXX marvin.hsr.loc"
+		/Port		"49999"
+	}
+	/ldapWrongBindDNTestCfg {
+		/Server		"marvin.hsr.loc"
+		/Port		"49999"
+
+	/ldapNirvanaTest {
+		/Server		"xxmarvin.hsr.loc"
+		/Port		"665"
+	}
+
+	/ldapWrongBindDNTest {
+		/Server		"marvin.hsr.loc"
+		/Port		"665"
+		/Bind		"cn=Kim Dojo"
+		/BindPW		"testtesttest"
+	}
+	/ldapWrongBindPWTestCfg {
+		/Server		"marvin.hsr.loc"
+		/Port		"49999"
+		/Bind		"cn=Directory Manager"
+		/BindPW		"Kim Dojo"
+	}
+
+	/ldapDaImplTest {
+		/Server		"marvin.hsr.loc"
+		/Port		"49999"
+	}
+	/ldapEmptySearch {
+		/Server		"marvin.hsr.loc"
+		/Port		"49999"
+	}
+	/ldapDaImplEnvTestCfg {
+		/Server		"marvin.hsr.loc"
+		/Port		"49999"
+		/GetDNComponents 1L
+	}
+	/ldapSearchTestCfg {
+		/Server		"marvin.hsr.loc"
+		/Port		"49999"
+	}
+	/ldapSearchTest2Cfg {
+		/Server		"marvin.hsr.loc"
+		/Port		"49999"
+	}
+	/ldapQueryCodedInConfiguration {
+		/Server		"marvin.hsr.loc"
+		/Port		"49999"
+	}
+	/SearchForGivenService {
+		/Server		"marvin.hsr.loc"
+		/Port		"49999"
+	}
+	/ldapCompareTest {
+		/Server		"marvin.hsr.loc"
+		/Port		"49999"
+		/Bind		"cn=Directory Manager"
+		/BindPW		{ /StringCompareRenderer { /String1 "a" /String2 "b" /Equal "blah" /Unequal "ifaifaifa"} }
+	}
+	/ldapCompareTest1 {
+		/Server		"marvin.hsr.loc"
+		/Port		"49999"
+	}
+
+	/ldapModifyTest {
+		/Server		"marvin.hsr.loc"
+		/Port		"49999"
+		/Bind		"cn=Directory Manager"
+		/BindPW		"ifaifaifa"
+	}
+
+	/ldapAddTest {
+		/Server		"marvin.hsr.loc"
+		/Port		"49999"
+		/Bind		"cn=Directory Manager"
+		/BindPW		"ifaifaifa"
+	}
+
+	/ldapDelTest {
+		/Server		"marvin.hsr.loc"
+		/Port		"49999"
+		/Bind		"cn=Directory Manager"
+		/BindPW		"ifaifaifa"
+	}
+
+	/TimeLimitExceededTest {
+		/Server		"marvin.hsr.loc"
+		/Port		"49999"
+	}
+
+	/ldapDASearchESID {
+		/Server		"marvin.hsr.loc"
+		/Port		"49999"
+	}
+	/ldapDASearchHEXID {
+		/Server		"marvin.hsr.loc"
+		/Port		"49999"
+	}
+	/ldapDASearchUID {
+		/Server		"marvin.hsr.loc"
+		/Port		"49999"
+	}
+	/ldapDASearchOUuser {
+		/Server		"marvin.hsr.loc"
+		/Port		"49999"
+	}
+	/ldapDASearchO {
+		/Server		"marvin.hsr.loc"
+		/Port		"49999"
+	}
+	/ldapDASearchONoMapping
+	{
+		/NoHTMLCharMapping	1
+	}
+	/ldapDASearchOPlainBinary
+	{
+		/PlainBinaryValues	1
+	}
+	/ldapDASearchC {
+		/Server		"marvin.hsr.loc"
+		/Port		"49999"
+	}
+	/ldapDASearchOUcontainer {
+		/Server		"marvin.hsr.loc"
+		/Port		"49999"
+	}
+	/ldapDASearchSID {
+		/Server		"marvin.hsr.loc"
+		/Port		"49999"
+	}
+	/ldapDASearchPEID {
+		/Server		"marvin.hsr.loc"
+		/Port		"49999"
+	}
+	/ldapDASearchOUcluster {
+		/Server		"marvin.hsr.loc"
+		/Port		"49999"
+	}
+	/ldapDASearchOTID {
+		/Server		"marvin.hsr.loc"
+		/Port		"49999"
+	}
+	/ldapModifyUIDTest {
+		/Server		"marvin.hsr.loc"
+		/Port		"49999"
+		/Bind		"cn=Directory Manager"
+		/BindPW		"ifaifaifa"
+	}
+	/ldapDADelUserGAGA  {
+		/Server		"marvin.hsr.loc"
+		/Port		"49999"
+		/Bind		"cn=Directory Manager"
+		/BindPW		"ifaifaifa"
+	}
+
+	/ldapDASearchUserGAGA {
+		/Server		"marvin.hsr.loc"
+		/Port		"49999"
+	}
+
+	/ldapDAAddUserGAGA {
+		/Server		"marvin.hsr.loc"
+		/Port		"49999"
+		/Bind		"cn=Directory Manager"
+		/BindPW		"ifaifaifa"
+	}
+
+	/ldapDAModifyUserGAGA {
+		/Server		"marvin.hsr.loc"
+		/Port		"49999"
+		/Bind		"cn=Directory Manager"
+		/BindPW		"ifaifaifa"
+	}
+
+	/ldapDACompareUserGAGA {
+		/Server		"marvin.hsr.loc"
+		/Port		"49999"
+		/Bind		"cn=Directory Manager"
+		/BindPW		"ifaifaifa"
+	}
+
+	/ListMapperTestDA
+	{
+		/DataType Anything
+		/transfer
+		{
+			/LdapIn1  LdapOut
+			/LdapIn2  LdapOut
+			/LdapIn3  LdapOut
+		}
+	}
+
+}
+

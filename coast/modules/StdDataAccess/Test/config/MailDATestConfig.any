@@ -1,0 +1,62 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/Mailhost	smtp.hsr.loc
+	/Helo		hsr.loc
+	/FromName	TestUser@hsr.ch
+	/ToName		slzh@hsr.ch
+
+	/RunTestCases {
+		/MailDAOkTestWithHelo	{
+			/TheAction	{ /CallDA	{ /DataAccess TestMail } }
+			/Query {
+				/Mailhost	%Mailhost
+				/Helo		%Helo
+				/From		%FromName
+				/To			%ToName
+				/Subject	"MailDA Test"
+				/Message	"Test is ok"
+				/Timeout 120
+			}
+		}
+		/MailDAOkTest	{
+			/TheAction	{ /CallDA	{ /DataAccess TestMail } }
+			/Query {
+				/Mailhost	%Mailhost
+				/From		%FromName
+				/To			%ToName
+				/Subject	"MailDA Test"
+				/Message	"Test is ok"
+			}
+		}
+		/MailDAFailTestNoTo {
+			/TheAction	{ /CallDA	{ /DataAccess TestMail } }
+			/Query {
+				/Mailhost	%Mailhost
+				/From		%FromName
+				/Subject	"MailDA Test"
+				/Message	"Test is not ok"
+			}
+			/ExpectedResult 0
+		}
+		/MailDAFailTestWrongPort	{
+			/TheAction	{ /CallDA	{ /DataAccess TestMail } }
+			/Query {
+				/Mailhost	%Mailhost
+				/MailhostPort	21121
+				/From		%FromName
+				/To			%ToName
+				/Subject	"MailDA Test"
+				/Message	"Test is not ok"
+			}
+			/ExpectedResult 0
+		}
+	}
+}

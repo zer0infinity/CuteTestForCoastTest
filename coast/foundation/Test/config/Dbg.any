@@ -1,0 +1,170 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/LowerBound							0
+	/UpperBound							20
+	/DumpAnythings  					1
+
+	/DbgTest {
+		/MainSwitch						0
+		/EnableAll						0
+
+		/FirstLevel						0
+		/Second {
+			/MainSwitch					0
+			/EnableAll					0
+
+			/SecondLevel				0
+			/Third {
+				/ThirdLevel				0
+			}
+		}
+	}
+	/AnythingParser {
+		/MainSwitch						60
+		/EnableAll						0
+		/any							60
+		/DoParseSequence				50
+		/DoParse {
+			/MainSwitch					50
+			/EnableAll					0
+			/any						50
+		}
+		/ImportIncludeAny				60
+	}
+	/SlotFinder{
+		/MainSwitch						77
+		/EnableAll						0
+	}
+	/SlotCleaner{
+		/MainSwitch						77
+		/EnableAll						0
+	}
+	/SlotPutter {
+		/MainSwitch						77
+		/EnableAll						0
+	}
+	/Anything {
+		/MainSwitch						40
+		/EnableAll						0
+		/LookupPath {
+			/MainSwitch					40
+			/EnableAll					0
+			/any						40
+		}
+	}
+	/SlotCopier {
+		/MainSwitch						77
+		/EnableAll						0
+	}
+	/AnythingTest {
+		/MainSwitch						77
+		/EnableAll						0
+		/SlotFinderTest					0
+		/SlotCleanerTest				0
+		/SlotCopierTest					0
+		/SlotPutterTest					0
+	}
+	/Context {
+		/MainSwitch						30
+		/EnableAll						0
+
+		/HTMLDebug
+		{
+			/MainSwitch						30
+			/TmpStore						30
+			/EnvStore						30
+			/QueryStore						30
+		}
+		/Lookup							55
+	}
+	/URLFilter {
+		/MainSwitch						550
+		/EnableAll						0
+		/DoFilterState {
+			/MainSwitch						680
+			/EnableAll						685
+			/query							681
+		}
+		/FilterState {
+			/MainSwitch						680
+			/EnableAll						685
+			/query							681
+		}
+	}
+	/Server {
+		/MainSwitch						550
+		/EnableAll						120
+		/FilterQuery					550
+	}
+	/PipeExecutor {
+		/MainSwitch						1000
+		/EnableAll						1000
+	}
+	/PipeExecutorTest {
+		/MainSwitch						1000
+		/EnableAll						1000
+	}
+	/System {
+		/MainSwitch						11
+		/EnableAll						11
+		/FindFile						1000
+		/DoSingleSelect					1000
+	}
+	/EndPoint {
+		/MainSwitch						1000
+		/EnableAll						1000
+	}
+	/Socket{
+		/MainSwitch						1000
+		/EnableAll						000
+		/IsReady						1000
+	}
+	/Acceptor {
+		/MainSwitch						1000
+		/EnableAll						1000
+	}
+	/AcceptorTest {
+		/MainSwitch						1000
+		/EnableAll						1000
+	}
+	/Connector {
+		/MainSwitch						60
+		/EnableAll						60
+	}
+	/AnyUtils {
+		/MainSwitch						0
+		/EnableAll						0
+		/AnyCompareEqual				0
+		/AnyMerge {
+			/MainSwitch					11
+			/EnableAll					0
+			/TraceInputAny				0
+		}
+		/DoAnyMerge {
+			/MainSwitch					11
+			/EnableAll					0
+			/TraceInputAny				0
+		}
+	}
+	/AnyUtilsTest {
+		/MainSwitch						0
+		/EnableAll						0
+		/MergeTest						11
+	}
+	/SystemTest {
+		/MainSwitch						11
+		/EnableAll						11
+	}
+	/ResolverTest {
+		/MainSwitch						20
+		/EnableAll						20
+	}
+}

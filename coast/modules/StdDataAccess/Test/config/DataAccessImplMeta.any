@@ -1,0 +1,45 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/fdputargs
+	{
+		/Server				"153.46.248.7"	# finxs server
+		/Port				"80"
+	}
+	/fdputargs2
+	{
+		/Server				"153.46.248.7"	# finxs server
+		/Port				"80"
+	}
+
+	/useSSLTest
+	{
+		/Server				"tonga.zh.hsr.ch"
+		/Port				"443"
+		/UseSSL				1
+		/Timeout			30
+	}
+
+	/ErrorHandlingTest {
+		/Server				"153.46.30.25"
+		/Port				"8181"
+		/UseSSL				0
+		/Timeout			1
+	}
+
+	/webappputargs {
+		/Server		"192.168.85.5"
+		/Port		"443"
+	}
+	/webappputargs2 {
+		/Server		"192.168.85.5"
+		/Port		"443"
+	}
+}

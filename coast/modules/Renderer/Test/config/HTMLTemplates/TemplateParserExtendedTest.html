@@ -1,0 +1,17 @@
+<form method=post name=ActionFoundInPageAny action=PageInternalActionScript>
+<input type=text value=abc size=5 name=dummyfield>
+</form><form method=post name=ActionFoundInRoleAny action=GoBanner>
+<input type=text value=abc size=5 name=dummyfield>
+</form><form method=post name=PageSpecificActionFoundInRoleAny action=PageSpecificActionToken>
+<input type=text value=abc size=5 name=dummyfield>
+</form><form method=post name=PageSpecificStayOnSamePageTokenFoundInRoleAny action=StayOnTemplateParserExtendedTest>
+<input type=text value=abc size=5 name=dummyfield>
+</form><form method=post name=ActionNotFoundInRoleAny action=GoNoWhere>
+<input type=text value=abc size=5 name=dummyfield>
+</form><form method=post name=ActionFoundInRTCustomerAny action=PageRoleSpecificActionToken>
+<input type=text value=abc size=5 name=dummyfield>
+</form><form method=post name=ActionFoundInRoleAny action=GoBanner baseaddr="https://mytest:443/test1">
+<input type=text value=abc size=5 name=dummyfield>
+</form><form method=post name=ActionFoundInRoleAny action=GoBanner baseaddr=[[#wd ContextLookupRenderer SecureBaseAddr]]>
+<input type=text value=abc size=5 name=dummyfield>
+</form>

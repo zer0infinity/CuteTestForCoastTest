@@ -1,0 +1,137 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	# replicated config used by testcases
+	/testport 54242
+	/UseBaseURL			0
+
+	# --- config used to drive successful login attempt
+
+	/DefaultRequest {
+		/env {
+			/REMOTE_ADDR 		"dummy"
+			/HTTP_USER_AGENT	"dummy"
+		}
+		/query *
+	}
+ 	/BadLoginRequest {
+		/env {
+			/REMOTE_ADDR 		"dummy"
+			/HTTP_USER_AGENT	"dummy"
+		}
+		/query {
+			/action		"LoginAction"
+			/LoginName	"baduser"
+		}
+	}
+ 	/GoodLoginRequest {
+		/env {
+			/REMOTE_ADDR 		"dummy"
+			/HTTP_USER_AGENT	"dummy"
+		}
+		/query {
+			/action		"LoginAction"
+			/LoginName	"Coast"
+		}
+	}
+ 	/CustomerRequest2 {
+		/env {
+			/REMOTE_ADDR 		"dummy"
+			/HTTP_USER_AGENT	"dummy"
+		}
+		/query {
+			/action		"GoCustomer2Action"
+		}
+	}
+ 	/LogoutRequest {
+		/env {
+			/REMOTE_ADDR 		"dummy"
+			/HTTP_USER_AGENT	"dummy"
+		}
+		/query {
+			/action		"Logout"
+		}
+	}
+
+#--- Server configuration ----------------------------------------------------
+	/Server				{ "PBOWTypeServer" }
+	/Servers {
+		/Server "PBOWTypeServer"
+	}
+
+#	/ServerModules {
+#		{
+#			/ServerName				"Server"
+#		}
+#	}
+
+	/DLL { }	# names of dynamically loaded libraries
+
+#--- Modules ------------------------------------
+	/Modules {
+		SecurityModule
+		RolesModule
+		PagesModule
+		RenderersModule
+		AcceptorFactoriesModule
+		SessionListManager
+	}
+
+	/SessionListManager {
+	  /MaxSessionsAllowed 50
+	  /CleanerTimeout 720
+	  /CleanerAction None
+	  /SessionFactory SessionFactory
+	}
+	/AcceptorFactories {
+		/AcceptorFactory {
+			TCP4242
+		}
+
+	}
+
+	/SecurityModule { # SOP: use base items, because we do not want dependency on libsecurity.so
+		/Scrambler Scrambler
+		/Encoder Encoder
+		/Signer	 Signer
+	}
+	/Roles {
+		/Role {
+			Guest
+			Customer
+
+			# PBOW type test
+			PBOWTypeGuest
+			PBOWTypeCustomer
+		}
+	}
+	/Pages {
+		/Page {
+			# sub pages for "Page"
+			/SessionIdPage {
+				ErrorPage		# predefined page
+				/PBOWGuestPage { PBOWLoginPage }
+				/PBOWCustomerOnlyPage { PBOWCustomerOnlyPage2 }
+			}
+		}
+	}
+
+#--- Renderer objects and their aliases --------------------------------------------
+
+	/Renderers { }	# aliases for Renderers
+
+#--- Action objects and their aliases --------------------------------------------
+
+	/Actions {
+		/LoginAction {
+			"Login"		# automatically generated token
+		}
+	}	# aliases for "Actions"
+}

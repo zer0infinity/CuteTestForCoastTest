@@ -1,0 +1,69 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+        /LowerBound		00
+        /UpperBound		320
+        /DumpAnythings	1
+
+        /Base64 {
+			/MainSwitch		310
+			/EnableAll		320
+        }
+        /Encoder {
+        	/MainSwitch		100
+			/EnableAll		110
+        }
+        /Signer {
+        	/MainSwitch		100
+			/EnableAll		110
+        }
+        /SecurityItem {
+        	/MainSwitch		300
+			/EnableAll		110
+
+			/Encode	310
+			/DoLoadConfig 310
+			/Init 310
+        }
+        /BlowfishScrambler {
+        	/MainSwitch		200
+			/EnableAll		210
+        }
+        /Base64Encoder{
+        	/MainSwitch		100
+			/EnableAll		110
+        }
+        /Scrambler {
+        	/MainSwitch		100
+			/EnableAll		110
+        }
+        /TableCompressor {
+        	/MainSwitch		100
+			/EnableAll		130
+			/Init	100
+			/DoLoadConfig 100
+			/DoGetConfigName 100
+
+        }
+        /SecurityModule{
+			/MainSwitch		300
+			/EnableAll		310
+
+			/UnscrambleState 100
+		}
+		/ScrambleStateTest {
+			/MainSwitch		300
+			/EnableAll		310
+
+			/DoScrambleTest 300
+
+		}
+
+}

@@ -1,0 +1,64 @@
+/*
+ * Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+ * All rights reserved.
+ *
+ * This library/application is free software; you can redistribute and/or modify it under the terms of
+ * the license that is included with this library/application in the file license.txt.
+ */
+
+#include <iostream.h>
+
+//--- standard modules used ----------------------------------------------------
+#include "Anything.h"
+#include "Context.h"
+#include "Dbg.h"
+
+//--- interface ------------
+#include "SlotNameRenderer.h"
+
+//---- SlotNameRenderer ---------------------------------------------------------------
+RegisterRenderer(SlotNameRenderer);
+
+SlotNameRenderer::SlotNameRenderer(const char *name) : Renderer(name) { }
+
+SlotNameRenderer::~SlotNameRenderer() { }
+
+void SlotNameRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+{
+	StartTrace(SlotNameRenderer.RenderAll);
+
+	TraceAny(config, "config");
+
+	String value, index;
+	ROAnything roaSlotConfig;
+
+	if (config.LookupPath(roaSlotConfig, "PathName")) {
+		RenderOnString(value, c, roaSlotConfig);
+	} else {
+		Trace("Error in SlotNameRenderer::RenderAll, PathName not defined");
+		reply << String("");
+		return;
+	}
+	//cerr << "PathName: [" << value << "]" << endl;
+	Trace("PathName: [" << value << "]");
+	ROAnything roAnyTemp = c.Lookup(value);
+	//cerr << "roAnyTemp: [" << roAnyTemp << "]" << endl;
+
+	if (config.LookupPath(roaSlotConfig, "Index")) {
+		RenderOnString(index, c, roaSlotConfig);
+	} else {
+		Trace("Error in SlotNameRenderer::RenderAll, Index not defined");
+		reply << String("");
+		return;
+	}
+	Trace("Index: [" << index << "]");
+	//cerr << "Index: [" << index << "]" << endl;
+
+	long i = index.AsLong(-1);
+	if ( i < 0 ) {
+		reply << "";
+	} else {
+		//cerr << "SlotName: [" << roAnyTemp.SlotName( i ) << "]" << endl;
+		reply << roAnyTemp.SlotName( i );
+	}
+}

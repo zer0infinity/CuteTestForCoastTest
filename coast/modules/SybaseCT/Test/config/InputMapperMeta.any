@@ -1,0 +1,214 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+#-- User data  ----------------------
+	/SybSearchTest {
+		/SQL	{
+			/RendererMapper {
+				"select au_fname, au_lname from authors where au_lname='Bennet'"
+			}
+		}
+	}
+	/SybPoolSearchTest	%SybSearchTest
+	/SybLimitedSearchTest {
+		/SQL	{
+			"select * from authors"
+		}
+		/SybDBMaxResultSize	4
+	}
+	/SybLimitedSearchByParam {
+		/SQL	{
+			"select * from authors"
+		}
+	}
+	/SybLimitedSearchByParamOverride %SybLimitedSearchByParam
+	/SybShowDatabases {
+		/SQL	{
+			/RendererMapper {
+				"SELECT "
+				{ /ContextLookupRenderer DesiredFields }
+				" FROM master..sysdatabases where name='master'"
+			}
+		}
+	}
+	/SybPoolShowDatabases	%SybShowDatabases
+	/SybInsertDatabases {
+		/SQL	{
+			/RendererMapper {
+				"INSERT INTO pub2..au_pix VALUES ( 'cirp',NULL,NULL,NULL,NULL,NULL)"
+			}
+		}
+	}
+	/SybPoolInsertDatabases	%SybInsertDatabases
+	/SybDeleteFromDatabase {
+		/SQL	{
+			/RendererMapper {
+				"DELETE FROM pub2..au_pix where au_id='cirp'"
+			}
+		}
+	}
+	/SybPoolDeleteFromDatabase	%SybDeleteFromDatabase
+	/SybTestTypeConversions {
+		/SQL	{
+			"set rowcount 1 SELECT * FROM pub2.guest.TestTypeTable"
+		}
+	}
+	/SybPoolTestTypeConversions	%SybTestTypeConversions
+	/SybErrorTest {
+		/SQL	{
+			/RendererMapper {
+				"INSERT INTO GaGaTable "
+				"VALUES (NULL,'Hallo')"
+			}
+		}
+	}
+	/SybPoolErrorTest	%SybErrorTest
+	/SybDeleteStoredProcedureTest {
+		/SQL {
+			/RendererMapper {
+				"if exists (select name from sysobjects where type = \"P\" "
+				"and name = \"sample_rpc\") "
+				" Begin	"
+				"   drop proc sample_rpc "
+				" End "
+			}
+		}
+	}
+	/SybPoolDeleteStoredProcedureTest	%SybDeleteStoredProcedureTest
+	/SybCreateStoredProcedureTest {
+		/SQL {
+			/RendererMapper {
+				"create proc sample_rpc (@intparam int, "
+				"@sintparam smallint output, @floatparam float output, "
+				"@moneyparam money output, "
+				"@dateparam datetime output, @charparam char(20) output, "
+				"@binaryparam binary(20) output) "
+				"as "
+				"select @intparam, @sintparam, @floatparam, @moneyparam, "
+				"@dateparam, @charparam, @binaryparam "
+				"select @sintparam = @sintparam + @intparam "
+				"select @floatparam = @floatparam + @intparam "
+				"select @moneyparam = @moneyparam + convert(money, @intparam) "
+				"select @dateparam = '09 Aug 2001 05:10PM' "
+				"select @charparam = \"The char parameters\" "
+				"select @binaryparam = @binaryparam "
+				"print \"This is the message printed out by sample_rpc.\""
+			}
+		}
+	}
+	/SybPoolCreateStoredProcedureTest	%SybCreateStoredProcedureTest
+	/SybExecuteStoredProcedureTest {
+		/SQL {
+			/RendererMapper {
+				"declare @intvar int,"
+				" @sintparam smallint,"
+				" @floatparam float,"
+				" @moneyparam money,"
+				" @dateparam datetime,"
+				" @charparam char(20),"
+				" @binaryparam binary(20)"
+				" select @intvar = 2,"
+				" @sintparam = 234,"
+				" @floatparam = 0.12, "
+				" @moneyparam = convert(money, '300.90'),"
+				" @dateparam = '08 Aug 2001 04:10PM',"
+				" @binaryparam = 0xff"
+				" EXEC sample_rpc"
+				" @intvar,"
+				" @sintparam out,"
+				" @floatparam out,"
+				" @moneyparam out,"
+				" @dateparam out,"
+				" @charparam out,"
+				" @binaryparam out"
+			}
+		}
+	}
+	/SybPoolExecuteStoredProcedureTest	%SybExecuteStoredProcedureTest
+	/SybSingleRowForSingleSelects {
+		/SQL {
+			/RendererMapper {
+				"select min(au_id) Rmin, count(*) Rcount, max(au_id) Rmax from authors"
+			}
+		}
+	}
+	/SybPoolSingleRowForSingleSelects	%SybSingleRowForSingleSelects
+	/SybMultipleRowsForMultipleSelects {
+		/SQL {
+			/RendererMapper {
+				"select min(au_id) Rmin from authors select count(*) Rcount from authors select max(au_id) Rmax from authors"
+			}
+		}
+	}
+	/SybPoolMultipleRowsForMultipleSelects	%SybMultipleRowsForMultipleSelects
+	/SybPoolSeparatedTitlesFromRows {
+		/SQL {
+			"select min(au_id) Rmin from authors select count(*) Rcount from authors select max(au_id) Rmax from authors"
+		}
+		/SybDBResultFormat	TitlesOnce
+	}
+	/SybTestThreadDA
+	{
+		/SQL
+		{
+			/RendererMapper
+			{
+
+				" SELECT dla.dla_nr, dla.dla_kbez, vpo.vtr_nr, vpo.vpo_nr, usr.usr_name,  "
+				" convert(varchar(11), anz.anz_dateroe, 106) anz_dateroe, "
+				" convert(varchar(11), anz.anz_datgesch, 106) anz_datgesch, usr.prt_kun, "
+				" usr.prt_stao, anz.anz_nr, anz.trn_nrzu, anz.trn_nrab  "
+				" ,vpo.vpo_eroeart, vpo.vpo_kdgart"
+				" FROM USERS usr, ANSCHLUSSZU anz, VERTRAGSPOSITION vpo, DIENSTLEISTUNG dla  "
+				" WHERE (1=1)  "
+				" AND usr.usr_name = 'tksik' "
+				" AND usr.mnd_land = 'CH' "
+				" AND usr.prt_kun = 10601 "
+				" AND anz.mnd_land = usr.mnd_land "
+				" AND anz.ans_code = usr.usr_name  "
+				" AND anz.prt_kun = usr.prt_kun  "
+				" AND vpo.mnd_land = anz.mnd_land  "
+				" AND vpo.vtr_nr = anz.vtr_nr  "
+				" AND vpo.vpo_nr = anz.vpo_nr  "
+				" AND dla.dla_nr = vpo.dla_nr  "
+				" ORDER BY usr.usr_name, dla.dla_kbez"
+						}
+		}
+	}
+
+	/SybTestThreadWithErrorDA
+	{
+		/SQL
+		{
+			/RendererMapper
+			{
+				" SELECT dla.dla_nr, dla.dla_kbez, vpo.vtr_nr, vpo.vpo_nr, usr.usr_name,  "
+				" convert(varchar(11), anz.anz_dateroe, 106) anz_dateroe, "
+				" convert(varchar(11), anz.anz_datgesch, 106) anz_datgesch, usr.prt_kun, "
+				" usr.prt_stao, anz.anz_nr, anz.trn_nrzu, anz.trn_nrab  "
+				" ,vpo.vpo_eroeart, vpo.vpo_kdgart"
+				" FROM USERS usr, ANSCHLUSSZU anz, VERTRAGSPOSITION vpo, DIENSTLEISTUNG dla  "
+				" WHERE (1=1)  "
+				" AND usr.usr_name = 'tksik' "
+				" AND usr.mnd_land = 'CH' "
+				" AND usr.prt_kun = "
+				" AND anz.mnd_land = usr.mnd_land "
+				" AND anz.ans_code = usr.usr_name  "
+				" AND anz.prt_kun = usr.prt_kun  "
+				" AND vpo.mnd_land = anz.mnd_land  "
+				" AND vpo.vtr_nr = anz.vtr_nr  "
+				" AND vpo.vpo_nr = anz.vpo_nr  "
+				" AND dla.dla_nr = vpo.dla_nr  "
+				" ORDER BY usr.usr_name, dla.dla_kbez"
+			}
+		}
+	}
+
+}

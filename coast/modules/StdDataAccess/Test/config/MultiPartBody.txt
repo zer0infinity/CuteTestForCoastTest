@@ -1,0 +1,43 @@
+Referer: http://marvin.hsr.loc:1919/uploadTest.html
+Connection: Keep-Alive
+User-Agent: Mozilla/4.7 [en] (WinNT; U)
+Host: marvin.hsr.loc:1919
+Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, image/png, */*
+Accept-Encoding: gzip
+Accept-Language: de-CH,en
+Accept-Charset: iso-8859-1,*,utf-8
+Cookie: FDState=b64:YnMwOu4iKD8l5K80Z5LG39oHcsbTEn6JqyOg$S7vR895cREzXc0cb$$HevoEUvHu8bOyjeljLFm1$VQWe4Iot$0rQAB-l2e3ICCoA4jd4fLv0AFrT6s0amAhkfW9ybZl9ygErgykJAzKNw8v
+Content-type: multipart/form-data; boundary=---------------------------210003122518197
+Content-Length: 1710
+
+-----------------------------210003122518197
+Content-Disposition: form-data; name="Datei"; filename="G:\DEVELOP\coast\foundation\Test\config\UmlautTest.any"
+Content-Type: text/html
+
+<html>test& -- Rest</html>
+
+-----------------------------210003122518197
+Content-Disposition: form-data; name="Datei1"; filename="G:\DEVELOP\coast\foundation\Test\.Sniff_LastMake"
+
+02/25/00-14:40:21
+-----------------------------210003122518197
+Content-Disposition: form-data; name="Datei2"; filename="G:\DEVELOP\coast\foundation\Test\config\len5.tst"
+
+01234
+-----------------------------210003122518197
+Content-Disposition: form-data; name="Datei"; filename="G:\DEVELOP\coast\foundation\Test\config\Test.csv"
+Content-Type: text/plain
+
+EventType;ExternalId;Language1;Title1;Info1;FromDate;ToDate;SportType1;Category1;EventCountryCode;EventPostalCode;EventCity;EventAddrURL;OrgFirstName;OrgLastName;OrgAdditionalName;OrgStreet;OrgPostalCode;OrgCity;OrgCountryCode;OrgAddrURL
+1;196;D;ENOC: European Youth Olympic Days;"Boys: 87 - 88  --  Girls: 89 - 90";29.07.03;04.08.03;Schwimmen;;FRA;;Paris;;;;;;;;;
+-----------------------------210003122518197
+Content-Disposition: form-data; name="Formname";
+Content-Type: application/x-www-form-urlencoded
+
+Button=Ok&Text=abc+123
+-----------------------------210003122518197
+Content-Disposition: form-data; name="Datei3"; filename="G:\DEVELOP\coast\foundation\Test\config\len5.tst"
+Content-Type: text/plain
+
+01234
+-----------------------------210003122518197--

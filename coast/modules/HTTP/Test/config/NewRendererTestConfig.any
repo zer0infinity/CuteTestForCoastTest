@@ -1,0 +1,103 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/EnvForAllCases {
+	}
+	/RunOnly {
+	}
+	/TestCases
+	{
+		/HTTPHeaderRendererTest1
+		{
+			/Env
+			{
+				/TestHeader
+				{
+					/WWW-Authenticate "NTLM"
+				}
+			}
+			/Renderer
+			{
+				/HTTPHeaderRenderer "TestHeader"
+			}
+			/Expected "WWW-Authenticate: NTLM\r\n"
+		}
+		/HTTPHeaderRendererTest2
+		{
+			/Env
+			{
+				/httpHeader	"TestHeader"
+				/TestHeader
+				{
+					/WWW-Authenticate "NTLM"
+				}
+			}
+			/Renderer
+			{
+				/HTTPHeaderRenderer { /ContextLookupRenderer "httpHeader" }
+			}
+			/Expected "WWW-Authenticate: NTLM\r\n"
+		}
+		/HTTPHeaderRendererSpecTest
+		{
+			/Env
+			{
+				/forlookup "NTLM"
+				/TestHeader
+				{
+					/WWW-Authenticate { {/ContextLookupRenderer forlookup} }
+				}
+			}
+			/Renderer
+			{
+				/HTTPHeaderRenderer "TestHeader"
+			}
+			/Expected "WWW-Authenticate: NTLM\r\n"
+		}
+		/HTTPHeaderRendererWrongSpecTest
+		{
+			/Env
+			{
+				/forlookupwrong "NTLM"
+				/TestHeader
+				{
+					/WWW-Authenticate { /ContextLookupRenderer forlookupwrong }
+				}
+			}
+			/Renderer
+			{
+				/HTTPHeaderRenderer "TestHeader"
+			}
+			/Expected "WWW-Authenticate: forlookupwrong\r\n"
+		}
+
+		/HTTPHeaderRendererMultiValueSpecTest
+		{
+			/Env
+			{
+				/forlookup1 "NTLM"
+				/forlookup2 "Basic"
+				/TestHeader
+				{
+					/WWW-Authenticate {
+							{ /ContextLookupRenderer forlookup1 }
+							{ /ContextLookupRenderer forlookup2 }
+					}
+				}
+			}
+			/Renderer
+			{
+				/HTTPHeaderRenderer "TestHeader"
+			}
+			/Expected "WWW-Authenticate: NTLM, Basic\r\n"
+		}
+
+	}
+}

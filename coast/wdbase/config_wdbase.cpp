@@ -1,0 +1,58 @@
+/*
+ * Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+ * All rights reserved.
+ *
+ * This library/application is free software; you can redistribute and/or modify it under the terms of
+ * the license that is included with this library/application in the file license.txt.
+ */
+
+//--- standard modules used ----------------------------------------------------
+#include "SysLog.h"
+
+//--- interface include ---------------------------------------------------------
+#include "config_wdbase.h"
+
+#if defined(WIN32)
+#ifdef _DLL
+#include "Threads.h"
+
+// DllMain() is the entry-point function for this DLL.
+BOOL WINAPI DllMain(HANDLE hinstDLL,  // DLL module handle
+					DWORD fdwReason,                    // reason called
+					LPVOID lpvReserved)                 // reserved
+{
+	switch (fdwReason) {
+
+			// The DLL is loading due to process
+			// initialization or a call to LoadLibrary.
+		case DLL_PROCESS_ATTACH:
+			SysLog::Info("wdbase: DLL_PROCESS_ATTACH called");
+			break;
+
+			// The attached process creates a new thread.
+		case DLL_THREAD_ATTACH:
+			SysLog::Info(String("wdbase::DLL_THREAD_ATTACH for [") << Thread::MyId() << "]");
+			break;
+
+			// The thread of the attached process terminates.
+		case DLL_THREAD_DETACH:
+			SysLog::Info(String("wdbase::DLL_THREAD_DETACH for [") << Thread::MyId() << "]");
+			break;
+
+			// The DLL unloading due to process termination or call to FreeLibrary.
+		case DLL_PROCESS_DETACH:
+			SysLog::Info("wdbase: DLL_PROCESS_DETACH called");
+			TerminateKilledThreads();
+			break;
+
+		default:
+			break;
+	}
+
+	return true;
+	UNREFERENCED_PARAMETER(hinstDLL);
+	UNREFERENCED_PARAMETER(lpvReserved);
+}
+
+#endif	// _DLL
+#endif	// WIN32

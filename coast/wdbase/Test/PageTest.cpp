@@ -1,0 +1,152 @@
+/*
+ * Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+ * All rights reserved.
+ *
+ * This library/application is free software; you can redistribute and/or modify it under the terms of
+ * the license that is included with this library/application in the file license.txt.
+ */
+
+//--- test modules used --------------------------------------------------------
+#include "TestSuite.h"
+
+//--- module under test --------------------------------------------------------
+#include "Page.h"
+
+//--- interface include --------------------------------------------------------
+#include "PageTest.h"
+
+//--- standard modules used ----------------------------------------------------
+#include "StringStream.h"
+#include "TestAction.h"
+#include "Dbg.h"
+
+//--- c-library modules used ---------------------------------------------------
+
+//---- PageTest ----------------------------------------------------------------
+PageTest::PageTest(TString tname) : TestCase(tname)
+{
+	StartTrace(PageTest.Ctor);
+}
+
+PageTest::~PageTest()
+{
+	StartTrace(PageTest.Dtor);
+}
+
+// setup for this TestCase
+void PageTest::setUp ()
+{
+	StartTrace(PageTest.setUp);
+	Action *testAction = Action::FindAction("TestAction");
+	if (testAction != 0) {
+		testAction->Register("ChangeMeTrue", "Action");
+		testAction->Register("ReturnFalse", "Action");
+
+		fActionConfig["TestAction"] = "";
+		fActionConfig["ConfiguredTestAction"]["RetValue"] = false;
+		fActionConfig["ConfiguredTestAction"]["ActionToken"] = "ConfigChanged";
+
+		Anything tmpStore(fCtx.GetTmpStore());
+		tmpStore["DoTest"] = fActionConfig;
+	} else {
+		cerr << "couldn't find TestAction" << endl;
+	}
+} // setUp
+
+void PageTest::tearDown ()
+{
+	StartTrace(PageTest.tearDown);
+} // tearDown
+
+void PageTest::FinishTest()
+{
+	StartTrace(PageTest.FinishTest);
+
+	Page p("test");
+	String transitionToken;
+
+	transitionToken = "NoAction";
+	t_assert(p.Finish(transitionToken, fCtx));
+	assertEqual("NoAction", transitionToken);
+
+	Anything tmpStore = fCtx.GetTmpStore();
+	tmpStore["TestAction"] = "";
+	tmpStore["ConfiguredTestAction"] = "";
+
+	transitionToken = "ChangeMeTrue";
+	t_assert(p.Finish(transitionToken, fCtx));
+	assertEqual("Changed", transitionToken);
+	assertEqual("ChangeMeTrue", tmpStore["TestAction"].AsString("x"));
+
+	tmpStore["TestAction"] = "";
+	tmpStore["ConfiguredTestAction"] = "";
+
+	transitionToken = "ReturnFalse";
+	t_assert(!p.Finish(transitionToken, fCtx));
+	assertEqual("ReturnFalse", transitionToken);
+	assertEqual("ReturnFalse", tmpStore["TestAction"].AsString("x"));
+
+	tmpStore["TestAction"] = "";
+	tmpStore["ConfiguredTestAction"] = "";
+
+	transitionToken = "DoTest";
+	t_assert(!p.Finish(transitionToken, fCtx));
+	assertEqual("ConfigChanged", transitionToken);
+	// Check if both actions took place
+	assertEqual("DoTest", tmpStore["TestAction"].AsString("x"));
+	assertEqual("DoTest", tmpStore["ConfiguredTestAction"].AsString("x"));
+}
+
+void PageTest::PrepareTest()
+{
+	StartTrace(PageTest.PrepareTest);
+
+	Page p("test");
+	String transitionToken("");
+
+	t_assert(p.Prepare(transitionToken, fCtx));
+	assertEqual("", transitionToken);
+
+	transitionToken = "NoAction";
+	t_assert(p.Prepare(transitionToken, fCtx));
+	assertEqual("NoAction", transitionToken);
+
+	Anything tmpStore = fCtx.GetTmpStore();
+	tmpStore["TestAction"] = "";
+	tmpStore["ConfiguredTestAction"] = "";
+
+	transitionToken = "ChangeMeTrue";
+	t_assert(p.Prepare(transitionToken, fCtx));
+	assertEqual("Changed", transitionToken);
+
+	tmpStore["TestAction"] = "";
+	tmpStore["ConfiguredTestAction"] = "";
+
+	transitionToken = "ReturnFalse";
+	t_assert(!p.Prepare(transitionToken, fCtx));
+	assertEqual("ReturnFalse", transitionToken);
+
+	tmpStore["TestAction"] = "";
+	tmpStore["ConfiguredTestAction"] = "";
+
+	transitionToken = "DoTest";
+	t_assert(!p.Finish(transitionToken, fCtx));
+	assertEqual("ConfigChanged", transitionToken);
+	// Check if both actions took place
+	assertEqual("DoTest", tmpStore["TestAction"].AsString("x"));
+	assertEqual("DoTest", tmpStore["ConfiguredTestAction"].AsString("x"));
+
+}
+
+// builds up a suite of testcases, add a line for each testmethod
+Test *PageTest::suite ()
+{
+	StartTrace(PageTest.suite);
+	TestSuite *testSuite = new TestSuite;
+
+	testSuite->addTest (NEW_CASE(PageTest, FinishTest));
+	testSuite->addTest (NEW_CASE(PageTest, PrepareTest));
+
+	return testSuite;
+
+} // suite

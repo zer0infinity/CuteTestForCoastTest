@@ -1,0 +1,157 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+	/LowerBound			0 		# debugging on or off
+	/UpperBound			60		# override switch: turns everything on
+	/DumpAnythings		1		# print full Anythings
+
+	/ThreadsTest {
+		/MainSwitch		51		# debugging on or off
+		/EnableAll		51		# override switch: turns everything on
+	}
+	/DiffTimer {
+		/MainSwitch		10		# debugging on or off
+		/EnableAll		20		# override switch: turns everything on
+	}
+	/DiffTimerTest {
+		/MainSwitch		10		# debugging on or off
+		/EnableAll		20		# override switch: turns everything on
+	}
+	/ThreadPoolManager {
+		/MainSwitch		100		# debugging on or off
+		/EnableAll		120		# override switch: turns everything on
+		/DoGetThread	53
+		/DoDeletePool	53
+	}
+	/Thread {
+		/MainSwitch		51		# debugging on or off
+		/EnableAll		52		# override switch: turns everything on
+		/SetState		51
+		/CheckState		51
+		/IntCheckState		51
+		/SetRunningState 51
+		/CheckRunningState 51
+		/RegisterCleaner	53
+		/CleanupThreadStorage	53
+		/Destructor		53
+	}
+	/CleanupInitializer {
+		/MainSwitch		51
+		/EnableAll		52
+	}
+	/FinalCleaner {
+		/MainSwitch		51
+		/EnableAll		52
+	}
+	/Semaphore {
+		/MainSwitch		52		# debugging on or off
+		/EnableAll		60		# override switch: turns everything on
+		/Acquire		51
+		/Release		51
+		/TryAcquire		51
+	}
+	/Mutex {
+		/MainSwitch		51		# debugging on or off
+		/EnableAll		60		# override switch: turns everything on
+		/Lock			51
+		/Unlock			51
+		/TryLock		51
+		/AcquireAfterWait	51
+		/SetCount		53
+	}
+	/Condition {
+		/MainSwitch		51		# debugging on or off
+		/EnableAll		51		# override switch: turns everything on
+		/Signal			51
+		/BroadCast		51
+	}
+	/TestThread {
+		/MainSwitch		30		# debugging on or off
+		/EnableAll		40		# override switch: turns everything on
+	}
+	/TerminateMeTestThread {
+		/MainSwitch		40		# debugging on or off
+		/EnableAll		50		# override switch: turns everything on
+	}
+	/ThreadPoolTest {
+		/MainSwitch		50		# debugging on or off
+		/EnableAll		60		# override switch: turns everything on
+	}
+	/WorkerPoolManager {
+		/MainSwitch		40		# debugging on or off
+		/EnableAll		50		# override switch: turns everything on
+	}
+	/WorkerPoolManagerTest {
+		/MainSwitch		40		# debugging on or off
+		/EnableAll		50		# override switch: turns everything on
+	}
+	/TestWorker{
+		/MainSwitch		40		# debugging on or off
+		/EnableAll		50		# override switch: turns everything on
+	}
+	/WorkerThread {
+		/MainSwitch		40		# debugging on or off
+		/EnableAll		50		# override switch: turns everything on
+	}
+	/ContentionRunner {
+		/MainSwitch		40		# debugging on or off
+		/EnableAll		50		# override switch: turns everything on
+	}
+	/RecursiveSynchTestThread {
+		/MainSwitch		50		# debugging on or off
+		/EnableAll		51		# override switch: turns everything on
+	}
+	/MTStorageTest2 {
+		/MainSwitch		40		# debugging on or off
+		/EnableAll		50		# override switch: turns everything on
+	}
+	/MT_Storage {
+		/MainSwitch		40		# debugging on or off
+		/EnableAll		50		# override switch: turns everything on
+	}
+	/SystemAPITest {
+		/MainSwitch		60		# debugging on or off
+		/EnableAll		60		# override switch: turns everything on
+		/CONDITIONSignalSingleTest		60
+		/CONDITIONSignalManyTest		60
+		/CONDITIONTestWaitOnSignalFunc	60
+		/CONDITIONBroadcastSingleTest	60
+		/CONDITIONBroadcastManyTest		60
+		/CONDITIONSTestMain		60
+		/SleepAndSignal	60
+	}
+	/SimpleTestThread {
+		/MainSwitch		60		# debugging on or off
+		/EnableAll		60		# override switch: turns everything on
+	}
+	/WPMStatHandler {
+		/MainSwitch		70		# debugging on or off
+		/EnableAll		80		# override switch: turns everything on
+	}
+
+	/LeaderFollowerPool {
+		/MainSwitch		100		# debugging on or off
+		/EnableAll		120		# override switch: turns everything on
+	}
+
+	/LeaderFollowerPoolTest {
+		/MainSwitch		100		# debugging on or off
+		/EnableAll		120		# override switch: turns everything on
+	}
+
+	/TestReactor {
+		/MainSwitch		100		# debugging on or off
+		/EnableAll		120		# override switch: turns everything on
+	}
+
+	/HandleSet {
+		/MainSwitch		100		# debugging on or off
+		/EnableAll		120		# override switch: turns everything on
+	}
+}

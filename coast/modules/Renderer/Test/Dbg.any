@@ -1,0 +1,68 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/LowerBound 	0
+	/UpperBound 	11
+	/DumpAnythings 	1
+
+	/SessionListManager {
+		/MainSwitch	0
+		/EnableAll	10
+	}
+	/OptionsPrinter {
+		/MainSwitch	0
+		/EnableAll	10
+	}
+	/LocalizationUtils{
+		/MainSwitch	0
+		/EnableAll	10
+	}
+	/HTMLTemplateCacheLoader {
+		/MainSwitch 0
+		/EnableAll	10
+	}
+	/HTMLTemplateRenderer {
+		/MainSwitch 0
+		/EnableAll	10
+	}
+	/SelectBoxRenderer {
+		/MainSwitch			0
+		/EnableAll			10
+		/RenderOptionList	10
+	}
+	/OptionListRenderer {
+		/MainSwitch 		0
+		/EnableAll			10
+	}
+	/TemplateParserTest {
+		/MainSwitch 		0
+		/EnableAll			10
+	}
+	/TemplateParser {
+		/MainSwitch 		0
+		/EnableAll			0
+		/ParseAttribute		10
+		/CompactHTMLBlocks	10
+		/ReadHTMLAsString	10
+		/ProcessArgs		10
+		/ProcessSpecialTag	10
+		/ProcessFormTag		10
+		/IsSpecialTag		10
+	}
+	/AnyUtils {
+		/MainSwitch 		0
+		/EnableAll			10
+		/AnyCompareEqual	10
+	}
+	/StringTokenizeRenderer {
+		/MainSwitch 		11
+		/EnableAll			11
+	}
+}

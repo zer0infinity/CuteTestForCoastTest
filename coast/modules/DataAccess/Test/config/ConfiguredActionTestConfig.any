@@ -1,0 +1,1020 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/RunOnly {
+#		DATest_NoMappersGiven
+#		DATest_OnlyResultMapperGiven
+#		DATest_StdMappers_NoScript
+#		DATest_StdMappers_Script
+#		DATest_StdMappers_ComplexScript
+#		DATest_StdMappers_MoreComplexScript
+#		DATest_NonexistingMapper
+#		DATest_UseFallbackMapper
+#		DATest_UseFallbackMapperFrontdoorStyle
+	}
+	/RunTestCases {
+
+	# ------ data access tests for refactored data access 16/03/04 --------
+
+		/DATest_NoMappersGiven {
+			/TheAction {
+				/CallDA {
+					/DataAccess	DATest_NoMappersGiven
+				}
+			}
+			/ExpectedResult 0
+			/Result {
+				/TmpStore {
+				  /DataAccess {
+					/DATest_NoMappersGiven {
+					  /Error {
+						"DataAccess.cpp:155 ParameterMapper::FindParameterMapper returned 0 for DATest_NoMappersGiven"
+						"DataAccess.cpp:202 ResultMapper::FindResultMapper returned 0 for DATest_NoMappersGiven"
+					  }
+					}
+				  }
+				}
+			}
+		}
+
+		# This test also covers the case of an unknown mapper name
+		/DATest_OnlyResultMapperGiven {
+			/TheAction {
+				/CallDA {
+					/DataAccess	DATest_OnlyResultMapperGiven
+				}
+			}
+			/ExpectedResult 0
+			/Result {
+				/TmpStore {
+				  /DataAccess {
+					/DATest_OnlyResultMapperGiven {
+					  /Error {
+						"DataAccess.cpp:155 ParameterMapper::FindParameterMapper returned 0 for DATest_OnlyResultMapperGiven"
+					  }
+					}
+				  }
+				}
+			}
+		}
+
+		/DATest_StdMappers_NoScript {
+			# uses default mappers: ParameterMapper / ResultMapper
+			/TmpStore {
+				/In	XYZ
+			}
+			/TheAction {
+				/CallDA {
+					/DataAccess	DATest_StdMappers_NoScript
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore {
+					/Mapper {
+						/Out XYZ
+					}
+				}
+			}
+		}
+
+		/DATest_StdMappers_Script {
+			# uses default mappers: ParameterMapper / ResultMapper with
+			# scripts, semantically identical to DATest_StdMappers_NoScript
+			/TmpStore {
+				/In	XYZ
+			}
+			/TheAction {
+				/CallDA {
+					/DataAccess	DATest_StdMappers_Script
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore {
+					/Mapper {
+						/Out XYZ
+					}
+				}
+			}
+		}
+
+		/DATest_StdMappers_ComplexScript {
+			/TmpStore {
+				/In	XYZ
+			}
+			/TheAction {
+				/CallDA {
+					/DataAccess	DATest_StdMappers_ComplexScript
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore {
+					/Mapper {
+						/NotOut XYZ
+					}
+					/A {
+						/B {
+							/C XYZ
+						}
+					}
+					/Out XYZ
+				}
+			}
+		}
+
+		/DATest_StdMappers_MoreComplexScript {
+			/TmpStore {
+				/In	"{ /XYZ { /abc 123 } /ZZZ { 11 /a 3 } }"
+			}
+			/TheAction {
+				/CallDA {
+					/DataAccess	DATest_StdMappers_MoreComplexScript
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore {
+					/Mapper {
+						/onlyabc	123
+						/subTreeZZZ {
+							11
+							/a	3
+						}
+						/unnamedSlot {
+							/XYZ {
+								/abc 123
+							}
+							/ZZZ {
+								11
+								/a 3
+							}
+						}
+					}
+					/RootMappedXYZ {
+						/abc	123
+					}
+					/RootSecondCopyOfSubTreeZZZ {
+						11
+						/a	3
+					}
+				}
+			}
+			/NotResult {
+				/TmpStore {
+					/Mapper {
+						/notMatchedNull	*
+					}
+				}
+			}
+		}
+
+		/DATest_NonexistingMapper {
+			# An unknown mapper in a script is treated as a key
+			/TmpStore {
+				/In XYZ
+			}
+			/TheAction {
+				/CallDA {
+					/DataAccess	DATest_NonexistingMapper
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore {
+					/Mapper {
+						/FantasyMapper XYZ
+					}
+				}
+			}
+		}
+
+		/DATest_UseFallbackMapper {
+			/TmpStore {
+				/In XYZ
+			}
+			/TheAction {
+				/CallDA {
+					/DataAccess	DATest_UseFallbackMapper
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore {
+					/Mapper {
+						/Out XYZ
+					}
+				}
+			}
+		}
+
+		/DATest_UseFallbackMapperFrontdoorStyle {
+			/TmpStore {
+				/In XYZ
+			}
+			/TheAction {
+				/CallDA {
+					/DataAccess	DATest_UseFallbackMapperFrontdoorStyle
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore {
+					/Mapper {
+						/Out XYZ
+					}
+				}
+			}
+		}
+
+	# ------ old tests (before data access refact. 16/03/04) --------------
+
+		/CallDataAccessSuceeds {
+			/TmpStore {
+				/In	XYZ
+			}
+			/TheAction {
+				/CallDA {
+					/DataAccess		CallDAOkTest
+				}
+			}
+			/Result {
+				/TmpStore {
+					/Mapper	{
+						/Out	XYZ
+					}
+				}
+			}
+		}
+		/CallDataAccessSuceedsShortCutForm {
+			/TmpStore {
+				/In	XYZ
+			}
+			/TheAction {
+				/CallDA CallDAOkTest
+			}
+			/Result {
+				/TmpStore {
+					/Mapper	{
+						/Out	XYZ
+					}
+				}
+			}
+		}
+		/CallDataAccessSuceedsWithParams {
+			/TmpStore {
+				/In	XYZ
+			}
+			/TheAction {
+				{ /CallDA {
+					/DataAccess CallDAOkTest
+					/Parameters {
+						/In	ABC
+					}
+				} }
+				{ /CallDA CallDAOkTest }
+			}
+			/Result {
+				/TmpStore {
+					/Mapper	{
+						/Out	{
+							ABC
+							XYZ
+						}
+					}
+				}
+			}
+		}
+		/CallDataAccessSuceedsWithParamsShortform {
+			/TmpStore {
+				/In	XYZ
+			}
+			/TheAction {
+				{ /CallDA {
+					CallDAOkTest
+					/Parameters {
+						/In ABBA
+					}
+				} }
+				{ /CallDA CallDAOkTest }
+			}
+			/Result {
+				/TmpStore {
+					/Mapper	{
+						/Out	{
+							ABBA
+							XYZ
+						}
+					}
+				}
+			}
+		}
+		/CallDataAccessNonExistingSlot {
+			/TmpStore {
+				/InNotThere	XYZ
+			}
+			/TheAction {
+				/CallDA CallDAOkTest
+			}
+			/Result {
+			}
+		}
+		/CallDataAccessFails {
+			/TheAction {
+				/CallDA {
+					/DataAccess		CallDANotOkTest
+				}
+			}
+			/ExpectedResult	0
+			/Result {
+			}
+		}
+		/CallNotExistingDataAccess {
+			/TheAction {
+				/CallDA {
+					/DataAccess		NotExistingDataAccess
+				}
+			}
+			/ExpectedResult	0
+		}
+		/WrongConfigured1 {
+			/TheAction {
+				/CallDA {
+					# Dataaccess instead of DataAccess
+					/Dataaccess		TestDataAccess
+				}
+			}
+			/ExpectedResult	0
+		}
+		/WrongConfigured2 {
+			/TheAction {
+				/CallDA {
+					# DataAccess is empty
+					/DataAccess		""
+				}
+			}
+			/ExpectedResult	0
+		}
+		/MyTestDAImplMetaConfigTest {
+			/TmpStore {
+				/InNotThere	XYZ
+			}
+			/TheAction {
+				/CallDA MyTestDAImplMetaConfig
+			}
+			/Result {
+				/TmpStore {
+					/Mapper	{
+						/Out	DAImplMetaConfig
+					}
+				}
+			}
+		}
+		/MyTestInputMapperConfigTest {
+			/TmpStore {
+				/InNotThere	XYZ
+			}
+			/TheAction {
+				/CallDA MyTestInputMapperConfig
+			}
+			/Result {
+				/TmpStore {
+					/Mapper	{
+						/Out {
+							InputMapperConfig
+						}
+					}
+				}
+			}
+		}
+		/MyTestParamConfigTest {
+			/TmpStore {
+				/InNotThere	XYZ
+			}
+			/TheAction {
+				/CallDA {
+					MyTestParamConfig
+					/Parameters {
+						/In ParamConfig
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/Mapper	{
+						/Out	ParamConfig
+					}
+				}
+			}
+		}
+		/MyTestTransferConfigTmpStoreTest {
+			/TmpStore {
+				/MyInputSlot	TmpStoreConfig
+				/transfer {
+					/MyInputSlot	MyOutputSlot
+				}
+			}
+			/TheAction {
+				/CallDA MyTestTransferConfigTmpStore
+			}
+			/Result {
+				/TmpStore {
+					/Mapper	{
+						/MyOutputSlot	TmpStoreConfig
+					}
+				}
+			}
+		}
+		/MyTestTransferConfigTmpStoreTypeTest {
+			/TmpStore {
+				/MyInputSlot {
+					/A	TmpStoreConfig
+				}
+				/DataType	Anything
+				/transfer {
+					/MyInputSlot	MyOutputSlot
+				}
+			}
+			/TheAction {
+				/CallDA MyTestTransferConfigTmpStore
+			}
+			/Result {
+				/TmpStore {
+					/Mapper	{
+						/MyOutputSlot {
+							/A	TmpStoreConfig
+						}
+					}
+				}
+			}
+		}
+		/MyTestTransferConfigParamsTest {
+			/TmpStore {
+				/MyInputSlot2 {
+					/B	TmpStoreConfig2
+				}
+			}
+			/TheAction {
+				/CallDA {
+					/DataAccess	MyTestTransferConfigParams
+					/Parameters {
+						/DataType	Anything
+						/transfer {
+							/MyInputSlot2	MyOutputSlot2
+						}
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/Mapper	{
+						/MyOutputSlot2 {
+							/B	TmpStoreConfig2
+						}
+					}
+				}
+			}
+		}
+		/MyTestHardCodedInputMapperTest {
+			/TheAction {
+				/CallDA {
+					/DataAccess	MyTestHardCodedInputMapperConfig
+					/Parameters {
+						/DataType	Anything
+						/transfer {
+							/In Out
+						}
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/Mapper	{
+						/Out {
+							"foo"
+							"-"
+							"bar"
+							"is the bar"
+						}
+					}
+				}
+			}
+		}
+		/MyTestTmpStoreConfigTest {
+			/TmpStore {
+				/In	TmpStoreConfig
+			}
+			/TheAction {
+				/CallDA MyTestTmpStoreConfig
+			}
+			/Result {
+				/TmpStore {
+					/Mapper	{
+						/Out	TmpStoreConfig
+					}
+				}
+			}
+		}
+		/MyTestGenericLongTest {
+			/TmpStore {
+				/In		"12345"
+			}
+			/TheAction {
+				/CallDA {
+					MyTestGeneric
+					/Parameters {
+						/DataType	long
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/Mapper	{
+						/Out	12345
+					}
+				}
+			}
+		}
+		/MyTestGenericDoubleTest {
+			/TmpStore {
+				/In		"12.345"
+			}
+			/TheAction {
+				/CallDA {
+					MyTestGeneric
+					/Parameters {
+						/DataType	double
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/Mapper	{
+						/Out	12.345
+					}
+				}
+			}
+		}
+		/MyTestGenericAnythingTest {
+			/TmpStore {
+				/In		{
+					/A	hallo
+					/B	1234
+					Gugus
+				}
+			}
+			/TheAction {
+				/CallDA {
+					MyTestGeneric
+					/Parameters {
+						/DataType	Anything
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/Mapper	{
+						/Out	{
+							/A	hallo
+							/B	1234
+							Gugus
+						}
+					}
+				}
+			}
+		}
+		/MyTestGenericAnything2Test {
+			/TmpStore {
+				/In		{
+					/A	hallo
+					/B	1234
+					Gugus
+				}
+			}
+			/TheAction {
+				/CallDA {
+					MyTestGeneric
+					/Parameters {
+						/DataType	Anything2
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/Mapper	{
+						/Out	{
+							/A	hallo
+							/B	1234
+							Gugus
+						}
+					}
+				}
+			}
+		}
+		/MyTestRendererDAScriptTest {
+			/TmpStore {
+				/A	hallo
+				/B	1234
+			}
+			/TheAction {
+				/CallDA {
+					MyTestRendererDA
+					/Parameters {
+						/DataType	Anything
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/Mapper	{
+						/Out	"hallo1234Gugus"
+					}
+				}
+			}
+		}
+		/NameUsingOutputMapperWithEmptyLocalConfigTest {
+			/TmpStore {
+				/A	hallo
+			}
+			/TheAction {
+				/CallDA	NameUsingTestWithEmptyLocalConfig
+			}
+			/Result {
+				/TmpStore {
+					/A	hallo
+					/NameUsingMapperTemp ignore
+					/QueryCountMapper {
+						/NewOutSlot "hallo"
+					}
+				}
+				/SessionStore {
+				}
+			}
+		}
+		/NameUsingOutputMapperWithLocalConfigTest {
+			/TmpStore {
+				/A	hallo
+			}
+			/TheAction {
+				/CallDA	NameUsingTestWithLocalConfig
+			}
+			/Result {
+				/TmpStore {
+				}
+				/SessionStore {
+					/NewOutSlot	hallo
+				}
+			}
+		}
+		/NameUsingOutputMapperWithNullConfigTest {
+			/TmpStore {
+				/A	hallo
+			}
+			/TheAction {
+				/CallDA	NameUsingTestWithNullConfig
+			}
+			/Result {
+				/TmpStore {
+				}
+				/SessionStore {
+					/NewOutSlot	hallo
+				}
+			}
+		}
+		/RenderedDANameTest
+		{
+			/TmpStore
+			{
+				/MyDA	MyTestRendererDA
+				/A	hallo
+				/B	1234
+			}
+			/TheAction
+			{
+				/CallDA
+				{
+					/DataAccess 	{ /ContextLookupRenderer MyDA }
+					/Parameters
+					{
+						/DataType	Anything
+					}
+				}
+			}
+			/Result
+			{
+				/TmpStore
+				{
+					/Mapper
+					{
+						/Out	"hallo1234Gugus"
+					}
+				}
+			}
+		}
+		/ReadFileDAWrongGlobalTest {
+			/TmpStore {
+				/Extension		any
+			}
+			/TheAction {
+				/CallDA		SimpleFileReadTest
+			}
+			/ExpectedResult	0
+			/Result {
+			}
+		}
+		/ReadFileDAGlobalTest {
+			/TmpStore {
+				/Extension		any
+				/Filename		TestData
+			}
+			/TheAction {
+				/CallDA		SimpleFileReadTest
+			}
+			/Result {
+				/TmpStore {
+					/Mapper	{
+						/FileContent	"#--------------------------------------------------------------------\x0A# Copyright (c) 2005 ifs\x0A# All Rights Reserved\x0A#--------------------------------------------------------------------\x0A{\x0A	/Version    1234\x0A	/Guguseli	Hallo\x0A}\x0A"
+					}
+				}
+			}
+		}
+		/ReadFileDACfgTest {
+			/TmpStore {
+				/Extension		any
+			}
+			/TheAction {
+				/CallDA {
+					/DataAccess	SimpleFileReadTest
+					/Parameters {
+						/Filename	TestData
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/Mapper	{
+						/FileContent	"#--------------------------------------------------------------------\x0A# Copyright (c) 2005 ifs\x0A# All Rights Reserved\x0A#--------------------------------------------------------------------\x0A{\x0A	/Version    1234\x0A	/Guguseli	Hallo\x0A}\x0A"
+					}
+				}
+			}
+		}
+		/AnyFileDATest {
+			/TmpStore {
+			}
+			/TheAction {
+				/CallDA {
+					/DataAccess	ReadAnythingDA
+					/Parameters {
+						/Filename	TestData
+						/Extension		any
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/Mapper	{
+						/FileContent {
+							/Version	1234
+							/Guguseli	Hallo
+						}
+					}
+				}
+			}
+		}
+		/FileXMLReadTestNoFile {
+			/TheAction {
+				/CallDA	{
+					TestFileXMLReadDAImpl
+					/Parameters {
+					/Filename "XXmlData"
+					/Extension "xml"
+					}
+				}
+			}
+			/ExpectedResult 0
+		}
+		/FileXMLReadTest {
+			/TheAction {
+				/CallDA	{
+					TestFileXMLReadDAImpl
+					/Parameters {
+					/Filename "XmlData"
+					/Extension "xml"
+					}
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore
+				{
+					/Mapper {
+					  /ParsedXMLAsAny  %XMLResult
+					}
+				}
+			}
+		}
+		/FileXMLReadTestTargetSlot {
+			/TheAction {
+				/CallDA	{
+					TestFileXMLReadDAImpl
+					/Parameters {
+					/Filename "XmlData"
+					/Extension "xml"
+					/ResultSlotName "ALocation"
+					}
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore
+				{
+					/Mapper {
+					  /ALocation  %XMLResult
+					}
+				}
+			}
+		}
+		/XMLMapperTest {
+			/TmpStore {
+			}
+			/TheAction {
+				 /CallDA {
+					TestFileXMLReadDAImplXMLMapper
+					/Parameters {
+						/Filename "XmlData"
+						/Extension "xml"
+					}
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore
+				{
+				/TestFileXMLReadDAImplXMLMapper  {
+					/LookupPathes {
+						"!0!2!0!0!0"
+						"!0!2!1!0"
+						"!0!2!2!1!0"
+						"!0!2!3!1!0"
+						"!0!2!3!2!1!0"
+						"!0!2!3!2!2!1!0"
+						"!0!2!3!3!1!0"
+						"!0!2!3!3!2!1!0"
+						"!0!3!0!0!0"
+						"!0!3!1!0"
+					}
+					/ParsedXMLAsAny %XMLResult
+				  }
+				}
+			}
+		}
+		/XMLMapperTwoTest {
+			/TmpStore {
+			}
+			/TheAction {
+				 /CallDA {
+					TestFileXMLReadDAImplXMLMapperTwo
+					/Parameters {
+					/Filename "XmlData"
+					/Extension "xml"
+					}
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore
+				{
+				/TestFileXMLReadDAImplXMLMapperTwo  {
+					/LookupPathes
+					{
+						":0:2:3:2:1:0"
+						":0:2:3:2:2:1:0"
+						":0:2:3:3:1:0"
+						":0:2:3:3:2:1:0"
+						":0:4:1:0"
+						":0:5:1:0"
+					}
+					/ParsedXMLAsAny %XMLResult
+				  }
+				}
+			}
+		}
+		/XMLMapperThreeTest {
+			/TmpStore {
+			}
+			/TheAction {
+				 /CallDA {
+					TestFileXMLReadDAImplXMLMapperThree
+					/Parameters {
+					/Filename "XmlData"
+					/Extension "xml"
+					}
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore
+				{
+				/TestFileXMLReadDAImplXMLMapperThree  {
+					/LookupPathes
+					{
+						":0:2.projects.id:0"
+						":0:3.projects.id:0"
+					}
+					/ParsedXMLAsAny %XMLResult				  }
+				}
+			}
+		}
+		/XMLMapperFourTest {
+			/TmpStore {
+			}
+			/TheAction {
+				 /CallDA {
+					TestFileXMLReadDAImplXMLMapperFour
+					/Parameters {
+					/Filename "XmlData"
+					/Extension "xml"
+					}
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore
+				{
+				/TestFileXMLReadDAImplXMLMapperFour  {
+					/LookupPathes
+					{
+						"+0+2-projects-id+0"
+						"+0+3-projects-id+0"
+					}
+					/ParsedXMLAsAny %XMLResult
+				  }
+				}
+			}
+		}
+	}
+
+	# ------------------ referred result values -----------------
+	/XMLResult
+	{
+	  {
+		/name {
+		  /empno "444"
+		}
+		"Hank"
+		{
+		  /projects {
+			/id "1"
+		  }
+		  "big bang"
+		  {
+			/functions *
+			"pl"
+		  }
+		  {
+			/functions *
+			"programmer"
+			{
+			  /subfunctions *
+			  "tester"
+			  {
+				/reportsto *
+				"bigboss"
+			  }
+			}
+			{
+			  /subfunctions *
+			  "integrator"
+			  {
+				/reportsto *
+				"ali baba"
+			  }
+			}
+		  }
+		}
+		{
+		  /projects {
+			/id "2"
+		  }
+		  "wild stuff"
+		}
+		{
+		  /skills *
+		  "c++"
+		}
+		{
+		  /skills *
+		  "perl"
+		}
+	  }
+	  "\n"
+	}
+}

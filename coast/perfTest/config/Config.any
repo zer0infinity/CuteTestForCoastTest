@@ -1,0 +1,122 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+{
+#--- Server configuration ----------------------------------------------------
+	/Application		"StressApp"
+	/AppId "Stresser" # for event logging app id...
+	/PathList			".:src:config"
+
+	/DLL {
+#		libSSL.so
+#		libstddataaccess.so
+#		libperftest.so
+	}
+
+#--- Modules ------------------------------------
+	/Modules {
+		StressersModule
+		DataAccessImplsModule
+		CacheHandlerModule
+		MappersModule
+		FlowControllersModule
+		SSLModule
+		RenderersModule
+	}
+	/Stressers {
+		/DataAccessStresser {
+			Connection1
+			LocalConnection
+		}
+		/RemoteStresser {
+			RemoteStress
+		}
+		/ThreadedStresserRunner {
+			MultiRemote
+		}
+		/FlowControlDAStresser {
+			FDSFlow FDInternalPublic
+
+		}
+	}
+	/FlowControllers {
+		/HttpFlowController {
+			FD1FinXSFlow
+			LogInFXSFlow
+			FD1UserLogin
+			FD1LoginLogoff
+			FDInternalNoLogin
+			FD1LoginLogoff2
+		}
+	}
+
+#--- Transactions related stuff -------------------------------------------------------
+
+#--- Renderer objects and their aliases --------------------------------------------
+
+	/Renderers {					# aliases for Renderers
+		/TableRenderer 			{	Table	}
+		/FormRenderer 			{	Form	}
+		/HTMLTemplateRenderer	{	HTML	}
+		/ContextLookupRenderer	{	ContextLookup	Lookup	Render	}
+		/LinkRenderer 			{	Link	}
+		/URLRenderer 			{	URL		}
+		/ImageRenderer 			{	Image	}
+		/StringRenderer 		{	String	}
+		/TextAreaRenderer 		{	TextArea}
+		/ConditionalRenderer 	{	Condition	}
+		/HiddenFieldRenderer 	{	Hidden		}
+		/TextFieldRenderer 		{	Text	}
+		/ButtonRenderer 		{	Button }
+		/RadioButtonRenderer	{	RadioButton }
+		/ListRenderer 			{	List	}
+		/BaseURLRenderer 		{	Base	}
+	}
+
+#--- TRX Implementation objects ------------------------
+	/DataAccessImpls {
+##		/HTTPDAImpl {
+##			AWebServer
+##			LocalServer
+##			AStressServer
+##		}
+##
+		/HTTPDAImpl {
+			FDSTest
+		}
+	}
+
+#--- Mapper objects ------------------------
+	/Mappers {
+		/Input {
+			/Mapper {
+				AWebServer
+				LocalServer
+				FDSTest
+			}
+			/StreamingAnythingMapper {
+				AStressServer
+			}
+		}
+		/Output {
+			/Mapper {
+				AWebServer
+				LocalServer
+				FDSTest
+			}
+			/StreamingAnythingMapper {
+				AStressServer
+			}
+			/HTTPMapper {
+
+			}
+		}
+
+	}
+
+}
+

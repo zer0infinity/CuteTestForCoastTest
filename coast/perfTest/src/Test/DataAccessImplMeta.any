@@ -1,0 +1,28 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/AWebServer {
+		/Server		172.16.0.11
+		/Port		80
+	}
+
+	/AStressServer {
+		/Server		127.0.0.1
+		/Port		6666
+	}
+	/ItopiaCh {
+		/Server		172.16.0.11
+		/Port		80
+	}
+	/HostUnknown {
+		/Server		127.0.0.1
+		/Port		12345
+	}
+}

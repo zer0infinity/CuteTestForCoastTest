@@ -1,0 +1,38 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/Allconfig isuseless
+	/PriRun	{				# Inputconfiguration for preparing
+		{  				# requests (only run once)
+			/Phase	"Prepare"
+			/Call	1
+		}
+		{
+			/Phase	"Prepare"
+			/Call	2
+		}
+	}
+	/NumberofRuns	2		# Number of times the series is run
+	/Runs	{				# Inputconfiguration for the series of
+		{  					# requests (run NumberOfRuns times)
+			/Phase	"Run"
+			/Call	1
+		}
+		{
+			/Phase	"Run"
+			/Call	2
+		}
+		{
+			/Phase	"Run"
+			/Call	3
+		}
+	}
+	/If oneMisspellsTheSlotnames
+}

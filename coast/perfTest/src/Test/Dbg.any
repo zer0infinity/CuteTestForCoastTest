@@ -1,0 +1,159 @@
+{
+	/LowerBound		0
+	/UpperBound		10
+	/DumpAnythings	1
+
+	/StressApp {
+		/MainSwitch	9
+		/EnableAll	9
+	}
+	/StressAppTest {
+		/MainSwitch	9
+		/EnableAll	9
+	}
+	/StresserThread {
+		/MainSwitch	0
+		/EnableAll	0
+		/GetResult	10
+	}
+
+	/Stresser {
+		/MainSwitch	9
+		/EnableAll	10
+	}
+
+	/DummyStresser {
+		/MainSwitch	9
+		/EnableAll	10
+	}
+
+	/DataAccessStresser {
+		/MainSwitch	9
+		/EnableAll	9
+		/GetResult	1505
+		/Run 		1505
+	}
+
+	/ThreadedStresserRunner {
+		/MainSwitch	9
+		/EnableAll	10
+	}
+
+	/RemoteStresser {
+		/MainSwitch	9
+		/EnableAll	9
+	}
+
+	/RemoteStresserTest {
+		/MainSwitch	9
+		/EnableAll	9
+	}
+
+	/FlowController {
+		/MainSwitch	9
+		/EnableAll	9
+	}
+
+	/HttpFlowController {
+		/MainSwitch	105
+		/EnableAll	105
+	}
+
+	/FlowControlDAStresser {
+		/MainSwitch	9
+		/EnableAll	9
+	}
+
+	/HTTPFlowControllerTest {
+		/MainSwitch	1505
+		/EnableAll	1505
+	}
+
+	/FlowControllerTest {
+		/MainSwitch	0
+		/EnableAll	10
+	}
+
+	/StressProcessor {
+		/MainSwitch	0
+		/EnableAll	10
+	}
+	/StressServer {
+		/MainSwitch	0
+		/EnableAll	10
+	}
+	/StreamToAnythingMapper {
+		/MainSwitch	0
+		/EnableAll	10
+	}
+	/AnythingToStreamMapper {
+		/MainSwitch	0
+		/EnableAll	10
+	}
+	/HTTPDAImpl {
+		/MainSwitch	105
+		/EnableAll	105
+	}
+
+	/HTTPFileLoader {
+		/MainSwitch	0
+		/EnableAll	10
+	}
+
+	/Mapper {
+		/MainSwitch	0
+		/EnableAll	10
+	}
+
+	/Action {
+		/MainSwitch	0
+		/EnableAll	10
+	}
+
+	/Application {
+		/MainSwitch	0
+		/EnableAll	10
+	}
+	/StressersModule {
+		/MainSwitch	0
+		/EnableAll	10
+	}
+	/AppBooter {
+		/MainSwitch	0
+		/EnableAll	10
+	}
+	/RegisterableObject {
+		/MainSwitch	0
+		/EnableAll	10
+	}
+	/AliasInstaller  {
+		/MainSwitch	0
+		/EnableAll	10
+	}
+	/HTMLComparer {
+		/MainSwitch	0
+		/EnableAll	10
+	}
+	/HTMLTreeMapper {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/HTMLTreeWriter {
+		/MainSwitch	105
+		/EnableAll	100
+		/Comment    100
+		/EndTag		105
+	}
+	/MyHTMLWriter {
+		/MainSwitch		105
+		/EnableAll		05
+		/Comment    	1200
+		/Tag			105
+		/RenderFontTag	105
+		/RenderMetaTag	105
+	}
+	/FlowControllerPrepareRequestAction {
+		/MainSwitch						15
+		/EnableAll						15
+	}
+}

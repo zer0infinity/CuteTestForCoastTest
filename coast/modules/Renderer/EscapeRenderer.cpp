@@ -1,0 +1,48 @@
+/*
+ * Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+ * All rights reserved.
+ *
+ * This library/application is free software; you can redistribute and/or modify it under the terms of
+ * the license that is included with this library/application in the file license.txt.
+ */
+
+//--- interface include --------------------------------------------------------
+#include "EscapeRenderer.h"
+
+//--- standard modules used ----------------------------------------------------
+#include "Dbg.h"
+
+//--- c-library modules used ---------------------------------------------------
+
+//---- EscapeRenderer ---------------------------------------------------------------
+RegisterRenderer(EscapeRenderer);
+
+EscapeRenderer::EscapeRenderer(const char *name) : Renderer(name) { }
+
+EscapeRenderer::~EscapeRenderer() { }
+
+void EscapeRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+{
+	StartTrace(EscapeRenderer.RenderAll);
+
+	String toEscape = config["ToEscape"].AsString();
+	String escapeChar = config["EscapeChar"].AsString();
+	if ( toEscape != "" ) {
+		char eChar = '\\';
+		if (escapeChar != "") {
+			eChar = escapeChar[0L];
+		}
+		String original;
+		RenderOnString(original, c, config["String"]);
+		long sz = original.Length();
+		for (long i = 0; i < sz; i++) {
+			if (toEscape.StrChr(original[i]) >= 0) {
+				reply << eChar;
+			}
+			reply << original[i];
+		}
+
+	} else {
+		Render(reply, c, config["String"]);
+	}
+}

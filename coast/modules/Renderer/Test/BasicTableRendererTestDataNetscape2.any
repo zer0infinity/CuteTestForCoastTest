@@ -1,0 +1,155 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+	/Query	{
+	  /REQUEST_METHOD "GET"
+	  /port "1109"
+	  /Button "myReFreshButton"
+	  /adr *
+	  /action "GoQuery"
+	  /role "LocalAdmin"
+	  /sessionId "925910354_83776171715845"
+	  /page "QueryPage"
+	  /fields {
+		/myReFreshButton "Refresh"
+	  }
+	}
+
+	/Env	{
+	  /TZ "MET"
+	  /HACC_PORT "2352"
+	  /HTTP_REFERER "http://sentosa.ifa.ch/cgi-bin/wdgateway?port=1109&X=Base64:Qmxvd2Zpc2hTY3JhbWJsZXIwOnX96LrMgzOhQhMyzUaDAUvrZZZ7G$9dW5zqf4oH$W8hKYzNG8HrCE1C$2xfY3Qq8Ox8iFSDaOtLN$5Y2iihX1HyJbkufuZRcSRFFTw05KE19HSPWaedivFmp6BUBrWaGVCikAjgdk8Qv54DgFwUtvQe55Vjmce8zg=="
+	  /HTTP_CONNECTION "Keep-Alive"
+	  /HTTP_USER_AGENT "djsgfhdsgf j Mozilla/2.51 [en] (WinNT; I)"
+	  /HTTP_HOST "sentosa.ifa.ch"
+	  /HTTP_ACCEPT {
+		"image/gif"
+		" image/x-xbitmap"
+		" image/jpeg"
+		" image/pjpeg"
+		" image/png"
+		" */*"
+	  }
+	  /HTTP_ACCEPT_ENCODING "gzip"
+	  /ACCEPT-LANGUAGE {
+		"en"
+	  }
+	  /HTTP_ACCEPT_CHARSET "iso-8859-1,*,utf-8"
+	  /PATH "/usr/sbin:/usr/bin"
+	  /SERVER_SOFTWARE "Apache/1.2.4"
+	  /SERVER_NAME "sentosa.ifa.ch"
+	  /SERVER_PORT "80"
+	  /REMOTE_HOST "krm.ifa.ch"
+	  /REMOTE_ADDR "193.247.78.80"
+	  /DOCUMENT_ROOT "/pc23/htdocs"
+	  /SERVER_ADMIN "rueedi@ifa.ch"
+	  /SCRIPT_FILENAME "/pc23/htdocs/cgi-bin/wdgateway"
+	  /REMOTE_PORT "2458"
+	  /REMOTE_USER "krebs"
+	  /AUTH_TYPE "Basic"
+	  /GATEWAY_INTERFACE "CGI/1.1"
+	  /SERVER_PROTOCOL "HTTP/1.0"
+	  /REQUEST_METHOD "GET"
+	  /QUERY_STRING "X=Base64%3AQmxvd2Zpc2hTY3JhbWJsZXIwOnX96LrMgzOh4njy7ZOgE0RF7XCMNmTS6fIBHjpAFv0qSppJzbFxkfxSgSLZqtsgLObm5tRph5sks2q8SutvnG4j2veWq8PHJWVTMzyEw%24ANo35uXd6qq30qayVWG-XxEa2IIQy5qfaTkXnYOpnkHFGDXi4MK94sVchRgTATyKzCXMx3gTXrWfU%3D&port=1109&b_myReFreshButton=Refresh"
+	  /REQUEST_URI "/cgi-bin/wdgateway?X=Base64%3AQmxvd2Zpc2hTY3JhbWJsZXIwOnX96LrMgzOh4njy7ZOgE0RF7XCMNmTS6fIBHjpAFv0qSppJzbFxkfxSgSLZqtsgLObm5tRph5sks2q8SutvnG4j2veWq8PHJWVTMzyEw%24ANo35uXd6qq30qayVWG-XxEa2IIQy5qfaTkXnYOpnkHFGDXi4MK94sVchRgTATyKzCXMx3gTXrWfU%3D&port=1109&b_myReFreshButton=Refresh"
+	  /SCRIPT_NAME "/cgi-bin/wdgateway"
+	  /argv0 "wdgateway"
+	  /StubVersion "$Id$"
+	}
+
+	/TmpStore	{
+	  /ConnData {
+		/HPS {
+		  /Status "Not active"
+		  /IPAddress " "
+		}
+		/Details {
+		  {
+			/Region 10
+			/Station "1"
+			/IPAddress "193.247.78.4"
+			/Status "Not active"
+		  }
+		  {
+			/Region 10
+			/Station "2"
+			/IPAddress "193.247.78.4"
+			/Status "Not active"
+		  }
+		  {
+			/Region 11
+			/Station "1"
+			/IPAddress "193.247.78.4"
+			/Status "Not active"
+		  }
+		  {
+			/Region 12
+			/Station "3"
+			/IPAddress "193.247.78.16"
+			/Status "Not active"
+		  }
+		  {
+			/Region 12
+			/Station "126"
+			/IPAddress "193.247.78.80"
+			/Status "Not active"
+		  }
+		  {
+			/Region 10
+			/Station "3"
+			/IPAddress "193.247.78.80"
+			/Status "Not active"
+		  }
+		  {
+			/Region 12
+			/Station "2"
+			/IPAddress "193.247.78.80"
+			/Status "Not active"
+		  }
+		  {
+			/Region 10
+			/Station "4"
+			/IPAddress "172.16.2.4"
+			/Status "Not active"
+		  }
+		  {
+			/Region 12
+			/Station "2"
+			/IPAddress "172.16.2.4"
+			/Status "Not active"
+		  }
+		  {
+			/Region 26
+			/Station "207"
+			/IPAddress "172.16.2.4"
+			/Status "Not active"
+		  }
+		  {
+			/Region 12087
+			/Station "22"
+			/IPAddress "172.16.2.4"
+			/Status "Not active"
+		  }
+		  {
+			/Region 12
+			/Station "4"
+			/IPAddress "193.247.78.102"
+			/Status "Not active"
+		  }
+		}
+	  }
+	  /RowData {
+		/Region 12
+		/Station "4"
+		/IPAddress "193.247.78.102"
+		/Status "Not active"
+	  }
+	  /RowIndex 11
+	}
+}

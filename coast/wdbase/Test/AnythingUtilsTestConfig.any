@@ -1,0 +1,232 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/Queries {
+		/StorePutterTest {
+			/Destinations {
+				{
+					/Store	Session
+					/Slot	"Test.Data.Result"
+				}
+				{
+					/Store	Role
+					/Slot	"Test.Data.Result"
+				}
+				{
+					/Slot	"Test.Data.Result"
+				}
+			}
+			/ToStore "SimpleType"
+		}
+		/SessionStorePutterTest {
+			/Destination {
+				/Store	Session
+				/Slot	"Test.Data.Result"
+			}
+			/ToStore "SimpleType"
+		}
+		/StorePutterReplaceRenderedTest {
+			/Destination {
+				/Store	Role
+				/Slot	{
+					{ /ContextLookupRenderer	"Test.Data.Result" }
+					".Data.Result"
+				}
+			}
+			/ToStore "SimpleType"
+		}
+		/StorePutterReplaceTest {
+			/Destination {
+				/Store	Role
+				/Slot	"Test.Data.Result"
+			}
+			/ToStore "SimpleType"
+		}
+		/StorePutterEmptySlotTest {
+			/Destination {
+				/Slot	""
+			}
+			/ToStore {
+				/Sub1	"TestDataResult"
+				{ Hallo Goodbye }
+			}
+		}
+		/StoreFinderTest {
+			/ToFind {
+				/Store	Role
+				/Slot	"Test.Data"
+			}
+			/SessionToFind {
+				/Store	Session
+				/Slot	"Test.SessionData"
+			}
+		}
+		/StoreFinderRenderedTest {
+			/ToFind {
+				/Store	Role
+				/Slot	{
+					{ /ContextLookupRenderer	"Test.Data.Result" }
+					".Data"
+				}
+			}
+		}
+		/StoreCopierTest {
+			/CopyTest {
+				/Source	{
+					/First	1
+					/Second	2
+					/Third	3
+					/Forth	4
+				}
+				/CopyList {
+					/First	 { Dest First }
+					/Third	DestThird
+				}
+				/Result {
+					/DestFirst	1
+					/DestThird	3
+				}
+			}
+			/PathCopyTest {
+				/Source	{
+					/First	1
+					/Second	2
+					/Third	3
+					/Forth	{
+						/Named	4
+						44
+					}
+				}
+				/CopyList {
+					/Forth			DestForth
+					/Forth.Named	DestForthNamed
+					/Forth:1		DestForthIndexed
+				}
+				/Result {
+					/DestForth {
+						/Named	4
+						44
+					}
+					/DestForthNamed		4
+					/DestForthIndexed	44
+				}
+			}
+			/PathCopyDelimIndexDelimTest {
+				/Source	{
+					/First	1
+					/Second	2
+					/Third	3
+					/Forth	{
+						/Named	4
+						44
+					}
+				}
+				/CopyList {
+					/Forth			DestForth
+					/Forth.Named	DestForthNamed
+					/Forth:1		DestForthIndexed
+				}
+				/Delim		"."
+				/IndexDelim	":"
+				/Result {
+					/DestForth {
+						/Named	4
+						44
+					}
+					/DestForthNamed		4
+					/DestForthIndexed	44
+				}
+			}
+			/PathCopyDelimIndexDelimDifferentTest {
+				/Source	{
+					/First	1
+					/Second	2
+					/Third	3
+					/Forth	{
+						/Named	4
+						44
+					}
+					/"D.e:st"	Dest
+					/Name	{ Named }
+					/NamedDestination {
+						{ /ContextLookupRenderer { "D.e:st" "" "@" "#" }}
+						{ Forth }
+						{ /ContextLookupRenderer Name }
+					}
+				}
+				/CopyList {
+					/Forth			DestForth
+					/Forth@Named	{ /ContextLookupRenderer NamedDestination }
+					/"Forth#1"		DestForthIndexed
+				}
+				/Delim		"@"
+				/IndexDelim	"#"
+				/Result {
+					/DestForth {
+						/Named	4
+						44
+					}
+					/DestForthNamed		4
+					/DestForthIndexed	44
+				}
+			}
+		}
+	}
+
+	/Results {
+		/StorePutterTest {
+			/Store {
+				/Test {
+					/Data {
+						/Result "SimpleType"
+					}
+				}
+			}
+			/SessionStore {
+			  /Test {
+				/Data {
+				  /Result "SimpleType"
+				}
+			  }
+			  /RoleStore {
+				/Test {
+				  /Data {
+					/Result %"Results.StorePutterTest.SessionStore.Test.Data.Result"
+				  }
+				}
+			  }
+			}
+		}
+		/StoreFinderTest {
+			/Result		Test
+		}
+	}
+	/RoleStore1 {
+		/Test {
+			/Data {
+				/Result 	Test
+			}
+		}
+	}
+	/RoleStore2 {
+		/Test {
+			/Data {
+				/Test 	Test
+			}
+		}
+	}
+	/SessionStore {
+		/Test {
+			/SessionData {
+				/Result 	Test
+			}
+		}
+	}
+}

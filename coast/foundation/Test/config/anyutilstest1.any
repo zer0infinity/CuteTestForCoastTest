@@ -1,0 +1,501 @@
+{
+	/OkTests {
+		/SlotnamedOrderDifferent {
+			/In {
+				/B {
+					/c	3
+					/a	1
+					/b	2
+				}
+				/A {
+					/a	Aa
+					/c	Ac
+					/b  Ab
+				}
+			}
+			/Master {
+				/A {
+					/a	Aa
+					/b	Ab
+					/c	Ac
+				}
+				/B {
+					/a	1
+					/b	2
+					/c	3
+				}
+			}
+		}
+		/StringEqualsLong {
+			/In {
+				/A	"1"
+				/B	"2"
+			}
+			/Master {
+				/A	1
+				/B	2
+			}
+		}
+		/InCanHaveMoreNamedSlotsThanMaster {
+			/In {
+				/A	1
+				/B	2
+				/C  3
+			}
+			/Master {
+				/A	1
+				/B	2
+			}
+		}
+		/InCanHaveMoreUnnamedSlotsThanMaster {
+			/In {
+				A B C
+			}
+			/Master {
+				A B
+			}
+		}
+
+		/"MixedExactMatch"
+		{
+			/In
+			{
+				/Test2 { HalloK }
+				/Test { Hallo }
+				{ Hallo }
+			}
+
+			/Master
+			{
+				/Test2 { HalloK }
+				/Test { Hallo }
+				{ Hallo }
+			}
+		}
+		/"MixedOrderDifferent"
+		{
+			/In
+			{
+				/Test2 { Hallo Mike }
+				{ Hallo }
+				/Test { Hallo }
+			}
+
+			/Master
+			{
+				/Test2 { Mike Hallo }
+				/Test { Hallo }
+				{ Hallo }
+			}
+		}
+		/"MixedOrderDifferent2"
+		{
+			/In
+			{
+				{ Hallo }
+				/Test { Hallo /Name * }
+				/Test2 { HalloK }
+				{ Error }
+			}
+
+			/Master
+			{
+				/Test2 { HalloK }
+				/Test { Hallo /Name * }
+				{ Error }
+				{ Hallo }
+			}
+		}
+
+		/DontCompareUnequal {
+			/In {
+				/A	Hallo
+				/Time	"10:45:23"
+				/Name	"Mike"
+			}
+			/Master {
+				/Name	Mike
+				/A	Hallo
+				/Time	ignore
+			}
+		}
+		/DontCompareUnequalAgainstNull {
+			/In {
+				/A	Hallo
+				/Time	*
+				/Name	"Mike"
+			}
+			/Master {
+				/Name	Mike
+				/A	Hallo
+				/Time	ignore
+			}
+		}
+
+		/"WithoutSlotnames" {
+			/In {
+				/Token {
+					{ /must "FinXS" }
+					{ /mustnot "Wrong password or unknown user" }
+					{ /must "TKBondfloorPricing" }
+					{ /mustnot "TKBondfpEdit" }
+					{
+						/must "VDB"
+						/noError ""
+						/jump "FinBaseTests"
+					}
+				}
+			}
+			/Master {
+				/Token {
+					{ /must "FinXS" }
+					{ /mustnot "Wrong password or unknown user" }
+					{ /must "TKBondfloorPricing" }
+					{ /mustnot "TKBondfpEdit" }
+					{
+						/must "VDB"
+						/noError ""
+						/jump "FinBaseTests"
+					}
+				}
+			}
+		}
+		/"WithoutSlotnamesOrderDifferent" {
+			/In {
+				/Token {
+					{ /must "FinXS" }
+					{ /mustnot "Wrong password or unknown user" }
+					{ /must "TKBondfloorPricing" }
+					{ /mustnot "TKBondfpEdit" }
+					{
+						/must "VDB"
+						/noError ""
+						/jump "FinBaseTests"
+					}
+				}
+			}
+			/Master {
+				/Token {
+					{ /mustnot "Wrong password or unknown user" }
+					{ /must "TKBondfloorPricing" }
+					{ /mustnot "TKBondfpEdit" }
+					{ /must "FinXS" }
+					{
+						/must "VDB"
+						/noError ""
+						/jump "FinBaseTests"
+					}
+				}
+			}
+		}
+
+		/OkCaseThatMightSurprise {
+			/In {
+				A B
+			}
+			/Master {
+				A B A B
+			}
+		}
+		/TestUsingPathAsSlotname {
+			/In {
+				/First {
+					/Second {
+						/Third {
+							{
+								/SubThird {
+									{ }
+									{ Gugus }
+								}
+							}
+						}
+					}
+				}
+			}
+			/Master {
+				/First.Second.Third:0.SubThird:1:0	Gugus
+				/First.Second.Third:0.SubThird:0	{ }
+			}
+		}
+		/TestUsingPathAsSlotnameNull {
+			/In {
+				/First {
+					/Second {
+						/Third {
+							{
+								/SubThird {
+									{ }
+									abc
+									/Huhu	*
+								}
+							}
+						}
+					}
+				}
+			}
+			/Master {
+				/First.Second.Third:0.SubThird:0	{ }
+				/First.Second.Third:0.SubThird:1	abc
+				/First.Second.Third:0.SubThird.Huhu	*
+			}
+		}
+		/OtherIndexTest {
+			/IndexDelim		"_"
+			/In {
+				/"11:30"	abc
+			}
+			/Master {
+				/"11:30"	abc
+			}
+		}
+		/OtherDelimTest {
+			/Delim			"_"
+			/In {
+				/"11.30"	abc
+			}
+			/Master {
+				/"11.30"	abc
+			}
+		}
+		/OtherDelimIndexTest {
+			/Delim			"_"
+			/IndexDelim		"-"
+			/In {
+				/":0.AB"	abc
+			}
+			/Master {
+				/":0.AB"	abc
+			}
+		}
+	}
+	/NokTests {
+		/UnnamedSlotMissing {
+			/In
+			{
+				/Test2 { Hallo }
+				/Test { Hallo }
+			}
+
+			/Master
+			{
+				{ Hallo }
+				/Test2 { Hallo }
+				/Test { Hallo }
+			}
+		}
+		/UnnamedSlotMissingEvenIfANamedSlotExistsWithTheSameContentThatisNotInTheMaster {
+			/In {
+				/Test2 { Hallo }		# Does not match to Master[0]
+				/Test { Hallo }
+			}
+
+			/Master {
+				{ Hallo }
+				/Test { Hallo }
+			}
+		}
+		/SlotMissing {
+			/In {
+				/A	a
+				/C	c
+			}
+			/Master {
+				/A	a
+				/B	b
+				/C	c
+			}
+		}
+		/NullSlotMissing {
+			/In {
+				/A	a
+				/C	c
+			}
+			/Master {
+				/A	a
+				/B	*
+				/C	c
+			}
+		}
+
+		/ContentDifferentSimpleType
+		{
+			/In
+			{
+				/Test2 Hallo
+				/Test Hallo
+			}
+
+			/Master
+			{
+				/Test Hallo
+				/Test2 HalloK
+			}
+		}
+		/ContentDifferentSimpleTypeNotTheSameTypes
+		{
+			/In
+			{
+				/Test2 "2"
+				/Test Hallo
+			}
+
+			/Master
+			{
+				/Test Hallo
+				/Test2 1
+			}
+		}
+		/ContentDifferentArrayType  {
+			/In
+			{
+				/Test2 { /A Hallo }
+				/Test { /A Hallo }
+			}
+
+			/Master
+			{
+				/Test2 { /A HalloK }
+				/Test { /A Hallo }
+			}
+		}
+		/ContentDifferentArrayWithUnamedChildren {   # Difference to the one above is in the verbose output
+			/In
+			{
+				/Test2 { A Hallo }
+				/Test { A Hallo }
+			}
+
+			/Master
+			{
+				/Test2 { A HalloK }
+				/Test { A Hallo }
+			}
+		}
+		/OutputReportsAllDifferences {   # Difference to the one above is in the verbose output
+			/In {
+				/Test2 { A Hallo }
+				/Test { a /Test { Hal lo } }
+			}
+
+			/Master {
+				/Test2 { A HalloK }
+				/Test { A /Test { Hallo } }
+			}
+		}
+		/UnequalOnlySupressComparisonInMaster {
+			/In {
+				/A	Hallo
+				/Time	ignore
+				/Name	"Mike"
+			}
+			/Master {
+				/Name	Mike
+				/A	Hallo
+				/Time	"10:45:23"
+			}
+		}
+		/LeafContentMinimalDifference
+		{
+			/In
+			{
+				/Token {
+					{
+						/must "FinXS"
+					}
+					{
+						/mustnot "Wrong password or unknown user"
+					}
+					{
+						/must "TKBondfloorPricing"
+					}
+					{
+						/mustnot "TKBondfpEdit"
+					}
+					{
+						/must "VDB"
+						/noError ""
+						/jump "FinB1aseTests"
+					}
+				}
+			}
+
+			/Master
+			{
+				/Token {
+					{
+						/must "FinXS"
+					}
+					{
+						/mustnot "Wrong password or unknown user"
+					}
+					{
+						/must "TKBondfloorPricing"
+					}
+					{
+						/mustnot "TKBondfpEdit"
+					}
+					{
+						/must "VDB"
+						/noError ""
+						/jump "FinBaseTests"
+					}
+				}
+			}
+		}
+		/InvalidIndexSlotTest {
+			/In {
+				/First {
+					/Second {
+						/Third {
+							/A {
+								/SubThird {
+									{ }
+									abc
+									/Huhu	*
+									*
+								}
+							}
+						}
+					}
+				}
+			}
+			/Master {
+				/First.Second.Third:2	abc
+			}
+		}
+		/IndexSlotNullTest {
+			/In {
+				*
+				/Abc	3
+			}
+			/Master {
+				/:0	*
+			}
+		}
+		/DelimFailTest {
+			/In {
+				/"11.30"	abc
+			}
+			/Master {
+				/"11.30"	abc
+			}
+		}
+		/IndexFailTest {
+			/In {
+				/"11:30"	abc
+			}
+			/Master {
+				/"11:30"	abc
+			}
+		}
+		/DelimIndexFailTest {
+			/In {
+				/":0.AB"	abc
+			}
+			/Master {
+				/":0.AB"	abc
+			}
+		}
+	}
+}
+

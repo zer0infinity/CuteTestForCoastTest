@@ -1,0 +1,10 @@
+{
+  /"20041208141548" {
+    /"RunLoop[this is a ]100000" 1168
+    /"RunPreallocLoop[this is a ]100000" 31
+    /"RunPoolAllocLoop[this is a ]100000" 50
+    /"RunLoop[this is a short samp]100000" 4349
+    /"RunPreallocLoop[this is a short samp]100000" 42
+    /"RunPoolAllocLoop[this is a short samp]100000" 73
+  }
+}

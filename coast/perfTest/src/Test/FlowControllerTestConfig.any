@@ -1,0 +1,101 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/FullConfigurationTest {
+		/FlowController	FullConfiguredFlowController
+		/Results {
+			{	/Phase	"Prepare"	/Call	1	}
+			{	/Phase	"Prepare"	/Call	2	/Save Test }
+			{	/Phase	"Run"	/Call	1	/Save Test	}
+			{ 	/Phase	"Run"	/Call	2	/Save Test	}
+			{ 	/Phase	"Run"	/Call	3	/Save Test	}
+			{	/Phase	"Run"	/Call	1	/Save Test	}
+			{	/Phase	"Run"	/Call	2	/Save Test	}
+			{ 	/Phase	"Run"	/Call	3	/Save Test	}
+		}
+	}
+	/WithoutNumberOfRunsConfigurationTest {
+		/FlowController	WithoutNumberOfRunsFlowController
+		/Results {
+			{	/Phase	"Prepare"	/Call	1	}
+			{	/Phase	"Prepare"	/Call	2	}
+			{	/Phase	"Run"	/Call	1		}
+			{	/Phase	"Run"	/Call	2		}
+			{	/Phase	"Run"	/Call	3		}
+		}
+	}
+	/NumberOfRuns0ConfigurationTest {
+		/FlowController	NrRuns0FlowController
+		/Results {
+			{	/Phase	PreRun	/Call	1	}
+			{	/Phase	PreRun	/Call	2	}
+		}
+	}
+	/WithoutPreRunConfigurationTest {
+		/FlowController	WithoutPreRunFlowController
+		/Results {
+			{	/Phase	"Run"	/Call	1			}
+			{	/Phase	"Run"	/Call	2			}
+			{ 	/Phase	"Run"	/Call	3			}
+			{	/Phase	"Run"	/Call	1			}
+			{	/Phase	"Run"	/Call	2			}
+			{ 	/Phase	"Run"	/Call	3			}
+			{	/Phase	"Run"	/Call	1			}
+			{ 	/Phase	"Run"	/Call	2			}
+			{ 	/Phase	"Run"	/Call	3			}
+		}
+	}
+	/WithoutRunConfigurationTest {
+		/FlowController	WithoutRunFlowController
+		/Results {
+			{	/Phase	"Prepare"	/Call	1	}
+			{	/Phase	"Prepare"	/Call	2	}
+		}
+	}
+	/PreRunOnlyConfigurationTest {
+		/FlowController	PreRunOnlyFlowController
+		/Results {
+			{	/Phase	{ /Pre Run }	/Call	1	}
+			{	/Phase	{ /Pre Run }	/Call	2	}
+		}
+	}
+	/RunOnlyConfigurationTest {
+		/FlowController	RunOnlyFlowController
+		/Results {
+			{ /DA1In { /Phase	"Run"	/Call	1 }	}
+			{ /DA2In { /Phase	"Run"	/Call	2 } }
+			{ /DA3In { /Phase	"Run"	/Call	3 }	}
+			{ /DA4In { /Phase	"Run"	/Call	4 } }
+		}
+	}
+	/RunOnlyOneStepConfigurationTest {
+		/FlowController	RunOnlyOneStepFlowController
+		/Results {
+			{
+				/CurrentServer {
+					/ServerName "localhost"
+					/Path		"/"
+					/Port		"12345"
+					/Timeout	1
+				}
+				/Token {
+					{ /mustnot "a" }
+					{ /mustnot "e" }
+					{ /mustnot "i" }
+				}
+				/Input "GET / HTTP/1.0\n\n"
+			}
+		}
+	}
+	/InvalidConfigurationTest {
+		/FlowController	InvalidConfigFlowController
+		/Results { }
+	}
+}

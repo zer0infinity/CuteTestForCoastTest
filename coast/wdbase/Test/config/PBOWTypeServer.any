@@ -1,0 +1,55 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+#--- Server configuration ----------------------------------------------------
+	/ActiveRequests		50					# number of parallel pending requests
+	/SessionTimeout  	500 				# timeout in seconds
+	/CleanerTimeout		5000				# session cleaner wait time
+
+	/ListenerPool {
+		TCP4242
+	}
+	/RequestProcessor	"RequestProcessor"
+
+	/StartPage	"PBOWLoginPage"
+
+	/DefaultRole	"PBOWTypeGuest"
+	/DefaultAction	"Login"				# 'Login' token is predefined
+
+	/RoleChanges {
+		/GoCustomerAction	"PBOWTypeCustomer"
+		/Logout				"PBOWTypeGuest"			# 'Logout' token is predefined
+	}
+
+#--- Paths used ---------------------------------------------------------------
+	/ImagePath		    "/images/"	# the images referenced by this server
+	/TemplateDir		"config/HTMLTemplates"
+
+#--- BaseURL support ---------------------------------------------------------------
+
+	/UseBaseURL			0
+
+#--- Localization and language issues -----------------------------------------
+
+	#/Language 			D					# default language (overriden per user)
+	/UseBrowserLang		1					# set to 1 if you want to use browsers prefs
+	/LanguageKeyMap {
+		/D				{ "de" "de-CH" "de-DE" "de-AU" }
+		/E				{ "en" "en-GB" "en-US" }
+		/F				{ "fr" "fr-BE" "fr-CA" "fr-FR" "fr-CH" }
+		/I				{ "it" }
+	}
+	/LanguageDirMap {	# maps language key to localized templates dir
+		/D				"Localized_D"
+		/E				"Localized_E"
+		/F				"Localized_F"
+		/I				"Localized_I"
+	}
+}

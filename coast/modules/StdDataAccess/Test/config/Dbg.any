@@ -1,0 +1,191 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/LowerBound		200
+	/UpperBound		211
+	/DumpAnythings  1
+
+	/DataAccessImpl {
+		/MainSwitch						11
+		/EnableAll						11
+	}
+	/RequestBodyParser {
+		/MainSwitch						200
+		/EnableAll						200
+	}
+	/RequestBodyParserTest {
+		/MainSwitch						0
+		/EnableAll						200
+	}
+	/ParameterMapper {
+		/MainSwitch						10
+		/EnableAll						10
+	}
+	/HTTPHeaderParameterMapper {
+		/MainSwitch						10
+		/EnableAll						10
+	}
+	/HTTPBodyMapper {
+		/MainSwitch						0
+		/EnableAll						20
+	}
+	/ParamGetMapper{
+		/MainSwitch						0
+		/EnableAll						20
+	}
+	/HTTPMapperTest {
+		/MainSwitch						10
+		/EnableAll						10
+	}
+	/URI2FileNameMapper {
+		/MainSwitch						10
+		/EnableAll						20
+	}
+	/HTTPFileLoader {
+		/MainSwitch						10
+		/EnableAll						20
+	}
+	/MailDAImpl {
+		/MainSwitch						150
+		/EnableAll						150
+	}
+	/MailDATest {
+		/MainSwitch						150
+		/EnableAll						150
+	}
+	/WriteFileDAImpl {
+		/MainSwitch						110
+		/EnableAll						110
+	}
+	/Action {
+		/MainSwitch						110
+		/EnableAll						110
+	}
+	/ActionTest {
+		/MainSwitch						110
+		/EnableAll						110
+	}
+	/CallDataAccessAction {
+		/MainSwitch						110
+		/EnableAll						110
+	}
+	/HTTPDAImpl {
+		/MainSwitch						210
+		/EnableAll						210
+	}
+	/HTTPDAImplTest {
+		/MainSwitch						210
+		/EnableAll						210
+	}
+	/HTTPProcessor {
+		/MainSwitch						310
+		/EnableAll						320
+	}
+	/HTTPProcessorTest {
+		/MainSwitch						10
+		/EnableAll						20
+	}
+	/RequestReader {
+		/MainSwitch						200
+		/EnableAll						201
+	}
+	/RequestReaderTest {
+		/MainSwitch						200
+		/EnableAll						201
+	}
+	/CgiCaller {
+		/MainSwitch						10
+		/EnableAll						20
+	}
+	/CgiParams {
+		/MainSwitch						10
+		/EnableAll						20
+	}
+	/CgiParamsTest {
+		/MainSwitch						10
+		/EnableAll						20
+	}
+	/CgiCallerTest {
+		/MainSwitch						10
+		/EnableAll						20
+	}
+	/SSLSocket {
+		/MainSwitch						210
+		/EnableAll						210
+	}
+	/SSLClientSocket {
+		/MainSwitch						210
+		/EnableAll						210
+	}
+	/SSLModule {
+		/MainSwitch						210
+		/EnableAll						210
+	}
+	/SSLSocketArgs {
+		/MainSwitch						210
+		/EnableAll						210
+	}
+	/SSLSocketUtils {
+		/MainSwitch						210
+		/EnableAll						210
+	}
+	/SSLConnector {
+		/MainSwitch						210
+		/EnableAll						210
+	}
+	/ConnectorParams{
+		/MainSwitch						210
+		/EnableAll						210
+	}
+	/AuthenticationService {
+		/MainSwitch						10
+		/EnableAll						10
+	}
+	/AuthenticationServiceTest {
+		/MainSwitch						10
+		/EnableAll						10
+	}
+	/ConfiguredTestCase {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/AppBooter {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/TestRunnerApplication {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/SecurityModule {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/AccessManagerModule {
+		/MainSwitch						10
+		/EnableAll						10
+	}
+	/AccessManager {
+		/MainSwitch						10
+		/EnableAll						10
+	}
+	/ResultMapper {
+		/MainSwitch						10
+		/EnableAll						10
+	}
+	/TestStringStreamBuf {
+		/MainSwitch						200
+		/EnableAll						200
+	}
+	/TestIStringStream {
+		/MainSwitch						200
+		/EnableAll						200
+	}
+}

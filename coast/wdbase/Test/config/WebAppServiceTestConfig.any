@@ -1,0 +1,390 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/BuildQueryTest
+	{
+		{
+			/Path		"/a"
+			/Query		"alpha=beta"
+			/Expected
+			{
+				a
+				/alpha	beta
+			}
+		}
+		{
+			/Path		"/a"
+			/Query		"alpha=beta+3"
+			/Expected
+			{
+				a
+				/alpha	"beta 3"
+			}
+		}
+		{
+			/Path		"/fda"
+			/Query		"X=ABC&foo=bah&zzz"
+			/Expected
+			{
+				fda
+				/X		ABC
+				/foo	bah
+				zzz
+			}
+		}
+		{
+			/Path		"/finVAL/XS.ISA/foo/bah"
+			/Query		"action=Go&role=Guest"
+			/Expected
+			{
+				finVAL
+				XS.ISA
+				foo
+				bah
+				/action	Go
+				/role	Guest
+			}
+		}
+		{
+			/Path		"/"
+			/Query		""
+			/Expected	*
+		}
+	}
+	/Add2QueryTest
+	{
+		{
+			/Query
+			{
+			}
+			/Add2Query
+			{
+			}
+			/OverWrite	0
+			/Expected
+			{
+			}
+		}
+		{
+			/Query
+			{
+				abc
+			}
+			/Add2Query
+			{
+			}
+			/OverWrite	0
+			/Expected
+			{
+				abc
+			}
+		}
+		{
+			/Query
+			{
+				abc
+			}
+			/Add2Query
+			{
+				/abc	1234
+			}
+			/OverWrite	0
+			/Expected
+			{
+				abc
+				/abc	1234
+			}
+		}
+		{
+			/Query
+			{
+				/abc	0
+			}
+			/Add2Query
+			{
+				/abc	1234
+			}
+			/OverWrite	0
+			/Expected
+			{
+				/abc	0
+			}
+		}
+		{
+			/Query
+			{
+				/abc	0
+			}
+			/Add2Query
+			{
+				/abc	1234
+			}
+			/OverWrite	1
+			/Expected
+			{
+				/abc	1234
+			}
+		}
+		{
+			/Query
+			{
+				abc
+			}
+			/Add2Query
+			{
+				/abc	1234
+				def
+				abc
+			}
+			/OverWrite	1
+			/Expected
+			{
+				abc
+				/abc	1234
+				def
+				abc
+			}
+		}
+	}
+	/DecodeWDQueryTest
+	{
+		{
+			/Query
+			{
+				/foo	bah
+			}
+			/Request
+			{
+				/header {
+					/CONTENT-TYPE "multipart/form-data;"
+				}
+				/REQUEST_URI	"/fda?action=login&role=guest"
+				/REQUEST_BODY {
+					{
+						/header {
+							/CONTENT-DISPOSITION {
+								/NAME	cc
+							}
+						}
+						/body {
+							ch
+						}
+					}
+					{
+						/header {
+							/CONTENT-DISPOSITION {
+								/NAME	cid
+							}
+						}
+						/body {
+							10601
+						}
+					}
+					{
+						/header {
+							/CONTENT-DISPOSITION {
+								/NAME	uid
+							}
+						}
+						/body {
+							tkgae
+						}
+					}
+					{
+						/header {
+							/CONTENT-DISPOSITION {
+								/NAME	pass
+							}
+						}
+						/body {
+							gaef
+						}
+					}
+				}
+			}
+			/Expected
+			{
+				/foo	bah
+				fda
+				/action	login
+				/role	guest
+				/cc		ch
+				/cid	10601
+				/uid	tkgae
+				/pass	gaef
+			}
+		}
+		{
+			/Request {
+				/REQUEST_METHOD "POST"
+				/REQUEST_URI "/ftimgs/TestOk.html"
+				/SERVER_PROTOCOL "HTTP/1.0"
+				/header {
+					/CONTENT-TYPE "multipart/form-data; boundary=---------------------------43572382324488"
+					/CONTENT-LENGTH "6085"
+					/REMOTE_ADDR "172.16.2.4"
+					/BOUNDARY "---------------------------43572382324488"
+				}
+				/REQUEST_BODY {
+					{
+					  /header {
+						/CONTENT-DISPOSITION {
+						  "form-data"
+						  /NAME "fld_Password"
+						}
+						/CONTENT-LENGTH 59
+						/CONTENT-TYPE "multipart/part"
+					  }
+					  /body {
+						"testtest"
+					  }
+					}
+					{
+					  /header {
+						/CONTENT-DISPOSITION {
+						  "form-data"
+						  /NAME "fld_data"
+						}
+						/CONTENT-LENGTH 50
+						/CONTENT-TYPE "multipart/part"
+					  }
+					  /body {
+						"Yes"
+					  }
+					}
+					{
+					  /header {
+						/CONTENT-DISPOSITION {
+						  "form-data"
+						  /NAME "fld_theFile"
+						  /FILENAME "NeuTestZweiRunde2.csv"
+						}
+						/CONTENT-LENGTH 5692
+						/CONTENT-TYPE "text/plain"
+					  }
+					  /body {
+						"Die Paarungen;;;;;;;\x0D\n;;;;;;;\x0D\nRunde;2;;;;;;\x0D\n"
+					  }
+					}
+					{
+					  /header {
+						/CONTENT-DISPOSITION {
+						  "form-data"
+						  /NAME "fld_Test"
+						}
+						/CONTENT-LENGTH 49
+						/CONTENT-TYPE "multipart/part"
+					  }
+					  /body {
+						"Wash"
+						"And"
+						"Go"
+					  }
+					}
+				}
+				/REMOTE_ADDR "172.16.2.4"
+			}
+			/Query {
+				/URIPrefix "/ftimgs"
+			}
+			/Expected {
+				/URIPrefix "/ftimgs"
+				ftimgs
+				"TestOk.html"
+				/fld_Password	"testtest"
+				/fld_data		"Yes"
+				/fld_theFile	"Die Paarungen;;;;;;;\x0D\n;;;;;;;\x0D\nRunde;2;;;;;;\x0D\n"
+				/fld_Test		{
+					"Wash"
+					"And"
+					"Go"
+				}
+
+			}
+		}
+		{
+			/Request {
+				/REQUEST_METHOD "POST"
+				/REQUEST_URI "/ftimgs/TestOk.html"
+				/SERVER_PROTOCOL "HTTP/1.0"
+				/header {
+					/CONTENT-LENGTH "8"
+					/REMOTE_ADDR "172.16.2.4"
+				}
+				/REQUEST_BODY {
+					"SomeBody"
+					/alpha	beta
+				}
+				/REMOTE_ADDR "172.16.2.4"
+			}
+			/Query {
+				/URIPrefix "/ftimgs"
+			}
+			/Expected {
+				/URIPrefix "/ftimgs"
+				ftimgs
+				"TestOk.html"
+				SomeBody
+				/alpha	beta
+			}
+		}
+		{
+			/Request {
+				/REQUEST_METHOD "GET"
+				/REQUEST_URI "/ftimgs/X1=abc=def/X2=gugu=gaga"
+				/SERVER_PROTOCOL "HTTP/1.0"
+				/header {
+					/REMOTE_ADDR "172.16.2.4"
+				}
+				/REMOTE_ADDR "172.16.2.4"
+			}
+			/Query {
+				/URIPrefix "/ftimgs"
+			}
+			/Expected {
+				/URIPrefix "/ftimgs"
+				ftimgs
+				/X1	"abc=def"
+				/X2	"gugu=gaga"
+			}
+		}
+	}
+	/PrepareRequestTest {
+		{
+			/Request {
+				/env {
+					/header {
+						/REMOTE-ADDR		"192.168.1.1:123"
+						/USER-AGENT			"Mozilla"
+						/COOKIE {
+							/FDState		"b64:YnMwOh8tQnIEs1uC2rU3V3fpDOlWqwZeyeSV8xcTT9-m55gkcdmUwEAX5yBjiXEiji1cn63s81FKkm7fz0Sjwnxg-DX7awEQ723P7SKNLpzc4RLj3QBa5t7t6rKawa-X8Y-PYBnJvNByMH3jWcBY3ewDGXM="
+							/FINXSCUSTNO	CH10601
+						}
+					}
+				}
+			}
+			/Expected {
+				/env {
+					/header {
+						/REMOTE-ADDR		"192.168.1.1:123"
+						/USER-AGENT			"Mozilla"
+						/COOKIE {
+							/FDState		"b64:YnMwOh8tQnIEs1uC2rU3V3fpDOlWqwZeyeSV8xcTT9-m55gkcdmUwEAX5yBjiXEiji1cn63s81FKkm7fz0Sjwnxg-DX7awEQ723P7SKNLpzc4RLj3QBa5t7t6rKawa-X8Y-PYBnJvNByMH3jWcBY3ewDGXM="
+							/FINXSCUSTNO	CH10601
+						}
+					}
+					/WDCookies 			%"PrepareRequestTest:0.Expected.env.header.COOKIE"
+					/REMOTE_ADDR		%"PrepareRequestTest:0.Expected.env.header.REMOTE-ADDR"
+					/HTTP_USER_AGENT	%"PrepareRequestTest:0.Expected.env.header.USER-AGENT"
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,112 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/FileUploadTest {
+		/Request "POST / HTTP/1.0\r\nCONTENT-TYPE: multipart/form-data; boundary=---------------------------28804130528140\r\nContent-Length: 330\r\n\r\n-----------------------------28804130528140\r\nContent-Disposition: form-data; name=\"fld_TheFile\"; filename=\"C:\\test.txt\"\r\nContent-Type: text/plain\r\n\r\nInhalt;\x00&+ =;\r\n\r\n-----------------------------28804130528140\r\nContent-Length: 4\r\nContent-Disposition: form-data; name=\"b_Ok\"\r\n\r\nSend\r\n-----------------------------28804130528140--\r\n"
+		/Results {
+			/REQUEST_BODY {
+				{
+					/header {
+						/CONTENT-DISPOSITION {
+							"form-data"
+							/NAME "fld_TheFile"
+							/FILENAME "C:\\test.txt"
+						}
+						/CONTENT-TYPE "text/plain"
+					}
+					/body { "Inhalt;\x00&+ =;\r\n" }
+				}
+				{
+					/header {
+						/CONTENT-LENGTH "4"
+						/CONTENT-DISPOSITION {
+							"form-data"
+							/NAME "b_Ok"
+						}
+						/CONTENT-TYPE "multipart/part"
+					}
+					/body {
+						"Send"
+					}
+				}
+			}
+		}
+	}
+
+	/IsZipEncodingAcceptedByClientTest {
+		/NotAcceptingRequest {
+			/Request {
+				/env {
+					/header {
+						/ACCEPT-ENCODING {
+							"xxx"
+						}
+					}
+				}
+			}
+			/Expected 0
+		}
+		/NotAcceptingByConfig {
+			/TmpStore {
+				/DisableZipEncoding	1
+			}
+			/Request {
+				/env {
+					/header {
+						/ACCEPT-ENCODING {
+							"gzip"
+							"deflate"
+						}
+					}
+				}
+			}
+			/Expected 0
+		}
+		/AcceptingByConfig {
+			/TmpStore {
+				/DisableZipEncoding	0
+			}
+			/Request {
+				/env {
+					/header {
+						/ACCEPT-ENCODING {
+							"gzip"
+							"deflate"
+						}
+					}
+				}
+			}
+			/Expected 1
+		}
+		/AcceptingRequest {
+			/Request {
+				/env {
+					/header {
+						/ACCEPT-ENCODING {
+							"gzip"
+							"deflate"
+						}
+					}
+				}
+			}
+			/Expected 1
+		}
+
+		/NoAcceptFieldRequest {
+			/Request {
+				/env {
+					/header {
+					}
+				}
+			}
+			/Expected 0
+		}
+	}
+}

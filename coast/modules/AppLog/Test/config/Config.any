@@ -1,0 +1,163 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/DLL {
+	}
+
+	/Modules {
+		TimeLoggingModule
+		RenderersModule
+		ActionsModule
+		ServersModule
+	}
+
+	/Server {
+		TestServer
+	}
+	/Servers {
+		/Server	{
+			/TestServer {
+				AnotherServerWithoutLogConfigButShouldUseChannelsOfTestServer
+			}
+		}
+	}
+
+	/Renderers {
+		/ContextLookupRenderer	{ Lookup }
+	}
+
+	/Actions {
+		/LoggingAction	{ Log }
+		/TimeLoggingAction	{ TimeLog }
+	}
+
+	/TimeLoggingModule {
+		/DoTiming	1
+		/DoLogging	1
+	}
+
+	/AppLogModule {
+		/LogDir		"config"
+		/Servers {
+			/TestServer	{
+				/AccessLog	{
+					/FileName	"Access.log"
+					/Format		%AccessLogFormat
+					/Header		"TestHeader"
+				}
+				/ErrorLog	{
+					/FileName	"Error.log"
+					/Format		%ErrorLogFormat
+					/Header		"ErrorlogTestHeader"
+				}
+				/AccessLog2	{
+					/FileName	"Access2.log"
+					/Format		%AccessLogFormat
+					/Header		"Access2Header"
+				}
+				/ErrorLog2	{
+					/FileName	"Error2.log"
+					/Format		%ErrorLogFormat
+					/Header		"Errorlog2TestHeader"
+				}
+				/TimeLog1 {
+					/FileName	"MethodTime.log"
+					/Format		%MethodTimeFormat
+					/Header		"TimeLogTestHeader"
+				}
+				/RelativeLogDir	{
+					/LogDir		"."
+					/RotateDir	"config"
+					/FileName	"Relative.log"
+					/Format		"Nothing"
+					/Header		"# Relative-File"
+				}
+				/AbsoluteLogDir	{
+					/LogDir		"/tmp"
+					/RotateDir	"/tmp"
+					/FileName	"Absolute.log"
+					/Format		"Nothing"
+					/Header		"# Absolute-File"
+				}
+			}
+			/AnotherServerWithoutLogConfigButShouldUseChannelsOfTestServer {}
+		}
+	}
+	/AccessLogFormat {
+		{ /Lookup	TestMsg }
+		" - Test"
+	}
+
+	/ErrorLogFormat {
+		{ /Lookup	ErrorMsg }
+		" - Test"
+	}
+	/MethodTimeFormat {
+	  "<"
+	  { /Lookup TimeLogEntry.Key }
+	  ">: "
+	  { /Lookup TimeLogEntry.Msg }
+	  "->"
+	  { /Lookup TimeLogEntry.Time }
+	  " ms"
+	}
+
+	/AccessTestAction {
+		/LoggingAction	{
+			/Channel	AccessLog2
+		}
+	}
+	/ErrorlogTestAction {
+		/Log	{
+			/Channel	ErrorLog2
+		}
+	}
+	/NoChannelTestAction {
+		/Log	{
+		}
+	}
+	/TimeLogTestAction {
+		/TimeLog	{
+		  /Channel TimeLog1
+		  /TimeEntries "Log.Times"
+		}
+	}
+	#--- time logging tables ---
+	/EnabledValues {
+	  /Log {
+		/Times {
+		  /Method {
+			/Test	{
+			  /SubA	1
+			  /SubB 1
+			}
+		  }
+		  /Request {
+			/Cycle 1
+		  }
+		}
+	  }
+	}
+	/SimulatedValues {
+	  /Log	{
+		/Times {
+		  /Method {
+			/Test {
+			  /SubA	10
+			  /SubB	10
+			}
+		  }
+		  /Request {
+			/Cycle	10
+		  }
+		}
+	  }
+	}
+}

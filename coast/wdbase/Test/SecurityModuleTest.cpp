@@ -1,0 +1,258 @@
+/*
+ * Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+ * All rights reserved.
+ *
+ * This library/application is free software; you can redistribute and/or modify it under the terms of
+ * the license that is included with this library/application in the file license.txt.
+ */
+
+//--- interface include --------------------------------------------------------
+#include "SecurityModuleTest.h"
+//--- test modules used --------------------------------------------------------
+#include "TestSuite.h"
+
+//--- module under test --------------------------------------------------------
+#include "SecurityModule.h"
+//--- std modules used
+#include "System.h"
+#include "Dbg.h"
+
+//---- SecurityModuleTest ----------------------------------------------------------------
+Test *SecurityModuleTest::suite ()
+{
+	TestSuite *testSuite = new TestSuite;
+
+	ADD_CASE(testSuite, SecurityModuleTest, EncodeDecodeTest);
+	ADD_CASE(testSuite, SecurityModuleTest, InitWithConfigTest);
+
+	return testSuite;
+}
+
+SecurityModuleTest::SecurityModuleTest(TString tname) : TestCase(tname)
+{
+}
+
+SecurityModuleTest::~SecurityModuleTest()
+{
+}
+
+class TestScrambler: public Scrambler
+{
+public:
+	TestScrambler(const char *name): Scrambler(name), fKey("") {}
+	virtual ~TestScrambler() {}
+	IFAObject *Clone() const {
+		return new TestScrambler(fName);
+	}
+	virtual void InitKey(const String &key) {
+		fKey = key;
+	}
+	String fKey;
+
+};
+RegisterScrambler(TestScrambler);
+void SecurityModuleTest::InitWithConfigTest()
+{
+	StartTrace(SecurityModuleTest.InitWithConfigTest);
+	SecurityModule smtest("smtest");
+	Anything theConfig;
+	theConfig["smtest"]["SecurityItems"]["TestScrambler"] = "MyTestScrambler";
+	TraceAny(theConfig, "config to use");
+	t_assert(System::GetFilePath("SecurityItems", "any") != "");
+	Anything keyFromFile;
+	t_assert(System::LoadConfigFile(keyFromFile, "aTestKey.txt", ""));
+	t_assert(keyFromFile.AsString("oops") != "oops");
+	TestScrambler *ts = SafeCast(Scrambler::FindScrambler("MyTestScrambler"), TestScrambler);
+	t_assert(!ts);
+	smtest.Init(theConfig);
+	ts = SafeCast(Scrambler::FindScrambler("MyTestScrambler"), TestScrambler);
+	if (t_assert(ts)) {
+		assertEqual(keyFromFile.AsString("oops"), ts->fKey);
+	}
+}
+
+void SecurityModuleTest::EncodeDecodeTest()
+{
+	Encoder encoder("encoder");
+
+	int i;
+
+	String EmptySt;
+	String EncodedString;
+	String DecodedString;
+	String OriginalString;
+
+	// Test 1:
+	// checkif all HEX-values can be en-/decoded
+	// check for identity of original and decoded string
+	// check the lengths
+
+	// setup original
+	for (  i = 0; i < 256; i++ ) {
+		OriginalString.Append( (char)i );
+	}
+
+	// encode decode with standard encoder (cleartext)
+	encoder.DoEncode( EncodedString, OriginalString);
+	encoder.DoDecode( DecodedString, EncodedString);
+
+	// assert strings are equal
+	t_assert( 	memcmp( (const char *)OriginalString,
+						(const char *)DecodedString,
+						OriginalString.Length() ) == 0 );
+	t_assert( OriginalString.Length() == DecodedString.Length() );
+
+	assertEqual( OriginalString, DecodedString );
+	assertEqual( OriginalString.Length(), DecodedString.Length() );
+
+	// Test 2
+	// reset strings
+	EncodedString = EmptySt;
+	DecodedString = EmptySt;
+
+	// encode decode with standard encoder (cleartext)
+	encoder.DoEncode( EncodedString, OriginalString );
+	encoder.DoDecode( DecodedString, EncodedString );
+
+	// check whether the Strings are identical
+	assertCharPtrEqual( OriginalString, DecodedString );
+	assertEqual(1, (long)( OriginalString == DecodedString ));
+
+	// Test 3
+	// reset strings
+	OriginalString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	EncodedString = EmptySt;
+	DecodedString = EmptySt;
+
+	// encode decode with standard encoder (cleartext)
+	encoder.DoEncode( EncodedString, OriginalString);
+	encoder.DoDecode( DecodedString, EncodedString );
+
+	// check whether the Strings are identical
+	assertCharPtrEqual( OriginalString, DecodedString );
+	t_assert( OriginalString == DecodedString );
+	assertCharPtrEqual( "ABCDEFGHIJKLMNOPQRSTUVWXYZ", EncodedString );
+
+	//Test 4
+	// Only Unprintable Chars, unscrambled
+	OriginalString = EmptySt;
+	EncodedString = EmptySt;
+	DecodedString = EmptySt;
+
+	for ( i = 0; i < 10; i++ ) {
+		OriginalString.Append( (char)i );
+	}
+
+	// encode decode with standard encoder (cleartext)
+	encoder.DoEncode( EncodedString, OriginalString);
+	encoder.DoDecode( DecodedString, EncodedString );
+
+	// check whether the Strings are identical
+	t_assert( (memcmp( (const char *)OriginalString, (const char *)DecodedString, OriginalString.Length() ) == 0) );
+	t_assert( OriginalString.Length() == DecodedString.Length() );
+
+	assertCharPtrEqual( OriginalString, DecodedString );
+	t_assert( OriginalString == DecodedString );
+
+	assertCharPtrEqual( "\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09", EncodedString );
+
+	// One Printable Char, unscrambled
+	OriginalString = "M";
+	EncodedString = EmptySt;
+	DecodedString = EmptySt;
+
+	// check whether the Strings are identical
+	encoder.DoEncode( EncodedString, OriginalString);
+	encoder.DoDecode( DecodedString, EncodedString );
+
+	assertCharPtrEqual( OriginalString, DecodedString );
+	t_assert( OriginalString == DecodedString );
+	assertCharPtrEqual( "M", EncodedString );
+
+	// One Unprintable Char, unscrambled
+	OriginalString = EmptySt;
+	OriginalString.Append( (char)5 );
+
+	OriginalString = OriginalString;
+	EncodedString = EmptySt;
+	DecodedString = EmptySt;
+	encoder.DoEncode( EncodedString, OriginalString);
+	encoder.DoDecode( DecodedString, EncodedString );
+
+	assertCharPtrEqual( OriginalString, DecodedString );
+	t_assert( OriginalString == DecodedString );
+
+	// String::IntPrintOn:  05     -> \x05
+	// URLUtils::urlEncode: \x05   -> %5Cx05
+	// URLUtils::urlEncode: %5Cx05 -> %255Cx05
+	assertCharPtrEqual( "\x05", EncodedString );
+
+	// Only Printable Chars, scrambled
+	OriginalString = "ABC";
+	EncodedString = EmptySt;
+	DecodedString = EmptySt;
+	encoder.DoEncode( EncodedString, OriginalString);
+	encoder.DoDecode( DecodedString, EncodedString );
+
+	assertCharPtrEqual( OriginalString, DecodedString );
+	t_assert( OriginalString == DecodedString );
+	// w\"ABC\"
+	assertCharPtrEqual( "ABC", EncodedString );
+
+	// a particularly nasty sequence of non-printables and printables
+	OriginalString = "Anfang%252B+%2BEnde";
+	EncodedString = EmptySt;
+	DecodedString = EmptySt;
+
+	encoder.DoEncode( EncodedString, OriginalString);
+	encoder.DoDecode( DecodedString, EncodedString );
+
+	assertEqual( OriginalString, DecodedString );
+	assertEqual( OriginalString, EncodedString );
+
+	// Only Unprintable Chars, scrambled
+	OriginalString = EmptySt;
+	for (  i = 0; i < 3; i++ ) {
+		OriginalString.Append( (char)i );
+	}
+	EncodedString = EmptySt;
+	DecodedString = EmptySt;
+	encoder.DoEncode( EncodedString, OriginalString);
+	encoder.DoDecode( DecodedString, EncodedString );
+
+	assertCharPtrEqual( OriginalString, DecodedString );
+	t_assert( OriginalString == DecodedString );
+
+	assertCharPtrEqual( "\x00\x01\x02", EncodedString );
+
+	// One Printable Char, scrambled
+	OriginalString = "M";
+	OriginalString = OriginalString;
+	EncodedString = EmptySt;
+	DecodedString = EmptySt;
+	encoder.DoEncode( EncodedString, OriginalString);
+	encoder.DoDecode( DecodedString, EncodedString );
+
+	assertCharPtrEqual( OriginalString, DecodedString );
+	t_assert( OriginalString == DecodedString );
+	assertCharPtrEqual( "M", EncodedString );
+
+	//           1         2         3         4         5         6
+	// 0123456789012345678901234567890123456789012345678901234567890123456789
+	// ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-$
+
+	// One Unprintable Char, scrambled
+	OriginalString = EmptySt;
+	OriginalString.Append( (char)5 );
+
+	OriginalString = OriginalString;
+	EncodedString = EmptySt;
+	DecodedString = EmptySt;
+	encoder.DoEncode( EncodedString, OriginalString);
+	encoder.DoDecode( DecodedString, EncodedString );
+
+	assertCharPtrEqual( OriginalString, DecodedString );
+	t_assert( OriginalString == DecodedString );
+
+	assertCharPtrEqual( "\x05", EncodedString );
+}

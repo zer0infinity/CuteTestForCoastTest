@@ -1,0 +1,349 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/RunOnly {}
+	/RunTestCases {
+		/FirstTestName {
+			/TmpStore {
+			}
+			/RoleStore {
+			}
+			/Query {
+				/fields {
+					/TheTestField	"qwertz"
+				}
+			}
+			/SessionStore {
+				/Fieldname abc
+			}
+			/TheAction {
+				/NotEmptyCheckAction {
+					/FieldName	TheTestField
+				}
+			}
+
+			/ExpectedToken	TheAction
+			/ExpectedResult 1
+
+			/Result {
+				/TmpStore {
+				}
+			}
+		}
+		/SecondTestName {
+			/UseConfig FirstTestName
+			/Replace {
+				/SessionStore.Fieldname {
+					123
+				}
+				/TheAction {
+					/NotEmptyCheckAction {
+						/FieldName	Fieldname
+					}
+				}
+				/ExpectedResult 0
+				/Result {
+					/TmpStore {
+						/Error	NotEmptyCheckAction
+						/ErrorData	Fieldname
+					}
+				}
+			}
+		}
+
+		/StringsEqualActionTrueTest {
+			/TheAction {
+				/StringsEqualAction {
+					/String1	"XXX"
+					/String2	"XXX"
+				}
+			}
+			/ExpectedResult 1
+		}
+		/StringsEqualActionFalseTest {
+			/TheAction {
+				/StringsEqualAction {
+					/String1	"XXX"
+					/String2	"XxX"
+				}
+			}
+			/ExpectedResult 0
+		}
+
+		/AppendListActionAppendTest {
+			/TmpStore {
+				/Testlist  {
+					/0	"A"
+					/1	"B"
+					/2	"C"
+					/3	"D"
+				}
+			}
+			/TheAction {
+				/AppendListAction {
+					/Destination {
+						/Slot NewList
+					}
+					/CopyList {
+						/Testlist	CpTestlist
+					}
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore {
+					/NewList  {
+						/CpTestlist {
+							/0	"A"
+							/1	"B"
+							/2	"C"
+							/3	"D"
+						}
+					}
+				}
+			}
+		}
+		/AppendListActionAppendExistingSlotTest {
+			/TmpStore {
+				/Testlist  {
+					/0	"E"
+					/1	"F"
+					/2	"G"
+					/3	"H"
+				}
+				/NewList  {
+					/CpTestlist {
+						/0	"A"
+						/1	"B"
+						/2	"C"
+						/3	"D"
+					}
+				}
+			}
+			/TheAction {
+				/AppendListAction {
+					/Destination {
+						/Slot NewList
+					}
+					/CopyList {
+						/Testlist	CpTestlist
+					}
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore {
+					/NewList  {
+						/CpTestlist {
+							/0	"A"
+							/1	"B"
+							/2	"C"
+							/3	"D"
+							/4	"E"
+							/5	"F"
+							/6	"G"
+							/7	"H"
+						}
+					}
+				}
+			}
+		}
+		/CreateAnythingFromStringActionTest {
+			/TheAction {
+				 /CreateAnythingFromStringAction {
+					/Destination {
+						/Slot 	NewTestlist
+					}
+					/String		"{ gugus /abc 3 { 123 } }"
+				 }
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore {
+					/NewTestlist {
+						gugus
+						/abc	3
+						{ 123 }
+					}
+				}
+			}
+		}
+		/CreateAnythingFromStringActionDestFailTest {
+			/TheAction {
+				 /CreateAnythingFromStringAction {
+					/Destination {
+						/Slot 	NewTestlist
+					}
+					/XString		"{ gugus /abc 3 { 123 } }"
+				 }
+			}
+			/ExpectedResult 0
+		}
+		/CreateAnythingFromStringActionStringFailTest {
+			/TheAction {
+				 /CreateAnythingFromStringAction {
+					/Slot 	NewTestlist
+					/String		"{ gugus /abc 3 { 123 } }"
+				 }
+			}
+			/ExpectedResult 0
+		}
+		/AnythingNotNullActionSimpleTrueTest {
+			/TmpStore {
+				/Testslot  {
+					abc
+				}
+			}
+			/TheAction {
+				/AnythingNotNullAction {
+					/Slot	Testslot
+				}
+			}
+		}
+		/AnythingNotNullActionSimpleFalseTest {
+			/TmpStore {
+				/Testslot *
+			}
+			/TheAction {
+				/AnythingNotNullAction {
+					/Slot	Testslot
+				}
+			}
+			/ExpectedResult	0
+		}
+		/AnythingNotNullActionNoSlotTest {
+			/TheAction {
+				/AnythingNotNullAction {
+					/Slot	Testslot
+				}
+			}
+			/ExpectedResult	0
+		}
+		/AnythingNotNullActionRoleStoreTrueTest {
+			/RoleStore {
+				/Testslot  {
+					abc
+				}
+			}
+			/TheAction {
+				/AnythingNotNullAction {
+					/Store	Role
+					/Slot	Testslot
+				}
+			}
+		}
+		/AnythingNotNullActionRenderedTrueTest {
+			/TmpStore {
+				/Testslot  {
+					/abc {}
+				}
+			}
+			/TheAction {
+				/AnythingNotNullAction {
+					/Slot {
+						Testslot
+						"."
+						abc
+					}
+				}
+			}
+		}
+		/CreateAnythingFromStringActionSecondTest {
+			/TheAction {
+				/CreateAnythingFromStringAction {
+					/Destination {
+						/Store	Role
+						/Slot	ResultSlot
+					}
+					/String		"{ /Slot1 \"data1\" /Slot2 1234 { /sub1 \"datasub1\" } }"
+				}
+			}
+			/Result {
+				/RoleStore {
+					/ResultSlot {
+						/Slot1 "data1"
+						/Slot2 1234
+						{
+							/sub1 "datasub1"
+						}
+					}
+				}
+			}
+		}
+		/CreateAnythingFromStringActionTestUseTempStore {
+			/TheAction {
+				/CreateAnythingFromStringAction {
+					/Destination {
+						/Slot	ResultSlot
+					}
+					/String		"{ /Slot1 \"data1\" /Slot2 1234 { /sub1 \"datasub1\" } }"
+				}
+			}
+			/Result {
+				/TmpStore {
+					/ResultSlot {
+						/Slot1 "data1"
+						/Slot2 1234
+						{
+							/sub1 "datasub1"
+						}
+					}
+				}
+			}
+		}
+		/CreateAnythingFromStringActionTestNested {
+			/TheAction {
+				/CreateAnythingFromStringAction {
+					/Destination {
+						/Slot	Result.Slot
+					}
+					/String		"{ /Slot1 \"data1\" /Slot2 1234 { /sub1 \"datasub1\" } }"
+				}
+			}
+			/Result {
+				/TmpStore {
+					/Result {
+						/Slot {
+							/Slot1 "data1"
+							/Slot2 1234
+							{
+								/sub1 "datasub1"
+							}
+						}
+					}
+				}
+			}
+		}
+		/CreateAnythingFromStringActionTestLookupString {
+			/TmpStore {
+				/MyText	"{ /Slot1 \"data1\" /Slot2 1234 { /sub1 \"datasub1\" } }"
+			}
+			/TheAction {
+				/CreateAnythingFromStringAction {
+					/Destination {
+						/Slot	ResultSlot
+					}
+					/String		{ /Lookup MyText }
+				}
+			}
+			/Result {
+				/TmpStore {
+					/ResultSlot {
+						/Slot1 "data1"
+						/Slot2 1234
+						{
+							/sub1 "datasub1"
+						}
+					}
+				}
+			}
+		}
+	}
+}

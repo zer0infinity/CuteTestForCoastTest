@@ -1,0 +1,49 @@
+/*
+ * Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+ * All rights reserved.
+ *
+ * This library/application is free software; you can redistribute and/or modify it under the terms of
+ * the license that is included with this library/application in the file license.txt.
+ */
+
+#ifndef _NameUsingOutputMapper_H
+#define _NameUsingOutputMapper_H
+
+//---- OutputMapper include -------------------------------------------------
+#include "config_dataaccess.h"
+#include "Mapper.h"
+
+//---- NameUsingOutputMapper ----------------------------------------------------------
+//! <B>Stores values to put below a configured slot or its aliased name in TempStore</B>
+/*!
+<B>Configuration:</B><PRE>
+{
+	/Destination {							optional
+		/Store			String				mandatory, default TempStore [Role|Session|Request|TempStore], name of the destination store
+		/Slot			String				qualified slot name
+		/Delim   		String				optional, default ".", first char is taken as delimiter for named slots
+		/IndexDelim		String				optional, default ":", first char is taken as delimiter for indexed slots
+	}
+} </PRE>
+Default configuration is the mappers alias name in TempStore
+*/
+class EXPORTDECL_DATAACCESS NameUsingOutputMapper : public EagerResultMapper
+{
+public:
+	NameUsingOutputMapper(const char *name);
+	IFAObject *Clone() const;			// support for prototype
+
+	virtual bool DoPutAny(const char *key, Anything value, Context &ctx, ROAnything config);
+	virtual bool DoPutStream(const char *key, istream &is, Context &ctx, ROAnything config);
+
+protected:
+	virtual Anything GetDestination(Context &ctx, ROAnything config);
+	virtual ROAnything GetDestinationConfig(Context &ctx, ROAnything config );
+
+private:
+	NameUsingOutputMapper();
+	NameUsingOutputMapper(const NameUsingOutputMapper &);
+	NameUsingOutputMapper &operator=(const NameUsingOutputMapper &);
+};
+
+#endif

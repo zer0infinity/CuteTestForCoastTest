@@ -1,0 +1,161 @@
+{
+	/MainSwitch	0 #1000 #10
+	/EnableAll	0 #1500 #500 #50
+	/DumpAnythings  1		# print full Anythings
+
+	/StressApp {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+
+	/FlowControlDAStresser {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+
+	/ConfNamedObject {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+
+	/URLUtils {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+
+	/Mapper {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+
+	/DataAccessImpl  {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+
+	/SortedTagsHTMLMapper {
+		/MainSwitch	1000
+		/EnableAll	1500
+	}
+
+	/Stresser {
+		/MainSwitch	10
+		/EnableAll	30
+	}
+
+	/DataAccessStresser {
+		/MainSwitch	10
+		/EnableAll	80
+		/GetResult	10
+		/Run 		10
+	}
+
+	/DataAccess {
+		/MainSwitch 0
+		/EnableAll	10
+		/Exec		10
+	}
+
+	/FlowControlDAStresser {
+		/MainSwitch	1000
+		/EnableAll	1500
+		/Run 		1001
+	}
+
+	# to see what HTML is being sent...
+	/HTTPDAImpl {
+		/MainSwitch	10
+		/EnableAll	10
+		/DoExec		10
+	}
+	# to see what HTML is being sent...
+	/HTTPMapper {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+
+	/RemoteStresser {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+
+	/StressProcessor {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+
+	/FlowController {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+
+	/HttpFlowController {
+		/MainSwitch	1000
+		/EnableAll	1500
+		/DoProcessSetCookie 1000
+		/DoProcessLinksFormsAndFrames 1000
+	}
+
+	/Context  {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+
+	# used for what???
+	/LookupMapper {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+
+	/Renderer {
+		/MainSwitch	100
+		/EnableAll	120
+	}
+
+	/CookieToServerRenderer {
+		/MainSwitch	1000
+		/EnableAll	1500
+	}
+
+	/RequestLineRenderer {
+		/MainSwitch	1000
+		/EnableAll	1500
+	}
+
+	/StringRenderer {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+
+	/LookupRenderer {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+
+	/RendererMapper {
+		/MainSwitch	100
+		/EnableAll	120
+	}
+
+	/HTTPBodyMapper {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+
+	/HTTPHeaderMapper {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+
+	/HTMLParser {
+		/MainSwitch	1000
+		/EnableAll	1500
+	}
+
+	/MyHTMLWriter {
+		/MainSwitch	2000
+		/EnableAll	2500
+	}
+
+}
+

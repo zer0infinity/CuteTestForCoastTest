@@ -1,0 +1,38 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/Map {								# OBSOLETE!!!
+		/Default {
+			/Login { Home Login }
+			/Logout Home
+			/Home  GuestPage
+			/GoBanner BannerPage
+		}
+		/TemplateParserExtendedTest {
+			/PageSpecificActionToken	Home
+		}
+	}
+	/StayOnSamePageTokens {
+		LoginRTGuest
+		LoginRTCustomer
+		StayOnTemplateParserExtendedTest
+	}
+
+	# role levels for PBOW type test
+	/PBOWTypeGuest		0
+	/PBOWTypeCustomer	1
+
+	/StateFull {
+		Language
+	}
+
+	/ContextTestRole	"found"
+	/ContextItem		"Role"
+}

@@ -1,0 +1,51 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/TheTestUser	wdtester
+	/TheTestUserPW	all2test
+
+	/SybLocalTest {
+#		/SybDBUser  test
+		/SybDBUser	{
+			/RendererMapper {
+				/ContextLookupRenderer TheTestUser
+			}
+		}
+		/SybDBPW {
+			/RendererMapper {
+				/ContextLookupRenderer TheTestUserPW
+			}
+		}
+		/SybDBHost	HIKU_INT2
+		/SybDBApp	SybCTDAImplTest
+	}
+	/SybLocalSa {
+		/SybDBUser  "wdtester"
+		/SybDBPW	"all2test"
+		/SybDBHost	HIKU_INT2
+		/SybDBApp	SybShowDatabases
+	}
+	/SybPoolLocalTest	%SybLocalTest
+	/SybPoolLocalSa		%SybLocalSa
+
+	/SelectTestWithoutQueryCount {
+		/NoQueryCount   1
+	}
+	/SybLimitedSearchByParamOverride {
+		/SybDBMaxResultSize	4
+	}
+	/SybTestThreadDA
+	{
+		/SybDBUser  webgui
+		/SybDBPW	webgui
+		/SybDBHost	SYB_FKISQA
+		/SybDBApp	ThreadTests
+	}
+}

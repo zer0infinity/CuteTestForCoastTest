@@ -1,0 +1,178 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+	/NumberOfRuns	1 #20000 # - how many times to loop through complete Run below
+	/Run
+	{	 # number of steps in run given by number of slots in this anything
+		{	# 0 # initial address
+			/ClosePeriodically
+			{
+				{	/from "TUE 10:00"
+					/till "TUE 10:59"
+				}
+				{	/from "TUE 12:00"
+					/till "TUE 13:59"
+				}
+			}
+			/CloseSingleTime
+			{
+				{
+					/from "2000-01-26 11:39"
+					/till "2000-01-26 11:57"
+				}
+			}
+			/CurrentServer {
+				/ServerName	"www.acm.org" # 199.222.69.150
+				/Path		"/"
+			}
+		}
+		{	# 1 # initial address
+			/Label TimeoutTest
+			/ClosePeriodically
+			{
+				{	/from "TUE 11:00"
+					/till "TUE 11:59"
+				}
+				{	/from "TUE 13:00"
+					/till "TUE 13:59"
+				}
+			}
+			/CloseSingleTime
+			{
+				{
+					/from "2000-01-26 20:00"
+					/till "2000-01-26 21:57"
+					/jump Psion
+				}
+			}
+			/CurrentServer {
+				/ServerName	"sentosa.hsr.loc"
+				/Path		"/"
+				/Port	1333
+			}
+		}
+		{	# 2 # initial address
+			/Label TimeoutTest
+			/Token
+			{ # don't place link form and other instructions in separate config steps unless you wish to generate extra traffic!
+				{
+					/must "Elefant"
+				}
+				{
+					/must "Wrong"
+					/jump FDlogon
+				}
+			}
+			/Link
+			{
+				/slotName "Press Room" # must be exact match, change in future (?)
+			}
+
+		}
+		{
+			# 3 #
+			/Label Psion
+			/CurrentServer { # just to test label jumps
+				/ServerName	"www.psion.com"
+				/Path		"/"
+			}
+		}
+		{	# 4 # initial address
+			/Label RevertPassword
+
+			/CurrentServer { # just to test label jumps
+				/ServerName	"www.amazon.com"
+				/Path		"/"
+			}
+		}
+
+		{	/Label FDlogon
+			/CurrentServer {
+				/ServerName	"www.tklink.com"
+				/Path		"/"
+			}
+		}
+		{
+			/Label FillLoginForm
+			/Form {
+				/slotNr		0
+				/buttonPressed "Login"		# must be exact (now) will also do a "Force Login" since "Login" is in the same string <- NOT always good
+				/formContents {
+					/Customer 	CH10601
+					/User 		 tkdemo1
+					/Password 	test
+				}
+			}
+		}
+		{	/Label CheckAndMoveToFinxs
+			/Token
+			{ # don't place link form and other instructions in separate config steps unless you wish to generate extra traffic!
+				{
+					/mustnot "Wrong"
+				}
+				{
+					/mustnot "already in use"
+					/jump TheEnd
+				}
+			}
+			/Link
+			{
+				/ServerName	"www.tklink.com"
+				/slotName "FinXS" # must be exact match, change in future (?)
+			}
+		}
+		{
+			/Label CheckFinxsAndMoveToHome
+			/Token
+			{ # don't place link form and other instructions in separate config steps unless you wish to generate extra traffic!
+				{
+					/must "ifs someapp" # Wdog should report an error here
+				}
+			}
+			/CurrentServer {
+				/ServerName	"www.tklink.com"
+				/Path		"/home"
+			}
+		}
+		{
+			/Label MoveToTeledata
+
+			/Link
+			{
+				/slotName "Teledata" # must be exact match, change in future (?)
+			}
+		}
+		{
+			/Label CheckTeledataAndMoveToHome
+			/Token
+			{ # don't place link form and other instructions in separate config steps unless you wish to generate extra traffic!
+				{
+					/must "Beginnen Sie Ihre Recherche"
+				}
+			}
+			/CurrentServer {
+				/ServerName	"WWW.TKLINK.COM"
+				/Path		"/home"
+			}
+		}
+		{
+			/Label Logoff1
+
+			/Link
+			{
+				/slotName "Logoff" # must be exact match, change in future (?)
+			}
+		}
+		{
+			/Label TheEnd
+
+		}
+	}
+}
+

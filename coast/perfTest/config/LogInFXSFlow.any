@@ -1,0 +1,38 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+	/NumberOfRuns	10 #0000 - how many times to loop through complete Run below
+	/Run	{
+		# number of steps in run given by number of slots in this anything
+		# URL http://www.muc.de/~kenny/michael/startframeset.htm <-in future as well
+
+		{
+			/CurrentServer {
+				/ServerName	"sentosa.hsr.loc"
+				/Path		"/"
+				/Port		"1919" # nicht SSL
+			}
+		}
+		{	# after browser induced refresh
+			# fill out HTTPS FDS login form
+			/Form {
+				/slotNr		0
+				/formContents {
+					#/fld_TKCountryCode 			"CH"
+					#/fld_TKUserID 				"tkgae2"
+					#/fld_TKCustNumber			"10601"
+					#/fld_TKPassword			"gaefr"
+					/fld_TKCountryCodeAndCustNumber { /Lookup { { "UserList." {/Lookup Id} ".cuid" } }  }
+					/fld_TKUserID 					{ /Lookup { { "UserList." {/Lookup Id} ".uid"  } }  }
+					/fld_TKPassword					{ /Lookup { { "UserList." {/Lookup Id} ".pw"   } }  }
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,63 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/useSSL {	#mapper for test purposes
+		/Output {
+			/HTTPMimeHeaderMapper	*
+			/HTTPBody {
+				/HTTPBodyMapper *
+			}
+		}
+	}
+
+	/ExecTestOut {
+		/HTTPBody {
+			/HTTPBodyMapper *
+		}
+	}
+	/CgiExecTest {
+		/HTTPBody {
+			/HTTPBodyMapper *
+		}
+	}
+	/HTTPMimeHeaderMapper { # dummy, but not empty
+	}
+	/HTTPMimeHeaderWithSuppress {
+		/Suppress {
+			"Connection"
+			"server"
+		}
+	}
+	/HTTPMimeHeaderWithAdd {
+		/Add {
+			/fd-info	"foo"
+			/fd-stuff	"bar"
+		}
+	}
+	/HTTPMimeHeaderWithSuppressAndAdd {
+		/Suppress {
+			"Connection"
+		}
+		/Add {
+			/server			"Coast 2.0"
+			/fd-format		"special"
+		}
+	}
+	/HTTPMimeHeaderWithSuppressAndAddNoHeaderFieldSplit {
+		/Suppress {
+			"Connection"
+		}
+		/Add {
+			/server			"Coast 2.0"
+			/fd-format		"special"
+		}
+		/DoNotSplitHeaderFields 1
+	}
+}

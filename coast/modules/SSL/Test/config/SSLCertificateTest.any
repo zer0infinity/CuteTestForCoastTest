@@ -1,0 +1,432 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/RemoteCertificateHost {
+		/Address	"www.tkfweb.com"
+		/Port		443
+		/SSLPeerCAFile "cert_files/tklinkCARSA.pem"
+		/SSLVerifyPeerCert 1
+		/SSLVerifyDepth 2
+	}
+
+	/ClientCertificateTest
+	{
+		# 0
+		{
+			/Config
+			{
+				/Address	"localhost"
+				/Port		443
+				/SSLVerifyDepth 3
+				/KeyFileClient	"cert_files/clientkey.pem"
+				/CertFileClient	"cert_files/clientcrt.pem"
+				/SSLVerifyFailIfNoPeerCert 0
+				/SSLUseAppCallback		1
+				/SSLPeerCAFile "cert_files/rootCA1.pem"
+				/VerifyCertifiedEntity 1
+				/CertVerifyStringIsFilter 0
+				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+			}
+			/Results
+			{
+				/SSLCertVerifyStatus		1
+				/AppLevelCertVerifyStatus	1
+				/GetRequestOk				1
+				/IsCertCheckPassed			1
+			}
+		}
+
+		# 1
+		#
+		#		CertChainDepth error
+		#
+
+		{
+			/Config
+			{
+				/Address	"localhost"
+				/Port		443
+				/SSLVerifyDepth 1
+				/KeyFileClient	"cert_files/clientkey.pem"
+				/CertFileClient	"cert_files/clientcrt.pem"
+				/SSLVerifyFailIfNoPeerCert 0
+				/SSLUseAppCallback		1
+				/SSLPeerCAFile "cert_files/rootCA1.pem"
+				/VerifyCertifiedEntity 1
+				/CertVerifyStringIsFilter 0
+				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+			}
+			/Results
+			{
+				/SSLCertVerifyStatus		0
+				/AppLevelCertVerifyStatus	0
+				/GetRequestOk				1
+				/IsCertCheckPassed			0
+			}
+		}
+
+		# 2
+		#
+		#		Check parsed DN, pass filter spec
+		#
+		{
+			/Config
+			{
+				/Address	"localhost"
+				/Port		443
+				/SSLVerifyDepth 3
+				/KeyFileClient	"cert_files/clientkey.pem"
+				/CertFileClient	"cert_files/clientcrt.pem"
+				/SSLVerifyFailIfNoPeerCert 0
+				/SSLUseAppCallback		1
+				/SSLPeerCAFile "cert_files/rootCA1.pem"
+				/VerifyCertifiedEntity 1
+				/CertVerifyStringIsFilter 1
+				/CertVerifyString		"CN=zuoz.hsr.ch"
+			}
+			/Results
+			{
+				/SSLCertVerifyStatus		1
+				/AppLevelCertVerifyStatus	1
+				/GetRequestOk				1
+				/IsCertCheckPassed			1
+			}
+		}
+
+		# 3
+		#
+		#		Check parsed DN, pass filter spec, wrong filter (value wrong)
+		#
+		{
+			/Config
+			{
+				/Address	"localhost"
+				/Port		443
+				/SSLVerifyDepth 3
+				/KeyFileClient	"cert_files/clientkey.pem"
+				/CertFileClient	"cert_files/clientcrt.pem"
+				/SSLVerifyFailIfNoPeerCert 0
+				/SSLUseAppCallback		1
+				/SSLPeerCAFile "cert_files/rootCA1.pem"
+				/VerifyCertifiedEntity 1
+				/CertVerifyStringIsFilter 1
+				/CertVerifyString		"CN=zuoz.hsr.chxxxxxxxxxxxxxxx"
+
+			}
+			/Results
+			{
+				/SSLCertVerifyStatus		1
+				/AppLevelCertVerifyStatus	0
+				/GetRequestOk				1
+				/IsCertCheckPassed			0
+			}
+		}
+
+		# 4
+		#
+		#		Check parsed DN, pass filter spec, wrong filter (dn name part wrong)
+		#
+		{
+			/Config
+			{
+				/Address	"localhost"
+				/Port		443
+				/SSLVerifyDepth 3
+				/KeyFileClient	"cert_files/clientkey.pem"
+				/CertFileClient	"cert_files/clientcrt.pem"
+				/SSLVerifyFailIfNoPeerCert 0
+				/SSLUseAppCallback		1
+				/SSLPeerCAFile "cert_files/rootCA1.pem"
+				/VerifyCertifiedEntity 1
+				/CertVerifyStringIsFilter 1
+				/CertVerifyString		"xCN=zuoz.hsr.ch"
+			}
+			/Results
+			{
+				/SSLCertVerifyStatus		1
+				/AppLevelCertVerifyStatus	0
+				/GetRequestOk				1
+				/IsCertCheckPassed			0
+			}
+		}
+
+		# 5
+		#
+		#		Check parsed DN, wrong DN, no filter
+		#
+		{
+			/Config
+			{
+				/Address	"localhost"
+				/Port		443
+				/SSLVerifyDepth 3
+				/KeyFileClient	"cert_files/clientkey.pem"
+				/CertFileClient	"cert_files/clientcrt.pem"
+				/SSLVerifyFailIfNoPeerCert 0
+				/SSLUseAppCallback		1
+				/SSLPeerCAFile "cert_files/rootCA1.pem"
+				/VerifyCertifiedEntity 1
+				/CertVerifyStringIsFilter 0
+				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.Xom,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+
+			}
+			/Results
+			{
+				/SSLCertVerifyStatus		1
+				/AppLevelCertVerifyStatus	0
+				/GetRequestOk				1
+				/IsCertCheckPassed			0
+			}
+		}
+
+		# 6
+		#
+		#		Do not use application callback - SSLVerifyPeerCert is crucial now!!!!!!!
+		#
+
+		{
+			/Config
+			{
+				/Address	"localhost"
+				/Port		443
+				/SSLVerifyDepth 3
+				/KeyFileClient	"cert_files/clientkey.pem"
+				/CertFileClient	"cert_files/clientcrt.pem"
+				/SSLVerifyFailIfNoPeerCert 0
+				/SSLUseAppCallback		0
+				/SSLVerifyPeerCert		1
+				/SSLPeerCAFile "cert_files/rootCA1.pem"
+				/VerifyCertifiedEntity 1
+				/CertVerifyStringIsFilter 0
+				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+			}
+			/Results
+			{
+				/SSLCertVerifyStatus		1
+				/AppLevelCertVerifyStatus	1
+				/GetRequestOk				1
+				/IsCertCheckPassed			1
+			}
+		}
+
+		# 7
+		#
+		#		Do not use application callback - SSLVerifyPeerCert is crucial now!!!!!!!
+		#		Chain depth not valid.
+
+		{
+			/Config
+			{
+				/Address	"localhost"
+				/Port		443
+				/SSLVerifyDepth 1
+				/KeyFileClient	"cert_files/clientkey.pem"
+				/CertFileClient	"cert_files/clientcrt.pem"
+				/SSLVerifyFailIfNoPeerCert 0
+				/SSLUseAppCallback		0
+				/SSLVerifyPeerCert		1
+				/SSLPeerCAFile "cert_files/rootCA1.pem"
+				/VerifyCertifiedEntity 1
+				/CertVerifyStringIsFilter 0
+				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+			}
+			/Results
+			{
+				/SSLCertVerifyStatus		0
+				/AppLevelCertVerifyStatus	0
+				/GetRequestOk				0
+				/IsCertCheckPassed			0
+			}
+		}
+
+		# 8
+		#
+		#		Do not use application callback - SSLVerifyPeerCert is crucial now!!!!!!!
+		#		Do not verify peer cert
+
+		{
+			/Config
+			{
+				/Address	"localhost"
+				/Port		443
+				/SSLVerifyDepth 1
+				/KeyFileClient	"cert_files/clientkey.pem"
+				/CertFileClient	"cert_files/clientcrt.pem"
+				/SSLVerifyFailIfNoPeerCert 0
+				/SSLUseAppCallback		0
+				/SSLVerifyPeerCert		0
+				/SSLPeerCAFile "cert_files/rootCA1.pem"
+				/VerifyCertifiedEntity 1
+				/CertVerifyStringIsFilter 0
+				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+			}
+			/Results
+			{
+				/SSLCertVerifyStatus		0
+				/AppLevelCertVerifyStatus	0
+				/GetRequestOk				1
+				/IsCertCheckPassed			0
+			}
+		}
+
+		# 9
+		#
+		#		Do not use application callback - SSLVerifyPeerCert is crucial now!!!!!!!
+		#		This are the settings we would use in production.
+		#		Stream would be BAD.
+
+		{
+			/Config
+			{
+				/Address	"localhost"
+				/Port		443
+				/SSLVerifyDepth 1
+				/KeyFileClient	"cert_files/clientkey.pem"
+				/CertFileClient	"cert_files/clientcrt.pem"
+				/SSLVerifyFailIfNoPeerCert 1
+				/SSLUseAppCallback		0
+				/SSLVerifyPeerCert		1
+				/SSLPeerCAFile "cert_files/rootCA1.pem"
+				/VerifyCertifiedEntity 1
+				/CertVerifyStringIsFilter 0
+				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+			}
+			/Results
+			{
+				/SSLCertVerifyStatus		0
+				/AppLevelCertVerifyStatus	0
+				/GetRequestOk				0
+				/IsCertCheckPassed			0
+			}
+		}
+
+		# 10
+		#
+		#		CertChainDepth error
+		#		Use application callback. This are the settings we would use in production.
+		#		Stream would be BAD.
+
+		{
+			/Config
+			{
+				/Address	"localhost"
+				/Port		443
+				/SSLVerifyDepth 1
+				/KeyFileClient	"cert_files/clientkey.pem"
+				/CertFileClient	"cert_files/clientcrt.pem"
+				/SSLVerifyFailIfNoPeerCert 0
+				/SSLUseAppCallback		1
+				/SSLVerifyPeerCert		1
+				/SSLPeerCAFile "cert_files/rootCA1.pem"
+				/VerifyCertifiedEntity 1
+				/CertVerifyStringIsFilter 0
+				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+			}
+			/Results
+			{
+				/SSLCertVerifyStatus		0
+				/AppLevelCertVerifyStatus	0
+				/GetRequestOk				0
+				/IsCertCheckPassed			0
+			}
+		}
+
+		# 11
+		#
+		#		CertChainDepth error
+		#		SSLVerifyPeerCert 0 and SSLVerifyFailIfNoPeerCert 1
+		#
+		{
+			/Config
+			{
+				/Address	"localhost"
+				/Port		443
+				/SSLVerifyDepth 1
+				/KeyFileClient	"cert_files/clientkey.pem"
+				/CertFileClient	"cert_files/clientcrt.pem"
+				/SSLVerifyFailIfNoPeerCert 1
+				/SSLUseAppCallback		0
+				/SSLVerifyPeerCert		0
+				/SSLPeerCAFile "cert_files/rootCA1.pem"
+				/VerifyCertifiedEntity 0
+				/CertVerifyStringIsFilter 0
+				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+			}
+			/Results
+			{
+				/SSLCertVerifyStatus		0
+				/AppLevelCertVerifyStatus	0
+				/GetRequestOk				0
+				/IsCertCheckPassed			0
+			}
+		}
+
+		# 12
+		#
+		#		CertChainDepth error
+		#		SSLVerifyPeerCert 0 and SSLVerifyFailIfNoPeerCert 1
+		#
+		{
+			/Config
+			{
+				/Address	"localhost"
+				/Port		443
+				/SSLVerifyDepth 1
+				/KeyFileClient	"cert_files/clientkey.pem"
+				/CertFileClient	"cert_files/clientcrt.pem"
+				/SSLVerifyFailIfNoPeerCert 	0
+				/SSLUseAppCallback		0
+				/SSLVerifyPeerCert		0
+				/SSLPeerCAFile "cert_files/rootCA1.pem"
+				/VerifyCertifiedEntity 0
+				/CertVerifyStringIsFilter 0
+				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+			}
+			/Results
+			{
+				/SSLCertVerifyStatus		0
+				/AppLevelCertVerifyStatus	0
+				/GetRequestOk				1
+				/IsCertCheckPassed			1
+			}
+		}
+
+		# 13
+		#
+		#		Use c_rehashed directory containing the trusted certs, /tmp/SSLSocketTestHashedCerts
+		#		is created by prjRunTest.sh
+		#
+		{
+			/Config
+			{
+				/Address	"localhost"
+				/Port		443
+				/SSLVerifyDepth 3
+				/KeyFileClient	"cert_files/clientkey.pem"
+				/CertFileClient	"cert_files/clientcrt.pem"
+				/SSLVerifyFailIfNoPeerCert 	1
+				/SSLUseAppCallback		1
+				/SSLVerifyPeerCert		1
+				/SSLVerifyPath 		"/tmp/SSLSocketTestHashedCerts"
+				/VerifyCertifiedEntity 1
+				/CertVerifyStringIsFilter 1
+				/CertVerifyString		"CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+			}
+			/Results
+			{
+				/SSLCertVerifyStatus		1
+				/AppLevelCertVerifyStatus	1
+				/GetRequestOk				1
+				/IsCertCheckPassed			1
+			}
+		}
+	}
+}
+

@@ -1,0 +1,68 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/MultiRemote {
+		/Stressers {
+			/RemoteStress	10
+		}
+	}
+
+    /RemoteStress {
+		/DataAccess		AStressServer
+		/Input 		{
+			/StresserName TStresserRunner
+		}
+    }
+	/Connection1 {
+		/DataAccess		AWebServer
+		/NumberOfCalls		10
+		/Input	"Get / HTTP1.0\n\n"
+	}
+	/LocalConnection {
+		/DataAccess		LocalServer
+		/NumberOfCalls		150
+		/Input	{
+			/Transaction    "AV_TRX1"
+			/Data			"ROM"
+		}
+	}
+	/FDSFlow {
+		/UserList {
+			/"0"	{ /cuid ch10601 /uid tkdemo /pw test }
+			/"1"	{ /cuid ch10601 /uid tkdemo1 /pw test }
+			/"2"	{ /cuid ch10601 /uid tkdemo2 /pw test }
+			/"3"	{ /cuid ch10601 /uid tkdemo3 /pw test }
+			/"4"	{ /cuid ch10601 /uid tkdemo4 /pw test }
+			/"5"	{ /cuid ch10601 /uid tkdemo5 /pw test }
+			/"6"	{ /cuid ch10601 /uid tkdemo6 /pw test }
+			/"7"	{ /cuid ch10601 /uid tkdemo7 /pw test }
+			/"8"	{ /cuid ch10601 /uid tkdemo8 /pw test }
+			/"9"	{ /cuid ch10601 /uid tkdemo9 /pw test }
+			/"10"	{ /cuid ch10601 /uid tkhelp1 /pw test }
+			/"11"	{ /cuid ch10601 /uid tkhelp2 /pw test }
+			/"12"	{ /cuid ch10601 /uid tkhelp3 /pw test }
+		}
+		/DataAccess		FDSTest # not really relevant with FDS stresser-browser
+		/FlowController	FD1LoginLogoff
+	}
+
+	/FDInternalPublic {
+		/DataAccess		FDSTest # not really relevant with FDS stresser-browser
+		/FlowController	FDInternalNoLogin
+
+	}
+
+	/ThreadedStresserRunner {
+		/Stressers {
+			/FDInternalPublic 10 #3 # 2 # 20 - how many threads to run - single thread right now
+		}
+	}
+
+}

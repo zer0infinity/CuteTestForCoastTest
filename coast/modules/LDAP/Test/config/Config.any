@@ -1,0 +1,175 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+	/DLL {
+		libldapdataaccess2
+	}
+
+#--- Modules ------------------------------------
+	/Modules {
+		DataAccessImplsModule
+		MappersModule
+		ActionsModule
+	}
+	/Actions {
+		/CallDataAccessAction	{ CallDA }
+		/ConditionalAction	{ Cond }
+	}
+
+	/DataAccessImpls {
+
+		/LDAPAbstractDAI {
+
+			/LDAPSearchDAI {
+				"LDAPTest_LookupTmpAndEnv"
+
+				"LDAPSearchTest_IllegalQuery"
+				"LDAPSearchTest_ScopeBase"
+				"LDAPSearchTest_ScopeOneLevel"
+				"LDAPSearchTest_ScopeSubTree"
+				"LDAPSearchTest_SizeLimit"
+				"LDAPSearchTest_AttrSelection"
+				"LDAPSearchTest_AttrsOnly"
+				"LDAPSearchTest_Filter"
+				"LDAPSearchTest_WrongDN"
+				"LDAPSearchTest_EmptyResult"
+
+				"LDAPSearchQuery_LookupTkrefactor"
+			}
+
+			/LDAPDeleteDAI {
+				"LDAPDeleteTest_NonLeaf"
+				"LDAPDeleteTest_NonExisting"
+				"LDAPDeleteTest_ExistingLeaf"
+			}
+
+			/LDAPCompareDAI {
+				"LDAPCompareTest_NonExistingEntry"
+				"LDAPCompareTest_NonExistingAttribute"
+				"LDAPCompareTest_EqualValue"
+				"LDAPCompareTest_UnequalValue"
+				"LDAPCompareTest_MissingAttrNameParam"
+				"LDAPCompareTest_MissingAttrValueParam"
+			}
+
+			/LDAPAddDAI {
+				"LDAPAddTest_ExistingEntry"
+				"LDAPAddTest_NonExistingEntry"
+				"LDAPAddTest_MissingRequiredAttributes"
+				"LDAPAddTest_NonExistingAttribute"
+				"LDAPAddTest_MissingAttrsParam"
+				"LDAPAddTest_SingleValues"
+			}
+
+			/LDAPModifyDAI {
+				"LDAPModifyTest_UnknownAttribute"
+				"LDAPModifyTest_AddExistingValue"
+				"LDAPModifyTest_DeleteRequiredAttribute"
+				"LDAPModifyTest_MultipleModify"
+				"LDAPModifyTest_WrongMods"
+				"LDAPModifyTest_EmptyModsGiven"
+				"LDAPModifyTest_DeleteNonExistingValue"
+				"LDAPModifyTest_DeleteAndAddWholeAttr"
+			}
+		}
+	}
+
+	/Mappers {
+		/Input {
+			/ParameterMapper {
+				"LDAPTest_LookupTmpAndEnv"
+
+				"LDAPSearchTest_IllegalQuery"
+				"LDAPSearchTest_ScopeBase"
+				"LDAPSearchTest_ScopeOneLevel"
+				"LDAPSearchTest_ScopeSubTree"
+				"LDAPSearchTest_SizeLimit"
+				"LDAPSearchTest_AttrSelection"
+				"LDAPSearchTest_AttrsOnly"
+				"LDAPSearchTest_Filter"
+				"LDAPSearchTest_WrongDN"
+				"LDAPSearchTest_EmptyResult"
+
+				"LDAPSearchQuery_LookupTkrefactor"
+
+				"LDAPDeleteTest_NonLeaf"
+				"LDAPDeleteTest_NonExisting"
+				"LDAPDeleteTest_ExistingLeaf"
+
+				"LDAPCompareTest_NonExistingEntry"
+				"LDAPCompareTest_NonExistingAttribute"
+				"LDAPCompareTest_EqualValue"
+				"LDAPCompareTest_UnequalValue"
+				"LDAPCompareTest_MissingAttrNameParam"
+				"LDAPCompareTest_MissingAttrValueParam"
+
+				"LDAPAddTest_ExistingEntry"
+				"LDAPAddTest_NonExistingEntry"
+				"LDAPAddTest_MissingRequiredAttributes"
+				"LDAPAddTest_NonExistingAttribute"
+				"LDAPAddTest_MissingAttrsParam"
+				"LDAPAddTest_SingleValues"
+
+				"LDAPModifyTest_UnknownAttribute"
+				"LDAPModifyTest_AddExistingValue"
+				"LDAPModifyTest_DeleteRequiredAttribute"
+				"LDAPModifyTest_MultipleModify"
+				"LDAPModifyTest_WrongMods"
+				"LDAPModifyTest_EmptyModsGiven"
+				"LDAPModifyTest_DeleteNonExistingValue"
+				"LDAPModifyTest_DeleteAndAddWholeAttr"
+			}
+		}
+		/Output {
+			/RootMapper {
+				"LDAPTest_LookupTmpAndEnv"
+
+				"LDAPSearchTest_IllegalQuery"
+				"LDAPSearchTest_ScopeBase"
+				"LDAPSearchTest_ScopeOneLevel"
+				"LDAPSearchTest_ScopeSubTree"
+				"LDAPSearchTest_SizeLimit"
+				"LDAPSearchTest_AttrSelection"
+				"LDAPSearchTest_AttrsOnly"
+				"LDAPSearchTest_Filter"
+				"LDAPSearchTest_WrongDN"
+				"LDAPSearchTest_EmptyResult"
+
+				"LDAPSearchQuery_LookupTkrefactor"
+
+				"LDAPDeleteTest_NonLeaf"
+				"LDAPDeleteTest_NonExisting"
+				"LDAPDeleteTest_ExistingLeaf"
+
+				"LDAPCompareTest_NonExistingEntry"
+				"LDAPCompareTest_NonExistingAttribute"
+				"LDAPCompareTest_EqualValue"
+				"LDAPCompareTest_UnequalValue"
+				"LDAPCompareTest_MissingAttrNameParam"
+				"LDAPCompareTest_MissingAttrValueParam"
+
+				"LDAPAddTest_ExistingEntry"
+				"LDAPAddTest_NonExistingEntry"
+				"LDAPAddTest_MissingRequiredAttributes"
+				"LDAPAddTest_NonExistingAttribute"
+				"LDAPAddTest_MissingAttrsParam"
+				"LDAPAddTest_SingleValues"
+
+				"LDAPModifyTest_UnknownAttribute"
+				"LDAPModifyTest_AddExistingValue"
+				"LDAPModifyTest_DeleteRequiredAttribute"
+				"LDAPModifyTest_MultipleModify"
+				"LDAPModifyTest_WrongMods"
+				"LDAPModifyTest_EmptyModsGiven"
+				"LDAPModifyTest_DeleteNonExistingValue"
+				"LDAPModifyTest_DeleteAndAddWholeAttr"
+			}
+		}
+	}
+}

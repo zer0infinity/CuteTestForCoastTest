@@ -1,0 +1,121 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+	/LowerBound		0
+	/UpperBound		400
+	/DumpAnythings  1		# print full Anythings
+
+	/ResultMapper {
+		/MainSwitch						0
+		/EnableAll						0
+		/DoFinalPutAny					400
+	}
+	/ConfigMapper {
+		/MainSwitch						0
+		/EnableAll						400
+	}
+	/ParameterMapper {
+		/MainSwitch						0
+		/EnableAll						400
+	}
+	/EagerParameterMapper {
+		/MainSwitch						0
+		/EnableAll						400
+	}
+	/CallDataAccesss {
+		/MainSwitch						0
+		/EnableAll						400
+	}
+	/Action {
+		/MainSwitch						0
+		/EnableAll						400
+	}
+	/ConfiguredActionTest {
+		/MainSwitch						400
+		/EnableAll						400
+	}
+	/LDAPDAImpl {
+		/MainSwitch						400
+		/EnableAll						400
+		/Connect						400
+	}
+	/LDAPAddDAImpl {
+		/MainSwitch						400
+		/EnableAll						400
+		/Connect						400
+	}
+	/LDAPCompareDAImpl {
+		/MainSwitch						400
+		/EnableAll						400
+		/Connect						400
+	}
+	/LDAPDelDAImpl {
+		/MainSwitch						400
+		/EnableAll						400
+		/Connect						400
+	}
+	/LDAPModifyDAImpl {
+		/MainSwitch						400
+		/EnableAll						400
+		/Connect						400
+	}
+	/HTTPMapper {
+		/MainSwitch						300
+		/EnableAll						50
+	}
+	/HTTPMapperTest {
+		/MainSwitch						300
+		/EnableAll						50
+		/FDTest							30
+	}
+	/HTTPBodyMapper {
+		/MainSwitch						30
+		/EnableAll						50
+	}
+	/LDAPDAImplTest {
+		/MainSwitch						400
+		/EnableAll						400
+	}
+	/LDAPDAImplConfigTest {
+		/MainSwitch						400
+		/EnableAll						400
+	}
+	/LDAPMapperTest {
+		/MainSwitch						5
+		/EnableAll						5
+	}
+	/LDAPParams {
+		/MainSwitch						5
+		/EnableAll						5
+	}
+	/LDAPListWithPrimaryKeyMapper {
+		/MainSwitch						10
+		/EnableAll						10
+	}
+	/LDAPParamMapper {
+		/MainSwitch						5
+		/EnableAll						5
+	}
+	/LDAPDNameMapper {
+		/MainSwitch						100
+		/EnableAll						100
+	}
+	/LDAPQueryMapper {
+		/MainSwitch						100
+		/EnableAll						100
+	}
+	/LDAPModifyValsMapper {
+		/MainSwitch						100
+		/EnableAll						100
+	}
+	/ConditionalAction {
+		/MainSwitch						100
+		/EnableAll						0
+	}
+}

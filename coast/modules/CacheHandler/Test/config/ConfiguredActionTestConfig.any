@@ -1,0 +1,655 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+	/RunOnly
+	{
+	}
+
+	/RunTestCases
+	{
+		/NixFoundGroupCfg
+ 		{
+ 			/TheAction
+ 			{
+					/CLCA
+					{
+							/Da		"TestDA1"
+ 							/Key	"0:2000"
+ 					}
+ 			}
+ 			/ExpectedResult		0
+ 			/Result
+ 			{
+ 				/TmpStore
+ 				{
+ 				}
+ 			}
+		}
+		/NixFoundWithKey
+ 		{
+ 			/TheAction
+ 			{
+ 					/CLCA
+ 					{
+							/Da		"TestDA1"
+ 							/Key	"gugus"
+ 					}
+ 			}
+ 			/ExpectedResult		0
+ 			/Result
+ 			{
+ 				/TmpStore
+ 				{
+ 				}
+ 			}
+		}
+		/MixedAccessPathCfg
+ 		{
+ 			/TheAction
+ 			{
+ 					/CLCA
+ 					{
+							/Da		"TestDA1"
+ 							/Key	":0"
+ 					}
+ 			}
+ 			/ExpectedResult		1
+ 			/Result
+ 			{
+ 				/TmpStore
+ 				{
+ 					/:0 "ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+ 				}
+ 			}
+ 		}
+ 		/MixedAccessPathCfgOtherGroup
+ 		{
+ 			/TheAction
+ 			{
+ 					/CLCA
+ 					{
+							/Da		"TestDA1"
+ 							/Key	":0"
+ 					}
+ 			}
+ 			/ExpectedResult		1
+ 			/Result
+ 			{
+ 				/TmpStore
+ 				{
+ 					/:0 "ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+ 				}
+ 			}
+ 		}
+		/IndexedAccessTestCfg
+		{
+			/TheAction
+			{
+					/CLCA
+					{
+							/Da		"TestDA1"
+							/Key	":3"
+					}
+			}
+			/ExpectedResult		1
+			/Result
+			{
+				/TmpStore
+				{
+					/dn "esid=1100/153.046.016.009,uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+					/objectclass
+					{
+					  "entitledService"
+					  "tkfModify"
+					}
+					/esid "1100/153.046.016.009"
+					/apptype "undef"
+					/stype "undef"
+					/s-dn "sid=1100,ou=tkfs,o=1,c=CH,dc=tkfcd.hsr.ch"
+					/s-uid "1100"
+					/sid "1100"
+					/tc-dn "tid=153.046.016.009,ou=tkftc,o=1,c=CH,dc=tkfcd.hsr.ch"
+					/tc-uid "153.046.016.009"
+					/tid "153.046.016.009"
+					/tc-type "dummy"
+					/tkfmodtime "20000530_14:51:06"
+				}
+			}
+		}
+		/PathAccessTestCfg
+		{
+			/TheAction
+			{
+					/CLCA
+					{
+							/Da		"TestDA1"
+							/Key	":1.tids"
+					}
+			}
+			/ExpectedResult		1
+			/Result
+			{
+				/TmpStore
+				{
+
+					"153.046.248.014"
+					"172.016.001.041"
+					"172.016.200.013"
+					"195.112.074.110"
+					"172.016.003.077"
+					"153.046.030.066"
+					"153.046.016.001"
+					"153.046.016.009"
+					"HOST"
+					"230.001.240.000"
+				}
+			}
+		}
+		/OtherGroup1
+		{
+			/TheAction
+			{
+					/CLCA
+					{
+							/Da		"TestDA3"
+							/Key	":0"
+					}
+			}
+			/ExpectedResult		1
+			/Result
+			{
+				/TmpStore
+				{
+						/dn "uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+				}
+			}
+		}
+		/OtherGroup2
+		{
+			/TheAction
+			{
+					/CLCA
+					{
+							/Da		"TestDA3"
+							/Key	":0"
+					}
+			}
+			/ExpectedResult		1
+			/Result
+			{
+				/TmpStore
+				{
+					/dn "uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+					/objectclass
+					{
+					  "person"
+					  "client"
+					  "tkfModify"
+					}
+					/uid "tkgae"
+					/sn "tkgae"
+					/cn "tkgae"
+					/language "D"
+					/ifs-id "tkgae"
+					/pd-dn "cn=CH10601-tkgae,dc=tkfpd.hsr.ch"
+					/userpassword "{SHA}8HMddz0wJeXIdx5j+4I3y3W+ne0="
+					/passwordexp "20010624_11:55:37"
+					/tkfmodtime "20010424_11:55:37"
+					/childmodtime "20010426_09:27:20"
+					/tids
+					{
+					  "153.046.248.014"
+					  "172.016.001.041"
+					  "172.016.200.013"
+					  "195.112.074.110"
+					  "172.016.003.077"
+					  "153.046.030.066"
+					  "153.046.016.001"
+					  "153.046.016.009"
+					  "HOST"
+					  "230.001.240.000"
+					}
+				  }
+			}
+		}
+		/OtherGroup3
+		{
+			/TheAction
+			{
+					/CLCA
+					{
+							/Da		"TestDA2"
+							/Key	":1"
+					}
+			}
+			/ExpectedResult		1
+			/Result
+			{
+				/TmpStore
+				{
+					/dn "esid=1100/172.016.200.013,uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+				}
+			}
+		}
+		/Asterix
+		{
+			/TheAction
+			{
+					/CLCA
+					{
+							/Da		"TestDA3"
+							/Key	"*"
+					}
+			}
+			/ExpectedResult		1
+			/Result
+			{
+				/TmpStore
+				{
+					/:0
+					 {
+						/dn "uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+						/objectclass
+						{
+						  "person"
+						  "client"
+						  "tkfModify"
+						}
+						/uid "tkgae"
+						/sn "tkgae"
+						/cn "tkgae"
+						/language "D"
+						/ifs-id "tkgae"
+						/pd-dn "cn=CH10601-tkgae,dc=tkfpd.hsr.ch"
+						/userpassword "{SHA}8HMddz0wJeXIdx5j+4I3y3W+ne0="
+						/passwordexp "20010624_11:55:37"
+						/tkfmodtime "20010424_11:55:37"
+						/childmodtime "20010426_09:27:20"
+						/tids
+						{
+						  "153.046.248.014"
+						  "172.016.001.041"
+						  "172.016.200.013"
+						  "195.112.074.110"
+						  "172.016.003.077"
+						  "153.046.030.066"
+						  "153.046.016.001"
+						  "153.046.016.009"
+						  "HOST"
+						  "230.001.240.000"
+						}
+					}
+				  }
+			}
+		}
+		/OtherGroup4
+		{
+			/TheAction
+			{
+					/CLCA
+					{
+							/Da		"TestDA2"
+							/Key	":1"
+					}
+			}
+			/ExpectedResult		1
+			/Result
+			{
+				/TmpStore
+				{
+					/dn "esid=1100/172.016.200.013,uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+				}
+			}
+		}
+
+		/OtherGroup5
+		{
+			/TheAction
+			{
+					/CLCA
+					{
+							/Da		"TestDA2"
+							/Key	":1.dn"
+					}
+			}
+			/ExpectedResult		1
+			/Result
+			{
+				/TmpStore
+				{
+				{
+					"esid=1100/172.016.200.013,uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+				}
+				}
+			}
+		}
+
+####################################################################################
+# same tests with action triggering LdapDataAccess
+####################################################################################
+
+		/NixFoundGroupCfgAction
+ 		{
+ 			/TheAction
+ 			{
+					/CLCA
+					{
+							/Da		"TestDA1Action"
+ 							/Key	"0:2000"
+ 					}
+ 			}
+ 			/ExpectedResult		0
+ 			/Result
+ 			{
+ 				/TmpStore
+ 				{
+ 				}
+ 			}
+		}
+		/NixFoundWithKeyAction
+ 		{
+ 			/TheAction
+ 			{
+ 					/CLCA
+ 					{
+							/Da		"TestDA1Action"
+ 							/Key	"gugus"
+ 					}
+ 			}
+ 			/ExpectedResult		0
+ 			/Result
+ 			{
+ 				/TmpStore
+ 				{
+ 				}
+ 			}
+		}
+		/MixedAccessPathCfgAction
+ 		{
+ 			/TheAction
+ 			{
+ 					/CLCA
+ 					{
+							/Da		"TestDA1Action"
+ 							/Key	":0"
+ 					}
+ 			}
+ 			/ExpectedResult		1
+ 			/Result
+ 			{
+ 				/TmpStore
+ 				{
+ 					/:0 "ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+ 				}
+ 			}
+ 		}
+ 		/MixedAccessPathCfgOtherGroupAction
+ 		{
+ 			/TheAction
+ 			{
+ 					/CLCA
+ 					{
+							/Da		"TestDA1Action"
+ 							/Key	":0"
+ 					}
+ 			}
+ 			/ExpectedResult		1
+ 			/Result
+ 			{
+ 				/TmpStore
+ 				{
+ 					/:0 "ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+ 				}
+ 			}
+ 		}
+		/IndexedAccessTestCfgAction
+		{
+			/TheAction
+			{
+					/CLCA
+					{
+							/Da		"TestDA1Action"
+							/Key	":3"
+					}
+			}
+			/ExpectedResult		1
+			/Result
+			{
+				/TmpStore
+				{
+					/dn "esid=1100/153.046.016.009,uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+					/objectclass
+					{
+					  "entitledService"
+					  "tkfModify"
+					}
+					/esid "1100/153.046.016.009"
+					/apptype "undef"
+					/stype "undef"
+					/s-dn "sid=1100,ou=tkfs,o=1,c=CH,dc=tkfcd.hsr.ch"
+					/s-uid "1100"
+					/sid "1100"
+					/tc-dn "tid=153.046.016.009,ou=tkftc,o=1,c=CH,dc=tkfcd.hsr.ch"
+					/tc-uid "153.046.016.009"
+					/tid "153.046.016.009"
+					/tc-type "dummy"
+					/tkfmodtime "20000530_14:51:06"
+				}
+			}
+		}
+		/PathAccessTestCfgAction
+		{
+			/TheAction
+			{
+					/CLCA
+					{
+							/Da		"TestDA1Action"
+							/Key	":1.tids"
+					}
+			}
+			/ExpectedResult		1
+			/Result
+			{
+				/TmpStore
+				{
+
+					"153.046.248.014"
+					"172.016.001.041"
+					"172.016.200.013"
+					"195.112.074.110"
+					"172.016.003.077"
+					"153.046.030.066"
+					"153.046.016.001"
+					"153.046.016.009"
+					"HOST"
+					"230.001.240.000"
+				}
+			}
+		}
+		/OtherGroup1Action
+		{
+			/TheAction
+			{
+					/CLCA
+					{
+							/Da		"TestDA3Action"
+							/Key	":0"
+					}
+			}
+			/ExpectedResult		1
+			/Result
+			{
+				/TmpStore
+				{
+						/dn "uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+				}
+			}
+		}
+		/OtherGroup2Action
+		{
+			/TheAction
+			{
+					/CLCA
+					{
+							/Da		"TestDA3Action"
+							/Key	":0"
+					}
+			}
+			/ExpectedResult		1
+			/Result
+			{
+				/TmpStore
+				{
+					/dn "uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+					/objectclass
+					{
+					  "person"
+					  "client"
+					  "tkfModify"
+					}
+					/uid "tkgae"
+					/sn "tkgae"
+					/cn "tkgae"
+					/language "D"
+					/ifs-id "tkgae"
+					/pd-dn "cn=CH10601-tkgae,dc=tkfpd.hsr.ch"
+					/userpassword "{SHA}8HMddz0wJeXIdx5j+4I3y3W+ne0="
+					/passwordexp "20010624_11:55:37"
+					/tkfmodtime "20010424_11:55:37"
+					/childmodtime "20010426_09:27:20"
+					/tids
+					{
+					  "153.046.248.014"
+					  "172.016.001.041"
+					  "172.016.200.013"
+					  "195.112.074.110"
+					  "172.016.003.077"
+					  "153.046.030.066"
+					  "153.046.016.001"
+					  "153.046.016.009"
+					  "HOST"
+					  "230.001.240.000"
+					}
+				  }
+			}
+		}
+		/OtherGroup3Action
+		{
+			/TheAction
+			{
+					/CLCA
+					{
+							/Da		"TestDA2Action"
+							/Key	":1"
+					}
+			}
+			/ExpectedResult		1
+			/Result
+			{
+				/TmpStore
+				{
+					/dn "esid=1100/172.016.200.013,uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+				}
+			}
+		}
+		/AsterixAction
+		{
+			/TheAction
+			{
+					/CLCA
+					{
+							/Da		"TestDA3Action"
+							/Key	"*"
+					}
+			}
+			/ExpectedResult		1
+			/Result
+			{
+				/TmpStore
+				{
+					/:0
+					 {
+						/dn "uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+						/objectclass
+						{
+						  "person"
+						  "client"
+						  "tkfModify"
+						}
+						/uid "tkgae"
+						/sn "tkgae"
+						/cn "tkgae"
+						/language "D"
+						/ifs-id "tkgae"
+						/pd-dn "cn=CH10601-tkgae,dc=tkfpd.hsr.ch"
+						/userpassword "{SHA}8HMddz0wJeXIdx5j+4I3y3W+ne0="
+						/passwordexp "20010624_11:55:37"
+						/tkfmodtime "20010424_11:55:37"
+						/childmodtime "20010426_09:27:20"
+						/tids
+						{
+						  "153.046.248.014"
+						  "172.016.001.041"
+						  "172.016.200.013"
+						  "195.112.074.110"
+						  "172.016.003.077"
+						  "153.046.030.066"
+						  "153.046.016.001"
+						  "153.046.016.009"
+						  "HOST"
+						  "230.001.240.000"
+						}
+					}
+				  }
+			}
+		}
+		/OtherGroup4Action
+		{
+			/TheAction
+			{
+					/CLCA
+					{
+							/Da		"TestDA2Action"
+							/Key	":1"
+					}
+			}
+			/ExpectedResult		1
+			/Result
+			{
+				/TmpStore
+				{
+					/dn "esid=1100/172.016.200.013,uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+				}
+			}
+		}
+
+		/OtherGroup5Action
+		{
+			/TheAction
+			{
+					/CLCA
+					{
+							/Da		"TestDA2Action"
+							/Key	":1.dn"
+					}
+			}
+			/ExpectedResult		1
+			/Result
+			{
+				/TmpStore
+				{
+				{
+					"esid=1100/172.016.200.013,uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+				}
+				}
+			}
+		}
+	}
+}
+

@@ -1,0 +1,60 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/DLL {
+	}
+
+	/Modules {
+		RenderersModule
+		SecurityModule
+		RolesModule
+		PagesModule
+		CacheHandlerModule
+		TemplatesCacheModule
+		LocalizationModule
+	}
+	/StringFile "LocalizedStrings" ## SOP: this is an old feature might use any-include instead
+
+	/Renderers {
+		/URLRenderer	{ URL }
+		/ContextLookupRenderer	{ Lookup ContextLookup Render }
+		/HTMLTemplateRenderer	{ HTML }
+		/FormRenderer	{ Form }
+		/IncrementRenderer { Inc }
+		/SetLanguageRenderer { SwitchLanguage }
+		/StringRenderer { String }
+		/TailRenderer	{ Tail }
+	}
+
+	/Pages {
+		/Page {
+			TestPage
+			TemplateParserExtendedTest
+		}
+	}
+	/Roles {
+		/Role {
+			TestRole
+			/RTGuest {
+				RTCustomer
+			}
+		}
+	}
+	/DefaultRole TestRole
+
+	/TemplateDir		"config/HTMLTemplates"
+	/LanguageDirMap {	# maps language key to localized templates dir
+		/D				"."
+		#/E				"."   No E Map -> English pages are not cached !!
+		/F				"."
+		/I				"."
+	}
+	/Actions {}
+}

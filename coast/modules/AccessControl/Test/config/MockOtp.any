@@ -1,0 +1,35 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	# some token
+	/"000100038"
+	{
+		/OtpList
+		{
+			"2234"	# <-- count ptr
+			"0438"
+			"1291"
+			"8737"
+		}
+		/Count	0
+	}
+
+	# another token
+	/"000100223"
+	{
+		/OtpList
+		{
+			"2278"
+			"8689"
+			"0384"	# <-- count ptr
+		}
+		/Count 2
+	}
+}

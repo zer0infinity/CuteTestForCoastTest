@@ -1,0 +1,402 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/LowerBound		0
+	/UpperBound		3100
+	/DumpAnythings	1
+
+	/ConfiguredTestCase {
+		/MainSwitch	0
+		/EnableAll	33
+	}
+	/Role {
+		/MainSwitch	0
+		/EnableAll	33
+	}
+	/Registry {
+		/MainSwitch	0
+		/EnableAll	33
+	}
+	/RegisterableObject {
+		/MainSwitch	10
+		/EnableAll	20
+	}
+	/Mutex {
+		/MainSwitch	1
+		/EnableAll	10
+		/Mutex		1200
+	}
+	/Condition {
+		/MainSwitch	1
+		/EnableAll	10
+	}
+	/Thread {
+		/MainSwitch			0
+		/EnableAll			10
+		/Terminate			33
+		/SetState			33
+		/CheckState			33
+		/IntCheckState		33
+		/CheckRunningState	33
+	}
+	/Action {
+		/MainSwitch	1220
+		/EnableAll	1221
+	}
+	/TestAction {
+		/MainSwitch	100
+		/EnableAll	100
+	}
+	/ConfiguredTestAction {
+		/MainSwitch	100
+		/EnableAll	100
+	}
+	/PeriodicActionTest {
+		/MainSwitch	1220
+		/EnableAll	1221
+	}
+	/AcceptorFactory {
+		/MainSwitch	0
+		/EnableAll	33
+	}
+	/ListenerThread {
+		/MainSwitch	1200
+		/EnableAll	1200
+	}
+	/ThreadPoolManager {
+		/MainSwitch	0
+		/EnableAll	33
+	}
+	/ListenerPool {
+		/MainSwitch	0
+		/EnableAll	33
+	}
+	/AcceptorFactoriesModule {
+		/MainSwitch	200
+		/EnableAll	200
+	}
+	/InterruptHandlerTest {
+		/MainSwitch			0
+		/EnableAll			33
+	}
+	/InterruptHandler {
+		/MainSwitch			300
+		/EnableAll			300
+	}
+	/WIN32InterruptHandler {
+		/MainSwitch			0
+		/EnableAll			33
+	}
+	/MIMEHeader {
+		/MainSwitch	400
+		/EnableAll	400
+	}
+	/MIMEHeaderTest {
+		/MainSwitch	400
+		/EnableAll	400
+	}
+	/RequestBodyParser {
+		/MainSwitch	500
+		/EnableAll	500
+	}
+	/SlotPutterAppendTest {
+		/MainSwitch	1020
+		/EnableAll	1030
+	}
+	/AnythingUtilsTest {
+	  /StoreFinderRenderedTest {
+		/MainSwitch	33
+		/EnableAll	0
+	  }
+	  /StorePutterReplaceRenderedTest {
+		/MainSwitch	1020
+		/EnableAll	1030
+	  }
+	}
+	/SlotCleaner {
+		/MainSwitch	33
+		/EnableAll	0
+	}
+	/SlotFinder {
+	  /MainSwitch	33
+	  /EnableAll	0
+	}
+	/SlotPutter {
+		/MainSwitch	33
+		/EnableAll	0
+	}
+	/StoreFinder {
+	  /MainSwitch	33
+	  /EnableAll	0
+	}
+	/StorePutter {
+		/MainSwitch	33
+		/EnableAll	0
+	}
+	/Context {
+		/MainSwitch	10000
+		/EnableAll	0
+		/Find 10000
+		/FindIndex 10000
+		/SetPage  10000
+		/GetPage 10000
+		/Replace 10000
+		/Remove 10000
+	}
+	/ConfNamedObject {
+		/MainSwitch	1000
+		/EnableAll	1010
+	}
+	/HierarchConfNamed {
+		/MainSwitch			0
+		/EnableAll			33
+	}
+	/LookupInterface {
+		/MainSwitch			0
+		/EnableAll			33
+	}
+	/LoopbackProcessor {
+		/MainSwitch	0
+		/EnableAll	33
+	}
+	/PeriodicAction {
+		/MainSwitch	1220
+		/EnableAll	1221
+	}
+	/PeriodicTestAction {
+		/MainSwitch	1220
+		/EnableAll	1221
+	}
+	/DiffTimer {
+		/MainSwitch	1220
+		/EnableAll	1222
+		/Scale		1221
+		/Diff		1221
+	}
+	/RendererDispatcher {
+		/MainSwitch	1250
+		/EnableAll	1260
+	}
+	/ContextLookupRenderer {
+		/MainSwitch	1250
+		/EnableAll	1260
+	}
+	/RendererDispatcherTest {
+		/MainSwitch	1250
+		/EnableAll	1260
+	}
+	/Page {
+		/MainSwitch	10000
+		/EnableAll	10000
+	}
+	/Session {
+		/MainSwitch	0
+		/EnableAll	33
+	}
+	/PageNameRenderer {
+		/MainSwitch	10000
+		/EnableAll	10000
+	}
+	/SessionTest {
+		/MainSwitch	0
+		/EnableAll	33
+	}
+	/SessionListManagerTest {
+		/MainSwitch	2250
+		/EnableAll	2260
+	}
+	/SessionListManager {
+		/MainSwitch	2250
+		/EnableAll	2260
+	}
+	/TimeLoggingModule {
+		/MainSwitch	0
+		/EnableAll	3100
+	}
+	/TimeLoggerEntry {
+		/MainSwitch	3000
+		/EnableAll	3100
+	}
+	/TimeLogger {
+		/MainSwitch	3000
+		/EnableAll	3100
+	}
+	/LogTimerTest {
+		/MainSwitch	3000
+		/EnableAll	3100
+	}
+	/ServiceDispatcher {
+		/MainSwitch	4000
+		/EnableAll	4100
+	}
+	/SimpleDAServiceTest {
+		/MainSwitch	4000
+		/EnableAll	4200
+
+		/SimpleDispatch 4000
+	}
+	/RegistryIterator {
+		/MainSwitch	5000
+		/EnableAll	5100
+	}
+	/RegistryIteratorTest {
+		/MainSwitch	5000
+		/EnableAll	5100
+	}
+	/Application {
+		/MainSwitch	0
+		/EnableAll	33
+	}
+	/AppBooter {
+		/MainSwitch	0
+		/EnableAll	33
+	}
+	/AppBooterTest {
+		/MainSwitch	0
+		/EnableAll	33
+	}
+	/RequestThreadsManager {
+		/MainSwitch	0
+		/EnableAll	33
+	}
+	/HandleRequest {
+		/MainSwitch	0
+		/EnableAll	33
+	}
+	/LFListenerPoolTest {
+		/MainSwitch	0
+		/EnableAll	33
+	}
+	/LFListenerPool {
+		/MainSwitch	0
+		/EnableAll	33
+	}
+	/TestProcessor {
+		/MainSwitch	7000
+		/EnableAll	7100
+	}
+	/HandleSet {
+		/MainSwitch	7000
+		/EnableAll	7100
+	}
+	/Acceptor {
+		/MainSwitch	33
+		/EnableAll	0
+	}
+	/Socket {
+		/MainSwitch	7000
+		/EnableAll	7100
+	}
+	/Reactor {
+		/MainSwitch	7000
+		/EnableAll	7100
+	}
+	/LeaderFollowerPool {
+		/MainSwitch	33
+		/EnableAll	33
+	}
+	/MasterServerTest {
+		/MainSwitch	33
+		/EnableAll	0
+	}
+	/MasterServer {
+		/MainSwitch	33
+		/EnableAll	0
+	}
+	/ServerThread {
+		/MainSwitch	0
+		/EnableAll	33
+	}
+	/Server {
+		/MainSwitch	0
+		/EnableAll	33
+		/DoLookup	-33
+	}
+	/ServerTest {
+		/MainSwitch	33
+		/EnableAll	33
+	}
+	/ServerThreadPoolsManager {
+		/MainSwitch	0
+		/EnableAll	33
+	}
+	/WDModule {
+		/MainSwitch	8200
+		/EnableAll	8300
+	}
+	/URLUtils {
+		/MainSwitch	0
+		/EnableAll	33
+	}
+	/URLEncoderTest {
+		/MainSwitch	0
+		/EnableAll	33
+	}
+	/SimpleListenerPoolTest {
+		/MainSwitch				0
+		/EnableAll				0
+		/DoTestConnect			33
+	}
+	/WebAppService {
+		/MainSwitch				0
+		/EnableAll				33
+	}
+	/LocalizationUtils {
+		/MainSwitch				33
+		/EnableAll				0
+		/OpenStream				33
+	}
+	/System {
+		/MainSwitch				0
+		/EnableAll				33
+	}
+	/RequestProcessor {
+		/MainSwitch				0
+		/EnableAll				33
+	}
+	/WorkerPoolManager {
+		/MainSwitch				33
+		/EnableAll				33
+	}
+	/WorkerThread {
+		/MainSwitch				0
+		/EnableAll				33
+	}
+	/SecurityModule	{
+		/MainSwitch				310
+		/EnableAll				330
+	}
+	/SecurityItem	{
+		/MainSwitch				300
+		/EnableAll				330
+		/Decode					300
+	}
+	/SecurityModuleTest {
+		/MainSwitch				330
+		/EnableAll				330
+	}
+	/SimpleTestServer {
+		/MainSwitch				33
+		/EnableAll				33
+	}
+	/SimpleTestApp {
+		/MainSwitch				33
+		/EnableAll				33
+	}
+	/TimeStamp {
+		/MainSwitch				0
+		/EnableAll				3100
+		/TimeStamp				3100
+	}
+	/TimeStampTest {
+		/MainSwitch				0
+		/EnableAll				3100
+	}
+}

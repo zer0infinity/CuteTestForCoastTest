@@ -1,0 +1,136 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/LowerBound		0
+	/UpperBound		110
+	/DumpAnythings	1
+
+	/OTPList {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+
+	/MockOTPList {
+		/MainSwitch	110
+		/EnableAll	0
+		/Verify		110
+		/IsValid	110
+	}
+
+	/OTPListTest {
+		/MainSwitch	110
+		/EnableAll	110
+	}
+
+	/MockAccessManager {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+
+	/BasicAccessManager {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+
+	/AccessManager {
+		/MainSwitch	0
+		/EnableAll	10
+	}
+
+	/AccessManagerTest {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+
+	/AccessManagerModule {
+		/MainSwitch	0
+		/EnableAll	20
+	}
+
+	/AccessManagerModuleTest {
+		/MainSwitch	0
+		/EnableAll	20
+	}
+
+	/UserDataAccessController {
+		/MainSwitch	10
+		/EnableAll	30
+	}
+
+	/FileUDACTest {
+		/MainSwitch	10
+		/EnableAll	30
+	}
+
+	/FileUDAC {
+		/MainSwitch	10
+		/EnableAll	30
+	}
+
+	/FileEDACTest {
+		/MainSwitch	10
+		/EnableAll	30
+	}
+
+	/FileEDAC {
+		/MainSwitch 10
+		/EnableAll	30
+	}
+
+	/TokenDataAccessController {
+		/MainSwitch	10
+		/EnableAll	30
+	}
+
+	/FileTDACTest {
+		/MainSwitch	10
+		/EnableAll	30
+	}
+
+	/FileTDAC {
+		/MainSwitch	10
+		/EnableAll	30
+	}
+
+	/DataAccess {
+		/MainSwitch	0
+		/EnableAll	10
+	}
+
+	/DataAccessImpl {
+		/MainSwitch	0
+		/EnableAll	10
+	}
+	/ReadFileDAImpl {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/FileDAImpl {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/AuthenticateStrongAction {
+		/MainSwitch	0
+		/EnableAll	10
+	}
+
+	/AuthenticateWeakAction {
+		/MainSwitch	0
+		/EnableAll	10
+	}
+	/ResultMapper {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/StreamToAnythingMapper {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+}

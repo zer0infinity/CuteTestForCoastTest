@@ -1,0 +1,37 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/MySQLDAImpl {
+		/Host		zaphod
+		/MySQLUser	TestUser
+		/MySQLPW	allTests
+	}
+
+	/SelectTest {
+		/Host   "zaphod.zueri.hsr.ch"
+		/Port   "3306"               		# this is default
+	}
+	/InsertTest {
+		/Host   localhost          			# this is default
+	}
+	/DeleteTest {
+	}
+	/WrongHostTest {
+		/Host   "zaphodx.hsr.loc"
+		/Port   "3306"               		# this is default
+	}
+	/WrongPortTest {
+		/Host   "zaphod.zueri.hsr.ch"
+		/Port   "3307"               		# failure port
+	}
+	/SelectTestWithoutQueryCount {
+		/NoQueryCount   1
+	}
+}

@@ -1,0 +1,39 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/AcceptedCodes {
+		"22241932"
+		"99382004"
+		"84782021"
+	}
+	/AcceptedUsers {
+		/tester					"secret"
+		/testerWithoutRights	"secret"
+		/hacker					"cracked"
+	}
+	/Rights {
+		/tester {
+			"cookiejar"
+			"fridge"
+			"resetPW"
+			"changePW"
+		}
+		/testerWithoutRights {
+			# if no rights are listed, this has the same effect
+			# as if user is not listed at all under /Rights
+		}
+	}
+
+	/AuthFailRole		guest
+	/AuthSuccessRole	loginOk
+
+	/RightForPasswdChange	"changePW"
+	/RightForPasswdReset	"resetPW"
+}

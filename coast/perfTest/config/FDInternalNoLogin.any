@@ -1,0 +1,26 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+	/NumberOfRuns 10#	20000 - how many times to loop through complete Run below
+
+	/Run	{ # number of steps in run given by number of slots in this anything
+		{
+			/CurrentServer {
+				/ServerName	"sentosa.hsr.loc"
+				/Path		"/fdinfo/SysInfo.html"
+				/Port		"1919"
+			}
+		}
+
+		{ /Link { /slotName "Help" } }	# help link
+		{ /Link { /slotName "Contact ifs" } } # contact link
+		{ /Link { /slotName "Help" } } # version link
+	}
+}
+

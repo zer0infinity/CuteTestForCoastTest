@@ -1,0 +1,73 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/Modules {
+		DataAccessImplsModule
+		MappersModule
+		AccessControllersModule
+		AccessManagerModule
+	}
+
+	/AccessControllers
+	{
+		/User {
+			/FileUDAC 	{ UserData }
+#			/MockUDAC 	{ MockUserData }
+		}
+		/Token {
+			/FileTDAC 	{ TokenData }
+#			/MockTDAC 	{ MockTokenData }
+		}
+		/Entity {
+			/FileEDAC 	{ EntityData }
+#			/MockEDAC 	{ MockEntityData }
+		}
+	}
+
+	/AccessManagers
+	{
+		/BasicAccessManager 	{ BasicAM ActerAM }
+		/MockAccessManager		{ MockAM }
+	}
+	/DefaultAccessManager	BasicAM
+
+	/DataAccessImpls
+	{
+		/DataAccessImpl
+		{
+			/ReadFileDAImpl {
+				ReadUserData
+				ReadTokenData
+				ReadEntityData
+			}
+			/WriteFileDAImpl {
+				WriteUserData
+				WriteTokenData
+				WriteEntityData
+			}
+		}
+	}
+	/Mappers {
+		/Input {
+			/ParameterMapper {
+				ReadUserData
+				ReadTokenData
+				ReadEntityData
+			}
+		}
+		/Output {
+			/ResultMapper {
+				ReadUserData
+				ReadTokenData
+				ReadEntityData
+			}
+		}
+	}
+}

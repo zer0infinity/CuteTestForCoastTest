@@ -1,0 +1,98 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/ConfigMapperTest {
+
+		/LiteralConfig {
+			/TmpStore {
+				# not used (no lookups)
+			}
+			/MapperConfig {
+				/flat slot
+				/nested {
+					/slot {
+						/with "or"
+						/two  "values"
+					}
+					/and "more"
+				}
+			}
+			/Expected {
+				/flat slot
+				/nested {
+					/slot {
+						/with "or"
+						/two  "values"
+					}
+					/and "more"
+				}
+			}
+		}
+
+		/ScriptingConfig {
+			/TmpStore {
+				/foo "bar"
+				/Mapper {
+					/one "two"
+					/three "four"
+				}
+			}
+			/MapperConfig {
+				/MyValue {
+					/MapperScript {
+						/foo {
+							/ParameterMapper *
+						}
+					}
+				}
+				/MyOtherValue {
+					/MapperScript {
+						/Mapper.one {
+							/ParameterMapper *
+						}
+					}
+				}
+			}
+			/Expected {
+				/MyValue "bar"
+				/MyOtherValue "two"
+			}
+		}
+
+		/ScriptingAndLiteral {
+			/TmpStore {
+				/MyLookupValue	"looked up in tmp store"
+			}
+			/MapperConfig {
+				/This	"stays"
+				/As	{
+					/It "is"
+					/Nested "stuff"
+				}
+				/ButThisIsLookedUp {
+					/MapperScript {
+						/MyLookupValue {
+							/ParameterMapper *
+						}
+					}
+				}
+			}
+			/Expected {
+				/This	"stays"
+				/As	{
+					/It "is"
+					/Nested "stuff"
+				}
+				/ButThisIsLookedUp "looked up in tmp store"
+			}
+		}
+
+	}
+}

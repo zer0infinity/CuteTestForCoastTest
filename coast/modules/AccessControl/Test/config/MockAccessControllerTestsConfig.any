@@ -1,0 +1,38 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/Config
+	{
+		/Modules
+		{
+			AccessControllersModule
+		}
+		/AccessControllers
+		{
+			/User {
+				/MockUDAC {	MockUserData }
+			}
+			/Token {
+				/MockTDAC {	MockTokenData }
+			}
+			/Entity {
+				/MockEDAC {	MockEntityData }
+			}
+		}
+	}
+
+	/Results
+	{
+		/MockUDACTest	!FileAccessControllerTestsConfig.any?FileContent.UDACTest
+		/MockTDACTest	!FileAccessControllerTestsConfig.any?FileContent.TDACTest
+		/MockEDACTest	!FileAccessControllerTestsConfig.any?FileContent.EDACTest
+	}
+
+}

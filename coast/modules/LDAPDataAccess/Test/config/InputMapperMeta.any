@@ -1,0 +1,1193 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	#-- Configurations for LDAP Mapper Tests ---------
+	#-------------------------------------------------
+	#-- Fieldmapper testing  (securehash algorithm / base64 encoded) especially for ldap passwords ---
+	/FieldMapperTest1_fixed	{
+		/Input {
+			/password {
+				/LDAPFieldMapper {
+					/DataFormat	PWD
+				}
+			}
+		}
+	}
+
+	#-- Fieldmapper testing (base64 encoding only) ---
+	/FieldMapperTest2 {
+		/Input {
+			/password {
+				/LDAPFieldMapper {
+					/DataFormat	Base64
+				}
+			}
+		}
+	}
+
+	#--- BasicParamMapperTest ----
+	/BasicParams {
+		/Input {
+			/LDAPParamMapper {  #-- defines ldap basic input parameters ----
+				/Base		"o=IFA Informatik,c=CH"
+				/Attributes { "uid" "services" }
+				/Timeout	10	# query timeout in seconds
+				/SizeLimit	100	# result size limit
+			}
+		}
+	}
+
+	#--- DistinguishedNameMapperTest ----
+	/DName {
+		/Input {
+			/LDAPDNameMapper {
+				/Query {
+					{ /"=" userid }
+					{ /"=" orgunit }
+				}
+				/Map {  #--- here we can define names which maps to the query items above ---
+					/userid  uid
+					/orgunit ou
+				}
+				/Value {  #--- optionally we can define values for the query items, values from context takes precedence --
+					/orgunit 	"tkfu"
+				}
+			}
+		}
+	}
+
+	#--- QueryMapperTest ----
+	/lqmTest0 {
+		/Input {
+			/LDAPQueryMapper {
+				/Query {
+					/"&" {
+						{ /"=" objectclass1 }
+						{ /"=" userid }
+					}
+				}
+				/Map {
+					/objectclass1 objectclass
+					/userid  uid
+				}
+				/Value {
+					/objectclass1 	"person"
+					/userid			"birrer"
+				}
+			}
+		}
+	}
+
+	/ModifyValsFixed {  #-- defines ldap modify values ----
+		/Modify {
+			/LDAPModifyValsMapper {   # here you have to define your modifylist
+				{
+					/Attribut 	"userpassword"  # name of attribute we would like to modify into LDAP
+					/Mode		2  	# LDAP_MOD_REPLACE
+					/Values {
+						{
+							/Map {
+								/Password {
+									/LDAPFieldMapper {
+										/DataFormat	PWD  # PWD = SecureHashAlgorithm and Base64 enc. for passwords
+														 # Base64 = Base64 encoded
+														 # nothing takes the value as plain text
+									}
+								}
+							}
+						}
+					}
+				}
+				{
+					/Attribut 	"initials"  # name of attribute we would like to modify into LDAP
+					/Mode		2  	# LDAP_MOD_REPLACE
+					/Values {
+						{
+							/Value 1
+						}
+						{
+							/Value 5
+						}
+					}
+				}
+			}
+		}
+	}
+
+	#-- Configurations for LDAP DAImpl-Tests ---------
+	#-------------------------------------------------
+	#--- LDAP Search Test ----
+	/ldapSearchTestCfg {
+		/Filter {  #-- defines a ldap query ----
+			/LDAPQueryMapper {
+				/Query {
+					/"&" {
+						{ /"=" objectclass1 }
+						{ /"=" userid }
+					}
+				}
+				/Map {  #--- here we can define names which maps to the query items above ---
+					/objectclass1 objectclass
+					/userid  uid
+				}
+				/Value {  #--- optionally we can define values for the query items, values from context takes precedence --
+					/objectclass1 	"client"
+					/userid			"testcaseprecedence"
+				}
+			}
+		}
+		/InputParams {
+			/LDAPParamMapper {  #-- defines ldap basic input parameters ----
+				/Base	"o=IFA Informatik,c=CH" # search base in ldap schema
+				/Attributes { "uid" "services" } # attributes we would like to get in searchresult
+				/Timeout	10	# query timeout in seconds
+				/SizeLimit	100	# result size limit
+			}
+		}
+	}
+
+	#-- Configurations for LDAP DAImpl-Tests ---------
+	#-------------------------------------------------
+	#--- LDAP Search Test2 ----
+	/ldapSearchTest2Cfg {
+		/Filter {  #-- defines a ldap query ----
+			/LDAPQueryMapper {
+				/Query {
+					/"&" {
+						{ /"=" objectclass1 }
+						{ /"=" userid }
+					}
+				}
+				/Map {  #--- here we can define names which maps to the query items above ---
+					/objectclass1 objectclass
+					/userid  uid
+				}
+				/Value {  #--- optionally we can define values for the query items, values from context takes precedence --
+					/objectclass1 	"testcaseprecedence"
+					/userid			"tkgae"
+				}
+			}
+		}
+		/InputParams {
+			/LDAPParamMapper {  #-- defines ldap basic input parameters ----
+				/Base	"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch" # search base in ldap schema
+				/Attributes { "pd-dn" "language" } # attributes we would like to get in searchresult
+				/Timeout	10	# query timeout in seconds
+				/SizeLimit	100000	  #-- result size limit
+			}
+		}
+	}
+
+	/ldapQueryCodedInConfiguration {
+		/Filter {  #-- defines a ldap query ----
+			"(&(apptype=vdb)(objectclass=entitledservice))"
+		}
+		/InputParams {
+			/LDAPParamMapper {  #-- defines ldap basic input parameters ----
+				/Base	"dc=ifs,dc=com" # search base in ldap schema
+				/Attributes { "tc-dn" } # attributes we would like to get in searchresult
+				/Timeout	10	# query timeout in seconds
+				/SizeLimit	100	# result size limit
+			}
+		}
+	}
+
+ 	#-- Configurations for LDAP DAImpl-Tests ---------
+	#-------------------------------------------------
+	#--- LDAP Search Test ----
+	/SearchForGivenService {
+		/Filter {  #-- defines a ldap query ----
+			/LDAPQueryMapper {
+				/Query {
+					/"&" {
+						{ /"=" objectclass1 }
+						{ /"=" transactiontype }
+						{ /"=" appinstance }
+						{ /"=" termclusterid }
+					}
+				}
+				/Map {  #--- here we can define names which maps to the query items above ---
+					/objectclass1 			objectclass
+					/transactiontype		tc-type
+					/appinstance			appinst
+					/termclusterid			tid
+				}
+				/Value {  #--- optionally we can define values for the query items, values from context takes precedence --
+					/objectclass1 	"termcluster"
+					/transactiontype "tc-type"
+					/appinstance	"appinst"
+				}
+			}
+		}
+		/InputParams {
+			/LDAPParamMapper {  #-- defines ldap basic input parameters ----
+				/Base	"" # search base in ldap schema
+				/Attributes { "appinst" "tc-type" "tid"} # attributes we would like to get in searchresult
+				/Timeout	300	# query timeout in seconds
+				/SizeLimit	100	# result size limit
+			}
+		}
+	}
+
+ 	#-- Configurations for LDAP DAImpl-Tests ---------
+	#-------------------------------------------------
+	#--- LDAP Search Test ----
+	/TimeLimitExceededTest {
+		/Filter {  #-- defines a ldap query ----
+			/LDAPQueryMapper {
+				/Query {
+					/"&" {
+						{ /"=" orgunit }
+						{ /"=" other }
+						{ /"=" objectclass1 }
+						{ /"=" termclusterid }
+					}
+				}
+				/Map {  #--- here we can define names which maps to the query items above ---
+					/orgunit 				ou
+					/other 					o
+					/objectclass1 			objectclass
+					/termclusterid			tid
+				}
+				/Value {  #--- optionally we can define values for the query items, values from context takes precedence --
+					/orgunit 	"*"
+					/other 	"*"
+					/objectclass1 	"*"
+				}
+			}
+		}
+		/InputParams {
+			/LDAPParamMapper {  #-- defines ldap basic input parameters ----
+				/Base	"" # search base in ldap schema
+				/Attributes { "appinst" "tc-type" "tid"} # attributes we would like to get in searchresult
+				/Timeout	10
+				/SizeLimit	100	# result size limit
+			}
+		}
+	}
+
+	#--- LDAP Compare Test ----
+	/ldapCompareTest {
+		/DName {  #-- defines a ldap dn ----
+			/LDAPDNameMapper {
+				/Query {
+					{ /"=" userid }
+					{ /"=" orgunit }
+				}
+				/Map {  #--- here we can define names which maps to the query items above ---
+					/userid  uid
+					/orgunit ou
+				}
+				/Value {  #--- optionally we can define values for the query items, values from context takes precedence --
+					/orgunit		"tkfu"
+				}
+			}
+		}
+		/InputParams {
+			/LDAPParamMapper {  #-- defines ldap basic input parameters ----
+				/Base		"o=10601,c=CH,dc=tkfcd.hsr.ch" 			# search base in ldap schema
+				/Attributes { "userPassword" }  							# attribute we would like to compare
+				/Timeout	10												# query timeout in seconds
+				/SizeLimit	100												# result size limit
+			}
+		}
+		/Compare {
+			/LDAPFieldMapper {
+				/DataFormat	PWD
+			}
+		}
+	}
+
+	#--- LDAP Compare Test1 ----
+	/ldapCompareTest1 {
+		/DName {  #-- defines a ldap dn ----
+			/LDAPDNameMapper {
+				/Query {
+					{ /"=" extendedsid }  # this is what you fill in
+					{ /"=" userid }
+					{ /"=" organizationalunit }
+					{ /"=" organization }
+					{ /"=" country }
+				}
+				/Map {  #--- here we can define names which maps to the query items above ---
+					/extendedsid esid
+					/userid uid
+					/organizationalunit ou
+					/organization o
+					/country c
+				}
+			}
+		}
+		/Compare { /CompVar * }
+		/InputParams {
+			/LDAPParamMapper {  #-- defines ldap basic input parameters ----
+				/Base	"dc=tkfcd.hsr.ch" # search base in ldap schema
+				/Attributes { "apptype" } # attribute we would like to compare
+				/Timeout	10	# query timeout in seconds
+				/SizeLimit	100	# result size limit
+			}
+		}
+	}
+
+	/ldapModifyTest {
+		/DName {  #-- defines a ldap dn ----
+			/LDAPDNameMapper {
+				/Query {
+					{ /"=" extendedsid }
+					{ /"=" userid }
+				}
+				/Map {  #--- here we can define names which maps to the query items above ---
+					/userid			uid
+					/extendedsid	esid
+				}
+				/Value {  #--- optionally we can define values for the query items, values from context takes precedence --
+					/userid  	tkgae
+					/extendedsid "1100/172.016.200.013"
+				}
+			}
+		}
+		/InputParams {
+			/LDAPParamMapper {  #-- defines ldap basic input parameters ----
+				/Base		"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch" 	# search base in ldap schema
+				/Attributes { "apptype" "stype" "tc-type" }					# attributes we would like to get in searchresult
+				/Timeout	10	# query timeout in seconds
+				/SizeLimit	100	# result size limit
+			}
+		}
+		/ModifyVals {  #-- defines ldap modify values ----
+			/LDAPModifyValsMapper { # here you have to define your modifylist
+				{
+					/Attribut 	"apptype"  # name of attribute we would like to modify into LDAP
+					/Mode		2  	# LDAP_MOD_REPLACE
+					/Values {
+						{
+							/Map {
+								/Input.apptype {
+									/LDAPFieldMapper {
+										/DataFormat	PWD
+									}
+								}
+							}
+						}
+					}
+				}
+				{
+					/Attribut 	"stype"  # name of attribute we would like to modify into LDAP
+					/Mode		2  	# LDAP_MOD_REPLACE
+					/Values {
+						{
+							/Map { /Input.stype { /LDAPFieldMapper * } }
+						}
+					}
+				}
+				{
+					/Attribut 	"tc-type"  # name of attribute we would like to modify into LDAP
+					/Mode		2  	# LDAP_MOD_REPLACE
+					/Values {
+						{
+							/Value "tc-typeTest"
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/AddVals {  #-- defines ldap modify values ----
+		/Modify {
+			/LDAPModifyValsMapper {   # here you have to define your modifylist
+				{
+					/Attribut 	"uid"  # name of attribute we would like to modify into LDAP
+					/Mode		0  	# LDAP_MOD_ADD
+					/Values {
+						{
+							/Map {
+								/Input.UniversalId {
+									/LDAPFieldMapper *
+								}
+							}
+						}
+					}
+				}
+				{
+					/Attribut 	"userpassword"  # name of attribute we would like to modify into LDAP
+					/Mode		0  	# LDAP_MOD_ADD
+					/Values {
+						{
+							/Map {
+								/Input.Passwd {
+									/LDAPFieldMapper {
+										/DataFormat	PWD
+									}
+								}
+							}
+						}
+					}
+				}
+				{
+					/Attribut 	"tkfmodtime"  # name of attribute we would like to modify into LDAP
+					/Mode		0  	# LDAP_MOD_ADD
+					/Values {
+						{
+							/Map { /Input.TKFModTimeValue { /LDAPFieldMapper * } }
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/AddVals_fixed {  #-- defines ldap modify values ----
+		/Modify {
+			/LDAPModifyValsMapper {   # here you have to define your modifylist
+				{
+					/Attribut 	"uid"  # name of attribute we would like to modify into LDAP
+					/Mode		0  	# LDAP_MOD_ADD
+					/Values {
+						{
+							/Map {
+								/Input.UniversalId {
+									/LDAPFieldMapper *
+								}
+							}
+						}
+					}
+				}
+				{
+					/Attribut 	"userpassword"  # name of attribute we would like to modify into LDAP
+					/Mode		0  	# LDAP_MOD_ADD
+					/Values {
+						{
+							/Map {
+								/Input.Passwd {
+									/LDAPFieldMapper {
+										/DataFormat	PWD
+									}
+								}
+							}
+						}
+					}
+				}
+				{
+					/Attribut 	"tkfmodtime"  # name of attribute we would like to modify into LDAP
+					/Mode		0  	# LDAP_MOD_ADD
+					/Values {
+						{
+							/Map { /Input.TKFModTimeValue { /LDAPFieldMapper * } }
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/LDAPAddTest_fixed {
+		/DName {  #-- defines a ldap dn ----
+			/LDAPDNameMapper {
+				/Query {
+					{ /"=" FD_REMOTE_USER }
+				}
+				/Map {  #--- here we can define names which maps to the query items above ---
+					/FD_REMOTE_USER  uid
+				}
+			}
+		}
+		/InputParams {
+			/LDAPParamMapper {  #-- defines ldap basic input parameters ----
+				/Base		"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+				/Attributes { uid TKFmodtime userPassword }
+				/Timeout	10												# query timeout in seconds
+				/SizeLimit	100												# result size limit
+			}
+		}
+		/ModifyVals {  #-- defines ldap modify values ----
+			/LDAPModifyValsMapper {   # here you have to define your modifylist
+				{
+					/Attribut 	"sn"	# name of attribute we would like to modify into LDAP
+					/Mode		0  		# LDAP_MOD_ADD
+					/Values {
+						{
+							/Map {
+								/Input.sn {
+									/LDAPFieldMapper *
+								}
+							}
+						}
+					}
+				}
+				{
+					/Attribut 	"cn"	# name of attribute we would like to modify into LDAP
+					/Mode		0  		# LDAP_MOD_ADD
+					/Values {
+						{
+							/Map {
+								/Input.cn {
+									/LDAPFieldMapper *
+								}
+							}
+						}
+					}
+				}
+				{
+					/Attribut 	"userPassword"  # name of attribute we would like to modify into LDAP
+					/Mode		0  	# LDAP_MOD_ADD
+					/Values {
+						{
+							/Map {
+								/Input.Passwd {
+									/LDAPFieldMapper {
+										/DataFormat	PWD
+									}
+								}
+							}
+						}
+					}
+				}
+				{
+					/Attribut 	"TKFmodtime"  # name of attribute we would like to modify into LDAP
+					/Mode		0  	# LDAP_MOD_ADD
+					/Values {
+						{
+							/Map { /Input.TKFModTimeValue { /LDAPFieldMapper * } }
+						}
+					}
+				}
+				{
+					/Attribut 	"objectclass"  # name of attribute we would like to modify into LDAP
+					/Mode		0  	# LDAP_MOD_ADD
+					/Values {
+						{
+							/Map {
+								/Input.object1 {
+									/LDAPFieldMapper *
+								}
+							}
+						}
+						{
+							/Map {
+								/Input.object2 {
+									/LDAPFieldMapper *
+								}
+							}
+						}
+						{
+							/Map {
+								/Input.object3 {
+									/LDAPFieldMapper *
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	/ldapAddTest	%LDAPAddTest_fixed
+
+	/ldapDelTest {
+		/DName {  #-- defines a ldap dn ----
+			/LDAPDNameMapper {
+				/Query {
+					{ /"=" FD_REMOTE_USER }
+				}
+				/Map {  #--- here we can define names which maps to the query items above ---
+
+					/FD_REMOTE_USER  uid
+				}
+			}
+		}
+		/InputParams {
+			/LDAPParamMapper {  #-- defines ldap basic input parameters ----
+
+				/Base		"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+				/Attributes { uid TKFmodtime userPassword }
+				/Timeout	10	# query timeout in seconds
+				/SizeLimit	100	# result size limit
+			}
+		}
+	}
+
+	/ldapDaImplTest {
+		/Filter {
+			/LDAPQueryMapper {
+				/Query {
+					/"&" {
+						{ /"=" objectclass1 }
+					}
+				}
+				/Map {
+					/objectclass1 objectclass
+				}
+			}
+		}
+		/InputParams {  #-- defines ldap basic input parameters ----
+			/Base		"dc=tkfpd.hsr.ch"
+			/Attributes { uid tkfmodtime userpassword }
+			/Timeout	10	# query timeout in seconds
+			/SizeLimit	100	# result size limit
+		}
+	}
+
+	/ldapEmptySearch {
+		/Filter {
+			/LDAPQueryMapper {
+				/Query {
+					/"&" {
+						{ /"=" objectclass1 }
+					}
+				}
+				/Map {
+					/objectclass1 objectclass
+				}
+			}
+		}
+		/InputParams {  #-- defines ldap basic input parameters ----
+			/Base	"dc=tkfpd.hsr.ch"
+			/Attributes { uid tkfmodtime userpassword }
+			/Timeout	10	# query timeout in seconds
+			/SizeLimit	100	# result size limit
+		}
+	}
+
+	/ldapDaImplEnvTestCfg {
+		/Filter {
+			/LDAPQueryMapper {
+				/Query {
+					/"&" {
+						{ /"=" objectclass1 }
+					}
+				}
+				/Map {
+					/objectclass1 objectclass
+				}
+			}
+		}
+		/InputParams {  #-- defines ldap basic input parameters ----
+			/Base		"dc=tkfpd.hsr.ch"
+			/Attributes { uid tkfmodtime userpassword }
+			/Timeout	10	# query timeout in seconds
+			/SizeLimit	100	# result size limit
+		}
+	}
+
+	/ldapDASearchC {
+		/Filter {
+			/LDAPQueryMapper {
+				/Query {
+					/"&" {
+						{ /"=" countryid }
+					}
+				}
+				/Map {
+					/countryid 	c
+				}
+				/Value {
+					/countryid 	ch
+				}
+			}
+		}
+		/InputParams {
+			/LDAPParamMapper {
+				/Base	"dc=tkfcd.hsr.ch"
+				/Attributes {
+					"c"
+					"description"
+				}
+				/Timeout	10
+				/SizeLimit	100000
+			}
+		}
+	}
+	/ldapDASearchONoMapping	%ldapDASearchO
+	/ldapDASearchOPlainBinary	%ldapDASearchO
+	/ldapDASearchO {
+		/Filter {
+			/LDAPQueryMapper {
+				/Query {
+					/"&" {
+						{ /"=" organisationId }
+					}
+				}
+				/Map {
+					/organisationId 	o
+				}
+				/Value {
+					/organisationId 	10601
+				}
+			}
+		}
+		/InputParams {
+			/LDAPParamMapper {
+				/Base	"c=ch,dc=tkfcd.hsr.ch"
+				/Attributes {
+					"o"
+					"ou"
+					"street"
+				}
+				/Timeout	10
+				/SizeLimit	100000
+			}
+		}
+	}
+
+	/ldapDASearchOUuser {
+		/Filter {
+			/LDAPQueryMapper {
+				/Query {
+					/"&" {
+						{ /"=" usercontainer }
+					}
+				}
+				/Map {
+					/usercontainer 		ou
+				}
+				/Value {
+					/usercontainer 		"tkfu"
+				}
+			}
+		}
+		/InputParams {
+			/LDAPParamMapper {
+				/Base	"o=10601,c=ch,dc=tkfcd.hsr.ch"
+				/Attributes {
+					"ou"
+					"cn"
+				}
+				/Timeout	10
+				/SizeLimit	100000
+			}
+		}
+	}
+
+	/ldapDASearchUID {
+		/Filter {
+			/LDAPQueryMapper {
+				/Query {
+					/"&" {
+						{ /"=" username }
+					}
+				}
+				/Map {
+					/username 		uid
+				}
+				/Value {
+					/username 		"*"
+				}
+			}
+		}
+		/InputParams {
+			/LDAPParamMapper {
+				/Base	"ou=tkfu,o=10601,c=ch,dc=tkfcd.hsr.ch"
+				/Attributes {
+					"uid"
+				}
+				/Timeout	10
+				/SizeLimit	100000
+			}
+		}
+	}
+
+	/ldapDASearchESID {
+		/Filter {
+			/LDAPQueryMapper {
+				/Query {
+					/"&" {
+						{ /"=" servicetype }
+					}
+				}
+				/Map {
+					/servicetype stype
+				}
+				/Value {
+					/servicetype	"hacc"
+				}
+			}
+		}
+		/InputParams {
+			/LDAPParamMapper {
+				/Base	"uid=tkgae,ou=tkfu,o=10601,c=ch,dc=tkfcd.hsr.ch"
+				/Attributes {
+					"esid"
+				}
+				/Timeout	10
+				/SizeLimit	100000
+			}
+		}
+	}
+
+	/ldapDASearchHEXID {
+		/Filter {
+			/LDAPQueryMapper {
+				/Query {
+					/"&" {
+						{ /"=" clustername }
+					}
+				}
+				/Map {
+					/clustername cluster
+				}
+				/Value {
+					/clustername	"153.046.248.014"
+				}
+			}
+		}
+		/InputParams {
+			/LDAPParamMapper {
+				/Base	"uid=tkgae,ou=tkfu,o=10601,c=ch,dc=tkfcd.hsr.ch"
+				/Attributes {
+					"hexid"
+				}
+				/Scope		"subtree"
+				/Timeout	10
+				/SizeLimit	100000
+			}
+		}
+	}
+
+	/ldapDASearchOUcontainer {
+		/Filter {
+			/LDAPQueryMapper {
+				/Query {
+					/"&" {
+						{ /"=" servicecontainer }
+					}
+				}
+				/Map {
+					/servicecontainer 		ou
+				}
+				/Value {
+					/servicecontainer 		"tkfs"
+				}
+			}
+		}
+		/InputParams {
+			/LDAPParamMapper {
+				/Base	"dc=tkfcd.hsr.ch"
+				/Attributes {
+					"ou"
+				}
+				/Timeout	10
+				/SizeLimit	100000
+			}
+		}
+	}
+
+	/ldapDASearchSID {
+		/Filter {
+			/LDAPQueryMapper {
+				/Query {
+					/"&" {
+						{ /"=" servicetype }
+						{ /"=" servicename }
+					}
+				}
+				/Map {
+					/servicetype	stype
+					/servicename 	sid
+				}
+				/Value {
+					/servicetype	hacc
+					/servicename 	"*"
+				}
+			}
+		}
+		/InputParams {
+			/LDAPParamMapper {
+				/Base	"ou=tkfs,o=1,c=ch,dc=tkfcd.hsr.ch"
+				/Attributes {
+					"sid"
+				}
+				/Timeout	10
+				/SizeLimit	100000
+			}
+		}
+	}
+
+	/ldapDASearchPEID {
+		/Filter {
+			/LDAPQueryMapper {
+				/Query {
+					/"&" {
+						{ /"=" namevalue }
+						{ /"=" permissibleentity }
+					}
+				}
+				/Map {
+					/namevalue			name
+					/permissibleentity	peid
+				}
+				/Value {
+					/namevalue			"Virt-x SKR"
+					/permissibleentity 	"*"
+				}
+			}
+		}
+		/InputParams {
+			/LDAPParamMapper {
+				/Base	"ou=tkfs,o=1,c=ch,dc=tkfcd.hsr.ch"
+				/Attributes {
+					"peid"
+				}
+				/Timeout	10
+				/SizeLimit	100000
+				/Scope		"subtree"
+			}
+		}
+	}
+
+	/ldapDASearchOUcluster {
+		/Filter {
+			/LDAPQueryMapper {
+				/Query {
+					/"&" {
+						{ /"=" clustercontainer }
+					}
+				}
+				/Map {
+					/clustercontainer 		ou
+				}
+				/Value {
+					/clustercontainer 		"tkftc"
+				}
+			}
+		}
+		/InputParams {
+			/LDAPParamMapper {
+				/Base	"dc=tkfcd.hsr.ch"
+				/Attributes {
+					"ou"
+				}
+				/Timeout	10
+				/SizeLimit	100000
+			}
+		}
+	}
+
+	/ldapDASearchOTID {
+		/Filter {
+			/LDAPQueryMapper {
+				/Query {
+					/"|" {
+						{ /"=" clusterid0 }
+						{ /"=" clusterid1 }
+					}
+				}
+				/Map {
+					/clusterid0 		tid
+					/clusterid1 		tid
+				}
+				/Value {
+					/clusterid0 		"172.016.002.177"
+					/clusterid1 		"172.016.002.181"
+				}
+			}
+		}
+		/InputParams {
+			/LDAPParamMapper {
+				/Base	"ou=tkftc,o=1,c=ch,dc=tkfcd.hsr.ch"
+				/Attributes {
+					"tid"
+				}
+				/Timeout	100
+				/SizeLimit	100000
+			}
+		}
+	}
+
+	/ldapModifyUIDTest {
+		/InputParams {
+			/LDAPParamMapper {  #-- defines ldap basic input parameters ----
+				/Base	"ou=tkfu,o=10601,c=ch,dc=tkfcd.hsr.ch" # search base in ldap schema
+				/Attributes { TKFmodtime userPassword }
+				/Timeout	10
+				/SizeLimit	100
+			}
+		}
+		/ModifyVals {
+			/LDAPModifyValsMapper {
+				{
+					/Attribut 	"userPassword"  # name of attribute we would like to modify into LDAP
+					/Mode		2  	# LDAP_MOD_ADD
+					/Values {
+						{
+							/Map { /Input.Passwd { /LDAPFieldMapper { /DataFormat PWD } } }
+						}
+					}
+				}
+				{
+					/Attribut 	"TKFmodtime"  # name of attribute we would like to modify into LDAP
+					/Mode		2  	# LDAP_MOD_ADD
+					/Values {
+						{
+							/Map { /Input.TKFModTimeValue { /LDAPFieldMapper * } }
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/ldapDADelUserGAGA {
+		/DName { "uid=CH10601-tkgaga," }
+		/InputParams {
+			/LDAPParamMapper {
+				/Base		"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+				/Attributes { uid TKFmodtime userPassword }
+				/Timeout	10	# query timeout in seconds
+				/SizeLimit	100	# result size limit
+			}
+		}
+	}
+
+	/ldapDASearchUserGAGA {
+		/Filter { "(&(uid=CH10601-tkgaga))" }
+		/InputParams {
+			/LDAPParamMapper {
+				/Base	"ou=tkfu,o=10601,c=ch,dc=tkfcd.hsr.ch"
+				/Attributes {
+					"uid" "TKFmodtime" "userPassword"
+				}
+				/Timeout	10
+				/SizeLimit	100000
+			}
+		}
+	}
+
+	/ldapDAAddUserGAGA {
+		/DName { "uid=CH10601-tkgaga," }
+		/InputParams {
+			/LDAPParamMapper {
+				/Base		"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+				/Attributes { uid TKFmodtime userPassword }
+				/Timeout	10
+				/SizeLimit	100
+			}
+		}
+		/ModifyVals {
+			/LDAPModifyValsMapper {
+				{
+					/Attribut 	"sn"
+					/Mode		0  		# LDAP_MOD_ADD
+					/Values {
+						{ /Value sn_value }
+					}
+				}
+				{
+					/Attribut 	"cn"
+					/Mode		0  		# LDAP_MOD_ADD
+					/Values {
+						{ /Value cn_value }
+					}
+				}
+				{
+					/Attribut 	"userPassword"
+					/Mode		0  	# LDAP_MOD_ADD
+					/Values {
+						{ /Value initpassword }
+					}
+				}
+				{
+					/Attribut 	"TKFmodtime"
+					/Mode		0  	# LDAP_MOD_ADD
+					/Values {
+						{ /Value "19990520_00:00:00" }
+					}
+				}
+				{
+					/Attribut 	"objectclass"
+					/Mode		0  	# LDAP_MOD_ADD
+					/Values {
+						{
+							/Map {
+								/Input.object1 {
+									/LDAPFieldMapper *
+								}
+							}
+						}
+						{
+							/Map {
+								/Input.object2 {
+									/LDAPFieldMapper *
+								}
+							}
+						}
+						{
+							/Map {
+								/Input.object3 {
+									/LDAPFieldMapper *
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/ldapDAModifyUserGAGA {
+		/DName { "uid=CH10601-tkgaga," }
+		/InputParams {
+			/LDAPParamMapper {
+				/Base	"ou=tkfu,o=10601,c=ch,dc=tkfcd.hsr.ch"
+				/Attributes { TKFmodtime userPassword }
+				/Timeout	10
+				/SizeLimit	100
+			}
+		}
+		/ModifyVals {
+			/LDAPModifyValsMapper {
+				{
+					/Attribut 	"userPassword"
+					/Mode		2  	# LDAP_MOD_ADD
+					/Values {
+						{ /Value newpassword }
+					}
+				}
+				{
+					/Attribut 	"TKFmodtime"
+					/Mode		2  	# LDAP_MOD_ADD
+					/Values {
+						{ /Value "19990520_00:11:22" }
+					}
+				}
+			}
+		}
+	}
+
+	/ldapDACompareUserGAGA {
+		/DName {
+			/LDAPDNameMapper {
+				/Query {
+					{ /"=" userid }
+				}
+				/Map {
+					/userid  uid
+				}
+				/Value {
+					/userid		"CH10601-tkgaga"
+				}
+			}
+		}
+		/InputParams {
+			/LDAPParamMapper {
+				/Base		"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch" 			# search base in ldap schema
+				/Attributes { "userPassword" }
+				/Timeout	10
+				/SizeLimit	100
+			}
+		}
+		/Compare {
+			/LDAPFieldMapper {
+				/DataFormat	PWD
+			}
+		}
+	}
+
+}

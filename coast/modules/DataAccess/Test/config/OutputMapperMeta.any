@@ -1,0 +1,146 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/testmapper {	#mapper for test purposes
+		/testitem1	"foo"
+		/testitem2  "bah"
+	}
+
+	/testmo {
+		/testmo1 testmo1
+	}
+
+	# For NameUsingOutputMapperTest
+	/ConfiguredTestMapper {
+		/Destination {
+			/Store		Session
+			/Slot		TestMapper
+		}
+	}
+	/NameUsingTestWithEmptyLocalConfig {
+		/Out {
+			/NewOutSlot {
+				/QueryCountMapper {}
+			}
+		}
+	}
+	/NameUsingTestWithLocalConfig {
+		/Out {
+			/NewOutSlot {
+				/QueryCountMapper {
+					/Destination {
+						/Store		Session
+					}
+				}
+			}
+		}
+	}
+	/NameUsingTestWithNullConfig {
+		/Out {
+			/NewOutSlot {
+				/QueryCountMapper *
+			}
+		}
+	}
+	/QueryCountMapper {
+		/Destination {
+			/Store		Session
+		}
+	}
+
+	# For SlotnameOutputMapperTest
+	/SlotnameTestOutputMapper {
+		/Destination {
+			/Store		Session
+			/Slot		AnyWithSlotnames
+		}
+		/SlotnameSlots {
+			ACategory
+			AKey
+		}
+	}
+
+	# For XMLMapperTest
+	/TestFileXMLReadDAImplXMLMapper
+	{
+		/IndexedPathOnly 1
+		/IndexDelim "!"
+		/Elements
+		{
+			"projects"
+		}
+	}
+	/TestFileXMLReadDAImplXMLMapperTwo
+	{
+		/IndexedPathOnly 1
+		/Elements
+		{
+			"subfunctions"
+			"skills"
+		}
+	}
+	/TestFileXMLReadDAImplXMLMapperThree
+	{
+		/IndexedPathOnly 0
+		/Elements
+		{
+			"id"
+		}
+	}
+	/TestFileXMLReadDAImplXMLMapperFour
+	{
+		/IndexedPathOnly 0
+		/Delim		"-"
+		/IndexDelim "+"
+		/Elements
+		{
+			"id"
+		}
+	}
+
+	/RenameSlotWithConfigPutTest {
+		/Kaspar { /Peter * }
+	}
+
+	/ScriptedPutTest {
+	    /Kaspar { {/EagerResultMapper { /Peter * }} { /EagerResultMapper { /Mike * }} }
+	}
+
+	/ResultMapperTest {
+		/string {
+			"sKey"
+		}
+		/double {
+			"dKey"
+		}
+		/long {
+			"lKey"
+		}
+		/bool {
+			"bKey"
+		}
+		/any {
+			"aKey"
+		}
+		/stream {
+			"strmKey"
+		}
+	}
+
+	/DynamicStorer {
+		/DestinationSlot "Mapper.foo.bar"
+	}
+
+	/ReadAnythingDA {
+		/FileContent {
+			/StreamToAnythingMapper *
+		}
+	}
+}

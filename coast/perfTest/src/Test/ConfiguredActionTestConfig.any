@@ -1,0 +1,700 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/RunOnly {}
+
+	/RunTestCases {
+		/HTMLTreeAndSortedTagsMapperTest {
+			/TheAction {
+				/CallDA {
+					/DataAccess   GetHTMLTestFile
+				}
+			}
+			/TmpStore {
+				/FileName "Sample1.html"
+			}
+			/Result {
+				/TmpStore {
+					/Mapper.Output {
+						/Links {
+							/"0" {
+								/href "AnotherPage.html"
+							}
+						}
+						/LinksNameMap {
+							/Sämple "0"
+						}
+						/Tokens "TesttheRestHallo Sämple"
+					}
+					/Mapper.HTTPBody {
+						/Tree {
+							/Content {
+								{ /doctype {
+									/Content {
+										{ /html {
+											/Content {
+												{ /head {
+													/Content {
+														{ /title {
+															/Content {
+																"Test the Rest <!--- this - --- > is - comment --->"
+															}
+														} }
+													}
+												} }
+												{ /body {
+													/Attr {
+														/bgcolor  "#FFDDAA"
+													}
+													/Content {
+														{ /h1 {
+															/Content {
+																"Hallo"
+															}
+														} }
+														{ /a {
+															/Attr {
+																/href  "AnotherPage.html"
+															}
+															/Content {
+																"Sämple"
+															}
+														} }
+													}
+												} }
+											}
+										} }
+									}
+								} }
+							}
+						}
+					}
+				}
+			}
+		}
+		/HTMLTreeAndSortedTagsMapperWith2FormsTest {
+			/TheAction {
+				/CallDA {
+					/DataAccess   GetHTMLTestFile
+				}
+			}
+			/TmpStore {
+				/FileName "Sample2.html"
+			}
+			/Result {
+				/TmpStore {
+					/Mapper.Output {
+						/Links {
+							/"0" {
+								/href "AnotherPage.html"
+							}
+							/"1" {
+								/href "AnotherPage.html"
+							}
+						}
+						/LinksNameMap {
+							/Sample "0"
+							/Sample2 "1"
+						}
+						/Forms {
+							/"0" {
+							  /action "TestMe.html"
+							  /name "F1"
+							  /Fields {
+								/Text "Hallo"
+							  }
+							  /ImageButtons {
+								/Ok "IMAGETYPE"
+							  }
+							}
+							/"1" {
+							  /action "TestMeToo.html"
+							  /name "F2"
+							  /Fields {
+								/OptionList *
+								/Text "Hallo"
+							  }
+							  /Buttons {
+								/Ok "Ok"
+							  }
+							}
+							/"2" {
+							  /action "TestMe3.html"
+							  /name "F3"
+							  /Fields {
+								/Text "Hallo"
+							  }
+							  /ImageButtons {
+								/Ok "IMAGETYPE"
+								/NOk "IMAGETYPE"
+								/Reset "IMAGETYPE"
+								/i_Logoff "IMAGETYPE"
+								/Submit "IMAGETYPE"
+							  }
+							  /Buttons {
+								/Submit "Submit"
+							  }
+							}
+						}
+						/Tokens "TesttheRestHallo SampleDer Text:Choose a char : an Ua XDer Text:Sample2Der Text:"
+					}
+					/Mapper.HTTPBody {
+						/Tree {
+							/Content {
+								{ /doctype {
+									/Content {
+										{ /html {
+											/Content {
+												{ /head {
+													/Content {
+														{ /title {
+															/Content {
+																"Test the Rest <!-- this is comment -->"
+															}
+														} }
+													}
+												} }
+												{ /body {
+													/Attr {
+														/bgcolor  "#FFDDAA"
+													}
+													/Content {
+														{ /h1 {
+															/Content {
+																"Hallo"
+															}
+														} }
+														{ /a {
+															/Attr {
+																/href  "AnotherPage.html"
+															}
+															/Content {
+																"Sample"
+															}
+														} }
+														{ /form {
+															/Attr {
+																/action "TestMe.html"
+																/name	"F1"
+															}
+															/Content {
+																"Der Text:"
+																{ /input {
+																	/Attr {
+																		/type "Text"
+																		/size "5"
+																		/name	"Text"
+																		/value "Hallo"
+																	}
+																} }
+																{ /input {
+																	/Attr {
+																		/type "Image"
+																		/name	"Ok"
+																		/src "/Ok.gif"
+																	}
+																} }
+															}
+														} }
+														{ /form {
+															/Attr {
+																/action "TestMeToo.html"
+																/name	"F2"
+															}
+															/Content {
+																"Choose a char :"
+																{ /select {
+																	/Attr {
+																		/name "OptionList"
+																	}
+																	/Content {
+																		{ /option {
+																			/Attr {
+																				/value "X"
+																			}
+																			/Content { "an U" }
+																		} }
+																		{ /option {
+																			/Attr {
+																				/value "U"
+																			}
+																			/Content { "a X" }
+																		} }
+																	}
+																} }
+																"Der Text:"
+																{ /input {
+																	/Attr {
+																		/type "Text"
+																		/size "5"
+																		/name	"Text"
+																		/value "Hallo"
+																	}
+																} }
+																{ /input {
+																	/Attr {
+																		/type "Submit"
+																		/name	"Ok"
+																		/value "Ok"
+																	}
+																} }
+															}
+														} }
+														{ /a {
+															/Attr {
+																/href  "AnotherPage.html"
+															}
+															/Content {
+																"Sample2"
+															}
+														} }
+														{
+														  /form {
+															/Attr {
+															  /action "TestMe3.html"
+															  /name "F3"
+															}
+															/Content {
+															  "Der Text:"
+															  {
+																/input {
+																  /Attr {
+																	/type "Text"
+																	/size "5"
+																	/name "Text"
+																	/value "Hallo"
+																  }
+																}
+															  }
+															  {
+																/input {
+																  /Attr {
+																	/type "Image"
+																	/name "Ok"
+																	/src "/Ok.gif"
+																  }
+																}
+															  }
+															  {
+																/input {
+																  /Attr {
+																	/type "Image"
+																	/name "NOk"
+																	/src "/Ok.gif"
+																  }
+																}
+															  }
+															  {
+																/input {
+																  /Attr {
+																	/type "Image"
+																	/name "Reset"
+																	/src "/Ok.gif"
+																  }
+																}
+															  }
+															  {
+																/input {
+																  /Attr {
+																	/type "Image"
+																	/name "i_Logoff"
+																	/src "/Ok.gif"
+																  }
+																}
+															  }
+															  {
+																/input {
+																  /Attr {
+																	/type "Image"
+																	/name "Submit"
+																	/src "/Ok.gif"
+																  }
+																}
+															  }
+															  {
+																/input {
+																  /Attr {
+																	/type "Submit"
+																	/name "Submit"
+																	/value "Submit"
+																  }
+																}
+															  }
+															}
+														  }
+														}
+
+													}
+												} }
+											}
+										} }
+									}
+								} }
+							}
+						}
+					}
+				}
+			}
+		}
+		/HTMLTreeMapperErronousTest {
+			/TheAction {
+				/CallDA {
+					/DataAccess   GetTreeMappedHTMLFile
+				}
+			}
+			/TmpStore {
+				/FileName "ErrShort.html"
+			}
+			/Result {
+				/TmpStore {
+					/Mapper {
+						/HTTPBody {
+						  /Tree {
+        /Content {
+          {
+            /doctype {
+              /Content {
+                {
+                  /html {
+                    /Content {
+                      {
+                        /head {
+                          /Content {
+                            {
+                              /title {
+                                /Content {
+                                  "Wiki: Welcome Visitors"
+                                }
+                              }
+                            }
+                            {
+                              /style {
+                                /Attr {
+                                  /type "text/css"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                      {
+                        /body {
+                          /Attr {
+                            /bgcolor "#FFFFFF"
+                          }
+                          /Content {
+                            {
+                              /table {
+                                /Attr {
+                                  /cellspacing "0"
+                                  /cellpadding "4"
+                                  /width "100%"
+                                }
+                                /Content {
+                                  {
+                                    /td {
+                                      /Attr {
+                                        /class "ifs"
+                                        /width "88%"
+                                        /align "left"
+                                      }
+                                      /Content {
+                                        {
+                                          /b {
+                                            /Content {
+                                              {
+                                                /font {
+                                                  /Attr {
+                                                    /size "6"
+                                                  }
+                                                  /Content {
+                                                    {
+                                                      /a {
+                                                        /Attr {
+                                                          /href "search.cgi?search=WelcomeVisitors"
+                                                        }
+                                                        /Content {
+                                                          "Welcome Visitors"
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                        {
+                                          /br {
+                                            /Content {
+                                              ":"
+                                              {
+                                                /a {
+                                                  /Attr {
+                                                    /href "edit.cgi?WelcomeVisitors"
+                                                  }
+                                                  /Content {
+                                                    "edit page"
+                                                  }
+                                                }
+                                              }
+                                              ":"
+                                              {
+                                                /a {
+                                                  /Attr {
+                                                    /href "edit.cgi?WelcomeVisitors&mode=append"
+                                                  }
+                                                  /Content {
+                                                    "append comment"
+                                                  }
+                                                }
+                                              }
+                                              ":"
+                                              {
+                                                /a {
+                                                  /Attr {
+                                                    /href "wiki.cgi?WelcomeVisitors&printerfriendly"
+                                                  }
+                                                  /Content {
+                                                    "print friendly version"
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                  {
+                                    /td {
+                                      /Attr {
+                                        /align "left"
+                                        /class "ifs"
+                                      }
+                                      /Content {
+                                        {
+                                          /form {
+                                            /Attr {
+                                              /action "search.cgi"
+                                            }
+                                            /Content {
+                                              {
+                                                /input {
+                                                  /Attr {
+                                                    /style "color:white;background-color:#222266"
+                                                    /type "text"
+                                                    /size "20"
+                                                    /maxlength "40"
+                                                    /name "search"
+                                                  }
+                                                }
+                                              }
+                                              {
+                                                /input {
+                                                  /Attr {
+                                                    /type "submit"
+                                                    /value "Search"
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                  {
+                                    /td {
+                                      /Attr {
+                                        /align "right"
+                                        /class "ifs"
+                                      }
+                                      /Content {
+                                        {
+                                          /a {
+                                            /Attr {
+                                              /href "wiki.cgi"
+                                            }
+                                            /Content {
+                                              {
+                                                /img {
+                                                  /Attr {
+                                                    /src "logo.gif"
+                                                    /alt "Go to Start"
+                                                    /border "0"
+                                                    /align "right"
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                  {
+                                    /td {
+                                      /Attr {
+                                        /align "right"
+                                        /class "ifs"
+                                      }
+                                      /Content {
+                                        {
+                                          /a {
+                                            /Attr {
+                                              /href "changes.cgi"
+                                            }
+                                            /Content {
+                                              "Recent"
+                                              {
+                                                /br {
+                                                  /Content {
+                                                    "Changes"
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                            {
+                              /p {
+                                /Content {
+                                  {
+                                    /small {
+                                      /Content {
+                                        {
+                                          /a {
+                                            /Attr {
+                                              /name "0"
+                                            }
+                                            /Content {
+                                              {
+                                                /em {
+                                                  /Content {
+                                                    "Headings:"
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                        {
+                                          /a {
+                                            /Attr {
+                                              /href "#1"
+                                            }
+                                            /Content {
+                                              "Our Department"
+                                            }
+                                          }
+                                        }
+                                        {
+                                          /a {
+                                            /Attr {
+                                              /href "#2"
+                                            }
+                                            /Content {
+                                              "LotusNotes"
+                                            }
+                                          }
+                                        }
+                                        {
+                                          /a {
+                                            /Attr {
+                                              /href "#3"
+                                            }
+                                            /Content {
+                                              "Using Wiki"
+                                            }
+                                          }
+                                        }
+                                        {
+                                          /a {
+                                            /Attr {
+                                              /href "#4"
+                                            }
+                                            /Content {
+                                              "User Maintenance"
+                                            }
+                                          }
+                                        }
+                                        {
+                                          /a {
+                                            /Attr {
+                                              /href "#5"
+                                            }
+                                            /Content {
+                                              "Special Features"
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                            {
+                              /p {
+                                /Content {
+                                  {
+                                    /h2 {
+                                      /Content {
+                                        {
+                                          /a {
+                                            /Attr {
+                                              /name "1"
+                                            }
+                                            /Content {
+                                              "Our Department"
+                                            }
+                                          }
+                                        }
+                                        {
+                                          /a {
+                                            /Attr {
+                                              /href "#0"
+                                            }
+                                            /Content {
+                                              "^"
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+						}
+					}
+				}
+			}
+		}
+	}
+}

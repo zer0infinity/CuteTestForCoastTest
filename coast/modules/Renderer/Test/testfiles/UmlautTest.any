@@ -1,0 +1,8 @@
+{
+  /REQUEST_METHOD "GET"
+  /Button "confirmButton"
+  /fields {
+    /reportTitle "Stamm \xDCbersicht"
+    /confirmButton "\xA0Ausf\xFChren\xA0\xA0"
+  }
+}

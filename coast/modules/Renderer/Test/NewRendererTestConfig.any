@@ -1,0 +1,3104 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/EnvForAllCases {
+		/ItopiaDomain	"hsr.loc"
+		/RoundClosures	{
+			/"200002021400"		1
+			/"200002031400"		2
+			/"200002041400"		3
+			/"200002051400"		4
+		}
+	}
+	/TestCases
+	{
+		## StringTokenizeRenderer-Tests
+		/StringTokenizeRendererEmptyTest {
+			/Env {
+				/InString	"abc"
+				/InToken	";"
+			}
+			/Renderer {
+				/StringTokenizeRenderer {
+					/String			{ /Lookup InString }
+					/Token			{ /Lookup InToken }
+					/RenderToken	1
+				}
+			}
+			/Expected	""
+		}
+		/StringTokenizeRendererDefaultTest {
+			/Env {
+				/InString	"abc"
+				/InToken	";"
+			}
+			/Renderer {
+				/StringTokenizeRenderer {
+					/String			{ /Lookup InString }
+					/Token			{ /Lookup InToken }
+					/RenderToken	1
+					/Default		{ /Lookup InString }
+				}
+			}
+			/Expected	"abc"
+		}
+		/StringTokenizeRendererFirstTokenTest {
+			/Env {
+				/InString	"abc;"
+				/InToken	";"
+			}
+			/Renderer {
+				/StringTokenizeRenderer {
+					/String			{ /Lookup InString }
+					/Token			{ /Lookup InToken }
+					/RenderToken	1
+				}
+			}
+			/Expected	"abc"
+		}
+		/StringTokenizeRendererSecondTokenTest {
+			/Env {
+				/InString	"abc;"
+				/InToken	";"
+			}
+			/Renderer {
+				/StringTokenizeRenderer {
+					/String			{ /Lookup InString }
+					/Token			{ /Lookup InToken }
+					/RenderToken	2
+				}
+			}
+			/Expected	""
+		}
+		/StringTokenizeRendererNonExistingTokenTest {
+			/Env {
+				/InString	"abc;"
+				/InToken	";"
+			}
+			/Renderer {
+				/StringTokenizeRenderer {
+					/String			{ /Lookup InString }
+					/Token			{ /Lookup InToken }
+					/RenderToken	3
+				}
+			}
+			/Expected	""
+		}
+		/StringTokenizeRendererFirstReverseTokenTest {
+			/Env {
+				/InString	"abc;"
+				/InToken	";"
+			}
+			/Renderer {
+				/StringTokenizeRenderer {
+					/String			{ /Lookup InString }
+					/Token			{ /Lookup InToken }
+					/RenderToken	-1
+				}
+			}
+			/Expected	""
+		}
+		/StringTokenizeRendererSecondReverseTokenTest {
+			/Env {
+				/InString	"abc;"
+				/InToken	";"
+			}
+			/Renderer {
+				/StringTokenizeRenderer {
+					/String			{ /Lookup InString }
+					/Token			{ /Lookup InToken }
+					/RenderToken	-2
+				}
+			}
+			/Expected	"abc"
+		}
+		/StringTokenizeRendererListOfTokensTest {
+			/Env {
+				/InString	"abc;def;ghi;jkl"
+				/InToken	";"
+			}
+			/Renderer {
+				/StringTokenizeRenderer {
+					/String			{ /Lookup InString }
+					/Token			{ /Lookup InToken }
+					/RenderToken	"1;3"
+				}
+			}
+			/Expected	"abcghi"
+		}
+		/StringTokenizeRendererReverseListOfTokensTest {
+			/Env {
+				/InString	"abc;def;ghi;jkl"
+				/InToken	";"
+			}
+			/Renderer {
+				/StringTokenizeRenderer {
+					/String			{ /Lookup InString }
+					/Token			{ /Lookup InToken }
+					/RenderToken	"-1;-3"
+				}
+			}
+			/Expected	"jkldef"
+		}
+		/StringTokenizeRendererListOfTokensWithFillerTest {
+			/Env {
+				/InString	"abc;def;ghi;jkl"
+				/InToken	";"
+			}
+			/Renderer {
+				/StringTokenizeRenderer {
+					/String			{ /Lookup InString }
+					/Token			{ /Lookup InToken }
+					/RenderToken	"1;3"
+					/OutputFiller	":"
+				}
+			}
+			/Expected	"abc:ghi"
+		}
+		/StringTokenizeRendererListOfTokensWithEmptyInTokensTest {
+			/Env {
+				/InString	"abc;;;jkl"
+				/InToken	";"
+			}
+			/Renderer {
+				/StringTokenizeRenderer {
+					/String			{ /Lookup InString }
+					/Token			{ /Lookup InToken }
+					/RenderToken	"1;4"
+					/OutputFiller	":"
+				}
+			}
+			/Expected	"abc:jkl"
+		}
+		/StringTokenizeRendererListOfTokensMultiCharTokenTest {
+			/Env {
+				/InString	"abcAAdefAAjkl"
+				/InToken	"AA"
+			}
+			/Renderer {
+				/StringTokenizeRenderer {
+					/String			{ /Lookup InString }
+					/Token			{ /Lookup InToken }
+					/RenderToken	"1;2"
+					/OutputFiller	":"
+				}
+			}
+			/Expected	"abc:def"
+		}
+		/StringTokenizeRendererListOfUndefinedTokensTest {
+			/Env {
+				/InString	"abc;def;ghi"
+				/InToken	";"
+			}
+			/Renderer {
+				/StringTokenizeRenderer {
+					/String			{ /Lookup InString }
+					/Token			{ /Lookup InToken }
+					/RenderToken	"1;3;4;5"
+					/OutputFiller	":"
+				}
+			}
+			/Expected	"abc:ghi"
+		}
+		/StringTokenizeRendererValidTokenRangeTest {
+			/Env {
+				/InString	"abc;def;ghi;jkl;mno"
+				/InToken	";"
+			}
+			/Renderer {
+				/StringTokenizeRenderer {
+					/String			{ /Lookup InString }
+					/Token			{ /Lookup InToken }
+					/RenderToken	"2-4"
+					/OutputFiller	":"
+				}
+			}
+			/Expected	"def:ghi:jkl"
+		}
+		/StringTokenizeRendererTokenRangeExceededTest {
+			/Env {
+				/InString	"abc;def;ghi;jkl;mno"
+				/InToken	";"
+			}
+			/Renderer {
+				/StringTokenizeRenderer {
+					/String			{ /Lookup InString }
+					/Token			{ /Lookup InToken }
+					/RenderToken	"3-10"
+					/OutputFiller	":"
+				}
+			}
+			/Expected	"ghi:jkl:mno"
+		}
+		/StringTokenizeRendererUpToEndTest {
+			/Env {
+				/InString	"abc;def;ghi;jkl;mno"
+				/InToken	";"
+			}
+			/Renderer {
+				/StringTokenizeRenderer {
+					/String			{ /Lookup InString }
+					/Token			{ /Lookup InToken }
+					/RenderToken	"3-"
+					/OutputFiller	":"
+				}
+			}
+			/Expected	"ghi:jkl:mno"
+		}
+		/StringTokenizeRendererValidTokenRangeNegativeTest {
+			/Env {
+				/InString	"abc;def;ghi;jkl;mno"
+				/InToken	";"
+			}
+			/Renderer {
+				/StringTokenizeRenderer {
+					/String			{ /Lookup InString }
+					/Token			{ /Lookup InToken }
+					/RenderToken	"-2--4"
+					/OutputFiller	":"
+				}
+			}
+			/Expected	"jkl:ghi:def"
+		}
+		/StringTokenizeRendererTokenRangeExceededNegativeTest {
+			/Env {
+				/InString	"abc;def;ghi;jkl;mno"
+				/InToken	";"
+			}
+			/Renderer {
+				/StringTokenizeRenderer {
+					/String			{ /Lookup InString }
+					/Token			{ /Lookup InToken }
+					/RenderToken	"-3--10"
+					/OutputFiller	":"
+				}
+			}
+			/Expected	"ghi:def:abc"
+		}
+		/StringTokenizeRendererUpToEndNegativeTest {
+			/Env {
+				/InString	"abc;def;ghi;jkl;mno"
+				/InToken	";"
+			}
+			/Renderer {
+				/StringTokenizeRenderer {
+					/String			{ /Lookup InString }
+					/Token			{ /Lookup InToken }
+					/RenderToken	"-3-"
+					/OutputFiller	":"
+				}
+			}
+			/Expected	"ghi:def:abc"
+		}
+		/StringTokenizeRendererRangeNumberCombinationTest {
+			/Env {
+				/InString	"abc;def;ghi;jkl;mno;pqr;stu;vwx"
+				/InToken	";"
+			}
+			/Renderer {
+				/StringTokenizeRenderer {
+					/String			{ /Lookup InString }
+					/Token			{ /Lookup InToken }
+					/RenderToken	"2-5;7"
+					/OutputFiller	":"
+				}
+			}
+			/Expected	"def:ghi:jkl:mno:stu"
+		}
+		/StringTokenizeRendererRangeRangeCombinationTest {
+			/Env {
+				/InString	"abc;def;ghi;jkl;mno;pqr;stu;vwx"
+				/InToken	";"
+			}
+			/Renderer {
+				/StringTokenizeRenderer {
+					/String			{ /Lookup InString }
+					/Token			{ /Lookup InToken }
+					/RenderToken	"1-3;5-7"
+					/OutputFiller	":"
+				}
+			}
+			/Expected	"abc:def:ghi:mno:pqr:stu"
+		}
+		/StringTokenizeRendererNumberUpToEndTest {
+			/Env {
+				/InString	"abc;def;ghi;jkl;mno;pqr;stu;vwx"
+				/InToken	";"
+			}
+			/Renderer {
+				/StringTokenizeRenderer {
+					/String			{ /Lookup InString }
+					/Token			{ /Lookup InToken }
+					/RenderToken	"2;5-"
+					/OutputFiller	":"
+				}
+			}
+			/Expected	"def:mno:pqr:stu:vwx"
+		}
+		/StringTokenizeRendererOverlappingRangeTest {
+			/Env {
+				/InString	"abc;def;ghi;jkl;mno;pqr;stu;vwx"
+				/InToken	";"
+			}
+			/Renderer {
+				/StringTokenizeRenderer {
+					/String			{ /Lookup InString }
+					/Token			{ /Lookup InToken }
+					/RenderToken	"1-3;2-4"
+					/OutputFiller	":"
+				}
+			}
+			/Expected	"abc:def:ghi:def:ghi:jkl"
+		}
+		/StringTokenizeRendererUpAndDownWrongIdeaTest {
+			/Env {
+				/InString	"abc;def;ghi;jkl;mno;pqr;stu;vwx"
+				/InToken	";"
+			}
+			/Renderer {
+				/StringTokenizeRenderer {
+					/String			{ /Lookup InString }
+					/Token			{ /Lookup InToken }
+					/RenderToken	"1-;-8-"
+					/OutputFiller	":"
+				}
+			}
+			/Expected	"abc:def:ghi:jkl:mno:pqr:stu:vwx:abc"
+		}
+		/StringTokenizeRendererUpAndDownTest {
+			/Env {
+				/InString	"abc;def;ghi;jkl;mno;pqr;stu;vwx"
+				/InToken	";"
+			}
+			/Renderer {
+				/StringTokenizeRenderer {
+					/String			{ /Lookup InString }
+					/Token			{ /Lookup InToken }
+					/RenderToken	"1-;-1-"
+					/OutputFiller	":"
+				}
+			}
+			/Expected	"abc:def:ghi:jkl:mno:pqr:stu:vwx:vwx:stu:pqr:mno:jkl:ghi:def:abc"
+		}
+		/StringTokenizeRendererWrongPosIndexTest {
+			/Env {
+				/InString	"abc;def"
+				/InToken	";"
+			}
+			/Renderer {
+				/StringTokenizeRenderer {
+					/String			{ /Lookup InString }
+					/Token			{ /Lookup InToken }
+					/RenderToken	"4"
+					/OutputFiller	":"
+					/Default		"gugus"
+				}
+			}
+			/Expected	"gugus"
+		}
+		/StringTokenizeRendererWrongNegIndexTest {
+			/Env {
+				/InString	"abc;def"
+				/InToken	";"
+			}
+			/Renderer {
+				/StringTokenizeRenderer {
+					/String			{ /Lookup InString }
+					/Token			{ /Lookup InToken }
+					/RenderToken	"-4"
+					/OutputFiller	":"
+				}
+			}
+			/Expected	""
+		}
+		{
+			/Env {
+				/"The.List.With.Dots" {
+					/"hsr.loc" 	Winner
+					/"etoys.com"	Looser
+				}
+			}
+			/Renderer {
+				/ContextLookupRenderer	{
+					/LookupName		"The.List.With.Dots/hsr.loc"
+					/Delim			"/"
+				}
+			}
+			/Expected	"Winner"
+		}
+		{
+			/Env {
+				/"The.List.With.Dots"	{
+					/"The:Slot:With:Indexes" {
+						/"hsr.loc" 	Winner
+						/"etoys.com"	Looser
+					}
+				}
+			}
+			/Renderer {
+				/ContextLookupRenderer	{
+					/LookupName		"The.List.With.Dots/The:Slot:With:Indexes/hsr.loc"
+					/Delim			"/"
+					/IndexDelim		"#"
+				}
+			}
+			/Expected	"Winner"
+		}
+		{
+			/Env {
+				/"The.List.With.Dots"	{
+					/"The:Slot:With:Indexes" {
+						/"hsr.loc" 	Looser
+						/"etoys.com"	Winner
+					}
+				}
+			}
+			/Renderer {
+				/ContextLookupRenderer	{
+					/LookupName		"The.List.With.Dots#0#1"
+					/Delim			"/"
+					/IndexDelim		"#"
+				}
+			}
+			/Expected	"Winner"
+		}
+		{
+			/Env {
+				/"The.List.With.Dots"	{
+					/"The:Slot:With:Indexes" {
+						/"hsr.loc" 	Looser
+						/"etoys.com"	Winner
+					}
+				}
+			}
+			/Renderer {
+				/ContextLookupRenderer	{ "The.List.With.Dots#0#1" "" "/" "#" }
+			}
+			/Expected	"Winner"
+		}
+		{
+			/Renderer {
+				/FloorRenderer	{
+					/ListData    RoundClosures
+					/Key		"200002041359"
+				}
+			}
+			/Expected	2
+		}
+		{
+			/Renderer {
+				/FloorRenderer	{
+					/ListData    RoundClosures
+					/Key		"200002041400"
+				}
+			}
+			/Expected	3
+		}
+		{
+			/Renderer {
+				/FloorRenderer	{
+					/ListData    RoundClosures
+					/Key		"200002041401"
+				}
+			}
+			/Expected	3
+		}
+		{
+			/Renderer {
+				/FloorRenderer	{
+					/ListData    RoundClosures
+					/Key		"200001041359"
+				}
+			}
+			/Expected	""
+		}
+		{
+			/Renderer {
+				/FloorRenderer	{
+					/ListData    RoundClosures
+					/Key		"200002021400"
+				}
+			}
+			/Expected	"1"
+		}
+		{
+			/Renderer {
+				/FloorRenderer	{
+					/ListData    RoundClosures
+					/Key		"200003041359"
+				}
+			}
+			/Expected	4
+		}
+		{
+			/Renderer {
+				/FloorRenderer	{
+					/ListData    RoundClosures
+					/Key		"200002051400"
+				}
+			}
+			/Expected	4
+		}
+		{	# if the List is unsorted - the first that is greater triggers
+			# the return of the preceeding
+			/Env {
+				/Unsorted {
+					/Alpha		"A"
+					/Beta		"B"
+					/Gamma		"C"
+					/Delta		"D"
+				}
+			}
+			/Renderer {
+				/FloorRenderer	{
+					/ListData    Unsorted
+					/Key		"Epsilon"
+				}
+			}
+			/Expected	"B"
+		}
+		# CeilingRenderer
+		{
+			/Renderer {
+				/CeilingRenderer	{
+					/ListData    RoundClosures
+					/Key		"200002041359"
+				}
+			}
+			/Expected	3
+		}
+		{
+			/Renderer {
+				/CeilingRenderer	{
+					/ListData    RoundClosures
+					/Key		"200002041400"
+				}
+			}
+			/Expected	3
+		}
+		{
+			/Renderer {
+				/CeilingRenderer	{
+					/ListData    RoundClosures
+					/Key		"200002041401"
+				}
+			}
+			/Expected	4
+		}
+		{
+			/Renderer {
+				/CeilingRenderer	{
+					/ListData    RoundClosures
+					/Key		"200001041359"
+				}
+			}
+			/Expected	"1"
+		}
+		{
+			/Renderer {
+				/CeilingRenderer	{
+					/ListData    RoundClosures
+					/Key		"200002021400"
+				}
+			}
+			/Expected	"1"
+		}
+		{
+			/Renderer {
+				/CeilingRenderer	{
+					/ListData    RoundClosures
+					/Key		"200003041359"
+				}
+			}
+			/Expected	""
+		}
+		{
+			/Renderer {
+				/CeilingRenderer	{
+					/ListData    RoundClosures
+					/Key		"200002051400"
+				}
+			}
+			/Expected	4
+		}
+		{	# if the List is unsorted - the first that is greater is returned
+			/TmpStore {
+				/Unsorted {
+					/Alpha		"A"
+					/Beta		"B"
+					/Gamma		"C"
+					/Delta		"D"
+				}
+			}
+			/Renderer {
+				/CeilingRenderer	{
+					/ListData    Unsorted
+					/Key		"Epsilon"
+				}
+			}
+			/Expected	"C"
+		}
+		# EscapeRenderer
+		{
+			/SessionStore {
+				/TheString	"Jostein Gaarder: Sophie's World"
+			}
+			/Renderer {
+				/EscapeRenderer {
+					/String		{ /ContextLookupRenderer	TheString }
+					/EscapeChar	"\\"
+					/ToEscape	"':"
+				}
+			}
+			/Expected	"Jostein Gaarder\: Sophie\'s World"
+		}
+		{
+			/Env {
+				/"TheString"	"Jostein Gaarder: Sophie's World"
+			}
+			/Renderer {
+				/EscapeRenderer {
+					/String		{ /ContextLookupRenderer	"TheString" }
+					/EscapeChar	"/"
+					/ToEscape	"':"
+				}
+			}
+			/Expected	"Jostein Gaarder/: Sophie/'s World"
+		}
+		# String is missing
+		{
+			/Env {
+				/TheString	"Jostein Gaarder: Sophie's World"
+			}
+			/Renderer {
+				/EscapeRenderer {
+					/EscapeChar	"\\"
+					/ToEscape	"':"
+				}
+			}
+			/Expected	""
+		}
+		# EscapeChar is missing
+		{
+			/Env {
+				/TheString	"Jostein Gaarder: Sophie's World"
+			}
+			/Renderer {
+				/EscapeRenderer {
+					/String		{ /ContextLookupRenderer	TheString }
+					/ToEscape	"':"
+				}
+			}
+			/Expected	"Jostein Gaarder\: Sophie\'s World"
+		}
+		# ToEscape is missing
+		{
+			/Env {
+				/TheString	"Jostein Gaarder: Sophie's World"
+			}
+			/Renderer {
+				/EscapeRenderer {
+					/String		{ /ContextLookupRenderer	TheString }
+					/EscapeChar	"\\"
+				}
+			}
+			/Expected	"Jostein Gaarder: Sophie's World"
+		}
+		# EscapeChar is empty
+		{
+			/Env {
+				/TheString	"Jostein Gaarder: Sophie's World"
+			}
+			/Renderer {
+				/EscapeRenderer {
+					/String		{ /ContextLookupRenderer	TheString }
+					/ToEscape	"':"
+					/EscapeChar	""
+				}
+			}
+			/Expected	"Jostein Gaarder\: Sophie\'s World"
+		}
+		# ToEscape is empty
+		{
+			/Env {
+				/TheString	"Jostein Gaarder: Sophie's World"
+			}
+			/Renderer {
+				/EscapeRenderer {
+					/String		{ /ContextLookupRenderer	TheString }
+					/ToEscape	""
+					/EscapeChar	"\\"
+				}
+			}
+			/Expected	"Jostein Gaarder: Sophie's World"
+		}
+		# ContainsRenderer
+		{
+			/Env {
+				/WhichList	TheList
+				/WhichValue	"123"
+				/TheList {
+					"AB"
+					"123"
+					"CD"
+					"456"
+				}
+				/Found		True
+				/NotFound	False
+			}
+			/Renderer {
+				{ /ContainsRenderer {	# Results "Yes"
+					/ListData		{ /ContextLookupRenderer	WhichList }
+					/ValueToCheck	{ /ContextLookupRenderer	WhichValue }
+					/True	"Yes"
+					/False	"No"
+				} }
+				{ /ContainsRenderer {	# Results "Yes"
+					/ListData		{ /ContextLookupRenderer	WhichList }
+					/ValueToCheck	123
+					/True	"Yes"
+					/False	"No"
+				} }
+				{ /ContainsRenderer {	# Results "False"
+					/ListData		TheList
+					/ValueToCheck	"BC"
+					/True	{ /ContextLookupRenderer	Found }
+					/False	{ /ContextLookupRenderer	NotFound }
+				} }
+				{ /ContainsRenderer {	# Results ""
+					/ListData		TheList
+					/ValueToCheck	"456"
+				} }
+				{ /ContainsRenderer {	# Results ""
+					/ListData		TheList
+					/ValueToCheck	"4567"
+				} }
+				{ /ContainsRenderer {	# Results "No"
+					/ListData		TheList
+					/True	"Yes"
+					/False	"No"
+				} }
+				{ /ContainsRenderer {	# Results "No"
+					/ValueToCheck	"AB"
+					/True	"Yes"
+					/False	"No"
+				} }
+				{ /ContainsRenderer {	# Results ""
+					/ValueToCheck	"AB"
+				} }
+				{ /ContainsRenderer {	# Results ""
+					/ListData		TheList
+				} }
+			}
+			/Expected	"YesYesFalseNoNo"
+		}
+		{
+			/Env {
+				/TheList	{
+					/Slot1	{
+						/Name		"A"
+						/Ort		"B"
+					}
+					/Slot2	{
+						/Name		"C"
+						/Ort		"D"
+					}
+					/Slot3	{
+						/Name		"E"
+						/Ort		"F"
+					}
+				}
+			}
+			/Renderer {
+				/ListRenderer	{
+					/ListData    TheList
+					/ListHeader    "<"
+					/ListFooter		">"
+					/EntryHeader	{ /ContextLookupRenderer SlotName }
+					/EntryFooter	{ /ContextLookupRenderer Index }
+					/EntryStore		Record
+					/EntryRenderer    {
+						{ /ContextLookupRenderer   Record.Name }
+						{ /ContextLookupRenderer   Record.Ort }
+					}
+					/IndexSlot		Index
+					/SlotnameSlot	SlotName
+				}
+			}
+			/Expected	"<Slot1AB0Slot2CD1Slot3EF2>"
+		}
+		{
+			/Env {
+				/TheList	{
+					/Slot1	{
+						/Name		"A"
+						/Ort		"B"
+					}
+					/Slot2	{
+						/Name		"C"
+						/Ort		"D"
+					}
+					/Slot3	{
+						/Name		"E"
+						/Ort		"F"
+					}
+					/Slot4	{
+						/Name		"G"
+						/Ort		"H"
+					}
+				}
+			}
+			/Renderer {
+				/ListRenderer	{
+					/ListData    TheList
+					/ListHeader    "<"
+					/ListFooter		">"
+					/EntryHeaders	{
+						{ "<" { /ContextLookupRenderer SlotName } ">"}
+						{ "{" { /ContextLookupRenderer SlotName } "}" }
+					}
+					/EntryFooter	{ /ContextLookupRenderer Index }
+					/EntryStore		Record
+					/EntryRenderer    {
+						{ /ContextLookupRenderer   Record.Name }
+						{ /ContextLookupRenderer   Record.Ort }
+					}
+					/IndexSlot		Index
+					/SlotnameSlot	SlotName
+				}
+			}
+			/Expected	"<<Slot1>AB0{Slot2}CD1<Slot3>EF2{Slot4}GH3>"
+		}
+		{
+			/Env {
+				/TheList	{ 0 1 2 3 4 5 6 7 8 9 10 }
+			}
+			/Renderer {
+				/PartialListRenderer	{
+					/StartPosn 3
+					/EndPosn 6
+					/ListData    TheList
+					/EntryRenderer	{ /ContextLookupRenderer EntryData }
+				}
+			}
+			/Expected	"3456"
+		}
+		{
+			/Env {
+				/TheList	{ 0 1 2 3 4 5 6 7 8 9 10 }
+				/Three 3
+				/Six 6
+			}
+			/Renderer {
+				/PartialListRenderer	{
+					/StartPosn	{ /ContextLookupRenderer Three }
+					/EndPosn 	{ /ContextLookupRenderer Six }
+					/ListData    TheList
+					/EntryRenderer	{ /ContextLookupRenderer EntryData }
+				}
+			}
+			/Expected	"3456"
+		}
+		{
+			/Env {
+				/TheList	{ 0 1 2 3 4 5 6 7 8 9 10 }
+			}
+			/Renderer {
+				/PartialListRenderer	{
+					/StartPosn 0
+					/EndPosn 6
+					/ListData    TheList
+					/EntryRenderer	{ /ContextLookupRenderer EntryData }
+				}
+			}
+			/Expected	"0123456"
+		}
+		{
+			/Env {
+				/TheList	{ 0 1 2 3 4 5 6 7 8 9 10 }
+			}
+			/Renderer {
+				/PartialListRenderer	{
+					/StartPosn -5
+					/EndPosn 6
+					/ListData    TheList
+					/EntryRenderer	{ /ContextLookupRenderer EntryData }
+				}
+			}
+			/Expected	"0123456"
+		}
+		{
+			/Env {
+				/TheList	{ 0 1 2 3 4 5 6 7 8 9 10 }
+			}
+			/Renderer {
+				/PartialListRenderer	{
+					/StartPosn 6
+					/EndPosn 10
+					/ListData    TheList
+					/EntryRenderer	{ /ContextLookupRenderer EntryData }
+				}
+			}
+			/Expected	"678910"
+		}
+		{
+			/Env {
+				/TheList	{ 0 1 2 3 4 5 6 7 8 9 10 }
+			}
+			/Renderer {
+				/PartialListRenderer	{
+					/StartPosn 6
+					/EndPosn 12
+					/ListData    TheList
+					/IndexSlot	Index
+					/EntryRenderer	{ /ContextLookupRenderer Index }
+				}
+			}
+			/Expected	"01234"
+		}
+		{
+			/Env {
+				/TheList	{ 0 1 2 3 4 5 6 7 8 9 10 }
+			}
+			/Renderer {
+				/PartialListRenderer	{
+					/StartPosn 6
+					/EndPosn 6
+					/ListData    TheList
+					/EntryRenderer	{ /ContextLookupRenderer EntryData }
+				}
+			}
+			/Expected	"6"
+		}
+		{
+			/Env {
+				/TheList	{ 0 1 2 3 4 5 6 7 8 9 10 }
+			}
+			/Renderer {
+				/PartialListRenderer	{
+					/StartPosn 6
+					/ListData    TheList
+					/EntryRenderer	{ /ContextLookupRenderer EntryData }
+				}
+			}
+			/Expected	"678910"
+		}
+		{
+			/Env {
+				/TheList	{ 0 1 2 3 4 5 6 7 8 9 10 }
+			}
+			/Renderer {
+				/PartialListRenderer	{
+					/EndPosn 6
+					/ListData    TheList
+					/EntryRenderer	{ /ContextLookupRenderer EntryData }
+				}
+			}
+			/Expected	"0123456"
+		}
+		{
+			/Env {
+				/TheList	{ 0 1 2 3 4 5 6 7 8 9 10 }
+			}
+			/Renderer {
+				/PartialListRenderer	{
+					/ListData    TheList
+					/EntryRenderer	{ /ContextLookupRenderer EntryData }
+				}
+			}
+			/Expected	"012345678910"
+		}
+		{
+			/Env {
+				/TheList	{ 0 1 2 3 4 5 6 7 8 9 10 }
+			}
+			/Renderer {
+				/PartialListRenderer	{
+					/StartPosn 6
+					/EndPosn 3
+					/ListData    TheList
+					/EntryRenderer	{ /ContextLookupRenderer EntryData }
+				}
+			}
+			/Expected	""
+		}
+		{
+			/Env {
+				/TheList	{ 0 1 2 3 4 5 6 7 8 9 10 }
+			}
+			/Renderer {
+				/PartialListRenderer	{
+					/StartPosn -6
+					/EndPosn -3
+					/ListData    TheList
+					/EntryRenderer	{ /ContextLookupRenderer EntryData }
+				}
+			}
+			/Expected	""
+		}
+		{
+			/Env {
+				/TheList	{ 0 1 2 3 4 5 6 7 8 9 10 }
+			}
+			/Renderer {
+				/PartialListRenderer	{
+					/StartPosn -3
+					/EndPosn -6
+					/ListData    TheList
+					/EntryRenderer	{ /ContextLookupRenderer EntryData }
+				}
+			}
+			/Expected	""
+		}
+		{
+			/Env {
+				/TheList	{ 0 1 2 3 4 5 6 7 8 9 10 }
+			}
+			/Renderer {
+				/PartialListRenderer	{
+					/EndPosn -6
+					/ListData    TheList
+					/EntryRenderer	{ /ContextLookupRenderer EntryData }
+				}
+			}
+			/Expected	""
+		}
+		{
+			/Env {
+				/TheList	{ 0 1 2 3  }
+			}
+			/Renderer {
+				/PartialListRenderer	{
+					/StartPosn 5
+					/EndPosn 6
+					/ListData    TheList
+					/EntryRenderer	{ /ContextLookupRenderer EntryData }
+				}
+			}
+			/Expected	""
+		}
+		{
+			/Env {
+				/TheList	{   }
+			}
+			/Renderer {
+				/PartialListRenderer	{
+					/StartPosn 0
+					/EndPosn 6
+					/ListData    TheList
+					/IndexSlot Index
+					/EntryRenderer	{ /ContextLookupRenderer Index }
+				}
+			}
+			/Expected	""
+		}
+		{ # Full ListRenderer config
+			/Env {
+				/TheList {
+					/"A"  1
+					/"B"  2
+					/"C"  3
+					/"D"  4
+					/"E"  5
+					/"F"  6
+					/"G"  7
+					/"H"  8
+					/"I"  9
+					/"J"  10
+				}
+			}
+			/Renderer {
+				/PartialListRenderer	{
+					/StartPosn 0
+					/EndPosn 9
+					/ListData    TheList
+					/ListHeader    "<"
+					/ListFooter		">"
+					/EntryHeader	"["
+					/EHStartingEntry 2
+					/EHEveryXEntries 2
+					/EntryFooter	"]"
+					/EFStartingEntry 2
+					/EFEveryXEntries 4
+					/EFSuppressLast		1
+					/EntryStore		Record
+					/SlotnameSlot   Slotname
+					/IndexSlot		Index
+					/EntryRenderer    {
+						{ /ContextLookupRenderer   Slotname }
+						{ /ContextLookupRenderer   Index } ":"
+						{ /ContextLookupRenderer   Record }
+					}
+				}
+			}
+			/Expected	"<A0:1[B1:2]C2:3[D3:4E4:5[F5:6]G6:7[H7:8I8:9[J9:10>"
+		}
+		{
+			/Env {
+				/TheList {
+					/"A"  1
+					/"B"  2
+					/"C"  3
+					/"D"  4
+					/"E"  5
+					/"F"  6
+					/"G"  7
+					/"H"  8
+					/"I"  9
+					/"J"  10
+					/"K"  11
+				}
+			}
+			/Renderer {
+				/LinksListRenderer	{
+					/Increment 5
+					/ListData    TheList
+					/EntryRenderer	{
+						{ /ContextLookupRenderer EntryData.Number }
+						":"
+						{ /ContextLookupRenderer EntryData.StartPosn }
+						"-"
+						{ /ContextLookupRenderer EntryData.EndPosn }
+						" "
+					}
+				}
+			}
+			/Expected	"0:0-4 1:5-9 2:10-10 "
+		}
+		{
+			/Env {
+				/TheList {
+					/"A"  1
+					/"B"  2
+					/"C"  3
+					/"D"  4
+					/"E"  5
+					/"F"  6
+					/"G"  7
+					/"H"  8
+					/"I"  9
+					/"J"  10
+					/"K"  11
+				}
+			}
+			/Renderer {
+				/LinksListRenderer	{
+					/Increment 3
+					/ListData    TheList
+					/EntryRenderer	{
+						{ /ContextLookupRenderer EntryData.Number }
+						":"
+						{ /ContextLookupRenderer EntryData.StartPosn }
+						"-"
+						{ /ContextLookupRenderer EntryData.EndPosn }
+						" "
+					}
+				}
+			}
+			/Expected	"0:0-2 1:3-5 2:6-8 3:9-10 "
+		}
+		{
+			/Env {
+				/Gap 3
+				/TheList {
+					/"A"  1
+					/"B"  2
+					/"C"  3
+					/"D"  4
+					/"E"  5
+					/"F"  6
+					/"G"  7
+					/"H"  8
+					/"I"  9
+					/"J"  10
+					/"K"  11
+				}
+			}
+			/Renderer {
+				/LinksListRenderer	{
+					/Increment { /ContextLookupRenderer Gap }
+					/ListData    { The List }
+					/EntryRenderer	{
+						{ /ContextLookupRenderer EntryData.Number }
+						":"
+						{ /ContextLookupRenderer EntryData.StartPosn }
+						"-"
+						{ /ContextLookupRenderer EntryData.EndPosn }
+						" "
+					}
+				}
+			}
+			/Expected	"0:0-2 1:3-5 2:6-8 3:9-10 "
+		}
+		{
+			/Env {
+				/TheList {
+					/"A"  1
+					/"B"  2
+					/"C"  3
+					/"D"  4
+					/"E"  5
+					/"F"  6
+					/"G"  7
+					/"H"  8
+					/"I"  9
+					/"J"  10
+					/"K"  11
+				}
+			}
+			/Renderer {
+				/LinksListRenderer	{
+					/Increment 0
+					/ListData    TheList
+					/EntryRenderer	{
+						{ /ContextLookupRenderer EntryData.Number }
+						":"
+						{ /ContextLookupRenderer EntryData.StartPosn }
+						"-"
+						{ /ContextLookupRenderer EntryData.EndPosn }
+						" "
+					}
+				}
+			}
+			/Expected	"0:0-10 "
+		}
+		{
+			/Env {
+				/TheList {
+					/"A"  1
+					/"B"  2
+					/"C"  3
+					/"D"  4
+					/"E"  5
+					/"F"  6
+					/"G"  7
+					/"H"  8
+					/"I"  9
+					/"J"  10
+					/"K"  11
+				}
+			}
+			/Renderer {
+				/LinksListRenderer	{
+					/Increment -4		# sign is ignored
+					/ListData    TheList
+					/EntryRenderer	{
+						{ /ContextLookupRenderer EntryData.Number }
+						":"
+						{ /ContextLookupRenderer EntryData.StartPosn }
+						"-"
+						{ /ContextLookupRenderer EntryData.EndPosn }
+						" "
+					}
+				}
+			}
+			/Expected	"0:0-3 1:4-7 2:8-10 "
+		}
+		{
+			/Env {
+				/TheList {
+					/"A"  1
+					/"B"  2
+					/"C"  3
+					/"D"  4
+					/"E"  5
+					/"F"  6
+					/"G"  7
+					/"H"  8
+					/"I"  9
+					/"J"  10
+					/"K"  11
+				}
+			}
+			/Renderer {
+				/LinksListRenderer	{
+					/Increment 56
+					/ListData    TheList
+					/EntryRenderer	{
+						{ /ContextLookupRenderer EntryData.Number }
+						":"
+						{ /ContextLookupRenderer EntryData.StartPosn }
+						"-"
+						{ /ContextLookupRenderer EntryData.EndPosn }
+						" "
+					}
+				}
+			}
+			/Expected	"0:0-10 "
+		}
+		{ # Empty List
+			/Env {
+				/TheList {
+				}
+			}
+			/Renderer {
+				/LinksListRenderer	{
+					/Increment 56
+					/ListData    TheList
+					/EntryRenderer	{ /ContextLookupRenderer EntryData }
+				}
+			}
+			/Expected	""
+		}
+		{ # Increment missing
+			/Env {
+				/TheList {
+				}
+			}
+			/Renderer {
+				/LinksListRenderer	{
+					/ListData    TheList
+					/EntryRenderer	{ /ContextLookupRenderer EntryData }
+				}
+			}
+			/Expected	""
+		}
+
+		{
+			/Env {
+				/TheList	{ 1 2 3 4 5 6 7 8 9 10 }
+			}
+			/Renderer {
+				/ListRenderer	{
+					/ListData    TheList
+					/ListHeader    "<"
+					/ListFooter		">"
+					/EntryHeader	"["
+					/EHStartingEntry 2
+					/EHEveryXEntries 2
+					/EntryFooter	"]"
+					/EFStartingEntry 2
+					/EFEveryXEntries 4
+					/EFSuppressLast		1
+					/EntryStore		Record
+					/EntryRenderer    {
+						{ /ContextLookupRenderer   Record }
+					}
+				}
+			}
+			/Expected	"<1[2]3[45[6]7[89[10>"
+		}
+		{
+			/Env	{
+				/ListBoxList	{
+					/A { /Name AName  /Key	A }
+					/B { /Name BName  /Key	AB }
+					/C { /Name CName  /Key	C }
+					/D { /Name DName  /Key	D }
+				}
+				/True 	1
+				/False 	0
+				/SelectedOption	2
+			}
+			/Renderer {
+				/SelectBoxRenderer {
+					/Name	 "TestList"
+					/Size   2      #optional (default=1 -> pulldown menu)
+					/PlainList		ListBoxList
+					/TextRenderer	{
+						{ /ContextLookupRenderer	SelectBoxOption.Name }
+						"-"
+						{ /ContextLookupRenderer	SelectBoxOption.Key }
+					}
+					/ValueRenderer	{ /ContextLookupRenderer 	SelectBoxOptionSlotname }
+					/SelectedRenderer {
+						/StringCompareRenderer {
+							/String1	{ /ContextLookupRenderer SelectBoxOptionIndex }
+							/String2	{ /ContextLookupRenderer SelectedOption }
+							/Equal		True
+							/Unequal	False
+						}
+					}
+				}
+			}
+			/Expected	"<SELECT NAME=\"fld_TestList\" SIZE=\"2\">\n<OPTION VALUE=\"A\">AName-A\n<OPTION VALUE=\"B\">BName-AB\n<OPTION VALUE=\"C\" SELECTED>CName-C\n<OPTION VALUE=\"D\">DName-D\n</SELECT>\n"
+		}
+		{
+			/Env	{
+				/ListBoxList	{
+					/A { /Name AName  /Key	A }
+					/B { /Name BName  /Key	AB }
+					/C { /Name CName  /Key	C }
+					/D { /Name DName  /Key	D }
+				}
+				/PrependList {
+					/P1	{ /Name P1Name /Key P1 }
+					/P2	{ /Name P2Name /Key P2 }
+				}
+				/AppendList {
+					/A1	{ /Name A1Name /Key A1 }
+					/A2	{ /Name A2Name /Key A2 }
+				}
+				/True 	1
+				/False 	0
+				/SelectedOption	2
+			}
+			/Renderer {
+				/SelectBoxRenderer {
+					/Name	 "TestList"
+					/Size   2      #optional (default=1 -> pulldown menu)
+					/PlainList		ListBoxList
+					/PrependList	PrependList
+					/AppendList		AppendList
+					/TextRenderer	{
+						{ /ContextLookupRenderer	SelectBoxOption.Name }
+						"-"
+						{ /ContextLookupRenderer	SelectBoxOption.Key }
+					}
+					/ValueRenderer	{ /ContextLookupRenderer 	SelectBoxOptionSlotname }
+					/SelectedRenderer {
+						/StringCompareRenderer {
+							/String1	{ /ContextLookupRenderer SelectBoxOptionIndex }
+							/String2	{ /ContextLookupRenderer SelectedOption }
+							/Equal		True
+							/Unequal	False
+						}
+					}
+				}
+			}
+			/Expected	"<SELECT NAME=\"fld_TestList\" SIZE=\"2\">\n<OPTION VALUE=\"P1\">P1Name-P1\n<OPTION VALUE=\"P2\">P2Name-P2\n<OPTION VALUE=\"A\">AName-A\n<OPTION VALUE=\"B\">BName-AB\n<OPTION VALUE=\"C\" SELECTED>CName-C\n<OPTION VALUE=\"D\">DName-D\n<OPTION VALUE=\"A1\">A1Name-A1\n<OPTION VALUE=\"A2\">A2Name-A2\n</SELECT>\n"
+		}
+		{
+			/Env	{
+				/ListBoxList	{
+					/A { /Name AName  /Key	A }
+					/B { /Name BName  /Key	AB }
+					/C { /Name CName  /Key	C }
+					/D { /Name DName  /Key	D }
+				}
+				/True 	1
+				/False 	0
+				/SelectedOption	2
+				/Size	4
+			}
+			/Renderer {
+				/SelectBoxRenderer {
+					/Name	 "TestList"
+					/Size   { /Lookup Size }
+					/PlainList		ListBoxList
+					/TextRenderer	{
+						{ /ContextLookupRenderer	SelectBoxOption.Name }
+						"-"
+						{ /ContextLookupRenderer	SelectBoxOption.Key }
+					}
+					/ValueRenderer	{ /ContextLookupRenderer 	SelectBoxOptionSlotname }
+					/SelectedRenderer {
+						/StringCompareRenderer {
+							/String1	{ /ContextLookupRenderer SelectBoxOptionIndex }
+							/String2	{ /ContextLookupRenderer SelectedOption }
+							/Equal		True
+							/Unequal	False
+						}
+					}
+				}
+			}
+			/Expected	"<SELECT NAME=\"fld_TestList\" SIZE=\"4\">\n<OPTION VALUE=\"A\">AName-A\n<OPTION VALUE=\"B\">BName-AB\n<OPTION VALUE=\"C\" SELECTED>CName-C\n<OPTION VALUE=\"D\">DName-D\n</SELECT>\n"
+		}
+		{
+			/Env	{
+				/ListBoxList	{
+					/A { /Name AName  /Key	A }
+					/B { /Name BName  /Key	AB }
+					/C { /Name CName  /Key	C }
+					/D { /Name DName  /Key	D }
+				}
+				/True 	1
+				/False 	0
+				/SelectedOption	2
+				/Size	4
+				/Multiple	1
+			}
+			/Renderer {
+				/SelectBoxRenderer {
+					/Name	 "TestList"
+					/Size   { /Lookup Size }
+					/Multiple	{ /Lookup Multiple }
+					/PlainList		ListBoxList
+					/TextRenderer	{
+						{ /ContextLookupRenderer	SelectBoxOption.Name }
+						"-"
+						{ /ContextLookupRenderer	SelectBoxOption.Key }
+					}
+					/ValueRenderer	{ /ContextLookupRenderer 	SelectBoxOptionSlotname }
+					/SelectedRenderer {
+						/StringCompareRenderer {
+							/String1	{ /ContextLookupRenderer SelectBoxOptionIndex }
+							/String2	{ /ContextLookupRenderer SelectedOption }
+							/Equal		True
+							/Unequal	False
+						}
+					}
+				}
+			}
+			/Expected	"<SELECT NAME=\"fld_TestList\" SIZE=\"4\" MULTIPLE>\n<OPTION VALUE=\"A\">AName-A\n<OPTION VALUE=\"B\">BName-AB\n<OPTION VALUE=\"C\" SELECTED>CName-C\n<OPTION VALUE=\"D\">DName-D\n</SELECT>\n"
+		}
+		{
+			/Env	{
+				/ListBoxList	{
+					/A { /Name AName  /Key	A }
+					/B { /Name BName  /Key	AB }
+					/C { /Name CName  /Key	C }
+					/D { /Name DName  /Key	D }
+				}
+				/True 	1
+				/False 	0
+				/SelectedOption	2
+				/Size	4
+				/Multiple	0
+			}
+			/Renderer {
+				/SelectBoxRenderer {
+					/Name	 "TestList"
+					/Size   { /Lookup Size }
+					/Multiple	{ /Lookup Multiple }
+					/PlainList		ListBoxList
+					/TextRenderer	{
+						{ /ContextLookupRenderer	SelectBoxOption.Name }
+						"-"
+						{ /ContextLookupRenderer	SelectBoxOption.Key }
+					}
+					/ValueRenderer	{ /ContextLookupRenderer 	SelectBoxOptionSlotname }
+					/SelectedRenderer {
+						/StringCompareRenderer {
+							/String1	{ /ContextLookupRenderer SelectBoxOptionIndex }
+							/String2	{ /ContextLookupRenderer SelectedOption }
+							/Equal		True
+							/Unequal	False
+						}
+					}
+				}
+			}
+			/Expected	"<SELECT NAME=\"fld_TestList\" SIZE=\"4\">\n<OPTION VALUE=\"A\">AName-A\n<OPTION VALUE=\"B\">BName-AB\n<OPTION VALUE=\"C\" SELECTED>CName-C\n<OPTION VALUE=\"D\">DName-D\n</SELECT>\n"
+		}
+		{
+			/Env	{
+				/ListBoxList	{
+					/A { /Name AName  /Key	A }
+					/B { /Name BName  /Key	AB }
+					/C { /Name CName  /Key	C }
+					/D { /Name DName  /Key	D }
+				}
+				/True 	1
+				/False 	0
+				/SelectedOption	2
+				/Size	4
+			}
+			/Renderer {
+				/SelectBoxRenderer {
+					/Name	 "TestList"
+					/Size   { /Lookup Size }
+					/Multiple	{ /Lookup Multiple }
+					/PlainList		ListBoxList
+					/TextRenderer	{
+						{ /ContextLookupRenderer	SelectBoxOption.Name }
+						"-"
+						{ /ContextLookupRenderer	SelectBoxOption.Key }
+					}
+					/ValueRenderer	{ /ContextLookupRenderer 	SelectBoxOptionSlotname }
+					/SelectedRenderer {
+						/StringCompareRenderer {
+							/String1	{ /ContextLookupRenderer SelectBoxOptionIndex }
+							/String2	{ /ContextLookupRenderer SelectedOption }
+							/Equal		True
+							/Unequal	False
+						}
+					}
+				}
+			}
+			/Expected	"<SELECT NAME=\"fld_TestList\" SIZE=\"4\">\n<OPTION VALUE=\"A\">AName-A\n<OPTION VALUE=\"B\">BName-AB\n<OPTION VALUE=\"C\" SELECTED>CName-C\n<OPTION VALUE=\"D\">DName-D\n</SELECT>\n"
+		}
+		{
+			/Renderer	{
+				/ContextLookupRenderer	ItopiaDomain
+			}
+			/Expected	"hsr.loc"
+		}
+		{
+			/Env {
+			}
+			/Renderer	{
+				/TextFieldRenderer {
+					/Name		Gugus
+					/Value		gaga
+					/Size		5
+					/Maxlength	6
+					/Options {
+						/class	Hallo
+					}
+				}
+			}
+			/Expected	"<INPUT TYPE=\"TEXT\" NAME=\"fld_Gugus\" VALUE=\"gaga\" SIZE=\"5\" MAXLENGTH=\"6\" class=\"Hallo\">"
+		}
+		{
+			/Env {
+				/Name	Gugus
+			}
+			/Renderer	{
+				/TextFieldRenderer {
+					/Name		{ /Lookup Name }
+					/Value		*
+					/Size		5
+					/Maxlength	6
+					/Options {
+						/class	Hallo
+					}
+				}
+			}
+			/Expected	"<INPUT TYPE=\"TEXT\" NAME=\"fld_Gugus\" SIZE=\"5\" MAXLENGTH=\"6\" class=\"Hallo\">"
+		}
+		{
+			/Env {
+				/RadioOn	"Hallo"
+			}
+			/Renderer {
+				/Radio3 {
+					/RadioButtonRenderer	{
+						/Name   "x1"
+						/Value	"pos2"
+						/EvaluateChecked 	{
+							/ConditionalRenderer {
+								/ContextCondition  RadioOn 		# initially set button
+								/Defined	1					# because RadioOn is defined in
+								/Undefined	0					# the Context
+							}
+						}
+					}
+				}
+			}
+			/Expected	"<INPUT TYPE=\"RADIO\" NAME=\"fld_x1\" VALUE=\"pos2\" CHECKED>"
+		}
+		{
+			/Env {
+				/RadioOff	"Hallo"
+			}
+			/Renderer {
+				/Radio3 {
+					/RadioButtonRenderer	{
+						/Name   "x1"
+						/Value	"pos2"
+						/EvaluateChecked 	{
+							/ConditionalRenderer {
+								/ContextCondition  RadioOn 		# initially button not set
+								/Defined	1					# because RadioOn is not defined in
+								/Undefined	0					# the Context
+							}
+						}
+					}
+				}
+			}
+			/Expected	"<INPUT TYPE=\"RADIO\" NAME=\"fld_x1\" VALUE=\"pos2\">"
+		}
+		{	# NavBarRenderer
+			/Env {
+				/FirstEntry_L	"1. Menupunkt"
+				/SecondEntry_L	"2. Menupunkt"
+				/Nav1	Second
+				/Nav2	SecondsSecondChild
+				/NavBarInfo  {
+					/ActualStore	Nav1
+					/Entries {
+						{
+							/Name		First		# Name is compared against ActaulStore content (here Nav1)
+							/Text		{ /ContextLookupRenderer    FirstEntry_L }
+							/Childs		{
+								/ActualStore	Nav2
+								/Entries {
+									{
+										/Name		FirstsFirstChild	# Name is compared against ActaulStore content (here Nav2)
+										/Text		"1.1. Menupunkt"
+									}
+									{
+										/Name		FirstsSecondChild
+										/Text		"1.2. Menupunkt"
+									}
+								}
+							}
+						}
+						{
+							/Name		Second			# Name is compared against ActaulStore content (here Nav1)
+							/Text		{ /ContextLookupRenderer   SecondEntry_L  }
+							/Renderer	{
+								/Selected	{
+									"<OwnS>"
+									{ /ContextLookupRenderer	NavEntry.Name }
+									"</OwnS>"
+								}
+							}
+							/Childs		{
+								/ActualStore	Nav2
+								/Entries {
+									{
+										/Name		SecondsFirstChild	# Name is compared against ActaulStore content (here Nav2)
+										/Text		"2.1. Menupunkt"
+										/Renderer	{
+											/Unselected	{
+												"<OwnUS>"
+												{ /ContextLookupRenderer	NavEntry.Name }
+												"</OwnUS>"
+											}
+										}
+									}
+									{
+										/Name		SecondsSecondChild
+										/Text		"2.2. Menupunkt"
+									}
+									{
+										/Name		SecondsThirdChild
+										/Text		"2.3. Menupunkt"
+										/Disabled	1
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			/Renderer {
+				/NavBarRenderer {
+					/Info		NavBarInfo
+					/LevelHeader		"<LEVELStart>"
+					/LevelFooter		"<LEVELEnd>"
+					/EntryStore			NavEntry
+					/Selected			{
+						"<S>"
+						{ /ContextLookupRenderer	NavEntry.Text }
+						"</S>"
+					}
+					/Unselected			{
+						"<US>"
+						{ /ContextLookupRenderer	NavEntry.Text }
+						"</US>"
+					}
+					/Disabled			{
+						"<D>"
+						{ /ContextLookupRenderer	NavEntry.Text }
+						"</D>"
+					}
+				}
+			}
+			/Expected	"<LEVELStart><US>1. Menupunkt</US><OwnS>Second</OwnS><LEVELEnd><LEVELStart><OwnUS>SecondsFirstChild</OwnUS><S>2.2. Menupunkt</S><D>2.3. Menupunkt</D><LEVELEnd>"
+		}
+		{
+			/Env {
+				/UseBaseURL		1
+				/BaseAddress 	"http://sentosa.hsr.loc:1919/"
+			}
+			/Renderer {
+				/BaseURLPrinter *
+			}
+			/Expected	"http://sentosa.hsr.loc:1919/wdgateway/X1=Encoder-Scrambler-Signer-Compressor-{/role \"TestRole\"/sessionId \"TestSession\"/page \"TestPage\"}/"
+		}
+		{
+			/Env {
+				/UseBaseURL		1
+				/BaseAddress {
+					/ConditionalRenderer {
+						/ContextCondition { IsSecure }
+						/True 	{ /Lookup SecureBaseAddress		}
+						/False 	{ /Lookup UnsecureBaseAddress	}
+					}
+				}
+				/HostName				"sentosa.hsr.loc"
+				/Port					1919
+				/SecurePort				2020
+				/Protocol				http
+				/SecureProtocol			https
+
+				/IsSecure				0
+				/UnsecureBaseAddress 	{ {/Lookup Protocol} "://" {/Lookup HostName} ":" {/Lookup Port} "/" }
+				/SecureBaseAddress		{ {/Lookup SecureProtocol} "://" {/Lookup HostName} ":" {/Lookup SecurePort} "/" }	 # defines literal for the standard BaseAddress
+
+			}
+			/Renderer {
+				/BaseURLPrinter *
+			}
+			/Expected	"http://sentosa.hsr.loc:1919/wdgateway/X1=Encoder-Scrambler-Signer-Compressor-{/role \"TestRole\"/sessionId \"TestSession\"/page \"TestPage\"}/"
+		}
+		{
+			/Renderer {
+				/URL {
+					/Action	GoTest
+					/Params {
+						/Name	Test
+						/Key	XYZ
+					}
+				}
+				/Expected	"http://sentosa.hsr.loc:1919/wdgateway/X1=Encoder-Scrambler0:Signer:Compressor:{/role \"TestRole\"/sessionId \"TestSession\"/page \"TestPage\"}/"
+			}
+			/Expected	"wdgateway?X=Encoder-Scrambler-Signer-Compressor-{/role \"TestRole\"/sessionId \"TestSession\"/page \"TestPage\"/action \"GoTest\"/Name \"Test\"/Key \"XYZ\"}"
+		}
+		{
+			/Env {
+				/UseBaseURL		1
+			}
+			/Renderer {
+				/URL {
+					/Action	GoTest
+					/Params {
+						/Name	Test
+						/Key	XYZ
+					}
+				}
+			}
+			/Expected	"X2=Encoder-Scrambler-Signer-Compressor-{/action \"GoTest\"/Name \"Test\"/Key \"XYZ\"}"
+		}
+		{
+			/Env {
+				/UseBaseURL		1
+				/SecureBaseURL	"https://test.hsr.loc/"
+				/ServicePrefix	"testApp"
+			}
+			/Renderer {
+				/URL {
+					/BaseAddr	{ /Lookup	SecureBaseURL }
+					/Action	GoTest
+					/Params {
+						/Name	Test
+						/Key	XYZ
+					}
+				}
+			}
+			/Expected	"https://test.hsr.loc/testApp?X=Encoder-Scrambler-Signer-Compressor-{/role \"TestRole\"/sessionId \"TestSession\"/page \"TestPage\"/action \"GoTest\"/Name \"Test\"/Key \"XYZ\"}"
+		}
+		{
+			/Env {
+				/UseBaseURL		1
+				/SecureBaseURL	"https://test.hsr.loc/"
+				/ServicePrefix	"testApp"
+			}
+			/Renderer {
+				/LinkRenderer {
+					/Label	"Test"
+					/BaseAddr	{ /Lookup	SecureBaseURL }
+					/Action	GoTest
+					/Params {
+						/Name	Test
+						/Key	XYZ
+					}
+				}
+			}
+			/Expected	"<A HREF=\"https://test.hsr.loc/testApp?X=Encoder-Scrambler-Signer-Compressor-{/role \"TestRole\"/sessionId \"TestSession\"/page \"TestPage\"/action \"GoTest\"/Name \"Test\"/Key \"XYZ\"}\" >Test</A>"
+		}
+		{
+			/Env {
+				/UseBaseURL		1
+				/SecureBaseURL	"https://test.hsr.loc/"
+				/ServicePrefix	"testApp"
+			}
+			/Renderer {
+				/FormRenderer {
+					/Label	"Test"
+					/BaseAddr	{ /Lookup	SecureBaseURL }
+					/Action	GoTest
+					/Params {
+						/Name	Test
+						/Key	XYZ
+					}
+					/Layout	"NoInput"
+				}
+			}
+			/Expected	"<FORM ACTION=\"https://test.hsr.loc/testApp?X=Encoder-Scrambler-Signer-Compressor-{/role \"TestRole\"/sessionId \"TestSession\"/page \"TestPage\"/action \"GoTest\"/Name \"Test\"/Key \"XYZ\"}\" METHOD=\"POST\">NoInput</FORM>"
+		}
+		{
+			/Env {
+				/TestMe		Hallo
+			}
+			/Renderer {
+				/HTML {
+					/Template	{
+						"Test [[#wd Lookup	{ TestMe } ]] "
+					}
+				}
+			}
+			/Expected "Test Hallo "
+		}
+		{ # [[#wd ]] Macro Style uncached (E see below )
+			/Env {
+				/TestMe		Hallo
+			}
+			/Renderer {
+				/HTML {
+					/TemplateName	TemplateTest
+				}
+			}
+			/Expected "Test Hallo "
+		}
+		{	# [[#wd ]] Macro Style cached (D see below )
+			/Env {
+				/TestMe		Hallo
+				/Language	"D"
+			}
+			/Renderer {
+				/HTML {
+					/TemplateName	TemplateTest
+				}
+			}
+			/Expected "Test Hallo "
+		}
+
+		#--- ATTENTION!!! changed HTMLTemplateRenderer comment syntax ATTENTION!!! ----
+		{
+			/Env {
+				/TestMe		Hallo
+			}
+			/Renderer {
+				/HTML {
+					/Template	{
+						"TestTemplate <!--#Lookup {TestMe} ---><!--#Lookup {TestMe} -->"
+					}
+				}
+			}
+			/Expected "TestTemplate <!--#Lookup {TestMe} ---><!--#Lookup {TestMe} -->"
+		}
+		{
+			/Env {
+				/TestMe		Hallo
+				/"Test--Me" Ende
+			}
+			/Renderer {
+				/HTML {
+					/Template	{
+						"TestTemplate <!--#wd Lookup {TestMe} ---> <!--#BeginLibraryItem -- notOurBeer ----> <!--#wd Lookup { { \"Test--Me\" } } -->"
+					}
+				}
+			}
+			/Expected "TestTemplate Hallo <!--#BeginLibraryItem -- notOurBeer ----> Ende"
+		}
+		{
+			/Env {
+				/TestMe		Hallo
+				/"Test--Me" Ende
+			}
+			/Renderer {
+				/HTML {
+					/Template	{
+						"TestTemplate <!--#wd Lookup {TestMe} ---> <!--#BeginLibraryItem -- notOurBeer ----> <!--#wd Lookup { { \"Test\" --  Me } } -->"
+					}
+				}
+			}
+			/Expected "TestTemplate Hallo <!--#BeginLibraryItem -- notOurBeer ----> Ende"
+		}
+		{ # This tests does use a cached page -- because the Language is set to "D" and D is defined in LanguageDirMap in Config.any
+			/Env {
+				/TestMe		Hallo
+				/Language 	"D"
+			}
+			/Renderer {
+				/HTML {
+					/TemplateName TemplateCommentTest
+				}
+			}
+			/Expected "TestTemplateFile Hallo <!--#BeginLibraryItem notOurBeer -->"
+		}
+		{ # This tests doesn't use a cached page -- because the Language is set to "E" (Default in TestCase) and E is not defined in LanguageDirMap in Config.any'
+			/Env {
+				/TestMe		Hallo
+			}
+			/Renderer {
+				/HTML {
+					/TemplateName TemplateCommentTest
+				}
+			}
+			/Expected "TestTemplateFile Hallo <!--#BeginLibraryItem notOurBeer -->"
+		}
+#--- Test Template with Localized Lookup
+		/TemplateLocalizedTestDefault { # [[#wd ]] Macro Style uncached (E see below )
+			/Env {
+				/TestMe		Hallo
+			}
+			/Renderer {
+				/HTML {
+					/TemplateName	TemplateLocalizedTest
+				}
+			}
+			/Expected "Test Localized Test in deutsch done<!-- not cached -->\n"
+		}
+		/TemplateLocalizedTestGerman {	# [[#wd ]] Macro Style cached (D see below )
+			/Env {
+				/TestMe		Hallo
+				/Language	"E"
+			}
+			/Renderer {
+				/HTML {
+					/TemplateName	TemplateLocalizedTest
+				}
+			}
+			/Expected "Test Localized Testing done<!-- not cached -->\n"
+		}
+
+#--- Form Renderer Tests
+		{ # Form Renderer Method GET
+			/Renderer {
+				/Form {
+					/Action { Te st }
+					/Method { G E T }
+					/EncType  "multipart/form-data"
+					/Target   "_blank"
+					/Options  {
+						/Name  { Test Form }
+					}
+					/Params {
+						/TestId	{ Te st }
+					}
+					/Layout { TEST }
+				}
+			}
+			/Expected "<FORM ACTION=\"wdgateway?X=Encoder-Scrambler-Signer-Compressor-{/role \"TestRole\"/sessionId \"TestSession\"/page \"TestPage\"/action \"Test\"/TestId \"Test\"}\" METHOD=\"GET\" ENCTYPE=\"multipart/form-data\" TARGET=\"_blank\" Name=\"TestForm\"><INPUT TYPE=HIDDEN NAME=\"X\" VALUE=\"Encoder-Scrambler-Signer-Compressor-{/role \"TestRole\"/sessionId \"TestSession\"/page \"TestPage\"/action \"Test\"/TestId \"Test\"}\">TEST</FORM>"
+		}
+		{ # Form Renderer Method POST
+			/Renderer {
+				/Form {
+					/Action { Te st }
+					/Method { PO ST }
+					/EncType  "multipart/form-data"
+					/Target   "_blank"
+					/Options  {
+						/Name  { Test Form }
+					}
+					/Params {
+						/TestId	{ Te st }
+					}
+					/Layout { TEST }
+				}
+			}
+			/Expected "<FORM ACTION=\"wdgateway?X=Encoder-Scrambler-Signer-Compressor-{/role \"TestRole\"/sessionId \"TestSession\"/page \"TestPage\"/action \"Test\"/TestId \"Test\"}\" METHOD=\"POST\" ENCTYPE=\"multipart/form-data\" TARGET=\"_blank\" Name=\"TestForm\">TEST</FORM>"
+		}
+		{ # Form Renderer Method GET mit Base URL
+			/Env {
+				/UseBaseURL		1
+			}
+			/Renderer {
+				/Form {
+					/Action { Te st }
+					/Method { G E T }
+					/EncType  "multipart/form-data"
+					/Target   "_blank"
+					/Options  {
+						/Name  { Test Form }
+					}
+					/Params {
+						/TestId	{ Te st }
+					}
+					/Layout { TEST }
+				}
+			}
+			/Expected "<FORM ACTION=\"X2=Encoder-Scrambler-Signer-Compressor-{/action \"Test\"/TestId \"Test\"}\" METHOD=\"GET\" ENCTYPE=\"multipart/form-data\" TARGET=\"_blank\" Name=\"TestForm\">TEST</FORM>"
+		}
+		{ # Form Renderer Method POST mit Base URL
+			/Env {
+				/UseBaseURL		1
+			}
+			/Renderer {
+				/Form {
+					/Action { Te st }
+					/Method { PO ST }
+					/EncType  "multipart/form-data"
+					/Target   "_blank"
+					/Options  {
+						/Name  { Test Form }
+					}
+					/Params {
+						/TestId	{ Te st }
+					}
+					/Layout { TEST }
+				}
+			}
+			/Expected "<FORM ACTION=\"X2=Encoder-Scrambler-Signer-Compressor-{/action \"Test\"/TestId \"Test\"}\" METHOD=\"POST\" ENCTYPE=\"multipart/form-data\" TARGET=\"_blank\" Name=\"TestForm\">TEST</FORM>"
+		}
+		{ # Form Renderer minimal config test
+			/Renderer {
+				/Form {
+					/Layout { TEST }
+				}
+			}
+			/Expected "<FORM ACTION=\"wdgateway?X=Encoder-Scrambler-Signer-Compressor-{/role \"TestRole\"/sessionId \"TestSession\"/page \"TestPage\"}\" METHOD=\"POST\">TEST</FORM>"
+		}
+		{ # Form Renderer minimal config test with Base URL
+			/Env {
+				/UseBaseURL		1
+			}
+			/Renderer {
+				/Form {
+					/Layout { TEST }
+				}
+			}
+			/Expected "<FORM ACTION=\"X2=Encoder-Scrambler-Signer-Compressor-*\" METHOD=\"POST\">TEST</FORM>"
+		}
+		/IncrementRendererTest1 { # Increment Renderer test - simple
+			/Env {
+				/ANumber		99
+			}
+			/Renderer {
+				/Inc {
+					/IncValue { /Lookup ANumber }
+				}
+			}
+			/Expected "100"
+		}
+		/IncrementRendererTest2 { # Increment Renderer test - from minus to zero
+			/Env {
+				/ANumber		"-1"
+			}
+			/Renderer {
+				/Inc { /Lookup ANumber }
+			}
+			/Expected "0"
+		}
+		/IncrementRendererTest3 { # Increment Renderer test - from zero to 0
+			/Renderer {
+				/Inc 0
+			}
+			/Expected "1"
+		}
+		/IncrementRendererTest4 { # Increment Renderer test  - Non numeric values are converted to 0 and incremented to 1
+			/Renderer {
+				/Inc NotANumber
+			}
+			/Expected "1"
+		}
+		/TailRendererTest { #
+			/Renderer {
+				/Tail {
+					/String {
+						 "Another-Render-Me " "This"
+					}
+					/Delim	"-"
+				}
+			}
+			/Expected "Me This"
+		}
+		/TailRendererDefaultTest { #
+			/Renderer {
+				/Tail {
+					/String {
+						 "Another-Render=Me " "This"
+					}
+				}
+			}
+			/Expected "Me This"
+		}
+		/TailRendererNoMatch {
+			/Renderer {
+				/Tail {
+					/String {
+						 "Another-Render=Me " "This"
+					}
+					/Delim "#"
+				}
+			}
+			/Expected "Another-Render=Me This"
+		}
+		/SetLanguageRendererTest {
+			/Env {
+				/Language D
+				/TheString_L {
+					/String {
+						/Default "Default,"
+						/D	"D,"
+						/E	"E,"
+						/F  "F,"
+					}
+				}
+				/AnotherLanguage E
+			}
+			/Renderer {
+				{ /Lookup TheString_L }
+				{ /SwitchLanguage {
+					/TempLang F
+					/Content {
+						{ /Lookup TheString_L }
+					}
+				} }
+				{ /SwitchLanguage {
+					/TempLang I
+					/Content {
+						{ /Lookup TheString_L }
+					}
+				} }
+				{ /SwitchLanguage {
+					/TempLang { /Lookup AnotherLanguage }
+					/Content {
+						{ /Lookup TheString_L }
+					}
+				} }
+				{ /SwitchLanguage {
+					/TempLang "Unknown"
+					/Content {
+						{ /Lookup TheString_L }
+					}
+				} }
+				{ /Lookup TheString_L }
+			}
+			/Expected "D,F,Default,E,Default,D,"
+		}
+		/SubStringRendererNormalTest
+		{
+			/Env
+			{
+			}
+			/Renderer
+			{
+				/SubStringRenderer
+				{
+					/String "foobar"
+					/Start	3
+					/Length 3
+				}
+			}
+			/Expected	bar
+		}
+		/SubStringRendererFullTest
+		{
+			/Env
+			{
+			}
+			/Renderer
+			{
+				/SubStringRenderer
+				{
+					/String "foobar"
+				}
+			}
+			/Expected	foobar
+		}
+		/SubStringRendererLookupTest
+		{
+			/Env
+			{
+				/str	foobar
+			}
+			/Renderer
+			{
+				/SubStringRenderer
+				{
+					/String { /Lookup str }
+					/Start	3
+				}
+			}
+			/Expected	bar
+		}
+		/SubStringRendererEmpyTest
+		{
+			/Env
+			{
+			}
+			/Renderer
+			{
+				/SubStringRenderer
+				{
+				}
+			}
+			/Expected	""
+		}
+		/SubStringRendererStartTooBigTest
+		{
+			/Env
+			{
+			}
+			/Renderer
+			{
+				/SubStringRenderer
+				{
+					/String "foobar"
+					/Start	10
+					/Length 3
+				}
+			}
+			/Expected	""
+		}
+		/SubStringRendererLengthTooBigTest
+		{
+			/Env
+			{
+			}
+			/Renderer
+			{
+				/SubStringRenderer
+				{
+					/String "foobar"
+					/Start	3
+					/Length 10
+				}
+			}
+			/Expected	"bar"
+		}
+
+		/FileLoadRendererTest
+		{
+				/Env
+				{
+				}
+				/Renderer
+				{
+						/FileLoadRenderer
+						{
+								/File2Load "foobar"
+						}
+				}
+				/Expected       "FileLoadRenderer: File foobar not found."
+		}
+		{
+				/Env
+				{
+				}
+				/Renderer
+				{
+						/FileLoadRenderer
+						{
+						}
+				}
+				/Expected       "FileLoadRenderer: File2Load Param missing."
+		}
+		{
+				/Env
+				{
+				}
+				/Renderer
+				{
+						/FileLoadRenderer
+						{
+								/File2Load "FileLoadRenderer.html"
+						}
+				}
+				/Expected       "foobar,foobar\n"
+		}
+		{
+				/Env
+				{
+					/FileName	"FileLoadRenderer.html"
+				}
+				/Renderer
+				{
+						/FileLoadRenderer
+						{
+								/File2Load { /Lookup FileName }
+						}
+				}
+				/Expected       "foobar,foobar\n"
+		}
+		#TestContextFlagRenderer
+		{
+				/Env
+				{
+					/AccessRights
+					{
+						/vdb	1
+					}
+					/flag	"AccessRights.vdb"
+					/alpha	"ALPHA"
+					/beta	"BETA"
+				}
+				/Renderer
+				{
+						/TestContextFlagRenderer
+							{
+								/FlagName 	{ /Lookup flag  }
+								/WhenSet	{ /Lookup alpha }
+								/WhenNotSet	{ /Lookup beta	}
+						}
+				}
+				/Expected       "ALPHA"
+		}
+		{
+				/Env
+				{
+					/AccessRights
+					{
+						/vdb	0
+					}
+					/flag	"AccessRights.vdb"
+					/alpha	"ALPHA"
+					/beta	"BETA"
+				}
+				/Renderer
+				{
+						/TestContextFlagRenderer
+							{
+								/FlagName 	{ /Lookup flag  }
+								/WhenSet	{ /Lookup alpha }
+								/WhenNotSet	{ /Lookup beta	}
+						}
+				}
+				/Expected       "BETA"
+		}
+		{
+				/Env
+				{
+					/AccessRights
+					{
+						/finxs	1
+					}
+					/flag	"AccessRights.vdb"
+					/alpha	"ALPHA"
+					/beta	"BETA"
+				}
+				/Renderer
+				{
+						/TestContextFlagRenderer
+							{
+								/FlagName 	{ /Lookup flag  }
+								/WhenSet	{ /Lookup alpha }
+								/WhenNotSet	{ /Lookup beta	}
+						}
+				}
+				/Expected       "BETA"
+		}
+		/HTMLEscapeRendererTest
+		{
+			/Env
+			{
+				/foo "<bar>bld<bar/>"
+			}
+			/Renderer
+			{
+				/HTMLEscapeRenderer	{ /Lookup foo }
+			}
+			/Expected       "&#60;bar&#62;bl&#246;d&#60;bar&#47;&#62;"
+		}
+		/GetThisHostNameRendererFullTest
+		{
+			/Renderer
+			{
+				/GetThisHostNameRenderer
+				{
+					/Representation "Full"
+				}
+			}
+			/Expected       "zaphod.zueri.hsr.ch"
+		}
+		/GetThisHostNameRendererHostTest
+		{
+			/Renderer
+			{
+				/GetThisHostNameRenderer
+				{
+					/Representation "HostOnly"
+				}
+			}
+			/Expected       "zaphod"
+		}
+		/GetThisHostNameRendererDNSTest
+		{
+			/Renderer
+			{
+				/GetThisHostNameRenderer
+				{
+					/Representation "DomainOnly"
+				}
+			}
+			/Expected       "zueri.hsr.ch"
+		}
+		/AnythingContentRendererTest
+		{
+			/Env
+			{
+				/aAnyThing
+				{
+					/foo	bar
+				}
+			}
+			/Renderer
+			{
+				/AnythingContentRenderer
+				{
+					/Input "aAnyThing"
+					/Pretty 0
+				}
+			}
+			/Expected       "{/foo \"bar\"}"
+		}
+		/AnythingContentRendererWithXMPTest
+		{
+			/Env
+			{
+				/aAnyThing
+				{
+					/foo	bar
+				}
+			}
+			/Renderer
+			{
+				/AnythingContentRenderer
+				{
+					/Input		"aAnyThing"
+					/Pretty		0
+					/XmpTags	{
+									/PreTag "<kim>"
+									/PostTag "<dojo>"
+								}
+				}
+			}
+			/Expected       "<br><pre><kim>{/foo \"bar\"}<dojo></pre><br>"
+		}
+		/AnythingContentRendererWithXMPNoTagsTest
+		{
+			/Env
+			{
+				/aAnyThing
+				{
+					/foo	bar
+				}
+			}
+			/Renderer
+			{
+				/AnythingContentRenderer
+				{
+					/Input		"aAnyThing"
+					/Pretty		0
+					/XmpTags	""
+				}
+			}
+			/Expected       "<br><pre>{/foo \"bar\"}</pre><br>"
+		}
+		/StringCompareRendererEqualTest
+		{
+			/Env
+			{
+					/StringOne	bar
+					/StringTwo  bar
+			}
+			/Renderer
+			{
+				/StringCompareRenderer
+				{
+					/String1	{ /Lookup StringOne }
+					/String2	{ /Lookup StringTwo }
+					/Equal		"Equal"
+					/Unequal	"Unequal"
+				}
+			}
+			/Expected       "Equal"
+		}
+		/StringCompareRendererEqualCaseInsensitiveTest
+		{
+			/Env
+			{
+					/StringOne	BAR
+					/StringTwo  bar
+			}
+			/Renderer
+			{
+				/StringCompareRenderer
+				{
+					/String1	{ /Lookup StringOne }
+					/String2	{ /Lookup StringTwo }
+					/IgnoreCase	1
+					/Equal		"Equal"
+					/Unequal	"Unequal"
+				}
+			}
+			/Expected       "Equal"
+		}
+		/StringCompareRendererUnequalCaseSensitiveTest
+		{
+			/Env
+			{
+					/StringOne	BAR
+					/StringTwo  bar
+			}
+			/Renderer
+			{
+				/StringCompareRenderer
+				{
+					/String1	{ /Lookup StringOne }
+					/String2	{ /Lookup StringTwo }
+					/IgnoreCase	0
+					/Equal		"Equal"
+					/Unequal	"Unequal"
+				}
+			}
+			/Expected       "Unequal"
+		}
+		/XMLEscapeRendererNo
+		{
+			/Env
+			{
+				/foo	bar
+			}
+			/Renderer
+			{
+				/XMLEscapeRenderer	"nothing"
+			}
+			/Expected       "nothing"
+		}
+		/XMLEscapeRendererLookupNo
+		{
+			/Env
+			{
+				/foo	bar
+			}
+			/Renderer
+			{
+				/XMLEscapeRenderer	{ /Lookup foo }
+			}
+			/Expected       "bar"
+		}
+		/XMLEscapeRendererFull
+		{
+			/Env
+			{
+				/foo	"<a href=\"b\" label='c' > Fink & Co"
+			}
+			/Renderer
+			{
+				/XMLEscapeRenderer	{ /Lookup foo }
+			}
+			/Expected       "&lt;a href=&quot;b&quot; label=&apos;c&apos; &gt; Fink &amp; Co"
+		}
+		/XMLUnescapeRendererNo
+		{
+			/Env
+			{
+				/foo	bar
+			}
+			/Renderer
+			{
+				/XMLUnescapeRenderer	"nothing"
+			}
+			/Expected       "nothing"
+		}
+		/XMLUnescapeRendererLookupNo
+		{
+			/Env
+			{
+				/foo	bar
+			}
+			/Renderer
+			{
+				/XMLUnescapeRenderer	{ /Lookup foo }
+			}
+			/Expected       "bar"
+		}
+		/XMLUnescapeRendererEasy
+		{
+			/Env
+			{
+				/foo	"&lt;"
+			}
+			/Renderer
+			{
+				/XMLUnescapeRenderer	"&lt;"
+			}
+			/Expected       "<"
+		}
+		/XMLUnescapeRendererFull
+		{
+			/Env
+			{
+				/foo	"&lt;a href=&quot;b&quot; label=&apos;c&apos; &gt; Fink &amp; Co"
+			}
+			/Renderer
+			{
+				/XMLUnescapeRenderer	{ /Lookup foo }
+			}
+			/Expected       "<a href=\"b\" label='c' > Fink & Co"
+		}
+		/CallRendererTest1
+		{
+			/Env
+			{
+				/foo	"Peter"
+				/bar	"foo"
+				/goo	"bar"
+				/therenderer { /Lookup foo }
+			}
+			/Renderer
+			{
+				/CallRenderer
+				{
+					/Renderer	therenderer
+					/Parameters
+					{
+						/foo	{  /Lookup "bar" "hui" }
+					}
+				}
+			}
+			/Expected       "foohui"
+		}
+		/CallRendererTest2
+		{
+			/Env
+			{
+				/foo	"Peter"
+				/bar	"foo"
+				/goo	"bar"
+			}
+			/Renderer
+			{
+				/CallRenderer
+				{
+					/Renderer
+					{
+						/Lookup foo
+					}
+					/Parameters
+					{
+						/foo	{  /Lookup "bar" "hui" }
+					}
+				}
+			}
+			/Expected       "foohui"
+		}
+		/CallRendererTestLaziness
+		{
+			/Env
+			{
+				/foo	"Peter"
+				/bar	"foo"
+				/goo	"bar"
+			}
+			/Renderer
+			{
+				/CallRenderer
+				{
+					/Renderer
+					{
+						/Lookup "foo.Lookup"
+					}
+					/Parameters
+					{
+						/foo	{  /Lookup "bar" "hui" }
+					}
+				}
+			}
+			/Expected       "bar"
+		}
+		/CallRendererTestNesting
+		{
+			/Env
+			{
+				/foo	"Peter"
+				/bar	"foo"
+				/goo	"bar"
+			}
+			/Renderer
+			{
+				/CallRenderer
+				{
+					/Renderer
+					{
+						/CallRenderer
+						{
+							/Renderer
+							{
+								{ /Lookup foo1 }
+								{ /Lookup foo2 }
+							}
+							/Parameters
+							{
+								/foo2	{  /Lookup "bar" "hui2" }
+							}
+						}
+					}
+					/Parameters
+					{
+						/foo1	{  /Lookup "bar" "hui1" }
+					}
+				}
+			}
+			/Expected       "foohui2"
+		}
+		/PositionalCallRendererTest1
+		{
+			/Env
+			{
+				/foo	"Peter"
+				/bar	"foo"
+				/goo	"bar"
+				/therenderer { /Lookup "$1" }
+			}
+			/Renderer
+			{
+				/CallRenderer
+				{
+					therenderer
+					{  /Lookup "bar" "hui" }
+				}
+			}
+			/Expected       "foohui"
+		}
+		/PositionalCallRendererTest2
+		{
+			/Env
+			{
+				/foo	"Peter"
+				/bar	"foo"
+				/goo	"bar"
+			}
+			/Renderer
+			{
+				/CallRenderer
+				{
+					{	/Lookup "$1"	}
+					{	/Lookup "bar" "hui" }
+				}
+			}
+			/Expected       "foohui"
+		}
+		/EagerCallRendererTest1
+		{
+			/Env
+			{
+				/foo	"Peter"
+				/bar	"foo"
+				/goo	"bar"
+				/therenderer { /Lookup foo }
+			}
+			/Renderer
+			{
+				/EagerCallRenderer
+				{
+					/Renderer	therenderer
+					/Parameters
+					{
+						/foo	{  /Lookup "bar" "hui" }
+					}
+				}
+			}
+			/Expected       "foohui"
+		}
+		/EagerCallRendererTestEagerness
+		{
+			/Env
+			{
+				/foo	"Peter"
+				/bar	"foo"
+				/goo	"bar"
+			}
+			/Renderer
+			{
+				/EagerCallRenderer
+				{
+					/Renderer
+					{
+						/Lookup "foo.Lookup"
+					}
+					/Parameters
+					{
+						/foo	{  /Lookup "bar" "hui" }
+					}
+				}
+			}
+			/Expected       ""
+		}
+		/ListSizeRendererNamedTest {
+			/Env {
+				/TheList	{
+					/Slot1	{
+						/Name		"A"
+						/Ort		"B"
+					}
+					/Slot2	{
+						/Name		"C"
+						/Ort		"D"
+					}
+					/Slot3	{
+						/Name		"E"
+						/Ort		"F"
+					}
+					/Slot4	{
+						/Name		"G"
+						/Ort		"H"
+					}
+				}
+			}
+			/Renderer {
+				/ListSizeRenderer {
+					/ListData	TheList
+				}
+			}
+			/Expected	"4"
+		}
+		/ListSizeRendererNotExistingListTest {
+			/Env {
+				/TheList	{
+					/Slot1	{
+						/Name		"A"
+						/Ort		"B"
+					}
+					/Slot2	{
+						/Name		"C"
+						/Ort		"D"
+					}
+					/Slot3	{
+						/Name		"E"
+						/Ort		"F"
+					}
+					/Slot4	{
+						/Name		"G"
+						/Ort		"H"
+					}
+				}
+			}
+			/Renderer {
+				/ListSizeRenderer {
+					/ListData	TheGagaList
+				}
+			}
+			/Expected	""
+		}
+		/ListSizeRendererUnnamedSlotTest {
+			/Env {
+				/TheList	{
+					/Slot1	{
+						/Name		"A"
+						/Ort		"B"
+					}
+					/Slot2	{
+						/Name		"C"
+						/Ort		"D"
+					}
+					/Slot3	{
+						/Name		"E"
+						/Ort		"F"
+					}
+					/Slot4	{
+						/Name		"G"
+						/Ort		"H"
+					}
+				}
+			}
+			/Renderer {
+				/ListSizeRenderer TheList
+			}
+			/Expected	"4"
+		}
+		/UnTaintRendererOneTest
+		{
+				/TmpStore
+				{
+					/TheString	"<script>alert(\"bad one\")</script>&%"
+				}
+				/Renderer
+				{
+						/UnTaintRenderer
+						{
+								/ToClean { /Lookup TheString }
+						}
+				}
+				/Expected       "scriptalert(\"bad one\")/script"
+		}
+		/UnTaintRendererWitheBadCharsTest
+		{
+				/TmpStore
+				{
+					/TheString	"<script>alert(\"bad one\")</script>"
+					/BadOnes	"\"()/"
+				}
+				/Renderer
+				{
+						/UnTaintRenderer
+						{
+								/ToClean { /Lookup TheString }
+								/BadChars { /Lookup BadOnes }
+						}
+				}
+				/Expected       "scriptalertbad onescript"
+		}
+		/UnTaintRendererOneWithUnescaping
+		{
+				/TmpStore
+				{
+					/TheString	"%25u002E////ok"
+					/BadOnes	"./"
+				}
+				/Renderer
+				{
+						/UnTaintRenderer
+						{
+								/ToClean { /Lookup TheString }
+								/BadChars { /Lookup BadOnes }
+						}
+				}
+				/Expected       "ok"
+		}
+		/UnTaintRendererTwoWithUnescaping
+		{
+				/TmpStore
+				{
+					/TheString	"<>%%%25%25%32%35%25%25%37%35002%u0045+++////ok"
+					/BadOnes	"+"
+				}
+				/Renderer
+				{
+						/UnTaintRenderer
+						{
+								/ToClean { /Lookup TheString }
+								/BadChars { /Lookup BadOnes }
+						}
+				}
+				/Expected       ".////ok"
+		}
+		/UnTaintRendererThreeWithUnescaping
+		{
+				/TmpStore
+				{
+					/TheString	"<>%%%25%25%32%35%25%25%37%35002%u0045+++////ok"
+					/BadOnes	"+."
+				}
+				/Renderer
+				{
+						/UnTaintRenderer
+						{
+								/ToClean { /Lookup TheString }
+								/BadChars { /Lookup BadOnes }
+						}
+				}
+				/Expected       "////ok"
+		}
+		/UnTaintRendererFourWithUnescaping
+		{
+				/TmpStore
+				{
+					/TheString	"<>&#x0026;&#x23;&#x078;&#x0032;&#054;&#x003B;#x26;&#X0023;&#120;002E;<>"
+					/BadOnes	""
+				}
+				/Renderer
+				{
+						/UnTaintRenderer
+						{
+								/ToClean { /Lookup TheString }
+								/BadChars { /Lookup BadOnes }
+						}
+				}
+				/Expected       "."
+		}
+		/UnTaintRendererFiveWithUnescaping
+		{
+				/TmpStore
+				{
+					/TheString	"%%&&<>%%%25%25%32%35%25%25%37%35002%u0045+++////ok<>&#x0026;&#x23;&#x078;&#x0032;&#054;&#x003B;#x26;&#X0023;&#120;002E;<>++//"
+					/BadOnes	"+"
+				}
+				/Renderer
+				{
+						/UnTaintRenderer
+						{
+								/ToClean { /Lookup TheString }
+								/BadChars { /Lookup BadOnes }
+						}
+				}
+				/Expected       ".////ok.//"
+		}
+		/UnTaintRendererNoArgsGiven
+		{
+				/TmpStore
+				{
+				}
+				/Renderer
+				{
+						/UnTaintRenderer
+						{
+						}
+				}
+				/Expected       ""
+		}
+	}
+}

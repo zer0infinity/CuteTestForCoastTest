@@ -1,0 +1,325 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+###########################################################################
+# 							refactored                                    #
+###########################################################################
+# NOTE: config of mappers overrides config that might otherwise be found  #
+# in store (e.g. env- or tmp-store).                                      #
+###########################################################################
+
+#	# The following template shows all the possible/required parameters for
+#	# each query type (for documentation purposes only, not actually used)
+#
+#	/LDAPAccessParameterMapperConfigTemplate {
+#
+#		# all queries:
+#		/LDAPBase		*	# required for all
+#
+#		# for searches only:
+#		/LDAPScope		*	# opt (default: base)
+#		/LDAPFilter		*	# opt (default: all)
+#		/LDAPAttrs		*	# opt (default: all)
+#		/LDAPAttrsOnly	*	# opt (default: no)
+#		/LDAPTimelimit	*	# opt (default: use session default)
+#		/LDAPSizeLimit	*	# opt (default: no limit)
+#
+#		# for comparing only:
+#		/LDAPAttrName	*	# req
+#		/LDAPAttrValue	*	# req
+#
+#		# for modifications only:
+#		/LDAPMods		*	# req
+#
+#		# for adds only:
+#		/LDAPAttrs		*	# req
+#
+#		# for deletions: no extra parameters (/LDAPBase only)
+#	}
+
+	# --------------------------- Queries --------------------------------
+
+	/LDAPSearchQuery_LookupTkrefactor %LDAPSearchTest_ScopeBase
+
+	# ---------------------------- Tests ---------------------------------
+
+	/LDAPTest_LookupTmpAndEnv {
+		# no config here!
+		# the config should instead be looked up in tmp and env stores
+	}
+
+	/LDAPSearchTest_IllegalQuery {
+		# no base DN given -> will provoke error
+	}
+
+	/LDAPSearchTest_ScopeBase {
+		/LDAPBase		"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		#/LDAPScope		"base"	# base is default
+	}
+
+	/LDAPSearchTest_ScopeOneLevel {
+		/LDAPBase		"o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPScope		"onelevel"
+	}
+
+	/LDAPSearchTest_ScopeSubTree {
+		/LDAPBase		"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPScope		"subtree"
+	}
+
+	/LDAPSearchTest_SizeLimit {
+		/LDAPBase		"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPScope		"subtree"
+		/LDAPSizeLimit	10
+	}
+
+	/LDAPSearchTest_AttrSelection {
+		/LDAPBase		"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPAttrs {
+			"pd-dn"
+			"language"
+		}
+	}
+
+	/LDAPSearchTest_AttrsOnly {
+		/LDAPBase		"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPAttrsOnly	1
+	}
+
+	/LDAPSearchTest_Filter {
+		/LDAPBase		"o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPScope		"subtree"
+		/LDAPFilter		"(&(objectclass=client)(uid=tkrefactor))"	# this could be assembled, using a script
+	}
+
+	/LDAPSearchTest_WrongDN {
+		/LDAPBase		"o=10601,c=TX,dc=tkfcd.hsr.ch"	# c=TX does not exist
+		/LDAPScope		"subtree"
+	}
+
+	/LDAPSearchTest_EmptyResult {
+		/LDAPBase		"o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPScope		"subtree"
+		/LDAPFilter		"(&(objectclass=client)(uid=nonexistinguser))" # uid is wrong
+	}
+
+	# ---------------------------------------------------------
+
+	/LDAPDeleteTest_NonLeaf {
+		/LDAPBase		"o=10601,c=CH,dc=tkfcd.hsr.ch"
+	}
+
+	/LDAPDeleteTest_NonExisting {
+		/LDAPBase		"uid=nonexusr,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+	}
+
+	/LDAPDeleteTest_ExistingLeaf {
+		/LDAPBase		"tid=152.000.021.001,ou=tkftc,o=1,c=CH,dc=tkfcd.hsr.ch"
+	}
+
+	# ---------------------------------------------------------
+
+	/LDAPCompareTest_NonExistingEntry {
+		/LDAPBase		"uid=nonexusr,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPAttrName	"DoesNotMatter"
+		/LDAPAttrValue	"FantasyValue"
+	}
+
+	/LDAPCompareTest_NonExistingAttribute {
+		/LDAPBase		"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPAttrName	"NonExistingAttribute"
+		/LDAPAttrValue	"FantasyValue"
+	}
+
+	/LDAPCompareTest_EqualValue {
+		/LDAPBase		"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPAttrName	"language"
+		/LDAPAttrValue	"D"
+	}
+
+	/LDAPCompareTest_UnequalValue {
+		/LDAPBase		"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPAttrName	"uid"
+		/LDAPAttrValue	"tkfoo"
+	}
+
+	/LDAPCompareTest_MissingAttrNameParam {
+		/LDAPBase		"dc=tkfcd.hsr.ch"
+		# no /LDAPAttrName
+		/LDAPAttrValue	"tkfoo"
+	}
+
+	/LDAPCompareTest_MissingAttrValueParam {
+		/LDAPBase		"dc=tkfcd.hsr.ch"
+		/LDAPAttrName	"childModtime"
+		# no /LDAPAttrValue
+	}
+
+	# ---------------------------------------------------------
+
+	/LDAPAddTest_MissingAttrsParam {
+		/LDAPBase	"dc=tkfcd.hsr.ch"
+		# no /LDAPAttrs	parameter
+	}
+
+	/LDAPAddTest_SingleValues {
+		/LDAPBase	"dc=tkfcd.hsr.ch"
+		/LDAPAttrs {
+			"uid"
+			"otherStuff"
+		}
+	}
+
+	/LDAPAddTest_ExistingEntry {
+		/LDAPBase	"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPAttrs	{
+			/ConfigMapper {
+				/uid "NotRelevant"
+				/cn "NotRelevant"
+				/sn "NotRelevant"
+				# usw. usf.
+			}
+		}
+	}
+
+	/LDAPAddTest_NonExistingEntry {
+		/LDAPBase	"uid=addtest1,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPAttrs	{
+			/ConfigMapper {
+				/objectclass { "client" "tkfModify" "person" }
+				/uid "addtest1"
+				/sn	"addtest1"
+				/cn "addtest1"
+			}
+		}
+	}
+
+	/LDAPAddTest_MissingRequiredAttributes {
+		/LDAPBase	"uid=addtest2,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPAttrs	{
+			/ConfigMapper {
+				/objectclass { "client" "tkfModify" "person" }
+				/uid "addtest3"
+				/sn	"addtest3"
+				# /cn "addtest3" required, but missing here
+			}
+		}
+	}
+
+	/LDAPAddTest_NonExistingAttribute {
+		/LDAPBase	"uid=addtest3,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPAttrs	{
+			/ConfigMapper {
+				/objectclass { "client" "tkfModify" "person" }
+				/uid "addtest3"
+				/sn	"addtest3"
+				/cvn "addtest3"
+			}
+		}
+	}
+
+	# ---------------------------------------------------------
+
+	/LDAPModifyTest_UnknownAttribute {
+		/LDAPBase	"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPMods {
+			/ConfigMapper {
+				/Delete {
+					/foo *
+				}
+			}
+		}
+	}
+
+	/LDAPModifyTest_AddExistingValue {
+		/LDAPBase	"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPMods {
+			/ConfigMapper {
+				/Add {
+					/language "D"
+				}
+			}
+		}
+	}
+
+	/LDAPModifyTest_DeleteRequiredAttribute {
+		/LDAPBase	"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPMods {
+			/ConfigMapper {
+				/Delete {
+					/cn *
+				}
+			}
+		}
+	}
+
+	/LDAPModifyTest_MultipleModify {
+		/LDAPBase	"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPMods {
+			/ConfigMapper {
+				/Delete {
+					/tids "153.046.248.014"
+				}
+				/Add {
+					/tids {
+						"555.666.777.888"
+						"111.222.333.444"
+					}
+				}
+				/Replace {
+					/language "I"
+				}
+			}
+		}
+	}
+
+	/LDAPModifyTest_WrongMods {
+		/LDAPBase	"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPMods {
+			/ConfigMapper {
+				/NonExistingModOp {		# this should be filtered out
+					/foo	"bar"		# since mods will be empty thereafter
+				}						# it will provoke an error msg
+			}
+		}
+	}
+
+	/LDAPModifyTest_EmptyModsGiven {
+		/LDAPBase	"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPMods {
+			# /LDAPMods slot is empty --> error
+		}
+	}
+
+	/LDAPModifyTest_DeleteNonExistingValue {
+		/LDAPBase	"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPMods {
+			/ConfigMapper {
+				/Delete {
+					/tids "123.456.789.000"	# this value does not exist for tids
+				}
+			}
+		}
+	}
+
+	/LDAPModifyTest_DeleteAndAddWholeAttr {
+		/LDAPBase	"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPMods {
+			/ConfigMapper {
+				/Delete {
+					/passwordexp	*
+				}
+				/Add {
+		            /passwordexp "20010101_00:00:00"
+				}
+			}
+		}
+	}
+}

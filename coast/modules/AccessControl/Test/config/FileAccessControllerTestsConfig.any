@@ -1,0 +1,128 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/Config
+	{
+		/Modules
+		{
+			DataAccessImplsModule
+			MappersModule
+			AccessControllersModule
+		}
+		/AccessControllers
+		{
+			/Entity {
+				/FileEDAC {	EntityDataFile }
+			}
+			/Token {
+				/FileTDAC {	TokenDataFile }
+			}
+			/User {
+				/FileUDAC {	UserDataFile }
+			}
+		}
+		/DataAccessImpls
+		{
+			/DataAccessImpl
+			{
+				/ReadFileDAImpl {
+					ReadEntityData
+					ReadTokenData
+					ReadUserData
+				}
+				/WriteFileDAImpl {
+					WriteEntityData
+					WriteTokenData
+					WriteUserData
+				}
+			}
+		}
+		/Mappers {
+			/Input {
+				/ParameterMapper {
+					ReadUserData
+					ReadTokenData
+					ReadEntityData
+				}
+			}
+			/Output {
+				/ResultMapper {
+					ReadUserData
+					ReadTokenData
+					ReadEntityData
+				}
+			}
+		}
+	}
+
+	# init data (used to set up various tests)
+	/InitData {
+		/EDACTest {
+			/user {
+				"changePW"
+				"resetPW"
+			}
+			/guest {
+				# guests have no rights at all
+			}
+			/coffee {
+				"cookiejar"
+				"espressomachine"
+			}
+			/movies {
+				"cinema"
+				"tv"
+				"dvdplayer"
+			}
+		}
+		/TDACTest {
+			/"000100002" {
+				/Seed "e5a4103be54395b743c1c70365d47603"
+				/Count 612314215
+			}
+		}
+		/UDACTest {
+			/tester {
+				/uid 		"tester"
+				/Password 	"secret"
+				/TokenId 	"000100002"
+				/Groups {
+					"superhero"
+					"deadserious"
+				}
+			}
+		}
+	}
+
+	/FileContent {
+		# since EDAC API does not allow to change anything, this
+		# should be identical to init
+		/EDACTest %InitData.EDACTest
+
+		/TDACTest {
+			/"000100002" {
+				/Seed "e5a4103be54395b743c1c70365d47603"
+				/Count 612314238
+			}
+		}
+
+		/UDACTest {
+			/tester {
+				/uid "tester"
+				/Password "tester"
+				/TokenId "000100002"
+				/Groups {
+					"superhero"
+					"singsong"
+				}
+			}
+		}
+	}
+}

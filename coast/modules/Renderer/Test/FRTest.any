@@ -1,0 +1,7 @@
+# Configuration file for the role to test the FormRenderer
+{
+	/StateFull {
+		"Slot1"
+		"Slot2"
+	}
+}

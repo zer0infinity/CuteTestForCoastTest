@@ -1,0 +1,31 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/GetStreamTimeout		5000
+	/ReadyForReadingTimeout	5000
+	/ReadyForWritingTimeout	5000
+	/ConnectorTimeout		5000
+	/Testhost {
+		/ip			"127.0.0.1"
+		/port		80
+		/faultyport	28
+	}
+	/MakeInetAddrTest
+	{
+		/IpAddr
+		{
+			/"255.255.255.255"		-1
+			/"172.16.2.5"		 -1408237051
+			/"127.0.0.1"		  2130706433
+			/"0.0.0.0"				0
+		}
+		/LocalHost				  2130706433
+	}
+}

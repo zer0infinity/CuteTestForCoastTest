@@ -1,0 +1,126 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+        /LowerBound 00
+        /UpperBound	5002
+        /DumpAnythings 1
+
+        /ConfiguredTestCase {
+        	/MainSwitch	5000
+			/EnableAll	200
+			/setUp	5001
+        }
+        /HierarchyInstaller {
+			/MainSwitch	00
+			/EnableAll	200
+        }
+        /RegisterableObject {
+			/MainSwitch	300
+			/EnableAll	400
+			/Register	300
+        }
+        /ConfNamedObject {
+			/MainSwitch	0
+			/EnableAll	200
+        }
+		/SSLAcceptorFactory {
+			/MainSwitch	200
+			/EnableAll	200
+        }
+		/AcceptorFactory {
+			/MainSwitch	200
+			/EnableAll	200
+        }
+        /ListenerThread {
+			/MainSwitch	200
+			/EnableAll	200
+        }
+
+        /ThreadPoolManager {
+			/MainSwitch	2000
+			/EnableAll	2000
+        }
+        /ListenerPool {
+			/MainSwitch	2000
+			/EnableAll	2000
+        }
+       /TestReceiver {
+			/MainSwitch	5000
+			/EnableAll	5002
+        }
+        /SSLModule {
+			/MainSwitch	5000
+			/EnableAll	5002
+			/DoMakeContext	5002
+			/SetSSLCtxVerifyParameters 5000
+			/SetOwnCertificateAndKey 5000
+			/PrepareClientContext 5000
+			/GetSSLClientCtx 5000
+			/SetSSLSetAcceptableClientCAs 5000
+        }
+		/SSLObjectManager {
+			/MainSwitch	5000
+			/EnableAll	5002
+		}
+		/SSLSocketArgs {
+			/MainSwitch	3000
+			/EnableAll	3000
+		}
+		/SSLSocketUtils {
+			/MainSwitch	5000
+			/EnableAll	5002
+		}
+		/SSLClientSocket {
+			/MainSwitch	5000
+			/EnableAll	5002
+		}
+		/SSLServerSocket {
+			/MainSwitch	5000
+			/EnableAll	5002
+		}
+		/SSLSocket {
+			/MainSwitch	5000
+			/EnableAll	5002
+			/ReportSSLError 4003
+			/DoMakeStream 5002
+			/CheckPeerCertificate 5002
+			/DoCheckPeeerCertificate	5002
+		}
+		/SSLListenerPoolTest {
+			/MainSwitch	5000
+			/EnableAll	5000
+			/DoTestConnect 5002
+		}
+		/SSLConnectorTest {
+			/MainSwitch	2000
+			/EnableAll	2000
+		}
+		/SSLSocketArgsTest {
+			/MainSwitch	2000
+			/EnableAll	2000
+		}
+		/SSLObjectManagerTest {
+			/MainSwitch	5000
+			/EnableAll	5002
+		}
+		/SSLCertificateTest {
+			/MainSwitch	5000
+			/EnableAll	5000
+		}
+		/SSLConnector {
+			/MainSwitch	5000
+			/EnableAll	5000
+		}
+		/Connector {
+			/MainSwitch	3000
+			/EnableAll	3000
+		}
+}
+

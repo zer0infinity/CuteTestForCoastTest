@@ -1,0 +1,143 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/testdai {	#data access impl for test purposes
+		/testitem1	"foo"
+		/testitem2  "bah"
+
+	}
+	/LoopBackDATest {
+		/transfer {
+			/Message 	mReply	# put the input received under message into the reply under foo
+			/Header 	hReply
+			/Footer 	fReply
+			/Control	cReply
+		}
+	}
+	/CallDAOkTest {
+		/transfer	{
+			/In	Out
+		}
+	}
+	/CallDANotOkTest {
+	}
+
+	# --- kgu: let all "My..." and "DATest_..." tests inherit from this config
+	/MapperTestDAImpl {
+		/transfer	{
+			/In	Out
+		}
+	}
+	/MyTestDAImplMetaConfig {
+		/In		DAImplMetaConfig
+	}
+	/MyTestInputMapperConfig {
+		/DataType	Anything
+	}
+
+	# use standard mappers for i/o
+	/DATest_StdMappers_NoScript {
+		/ParameterMapperScript ParameterMapper
+		/ResultMapperScript ResultMapper
+	}
+
+	# use standard mappers, but defined in script
+	# (this is semantically identical to DATest_StdMappers_NoScript)
+	/DATest_StdMappers_Script {
+		/ParameterMapperScript {
+			/ParameterMapper *
+		}
+		/ResultMapperScript {
+			/ResultMapper *
+		}
+	}
+
+	# use more complex scripts for i/o
+	/DATest_StdMappers_ComplexScript {
+		/ParameterMapperScript ParameterMapper
+		/ResultMapperScript {
+			# multiple destinations for output
+			# (this is actually complexer than it needed to be)
+			/Out {
+				/NotOut {
+					/ResultMapper *	# mapper output under "Mapper.NotOut"
+				}
+				/"A.B.C" {
+					/RootMapper *	# root mapper output under "A.B.C"
+				}
+				/RootMapper *		# root mapper output under "Out"
+			}
+		}
+	}
+
+	# use even more complex scripts for i/o
+	/DATest_StdMappers_MoreComplexScript {
+		/DataType	StringStream
+		/ParameterMapperScript ParameterMapper
+		/ResultMapperScript {
+			# multiple destinations for output
+			# (this is actually complexer than it needed to be)
+			/Out {
+				/StreamToAnythingMapper {
+					/Out {
+						/"XYZ.abc"	onlyabc
+						/ZZZ {
+							subTreeZZZ
+							/RootMapper {
+								/Out	RootSecondCopyOfSubTreeZZZ
+							}
+						}
+						/gaga		notMatchedSlotWillNotAppear
+						/XYZ {
+							/RootMappedXYZ {
+								/RootMapper *
+							}
+						}
+						unnamedSlot
+					}
+				}
+			}
+		}
+	}
+
+	/DATest_NonexistingMapper {
+		/ParameterMapperScript	ParameterMapper
+		/ResultMapperScript {
+			/FantasyMapper *
+		}
+	}
+
+	/DATest_UseFallbackMapper {
+		/ParameterMapperScript	FooMapper	# unknown
+		/ResultMapperScript 	BarMapper	# unknown
+
+		/FallbackParameterMapper	ParameterMapper
+		/FallbackResultMapper		ResultMapper
+	}
+
+	# FIXME: kgu: This test should become obsolete at some point!
+	/DATest_UseFallbackMapperFrontdoorStyle {
+		/ParameterMapperScript	FooMapper	# unknown
+		/ResultMapperScript 	BarMapper	# unknown
+
+		/FallbackInputMapper		ParameterMapper
+		/FallbackOutputMapper		ResultMapper
+	}
+
+	# ---
+
+	/NameUsingTestWithLocalConfig {
+		/transfer	{
+			/A	Out
+		}
+	}
+	/NameUsingTestWithEmptyLocalConfig %NameUsingTestWithLocalConfig
+	/NameUsingTestWithNullConfig %NameUsingTestWithLocalConfig
+}

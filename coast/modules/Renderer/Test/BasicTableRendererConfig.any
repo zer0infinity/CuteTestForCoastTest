@@ -1,0 +1,137 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+	/Type BasicTable
+	/DataSource 	"ConnData"
+	/TableFormats {
+		/fmtTable {
+			/OuterTableOptions "BORDER=1 CELLPADDING=2 CELLSPACING=0 WIDTH=100%"
+			/Options "BORDER=0 CELLPADDING=1 CELLSPACING=0 WIDTH=100%"
+			/HdrBackgrdColor "00BFFF"	# blue background
+		}
+	}
+	/RowFormats {
+		/fmtRow {
+			/RowColors {	# alternating white & grey background color
+				"D3D3D3"
+				"FFFFFF"
+			}
+		}
+	}
+	/CellFormats {
+		/fmtConnCell {
+			/Options 	"ALIGN=LEFT NOWRAP"
+			/Font		"SIZE=-1"
+		}
+		/fmtTitleCell {
+			/Options 	"ALIGN=LEFT NOWRAP"
+			/Font		"SIZE=-1"
+			/Bold 		1
+		}
+	}
+	/FormatTable 		"fmtTable"
+	/Outline {
+		/Header {
+			{
+				/RendererSpecification {
+					/Type StringRenderer
+					/D "Spalte1"
+				}
+				/FormatCell		fmtTitleCell
+			}
+			{
+				/RendererSpecification {
+					/Type StringRenderer
+					/D "Spalte2"
+				}
+				/FormatCell		fmtTitleCell
+			}
+			{
+				/RendererSpecification {
+					/Type StringRenderer
+					/D "Spalte3"
+				}
+				/FormatCell		fmtTitleCell
+			}
+			{
+				/RendererSpecification {
+					/Type StringRenderer
+					/D "Spalte4"
+				}
+				/FormatCell		fmtTitleCell
+			}
+		}
+		/Body {
+			{
+				/DataSource "Details"
+				/FormatRow "fmtRow"
+				/Items {
+					{
+						/RendererSpecification {
+							/Type StoreLookupRenderer
+							/LookupName "RowData.Region"
+						}
+						/FormatCell fmtConnCell
+					}
+					{
+						/RendererSpecification {
+							/Type StoreLookupRenderer
+							/LookupName "RowData.Station"
+						}
+						/FormatCell fmtConnCell
+					}
+					{
+						/RendererSpecification {
+							/Type StoreLookupRenderer
+							/LookupName "RowData.IPAddress"
+						}
+						/FormatCell fmtConnCell
+					}
+					{
+						/RendererSpecification {
+							/Type SwitchRenderer
+							/Data {
+								/ContextLookupName "RowData.Status"
+								/Case {
+									/Active {
+										/Type ImageRenderer
+										/Data  {
+											/ImageName "gr_ball.gif"
+											/Options {
+												/Border 0
+												/Alt "active"
+											}
+										}
+									}
+									/"Not active" {
+										/Type ImageRenderer
+										/Data {
+											/ImageName "rd_ball.gif"
+											/Options {
+												"Border=0"
+												"Alt=inactive"
+											}
+										}
+									}
+								}
+								/Default {
+									/Type StringRenderer
+									/Data {
+										/Default "undefined"
+									}
+								}
+							}
+						}
+						/FormatCell fmtConnCell
+					}
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,113 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+	/NumberOfRuns	1 #20000 # - how many times to loop through complete Run below
+	/Run	{ # number of steps in run given by number of slots in this anything
+		{	# initial address
+			/CurrentServer {
+				/ServerName	"sentosa.hsr.loc"
+				/Path		"/"
+				/Port		"1922"
+			}
+		}
+		#-----------------------------------------------------------------------------------------------------------------
+		# Login, ChangePassword to new value, Logout
+		{
+			#fill out form - i.e. Login
+			# fill out HTTPS FDS login form
+			/Form {
+				/slotNr		0
+				/buttonPressed "Login"		# must be exact (now) will also do a "Force Login" since "Login" is in the same string <- NOT always good
+				/formContents {
+					/Customer 	{ /Lookup { { "UserList." {/Lookup Id} ".cuid" } }  }
+					/User 		{ /Lookup { { "UserList." {/Lookup Id} ".uid"  } }  }
+					/Password 	{ /Lookup { { "UserList." {/Lookup Id} ".pw"   } }  }
+				}
+			}
+		}
+		{
+			/Token {
+				/slotName 0 # 1 # 1 is "true" i.e. must be present... # must be for now - 1 flag that this string should not occur, 0 that it should...
+				/String "Wrong"
+			}
+			/Link
+			{
+				/slotName "Change password" # must be exact match, change in future (?)
+			}
+		}
+		{
+			#fill out form - i.e. change password
+			/Form {
+				/slotNr		0
+				/buttonPressed "Change"
+				/formContents {
+					/Current { /Lookup { { "UserList." {/Lookup Id} ".pw"   } }  }
+					/"New password" "newpasswd"
+					/again "newpasswd"
+				}
+			}
+		}
+		{
+			/Token {
+				/slotName 1 # 1 # 1 is "true" i.e. must be present... # must be for now - 1 flag that this string should not occur, 0 that it should...
+				/String "Password successfully changed"
+			}
+			/Link
+			{
+				/slotName "Logoff"
+			}
+		}
+
+		#-----------------------------------------------------------------------------------------------------------------
+		# Login, ChangePassword back to original, Logout
+		{
+			#fill out form - i.e. Login
+			# fill out HTTPS FDS login form
+			/Form {
+				/slotNr		0
+				/buttonPressed "Login"
+				/formContents {
+					/Customer 	{ /Lookup { { "UserList." {/Lookup Id} ".cuid" } }  }
+					/User		{ /Lookup { { "UserList." {/Lookup Id} ".uid"  } }  }
+					/Password	"newpasswd"
+				}
+			}
+		}
+		{
+			/Link
+			{
+				/slotName "Change password" # must be exact match, change in future (?)
+			}
+		}
+		{
+			#fill out form - i.e. change password
+			/Form {
+				/slotNr		0
+				/buttonPressed "Change"
+				/formContents {
+					/Current  	"newpasswd"
+					/"New password" { /Lookup { { "UserList." {/Lookup Id} ".pw"   } }  }
+					/again	{ /Lookup { { "UserList." {/Lookup Id} ".pw"   } }  }
+				}
+			}
+		}
+		{
+			/Token {
+				/slotName 1 # 1 # 1 is "true" i.e. must be present... # must be for now - 1 flag that this string should not occur, 0 that it should...
+				/String "Password successfully changed"
+			}
+			/Link
+			{
+				/slotName "Logoff"
+			}
+		}
+		#-----------------------------------------------------------------------------------------------------------------
+	}
+}
+

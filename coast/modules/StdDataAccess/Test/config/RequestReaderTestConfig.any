@@ -1,0 +1,716 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/TestReadMinimalInput
+	{
+		{
+			/RequestLine "\r\n\r\n"
+			/UriSizeLimit		271
+			/LineSizeLimit		4096
+			/RequestSizeLimit	5120
+			/DoURLDecoding		1
+			/URLEncodeExclude   "/?"
+			/Expected
+			{
+				/FirstResponseLine	"HTTP/1.1 400 Bad Request"
+				/Return			1
+			}
+		}
+		{
+			/RequestLine "GET  HTTP/1.0\r\n\r\n"
+			/UriSizeLimit		271
+			/LineSizeLimit		4096
+			/RequestSizeLimit	5120
+			/DoURLDecoding		1
+			/URLEncodeExclude   "/?"
+			/Expected
+			{
+				/REQUEST_METHOD	"GET"
+				/Return			1
+			}
+		}
+		{
+			/RequestLine "GET  HTTP/1.0\r\n\r\n"
+			/UriSizeLimit		8
+			/LineSizeLimit		4096
+			/RequestSizeLimit	5120
+			/DoURLDecoding		1
+			/URLEncodeExclude   "/?"
+			/Expected
+			{
+				/FirstResponseLine	"HTTP/1.1 414 Request-URL Too Large"
+				/Return			1
+			}
+		}
+		{
+			/RequestLine "GET  HTTP/1.0\r\n\r\n"
+			/UriSizeLimit		271
+			/LineSizeLimit		8
+			/RequestSizeLimit	5120
+			/DoURLDecoding		1
+			/URLEncodeExclude   "/?"
+			/Expected
+			{
+				/FirstResponseLine	"HTTP/1.1 413 Request Entity Too Large"
+				/Return			0
+			}
+		}
+		{
+			/RequestLine "GET  HTTP/1.0\r\n\r\n"
+			/UriSizeLimit		271
+			/LineSizeLimit		4096
+			/RequestSizeLimit	8
+			/DoURLDecoding		1
+			/URLEncodeExclude   "/?"
+			/Expected
+			{
+				/FirstResponseLine	"HTTP/1.1 413 Request Entity Too Large"
+				/Return			0
+			}
+		}
+		{
+			/RequestLine "xxGET  HTTP/1.0\r\n\r\n"
+			/UriSizeLimit		271
+			/LineSizeLimit		4096
+			/RequestSizeLimit	5120
+			/DoURLDecoding		1
+			/URLEncodeExclude   "/?"
+			/Expected
+			{
+				/FirstResponseLine "HTTP/1.1 405 Method Not Allowed"
+				/Return			1
+			}
+		}
+	}
+
+	/TestCleanupRequestLine
+	{
+		{
+				/RequestLine 	"GET ?bar HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"?bar"
+				/TraversialAttack 0
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET / HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/"
+				/TraversialAttack 0
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET %2F HTTP%2F1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/"
+				/TraversialAttack 0
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET /ftimage/image.gif HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/ftimage/image.gif"
+				/TraversialAttack 0
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET %2Fftimage%2Fimage.gif HTTP%2F1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/ftimage/image.gif"
+				/TraversialAttack 0
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		# Above hex FF
+		{
+				/RequestLine 	"GET %2Fftimage%2F%u01FFimage.gif HTTP%2F1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		""
+				/TraversialAttack 0
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET %2Fftimage%2F%u01FFimage.gif HTTP%2F1.0\r\n"
+				/DoURLDecoding		0
+				/URLEncodeExclude   "/?"
+				/Expected		"%2Fftimage%2F%u01FFimage.gif"
+				/TraversialAttack 0
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET /ftimage/subimage/../../etc/shadow HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		 "/etc/shadow"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET %u002Fftimage/subimage%u002F%u002E%u002E%u002F%2E%2E%2Fetc%2Fshadow HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		 "/etc/shadow"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET %2Fftimage/subimage/%2E.%2F%2E%2E%2Fetc%2Fshadow HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		 "/etc/shadow"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		# 10
+		{
+				/RequestLine 	"GET /ftimage/../../../etc/shadow HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected	 	"/etc/shadow"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET %2Fftimage%2F%2E%2E%2F%2E%2E%2F%2E%2E%2Fetc%2Fshadow HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected	 	"/etc/shadow"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET %2Fftimage%u002F%u002E%2E/%2E%2E%2F.%2E/etc%2Fshadow HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected	 	"/etc/shadow"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET /../../../../etc/shadow HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected	 	"/etc/shadow"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET %2F%2E%2E%2F%2E%2E%2F%2E%2E%2F%2E%2E%2Fetc%2Fshadow HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected	 	"/etc/shadow"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET /ftimage/../../.. HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET /ftimage%2F%2E%u002E%2F%2E%2E%2F%2E%2E HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET /ftimage%2F%2E%2E%2F%2E%2E%2F%2E%2E HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET /ftimage/../../../ HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET /ftimage%2F%2E%u002E%2F%2E%2E%2F%u002E%2E%2F HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		# 20
+		{
+				/RequestLine 	"GET /. HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET %2F%2E HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine	"GET /./. HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine	"GET %2F%2E%2F%2E HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine	"GET /ftimage/./ HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/ftimage/"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine	"GET %2Fftimage%2F%2E%2F HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/ftimage/"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine	"GET /ftimage/./. HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/ftimage"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine	"GET %2Fftimage%2F%2E%2F%2E HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/ftimage"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine	 "GET /ftimage/. HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/ftimage"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine	 "GET %2Fftimage%2F%2E HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/ftimage"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		# 30
+		{
+				/RequestLine 	"GET /ftimage/foo/..?fobaz&..&..&X HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/ftimage?fobaz&..&..&X"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET %2Fftimage%2Ffoo%2F%2E%2E?fobaz&..&..&X HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/ftimage?fobaz&..&..&X"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		# Arguments are not unescaped!
+		{
+				/RequestLine 	"GET %2Fftimage%2Ffoo%2F%2E%2E?fobaz%2F%u002F&..&..&X HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/ftimage?fobaz%2F%u002F&..&..&X"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		# Request with terminating ? ( Must be removed, since a URI with terminating ? is not likely to be found )
+		{
+				/RequestLine 	"GET /kimdojo? HTTP/1.1\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/kimdojo"
+				/TraversialAttack 0
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET %2Fkimdojo? HTTP/1.1\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/kimdojo"
+				/TraversialAttack 0
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET ? HTTP/1.1\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		""
+				/TraversialAttack 0
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET /? HTTP/1.1\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/"
+				/TraversialAttack 0
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		# Directory traversial cleanup, more elaborate cases
+		{
+				/RequestLine 	"GET /aa/bb/cc/dd/ee/ff/gg/hh/ii/fims-api-info/../../../../../etc/passwd HTTP/1.1\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/aa/bb/cc/dd/ee/etc/passwd"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET /aa/bb/cc/dd/ee/ff/gg/hh/ii/fims-api-info/%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2fetc/passwd HTTP/1.1\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/aa/bb/cc/dd/ee/etc/passwd"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET /../../../../../etc/passwd HTTP/1.1\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/etc/passwd"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		# 40
+		{
+				/RequestLine 	"GET %2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2fetc/passwd HTTP/1.1\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/etc/passwd"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET ../../../../../etc/passwd HTTP/1.1\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"etc/passwd"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET %2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2fetc/passwd HTTP/1.1\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"etc/passwd"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET /etc/./passwd HTTP/1.1\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/etc/passwd"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET /etc%2f%2e%2fpasswd HTTP/1.1\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/etc/passwd"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET /etc/./././passwd HTTP/1.1\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/etc/passwd"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET /etc%2f%2e%2f%2f%2e%2f%2f%2e%2fpasswd HTTP/1.1\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/etc/passwd"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET ./etc/passwd HTTP/1.1\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"etc/passwd"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET %2e%2fetc/passwd HTTP/1.1\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"etc/passwd"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET %2e%2f%2e%2f%2e%2fetc/passwd HTTP/1.1\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"etc/passwd"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		# 50
+		{
+				/RequestLine 	"GET ./././etc/passwd HTTP/1.1\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"etc/passwd"
+				/TraversialAttack 1
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		# Argument checking
+		{
+				/RequestLine 	"GET ?bar=%4B%69%6D-dojo& HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"?bar=%4B%69%6D-dojo&"
+				/TraversialAttack 0
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET /?bar=%4B%69%6D-dojo& HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/?bar=%4B%69%6D-dojo&"
+				/TraversialAttack 0
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET %2F?bar=%4B%69%6D-!dojo& HTTP%2F1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/?bar=%4B%69%6D-!dojo&"
+				/TraversialAttack 0
+				/WrongUrlArgsEncoding  1
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET /ftimage/image.gif?bar=%4B%69%6D-dojo& HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/ftimage/image.gif?bar=%4B%69%6D-dojo&"
+				/TraversialAttack 0
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET /ftimage/image.gif?bar=%u004B%u0069%u006D-dojo& HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/ftimage/image.gif?bar=%u004B%u0069%u006D-dojo&"
+				/TraversialAttack 0
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET %2Fftimage%2Fimage.gif?bar=%4B%69%6D-dojo!& HTTP%2F1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/ftimage/image.gif?bar=%4B%69%6D-dojo!&"
+				/TraversialAttack 0
+				/WrongUrlArgsEncoding  1
+				/WrongUrlPathEncoding  0
+		}
+		# args above hex FF
+		{
+				/RequestLine 	"GET /ftimage/image.gif?bar=%u01FF-dojo& HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/ftimage/image.gif?bar=%u01FF-dojo&"
+				/TraversialAttack 0
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		# Wrong path encodings, 4 cases basing on same url
+		{
+				/RequestLine 	"GET /ftimage!/image.gif HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/ftimage%21/image.gif"
+				/TraversialAttack 0
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  1
+		}
+		# Same, without url-decoding
+		{
+				/RequestLine 	"GET /ftimage!/image.gif HTTP/1.0\r\n"
+				/DoURLDecoding		0
+				/URLEncodeExclude   "/?"
+				/Expected		"/ftimage!/image.gif"
+				/TraversialAttack 0
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  1
+		}
+		# 60
+		{
+				/RequestLine 	"GET /ftimage%21/image.gif HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/ftimage%21/image.gif"
+				/TraversialAttack 0
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET /ftimage%21/image.gif HTTP/1.0\r\n"
+				/DoURLDecoding		0
+				/URLEncodeExclude   "/?"
+				/Expected		"/ftimage%21/image.gif"
+				/TraversialAttack 0
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET /ftimage/image.gif?bar=%u01FF-dojo& HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/ftimage/image.gif?bar=%u01FF-dojo&"
+				/TraversialAttack 0
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		# Same, without url-decoding
+		{
+				/RequestLine 	"GET /ftimage%21/image.gif HTTP/1.0\r\n"
+				/DoURLDecoding		0
+				/URLEncodeExclude   "/?"
+				/Expected		"/ftimage%21/image.gif"
+				/TraversialAttack 0
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		# not encoded blanks trigger end of path parsing
+		{
+				/RequestLine 	"GET /ftimage/image withblank.gif HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/ftimage/image"
+				/TraversialAttack 0
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		{
+				/RequestLine 	"GET /ftimage/image%20withblank.gif HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/ftimage/image%20withblank.gif"
+				/TraversialAttack 0
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+		# this does not correspond to the rfc, blank should be encoded
+		{
+				/RequestLine 	"GET /ftimage/image withblank.gif HTTP/1.0\r\n"
+				/DoURLDecoding		1
+				/URLEncodeExclude   "/?"
+				/Expected		"/ftimage/image"
+				/TraversialAttack 0
+				/WrongUrlArgsEncoding  0
+				/WrongUrlPathEncoding  0
+		}
+	}
+}

@@ -1,0 +1,134 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/Application "SimpleTestApp"
+
+	/AppId	wdbasetest
+	/DLL {
+	}
+	/Modules {
+		TimeLoggingModule
+		RolesModule
+		PagesModule
+		RenderersModule
+		AcceptorFactoriesModule
+		ServerPoolsManagerInterfacesModule
+		ServersModule
+		ServiceDispatchersModule
+		LocalizationModule
+	}
+
+	/ServerPoolsManagerInterfaces {
+		/ServerThreadPoolsManager 	{
+			AcceptorsWorkers
+		}
+		/ServerLFThreadPoolsManager {
+			LeaderFollower
+			MasterLeaderFollower
+		}
+	}
+	/Servers {
+		/Server {
+			AcceptorWorkerServer
+			AcceptorWorkerServer3
+			AcceptorWorkerServer2
+			LeaderFollowerServer
+			SimpleTestServer
+		}
+		/MasterServer {
+			TestMasterServer0
+			TestMasterServer1
+			TestMasterServer2
+			TestMasterServer3
+		}
+	}
+	/ServiceDispatchers {
+		/ServiceDispatcher {
+			/TestDispatcher { SecondTestDipatcher }
+		}
+	}
+	/Roles {
+		/Role {
+			/RTGuest {
+				RTCustomer
+			}
+			Guest
+			Customer
+		}
+	}
+	/DefaultRole {
+		"My" "Role"
+	}
+	/Pages {
+		/Page {
+			SecondPage
+		}
+	}
+	/Actions {
+	}
+	/Renderers { }
+
+	/TimeLoggingModule {
+		/DoTiming	1
+		/DoLogging	0
+	}
+
+	# common TestCase configuration
+	/Testhost {
+		/ip			"127.0.0.1"
+		/port		1919
+	}
+
+	# -- Config for Acceptor Factories  in  ListenerPoolTest
+	/AcceptorFactories {
+		/AcceptorFactory {
+			TCP5010  TCP5011 TCP5020 TCP5021 TCP5012 TCP5013 TCP5014 TCP5015 TCP5033
+		}
+		/FakeAcceptorFactory { Fake }
+	}
+
+	/TCP5010 {
+	  /Port	55010
+	}
+	/TCP5011 {
+	  /Port	55011
+	}
+	/TCP5012 {
+	  /Port	55012
+	}
+	/TCP5013 {
+	  /Port	55013
+	}
+	/TCP5014 {
+	  /Port	55014
+	}
+	/TCP5015 {
+	  /Port	55015
+	}
+	/TCP4242 {
+	  /Port	54242
+	}
+	/TCP4343 {
+	  /Port	54343
+	}
+	/ListenerPool {
+		TCP4242
+	}
+	/TCP5020 {
+	  /Port	55020
+	}
+	/TCP5021 {
+	  /Port	55021
+	}
+	/TCP5033 {
+	  /Port	55033
+	}
+	/StringFile "LocalizedStringsTestConfig"
+}

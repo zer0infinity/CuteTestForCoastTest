@@ -1,0 +1,46 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/ReadUserData {
+		/Filename					"FileTestUserDB.any"
+		/FallbackParameterMapper	ParameterMapper
+		/FallbackResultMapper		RootMapper
+	}
+
+	/WriteUserData {
+		/Filename					"FileTestUserDB.any"
+		/FallbackParameterMapper	ParameterMapper
+		/FallbackResultMapper		RootMapper
+	}
+
+	/ReadTokenData {
+		/Filename					"FileTestActerDB.any"
+		/FallbackParameterMapper	ParameterMapper
+		/FallbackResultMapper		RootMapper
+	}
+
+	/WriteTokenData {
+		/Filename					"FileTestActerDB.any"
+		/FallbackParameterMapper	ParameterMapper
+		/FallbackResultMapper		RootMapper
+	}
+
+	/ReadEntityData {
+		/Filename					"FileTestRightsDB.any"
+		/FallbackParameterMapper	ParameterMapper
+		/FallbackResultMapper		RootMapper
+	}
+
+	/WriteEntityData {
+		/Filename					"FileTestRightsDB.any"
+		/FallbackParameterMapper	ParameterMapper
+		/FallbackResultMapper		RootMapper
+	}
+}

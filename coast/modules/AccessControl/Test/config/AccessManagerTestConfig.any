@@ -1,0 +1,292 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/Config		!Config.any
+
+	/InitData {
+		# --- contents of user file
+		/UserFile {
+			/tester {
+				/uid 		"tester"
+				/Password 	"secret"
+				/TokenId 	"000100002"
+				/Groups {
+					"user"
+					"coffee"
+				}
+			}
+			/testerWithoutRights {
+				/uid 		"testerWithoutRights"
+				/Password 	"schlonk"
+				/TokenId 	"000100002"
+				/Groups {
+					# no groups - no rights!
+				}
+			}
+			/actertester {
+				/uid 		"actertester"
+				/Password 	"onetime"
+				/TokenId 	"000100002"
+			}
+		}
+		# --- contents of token file
+		/TokenFile {
+			/"000100002" {
+				/Seed "e5a4103be54395b743c1c70365d47603"
+				/Count 612314215
+			}
+		}
+		# --- contents of entity file (rights)
+		/EntityFile {
+			/user {
+				"changePW"
+				"resetPW"
+			}
+			/guest {
+				# guests have no rights at all
+			}
+			/coffee {
+				"cookiejar"
+				"espressomachine"
+			}
+		}
+	}
+
+	/RunOnly
+	{
+		# give names of access managers to test (all, if none given)
+	}
+
+	/Tests
+	{
+		# ---------------- tests for Basic AccessManager -----------------
+
+		#
+		# BasicAM is configured to have file based User-, Token- and EntityData
+		# However, since no OTPList is specified, strong authentication will fail
+		# in any case!
+		#
+
+		/BasicAM
+		{
+			/Validate {
+				/UnknownUser
+				{
+					/uid			"unknown"
+					/result			0
+				}
+				/ExistingUser
+				{
+					/uid			"tester"
+					/result			1
+				}
+			}
+			/AuthenticateWeak {
+				/WeakAuth_Failure_UnknownUser
+				{
+					/uid			"unknown"
+					/pwd			"doesntMatter"
+					/result			0
+					/resultRole		"guest"
+				}
+				/WeakAuth_Failure_WrongPassword
+				{
+					/uid			"tester"
+					/pwd			"wrongPasswd"
+					/result			0
+					/resultRole		"guest"
+				}
+				/WeakAuth_Success
+				{
+					/uid			"tester"
+					/pwd			"secret"
+					/result			1
+					/resultRole		"loginOk"
+				}
+			}
+			/AuthenticateStrong {
+				#
+				# For testing purposes, BasicAM has no OTPList defined and is thus not able
+				# to perform strong authentication. Any attempt to do so will fail by default.
+				#
+				/StrongAuth_FailAlways
+				{
+					/uid			"tester"
+					/pwd			"secret"
+					/otp			"22345322"
+					/result			0
+					/resultRole		"guest"
+				}
+			}
+			/ChangePassword {
+				/ChangePasswd_UnknownUser
+				{
+					/uid			"unknown"
+					/oldpwd			"doesntMatter"
+					/newpwd			"whoCares"
+					/result			0
+				}
+				/ChangePasswd_WrongOldPasswd
+				{
+					/uid			"tester"
+					/oldpwd			"notRight"
+					/newpwd			"myNewPasswd"
+					/result			0
+				}
+				/ChangePasswd_NotAllowed
+				{
+					/uid			"testerWithoutRights"
+					/oldpwd			"secret"
+					/newpwd			"topSecret"
+					/result			0
+				}
+				/ChangePasswd_Success
+				{
+					/uid			"tester"
+					/oldpwd			"secret"
+					/newpwd			"topSecret"
+					/result			1
+				}
+			}
+			/ResetPassword {
+				/ResetPasswd_UnknownUser
+				{
+					/uid			"unknown"
+					/result			0
+				}
+				/ResetPasswd_NotAllowed
+				{
+					/uid			"testerWithoutRights"
+					/result			0
+				}
+				/ResetPasswd_Success
+				{
+					/uid			"tester"
+					/result			1
+				}
+			}
+			/IsAllowed {
+				/IsAllowed_UnknownUser
+				{
+					/uid			"unknown"
+					/entity			"icecream"
+					/result			0
+				}
+				/IsAllowed_Failure
+				{
+					/uid			"tester"
+					/entity			"god"
+					/result			0
+				}
+				/IsAllowed_Success
+				{
+					/uid			"tester"
+					/entity			"cookiejar"
+					/result			1
+				}
+			}
+			/GetAllowed {
+				/GetAllowed_UnknownUser
+				{
+					/uid			"unknown"
+					/result			0
+					/resultAllowed	{}
+				}
+				/GetAllowed_Success1
+				{
+					/uid			"tester"
+					/result			1
+					/resultAllowed {
+						"changePW"
+						"resetPW"
+						"cookiejar"
+						"espressomachine"
+					}
+				}
+				/GetAllowed_Success2
+				{
+					/uid			"testerWithoutRights"
+					/result			1
+					/resultAllowed 	{}
+				}
+			}
+		}
+
+		# ---------------- tests for Mock AccessManager -----------------
+
+		/MockAM
+		{
+			/Validate 			%Tests.BasicAM.Validate
+			/AuthenticateWeak 	%Tests.BasicAM.AuthenticateWeak
+			/AuthenticateStrong {
+				/StrongAuth_Failure_UnknownUser
+				{
+					/uid			"unknown"
+					/pwd			"doesntMatter"
+					/otp			"84782021"	# correct code
+					/result			0
+					/resultRole		"guest"
+				}
+				/StrongAuth_Failure_WrongPassword
+				{
+					/uid			"tester"
+					/pwd			"wrongPasswd"
+					/otp			"84782021"	# correct code
+					/result			0
+					/resultRole		"guest"
+				}
+				/StrongAuth_Failure_WrongToken
+				{
+					/uid			"hacker"
+					/pwd			"cracked"
+					/otp			"23928832"
+					/result			0
+					/resultRole		"guest"
+				}
+				/StrongAuth_Success
+				{
+					/uid			"hacker"
+					/pwd			"cracked"
+					/otp			"84782021"
+					/result			1
+					/resultRole		"loginOk"
+				}
+			}
+			/ChangePassword 	%Tests.BasicAM.ChangePassword
+			/ResetPassword 		%Tests.BasicAM.ResetPassword
+			/IsAllowed 			%Tests.BasicAM.IsAllowed
+			/GetAllowed {
+				/GetAllowed_UnknownUser
+				{
+					/uid			"unknown"
+					/result			0
+					/resultAllowed	{}
+				}
+				/GetAllowed_Success1
+				{
+					/uid			"tester"
+					/result			1
+					/resultAllowed {
+						"cookiejar"
+						"fridge"
+						"resetPW"
+						"changePW"
+					}
+				}
+				/GetAllowed_Success2
+				{
+					/uid			"testerWithoutRights"
+					/result			1
+					/resultAllowed 	{}
+				}
+			}
+		}
+	}
+}

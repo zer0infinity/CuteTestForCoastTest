@@ -1,0 +1,18 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/Testhost {
+		/ip			"127.0.0.1"
+		/port		80
+		/port1		1919
+		/port2		2020
+		/port3		2121
+	}
+}

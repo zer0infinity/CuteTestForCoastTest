@@ -1,0 +1,231 @@
+/*
+ * Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+ * All rights reserved.
+ *
+ * This library/application is free software; you can redistribute and/or modify it under the terms of
+ * the license that is included with this library/application in the file license.txt.
+ */
+
+//--- c-library modules used ---------------------------------------------------
+
+//--- standard modules used ----------------------------------------------------
+#include "Anything.h"
+#include "Dbg.h"
+
+//--- test modules used --------------------------------------------------------
+#include "TestSuite.h"
+
+//--- module under test --------------------------------------------------------
+#include "Registry.h"
+
+//--- interface include --------------------------------------------------------
+#include "RegistryIteratorTest.h"
+
+//---- RegistryIteratorTest ----------------------------------------------------------------
+RegistryIteratorTest::RegistryIteratorTest(TString tname) : TestCase(tname)
+{
+	StartTrace(RegistryIteratorTest.Ctor);
+}
+
+RegistryIteratorTest::~RegistryIteratorTest()
+{
+	StartTrace(RegistryIteratorTest.Dtor);
+}
+
+// setup for this TestCase
+void RegistryIteratorTest::setUp ()
+{
+	StartTrace(RegistryIteratorTest.setUp);
+} // setUp
+
+void RegistryIteratorTest::tearDown ()
+{
+	StartTrace(RegistryIteratorTest.tearDown);
+} // tearDown
+
+void RegistryIteratorTest::IterateOverNullRegistry()
+{
+	StartTrace(RegistryIteratorTest.IterateOverNullRegistry);
+	{
+		Registry *r = 0;
+		String key("undefined");
+		RegistryIterator ri(r);
+		t_assertm(!ri.HasMore(), "expected RegistryIterator to have no elements");
+		t_assertm(ri.Next(key) == 0, "expected RegistryIterator to return null element");
+		t_assertm(!ri.HasMore(), "expected RegistryIterator to have no elements");
+		t_assertm(ri.RemoveNext(key) == 0, "expected RegistryIterator to return null element");
+		t_assertm(!ri.HasMore(), "expected RegistryIterator to have no elements");
+		assertEqual("undefined", key);
+	}
+	{
+		Registry *r = 0;
+		String key("undefined");
+		RegistryIterator ri(r, false);
+		t_assertm(!ri.HasMore(), "expected RegistryIterator to have no elements");
+		t_assertm(ri.Next(key) == 0, "expected RegistryIterator to return null element");
+		t_assertm(!ri.HasMore(), "expected RegistryIterator to have no elements");
+		t_assertm(ri.RemoveNext(key) == 0, "expected RegistryIterator to return null element");
+		t_assertm(!ri.HasMore(), "expected RegistryIterator to have no elements");
+		assertEqual("undefined", key);
+	}
+
+}
+
+void RegistryIteratorTest::IterateOverEmptyRegistry()
+{
+	StartTrace(RegistryIteratorTest.IterateOverEmptyRegistry);
+	{
+		Registry r("emptyforward");
+		String key("undefined");
+		RegistryIterator ri(&r);
+		t_assertm(!ri.HasMore(), "expected RegistryIterator to have no elements");
+		t_assertm(ri.Next(key) == 0, "expected RegistryIterator to return null element");
+		t_assertm(!ri.HasMore(), "expected RegistryIterator to have no elements");
+		t_assertm(ri.RemoveNext(key) == 0, "expected RegistryIterator to return null element");
+		t_assertm(!ri.HasMore(), "expected RegistryIterator to have no elements");
+		assertEqual("undefined", key);
+	}
+	{
+		Registry r("emptybackward");
+		String key("undefined");
+		RegistryIterator ri(&r, false);
+		t_assertm(!ri.HasMore(), "expected RegistryIterator to have no elements");
+		t_assertm(ri.Next(key) == 0, "expected RegistryIterator to return null element");
+		t_assertm(!ri.HasMore(), "expected RegistryIterator to have no elements");
+		t_assertm(ri.RemoveNext(key) == 0, "expected RegistryIterator to return null element");
+		t_assertm(!ri.HasMore(), "expected RegistryIterator to have no elements");
+		assertEqual("undefined", key);
+	}
+
+}
+
+void RegistryIteratorTest::IterateOverOneElementRegistry()
+{
+	StartTrace(RegistryIteratorTest.IterateOverOneElementRegistry);
+	{
+		Registry r("oneElementForward");
+		Registry r1("test");
+		r.Register("One", &r1);
+		String key("undefined");
+		RegistryIterator ri(&r);
+		t_assertm(ri.HasMore(), "expected RegistryIterator to have one element");
+		t_assertm(ri.Next(key) == &r1, "expected RegistryIterator to return null element");
+		t_assertm(!ri.HasMore(), "expected RegistryIterator to have no more elements");
+		assertEqual("One", key);
+	}
+	{
+		Registry r("oneElementBackward");
+		Registry r1("test");
+		r.Register("One", &r1);
+		String key("undefined");
+		RegistryIterator ri(&r, false);
+		t_assertm(ri.HasMore(), "expected RegistryIterator to have one element");
+		t_assertm(ri.Next(key) == &r1, "expected RegistryIterator to return null element");
+		t_assertm(!ri.HasMore(), "expected RegistryIterator to have no more elements");
+		assertEqual("One", key);
+	}
+
+}
+
+void RegistryIteratorTest::IterateOverNElementRegistry()
+{
+	StartTrace(RegistryIteratorTest.IterateOverNElementRegistry);
+	{
+		Registry r("oneElementForward");
+		Registry r1("test1");
+		Registry r2("test2");
+		r.Register("One", &r1);
+		r.Register("Two", &r2);
+		String key("undefined");
+		RegistryIterator ri(&r);
+		t_assertm(ri.HasMore(), "expected RegistryIterator to have one element");
+		t_assertm(ri.Next(key) == &r1, "expected RegistryIterator to return null element");
+		t_assertm(ri.HasMore(), "expected RegistryIterator to have no more elements");
+		assertEqual("One", key);
+		t_assertm(ri.HasMore(), "expected RegistryIterator to have one element");
+		t_assertm(ri.Next(key) == &r2, "expected RegistryIterator to return null element");
+		t_assertm(!ri.HasMore(), "expected RegistryIterator to have no more elements");
+		assertEqual("Two", key);
+	}
+	{
+		Registry r("oneElementBackward");
+		Registry r1("test1");
+		Registry r2("test2");
+		r.Register("One", &r1);
+		r.Register("Two", &r2);
+		String key("undefined");
+		RegistryIterator ri(&r, false);
+		t_assertm(ri.HasMore(), "expected RegistryIterator to have one element");
+		t_assertm(ri.Next(key) == &r2, "expected RegistryIterator to return null element");
+		t_assertm(ri.HasMore(), "expected RegistryIterator to have no more elements");
+		assertEqual("Two", key);
+		t_assertm(ri.HasMore(), "expected RegistryIterator to have one element");
+		t_assertm(ri.Next(key) == &r1, "expected RegistryIterator to return null element");
+		t_assertm(!ri.HasMore(), "expected RegistryIterator to have no more elements");
+		assertEqual("One", key);
+	}
+
+}
+
+void RegistryIteratorTest::IterateWhileRemoving()
+{
+	StartTrace(RegistryIteratorTest.IterateWhileRemoving);
+	{
+		Registry r("oneElementForward");
+		Registry r1("test1");
+		Registry r2("test2");
+		r.Register("One", &r1);
+		r.Register("Two", &r2);
+		String key("undefined");
+		RegistryIterator ri(&r);
+		t_assertm(ri.HasMore(), "expected RegistryIterator to have one element");
+		t_assertm(ri.RemoveNext(key) == &r1, "expected RegistryIterator to return null element");
+		t_assertm(ri.HasMore(), "expected RegistryIterator to have no more elements");
+		assertEqual("One", key);
+		t_assertm(ri.HasMore(), "expected RegistryIterator to have one element");
+		t_assertm(ri.RemoveNext(key) == &r2, "expected RegistryIterator to return null element");
+		t_assertm(!ri.HasMore(), "expected RegistryIterator to have no more elements");
+		assertEqual("Two", key);
+		t_assertm(ri.RemoveNext(key) == 0, "expected RegistryIterator to return null element");
+		t_assertm(!ri.HasMore(), "expected RegistryIterator to have no more elements");
+		assertEqual("Two", key);
+	}
+	{
+		Registry r("oneElementBackward");
+		Registry r1("test1");
+		Registry r2("test2");
+		r.Register("One", &r1);
+		r.Register("Two", &r2);
+		String key("undefined");
+		RegistryIterator ri(&r, false);
+		t_assertm(ri.HasMore(), "expected RegistryIterator to have one element");
+		t_assertm(ri.RemoveNext(key) == &r2, "expected RegistryIterator to return null element");
+		t_assertm(ri.HasMore(), "expected RegistryIterator to have no more elements");
+		assertEqual("Two", key);
+		t_assertm(ri.HasMore(), "expected RegistryIterator to have one element");
+		t_assertm(ri.RemoveNext(key) == &r1, "expected RegistryIterator to return null element");
+		t_assertm(!ri.HasMore(), "expected RegistryIterator to have no more elements");
+		assertEqual("One", key);
+		t_assertm(!ri.HasMore(), "expected RegistryIterator to have one element");
+		t_assertm(ri.RemoveNext(key) == 0, "expected RegistryIterator to return null element");
+		t_assertm(!ri.HasMore(), "expected RegistryIterator to have no more elements");
+		assertEqual("One", key);
+	}
+
+}
+
+// builds up a suite of testcases, add a line for each testmethod
+Test *RegistryIteratorTest::suite ()
+{
+	StartTrace(RegistryIteratorTest.suite);
+	TestSuite *testSuite = new TestSuite;
+
+	testSuite->addTest (NEW_CASE(RegistryIteratorTest, IterateOverNullRegistry));
+	testSuite->addTest (NEW_CASE(RegistryIteratorTest, IterateOverEmptyRegistry));
+	testSuite->addTest (NEW_CASE(RegistryIteratorTest, IterateOverOneElementRegistry));
+	testSuite->addTest (NEW_CASE(RegistryIteratorTest, IterateOverNElementRegistry));
+	testSuite->addTest (NEW_CASE(RegistryIteratorTest, IterateWhileRemoving));
+
+	return testSuite;
+
+} // suite
