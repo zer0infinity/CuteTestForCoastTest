@@ -88,12 +88,17 @@
 		/SSLSocket {
 			/MainSwitch	5000
 			/EnableAll	5002
-			/ReportSSLError 4003
+			/ReportSSLError 5002
 			/DoMakeStream 5002
 			/CheckPeerCertificate 5002
 			/DoCheckPeeerCertificate	5002
 		}
 		/SSLListenerPoolTest {
+			/MainSwitch	5000
+			/EnableAll	5000
+			/DoTestConnect 5002
+		}
+		/ListenerPoolTest {
 			/MainSwitch	5000
 			/EnableAll	5000
 			/DoTestConnect 5002
@@ -116,7 +121,7 @@
 		}
 		/SSLConnector {
 			/MainSwitch	5000
-			/EnableAll	5000
+			/EnableAll	5002
 		}
 		/Connector {
 			/MainSwitch	3000
