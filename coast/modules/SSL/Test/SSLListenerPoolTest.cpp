@@ -85,44 +85,53 @@ void SSLListenerPoolTest::DoTestConnect()
 	FOREACH_ENTRY("SSLListenerPoolTest", cConfig, cName) {
 		TraceAny(cConfig, "cConfig");
 		Trace(cConfig["SSLConnector"].AsLong(1));
-		if ( cConfig["SSLConnector"].AsLong(1) == 1 ) {
-			if ( cConfig["ConnectorToUse"].AsString() != "" ) {
-				// deep clone, no side effect when adding Timeout
-				Anything connectorConfig = fTestCaseConfig[cConfig["ConnectorToUse"].AsString()].DeepClone();
-				if ( cConfig.IsDefined("TimeoutToUse") ) {
-					connectorConfig["Timeout"] = cConfig["TimeoutToUse"].AsLong(0L);
-				}
-				if ( cConfig.IsDefined("UseThreadLocalMemory") ) {
-					connectorConfig["UseThreadLocalMemory"] = cConfig["UseThreadLocalMemory"].AsLong(0L);
-				}
-				SSLConnector sc(connectorConfig);
-				if ( cConfig["DoSendReceiveWithFailure"].AsLong(0) ) {
-					DoSendReceiveWithFailure(&sc, cConfig["Data"].DeepClone(),
-											 cConfig["IOSGoodAfterSend"].AsLong(0),
-											 cConfig["IOSGoodBeforeSend"].AsLong(1));
-				} else {
-					DoSendReceive(&sc, cConfig["Data"].DeepClone());
-				}
-			} else {
-				SSLConnector sc("localhost", cConfig["PortToUse"].AsLong(0), cConfig["TimeoutToUse"].AsLong(0),
-								(SSL_CTX *) NULL, (const char *) NULL, 0L, cConfig["UseThreadLocalMemory"].AsBool(0));
-				if ( cConfig["DoSendReceiveWithFailure"].AsLong(0) ) {
-					DoSendReceiveWithFailure(&sc, cConfig["Data"].DeepClone(),
-											 cConfig["IOSGoodAfterSend"].AsLong(0),
-											 cConfig["IOSGoodBeforeSend"].AsLong(1));
-				} else {
-					DoSendReceive(&sc, cConfig["Data"].DeepClone());
-				}
+		Anything data = cConfig["Data"].DeepClone();
+		long connectsToDo = cConfig["NumberOfConnects"].AsLong(1L);
+		for ( long l = 0; l < connectsToDo; l++ ) {
+			Trace("At connect Nr.: " << l);
+			if ( ((connectsToDo - 1) == l) && data.IsDefined("LastChecksToDo") ) {
+				data["ChecksToDo"] = data["LastChecksToDo"];
 			}
-		} else {
-			Trace("Using configured NON SSL connector");
-			Connector c("localhost", cConfig["PortToUse"].AsLong(0L), cConfig["TimeoutToUse"].AsLong(0L), String(), 0L, cConfig["UseThreadLocalMemory"].AsBool(0));
-			if ( cConfig["DoSendReceiveWithFailure"].AsLong(0) ) {
-				DoSendReceiveWithFailure(&c, cConfig["Data"].DeepClone(),
-										 cConfig["IOSGoodAfterSend"].AsLong(0),
-										 cConfig["IOSGoodBeforeSend"].AsLong(1));
+			if ( cConfig["SSLConnector"].AsLong(1) == 1 ) {
+				if ( cConfig["ConnectorToUse"].AsString() != "" ) {
+					// deep clone, no side effect when adding Timeout
+					Anything connectorConfig = fTestCaseConfig[cConfig["ConnectorToUse"].AsString()].DeepClone();
+					if ( cConfig.IsDefined("TimeoutToUse") ) {
+						connectorConfig["Timeout"] = cConfig["TimeoutToUse"].AsLong(0L);
+					}
+					if ( cConfig.IsDefined("UseThreadLocalMemory") ) {
+						connectorConfig["UseThreadLocalMemory"] = cConfig["UseThreadLocalMemory"].AsLong(0L);
+					}
+					SSLConnector sc(connectorConfig);
+					if ( cConfig["DoSendReceiveWithFailure"].AsLong(0) ) {
+						DoSendReceiveWithFailure(&sc, data,
+												 cConfig["IOSGoodAfterSend"].AsLong(0),
+												 cConfig["IOSGoodBeforeSend"].AsLong(1));
+					} else {
+						DoSendReceive(&sc, data);
+					}
+				} else {
+					SSLConnector sc("localhost", cConfig["PortToUse"].AsLong(0), cConfig["TimeoutToUse"].AsLong(0),
+									(SSL_CTX *) NULL, (const char *) NULL, 0L, cConfig["UseThreadLocalMemory"].AsBool(0));
+
+					if ( cConfig["DoSendReceiveWithFailure"].AsLong(0) ) {
+						DoSendReceiveWithFailure(&sc, data,
+												 cConfig["IOSGoodAfterSend"].AsLong(0),
+												 cConfig["IOSGoodBeforeSend"].AsLong(1));
+					} else {
+						DoSendReceive(&sc, data);
+					}
+				}
 			} else {
-				DoSendReceive(&c, cConfig["Data"].DeepClone());
+				Trace("Using configured NON SSL connector");
+				Connector c("localhost", cConfig["PortToUse"].AsLong(0L), cConfig["TimeoutToUse"].AsLong(0L), String(), 0L, cConfig["UseThreadLocalMemory"].AsBool(0));
+				if ( cConfig["DoSendReceiveWithFailure"].AsLong(0) ) {
+					DoSendReceiveWithFailure(&c, data,
+											 cConfig["IOSGoodAfterSend"].AsLong(0),
+											 cConfig["IOSGoodBeforeSend"].AsLong(1));
+				} else {
+					DoSendReceive(&c, data);
+				}
 			}
 		}
 	}
