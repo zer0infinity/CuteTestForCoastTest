@@ -187,6 +187,8 @@ else
            exit 1
 	fi
 fi
+
+mkdir ${target_dir}/ucerts
 cd ${target_dir}
 
 DAYS="-days $days"
@@ -221,8 +223,10 @@ Netcape use. Password is rootca1"
 ${openssl_bin} pkcs12 -passin pass:hank  -passout pass:rootca1 -export \
 	 -in ${CATOP}/$CACERT   \
          -inkey ${CATOP}/private/$CAKEY -out ${CATOP}/cacert.p12
+echo "Stripping passphrase from rootCA1key.pem"
+${openssl_bin} rsa -passin pass:hank -in ${CATOP}/private/$CAKEY -out ${target_dir}/ucerts/rootCA1key.pem
 
-		 echo "Certificate Request for SubCA1"
+echo "Certificate Request for SubCA1"
 ${openssl_bin} req -config $conf -new  -passout pass:gugus -keyout newreq.pem \
                            -out newreq.pem <<EOF1
 ${country}
@@ -260,6 +264,10 @@ echo "Stripping Certificate and private Key from Certificate for SubCA1"
 csplit -f work -s -n 2  ../newreq.pem '/-----BEGIN CERTIFICATE REQUEST-----/'
 mv work00 ${CATOP}/private/cakey.pem
 rm work01
+echo "Stripping passphrase from subCA1key.pem"
+${openssl_bin} rsa -passin pass:gugus -in ${CATOP}/private/$CAKEY -out ${target_dir}/ucerts/subCA1key.pem
+
+cp ${CATOP}/private/cakey.pem ${target_dir}/ucerts/subCA1key.pem
 
 echo "Stripping plaintext from SubCA1 Certificate"
 ${openssl_bin} x509  -in ../newcert.pem -out ${CATOP}/cacert.pem
@@ -331,15 +339,14 @@ ${openssl_bin} pkcs12 -export -passin pass:gugus -passout pass:client -clcerts \
 done
 
 echo "Building result directory  ${target_dir}/ucerts"
-mkdir ${target_dir}/ucerts
-cp  ${CATOP}/cacert.pem ${target_dir}/ucerts/subCA1.pem
+cp  ${CATOP}/cacert.pem ${target_dir}/ucerts/subCA1crt.pem
 for commonnameserver_var in ${commonnameserver}
 do
 	cp  ./newcert_${commonnameserver_var}.pem       ${target_dir}/ucerts/servercrt_${commonnameserver_var}.pem
 	cp  ./newreq_${commonnameserver_var}.plain.pem  ${target_dir}/ucerts/serverkey_${commonnameserver_var}.pem
 done
 cd ..
-cp ${CATOP}/cacert.pem ${target_dir}/ucerts/rootCA1.pem
+cp ${CATOP}/cacert.pem ${target_dir}/ucerts/rootCA1crt.pem
 cp ${CATOP}/cacert.p12 ${target_dir}/ucerts/rootCA1.p12
 cd client
 
@@ -352,14 +359,14 @@ done
 
 cd ${target_dir}/ucerts
 echo "Creating Chain without Server Cert)"
-cp  subCA1.pem     chainwoservercrt.pem
-cat rootCA1.pem >> chainwoservercrt.pem
+cp  subCA1crt.pem     chainwoservercrt.pem
+cat rootCA1crt.pem >> chainwoservercrt.pem
 for commonnameserver_var in ${commonnameserver}
 do
 	echo "Creating Full Cain file (Server/subCA1/rootCA1) for ${commonnameserver_var}"
 	cp  servercrt_${commonnameserver_var}.pem     fullchain_${commonnameserver_var}.pem
-	cat subCA1.pem     >> fullchain_${commonnameserver_var}.pem
-	cat rootCA1.pem    >> fullchain_${commonnameserver_var}.pem
+	cat subCA1crt.pem     >> fullchain_${commonnameserver_var}.pem
+	cat rootCA1crt.pem    >> fullchain_${commonnameserver_var}.pem
 done
 
 for commonnameserver_var in ${commonnameserver}
@@ -367,7 +374,7 @@ do
 	echo "Creating Chain without the CA the client trusts (without rootCA1) for ${commonnameserver_var}"
 	echo "You might use this in Frontdoor"
 	cp  servercrt_${commonnameserver_var}.pem     serverchain_${commonnameserver_var}.pem
-	cat subCA1.pem     >> serverchain_${commonnameserver_var}.pem
+	cat subCA1crt.pem     >> serverchain_${commonnameserver_var}.pem
 done
 echo "Your certificates are in ${target_dir}/ucerts"
 if [ ! -z ${copyto} ]
@@ -381,7 +388,7 @@ then
 	do
 		cp servercrt_${commonnameserver_var}.pem          ${copyto}
 		cp serverkey_${commonnameserver_var}.pem          ${copyto}
-	cp chainwoservercrt.pem   ${copyto}
+		cp chainwoservercrt.pem   ${copyto}
 		cp fullchain_${commonnameserver_var}.pem          ${copyto}
 		cp serverchain_${commonnameserver_var}.pem    	  ${copyto}
 	done
@@ -399,7 +406,7 @@ for commonnameserver_var in ${commonnameserver}
 do
 	echo "Verifying cert chain with -untrusted option for ${commonnameserver_var}"
 	${openssl_bin} verify -verbose  -purpose sslserver \
-	-CAfile rootCA1.pem -untrusted subCA1.pem servercrt_${commonnameserver_var}.pem
+	-CAfile rootCA1crt.pem -untrusted subCA1crt.pem servercrt_${commonnameserver_var}.pem
 	if [ $? -ne 0 ]
 	then
 		errorexit;
@@ -430,9 +437,9 @@ do
 	done
 done
 echo "RootCA1 Certificate is:"
-${openssl_bin}  x509  -text -in  rootCA1.pem   -noout
+${openssl_bin}  x509  -text -in  rootCA1crt.pem   -noout
 echo "subCA1  Certificate is:"
-${openssl_bin}  x509  -text -in  subCA1.pem    -noout
+${openssl_bin}  x509  -text -in  subCA1crt.pem    -noout
 for commonnameserver_var in ${commonnameserver}
 do
 	echo "Server Certificate ${commonnameserver_var} is:"
