@@ -27,6 +27,7 @@ public:
 	virtual long Port();
 	virtual String PortAsString();
 	virtual long Timeout();
+	virtual bool UseThreadLocal();
 
 protected:
 	DataAccessImpl *fMaster;

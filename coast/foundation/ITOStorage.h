@@ -281,6 +281,7 @@ protected:
 	friend class FinalCleaner;
 	friend class SocketTest;
 	friend class SSLConnectorTest;
+	friend class ConnectorTest;
 	friend class AnythingPerfTest;
 
 	//! used by mt system to redefine the hooks for mt-local storage policy

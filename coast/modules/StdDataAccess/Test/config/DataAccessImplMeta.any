@@ -25,6 +25,7 @@
 		/Port				"443"
 		/UseSSL				1
 		/Timeout			30
+		/UseThreadLocalMemory 0
 	}
 
 	/ErrorHandlingTest {
