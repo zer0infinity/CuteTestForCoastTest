@@ -150,8 +150,8 @@ iostream *SSLSocket::DoMakeStream()
 
 	// Continuing with invalid SSL structure will segfault.
 	// Returning a NULL pointer is a trifle better.
-	if ( !ssl ) {
-		String logMsg("SSL error: SSLObject/SSLContext not good. SSL module not properly configured???");
+	if ( ssl == (SSL *) NULL ) {
+		String logMsg("SSL error: SSLContext not good.");
 		SysLog::Error(logMsg);
 		return NULL;
 	}
@@ -218,23 +218,14 @@ iostream *SSLSocket::DoMakeStream()
 	SSL_SESSION *sslSessionCurrent;
 	if ( (sslSessionCurrent = SSL_get_session(ssl)) == (SSL_SESSION *) NULL) {
 		Trace("No valid SSL_SESSION created!!!");
-		String logMsg("SSL error: SSLObject/SSLContext not good. SSL module not properly configured???");
+		String logMsg("SSL error: SSLSession not good.");
 		SysLog::Error(logMsg);
+		return NULL;
 	} else {
-		Trace(" ssl session info of Current Session : " << SSLObjectManager::SessionIdAsHex(sslSessionCurrent) << ENDL
-			  << "key_arg: " << sslSessionCurrent->key_arg << ENDL
-			  << "master_key: " << sslSessionCurrent->master_key << ENDL
-			  << "session_id " << sslSessionCurrent->session_id << ENDL
-			  << "not_resumable: " << sslSessionCurrent->not_resumable << ENDL
-			  << "references: " << sslSessionCurrent->references << ENDL
-			  << "timeout: " << sslSessionCurrent->timeout << ENDL
-			  << "time: " << sslSessionCurrent->time << ENDL
-			  << "cipher: " << sslSessionCurrent->cipher->name << ENDL
-			 );
+		TraceAny(SSLObjectManager::TraceSSLSession(sslSessionCurrent), "sslSessionCurrent");
 		TraceAny(sslinfo, "SSL  info");
 	}
 //	SSL_set_shutdown(ssl, SSL_SENT_SHUTDOWN|SSL_RECEIVED_SHUTDOWN);
-
 	return new(GetAllocator()) SSLSocketStream(ssl, this);
 }
 
@@ -402,18 +393,8 @@ SSL_SESSION *SSLClientSocket::SessionResumptionHookResumeSession(SSL *ssl)
 	if (fSSLSocketArgs.SessionResumption()) {
 		sslSessionStored = SSLObjectManager::SSLOBJMGR()->GetSessionId(fClientInfo["REMOTE_ADDR"].AsString(), fClientInfo["REMOTE_PORT"].AsString());
 		if (sslSessionStored != (SSL_SESSION *) NULL) {
-			Trace(" ssl session info of Stored Session : " << SSLObjectManager::SessionIdAsHex(sslSessionStored) << ENDL
-				  << "key_arg: " << sslSessionStored->key_arg << ENDL
-				  << "master_key: " << sslSessionStored->master_key << ENDL
-				  << "session_id " << sslSessionStored->session_id << ENDL
-				  << "not_resumable: " << sslSessionStored->not_resumable << ENDL
-				  << "references: " << sslSessionStored->references << ENDL
-				  << "timeout: " << sslSessionStored->timeout << ENDL
-				  << "time: " << sslSessionStored->time << ENDL
-				  << "cipher: " << sslSessionStored->cipher->name << ENDL
-				 );
+			TraceAny(SSLObjectManager::TraceSSLSession(sslSessionStored), "sslSessionStored");
 			Trace("Trying to re-use sslSessionIdStored: " << SSLObjectManager::SessionIdAsHex(sslSessionStored));
-
 			int res = SSL_set_session(ssl, sslSessionStored);
 			ReportSSLError(GetSSLError(ssl, res));
 			Trace("Trying re-using sslSessionIdStored:  returned: " << res);

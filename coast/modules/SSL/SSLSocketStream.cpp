@@ -11,6 +11,8 @@
 //--- standard modules used ----------------------------------------------------
 #include "SSLAPI.h"
 #include "SSLSocket.h"
+#include "SSLObjectManager.h"
+
 #include "Dbg.h"
 
 #undef Free
@@ -67,17 +69,7 @@ SSLSocketStreamBuf::~SSLSocketStreamBuf()
 	if ( fContext) {
 		Trace("SSLCtx SSL_get_quiet_shutdown(): " << SSL_get_quiet_shutdown(fContext));
 		SSL_SESSION *sslSessionCurrent = SSL_get_session(fContext);
-		if ( sslSessionCurrent ) {
-			Trace(" ssl session info in  ~SSLSocketStreamBuf: " << ENDL
-				  << "key_arg: " << sslSessionCurrent->key_arg << ENDL
-				  << "master_key: " << sslSessionCurrent->master_key << ENDL
-				  << "session_id " << sslSessionCurrent->session_id << ENDL
-				  << "not_resumable: " << sslSessionCurrent->not_resumable << ENDL
-				  << "references: " << sslSessionCurrent->references << ENDL
-				  << "timeout: " << sslSessionCurrent->timeout << ENDL
-				  << "time: " << sslSessionCurrent->time << ENDL
-				  << "cipher: " << sslSessionCurrent->cipher->name << ENDL);
-		}
+		TraceAny(SSLObjectManager::TraceSSLSession(sslSessionCurrent), "sslSessionCurrent");
 		SSL_shutdown(fContext);
 		SSL_free (fContext);
 	}
