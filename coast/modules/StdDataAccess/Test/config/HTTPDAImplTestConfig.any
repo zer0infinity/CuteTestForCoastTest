@@ -8,6 +8,73 @@
 
 {
 
+	/SSLNirvanaConnectTests
+	{
+		{
+			/NumberOfRuns 10
+			/UseSSLObjectManager	0
+			/Config
+			{
+				/CurrentServer
+				{
+					/Server		"127.0.0.1"
+					/Port		55555
+					/UseSSL		1
+					/Timeout	5
+				}
+				/SSLModuleCfg
+				{
+					/SSLVerifyDepth 3
+					/KeyFileCert	"cert_files/clientkey.pem"
+					/CertFileCert	"cert_files/clientcrt.pem"
+					/SSLVerifyFailIfNoPeerCert 0
+					/SSLUseAppCallback		0
+					/SSLVerifyPeerCert		1
+					/SSLPeerCAFile "cert_files/rootCA1crt.pem"
+				}
+				/VerifyCertifiedEntity 0
+				/SessionResumption		1
+			}
+			/Results
+			{
+				/SSLCertVerifyStatus		0
+				/AppLevelCertVerifyStatus	0
+				/HTTPDAImplRet				0
+			}
+		}
+		{
+			/NumberOfRuns 10
+			/UseSSLObjectManager	1
+			/Config
+			{
+				/CurrentServer
+				{
+					/Server		"127.0.0.1"
+					/Port		55555
+					/UseSSL		1
+					/Timeout	5
+				}
+				/SSLModuleCfg
+				{
+					/SSLVerifyDepth 3
+					/KeyFileCert	"cert_files/clientkey.pem"
+					/CertFileCert	"cert_files/clientcrt.pem"
+					/SSLVerifyFailIfNoPeerCert 0
+					/SSLUseAppCallback		0
+					/SSLVerifyPeerCert		1
+					/SSLPeerCAFile "cert_files/rootCA1crt.pem"
+				}
+				/VerifyCertifiedEntity 0
+				/SessionResumption		1
+			}
+			/Results
+			{
+				/SSLCertVerifyStatus		0
+				/AppLevelCertVerifyStatus	0
+				/HTTPDAImplRet				0
+			}
+		}
+	}
 	/SSLTests
 	{
 		{

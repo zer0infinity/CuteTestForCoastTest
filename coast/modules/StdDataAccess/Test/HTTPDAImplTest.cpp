@@ -84,9 +84,41 @@ void HTTPDAImplTest::SSLTests()
 		Anything clientInfo;
 		clientInfo = tmp["ClientInfoBackends"];
 		TraceAny(clientInfo, "ClientInfo used to verify test results.");
-		assertEqual(cConfig["Results"]["SSLCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["SSLCertVerifyStatus"]["SSL"]["Ok"].AsBool(0));
-		assertEqual(cConfig["Results"]["AppLevelCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["AppLevelCertVerifyStatus"].AsBool(0));
+		assertEqual(clientInfo["SSL"]["Peer"]["SSLCertVerifyStatus"]["SSL"]["Ok"].AsBool(0), cConfig["Results"]["SSLCertVerifyStatus"].AsBool(1));
+		assertEqual(clientInfo["SSL"]["Peer"]["AppLevelCertVerifyStatus"].AsBool(0), cConfig["Results"]["AppLevelCertVerifyStatus"].AsBool(1));
 		TraceAny(ctx.GetTmpStore(), "Tempstore after");
+	}
+}
+
+void HTTPDAImplTest::SSLNirvanaConnectTests()
+{
+	StartTrace(HTTPDAImplTest.SSLTests);
+
+	FOREACH_ENTRY("SSLNirvanaConnectTests", cConfig, cName) {
+		Trace("SSLTests: At entry: " << i);
+		TraceAny(cConfig, "SSLTests config");
+		InputMapper in("SSLTests");
+		in.CheckConfig("InputMapper");
+		OutputMapper out("SSLTests");
+		HTTPDAImpl httpDAImpl("SSLTests");
+		Context ctx;
+		ctx.GetTmpStore() = cConfig["Config"].DeepClone();
+		for (long l = 0; l < cConfig["NumberOfRuns"].AsLong(0L); l++) {
+			SSL_CTX	 *sslctx = NULL;
+			// We must set our ssl context individually, otherwise SSLOBJMGR takes care of it
+			if (cConfig["UseSSLObjectManager"].AsBool(1)) {
+				sslctx = SSLModule::GetSSLClientCtx(cConfig["Config"]["SSLModuleCfg"].DeepClone());
+			}
+			ctx.GetTmpStore()["SSLContext"] = (IFAObject *) sslctx;
+			assertEquals(httpDAImpl.Exec(ctx, &in, &out), cConfig["Results"]["HTTPDAImplRet"].AsBool(0));
+			Anything tmp = ctx.GetTmpStore();
+			Anything clientInfo;
+			clientInfo = tmp["ClientInfoBackends"];
+			TraceAny(clientInfo, "ClientInfo used to verify test results.");
+			assertEqual(clientInfo["SSL"]["Peer"]["SSLCertVerifyStatus"]["SSL"]["Ok"].AsBool(0), cConfig["Results"]["SSLCertVerifyStatus"].AsBool(1));
+			assertEqual(clientInfo["SSL"]["Peer"]["AppLevelCertVerifyStatus"].AsBool(0), cConfig["Results"]["AppLevelCertVerifyStatus"].AsBool(1));
+			TraceAny(ctx.GetTmpStore(), "Tempstore after");
+		}
 	}
 }
 
@@ -119,6 +151,7 @@ Test *HTTPDAImplTest::suite ()
 	testSuite->addTest (NEW_CASE(HTTPDAImplTest, useSSLTest));
 	testSuite->addTest (NEW_CASE(HTTPDAImplTest, ErrorHandlingTest));
 	testSuite->addTest (NEW_CASE(HTTPDAImplTest, SSLTests));
+	testSuite->addTest (NEW_CASE(HTTPDAImplTest, SSLNirvanaConnectTests));
 
 	return testSuite;
 } // suite

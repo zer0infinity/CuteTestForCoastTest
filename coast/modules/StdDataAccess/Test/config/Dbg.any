@@ -9,7 +9,7 @@
 {
 
 	/LowerBound		0
-	/UpperBound		201
+	/UpperBound		211
 	/DumpAnythings  1
 
 	/DataAccessImpl {
@@ -81,8 +81,8 @@
 		/EnableAll						210
 	}
 	/HTTPDAImplTest {
-		/MainSwitch						1210
-		/EnableAll						1210
+		/MainSwitch						210
+		/EnableAll						210
 	}
 	/HTTPProcessor {
 		/MainSwitch						310
@@ -137,6 +137,10 @@
 		/EnableAll						210
 	}
 	/SSLConnector {
+		/MainSwitch						210
+		/EnableAll						210
+	}
+	/SSLObjectManager {
 		/MainSwitch						210
 		/EnableAll						210
 	}

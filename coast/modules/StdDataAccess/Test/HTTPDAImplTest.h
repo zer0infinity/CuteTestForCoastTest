@@ -45,6 +45,8 @@ protected:
 	void ErrorHandlingTest();
 
 	void SSLTests();
+
+	void SSLNirvanaConnectTests();
 };
 
 #endif
