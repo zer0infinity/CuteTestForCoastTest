@@ -262,27 +262,36 @@
 				/Reason				"Argument string (after ?) was not correctly encoded. Request not rejected."
 		}
 		# 23
+		# Override ! in argument check
+		{
+				/RequestLine 	"GET %2F?bar=%4B%69%6D-!dojo& HTTP%2F1.0\r\n"
+				/CheckUrlArgEncodingOverride	"-!&%="
+				/ExpectedRequest		"%2F?bar=%4B%69%6D-!dojo&"
+				/HasErrors			 0
+				/Reason				""
+		}
+		# 24
 		{
 				/RequestLine 	"GET /ftimage/image.gif?bar=%4B%69%6D-dojo& HTTP/1.0\r\n"
 				/ExpectedRequest		"/ftimage/image.gif?bar=%4B%69%6D-dojo&"
 				/HasErrors			 0
 				/Reason				""
 		}
-		# 24
+		# 25
 		{
 				/RequestLine 	"GET /ftimage/image.gif?bar=%u004B%u0069%u006D-dojo& HTTP/1.0\r\n"
 				/ExpectedRequest		"/ftimage/image.gif?bar=%u004B%u0069%u006D-dojo&"
 				/HasErrors			 0
 				/Reason				""
 		}
-		# 25
+		# 26
 		{
 				/RequestLine 	"GET %2Fftimage%2Fimage.gif?bar=%4B%69%6D-dojo!& HTTP%2F1.0\r\n"
 				/ExpectedRequest		"%2Fftimage%2Fimage.gif?bar=%4B%69%6D-dojo!&"
 				/HasErrors			 1
 				/Reason				"Argument string (after ?) was not correctly encoded. Request not rejected."
 		}
-		# 26
+		# 27
 		# args above hex FF
 		{
 				/RequestLine 	"GET /ftimage/image.gif?bar=%u01FF-dojo& HTTP/1.0\r\n"
@@ -290,7 +299,7 @@
 				/HasErrors			 0
 				/Reason				""
 		}
-		# 27
+		# 28
 		# Wrong path encodings, 4 cases basing on same url
 		{
 				/RequestLine 	"GET /ftimage!/image.gif HTTP/1.0\r\n"
@@ -298,20 +307,13 @@
 				/HasErrors			 1
 				/Reason				"Not all unsave chars URL encoded"
 		}
-		# 28
+		# 29
 		# Same, without url-decoding
 		{
 				/RequestLine 	"GET /ftimage!/image.gif HTTP/1.0\r\n"
 				/ExpectedRequest		""
 				/HasErrors			 1
 				/Reason				"Not all unsave chars URL encoded"
-		}
-		# 29
-		{
-				/RequestLine 	"GET /ftimage%21/image.gif HTTP/1.0\r\n"
-				/ExpectedRequest		"/ftimage%21/image.gif"
-				/HasErrors			 0
-				/Reason				""
 		}
 		# 30
 		{
@@ -322,12 +324,19 @@
 		}
 		# 31
 		{
+				/RequestLine 	"GET /ftimage%21/image.gif HTTP/1.0\r\n"
+				/ExpectedRequest		"/ftimage%21/image.gif"
+				/HasErrors			 0
+				/Reason				""
+		}
+		# 32
+		{
 				/RequestLine 	"GET /ftimage/image.gif?bar=%u01FF-dojo& HTTP/1.0\r\n"
 				/ExpectedRequest		"/ftimage/image.gif?bar=%u01FF-dojo&"
 				/HasErrors			 0
 				/Reason				""
 		}
-		# 32
+		# 33
 		# Same, without url-decoding
 		{
 				/RequestLine 	"GET /ftimage%21/image.gif HTTP/1.0\r\n"
@@ -335,7 +344,7 @@
 				/HasErrors			 0
 				/Reason				""
 		}
-		# 33
+		# 34
 		# not encoded blanks trigger end of path parsing
 		{
 				/RequestLine 	"GET /ftimage/image withblank.gif HTTP/1.0\r\n"
@@ -343,14 +352,14 @@
 				/HasErrors			 0
 				/Reason				""
 		}
-		# 34
+		# 35
 		{
 				/RequestLine 	"GET /ftimage/image%20withblank.gif HTTP/1.0\r\n"
 				/ExpectedRequest		"/ftimage/image%20withblank.gif"
 				/HasErrors			 0
 				/Reason				""
 		}
-		# 35
+		# 36
 		# this does not correspond to the rfc, blank should be encoded
 		{
 				/RequestLine 	"GET /ftimage/image withblank.gif HTTP/1.0\r\n"
@@ -358,7 +367,7 @@
 				/HasErrors			 0
 				/Reason				""
 		}
-		# 36
+		# 37
 		# \ is not allowed
 		{
 				/RequestLine 	"GET /ftimage\image/my.gif HTTP/1.0\r\n"
@@ -366,7 +375,7 @@
 				/HasErrors			 1
 				/Reason				"Not all unsave chars URL encoded"
 		}
-		# 37
+		# 38
 		# after first pass of decoding there are still encoded sequences
 		{
 				/RequestLine 	"GET /ftimage%255Cimage/my.gif HTTP/1.0\r\n"
@@ -374,7 +383,7 @@
 				/HasErrors			 1
 				/Reason				"Decoded URL path contains unsafe char"
 		}
-		# 38
+		# 39
 		# %25%35%63 evaluates to \ which is not valid
 		{
 				/RequestLine 	"GET /ftimage%25%35%63../image/my.gif HTTP/1.0\r\n"
@@ -383,7 +392,7 @@
 				/Reason				"Decoded URL path contains unsafe char"
 		}
 
-		# 39
+		# 40
 		# after first pass of decoding there are still encoded sequences
 		{
 				/RequestLine 	"GET /ftimage%255C../ HTTP/1.0\r\n"
@@ -392,7 +401,7 @@
 				/Reason				"Decoded URL path contains unsafe char"
 		}
 
-		# 40
+		# 41
 		# %%35c evaluates to \
 		{
 				/RequestLine 	"GET /ftimage%%35c../image/my.gif HTTP/1.0\r\n"
@@ -401,7 +410,7 @@
 				/Reason				"Decoded URL path contains unsafe char"
 		}
 
-		# 41
+		# 42
 		# this are encoded chars > ascii 127 (À¯À¯), thus invalid
 		{
 				/RequestLine 	"GET /ftimage%C0%AF%C0%AF/image/my.gif HTTP/1.0\r\n"
@@ -409,7 +418,7 @@
 				/HasErrors			 1
 				/Reason				"Decoded URL path contains unsafe char"
 		}
-		# 42
+		# 43
 		# unicode encoded .. sequence
 		{
 				/RequestLine 	"GET /ftimage/%u002e%u002e/image/my.gif HTTP/1.0\r\n"
@@ -417,7 +426,7 @@
 				/HasErrors			 1
 				/Reason				"Directory traversial attack"
 		}
-		# 43
+		# 44
 		# %255C evaluates to \
 		{
 				/RequestLine 	"GET /ftimage%255C../image/my.gif HTTP/1.0\r\n"
@@ -425,7 +434,7 @@
 				/HasErrors			 1
 				/Reason				"Decoded URL path contains unsafe char"
 		}
-		# 44
+		# 45
 		# after one-time url decoding there are no more escaped squences, but invalid chars (same as 41)
 		{
 				/RequestLine 	"GET /ftimage%255C..%255C..%255C../image/my.gif HTTP/1.0\r\n"
@@ -433,7 +442,7 @@
 				/HasErrors			 1
 				/Reason				"Decoded URL path contains unsafe char"
 		}
-		# 45 "old traversial attack tests"
+		# 46 "old traversial attack tests"
 		{
 				/RequestLine 	"GET /ftimage/subimage/../../etc/shadow HTTP/1.0\r\n"
 				/FixDirectoryTraversial		1
@@ -441,7 +450,7 @@
 				/HasErrors			 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 46
+		# 47
 		{
 				/RequestLine 	"GET %u002Fftimage/subimage%u002F%u002E%u002E%u002F%2E%2E%2Fetc%2Fshadow HTTP/1.0\r\n"
 				/FixDirectoryTraversial		1
@@ -449,7 +458,7 @@
 				/HasErrors			 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 47
+		# 48
 		{
 				/RequestLine 	"GET %2Fftimage/subimage/%2E.%2F%2E%2E%2Fetc%2Fshadow HTTP/1.0\r\n"
 				/FixDirectoryTraversial		1
@@ -457,7 +466,7 @@
 				/HasErrors			 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 48
+		# 49
 		{
 				/RequestLine 	"GET /ftimage/../../../etc/shadow HTTP/1.0\r\n"
 				/FixDirectoryTraversial		1
@@ -465,7 +474,7 @@
 				/HasErrors			 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 49
+		# 50
 		{
 				/RequestLine 	"GET %2Fftimage%2F%2E%2E%2F%2E%2E%2F%2E%2E%2Fetc%2Fshadow HTTP/1.0\r\n"
 				/FixDirectoryTraversial		1
@@ -473,7 +482,7 @@
 				/HasErrors			 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 50
+		# 51
 		{
 				/RequestLine 	"GET %2Fftimage%u002F%u002E%2E/%2E%2E%2F.%2E/etc%2Fshadow HTTP/1.0\r\n"
 				/FixDirectoryTraversial		1
@@ -482,7 +491,7 @@
 				/HasErrors			 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 51
+		# 52
 		{
 				/RequestLine 	"GET /../../../../etc/shadow HTTP/1.0\r\n"
 				/FixDirectoryTraversial		1
@@ -490,7 +499,7 @@
 				/HasErrors			 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 52
+		# 53
 		{
 				/RequestLine 	"GET %2F%2E%2E%2F%2E%2E%2F%2E%2E%2F%2E%2E%2Fetc%2Fshadow HTTP/1.0\r\n"
 				/FixDirectoryTraversial		1
@@ -498,7 +507,7 @@
 				/HasErrors			 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 53
+		# 54
 		{
 				/RequestLine 	"GET /ftimage/../../.. HTTP/1.0\r\n"
 				/FixDirectoryTraversial		1
@@ -506,7 +515,7 @@
 				/HasErrors 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 54
+		# 55
 		{
 				/RequestLine 	"GET /ftimage%2F%2E%u002E%2F%2E%2E%2F%2E%2E HTTP/1.0\r\n"
 				/FixDirectoryTraversial		1
@@ -514,7 +523,7 @@
 				/HasErrors 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 55
+		# 56
 		{
 				/RequestLine 	"GET /ftimage%2F%2E%2E%2F%2E%2E%2F%2E%2E HTTP/1.0\r\n"
 				/FixDirectoryTraversial		1
@@ -522,7 +531,7 @@
 				/HasErrors 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 56
+		# 57
 		{
 				/RequestLine 	"GET /ftimage/../../../ HTTP/1.0\r\n"
 				/FixDirectoryTraversial		1
@@ -530,7 +539,7 @@
 				/HasErrors 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 57
+		# 58
 		{
 				/RequestLine 	"GET /ftimage%2F%2E%u002E%2F%2E%2E%2F%u002E%2E%2F HTTP/1.0\r\n"
 				/FixDirectoryTraversial		1
@@ -538,7 +547,7 @@
 				/HasErrors 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 58
+		# 59
 		{
 				/RequestLine 	"GET /. HTTP/1.0\r\n"
 				/FixDirectoryTraversial		1
@@ -546,7 +555,7 @@
 				/HasErrors 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 59
+		# 60
 		{
 				/RequestLine 	"GET %2F%2E HTTP/1.0\r\n"
 				/FixDirectoryTraversial		1
@@ -555,7 +564,7 @@
 				/HasErrors 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 60
+		# 61
 		{
 				/RequestLine	"GET /./. HTTP/1.0\r\n"
 				/FixDirectoryTraversial		1
@@ -564,7 +573,7 @@
 				/HasErrors 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 61
+		# 62
 		{
 				/RequestLine	"GET %2F%2E%2F%2E HTTP/1.0\r\n"
 				/FixDirectoryTraversial		1
@@ -572,7 +581,7 @@
 				/HasErrors 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 62
+		# 63
 		{
 				/RequestLine	"GET /ftimage/./ HTTP/1.0\r\n"
 				/FixDirectoryTraversial		1
@@ -580,7 +589,7 @@
 				/HasErrors 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 63
+		# 64
 		{
 				/RequestLine	"GET %2Fftimage%2F%2E%2F HTTP/1.0\r\n"
 				/FixDirectoryTraversial		1
@@ -588,7 +597,7 @@
 				/HasErrors 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 64
+		# 65
 		{
 				/RequestLine	"GET /ftimage/./. HTTP/1.0\r\n"
 				/FixDirectoryTraversial		1
@@ -596,7 +605,7 @@
 				/HasErrors 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 65
+		# 66
 		{
 				/RequestLine	"GET %2Fftimage%2F%2E%2F%2E HTTP/1.0\r\n"
 				/FixDirectoryTraversial		1
@@ -604,7 +613,7 @@
 				/HasErrors 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 66
+		# 67
 		{
 				/RequestLine	 "GET /ftimage/. HTTP/1.0\r\n"
 				/FixDirectoryTraversial		1
@@ -612,7 +621,7 @@
 				/HasErrors 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 67
+		# 68
 		{
 				/RequestLine	 "GET %2Fftimage%2F%2E HTTP/1.0\r\n"
 				/FixDirectoryTraversial		1
@@ -620,7 +629,7 @@
 				/HasErrors 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 68
+		# 69
 		{
 				/RequestLine 	"GET /ftimage/foo/..?fobaz&..&..&X HTTP/1.0\r\n"
 				/FixDirectoryTraversial		1
@@ -628,7 +637,7 @@
 				/HasErrors 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 69
+		# 70
 		{
 				/RequestLine 	"GET %2Fftimage%2Ffoo%2F%2E%2E?fobaz&..&..&X HTTP/1.0\r\n"
 				/FixDirectoryTraversial		1
@@ -637,7 +646,7 @@
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
 		# Arguments are not unescaped!
-		# 70
+		# 71
 		{
 				/RequestLine 	"GET %2Fftimage%2Ffoo%2F%2E%2E?fobaz%2F%u002F&..&..&X HTTP/1.0\r\n"
 				/FixDirectoryTraversial		1
@@ -646,7 +655,7 @@
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
 		# Directory traversial cleanup, more elaborate cases
-		# 71
+		# 72
 		{
 				/RequestLine 	"GET /aa/bb/cc/dd/ee/ff/gg/hh/ii/fims-api-info/../../../../../etc/passwd HTTP/1.1\r\n"
 				/FixDirectoryTraversial		1
@@ -654,7 +663,7 @@
 				/HasErrors 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 72
+		# 73
 		{
 				/RequestLine 	"GET /aa/bb/cc/dd/ee/ff/gg/hh/ii/fims-api-info/%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2fetc/passwd HTTP/1.1\r\n"
 				/FixDirectoryTraversial		1
@@ -662,7 +671,7 @@
 				/HasErrors 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 73
+		# 74
 		{
 				/RequestLine 	"GET /../../../../../etc/passwd HTTP/1.1\r\n"
 				/FixDirectoryTraversial		1
@@ -670,7 +679,7 @@
 				/HasErrors 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 74
+		# 75
 		{
 				/RequestLine 	"GET %2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2fetc/passwd HTTP/1.1\r\n"
 				/FixDirectoryTraversial		1
@@ -678,7 +687,7 @@
 				/HasErrors 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 75
+		# 76
 		{
 				/RequestLine 	"GET ../../../../../etc/passwd HTTP/1.1\r\n"
 				/FixDirectoryTraversial		1
@@ -686,7 +695,7 @@
 				/HasErrors 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 76
+		# 77
 		{
 				/RequestLine 	"GET %2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2fetc/passwd HTTP/1.1\r\n"
 				/FixDirectoryTraversial		1
@@ -694,7 +703,7 @@
 				/HasErrors 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 77
+		# 78
 		{
 				/RequestLine 	"GET /etc%2f%2e%2fpasswd HTTP/1.1\r\n"
 				/FixDirectoryTraversial		1
@@ -703,7 +712,7 @@
 				/HasErrors 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 78
+		# 79
 		{
 				/RequestLine 	"GET /etc/./././passwd HTTP/1.1\r\n"
 				/FixDirectoryTraversial		1
@@ -712,7 +721,7 @@
 				/HasErrors 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 79
+		# 80
 		{
 				/RequestLine 	"GET /etc/./passwd HTTP/1.1\r\n"
 				/FixDirectoryTraversial		1
@@ -721,7 +730,7 @@
 				/HasErrors 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 80
+		# 81
 		{
 				/RequestLine 	"GET /etc%2f%2e%2f%2f%2e%2f%2f%2e%2fpasswd HTTP/1.1\r\n"
 				/FixDirectoryTraversial		1
@@ -729,7 +738,7 @@
 				/HasErrors 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 81
+		# 82
 		{
 				/RequestLine 	"GET ./etc/passwd HTTP/1.1\r\n"
 				/FixDirectoryTraversial		1
@@ -737,7 +746,7 @@
 				/HasErrors 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 82
+		# 83
 		{
 				/RequestLine 	"GET %2e%2fetc/passwd HTTP/1.1\r\n"
 				/FixDirectoryTraversial		1
@@ -745,7 +754,7 @@
 				/HasErrors 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 83
+		# 84
 		{
 				/RequestLine 	"GET %2e%2f%2e%2f%2e%2fetc/passwd HTTP/1.1\r\n"
 				/FixDirectoryTraversial		1
@@ -753,7 +762,7 @@
 				/HasErrors 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 84
+		# 85
 		{
 				/RequestLine 	"GET ./././etc/passwd HTTP/1.1\r\n"
 				/FixDirectoryTraversial		1
@@ -761,7 +770,7 @@
 				/HasErrors 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 85
+		# 86
 		# Url with blank
 		{
 				/RequestLine 	"GET ./././etc/passwd/my%20blank.gif HTTP/1.1\r\n"
@@ -770,7 +779,7 @@
 				/HasErrors 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 86
+		# 87
 		# URLEncodeExclude set to ("/?=")
 		{
 				/RequestLine 	"GET ./././etc/passwd/my%3Dequals.gif HTTP/1.1\r\n"
@@ -780,7 +789,7 @@
 				/HasErrors 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 87
+		# 88
 		#  multiple encodings.
 		# after first pass of decoding there are still encoded sequences
 		{
@@ -790,7 +799,7 @@
 				/HasErrors			 1
 				/Reason				"Decoded URL path contains unsafe char"
 		}
-		# 88
+		# 89
 		# multiple encodings. Only with FixDirectoryTraversial the modified request will be seen
 		# and only if there had something to be fixed in the directory structure
 		{
@@ -801,7 +810,7 @@
 				/HasErrors			 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 89
+		# 90
 		# multiple encodings.No FixDirectoryTraversial given
 		{
 				/RequestLine 	"GET /ftimage%252F../image/my.gif HTTP/1.0\r\n"
@@ -810,7 +819,7 @@
 				/HasErrors			 1
 				/Reason				"Directory traversial attack"
 		}
-		# 90
+		# 91
 		# %%%25%25%32%35%25%25%37%35002%%%u0075004%u0035 evaluates to a .
 		{
 				/RequestLine 	"GET /ftimage%252F.%%%25%25%32%35%25%25%37%35002%%%u0075004%u0035/image/my.gif HTTP/1.0\r\n"
@@ -820,7 +829,7 @@
 				/HasErrors			 1
 				/Reason				"Directory traversial attack detected and normalized. Request not rejected because of config settings"
 		}
-		# 91
+		# 92
 		# Char above hex 255  (unicode)
 		{
 				/RequestLine 	"GET /ftimage/%u0900/my.gif HTTP/1.0\r\n"
@@ -830,7 +839,7 @@
 				/HasErrors			 1
 				/Reason				"Encoded char above 0x255 detected"
 		}
-		# 92
+		# 93
 		# Normally we accept $-_.+/?% as unencoded chars in a URL
 		# Now we allow = to be unencoded
 		{
@@ -840,7 +849,7 @@
 				/HasErrors			 0
 				/Reason				""
 		}
-		# 93
+		# 94
 		# With the default $-_.+/?% the request is invalid
 		{
 				/RequestLine 	"GET /ftimage/my=equals.gif HTTP/1.0\r\n"
@@ -848,7 +857,7 @@
 				/HasErrors			 1
 				/Reason				"Not all unsave chars URL encoded"
 		}
-		# 94
+		# 95
 		# Not allowed chars in URL-path, default is "<>\"#%{}|\\^~[]`" ( after decoding )
 		# x84=ä is extended ascii
 		{
@@ -857,7 +866,7 @@
 				/HasErrors			 1
 				/Reason				"Decoded URL path contains unsafe char"
 		}
-		# 95
+		# 96
 		# Now allow  0xe4=ä 0xf6=ö
 		{
 				/RequestLine 	"GET /ftimage/%u00e4%f6umlaut.gif HTTP/1.0\r\n"
@@ -866,7 +875,7 @@
 				/HasErrors			 0
 				/Reason				""
 		}
-		# 96
+		# 97
 		# Now allow  0xe4=ä 0xf6=ö, given in \x notation
 		{
 				/RequestLine 	"GET /ftimage/%u00e4%f6umlaut.gif HTTP/1.0\r\n"
@@ -875,7 +884,7 @@
 				/HasErrors			 0
 				/Reason				""
 		}
-		# 97
+		# 98
 		# Override the default set of allowed chars in URL-path ( after decoding ) < = 0x3c
 		# by removing it from the list
 		{
@@ -885,7 +894,7 @@
 				/HasErrors			 0
 				/Reason				""
 		}
-		# 98
+		# 99
 		# this are encoded chars > ascii 127 (À¯À¯), do not complain because CheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii
 		{
 				/RequestLine 	"GET /ftimage%C0%AF%C0%AF/image/my.gif HTTP/1.0\r\n"

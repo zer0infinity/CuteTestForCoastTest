@@ -264,7 +264,7 @@ bool RequestReader::VerifyUrlArgs(String &urlArgs)
 {
 	StartTrace(RequestReader.VerifyUrlArgs);
 	// Are all character which must be URL-encoded really encoded?
-	if (URLUtils::CheckUrlArgEncoding(urlArgs) == false) {
+	if (URLUtils::CheckUrlArgEncoding(urlArgs, fProc->fCheckUrlArgEncodingOverride) == false) {
 		return false;
 	}
 	return true;

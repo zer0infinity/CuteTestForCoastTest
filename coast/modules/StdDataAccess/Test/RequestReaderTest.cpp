@@ -68,6 +68,7 @@ void RequestReaderTest::testCleanupRequestLine()
 		httpProc.fCheckUrlPathContainsUnsafeCharsOverride 					= cConfig["CheckUrlPathContainsUnsafeCharsOverride"].AsString();
 		httpProc.fCheckUrlPathContainsUnsafeCharsAsciiOverride				= cConfig["CheckUrlPathContainsUnsafeCharsAsciiOverride"].AsString();
 		httpProc.fCheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii	= cConfig["CheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii"].AsLong(0);
+		httpProc.fCheckUrlArgEncodingOverride										= cConfig["CheckUrlArgEncodingOverride"].AsString();
 		httpProc.fUrlExhaustiveDecode										= cConfig["URLExhaustiveDecode"].AsLong(0);
 		httpProc.fFixDirectoryTraversial									= cConfig["FixDirectoryTraversial"].AsLong(0);
 		httpProc.fURLEncodeExclude											= cConfig["URLEncodeExclude"].AsString("/?");
