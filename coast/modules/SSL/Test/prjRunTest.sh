@@ -17,6 +17,7 @@ function prepareTest
 	# Linking hashed certificate directory to one common place
 	rm /tmp/SSLSocketTestHashedCerts > /dev/null 2>&1
 	ln -s $PRJCONFIGPATH/cert_hashes /tmp/SSLSocketTestHashedCerts
+	chmod 777 /tmp/SSLSocketTestHashedCerts
 }
 ## call to wdtest or whatever you want to call
 function callTest
