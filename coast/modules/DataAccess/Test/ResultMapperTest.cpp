@@ -238,6 +238,34 @@ void ResultMapperTest::testPut()
 	// unknown key in script is put under Mapper.key
 	rm.Put("unknownKey", msg, ctx);
 	assertEqual(msg, tmp["Mapper"]["unknownKey"].AsString());
+
+	// another put will append the new result
+	Anything anyExp = any;
+	anyExp.Append(any);
+	rm.Put("any", any, ctx);
+	assertAnyEqual(anyExp, tmp["Mapper"]["aKey"]);
+
+	// test with special always appending mapper
+	ResultMapper arm("AppendingResultMapper");
+	arm.CheckConfig("ResultMapper");
+
+	// put any
+	anyExp = Anything();
+	anyExp.Append(any);
+	arm.Put("any", any, ctx);
+	assertAnyEqual(anyExp, tmp["AppendAnyMapper"]["aKey"]);
+	// another put will append the new result
+	anyExp.Append(any);
+	arm.Put("any", any, ctx);
+	assertAnyEqual(anyExp, tmp["AppendAnyMapper"]["aKey"]);
+
+	anyExp = Anything();
+	anyExp.Append(l);
+	arm.Put("long", l, ctx);
+	assertAnyEqual(anyExp, tmp["AppendAnyMapper"]["lKey"]);
+	anyExp.Append(l);
+	arm.Put("long", l, ctx);
+	assertAnyEqual(anyExp, tmp["AppendAnyMapper"]["lKey"]);
 }
 
 void ResultMapperTest::testEagerDoSelectScript()

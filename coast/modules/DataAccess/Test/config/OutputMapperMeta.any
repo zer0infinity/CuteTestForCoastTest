@@ -133,6 +133,16 @@
 			"strmKey"
 		}
 	}
+	/AppendingResultMapper {
+		/DestinationSlot	AppendAnyMapper
+		/AppendAnyAlways	1
+		/long {
+			"lKey"
+		}
+		/any {
+			"aKey"
+		}
+	}
 
 	/DynamicStorer {
 		/DestinationSlot "Mapper.foo.bar"

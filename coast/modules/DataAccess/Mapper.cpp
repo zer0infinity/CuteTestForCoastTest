@@ -627,7 +627,7 @@ bool ResultMapper::DoFinalPutAny(const char *key, Anything value, Context &ctx)
 
 	Anything anyTarget;
 	DoGetDestinationAny(kPrefix, anyTarget, ctx);
-	if (anyTarget.IsDefined(kKey)) {
+	if ( ( Lookup("AppendAnyAlways", 0L) != 0L ) || anyTarget.IsDefined(kKey) ) {
 		anyTarget[kKey].Append(value);
 	} else {
 		anyTarget[kKey] = value;

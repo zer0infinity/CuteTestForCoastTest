@@ -186,6 +186,13 @@ private:
 	friend class ParameterMapperTest;
 };
 //---------------- ResultMapper aka OutputMapper ------------------------------
+/*! Base class for putting results into context
+This Mapper supports behavior configuration. Put the following into OutputMapperMeta.any for the corresponding Mapper alias name.
+<B>Configuration:</B><PRE>
+{
+	/AppendAnyAlways		long		optional, default 0, if set to value != 0 Put(key, Anything) will always append the given Anything at slot key. Otherways the Anything will only be appended when the slot already exists.
+}</PRE>
+*/
 class EXPORTDECL_DATAACCESS ResultMapper: public ConfNamedObject
 {
 public:
