@@ -311,13 +311,8 @@ int MmapStreamBuf::sync()
 		ret = syncOutput();
 	}
 
-#if GEN_COMPILER==CC_GNU
-	if (ret != EOF) {
-		ret = 0;    // do we still need this????
-	}
-#endif
 	return ret;
-} // sync
+}
 
 bool MmapStreamBuf::reserve(long newlength)
 {
