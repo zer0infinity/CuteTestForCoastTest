@@ -77,7 +77,9 @@ void SimpleListenerPoolTest::DoTestConnect()
 					cConfig["PortToUse"].AsLong(0L),
 					cConfig["TimeoutToUse"].AsLong(0L));
 		if ( cConfig["DoSendReceiveWithFailure"].AsLong(0) ) {
-			DoSendReceiveWithFailure(&c, cConfig["Data"].DeepClone(), cConfig["IOSGoodAfterSend"].AsLong(0));
+			DoSendReceiveWithFailure(&c, cConfig["Data"].DeepClone(),
+									 cConfig["IOSGoodAfterSend"].AsLong(0),
+									 cConfig["IOSGoodBeforeSend"].AsLong(1));
 		} else {
 			DoSendReceive(&c, cConfig["Data"].DeepClone());
 		}
