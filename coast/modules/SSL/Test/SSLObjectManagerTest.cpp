@@ -51,14 +51,15 @@ void SSLObjectManagerTest::testCase()
 	ConfiguredTestCase::tearDown();
 }
 
-void SSLObjectManagerTest::GetCtxTest()
+void SSLObjectManagerTest::UsePassedInCtxTest()
 {
-	StartTrace(SSLObjectManagerTest.GetCtxTest);
+	StartTrace(SSLObjectManagerTest.UsePassedInCtxTest);
 	FOREACH_ENTRY("GetCtxTest", cConfig, cName) {
+		Trace("At entry: " << i);
 		SSLObjectManager::SSLOBJMGR()->RemoveCtx(cConfig["Config"]["Address"].AsString(), cConfig["Config"]["Port"].AsString());
-		Trace("GetTest: At entry: " << i);
 		TraceAny(cConfig, "cConfig");
-		for (int i = 0; i < 10; i++) {
+		for (int ii = 0; ii < 10; ii++) {
+			Trace("At run index: " << ii);
 			SSL_CTX *sslctx;
 			sslctx = SSLObjectManager::SSLOBJMGR()->GetCtx(cConfig["Config"]["Address"].AsString(), cConfig["Config"]["Port"].AsString(), cConfig["Config"]);
 			t_assert(sslctx != (SSL_CTX *) NULL);
@@ -68,7 +69,7 @@ void SSLObjectManagerTest::GetCtxTest()
 							 cConfig["Config"]["CertVerifyStringIsFilter"].AsBool(1),
 							 cConfig["Config"]["SessionResumption"].AsBool(0));
 
-			SSLConnector sc(ca, sa, sslctx, (const char *) NULL, 0L, cConfig["Config"]["UseThreadLocalMemory"].AsLong(0L));
+			SSLConnector sc(ca, sa, Anything(), sslctx, (const char *) NULL, 0L, cConfig["Config"]["UseThreadLocalMemory"].AsLong(0L));
 			iostream *s1 = sc.GetStream();
 			Socket *s = sc.Use();
 			Anything clientInfo = sc.ClientInfo();
@@ -89,17 +90,15 @@ void SSLObjectManagerTest::GetCtxTest()
 	}
 }
 
-void SSLObjectManagerTest::SessionResumptionTest()
+void SSLObjectManagerTest::ReUseCreatedCtxTest()
 {
-	StartTrace(SSLObjectManagerTest.SessionResumptionTest);
-
-	FOREACH_ENTRY("SessionResumptionTest", cConfig, cName) {
-		Trace("GetTest: At entry: " << i);
-		TraceAny(cConfig, "cConfig");
-		// empty  context built up by other test
+	StartTrace(SSLObjectManagerTest.ReUseCreatedCtxTest);
+	FOREACH_ENTRY("GetCtxTest", cConfig, cName) {
+		Trace("At entry: " << i);
 		SSLObjectManager::SSLOBJMGR()->RemoveCtx(cConfig["Config"]["Address"].AsString(), cConfig["Config"]["Port"].AsString());
-		for (int i = 0; i < 258; i++) {
-			Trace("Working at index: " << i);
+		TraceAny(cConfig, "cConfig");
+		for (int ii = 0; ii < 10; ii++) {
+			Trace("At run index: " << ii);
 			SSL_CTX *sslctx;
 			sslctx = SSLObjectManager::SSLOBJMGR()->GetCtx(cConfig["Config"]["Address"].AsString(), cConfig["Config"]["Port"].AsString(), cConfig["Config"]);
 			t_assert(sslctx != (SSL_CTX *) NULL);
@@ -109,7 +108,39 @@ void SSLObjectManagerTest::SessionResumptionTest()
 							 cConfig["Config"]["CertVerifyStringIsFilter"].AsBool(1),
 							 cConfig["Config"]["SessionResumption"].AsBool(0));
 
-			SSLConnector sc(ca, sa, sslctx, (const char *) NULL, 0L, cConfig["Config"]["UseThreadLocalMemory"].AsLong(0L));
+			SSLConnector sc(ca, sa, Anything(), NULL, (const char *) NULL, 0L, cConfig["Config"]["UseThreadLocalMemory"].AsLong(0L));
+			iostream *s1 = sc.GetStream();
+			Socket *s = sc.Use();
+			Anything clientInfo = sc.ClientInfo();
+			TraceAny(clientInfo, "clientInfo");
+			assertEqual(cConfig["Results"]["SSLCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["SSLCertVerifyStatus"]["SSL"]["Ok"].AsBool(0));
+			assertEqual(cConfig["Results"]["AppLevelCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["AppLevelCertVerifyStatus"].AsBool(0));
+			assertEqual(cConfig["Results"]["IsCertCheckPassed"].AsBool(1), sc.IsCertCheckPassed(cConfig["Config"]));
+
+			if (t_assert(s1 != NULL) && t_assert(s != NULL)) {
+				TraceAny(s->ClientInfo(), "peer info");
+				(*s1) << "GET / HTTP/1.0" << ENDL << ENDL << flush;
+				String reply;
+				getline(*s1, reply);
+				t_assert(!!(*s1));
+				assertEqual( "HTTP", reply.SubString(0, 4)) ;
+			}
+		}
+	}
+}
+
+void SSLObjectManagerTest::SessionResumptionWithMinimumConfigTest()
+{
+	StartTrace(SSLObjectManagerTest.SessionResumptionWithMinimumConfigTest);
+
+	FOREACH_ENTRY("SessionResumptionTest", cConfig, cName) {
+		Trace("At entry: " << i);
+		TraceAny(cConfig, "cConfig");
+		// empty  context built up by other test
+		SSLObjectManager::SSLOBJMGR()->RemoveCtx(cConfig["Config"]["Address"].AsString(), cConfig["Config"]["Port"].AsString());
+		for (int ii = 0; ii < 258; ii++) {
+			Trace("At run index: " << ii);
+			SSLConnector sc(cConfig["Config"]);
 			iostream *s1 = sc.GetStream();
 			Socket *s = sc.Use();
 			Anything clientInfo(sc.ClientInfo());
@@ -117,7 +148,51 @@ void SSLObjectManagerTest::SessionResumptionTest()
 			assertEqual(cConfig["Results"]["SSLCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["SSLCertVerifyStatus"]["SSL"]["Ok"].AsBool(0));
 			assertEqual(cConfig["Results"]["AppLevelCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["AppLevelCertVerifyStatus"].AsBool(0));
 			assertEqual(cConfig["Results"]["IsCertCheckPassed"].AsBool(1), sc.IsCertCheckPassed(cConfig["Config"]));
-			if ( i == 0 || i == 256 ) {
+			if ( ii == 0 || ii == 256 ) {
+				assertEquals(0, clientInfo["SSL"]["SessionIsResumed"].AsLong(1));
+			} else {
+				assertEquals(1, clientInfo["SSL"]["SessionIsResumed"].AsLong(0));
+			}
+			if (t_assert(s1 != NULL) && t_assert(s != NULL)) {
+				(*s1) << "GET / HTTP/1.0" << ENDL << ENDL << flush;
+				String reply;
+				getline(*s1, reply);
+				t_assert(!!(*s1));
+				assertEqual( "HTTP", reply.SubString(0, 4)) ;
+			}
+		}
+	}
+}
+
+void SSLObjectManagerTest::SessionResumptionTest()
+{
+	StartTrace(SSLObjectManagerTest.SessionResumptionTest);
+
+	FOREACH_ENTRY("SessionResumptionTest", cConfig, cName) {
+		Trace("At entry: " << i);
+		TraceAny(cConfig, "cConfig");
+		// empty  context built up by other test
+		SSLObjectManager::SSLOBJMGR()->RemoveCtx(cConfig["Config"]["Address"].AsString(), cConfig["Config"]["Port"].AsString());
+		for (int ii = 0; ii < 258; ii++) {
+			Trace("At run index: " << ii);
+			SSL_CTX *sslctx;
+			sslctx = SSLObjectManager::SSLOBJMGR()->GetCtx(cConfig["Config"]["Address"].AsString(), cConfig["Config"]["Port"].AsString(), cConfig["Config"]);
+			t_assert(sslctx != (SSL_CTX *) NULL);
+			ConnectorArgs ca(cConfig["Config"]["Address"].AsString(), cConfig["Config"]["Port"].AsLong());
+			SSLSocketArgs sa(cConfig["Config"]["VerifyCertifiedEntity"].AsBool(1),
+							 cConfig["Config"]["CertVerifyString"].AsString(),
+							 cConfig["Config"]["CertVerifyStringIsFilter"].AsBool(1),
+							 cConfig["Config"]["SessionResumption"].AsBool(0));
+
+			SSLConnector sc(ca, sa, Anything(), sslctx, (const char *) NULL, 0L, cConfig["Config"]["UseThreadLocalMemory"].AsLong(0L));
+			iostream *s1 = sc.GetStream();
+			Socket *s = sc.Use();
+			Anything clientInfo(sc.ClientInfo());
+			TraceAny(clientInfo, "clientInfo");
+			assertEqual(cConfig["Results"]["SSLCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["SSLCertVerifyStatus"]["SSL"]["Ok"].AsBool(0));
+			assertEqual(cConfig["Results"]["AppLevelCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["AppLevelCertVerifyStatus"].AsBool(0));
+			assertEqual(cConfig["Results"]["IsCertCheckPassed"].AsBool(1), sc.IsCertCheckPassed(cConfig["Config"]));
+			if ( ii == 0 || ii == 256 ) {
 				assertEquals(0, clientInfo["SSL"]["SessionIsResumed"].AsLong(1));
 			} else {
 				assertEquals(1, clientInfo["SSL"]["SessionIsResumed"].AsLong(0));
@@ -138,12 +213,12 @@ void SSLObjectManagerTest::NoSessionResumptionTest()
 	StartTrace(SSLObjectManagerTest.NoSessionResumptionTest);
 
 	FOREACH_ENTRY("NoSessionResumptionTest", cConfig, cName) {
-		Trace("GetTest: At entry: " << i);
+		Trace("At entry: " << i);
 		TraceAny(cConfig, "cConfig");
 		// empty  context built up by other test
 		SSLObjectManager::SSLOBJMGR()->RemoveCtx(cConfig["Config"]["Address"].AsString(), cConfig["Config"]["Port"].AsString());
-		for (int i = 0; i < 10; i++) {
-			Trace("Working at index: " << i);
+		for (int ii = 0; ii < 10; ii++) {
+			Trace("At run index: " << ii);
 			SSL_CTX *sslctx;
 			sslctx = SSLObjectManager::SSLOBJMGR()->GetCtx(cConfig["Config"]["Address"].AsString(), cConfig["Config"]["Port"].AsString(), cConfig["Config"]);
 			t_assert(sslctx != (SSL_CTX *) NULL);
@@ -153,7 +228,7 @@ void SSLObjectManagerTest::NoSessionResumptionTest()
 							 cConfig["Config"]["CertVerifyStringIsFilter"].AsBool(1),
 							 cConfig["Config"]["SessionResumption"].AsBool(0));
 
-			SSLConnector sc(ca, sa, sslctx, (const char *) NULL, 0L, cConfig["Config"]["UseThreadLocalMemory"].AsLong(0L));
+			SSLConnector sc(ca, sa, Anything(), sslctx, (const char *) NULL, 0L, cConfig["Config"]["UseThreadLocalMemory"].AsLong(0L));
 			iostream *s1 = sc.GetStream();
 			Socket *s = sc.Use();
 			Anything clientInfo(sc.ClientInfo());
@@ -177,10 +252,11 @@ void SSLObjectManagerTest::GetDefaultCtxTest()
 {
 	StartTrace(SSLObjectManagerTest.GetDefaultCtxTest);
 	FOREACH_ENTRY("GetDefaultCtxTest", cConfig, cName) {
+		Trace("At entry: " << i);
 		SSLObjectManager::SSLOBJMGR()->RemoveCtx(cConfig["Address"].AsString(), cConfig["Port"].AsString());
-		Trace("GetTest: At entry: " << i);
 		TraceAny(cConfig, "cConfig");
-		for (int i = 0; i < 10; i++) {
+		for (int ii = 0; ii < 10; ii++) {
+			Trace("At run index: " << ii);
 			SSL_CTX *sslctx;
 			sslctx = SSLObjectManager::SSLOBJMGR()->GetCtx(cConfig["Address"].AsString(), cConfig["Port"].AsString(), Anything());
 			t_assert(sslctx != (SSL_CTX *) NULL);
@@ -207,7 +283,7 @@ void SSLObjectManagerTest::SessionIdTest()
 	StartTrace(SSLObjectManagerTest.SessionIdTest);
 	{
 		FOREACH_ENTRY("SessionIdTest", cConfig, cName) {
-			Trace("GetTest: At entry: " << i);
+			Trace("At entry: " << i);
 			SSL_SESSION sslSession;
 			sslSession.session_id_length = sizeof(sslSession);
 			long expected(cConfig["Version"].AsLong(0));
@@ -228,10 +304,12 @@ Test *SSLObjectManagerTest::suite ()
 	TestSuite *testSuite = new TestSuite;
 
 //	ADD_CASE(testSuite, SSLObjectManagerTest, testCase);
-	ADD_CASE(testSuite, SSLObjectManagerTest, GetCtxTest);
+	ADD_CASE(testSuite, SSLObjectManagerTest, UsePassedInCtxTest);
+	ADD_CASE(testSuite, SSLObjectManagerTest, ReUseCreatedCtxTest);
 	ADD_CASE(testSuite, SSLObjectManagerTest, GetDefaultCtxTest);
 	ADD_CASE(testSuite, SSLObjectManagerTest, SessionIdTest);
 	ADD_CASE(testSuite, SSLObjectManagerTest, SessionResumptionTest);
+	ADD_CASE(testSuite, SSLObjectManagerTest, SessionResumptionWithMinimumConfigTest);
 	ADD_CASE(testSuite, SSLObjectManagerTest, NoSessionResumptionTest);
 	return testSuite;
 }
