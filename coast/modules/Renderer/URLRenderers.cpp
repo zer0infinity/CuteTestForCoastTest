@@ -11,6 +11,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "SecurityModule.h"
+#include "URLUtils.h"
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
@@ -203,11 +204,16 @@ void URLPrinter::BuildPrivateState(ostream &, Context &c, const ROAnything &conf
 
 void URLPrinter::AppendEncodedState(ostream &reply, Context &c, const Anything &state, const char *argName)
 {
+	StartTrace(URLPrinter.AppendEncodedState);
 	// encode state string
 	String s(argName);
 	s.Append("=");
 	SecurityModule::ScrambleState(s, state);
-	reply << s;
+	// now we need to encode the string according to RFC1738/1808
+	Trace("state before encoding [" << s << "]");
+	String strEncoded = URLUtils::urlEncode(s);
+	Trace("state after  encoding [" << strEncoded << "]");
+	reply << strEncoded;
 }
 
 void URLPrinter::GetState(Anything &state, Context &c)
