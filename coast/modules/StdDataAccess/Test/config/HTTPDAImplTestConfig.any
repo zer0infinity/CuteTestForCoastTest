@@ -28,7 +28,7 @@
 					/SSLVerifyFailIfNoPeerCert 0
 					/SSLUseAppCallback		0
 					/SSLVerifyPeerCert		1
-					/SSLPeerCAFile "cert_files/rootCA1.pem"
+					/SSLPeerCAFile "cert_files/rootCA1crt.pem"
 				}
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
@@ -60,7 +60,7 @@
 					/SSLVerifyFailIfNoPeerCert 0
 					/SSLUseAppCallback		0
 					/SSLVerifyPeerCert		1
-					/SSLPeerCAFile "cert_files/rootCA1.pem"
+					/SSLPeerCAFile "cert_files/rootCA1crt.pem"
 				}
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
@@ -92,7 +92,7 @@
 					/SSLVerifyFailIfNoPeerCert 0
 					/SSLUseAppCallback		0
 					/SSLVerifyPeerCert		1
-					/SSLPeerCAFile "cert_files/rootCA1.pem"
+					/SSLPeerCAFile "cert_files/rootCA1crt.pem"
 				}
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
@@ -124,7 +124,7 @@
 					/SSLVerifyFailIfNoPeerCert 0
 					/SSLUseAppCallback		0
 					/SSLVerifyPeerCert		1
-					/SSLPeerCAFile "cert_files/rootCA1.pem"
+					/SSLPeerCAFile "cert_files/rootCA1crt.pem"
 				}
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 1
@@ -156,7 +156,7 @@
 					/SSLVerifyFailIfNoPeerCert 0
 					/SSLUseAppCallback		0
 					/SSLVerifyPeerCert		1
-					/SSLPeerCAFile "cert_files/rootCA1.pem"
+					/SSLPeerCAFile "cert_files/rootCA1crt.pem"
 				}
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 1
