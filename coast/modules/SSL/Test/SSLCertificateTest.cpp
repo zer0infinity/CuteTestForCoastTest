@@ -54,7 +54,7 @@ void SSLCertificateTest::clientCertificateTest()
 	StartTrace(SSLCertificateTest.clientCertificateTest);
 	FOREACH_ENTRY("ClientCertificateTest", cConfig, cName) {
 		Trace("ClientCertificateTest: At entry: " << i);
-		SSLConnector sc(cConfig["Config"]); // add a new connector type using a config
+		SSLConnector sc(cConfig["Config"], (SSL_CTX *) NULL); // add a new connector type using a config
 		iostream *s1 = sc.GetStream();
 		Socket *s = sc.Use();
 		Anything clientInfo(sc.ClientInfo());
@@ -80,7 +80,7 @@ void SSLCertificateTest::checkServerCertificateTest()
 {
 	StartTrace(SSLCertificateTest.checkServerCertificateTest);
 	ROAnything scfg(fConfig["RemoteCertificateHost"]);
-	SSLConnector sc(scfg); // add a new connector type using a config
+	SSLConnector sc(scfg, (SSL_CTX *) NULL); // add a new connector type using a config
 	iostream *s1 = sc.GetStream();
 	Socket *s = sc.Use();
 	if (t_assert(s1 != NULL) && t_assert(s != NULL)) {
