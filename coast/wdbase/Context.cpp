@@ -34,37 +34,44 @@ const String Context::DebugStoreSeparator("<!--separator 54353021345321784456 --
 //---- Context ------------------------------------------------------------------
 Context::Context() :
 	fSession(0),
-	fSessionStore(MetaThing(Storage::Global()), Storage::Global()),
+	fSessionStoreGlobal(MetaThing(Storage::Global()), Storage::Global()),
+	fSessionStoreCurrent(MetaThing(Storage::Current()), Storage::Current()),
 	fStackSz(0),
 	fStoreSz(0),
 	fRequest(),
 	fSocket(0),
 	fMockStream(0),
-	fUnlockSession(false)
+	fUnlockSession(false),
+	fCopySessionStore(false)
 {
 	InitTmpStore();
 }
 Context::Context(Anything &request) :
 	fSession(0),
-	fSessionStore(MetaThing(Storage::Global()), Storage::Global()),
+	fSessionStoreGlobal(MetaThing(Storage::Global()), Storage::Global()),
+	fSessionStoreCurrent(MetaThing(Storage::Current()), Storage::Current()),
 	fStackSz(0),
 	fStoreSz(0),
 	fRequest(request),
 	fSocket(0),
 	fMockStream(0),
-	fUnlockSession(false)
+	fUnlockSession(false),
+	fCopySessionStore(false)
+
 {
 	InitTmpStore();
 	fLanguage = LocalizationUtils::FindLanguageKey(*this, Lookup("Language", "D"));
 }
 Context::Context(Socket *socket)  :
 	fSession(0),
-	fSessionStore(MetaThing(Storage::Global()), Storage::Global()),
+	fSessionStoreGlobal(MetaThing(Storage::Global()), Storage::Global()),
+	fSessionStoreCurrent(MetaThing(Storage::Current()), Storage::Current()),
 	fStackSz(0),
 	fStoreSz(0),
 	fSocket(socket),
 	fMockStream(0),
-	fUnlockSession(false)
+	fUnlockSession(false),
+	fCopySessionStore(false)
 {
 	// the arguments we get for this request
 	if ( fSocket ) {
@@ -75,12 +82,14 @@ Context::Context(Socket *socket)  :
 }
 Context::Context(iostream *stream)  :
 	fSession(0),
-	fSessionStore(MetaThing(Storage::Global()), Storage::Global()),
+	fSessionStoreGlobal(MetaThing(Storage::Global()), Storage::Global()),
+	fSessionStoreCurrent(MetaThing(Storage::Current()), Storage::Current()),
 	fStackSz(0),
 	fStoreSz(0),
 	fSocket(0),
 	fMockStream(stream),
-	fUnlockSession(false)
+	fUnlockSession(false),
+	fCopySessionStore(false)
 {
 	// the arguments we get for this request
 	InitTmpStore();
@@ -90,12 +99,14 @@ Context::Context(const Anything &env, const Anything &query, Server *server, Ses
 	:	fSession(0), // don't initialize because InitSession would interpret it as same session and not increment
 		// session's ref count while the destructor decrements it. Init(s) does the needed intitialization
 		// while InitSession handels the refcounting correctly.
-		fSessionStore(MetaThing(Storage::Global()), Storage::Global()),
+		fSessionStoreGlobal(MetaThing(Storage::Global()), Storage::Global()),
+		fSessionStoreCurrent(MetaThing(Storage::Current()), Storage::Current()),
 		fStackSz(0),
 		fStoreSz(0),
 		fSocket(0),
 		fMockStream(0),
-		fUnlockSession(false)
+		fUnlockSession(false),
+		fCopySessionStore(false)
 {
 
 	InitSession(s);
@@ -129,7 +140,7 @@ void Context::InitSession(Session *s)
 	ROAnything contextAny;
 	if (Lookup("Context", contextAny)) {
 		fUnlockSession = contextAny["UnlockSession"].AsBool(false);
-		copySessionStore = contextAny["CopySessionStore"].AsBool(false);
+		fCopySessionStore = contextAny["CopySessionStore"].AsBool(false);
 	}
 
 	Trace("CopySessionStore: " << (copySessionStore ? "true" : "false"));
@@ -138,7 +149,7 @@ void Context::InitSession(Session *s)
 	Trace("session is " << (sessionIsDifferent ? "" : "not ") << "different");
 
 	Session *saveSession = fSession;
-	if (sessionIsDifferent || copySessionStore) {
+	if (sessionIsDifferent || fCopySessionStore) {
 		// first handle pushed session because it might get deleted underway
 		fSession = s;
 		if (fSession) {
@@ -147,15 +158,19 @@ void Context::InitSession(Session *s)
 			if (sessionIsDifferent) {
 				fSession->Ref();
 			}
-			if (copySessionStore) {
-				fSessionStore = fSession->GetStoreGlobal().DeepClone(fSessionStore.GetAllocator());
+			if (fCopySessionStore) {
+				fSessionStoreCurrent = fSession->GetStoreGlobal().DeepClone(fSessionStoreCurrent.GetAllocator());
 				Trace("InitSession new s: About to unlock <" << fSession->GetId() << ">");
 			} else {
-				fSessionStore = fSession->GetStoreGlobal();
+				fSessionStoreGlobal = fSession->GetStoreGlobal();
 			}
 			UnlockSession();
 		} else {
-			fSessionStore = MetaThing(fSessionStore.GetAllocator());
+			if (fCopySessionStore) {
+				fSessionStoreCurrent = MetaThing(fSessionStoreCurrent.GetAllocator());
+			} else {
+				fSessionStoreGlobal = MetaThing(fSessionStoreGlobal.GetAllocator());
+			}
 		}
 		if (saveSession) {
 			if (sessionIsDifferent) {
@@ -238,12 +253,12 @@ Anything &Context::GetEnvStore()
 
 Anything &Context::GetRoleStoreGlobal()
 {
-	return fSessionStore["RoleStore"];
+	return fCopySessionStore ? fSessionStoreCurrent["RoleStore"] : fSessionStoreGlobal["RoleStore"];
 }
 
 Anything &Context::GetSessionStore()
 {
-	return fSessionStore;
+	return fCopySessionStore ? fSessionStoreCurrent : fSessionStoreGlobal;
 }
 
 Anything &Context::GetTmpStore()
@@ -688,13 +703,24 @@ bool Context::LookupStores(const char *key, ROAnything &result, char delim, char
 		}
 	}
 
-	if (ROAnything(fSessionStore)["RoleStore"].LookupPath(result, key, delim, indexdelim)) {
-		Trace("found in RoleStore");
-		return true;
-	}
-	if (ROAnything(fSessionStore).LookupPath(result, key, delim, indexdelim)) {
-		Trace("found in SessionStore");
-		return true;
+	if ( fCopySessionStore ) {
+		if (ROAnything(fSessionStoreCurrent)["RoleStore"].LookupPath(result, key, delim, indexdelim)) {
+			Trace("found in RoleStore [Current]");
+			return true;
+		}
+		if (ROAnything(fSessionStoreCurrent).LookupPath(result, key, delim, indexdelim)) {
+			Trace("found in SessionStore [Current]");
+			return true;
+		}
+	} else {
+		if (ROAnything(fSessionStoreGlobal)["RoleStore"].LookupPath(result, key, delim, indexdelim)) {
+			Trace("found in RoleStore [Global]");
+			return true;
+		}
+		if (ROAnything(fSessionStoreGlobal).LookupPath(result, key, delim, indexdelim)) {
+			Trace("found in SessionStore [Global]");
+			return true;
+		}
 	}
 	Trace("failed");
 	return false;
@@ -786,12 +812,12 @@ bool Context::GetStore(const char *key, Anything &store)
 	}
 
 	if (key && strcmp(key, "Session") == 0) {
-		store = fSessionStore;
+		store = fCopySessionStore ? fSessionStoreCurrent : fSessionStoreGlobal;
 		return true;
 	}
 
 	if (key && strcmp(key, "Role") == 0) {
-		store = fSessionStore["RoleStore"];
+		store = fCopySessionStore ? fSessionStoreCurrent["RoleStore"] : fSessionStoreGlobal["RoleStore"];
 		return true;
 	}
 

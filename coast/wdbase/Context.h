@@ -279,8 +279,9 @@ protected:
 	//! the session of this context
 	Session *fSession;
 
-	//! the reference to the session store
-	Anything fSessionStore;
+	//! the reference to the session store (Storage::Global and Storage::Current)
+	Anything fSessionStoreGlobal;
+	Anything fSessionStoreCurrent;
 
 	//! cached language setting
 	String fLanguage;
@@ -317,6 +318,10 @@ protected:
 	//!leave session locked or unlock it (in that case, U are responsible
 	//! what U do with the Sessionstore.
 	bool fUnlockSession;
+
+	//!if set, make a copy of the session store. This allows concurrent requests using the same session
+	//!because lookups targeting the session store don't need a lock.
+	bool fCopySessionStore;
 
 private:
 	Context(const Context &);
