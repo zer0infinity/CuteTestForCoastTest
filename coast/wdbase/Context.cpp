@@ -142,7 +142,7 @@ void Context::InitSession(Session *s)
 		fCopySessionStore = contextAny["CopySessionStore"].AsBool(false);
 	}
 
-	Trace("CopySessionStore: " << (copySessionStore ? "true" : "false"));
+	Trace("CopySessionStore: " << (fCopySessionStore ? "true" : "false"));
 	Trace("UnlockSession: " << (fUnlockSession ? "true" : "false"));
 	Trace("s = " << (long)(void *)s << " fSession = " << (long)(void *)fSession );
 	Trace("session is " << (sessionIsDifferent ? "" : "not ") << "different");
