@@ -62,6 +62,8 @@ void ROAnyConfNamedObjectLookupAdapterTest::testLookup()
 	TestConfNamedObj *tcfno = TestConfNamedObj::FindTestConfNamedObj("TestConfNamedObj");
 	t_assertm(tcfno != NULL, "Ooops, Expected TestConfNamedObj pointer not to be null!");
 
+	tcfno->CheckConfig("TestConfNamedObj", true);
+
 	base["hank"] = "bar";
 	base["long"] = 31416L;
 	base["compo"]["site"] = "bar";
@@ -73,7 +75,9 @@ void ROAnyConfNamedObjectLookupAdapterTest::testLookup()
 	assertEquals("bar", la.Lookup("hank", "X"));
 	assertEquals("bar", la.Lookup("compo@site", "X", '@'));
 	t_assert(31416L == la.Lookup("long", 0L));
+	cerr << "testConfNamedObject" << "1" << endl;
 	assertEquals("X", la.Lookup("fox", "X"));
+	cerr << "testConfNamedObject" << "2" << endl;
 
 	//Test lookups aiming at the ConfiguredNamedObject's config
 	assertEquals("FromConfigString", la.Lookup("FromConfigString", "X"));
@@ -120,7 +124,9 @@ void ROAnyConfNamedObjectLookupAdapterTest::testNoConfNamedObject()
 	assertEquals("bar", la.Lookup("hank", "X"));
 	assertEquals("bar", la.Lookup("compo@site", "X", '@'));
 	t_assert(31416L == la.Lookup("long", 0L));
+	cerr << "NOtestNoConfNamedObject" << "1" << endl;
 	assertEquals("X", la.Lookup("fox", "X"));
+	cerr << "NOtestNoConfNamedObject" << "2" << endl;
 
 	//Test lookups aiming at the ConfiguredNamedObject's config
 	assertEquals("XXXX", la.Lookup("FromConfigString", "XXXX"));
