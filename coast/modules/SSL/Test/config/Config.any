@@ -5,7 +5,6 @@
 # This library/application is free software; you can redistribute and/or modify it under the terms of
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
-
 {
 
 #--- Modules ------------------------------------
@@ -22,16 +21,14 @@
 			TCP5011
 		}
 	}
-
 		# -- Config for Acceptor Factories  in  ListenerPoolTest
 	# These are the SLLServerSocket test cases.
 		/TCP5010 {
-			/Address "127.0.0.1"
-			/Port	5010
+		/Address "127.0.0.1"
+		/Port	5010
 		/KeyFileServer	"cert_files/clientkey.pem"
 		/CertFileServer	"cert_files/clientcrt.pem"
 		}
-
 	# Expecting send/recieve to fail
 		/TCP5011 {
 			/Port	5011
@@ -117,7 +114,6 @@
 		/SSLVerifyPeerCert 1
 		/SSLVerifyFailIfNoPeerCert 1
 	}
-
 	# Expecting send/recieve to fail because of SSLVerifyDepth
 	/TCP5019 {
 		/Port	5019
@@ -144,7 +140,6 @@
 		/CertVerifyStringIsFilter 0
 		/CertVerifyString		"emailAddress=rootca1@wildplanet.com,CN=RootCA1,OU=CertIssueing,O=RootCA1,L=ZH,ST=ZH,C=CH"
 		}
-
 	/PoolTest {
 		# Check peer's (server) cert, don't show cert to peer
 		/Connector5010 {
@@ -170,6 +165,7 @@
 		/Connector5013 {
 			/Address "127.0.0.1"
 			/Port 5013
+			/SessionResumption 1
 			/KeyFileClient	"cert_files/clientkey.pem"
 			/CertFileClient	"cert_files/clientcrt.pem"
 			/SSLVerifyDepth 2
@@ -279,6 +275,7 @@
 		{
 			/DoSendReceiveWithFailure 0
 			/SSLConnector		1
+			/NumberOfConnects	2
 			/ConnectorToUse	"Connector5013"
 			/Data
 			{
@@ -288,6 +285,13 @@
 					/"SSL.Peer.AppLevelCertVerifyStatus" 1
 					/"SSL.Peer.SSLCertVerifyStatus.SSL.Ok" 1
 					/"SSL.Peer.Whole"	"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ClientSite,L=ZH,ST=ZH,C=CH"
+				}
+				/LastChecksToDo
+				{
+					/"SSL.Peer.AppLevelCertVerifyStatus" 1
+					/"SSL.Peer.SSLCertVerifyStatus.SSL.Ok" 1
+					/"SSL.Peer.Whole"	"emailAddress=bondo.hsr.ch@wildplanet.com,CN=bondo.hsr.ch,OU=CertIssueing,O=ClientSite,L=ZH,ST=ZH,C=CH"
+					/"SSL.SessionIsResumed" 1
 				}
 			}
 		}
@@ -306,7 +310,6 @@
 				}
 			}
 		}
-
 		{
 			/DoSendReceiveWithFailure 0
 			/SSLConnector		1
@@ -408,7 +411,6 @@
 				}
 			}
 		}
-
 #	# a SSL Connector to an non-SSL-Acceptor
 		{
 			/DoSendReceiveWithFailure 1
@@ -457,7 +459,6 @@
 			/DoSendReceiveWithFailure 1
 			/IOSGoodBeforeSend			0
 			/IOSGoodAfterSend			0
-
 			/SSLConnector		1
 			/ConnectorToUse		"Connector5018"
 			/TimeoutToUse		1000
