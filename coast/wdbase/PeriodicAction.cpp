@@ -6,17 +6,15 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- c-library modules used ---------------------------------------------------
-#include <stdlib.h>
+//--- interface include --------------------------------------------------------
+#include "PeriodicAction.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "Anything.h"
 #include "Context.h"
 #include "Action.h"
 #include "Dbg.h"
 
-//--- interface include --------------------------------------------------------
-#include "PeriodicAction.h"
+//--- c-library modules used ---------------------------------------------------
 
 //--- PeriodicAction ----
 PeriodicAction::PeriodicAction(const String &action, long waitTime)
@@ -34,22 +32,17 @@ void PeriodicAction::Run()
 {
 	StartTrace(PeriodicAction.Run);
 	while ( IsRunning() ) {
-
-		Trace("Waiting for next period");
+		Trace("Waiting " << fWaitTime << "s for next period");
 		// wait for the next cycle due
 		// or the termination signal
-		CheckRunningState(Thread::eWorking, fWaitTime);
-		Trace("Starting work");
-
-		// check the alive flag
-		if (!IsRunning()) {
-			return;
-		} else {
-
-			Trace("calling " << fAction);
+		if ( !CheckState(Thread::eTerminationRequested, fWaitTime) && IsRunning() ) {
+			Trace("Starting work and calling Action [" << fAction << "]");
 			Context ctx;
 			ctx.Process(fAction);
-			SetReady();
+			if ( IsRunning() ) {
+				Trace("signalling Ready state");
+				SetReady();
+			}
 		}
 	}
 }
