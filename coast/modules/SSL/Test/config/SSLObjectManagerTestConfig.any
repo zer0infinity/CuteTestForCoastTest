@@ -54,7 +54,37 @@
 			/SSLUseAppCallback		1
 			/SSLPeerCAFile "cert_files/rootCA1.pem"
 			/VerifyCertifiedEntity 1
-				/SessionResumption 1
+			/SessionResumption 1
+			/CertVerifyStringIsFilter 0
+					/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+			}
+			/Results
+			{
+				/SSLCertVerifyStatus		1
+				/AppLevelCertVerifyStatus	1
+				/IsCertCheckPassed			1
+			}
+		}
+	}
+	/NoSessionResumptionTest
+	{
+		{
+			/Config
+			{
+				/Address	"localhost"
+				/Port		443
+####			/Port		4433					# Use opensll s_server with options
+####												  -cert servercert.pem -key serverkey.pem -Verify 4 -CAfile fullchain.pem -debug
+####												  and type "HTTP" as the server's response in GetCtxTest.
+				/SSLClientSessionTimeout	1
+			/SSLVerifyDepth 3
+				/KeyFileClient	"cert_files/clientkey.pem"
+				/CertFileClient	"cert_files/clientcrt.pem"
+			/SSLVerifyFailIfNoPeerCert 0
+			/SSLUseAppCallback		1
+			/SSLPeerCAFile "cert_files/rootCA1.pem"
+			/VerifyCertifiedEntity 1
+			/SessionResumption 0
 			/CertVerifyStringIsFilter 0
 					/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}

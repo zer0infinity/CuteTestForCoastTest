@@ -56,7 +56,7 @@ else
         else
                 echo 'WARNING: check if you really wanted to use this Sybase-Dir
 ectory ['${SYBASE}']';
-        fi;s
+        fi;
 fi
 echo 'prjconfig.sh: using sybase from ['${SYBASE}']';
 
