@@ -5,7 +5,6 @@ export WD_PATH=config:.
 ## add test specific things before the call to callTest
 function prepareTest
 {
-	set -x
 	echo "Setting up certificate cache...."
 	certdir=ifs_cert
 	# Setting up certificate directory for tests
@@ -19,8 +18,8 @@ function prepareTest
 	$PROJECTDIR/rehashwrapper.sh $PRJCONFIGPATH/cert_hashes
 	# Linking hashed certificate directory to one common place
 	rm /tmp/SSLSocketTestHashedCerts > /dev/null 2>&1
-	ln -s $PRJCONFIGPATH/cert_hashes /tmp/SSLSocketTestHashedCerts
-	chmod 777 /tmp/SSLSocketTestHashedCerts
+	ln -s $PRJCONFIGPATH/cert_hashes /tmp/SSLSocketTestHashedCerts > /dev/null 2>&1
+	chmod -f 777 /tmp/SSLSocketTestHashedCerts
 }
 
 ## call to wdtest or whatever you want to call
