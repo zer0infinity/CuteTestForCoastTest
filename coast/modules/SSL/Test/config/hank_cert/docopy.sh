@@ -4,7 +4,7 @@ cp /tmp/mkca/ca-hierarchy/ucerts/* .
 clienthost=dylan.hank.com
 serverhost=dylan.hank.com
 cp clientcrt_${clienthost}.pem clientcrt.pem
-cp clientkey_${clienthost}com.pem clientkey.pem
+cp clientkey_${clienthost}.pem clientkey.pem
 cp servercrt_${serverhost}.pem servercrt.pem
 cp serverkey_${serverhost}.pem serverkey.pem
 cp fullchain_${serverhost}.pem fullchain.pem
