@@ -17,6 +17,7 @@
 #include "ServerUtils.h"
 #include "SysLog.h"
 #include "Dbg.h"
+// #include "System.h"
 
 //--- c-library modules used ---------------------------------------------------
 
@@ -46,7 +47,20 @@ void RequestProcessor::ProcessRequest(Context &ctx)
 
 	ROAnything timeout;
 	fServer->Lookup("SocketReadTimeout", timeout);
-
+//	if (socket)
+//	{
+//		socket->SetTimeout(timeout.AsLong(10*1000L));
+//		long lRetCode = socket->SetToNonBlocking(socket->GetFd(),socket->GetTimeout());
+//		if ( lRetCode == 0 )
+//		{
+//			String logMsg;
+//			logMsg <<  "set socket to " << (socket->GetTimeout() > 0?"non ":"") <<
+//					   "blocking mode failed: of socket fd=" << socket->GetFd() <<
+//					   " failed with function retCode:" << lRetCode << " (#" << (long)System::GetSystemError() << ") " << SysLog::LastSysError();
+//			Trace(logMsg);
+//			SysLog::Error(logMsg);
+//		}
+//	}
 	if (socket) {
 		socket->SetTimeout(timeout.AsLong(10 * 1000L));
 	}
