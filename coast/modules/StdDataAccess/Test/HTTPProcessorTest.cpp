@@ -61,7 +61,7 @@ void HTTPProcessorTest::testDoReadInputWithError()
 
 	String common = String("") << "</head><body bgcolor=\"silver\">\n"
 					<< "<center>\n<h1>Page not found.</h1>\nPress the back button to return to the previous page!<br><br>\n"
-					<< "<FORM><input type=button value=\"Back\" onClick=\"javascript:history.back(1)\"></FORM>\n</body></html>";
+					<< "<FORM><input type=button value=\"Back\" onClick=\"javascript:history.back(1)\"></FORM>\n</center>\n</body></html>";
 
 	expected =    String("") << "HTTP/1.1 414 Request-URL Too Large" << ENDL
 				  << "Connection: close\r\ncontent-type: text/html" << ENDL << ENDL
