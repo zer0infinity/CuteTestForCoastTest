@@ -22,17 +22,17 @@
 		{
 			/Config
 			{
-				/Address	"localhost"
+				/Address	"dylan"
 				/Port		443
 				/SSLVerifyDepth 3
 				/KeyFileClient	"cert_files/clientkey.pem"
 				/CertFileClient	"cert_files/clientcrt.pem"
 				/SSLVerifyFailIfNoPeerCert 0
 				/SSLUseAppCallback		1
-				/SSLPeerCAFile "cert_files/rootCA1.pem"
+				/SSLPeerCAFile "cert_files/rootCA1crt.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -51,17 +51,17 @@
 		{
 			/Config
 			{
-				/Address	"localhost"
+				/Address	"dylan"
 				/Port		443
 				/SSLVerifyDepth 1
 				/KeyFileClient	"cert_files/clientkey.pem"
 				/CertFileClient	"cert_files/clientcrt.pem"
 				/SSLVerifyFailIfNoPeerCert 0
 				/SSLUseAppCallback		1
-				/SSLPeerCAFile "cert_files/rootCA1.pem"
+				/SSLPeerCAFile "cert_files/rootCA1crt.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -79,17 +79,17 @@
 		{
 			/Config
 			{
-				/Address	"localhost"
+				/Address	"dylan"
 				/Port		443
 				/SSLVerifyDepth 3
 				/KeyFileClient	"cert_files/clientkey.pem"
 				/CertFileClient	"cert_files/clientcrt.pem"
 				/SSLVerifyFailIfNoPeerCert 0
 				/SSLUseAppCallback		1
-				/SSLPeerCAFile "cert_files/rootCA1.pem"
+				/SSLPeerCAFile "cert_files/rootCA1crt.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 1
-				/CertVerifyString		"CN=zuoz.hsr.ch"
+				/CertVerifyString		"CN=dylan.hank.com"
 			}
 			/Results
 			{
@@ -107,17 +107,17 @@
 		{
 			/Config
 			{
-				/Address	"localhost"
+				/Address	"dylan"
 				/Port		443
 				/SSLVerifyDepth 3
 				/KeyFileClient	"cert_files/clientkey.pem"
 				/CertFileClient	"cert_files/clientcrt.pem"
 				/SSLVerifyFailIfNoPeerCert 0
 				/SSLUseAppCallback		1
-				/SSLPeerCAFile "cert_files/rootCA1.pem"
+				/SSLPeerCAFile "cert_files/rootCA1crt.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 1
-				/CertVerifyString		"CN=zuoz.hsr.chxxxxxxxxxxxxxxx"
+				/CertVerifyString		"CN=dylan.hank.comxxxxxx"
 
 			}
 			/Results
@@ -136,17 +136,17 @@
 		{
 			/Config
 			{
-				/Address	"localhost"
+				/Address	"dylan"
 				/Port		443
 				/SSLVerifyDepth 3
 				/KeyFileClient	"cert_files/clientkey.pem"
 				/CertFileClient	"cert_files/clientcrt.pem"
 				/SSLVerifyFailIfNoPeerCert 0
 				/SSLUseAppCallback		1
-				/SSLPeerCAFile "cert_files/rootCA1.pem"
+				/SSLPeerCAFile "cert_files/rootCA1crt.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 1
-				/CertVerifyString		"xCN=zuoz.hsr.ch"
+				/CertVerifyString		"xCN=dylan.hank.com"
 			}
 			/Results
 			{
@@ -164,17 +164,17 @@
 		{
 			/Config
 			{
-				/Address	"localhost"
+				/Address	"dylan"
 				/Port		443
 				/SSLVerifyDepth 3
 				/KeyFileClient	"cert_files/clientkey.pem"
 				/CertFileClient	"cert_files/clientcrt.pem"
 				/SSLVerifyFailIfNoPeerCert 0
 				/SSLUseAppCallback		1
-				/SSLPeerCAFile "cert_files/rootCA1.pem"
+				/SSLPeerCAFile "cert_files/rootCA1crt.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.Xom,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.Xom,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 
 			}
 			/Results
@@ -194,7 +194,7 @@
 		{
 			/Config
 			{
-				/Address	"localhost"
+				/Address	"dylan"
 				/Port		443
 				/SSLVerifyDepth 3
 				/KeyFileClient	"cert_files/clientkey.pem"
@@ -202,10 +202,10 @@
 				/SSLVerifyFailIfNoPeerCert 0
 				/SSLUseAppCallback		0
 				/SSLVerifyPeerCert		1
-				/SSLPeerCAFile "cert_files/rootCA1.pem"
+				/SSLPeerCAFile "cert_files/rootCA1crt.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -224,7 +224,7 @@
 		{
 			/Config
 			{
-				/Address	"localhost"
+				/Address	"dylan"
 				/Port		443
 				/SSLVerifyDepth 1
 				/KeyFileClient	"cert_files/clientkey.pem"
@@ -232,10 +232,10 @@
 				/SSLVerifyFailIfNoPeerCert 0
 				/SSLUseAppCallback		0
 				/SSLVerifyPeerCert		1
-				/SSLPeerCAFile "cert_files/rootCA1.pem"
+				/SSLPeerCAFile "cert_files/rootCA1crt.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -254,7 +254,7 @@
 		{
 			/Config
 			{
-				/Address	"localhost"
+				/Address	"dylan"
 				/Port		443
 				/SSLVerifyDepth 1
 				/KeyFileClient	"cert_files/clientkey.pem"
@@ -262,10 +262,10 @@
 				/SSLVerifyFailIfNoPeerCert 0
 				/SSLUseAppCallback		0
 				/SSLVerifyPeerCert		0
-				/SSLPeerCAFile "cert_files/rootCA1.pem"
+				/SSLPeerCAFile "cert_files/rootCA1crt.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -285,7 +285,7 @@
 		{
 			/Config
 			{
-				/Address	"localhost"
+				/Address	"dylan"
 				/Port		443
 				/SSLVerifyDepth 1
 				/KeyFileClient	"cert_files/clientkey.pem"
@@ -293,10 +293,10 @@
 				/SSLVerifyFailIfNoPeerCert 1
 				/SSLUseAppCallback		0
 				/SSLVerifyPeerCert		1
-				/SSLPeerCAFile "cert_files/rootCA1.pem"
+				/SSLPeerCAFile "cert_files/rootCA1crt.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -316,7 +316,7 @@
 		{
 			/Config
 			{
-				/Address	"localhost"
+				/Address	"dylan"
 				/Port		443
 				/SSLVerifyDepth 1
 				/KeyFileClient	"cert_files/clientkey.pem"
@@ -324,10 +324,10 @@
 				/SSLVerifyFailIfNoPeerCert 0
 				/SSLUseAppCallback		1
 				/SSLVerifyPeerCert		1
-				/SSLPeerCAFile "cert_files/rootCA1.pem"
+				/SSLPeerCAFile "cert_files/rootCA1crt.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -346,7 +346,7 @@
 		{
 			/Config
 			{
-				/Address	"localhost"
+				/Address	"dylan"
 				/Port		443
 				/SSLVerifyDepth 1
 				/KeyFileClient	"cert_files/clientkey.pem"
@@ -354,10 +354,10 @@
 				/SSLVerifyFailIfNoPeerCert 1
 				/SSLUseAppCallback		0
 				/SSLVerifyPeerCert		0
-				/SSLPeerCAFile "cert_files/rootCA1.pem"
+				/SSLPeerCAFile "cert_files/rootCA1crt.pem"
 				/VerifyCertifiedEntity 0
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -376,7 +376,7 @@
 		{
 			/Config
 			{
-				/Address	"localhost"
+				/Address	"dylan"
 				/Port		443
 				/SSLVerifyDepth 1
 				/KeyFileClient	"cert_files/clientkey.pem"
@@ -384,10 +384,10 @@
 				/SSLVerifyFailIfNoPeerCert 	0
 				/SSLUseAppCallback		0
 				/SSLVerifyPeerCert		0
-				/SSLPeerCAFile "cert_files/rootCA1.pem"
+				/SSLPeerCAFile "cert_files/rootCA1crt.pem"
 				/VerifyCertifiedEntity 0
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -406,7 +406,7 @@
 		{
 			/Config
 			{
-				/Address	"localhost"
+				/Address	"dylan"
 				/Port		443
 				/SSLVerifyDepth 3
 				/KeyFileClient	"cert_files/clientkey.pem"
@@ -417,7 +417,7 @@
 				/SSLVerifyPath 		"/tmp/SSLSocketTestHashedCerts"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 1
-				/CertVerifyString		"CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{

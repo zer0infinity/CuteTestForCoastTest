@@ -23,7 +23,7 @@
 				/CertFileClient	"cert_files/clientcrt.pem"
 				/SSLVerifyFailIfNoPeerCert 0
 				/SSLUseAppCallback		1
-				/SSLPeerCAFile "cert_files/rootCA1.pem"
+				/SSLPeerCAFile "cert_files/rootCA1crt.pem"
 				/VerifyCertifiedEntity 1
 				/SessionResumption 1
 				/CertVerifyStringIsFilter 0
@@ -42,6 +42,7 @@
 		{
 			/Config
 			{
+				/Address	"localhost"
 				/Port		443
 ####			/Port		4433					# Use opensll s_server with options
 ####												  -cert servercert.pem -key serverkey.pem -Verify 4 -CAfile fullchain.pem -debug
@@ -52,7 +53,7 @@
 				/CertFileClient	"cert_files/clientcrt.pem"
 			/SSLVerifyFailIfNoPeerCert 0
 			/SSLUseAppCallback		1
-			/SSLPeerCAFile "cert_files/rootCA1.pem"
+			/SSLPeerCAFile "cert_files/rootCA1crt.pem"
 			/VerifyCertifiedEntity 1
 			/SessionResumption 1
 			/CertVerifyStringIsFilter 0
@@ -82,7 +83,7 @@
 				/CertFileClient	"cert_files/clientcrt.pem"
 			/SSLVerifyFailIfNoPeerCert 0
 			/SSLUseAppCallback		1
-			/SSLPeerCAFile "cert_files/rootCA1.pem"
+			/SSLPeerCAFile "cert_files/rootCA1crt.pem"
 			/VerifyCertifiedEntity 1
 			/SessionResumption 0
 			/CertVerifyStringIsFilter 0
