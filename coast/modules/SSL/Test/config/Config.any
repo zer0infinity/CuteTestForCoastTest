@@ -15,7 +15,7 @@
 	}
 	/AcceptorFactories {
 		/SSLAcceptorFactory {
-				 /TCP5010 { TCP5012 TCP5013 TCP5014 TCP5015 TCP5016 TCP5017 TCP5018 TCP5019 }
+				 /TCP5010 { TCP5012 TCP5013 TCP5014 TCP5015 TCP5016 TCP5017 TCP5018 TCP5019 TCP5020 }
 		}
 		# Not a SSL acceptor factory!
 		/AcceptorFactory {
@@ -131,6 +131,19 @@
 		/CertVerifyStringIsFilter 0
 		/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 		}
+	# Expecting send/recieve to be ok
+		/TCP5020 {
+		/Port	5020
+		/KeyFileServer	"cert_files/rootCA1key.pem"
+		/CertFileServer	"cert_files/rootCA1crt.pem"
+		/SSLPeerCAFile "cert_files/rootCA1crt.pem" #"subca1cert.pem"
+		/SSLVerifyDepth 1
+		/SSLVerifyPeerCert 1
+		/SSLVerifyFailIfNoPeerCert 1
+		/VerifyCertifiedEntity 1
+		/CertVerifyStringIsFilter 0
+		/CertVerifyString		"emailAddress=rootca1@wildplanet.com,CN=RootCA1,OU=CertIssueing,O=RootCA1,L=ZH,ST=ZH,C=CH"
+		}
 
 	/PoolTest {
 		# Check peer's (server) cert, don't show cert to peer
@@ -212,6 +225,16 @@
 			/SSLVerifyPeerCert 1
 			/SSLVerifyFailIfNoPeerCert 1
 		}
+		/Connector5020 {
+			/Address "127.0.0.1"
+			/Port 5020
+			/KeyFileClient	"cert_files/rootCA1key.pem"
+			/CertFileClient	"cert_files/rootCA1crt.pem"
+			/SSLVerifyDepth 2
+			/SSLPeerCAFile "cert_files/rootCA1crt.pem"
+			/SSLVerifyPeerCert 1
+			/SSLVerifyFailIfNoPeerCert 1
+		}
 	}
 	/SSLListenerPoolTest
 	{
@@ -265,10 +288,25 @@
 					/"SSL.Peer.AppLevelCertVerifyStatus" 1
 					/"SSL.Peer.SSLCertVerifyStatus.SSL.Ok" 1
 					/"SSL.Peer.Whole"	"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ClientSite,L=ZH,ST=ZH,C=CH"
-
 				}
 			}
 		}
+		{
+			/DoSendReceiveWithFailure 0
+			/SSLConnector		1
+			/ConnectorToUse	"Connector5020"
+			/Data
+			{
+				/MessageToSend	"5020_timeout_0"
+				/ChecksToDo
+				{
+					/"SSL.Peer.AppLevelCertVerifyStatus" 1
+					/"SSL.Peer.SSLCertVerifyStatus.SSL.Ok" 1
+					/"SSL.Peer.Whole" "emailAddress=rootca1@wildplanet.com,CN=RootCA1,OU=CertIssueing,O=RootCA1,L=ZH,ST=ZH,C=CH"
+				}
+			}
+		}
+
 		{
 			/DoSendReceiveWithFailure 0
 			/SSLConnector		1
