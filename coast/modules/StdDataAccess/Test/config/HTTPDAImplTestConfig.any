@@ -21,6 +21,7 @@
 					/Port		55555
 					/UseSSL		1
 					/Timeout	5
+					/UseThreadLocalMemory 1
 				}
 				/SSLModuleCfg
 				{
@@ -41,6 +42,7 @@
 				/AppLevelCertVerifyStatus	0
 				/HTTPDAImplRet				0
 			}
+
 		}
 		{
 			/NumberOfRuns 10
@@ -53,6 +55,7 @@
 					/Port		55555
 					/UseSSL		1
 					/Timeout	5
+					/UseThreadLocalMemory 1
 				}
 				/SSLModuleCfg
 				{
@@ -73,6 +76,7 @@
 				/AppLevelCertVerifyStatus	0
 				/HTTPDAImplRet				0
 			}
+
 		}
 	}
 	/SSLTests
@@ -82,10 +86,11 @@
 			{
 				/CurrentServer
 				{
-					/Server	"localhost"
+					/Server	"dylan"
 					/Port		443
 					/UseSSL		1
 					/Timeout	30
+					/UseThreadLocalMemory 1
 				}
 				/SSLModuleCfg
 				{
@@ -99,7 +104,7 @@
 				}
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -114,10 +119,11 @@
 			{
 				/CurrentServer
 				{
-					/Server	"localhost"
+					/Server	"dylan"
 					/Port		443
 					/UseSSL		1
 					/Timeout	30
+					/UseThreadLocalMemory 1
 				}
 				/SSLModuleCfg
 				{
@@ -131,7 +137,7 @@
 				}
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -146,10 +152,11 @@
 			{
 				/CurrentServer
 				{
-					/Server	"localhost"
+					/Server	"dylan"
 					/Port		443
 					/UseSSL		1
 					/Timeout	30
+					/UseThreadLocalMemory 1
 				}
 				/SSLModuleCfg
 				{
@@ -163,7 +170,7 @@
 				}
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,xCN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,xCN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -178,10 +185,11 @@
 			{
 				/CurrentServer
 				{
-					/Server	"localhost"
+					/Server	"dylan"
 					/Port		443
 					/UseSSL		1
 					/Timeout	30
+					/UseThreadLocalMemory 1
 				}
 				/SSLModuleCfg
 				{
@@ -195,7 +203,7 @@
 				}
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 1
-				/CertVerifyString		"xCN=zuoz.hsr.ch"
+				/CertVerifyString		"xCN=dylan.hank.com"
 			}
 			/Results
 			{
@@ -210,10 +218,11 @@
 			{
 				/CurrentServer
 				{
-					/Server	"localhost"
+					/Server	"dylan"
 					/Port		443
 					/UseSSL		1
 					/Timeout	30
+					/UseThreadLocalMemory 0
 				}
 				/SSLModuleCfg
 				{
@@ -227,7 +236,7 @@
 				}
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 1
-				/CertVerifyString		"CN=zuoz.hsr.ch"
+				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{

@@ -90,7 +90,10 @@ void SSLListenerPoolTest::DoTestConnect()
 				// deep clone, no side effect when adding Timeout
 				Anything connectorConfig = fTestCaseConfig[cConfig["ConnectorToUse"].AsString()].DeepClone();
 				if ( cConfig.IsDefined("TimeoutToUse") ) {
-					connectorConfig["Timeout"] = 1000L;
+					connectorConfig["Timeout"] = cConfig["TimeoutToUse"].AsLong(0L);
+				}
+				if ( cConfig.IsDefined("UseThreadLocalMemory") ) {
+					connectorConfig["UseThreadLocalMemory"] = cConfig["UseThreadLocalMemory"].AsLong(0L);
 				}
 				SSLConnector sc(connectorConfig);
 				if ( cConfig["DoSendReceiveWithFailure"].AsLong(0) ) {
@@ -101,7 +104,8 @@ void SSLListenerPoolTest::DoTestConnect()
 					DoSendReceive(&sc, cConfig["Data"].DeepClone());
 				}
 			} else {
-				SSLConnector sc("localhost", cConfig["PortToUse"].AsLong(0), cConfig["TimeoutToUse"].AsLong(0));
+				SSLConnector sc("localhost", cConfig["PortToUse"].AsLong(0), cConfig["TimeoutToUse"].AsLong(0),
+								(SSL_CTX *) NULL, (const char *) NULL, 0L, cConfig["UseThreadLocalMemory"].AsBool(0));
 				if ( cConfig["DoSendReceiveWithFailure"].AsLong(0) ) {
 					DoSendReceiveWithFailure(&sc, cConfig["Data"].DeepClone(),
 											 cConfig["IOSGoodAfterSend"].AsLong(0),
@@ -112,7 +116,7 @@ void SSLListenerPoolTest::DoTestConnect()
 			}
 		} else {
 			Trace("Using configured NON SSL connector");
-			Connector c("localhost", cConfig["PortToUse"].AsLong(0L), cConfig["TimeoutToUse"].AsLong(0L));
+			Connector c("localhost", cConfig["PortToUse"].AsLong(0L), cConfig["TimeoutToUse"].AsLong(0L), String(), 0L, cConfig["UseThreadLocalMemory"].AsBool(0));
 			if ( cConfig["DoSendReceiveWithFailure"].AsLong(0) ) {
 				DoSendReceiveWithFailure(&c, cConfig["Data"].DeepClone(),
 										 cConfig["IOSGoodAfterSend"].AsLong(0),

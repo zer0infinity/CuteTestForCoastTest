@@ -136,6 +136,7 @@
 		{
 			/ConnectorToUse	"TCP5010"
 			/PortToUse			55010
+			/UseThreadLocalMemory 1
 			/TimeoutToUse		0
 			/DoSendReceiveWithFailure	0
 			/Data
@@ -149,6 +150,7 @@
 		{
 			/ConnectorToUse	"TCP5011"
 			/PortToUse			55011
+			/UseThreadLocalMemory 1
 			/TimeoutToUse		0
 			/DoSendReceiveWithFailure	0
 			/Data
@@ -162,6 +164,7 @@
 		{
 			/ConnectorToUse	"TCP5012"
 			/PortToUse			55012
+			/UseThreadLocalMemory 1
 			/TimeoutToUse		0
 			/DoSendReceiveWithFailure	0
 			/Data
@@ -175,6 +178,7 @@
 		{
 			/ConnectorToUse	"TCP5010"
 			/PortToUse			55010
+			/UseThreadLocalMemory 1
 			/TimeoutToUse		1000
 			/DoSendReceiveWithFailure	0
 			/Data
@@ -188,6 +192,7 @@
 		{
 			/ConnectorToUse	"TCP5011"
 			/PortToUse			55011
+			/UseThreadLocalMemory 1
 			/TimeoutToUse		1000
 			/DoSendReceiveWithFailure	0
 			/Data
@@ -201,6 +206,7 @@
 		{
 			/ConnectorToUse	"TCP5012"
 			/PortToUse			55012
+			/UseThreadLocalMemory 1
 			/TimeoutToUse		1000
 			/DoSendReceiveWithFailure	0
 			/Data

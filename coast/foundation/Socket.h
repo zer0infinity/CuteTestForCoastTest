@@ -254,6 +254,7 @@ private:
 	Socket &operator=(const Socket &s);
 
 	friend class SSLConnectorTest;
+	friend class ConnectorTest;
 };
 
 //! common features of Connector and Acceptor
@@ -384,9 +385,9 @@ public:
 	//! \param srcPort the port we bind this end of the socket to
 	//! \pre ipAdr is a valid, reachable server ip adress, port is a valid port number
 	//! \post Connector holds the socket specification, the socket is not yet connected
-	Connector(String ipAdr, long port, long connectTimeout = 0, String srcIpAdr = "", long srcPort = 0);
+	Connector(String ipAdr, long port, long connectTimeout = 0, String srcIpAdr = "", long srcPort = 0, bool threadLocal = 0);
 	//!same as above, but take a ConnectorArgs object which wraps ipAdr, port, connectTimeout
-	Connector(ConnectorArgs &connectorArgs, String srcIpAdr = "", long srcPort = 0);
+	Connector(ConnectorArgs &connectorArgs, String srcIpAdr = "", long srcPort = 0,  bool threadLocal = 0);
 
 	//!  Connector destructors deletes the internal socket object if allocated
 	virtual ~Connector();

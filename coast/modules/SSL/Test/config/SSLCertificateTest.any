@@ -24,6 +24,7 @@
 			{
 				/Address	"dylan"
 				/Port		443
+				/UseThreadLocalMemory		1
 				/SSLVerifyDepth 3
 				/KeyFileClient	"cert_files/clientkey.pem"
 				/CertFileClient	"cert_files/clientcrt.pem"
@@ -53,6 +54,7 @@
 			{
 				/Address	"dylan"
 				/Port		443
+				/UseThreadLocalMemory		1
 				/SSLVerifyDepth 1
 				/KeyFileClient	"cert_files/clientkey.pem"
 				/CertFileClient	"cert_files/clientcrt.pem"
@@ -81,6 +83,7 @@
 			{
 				/Address	"dylan"
 				/Port		443
+				/UseThreadLocalMemory		1
 				/SSLVerifyDepth 3
 				/KeyFileClient	"cert_files/clientkey.pem"
 				/CertFileClient	"cert_files/clientcrt.pem"
@@ -109,6 +112,7 @@
 			{
 				/Address	"dylan"
 				/Port		443
+				/UseThreadLocalMemory		1
 				/SSLVerifyDepth 3
 				/KeyFileClient	"cert_files/clientkey.pem"
 				/CertFileClient	"cert_files/clientcrt.pem"
@@ -138,6 +142,7 @@
 			{
 				/Address	"dylan"
 				/Port		443
+				/UseThreadLocalMemory		1
 				/SSLVerifyDepth 3
 				/KeyFileClient	"cert_files/clientkey.pem"
 				/CertFileClient	"cert_files/clientcrt.pem"
@@ -166,6 +171,7 @@
 			{
 				/Address	"dylan"
 				/Port		443
+				/UseThreadLocalMemory		1
 				/SSLVerifyDepth 3
 				/KeyFileClient	"cert_files/clientkey.pem"
 				/CertFileClient	"cert_files/clientcrt.pem"
@@ -196,6 +202,7 @@
 			{
 				/Address	"dylan"
 				/Port		443
+				/UseThreadLocalMemory		1
 				/SSLVerifyDepth 3
 				/KeyFileClient	"cert_files/clientkey.pem"
 				/CertFileClient	"cert_files/clientcrt.pem"
@@ -226,6 +233,7 @@
 			{
 				/Address	"dylan"
 				/Port		443
+				/UseThreadLocalMemory		1
 				/SSLVerifyDepth 1
 				/KeyFileClient	"cert_files/clientkey.pem"
 				/CertFileClient	"cert_files/clientcrt.pem"
@@ -256,6 +264,7 @@
 			{
 				/Address	"dylan"
 				/Port		443
+				/UseThreadLocalMemory		1
 				/SSLVerifyDepth 1
 				/KeyFileClient	"cert_files/clientkey.pem"
 				/CertFileClient	"cert_files/clientcrt.pem"
@@ -287,6 +296,7 @@
 			{
 				/Address	"dylan"
 				/Port		443
+				/UseThreadLocalMemory		1
 				/SSLVerifyDepth 1
 				/KeyFileClient	"cert_files/clientkey.pem"
 				/CertFileClient	"cert_files/clientcrt.pem"
@@ -318,6 +328,7 @@
 			{
 				/Address	"dylan"
 				/Port		443
+				/UseThreadLocalMemory		1
 				/SSLVerifyDepth 1
 				/KeyFileClient	"cert_files/clientkey.pem"
 				/CertFileClient	"cert_files/clientcrt.pem"
@@ -348,6 +359,7 @@
 			{
 				/Address	"dylan"
 				/Port		443
+				/UseThreadLocalMemory		1
 				/SSLVerifyDepth 1
 				/KeyFileClient	"cert_files/clientkey.pem"
 				/CertFileClient	"cert_files/clientcrt.pem"
@@ -378,6 +390,7 @@
 			{
 				/Address	"dylan"
 				/Port		443
+				/UseThreadLocalMemory		1
 				/SSLVerifyDepth 1
 				/KeyFileClient	"cert_files/clientkey.pem"
 				/CertFileClient	"cert_files/clientcrt.pem"
@@ -408,6 +421,7 @@
 			{
 				/Address	"dylan"
 				/Port		443
+				/UseThreadLocalMemory		0
 				/SSLVerifyDepth 3
 				/KeyFileClient	"cert_files/clientkey.pem"
 				/CertFileClient	"cert_files/clientcrt.pem"

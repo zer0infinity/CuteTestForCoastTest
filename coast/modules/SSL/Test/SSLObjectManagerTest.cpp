@@ -68,7 +68,7 @@ void SSLObjectManagerTest::GetCtxTest()
 							 cConfig["Config"]["CertVerifyStringIsFilter"].AsBool(1),
 							 cConfig["Config"]["SessionResumption"].AsBool(0));
 
-			SSLConnector sc(ca, sa, sslctx);
+			SSLConnector sc(ca, sa, sslctx, (const char *) NULL, 0L, cConfig["Config"]["UseThreadLocalMemory"].AsLong(0L));
 			iostream *s1 = sc.GetStream();
 			Socket *s = sc.Use();
 			Anything clientInfo = sc.ClientInfo();
@@ -109,7 +109,7 @@ void SSLObjectManagerTest::SessionResumptionTest()
 							 cConfig["Config"]["CertVerifyStringIsFilter"].AsBool(1),
 							 cConfig["Config"]["SessionResumption"].AsBool(0));
 
-			SSLConnector sc(ca, sa, sslctx);
+			SSLConnector sc(ca, sa, sslctx, (const char *) NULL, 0L, cConfig["Config"]["UseThreadLocalMemory"].AsLong(0L));
 			iostream *s1 = sc.GetStream();
 			Socket *s = sc.Use();
 			Anything clientInfo(sc.ClientInfo());
@@ -153,7 +153,7 @@ void SSLObjectManagerTest::NoSessionResumptionTest()
 							 cConfig["Config"]["CertVerifyStringIsFilter"].AsBool(1),
 							 cConfig["Config"]["SessionResumption"].AsBool(0));
 
-			SSLConnector sc(ca, sa, sslctx);
+			SSLConnector sc(ca, sa, sslctx, (const char *) NULL, 0L, cConfig["Config"]["UseThreadLocalMemory"].AsLong(0L));
 			iostream *s1 = sc.GetStream();
 			Socket *s = sc.Use();
 			Anything clientInfo(sc.ClientInfo());

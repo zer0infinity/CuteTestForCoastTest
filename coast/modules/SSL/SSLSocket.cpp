@@ -412,7 +412,7 @@ void SSLClientSocket::SessionResumptionHookSetSession(SSL *ssl, SSL_SESSION *ssl
 	StartTrace(SSLClientSocket.SessionResumptionHookSetSession);
 	SSL_SESSION *sslSessionCurrent = NULL;
 	if (fSSLSocketArgs.SessionResumption()) {
-		if (sslSessionStored == (SSL_SESSION *) NULL ||  wasResumed == false) {
+		if (wasResumed == false) {
 			sslSessionCurrent = SSL_get1_session(ssl);
 			Trace("Storing inital sessionId: " << SSLObjectManager::SessionIdAsHex(sslSessionCurrent));
 			SSLObjectManager::SSLOBJMGR()->SetSessionId(fClientInfo["REMOTE_ADDR"].AsString(), fClientInfo["REMOTE_PORT"].AsString(), sslSessionCurrent);
@@ -518,23 +518,23 @@ String SSLSocketArgs::ShowState()
 }
 
 //--- SSLConnector --------------------------------------------
-SSLConnector::SSLConnector(const char *ipAdr, long port, long connectTimeout, SSL_CTX *ctx, const char *srcIpAdr, long srcPort)
-	:	Connector(ipAdr, port, connectTimeout, srcIpAdr, srcPort),
+SSLConnector::SSLConnector(const char *ipAdr, long port, long connectTimeout, SSL_CTX *ctx, const char *srcIpAdr, long srcPort, bool threadLocal)
+	:	Connector(ipAdr, port, connectTimeout, srcIpAdr, srcPort, threadLocal),
 		fContext((ctx) ? ctx : SSL_CTX_new(SSLv23_client_method())),
 		fSSLSocketArgs()
 {
 	fDeleteCtx = (ctx == 0);
 }
 
-SSLConnector::SSLConnector(ConnectorArgs &connectorArgs, SSL_CTX *ctx, const char *srcIpAdr, long srcPort)
-	:	Connector(connectorArgs, srcIpAdr, srcPort),
+SSLConnector::SSLConnector(ConnectorArgs &connectorArgs, SSL_CTX *ctx, const char *srcIpAdr, long srcPort, bool threadLocal)
+	:	Connector(connectorArgs, srcIpAdr, srcPort, threadLocal),
 		fContext((ctx) ? ctx : SSL_CTX_new(SSLv23_client_method())),
 		fSSLSocketArgs()
 {
 	fDeleteCtx = (ctx == 0);
 }
-SSLConnector::SSLConnector(ConnectorArgs &connectorArgs, SSLSocketArgs sslSocketArgs, SSL_CTX *ctx, const char *srcIpAdr, long srcPort)
-	:	Connector(connectorArgs, srcIpAdr, srcPort),
+SSLConnector::SSLConnector(ConnectorArgs &connectorArgs, SSLSocketArgs sslSocketArgs, SSL_CTX *ctx, const char *srcIpAdr, long srcPort, bool threadLocal)
+	:	Connector(connectorArgs, srcIpAdr, srcPort, threadLocal),
 		fContext((ctx) ? ctx : SSL_CTX_new(SSLv23_client_method())),
 		fSSLSocketArgs(sslSocketArgs)
 {
@@ -545,8 +545,8 @@ SSLConnector::SSLConnector(ConnectorArgs &connectorArgs,
 						   SSLSocketArgs sslSocketArgs,
 						   ROAnything sslModuleCfg,
 						   SSL_CTX *ctx,
-						   const char *srcIpAdr, long srcPort)
-	:	Connector(connectorArgs, srcIpAdr, srcPort),
+						   const char *srcIpAdr, long srcPort, bool threadLocal)
+	:	Connector(connectorArgs, srcIpAdr, srcPort, threadLocal),
 		fContext((ctx) ? ctx : SSLObjectManager::SSLOBJMGR()->GetCtx(connectorArgs.IPAddress(), connectorArgs.PortAsString(), sslModuleCfg)),
 		fSSLSocketArgs(sslSocketArgs)
 {
@@ -560,7 +560,8 @@ SSLConnector::SSLConnector(ROAnything config)
 				config["Port"].AsLong(443L),
 				config["Timeout"].AsLong(0L),
 				config["SrcAddress"].AsCharPtr(0),
-				config["SrcPort"].AsLong(0L)),
+				config["SrcPort"].AsLong(0L),
+				config["UseThreadLocalMemory"].AsLong(0L)),
 	fContext(SSLModule::GetSSLClientCtx(config)),
 	fSSLSocketArgs(config["VerifyCertifiedEntity"].AsBool(0),
 				   config["CertVerifyString"].AsString(),

@@ -81,22 +81,41 @@ void SSLConnectorTest::simpleConstructorTest()
 
 void SSLConnectorTest::allocatorConstructorTest()
 {
-	PoolAllocator pa(1, 8 * 1024, 21);
-	TestStorageHooks tsh(&pa);
-	Storage::SetHooks(&tsh);
-	SSLConnector connector(fConfig["InternalSSLhost"]["ip"].AsString(), fConfig["InternalSSLhost"]["port"].AsLong());
-	connector.SetThreadLocal();
-	Socket *socket = connector.MakeSocket();
+	{
+		PoolAllocator pa(1, 8 * 1024, 21);
+		TestStorageHooks tsh(&pa);
+		Storage::SetHooks(&tsh);
+		SSLConnector connector(fConfig["InternalSSLhost"]["ip"].AsString(), fConfig["InternalSSLhost"]["port"].AsLong(), 0L,
+							   (SSL_CTX *) NULL, (const char *) NULL, 0L, true);
+		Socket *socket = connector.MakeSocket();
 
-	if ( t_assert( socket != NULL ) && t_assertm(&pa == socket->fAllocator, "allocator should match") ) {
-		long socketfd = socket->GetFd();
-		t_assert( socketfd > 0 );
+		if ( t_assert( socket != NULL ) && t_assertm(&pa == socket->fAllocator, "allocator should match") ) {
+			long socketfd = socket->GetFd();
+			t_assert( socketfd > 0 );
 
-		iostream *Ios = socket->GetStream();
-		t_assert( Ios != NULL);
+			iostream *Ios = socket->GetStream();
+			t_assert( Ios != NULL);
+		}
+		delete socket;
+		Storage::SetHooks(0);
 	}
-	delete socket;
-	Storage::SetHooks(0);
+	{
+		TestStorageHooks tsh(Storage::Global());
+		Storage::SetHooks(&tsh);
+		SSLConnector connector(fConfig["InternalSSLhost"]["ip"].AsString(), fConfig["InternalSSLhost"]["port"].AsLong(), 0L,
+							   (SSL_CTX *) NULL, (const char *) NULL, 0L, false);
+		Socket *socket = connector.MakeSocket();
+
+		if ( t_assert( socket != NULL ) && t_assertm(Storage::Global() == socket->fAllocator, "allocator should match") ) {
+			long socketfd = socket->GetFd();
+			t_assert( socketfd > 0 );
+
+			iostream *Ios = socket->GetStream();
+			t_assert( Ios != NULL);
+		}
+		delete socket;
+		Storage::SetHooks(0);
+	}
 }
 
 void SSLConnectorTest::ConnectAndAssert(const char *host, long port, long timeout, bool shouldFail)

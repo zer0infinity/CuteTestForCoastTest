@@ -59,10 +59,13 @@ public:
 	//!tests method GetStream
 	void getStreamTest();
 
+	//!tests allocator
+	void allocatorConstructorTest();
+
 private:
 	// use careful, you inhibit subclass use
 	//--- private class api
-	void ConnectAndAssert(const char *host, long port, long timeout, bool shouldFail);
+	void ConnectAndAssert(const char *host, long port, long timeout, bool threadLocal, bool shouldFail);
 	//--- private member variables
 	Anything	fConfig;
 };

@@ -163,15 +163,15 @@ class EXPORTDECL_SSL SSLConnector : public Connector
 public:
 
 	//! If no SSL_CTX  is provided by the caller, a default client SSL_CTX will be created.
-	SSLConnector(const char *ipAdr, long port, long connectTimeout = 0, SSL_CTX *ctx = 0, const char *srcIpAdr = 0, long srcPort = 0);
+	SSLConnector(const char *ipAdr, long port, long connectTimeout = 0, SSL_CTX *ctx = 0, const char *srcIpAdr = 0, long srcPort = 0, bool threadLocal = 0);
 	//! If no SSL_CTX  is provided by the caller, a default client SSL_CTX will be created.
-	SSLConnector(ConnectorArgs &connectorArgs, SSL_CTX *ctx = 0, const char *srcIpAdr = 0, long srcPort = 0);
+	SSLConnector(ConnectorArgs &connectorArgs, SSL_CTX *ctx = 0, const char *srcIpAdr = 0, long srcPort = 0, bool threadLocal = 0);
 	//! If no SSL_CTX is provided by the caller and the sslModuleCfg  is NULL, a new default client SSL_CTX will be created.
 	//! If SSL_CTX  is NULL and sslModuleCfg is not NULL,  a new client SSL_CTX is created considering the sslModuleCfg settings.
 	//! Use this  method when you need a specialized SSL_CTX which  corresponds  to your SSLSocketArgs
-	SSLConnector(ConnectorArgs &connectorArgs, SSLSocketArgs sslSocketArgs, ROAnything sslModuleCfg = 0, SSL_CTX *ctx = 0, const char *srcIpAdr = 0, long srcPort = 0);
+	SSLConnector(ConnectorArgs &connectorArgs, SSLSocketArgs sslSocketArgs, ROAnything sslModuleCfg = 0, SSL_CTX *ctx = 0, const char *srcIpAdr = 0, long srcPort = 0, bool threadLocal = 0);
 	//! Use this constructor if you  have created a specialized SSL_CTX.
-	SSLConnector(ConnectorArgs &connectorArgs, SSLSocketArgs sslSocketArgs, SSL_CTX *ctx = 0, const char *srcIpAdr = 0, long srcPort = 0);
+	SSLConnector(ConnectorArgs &connectorArgs, SSLSocketArgs sslSocketArgs, SSL_CTX *ctx = 0, const char *srcIpAdr = 0, long srcPort = 0, bool threadLocal = 0);
 	//! pass socket parameters as anything, use /Address, /Port, /Timeout like AcceptorFactory config
 	SSLConnector(ROAnything config);
 	virtual ~SSLConnector();

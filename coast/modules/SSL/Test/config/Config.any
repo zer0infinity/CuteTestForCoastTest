@@ -326,6 +326,7 @@
 			/SSLConnector		1
 			/PortToUse			5010
 			/TimeoutToUse		1000
+			/UseThreadLocalMemory 1
 			/Data
 			{
 				/MessageToSend	"5010_timeout_1000"
@@ -339,6 +340,7 @@
 			/SSLConnector		0
 			/PortToUse			5011
 			/TimeoutToUse		1000
+			/UseThreadLocalMemory 1
 			/Data
 			{
 				/MessageToSend	"5011_timeout_1000"
@@ -351,6 +353,7 @@
 			/DoSendReceiveWithFailure 0
 			/SSLConnector		1
 			/ConnectorToUse		"Connector5012"
+			/UseThreadLocalMemory 1
 			/TimeoutToUse		1000
 			/Data
 			{
@@ -364,7 +367,8 @@
 			/DoSendReceiveWithFailure 0
 			/SSLConnector		1
 			/ConnectorToUse	"Connector5012"
-			/Timeout			2000
+			/TimeoutToUse		2000
+			/UseThreadLocalMemory 1
 			/Data
 			{
 				/MessageToSend	"5012_timeout_2000"
@@ -378,6 +382,7 @@
 			/SSLConnector		0
 			/PortToUse			5011
 			/TimeoutToUse		2000
+			/UseThreadLocalMemory 1
 			/Data
 			{
 				/MessageToSend	"5011_timeout_2000"
@@ -394,6 +399,7 @@
 			/SSLConnector		0
 			/PortToUse			5012
 			/TimeoutToUse		2000
+			/UseThreadLocalMemory 1
 			/Data
 			{
 				/MessageToSend	"5011_timeout_2000"
@@ -424,6 +430,7 @@
 			/SSLConnector		1
 			/ConnectorToUse		"Connector5016"
 			/TimeoutToUse		1000
+			/UseThreadLocalMemory 1
 			/Data
 			{
 				/MessageToSend	"5016_timeout_1000"
@@ -437,6 +444,7 @@
 			/SSLConnector		1
 			/ConnectorToUse		"Connector5017"
 			/TimeoutToUse		1000
+			/UseThreadLocalMemory 1
 			/Data
 			{
 				/MessageToSend	"5017_timeout_1000"
@@ -452,6 +460,7 @@
 			/SSLConnector		1
 			/ConnectorToUse		"Connector5018"
 			/TimeoutToUse		1000
+			/UseThreadLocalMemory 1
 			/Data
 			{
 				/MessageToSend	"5018_timeout_1000"

@@ -75,7 +75,11 @@ void SimpleListenerPoolTest::DoTestConnect()
 
 		Connector c("localhost",
 					cConfig["PortToUse"].AsLong(0L),
-					cConfig["TimeoutToUse"].AsLong(0L));
+					cConfig["TimeoutToUse"].AsLong(0L),
+					String(),
+					0L,
+					cConfig["UseThreadLocalMemory"].AsBool(0));
+
 		if ( cConfig["DoSendReceiveWithFailure"].AsLong(0) ) {
 			DoSendReceiveWithFailure(&c, cConfig["Data"].DeepClone(),
 									 cConfig["IOSGoodAfterSend"].AsLong(0),

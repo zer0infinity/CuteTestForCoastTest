@@ -665,25 +665,27 @@ long ConnectorArgs::ConnectTimeout()
 }
 
 //--- Connector --------------------------------------------
-Connector::Connector(String ipAdr, long port, long connectTimeout, String srcIPAdr, long srcPort) :
-	EndPoint(String(Resolver::DNS2IPAddress(ipAdr), -1, Storage::Global()), port),
+Connector::Connector(String ipAdr, long port, long connectTimeout, String srcIPAdr, long srcPort, bool threadLocal) :
+	EndPoint(String(Resolver::DNS2IPAddress(ipAdr), -1, threadLocal ? Storage::Current() : Storage::Global()), port),
 	fConnectTimeout(connectTimeout),
-	fSrcIPAdress(Resolver::DNS2IPAddress(srcIPAdr), -1, Storage::Global()),
+	fSrcIPAdress(Resolver::DNS2IPAddress(srcIPAdr), -1, threadLocal ? Storage::Current() : Storage::Global()),
 	fSrcPort(srcPort), fSocket(0)
 {
 	StartTrace(Connector.Connector);
+	SetThreadLocal(threadLocal);
 	Trace("IPAddr: " << fIPAddress << ":" << fPort);
 	Trace("TimeOut: " << fConnectTimeout);
 	Trace("srcIP : " << fSrcIPAdress << ":" << fSrcPort);
 }
 
-Connector::Connector(ConnectorArgs &connectorArgs, String srcIPAdr, long srcPort) :
-	EndPoint(String(Resolver::DNS2IPAddress(connectorArgs.IPAddress()), -1, Storage::Global()), connectorArgs.Port()),
+Connector::Connector(ConnectorArgs &connectorArgs, String srcIPAdr, long srcPort, bool threadLocal) :
+	EndPoint(String(Resolver::DNS2IPAddress(connectorArgs.IPAddress()), -1, threadLocal ? Storage::Current() : Storage::Global()), connectorArgs.Port()),
 	fConnectTimeout(connectorArgs.ConnectTimeout()),
-	fSrcIPAdress(Resolver::DNS2IPAddress(srcIPAdr), -1, Storage::Global()),
+	fSrcIPAdress(Resolver::DNS2IPAddress(srcIPAdr), -1, threadLocal ? Storage::Current() : Storage::Global()),
 	fSrcPort(srcPort), fSocket(0)
 {
 	StartTrace(Connector.Connector);
+	SetThreadLocal(threadLocal);
 	Trace("IPAddr: " << fIPAddress << ":" << fPort);
 	Trace("TimeOut: " << fConnectTimeout);
 	Trace("srcIP : " << fSrcIPAdress << ":" << fSrcPort);
