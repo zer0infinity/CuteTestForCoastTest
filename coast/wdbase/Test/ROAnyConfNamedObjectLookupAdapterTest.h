@@ -48,6 +48,7 @@ public:
 	void testCase();
 
 	void testLookup();
+	void testNoConfNamedObject();
 };
 
 class TestConfNamedObj : public ConfNamedObject
