@@ -133,12 +133,6 @@ void SSLObjectManager::SetSessionId(const String &ip, const String &port, SSL_SE
 		sslSessionStored = (SSL_SESSION *) fSSLSessionIdStore[ip][port][thrId]["session"].AsIFAObject(0);
 		if ( sslSessionStored != (SSL_SESSION *) NULL ) {
 			Trace("Freeing old SessionId: "  << SessionIdAsHex(sslSessionStored) << " RefCount: " << sslSessionStored->references);
-			if ( sslSessionStored->references != 1L) {
-				String msg;
-				msg << "SSLObjectManager::SetSessionId:  Session: " << SessionIdAsHex(sslSessionStored) <<
-					" RefCount: " << sslSessionStored->references << " (should be 1)\n";
-				SysLog::WriteToStderr(msg);
-			}
 			SSL_SESSION_free(sslSessionStored);
 			fSSLSessionIdStore[ip][port][thrId].Remove("length");
 		}
