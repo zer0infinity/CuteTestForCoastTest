@@ -47,7 +47,7 @@ protected:
 
 private:
 	void WriteError(Anything &error);
-	void WriteSysLog(Anything error, String &msg);
+	String WriteSysLog(Anything error, String &msg);
 };
 
 #endif

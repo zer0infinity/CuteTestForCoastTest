@@ -46,8 +46,9 @@ void LDAPErrorHandler::HandleSessionError(LDAP *handle, String msg)
 	// get connection parameters + append
 	error["LdapConnectionParams"] = GetConnectionParams();
 
+	String msgAsString = WriteSysLog(error, msg);
+	error["MsgAsString"] = msgAsString;
 	WriteError(error);
-	WriteSysLog(error, msg);
 }
 
 void LDAPErrorHandler::HandleError(String msg, Anything args, String argDescr)
@@ -63,25 +64,41 @@ void LDAPErrorHandler::HandleError(String msg, Anything args, String argDescr)
 	// get query parameters + append
 	error["LdapQueryParams"] = GetQueryParams();
 
+	String msgAsString = WriteSysLog(error, msg);
+	error["MsgAsString"] = msgAsString;
 	WriteError(error);
-	WriteSysLog(error, msg );
 }
 
-void LDAPErrorHandler::WriteSysLog(Anything error, String &msg)
+String LDAPErrorHandler::WriteSysLog(Anything error, String &msg)
 {
-	String osString;
 	Anything anyOldPWD;
 	if ( error.LookupPath(anyOldPWD, "LdapConnectionParams.BindPW") ) {
 		error["LdapConnectionParams"]["BindPW"] = "WipedOut";
 	}
-	OStringStream oss(&osString);
-	error.PrintOn(oss, false);
-	oss.flush();
+	String sSysLog;
+	OStringStream ossSysLog(&sSysLog);
+	error.PrintOn(ossSysLog, false);
+	ossSysLog.flush();
 	// log all ldap session errors in SysLog
-	SysLog::Error(msg << " " << fName << " " << osString);
+	SysLog::Error(msg << " " << fName << " " << ossSysLog);
+	String msgAsString;
+	msgAsString << "LdapDataAccess: [" << fName << "]";
+	for ( long l = 0; l < error.GetSize(); l++ ) {
+		if ( error[l].GetType() == Anything::eArray ) {
+			String sMsgDetails;
+			OStringStream ossMsgDetails(&sMsgDetails);
+			error[l].PrintOn(ossMsgDetails, false);
+			ossMsgDetails.flush();
+			msgAsString << " " << error.SlotName(l) << " [" <<	sMsgDetails << "]";
+		} else {
+			msgAsString << " " << error.SlotName(l) << " [" << error[l].AsString() << "]";
+		}
+	}
+	// Restore password
 	if ( !anyOldPWD.IsNull() ) {
 		error["LdapConnectionParams"]["BindPW"] = anyOldPWD.AsCharPtr();
 	}
+	return msgAsString;
 }
 
 void LDAPErrorHandler::WriteError(Anything &error)
