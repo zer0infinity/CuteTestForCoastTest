@@ -836,7 +836,7 @@ bool HttpFlowController::PrepareRequest(Context &ctx, bool &bPrepareRequestSucce
 		bPrepareRequestSucceeded = DoProcessLinksFormsAndFrames(ctx); // no relocations expected here
 	}
 	if ( tmpStore["CurrentServer"]["UseSSL"].AsLong(0) == 1L ) {
-		PrepareSSL(ctx);
+		PrepareConnector(ctx);
 	}
 	tmpStore.Remove("DataAccess");
 	Trace("PrepareRequestSucceeded: " << (bPrepareRequestSucceeded ? "true" : "false"));
@@ -855,24 +855,29 @@ void HttpFlowController::SetupSSLCtx(Anything &sslModuleCfg, Context &ctx)
 	sslModuleCfg["KeyFileClient"] 				= "";
 	sslModuleCfg["CertFileClient"] 				= "";
 	sslModuleCfg["NoCertAndPrivateKey"]			= 1L;
+	sslModuleCfg["SSLClientSessionTimeout"]		= 86400L;	// one day
 }
 
-void HttpFlowController::PrepareSSL(Context &ctx)
+void HttpFlowController::PrepareConnector(Context &ctx)
 {
 	// this is the new method that also gets a config ( similar to Renderer::RenderAll )
 	// write the action code here - you don't have to override DoAction anymore
 	StartTrace(HttpFlowController.PrepareSSL);
 	Anything toPush;
 	toPush["CurrentServer"]["UseThreadLocalMemory"] = 1L;
-	Anything sslModuleCfg;
-	SetupSSLCtx(sslModuleCfg, ctx);
-
-	toPush["SSLModuleCfg"] 				= sslModuleCfg;
-	toPush["VerifyCertifiedEntity"] 	= 0L;
-	toPush["CertVerifyString"]			= "";
-	toPush["CertVerifyStringIsFilter"]  = 0L;
-	toPush["SessionResumption"] 		= 1L;
+	if ( ctx.GetTmpStore()["CurrentServer"]["UseSSL"].AsLong(0) == 1L ) {
+		Anything sslModuleCfg;
+		SetupSSLCtx(sslModuleCfg, ctx);
+		toPush["SSLModuleCfg"] 				= sslModuleCfg;
+		toPush["VerifyCertifiedEntity"] 	= 0L;
+		toPush["CertVerifyString"]			= "";
+		toPush["CertVerifyStringIsFilter"]  = 0L;
+		toPush["SessionResumption"] 		= 1L;
+	}
 	String name("SSLData");
+	// The information pushed may be needed in "follow up" requests triggered by redirects.
+	// Because the TmpStore is lost after FlowController has handled one request, we must not
+	// call PopStore.
 	ctx.PushStore(name, toPush);
 }
 

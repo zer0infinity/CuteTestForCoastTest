@@ -81,7 +81,7 @@ private:
 	bool SingleScheduling( Context &ctx );
 	bool PeriodicalScheduling( Context &ctx );
 	void SetupSSLCtx(Anything &sslModuleCfg, Context &ctx);
-	void PrepareSSL(Context &ctx);
+	void PrepareConnector(Context &ctx);
 
 	Anything fJmpTable;
 	bool fJmpTableInit;
