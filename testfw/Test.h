@@ -218,6 +218,10 @@ __LINE__,__FILE__,TString(" " #expected " == " #actual " ")))
 (actual.Length()),\
 __LINE__,__FILE__,message))
 
+#define assertCharPtrEqualm(expected,actual,message)\
+(this->assertEquals ((expected),\
+		(actual),__LINE__,__FILE__,TString(" " #expected " == " #actual " ") << message))
+
 #define assertAnyEqualm(expected,actual,message)\
 {    bool tluseReht = true;\
      TString egasseMeht = (const char *)Anything::CompareForTestCases(expected,actual,tluseReht);\
