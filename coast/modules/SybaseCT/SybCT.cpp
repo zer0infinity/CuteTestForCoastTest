@@ -441,7 +441,6 @@ bool SybCT::SqlExec(String query, String resultformat, long lMaxResultSize )
 CS_RETCODE SybCT::DoFetchData(CS_COMMAND *cmd, const CS_INT res_type, const String &resultformat, const long &lMaxResultSize)
 {
 	StartTrace(SybCT.DoFetchData);
-	StartTraceMem(SybCT.DoFetchData);
 
 	CS_RETCODE		retcode;
 	CS_INT			num_cols;
@@ -573,7 +572,6 @@ CS_RETCODE SybCT::DoFetchData(CS_COMMAND *cmd, const CS_INT res_type, const Stri
 	}
 	Trace("max number of rows to totally fetch: " << lMaxRows);
 
-	TraceMemDelta("Memory allocated before creating column memory: ");
 	for (i = 0; i < num_cols; i++) {
 		Trace("processing column [" << datafmt[i].name << "]");
 		// Allocate memory for the column string
@@ -611,16 +609,12 @@ CS_RETCODE SybCT::DoFetchData(CS_COMMAND *cmd, const CS_INT res_type, const Stri
 			Error("DoFetchData: ct_bind() failed");
 			break;
 		}
-		TraceMemDelta("memory for column: ");
 	}
 	if (retcode != CS_SUCCEED) {
-		TraceMemDelta("before deleting coldata: ");
 		delete[] coldata;
 		(Storage::Global())->Free(datafmt);
-		TraceMemDelta("after deleting coldata: ");
 		return retcode;
 	}
-	TraceMemDelta("Memory after allocating num_rows * columns: ");
 	// Fetch the rows.  Loop while ct_fetch() returns CS_SUCCEED or  CS_ROW_FAIL
 	long lDiff = 0L;
 	{
@@ -638,7 +632,6 @@ CS_RETCODE SybCT::DoFetchData(CS_COMMAND *cmd, const CS_INT res_type, const Stri
 		}
 
 		DoFillResults(rows_read, num_cols, datafmt, coldata, res_type, resultformat );
-		TraceMemDelta("after DoFillResults: ");
 		if ((lRowCount + num_rows) > lMaxRows) {
 			retcode = CS_MEM_ERROR;
 			break;
@@ -655,7 +648,6 @@ CS_RETCODE SybCT::DoFetchData(CS_COMMAND *cmd, const CS_INT res_type, const Stri
 	// Free allocated space.
 	delete[] coldata;
 	(Storage::Global())->Free(datafmt);
-	TraceMemDelta("Mem after deleting all coldata: ");
 
 	// We're done processing rows.  Let's check the final return value of ct_fetch().
 	switch ((int)retcode) {
@@ -750,7 +742,6 @@ CS_INT SybCT::DisplayDlen(CS_DATAFMT *column)
 CS_RETCODE SybCT::DoFillResults(CS_INT numrows, CS_INT numcols, CS_DATAFMT *colfmt, EX_COLUMN_DATA *coldata, const CS_INT res_type, const String &resultformat )
 {
 	StartTrace(SybCT.DoFillResults);
-	StartTraceMem(SybCT.DoFillResults);
 	CS_INT row, col, anyIdx;
 
 	Trace("resultformat [" << resultformat << "]");
