@@ -23,8 +23,8 @@
 				/SSLModuleCfg
 				{
 					/SSLVerifyDepth 3
-					/KeyFile	"cert_files/clientkey.pem"
-					/CertFile	"cert_files/clientcrt.pem"
+					/KeyFileClient	"cert_files/clientkey.pem"
+					/CertFileClient	"cert_files/clientcrt.pem"
 					/SSLVerifyFailIfNoPeerCert 0
 					/SSLUseAppCallback		0
 					/SSLVerifyPeerCert		1
@@ -55,8 +55,8 @@
 				/SSLModuleCfg
 				{
 					/SSLVerifyDepth 1
-					/KeyFile	"cert_files/clientkey.pem"
-					/CertFile	"cert_files/clientcrt.pem"
+					/KeyFileClient	"cert_files/clientkey.pem"
+					/CertFileClient	"cert_files/clientcrt.pem"
 					/SSLVerifyFailIfNoPeerCert 0
 					/SSLUseAppCallback		0
 					/SSLVerifyPeerCert		1
@@ -87,8 +87,8 @@
 				/SSLModuleCfg
 				{
 					/SSLVerifyDepth 3
-					/KeyFile	"cert_files/clientkey.pem"
-					/CertFile	"cert_files/clientcrt.pem"
+					/KeyFileClient	"cert_files/clientkey.pem"
+					/CertFileClient	"cert_files/clientcrt.pem"
 					/SSLVerifyFailIfNoPeerCert 0
 					/SSLUseAppCallback		0
 					/SSLVerifyPeerCert		1
@@ -119,8 +119,8 @@
 				/SSLModuleCfg
 				{
 					/SSLVerifyDepth 3
-					/KeyFile	"cert_files/clientkey.pem"
-					/CertFile	"cert_files/clientcrt.pem"
+					/KeyFileClient	"cert_files/clientkey.pem"
+					/CertFileClient	"cert_files/clientcrt.pem"
 					/SSLVerifyFailIfNoPeerCert 0
 					/SSLUseAppCallback		0
 					/SSLVerifyPeerCert		1
@@ -151,8 +151,8 @@
 				/SSLModuleCfg
 				{
 					/SSLVerifyDepth 3
-					/KeyFile	"cert_files/clientkey.pem"
-					/CertFile	"cert_files/clientcrt.pem"
+					/KeyFileClient	"cert_files/clientkey.pem"
+					/CertFileClient	"cert_files/clientcrt.pem"
 					/SSLVerifyFailIfNoPeerCert 0
 					/SSLUseAppCallback		0
 					/SSLVerifyPeerCert		1
