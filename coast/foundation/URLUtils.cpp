@@ -284,7 +284,6 @@ String URLUtils::urlDecode(const String &instr, bool replacePlusByBlank)
 	StartTrace(URLUtils.urlDecode);
 	URLUtils::URLCheckStatus eUrlCheckStatus;
 	return urlDecode(instr, eUrlCheckStatus, replacePlusByBlank);
-
 }
 
 // decodes the given string into res by expanding %XX and %uXXXXX escapes
@@ -374,16 +373,78 @@ bool URLUtils::CheckUrlEncoding(const String &str, const String exclusionSet)
 }
 
 // encode the given char *p into res by expanding problematic characters into %XX escapes
-// Compliant to RFC1808
 bool URLUtils::DoUrlEncode(const String &str, const String exclusionSet, String &encoded, bool doCheck)
 {
 	StartTrace(URLUtils.DoUrlEncode);
 	char c;
 
-	// check for a-Z
+	// encoding scheme for HTTP (RFC1738):
+	//	httpurl        = "http://" hostport [ "/" hpath [ "?" search ]]
+	//	hpath          = hsegment *[ "/" hsegment ]
+	//	hsegment       = *[ uchar | ";" | ":" | "@" | "&" | "=" ]
+	//	>> hsegment    = *[ "a-zA-Z0-9$-_.+!*'(),;:@&=" ]	// satisfy sniffparser '
+	// superseeding as of RFC1808:
+	//		URL         = ( absoluteURL | relativeURL ) [ "#" fragment ]
+	//
+	//		absoluteURL = generic-RL | ( scheme ":" *( uchar | reserved ) )
+	//
+	//		generic-RL  = scheme ":" relativeURL
+	//
+	//		relativeURL = net_path | abs_path | rel_path
+	//
+	//		net_path    = "//" net_loc [ abs_path ]
+	//		abs_path    = "/"  rel_path
+	//		rel_path    = [ path ] [ ";" params ] [ "?" query ]
+	//		path        = fsegment *( "/" segment )
+	//		fsegment    = 1*pchar					// 1* means: '1 or more characters of'
+	//		segment     =  *pchar
+	//
+	//		params      = param *( ";" param )
+	//		param       = *( pchar | "/" )
+	//
+	//		scheme      = 1*( alpha | digit | "+" | "-" | "." )
+	//		net_loc     =  *( pchar | ";" | "?" )
+	//		query       =  *( uchar | reserved )
+	//		fragment    =  *( uchar | reserved )
+	//
+	//	this leads to a (f)segment: ';' is omitted compared to hsegment
+	//	>> (f)segment   = *[ "a-zA-Z0-9$-_.+!*'(),:@&=" ]	// satisfy sniffparser '
+
+	//	search         = *[ uchar | ";" | ":" | "@" | "&" | "=" ]
+	//	lowalpha       = "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" |
+	//					 "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" |
+	//					 "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" |
+	//					 "y" | "z"
+	//	hialpha        = "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" |
+	//					 "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" |
+	//					 "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z"
+	//
+	//	alpha          = lowalpha | hialpha
+	//	digit          = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" |
+	//					 "8" | "9"
+	//	safe           = "$" | "-" | "_" | "." | "+"
+	//	extra          = "!" | "*" | "'" | "(" | ")" | ","
+	//	national       = "{" | "}" | "|" | "\" | "^" | "~" | "[" | "]" | "`"
+	//	punctuation    = "<" | ">" | "#" | "%" | <">
+	//
+	//	reserved       = ";" | "/" | "?" | ":" | "@" | "&" | "="
+	//	hex            = digit | "A" | "B" | "C" | "D" | "E" | "F" |
+	//					 "a" | "b" | "c" | "d" | "e" | "f"
+	//	escape         = "%" hex hex
+	//
+	//	unreserved     = alpha | digit | safe | extra
+	//	uchar          = unreserved | escape
+	//	>> uchar       = "a-zA-Z0-9$-_.+!*'(),"		// satisfy sniffparser '
+	//	pchar          = uchar | ":" | "@" | "&" | "="
+	//	>> pchar       = "a-zA-Z0-9$-_.+!*'(),:@&="		// satisfy sniffparser '
+
+	// characters which always need escaping: 0x00-0x1F, 0x7F-0xFF
+	// to be escaped too: "<>\"#%{}|\\^~[]`"
+	// for path encoding we need to escape "?;" too
 	if (str.Length() > 0) {
 		for (long l = 0; l < str.Length(); l++) {
-			unsigned int ui  = c = str[l];
+			c = str[l];
+			unsigned int ui = c;
 			if ( ui <= 0x20 ||
 				 ui >= 0x7F ||
 				 ui == '"'  ||
