@@ -27,6 +27,7 @@ public:
 		  fCheckUrlEncodingOverride(),
 		  fCheckUrlPathContainsUnsafeCharsOverride(),
 		  fCheckUrlPathContainsUnsafeCharsAsciiOverride(),
+		  fCheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii(0),
 		  fUrlExhaustiveDecode(0),
 		  fFixDirectoryTraversial(0),
 		  fURLEncodeExclude("/?") {}
@@ -73,6 +74,7 @@ protected:
 	String		fCheckUrlEncodingOverride;
 	String		fCheckUrlPathContainsUnsafeCharsOverride;
 	String		fCheckUrlPathContainsUnsafeCharsAsciiOverride;
+	long		fCheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii;
 	long		fUrlExhaustiveDecode;
 	long		fFixDirectoryTraversial;
 	String		fURLEncodeExclude;

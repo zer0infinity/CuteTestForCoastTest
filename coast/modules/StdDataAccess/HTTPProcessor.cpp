@@ -32,6 +32,7 @@ void HTTPProcessor::Init(Server *server)
 		fCheckUrlEncodingOverride = server->Lookup("CheckUrlEncodingOverride", fCheckUrlEncodingOverride);
 		fCheckUrlPathContainsUnsafeCharsOverride = server->Lookup("CheckUrlPathContainsUnsafeCharsOverride", fCheckUrlPathContainsUnsafeCharsOverride);
 		fCheckUrlPathContainsUnsafeCharsAsciiOverride = server->Lookup("CheckUrlPathContainsUnsafeCharsAsciiOverride", fCheckUrlPathContainsUnsafeCharsAsciiOverride);
+		fCheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii = server->Lookup("CheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii", fCheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii);
 		fUrlExhaustiveDecode = server->Lookup("URLExhaustiveDecode", fUrlExhaustiveDecode);
 		fFixDirectoryTraversial = server->Lookup("FixDirectoryTraversial", fFixDirectoryTraversial);
 		fURLEncodeExclude = server->Lookup("URLEncodeExclude", fURLEncodeExclude);

@@ -240,7 +240,7 @@ bool RequestReader::VerifyUrlPath(iostream &Ios, String &urlPath, const Anything
 	}
 	if ( URLUtils::CheckUrlPathContainsUnsafeChars(urlPath, fProc->fCheckUrlPathContainsUnsafeCharsOverride,
 			fProc->fCheckUrlPathContainsUnsafeCharsAsciiOverride,
-			true) ) {
+			!(fProc->fCheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii)) ) {
 		return DoHandleError(Ios, 400, "Decoded URL path contains unsafe char", urlPathOrig, clientInfo);
 	}
 	// "path" part of URL had to be normalized. This may indicate an attack.

@@ -64,12 +64,13 @@ void RequestReaderTest::testCleanupRequestLine()
 		Context ctx;
 		MIMEHeader header(0);
 		HTTPProcessor httpProc("HTTPProc");
-		httpProc.fCheckUrlEncodingOverride						= cConfig["CheckUrlEncodingOverride"].AsString();
-		httpProc.fCheckUrlPathContainsUnsafeCharsOverride 		= cConfig["CheckUrlPathContainsUnsafeCharsOverride"].AsString();
-		httpProc.fCheckUrlPathContainsUnsafeCharsAsciiOverride	= cConfig["CheckUrlPathContainsUnsafeCharsAsciiOverride"].AsString();
-		httpProc.fUrlExhaustiveDecode							= cConfig["URLExhaustiveDecode"].AsLong(0);
-		httpProc.fFixDirectoryTraversial						= cConfig["FixDirectoryTraversial"].AsLong(0);
-		httpProc.fURLEncodeExclude								= cConfig["URLEncodeExclude"].AsString("/?");
+		httpProc.fCheckUrlEncodingOverride									= cConfig["CheckUrlEncodingOverride"].AsString();
+		httpProc.fCheckUrlPathContainsUnsafeCharsOverride 					= cConfig["CheckUrlPathContainsUnsafeCharsOverride"].AsString();
+		httpProc.fCheckUrlPathContainsUnsafeCharsAsciiOverride				= cConfig["CheckUrlPathContainsUnsafeCharsAsciiOverride"].AsString();
+		httpProc.fCheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii	= cConfig["CheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii"].AsLong(0);
+		httpProc.fUrlExhaustiveDecode										= cConfig["URLExhaustiveDecode"].AsLong(0);
+		httpProc.fFixDirectoryTraversial									= cConfig["FixDirectoryTraversial"].AsLong(0);
+		httpProc.fURLEncodeExclude											= cConfig["URLEncodeExclude"].AsString("/?");
 		RequestReader 	reader(&httpProc, header);
 		String uri(cConfig["RequestLine"].AsString());
 		StringStreamSocket ss(uri);
@@ -128,7 +129,7 @@ Test *RequestReaderTest::suite ()
 	TestSuite *testSuite = new TestSuite;
 
 	testSuite->addTest (NEW_CASE(RequestReaderTest, testCase));
-//	testSuite->addTest (NEW_CASE(RequestReaderTest, testReadMinimalInput));
+	testSuite->addTest (NEW_CASE(RequestReaderTest, testReadMinimalInput));
 	testSuite->addTest (NEW_CASE(RequestReaderTest, testCleanupRequestLine));
 	return testSuite;
 } // suite

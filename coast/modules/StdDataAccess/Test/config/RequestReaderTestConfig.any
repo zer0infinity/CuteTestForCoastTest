@@ -402,7 +402,7 @@
 		}
 
 		# 41
-		# this are encoded chars > ascii 127, thus invalid
+		# this are encoded chars > ascii 127 (АЇАЇ), thus invalid
 		{
 				/RequestLine 	"GET /ftimage%C0%AF%C0%AF/image/my.gif HTTP/1.0\r\n"
 				/ExpectedRequest		""
@@ -858,22 +858,39 @@
 				/Reason				"Decoded URL path contains unsafe char"
 		}
 		# 95
-		# Now allow  0xe4=д
+		# Now allow  0xe4=д 0xf6=ц
 		{
-				/RequestLine 	"GET /ftimage/%u00e4umlaut.gif HTTP/1.0\r\n"
-				/ExpectedRequest	"/ftimage/%u00e4umlaut.gif"
-				/CheckUrlPathContainsUnsafeCharsAsciiOverride "д"
+				/RequestLine 	"GET /ftimage/%u00e4%f6umlaut.gif HTTP/1.0\r\n"
+				/ExpectedRequest	"/ftimage/%u00e4%f6umlaut.gif"
+				/CheckUrlPathContainsUnsafeCharsAsciiOverride "дц"
 				/HasErrors			 0
 				/Reason				""
 		}
-
 		# 96
+		# Now allow  0xe4=д 0xf6=ц, given in \x notation
+		{
+				/RequestLine 	"GET /ftimage/%u00e4%f6umlaut.gif HTTP/1.0\r\n"
+				/ExpectedRequest	"/ftimage/%u00e4%f6umlaut.gif"
+				/CheckUrlPathContainsUnsafeCharsAsciiOverride "\xe4\xf6"
+				/HasErrors			 0
+				/Reason				""
+		}
+		# 97
 		# Override the default set of allowed chars in URL-path ( after decoding ) < = 0x3c
 		# by removing it from the list
 		{
 				/RequestLine 	"GET /ftimage/%3csmaller.gif HTTP/1.0\r\n"
 				/CheckUrlPathContainsUnsafeCharsOverride ">\"#%{}|\\^~[]`"
 				/ExpectedRequest	"/ftimage/%3csmaller.gif"
+				/HasErrors			 0
+				/Reason				""
+		}
+		# 98
+		# this are encoded chars > ascii 127 (АЇАЇ), do not complain because CheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii
+		{
+				/RequestLine 	"GET /ftimage%C0%AF%C0%AF/image/my.gif HTTP/1.0\r\n"
+				/CheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii 1
+				/ExpectedRequest		"/ftimage%C0%AF%C0%AF/image/my.gif"
 				/HasErrors			 0
 				/Reason				""
 		}
