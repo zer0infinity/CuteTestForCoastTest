@@ -31,26 +31,6 @@
 				}
 			}
 		}
-		/SybPoolSearchTest {
-			/TheAction {
-				/CallDA 	SybPoolSearchTest
-			}
-			/Result {
-				/TmpStore {
-					/SybPoolSearchTest {
-						/Query	"select au_fname, au_lname from authors where au_lname='Bennet'"
-						/QueryCount 1
-						/QueryResult	{
-							/"0" {
-								/au_fname	"Abraham"
-								/au_lname	"Bennet"
-							}
-						}
-						/QuerySource	"HIKU_INT2"
-					}
-				}
-			}
-		}
 		/SybLimitedSearchTest {
 			/TheAction {
 				/CallDA 	SybLimitedSearchTest
@@ -129,29 +109,6 @@
 				}
 			}
 		}
-		/SybPoolShowDatabases {
-			/TmpStore {
-				/DesiredFields "name,crdate"
-			}
-			/TheAction {
-				/CallDA 	SybPoolShowDatabases
-			}
-			/Result {
-				/TmpStore {
-					/SybPoolShowDatabases {
-						/Query	"SELECT name,crdate FROM master..sysdatabases where name='master'"
-						/QueryCount 1
-						/QueryResult	{
-							/"0" {
-								/name "master"
-								/crdate "Jan  1 1900 12:00AM"
-							}
-						}
-						/QuerySource	"HIKU_INT2"
-					}
-				}
-			}
-		}
 		/SybInsertDatabases {
 			/TheAction {
 				/CallDA 	SybInsertDatabases
@@ -166,20 +123,6 @@
 				}
 			}
 		}
-		/SybPoolInsertDatabases {
-			/TheAction {
-				/CallDA 	SybPoolInsertDatabases
-			}
-			/Result {
-				/TmpStore {
-					/SybPoolInsertDatabases {
-						/Query "INSERT INTO pub2..au_pix VALUES ( 'cirp',NULL,NULL,NULL,NULL,NULL)"
-						/QueryCount 0
-						/QueryResult *
-					}
-				}
-			}
-		}
 		/SybDeleteFromDatabase {
 			/TheAction {
 				/CallDA 	SybDeleteFromDatabase
@@ -187,20 +130,6 @@
 			/Result {
 				/TmpStore {
 					/SybDeleteFromDatabase {
-						/Query "DELETE FROM pub2..au_pix where au_id='cirp'"
-						/QueryCount 0
-						/QueryResult *
-					}
-				}
-			}
-		}
-		/SybPoolDeleteFromDatabase {
-			/TheAction {
-				/CallDA 	SybPoolDeleteFromDatabase
-			}
-			/Result {
-				/TmpStore {
-					/SybPoolDeleteFromDatabase {
 						/Query "DELETE FROM pub2..au_pix where au_id='cirp'"
 						/QueryCount 0
 						/QueryResult *
@@ -247,6 +176,191 @@
 #				}
 #			}
 #		}
+		/SybErrorTest {
+			/TheAction {
+				/CallDA 	SybErrorTest
+			}
+			/ExpectedResult	0
+			/Result {
+				/TmpStore {
+					/SybErrorTest {
+						/Query "INSERT INTO GaGaTable VALUES (NULL,'Hallo')"
+						/MainMsgErr "SybErrorTest: [GaGaTable not found. Specify owner.objectname or use sp_help to check whether the object exists (sp_help may produce lots of output).]"
+					}
+				}
+			}
+		}
+		/SybSingleRowForSingleSelects {
+			/TheAction {
+				/CallDA 	SybSingleRowForSingleSelects
+			}
+			/Result {
+				/TmpStore {
+					/SybSingleRowForSingleSelects {
+						/Query	"select min(au_id) Rmin, count(*) Rcount, max(au_id) Rmax from authors"
+						/QueryCount	1
+						/QueryResult {
+							/"0" {
+								/Rmin	"172-32-1176"
+								/Rcount	"23"
+								/Rmax	"998-72-3567"
+							}
+						}
+					}
+				}
+			}
+		}
+		/SybMultipleRowsForMultipleSelects {
+			/TheAction {
+				/CallDA 	SybMultipleRowsForMultipleSelects
+			}
+			/Result {
+				/TmpStore {
+					/SybMultipleRowsForMultipleSelects {
+						/Query	"select min(au_id) Rmin from authors select count(*) Rcount from authors select max(au_id) Rmax from authors"
+						/QueryCount	3
+						/QueryResult {
+							/"0" {
+								/Rmin	"172-32-1176"
+							}
+							/"1" {
+								/Rcount	"23"
+							}
+							/"2" {
+								/Rmax	"998-72-3567"
+							}
+						}
+					}
+				}
+			}
+		}
+		/SybDeleteStoredProcedureTest {
+			/TheAction {
+				/CallDA 	SybDeleteStoredProcedureTest
+			}
+			/Result {
+				/TmpStore {
+					/SybDeleteStoredProcedureTest {
+					}
+				}
+			}
+		}
+		/SybCreateStoredProcedureTest {
+			/TheAction {
+				/CallDA 	SybCreateStoredProcedureTest
+			}
+			/Result {
+				/TmpStore {
+					/SybCreateStoredProcedureTest {
+					}
+				}
+			}
+		}
+		/SybExecuteStoredProcedureTest {
+			/TheAction {
+				/CallDA 	SybExecuteStoredProcedureTest
+			}
+			/Result {
+				/TmpStore {
+					/SybExecuteStoredProcedureTest {
+						/Query	"declare @intvar int, @sintparam smallint, @floatparam float, @moneyparam money, @dateparam datetime, @charparam char(20), @binaryparam binary(20) select @intvar = 2, @sintparam = 234, @floatparam = 0.12,  @moneyparam = convert(money, '300.90'), @dateparam = '08 Aug 2001 04:10PM', @binaryparam = 0xff EXEC sample_rpc @intvar, @sintparam out, @floatparam out, @moneyparam out, @dateparam out, @charparam out, @binaryparam out"
+						/QueryCount	2
+						/QueryResult {
+							/"0" {
+								"2"
+								"234"
+								".12"
+								"300.90"
+								"Aug  8 2001  4:10PM"
+								""
+								"ff00000000000000000000000000000000000000"
+							}
+							/"1" {
+								"236"
+								"2.1200000000000001"
+								"302.90"
+								"Aug  9 2001  5:10PM"
+								"The char parameters "
+								"ff00000000000000000000000000000000000000"
+							}
+						}
+						/SP_Retcode	3
+					}
+				}
+			}
+		}
+#### the pool tests follow here ####
+		/SybPoolSearchTest {
+			/TheAction {
+				/CallDA 	SybPoolSearchTest
+			}
+			/Result {
+				/TmpStore {
+					/SybPoolSearchTest {
+						/Query	"select au_fname, au_lname from authors where au_lname='Bennet'"
+						/QueryCount 1
+						/QueryResult	{
+							/"0" {
+								/au_fname	"Abraham"
+								/au_lname	"Bennet"
+							}
+						}
+						/QuerySource	"HIKU_INT2"
+					}
+				}
+			}
+		}
+		/SybPoolShowDatabases {
+			/TmpStore {
+				/DesiredFields "name,crdate"
+			}
+			/TheAction {
+				/CallDA 	SybPoolShowDatabases
+			}
+			/Result {
+				/TmpStore {
+					/SybPoolShowDatabases {
+						/Query	"SELECT name,crdate FROM master..sysdatabases where name='master'"
+						/QueryCount 1
+						/QueryResult	{
+							/"0" {
+								/name "master"
+								/crdate "Jan  1 1900 12:00AM"
+							}
+						}
+						/QuerySource	"HIKU_INT2"
+					}
+				}
+			}
+		}
+		/SybPoolInsertDatabases {
+			/TheAction {
+				/CallDA 	SybPoolInsertDatabases
+			}
+			/Result {
+				/TmpStore {
+					/SybPoolInsertDatabases {
+						/Query "INSERT INTO pub2..au_pix VALUES ( 'cirp',NULL,NULL,NULL,NULL,NULL)"
+						/QueryCount 0
+						/QueryResult *
+					}
+				}
+			}
+		}
+		/SybPoolDeleteFromDatabase {
+			/TheAction {
+				/CallDA 	SybPoolDeleteFromDatabase
+			}
+			/Result {
+				/TmpStore {
+					/SybPoolDeleteFromDatabase {
+						/Query "DELETE FROM pub2..au_pix where au_id='cirp'"
+						/QueryCount 0
+						/QueryResult *
+					}
+				}
+			}
+		}
 #		/SybPoolTestTypeConversions {
 #			/TheAction {
 #				/CallDA 	SybPoolTestTypeConversions
@@ -286,20 +400,6 @@
 #				}
 #			}
 #		}
-		/SybErrorTest {
-			/TheAction {
-				/CallDA 	SybErrorTest
-			}
-			/ExpectedResult	0
-			/Result {
-				/TmpStore {
-					/SybErrorTest {
-						/Query "INSERT INTO GaGaTable VALUES (NULL,'Hallo')"
-						/MainMsgErr "SybErrorTest: [GaGaTable not found. Specify owner.objectname or use sp_help to check whether the object exists (sp_help may produce lots of output).]"
-					}
-				}
-			}
-		}
 		/SybPoolErrorTest {
 			/TheAction {
 				/CallDA 	SybPoolErrorTest
@@ -310,26 +410,6 @@
 					/SybPoolErrorTest {
 						/Query "INSERT INTO GaGaTable VALUES (NULL,'Hallo')"
 						/MainMsgErr "SybPoolErrorTest: [GaGaTable not found. Specify owner.objectname or use sp_help to check whether the object exists (sp_help may produce lots of output).]"
-					}
-				}
-			}
-		}
-		/SybSingleRowForSingleSelects {
-			/TheAction {
-				/CallDA 	SybSingleRowForSingleSelects
-			}
-			/Result {
-				/TmpStore {
-					/SybSingleRowForSingleSelects {
-						/Query	"select min(au_id) Rmin, count(*) Rcount, max(au_id) Rmax from authors"
-						/QueryCount	1
-						/QueryResult {
-							/"0" {
-								/Rmin	"172-32-1176"
-								/Rcount	"23"
-								/Rmax	"998-72-3567"
-							}
-						}
 					}
 				}
 			}
@@ -383,30 +463,6 @@
 				}
 			}
 		}
-		/SybMultipleRowsForMultipleSelects {
-			/TheAction {
-				/CallDA 	SybMultipleRowsForMultipleSelects
-			}
-			/Result {
-				/TmpStore {
-					/SybMultipleRowsForMultipleSelects {
-						/Query	"select min(au_id) Rmin from authors select count(*) Rcount from authors select max(au_id) Rmax from authors"
-						/QueryCount	3
-						/QueryResult {
-							/"0" {
-								/Rmin	"172-32-1176"
-							}
-							/"1" {
-								/Rcount	"23"
-							}
-							/"2" {
-								/Rmax	"998-72-3567"
-							}
-						}
-					}
-				}
-			}
-		}
 		/SybPoolMultipleRowsForMultipleSelects {
 			/TheAction {
 				/CallDA 	SybPoolMultipleRowsForMultipleSelects
@@ -414,39 +470,6 @@
 			/Result {
 				/TmpStore {
 					/SybPoolMultipleRowsForMultipleSelects %RunTestCases.SybMultipleRowsForMultipleSelects.Result.TmpStore.SybMultipleRowsForMultipleSelects
-				}
-			}
-		}
-		/SybDeleteStoredProcedureTest {
-			/TheAction {
-				/CallDA 	SybDeleteStoredProcedureTest
-			}
-			/Result {
-				/TmpStore {
-					/SybDeleteStoredProcedureTest {
-					}
-				}
-			}
-		}
-		/SybPoolDeleteStoredProcedureTest {
-			/TheAction {
-				/CallDA 	SybPoolDeleteStoredProcedureTest
-			}
-			/Result {
-				/TmpStore {
-					/SybPoolDeleteStoredProcedureTest {
-					}
-				}
-			}
-		}
-		/SybCreateStoredProcedureTest {
-			/TheAction {
-				/CallDA 	SybCreateStoredProcedureTest
-			}
-			/Result {
-				/TmpStore {
-					/SybCreateStoredProcedureTest {
-					}
 				}
 			}
 		}
@@ -463,38 +486,6 @@
 				}
 			}
 		}
-		/SybExecuteStoredProcedureTest {
-			/TheAction {
-				/CallDA 	SybExecuteStoredProcedureTest
-			}
-			/Result {
-				/TmpStore {
-					/SybExecuteStoredProcedureTest {
-						/Query	"declare @intvar int, @sintparam smallint, @floatparam float, @moneyparam money, @dateparam datetime, @charparam char(20), @binaryparam binary(20) select @intvar = 2, @sintparam = 234, @floatparam = 0.12,  @moneyparam = convert(money, '300.90'), @dateparam = '08 Aug 2001 04:10PM', @binaryparam = 0xff EXEC sample_rpc @intvar, @sintparam out, @floatparam out, @moneyparam out, @dateparam out, @charparam out, @binaryparam out"
-						/QueryCount	2
-						/QueryResult {
-							/"0" {
-								"2"
-								"234"
-								".12"
-								"300.90"
-								"Aug  8 2001  4:10PM"
-								""
-								"ff00000000000000000000000000000000000000"
-							}
-							/"1" {
-								"236"
-								"2.1200000000000001"
-								"302.90"
-								"Aug  9 2001  5:10PM"
-								"The char parameters "
-								"ff00000000000000000000000000000000000000"
-							}
-						}
-					}
-				}
-			}
-		}
 		/SybPoolExecuteStoredProcedureTest {
 			/TheAction {
 				/CallDA 	SybPoolExecuteStoredProcedureTest
@@ -502,17 +493,6 @@
 			/Result {
 				/TmpStore {
 					/SybPoolExecuteStoredProcedureTest %RunTestCases.SybExecuteStoredProcedureTest.Result.TmpStore.SybExecuteStoredProcedureTest
-				}
-			}
-		}
-		/SybDeleteStoredProcedureTest2 {
-			/TheAction {
-				/CallDA 	SybDeleteStoredProcedureTest
-			}
-			/Result {
-				/TmpStore {
-					/SybDeleteStoredProcedureTest {
-					}
 				}
 			}
 		}
