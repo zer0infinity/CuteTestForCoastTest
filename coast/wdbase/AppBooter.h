@@ -32,7 +32,7 @@ public:
 	virtual int Run(int argc, char *argv[], bool doHalt = true);
 
 	virtual bool Boot(Anything &config); // access the intial config file
-	virtual Application *FindApplication(const Anything &config, String &applicationName);
+	virtual Application *FindApplication(ROAnything config, String &applicationName);
 
 	virtual bool OpenLibs(const Anything &config);
 	virtual bool CloseLibs();

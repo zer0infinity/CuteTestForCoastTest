@@ -351,12 +351,12 @@ bool AppBooter::CloseLibs()
 	return ret;
 }
 
-Application *AppBooter::FindApplication(const Anything &config, String &applicationName)
+Application *AppBooter::FindApplication(ROAnything config, String &applicationName)
 {
 	StartTrace(AppBooter.FindApplication);
 	Trace("application:" << applicationName);
 	TraceAny(config, "config");
-	Anything applicationConf;
+	ROAnything applicationConf;
 	Application *application = 0;
 
 	if (config.LookupPath(applicationConf, "Application") || config.LookupPath(applicationConf, "Server")  ) {
