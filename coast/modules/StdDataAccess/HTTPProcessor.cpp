@@ -29,8 +29,12 @@ void HTTPProcessor::Init(Server *server)
 		fRequestSizeLimit = server->Lookup("RequestSizeLimit", fRequestSizeLimit);
 		fLineSizeLimit = server->Lookup("LineSizeLimit", fLineSizeLimit);
 		fURISizeLimit = server->Lookup("URISizeLimit", fURISizeLimit);
+		fCheckUrlEncodingOverride = server->Lookup("CheckUrlEncodingOverride", fCheckUrlEncodingOverride);
+		fCheckUrlPathContainsUnsafeCharsOverride = server->Lookup("CheckUrlPathContainsUnsafeCharsOverride", fCheckUrlPathContainsUnsafeCharsOverride);
+		fCheckUrlPathContainsUnsafeCharsAsciiOverride = server->Lookup("CheckUrlPathContainsUnsafeCharsAsciiOverride", fCheckUrlPathContainsUnsafeCharsAsciiOverride);
+		fUrlExhaustiveDecode = server->Lookup("URLExhaustiveDecode", fUrlExhaustiveDecode);
+		fFixDirectoryTraversial = server->Lookup("FixDirectoryTraversial", fFixDirectoryTraversial);
 		fURLEncodeExclude = server->Lookup("URLEncodeExclude", fURLEncodeExclude);
-		fDoURLDecoding = server->Lookup("DoURLDecoding", fDoURLDecoding);
 	}
 	RequestProcessor::Init(server);
 }

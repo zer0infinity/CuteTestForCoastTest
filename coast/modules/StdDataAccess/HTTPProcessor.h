@@ -24,8 +24,12 @@ public:
 		  fLineSizeLimit(4096),
 		  fRequestSizeLimit(5120),
 		  fURISizeLimit(271),	// limit URI size to 255 per default since most of the proxies and some browsers won't handle more
-		  fURLEncodeExclude("/?"),
-		  fDoURLDecoding(0)	{ }
+		  fCheckUrlEncodingOverride(),
+		  fCheckUrlPathContainsUnsafeCharsOverride(),
+		  fCheckUrlPathContainsUnsafeCharsAsciiOverride(),
+		  fUrlExhaustiveDecode(0),
+		  fFixDirectoryTraversial(0),
+		  fURLEncodeExclude("/?") {}
 
 	virtual ~HTTPProcessor()	{ }
 
@@ -63,11 +67,15 @@ protected:
 	//! render the protocol specific error msg
 	virtual void DoError(ostream &reply, const String &msg, Context &ctx);
 
-	long 	fLineSizeLimit;
-	long 	fRequestSizeLimit;
-	long 	fURISizeLimit;
-	String  fURLEncodeExclude;
-	long 	fDoURLDecoding;
+	long 		fLineSizeLimit;
+	long 		fRequestSizeLimit;
+	long 		fURISizeLimit;
+	String		fCheckUrlEncodingOverride;
+	String		fCheckUrlPathContainsUnsafeCharsOverride;
+	String		fCheckUrlPathContainsUnsafeCharsAsciiOverride;
+	long		fUrlExhaustiveDecode;
+	long		fFixDirectoryTraversial;
+	String		fURLEncodeExclude;
 
 	friend class HTTPProcessorTest;
 	friend class RequestReaderTest;

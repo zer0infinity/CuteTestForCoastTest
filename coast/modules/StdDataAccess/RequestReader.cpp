@@ -17,7 +17,7 @@
 
 //---- RequestReader -----------------------------------------------------------
 RequestReader::RequestReader(HTTPProcessor *p, MIMEHeader &header)
-	: fProc(p), fHeader(header), fRequestBufferSize(0), fFirstLine(true)
+	: fProc(p), fHeader(header), fRequestBufferSize(0), fFirstLine(true), fErrors()
 {
 	StartTrace(RequestReader.RequestReader);
 }
@@ -82,13 +82,10 @@ bool RequestReader::ReadRequest(iostream &Ios, const Anything &clientInfo)
 		}
 
 		// handle request lines
-		if (!fHeader.DoParseHeaderLine(line)) {
-			// correct error code? FIXME
-			return DoHandleError(Ios, 400, "Bad Request", line, clientInfo);
-		}
+		fHeader.DoParseHeaderLine(line);
 	}
 	if ( fRequestBufferSize == 0 ) {
-		return DoHandleError(Ios, 400, "Bad Request", line, clientInfo);
+		return DoHandleError(Ios, 400, "Empty request", line, clientInfo);
 	}
 
 #ifdef REQ_TRACING
@@ -102,8 +99,9 @@ bool RequestReader::CheckReqLineSize(iostream &Ios, long lineLength, const Strin
 {
 	StartTrace(RequestReader.CheckReqLineSize);
 	if (lineLength > fProc->fLineSizeLimit) {
-		Trace("Request Line Too Large : [" << lineLength << "] (max " << fProc->fLineSizeLimit << ")");
-		return DoHandleError(Ios, 413, "Request Line Too Large", line, clientInfo);
+		String msg;
+		msg << "CheckReqLineSize: Request line too Large : [" << lineLength << "] (max " << fProc->fLineSizeLimit << ")";
+		return DoHandleError(Ios, 413, msg, line, clientInfo);
 	}
 	return true;
 }
@@ -112,7 +110,9 @@ bool RequestReader::CheckReqBufferSize(iostream &Ios, long lineLength, const Str
 {
 	StartTrace(RequestReader.CheckReqBufferSize);
 	if (lineLength > fProc->fRequestSizeLimit) {
-		return DoHandleError(Ios, 413, "Request Too Large", line, clientInfo);
+		String msg;
+		msg << "CheckReqBufferSize: Request too large : [" << lineLength << "] (max " << fProc->fRequestSizeLimit << ")";
+		return DoHandleError(Ios, 413, msg, line, clientInfo);
 	}
 	return true;
 }
@@ -134,7 +134,7 @@ bool RequestReader::HandleFirstLine(iostream &Ios, String &line, const Anything 
 	StartTrace(RequestReader.HandleFirstLine);
 	long llen = line.Length();
 	if (line == ENDL || !(line[long(llen-2)] == '\r' && line[long(llen-1)] == '\n')) {
-		return DoHandleError(Ios, 400, "Bad Request", line, clientInfo);
+		return DoHandleError(Ios, 400, "No request header/body", line, clientInfo);
 	} else {
 		line.Trim(llen - 2); // cut off ENDL
 	}
@@ -154,9 +154,6 @@ bool RequestReader::ParseRequest(iostream &Ios, String &line, const Anything &cl
 	StringTokenizer st(line, ' ');
 	String tok;
 
-	fRequest["TraversialAttack"]	= 0;
-	fRequest["WrongUrlPathEncoding"]	= 0;
-	fRequest["WrongUrlArgsEncoding"]	= 0;
 	if ( st.NextToken(tok) ) {
 		// request type
 		tok.ToUpper();
@@ -169,7 +166,7 @@ bool RequestReader::ParseRequest(iostream &Ios, String &line, const Anything &cl
 		return DoHandleError(Ios, 405, "Method Not Allowed", line, clientInfo);
 	}
 	String cleanUrl;
-	String urlPath;
+	String url;
 	if ( st.NextToken(tok) ) {
 		// extract request url path, without trailing ?
 		long questPos = tok.StrChr('?');
@@ -185,8 +182,11 @@ bool RequestReader::ParseRequest(iostream &Ios, String &line, const Anything &cl
 			if ( hasArgs ) {
 				urlArgs = tok.SubString(questPos + 1, tok.Length());
 				Trace("UrlArgs: questPos: " << questPos << "urlArgs: " << urlArgs);
-				VerifyUrlArgs(urlArgs);
 				cleanUrl << urlPath << "?" <<  urlArgs;
+				if ( !VerifyUrlArgs(urlArgs) ) {
+					DoLogError(0, "Argument string (after ?) was not correctly encoded. Request not rejected.",
+							   cleanUrl, clientInfo, "");
+				}
 			} else {
 				cleanUrl << urlPath;
 			}
@@ -196,12 +196,12 @@ bool RequestReader::ParseRequest(iostream &Ios, String &line, const Anything &cl
 				return false;
 			}
 			// No arguments supplied
-			urlPath = tok;
-			Trace("urlPath: " << urlPath);
-			if (!VerifyUrlPath(Ios, urlPath, clientInfo)) {
+			url = tok;
+			Trace("urlPath: " << url);
+			if (!VerifyUrlPath(Ios, url, clientInfo)) {
 				return false;
 			}
-			cleanUrl = urlPath;
+			cleanUrl = url;
 		}
 		fRequest["REQUEST_URI"] = cleanUrl;
 		Trace("Resulting Url " << cleanUrl);
@@ -222,31 +222,41 @@ bool RequestReader::ParseRequest(iostream &Ios, String &line, const Anything &cl
 bool RequestReader::VerifyUrlPath(iostream &Ios, String &urlPath, const Anything &clientInfo)
 {
 	StartTrace(RequestReader.VerifyUrlPath);
-	// Are all character which must be URL-encoded really encoded?
-	if (URLUtils::CheckUrlEncoding(urlPath) == false) {
-		fRequest["WrongUrlPathEncoding"] = 1;
+
+	URLUtils::URLCheckStatus eUrlCheckStatus = URLUtils::eOk;
+	String urlPathOrig = urlPath;
+	// Are all chars which must be URL-encoded really encoded?
+	if (URLUtils::CheckUrlEncoding(urlPath, fProc->fCheckUrlEncodingOverride) == false) {
+		return DoHandleError(Ios, 400, "Not all unsave chars URL encoded", urlPathOrig, clientInfo);
 	}
-	Trace("DoURLDecoding: " <<  fProc->fDoURLDecoding);
-	if ( fProc->fDoURLDecoding ) {
-		String urlPathOrig(urlPath);
-		URLUtils::URLCheckStatus eUrlCheckStatus;
-		// Do we have a char > FF ? This is suspicious.
-		urlPathOrig = urlPath;
+	if (fProc->fUrlExhaustiveDecode) {
 		urlPath = URLUtils::ExhaustiveUrlDecode(urlPath, eUrlCheckStatus, false);
-		if (eUrlCheckStatus == URLUtils::eSuspiciousChar) {
-			// We are done, invalid request
-			return DoHandleError(Ios, 400, "Bad Request", urlPathOrig, clientInfo);
+	} else {
+		urlPath = URLUtils::urlDecode(urlPath, eUrlCheckStatus, false);
+	}
+	if (eUrlCheckStatus == URLUtils::eSuspiciousChar) {
+		// We are done, invalid request
+		return DoHandleError(Ios, 400, "Encoded char above 0x255 detected", urlPathOrig, clientInfo);
+	}
+	if ( URLUtils::CheckUrlPathContainsUnsafeChars(urlPath, fProc->fCheckUrlPathContainsUnsafeCharsOverride,
+			fProc->fCheckUrlPathContainsUnsafeCharsAsciiOverride,
+			true) ) {
+		return DoHandleError(Ios, 400, "Decoded URL path contains unsafe char", urlPathOrig, clientInfo);
+	}
+	// "path" part of URL had to be normalized. This may indicate an attack.
+	String normalizedUrl =  URLUtils::CleanUpUriPath(urlPath);
+	if ( urlPath.Length() !=  normalizedUrl.Length() ) {
+		if ( fProc->fFixDirectoryTraversial ) {
+			// alter the original url
+			urlPathOrig = URLUtils::urlEncode(normalizedUrl, fProc->fURLEncodeExclude);
+			DoLogError(0, "Directory traversial attack detected and normalized. Request not rejected because of config settings",
+					   urlPathOrig, clientInfo, "");
+		} else {
+			return DoHandleError(Ios, 400, "Directory traversial attack", urlPathOrig, clientInfo);
 		}
 	}
-	long notNormalizedLength(urlPath.Length());
-	urlPath = URLUtils::CleanUpUriPath(urlPath);
-	// "path" part of URL had to be normalized. This may indicate an attack.
-	if ( urlPath.Length() != notNormalizedLength ) {
-		fRequest["TraversialAttack"] = 1;
-	}
-	if ( fProc->fDoURLDecoding ) {
-		urlPath = URLUtils::urlEncode(urlPath, fProc->fURLEncodeExclude);
-	}
+	urlPath = urlPathOrig;
+
 	return true;
 }
 
@@ -255,7 +265,6 @@ bool RequestReader::VerifyUrlArgs(String &urlArgs)
 	StartTrace(RequestReader.VerifyUrlArgs);
 	// Are all character which must be URL-encoded really encoded?
 	if (URLUtils::CheckUrlArgEncoding(urlArgs) == false) {
-		fRequest["WrongUrlArgsEncoding"] = 1;
 		return false;
 	}
 	return true;
@@ -268,7 +277,7 @@ Anything RequestReader::GetRequest()
 }
 
 // handle error
-bool RequestReader::DoHandleError(iostream &Ios, long errcode, const String &msg, const String &line, const Anything &clientInfo)
+bool RequestReader::DoHandleError(iostream &Ios, long errcode, const String &reason, const String &line, const Anything &clientInfo, const String &msg)
 {
 	StartTrace(RequestReader.DoHandleError);
 	Trace("Errcode: " << errcode << " Mesage: " << msg << " Faulty line: " << line);
@@ -285,21 +294,23 @@ bool RequestReader::DoHandleError(iostream &Ios, long errcode, const String &msg
 	} else {
 		Trace("Can not send error msg.");
 	}
-	DoLogError(errcode, msg, line, clientInfo);
+	DoLogError(errcode, reason, line, clientInfo, msg);
 	return false;
 }
 
-void RequestReader::DoLogError(long errcode, const String &msg, const String &line, const Anything &clientInfo)
+void RequestReader::DoLogError(long errcode, const String &reason, const String &line, const Anything &clientInfo, const String &msg)
 {
 	StartTrace(RequestReader.DoHandleError);
 	// define SecurityLog according to the AppLog rules if you want to see this output.
 	Context ctx;
 	Anything tmpStore = ctx.GetTmpStore();
-	tmpStore["REMOTE_ADDR"] = clientInfo["REMOTE_ADDR"];
-	tmpStore["HTTPS"] = clientInfo["HTTPS"];
-	tmpStore["Request"] = GetRequest();
-	tmpStore["HttpStatusCode"] =  errcode;
-	tmpStore["HttpResponseMsg"] = msg;
-	tmpStore["FaultyRequestLine"] = line;
+	tmpStore["RequestReader"]["REMOTE_ADDR"] = clientInfo["REMOTE_ADDR"];
+	tmpStore["RequestReader"]["HTTPS"] = clientInfo["HTTPS"];
+	tmpStore["RequestReader"]["Request"] = GetRequest();
+	tmpStore["RequestReader"]["HttpStatusCode"]	=  errcode;
+	tmpStore["RequestReader"]["HttpResponseMsg"] = msg;
+	tmpStore["RequestReader"]["Reason"] = reason;
+	tmpStore["RequestReader"]["FaultyRequestLine"] = line;
+	fErrors = tmpStore["RequestReader"];
 	AppLogModule::Log(ctx, "SecurityLog");
 }

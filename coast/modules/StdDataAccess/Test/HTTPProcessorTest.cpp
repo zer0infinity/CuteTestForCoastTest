@@ -62,7 +62,7 @@ void HTTPProcessorTest::testDoReadInputWithError()
 	expected =    String("") << "HTTP/1.1 414 Request-URL Too Large" << ENDL
 				  << "Connection: close\r\ncontent-type: text/html" << ENDL << ENDL
 				  << "<html><head>\n<title>414 Request-URL Too Large</title>\n</head><body>\n"
-				  << "<h1>Request-URL Too Large</h1>\n<p>Request-URI Too Long [25].</p><hr />\n"
+				  << "<h1>Request-URL Too Large</h1>\n<p>Bad Request</p><hr />\n"
 				  << "<address>Coast 2.0 Server</address>\n</body></html>";
 	fds.fRequestSizeLimit = 5120L;
 	fds.fLineSizeLimit = 1024L;
@@ -72,7 +72,7 @@ void HTTPProcessorTest::testDoReadInputWithError()
 	expected =    String("") << "HTTP/1.1 413 Request Entity Too Large" << ENDL
 				  << "Connection: close\r\ncontent-type: text/html" << ENDL << ENDL
 				  << "<html><head>\n<title>413 Request Entity Too Large</title>\n</head><body>\n"
-				  << "<h1>Request Entity Too Large</h1>\n<p>Request Line Too Large</p><hr />\n"
+				  << "<h1>Request Entity Too Large</h1>\n<p>Bad Request</p><hr />\n"
 				  << "<address>Coast 2.0 Server</address>\n</body></html>";
 	fds.fRequestSizeLimit = 5120L;
 	fds.fLineSizeLimit = 30L;
@@ -82,7 +82,7 @@ void HTTPProcessorTest::testDoReadInputWithError()
 	expected =    String("") << "HTTP/1.1 413 Request Entity Too Large" << ENDL
 				  << "Connection: close\r\ncontent-type: text/html" << ENDL << ENDL
 				  << "<html><head>\n<title>413 Request Entity Too Large</title>\n</head><body>\n"
-				  << "<h1>Request Entity Too Large</h1>\n<p>Request Line Too Large</p><hr />\n"
+				  << "<h1>Request Entity Too Large</h1>\n<p>Bad Request</p><hr />\n"
 				  << "<address>Coast 2.0 Server</address>\n</body></html>";
 	fds.fRequestSizeLimit = 5120L;
 	fds.fLineSizeLimit = 20L;
@@ -92,7 +92,7 @@ void HTTPProcessorTest::testDoReadInputWithError()
 	expected =    String("") << "HTTP/1.1 413 Request Entity Too Large" << ENDL
 				  << "Connection: close\r\ncontent-type: text/html" << ENDL << ENDL
 				  << "<html><head>\n<title>413 Request Entity Too Large</title>\n</head><body>\n"
-				  << "<h1>Request Entity Too Large</h1>\n<p>Request Too Large</p><hr />\n"
+				  << "<h1>Request Entity Too Large</h1>\n<p>Bad Request</p><hr />\n"
 				  << "<address>Coast 2.0 Server</address>\n</body></html>";
 	fds.fRequestSizeLimit = 200L;
 	fds.fLineSizeLimit = 1024L;

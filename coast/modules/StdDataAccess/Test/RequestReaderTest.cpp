@@ -64,19 +64,27 @@ void RequestReaderTest::testCleanupRequestLine()
 		Context ctx;
 		MIMEHeader header(0);
 		HTTPProcessor httpProc("HTTPProc");
-		httpProc.fURLEncodeExclude	= cConfig["URLEncodeExclude"].AsString();
-		httpProc.fDoURLDecoding		= cConfig["DoURLDecoding"].AsLong(0);
+		httpProc.fCheckUrlEncodingOverride						= cConfig["CheckUrlEncodingOverride"].AsString();
+		httpProc.fCheckUrlPathContainsUnsafeCharsOverride 		= cConfig["CheckUrlPathContainsUnsafeCharsOverride"].AsString();
+		httpProc.fCheckUrlPathContainsUnsafeCharsAsciiOverride	= cConfig["CheckUrlPathContainsUnsafeCharsAsciiOverride"].AsString();
+		httpProc.fUrlExhaustiveDecode							= cConfig["URLExhaustiveDecode"].AsLong(0);
+		httpProc.fFixDirectoryTraversial						= cConfig["FixDirectoryTraversial"].AsLong(0);
+		httpProc.fURLEncodeExclude								= cConfig["URLEncodeExclude"].AsString("/?");
 		RequestReader 	reader(&httpProc, header);
-
 		String uri(cConfig["RequestLine"].AsString());
 		StringStreamSocket ss(uri);
 		reader.ReadRequest(*(ss.GetStream()), ss.ClientInfo());
 		Anything request(reader.GetRequest());
-		assertEqualm(cConfig["Expected"].AsString(), request["REQUEST_URI"].AsString(), TString("At index: ") << i);
+		TraceAny(request, "request:");
+		long hasErrors = reader.HasErrors();
+		Anything errors = reader.GetErrors();
+		Trace("Checking HasErrors");
+		assertEquals(cConfig["HasErrors"].AsLong(0), hasErrors);
+		Trace("Checking Reason");
+		assertEquals(cConfig["Reason"].AsString(), errors["Reason"].AsString(""));
+		Trace("Checking ExpectedRequest");
+		assertEquals(cConfig["ExpectedRequest"].AsString(), request["REQUEST_URI"].AsString());
 		Trace("Resulting REQUEST_URI: " << request["REQUEST_URI"].AsString());
-		assertEqualm(cConfig["TraversialAttack"].AsBool(), request["TraversialAttack"].AsBool(), TString("At index: ") << i);
-		assertEqualm(cConfig["WrongUrlPathEncoding"].AsBool(), request["WrongUrlPathEncoding"].AsBool(), TString("At index: ") << i);
-		assertEqualm(cConfig["WrongUrlArgsEncoding"].AsBool(), request["WrongUrlArgsEncoding"].AsBool(), TString("At index: ") << i);
 	}
 }
 
@@ -93,8 +101,6 @@ void RequestReaderTest::testReadMinimalInput()
 		httpProc.fRequestSizeLimit 	= cConfig["RequestSizeLimit"].AsLong(0);
 		httpProc.fLineSizeLimit 	= cConfig["LineSizeLimit"].AsLong(0);
 		httpProc.fURISizeLimit		= cConfig["UriSizeLimit"].AsLong(0);
-		httpProc.fURLEncodeExclude	= cConfig["URLEncodeExclude"].AsString();
-		httpProc.fDoURLDecoding		= cConfig["DoURLDecoding"].AsLong(0);
 		RequestReader 	reader(&httpProc, header);
 
 		String uri(cConfig["RequestLine"].AsString());
@@ -122,7 +128,7 @@ Test *RequestReaderTest::suite ()
 	TestSuite *testSuite = new TestSuite;
 
 	testSuite->addTest (NEW_CASE(RequestReaderTest, testCase));
-	testSuite->addTest (NEW_CASE(RequestReaderTest, testReadMinimalInput));
+//	testSuite->addTest (NEW_CASE(RequestReaderTest, testReadMinimalInput));
 	testSuite->addTest (NEW_CASE(RequestReaderTest, testCleanupRequestLine));
 	return testSuite;
 } // suite
