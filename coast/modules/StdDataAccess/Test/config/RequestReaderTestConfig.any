@@ -305,7 +305,7 @@
 				/RequestLine 	"GET /ftimage~/image.gif HTTP/1.0\r\n"
 				/ExpectedRequest		""
 				/HasErrors			 1
-				/Reason				"Not all unsave chars URL encoded"
+				/Reason				"Not all unsafe chars URL encoded"
 		}
 		# 29
 		# Same, without url-decoding
@@ -313,7 +313,7 @@
 				/RequestLine 	"GET /ftimage~/image.gif HTTP/1.0\r\n"
 				/ExpectedRequest		""
 				/HasErrors			 1
-				/Reason				"Not all unsave chars URL encoded"
+				/Reason				"Not all unsafe chars URL encoded"
 		}
 		# 30
 		{
@@ -373,7 +373,7 @@
 				/RequestLine 	"GET /ftimage\image/my.gif HTTP/1.0\r\n"
 				/ExpectedRequest		""
 				/HasErrors			 1
-				/Reason				"Not all unsave chars URL encoded"
+				/Reason				"Not all unsafe chars URL encoded"
 		}
 		# 38
 		# after first pass of decoding there are still encoded sequences
@@ -855,7 +855,7 @@
 				/RequestLine 	"GET /ftimage/my]equals.gif HTTP/1.0\r\n"
 				/ExpectedRequest	""
 				/HasErrors			 1
-				/Reason				"Not all unsave chars URL encoded"
+				/Reason				"Not all unsafe chars URL encoded"
 		}
 		# 95
 		# Not allowed chars in URL-path, default is "<>\"#%{}|\\^~[]`" ( after decoding )
