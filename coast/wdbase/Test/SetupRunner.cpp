@@ -44,6 +44,7 @@
 #include "LocalizedStringsTest.h"
 #include "BasicRendererTest.h"
 #include "ROAnyLookupAdapterTest.h"
+#include "ROAnyConfNamedObjectLookupAdapterTest.h"
 #include "HTTPChunkedOStreamTest.h"
 #include "HTTPStreamStackTest.h"
 #include "ContextLookupRendererTest.h"
@@ -102,6 +103,7 @@ void setupRunner(TestRunner &runner)
 	ADD_SUITE(runner, RequestBlockerTest);
 	ADD_SUITE(runner, RequestProcessorTest);
 	ADD_SUITE(runner, ROAnyLookupAdapterTest);
+	ADD_SUITE(runner, ROAnyConfNamedObjectLookupAdapterTest);
 	ADD_SUITE(runner, SecurityModuleTest);
 	ADD_SUITE(runner, URLEncoderTest);
 	ADD_SUITE(runner, SessionListManagerTest);
