@@ -266,8 +266,6 @@ void LDAPConnection::TransformResult(LDAPMessage *ldapResult, Anything &result, 
 
 		// extract data
 		LDAPMessage *entry = ldap_first_entry(fHandle, ldapResult);
-		String attr;
-		String dn;
 		String valStr;
 		struct berval **vals;
 		BerElement *ber;
@@ -277,19 +275,25 @@ void LDAPConnection::TransformResult(LDAPMessage *ldapResult, Anything &result, 
 
 		// step through all entries
 		while (entry) {
-			dn = ldap_get_dn(fHandle, entry);
-			attr = ldap_first_attribute(fHandle, entry, &ber);
+			String dn;
+			char *ptrToDn = ldap_get_dn(fHandle, entry);
+			if ( ptrToDn != ( char * ) NULL ) {
+				dn = ptrToDn;
+				ldap_memfree( ptrToDn );
+			}
 
-			// ---------------------------------------------------
+			char *attr = ldap_first_attribute(fHandle, entry, &ber);
+			//
 			// kgu: might want to add dn ass attribute to each
 			// entry, some clients of old system might rely on it
-			// ---------------------------------------------------
+			//
 			// entries[dn]["dn"] = dn;
 
 			// step through all attributes
-			while (attr.Length() > 0) {
+			while ( attr != (char *) NULL ) {
+				String attrString(attr);
 				// normalize all attributes to lowercase
-				attr.ToLower();
+				attrString.ToLower();
 
 				vals = ldap_get_values_len(fHandle, entry, attr);
 				nofVals = ldap_count_values_len(vals);
@@ -297,7 +301,7 @@ void LDAPConnection::TransformResult(LDAPMessage *ldapResult, Anything &result, 
 				if ( nofVals == 0 ) {
 					// there might be attributes without values
 					// (eg. if AttrsOnly was requested)
-					entries[dn].Append(attr);
+					entries[dn].Append(attrString);
 				} else {
 					for (int i = 0; i < nofVals; i++) {
 						valStr = String((void *)vals[i]->bv_val, (long)vals[i]->bv_len);
@@ -306,28 +310,28 @@ void LDAPConnection::TransformResult(LDAPMessage *ldapResult, Anything &result, 
 						MapUTF8Chars(valStr);
 
 						if (i == 0) {
-							entries[dn][attr] = valStr;
+							entries[dn][attrString] = valStr;
 						} else {
-							entries[dn][attr].Append(valStr);
+							entries[dn][attrString].Append(valStr);
 						}
 					}
 				}
-
-				attr = ldap_next_attribute(fHandle, entry, ber);
-
 				// free used memory
-				ber_bvecfree(vals);
+				if ( vals != ( berval ** ) NULL ) {
+					ldap_value_free_len(vals);
+				}
+				if ( attr != ( char * ) NULL ) {
+					ldap_memfree(attr);
+				}
+				attr = ldap_next_attribute(fHandle, entry, ber);
 			}
-
 			entry = ldap_next_entry(fHandle, entry);
 			count++;
-
-			// free memory used
+			// free used memory
 			if (ber) {
 				ber_free(ber, 0);
 			}
 		}
-
 		result["Entries"] = entries;
 	}
 }
