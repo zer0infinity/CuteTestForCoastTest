@@ -245,8 +245,7 @@ Anything SSLObjectManager::TraceSSLSession(SSL_SESSION *sslSession)
 	}
 	result["session_id"] = SSLObjectManager::SessionIdAsHex(sslSession);
 	if (sslSession->key_arg != (unsigned char *) NULL) {
-		String out;
-		out.AppendAsHex((const unsigned char *) (void *)sslSession->key_arg, sslSession->key_arg_length);
+		result["session_size"] = i2d_SSL_SESSION(sslSession, (unsigned char **) NULL);
 	} else {
 		result["key_arg"] = "NULL POINTER SESSIONVALUE";
 	}
