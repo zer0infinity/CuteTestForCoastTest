@@ -62,6 +62,7 @@ public:
 	SSL_SESSION *GetSessionId(const String &ip, const String &port);
 	void SetSessionId(const String &ip, const String &port, SSL_SESSION *sslSession);
 	static String SessionIdAsHex(SSL_SESSION *sslSession);
+	static Anything SSLObjectManager::TraceSSLSession(SSL_SESSION *sslSession);
 
 	friend class SSLObjectManagerTest;
 

@@ -227,8 +227,51 @@ void SSLObjectManager::LeaveReInit()
 
 String SSLObjectManager::SessionIdAsHex(SSL_SESSION *sslSession)
 {
-	if (!sslSession) {
-		return String("NULL POINTER!!!");
+	if ((sslSession != (SSL_SESSION *) NULL) && (sslSession->session_id != (unsigned char *) NULL)) {
+		String out;
+		out.AppendAsHex((const unsigned char *) (void *)sslSession->session_id, sslSession->session_id_length);
+		return out;
+	} else {
+		return String("SESSION ID IS NULL POINTER!!!");
 	}
-	return String().AppendAsHex((const unsigned char *) (void *)sslSession->session_id, sslSession->session_id_length);
+}
+
+Anything SSLObjectManager::TraceSSLSession(SSL_SESSION *sslSession)
+{
+	Anything result;
+	if (sslSession == (SSL_SESSION *) NULL) {
+		result["session_id"] = SSLObjectManager::SessionIdAsHex(sslSession);
+		return result;
+	}
+	result["session_id"] = SSLObjectManager::SessionIdAsHex(sslSession);
+	if (sslSession->key_arg != (unsigned char *) NULL) {
+		String out;
+		out.AppendAsHex((const unsigned char *) (void *)sslSession->key_arg, sslSession->key_arg_length);
+	} else {
+		result["key_arg"] = "NULL POINTER SESSIONVALUE";
+	}
+	if (sslSession->master_key != (unsigned char *) NULL) {
+		String out;
+		out.AppendAsHex((const unsigned char *) (void *)sslSession->master_key, sslSession->master_key_length);
+		result["master_key"] = out;
+	} else {
+		result["master_key"] = "NULL POINTER SESSIONVALUE";
+	}
+	if (sslSession != (SSL_SESSION *) NULL) {
+		result["not_resumable"] = sslSession->not_resumable;
+		result["references"] =   sslSession->references;
+		result["timeout"] = sslSession->timeout;
+		result["time"] = sslSession->time;
+	} else {
+		result["not_resumable"] = "NULL POINTER SESSIONVALUE";
+		result["references"] =   "NULL POINTER SESSIONVALUE";
+		result["timeout"] = "NULL POINTER SESSIONVALUE";
+		result["time"] = "NULL POINTER SESSIONVALUE";
+	}
+	if ((sslSession->cipher != (SSL_CIPHER *) NULL) && (sslSession->cipher->name != (char *) NULL)) {
+		result["cipher"] = sslSession->cipher->name;
+	} else {
+		result["cipher"] = "NULL POINTER SESSIONVALUE";
+	}
+	return result;
 }
