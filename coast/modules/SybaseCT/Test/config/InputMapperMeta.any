@@ -91,6 +91,7 @@
 				"@dateparam datetime output, @charparam char(20) output, "
 				"@binaryparam binary(20) output) "
 				"as "
+				"begin "
 				"select @intparam, @sintparam, @floatparam, @moneyparam, "
 				"@dateparam, @charparam, @binaryparam "
 				"select @sintparam = @sintparam + @intparam "
@@ -99,7 +100,9 @@
 				"select @dateparam = '09 Aug 2001 05:10PM' "
 				"select @charparam = \"The char parameters\" "
 				"select @binaryparam = @binaryparam "
-				"print \"This is the message printed out by sample_rpc.\""
+				"print \"This is the message printed out by sample_rpc.\" "
+				"return 3 "
+				"end"
 			}
 		}
 	}
@@ -160,7 +163,6 @@
 		{
 			/RendererMapper
 			{
-
 				" SELECT dla.dla_nr, dla.dla_kbez, vpo.vtr_nr, vpo.vpo_nr, usr.usr_name,  "
 				" convert(varchar(11), anz.anz_dateroe, 106) anz_dateroe, "
 				" convert(varchar(11), anz.anz_datgesch, 106) anz_datgesch, usr.prt_kun, "
