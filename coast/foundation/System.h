@@ -256,6 +256,9 @@ public:
 	//! \return process id of current process
 	static pid_t getpid();
 
+	//!get current user id - only for unix/linux implemented!
+	//! \return user id of current process
+	static uid_t getuid();
 	// io specific inner class
 	// first some definitions
 #if !defined (R_OK)

@@ -1027,6 +1027,15 @@ pid_t System::getpid()
 #endif
 }
 
+uid_t System::getuid()
+{
+#if defined(WIN32)
+//	??? %%% Marcel, please help!;
+#else
+	return ::getuid();
+#endif
+}
+
 int System::IO::access(const char *path, int amode)
 {
 	StartTrace(System.IO.access);
