@@ -118,7 +118,7 @@
 		/SSLVerifyFailIfNoPeerCert 1
 	}
 
-	# Expecting send/recieve to be ok
+	# Expecting send/recieve to fail because of SSLVerifyDepth
 	/TCP5019 {
 		/Port	5019
 		/KeyFileServer	"cert_files/serverkey.pem"
