@@ -96,7 +96,7 @@ public:
 protected:
 	virtual iostream *DoMakeStream();
 	virtual int PrepareSocket(SSL *) = 0;
-	virtual void SSLSocket::DoCheckPeeerCertificate(Anything &sslinfo, SSL *ssl);
+	virtual void SSLSocket::DoCheckPeerCertificate(Anything &sslinfo, SSL *ssl);
 	virtual SSL_SESSION *SessionResumptionHookResumeSession(SSL *ssl);
 	virtual void SessionResumptionHookSetSession(SSL *ssl, SSL_SESSION *sslSessionStored, bool wasResumed);
 

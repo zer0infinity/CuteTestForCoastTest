@@ -203,7 +203,7 @@ iostream *SSLSocket::DoMakeStream()
 	sslinfo["Cipher"] = String(SSL_get_cipher(ssl));
 	sslinfo["SessionIsResumed"] = SSL_session_reused(ssl);
 
-	DoCheckPeeerCertificate(sslinfo, ssl);
+	DoCheckPeerCertificate(sslinfo, ssl);
 
 	// Application decides to continue or not depending on CLIENT_INFO
 	TraceAny(fClientInfo, "SSL client info");
@@ -233,9 +233,9 @@ iostream *SSLSocket::DoMakeStream()
 	return new(GetAllocator()) SSLSocketStream(ssl, this);
 }
 
-void SSLSocket::DoCheckPeeerCertificate(Anything &sslinfo, SSL *ssl)
+void SSLSocket::DoCheckPeerCertificate(Anything &sslinfo, SSL *ssl)
 {
-	StartTrace(SSLSocket.DoCheckPeeerCertificate);
+	StartTrace(SSLSocket.DoCheckPeerCertificate);
 // Commented code should only be done on clients for checking servers
 // more work needed for wildcard certs:
 // sslinfo["hostnameverify"] = (fClientInfo["REMOTE_ADDR"].AsString()
@@ -246,7 +246,6 @@ void SSLSocket::DoCheckPeeerCertificate(Anything &sslinfo, SSL *ssl)
 	Trace("CertVerifyStringIsFilter: " << fSSLSocketArgs.CertVerifyStringIsFilter());
 	if ( CheckPeerCertificate(ssl, sslinfo) == true ) {
 		if ( fSSLSocketArgs.VerifyCertifiedEntity() == 1 ) {
-			fPeerCert = SSL_get_peer_certificate(ssl);
 			sslinfo["Peer"]["Whole"] = SSLSocketUtils::GetPeerAsString(fPeerCert);
 			sslinfo["Peer"]["ParsedDn"] = SSLSocketUtils::ParseDN(sslinfo["Peer"]["Whole"].AsString());
 			sslinfo["Peer"]["Issuer"] = SSLSocketUtils::GetPeerIssuerAsString(fPeerCert);
@@ -348,7 +347,8 @@ long SSLSocket::GetWriteCount() const
 bool SSLSocket::CheckPeerCertificate(SSL *ssl,  Anything &sslinfo)
 {
 	StartTrace(SSLSocket.CheckPeerCertificate);
-	bool ret = (SSL_get_peer_certificate(ssl) != NULL);
+	fPeerCert = SSL_get_peer_certificate(ssl);
+	bool ret = (fPeerCert != NULL);
 	Trace("peer cert " << ret ? "OK" : "MISSING");
 	long verifyresult = SSL_get_verify_result(ssl);
 	ReportSSLError(sslinfo["Peer"]["SSLCertVerifyStatus"]["SSL"]["ErrorDesc"], verifyresult);
