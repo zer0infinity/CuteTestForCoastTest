@@ -2979,18 +2979,37 @@ void StringTest::TestContainsCharAbove()
 {
 	String test;
 	unsigned int ui;
-	for ( ui = 0; ui < 256; ui++ ) {
+	unsigned int lowbound = 0;
+	unsigned int highbound = 256;
+
+	// Tests without exclusion set
+	// variation on water mark
+	for ( ui = lowbound; ui < highbound; ui++ ) {
 		test.Append((char) ui);
 	}
-	for (ui = 0; ui < 255; ui++) {
-		assertEqual(ui + 1, test.ContainsCharAbove(ui));
+	for (ui = lowbound; ui < highbound - 1; ui++) {
+		assertEqual(ui - lowbound + 1, test.ContainsCharAbove(ui));
 	}
+	assertEqual(-1, test.ContainsCharAbove(highbound - 1));
+
 	assertEqual(-1, test.ContainsCharAbove(255));
 	assertEqual(0, test.ContainsCharAbove(256));
+
+	// Tests with exclusion set
+	for (ui = lowbound; ui < highbound; ui++) {
+		assertEqual(-1, test.ContainsCharAbove(ui, test.SubString(ui - lowbound + 1)));
+	}
+
+	for (ui = lowbound; ui < highbound - 1; ui++) {
+		assertEqual(ui - lowbound + 1, test.ContainsCharAbove(ui, test.SubString(ui - lowbound + 2)));
+	}
+	assertEqual(-1, test.ContainsCharAbove(ui, test.SubString(ui - lowbound + 2)));
 
 	String empty;
 	assertEqual(-1, empty.ContainsCharAbove(255));
 	assertEqual(0, empty.ContainsCharAbove(256));
+	assertEqual(-1, empty.ContainsCharAbove(255, "дц"));
+	assertEqual(0, empty.ContainsCharAbove(256, "дц"));
 }
 
 void StringTest::TestLastCharOf()

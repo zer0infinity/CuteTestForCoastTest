@@ -682,16 +682,30 @@ long String::CaselessCompare(const char *s1, const char *s2)
 	}
 } // CaselessCompare
 
-long String::ContainsCharAbove(unsigned highMark)
+long String::ContainsCharAbove(unsigned highMark, const String excludeSet)
 {
 	long ret = -1L;
-	if (highMark > 255) {		// Sanity check
+	if (highMark > 255) {
 		return 0;
 	}
+	long excludeSetLength = excludeSet.Length();
 	for ( long i = 0; i < Length(); i ++) {
 		unsigned char c = At(i);
 		if ( c > highMark ) {
-			return i;
+			if ( excludeSetLength == 0L ) {
+				return i;
+			} else {
+				bool found = false;
+				for ( long ii = 0; ii < excludeSetLength; ii++) {
+
+					if ( found = ((unsigned char) excludeSet.At(ii) == c) ) {
+						break;
+					}
+				}
+				if ( !found ) {
+					return i;
+				}
+			}
 		}
 	}
 	return ret;
