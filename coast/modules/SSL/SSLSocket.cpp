@@ -305,7 +305,7 @@ int SSLSocket::SSLVerifyCallback(int preverify_ok, X509_STORE_CTX *ctx)
 	pAppData =  (Anything *)  SSL_get_ex_data(ssl, Thread::MyId());
 	if (depth > allowedDepth + 1) {
 		preverify_ok = 0;
-		int err = X509_V_ERR_CERT_CHAIN_TOO_LONG;
+		err = X509_V_ERR_CERT_CHAIN_TOO_LONG;
 		X509_STORE_CTX_set_error(ctx, err);
 	}
 
