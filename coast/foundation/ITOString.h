@@ -225,6 +225,8 @@ public:
 	//! entirely of characters that are not in the charSet
 	//! -1 indicates "failure" (no char matched), values >= 0 indicate the position of found char in String.
 	long FirstCharOf(const String &charSet);
+	//! Return position of first char in string beeing > highMark or -1 if no char matching to criterion found.
+	long ContainsCharAbove(unsigned highMark = 127);
 	//! computes the length of the maximum initial segment of the string that consists entirely
 	//! of characters from the string pointed to by charSet
 	//! -1 indicates the string contains no chars from charSet

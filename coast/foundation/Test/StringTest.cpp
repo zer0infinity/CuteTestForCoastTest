@@ -67,6 +67,7 @@ Test *StringTest::suite ()
 	testSuite->addTest (NEW_CASE(StringTest, ReplaceTest));
 	testSuite->addTest (NEW_CASE(StringTest, TestFirstCharOf));
 	testSuite->addTest (NEW_CASE(StringTest, TestLastCharOf));
+	testSuite->addTest (NEW_CASE(StringTest, TestContainsCharAbove));
 
 	return testSuite;
 }
@@ -2972,6 +2973,24 @@ void StringTest::TestFirstCharOf()
 	// String on which method is executed is empty
 	String empty;
 	assertEqual(-1L, empty.FirstCharOf("0123456789"));
+}
+
+void StringTest::TestContainsCharAbove()
+{
+	String test;
+	unsigned int ui;
+	for ( ui = 0; ui < 256; ui++ ) {
+		test.Append((char) ui);
+	}
+	for (ui = 0; ui < 255; ui++) {
+		assertEqual(ui + 1, test.ContainsCharAbove(ui));
+	}
+	assertEqual(-1, test.ContainsCharAbove(255));
+	assertEqual(0, test.ContainsCharAbove(256));
+
+	String empty;
+	assertEqual(-1, empty.ContainsCharAbove(255));
+	assertEqual(0, empty.ContainsCharAbove(256));
 }
 
 void StringTest::TestLastCharOf()

@@ -122,6 +122,7 @@ public:
 	void contain0 ();
 	void TestFirstCharOf();
 	void TestLastCharOf();
+	void TestContainsCharAbove();
 
 	void			subStrings ();
 	void subString0 ();

@@ -682,6 +682,21 @@ long String::CaselessCompare(const char *s1, const char *s2)
 	}
 } // CaselessCompare
 
+long String::ContainsCharAbove(unsigned highMark)
+{
+	long ret = -1L;
+	if (highMark > 255) {		// Sanity check
+		return 0;
+	}
+	for ( long i = 0; i < Length(); i ++) {
+		unsigned char c = At(i);
+		if ( c > highMark ) {
+			return i;
+		}
+	}
+	return ret;
+}
+
 String &String::ToLower()
 {
 	if (GetImpl()) {
