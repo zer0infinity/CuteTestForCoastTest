@@ -44,11 +44,6 @@ void ZipStreamTest::tearDown ()
 	StartTrace(ZipStreamTest.tearDown);
 }
 
-void ZipStreamTest::testCase()
-{
-	StartTrace(ZipStreamTest.testCase);
-}
-
 static String content("Hello Hello Peter\nhallo\n");
 
 void ZipStreamTest::GzipZlibTest()
@@ -326,19 +321,43 @@ void ZipStreamTest::GzipHeaderCheck()
 	assertEqual(headerstr, writtenHeader);
 }
 
+void ZipStreamTest::StringGetlineTest()
+{
+	StartTrace(ZipStreamTest.StringGetlineTest);
+	istream *is = System::OpenIStream("tt", "gz", ios::binary);
+	if (!t_assert(is != NULL)) {
+		return ;
+	}
+	ZipIStream zis(*is);
+
+	String strLine;
+	long lCount = 0;
+	while ( !!zis && !getline(zis, strLine).bad() && !zis.eof() ) {
+		lCount++;
+		Trace("count: " << lCount);
+		Trace("read [" << strLine << "]");
+	}
+	assertEqualm(2, lCount, "expected 2 lines to be read");
+	t_assert(zis.get() == EOF);
+	t_assert(zis.eof() != 0);
+	t_assert(!zis.bad());
+	zis.close();
+}
+
 // builds up a suite of testcases, add a line for each testmethod
 Test *ZipStreamTest::suite ()
 {
 	StartTrace(ZipStreamTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(ZipStreamTest, GzipHeaderCheck));
-	testSuite->addTest (NEW_CASE(ZipStreamTest, GzipSimpleFileCheck));
-	testSuite->addTest (NEW_CASE(ZipStreamTest, GzipBigFileCheck));
-	testSuite->addTest (NEW_CASE(ZipStreamTest, GzipLongFileCheck));
-	testSuite->addTest (NEW_CASE(ZipStreamTest, GzipZlibTest));
-	testSuite->addTest (NEW_CASE(ZipStreamTest, GzipCorruptInputCheck));
-	testSuite->addTest (NEW_CASE(ZipStreamTest, GzipConstantBufferCheck));
+	ADD_CASE(testSuite, ZipStreamTest, GzipHeaderCheck);
+	ADD_CASE(testSuite, ZipStreamTest, GzipSimpleFileCheck);
+	ADD_CASE(testSuite, ZipStreamTest, GzipBigFileCheck);
+	ADD_CASE(testSuite, ZipStreamTest, GzipLongFileCheck);
+	ADD_CASE(testSuite, ZipStreamTest, GzipZlibTest);
+	ADD_CASE(testSuite, ZipStreamTest, GzipCorruptInputCheck);
+	ADD_CASE(testSuite, ZipStreamTest, GzipConstantBufferCheck);
+	ADD_CASE(testSuite, ZipStreamTest, StringGetlineTest);
 
 	return testSuite;
 }

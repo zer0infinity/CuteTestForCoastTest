@@ -54,7 +54,7 @@ public:
 	//!test the gzip file creation
 	void GzipZlibTest();
 	//!describe this testcase
-	void testCase();
+	void StringGetlineTest();
 
 private:
 	void VerifyFile(const char *fileName);
