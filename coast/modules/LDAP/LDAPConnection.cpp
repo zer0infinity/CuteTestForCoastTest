@@ -195,18 +195,14 @@ bool LDAPConnection::WaitForResult(int msgId, Anything &result, LDAPErrorHandler
 		resultCode = ldap_result(fHandle, msgId, 1, tvp, &ldapResult);
 
 		// check result
-		if (resultCode == -1) {
+		if (resultCode == -1 && fSearchTimeout == 0) {
 			// error!
 			Trace("WaitForResult received an error - trying again...");
 
 			int opRet;
 			ldap_parse_result( fHandle, ldapResult, &opRet, NULL, NULL, NULL, NULL, 0 );
 			Trace("ErrorCode: " << (long)opRet << ", ErrorMsg: " << ldap_err2string( opRet ));
-
-			// kgu: this is a legacy decision - should we not rather
-			// finish here with an appropriate error msg instead
-			// of having a loop and trying it over and over?
-		} else if (resultCode == 0) {
+		} else if (resultCode == 0 || (resultCode == -1 && fSearchTimeout != 0)) {
 			// timeout, abandon
 			int errCode = ldap_abandon(fHandle, msgId);
 			errMsg << "The request <" << (long) msgId << "> timed out. Abandoning request now...";
