@@ -32,7 +32,7 @@
 #define MIN(X,Y)	(((X) < (Y)) ? (X) : (Y))
 #endif
 // Maximum character buffer for displaying a column
-#define MAX_CHAR_BUF	1024
+#define MAX_CHAR_BUF	2048
 // Maximum size of memory block to be used during array binding
 #define MAX_MEM_BLOCK_SIZE	50000
 // MEM_ALIGN_BOUNDARY - memory alignment boundary
@@ -89,9 +89,9 @@ protected:
 	//--- subclass api
 	void	Warning(String str);
 	void	Error(String str);
-	CS_RETCODE	DoFetchData(CS_COMMAND *cmd, String resultformat, const long &lMaxResultSize );
+	CS_RETCODE	DoFetchData(CS_COMMAND *cmd, const CS_INT res_type, const String &resultformat, const long &lMaxResultSize );
 	CS_INT 		DisplayDlen(CS_DATAFMT *column);
-	CS_RETCODE	DoFillResults(CS_INT numrows, CS_INT numcols, CS_DATAFMT *colfmt, EX_COLUMN_DATA *coldata, String resultformat);
+	CS_RETCODE	DoFillResults(CS_INT numrows, CS_INT numcols, CS_DATAFMT *colfmt, EX_COLUMN_DATA *coldata, const CS_INT res_type, const String &resultformat);
 
 	//--- member variables declaration
 	CS_CONTEXT	*fContext;

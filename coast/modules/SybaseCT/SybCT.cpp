@@ -350,12 +350,6 @@ bool SybCT::SqlExec(String query, String resultformat, long lMaxResultSize )
 				break;
 			}
 			case CS_STATUS_RESULT:
-				retcode = ct_cancel(NULL, cmd, CS_CANCEL_CURRENT);
-				if (retcode != CS_SUCCEED) {
-					Error("SqlExec: ct_cancel() failed");
-					query_code = CS_FAIL;
-				}
-				break;
 			case CS_CURSOR_RESULT:
 			case CS_ROW_RESULT:
 			case CS_PARAM_RESULT:
@@ -378,7 +372,7 @@ bool SybCT::SqlExec(String query, String resultformat, long lMaxResultSize )
 					long lDiff = 0L;
 					{
 						DiffTimer aTimer;
-						retcode = DoFetchData(cmd, resultformat, lMaxResultSize);
+						retcode = DoFetchData(cmd, res_type, resultformat, lMaxResultSize);
 						lDiff = aTimer.Diff();
 					}
 					Trace("fetching data: " << lDiff << "ms");
@@ -444,7 +438,7 @@ bool SybCT::SqlExec(String query, String resultformat, long lMaxResultSize )
 	return (query_code == CS_SUCCEED);
 }
 
-CS_RETCODE SybCT::DoFetchData(CS_COMMAND *cmd, String resultformat, const long &lMaxResultSize)
+CS_RETCODE SybCT::DoFetchData(CS_COMMAND *cmd, const CS_INT res_type, const String &resultformat, const long &lMaxResultSize)
 {
 	StartTrace(SybCT.DoFetchData);
 	StartTraceMem(SybCT.DoFetchData);
@@ -643,7 +637,7 @@ CS_RETCODE SybCT::DoFetchData(CS_COMMAND *cmd, String resultformat, const long &
 			Error(String("DoFetchData: Error on row ") << (long)lRowCount);
 		}
 
-		DoFillResults(rows_read, num_cols, datafmt, coldata, resultformat );
+		DoFillResults(rows_read, num_cols, datafmt, coldata, res_type, resultformat );
 		TraceMemDelta("after DoFillResults: ");
 		if ((lRowCount + num_rows) > lMaxRows) {
 			retcode = CS_MEM_ERROR;
@@ -753,18 +747,19 @@ CS_INT SybCT::DisplayDlen(CS_DATAFMT *column)
 	return MAX(strlen(column->name) + 1, (unsigned)len);
 }
 
-CS_RETCODE SybCT::DoFillResults(CS_INT numrows, CS_INT numcols, CS_DATAFMT *colfmt, EX_COLUMN_DATA *coldata, String resultformat )
+CS_RETCODE SybCT::DoFillResults(CS_INT numrows, CS_INT numcols, CS_DATAFMT *colfmt, EX_COLUMN_DATA *coldata, const CS_INT res_type, const String &resultformat )
 {
 	StartTrace(SybCT.DoFillResults);
 	StartTraceMem(SybCT.DoFillResults);
 	CS_INT row, col, anyIdx;
 
-	if (resultformat.IsEqual("TitlesOnce")) {
+	Trace("resultformat [" << resultformat << "]");
+	if ( res_type == CS_STATUS_RESULT ) {
+		Trace("CS_STATUS_RESULT: stored procedure return code");
+		fQueryResults["SP_Retcode"] = EX_GET_COLUMN_VALUE(coldata, 0, 0, colfmt);
+	} else if (resultformat.IsEqual("TitlesOnce")) {
 		for (col = 0; col < numcols; col++) {
-			// the following would be for a NULL value
-			// fQueryResults[String() << (long)(row)][colfmt[col].name] = Anything();
 			Trace("colname:[" << colfmt[col].name << "]" );
-
 			fQueryColNames[colfmt[col].name] = (long)col;
 		}
 
@@ -784,6 +779,8 @@ CS_RETCODE SybCT::DoFillResults(CS_INT numrows, CS_INT numcols, CS_DATAFMT *colf
 		TraceAny(fQueryResults, "QUERYRESULT is :");
 	} else {
 		anyIdx = fQueryResults.GetSize();
+		// need correction when SP_Retcode is defined
+		anyIdx -= (fQueryResults.IsDefined("SP_Retcode") ? 1 : 0);
 		for (row = 0; row < numrows; row++) {
 			// We have a row.  Loop through the columns displaying the column values.
 			for (col = 0; col < numcols; col++) {
