@@ -146,9 +146,15 @@ protected:
 	/*! used for general initialization of the worker when it is created. Arbitrary parameters may be passed using the ROAnything...
 		\note Make sure to copy whatever you need from the ROAnything into some instance variable because the values of workerInit are only guaranteed to live during the invocation of DoInit
 		\param workerInit ROAnything containing initialization params for the WorkerThread */
-	virtual void DoInit(ROAnything workerInit);
-	//!checks back after processing a work package to announce its readyness after the state change
+	virtual void DoInit(ROAnything workerInit) {};
+
+	/*! PoolManager interface to pass working arguments - called by Thread::SetWorking()
+		\param args pass work to do and store it for later use by DoProcessWorkload() */
+	virtual void DoWorkingHook(ROAnything args) {};
+
+	//! checks back after processing a work package to announce its readyness after the state change
 	virtual void DoReadyHook(ROAnything);
+
 	//! do the work (using the informations you stored in the instance variables)
 	virtual void DoProcessWorkload() = 0;
 
@@ -212,17 +218,11 @@ public:
 	void Statistic(Anything &item);
 
 protected:
-	//!allocate the thread pool
-	bool AllocPool(long poolSize, ROAnything args);
-
 	//! create an array of the required workers
 	virtual void DoAllocPool(ROAnything args) = 0;
 
-	//!Init pool members with request processor and pool storage if necessary
-	int InitPool(bool usePoolStorage, long poolStorageSize, int numOfPoolBucketSizes, ROAnything args);
-
-	//!handles misconfiguration
-	int PreparePool(int usePoolStorage, int poolStorageSize, int numOfPoolBucketSizes, ROAnything args);
+	//! implementers should return ith WorkerThread
+	virtual WorkerThread *DoGetWorker(long i) = 0;
 
 	//!cleanup hook for re-initialization of pool
 	virtual void DoDeletePool(ROAnything args) = 0;
@@ -230,13 +230,19 @@ protected:
 	//!check if the presently pool may be re-initalized
 	virtual bool CanReInitPool();
 
+	//!allocate the thread pool
+	bool AllocPool(long poolSize, ROAnything args);
+
+	//!Init pool members with request processor and pool storage if necessary
+	int InitPool(bool usePoolStorage, long poolStorageSize, int numOfPoolBucketSizes, ROAnything args);
+
+	//!handles misconfiguration
+	int PreparePool(int usePoolStorage, int poolStorageSize, int numOfPoolBucketSizes, ROAnything args);
+
 	/*! finds a runnable WorkerThread object. Since there are fPoolSize WorkerThread objects and also fPoolSize allowed in the critical region there should always at least one be runnable
 		\param requestNr a number
 		\return the next available WorkerThread */
 	WorkerThread *FindNextRunnable(long requestNr);
-
-	//! implementers should return ith WorkerThread
-	virtual WorkerThread *DoGetWorker(long i) = 0;
 
 	//! number of allowed request threads that can run in parallel
 	long fPoolSize;
