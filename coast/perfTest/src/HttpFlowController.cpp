@@ -711,14 +711,6 @@ bool HttpFlowController::PrepareRequest(Context &ctx, bool &bPrepareRequestSucce
 		DoCommand(ctx, stepConfig["DoCommand"]);
 	}
 
-	if ( ctx.Lookup("UseSSL", 0L) ) {
-		ROAnything sslCtx = ctx.Lookup("SSLContext");
-		if ( !sslCtx.AsIFAObject(0) ) {
-			// generate client side ssl ctx for multiple use
-			tmpStore["SSLContext"] = Anything((IFAObject *)SSL_CTX_new(SSLv23_client_method()));
-		}
-	}
-
 	if ( fJmpTableInit == false ) {
 		fJmpTableInit = true;
 		bPrepareRequestSucceeded = ResolveLabels( fJmpTable, fConfig["Run"], tmpStore );
@@ -837,9 +829,46 @@ bool HttpFlowController::PrepareRequest(Context &ctx, bool &bPrepareRequestSucce
 	} else {
 		bPrepareRequestSucceeded = DoProcessLinksFormsAndFrames(ctx); // no relocations expected here
 	}
+	if ( tmpStore["CurrentServer"]["UseSSL"].AsLong(0) == 1L ) {
+		PrepareSSL(ctx);
+	}
 	tmpStore.Remove("DataAccess");
 	Trace("PrepareRequestSucceeded: " << (bPrepareRequestSucceeded ? "true" : "false"));
 	return true;
+}
+
+void HttpFlowController::SetupSSLCtx(Anything &sslModuleCfg, Context &ctx)
+{
+	StartTrace(HttpFlowController.SetupSSLCtx);
+	sslModuleCfg["SSLVerifyPeerCert"]			= ctx.Lookup("SSLVerifyPeerCert", 0L);
+	sslModuleCfg["SSLVerifyFailIfNoPeerCert"]	= ctx.Lookup("SSLVerifyFailIfNoPeerCert", 0L);
+	sslModuleCfg["SSLUseAppCallback"] 			= ctx.Lookup("SSLUseAppCallback", 0L);
+	sslModuleCfg["SSLVerifyDepth"] 				= ctx.Lookup("SSLVerifyDepth", 99L);
+	sslModuleCfg["SSLPeerCAFile"] 				= ctx.Lookup("SSLPeerCAFile", "");
+	sslModuleCfg["SSLVerifyPath"] 				= ctx.Lookup("SSLVerifyPath", "");
+	sslModuleCfg["KeyFileClient"] 				= ctx.Lookup("KeyFileClient", "");
+	sslModuleCfg["CertFileClient"] 				= ctx.Lookup("CertFileClient", "");
+	sslModuleCfg["NoCertAndPrivateKey"]			= 1L;
+}
+
+void HttpFlowController::PrepareSSL(Context &ctx)
+{
+	// this is the new method that also gets a config ( similar to Renderer::RenderAll )
+	// write the action code here - you don't have to override DoAction anymore
+	StartTrace(HttpFlowController.PrepareSSL);
+	Anything toPush;
+	toPush["CurrentServer"]["UseSSL"] = 1L;
+	toPush["CurrentServer"]["UseThreadLocalMemory"] = 1L;
+	Anything sslModuleCfg;
+	SetupSSLCtx(sslModuleCfg, ctx);
+
+	toPush["SSLModuleCfg"] 				= sslModuleCfg;
+	toPush["VerifyCertifiedEntity"] 	= ctx.Lookup("VerifyCertifiedEntity", 0L);
+	toPush["CertVerifyString"]			= ctx.Lookup("CertVerifyString", "");
+	toPush["CertVerifyStringIsFilter"]  = ctx.Lookup("CertVerifyStringIsFilter", 0L);
+	toPush["SessionResumption"] 		= ctx.Lookup("SessionResumption", 1L);
+	String name("SSLData");
+	ctx.PushStore(name, toPush);
 }
 
 bool HttpFlowController::AnalyseReply(Context &ctx)
