@@ -136,7 +136,6 @@ void Context::InitSession(Session *s)
 	StartTrace1(Context.InitSession, String() << (long)(void *)this);
 
 	bool sessionIsDifferent =  (s != fSession);
-	bool copySessionStore = false;
 	ROAnything contextAny;
 	if (Lookup("Context", contextAny)) {
 		fUnlockSession = contextAny["UnlockSession"].AsBool(false);
