@@ -27,7 +27,7 @@ const char *SecurityItem::fgcLegacyMasterKey = ".wsoäö3$n4.ert?";
 #define FindSecurityItemWithDefault(var,name,Type)\
 	const Type *var = SafeCast(FindSecurityItem(name),Type);\
 	if (!var){ Trace("using standard item: " _QUOTE_(Type));\
-	 var=SafeCast(FindSecurityItem(_QUOTE_(Type)),Type);\
+		var=SafeCast(FindSecurityItem(_QUOTE_(Type)),Type);\
 	} Assert(var);
 
 //----- SecurityItem --- factored commonality
@@ -45,6 +45,7 @@ long SecurityItem::GetNamePrefixFromEncodedText(String &scramblername, const Str
 	Trace("scramblername: " << scramblername);
 	return scramblername.Length();
 }
+
 void SecurityItem::Encode(const char *itemtouse, String &encodedText, const String &cleartext)
 {
 	StartTrace1(SecurityItem.Encode, "using SecurityItem <" << itemtouse << ">");
@@ -62,6 +63,7 @@ void SecurityItem::Encode(const char *itemtouse, String &encodedText, const Stri
 	encodedText << name << '-' << encoded;
 	Trace("result :<" << encodedText << ">\n");
 }
+
 bool SecurityItem::Decode(String &cleartext, const String &encodedText)
 {
 	StartTrace(SecurityItem.Decode);
@@ -81,6 +83,7 @@ bool SecurityItem::DoGetConfigName(const char *category, const char *objName, St
 	configFileName = "SecurityItems";
 	return true;
 }
+
 bool SecurityItem::DoLoadConfig(const char *category)
 {
 	StartTrace1(SecurityItem.DoLoadConfig, fName);
@@ -100,31 +103,36 @@ bool SecurityItem::DoLoadConfig(const char *category)
 	Trace("DoLoadConfig of HierarchConfNamed failed");
 	return false; // faile to load config
 }
+
 bool SecurityItem::Init(ROAnything config)
 {
 	StartTrace1(SecurityItem.Init, fName);
+	bool bRetCode = false;
 	if (config.IsDefined("Key")) {
 		Trace("using key from config");
 		InitKey(config["Key"].AsString());
+		bRetCode = true;
 	} else if (config.IsDefined("KeyLoc")) {
 		Trace("looking for key file");
 		String key;
 		if (DoLoadKeyFile(config["KeyLoc"].AsCharPtr(), key)) {
 			Trace("Initializing key: <" << key << ">");
 			InitKey(key);
+			bRetCode = true;
 		} else {
 			String msg;
-			msg << "SecurityItem::Init:didn't find key file " << config["KeyLoc"].AsCharPtr("undefined name");
+			msg << "didn't find key file " << config["KeyLoc"].AsCharPtr("undefined name");
 			Trace(msg);
-			SysLog::Error(msg);
-			return false;
+			SYSERROR(msg);
 		}
 	}
-	return true;
+	return bRetCode;
 }
+
 // the following code is from keyscrambler in Frontdoor which might be obsoleted by that
 bool SecurityItem::DoLoadKeyFile(const char *name, String &key)
 {
+	StartTrace1(SecurityItem.DoLoadKeyFile, name);
 	Anything content;
 	if (!System::LoadConfigFile(content, name, "")) {
 		return false;
@@ -147,16 +155,12 @@ String SecurityItem::GenerateRandomString(long length)
 }
 
 //----
-
 String	SecurityModule::fgScrambler(Storage::Global());
 String	SecurityModule::fgEncoder(Storage::Global());
 String	SecurityModule::fgSigner(Storage::Global());
 String	SecurityModule::fgCompressor(Storage::Global());
 
-// Module methods
 SecurityModule::SecurityModule(const char *name) : WDModule(name)
-// constructor
-// Set the correct name in the constructor of derived classes!
 {
 }
 
@@ -473,4 +477,3 @@ bool Signer::Check(String &cleartext, const String &scrambledText)
 	StartTrace(Signer.Check);
 	return SecurityItem::Decode(cleartext, scrambledText);
 }
-
