@@ -68,7 +68,7 @@ void URLRendererTest::Standard()
 
 	// assert the result
 
-	assertCharPtrEqual(_QUOTE_(wdgateway?X=Encoder-Scrambler-Signer-Compressor-{/action "StandardAction"/p0 "Par0"/p1 "Par1"/p2 "Par2"/p3 "Par3"}), fReply.str());
+	assertCharPtrEqual("wdgateway?X=Encoder-Scrambler-Signer-Compressor-%7B%2Faction%20%22StandardAction%22%2Fp0%20%22Par0%22%2Fp1%20%22Par1%22%2Fp2%20%22Par2%22%2Fp3%20%22Par3%22%7D", fReply.str());
 }
 
 void URLRendererTest::BaseURL()
@@ -82,7 +82,7 @@ void URLRendererTest::BaseURL()
 	urlRenderer.RenderAll(fReply, fContext, roConfig);
 
 	// assert the result
-	assertCharPtrEqual(_QUOTE_(X2=Encoder-Scrambler-Signer-Compressor-{/action "StandardAction"/p0 "Par0"/p1 "Par1"/p2 "Par2"/p3 "Par3"}), fReply.str());
+	assertCharPtrEqual("X2=Encoder-Scrambler-Signer-Compressor-%7B%2Faction%20%22StandardAction%22%2Fp0%20%22Par0%22%2Fp1%20%22Par1%22%2Fp2%20%22Par2%22%2Fp3%20%22Par3%22%7D", fReply.str());
 }
 
 void URLRendererTest::BaseR3SSL()

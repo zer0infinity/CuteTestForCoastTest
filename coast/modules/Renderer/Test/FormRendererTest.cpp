@@ -105,7 +105,7 @@ void FormRendererTest::TestCase0()
 	fFormRenderer.RenderAll(fReply, fContext, roConfig);
 	// assert the result
 
-	const char *expectedResult = _QUOTE_(<FORM ACTION="wd-Gateway?X=Encoder-Scrambler-Signer-Compressor-{/role "FRTestRole"/action "my_action"/"0" "my - param0"/P1 "my - param1"/"2" "my - param2"}" METHOD="GET" ENCTYPE="my-encr" TARGET="my-target" 0="my-option0" my - option1 2="my-option2"><INPUT TYPE=HIDDEN NAME="X" VALUE="Encoder-Scrambler-Signer-Compressor-{/role "FRTestRole"/action "my_action"/"0" "my - param0"/P1 "my - param1"/"2" "my - param2"}"></FORM>);
+	const char *expectedResult = _QUOTE_(<FORM ACTION="wd-Gateway?X=Encoder-Scrambler-Signer-Compressor-%7B%2Frole%20%22FRTestRole%22%2Faction%20%22my_action%22%2F%220%22%20%22my-param0%22%2FP1%20%22my-param1%22%2F%222%22%20%22my-param2%22%7D" METHOD="GET" ENCTYPE="my-encr" TARGET="my-target" 0="my-option0" my-option1 2="my-option2"><INPUT TYPE=HIDDEN NAME="X" VALUE="Encoder-Scrambler-Signer-Compressor-%7B%2Frole%20%22FRTestRole%22%2Faction%20%22my_action%22%2F%220%22%20%22my-param0%22%2FP1%20%22my-param1%22%2F%222%22%20%22my-param2%22%7D"></FORM>);
 
 	assertEqual( expectedResult, fReply.str() );
 	assertEqual( strlen(expectedResult), fReply.str().Length());

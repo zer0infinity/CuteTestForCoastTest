@@ -1793,7 +1793,7 @@
 			/Renderer {
 				/BaseURLPrinter *
 			}
-			/Expected	"http://sentosa.hsr.loc:1919/wdgateway/X1=Encoder-Scrambler-Signer-Compressor-{/role \"TestRole\"/sessionId \"TestSession\"/page \"TestPage\"}/"
+			/Expected	"http://sentosa.hsr.loc:1919/wdgateway/X1=Encoder-Scrambler-Signer-Compressor-%7B%2Frole%20%22TestRole%22%2FsessionId%20%22TestSession%22%2Fpage%20%22TestPage%22%7D/"
 		}
 		{
 			/Env {
@@ -1819,7 +1819,7 @@
 			/Renderer {
 				/BaseURLPrinter *
 			}
-			/Expected	"http://sentosa.hsr.loc:1919/wdgateway/X1=Encoder-Scrambler-Signer-Compressor-{/role \"TestRole\"/sessionId \"TestSession\"/page \"TestPage\"}/"
+			/Expected	"http://sentosa.hsr.loc:1919/wdgateway/X1=Encoder-Scrambler-Signer-Compressor-%7B%2Frole%20%22TestRole%22%2FsessionId%20%22TestSession%22%2Fpage%20%22TestPage%22%7D/"
 		}
 		{
 			/Renderer {
@@ -1830,9 +1830,8 @@
 						/Key	XYZ
 					}
 				}
-				/Expected	"http://sentosa.hsr.loc:1919/wdgateway/X1=Encoder-Scrambler0:Signer:Compressor:{/role \"TestRole\"/sessionId \"TestSession\"/page \"TestPage\"}/"
 			}
-			/Expected	"wdgateway?X=Encoder-Scrambler-Signer-Compressor-{/role \"TestRole\"/sessionId \"TestSession\"/page \"TestPage\"/action \"GoTest\"/Name \"Test\"/Key \"XYZ\"}"
+			/Expected	"wdgateway?X=Encoder-Scrambler-Signer-Compressor-%7B%2Frole%20%22TestRole%22%2FsessionId%20%22TestSession%22%2Fpage%20%22TestPage%22%2Faction%20%22GoTest%22%2FName%20%22Test%22%2FKey%20%22XYZ%22%7D"
 		}
 		{
 			/Env {
@@ -1847,7 +1846,7 @@
 					}
 				}
 			}
-			/Expected	"X2=Encoder-Scrambler-Signer-Compressor-{/action \"GoTest\"/Name \"Test\"/Key \"XYZ\"}"
+			/Expected	"X2=Encoder-Scrambler-Signer-Compressor-%7B%2Faction%20%22GoTest%22%2FName%20%22Test%22%2FKey%20%22XYZ%22%7D"
 		}
 		{
 			/Env {
@@ -1865,7 +1864,7 @@
 					}
 				}
 			}
-			/Expected	"https://test.hsr.loc/testApp?X=Encoder-Scrambler-Signer-Compressor-{/role \"TestRole\"/sessionId \"TestSession\"/page \"TestPage\"/action \"GoTest\"/Name \"Test\"/Key \"XYZ\"}"
+			/Expected	"https://test.hsr.loc/testApp?X=Encoder-Scrambler-Signer-Compressor-%7B%2Frole%20%22TestRole%22%2FsessionId%20%22TestSession%22%2Fpage%20%22TestPage%22%2Faction%20%22GoTest%22%2FName%20%22Test%22%2FKey%20%22XYZ%22%7D"
 		}
 		{
 			/Env {
@@ -1884,7 +1883,7 @@
 					}
 				}
 			}
-			/Expected	"<A HREF=\"https://test.hsr.loc/testApp?X=Encoder-Scrambler-Signer-Compressor-{/role \"TestRole\"/sessionId \"TestSession\"/page \"TestPage\"/action \"GoTest\"/Name \"Test\"/Key \"XYZ\"}\" >Test</A>"
+			/Expected	"<A HREF=\"https://test.hsr.loc/testApp?X=Encoder-Scrambler-Signer-Compressor-%7B%2Frole%20%22TestRole%22%2FsessionId%20%22TestSession%22%2Fpage%20%22TestPage%22%2Faction%20%22GoTest%22%2FName%20%22Test%22%2FKey%20%22XYZ%22%7D\" >Test</A>"
 		}
 		{
 			/Env {
@@ -1904,7 +1903,7 @@
 					/Layout	"NoInput"
 				}
 			}
-			/Expected	"<FORM ACTION=\"https://test.hsr.loc/testApp?X=Encoder-Scrambler-Signer-Compressor-{/role \"TestRole\"/sessionId \"TestSession\"/page \"TestPage\"/action \"GoTest\"/Name \"Test\"/Key \"XYZ\"}\" METHOD=\"POST\">NoInput</FORM>"
+			/Expected	"<FORM ACTION=\"https://test.hsr.loc/testApp?X=Encoder-Scrambler-Signer-Compressor-%7B%2Frole%20%22TestRole%22%2FsessionId%20%22TestSession%22%2Fpage%20%22TestPage%22%2Faction%20%22GoTest%22%2FName%20%22Test%22%2FKey%20%22XYZ%22%7D\" METHOD=\"POST\">NoInput</FORM>"
 		}
 		{
 			/Env {
@@ -2050,7 +2049,7 @@
 					/Layout { TEST }
 				}
 			}
-			/Expected "<FORM ACTION=\"wdgateway?X=Encoder-Scrambler-Signer-Compressor-{/role \"TestRole\"/sessionId \"TestSession\"/page \"TestPage\"/action \"Test\"/TestId \"Test\"}\" METHOD=\"GET\" ENCTYPE=\"multipart/form-data\" TARGET=\"_blank\" Name=\"TestForm\"><INPUT TYPE=HIDDEN NAME=\"X\" VALUE=\"Encoder-Scrambler-Signer-Compressor-{/role \"TestRole\"/sessionId \"TestSession\"/page \"TestPage\"/action \"Test\"/TestId \"Test\"}\">TEST</FORM>"
+			/Expected "<FORM ACTION=\"wdgateway?X=Encoder-Scrambler-Signer-Compressor-%7B%2Frole%20%22TestRole%22%2FsessionId%20%22TestSession%22%2Fpage%20%22TestPage%22%2Faction%20%22Test%22%2FTestId%20%22Test%22%7D\" METHOD=\"GET\" ENCTYPE=\"multipart/form-data\" TARGET=\"_blank\" Name=\"TestForm\"><INPUT TYPE=HIDDEN NAME=\"X\" VALUE=\"Encoder-Scrambler-Signer-Compressor-%7B%2Frole%20%22TestRole%22%2FsessionId%20%22TestSession%22%2Fpage%20%22TestPage%22%2Faction%20%22Test%22%2FTestId%20%22Test%22%7D\">TEST</FORM>"
 		}
 		{ # Form Renderer Method POST
 			/Renderer {
@@ -2068,7 +2067,7 @@
 					/Layout { TEST }
 				}
 			}
-			/Expected "<FORM ACTION=\"wdgateway?X=Encoder-Scrambler-Signer-Compressor-{/role \"TestRole\"/sessionId \"TestSession\"/page \"TestPage\"/action \"Test\"/TestId \"Test\"}\" METHOD=\"POST\" ENCTYPE=\"multipart/form-data\" TARGET=\"_blank\" Name=\"TestForm\">TEST</FORM>"
+			/Expected "<FORM ACTION=\"wdgateway?X=Encoder-Scrambler-Signer-Compressor-%7B%2Frole%20%22TestRole%22%2FsessionId%20%22TestSession%22%2Fpage%20%22TestPage%22%2Faction%20%22Test%22%2FTestId%20%22Test%22%7D\" METHOD=\"POST\" ENCTYPE=\"multipart/form-data\" TARGET=\"_blank\" Name=\"TestForm\">TEST</FORM>"
 		}
 		{ # Form Renderer Method GET mit Base URL
 			/Env {
@@ -2089,7 +2088,7 @@
 					/Layout { TEST }
 				}
 			}
-			/Expected "<FORM ACTION=\"X2=Encoder-Scrambler-Signer-Compressor-{/action \"Test\"/TestId \"Test\"}\" METHOD=\"GET\" ENCTYPE=\"multipart/form-data\" TARGET=\"_blank\" Name=\"TestForm\">TEST</FORM>"
+			/Expected "<FORM ACTION=\"X2=Encoder-Scrambler-Signer-Compressor-%7B%2Faction%20%22Test%22%2FTestId%20%22Test%22%7D\" METHOD=\"GET\" ENCTYPE=\"multipart/form-data\" TARGET=\"_blank\" Name=\"TestForm\">TEST</FORM>"
 		}
 		{ # Form Renderer Method POST mit Base URL
 			/Env {
@@ -2110,7 +2109,7 @@
 					/Layout { TEST }
 				}
 			}
-			/Expected "<FORM ACTION=\"X2=Encoder-Scrambler-Signer-Compressor-{/action \"Test\"/TestId \"Test\"}\" METHOD=\"POST\" ENCTYPE=\"multipart/form-data\" TARGET=\"_blank\" Name=\"TestForm\">TEST</FORM>"
+			/Expected "<FORM ACTION=\"X2=Encoder-Scrambler-Signer-Compressor-%7B%2Faction%20%22Test%22%2FTestId%20%22Test%22%7D\" METHOD=\"POST\" ENCTYPE=\"multipart/form-data\" TARGET=\"_blank\" Name=\"TestForm\">TEST</FORM>"
 		}
 		{ # Form Renderer minimal config test
 			/Renderer {
@@ -2118,7 +2117,7 @@
 					/Layout { TEST }
 				}
 			}
-			/Expected "<FORM ACTION=\"wdgateway?X=Encoder-Scrambler-Signer-Compressor-{/role \"TestRole\"/sessionId \"TestSession\"/page \"TestPage\"}\" METHOD=\"POST\">TEST</FORM>"
+			/Expected "<FORM ACTION=\"wdgateway?X=Encoder-Scrambler-Signer-Compressor-%7B%2Frole%20%22TestRole%22%2FsessionId%20%22TestSession%22%2Fpage%20%22TestPage%22%7D\" METHOD=\"POST\">TEST</FORM>"
 		}
 		{ # Form Renderer minimal config test with Base URL
 			/Env {
