@@ -37,7 +37,7 @@ void URLUtilsTest::CheckUrlEncodingTest()
 {
 	StartTrace(URLUtilsTest.CheckUrlEncodingTest);
 
-	// --- testing different appearances of the &# token
+	// --- test with default
 	String arguments("abcd");
 	bool ret = URLUtils::CheckUrlEncoding(arguments);
 	assertEqual(true, ret);
@@ -53,6 +53,117 @@ void URLUtilsTest::CheckUrlEncodingTest()
 	arguments = "";
 	ret = URLUtils::CheckUrlEncoding(arguments);
 	assertEqual(true, ret);
+
+	arguments = "$-_.+/?%";
+	ret = URLUtils::CheckUrlEncoding(arguments);
+	assertEqual(true, ret);
+
+	// empty override string
+	arguments = "$-_.+/?%";
+	String override;
+	ret = URLUtils::CheckUrlEncoding(arguments, override);
+	assertEqual(true, ret);
+
+	// --- test with override
+	// "% is not contained in override set
+	arguments = "$-_.+/?%";
+	ret = URLUtils::CheckUrlEncoding(arguments, "$-_.+/?");
+	assertEqual(false, ret);
+
+	arguments = "bubu^bubu";
+	ret = URLUtils::CheckUrlEncoding(arguments, "$-_.+/?");
+	assertEqual(false, ret);
+
+	// ! is additionally defined
+	arguments = "$-_.+/?%!";
+	ret = URLUtils::CheckUrlEncoding(arguments, "$-_.+/?%!");
+	assertEqual(true, ret);
+
+	arguments = "bubu!bubu";
+	ret = URLUtils::CheckUrlEncoding(arguments, "$-_.+/?!");
+	assertEqual(true, ret);
+}
+
+void URLUtilsTest::CheckUrlPathContainsUnsafeCharsTest()
+{
+	StartTrace(URLUtilsTest.CheckUrlPathContainsUnsafeCharsTest);
+
+	// --- testing with default set, check ascii extended
+	String arguments("\\");
+	bool ret = URLUtils::CheckUrlPathContainsUnsafeChars(arguments);
+	assertEqual(true, ret);
+
+	arguments = "abcd{";
+	ret = URLUtils::CheckUrlPathContainsUnsafeChars(arguments);
+	assertEqual(true, ret);
+
+	arguments = "{abcd";
+	ret = URLUtils::CheckUrlPathContainsUnsafeChars(arguments);
+	assertEqual(true, ret);
+
+	arguments = "";
+	ret = URLUtils::CheckUrlPathContainsUnsafeChars(arguments);
+	assertEqual(false, ret);
+
+	arguments = "abcd efg";
+	ret = URLUtils::CheckUrlPathContainsUnsafeChars(arguments);
+	assertEqual(false, ret);
+
+	arguments = "abcdöefg";
+	ret = URLUtils::CheckUrlPathContainsUnsafeChars(arguments);
+	assertEqual(true, ret);
+
+	// --- testing with different set
+
+	arguments = "abcd<\\efg";
+	ret = URLUtils::CheckUrlPathContainsUnsafeChars(arguments, "<\\");
+	assertEqual(true, ret);
+
+	arguments = "abcd{}efg";
+	ret = URLUtils::CheckUrlPathContainsUnsafeChars(arguments, "<\\");
+	assertEqual(false, ret);
+
+	arguments = "ab^cd\\!efg";
+	ret = URLUtils::CheckUrlPathContainsUnsafeChars(arguments, "\\!^");
+	assertEqual(true, ret);
+
+	arguments = "ab#cdefg";
+	ret = URLUtils::CheckUrlPathContainsUnsafeChars(arguments, "\\!^");
+	assertEqual(false, ret);
+
+	// --- testing with do not check ascii extended. Note default set must be given
+	// because it is a default parameter
+
+	arguments = "abcdöefg";
+	ret = URLUtils::CheckUrlPathContainsUnsafeChars(arguments, "ö", "", 0);
+	assertEqual(true, ret);
+
+	// same test, but check for extended ascii, which will return false
+	arguments = "abcdöefg";
+	ret = URLUtils::CheckUrlPathContainsUnsafeChars(arguments, "ö", "", 1);
+	assertEqual(true, ret);
+
+	// no ö present
+	arguments = "abcdäüefg";
+	ret = URLUtils::CheckUrlPathContainsUnsafeChars(arguments, "ö", "", 0);
+	assertEqual(false, ret);
+
+	// no ö present
+	arguments = "abcdäüefg";
+	ret = URLUtils::CheckUrlPathContainsUnsafeChars(arguments, "ö", "", 1);
+	assertEqual(true, ret);
+
+	// Exclude some extended ascii chars from check
+	// no ö present
+	arguments = "abcdäüefg";
+	ret = URLUtils::CheckUrlPathContainsUnsafeChars(arguments, "ö", "äü", 1);
+	assertEqual(false, ret);
+
+	// Because ö is declared an unsafe char the ascii override has no impact
+	arguments = "abcdöefg";
+	ret = URLUtils::CheckUrlPathContainsUnsafeChars(arguments, "ö", "ö", 1);
+	assertEqual(true, ret);
+
 }
 
 void URLUtilsTest::CheckUrlArgEncodingTest()
@@ -1561,6 +1672,7 @@ Test *URLUtilsTest::suite ()
 	testSuite->addTest (NEW_CASE(URLUtilsTest, RemoveUnwantedCharsTest));
 	testSuite->addTest (NEW_CASE(URLUtilsTest, CheckUrlEncodingTest));
 	testSuite->addTest (NEW_CASE(URLUtilsTest, CheckUrlArgEncodingTest));
+	testSuite->addTest (NEW_CASE(URLUtilsTest, CheckUrlPathContainsUnsafeCharsTest));
 
 	return testSuite;
 

@@ -428,19 +428,24 @@ String URLUtils::urlEncode(const String &str, String &exclusionSet)
 	return result;
 }
 
-// Check URL for chars which should be encoded according to RF1808
-bool URLUtils::CheckUrlEncoding(String &str)
+// Check URL for chars which should be encoded according to RF1738
+bool URLUtils::CheckUrlEncoding(String &str, const String override)
 {
 	StartTrace(URLUtils.CheckUrlEncoding);
-	return (str.LastCharOf("ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-						   "abcdefghijklmnopqrstuvwxyz"
-						   "0123456789"
-						   "$-_.+"
-						   "/?%") == str.Length() ||
+	String base("ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+				"abcdefghijklmnopqrstuvwxyz"
+				"0123456789");
+	String overrideDefault("$-_.+/?%");
+	if ( override.Length() == 0L ) {
+		base.Append(overrideDefault);
+	} else {
+		base.Append(override);
+	}
+	return (str.LastCharOf(base) == str.Length() ||
 			str.Length() == 0);
 }
 
-// Check URL for chars which should be encoded according to RF1808
+// Check URL for chars which should be encoded according to RFC1738
 bool URLUtils::CheckUrlArgEncoding(String &str)
 {
 	StartTrace(URLUtils.CheckUrlArgEncoding);
@@ -450,6 +455,20 @@ bool URLUtils::CheckUrlArgEncoding(String &str)
 						   "$-_.+"
 						   "/%=&") == str.Length() ||
 			str.Length() == 0);
+}
+
+// Check URL contains only valid chars according to RFC1738
+bool URLUtils::CheckUrlPathContainsUnsafeChars(String &str, const String overrideUnsafe, const String overrideAscii, bool asciiExtended)
+{
+	StartTrace(URLUtils.CheckUrlPathContainsUnsafeChars);
+	String base("<>\"#%{}|\\^~[]`");
+	if ( overrideUnsafe.Length() > 0L ) {
+		base = overrideUnsafe;
+	}
+	bool containsExtendedAscii = ( asciiExtended && (str.ContainsCharAbove(127, overrideAscii) != -1L));
+	bool containsUnsaveChar = (str.FirstCharOf(base) != -1L);
+	Trace ("containsExtendedAscii: " << containsExtendedAscii << " containsUnsaveChar: " << containsUnsaveChar);
+	return ( containsUnsaveChar || containsExtendedAscii);
 }
 
 void URLUtils::HandleURI(Anything &query, const String &uri)

@@ -40,6 +40,7 @@ public:
 	void HTMLDecodeTest();
 	void CheckUrlEncodingTest();
 	void CheckUrlArgEncodingTest();
+	void CheckUrlPathContainsUnsafeCharsTest();
 
 protected:
 

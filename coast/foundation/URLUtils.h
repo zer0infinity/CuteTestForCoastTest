@@ -60,10 +60,18 @@ public:
 	static void DecodeAll(Anything &a);
 
 	//! check URL Path Encoding according to RFC1738
-	static bool CheckUrlEncoding(String &str);
+	static bool CheckUrlEncoding(String &str, const String override = String());
 
 	//! check URL Args Encoding according to RFC1738
 	static bool CheckUrlArgEncoding(String &str);
+
+	//! check URL Path char to be safe according to RFC1738
+	//! You may pass in your own set of unsafe chars (overrideUnsafe
+	//! If asciiExtended is enabled, you may define chars which are in the extended set which are ignored
+	//! by this check.
+	//! The default applies to RFC1738
+	static bool CheckUrlPathContainsUnsafeChars(String &str, const String overrideUnsafe = String(),
+			const String overrideAscii = String(), bool asciiExtended = true);
 
 	//! takes a full uri and decomposes it into a query anything
 	//! \param query resulting anything structure
