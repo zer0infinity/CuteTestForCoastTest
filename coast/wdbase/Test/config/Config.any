@@ -131,4 +131,85 @@
 	  /Port	55033
 	}
 	/StringFile "LocalizedStringsTestConfig"
+	/SimpleListenerPoolTest
+	{
+		{
+			/ConnectorToUse	"TCP5010"
+			/PortToUse			55010
+			/TimeoutToUse		0
+			/DoSendReceiveWithFailure	0
+			/Data
+			{
+				/MessageToSend	"5010_timeout_0"
+				/ChecksToDo
+				{
+				}
+			}
+		}
+		{
+			/ConnectorToUse	"TCP5011"
+			/PortToUse			55011
+			/TimeoutToUse		0
+			/DoSendReceiveWithFailure	0
+			/Data
+			{
+				/MessageToSend	"5011_timeout_0"
+				/ChecksToDo
+				{
+				}
+			}
+		}
+		{
+			/ConnectorToUse	"TCP5012"
+			/PortToUse			55012
+			/TimeoutToUse		0
+			/DoSendReceiveWithFailure	0
+			/Data
+			{
+				/MessageToSend	"5012_timeout_0"
+				/ChecksToDo
+				{
+				}
+			}
+		}
+		{
+			/ConnectorToUse	"TCP5010"
+			/PortToUse			55010
+			/TimeoutToUse		1000
+			/DoSendReceiveWithFailure	0
+			/Data
+			{
+				/MessageToSend	"5010_timeout_1000"
+				/ChecksToDo
+				{
+				}
+			}
+		}
+		{
+			/ConnectorToUse	"TCP5011"
+			/PortToUse			55011
+			/TimeoutToUse		1000
+			/DoSendReceiveWithFailure	0
+			/Data
+			{
+				/MessageToSend	"5011_timeout_1000"
+				/ChecksToDo
+				{
+				}
+			}
+		}
+		{
+			/ConnectorToUse	"TCP5012"
+			/PortToUse			55012
+			/TimeoutToUse		1000
+			/DoSendReceiveWithFailure	0
+			/Data
+			{
+				/MessageToSend	"5012_timeout_1000"
+				/ChecksToDo
+				{
+				}
+			}
+		}
+	}
 }

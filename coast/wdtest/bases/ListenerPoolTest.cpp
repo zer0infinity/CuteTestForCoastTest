@@ -19,31 +19,6 @@
 #include "StringStream.h"
 #include "Dbg.h"
 
-class TestReceiver
-{
-public:
-	TestReceiver(): fMutex("MMMM") {}
-	void Receive(iostream *Ios);
-	Anything GetResult();
-
-protected:
-	Anything fResult;
-	Mutex fMutex;
-};
-
-class TestCallBackFactory : public CallBackFactory
-{
-public:
-	TestCallBackFactory() { };
-	virtual ~TestCallBackFactory() {};
-	virtual AcceptorCallBack *MakeCallBack();
-	Anything GetResult() {
-		return fReceiver.GetResult();
-	}
-protected:
-	TestReceiver fReceiver;
-};
-
 class TestCallBack : public AcceptorCallBack
 {
 public:
@@ -68,23 +43,52 @@ void TestCallBack::CallBack(Socket *socket)
 	iostream *Ios = socket->GetStream();
 
 	if (Ios) {
-		fReceiver->Receive(Ios);
+		fReceiver->Receive(Ios, socket);
 	}
 
 	delete socket;
 }
 
-void TestReceiver::Receive(iostream *Ios)
+void TestReceiver::Receive(iostream *Ios, Socket *socket)
 {
 	StartTrace(TestReceiver.Receive);
 
 	MutexEntry me(fMutex);
 	me.Use();
-	String msg;
-	*Ios >> msg;
+	Anything toImport;
+	toImport.Import(*Ios);
+	TraceAny(toImport, "Recieved data");
+	String msg = toImport["MessageToSend"].AsString();
 	Ios->flush();
 	fResult.Append(msg);
 	*Ios << "Ok " << flush;
+	DoChecks(toImport, socket);
+}
+
+void TestReceiver::DoChecks(Anything &toImport, Socket *socket)
+{
+	StartTrace(TestReceiver.DoChecks);
+	Anything clientInfo = socket->ClientInfo();
+	Anything collectedFailures;
+	for ( long l = 0; l < toImport["ChecksToDo"].GetSize(); l++ ) {
+		String pathToCheck	= toImport["ChecksToDo"].SlotName(l);
+		String expected = toImport["ChecksToDo"][l].AsString();
+		Anything tmp;
+		clientInfo.LookupPath(tmp, pathToCheck);
+		String was = tmp.AsString();
+		String result;
+		result  << "CheckPath:   " << pathToCheck << " Expected: " << expected << " Was: " << was;
+		if ( expected != was ) {
+			collectedFailures.Append(result);
+		}
+	}
+	if (collectedFailures.GetSize() > 0) {
+		Anything feedBack;
+		feedBack["TestData"]	 = toImport;
+		feedBack["FailedChecks"] = collectedFailures;
+		feedBack["ClientInfo"]	 = clientInfo;
+		fFailures.Append(feedBack);
+	}
 }
 
 Anything TestReceiver::GetResult()
@@ -92,6 +96,13 @@ Anything TestReceiver::GetResult()
 	MutexEntry me(fMutex);
 	me.Use();
 	return fResult;
+}
+
+Anything TestReceiver::GetFailures()
+{
+	MutexEntry me(fMutex);
+	me.Use();
+	return fFailures;
 }
 
 class FakeAcceptorFactory: public AcceptorFactory
@@ -154,30 +165,6 @@ void ListenerPoolTest::tearDown ()
 void ListenerPoolTest::PoolTest()
 {
 	StartTrace(ListenerPoolTest.PoolTest);
-
-	Anything config;
-	config.Append("TCP5010");
-	config.Append("TCP5011");
-	config.Append("TCP5012");
-	config.Append("TCP5013");
-	config.Append("TCP5014");
-
-	TestCallBackFactory *tcbf = new TestCallBackFactory;
-	ListenerPool lpToTest(tcbf);
-
-	if ( t_assertm( lpToTest.Init(config.GetSize(), config), "Init should work") && t_assertm(lpToTest.Start(false, 0, 0) == 0, "Start should work")) {
-		DoTestConnect();
-		if (t_assertm(lpToTest.Terminate(1, 10) == 0, "Terminate failed")) {
-			t_assertm(lpToTest.Join() == 0, "Join failed");
-			Anything result = tcbf->GetResult();
-			t_assert(result.Contains("5010_timeout_0"));
-			t_assert(result.Contains("5011_timeout_0"));
-			t_assert(result.Contains("5012_timeout_0"));
-			t_assert(result.Contains("5010_timeout_1000"));
-			t_assert(result.Contains("5011_timeout_1000"));
-			t_assert(result.Contains("5012_timeout_1000"));
-		}
-	}
 }
 
 void ListenerPoolTest::DoSendReceive(Connector *c, String msg)
@@ -198,6 +185,23 @@ void ListenerPoolTest::DoSendReceive(Connector *c, String msg)
 	}
 }
 
+void ListenerPoolTest::DoSendReceive(Connector *c, Anything toSend)
+{
+	StartTrace(ListenerPoolTest.DoSendReceive);
+
+	iostream *Ios = c->GetStream();
+	t_assertm(Ios != 0, "connect failed.");
+	TraceAny(toSend, "toSend:");
+	if (Ios) {
+		toSend.Export(*Ios);
+		t_assert(!!(*Ios));
+		String reply;
+		*Ios >> reply;
+		t_assertm(!!(*Ios), "oops socket time out? connector time out too short?");
+		assertEqual("Ok", reply); //PS use correct macro
+	}
+}
+
 void ListenerPoolTest::DoSendReceiveWithFailure(Connector *c, String msg, bool iosGoodAfterSend)
 {
 	StartTrace(ListenerPoolTest.DoSendReceive);
@@ -205,6 +209,24 @@ void ListenerPoolTest::DoSendReceiveWithFailure(Connector *c, String msg, bool i
 	t_assertm(Ios != 0, "Expected iostream not to be 0");
 	if (Ios) {
 		*Ios << msg << endl;
+		if (iosGoodAfterSend) {
+			t_assertm(!!(*Ios), "Expected iostream state to be good after send");
+		} else {
+			t_assertm(!(*Ios), "Expected iostream state to be bad  after send");
+		}
+		String reply;
+		*Ios >> reply;
+		t_assertm(Ios->fail(), "Expected iostream state to be fail.");
+	}
+}
+
+void ListenerPoolTest::DoSendReceiveWithFailure(Connector *c, Anything toSend, bool iosGoodAfterSend)
+{
+	StartTrace(ListenerPoolTest.DoSendReceive);
+	iostream *Ios = c->GetStream();
+	t_assertm(Ios != 0, "Expected iostream not to be 0");
+	if (Ios) {
+		toSend.Export(*Ios);
 		if (iosGoodAfterSend) {
 			t_assertm(!!(*Ios), "Expected iostream state to be good after send");
 		} else {

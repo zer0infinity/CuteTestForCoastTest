@@ -11,6 +11,9 @@
 
 //---- baseclass include -------------------------------------------------
 #include "ConfiguredTestCase.h"
+#include "Socket.h"
+#include "Threads.h"
+
 class Connector;
 
 //---- ListenerPoolTest ----------------------------------------------------------
@@ -48,7 +51,40 @@ protected:
 	// utility to test with non standard Connectors
 	virtual void DoTestConnect() = 0;
 	virtual void DoSendReceive(Connector *c, String msg);
+	virtual void DoSendReceive(Connector *c, Anything toSend);
 	virtual void DoSendReceiveWithFailure(Connector *c, String msg, bool iosGoodAfterSend);
+	virtual void DoSendReceiveWithFailure(Connector *c, Anything toSend, bool iosGoodAfterSend);
+};
+
+class TestReceiver
+{
+public:
+	TestReceiver(): fMutex("MMMM") {}
+	void Receive(iostream *Ios, Socket *socket);
+	Anything GetResult();
+	Anything GetFailures();
+	void DoChecks(Anything &toImport, Socket *socket);
+
+protected:
+	Anything fResult;
+	Anything fFailures;
+	Mutex fMutex;
+};
+
+class TestCallBackFactory : public CallBackFactory
+{
+public:
+	TestCallBackFactory() { };
+	virtual ~TestCallBackFactory() {};
+	virtual AcceptorCallBack *MakeCallBack();
+	Anything GetResult() {
+		return fReceiver.GetResult();
+	}
+	Anything GetFailures() {
+		return fReceiver.GetFailures();
+	}
+protected:
+	TestReceiver fReceiver;
 };
 
 #endif

@@ -340,8 +340,17 @@
 		/EnableAll	33
 	}
 	/SimpleListenerPoolTest {
-		/MainSwitch				0
-		/EnableAll				0
+		/MainSwitch				33
+		/EnableAll				34
+		/DoTestConnect			33
+	}
+	/TestReceiver {
+		/MainSwitch				33
+		/EnableAll				34
+	}
+	/ListenerPoolTest {
+		/MainSwitch				33
+		/EnableAll				34
 		/DoTestConnect			33
 	}
 	/WebAppService {
