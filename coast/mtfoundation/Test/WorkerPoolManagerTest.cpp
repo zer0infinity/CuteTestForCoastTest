@@ -38,12 +38,11 @@ Test *WorkerPoolManagerTest::suite ()
 	StartTrace(WorkerPoolManagerTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(WorkerPoolManagerTest, InitTest));
-	testSuite->addTest (NEW_CASE(WorkerPoolManagerTest, EnterLeaveTests));
+	ADD_CASE(testSuite, WorkerPoolManagerTest, InitTest);
+	ADD_CASE(testSuite, WorkerPoolManagerTest, EnterLeaveTests);
 
 	return testSuite;
-
-} // suite
+}
 
 // setup for this TestCase
 void WorkerPoolManagerTest::setUp ()
@@ -84,7 +83,7 @@ void WorkerPoolManagerTest::InitTest()
 
 void WorkerPoolManagerTest::EnterLeaveTests()
 {
-	StartTrace(WorkerPoolManagerTest.InitTest);
+	StartTrace(WorkerPoolManagerTest.EnterLeaveTests);
 	const long cPoolSz = 2;
 	SamplePoolManager wpm("EnterLeaveTestsPool");
 	Anything config;
@@ -113,7 +112,6 @@ void WorkerPoolManagerTest::EnterLeaveTests()
 	statistic.Remove("TRX/sec"); // since varies
 
 	assertAnyEqualm(expected, statistic, "statistic differs");
-
 }
 
 void WorkerPoolManagerTest::CheckPrepare2Run(bool isReady, bool wasPrepared)
