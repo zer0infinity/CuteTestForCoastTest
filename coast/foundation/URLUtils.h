@@ -63,7 +63,7 @@ public:
 	static bool CheckUrlEncoding(String &str, const String override = String());
 
 	//! check URL Args Encoding according to RFC1738
-	static bool CheckUrlArgEncoding(String &str);
+	static bool CheckUrlArgEncoding(String &str, const String override = String());
 
 	//! check URL Path char to be safe according to RFC1738
 	//! You may pass in your own set of unsafe chars (overrideUnsafe

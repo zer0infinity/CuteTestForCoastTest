@@ -186,6 +186,17 @@ void URLUtilsTest::CheckUrlArgEncodingTest()
 	arguments = "";
 	ret = URLUtils::CheckUrlArgEncoding(arguments);
 	assertEqual(true, ret);
+
+	// Testing with different set (without $, but with >)
+	arguments = "abcd$efgh";
+	ret = URLUtils::CheckUrlArgEncoding(arguments, "-_.+/%=&>");
+	assertEqual(false, ret);
+
+	// Testing with different set (without $, but with >)
+	arguments = "abcd>efgh";
+	ret = URLUtils::CheckUrlArgEncoding(arguments, "-_.+/%=&>");
+	assertEqual(true, ret);
+
 }
 
 void URLUtilsTest::HTMLDecodeTest()

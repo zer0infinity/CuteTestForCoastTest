@@ -446,14 +446,19 @@ bool URLUtils::CheckUrlEncoding(String &str, const String override)
 }
 
 // Check URL for chars which should be encoded according to RFC1738
-bool URLUtils::CheckUrlArgEncoding(String &str)
+bool URLUtils::CheckUrlArgEncoding(String &str, const String override)
 {
 	StartTrace(URLUtils.CheckUrlArgEncoding);
-	return (str.LastCharOf("ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-						   "abcdefghijklmnopqrstuvwxyz"
-						   "0123456789"
-						   "$-_.+"
-						   "/%=&") == str.Length() ||
+	String base("ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+				"abcdefghijklmnopqrstuvwxyz"
+				"0123456789");
+	String overrideDefault("$-_.+/%=&");
+	if (override.Length() == 0L) {
+		base.Append(overrideDefault);
+	} else {
+		base.Append(override);
+	}
+	return (str.LastCharOf(base) == str.Length() ||
 			str.Length() == 0);
 }
 
