@@ -49,6 +49,7 @@ public:
 	void UnscrambleStateTest();
 
 	void HandleCookieTest();
+	void HandleMultipleCookiesTest();
 	void HandleQueryTest();
 
 protected:

@@ -17,18 +17,19 @@
 #include "Dbg.h"
 
 //--- URLFilter ----------------------------------------------------------
-bool URLFilter::HandleCookie(Anything &query, const Anything &env, const ROAnything &filterCookieConf, Context &ctx)
+bool URLFilter::HandleCookie(Anything &query, Anything &env, const ROAnything &filterCookieConf, Context &ctx)
 {
 	StartTrace(URLFilter.HandleCookie);
 	SubTraceAny(query, query, "Query: ");
 	SubTraceAny(env, env, "Env: ");
 	SubTraceAny(filterCookieConf, filterCookieConf, "Filter configuration: ");
-
+	bool ret = false;
 	// default implementation copies cookie tags
 	// defined in the filter into the query
 	// if they are not already there
 	Anything cookies;
 	if ( env.LookupPath(cookies, "WDCookies") ) {
+		ret = true;
 		long numOfFilters = filterCookieConf.GetSize();
 		for (long i = 0; i < numOfFilters; i++) {
 			ROAnything filter(filterCookieConf[i]);
@@ -40,19 +41,30 @@ bool URLFilter::HandleCookie(Anything &query, const Anything &env, const ROAnyth
 				filterVal = filter.AsCharPtr(0);
 			}
 
-			const char *slotname = filterVal;
-			if ( cookies.IsDefined(slotname) &&
-				 !query.IsDefined(slotname)) {
-				Trace("query[" << slotname << "]= " << cookies[slotname].AsCharPtr(""));
-				// don't override existing tags
-				query[slotname] = cookies[slotname];
-//				cookies.Remove(slotname); // no duplicates
+			const char *slotName = filterVal;
+			env["NrOfCookies"][slotName] = 0;
+			if ( cookies.IsDefined(slotName) &&
+				 !query.IsDefined(slotName) ) {
+				if ( cookies[slotName].GetType() != Anything::eArray ) {
+					// don't override existing tags
+					query[slotName] = cookies[slotName];
+					env["NrOfCookies"][slotName] = 1;
+					//	cookies.Remove(slotName); // no duplicates
+				} else {
+					long size = cookies[slotName].GetSize();
+					query[slotName] = "";
+					String errMsg("Cookie: <");
+					errMsg << slotName << "> was sent <" << size << "> times. " << slotName << " set to blank.";
+					SysLog::Error(errMsg);
+					env["NrOfCookies"][slotName] = size;
+					ret = false;
+				}
+				Trace("query[" << slotName << "]= " << cookies[slotName].AsCharPtr(""));
 			}
 		}
 		SubTraceAny(query, query, "Query after: ");
-		return true;
 	}
-	return false;
+	return ret;
 }
 
 bool URLFilter::HandleQuery(Anything &query, const ROAnything &filterQueryConf, Context &ctx)
@@ -86,9 +98,9 @@ bool URLFilter::FilterState(Anything &query, const ROAnything &filterTags, Conte
 
 	long numOfFilters = filterTags.GetSize();
 	for (long i = 0; i < numOfFilters; i++) {
-		const char *slotname = filterTags.SlotName(i);
+		const char *slotName = filterTags.SlotName(i);
 		ROAnything filter(filterTags[i]);
-		if (!slotname) {
+		if (!slotName) {
 			String filterVal;
 			if (filter.GetType() != Anything::eCharPtr) {
 				// assume renderer expression
@@ -103,14 +115,13 @@ bool URLFilter::FilterState(Anything &query, const ROAnything &filterTags, Conte
 			{
 				retCode = DoFilterState(query, filterVal, ctx) && retCode;
 			}
-		} else if (slotname) {
+		} else if (slotName) {
 			// complex filter; remove from query if
-			// filter["slotname"].Contains(query["slotname"]);
-			if (	query.IsDefined(slotname) &&
-					filter.Contains(query[slotname].AsCharPtr(""))
-			   ) {
-				Trace("removing <" << slotname << ">=<" << query[slotname].AsCharPtr("") << ">");
-				query.Remove(slotname);
+			// filter[slotName].Contains(query[slotName]);
+			if (	query.IsDefined(slotName) &&
+					filter.Contains(query[slotName].AsCharPtr("")) ) {
+				Trace("removing <" << slotName << ">=<" << query[slotName].AsCharPtr("") << ">");
+				query.Remove(slotName);
 				retCode = true && retCode;
 			}
 		} else {
@@ -166,7 +177,7 @@ bool URLFilter::DoFilterState(Anything &query, const char *slotName, Context &ct
 
 bool URLFilter::DoUnscrambleState(Anything &query, const char *slotName, Context &ctx)
 {
-	// Scrambled private information in slotname
+	// Scrambled private information in slotName
 	StartTrace1(URLFilter.DoUnscrambleState, "Slot: " << NotNull(slotName));
 
 	if (slotName && query.IsDefined(slotName)) {

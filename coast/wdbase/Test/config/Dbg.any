@@ -408,4 +408,12 @@
 		/MainSwitch				0
 		/EnableAll				3100
 	}
+	/URLFilterTest {
+		/MainSwitch				5000
+		/EnableAll				5001
+	}
+	/URLFilter {
+		/MainSwitch				5000
+		/EnableAll				5001
+	}
 }

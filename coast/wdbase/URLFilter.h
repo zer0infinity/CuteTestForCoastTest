@@ -33,7 +33,7 @@ public:
 	//! \param query the query anything relevant for this request
 	//! \param env environment anything containing the cookie, since cookie is a headerfield
 	//!:param: filterCookieConf - configuration anything containing the slotnames to be copied
-	virtual bool HandleCookie(Anything &query, const Anything &env, const ROAnything &filterCookieConf, Context &ctx);
+	virtual bool HandleCookie(Anything &query, Anything &env, const ROAnything &filterCookieConf, Context &ctx);
 
 	//! filters public elements and unscrambles scrambled state
 	//! \param query the query anything relevant for this request

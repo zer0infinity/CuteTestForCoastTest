@@ -10,6 +10,7 @@
 #include "Anything.h"
 #include "Threads.h"
 #include "Context.h"
+#include "Dbg.h"
 #include "SecurityModule.h"
 #include "Application.h"
 
@@ -52,6 +53,7 @@ void URLFilterTest::tearDown ()
 // handle simple things first
 void URLFilterTest::DoFilterStateTest()
 {
+	StartTrace(URLFilterTest.DoFilterStateTest);
 	Anything query;
 	URLFilter urlFilter("Test");
 	long querySz;
@@ -81,6 +83,7 @@ void URLFilterTest::DoFilterStateTest()
 // handle simple things first
 void URLFilterTest::DoUnscrambleStateTest()
 {
+	StartTrace(URLFilterTest.DoUnscrambleStateTest);
 	// first setup a state and scramble it
 	Anything state;
 	state["first"] = "test";
@@ -136,6 +139,8 @@ void URLFilterTest::DoUnscrambleStateTest()
 
 void URLFilterTest::FilterStateTest()
 {
+	StartTrace(URLFilterTest.FilterStateTest);
+
 	Anything query;
 	Anything filterTags;
 	URLFilter urlFilter("Test");
@@ -204,6 +209,8 @@ void URLFilterTest::FilterStateTest()
 
 void URLFilterTest::UnscrambleStateTest()
 {
+	StartTrace(URLFilterTest.UnscrambleStateTest);
+
 	Anything query;
 	Anything filterTags;
 	URLFilter urlFilter("Test");
@@ -238,6 +245,8 @@ void URLFilterTest::UnscrambleStateTest()
 
 void URLFilterTest::HandleCookieTest()
 {
+	StartTrace(URLFilterTest.HandleCookieTest);
+
 	Anything env;
 	Anything query;
 	Anything cookieState;
@@ -289,8 +298,119 @@ void URLFilterTest::HandleCookieTest()
 
 }
 
+void URLFilterTest::HandleMultipleCookiesTest()
+{
+	StartTrace(URLFilterTest.HandleMultipleCookiesTest);
+
+	{
+		Anything env;
+		Anything query;
+		Anything cookieState;
+		Anything cookieSpec;
+		URLFilter urlFilter("Test");
+		Context ctx(env, query, 0, 0, 0, 0);
+
+		// setting up the data
+		String slotName1 = "FDState";
+		cookieState[slotName1][0L] = "first";
+		cookieState[slotName1][1L] = "second";
+		cookieState[slotName1][2L] = "third";
+		env["WDCookies"] = cookieState;
+
+		cookieSpec.Append(slotName1);
+		t_assert(urlFilter.HandleCookie(query, env, cookieSpec, ctx) == false);
+		// more then one cookie for a given name, blank out
+		assertEqual("", query[slotName1].AsString());
+		TraceAny(env, "environment");
+		assertEqual(3, env["NrOfCookies"][slotName1].AsLong(0));
+	}
+	{
+		Anything env;
+		Anything query;
+		Anything cookieState;
+		Anything cookieSpec;
+		URLFilter urlFilter("Test");
+		Context ctx(env, query, 0, 0, 0, 0);
+
+		// setting up the data
+		String slotName1 = "FDState";
+		String slotName2 = "Hank";
+		cookieState[slotName1] = "first";
+		cookieState[slotName2] = "second";
+		env["WDCookies"] = cookieState;
+
+		cookieSpec.Append(slotName1);
+		cookieSpec.Append(slotName2);
+		t_assert(urlFilter.HandleCookie(query, env, cookieSpec, ctx) == true);
+		assertEqual("first", query[slotName1].AsString());
+		assertEqual("second", query[slotName2].AsString());
+		TraceAny(env, "environment");
+		TraceAny(query, "query");
+		assertEqual(1, env["NrOfCookies"][slotName1].AsLong(0));
+		assertEqual(1, env["NrOfCookies"][slotName2].AsLong(0));
+	}
+	{
+		Anything env;
+		Anything query;
+		Anything cookieState;
+		Anything cookieSpec;
+		URLFilter urlFilter("Test");
+		Context ctx(env, query, 0, 0, 0, 0);
+
+		// setting up the data
+		String slotName1 = "FDState";
+		String slotName2 = "NotThere";
+		cookieState[slotName1] = "first";
+		env["WDCookies"] = cookieState;
+
+		// Look for a cookie which is not there
+		cookieSpec.Append(slotName2);
+		t_assert(urlFilter.HandleCookie(query, env, cookieSpec, ctx) == true);
+		TraceAny(env, "environment");
+		TraceAny(query, "query");
+		assertEqual(0, env["NrOfCookies"][slotName2].AsLong(3));
+	}
+	{
+		Anything env;
+		Anything query;
+		Anything cookieState;
+		Anything cookieSpec;
+		URLFilter urlFilter("Test");
+		Context ctx(env, query, 0, 0, 0, 0);
+
+		// setting up the data
+		String slotName1 = "FDState";
+		String slotName2 = "Array";
+		String slotName3 = "Hank";
+		cookieState[slotName1] = "first";
+		cookieState[slotName2][0] = "second_first";
+		cookieState[slotName2][1] = "second_second";
+		cookieState[slotName3] = "third";
+		env["WDCookies"] = cookieState;
+
+		cookieSpec.Append(slotName1);
+		cookieSpec.Append(slotName2);
+		cookieSpec.Append(slotName3);
+		// HandleCookie extract all cookies, it does not stop if it finds more then one
+		// cookies for a given name. Thus the valid cookies are handled as usual, only the
+		// returncode is set to false.
+		t_assert(urlFilter.HandleCookie(query, env, cookieSpec, ctx) == false);
+		assertEqual("first", query[slotName1].AsString());
+		// more then one cookie for a given name, blank out
+		assertEqual("", query[slotName2].AsString());
+		assertEqual("third", query[slotName3].AsString());
+		TraceAny(env, "environment");
+		TraceAny(query, "query");
+		assertEqual(1, env["NrOfCookies"][slotName1].AsLong(0));
+		assertEqual(2, env["NrOfCookies"][slotName2].AsLong(0));
+		assertEqual(1, env["NrOfCookies"][slotName3].AsLong(0));
+	}
+}
+
 void URLFilterTest::HandleQueryTest()
 {
+	StartTrace(URLFilterTest.HandleQueryTest);
+
 	Anything query;
 	Anything filterTags;
 	URLFilter urlFilter("Test");
@@ -342,6 +462,7 @@ Test *URLFilterTest::suite ()
 	testSuite->addTest (NEW_CASE(URLFilterTest, FilterStateTest));
 	testSuite->addTest (NEW_CASE(URLFilterTest, UnscrambleStateTest));
 	testSuite->addTest (NEW_CASE(URLFilterTest, HandleCookieTest));
+	testSuite->addTest (NEW_CASE(URLFilterTest, HandleMultipleCookiesTest));
 	testSuite->addTest (NEW_CASE(URLFilterTest, HandleQueryTest));
 
 	return testSuite;
