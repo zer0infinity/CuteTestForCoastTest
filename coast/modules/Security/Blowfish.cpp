@@ -496,7 +496,7 @@ void BlowfishScrambler::BF_ECB_decrypt(unsigned char *in, unsigned char *out) co
 void BlowfishScrambler::InitKey(const String &keyin)
 {
 	StartTrace1(BlowfishScrambler.InitKey, fName);
-	Trace("Configured name: " << fName << " setting configured key:" << keyin);
+	Trace("Configured name: " << fName << " using key:" << keyin);
 	int len = keyin.Length();
 	unsigned char *data = (unsigned char *) (const char *) keyin;
 	int i;
