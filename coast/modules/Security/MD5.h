@@ -21,9 +21,7 @@ public:
 	IFAObject *Clone() const {
 		return new MD5Signer(fName);
 	}
-	void InitKey(const String &key) {
-		fKey = key;
-	}
+	void InitKey(const String &key);
 	//!calculate plain MD5 hash value, no signing
 	static void DoHash(const String &cleartext, String &hashvalue);
 	//! sign the cleartext with MD5 hash value, takes the key from configuration
