@@ -68,8 +68,7 @@ SSLSocketStreamBuf::~SSLSocketStreamBuf()
 
 	if ( fContext) {
 		Trace("SSLCtx SSL_get_quiet_shutdown(): " << SSL_get_quiet_shutdown(fContext));
-		SSL_SESSION *sslSessionCurrent = SSL_get_session(fContext);
-		TraceAny(SSLObjectManager::TraceSSLSession(sslSessionCurrent), "sslSessionCurrent");
+		TraceAny(SSLObjectManager::TraceSSLSession(SSL_get_session(fContext)), "sslSessionCurrent");
 		SSL_shutdown(fContext);
 		SSL_free (fContext);
 	}
