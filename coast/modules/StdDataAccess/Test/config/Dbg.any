@@ -8,8 +8,8 @@
 
 {
 
-	/LowerBound		200
-	/UpperBound		211
+	/LowerBound		0
+	/UpperBound		201
 	/DumpAnythings  1
 
 	/DataAccessImpl {
@@ -81,8 +81,8 @@
 		/EnableAll						210
 	}
 	/HTTPDAImplTest {
-		/MainSwitch						210
-		/EnableAll						210
+		/MainSwitch						1210
+		/EnableAll						1210
 	}
 	/HTTPProcessor {
 		/MainSwitch						310
