@@ -1,0 +1,127 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/LowerBound				11
+	/UpperBound				11
+	/DumpAnythings			1
+
+	/TimeLoggingModule{
+		/MainSwitch			10
+		/EnableAll			10
+	}
+	/Context {
+		/MainSwitch			10
+		/EnableAll			0
+		/Process			10
+	}
+	/Queue {
+		/MainSwitch			0
+		/EnableAll			10
+	}
+	/QueueTest {
+		/MainSwitch			0
+		/EnableAll			10
+	}
+	/Thread {
+		/MainSwitch			0
+		/EnableAll			0
+		/IntRun				10
+		/SetWorking			10
+		/IsRunning			10
+		/CheckRunningState	10
+		/Terminate			10
+		/GetState			0
+		/SetState			0
+		/IntSetState		0
+	}
+	/TestConsumer {
+		/MainSwitch			0
+		/EnableAll			10
+	}
+	/TestProducer {
+		/MainSwitch			0
+		/EnableAll			10
+	}
+	/ConsumerTerminationThread {
+		/MainSwitch			0
+		/EnableAll			10
+	}
+	/CountEntry {
+		/MainSwitch			0
+		/EnableAll			10
+	}
+	/AcceptorThread {
+		/MainSwitch			0
+		/EnableAll			10
+	}
+	/LookupInterface {
+		/MainSwitch			0
+		/EnableAll			10
+	}
+	/HierarchConfNamed {
+		/MainSwitch			0
+		/EnableAll			10
+	}
+	/ConfNamedObject {
+		/MainSwitch			0
+		/EnableAll			10
+	}
+	/QueueWorkingModule {
+		/MainSwitch			0
+		/EnableAll			10
+	}
+	/ModuleTestConsumer {
+		/MainSwitch			0
+		/EnableAll			10
+	}
+	/AnyUtils {
+		/MainSwitch			0
+		/EnableAll			10
+	}
+	/HTTPDAImpl {
+		/MainSwitch			0
+		/EnableAll			10
+	}
+	/LoopBackDAImpl {
+		/MainSwitch			0
+		/EnableAll			10
+	}
+	/ResultMapper {
+		/MainSwitch			0
+		/EnableAll			10
+	}
+	/EagerResultMapper {
+		/MainSwitch			0
+		/EnableAll			10
+	}
+	/NameUsingOutputMapper {
+		/MainSwitch			0
+		/EnableAll			10
+	}
+	/StreamToAnythingMapper {
+		/MainSwitch			0
+		/EnableAll			10
+	}
+	/SlotnameOutputMapper {
+		/MainSwitch			0
+		/EnableAll			10
+	}
+	/ThreadPoolManager {
+		/MainSwitch			0
+		/EnableAll			0
+		/Update				10
+		/Start				10
+		/Init				10
+	}
+	/HierarchyInstaller {
+		/MainSwitch			0
+		/EnableAll			10
+	}
+}

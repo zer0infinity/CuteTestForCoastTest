@@ -1,0 +1,201 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/DLL {
+		renderers
+	}
+	/Modules {
+		RenderersModule
+		ActionsModule
+		AppLogModule
+	}
+
+	/Actions {
+	}
+	/Renderers {
+		/ContextLookupRenderer	{ Lookup }
+		/DateRenderer			{ Date }
+	}
+
+#--- Logging-Configuration --------------------------------------------
+	/TimeLoggingModule {
+		/DoTiming	0
+		/DoLogging	0
+	}
+	/AppLogModule {
+		/LogDir	"."
+		/Servers {
+			/Server {
+				/AccessLog	{
+					/FileName	"CalcAccess.log"
+					/Format		%AccessLog.Format
+					/Header		%AccessLog.Header
+					/SuppressEmptyLines	1
+				}
+				/WarningLog	{
+					/FileName	"CalcWarning.log"
+					/Format		%WarningLog.Format
+					/Header		%WarningLog.Header
+					/SuppressEmptyLines	1
+				}
+				/ErrorLog	{
+					/FileName	"CalcError.log"
+					/Format		%ErrorLog.Format
+					/Header		%ErrorLog.Header
+					/SuppressEmptyLines	1
+				}
+				/TimerLog {
+					/FileName	"MethodTimer.log"
+					/Format		%MethodTimerLog.Format
+					/Header		%MethodTimerLog.Header
+				}
+			}
+		}
+	}
+	/LogTimeStamp {
+		{ /Date { /Format "%Y%m%d%H%M%S" } }
+	}
+	/AccessLog {
+		/Header			"# TimeStamp [ThreadId] [Rem.Addr:Rem.Port] - [StatusMsg | ...]"
+		/Format {
+			%StdLogFormat
+			"- "
+			{ /Lookup LogMessage }
+			{ /StringCompareRenderer {
+				/String1	{ /Lookup ListingId }
+				/String2	""
+				/Unequal {
+					" ["
+					/Lookup ListingId
+					"]"
+				}
+			} }
+		}
+	}
+
+	/WarningLog {
+		/Header			"# TimeStamp [ThreadId] [Rem.Addr:Rem.Port] - [WarningMsg | ...]"
+		/Format {
+			%StdLogFormat
+			"- "
+			{ /Lookup LogMessage }
+			{ /StringCompareRenderer {
+				/String1	{ /Lookup ListingId }
+				/String2	""
+				/Unequal {
+					" ["
+					/Lookup ListingId
+					"]"
+				}
+			} }
+		}
+	}
+
+	/ErrorLog {
+		/Header			"# TimeStamp [ThreadId] [Rem.Addr:Rem.Port] - [ErrorMsg | ...]"
+		/Format {
+			%StdLogFormat
+			"- "
+			{ /Lookup LogMessage }
+			{ /StringCompareRenderer {
+				/String1	{ /Lookup ListingId }
+				/String2	""
+				/Unequal {
+					" ["
+					/Lookup ListingId
+					"]"
+				}
+			} }
+		}
+	}
+
+	/StdLogFormat {
+		%LogTimeStamp
+		{ /StringCompareRenderer {
+			/String1	{ /Lookup ThreadId }
+			/String2	""
+			/Unequal {
+				" ["
+				/Lookup ThreadId
+				"]"
+			}
+		} }
+		" "
+	}
+
+	/MethodTimerLog {
+		/Header "# TimeStamp [ThreadId] [Class.Method] [Message]-> <time>ms"
+		/Format {
+			%LogTimeStamp
+			{ /StringCompareRenderer {
+				/String1	{ /Lookup ThreadId }
+				/String2	""
+				/Unequal {
+					" ["
+					/Lookup ThreadId
+					"]"
+				}
+			} }
+			" ["
+			{ /Lookup TimeLogEntry.Key }
+			"] "
+			{ /StringCompareRenderer {
+				/String1	{ /Lookup TimeLogEntry.Msg }
+				/String2	""
+				/Unequal {
+					"["
+					{ /Lookup TimeLogEntry.Msg }
+					"] "
+				}
+			} }
+			"-> "
+			{ /Lookup TimeLogEntry.Time }
+			"ms"
+		}
+	}
+
+#--- time logging configuration ---
+	# configure where to log, acts as config for TimeLoggingAction
+	/TimeLoggingAction {
+		{ /TimeLoggingAction	{
+			/Channel		TimerLog
+			/TimeEntries	Log.Times.Method
+		} }
+		{ /TimeLoggingAction	{
+			/Channel		TimerLog
+			/TimeEntries	Log.Times.DataAccess
+		} }
+	}
+	# specify which entries to log
+	/EnabledValues {
+		/Log {
+			/Times {
+				/Request					0		# measured with RequestTimer() macro
+				/Method {							# measured with MethodTimer() macro
+					/Page {
+						/Render				0
+					}
+				}
+				/DataAccess {						# measured with DAAccessTimer() macro
+					/DataAccess {
+						/StdExec			1
+						/Exec				0
+					}
+					/SlotnameOutputMapper {
+						/DoPutAny			1
+					}
+					/StreamToAnythingMapper {
+						/DoPutStream		1
+					}
+				}
+			}
+		}
+	}
+}
