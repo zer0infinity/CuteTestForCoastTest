@@ -93,7 +93,7 @@ void ErrorHandlerTest::testHandleError()
 	t_assert(eh.GetError(error));
 	TraceAny(error, "Error1");
 	assertEqual(error["Msg"].AsString(), "HandleError1");
-	assertEqual(error.GetSize(), 2L);
+	assertEqual(error.GetSize(), 3L);
 	fCtx->GetTmpStore().Remove("LDAPError");
 
 	eh.HandleError("HandleError2", info);
