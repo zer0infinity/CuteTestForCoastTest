@@ -129,7 +129,7 @@
 		/SSLVerifyFailIfNoPeerCert 0
 		/VerifyCertifiedEntity 1
 		/CertVerifyStringIsFilter 0
-		/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+		/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ClientSite,L=ZH,ST=ZH,C=CH"
 		}
 	# Expecting send/recieve to be ok
 		/TCP5020 {
