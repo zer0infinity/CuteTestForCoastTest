@@ -455,6 +455,7 @@
 		}
 		{
 			/DoSendReceiveWithFailure 1
+			/IOSGoodBeforeSend			0
 			/IOSGoodAfterSend			0
 
 			/SSLConnector		1
@@ -471,6 +472,7 @@
 		}
 		{
 			/DoSendReceiveWithFailure 1
+			/IOSGoodBeforeSend			0
 			/IOSGoodAfterSend			0
 			/SSLConnector		1
 			/ConnectorToUse	"Connector5019"

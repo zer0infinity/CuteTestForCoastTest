@@ -179,9 +179,7 @@ iostream *SSLSocket::DoMakeStream()
 	do {
 		res = PrepareSocket(ssl);
 	} while (ShouldRetry(ssl, res, true));
-	if ( res < 0 ) { //res != 1 )
-		// SOP slight semantic change, was ==-1, but 0 seems to be an error as well
-		// return value was not guaranteed to be -1 when below zero
+	if ( res <= 0 ) { // 0 = Handshake failure, SSL layer shut down connection properly, -1 = error, 1 = ok
 		if ( ssl ) {
 			SSL_free (ssl);
 		}
