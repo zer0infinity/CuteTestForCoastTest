@@ -16,7 +16,8 @@
 //--- SybCTGenericDAImpl -----------------------------------------------------
 RegisterDataAccessImpl(SybCTGenericDAImpl);
 
-SybCTGenericDAImpl::SybCTGenericDAImpl(const char *name) : DataAccessImpl(name)
+SybCTGenericDAImpl::SybCTGenericDAImpl(const char *name)
+	: DataAccessImpl(name)
 {
 }
 
@@ -75,10 +76,16 @@ bool SybCTGenericDAImpl::PutResults(Context &context, InputMapper *in, OutputMap
 	bool bShowRowCount = true;
 	in->Get("NoQueryCount", bShowRowCount, context);
 	Trace("bShowRowCount is " << (bShowRowCount ? "true" : "false"));
+	if ( queryResults.IsDefined("SP_Retcode") ) {
+		Trace("StoredProcedure return code: " << queryResults["SP_Retcode"].AsString());
+		out->Put("SP_Retcode", queryResults["SP_Retcode"], context);
+		queryResults.Remove("SP_Retcode");
+	}
 	if (bShowRowCount) {
 		out->Put("QueryCount", queryResults.GetSize(), context);
 	}
 	if (queryParams["resultformat"].AsString().Compare("TitlesOnce") == 0) {
+		TraceAny(queryTitles, "titles once was defined and contains");
 		out->Put("QueryTitles", queryTitles, context);
 	}
 	out->Put("QueryResult", queryResults, context);
