@@ -532,8 +532,16 @@ protected:
 	//! use current list of cleanup handlers to cleanup the thread specific storage and then reset to an empty list
 	static bool CleanupThreadStorage();
 
-	//!subclass hook
+	/*! This hook gets called before an operating system thread will be started. One can decide - returning true or false - if an operating system thread should really be started or not.
+		This method is useful when we want to initialize memory dependant things because the fAllocator member is now initialized. The GetId() function will not return a valid id because no real thread was started yet.
+		\param args arguments passed when calling the Start() method
+		\return true in case the Start() method should continue to attach us to a real operating system thread, false otherwises */
 	virtual bool DoStartRequestedHook(ROAnything args);
+
+	/*! This hook gets called when an operating system thread could be started. The IntRun() method and its internal call to Run() will appear after we leave this function so it is guaranteed that we do not need to lock anything which could be used already in the Run() method.
+		This method is useful when we want to initialize memory dependant things because the fAllocator member is now initialized. In addition - to DoStartRequestedHook - the GetId() function also returns a valid threadid.
+		\param args arguments passed when calling the Start() method */
+	virtual void DoStartedHook(ROAnything args);
 
 	//!subclass hook
 	virtual void DoTerminationRequestHook(ROAnything args);

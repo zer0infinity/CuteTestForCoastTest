@@ -397,6 +397,9 @@ bool Thread::CallStateHooks(EThreadState state, ROAnything args)
 	switch (state) {
 		case eStartRequested:
 			return DoStartRequestedHook(args);
+		case eStarted:
+			DoStartedHook(args);
+			break;
 		case eTerminationRequested:
 			DoTerminationRequestHook(args);
 			break;
@@ -413,6 +416,7 @@ bool Thread::DoStartRequestedHook(ROAnything)
 {
 	return true;
 };
+void Thread::DoStartedHook(ROAnything) {};
 void Thread::DoTerminationRequestHook(ROAnything) {};
 void Thread::DoTerminatedHook() {};
 
