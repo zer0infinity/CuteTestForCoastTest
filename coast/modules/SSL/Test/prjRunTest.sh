@@ -16,7 +16,7 @@ function prepareTest
 	$PROJECTDIR/rehashwrapper.sh $PRJCONFIGPATH/cert_hashes
 	# Linking hashed certificate directory to one common place
 	rm /tmp/SSLSocketTestHashedCerts > /dev/null 2>&1
-	ln -s $PRJCONFIGPATH/cert_hashes /tmp/SSLSocketTestHashedCerts
+	ln -s $PRJCONFIGPATH/cert_hashes /tmp/SSLSocketTestHashedCerts > /dev/null 2>&1
 	chmod -f 777 /tmp/SSLSocketTestHashedCerts
 }
 ## call to wdtest or whatever you want to call
