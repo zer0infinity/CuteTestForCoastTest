@@ -59,11 +59,14 @@ void HTTPProcessorTest::testDoReadInputWithError()
 	fds.fURISizeLimit = 1024L;
 	testDoReadInputWithCfg( fds, expected );
 
+	String common = String("") << "</head><body bgcolor=\"silver\">\n"
+					<< "<center>\n<h1>Page not found.</h1>\nPress the back button to return to the previous page!<br><br>\n"
+					<< "<FORM><input type=button value=\"Back\" onClick=\"javascript:history.back(1)\"></FORM>\n</body></html>";
+
 	expected =    String("") << "HTTP/1.1 414 Request-URL Too Large" << ENDL
 				  << "Connection: close\r\ncontent-type: text/html" << ENDL << ENDL
-				  << "<html><head>\n<title>414 Request-URL Too Large</title>\n</head><body>\n"
-				  << "<h1>Request-URL Too Large</h1>\n<p>Bad Request</p><hr />\n"
-				  << "<address>Coast 2.0 Server</address>\n</body></html>";
+				  << "<html><head>\n<title>414 Request-URL Too Large</title>\n"
+				  << common;
 	fds.fRequestSizeLimit = 5120L;
 	fds.fLineSizeLimit = 1024L;
 	fds.fURISizeLimit = 20L;
@@ -71,9 +74,8 @@ void HTTPProcessorTest::testDoReadInputWithError()
 
 	expected =    String("") << "HTTP/1.1 413 Request Entity Too Large" << ENDL
 				  << "Connection: close\r\ncontent-type: text/html" << ENDL << ENDL
-				  << "<html><head>\n<title>413 Request Entity Too Large</title>\n</head><body>\n"
-				  << "<h1>Request Entity Too Large</h1>\n<p>Bad Request</p><hr />\n"
-				  << "<address>Coast 2.0 Server</address>\n</body></html>";
+				  << "<html><head>\n<title>413 Request Entity Too Large</title>\n"
+				  << common;
 	fds.fRequestSizeLimit = 5120L;
 	fds.fLineSizeLimit = 30L;
 	fds.fURISizeLimit = 120L;
@@ -81,9 +83,8 @@ void HTTPProcessorTest::testDoReadInputWithError()
 
 	expected =    String("") << "HTTP/1.1 413 Request Entity Too Large" << ENDL
 				  << "Connection: close\r\ncontent-type: text/html" << ENDL << ENDL
-				  << "<html><head>\n<title>413 Request Entity Too Large</title>\n</head><body>\n"
-				  << "<h1>Request Entity Too Large</h1>\n<p>Bad Request</p><hr />\n"
-				  << "<address>Coast 2.0 Server</address>\n</body></html>";
+				  << "<html><head>\n<title>413 Request Entity Too Large</title>\n"
+				  << common;
 	fds.fRequestSizeLimit = 5120L;
 	fds.fLineSizeLimit = 20L;
 	fds.fURISizeLimit = 20L;
@@ -91,9 +92,8 @@ void HTTPProcessorTest::testDoReadInputWithError()
 
 	expected =    String("") << "HTTP/1.1 413 Request Entity Too Large" << ENDL
 				  << "Connection: close\r\ncontent-type: text/html" << ENDL << ENDL
-				  << "<html><head>\n<title>413 Request Entity Too Large</title>\n</head><body>\n"
-				  << "<h1>Request Entity Too Large</h1>\n<p>Bad Request</p><hr />\n"
-				  << "<address>Coast 2.0 Server</address>\n</body></html>";
+				  << "<html><head>\n<title>413 Request Entity Too Large</title>\n"
+				  << common;
 	fds.fRequestSizeLimit = 200L;
 	fds.fLineSizeLimit = 1024L;
 	fds.fURISizeLimit = 1024L;

@@ -192,12 +192,11 @@ void HTTPProcessor::DoError(ostream &reply, const String &msg, Context &ctx)
 	reply << "content-type: text/html" << ENDL << ENDL;
 	reply << "<html><head>\n";
 	reply << "<title>" << errorCode << " " << errorMsg << "</title>\n";
-	reply << "</head><body>\n";
-	reply << "<h1>" << errorMsg << "</h1>\n";
-	reply << "<p>" << msg << "</p>";
-	reply << "<hr />\n";
-	reply << "<address>Coast 2.0 Server</address>\n";
-
+	reply << "</head><body bgcolor=\"silver\">\n";
+	reply << "<center>\n";
+	reply << "<h1>" << msg << "</h1>\n";
+	reply << "Press the back button to return to the previous page!<br><br>\n";
+	reply << "<FORM><input type=button value=\"Back\" onClick=\"javascript:history.back(1)\"></FORM>\n";
 	HTMLTraceStores(reply, ctx);
 
 	reply << "</body></html>\n";
