@@ -246,6 +246,7 @@ ROAnything ThreadPoolManager::DoGetConfig(long i, ROAnything args)
 //--- WorkerThread implementation -------------------------------
 WorkerThread::WorkerThread(const char *name)
 	: Thread(name)
+	, fRefreshAllocator(true)
 	, fPoolManager(0)
 {
 }
@@ -290,10 +291,12 @@ void WorkerThread::DoReadyHook(ROAnything)
 	// check back and leave the critical region
 	// to make room for next requests
 	fPoolManager->Leave();
-	CleanupThreadStorage();
-	// reorganize allocator memory
-	if (fAllocator) {
-		fAllocator->Refresh();
+	if ( fRefreshAllocator ) {
+		CleanupThreadStorage();
+		// reorganize allocator memory
+		if ( fAllocator ) {
+			fAllocator->Refresh();
+		}
 	}
 }
 
@@ -558,5 +561,4 @@ void WorkerPoolManager::Statistic(Anything &item)
 	if (fStatEvtHandler) {
 		fStatEvtHandler->Statistic(item);
 	}
-
 }

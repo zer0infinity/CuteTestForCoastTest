@@ -158,13 +158,17 @@ protected:
 	//! do the work (using the informations you stored in the instance variables)
 	virtual void DoProcessWorkload() = 0;
 
+	/*! if we did not allocate memory using a possibly given allocator it is safe to refresh it after each working cycle otherways it is a matter of time until a bus error will happen...
+		set to true if a refresh is possible, to false if we should not refresh it */
+	bool				fRefreshAllocator;
+
 private:
 	//!prohibit the use of the copy constructor
 	WorkerThread(const WorkerThread &);
 	//!prohibit the use of th assignement operator
 	WorkerThread &operator=(const WorkerThread &);
 	//!the master of the worker
-	WorkerPoolManager *fPoolManager;
+	WorkerPoolManager	*fPoolManager;
 };
 
 //---- WorkerPoolManager ------------------------------------------------
