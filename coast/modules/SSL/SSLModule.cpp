@@ -253,6 +253,11 @@ SSL_CTX *SSLModule::PrepareClientContext(LookupInterface *object)
 SSL_CTX *SSLModule::SetOwnCertificateAndKey(SSL_CTX *ctx, LookupInterface *object, MakeContextFor eContextFor)
 {
 	StartTrace(SSLModule.SetOwnCertificateAndKey);
+	if ( object->Lookup("NoCertAndPrivateKey", 0L) == 1L ) {
+		SSL *ssl = SSL_new(ctx);
+		Assert(ssl);
+		return ctx;
+	}
 	String keyLookup, certLookup, keyDefault, certDefault;
 	if ( eContextFor == SSLModule::eServer ) {
 		keyLookup	= "KeyFileServer";
