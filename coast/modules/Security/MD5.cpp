@@ -398,6 +398,13 @@ MD5Signer::MD5Signer(const char *name) : Signer(name)
 	InitKey(fgcLegacyMasterKey);
 }
 
+void MD5Signer::InitKey(const String &key)
+{
+	StartTrace1(MD5Signer.InitKey, fName);
+	Trace("Configured name: " << fName << " using key:" << key);
+	fKey = key;
+}
+
 MD5Signer::~MD5Signer()
 {
 }
