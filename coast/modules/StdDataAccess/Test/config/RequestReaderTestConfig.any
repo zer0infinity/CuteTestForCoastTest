@@ -256,17 +256,17 @@
 		}
 		# 22
 		{
-				/RequestLine 	"GET %2F?bar=%4B%69%6D-!dojo& HTTP%2F1.0\r\n"
-				/ExpectedRequest		"%2F?bar=%4B%69%6D-!dojo&"
+				/RequestLine 	"GET %2F?bar=%4B%69%6D-~dojo& HTTP%2F1.0\r\n"
+				/ExpectedRequest		"%2F?bar=%4B%69%6D-~dojo&"
 				/HasErrors			 1
 				/Reason				"Argument string (after ?) was not correctly encoded. Request not rejected."
 		}
 		# 23
-		# Override ! in argument check
+		# Override ~{} in argument check
 		{
-				/RequestLine 	"GET %2F?bar=%4B%69%6D-!dojo& HTTP%2F1.0\r\n"
-				/CheckUrlArgEncodingOverride	"-!&%="
-				/ExpectedRequest		"%2F?bar=%4B%69%6D-!dojo&"
+				/RequestLine 	"GET %2F?bar=%4B%69%6D-~{dojo}& HTTP%2F1.0\r\n"
+				/CheckUrlArgEncodingOverride	"%=-~{}&"
+				/ExpectedRequest		"%2F?bar=%4B%69%6D-~{dojo}&"
 				/HasErrors			 0
 				/Reason				""
 		}
@@ -286,8 +286,8 @@
 		}
 		# 26
 		{
-				/RequestLine 	"GET %2Fftimage%2Fimage.gif?bar=%4B%69%6D-dojo!& HTTP%2F1.0\r\n"
-				/ExpectedRequest		"%2Fftimage%2Fimage.gif?bar=%4B%69%6D-dojo!&"
+				/RequestLine 	"GET %2Fftimage%2Fimage.gif?bar=%4B%69%6D-dojo~& HTTP%2F1.0\r\n"
+				/ExpectedRequest		"%2Fftimage%2Fimage.gif?bar=%4B%69%6D-dojo~&"
 				/HasErrors			 1
 				/Reason				"Argument string (after ?) was not correctly encoded. Request not rejected."
 		}

@@ -374,8 +374,7 @@ bool URLUtils::CheckUrlEncoding(const String &str, const String exclusionSet)
 }
 
 // encode the given char *p into res by expanding problematic characters into %XX escapes
-// encode all chars except a-Z, 0-9,  the RFC1808 safe "$-_.+" ones and the chars passed in
-// the exclusion set
+// Compliant to RFC1808
 bool URLUtils::DoUrlEncode(const String &str, const String exclusionSet, String &encoded, bool doCheck)
 {
 	StartTrace(URLUtils.DoUrlEncode);
@@ -420,14 +419,14 @@ bool URLUtils::DoUrlEncode(const String &str, const String exclusionSet, String 
 	return true;
 }
 
-// Check URL for chars which should be encoded according to RFC1738
+// Check URL for chars which should be encoded according to RFC1808
 bool URLUtils::CheckUrlArgEncoding(String &str, const String override)
 {
 	StartTrace(URLUtils.CheckUrlArgEncoding);
 	String base("ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 				"abcdefghijklmnopqrstuvwxyz"
 				"0123456789");
-	String overrideDefault("$-_.+/%=&");
+	String overrideDefault("%;/?:@&=$-_.+!*'(),");
 	if (override.Length() == 0L) {
 		base.Append(overrideDefault);
 	} else {
