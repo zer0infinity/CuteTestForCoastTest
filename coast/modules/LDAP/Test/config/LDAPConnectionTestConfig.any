@@ -36,8 +36,8 @@
 					/ConnectionTimeout 5
 					/BindName "cn=Directory Manager"
 					/BindPW "ifaifaifa"
-
 				}
+				/MsgAsString "LdapDataAccess: [WrongServer] Msg [Binding request failed. [Server: 'nonexisting.server.loc', Port: '49999']  (Authorized bind.)] LdapCode [91] LdapMsg [Can't connect to the LDAP server] LdapConnectionParams [{/Server \"nonexisting.server.loc\"/Port 49999/Timeout 10/ConnectionTimeout 5/BindName \"cn=Directory Manager\"/BindPW \"WipedOut\"}]"
 			}
 		}
 
@@ -102,6 +102,7 @@
 					/BindName "cn=WrongBindName"
 					/BindPW "ifaifaifa"
 				}
+				/MsgAsString "LdapDataAccess: [WrongBindName] Msg [LDAP request failed.] LdapCode [32] LdapMsg [No such object] LdapConnectionParams [{/Server \"surlej.hsr.ch\"/Port 49999/Timeout 10/ConnectionTimeout 5/BindName \"cn=WrongBindName\"/BindPW \"WipedOut\"}]"
 			}
 		}
 
@@ -125,6 +126,8 @@
 					/BindName "cn=Directory Manager"
 					/BindPW "SillyNonexistingBindPW"
 				}
+				/MsgAsString "LdapDataAccess: [WrongBindPW] Msg [LDAP request failed.] LdapCode [49] LdapMsg [Invalid credentials] LdapConnectionParams [{/Server \"surlej.hsr.ch\"/Port 49999/Timeout 10/ConnectionTimeout 5/BindName \"cn=Directory Manager\"/BindPW \"WipedOut\"}]"
+}
 			}
 		}
 
