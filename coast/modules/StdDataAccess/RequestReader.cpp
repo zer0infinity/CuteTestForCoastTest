@@ -12,6 +12,8 @@
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "AppLog.h"
+#include "Server.h"
+#include "AppBooter.h"
 
 //--- c-library modules used ---------------------------------------------------
 
@@ -227,7 +229,7 @@ bool RequestReader::VerifyUrlPath(iostream &Ios, String &urlPath, const Anything
 	String urlPathOrig = urlPath;
 	// Are all chars which must be URL-encoded really encoded?
 	if (URLUtils::CheckUrlEncoding(urlPath, fProc->fCheckUrlEncodingOverride) == false) {
-		return DoHandleError(Ios, 400, "Not all unsave chars URL encoded", urlPathOrig, clientInfo);
+		return DoHandleError(Ios, 400, "Not all unsafe chars URL encoded", urlPathOrig, clientInfo);
 	}
 	if (fProc->fUrlExhaustiveDecode) {
 		urlPath = URLUtils::ExhaustiveUrlDecode(urlPath, eUrlCheckStatus, false);
@@ -280,7 +282,7 @@ Anything RequestReader::GetRequest()
 bool RequestReader::DoHandleError(iostream &Ios, long errcode, const String &reason, const String &line, const Anything &clientInfo, const String &msg)
 {
 	StartTrace(RequestReader.DoHandleError);
-	Trace("Errcode: " << errcode << " Mesage: " << msg << " Faulty line: " << line);
+	Trace("Errcode: " << errcode << " Message: " << msg << " Faulty line: " << line);
 	if ( !!Ios ) {
 		Context ctx;
 
@@ -300,7 +302,8 @@ bool RequestReader::DoHandleError(iostream &Ios, long errcode, const String &rea
 
 void RequestReader::DoLogError(long errcode, const String &reason, const String &line, const Anything &clientInfo, const String &msg)
 {
-	StartTrace(RequestReader.DoHandleError);
+	StartTrace(RequestReader.DoLogError);
+	TraceAny(clientInfo, "client info:");
 	// define SecurityLog according to the AppLog rules if you want to see this output.
 	Context ctx;
 	Anything tmpStore = ctx.GetTmpStore();
@@ -312,5 +315,14 @@ void RequestReader::DoLogError(long errcode, const String &reason, const String 
 	tmpStore["RequestReader"]["Reason"] = reason;
 	tmpStore["RequestReader"]["FaultyRequestLine"] = line;
 	fErrors = tmpStore["RequestReader"];
+	Application *pApp = NULL;
+	Server *pServer = NULL;
+	String strServerName;
+	pApp = AppBooter().FindApplication(Application::GetConfig(), strServerName);
+	TraceAny(tmpStore["RequestReader"], "global server, aka 'MasterServer', is [" << strServerName << "]");
+	pServer = SafeCast(pApp, Server);
+	if ( pServer ) {
+		ctx.SetServer(pServer);
+	}
 	AppLogModule::Log(ctx, "SecurityLog");
 }
