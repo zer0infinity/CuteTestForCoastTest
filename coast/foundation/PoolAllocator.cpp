@@ -87,7 +87,7 @@ PoolAllocator::~PoolAllocator()
 #ifdef MEM_DEBUG
 	MemTrackStat(fPoolTracker);
 	if (fPoolTracker.CurrentlyAllocated() != 0) {
-		SysLog::Error(String("deleted PoolAllocator ") << (long)this << " was still in use!");
+		SysLog::Error(String("deleted PoolAllocator [") << GetId() << "] " << (long)this << " was still in use!");
 	}
 #endif
 	::free(fPoolBuckets);
@@ -262,7 +262,7 @@ void PoolAllocator::Refresh()
 #ifdef MEM_DEBUG
 	if (fPoolTracker.CurrentlyAllocated() != 0) {
 		String strMsg(Storage::Global());
-		strMsg << "PoolAllocator is still in use: " << (long)fPoolTracker.CurrentlyAllocated();
+		strMsg << "PoolAllocator [" << GetId() << "] is still in use: " << (long)fPoolTracker.CurrentlyAllocated();
 		SysLog::Error(strMsg);
 		PrintStatistic();
 	} else {
@@ -271,7 +271,9 @@ void PoolAllocator::Refresh()
 	}
 
 	if (fExcessTracker.CurrentlyAllocated() != 0) {
-		SysLog::Error("PoolAllocator is still using global memory!");
+		String strMsg(Storage::Global());
+		strMsg << "PoolAllocator [" << GetId() << "] is still using global memory: " << (long)fExcessTracker.CurrentlyAllocated();
+		SysLog::Error(strMsg);
 	}
 #else
 	// reinitialize pool
