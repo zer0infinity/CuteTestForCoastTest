@@ -98,7 +98,6 @@ void SybCTGenericDAImpl::PutMessages(Context &context, OutputMapper *out, Anythi
 	StartTrace(SybCTGenericDAImpl.PutMessages);
 	if ( aMsgAny.IsDefined("Messages") ) {
 		TraceAny(aMsgAny, "SybaseCT Messages");
-		out->Put("Messages", Anything(context.Lookup("sessionId", "noSession")), context);
 		out->Put("Messages", aMsgAny["Messages"], context);
 		if ( aMsgAny.IsDefined( "MainMsgErr" ) ) {
 			String mainMsgErr;
