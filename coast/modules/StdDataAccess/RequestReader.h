@@ -61,7 +61,7 @@ protected:
 	bool VerifyUrlArgs(String &urlArgs);
 
 	//!writes back http error codes with html msg
-	bool DoHandleError(iostream &Ios, long errcode, const String &reason, const String &line, const Anything &clientInfo, const String & = String("Bad Request"));
+	bool DoHandleError(iostream &Ios, long errcode, const String &reason, const String &line, const Anything &clientInfo, const String & = String("Page not found."));
 
 	//!Logs  the error if SecurityLog is defined in AppLog config
 	void DoLogError(long errcode, const String &reason, const String &line, const Anything &clientInfo, const String &msg);
