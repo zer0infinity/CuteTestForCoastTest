@@ -7,7 +7,7 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-	/LowerBound		400
+	/LowerBound		0
 	/UpperBound		401
 	/DumpAnythings  1		# print full Anythings
 
