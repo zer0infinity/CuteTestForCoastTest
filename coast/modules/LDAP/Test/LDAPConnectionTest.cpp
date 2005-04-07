@@ -51,46 +51,52 @@ void LDAPConnectionTest::tearDown ()
 void LDAPConnectionTest::ConnectionTest()
 {
 	StartTrace(LDAPConnectionTest.ConnectionTest);
-	FOREACH_ENTRY("ConnectionTest", caseConfig, caseName) {
-		Trace("Running " << caseName << " Test");
+	FOREACH_ENTRY("ConnectionTest", cConfig, caseName) {
+		Trace("At test entry: " << i);
 
-		Anything params;
-		params["Server"] = caseConfig["LDAPServer"].AsString();
-		params["Port"] = caseConfig["LDAPPort"].AsLong();
-		params["Timeout"] = caseConfig["LDAPTimeout"].AsLong();
-		params["ConnectionTimeout"] = caseConfig["LDAPConnectionTimeout"].AsLong();
-		params["BindName"] = caseConfig["LDAPBindName"].AsString();
-		params["BindPW"] = caseConfig["LDAPBindPW"].AsString();
+		for ( long l = 0; l < cConfig["NumberOfConnects"].AsLong(1); l++ ) {
+			Anything params;
+			params["Server"] 			= cConfig["LDAPServer"].AsString();
+			params["Port"] 				= cConfig["LDAPPort"].AsLong();
+			params["Timeout"] 			= cConfig["LDAPTimeout"].AsLong();
+			params["ConnectionTimeout"] = cConfig["LDAPConnectionTimeout"].AsLong();
+			params["BindName"] 			= cConfig["LDAPBindName"].AsString();
+			params["BindPW"] 			= cConfig["LDAPBindPW"].AsString();
+			params["PooledConnections"]	= cConfig["LDAPPooledConnections"].AsLong(0L);
+			params["RebindTimeout"]		= cConfig["LDAPRebindTimeout"].AsLong(3600L);
 
-		Context ctx;
-		ParameterMapper pm("ConnectionTestParameterMapper");
-		ResultMapper rm("ConnectionTestResultMapper");
-		rm.CheckConfig("OutputMapper");
-		String da(caseName);
+			Context ctx;
+			ParameterMapper pm("ConnectionTestParameterMapper");
+			ResultMapper rm("ConnectionTestResultMapper");
+			rm.CheckConfig("OutputMapper");
+			String da("DataAccess_");
+			da << i;
 
-		LDAPErrorHandler eh(ctx, &pm, &rm, da);
-		eh.PutConnectionParams(params);
+			LDAPErrorHandler eh(ctx, &pm, &rm, da);
+			eh.PutConnectionParams(params);
 
-		// connect
-		LDAPConnection lc(params);
-		bool result = lc.Connect(params, eh);
-		Trace("Connect success: " << result);
+			// connect
+			LDAPConnection lc(params);
+			LDAPConnection::EConnectState eConnectState = lc.DoConnect(params, eh);
+			String result(LDAPConnection::ConnectRetToString(eConnectState));
+			Trace("Connect result: " << result);
 
-		// check for errors
-		Anything error;
-		if ( !eh.GetError(error) ) {
-			Trace("No error reported.");
-		} else {
-			TraceAny(error, "Error description:");
+			// check for errors
+			Anything error;
+			if ( !eh.GetError(error) ) {
+				Trace("No error reported.");
+			} else {
+				TraceAny(error, "Error description:");
+			}
+
+			// compare result and expected error
+			assertEqual(cConfig["ConnectRet"].AsString(), result);
+			bool ret = LDAPConnection::IsConnectOk(eConnectState);
+			assertEqual(cConfig["ConnectIsOk"].AsBool(1), ret);
+			if (!ret) {
+				assertAnyEqual(cConfig["Error"], error);
+			}
 		}
-
-		// compare result and expected error
-		assertEqual(caseConfig["Expected"].AsBool(), result);
-		if (!result) {
-			assertAnyEqual(caseConfig["Error"], error);
-		}
-
-		// NOTE: unbind happens automatically at destruction of lc
 	}
 }
 

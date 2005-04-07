@@ -18,6 +18,8 @@
 class EXPORTDECL_LDAPDA LDAPConnection
 {
 public:
+	enum EConnectState { eOk, eNok, eMustRebind, eMustNotRebind, eRebindOk, eInitNok, eBindNok, eSetOptionsNok };
+
 	//! create a new ldap session
 	//! \param connectionParams an Anything that contains Server, Port,
 	//!		   Timeout and MapUTF8 parameters
@@ -51,6 +53,9 @@ public:
 	//! \param eh		error handler object
 	bool WaitForResult(int msgId, Anything &result, LDAPErrorHandler eh);
 
+	//! Dump Connection handle as hex string
+	static String DumpConnectionHandle(LDAP *handle);
+
 protected:
 	String fServer;
 	long fPort;
@@ -58,6 +63,8 @@ protected:
 	int fSearchTimeout;
 	LDAP *fHandle;
 	bool fMapUTF8;
+	bool fUseLdapConnectionManager;
+	long fRebindTimeout;
 
 private:
 	//! init connection
@@ -88,6 +95,24 @@ private:
 
 	//! disconnect from server (unbind). called automatically from destructor.
 	bool Disconnect();
+
+	//! does the Connect and reports details what it has done.
+	LDAPConnection::EConnectState DoConnect(ROAnything bindParams, LDAPErrorHandler eh);
+
+	//! determine Connect() return code
+	static bool IsConnectOk(LDAPConnection::EConnectState eConnectState);
+
+	//! Translate Connect() returncodes to string literals
+	static String ConnectRetToString(LDAPConnection::EConnectState eConnectState);
+
+	//! disconnect from server (unbind). called by LDAPConnectionManager.
+	static bool Disconnect(LDAP *handle);
+
+	//! create the unique connection id used by LdapConnectionManager
+	String GetLdapConnectionManagerId(const String &bindName, const String &bindPW);
+
+	//! LDAPConnectionManager acesses private methods of LDAPConnection
+	friend class LDAPConnectionManager;
 
 	// testclasses
 	friend class LDAPConnectionTest;

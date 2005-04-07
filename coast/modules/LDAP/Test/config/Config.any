@@ -40,13 +40,15 @@
 				"LDAPSearchTest_WrongDN"
 				"LDAPSearchTest_EmptyResult"
 
-				"LDAPSearchQuery_LookupTkrefactor"
+				"LDAPSearchQuery_LookupTkrefactor_NotPooled"
+				"LDAPSearchQuery_LookupTkrefactor_Pooled"
 			}
 
 			/LDAPDeleteDAI {
 				"LDAPDeleteTest_NonLeaf"
 				"LDAPDeleteTest_NonExisting"
-				"LDAPDeleteTest_ExistingLeaf"
+				"LDAPDeleteTest_ExistingLeaf_NotPooled"
+				"LDAPDeleteTest_ExistingLeaf_Pooled"
 			}
 
 			/LDAPCompareDAI {
@@ -60,7 +62,8 @@
 
 			/LDAPAddDAI {
 				"LDAPAddTest_ExistingEntry"
-				"LDAPAddTest_NonExistingEntry"
+				"LDAPAddTest_NonExistingEntry_NotPooled"
+				"LDAPAddTest_NonExistingEntry_Pooled"
 				"LDAPAddTest_MissingRequiredAttributes"
 				"LDAPAddTest_NonExistingAttribute"
 				"LDAPAddTest_MissingAttrsParam"
@@ -71,11 +74,13 @@
 				"LDAPModifyTest_UnknownAttribute"
 				"LDAPModifyTest_AddExistingValue"
 				"LDAPModifyTest_DeleteRequiredAttribute"
-				"LDAPModifyTest_MultipleModify"
+				"LDAPModifyTest_MultipleModify_NotPooled"
+				"LDAPModifyTest_MultipleModify_Pooled"
 				"LDAPModifyTest_WrongMods"
 				"LDAPModifyTest_EmptyModsGiven"
 				"LDAPModifyTest_DeleteNonExistingValue"
-				"LDAPModifyTest_DeleteAndAddWholeAttr"
+				"LDAPModifyTest_DeleteAndAddWholeAttr_NotPooled"
+				"LDAPModifyTest_DeleteAndAddWholeAttr_Pooled"
 			}
 		}
 	}
@@ -96,11 +101,13 @@
 				"LDAPSearchTest_WrongDN"
 				"LDAPSearchTest_EmptyResult"
 
-				"LDAPSearchQuery_LookupTkrefactor"
+				"LDAPSearchQuery_LookupTkrefactor_NotPooled"
+				"LDAPSearchQuery_LookupTkrefactor_Pooled"
 
 				"LDAPDeleteTest_NonLeaf"
 				"LDAPDeleteTest_NonExisting"
-				"LDAPDeleteTest_ExistingLeaf"
+				"LDAPDeleteTest_ExistingLeaf_NotPooled"
+				"LDAPDeleteTest_ExistingLeaf_Pooled"
 
 				"LDAPCompareTest_NonExistingEntry"
 				"LDAPCompareTest_NonExistingAttribute"
@@ -110,7 +117,8 @@
 				"LDAPCompareTest_MissingAttrValueParam"
 
 				"LDAPAddTest_ExistingEntry"
-				"LDAPAddTest_NonExistingEntry"
+				"LDAPAddTest_NonExistingEntry_NotPooled"
+				"LDAPAddTest_NonExistingEntry_Pooled"
 				"LDAPAddTest_MissingRequiredAttributes"
 				"LDAPAddTest_NonExistingAttribute"
 				"LDAPAddTest_MissingAttrsParam"
@@ -119,11 +127,13 @@
 				"LDAPModifyTest_UnknownAttribute"
 				"LDAPModifyTest_AddExistingValue"
 				"LDAPModifyTest_DeleteRequiredAttribute"
-				"LDAPModifyTest_MultipleModify"
+				"LDAPModifyTest_MultipleModify_NotPooled"
+				"LDAPModifyTest_MultipleModify_Pooled"
 				"LDAPModifyTest_WrongMods"
 				"LDAPModifyTest_EmptyModsGiven"
 				"LDAPModifyTest_DeleteNonExistingValue"
-				"LDAPModifyTest_DeleteAndAddWholeAttr"
+				"LDAPModifyTest_DeleteAndAddWholeAttr_NotPooled"
+				"LDAPModifyTest_DeleteAndAddWholeAttr_Pooled"
 			}
 		}
 		/Output {
@@ -141,11 +151,13 @@
 				"LDAPSearchTest_WrongDN"
 				"LDAPSearchTest_EmptyResult"
 
-				"LDAPSearchQuery_LookupTkrefactor"
+				"LDAPSearchQuery_LookupTkrefactor_NotPooled"
+				"LDAPSearchQuery_LookupTkrefactor_Pooled"
 
 				"LDAPDeleteTest_NonLeaf"
 				"LDAPDeleteTest_NonExisting"
-				"LDAPDeleteTest_ExistingLeaf"
+				"LDAPDeleteTest_ExistingLeaf_NotPooled"
+				"LDAPDeleteTest_ExistingLeaf_Pooled"
 
 				"LDAPCompareTest_NonExistingEntry"
 				"LDAPCompareTest_NonExistingAttribute"
@@ -155,7 +167,8 @@
 				"LDAPCompareTest_MissingAttrValueParam"
 
 				"LDAPAddTest_ExistingEntry"
-				"LDAPAddTest_NonExistingEntry"
+				"LDAPAddTest_NonExistingEntry_NotPooled"
+				"LDAPAddTest_NonExistingEntry_Pooled"
 				"LDAPAddTest_MissingRequiredAttributes"
 				"LDAPAddTest_NonExistingAttribute"
 				"LDAPAddTest_MissingAttrsParam"
@@ -164,11 +177,13 @@
 				"LDAPModifyTest_UnknownAttribute"
 				"LDAPModifyTest_AddExistingValue"
 				"LDAPModifyTest_DeleteRequiredAttribute"
-				"LDAPModifyTest_MultipleModify"
+				"LDAPModifyTest_MultipleModify_NotPooled"
+				"LDAPModifyTest_MultipleModify_Pooled"
 				"LDAPModifyTest_WrongMods"
 				"LDAPModifyTest_EmptyModsGiven"
 				"LDAPModifyTest_DeleteNonExistingValue"
-				"LDAPModifyTest_DeleteAndAddWholeAttr"
+				"LDAPModifyTest_DeleteAndAddWholeAttr_NotPooled"
+				"LDAPModifyTest_DeleteAndAddWholeAttr_Pooled"
 			}
 		}
 	}

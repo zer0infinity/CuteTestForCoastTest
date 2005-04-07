@@ -15,29 +15,37 @@
 	/LDAPTimeout	10
 	/LDAPConnectionTimeout 5
 
-	/ConnectionTest {
-
-		/WrongServer {
+	/ConnectionTest
+	{
+		# Wrong server
+		{
 			/LDAPServer		"nonexisting.server.loc"
 			/LDAPPort		%LDAPPort
 			/LDAPTimeout	%LDAPTimeout
 			/LDAPConnectionTimeout	%LDAPConnectionTimeout
 			/LDAPBindName	%LDAPBind
 			/LDAPBindPW		%LDAPBindPW
-			/Expected 	0
-			/Error {
+			/LDAPPooledConnections 0
+			/LDAPRebindTimeout 0
+			/ConnectIsOk	0
+			/ConnectRet 	"eBindNok"
+			/Error
+			{
 				/Msg 		"Binding request failed. [Server: 'nonexisting.server.loc', Port: '49999']  (Authorized bind.)"
 				/LdapCode	91
 				/LdapMsg	"Can't connect to the LDAP server"
-				/LdapConnectionParams {
+				/LdapConnectionParams
+				{
 					/Server "nonexisting.server.loc"
 					/Port 49999
 					/Timeout 10
 					/ConnectionTimeout 5
 					/BindName "cn=Directory Manager"
 					/BindPW "ifaifaifa"
+					/PooledConnections 0
+					/RebindTimeout 0
 				}
-				/MsgAsString "LdapDataAccess: [WrongServer] Msg [Binding request failed. [Server: 'nonexisting.server.loc', Port: '49999']  (Authorized bind.)] LdapCode [91] LdapMsg [Can't connect to the LDAP server] LdapConnectionParams [{/Server \"nonexisting.server.loc\"/Port 49999/Timeout 10/ConnectionTimeout 5/BindName \"cn=Directory Manager\"/BindPW \"WipedOut\"}]"
+				/MsgAsString "LdapDataAccess: [DataAccess_0] Msg [Binding request failed. [Server: 'nonexisting.server.loc', Port: '49999']  (Authorized bind.)] LdapCode [91] LdapMsg [Can't connect to the LDAP server] LdapConnectionParams [{/Server \"nonexisting.server.loc\"/Port 49999/Timeout 10/ConnectionTimeout 5/BindName \"cn=Directory Manager\"/BindPW \"WipedOut\"/PooledConnections 0/RebindTimeout 0}]"
 			}
 		}
 
@@ -72,73 +80,120 @@
 #			}
 #		}
 
-		/AnonymousBind {
+		# Anonymous bind
+		{
 			/LDAPServer		%LDAPServer
 			/LDAPPort		%LDAPPort
 			/LDAPTimeout	%LDAPTimeout
 			/LDAPConnectionTimeout	%LDAPConnectionTimeout
 			/LDAPBindName	""
 			/LDAPBindPW		""
-			/Expected 	1		# success, no error
+			/ConnectIsOk	1
+			/ConnectRet 	"eOk"
 		}
 
-		/WrongBindName {
+		# Wrong bind name
+		{
 			/LDAPServer		%LDAPServer
 			/LDAPPort		%LDAPPort
 			/LDAPTimeout	%LDAPTimeout
 			/LDAPConnectionTimeout	%LDAPConnectionTimeout
 			/LDAPBindName	"cn=WrongBindName"
 			/LDAPBindPW		%LDAPBindPW
-			/Expected 	0
-			/Error {
+			/LDAPPooledConnections 0
+			/LDAPRebindTimeout 0
+			/ConnectIsOk	0
+			/ConnectRet 	"eBindNok"
+			/Error
+			{
 				/Msg "LDAP request failed."
 				/LdapCode 32
 				/LdapMsg "No such object"
-				/LdapConnectionParams {
+				/LdapConnectionParams
+				{
 					/Server "marvin.hsr.loc"
 					/Port 49999
 					/Timeout 10
 					/ConnectionTimeout 5
 					/BindName "cn=WrongBindName"
 					/BindPW "ifaifaifa"
+					/PooledConnections 0
+					/RebindTimeout 0
 				}
-				/MsgAsString "LdapDataAccess: [WrongBindName] Msg [LDAP request failed.] LdapCode [32] LdapMsg [No such object] LdapConnectionParams [{/Server \"surlej.hsr.ch\"/Port 49999/Timeout 10/ConnectionTimeout 5/BindName \"cn=WrongBindName\"/BindPW \"WipedOut\"}]"
+				/MsgAsString "LdapDataAccess: [DataAccess_2] Msg [LDAP request failed.] LdapCode [32] LdapMsg [No such object] LdapConnectionParams [{/Server \"surlej.hsr.ch\"/Port 49999/Timeout 10/ConnectionTimeout 5/BindName \"cn=WrongBindName\"/BindPW \"WipedOut\"/PooledConnections 0/RebindTimeout 0}]"
 			}
 		}
 
-		/WrongBindPW {
+		# WrongBindPW
+		{
 			/LDAPServer		%LDAPServer
 			/LDAPPort		%LDAPPort
 			/LDAPTimeout	%LDAPTimeout
 			/LDAPConnectionTimeout	%LDAPConnectionTimeout
 			/LDAPBindName	%LDAPBind
 			/LDAPBindPW		"SillyNonexistingBindPW"
-			/Expected 	0
-			/Error {
+			/LDAPPooledConnections 0
+			/LDAPRebindTimeout 	   0
+			/ConnectIsOk	0
+			/ConnectRet 	"eBindNok"
+			/Error
+			{
 				/Msg "LDAP request failed."
 				/LdapCode 49
 				/LdapMsg "Invalid credentials"
-				/LdapConnectionParams {
+				/LdapConnectionParams
+				{
 					/Server "marvin.hsr.loc"
 					/Port 49999
 					/Timeout 10
 					/ConnectionTimeout 5
 					/BindName "cn=Directory Manager"
 					/BindPW "SillyNonexistingBindPW"
+					/PooledConnections 0
+					/RebindTimeout 0
 				}
-				/MsgAsString "LdapDataAccess: [WrongBindPW] Msg [LDAP request failed.] LdapCode [49] LdapMsg [Invalid credentials] LdapConnectionParams [{/Server \"surlej.hsr.ch\"/Port 49999/Timeout 10/ConnectionTimeout 5/BindName \"cn=Directory Manager\"/BindPW \"WipedOut\"}]"
-}
+				/MsgAsString "LdapDataAccess: [DataAccess_3] Msg [LDAP request failed.] LdapCode [49] LdapMsg [Invalid credentials] LdapConnectionParams [{/Server \"surlej.hsr.ch\"/Port 49999/Timeout 10/ConnectionTimeout 5/BindName \"cn=Directory Manager\"/BindPW \"WipedOut\"/PooledConnections 0/RebindTimeout 0}]"
 			}
 		}
+		#	Pooled connect, first
+		{
+			/NumberOfConnects 1
+			/LDAPServer		"marvin.hsr.loc"
+			/LDAPPort		"49999"
+			/LDAPBind		"cn=Directory Manager"
+			/LDAPBindPW		"ifaifaifa"
+			/LDAPTimeout	10
+			/LDAPConnectionTimeout 5
+			/ConnectIsOk	1
+			/ConnectRet 	"eRebindOk"
+			/LDAPPooledConnections 1
+			/LDAPRebindTimeout 600
+		}
+		# Pooled connect, follow ups
+		{
+			/NumberOfConnects 10
+			/LDAPServer		"marvin.hsr.loc"
+			/LDAPPort		"49999"
+			/LDAPBind		"cn=Directory Manager"
+			/LDAPBindPW		"ifaifaifa"
+			/LDAPTimeout	10
+			/LDAPConnectionTimeout 5
+			/ConnectIsOk	1
+			/ConnectRet 	"eOk"
+			/LDAPPooledConnections 1
+			/LDAPRebindTimeout 600
+		}
 
-		/CorrectBind {
+		# Correct bind, not pooled
+		{
 			/LDAPServer		%LDAPServer
 			/LDAPPort		%LDAPPort
 			/LDAPTimeout	%LDAPTimeout
 			/LDAPConnectionTimeout	%LDAPConnectionTimeout
 			/LDAPBindName	%LDAPBind
 			/LDAPBindPW		%LDAPBindPW
-			/Expected 	1		# success, no error
+			/ConnectIsOk	1
+			/ConnectRet 	"eOk"
 		}
 	}
 }

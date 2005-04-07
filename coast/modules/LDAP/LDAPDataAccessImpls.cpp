@@ -56,6 +56,8 @@ bool LDAPAbstractDAI::Exec( Context &ctx, ParameterMapper *getter, ResultMapper 
 	cp["BindName"] = bindName = ctx.Lookup("LDAPBindName", "");
 	cp["BindPW"] = bindPw = ctx.Lookup("LDAPBindPW", "");
 	cp["MapUTF8"] = !ctx.Lookup("NoHTMLCharMapping", 0L);
+	cp["PooledConnections"] = ctx.Lookup("LDAPPooledConnections", 0L);
+	cp["RebindTimeout"] = ctx.Lookup("LDAPRebindTimeout", 3600L);
 
 	// store connection params in ctx (lookup for error-handling)
 	eh.PutConnectionParams(cp);

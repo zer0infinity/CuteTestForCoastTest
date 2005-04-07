@@ -16,7 +16,7 @@
 	# LDAP SETTINGS: can be overridden by defining the same
 	# slotnames in specific config of a DAImpl (in DAImplMeta.any)
 	# ------------------------------------------------------------
-	/LDAPConfig
+	/LDAPConfig_NotPooled
 	{
 		/LDAPServer		"marvin.hsr.loc"
 		/LDAPPort		"49999"
@@ -24,54 +24,100 @@
 		/LDAPBindPW		"ifaifaifa"
 		/LDAPConnectionTimeout	5
 		/LDAPTimeout	10
+		/LDAPPooledConnections 0
+	}
+
+	/LDAPConfig_Pooled
+	{
+		/LDAPServer		"marvin.hsr.loc"
+		/LDAPPort		"49999"
+		/LDAPBindName	"cn=Directory Manager"
+		/LDAPBindPW		"ifaifaifa"
+		/LDAPConnectionTimeout	5
+		/LDAPTimeout	10
+		/LDAPPooledConnections 1
+		/LDAPRebindTimeout 60
 	}
 
 	/RunOnly
 	{
-#		"LDAPTest_LookupTmpAndEnv"
-#		"LDAPSearchTest_IllegalQuery"
-#		"LDAPSearchTest_ScopeBase"
-#		"LDAPSearchTest_ScopeOneLevel"
-#		"LDAPSearchTest_ScopeSubTree"
-#		"LDAPSearchTest_SizeLimit"
-#		"LDAPSearchTest_AttrSelection"
-#		"LDAPSearchTest_AttrsOnly"
-#		"LDAPSearchTest_Filter"
-#		"LDAPSearchTest_WrongDN"
-#		"LDAPSearchTest_EmptyResult"
+#		"LDAPTest_LookupTmpAndEnv_NotPooled"
+#		"LDAPTest_LookupTmpAndEnv_Pooled"
+#		"LDAPSearchTest_IllegalQuery_NotPooled"
+#		"LDAPSearchTest_IllegalQuery_Pooled"
+#		"LDAPSearchTest_ScopeBase_NotPooled"
+#		"LDAPSearchTest_ScopeBase_Pooled"
+#		"LDAPSearchTest_ScopeOneLevel_NotPooled"
+#		"LDAPSearchTest_ScopeOneLevel_Pooled"
+#		"LDAPSearchTest_ScopeSubTree_NotPooled"
+#		"LDAPSearchTest_ScopeSubTree_Pooled"
+#		"LDAPSearchTest_SizeLimit_NotPooled"
+#		"LDAPSearchTest_SizeLimit_Pooled"
+#		"LDAPSearchTest_AttrSelection_NotPooled"
+#		"LDAPSearchTest_AttrSelection_Pooled"
+#		"LDAPSearchTest_AttrsOnly_NotPooled"
+#		"LDAPSearchTest_AttrsOnly_Pooled"
+#		"LDAPSearchTest_Filter_NotPooled"
+#		"LDAPSearchTest_Filter_Pooled"
+#		"LDAPSearchTest_WrongDN_NotPooled"
+#		"LDAPSearchTest_WrongDN_Pooled"
+#		"LDAPSearchTest_EmptyResult_NotPooled"
+#		"LDAPSearchTest_EmptyResult_Pooled"
 #
-#		"LDAPDeleteTest_NonLeaf"
-#		"LDAPDeleteTest_NonExisting"
-#		"LDAPDeleteTest_ExistingLeaf"
+#		"LDAPDeleteTest_NonLeaf_NotPooled"
+#		"LDAPDeleteTest_NonLeaf_Pooled"
+#		"LDAPDeleteTest_NonExisting_NotPooled"
+#		"LDAPDeleteTest_NonExisting_Pooled"
+#		"LDAPDeleteTest_ExistingLeaf_NotPooled"
+#		"LDAPDeleteTest_ExistingLeaf_Pooled"
 #
-#		"LDAPCompareTest_NonExistingEntry"
-#		"LDAPCompareTest_NonExistingAttribute"
-#		"LDAPCompareTest_EqualValue"
-#		"LDAPCompareTest_UnequalValue"
-#		"LDAPCompareTest_MissingAttrNameParam"
-#		"LDAPCompareTest_MissingAttrValueParam"
+#		"LDAPCompareTest_NonExistingEntry_NotPooled"
+#		"LDAPCompareTest_NonExistingEntry_Pooled"
+#		"LDAPCompareTest_NonExistingAttribute_NotPooled"
+#		"LDAPCompareTest_NonExistingAttribute_Pooled"
+#		"LDAPCompareTest_EqualValue_NotPooled"
+#		"LDAPCompareTest_EqualValue_Pooled"
+#		"LDAPCompareTest_UnequalValue_NotPooled"
+#		"LDAPCompareTest_UnequalValue_Pooled"
+#		"LDAPCompareTest_MissingAttrNameParam_NotPooled"
+#		"LDAPCompareTest_MissingAttrNameParam_Pooled"
+#		"LDAPCompareTest_MissingAttrValueParam_NotPooled
+#		"LDAPCompareTest_MissingAttrValueParam_Pooled"
 #
-#		"LDAPAddTest_MissingAttrsParam"
-#		"LDAPAddTest_SingleValues"
-#		"LDAPAddTest_ExistingEntry"
-#		"LDAPAddTest_NonExistingEntry"
-#		"LDAPAddTest_MissingRequiredAttributes"
-#		"LDAPAddTest_NonExistingAttribute"
+#		"LDAPAddTest_MissingAttrsParam_NotPooled"
+#		"LDAPAddTest_MissingAttrsParam_Pooled_Pooled"
+#		"LDAPAddTest_SingleValues_NotPooled"
+#		"LDAPAddTest_SingleValues_Pooled"
+#		"LDAPAddTest_ExistingEntry_NotPooled"
+#		"LDAPAddTest_ExistingEntry_Pooled"
+#		"LDAPAddTest_NonExistingEntry_NotPooled
+#		"LDAPAddTest_NonExistingEntry_Pooled"
+#		"LDAPAddTest_MissingRequiredAttributes_NotPooled"
+#		"LDAPAddTest_MissingRequiredAttributes_Pooled"
+#		"LDAPAddTest_NonExistingAttribute_NotPooled"
+#		"LDAPAddTest_NonExistingAttribute_Pooled"
 #
-#		"LDAPModifyTest_UnknownAttribute"
-#		"LDAPModifyTest_AddExistingValue"
-#		"LDAPModifyTest_DeleteRequiredAttribute"
-#		"LDAPModifyTest_MultipleModify"
-#		"LDAPModifyTest_WrongMods"
-#		"LDAPModifyTest_EmptyModsGiven"
-#		"LDAPModifyTest_DeleteNonExistingValue"
-#		"LDAPModifyTest_DeleteAndAddWholeAttr"
+#		"LDAPModifyTest_UnknownAttribute_NotPooled"
+#		"LDAPModifyTest_UnknownAttribute_Pooled"
+#		"LDAPModifyTest_AddExistingValue_NotPooled"
+#		"LDAPModifyTest_AddExistingValue_Pooled"
+#		"LDAPModifyTest_DeleteRequiredAttribute_NotPooled"
+#		"LDAPModifyTest_DeleteRequiredAttribute_Pooled"
+#		"LDAPModifyTest_MultipleModify_NotPooled"
+#		"LDAPModifyTest_MultipleModify_Pooled"
+#		"LDAPModifyTest_WrongMods_NotPooled"
+#		"LDAPModifyTest_WrongMods_Pooled"
+#		"LDAPModifyTest_EmptyModsGiven_NotPooled"
+#		"LDAPModifyTest_EmptyModsGiven_Pooled"
+#		"LDAPModifyTest_DeleteNonExistingValue_NotPooled"
+#		"LDAPModifyTest_DeleteNonExistingValue_Pooled"
+#		"LDAPModifyTest_DeleteAndAddWholeAttr_NotPooled"
+#		"LDAPModifyTest_DeleteAndAddWholeAttr_Pooled"
 	}
 
 	/RunTestCases
 	{
-
-		/LDAPTest_LookupTmpAndEnv
+		/LDAPTest_LookupTmpAndEnv_NotPooled
 		{
 			/TmpStore	{
 				# connection config
@@ -81,6 +127,48 @@
 				/LDAPBindPW		"ifaifaifa"
 				/LDAPConnectionTimeout	5
 				/LDAPTimeout	10
+				/LDAPPooledConnections 0
+
+				# test config
+				/LDAPBase		"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+				/LDAPScope		"subtree"
+			}
+			/Env {
+				# test config, more parts in different store
+				/LDAPSizeLimit	20
+			}
+			/TheAction
+			{
+				/CallDA 	LDAPTest_LookupTmpAndEnv
+			}
+			/ExpectedResult	1
+			/Result
+			{
+				/TmpStore
+				{
+					/LDAPResult {
+						/LDAPTest_LookupTmpAndEnv {
+							/NumberOfResultMessages 21
+							/NumberOfEntries 20
+							/SizeLimitExceeded 1
+						}
+					}
+				}
+			}
+		}
+
+		/LDAPTest_LookupTmpAndEnv_Pooled
+		{
+			/TmpStore	{
+				# connection config
+				/LDAPServer		"marvin.hsr.loc"
+				/LDAPPort		"49999"
+				/LDAPBindName	"cn=Directory Manager"
+				/LDAPBindPW		"ifaifaifa"
+				/LDAPConnectionTimeout	5
+				/LDAPTimeout	10
+				/LDAPPooledConnections 1
+				/LDAPRebindTimeout 60
 
 				# test config
 				/LDAPBase		"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
@@ -112,9 +200,9 @@
 
 # =============================================================================
 
-		/LDAPSearchTest_IllegalQuery
+		/LDAPSearchTest_IllegalQuery_NotPooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_NotPooled
 			/TheAction
 			{
 				/CallDA 	LDAPSearchTest_IllegalQuery
@@ -132,10 +220,32 @@
 				}
 			}
 		}
-# ---------------------------------------------------------------------------
-		/LDAPSearchTest_ScopeBase
+
+		/LDAPSearchTest_IllegalQuery_Pooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_Pooled
+			/TheAction
+			{
+				/CallDA 	LDAPSearchTest_IllegalQuery
+			}
+			/ExpectedResult	0
+			/Result
+			{
+				/TmpStore
+				{
+					/LDAPError {
+						/LDAPSearchTest_IllegalQuery {
+							/Msg "Illegal Base DN in query (empty or not defined)"
+						}
+					}
+				}
+			}
+		}
+
+# ---------------------------------------------------------------------------
+		/LDAPSearchTest_ScopeBase_NotPooled
+		{
+			/TmpStore	%LDAPConfig_NotPooled
 			/TheAction
 			{
 				/CallDA 	LDAPSearchTest_ScopeBase
@@ -167,10 +277,46 @@
 				}
 			}
 		}
-# ---------------------------------------------------------------------------
-		/LDAPSearchTest_ScopeOneLevel
+
+		/LDAPSearchTest_ScopeBase_Pooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_Pooled
+			/TheAction
+			{
+				/CallDA 	LDAPSearchTest_ScopeBase
+			}
+			/ExpectedResult	1
+			/Result
+			{
+				/Delim	"^"
+				/TmpStore
+				{
+					/LDAPResult {
+						/LDAPSearchTest_ScopeBase {
+							/NumberOfResultMessages 2
+							/NumberOfEntries 1
+
+							# just check a few expected things (samples)
+							/Entries
+							{
+								/"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+								{
+									/objectclass {
+										"person"
+									}
+									/uid "tkrefactor"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+# ---------------------------------------------------------------------------
+		/LDAPSearchTest_ScopeOneLevel_NotPooled
+		{
+			/TmpStore	%LDAPConfig_NotPooled
 			/TheAction
 			{
 				/CallDA 	LDAPSearchTest_ScopeOneLevel
@@ -202,10 +348,46 @@
 				}
 			}
 		}
-# ---------------------------------------------------------------------------
-		/LDAPSearchTest_ScopeSubTree
+
+		/LDAPSearchTest_ScopeOneLevel_Pooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_Pooled
+			/TheAction
+			{
+				/CallDA 	LDAPSearchTest_ScopeOneLevel
+			}
+			/ExpectedResult	1
+			/Result
+			{
+				/Delim	"^"
+				/TmpStore
+				{
+					/LDAPResult {
+						/LDAPSearchTest_ScopeOneLevel {
+							/NumberOfResultMessages 2
+							/NumberOfEntries 1
+							# check a few expected things within the returned entries
+							/Entries
+							{
+								/"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+								{
+									/objectclass {
+										"organizationalUnit"
+										"container"
+									}
+									/name "ifs APPL. User Directory"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+# ---------------------------------------------------------------------------
+		/LDAPSearchTest_ScopeSubTree_NotPooled
+		{
+			/TmpStore	%LDAPConfig_NotPooled
 			/TheAction
 			{
 				/CallDA 	LDAPSearchTest_ScopeSubTree
@@ -218,17 +400,41 @@
 				{
 					/LDAPResult {
 						/LDAPSearchTest_ScopeSubTree {
-							/NumberOfResultMessages 60
-							/NumberOfEntries 59
+							/NumberOfResultMessages 61
+							/NumberOfEntries 60
 						}
 					}
 				}
 			}
 		}
-# ---------------------------------------------------------------------------
-		/LDAPSearchTest_SizeLimit
+
+		/LDAPSearchTest_ScopeSubTree_Pooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_Pooled
+			/TheAction
+			{
+				/CallDA 	LDAPSearchTest_ScopeSubTree
+			}
+			/ExpectedResult	1
+			/Result
+			{
+				/Delim	"^"
+				/TmpStore
+				{
+					/LDAPResult {
+						/LDAPSearchTest_ScopeSubTree {
+							/NumberOfResultMessages 61
+							/NumberOfEntries 60
+						}
+					}
+				}
+			}
+		}
+
+# ---------------------------------------------------------------------------
+		/LDAPSearchTest_SizeLimit_NotPooled
+		{
+			/TmpStore	%LDAPConfig_NotPooled
 			/TheAction
 			{
 				/CallDA 	LDAPSearchTest_SizeLimit
@@ -249,10 +455,35 @@
 				}
 			}
 		}
-# ---------------------------------------------------------------------------
-		/LDAPSearchTest_AttrSelection
+
+		/LDAPSearchTest_SizeLimit_Pooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_Pooled
+			/TheAction
+			{
+				/CallDA 	LDAPSearchTest_SizeLimit
+			}
+			/ExpectedResult	1
+			/Result
+			{
+				/Delim	"^"
+				/TmpStore
+				{
+					/LDAPResult {
+						/LDAPSearchTest_SizeLimit {
+							/NumberOfResultMessages 11
+							/NumberOfEntries 10
+							/SizeLimitExceeded 1
+						}
+					}
+				}
+			}
+		}
+
+# ---------------------------------------------------------------------------
+		/LDAPSearchTest_AttrSelection_NotPooled
+		{
+			/TmpStore	%LDAPConfig_NotPooled
 			/TheAction
 			{
 				/CallDA 	LDAPSearchTest_AttrSelection
@@ -280,10 +511,42 @@
 				}
 			}
 		}
-# ---------------------------------------------------------------------------
-		/LDAPSearchTest_AttrsOnly
+
+		/LDAPSearchTest_AttrSelection_Pooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_Pooled
+			/TheAction
+			{
+				/CallDA 	LDAPSearchTest_AttrSelection
+			}
+			/ExpectedResult	1
+			/Result
+			{
+				/Delim	"^"
+				/TmpStore
+				{
+					/LDAPResult {
+						/LDAPSearchTest_AttrSelection {
+							/NumberOfResultMessages 2
+							/NumberOfEntries 1
+							# check a few expected things within the returned entries
+							/Entries {
+								/"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+								{
+									/pd-dn "cn=CH10601-tkrefactor,dc=tkfpd.hsr.ch"
+									/language "D"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+# ---------------------------------------------------------------------------
+		/LDAPSearchTest_AttrsOnly_NotPooled
+		{
+			/TmpStore	%LDAPConfig_NotPooled
 			/TheAction
 			{
 				/CallDA 	LDAPSearchTest_AttrsOnly
@@ -315,10 +578,46 @@
 				}
 			}
 		}
-# ---------------------------------------------------------------------------
-		/LDAPSearchTest_Filter
+
+		/LDAPSearchTest_AttrsOnly_Pooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_Pooled
+			/TheAction
+			{
+				/CallDA 	LDAPSearchTest_AttrsOnly
+			}
+			/ExpectedResult	1
+			/Result
+			{
+				/Delim	"^"
+				/TmpStore
+				{
+					/LDAPResult {
+						/LDAPSearchTest_AttrsOnly {
+							/NumberOfResultMessages 2
+							/NumberOfEntries 1
+							# check a few expected things within the returned entries
+							/Entries
+							{
+								/"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch" {
+									"objectclass"
+									"ou"
+									"name"
+									"cn"
+									"tkfmodtime"
+									"childmodtime"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+# ---------------------------------------------------------------------------
+		/LDAPSearchTest_Filter_NotPooled
+		{
+			/TmpStore	%LDAPConfig_NotPooled
 			/TheAction
 			{
 				/CallDA 	LDAPSearchTest_Filter
@@ -353,10 +652,49 @@
 				}
 			}
 		}
-# ---------------------------------------------------------------------------
-		/LDAPSearchTest_WrongDN
+
+		/LDAPSearchTest_Filter_Pooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_Pooled
+			/TheAction
+			{
+				/CallDA 	LDAPSearchTest_Filter
+			}
+			/ExpectedResult	1
+			/Result
+			{
+				/Delim	"^"
+				/TmpStore
+				{
+					/LDAPResult {
+						/LDAPSearchTest_Filter {
+							/NumberOfResultMessages 2
+							/NumberOfEntries 1
+							# check a few expected things within the returned entries
+							/Entries
+							{
+							  /"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+							  {
+								/objectclass {
+								  "person"
+								  "client"
+								  "tkfModify"
+								}
+								/uid "tkrefactor"
+								/language "D"
+								/ifs-id "tkrefactor"
+							  }
+							}
+						}
+					}
+				}
+			}
+		}
+
+# ---------------------------------------------------------------------------
+		/LDAPSearchTest_WrongDN_NotPooled
+		{
+			/TmpStore	%LDAPConfig_NotPooled
 			/TheAction
 			{
 				/CallDA 	LDAPSearchTest_WrongDN
@@ -376,10 +714,58 @@
 				}
 			}
 		}
-# ---------------------------------------------------------------------------
-		/LDAPSearchTest_EmptyResult
+
+		/LDAPSearchTest_WrongDN_Pooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_Pooled
+			/TheAction
+			{
+				/CallDA 	LDAPSearchTest_WrongDN
+			}
+			/ExpectedResult	0
+			/Result
+			{
+				/TmpStore
+				{
+					/LDAPError {
+						/LDAPSearchTest_WrongDN {
+							/Msg "LDAP request failed."
+							/LdapCode 32
+							/LdapMsg "No such object"
+						}
+					}
+				}
+			}
+		}
+
+# ---------------------------------------------------------------------------
+		/LDAPSearchTest_EmptyResult_NotPooled
+		{
+			/TmpStore	%LDAPConfig_NotPooled
+			/TheAction
+			{
+				/CallDA 	LDAPSearchTest_EmptyResult
+			}
+			/ExpectedResult	1
+			/Result
+			{
+				/TmpStore
+				{
+					/LDAPResult {
+						/LDAPSearchTest_EmptyResult {
+							/Type "LDAP_RES_SEARCH_RESULT"
+							/NumberOfResultMessages 1
+							/NumberOfEntries 0
+							/Entries *
+						}
+					}
+				}
+			}
+		}
+
+		/LDAPSearchTest_EmptyResult_Pooled
+		{
+			/TmpStore	%LDAPConfig_Pooled
 			/TheAction
 			{
 				/CallDA 	LDAPSearchTest_EmptyResult
@@ -403,9 +789,9 @@
 
 # =============================================================================
 
-		/LDAPDeleteTest_NonLeaf
+		/LDAPDeleteTest_NonLeaf_NotPooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_NotPooled
 			/TheAction
 			{
 				/CallDA 	LDAPDeleteTest_NonLeaf
@@ -425,10 +811,34 @@
 				}
 			}
 		}
-# -------------------------------------------------------------------------
-		/LDAPDeleteTest_NonExisting
+
+		/LDAPDeleteTest_NonLeaf_Pooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_Pooled
+			/TheAction
+			{
+				/CallDA 	LDAPDeleteTest_NonLeaf
+			}
+			/ExpectedResult	0
+			/Result
+			{
+				/TmpStore
+				{
+					/LDAPError {
+						/LDAPDeleteTest_NonLeaf {
+							/Msg "LDAP request failed."
+							/LdapCode 66
+							/LdapMsg "Operation not allowed on nonleaf"
+						}
+					}
+				}
+			}
+		}
+
+# -------------------------------------------------------------------------
+		/LDAPDeleteTest_NonExisting_NotPooled
+		{
+			/TmpStore	%LDAPConfig_NotPooled
 			/TheAction
 			{
 				/CallDA 	LDAPDeleteTest_NonExisting
@@ -448,13 +858,37 @@
 				}
 			}
 		}
-# -------------------------------------------------------------------------
-		/LDAPDeleteTest_ExistingLeaf
+
+		/LDAPDeleteTest_NonExisting_Pooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_Pooled
 			/TheAction
 			{
-				/CallDA 	LDAPDeleteTest_ExistingLeaf
+				/CallDA 	LDAPDeleteTest_NonExisting
+			}
+			/ExpectedResult	0
+			/Result
+			{
+				/TmpStore
+				{
+					/LDAPError {
+						/LDAPDeleteTest_NonExisting {
+							/Msg "LDAP request failed."
+							/LdapCode 32
+							/LdapMsg "No such object"
+						}
+					}
+				}
+			}
+		}
+
+# -------------------------------------------------------------------------
+		/LDAPDeleteTest_ExistingLeaf_NotPooled
+		{
+			/TmpStore	%LDAPConfig_NotPooled
+			/TheAction
+			{
+				/CallDA 	LDAPDeleteTest_ExistingLeaf_NotPooled
 			}
 			/ExpectedResult	1
 			/Result
@@ -462,7 +896,31 @@
 				/TmpStore
 				{
 					/LDAPResult {
-						/LDAPDeleteTest_ExistingLeaf {
+						/LDAPDeleteTest_ExistingLeaf_NotPooled {
+							/Type "LDAP_RES_DELETE"
+							/NumberOfResultMessages 1
+							/NumberOfEntries 0
+							/Entries *
+						}
+					}
+				}
+			}
+		}
+
+		/LDAPDeleteTest_ExistingLeaf_Pooled
+		{
+			/TmpStore	%LDAPConfig_Pooled
+			/TheAction
+			{
+				/CallDA 	LDAPDeleteTest_ExistingLeaf_Pooled
+			}
+			/ExpectedResult	1
+			/Result
+			{
+				/TmpStore
+				{
+					/LDAPResult {
+						/LDAPDeleteTest_ExistingLeaf_Pooled {
 							/Type "LDAP_RES_DELETE"
 							/NumberOfResultMessages 1
 							/NumberOfEntries 0
@@ -475,9 +933,9 @@
 
 # =============================================================================
 
-		/LDAPCompareTest_NonExistingEntry
+		/LDAPCompareTest_NonExistingEntry_NotPooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_NotPooled
 			/TheAction
 			{
 				/CallDA 	LDAPCompareTest_NonExistingEntry
@@ -497,10 +955,34 @@
 				}
 			}
 		}
-# -------------------------------------------------------------------------
-		/LDAPCompareTest_NonExistingAttribute
+
+		/LDAPCompareTest_NonExistingEntry_Pooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_Pooled
+			/TheAction
+			{
+				/CallDA 	LDAPCompareTest_NonExistingEntry
+			}
+			/ExpectedResult	0
+			/Result
+			{
+				/TmpStore
+				{
+					/LDAPError {
+						/LDAPCompareTest_NonExistingEntry {
+							/Msg "LDAP request failed."
+							/LdapCode 32
+							/LdapMsg "No such object"
+						}
+					}
+				}
+			}
+		}
+
+# -------------------------------------------------------------------------
+		/LDAPCompareTest_NonExistingAttribute_NotPooled
+		{
+			/TmpStore	%LDAPConfig_NotPooled
 			/TheAction
 			{
 				/CallDA 	LDAPCompareTest_NonExistingAttribute
@@ -520,10 +1002,33 @@
 				}
 			}
 		}
-# -------------------------------------------------------------------------
-		/LDAPCompareTest_EqualValue
+		/LDAPCompareTest_NonExistingAttribute_Pooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_Pooled
+			/TheAction
+			{
+				/CallDA 	LDAPCompareTest_NonExistingAttribute
+			}
+			/ExpectedResult	0
+			/Result
+			{
+				/TmpStore
+				{
+					/LDAPError {
+						/LDAPCompareTest_NonExistingAttribute {
+							/Msg "LDAP request failed."
+							/LdapCode 16
+							/LdapMsg "No such attribute"
+						}
+					}
+				}
+			}
+		}
+
+# -------------------------------------------------------------------------
+		/LDAPCompareTest_EqualValue_NotPooled
+		{
+			/TmpStore	%LDAPConfig_NotPooled
 			/TheAction
 			{
 				/CallDA 	LDAPCompareTest_EqualValue
@@ -544,10 +1049,35 @@
 				}
 			}
 		}
-# -------------------------------------------------------------------------
-		/LDAPCompareTest_UnequalValue
+
+		/LDAPCompareTest_EqualValue_Pooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_Pooled
+			/TheAction
+			{
+				/CallDA 	LDAPCompareTest_EqualValue
+			}
+			/ExpectedResult	1
+			/Result
+			{
+				/TmpStore
+				{
+					/LDAPResult {
+						/LDAPCompareTest_EqualValue {
+							/Type "LDAP_RES_COMPARE"
+							/Equal 1
+							/LdapCode 6
+							/LdapMsg "Compare true"
+						}
+					}
+				}
+			}
+		}
+
+# -------------------------------------------------------------------------
+		/LDAPCompareTest_UnequalValue_NotPooled
+		{
+			/TmpStore	%LDAPConfig_NotPooled
 			/TheAction
 			{
 				/CallDA 	LDAPCompareTest_UnequalValue
@@ -568,10 +1098,34 @@
 				}
 			}
 		}
-# -------------------------------------------------------------------------
-		/LDAPCompareTest_MissingAttrNameParam
+		/LDAPCompareTest_UnequalValue_Pooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_Pooled
+			/TheAction
+			{
+				/CallDA 	LDAPCompareTest_UnequalValue
+			}
+			/ExpectedResult	1
+			/Result
+			{
+				/TmpStore
+				{
+					/LDAPResult {
+						/LDAPCompareTest_UnequalValue {
+							/Type "LDAP_RES_COMPARE"
+							/Equal 0
+							/LdapCode 5
+							/LdapMsg "Compare false"
+						}
+					}
+				}
+			}
+		}
+
+# -------------------------------------------------------------------------
+		/LDAPCompareTest_MissingAttrNameParam_NotPooled
+		{
+			/TmpStore	%LDAPConfig_NotPooled
 			/TheAction
 			{
 				/CallDA 	LDAPCompareTest_MissingAttrNameParam
@@ -589,10 +1143,53 @@
 				}
 			}
 		}
-# -------------------------------------------------------------------------
-		/LDAPCompareTest_MissingAttrValueParam
+
+		/LDAPCompareTest_MissingAttrNameParam_Pooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_Pooled
+			/TheAction
+			{
+				/CallDA 	LDAPCompareTest_MissingAttrNameParam
+			}
+			/ExpectedResult	0
+			/Result
+			{
+				/TmpStore
+				{
+					/LDAPError {
+						/LDAPCompareTest_MissingAttrNameParam {
+							/Msg "Attribute name not defined (or empty) in compare query"
+						}
+					}
+				}
+			}
+		}
+
+# -------------------------------------------------------------------------
+		/LDAPCompareTest_MissingAttrValueParam_NotPooled
+		{
+			/TmpStore	%LDAPConfig_NotPooled
+			/TheAction
+			{
+				/CallDA 	LDAPCompareTest_MissingAttrValueParam
+			}
+			/ExpectedResult	0
+			/Result
+			{
+				/TmpStore
+				{
+					/LDAPError {
+						/LDAPCompareTest_MissingAttrValueParam {
+							/Msg "Value to compare not defined (or empty) in compare query"
+						}
+					}
+				}
+			}
+		}
+
+		/LDAPCompareTest_MissingAttrValueParam_Pooled
+		{
+			/TmpStore	%LDAPConfig_Pooled
 			/TheAction
 			{
 				/CallDA 	LDAPCompareTest_MissingAttrValueParam
@@ -613,9 +1210,9 @@
 
 # =============================================================================
 
-		/LDAPAddTest_MissingAttrsParam
+		/LDAPAddTest_MissingAttrsParam_NotPooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_NotPooled
 			/TheAction
 			{
 				/CallDA 	LDAPAddTest_MissingAttrsParam
@@ -633,10 +1230,31 @@
 				}
 			}
 		}
-# -------------------------------------------------------------------------
-		/LDAPAddTest_SingleValues
+		/LDAPAddTest_MissingAttrsParam_Pooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_Pooled
+			/TheAction
+			{
+				/CallDA 	LDAPAddTest_MissingAttrsParam
+			}
+			/ExpectedResult	0
+			/Result
+			{
+				/TmpStore
+				{
+					/LDAPError {
+						/LDAPAddTest_MissingAttrsParam {
+							/Msg "No attribute type/value pairs defined in add query"
+						}
+					}
+				}
+			}
+		}
+
+# -------------------------------------------------------------------------
+		/LDAPAddTest_SingleValues_NotPooled
+		{
+			/TmpStore	%LDAPConfig_NotPooled
 			/TheAction
 			{
 				/CallDA 	LDAPAddTest_SingleValues
@@ -654,10 +1272,31 @@
 				}
 			}
 		}
-# -------------------------------------------------------------------------
-		/LDAPAddTest_ExistingEntry
+		/LDAPAddTest_SingleValues_Pooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_Pooled
+			/TheAction
+			{
+				/CallDA 	LDAPAddTest_SingleValues
+			}
+			/ExpectedResult	0
+			/Result
+			{
+				/TmpStore
+				{
+					/LDAPError {
+						/LDAPAddTest_SingleValues {
+							/Msg "All values listed under 'Attrs' must have an associated attribute name."
+						}
+					}
+				}
+			}
+		}
+
+# -------------------------------------------------------------------------
+		/LDAPAddTest_ExistingEntry_NotPooled
+		{
+			/TmpStore	%LDAPConfig_NotPooled
 			/TheAction
 			{
 				/CallDA 	LDAPAddTest_ExistingEntry
@@ -677,13 +1316,36 @@
 				}
 			}
 		}
-# -------------------------------------------------------------------------
-		/LDAPAddTest_NonExistingEntry
+		/LDAPAddTest_ExistingEntry_Pooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_Pooled
 			/TheAction
 			{
-				/CallDA 	LDAPAddTest_NonExistingEntry
+				/CallDA 	LDAPAddTest_ExistingEntry
+			}
+			/ExpectedResult	0
+			/Result
+			{
+				/TmpStore
+				{
+					/LDAPError {
+						/LDAPAddTest_ExistingEntry {
+							/Msg "LDAP request failed."
+							/LdapCode 68
+							/LdapMsg "Already exists"
+						}
+					}
+				}
+			}
+		}
+
+# -------------------------------------------------------------------------
+		/LDAPAddTest_NonExistingEntry_NotPooled
+		{
+			/TmpStore	%LDAPConfig_NotPooled
+			/TheAction
+			{
+				/CallDA 	LDAPAddTest_NonExistingEntry_NotPooled
 			}
 			/ExpectedResult	1
 			/Result
@@ -691,7 +1353,7 @@
 				/TmpStore
 				{
 					/LDAPResult {
-						/LDAPAddTest_NonExistingEntry {
+						/LDAPAddTest_NonExistingEntry_NotPooled {
 							/Type "LDAP_RES_ADD"
 							/NumberOfResultMessages 1
 							/NumberOfEntries 0
@@ -701,10 +1363,34 @@
 				}
 			}
 		}
-# -------------------------------------------------------------------------
-		/LDAPAddTest_MissingRequiredAttributes
+		/LDAPAddTest_NonExistingEntry_Pooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_Pooled
+			/TheAction
+			{
+				/CallDA 	LDAPAddTest_NonExistingEntry_Pooled
+			}
+			/ExpectedResult	1
+			/Result
+			{
+				/TmpStore
+				{
+					/LDAPResult {
+						/LDAPAddTest_NonExistingEntry_Pooled {
+							/Type "LDAP_RES_ADD"
+							/NumberOfResultMessages 1
+							/NumberOfEntries 0
+							/Entries *
+						}
+					}
+				}
+			}
+		}
+
+# -------------------------------------------------------------------------
+		/LDAPAddTest_MissingRequiredAttributes_NotPooled
+		{
+			/TmpStore	%LDAPConfig_NotPooled
 			/TheAction
 			{
 				/CallDA 	LDAPAddTest_MissingRequiredAttributes
@@ -724,10 +1410,56 @@
 				}
 			}
 		}
-# -------------------------------------------------------------------------
-		/LDAPAddTest_NonExistingAttribute
+		/LDAPAddTest_MissingRequiredAttributes_Pooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_Pooled
+			/TheAction
+			{
+				/CallDA 	LDAPAddTest_MissingRequiredAttributes
+			}
+			/ExpectedResult	0
+			/Result
+			{
+				/TmpStore
+				{
+					/LDAPError {
+						/LDAPAddTest_MissingRequiredAttributes {
+							/Msg "LDAP request failed."
+							/LdapCode 65
+							/LdapMsg "Object class violation"
+						}
+					}
+				}
+			}
+		}
+
+# -------------------------------------------------------------------------
+		/LDAPAddTest_NonExistingAttribute_NotPooled
+		{
+			/TmpStore	%LDAPConfig_NotPooled
+			/TheAction
+			{
+				/CallDA 	LDAPAddTest_NonExistingAttribute
+			}
+			/ExpectedResult	0
+			/Result
+			{
+				/TmpStore
+				{
+					/LDAPError {
+						/LDAPAddTest_NonExistingAttribute {
+							/Msg "LDAP request failed."
+							/LdapCode 65
+							/LdapMsg "Object class violation" # attribute specified is not known to server
+						}
+					}
+				}
+			}
+		}
+
+		/LDAPAddTest_NonExistingAttribute_Pooled
+		{
+			/TmpStore	%LDAPConfig_Pooled
 			/TheAction
 			{
 				/CallDA 	LDAPAddTest_NonExistingAttribute
@@ -750,9 +1482,9 @@
 
 # =============================================================================
 
-		/LDAPModifyTest_UnknownAttribute
+		/LDAPModifyTest_UnknownAttribute_NotPooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_NotPooled
 			/TheAction
 			{
 				/CallDA 	LDAPModifyTest_UnknownAttribute
@@ -772,10 +1504,33 @@
 				}
 			}
 		}
-# -------------------------------------------------------------------------
-		/LDAPModifyTest_AddExistingValue
+		/LDAPModifyTest_UnknownAttribute_Pooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_Pooled
+			/TheAction
+			{
+				/CallDA 	LDAPModifyTest_UnknownAttribute
+			}
+			/ExpectedResult	0
+			/Result
+			{
+				/TmpStore
+				{
+					/LDAPError {
+						/LDAPModifyTest_UnknownAttribute {
+							/Msg "LDAP request failed."
+							/LdapCode 16
+							/LdapMsg "No such attribute"
+						}
+					}
+				}
+			}
+		}
+
+# -------------------------------------------------------------------------
+		/LDAPModifyTest_AddExistingValue_NotPooled
+		{
+			/TmpStore	%LDAPConfig_NotPooled
 			/TheAction
 			{
 				/CallDA 	LDAPModifyTest_AddExistingValue
@@ -795,10 +1550,33 @@
 				}
 			}
 		}
-# -------------------------------------------------------------------------
-		/LDAPModifyTest_DeleteRequiredAttribute
+		/LDAPModifyTest_AddExistingValue_Pooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_Pooled
+			/TheAction
+			{
+				/CallDA 	LDAPModifyTest_AddExistingValue
+			}
+			/ExpectedResult	0
+			/Result
+			{
+				/TmpStore
+				{
+					/LDAPError {
+						/LDAPModifyTest_AddExistingValue {
+							/Msg "LDAP request failed."
+							/LdapCode 20
+							/LdapMsg "Type or value exists"
+						}
+					}
+				}
+			}
+		}
+
+# -------------------------------------------------------------------------
+		/LDAPModifyTest_DeleteRequiredAttribute_NotPooled
+		{
+			/TmpStore	%LDAPConfig_NotPooled
 			/TheAction
 			{
 				/CallDA 	LDAPModifyTest_DeleteRequiredAttribute
@@ -818,15 +1596,38 @@
 				}
 			}
 		}
-# -------------------------------------------------------------------------
-		/LDAPModifyTest_MultipleModify
+		/LDAPModifyTest_DeleteRequiredAttribute_Pooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_Pooled
+			/TheAction
+			{
+				/CallDA 	LDAPModifyTest_DeleteRequiredAttribute
+			}
+			/ExpectedResult	0
+			/Result
+			{
+				/TmpStore
+				{
+					/LDAPError {
+						/LDAPModifyTest_DeleteRequiredAttribute {
+							/Msg "LDAP request failed."
+							/LdapCode 65
+							/LdapMsg "Object class violation"
+						}
+					}
+				}
+			}
+		}
+
+# -------------------------------------------------------------------------
+		/LDAPModifyTest_MultipleModify_NotPooled
+		{
+			/TmpStore	%LDAPConfig_NotPooled
 			/TheAction
 			{
 				/Cond {
-					/Call { /CallDA LDAPModifyTest_MultipleModify }
-					/True { /CallDA LDAPSearchQuery_LookupTkrefactor }
+					/Call { /CallDA LDAPModifyTest_MultipleModify_NotPooled }
+					/True { /CallDA LDAPSearchQuery_LookupTkrefactor_NotPooled }
 					# False: do nothing, modification failed
 				}
 			}
@@ -837,13 +1638,13 @@
 				/TmpStore
 				{
 					/LDAPResult {
-						/LDAPModifyTest_MultipleModify {
+						/LDAPModifyTest_MultipleModify_NotPooled {
 							/Type "LDAP_RES_MODIFY"
 							/NumberOfResultMessages 1
 							/NumberOfEntries 0
 							/Entries *
 						}
-						/LDAPSearchQuery_LookupTkrefactor {
+						/LDAPSearchQuery_LookupTkrefactor_NotPooled {
 							/Type "LDAP_RES_SEARCH_ENTRY"
 							/NumberOfResultMessages 2
 							/NumberOfEntries 1
@@ -872,10 +1673,64 @@
 				}
 			}
 		}
-# -------------------------------------------------------------------------
-		/LDAPModifyTest_WrongMods
+
+		/LDAPModifyTest_MultipleModify_Pooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_Pooled
+			/TheAction
+			{
+				/Cond {
+					/Call { /CallDA LDAPModifyTest_MultipleModify_Pooled }
+					/True { /CallDA LDAPSearchQuery_LookupTkrefactor_Pooled }
+					# False: do nothing, modification failed
+				}
+			}
+			/ExpectedResult	1
+			/Result
+			{
+				/Delim	"^"
+				/TmpStore
+				{
+					/LDAPResult {
+						/LDAPModifyTest_MultipleModify_Pooled {
+							/Type "LDAP_RES_MODIFY"
+							/NumberOfResultMessages 1
+							/NumberOfEntries 0
+							/Entries *
+						}
+						/LDAPSearchQuery_LookupTkrefactor_Pooled {
+							/Type "LDAP_RES_SEARCH_ENTRY"
+							/NumberOfResultMessages 2
+							/NumberOfEntries 1
+
+							# only check the stuff we've changed
+							/Entries {
+							  /uid=tkrefactor1,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch {
+								/tids {
+								  "172.016.001.041"
+								  "172.016.200.013"
+								  "195.112.074.110"
+								  "172.016.003.077"
+								  "153.046.030.066"
+								  "153.046.016.001"
+								  "153.046.016.009"
+								  "HOST"
+								  "230.001.240.000"
+								  "555.666.777.888"
+								  "111.222.333.444"
+								}
+								/language "I"
+							  }
+							}
+						}
+					}
+				}
+			}
+		}
+# -------------------------------------------------------------------------
+		/LDAPModifyTest_WrongMods_NotPooled
+		{
+			/TmpStore	%LDAPConfig_NotPooled
 			/TheAction
 			{
 				/CallDA 	LDAPModifyTest_WrongMods
@@ -893,10 +1748,31 @@
 				}
 			}
 		}
-# -------------------------------------------------------------------------
-		/LDAPModifyTest_EmptyModsGiven
+		/LDAPModifyTest_WrongMods_Pooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_Pooled
+			/TheAction
+			{
+				/CallDA 	LDAPModifyTest_WrongMods
+			}
+			/ExpectedResult	0
+			/Result
+			{
+				/TmpStore
+				{
+					/LDAPError {
+						/LDAPModifyTest_WrongMods {
+							/Msg "No legal modification operations in modify query"
+						}
+					}
+				}
+			}
+		}
+
+# -------------------------------------------------------------------------
+		/LDAPModifyTest_EmptyModsGiven_NotPooled
+		{
+			/TmpStore	%LDAPConfig_NotPooled
 			/TheAction
 			{
 				/CallDA 	LDAPModifyTest_EmptyModsGiven
@@ -914,10 +1790,31 @@
 				}
 			}
 		}
-# -------------------------------------------------------------------------
-		/LDAPModifyTest_DeleteNonExistingValue
+		/LDAPModifyTest_EmptyModsGiven_Pooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_Pooled
+			/TheAction
+			{
+				/CallDA 	LDAPModifyTest_EmptyModsGiven
+			}
+			/ExpectedResult	0
+			/Result
+			{
+				/TmpStore
+				{
+					/LDAPError {
+						/LDAPModifyTest_EmptyModsGiven {
+					        /Msg "No modifications defined in modify query"
+						}
+					}
+				}
+			}
+		}
+
+# -------------------------------------------------------------------------
+		/LDAPModifyTest_DeleteNonExistingValue_NotPooled
+		{
+			/TmpStore	%LDAPConfig_NotPooled
 			/TheAction
 			{
 				/CallDA 	LDAPModifyTest_DeleteNonExistingValue
@@ -937,15 +1834,38 @@
 				}
 			}
 		}
-# -------------------------------------------------------------------------
-		/LDAPModifyTest_DeleteAndAddWholeAttr
+		/LDAPModifyTest_DeleteNonExistingValue_Pooled
 		{
-			/TmpStore	%LDAPConfig
+			/TmpStore	%LDAPConfig_Pooled
+			/TheAction
+			{
+				/CallDA 	LDAPModifyTest_DeleteNonExistingValue
+			}
+			/ExpectedResult	0
+			/Result
+			{
+				/TmpStore
+				{
+					/LDAPError {
+						/LDAPModifyTest_DeleteNonExistingValue {
+							/Msg "LDAP request failed."
+							/LdapCode 16
+							/LdapMsg "No such attribute"	# this is the correct error msg!
+						}
+					}
+				}
+			}
+		}
+
+# -------------------------------------------------------------------------
+		/LDAPModifyTest_DeleteAndAddWholeAttr_NotPooled
+		{
+			/TmpStore	%LDAPConfig_NotPooled
 			/TheAction
 			{
 				/Cond {
-					/Call { /CallDA LDAPModifyTest_DeleteAndAddWholeAttr }
-					/True { /CallDA LDAPSearchQuery_LookupTkrefactor }
+					/Call { /CallDA LDAPModifyTest_DeleteAndAddWholeAttr_NotPooled }
+					/True { /CallDA LDAPSearchQuery_LookupTkrefactor_NotPooled }
 					# False: do nothing, modification failed
 				}
 			}
@@ -957,13 +1877,13 @@
 				/TmpStore
 				{
 					/LDAPResult {
-						/LDAPModifyTest_DeleteAndAddWholeAttr {
+						/LDAPModifyTest_DeleteAndAddWholeAttr_NotPooled {
 							/Type "LDAP_RES_MODIFY"
 							/NumberOfResultMessages 1
 							/NumberOfEntries 0
 							/Entries *
 						}
-						/LDAPSearchQuery_LookupTkrefactor {
+						/LDAPSearchQuery_LookupTkrefactor_NotPooled {
 						  /Type "LDAP_RES_SEARCH_ENTRY"
 						  /NumberOfResultMessages 2
 						  /NumberOfEntries 1
@@ -978,6 +1898,45 @@
 				}
 			}
 		}
-
+		/LDAPModifyTest_DeleteAndAddWholeAttr_Pooled
+		{
+			/TmpStore	%LDAPConfig_Pooled
+			/TheAction
+			{
+				/Cond {
+					/Call { /CallDA LDAPModifyTest_DeleteAndAddWholeAttr_Pooled }
+					/True { /CallDA LDAPSearchQuery_LookupTkrefactor_Pooled }
+					# False: do nothing, modification failed
+				}
+			}
+			/ExpectedResult	1
+			/Result
+			{
+				/Delim "^"
+				/IndexDelim "§"
+				/TmpStore
+				{
+					/LDAPResult {
+						/LDAPModifyTest_DeleteAndAddWholeAttr_Pooled {
+							/Type "LDAP_RES_MODIFY"
+							/NumberOfResultMessages 1
+							/NumberOfEntries 0
+							/Entries *
+						}
+						/LDAPSearchQuery_LookupTkrefactor_Pooled {
+						  /Type "LDAP_RES_SEARCH_ENTRY"
+						  /NumberOfResultMessages 2
+						  /NumberOfEntries 1
+						  # only check the relevant fields of the returned entries
+						  /Entries {
+							/uid=tkrefactor1,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch {
+							  /passwordexp "20010101_00:00:00"
+							}
+						  }
+				        }
+					}
+				}
+			}
+		}
 	}
 }

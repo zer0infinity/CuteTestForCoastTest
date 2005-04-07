@@ -17,6 +17,7 @@
 #include "ConfiguredActionTest.h"
 #include "LDAPConnectionTest.h"
 #include "ErrorHandlerTest.h"
+#include "LDAPConnectionManagerTest.h"
 
 void setupRunner(TestRunner &runner)
 {
@@ -24,6 +25,7 @@ void setupRunner(TestRunner &runner)
 	ADD_SUITE(runner, ConfiguredActionTest);
 	ADD_SUITE(runner, LDAPConnectionTest);
 	ADD_SUITE(runner, ErrorHandlerTest);
+	ADD_SUITE(runner, LDAPConnectionManagerTest);
 #else
 	cout << "No ldap environment defined" << endl;
 #endif

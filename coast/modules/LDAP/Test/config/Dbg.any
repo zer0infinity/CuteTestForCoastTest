@@ -7,8 +7,8 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-	/LowerBound		0
-	/UpperBound		100
+	/LowerBound		400
+	/UpperBound		401
 	/DumpAnythings  1		# print full Anythings
 
 	/ResultMapper {
@@ -28,9 +28,9 @@
 		/MainSwitch						0
 		/EnableAll						400
 	}
-	/CallDataAccesss {
-		/MainSwitch						0
-		/EnableAll						400
+	/CallDataAccessAction {
+		/MainSwitch						400
+		/EnableAll						401
 	}
 	/Action {
 		/MainSwitch						0
@@ -38,7 +38,7 @@
 	}
 	/ConfiguredActionTest {
 		/MainSwitch						400
-		/EnableAll						400
+		/EnableAll						401
 	}
 	/ErrorHandlerTest {
 		/MainSwitch						400
@@ -59,7 +59,7 @@
 	}
 	/LDAPDeleteDAI {
 		/MainSwitch						400
-		/EnableAll						400
+		/EnableAll						401
 	}
 	/LDAPCompareDAI {
 		/MainSwitch						400
@@ -71,18 +71,26 @@
 	}
 	/LDAPConnectionTest {
 		/MainSwitch						400
-		/EnableAll						400
+		/EnableAll						401
+	}
+	/LDAPConnectionManagerTest {
+		/MainSwitch						400
+		/EnableAll						401
 	}
 	/LDAPConnection {
 		/MainSwitch						400
-		/EnableAll						0
+		/EnableAll						401
 		/WaitForResult					400
 		/Bind							400
 		/TransformResult				400
 	}
+	/LDAPConnectionManager {
+		/MainSwitch						400
+		/EnableAll						401
+	}
 	/LDAPErrorHandler {
 		/MainSwitch						400
-		/EnableAll						400
+		/EnableAll						401
 	}
 	/ConditionalAction {
 		/MainSwitch						100

@@ -46,7 +46,12 @@
 
 	# --------------------------- Queries --------------------------------
 
-	/LDAPSearchQuery_LookupTkrefactor %LDAPSearchTest_ScopeBase
+	/LDAPSearchQuery_LookupTkrefactor_NotPooled %LDAPSearchTest_ScopeBase
+	/LDAPSearchQuery_LookupTkrefactor_Pooled
+	{
+		/LDAPBase		"uid=tkrefactor1,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		#/LDAPScope		"base"	# base is default
+	}
 
 	# ---------------------------- Tests ---------------------------------
 
@@ -120,8 +125,12 @@
 		/LDAPBase		"uid=nonexusr,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
 	}
 
-	/LDAPDeleteTest_ExistingLeaf {
+	/LDAPDeleteTest_ExistingLeaf_NotPooled {
 		/LDAPBase		"tid=152.000.021.001,ou=tkftc,o=1,c=CH,dc=tkfcd.hsr.ch"
+	}
+
+	/LDAPDeleteTest_ExistingLeaf_Pooled {
+		/LDAPBase		"tid=153.046.016.001,ou=tkftc,o=1,c=CH,dc=tkfcd.hsr.ch"
 	}
 
 	# ---------------------------------------------------------
@@ -189,7 +198,7 @@
 		}
 	}
 
-	/LDAPAddTest_NonExistingEntry {
+	/LDAPAddTest_NonExistingEntry_NotPooled {
 		/LDAPBase	"uid=addtest1,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
 		/LDAPAttrs	{
 			/ConfigMapper {
@@ -201,8 +210,20 @@
 		}
 	}
 
-	/LDAPAddTest_MissingRequiredAttributes {
+	/LDAPAddTest_NonExistingEntry_Pooled {
 		/LDAPBase	"uid=addtest2,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPAttrs	{
+			/ConfigMapper {
+				/objectclass { "client" "tkfModify" "person" }
+				/uid "addtest2"
+				/sn	"addtest2"
+				/cn "addtest2"
+			}
+		}
+	}
+
+	/LDAPAddTest_MissingRequiredAttributes {
+		/LDAPBase	"uid=addtest3,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
 		/LDAPAttrs	{
 			/ConfigMapper {
 				/objectclass { "client" "tkfModify" "person" }
@@ -260,8 +281,28 @@
 		}
 	}
 
-	/LDAPModifyTest_MultipleModify {
+	/LDAPModifyTest_MultipleModify_NotPooled {
 		/LDAPBase	"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPMods {
+			/ConfigMapper {
+				/Delete {
+					/tids "153.046.248.014"
+				}
+				/Add {
+					/tids {
+						"555.666.777.888"
+						"111.222.333.444"
+					}
+				}
+				/Replace {
+					/language "I"
+				}
+			}
+		}
+	}
+
+	/LDAPModifyTest_MultipleModify_Pooled {
+		/LDAPBase	"uid=tkrefactor1,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
 		/LDAPMods {
 			/ConfigMapper {
 				/Delete {
@@ -309,8 +350,21 @@
 		}
 	}
 
-	/LDAPModifyTest_DeleteAndAddWholeAttr {
+	/LDAPModifyTest_DeleteAndAddWholeAttr_NotPooled {
 		/LDAPBase	"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPMods {
+			/ConfigMapper {
+				/Delete {
+					/passwordexp	*
+				}
+				/Add {
+		            /passwordexp "20010101_00:00:00"
+				}
+			}
+		}
+	}
+	/LDAPModifyTest_DeleteAndAddWholeAttr_Pooled {
+		/LDAPBase	"uid=tkrefactor1,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
 		/LDAPMods {
 			/ConfigMapper {
 				/Delete {
