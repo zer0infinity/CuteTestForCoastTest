@@ -103,8 +103,11 @@ String LDAPErrorHandler::WriteSysLog(Anything error, String &msg)
 
 void LDAPErrorHandler::WriteError(Anything &error)
 {
+	StartTrace(LDAPErrorHandler.WriteError);
 	String key("LDAPError.");
 	key << fName;
+	Trace("WriteKey: " << key);
+	TraceAny(error, "Error content:");
 	fOut->Put(key, error, fCtx);
 }
 
@@ -113,6 +116,7 @@ bool LDAPErrorHandler::GetError(Anything &error)
 	StartTrace(LDAPErrorHandler.GetError);
 	String key;
 	key << "LDAPError." << fName;
+	Trace("ReadKey: " << key);
 	return fIn->Get(key, error, fCtx);
 }
 
