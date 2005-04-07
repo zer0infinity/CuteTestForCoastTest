@@ -15,10 +15,13 @@
 
 //---- LDAPConnection ----------------------------------------------------------
 //! <B>Wraps an LDAP connection and handles connecting and disconnecting.</B>
+
 class EXPORTDECL_LDAPDA LDAPConnection
 {
 public:
 	enum EConnectState { eOk, eNok, eMustRebind, eMustNotRebind, eRebindOk, eInitNok, eBindNok, eSetOptionsNok };
+
+//	static int  LDAP_CALL LDAP_CALLBACK RebindProc( LDAP *ld, char **dnp, char **passwdp, int *authmethodp, int freeit, void *arg );
 
 	//! create a new ldap session
 	//! \param connectionParams an Anything that contains Server, Port,
@@ -65,6 +68,7 @@ protected:
 	bool fMapUTF8;
 	bool fUseLdapConnectionManager;
 	long fRebindTimeout;
+	String fUniqueConnectionId;
 
 private:
 	//! init connection
@@ -78,6 +82,9 @@ private:
 
 	//! set ldap connection timeout - important to avoid deadlocks caused by hanging ldap connects
 	bool SetConnectionTimeout(LDAPErrorHandler eh);
+
+	//! set rebind procedure (in re-authenticates and when chasing referals)
+//	bool SetRebindProc(LDAPErrorHandler eh);
 
 	//! bind (asynchronous)
 	bool Bind(String BindName, String BindPW, int &msgId, LDAPErrorHandler eh);
@@ -110,6 +117,9 @@ private:
 
 	//! create the unique connection id used by LdapConnectionManager
 	String GetLdapConnectionManagerId(const String &bindName, const String &bindPW);
+
+	//! Issue error message and abadon connection
+	void HandleWait4ResultError(int msgId, String &errMsg, LDAPErrorHandler eh);
 
 	//! LDAPConnectionManager acesses private methods of LDAPConnection
 	friend class LDAPConnectionManager;

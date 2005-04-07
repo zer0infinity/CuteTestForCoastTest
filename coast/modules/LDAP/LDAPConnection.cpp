@@ -22,6 +22,39 @@
 
 //--- c-modules used -----------------------------------------------------------
 
+//int LDAP_CALL LDAP_CALLBACK LDAPConnection::RebindProc( LDAP *ld, char **dnp, char **passwdp, int *authmethodp, int freeit, void *arg )
+//{
+//  cerr << "Rebindproc called" << endl;
+//  switch ( freeit ) {
+//  /* Your client calls the rebind function with freeit==1 when it needs
+//    to free any memory you've allocated. */
+//  case 1:
+//    cerr << "Freeing memory" << endl;
+//    if ( dnp && *dnp ) {
+//      free( *dnp );
+//    }
+//    if ( passwdp && *passwdp ) {
+//      free( *passwdp );
+//    }
+//    break;
+//  /* Your client calls the rebind function with freeit==0 when it needs
+//  to get the DN, credentials, and authentication method. */
+//  case 0:
+//    cerr << "Getting DN and credentials." << endl;
+//    *dnp = strdup( "cn=Directory Manager" );
+//    *passwdp = strdup( "all2test" );
+//    *authmethodp = LDAP_AUTH_SIMPLE;
+//    break;
+//  default:
+//    cerr << "Unknown value of freeit argument: " <<  freeit  << endl;
+//    break;
+//  }
+//  /* If you successfully set the DN and credentials, you should return
+//    LDAP_SUCCESS. (Any other return code will stop the client from
+//    automatically following the referral. */
+//  return LDAP_SUCCESS;
+//}
+
 LDAPConnection::LDAPConnection(ROAnything connectionParams)
 {
 	StartTrace(LDAPConnection.LDAPConnection);
@@ -104,13 +137,12 @@ LDAPConnection::EConnectState LDAPConnection::DoConnect(ROAnything bindParams, L
 	// set handle to null
 	fHandle = NULL;
 	String errMsg;
-	String uniqueConnectionId;
 	String bindName = bindParams["BindName"].AsString("");
 	String bindPW = bindParams["BindPW"].AsString("");
 	LDAPConnection::EConnectState eConnectState;
 	if ( fUseLdapConnectionManager ) {
-		uniqueConnectionId = GetLdapConnectionManagerId(bindName, bindPW);
-		Anything returned = LDAPConnectionManager::LDAPCONNMGR()->GetLdapConnection(uniqueConnectionId, fRebindTimeout);
+		fUniqueConnectionId = GetLdapConnectionManagerId(bindName, bindPW);
+		Anything returned = LDAPConnectionManager::LDAPCONNMGR()->GetLdapConnection(fUniqueConnectionId, fRebindTimeout);
 		fHandle = (LDAP *) returned["Handle"].AsIFAObject(0);
 		returned["MustRebind"].AsBool(1) == false ? eConnectState = LDAPConnection::eMustNotRebind  : eConnectState = LDAPConnection::eMustRebind;
 		Trace("eConnectState: " << ConnectRetToString(eConnectState) << " Handle: " << DumpConnectionHandle(fHandle));
@@ -124,8 +156,8 @@ LDAPConnection::EConnectState LDAPConnection::DoConnect(ROAnything bindParams, L
 		return eInitNok;
 	}
 
-	// set protocol + timeout
-	if ( !SetProtocol(eh) || !SetConnectionTimeout(eh) || !SetSearchTimeout(eh) ) {
+	// set protocol, timeout and rebind procedure
+	if ( !SetProtocol(eh) || !SetConnectionTimeout(eh) || !SetSearchTimeout(eh) /* || !SetRebindProc(eh) */  ) {
 		return eSetOptionsNok;
 	}
 
@@ -139,7 +171,7 @@ LDAPConnection::EConnectState LDAPConnection::DoConnect(ROAnything bindParams, L
 	Anything result;
 	bool ret = WaitForResult(msgId, result, eh);
 	if ( fUseLdapConnectionManager && ret ) {
-		LDAPConnectionManager::LDAPCONNMGR()->SetLdapConnection(uniqueConnectionId, fHandle);
+		LDAPConnectionManager::LDAPCONNMGR()->SetLdapConnection(fUniqueConnectionId, fHandle);
 		if ( eConnectState == LDAPConnection::eMustRebind ) {
 			return LDAPConnection::eRebindOk;
 		}
@@ -173,6 +205,19 @@ bool LDAPConnection::SetProtocol(LDAPErrorHandler eh)
 	}
 	return true;
 }
+
+//bool LDAPConnection::SetRebindProc(LDAPErrorHandler eh)
+//{
+//	StartTrace(LDAPConnection.SetProtocol);
+//
+//	if( ::ldap_set_option( fHandle, LDAP_OPT_REBIND_FN,  (const void *) &LDAPConnection::RebindProc ) != LDAP_SUCCESS )
+//	{
+//		Trace("ldap_set_option: LDAP_OPT_REBIND_FN  FAILED");
+//		eh.HandleSessionError(fHandle, "Could not set rebind procedure.");
+//		return false;
+//	}
+//	return true;
+//}
 
 bool LDAPConnection::SetSearchTimeout(LDAPErrorHandler eh)
 {
@@ -260,20 +305,18 @@ bool LDAPConnection::WaitForResult(int msgId, Anything &result, LDAPErrorHandler
 
 		// check result
 		if (resultCode == -1 && fSearchTimeout == 0) {
-			// error!
-			Trace("WaitForResult received an error - trying again...");
-
+			// error, abandon!
+			Trace("WaitForResult [Timeout: 0] received an error");
 			int opRet;
 			ldap_parse_result( fHandle, ldapResult, &opRet, NULL, NULL, NULL, NULL, 0 );
-			Trace("ErrorCode: " << (long)opRet << ", ErrorMsg: " << ldap_err2string( opRet ));
+			errMsg << "Synchronous Wait4Result: ErrorCode: [" << (long)opRet << "] ErrorMsg: " << ldap_err2string( opRet );
+			HandleWait4ResultError(msgId, errMsg, eh);
+			finished = true;
 		} else if (resultCode == 0 || (resultCode == -1 && fSearchTimeout != 0)) {
 			// timeout, abandon
-			Trace("WaitForResult encountered a timeout ...");
-			int errCode = ldap_abandon(fHandle, msgId);
-			errMsg << "The request <" << (long) msgId << "> timed out. Abandoning request now...";
-			errMsg << (errCode == LDAP_SUCCESS ? "Request successfully abandoned." : "Request abandoning FAILED!");
-
-			eh.HandleSessionError(fHandle, errMsg);
+			Trace("WaitForResult [Timeout != 0] encountered a timeout ...");
+			errMsg << "Asynchronous Wait4Result: The request <" << (long) msgId << "> timed out.";
+			HandleWait4ResultError(msgId, errMsg, eh);
 			finished = true;
 		} else {
 			// received a result
@@ -310,6 +353,18 @@ bool LDAPConnection::WaitForResult(int msgId, Anything &result, LDAPErrorHandler
 	}
 
 	return success;
+}
+
+void LDAPConnection::HandleWait4ResultError(int msgId, String &errMsg, LDAPErrorHandler eh)
+{
+	StartTrace(LDAPConnection.TransformResult);
+	int errCode = ldap_abandon(fHandle, msgId);
+	errMsg << " Request abandoned: " << (errCode == LDAP_SUCCESS ? " successfully." : " FAILED!");
+	eh.HandleSessionError(fHandle, errMsg);
+	// Invalidate our handle because LDAP server might be down, will rebind next time!
+	if ( fUseLdapConnectionManager ) {
+		LDAPConnectionManager::LDAPCONNMGR()->SetLdapConnection(fUniqueConnectionId, (LDAP *) NULL);
+	}
 }
 
 void LDAPConnection::TransformResult(LDAPMessage *ldapResult, Anything &result, Anything query)
@@ -575,9 +630,7 @@ String LDAPConnection::GetLdapConnectionManagerId(const String &bindName, const 
 {
 	StartTrace(LDAPConnection.GetLdapConnectionManagerId);
 	return	String("ThreadId[") << Thread::MyId() << "] Host[" << fServer << "] Port[" << fPort << "] DN[" <<
-			bindName << "] PW[" << bindPW << "] SearchTimeout[" <<
-			fSearchTimeout << "] ConnTimeout[" << fConnectionTimeout << "] LDAPRebindTimeout[" <<
-			fRebindTimeout << "] MapUTF8]" << fMapUTF8 << "]";
+			bindName << "] BindPW[" << bindPW << "] ConnTimeout[" << fConnectionTimeout;
 }
 
 String LDAPConnection::DumpConnectionHandle(LDAP *handle)
