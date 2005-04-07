@@ -357,7 +357,7 @@ bool LDAPConnection::WaitForResult(int msgId, Anything &result, LDAPErrorHandler
 
 void LDAPConnection::HandleWait4ResultError(int msgId, String &errMsg, LDAPErrorHandler eh)
 {
-	StartTrace(LDAPConnection.TransformResult);
+	StartTrace(LDAPConnection.HandleWait4ResultError);
 	int errCode = ldap_abandon(fHandle, msgId);
 	errMsg << " Request abandoned: " << (errCode == LDAP_SUCCESS ? " successfully." : " FAILED!");
 	eh.HandleSessionError(fHandle, errMsg);
