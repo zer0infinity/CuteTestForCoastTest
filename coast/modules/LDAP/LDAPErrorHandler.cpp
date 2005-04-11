@@ -80,7 +80,7 @@ String LDAPErrorHandler::WriteSysLog(Anything error, String &msg)
 	error.PrintOn(ossSysLog, false);
 	ossSysLog.flush();
 	// log all ldap session errors in SysLog
-	SysLog::Error(msg << " " << fName << " " << ossSysLog);
+	SysLog::Error(msg << " " << fName << " " << sSysLog);
 	String msgAsString;
 	msgAsString << "LdapDataAccess: [" << fName << "]";
 	for ( long l = 0; l < error.GetSize(); l++ ) {
