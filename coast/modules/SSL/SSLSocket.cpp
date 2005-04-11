@@ -213,7 +213,7 @@ iostream *SSLSocket::DoMakeStream()
 		  << " timeout : " << SSL_CTX_get_timeout(fContext) << ENDL
 		 );
 
-	SessionResumptionHookSetSession(ssl, sslSessionStored, sslinfo["SessionIsResumed"].AsLong(0));
+	SessionResumptionHookSetSession(ssl, sslSessionStored, sslinfo["SessionIsResumed"].AsLong(0) != 0L);
 
 	SSL_SESSION *sslSessionCurrent;
 	if ( (sslSessionCurrent = SSL_get_session(ssl)) == (SSL_SESSION *) NULL) {
@@ -550,7 +550,7 @@ SSLConnector::SSLConnector(ROAnything config)
 				config["Timeout"].AsLong(0L),
 				config["SrcAddress"].AsCharPtr(0),
 				config["SrcPort"].AsLong(0L),
-				config["UseThreadLocalMemory"].AsLong(0L)),
+				config["UseThreadLocalMemory"].AsLong(0L) != 0L),
 	fContext(SSLObjectManager::SSLOBJMGR()->GetCtx(config["Address"].AsCharPtr("127.0.0.1"),
 			 config["Port"].AsCharPtr("443"),
 			 config)),
@@ -570,7 +570,7 @@ SSLConnector::SSLConnector(ROAnything config, SSL_CTX *ctx, bool deleteCtx)
 				config["Timeout"].AsLong(0L),
 				config["SrcAddress"].AsCharPtr(0),
 				config["SrcPort"].AsLong(0L),
-				config["UseThreadLocalMemory"].AsLong(0L)),
+				config["UseThreadLocalMemory"].AsLong(0L) != 0L),
 	fContext((ctx) ? ctx : SSLModule::GetSSLClientCtx(config)),
 	fSSLSocketArgs(config["VerifyCertifiedEntity"].AsBool(0),
 				   config["CertVerifyString"].AsString(),
@@ -634,7 +634,7 @@ bool SSLConnector::IsCertCheckPassed(ROAnything config)
 	}
 	// We must verify certified entity....
 	if ( fSSLSocketArgs.VerifyCertifiedEntity() ) {
-		bool ret = clientInfo["SSL"]["Peer"]["AppLevelCertVerifyStatus"].AsLong(0);
+		bool ret = clientInfo["SSL"]["Peer"]["AppLevelCertVerifyStatus"].AsLong(0) != 0L;
 		Trace("Returning " << ret);
 		return ret;
 	}

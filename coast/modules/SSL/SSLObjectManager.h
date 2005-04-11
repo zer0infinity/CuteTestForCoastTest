@@ -10,6 +10,7 @@
 #define _SSLObjectManager_H
 
 //---- baseclass include -------------------------------------------------
+#include "config_ssl.h"
 #include "WDModule.h"
 #include "Threads.h"
 #include "SSLModule.h"
@@ -29,7 +30,7 @@ class RWLock;
 //! that a session stored away in  order to be resumed was checked  once  when it
 //! was stored away. Nevertheless, opennssl will check  if a stored  away sessions
 //! has timed out.
-class EXPORTDECL_WDBASE SSLObjectManager: public WDModule
+class EXPORTDECL_SSL SSLObjectManager: public WDModule
 {
 public:
 	//!it exists only one since it is a not cloned

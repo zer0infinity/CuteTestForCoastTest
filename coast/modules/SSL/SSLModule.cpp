@@ -456,10 +456,10 @@ Acceptor *SSLAcceptorFactory::MakeAcceptor(AcceptorCallBack *ac)
 		return 0;
 	}
 
-	SSLSocketArgs sslSocketArgs(Lookup("VerifyCertifiedEntity", 0L),
+	SSLSocketArgs sslSocketArgs(Lookup("VerifyCertifiedEntity", 0L) != 0L,
 								Lookup("CertVerifyString", ""),
-								Lookup("CertVerifyStringIsFilter", 0L),
-								0); // Server Sockets do session resumption based upon settings  in SSLModule,
+								Lookup("CertVerifyStringIsFilter", 0L) != 0L,
+								false); // Server Sockets do session resumption based upon settings  in SSLModule,
 	// using  openssl's  own session cache
 	return new SSLAcceptor( sslCtx,
 							Lookup("Address", (const char *)0),
