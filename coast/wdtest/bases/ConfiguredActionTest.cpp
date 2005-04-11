@@ -19,6 +19,7 @@
 #include "Role.h"
 #include "Action.h"
 #include "AnyUtils.h"
+#include "Timers.h"
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
@@ -113,6 +114,7 @@ void ConfiguredActionTest::DoTest(Anything testCase, const char *testCaseName)
 	StartTrace1(ConfiguredActionTest.DoTest, "<" << NotNull(testCaseName) << ">");
 	Context ctx;
 	DoTest(testCase, testCaseName, ctx);
+	RequestTimeLogger(ctx);
 }
 
 void ConfiguredActionTest::DoTest(Anything testCase, const char *testCaseName, Context &ctx)
