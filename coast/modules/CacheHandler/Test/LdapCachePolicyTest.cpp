@@ -79,7 +79,8 @@ void LdapCachePolicyTest::NoDataReadTest()
 void LdapCachePolicyTest::ReInitTest()
 {
 	StartTrace(LdapCachePolicyTest.ReInitTest);
-	for (int i = 0; i < 5; i++) {
+	int i;
+	for (i = 0; i < 5; i++) {
 		ROAnything result;
 		t_assert(LdapCacheGetter::Get(result, "TestDA1", ":0.dn"));
 		assertEqualm("ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch", result.AsString(), "Reset test failed.");
@@ -88,7 +89,7 @@ void LdapCachePolicyTest::ReInitTest()
 		assertEqualm(0, WDModule::Reset(fGlobalConfig, fGlobalConfig), "WDModule::Reset should have worked");
 		break;
 	}
-	for (int i = 0; i < 5; i++) {
+	for (i = 0; i < 5; i++) {
 		ROAnything result;
 		t_assert(LdapCacheGetter::Get(result, "TestDA1Action", ":0.dn"));
 		assertEqualm("ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch", result.AsString(), "Reset test failed.");
@@ -102,14 +103,15 @@ void LdapCachePolicyTest::ReInitTest()
 void LdapCachePolicyTest::CallsInARow()
 {
 	StartTrace(LdapCachePolicyTest.ReInitTest);
-	for (int i = 0; i < 5; i++) {
+	int i;
+	for (i = 0; i < 5; i++) {
 		ROAnything result;
 		t_assert(LdapCacheGetter::Get(result, "TestDA1", ":0.dn"));
 		assertEqualm("ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch", result.AsString(), "Reset test failed.");
 		t_assert(LdapCacheGetter::Get(result, "TestDA2", ":0.dn"));
 		assertEqualm("uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch", result.AsString(), "Reset test failed.");
 	}
-	for (int i = 0; i < 5; i++) {
+	for (i = 0; i < 5; i++) {
 		ROAnything result;
 		t_assert(LdapCacheGetter::Get(result, "TestDA1Action", ":0.dn"));
 		assertEqualm("ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch", result.AsString(), "Reset test failed.");
