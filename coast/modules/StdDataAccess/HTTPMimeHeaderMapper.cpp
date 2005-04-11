@@ -40,7 +40,7 @@ bool HTTPMimeHeaderMapper::DoPutStream(const char *, istream &is, Context &ctx, 
 	if (config.IsDefined("DoNotSplitHeaderFields") && config["DoNotSplitHeaderFields"].AsBool(0) == true) {
 		eProcMode = MIMEHeader::eDoNotSplitHeaderFields;
 	}
-	MIMEHeader mh(0, URLUtils::eDownshift, eProcMode);
+	MIMEHeader mh(URLUtils::eDownshift, eProcMode);
 	bool result = mh.DoReadHeader(is);
 	Trace("Result is: " << result);
 	if (result && is.good()) {

@@ -33,15 +33,9 @@ public:
 		eDoNotSplitHeaderFields,
 		eDoSplitHeaderFields
 	};
-	/*	//:default max of header length
-		static const long cDefaultMaxHeaderSz= 4096;
 
-		//!default max of line length
-		static const long cDefaultMaxLineSz= 512;
-	*/
-	//! represent a mime header, if we are within a
-	//! multipart MIME element we take the boundary string from sup
-	MIMEHeader(MIMEHeader *sup, URLUtils::NormalizeTag normalizeKey = URLUtils::eUpshift, MIMEHeader::ProcessMode = eDoSplitHeaderFields);
+	//! represent a mime header
+	MIMEHeader(URLUtils::NormalizeTag normalizeKey = URLUtils::eUpshift, ProcessMode = eDoSplitHeaderFields);
 
 	//! read the MIME header from is
 	//! reads MIME header from is withlimit the line size to
@@ -77,8 +71,8 @@ public:
 
 	//!consume \n at end of line if any
 	bool ConsumeEOL(istream &in) const;
-protected:
 
+protected:
 	//! parse a line with fieldname ": " value
 	//! stores value as string in fHeader[Normalize(fieldname)]
 	//! \param fieldname out the normalized fieldname
@@ -96,15 +90,14 @@ protected:
 
 	//!contains the request/reply header
 	Anything fHeader;
-	MIMEHeader *fSuper;
 
 	//!boundary between different part of multipart/form-data
 	String fBoundary;
 	bool fBoundaryChecked;
 	URLUtils::NormalizeTag fNormalizeKey;
 	ProcessMode fSplitHeaderFields;
+
 private:
-	MIMEHeader();
 	MIMEHeader(const MIMEHeader &);
 };
 

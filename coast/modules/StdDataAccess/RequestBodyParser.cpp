@@ -180,7 +180,7 @@ bool RequestBodyParser::ParseMultiPart(istream *is, const String &bound)
 		Trace("Body: <" << body << ">");
 		if (body != "") {
 			IStringStream innerpart(&body);
-			MIMEHeader hinner(&fHeader);
+			MIMEHeader hinner;
 			if (hinner.DoReadHeader(innerpart)) {
 				Anything partInfo;
 				if (!hinner.GetInfo().IsDefined("CONTENT-TYPE") ) {

@@ -62,7 +62,7 @@ void RequestReaderTest::testCleanupRequestLine()
 		Trace("TestCleanupRequestLine At testindex: " << i << " --------------------------------------------");
 
 		Context ctx;
-		MIMEHeader header(0);
+		MIMEHeader header;
 		HTTPProcessor httpProc("HTTPProc");
 		httpProc.fCheckUrlEncodingOverride									= cConfig["CheckUrlEncodingOverride"].AsString();
 		httpProc.fCheckUrlPathContainsUnsafeCharsOverride 					= cConfig["CheckUrlPathContainsUnsafeCharsOverride"].AsString();
@@ -98,7 +98,7 @@ void RequestReaderTest::testReadMinimalInput()
 	FOREACH_ENTRY("TestReadMinimalInput", cConfig, cName) {
 		Trace("TestReadMinimalInput At testindex: " << i << " --------------------------------------------");
 		Context ctx;
-		MIMEHeader header(0);
+		MIMEHeader header;
 		HTTPProcessor httpProc("HTTPProc");
 		httpProc.fRequestSizeLimit 	= cConfig["RequestSizeLimit"].AsLong(0);
 		httpProc.fLineSizeLimit 	= cConfig["LineSizeLimit"].AsLong(0);

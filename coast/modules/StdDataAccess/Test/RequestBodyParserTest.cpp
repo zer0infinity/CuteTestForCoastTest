@@ -56,7 +56,7 @@ void RequestBodyParserTest::ReadMultiPartPost()
 
 	t_assertm(is != 0, "expected 'MultiPartBody.txt' to be there");
 	if ( is ) {
-		MIMEHeader mh(0);
+		MIMEHeader mh;
 		t_assertm(mh.DoReadHeader(*is, 4096, 4096), "expected global header parsing to succeed");
 
 		RequestBodyParser sm(mh, *is);
@@ -77,7 +77,7 @@ void RequestBodyParserTest::ReadMultiPartPost()
 
 	is =  System::OpenStream("MultiPartBody.txt", 0);
 	if ( is ) {
-		MIMEHeader mh(0);
+		MIMEHeader mh;
 		t_assertm(mh.DoReadHeader(*is, 4096, 4096), "expected global header parsing to succeed");
 
 		RequestBodyParser sm(mh, *is);
@@ -108,7 +108,7 @@ void RequestBodyParserTest::ReadToBoundaryTestWithStreamFailure()
 		String result, strInput(cConfig["Input"].AsCharPtr());
 		Trace("input to parse [" << strInput << "]");
 		StringStream tiss(strInput);
-		MIMEHeader mh(0);
+		MIMEHeader mh;
 		RequestBodyParser sm(mh, tiss);
 #if defined(WIN32) && !defined(ONLY_STD_IOSTREAM)
 		int iState = tiss.rdstate();
@@ -163,7 +163,7 @@ void RequestBodyParserTest::ReadToBoundaryTest()
 	FOREACH_ENTRY("ReadToBoundaryTest", cConfig, cName) {
 		String result;
 		IStringStream tiss(Renderer::RenderToString(ctx, cConfig["Input"]));
-		MIMEHeader mh(0);
+		MIMEHeader mh;
 		RequestBodyParser sm(mh, tiss);
 
 		bool res = sm.ReadToBoundary(&tiss, cConfig["Boundary"].AsString(), result);
@@ -173,8 +173,8 @@ void RequestBodyParserTest::ReadToBoundaryTest()
 		String expUnparsed(Renderer::RenderToString(ctx, cConfig["ExpectedUnparsedContent"]));
 		String realUnparsed(sm.GetUnparsedContent());
 		if (!assertEqualm(expUnparsed, realUnparsed, cName)) {
-			for (long i = 0; i < expUnparsed.Length() && i < realUnparsed.Length(); i++) {
-				if (!assertEqualm(expUnparsed[i], realUnparsed[i], TString("Position: ") << i << " " << expUnparsed[i])) {
+			for (long ii = 0; ii < expUnparsed.Length() && ii < realUnparsed.Length(); ii++) {
+				if (!assertEqualm(expUnparsed[ii], realUnparsed[ii], TString("Position: ") << ii << " " << expUnparsed[ii])) {
 					break;
 				}
 			}
@@ -195,7 +195,7 @@ void RequestBodyParserTest::ReadToBoundaryTest()
 		testinput << "\r\nsome content2\r\n--" << testboundary;
 		{
 			IStringStream is(&testinput);
-			MIMEHeader mh(0);
+			MIMEHeader mh;
 			RequestBodyParser sm(mh, is);
 
 			t_assertm(!sm.ReadToBoundary(&is, testboundary, result), "expected end reached with simple input");
@@ -207,7 +207,7 @@ void RequestBodyParserTest::ReadToBoundaryTest()
 		}
 		{
 			IStringStream is(&testinput);
-			MIMEHeader mh(0);
+			MIMEHeader mh;
 			RequestBodyParser sm(mh, is);
 			sm.ReadToBoundary(&is, testboundary, result);
 			String unparsedContent;
@@ -226,7 +226,7 @@ void RequestBodyParserTest::ReadToBoundaryTest()
 		testinput << "\r\nsome content2\r\n--" << testboundary << "--";
 		{
 			IStringStream is(&testinput);
-			MIMEHeader mh(0);
+			MIMEHeader mh;
 			RequestBodyParser sm(mh, is);
 
 			t_assertm(!sm.ReadToBoundary(&is, testboundary, result), "expected  end not reached with simple input");
@@ -238,7 +238,7 @@ void RequestBodyParserTest::ReadToBoundaryTest()
 		}
 		{
 			IStringStream is(&testinput);
-			MIMEHeader mh(0);
+			MIMEHeader mh;
 			RequestBodyParser sm(mh, is);
 			sm.ReadToBoundary(&is, testboundary, result);
 			String unparsedContent;
@@ -287,7 +287,7 @@ void RequestBodyParserTest::ParseMultiPartTest()
 	result[0L]["body"].Append("01234");
 	{
 		IStringStream is(testinput);
-		MIMEHeader mh(0);
+		MIMEHeader mh;
 		RequestBodyParser sm(mh, is);
 
 		assertAnyEqualm(Anything(), sm.GetContent(), "expected fContent to be empty" );
@@ -295,7 +295,7 @@ void RequestBodyParserTest::ParseMultiPartTest()
 	}
 	{
 		IStringStream is(testinput1);
-		MIMEHeader mh(0);
+		MIMEHeader mh;
 		RequestBodyParser sm(mh, is);
 		sm.ParseMultiPart(&is, testboundary);
 

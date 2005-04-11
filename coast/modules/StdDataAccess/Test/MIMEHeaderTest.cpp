@@ -53,7 +53,7 @@ void MIMEHeaderTest::SimpleHeaderTest()
 	// some bad data tests
 	testinput = "nonsense";
 	{
-		MIMEHeader mh(0);
+		MIMEHeader mh;
 		StringStream is(testinput);
 
 		// basic checks of success
@@ -104,7 +104,7 @@ void MIMEHeaderTest::SimpleHeaderTest()
 	result1["ACCEPT-CHARSET"] = "iso-8859-1,*,utf-8";
 
 	{
-		MIMEHeader mh(0);
+		MIMEHeader mh;
 		StringStream is(testinput);
 
 		// basic checks of success
@@ -119,7 +119,7 @@ void MIMEHeaderTest::SimpleHeaderTest()
 		assertAnyEqual(result, mh.GetInfo());
 	}
 	{
-		MIMEHeader mh(0, URLUtils::eUpshift, MIMEHeader::eDoNotSplitHeaderFields);
+		MIMEHeader mh(URLUtils::eUpshift, MIMEHeader::eDoNotSplitHeaderFields);
 		StringStream is(testinput);
 
 		// basic checks of success
@@ -253,7 +253,7 @@ void MIMEHeaderTest::MultiPartHeaderTest()
 	result3["BOUNDARY"] = "---------------------------61400283883149348477195787";
 
 	{
-		MIMEHeader mh(0);
+		MIMEHeader mh;
 		StringStream is(testinput);
 
 		// basic checks of success
@@ -268,7 +268,7 @@ void MIMEHeaderTest::MultiPartHeaderTest()
 		assertAnyEqual(result, mh.GetInfo());
 	}
 	{
-		MIMEHeader mh(0);
+		MIMEHeader mh;
 		StringStream is(testinput1);
 
 		// basic checks of success
@@ -283,7 +283,7 @@ void MIMEHeaderTest::MultiPartHeaderTest()
 		assertAnyEqual(result1, mh.GetInfo());
 	}
 	{
-		MIMEHeader mh(0, URLUtils::eUpshift, MIMEHeader::eDoNotSplitHeaderFields);
+		MIMEHeader mh(URLUtils::eUpshift, MIMEHeader::eDoNotSplitHeaderFields);
 		StringStream is(testinput);
 
 		// basic checks of success
@@ -298,7 +298,7 @@ void MIMEHeaderTest::MultiPartHeaderTest()
 		assertAnyEqual(result2, mh.GetInfo());
 	}
 	{
-		MIMEHeader mh(0, URLUtils::eUpshift, MIMEHeader::eDoNotSplitHeaderFields);
+		MIMEHeader mh(URLUtils::eUpshift, MIMEHeader::eDoNotSplitHeaderFields);
 		StringStream is(testinput1);
 
 		// basic checks of success
@@ -320,7 +320,7 @@ void MIMEHeaderTest::PartHeaderTest()
 	StartTrace(MIMEHeaderTest.PartHeaderTest);
 
 	String testinput;
-	MIMEHeader mh(0);
+	MIMEHeader mh;
 
 	// test a multipart/form-data part header
 	testinput =

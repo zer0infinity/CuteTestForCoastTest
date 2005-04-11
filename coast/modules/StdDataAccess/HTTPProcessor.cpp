@@ -48,7 +48,7 @@ void HTTPProcessor::DoReadInput(iostream &Ios, Context &ctx)
 	StartTrace(HTTPProcessor.DoReadInput);
 	MethodTimer(HTTPProcessor.DoReadInput, "Reading input", ctx);
 
-	MIMEHeader header(0); // no super header
+	MIMEHeader header; // no super header
 
 	RequestReader reader(this, header);
 	{

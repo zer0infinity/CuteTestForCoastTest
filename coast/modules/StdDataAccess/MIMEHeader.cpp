@@ -15,11 +15,10 @@
 
 //--- c-library modules used ---------------------------------------------------
 
-MIMEHeader::MIMEHeader(MIMEHeader *sup, URLUtils::NormalizeTag normalizeKey, MIMEHeader::ProcessMode splitHeaderFields)
-	:	fSuper(sup),
-		fBoundaryChecked(false),
-		fNormalizeKey(normalizeKey),
-		fSplitHeaderFields(splitHeaderFields)
+MIMEHeader::MIMEHeader(URLUtils::NormalizeTag normalizeKey, MIMEHeader::ProcessMode splitHeaderFields)
+	: fBoundaryChecked(false)
+	, fNormalizeKey(normalizeKey)
+	, fSplitHeaderFields(splitHeaderFields)
 {
 	StartTrace(MIMEHeader.Ctor);
 }
