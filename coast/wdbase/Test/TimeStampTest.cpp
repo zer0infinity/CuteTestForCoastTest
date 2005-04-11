@@ -254,15 +254,15 @@ void TimeStampTest::testInvalid()
 	t_assertm(result.IsValid(), "Expected valid value");
 	assertEqual(946782245, result.AsLong());
 
-	TimeStamp max(TimeStamp::Max()), min(TimeStamp::Min());
-	t_assertm(max.IsValid(), "Expected valid value");
-	t_assertm(min.IsValid(), "Expected valid value");
-	min -= 1;
-	max += 1;
-	t_assertm(!max.IsValid(), "Expected invalid value");
-	t_assertm(!min.IsValid(), "Expected invalid value");
-	assertEqualm("19691231235959", max.AsString(), "Date must be invalid now");
-	assertEqualm("19691231235959", min.AsString(), "Date must be invalid now");
+	TimeStamp tsMax(TimeStamp::Max()), tsMin(TimeStamp::Min());
+	t_assertm(tsMax.IsValid(), "Expected valid value");
+	t_assertm(tsMin.IsValid(), "Expected valid value");
+	tsMin -= 1;
+	tsMax += 1;
+	t_assertm(!tsMax.IsValid(), "Expected invalid value");
+	t_assertm(!tsMin.IsValid(), "Expected invalid value");
+	assertEqualm("19691231235959", tsMax.AsString(), "Date must be invalid now");
+	assertEqualm("19691231235959", tsMin.AsString(), "Date must be invalid now");
 }
 
 void TimeStampTest::testStaticMethods()
