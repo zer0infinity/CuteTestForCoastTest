@@ -79,7 +79,8 @@ void LDAPDAICachePolicyTest::NoDataReadTest()
 void LDAPDAICachePolicyTest::ReInitTest()
 {
 	StartTrace(LDAPDAICachePolicyTest.ReInitTest);
-	for (int i = 0; i < 5; i++) {
+	int i;
+	for (i = 0; i < 5; i++) {
 		ROAnything result;
 		t_assert(LDAPDAICacheGetter::Get(result, "TestDA1", ":0.name"));
 		assertEqualm("ifs APPL. User Directory", result.AsString(), "Reset test failed.");
@@ -88,7 +89,7 @@ void LDAPDAICachePolicyTest::ReInitTest()
 		assertEqualm(0, WDModule::Reset(fGlobalConfig, fGlobalConfig), "WDModule::Reset should have worked");
 		break;
 	}
-	for (int i = 0; i < 5; i++) {
+	for (i = 0; i < 5; i++) {
 		ROAnything result;
 		t_assert(LDAPDAICacheGetter::Get(result, "TestDA1Action", ":0.name"));
 		assertEqualm("ifs APPL. User Directory", result.AsString(), "Reset test failed.");
@@ -102,14 +103,15 @@ void LDAPDAICachePolicyTest::ReInitTest()
 void LDAPDAICachePolicyTest::CallsInARow()
 {
 	StartTrace(LDAPDAICachePolicyTest.ReInitTest);
-	for (int i = 0; i < 5; i++) {
+	int i;
+	for (i = 0; i < 5; i++) {
 		ROAnything result;
 		t_assert(LDAPDAICacheGetter::Get(result, "TestDA1", ":0.name"));
 		assertEqualm("ifs APPL. User Directory", result.AsString(), "Reset test failed.");
 		t_assert(LDAPDAICacheGetter::Get(result, "TestDA2", ":0.pd-dn"));
 		assertEqualm("cn=CH10601-tkgae,dc=tkfpd.hsr.ch", result.AsString(), "Reset test failed.");
 	}
-	for (int i = 0; i < 5; i++) {
+	for (i = 0; i < 5; i++) {
 		ROAnything result;
 		t_assert(LDAPDAICacheGetter::Get(result, "TestDA1Action", ":0.name"));
 		assertEqualm("ifs APPL. User Directory", result.AsString(), "Reset test failed.");
