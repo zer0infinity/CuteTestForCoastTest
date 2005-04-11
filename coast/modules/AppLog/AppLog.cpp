@@ -77,11 +77,11 @@ bool AppLogModule::Init(const Anything &config)
 			const char *servername = servers.SlotName(i);
 			Server *s;
 			if ( servername && (s = Server::FindServer(servername)) ) {
-				Anything config;
-				config["Channels"] = servers[i];
-				config["LogDir"] = strLogDir;
-				config["RotateDir"] = strRotateDir;
-				retCode = retCode && MakeChannels(servername, config);
+				Anything cfg;
+				cfg["Channels"] = servers[i];
+				cfg["LogDir"] = strLogDir;
+				cfg["RotateDir"] = strRotateDir;
+				retCode = retCode && MakeChannels(servername, cfg);
 			}
 			SysLog::WriteToStderr(".", 1);
 		}
