@@ -38,6 +38,7 @@ void PeriodicAction::Run()
 		if ( !CheckState(Thread::eTerminationRequested, fWaitTime) && IsRunning() ) {
 			Trace("Starting work and calling Action [" << fAction << "]");
 			Context ctx;
+			ctx.GetTmpStore()["PeriodicActionTimeout"] = fWaitTime;
 			ctx.Process(fAction);
 			if ( IsRunning() ) {
 				Trace("signalling Ready state");
