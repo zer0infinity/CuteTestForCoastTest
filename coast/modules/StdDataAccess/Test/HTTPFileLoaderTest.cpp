@@ -135,8 +135,7 @@ void HTTPFileLoaderTest::ExecTest()
 	tmpStore["REQUEST_URI"] = "/config/NotThere<script>alert(\"gugus\")</script>";
 	t_assertm(!hfl.Exec(ctx, &mapin, &mout), "expected failure of file loading");
 	String body(ctx.Lookup("Mapper.HTTPBody", "<"));
-	t_assertm(body.Contains("<p>The requested URL <b>/config/NotTherescriptalert(\"gugus\")/script</b> is invalid.</p>" ),
-			  "No tainted content expected.");
+	t_assertm(body.Contains(_QUOTE_(<p>The requested URL <b>/config/NotTherescriptalert("gugus")/script</b> is invalid.</p>)) >= 0, "No tainted content expected.");
 
 	assertEqual(404, ctx.Lookup("Mapper.ResponseCode", 200L));
 	assertEqual("Not Found", ctx.Lookup("Mapper.ResponseMsg", "Ok"));
