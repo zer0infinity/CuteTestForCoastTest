@@ -38,7 +38,14 @@ void PipeExecutorTest::EchoEnvTest()
 	StartTrace(PipeExecutorTest.EchoEnvTest);
 	Anything env;
 	env["HALLO"] = "Peter";
-	PipeExecutor Execute("/usr/bin/env", env);
+	String fullname;
+#if defined(WIN32)
+	System::FindFile(fullname, "env.exe");
+#else
+	fullname << "/usr/bin/env";
+#endif
+	Trace("Path:[" << fullname << "]");
+	PipeExecutor Execute(fullname, env);
 	t_assert(Execute.Start());
 	ostream *os = Execute.GetStream();
 	t_assertm(os != NULL, "Execute env failed");
@@ -75,11 +82,20 @@ void PipeExecutorTest::FailExecTest()
 		Execute.ShutDownWriting();
 	}
 }
+
 void PipeExecutorTest::CatGugusErrTest()
 {
 	StartTrace(PipeExecutorTest.CatGugusErrTest);
 	Anything env;
-	PipeExecutor Execute("/bin/cat ./gugus", env, ".", 3000L, true); // file doesn't exist
+	String fullname;
+#if defined(WIN32)
+	System::FindFile(fullname, "cat.exe");
+#else
+	fullname << "/bin/cat";
+#endif
+	Trace("Path:[" << fullname << "]");
+	fullname << " ./gugus";
+	PipeExecutor Execute(fullname, env, ".", 3000L, true); // file doesn't exist
 	t_assert(Execute.Start());
 	istream *err = Execute.GetStderr();
 	t_assertm(err != NULL, "Execute cat stderr failed");
@@ -92,6 +108,7 @@ void PipeExecutorTest::CatGugusErrTest()
 		t_assert(s1.Length() > 0);
 	}
 }
+
 void PipeExecutorTest::CatWorkingDirTest()
 {
 	StartTrace(PipeExecutorTest.CatWorkingDirTest);
@@ -107,8 +124,14 @@ void PipeExecutorTest::CatWorkingDirTest()
 		(*os) << msg << flush;
 		delete os;
 	}
-	String cmd("/bin/cat ");
-	cmd << fileName;
+	String cmd;
+#if defined(WIN32)
+	System::FindFile(cmd, "cat.exe");
+#else
+	cmd << "/bin/cat";
+#endif
+	Trace("Path:[" << cmd << "]");
+	cmd << " " << fileName;
 	PipeExecutor Execute(cmd, env, wd);
 	t_assert(Execute.Start());
 	istream *is = Execute.GetStream();
@@ -129,14 +152,14 @@ void PipeExecutorTest::EchoCatTest()
 {
 	StartTrace(PipeExecutorTest.EchoCatTest);
 	Anything env;
-#if defined(WIN32)
 	String fullname;
+#if defined(WIN32)
 	System::FindFile(fullname, "cat.exe");
+#else
+	fullname << "/bin/cat";
+#endif
 	Trace("Path:[" << fullname << "]");
 	PipeExecutor Execute(fullname, env);
-#else
-	PipeExecutor Execute("/bin/cat", env);
-#endif
 	t_assert(Execute.Start());
 	ostream *os = Execute.GetStream();
 	t_assertm(os != NULL, "Execute cat failed");
@@ -148,7 +171,7 @@ void PipeExecutorTest::EchoCatTest()
 		t_assertm(!!(*is), "Execute cat failed");
 		String s0("hallo");
 		(*os) << s0 << endl;
-		Execute.ShutDownWriting();
+		t_assert(Execute.ShutDownWriting());
 		String s1;
 		// may be we need to close it here...
 		(*is) >> s1;
@@ -156,11 +179,19 @@ void PipeExecutorTest::EchoCatTest()
 	}
 	assertEqual(0, Execute.TerminateChild()); // everything is over
 }
+
 void PipeExecutorTest::KillTest()
 {
 	StartTrace(PipeExecutorTest.KillTest);
 	Anything env;
-	PipeExecutor Execute("/bin/cat", env, ".", 10000L);
+	String fullname;
+#if defined(WIN32)
+	System::FindFile(fullname, "cat.exe");
+#else
+	fullname << "/bin/cat";
+#endif
+	Trace("Path:[" << fullname << "]");
+	PipeExecutor Execute(fullname, env, ".", 10000L);
 	t_assert(Execute.Start());
 	ostream *os = Execute.GetStream();
 	t_assertm(os != NULL, "Execute cat failed");
@@ -188,6 +219,7 @@ void PipeExecutorTest::KillTest()
 //		t_assertm(!(*is),"oops, reading from dead cat possible");
 	}
 }
+
 void PipeExecutorTest::ParseParamTest()
 {
 	StartTrace(PipeExecutorTest.ParseParamTest);
@@ -196,8 +228,8 @@ void PipeExecutorTest::ParseParamTest()
 	Execute.ParseParam("/bin/cat /etc/passwd", p);
 	assertEqual("/bin/cat", p[0L].AsCharPtr());
 	assertEqual("/etc/passwd", p[1L].AsCharPtr());
-
 }
+
 void PipeExecutorTest::PrepareParamTest()
 {
 	StartTrace(PipeExecutorTest.PrepareParamTest);
@@ -210,6 +242,7 @@ void PipeExecutorTest::PrepareParamTest()
 	assertCharPtrEqual("/etc/passwd", p[1]);
 	assertEqual(0, p[2]);
 }
+
 void PipeExecutorTest::PrepareEnvTest()
 {
 	StartTrace(PipeExecutorTest.PrepareEnvTest);
@@ -222,6 +255,7 @@ void PipeExecutorTest::PrepareEnvTest()
 	assertCharPtrEqual("Hallo=Peter", p[0]);
 	assertEqual(0, p[1]);
 }
+
 void PipeExecutorTest::DummyKillTest()
 {
 	StartTrace(PipeExecutorTest.DummyKillTest);
