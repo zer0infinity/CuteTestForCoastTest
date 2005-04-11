@@ -132,7 +132,6 @@ void AnyBuiltInSortTest::SortThree()
 	t_assert(checksorted(b));
 	b.SortByKey();
 	t_assert(checksorted(b));
-
 }
 
 void AnyBuiltInSortTest::SortMany()
@@ -141,8 +140,13 @@ void AnyBuiltInSortTest::SortMany()
 	Anything a;
 	Anything b;
 	const long size = 1000;
-	for (long i = 0; i < size; i++) {
+	long i;
+	for (i = 0; i < size; i++) {
+#if defined(WIN32)
+		long r = rand();
+#else
 		long r = random();
+#endif
 		String sr;
 		sr << i << "bar" << r << "foo"; // needs i to make it unique
 		a[sr] = i;
@@ -156,7 +160,7 @@ void AnyBuiltInSortTest::SortMany()
 	cerr << "sorting of " << size << " took " << dt.Diff() << " ms.\n";
 	t_assertm(checksorted(a), "should be sorted");
 	assertEqual(size, a.GetSize());
-	for (long i = 0; i < size; i++) {
+	for (i = 0; i < size; i++) {
 		if (!assertEqualm(i, a[b.SlotName(i)].AsLong(), TString("in slot i : ") << i)) {
 			break;
 		}
@@ -169,7 +173,6 @@ void AnyBuiltInSortTest::SortMany()
 	SlotnameSorter::Sort(b);
 	cerr << "Slogname sorting of " << size << " took " << dt.Diff() << " ms.\n";
 	assertAnyEqual(a, b);
-
 }
 
 void AnyBuiltInSortTest::SortManyStringValues()
@@ -179,7 +182,11 @@ void AnyBuiltInSortTest::SortManyStringValues()
 	Anything b;
 	const long size = 1000;
 	for (long i = 0; i < size; i++) {
+#if defined(WIN32)
+		long r = rand();
+#else
 		long r = random();
+#endif
 		String sr;
 		sr << "bar" << r << "foo"; // needs i to make it unique
 		a.Append(sr);;
@@ -192,6 +199,7 @@ void AnyBuiltInSortTest::SortManyStringValues()
 	t_assertm(checksortedbyvalue(a), "should be sorted");
 	assertEqual(size, a.GetSize());
 }
+
 void AnyBuiltInSortTest::SortIsStable()
 {
 	StartTrace(AnyBuiltInSortTest.SortIsStable);
@@ -199,12 +207,13 @@ void AnyBuiltInSortTest::SortIsStable()
 	a["d"] = 1;
 	a["c"] = 2;
 	a["a"] = 3;
-	for (long i = 4; i < 10; i++) {
+	long i;
+	for (i = 4; i < 10; i++) {
 		a.Append(i);
 	}
 	t_assertm(checksorted(a, true), "should be unsorted");
 	a.SortByKey();
-	for (long i = 0; i < a.GetSize() - 1; i++)
+	for (i = 0; i < a.GetSize() - 1; i++)
 		if (!a.SlotName(i) && !a.SlotName(i + 1)) {
 			t_assertm(a[i].AsLong() < a[i+1].AsLong(), TString("unstable at: ") << i << ":" << a[i].AsLong() << " not less than " << a[i+1].AsLong());
 		}
