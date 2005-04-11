@@ -149,12 +149,13 @@ long PipeExecutor::TerminateChild(int termSignal, bool tryhard)
 	return -1; // something went wrong
 }
 #endif
-void PipeExecutor::ShutDownWriting()
+bool PipeExecutor::ShutDownWriting()
 {
 	StartTrace(PipeExecutor.ShutDownWriting);
 	if (fPipe) {
-		fPipe->ShutDownWriting();
+		return fPipe->ShutDownWriting();
 	}
+	return false;
 }
 
 bool PipeExecutor::ParseParam(String cmd, Anything &param)
@@ -250,6 +251,7 @@ bool PipeExecutor::SetupChildPipes(Pipe &stdChildPipeIn, Pipe &stdChildPipeOut)
 
 bool PipeExecutor::ForkAndRun(Anything parm, Anything env)
 {
+	StartTrace(PipeExecutor.ForkAndRun);
 	if (fPipe) {
 		return false; // we can do it only once
 	}
@@ -258,10 +260,8 @@ bool PipeExecutor::ForkAndRun(Anything parm, Anything env)
 		// should implement search path here? better within CGI module
 		Pipe inp(fTimeout);
 		Pipe outp(fTimeout);
-		if (inp.GetReadFd()  >= 0 &&
-			inp.GetWriteFd() >= 0 &&
-			outp.GetReadFd() >= 0 &&
-			outp.GetWriteFd() >= 0) {
+		if (inp.GetReadFd() >= 0 && inp.GetWriteFd() >= 0 &&
+			outp.GetReadFd() >= 0 && outp.GetWriteFd() >= 0 ) {
 			if (fRedirectStderr) {
 				fStderr = new Pipe(fTimeout);
 			}
@@ -321,7 +321,7 @@ bool PipeExecutor::ForkAndRun(Anything parm, Anything env)
 
 				sa.nLength              = sizeof (SECURITY_ATTRIBUTES);
 				sa.lpSecurityDescriptor = NULL;
-				sa.bInheritHandle       = true;
+				sa.bInheritHandle       = FALSE;
 
 				memset(&aStartupInfo, 0, sizeof (STARTUPINFO));
 				memset(&aProcessInformation, 0, sizeof (PROCESS_INFORMATION));
@@ -349,7 +349,7 @@ bool PipeExecutor::ForkAndRun(Anything parm, Anything env)
 				lpCommandLine = *cgiParams.GetParams();
 				char **lpEnv = cgiEnv.GetEnv();
 				fRet = CreateProcess(lpApplicationName, lpCommandLine, &sa, &sa,
-									 sa.bInheritHandle, dwCreationFlags, lpEnv, (const char *)fWorkingDir, &aStartupInfo, &aProcessInformation);
+									 TRUE, dwCreationFlags, lpEnv, (const char *)fWorkingDir, &aStartupInfo, &aProcessInformation);
 				if (fRet) {
 					CloseHandle(aProcessInformation.hThread);
 					fChildPid = (int)aProcessInformation.hProcess;

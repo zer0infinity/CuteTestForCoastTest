@@ -55,7 +55,7 @@ public:
 	//! buffer is full. So whenever you write large portions
 	//! of data to a child process try to read in-between if
 	//! you get timeouts.
-	void ShutDownWriting();
+	bool ShutDownWriting();
 
 	//!do the real thing, interpret cmd and look for program that
 	//! corresponds to cmd first element, only use blank as delimiter in cmd
