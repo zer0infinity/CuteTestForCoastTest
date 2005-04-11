@@ -109,7 +109,7 @@ void ConnectorTest::timeOutTest()
 #if !defined(ATRAXOSA) && !defined(WIN32)
 	ConnectAndAssert(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port"].AsLong(), 1L, true, false);
 #else
-	ConnectAndAssert(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port"].AsLong(), 1000L, false);
+	ConnectAndAssert(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port"].AsLong(), 1000L, true, false);
 #endif
 	ConnectAndAssert(fConfig["Testhost2"]["name"].AsString(), fConfig["Testhost2"]["port"].AsLong(), 5000L, true, false);
 	ConnectAndAssert(fConfig["Testhost3"]["name"].AsString(), fConfig["Testhost3"]["port"].AsLong(), 100L, true, true);
