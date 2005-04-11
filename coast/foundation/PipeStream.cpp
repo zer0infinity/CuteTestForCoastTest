@@ -54,6 +54,7 @@ PipeStreamBuf::PipeStreamBuf(Pipe *myPipe, long timeout, long sockbufsz, int mod
 	, fReadCount(0)
 	, fWriteCount(0)
 {
+	StartTrace(PipeStreamBuf.PipeStreamBuf);
 	if (fPipe) {
 		// set to non-blocking IO
 		Socket::SetToNonBlocking(fPipe->GetReadFd());
@@ -70,6 +71,7 @@ PipeStreamBuf::PipeStreamBuf(const PipeStreamBuf &ssbuf)
 	, fReadCount(ssbuf.fReadCount)
 	, fWriteCount(ssbuf.fWriteCount)
 {
+	StartTrace1(PipeStreamBuf.PipeStreamBuf, "copy");
 	int mode = 0;
 	if (fReadBufStorage.Capacity() > 0) {
 		mode |= ios::in;
@@ -82,6 +84,7 @@ PipeStreamBuf::PipeStreamBuf(const PipeStreamBuf &ssbuf)
 
 void PipeStreamBuf::xinit()
 {
+	StartTrace(PipeStreamBuf.xinit);
 	//setb(start(), end(), 0); // holding area
 	setg(0, 0, 0);
 	setp(0, 0);
@@ -89,6 +92,7 @@ void PipeStreamBuf::xinit()
 
 PipeStreamBuf::~PipeStreamBuf()
 {
+	StartTrace(PipeStreamBuf.~PipeStreamBuf);
 	sync(); // clear the buffer
 	setg(0, 0, 0);
 	setp(0, 0);
@@ -96,6 +100,7 @@ PipeStreamBuf::~PipeStreamBuf()
 
 int PipeStreamBuf::overflow( int c )
 {
+	StartTrace1(PipeStreamBuf.overflow, "char [" << (char)c << "] val: " << (long)c);
 	if (!pptr()) {
 		setp(startw(), endw());	// reinitialize put area
 	} else {
@@ -118,6 +123,7 @@ int PipeStreamBuf::overflow( int c )
 
 int PipeStreamBuf::underflow()
 {
+	StartTrace(PipeStreamBuf.underflow);
 	int count;
 
 	if (gptr() < egptr()) { //(in_avail())
@@ -141,6 +147,7 @@ int PipeStreamBuf::underflow()
 
 int PipeStreamBuf::sync()
 {
+	StartTrace(PipeStreamBuf.sync);
 	long count;
 	long written = 0;
 
@@ -156,12 +163,14 @@ int PipeStreamBuf::sync()
 
 PipeStreamBuf::pos_type PipeStreamBuf::seekpos(PipeStreamBuf::pos_type p, PipeStreamBuf::openmode mode)
 {
+	StartTrace1(PipeStreamBuf.seekpos, (long)p);
 	sync();
 	return pos_type(0);
 }
 
 PipeStreamBuf::pos_type PipeStreamBuf::seekoff(PipeStreamBuf::off_type of, PipeStreamBuf::seekdir dir, PipeStreamBuf::openmode mode)
 {
+	StartTrace1(PipeStreamBuf.seekoff, (long)of);
 	sync();
 	return pos_type(0);
 }
@@ -246,6 +255,7 @@ ostream  &operator<<(ostream &os, PipeStreamBuf *ssbuf)
 				totBytesRead += bytesRead;
 				SubTrace(content, buf);
 				os.write(buf, bytesRead);
+				Trace("read another " << bytesRead << " bytes");
 			} else if (bytesRead < 0) {
 				String logMsg("Pipe error on read: ");
 				logMsg << (long) errno;
@@ -257,6 +267,7 @@ ostream  &operator<<(ostream &os, PipeStreamBuf *ssbuf)
 		} while ( bytesRead > 0 );
 
 		os.flush();
+		Trace("total bytes read: " << totBytesRead);
 	}
 	return os;
 }
