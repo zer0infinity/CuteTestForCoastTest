@@ -20,10 +20,14 @@ using namespace std;
 #endif
 
 #include <time.h> // for LocalTime parameters struct tm
+#if defined(WIN32)
+#include <sys/types.h>
+#endif
 #include <sys/stat.h>
 
 #if defined(WIN32)
 typedef long pid_t;
+typedef long uid_t;
 // following values were taken from linux <bits/poll.h> file
 #define POLLIN		0x001
 #define POLLPRI		0x002

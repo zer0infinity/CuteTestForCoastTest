@@ -32,6 +32,7 @@ using namespace std;
 #include <stdlib.h>
 #include <stdio.h>
 #include <limits.h>
+#include <errno.h>
 
 #if defined(WIN32)
 #include <io.h>
@@ -41,7 +42,6 @@ using namespace std;
 #include <unistd.h>
 #include <dirent.h>  // directory access
 #include <sys/time.h>
-#include <errno.h>
 #include <string.h>
 #include <sys/utsname.h>
 #if defined(__linux__)
@@ -719,7 +719,7 @@ bool System::GetFileSize(const char *path, ul_long &ulFileSize)
 	struct stat stbuf;
 	if ( CheckPath(path, &stbuf) ) {
 		ulFileSize = stbuf.st_size;
-		Trace("file size: " << (long)ulFileSize << "bytes");
+		Trace("file size: " << (long)ulFileSize << " bytes");
 		return true;
 	}
 	return false;
@@ -1030,7 +1030,7 @@ pid_t System::getpid()
 uid_t System::getuid()
 {
 #if defined(WIN32)
-//	??? %%% Marcel, please help!;
+	return (uid_t) - 1L;
 #else
 	return ::getuid();
 #endif
@@ -1078,14 +1078,22 @@ bool System::BlocksLeftOnFS(const char *pFsPath, ul_long &ulBlocks, unsigned lon
 	struct statvfs buf;
 	if (0 == statvfs(pFsPath, &buf)) {
 		lBlkSize = (unsigned long)buf.f_frsize;
+		ulBlocks = (ul_long)buf.f_bavail;
 #elif defined(__linux__)
 	struct statfs buf;
 	if (0 == statfs(pFsPath, &buf)) {
 		lBlkSize = (unsigned long)buf.f_bsize;
-#endif
 		ulBlocks = (ul_long)buf.f_bavail;
-		Trace("blocksize: " << (long)lBlkSize << "b free blocks: " << (long)ulBlocks);
+#elif defined(WIN32)
+	_ULARGE_INTEGER ulBytesAvailable;
+	if ( GetDiskFreeSpaceEx(pFsPath, &ulBytesAvailable, NULL, NULL) != 0 ) {
+		lBlkSize = 1;
+		ulBlocks = ulBytesAvailable.QuadPart;
+#endif
+		Trace("blocksize: " << (long)lBlkSize << " bytes free blocks: " << (long)ulBlocks);
 		return true;
+	} else {
+		SYSWARNING("Failed to get blocks left on FS [" << SysLog::LastSysError() << "]");
 	}
 	return false;
 }
