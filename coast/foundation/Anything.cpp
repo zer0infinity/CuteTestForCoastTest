@@ -1077,8 +1077,9 @@ public:
 	const Anything &IntValue(long at);
 	//!works with index into fContents
 	const String &IntKey(long at) ;
+
 	//!interface for internal comparing during sort
-	class AnyIntCompare
+	class EXPORTDECL_FOUNDATION AnyIntCompare
 	{
 	public:
 		virtual int	Compare(AnyArrayImpl &that, long leftInt, long rightInt) const {
@@ -1102,23 +1103,21 @@ public:
 		return ((cap + fBufSize - 1) / fBufSize) * fBufSize;    // make it a multiple of fBufSize
 	}
 
-	static class AnyIntKeyCompare : public AnyIntCompare
+	static class EXPORTDECL_FOUNDATION AnyIntKeyCompare : public AnyIntCompare
 	{
 	public:
 		virtual int	Compare(AnyArrayImpl &that, long leftInt, long rightInt) const {
 			return that.IntKey(leftInt).Compare(that.IntKey(rightInt));
 		}
 	}	theKeyComparer;
-
-	static class AnyIntReverseKeyCompare : public AnyIntCompare
+	static class EXPORTDECL_FOUNDATION AnyIntReverseKeyCompare : public AnyIntCompare
 	{
 	public:
 		virtual int	Compare(AnyArrayImpl &that, long leftInt, long rightInt) const {
 			return - that.IntKey(leftInt).Compare(that.IntKey(rightInt));
 		}
 	}	theReverseKeyComparer;
-
-	class AnyIntComparerCompare : public AnyIntCompare
+	class EXPORTDECL_FOUNDATION AnyIntComparerCompare : public AnyIntCompare
 	{
 		const AnyComparer	&ac;
 	public:
@@ -1127,7 +1126,6 @@ public:
 			return ac.Compare(that.IntValue(leftInt), that.IntValue(rightInt));
 		}
 	};
-
 }; // AnyArrayImpl
 AnyArrayImpl::AnyIntKeyCompare AnyArrayImpl::theKeyComparer;
 AnyArrayImpl::AnyIntReverseKeyCompare AnyArrayImpl::theReverseKeyComparer;
@@ -1627,8 +1625,11 @@ void AnyArrayImpl::MergeByComparer(long lo, long hi, long m, const AnyIntCompare
 	}
 	long i, j, k;
 	const long sz = m - lo + 1;
-	long a[sz];           // temporary array of lower half
-
+#if defined(WIN32) && (_MSC_VER <= 1200) // VC6 or lower
+	long *a = new long[sz];		// temporary array of lower half
+#else
+	long a[sz];					// temporary array of lower half
+#endif
 	for (k = 0, i = lo; i <= m && k < sz; i++, k++) {
 		a[k] = IntAt(i);
 	}
@@ -1657,8 +1658,11 @@ void AnyArrayImpl::MergeByComparer(long lo, long hi, long m, const AnyIntCompare
 	}
 	Assert(i == j);
 	Assert(k == sz);
-
+#if defined(WIN32) && (_MSC_VER <= 1200) // VC6 or lower
+	delete[] a;
+#endif
 }
+
 void AnyArrayImpl::MergeSortByComparer(long low, long high, const AnyIntCompare &comparer)
 {
 	if (low >= high) {
@@ -1677,11 +1681,13 @@ void AnyArrayImpl::SortByKey()
 	MergeSortByComparer(0, GetSize() - 1, theKeyComparer);
 	RecreateKeyTabe();
 }
+
 void AnyArrayImpl::SortReverseByKey()
 {
 	MergeSortByComparer(0, GetSize() - 1, theReverseKeyComparer);
 	RecreateKeyTabe();
 }
+
 void AnyArrayImpl::SortByAnyComparer(const AnyComparer &comparer)
 {
 	MergeSortByComparer(0, GetSize() - 1, AnyIntComparerCompare(comparer));
@@ -2443,7 +2449,7 @@ bool Anything::LookupPath(Anything &result, const char *path, char delimSlot, ch
 			return false;
 		}
 
-		const Anything *c(this); // pointers are faster!
+		const Anything *c = this; // pointers are faster!
 		do {
 			register long lIdx = -1;
 			if (*tokPtr == delimIdx) {
