@@ -14,12 +14,12 @@
 #ifdef _DLL
 #include <windows.h>
 #ifdef CACHE_IMPL
-#define EXPORTDECL_CACHE	__declspec(dllexport)
+#define EXPORTDECL_LDAPDAICACHE	__declspec(dllexport)
 #else
-#define EXPORTDECL_CACHE	__declspec(dllimport)
+#define EXPORTDECL_LDAPDAICACHE	__declspec(dllimport)
 #endif
 #else
-#define EXPORTDECL_CACHE
+#define EXPORTDECL_LDAPDAICACHE
 #endif
 #else
 #define EXPORTDECL_LDAPDAICACHE
