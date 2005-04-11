@@ -10,4 +10,7 @@
 
 	# The following temporary directory must already exist and will be used to create and delete subdirectories from within tests
 	/TmpDir			"/tmp"
+	/BlocksLeftOnFSTest {
+		/FS			"/"
+	}
 }

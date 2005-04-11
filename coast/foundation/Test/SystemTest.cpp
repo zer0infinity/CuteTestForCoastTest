@@ -1227,14 +1227,14 @@ void SystemTest::GetFileSizeTest()
 	if ( t_assertm(path.Length() > 0, "expected file path to be valid") ) {
 		ul_long ulSize = 0;
 		if ( t_assert(System::GetFileSize(path, ulSize)) ) {
-			assertEqualm(5L, ulSize, "expected same size");
+			assertEqualm(5UL, ulSize, "expected same size");
 		}
 	}
 	path = System::GetFilePath("anyutilstest1", "any");
 	if ( t_assertm(path.Length() > 0, "expected file path to be valid") ) {
 		ul_long ulSize = 0;
 		if ( t_assert(System::GetFileSize(path, ulSize)) ) {
-			assertEqualm(6666L, ulSize, "expected same size");
+			assertEqualm(6657UL, ulSize, "expected same size");
 		}
 	}
 }
@@ -1245,7 +1245,7 @@ void SystemTest::BlocksLeftOnFSTest()
 	// can only test that we have still some space left, nothing more for now
 	ul_long ulBlocks = 0;
 	unsigned long ulBlockSize = 0;
-	String fsPath("/");
+	String fsPath(fConfig["BlocksLeftOnFSTest"]["FS"].AsString("/"));
 	if ( t_assertm(System::BlocksLeftOnFS(fsPath, ulBlocks, ulBlockSize), "expected function call to succeed") ) {
 		t_assertm(ulBlocks > 0, "expected some blocks left on device");
 		t_assertm(ulBlockSize > 0, "expected block size not to be 0");
