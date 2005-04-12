@@ -105,6 +105,21 @@ void ObjectListTest::DtorTest()
 		}
 		TraceMemDelta("after destruction of list");
 	}
+	{
+		TraceMemDelta("before allocation");
+		const long lCount = 10;
+		{
+			ObjectList<int> aIntList("IntList");
+			for (long lIdx = 0; lIdx < lCount; lIdx++) {
+				aIntList.InsertTail((int)lCount);
+			}
+			assertEqual(lCount, aIntList.GetSize());
+			TraceMemDelta("after allocation of many ints");
+			// set to destructive shutdown which should delete pointees hold in list
+			aIntList.SignalShutdown(true);
+		}
+		TraceMemDelta("after destruction of list");
+	}
 }
 
 // builds up a suite of testcases, add a line for each testmethod
