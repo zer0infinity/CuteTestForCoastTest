@@ -22,6 +22,7 @@
 #include "WorkerPoolManagerTest.h"
 #include "WPMStatHandlerTest.h"
 #include "LeaderFollowerPoolTest.h"
+#include "ObjectList_rTest.h"
 
 void setupRunner(TestRunner &runner)
 {
@@ -34,5 +35,6 @@ void setupRunner(TestRunner &runner)
 	ADD_SUITE(runner, WorkerPoolManagerTest);
 	ADD_SUITE(runner, WPMStatHandlerTest);
 	ADD_SUITE(runner, LeaderFollowerPoolTest);
+	ADD_SUITE(runner, ObjectList_rTest);
 } // setupRunner
 
