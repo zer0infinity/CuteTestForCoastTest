@@ -130,6 +130,25 @@ String LDAPConnection::ConnectRetToString(LDAPConnection::EConnectState eConnect
 	return conv[eConnectState].AsString();
 }
 
+LDAPConnection::EConnectState LDAPConnection::DoConnectHook(const String &bindName, const String &bindPW)
+{
+	StartTrace(LDAPConnection.DoConnectHook);
+	fUniqueConnectionId = GetLdapConnectionManagerId(bindName, bindPW);
+	Anything returned = LDAPConnectionManager::LDAPCONNMGR()->GetLdapConnection(fUniqueConnectionId, fRebindTimeout);
+	LDAPConnection::EConnectState eConnectState =
+		returned["MustRebind"].AsBool(1) == false ?
+		LDAPConnection::eMustNotRebind  : LDAPConnection::eMustRebind;
+	fHandle = (LDAP *) returned["Handle"].AsIFAObject(0);
+	if ( eConnectState == LDAPConnection::eMustRebind ) {
+		if ( (fHandle != (LDAP *) NULL)  ) {
+			Trace("Retrning: " << ConnectRetToString(LDAPConnection::eOk));
+			eConnectState = LDAPConnection::eOk;
+		}
+	}
+	Trace("eConnectState: " << ConnectRetToString(eConnectState) << " Handle: " << DumpConnectionHandle(fHandle));
+	return eConnectState;
+}
+
 LDAPConnection::EConnectState LDAPConnection::DoConnect(ROAnything bindParams, LDAPErrorHandler eh)
 {
 	StartTrace(LDAPConnection.DoConnect);
@@ -141,14 +160,8 @@ LDAPConnection::EConnectState LDAPConnection::DoConnect(ROAnything bindParams, L
 	String bindPW = bindParams["BindPW"].AsString("");
 	LDAPConnection::EConnectState eConnectState;
 	if ( fUseLdapConnectionManager ) {
-		fUniqueConnectionId = GetLdapConnectionManagerId(bindName, bindPW);
-		Anything returned = LDAPConnectionManager::LDAPCONNMGR()->GetLdapConnection(fUniqueConnectionId, fRebindTimeout);
-		fHandle = (LDAP *) returned["Handle"].AsIFAObject(0);
-		returned["MustRebind"].AsBool(1) == false ? eConnectState = LDAPConnection::eMustNotRebind  : eConnectState = LDAPConnection::eMustRebind;
-		Trace("eConnectState: " << ConnectRetToString(eConnectState) << " Handle: " << DumpConnectionHandle(fHandle));
-		if ( (fHandle != (LDAP *) NULL) && (eConnectState == LDAPConnection::eMustNotRebind) ) {
-			Trace("Retrning: " << ConnectRetToString(LDAPConnection::eOk));
-			return LDAPConnection::eOk;
+		if ( (eConnectState = DoConnectHook(bindName, bindPW)) == LDAPConnection::eOk ) {
+			return eConnectState;
 		}
 	}
 	// get connection handle
