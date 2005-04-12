@@ -106,6 +106,9 @@ private:
 	//! does the Connect and reports details what it has done.
 	LDAPConnection::EConnectState DoConnect(ROAnything bindParams, LDAPErrorHandler eh);
 
+	//! Hook when using LDAPConnectionManager
+	LDAPConnection::EConnectState DoConnectHook(const String &bindName, const String &bindPW);
+
 	//! determine Connect() return code
 	static bool IsConnectOk(LDAPConnection::EConnectState eConnectState);
 
