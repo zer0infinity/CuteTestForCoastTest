@@ -39,9 +39,21 @@ public:
 	typedef typename PointerTraits<T>::PointeeType PointeeType;
 };
 
+template <int v>
+struct Int2Type {
+	enum { value = v };
+};
+
 template<typename Tp>
 class ObjectList : public list<Tp>
 {
+	enum DeleteFuncSelector { Reftype, Pointertype };
+
+	void DoDeleteObject(const typename list<Tp>::value_type &newObjPtr, Int2Type<Reftype> ) {};
+	void DoDeleteObject(const typename list<Tp>::value_type &newObjPtr, Int2Type<Pointertype> ) {
+		delete newObjPtr;
+	};
+
 public:
 	ObjectList(const char *name, Allocator *a = Storage::Global())
 		: fShutdown(false)
@@ -53,13 +65,12 @@ public:
 	virtual ~ObjectList() {
 		if ( fDestructiveShutdown ) {
 			// no more workers waiting and capable of emptying the list
-			// we have to delete elements if they were pointers, let an appropriate callback function do this work... or have a memory leak
-			if ( TypeTraits<Tp>::isPointer ) {
-				while ( IntGetSize() > 0 ) {
-					Tp pElement;
-					IntRemoveHead(pElement);
-					delete pElement;
-				}
+			// we have to delete elements if they were pointers, let an appropriate function do this work
+			enum { delAlgo = (TypeTraits<Tp>::isPointer) ? Pointertype : Reftype };
+			while ( IntGetSize() > 0 ) {
+				Tp pElement;
+				IntRemoveHead(pElement);
+				DoDeleteObject(pElement, Int2Type<delAlgo>() );
 			}
 		}
 	}
@@ -72,7 +83,12 @@ public:
 		return false;
 	}
 
-	virtual bool RemoveHead(typename list<Tp>::reference aElement) {
+	/*! removes the head element of the list
+		\param aElement reference to a receiving element, depending on the type (pointer, element) an assignment operator of the element is required!
+		\param lSecs unused
+		\param lNanosecs unused
+		\return true only when an element could be get, false in case the list was empty or we are in shutdown mode */
+	virtual bool RemoveHead(typename list<Tp>::reference aElement, long lSecs = 0L, long lNanosecs = 0L) {
 		if ( !IsShuttingDown() && !this->empty() ) {
 			IntRemoveHead(aElement);
 			return true;

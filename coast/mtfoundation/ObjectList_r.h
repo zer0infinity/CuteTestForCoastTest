@@ -43,7 +43,7 @@ public:
 
 	virtual bool InsertTail(const typename list<Tp>::value_type &newObjPtr) {
 		SimpleMutexEntry me(fMutex);
-		if ( ObjectList<Tp>::InsertTail(newObjPtr) ) {
+		if ( !IsShuttingDown() && ObjectList<Tp>::InsertTail(newObjPtr) ) {
 			fCondFull.BroadCast();
 			return true;
 		}
@@ -52,13 +52,18 @@ public:
 
 	/*! removes the head element of the list
 		\param aElement reference to a receiving element, depending on the type (pointer, element) an assignment operator of the element is required!
-		\return true only when an element could be get, false in case the list was empty or we are in shutdown mode */
-	virtual bool RemoveHead(typename list<Tp>::reference aElement) {
+		\param lSecs time in seconds after which the wait will be aborted, specify 0 for endless wait
+		\param lNanosecs time in nanoseconds (10e-9) after which the wait will be aborted, specify 0 for endless wait
+		\return true only when an element could be get, false in case the list was empty, we are in shutdown mode or a timeout occured */
+	virtual bool RemoveHead(typename list<Tp>::reference aElement, long lSecs = 0L, long lNanosecs = 0L) {
 		SimpleMutexEntry me(fMutex);
 		while ( !IsShuttingDown() && this->empty() ) {
-			fCondFull.Wait(fMutex);
+			if ( fCondFull.TimedWait(fMutex, lSecs, lNanosecs) == TIMEOUTCODE ) {
+				// prematurely exit in case of a timeout
+				return false;
+			}
 		}
-		if ( ObjectList<Tp>::RemoveHead(aElement) ) {
+		if ( !IsShuttingDown() && ObjectList<Tp>::RemoveHead(aElement) ) {
 			fCondEmpty.Signal();
 			return true;
 		}
@@ -87,7 +92,7 @@ public:
 					fCondEmpty.Wait(fMutex);
 				}
 			}
-			ObjectList<Tp>::SignalShutdown();
+			ObjectList<Tp>::SignalShutdown(bDestructive);
 		}
 		// wake up the workerThreads such that they recheck the shutdown flag
 		fCondFull.BroadCast();
