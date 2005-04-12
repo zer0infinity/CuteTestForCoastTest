@@ -68,11 +68,11 @@ Anything LDAPConnectionManager::GetLdapConnection(const String &uniqueConnection
 	}
 	TimeStamp now = TimeStamp().Now();
 	TimeStamp lastRebind(returned["LastRebind"].AsString());
-	bool mustRebind =  ( ((lastRebind + rebindTimeout) <  now) || (handle == (LDAP *) NULL)  );
+	bool mustRebind =  ( ((lastRebind + rebindTimeout) <  now) );
 	Trace("Get: " << uniqueConnectionId << " "  << LDAPConnection::DumpConnectionHandle(handle));
-	Trace("Now: " << now << " LastRebind: " << lastRebind  << " RebindTimeout: " << rebindTimeout << " Must rebind: " << mustRebind);
+	Trace("Now: " << now << " LastRebind: " << lastRebind  << " RebindTimeout: "
+		  << rebindTimeout << " Must rebind: " << mustRebind);
 	returned["Handle"] 		= (IFAObject * )handle;
-	returned["LastRebind"]  = returned["LastRebind"].AsString();
 	returned["MustRebind"]	= mustRebind;
 	TraceAny(returned, "Returning:");
 	return returned;
@@ -118,8 +118,8 @@ bool LDAPConnectionManager::Finis()
 		me.Use();
 		for ( long items = 0; items < fLdapConnectionStore.GetSize(); items++ ) {
 			LDAP *handle = (LDAP *) fLdapConnectionStore[items]["Handle"].AsIFAObject(0);
-			Trace("Freeing LDAP connection for: " << fLdapConnectionStore.SlotName(items) <<
-				  handle << LDAPConnection::DumpConnectionHandle(handle));
+			Trace("Freeing LDAP connection for: " << fLdapConnectionStore.SlotName(items) << handle
+				  << LDAPConnection::DumpConnectionHandle(handle));
 			if (handle) {
 				LDAPConnection::Disconnect(handle);
 			}
