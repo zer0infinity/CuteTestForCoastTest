@@ -20,7 +20,7 @@
 			/Expected
 			{
 				/FirstResponseLine	"HTTP/1.1 400 Bad Request"
-				/Return			1
+				/Return			0
 			}
 		}
 		{
@@ -33,7 +33,7 @@
 			/Expected
 			{
 				/REQUEST_METHOD	"GET"
-				/Return			1
+				/Return			0
 			}
 		}
 		{
@@ -46,7 +46,7 @@
 			/Expected
 			{
 				/FirstResponseLine	"HTTP/1.1 414 Request-URL Too Large"
-				/Return			1
+				/Return			0
 			}
 		}
 		{
@@ -85,7 +85,7 @@
 			/Expected
 			{
 				/FirstResponseLine "HTTP/1.1 405 Method Not Allowed"
-				/Return			1
+				/Return			0
 			}
 		}
 	}

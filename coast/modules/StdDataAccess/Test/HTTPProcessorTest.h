@@ -59,6 +59,7 @@ public:
 protected:
 
 	void testDoReadInputWithCfg( HTTPProcessor &fds, String expected, const bool expectedRequest = true );
+	void BuildResult( String &reply, String &fullreply, String result );
 
 	Anything fArgTemplate;	// an argument template used to initialize args
 };

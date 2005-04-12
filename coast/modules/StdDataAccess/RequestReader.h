@@ -38,7 +38,7 @@ public:
 protected:
 	//!read the one input line stream and check it against limits,
 	//! my generate an error reply in case of "attacks"
-	bool ReadLine(iostream &Ios, String &line, const Anything &clientInfo);
+	bool ReadLine(iostream &Ios, String &line, const Anything &clientInfo, bool &hadError);
 	//!handle the the request line by line
 	bool ParseRequest(iostream &Ios, String &line, const Anything &clientInfo);
 

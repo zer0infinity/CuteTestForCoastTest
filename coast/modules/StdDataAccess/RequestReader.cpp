@@ -24,16 +24,16 @@ RequestReader::RequestReader(HTTPProcessor *p, MIMEHeader &header)
 	StartTrace(RequestReader.RequestReader);
 }
 
-bool RequestReader::ReadLine(iostream &Ios, String &line, const Anything &clientInfo)
+bool RequestReader::ReadLine(iostream &Ios, String &line, const Anything &clientInfo, bool &hadError)
 {
 	StartTrace(RequestReader.ReadLine);
 	char c;
 	const char eol = '\n';
 	line = "";
+	hadError = false;
 	long counter = 0;
 	long maxLineSz = fProc->fLineSizeLimit;
 	Trace("======================= reading input ==================");
-
 	while ( Ios.get(c).good() ) {
 		// read in characterwise
 		line << c;
@@ -41,6 +41,7 @@ bool RequestReader::ReadLine(iostream &Ios, String &line, const Anything &client
 		// error handling
 		if ( ((counter > maxLineSz)) && !CheckReqLineSize(Ios, line.Length(), line, clientInfo)) {
 			Trace("Error in read line '" << line << "'");
+			hadError = true;
 			return false;
 		}
 
@@ -52,7 +53,9 @@ bool RequestReader::ReadLine(iostream &Ios, String &line, const Anything &client
 			Trace("fRequestBufferSize:" << fRequestBufferSize);
 			Trace("maxReqSz:" << fProc->fRequestSizeLimit);
 			Trace("fRequestBuffer.Length():" << fRequestBuffer.Length());
-			return CheckReqBufferSize(Ios, fRequestBufferSize, line, clientInfo);
+			bool ret = CheckReqBufferSize(Ios, fRequestBufferSize, line, clientInfo);
+			ret == false ? hadError = true : hadError = false;
+			return ret;
 		}
 	}
 	return false;
@@ -64,20 +67,21 @@ bool RequestReader::ReadRequest(iostream &Ios, const Anything &clientInfo)
 	String line;
 
 	Trace("======================= reading input ==================");
-
-	// read the first line, this is special
-	// We must return true even in the error cases because we want HTTPProcessor to display
-	// the error message.
-	bool ret = ReadLine(Ios, line, clientInfo);
-	if ( !ret) {
+	bool hadError = false;
+	bool doContinue = ReadLine(Ios, line, clientInfo, hadError);
+	if ( !doContinue) {
 		return false;
 	}
-	if ( ret ) {
-		ret = HandleFirstLine(Ios, line, clientInfo);
-		Trace("First line: [" << line << "]");
+	doContinue = HandleFirstLine(Ios, line, clientInfo);
+	Trace("First line: [" << line << "]");
+	if ( !doContinue) {
+		return false;
 	}
-	while ( ret ) {
-		ret = ReadLine(Ios, line, clientInfo);
+	while ( doContinue ) {
+		doContinue = ReadLine(Ios, line, clientInfo, hadError);
+		if (hadError) {
+			return false;
+		}
 		// end of request
 		if (line == ENDL ) {
 			break;
@@ -194,8 +198,7 @@ bool RequestReader::ParseRequest(iostream &Ios, String &line, const Anything &cl
 			}
 		} else {
 			if (tok == "") {
-				Trace("returning false");
-				return false;
+				return DoHandleError(Ios, 400, "No URL in request.", line, clientInfo);
 			}
 			// No arguments supplied
 			url = tok;
