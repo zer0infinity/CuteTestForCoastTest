@@ -643,7 +643,7 @@ String LDAPConnection::GetLdapConnectionManagerId(const String &bindName, const 
 {
 	StartTrace(LDAPConnection.GetLdapConnectionManagerId);
 	return	String("ThreadId[") << Thread::MyId() << "] Host[" << fServer << "] Port[" << fPort << "] DN[" <<
-			bindName << "] BindPW[" << bindPW << "] ConnTimeout[" << fConnectionTimeout;
+			bindName << "] BindPW[" << bindPW << "] ConnTimeout[" << fConnectionTimeout << "]";
 }
 
 String LDAPConnection::DumpConnectionHandle(LDAP *handle)
