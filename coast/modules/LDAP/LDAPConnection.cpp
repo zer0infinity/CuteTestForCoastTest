@@ -158,7 +158,7 @@ LDAPConnection::EConnectState LDAPConnection::DoConnect(ROAnything bindParams, L
 	String errMsg;
 	String bindName = bindParams["BindName"].AsString("");
 	String bindPW = bindParams["BindPW"].AsString("");
-	LDAPConnection::EConnectState eConnectState;
+	LDAPConnection::EConnectState eConnectState = LDAPConnection::eNok;
 	if ( fUseLdapConnectionManager ) {
 		if ( (eConnectState = DoConnectHook(bindName, bindPW)) == LDAPConnection::eOk ) {
 			return eConnectState;
