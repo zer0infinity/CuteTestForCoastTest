@@ -903,5 +903,40 @@
 				/HasErrors			 0
 				/Reason				""
 		}
+		# 100
+		# this request contains ; as delimiter
+		{
+				/RequestLine 	"GET /ftimage/my.gif;ali=baba&gu^gus=da^da& HTTP/1.0\r\n"
+				/ExpectedRequest		"/ftimage/my.gif;ali=baba&gu^gus=da^da&"
+				/HasErrors			 1
+				/Reason				"Argument string (after ;) was not correctly encoded. Request not rejected."
+		}
+		# 101
+		# this request contains ; as url encoded (3B) delimiter
+		{
+				/RequestLine 	"GET /ftimage/my.gif%3Bali%3Dbaba HTTP/1.0\r\n"
+				/ExpectedRequest		"/ftimage/my.gif%3Bali%3Dbaba"
+				/HasErrors			 0
+		}
+		# 102
+		# this request contains ; as url encoded (3B) delimiter, exhaustive decoding
+		{
+				/RequestLine 	"GET /ftimage/my.gif%3Bali%3Dbaba HTTP/1.0\r\n"
+				/URLEncodeExclude  "/?="
+				/URLExhaustiveDecode	1
+				/FixDirectoryTraversial 1
+				/ExpectedRequest		"/ftimage/my.gif%3Bali%3Dbaba"
+				/HasErrors			 0
+		}
+		# 103
+		# this request contains ? as url encoded (3F) delimiter, exhaustive decoding
+		{
+				/RequestLine 	"GET /ftimage/my.gif%3Fali%3Dbaba HTTP/1.0\r\n"
+				/URLEncodeExclude  "/?="
+				/URLExhaustiveDecode	1
+				/FixDirectoryTraversial 1
+				/ExpectedRequest		"/ftimage/my.gif%3Fali%3Dbaba"
+				/HasErrors			 0
+		}
 	}
 }

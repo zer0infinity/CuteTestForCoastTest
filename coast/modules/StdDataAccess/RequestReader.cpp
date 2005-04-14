@@ -174,24 +174,27 @@ bool RequestReader::ParseRequest(iostream &Ios, String &line, const Anything &cl
 	String cleanUrl;
 	String url;
 	if ( st.NextToken(tok) ) {
-		// extract request url path, without trailing ?
-		long questPos = tok.StrChr('?');
-		if (questPos != -1) {
-			String urlPath(tok.SubString(0, questPos));
-			Trace("UrlPath: questPos: " << questPos << "urlPath: " << urlPath);
+		// extract request url path, without trailing ? or;
+
+		long argDelimPos = tok.FirstCharOf("?;");
+		if (argDelimPos != -1) {
+			char argDelim = tok[argDelimPos];
+			String urlPath(tok.SubString(0, argDelimPos));
+			Trace("UrlPath: argDelimPos: " << argDelimPos << " argDelim: " << argDelim << "urlPath: " << urlPath);
 			if (!VerifyUrlPath(Ios, urlPath, clientInfo)) {
 				return false;
 			}
 			String urlArgs;
 			// Do we have any args in original, unchanged request?
-			bool hasArgs(questPos != tok.Length() - 1);
+			bool hasArgs(argDelimPos != tok.Length() - 1);
 			if ( hasArgs ) {
-				urlArgs = tok.SubString(questPos + 1, tok.Length());
-				Trace("UrlArgs: questPos: " << questPos << "urlArgs: " << urlArgs);
-				cleanUrl << urlPath << "?" <<  urlArgs;
+				urlArgs = tok.SubString(argDelimPos + 1, tok.Length());
+				Trace("UrlArgs: argDelimPos: " << argDelimPos << " urlArgs: " << urlArgs);
+				cleanUrl << urlPath << argDelim <<  urlArgs;
 				if ( !VerifyUrlArgs(urlArgs) ) {
-					DoLogError(0, "Argument string (after ?) was not correctly encoded. Request not rejected.",
-							   cleanUrl, clientInfo, "");
+					String reason("Argument string (after ");
+					reason << argDelim << ") was not correctly encoded. Request not rejected.";
+					DoLogError(0, reason, cleanUrl, clientInfo, "");
 				}
 			} else {
 				cleanUrl << urlPath;
