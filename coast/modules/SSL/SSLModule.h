@@ -18,6 +18,7 @@ class SSLSocket;
 //---- SSLModule -----------------------------------------------------------
 class EXPORTDECL_SSL SSLModule : public WDModule
 {
+	friend class SSLModuleTest;
 public:
 	enum MakeContextFor {
 		eServer,
@@ -32,6 +33,7 @@ public:
 	// verification
 	static SSL_CTX *GetSSLCtx(ConfNamedObject *object);
 	static SSL_CTX *GetSSLClientCtx(ROAnything config);
+
 protected:
 	static SSL_CTX *SetOwnCertificateAndKey(SSL_CTX *ctx, LookupInterface *object, MakeContextFor eContextFor = SSLModule::eServer);
 	static void SetSSLSetAcceptableClientCAs(SSL_CTX *ctx, LookupInterface *object);
@@ -39,7 +41,6 @@ protected:
 	static SSL_CTX *PrepareClientContext(LookupInterface *object);
 	static SSL_CTX *PrepareServerContext(LookupInterface *object);
 	static SSL_CTX *DoMakeServerContext(LookupInterface *object);
-
 };
 
 //---- SSLAcceptorFactory -----------------------------------------------------------
