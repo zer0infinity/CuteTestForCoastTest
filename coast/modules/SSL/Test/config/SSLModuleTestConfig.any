@@ -1,0 +1,38 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/LoadCertAndKeyTest
+	{
+		{
+			/Config
+			{
+				/KeyFileServer	"cert_files/serverkey.pem"
+				/CertFileServer	"cert_files/servercrt.pem"
+			}
+			/TestData
+			{
+				/ClientOrServer "Server"
+				/NumberOfRuns	10
+			}
+		}
+		{
+			/Config
+			{
+				/KeyFileClient	"cert_files/clientkey.pem"
+				/CertFileClient	"cert_files/clientcrt.pem"
+			}
+			/TestData
+			{
+				/ClientOrServer "Client"
+				/NumberOfRuns	10
+			}
+		}
+	}
+}

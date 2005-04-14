@@ -8,7 +8,7 @@
 
 {
 
-        /LowerBound 00
+        /LowerBound 000
         /UpperBound	5002
         /DumpAnythings 1
 
@@ -110,6 +110,10 @@
 		/SSLSocketArgsTest {
 			/MainSwitch	2000
 			/EnableAll	2000
+		}
+		/SSLModuleTest {
+			/MainSwitch	5000
+			/EnableAll	5002
 		}
 		/SSLObjectManagerTest {
 			/MainSwitch	5000
