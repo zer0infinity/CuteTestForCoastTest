@@ -137,7 +137,7 @@ void HTTPDAImplTest::ErrorHandlingTest()
 	Context ctx(dummy, dummy, 0, 0, 0, 0);
 
 	t_assert(!httpDAImpl.Exec(ctx, &in, &out));
-	TString strMsg("connection to  [Server Name:ErrorHandlingTest IP:");
+	TString strMsg("Connection to  [Server Name:ErrorHandlingTest IP:");
 	strMsg << ctx.Lookup("Backend.Server", "") << " Port:" << ctx.Lookup("Backend.Port", "") << "] failed";
 	TraceAny(ctx.GetTmpStore()["Mapper"]["Error"], "Mapper.Error");
 	assertEqual(strMsg, ctx.GetTmpStore()["Mapper"]["Error"].AsCharPtr("bad"));

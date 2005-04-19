@@ -93,7 +93,7 @@ bool HTTPDAImpl::DoExec(Connector *csc, ConnectorParams *cps, Context &context, 
 	iostream *Ios = 0;
 
 	{
-		DAAccessTimer(HTTPDAImpl.DoExec, "connecting <" << fName << ">", context);
+		DAAccessTimer(HTTPDAImpl.DoExec, "Connecting <" << fName << ">", context);
 		s = csc->Use();
 		// Store client info
 		context.GetTmpStore()["ClientInfoBackends"] = csc->ClientInfo();
@@ -106,7 +106,7 @@ bool HTTPDAImpl::DoExec(Connector *csc, ConnectorParams *cps, Context &context, 
 			}
 		}
 		if (! Ios ) {
-			out->Put("Error", GenerateErrorMessage("connection to ", context), context);
+			out->Put("Error", GenerateErrorMessage("Connection to ", context), context);
 			return false;
 		}
 	}
@@ -121,7 +121,7 @@ bool HTTPDAImpl::DoExec(Connector *csc, ConnectorParams *cps, Context &context, 
 		DAAccessTimer(HTTPDAImpl.DoExec, " reading", context);
 
 		if (! out->Put("Output", *Ios, context) ) {
-			out->Put("Error", GenerateErrorMessage("receiving reply of ", context), context);
+			out->Put("Error", GenerateErrorMessage("Receiving reply of ", context), context);
 			return false;
 		}
 		return true;
@@ -148,7 +148,7 @@ bool HTTPDAImpl::RenderReply( String &theReply, Context &context, OutputMapper *
 
 	// read from input stream via renderers....
 	if (! out->Put("Output", is, context) ) {
-		out->Put("Error", GenerateErrorMessage("receiving reply of ", context), context);
+		out->Put("Error", GenerateErrorMessage("Receiving reply of ", context), context);
 		return false;
 	}
 	return true;
@@ -207,7 +207,7 @@ bool HTTPDAImpl::DoExecRecord(Connector *csc, ConnectorParams *cps, Context &con
 			Ios = csc->GetStream();
 		}
 		if (! Ios || !(*Ios)) {
-			out->Put("Error", GenerateErrorMessage("connection to ", context), context);
+			out->Put("Error", GenerateErrorMessage("Connection to ", context), context);
 			return false;
 		}
 	}
@@ -224,7 +224,7 @@ bool HTTPDAImpl::DoExecRecord(Connector *csc, ConnectorParams *cps, Context &con
 
 	bool result = SendRequest( request, Ios, s, cps ); // really send request to server...
 	if (result && !ReadReply( theReply, context, Ios )) {
-		out->Put("Error", GenerateErrorMessage("connection to ", context), context);
+		out->Put("Error", GenerateErrorMessage("Connection to ", context), context);
 		result = false;
 	}
 
@@ -281,7 +281,7 @@ bool HTTPDAImpl::SendInput(iostream *Ios, Socket *s, long timeout, Context &cont
 				// don't use ShutDownWriting, since not all HTTP-Agents understand it (e.g. CICS-WebInterface)
 				return true;
 			} else {
-				out->Put("Error", GenerateErrorMessage("sending request ", context), context);
+				out->Put("Error", GenerateErrorMessage("Sending request ", context), context);
 				return false;
 			}
 		}
@@ -309,6 +309,6 @@ bool HTTPDAImpl::DoSendInput(iostream *Ios, Socket *s, long timeout, Context &co
 
 		}
 	}
-	out->Put("Error", GenerateErrorMessage("sending request ", context), context);
+	out->Put("Error", GenerateErrorMessage("Sending request ", context), context);
 	return false;
 }
