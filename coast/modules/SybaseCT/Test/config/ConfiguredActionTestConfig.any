@@ -8,6 +8,9 @@
 
 {
 
+	# uncomment the server slot for enabling TimeLogging
+	/Server	Server
+
 	/RunOnly {
 	}
 	/RunTestCases {
@@ -504,6 +507,174 @@
 				/TmpStore {
 					/SybPoolDeleteStoredProcedureTest {
 					}
+				}
+			}
+		}
+		/SybNewDASearchTest {
+			/TheAction {
+				/CallDA 	SybNewDASearchTest
+			}
+			/Result {
+				/TmpStore {
+					/TestOutput {
+						/Query	{
+							"select au_fname, au_lname from authors where au_lname='Bennet'"
+						}
+						/QueryCount 1
+						/QueryResult	{
+							{
+								/au_fname	"Abraham"
+								/au_lname	"Bennet"
+							}
+						}
+						/QuerySource	"HIKU_INT2"
+						/Messages	ignore
+					}
+				}
+			}
+		}
+		/SybNewDASearchTitlsesOnceTest {
+			/TheAction {
+				/CallDA {
+					/DataAccess	SybNewDASearchTest
+					/Parameters {
+						/SybDBResultFormat		TitlesOnce
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/TestOutput {
+						/Query	{
+							"select au_fname, au_lname from authors where au_lname='Bennet'"
+						}
+						/QueryCount 1
+						/QueryTitles {
+							/au_fname	0
+							/au_lname	1
+						}
+						/QueryResult	{
+							{
+								"Abraham"
+								"Bennet"
+							}
+						}
+						/QuerySource	"HIKU_INT2"
+					}
+				}
+			}
+		}
+		/SybNewDASearchAllResultsTest {
+			/TheAction {
+				/CallDA {
+					/DataAccess	SybNewDASearchTest
+					/Parameters {
+						/SQL	"select * from authors"
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/TestOutput {
+						/Query	{
+							"select * from authors"
+						}
+						/QueryCount		23
+						/QueryResult	ignore
+						/QuerySource	"HIKU_INT2"
+					}
+				}
+			}
+		}
+		/SybNewDASearchAllResultsTitlesOnceTest {
+			/TheAction {
+				/CallDA {
+					/DataAccess	SybNewDASearchTest
+					/Parameters {
+						/SQL	"select * from authors"
+						/SybDBResultFormat		TitlesOnce
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/TestOutput {
+						/Query	{
+							"select * from authors"
+						}
+						/QueryCount		23
+						/QueryResult	ignore
+						/QuerySource	"HIKU_INT2"
+					}
+				}
+			}
+		}
+		/SybNewDAForceCloseTest {
+			/TheAction {
+				/CallDA {
+					/DataAccess	SybNewDASearchTest
+					/Parameters {
+						/SybDBUser	"gugus"
+					}
+				}
+			}
+			/ExpectedResult	0
+			/Result {
+				/TmpStore {
+				}
+			}
+		}
+		/SybDALoopTest {
+			/TheAction {
+				/LoopAction {
+					/Start	0
+					/End	20
+					/Action {
+						/CallDA {
+							/DataAccess	SybSearchTest
+						}
+					}
+				}
+			}
+			/ExpectedResult	1
+			/Result {
+				/TmpStore {
+				}
+			}
+		}
+		/SybNewDALoopTest {
+			/TheAction {
+				/LoopAction {
+					/Start	0
+					/End	20
+					/Action {
+						/CallDA {
+							/DataAccess	SybNewDASearchTest
+						}
+					}
+				}
+			}
+			/ExpectedResult	1
+			/Result {
+				/TmpStore {
+				}
+			}
+		}
+		/SybPoolDALoopTest {
+			/TheAction {
+				/LoopAction {
+					/Start	0
+					/End	20
+					/Action {
+						/CallDA {
+							/DataAccess	SybPoolSearchTest
+						}
+					}
+				}
+			}
+			/ExpectedResult	1
+			/Result {
+				/TmpStore {
 				}
 			}
 		}
