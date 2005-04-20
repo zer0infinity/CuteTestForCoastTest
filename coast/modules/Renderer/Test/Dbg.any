@@ -16,10 +16,6 @@
 		/MainSwitch	0
 		/EnableAll	10
 	}
-	/OptionsPrinter {
-		/MainSwitch	0
-		/EnableAll	10
-	}
 	/LocalizationUtils{
 		/MainSwitch	0
 		/EnableAll	10
@@ -64,5 +60,33 @@
 	/StringTokenizeRenderer {
 		/MainSwitch 		11
 		/EnableAll			11
+	}
+	/OptionsPrinter {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/URLPrinter {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/SimpleURLPrinter {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/FullURLPrinter {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/URLRenderer {
+		/MainSwitch 		10
+		/EnableAll			10
+	}
+	/URLUtils {
+		/MainSwitch 		10
+		/EnableAll			10
+	}
+	/SecurityModule {
+		/MainSwitch 		10
+		/EnableAll			10
 	}
 }
