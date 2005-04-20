@@ -9,11 +9,14 @@
 #ifndef _SybCT_H
 #define _SybCT_H
 
-//---- baseclass include -------------------------------------------------
+//---- baseclass include -------------------------------------------------------
 #include "config_sybasect.h"
-#include <ctpublic.h>
-#include "Anything.h"
+
+//--- standard modules used ----------------------------------------------------
 #include "Threads.h"
+
+//--- c-library modules used ---------------------------------------------------
+#include <ctpublic.h>
 
 //---- SybCT ----------------------------------------------------------
 //:single line description of the class

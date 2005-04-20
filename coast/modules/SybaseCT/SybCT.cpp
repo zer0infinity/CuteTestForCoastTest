@@ -10,7 +10,6 @@
 #include "SybCT.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "Threads.h"
 #include "Dbg.h"
 #include "SysLog.h"
 #include "StringStream.h"
