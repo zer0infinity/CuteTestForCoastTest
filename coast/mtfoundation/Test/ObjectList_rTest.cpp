@@ -75,10 +75,10 @@ void ObjectList_rTest::CtorTest()
 			}
 		}
 		TraceMemDelta("after removal of many strings");
-		// the following tests should not be done in non MT-environment, because it blocks without someone signalling shutdown
-//		pString=NULL;
-//		t_assertm(!aStringList.RemoveHead(pString), "expected empty list!");
-//		t_assert(pString==NULL);
+		pString = NULL;
+		// wait on Remove for 10ms but it should fail
+		t_assertm(!aStringList.RemoveHead(pString, 0L, 10000000L), "expected empty list!");
+		t_assert(pString == NULL);
 	}
 	TraceMemDelta("before terminating");
 }
