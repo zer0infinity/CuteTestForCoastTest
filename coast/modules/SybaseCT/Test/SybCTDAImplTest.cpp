@@ -17,6 +17,8 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
+#include "StringStream.h"
+#include "AnyUtils.h"
 
 //---- SybCTDAImplTest ----------------------------------------------------------------
 SybCTDAImplTest::SybCTDAImplTest(TString name) : TestCase(name)
@@ -80,7 +82,7 @@ void SybCTDAImplTest::testCase()
 	SlotCleaner::Operate(result, cfg);
 	TraceAny(result, "resulting tmpstore: ");
 
-	assertAnyEqual(expected, result);
+	assertAnyCompareEqual(expected, result, "TmpStore.", '.', ':');
 }
 
 // builds up a suite of testcases, add a line for each testmethod
