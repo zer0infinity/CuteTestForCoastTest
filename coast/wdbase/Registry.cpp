@@ -156,10 +156,10 @@ Registry *Registry::MakeRegistry(const char *category)
 {
 	String msg("Creating Registry for: <");
 	msg << NotNull(category) << ">";
-#if !defined (__linux__) && !defined (_AIX) && !defined(WIN32)   //static Initialisation problem
-	StartTrace(Registry.MakeRegistry);
-	Trace(msg);
-#endif
+//#if !defined (__linux__) && !defined (_AIX) && !defined(WIN32)   //static Initialisation problem
+//	StartTrace(Registry.MakeRegistry);
+//	Trace(msg);
+//#endif
 	SysLog::Info(msg);
 	Registry *r = new Registry(category);
 	GetRegTable()[category] = Anything(r, Storage::Global()); // r stored as pointer to IFAObject (AB)
