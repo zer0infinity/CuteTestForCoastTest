@@ -38,10 +38,12 @@
 #include "TemplateParserTest.h"
 #include "NewRendererTest.h"
 #include "GetEnvRendererTest.h"
+#include "SetupCase.h"
 
 void setupRunner(TestRunner &runner)
 {
 	// add a whole suite with the ADD_SUITE(runner,"Suites's Classname") macro
+	ADD_SUITE(runner, SetupCase);
 	ADD_SUITE(runner, NewRendererTest);
 	ADD_SUITE(runner, PageRelatedRendererTest);
 	ADD_SUITE(runner, ConditionalRendererTest);
