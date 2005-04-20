@@ -365,7 +365,7 @@ String URLUtils::urlEncode(const String &str, const String exclusionSet)
 
 bool URLUtils::CheckUrlEncoding(const String &str, const String exclusionSet)
 {
-	StartTrace(URLUtils.urlEncode);
+	StartTrace(URLUtils.CheckUrlEncoding);
 	String encoded;
 	String exclusionSetModified(exclusionSet);
 	exclusionSetModified.Append("%;?/");
@@ -466,6 +466,7 @@ bool URLUtils::DoUrlEncode(const String &str, const String exclusionSet, String 
 			   ) {
 				if ( (exclusionSet.StrChr(c) == -1L) ) {
 					if ( doCheck ) {
+						Trace("failed at character [" << c << "]");
 						return false;
 					}
 					encoded.Append('%');
