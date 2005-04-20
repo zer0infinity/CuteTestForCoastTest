@@ -24,12 +24,57 @@
 		/MainSwitch						0
 		/EnableAll						10
 	}
+	/TestCase {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+### common Sybase section
 	/SybaseModule {
 		/MainSwitch						0
 		/EnableAll						10
 	}
+### SybCTnewDA section
+	/SybCTnewDA {
+		/MainSwitch						0
+		/EnableAll						10
+		/SybCT_clientmsg_handler		10
+		/SybCT_csmsg_handler			10
+		/SybCT_servermsg_handler		-10
+		/SqlExec						10
+		/DoFillResults					-10
+		/DoFetchData					-10
+		/AllocateValue					-10
+		/AllocateIndicator				-10
+		/AllocateValuelen				-10
+		/PutMessages					-10
+		/SetConProps					-10
+		/GetConProps					-10
+		/IntGetConProps					-10
+	}
+	/SybCTnewDATest {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/SybCTnewDAImpl {
+		/MainSwitch						0
+		/EnableAll						10
+		/DoPrepareSQL					-10
+	}
+	/SybCTnewDAImplTest {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/SybCheckCloseOpenedConnectionsAction {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+###
+	/SybCTThreadTest {
+		/MainSwitch						0
+		/EnableAll						10
+	}
 	/SybCTDAImpl {
-		/MainSwitch						10
+		/MainSwitch						0
 		/EnableAll						10
 		/Exec							10
 	}
@@ -47,7 +92,7 @@
 		/EnableAll						10
 	}
 	/SybCTGenericDAImpl {
-		/MainSwitch						10
+		/MainSwitch						0
 		/EnableAll						0
 		/PutResults						10
 		/PutMessages					10
@@ -62,7 +107,7 @@
 		/DoProcessWorkload				10
 	}
 	/SybCTPoolManager {
-		/MainSwitch						11
+		/MainSwitch						0
 		/EnableAll						10
 		/~SybCTPoolManager				11
 	}
@@ -71,6 +116,72 @@
 		/EnableAll						10
 	}
 	/SybCTParamMapper {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/ResultMapper {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/ParameterMapper {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/PeriodicAction {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/TimeLogger {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/TimeLoggerEntry {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/TimeLoggingModule {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/TimeLoggingAction {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/ConfiguredTestCase {
+		/MainSwitch						0
+		/EnableAll						0
+		/setUp							10
+	}
+	/ConfiguredActionTest {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/Semaphore {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/ObjectList {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/ObjectList_r {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/Registry {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/RegistryIterator {
+		/MainSwitch						0
+		/EnableAll						10
+		/HasMore						-10
+	}
+	/RegistryCleaner {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/RegisterableObject {
 		/MainSwitch						0
 		/EnableAll						10
 	}
