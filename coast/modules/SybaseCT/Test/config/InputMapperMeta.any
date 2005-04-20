@@ -12,11 +12,15 @@
 	/SybSearchTest {
 		/SQL	{
 			/RendererMapper {
-				"select au_fname, au_lname from authors where au_lname='Bennet'"
+				/ContextLookupRenderer { SQL "select au_fname, au_lname from authors where au_lname='Bennet'" }
 			}
 		}
 	}
 	/SybPoolSearchTest	%SybSearchTest
+	/SybNewDASearchTest {
+		/SQL		%SybSearchTest.SQL
+	}
+
 	/SybLimitedSearchTest {
 		/SQL	{
 			"select * from authors"
@@ -181,11 +185,13 @@
 				" AND vpo.vpo_nr = anz.vpo_nr  "
 				" AND dla.dla_nr = vpo.dla_nr  "
 				" ORDER BY usr.usr_name, dla.dla_kbez"
-						}
+			}
 		}
 	}
+	/SybTestThreadPoolDA	%SybTestThreadDA
+	/SybTestThreadnewDA		%SybTestThreadDA
 
-	/SybTestThreadWithErrorDA
+	/SybTestThreadDAWithError
 	{
 		/SQL
 		{
@@ -212,5 +218,10 @@
 			}
 		}
 	}
+	/SybTestThreadPoolDAWithError	%SybTestThreadDAWithError
+	/SybTestThreadnewDAWithError	%SybTestThreadDAWithError
 
+	/NewDAInpuMapper {
+#		/ShowQueryCount	0
+	}
 }
