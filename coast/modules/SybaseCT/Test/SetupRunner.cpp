@@ -12,6 +12,8 @@
 //--- test cases ---------------------------------------------------------------
 #include "SybCTTest.h"
 #include "SybCTDAImplTest.h"
+#include "SybCTnewDATest.h"
+#include "SybCTnewDAImplTest.h"
 #include "SybCTPoolDAImplTest.h"
 #include "ConfiguredActionTest.h"
 #include "SybCTThreadTest.h"
@@ -27,6 +29,8 @@ void setupRunner(TestRunner &runner)
 #endif
 	ADD_SUITE(runner, SybCTTest);
 	ADD_SUITE(runner, SybCTDAImplTest);
+	ADD_SUITE(runner, SybCTnewDATest);
+	ADD_SUITE(runner, SybCTnewDAImplTest);
 	ADD_SUITE(runner, SybCTPoolDAImplTest);
 	ADD_SUITE(runner, SybCTThreadTest);
 	ADD_SUITE(runner, ConfiguredActionTest);
