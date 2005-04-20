@@ -48,4 +48,13 @@
 		/SybDBHost	SYB_FKISQA
 		/SybDBApp	ThreadTests
 	}
+	/SybTestThreadPoolDA	%SybTestThreadDA
+	/SybTestThreadnewDA		%SybTestThreadDA
+
+	/SybNewLocal {
+		/SybDBUser  "wdtester"
+		/SybDBPW	"all2test"
+		/SybDBHost	HIKU_INT2
+		/SybDBApp	SybCTnewDAImplTest
+	}
 }
