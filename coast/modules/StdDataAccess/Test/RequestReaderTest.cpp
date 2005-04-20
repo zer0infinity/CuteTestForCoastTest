@@ -64,6 +64,9 @@ void RequestReaderTest::testCleanupRequestLine()
 		Context ctx;
 		MIMEHeader header;
 		HTTPProcessor httpProc("HTTPProc");
+		httpProc.fLineSizeLimit												= cConfig["LineSizeLimit"].AsLong(4096L);
+		httpProc.fURISizeLimit												= cConfig["URISizeLimit"].AsLong(1024L);
+		httpProc.fRequestSizeLimit											= cConfig["RequestSizeLimit"].AsLong(5120L);
 		httpProc.fCheckUrlEncodingOverride									= cConfig["CheckUrlEncodingOverride"].AsString();
 		httpProc.fCheckUrlPathContainsUnsafeCharsOverride 					= cConfig["CheckUrlPathContainsUnsafeCharsOverride"].AsString();
 		httpProc.fCheckUrlPathContainsUnsafeCharsAsciiOverride				= cConfig["CheckUrlPathContainsUnsafeCharsAsciiOverride"].AsString();
