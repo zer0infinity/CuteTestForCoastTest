@@ -195,7 +195,7 @@ void URLPrinter::BuildPrivateState(ostream &, Context &c, const ROAnything &conf
 			String value;
 			RenderOnString(value, c, params[i]);
 
-			SubTrace(params(i), "Value = " << value << ", name = " << name);
+			Trace("name = " << name << " value = " << value);
 
 			state[name] = value;
 		}
@@ -209,11 +209,15 @@ void URLPrinter::AppendEncodedState(ostream &reply, Context &c, const Anything &
 	String s(argName);
 	s.Append("=");
 	SecurityModule::ScrambleState(s, state);
-	// now we need to encode the string according to RFC1738/1808
-	Trace("state before encoding [" << s << "]");
-	String strEncoded = URLUtils::urlEncode(s);
-	Trace("state after  encoding [" << strEncoded << "]");
-	reply << strEncoded;
+	Trace("scrambled state [" << s << "]");
+	if ( URLUtils::CheckUrlEncoding(s) ) {
+		reply << s;
+	} else {
+		// now we need to encode the string according to RFC1738/1808
+		String strEncoded = URLUtils::urlEncode(s);
+		Trace("state after additional encoding [" << strEncoded << "]");
+		reply << strEncoded;
+	}
 }
 
 void URLPrinter::GetState(Anything &state, Context &c)
