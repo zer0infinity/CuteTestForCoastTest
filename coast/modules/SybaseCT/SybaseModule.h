@@ -46,6 +46,8 @@ public:
 
 private:
 	Anything	fWorkerPools;
+	bool		fHasDAImpls;
+	bool		fHasNewDAImpls;
 };
 
 #endif

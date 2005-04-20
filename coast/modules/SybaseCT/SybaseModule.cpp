@@ -14,12 +14,15 @@
 #include "Dbg.h"
 #include "SybCTPoolManager.h"
 #include "SybCTDAImpl.h"
+#include "SybCTnewDAImpl.h"
 
 //---- SybaseModule ---------------------------------------------------------------
 RegisterModule(SybaseModule);
 
 SybaseModule::SybaseModule(const char *name)
 	: WDModule(name)
+	, fHasDAImpls(false)
+	, fHasNewDAImpls(false)
 {
 	StartTrace(SybaseModule.SybaseModule);
 }
@@ -37,9 +40,10 @@ bool SybaseModule::Init(const Anything &config)
 	long l = 0L;
 	Anything myCfg;
 	if (config.LookupPath(myCfg, "SybaseModule")) {
+		TraceAny(myCfg, "SybaseModuleConfig");
 		// initialize WorkerPools for the listed servers
-		if (myCfg.IsDefined("Servers")) {
-			Anything &servers = myCfg["Servers"];
+		if (myCfg.IsDefined("SybCTPoolDAImpl")) {
+			Anything &servers = myCfg["SybCTPoolDAImpl"];
 			for (l = 0L; l < servers.GetSize(); l++) {
 				Anything &anySub = servers[l];
 				String srvName(servers.SlotName(l));
@@ -62,8 +66,15 @@ bool SybaseModule::Init(const Anything &config)
 				(*(SybCTPoolManager *)fWorkerPools[l].AsIFAObject()).UnblockRequests();
 			}
 		}
-		// initialize standard SybCTDAImpl
-		SybCTDAImpl::Init(config);
+		if ( myCfg.IsDefined("SybCTDAImpl") ) {
+			// initialize standard SybCTDAImpl
+			fHasDAImpls = SybCTDAImpl::Init(config);
+		}
+		if ( myCfg.IsDefined("SybCTnewDAImpl") ) {
+			// initialize SybCTnewDAImpls
+			Trace("initializing SybCTnewDAImpl");
+			fHasNewDAImpls = SybCTnewDAImpl::Init(config);
+		}
 	}
 	return true;
 }
@@ -90,8 +101,13 @@ bool SybaseModule::Finis()
 		delete pPool;
 		fWorkerPools.Remove(0L);
 	}
-	// de-initialize standard SybCTDAImpl
-	SybCTDAImpl::Finis();
-
+	if ( fHasDAImpls && SybCTDAImpl::fgInitialized ) {
+		// de-initialize SybCTDAImpl
+		SybCTDAImpl::Finis();
+	}
+	if ( fHasNewDAImpls && SybCTnewDAImpl::fgInitialized ) {
+		// de-initialize SybCTnewDAImpls
+		SybCTnewDAImpl::Finis();
+	}
 	return true;
 }
