@@ -43,7 +43,7 @@ public:
 protected:
 	//: Helper method to report errors
 	//	void SetErrorMsg(const char* msg, SybDB *SybDB, Context &context, Mapper *out );
-	static Mutex    fgStartMutex;
+	static Mutex    fgStructureMutex;
 	static Anything fgListOfSybCT;
 	static Anything fgContextMessages;
 	static CS_CONTEXT *fg_cs_context;
@@ -57,6 +57,7 @@ private:
 	//assignement
 	SybCTDAImpl &operator=(const SybCTDAImpl &);
 
+	friend class SybaseModule;
 	friend class SybCTDAImplTest;
 };
 
