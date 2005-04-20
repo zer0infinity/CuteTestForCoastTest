@@ -42,10 +42,14 @@ public:
 	void tearDown ();
 
 	//! describe this Test
-	void test();
+	void SybCTDAImplTest();
+	void SybCTPoolDAImplTest();
+	void SybCTnewDAImplTest();
 
-	void Run(long i);
+	void DoTest(const char *goodDAName, const char *failDAName);
+	void Run(long id, const char *goodDAName, const char *failDAName);
 
+	bool fbWasInitialized;
 };
 
 #endif
