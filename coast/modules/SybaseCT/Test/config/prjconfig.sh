@@ -45,7 +45,6 @@ fi
 
 SybInPrjDir=${PROJECTDIR}/sybase
 SybIn3rdParty=${DEV_HOME}/3rdparty/installed/sybase
-
 if [ -d "${SybInPrjDir}" ]; then
         export SYBASE=${SybInPrjDir};
 elif [ -d "${SybIn3rdParty}" ]; then
