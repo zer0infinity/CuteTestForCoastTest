@@ -81,11 +81,11 @@ bool RegisterableObject::Terminate(const char *category, TerminationPolicy *term
 
 void RegisterableObject::Register(const char *name, const char *category)
 {
-#if !defined (_AIX)   //static Initialisation problem
+#if !defined (_AIX) && !defined(__sun)   //static Initialisation problem
 	StartTrace(RegisterableObject.Register);
 #endif
 	Registry *reg = Registry::GetRegistry(category);
-#if !defined (_AIX)   //static Initialisation problem
+#if !defined (_AIX) && !defined(__sun)   //static Initialisation problem
 	Trace("Registering: <" << name << "> of category <" << category << "> in &" << (long)reg);
 #endif
 	reg->Register(name, this);
