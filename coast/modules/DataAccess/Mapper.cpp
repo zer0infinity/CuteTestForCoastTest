@@ -507,6 +507,10 @@ bool ResultMapper::DoPutAny(const char *key, Anything value, Context &ctx, ROAny
 
 	// now for the scripting case, similar to Renderers
 	TraceAny(script, "Got a script. Starting interpretation foreach slot...");
+	// force setting a possibly given DestinationSlot from config into the context
+	// -> this allows sub-mappers, eg executed in script mode, to put into the same slot if not overridden again
+	String path = DoGetDestinationSlot(ctx);
+
 	bool retval = true;
 	for (long i = 0; retval && i < script.GetSize(); i++) {
 		String slotname(script.SlotName(i));
@@ -656,8 +660,10 @@ String ResultMapper::DoGetDestinationSlot(Context &ctx)
 		Trace("doing ctx.Lookup on [" << slotnamename << "]");
 		ctx.Lookup(slotnamename, roaDest);
 	}
-	Trace("destination slot is [" << roaDest.AsCharPtr() << "]");
-	return (!roaDest.IsNull() ? roaDest.AsCharPtr() : "Mapper");
+	String strRet(!roaDest.IsNull() ? roaDest.AsCharPtr() : "Mapper", Storage::Current());
+	Trace("destination slot is [" << strRet << "]");
+	ctx.GetTmpStore()["ResultMapper"]["DestinationSlot"] = strRet;
+	return strRet;
 }
 
 // -------------------------- EagerResultMapper -------------------------
