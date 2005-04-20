@@ -10,7 +10,7 @@
 #define _ConnectorArgsTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "TestCase.h"
 #include "Socket.h"
 
 //---- ConnectorArgsTest ----------------------------------------------------------
