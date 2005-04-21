@@ -87,7 +87,7 @@ public:
 	//!retv: explanation of return value
 	//!prec: explanation of precondition for the method call
 	//!postc: explanation of postcondition for the method call
-	static CS_RETCODE Init(CS_CONTEXT **context, Anything *pMessages, const String &strInterfacesPathName);
+	static CS_RETCODE Init(CS_CONTEXT **context, Anything *pMessages, const String &strInterfacesPathName, CS_INT iNumberOfConns);
 	static CS_RETCODE Finis(CS_CONTEXT *context);
 
 	struct DaParams {

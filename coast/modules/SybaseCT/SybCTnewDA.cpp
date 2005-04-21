@@ -14,7 +14,7 @@
 #include "SysLog.h"
 #include "StringStream.h"
 #include "Timers.h"
-#include "Mapper.h"
+#include "System.h"
 
 //--- c-library modules used ---------------------------------------------------
 #include <limits.h>
@@ -122,7 +122,7 @@ SybCTnewDA::~SybCTnewDA()
 	}
 }
 
-CS_RETCODE SybCTnewDA::Init(CS_CONTEXT **context, Anything *pMessages, const String &strInterfacesPathName)
+CS_RETCODE SybCTnewDA::Init(CS_CONTEXT **context, Anything *pMessages, const String &strInterfacesPathName, CS_INT iNumberOfConns)
 {
 	StartTrace(SybCTnewDA.Init);
 	CS_RETCODE retcode = CS_FAIL;
@@ -184,7 +184,7 @@ CS_RETCODE SybCTnewDA::Init(CS_CONTEXT **context, Anything *pMessages, const Str
 		}
 	}
 
-	// This is a synchronous example so set the input/output type
+	// This is a synchronous connection so set the input/output type
 	// to synchronous (This is the default setting, but show an example anyway).
 	Trace("set context to synchronous IO");
 	if (retcode == CS_SUCCEED) {
@@ -194,12 +194,22 @@ CS_RETCODE SybCTnewDA::Init(CS_CONTEXT **context, Anything *pMessages, const Str
 			SYSERROR("ct_config(netio) failed");
 		}
 	}
-	if (retcode == CS_SUCCEED) {
+	if ( retcode == CS_SUCCEED && iNumberOfConns > 0 ) {
+		Trace("Try set Max Connections to [" << (long)iNumberOfConns << "]");
+		retcode = ct_config(*context, CS_SET, CS_MAX_CONNECT, &iNumberOfConns, CS_UNUSED, NULL);
+		if (retcode != CS_SUCCEED) {
+			SYSWARNING("ct_config(CS_MAX_CONNECT) to " << (long)iNumberOfConns << " failed");
+			retcode = CS_SUCCEED;
+		}
+	}
+	if ( retcode == CS_SUCCEED ) {
 		CS_INT maxCons;
 		retcode = ct_config(*context, CS_GET, CS_MAX_CONNECT, &maxCons, CS_UNUSED, NULL);
 		if (retcode == CS_SUCCEED) {
-			Trace("### MAX_CONNECTIONS: " << maxCons << " ###");
-			SysLog::Info(String("MAX_CONNECTIONS: ") << (long)maxCons);
+			String strMsg("MAX_CONNECTIONS of SybCTnewDA: ");
+			strMsg << maxCons;
+			Trace(strMsg);
+			SysLog::Info(strMsg);
 		}
 	}
 	if (retcode == CS_SUCCEED && strInterfacesPathName.Length()) {
@@ -281,6 +291,15 @@ bool SybCTnewDA::Open(DaParams &params, String user, String password, String ser
 						}
 					} else {
 						Warning(params, "Open: Applicationname missing");
+					}
+
+					// Set Host-Name
+					String hostName;
+					if ( (retcode == CS_SUCCEED) && System::HostName( hostName ) ) {
+						Trace("setting hostname to [" << hostName << "]");
+						if ( (retcode = ct_con_props(fConnection, CS_SET, CS_HOSTNAME, (char *)(const char *)hostName, CS_NULLTERM, NULL)) != CS_SUCCEED ) {
+							Warning(params, "Open: setting hostname failed");
+						}
 					}
 
 					// Open a Server fConnection.

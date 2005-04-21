@@ -71,7 +71,7 @@ bool SybCTnewDAImpl::Init(ROAnything config)
 		fgListOfSybCT.SetAllocator(Storage::Global());
 		fgListOfSybCT = Anything();
 		// SybCTnewDA::Init initializes the cs_context.  It must be done only once
-		if ( SybCTnewDA::Init(&fg_cs_context, &fgContextMessages, strInterfacesPathName) == CS_SUCCEED ) {
+		if ( SybCTnewDA::Init(&fg_cs_context, &fgContextMessages, strInterfacesPathName, nrOfSybCTs) == CS_SUCCEED ) {
 			// use the semaphore to block when no more resources are available
 			fgListOfSybCT["Size"] = nrOfSybCTs;
 			fgpResourcesSema = new Semaphore(nrOfSybCTs);

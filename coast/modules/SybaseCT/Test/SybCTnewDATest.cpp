@@ -58,7 +58,7 @@ void SybCTnewDATest::InitOpenSetConPropTest()
 		ResultMapper aResultMapper("aResultMapper");
 		String strDAName(name());
 		// create context
-		if (t_assertm(SybCTnewDA::Init(&context, &anyCtxMessages, strInterfacesFileName) == CS_SUCCEED, "Context should have been created")) {
+		if (t_assertm(SybCTnewDA::Init(&context, &anyCtxMessages, strInterfacesFileName, 5) == CS_SUCCEED, "Context should have been created")) {
 			SybCTnewDA sybct(context);
 			SybCTnewDA::DaParams myParams(&ctx, &aParamMapper, &aResultMapper, &strDAName);
 			if (t_assertm(sybct.Open( myParams, "wdtester", "all2test", "HIKU_INT2", "SimpleQueryTest"), "dbOpen should have succeeded")) {
@@ -114,7 +114,7 @@ void SybCTnewDATest::SimpleQueryTest()
 		aResultMapper.CheckConfig("OutputMapper");
 		String strDAName(name());
 		// create context
-		if (t_assertm(SybCTnewDA::Init(&context, &anyCtxMessages, strInterfacesFileName) == CS_SUCCEED, "Context should have been created")) {
+		if (t_assertm(SybCTnewDA::Init(&context, &anyCtxMessages, strInterfacesFileName, 5) == CS_SUCCEED, "Context should have been created")) {
 			SybCTnewDA sybct(context);
 			SybCTnewDA::DaParams myParams(&ctx, &aParamMapper, &aResultMapper, &strDAName);
 			if (t_assertm(sybct.Open( myParams, "wdtester", "all2test", "HIKU_INT2", "SimpleQueryTest"), "dbOpen should have succeeded")) {
@@ -160,7 +160,7 @@ void SybCTnewDATest::LimitedMemoryTest()
 		aResultMapper.CheckConfig("OutputMapper");
 		String strDAName(name());
 		// create context
-		if (t_assertm(SybCTnewDA::Init(&context, &anyCtxMessages, strInterfacesFileName) == CS_SUCCEED, "Context should have been created")) {
+		if (t_assertm(SybCTnewDA::Init(&context, &anyCtxMessages, strInterfacesFileName, 5) == CS_SUCCEED, "Context should have been created")) {
 			SybCTnewDA sybct(context);
 			SybCTnewDA::DaParams myParams(&ctx, &aParamMapper, &aResultMapper, &strDAName);
 			if (t_assertm(sybct.Open( myParams, "wdtester", "all2test", "HIKU_INT2", "SimpleQueryTest"), "dbOpen should have succeeded")) {
