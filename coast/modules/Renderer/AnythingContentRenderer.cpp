@@ -31,13 +31,21 @@ void AnythingContentRenderer::RenderAll(ostream &reply, Context &ctx, const ROAn
 	TraceAny(config, "config");
 	String whatToPrint;
 	bool addXmpTags(config.IsDefined("XmpTags"));
+	String cssTag(config["XmpTags"]["CSSTag"].AsString(""));
 	String preTag(config["XmpTags"]["PreTag"].AsString(""));
 	String postTag(config["XmpTags"]["PostTag"].AsString(""));
 	bool prettyPrint(config["Pretty"].AsBool(1));
 	Renderer::RenderOnString(whatToPrint, ctx, config["Input"]);
 
 	if (addXmpTags) {
-		reply << "<br><pre>" << preTag;
+		reply << "<br><pre";
+		if ( config["XmpTags"].IsDefined("CSSTag") ) {
+			reply << " " << cssTag;
+		}
+		reply << ">";
+		if ( config["XmpTags"].IsDefined("PreTag") ) {
+			reply << preTag;
+		}
 	}
 	ROAnything anyToPrint;
 	if (ctx.Lookup(whatToPrint, anyToPrint)) {
