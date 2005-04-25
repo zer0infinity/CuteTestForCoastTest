@@ -2536,6 +2536,31 @@
 			}
 			/Expected       "<br><pre><kim>{/foo \"bar\"}<dojo></pre><br>"
 		}
+		/AnythingContentRendererWithStyleTest
+		{
+			/Env
+			{
+				/aAnyThing
+				{
+					/foo	bar
+				}
+			}
+			/Renderer
+			{
+				/AnythingContentRenderer
+				{
+					/Input		"aAnyThing"
+					/Pretty		0
+					/XmpTags	{
+									/CSSTag "class=\"ali baba\""
+									/PreTag "<kim>"
+									/PostTag "<dojo>"
+								}
+				}
+			}
+			/Expected       "<br><pre class=\"ali baba\"><kim>{/foo \"bar\"}<dojo></pre><br>"
+		}
+
 		/AnythingContentRendererWithXMPNoTagsTest
 		{
 			/Env
