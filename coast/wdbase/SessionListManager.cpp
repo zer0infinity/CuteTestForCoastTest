@@ -717,11 +717,11 @@ bool SessionListManager::GetASessionsInfo(Anything &sessionInfo, const String &s
 {
 	StartTrace(SessionListManager.GetASessionsInfo);
 	TRACE_LOCK_START("GetASessionsInfo");
+	Session *originalSession = ctx.GetSession();
 	Session *s = IntLookupSession(sessionId, ctx);
 	if (!s) {
 		return false;
 	}
-	Session *originalSession = ctx.GetSession();
 	sessionInfo = MetaThing();
 	ctx.GetTmpStore()["SessionInfo"] = sessionInfo;
 	s->GetSessionInfo(sessionInfo, ctx, "SessionInfo");
