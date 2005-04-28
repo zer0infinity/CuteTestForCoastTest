@@ -68,7 +68,16 @@ Anything LDAPConnectionManager::GetLdapConnection(const String &uniqueConnection
 	}
 	TimeStamp now = TimeStamp().Now();
 	TimeStamp lastRebind(returned["LastRebind"].AsString());
-	bool mustRebind =  ( ((lastRebind + rebindTimeout) <  now) );
+	bool mustRebind;
+	if ( handle == (LDAP *) NULL ) {
+		mustRebind = true;
+	} else {
+		if ( rebindTimeout != 0L ) {
+			mustRebind =  ( ((lastRebind + rebindTimeout) <  now) );
+		} else {
+			mustRebind = false;
+		}
+	}
 	Trace("Get: " << uniqueConnectionId << " "  << LDAPConnection::DumpConnectionHandle(handle));
 	Trace("Now: " << now << " LastRebind: " << lastRebind  << " RebindTimeout: "
 		  << rebindTimeout << " Must rebind: " << mustRebind);

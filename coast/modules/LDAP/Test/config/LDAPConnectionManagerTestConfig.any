@@ -10,110 +10,392 @@
 
 	/testLDAPConnectionManager
 	{
-		# Setting handle, retrieving it with timeout to high
+		# 0 Getting not existing handle, then setting handle
 		{
 			/NumberOfRuns 1
-			/Get
+			/Suite
 			{
-				/Data
 				{
-					/UniqueConnectionId		"FristConnection"
-					/LDAPRebindTimeout			2
-					/SleepTime				3
+					/Get
+					{
+						/Data
+						{
+							/UniqueConnectionId		"FristConnection"
+							/LDAPRebindTimeout			2
+							/SleepTime				3
+						}
+						/Expected
+						{
+							/MustRebind				1
+						}
+					}
 				}
-				/Expected
 				{
-					/MustRebind				1
-				}
-			}
-			/Set
-			{
-				/Data
-				{
-					/LDAPServer		"marvin.hsr.loc"
-					/LDAPPort		"49999"
-					/UniqueConnectionId		"FristConnection"
-				}
-				/Expected
-				{
-					/Return				1
+					/Set
+					{
+						/Data
+						{
+
+							/LDAPPort		"49999"
+							/UniqueConnectionId		"FristConnection"
+						}
+						/Expected
+						{
+							/Return				1
+						}
+					}
 				}
 			}
 		}
-		# Re-Setting same handle, retrieving it with timeout ok
+		# 1 Getting this handle with valid timeout, resetting it
 		{
 			/NumberOfRuns 1
-			/Get
+			/Suite
 			{
-				/Data
 				{
-					/UniqueConnectionId		"FristConnection"
-					/LDAPRebindTimeout			2
-					/SleepTime				1
+					/Get
+					{
+						/Data
+						{
+							/UniqueConnectionId		"FristConnection"
+							/LDAPRebindTimeout		3
+							/SleepTime				1
+						}
+						/Expected
+						{
+							/MustRebind				0
+						}
+					}
 				}
-				/Expected
 				{
-					/MustRebind				0
-				}
-			}
-			/Set
-			{
-				/Data
-				{
-					/LDAPServer		"marvin.hsr.loc"
-					/LDAPPort		"49999"
-					/UniqueConnectionId		"FristConnection"
-				}
-				/Expected
-				{
-					/Return				1
+					/Set
+					{
+						/Data
+						{
+
+							/LDAPPort		"49999"
+							/UniqueConnectionId		"FristConnection"
+						}
+						/Expected
+						{
+							/Return				1
+						}
+					}
 				}
 			}
 		}
-		# Setting another handle, retrieving it with timeout ok
+		# 2 Getting this handle with rebind timeout ok expired
 		{
 			/NumberOfRuns 1
-			/Get
+			/Suite
 			{
-				/Data
 				{
-					/UniqueConnectionId		"SecondConnection"
-					/LDAPRebindTimeout			5
-					/SleepTime				0
-				}
-				/Expected
-				{
-					/MustRebind				0
-				}
-			}
-			/Set
-			{
-				/Data
-				{
-					/LDAPServer		"marvin.hsr.loc"
-					/LDAPPort		"49999"
-					/UniqueConnectionId		"SecondConnection"
-				}
-				/Expected
-				{
-					/Return				1
+					/Get
+					{
+						/Data
+						{
+							/UniqueConnectionId		"FristConnection"
+							/LDAPRebindTimeout		1
+							/SleepTime				0
+						}
+						/Expected
+						{
+							/MustRebind				0
+						}
+					}
 				}
 			}
 		}
-		# Re-Getting this handle, retrieving it with timeout ok
+		# 3 Setting another handle, retrieving it with timeout not ok
+		{
+			/NumberOfRuns 1
+			/Suite
+			{
+				{
+					/Set
+					{
+						/Data
+						{
+
+							/LDAPPort		"49999"
+							/UniqueConnectionId		"FristConnection"
+						}
+						/Expected
+						{
+							/Return				1
+						}
+					}
+				}
+				{
+					/Get
+					{
+						/Data
+						{
+							/UniqueConnectionId		"FristConnection"
+							/LDAPRebindTimeout		1
+							/SleepTime				2
+						}
+						/Expected
+						{
+							/MustRebind				1
+						}
+					}
+				}
+			}
+		}
+		# 4 Re-Getting this handle, retrieving it with timeout ok
 		{
 			/NumberOfRuns 5
-			/Get
+			/Suite
 			{
-				/Data
 				{
-					/UniqueConnectionId		"SecondConnection"
-					/LDAPRebindTimeout			5
-					/SleepTime				0
+					/Get
+					{
+						/Data
+						{
+							/UniqueConnectionId		"FristConnection"
+							/LDAPRebindTimeout			15
+							/SleepTime				1
+						}
+						/Expected
+						{
+							/MustRebind				0
+						}
+					}
 				}
-				/Expected
+			}
+		}
+		# 5 Setting new handle, retrieving it (no rebind)
+		{
+			/NumberOfRuns 1
+			/Suite
+			{
 				{
-					/MustRebind				0
+					/Set
+					{
+						/Data
+						{
+
+							/LDAPPort		"49999"
+							/UniqueConnectionId		"SecondConnection"
+						}
+						/Expected
+						{
+							/Return				1
+						}
+					}
+				}
+				{
+					/Get
+					{
+						/Data
+						{
+							/UniqueConnectionId		"SecondConnection"
+							/LDAPRebindTimeout		0
+						}
+						/Expected
+						{
+							/MustRebind				0
+						}
+					}
+				}
+			}
+		}
+		# 6 Setting nullhandle, retrieving it
+		{
+			/NumberOfRuns 1
+			/Suite
+			{
+				{
+					/Set
+					{
+						/Data
+						{
+							/NullHandle				1
+							/UniqueConnectionId		"SecondConnection"
+						}
+						/Expected
+						{
+							/Return				1
+						}
+					}
+				}
+				{
+					/Get
+					{
+						/Data
+						{
+							/UniqueConnectionId		"SecondConnection"
+							/LDAPRebindTimeout		0
+						}
+						/Expected
+						{
+							/MustRebind				1
+						}
+					}
+				}
+			}
+		}
+		# 7 Getting another handle (no rebind)
+		{
+			/NumberOfRuns 1
+			/Suite
+			{
+				{
+					/Get
+					{
+						/Data
+						{
+							/UniqueConnectionId		"ThirdConnection"
+						}
+						/Expected
+						{
+							/MustRebind				1
+						}
+					}
+				}
+				{
+					/Set
+					{
+						/Data
+						{
+
+							/LDAPPort		"49999"
+							/UniqueConnectionId		"ThirdConnection"
+						}
+						/Expected
+						{
+							/Return				1
+						}
+					}
+				}
+			}
+		}
+		# 8 Getting this handle 20 times
+		{
+			/NumberOfRuns 20
+			/Suite
+			{
+				{
+					/Get
+					{
+						/Data
+						{
+							/UniqueConnectionId		"ThirdConnection"
+						}
+						/Expected
+						{
+							/MustRebind				0
+						}
+					}
+				}
+			}
+		}
+		# 9 Resetting this handle with NULL
+		{
+			/NumberOfRuns 1
+			/Suite
+			{
+				{
+					/Set
+					{
+						/Data
+						{
+							/NullHandle				1
+							/UniqueConnectionId		"ThirdConnection"
+						}
+						/Expected
+						{
+							/Return				1
+						}
+					}
+				}
+			}
+		}
+		# 10 Setting this handle
+		{
+			/NumberOfRuns 1
+			/Suite
+			{
+				{
+					/Set
+					{
+						/Data
+						{
+
+							/LDAPPort		"49999"
+							/UniqueConnectionId		"ThirdConnection"
+						}
+						/Expected
+						{
+							/Return				1
+						}
+					}
+				}
+			}
+		}
+		# 11 Getting this handle, valid rebind timeout
+		{
+			/NumberOfRuns 1
+			/Suite
+			{
+				{
+					/Get
+					{
+						/Data
+						{
+							/UniqueConnectionId		"ThirdConnection"
+							/LDAPRebindTimeout		2
+							/SleepTime				1
+						}
+						/Expected
+						{
+							/MustRebind				0
+						}
+					}
+				}
+			}
+		}
+		# 12 Getting this handle, not  valid rebind timeout
+		{
+			/NumberOfRuns 1
+			/Suite
+			{
+				{
+					/Get
+					{
+						/Data
+						{
+							/UniqueConnectionId		"ThirdConnection"
+							/LDAPRebindTimeout		1
+							/SleepTime				2
+						}
+						/Expected
+						{
+							/MustRebind				1
+						}
+					}
+				}
+			}
+		}
+		# 13 Getting this handle with no rebind timeout is ok.
+		{
+			/NumberOfRuns 1
+			/Suite
+			{
+				{
+					/Get
+					{
+						/Data
+						{
+							/UniqueConnectionId		"ThirdConnection"
+							/LDAPRebindTimeout		0
+						}
+						/Expected
+						{
+							/MustRebind				0
+						}
+					}
 				}
 			}
 		}

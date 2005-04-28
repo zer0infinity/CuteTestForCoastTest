@@ -66,7 +66,7 @@ LDAPConnection::LDAPConnection(ROAnything connectionParams)
 	fConnectionTimeout *= 1000;
 	fMapUTF8 = connectionParams["MapUTF8"].AsBool(true);
 	fUseLdapConnectionManager = ( bool ) connectionParams["PooledConnections"].AsLong(0L);
-	fRebindTimeout = connectionParams["RebindTimeout"].AsLong(3600L);
+	fRebindTimeout = connectionParams["RebindTimeout"].AsLong(0L);
 	TraceAny(connectionParams, "ConnectionParams");
 }
 
@@ -139,11 +139,9 @@ LDAPConnection::EConnectState LDAPConnection::DoConnectHook(const String &bindNa
 		returned["MustRebind"].AsBool(1) == false ?
 		LDAPConnection::eMustNotRebind  : LDAPConnection::eMustRebind;
 	fHandle = (LDAP *) returned["Handle"].AsIFAObject(0);
-	if ( eConnectState == LDAPConnection::eMustRebind ) {
-		if ( (fHandle != (LDAP *) NULL)  ) {
-			Trace("Retrning: " << ConnectRetToString(LDAPConnection::eOk));
-			eConnectState = LDAPConnection::eOk;
-		}
+	if ( eConnectState == LDAPConnection::eMustNotRebind ) {
+		Trace("Retrning: " << ConnectRetToString(LDAPConnection::eOk));
+		eConnectState = LDAPConnection::eOk;
 	}
 	Trace("eConnectState: " << ConnectRetToString(eConnectState) << " Handle: " << DumpConnectionHandle(fHandle));
 	return eConnectState;
@@ -213,7 +211,7 @@ bool LDAPConnection::SetProtocol(LDAPErrorHandler eh)
 	int ldapVersion = LDAP_VERSION_MAX;
 	if ( ::ldap_set_option( fHandle, LDAP_OPT_PROTOCOL_VERSION, &ldapVersion ) != LDAP_SUCCESS ) {
 		Trace("ldap_set_option: LDAP_OPT_PROTOCOL_VERSION   FAILED");
-		eh.HandleSessionError(fHandle, "Could not set protocol vesion.");
+		eh.HandleSessionError(fHandle, "Could not set protocol version.");
 		return false;
 	}
 	return true;
