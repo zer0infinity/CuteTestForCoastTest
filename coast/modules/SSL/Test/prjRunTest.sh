@@ -13,7 +13,7 @@ function prepareTest
 	mkdir $PRJCONFIGPATH/cert_hashes > /dev/null 2>&1
 	rm -f $PRJCONFIGPATH/cert_hashes/*
 	cp $PRJCONFIGPATH/$certdir/*.pem $PRJCONFIGPATH/cert_hashes
-	$PROJECTDIR/rehashwrapper.sh $PRJCONFIGPATH/cert_hashes
+	rehashwrapper.sh -d $PRJCONFIGPATH/cert_hashes -t
 	# Linking hashed certificate directory to one common place
 	rm /tmp/SSLSocketTestHashedCerts > /dev/null 2>&1
 	ln -s $PRJCONFIGPATH/cert_hashes /tmp/SSLSocketTestHashedCerts > /dev/null 2>&1
