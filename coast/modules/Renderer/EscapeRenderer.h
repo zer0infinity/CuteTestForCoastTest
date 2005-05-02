@@ -14,20 +14,20 @@
 #include "Renderer.h"
 
 //---- EscapeRenderer ----------------------------------------------------------
-//! <B>Inserts a given escape character before the character to escape</B>
+//! <B>Inserts a given escape character before the character(s) to escape</B>
 /*!
 <B>Configuration:</B><PRE>
 {
 	/String			Rendererspec	mandatory, String to be escaped
 	/EscapeChar		String			optional, default '\', defines the escape character
-	/ToEscape		String			mandatory, character to escape
+	/ToEscape		String			mandatory, characters to escape
 }
 </PRE>
 <B>Example:</B>
 <PRE>
 { /EscapeRenderer {
 	/String			"You can't escape this String's content"
-	/EscapeChar		"\"
+	/EscapeChar		"\\"
 	/ToEscape		"'"
 } }
 </PRE>
