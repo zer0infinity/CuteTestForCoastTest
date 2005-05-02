@@ -10,10 +10,8 @@
 #include "DataAccess.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "Context.h"
 #include "SysLog.h"
 #include "Timers.h"
-#include "DataAccessImpl.h"
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
@@ -23,7 +21,7 @@
 DataAccess::DataAccess(const char *trxName)
 	: fName(trxName, -1, Storage::Global())
 {
-	StartTrace1(DataAccess.DataAccess, "trxName: <" << trxName << ">");
+	StartTrace1(DataAccess.DataAccess, "trxName: [" << trxName << "]");
 }
 
 DataAccess::~DataAccess()
@@ -33,24 +31,15 @@ DataAccess::~DataAccess()
 DataAccessImpl *DataAccess::GetImpl(const char *trxName, Context &context)
 {
 	StartTrace(DataAccess.GetImpl);
-	Trace("Trx name is->" << trxName );
+	Trace("Trx name is [" << trxName << "]");
 	Assert(trxName); // precondition
 	DataAccessImpl *trxImpl = DataAccessImpl::FindDataAccessImpl(trxName);
-
-	Assert(trxImpl); // we expect a trximpl to be found
-	if (trxImpl) {
-		return trxImpl;
+	// handling error or misconfiguration, keep on same line for clearness reason of output message
+	Assert(trxImpl);
+	if (!trxImpl) {
+		HandleError(context, trxName, __FILE__, __LINE__, "DataAccess::GetImpl returned 0");
 	}
-
-	// handling error or misconfiguration
-	String logMsg(__FILE__);
-	logMsg << ":" << (long)__LINE__ << " DataAccessImpl::FindDataAccessImpl returned 0 for " << trxName;
-	SysLog::Error(logMsg);
-
-	Anything tmpStore(context.GetTmpStore());
-	tmpStore["DataAccess"][trxName]["Error"].Append(logMsg);
-
-	return 0;
+	return trxImpl;
 }
 
 bool DataAccess::StdExec(Context &trxContext)
@@ -139,8 +128,8 @@ bool DataAccess::GetMyParameterMapper(Context &c, ParameterMapper *&pm)
 			if (pm) {
 				Trace("Using fallback ParameterMapper: " << fallback);
 			} else {
-				Trace("ERROR: No mapper with name '" << name << "' found.");
-				HandleError(c, name, __FILE__, __LINE__, "ParameterMapper::FindParameterMapper returned 0");
+				Trace("ERROR: No mapper with name [" << name << "] found.");
+				HandleError(c, name, __FILE__, __LINE__, "DataAccess::GetMyParameterMapper returned 0");
 			}
 		}
 	}
@@ -179,17 +168,17 @@ bool DataAccess::GetMyResultMapper(Context &c, ResultMapper *&rm)
 			if (rm) {
 				Trace("Using fallback ResultMapper: " << fallback);
 			} else {
-				Trace("ERROR: No mapper with name '" << name << "' found.");
-				HandleError(c, name, __FILE__, __LINE__, "ResultMapper::FindResultMapper returned 0");
+				Trace("ERROR: No mapper with name [" << name << "] found.");
+				HandleError(c, name, __FILE__, __LINE__, "DataAccess::GetMyResultMapper returned 0");
 			}
 		}
 	}
 	return isScriptInterpreter;
 }
 
-// kgu: copy/paste from DAImpl.cpp
 void DataAccess::HandleError(Context &context, String mapperName, const char *file, long line, String msg)
 {
+	StartTrace(DataAccess.HandleError);
 	// cut off path in file string (only output file)
 	String filePath(file);
 	long pos = filePath.StrRChr('\\');			// windows path?
@@ -198,8 +187,8 @@ void DataAccess::HandleError(Context &context, String mapperName, const char *fi
 	}
 
 	String logMsg = (pos < 0) ? filePath : filePath.SubString(pos + 1);
-	logMsg << ":" << line << " " << msg << " for " << mapperName;
+	logMsg << ":" << line << " " << msg << " for [" << mapperName << "]";
 	SysLog::Error(logMsg);
-	Anything tmpStore(context.GetTmpStore());
-	tmpStore["DataAccess"][mapperName]["Error"].Append(logMsg);
+	Trace(logMsg);
+	context.GetTmpStore()["DataAccess"][mapperName]["Error"].Append(logMsg);
 }
