@@ -73,6 +73,7 @@ Socket::Socket(int socketfd, const Anything &clientInfo, bool doClose, long time
 	, fAllocator((a) ? a : Storage::Global())
 {
 	StartTrace1(Socket.Ctor, "fd:" << GetFd() << " using allocator: [" << (long)fAllocator << "]");
+	TraceAny(fClientInfo, "clientInfo");
 }
 
 Socket::~Socket()
