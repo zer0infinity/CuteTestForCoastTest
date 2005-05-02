@@ -34,9 +34,11 @@ void EscapeRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &con
 		}
 		String original;
 		RenderOnString(original, c, config["String"]);
+		Trace("original String [" << original << "]");
 		long sz = original.Length();
 		for (long i = 0; i < sz; i++) {
 			if (toEscape.StrChr(original[i]) >= 0) {
+				Trace("escaping char [" << original[i] << "] at pos:" << i);
 				reply << eChar;
 			}
 			reply << original[i];
