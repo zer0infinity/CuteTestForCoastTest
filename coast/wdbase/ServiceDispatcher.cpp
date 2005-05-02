@@ -125,6 +125,7 @@ String RendererDispatcher::FindServiceName(Context &ctx)
 
 	ROAnything uriPrefixList(ctx.Lookup("URIPrefix2ServiceMap"));
 	String requestURI(ctx.Lookup("REQUEST_URI", ""));
+	Trace("request URI [" << requestURI << "]");
 	Anything query(ctx.GetQuery());
 	SubTraceAny(uriPrefixList, uriPrefixList, "Service Prefixes: ");
 
