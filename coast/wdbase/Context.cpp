@@ -252,7 +252,7 @@ Anything &Context::GetEnvStore()
 
 Anything &Context::GetRoleStoreGlobal()
 {
-	return fCopySessionStore ? fSessionStoreCurrent["RoleStore"] : fSessionStoreGlobal["RoleStore"];
+	return GetSessionStore()["RoleStore"];
 }
 
 Anything &Context::GetSessionStore()
@@ -811,12 +811,12 @@ bool Context::GetStore(const char *key, Anything &store)
 	}
 
 	if (key && strcmp(key, "Session") == 0) {
-		store = fCopySessionStore ? fSessionStoreCurrent : fSessionStoreGlobal;
+		store = GetSessionStore();
 		return true;
 	}
 
 	if (key && strcmp(key, "Role") == 0) {
-		store = fCopySessionStore ? fSessionStoreCurrent["RoleStore"] : fSessionStoreGlobal["RoleStore"];
+		store = GetRoleStoreGlobal();
 		return true;
 	}
 
