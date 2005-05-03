@@ -3799,7 +3799,8 @@ void AnythingParser::Error(const char *msg, const char *toktext)
 {
 	// put a space in front to give poor Sniff a chance
 	String m(" ");
-	m << fContext.fFileName << ".any:" << fContext.fLine << " " << msg << ":" << toktext;
+	bool bHasExt = (fContext.fFileName.SubString(fContext.fFileName.Length() - 4L) == ".any");
+	m << fContext.fFileName << (bHasExt ? ":" : ".any:") << fContext.fLine << " " << msg << ":" << toktext;
 	SYSWARNING(m);
 	m << "\n";
 	SysLog::WriteToStderr(m);
