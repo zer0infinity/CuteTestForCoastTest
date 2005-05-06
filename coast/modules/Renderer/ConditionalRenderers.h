@@ -34,8 +34,9 @@ public:
 	void RenderAll(ostream &reply, Context &c, const ROAnything &config);
 
 protected:
-	// TestCondition does the actual testing. Result of test is returned via res
-	// Errors are signaled using the value "Error".
+	/*! TestCondition does the actual testing. Result of test is returned via res. Errors are signaled using the value "Error".
+		\param context context to work with
+		\param res conditions test result */
 	virtual void TestCondition(Context &context, const ROAnything &args, String &res);
 };
 
@@ -48,7 +49,7 @@ protected:
 	/Case {								mandatory, list of different cases to compare ContextLookupName-value with
 		/xxx			Rendererspec	optional, if context.Lookup("ContextLookupName-value") == xxx, the content of this slot will be rendered
 		/yyy			Rendererspec	optional, if context.Lookup("ContextLookupName-value") == yyy, the content of this slot will be rendered
-		/""				Rendererspec	optional, if context.Lookup("ContextLookupName-value") is empty, the content of this slot will be rendered
+		/''				Rendererspec	optional, if context.Lookup("ContextLookupName-value") is empty, the content of this slot will be rendered, Important: you must use single quotes when defining Anythings empty slotname!
 	}
 	/Default			Rendererspec	optional, for all unspecified conditions (not listed in Case slot), the content of this slot will be rendered
 }
