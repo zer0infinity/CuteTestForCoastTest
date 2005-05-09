@@ -29,15 +29,15 @@
 #include <errno.h>
 
 //---- PipeExecutor ----------------------------------------------------------------
-PipeExecutor::PipeExecutor(const String &cmd, Anything env, const char *wd, long to, bool redirectstderr)
+PipeExecutor::PipeExecutor(const String &cmd, Anything env, const char *wd, long lExecTimeout, bool bOpenStreamForStderr)
 	: fPipe(0)
 	, fChildPid(0)
 	, fCommand(cmd)
 	, fEnv(env)
 	, fWorkingDir(wd)
-	, fRedirectStderr(redirectstderr)
+	, fOpenStreamForStderr(bOpenStreamForStderr)
 	, fStderr(0)
-	, fTimeout(to)
+	, fTimeout(lExecTimeout)
 {
 	StartTrace(PipeExecutor.PipeExecutor);
 	Trace("executing cmd:[" << cmd << "] with path:[" << wd << "]");
@@ -94,19 +94,16 @@ long PipeExecutor::TerminateChild(int termSignal, bool tryhard)
 	if (fChildPid > 0) {
 		DWORD exitcode;
 		for (;;) {
-			if (GetExitCodeProcess((HANDLE)fChildPid, &exitcode)) {
+			if ( GetExitCodeProcess((HANDLE)fChildPid, &exitcode) != 0 ) {
+				Trace("exitcode:" << exitcode);
 				if (exitcode == STILL_ACTIVE) {
-					//printf("Process is Active.\n");
-					Sleep(100);
-					TerminateProcess((HANDLE)fChildPid, 0); // ugly...
+					if ( tryhard ) {
+						// we cannot use ExitProcess here because we need to specify a PID
+						TerminateProcess((HANDLE)fChildPid, 0);
+					}
 					continue;
-				} else if (exitcode == 0) {
-					//printf("done.\n");
-					break;
-				} else {
-					//printf("never.\n");
-					break;
 				}
+				break;
 			}
 		}
 		CloseHandle((HANDLE)fChildPid);
@@ -262,7 +259,7 @@ bool PipeExecutor::ForkAndRun(Anything parm, Anything env)
 		Pipe outp(fTimeout);
 		if (inp.GetReadFd() >= 0 && inp.GetWriteFd() >= 0 &&
 			outp.GetReadFd() >= 0 && outp.GetWriteFd() >= 0 ) {
-			if (fRedirectStderr) {
+			if (fOpenStreamForStderr) {
 				fStderr = new Pipe(fTimeout);
 			}
 

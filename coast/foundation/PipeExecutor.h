@@ -17,57 +17,56 @@ class EXPORTDECL_FOUNDATION Pipe;
 
 //---- PipeExecutor ----------------------------------------------------------
 //!execute a program and connect its stdio to iostreams
-//! this is useful for implementing CGI and all other kinds of delegation
-//! to existing programs.
-//! CAUTION: many programs wait until stdin is closed before producing their
-//! complete output, therfore use CloseWriteStream() to ensure the corresponding
-//! pipe is closed.
-
+/*! this is useful for implementing CGI and all other kinds of delegation
+to existing programs.
+CAUTION: many programs wait until stdin is closed before producing their
+complete output, therfore use ShutDownWriting() to ensure the corresponding
+pipe is closed. */
 class EXPORTDECL_FOUNDATION PipeExecutor
 {
 public:
 	//--- constructors
-	//!create an execution endpoint that calls program cmd with environment
-	//! env.
-	//! \param cmd the path to the program called
-	//! \param env the environment to be used for calling
-	//! \param wd the working directory to be used for calling
-	//! \param to timeout passed to underlying Pipe s
-	//! \param redirectstderr also capture stderr (fd=2) with a Pipe
-	PipeExecutor(const String &cmd, Anything env, const char *wd = ".", long to = 1000L, bool redirectstderr = false);
+	/*! Create an execution endpoint that calls program cmd with environment env
+		\param cmd the path to the program called
+		\param env the environment to be used for calling
+		\param wd the working directory to be used for calling
+		\param lExecTimeout execution timeout passed to underlying Pipe [ms], if no output can be read within the givin time, the pipe(s) will be closed.
+		\param bOpenStreamForStderr if set to true, stderr (fd=2) output will be captured. Call GetStderr() to get this stream. */
+	PipeExecutor(const String &cmd, Anything env, const char *wd = ".", long lExecTimeout = 1000L, bool bOpenStreamForStderr = false);
 	~PipeExecutor();
 
 	//--- public api
-	//!return iostream for reading/writing to called program, connected to programs stdin(0) and stdout(1)
-	//! \return returns 0 if something went wrong
+	/*! Get iostream for reading/writing to called program, connected to programs stdin(0) and stdout(1)
+		\return returns 0 if something went wrong */
 	iostream *GetStream();
 
-	//!return istream for reading stderr output of called program
-	//! \return returns 0 if something went wrong
+	/*! Get istream for reading stderr output of called program, only valid if bOpenStreamForStderr was set to true in ctor.
+		\return returns 0 if something went wrong or bOpenStreamForStderr was set to false in ctor */
 	istream *GetStderr();
 
-	//!provide hook for clients to switch off stdin, so that they can
-	//! read safely from stdout of the client program, otherwise
-	//! things could block.<BR>
-	//! <B>NOTE:</B> this is not fail safe (yet). writing might
-	//! block, because the child process is blocked in writing
-	//! as well and we haven't read anything yet and the OS pipe
-	//! buffer is full. So whenever you write large portions
-	//! of data to a child process try to read in-between if
-	//! you get timeouts.
+	/*! Provide hook for clients to switch off stdin, so that they can
+		read safely from stdout of the client program, otherwise
+		things could block.<BR>
+		<B>NOTE:</B> this is not fail safe (yet). writing might
+		block, because the child process is blocked in writing
+		as well and we haven't read anything yet and the OS pipe
+		buffer is full. So whenever you write large portions
+		of data to a child process try to read in-between if
+		you get timeouts.
+		\return true in case the write side could be closed successfully or false if something went wrong */
 	bool ShutDownWriting();
 
-	//!do the real thing, interpret cmd and look for program that
-	//! corresponds to cmd first element, only use blank as delimiter in cmd
-	//! no complete shell interpretation
+	/*! Do the real thing, interpret cmd and look for program that
+		corresponds to cmd first element, only use blank as delimiter in cmd
+		\note no complete shell interpretation, eg. globbing!
+		\return true if command execution was successful */
 	bool Start();
 
-	//!wait for the bastard and kill if not dead bastard and wait for its termination
-	//! \param signal the signal to be used, if failing tries always SIGKILL
-	//! automagically
-	//! \param tryhard if true, do not wait on wait AND kill the bastard
-	//! <B>caution:</B> if false this call blocks until child process dies
-	//! \return return the exit status of the child process or -1 if something is wrong
+	/*! Kill executable nicely first if not already terminated and wait for its termination.
+		\note if tryhard is set to false this call blocks until child process dies
+		\param signal kill signal to be used, if this fails we always SIGKILL it
+		\param tryhard If set to false, we wait on child termination forever. Use true, to kill the bastard now.
+		\return return the exit status of the child process or -1 if something went wrong */
 	long TerminateChild(int signal = 15 /*SIGTERM*/, bool tryhard = true);
 
 protected:
@@ -97,7 +96,7 @@ protected:
 	String fCommand;
 	Anything fEnv;
 	String fWorkingDir;
-	bool fRedirectStderr;
+	bool fOpenStreamForStderr;
 	Pipe *fStderr;
 	long fTimeout;
 
