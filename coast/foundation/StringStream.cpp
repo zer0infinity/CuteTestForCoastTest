@@ -11,6 +11,8 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "SysLog.h"
+#include "Dbg.h"
+
 //--- c-library modules used ---------------------------------------------------
 #include <assert.h>
 #include <ctype.h>
@@ -28,12 +30,14 @@ StringStreamBuf::StringStreamBuf(const String &s, int mode)
 	xinit(0, &s);
 	setbufpointers(0, 0);
 }
+
 StringStreamBuf::StringStreamBuf(String *s, int mode)
 	: fStore(s), fDeleteStore(false), fOpenMode(mode)
 {
 	xinit(s, 0);
 	setbufpointers(0, 0);
 }
+
 StringStreamBuf::~StringStreamBuf()
 {
 	this->sync();
@@ -43,6 +47,7 @@ StringStreamBuf::~StringStreamBuf()
 	}
 	fOpenMode = 0;
 }
+
 String &StringStreamBuf::str()
 {
 	this->sync();
@@ -90,6 +95,7 @@ void StringStreamBuf::xinit(  String *s, const String *contents)
 	}
 	Assert(fStore);
 }
+
 void StringStreamBuf::setgetpointer(long getoffset)
 {
 	char *eg = 0;
@@ -98,6 +104,7 @@ void StringStreamBuf::setgetpointer(long getoffset)
 	}
 	setg((fOpenMode & ios::in) ? start() : eg, start() + getoffset , eg);
 }
+
 void StringStreamBuf::setbufpointers(long getoffset, long putoffset)
 {
 	char *sc = 0;
@@ -227,7 +234,6 @@ StringStreamBuf::pos_type StringStreamBuf::seekpos(StringStreamBuf::pos_type p, 
 		}
 	}
 	return p;
-
 } // seekpos
 
 //
@@ -248,3 +254,36 @@ StringStreamBuf::pos_type StringStreamBuf::seekoff(StringStreamBuf::off_type of,
 	return seekpos(pos, mode);
 } // seekoff
 
+bool StringStream::PlainCopyStream2Stream(istream *streamSrc, ostream &streamDest, long &copiedBytes, long lBytes2Copy)
+{
+	StartTrace(StringStream.PlainCopyStream2Stream);
+	streamsize read = 0;
+	Trace("Bytes to copy: " << lBytes2Copy);
+	String sBuf(lBytes2Copy);
+	char *buf = (char *)(const char *) sBuf;
+	copiedBytes = 0L;
+	bool bRet = true;
+	while ( lBytes2Copy > 0L ) {
+		if ( streamSrc->good() ) {
+			if ( streamDest.good() ) {
+				streamSrc->read(buf, (int)lBytes2Copy);
+				read = streamSrc->gcount();
+				streamDest.write(buf, read);
+				copiedBytes += (long)read;
+				lBytes2Copy -= (long)read;
+				Trace("Bytes copied so far: " << copiedBytes);
+			} else {
+				Trace("Destination stream is not good , aborting copy!");
+				bRet = false;
+				break;
+			}
+		} else {
+			// test if we reached eof of streamSrc
+			bRet = (streamSrc->eof() != 0);
+			Trace("Source stream is not good anymore" << (bRet ? " (eof)" : "") << ", finishing copy!" );
+			break;
+		}
+	}
+	Trace("bytes copied this time: " << copiedBytes);
+	return bRet;
+}
