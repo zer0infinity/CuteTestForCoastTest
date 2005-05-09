@@ -223,7 +223,7 @@ private:
 	PipeStream &operator=(const PipeStream &);
 };
 
-//---- TimeoutModifier -------------------------------------------------------------------
+//---- PipeTimeoutModifier -------------------------------------------------------------------
 //! temporarily changes the timeout used by a PipeStream
 class  EXPORTDECL_FOUNDATION PipeTimeoutModifier
 {

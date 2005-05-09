@@ -33,7 +33,7 @@ PipeStream::PipeStream(Pipe *s, long timeout, long sockbufsz)
 {
 }
 
-//---- TimeoutModifier -------------------------------------------------------------------
+//---- PipeTimeoutModifier -------------------------------------------------------------------
 PipeTimeoutModifier::PipeTimeoutModifier(PipeStream *ioStream, long timeout)
 	: fStream(ioStream)
 {
