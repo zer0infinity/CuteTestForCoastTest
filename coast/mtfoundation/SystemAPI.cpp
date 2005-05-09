@@ -27,7 +27,7 @@ THREADWRAPPERFUNCDECL(ThreadWrapper, thread)
 	if (t) {
 		// need to set thread id here because no other possibility when using _beginthread
 		t->fThreadId = (void *)THRID();
-#ifdef _DLL
+#if defined(_DLL)
 		if (!TlsSetValue(fgThreadPtrKey, (void *)t)) {
 			SysLog::Error( String("ThreadWrapper[") << (long)t->fThreadId << "] failed to store Thread* into TLS");
 		}
@@ -42,6 +42,12 @@ THREADWRAPPERFUNCDECL(ThreadWrapper, thread)
 		}
 #endif
 		t->IntRun();
+#if !defined(_DLL)
+		if (!t->SetState(Thread::eTerminated)) {
+			SysLog::Warning( String("SetState(eTerminated) failed MyId(") << (long)t->fThreadId << ")");
+		}
+		t->CleanupThreadStorage();
+#endif
 	}
 }
 
@@ -112,6 +118,10 @@ THREADWRAPPERFUNCDECL(ThreadWrapper, thread)
 	Thread *t = (Thread *) thread;	// we should better check this....
 	if (t) {
 		t->IntRun();
+		if (!t->SetState(Thread::eTerminated)) {
+			SysLog::Warning( String("SetState(eTerminated) failed MyId(") << (long)t->fThreadId << ")");
+		}
+		t->CleanupThreadStorage();
 	}
 	return 0;
 }
@@ -218,6 +228,10 @@ THREADWRAPPERFUNCDECL(ThreadWrapper, thread)
 	Thread *t = (Thread *) thread;	// we should better check this....
 	if (t) {
 		t->IntRun();
+		if (!t->SetState(Thread::eTerminated)) {
+			SysLog::Warning( String("SetState(eTerminated) failed MyId(") << (long)t->fThreadId << ")");
+		}
+		t->CleanupThreadStorage();
 	}
 	return 0;
 }

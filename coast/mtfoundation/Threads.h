@@ -78,6 +78,7 @@ private:
 recursive call from the same thread means deadlock! */
 class EXPORTDECL_MTFOUNDATION SimpleMutex
 {
+	friend class SimpleCondition;
 public:
 	/*! create mutex with names to ease debugging of locking problems
 		\param name a name to identify the mutex when tracing locking problems
@@ -121,6 +122,9 @@ it is possible to call lock from the same thread without deadlock.
 \note you have to call unlock as many times as you have called lock */
 class EXPORTDECL_MTFOUNDATION Mutex
 {
+	friend class Condition;
+	friend class ThreadsTest;
+	friend class ContextTest;
 public:
 	/*! create mutex with names to ease debugging of locking problems
 		\param name a name to identify the mutex when tracing locking problems
@@ -159,9 +163,6 @@ public:
 	static THREADKEY fgCountTableKey;
 
 protected:
-	friend class ThreadsTest;
-	friend class ContextTest;
-
 	//!returns thread specific mutex lock count
 	long GetCount();
 	//!sets thread specific mutex lock count
@@ -392,6 +393,7 @@ public:
 		eStarted,
 		eRunning,
 		eTerminationRequested,
+		eTerminatedRunMethod,
 		eTerminated
 	};
 
@@ -546,7 +548,11 @@ protected:
 	//!subclass hook
 	virtual void DoTerminationRequestHook(ROAnything args);
 
-	//!subclass hook
+	/*! subclass hook to catch event when thread specific (derived) Run() method returns */
+	virtual void DoTerminatedRunMethodHook();
+
+	/*! subclass hook to catch event when IntRun() method returns, eg. OS specific thread terminates
+		\note From now on, every Run() related code has finished executing */
 	virtual void DoTerminatedHook();
 
 	//!dispatch to subclass hooks for running state changes
