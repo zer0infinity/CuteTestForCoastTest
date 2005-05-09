@@ -33,9 +33,7 @@
 #include "SystemTest.h"
 #include "StorageTest.h"
 #include "ROSimpleAnythingTest.h"
-//#include "SimpleAnyXMLTest.h"
 #include "GenericXMLParserTest.h"
-//#include "GenericXMLPathTest.h"
 #include "AnyBuiltInSortTest.h"
 #include "PipeTest.h"
 #include "PipeStreamTest.h"
@@ -91,9 +89,7 @@ void setupRunner(TestRunner &runner)
 	ADD_SUITE(runner, StorageTest);
 	ADD_SUITE(runner, ROAnythingSimpleTest);
 	ADD_SUITE(runner, SysLogTest);
-//	ADD_SUITE(runner, SimpleAnyXMLTest);
 	ADD_SUITE(runner, GenericXMLParserTest);
-//	ADD_SUITE(runner, GenericXMLPathTest);
 	ADD_SUITE(runner, AnyBuiltInSortTest);
 	ADD_SUITE(runner, ConnectorArgsTest);
 	ADD_SUITE(runner, ObjectListTest);
