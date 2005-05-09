@@ -31,8 +31,7 @@ class TestWorkerThread : public Thread
 {
 protected:
 	TestWorkerThread(Allocator *a);
-	~TestWorkerThread();
-protected:
+	virtual ~TestWorkerThread();
 };
 
 TestWorkerThread::TestWorkerThread(Allocator *a)
@@ -50,21 +49,20 @@ class DataProviderThread : public TestWorkerThread
 {
 public:
 	DataProviderThread(Allocator *a);
+	~DataProviderThread() {}
 
 	Anything &GetData() {
 		return fData;
 	}
+
 protected:
 	virtual void Run();
-
 	Anything fData;
 };
 
 DataProviderThread::DataProviderThread(Allocator *a)
 	: TestWorkerThread(a), fData(a)
 {
-//	fName.SetAllocator(a);		// use local pool so as not to disturb measurements
-//	fName= "DataProviderThread";
 }
 
 void DataProviderThread::Run()
@@ -91,7 +89,6 @@ MTStorageTest2::MTStorageTest2(TString tname) : TestCase(tname), fGlobal(0), fPo
 MTStorageTest2::~MTStorageTest2()
 {
 	StartTrace1(MTStorageTest2.Dtor, "ThrdId: " << Thread::MyId());
-
 }
 
 void MTStorageTest2::setUp()
@@ -110,6 +107,7 @@ void MTStorageTest2::setUp()
 
 void MTStorageTest2::tearDown()
 {
+	StartTrace(MTStorageTest2.tearDown);
 	MT_Storage::UnrefAllocator(fPool);
 	fPool = 0;
 }
@@ -124,9 +122,7 @@ void MTStorageTest2::twoThreadTest()
 {
 	StartTrace1(MTStorageTest2.twoThreadTest, "ThrdId: " << Thread::MyId());
 #ifdef MEM_DEBUG
-//	l_long l= fGlobal->CurrentlyAllocated();
 	assertEqualm(0, fPool->CurrentlyAllocated(), "expected fPool to be empty");
-
 #endif
 	DataProviderThread *t1 = new DataProviderThread(fPool);
 	t1->Start(fPool);
@@ -137,7 +133,6 @@ void MTStorageTest2::twoThreadTest()
 	// everything should have been allocated within pool!
 #ifdef MEM_DEBUG
 	t_assert( fPool->CurrentlyAllocated() > 0);
-//	t_assert( fGlobal->CurrentlyAllocated() == l); no longer true
 #endif
 	delete t1;
 #ifdef MEM_DEBUG
@@ -156,10 +151,6 @@ void MTStorageTest2::twoThreadAssignmentTest()
 
 	// wait for other thread to finish
 	t1->CheckState(Thread::eTerminated);
-
-#ifdef MEM_DEBUG
-//	t_assert( fGlobal->CurrentlyAllocated() == l); no longer true
-#endif
 
 	Anything y = t1->GetData();
 	delete t1;
@@ -184,9 +175,6 @@ void MTStorageTest2::twoThreadCopyConstructorTest()
 	// wait for other thread to finish
 	t1->CheckState(Thread::eTerminated);
 
-#ifdef MEM_DEBUG
-//	t_assert( fGlobal->CurrentlyAllocated() == l); no longer true
-#endif
 	Anything y(t1->GetData());		// should be equivalent to the use of operator=
 	delete t1;
 
@@ -240,19 +228,15 @@ void MTStorageTest2::reusePoolTest()
 {
 	StartTrace1(MTStorageTest2.reusePoolTest, "ThrdId: " << Thread::MyId());
 
-#ifdef MEM_DEBUG
-//	l_long l= fGlobal->CurrentlyAllocated();
-#endif
-
 	Allocator *pa = MT_Storage::MakePoolAllocator(3);
 	t_assertm(pa != 0, "expected allocation of PoolAllocator to succeed");
 	if (!pa) {
 		return;
 	}
 	MT_Storage::RefAllocator(pa);	// need to refcount poolstorage
-	t_assertm(pa->RefCnt() == 1, "expected refcnt to be 1");
+	assertEqualm(1L, pa->RefCnt(), "expected refcnt to be 1");
 	DataProviderThread *t1 = new DataProviderThread(pa);
-	t_assertm(pa->RefCnt() == 2, "expected refcnt to be 2");
+	assertEqualm(2L, pa->RefCnt(), "expected refcnt to be 2");
 
 	// do some work
 	t1->Start(pa);
@@ -260,13 +244,13 @@ void MTStorageTest2::reusePoolTest()
 	// wait for thread to finish
 	t1->CheckState(Thread::eTerminated);
 
-	t_assertm(pa->RefCnt() == 2, "expected refcnt to be 2");
+	assertEqualm(2L, pa->RefCnt(), "expected refcnt to be 2");
 	delete t1;
-	t_assertm(pa->RefCnt() == 1, "expected refcnt to be 1");
+	assertEqualm(1L, pa->RefCnt(), "expected refcnt to be 1");
 
 	// do it again
 	t1 = new DataProviderThread(pa);
-	t_assertm(pa->RefCnt() == 2, "expected refcnt to be 2");
+	assertEqualm(2L, pa->RefCnt(), "expected refcnt to be 2");
 
 	// do some work
 	t1->Start(pa);
@@ -274,21 +258,14 @@ void MTStorageTest2::reusePoolTest()
 	// wait for other thread to finish
 	t1->CheckState(Thread::eTerminated);
 
-	t_assertm(pa->RefCnt() == 2, "expected refcnt to be 2");
+	assertEqualm(2L, pa->RefCnt(), "expected refcnt to be 2");
 	delete t1;
-	t_assertm(pa->RefCnt() == 1, "expected refcnt to be 1");
+	assertEqualm(1L, pa->RefCnt(), "expected refcnt to be 1");
 
 	MT_Storage::UnrefAllocator(pa);	// need to refcount poolstorage
-
-#ifdef MEM_DEBUG
-	// new we should be back where we started
-//	t_assert( fGlobal->CurrentlyAllocated() == l); no longer true
-#endif
-
 }
 
 Test *MTStorageTest2::suite()
-// collect all test cases for the SocketStream
 {
 	TestSuite *testSuite = new TestSuite;
 	testSuite->addTest (NEW_CASE(MTStorageTest2, trivialTest));
