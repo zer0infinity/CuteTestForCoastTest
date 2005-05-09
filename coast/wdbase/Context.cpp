@@ -407,15 +407,6 @@ void Context::CollectLinkState(Anything &a)
 	}
 }
 
-//bool Context::Log(long severity, const String &msg, short qualifier)
-//{
-//	if (fSession)
-//	{
-//		return fSession->Log(severity, msg, qualifier);
-//	}
-//	return false;
-//}
-
 void Context::DebugStores(const char *msg, ostream &reply, bool printAny)
 {
 #ifdef DEBUG
@@ -440,12 +431,10 @@ void Context::DebugStores(const char *msg, ostream &reply, bool printAny)
 #endif
 }
 
-//void Context::HTMLWDDebugStores(ostream &reply)
 void Context::HTMLDebugStores(ostream &reply)
 {
-
 #ifdef DEBUG
-	if ( Tracer::CheckWDDebug("Context.HTMLWDDebug") ) {
+	if ( Tracer::CheckWDDebug("Context.HTMLWDDebug", Storage::Current()) ) {
 		reply << DebugStoreSeparator;
 		reply << "<p><hr>\n<xmp>\n";
 		Session *s = fSession;
@@ -469,12 +458,12 @@ void Context::HTMLDebugStores(ostream &reply)
 		reply << "Role:           " << rName << "\n\n";
 
 		// show Lookup stack on html page
-		if ( Tracer::CheckWDDebug("Context.HTMLWDDebug.LookupStack") ) {
+		if ( Tracer::CheckWDDebug("Context.HTMLWDDebug.LookupStack", Storage::Current()) ) {
 			reply << "</xmp><hr><xmp>Lookup stack:\n" << fLookupStack << "\n";
 		}
 
 		// show tmp store on html page
-		if ( Tracer::CheckWDDebug("Context.HTMLWDDebug.TmpStore") ) {
+		if ( Tracer::CheckWDDebug("Context.HTMLWDDebug.TmpStore", Storage::Current()) ) {
 			reply << "</xmp><hr><xmp>Tmp store:\n" << fStore << "\n";
 		}
 
@@ -484,7 +473,7 @@ void Context::HTMLDebugStores(ostream &reply)
 		}
 
 		// show request store on html page
-		if ( Tracer::CheckWDDebug("Context.HTMLWDDebug.EnvStore") ) {
+		if ( Tracer::CheckWDDebug("Context.HTMLWDDebug.EnvStore", Storage::Current()) ) {
 			reply << "</xmp><hr><xmp>Request:\n" << fRequest << "\n";
 		}
 

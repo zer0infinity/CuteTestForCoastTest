@@ -52,29 +52,29 @@ void DbgTest::CheckTriggerTest()
 	// test the normal case, all main switches on and switch in range
 	Tracer::fgWDDebugContext["DbgTest"]["MainSwitch"] = 5L;
 	Tracer::fgWDDebugContext["DbgTest"]["FirstLevel"] = 5L;
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.FirstLevel"));
+	assertEqual(true, Tracer::CheckTrigger("DbgTest.FirstLevel", Storage::Current()));
 
 	// test the normal case second level
 	Tracer::fgWDDebugContext["DbgTest"]["Second"]["MainSwitch"] = 5L;
 	Tracer::fgWDDebugContext["DbgTest"]["Second"]["SecondLevel"] = 5L;
 	assertEqual(0L, Tracer::fgWDDebugContext["DbgTest"]["EnableAll"].AsLong(1));
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.SecondLevel"));
+	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.SecondLevel", Storage::Current()));
 
 	// test the normal case third level
 	Tracer::fgWDDebugContext["DbgTest"]["Second"]["Third"]["MainSwitch"] = 5L;
 	Tracer::fgWDDebugContext["DbgTest"]["Second"]["Third"]["ThirdLevel"] = 5L;
 	assertEqual(0L, Tracer::fgWDDebugContext["DbgTest"]["Second"]["EnableAll"].AsLong(1));
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel"));
+	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel", Storage::Current()));
 
 	// test main switch off at various levels
 	Tracer::fgWDDebugContext["DbgTest"]["Second"]["Third"]["MainSwitch"] = 0L;
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel"));
+	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel", Storage::Current()));
 
 	Tracer::fgWDDebugContext["DbgTest"]["Second"]["MainSwitch"] = 0L;
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel"));
+	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel", Storage::Current()));
 
 	Tracer::fgWDDebugContext["DbgTest"]["MainSwitch"] = 0L;
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.FirstLevel"));
+	assertEqual(false, Tracer::CheckTrigger("DbgTest.FirstLevel", Storage::Current()));
 
 	// reset all main switches to on but set master switch off
 	Tracer::fgWDDebugContext["LowerBound"] = 0L;
@@ -82,9 +82,9 @@ void DbgTest::CheckTriggerTest()
 	Tracer::fgWDDebugContext["DbgTest"]["Second"]["Third"]["MainSwitch"] = 5L;
 	Tracer::fgWDDebugContext["DbgTest"]["Second"]["MainSwitch"] = 5L;
 	Tracer::fgWDDebugContext["DbgTest"]["MainSwitch"] = 5L;
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.FirstLevel"));
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel"));
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel"));
+	assertEqual(false, Tracer::CheckTrigger("DbgTest.FirstLevel", Storage::Current()));
+	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel", Storage::Current()));
+	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel", Storage::Current()));
 
 	// reset master switch to initial values and test out of range values
 	// for the level switches, main switches are normal and on
@@ -95,17 +95,17 @@ void DbgTest::CheckTriggerTest()
 	Tracer::fgWDDebugContext["DbgTest"]["FirstLevel"] = 4L;
 	Tracer::fgWDDebugContext["DbgTest"]["Second"]["SecondLevel"] = 4L;
 	Tracer::fgWDDebugContext["DbgTest"]["Second"]["Third"]["ThirdLevel"] = 4L;
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.FirstLevel"));
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel"));
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel"));
+	assertEqual(false, Tracer::CheckTrigger("DbgTest.FirstLevel", Storage::Current()));
+	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel", Storage::Current()));
+	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel", Storage::Current()));
 
 	// overflow
 	Tracer::fgWDDebugContext["DbgTest"]["FirstLevel"] = 11L;
 	Tracer::fgWDDebugContext["DbgTest"]["Second"]["SecondLevel"] = 11L;
 	Tracer::fgWDDebugContext["DbgTest"]["Second"]["Third"]["ThirdLevel"] = 11L;
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.FirstLevel"));
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel"));
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel"));
+	assertEqual(false, Tracer::CheckTrigger("DbgTest.FirstLevel", Storage::Current()));
+	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel", Storage::Current()));
+	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel", Storage::Current()));
 
 	// reset level switches and test main switches out of range
 	Tracer::fgWDDebugContext["DbgTest"]["FirstLevel"] = 5L;
@@ -114,19 +114,19 @@ void DbgTest::CheckTriggerTest()
 
 	// underflow
 	Tracer::fgWDDebugContext["DbgTest"]["Second"]["Third"]["MainSwitch"] = 4L;
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel"));
+	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel", Storage::Current()));
 	Tracer::fgWDDebugContext["DbgTest"]["Second"]["MainSwitch"] = 4L;
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel"));
+	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel", Storage::Current()));
 	Tracer::fgWDDebugContext["DbgTest"]["MainSwitch"] = 4L;
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.FirstLevel"));
+	assertEqual(false, Tracer::CheckTrigger("DbgTest.FirstLevel", Storage::Current()));
 
 	// overflow
 	Tracer::fgWDDebugContext["DbgTest"]["Second"]["Third"]["MainSwitch"] = 11L;
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel"));
+	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel", Storage::Current()));
 	Tracer::fgWDDebugContext["DbgTest"]["Second"]["MainSwitch"] = 11L;
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel"));
+	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel", Storage::Current()));
 	Tracer::fgWDDebugContext["DbgTest"]["MainSwitch"] = 11L;
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.FirstLevel"));
+	assertEqual(false, Tracer::CheckTrigger("DbgTest.FirstLevel", Storage::Current()));
 
 	// reset main switches and test enable all values
 	Tracer::fgWDDebugContext["DbgTest"]["MainSwitch"] = 5L;
@@ -140,64 +140,64 @@ void DbgTest::CheckTriggerTest()
 
 	// enable all on the first level
 	Tracer::fgWDDebugContext["DbgTest"]["EnableAll"] = 7L;
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.FirstLevel"));
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.SecondLevel"));
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel"));
+	assertEqual(true, Tracer::CheckTrigger("DbgTest.FirstLevel", Storage::Current()));
+	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.SecondLevel", Storage::Current()));
+	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel", Storage::Current()));
 
 	// enable all on the second level
 	Tracer::fgWDDebugContext["DbgTest"]["EnableAll"] = 0L;
 	Tracer::fgWDDebugContext["DbgTest"]["Second"]["EnableAll"] = 7L;
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.FirstLevel"));
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.SecondLevel"));
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel"));
+	assertEqual(false, Tracer::CheckTrigger("DbgTest.FirstLevel", Storage::Current()));
+	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.SecondLevel", Storage::Current()));
+	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel", Storage::Current()));
 
 	// enable all on the third level
 	Tracer::fgWDDebugContext["DbgTest"]["EnableAll"] = 0L;
 	Tracer::fgWDDebugContext["DbgTest"]["Second"]["EnableAll"] = 0L;
 	Tracer::fgWDDebugContext["DbgTest"]["Second"]["Third"]["EnableAll"] = 7L;
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.FirstLevel"));
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel"));
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel"));
+	assertEqual(false, Tracer::CheckTrigger("DbgTest.FirstLevel", Storage::Current()));
+	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel", Storage::Current()));
+	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel", Storage::Current()));
 
 	// enable all out of range overflow
 	// enable all on the first level
 	Tracer::fgWDDebugContext["DbgTest"]["EnableAll"] = 11L;
 	Tracer::fgWDDebugContext["DbgTest"]["Second"]["Third"]["EnableAll"] = 0L;
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.FirstLevel"));
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel"));
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel"));
+	assertEqual(false, Tracer::CheckTrigger("DbgTest.FirstLevel", Storage::Current()));
+	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel", Storage::Current()));
+	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel", Storage::Current()));
 
 	// enable all out of range underflow
 	// enable all on the first level
 	Tracer::fgWDDebugContext["DbgTest"]["EnableAll"] = 4L;
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.FirstLevel"));
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel"));
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel"));
+	assertEqual(false, Tracer::CheckTrigger("DbgTest.FirstLevel", Storage::Current()));
+	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel", Storage::Current()));
+	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel", Storage::Current()));
 
 	// check EnableAll with exclusion
 	Tracer::fgWDDebugContext["DbgTest"]["EnableAll"] = 10L;
 	Tracer::fgWDDebugContext["DbgTest"]["Second"]["Third"]["EnableAll"] = -1L;
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.FirstLevel"));
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.SecondLevel"));
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel"));
+	assertEqual(true, Tracer::CheckTrigger("DbgTest.FirstLevel", Storage::Current()));
+	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.SecondLevel", Storage::Current()));
+	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel", Storage::Current()));
 
 	Tracer::fgWDDebugContext["DbgTest"]["Second"]["Third"]["EnableAll"] = 7L;
 	Tracer::fgWDDebugContext["DbgTest"]["Second"]["Third"]["MainSwitch"] = -1L;
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.FirstLevel"));
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.SecondLevel"));
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel"));
+	assertEqual(true, Tracer::CheckTrigger("DbgTest.FirstLevel", Storage::Current()));
+	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.SecondLevel", Storage::Current()));
+	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel", Storage::Current()));
 
 	Tracer::fgWDDebugContext["DbgTest"]["Second"]["MainSwitch"] = -7L;
 	Tracer::fgWDDebugContext["DbgTest"]["Second"]["Third"]["MainSwitch"] = 1L;
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.FirstLevel"));
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel"));
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel"));
+	assertEqual(true, Tracer::CheckTrigger("DbgTest.FirstLevel", Storage::Current()));
+	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel", Storage::Current()));
+	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel", Storage::Current()));
 
 	Tracer::fgWDDebugContext["DbgTest"]["Second"]["MainSwitch"] = 7L;
 	Tracer::fgWDDebugContext["DbgTest"]["Second"]["SecondLevel"] = -7L;
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.FirstLevel"));
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel"));
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel"));
+	assertEqual(true, Tracer::CheckTrigger("DbgTest.FirstLevel", Storage::Current()));
+	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel", Storage::Current()));
+	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel", Storage::Current()));
 }
 
 void DbgTest::CheckContextTriggerFailure()
@@ -211,7 +211,7 @@ void DbgTest::CheckContextTriggerFailure()
 	Tracer::fgWDDebugContext["UpperBound"] = 50L;
 	Tracer::fgWDDebugContext["LowerBound"] = 30L;
 
-	assertEqual(true, Tracer::CheckTrigger("Context.HTMLDebug"));
+	assertEqual(true, Tracer::CheckTrigger("Context.HTMLDebug", Storage::Current()));
 }
 
 void DbgTest::CheckTriggerTestFile()
@@ -225,9 +225,9 @@ void DbgTest::CheckTriggerTestFile()
 	Tracer::fgWDDebugContext["UpperBound"] = 650L;
 	Tracer::fgWDDebugContext["LowerBound"] = 550L;
 
-	assertEqual(false, Tracer::CheckTrigger("URLFilter.FilterState"));
-	assertEqual(false, Tracer::CheckTrigger("URLFilter.DoFilterState"));
-	assertEqual(true, Tracer::CheckTrigger("Server.FilterQuery"));
+	assertEqual(false, Tracer::CheckTrigger("URLFilter.FilterState", Storage::Current()));
+	assertEqual(false, Tracer::CheckTrigger("URLFilter.DoFilterState", Storage::Current()));
+	assertEqual(true, Tracer::CheckTrigger("Server.FilterQuery", Storage::Current()));
 }
 
 #endif

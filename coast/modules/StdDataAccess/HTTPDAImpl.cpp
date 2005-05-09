@@ -253,12 +253,11 @@ bool HTTPDAImpl::DoExecRecord(Connector *csc, ConnectorParams *cps, Context &con
 
 bool HTTPDAImpl::SendInput(iostream *Ios, Socket *s, long timeout, Context &context, InputMapper *in, OutputMapper *out)
 {
-
 	StartTrace(HTTPDAImpl.SendInput);
 #ifdef DEBUG
 	Trace("Debug Version");
 
-	if ( Tracer::CheckWDDebug("HTTPDAImpl.SendInput") ) {
+	if ( Tracer::CheckWDDebug("HTTPDAImpl.SendInput", Storage::Current()) ) {
 		String request;
 		{
 			OStringStream os(&request);

@@ -70,19 +70,19 @@ public:
 	void AnyWDDebug(const ROAnything &any, const char *msg);
 	void SubWDDebug(const char *trigger, const char *msg);
 	void SubAnyWDDebug(const char *trigger, const ROAnything &any, const char *msg);
-	static void StatWDDebug(const char *trigger, const char *msg);
-	static void AnythingWDDebug(const char *trigger, const ROAnything &a, const char *msg);
-	static bool CheckWDDebug(const char *trigger);
+	static void StatWDDebug(const char *trigger, const char *msg, Allocator *pAlloc);
+	static void AnythingWDDebug(const char *trigger, const ROAnything &a, const char *msg, Allocator *pAlloc);
+	static bool CheckWDDebug(const char *trigger, Allocator *pAlloc);
 
 	static void Reset();
 	static void Terminate();
 
 protected:
 	friend class DbgTest;
-	static bool CheckTrigger(const char *trigger);
+	static bool CheckTrigger(const char *trigger, Allocator *pAlloc);
 
-	static bool DoCheckLevel(const char *trigger, const ROAnything &level, long levelSwitch, long levelAll, long enableAll = 0);
-	static bool DoCheckTrigger(const char *trigger, const ROAnything &level, long levelSwitch, long levelAll, long enableAll = 0);
+	static bool DoCheckLevel(const char *trigger, const ROAnything &level, long levelSwitch, long levelAll, long enableAll, Allocator *pAlloc);
+	static bool DoCheckTrigger(const char *trigger, const ROAnything &level, long levelSwitch, long levelAll, long enableAll, Allocator *pAlloc);
 	static bool DoCheckSwitch(long switchValue, long levelSwitch, long levelAll);
 	static bool CheckMainSwitch(long mainSwitch, long levelSwitch, long levelAll);
 
@@ -91,12 +91,12 @@ private:
 
 	const char *fTrigger;
 	bool fTriggered;
-	String fMsg;
+	const char *fpMsg;
+	Allocator *fpAlloc;
 
 	static int fgLevel;
 	static Anything fgWDDebugContext;
 	static ROAnything fgROWDDebugContext;
-	static String fgWDDebugPath;
 	static long fgLowerBound;
 	static long fgUpperBound;
 	static long fgAlwaysOn;
@@ -110,13 +110,13 @@ private:
 	Tracer recart(_QUOTE_(trigger)); recart.Use()
 
 #define StartTrace1(trigger, msg) \
-	String gsMrotcurtsnoCrecart(Storage::Global()); \
+	String gsMrotcurtsnoCrecart(Storage::Current()); \
 	Tracer recart(_QUOTE_(trigger), gsMrotcurtsnoCrecart << msg); recart.Use()
 
 // debug statements
 #define TraceBuf(msg, sz)				\
 {										\
-	String gsMecart("\n\n<",-1, Storage::Global());			\
+	String gsMecart("\n\n<",-1, Storage::Current());			\
 	gsMecart.Append(msg,sz).Append(">\n\n");	\
 	recart.WDDebug(gsMecart);			\
 }
@@ -124,39 +124,39 @@ private:
 // debug statements
 #define Trace(msg)									\
 {													\
-	String gsMecart(Storage::Global());				\
+	String gsMecart(Storage::Current());				\
 	recart.WDDebug(gsMecart << msg);					\
 }
 
 #define TraceAny(any, msg)					\
 {											\
-	String gsMecart(Storage::Global());		\
+	String gsMecart(Storage::Current());		\
 	recart.AnyWDDebug(any, gsMecart << msg);	\
 }
 
 // subdebugs
 #define SubTrace(subtrigger, msg)							\
 {															\
-	String gsMecart(Storage::Global());						\
+	String gsMecart(Storage::Current());						\
 	recart.SubWDDebug(_QUOTE_(subtrigger), gsMecart << msg);	\
 }
 
 #define SubTraceBuf(subtrigger, msg, sz)					\
 {															\
-	String gsMecart(msg,sz, Storage::Global());				\
+	String gsMecart(msg,sz, Storage::Current());				\
 	recart.SubWDDebug(_QUOTE_(subtrigger), gsMecart);			\
 }
 
 #define SubTraceAny(subtrigger, any, msg)							\
 {																	\
-	String gsMecart(Storage::Global());								\
+	String gsMecart(Storage::Current());								\
 	recart.SubAnyWDDebug(_QUOTE_(subtrigger), any, gsMecart << msg);	\
 }
 
 #define StatTrace(trigger, msg)								\
 {															\
-	String gsMecart(Storage::Global());						\
-	Tracer::StatWDDebug(_QUOTE_(trigger), gsMecart << msg);	\
+	String gsMecart(Storage::Current());						\
+	Tracer::StatWDDebug(_QUOTE_(trigger), gsMecart << msg, Storage::Current());	\
 }
 
 #define ResetTracer()	Tracer::Reset()

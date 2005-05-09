@@ -187,7 +187,7 @@ void RequestLineRenderer::RenderAll(ostream &reply, Context &c, const ROAnything
 		infoMsg << replyDebugBuffer.str();
 
 #ifdef DEBUG
-		if ( Tracer::CheckWDDebug("RequestLineRenderer.Render") ) {
+		if ( Tracer::CheckWDDebug("RequestLineRenderer.Render", Storage::Current()) ) {
 			SysLog::Info( infoMsg ); // perhaps enable this line with an entry in RequestLineRenderer.any.... future
 		}
 #endif

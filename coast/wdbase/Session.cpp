@@ -279,7 +279,7 @@ void Session::PutInStore(const char *key, const Anything &a)
 void Session::HTMLDebugStore(ostream &reply)
 {
 #ifdef DEBUG
-	if ( Tracer::CheckWDDebug( "Session.HTMLSessionStore" ) ) {
+	if ( Tracer::CheckWDDebug( "Session.HTMLSessionStore", Storage::Current() ) ) {
 		reply << "</xmp><hr><xmp>Session Store:\n" << fStore << "\n";
 	}
 #endif
@@ -291,7 +291,6 @@ void Session::RemoveFromStore(const char *key)
 }
 
 //---- entry points
-
 bool Session::MakeInvalid(Context &ctx)
 {
 	TRACE_LOCK_START("MakeInvalid");

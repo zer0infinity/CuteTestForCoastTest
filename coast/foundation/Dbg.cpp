@@ -20,7 +20,6 @@
 
 //---- Tracer -------------------------------------------------------------------------
 int Tracer::fgLevel = 0;
-String Tracer::fgWDDebugPath(".", -1, Storage::Global());
 Anything Tracer::fgWDDebugContext(Storage::Global());
 ROAnything Tracer::fgROWDDebugContext;
 long Tracer::fgLowerBound = 0;
@@ -33,8 +32,8 @@ static bool fgIsInitialised = false;
 class TracerHelper
 {
 public:
-	TracerHelper(int nLevel)
-		: fStrBuf(Storage::Global())
+	TracerHelper(int nLevel, Allocator *pAlloc)
+		: fStrBuf(pAlloc)
 		, fStream(fStrBuf) {
 		Tab(nLevel);
 	}
@@ -57,23 +56,27 @@ private:
 };
 
 Tracer::Tracer(const char *trigger)
-	: fTrigger(trigger), fMsg(Storage::Global())
+	: fTrigger(trigger)
+	, fpMsg(NULL)
+	, fpAlloc(Storage::Current())
 {
-	fTriggered = CheckWDDebug(fTrigger);
+	fTriggered = CheckWDDebug(fTrigger, fpAlloc);
 	if (fTriggered) {
-		TracerHelper hlp(fgLevel);
+		TracerHelper hlp(fgLevel, fpAlloc);
 		hlp.GetStream() << fTrigger << ": --- entering ---\n";
 		fgLevel++;
 	}
 }
 
 Tracer::Tracer(const char *trigger, const char *msg)
-	: fTrigger(trigger), fMsg(msg, -1, Storage::Global())
+	: fTrigger(trigger)
+	, fpMsg(msg)
+	, fpAlloc(Storage::Current())
 {
-	fTriggered = CheckWDDebug(fTrigger);
+	fTriggered = CheckWDDebug(fTrigger, fpAlloc);
 	if (fTriggered) {
-		TracerHelper hlp(fgLevel);
-		hlp.GetStream() << fTrigger << ": " << fMsg << " --- entering ---\n";
+		TracerHelper hlp(fgLevel, fpAlloc);
+		hlp.GetStream() << fTrigger << ": " << fpMsg << " --- entering ---\n";
 		fgLevel++;
 	}
 }
@@ -82,10 +85,10 @@ Tracer::~Tracer()
 {
 	if (fTriggered) {
 		fgLevel--;
-		TracerHelper hlp(fgLevel);
+		TracerHelper hlp(fgLevel, fpAlloc);
 		hlp.GetStream() << fTrigger << ":";
-		if (fMsg) {
-			hlp.GetStream() << " " << fMsg;
+		if (fpMsg) {
+			hlp.GetStream() << " " << fpMsg;
 		}
 		hlp.GetStream() << " --- leaving ---\n";
 	}
@@ -94,7 +97,7 @@ Tracer::~Tracer()
 void Tracer::WDDebug(const char *msg)
 {
 	if (fTriggered) {
-		TracerHelper hlp(fgLevel);
+		TracerHelper hlp(fgLevel, fpAlloc);
 		hlp.GetStream() << fTrigger << ": " << msg << "\n";
 	}
 }
@@ -118,7 +121,7 @@ void Tracer::IntAnyWDDebug(const ROAnything &any, TracerHelper &hlp)
 void Tracer::AnyWDDebug(const ROAnything &any, const char *msg)
 {
 	if (fTriggered) {
-		TracerHelper hlp(fgLevel);
+		TracerHelper hlp(fgLevel, fpAlloc);
 		hlp.GetStream() << fTrigger << ": "  << msg << "\n";
 		IntAnyWDDebug(any, hlp);
 	}
@@ -126,45 +129,45 @@ void Tracer::AnyWDDebug(const ROAnything &any, const char *msg)
 
 void Tracer::SubWDDebug(const char *subtrigger, const char *msg)
 {
-	String trigger(fTrigger, -1, Storage::Global());
+	String trigger(fTrigger, -1, fpAlloc);
 	trigger.Append('.').Append(subtrigger);
 
-	if (fTriggered && Tracer::CheckWDDebug(trigger)) {
-		TracerHelper hlp(fgLevel);
+	if (fTriggered && Tracer::CheckWDDebug(trigger, fpAlloc)) {
+		TracerHelper hlp(fgLevel, fpAlloc);
 		hlp.GetStream() << trigger << ": " << msg << "\n";
 	}
 }
 
 void Tracer::SubAnyWDDebug(const char *subtrigger, const ROAnything &any, const char *msg)
 {
-	String trigger(fTrigger, -1, Storage::Global());
+	String trigger(fTrigger, -1, fpAlloc);
 	trigger.Append('.').Append(subtrigger);
 
-	if (fTriggered && Tracer::CheckWDDebug(trigger)) {
-		TracerHelper hlp(fgLevel);
+	if (fTriggered && Tracer::CheckWDDebug(trigger, fpAlloc)) {
+		TracerHelper hlp(fgLevel, fpAlloc);
 		hlp.GetStream() << trigger << ": " << msg << "\n";
 		IntAnyWDDebug(any, hlp);
 	}
 }
 
-void Tracer::StatWDDebug(const char *trigger, const char *msg)
+void Tracer::StatWDDebug(const char *trigger, const char *msg, Allocator *pAlloc)
 {
-	if (CheckWDDebug(trigger)) {
-		TracerHelper hlp(fgLevel);
+	if (CheckWDDebug(trigger, pAlloc)) {
+		TracerHelper hlp(fgLevel, pAlloc);
 		hlp.GetStream() << trigger << ": " << msg << "\n";
 	}
 }
 
-void Tracer::AnythingWDDebug(const char *trigger, const ROAnything &any, const char *msg)
+void Tracer::AnythingWDDebug(const char *trigger, const ROAnything &any, const char *msg, Allocator *pAlloc)
 {
-	if (CheckWDDebug(trigger)) {
-		TracerHelper hlp(fgLevel);
+	if (CheckWDDebug(trigger, pAlloc)) {
+		TracerHelper hlp(fgLevel, pAlloc);
 		hlp.GetStream() << trigger << ": " << msg << "\n";
 		IntAnyWDDebug(any, hlp);
 	}
 }
 
-bool Tracer::CheckWDDebug(const char *trigger)
+bool Tracer::CheckWDDebug(const char *trigger, Allocator *pAlloc)
 {
 	if (!fgIsInitialised) {
 		fgIsInitialised = true;
@@ -187,7 +190,7 @@ bool Tracer::CheckWDDebug(const char *trigger)
 	}
 
 	if (fgLowerBound > 0) {
-		return CheckTrigger(trigger);
+		return CheckTrigger(trigger, pAlloc);
 	}
 	return false;
 }
@@ -207,7 +210,7 @@ bool Tracer::CheckMainSwitch(long mainSwitch, long levelSwitch, long levelAll)
 	return true;
 }
 
-bool Tracer::DoCheckLevel(const char *trigger, const ROAnything &level, long levelSwitch, long levelAll, long enableAll)
+bool Tracer::DoCheckLevel(const char *trigger, const ROAnything &level, long levelSwitch, long levelAll, long enableAll, Allocator *pAlloc)
 {
 	// check the main switch if it exists
 	if ( level.IsDefined("MainSwitch") ) {
@@ -215,7 +218,7 @@ bool Tracer::DoCheckLevel(const char *trigger, const ROAnything &level, long lev
 			if ( level["MainSwitch"].AsLong(0) < 0 ) {
 				return false;
 			} else {
-				return DoCheckTrigger(trigger, level, levelSwitch, levelAll, enableAll);
+				return DoCheckTrigger(trigger, level, levelSwitch, levelAll, enableAll, pAlloc);
 			}
 		}
 		if (!CheckMainSwitch(level["MainSwitch"].AsLong(0), levelSwitch, levelAll)) {
@@ -234,24 +237,24 @@ bool Tracer::DoCheckLevel(const char *trigger, const ROAnything &level, long lev
 			enableAll = level["EnableAll"].AsLong(0L);
 			// enable all switch in range -> all on
 			if ( ( enableAll > 0L ) && ( enableAll >= levelSwitch ) && ( enableAll <= levelAll ) ) {
-				return DoCheckTrigger(trigger, level, levelSwitch, levelAll, enableAll);
+				return DoCheckTrigger(trigger, level, levelSwitch, levelAll, enableAll, pAlloc);
 			}
 			enableAll = 0;
 		}
 	} else {
 		levelAll = fgUpperBound;
 	}
-	return DoCheckTrigger(trigger, level, levelSwitch, levelAll, enableAll);
+	return DoCheckTrigger(trigger, level, levelSwitch, levelAll, enableAll, pAlloc);
 }
 
-bool Tracer::DoCheckTrigger(const char *trigger, const ROAnything &level, long levelSwitch, long levelAll, long enableAll)
+bool Tracer::DoCheckTrigger(const char *trigger, const ROAnything &level, long levelSwitch, long levelAll, long enableAll, Allocator *pAlloc)
 {
-	String s(trigger, -1, Storage::Global());
+	String s(trigger, -1, pAlloc);
 	long pos;
 	if ( (pos = s.StrChr('.')) != -1 ) {
-		String part(s.SubString(0, pos), -1, Storage::Global());
+		String part(s.SubString(0, pos), -1, pAlloc);
 		if ( level.IsDefined(part) ) {
-			return DoCheckLevel(s.SubString(pos + 1), level[part], levelSwitch, levelAll, enableAll);
+			return DoCheckLevel(s.SubString(pos + 1), level[part], levelSwitch, levelAll, enableAll, pAlloc);
 		}
 	}
 
@@ -281,9 +284,9 @@ bool Tracer::DoCheckSwitch(long switchValue, long levelSwitch, long levelAll)
 	return false;
 }
 
-bool Tracer::CheckTrigger(const char *trigger)
+bool Tracer::CheckTrigger(const char *trigger, Allocator *pAlloc)
 {
-	return DoCheckLevel(trigger, fgROWDDebugContext, fgLowerBound, 0L);
+	return DoCheckLevel(trigger, fgROWDDebugContext, fgLowerBound, 0L, 0L, pAlloc);
 }
 
 void Tracer::Reset()
