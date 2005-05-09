@@ -36,7 +36,7 @@ void EXPORTDECL_MTFOUNDATION TerminateKilledThreads()
 				Thread *pThr = (Thread *)aAny["Addr"].AsIFAObject();
 				SysLog::Warning(String("  Thread[") << aAny["Name"].AsString() << "] Handle[" << aAny["id"].AsLong() << "] Addr [" << (long)aAny["Addr"].AsIFAObject() << "]");
 				if (pThr && pThr->IsAlive()) {
-					pThr->IntSetState(Thread::eTerminated);
+					pThr->IntSetState(Thread::eTerminationRequested);
 				}
 			}
 		}
