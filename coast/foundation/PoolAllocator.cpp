@@ -32,7 +32,11 @@ struct PoolBucket {
 	void *fFirstFree;
 };
 
-PoolAllocator::PoolAllocator(long poolid, u_long poolSize, u_long maxPoolBuckets) : Allocator(poolid), fNumOfPoolBucketSizes(maxPoolBuckets)
+PoolAllocator::PoolAllocator(long poolid, u_long poolSize, u_long maxPoolBuckets)
+	: Allocator(poolid)
+	, fNumOfPoolBucketSizes(maxPoolBuckets)
+	MemTrackInit(fPoolTracker)
+	MemTrackInit(fExcessTracker)
 {
 	fAllocSz = poolSize * 1024;
 	fPoolMemory = ::calloc(fAllocSz, 1);
@@ -85,7 +89,12 @@ void PoolAllocator::Initialize()
 PoolAllocator::~PoolAllocator()
 {
 #ifdef MEM_DEBUG
-	MemTrackStat(fPoolTracker);
+	{
+		MemTrackStat(fPoolTracker);
+	} {
+		// caution: must use scoping because tracking would increase fPoolTrackers allocated count!
+		MemTrackStat(fExcessTracker);
+	}
 	if (fPoolTracker.CurrentlyAllocated() != 0) {
 		SysLog::Error(String("deleted PoolAllocator [") << GetId() << "] " << (long)this << " was still in use!");
 	}
