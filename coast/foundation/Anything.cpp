@@ -2404,16 +2404,18 @@ bool Anything::Import(istream &is, const char *fname)
 		AnythingParser p(context);
 		if (!p.DoParse(*this)) {
 			// there has been a syntax error
-			String m1("Anything::Import "), m;
-			if (context.fFileName.Length()) {
-				m.Append(context.fFileName).Append(":");
-			} else {
+			String m("Anything::Import "), strFName(context.fFileName);
+			if ( !strFName.Length() ) {
 				if (fname != NULL) {
-					m.Append(fname).Append(":");
+					strFName << fname;
+				} else {
+					strFName << "<NoName>";
 				}
 			}
-			m.Append("syntax error");
-			SysLog::WriteToStderr(m1 << m << "\n");
+			bool bHasExt = (strFName.SubString(strFName.Length() - 4L) == ".any");
+			m << strFName << (bHasExt ? ":" : ".any");
+			m.Append(": syntax error");
+			SysLog::WriteToStderr(m << "\n");
 			SYSERROR(m);
 			return false;
 		}
@@ -3798,9 +3800,12 @@ void AnythingParser::ImportIncludeAny(Anything &element, String &url)
 void AnythingParser::Error(const char *msg, const char *toktext)
 {
 	// put a space in front to give poor Sniff a chance
-	String m(" ");
-	bool bHasExt = (fContext.fFileName.SubString(fContext.fFileName.Length() - 4L) == ".any");
-	m << fContext.fFileName << (bHasExt ? ":" : ".any:") << fContext.fLine << " " << msg << ":" << toktext;
+	String m(fContext.fFileName);
+	if ( !m.Length() ) {
+		m << "<NoName>";
+	}
+	bool bHasExt = (m.SubString(m.Length() - 4L) == ".any");
+	m << (bHasExt ? ":" : ".any:") << fContext.fLine << " " << msg << " [" << toktext << "]";
 	SYSWARNING(m);
 	m << "\n";
 	SysLog::WriteToStderr(m);
