@@ -151,7 +151,10 @@ void ThreadPoolManager::Update(Thread *t, const Anything &args)
 	MutexEntry me(fMutex);
 	me.Use();
 
-	long evt = args[0L].AsLong(-1);
+	TraceAny(args, "event received");
+	ROAnything roaStateEvt(((ROAnything)args)["ThreadState"]);
+
+	long evt = roaStateEvt["New"].AsLong(-1);
 	switch (evt) {
 		case Thread::eTerminated:
 			fRunningThreads--;
@@ -264,30 +267,21 @@ void WorkerThread::Init(WorkerPoolManager *manager, ROAnything workerInit)
 
 void WorkerThread::Run()
 {
-	StartTrace(WorkerThread.Run);
+	// if you add Traces here, expect PoolAllocator to tell you about unfreed memory !!
 	Assert(fPoolManager);
-
 	while ( IsRunning() ) {
-		// wait for the next working request or for termination
-		Trace("Entering working loop, now checking running state to be working ...");
 		if ( CheckRunningState(eWorking) && IsRunning() ) {
-			Trace("processing workload");
-			// work for the next request
 			DoProcessWorkload();
-
-			// example: the socket communication could be done now
 			if ( IsRunning() ) {
-				Trace("signalling Ready state");
 				SetReady();
 			}
 		}
 	}
-	Trace("not running anymore, sniff");
 }
 
 void WorkerThread::DoReadyHook(ROAnything)
 {
-	StartTrace(WorkerThread.DoReadyHook);
+	// if you add Traces here, expect PoolAllocator to tell you about unfreed memory !!
 	// check back and leave the critical region
 	// to make room for next requests
 	fPoolManager->Leave();

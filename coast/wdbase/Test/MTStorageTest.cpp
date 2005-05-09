@@ -108,7 +108,11 @@ void MTStorageTest::Update(Thread *t, const Anything &args)
 	StartTrace(MTStorageTest.Update);
 	MutexEntry me(fFinishedMutex);
 	me.Use();
-	long evt = args[0L].AsLong(-1);
+
+	TraceAny(args, "event received");
+	ROAnything roaStateEvt(((ROAnything)args)["ThreadState"]);
+
+	long evt = roaStateEvt["New"].AsLong(-1);
 	if (evt == Thread::eTerminated) {
 		fFinished++;
 	}
