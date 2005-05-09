@@ -24,7 +24,7 @@
 class EXPORTDECL_FOUNDATION MemTracker
 {
 public:
-	MemTracker();
+	MemTracker(const char *name);
 	virtual ~MemTracker();
 
 	//!tracks allocation; chunk allocated has allocSz
@@ -56,8 +56,10 @@ protected:
 	//!tracks the number and maximum of freed bytes
 	l_long  fNumFrees, fSizeFreed;
 
-	//!the id of the pool we track
+	//! the id of the pool we track
 	long fId;
+	//! the name of the pool we track
+	const char *fpName;
 };
 
 //!helper class to check for memory leaks
@@ -94,6 +96,7 @@ protected:
 #define TraceMemDelta1(message) rekcehc1.TraceDelta(message)
 
 #define MemTrackDef(tracker) MemTracker tracker;
+#define MemTrackInit(tracker) , tracker(#tracker)
 #define MemTrackAlloc(tracker, allocSz) tracker.TrackAlloc(allocSz)
 #define MemTrackFree(tracker, allocSz) tracker.TrackFree(allocSz)
 #define MemTrackStat(tracker) tracker.PrintStatistic()
@@ -105,6 +108,7 @@ protected:
 #define TraceMemDelta1(message)
 
 #define MemTrackDef(tracker)
+#define MemTrackInit(tracker)
 #define MemTrackAlloc(tracker, allocSz)
 #define MemTrackFree(tracker, allocSz)
 #define MemTrackStat(tracker)
@@ -243,7 +247,7 @@ struct EXPORTDECL_FOUNDATION StorageHooks {
 	virtual Allocator *Current() = 0;
 #ifdef MEM_DEBUG
 	//!allocate a memory tracker object (only available if MEM_DEBUG is set)
-	virtual MemTracker *MakeMemTracker() = 0;
+	virtual MemTracker *MakeMemTracker(const char *name) = 0;
 #endif
 };
 
@@ -263,7 +267,7 @@ public:
 	static void PrintStatistic();
 
 	//!factory method to allocate memory management specific MemTracker
-	static MemTracker *MakeMemTracker();
+	static MemTracker *MakeMemTracker(const char *name);
 #endif
 	//! get the global allocator
 	static Allocator *Global();
@@ -304,7 +308,7 @@ protected:
 	static void DoFinalize();
 #ifdef MEM_DEBUG
 	//!factory method to allocate MemTracker
-	static MemTracker *DoMakeMemTracker();
+	static MemTracker *DoMakeMemTracker(const char *name);
 #endif
 
 	//!exchange this object when MT_Storage is used
@@ -328,7 +332,7 @@ public:
 	virtual Allocator *Global();
 	virtual Allocator *Current();
 #ifdef MEM_DEBUG
-	virtual MemTracker *MakeMemTracker();
+	virtual MemTracker *MakeMemTracker(const char *name);
 #endif
 
 	Allocator *fAllocator;

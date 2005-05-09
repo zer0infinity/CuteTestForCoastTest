@@ -58,7 +58,7 @@ l_long MemChecker::CheckDelta()
 }
 
 //------------- Utilities for Memory Tracking --------------
-MemTracker::MemTracker()
+MemTracker::MemTracker(const char *name)
 	: fAllocated(0)
 	, fMaxAllocated(0)
 	, fNumAllocs(0)
@@ -66,6 +66,7 @@ MemTracker::MemTracker()
 	, fNumFrees(0)
 	, fSizeFreed(0)
 	, fId(-1)
+	, fpName(name)
 {}
 
 void MemTracker::Init(MemTracker *t)
@@ -123,31 +124,31 @@ void MemTracker::PrintStatistic()
 	// THIS CODE WILL ONLY BE INCLUDED IN DEBUG VERSIONS SO NO SAFETY CONCERN
 	// FOR PRODUCTION CODE. Peter.
 	char buf[2048] ; // safety margin for bytes
-	::sprintf(buf, "\nAllocator [%02ld]\n"
-			  "Peek Allocated  %20lld bytes\n"
-			  "Total Allocated %20lld bytes in %15lld runs (%ld/run)\n"
-			  "Total Freed     %20lld bytes in %15lld runs (%ld/run)\n"
-			  "------------------------------------------\n"
-			  "Difference      %20lld bytes\n",
-			  fId, fMaxAllocated,
-			  fSizeAllocated , fNumAllocs, (long)(fSizeAllocated / ((fNumAllocs) ? fNumAllocs : 1)),
-			  fSizeFreed, fNumFrees, (long)(fSizeFreed / ((fNumFrees) ? fNumFrees : 1)),
-			  fAllocated
-			 );
+	::snprintf(buf, sizeof(buf), "\nAllocator [%02ld] [%s]\n"
+			   "Peek Allocated  %20lld bytes\n"
+			   "Total Allocated %20lld bytes in %15lld runs (%ld/run)\n"
+			   "Total Freed     %20lld bytes in %15lld runs (%ld/run)\n"
+			   "------------------------------------------\n"
+			   "Difference      %20lld bytes\n",
+			   fId, fpName, fMaxAllocated,
+			   fSizeAllocated , fNumAllocs, (long)(fSizeAllocated / ((fNumAllocs) ? fNumAllocs : 1)),
+			   fSizeFreed, fNumFrees, (long)(fSizeFreed / ((fNumFrees) ? fNumFrees : 1)),
+			   fAllocated
+			  );
 	SysLog::WriteToStderr(buf, strlen(buf));
 }
 
-MemTracker *Storage::DoMakeMemTracker()
+MemTracker *Storage::DoMakeMemTracker(const char *name)
 {
-	return 	new MemTracker();
+	return new MemTracker(name);
 }
 
-MemTracker *Storage::MakeMemTracker()
+MemTracker *Storage::MakeMemTracker(const char *name)
 {
 	if  (fgHooks && !fgForceGlobal) {
-		return fgHooks->MakeMemTracker();
+		return fgHooks->MakeMemTracker(name);
 	}
-	return Storage::DoMakeMemTracker();
+	return Storage::DoMakeMemTracker(name);
 }
 #endif
 
@@ -313,7 +314,7 @@ MemoryHeader *Allocator::RealMemStart(void *vp)
 GlobalAllocator::GlobalAllocator() : Allocator(13L)
 {
 #ifdef MEM_DEBUG
-	fTracker = Storage::MakeMemTracker();
+	fTracker = Storage::MakeMemTracker("GlobalAllocator");
 	fTracker->SetId(fAllocatorId);
 #endif
 }
@@ -419,8 +420,8 @@ TestStorageHooks::TestStorageHooks(Allocator *wdallocator)
 }
 
 #ifdef MEM_DEBUG
-MemTracker *TestStorageHooks::MakeMemTracker()
+MemTracker *TestStorageHooks::MakeMemTracker(const char *name)
 {
-	return new MemTracker();
+	return new MemTracker(name);
 }
 #endif
