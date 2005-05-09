@@ -21,7 +21,7 @@ class EXPORTDECL_MTFOUNDATION MT_MemTracker : public MemTracker
 {
 public:
 	//!creates system dependent mutex to provide locking without allocation of strings
-	MT_MemTracker();
+	MT_MemTracker(const char *name);
 	//!destroys system dependent mutex
 	virtual ~MT_MemTracker();
 

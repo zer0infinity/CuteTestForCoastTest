@@ -35,7 +35,8 @@ static Mutex *gsAllocatorInit = 0;		// protect all data structures used by MT_St
 #ifdef MEM_DEBUG
 //------------- Utilities for Memory Tracking (multi threaded) --------------
 
-MT_MemTracker::MT_MemTracker() : MemTracker()
+MT_MemTracker::MT_MemTracker(const char *name)
+	: MemTracker(name)
 {
 	if ( !CREATEMUTEX(fMutex) ) {
 		SysLog::Error("Mutex create failed");
@@ -105,7 +106,7 @@ public:
 
 	virtual Allocator *Current();
 #ifdef MEM_DEBUG
-	virtual MemTracker *MakeMemTracker();
+	virtual MemTracker *MakeMemTracker(const char *name);
 #endif
 	static bool fgInitialized;
 };
@@ -135,7 +136,7 @@ void MT_Storage::Initialize()
 		// switch to thread safe memory tracker
 		Allocator *a = Storage::Global();
 		if (a) {
-			a->ReplaceMemTracker(Storage::MakeMemTracker());
+			a->ReplaceMemTracker(Storage::MakeMemTracker("MTGlobalAllocator"));
 		}
 #endif
 		once = true;
@@ -144,7 +145,7 @@ void MT_Storage::Initialize()
 
 void MT_Storage::RefAllocator(Allocator *wdallocator)
 {
-	StartTrace(MT_Storage.RefAllocator);
+	StartTrace1(MT_Storage.RefAllocator, "Id:" << (wdallocator ? wdallocator->GetId() : -1L));
 	if ( wdallocator ) {
 		Initialize();	// used to initialize gsAllocatorInit Mutex
 		// in mt case we need to control ref counting with mutexes
@@ -162,7 +163,7 @@ void MT_Storage::RefAllocator(Allocator *wdallocator)
 
 		// normal case everything ok
 		wdallocator->Ref();
-
+		Trace("refcount is now:" << wdallocator->RefCnt());
 		// update linked list
 		elmt->wdallocator = wdallocator;
 		elmt->next = fgPoolAllocatorList;
@@ -173,15 +174,15 @@ void MT_Storage::RefAllocator(Allocator *wdallocator)
 
 void MT_Storage::UnrefAllocator(Allocator *wdallocator)
 {
-	StartTrace(MT_Storage.UnrefAllocator);
+	StartTrace1(MT_Storage.UnrefAllocator, "Id:" << (wdallocator ? wdallocator->GetId() : -1L));
 	if (wdallocator) {	// just to be robust wdallocator == 0 should not happen
 		Initialize();	// used to initialize gsAllocatorInit Mutex
 		MutexEntry me(*gsAllocatorInit);
 		me.Use();
 		wdallocator->Unref();
+		Trace("refcount is now:" << wdallocator->RefCnt());
 
 		if ( wdallocator->RefCnt() <= 0 ) {
-
 			// remove pool allocator
 			AllocList *elmt = fgPoolAllocatorList;
 			AllocList *prev = fgPoolAllocatorList;
@@ -261,9 +262,9 @@ Allocator *MTStorageHooks::Global()
 }
 
 #ifdef MEM_DEBUG
-MemTracker *MTStorageHooks::MakeMemTracker()
+MemTracker *MTStorageHooks::MakeMemTracker(const char *name)
 {
-	return new MT_MemTracker();
+	return new MT_MemTracker(name);
 }
 #endif
 
