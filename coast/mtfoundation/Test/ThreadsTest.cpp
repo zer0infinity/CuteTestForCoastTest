@@ -131,19 +131,19 @@ void ThreadsTest::ThreadObjectReuseTest()
 		ExecCountThread t;
 		if (t_assert(t.Start())) {
 			// start once
-			if ( t_assert(t.CheckState(Thread::eTerminated, 1) && t_assert(t.fCount == 1))) {
+			if ( t_assert(t.CheckState(Thread::eTerminated, 2)) && assertEqual(1L, t.fCount) ) {
 				Trace("count: " << t.fCount);
 				if (t_assert(t.Start())) {
 					// start twice
-					if (t_assert(t.CheckState(Thread::eTerminated, 1) && t_assert(t.fCount == 2))) {
+					if ( t_assert(t.CheckState(Thread::eTerminated, 2)) && assertEqual(2L, t.fCount) ) {
 						Trace("count: " << t.fCount);
 						if (t_assert(t.Start())) {
 							// start three times
-							if (t_assert(t.CheckState(Thread::eTerminated, 1))) {
+							if (t_assert(t.CheckState(Thread::eTerminated, 2))) {
 								Trace("count: " << t.fCount);
-								t_assert(t.fCount == 3);			// did it properly run three times
+								assertEqual(3L, t.fCount);			// did it properly run three times
 							} else {
-								t_assert(t.fCount == 3);
+								assertEqual(3L, t.fCount);
 								cerr << "/";
 								break;
 							}
@@ -151,7 +151,7 @@ void ThreadsTest::ThreadObjectReuseTest()
 							cerr << "ç";
 						}
 					} else {
-						t_assert(t.fCount == 2);
+						assertEqual(2L, t.fCount);
 						cerr << "#";
 						break;
 					}
@@ -159,7 +159,7 @@ void ThreadsTest::ThreadObjectReuseTest()
 					cerr << "@";
 				}
 			} else {
-				t_assert(t.fCount == 1);
+				assertEqual(1L, t.fCount);
 				cerr << "%";
 				break;
 			}
@@ -429,8 +429,8 @@ void ThreadsTest::TimedRunTest()
 		// same tenth of second. (Timer is stopped after CheckRunningState
 		// returns)
 
-		t_assertm(waited >= miliTestTime, 	 "Exact Time passsed should be equal or greater time given to wait");
-		assertEqualm(centiSecWaited , testTime,   "Time passsed rounded to .1 seconds should equal time given to wait");
+		t_assertm(waited >= miliTestTime, 	 "Exact Time passed should be equal or greater time given to wait");
+		assertEqualm(centiSecWaited , testTime,   "Time passed rounded to .1 seconds should equal time given to wait");
 		// Start them up
 		t_assert(t1.StartRunning());				// we will get out of this test, won't we?
 		t1.CheckState(Thread::eTerminated);
