@@ -88,17 +88,9 @@ void PoolAllocator::Initialize()
 
 PoolAllocator::~PoolAllocator()
 {
-#ifdef MEM_DEBUG
-	{
-		MemTrackStat(fPoolTracker);
-	} {
-		// caution: must use scoping because tracking would increase fPoolTrackers allocated count!
-		MemTrackStat(fExcessTracker);
-	}
-	if (fPoolTracker.CurrentlyAllocated() != 0) {
-		SysLog::Error(String("deleted PoolAllocator [") << GetId() << "] " << (long)this << " was still in use!");
-	}
-#endif
+	MemTrackStatIfAllocated(fPoolTracker);
+	MemTrackStatIfAllocated(fExcessTracker);
+	MemTrackStillAllocatedException(fPoolTracker);
 	::free(fPoolBuckets);
 	::free(fPoolMemory);
 }
