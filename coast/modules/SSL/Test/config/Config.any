@@ -290,7 +290,7 @@
 				{
 					/"SSL.Peer.AppLevelCertVerifyStatus" 1
 					/"SSL.Peer.SSLCertVerifyStatus.SSL.Ok" 1
-					/"SSL.Peer.Whole"	"emailAddress=bondo.hsr.ch@wildplanet.com,CN=bondo.hsr.ch,OU=CertIssueing,O=ClientSite,L=ZH,ST=ZH,C=CH"
+					/"SSL.Peer.Whole"	"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ClientSite,L=ZH,ST=ZH,C=CH"
 					/"SSL.SessionIsResumed" 1
 				}
 			}
