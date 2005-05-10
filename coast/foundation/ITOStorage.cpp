@@ -218,7 +218,7 @@ void Storage::DoInitialize()
 #ifdef MEM_DEBUG
 	static bool once = true;
 	if (once) {
-		Storage::DoGloba < l()->PrintStatistic();
+		Storage::DoGlobal()->PrintStatistic();
 		once = false;
 	}
 #endif
