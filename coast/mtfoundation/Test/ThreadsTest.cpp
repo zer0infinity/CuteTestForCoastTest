@@ -99,7 +99,7 @@ void ThreadsTest::ThreadRunningStateTransitionTest()
 	t_assertm(t.IsRunning(), "Thread is running");
 	t_assertm(t.CheckRunningState(Thread::eReady), "State should be eReady");
 	t_assertm(t.IsReady(), "is ready by default");
-	t_assertm(!t.IsWorking(), "It is not working");
+	t_assertm(!t.IsWorking(), "It is not working (might fail sometimes because we are too fast)");
 	t_assertm(!t.CheckRunningState(Thread::eWorking, 0, 20 * MILISEC), "State can not be eWorking");
 	t_assertm(!t.CheckRunningState(Thread::eWorking, 0, 20 * MILISEC), "State can not be eWorking");
 	t_assertm(t.SetWorking(), "Can be set to working");
