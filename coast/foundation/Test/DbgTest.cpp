@@ -243,7 +243,7 @@ void DbgTest::CheckMacrosCompile()
 	SubTrace("test", "a sub trace message");
 	SubTraceAny("test", a, "a sub trace any");
 	SubTraceBuf("test", "a subtrace buffer", 10);
-	StatTrace("test", "a stat trace");
+	StatTrace("test", "a stat trace", Storage::Current());
 // couldn't test here TerminateTracer() and HTMLTraceStores()
 }
 

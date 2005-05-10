@@ -153,10 +153,10 @@ private:
 	recart.SubAnyWDDebug(_QUOTE_(subtrigger), any, gsMecart << msg);	\
 }
 
-#define StatTrace(trigger, msg)								\
+#define StatTrace(trigger, msg, allocator)						\
 {															\
-	String gsMecart(Storage::Current());						\
-	Tracer::StatWDDebug(_QUOTE_(trigger), gsMecart << msg, Storage::Current());	\
+	String gsMecart(allocator);						\
+	Tracer::StatWDDebug(_QUOTE_(trigger), gsMecart << msg, allocator);	\
 }
 
 #define ResetTracer()	Tracer::Reset()
@@ -176,7 +176,7 @@ private:
 #define SubTrace(subtrigger, msg)
 #define SubTraceAny(subtrigger, any, msg)
 #define SubTraceBuf(subtrigger, msg, sz)
-#define StatTrace(trigger, msg)
+#define StatTrace(trigger, msg, allocator)
 #define ResetTracer()
 #define TerminateTracer()
 #define HTMLTraceStores(reply, context)
