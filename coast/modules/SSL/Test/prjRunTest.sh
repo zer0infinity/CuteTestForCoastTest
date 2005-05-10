@@ -14,9 +14,10 @@ function prepareTest
 	rm -f $PRJCONFIGPATH/cert_hashes/*
 	cp $PRJCONFIGPATH/$certdir/*.pem $PRJCONFIGPATH/cert_hashes
 	rehashwrapper.sh -d $PRJCONFIGPATH/cert_hashes -t
-	# Linking hashed certificate directory to one common place
-	rm /tmp/SSLSocketTestHashedCerts > /dev/null 2>&1
-	ln -s $PRJCONFIGPATH/cert_hashes /tmp/SSLSocketTestHashedCerts > /dev/null 2>&1
+	# create dir (might not exist)
+	mkdir /tmp/SSLSocketTestHashedCerts # > /dev/null 2>&1
+	rm -f /tmp/SSLSocketTestHashedCerts/* #> /dev/null 2>&1
+	cp  $PRJCONFIGPATH/cert_hashes/* /tmp/SSLSocketTestHashedCerts # > /dev/null 2>&1
 	chmod -f 777 /tmp/SSLSocketTestHashedCerts
 }
 ## call to wdtest or whatever you want to call
