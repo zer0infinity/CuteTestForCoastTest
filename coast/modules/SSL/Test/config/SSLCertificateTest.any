@@ -442,7 +442,7 @@
 				/SSLVerifyFailIfNoPeerCert 	1
 				/SSLUseAppCallback		1
 				/SSLVerifyPeerCert		1
-				/SSLVerifyPath 		"/tmp/SSLSocketTestHashedCerts/cert_hashes"
+				/SSLVerifyPath 		"/tmp/SSLSocketTestHashedCerts"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 1
 				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
