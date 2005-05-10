@@ -137,7 +137,7 @@ public:
 	~WorkerThread();
 
 	//! init thread object after construction of elements with array constructor
-	void Init(WorkerPoolManager *manager, ROAnything workerInit);
+	int Init(ROAnything workerInit);
 
 protected:
 	//! implements the worker cycle<br><ul><li>waiting for work<li>processing assigned work<li>checking back and waiting again</ul><br> until terminated
@@ -152,15 +152,12 @@ protected:
 		\param args pass work to do and store it for later use by DoProcessWorkload() */
 	virtual void DoWorkingHook(ROAnything args) {};
 
-	//! checks back after processing a work package to announce its readyness after the state change
-	virtual void DoReadyHook(ROAnything);
-
 	//! do the work (using the informations you stored in the instance variables)
 	virtual void DoProcessWorkload() = 0;
 
 	/*! if we did not allocate memory using a possibly given allocator it is safe to refresh it after each working cycle otherways it is a matter of time until a bus error will happen...
 		set to true if a refresh is possible, to false if we should not refresh it */
-	bool				fRefreshAllocator;
+	bool fRefreshAllocator;
 
 private:
 	//!prohibit the use of the copy constructor
@@ -168,7 +165,6 @@ private:
 	//!prohibit the use of th assignement operator
 	WorkerThread &operator=(const WorkerThread &);
 	//!the master of the worker
-	WorkerPoolManager	*fPoolManager;
 };
 
 //---- WorkerPoolManager ------------------------------------------------
@@ -176,7 +172,7 @@ private:
 /*! this abstract class handles the critical region of parallel active requests
 it uses a semaphore which is set by the parameter numMaxParallelRequests
 see SamplePoolManager for an example on how to use this class */
-class EXPORTDECL_MTFOUNDATION WorkerPoolManager : public StatGatherer
+class EXPORTDECL_MTFOUNDATION WorkerPoolManager : public StatGatherer, public ThreadObserver
 {
 public:
 	/*! does nothing, real work is done in init, object is still unusable without call of Init() method!
@@ -195,11 +191,13 @@ public:
 		\param workload arguments passed to WorkerThread */
 	void Enter(ROAnything workload);
 
-	//!critical region leave, this method allows a blocked caller of Enter to run if NumOfRequests() < MaxRequests2Run()
-	void Leave();
-
 	//!blocks the caller waiting for the running requests to terminate. It waits at most 'secs' seconds
 	bool AwaitEmpty(long secs);
+
+	/*! react to state changes of pool threads
+		\param t thread which wants to signal a state change
+		\param args arguments the thread can pass us */
+	virtual void Update(Thread *t, const Anything &args);
 
 	/*! waits for termination of all workers which are still running
 		\param secs waits for threads secs seconds after that it starts killing threads; if secs == 0 waits uncoditionally

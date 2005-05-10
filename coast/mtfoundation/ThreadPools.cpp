@@ -250,7 +250,6 @@ ROAnything ThreadPoolManager::DoGetConfig(long i, ROAnything args)
 WorkerThread::WorkerThread(const char *name)
 	: Thread(name)
 	, fRefreshAllocator(true)
-	, fPoolManager(0)
 {
 }
 
@@ -258,38 +257,29 @@ WorkerThread::~WorkerThread()
 {
 }
 
-void WorkerThread::Init(WorkerPoolManager *manager, ROAnything workerInit)
+int WorkerThread::Init(ROAnything workerInit)
 {
 	StartTrace(WorkerThread.Init);
-	fPoolManager = manager;
 	DoInit(workerInit);
+	return 0;
 }
 
 void WorkerThread::Run()
 {
 	// if you add Traces here, expect PoolAllocator to tell you about unfreed memory !!
-	Assert(fPoolManager);
 	while ( IsRunning() ) {
 		if ( CheckRunningState(eWorking) && IsRunning() ) {
 			DoProcessWorkload();
 			if ( IsRunning() ) {
 				SetReady();
+				if ( fRefreshAllocator ) {
+					StatTrace(WorkerThread.Run, "fAllocator->Refresh", Storage::Global());
+					// reorganize allocator memory
+					if ( fAllocator ) {
+						fAllocator->Refresh();
+					}
+				}
 			}
-		}
-	}
-}
-
-void WorkerThread::DoReadyHook(ROAnything)
-{
-	// if you add Traces here, expect PoolAllocator to tell you about unfreed memory !!
-	// check back and leave the critical region
-	// to make room for next requests
-	fPoolManager->Leave();
-	if ( fRefreshAllocator ) {
-		CleanupThreadStorage();
-		// reorganize allocator memory
-		if ( fAllocator ) {
-			fAllocator->Refresh();
 		}
 	}
 }
@@ -348,7 +338,8 @@ int WorkerPoolManager::InitPool(bool usePoolStorage, long poolStorageSize, int n
 		Trace("initializing worker number " << i << usePoolStorage ? "with pool allocator" : "with global allocator");
 		WorkerThread *wt = DoGetWorker(i);
 		Trace("got worker at " << long(wt));
-		wt->Init(this, args);
+		wt->Init(args);
+		wt->AddObserver(this);
 		Trace("init done");
 		if (usePoolStorage) {
 			// use different memory manager for each thread
@@ -416,16 +407,9 @@ void WorkerPoolManager::Enter(ROAnything workload)
 
 	Assert(fPoolSize > fCurrentParallelRequests);
 	Trace("I slipped past the Critical Region and there are " << fCurrentParallelRequests << " requests in work");
-	fCurrentParallelRequests++;			// count current parallel requests
-	Trace("Requests running in Enter:[" << fCurrentParallelRequests << "]");
 
 	// use the request param as hint to get the next free WorkerThread
-	long request = workload["request"].AsLong(fCurrentParallelRequests);
-
-	// hook for server statistic
-	if (fStatEvtHandler) {
-		fStatEvtHandler->HandleStatEvt(WPMStatHandler::eEnter);
-	}
+	long request = workload["request"].AsLong(fCurrentParallelRequests + 1L);
 
 	// find a worker object that can run this request
 	WorkerThread *hr = FindNextRunnable(request);
@@ -433,21 +417,38 @@ void WorkerPoolManager::Enter(ROAnything workload)
 	hr->SetWorking(workload);
 }
 
-void WorkerPoolManager::Leave()
+void WorkerPoolManager::Update(Thread *t, const Anything &args)
 {
-	// leave the critical region and
-	// make room for new requests
+	StartTrace(WorkerPoolManager.Update);
+
 	MutexEntry me(fMutex);
 	me.Use();
-	{
-		StartTrace(WorkerPoolManager.Leave);
-		fCurrentParallelRequests--;
-		Trace("Requests running in Leave:[" << fCurrentParallelRequests << "]");
-		fCond.Signal();
-		if (fStatEvtHandler) {
-			fStatEvtHandler->HandleStatEvt(WPMStatHandler::eLeave);
-		}
+
+	TraceAny(args, "event received");
+	ROAnything roaStateEvt(((ROAnything)args)["RunningState"]);
+
+	long evt = roaStateEvt["New"].AsLong(-1);
+	switch (evt) {
+		case Thread::eReady:
+			fCurrentParallelRequests--;
+			Trace("Requests still running: " << fCurrentParallelRequests);
+			if (fStatEvtHandler) {
+				fStatEvtHandler->HandleStatEvt(WPMStatHandler::eLeave);
+			}
+			break;
+
+		case Thread::eWorking:
+			fCurrentParallelRequests++;
+			Trace("Requests now running: " << fCurrentParallelRequests);
+			if (fStatEvtHandler) {
+				fStatEvtHandler->HandleStatEvt(WPMStatHandler::eEnter);
+			}
+			break;
+
+		default:
+			break;
 	}
+	fCond.BroadCast();
 }
 
 long WorkerPoolManager::NumOfRequestsRunning()
