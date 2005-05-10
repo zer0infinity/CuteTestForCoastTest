@@ -182,7 +182,6 @@ bool Thread::Start(Allocator *pAllocator, ROAnything args)
 
 			Assert(fAllocator);
 			if ( SetState(eStartRequested, args) ) {
-				// FIXME: params have still to be cleaned up
 				bool *b = new bool[4];
 				b[0] = fBound;
 				b[1] = fDetached;
