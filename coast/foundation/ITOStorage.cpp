@@ -102,22 +102,11 @@ void MemTracker::TrackFree(u_long allocSz)
 	fSizeFreed += allocSz;
 }
 
-l_long MemTracker::CurrentlyAllocated()
-{
-	return  fAllocated;
-}
-
 #if !defined(__SUNPRO_CC) || __SUNPRO_CC < 0x500
 extern "C" int write(int, const void *, unsigned);
 #endif
 void MemTracker::PrintStatistic()
 {
-#if 0
-	SysLog::WriteToStderr( "Currently Allocated " << ":" << (long)fAllocated << "\n" );
-	SysLog::WriteToStderr( "Total Allocated " << (long)fSizeAllocated << " bytes in " << (long)fNumAllocs << " runs (" << (long)(fSizeAllocated / ((fNumAllocs) ? fNumAllocs : 1)) << "/run)" << "\n" );
-	SysLog::WriteToStderr( "Total Freed " << (long)fSizeFreed << " bytes in " << (long)fNumFrees << " runs (" << (long)(fSizeFreed / ((fNumFrees) ? fNumFrees : 1)) << "/run)" << "\n" );
-	SysLog::WriteToStderr( "Total " << (long)(fSizeAllocated - fSizeFreed) << "\n" );
-#endif
 	// CAUTION: DO NOT PROGRAM AS FOLLOWS !!!
 	// IT IS ONLY NECESSARY HERE, BECAUSE THIS CODE MIGHT BE EXECUTED DURING
 	// atexit() WHEN PART OF THE C++ ENVIRONMENT IS ALREADY GONE (like cerr and cerr)
@@ -229,7 +218,7 @@ void Storage::DoInitialize()
 #ifdef MEM_DEBUG
 	static bool once = true;
 	if (once) {
-		Storage::DoGlobal()->PrintStatistic();
+		Storage::DoGloba < l()->PrintStatistic();
 		once = false;
 	}
 #endif

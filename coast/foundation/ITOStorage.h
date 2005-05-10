@@ -20,7 +20,7 @@
 #ifdef MEM_DEBUG
 
 //! Base class for memory allocation tracking
-//!helper class for debugging memory management problems
+/*! helper class for debugging memory management problems */
 class EXPORTDECL_FOUNDATION MemTracker
 {
 public:
@@ -37,13 +37,17 @@ public:
 	virtual void PrintStatistic();
 
 	//!returns currently allocated bytes
-	l_long  CurrentlyAllocated();
+	l_long CurrentlyAllocated() {
+		return fAllocated;
+	}
+
+	//!returns peak allocated bytes
+	l_long PeakAllocated() {
+		return fMaxAllocated;
+	}
 
 	//!sets the id of the allocator to be tracked
 	void SetId(long);
-
-	//!sets the id of the allocator to be tracked
-	void TraceAllocs();
 
 	//!initializes statistics to the values of MemTracker t
 	virtual void Init(MemTracker *t);
@@ -56,6 +60,7 @@ protected:
 	//!tracks the number and maximum of freed bytes
 	l_long  fNumFrees, fSizeFreed;
 
+public:
 	//! the id of the pool we track
 	long fId;
 	//! the name of the pool we track
@@ -100,6 +105,9 @@ protected:
 #define MemTrackAlloc(tracker, allocSz) tracker.TrackAlloc(allocSz)
 #define MemTrackFree(tracker, allocSz) tracker.TrackFree(allocSz)
 #define MemTrackStat(tracker) tracker.PrintStatistic()
+#define MemTrackStatIfAllocated(tracker) if ( tracker.PeakAllocated() > 0 ) tracker.PrintStatistic()
+#define MemTrackStillAllocatedException(tracker)	if( tracker.CurrentlyAllocated() > 0 )	\
+	SysLog::Error(String("deleted PoolAllocator was still in use! (id: ") << tracker.fId << " name [" << NotNull(tracker.fpName) << "])")
 
 #else
 #define StartTraceMem(scope)
@@ -112,6 +120,8 @@ protected:
 #define MemTrackAlloc(tracker, allocSz)
 #define MemTrackFree(tracker, allocSz)
 #define MemTrackStat(tracker)
+#define MemTrackStatIfAllocated(tracker)
+#define MemTrackStillAllocatedException(tracker)
 #endif
 
 class EXPORTDECL_FOUNDATION MemoryHeader;
