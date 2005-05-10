@@ -56,7 +56,7 @@ Role::Role(const char *name) : HierarchConfNamed(name)
 
 Role::~Role()
 {
-	StatTrace(Role.Misc, "~Role: <" << fName << ">");
+	StatTrace(Role.Misc, "~Role: <" << fName << ">", Storage::Current());
 }
 
 IFAObject *Role::Clone() const

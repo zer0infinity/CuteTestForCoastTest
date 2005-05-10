@@ -266,6 +266,7 @@ SMTPState *SMTPState::HandleState(Anything fMsgData, iostream &Ios)
 	}
 	return FindSMTPState(NextErrorState()); ;
 }
+
 bool SMTPState::DoProduceMsg(Anything &fMsgData, ostream &os)
 {
 	StartTrace(SMTPState.DoProduceMsg);
@@ -283,15 +284,15 @@ bool SMTPState::ConsumeReply(Anything &context, istream &is)
 	String msg;
 	long status(-1);
 	is >> status;
+	StartTrace1(SMTPState.ConsumeReply, "Msg status " << status);
 
-	StatTrace(MailDAImpl.ConsumeReply, "Msg status " << status);
 	if (!is) {
-		StatTrace(MailDAImpl.ConsumeReply, "Communication Error");
+		Trace("Communication Error");
 		context["Result"]["Error"] = "Communication Error";
 		return false;
 	} else {
 		ConsumeTillEol(is, msg);
-		StatTrace(MailDAImpl.ConsumeReply, "Msg line " << msg);
+		Trace("Msg line " << msg);
 		if ( status != DoGetStatus() ) {
 			context["Result"]["Error"] = msg;
 			return false;
@@ -302,7 +303,7 @@ bool SMTPState::ConsumeReply(Anything &context, istream &is)
 
 void SMTPState::ConsumeTillEol(istream &is, String &msg)
 {
-	StartTrace(MailDAImpl.ConsumeTillEol);
+	StartTrace(SMTPState.ConsumeTillEol);
 
 	char c, peek;
 	bool eol(false);
@@ -314,7 +315,6 @@ void SMTPState::ConsumeTillEol(istream &is, String &msg)
 				eol = true;
 			}
 		}
-//		if ( c == EOF ) eol = true;
 		msg.Append(c);
 	}
 }
@@ -343,7 +343,7 @@ bool MailSTARTState::ProduceMsg(Anything &context, ostream &os)
 	os << context["Helo"].AsCharPtr(DEF_UNKNOWN);
 	os << CRLF; // FIXME: should test whether this always works
 
-	StatTrace(MailDAImpl.ProduceMsg, "Produce MailSTARTState " << context["Helo"].AsCharPtr(DEF_UNKNOWN));
+	StatTrace(MailDAImpl.ProduceMsg, "Produce MailSTARTState " << context["Helo"].AsCharPtr(DEF_UNKNOWN), Storage::Current());
 	return (os.good() != 0);
 }
 
@@ -370,9 +370,8 @@ bool MailFROMState::ProduceMsg(Anything &context, ostream &os)
 	}
 
 	os << CRLF; // FIXME: should test whether this always works
-	StatTrace(MailDAImpl.ProduceMsg, "Produce MailFROMState " << context["From"].AsCharPtr("?"));
+	StatTrace(MailDAImpl.ProduceMsg, "Produce MailFROMState " << context["From"].AsCharPtr("?"), Storage::Current());
 	return (os.good() != 0);
-
 }
 
 MailRCPTState::MailRCPTState(const char *name) : SMTPState(name)
@@ -420,7 +419,7 @@ bool MailRCPTState::ProduceMsg(Anything &context, ostream &os)
 
 	os << CRLF; // FIXME: check whether this work always
 
-	StatTrace(MailDAImpl.ProduceMsg, "Produce MailRCPTState " << context["To"].AsCharPtr("?"));
+	StatTrace(MailDAImpl.ProduceMsg, "Produce MailRCPTState " << context["To"].AsCharPtr("?"), Storage::Current());
 	return (!!os);
 }
 
@@ -437,7 +436,7 @@ bool MailDATAState::ProduceMsg(Anything &context, ostream &os)
 {
 	os << "DATA";
 	os << CRLF;
-	StatTrace(MailDAImpl.ProduceMsg, "Produce MailDATAState");
+	StatTrace(MailDAImpl.ProduceMsg, "Produce MailDATAState", Storage::Current());
 	return (!!os);
 }
 
@@ -470,7 +469,7 @@ bool MailSENDState::ProduceMsg(Anything &context, ostream &os)
 		os << CRLF;
 		os << '.';
 		os << CRLF;
-		StatTrace(MailDAImpl.ProduceMsg, "Produce MailSENDState " << context["Message"].AsCharPtr("") );
+		StatTrace(MailDAImpl.ProduceMsg, "Produce MailSENDState " << context["Message"].AsCharPtr(""), Storage::Current());
 	}
 	return (!!os);
 }
@@ -496,7 +495,6 @@ void MailSENDState::ProduceMultipartMsg(Anything &context, ostream &os)
 	Encoder *base64 = Encoder::FindEncoder("Base64Regular");
 
 	for (long i = 0; i < attach.GetSize(); i++) {
-
 		String name(attach[i]["FileName"].AsString("noname"));
 
 		// the following might prove inefficient for large files...
@@ -529,7 +527,7 @@ bool MailERRORState::ProduceMsg(Anything &context, ostream &os)
 	os << "QUIT";
 	os << CRLF;
 
-	StatTrace(MailDAImpl.ProduceMsg, "Produce MailERRORState");
+	StatTrace(MailDAImpl.ProduceMsg, "Produce MailERRORState", Storage::Current());
 	return (!!os);
 }
 

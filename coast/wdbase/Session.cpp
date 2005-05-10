@@ -61,7 +61,7 @@ Session::Session(const char *name, Context &ctx)
 
 Session::~Session()
 {
-	StatTrace(Session.Finalize, "Session id: <" << fId << ">");
+	StartTrace1(Session.~Session, "Session id: <" << fId << ">");
 	String logMsg("deleted");
 	logMsg << " " << fId;
 	SysLog::Info(logMsg);
@@ -81,6 +81,7 @@ Session::~Session()
 
 void Session::Init(const char *id, Context &ctx)
 {
+	StartTrace1(Session.Init, "id <" << NotNull(id) << ">");
 	// is entrypoint but doesn't need Mutex, since it is similar to a constructor
 	fId = id;
 	PutInStore("SessionId", fId);
@@ -103,7 +104,6 @@ void Session::Init(const char *id, Context &ctx)
 	if ( query.IsDefined("port") ) {
 		fPort = query["port"][0L].AsLong(-1);
 	}
-	StatTrace(Session.Init, "id= " <<  fId);
 	String logMsg("created: ");
 	logMsg << fId;
 	SysLog::Info(logMsg);
@@ -176,6 +176,7 @@ long Session::GetTimeout(Context &ctx) const
 
 void Session::SetRole(Role *newRole, Context &ctx)
 {
+	StartTrace(Session.SetRole);
 	// assumption fMutex is already set by caller
 	Role *oldRole = GetRole(ctx);
 	if (newRole != oldRole || !fStore.IsDefined("RoleName") ) {
@@ -190,7 +191,7 @@ void Session::SetRole(Role *newRole, Context &ctx)
 		}
 		String msg("switching newRole from <");
 		msg << oldRoleName << "> to <" << newRoleName << ">";
-		StatTrace(Session.SetRole, msg);
+		Trace(msg);
 		SysLog::Info(msg);
 		PutInStore("RoleName", newRoleName);
 		// Needed only when context used with copy of session store
@@ -295,7 +296,7 @@ bool Session::MakeInvalid(Context &ctx)
 {
 	TRACE_LOCK_START("MakeInvalid");
 	if ( fMutex.TryLock() ) {
-		StatTrace(Session.MakeInvalid, "Session id: <" << fId << ">");
+		StartTrace1(Session.MakeInvalid, "Session id: <" << fId << ">");
 		String logMsg("Session: <");
 		logMsg << fId << "> invalidation request";
 		SysLog::Info(logMsg);

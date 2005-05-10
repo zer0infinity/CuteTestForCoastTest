@@ -68,7 +68,7 @@ Page::~Page()
 
 IFAObject *Page::Clone() const
 {
-	StatTrace("Page.Clone", "creating Page");
+	StartTrace(Page.Clone);
 	return new Page(fName);
 }
 
