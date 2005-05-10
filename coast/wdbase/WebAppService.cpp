@@ -47,7 +47,7 @@ void WebAppService::DoHandleService(ostream &reply, Context &ctx)
 
 	// second stage: prepare the query and get the session id if any
 	String sessionId = SessionListManager::SLM()->FilterQueryAndGetId(ctx);
-	Trace("SessionId:<" << sessionId);
+	Trace("SessionId:<" << sessionId << ">");
 
 	// third stage: lookup the session
 	bool isBusy = false;
