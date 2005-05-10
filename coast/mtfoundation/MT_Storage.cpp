@@ -277,9 +277,7 @@ Allocator *MTStorageHooks::Current()
 	Storage::Initialize();
 
 	// determine which allocator to use
-#if defined(__sun) || defined(WIN32) || defined(__linux__) || defined(_AIX)
 	FindAllocator(wdallocator);
-#endif
 
 	if (wdallocator) {
 		return wdallocator;
