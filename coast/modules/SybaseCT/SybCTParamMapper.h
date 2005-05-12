@@ -9,13 +9,13 @@
 #ifndef _SybCTParamMapper_H
 #define _SybCTParamMapper_H
 
-//---- OutputMapper include -------------------------------------------------
+//---- Mapper include -------------------------------------------------
 #include "config_sybasect.h"
 #include "Mapper.h"
 
 //---- SybCTParamMapper ----------------------------------------------------------
-//: comment InputMapper
-class EXPORTDECL_SYBASECT SybCTParamMapper : public InputMapper
+//: comment ParameterMapper
+class EXPORTDECL_SYBASECT SybCTParamMapper : public ParameterMapper
 {
 public:
 	//--- constructors

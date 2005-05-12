@@ -13,9 +13,9 @@
 #include "Dbg.h"
 
 //---- SybCTParamMapper ------------------------------------------------------------------
-RegisterInputMapper(SybCTParamMapper);
+RegisterParameterMapper(SybCTParamMapper);
 
-SybCTParamMapper::SybCTParamMapper(const char *name) : InputMapper(name)
+SybCTParamMapper::SybCTParamMapper(const char *name) : ParameterMapper(name)
 {
 	StartTrace(SybCTParamMapper.Ctor);
 }
@@ -33,14 +33,14 @@ bool SybCTParamMapper::Get(const char *key, String &value, Context &ctx)
 	// if the key is found in context, the value of the key is taken as
 	// configuration of the second Get call and used like a mapper-script
 	// this can be used to specify default values in DataAccessImplMeta.any which
-	// can be overridden in the configuration of the InputMapper therefor the
+	// can be overridden in the configuration of the ParameterMapper therefor the
 	// specification in DataAccessImplMeta MUST be in mapper-script-style
 
 	Anything anyValue;
-	if ( InputMapper::Get(key, anyValue, ctx) && !anyValue.IsNull() ) {
+	if ( ParameterMapper::Get(key, anyValue, ctx) && !anyValue.IsNull() ) {
 		TraceAny(anyValue, "result of first Get");
 		Anything anyFinal;
-		if ( InputMapper::DoGetAny(key, anyFinal, ctx, anyValue) && !anyFinal.IsNull() ) {
+		if ( ParameterMapper::DoGetAny(key, anyFinal, ctx, anyValue) && !anyFinal.IsNull() ) {
 			TraceAny(anyFinal, "result of second Get");
 			if (anyFinal.GetType() == Anything::eArray) {
 				value = anyFinal[0L].AsCharPtr();
