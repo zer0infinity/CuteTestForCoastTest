@@ -51,8 +51,8 @@ void HTTPMapperTest::FDTest1()
 	TraceAny(testInput, "TestFDPost input: ");
 
 	Context ctx(testInput, dummy, (Server *)0, (Session *)0, (Role *)0);
-	InputMapper httpmapper("finvalstatic1");
-	httpmapper.CheckConfig("InputMapper");
+	ParameterMapper httpmapper("finvalstatic1");
+	httpmapper.CheckConfig("ParameterMapper");
 
 	t_assert(httpmapper.Get("Input", os, ctx));
 	os << ">" << flush;
@@ -74,8 +74,8 @@ void HTTPMapperTest::FDTest2()
 	TraceAny(testInput, "TestFDPost input: ");
 
 	Context ctx(testInput, dummy, (Server *)0, (Session *)0, (Role *)0);
-	InputMapper httpmapper("finvalstatic2");
-	httpmapper.CheckConfig("InputMapper");
+	ParameterMapper httpmapper("finvalstatic2");
+	httpmapper.CheckConfig("ParameterMapper");
 	t_assert(httpmapper.Get("Input", os, ctx));
 	os << ">" << flush;
 
@@ -93,8 +93,8 @@ void HTTPMapperTest::FDTest3()
 	GetTestInput(dummy, "TestData");
 
 	Context ctx(dummy["TestFDPost3"]["env"], dummy["TestFDPost3"]["query"], (Server *)0, (Session *)0, (Role *)0);
-	InputMapper httpmapper("finvalstatic3");
-	httpmapper.CheckConfig("InputMapper");
+	ParameterMapper httpmapper("finvalstatic3");
+	httpmapper.CheckConfig("ParameterMapper");
 
 	Anything tmpStore(ctx.GetTmpStore());
 

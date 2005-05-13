@@ -26,7 +26,7 @@ typedef struct timeval ldaptimeout;
 class EXPORTDECL_LDAP LDAPParams
 {
 public:
-	LDAPParams(Context &ctx, InputMapper *in);
+	LDAPParams(Context &ctx, ParameterMapper *in);
 	virtual ~LDAPParams();
 
 	virtual const char *Base();
@@ -41,7 +41,7 @@ public:
 
 protected:
 	Context &fContext;
-	InputMapper *fMapper;
+	ParameterMapper *fMapper;
 
 	String fBase;
 	ldaptimeout fTimeout;
@@ -60,7 +60,7 @@ private:
 class EXPORTDECL_LDAP LDAPModifyCompareParams : public LDAPParams
 {
 public:
-	LDAPModifyCompareParams(Context &ctx, InputMapper *in);
+	LDAPModifyCompareParams(Context &ctx, ParameterMapper *in);
 	virtual ~LDAPModifyCompareParams();
 
 	virtual const char *DName();

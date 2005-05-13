@@ -9,7 +9,7 @@
 #ifndef _CGIParams_H
 #define _CGIParams_H
 
-//---- OutputMapper include -------------------------------------------------
+//---- Mapper include -------------------------------------------------
 #include "config_stddataaccess.h"
 #include "URI2FileNameMapper.h"
 

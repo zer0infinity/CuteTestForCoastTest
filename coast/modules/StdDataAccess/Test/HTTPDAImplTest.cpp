@@ -49,10 +49,10 @@ void HTTPDAImplTest::tearDown ()
 
 void HTTPDAImplTest::useSSLTest()
 {
-	InputMapper in("useSSL");
-	in.CheckConfig("InputMapper");
-	OutputMapper out("useSSL");
-	out.CheckConfig("OutputMapper");
+	ParameterMapper in("useSSL");
+	in.CheckConfig("ParameterMapper");
+	ResultMapper out("useSSL");
+	out.CheckConfig("ResultMapper");
 
 	HTTPDAImpl httpDAImpl("useSSLTest");
 	httpDAImpl.CheckConfig("DataAccessImpl");
@@ -70,9 +70,9 @@ void HTTPDAImplTest::SSLTests()
 	FOREACH_ENTRY("SSLTests", cConfig, cName) {
 		Trace("SSLTests: At entry: " << i);
 		TraceAny(cConfig, "SSLTests config");
-		InputMapper in("SSLTests");
-		in.CheckConfig("InputMapper");
-		OutputMapper out("SSLTests");
+		ParameterMapper in("SSLTests");
+		in.CheckConfig("ParameterMapper");
+		ResultMapper out("SSLTests");
 		HTTPDAImpl httpDAImpl("SSLTests");
 		Context ctx;
 		ctx.GetTmpStore() = cConfig["Config"].DeepClone();
@@ -97,9 +97,9 @@ void HTTPDAImplTest::SSLNirvanaConnectTests()
 	FOREACH_ENTRY("SSLNirvanaConnectTests", cConfig, cName) {
 		Trace("SSLTests: At entry: " << i);
 		TraceAny(cConfig, "SSLTests config");
-		InputMapper in("SSLTests");
-		in.CheckConfig("InputMapper");
-		OutputMapper out("SSLTests");
+		ParameterMapper in("SSLTests");
+		in.CheckConfig("ParameterMapper");
+		ResultMapper out("SSLTests");
 		HTTPDAImpl httpDAImpl("SSLTests");
 		Context ctx;
 		ctx.GetTmpStore() = cConfig["Config"].DeepClone();
@@ -125,10 +125,10 @@ void HTTPDAImplTest::SSLNirvanaConnectTests()
 void HTTPDAImplTest::ErrorHandlingTest()
 {
 	StartTrace(HTTPDAImplTest.ErrorHandlingTest);
-	InputMapper in("useSSL");
-	in.CheckConfig("InputMapper");
-	OutputMapper out("useSSL");
-	out.CheckConfig("OutputMapper");
+	ParameterMapper in("useSSL");
+	in.CheckConfig("ParameterMapper");
+	ResultMapper out("useSSL");
+	out.CheckConfig("ResultMapper");
 
 	HTTPDAImpl httpDAImpl("ErrorHandlingTest");
 	httpDAImpl.CheckConfig("DataAccessImpl");

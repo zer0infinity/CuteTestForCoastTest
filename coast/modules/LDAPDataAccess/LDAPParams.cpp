@@ -26,7 +26,7 @@
 #include "LDAPAPI.h"
 
 //--- implementation of LDAPParams -----------------------------------------------------------
-LDAPParams::LDAPParams(Context &ctx, InputMapper *in) : fContext(ctx), fMapper(in), fLDAPAttr(0)
+LDAPParams::LDAPParams(Context &ctx, ParameterMapper *in) : fContext(ctx), fMapper(in), fLDAPAttr(0)
 {
 	StartTrace(LDAPParams.LDAPParams);
 
@@ -140,7 +140,7 @@ bool LDAPParams::FilterDefined()
 
 //--- LDAPModifyCompareParams -----------------------------------
 
-LDAPModifyCompareParams::LDAPModifyCompareParams(Context &ctx, InputMapper *in)
+LDAPModifyCompareParams::LDAPModifyCompareParams(Context &ctx, ParameterMapper *in)
 	: LDAPParams(ctx, in), fModifies(0), fModifiesSz(0)
 {
 	StartTrace(LDAPModifyCompareParams.LDAPModifyCompareParams);

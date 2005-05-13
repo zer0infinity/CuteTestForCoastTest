@@ -32,7 +32,7 @@ IFAObject *DummyHTTPDAImpl::Clone() const
 	return new DummyHTTPDAImpl(fName);
 }
 
-bool DummyHTTPDAImpl::Exec( Context &context, InputMapper *in, OutputMapper *out)
+bool DummyHTTPDAImpl::Exec( Context &context, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(DummyHTTPDAImpl.Exec);
 

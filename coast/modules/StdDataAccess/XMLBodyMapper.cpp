@@ -175,7 +175,7 @@ bool XMLTagParser::ReadToExpectedChar(char ExpectedChar, istream &Is, String &Co
 }
 
 //--- XMLBodyMapper ---------------------------
-RegisterOutputMapper(XMLBodyMapper);
+RegisterResultMapper(XMLBodyMapper);
 
 // --- Put API
 bool XMLBodyMapper::DoFinalPutStream(const char *key, istream &is, Context &ctx)

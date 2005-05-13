@@ -29,7 +29,7 @@ public:
 	//! \param c The context of the transaction
 	//! \pre fData2Send contains the HTTP-Request
 	//! \post fData2Get contains either an slot /MsgReceived containing the HTTP Response or the slot /Error storing information about the error occured.
-	virtual bool Exec(Context &c, InputMapper *, OutputMapper *);
+	virtual bool Exec(Context &c, ParameterMapper *, ResultMapper *);
 
 private:
 	//constructor

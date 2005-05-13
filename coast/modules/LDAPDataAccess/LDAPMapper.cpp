@@ -23,7 +23,7 @@
 #include <openssl/sha.h>
 
 //---- LDAPFieldMapper ------------------------------------------------------------------------
-RegisterInputMapper(LDAPFieldMapper);
+RegisterParameterMapper(LDAPFieldMapper);
 LDAPFieldMapper::LDAPFieldMapper(const char *name): EagerParameterMapper(name)
 {
 }
@@ -40,7 +40,7 @@ bool LDAPFieldMapper::DoGetStream(const char *key, ostream &os, Context &ctx,  R
 		String rawInput;
 		String formattedInput;
 		String dataFormat;
-		if ( InputMapper::Get(key, rawInput, ctx) ) {
+		if ( ParameterMapper::Get(key, rawInput, ctx) ) {
 			if ( info.IsDefined("DataFormat") ) {
 				dataFormat = info["DataFormat"].AsCharPtr();
 				Encoder *base64 = Encoder::FindEncoder("Base64Regular");
@@ -71,7 +71,7 @@ bool LDAPFieldMapper::DoGetStream(const char *key, ostream &os, Context &ctx,  R
 }
 
 //---- LDAPQueryMapper ------------------------------------------------------------------------
-RegisterInputMapper(LDAPQueryMapper);
+RegisterParameterMapper(LDAPQueryMapper);
 LDAPQueryMapper::LDAPQueryMapper(const char *name): ParameterMapper(name)
 {
 }
@@ -191,8 +191,8 @@ bool LDAPParamMapper::DoGetAny(const char *key, Anything &value, Context &ctx,  
 }
 
 //---- LDAPDNameMapper ------------------------------------------------------------------------
-RegisterInputMapper(LDAPDNameMapper);
-LDAPDNameMapper::LDAPDNameMapper(const char *name): InputMapper(name)
+RegisterParameterMapper(LDAPDNameMapper);
+LDAPDNameMapper::LDAPDNameMapper(const char *name): ParameterMapper(name)
 {
 }
 
@@ -329,7 +329,7 @@ bool LDAPModifyValsMapper::DoGetAny(const char *key, Anything &value, Context &c
 }
 
 //---- LDAPListMapper ------------------------------------------------------------------------
-RegisterOutputMapper(LDAPListMapper);
+RegisterResultMapper(LDAPListMapper);
 LDAPListMapper::LDAPListMapper(const char *name): ResultMapper(name)
 {
 }
@@ -353,7 +353,7 @@ bool LDAPListMapper::DoFinalPutAny(const char *key, Anything value, Context &ctx
 }
 
 //---- LDAPListWithPrimaryKeyMapper ------------------------------------------------------------------------
-RegisterOutputMapper(LDAPListWithPrimaryKeyMapper);
+RegisterResultMapper(LDAPListWithPrimaryKeyMapper);
 LDAPListWithPrimaryKeyMapper::LDAPListWithPrimaryKeyMapper(const char *name)
 	: ResultMapper(name)
 {

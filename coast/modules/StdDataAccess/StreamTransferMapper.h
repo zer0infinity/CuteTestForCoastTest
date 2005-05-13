@@ -9,7 +9,7 @@
 #ifndef _StreamTransferMapper_H
 #define _StreamTransferMapper_H
 
-//---- OutputMapper include -------------------------------------------------
+//---- Mapper include -------------------------------------------------
 #include "config_stddataaccess.h"
 #include "Mapper.h"
 

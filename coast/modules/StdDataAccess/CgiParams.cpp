@@ -17,7 +17,7 @@
 //--- c-library modules used ---------------------------------------------------
 
 //---- CgiParams ------------------------------------------------------------------
-RegisterInputMapper(CgiParams);
+RegisterParameterMapper(CgiParams);
 
 CgiParams::CgiParams(const char *name) : URI2FileNameMapper(name)
 {

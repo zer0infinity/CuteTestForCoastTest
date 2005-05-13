@@ -94,10 +94,10 @@ private:
 
 // ------------------------- HTTPBodyParameterMapper -------------------------
 
-class EXPORTDECL_STDDATAACCESS HTTPBodyParameterMapper : public InputMapper
+class EXPORTDECL_STDDATAACCESS HTTPBodyParameterMapper : public ParameterMapper
 {
 public:
-	HTTPBodyParameterMapper(const char *name) : InputMapper(name) { }
+	HTTPBodyParameterMapper(const char *name) : ParameterMapper(name) { }
 	~HTTPBodyParameterMapper()	{ }
 
 	IFAObject *Clone() const {

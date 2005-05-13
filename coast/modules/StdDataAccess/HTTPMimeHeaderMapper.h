@@ -9,7 +9,7 @@
 #ifndef _HTTPMimeHeaderMapper_H
 #define _HTTPMimeHeaderMapper_H
 
-//---- OutputMapper include -------------------------------------------------
+//---- Mapper include -------------------------------------------------
 #include "config_stddataaccess.h"
 #include "Mapper.h"
 

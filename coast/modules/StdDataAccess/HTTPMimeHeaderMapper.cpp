@@ -18,7 +18,7 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- HTTPMimeHeaderMapper ------------------------------------------------------------------
-RegisterOutputMapper(HTTPMimeHeaderMapper);
+RegisterResultMapper(HTTPMimeHeaderMapper);
 
 HTTPMimeHeaderMapper::HTTPMimeHeaderMapper(const char *name)
 	: EagerResultMapper(name)

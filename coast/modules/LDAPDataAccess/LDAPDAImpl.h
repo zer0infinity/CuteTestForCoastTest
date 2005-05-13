@@ -30,7 +30,7 @@ public:
 	//! \param in input mapper which generates the inputparameters
 	//! \param out ouput mapper which collects the outputparameters
 	//! \return returns true if the 'DataAccess' was successful otherwise false
-	virtual bool Exec(Context &c, InputMapper *in, OutputMapper *out);
+	virtual bool Exec(Context &c, ParameterMapper *in, ResultMapper *out);
 
 protected:
 	//!binds to an LDAP-Server
@@ -39,7 +39,7 @@ protected:
 	//! \param in input mapper which gets inputparameters
 	//! \param out ouput mapper which puts outputparameters to context
 	//! \return returns a ldaphandle pointer if bind was successful otherwise NULL
-	LDAP *Connect(Context &ctx, InputMapper *in, OutputMapper *out);
+	LDAP *Connect(Context &ctx, ParameterMapper *in, ResultMapper *out);
 
 	//!gets response/data from LDAP-Server
 	//! gets data and fill it to result
@@ -48,7 +48,7 @@ protected:
 	//! \param ctx the thread context of the invocation
 	//! \param out ouput mapper which puts outputparameters to context
 	//! \return void
-	void GetData( LDAPMessage *result, LDAP *ldapHdl, Context &c, OutputMapper *out );
+	void GetData( LDAPMessage *result, LDAP *ldapHdl, Context &c, ResultMapper *out );
 
 	//!converts textual attribute values and distinguished names (UTF-8) in HTML-specific format
 	//!LDAPv3 usese the UTF-8 (Unicode Transformation Format-8) characterset
@@ -66,40 +66,40 @@ protected:
 	//!conditions wouldn't be detected.
 	bool DoSearch( LDAP *ldapHdl, String messageIn,
 				   int msgId, int all,
-				   Context &c, InputMapper *in, OutputMapper *out);
+				   Context &c, ParameterMapper *in, ResultMapper *out);
 
 	bool DoConnect( LDAP *ldapHdl, String messageIn,
 					int msgId, int all,
-					Context &c, InputMapper *in, OutputMapper *out);
+					Context &c, ParameterMapper *in, ResultMapper *out);
 
 	bool DoAddModifyDel( LDAP *ldapHdl, String messageIn,
 						 int msgId, int all,
-						 Context &c, InputMapper *in, OutputMapper *out);
+						 Context &c, ParameterMapper *in, ResultMapper *out);
 
 	//!To achieve a polling effect, you have to give a /Timeout of 0 seconds, which is interpeted as
 	//!wait for ever. This is done by callin ldap_result with a null pointer.
 	int WaitForResult(LDAPMessage **result, LDAP *ldapHdl, String messageIn,
 					  timeval *timeLimitIn, int msgId, int all,
-					  Context &c, InputMapper *in, OutputMapper *out);
+					  Context &c, ParameterMapper *in, ResultMapper *out);
 
 	//!The Check... methods do the operation specific checking.
 	bool CheckConnectResult( int opRet, bool &outcome, LDAPMessage *result, LDAP *ldapHdl, String messageIn,
 							 timeval *timeLimitIn, int msgId,
-							 Context &c, InputMapper *in, OutputMapper *out);
+							 Context &c, ParameterMapper *in, ResultMapper *out);
 	bool CheckSearchResult( int opRet, bool &outcome, LDAPMessage *result, LDAP *ldapHdl, String messageIn,
 							timeval *timeLimitIn, int msgId,
-							Context &c, InputMapper *in, OutputMapper *out);
+							Context &c, ParameterMapper *in, ResultMapper *out);
 
 	bool CheckAddDelModifyResult( int opRet, bool &outcome, LDAPMessage *result, LDAP *ldapHdl, String messageIn,
 								  timeval *timeLimitIn, int msgId,
-								  Context &c, InputMapper *in, OutputMapper *out);
+								  Context &c, ParameterMapper *in, ResultMapper *out);
 
 	//!Depending of the setting of /Timeout it is an error to recieve a timeout (/Timeout not 0) or we try again.
 	bool HandleTimeout(int opRet, bool &outcome, LDAPMessage *result, LDAP *ldapHdl, String messageIn,
-					   timeval *timeLimitIn, int msgId,   Context &c, InputMapper *in, OutputMapper *out);
+					   timeval *timeLimitIn, int msgId,   Context &c, ParameterMapper *in, ResultMapper *out);
 
 	//!Logs error and closes handle
-	void HandleError(LDAP *ldapHdl, Context &ctx, OutputMapper *out, const String &msg);
+	void HandleError(LDAP *ldapHdl, Context &ctx, ResultMapper *out, const String &msg);
 };
 
 //---- LDAPCompareDAImpl -----------------------------------------------------------
@@ -117,10 +117,10 @@ public:
 	//! \param in input mapper which generates the inputparameters
 	//! \param out ouput mapper which collects the outputparameters
 	//! \return returns true if the 'DataAccess' was successful otherwise false
-	virtual bool Exec(Context &ctx, InputMapper *in, OutputMapper *out);
+	virtual bool Exec(Context &ctx, ParameterMapper *in, ResultMapper *out);
 	bool  CheckCompareResult( int opRet, bool &outcome, LDAPMessage *result, LDAP *ldapHdl, String messageIn,
 							  timeval *timeLimitIn, int msgId,
-							  Context &c, InputMapper *in, OutputMapper *out);
+							  Context &c, ParameterMapper *in, ResultMapper *out);
 protected:
 };
 
@@ -139,7 +139,7 @@ public:
 	//! \param in input mapper which generates the inputparameters
 	//! \param out ouput mapper which collects the outputparameters
 	//! \return returns true if the 'DataAccess' was successful otherwise false
-	virtual bool Exec(Context &c, InputMapper *in, OutputMapper *out);
+	virtual bool Exec(Context &c, ParameterMapper *in, ResultMapper *out);
 };
 
 //---- LDAPAddDAImpl -----------------------------------------------------------
@@ -157,7 +157,7 @@ public:
 	//! \param in input mapper which generates the inputparameters
 	//! \param out ouput mapper which collects the outputparameters
 	//! \return returns true if the 'DataAccess' was successful otherwise false
-	virtual bool Exec(Context &c, InputMapper *in, OutputMapper *out);
+	virtual bool Exec(Context &c, ParameterMapper *in, ResultMapper *out);
 };
 
 //---- LDAPDelDAImpl -----------------------------------------------------------
@@ -175,7 +175,7 @@ public:
 	//! \param in input mapper which generates the inputparameters
 	//! \param out ouput mapper which collects the outputparameters
 	//! \return returns true if the 'DataAccess' was successful otherwise false
-	virtual bool Exec(Context &c, InputMapper *in, OutputMapper *out);
+	virtual bool Exec(Context &c, ParameterMapper *in, ResultMapper *out);
 };
 
 #endif

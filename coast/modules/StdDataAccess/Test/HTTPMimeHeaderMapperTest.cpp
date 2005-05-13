@@ -50,7 +50,7 @@ void HTTPMimeHeaderMapperTest::SimpleHeader()
 	StartTrace(HTTPMimeHeaderMapperTest.SimpleHeader);
 	IStringStream is(fConfig["simpleHeader"].AsCharPtr());
 	HTTPMimeHeaderMapper m("HTTPMimeHeaderMapper");
-	m.CheckConfig("OutputMapper");
+	m.CheckConfig("ResultMapper");
 	Context ctx;
 	t_assert(((ResultMapper &)m).Put("", is, ctx)); // key not necessary
 	assertAnyEqual(fConfig["simpleHeaderResult"], ctx.GetTmpStore()["Mapper"]["HTTPHeader"]);
@@ -67,7 +67,7 @@ void HTTPMimeHeaderMapperTest::SuppressedHeadersTest()
 	StartTrace(HTTPMimeHeaderMapperTest.SuppressedHeadersTest);
 	IStringStream is(fConfig["simpleHeader"].AsCharPtr());
 	HTTPMimeHeaderMapper m("HTTPMimeHeaderWithSuppress");
-	t_assert(m.CheckConfig("OutputMapper"));
+	t_assert(m.CheckConfig("ResultMapper"));
 	Context ctx;
 	t_assert(((ResultMapper &)m).Put("", is, ctx)); // key not necessary
 	assertAnyEqual(fConfig["suppressedHeaderResult"], ctx.GetTmpStore()["Mapper"]["HTTPHeader"]);
@@ -87,7 +87,7 @@ void HTTPMimeHeaderMapperTest::AddHeadersTest()
 	StartTrace(HTTPMimeHeaderMapperTest.AddHeadersTest);
 	IStringStream is(fConfig["simpleHeader"].AsCharPtr());
 	HTTPMimeHeaderMapper m("HTTPMimeHeaderWithAdd");
-	t_assert(m.CheckConfig("OutputMapper"));
+	t_assert(m.CheckConfig("ResultMapper"));
 	Context ctx;
 	t_assert(((ResultMapper &)m).Put("", is, ctx)); // key not necessary
 	assertAnyEqual(fConfig["addResult"], ctx.GetTmpStore()["Mapper"]["HTTPHeader"]);
@@ -98,7 +98,7 @@ void HTTPMimeHeaderMapperTest::SuppressAndAddHeadersTest()
 	{
 		IStringStream is(fConfig["simpleHeader"].AsCharPtr());
 		HTTPMimeHeaderMapper m("HTTPMimeHeaderWithSuppressAndAdd");
-		t_assert(m.CheckConfig("OutputMapper"));
+		t_assert(m.CheckConfig("ResultMapper"));
 		Context ctx;
 		t_assert(((ResultMapper &)m).Put("", is, ctx)); // key not necessary
 		assertAnyEqual(fConfig["suppressAndAddResult"], ctx.GetTmpStore()["Mapper"]["HTTPHeader"]);
@@ -106,7 +106,7 @@ void HTTPMimeHeaderMapperTest::SuppressAndAddHeadersTest()
 	{
 		IStringStream is(fConfig["simpleHeader"].AsCharPtr());
 		HTTPMimeHeaderMapper m("HTTPMimeHeaderWithSuppressAndAddNoHeaderFieldSplit");
-		t_assert(m.CheckConfig("OutputMapper"));
+		t_assert(m.CheckConfig("ResultMapper"));
 		Context ctx;
 		t_assert(((ResultMapper &)m).Put("", is, ctx)); // key not necessary
 		assertAnyEqual(fConfig["suppressAndAddResult"], ctx.GetTmpStore()["Mapper"]["HTTPHeader"]);

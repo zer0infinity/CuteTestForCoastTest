@@ -52,7 +52,7 @@ String HTTPDAImpl::GenerateErrorMessage(const char *msg, Context &context)
 	return errorMsg;
 }
 
-bool HTTPDAImpl::Exec( Context &context, InputMapper *in, OutputMapper *out)
+bool HTTPDAImpl::Exec( Context &context, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(HTTPDAImpl.Exec);
 
@@ -80,7 +80,7 @@ bool HTTPDAImpl::Exec( Context &context, InputMapper *in, OutputMapper *out)
 	return false;
 }
 
-bool HTTPDAImpl::DoExec(Connector *csc, ConnectorParams *cps, Context &context, InputMapper *in, OutputMapper *out)
+bool HTTPDAImpl::DoExec(Connector *csc, ConnectorParams *cps, Context &context, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(HTTPDAImpl.DoExec);
 
@@ -142,7 +142,7 @@ bool HTTPDAImpl::ReadReply( String &theReply, Context &context, iostream *Ios )
 	}
 }
 
-bool HTTPDAImpl::RenderReply( String &theReply, Context &context, OutputMapper *out  )
+bool HTTPDAImpl::RenderReply( String &theReply, Context &context, ResultMapper *out  )
 {
 	IStringStream is(&theReply);
 
@@ -154,7 +154,7 @@ bool HTTPDAImpl::RenderReply( String &theReply, Context &context, OutputMapper *
 	return true;
 }
 
-bool HTTPDAImpl::BuildRequest( String &request, Context &context, InputMapper *in, OutputMapper *out )
+bool HTTPDAImpl::BuildRequest( String &request, Context &context, ParameterMapper *in, ResultMapper *out )
 {
 	StartTrace(HTTPDAImpl.BuildRequest);
 	{
@@ -166,7 +166,7 @@ bool HTTPDAImpl::BuildRequest( String &request, Context &context, InputMapper *i
 	}
 
 	Anything tmpStore(context.GetTmpStore());
-	tmpStore["InputMapper"]["RequestMade"] = request;
+	tmpStore["ParameterMapper"]["RequestMade"] = request;
 	TraceAny( tmpStore["Mapper"], "tmpStore.Mapper" );
 
 	return true; // request built successfully
@@ -186,7 +186,7 @@ bool HTTPDAImpl::SendRequest(String &request, iostream *Ios, Socket *s, Connecto
 	return true;
 }
 
-bool HTTPDAImpl::DoExecRecord(Connector *csc, ConnectorParams *cps, Context &context, InputMapper *in, OutputMapper *out)
+bool HTTPDAImpl::DoExecRecord(Connector *csc, ConnectorParams *cps, Context &context, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(HTTPDAImpl.DoExecRecordOrTest);
 
@@ -251,7 +251,7 @@ bool HTTPDAImpl::DoExecRecord(Connector *csc, ConnectorParams *cps, Context &con
 }
 #endif
 
-bool HTTPDAImpl::SendInput(iostream *Ios, Socket *s, long timeout, Context &context, InputMapper *in, OutputMapper *out)
+bool HTTPDAImpl::SendInput(iostream *Ios, Socket *s, long timeout, Context &context, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(HTTPDAImpl.SendInput);
 #ifdef DEBUG
@@ -293,7 +293,7 @@ bool HTTPDAImpl::SendInput(iostream *Ios, Socket *s, long timeout, Context &cont
 	return false;
 }
 
-bool HTTPDAImpl::DoSendInput(iostream *Ios, Socket *s, long timeout, Context &context, InputMapper *in, OutputMapper *out)
+bool HTTPDAImpl::DoSendInput(iostream *Ios, Socket *s, long timeout, Context &context, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(HTTPDAImpl.DoSendInput);
 

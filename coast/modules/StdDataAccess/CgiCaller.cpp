@@ -34,7 +34,7 @@ IFAObject *CgiCaller::Clone() const
 	return new CgiCaller(fName);
 }
 
-bool CgiCaller::GenReplyHeader(Context &context, InputMapper *in, OutputMapper *out)
+bool CgiCaller::GenReplyHeader(Context &context, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(HTTPFileLoader.GenReplyHeader);
 
@@ -74,7 +74,7 @@ String CgiCaller::GetFileExtension(const String &file)
 	return ext;
 }
 
-bool CgiCaller::ProcessFile(const String &filename, Context &context, InputMapper *in, OutputMapper *out)
+bool CgiCaller::ProcessFile(const String &filename, Context &context, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace1(CgiCaller.ProcessFile, "Filename: >" << filename << "<");
 

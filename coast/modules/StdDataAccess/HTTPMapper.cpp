@@ -34,8 +34,8 @@ static void SuppressListToLower(ROAnything suppressList, Anything &suppressListT
 /* ************************* Removed to prove obsoleteness, 16.1.2004, kvg
 
 //--- HTTPHeaderMapper ---------------------------
-RegisterOutputMapper(HTTPHeaderResultMapper);
-RegisterOutputMapperAlias(HTTPHeaderMapper,HTTPHeaderResultMapper);
+RegisterResultMapper(HTTPHeaderResultMapper);
+RegisterResultMapperAlias(HTTPHeaderMapper,HTTPHeaderResultMapper);
 
 bool HTTPHeaderResultMapper::DoPutStream(const char *, istream &is, Context &ctx,  ROAnything config)
 {
@@ -120,7 +120,7 @@ bool HTTPHeaderResultMapper::DoPutStream(const char *, istream &is, Context &ctx
 }
 */
 
-RegisterInputMapper(HTTPHeaderParameterMapper);
+RegisterParameterMapper(HTTPHeaderParameterMapper);
 
 bool HTTPHeaderParameterMapper::DoGetStream(const char *key, ostream &os, Context &ctx,  ROAnything info)
 {
@@ -178,8 +178,8 @@ bool HTTPHeaderParameterMapper::DoGetStream(const char *key, ostream &os, Contex
 }
 
 //--- HTTPBodyResultMapper ---------------------------
-RegisterOutputMapper(HTTPBodyResultMapper);
-RegisterOutputMapperAlias(HTTPBodyMapper, HTTPBodyResultMapper);
+RegisterResultMapper(HTTPBodyResultMapper);
+RegisterResultMapperAlias(HTTPBodyMapper, HTTPBodyResultMapper);
 
 bool HTTPBodyResultMapper::DoFinalPutStream(const char *key, istream &is, Context &ctx)
 {
@@ -210,8 +210,8 @@ void HTTPBodyResultMapper::ReadBody(String &body, istream &is, Context &ctx)
 	Trace("<" << body << ">");
 }
 
-RegisterInputMapper(HTTPBodyParameterMapper);
-RegisterInputMapperAlias(HTTPBodyMapper, HTTPBodyParameterMapper);
+RegisterParameterMapper(HTTPBodyParameterMapper);
+RegisterParameterMapperAlias(HTTPBodyMapper, HTTPBodyParameterMapper);
 bool HTTPBodyParameterMapper::DoFinalGetStream(const char *key, ostream &os, Context &ctx)
 {
 	StartTrace1(HTTPBodyParameterMapper.DoFinalGetStream, NotNull(key));

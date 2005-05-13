@@ -25,7 +25,7 @@ public:
 
 	//! executes the transaction
 	//! \param c The context of the transaction
-	virtual bool Exec(Context &c, InputMapper *, OutputMapper *);
+	virtual bool Exec(Context &c, ParameterMapper *, ResultMapper *);
 
 protected:
 	//! loads the file
@@ -33,13 +33,13 @@ protected:
 	//! \param c The context of the transaction
 	//! \param input the input mapper, assumes functionality of CgiParams
 	//! \param output the output mapper, assumes functionality of StreamTransferMapper
-	virtual bool ProcessFile(const String &filename, Context &context, InputMapper *in, OutputMapper *out);
+	virtual bool ProcessFile(const String &filename, Context &context, ParameterMapper *in, ResultMapper *out);
 
 	//! produces an error reply according to HTTPError in context
 	//! \param filename full pathname of the file
-	virtual void ProduceErrorReply(const String &filename, Context &context, InputMapper *in, OutputMapper *out);
-	virtual bool GenReplyStatus(Context &context, InputMapper *in, OutputMapper *out);
-	virtual bool GenReplyHeader(Context &context, InputMapper *in, OutputMapper *out);
+	virtual void ProduceErrorReply(const String &filename, Context &context, ParameterMapper *in, ResultMapper *out);
+	virtual bool GenReplyStatus(Context &context, ParameterMapper *in, ResultMapper *out);
+	virtual bool GenReplyHeader(Context &context, ParameterMapper *in, ResultMapper *out);
 
 private:
 	//constructor

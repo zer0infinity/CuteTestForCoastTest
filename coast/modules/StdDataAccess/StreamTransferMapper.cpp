@@ -17,7 +17,7 @@
 //--- c-library modules used ---------------------------------------------------
 
 //---- StreamTransferMapper ------------------------------------------------------------------
-RegisterOutputMapper(StreamTransferMapper);
+RegisterResultMapper(StreamTransferMapper);
 
 bool StreamTransferMapper::DoPutStream(const char *key, istream &is, Context &ctx, ROAnything config)
 {

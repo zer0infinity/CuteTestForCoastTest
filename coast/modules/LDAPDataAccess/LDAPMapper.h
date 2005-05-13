@@ -71,7 +71,7 @@ protected:
 	//! \return returns true if the mapping was successful otherwise false
 	bool DoGet(ostream &os, Context &ctx,  ROAnything config,  ROAnything query);
 	// always use full config:
-	virtual ROAnything DoSelectScript(const char *key, ROAnything script) {
+	virtual ROAnything DoSelectScript(const char *key, ROAnything script, Context &ctx) {
 		return script;
 	}
 
@@ -104,7 +104,7 @@ public:
 protected:
 	bool DoGet(ostream &os, Context &ctx,  ROAnything config,  ROAnything query);
 	// always use full config:
-	virtual ROAnything DoSelectScript(const char *key, ROAnything script) {
+	virtual ROAnything DoSelectScript(const char *key, ROAnything script, Context &ctx) {
 		return script;
 	}
 
@@ -244,7 +244,7 @@ protected:
 	//! \param value the value to be mapped and put to context
 	//! \param ctx the thread context of the invocation
 	//! \return returns true if the mapping was successful otherwise false
-	virtual ROAnything DoSelectScript(const char *key, ROAnything script) {
+	virtual ROAnything DoSelectScript(const char *key, ROAnything script, Context &ctx) {
 		return script;
 	}
 

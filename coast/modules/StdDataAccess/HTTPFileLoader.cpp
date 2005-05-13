@@ -32,7 +32,7 @@ IFAObject *HTTPFileLoader::Clone() const
 	return new HTTPFileLoader(fName);
 }
 
-bool HTTPFileLoader::GenReplyStatus(Context &context, InputMapper *in, OutputMapper *out)
+bool HTTPFileLoader::GenReplyStatus(Context &context, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(HTTPFileLoader.GenReplyHeader);
 
@@ -53,7 +53,7 @@ bool HTTPFileLoader::GenReplyStatus(Context &context, InputMapper *in, OutputMap
 	return out->Put("HTTPStatus", statusSpec, context);
 }
 
-bool HTTPFileLoader::GenReplyHeader(Context &context, InputMapper *in, OutputMapper *out)
+bool HTTPFileLoader::GenReplyHeader(Context &context, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(HTTPFileLoader.GenReplyHeader);
 
@@ -79,7 +79,7 @@ bool HTTPFileLoader::GenReplyHeader(Context &context, InputMapper *in, OutputMap
 	return out->Put("HTTPHeader", headerSpec, context);
 }
 
-bool HTTPFileLoader::Exec( Context &context, InputMapper *in, OutputMapper *out)
+bool HTTPFileLoader::Exec( Context &context, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(HTTPFileLoader.Exec);
 	bool retVal = true;
@@ -104,7 +104,7 @@ bool HTTPFileLoader::Exec( Context &context, InputMapper *in, OutputMapper *out)
 	return retVal;
 }
 
-void HTTPFileLoader::ProduceErrorReply(const String &filename, Context &context, InputMapper *in, OutputMapper *out)
+void HTTPFileLoader::ProduceErrorReply(const String &filename, Context &context, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace1(HTTPFileLoader.ProduceErrorReply, "Filename: >" << filename << "<");
 
@@ -137,7 +137,7 @@ void HTTPFileLoader::ProduceErrorReply(const String &filename, Context &context,
 	TraceAny(context.GetTmpStore()["Mapper"], "Error handling");
 }
 
-bool HTTPFileLoader::ProcessFile(const String &filename, Context &context, InputMapper *in, OutputMapper *out)
+bool HTTPFileLoader::ProcessFile(const String &filename, Context &context, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace1(HTTPFileLoader.ProcessFile, "Filename: >" << filename << "<");
 

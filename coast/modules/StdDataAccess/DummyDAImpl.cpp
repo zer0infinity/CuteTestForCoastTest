@@ -43,13 +43,13 @@ bool DummyDAImpl::HandleError(const char *msg, Context &context)
 	return false;
 }
 
-bool DummyDAImpl::Exec( Context &context, InputMapper *in, OutputMapper *out)
+bool DummyDAImpl::Exec( Context &context, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(DummyDAImpl.Exec);
 	return DoExec(context, in, out);
 }
 
-bool DummyDAImpl::RenderReply( String &theReply, Context &context, OutputMapper *out  )
+bool DummyDAImpl::RenderReply( String &theReply, Context &context, ResultMapper *out  )
 {
 	IStringStream is(&theReply);
 
@@ -61,7 +61,7 @@ bool DummyDAImpl::RenderReply( String &theReply, Context &context, OutputMapper 
 	return true;
 }
 
-bool DummyDAImpl::BuildRequest( String &request, Context &context, InputMapper *in )
+bool DummyDAImpl::BuildRequest( String &request, Context &context, ParameterMapper *in )
 {
 	Anything tmpStore(context.GetTmpStore());
 
@@ -74,7 +74,7 @@ bool DummyDAImpl::BuildRequest( String &request, Context &context, InputMapper *
 	}
 
 #ifdef DEBUG
-	tmpStore["InputMapper"]["RequestMade"] = request;
+	tmpStore["ParameterMapper"]["RequestMade"] = request;
 #endif
 
 	return true; // request built successfully
@@ -117,7 +117,7 @@ String DummyDAImpl::GetReplyMatchingRequest( Anything &recording, Context &conte
 	}
 }
 
-bool DummyDAImpl::DoExec( Context &context, InputMapper *in, OutputMapper *out)
+bool DummyDAImpl::DoExec( Context &context, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(DummyDAImpl.DoExecRecordOrTest);
 	DAAccessTimer("DummyDAImpl.Exec", "DummyDAImpl.Exec writing", context);

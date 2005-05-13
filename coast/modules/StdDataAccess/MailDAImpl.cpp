@@ -25,7 +25,7 @@ class EXPORTDECL_STDDATAACCESS SMTPState: public NotCloned
 public:
 
 	// apply the smtp protocol
-	static bool SendMail(iostream &Ios, Context &ctx, InputMapper *in, OutputMapper *out);
+	static bool SendMail(iostream &Ios, Context &ctx, ParameterMapper *in, ResultMapper *out);
 
 	// register a mail protocol state (state pattern)
 	static void Register(const char *name, SMTPState *r);
@@ -231,7 +231,7 @@ RegisterSMTPState(MailENDState);
 
 const String SMTPState::CRLF("\x0D\x0A");
 
-bool SMTPState::SendMail(iostream &Ios, Context &ctx, InputMapper *in, OutputMapper *out)
+bool SMTPState::SendMail(iostream &Ios, Context &ctx, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(MailDAImpl.SendMail);
 	SMTPState *st = SMTPState::FindSMTPState("MailSTARTState");
@@ -573,7 +573,7 @@ IFAObject *MailDAImpl::Clone() const
 	return new MailDAImpl(fName);
 }
 
-bool MailDAImpl::Exec( Context &ctx, InputMapper *in, OutputMapper *out)
+bool MailDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(MailDAImpl.Exec);
 

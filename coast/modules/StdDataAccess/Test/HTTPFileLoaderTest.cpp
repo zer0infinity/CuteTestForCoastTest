@@ -50,8 +50,8 @@ void HTTPFileLoaderTest::ReplyHeaderTest()
 {
 	StartTrace(HTTPFileLoaderTest.ReplyHeaderTest);
 	HTTPFileLoader hfl("test");
-	InputMapper mpi("test");
-	OutputMapper mpo("test");
+	ParameterMapper mpi("test");
+	ResultMapper mpo("test");
 
 	Context ctx;
 	String filename("defaultFileName");
@@ -112,8 +112,8 @@ void HTTPFileLoaderTest::ExecTest()
 {
 	HTTPFileLoader hfl("test");
 	URI2FileNameMapper mapin("test");
-	OutputMapper mout("ExecTestOut");
-	mout.CheckConfig("OutputMapper");
+	ResultMapper mout("ExecTestOut");
+	mout.CheckConfig("ResultMapper");
 
 	Context ctx;
 	Anything tmpStore(ctx.GetTmpStore());

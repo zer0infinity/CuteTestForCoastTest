@@ -18,7 +18,7 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- URI2FileNameMapper ------------------------------------------------------------------
-RegisterInputMapper(URI2FileNameMapper);
+RegisterParameterMapper(URI2FileNameMapper);
 
 bool URI2FileNameMapper::DoFinalGetAny(const char *key, Anything &val, Context &ctx)
 {
@@ -112,7 +112,7 @@ bool URI2FileNameMapper::DoFinalGetAny(const char *key, Anything &val, Context &
 		}
 	} else {
 		Trace( "Key[" << key << "]<" << val.AsCharPtr() << ">" );
-		return InputMapper::DoFinalGetAny(strKey, val, ctx);
+		return ParameterMapper::DoFinalGetAny(strKey, val, ctx);
 	}
 	Trace("resolved name is: [" << val.AsCharPtr() << "]");
 	return true;

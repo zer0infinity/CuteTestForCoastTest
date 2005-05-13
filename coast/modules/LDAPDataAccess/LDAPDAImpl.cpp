@@ -30,7 +30,7 @@ IFAObject *LDAPDAImpl::Clone() const
 	return new LDAPDAImpl(fName);
 }
 
-bool LDAPDAImpl::Exec(Context &ctx, InputMapper *in, OutputMapper *out)
+bool LDAPDAImpl::Exec(Context &ctx, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(LDAPDAImpl.DoExec);
 #ifndef NO_LDAP
@@ -79,7 +79,7 @@ bool LDAPDAImpl::Exec(Context &ctx, InputMapper *in, OutputMapper *out)
 #endif
 }
 
-void LDAPDAImpl::HandleError(LDAP *ldapHdl, Context &ctx, OutputMapper *out, const String &msg)
+void LDAPDAImpl::HandleError(LDAP *ldapHdl, Context &ctx, ResultMapper *out, const String &msg)
 {
 	StartTrace(LDAPDAImpl.HandleError);
 	long errCode = 0;
@@ -102,7 +102,7 @@ void LDAPDAImpl::HandleError(LDAP *ldapHdl, Context &ctx, OutputMapper *out, con
 	SysLog::Error(msg);
 }
 
-LDAP *LDAPDAImpl::Connect(Context &ctx, InputMapper *in, OutputMapper *out)
+LDAP *LDAPDAImpl::Connect(Context &ctx, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(LDAPDAImpl.Connect);
 #ifndef NO_LDAP
@@ -189,7 +189,7 @@ LDAP *LDAPDAImpl::Connect(Context &ctx, InputMapper *in, OutputMapper *out)
 
 int LDAPDAImpl::WaitForResult( LDAPMessage **result, LDAP *ldapHdl, String messageIn,
 							   timeval *timeLimitIn, int msgId, int all,
-							   Context &c, InputMapper *in, OutputMapper *out)
+							   Context &c, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(LDAPDAImpl.WaitForResult);
 #if !defined(NO_LDAP)
@@ -222,7 +222,7 @@ int LDAPDAImpl::WaitForResult( LDAPMessage **result, LDAP *ldapHdl, String messa
 
 bool LDAPDAImpl::DoAddModifyDel(LDAP *ldapHdl, String messageIn,
 								int msgId, int all,
-								Context &c, InputMapper *in, OutputMapper *out)
+								Context &c, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(LDAPAddDAImpl.DoAddModifyDel);
 	Trace( "=========================== MessageIn = [" << messageIn << "]" );
@@ -253,7 +253,7 @@ bool LDAPDAImpl::DoAddModifyDel(LDAP *ldapHdl, String messageIn,
 
 bool LDAPDAImpl::DoSearch(LDAP *ldapHdl, String messageIn,
 						  int msgId, int all,
-						  Context &c, InputMapper *in, OutputMapper *out)
+						  Context &c, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(LDAPDAImpl.DoSearch);
 	DAAccessTimer(LDAPDAImpl.DoSearch, "", c);
@@ -285,7 +285,7 @@ bool LDAPDAImpl::DoSearch(LDAP *ldapHdl, String messageIn,
 
 bool LDAPDAImpl::DoConnect(LDAP *ldapHdl, String messageIn,
 						   int msgId, int all,
-						   Context &c, InputMapper *in, OutputMapper *out)
+						   Context &c, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(LDAPAddDAImpl.DoConnect);
 #ifndef NO_LDAP
@@ -319,7 +319,7 @@ bool LDAPDAImpl::DoConnect(LDAP *ldapHdl, String messageIn,
 
 bool LDAPDAImpl::CheckConnectResult(int opRet, bool &outcome, LDAPMessage *result, LDAP *ldapHdl, String messageIn,
 									timeval *timeLimitIn, int msgId,
-									Context &c, InputMapper *in, OutputMapper *out)
+									Context &c, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(LDAPDAImpl.CheckConnectResult);
 #if !defined(NO_LDAP)
@@ -347,7 +347,7 @@ bool LDAPDAImpl::CheckConnectResult(int opRet, bool &outcome, LDAPMessage *resul
 }
 
 bool LDAPDAImpl::CheckSearchResult(int opRet, bool &outcome, LDAPMessage *result, LDAP *ldapHdl, String messageIn,
-								   timeval *timeLimitIn, int msgId,   Context &c, InputMapper *in, OutputMapper *out)
+								   timeval *timeLimitIn, int msgId,   Context &c, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(LDAPDAImpl.CheckSearchResult);
 #if !defined(NO_LDAP)
@@ -426,7 +426,7 @@ bool LDAPDAImpl::CheckSearchResult(int opRet, bool &outcome, LDAPMessage *result
 }
 
 bool LDAPDAImpl::CheckAddDelModifyResult(int opRet, bool &outcome, LDAPMessage *result, LDAP *ldapHdl, String messageIn,
-		timeval *timeLimitIn, int msgId,   Context &c, InputMapper *in, OutputMapper *out)
+		timeval *timeLimitIn, int msgId,   Context &c, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(LDAPModifyDaImpl.CheckResult);
 #if !defined(NO_LDAP)
@@ -503,7 +503,7 @@ bool LDAPDAImpl::GetDNComponents(const char *dn, Anything &dnParts)
 	return true;
 }
 
-void LDAPDAImpl::GetData( LDAPMessage * /* result */  e, LDAP *ldapHdl, Context &c, OutputMapper *out )
+void LDAPDAImpl::GetData( LDAPMessage * /* result */  e, LDAP *ldapHdl, Context &c, ResultMapper *out )
 {
 	StartTrace(LDAPDAImpl.GetData);
 #if !defined(NO_LDAP)
@@ -557,7 +557,7 @@ void LDAPDAImpl::GetData( LDAPMessage * /* result */  e, LDAP *ldapHdl, Context 
 }
 
 bool LDAPDAImpl::HandleTimeout(int opRet, bool &outcome, LDAPMessage *result, LDAP *ldapHdl, String messageIn,
-							   timeval *timeLimitIn, int msgId,   Context &c, InputMapper *in, OutputMapper *out)
+							   timeval *timeLimitIn, int msgId,   Context &c, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(LDAPDAImpl.HandleTimeout);
 #if !defined(NO_LDAP)
@@ -588,7 +588,7 @@ IFAObject *LDAPCompareDAImpl::Clone() const
 	return new LDAPCompareDAImpl(fName);
 }
 
-bool LDAPCompareDAImpl::Exec(Context &ctx, InputMapper *in, OutputMapper *out)
+bool LDAPCompareDAImpl::Exec(Context &ctx, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(LDAPCompareDAImpl.DoExec);
 #ifndef NO_LDAP
@@ -651,7 +651,7 @@ bool LDAPCompareDAImpl::Exec(Context &ctx, InputMapper *in, OutputMapper *out)
 }
 
 bool LDAPCompareDAImpl::CheckCompareResult(int opRet, bool &outcome, LDAPMessage *result, LDAP *ldapHdl, String messageIn,
-		timeval *timeLimitIn, int msgId,   Context &c, InputMapper *in, OutputMapper *out)
+		timeval *timeLimitIn, int msgId,   Context &c, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(LDAPCompareDAImpl.CheckCompareResult);
 #if !defined(NO_LDAP)
@@ -734,7 +734,7 @@ IFAObject *LDAPModifyDAImpl::Clone() const
 	return new LDAPModifyDAImpl(fName);
 }
 
-bool LDAPModifyDAImpl::Exec(Context &ctx, InputMapper *in, OutputMapper *out)
+bool LDAPModifyDAImpl::Exec(Context &ctx, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(LDAPModifyDAImpl.DoExec);
 #ifndef NO_LDAP
@@ -785,7 +785,7 @@ IFAObject *LDAPAddDAImpl::Clone() const
 	return new LDAPAddDAImpl(fName);
 }
 
-bool LDAPAddDAImpl::Exec(Context &ctx, InputMapper *in, OutputMapper *out)
+bool LDAPAddDAImpl::Exec(Context &ctx, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(LDAPAddDAImpl.DoExec);
 #ifndef NO_LDAP
@@ -843,7 +843,7 @@ IFAObject *LDAPDelDAImpl::Clone() const
 	return new LDAPDelDAImpl(fName);
 }
 
-bool LDAPDelDAImpl::Exec(Context &ctx, InputMapper *in, OutputMapper *out)
+bool LDAPDelDAImpl::Exec(Context &ctx, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(LDAPDelDAImpl.DoExec);
 #ifndef NO_LDAP

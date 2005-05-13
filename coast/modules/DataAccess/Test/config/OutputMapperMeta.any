@@ -144,6 +144,18 @@
 		}
 	}
 
+	/OutputMapperConfig {
+		/DestinationSlot	OutputMapperConfig
+	}
+	/OutputMapperConfigDerived {
+		/DestinationSlot	*
+		/Out	{
+			/Gugus {
+				/ResultMapper *
+			}
+		}
+	}
+
 	/DynamicStorer {
 		/DestinationSlot "Mapper.foo.bar"
 	}

@@ -110,7 +110,9 @@
 	/MyTestInputMapperConfig {
 		/In	InputMapperConfig
 	}
-
+	/MyTestInputMapperConfigDerived {
+		/In	InputMapperConfigDerived
+	}
 	/HardCodedMapper {
 		/Foo {
 			"foo"

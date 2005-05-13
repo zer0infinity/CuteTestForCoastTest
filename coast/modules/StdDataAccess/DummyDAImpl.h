@@ -30,7 +30,7 @@ public:
 	//! \param c The context of the transaction
 	//! \pre fData2Send contains the HTTP-Request
 	//! \post fData2Get contains either an slot /MsgReceived containing the HTTP Response or the slot /Error storing information about the error occured.
-	virtual bool Exec(Context &c, InputMapper *, OutputMapper *);
+	virtual bool Exec(Context &c, ParameterMapper *, ResultMapper *);
 
 protected:
 	virtual bool HandleError(const char *msg, Context &ctx);
@@ -43,13 +43,13 @@ protected:
 	//! the CompareRequest method here to supply your desired behaviour. Same is true for other methods, although they should need to be
 	//! overridden since they are config from Mappers anyway.
 	//! \param context the context for this call
-	//! \param in InputMapper
-	//! \param out OutputMapper
-	virtual bool DoExec( Context &context, InputMapper *in, OutputMapper *out);
+	//! \param in ParameterMapper
+	//! \param out ResultMapper
+	virtual bool DoExec( Context &context, ParameterMapper *in, ResultMapper *out);
 
-	virtual bool RenderReply( String &theReply, Context &context, OutputMapper *out  );
+	virtual bool RenderReply( String &theReply, Context &context, ResultMapper *out  );
 	virtual String GetReplyMatchingRequest( Anything &recording, Context &context, String &request );
-	virtual bool BuildRequest( String &request, Context &context, InputMapper *in );
+	virtual bool BuildRequest( String &request, Context &context, ParameterMapper *in );
 
 private:
 	//constructor

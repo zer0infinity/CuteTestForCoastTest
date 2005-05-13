@@ -30,7 +30,7 @@ IFAObject *MySQLDAImpl::Clone() const
 	return new MySQLDAImpl(fName);
 }
 
-bool MySQLDAImpl::Exec( Context &context, InputMapper *in, OutputMapper *out)
+bool MySQLDAImpl::Exec( Context &context, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(MySQLDAImpl.Exec);
 
@@ -118,7 +118,7 @@ bool MySQLDAImpl::Exec( Context &context, InputMapper *in, OutputMapper *out)
 	return result;
 }
 
-void MySQLDAImpl::SetErrorMsg(const char *msg, MYSQL *mysql, Context &context, OutputMapper *out )
+void MySQLDAImpl::SetErrorMsg(const char *msg, MYSQL *mysql, Context &context, ResultMapper *out )
 {
 	StartTrace(MySQLDAImpl.SetErrorMsg);
 

@@ -17,7 +17,7 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- HTTPResponseMapper ------------------------------------------------------------------
-RegisterOutputMapper(HTTPResponseMapper);
+RegisterResultMapper(HTTPResponseMapper);
 
 HTTPResponseMapper::HTTPResponseMapper(const char *name) : ResultMapper(name)
 {

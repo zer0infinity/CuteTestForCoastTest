@@ -26,10 +26,15 @@
 			NameUsingTestWithLocalConfig NameUsingTestWithEmptyLocalConfig NameUsingTestWithNullConfig
 		}
 		/MapperTestDAImpl {
-			MyTestInputMapperConfig
+			/MyTestInputMapperConfig {
+				MyTestInputMapperConfigDerived
+			}
 			MyTestHardCodedInputMapperConfig
 			MyTestDAImplMetaConfig
 			MyTestParamConfig
+			/OutputMapperConfig {
+				OutputMapperConfigDerived
+			}
 			MyTestTmpStoreConfig
 			MyTestGeneric
 			MyTestRendererDA
@@ -44,7 +49,6 @@
 			DATest_StdMappers_MoreComplexScript
 			DATest_NonexistingMapper
 			DATest_UseFallbackMapper
-			DATest_UseFallbackMapperFrontdoorStyle
 		}
 		/ReadFileDAImpl {
 			SimpleFileReadTest
@@ -67,11 +71,17 @@
 				HardCodedMapper
 			}
 			/Mapper {
-				MapperTestDAImpl daTest LoopBackDATest CallDAOkTest CallDANotOkTest
+				/MapperTestDAImpl {
+					OutputMapperConfig
+					OutputMapperConfigDerived
+				}
+				daTest LoopBackDATest CallDAOkTest CallDANotOkTest
 				NameUsingTestWithLocalConfig NameUsingTestWithEmptyLocalConfig NameUsingTestWithNullConfig
 				MyTestHardCodedInputMapperConfig
 				MyTestDAImplMetaConfig
-				MyTestInputMapperConfig
+				/MyTestInputMapperConfig {
+					MyTestInputMapperConfigDerived
+				}
 				MyTestParamConfig
 				MyTestTmpStoreConfig
 				MyTestGeneric
@@ -92,9 +102,14 @@
 			/Mapper {
 				MapperTestDAImpl daTest LoopBackDATest CallDAOkTest CallDANotOkTest
 				MyTestDAImplMetaConfig
-				MyTestInputMapperConfig
+				/MyTestInputMapperConfig {
+					MyTestInputMapperConfigDerived
+				}
 				MyTestHardCodedInputMapperConfig
 				MyTestParamConfig
+				/OutputMapperConfig {
+					OutputMapperConfigDerived
+				}
 				MyTestTmpStoreConfig
 				MyTestGeneric
 				MyTestRendererDA

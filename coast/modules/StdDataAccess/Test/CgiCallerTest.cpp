@@ -76,9 +76,9 @@ void CgiCallerTest::DoExecTest(Context &ctx)
 
 	CgiCaller cgi("testcgi");
 	CgiParams mapin("ExecTestIn");
-	mapin.CheckConfig("InputMapper");
-	OutputMapper mout("ExecTestOut");
-	mout.CheckConfig("OutputMapper");
+	mapin.CheckConfig("ParameterMapper");
+	ResultMapper mout("ExecTestOut");
+	mout.CheckConfig("ResultMapper");
 
 	t_assertm(cgi.Exec(ctx, &mapin, &mout), "expected success of cgi call");
 

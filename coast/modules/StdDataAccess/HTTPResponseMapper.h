@@ -9,7 +9,7 @@
 #ifndef _HTTPResponseMapper_H
 #define _HTTPResponseMapper_H
 
-//---- OutputMapper include -------------------------------------------------
+//---- Mapper include -------------------------------------------------
 #include "config_stddataaccess.h"
 #include "Mapper.h"
 

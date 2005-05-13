@@ -16,7 +16,7 @@
 #include "Dbg.h"
 
 //---- HTMLTreeMapper -----------------------------------------------------------
-RegisterOutputMapper(HTMLTreeMapper);
+RegisterResultMapper(HTMLTreeMapper);
 
 bool HTMLTreeMapper::DoPutStream(const char *, istream &is, Context &ctx, ROAnything)
 {
@@ -38,7 +38,7 @@ bool HTMLTreeMapper::DoPutStream(const char *, istream &is, Context &ctx, ROAnyt
 }
 
 //---- HTMLTreeAndSortedTagsMapper -----------------------------------------------------------
-RegisterOutputMapper(HTMLTreeAndSortedTagsMapper);
+RegisterResultMapper(HTMLTreeAndSortedTagsMapper);
 
 bool HTMLTreeAndSortedTagsMapper::DoPutStream(const char *, istream &is, Context &ctx, ROAnything)
 {

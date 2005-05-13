@@ -17,7 +17,7 @@
 #include "SortedTagsHTMLMapper.h"
 
 //---- SortedTagsHTMLMapper -----------------------------------------------------------
-RegisterOutputMapper(SortedTagsHTMLMapper);
+RegisterResultMapper(SortedTagsHTMLMapper);
 
 bool SortedTagsHTMLMapper::DoPutStream(const char *key, istream &is, Context &ctx, ROAnything)
 {

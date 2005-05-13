@@ -28,13 +28,13 @@ public:
 	IFAObject *Clone() const;
 
 protected:
-	virtual bool GenReplyHeader(Context &context, InputMapper *in, OutputMapper *out);
+	virtual bool GenReplyHeader(Context &context, ParameterMapper *in, ResultMapper *out);
 	//! executes the file
 	//! \param filename full pathname of the file to be executed
 	//! \param c The context of the transaction
 	//! \param input the input mapper, assumes functionality of CgiParams
 	//! \param output the output mapper, assumes functionality of StreamTransferMapper
-	virtual bool ProcessFile(const String &filename, Context &context, InputMapper *in, OutputMapper *out);
+	virtual bool ProcessFile(const String &filename, Context &context, ParameterMapper *in, ResultMapper *out);
 
 private:
 	//constructor

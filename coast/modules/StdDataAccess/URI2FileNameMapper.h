@@ -9,7 +9,7 @@
 #ifndef _URI2FileNameMapper_H
 #define _URI2FileNameMapper_H
 
-//---- InputMapper include -------------------------------------------------
+//---- Mapper include -------------------------------------------------
 #include "config_stddataaccess.h"
 #include "Mapper.h"
 
