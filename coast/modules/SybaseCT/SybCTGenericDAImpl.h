@@ -27,12 +27,12 @@ public:
 
 	//: executes the transaction
 	//!param: c - The context of the transaction
-	virtual bool Exec(Context &c, InputMapper *, OutputMapper *);
+	virtual bool Exec(Context &c, ParameterMapper *, ResultMapper *);
 
 protected:
-	void FillParameters(Context &context, InputMapper *in, OutputMapper *out, Anything &queryParams);
-	bool PutResults(Context &context, InputMapper *in, OutputMapper *out, Anything &queryParams, Anything &queryResults, Anything &queryTitles);
-	void PutMessages(Context &context, OutputMapper *out, Anything &aMsgAny);
+	void FillParameters(Context &context, ParameterMapper *in, ResultMapper *out, Anything &queryParams);
+	bool PutResults(Context &context, ParameterMapper *in, ResultMapper *out, Anything &queryParams, Anything &queryResults, Anything &queryTitles);
+	void PutMessages(Context &context, ResultMapper *out, Anything &aMsgAny);
 
 private:
 	//constructor

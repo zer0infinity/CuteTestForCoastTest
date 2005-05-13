@@ -116,7 +116,7 @@ IFAObject *SybCTDAImpl::Clone() const
 	return new SybCTDAImpl(fName);
 }
 
-bool SybCTDAImpl::Exec( Context &context, InputMapper *in, OutputMapper *out)
+bool SybCTDAImpl::Exec( Context &context, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(SybCTDAImpl.Exec);
 

@@ -37,7 +37,7 @@ IFAObject *SybCTPoolDAImpl::Clone() const
 	return new SybCTPoolDAImpl(fName);
 }
 
-bool SybCTPoolDAImpl::Exec( Context &context, InputMapper *in, OutputMapper *out)
+bool SybCTPoolDAImpl::Exec( Context &context, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(SybCTPoolDAImpl.Exec);
 
