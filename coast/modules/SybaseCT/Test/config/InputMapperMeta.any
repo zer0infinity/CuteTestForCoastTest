@@ -8,7 +8,31 @@
 
 {
 
-#-- User data  ----------------------
+	/SybLocalTest {
+		/SybDBUser	{
+			/RendererMapper {
+				/ContextLookupRenderer {
+					SybDBUser
+					{ /ContextLookupRenderer TheTestUser }
+				}
+			}
+		}
+		/SybDBPW {
+			/RendererMapper {
+				/ContextLookupRenderer {
+					SybDBPW
+					{ /ContextLookupRenderer TheTestUserPW }
+				}
+			}
+		}
+		/SybDBHost	HIKU_INT2
+	}
+	/SybLocalSa {
+		/SybDBUser  "wdtester"
+		/SybDBPW	"all2test"
+		/SybDBHost	HIKU_INT2
+	}
+
 	/SybSearchTest {
 		/SQL	{
 			/RendererMapper {
@@ -16,11 +40,6 @@
 			}
 		}
 	}
-	/SybPoolSearchTest	%SybSearchTest
-	/SybNewDASearchTest {
-		/SQL		%SybSearchTest.SQL
-	}
-
 	/SybLimitedSearchTest {
 		/SQL	{
 			"select * from authors"
@@ -32,7 +51,6 @@
 			"select * from authors"
 		}
 	}
-	/SybLimitedSearchByParamOverride %SybLimitedSearchByParam
 	/SybShowDatabases {
 		/SQL	{
 			/RendererMapper {
@@ -42,7 +60,6 @@
 			}
 		}
 	}
-	/SybPoolShowDatabases	%SybShowDatabases
 	/SybInsertDatabases {
 		/SQL	{
 			/RendererMapper {
@@ -50,7 +67,6 @@
 			}
 		}
 	}
-	/SybPoolInsertDatabases	%SybInsertDatabases
 	/SybDeleteFromDatabase {
 		/SQL	{
 			/RendererMapper {
@@ -58,13 +74,11 @@
 			}
 		}
 	}
-	/SybPoolDeleteFromDatabase	%SybDeleteFromDatabase
 	/SybTestTypeConversions {
 		/SQL	{
 			"set rowcount 1 SELECT * FROM pub2.guest.TestTypeTable"
 		}
 	}
-	/SybPoolTestTypeConversions	%SybTestTypeConversions
 	/SybErrorTest {
 		/SQL	{
 			/RendererMapper {
@@ -73,7 +87,6 @@
 			}
 		}
 	}
-	/SybPoolErrorTest	%SybErrorTest
 	/SybDeleteStoredProcedureTest {
 		/SQL {
 			/RendererMapper {
@@ -85,7 +98,6 @@
 			}
 		}
 	}
-	/SybPoolDeleteStoredProcedureTest	%SybDeleteStoredProcedureTest
 	/SybCreateStoredProcedureTest {
 		/SQL {
 			/RendererMapper {
@@ -110,7 +122,6 @@
 			}
 		}
 	}
-	/SybPoolCreateStoredProcedureTest	%SybCreateStoredProcedureTest
 	/SybExecuteStoredProcedureTest {
 		/SQL {
 			/RendererMapper {
@@ -138,7 +149,6 @@
 			}
 		}
 	}
-	/SybPoolExecuteStoredProcedureTest	%SybExecuteStoredProcedureTest
 	/SybSingleRowForSingleSelects {
 		/SQL {
 			/RendererMapper {
@@ -146,7 +156,6 @@
 			}
 		}
 	}
-	/SybPoolSingleRowForSingleSelects	%SybSingleRowForSingleSelects
 	/SybMultipleRowsForMultipleSelects {
 		/SQL {
 			/RendererMapper {
@@ -154,15 +163,16 @@
 			}
 		}
 	}
-	/SybPoolMultipleRowsForMultipleSelects	%SybMultipleRowsForMultipleSelects
 	/SybPoolSeparatedTitlesFromRows {
 		/SQL {
 			"select min(au_id) Rmin from authors select count(*) Rcount from authors select max(au_id) Rmax from authors"
 		}
 		/SybDBResultFormat	TitlesOnce
 	}
-	/SybTestThreadDA
-	{
+	/SybTestThreadDA {
+		/SybDBUser  webgui
+		/SybDBPW	webgui
+		/SybDBHost	SYB_FKISQA
 		/SQL
 		{
 			/RendererMapper
@@ -188,8 +198,6 @@
 			}
 		}
 	}
-	/SybTestThreadPoolDA	%SybTestThreadDA
-	/SybTestThreadnewDA		%SybTestThreadDA
 
 	/SybTestThreadDAWithError
 	{
@@ -218,8 +226,6 @@
 			}
 		}
 	}
-	/SybTestThreadPoolDAWithError	%SybTestThreadDAWithError
-	/SybTestThreadnewDAWithError	%SybTestThreadDAWithError
 
 	/NewDAInpuMapper {
 #		/ShowQueryCount	0

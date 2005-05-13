@@ -128,6 +128,8 @@ function prepareTest
 			doTestRemote
 		fi
 		return 0;
+	else
+		return 1;
 	fi
 }
 
@@ -145,7 +147,8 @@ function callTest
 		fi;
 	else
 		echo 'No Test on this platform and host';
-		return 0;
+		${TEST_EXE} $cfg_testparams
+		return $?;
 	fi
 }
 

@@ -8,7 +8,7 @@
 
 {
 
-	/ListResultMapper {
+	/SybCTnewDAImpl {
 		/DestinationSlot	TestOutput
 		/AppendAnyAlways	1
 		/QueryCount			{ /ResultMapper * }
@@ -17,23 +17,10 @@
 		/MainMsgErrNumber	{ /ResultMapper * }
 		/MainMsgErr			{ /ResultMapper * }
 	}
-	/SybNewDASearchTest	%ListResultMapper
 	/SybTestThreadnewDA {
 		/DestinationSlot	SybTestThreadnewDA
-		/AppendAnyAlways	1
-		/QueryCount			{ /ResultMapper * }
-		/QuerySource		{ /ResultMapper * }
-		/QueryTitles		{ /ResultMapper * }
-		/MainMsgErrNumber	{ /ResultMapper * }
-		/MainMsgErr			{ /ResultMapper * }
 	}
 	/SybTestThreadnewDAWithError {
 		/DestinationSlot	SybTestThreadnewDAWithError
-		/AppendAnyAlways	1
-		/QueryCount			{ /ResultMapper * }
-		/QuerySource		{ /ResultMapper * }
-		/QueryTitles		{ /ResultMapper * }
-		/MainMsgErrNumber	{ /ResultMapper * }
-		/MainMsgErr			{ /ResultMapper * }
 	}
 }

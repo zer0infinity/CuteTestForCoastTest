@@ -67,10 +67,10 @@ void SybCTDAImplTest::testCase()
 	// force load of configuration
 	SybCTDAImpl da("SybSearchTestCoded");
 	da.CheckConfig("SybCTDAImpl");
-	InputMapper	inpMapper("SybSearchTestCoded");
-	inpMapper.CheckConfig("InputMapper");
-	OutputMapper	outMapper("SybSearchTestCoded");
-	outMapper.CheckConfig("OutputMapper");
+	ParameterMapper	inpMapper("SybSearchTestCoded");
+	inpMapper.CheckConfig("ParameterMapper");
+	ResultMapper	outMapper("SybSearchTestCoded");
+	outMapper.CheckConfig("ResultMapper");
 
 	ctx.Push("DataAccess", &da);
 	t_assert(da.Exec(ctx, &inpMapper, &outMapper));

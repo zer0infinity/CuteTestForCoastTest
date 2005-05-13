@@ -8,32 +8,27 @@
 
 {
 
-	/TheTestUser	wdtester
-	/TheTestUserPW	all2test
-
 	/SybLocalTest {
-#		/SybDBUser  test
-		/SybDBUser	{
-			/RendererMapper {
-				/ContextLookupRenderer TheTestUser
-			}
-		}
-		/SybDBPW {
-			/RendererMapper {
-				/ContextLookupRenderer TheTestUserPW
-			}
-		}
-		/SybDBHost	HIKU_INT2
+		/TheTestUser	wdtester
+		/TheTestUserPW	all2test
 		/SybDBApp	SybCTDAImplTest
 	}
 	/SybLocalSa {
-		/SybDBUser  "wdtester"
-		/SybDBPW	"all2test"
-		/SybDBHost	HIKU_INT2
 		/SybDBApp	SybShowDatabases
 	}
-	/SybPoolLocalTest	%SybLocalTest
-	/SybPoolLocalSa		%SybLocalSa
+	/SybPoolLocalTest {
+		/TheTestUser	wdtester
+		/TheTestUserPW	all2test
+		/SybDBApp	SybCTPoolDAImplTest
+	}
+	/SybPoolLocalSa {
+		/SybDBApp	SybCTPoolDAImplSaTest
+	}
+	/SybNewLocal {
+		/TheTestUser	wdtester
+		/TheTestUserPW	all2test
+		/SybDBApp		SybCTnewDAImplTest
+	}
 
 	/SelectTestWithoutQueryCount {
 		/NoQueryCount   1
@@ -41,20 +36,7 @@
 	/SybLimitedSearchByParamOverride {
 		/SybDBMaxResultSize	4
 	}
-	/SybTestThreadDA
-	{
-		/SybDBUser  webgui
-		/SybDBPW	webgui
-		/SybDBHost	SYB_FKISQA
+	/SybTestThreadDA {
 		/SybDBApp	ThreadTests
-	}
-	/SybTestThreadPoolDA	%SybTestThreadDA
-	/SybTestThreadnewDA		%SybTestThreadDA
-
-	/SybNewLocal {
-		/SybDBUser  "wdtester"
-		/SybDBPW	"all2test"
-		/SybDBHost	HIKU_INT2
-		/SybDBApp	SybCTnewDAImplTest
 	}
 }

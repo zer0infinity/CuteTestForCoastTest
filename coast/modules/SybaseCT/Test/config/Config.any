@@ -97,9 +97,10 @@
 				SybPoolSingleRowForSingleSelects
 				SybPoolMultipleRowsForMultipleSelects
 				SybPoolSeparatedTitlesFromRows
-			}
-			/SybTestThreadPoolDA {
-				SybTestThreadPoolDAWithError
+
+				/SybTestThreadPoolDA {
+					SybTestThreadPoolDAWithError
+				}
 			}
 		}
 		/SybCTnewDAImpl {
@@ -115,50 +116,65 @@
 	/Mappers {
 		/Input {
 			/ParameterMapper {
-				SybNewDASearchTest
-				SybTestThreadnewDA
-				SybTestThreadnewDAWithError
-			}
-			/SybCTParamMapper {
-				SybSearchTest
-				SybLimitedSearchTest
-				SybLimitedSearchByParam
-				SybLimitedSearchByParamOverride
-				SybShowDatabases
-				SybInsertDatabases
-				SybDeleteFromDatabase
-#				SybTestTypeConversions
-				SybErrorTest
-				SybDeleteStoredProcedureTest
-				SybCreateStoredProcedureTest
-				SybExecuteStoredProcedureTest
-				SybSingleRowForSingleSelects
-				SybMultipleRowsForMultipleSelects
-				SybTestThreadDA
-				SybTestThreadDAWithError
-
-				SybPoolSearchTest
-				SybPoolShowDatabases
-				SybPoolInsertDatabases
-				SybPoolDeleteFromDatabase
-#				SybPoolTestTypeConversions
-				SybPoolErrorTest
-				SybPoolDeleteStoredProcedureTest
-				SybPoolCreateStoredProcedureTest
-				SybPoolExecuteStoredProcedureTest
-				SybPoolSingleRowForSingleSelects
-				SybPoolMultipleRowsForMultipleSelects
-				SybPoolSeparatedTitlesFromRows
-				SybTestThreadPoolDA
-				SybTestThreadPoolDAWithError
+				/SybLocalSa {
+					/SybShowDatabases {
+						SybPoolShowDatabases
+					}
+					/SybDeleteFromDatabase {
+						SybPoolDeleteFromDatabase
+					}
+				}
+				/SybLocalTest {
+					/SybSearchTest {
+						SybPoolSearchTest
+						SybNewDASearchTest
+					}
+					SybLimitedSearchTest
+					/SybLimitedSearchByParam {
+						SybLimitedSearchByParamOverride
+					}
+					/SybInsertDatabases {
+						SybPoolInsertDatabases
+					}
+#					SybTestTypeConversions
+#					SybPoolTestTypeConversions
+					/SybErrorTest {
+						SybPoolErrorTest
+					}
+					/SybDeleteStoredProcedureTest {
+						SybPoolDeleteStoredProcedureTest
+					}
+					/SybCreateStoredProcedureTest {
+						SybPoolCreateStoredProcedureTest
+					}
+					/SybExecuteStoredProcedureTest {
+						SybPoolExecuteStoredProcedureTest
+					}
+					/SybSingleRowForSingleSelects {
+						SybPoolSingleRowForSingleSelects
+					}
+					/SybMultipleRowsForMultipleSelects {
+						SybPoolMultipleRowsForMultipleSelects
+					}
+					SybPoolSeparatedTitlesFromRows
+				}
+				/SybTestThreadDA {
+					SybTestThreadPoolDA
+					SybTestThreadnewDA
+					/SybTestThreadDAWithError {
+						SybTestThreadPoolDAWithError
+						SybTestThreadnewDAWithError
+					}
+				}
 			}
 		}
 		/Output {
 			/ResultMapper {
-				ListResultMapper
-				SybNewDASearchTest
-				SybTestThreadnewDA
-				SybTestThreadnewDAWithError
+				/SybCTnewDAImpl {
+					SybNewDASearchTest
+					SybTestThreadnewDA
+					SybTestThreadnewDAWithError
+				}
 			}
 			/NameUsingOutputMapper {
 				SybSearchTest

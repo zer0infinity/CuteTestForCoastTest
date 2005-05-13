@@ -73,9 +73,9 @@ void SybCTnewDAImplTest::UninitializedExecTest()
 	SybCTnewDAImpl da("SybSearchTestCoded");
 	da.CheckConfig("SybCTnewDAImpl");
 	ParameterMapper	inpMapper("SybSearchTestCoded");
-	inpMapper.CheckConfig("InputMapper");
+	inpMapper.CheckConfig("ParameterMapper");
 	ResultMapper outMapper("SybSearchTestCoded");
-	outMapper.CheckConfig("OutputMapper");
+	outMapper.CheckConfig("ResultMapper");
 
 	ctx.Push("DataAccess", &da);
 	t_assertm( da.Exec(ctx, &inpMapper, &outMapper) == false, "DataAccess should have failed due to uninitialized SybCTnewDAImpl!");
@@ -216,10 +216,10 @@ void SybCTnewDAImplTest::testCase()
 	// force load of configuration
 	SybCTnewDAImpl da("SybSearchTestCoded");
 	da.CheckConfig("SybCTnewDAImpl");
-	InputMapper	inpMapper("SybSearchTestCoded");
-	inpMapper.CheckConfig("InputMapper");
-	OutputMapper	outMapper("SybSearchTestCoded");
-	outMapper.CheckConfig("OutputMapper");
+	ParameterMapper	inpMapper("SybSearchTestCoded");
+	inpMapper.CheckConfig("ParameterMapper");
+	ResultMapper	outMapper("SybSearchTestCoded");
+	outMapper.CheckConfig("ResultMapper");
 
 	ctx.Push("DataAccess", &da);
 	t_assert(da.Exec(ctx, &inpMapper, &outMapper));

@@ -109,9 +109,9 @@ void SybCTnewDATest::SimpleQueryTest()
 		// create context
 		Context ctx;
 		ParameterMapper aParamMapper("NewDAInpuMapper");
-		aParamMapper.CheckConfig("InputMapper");
-		ResultMapper aResultMapper("ListResultMapper");
-		aResultMapper.CheckConfig("OutputMapper");
+		aParamMapper.CheckConfig("ParameterMapper");
+		ResultMapper aResultMapper("SybCTnewDAImpl");
+		aResultMapper.CheckConfig("ResultMapper");
 		String strDAName(name());
 		// create context
 		if (t_assertm(SybCTnewDA::Init(&context, &anyCtxMessages, strInterfacesFileName, 5) == CS_SUCCEED, "Context should have been created")) {
@@ -155,9 +155,9 @@ void SybCTnewDATest::LimitedMemoryTest()
 		// create context
 		Context ctx;
 		ParameterMapper aParamMapper("NewDAInpuMapper");
-		aParamMapper.CheckConfig("InputMapper");
-		ResultMapper aResultMapper("ListResultMapper");
-		aResultMapper.CheckConfig("OutputMapper");
+		aParamMapper.CheckConfig("ParameterMapper");
+		ResultMapper aResultMapper("SybCTnewDAImpl");
+		aResultMapper.CheckConfig("ResultMapper");
 		String strDAName(name());
 		// create context
 		if (t_assertm(SybCTnewDA::Init(&context, &anyCtxMessages, strInterfacesFileName, 5) == CS_SUCCEED, "Context should have been created")) {
