@@ -9,7 +9,7 @@
 {
 
 	/LowerBound		0		# debugging on or off
-	/UpperBound		11		# override switch: turns everything on
+	/UpperBound		10		# override switch: turns everything on
 	/DumpAnythings  1		# print full Anythings
 
 	/SybCT {
@@ -56,8 +56,8 @@
 		/EnableAll						10
 	}
 	/SybCTnewDAImpl {
-		/MainSwitch						0
-		/EnableAll						10
+		/MainSwitch						11
+		/EnableAll						11
 		/DoPrepareSQL					-10
 	}
 	/SybCTnewDAImplTest {
@@ -115,7 +115,15 @@
 		/MainSwitch						0
 		/EnableAll						10
 	}
-	/SybCTParamMapper {
+	/LookupRenderer {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/ContextLookupRenderer {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/RendererMapper {
 		/MainSwitch						0
 		/EnableAll						10
 	}
@@ -154,7 +162,8 @@
 	}
 	/ConfiguredActionTest {
 		/MainSwitch						0
-		/EnableAll						10
+		/EnableAll						0
+		/DoTestWithContext				10
 	}
 	/Semaphore {
 		/MainSwitch						0
