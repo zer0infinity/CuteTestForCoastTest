@@ -9,13 +9,13 @@
 #ifndef _XMLMapper_H
 #define _XMLMapper_H
 
-//---- OutputMapper include -------------------------------------------------
+//---- Mapper include -------------------------------------------------
 #include "Mapper.h"
 
 //---- XMLMapper ----------------------------------------------------------
 //! <B>Mapper to use with ReadXMLFileDAImpl</B>
 /*!
-<B>OutputMapper-Configuration:</B><PRE>
+<B>XMLMapper-Configuration:</B><PRE>
 {
 	/Delim				Mapperspec		optional, default is "."  This delim is used to compose the lookup-path
 	/IndexDelim			Mapperspec		optional, default is ":". This delim is used to compose the lookup-path

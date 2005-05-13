@@ -43,7 +43,7 @@ void RendererMapperTest::StdGetTest()
 
 	// fConfig does not appear to be set properly
 	RendererMapper mapper("renderertestmapper");
-	mapper.CheckConfig("InputMapper");
+	mapper.CheckConfig("ParameterMapper");
 
 	// test the overloaded get api
 	String iString("<");
@@ -62,7 +62,7 @@ void RendererMapperTest::GetOnAnyTest()
 
 	// fConfig does not appear to be set properly
 	RendererMapper mapper("renderertestmapper");
-	mapper.CheckConfig("InputMapper");
+	mapper.CheckConfig("ParameterMapper");
 
 	// test the overloaded get api
 	Anything result;

@@ -19,8 +19,8 @@
 //	Structure of config:
 //<PRE>	{
 //		/transfer {					config entry to specify slots to transfer
-//			/FromSlot1	ToSlot1		using InputMapper->Get to lookup FromSlot and
-//									putting it using OutputMapper->Put to store it at ToSlot
+//			/FromSlot1	ToSlot1		using ParameterMapper->Get to lookup FromSlot and
+//									putting it using ResultMapper->Put to store it at ToSlot
 //			/FromSlot2	ToSlot2		...
 //			...
 //		}
@@ -48,7 +48,7 @@ public:
 
 	//! executes the transaction
 	//! \param c The context of the transaction
-	virtual bool Exec(Context &c, InputMapper *, OutputMapper *);
+	virtual bool Exec(Context &c, ParameterMapper *, ResultMapper *);
 
 private:
 	//constructor

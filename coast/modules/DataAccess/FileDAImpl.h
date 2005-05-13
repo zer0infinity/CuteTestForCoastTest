@@ -43,9 +43,9 @@ protected:
 	//! override to specify different file access modes
 	virtual int DoGetMode(ROAnything roaModes);
 
-	bool GetFileName(String &filename, String &ext, Context &context, InputMapper *in);
-	iostream *GetFileStream(Context &context, InputMapper *in);
-	int GetMode(Context &context, InputMapper *in);
+	bool GetFileName(String &filename, String &ext, Context &context, ParameterMapper *in);
+	iostream *GetFileStream(Context &context, ParameterMapper *in);
+	int GetMode(Context &context, ParameterMapper *in);
 
 private:
 	// constructor

@@ -119,10 +119,6 @@ bool DataAccess::GetMyParameterMapper(Context &c, ParameterMapper *&pm)
 		} else {
 			// is there a fallback mapper defined?
 			String fallback = c.Lookup("FallbackParameterMapper", "");
-			// FIXME: legacy, frontdoor-specific
-			if (fallback.IsEqual("")) {
-				fallback = c.Lookup("FallbackInputMapper", "");
-			}
 
 			pm = ParameterMapper::FindParameterMapper(fallback);
 			if (pm) {
@@ -159,10 +155,6 @@ bool DataAccess::GetMyResultMapper(Context &c, ResultMapper *&rm)
 		} else {
 			// is there a fallback mapper defined?
 			String fallback = c.Lookup("FallbackResultMapper", "");
-			// FIXME: legacy, frontdoor-specific
-			if (fallback.IsEqual("")) {
-				fallback = c.Lookup("FallbackOutputMapper", "");
-			}
 
 			rm = ResultMapper::FindResultMapper(fallback);
 			if (rm) {

@@ -65,7 +65,7 @@ void DataMapperTest::StdGetTest()
 	Anything dummy;
 	Context ctx(fStdContextAny, dummy, 0, 0, 0, 0);
 
-	InputMapper mapper("stdtestgetmapper");
+	ParameterMapper mapper("stdtestgetmapper");
 
 	// test the overloaded get api
 	int iTestVal;
@@ -104,7 +104,7 @@ void DataMapperTest::NegativGetTest()
 	Anything dummy;
 	Context ctx(fStdContextAny, dummy, 0, 0, 0, 0);
 
-	InputMapper mapper("stdtestgetmapper");
+	ParameterMapper mapper("stdtestgetmapper");
 
 	// Test the overloaded get api
 	int iTestVal;

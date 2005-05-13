@@ -51,9 +51,9 @@ void ResultMapperTest::testDoSelectScript()
 	Anything script, empty;
 	script["Sub"] = "a";
 	ResultMapper rm("");
-
-	assertAnyEqual(rm.DoSelectScript("Sub", script), script["Sub"]);
-	assertAnyEqual(rm.DoSelectScript("Nonex", script), empty);
+	Context ctx;
+	assertAnyEqual(rm.DoSelectScript("Sub", script, ctx), script["Sub"]);
+	assertAnyEqual(rm.DoSelectScript("Nonex", script, ctx), empty);
 }
 
 void ResultMapperTest::testDoLoadConfig()
@@ -136,7 +136,7 @@ void ResultMapperTest::testDoPutAny()
 
 	// --- 2. Mapper with simple valued script (key/context do not matter)
 
-	script = rm.DoSelectScript("SingleScript1", scripts);
+	script = rm.DoSelectScript("SingleScript1", scripts, ctx);
 	rm.DoPutAny("-", any, ctx, script);
 	assertAnyEqual(any, ctx.GetTmpStore()["Mapper"]["ding"]);
 
@@ -144,14 +144,14 @@ void ResultMapperTest::testDoPutAny()
 
 	// 3.1 DistributorScript
 	Context ctx2;
-	script = rm.DoSelectScript("DistributorScript", scripts);
+	script = rm.DoSelectScript("DistributorScript", scripts, ctx);
 	rm.DoPutAny("-", any, ctx2, script);
 	OStringStream os;
 	os << ctx2.GetTmpStore()["Mapper"];
 	assertEqual("{\n  /a "_QUOTE_("value")"\n  /b "_QUOTE_("value")"\n  /c "_QUOTE_("value")"\n  /d "_QUOTE_("value")"\n}", os.str());
 
 	// 3.2 DelegationScript
-	script = rm.DoSelectScript("AnyPlacerScript", scripts);
+	script = rm.DoSelectScript("AnyPlacerScript", scripts, ctx);
 	rm.DoPutAny("Inside", any, ctx, script);
 	assertAnyEqualm(any, ctx.GetTmpStore()["SomeSlot"]["Inside"], "Was NameUsingOutputMapper called?");
 	assertAnyEqualm(any, ctx.GetTmpStore()["SomeOtherSlot"]["Deep"]["Inside"], "Was NameUsingOutputMapper called?");
@@ -182,7 +182,7 @@ void ResultMapperTest::testDoPutStream()
 	// --- 2. Mapper with simple valued script (key/context do not matter)
 
 	IStringStream is2(msg);
-	script = rm.DoSelectScript("SingleScript1", scripts);
+	script = rm.DoSelectScript("SingleScript1", scripts, ctx);
 	rm.DoPutStream("-", is2, ctx, script);
 	assertEqual(msg, ctx.GetTmpStore()["Mapper"]["ding"].AsString());
 
@@ -190,7 +190,7 @@ void ResultMapperTest::testDoPutStream()
 
 	IStringStream is3(msg);
 	Anything res;
-	script = rm.DoSelectScript("StreamPlacerScript", scripts);
+	script = rm.DoSelectScript("StreamPlacerScript", scripts, ctx);
 	rm.DoPutStream("StreamSlot", is3, ctx, script);
 	assertEqualm(msg, ctx.GetTmpStore()["SomeSlot"]["StreamSlot"].AsString(), "Was NameUsingOutputMapper called?");
 	t_assert(ctx.GetTmpStore().LookupPath(res, "EmptyStuff.StreamSlot"));
@@ -275,9 +275,9 @@ void ResultMapperTest::testEagerDoSelectScript()
 	Anything script;
 	script["Sub"] = "a";
 	EagerResultMapper erm("");
-
-	assertAnyEqual(erm.DoSelectScript("Sub", script), script["Sub"]);
-	assertAnyEqual(erm.DoSelectScript("Nonex", script), script);
+	Context ctx;
+	assertAnyEqual(erm.DoSelectScript("Sub", script, ctx), script["Sub"]);
+	assertAnyEqual(erm.DoSelectScript("Nonex", script, ctx), script);
 }
 
 void ResultMapperTest::testEagerPut()

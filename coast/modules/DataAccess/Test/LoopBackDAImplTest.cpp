@@ -65,9 +65,9 @@ void LoopBackDAImplTest::ExecTest()
 
 	Anything tmpStore(ctx.GetTmpStore());
 
-	InputMapper imapper("stdmapper");
+	ParameterMapper imapper("stdmapper");
 
-	OutputMapper omapper("stdmapper");
+	ResultMapper omapper("stdmapper");
 	LoopBackDAImpl lbdai("LoopBackDATest");
 	lbdai.CheckConfig("DataAccessImpl");
 	t_assert(lbdai.Exec(ctx, &imapper, &omapper));

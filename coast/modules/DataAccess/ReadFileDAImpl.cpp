@@ -34,7 +34,7 @@ IFAObject *ReadFileDAImpl::Clone() const
 	return new ReadFileDAImpl(fName);
 }
 
-bool ReadFileDAImpl::Exec( Context &context, InputMapper *in, OutputMapper *out)
+bool ReadFileDAImpl::Exec( Context &context, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(ReadFileDAImpl.Exec);
 	bool retVal = false;

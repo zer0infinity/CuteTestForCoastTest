@@ -29,8 +29,6 @@ Test *DataAccessImplTest::suite ()
 
 	testSuite->addTest (NEW_CASE(DataAccessImplTest, GetConfigNameTest));
 	testSuite->addTest (NEW_CASE(DataAccessImplTest, DoLoadConfigTest));
-	testSuite->addTest (NEW_CASE(DataAccessImplTest, GetInputMapperTest));
-	testSuite->addTest (NEW_CASE(DataAccessImplTest, GetOutputMapperTest));
 
 	return testSuite;
 
@@ -47,10 +45,9 @@ DataAccessImplTest::~DataAccessImplTest()
 }
 
 void DataAccessImplTest::setUp ()
-// setup connector for this TestCase
 {
 
-} // setUp
+}
 
 void DataAccessImplTest::GetConfigNameTest()
 {
@@ -59,7 +56,6 @@ void DataAccessImplTest::GetConfigNameTest()
 
 	t_assert( dai.DoGetConfigName("DataAccessImpl", "testdai", configName) );
 	assertEqual("DataAccessImplMeta", configName);
-
 }
 
 void DataAccessImplTest::DoLoadConfigTest()
@@ -72,48 +68,3 @@ void DataAccessImplTest::DoLoadConfigTest()
 	t_assert(dai.fConfig.IsDefined("testitem2"));
 	assertEqual("bah", dai.fConfig["testitem2"].AsCharPtr());
 }
-
-void DataAccessImplTest::GetInputMapperTest()
-{
-	Anything dummy;
-	Context ctx(dummy, dummy, 0, 0, 0, 0);
-	Anything tmpStore(ctx.GetTmpStore());
-
-	const char *daName = "daTest";
-	DataAccessImpl daTest(daName);
-	InputMapper *m = daTest.GetInputMapper( ctx);
-
-	t_assert( m != 0 );
-
-	daName = "daTestNone";
-	DataAccessImpl daTestNone(daName);
-	InputMapper *none = daTestNone.GetInputMapper( ctx);
-
-	t_assert( none == 0 );
-	String str(tmpStore["DataAccess"][daName]["Error"][0L].AsCharPtr());
-	t_assertm(str.Contains("Mapper::FindInputMapper returned 0 for daTestNone") >= 0, "Mapper::FindInputMapper errormsg not OK");
-
-}
-
-void DataAccessImplTest::GetOutputMapperTest()
-{
-	Anything dummy;
-	Context ctx(dummy, dummy, 0, 0, 0, 0);
-	Anything tmpStore(ctx.GetTmpStore());
-
-	const char *daName = "daTest";
-	DataAccessImpl daTest(daName);
-	OutputMapper *m = daTest.GetOutputMapper( ctx);
-
-	t_assert( m != 0 );
-
-	daName = "daTestNone";
-	DataAccessImpl daTestNone(daName);
-	OutputMapper *none = daTestNone.GetOutputMapper( ctx);
-
-	t_assert( none == 0 );
-	String str(tmpStore["DataAccess"][daName]["Error"][0L].AsCharPtr());
-	t_assertm(str.Contains("Mapper::FindOutputMapper returned 0 for daTestNone") >= 0, "Mapper::FindOutputMapper errormsg not OK");
-
-}
-

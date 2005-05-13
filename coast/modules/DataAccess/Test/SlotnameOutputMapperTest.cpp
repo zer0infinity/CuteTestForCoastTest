@@ -35,7 +35,7 @@ void SlotnameOutputMapperTest::BasicFunctionTest()
 	StartTrace(SlotnameOutputMapperTest.BasicFunctionTest);
 
 	SlotnameOutputMapper som("SlotnameTestOutputMapper");
-	som.CheckConfig("OutputMapper");
+	som.CheckConfig("ResultMapper");
 
 	Context ctx;
 	som.Put("Data", fTestCaseConfig["AnyToPut"], ctx);
@@ -47,7 +47,7 @@ void SlotnameOutputMapperTest::OverwriteOrAppendTest()
 	StartTrace(SlotnameOutputMapperTest.OverwriteOrAppendTest);
 
 	SlotnameOutputMapper som("SlotnameTestOutputMapper");
-	som.CheckConfig("OutputMapper");
+	som.CheckConfig("ResultMapper");
 
 	Context ctx;
 	som.Put("Data", fTestCaseConfig["AnyToPut"][0L], ctx);

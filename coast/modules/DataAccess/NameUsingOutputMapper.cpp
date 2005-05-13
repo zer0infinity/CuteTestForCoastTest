@@ -36,9 +36,12 @@ bool NameUsingOutputMapper::DoPutAny(const char *key, Anything value, Context &c
 
 bool NameUsingOutputMapper::DoPutStream(const char *key, istream &is, Context &ctx, ROAnything config)
 {
-	OStringStream input;
-	input << is.rdbuf();
-	return DoPutAny(key, input.str(), ctx, config);
+	String strBuf;
+	{
+		OStringStream input(strBuf);
+		input << is.rdbuf();
+	}
+	return DoPutAny(key, strBuf, ctx, config);
 }
 
 Anything NameUsingOutputMapper::GetDestination(Context &ctx, ROAnything config)

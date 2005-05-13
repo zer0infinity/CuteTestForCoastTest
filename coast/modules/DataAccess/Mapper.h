@@ -13,6 +13,8 @@
 #include "Context.h"
 #include "WDModule.h"
 
+#define HIERARCH_MAPPERS
+
 class Registry;
 
 //---- MappersModule -----------------------------------------------------------
@@ -26,8 +28,12 @@ public:
 	virtual bool ResetFinis(const Anything &);
 	virtual bool Finis();
 };
-//----------------------- ParameterMapper aka InputMapper --------------------
+//----------------------- ParameterMapper aka ParameterMapper --------------------
+#if defined(HIERARCH_MAPPERS)
+class EXPORTDECL_DATAACCESS ParameterMapper : public HierarchConfNamed
+#else
 class EXPORTDECL_DATAACCESS ParameterMapper : public ConfNamedObject
+#endif
 {
 public:
 	ParameterMapper(const char *name);
@@ -111,17 +117,13 @@ public:
 	//! \return returns true if the mapping was successful otherwise false
 	virtual bool DoGetStream(const char *key, ostream &os, Context &ctx, ROAnything script);
 
-	//! Finds InputMappers, too
-	static ParameterMapper *FindInputMapper(const char *name);
-
 	//! convenience function:
 	static void PlaceIntoAnyOrAppendIfNotEmpty(Anything &var, ROAnything theValue);
 
 protected:
-
 	// generate the config file name (without extension, which is assumed to be any)
 	// is simply the concatenation of category and "Meta"
-	// (if category is "ParameterMapper" we use "InputMapper" instead, to keep compatibility)
+	// (if category is "ParameterMapper" we use "ParameterMapper" instead, to keep compatibility)
 	virtual bool DoGetConfigName(const char *category, const char *, String &configFileName);
 
 	// load an anything and make it available by storing a reference in fConfig
@@ -133,7 +135,7 @@ protected:
 	//! subclasses might overwrite this method to avoid scripting (recursion)
 	//! default is to pass script[key],
 	//! mappers that want complete scripting should return whole script for interpretation if key not found
-	virtual ROAnything DoSelectScript(const char *key, ROAnything script);
+	virtual ROAnything DoSelectScript(const char *key, ROAnything script, Context &ctx);
 
 	//! hook for recursion stoppper in Mapper script interpretation
 	//! looks for value in context using the key and appends it to value
@@ -160,8 +162,6 @@ private:
 	friend class MapperTest;
 };
 
-typedef ParameterMapper InputMapper;
-
 //---------------- EagerParameterMapper ------------------------------
 //! A ParameterMapper eager to interpret its config, interprets full config if key is not found
 class EXPORTDECL_DATAACCESS EagerParameterMapper : public ParameterMapper
@@ -173,10 +173,9 @@ public:
 	IFAObject *Clone() const {
 		return new EagerParameterMapper(fName);
 	}
+
 protected:
-	virtual ROAnything DoSelectScript(const char *key, ROAnything script) {
-		return script.IsDefined(key) ? script[key] : script;
-	}
+	virtual ROAnything DoSelectScript(const char *key, ROAnything script, Context &ctx);
 
 private:
 	EagerParameterMapper();
@@ -185,7 +184,8 @@ private:
 
 	friend class ParameterMapperTest;
 };
-//---------------- ResultMapper aka OutputMapper ------------------------------
+
+//---------------- ResultMapper ------------------------------
 /*! Base class for putting results into context
 This Mapper supports behavior configuration. Put the following into OutputMapperMeta.any for the corresponding Mapper alias name.
 <B>Configuration:</B><PRE>
@@ -193,14 +193,16 @@ This Mapper supports behavior configuration. Put the following into OutputMapper
 	/AppendAnyAlways		long		optional, default 0, if set to value != 0 Put(key, Anything) will always append the given Anything at slot key. Otherways the Anything will only be appended when the slot already exists.
 }</PRE>
 */
-class EXPORTDECL_DATAACCESS ResultMapper: public ConfNamedObject
+#if defined(HIERARCH_MAPPERS)
+class EXPORTDECL_DATAACCESS ResultMapper : public HierarchConfNamed
+#else
+class EXPORTDECL_DATAACCESS ResultMapper : public ConfNamedObject
+#endif
 {
 public:
-	ResultMapper(const char *name) : ConfNamedObject(name) {};
-	virtual ~ResultMapper() {};
-	IFAObject *Clone() const {
-		return new ResultMapper(fName);
-	};
+	ResultMapper(const char *name);
+	virtual ~ResultMapper();
+	IFAObject *Clone() const;
 
 	//---- registry api
 	RegCacheDef(ResultMapper);	// FindResultMapper()
@@ -278,11 +280,7 @@ public:
 	//! \return returns true if the mapping was successful otherwise false
 	virtual bool DoPutStream(const char *key, istream &is, Context &ctx, ROAnything script);
 
-	//! Finds ResultMappers, too
-	static ResultMapper *FindOutputMapper(const char *name);
-
 protected:
-
 	//! defines the name space where to put values, default is "Mapper" in tmpstore.
 	//! May return a "."-separated path, such as x.y.z
 	//! if empty string, tmpstore.key is used directly when calling DoFinalPutAny
@@ -314,7 +312,8 @@ protected:
 
 	//! subclasses might overwrite this method to enable deep scripting (recursion)
 	//! default is to pass script[key], mappers that want complete scripting can return whole script
-	virtual ROAnything DoSelectScript(const char *key, ROAnything script);
+	virtual ROAnything DoSelectScript(const char *key, ROAnything script, Context &ctx);
+
 private:
 	ResultMapper();
 	ResultMapper(const ResultMapper &);
@@ -323,8 +322,6 @@ private:
 	friend class ResultMapperTest;
 	friend class MapperTest;
 };
-
-typedef ResultMapper OutputMapper;
 
 //---------------- EagerResultMapper ------------------------------
 //! A ResultMapper eager to do something with its config, interprets full config if key is not found
@@ -337,10 +334,9 @@ public:
 	IFAObject *Clone() const {
 		return new EagerResultMapper(fName);
 	}
+
 protected:
-	virtual ROAnything DoSelectScript(const char *key, ROAnything script) {
-		return script.IsDefined(key) ? script[key] : script;
-	}
+	virtual ROAnything DoSelectScript(const char *key, ROAnything script, Context &ctx);
 
 private:
 	EagerResultMapper();
@@ -350,22 +346,10 @@ private:
 	friend class ResultMapperTest;
 };
 
-//---- Mapper ------------------------------------------------------------------
-class EXPORTDECL_DATAACCESS Mapper
-{
-public:
-	static InputMapper *FindInputMapper(const char *name);
-	static OutputMapper *FindOutputMapper(const char *name);
-};
-
 #define RegisterParameterMapper(name) RegisterObject(name, ParameterMapper)
-#define RegisterInputMapper(name) RegisterObject(name, ParameterMapper)
-#define RegisterInputMapperAlias(name,classname) RegisterShortName(name,classname,ParameterMapper)
+#define RegisterParameterMapperAlias(name,classname) RegisterShortName(name,classname,ParameterMapper)
 #define RegisterResultMapper(name) RegisterObject(name, ResultMapper)
-#define RegisterOutputMapper(name) RegisterObject(name, ResultMapper)
-#define RegisterOutputMapperAlias(name,classname) RegisterShortName(name,classname,ResultMapper)
-
-#define RegisterMapper(name) ;is your mapper implementing Get or Put?; // fail compilation if used
+#define RegisterResultMapperAlias(name,classname) RegisterShortName(name,classname,ResultMapper)
 
 //  ========================== Other Mappers ===============================
 

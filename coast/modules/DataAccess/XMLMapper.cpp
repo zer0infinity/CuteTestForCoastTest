@@ -19,7 +19,7 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- XMLMapper ------------------------------------------------------------------
-RegisterOutputMapper(XMLMapper);
+RegisterResultMapper(XMLMapper);
 
 XMLMapper::XMLMapper(const char *name) : ResultMapper(name)
 {

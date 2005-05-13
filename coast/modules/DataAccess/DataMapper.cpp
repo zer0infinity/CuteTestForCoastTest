@@ -110,11 +110,12 @@ IFAObject *UpperCaseMapper::Clone() const
 
 bool UpperCaseMapper::DoGetStream(const char *key, ostream &os, Context &ctx, ROAnything info)
 {
-	OStringStream osStr;
-
-	ParameterMapper::DoGetStream(key, osStr, ctx, info);
-
-	os << osStr.str().ToUpper();
+	String strBuf;
+	{
+		OStringStream osStr(strBuf);
+		ParameterMapper::DoGetStream(key, osStr, ctx, info);
+	}
+	os << strBuf.ToUpper();
 	return true;
 }
 
@@ -144,9 +145,11 @@ bool RendererMapper::DoGetStream(const char *key, ostream &os, Context &ctx, ROA
 bool RendererMapper::DoGetAny(const char *key, Anything &value, Context &ctx, ROAnything info)
 {
 	StartTrace1(RendererMapper.DoGetAny, NotNull(key));
-	OStringStream stream;
+	String strBuf;
+	OStringStream stream(strBuf);
 	if (DoGetStream(key, stream, ctx, info)) {
-		value = stream.str();
+		stream.flush();
+		value = strBuf;
 		return true;
 	}
 	return false;
@@ -156,18 +159,18 @@ bool RendererMapper::DoGetAny(const char *key, Anything &value, Context &ctx, RO
 bool RendererMapper::Get(const char *key, Anything &value, Context &ctx)
 {
 	StartTrace1(RendererMapper.Get, "( \"" << NotNull(key) << "\" , Anything &value, Context &ctx)");
-
 	Anything anyValue;
 
-	if (DoGetAny(key, anyValue, ctx, ParameterMapper::DoSelectScript(key, fConfig))) {
+	if (DoGetAny(key, anyValue, ctx, ParameterMapper::DoSelectScript(key, fConfig, ctx))) {
 		value = anyValue;
+		TraceAny(value, "returned value");
 		return true;
 	}
 	return false;
 }
 
 //---- LookupMapper ------------------------------------------------------------------
-RegisterInputMapper(LookupMapper);
+RegisterParameterMapper(LookupMapper);
 
 LookupMapper::LookupMapper(const char *name) : EagerParameterMapper(name)
 {
@@ -217,8 +220,8 @@ bool LookupMapper::DoGetStream(const char *key, ostream &os, Context &ctx, ROAny
 }
 
 //------ ResultLookupMapper
-RegisterOutputMapper(ResultLookupMapper);
-RegisterOutputMapperAlias(LookupMapper, ResultLookupMapper);
+RegisterResultMapper(ResultLookupMapper);
+RegisterResultMapperAlias(LookupMapper, ResultLookupMapper);
 ResultLookupMapper::ResultLookupMapper(const char *name) : EagerResultMapper(name)
 {
 }

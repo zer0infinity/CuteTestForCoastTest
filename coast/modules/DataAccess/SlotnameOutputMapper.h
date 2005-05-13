@@ -9,7 +9,7 @@
 #ifndef _SlotnameOutputMapper_H
 #define _SlotnameOutputMapper_H
 
-//---- OutputMapper include -------------------------------------------------
+//---- Mapper include -------------------------------------------------
 #include "config_dataaccess.h"
 #include "NameUsingOutputMapper.h"
 

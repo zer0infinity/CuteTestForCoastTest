@@ -36,7 +36,7 @@ IFAObject *WriteFileDAImpl::Clone() const
 	return new WriteFileDAImpl(fName);
 }
 
-bool WriteFileDAImpl::Exec( Context &context, InputMapper *in, OutputMapper *out)
+bool WriteFileDAImpl::Exec( Context &context, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(WriteFileDAImpl.Exec);
 

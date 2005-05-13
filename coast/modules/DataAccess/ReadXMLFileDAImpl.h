@@ -37,7 +37,7 @@ public:
 
 	//! executes the transaction
 	//! \param c The context of the transaction
-	virtual bool Exec(Context &c, InputMapper *, OutputMapper *);
+	virtual bool Exec(Context &c, ParameterMapper *, ResultMapper *);
 
 private:
 	// constructor

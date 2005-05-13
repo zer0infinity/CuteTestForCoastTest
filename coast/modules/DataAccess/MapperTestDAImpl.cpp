@@ -28,7 +28,7 @@ IFAObject *MapperTestDAImpl::Clone() const
 	return new MapperTestDAImpl(fName);
 }
 
-bool MapperTestDAImpl::Exec( Context &context, InputMapper *input, OutputMapper *output)
+bool MapperTestDAImpl::Exec( Context &context, ParameterMapper *input, ResultMapper *output)
 {
 	StartTrace1(MapperTestDAImpl.Exec, fName);
 	Anything config, anyDataType;

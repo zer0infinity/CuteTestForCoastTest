@@ -34,7 +34,7 @@ IFAObject *FileDAImpl::Clone() const
 	return new FileDAImpl(fName);
 }
 
-bool FileDAImpl::GetFileName(String &filename, String &ext, Context &context, InputMapper *in)
+bool FileDAImpl::GetFileName(String &filename, String &ext, Context &context, ParameterMapper *in)
 {
 	StartTrace(FileDAImpl.GetFileName);
 
@@ -61,7 +61,7 @@ bool FileDAImpl::GetFileName(String &filename, String &ext, Context &context, In
 	return ret;
 }
 
-int FileDAImpl::GetMode(Context &context, InputMapper *in)
+int FileDAImpl::GetMode(Context &context, ParameterMapper *in)
 {
 	StartTrace(FileDAImpl.GetMode);
 	int mode = 0;
@@ -87,7 +87,7 @@ int FileDAImpl::DoGetMode(ROAnything roaModes)
 	return mode;
 }
 
-iostream *FileDAImpl::GetFileStream(Context &context, InputMapper *in)
+iostream *FileDAImpl::GetFileStream(Context &context, ParameterMapper *in)
 {
 	StartTrace(FileDAImpl.GetFileStream);
 	iostream *pStream = NULL;

@@ -17,7 +17,7 @@
 //--- c-library modules used ---------------------------------------------------
 
 //---- AnythingToStreamMapper ----------------------------------------------------------------
-RegisterInputMapper(AnythingToStreamMapper);
+RegisterParameterMapper(AnythingToStreamMapper);
 
 bool AnythingToStreamMapper::DoFinalGetStream(const char *key, ostream &os, Context &ctx)
 {
@@ -42,7 +42,7 @@ bool AnythingToStreamMapper::DoFinalGetStream(const char *key, ostream &os, Cont
 }
 
 //---- StreamToAnythingMapper ----------------------------------------------------------------
-RegisterOutputMapper(StreamToAnythingMapper);
+RegisterResultMapper(StreamToAnythingMapper);
 
 bool StreamToAnythingMapper::DoPutStream(const char *key, istream &is, Context &ctx, ROAnything script)
 {
@@ -81,7 +81,7 @@ bool StreamToAnythingMapper::DoPutStream(const char *key, istream &is, Context &
 						importok = m->Put(key, anyResult, ctx);
 					} else {
 						Trace("Calling " << slotname << " with script[" << i << "][\"" << NotNull(key) << "\"]...");
-						importok = m->DoPutAny(key, anyResult, ctx, DoSelectScript(key, script[i]));
+						importok = m->DoPutAny(key, anyResult, ctx, DoSelectScript(key, script[i], ctx));
 					}
 				} else {
 					Trace("Slotname " << slotname << " is not a mapper (not found).");

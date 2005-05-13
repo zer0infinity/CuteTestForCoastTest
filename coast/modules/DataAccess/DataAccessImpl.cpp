@@ -82,6 +82,7 @@ bool DataAccessImplsModule::Finis()
 }
 
 //--- DataAccessImpl --------------------------------------------------
+RegisterDataAccessImpl(DataAccessImpl);
 RegCacheImpl(DataAccessImpl);
 
 DataAccessImpl::DataAccessImpl(const char *name) : HierarchConfNamed(name)
@@ -99,7 +100,7 @@ IFAObject *DataAccessImpl::Clone() const
 }
 
 //--- Send/Receive
-bool DataAccessImpl::Exec(Context &c, InputMapper *input, OutputMapper *output)
+bool DataAccessImpl::Exec(Context &c, ParameterMapper *input, ResultMapper *output)
 {
 	StartTrace(DataAccessImpl.Exec);	// support for tracing
 
@@ -112,14 +113,16 @@ bool DataAccessImpl::Exec(Context &c, InputMapper *input, OutputMapper *output)
 
 bool DataAccessImpl::DoLoadConfig(const char *category)
 {
+	StartTrace(DataAccessImpl.DoLoadConfig);
 	if ( HierarchConfNamed::DoLoadConfig(category) && fConfig.IsDefined(fName) ) {
-		StartTrace(DataAccessImpl.DoLoadConfig);
 		// trx impls use only a subset of the whole configuration file
 		fConfig = fConfig[fName];
-		TraceAny(fConfig, "Config:");
+		TraceAny(fConfig, "Config for [" << fName << "]");
 		Assert(!fConfig.IsNull());
 		return (!fConfig.IsNull());
 	}
+	fConfig = Anything();
+	Trace("No specific " << fName << " config found, returning false");
 	return false;
 }
 
@@ -141,7 +144,7 @@ IFAObject *LoopBackDAImpl::Clone() const
 	return new LoopBackDAImpl(fName);
 }
 
-bool LoopBackDAImpl::Exec(Context &c, InputMapper *input, OutputMapper *output)
+bool LoopBackDAImpl::Exec(Context &c, ParameterMapper *input, ResultMapper *output)
 {
 	StartTrace1(LoopBackDAImpl.Exec, "Name: " << fName);
 	ROAnything config;
@@ -195,42 +198,3 @@ bool LoopBackDAImpl::Exec(Context &c, InputMapper *input, OutputMapper *output)
 	Trace("ret: false");
 	return false;
 }
-
-void DataAccessImpl::HandleError(Context &context, const String &mapperName, const char *file, long line, const String &msg)
-{
-	String logMsg(file);
-	logMsg << ":" << line << msg << " for " << mapperName;
-	SysLog::Error(logMsg);
-	Anything tmpStore(context.GetTmpStore());
-	tmpStore["DataAccess"][mapperName]["Error"].Append(logMsg);
-}
-
-InputMapper *DataAccessImpl::GetInputMapper(Context &context)
-{
-	StartTrace(DataAccessImpl.GetInputMapper);
-	// first look into my own config
-	String theName(this->Lookup("InputMapper", fName));
-	Trace("using Mapper :" << theName);
-	InputMapper *mapper = InputMapper::FindInputMapper(theName);
-	Assert(mapper);
-	if (!mapper) {
-		HandleError(context, theName, __FILE__, __LINE__, "InputMapper::FindInputMapper returned 0");
-	}
-	return mapper;
-}
-
-OutputMapper *DataAccessImpl::GetOutputMapper(Context &context)
-{
-	StartTrace(DataAccessImpl.GetOutputMapper);
-	// first look into my own config
-	String theName(this->Lookup("OutputMapper", fName));
-	Trace("using Mapper :" << theName);
-	OutputMapper *mapper = OutputMapper::FindOutputMapper(theName);
-	Assert(mapper);	// we expect a mapper to be configured for this trx
-	if (!mapper) {
-		HandleError(context, theName, __FILE__, __LINE__, "OutputMapper::FindOutputMapper returned 0");
-	}
-	return mapper;
-}
-
-RegisterDataAccessImpl(DataAccessImpl);

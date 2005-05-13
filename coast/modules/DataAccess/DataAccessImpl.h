@@ -45,22 +45,12 @@ public:
 	//! \param trxname the name of the data access entity
 	//! \param input a mapper object that is mapping data from the client space to the data access object on request
 	//! \param output a mapper object that maps the result of the access back into client space
-	virtual bool Exec(Context &c, InputMapper *input, OutputMapper *output);
+	virtual bool Exec(Context &c, ParameterMapper *input, ResultMapper *output);
 
-	//! find the InputMapper by Name, look first into own config, otherwise into
-	//! registered mappers with my own name
-	//! \param daName the name of the mapper sought
-	//! \param context the context of this data access call
-	virtual InputMapper *GetInputMapper(Context &context);
-
-	//! find the outputMapper by Name
-	//! \param daName the name of the mapper sought
-	//! \param context the context of this data access call
-	virtual OutputMapper *GetOutputMapper(Context &context);
 	//--- Registration
 	RegCacheDef(DataAccessImpl);	// FindDataAccessImpl()
-protected:
 
+protected:
 	// generate the config file name (without extension, which is assumed to be any)
 	// out of category and objName
 	// the default implementation just takes the objName
@@ -71,9 +61,6 @@ protected:
 	// if you provide your own implementation be careful about the lifetime of
 	// the loaded anything otherwise fConfig points to invalid data
 	virtual bool DoLoadConfig(const char *category);
-
-	// log error message to context and syslog
-	void HandleError(Context &context, const String &mapperName, const char *file, long line, const String &msg);
 
 	friend class DataAccessImplTest;
 
@@ -88,19 +75,19 @@ private:
 //	Structure of config:
 //<PRE>	{
 //		/transfer {					config entry to specify slots to transfer
-//			/FromSlot1	ToSlot1		using InputMapper->Get to lookup FromSlot and
-//									putting it using OutputMapper->Put to store it at ToSlot
+//			/FromSlot1	ToSlot1		using ParameterMapper->Get to lookup FromSlot and
+//									putting it using ResultMapper->Put to store it at ToSlot
 //			/FromSlot2	ToSlot2		...
 //			...
 //		}
 //		/Streaming					optional, 0L/1L/2L/3L, default 0L, defining streaming mode
 //									0L or default: no streaming used, using Get(FromSlot, String, Context)
-//									1L: InputMapper->Get using StringStream, eg. Get(FromSlot, ostream, Context, ROAnything)
-//										OutputMapper->Put using String, eg. Put(ToSlot, String, Context)
-//									2L: InputMapper->Get using String, eg. Get(FromSlot, String, Context)
-//										OutputMapper->Put using StringStream, eg. Put(ToSlot, istream, Context, ROAnything)
-//									3L: InputMapper->Get using StringStream, eg. Get(FromSlot, ostream, Context, ROAnything)
-//										OutputMapper->Put using StringStream, eg. Put(ToSlot, istream, Context, ROAnything)
+//									1L: ParameterMapper->Get using StringStream, eg. Get(FromSlot, ostream, Context, ROAnything)
+//										ResultMapper->Put using String, eg. Put(ToSlot, String, Context)
+//									2L: ParameterMapper->Get using String, eg. Get(FromSlot, String, Context)
+//										ResultMapper->Put using StringStream, eg. Put(ToSlot, istream, Context, ROAnything)
+//									3L: ParameterMapper->Get using StringStream, eg. Get(FromSlot, ostream, Context, ROAnything)
+//										ResultMapper->Put using StringStream, eg. Put(ToSlot, istream, Context, ROAnything)
 //	}
 class EXPORTDECL_DATAACCESS LoopBackDAImpl: public DataAccessImpl
 {
@@ -116,7 +103,7 @@ public:
 	//! \param trxname the name of the data access entity
 	//! \param input a mapper object that is mapping data from the client space to the data access object on request
 	//! \param output a mapper object that maps the result of the access back into client space
-	virtual bool Exec(Context &c, InputMapper *input, OutputMapper *output);
+	virtual bool Exec(Context &c, ParameterMapper *input, ResultMapper *output);
 
 private:
 	LoopBackDAImpl();

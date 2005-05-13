@@ -61,7 +61,7 @@ void NameUsingOutputMapperTest::ConfiguredDestinationTest()
 	StartTrace(NameUsingOutputMapperTest.ConfiguredDestinationTest);
 
 	NameUsingOutputMapper mapper("ConfiguredTestMapper");
-	mapper.CheckConfig("OutputMapper");
+	mapper.CheckConfig("ResultMapper");
 
 	Context c;
 

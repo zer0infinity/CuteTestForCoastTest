@@ -101,7 +101,7 @@ private:
 	LookupMapper(const LookupMapper &);
 	LookupMapper &operator=(const LookupMapper &);
 };
-//------ ResultLookupMapper (splittet "OutputMapper" from LookupMapper
+//------ ResultLookupMapper (splittet "ResultMapper" from LookupMapper
 //! legacy mapper, no longer very useful with new mapper scripting
 //! semantics can be achieved via /key { /OtherMapperName othermapperconfig }
 class EXPORTDECL_DATAACCESS ResultLookupMapper : public EagerResultMapper

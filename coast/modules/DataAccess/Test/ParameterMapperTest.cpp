@@ -51,9 +51,9 @@ void ParameterMapperTest::testDoSelectScript()
 	Anything script, empty;
 	script["KeyA"] = "a";
 	ParameterMapper pm("");
-
-	assertAnyEqual(pm.DoSelectScript("KeyA", script), script["KeyA"]);
-	assertAnyEqual(pm.DoSelectScript("KeyNonex", script), empty);
+	Context ctx;
+	assertAnyEqual(pm.DoSelectScript("KeyA", script, ctx), script["KeyA"]);
+	assertAnyEqual(pm.DoSelectScript("KeyNonex", script, ctx), empty);
 }
 
 void ParameterMapperTest::testDoLoadConfig()
@@ -158,13 +158,13 @@ void ParameterMapperTest::testDoGetAny()
 
 	// 2.1. Value is empty before call -> insert
 	res = Anything();
-	script = pm.DoSelectScript("SingleScript1", scripts);
+	script = pm.DoSelectScript("SingleScript1", scripts, ctx);
 	pm.DoGetAny("-", res, ctx, script);
 	t_assert(res.GetSize() == 1);
 	t_assert(res.Contains("ding"));
 
 	// 2.2. Value is not empty before call -> collect (append)
-	script = pm.DoSelectScript("SingleScript2", scripts);
+	script = pm.DoSelectScript("SingleScript2", scripts, ctx);
 	pm.DoGetAny("-", res, ctx, script);
 	t_assert(res.GetSize() == 2);
 	t_assert(res.Contains("dong"));
@@ -173,7 +173,7 @@ void ParameterMapperTest::testDoGetAny()
 
 	// 3.1 Collector Script
 	res = Anything();
-	script = pm.DoSelectScript("CollectorScript", scripts);
+	script = pm.DoSelectScript("CollectorScript", scripts, ctx);
 	pm.DoGetAny("-", res, ctx, script);
 	IStringStream is("{ a ValueToGet x y z }");
 	is >> exp;
@@ -181,13 +181,13 @@ void ParameterMapperTest::testDoGetAny()
 
 	// 3.2 Delegation Script
 	OStringStream os;
-	script = pm.DoSelectScript("DelegationScript", scripts);
+	script = pm.DoSelectScript("DelegationScript", scripts, ctx);
 	pm.DoGetStream("-", os, ctx, script);
 	assertEqualm("AB", os.str(), "Result not as expected. Was RendererMapper called?");
 
 	// 3.3 Dysfunctional Script (stop at first slot)
 	res = Anything();
-	script = pm.DoSelectScript("DysfunctionalScript", scripts);
+	script = pm.DoSelectScript("DysfunctionalScript", scripts, ctx);
 	pm.DoGetAny("-", res, ctx, script);
 	t_assert(res.IsNull());
 }
@@ -207,7 +207,7 @@ void ParameterMapperTest::testDoGetStream()
 	ParameterMapper pm("");
 	OStringStream os;
 
-	ROAnything script = pm.DoSelectScript("CollectorScript", scripts);
+	ROAnything script = pm.DoSelectScript("CollectorScript", scripts, ctx);
 	pm.DoGetStream("-", os, ctx, script);
 	assertEqual(os.str(), "aValueToGetxyz");
 }
@@ -267,9 +267,9 @@ void ParameterMapperTest::testEagerDoSelectScript()
 	Anything script;
 	script["KeyA"] = "a";
 	EagerParameterMapper epm("");
-
-	assertAnyEqual(epm.DoSelectScript("KeyA", script), script["KeyA"]);
-	assertAnyEqual(epm.DoSelectScript("KeyNonex", script), script);
+	Context ctx;
+	assertAnyEqual(epm.DoSelectScript("KeyA", script, ctx), script["KeyA"]);
+	assertAnyEqual(epm.DoSelectScript("KeyNonex", script, ctx), script);
 }
 
 void ParameterMapperTest::testEagerGet()

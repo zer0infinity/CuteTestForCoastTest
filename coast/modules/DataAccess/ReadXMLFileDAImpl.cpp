@@ -35,7 +35,7 @@ IFAObject *ReadXMLFileDAImpl::Clone() const
 	return new ReadXMLFileDAImpl(fName);
 }
 
-bool ReadXMLFileDAImpl::Exec( Context &context, InputMapper *in, OutputMapper *out)
+bool ReadXMLFileDAImpl::Exec( Context &context, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(ReadXMLFileDAImpl.Exec);
 	bool retVal = false;

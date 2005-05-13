@@ -35,10 +35,14 @@ bool MappersModule::Init(const Anything &config)
 	if (config.IsDefined("Mappers")) {
 		Anything mappers(config["Mappers"]);
 
+#if defined(HIERARCH_MAPPERS)
+		HierarchyInstaller ai1("ParameterMapper");
+		HierarchyInstaller ai2("ResultMapper");
+#else
 		AliasInstaller ai1("ParameterMapper");
-		bool ret = RegisterableObject::Install(mappers["Input"], "ParameterMapper", &ai1);
-
 		AliasInstaller ai2("ResultMapper");
+#endif
+		bool ret = RegisterableObject::Install(mappers["Input"], "ParameterMapper", &ai1);
 		return RegisterableObject::Install(mappers["Output"], "ResultMapper", &ai2) && ret;
 	}
 	return false;
@@ -48,9 +52,9 @@ bool MappersModule::ResetFinis(const Anything &config)
 {
 	// installation of different mapping objects for the different backend objects
 	AliasTerminator at1("ParameterMapper");
-	bool ret = RegisterableObject::ResetTerminate("ParameterMapper", &at1);
-
 	AliasTerminator at2("ResultMapper");
+
+	bool ret = RegisterableObject::ResetTerminate("ParameterMapper", &at1);
 	return RegisterableObject::ResetTerminate("ResultMapper", &at2) && ret;
 }
 
@@ -64,10 +68,15 @@ bool MappersModule::Finis()
 
 //---- ParameterMapper ------------------------------------------------------------------------
 RegisterParameterMapper(ParameterMapper);
-RegisterInputMapperAlias(Mapper, ParameterMapper);
+RegisterParameterMapperAlias(Mapper, ParameterMapper);
 RegCacheImpl(ParameterMapper);
 
-ParameterMapper::ParameterMapper(const char *name) : ConfNamedObject(name)
+ParameterMapper::ParameterMapper(const char *name)
+#if defined(HIERARCH_MAPPERS)
+	: HierarchConfNamed(name)
+#else
+	: ConfNamedObject(name)
+#endif
 {
 }
 
@@ -79,39 +88,27 @@ IFAObject *ParameterMapper::Clone() const
 {
 	return new ParameterMapper(fName);
 }
-//--- Registry -----
-
-ParameterMapper *ParameterMapper::FindInputMapper(const char *name)
-{
-	return FindParameterMapper(name);
-}
-
-ResultMapper *ResultMapper::FindOutputMapper(const char *name)
-{
-	return FindResultMapper(name);
-}
 
 bool ParameterMapper::DoLoadConfig(const char *category)
 {
 	StartTrace(ParameterMapper.DoLoadConfig);
 	Trace("category: " << category << " fName: " << fName);
 
-	if ( ConfNamedObject::DoLoadConfig(category) && fConfig.IsDefined(fName) ) {
+#if defined(HIERARCH_MAPPERS)
+	if ( HierarchConfNamed::DoLoadConfig(category) && fConfig.IsDefined(fName) )
+#else
+	if ( ConfNamedObject::DoLoadConfig(category) && fConfig.IsDefined(fName) )
+#endif
+	{
 		Trace("Meta-file for " << category << " found. Extracting config for " << fName);
-		// trx impls use only a subset of the whole configuration file
+		// mappers use only a subset of the whole configuration file
 		fConfig = fConfig[fName];
 		TraceAny(fConfig, "Extracted fConfig: (Returning true)");
 		return true;
 	}
 	fConfig = Anything();
-	Trace("No config found. Returning false.");
+	Trace("No specific " << fName << " config found, returning false");
 	return false;
-}
-
-ROAnything ParameterMapper::DoSelectScript(const char *key, ROAnything script)
-{
-	StartTrace1(ParameterMapper.DoSelectScript, "getting key [" << NotNull(key) << "]");
-	return script[key];
 }
 
 bool ParameterMapper::DoGetConfigName(const char *category, const char *, String &configFileName)
@@ -125,6 +122,19 @@ bool ParameterMapper::DoGetConfigName(const char *category, const char *, String
 		configFileName << "Meta";
 	}
 	return true;
+}
+
+ROAnything ParameterMapper::DoSelectScript(const char *key, ROAnything script, Context &ctx)
+{
+	StartTrace1(ParameterMapper.DoSelectScript, "getting key [" << NotNull(key) << "]");
+	TraceAny(script, "script config");
+	ROAnything roaReturn;
+	if ( script.IsNull() || !script.LookupPath(roaReturn, key) ) {
+		Trace("key not found in given script or Null-script, use hierarch-lookup mechanism now");
+		roaReturn = Lookup(key);
+	}
+	TraceAny(roaReturn, "selected script");
+	return roaReturn;
 }
 
 bool ParameterMapper::Get(const char *key, int &value, Context &ctx)
@@ -224,7 +234,7 @@ bool ParameterMapper::Get(const char *key, Anything &value, Context &ctx)
 	DAAccessTimer(ParameterMapper.Get, key << " (Anything)", ctx);
 
 	Anything anyValue;
-	if (DoGetAny(key, anyValue, ctx, DoSelectScript(key, fConfig))) {
+	if (DoGetAny(key, anyValue, ctx, DoSelectScript(key, fConfig, ctx))) {
 		value = anyValue;
 		return true;
 	}
@@ -236,7 +246,7 @@ bool ParameterMapper::Get(const char *key, ostream &os, Context &ctx)
 	StartTrace1(ParameterMapper.Get, "( \"" << NotNull(key) << "\" , ostream &os, Context &ctx)");
 	DAAccessTimer(ParameterMapper.Get, key << " (stream)", ctx);
 
-	return DoGetStream(key, os, ctx, DoSelectScript(key, fConfig));
+	return DoGetStream(key, os, ctx, DoSelectScript(key, fConfig, ctx));
 }
 
 // convenience method
@@ -285,10 +295,10 @@ bool ParameterMapper::DoGetAny(const char *key, Anything &value, Context &ctx, R
 				// no more config in script, use original mappers config
 				// fallback to orignal mapping with m's config
 				Trace("Slotval is null. Calling " << slotname << " with it's default config...");
-				retval = m->DoGetAny(key, value, ctx, m->DoSelectScript(key, m->fConfig));
+				retval = m->DoGetAny(key, value, ctx, m->DoSelectScript(key, m->fConfig, ctx));
 			} else {
 				Trace("Calling " << slotname << " with script[" << i << "][\"" << NotNull(key) << "\"]...");
-				retval = m->DoGetAny(key, value, ctx, m->DoSelectScript(key, script[i]));
+				retval = m->DoGetAny(key, value, ctx, m->DoSelectScript(key, script[i], ctx));
 			}
 		} else {
 			Trace("Slotname " << slotname << " is not a mapper (not found).");
@@ -330,10 +340,10 @@ bool ParameterMapper::DoGetStream(const char *key, ostream &os, Context &ctx, RO
 				// no more config in script, use original mappers config
 				// fallback to orignal mapping with m's config
 				Trace("Slotval is null. Calling " << slotname << " with it's default config...");
-				retval = m->DoGetStream(key, os, ctx, m->DoSelectScript(key, m->fConfig));
+				retval = m->DoGetStream(key, os, ctx, m->DoSelectScript(key, m->fConfig, ctx));
 			} else {
 				Trace("Calling " << slotname << " with script[" << i << "][\"" << NotNull(key) << "\"]...");
-				retval = m->DoGetStream(key, os, ctx, m->DoSelectScript(key, script[i]));
+				retval = m->DoGetStream(key, os, ctx, m->DoSelectScript(key, script[i], ctx));
 			}
 		} else {
 			Trace("Slotname " << slotname << " is not a mapper (not found).");
@@ -400,20 +410,77 @@ String ParameterMapper::DoGetSourceSlot(Context &ctx)
 //---- EagerParameterMapper ------------------------------------------------
 RegisterParameterMapper(EagerParameterMapper);
 
-EagerParameterMapper::EagerParameterMapper(const char *name, ROAnything config) : ParameterMapper(name)
+EagerParameterMapper::EagerParameterMapper(const char *name, ROAnything config)
+	: ParameterMapper(name)
 {
 	fConfig = config;
 }
 
+ROAnything EagerParameterMapper::DoSelectScript(const char *key, ROAnything script, Context &ctx)
+{
+	ROAnything roaReturn(ParameterMapper::DoSelectScript(key, script, ctx));
+	if ( roaReturn.IsNull() ) {
+		roaReturn = script;
+	}
+	return roaReturn;
+}
+
 //---- ResultMapper ----------------------------------------------------------------
 RegisterResultMapper(ResultMapper);
-RegisterOutputMapperAlias(Mapper, ResultMapper);
+RegisterResultMapperAlias(Mapper, ResultMapper);
 RegCacheImpl(ResultMapper);	// FindResultMapper()
 
-ROAnything ResultMapper::DoSelectScript(const char *key, ROAnything script)
+ResultMapper::ResultMapper(const char *name)
+#if defined(HIERARCH_MAPPERS)
+	: HierarchConfNamed(name)
+#else
+	: ConfNamedObject(name)
+#endif
+{
+}
+
+ResultMapper::~ResultMapper()
+{
+}
+
+IFAObject *ResultMapper::Clone() const
+{
+	return new ResultMapper(fName);
+}
+
+ROAnything ResultMapper::DoSelectScript(const char *key, ROAnything script, Context &ctx)
 {
 	StartTrace1(ResultMapper.DoSelectScript, "getting key [" << NotNull(key) << "]");
-	return script[key];
+	TraceAny(script, "script config");
+	ROAnything roaReturn;
+	if ( script.IsNull() || !script.LookupPath(roaReturn, key) ) {
+		Trace("key not found in given script or Null-script, use hierarch-lookup mechanism now");
+		roaReturn = Lookup(key);
+	}
+	TraceAny(roaReturn, "selected script");
+	return roaReturn;
+}
+
+bool ResultMapper::DoLoadConfig(const char *category)
+{
+	StartTrace(ResultMapper.DoLoadConfig);
+	Trace("category: " << category << " fName: " << fName);
+
+#if defined(HIERARCH_MAPPERS)
+	if ( HierarchConfNamed::DoLoadConfig(category) && fConfig.IsDefined(fName) )
+#else
+	if ( ConfNamedObject::DoLoadConfig(category) && fConfig.IsDefined(fName) )
+#endif
+	{
+		TraceAny(fConfig, "fConfig before: ");
+		// mappers use only a subset of the whole configuration file
+		fConfig = fConfig[fName];
+		TraceAny(fConfig, "new fConfig:");
+		return true;
+	}
+	fConfig = Anything();
+	Trace("No specific " << fName << " config found, returning false");
+	return false;
 }
 
 bool ResultMapper::DoGetConfigName(const char *category, const char *objName, String &configFileName)
@@ -426,23 +493,6 @@ bool ResultMapper::DoGetConfigName(const char *category, const char *objName, St
 		configFileName = (String(category) << "Meta");
 	}
 	return true;
-}
-
-bool ResultMapper::DoLoadConfig(const char *category)
-{
-	StartTrace(ResultMapper.DoLoadConfig);
-	Trace("category: " << category << " fName: " << fName);
-
-	if ( ConfNamedObject::DoLoadConfig(category) && fConfig.IsDefined(fName) ) {
-		TraceAny(fConfig, "fConfig before: ");
-		// trx impls use only a subset of the whole configuration file
-		fConfig = fConfig[fName];
-		TraceAny(fConfig, "new fConfig:");
-		return true;
-	}
-	fConfig = Anything();
-	Trace("returning false");
-	return false;
 }
 
 #if !defined(BOOL_NOT_SUPPORTED)
@@ -486,7 +536,7 @@ bool ResultMapper::Put(const char *key, Anything value, Context &ctx)
 {
 	StartTrace(ResultMapper.Put);
 	DAAccessTimer(ResultMapper.Put, key, ctx);
-	return DoPutAny(key, value, ctx, DoSelectScript(key, fConfig));
+	return DoPutAny(key, value, ctx, DoSelectScript(key, fConfig, ctx));
 }
 
 bool ResultMapper::DoPutAny(const char *key, Anything value, Context &ctx, ROAnything script)
@@ -523,10 +573,10 @@ bool ResultMapper::DoPutAny(const char *key, Anything value, Context &ctx, ROAny
 			if (script[i].IsNull()) {
 				// fallback to mappers original config
 				Trace("Slotval is null. Calling " << slotname << " with it's default config...");
-				retval = m->DoPutAny(key, value, ctx, m->DoSelectScript(key, m->fConfig));
+				retval = m->DoPutAny(key, value, ctx, m->DoSelectScript(key, m->fConfig, ctx));
 			} else {
 				Trace("Calling " << slotname << " with script[" << i << "][\"" << NotNull(key) << "\"]...");
-				retval = m->DoPutAny(key, value, ctx, m->DoSelectScript(key, script[i]));
+				retval = m->DoPutAny(key, value, ctx, m->DoSelectScript(key, script[i], ctx));
 			}
 		} else {
 			Trace("Slotname " << slotname << " is not a mapper (not found).");
@@ -540,7 +590,7 @@ bool ResultMapper::DoPutAny(const char *key, Anything value, Context &ctx, ROAny
 bool ResultMapper::Put(const char *key, istream &is, Context &ctx)
 {
 	StartTrace1(ResultMapper.Put, NotNull(key));
-	return DoPutStream(key, is, ctx, DoSelectScript(key, fConfig));
+	return DoPutStream(key, is, ctx, DoSelectScript(key, fConfig, ctx));
 }
 
 bool ResultMapper::DoPutStream(const char *key, istream &is, Context &ctx, ROAnything script)
@@ -572,10 +622,10 @@ bool ResultMapper::DoPutStream(const char *key, istream &is, Context &ctx, ROAny
 			if (script[i].IsNull()) {
 				// fallback to mappers original config
 				Trace("Slotval is null. Calling " << slotname << " with it's default config...");
-				retval = m->DoPutStream(key, is, ctx, m->DoSelectScript(key, m->fConfig));
+				retval = m->DoPutStream(key, is, ctx, m->DoSelectScript(key, m->fConfig, ctx));
 			} else {
 				Trace("Calling " << slotname << " with script[" << i << "][\"" << NotNull(key) << "\"]");
-				retval = m->DoPutStream(key, is, ctx, m->DoSelectScript(key, script[i]));
+				retval = m->DoPutStream(key, is, ctx, m->DoSelectScript(key, script[i], ctx));
 			}
 		} else {
 			Trace("Slotname " << slotname << " is not a mapper (not found).");
@@ -643,10 +693,13 @@ bool ResultMapper::DoFinalPutStream(const char *key, istream &is, Context &ctx)
 {
 	StartTrace1(ResultMapper.DoFinalPutStream, NotNull(key));
 
-	OStringStream input;
-	input << is.rdbuf();
-	Trace(input.str());
-	return DoFinalPutAny(key, input.str(), ctx);
+	String strBuf;
+	{
+		OStringStream input(strBuf);
+		input << is.rdbuf();
+	}
+	Trace(strBuf);
+	return DoFinalPutAny(key, strBuf, ctx);
 }
 
 String ResultMapper::DoGetDestinationSlot(Context &ctx)
@@ -667,12 +720,21 @@ String ResultMapper::DoGetDestinationSlot(Context &ctx)
 }
 
 // -------------------------- EagerResultMapper -------------------------
-
 RegisterResultMapper(EagerResultMapper);
 
-EagerResultMapper::EagerResultMapper(const char *name, ROAnything config) : ResultMapper(name)
+EagerResultMapper::EagerResultMapper(const char *name, ROAnything config)
+	: ResultMapper(name)
 {
 	fConfig = config;
+}
+
+ROAnything EagerResultMapper::DoSelectScript(const char *key, ROAnything script, Context &ctx)
+{
+	ROAnything roaReturn(ResultMapper::DoSelectScript(key, script, ctx));
+	if ( roaReturn.IsNull() ) {
+		roaReturn = script;
+	}
+	return roaReturn;
 }
 
 // ========================== Other Mappers =================================

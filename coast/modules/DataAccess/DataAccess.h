@@ -33,7 +33,7 @@ public:
 	//! \param input mapper that generates the needed input for the data access
 	//! \param output mapper that handles the output produced by the data access
 	//! \param context the context of this data access call
-	bool Exec(InputMapper *input, OutputMapper *output, Context &context);
+	bool Exec(ParameterMapper *input, ResultMapper *output, Context &context);
 
 protected:
 	friend class DataAccessTest;

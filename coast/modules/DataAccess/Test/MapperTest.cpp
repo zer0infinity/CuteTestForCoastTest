@@ -73,7 +73,7 @@ void MapperTest::HardConfiguredGet()
 	Anything dummy;
 	Context ctx(dummy, dummy, (Server *)0, (Session *)0, (Role *)0);
 	EagerParameterMapper httpmapper("HTTPHardCodedMapperTest");
-	httpmapper.CheckConfig("InputMapper");
+	httpmapper.CheckConfig("ParameterMapper");
 
 	String input("<");
 	OStringStream Ios(&input);
@@ -98,7 +98,7 @@ void MapperTest::MixedConfiguredGet()
 	Context ctx(inputData, inputData, (Server *)0, (Session *)0, (Role *)0);
 
 	EagerParameterMapper httpmapper("HostDAInputMapperTest");
-	httpmapper.CheckConfig("InputMapper");
+	httpmapper.CheckConfig("ParameterMapper");
 
 	String input("<");
 	String input1("<");
@@ -127,7 +127,7 @@ void MapperTest::GetTests()
 	StartTrace(MapperTest.GetTests);
 
 	ParameterMapper mapper("MapperTest");
-	mapper.CheckConfig("InputMapper");
+	mapper.CheckConfig("ParameterMapper");
 
 	Context ctx;
 	ctx.GetTmpStore()["AKeyFromContext"] = 9.1;
@@ -269,7 +269,7 @@ void MapperTest::StdGetTest()
 	Anything dummy;
 	Context ctx(fStdContextAny, dummy, 0, 0, 0, 0);
 
-	InputMapper mapper("stdtestgetmapper");
+	ParameterMapper mapper("stdtestgetmapper");
 
 	// test the overloaded get api
 	int iTestVal;
@@ -319,7 +319,7 @@ void MapperTest::StdGetNoDataTest()
 {
 	Context ctx;
 
-	InputMapper mapper("stdtestgetmapper");
+	ParameterMapper mapper("stdtestgetmapper");
 
 	// test the overloaded get api
 	int iTestVal;
@@ -456,14 +456,14 @@ void MapperTest::GetConfigNameTest()
 	String configName;
 
 	String mapperName("testmapper");
-	String categoryName("InputMapper");
-	InputMapper inputMapper(mapperName);
+	String categoryName("ParameterMapper");
+	ParameterMapper inputMapper(mapperName);
 
 	t_assert( inputMapper.DoGetConfigName(categoryName, mapperName, configName) );
 	assertEqual("InputMapperMeta", configName);
 
-	categoryName = "OutputMapper";
-	OutputMapper outputMapper(mapperName);
+	categoryName = "ResultMapper";
+	ResultMapper outputMapper(mapperName);
 
 	t_assert( outputMapper.DoGetConfigName(categoryName, mapperName, configName) );
 	assertEqual("OutputMapperMeta", configName);
@@ -472,8 +472,8 @@ void MapperTest::GetConfigNameTest()
 void MapperTest::DoLoadConfigTest()
 {
 	String mapperName("testmapper");
-	String categoryName("InputMapper");
-	InputMapper inputMapper(mapperName);
+	String categoryName("ParameterMapper");
+	ParameterMapper inputMapper(mapperName);
 
 	t_assert( inputMapper.DoLoadConfig(categoryName) );
 	t_assert(inputMapper.fConfig.IsDefined("testitem1"));
@@ -481,8 +481,8 @@ void MapperTest::DoLoadConfigTest()
 	t_assert(inputMapper.fConfig.IsDefined("testitem2"));
 	assertEqual("bah", inputMapper.fConfig["testitem2"].AsCharPtr());
 
-	OutputMapper outputMapper(mapperName);
-	categoryName = "OutputMapper";
+	ResultMapper outputMapper(mapperName);
+	categoryName = "ResultMapper";
 
 	t_assert( outputMapper.DoLoadConfig(categoryName) );
 	t_assert(outputMapper.fConfig.IsDefined("testitem1"));
@@ -493,10 +493,10 @@ void MapperTest::DoLoadConfigTest()
 
 void MapperTest::LookupMapperGetTest()
 {
-	InputMapper m("lookupMapperTest");
-	m.CheckConfig("InputMapper");
-	InputMapper m1("anotherMapper");
-	m1.CheckConfig("InputMapper");
+	ParameterMapper m("lookupMapperTest");
+	m.CheckConfig("ParameterMapper");
+	ParameterMapper m1("anotherMapper");
+	m1.CheckConfig("ParameterMapper");
 	m1.Register("anotherMapper", "ParameterMapper");
 	Context ctx;
 
@@ -515,8 +515,8 @@ void MapperTest::RenameSlotWithConfigPutTest()
 	/* config for RenameSlotWithConfigPutTest is
 	   { /Kaspar { /Peter * }}
 	 */
-	OutputMapper m("RenameSlotWithConfigPutTest");
-	m.CheckConfig("OutputMapper");
+	ResultMapper m("RenameSlotWithConfigPutTest");
+	m.CheckConfig("ResultMapper");
 	Context ctx;
 	t_assert(m.Put("Kaspar", 42L, ctx));
 	assertEqual(42L, ctx.GetTmpStore()["Mapper"]["Peter"].AsLong(0));
@@ -529,7 +529,7 @@ void MapperTest::ScriptedPutTest()
 	    { /Kaspar { /Mapper { /Peter * } { /Mapper { /Mike * }} } }
 	 */
 	EagerResultMapper m("ScriptedPutTest");
-	m.CheckConfig("OutputMapper");
+	m.CheckConfig("ResultMapper");
 	Context ctx;
 	t_assert(m.Put("Kaspar", 42L, ctx));
 	TraceAny(ctx.GetTmpStore(), "tmpstore");
@@ -543,7 +543,7 @@ void MapperTest::RenameSlotWithConfigGetTest()
 	   { /Kaspar { /Peter * } }
 	 */
 	ParameterMapper m("RenameSlotWithConfigGetTest");
-	m.CheckConfig("InputMapper");
+	m.CheckConfig("ParameterMapper");
 	Context ctx;
 	long value1, value2;
 	ctx.GetTmpStore()["Kaspar"] = 42L;		// will never be accessed

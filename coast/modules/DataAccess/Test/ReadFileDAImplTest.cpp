@@ -47,7 +47,7 @@ void ReadFileDAImplTest::GetFileNameTest()
 	StartTrace(ReadFileDAImplTest.GetFileNameTest);
 
 	ReadFileDAImpl hfl("test");
-	InputMapper mp("test");
+	ParameterMapper mp("test");
 
 	Context ctx;
 	String filename("defaultFileName");
@@ -81,7 +81,7 @@ void ReadFileDAImplTest::GetFileStreamTest()
 {
 	StartTrace(ReadFileDAImplTest.GetFileStreamTest);
 	ReadFileDAImpl hfl("test");
-	InputMapper mp("test");
+	ParameterMapper mp("test");
 
 	Context ctx;
 	Anything tmpStore(ctx.GetTmpStore());

@@ -118,7 +118,7 @@ public:
 	IFAObject *Clone() const {
 		return new SessionUnlockTestDAImpl(fName);
 	}
-	virtual bool Exec(Context &c, InputMapper *input, OutputMapper *output) {
+	virtual bool Exec(Context &c, ParameterMapper *input, ResultMapper *output) {
 		c.GetTmpStore()["session"] = c.GetSession()->IsLockedByMe() ? "LOCKED" : "unlocked";
 		return true;
 	}
