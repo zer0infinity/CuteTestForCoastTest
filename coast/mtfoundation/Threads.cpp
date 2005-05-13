@@ -230,7 +230,6 @@ void Thread::NotifyAll(Anything evt)
 
 	for (long i = 0; i < fObservers.GetSize(); i++) {
 		ThreadObserver *to = (ThreadObserver *)fObservers[i].AsIFAObject(0);
-
 		if (to) {
 			to->Update(this, evt);
 		} else {
@@ -241,9 +240,10 @@ void Thread::NotifyAll(Anything evt)
 
 void Thread::BroadCastEvent(Anything evt)
 {
-	StartTrace(Thread.BroadCastEvent);
+	StatTrace(Thread.BroadCastEvent, "-- entering --", Storage::Current());
 	NotifyAll(evt);
 	fStateCond.BroadCast();
+	StatTrace(Thread.BroadCastEvent, "-- leaving -- after broadcast", Storage::Current());
 }
 
 bool Thread::CheckState(EThreadState state, long timeout, long nanotimeout)
@@ -399,6 +399,9 @@ bool Thread::IntSetState(EThreadState state, ROAnything args)
 		Anything anyEvt;
 		anyEvt["ThreadState"]["Old"] = (long)fState;
 		anyEvt["ThreadState"]["New"] = (long)state;
+		if ( !args.IsNull() ) {
+			anyEvt["Args"] = args.DeepClone();
+		}
 		fState = state;
 		BroadCastEvent(anyEvt);
 		return true;
@@ -444,24 +447,36 @@ bool Thread::SetRunningState(ERunningState state, ROAnything args)
 {
 	SimpleMutexEntry me(fStateMutex);
 	me.Use();
-	StartTrace1(Thread.SetRunningState, "CallId: " << MyId());
+
+	// allocate things used before and after call to CallRunningStateHooks() on Storage::Global() because Allocator could be refreshed during call
+
+	StatTrace(Thread.SetRunningState, "-- entering -- CallId: " << MyId(), Storage::Current());
 
 	if (fState != eRunning || fRunningState == state) {
 		return false;
 	}
 
-	Anything anyEvt;
-	anyEvt["RunningState"]["Old"] = (long)fRunningState;
-	anyEvt["RunningState"]["New"] = (long)state;
+	ERunningState oldState = fRunningState;
 	fRunningState = state;
+	// after this call we potentially have refreshed Allocator
 	CallRunningStateHooks(state, args);
-	BroadCastEvent(anyEvt);
+	{
+		// scoping to force compiler not to move around automatic variables which could make strange things happen
+		Anything anyEvt;
+		anyEvt["RunningState"]["Old"] = (long)oldState;
+		anyEvt["RunningState"]["New"] = (long)state;
+		if ( !args.IsNull() ) {
+			anyEvt["Args"] = args.DeepClone();
+		}
+		BroadCastEvent(anyEvt);
+	}
+	StatTrace(Thread.SetRunningState, "-- leaving --", Storage::Current());
 	return true;
 }
 
 void Thread::CallRunningStateHooks(ERunningState state, ROAnything args)
 {
-	StartTrace1(Thread.CallRunningStateHooks, "RunningState:" << (long)state);
+	StatTrace(Thread.CallRunningStateHooks, "-- entering -- RunningState:" << (long)state, Storage::Current());
 
 	switch (state) {
 		case eReady:
@@ -472,6 +487,7 @@ void Thread::CallRunningStateHooks(ERunningState state, ROAnything args)
 		default:
 			;
 	}
+	StatTrace(Thread.CallRunningStateHooks, "-- leaving --", Storage::Current());
 }
 
 void Thread::DoReadyHook(ROAnything) {};
@@ -524,14 +540,14 @@ bool Thread::IsRunning()
 //:Try to set Ready state
 bool Thread::SetReady(ROAnything args)
 {
-	StartTrace(Thread.SetReady);
+	StatTrace(Thread.SetReady, "ThrdId: " << (long)GetId() << " CallId: " << MyId(), Storage::Current());
 	return SetRunningState(eReady, args);
 }
 
 //:Try to set Working state
 bool Thread::SetWorking(ROAnything args)
 {
-	StartTrace1(Thread.SetWorking, "ThrdId: " << (long)GetId() << " CallId: " << MyId());
+	StatTrace(Thread.SetWorking, "ThrdId: " << (long)GetId() << " CallId: " << MyId(), Storage::Current());
 	return SetRunningState(eWorking, args);
 }
 
