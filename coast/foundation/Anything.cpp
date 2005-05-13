@@ -660,8 +660,8 @@ public:
 	long RefCount() {
 		return fRefCount;
 	}
-	inline String ThisToHex() const {
-		String hexStr;
+	inline String ThisToHex(Allocator *a = Storage::Current()) const {
+		String hexStr(a);
 		return hexStr.Append((long)this);
 	}
 	static void *operator new(size_t size, Allocator *a);
@@ -1171,14 +1171,20 @@ void AnyImpl::operator delete(void *d)
 
 AnyImpl *AnyImpl::DeepClone(Allocator *a, Anything &xreftable)
 {
-
 	return this->DoDeepClone(a, xreftable);
 }
 
 //--- AnyArrayImpl implementation ----------------------------------
 
 AnyArrayImpl::AnyArrayImpl(Allocator *a)
-	: AnyImpl(a), fContents(0), fKeys(0), fInd(0), fCapacity(4), fSize(0), fBufSize(4), fNumOfBufs(0)
+	: AnyImpl(a)
+	, fContents(0)
+	, fKeys(0)
+	, fInd(0)
+	, fCapacity(4)
+	, fSize(0)
+	, fBufSize(4)
+	, fNumOfBufs(0)
 {
 	// allocate a default size structure
 	// without keys
@@ -1533,7 +1539,7 @@ void AnyArrayImpl::PrintHash()
 
 AnyImpl *AnyArrayImpl::DoDeepClone(Allocator *a, Anything &xreftable)
 {
-	String adr(ThisToHex());
+	String adr(ThisToHex(), a);
 	Anything &refEntry = xreftable[adr];
 	AnyImpl *res = (AnyImpl *)refEntry.AsIFAObject(0);
 	if (res != NULL) {
@@ -2405,14 +2411,13 @@ bool Anything::Import(istream &is, const char *fname)
 		if (!p.DoParse(*this)) {
 			// there has been a syntax error
 			String m("Anything::Import "), strFName(context.fFileName);
-			if ( !strFName.Length() ) {
-				if (fname != NULL) {
-					strFName << fname;
-				} else {
-					strFName << "<NoName>";
-				}
+			bool bHasExt = true;
+			if ( !strFName.Length() && fname != NULL ) {
+				strFName << fname;
+				bHasExt = (strFName.SubString(strFName.Length() - 4L) == ".any");
+			} else {
+				strFName << "<NoName>";
 			}
-			bool bHasExt = (strFName.SubString(strFName.Length() - 4L) == ".any");
 			m << strFName << (bHasExt ? ":" : ".any");
 			m.Append(": syntax error");
 			SysLog::WriteToStderr(m << "\n");
@@ -2584,7 +2589,7 @@ ROAnything::~ROAnything()
 
 Anything ROAnything::DeepClone(Allocator *a) const
 {
-	Anything xref;
+	Anything xref(a);
 	if (fAnyImp) {
 		return fAnyImp->DeepClone(a, xref);
 	} else {
@@ -3801,10 +3806,12 @@ void AnythingParser::Error(const char *msg, const char *toktext)
 {
 	// put a space in front to give poor Sniff a chance
 	String m(fContext.fFileName);
+	bool bHasExt = true;
 	if ( !m.Length() ) {
 		m << "<NoName>";
+	} else {
+		bHasExt = (m.SubString(m.Length() - 4L) == ".any");
 	}
-	bool bHasExt = (m.SubString(m.Length() - 4L) == ".any");
 	m << (bHasExt ? ":" : ".any:") << fContext.fLine << " " << msg << " [" << toktext << "]";
 	SYSWARNING(m);
 	m << "\n";
