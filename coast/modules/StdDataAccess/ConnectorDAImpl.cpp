@@ -255,12 +255,15 @@ bool ConnectorDAImpl::HandleError( Socket *s, const char *streamText, Context &c
 	StartTrace(ConnectorDAImpl.HandleError);
 	Trace(" Errortext to use : " << streamText);
 
-	StringStream stream;
-	stream << streamText;
-	s->ClientInfo().PrintOn(stream) << " failed!";
-	stream.flush();
-	out->Put("Error", stream.str(), context);
-	SYSERROR(stream.str());
+	String strBuf;
+	{
+		OStringStream stream(strBuf);
+		stream << streamText;
+		s->ClientInfo().PrintOn(stream) << " failed!";
+		stream.flush();
+	}
+	out->Put("Error", strBuf, context);
+	SYSERROR(strBuf);
 
 	return false;
 }
