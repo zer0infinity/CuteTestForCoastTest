@@ -60,10 +60,11 @@ Anything DataAccessStresser::Run(long id)
 			strStepNr << i;
 			DiffTimer timer;
 			if ( !da.StdExec(ctx) ) {
-				OStringStream outstream;
+				String strBuf;
+				OStringStream outstream(strBuf);
 				ctx.GetTmpStore()["Mapper"].PrintOn(outstream, true);
 				outstream.flush();
-				SysLog::WriteToStderr(outstream.str());
+				SysLog::WriteToStderr(strBuf);
 				nError++;
 				results["ErrorMessageCtr"][strStepNr] = ctx.GetTmpStore()["Mapper"];
 			}
