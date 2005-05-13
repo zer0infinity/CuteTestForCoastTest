@@ -159,6 +159,10 @@ private:
 	Tracer::StatWDDebug(_QUOTE_(trigger), gsMecart << msg, allocator);	\
 }
 
+// helper to check if we are triggered
+#define TraceTriggered(trigger, allocator)							\
+	Tracer::CheckWDDebug(_QUOTE_(trigger), allocator)
+
 #define ResetTracer()	Tracer::Reset()
 #define TerminateTracer()	Tracer::Terminate()
 #define HTMLTraceStores(reply, context)	context.HTMLDebugStores(reply)
@@ -177,6 +181,9 @@ private:
 #define SubTraceAny(subtrigger, any, msg)
 #define SubTraceBuf(subtrigger, msg, sz)
 #define StatTrace(trigger, msg, allocator)
+// helper to check if we are triggered
+#define TraceTriggered(trigger, allocator)		false
+
 #define ResetTracer()
 #define TerminateTracer()
 #define HTMLTraceStores(reply, context)
