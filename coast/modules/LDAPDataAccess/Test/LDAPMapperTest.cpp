@@ -65,8 +65,8 @@ void LDAPMapperTest::QueryFilterTest()
 	Anything inputArgs;
 
 	Context ctx(inputArgs, inputArgs, (Server *)0, (Session *)0, (Role *)0);
-	InputMapper querymapper("lqmTest0");
-	querymapper.CheckConfig("InputMapper");
+	ParameterMapper querymapper("lqmTest0");
+	querymapper.CheckConfig("ParameterMapper");
 
 	String input;
 	OStringStream Ios(&input);
@@ -86,8 +86,8 @@ void LDAPMapperTest::FieldMapperTest1()
 		inputArgs["password"] = "aaaaaaaaaaa"; //SHA1  11 byte: '755c001f4ae3c8843e5a50dd6aa2fa23893dd3ad'
 
 		Context ctx(inputArgs, inputArgs, (Server *)0, (Session *)0, (Role *)0);
-		InputMapper fieldmapper("FieldMapperTest1_fixed");
-		fieldmapper.CheckConfig("InputMapper");
+		ParameterMapper fieldmapper("FieldMapperTest1_fixed");
+		fieldmapper.CheckConfig("ParameterMapper");
 
 		String input;
 		OStringStream Ios(&input);
@@ -108,8 +108,8 @@ void LDAPMapperTest::FieldMapperTest2()
 	inputArgs["password"] = "welcome";
 
 	Context ctx(inputArgs, inputArgs, (Server *)0, (Session *)0, (Role *)0);
-	InputMapper fieldmapper("FieldMapperTest2");
-	fieldmapper.CheckConfig("InputMapper");
+	ParameterMapper fieldmapper("FieldMapperTest2");
+	fieldmapper.CheckConfig("ParameterMapper");
 
 	String input;
 	OStringStream Ios(&input);
@@ -130,7 +130,7 @@ void LDAPMapperTest::BasicParamTest()
 
 	Context ctx(inputArgs, inputArgs, (Server *)0, (Session *)0, (Role *)0);
 	EagerParameterMapper ldapparammapper("BasicParams");
-	ldapparammapper.CheckConfig("InputMapper");
+	ldapparammapper.CheckConfig("ParameterMapper");
 
 	Anything ldapparams;
 	t_assert(ldapparammapper.Get("Input", ldapparams, ctx));
@@ -150,8 +150,8 @@ void LDAPMapperTest::DNameTest()
 	inputArgs["userid"] = "stossel";
 
 	Context ctx(inputArgs, inputArgs, (Server *)0, (Session *)0, (Role *)0);
-	InputMapper dnmapper("DName");
-	dnmapper.CheckConfig("InputMapper");
+	ParameterMapper dnmapper("DName");
+	dnmapper.CheckConfig("ParameterMapper");
 
 	String input;
 	OStringStream Ios(&input);
@@ -174,7 +174,7 @@ void LDAPMapperTest::ModifyValsTest()
 
 		Context ctx(inputArgs, inputArgs, (Server *)0, (Session *)0, (Role *)0);
 		EagerParameterMapper modifymapper("ModifyValsFixed");
-		modifymapper.CheckConfig("InputMapper");
+		modifymapper.CheckConfig("ParameterMapper");
 
 		Anything vals;
 		t_assert(modifymapper.Get("Modify", vals, ctx));
@@ -203,9 +203,9 @@ void LDAPMapperTest::LDAPAddTest()
 		inputArgs["Input"]["UniversalId"] = "userpassword";
 
 		Context ctx(inputArgs, inputArgs, (Server *)0, (Session *)0, (Role *)0);
-		InputMapper addmapper("LDAPAddTest_fixed");
+		ParameterMapper addmapper("LDAPAddTest_fixed");
 
-		addmapper.CheckConfig("InputMapper");
+		addmapper.CheckConfig("ParameterMapper");
 
 		String dname;
 		{
@@ -214,8 +214,8 @@ void LDAPMapperTest::LDAPAddTest()
 		}
 		assertEqual("uid=tkgoa@10601.CH,", dname);
 
-		InputMapper addvalsmapper("AddVals_fixed");
-		addvalsmapper.CheckConfig("InputMapper");
+		ParameterMapper addvalsmapper("AddVals_fixed");
+		addvalsmapper.CheckConfig("ParameterMapper");
 
 		Anything vals;
 		t_assert(addvalsmapper.Get("Modify", vals, ctx));

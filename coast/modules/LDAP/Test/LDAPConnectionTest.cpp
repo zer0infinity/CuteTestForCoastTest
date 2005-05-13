@@ -68,7 +68,7 @@ void LDAPConnectionTest::ConnectionTest()
 			Context ctx;
 			ParameterMapper pm("ConnectionTestParameterMapper");
 			ResultMapper rm("ConnectionTestResultMapper");
-			rm.CheckConfig("OutputMapper");
+			rm.CheckConfig("ResultMapper");
 			String da("DataAccess_");
 			da << i;
 
