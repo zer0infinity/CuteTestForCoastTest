@@ -272,14 +272,19 @@ void WorkerThread::Run()
 			DoProcessWorkload();
 			if ( IsRunning() ) {
 				SetReady();
-				if ( fRefreshAllocator ) {
-					StatTrace(WorkerThread.Run, "fAllocator->Refresh", Storage::Global());
-					// reorganize allocator memory
-					if ( fAllocator ) {
-						fAllocator->Refresh();
-					}
-				}
 			}
+		}
+	}
+}
+
+void WorkerThread::DoReadyHook(ROAnything)
+{
+	if ( fRefreshAllocator ) {
+		// StatTrace memory can still be on current storage because its code will be inserted in a subscope
+		StatTrace(WorkerThread.DoReadyHook, "fAllocator->Refresh", Storage::Current());
+		// reorganize allocator memory and hope that no more memory is allocated anymore
+		if ( fAllocator ) {
+			fAllocator->Refresh();
 		}
 	}
 }
@@ -413,7 +418,12 @@ void WorkerPoolManager::Enter(ROAnything workload)
 
 	// find a worker object that can run this request
 	WorkerThread *hr = FindNextRunnable(request);
-	// configure the worker and let it work
+	// configure the worker and let it work if it is ready, wait at most 20ms
+	long lMaxCount = 10;
+	while ( !hr->IsReady() && ( lMaxCount-- > 0L ) ) {
+		Thread::Wait(0L, 2000000);
+	}
+
 	hr->SetWorking(workload);
 }
 

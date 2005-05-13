@@ -152,6 +152,9 @@ protected:
 		\param args pass work to do and store it for later use by DoProcessWorkload() */
 	virtual void DoWorkingHook(ROAnything args) {};
 
+	//! checks back after processing a work package to cleanup things if required
+	virtual void DoReadyHook(ROAnything);
+
 	//! do the work (using the informations you stored in the instance variables)
 	virtual void DoProcessWorkload() = 0;
 
