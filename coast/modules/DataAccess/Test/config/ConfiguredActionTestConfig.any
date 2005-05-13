@@ -9,20 +9,10 @@
 {
 
 	/RunOnly {
-#		DATest_NoMappersGiven
-#		DATest_OnlyResultMapperGiven
-#		DATest_StdMappers_NoScript
-#		DATest_StdMappers_Script
-#		DATest_StdMappers_ComplexScript
-#		DATest_StdMappers_MoreComplexScript
-#		DATest_NonexistingMapper
-#		DATest_UseFallbackMapper
-#		DATest_UseFallbackMapperFrontdoorStyle
 	}
 	/RunTestCases {
 
 	# ------ data access tests for refactored data access 16/03/04 --------
-
 		/DATest_NoMappersGiven {
 			/TheAction {
 				/CallDA {
@@ -35,8 +25,8 @@
 				  /DataAccess {
 					/DATest_NoMappersGiven {
 					  /Error {
-						"DataAccess.cpp:143 DataAccess::GetMyParameterMapper returned 0 for [DATest_NoMappersGiven]"
-						"DataAccess.cpp:190 DataAccess::GetMyResultMapper returned 0 for [DATest_NoMappersGiven]"
+						"DataAccess.cpp:141 DataAccess::GetMyParameterMapper returned 0 for [DATest_NoMappersGiven]"
+						"DataAccess.cpp:186 DataAccess::GetMyResultMapper returned 0 for [DATest_NoMappersGiven]"
 					  }
 					}
 				  }
@@ -57,7 +47,7 @@
 				  /DataAccess {
 					/DATest_OnlyResultMapperGiven {
 					  /Error {
-						"DataAccess.cpp:143 DataAccess::GetMyParameterMapper returned 0 for [DATest_OnlyResultMapperGiven]"
+						"DataAccess.cpp:141 DataAccess::GetMyParameterMapper returned 0 for [DATest_OnlyResultMapperGiven]"
 					  }
 					}
 				  }
@@ -216,25 +206,6 @@
 			}
 		}
 
-		/DATest_UseFallbackMapperFrontdoorStyle {
-			/TmpStore {
-				/In XYZ
-			}
-			/TheAction {
-				/CallDA {
-					/DataAccess	DATest_UseFallbackMapperFrontdoorStyle
-				}
-			}
-			/ExpectedResult 1
-			/Result {
-				/TmpStore {
-					/Mapper {
-						/Out XYZ
-					}
-				}
-			}
-		}
-
 	# ------ old tests (before data access refact. 16/03/04) --------------
 
 		/CallDataAccessSuceeds {
@@ -378,6 +349,26 @@
 				}
 			}
 		}
+		/MyTestDAImplMetaConfigParamOverrideTest {
+			/TmpStore {
+				/InNotThere	XYZ
+			}
+			/TheAction {
+				/CallDA {
+					/DataAccess	MyTestDAImplMetaConfig
+					/Parameters {
+						/In	Whatever
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/Mapper	{
+						/Out	Whatever
+					}
+				}
+			}
+		}
 		/MyTestInputMapperConfigTest {
 			/TmpStore {
 				/InNotThere	XYZ
@@ -390,6 +381,23 @@
 					/Mapper	{
 						/Out {
 							InputMapperConfig
+						}
+					}
+				}
+			}
+		}
+		/MyTestInputMapperConfigDerivedTest {
+			/TmpStore {
+				/InNotThere	XYZ
+			}
+			/TheAction {
+				/CallDA MyTestInputMapperConfigDerived
+			}
+			/Result {
+				/TmpStore {
+					/Mapper	{
+						/Out {
+							InputMapperConfigDerived
 						}
 					}
 				}
@@ -411,6 +419,42 @@
 				/TmpStore {
 					/Mapper	{
 						/Out	ParamConfig
+					}
+				}
+			}
+		}
+		/OutputMapperConfigTest {
+			/TmpStore {
+				/In	XYZ
+			}
+			/TheAction {
+				/CallDA OutputMapperConfig
+			}
+			/Result {
+				/TmpStore {
+					/ResultMapper {
+						/DestinationSlot OutputMapperConfig
+					}
+					/OutputMapperConfig	{
+						/Out	XYZ
+					}
+				}
+			}
+		}
+		/OutputMapperConfigDerivedTest {
+			/TmpStore {
+				/In	Hallo
+			}
+			/TheAction {
+				/CallDA OutputMapperConfigDerived
+			}
+			/Result {
+				/TmpStore {
+					/ResultMapper {
+						/DestinationSlot Mapper
+					}
+					/Mapper	{
+						/Gugus	Hallo
 					}
 				}
 			}
