@@ -30,13 +30,13 @@ IFAObject *SybCTGenericDAImpl::Clone() const
 	return new SybCTGenericDAImpl(fName);
 }
 
-bool SybCTGenericDAImpl::Exec( Context &context, InputMapper *in, OutputMapper *out)
+bool SybCTGenericDAImpl::Exec( Context &context, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(SybCTGenericDAImpl.Exec);
 	return false;
 }
 
-void SybCTGenericDAImpl::FillParameters(Context &context, InputMapper *in, OutputMapper *out, Anything &queryParams )
+void SybCTGenericDAImpl::FillParameters(Context &context, ParameterMapper *in, ResultMapper *out, Anything &queryParams )
 {
 	StartTrace(SybCTGenericDAImpl.FillParameters);
 	String user, passwd, server, app, command, resultformat, resultsize;
@@ -70,7 +70,7 @@ void SybCTGenericDAImpl::FillParameters(Context &context, InputMapper *in, Outpu
 	queryParams["resultsize"] = lResultSize;
 }
 
-bool SybCTGenericDAImpl::PutResults(Context &context, InputMapper *in, OutputMapper *out, Anything &queryParams, Anything &queryResults, Anything &queryTitles)
+bool SybCTGenericDAImpl::PutResults(Context &context, ParameterMapper *in, ResultMapper *out, Anything &queryParams, Anything &queryResults, Anything &queryTitles)
 {
 	StartTrace(SybCTGenericDAImpl.PutResults);
 	bool bShowRowCount = true;
@@ -93,7 +93,7 @@ bool SybCTGenericDAImpl::PutResults(Context &context, InputMapper *in, OutputMap
 	return true;
 }
 
-void SybCTGenericDAImpl::PutMessages(Context &context, OutputMapper *out, Anything &aMsgAny)
+void SybCTGenericDAImpl::PutMessages(Context &context, ResultMapper *out, Anything &aMsgAny)
 {
 	StartTrace(SybCTGenericDAImpl.PutMessages);
 	if ( aMsgAny.IsDefined("Messages") ) {

@@ -36,7 +36,7 @@ public:
 
 	//: executes the transaction
 	//!param: c - The context of the transaction
-	virtual bool Exec(Context &ctx, InputMapper *in, OutputMapper *out);
+	virtual bool Exec(Context &ctx, ParameterMapper *in, ResultMapper *out);
 
 	static bool Init(ROAnything config);
 	//:implementers should terminate module expecting destruction
@@ -49,7 +49,7 @@ protected:
 	static bool DoGetConnection(SybCTnewDA *&pSyb, bool &bIsOpen, const String &server, const String &user);
 	static void DoPutbackConnection(SybCTnewDA *&pSyb, bool bIsOpen, const String &server, const String &user);
 
-	bool DoPrepareSQL(String &command, Context &ctx, InputMapper *in);
+	bool DoPrepareSQL(String &command, Context &ctx, ParameterMapper *in);
 
 	//: Helper method to report errors
 	static Mutex    fgStructureMutex;

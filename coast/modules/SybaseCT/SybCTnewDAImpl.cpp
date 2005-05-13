@@ -223,7 +223,7 @@ void SybCTnewDAImpl::DoPutbackConnection(SybCTnewDA *&pSyb, bool bIsOpen, const 
 	TraceAny(fgListOfSybCT, "current list of connections");
 }
 
-bool SybCTnewDAImpl::Exec( Context &ctx, InputMapper *in, OutputMapper *out)
+bool SybCTnewDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(SybCTnewDAImpl.Exec);
 	bool bRet = false;
@@ -294,7 +294,7 @@ bool SybCTnewDAImpl::Exec( Context &ctx, InputMapper *in, OutputMapper *out)
 	return bRet;
 }
 
-bool SybCTnewDAImpl::DoPrepareSQL( String &command, Context &ctx, InputMapper *in)
+bool SybCTnewDAImpl::DoPrepareSQL( String &command, Context &ctx, ParameterMapper *in)
 {
 	StartTrace(SybCTnewDAImpl.DoPrepareSQL);
 	DAAccessTimer(SybCTnewDAImpl.DoPrepareSQL, fName, ctx);

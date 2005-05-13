@@ -92,10 +92,10 @@ public:
 
 	struct DaParams {
 		DaParams() : fpContext(NULL), fpIn(NULL), fpOut(NULL), fpDAName(NULL) {};
-		DaParams(Context *context, InputMapper *in, OutputMapper *out, String *pDAName) : fpContext(context), fpIn(in), fpOut(out), fpDAName(pDAName) {};
+		DaParams(Context *context, ParameterMapper *in, ResultMapper *out, String *pDAName) : fpContext(context), fpIn(in), fpOut(out), fpDAName(pDAName) {};
 		Context *fpContext;
-		InputMapper *fpIn;
-		OutputMapper *fpOut;
+		ParameterMapper *fpIn;
+		ResultMapper *fpOut;
 		String *fpDAName;
 	};
 	static bool GetDaParams(DaParams &params, CS_CONNECTION *connection);
