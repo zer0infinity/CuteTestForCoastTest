@@ -106,8 +106,17 @@ protected:
 #define MemTrackFree(tracker, allocSz) tracker.TrackFree(allocSz)
 #define MemTrackStat(tracker) tracker.PrintStatistic()
 #define MemTrackStatIfAllocated(tracker) if ( tracker.PeakAllocated() > 0 ) tracker.PrintStatistic()
-#define MemTrackStillAllocatedException(tracker)	if( tracker.CurrentlyAllocated() > 0 )	\
-	SysLog::Error(String("deleted PoolAllocator was still in use! (id: ") << tracker.fId << " name [" << NotNull(tracker.fpName) << "])")
+#define MemTrackStillAllocated(tracker)	( tracker.CurrentlyAllocated() > 0 )
+#define MemTrackStillAllocatedException(tracker, where)	if( tracker.CurrentlyAllocated() > 0 )	\
+	{	\
+		SysLog::Error(String("PoolAllocator was still in use! (id: ", Storage::Global()) << tracker.fId << " name [" << NotNull(tracker.fpName) << "]) in " << where); \
+	}
+#define PoolTrackStat(pAlloc) pAlloc->PrintStatistic()
+#define PoolTrackStatTriggered(trigger, pAlloc)	\
+		if ( TraceTriggered(trigger, Storage::Global()) )	\
+		{\
+			 pAlloc->PrintStatistic();	\
+		}
 
 #else
 #define StartTraceMem(scope)
@@ -121,7 +130,11 @@ protected:
 #define MemTrackFree(tracker, allocSz)
 #define MemTrackStat(tracker)
 #define MemTrackStatIfAllocated(tracker)
-#define MemTrackStillAllocatedException(tracker)
+#define MemTrackStillAllocated(tracker)	false
+#define MemTrackStillAllocatedException(tracker, where)
+
+#define PoolTrackStat(tracker)
+#define PoolTrackStatTriggered(trigger, pAlloc)
 #endif
 
 class EXPORTDECL_FOUNDATION MemoryHeader;
@@ -178,14 +191,15 @@ public:
 #ifdef MEM_DEBUG
 	//!Memory debugging and tracking support; implementer should report currently allocated bytes
 	virtual l_long CurrentlyAllocated() = 0;
-	//!Memory debugging and tracking support; implementer should report all statistic on cerr
-	virtual void PrintStatistic() = 0;
 	//!change of memtrackers to be e.g. MT-Safe
 	virtual void ReplaceMemTracker(MemTracker *t) {}
 #endif
+	//!Memory debugging and tracking support; implementer should report all statistic on cerr
+	virtual void PrintStatistic() = 0;
 
 	//!hook method to reorganize the managed memory
 	virtual void Refresh();
+
 protected:
 	//!hook for allocation of memory
 	virtual void *Alloc(u_long allocSize) = 0;
@@ -226,9 +240,9 @@ public:
 		return 1;
 	}
 
-#ifdef MEM_DEBUG
 	//!print out the allocators statistics (only available if MEM_DEBUG is enabled)
 	virtual void PrintStatistic();
+#ifdef MEM_DEBUG
 	//!returns the currently allocated bytes (only available if MEM_DEBUG is enabled)
 	l_long CurrentlyAllocated();
 	//!replaces the memory tracker with sthg. different e.g. thread safe  (only available if MEM_DEBUG is enabled)
@@ -272,10 +286,9 @@ public:
 	//!cleanup memory management
 	static void Finalize();
 
-#ifdef MEM_DEBUG
 	//!prints memory management statistics
 	static void PrintStatistic();
-
+#ifdef MEM_DEBUG
 	//!factory method to allocate memory management specific MemTracker
 	static MemTracker *MakeMemTracker(const char *name);
 #endif

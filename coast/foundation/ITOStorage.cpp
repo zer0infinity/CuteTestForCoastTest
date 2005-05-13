@@ -215,29 +215,23 @@ void Storage::Finalize()
 
 void Storage::DoInitialize()
 {
-#ifdef MEM_DEBUG
 	static bool once = true;
 	if (once) {
-		Storage::DoGlobal()->PrintStatistic();
+		PoolTrackStat(Storage::DoGlobal());
 		once = false;
 	}
-#endif
 }
 
 void Storage::DoFinalize()
 {
-#ifdef MEM_DEBUG
 	// terminate global allocator
-	Storage::DoGlobal()->PrintStatistic();
-#endif
+	PoolTrackStat(Storage::DoGlobal());
 }
 
-#ifdef MEM_DEBUG
 void Storage::PrintStatistic()
 {
-	DoGlobal()->PrintStatistic();
+	PoolTrackStat(DoGlobal());
 }
-#endif
 
 Allocator *Storage::DoGlobal()
 {
@@ -327,16 +321,16 @@ void GlobalAllocator::ReplaceMemTracker(MemTracker *t)
 	}
 }
 
-void GlobalAllocator::PrintStatistic()
-{
-	MemTrackStat((*fTracker));
-}
-
 l_long GlobalAllocator::CurrentlyAllocated()
 {
 	return fTracker->CurrentlyAllocated();
 }
 #endif
+
+void GlobalAllocator::PrintStatistic()
+{
+	MemTrackStat((*fTracker));
+}
 
 void *GlobalAllocator::Alloc(u_long allocSize)
 {
