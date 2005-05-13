@@ -122,15 +122,6 @@
 		/FallbackResultMapper		ResultMapper
 	}
 
-	# FIXME: kgu: This test should become obsolete at some point!
-	/DATest_UseFallbackMapperFrontdoorStyle {
-		/ParameterMapperScript	FooMapper	# unknown
-		/ResultMapperScript 	BarMapper	# unknown
-
-		/FallbackInputMapper		ParameterMapper
-		/FallbackOutputMapper		ResultMapper
-	}
-
 	# ---
 
 	/NameUsingTestWithLocalConfig {
