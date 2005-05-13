@@ -90,7 +90,7 @@ PoolAllocator::~PoolAllocator()
 {
 	MemTrackStatIfAllocated(fPoolTracker);
 	MemTrackStatIfAllocated(fExcessTracker);
-	MemTrackStillAllocatedException(fPoolTracker);
+	MemTrackStillAllocatedException(fPoolTracker, "PoolAllocator::~PoolAllocator");
 	::free(fPoolBuckets);
 	::free(fPoolMemory);
 }
@@ -245,13 +245,13 @@ PoolBucket *PoolAllocator::FindBucketBySize( u_long allocSize)
 	return 0;
 }
 
-#ifdef MEM_DEBUG
 void PoolAllocator::PrintStatistic()
 {
-	MemTrackStat(fPoolTracker);
-	MemTrackStat(fExcessTracker);
+	MemTrackStatIfAllocated(fPoolTracker);
+	MemTrackStatIfAllocated(fExcessTracker);
 }
 
+#ifdef MEM_DEBUG
 l_long PoolAllocator::CurrentlyAllocated()
 {
 	return fPoolTracker.CurrentlyAllocated() + fExcessTracker.CurrentlyAllocated();
@@ -260,24 +260,13 @@ l_long PoolAllocator::CurrentlyAllocated()
 
 void PoolAllocator::Refresh()
 {
-#ifdef MEM_DEBUG
-	if (fPoolTracker.CurrentlyAllocated() != 0) {
-		String strMsg(Storage::Global());
-		strMsg << "PoolAllocator [" << GetId() << "] is still in use: " << (long)fPoolTracker.CurrentlyAllocated();
-		SysLog::Error(strMsg);
-		PrintStatistic();
-	} else {
-		// reinitialize pool
+	MemTrackStatIfAllocated(fPoolTracker);
+	MemTrackStillAllocatedException(fPoolTracker, "PoolAllocator::Refresh()");
+	MemTrackStatIfAllocated(fExcessTracker);
+	MemTrackStillAllocatedException(fExcessTracker, "PoolAllocator::Refresh()");
+
+	if ( !MemTrackStillAllocated(fPoolTracker) ) {
+		// reinitialize pool if everything was freed
 		Initialize();
 	}
-
-	if (fExcessTracker.CurrentlyAllocated() != 0) {
-		String strMsg(Storage::Global());
-		strMsg << "PoolAllocator [" << GetId() << "] is still using global memory: " << (long)fExcessTracker.CurrentlyAllocated();
-		SysLog::Error(strMsg);
-	}
-#else
-	// reinitialize pool
-	Initialize();
-#endif
 }

@@ -37,8 +37,8 @@ public:
 		\return old identifier */
 	virtual long SetId(long lId);
 
-#ifdef MEM_DEBUG
 	virtual void PrintStatistic();
+#ifdef MEM_DEBUG
 	l_long  CurrentlyAllocated();
 #endif
 	//! apply this to an empty pool only, rebuilds bucket structure from
