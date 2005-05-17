@@ -23,6 +23,9 @@ extern "C" void finalize();
 
 #ifdef MEM_DEBUG
 #include <stdio.h>
+#if defined(WIN32)
+#define snprintf	_snprintf
+#endif
 
 MemChecker::MemChecker(const char *scope, Allocator *a)
 	: fAllocator(a)
@@ -48,7 +51,7 @@ void MemChecker::TraceDelta(const char *message)
 	if (message) {
 		SysLog::WriteToStderr( message, strlen(message));
 	}
-	int bufsz = sprintf(msgbuf, "\nMem Usage change by %.0f bytes in %s\n", (double)delta, fScope);
+	int bufsz = snprintf(msgbuf, sizeof(msgbuf), "\nMem Usage change by %.0f bytes in %s\n", (double)delta, fScope);
 	SysLog::WriteToStderr( msgbuf, bufsz );
 }
 
@@ -113,17 +116,25 @@ void MemTracker::PrintStatistic()
 	// THIS CODE WILL ONLY BE INCLUDED IN DEBUG VERSIONS SO NO SAFETY CONCERN
 	// FOR PRODUCTION CODE. Peter.
 	char buf[2048] ; // safety margin for bytes
-	::snprintf(buf, sizeof(buf), "\nAllocator [%02ld] [%s]\n"
-			   "Peek Allocated  %20lld bytes\n"
-			   "Total Allocated %20lld bytes in %15lld runs (%ld/run)\n"
-			   "Total Freed     %20lld bytes in %15lld runs (%ld/run)\n"
-			   "------------------------------------------\n"
-			   "Difference      %20lld bytes\n",
-			   fId, fpName, fMaxAllocated,
-			   fSizeAllocated , fNumAllocs, (long)(fSizeAllocated / ((fNumAllocs) ? fNumAllocs : 1)),
-			   fSizeFreed, fNumFrees, (long)(fSizeFreed / ((fNumFrees) ? fNumFrees : 1)),
-			   fAllocated
-			  );
+	snprintf(buf, sizeof(buf), "\nAllocator [%02ld] [%s]\n"
+#if defined(WIN32)
+			 "Peek Allocated  %20I64d bytes\n"
+			 "Total Allocated %20I64d bytes in %15I64d runs (%ld/run)\n"
+			 "Total Freed     %20I64d bytes in %15I64d runs (%ld/run)\n"
+			 "------------------------------------------\n"
+			 "Difference      %20I64d bytes\n",
+#else
+			 "Peek Allocated  %20lld bytes\n"
+			 "Total Allocated %20lld bytes in %15lld runs (%ld/run)\n"
+			 "Total Freed     %20lld bytes in %15lld runs (%ld/run)\n"
+			 "------------------------------------------\n"
+			 "Difference      %20lld bytes\n",
+#endif
+			 fId, fpName, fMaxAllocated,
+			 fSizeAllocated , fNumAllocs, (long)(fSizeAllocated / ((fNumAllocs) ? fNumAllocs : 1)),
+			 fSizeFreed, fNumFrees, (long)(fSizeFreed / ((fNumFrees) ? fNumFrees : 1)),
+			 fAllocated
+			);
 	SysLog::WriteToStderr(buf, strlen(buf));
 }
 
