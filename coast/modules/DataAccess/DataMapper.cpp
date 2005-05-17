@@ -10,46 +10,11 @@
 #include "DataMapper.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "Anything.h"
 #include "SysLog.h"
-#include "StringStream.h"
 #include "Renderer.h"
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
-
-//---- ListDataMapper ------------------------------------------------------------------
-RegisterResultMapper(ListDataMapper);
-
-ListDataMapper::ListDataMapper(const char *name) : ResultMapper(name)
-{
-}
-
-IFAObject *ListDataMapper::Clone() const
-{
-	return new ListDataMapper(fName);
-}
-
-bool ListDataMapper::DoPutAny(const char *key, Anything value, Context &ctx, ROAnything)
-{
-	if ( key ) {
-		Anything tmpStore(ctx.GetTmpStore());
-		// store it row major
-		long at = tmpStore[fName].GetSize();
-		bool isNewRow = (ctx.Lookup("IsNewRow", 0L) != 0);
-		if ( at > 0 && !isNewRow ) {
-			at--;
-		}
-		if ( tmpStore[fName][at].IsDefined(key) ) {
-			// this should not happen
-			tmpStore[fName][at][key].Append(value);
-		} else {
-			tmpStore[fName][at][key] = value;
-		}
-		return true;
-	}
-	return false;
-}
 
 //---- FixedSizeMapper ------------------------------------------------------------------
 RegisterParameterMapper(FixedSizeMapper);
@@ -218,51 +183,3 @@ bool LookupMapper::DoGetStream(const char *key, ostream &os, Context &ctx, ROAny
 		return false;
 	}
 }
-
-//------ ResultLookupMapper
-RegisterResultMapper(ResultLookupMapper);
-RegisterResultMapperAlias(LookupMapper, ResultLookupMapper);
-ResultLookupMapper::ResultLookupMapper(const char *name) : EagerResultMapper(name)
-{
-}
-
-IFAObject *ResultLookupMapper::Clone() const
-{
-	return new ResultLookupMapper(fName);
-}
-
-bool ResultLookupMapper::DoPutStream(const char *key, istream &os, Context &ctx, ROAnything info)
-{
-	StartTrace(ResultLookupMapper.DoPutStream);
-	TraceAny(info, "info");
-
-	bool isSimpleArray = false;
-
-	ROAnything lookupName;
-	if (!info.LookupPath(lookupName, gcSlotName, '\000')) {		// use new slotname
-		isSimpleArray = true;
-		lookupName = info[0L];
-	}
-
-	// lookup data and use it as a Mapper specification
-	if (! lookupName.IsNull()) {		// check if lookupName is defined somehow
-		if ( isSimpleArray ) {
-			ResultMapper *m = ResultMapper::FindResultMapper(lookupName.AsCharPtr(""));
-			if (m) {
-				return m->Put(key, os, ctx);
-			}
-		}
-		return DoPutStream(key, os, ctx, lookupName);
-
-	} else {
-		// handle error: lookup name is not a string
-		String error("ResultLookupMapper::DoPutStream: invalid lookup name: ");
-
-		OStringStream os(&error);
-		lookupName.PrintOn(os, false);	// append Anything to ease debugging
-
-		SysLog::Error(error);
-		return false;
-	}
-}
-

@@ -11,6 +11,7 @@
 
 //---- TestCase include -------------------------------------------------
 #include "TestCase.h"
+#include "Anything.h"
 
 //---- forward declaration -----------------------------------------------
 
@@ -31,25 +32,15 @@ public:
 	void setUp();
 
 	//--- public api
-	void StdPutTest();
 	void StdGetTest();
-	void ExtendedPutTest();
 	void NegativGetTest();
 
 	void FixedSizeTest();
 	void UppercaseTest();
 
 protected:
-	//--- subclass api
-
 	//--- member variables declaration
 	Anything fStdContextAny;
-private:
-	// use careful, you inhibit subclass use
-	//--- private class api
-
-	//--- private member variables
-
 };
 
 #endif

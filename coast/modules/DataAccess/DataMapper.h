@@ -12,40 +12,6 @@
 #include "config_dataaccess.h"
 #include "Mapper.h"
 
-//---- ListDataMapper -------------------------------------------------------------------
-//! FIXME: somehow strange behavior, inconsistent with new semantics, very special case
-class EXPORTDECL_DATAACCESS ListDataMapper : public ResultMapper
-{
-// special list mapper
-//	prepares output into context tmpstore data as list of records
-//  {
-//		/MapperName {
-//			{
-//				/key0	value0
-//				/key1	value1
-//				...
-//			}
-//			{
-//				/key0	value0
-//				/key1	value1
-//				...
-//			}
-//			...
-//		}
-//	}
-public:
-	ListDataMapper(const char *name);
-
-	IFAObject *Clone() const;			// support for prototype
-
-	virtual bool DoPutAny(const char *key, Anything value, Context &ctx, ROAnything script);
-
-private:
-	ListDataMapper();
-	ListDataMapper(const ListDataMapper &);
-	ListDataMapper &operator=(const ListDataMapper &);
-};
-
 //---- FixedSizeMapper -------------------------------------------------------------------
 class EXPORTDECL_DATAACCESS FixedSizeMapper : public EagerParameterMapper
 {
@@ -101,30 +67,10 @@ private:
 	LookupMapper(const LookupMapper &);
 	LookupMapper &operator=(const LookupMapper &);
 };
-//------ ResultLookupMapper (splittet "ResultMapper" from LookupMapper
-//! legacy mapper, no longer very useful with new mapper scripting
-//! semantics can be achieved via /key { /OtherMapperName othermapperconfig }
-class EXPORTDECL_DATAACCESS ResultLookupMapper : public EagerResultMapper
-{
-
-//
-public:
-	ResultLookupMapper(const char *name);
-
-	IFAObject *Clone() const;			// support for prototype
-
-	virtual bool DoPutStream(const char *key, istream &is, Context &ctx, ROAnything config);
-
-private:
-	ResultLookupMapper();
-	ResultLookupMapper(const ResultLookupMapper &);
-	ResultLookupMapper &operator=(const ResultLookupMapper &);
-};
 
 //---- RendererMapper -------------------------------------------------------------------
 class EXPORTDECL_DATAACCESS RendererMapper : public EagerParameterMapper
 {
-
 public:
 	RendererMapper(const char *name);
 
