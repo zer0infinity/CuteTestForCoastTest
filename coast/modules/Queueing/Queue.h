@@ -10,6 +10,7 @@
 #define _Queue_H
 
 //---- baseclass include -------------------------------------------------
+#include "config_Queueing.h"
 #include "IFAObject.h"
 #include "Threads.h"
 #include <limits.h>
@@ -45,7 +46,7 @@ Statistics can be made by evaluating the returned Anything from GetStatistics().
 </pre>
 <b>* marks slots not yet available</b>
 */
-class Queue : public IFAObject
+class EXPORTDECL_QUEUEING Queue : public IFAObject
 {
 public:
 	//--- constructors

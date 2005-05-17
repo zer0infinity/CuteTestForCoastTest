@@ -10,6 +10,7 @@
 #define _QueueWorkingModule_H
 
 //---- WDModule include -------------------------------------------------
+#include "config_Queueing.h"
 #include "WDModule.h"
 #include "Context.h"
 #include "Threads.h"
@@ -25,7 +26,7 @@ class Queue;
 	...
 }</PRE>
 */
-class QueueWorkingModule : public WDModule
+class EXPORTDECL_QUEUEING QueueWorkingModule : public WDModule
 {
 	friend class QueueWorkingModuleTest;
 	friend class ValueOutputtingModuleTest;
