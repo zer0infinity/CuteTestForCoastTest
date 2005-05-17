@@ -659,7 +659,7 @@ void ResultMapper::DoGetDestinationAny(const char *key, Anything &targetAny, Con
 
 bool ResultMapper::DoFinalPutAny(const char *key, Anything value, Context &ctx)
 {
-	StartTrace1(ResultMapper.DoFinalPutAny, NotNull(key));
+	StartTrace1(ResultMapper.DoFinalPutAny, "fName [" << fName << "] key: <" << NotNull(key) << ">");
 
 	String kStr(key);
 	if (kStr.Length() <= 0) {
@@ -682,8 +682,10 @@ bool ResultMapper::DoFinalPutAny(const char *key, Anything value, Context &ctx)
 	Anything anyTarget;
 	DoGetDestinationAny(kPrefix, anyTarget, ctx);
 	if ( ( Lookup("AppendAnyAlways", 0L) != 0L ) || anyTarget.IsDefined(kKey) ) {
+		Trace("appending value");
 		anyTarget[kKey].Append(value);
 	} else {
+		Trace("replacing value");
 		anyTarget[kKey] = value;
 	}
 	return true;
