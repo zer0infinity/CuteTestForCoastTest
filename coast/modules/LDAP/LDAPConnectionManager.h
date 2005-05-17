@@ -10,6 +10,7 @@
 #define _LDAPConnectionManager_H
 
 //---- baseclass include -------------------------------------------------
+#include "config_LDAPDA.h"
 #include "WDModule.h"
 #include "Threads.h"
 #include "Anything.h"
@@ -22,7 +23,7 @@
 //! If the RebindTimeout is expired, LDAPConnectionManager sets a corresponding flag.
 //! This module does not need any configuration data.
 
-class EXPORTDECL_WDBASE LDAPConnectionManager: public WDModule
+class EXPORTDECL_LDAPDA LDAPConnectionManager: public WDModule
 {
 public:
 	//!it exists only one since it is a not cloned
