@@ -1792,7 +1792,7 @@ Anything::~Anything()
 
 Anything Anything::DeepClone(Allocator *a) const
 {
-	Anything xref;
+	Anything xref(a);
 	if (GetImpl()) {
 		return GetImpl()->DeepClone(a, xref);
 	} else {
