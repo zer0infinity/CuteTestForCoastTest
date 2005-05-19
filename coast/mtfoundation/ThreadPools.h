@@ -29,9 +29,9 @@ public:
 
 	/*! initialization of thread pool (may be safely used also for reinit)
 		\param maxParallelRequests number of threads to manage in the pool, DoAllocPool() will be called to allocate the threads
-		\param args ROAnything carrying pool and thread specific information
+		\param roaThreadArgs ROAnything carrying thread specific information
 		\return true if allocation of threads was successful, false otherwise */
-	virtual bool Init(int maxParallelRequests, ROAnything args);
+	virtual bool Init(int maxParallelRequests, ROAnything roaThreadArgs);
 
 	/*! starts threads with or without using pool storage
 		\param usePoolStorage set to true if you want to use special pool memory
@@ -54,8 +54,8 @@ public:
 
 	/*! react to state changes of pool threads
 		\param t thread which wants to signal a state change
-		\param args arguments the thread can pass us */
-	virtual void Update(Thread *t, const Anything &args);
+		\param roaStateArgs arguments the thread can pass us */
+	virtual void Update(Thread *t, ROAnything roaStateArgs);
 
 	/*! access the pool size which reflects the number of threads really allocated and accessible to use
 		\return number of allocated and usable threads in the pool */
@@ -64,40 +64,40 @@ public:
 protected:
 	/*! allocate the thread pool
 		\param poolSize number of threads to allocate and use
-		\param args ROAnything carrying pool and thread specific information
+		\param roaThreadArgs ROAnything carrying thread specific information
 		\return true if thread allocation was successful, false in case of a allocation failure or poolSize=0 */
-	bool AllocPool(long poolSize, ROAnything args);
+	bool AllocPool(long poolSize, ROAnything roaThreadArgs);
 
 	/*! create an array of the required workers
 		\param poolSize number of threads to allocate and use
-		\param args ROAnything carrying pool and thread specific information
+		\param roaThreadArgs ROAnything carrying thread specific information
 		\return true if all threads could be allocated */
-	virtual bool DoAllocPool(long poolSize, ROAnything args);
+	virtual bool DoAllocPool(long poolSize, ROAnything roaThreadArgs);
 
 	/*! abstract method to allocate one single thread given its specific params
-		\param args ROAnything carrying thread specific information
+		\param roaThreadArgs ROAnything carrying thread specific information
 		\return pointer to the newly created Thread object */
-	virtual Thread *DoAllocThread(ROAnything args) = 0;
+	virtual Thread *DoAllocThread(ROAnything roaThreadArgs) = 0;
 
 	/*! cleanup hook for pool, removes threads from pool and deletes them
 		\note The threads must already be terminated or a runtime error will occur! */
 	virtual void DoDeletePool();
 
 	/*! Initialize all pool threads with their specific parameters and register them as subject for observing state changes
-		\param args ROAnything carrying pool and thread specific information
+		\param roaThreadArgs ROAnything carrying thread specific information
 		\return true if all threads could be initialized */
-	virtual bool InitPool(ROAnything args);
+	virtual bool InitPool(ROAnything roaThreadArgs);
 
 	/*! get the ith thread out of the pool
 		\param i index of the thread, poolSize > i >=0
 		\return pointer to the Thread object if it is valid */
 	virtual Thread *DoGetThread(long i);
 
-	/*! access configuration for the ith thread, overwrite this method if you do not want to use args[i] as the threads specific arguments
+	/*! access configuration for the ith thread, overwrite this method if you do not want to use roaThreadArgs[i] as the threads specific arguments
 		\param i index of the thread to get the configuration for, poolSize > i >=0
-		\param args ROAnything carrying pool and thread specific information
-		\return args[i] or an empty ROAnything */
-	virtual ROAnything DoGetConfig(long i, ROAnything args);
+		\param roaThreadArgs ROAnything carrying thread specific information
+		\return roaThreadArgs[i] or an empty ROAnything */
+	virtual ROAnything DoGetConfig(long i, ROAnything roaThreadArgs);
 
 	/*! Terminate all pool threads
 		\param lWaitToTerminate how many seconds should we wait until a thread is in terminated state
@@ -149,8 +149,8 @@ protected:
 	virtual void DoInit(ROAnything workerInit) {};
 
 	/*! PoolManager interface to pass working arguments - called by Thread::SetWorking()
-		\param args pass work to do and store it for later use by DoProcessWorkload() */
-	virtual void DoWorkingHook(ROAnything args) {};
+		\param roaWorkerArgs pass work to do and store it for later use by DoProcessWorkload() */
+	virtual void DoWorkingHook(ROAnything roaWorkerArgs) {};
 
 	//! checks back after processing a work package to cleanup things if required
 	virtual void DoReadyHook(ROAnything);
@@ -186,7 +186,7 @@ public:
 	virtual ~WorkerPoolManager();
 
 	//!initialisation of  thread pool (may be safely used also for reinit)
-	int Init(int maxParallelRequests, int usePoolStorage, int poolStorageSize, int numOfPoolBucketSizes, ROAnything args);
+	int Init(int maxParallelRequests, int usePoolStorage, int poolStorageSize, int numOfPoolBucketSizes, ROAnything roaWorkerArgs);
 
 	/*! critical region entry to process the next work package.
 		This method blocks the caller (e.g. the server accept-loop) if the pool has no worker ready,  i.e. NumOfRequestsRunning() == MaxRequests2Run()
@@ -199,8 +199,8 @@ public:
 
 	/*! react to state changes of pool threads
 		\param t thread which wants to signal a state change
-		\param args arguments the thread can pass us */
-	virtual void Update(Thread *t, const Anything &args);
+		\param roaStateArgs arguments the thread can pass us */
+	virtual void Update(Thread *t, ROAnything roaStateArgs);
 
 	/*! waits for termination of all workers which are still running
 		\param secs waits for threads secs seconds after that it starts killing threads; if secs == 0 waits uncoditionally
@@ -224,25 +224,25 @@ public:
 
 protected:
 	//! create an array of the required workers
-	virtual void DoAllocPool(ROAnything args) = 0;
+	virtual void DoAllocPool(ROAnything roaWorkerArgs) = 0;
 
 	//! implementers should return ith WorkerThread
 	virtual WorkerThread *DoGetWorker(long i) = 0;
 
 	//!cleanup hook for re-initialization of pool
-	virtual void DoDeletePool(ROAnything args) = 0;
+	virtual void DoDeletePool(ROAnything roaWorkerArgs) = 0;
 
 	//!check if the presently pool may be re-initalized
 	virtual bool CanReInitPool();
 
 	//!allocate the thread pool
-	bool AllocPool(long poolSize, ROAnything args);
+	bool AllocPool(long poolSize, ROAnything roaWorkerArgs);
 
 	//!Init pool members with request processor and pool storage if necessary
-	int InitPool(bool usePoolStorage, long poolStorageSize, int numOfPoolBucketSizes, ROAnything args);
+	int InitPool(bool usePoolStorage, long poolStorageSize, int numOfPoolBucketSizes, ROAnything roaWorkerArgs);
 
 	//!handles misconfiguration
-	int PreparePool(int usePoolStorage, int poolStorageSize, int numOfPoolBucketSizes, ROAnything args);
+	int PreparePool(int usePoolStorage, int poolStorageSize, int numOfPoolBucketSizes, ROAnything roaWorkerArgs);
 
 	/*! finds a runnable WorkerThread object. Since there are fPoolSize WorkerThread objects and also fPoolSize allowed in the critical region there should always at least one be runnable
 		\param requestNr a number
