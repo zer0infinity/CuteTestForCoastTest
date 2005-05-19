@@ -65,7 +65,7 @@ LDAPConnection::LDAPConnection(ROAnything connectionParams)
 	fConnectionTimeout = connectionParams["ConnectionTimeout"].AsLong(10);
 	fConnectionTimeout *= 1000;
 	fMapUTF8 = connectionParams["MapUTF8"].AsBool(true);
-	fUseLdapConnectionManager = ( bool ) connectionParams["PooledConnections"].AsLong(0L);
+	fUseLdapConnectionManager = ( connectionParams["PooledConnections"].AsLong(0L) > 0L );
 	fRebindTimeout = connectionParams["RebindTimeout"].AsLong(0L);
 	TraceAny(connectionParams, "ConnectionParams");
 }
