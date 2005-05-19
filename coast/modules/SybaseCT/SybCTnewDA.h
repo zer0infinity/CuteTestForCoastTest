@@ -131,6 +131,9 @@ private:
 	static Mutex	fgSybaseLocker;
 
 	friend class SybCTnewDATest;
+	friend CS_RETCODE SybCTnewDA_csmsg_handler(CS_CONTEXT *context, CS_CLIENTMSG *errmsg);
+	friend CS_RETCODE SybCTnewDA_clientmsg_handler(CS_CONTEXT *context, CS_CONNECTION *connection, CS_CLIENTMSG *errmsg);
+	friend CS_RETCODE SybCTnewDA_servermsg_handler(CS_CONTEXT *context, CS_CONNECTION *connection, CS_SERVERMSG *srvmsg);
 };
 
 #endif

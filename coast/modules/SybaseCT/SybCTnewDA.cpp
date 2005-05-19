@@ -246,14 +246,6 @@ CS_RETCODE SybCTnewDA::Finis(CS_CONTEXT *context)
 	return retcode;
 }
 
-CS_RETCODE SybCTnewDA::SetConProps(CS_INT property, CS_VOID *buffer, CS_INT buflen)
-{
-	StartTrace(SybCTnewDA.SetConProps);
-	MutexEntry me(fgSybaseLocker);
-	me.Use();
-	return ct_con_props(fConnection, CS_SET, property, buffer, buflen, NULL);
-}
-
 bool SybCTnewDA::Open(DaParams &params, String user, String password, String server, String appl)
 {
 	StartTrace(SybCTnewDA.Open);
@@ -890,9 +882,19 @@ bool SybCTnewDA::GetDaParams(DaParams &params, CS_CONNECTION *connection)
 	return SybCTnewDA::IntGetConProps(connection, CS_USERDATA, (CS_VOID **)&params, CS_SIZEOF(SybCTnewDA::DaParams)) == CS_SUCCEED;
 }
 
+CS_RETCODE SybCTnewDA::SetConProps(CS_INT property, CS_VOID *buffer, CS_INT buflen)
+{
+	StartTrace(SybCTnewDA.SetConProps);
+	MutexEntry me(fgSybaseLocker);
+	me.Use();
+	return ct_con_props(fConnection, CS_SET, property, buffer, buflen, NULL);
+}
+
 bool SybCTnewDA::GetConProps(CS_INT property, CS_VOID **propvalue, CS_INT propsize)
 {
 	StartTrace(SybCTnewDA.GetConProps);
+	MutexEntry me(fgSybaseLocker);
+	me.Use();
 	return IntGetConProps(fConnection, property, propvalue, propsize);
 }
 
@@ -950,7 +952,13 @@ CS_RETCODE SybCTnewDA_servermsg_handler(CS_CONTEXT *context, CS_CONNECTION *conn
 
 	if ( (long)srvmsg->severity != 0L ) {
 		SybCTnewDA::DaParams daParams;
-		if ( SybCTnewDA::GetDaParams(daParams, connection) ) {
+		bool bFuncCode = false;
+		{
+			MutexEntry me(SybCTnewDA::fgSybaseLocker);
+			me.Use();
+			bFuncCode = SybCTnewDA::GetDaParams(daParams, connection);
+		}
+		if ( bFuncCode ) {
 			Anything anyData, anyRef;
 			anyData["Messages"] = MetaThing();
 			anyRef = anyData["Messages"];
@@ -978,7 +986,12 @@ CS_RETCODE SybCTnewDA_servermsg_handler(CS_CONTEXT *context, CS_CONNECTION *conn
 				anyData["MainMsgErrNumber"] = (long)srvmsg->msgnumber;
 			}
 			TraceAny(anyData, "anyData");
-			if ( !SybCTnewDA::PutMessages(daParams, anyData) ) {
+			{
+				MutexEntry me(SybCTnewDA::fgSybaseLocker);
+				me.Use();
+				bFuncCode = SybCTnewDA::PutMessages(daParams, anyData);
+			}
+			if ( !bFuncCode ) {
 				SysLog::Error("SybCTnewDA_servermsg_handler: could not put messages using Mapper");
 			}
 		} else {
@@ -995,7 +1008,13 @@ CS_RETCODE SybCTnewDA_clientmsg_handler(CS_CONTEXT *context, CS_CONNECTION *conn
 	// If there is no error, we can spare to write the error-message
 	if ( (long)CS_SEVERITY(errmsg->msgnumber) != 0L ) {
 		SybCTnewDA::DaParams daParams;
-		if ( SybCTnewDA::GetDaParams(daParams, connection) ) {
+		bool bFuncCode = false;
+		{
+			MutexEntry me(SybCTnewDA::fgSybaseLocker);
+			me.Use();
+			bFuncCode = SybCTnewDA::GetDaParams(daParams, connection);
+		}
+		if ( bFuncCode ) {
 			Anything anyData, anyRef;
 			anyData["Messages"] = MetaThing();
 			anyRef = anyData["Messages"];
@@ -1020,7 +1039,12 @@ CS_RETCODE SybCTnewDA_clientmsg_handler(CS_CONTEXT *context, CS_CONNECTION *conn
 				anyData["MainMsgErrNumber"] = (long)CS_NUMBER(errmsg->msgnumber);
 			}
 			TraceAny(anyData, "anyData");
-			if ( !SybCTnewDA::PutMessages(daParams, anyData) ) {
+			{
+				MutexEntry me(SybCTnewDA::fgSybaseLocker);
+				me.Use();
+				bFuncCode = SybCTnewDA::PutMessages(daParams, anyData);
+			}
+			if ( !bFuncCode ) {
 				SysLog::Error("SybCTnewDA_clientmsg_handler: could not put messages using Mapper");
 			}
 		} else {
@@ -1037,7 +1061,13 @@ CS_RETCODE SybCTnewDA_csmsg_handler(CS_CONTEXT *context, CS_CLIENTMSG *errmsg)
 	// If there is no error, we can spare to write the error-message
 	if ( (long)CS_SEVERITY(errmsg->msgnumber) != 0L ) {
 		Anything *pAny = NULL;
-		if (SybCTnewDA::GetMessageAny(context, NULL, &pAny)) {
+		bool bFuncCode = false;
+		{
+			MutexEntry me(SybCTnewDA::fgSybaseLocker);
+			me.Use();
+			bFuncCode = SybCTnewDA::GetMessageAny(context, NULL, &pAny);
+		}
+		if ( bFuncCode ) {
 			Anything anyData;
 			anyData["severity"] = (long)CS_SEVERITY(errmsg->msgnumber);
 			anyData["msgno"] = (long)CS_NUMBER(errmsg->msgnumber);
