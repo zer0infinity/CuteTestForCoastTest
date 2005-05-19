@@ -37,7 +37,7 @@ public:
 	void tearDown ();
 
 	void WaitForStart();
-	virtual void Update(Thread *t, const Anything &args);
+	virtual void Update(Thread *t, ROAnything roaStateArgs);
 protected:
 	//--- subclass api
 
