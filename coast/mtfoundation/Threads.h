@@ -356,8 +356,8 @@ public:
 
 	/*! interface which must be implemented if you want to be notified when thread t's state changes
 		\param t the thread that changes its state
-		\param args arguments that describe the change; normally the EThreadState */
-	virtual void Update(Thread *t, const Anything &args) = 0;
+		\param args arguments that describe the change; EThreadState in subslot "ThreadState" or ERunningState in subslot "RunningState". "Old" and "New" slots tell you about corresponding states. */
+	virtual void Update(Thread *t, ROAnything roaStateArgs) = 0;
 };
 
 //---- Thread ------------------------------------------------------------
