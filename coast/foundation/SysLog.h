@@ -102,24 +102,24 @@ private:
 };
 
 #define	SYSDEBUG(msg) \
-	{ String strFileLineMsg("( ");\
-	strFileLineMsg << __FILE__ << ":" << (long)__LINE__ << " ) " << msg;\
+	{ String strFileLineMsg(Storage::Global());\
+	strFileLineMsg << "( " << __FILE__ << ":" << (long)__LINE__ << " ) " << msg;\
 	SysLog::Debug(strFileLineMsg); }
 #define	SYSINFO(msg) \
-	{ String strFileLineMsg("( ");\
-	strFileLineMsg << __FILE__ << ":" << (long)__LINE__ << " ) " << msg;\
+	{ String strFileLineMsg(Storage::Global());\
+	strFileLineMsg << "( " << __FILE__ << ":" << (long)__LINE__ << " ) " << msg;\
 	SysLog::Info(strFileLineMsg); }
 #define	SYSWARNING(msg) \
-	{ String strFileLineMsg("( ");\
-	strFileLineMsg << __FILE__ << ":" << (long)__LINE__ << " ) " << msg;\
+	{ String strFileLineMsg(Storage::Global());\
+	strFileLineMsg << "( " << __FILE__ << ":" << (long)__LINE__ << " ) " << msg;\
 	SysLog::Warning(strFileLineMsg); }
 #define	SYSERROR(msg) \
-	{ String strFileLineMsg("( ");\
-	strFileLineMsg << __FILE__ << ":" << (long)__LINE__ << " ) " << msg;\
+	{ String strFileLineMsg(Storage::Global());\
+	strFileLineMsg << "( " << __FILE__ << ":" << (long)__LINE__ << " ) " << msg;\
 	SysLog::Error(strFileLineMsg); }
 #define	SYSALERT(msg) \
-	{ String strFileLineMsg("( ");\
-	strFileLineMsg << __FILE__ << ":" << (long)__LINE__ << " ) " << msg;\
+	{ String strFileLineMsg(Storage::Global());\
+	strFileLineMsg << "( " << __FILE__ << ":" << (long)__LINE__ << " ) " << msg;\
 	SysLog::Alert(strFileLineMsg); }
 
 #if defined(__aix__) || defined(__linux__) || defined(__sun)

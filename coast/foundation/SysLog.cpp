@@ -185,12 +185,12 @@ String SysLog::SysErrorMsg(long errnum)
 		NULL
 	);
 
-	String msg((const char *)lpMsgBuf);
+	String msg((const char *)lpMsgBuf, strlen(lpMsgBuf), Storage::Global());
 	// Free the buffer.
 	LocalFree( lpMsgBuf );
 	return msg;
 #else
-	String theError;
+	String theError(Storage::Global());
 	if (errnum == EMFILE) {
 		theError = "[No more filehandles in Process.] ";
 	}
@@ -277,7 +277,7 @@ void SysLog::DoLog(long level, const char *msg)
 
 void SysLog::DoTraceLevel(const char *level, const char *msg)
 {
-	String finalMessage(level);
+	String finalMessage(level, strlen(level), Storage::Global());
 	finalMessage.Append(msg);
 	finalMessage.Append('\n');
 	SysLog::WriteToStderr(finalMessage, finalMessage.Length());
