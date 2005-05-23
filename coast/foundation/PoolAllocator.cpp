@@ -13,6 +13,7 @@
 #include "ITOString.h"
 #include "MemHeader.h"
 #include "SysLog.h"
+#include "StringStream.h"
 
 //--- c-library modules used ---------------------------------------------------
 #include <stdlib.h>
@@ -118,7 +119,25 @@ void PoolAllocator::Free(void *vp)
 			::free(header);
 		} else  {
 			// something wrong happened, double free
-			SysLog::Error("wrong header status");
+			SysLog::Error("wrong header status, double free?");
+			String strBuf(Storage::Global());
+			strBuf << "MemoryHeader [";
+			{
+				String strContent((void *)header, (long)header->AlignedSize(), Storage::Global());
+				OStringStream stream(strBuf);
+				strContent.DumpAsHex(stream, (long)header->AlignedSize());
+			}
+			strBuf << "]";
+			SysLog::Error(strBuf);
+			strBuf.Trim(0L);
+			strBuf << "Buffer, Size:" << (l_long)header->fSize << " [";
+			{
+				String strContent((void *)ExtMemStart(header), header->fSize, Storage::Global());
+				OStringStream stream(strBuf);
+				strContent.DumpAsHex(stream, 16L);
+			}
+			strBuf << "]";
+			SysLog::Error(strBuf);
 			Assert(0);
 		}
 	} else {

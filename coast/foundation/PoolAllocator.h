@@ -50,6 +50,7 @@ protected:
 	u_long fAllocSz;
 	u_long fNumOfPoolBucketSizes;
 	PoolBucket *fPoolBuckets;
+
 	//!implement hook for allocating memory using bucketing
 	virtual void *Alloc(u_long allocSize);
 
