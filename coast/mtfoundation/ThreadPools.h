@@ -11,6 +11,7 @@
 
 #include "Threads.h"
 #include "StatUtils.h"
+#include "ObserverIf.h"
 
 //---- ThreadPoolManager ------------------------------------------------
 //! <b>abstract class which handles initialization, starting and termination of threads in a pool</b>
@@ -121,8 +122,6 @@ protected:
 	Anything fThreadPool;
 };
 
-class WorkerPoolManager;
-
 //---- WorkerThread -----------------------------------------------
 //!<b>abstraction for processing some work on demand</b>
 /*! The WorkerThread processes the workload assigned by its WorkerPoolManager<br>
@@ -149,7 +148,8 @@ protected:
 	virtual void DoInit(ROAnything workerInit) {};
 
 	/*! PoolManager interface to pass working arguments - called by Thread::SetWorking()
-		\param roaWorkerArgs pass work to do and store it for later use by DoProcessWorkload() */
+		\param roaWorkerArgs pass work to do and store it for later use by DoProcessWorkload()
+		\note If the worker is configured to use its own PoolAllocator, do NOT try to use the Workers allocator within this function especially if Traces could be enabled (opt-wddbg or dbg)! Imagine an outer Thread using WorkerPoolManager::Enter() to pass its work. Further assume that the worker just left the SetReady() method but is not yet able to check its RunningState because of a OS-ThreadSwitch. Now the caller will get active again and Thread::SetWorking() will be called to pass the workload. Now this function will get active and receive the workload to be internally stored. If the workload is an Anything which we fully need later we could store it in an Anything internally by DeepCloning the passed work. If we do this using an unmodified member-Anything and a default-param DeepClone() everything will work fine because the internal member-Anything will hav an Allocator of Storage::Global(). But if we try to optimize our member-Anything and call SetAllocator(fAllocator) on it - because we want unlocked fast access - we have more troubles than benefits. But why? Because in the process of DeepCloning the given ROAnything, another context-switch might occur and the WorkerThread becomes active again. As stated above, it has to check his RunningState and should process the work when it switched to eWorking. But in the call-chain there is a Mutex which - if Traces are compiled in and optionally enabled - wants to tell the console that a Mutex has to be accessed and also additional things like who it was and so on. But this String needs memory - in our case PoolAllocator memory - to hold the content to print out. Now we have the case where two concurrent accessors try to Alloc/Free PoolAllocator memory and this can lead to nice BusErrors because PoolAllocators do not use locking on internal memory accesses. */
 	virtual void DoWorkingHook(ROAnything roaWorkerArgs) {};
 
 	//! checks back after processing a work package to cleanup things if required
@@ -158,7 +158,7 @@ protected:
 	//! do the work (using the informations you stored in the instance variables)
 	virtual void DoProcessWorkload() = 0;
 
-	/*! if we did not allocate memory using a possibly given allocator it is safe to refresh it after each working cycle otherways it is a matter of time until a bus error will happen...
+	/*! if we use pool allocators to allocate memory they will be refreshed in DoReadyHook(). Take care in implementing Workers which optimize for memory speed!
 		set to true if a refresh is possible, to false if we should not refresh it */
 	bool fRefreshAllocator;
 
@@ -168,6 +168,99 @@ private:
 	//!prohibit the use of th assignement operator
 	WorkerThread &operator=(const WorkerThread &);
 	//!the master of the worker
+};
+
+//---- PoolManager ------------------------------------------------
+template
+<
+typename TArgs
+>
+class EXPORTDECL_MTFOUNDATION PoolManager
+	: public StatGatherer
+	, public Observable<TArgs>::Observer
+{
+public:
+	typedef typename Observable<TArgs>::tObservedPtr tObservedPtr;
+	typedef typename Observable<TArgs>::tArgsRef tArgsRef;
+
+	/*! does nothing, real work is done in init, object is still unusable without call of Init() method!
+		\param name Give the pool Manager a name, gets printed in statistics */
+	PoolManager(const char *name) {};
+
+	/*! prints some statistics and terminates
+		\note can't delete pool here because representation of subobject has already gone */
+	virtual ~PoolManager() {};
+
+	//! implements the StatGatherer interface used by StatObserver
+	virtual void Statistic(Anything &item) = 0;
+
+	virtual void Update(tObservedPtr pObserved, tArgsRef aUpdateArgs) = 0;
+
+//	/*! access the pool size which reflects the number of resources really allocated and accessible to use
+//		\return number of allocated and usable resources in the pool */
+//	long GetPoolSize();
+//
+//	/*! access the pool and return the number of resources currently in use
+//		\return number of resources in use */
+//	long ResourcesUsed();
+//
+//	/*! access the pool and return the number of currently free resources
+//		\return number of free resources */
+//	long ResourcesFree();
+
+protected:
+//	/*! allocate the resource pool
+//		\param poolSize number of resources to allocate and use
+//		\param roaResourceArgs ROAnything carrying resource specific information
+//		\return true if resource allocation was successful, false in case of a allocation failure or poolSize=0 */
+//	bool AllocPool(long poolSize, ROAnything roaResourceArgs);
+//
+//	/*! create an array of the required workers
+//		\param poolSize number of resources to allocate and use
+//		\param roaResourceArgs ROAnything carrying resource specific information
+//		\return true if all resources could be allocated */
+//	virtual bool DoAllocPool(long poolSize, ROAnything roaResourceArgs);
+//
+//	/*! abstract method to allocate one single resource given its specific params
+//		\param roaResourceArgs ROAnything carrying resource specific information
+//		\return pointer to the newly created Thread object */
+//	virtual Thread *DoAllocThread(ROAnything roaResourceArgs) = 0;
+//
+//	/*! cleanup hook for pool, removes resources from pool and deletes them
+//		\note The resources must already be terminated or a runtime error will occur! */
+//	virtual void DoDeletePool();
+//
+//	/*! Initialize all pool resources with their specific parameters and register them as subject for observing state changes
+//		\param roaResourceArgs ROAnything carrying resource specific information
+//		\return true if all resources could be initialized */
+//	virtual bool InitPool(ROAnything roaResourceArgs);
+//
+//	/*! get the ith resource out of the pool
+//		\param i index of the resource, poolSize > i >=0
+//		\return pointer to the resource object if it is valid */
+//	virtual Thread *DoGetThread(long i);
+//
+//	/*! access configuration for the ith resource, overwrite this method if you do not want to use roaResourceArgs[i] as the resources specific arguments
+//		\param i index of the resource to get the configuration for, poolSize > i >=0
+//		\param roaResourceArgs ROAnything carrying resource specific information
+//		\return roaResourceArgs[i] or an empty ROAnything */
+//	virtual ROAnything DoGetConfig(long i, ROAnything roaResourceArgs);
+//
+//	/*! Terminate all pool resources
+//		\param lWaitToTerminate how many seconds should we wait until a resource is in terminated state
+//		\return number of resources not already terminated, 0 in case of success, negative value signals an internal problem concerning the pool */
+//	virtual int DoTerminate(long lWaitToTerminate);
+
+private:
+//	bool		fbInitialized;
+//	Anything	fanyListOfResources;
+//	Mutex		fStructureMutex;
+//	Semaphore	*fpResourcesSema;
+
+	//!prohibit the use of the copy constructor
+	PoolManager(const PoolManager &);
+	//!prohibit the use of the assignement operator
+	PoolManager &operator=(const PoolManager &);
 };
 
 //---- WorkerPoolManager ------------------------------------------------
@@ -185,11 +278,19 @@ public:
 	//!prints some statistics; can't delete pool here because representation of subobject is already gone
 	virtual ~WorkerPoolManager();
 
+	//! implements the StatGatherer interface used by StatObserver
+	void Statistic(Anything &item);
+
+	/*! react to state changes of pool threads
+		\param t thread which wants to signal a state change
+		\param roaStateArgs arguments the thread can pass us */
+	virtual void Update(Thread *t, ROAnything roaStateArgs);
+
 	//!initialisation of  thread pool (may be safely used also for reinit)
 	int Init(int maxParallelRequests, int usePoolStorage, int poolStorageSize, int numOfPoolBucketSizes, ROAnything roaWorkerArgs);
 
 	/*! critical region entry to process the next work package.
-		This method blocks the caller (e.g. the server accept-loop) if the pool has no worker ready,  i.e. NumOfRequestsRunning() == MaxRequests2Run()
+		This method blocks the caller (e.g. the server accept-loop) if the pool has no worker ready,  i.e. ResourcesUsed() == GetPoolSize()
 		\pre needs "request" slot in workload, containing a long which gives a hint which worker to take
 		\param workload arguments passed to WorkerThread */
 	void Enter(ROAnything workload);
@@ -197,30 +298,22 @@ public:
 	//!blocks the caller waiting for the running requests to terminate. It waits at most 'secs' seconds
 	bool AwaitEmpty(long secs);
 
-	/*! react to state changes of pool threads
-		\param t thread which wants to signal a state change
-		\param roaStateArgs arguments the thread can pass us */
-	virtual void Update(Thread *t, ROAnything roaStateArgs);
-
 	/*! waits for termination of all workers which are still running
 		\param secs waits for threads secs seconds after that it starts killing threads; if secs == 0 waits uncoditionally
 		\return returns true if all threads reached the state eTerminated */
 	bool Terminate(long secs = 0);
 
 	//!returns the number of active work packages that are being processed at the moment
-	long NumOfRequestsRunning();
+	long ResourcesUsed();
 
 	//! returns the number of max active requests running that could run in parallel
-	long MaxRequests2Run();
+	long GetPoolSize();
 
 	//! blocking requests on request of the admin server
 	void BlockRequests();
 
 	//! unblocking requests on request of the admin server
 	void UnblockRequests();
-
-	//! implements the StatGatherer interface used by StatObserver
-	void Statistic(Anything &item);
 
 protected:
 	//! create an array of the required workers
