@@ -43,8 +43,7 @@ public:
 	//!Tests Init Start Terminate
 	void TerminateTest();
 
-protected:
-
+	void PoolManagerTest();
 };
 
 #endif

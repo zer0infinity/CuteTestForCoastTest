@@ -68,7 +68,7 @@ void ThreadPoolTest::JoinTest()
 
 void ThreadPoolTest::TerminateTest()
 {
-	StartTrace(ThreadPoolTest.JoinTest);
+	StartTrace(ThreadPoolTest.TerminateTest);
 
 	TerminateTestThreadPool ttp;
 
@@ -88,6 +88,70 @@ void ThreadPoolTest::TerminateTest()
 	}
 }
 
+template
+<
+typename TArgs
+>
+class GugusThread : public Observable<TArgs>
+{
+	//!prohibit the use of the copy constructor
+	GugusThread(const GugusThread &);
+	//!prohibit the use of the assignement operator
+	GugusThread &operator=(const GugusThread &);
+public:
+	/*! does nothing, real work is done in init, object is still unusable without call of Init() method!
+		\param name Give the pool Manager a name, gets printed in statistics */
+	GugusThread(const char *name, Allocator *a)
+		: Observable<TArgs>(name, a)
+	{}
+
+	/*! prints some statistics and terminates
+		\note can't delete pool here because representation of subobject has already gone */
+	virtual ~GugusThread() {};
+};
+
+template
+<
+typename TArgs
+>
+class TestPoolManager : public PoolManager<TArgs>
+{
+public:
+	typedef typename PoolManager<TArgs>::tObservedPtr tObservedPtr;
+	typedef typename PoolManager<TArgs>::tArgsRef tArgsRef;
+
+	/*! does nothing, real work is done in init, object is still unusable without call of Init() method!
+		\param name Give the pool Manager a name, gets printed in statistics */
+	TestPoolManager(const char *name)
+		: PoolManager<TArgs>(name) {};
+
+	/*! prints some statistics and terminates
+		\note can't delete pool here because representation of subobject has already gone */
+	virtual ~TestPoolManager() {};
+
+	//! implements the StatGatherer interface used by StatObserver
+	void Statistic(Anything &item) { }
+
+	void Update(tObservedPtr pObserved, tArgsRef aUpdateArgs) {
+		fanyUpdates.Append(aUpdateArgs.DeepClone());
+	}
+
+	Anything fanyUpdates;
+};
+
+void ThreadPoolTest::PoolManagerTest()
+{
+	StartTrace(ThreadPoolTest.PoolManagerTest);
+	TestPoolManager<ROAnything> myPool("MyTestPool");
+	GugusThread<ROAnything> myThread("MyGugus", Storage::Global());
+	myThread.AddObserver(&myPool);
+	Anything anyData, anyExpected;
+	anyData["Mytest"] = 33;
+	myThread.NotifyAll(anyData);
+	anyExpected.Append(anyData);
+	assertAnyEqual(anyExpected, myPool.fanyUpdates);
+}
+
 // builds up a suite of testcases, add a line for each testmethod
 Test *ThreadPoolTest::suite ()
 {
@@ -96,6 +160,7 @@ Test *ThreadPoolTest::suite ()
 
 	testSuite->addTest (NEW_CASE(ThreadPoolTest, JoinTest));
 	testSuite->addTest (NEW_CASE(ThreadPoolTest, TerminateTest));
+	testSuite->addTest (NEW_CASE(ThreadPoolTest, PoolManagerTest));
 
 	return testSuite;
 } // suite
