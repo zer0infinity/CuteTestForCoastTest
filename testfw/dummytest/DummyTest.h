@@ -9,7 +9,7 @@
 class DummyTest : public TestCase
 {
 public:
-	DummyTest(TString name);
+	DummyTest(TString tstrName);
 	virtual ~DummyTest();
 
 	virtual void setUp ();

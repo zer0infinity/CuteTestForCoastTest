@@ -38,8 +38,8 @@ typedef void (TestCase::* CaseMemberPtr)();
  class MathTest : public TestCase {
      protected: int m_value1;
      protected: int m_value2;
-     public: MathTest (TString name)
-                 : TestCase (name) {
+     public: MathTest (TString tstrName)
+                 : TestCase (tstrName) {
      }
      protected: void setUp () {
          m_value1 = 2;
