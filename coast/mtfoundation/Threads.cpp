@@ -122,7 +122,7 @@ Thread::Thread(const char *name, bool daemon, bool detached, bool suspended, boo
 	, fSignature(0x0f0055AA)
 	, fThreadName(name, strlen(name), (fAllocator) ? fAllocator : Storage::Global())
 {
-	StartTrace1(Thread.Constructor, "IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId());
+	StartTrace1(Thread.Constructor, "IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId() << " Name [" << GetName() << "]");
 	if (fAllocator) {
 		fAllocator->Ref();
 	}
@@ -131,7 +131,7 @@ Thread::Thread(const char *name, bool daemon, bool detached, bool suspended, boo
 
 Thread::~Thread()
 {
-	StartTrace1(Thread.Destructor, "IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId());
+	StartTrace1(Thread.Destructor, "IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId() << " Name [" << GetName() << "]");
 	THRDETACH();
 
 	// doesn't really solve the problem if a subclass would do sthg in the hook method
@@ -240,15 +240,14 @@ void Thread::NotifyAll(Anything evt)
 
 void Thread::BroadCastEvent(Anything evt)
 {
-	StatTrace(Thread.BroadCastEvent, "-- entering --", Storage::Current());
+	StatTrace(Thread.BroadCastEvent, "notifying observers", Storage::Current());
 	NotifyAll(evt);
 	fStateCond.BroadCast();
-	StatTrace(Thread.BroadCastEvent, "-- leaving -- after broadcast", Storage::Current());
+	StatTrace(Thread.BroadCastEvent, "state broadcasted", Storage::Current());
 }
 
 bool Thread::CheckState(EThreadState state, long timeout, long nanotimeout)
 {
-	StartTrace1(Thread.CheckState, "State: " << (long)state << " IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId());
 	SimpleMutexEntry me(fStateMutex);
 	me.Use();
 	return IntCheckState(state, timeout, nanotimeout);
@@ -256,9 +255,8 @@ bool Thread::CheckState(EThreadState state, long timeout, long nanotimeout)
 
 bool Thread::IntCheckState(EThreadState state, long timeout, long nanotimeout)
 {
-	StartTrace1(Thread.IntCheckState, "State: " << (long)state << " IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId());
-
 	if (fState >= state) {
+		StatTrace(Thread.IntCheckState, "State already reached! IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Current());
 		return true;
 	}
 
@@ -266,49 +264,49 @@ bool Thread::IntCheckState(EThreadState state, long timeout, long nanotimeout)
 		DiffTimer dt;
 		long militimeout = timeout * 1000L + nanotimeout / 1000000;
 		while ( (fState < state) && ( dt.Diff() < (militimeout) )) {
-			Trace("waiting on fState(" << (long)fState << ")>=state(" << (long)state << ") CallId: " << MyId());
+			StatTrace(Thread.IntCheckState, "still waiting on fState(" << (long)fState << ")>=state(" << (long)state << ") CallId: " << MyId(), Storage::Current());
 			fStateCond.TimedWait(fStateMutex, timeout, nanotimeout);
 		}
-		Trace("fState: " << (long)fState << " IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId());
 	} else {
 		while (fState < state) {
-			Trace("waiting on fState(" << (long)fState << ")>=state(" << (long)state << ") CallId: " << MyId());
+			StatTrace(Thread.IntCheckState, "still waiting on fState(" << (long)fState << ")>=state(" << (long)state << ") CallId: " << MyId(), Storage::Current());
 			fStateCond.Wait(fStateMutex);
 		}
-		Trace("fState: " << (long)fState << " IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId());
 	}
+	StatTrace(Thread.IntCheckState, "fState(" << (long)fState << ")>=state(" << (long)state << ") is " << (( fState >= state ) ? "true" : "false") << " IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Current());
 	return ( fState >= state );
 }
 
 // a helper macro for debugging...
-#define CHECKRUNNING_STATE_DBG(message)  Trace((message) \
+#define CHECKRUNNING_STATE_DBG(message)  StatTrace(Thread.CheckRunningState, (message) \
 		  <<  " fRunningState: " << (long) fRunningState << " state: " << (long) state << " fState: " << (long) fState \
 		  <<  " realDiff: " << realDiff << " compDiff: " << compDiff \
 		  <<  " Seconds: " << seconds << " NanoSeconds: " << nanoSeconds \
-		  <<  " Timeout given: " << (timeout*1000L));
+		  <<  " Timeout given: " << (timeout*1000L), Storage::Current());
 
 bool Thread::CheckRunningState(ERunningState state, long timeout, long nanotimeout)
 {
-	StartTrace1(Thread.CheckRunningState, "State: " << (long)state << " IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId());
+	StatTrace(Thread.CheckRunningState, "waiting on fState(" << (long)fState << ")>=state(" << (long)state << ") IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Current());
 	SimpleMutexEntry me(fStateMutex);
 	me.Use();
 
 	if (fState < eRunning ) {
-		Trace("thread not yet running, waiting until it is running");
+		StatTrace(Thread.CheckRunningState, "not running yet, waiting until it is running. IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Current());
 		bool ret = IntCheckState(eRunning, timeout, nanotimeout);
 		if (!ret) {
-			Trace("timeout while waiting for eRunning");
+			StatTrace(Thread.CheckRunningState, "timeout while waiting. IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Current());
 			return ret;
 		}
 	}
 
 	if (fState > eRunning ) {
-		Trace("thread not running anymore, exiting");
+		StatTrace(Thread.CheckRunningState, "not running anymore. IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Current());
 		return false;
 	}
 	Assert(fState == eRunning);
 
 	if (fRunningState == state) {
+		StatTrace(Thread.CheckRunningState, "State already reached! IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Current());
 		return true;
 	}
 
@@ -350,19 +348,19 @@ bool Thread::CheckRunningState(ERunningState state, long timeout, long nanotimeo
 
 Thread::EThreadState Thread::GetState(bool trylock, EThreadState dfltState)
 {
-	StartTrace1(Thread.GetState, "IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId());
 	if (!trylock) {
 		SimpleMutexEntry me(fStateMutex);
 		me.Use();
-		Trace("fState:" << (long)fState);
+		StatTrace(Thread.GetState, "Locked access, fState:" << (long)fState << " IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Current());
 		return fState;
 	}
 	if (fStateMutex.TryLock()) {
-		Trace("could lock mutex");
+		StatTrace(Thread.GetState, "Locked access, fState:" << (long)fState << " IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Current());
 		dfltState = fState;
 		fStateMutex.Unlock();
+	} else {
+		StatTrace(Thread.GetState, "Lock failed, returning default:" << (long)dfltState << " IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Current());
 	}
-	Trace("returning:" << (long)dfltState);
 	return dfltState;
 }
 
@@ -370,25 +368,28 @@ bool Thread::SetState(EThreadState state, ROAnything args)
 {
 	SimpleMutexEntry me(fStateMutex);
 	me.Use();
-	StartTrace1(Thread.SetState, "State: " << (long)state << " IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId());
-
 	if (state == fState + 1) {
+		StatTrace(Thread.SetState, "state(" << (long)state << ")==fState(" << (long)fState << ")+1 " << (long)state << " IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Current());
 		return IntSetState(state, args);
 	}
 	if (state == eTerminationRequested && fState < eTerminationRequested) {
+		StatTrace(Thread.SetState, "state(eTerminationRequested) && fState(" << (long)fState << ")<eTerminationRequested " << (long)state << " IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Current());
 		return IntSetState((fState == eCreated || fState == eStartRequested) ? eTerminated : state, args);
 	}
 	if (fState == eTerminated && state == eCreated) {
+		StatTrace(Thread.SetState, "fState(eTerminated) && state(eCreated)" << (long)state << " IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Current());
 		return IntSetState(state, args);
 	}
 	if (state == eTerminatedRunMethod && MyId() == (long)GetId()) {
+		StatTrace(Thread.SetState, "state==eTerminatedRunMethod && MyId==GetId IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Current());
 		return IntSetState(state, args);
 	}
 	if (state == eTerminated && MyId() == (long)GetId()) {
+		StatTrace(Thread.SetState, "state==eTerminated && MyId==GetId IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Current());
 		return IntSetState(state, args);
 	}
 	if (state == eTerminated) {
-		Trace("SetState:(" << (long)state << ") fState(" << (long)fState << ") IntId: " << (long)GetId() << " CallId: " << MyId());
+		StatTrace(Thread.SetState, "state==eTerminated IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Current());
 	}
 	return false;
 }
@@ -411,21 +412,24 @@ bool Thread::IntSetState(EThreadState state, ROAnything args)
 
 bool Thread::CallStateHooks(EThreadState state, ROAnything args)
 {
-	StartTrace1(Thread.CallStateHooks, "ThreadState :" << (long)state);
-
 	switch (state) {
 		case eStartRequested:
+			StatTrace(Thread.CallStateHooks, "eStartRequested", Storage::Current());
 			return DoStartRequestedHook(args);
 		case eStarted:
+			StatTrace(Thread.CallStateHooks, "eStarted", Storage::Current());
 			DoStartedHook(args);
 			break;
 		case eTerminationRequested:
+			StatTrace(Thread.CallStateHooks, "eTerminationRequested", Storage::Current());
 			DoTerminationRequestHook(args);
 			break;
 		case eTerminatedRunMethod:
+			StatTrace(Thread.CallStateHooks, "eTerminatedRunMethod", Storage::Current());
 			DoTerminatedRunMethodHook();
 			break;
 		case eTerminated:
+			StatTrace(Thread.CallStateHooks, "eTerminated", Storage::Global());
 			DoTerminatedHook();
 			break;
 		default:
@@ -476,18 +480,17 @@ bool Thread::SetRunningState(ERunningState state, ROAnything args)
 
 void Thread::CallRunningStateHooks(ERunningState state, ROAnything args)
 {
-	StatTrace(Thread.CallRunningStateHooks, "-- entering -- RunningState:" << (long)state, Storage::Current());
-
 	switch (state) {
 		case eReady:
+			StatTrace(Thread.CallRunningStateHooks, "eReady", Storage::Current());
 			DoReadyHook(args);
 			break;
 		case eWorking:
+			StatTrace(Thread.CallRunningStateHooks, "eWorking", Storage::Current());
 			DoWorkingHook(args);
 		default:
 			;
 	}
-	StatTrace(Thread.CallRunningStateHooks, "-- leaving --", Storage::Current());
 }
 
 void Thread::DoReadyHook(ROAnything) {};
@@ -495,44 +498,45 @@ void Thread::DoWorkingHook(ROAnything) {};
 
 bool Thread::IsReady()
 {
-	// assume that if we can't lock the mutex
-	// this WorkerThread object is not ready
-
+	// assume that if we can't lock the mutex this WorkerThread object is not ready
 	bool isReady = false;
 	if (fStateMutex.TryLock()) {
 		// now we have locked the mutex
 		isReady = (fRunningState == eReady && fState == eRunning);
 		fStateMutex.Unlock();
+		StatTrace(Thread.IsReady, "ThrdId: " << (long)GetId() << " CallId: " << MyId() << (isReady ? " true" : " false"), Storage::Current());
+	} else {
+		StatTrace(Thread.IsReady, "ThrdId: " << (long)GetId() << " CallId: " << MyId() << (isReady ? " true" : " false") << " (StateMutex was not lockable)!", Storage::Current());
 	}
 	return isReady;
 }
 
 bool Thread::IsWorking()
 {
-	StartTrace(Thread.IsWorking);
-	// assume that if we can't lock the mutex
-	// this WorkerThread object is working
-
+	// assume that if we can't lock the mutex this WorkerThread object is working
 	bool isWorking = true;
 	if (fStateMutex.TryLock()) {
 		// now we have locked the mutex
 		isWorking = (fRunningState == eWorking && fState == eRunning);
 		fStateMutex.Unlock();
+		StatTrace(Thread.IsWorking, "ThrdId: " << (long)GetId() << " CallId: " << MyId() << (isWorking ? " true" : " false"), Storage::Current());
+	} else {
+		StatTrace(Thread.IsWorking, "ThrdId: " << (long)GetId() << " CallId: " << MyId() << (isWorking ? " true" : " false") << " (StateMutex was not lockable)!", Storage::Current());
 	}
 	return isWorking;
 }
 
 bool Thread::IsRunning()
 {
-	StartTrace(Thread.IsRunning);
-	// assume that if we can't lock the mutex
-	// this WorkerThread object is not ready
-
+	// assume that if we can't lock the mutex this Thread is not running
 	bool isRunning = true;
 	if (fStateMutex.TryLock()) {
 		// now we have locked the mutex
 		isRunning = (fState == eRunning);
 		fStateMutex.Unlock();
+		StatTrace(Thread.IsRunning, "fState:" << (long)fState << " ThrdId: " << (long)GetId() << " CallId: " << MyId() << (isRunning ? " true" : " false"), Storage::Current());
+	} else {
+		StatTrace(Thread.IsRunning, "fState:" << (long)fState << " ThrdId: " << (long)GetId() << " CallId: " << MyId() << (isRunning ? " true" : " false") << " (StateMutex was not lockable)!", Storage::Current());
 	}
 	return isRunning;
 }
@@ -553,7 +557,7 @@ bool Thread::SetWorking(ROAnything args)
 
 bool Thread::Terminate(long timeout, ROAnything args)
 {
-	StartTrace1(Thread.Terminate, "Timeout: " << timeout << " ThrdId: " << MyId());
+	StartTrace1(Thread.Terminate, "Timeout: " << timeout << " ThrdId: " << (long)GetId() << " CallId: " << MyId());
 
 	SetState(eTerminationRequested, args);
 
@@ -598,7 +602,7 @@ void Thread::IntRun()
 
 void Thread::Wait(long secs, long nanodelay)
 {
-	StartTrace(Thread.Wait);
+	StatTrace(Thread.Wait, "secs:" << secs << " nano:" << nanodelay, Storage::Current());
 
 	SimpleMutex m((const char *)0);	// FIXME: server shutdown may
 	// interrupt the wait (avoid random
@@ -615,7 +619,6 @@ void Thread::Wait(long secs, long nanodelay)
 
 long Thread::MyId()
 {
-	StartTrace(Thread.MyId);
 	return THRID();
 }
 
@@ -648,7 +651,7 @@ bool Thread::RegisterCleaner(CleanupHandler *handler)
 
 bool Thread::CleanupThreadStorage()
 {
-	StartTrace1(Thread.CleanupThreadStorage, "CallId: " << MyId());
+	StatTrace(Thread.CleanupThreadStorage, "CallId: " << MyId(), Storage::Global());
 
 	Anything *handlerList = 0;
 	if (GETTLSDATA(fgCleanerKey, handlerList, Anything) && handlerList) {
@@ -687,19 +690,19 @@ Semaphore::~Semaphore()
 
 bool Semaphore::Acquire()
 {
-	StartTrace(Semaphore.Acquire);
+	StatTrace(Semaphore.Acquire, "Sema&:" << (long)&fSemaphore, Storage::Current());
 	return LOCKSEMA(fSemaphore);
 }
 
 bool Semaphore::TryAcquire()
 {
-	StartTrace(Semaphore.TryAcquire);
+	StatTrace(Semaphore.TryAcquire, "Sema&:" << (long)&fSemaphore, Storage::Current());
 	return TRYSEMALOCK(fSemaphore);
 }
 
 void Semaphore::Release()
 {
-	StartTrace(Semaphore.Release);
+	StatTrace(Semaphore.Release, "Sema&:" << (long)&fSemaphore, Storage::Current());
 	if (!UNLOCKSEMA(fSemaphore)) {
 		SysLog::Error("UNLOCKSEMA failed");
 	}
@@ -737,7 +740,7 @@ SimpleMutex::~SimpleMutex()
 
 void SimpleMutex::Lock()
 {
-	StartTrace1(SimpleMutex.Lock, fName);
+	StatTrace(SimpleMutex.Lock, fName, Storage::Current());
 	if ( !LOCKMUTEX(fMutex) ) {
 		SysLog::Error("LOCKMUTEX failed");
 	}
@@ -745,7 +748,7 @@ void SimpleMutex::Lock()
 
 void SimpleMutex::Unlock()
 {
-	StartTrace1(SimpleMutex.Unlock, fName);
+	StatTrace(SimpleMutex.Unlock, fName, Storage::Current());
 	if ( !UNLOCKMUTEX(fMutex) ) {
 		SysLog::Error("UNLOCKMUTEX failed");
 	}
@@ -753,7 +756,7 @@ void SimpleMutex::Unlock()
 
 bool SimpleMutex::TryLock()
 {
-	StartTrace1(SimpleMutex.TryLock, fName);
+	StatTrace(SimpleMutex.TryLock, fName, Storage::Current());
 	return TRYLOCK(fMutex);
 }
 
@@ -773,7 +776,7 @@ THREADKEY Mutex::fgCountTableKey = 0;	// WIN32 defined it 0xFFFFFFFF !!
 MutexCountTableCleaner MutexCountTableCleaner::fgCleaner;
 bool MutexCountTableCleaner::DoCleanup()
 {
-	StartTrace1(MutexCountTableCleaner.DoCleanup, "ThrdId: " << Thread::MyId());
+	StatTrace(MutexCountTableCleaner.DoCleanup, "ThrdId: " << Thread::MyId(), Storage::Global());
 	MetaThing *countarray = 0;
 	if (GETTLSDATA(Mutex::fgCountTableKey, countarray, MetaThing)) {
 		if ((*countarray).GetSize()) {
@@ -844,18 +847,19 @@ Mutex::~Mutex() {
 }
 
 long Mutex::GetCount() {
-	StartTrace1(Mutex.GetCount, "ThrdId: " << Thread::MyId());
 	MetaThing *countarray = 0;
+	long lCount = 0L;
 	GETTLSDATA(fgCountTableKey, countarray, MetaThing);
 	if (countarray) {
-		TraceAny((*countarray), "countarray");
-		return ((ROAnything)(*countarray))[fMutexId].AsLong();
+		StatTraceAny(Mutex.GetCount, (*countarray), "countarray", Storage::Current());
+		lCount = ((ROAnything)(*countarray))[fMutexId].AsLong(0L);
 	}
-	return 0;
+	StatTrace(Mutex.GetCount, "Count:" << lCount << " ThrdId: " << Thread::MyId(), Storage::Current());
+	return lCount;
 }
 
 bool Mutex::SetCount(long newCount) {
-	StartTrace1(Mutex.SetCount, "ThrdId: " << Thread::MyId() << " newCount: " << newCount);
+	StatTrace(Mutex.SetCount, "ThrdId: " << Thread::MyId() << " newCount: " << newCount, Storage::Current());
 	MetaThing *countarray = 0;
 	GETTLSDATA(fgCountTableKey, countarray, MetaThing);
 
@@ -868,7 +872,7 @@ bool Mutex::SetCount(long newCount) {
 		}
 	}
 	if (countarray) {
-		TraceAny((*countarray), "countarray");
+		StatTraceAny(Mutex.SetCount, (*countarray), "countarray", Storage::Current());
 		if (newCount <= 0) {
 			(*countarray).Remove(fMutexId);
 		} else {
@@ -888,10 +892,10 @@ String &Mutex::GetId() {
 }
 
 void Mutex::Lock() {
-	StartTrace1(Mutex.Lock, "Id: " <<  GetId() << " ThrdId: " << Thread::MyId());
 	if (!TryLock()) {
+		StatTrace(Mutex.Lock, "First try to lock failed, eg. not recursive lock -> 'hard'-locking now. Id: " <<  GetId() << " ThrdId: " << Thread::MyId(), Storage::Current());
 		if ( !LOCKMUTEX(fMutex) ) {
-			SysLog::Error("UNLOCKMUTEX failed");
+			SysLog::Error("LOCKMUTEX failed");
 		}
 #ifdef TRACE_LOCKS_IMPL
 		if (fLocker != -1) {
@@ -903,16 +907,17 @@ void Mutex::Lock() {
 #ifdef TRACE_LOCKS_IMPL
 		SysLog::WriteToStderr(String("[") << fName << " Id " << GetId() << "]<" << GetCount() << "," << fLocker << "> L" << "\n");
 #endif
-		Trace("Count: " << GetCount());
+	} else {
+		StatTrace(Mutex.Lock, "TryLock success, Id: " <<  GetId() << " ThrdId: " << Thread::MyId(), Storage::Current());
 	}
 	TRACE_LOCK_ACQUIRE(fName);
 }
 
 void Mutex::Unlock() {
-	StartTrace1(Mutex.Unlock, "Id: " <<  GetId() << " ThrdId: " << Thread::MyId());
 	if ( fLocker == Thread::MyId() ) {
 		long actCount = GetCount() - 1;
 		SetCount(actCount);
+		StatTrace(Mutex.Unlock, "new lockcount:" << actCount << " Id: " <<  GetId() << " ThrdId: " << Thread::MyId(), Storage::Current());
 #ifdef TRACE_LOCKS_IMPL
 		SysLog::WriteToStderr(String("[") << fName << " Id " << GetId() << "]<" << GetCount() << "," << fLocker << "> TR" << "\n");
 #endif
@@ -935,26 +940,29 @@ void Mutex::Unlock() {
 		SysLog::WriteToStderr(logMsg << "\n");
 #endif
 	}
-	Trace("Count: " << GetCount());
 	TRACE_LOCK_RELEASE(fName);
 }
 
 bool Mutex::TryLock() {
-	StartTrace1(Mutex.TryLock, "Id: " <<  GetId() << " ThrdId: " << Thread::MyId() << " Locker: " << fLocker << " Count: " << GetCount());
 	bool hasLocked = TRYLOCK(fMutex);
+	StatTrace(Mutex.TryLock, "Mutex " << (hasLocked ? "" : "not") << " locked Id: " <<  GetId() << " ThrdId: " << Thread::MyId() << " Locker: " << fLocker << " Count: " << GetCount(), Storage::Current());
+	long lCount = 1;
 #if defined(WIN32)
 	if (hasLocked) {
 		// WIN32 allows same thread to acquire the mutex more than once without deadlocking
-		if (GetCount() == 0) {
+		lCount = GetCount();
+		if (lCount == 0) {
 			// mutex acquired for the first time
 			fLocker = Thread::MyId();
-			SetCount(1);
+			lCount++;
+			SetCount(lCount);
 #ifdef TRACE_LOCKS_IMPL
 			SysLog::WriteToStderr(String("[") << fName << " Id " << GetId() << "]<" << GetCount() << "," << fLocker << "> TL" << "\n");
 #endif
 		} else {
 			// consecutive acquire
-			SetCount(GetCount() + 1);
+			lCount += 1;
+			SetCount(lCount);
 			UNLOCKMUTEX(fMutex);
 #ifdef TRACE_LOCKS_IMPL
 			SysLog::WriteToStderr(String("[") << fName << " Id " << GetId() << "]<" << GetCount() << "," << fLocker << "> TLA" << "\n");
@@ -964,21 +972,23 @@ bool Mutex::TryLock() {
 #ifdef TRACE_LOCKS_IMPL
 		SysLog::WriteToStderr(String("[") << fName << " Id " << GetId() << "]<" << GetCount() << "," << fLocker << "> TLA" << "\n");
 #endif
-		SetCount(GetCount() + 1);
+		lCount += GetCount();
+		SetCount(lCount);
 		hasLocked = true;
 	}
 #else
 	if (hasLocked) {
 		fLocker = Thread::MyId();
-		SetCount(1);
-		Trace("Count: " << GetCount());
+		SetCount(lCount);
 #ifdef TRACE_LOCKS_IMPL
 		SysLog::WriteToStderr(String("[") << fName << " Id " << GetId() << "]<" << GetCount() << "," << fLocker << "> TL" << "\n");
 #endif
+		StatTrace(Mutex.TryLock, "first lock, count:" << lCount << " Id: " <<  GetId() << " ThrdId: " << Thread::MyId(), Storage::Current());
 	} else if ( fLocker == Thread::MyId() ) {
-		SetCount(GetCount() + 1);
+		lCount += GetCount();
+		SetCount(lCount);
 		hasLocked = true;
-		Trace("Count: " << GetCount());
+		StatTrace(Mutex.TryLock, "recursive lock, count:" << lCount << " Id: " <<  GetId() << " ThrdId: " << Thread::MyId(), Storage::Current());
 #ifdef TRACE_LOCKS_IMPL
 		SysLog::WriteToStderr(String("[") << fName << " Id " << GetId() << "]<" << GetCount() << "," << fLocker << "> TLA" << "\n");
 #endif
@@ -1068,35 +1078,38 @@ SimpleCondition::~SimpleCondition() {
 }
 
 int SimpleCondition::Wait(SimpleMutex & m) {
-	StartTrace1(SimpleCondition.Wait, "SimpleMutex[" << m.fName << "] CallId:" << Thread::MyId());
+	StatTrace(SimpleCondition.Wait, "releasing SimpleMutex[" << m.fName << "] CallId:" << Thread::MyId(), Storage::Current());
 	if (!CONDWAIT(fSimpleCondition, m.GetInternal())) {
 		SysLog::Error("CONDWAIT failed");
 	}
+	StatTrace(SimpleCondition.Wait, "reacquired SimpleMutex[" << m.fName << "] CallId:" << Thread::MyId(), Storage::Current());
 	return 0;
 }
 
 int SimpleCondition::TimedWait(SimpleMutex & m, long secs, long nanosecs) {
-	StartTrace1(SimpleCondition.TimedWait, "SimpleMutex[" << m.fName << "] CallId:" << Thread::MyId());
-	return CONDTIMEDWAIT(fSimpleCondition, m.GetInternal(), secs, nanosecs);
+	StatTrace(SimpleCondition.TimedWait, "releasing SimpleMutex[" << m.fName << "] secs:" << secs << " nano:" << nanosecs << " CallId:" << Thread::MyId(), Storage::Current());
+	int iRet = CONDTIMEDWAIT(fSimpleCondition, m.GetInternal(), secs, nanosecs);
+	StatTrace(SimpleCondition.TimedWait, "reacquired SimpleMutex[" << m.fName << "] CallId:" << Thread::MyId(), Storage::Current());
+	return iRet;
 }
 
 int SimpleCondition::Signal() {
-	StartTrace(SimpleCondition.Signal);
+	StatTrace(SimpleCondition.Signal, "", Storage::Current());
 	return SIGNALCOND(fSimpleCondition);
 }
 
 int SimpleCondition::BroadCast() {
-	StartTrace(SimpleCondition.BroadCast);
+	StatTrace(SimpleCondition.BroadCast, "", Storage::Current());
 	return BROADCASTCOND(fSimpleCondition);
 }
 
 long SimpleCondition::GetId() {
-	StartTrace(SimpleCondition.GetId);
-	return (long)GetInternal();
+	long lId = (long)GetInternal();
+	StatTrace(SimpleCondition.GetId, lId, Storage::Current());
+	return lId;
 }
 
 //---- Condition ------------------------------------------------
-
 Condition::Condition() {
 	if ( !CREATECOND(fCondition) ) {
 		SysLog::Error("CREATECOND failed");
@@ -1110,35 +1123,39 @@ Condition::~Condition() {
 }
 
 int Condition::Wait(Mutex & m) {
-	StartTrace1(Condition.Wait, "Id: " << GetId() << " CallId: " << Thread::MyId() << " Mutex[" << m.fName << "]");
+	StatTrace(Condition.Wait, "releasing Mutex[" << m.fName << "] Id: " << GetId() << " CallId:" << Thread::MyId(), Storage::Current());
 	m.ReleaseForWait();
 	if ( !CONDWAIT(fCondition, m.GetInternal()) ) {
 		SysLog::Error("CONDWAIT failed");
 	}
+	StatTrace(Condition.Wait, "reacquired Mutex[" << m.fName << "] Id: " << GetId() << " CallId:" << Thread::MyId(), Storage::Current());
 	m.AcquireAfterWait();
 	return 0;
 }
 
 int Condition::TimedWait(Mutex & m, long secs, long nanosecs) {
-	StartTrace1(Condition.TimedWait, "Id: " << GetId() << " CallId: " << Thread::MyId() << " Mutex[" << m.fName << "]");
+	StatTrace(Condition.TimedWait, "releasing Mutex[" << m.fName << "] secs:" << secs << " nano:" << nanosecs << " Id: " << GetId() << " CallId:" << Thread::MyId(), Storage::Current());
 	m.ReleaseForWait();
 	int ret = CONDTIMEDWAIT(fCondition, m.GetInternal(), secs, nanosecs);
+	StatTrace(Condition.Wait, "reacquired Mutex[" << m.fName << "] Id: " << GetId() << " CallId:" << Thread::MyId(), Storage::Current());
 	m.AcquireAfterWait();
 	return ret;
 }
 
 int Condition::Signal() {
-	StartTrace1(Condition.Signal, "Id: " << GetId() << " ThrdId: " << Thread::MyId());
+	StatTrace(Condition.Signal, "Id: " << GetId() << " ThrdId: " << Thread::MyId(), Storage::Current());
 	return SIGNALCOND(fCondition);
 }
 
 int Condition::BroadCast() {
-	StartTrace1(Condition.BroadCast, "Id: " << GetId() << " ThrdId: " << Thread::MyId());
+	StatTrace(Condition.BroadCast, "Id: " << GetId() << " ThrdId: " << Thread::MyId(), Storage::Current());
 	return BROADCASTCOND(fCondition);
 }
 
 long Condition::GetId() {
-	return (long)GetInternal();
+	long lId = (long)GetInternal();
+	StatTrace(Condition.GetId, lId, Storage::Current());
+	return lId;
 }
 
 ////--- ThreadLocalData ------------------------------

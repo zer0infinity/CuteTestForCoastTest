@@ -356,7 +356,7 @@ public:
 
 	/*! interface which must be implemented if you want to be notified when thread t's state changes
 		\param t the thread that changes its state
-		\param args arguments that describe the change; EThreadState in subslot "ThreadState" or ERunningState in subslot "RunningState". "Old" and "New" slots tell you about corresponding states. */
+		\param roaStateArgs arguments that describe the change; EThreadState in subslot "ThreadState" or ERunningState in subslot "RunningState". "Old" and "New" slots tell you about corresponding states. */
 	virtual void Update(Thread *t, ROAnything roaStateArgs) = 0;
 };
 
@@ -500,7 +500,7 @@ public:
 	//! returns id of the calling thread
 	static long MyId();
 
-	//! returns id of the calling thread
+	//! returns the number of active thread objects - still in IntRun() method
 	static long NumOfThreads();
 
 	//! allows clients to register an additional cleanup handler, (which is put into a list)
