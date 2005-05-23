@@ -14,10 +14,50 @@
 #include "Dbg.h"
 
 //--- c-modules used -----------------------------------------------------------
+#include "gzio.h"	// DEF_MEM_LEVEL
+
+// following section copied out of zutil.h
+// DO NOT TRY TO INCLUDE IT DIRECTLY BECAUSE OF SOME REDEFINITIONS!
+
+#if MAX_MEM_LEVEL >= 8
+#  define DEF_MEM_LEVEL 8
+#else
+#  define DEF_MEM_LEVEL  MAX_MEM_LEVEL
+#endif
+
+#if defined(MSDOS) || (defined(WINDOWS) && !defined(WIN32))
+#  define OS_CODE  0x00
+#endif
+
+#ifdef AMIGA
+#  define OS_CODE  0x01
+#endif
+
+#ifdef OS2
+#  define OS_CODE  0x06
+#endif
+
+#ifdef TOPS20
+#  define OS_CODE  0x0a
+#endif
+
+#ifdef WIN32
+#  ifndef __CYGWIN__  /* Cygwin is Unix, not Win32 */
+#    define OS_CODE  0x0b
+#  endif
+#endif
+
+#ifdef __50SERIES /* Prime/PRIMOS */
+#  define OS_CODE  0x0f
+#endif
+
+#ifndef OS_CODE
+#  define OS_CODE  0x03  /* assume Unix */
+#endif
 
 // definition og GzHeader see RFC 1952
 const unsigned char ZipStreamBuf::fgcGzSimpleHeader[10] =  {
-	0x1f, 0x8b,
+	gz_magic[0], gz_magic[1],
 	fgcZDeflated,
 	0, // flags
 	0, 0, 0, 0, // time
@@ -25,24 +65,27 @@ const unsigned char ZipStreamBuf::fgcGzSimpleHeader[10] =  {
 	fgcOsCode
 }; /* gzip magic header */
 
-const unsigned char ZipStreamBuf::fgcZDeflated = 0x08;
-#if defined(WIN32)
-// nt os code
-const unsigned char ZipOStreamBuf::fgcOsCode = 0x0b;
-#else
-// unix os code
-const unsigned char ZipStreamBuf::fgcOsCode = 0x03;
-#endif
-const long ZipStreamBuf::fgcStoreSize = 16384; // zlib's Z_BUFSIZE
+const unsigned char ZipStreamBuf::fgcZDeflated = Z_DEFLATED;
+const unsigned char ZipStreamBuf::fgcOsCode = OS_CODE;
+const long ZipStreamBuf::fgcStoreSize = Z_BUFSIZE;
+
+//---- ZipStreamBuf ----------------------------------------------------------------
+ZipStreamBuf::ZipStreamBuf(Allocator *alloc)
+	: isInitialized(false)
+	, fAllocator(alloc)
+	, fCrcData(0UL)
+	, fCrcHeader(0UL)
+	, fStore(fgcStoreSize, fAllocator)
+	, fCompressed(fgcStoreSize, fAllocator)
+{
+	z_stream_s aInit = { 0 };
+	fZip = aInit;
+}
 
 //---- ZipOStreamBuf ----------------------------------------------------------------
 ZipOStreamBuf::ZipOStreamBuf(ostream &os, Allocator *alloc)
-	: fAllocator(alloc ? alloc : Storage::Current())
-	, fStore(fgcStoreSize, fAllocator)
-	, fCompressed(fgcStoreSize, fAllocator)
+	: ZipStreamBuf(alloc ? alloc : Storage::Current())
 	, fOs(&os)
-	, fCrc(0)
-	, isInitialized(false)
 {
 	xinit();
 }
@@ -74,11 +117,11 @@ void ZipOStreamBuf::close()
 	} while (err == Z_OK);
 
 	Trace("bytes compressed:" << (long)fZip.total_in << " into : " << (long)fZip.total_out);
-	Trace("crc is:" << (long)fCrc);
+	Trace("crc is:" << (long)fCrcData);
 	Trace("total_out: " << (long) fZip.total_out);
 
 // now write crc and length
-	putLong(fCrc);
+	putLong(fCrcData);
 	putLong(fZip.total_in);
 	err = deflateEnd(&fZip);
 	if (err != Z_OK) {
@@ -111,6 +154,7 @@ unsigned long ZipIStreamBuf::getLong()
 	}
 	return value;
 }
+
 void ZipOStreamBuf::flushCompressedIfNecessary()
 {
 	StartTrace(ZipOStreamBuf.flushCompressedIfNecessary);
@@ -135,13 +179,7 @@ void ZipOStreamBuf::flushCompressed()
 
 		fOs->write((const char *)fZip.next_out, len);
 	}
-
 	Trace("writing bytes:" << len << "at address :" << (long)fZip.next_out);
-
-//	String strBuf;
-//	StringStream stream(strBuf);
-//	stream << "at address :" << hex << (long)fZip.next_out << flush;
-//	Trace(strBuf);
 }
 
 int ZipOStreamBuf::sync()
@@ -158,7 +196,7 @@ int ZipOStreamBuf::sync()
 	Trace("sync avail_in=" << (long)fZip.avail_in);
 	Trace("sync avail_out=" << (long)fZip.avail_out);
 	long err = Z_OK;
-	fCrc = crc32(fCrc, (const Bytef *)pbase(), pptr() - pbase());
+	fCrcData = crc32(fCrcData, (const Bytef *)pbase(), pptr() - pbase());
 	while (fZip.avail_in > 0 && err == Z_OK) {
 		flushCompressedIfNecessary();
 
@@ -222,10 +260,18 @@ static void ZipFree(void *a, voidpf address)
 	((Allocator *)a)->Free(address);
 }
 
+int ZipOStreamBuf::setCompression(int comp_level, int comp_strategy)
+{
+	StartTrace1(ZipOStreamBuf.setCompression, "level:" << (long)comp_level << " strategy:" << (long)comp_strategy);
+	return deflateParams (&fZip, comp_level, comp_strategy);
+}
+
 void ZipOStreamBuf::zipinit()
 {
 	StartTrace(ZipOStreamBuf.zipinit);
+	// write a correct header here!
 	fOs->write((const char *)fgcGzSimpleHeader, 10);
+
 	fZip.next_in = 0;
 	fZip.avail_in = 0;
 	fZip.next_out = 0;
@@ -233,11 +279,12 @@ void ZipOStreamBuf::zipinit()
 	fZip.zalloc = ZipAlloc;
 	fZip.zfree = ZipFree;
 	fZip.opaque = fAllocator;
+
 	long err = deflateInit2(&fZip,
 							Z_BEST_COMPRESSION,	//Z_DEFAULT_COMPRESSION, doesn't work?
 							Z_DEFLATED,
 							-MAX_WBITS,
-							8, //MEM_LEVEL
+							DEF_MEM_LEVEL,
 							Z_DEFAULT_STRATEGY);
 	fZip.next_in = (unsigned char *)(const char *)fStore;
 	fZip.next_out = (unsigned char *)(const char *)fCompressed;
@@ -246,18 +293,14 @@ void ZipOStreamBuf::zipinit()
 	if (Z_OK != err) {
 		Trace("zlib error " << err);
 	}
-	fCrc = crc32(0L, Z_NULL, 0);
+	fCrcData = crc32(0L, Z_NULL, 0);
 }
 
-ZipIStreamBuf::ZipIStreamBuf(istream &zis, istream &is, Allocator *a)
-	: fStore(fgcStoreSize),
-	  fCompressed(fgcStoreSize),
-	  fZis(zis),
-	  fIs(&is),
-	  fAllocator(a),
-	  fCrc(0),
-	  isInitialized(false),
-	  fZipErr(Z_OK)
+ZipIStreamBuf::ZipIStreamBuf(istream &zis, istream &is, Allocator *alloc)
+	: ZipStreamBuf(alloc ? alloc : Storage::Current())
+	, fZis(zis)
+	, fIs(&is)
+	, fZipErr(Z_OK)
 {
 	xinit();
 }
@@ -276,13 +319,10 @@ int ZipIStreamBuf::underflow()
 {
 	StartTrace(ZipIStreamBuf.underflow);
 
-	if ((gptr() >= egptr())
-		&& (fZipErr == Z_STREAM_END || (sync() != 0))) {
+	if ( (gptr() >= egptr()) && (fZipErr == Z_STREAM_END || (sync() != 0)) ) {
 		Trace("EOF, fZipErr: ");
-
 		return EOF;
 	}
-
 	Trace("still data");
 
 	return *gptr();
@@ -299,10 +339,10 @@ void ZipIStreamBuf::close()
 	unsigned long crc = getLong();
 	unsigned long len = getLong();
 
-	Trace("CRC check " << (long) crc << " vs. " << (long) fCrc);
+	Trace("CRC check " << (long) crc << " vs. " << (long) fCrcData);
 	Trace("Length check: " << (long) len << " vs. " << (long) fZip.total_out);
 
-	if (crc != fCrc || fZip.total_out != len) {
+	if (crc != fCrcData || fZip.total_out != len) {
 #if defined(WIN32) && !defined(ONLY_STD_IOSTREAM)
 		fZis.clear(ios::badbit | fZis.rdstate());
 #else
@@ -313,7 +353,6 @@ void ZipIStreamBuf::close()
 	if (Z_STREAM_END == fZipErr || Z_OK == fZipErr) {
 		fZipErr = inflateEnd(&fZip);
 	}
-
 	fIs = 0;
 }
 
@@ -353,6 +392,7 @@ void ZipIStreamBuf::zipinit()
 	Assert(Z_OK == fZipErr);
 
 	if (Z_OK == fZipErr) {
+		// change handling of header
 		unsigned char header[10];
 		fIs->read((char *)header, sizeof(header));
 
@@ -369,7 +409,7 @@ void ZipIStreamBuf::zipinit()
 		Trace("zlib error " << fZipErr);
 	}
 
-	fCrc = crc32(0L, Z_NULL, 0);
+	fCrcData = crc32(0L, Z_NULL, 0);
 }
 
 // assume fCompressed is empty
@@ -423,7 +463,7 @@ void ZipIStreamBuf::runInflate()
 
 	unsigned long postStoreLen = preStoreLen - fZip.avail_out;
 	pinit(postStoreLen);
-	fCrc = crc32(fCrc, (unsigned char *) gptr(), postStoreLen );
+	fCrcData = crc32(fCrcData, (unsigned char *) gptr(), postStoreLen );
 
 	Trace("fCompressed: " << (long)fZip.avail_in << "/" << fCompressed.Capacity());
 	Trace("fStore: " << (long) (egptr() - gptr()));

@@ -22,20 +22,28 @@ class ZipIStream;
 class EXPORTDECL_COMPRESS ZipStreamBuf : public streambuf
 {
 public:
+	ZipStreamBuf(Allocator *alloc);
+
 	static const unsigned char fgcGzSimpleHeader[10];	// definition og GzHeader see RFC 1952
 
 protected:
 	static const unsigned char fgcZDeflated;
 
-#if defined(WIN32)
-	// nt os code
+	// os code
 	static const unsigned char fgcOsCode;
-#else
-	// unix os code
-	static const unsigned char fgcOsCode;
-#endif
-
 	static const long fgcStoreSize;
+
+	bool isInitialized;
+	Allocator *fAllocator;
+	unsigned long fCrcData, fCrcHeader;
+	z_stream_s fZip;
+	//! the storage of the holding area buffer
+	String fStore;
+	//! the storage of the compressed buffer
+	String fCompressed;
+
+private:
+	ZipStreamBuf(const ZipStreamBuf &);
 };
 
 //---- ZipIStreamBuf ----------------------------------------------------------
@@ -44,7 +52,7 @@ class EXPORTDECL_COMPRESS ZipIStreamBuf : public ZipStreamBuf
 {
 public:
 	//--- constructors
-	ZipIStreamBuf(istream &zis, istream &, Allocator *a = Storage::Current());
+	ZipIStreamBuf(istream &zis, istream &, Allocator *alloc = Storage::Current());
 
 	~ZipIStreamBuf();
 
@@ -71,20 +79,10 @@ protected:
 	//! get long from underlying stream
 	unsigned long getLong();
 
-	//! the storage of the holding area buffer
-	String fStore;
-	//! the storage of the compressed buffer
-	String fCompressed;
-
 	istream &fZis;
 	istream *fIs;
 
-	Allocator *fAllocator;
-	z_stream_s fZip;
-	unsigned long fCrc;
-
 private:
-	bool isInitialized;
 	long fZipErr;
 };
 
@@ -121,19 +119,9 @@ protected:
 	void flushCompressed();
 	void flushCompressedIfNecessary();
 	void putLong(unsigned long);
+	int setCompression(int comp_level, int comp_strategy);
 
-	Allocator *fAllocator;
-	//! the storage of the holding area buffer
-	String fStore;
-	//! the storage of the compressed buffer
-	String fCompressed;
 	ostream *fOs;
-
-	unsigned long fCrc;
-	z_stream_s fZip;
-
-private:
-	bool isInitialized;
 };
 
 //---- ZipOStream ----------------------------------------------------------
