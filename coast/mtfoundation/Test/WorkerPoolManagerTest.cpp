@@ -64,17 +64,17 @@ void WorkerPoolManagerTest::InitTest()
 	config["timeout"] = 1;
 	config["test"] = Anything((IFAObject *)this);
 	t_assert(wpm.Init(0, 0, 0, 0, ROAnything(config)) == 0);	// always allocate at least one worker
-	t_assert(wpm.MaxRequests2Run() == 1);
-	t_assert(wpm.NumOfRequestsRunning() == 0);
+	t_assert(wpm.GetPoolSize() == 1);
+	t_assert(wpm.ResourcesUsed() == 0);
 	t_assert(wpm.Init(-1, 0, 0, 0, ROAnything(config)) == 0);
-	t_assert(wpm.MaxRequests2Run() == 1);
-	t_assert(wpm.NumOfRequestsRunning() == 0);
+	t_assert(wpm.GetPoolSize() == 1);
+	t_assert(wpm.ResourcesUsed() == 0);
 	t_assert(wpm.Init(1, 0, 0, 0, ROAnything(config)) == 0);
-	t_assert(wpm.MaxRequests2Run() == 1);
-	t_assert(wpm.NumOfRequestsRunning() == 0);
+	t_assert(wpm.GetPoolSize() == 1);
+	t_assert(wpm.ResourcesUsed() == 0);
 	t_assert(wpm.Init(10, 0, 0, 0, ROAnything(config)) == 0);
-	t_assert(wpm.MaxRequests2Run() == 10);
-	t_assert(wpm.NumOfRequestsRunning() == 0);
+	t_assert(wpm.GetPoolSize() == 10);
+	t_assert(wpm.ResourcesUsed() == 0);
 
 	for (long i = 0; i < 10; i++) {
 		t_assertm(wpm.DoGetWorker(i) != 0, "expected 10 Workers to be there");
@@ -90,8 +90,8 @@ void WorkerPoolManagerTest::EnterLeaveTests()
 	config["timeout"] = 1;
 	config["test"] = Anything((IFAObject *)this);
 	t_assert(wpm.Init(cPoolSz, 0, 0, 0, ROAnything(config)) == 0);
-	t_assert(wpm.MaxRequests2Run() == cPoolSz);
-	t_assert(wpm.NumOfRequestsRunning() == 0);
+	t_assert(wpm.GetPoolSize() == cPoolSz);
+	t_assert(wpm.ResourcesUsed() == 0);
 
 	Anything work;
 	for (long i = 0; i < 2 * cPoolSz; i++) {
