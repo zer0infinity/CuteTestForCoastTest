@@ -170,7 +170,7 @@ void ThreadPoolManager::Update(Thread *t, ROAnything roaStateArgs)
 
 		}
 	}
-	fCond.BroadCast();	//ab: notify all threads
+	fCond.BroadCast();
 }
 
 bool ThreadPoolManager::AllocPool(long poolSize, ROAnything roaThreadArgs)
@@ -322,6 +322,44 @@ bool WorkerPoolManager::CanReInitPool()
 	return true;
 }
 
+int WorkerPoolManager::Init(int maxParallelRequests, int usePoolStorage, int poolStorageSize, int numOfPoolBucketSizes, ROAnything roaWorkerArgs)
+{
+	StartTrace(WorkerPoolManager.Init);
+	bool reallyterminated = Terminate(1);	// nothing to do if yet uninitialized
+	Assert(reallyterminated);
+	DoDeletePool(roaWorkerArgs);
+
+	fTerminated = false;
+
+	if ( AllocPool(maxParallelRequests, roaWorkerArgs) ) {
+		Trace("allocation succeeded, preparing pool...");
+		return PreparePool(usePoolStorage, poolStorageSize, numOfPoolBucketSizes, roaWorkerArgs);
+	}
+	Trace("returning -1");
+	return -1;
+}
+
+bool WorkerPoolManager::Terminate(long secs)
+{
+	StartTrace(WorkerPoolManager.Terminate);
+	// sends signals to all running requests
+	// that should terminate the threads
+	// it is not 100% a solution because
+	// delivery of signals is dependent on
+	// the state of the thread
+	bool success = true;
+	if (!fTerminated) {
+		Trace("i am still not terminated, have to Terminate " << fPoolSize << " workers with timeout " << secs << "s");
+		for (long i = 0; i < fPoolSize; i++) {
+			Trace("at worker " << i);
+			WorkerThread *hs = DoGetWorker(i);
+			success = (hs->Terminate(secs) && success);
+		}
+		fTerminated = true;
+	}
+	return success;
+}
+
 bool WorkerPoolManager::AllocPool(long poolSize, ROAnything roaWorkerArgs)
 {
 	StartTrace(WorkerPoolManager.AllocPool);
@@ -329,7 +367,25 @@ bool WorkerPoolManager::AllocPool(long poolSize, ROAnything roaWorkerArgs)
 	fPoolSize = (poolSize > 0) ? poolSize : 1;
 	Assert(fPoolSize > 0);
 	DoAllocPool(roaWorkerArgs);
+	// check if at least something was done
 	return ( DoGetWorker(0) != NULL );
+}
+
+int WorkerPoolManager::PreparePool(int usePoolStorage, int poolStorageSize, int numOfPoolBucketSizes, ROAnything roaWorkerArgs)
+{
+	StartTrace(WorkerPoolManager.PreparePool);
+	// since an array uses the default constructor
+	// we have to initialize each object with the
+	// processor it is working with
+	if ( CanReInitPool() ) {
+		Trace("CanReInitPool() was true, do InitPool");
+		return InitPool(usePoolStorage != 0, poolStorageSize, numOfPoolBucketSizes, roaWorkerArgs);
+	}
+	// it makes no sense to start the thread pool if no processor is available
+	String logMessage("cannot re-init pool");
+	Trace(logMessage);
+	SysLog::Alert(logMessage);
+	return -1;
 }
 
 int WorkerPoolManager::InitPool(bool usePoolStorage, long poolStorageSize, int numOfPoolBucketSizes, ROAnything roaWorkerArgs)
@@ -356,40 +412,6 @@ int WorkerPoolManager::InitPool(bool usePoolStorage, long poolStorageSize, int n
 	//allocate hard for now; maybe later we can do it with a factory
 	fStatEvtHandler = new WPMStatHandler(fPoolSize);
 	return 0;
-}
-
-int WorkerPoolManager::Init(int maxParallelRequests, int usePoolStorage, int poolStorageSize, int numOfPoolBucketSizes, ROAnything roaWorkerArgs)
-{
-	StartTrace(WorkerPoolManager.Init);
-	bool reallyterminated = Terminate(1);	// nothing to do if yet uninitialized
-	Assert(reallyterminated);
-	DoDeletePool(roaWorkerArgs);
-
-	fTerminated = false;
-
-	if ( AllocPool(maxParallelRequests, roaWorkerArgs) ) {
-		Trace("allocation succeeded, preparing pool...");
-		return PreparePool(usePoolStorage, poolStorageSize, numOfPoolBucketSizes, roaWorkerArgs);
-	}
-	Trace("returning -1");
-	return -1;
-}
-
-int WorkerPoolManager::PreparePool(int usePoolStorage, int poolStorageSize, int numOfPoolBucketSizes, ROAnything roaWorkerArgs)
-{
-	StartTrace(WorkerPoolManager.PreparePool);
-	// since an array uses the default constructor
-	// we have to initialize each object with the
-	// processor it is working with
-	if ( CanReInitPool() ) {
-		Trace("CanReInitPool() was true, do InitPool");
-		return InitPool(usePoolStorage != 0, poolStorageSize, numOfPoolBucketSizes, roaWorkerArgs);
-	}
-	// it makes no sense to start the thread pool if no processor is available
-	String logMessage("cannot re-init pool");
-	Trace(logMessage);
-	SysLog::Alert(logMessage);
-	return -1;
 }
 
 void WorkerPoolManager::Enter(ROAnything workload)
@@ -419,14 +441,14 @@ void WorkerPoolManager::Enter(ROAnything workload)
 	hr->SetWorking(workload);
 }
 
-void WorkerPoolManager::Update(Thread *t, ROAnything roaStateArgs)
+void WorkerPoolManager::Update(Thread *pObserved, ROAnything aUpdateArgs)
 {
 	MutexEntry me(fMutex);
 	me.Use();
 	{
 		StartTrace(WorkerPoolManager.Update);
-		TraceAny(roaStateArgs, "state event received");
-		switch ( roaStateArgs["RunningState"]["New"].AsLong(-1) ) {
+		TraceAny(aUpdateArgs, "state event received");
+		switch ( aUpdateArgs["RunningState"]["New"].AsLong(-1) ) {
 			case Thread::eReady:
 				fCurrentParallelRequests--;
 				Trace("Requests still running: " << fCurrentParallelRequests);
@@ -450,7 +472,7 @@ void WorkerPoolManager::Update(Thread *t, ROAnything roaStateArgs)
 	fCond.BroadCast();
 }
 
-long WorkerPoolManager::NumOfRequestsRunning()
+long WorkerPoolManager::ResourcesUsed()
 {
 	// accessor to current active requests
 	MutexEntry me(fMutex);
@@ -461,22 +483,24 @@ long WorkerPoolManager::NumOfRequestsRunning()
 void WorkerPoolManager::BlockRequests()
 {
 	// accessor to current active requests
-	StartTrace(WorkerPoolManager.BlockRequests);
+	StatTrace(WorkerPoolManager.BlockRequests, "Blocking requests", Storage::Current());
 	MutexEntry me(fMutex);
 	me.Use();
 	fBlockRequestHandling = true;
+	fCond.Signal();
 }
 
 void WorkerPoolManager::UnblockRequests()
 {
 	// accessor to current active requests
+	StatTrace(WorkerPoolManager.UnblockRequests, "Unblocking requests", Storage::Current());
 	MutexEntry me(fMutex);
 	me.Use();
 	fBlockRequestHandling = false;
 	fCond.Signal();
 }
 
-long WorkerPoolManager::MaxRequests2Run()
+long WorkerPoolManager::GetPoolSize()
 {
 	// accessor to current max running
 	// requests
@@ -507,27 +531,6 @@ bool WorkerPoolManager::AwaitEmpty(long sec)
 		}
 	}
 	return (fCurrentParallelRequests <= 0);
-}
-
-bool WorkerPoolManager::Terminate(long secs)
-{
-	StartTrace(WorkerPoolManager.Terminate);
-	// sends signals to all running requests
-	// that should terminate the threads
-	// it is not 100% a solution because
-	// delivery of signals is dependent on
-	// the state of the thread
-	bool success = true;
-	if (!fTerminated) {
-		Trace("i am still not terminated, have to Terminate " << fPoolSize << " workers with timeout " << secs << "s");
-		for (long i = 0; i < fPoolSize; i++) {
-			Trace("at worker " << i);
-			WorkerThread *hs = DoGetWorker(i);
-			success = (hs->Terminate(secs) && success);
-		}
-		fTerminated = true;
-	}
-	return success;
 }
 
 WorkerThread *WorkerPoolManager::FindNextRunnable(long requestNr)
