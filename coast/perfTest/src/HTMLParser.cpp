@@ -1189,11 +1189,11 @@ void MyHTMLWriter::RenderImageTag(int t, const char *s, Anything &node, const ch
 	if (t == ' ') {
 		// start tag
 		if ( node.IsDefined("src") ) {
-			String s(node["src"].AsCharPtr(""));
+			String strSrc(node["src"].AsCharPtr(""));
 			long i;
 			// check whether this image is already in the list
 			for ( i = 0; i < fUrls["Imgs"].GetSize(); i++ ) {
-				if ( ! s.Compare( fUrls["Imgs"][i]["src"].AsCharPtr("") ) ) {
+				if ( ! strSrc.Compare( fUrls["Imgs"][i]["src"].AsCharPtr("") ) ) {
 					// already in the list
 					break;
 				}
