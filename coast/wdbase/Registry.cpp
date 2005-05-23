@@ -96,7 +96,7 @@ RegisterableObject *Registry::Find(const char *name)
 	return (RegisterableObject *)0;
 }
 
-void Registry::Register(const char *name, RegisterableObject *o)
+void Registry::RegisterRegisterableObject(const char *name, RegisterableObject *o)
 {
 	Assert(name && o);
 	if ( name && o ) { // make it robust
@@ -104,9 +104,9 @@ void Registry::Register(const char *name, RegisterableObject *o)
 	}
 }
 
-void Registry::Unregister(const char *name)
+void Registry::UnregisterRegisterableObject(const char *name)
 {
-	StartTrace1(Registry.Unregister, "name [" << NotNull(name) << "]");
+	StartTrace1(Registry.UnregisterRegisterableObject, "name [" << NotNull(name) << "]");
 	Assert(name);
 	if ( name && GetTable().IsDefined(name) ) { // make it robust
 		RegisterableObject *o = Find(name);

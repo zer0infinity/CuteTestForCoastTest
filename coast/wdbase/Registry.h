@@ -42,11 +42,11 @@ public:
 	//!installs the object o under name in the registry; after that in can be retrieved with Find. No checks against duplicate installs are made
 	//! \param name name used for registration
 	//! \param o the object to be registered
-	void Register(const char *name, RegisterableObject *o);
+	void RegisterRegisterableObject(const char *name, RegisterableObject *o);
 
 	//!removes the object associated with name (if any) from the registry, it does not delete anything. After that it is no longer accessible under name
 	//! \param name name used for registration
-	void Unregister(const char *name);
+	void UnregisterRegisterableObject(const char *name);
 
 	//!returns the object associated with name (if any)
 	//! \param name name used for registration

@@ -88,7 +88,7 @@ void RegisterableObject::Register(const char *name, const char *category)
 #if !defined (_AIX) && !defined(__sun)   //static Initialisation problem
 	Trace("Registering: <" << name << "> of category <" << category << "> in &" << (long)reg);
 #endif
-	reg->Register(name, this);
+	reg->RegisterRegisterableObject(name, this);
 }
 
 void RegisterableObject::Unregister(const char *name, const char *category)
@@ -101,7 +101,7 @@ void RegisterableObject::Unregister(const char *name, const char *category)
 #if !defined (_AIX)   //static Initialisation problem
 		Trace("Unregistering: <" << name << "> of category <" << category << "> in &" << (long)reg);
 #endif
-		reg->Unregister(name);
+		reg->UnregisterRegisterableObject(name);
 	}
 }
 

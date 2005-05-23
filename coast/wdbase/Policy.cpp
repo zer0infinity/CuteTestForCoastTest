@@ -183,7 +183,7 @@ HierarchConfNamed *HierarchyInstaller::GetLeaf(const char *leafName, HierarchCon
 		}
 		if (leaf && (rootName != leafName)) {
 			Trace("registering leaf [" << leafName << "]");
-			r->Register(leafName, leaf);
+			r->RegisterRegisterableObject(leafName, leaf);
 		}
 	}
 	if ( leaf ) {
@@ -211,7 +211,7 @@ bool AliasTerminator::Terminate(Registry *r)
 		ro = ri.Next(name);
 		if (ro && !ro->IsStatic() ) {
 			SysLog::Info(String("AliasTerminator::Terminate [") << name << "]");
-			r->Unregister(name);
+			r->UnregisterRegisterableObject(name);
 			String key(12L); // provide reasonable default capacity
 			key << (long)ro;
 

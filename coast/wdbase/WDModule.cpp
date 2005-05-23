@@ -344,7 +344,7 @@ bool WDTerminate::DoCall(WDModule *wdm)
 {
 	bool ret = DoCallInner(wdm);
 	if ( !wdm->IsStatic() ) {
-		Registry::GetRegistry("WDModule")->Unregister(fModuleName);
+		Registry::GetRegistry("WDModule")->UnregisterRegisterableObject(fModuleName);
 		delete wdm;
 	}
 	return ret;
