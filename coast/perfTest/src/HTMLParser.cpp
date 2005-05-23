@@ -1255,9 +1255,9 @@ void MyHTMLWriter::RenderBASETag(int t, const char *s, Anything &node)
 		// start tag
 		// if BASE tag contains href keep this base link
 		if ( node.IsDefined("href") ) {
-			String s(node["href"].AsCharPtr(""));
-			//s.TrimFront(7); // eliminate 'HTTP://' // MIKE, don't! leave HTTP in there
-			fUrls["BASE"] =  s;
+			String strHREF(node["href"].AsCharPtr(""));
+			//strHREF.TrimFront(7); // eliminate 'HTTP://' // MIKE, don't! leave HTTP in there
+			fUrls["BASE"] = strHREF;
 		}
 	} else {
 		// end tag.. needs not be modified
