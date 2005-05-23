@@ -885,16 +885,13 @@ bool SybCTnewDA::GetDaParams(DaParams &params, CS_CONNECTION *connection)
 CS_RETCODE SybCTnewDA::SetConProps(CS_INT property, CS_VOID *buffer, CS_INT buflen)
 {
 	StartTrace(SybCTnewDA.SetConProps);
-	MutexEntry me(fgSybaseLocker);
-	me.Use();
+//	MutexEntry me(fgSybaseLocker); me.Use();
 	return ct_con_props(fConnection, CS_SET, property, buffer, buflen, NULL);
 }
 
 bool SybCTnewDA::GetConProps(CS_INT property, CS_VOID **propvalue, CS_INT propsize)
 {
 	StartTrace(SybCTnewDA.GetConProps);
-	MutexEntry me(fgSybaseLocker);
-	me.Use();
 	return IntGetConProps(fConnection, property, propvalue, propsize);
 }
 
@@ -906,28 +903,20 @@ bool SybCTnewDA::IntGetConProps(CS_CONNECTION *connection, CS_INT property, CS_V
 	if (connection != (CS_CONNECTION *)NULL) {
 		retcode = ct_con_props(connection, CS_GET, property, propvalue, propsize, (CS_INT *)NULL);
 		if (retcode != CS_SUCCEED) {
-			SYSERROR("ct_con_props(CS_GET CS_USERDATA) failed");
+			SYSERROR("ct_con_props(CS_GET, " << (long)property << ") failed");
 		}
 	}
 	return (retcode == CS_SUCCEED);
 }
 
-bool SybCTnewDA::GetMessageAny(CS_CONTEXT *context, CS_CONNECTION *connection, Anything **anyMessage)
+bool SybCTnewDA::GetMessageAny(CS_CONTEXT *context, Anything **anyMessage)
 {
 	StartTrace(SybCTnewDA.GetMessageAny);
-	CS_RETCODE retcode = CS_FAIL;
-
-	if (connection != (CS_CONNECTION *)NULL) {
-		retcode = ct_con_props(connection, CS_GET, CS_USERDATA, anyMessage, CS_SIZEOF(Anything *), (CS_INT *)NULL);
-		if (retcode != CS_SUCCEED) {
-			SYSERROR("ct_con_props(CS_GET CS_USERDATA) failed, MessageAny not available");
-		}
-	} else {
-		retcode = cs_config(context, CS_GET, CS_USERDATA, anyMessage, CS_SIZEOF(Anything *), (CS_INT *)NULL);
-		if (retcode != CS_SUCCEED) {
-			SYSERROR("cs_config(CS_GET CS_USERDATA) failed");
-		}
+	CS_RETCODE retcode = cs_config(context, CS_GET, CS_USERDATA, anyMessage, CS_SIZEOF(Anything *), (CS_INT *)NULL);
+	if (retcode != CS_SUCCEED) {
+		SYSERROR("cs_config(CS_GET CS_USERDATA) failed");
 	}
+
 	return (retcode == CS_SUCCEED);
 }
 
@@ -954,8 +943,7 @@ CS_RETCODE SybCTnewDA_servermsg_handler(CS_CONTEXT *context, CS_CONNECTION *conn
 		SybCTnewDA::DaParams daParams;
 		bool bFuncCode = false;
 		{
-			MutexEntry me(SybCTnewDA::fgSybaseLocker);
-			me.Use();
+//			MutexEntry me(SybCTnewDA::fgSybaseLocker); me.Use();
 			bFuncCode = SybCTnewDA::GetDaParams(daParams, connection);
 		}
 		if ( bFuncCode ) {
@@ -987,8 +975,7 @@ CS_RETCODE SybCTnewDA_servermsg_handler(CS_CONTEXT *context, CS_CONNECTION *conn
 			}
 			TraceAny(anyData, "anyData");
 			{
-				MutexEntry me(SybCTnewDA::fgSybaseLocker);
-				me.Use();
+//				MutexEntry me(SybCTnewDA::fgSybaseLocker); me.Use();
 				bFuncCode = SybCTnewDA::PutMessages(daParams, anyData);
 			}
 			if ( !bFuncCode ) {
@@ -1010,8 +997,7 @@ CS_RETCODE SybCTnewDA_clientmsg_handler(CS_CONTEXT *context, CS_CONNECTION *conn
 		SybCTnewDA::DaParams daParams;
 		bool bFuncCode = false;
 		{
-			MutexEntry me(SybCTnewDA::fgSybaseLocker);
-			me.Use();
+//			MutexEntry me(SybCTnewDA::fgSybaseLocker); me.Use();
 			bFuncCode = SybCTnewDA::GetDaParams(daParams, connection);
 		}
 		if ( bFuncCode ) {
@@ -1040,8 +1026,7 @@ CS_RETCODE SybCTnewDA_clientmsg_handler(CS_CONTEXT *context, CS_CONNECTION *conn
 			}
 			TraceAny(anyData, "anyData");
 			{
-				MutexEntry me(SybCTnewDA::fgSybaseLocker);
-				me.Use();
+//				MutexEntry me(SybCTnewDA::fgSybaseLocker); me.Use();
 				bFuncCode = SybCTnewDA::PutMessages(daParams, anyData);
 			}
 			if ( !bFuncCode ) {
@@ -1065,7 +1050,7 @@ CS_RETCODE SybCTnewDA_csmsg_handler(CS_CONTEXT *context, CS_CLIENTMSG *errmsg)
 		{
 			MutexEntry me(SybCTnewDA::fgSybaseLocker);
 			me.Use();
-			bFuncCode = SybCTnewDA::GetMessageAny(context, NULL, &pAny);
+			bFuncCode = SybCTnewDA::GetMessageAny(context, &pAny);
 		}
 		if ( bFuncCode ) {
 			Anything anyData;
@@ -1083,15 +1068,20 @@ CS_RETCODE SybCTnewDA_csmsg_handler(CS_CONTEXT *context, CS_CLIENTMSG *errmsg)
 				anyData["osstring"] = NotNull(errmsg->osstring);
 			}
 			TraceAny(anyData, "anyData");
-			(*pAny)["Messages"].Append(anyData);
-			// The msgtext of the first severity unequal 0 must saved
-			if ( !(*pAny).IsDefined("MainMsgErr")
-				 && (long)CS_NUMBER(errmsg->msgnumber) != 5701L
-				 && (long)CS_NUMBER(errmsg->msgnumber) != 0L ) {
-				String help;
-				help << "[" << anyData["msgtext"].AsString("") << "]";
-				(*pAny)["MainMsgErr"] = help;
-				(*pAny)["MainMsgErrNumber"] = (long)CS_NUMBER(errmsg->msgnumber);
+			{
+				// needs lock because other connections could also log errors
+				MutexEntry me(SybCTnewDA::fgSybaseLocker);
+				me.Use();
+				(*pAny)["Messages"].Append(anyData);
+				// The msgtext of the first severity unequal 0 must saved
+				if ( !(*pAny).IsDefined("MainMsgErr")
+					 && (long)CS_NUMBER(errmsg->msgnumber) != 5701L
+					 && (long)CS_NUMBER(errmsg->msgnumber) != 0L ) {
+					String help;
+					help << "[" << anyData["msgtext"].AsString("") << "]";
+					(*pAny)["MainMsgErr"] = help;
+					(*pAny)["MainMsgErrNumber"] = (long)CS_NUMBER(errmsg->msgnumber);
+				}
 			}
 		} else {
 			SysLog::Error("SybCTnewDA_csmsg_handler: could not get Message anything");

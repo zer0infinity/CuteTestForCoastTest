@@ -106,7 +106,7 @@ public:
 	bool SqlExec(DaParams &params, String cmd, String resultformat = "TitlesAlways", const long lMaxResultSize = 0L );
 	bool Close(bool bForce = false);
 
-	static bool GetMessageAny(CS_CONTEXT *context, CS_CONNECTION *connection, Anything **anyMessage);
+	static bool GetMessageAny(CS_CONTEXT *context, Anything **anyMessage);
 	CS_RETCODE SetConProps(CS_INT property, CS_VOID *buffer, CS_INT buflen);
 	bool GetConProps(CS_INT property, CS_VOID **propvalue, CS_INT propsize);
 
