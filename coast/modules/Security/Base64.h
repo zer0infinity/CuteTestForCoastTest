@@ -20,7 +20,7 @@ class EXPORTDECL_SECURITY Base64 :  public Encoder
 public:
 	Base64(const char *name): Encoder(name) {}
 	virtual ~Base64() {}
-	virtual IFAObject *Clone() {
+	virtual IFAObject *Clone() const {
 		return new Base64(fName);
 	}
 
@@ -50,7 +50,7 @@ class EXPORTDECL_SECURITY Base64Regular :  public Base64
 public:
 	Base64Regular(const char *name): Base64(name) {}
 	virtual ~Base64Regular() {}
-	virtual IFAObject *Clone() {
+	virtual IFAObject *Clone() const {
 		return new Base64Regular(fName);
 	}
 

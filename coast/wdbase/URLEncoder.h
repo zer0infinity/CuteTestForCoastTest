@@ -17,7 +17,7 @@ class EXPORTDECL_WDBASE URLEncoder : public Encoder
 public:
 	URLEncoder(const char *name);
 	virtual ~URLEncoder();
-	virtual IFAObject *Clone() {
+	virtual IFAObject *Clone() const {
 		return new URLEncoder(fName);
 	}
 
