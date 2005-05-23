@@ -257,7 +257,7 @@ StringStreamBuf::pos_type StringStreamBuf::seekoff(StringStreamBuf::off_type of,
 bool StringStream::PlainCopyStream2Stream(istream *streamSrc, ostream &streamDest, long &copiedBytes, long lBytes2Copy)
 {
 	StartTrace(StringStream.PlainCopyStream2Stream);
-	streamsize read = 0;
+	streamsize szReadSize = 0;
 	Trace("Bytes to copy: " << lBytes2Copy);
 	String sBuf(lBytes2Copy);
 	char *buf = (char *)(const char *) sBuf;
@@ -267,10 +267,10 @@ bool StringStream::PlainCopyStream2Stream(istream *streamSrc, ostream &streamDes
 		if ( streamSrc->good() ) {
 			if ( streamDest.good() ) {
 				streamSrc->read(buf, (int)lBytes2Copy);
-				read = streamSrc->gcount();
-				streamDest.write(buf, read);
-				copiedBytes += (long)read;
-				lBytes2Copy -= (long)read;
+				szReadSize = streamSrc->gcount();
+				streamDest.write(buf, szReadSize);
+				copiedBytes += (long)szReadSize;
+				lBytes2Copy -= (long)szReadSize;
 				Trace("Bytes copied so far: " << copiedBytes);
 			} else {
 				Trace("Destination stream is not good , aborting copy!");
