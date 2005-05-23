@@ -194,14 +194,14 @@ LDAP *LDAPConnection::Init(LDAPErrorHandler eh)
 {
 	StartTrace(LDAPConnection.Init);
 
-	LDAP *ldap = ::ldap_init( fServer, fPort );
-	if ( !ldap ) {
+	LDAP *locLdap = ::ldap_init( fServer, fPort );
+	if ( !locLdap ) {
 		Trace("ldap_init FAILED");
 		String errMsg = "ldap_init(";
 		errMsg << fServer << "," << fPort << ") failed";
 		eh.HandleSessionError(fHandle, errMsg);
 	}
-	return ldap;
+	return locLdap;
 }
 
 bool LDAPConnection::SetProtocol(LDAPErrorHandler eh)

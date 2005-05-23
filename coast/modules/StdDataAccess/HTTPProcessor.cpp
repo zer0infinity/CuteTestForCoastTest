@@ -46,10 +46,8 @@ void HTTPProcessor::Init(Server *server)
 void HTTPProcessor::DoReadInput(iostream &Ios, Context &ctx)
 {
 	StartTrace(HTTPProcessor.DoReadInput);
-	MethodTimer(HTTPProcessor.DoReadInput, "Reading input", ctx);
 
 	MIMEHeader header; // no super header
-
 	RequestReader reader(this, header);
 	{
 		MethodTimer(RequestReader.ReadRequest, "Reading request", ctx);
@@ -57,6 +55,7 @@ void HTTPProcessor::DoReadInput(iostream &Ios, Context &ctx)
 			return;    // this was an error that forbids to process any further
 		}
 	}
+	MethodTimer(HTTPProcessor.DoReadInput, "Reading input", ctx);
 	Anything request(reader.GetRequest());
 
 	Anything args(ctx.GetRequest());

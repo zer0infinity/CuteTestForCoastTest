@@ -191,9 +191,9 @@ int LDAPAddDAI::DoLDAPRequest(LDAPConnection &lc, ROAnything query)
 	// free used memory
 	Trace("Freeing memory...");
 	if (ldapmods) {
-		for ( long i = 0; i < size; i++ ) {
-			delete [] ldapmods[i]->mod_values;
-			delete ldapmods[i];
+		for ( long k = 0; k < size; k++ ) {
+			delete [] ldapmods[k]->mod_values;
+			delete ldapmods[k];
 		}
 		delete[] ldapmods;
 	}
@@ -395,7 +395,7 @@ int LDAPModifyDAI::DoLDAPRequest(LDAPConnection &lc, ROAnything query)
 
 	// free used memory
 	if (ldapmods) {
-		for ( long i = 0; i < totalmods; i++ ) {
+		for ( i = 0; i < totalmods; i++ ) {
 			delete [] ldapmods[i]->mod_values;
 			delete ldapmods[i];
 		}
