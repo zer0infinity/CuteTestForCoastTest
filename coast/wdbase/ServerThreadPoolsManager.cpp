@@ -213,7 +213,7 @@ void ServerThreadPoolsManager::Terminate()
 long ServerThreadPoolsManager::GetThreadPoolSize()
 {
 	if ( fActiveRequests ) {
-		return fActiveRequests->MaxRequests2Run();
+		return fActiveRequests->GetPoolSize();
 	}
 	return 25;
 }

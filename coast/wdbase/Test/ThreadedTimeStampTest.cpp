@@ -86,8 +86,8 @@ void ThreadedTimeStampTest::DoTimeStampConcurrencyTest(iostream *pIos, long numb
 	config["UTCCtorTest"] = roaConfig["UTCCtorTest"].AsBool(false);
 	config["test"] = Anything((IFAObject *)this);
 	t_assert(wpm.Init(numberOfThreads, 1, 10, 20, config) == 0);
-	t_assert(wpm.MaxRequests2Run() == numberOfThreads);
-	t_assert(wpm.NumOfRequestsRunning() == 0);
+	t_assert(wpm.GetPoolSize() == numberOfThreads);
+	t_assert(wpm.ResourcesUsed() == 0);
 	String strRemainder;
 	strRemainder << "Threads: " << (numberOfThreads > 9 ? "" : " ") << numberOfThreads << " Concurrency: " << concurrencyFactor << " Runs: " << numberOfRuns << " UTC-Test: " << (roaConfig["UTCCtorTest"].AsBool(false) ? "true " : "false") << " Compare: " << (roaConfig["CompareStamps"].AsBool(false) ? "true " : "false") << "\n";
 	Trace(TimeStamp().AsString() << " Start    " << strRemainder);
