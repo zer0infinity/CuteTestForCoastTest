@@ -32,6 +32,67 @@ void TLSDestructor(void *)
 
 static Mutex *gsAllocatorInit = 0;		// protect all data structures used by MT_Storage
 
+#if 0
+#define TrackLockerInit(lockvar) , lockvar(0)
+#define TrackLockerDef(lockvar)	volatile long lockvar
+
+class EXPORTDECL_MTFOUNDATION CurrLockerEntry
+{
+	volatile long &frLockerId;
+public:
+	CurrLockerEntry(volatile long &rLockerId, const char *pFile, long lLine)
+		: frLockerId(rLockerId) {
+		CheckException(pFile, lLine);
+		frLockerId = Thread::MyId();
+	}
+	~CurrLockerEntry() {
+		frLockerId = 0;
+	}
+	inline void CheckException(const char *pFile, long lLine) {
+		if ( frLockerId != 0 ) {
+			long lOther = frLockerId;
+			char buf[256];
+			snprintf(buf, sizeof(buf), "\n%s:%d Another Locker entered already! otherThreadId:%d currentThreadId:%d\n", pFile, lLine, lOther, Thread::MyId());
+			SysLog::WriteToStderr(buf, strlen(buf));
+		}
+	}
+};
+
+#define TrackLocker(lockvar)	CurrLockerEntry aEntry(lockvar, __FILE__, __LINE__)
+
+#else
+
+#define TrackLockerInit(lockvar)
+#define TrackLockerDef(lockvar)
+#define TrackLocker(lockvar)
+
+#endif
+
+class MTPoolAllocator: public PoolAllocator
+{
+public:
+	//! create and initialize a pool allocator
+	//! \param poolid use poolid to distinguish more than one pool
+	//! \param poolSize size of pre-allocated pool in kBytes, default 1MByte
+	MTPoolAllocator(long poolid, u_long poolSize = 1024, u_long maxKindOfBucket = 10)
+		: PoolAllocator(poolid, poolSize, maxKindOfBucket) TrackLockerInit(fCurrLockerId) {}
+	//! destroy a pool only if its empty, i.e. all allocated bytes are freed
+	virtual ~MTPoolAllocator() { }
+	//! implement hook for freeing memory
+	virtual inline void Free(void *vp) {
+		TrackLocker(fCurrLockerId);
+		PoolAllocator::Free(vp);
+	}
+
+protected:
+	TrackLockerDef(fCurrLockerId);
+	//!implement hook for allocating memory using bucketing
+	virtual inline void *Alloc(u_long allocSize) {
+		TrackLocker(fCurrLockerId);
+		return PoolAllocator::Alloc(allocSize);
+	}
+};
+
 #ifdef MEM_DEBUG
 //------------- Utilities for Memory Tracking (multi threaded) --------------
 
@@ -224,7 +285,7 @@ bool MT_Storage::RegisterThread(Allocator *wdallocator)
 Allocator *MT_Storage::MakePoolAllocator(u_long poolStorageSize, u_long numOfPoolBucketSizes, long lPoolId)
 {
 	StartTrace(MT_Storage.MakePoolAllocator);
-	Allocator *newPoolAllocator = new PoolAllocator(lPoolId, poolStorageSize, numOfPoolBucketSizes);
+	Allocator *newPoolAllocator = new MTPoolAllocator(lPoolId, poolStorageSize, numOfPoolBucketSizes);
 	if (!newPoolAllocator) {
 		String msg("allocation of PoolStorage: ");
 		msg << (long)poolStorageSize << ", " << (long)numOfPoolBucketSizes << " failed";
