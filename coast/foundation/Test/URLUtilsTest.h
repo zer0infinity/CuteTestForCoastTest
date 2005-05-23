@@ -16,7 +16,7 @@
 class URLUtilsTest : public TestCase
 {
 public:
-	URLUtilsTest(TString name);
+	URLUtilsTest(TString tstrName);
 	virtual ~URLUtilsTest();
 
 	static Test *suite ();

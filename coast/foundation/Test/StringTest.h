@@ -23,7 +23,7 @@ protected:
 	String fLong;
 
 public:
-	StringTest (TString name); // : TestCase (name) {}
+	StringTest (TString tstrName); // : TestCase (name) {}
 	virtual ~StringTest();
 
 	virtual void			setUp ();

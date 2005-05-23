@@ -46,8 +46,8 @@ protected:
 RegisterServiceHandler(AuthTestService);
 
 //---- AuthenticationServiceTest ----------------------------------------------------------------
-AuthenticationServiceTest::AuthenticationServiceTest(TString name)
-	: ConfiguredActionTest(name, "AuthenticationServiceTestConfig")
+AuthenticationServiceTest::AuthenticationServiceTest(TString tstrName)
+	: ConfiguredActionTest(tstrName, "AuthenticationServiceTestConfig")
 {
 	StartTrace(AuthenticationServiceTest.Ctor);
 }

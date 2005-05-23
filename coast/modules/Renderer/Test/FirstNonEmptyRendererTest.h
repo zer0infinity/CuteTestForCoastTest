@@ -25,7 +25,7 @@ public:
 
 	//! TestCase constructor
 	//! \param name name of the test
-	FirstNonEmptyRendererTest(TString name);
+	FirstNonEmptyRendererTest(TString tstrName);
 
 	//! destroys the test case
 	~FirstNonEmptyRendererTest();

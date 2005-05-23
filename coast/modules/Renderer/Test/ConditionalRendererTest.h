@@ -18,7 +18,7 @@
 class ConditionalRendererTest : public RendererTest
 {
 public:
-	ConditionalRendererTest(TString name);
+	ConditionalRendererTest(TString tstrName);
 	virtual ~ConditionalRendererTest();
 
 	static Test *suite ();

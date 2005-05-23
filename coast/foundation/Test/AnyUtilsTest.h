@@ -18,7 +18,7 @@
 class AnyUtilsTest : public TestCase
 {
 public:
-	AnyUtilsTest(TString name);
+	AnyUtilsTest(TString tstrName);
 	virtual ~AnyUtilsTest();
 
 	static Test *suite ();

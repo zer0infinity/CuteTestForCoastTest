@@ -23,7 +23,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	AppLogTest(TString name);
+	AppLogTest(TString tstrName);
 
 	//!destroys the test case
 	~AppLogTest();

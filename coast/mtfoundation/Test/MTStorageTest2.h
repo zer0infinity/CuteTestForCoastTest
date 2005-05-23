@@ -23,7 +23,7 @@ class MTStorageTest2 : public TestCase
 {
 public:
 	//!constructors
-	MTStorageTest2(TString name);
+	MTStorageTest2(TString tstrName);
 	~MTStorageTest2();
 
 	//!builds up a suite of testcases for this test

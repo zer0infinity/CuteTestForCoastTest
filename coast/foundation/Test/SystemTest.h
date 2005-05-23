@@ -19,7 +19,7 @@ class SystemTest : public TestCase
 {
 public:
 	//!constructors
-	SystemTest(TString name);
+	SystemTest(TString tstrName);
 	~SystemTest();
 
 	//!builds up a suite of testcases for this test

@@ -21,7 +21,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	StringPerfTest(TString name);
+	StringPerfTest(TString tstrName);
 
 	//!destroys the test case
 	~StringPerfTest();

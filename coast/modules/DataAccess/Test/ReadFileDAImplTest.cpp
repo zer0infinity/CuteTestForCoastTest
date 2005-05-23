@@ -21,7 +21,7 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- ReadFileDAImplTest ----------------------------------------------------------------
-ReadFileDAImplTest::ReadFileDAImplTest(TString name) : TestCase(name)
+ReadFileDAImplTest::ReadFileDAImplTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(ReadFileDAImplTest.Ctor);
 }

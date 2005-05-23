@@ -28,7 +28,7 @@ public:
 
 	//! TestCase constructor
 	//! \param name name of the test
-	ROAnyConfNamedObjectLookupAdapterTest(TString name);
+	ROAnyConfNamedObjectLookupAdapterTest(TString tstrName);
 
 	//! destroys the test case
 	~ROAnyConfNamedObjectLookupAdapterTest();

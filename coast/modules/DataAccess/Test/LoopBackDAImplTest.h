@@ -18,7 +18,7 @@ class LoopBackDAImplTest : public TestCase
 {
 public:
 	//--- constructors
-	LoopBackDAImplTest(TString name);
+	LoopBackDAImplTest(TString tstrName);
 	~LoopBackDAImplTest();
 
 	static Test *suite ();

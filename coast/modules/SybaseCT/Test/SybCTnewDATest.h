@@ -21,7 +21,7 @@ public:
 
 	//:TestCase constructor
 	//!param: name - name of the test
-	SybCTnewDATest(TString name);
+	SybCTnewDATest(TString tstrName);
 
 	//:destroys the test case
 	~SybCTnewDATest();

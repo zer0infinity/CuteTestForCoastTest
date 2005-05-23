@@ -20,7 +20,7 @@
 //--- c-library modules used ---------------------------------------------------
 
 //---- StatisticTestCase ----------------------------------------------------------------
-StatisticTestCase::StatisticTestCase(TString name) : TestCase(name)
+StatisticTestCase::StatisticTestCase(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(StatisticTestCase.Ctor);
 }

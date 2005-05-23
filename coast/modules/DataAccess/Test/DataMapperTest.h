@@ -24,7 +24,7 @@ class DataMapperTest : public TestCase
 {
 public:
 	//--- constructors
-	DataMapperTest(TString name);
+	DataMapperTest(TString tstrName);
 	~DataMapperTest();
 
 	static Test *suite ();

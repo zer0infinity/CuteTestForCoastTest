@@ -25,7 +25,7 @@ public:
 
 	//! TestCase constructor
 	//! \param name name of the test
-	ReadFileDAImplTest(TString name);
+	ReadFileDAImplTest(TString tstrName);
 
 	//! destroys the test case
 	~ReadFileDAImplTest();

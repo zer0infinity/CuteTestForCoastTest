@@ -31,7 +31,7 @@ class FormRendererTest : public TestCase
 protected:
 
 public:
-	FormRendererTest (TString name); // : TestCase (name) {}
+	FormRendererTest (TString tstrName); // : TestCase (name) {}
 	virtual ~FormRendererTest();
 	virtual void	setUp ();
 	static Test		*suite ();

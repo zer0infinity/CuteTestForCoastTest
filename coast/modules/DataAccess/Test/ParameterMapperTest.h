@@ -25,7 +25,7 @@ public:
 	//--- constructors
 
 	/*! \param name name of the test */
-	ParameterMapperTest(TString name);
+	ParameterMapperTest(TString tstrName);
 
 	//! destroys the test case
 	~ParameterMapperTest();

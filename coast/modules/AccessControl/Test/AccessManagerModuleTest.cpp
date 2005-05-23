@@ -33,7 +33,7 @@ public:
 	IFAObject *Clone() const {
 		return new TestAccessManager(fName);
 	}
-	virtual bool Validate(String uid) {
+	virtual bool Validate(String &uid) {
 		return false;
 	}
 	virtual bool AuthenticateWeak(String uid, String passwd, String &newRole) {
@@ -68,8 +68,8 @@ public:
 RegisterAccessManager(MyAccessManager);
 
 //---- AccessManagerModuleTest ----------------------------------------------------------------
-AccessManagerModuleTest::AccessManagerModuleTest(TString name)
-	: ConfiguredTestCase(name, "AccessManagerModuleTest")
+AccessManagerModuleTest::AccessManagerModuleTest(TString tstrName)
+	: ConfiguredTestCase(tstrName, "AccessManagerModuleTest")
 {
 	StartTrace(AccessManagerModuleTest.Ctor);
 }

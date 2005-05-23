@@ -59,7 +59,7 @@ public:
 	//! check if given id is a valid user id
 	/*!	\param uid user id to check
 		\return true if user id is accepted */
-	virtual bool Validate(String uid) = 0;
+	virtual bool Validate(String &uid) = 0;
 
 	//! check if given id is a valid user id, context version
 	/*!	\param ctx Context to use for DataAccess etc.

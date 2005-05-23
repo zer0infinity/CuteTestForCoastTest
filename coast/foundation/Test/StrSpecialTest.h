@@ -16,7 +16,7 @@
 class StrSpecialTest : public TestCase
 {
 public:
-	StrSpecialTest(TString name);
+	StrSpecialTest(TString tstrName);
 	virtual ~StrSpecialTest();
 
 	static Test *suite ();

@@ -24,7 +24,7 @@ public:
 	//--- constructors
 
 	/*! \param name name of the test */
-	AnyBuiltInSortTest(TString name);
+	AnyBuiltInSortTest(TString tstrName);
 
 	//! destroys the test case
 	~AnyBuiltInSortTest();

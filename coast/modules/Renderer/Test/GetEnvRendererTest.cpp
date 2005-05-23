@@ -23,7 +23,7 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- GetEnvRendererTest ----------------------------------------------------------------
-GetEnvRendererTest::GetEnvRendererTest(TString name) : TestCase(name)
+GetEnvRendererTest::GetEnvRendererTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(GetEnvRendererTest.Ctor);
 }

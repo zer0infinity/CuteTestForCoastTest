@@ -23,7 +23,7 @@
 //--- c-library modules used ---------------------------------------------------
 
 //---- RemoteStresserTest ----------------------------------------------------------------
-RemoteStresserTest::RemoteStresserTest(TString name) : StressAppTest(name), fServerRunner(0), fStressServer(0)
+RemoteStresserTest::RemoteStresserTest(TString tstrName) : StressAppTest(tstrName), fServerRunner(0), fStressServer(0)
 {
 }
 

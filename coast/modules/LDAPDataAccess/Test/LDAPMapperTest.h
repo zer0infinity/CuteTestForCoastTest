@@ -25,7 +25,7 @@ class LDAPMapperTest : public TestCase
 {
 public:
 	//--- constructors
-	LDAPMapperTest(TString name);
+	LDAPMapperTest(TString tstrName);
 	~LDAPMapperTest();
 
 	//--- public api

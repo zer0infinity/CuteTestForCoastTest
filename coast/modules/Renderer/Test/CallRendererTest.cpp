@@ -22,7 +22,7 @@
 #include "CallRenderer.h"
 
 //---- CallRendererTest ----------------------------------------------------------------
-CallRendererTest::CallRendererTest(TString name) : RendererTest(name)
+CallRendererTest::CallRendererTest(TString tstrName) : RendererTest(tstrName)
 {
 	StartTrace(CallRendererTest.Ctor);
 }

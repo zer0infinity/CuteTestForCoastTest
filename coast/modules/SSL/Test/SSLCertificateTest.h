@@ -25,7 +25,7 @@ public:
 
 	//! ConfiguredTestCase constructor
 	//! \param name name of the test
-	SSLCertificateTest(TString name);
+	SSLCertificateTest(TString tstrName);
 
 	//! destroys the test case
 	~SSLCertificateTest();

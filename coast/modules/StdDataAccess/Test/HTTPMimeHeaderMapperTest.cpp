@@ -21,8 +21,8 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- HTTPMimeHeaderMapperTest ----------------------------------------------------------------
-HTTPMimeHeaderMapperTest::HTTPMimeHeaderMapperTest(TString name)
-	: ConfiguredTestCase(name, "HTTPMimeHeaderMapperTestConfig")
+HTTPMimeHeaderMapperTest::HTTPMimeHeaderMapperTest(TString tstrName)
+	: ConfiguredTestCase(tstrName, "HTTPMimeHeaderMapperTestConfig")
 {
 	StartTrace(HTTPMimeHeaderMapperTest.Ctor);
 }

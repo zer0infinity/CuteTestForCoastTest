@@ -22,7 +22,7 @@
 //--- c-library modules used ---------------------------------------------------
 
 //---- CgiCallerTest ----------------------------------------------------------------
-CgiCallerTest::CgiCallerTest(TString name) : TestCase(name)
+CgiCallerTest::CgiCallerTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(CgiCallerTest.Ctor);
 }

@@ -62,7 +62,7 @@ void RBRunner::Run()
 }
 
 //---- RequestBlockerTest ----------------------------------------------------------------
-RequestBlockerTest::RequestBlockerTest(TString name) : TestCase(name)
+RequestBlockerTest::RequestBlockerTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(RequestBlockerTest.Ctor);
 }

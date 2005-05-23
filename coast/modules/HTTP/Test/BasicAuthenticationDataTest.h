@@ -25,7 +25,7 @@ public:
 
 	//! ConfiguredTestCase constructor
 	//! \param name name of the test
-	BasicAuthenticationDataTest(TString name);
+	BasicAuthenticationDataTest(TString tstrName);
 
 	//! destroys the test case
 	~BasicAuthenticationDataTest();

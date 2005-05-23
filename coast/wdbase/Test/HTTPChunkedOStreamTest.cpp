@@ -23,7 +23,7 @@
 #include "HTTPChunkedOStream.h"
 
 //---- HTTPChunkedOStreamTest ----------------------------------------------------------------
-HTTPChunkedOStreamTest::HTTPChunkedOStreamTest(TString name) : TestCase(name)
+HTTPChunkedOStreamTest::HTTPChunkedOStreamTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(HTTPChunkedOStreamTest.Ctor);
 }

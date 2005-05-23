@@ -21,7 +21,7 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- MD5RendererTest ----------------------------------------------------------------
-MD5RendererTest::MD5RendererTest(TString name) : TestCase(name)
+MD5RendererTest::MD5RendererTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(MD5RendererTest.Ctor);
 }

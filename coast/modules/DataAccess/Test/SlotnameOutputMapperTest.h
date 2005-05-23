@@ -21,7 +21,7 @@ public:
 
 	//!ConfiguredTestCase constructor
 	//! \param name name of the test
-	SlotnameOutputMapperTest(TString name);
+	SlotnameOutputMapperTest(TString tstrName);
 
 	//!destroys the test case
 	~SlotnameOutputMapperTest();

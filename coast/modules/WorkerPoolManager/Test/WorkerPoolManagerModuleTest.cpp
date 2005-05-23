@@ -22,8 +22,8 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- WorkerPoolManagerModuleTest ----------------------------------------------------------------
-WorkerPoolManagerModuleTest::WorkerPoolManagerModuleTest(TString name)
-	: ConfiguredTestCase(name, "WorkerPoolManagerModuleTestConfig")
+WorkerPoolManagerModuleTest::WorkerPoolManagerModuleTest(TString tstrName)
+	: ConfiguredTestCase(tstrName, "WorkerPoolManagerModuleTestConfig")
 {
 	StartTrace(WorkerPoolManagerModuleTest.Ctor);
 }

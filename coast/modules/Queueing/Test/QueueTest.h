@@ -24,7 +24,7 @@ public:
 	//--- constructors
 
 	/*! \param name name of the test */
-	QueueTest(TString name);
+	QueueTest(TString tstrName);
 
 	//! destroys the test case
 	~QueueTest();

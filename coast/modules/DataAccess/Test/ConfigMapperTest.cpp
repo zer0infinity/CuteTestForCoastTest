@@ -21,8 +21,8 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- ConfigMapperTest ----------------------------------------------------------------
-ConfigMapperTest::ConfigMapperTest(TString name)
-	: ConfiguredTestCase(name, "ConfigMapperTestConfig")
+ConfigMapperTest::ConfigMapperTest(TString tstrName)
+	: ConfiguredTestCase(tstrName, "ConfigMapperTestConfig")
 {
 	StartTrace(ConfigMapperTest.Ctor);
 }

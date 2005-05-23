@@ -28,8 +28,8 @@
 
 //---- HTTPDAImplTest ----------------------------------------------------------------
 //---- RequestReaderTest ----------------------------------------------------------------
-HTTPDAImplTest::HTTPDAImplTest(TString name)
-	: ConfiguredTestCase(name, "HTTPDAImplTestConfig")
+HTTPDAImplTest::HTTPDAImplTest(TString tstrName)
+	: ConfiguredTestCase(tstrName, "HTTPDAImplTestConfig")
 {
 	StartTrace(HTTPDAImplTest.Ctor);
 }

@@ -21,7 +21,7 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- NTLMCryptTest ----------------------------------------------------------------
-NTLMCryptTest::NTLMCryptTest(TString name) : TestCase(name)
+NTLMCryptTest::NTLMCryptTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(NTLMCryptTest.Ctor);
 }

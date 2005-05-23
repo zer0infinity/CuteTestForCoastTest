@@ -21,7 +21,7 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- ObjectList_rTest ----------------------------------------------------------------
-ObjectList_rTest::ObjectList_rTest(TString name) : TestCase(name)
+ObjectList_rTest::ObjectList_rTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(ObjectList_rTest.Ctor);
 }

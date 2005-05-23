@@ -22,7 +22,7 @@
 //--- c-library modules used ---------------------------------------------------
 
 //---- AnythingPerfTest ----------------------------------------------------------------
-AnythingPerfTest::AnythingPerfTest(TString name) : StatisticTestCase(name)
+AnythingPerfTest::AnythingPerfTest(TString tstrName) : StatisticTestCase(tstrName)
 {
 	StartTrace(AnythingPerfTest.Ctor);
 }

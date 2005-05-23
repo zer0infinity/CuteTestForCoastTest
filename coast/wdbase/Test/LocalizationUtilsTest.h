@@ -17,7 +17,7 @@ class Context;
 class LocalizationUtilsTest : public TestCase
 {
 public:
-	LocalizationUtilsTest(TString name);
+	LocalizationUtilsTest(TString tstrName);
 	virtual ~LocalizationUtilsTest();
 
 	static Test *suite ();

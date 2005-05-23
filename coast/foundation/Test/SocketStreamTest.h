@@ -21,7 +21,7 @@ class EXPORTDECL_FOUNDATION String;
 class SocketStreamTest : public TestCase
 {
 public:
-	SocketStreamTest(TString name);
+	SocketStreamTest(TString tstrName);
 	virtual ~SocketStreamTest();
 
 	static Test *suite ();

@@ -24,7 +24,7 @@ public:
 	//--- constructors
 
 	/*! \param name name of the test */
-	ObjectListTest(TString name);
+	ObjectListTest(TString tstrName);
 
 	//! destroys the test case
 	~ObjectListTest();

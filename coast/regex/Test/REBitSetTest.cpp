@@ -23,7 +23,7 @@
 #include <ctype.h>
 
 //---- REBitSetTest ----------------------------------------------------------------
-REBitSetTest::REBitSetTest(TString name) : TestCase(name)
+REBitSetTest::REBitSetTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(REBitSetTest.Ctor);
 }
@@ -109,15 +109,15 @@ void REBitSetTest::TestPredicateSet()
 	}
 }
 
-void REBitSetTest::GeneratePosixSet(ostream &cppfile, const char *name, REBitSet::Predicate predicate)
+void REBitSetTest::GeneratePosixSet(ostream &cppfile, const char *pcName, REBitSet::Predicate predicate)
 {
 	REBitSet s;
 	s.Set(predicate);
 
 	cppfile << endl;
-	cppfile << "const unsigned long _dummy_" << name << " [] = {" << endl;
+	cppfile << "const unsigned long _dummy_" << pcName << " [] = {" << endl;
 	cppfile << s << "};" << endl;
-	cppfile << "const REBitSet " << name << "(_dummy_" << name << ");" << endl;
+	cppfile << "const REBitSet " << pcName << "(_dummy_" << pcName << ");" << endl;
 }
 
 // auxiliary predicates for posix and special escape handling

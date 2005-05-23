@@ -19,7 +19,7 @@
 class RadioButtonRendererTest : public FieldRendererTest
 {
 public:
-	RadioButtonRendererTest(TString name);
+	RadioButtonRendererTest(TString tstrName);
 	virtual ~RadioButtonRendererTest();
 
 	static Test *suite ();

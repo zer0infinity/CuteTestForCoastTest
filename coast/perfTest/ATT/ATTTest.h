@@ -21,7 +21,7 @@ public:
 
 	//!ConfiguredTestCase constructor
 	//! \param name name of the test
-	ATTTest(TString name);
+	ATTTest(TString tstrName);
 
 	//!destroys the test case
 	~ATTTest();
@@ -56,7 +56,7 @@ class DoneScenariosTest : public ATTTest
 {
 public:
 	//!DoneScenariosTest constructor
-	DoneScenariosTest(TString name): ATTTest(name) {};
+	DoneScenariosTest(TString tstrName): ATTTest(tstrName) {};
 
 	//!destroys the test case
 	~DoneScenariosTest() {};
@@ -74,7 +74,7 @@ class InWorkScenariosTest : public ATTTest
 {
 public:
 	//!InWorkScenariosTest constructor
-	InWorkScenariosTest(TString name): ATTTest(name) {};
+	InWorkScenariosTest(TString tstrName): ATTTest(tstrName) {};
 
 	//!destroys the test case
 	~InWorkScenariosTest() {};
@@ -92,7 +92,7 @@ class RunOnlyScenariosTest : public ATTTest
 {
 public:
 	//!RunOnlyScenariosTest constructor
-	RunOnlyScenariosTest(TString name): ATTTest(name) {};
+	RunOnlyScenariosTest(TString tstrName): ATTTest(tstrName) {};
 
 	//!destroys the test case
 	~RunOnlyScenariosTest() {};

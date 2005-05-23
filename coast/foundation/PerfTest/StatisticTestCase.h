@@ -25,7 +25,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	StatisticTestCase(TString name);
+	StatisticTestCase(TString tstrName);
 
 	//!destroys the test case
 	~StatisticTestCase();

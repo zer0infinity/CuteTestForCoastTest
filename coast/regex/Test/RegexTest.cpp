@@ -28,7 +28,7 @@
 //--- c-library modules used ---------------------------------------------------
 
 //---- RegexTest ----------------------------------------------------------------
-RegexTest::RegexTest(TString name) : TestCase(name)
+RegexTest::RegexTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(RegexTest.Ctor);
 }

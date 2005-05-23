@@ -21,8 +21,8 @@
 #include "LocalizedStringsTest.h"
 
 //---- LocalizedStringsTest ----------------------------------------------------------------
-LocalizedStringsTest::LocalizedStringsTest(TString name)
-	: ConfiguredTestCase(name, "LocalizedStringsTestConfig")
+LocalizedStringsTest::LocalizedStringsTest(TString tstrName)
+	: ConfiguredTestCase(tstrName, "LocalizedStringsTestConfig")
 {
 	StartTrace(LocalizedStringsTest.Ctor);
 }

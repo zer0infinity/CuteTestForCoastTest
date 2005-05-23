@@ -22,7 +22,7 @@ public:
 
 	//:TestCase constructor
 	//!param: name - name of the test
-	LdapCachePolicyTest(TString name);
+	LdapCachePolicyTest(TString tstrName);
 
 	//!destroys the test case
 	~LdapCachePolicyTest();

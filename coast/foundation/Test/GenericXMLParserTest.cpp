@@ -21,7 +21,7 @@
 #include "System.h"
 
 //---- GenericXMLParserTest ----------------------------------------------------------------
-GenericXMLParserTest::GenericXMLParserTest(TString name) : TestCase(name)
+GenericXMLParserTest::GenericXMLParserTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(GenericXMLParserTest.Ctor);
 }

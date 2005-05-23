@@ -24,7 +24,7 @@ public:
 	//--- constructors
 
 	/*! \param name name of the test */
-	SSLObjectManagerTest(TString name);
+	SSLObjectManagerTest(TString tstrName);
 
 	//! destroys the test case
 	~SSLObjectManagerTest();

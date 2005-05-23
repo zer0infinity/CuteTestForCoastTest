@@ -19,7 +19,7 @@
 class SwitchRendererTest : public RendererTest
 {
 public:
-	SwitchRendererTest(TString name);
+	SwitchRendererTest(TString tstrName);
 	virtual ~SwitchRendererTest();
 
 	static Test *suite ();

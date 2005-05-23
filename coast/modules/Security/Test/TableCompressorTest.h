@@ -24,7 +24,7 @@ class TableCompressorTest : public TestCase
 {
 public:
 	//--- constructors
-	TableCompressorTest(TString name);
+	TableCompressorTest(TString tstrName);
 	~TableCompressorTest();
 
 	static Test *suite ();

@@ -19,7 +19,7 @@
 class CheckBoxRendererTest : public FieldRendererTest
 {
 public:
-	CheckBoxRendererTest(TString name);
+	CheckBoxRendererTest(TString tstrName);
 	virtual ~CheckBoxRendererTest();
 
 	static Test *suite ();

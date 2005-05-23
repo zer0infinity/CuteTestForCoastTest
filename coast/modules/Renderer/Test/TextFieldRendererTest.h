@@ -19,7 +19,7 @@
 class TextFieldRendererTest : public FieldRendererTest
 {
 public:
-	TextFieldRendererTest(TString name);
+	TextFieldRendererTest(TString tstrName);
 	virtual ~TextFieldRendererTest();
 
 	static Test *suite ();

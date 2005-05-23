@@ -28,7 +28,7 @@ class NewRendererTest : public ConfiguredTestCase
 {
 public:
 	//--- constructors
-	NewRendererTest(TString name);
+	NewRendererTest(TString tstrName);
 	~NewRendererTest();
 
 	//--- public api

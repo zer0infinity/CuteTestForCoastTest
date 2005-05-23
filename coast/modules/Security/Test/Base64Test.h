@@ -23,7 +23,7 @@ class Base64Test : public TestCase
 {
 public:
 	//--- constructors
-	Base64Test(TString name);
+	Base64Test(TString tstrName);
 	~Base64Test();
 
 	static Test *suite ();

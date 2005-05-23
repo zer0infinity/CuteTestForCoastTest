@@ -23,7 +23,7 @@ public:
 
 	//!TestCases for the StressApp classes
 	//! \param name name of the test
-	StressAppTest(TString name);
+	StressAppTest(TString tstrName);
 
 	//!destroys the test case
 	~StressAppTest();

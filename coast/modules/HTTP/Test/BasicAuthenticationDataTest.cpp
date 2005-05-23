@@ -21,8 +21,8 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- BasicAuthenticationDataTest ----------------------------------------------------------------
-BasicAuthenticationDataTest::BasicAuthenticationDataTest(TString name)
-	: ConfiguredTestCase(name, "BasicAuthenticationDataTestConfig")
+BasicAuthenticationDataTest::BasicAuthenticationDataTest(TString tstrName)
+	: ConfiguredTestCase(tstrName, "BasicAuthenticationDataTestConfig")
 {
 	StartTrace(BasicAuthenticationDataTest.Ctor);
 }

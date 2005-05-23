@@ -23,7 +23,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	ThreadedTimeStampTest(TString name);
+	ThreadedTimeStampTest(TString tstrName);
 
 	//!destroys the test case
 	~ThreadedTimeStampTest();

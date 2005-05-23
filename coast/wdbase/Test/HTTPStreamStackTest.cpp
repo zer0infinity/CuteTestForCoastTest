@@ -24,7 +24,7 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- HTTPStreamStackTest ----------------------------------------------------------------
-HTTPStreamStackTest::HTTPStreamStackTest(TString name) : TestCase(name)
+HTTPStreamStackTest::HTTPStreamStackTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(HTTPStreamStackTest.Ctor);
 }

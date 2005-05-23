@@ -25,7 +25,7 @@ public:
 
 	//! ConfiguredTestCase constructor
 	//! \param name name of the test
-	HTTPMimeHeaderMapperTest(TString name);
+	HTTPMimeHeaderMapperTest(TString tstrName);
 
 	//! destroys the test case
 	~HTTPMimeHeaderMapperTest();

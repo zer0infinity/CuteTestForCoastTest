@@ -23,7 +23,7 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- ParameterMapperTest ----------------------------------------------------------------
-ParameterMapperTest::ParameterMapperTest(TString name) : TestCase(name)
+ParameterMapperTest::ParameterMapperTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(ParameterMapperTest.Ctor);
 }

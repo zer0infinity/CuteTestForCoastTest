@@ -21,7 +21,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	SSLListenerPoolTest(TString name);
+	SSLListenerPoolTest(TString tstrName);
 
 	//!destroys the test case
 	~SSLListenerPoolTest();

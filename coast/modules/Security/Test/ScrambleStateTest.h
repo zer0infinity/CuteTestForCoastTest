@@ -21,7 +21,7 @@ class ScrambleStateTest : public TestCase
 {
 public:
 	//--- constructors
-	ScrambleStateTest(TString name);
+	ScrambleStateTest(TString tstrName);
 	~ScrambleStateTest();
 
 	static Test *suite ();

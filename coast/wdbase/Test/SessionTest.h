@@ -25,7 +25,7 @@ public:
 
 	//!TestCases for the Session class
 	//! \param name name of the test
-	SessionTest(TString name);
+	SessionTest(TString tstrName);
 
 	//!destroys the test case
 	~SessionTest();

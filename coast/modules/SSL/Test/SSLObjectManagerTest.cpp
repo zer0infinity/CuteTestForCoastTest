@@ -22,8 +22,8 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- SSLObjectManagerTest ----------------------------------------------------------------
-SSLObjectManagerTest::SSLObjectManagerTest(TString name) :
-	ConfiguredTestCase(name, "SSLObjectManagerTestConfig")
+SSLObjectManagerTest::SSLObjectManagerTest(TString tstrName) :
+	ConfiguredTestCase(tstrName, "SSLObjectManagerTestConfig")
 {
 	StartTrace(SSLObjectManagerTest.Ctor);
 }

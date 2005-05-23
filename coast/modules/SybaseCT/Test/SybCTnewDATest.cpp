@@ -21,7 +21,7 @@
 #include "Dbg.h"
 
 //---- SybCTnewDATest ----------------------------------------------------------------
-SybCTnewDATest::SybCTnewDATest(TString name) : TestCase(name)
+SybCTnewDATest::SybCTnewDATest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(SybCTnewDATest.Ctor);
 }

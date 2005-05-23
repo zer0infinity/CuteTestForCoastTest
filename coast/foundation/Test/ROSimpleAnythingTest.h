@@ -25,7 +25,7 @@ public:
 
 	//!TestCases for the Socket classes
 	//! \param name name of the test
-	ROAnythingSimpleTest(TString name);
+	ROAnythingSimpleTest(TString tstrName);
 
 	//!destroys the test case
 	~ROAnythingSimpleTest();

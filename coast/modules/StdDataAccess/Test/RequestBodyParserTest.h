@@ -21,7 +21,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	RequestBodyParserTest(TString name);
+	RequestBodyParserTest(TString tstrName);
 
 	//!destroys the test case
 	~RequestBodyParserTest();

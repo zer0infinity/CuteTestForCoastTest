@@ -21,7 +21,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	RECompilerTest(TString name);
+	RECompilerTest(TString tstrName);
 
 	//!destroys the test case
 	~RECompilerTest();

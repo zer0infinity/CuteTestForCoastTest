@@ -21,8 +21,8 @@
 #include "Dbg.h"
 
 //---- SybCTnewDAImplTest ----------------------------------------------------------------
-SybCTnewDAImplTest::SybCTnewDAImplTest(TString name)
-	: TestCase(name)
+SybCTnewDAImplTest::SybCTnewDAImplTest(TString tstrName)
+	: TestCase(tstrName)
 	, fbWasInitialized(false)
 {
 	StartTrace(SybCTnewDAImplTest.Ctor);

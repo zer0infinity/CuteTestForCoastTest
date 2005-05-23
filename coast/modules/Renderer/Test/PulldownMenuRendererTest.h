@@ -21,7 +21,7 @@
 class PulldownMenuRendererTest : public FieldRendererTest
 {
 public:
-	PulldownMenuRendererTest(TString name);
+	PulldownMenuRendererTest(TString tstrName);
 	virtual ~PulldownMenuRendererTest();
 
 	static Test *suite ();

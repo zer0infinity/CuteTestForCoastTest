@@ -24,7 +24,7 @@ public:
 
 	//!TestCases for the Registry classes
 	//! \param name name of the test
-	RegistryTest(TString name);
+	RegistryTest(TString tstrName);
 
 	//!destroys the test case
 	~RegistryTest();

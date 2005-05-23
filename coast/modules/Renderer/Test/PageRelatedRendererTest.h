@@ -20,7 +20,7 @@ class PageRelatedRendererTest : public TestCase
 {
 public:
 	//!constructors
-	PageRelatedRendererTest(TString name);
+	PageRelatedRendererTest(TString tstrName);
 	~PageRelatedRendererTest();
 
 	//!builds up a suite of testcases for this test

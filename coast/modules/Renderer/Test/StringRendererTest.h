@@ -19,7 +19,7 @@
 class StringRendererTest : public RendererTest
 {
 public:
-	StringRendererTest(TString name);
+	StringRendererTest(TString tstrName);
 	virtual ~StringRendererTest();
 
 	static Test *suite ();

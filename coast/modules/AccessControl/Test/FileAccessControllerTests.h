@@ -30,8 +30,8 @@ class FileAccessControllerTests : public ConfiguredTestCase
 {
 public:
 	//--- constructors
-	FileAccessControllerTests(TString name) : ConfiguredTestCase(name, "FileAccessControllerTestsConfig") {}
-	FileAccessControllerTests(TString name, const char *file) : ConfiguredTestCase(name, file) {}
+	FileAccessControllerTests(TString tstrName) : ConfiguredTestCase(tstrName, "FileAccessControllerTestsConfig") {}
+	FileAccessControllerTests(TString tstrName, const char *file) : ConfiguredTestCase(tstrName, file) {}
 	~FileAccessControllerTests() {};
 
 	//--- public api

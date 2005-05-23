@@ -28,7 +28,7 @@ RegCacheImpl(TestConfNamedObj);				// FindTestConfNamedObj()
 RegisterTestConfNamedObj(TestConfNamedObj);
 
 //---- ROAnyConfNamedObjectLookupAdapterTest ----------------------------------------------------------------
-ROAnyConfNamedObjectLookupAdapterTest::ROAnyConfNamedObjectLookupAdapterTest(TString name) : TestCase(name)
+ROAnyConfNamedObjectLookupAdapterTest::ROAnyConfNamedObjectLookupAdapterTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(ROAnyConfNamedObjectLookupAdapterTest.Ctor);
 }

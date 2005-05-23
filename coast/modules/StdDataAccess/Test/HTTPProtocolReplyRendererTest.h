@@ -21,7 +21,7 @@ public:
 
 	//! TestCase constructor
 	//! \param name name of the test
-	HTTPProtocolReplyRendererTest(TString name);
+	HTTPProtocolReplyRendererTest(TString tstrName);
 
 	//! destroys the test case
 	~HTTPProtocolReplyRendererTest();

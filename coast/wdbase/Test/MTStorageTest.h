@@ -24,7 +24,7 @@ class MTStorageTest : public TestCase, ThreadObserver
 {
 public:
 	//!constructors
-	MTStorageTest(TString name);
+	MTStorageTest(TString tstrName);
 	~MTStorageTest();
 
 	//!builds up a suite of testcases for this test

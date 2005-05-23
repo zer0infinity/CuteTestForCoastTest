@@ -25,8 +25,8 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- RequestReaderTest ----------------------------------------------------------------
-RequestReaderTest::RequestReaderTest(TString name)
-	: ConfiguredTestCase(name, "RequestReaderTestConfig")
+RequestReaderTest::RequestReaderTest(TString tstrName)
+	: ConfiguredTestCase(tstrName, "RequestReaderTestConfig")
 {
 	StartTrace(RequestReaderTest.Ctor);
 }

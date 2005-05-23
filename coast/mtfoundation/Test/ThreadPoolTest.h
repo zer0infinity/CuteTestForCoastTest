@@ -21,7 +21,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	ThreadPoolTest(TString name);
+	ThreadPoolTest(TString tstrName);
 
 	//!destroys the test case
 	~ThreadPoolTest();

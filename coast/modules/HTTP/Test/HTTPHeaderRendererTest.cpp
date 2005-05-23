@@ -20,7 +20,7 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- HTTPHeaderRendererTest ----------------------------------------------------------------
-HTTPHeaderRendererTest::HTTPHeaderRendererTest(TString name) : TestCase(name)
+HTTPHeaderRendererTest::HTTPHeaderRendererTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(HTTPHeaderRendererTest.Ctor);
 }

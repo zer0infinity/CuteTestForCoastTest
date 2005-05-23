@@ -27,7 +27,7 @@ class SSLConnectorTest : public ConfiguredTestCase
 public:
 
 	//--- constructors
-	SSLConnectorTest(TString name);
+	SSLConnectorTest(TString tstrName);
 	~SSLConnectorTest();
 
 	//--- public api

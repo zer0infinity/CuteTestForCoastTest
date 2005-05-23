@@ -22,7 +22,7 @@
 #include <time.h>
 
 //---- DateTimeTest ----------------------------------------------------------------
-DateTimeTest::DateTimeTest(TString name)
+DateTimeTest::DateTimeTest(TString tstrName)
 	: ConfiguredTestCase(name, "DateTimeTestConfig")
 {
 	StartTrace(DateTimeTest.Ctor);

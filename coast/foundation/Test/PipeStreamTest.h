@@ -21,7 +21,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	PipeStreamTest(TString name);
+	PipeStreamTest(TString tstrName);
 
 	//!destroys the test case
 	~PipeStreamTest();

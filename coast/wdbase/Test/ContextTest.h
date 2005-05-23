@@ -22,7 +22,7 @@ public:
 	//--- constructors
 
 	//!TestCases for the Context class
-	ContextTest(TString name);
+	ContextTest(TString tstrName);
 
 	//!destroys the test case
 	~ContextTest();

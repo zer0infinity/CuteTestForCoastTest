@@ -20,7 +20,7 @@
 #include "SybDBTest.h"
 
 //---- SybDBTest ----------------------------------------------------------------
-SybDBTest::SybDBTest(TString name) : TestCase(name)
+SybDBTest::SybDBTest(TString tstrName) : TestCase(name)
 {
 	StartTrace(SybDBTest.Ctor);
 }

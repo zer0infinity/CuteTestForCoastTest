@@ -22,7 +22,7 @@
 //--- c-library modules used ---------------------------------------------------
 
 //---- StringPerfTest ----------------------------------------------------------------
-StringPerfTest::StringPerfTest(TString name) : StatisticTestCase(name)
+StringPerfTest::StringPerfTest(TString tstrName) : StatisticTestCase(tstrName)
 {
 	StartTrace(StringPerfTest.Ctor);
 }

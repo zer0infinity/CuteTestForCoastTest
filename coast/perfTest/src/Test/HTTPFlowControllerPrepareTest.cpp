@@ -23,10 +23,10 @@
 #include <stdlib.h>
 
 //---- HTTPFlowControllerPrepareTest ----------------------------------------------------------------
-HTTPFlowControllerPrepareTest::HTTPFlowControllerPrepareTest(TString name) : HTTPFlowControllerTest(name, "HTTPFlowControllerPrepareTestConfig")
+HTTPFlowControllerPrepareTest::HTTPFlowControllerPrepareTest(TString tstrName) : HTTPFlowControllerTest(tstrName, "HTTPFlowControllerPrepareTestConfig")
 { }
 
-HTTPFlowControllerPrepareTest::HTTPFlowControllerPrepareTest(TString name, TString configFileName) : HTTPFlowControllerTest(name, configFileName)
+HTTPFlowControllerPrepareTest::HTTPFlowControllerPrepareTest(TString tstrName, TString configFileName) : HTTPFlowControllerTest(tstrName, configFileName)
 { }
 
 HTTPFlowControllerPrepareTest::~HTTPFlowControllerPrepareTest()

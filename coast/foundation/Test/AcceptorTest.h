@@ -27,7 +27,7 @@ class AcceptorTest : public TestCase
 public:
 
 	//--- constructors
-	AcceptorTest(TString name);
+	AcceptorTest(TString tstrName);
 	~AcceptorTest();
 
 	//--- public api

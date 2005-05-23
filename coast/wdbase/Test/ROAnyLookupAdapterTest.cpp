@@ -24,7 +24,7 @@
 #include "ROAnyLookupAdapterTest.h"
 
 //---- ROAnyLookupAdapterTest ----------------------------------------------------------------
-ROAnyLookupAdapterTest::ROAnyLookupAdapterTest(TString name) : TestCase(name)
+ROAnyLookupAdapterTest::ROAnyLookupAdapterTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(ROAnyLookupAdapterTest.Ctor);
 }

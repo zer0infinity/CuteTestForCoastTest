@@ -23,7 +23,7 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- ResultMapperTest ----------------------------------------------------------------
-ResultMapperTest::ResultMapperTest(TString name) : TestCase(name)
+ResultMapperTest::ResultMapperTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(ResultMapperTest.Ctor);
 }

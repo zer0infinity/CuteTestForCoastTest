@@ -21,7 +21,7 @@
 #include "AnyUtils.h"
 
 //---- SybCTDAImplTest ----------------------------------------------------------------
-SybCTDAImplTest::SybCTDAImplTest(TString name) : TestCase(name)
+SybCTDAImplTest::SybCTDAImplTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(SybCTDAImplTest.Ctor);
 }

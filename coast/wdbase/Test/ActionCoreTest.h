@@ -21,7 +21,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	ActionCoreTest(TString name);
+	ActionCoreTest(TString tstrName);
 
 	//!destroys the test case
 	~ActionCoreTest();

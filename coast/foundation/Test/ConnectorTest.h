@@ -18,7 +18,7 @@ class ConnectorTest : public TestCase
 {
 public:
 	//--- constructors
-	ConnectorTest(TString name);
+	ConnectorTest(TString tstrName);
 	~ConnectorTest();
 
 	//--- public api

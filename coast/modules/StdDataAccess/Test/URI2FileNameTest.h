@@ -21,7 +21,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	URI2FileNameTest(TString name);
+	URI2FileNameTest(TString tstrName);
 
 	//!destroys the test case
 	~URI2FileNameTest();

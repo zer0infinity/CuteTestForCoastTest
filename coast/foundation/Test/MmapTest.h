@@ -20,7 +20,7 @@
 class MmapTest : public TestCase
 {
 public:
-	MmapTest(TString name);
+	MmapTest(TString tstrName);
 	virtual ~MmapTest();
 
 	virtual void setUp ();

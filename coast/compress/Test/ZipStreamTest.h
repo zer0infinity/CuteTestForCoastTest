@@ -23,7 +23,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	ZipStreamTest(TString name);
+	ZipStreamTest(TString tstrName);
 
 	//!destroys the test case
 	~ZipStreamTest();

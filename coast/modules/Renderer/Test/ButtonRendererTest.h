@@ -19,7 +19,7 @@
 class ButtonRendererTest : public FieldRendererTest
 {
 public:
-	ButtonRendererTest(TString name);
+	ButtonRendererTest(TString tstrName);
 	virtual ~ButtonRendererTest();
 
 	static Test *suite ();

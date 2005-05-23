@@ -20,7 +20,7 @@
 #include "HTMLComparerTest.h"
 
 //---- HTMLComparerTest ----------------------------------------------------------------
-HTMLComparerTest::HTMLComparerTest(TString name) : ConfiguredTestCase(name, "HTMLComparerTestConfig")
+HTMLComparerTest::HTMLComparerTest(TString tstrName) : ConfiguredTestCase(tstrName, "HTMLComparerTestConfig")
 {
 	StartTrace(HTMLComparerTest.Ctor);
 }

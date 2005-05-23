@@ -23,7 +23,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	AppBooterTest(TString name);
+	AppBooterTest(TString tstrName);
 
 	//!destroys the test case
 	~AppBooterTest();

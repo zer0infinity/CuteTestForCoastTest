@@ -21,7 +21,7 @@ public:
 
 	//!ConfiguredTestCase constructor
 	//! \param name name of the test
-	LocalizedStringsTest(TString name);
+	LocalizedStringsTest(TString tstrName);
 
 	//!destroys the test case
 	~LocalizedStringsTest();

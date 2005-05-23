@@ -19,7 +19,7 @@
 class RendererTest : public TestCase
 {
 public:
-	RendererTest(TString name);
+	RendererTest(TString tstrName);
 	virtual ~RendererTest();
 
 	void setUp ();

@@ -19,7 +19,7 @@
 class EBCDICTableTest : public TestCase
 {
 public:
-	EBCDICTableTest(TString name);
+	EBCDICTableTest(TString tstrName);
 	virtual ~EBCDICTableTest();
 
 	virtual void setUp ();

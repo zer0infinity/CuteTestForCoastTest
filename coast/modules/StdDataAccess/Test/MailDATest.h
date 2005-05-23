@@ -21,7 +21,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	MailDATest(TString name);
+	MailDATest(TString tstrName);
 
 	//!destroys the test case
 	~MailDATest();

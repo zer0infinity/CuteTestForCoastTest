@@ -24,7 +24,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	HTTPProcessorTest(TString name);
+	HTTPProcessorTest(TString tstrName);
 
 	//!destroys the test case
 	~HTTPProcessorTest();

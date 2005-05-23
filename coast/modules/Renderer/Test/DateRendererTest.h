@@ -18,7 +18,7 @@
 class DateRendererTest : public RendererTest
 {
 public:
-	DateRendererTest(TString name);
+	DateRendererTest(TString tstrName);
 	virtual ~DateRendererTest();
 
 	static Test *suite ();

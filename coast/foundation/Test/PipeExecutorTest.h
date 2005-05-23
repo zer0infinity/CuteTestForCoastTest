@@ -20,7 +20,7 @@ class PipeExecutorTest : public TestCase
 {
 public:
 	//--- constructors
-	PipeExecutorTest(TString name);
+	PipeExecutorTest(TString tstrName);
 	virtual ~PipeExecutorTest();
 	void EchoCatTest(); // call cat for echoing stdin stdout
 	void CatWorkingDirTest(); // call cat for reading a file in separate dir

@@ -24,7 +24,7 @@ public:
 	//--- constructors
 
 	/*! \param name name of the test */
-	SSLModuleTest(TString name);
+	SSLModuleTest(TString tstrName);
 
 	//! destroys the test case
 	~SSLModuleTest();

@@ -24,7 +24,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	NameUsingOutputMapperTest(TString name);
+	NameUsingOutputMapperTest(TString tstrName);
 
 	//!destroys the test case
 	~NameUsingOutputMapperTest();

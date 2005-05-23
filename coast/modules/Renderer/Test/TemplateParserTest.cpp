@@ -25,8 +25,8 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- TemplateParserTest ----------------------------------------------------------------
-TemplateParserTest::TemplateParserTest(TString name)
-	: ConfiguredTestCase(name, "TemplateParserTest")
+TemplateParserTest::TemplateParserTest(TString tstrName)
+	: ConfiguredTestCase(tstrName, "TemplateParserTest")
 {
 	StartTrace(TemplateParserTest.Ctor);
 }

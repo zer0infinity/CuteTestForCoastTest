@@ -23,7 +23,7 @@ class StorageTest : public TestCase
 {
 public:
 	//!constructors
-	StorageTest(TString name);
+	StorageTest(TString tstrName);
 	~StorageTest();
 
 	//!builds up a suite of testcases for this test

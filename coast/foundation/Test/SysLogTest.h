@@ -21,7 +21,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	SysLogTest(TString name);
+	SysLogTest(TString tstrName);
 
 	//!destroys the test case
 	~SysLogTest();

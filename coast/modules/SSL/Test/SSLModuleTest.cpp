@@ -22,8 +22,8 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- SSLModuleTest ----------------------------------------------------------------
-SSLModuleTest::SSLModuleTest(TString name) :
-	ConfiguredTestCase(name, "SSLModuleTestConfig")
+SSLModuleTest::SSLModuleTest(TString tstrName) :
+	ConfiguredTestCase(tstrName, "SSLModuleTestConfig")
 {
 	StartTrace(SSLModuleTest.Ctor);
 }

@@ -25,7 +25,7 @@ public:
 
 	//! TestCase constructor
 	//! \param name name of the test
-	MD5RendererTest(TString name);
+	MD5RendererTest(TString tstrName);
 
 	//! destroys the test case
 	~MD5RendererTest();

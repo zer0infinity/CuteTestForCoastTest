@@ -23,7 +23,7 @@ class DataAccessImplTest : public TestCase
 {
 public:
 	//--- constructors
-	DataAccessImplTest(TString name);
+	DataAccessImplTest(TString tstrName);
 	~DataAccessImplTest();
 
 	static Test *suite ();

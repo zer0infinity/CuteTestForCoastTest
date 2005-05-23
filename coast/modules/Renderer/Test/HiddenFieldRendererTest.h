@@ -19,7 +19,7 @@
 class HiddenFieldRendererTest : public FieldRendererTest
 {
 public:
-	HiddenFieldRendererTest(TString name);
+	HiddenFieldRendererTest(TString tstrName);
 	virtual ~HiddenFieldRendererTest();
 
 	static Test *suite ();

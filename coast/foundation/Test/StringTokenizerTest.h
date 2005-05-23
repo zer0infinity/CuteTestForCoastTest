@@ -26,7 +26,7 @@ protected:
 	String fLong;
 
 public:
-	StringTokenizerTest (TString name); // : TestCase (name) {}
+	StringTokenizerTest (TString tstrName); // : TestCase (name) {}
 
 	virtual void			setUp ();
 	static Test				*worksuite ();

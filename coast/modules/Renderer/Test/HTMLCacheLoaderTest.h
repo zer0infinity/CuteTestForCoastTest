@@ -23,7 +23,7 @@ public:
 
 	//:TestCase constructor
 	//!param: name - name of the test
-	HTMLCacheLoaderTest(TString name);
+	HTMLCacheLoaderTest(TString tstrName);
 
 	//!destroys the test case
 	~HTMLCacheLoaderTest();

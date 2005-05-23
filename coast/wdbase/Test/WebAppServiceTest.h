@@ -25,7 +25,7 @@ public:
 
 	//! ConfiguredTestCase constructor
 	//! \param name name of the test
-	WebAppServiceTest(TString name);
+	WebAppServiceTest(TString tstrName);
 
 	//! destroys the test case
 	~WebAppServiceTest();

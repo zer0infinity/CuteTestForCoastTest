@@ -25,7 +25,7 @@ public:
 
 	//! TestCase constructor
 	//! \param name name of the test
-	NTLMCryptTest(TString name);
+	NTLMCryptTest(TString tstrName);
 
 	//! destroys the test case
 	~NTLMCryptTest();

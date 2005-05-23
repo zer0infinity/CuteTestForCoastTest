@@ -22,7 +22,7 @@
 class MD5Test : public TestCase
 {
 public:
-	MD5Test(TString name);
+	MD5Test(TString tstrName);
 	virtual ~MD5Test();
 
 	virtual void setUp ();

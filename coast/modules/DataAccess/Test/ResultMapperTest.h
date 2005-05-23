@@ -42,7 +42,7 @@ public:
 	//--- constructors
 
 	/*! \param name name of the test */
-	ResultMapperTest(TString name);
+	ResultMapperTest(TString tstrName);
 
 	//! destroys the test case
 	~ResultMapperTest();

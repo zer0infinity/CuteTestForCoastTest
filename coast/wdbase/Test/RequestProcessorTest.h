@@ -22,7 +22,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	RequestProcessorTest(TString name);
+	RequestProcessorTest(TString tstrName);
 
 	//!destroys the test case
 	~RequestProcessorTest();

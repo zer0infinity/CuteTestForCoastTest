@@ -21,7 +21,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	SimpleListenerPoolTest(TString name);
+	SimpleListenerPoolTest(TString tstrName);
 
 	//!destroys the test case
 	~SimpleListenerPoolTest();

@@ -55,8 +55,8 @@ void TestProcessor::ProcessRequest(Context &ctx)
 }
 
 //---- LFListenerPoolTest ----------------------------------------------------------------
-LFListenerPoolTest::LFListenerPoolTest(TString name)
-	: ConfiguredTestCase(name, "Config")
+LFListenerPoolTest::LFListenerPoolTest(TString tstrName)
+	: ConfiguredTestCase(tstrName, "Config")
 {
 	StartTrace(LFListenerPoolTest.Ctor);
 }

@@ -25,7 +25,7 @@ class HTTPTRXTest : public TestCase
 public:
 
 	//--- constructors
-	HTTPTRXTest(TString name);
+	HTTPTRXTest(TString tstrName);
 	~HTTPTRXTest();
 
 	//--- public api
@@ -65,7 +65,7 @@ class HTTPDAImplTest : public TestCase
 public:
 
 	//--- constructors
-	HTTPDAImplTest(TString name);
+	HTTPDAImplTest(TString tstrName);
 	~HTTPDAImplTest();
 
 	//--- public api

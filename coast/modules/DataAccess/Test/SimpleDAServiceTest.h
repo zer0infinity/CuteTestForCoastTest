@@ -21,7 +21,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	SimpleDAServiceTest(TString name);
+	SimpleDAServiceTest(TString tstrName);
 
 	//!destroys the test case
 	~SimpleDAServiceTest();

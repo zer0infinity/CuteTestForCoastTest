@@ -26,7 +26,7 @@ class HTTPHeaderMapperTest : public TestCase
 public:
 
 	//--- constructors
-	HTTPHeaderMapperTest(TString name);
+	HTTPHeaderMapperTest(TString tstrName);
 	~HTTPHeaderMapperTest();
 
 	//--- public api

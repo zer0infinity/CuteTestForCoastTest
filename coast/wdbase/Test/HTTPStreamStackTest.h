@@ -21,7 +21,7 @@ public:
 
 	//! TestCase constructor
 	//! \param name name of the test
-	HTTPStreamStackTest(TString name);
+	HTTPStreamStackTest(TString tstrName);
 
 	//! destroys the test case
 	~HTTPStreamStackTest();

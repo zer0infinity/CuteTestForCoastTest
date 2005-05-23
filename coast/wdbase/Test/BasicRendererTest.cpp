@@ -21,7 +21,7 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- BasicRendererTest ----------------------------------------------------------------
-BasicRendererTest::BasicRendererTest(TString name) : TestCase(name)
+BasicRendererTest::BasicRendererTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(BasicRendererTest.Ctor);
 }

@@ -25,7 +25,7 @@ public:
 
 	//! TestCase constructor
 	//! \param name name of the test
-	HTTPHeaderRendererTest(TString name);
+	HTTPHeaderRendererTest(TString tstrName);
 
 	//! destroys the test case
 	~HTTPHeaderRendererTest();

@@ -25,7 +25,7 @@ public:
 
 	//! TestCase constructor
 	//! \param name name of the test
-	RequestReaderTest(TString name);
+	RequestReaderTest(TString tstrName);
 
 	//! destroys the test case
 	~RequestReaderTest();

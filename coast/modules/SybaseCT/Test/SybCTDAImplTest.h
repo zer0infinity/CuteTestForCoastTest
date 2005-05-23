@@ -21,7 +21,7 @@ public:
 
 	//:TestCase constructor
 	//!param: name - name of the test
-	SybCTDAImplTest(TString name);
+	SybCTDAImplTest(TString tstrName);
 
 	//:destroys the test case
 	~SybCTDAImplTest();

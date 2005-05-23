@@ -22,7 +22,7 @@ class RendererMapperTest : public TestCase
 {
 public:
 	//--- constructors
-	RendererMapperTest(TString name);
+	RendererMapperTest(TString tstrName);
 	~RendererMapperTest();
 
 	//--- public api

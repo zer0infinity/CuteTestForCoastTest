@@ -23,7 +23,7 @@ public:
 	//--- constructors
 
 	/*! \param name name of the test and its configuration file */
-	OTPListTest(TString name);
+	OTPListTest(TString tstrName);
 
 	//! destroys the test case
 	~OTPListTest();

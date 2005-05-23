@@ -24,8 +24,8 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- LDAPConnectionTest ----------------------------------------------------------------
-LDAPConnectionTest::LDAPConnectionTest(TString name)
-	: ConfiguredTestCase(name, "LDAPConnectionTestConfig")
+LDAPConnectionTest::LDAPConnectionTest(TString tstrName)
+	: ConfiguredTestCase(tstrName, "LDAPConnectionTestConfig")
 {
 	StartTrace(LDAPConnectionTest.Ctor);
 }

@@ -24,7 +24,7 @@ public:
 	//--- constructors
 
 	/*! \param name name of the test and its configuration file */
-	DateTimeTest(TString name);
+	DateTimeTest(TString tstrName);
 
 	//! destroys the test case
 	~DateTimeTest();

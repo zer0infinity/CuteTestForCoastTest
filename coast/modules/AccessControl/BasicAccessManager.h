@@ -51,7 +51,7 @@ public:
 	//! check if given id is a valid user id
 	/*!	\param uid user id to check
 		\return true if user id is accepted */
-	virtual bool Validate(String uid);
+	virtual bool Validate(String &uid);
 	virtual bool Validate(Context &ctx, String uid);
 
 	//! authenticate given user with password

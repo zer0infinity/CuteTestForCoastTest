@@ -21,7 +21,7 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- Base64RendererTest ----------------------------------------------------------------
-Base64RendererTest::Base64RendererTest(TString name) : TestCase(name)
+Base64RendererTest::Base64RendererTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(Base64RendererTest.Ctor);
 }

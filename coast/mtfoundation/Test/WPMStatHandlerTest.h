@@ -23,7 +23,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	WPMStatHandlerTest(TString name);
+	WPMStatHandlerTest(TString tstrName);
 
 	//!destroys the test case
 	~WPMStatHandlerTest();

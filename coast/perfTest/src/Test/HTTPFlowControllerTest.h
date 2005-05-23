@@ -22,12 +22,12 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	HTTPFlowControllerTest(TString name);
+	HTTPFlowControllerTest(TString tstrName);
 
 	//!TestCase constructor
 	//! \param name name of the test
 	//! \param configFileName name of the tests config file
-	HTTPFlowControllerTest(TString name, TString configFileName);
+	HTTPFlowControllerTest(TString tstrName, TString configFileName);
 
 	//!destroys the test case
 	~HTTPFlowControllerTest();

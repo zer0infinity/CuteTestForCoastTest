@@ -21,8 +21,8 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- WebAppServiceTest ----------------------------------------------------------------
-WebAppServiceTest::WebAppServiceTest(TString name)
-	: ConfiguredTestCase(name, "WebAppServiceTestConfig")
+WebAppServiceTest::WebAppServiceTest(TString tstrName)
+	: ConfiguredTestCase(tstrName, "WebAppServiceTestConfig")
 {
 	StartTrace(WebAppServiceTest.Ctor);
 }

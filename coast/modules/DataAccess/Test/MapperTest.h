@@ -24,7 +24,7 @@ class MapperTest : public TestCase
 {
 public:
 	//--- constructors
-	MapperTest(TString name);
+	MapperTest(TString tstrName);
 	~MapperTest();
 
 	static Test *suite ();

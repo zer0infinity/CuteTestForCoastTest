@@ -33,7 +33,7 @@ public:
 
 	//! TestCase constructor
 	//! \param name name of the test
-	AccessManagerTest(TString name);
+	AccessManagerTest(TString tstrName);
 
 	//! destroys the test case
 	~AccessManagerTest();

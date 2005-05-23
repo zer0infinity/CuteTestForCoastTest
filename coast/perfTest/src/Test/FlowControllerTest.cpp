@@ -22,7 +22,7 @@
 //--- c-library modules used ---------------------------------------------------
 
 //---- FlowControllerTest ----------------------------------------------------------------
-FlowControllerTest::FlowControllerTest(TString name) : StressAppTest(name) { }
+FlowControllerTest::FlowControllerTest(TString tstrName) : StressAppTest(tstrName) { }
 
 FlowControllerTest::~FlowControllerTest()
 {

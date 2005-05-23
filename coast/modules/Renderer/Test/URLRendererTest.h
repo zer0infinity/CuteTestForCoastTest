@@ -18,7 +18,7 @@
 class URLRendererTest : public RendererTest
 {
 public:
-	URLRendererTest(TString name);
+	URLRendererTest(TString tstrName);
 	virtual ~URLRendererTest();
 
 	static Test *suite ();

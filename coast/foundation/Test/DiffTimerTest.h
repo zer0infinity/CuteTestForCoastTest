@@ -20,7 +20,7 @@ class DiffTimerTest : public TestCase
 {
 public:
 	//--- constructors
-	DiffTimerTest(TString name);
+	DiffTimerTest(TString tstrName);
 	~DiffTimerTest();
 
 	//!builds up a suite of testcases for this test

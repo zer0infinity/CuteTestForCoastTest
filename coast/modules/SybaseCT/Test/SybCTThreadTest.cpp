@@ -27,8 +27,8 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- SybCTThreadTest ----------------------------------------------------------------
-SybCTThreadTest::SybCTThreadTest(TString name)
-	: ConfiguredTestCase(name, "Config")
+SybCTThreadTest::SybCTThreadTest(TString tstrName)
+	: ConfiguredTestCase(tstrName, "Config")
 {
 	StartTrace(SybCTThreadTest.Ctor);
 }

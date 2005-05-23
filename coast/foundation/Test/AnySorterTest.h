@@ -25,7 +25,7 @@ public:
 
 	//! TestCase constructor
 	//! \param name name of the test
-	AnySorterTest(TString name);
+	AnySorterTest(TString tstrName);
 
 	//! destroys the test case
 	~AnySorterTest();

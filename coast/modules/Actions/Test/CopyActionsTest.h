@@ -19,7 +19,7 @@ class String;
 class CopyActionsTest : public ConfiguredTestCase
 {
 public:
-	CopyActionsTest(TString name);
+	CopyActionsTest(TString tstrName);
 	virtual ~CopyActionsTest();
 
 	static Test *suite();

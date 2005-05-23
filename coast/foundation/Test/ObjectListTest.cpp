@@ -22,7 +22,7 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- ObjectListTest ----------------------------------------------------------------
-ObjectListTest::ObjectListTest(TString name) : TestCase(name)
+ObjectListTest::ObjectListTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(ObjectListTest.Ctor);
 }

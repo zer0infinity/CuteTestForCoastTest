@@ -18,7 +18,7 @@
 class TextAreaRendererTest : public FieldRendererTest
 {
 public:
-	TextAreaRendererTest(TString name);
+	TextAreaRendererTest(TString tstrName);
 	virtual ~TextAreaRendererTest();
 
 	static Test *suite ();

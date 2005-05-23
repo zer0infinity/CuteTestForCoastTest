@@ -21,7 +21,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	CgiParamsTest(TString name);
+	CgiParamsTest(TString tstrName);
 
 	//!destroys the test case
 	~CgiParamsTest();

@@ -20,7 +20,7 @@
 class SS1Test : public TestCase
 {
 public:
-	SS1Test(TString name);
+	SS1Test(TString tstrName);
 	virtual ~SS1Test();
 
 	virtual void setUp ();

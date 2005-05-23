@@ -21,7 +21,7 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- HTTPResponseMapperTest ----------------------------------------------------------------
-HTTPResponseMapperTest::HTTPResponseMapperTest(TString name) : TestCase(name)
+HTTPResponseMapperTest::HTTPResponseMapperTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(HTTPResponseMapperTest.Ctor);
 }

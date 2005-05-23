@@ -23,7 +23,7 @@ public:
 
 	//!TestCases
 	//! \param name name of the test
-	TransitionTests(TString name);
+	TransitionTests(TString tstrName);
 
 	//!destroys the test case
 	~TransitionTests();

@@ -22,7 +22,7 @@
 #include "Dbg.h"
 
 //---- StressAppTest ----------------------------------------------------------------
-StressAppTest::StressAppTest(TString name) : TestCase(name) { }
+StressAppTest::StressAppTest(TString tstrName) : TestCase(tstrName) { }
 
 StressAppTest::~StressAppTest()
 {

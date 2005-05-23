@@ -25,7 +25,7 @@ public:
 
 	//! TestCase constructor
 	//! \param name name of the test
-	Base64RendererTest(TString name);
+	Base64RendererTest(TString tstrName);
 
 	//! destroys the test case
 	~Base64RendererTest();

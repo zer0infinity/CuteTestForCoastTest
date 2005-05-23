@@ -21,7 +21,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	PageNameRendererTest(TString name);
+	PageNameRendererTest(TString tstrName);
 
 	//!destroys the test case
 	~PageNameRendererTest();

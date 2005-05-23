@@ -46,8 +46,8 @@ void RegistryTest::InstallAliases ( )
 	// Insert regular objects into the registry
 	NotCloned *a = new NotCloned(""), *b = new NotCloned("");
 	// these must be on the heap, implicit assumption of Registry
-	fRegistry->Register( "A", a );
-	fRegistry->Register( "B", b );
+	fRegistry->RegisterRegisterableObject( "A", a );
+	fRegistry->RegisterRegisterableObject( "B", b );
 
 	// registry with two elements
 	// Find
@@ -90,10 +90,10 @@ void RegistryTest::InstallHierarchy ( )
 	Page *a = new Page("A"), *b = new Page("B"), *c = new Page("C");
 	Page *d = new Page("D");
 
-	fRegistry->Register( "A", a );
-	fRegistry->Register( "B", b );
-	fRegistry->Register( "C", c );
-	fRegistry->Register( "D", d );
+	fRegistry->RegisterRegisterableObject( "A", a );
+	fRegistry->RegisterRegisterableObject( "B", b );
+	fRegistry->RegisterRegisterableObject( "C", c );
+	fRegistry->RegisterRegisterableObject( "D", d );
 
 	// registry with two elements
 	// Find
@@ -145,7 +145,7 @@ void RegistryTest::GetRegistry ()
 
 	t_assert(myRegistry->Find("Key") == 0);
 
-	myRegistry->Register("Key", &test);
+	myRegistry->RegisterRegisterableObject("Key", &test);
 	t_assert(myRegistry->Find("Key") == &test);
 
 	Registry *myRegistry2 = Registry::GetRegistry("NewRegistry");
@@ -153,7 +153,7 @@ void RegistryTest::GetRegistry ()
 	t_assert(myRegistry2->Find("Key") == &test);
 	// therefore the same key must return the same value
 
-	myRegistry->Unregister("Key");
+	myRegistry->UnregisterRegisterableObject("Key");
 }
 
 void RegistryTest::Constructor ()
@@ -171,8 +171,8 @@ void RegistryTest::TerminateTest()
 	Registry *r = Registry::GetRegistry("TerminateTest");
 	t_assert(r != 0);
 	if ( r ) {
-		r->Register("terminate1", &a);
-		r->Register("terminate2", b);
+		r->RegisterRegisterableObject("terminate1", &a);
+		r->RegisterRegisterableObject("terminate2", b);
 
 		AliasTerminator at("TerminateTest");
 		t_assert(r->Terminate(&at));
@@ -183,7 +183,7 @@ void RegistryTest::TerminateTest()
 		t_assert(r->Find("terminate1") != 0);
 
 		t_assert(r->Find("terminate2") == 0);
-		r->Unregister("terminate1");
+		r->UnregisterRegisterableObject("terminate1");
 	}
 
 }
@@ -193,7 +193,7 @@ class TestPage: public Page
 public:
 	TestPage(const char *name) : Page(name) {}
 	~TestPage() {}
-	IFAObject *Clone() {
+	IFAObject *Clone() const {
 		return new TestPage("TestPage");
 	}
 };
@@ -208,8 +208,8 @@ void RegistryTest::InstallHierarchyConfig()
 	Page *b = new TestPage("TestPage");
 
 	// initially registered pages
-	registry->Register("Page", a);
-	registry->Register("TestPage", b);
+	registry->RegisterRegisterableObject("Page", a);
+	registry->RegisterRegisterableObject("TestPage", b);
 
 	assertEqual( (long)a, (long)registry->Find("Page"));
 	assertEqual( (long)b, (long)registry->Find("TestPage"));

@@ -19,7 +19,7 @@ class EXPORTDECL_FOUNDATION String;
 class StringStreamTest : public TestCase
 {
 public:
-	StringStreamTest(TString name);
+	StringStreamTest(TString tstrName);
 	virtual ~StringStreamTest();
 
 	static Test *suite ();

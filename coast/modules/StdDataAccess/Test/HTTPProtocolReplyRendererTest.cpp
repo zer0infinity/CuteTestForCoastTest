@@ -24,7 +24,7 @@
 #include "Context.h"
 
 //---- HTTPProtocolReplyRendererTest ----------------------------------------------------------------
-HTTPProtocolReplyRendererTest::HTTPProtocolReplyRendererTest(TString name) : TestCase(name)
+HTTPProtocolReplyRendererTest::HTTPProtocolReplyRendererTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(HTTPProtocolReplyRendererTest.Ctor);
 }

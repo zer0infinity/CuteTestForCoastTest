@@ -66,7 +66,7 @@ public:
 	}
 
 	//! check if user exists in AcceptUsers list
-	virtual bool Validate(String uid);
+	virtual bool Validate(String &uid);
 	virtual bool Validate(Context &ctx, String uid);
 
 	//! perform weak authentication with uid + password

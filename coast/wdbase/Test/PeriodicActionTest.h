@@ -24,7 +24,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	PeriodicActionTest(TString name);
+	PeriodicActionTest(TString tstrName);
 
 	//!destroys the test case
 	~PeriodicActionTest();

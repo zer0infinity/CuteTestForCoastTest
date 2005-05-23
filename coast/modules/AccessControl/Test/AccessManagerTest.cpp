@@ -28,8 +28,8 @@
 #endif
 
 //---- AccessManagerTest ----------------------------------------------------------------
-AccessManagerTest::AccessManagerTest(TString name)
-	: ConfiguredTestCase(name, "AccessManagerTestConfig")
+AccessManagerTest::AccessManagerTest(TString tstrName)
+	: ConfiguredTestCase(tstrName, "AccessManagerTestConfig")
 {
 	StartTrace(AccessManagerTest.Ctor);
 }
@@ -78,7 +78,8 @@ void AccessManagerTest::doTestAccessManager(ROAnything config, AccessManager *am
 	for (long i = 0; i < subconf.GetSize(); i++) {
 		Trace("test case name = " << subconf.SlotName(i));
 		testconf = subconf[i];
-		res = am->Validate(testconf["uid"].AsString());
+		String strUid = testconf["uid"].AsString();
+		res = am->Validate(strUid);
 		assertEqual(testconf["result"].AsBool(), res);
 	}
 
@@ -189,10 +190,10 @@ void AccessManagerTest::testRegularAccessManagers()
 	AccessManager *am;
 
 	// run tests for registered/configured access managers (have names)
-	FOREACH_ENTRY("Tests", caseConfig, name) {
-		Trace("Running tests for '" << name << "' access manager ...");
-		if ( fConfig["RunOnly"].GetSize() == 0 || fConfig["RunOnly"].Contains(name) ) {
-			am = AccessManagerModule::GetAccessManager(name);
+	FOREACH_ENTRY("Tests", caseConfig, strName) {
+		Trace("Running tests for '" << strName << "' access manager ...");
+		if ( fConfig["RunOnly"].GetSize() == 0 || fConfig["RunOnly"].Contains(strName) ) {
+			am = AccessManagerModule::GetAccessManager(strName);
 			if (t_assert(am)) {
 				doTestAccessManager(caseConfig, am);
 			}

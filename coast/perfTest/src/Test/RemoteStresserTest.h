@@ -25,7 +25,7 @@ public:
 
 	//!TestCases for the StressApp classes
 	//! \param name name of the test
-	RemoteStresserTest(TString name);
+	RemoteStresserTest(TString tstrName);
 
 	//!destroys the test case
 	~RemoteStresserTest();

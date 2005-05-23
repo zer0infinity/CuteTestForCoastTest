@@ -122,7 +122,7 @@ private:
 	long fConsumed;
 };
 //---- QueueTest ----------------------------------------------------------------
-QueueTest::QueueTest(TString name) : TestCase(name)
+QueueTest::QueueTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(QueueTest.Ctor);
 }

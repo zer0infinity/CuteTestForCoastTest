@@ -24,7 +24,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	PageTest(TString name);
+	PageTest(TString tstrName);
 
 	//!destroys the test case
 	~PageTest();

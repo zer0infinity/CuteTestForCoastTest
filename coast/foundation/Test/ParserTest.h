@@ -32,7 +32,7 @@ protected:
 	void 		assertParsedAsString(const char *in, int id);
 
 public:
-	ParserTest (TString name); // : TestCase (name) {}
+	ParserTest (TString tstrName); // : TestCase (name) {}
 	virtual void			setUp ();
 	static Test				*worksuite ();
 	static Test				*suite ();

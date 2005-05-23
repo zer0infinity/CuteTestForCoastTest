@@ -26,7 +26,7 @@ public:
 
 	//! TestCase constructor
 	//! \param name name of the test
-	GenericXMLParserTest(TString name);
+	GenericXMLParserTest(TString tstrName);
 
 	//! destroys the test case
 	~GenericXMLParserTest();

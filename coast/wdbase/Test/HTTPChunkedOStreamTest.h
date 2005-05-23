@@ -21,7 +21,7 @@ public:
 
 	//! TestCase constructor
 	//! \param name name of the test
-	HTTPChunkedOStreamTest(TString name);
+	HTTPChunkedOStreamTest(TString tstrName);
 
 	//! destroys the test case
 	~HTTPChunkedOStreamTest();

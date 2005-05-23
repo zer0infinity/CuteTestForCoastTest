@@ -21,7 +21,7 @@
 #include "AnyUtils.h"
 
 //---- SybCTPoolDAImplTest ----------------------------------------------------------------
-SybCTPoolDAImplTest::SybCTPoolDAImplTest(TString name) : TestCase(name)
+SybCTPoolDAImplTest::SybCTPoolDAImplTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(SybCTPoolDAImplTest.Ctor);
 }

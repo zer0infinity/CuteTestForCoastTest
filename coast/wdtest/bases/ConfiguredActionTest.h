@@ -109,11 +109,11 @@ class ConfiguredActionTest : public ConfiguredTestCase
 public:
 	/*! TestCase constructor
 		\param name name of the test */
-	ConfiguredActionTest(TString name);
+	ConfiguredActionTest(TString tstrName);
 	/*! TestCase constructor
 		\param name name of the test
 		\param configFileName name of the tests config file */
-	ConfiguredActionTest(TString name, TString configFileName);
+	ConfiguredActionTest(TString tstrName, TString configFileName);
 
 	//! TestCase destructor
 	~ConfiguredActionTest();

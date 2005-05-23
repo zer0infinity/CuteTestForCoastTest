@@ -17,7 +17,7 @@ class Role;
 class AnythingUtilsTest : public ConfiguredTestCase
 {
 public:
-	AnythingUtilsTest(TString name);
+	AnythingUtilsTest(TString tstrName);
 	virtual ~AnythingUtilsTest();
 
 	virtual void setUp();

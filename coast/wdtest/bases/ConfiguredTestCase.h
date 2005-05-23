@@ -22,7 +22,7 @@ public:
 	//! \param name name of the test
 	//! \param configFileName The name of the Config file to load (Without extension)
 	//! the Config file has to have the extension .any
-	ConfiguredTestCase(TString name, TString configFileName);
+	ConfiguredTestCase(TString tstrName, TString configFileName);
 
 	//!destroys the test case
 	~ConfiguredTestCase();

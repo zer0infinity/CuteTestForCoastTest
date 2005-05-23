@@ -26,7 +26,7 @@ public:
 	//--- constructors
 
 	/*! \param name name of the test */
-	ErrorHandlerTest(TString name);
+	ErrorHandlerTest(TString tstrName);
 
 	//! destroys the test case
 	~ErrorHandlerTest();

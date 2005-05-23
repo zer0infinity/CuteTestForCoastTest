@@ -25,7 +25,7 @@ public:
 	//--- constructors
 
 	/*! \param name name of the test and its configuration file */
-	ConnectorArgsTest(TString name);
+	ConnectorArgsTest(TString tstrName);
 
 	//! destroys the test case
 	~ConnectorArgsTest();

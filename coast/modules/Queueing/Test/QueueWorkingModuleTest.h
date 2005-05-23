@@ -24,7 +24,7 @@ public:
 	//--- constructors
 
 	/*! \param name name of the test and its configuration file */
-	QueueWorkingModuleTest(TString name);
+	QueueWorkingModuleTest(TString tstrName);
 
 	//! destroys the test case
 	~QueueWorkingModuleTest();

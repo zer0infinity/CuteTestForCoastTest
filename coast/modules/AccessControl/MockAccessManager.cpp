@@ -19,7 +19,7 @@
 //---- MockAccessManager ----------------------------------------------------------------
 RegisterAccessManager(MockAccessManager);
 
-bool MockAccessManager::Validate(String uid)
+bool MockAccessManager::Validate(String &uid)
 {
 	StartTrace(MockAccessManager.Validate);
 

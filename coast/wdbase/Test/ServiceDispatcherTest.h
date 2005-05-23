@@ -20,7 +20,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	ServiceDispatcherTest(TString name);
+	ServiceDispatcherTest(TString tstrName);
 
 	//!destroys the test case
 	~ServiceDispatcherTest();

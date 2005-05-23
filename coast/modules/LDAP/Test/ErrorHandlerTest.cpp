@@ -22,7 +22,7 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- ErrorHandlerTest ----------------------------------------------------------------
-ErrorHandlerTest::ErrorHandlerTest(TString name) : TestCase(name)
+ErrorHandlerTest::ErrorHandlerTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(ErrorHandlerTest.Ctor);
 }

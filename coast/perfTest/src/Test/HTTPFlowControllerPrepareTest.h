@@ -20,12 +20,12 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	HTTPFlowControllerPrepareTest(TString name);
+	HTTPFlowControllerPrepareTest(TString tstrName);
 
 	//!TestCase constructor
 	//! \param name name of the test
 	//! \param configFileName name of the tests config file
-	HTTPFlowControllerPrepareTest(TString name, TString configFileName);
+	HTTPFlowControllerPrepareTest(TString tstrName, TString configFileName);
 
 	//!destroys the test case
 	~HTTPFlowControllerPrepareTest();

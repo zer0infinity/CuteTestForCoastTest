@@ -21,7 +21,7 @@
 class SelectBoxRendererTest : public FieldRendererTest
 {
 public:
-	SelectBoxRendererTest(TString name);
+	SelectBoxRendererTest(TString tstrName);
 	virtual ~SelectBoxRendererTest();
 
 	static Test *suite ();

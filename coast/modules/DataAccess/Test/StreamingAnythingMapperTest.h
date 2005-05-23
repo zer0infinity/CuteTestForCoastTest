@@ -20,7 +20,7 @@ class StreamingAnythingMapperTest : public TestCase
 public:
 
 	//--- constructors
-	StreamingAnythingMapperTest(TString name);
+	StreamingAnythingMapperTest(TString tstrName);
 	~StreamingAnythingMapperTest();
 
 	//--- public api

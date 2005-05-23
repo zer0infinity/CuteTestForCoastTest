@@ -39,8 +39,8 @@ protected:
 };
 
 //---- LeaderFollowerPoolTest ----------------------------------------------------------------
-LeaderFollowerPoolTest::LeaderFollowerPoolTest(TString name)
-	: 	TestCase(name),
+LeaderFollowerPoolTest::LeaderFollowerPoolTest(TString tstrName)
+	: 	TestCase(tstrName),
 		fEvents(0)
 {
 	StartTrace(LeaderFollowerPoolTest.Ctor);

@@ -21,8 +21,8 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- SSLSocketUtilsTest ----------------------------------------------------------------
-SSLSocketUtilsTest::SSLSocketUtilsTest(TString name)
-	: ConfiguredTestCase(name, "SSLSocketUtilsTestConfig")
+SSLSocketUtilsTest::SSLSocketUtilsTest(TString tstrName)
+	: ConfiguredTestCase(tstrName, "SSLSocketUtilsTestConfig")
 {
 	StartTrace(SSLSocketUtilsTest.Ctor);
 }

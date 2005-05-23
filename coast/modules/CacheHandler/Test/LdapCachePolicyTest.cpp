@@ -26,7 +26,7 @@
 #include "Threads.h"
 
 //---- LdapCachePolicyTest ----------------------------------------------------------------
-LdapCachePolicyTest::LdapCachePolicyTest(TString name) : TestCase(name)
+LdapCachePolicyTest::LdapCachePolicyTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(LdapCachePolicyTest.Ctor);
 }

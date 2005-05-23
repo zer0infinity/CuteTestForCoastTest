@@ -22,11 +22,11 @@
 #include "HTTPFlowControllerTest.h"
 
 //---- HTTPFlowControllerTest ----------------------------------------------------------------
-HTTPFlowControllerTest::HTTPFlowControllerTest(TString name) : ConfiguredActionTest(name, "HTTPFlowControllerTestConfig"),
+HTTPFlowControllerTest::HTTPFlowControllerTest(TString tstrName) : ConfiguredActionTest(tstrName, "HTTPFlowControllerTestConfig"),
 	fCtx()
 { }
 
-HTTPFlowControllerTest::HTTPFlowControllerTest(TString name, TString configFileName) : ConfiguredActionTest(name, configFileName),
+HTTPFlowControllerTest::HTTPFlowControllerTest(TString tstrName, TString configFileName) : ConfiguredActionTest(tstrName, configFileName),
 	fCtx()
 { }
 

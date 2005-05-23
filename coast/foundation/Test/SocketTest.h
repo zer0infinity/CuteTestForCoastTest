@@ -24,7 +24,7 @@ public:
 
 	//!TestCases for the Socket classes
 	//! \param name name of the test
-	SocketTest(TString name);
+	SocketTest(TString tstrName);
 
 	//!destroys the test case
 	~SocketTest();

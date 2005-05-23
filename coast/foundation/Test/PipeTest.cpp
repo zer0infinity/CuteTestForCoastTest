@@ -30,8 +30,8 @@
 #endif
 
 //---- PipeTest ----------------------------------------------------------------
-PipeTest::PipeTest(TString name)
-	: TestCase(name)
+PipeTest::PipeTest(TString tstrName)
+	: TestCase(tstrName)
 {
 	StartTrace(PipeTest.Ctor);
 }

@@ -22,7 +22,7 @@
 #include "SybDBDAImplTest.h"
 
 //---- SybDBDAImplTest ----------------------------------------------------------------
-SybDBDAImplTest::SybDBDAImplTest(TString name) : TestCase(name)
+SybDBDAImplTest::SybDBDAImplTest(TString tstrName) : TestCase(name)
 {
 	StartTrace(SybDBDAImplTest.Ctor);
 }

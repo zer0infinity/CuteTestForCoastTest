@@ -25,7 +25,7 @@ public:
 
 	//! TestCase constructor
 	//! \param name name of the test
-	ROAnyLookupAdapterTest(TString name);
+	ROAnyLookupAdapterTest(TString tstrName);
 
 	//! destroys the test case
 	~ROAnyLookupAdapterTest();

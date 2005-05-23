@@ -23,7 +23,7 @@ public:
 
 	//!TestCases for the Registry classes
 	//! \param name name of the test
-	URLFilterTest(TString name);
+	URLFilterTest(TString tstrName);
 
 	//!destroys the test case
 	~URLFilterTest();

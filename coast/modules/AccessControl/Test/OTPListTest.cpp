@@ -53,8 +53,8 @@ private:
 };
 
 //---- OTPListTest ----------------------------------------------------------------
-OTPListTest::OTPListTest(TString name)
-	: ConfiguredTestCase(name, "OTPListTestConfig")
+OTPListTest::OTPListTest(TString tstrName)
+	: ConfiguredTestCase(tstrName, "OTPListTestConfig")
 {
 	StartTrace(OTPListTest.Ctor);
 }

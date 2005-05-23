@@ -22,7 +22,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	SystemAPITest(TString name);
+	SystemAPITest(TString tstrName);
 
 	//!destroys the test case
 	~SystemAPITest();

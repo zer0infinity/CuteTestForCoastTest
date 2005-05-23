@@ -22,7 +22,7 @@ class WDModuleTest : public TestCase
 public:
 	//!TestCases
 	//! \param name name of the test
-	WDModuleTest(TString name);
+	WDModuleTest(TString tstrName);
 
 	//!destroys the test case
 	~WDModuleTest();

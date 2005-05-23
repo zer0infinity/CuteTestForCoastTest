@@ -21,7 +21,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	REBitSetTest(TString name);
+	REBitSetTest(TString tstrName);
 
 	//!destroys the test case
 	~REBitSetTest();

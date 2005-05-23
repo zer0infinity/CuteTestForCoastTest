@@ -21,7 +21,7 @@ class SecurityModuleTest : public TestCase
 {
 public:
 	//--- constructors
-	SecurityModuleTest(TString name);
+	SecurityModuleTest(TString tstrName);
 	~SecurityModuleTest();
 
 	static Test *suite ();

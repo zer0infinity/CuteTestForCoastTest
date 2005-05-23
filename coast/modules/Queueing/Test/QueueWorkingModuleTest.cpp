@@ -25,8 +25,8 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- QueueWorkingModuleTest ----------------------------------------------------------------
-QueueWorkingModuleTest::QueueWorkingModuleTest(TString name)
-	: ConfiguredTestCase(name, "QueueWorkingModuleTestConfig")
+QueueWorkingModuleTest::QueueWorkingModuleTest(TString tstrName)
+	: ConfiguredTestCase(tstrName, "QueueWorkingModuleTestConfig")
 {
 	StartTrace(QueueWorkingModuleTest.Ctor);
 }

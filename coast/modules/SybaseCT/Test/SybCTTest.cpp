@@ -21,7 +21,7 @@
 #include "Dbg.h"
 
 //---- SybCTTest ----------------------------------------------------------------
-SybCTTest::SybCTTest(TString name) : TestCase(name)
+SybCTTest::SybCTTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(SybCTTest.Ctor);
 }

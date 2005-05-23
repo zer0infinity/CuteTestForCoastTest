@@ -22,7 +22,7 @@
 #include <stdlib.h>
 
 //---- AnyBuiltInSortTest ----------------------------------------------------------------
-AnyBuiltInSortTest::AnyBuiltInSortTest(TString name) : TestCase(name)
+AnyBuiltInSortTest::AnyBuiltInSortTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(AnyBuiltInSortTest.Ctor);
 }

@@ -68,7 +68,7 @@ private:
 class ConnectorAcceptorTest : public TestCase
 {
 public:
-	ConnectorAcceptorTest(TString name);
+	ConnectorAcceptorTest(TString tstrName);
 	virtual ~ConnectorAcceptorTest();
 
 	virtual void setUp ();

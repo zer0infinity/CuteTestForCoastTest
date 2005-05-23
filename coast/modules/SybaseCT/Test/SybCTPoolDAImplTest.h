@@ -21,7 +21,7 @@ public:
 
 	//:TestCase constructor
 	//!param: name - name of the test
-	SybCTPoolDAImplTest(TString name);
+	SybCTPoolDAImplTest(TString tstrName);
 
 	//:destroys the test case
 	~SybCTPoolDAImplTest();

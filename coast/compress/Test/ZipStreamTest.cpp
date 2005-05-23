@@ -23,7 +23,7 @@
 #include <stdlib.h>
 
 //---- ZipStreamTest ----------------------------------------------------------------
-ZipStreamTest::ZipStreamTest(TString name) : TestCase(name)
+ZipStreamTest::ZipStreamTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(ZipStreamTest.Ctor);
 }

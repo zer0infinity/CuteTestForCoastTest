@@ -25,7 +25,7 @@
 //--- c-library modules used ---------------------------------------------------
 
 //---- RECompilerTest ----------------------------------------------------------------
-RECompilerTest::RECompilerTest(TString name) : TestCase(name)
+RECompilerTest::RECompilerTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(RECompilerTest.Ctor);
 }

@@ -33,7 +33,7 @@ public:
 
 	//! TestCase constructor
 	//! \param name name of the test
-	CallRendererTest(TString name);
+	CallRendererTest(TString tstrName);
 
 	//! destroys the test case
 	~CallRendererTest();

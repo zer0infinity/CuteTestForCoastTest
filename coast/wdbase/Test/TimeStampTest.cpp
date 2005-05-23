@@ -27,8 +27,8 @@
 #include <limits.h>
 
 //---- TimeStampTest ----------------------------------------------------------------
-TimeStampTest::TimeStampTest(TString name)
-	: ConfiguredTestCase(name, "TimeStampTestConfig")
+TimeStampTest::TimeStampTest(TString tstrName)
+	: ConfiguredTestCase(tstrName, "TimeStampTestConfig")
 {
 	StartTrace(TimeStampTest.Ctor);
 }

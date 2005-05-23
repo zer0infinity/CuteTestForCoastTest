@@ -21,7 +21,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	MIMEHeaderTest(TString name);
+	MIMEHeaderTest(TString tstrName);
 
 	//!destroys the test case
 	~MIMEHeaderTest();

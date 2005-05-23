@@ -21,7 +21,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	HTMLComparerTest(TString name);
+	HTMLComparerTest(TString tstrName);
 
 	//!destroys the test case
 	~HTMLComparerTest();

@@ -20,7 +20,7 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- FirstNonEmptyRendererTest ----------------------------------------------------------------
-FirstNonEmptyRendererTest::FirstNonEmptyRendererTest(TString name) : RendererTest(name)
+FirstNonEmptyRendererTest::FirstNonEmptyRendererTest(TString tstrName) : RendererTest(tstrName)
 {
 	StartTrace(FirstNonEmptyRendererTest.Ctor);
 }

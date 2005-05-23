@@ -18,7 +18,7 @@ class DbgTest : public TestCase
 {
 public:
 	//!constructors
-	DbgTest(TString name);
+	DbgTest(TString tstrName);
 	~DbgTest();
 
 	//!builds up a suite of testcases for this test

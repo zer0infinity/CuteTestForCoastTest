@@ -21,7 +21,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	SybDBDAImplTest(TString name);
+	SybDBDAImplTest(TString tstrName);
 
 	//!destroys the test case
 	~SybDBDAImplTest();

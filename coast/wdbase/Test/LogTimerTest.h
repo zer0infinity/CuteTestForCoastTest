@@ -19,7 +19,7 @@ class LogTimerTest : public ConfiguredTestCase
 public:
 	//!TestCase constructor
 	//! \param name name of the test
-	LogTimerTest(TString name);
+	LogTimerTest(TString tstrName);
 
 	//!destroys the test case
 	~LogTimerTest();

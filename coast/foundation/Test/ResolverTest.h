@@ -24,7 +24,7 @@ public:
 
 	//!TestCases for the Resolver class
 	//! \param name name of the test
-	ResolverTest(TString name);
+	ResolverTest(TString tstrName);
 
 	//!destroys the test case
 	~ResolverTest();

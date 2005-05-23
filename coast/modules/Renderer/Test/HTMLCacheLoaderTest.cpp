@@ -23,7 +23,7 @@
 #include "HTMLTemplateRenderer.h"
 
 //---- HTMLCacheLoaderTest ----------------------------------------------------------------
-HTMLCacheLoaderTest::HTMLCacheLoaderTest(TString name) : TestCase(name)
+HTMLCacheLoaderTest::HTMLCacheLoaderTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(HTMLCacheLoaderTest.Ctor);
 }

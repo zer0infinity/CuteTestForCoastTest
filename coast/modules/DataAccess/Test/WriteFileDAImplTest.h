@@ -21,7 +21,7 @@ public:
 
 	//!constructor
 	//! \param name name of the test
-	WriteFileDAImplTest(TString name);
+	WriteFileDAImplTest(TString tstrName);
 
 	//!destroys the test case
 	~WriteFileDAImplTest();

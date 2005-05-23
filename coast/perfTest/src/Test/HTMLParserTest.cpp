@@ -23,7 +23,7 @@
 #include "HTMLParserTest.h"
 
 //---- HTMLParserTest ----------------------------------------------------------------
-HTMLParserTest::HTMLParserTest(TString name) : TestCase(name)
+HTMLParserTest::HTMLParserTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(HTMLParserTest.Ctor);
 

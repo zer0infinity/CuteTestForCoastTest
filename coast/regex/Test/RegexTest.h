@@ -21,7 +21,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	RegexTest(TString name);
+	RegexTest(TString tstrName);
 
 	//!destroys the test case
 	~RegexTest();

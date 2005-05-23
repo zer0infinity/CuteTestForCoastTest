@@ -18,7 +18,7 @@
 class BasicTableRendererTest : public RendererTest
 {
 public:
-	BasicTableRendererTest(TString name);
+	BasicTableRendererTest(TString tstrName);
 	virtual ~BasicTableRendererTest();
 
 	static Test *suite ();

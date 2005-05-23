@@ -23,7 +23,7 @@ class URLEncoderTest : public TestCase
 {
 public:
 	//--- constructors
-	URLEncoderTest(TString name);
+	URLEncoderTest(TString tstrName);
 	~URLEncoderTest();
 
 	static Test *suite ();

@@ -18,7 +18,7 @@ class Renderer;
 class FieldRendererTest : public RendererTest
 {
 public:
-	FieldRendererTest(TString name);
+	FieldRendererTest(TString tstrName);
 	virtual ~FieldRendererTest();
 
 	static Test *suite ();

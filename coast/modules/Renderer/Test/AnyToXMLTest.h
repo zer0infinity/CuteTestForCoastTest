@@ -19,7 +19,7 @@ class String;
 class AnyToXMLTest : public TestCase
 {
 public:
-	AnyToXMLTest(TString name);
+	AnyToXMLTest(TString tstrName);
 	virtual ~AnyToXMLTest();
 
 	void setUp ();

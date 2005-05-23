@@ -18,7 +18,7 @@ class Anything;
 class XMLBodyMapperTest : public TestCase
 {
 public:
-	XMLBodyMapperTest(TString name);
+	XMLBodyMapperTest(TString tstrName);
 	virtual ~XMLBodyMapperTest();
 
 	void setUp ();

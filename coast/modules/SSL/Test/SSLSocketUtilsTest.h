@@ -24,7 +24,7 @@ public:
 	//--- constructors
 
 	/*! \param name name of the test and its configuration file */
-	SSLSocketUtilsTest(TString name);
+	SSLSocketUtilsTest(TString tstrName);
 
 	//! destroys the test case
 	~SSLSocketUtilsTest();

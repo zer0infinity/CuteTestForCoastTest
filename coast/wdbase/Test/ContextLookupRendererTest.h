@@ -18,7 +18,7 @@
 class ContextLookupRendererTest : public TestCase
 {
 public:
-	ContextLookupRendererTest(TString name);
+	ContextLookupRendererTest(TString tstrName);
 	virtual ~ContextLookupRendererTest();
 
 	static Test *suite ();

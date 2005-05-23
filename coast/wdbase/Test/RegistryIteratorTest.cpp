@@ -105,7 +105,7 @@ void RegistryIteratorTest::IterateOverOneElementRegistry()
 	{
 		Registry r("oneElementForward");
 		Registry r1("test");
-		r.Register("One", &r1);
+		r.RegisterRegisterableObject("One", &r1);
 		String key("undefined");
 		RegistryIterator ri(&r);
 		t_assertm(ri.HasMore(), "expected RegistryIterator to have one element");
@@ -116,7 +116,7 @@ void RegistryIteratorTest::IterateOverOneElementRegistry()
 	{
 		Registry r("oneElementBackward");
 		Registry r1("test");
-		r.Register("One", &r1);
+		r.RegisterRegisterableObject("One", &r1);
 		String key("undefined");
 		RegistryIterator ri(&r, false);
 		t_assertm(ri.HasMore(), "expected RegistryIterator to have one element");
@@ -134,8 +134,8 @@ void RegistryIteratorTest::IterateOverNElementRegistry()
 		Registry r("oneElementForward");
 		Registry r1("test1");
 		Registry r2("test2");
-		r.Register("One", &r1);
-		r.Register("Two", &r2);
+		r.RegisterRegisterableObject("One", &r1);
+		r.RegisterRegisterableObject("Two", &r2);
 		String key("undefined");
 		RegistryIterator ri(&r);
 		t_assertm(ri.HasMore(), "expected RegistryIterator to have one element");
@@ -151,8 +151,8 @@ void RegistryIteratorTest::IterateOverNElementRegistry()
 		Registry r("oneElementBackward");
 		Registry r1("test1");
 		Registry r2("test2");
-		r.Register("One", &r1);
-		r.Register("Two", &r2);
+		r.RegisterRegisterableObject("One", &r1);
+		r.RegisterRegisterableObject("Two", &r2);
 		String key("undefined");
 		RegistryIterator ri(&r, false);
 		t_assertm(ri.HasMore(), "expected RegistryIterator to have one element");
@@ -174,8 +174,8 @@ void RegistryIteratorTest::IterateWhileRemoving()
 		Registry r("oneElementForward");
 		Registry r1("test1");
 		Registry r2("test2");
-		r.Register("One", &r1);
-		r.Register("Two", &r2);
+		r.RegisterRegisterableObject("One", &r1);
+		r.RegisterRegisterableObject("Two", &r2);
 		String key("undefined");
 		RegistryIterator ri(&r);
 		t_assertm(ri.HasMore(), "expected RegistryIterator to have one element");
@@ -194,8 +194,8 @@ void RegistryIteratorTest::IterateWhileRemoving()
 		Registry r("oneElementBackward");
 		Registry r1("test1");
 		Registry r2("test2");
-		r.Register("One", &r1);
-		r.Register("Two", &r2);
+		r.RegisterRegisterableObject("One", &r1);
+		r.RegisterRegisterableObject("Two", &r2);
 		String key("undefined");
 		RegistryIterator ri(&r, false);
 		t_assertm(ri.HasMore(), "expected RegistryIterator to have one element");

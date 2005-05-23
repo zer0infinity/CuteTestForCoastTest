@@ -21,7 +21,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	RequestBlockerTest(TString name);
+	RequestBlockerTest(TString tstrName);
 
 	//!destroys the test case
 	~RequestBlockerTest();

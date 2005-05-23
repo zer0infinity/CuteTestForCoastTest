@@ -21,7 +21,7 @@
 
 RegisterAccessManager(BasicAccessManager);
 
-bool BasicAccessManager::Validate(String uid)
+bool BasicAccessManager::Validate(String &uid)
 {
 	StartTrace(BasicAccessManager.Validate);
 

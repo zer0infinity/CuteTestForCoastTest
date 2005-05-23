@@ -25,7 +25,7 @@ public:
 
 	//! ConfiguredTestCase constructor
 	//! \param name name of the test
-	SybCTThreadTest(TString name);
+	SybCTThreadTest(TString tstrName);
 
 	//! destroys the test case
 	~SybCTThreadTest();

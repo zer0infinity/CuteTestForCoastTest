@@ -21,7 +21,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	InterruptHandlerTest(TString name);
+	InterruptHandlerTest(TString tstrName);
 
 	//!destroys the test case
 	~InterruptHandlerTest();

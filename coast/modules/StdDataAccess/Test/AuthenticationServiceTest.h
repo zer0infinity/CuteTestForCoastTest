@@ -23,7 +23,7 @@ public:
 
 	//!ConfiguredTestCase constructor
 	//! \param name name of the test
-	AuthenticationServiceTest(TString name);
+	AuthenticationServiceTest(TString tstrName);
 
 	//!destroys the test case
 	~AuthenticationServiceTest();

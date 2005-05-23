@@ -23,7 +23,7 @@ class Scrambler;
 class BlowfishTest : public TestCase
 {
 public:
-	BlowfishTest(TString name);
+	BlowfishTest(TString tstrName);
 	virtual ~BlowfishTest();
 
 	virtual void setUp ();

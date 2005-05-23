@@ -19,7 +19,7 @@
 class ResetButtonRendererTest : public FieldRendererTest
 {
 public:
-	ResetButtonRendererTest(TString name);
+	ResetButtonRendererTest(TString tstrName);
 	virtual ~ResetButtonRendererTest();
 
 	static Test *suite ();

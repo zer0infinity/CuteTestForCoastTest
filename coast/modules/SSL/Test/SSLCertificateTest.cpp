@@ -20,8 +20,8 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- SSLCertificateTest ----------------------------------------------------------------
-SSLCertificateTest::SSLCertificateTest(TString name)
-	: ConfiguredTestCase(name, "SSLCertificateTest")
+SSLCertificateTest::SSLCertificateTest(TString tstrName)
+	: ConfiguredTestCase(tstrName, "SSLCertificateTest")
 {
 	StartTrace(SSLCertificateTest.Ctor);
 }

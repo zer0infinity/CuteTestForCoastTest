@@ -24,7 +24,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	LeaderFollowerPoolTest(TString name);
+	LeaderFollowerPoolTest(TString tstrName);
 
 	//!destroys the test case
 	~LeaderFollowerPoolTest();

@@ -25,7 +25,7 @@ public:
 
 	//! TestCase constructor
 	//! \param name name of the test
-	TemplateParserTest(TString name);
+	TemplateParserTest(TString tstrName);
 
 	//! destroys the test case
 	~TemplateParserTest();

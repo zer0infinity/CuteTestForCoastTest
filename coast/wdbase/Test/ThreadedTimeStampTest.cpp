@@ -24,8 +24,8 @@
 #include "Dbg.h"
 
 //---- ThreadedTimeStampTest ----------------------------------------------------------------
-ThreadedTimeStampTest::ThreadedTimeStampTest(TString name)
-	: ConfiguredTestCase(name, "ThreadedTimeStampTestConfig"), fCheckMutex("ThreadedTimeStampTest")
+ThreadedTimeStampTest::ThreadedTimeStampTest(TString tstrName)
+	: ConfiguredTestCase(tstrName, "ThreadedTimeStampTestConfig"), fCheckMutex("ThreadedTimeStampTest")
 {
 	StartTrace(ThreadedTimeStampTest.Ctor);
 }

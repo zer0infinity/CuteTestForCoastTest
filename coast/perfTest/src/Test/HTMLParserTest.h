@@ -21,7 +21,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	HTMLParserTest(TString name);
+	HTMLParserTest(TString tstrName);
 
 	//!destroys the test case
 	~HTMLParserTest();

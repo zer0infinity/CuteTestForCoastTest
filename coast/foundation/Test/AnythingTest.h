@@ -37,7 +37,7 @@ protected:
 	Anything fConfig;
 
 public:
-	AnythingTest (TString name);
+	AnythingTest (TString tstrName);
 
 	virtual void	setUp ();
 	static Test	*worksuite ();

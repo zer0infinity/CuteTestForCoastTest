@@ -17,7 +17,7 @@
 class FileBrowseRendererTest : public TextFieldRendererTest
 {
 public:
-	FileBrowseRendererTest(TString name);
+	FileBrowseRendererTest(TString tstrName);
 	virtual ~FileBrowseRendererTest();
 
 	static Test *suite ();

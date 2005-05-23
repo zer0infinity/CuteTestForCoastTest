@@ -21,7 +21,7 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- Base64WDRendererTest ----------------------------------------------------------------
-Base64WDRendererTest::Base64WDRendererTest(TString name) : TestCase(name)
+Base64WDRendererTest::Base64WDRendererTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(Base64WDRendererTest.Ctor);
 }

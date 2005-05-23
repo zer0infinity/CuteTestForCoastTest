@@ -23,7 +23,7 @@ public:
 
 	//!TestCase constructor
 	//! \param name name of the test
-	WorkerPoolManagerTest(TString name);
+	WorkerPoolManagerTest(TString tstrName);
 
 	//!destroys the test case
 	~WorkerPoolManagerTest();

@@ -21,7 +21,7 @@
 #include "CgiParamsTest.h"
 
 //---- CgiParamsTest ----------------------------------------------------------------
-CgiParamsTest::CgiParamsTest(TString name) : TestCase(name)
+CgiParamsTest::CgiParamsTest(TString tstrName) : TestCase(tstrName)
 {
 	StartTrace(CgiParamsTest.Ctor);
 }

@@ -22,7 +22,7 @@ class SetupCase : public ConfiguredTestCase
 public:
 	//!TestCase constructor
 	//! \param name name of the test
-	SetupCase(TString name);
+	SetupCase(TString tstrName);
 
 	//!destroys the test case
 	~SetupCase();

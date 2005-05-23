@@ -22,7 +22,7 @@ class MockAccessControllerTests : public FileAccessControllerTests
 {
 public:
 	//--- constructors
-	MockAccessControllerTests(TString name) : FileAccessControllerTests(name, "MockAccessControllerTestsConfig") {}
+	MockAccessControllerTests(TString tstrName) : FileAccessControllerTests(tstrName, "MockAccessControllerTestsConfig") {}
 	~MockAccessControllerTests() {};
 
 	//--- public api

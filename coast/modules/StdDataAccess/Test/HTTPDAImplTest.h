@@ -20,7 +20,7 @@ class HTTPDAImplTest : public ConfiguredTestCase
 public:
 
 	//--- constructors
-	HTTPDAImplTest(TString name);
+	HTTPDAImplTest(TString tstrName);
 	~HTTPDAImplTest() {};
 
 	//--- public api

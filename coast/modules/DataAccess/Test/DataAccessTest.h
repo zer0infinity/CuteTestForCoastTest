@@ -21,7 +21,7 @@ class DataAccessTest : public TestCase
 {
 public:
 	//--- constructors
-	DataAccessTest(TString name);
+	DataAccessTest(TString tstrName);
 	~DataAccessTest();
 
 	static Test *suite ();

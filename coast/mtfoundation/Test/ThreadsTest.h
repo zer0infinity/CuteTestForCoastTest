@@ -25,7 +25,7 @@ class ThreadsTest : public TestCase
 {
 public:
 	//--- constructors
-	ThreadsTest(TString name);
+	ThreadsTest(TString tstrName);
 	~ThreadsTest();
 
 	//!builds up a suite of testcases for this test
