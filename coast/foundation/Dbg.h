@@ -159,6 +159,13 @@ private:
 	Tracer::StatWDDebug(_QUOTE_(trigger), gsMecart << msg, allocator);	\
 }
 
+#define StatTraceAny(trigger, any, msg, allocator)						\
+{															\
+	String gsMecart(allocator);						\
+	Tracer::AnythingWDDebug(_QUOTE_(trigger), any, gsMecart << msg, allocator);	\
+	Tracer::StatWDDebug(_QUOTE_(trigger), gsMecart << msg, allocator);	\
+}
+
 // helper to check if we are triggered
 #define TraceTriggered(trigger, allocator)							\
 	Tracer::CheckWDDebug(_QUOTE_(trigger), allocator)
@@ -173,14 +180,15 @@ private:
 #define StartTrace(trigger)
 #define StartTrace1(trigger, msg)
 // debug statements
-#define TraceBuf(msg, sz)
-#define Trace(msg)
-#define TraceAny(any, msg)
+#define TraceBuf(msg, sz)	;
+#define Trace(msg)	;
+#define TraceAny(any, msg)	;
 // subdebugs
 #define SubTrace(subtrigger, msg)
 #define SubTraceAny(subtrigger, any, msg)
 #define SubTraceBuf(subtrigger, msg, sz)
 #define StatTrace(trigger, msg, allocator)
+#define StatTraceAny(trigger, any, msg, allocator)
 // helper to check if we are triggered
 #define TraceTriggered(trigger, allocator)		false
 
