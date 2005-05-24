@@ -128,11 +128,11 @@ void TimeStampTest::testArithmeticOperators()
 			TimeStamp ts1(cConfig["Date"].AsString());
 			TimeStamp result;
 			result = ts1 + cConfig["AmountSec"].AsLong();
-			t_assertm(result.AsString() == cConfig["ExpectedResult"].AsString(), "Expected + test to pass");
+			assertCharPtrEqualm(cConfig["ExpectedResult"].AsString(), result.AsString(), "Expected + test to pass");
 			Trace("result after operator+ is: " << result.AsString());
 
 			result = result - cConfig["AmountSec"].AsLong();
-			t_assertm(result.AsString() == cConfig["Date"].AsString(), "Expected - test to pass");
+			assertCharPtrEqualm(cConfig["Date"].AsString(), result.AsString(), "Expected - test to pass");
 			Trace("result after operator- is: " << result.AsString());
 		}
 	}
@@ -382,6 +382,29 @@ void TimeStampTest::WeekdayTest()
 	}
 }
 
+void TimeStampTest::DayOfYearTest()
+{
+	StartTrace(TimeStampTest.DayOfYearTest);
+	for (long i = 0; i < fTestCaseConfig.GetSize(); i++) {
+		ROAnything cConfig = fTestCaseConfig[i];
+		Trace("At testindex: " << i);
+		TimeStamp ts(cConfig["Date"].AsString());
+		Trace("Date [" << ts.AsString() << "]");
+		assertEqualm(cConfig["DayOfYear"].AsLong(-1), ts.DayOfYear(), "Expected same day of year");
+	}
+}
+
+void TimeStampTest::WeekOfYearTest()
+{
+	StartTrace(TimeStampTest.WeekOfYearTest);
+	for (long i = 0; i < fTestCaseConfig.GetSize(); i++) {
+		ROAnything cConfig = fTestCaseConfig[i];
+		TraceAny(cConfig, "At testindex: " << i);
+		TimeStamp ts(cConfig["Date"].AsString());
+		assertEqualm(cConfig["WeekOfYear"].AsLong(-1), ts.WeekOfYear(), TString("Expected same week of year [") << cConfig["Date"].AsString() << "]");
+	}
+}
+
 // builds up a suite of testcases, add a line for each testmethod
 Test *TimeStampTest::suite ()
 {
@@ -401,5 +424,7 @@ Test *TimeStampTest::suite ()
 	ADD_CASE(testSuite, TimeStampTest, ModifiersTest);
 	ADD_CASE(testSuite, TimeStampTest, CtorTest);
 	ADD_CASE(testSuite, TimeStampTest, WeekdayTest);
+	ADD_CASE(testSuite, TimeStampTest, DayOfYearTest);
+	ADD_CASE(testSuite, TimeStampTest, WeekOfYearTest);
 	return testSuite;
 }

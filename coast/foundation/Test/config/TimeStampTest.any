@@ -184,4 +184,92 @@
 			/Weekday	6
 		}
 	}
+	/DayOfYearTest {
+		{
+			/Date		"20040101"
+			/DayOfYear	1
+		}
+		{
+			/Date		"20050101"
+			/DayOfYear	1
+		}
+		{
+			/Date		"20050201"
+			/DayOfYear	32
+		}
+		{
+			/Date		"20040301"
+			/DayOfYear	61
+		}
+		{
+			/Date		"20000301"
+			/DayOfYear	61
+		}
+		{
+			/Date		"20050301"
+			/DayOfYear	60
+		}
+	}
+	/WeekOfYearTest {
+		{
+			/Date			"20010101"	# was a Monday
+			/WeekOfYear		1
+		}
+		{
+			/Date			"20020101"	# was a Tuesday
+			/WeekOfYear		1
+		}
+		{
+			/Date			"20030101"	# was a Wednesday
+			/WeekOfYear		1
+		}
+		{
+			/Date			"20040101"	# was a Thursday
+			/WeekOfYear		1
+		}
+		{
+			/Date			"19990101"	# was a Friday
+			/WeekOfYear		0
+		}
+		{
+			/Date			"20050101"	# was a Saturday
+			/WeekOfYear		0	# week in old year 53
+		}
+		{
+			/Date			"20060101"	# was a Sunday
+			/WeekOfYear		0
+		}
+		{
+			/Date			"20050103"	# Monday
+			/WeekOfYear		1
+		}
+		{
+			/Date			"20050501"	# Sunday
+			/WeekOfYear		17
+		}
+		{
+			/Date			"20041231"	# Friday
+			/WeekOfYear		53
+		}
+		{
+			/Date			"20041226"	# Sunday
+			/WeekOfYear		52
+		}
+		{
+			/Date			"20040105"	# Monday
+			/WeekOfYear		2
+		}
+		{
+			/Date			"20051231"	# Friday
+			/WeekOfYear		52
+		}
+		{
+			/Date			"20030106"	# Monday
+			/WeekOfYear		2
+		}
+		{
+			/Date			"20001231"	# Sunday
+			/WeekOfYear		52
+		}
+	}
 }

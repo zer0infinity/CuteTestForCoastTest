@@ -82,12 +82,25 @@ public:
 	char Second() const {
 		return fTimeStruct.cSec;
 	}
-	int Weekday() const {
+	/*! calculate the day of week where Sunday is day 0, Monday day 1 and so on.
+		An algorithm description can be found at: http://en.wikipedia.org/wiki/Calculating_the_day_of_the_week
+		\return day of week as described by TimeStamp::eWeekday */
+	inline eWeekday Weekday() const {
 		return fTimeStruct.Weekday();
 	}
+	/*! return the day number beginning at 1 for the first of january
+		\return day number beginning at 1 */
+	inline int DayOfYear() const {
+		return fTimeStruct.DayOfYear();
+	}
+	/*! week number calculation according to ISO8601
+		\return number of week in the range 0-53 where 0 means that the week number is the last week number of the last year. If the week number is 53 the last day of the year seems to be either a Thursday or a Friday. */
+	inline int WeekOfYear() const {
+		return fTimeStruct.WeekOfYear();
+	}
 
-	String	AsString() const;
-	String	AsStringWithZ() const;
+	String AsString() const;
+	String AsStringWithZ() const;
 
 	bool	IsValid() const;
 	long	AsLong() const;
@@ -144,6 +157,10 @@ public:
 	static const long DAY;
 	static const long YEAR;
 
+	static inline bool IsLeap(int iYear) {
+		return ((iYear) % 4 == 0 && ((iYear) % 100 != 0 || (iYear) % 400 == 0));
+	}
+
 protected:
 	struct EXPORTDECL_WDBASE intTimeRep {
 		char	cCent;
@@ -181,9 +198,16 @@ protected:
 		time_t AsTimeT() const;
 		String AsString() const;
 		bool InitFromTimeT(time_t lTime);
-		// algorithm description can be found at:
-		// http://en.wikipedia.org/wiki/Calculating_the_day_of_the_week
-		int Weekday() const;
+		/*! calculate the day of week where Sunday is day 0, Monday day 1 and so on.
+			An algorithm description can be found at: http://en.wikipedia.org/wiki/Calculating_the_day_of_the_week
+			\return day of week as described by TimeStamp::eWeekday */
+		eWeekday Weekday() const;
+		/*! return the day number beginning at 1 for the first of january
+			\return day number beginning at 1 */
+		int DayOfYear() const;
+		/*! week number calculation according to ISO8601
+			\return number of week in the range 0-53 where 0 means that the week number is the last week number of the last year. If the week number is 53 the last day of the year seems to be either a Thursday or a Friday. */
+		int WeekOfYear() const;
 	} fTimeStruct;
 
 	// internal initializer

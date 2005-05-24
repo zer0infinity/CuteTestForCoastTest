@@ -52,6 +52,8 @@ public:
 	void ModifiersTest();
 	void CtorTest();
 	void WeekdayTest();
+	void DayOfYearTest();
+	void WeekOfYearTest();
 };
 
 #endif

@@ -291,7 +291,7 @@ bool TimeStamp::intTimeRep::IsValidDate() const
 		cHour < 0 || cHour > 23 ||
 		cMin < 0 || cMin > 59 ||
 		cSec < 0 || cSec > 59 ||
-		( 2 == cMonth && cDay > (year % 4 ? 28 : 29)) ||
+		( 2 == cMonth && cDay > ( TimeStamp::IsLeap(year) ? 29 : 28)) ||
 		( (4 == cMonth || 6 == cMonth || 9 == cMonth || 11 == cMonth) && cDay > 30) ) {
 		bRet = false;
 	}
@@ -306,6 +306,8 @@ String TimeStamp::intTimeRep::TraceIntValues() const
 	return result;
 }
 
+// zero fill number
+static char ChrNumbers[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 #define ZFNUM(result, num) if ( num <= 9 ) result.Append('0').Append( ChrNumbers[(int)num] ); else result.Append( ChrNumbers[(num/10)] ).Append( ChrNumbers[(int)num%10] );
 
 String TimeStamp::intTimeRep::AsString() const
@@ -314,8 +316,6 @@ String TimeStamp::intTimeRep::AsString() const
 	Trace("internal values [" << TraceIntValues() << "]");
 	// result has length 14, optimize buffer to hold 14 characters plus 0
 	String result(15);
-	// zero fill number
-	static char ChrNumbers[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 	// assemble string
 	long year = (cCent * 100) + cYear;
 	result.Append(year);
@@ -342,7 +342,7 @@ time_t TimeStamp::intTimeRep::AsTimeT() const
 		lTime += MDAYS[i] * TimeStamp::DAY;
 	}
 	// leap-year adjustment
-	if (cMonth > 2 && 0 == (year % 4)) {
+	if ( cMonth > 2 && TimeStamp::IsLeap(year) ) {
 		Trace("adjusting current leap year");
 		lTime += TimeStamp::DAY;
 	}
@@ -364,10 +364,11 @@ bool TimeStamp::intTimeRep::InitFromTimeT(time_t lTime)
 	cMin = (char)(rem / 60);
 	cSec = rem % 60;
 	long y = 1970;
+	long lYearDays = 0L;
 	// count correct year, very simply
-	while ( days >= ((y % 4) ? 365 : 366)) {
+	while ( days >= ( lYearDays = (TimeStamp::IsLeap(y) ? 366 : 365) ) ) {
 		// could be optimized but runs max about 80 times...
-		days -= ((y % 4) ? 365 : 366);
+		days -= lYearDays;
 		y++;
 	}
 	cCent = y / 100;
@@ -375,7 +376,7 @@ bool TimeStamp::intTimeRep::InitFromTimeT(time_t lTime)
 	// calculate month
 	int i = 0;
 	// Leap Year February Adjust
-#define LYFA(theyear,mindex) ((1==mindex&&(0==theyear%4))?1:0)
+#define LYFA(theyear,mindex) ((1==mindex&&TimeStamp::IsLeap(theyear))?1:0)
 	for (i = 0; i < 12; i ++) {
 		if (days >= MDAYS[i] + LYFA(y, i)) {
 			days -= MDAYS[i] + LYFA(y, i);
@@ -389,18 +390,77 @@ bool TimeStamp::intTimeRep::InitFromTimeT(time_t lTime)
 	return IsValidDate();
 }
 
-int TimeStamp::intTimeRep::Weekday() const
+TimeStamp::eWeekday TimeStamp::intTimeRep::Weekday() const
 {
 	StartTrace(TimeStamp.Weekday);
 	int y = (cCent * 100) + cYear;
-	bool isLeap = ((y) % 4 == 0 && ((y) % 100 != 0 || (y) % 400 == 0));
-	Trace("isleap:" << (isLeap ? "true" : "false"));
+	Trace("isleap:" << (TimeStamp::IsLeap(y) ? "true" : "false"));
 	int DoW = WeekDayCenturyCorrect[cCent-17];
 	DoW += cYear;
 	DoW += (cYear / 4);
-	DoW += (isLeap ? WeekDayMonthCorrectLeap[cMonth-1] : WeekDayMonthCorrectNoLeap[cMonth-1]);
+	DoW += (TimeStamp::IsLeap(y) ? WeekDayMonthCorrectLeap[cMonth-1] : WeekDayMonthCorrectNoLeap[cMonth-1]);
 	DoW += cDay;
 	DoW = (DoW % 7);
 	Trace("DoW:" << DoW);
-	return DoW;
+	return (TimeStamp::eWeekday)DoW;
+}
+
+int TimeStamp::intTimeRep::DayOfYear() const
+{
+	StartTrace(TimeStamp.DayOfYear);
+	int lDay = 0;
+	for (int i = 0; i < cMonth - 1; i++) {
+		lDay += MDAYS[i] + LYFA(cYear, i);
+	}
+	lDay += cDay;
+	return lDay;
+}
+
+int TimeStamp::intTimeRep::WeekOfYear() const
+{
+	StartTrace(TimeStamp.WeekOfYear);
+	long lDayOfYearZ = DayOfYear() - 1L;
+	eWeekday aFirstOfYearDOW = (eWeekday)((((long)Weekday() + 7L) - (lDayOfYearZ % 7L)) % 7);
+	Trace("firstofyearweekday:" << (long)aFirstOfYearDOW);
+
+	// week starts on monday
+	long lDeltaDays = (((long)TimeStamp::eMonday + 7L) - (long)aFirstOfYearDOW) % 7;
+	long lWeek = 1L, lDaysToCalcWeek = lDayOfYearZ;
+	switch (aFirstOfYearDOW) {
+		case TimeStamp::eMonday:
+			break;
+		case TimeStamp::eFriday:
+		case TimeStamp::eSaturday:
+		case TimeStamp::eSunday:
+			lWeek--;
+		case TimeStamp::eTuesday:
+		case TimeStamp::eWednesday:
+		case TimeStamp::eThursday:
+			lDaysToCalcWeek += (7L - lDeltaDays);
+			break;
+		default:
+			break;
+	};
+	Trace("Delta days to monday:" << lDeltaDays);
+	Trace("day of year number:" << lDayOfYearZ + 1L);
+	Trace("days for week calculation:" << lDaysToCalcWeek);
+
+	lWeek += (lDaysToCalcWeek / 7);
+	Trace("unadjusted week number:" << lWeek);
+	if ( lWeek > 52 ) {
+		eWeekday aEndOfYearDOW = (IsLeap(cYear) ? (eWeekday)(((long)aFirstOfYearDOW + 1L) % 7) : aFirstOfYearDOW);
+		Trace("endofyearweekday:" << (long)aEndOfYearDOW);
+		switch (aEndOfYearDOW) {
+			case TimeStamp::eMonday:
+			case TimeStamp::eTuesday:
+			case TimeStamp::eWednesday:
+				lWeek = 1L;
+				Trace("day/week already in new year!");
+				break;
+			default:
+				break;
+		};
+	}
+	Trace("adjusted week number:" << lWeek);
+	return lWeek;
 }
