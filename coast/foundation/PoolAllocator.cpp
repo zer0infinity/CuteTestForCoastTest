@@ -10,10 +10,10 @@
 #include "PoolAllocator.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "ITOString.h"
 #include "MemHeader.h"
 #include "SysLog.h"
 #include "StringStream.h"
+#include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
 #include <stdlib.h>
@@ -279,9 +279,9 @@ l_long PoolAllocator::CurrentlyAllocated()
 
 void PoolAllocator::Refresh()
 {
-	MemTrackStatIfAllocated(fPoolTracker);
+	MemTrackStatIfAllocatedTriggered(PoolAllocator.Refresh, fPoolTracker);
 	MemTrackStillAllocatedException(fPoolTracker, "PoolAllocator::Refresh()");
-	MemTrackStatIfAllocated(fExcessTracker);
+	MemTrackStatIfAllocatedTriggered(PoolAllocator.Refresh, fExcessTracker);
 	MemTrackStillAllocatedException(fExcessTracker, "PoolAllocator::Refresh()");
 
 	if ( !MemTrackStillAllocated(fPoolTracker) ) {
