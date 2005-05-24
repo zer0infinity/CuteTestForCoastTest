@@ -106,17 +106,14 @@ protected:
 #define MemTrackFree(tracker, allocSz) tracker.TrackFree(allocSz)
 #define MemTrackStat(tracker) tracker.PrintStatistic()
 #define MemTrackStatIfAllocated(tracker) if ( tracker.PeakAllocated() > 0 ) tracker.PrintStatistic()
+#define MemTrackStatIfAllocatedTriggered(trigger, tracker) if ( TraceTriggered(trigger, Storage::Global()) ) { if ( tracker.PeakAllocated() > 0 ) tracker.PrintStatistic(); }
 #define MemTrackStillAllocated(tracker)	( tracker.CurrentlyAllocated() > 0 )
 #define MemTrackStillAllocatedException(tracker, where)	if( tracker.CurrentlyAllocated() > 0 )	\
 	{	\
 		SysLog::Error(String("PoolAllocator was still in use! (id: ", Storage::Global()) << tracker.fId << " name [" << NotNull(tracker.fpName) << "]) in " << where); \
 	}
 #define PoolTrackStat(pAlloc) pAlloc->PrintStatistic()
-#define PoolTrackStatTriggered(trigger, pAlloc)	\
-		if ( TraceTriggered(trigger, Storage::Global()) )	\
-		{\
-			 pAlloc->PrintStatistic();	\
-		}
+#define PoolTrackStatTriggered(trigger, pAlloc) if ( TraceTriggered(trigger, Storage::Global()) ) { pAlloc->PrintStatistic(); }
 
 #else
 #define StartTraceMem(scope)
@@ -130,6 +127,7 @@ protected:
 #define MemTrackFree(tracker, allocSz)
 #define MemTrackStat(tracker)
 #define MemTrackStatIfAllocated(tracker)
+#define MemTrackStatIfAllocatedTriggered(trigger, tracker)
 #define MemTrackStillAllocated(tracker)	false
 #define MemTrackStillAllocatedException(tracker, where)
 
