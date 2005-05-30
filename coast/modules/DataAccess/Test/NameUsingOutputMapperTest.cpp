@@ -51,8 +51,8 @@ void NameUsingOutputMapperTest::NonConfiguredDestinationTest()
 
 	DoPut(mapper, c);
 	c.GetTmpStore().Remove("NameUsingMapperTemp"); // remove implementation detail ??
+	c.GetTmpStore().Remove("ResultMapper"); // remove implementation detail ??
 	DoCheck(c.GetTmpStore());
-
 }
 
 //:tests if the data is put into the configured Destination
