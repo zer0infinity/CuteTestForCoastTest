@@ -311,15 +311,15 @@ void ResultMapperTest::testDoSetDestinationSlotDynamically()
 	ResultMapper rm("DynamicStorer");
 
 	// without config
-	assertEquals("Mapper", rm.DoGetDestinationSlot(ctx));
+	assertEquals("Mapper", rm.GetDestinationSlot(ctx));
 
 	// set in tmp-store
 	ctx.GetTmpStore()["DynamicStorer"]["DestinationSlot"] = "Mapper.a.b.c";
-	assertEquals("Mapper.a.b.c", rm.DoGetDestinationSlot(ctx));
+	assertEquals("Mapper.a.b.c", rm.GetDestinationSlot(ctx));
 
 	// with config (overrides dest in tmp store)
 	rm.CheckConfig("ResultMapper");
-	assertEquals("Mapper.foo.bar", rm.DoGetDestinationSlot(ctx));
+	assertEquals("Mapper.foo.bar", rm.GetDestinationSlot(ctx));
 }
 
 void ResultMapperTest::testDoGetDestinationSlotWithPath()
@@ -328,7 +328,7 @@ void ResultMapperTest::testDoGetDestinationSlotWithPath()
 
 	Context ctx;
 	PathTestMapper ptm("");
-	assertEquals("Mapper.x.y.z", ptm.DoGetDestinationSlot(ctx));
+	assertEquals("Mapper.x.y.z", ptm.GetDestinationSlot(ctx));
 
 	// assign first
 	ptm.Put("msg", String("foo"), ctx);
