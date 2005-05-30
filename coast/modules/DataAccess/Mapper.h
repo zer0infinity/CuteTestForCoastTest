@@ -281,18 +281,19 @@ public:
 	virtual bool DoPutStream(const char *key, istream &is, Context &ctx, ROAnything script);
 
 protected:
-	//! defines the name space where to put values, default is "Mapper" in tmpstore.
-	//! May return a "."-separated path, such as x.y.z
-	//! if empty string, tmpstore.key is used directly when calling DoFinalPutAny
+	/*! defines the base name space where to put values into tmpstore, default is "Mapper". May return a "."-separated path, such as x.y.z. If empty string, tmpstore will be used as base.
+		\param ctx the context in which to look for the destination slot
+		\return the name of the slot for later lookup or the empty string */
 	virtual String DoGetDestinationSlot(Context &ctx);
 
 	//! looks up the Anything at kPrefix in Context using Slotfinder
 	virtual void DoGetDestinationAny(const char *key, Anything &targetAny, Context &ctx);
 
-	//! hook for breaking recursion in mapper script interpretation
-	//! store the value in tmpstore under tmp.slot.key, where slot is retrieved with
-	//! DoGetDestinationSlot(). if slot == "", then value is stored under tmp.key directly
-	//! key may NOT be empty (fails otherwise)
+	/*! Hook for breaking recursion in mapper script interpretation. Store the value in tmpstore under tmp.slot.key, where slot is retrieved with GetDestinationSlot(). if slot == "", then value is stored under tmp.key directly key may NOT be empty (fails otherwise).
+		\param key name used to distinguish kind of output
+		\param value value to store
+		\param ctx the context in which to store the value
+		\return true in case we could store away the value */
 	virtual bool DoFinalPutAny(const char *key, Anything value, Context &ctx);
 
 	//! hook for breaking recursion in mapper script interpretation
@@ -315,6 +316,11 @@ protected:
 	virtual ROAnything DoSelectScript(const char *key, ROAnything script, Context &ctx);
 
 private:
+	/*! Calls DoGetDestinationSlot to get the name - or empty string - which will be used as base path in tmpstore. The 'base' path - the one returned here - will be stored in ResultMapper.DestinationSlot for later usage.
+		\param ctx the context in which to look for the destination slot
+		\return the name of the slot for later lookup or the empty string */
+	String GetDestinationSlot(Context &ctx);
+
 	ResultMapper();
 	ResultMapper(const ResultMapper &);
 	ResultMapper &operator=(const ResultMapper &);

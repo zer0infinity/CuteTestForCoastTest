@@ -536,7 +536,20 @@ bool ResultMapper::Put(const char *key, Anything value, Context &ctx)
 {
 	StartTrace(ResultMapper.Put);
 	DAAccessTimer(ResultMapper.Put, key, ctx);
+	// force setting a possibly given DestinationSlot from config into the context
+	// -> this allows sub-mappers, eg executed in script mode, to put into the same slot if not overridden again
+	String path = GetDestinationSlot(ctx);
 	return DoPutAny(key, value, ctx, DoSelectScript(key, fConfig, ctx));
+}
+
+bool ResultMapper::Put(const char *key, istream &is, Context &ctx)
+{
+	StartTrace1(ResultMapper.Put, NotNull(key));
+	DAAccessTimer(ResultMapper.Put, key, ctx);
+	// force setting a possibly given DestinationSlot from config into the context
+	// -> this allows sub-mappers, eg executed in script mode, to put into the same slot if not overridden again
+	String path = GetDestinationSlot(ctx);
+	return DoPutStream(key, is, ctx, DoSelectScript(key, fConfig, ctx));
 }
 
 bool ResultMapper::DoPutAny(const char *key, Anything value, Context &ctx, ROAnything script)
@@ -557,9 +570,6 @@ bool ResultMapper::DoPutAny(const char *key, Anything value, Context &ctx, ROAny
 
 	// now for the scripting case, similar to Renderers
 	TraceAny(script, "Got a script. Starting interpretation foreach slot...");
-	// force setting a possibly given DestinationSlot from config into the context
-	// -> this allows sub-mappers, eg executed in script mode, to put into the same slot if not overridden again
-	String path = DoGetDestinationSlot(ctx);
 
 	bool retval = true;
 	for (long i = 0; retval && i < script.GetSize(); i++) {
@@ -587,12 +597,6 @@ bool ResultMapper::DoPutAny(const char *key, Anything value, Context &ctx, ROAny
 	return retval;
 }
 
-bool ResultMapper::Put(const char *key, istream &is, Context &ctx)
-{
-	StartTrace1(ResultMapper.Put, NotNull(key));
-	return DoPutStream(key, is, ctx, DoSelectScript(key, fConfig, ctx));
-}
-
 bool ResultMapper::DoPutStream(const char *key, istream &is, Context &ctx, ROAnything script)
 {
 	StartTrace1(ResultMapper.DoPutStream, NotNull(key));
@@ -610,6 +614,7 @@ bool ResultMapper::DoPutStream(const char *key, istream &is, Context &ctx, ROAny
 	}
 	// now for the scripting case, similar to Renderers
 	TraceAny(script, "Got a script. Starting interpretation foreach slot...");
+
 	bool retval = true;
 	for (long i = 0; retval && i < script.GetSize(); i++) {
 		String slotname(script.SlotName(i));
@@ -640,7 +645,7 @@ void ResultMapper::DoGetDestinationAny(const char *key, Anything &targetAny, Con
 {
 	StartTrace1(ResultMapper.DoGetDestinationAny, NotNull(key));
 
-	String path = DoGetDestinationSlot(ctx), kPrefix(key);
+	String path = GetDestinationSlot(ctx), kPrefix(key);
 	if (path.Length() > 0 && kPrefix.Length()) {
 		path << "." << kPrefix;
 	} else {
@@ -704,6 +709,15 @@ bool ResultMapper::DoFinalPutStream(const char *key, istream &is, Context &ctx)
 	return DoFinalPutAny(key, strBuf, ctx);
 }
 
+String ResultMapper::GetDestinationSlot(Context &ctx)
+{
+	StartTrace1(ResultMapper.GetDestinationSlot, "fName [" << fName << "]");
+	String strRet = DoGetDestinationSlot(ctx);
+	Trace("destination slot is [" << strRet << "]");
+	ctx.GetTmpStore()["ResultMapper"]["DestinationSlot"] = strRet;
+	return strRet;
+}
+
 String ResultMapper::DoGetDestinationSlot(Context &ctx)
 {
 	StartTrace1(ResultMapper.DoGetDestinationSlot, "fName [" << fName << "]");
@@ -717,7 +731,6 @@ String ResultMapper::DoGetDestinationSlot(Context &ctx)
 	}
 	String strRet(!roaDest.IsNull() ? roaDest.AsCharPtr() : "Mapper", Storage::Current());
 	Trace("destination slot is [" << strRet << "]");
-	ctx.GetTmpStore()["ResultMapper"]["DestinationSlot"] = strRet;
 	return strRet;
 }
 
