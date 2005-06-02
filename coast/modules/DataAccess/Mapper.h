@@ -13,8 +13,6 @@
 #include "Context.h"
 #include "WDModule.h"
 
-#define HIERARCH_MAPPERS
-
 class Registry;
 
 //---- MappersModule -----------------------------------------------------------
@@ -29,11 +27,7 @@ public:
 	virtual bool Finis();
 };
 //----------------------- ParameterMapper aka ParameterMapper --------------------
-#if defined(HIERARCH_MAPPERS)
 class EXPORTDECL_DATAACCESS ParameterMapper : public HierarchConfNamed
-#else
-class EXPORTDECL_DATAACCESS ParameterMapper : public ConfNamedObject
-#endif
 {
 public:
 	ParameterMapper(const char *name);
@@ -193,11 +187,7 @@ This Mapper supports behavior configuration. Put the following into OutputMapper
 	/AppendAnyAlways		long		optional, default 0, if set to value != 0 Put(key, Anything) will always append the given Anything at slot key. Otherways the Anything will only be appended when the slot already exists.
 }</PRE>
 */
-#if defined(HIERARCH_MAPPERS)
 class EXPORTDECL_DATAACCESS ResultMapper : public HierarchConfNamed
-#else
-class EXPORTDECL_DATAACCESS ResultMapper : public ConfNamedObject
-#endif
 {
 public:
 	ResultMapper(const char *name);
@@ -268,8 +258,10 @@ public:
 
 	//! major hook for subclasses that want to do something with their config passed as script
 	//! default is to interpret the script and place value for every script item used
-	//! recursion stopped by DoFinalPutAny that places value under slot key under slot given DoGetDestinationSlot()
+	//! recursion stopped by DoFinalPutAny that places value under slot key under slot given GetDestinationSlot()
 	virtual bool DoPutAny(const char *key, Anything value, Context &ctx, ROAnything script);
+
+	virtual bool DoPutAnyWithSlotname(const char *key, Anything value, Context &ctx, ROAnything roaScript, const char *slotname);
 
 	//! reads from istream is values according to key
 	//! Clients use this method to let the mapper read values associated with the key directly from a istream
@@ -283,8 +275,9 @@ public:
 protected:
 	/*! defines the base name space where to put values into tmpstore, default is "Mapper". May return a "."-separated path, such as x.y.z. If empty string, tmpstore will be used as base.
 		\param ctx the context in which to look for the destination slot
+		\param pcDefault default value to return if we could not find a name either within mappers config or within context
 		\return the name of the slot for later lookup or the empty string */
-	virtual String DoGetDestinationSlot(Context &ctx);
+	virtual String DoGetDestinationSlot(Context &ctx, const char *pcDefault);
 
 	//! looks up the Anything at kPrefix in Context using Slotfinder
 	virtual void DoGetDestinationAny(const char *key, Anything &targetAny, Context &ctx);
@@ -374,7 +367,7 @@ public:
 	}
 
 protected:
-	String DoGetDestinationSlot(Context &ctx) {
+	String DoGetDestinationSlot(Context &ctx, const char *pcDefault) {
 		return "";
 	}
 

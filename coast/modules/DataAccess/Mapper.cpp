@@ -35,13 +35,8 @@ bool MappersModule::Init(const Anything &config)
 	if (config.IsDefined("Mappers")) {
 		Anything mappers(config["Mappers"]);
 
-#if defined(HIERARCH_MAPPERS)
 		HierarchyInstaller ai1("ParameterMapper");
 		HierarchyInstaller ai2("ResultMapper");
-#else
-		AliasInstaller ai1("ParameterMapper");
-		AliasInstaller ai2("ResultMapper");
-#endif
 		bool ret = RegisterableObject::Install(mappers["Input"], "ParameterMapper", &ai1);
 		return RegisterableObject::Install(mappers["Output"], "ResultMapper", &ai2) && ret;
 	}
@@ -72,11 +67,7 @@ RegisterParameterMapperAlias(Mapper, ParameterMapper);
 RegCacheImpl(ParameterMapper);
 
 ParameterMapper::ParameterMapper(const char *name)
-#if defined(HIERARCH_MAPPERS)
 	: HierarchConfNamed(name)
-#else
-	: ConfNamedObject(name)
-#endif
 {
 }
 
@@ -94,12 +85,7 @@ bool ParameterMapper::DoLoadConfig(const char *category)
 	StartTrace(ParameterMapper.DoLoadConfig);
 	Trace("category: " << category << " fName: " << fName);
 
-#if defined(HIERARCH_MAPPERS)
-	if ( HierarchConfNamed::DoLoadConfig(category) && fConfig.IsDefined(fName) )
-#else
-	if ( ConfNamedObject::DoLoadConfig(category) && fConfig.IsDefined(fName) )
-#endif
-	{
+	if ( HierarchConfNamed::DoLoadConfig(category) && fConfig.IsDefined(fName) ) {
 		Trace("Meta-file for " << category << " found. Extracting config for " << fName);
 		// mappers use only a subset of the whole configuration file
 		fConfig = fConfig[fName];
@@ -431,11 +417,7 @@ RegisterResultMapperAlias(Mapper, ResultMapper);
 RegCacheImpl(ResultMapper);	// FindResultMapper()
 
 ResultMapper::ResultMapper(const char *name)
-#if defined(HIERARCH_MAPPERS)
 	: HierarchConfNamed(name)
-#else
-	: ConfNamedObject(name)
-#endif
 {
 }
 
@@ -466,12 +448,7 @@ bool ResultMapper::DoLoadConfig(const char *category)
 	StartTrace(ResultMapper.DoLoadConfig);
 	Trace("category: " << category << " fName: " << fName);
 
-#if defined(HIERARCH_MAPPERS)
-	if ( HierarchConfNamed::DoLoadConfig(category) && fConfig.IsDefined(fName) )
-#else
-	if ( ConfNamedObject::DoLoadConfig(category) && fConfig.IsDefined(fName) )
-#endif
-	{
+	if ( HierarchConfNamed::DoLoadConfig(category) && fConfig.IsDefined(fName) ) {
 		TraceAny(fConfig, "fConfig before: ");
 		// mappers use only a subset of the whole configuration file
 		fConfig = fConfig[fName];
@@ -536,9 +513,6 @@ bool ResultMapper::Put(const char *key, Anything value, Context &ctx)
 {
 	StartTrace(ResultMapper.Put);
 	DAAccessTimer(ResultMapper.Put, key, ctx);
-	// force setting a possibly given DestinationSlot from config into the context
-	// -> this allows sub-mappers, eg executed in script mode, to put into the same slot if not overridden again
-	String path = GetDestinationSlot(ctx);
 	return DoPutAny(key, value, ctx, DoSelectScript(key, fConfig, ctx));
 }
 
@@ -546,98 +520,115 @@ bool ResultMapper::Put(const char *key, istream &is, Context &ctx)
 {
 	StartTrace1(ResultMapper.Put, NotNull(key));
 	DAAccessTimer(ResultMapper.Put, key, ctx);
-	// force setting a possibly given DestinationSlot from config into the context
-	// -> this allows sub-mappers, eg executed in script mode, to put into the same slot if not overridden again
-	String path = GetDestinationSlot(ctx);
 	return DoPutStream(key, is, ctx, DoSelectScript(key, fConfig, ctx));
 }
 
 bool ResultMapper::DoPutAny(const char *key, Anything value, Context &ctx, ROAnything script)
 {
 	StartTrace1(ResultMapper.DoPutAny, NotNull(key));
+	bool retval = true;
+
+	// force setting a possibly given DestinationSlot from config into the context
+	// -> this allows sub-mappers, eg executed in script mode, to put into the same slot if not overridden again
+	Anything anyPath;
+	anyPath["ResultMapper"]["DestinationSlot"] = GetDestinationSlot(ctx);
+	Context::PushPopEntry aEntry(ctx, "DestSlotMarker", anyPath);
 
 	if (script.IsNull() || script.GetSize() == 0) {
 		// no more script to run
 		Trace("Script is empty or null...");
-		return DoFinalPutAny(key, value, ctx);
-	}
-
-	if (script.GetType() != Anything::eArray) {
+		retval = DoFinalPutAny(key, value, ctx);
+	} else if (script.GetType() != Anything::eArray) {
 		// we found a simple value in script use it as a new key in final put
 		Trace("Script is a simple value:" << script.AsString());
-		return DoFinalPutAny(script.AsCharPtr(key), value, ctx);
-	}
+		retval = DoFinalPutAny(script.AsCharPtr(key), value, ctx);
+	} else {
+		// now for the scripting case, similar to Renderers
+		TraceAny(script, "Got a script. Starting interpretation foreach slot...");
 
-	// now for the scripting case, similar to Renderers
-	TraceAny(script, "Got a script. Starting interpretation foreach slot...");
-
-	bool retval = true;
-	for (long i = 0; retval && i < script.GetSize(); i++) {
-		String slotname(script.SlotName(i));
-		ResultMapper *m;
-		if (slotname.Length() <= 0) {
-			Trace("Anonymous slot, call myself again with script[" << i << "]");
-			retval = DoPutAny(key, value, ctx, script[i]);
-		} else if ((m = ResultMapper::FindResultMapper(slotname))) {
-			Trace("Slotname equals mapper: " << slotname);
-			if (script[i].IsNull()) {
-				// fallback to mappers original config
-				Trace("Slotval is null. Calling " << slotname << " with it's default config...");
-				retval = m->DoPutAny(key, value, ctx, m->DoSelectScript(key, m->fConfig, ctx));
+		for (long i = 0; retval && i < script.GetSize(); i++) {
+			String slotname(script.SlotName(i));
+			ResultMapper *m;
+			ROAnything roaScript(script[i]);
+			if (slotname.Length() <= 0) {
+				Trace("Anonymous slot, call myself again with script[" << i << "]");
+				retval = DoPutAny(key, value, ctx, roaScript);
+			} else if ((m = ResultMapper::FindResultMapper(slotname))) {
+				Trace("Slotname equals mapper: " << slotname);
+				if ( roaScript.IsNull() ) {
+					// fallback to mappers original config
+					Trace("Calling " << slotname << " with it's default config...");
+					retval = m->Put(key, value, ctx);
+				} else {
+					Trace("Calling " << slotname << " with script[" << i << "][\"" << NotNull(key) << "\"]...");
+					retval = m->DoPutAny(key, value, ctx, m->DoSelectScript(key, roaScript, ctx));
+				}
 			} else {
-				Trace("Calling " << slotname << " with script[" << i << "][\"" << NotNull(key) << "\"]...");
-				retval = m->DoPutAny(key, value, ctx, m->DoSelectScript(key, script[i], ctx));
+				Trace("Using slotname [" << slotname << "] as new key (not a mapper)");
+				retval = DoPutAnyWithSlotname(key, value, ctx, roaScript, slotname);
 			}
-		} else {
-			Trace("Slotname " << slotname << " is not a mapper (not found).");
-			Trace("Using slot as new key and call myself again with script[" << i << "]");
-			retval = DoPutAny(slotname, value, ctx, script[i]);
 		}
 	}
+	// store the base destination slot in temp store now
+	ctx.GetTmpStore()["ResultMapper"]["DestinationSlot"] = anyPath["ResultMapper"]["DestinationSlot"].AsString();
 	return retval;
+}
+
+bool ResultMapper::DoPutAnyWithSlotname(const char *key, Anything value, Context &ctx, ROAnything roaScript, const char *slotname)
+{
+	StartTrace1(ResultMapper.DoPutAnyWithSlotname, "key [" << NotNull(key) << "] slotname [" << NotNull(slotname) << "]");
+	Trace("Using slotname [" << slotname << "] as new key (not a mapper)");
+	return DoPutAny(slotname, value, ctx, roaScript);
 }
 
 bool ResultMapper::DoPutStream(const char *key, istream &is, Context &ctx, ROAnything script)
 {
 	StartTrace1(ResultMapper.DoPutStream, NotNull(key));
+	bool retval = true;
+
+	// force setting a possibly given DestinationSlot from config into the context
+	// -> this allows sub-mappers, eg executed in script mode, to put into the same slot if not overridden again
+	Anything anyPath;
+	anyPath["ResultMapper"]["DestinationSlot"] = GetDestinationSlot(ctx);
+	Context::PushPopEntry aEntry(ctx, "DestSlotMarker", anyPath);
 
 	if (script.IsNull() || script.GetSize() == 0) {
 		// no more script to run
 		Trace("Script is empty or null...");
-		return DoFinalPutStream(key, is, ctx);
-	}
-
-	if (script.GetType() != Anything::eArray) {
+		retval = DoFinalPutStream(key, is, ctx);
+	} else if (script.GetType() != Anything::eArray) {
 		// we found a simple value in script use it as a new key in final put
 		Trace("Script is a simple value:" << script.AsString());
-		return DoFinalPutStream(script.AsCharPtr(key), is, ctx);
-	}
-	// now for the scripting case, similar to Renderers
-	TraceAny(script, "Got a script. Starting interpretation foreach slot...");
+		retval = DoFinalPutStream(script.AsCharPtr(key), is, ctx);
+	} else {
+		// now for the scripting case, similar to Renderers
+		TraceAny(script, "Got a script. Starting interpretation foreach slot...");
 
-	bool retval = true;
-	for (long i = 0; retval && i < script.GetSize(); i++) {
-		String slotname(script.SlotName(i));
-		ResultMapper *m;
-		if (slotname.Length() <= 0) {
-			Trace("Anonymous slot, call myself again with script[" << i << "]");
-			retval = DoPutStream(key, is, ctx, script[i]);
-		} else if ((m = ResultMapper::FindResultMapper(slotname))) {
-			Trace("Slotname equals mapper: " << slotname);
-			if (script[i].IsNull()) {
-				// fallback to mappers original config
-				Trace("Slotval is null. Calling " << slotname << " with it's default config...");
-				retval = m->DoPutStream(key, is, ctx, m->DoSelectScript(key, m->fConfig, ctx));
+		for (long i = 0; retval && i < script.GetSize(); i++) {
+			String slotname(script.SlotName(i));
+			ResultMapper *m;
+			ROAnything roaScript(script[i]);
+			if (slotname.Length() <= 0) {
+				Trace("Anonymous slot, call myself again with script[" << i << "]");
+				retval = DoPutStream(key, is, ctx, roaScript);
+			} else if ((m = ResultMapper::FindResultMapper(slotname))) {
+				Trace("Slotname equals mapper: " << slotname);
+				if ( roaScript.IsNull() ) {
+					// fallback to mappers original config
+					Trace("Calling " << slotname << " with it's default config...");
+					retval = m->Put(key, is, ctx);
+				} else {
+					Trace("Calling " << slotname << " with script[" << i << "][\"" << NotNull(key) << "\"]");
+					retval = m->DoPutStream(key, is, ctx, m->DoSelectScript(key, roaScript, ctx));
+				}
 			} else {
-				Trace("Calling " << slotname << " with script[" << i << "][\"" << NotNull(key) << "\"]");
-				retval = m->DoPutStream(key, is, ctx, m->DoSelectScript(key, script[i], ctx));
+				Trace("Using slotname [" << slotname << "] as new key (not a mapper)");
+				retval = DoPutStream(slotname, is, ctx, roaScript);
 			}
-		} else {
-			Trace("Slotname " << slotname << " is not a mapper (not found).");
-			Trace("Using slot as new key and call myself again with script[" << i << "]");
-			retval = DoPutStream(slotname, is, ctx, script[i]);
 		}
 	}
+	// store the base destination slot in temp store now
+	ctx.GetTmpStore()["ResultMapper"]["DestinationSlot"] = anyPath["ResultMapper"]["DestinationSlot"].AsString();
 	return retval;
 }
 
@@ -653,7 +644,7 @@ void ResultMapper::DoGetDestinationAny(const char *key, Anything &targetAny, Con
 	}
 	Anything conf;
 	conf["Slot"] = path;
-	Trace("Path for slotfinder: " << path);
+	Trace("Path for slotfinder: [" << path << "]");
 
 	if (path.Length() > 0) {
 		SlotFinder::Operate(ctx.GetTmpStore(), targetAny, conf);
@@ -712,15 +703,18 @@ bool ResultMapper::DoFinalPutStream(const char *key, istream &is, Context &ctx)
 String ResultMapper::GetDestinationSlot(Context &ctx)
 {
 	StartTrace1(ResultMapper.GetDestinationSlot, "fName [" << fName << "]");
-	String strRet = DoGetDestinationSlot(ctx);
-	Trace("destination slot is [" << strRet << "]");
-	ctx.GetTmpStore()["ResultMapper"]["DestinationSlot"] = strRet;
-	return strRet;
+	const char *pcDefault = "Mapper";
+	// get current Destination slot if any
+	const char *pcCurrent = ctx.Lookup("ResultMapper.DestinationSlot", pcDefault);
+	// keep the current destination slot if it is not overridden
+	String strDestSlot = DoGetDestinationSlot(ctx, pcCurrent);
+	Trace("destination slot is [" << strDestSlot << "]");
+	return strDestSlot;
 }
 
-String ResultMapper::DoGetDestinationSlot(Context &ctx)
+String ResultMapper::DoGetDestinationSlot(Context &ctx, const char *pcDefault)
 {
-	StartTrace1(ResultMapper.DoGetDestinationSlot, "fName [" << fName << "]");
+	StartTrace1(ResultMapper.DoGetDestinationSlot, "fName [" << fName << "] default value [" << pcDefault << "]");
 	ROAnything roaDest;
 	String slotnamename(fName, Storage::Current());
 	slotnamename.Append(".DestinationSlot");
@@ -729,9 +723,9 @@ String ResultMapper::DoGetDestinationSlot(Context &ctx)
 		Trace("doing ctx.Lookup on [" << slotnamename << "]");
 		ctx.Lookup(slotnamename, roaDest);
 	}
-	String strRet(!roaDest.IsNull() ? roaDest.AsCharPtr() : "Mapper", Storage::Current());
-	Trace("destination slot is [" << strRet << "]");
-	return strRet;
+	String strDestSlot = (!roaDest.IsNull() ? roaDest.AsCharPtr() : pcDefault);
+	Trace("destination slot is [" << strDestSlot << "]");
+	return strDestSlot;
 }
 
 // -------------------------- EagerResultMapper -------------------------
