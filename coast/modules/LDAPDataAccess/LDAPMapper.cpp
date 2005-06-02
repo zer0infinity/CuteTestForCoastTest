@@ -302,8 +302,8 @@ bool LDAPModifyValsMapper::DoGetAny(const char *key, Anything &value, Context &c
 							{
 								OStringStream os(&modifyVal);
 								os << flush;
-								const char *key = tempval[m]["Map"].SlotName(0L);
-								ParameterMapper::DoGetStream(key, os, ctx, tempval[m]["Map"]);
+								const char *newkey = tempval[m]["Map"].SlotName(0L);
+								ParameterMapper::DoGetStream(newkey, os, ctx, tempval[m]["Map"]);
 							}
 							value[i]["Values"][m] = modifyVal;
 						} else {
@@ -326,30 +326,6 @@ bool LDAPModifyValsMapper::DoGetAny(const char *key, Anything &value, Context &c
 		retVal = false;
 	}
 	return retVal;
-}
-
-//---- LDAPListMapper ------------------------------------------------------------------------
-RegisterResultMapper(LDAPListMapper);
-LDAPListMapper::LDAPListMapper(const char *name): ResultMapper(name)
-{
-}
-
-IFAObject *LDAPListMapper::Clone() const
-{
-	return new LDAPListMapper(fName);
-}
-
-bool LDAPListMapper::DoFinalPutAny(const char *key, Anything value, Context &ctx)
-{
-	StartTrace1(LDAPListMapper.DoFinalPutAny, "Key: " << key);
-
-	if ( key ) {
-		Anything tmpStore(ctx.GetTmpStore());
-		tmpStore["Mapper"][key].Append(value); //FIXME: should use DoGetDestinationSlot()
-
-		return true;
-	}
-	return false;
 }
 
 //---- LDAPListWithPrimaryKeyMapper ------------------------------------------------------------------------

@@ -46,7 +46,7 @@ class EXPORTDECL_LDAP LDAPQueryMapper: public ParameterMapper
 {
 public:
 	LDAPQueryMapper(const char *name);
-//	virtual ~LDAPQueryMapper();
+	virtual ~LDAPQueryMapper() {}
 
 	IFAObject *Clone() const;
 
@@ -85,12 +85,11 @@ class EXPORTDECL_LDAP LDAPDNameMapper: public ParameterMapper
 {
 public:
 	LDAPDNameMapper(const char *name);
-//	virtual ~LDAPDNameMapper();
+	virtual ~LDAPDNameMapper() {}
 
 	IFAObject *Clone() const;
 
 public:
-
 	//--- Conversion interface called by TRX to get data
 	//! pulls out an ostream according to key
 	//! Clients use this method to pull out an ostream value with name key from the Mapper
@@ -118,7 +117,7 @@ class EXPORTDECL_LDAP LDAPParamMapper: public EagerParameterMapper
 {
 public:
 	LDAPParamMapper(const char *name);
-//	virtual ~LDAPParamMapper();
+	virtual ~LDAPParamMapper() {}
 
 	IFAObject *Clone() const;
 
@@ -143,7 +142,7 @@ class EXPORTDECL_LDAP LDAPModifyValsMapper: public EagerParameterMapper
 {
 public:
 	LDAPModifyValsMapper(const char *name);
-//	virtual ~LDAPModifyValsMapper();
+	virtual ~LDAPModifyValsMapper() {}
 
 	IFAObject *Clone() const;
 
@@ -162,47 +161,6 @@ private:
 	LDAPModifyValsMapper();
 	LDAPModifyValsMapper(const LDAPModifyValsMapper &);
 	LDAPModifyValsMapper &operator=(const LDAPModifyValsMapper &);
-};
-
-//---- LDAPListMapper -------------------------------------------------------------------
-//! <b>Store results list without transformation</b>
-//!	prepares output into context tmpstore data as list of records
-//! {
-//!		/MapperName {
-//!			{
-//!				/key0	value0
-//!				/key1	value1
-//!				...
-//!			}
-//!			{
-//!				/key0	value0
-//!				/key1	value1
-//!				...
-//!			}
-//!			...
-//!		}
-//!	}
-class EXPORTDECL_LDAP LDAPListMapper : public ResultMapper
-{
-public:
-	LDAPListMapper(const char *name);
-
-	IFAObject *Clone() const;			//!support for prototype
-
-protected:
-	//--- Conversion interface called by TRX to put data
-	//! pulls out an Anything according to key
-	//! Clients use this method to put data from Dataaccess source to context
-	//! \param key the name defines kind of value to put
-	//! \param value the value to be mapped and put to context
-	//! \param ctx the thread context of the invocation
-	//! \return returns true if the mapping was successful otherwise false
-	virtual bool DoFinalPutAny(const char *key, Anything value, Context &ctx);
-
-private:
-	LDAPListMapper();
-	LDAPListMapper(const LDAPListMapper &);
-	LDAPListMapper &operator=(const LDAPListMapper &);
 };
 
 //! <b>special mapper tranforming list into map</b>
@@ -250,7 +208,7 @@ protected:
 
 private:
 	LDAPListWithPrimaryKeyMapper();
-	LDAPListWithPrimaryKeyMapper(const LDAPListMapper &);
+	LDAPListWithPrimaryKeyMapper(const LDAPListWithPrimaryKeyMapper &);
 	LDAPListWithPrimaryKeyMapper &operator=(const LDAPListWithPrimaryKeyMapper &);
 };
 
