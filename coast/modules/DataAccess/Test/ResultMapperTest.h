@@ -23,7 +23,7 @@ public:
 	}
 
 protected:
-	String DoGetDestinationSlot(Context &ctx) {
+	String DoGetDestinationSlot(Context &ctx, const char *pcDefault) {
 		return "Mapper.x.y.z";
 	}
 
