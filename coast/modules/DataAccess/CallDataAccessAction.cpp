@@ -43,13 +43,9 @@ bool CallDataAccessAction::DoExecAction(String &action, Context &ctx, const ROAn
 	}
 
 	Anything params = config["Parameters"].DeepClone();
-	ctx.PushStore("ActionParameters", params);
+	Context::PushPopEntry aEntry(ctx, "ActionParameters", params);
 
 	Trace("DataAccess to perform : " << dataAccessName);
 	DataAccess da(dataAccessName);
-	bool result = da.StdExec(ctx);
-
-	String storeName;
-	ctx.PopStore(storeName);
-	return result;
+	return da.StdExec(ctx);
 }

@@ -58,12 +58,8 @@ void SimpleDataAccessService::DoHandleService(ostream &reply, Context &ctx)
 			Anything mapinfo = tmpStore["Mapper"];
 
 			if (mapinfo.IsDefined("HTTPStatus")) {
-				const char *TEMP_KEY = "TmpHTTPStatus";
-				ctx.PushStore(TEMP_KEY, mapinfo);
+				Context::PushPopEntry aEntry(ctx, "TmpHTTPStatus", mapinfo);
 				RequestProcessor::RenderProtocolStatus(reply, ctx);
-				String key;
-				ctx.PopStore(key);
-				Assert(key == TEMP_KEY);
 			} else {
 				Trace("no HTTPStatus");
 			}

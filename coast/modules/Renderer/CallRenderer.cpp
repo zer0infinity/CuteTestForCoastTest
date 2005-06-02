@@ -34,10 +34,8 @@ void CallRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &con
 		params = DoGetPositionalParameters(ctx, config);
 		callee = IntGetCallee(ctx, config[0L]);
 	}
-	String storeName("CallRenderer");
-	ctx.PushStore(storeName, params);
+	Context::PushPopEntry aEntry(ctx, "CallRenderer", params);
 	Renderer::Render(reply, ctx, callee);
-	ctx.PopStore(storeName);
 }
 
 ROAnything CallRenderer::IntGetCallee(Context &ctx, ROAnything callee)

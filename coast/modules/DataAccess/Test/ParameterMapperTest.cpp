@@ -103,7 +103,7 @@ void ParameterMapperTest::testDoFinalGetAny()
 	Anything res, store;
 	store["aKey"] = "a";
 	Context ctx;
-	ctx.PushStore("test", store);
+	Context::PushPopEntry aEntry(ctx, "test", store);
 
 	t_assert(pm.DoFinalGetAny("aKey", res, ctx));
 	t_assert(res.AsString().IsEqual("a"));
@@ -118,7 +118,7 @@ void ParameterMapperTest::testDoFinalGetStream()
 	Anything store, res;
 	store["aKey"] = "a";
 	Context ctx;
-	ctx.PushStore("test", store);
+	Context::PushPopEntry aEntry(ctx, "test", store);
 	OStringStream os;
 
 	// Default implementation gets value of key from context
@@ -137,7 +137,7 @@ void ParameterMapperTest::testDoGetAny()
 	Anything store, res, exp;
 	store["aKey"] = "a";
 	Context ctx;
-	ctx.PushStore("test", store);
+	Context::PushPopEntry aEntry(ctx, "test", store);
 	ParameterMapper pm("");
 
 	// --- 1. Mapper without script (i.e. script == empty)
@@ -203,7 +203,7 @@ void ParameterMapperTest::testDoGetStream()
 	Anything store, res;
 	store["aKey"] = "a";
 	Context ctx;
-	ctx.PushStore("test", store);
+	Context::PushPopEntry aEntry(ctx, "test", store);
 	ParameterMapper pm("");
 	OStringStream os;
 
@@ -224,7 +224,7 @@ void ParameterMapperTest::testGet()
 	store["aKey"]["foo"] = "bar";
 	store["aKey"]["hello"] = "world";
 	Context ctx;
-	ctx.PushStore("test", store);
+	Context::PushPopEntry aEntry(ctx, "test", store);
 	ParameterMapper pm("ParameterMapperTest");
 	pm.CheckConfig("ParameterMapper");
 	String s;
@@ -282,7 +282,7 @@ void ParameterMapperTest::testEagerGet()
 	store["someKey"] = "!";
 	store["anotherKey"] = "?";
 	Context ctx;
-	ctx.PushStore("test", store);
+	Context::PushPopEntry aEntry(ctx, "test", store);
 	OStringStream os;
 	String str;
 

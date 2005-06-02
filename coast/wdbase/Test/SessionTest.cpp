@@ -465,7 +465,7 @@ void SessionTest::CheckRoleExchangeTest()
 	StartTrace(SessionTest.CheckRoleExchangeTest);
 
 	Context theCtx;
-	theCtx.PushStore("fConfig", fConfig);
+	Context::PushPopEntry aEntry(theCtx, "fConfig", fConfig);
 
 	STTestSession s("dummysession", theCtx);
 
@@ -475,8 +475,6 @@ void SessionTest::CheckRoleExchangeTest()
 
 	IntCheckRoleExchange("RTGuest", "Role", "Blah", s, theCtx, false);
 	IntCheckRoleExchange("Role", "RTCustomer", "Logoff", s, theCtx, false);
-
-	theCtx.Pop();
 }
 
 Test *SessionTest::suite ()
