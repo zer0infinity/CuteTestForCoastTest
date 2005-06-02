@@ -50,13 +50,8 @@ void StreamTransferMapper::PutResponseLineAndHeader(ostream &os, Context &ctx)
 	if (mapinfo.IsDefined("HTTPStatus")) {
 		// only create output if the body really is defined, otherwise the
 		// data access already took care, if this is ok has to be determined
-		const char *TEMP_KEY = "TmpHTTPStatus";
-		ctx.PushStore(TEMP_KEY, mapinfo);
+		Context::PushPopEntry aEntry(ctx, "TmpHTTPStatus", mapinfo);
 		RequestProcessor::RenderProtocolStatus(os, ctx);
-		String key;
-		ctx.PopStore(key);
-		Assert(key == TEMP_KEY);
-
 		mapinfo.Remove("HTTPStatus");
 	} else {
 		Trace("no HTTPStatus");
