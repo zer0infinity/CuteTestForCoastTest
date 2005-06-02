@@ -49,7 +49,7 @@
 		/LDAPSizeLimit	2000	# result size limit
 		/LDAPScope		"subtree"
 	}
-	# Returns one data entry (Anything) -> LDAPListMapper
+	# Returns one data entry (Anything)
 	/TestDA5Action %TestDA5
 	/TestDA5
 	{
