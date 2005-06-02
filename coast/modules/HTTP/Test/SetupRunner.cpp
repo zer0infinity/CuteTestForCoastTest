@@ -13,13 +13,11 @@
 
 //--- test cases ---------------------------------------------------------------
 #include "NewRendererTest.h"
-#include "HTTPHeaderRendererTest.h"
 #include "BasicAuthenticationDataTest.h"
 
 void setupRunner(TestRunner &runner)
 {
 	// add a whole suite with the ADD_SUITE(runner,"Suites's Classname") macro
-	ADD_SUITE(runner, HTTPHeaderRendererTest);
 	ADD_SUITE(runner, NewRendererTest);
 	ADD_SUITE(runner, BasicAuthenticationDataTest);
 }
