@@ -37,11 +37,9 @@ public:
 	//!deletes the environment for this test
 	void tearDown ();
 
-	//!describe this testcase
 	void SimpleHeaderTest();
-	//!describe this testcase
+	void SetCookieTest();
 	void MultiPartHeaderTest();
-	//!describe this testcase
 	void PartHeaderTest();
 
 protected:

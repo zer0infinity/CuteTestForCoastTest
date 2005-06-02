@@ -136,6 +136,96 @@ void MIMEHeaderTest::SimpleHeaderTest()
 
 }
 
+void MIMEHeaderTest::SetCookieTest()
+{
+	StartTrace(MIMEHeaderTest.SetCookieTest);
+
+	String testinput;
+	Anything result;
+
+	// test a simple header
+	testinput =
+		"Connection: Keep-Alive\r\n"
+		"User-Agent: Mozilla/4.7 [en] (WinNT; U)\r\n"
+		"Host: sentosa.hsr.ch:2929\r\n"
+		"Set-Cookie: Test1=test_value1; expires=Sat, 01-Jan-2001 01:01:01 GMT; path=/;\r\n"
+		"Set-Cookie: Test2=test_value2; expires=Sat, 02-Jan-2002 02:02:02 GMT; path=/;\r\n"
+		"Set-Cookie: Test3=test_value3; expires=Sat, 03-Jan-2003 03:03:03 GMT; path=/;\r\n"
+		"\r\n";
+	Trace("TestInput: <" << testinput << ">");
+	result["CONNECTION"] = "Keep-Alive";
+	result["USER-AGENT"] = "Mozilla/4.7 [en] (WinNT; U)";
+	result["HOST"] = "sentosa.hsr.ch:2929";
+	result["SET-COOKIE"][0L] = "Test1=test_value1; expires=Sat, 01-Jan-2001 01:01:01 GMT; path=/;";
+	result["SET-COOKIE"][1L] = "Test2=test_value2; expires=Sat, 02-Jan-2002 02:02:02 GMT; path=/;";
+	result["SET-COOKIE"][2L] = "Test3=test_value3; expires=Sat, 03-Jan-2003 03:03:03 GMT; path=/;";
+
+	{
+		MIMEHeader mh;
+		StringStream is(testinput);
+
+		// basic checks of success
+		t_assertm(mh.DoReadHeader(is), "expected header parsing to succeed");
+
+		// sanity checks
+		t_assertm(mh.IsMultiPart() == false, "expected no multipart");
+		t_assertm(mh.GetBoundary().Length() == 0, "expected no multipart seperator");
+		t_assertm(mh.GetContentLength() == -1, "expected -1, since field is not set");
+		assertEqualm("", mh.Lookup("NotThere", ""), "expected 'NotThere' to be emtpy");
+
+		assertAnyEqual(result, mh.GetInfo());
+	}
+	{
+		MIMEHeader mh(URLUtils::eUpshift, MIMEHeader::eDoNotSplitHeaderFields);
+		StringStream is(testinput);
+
+		// basic checks of success
+		t_assertm(mh.DoReadHeader(is), "expected header parsing to succeed");
+
+		// sanity checks
+		t_assertm(mh.IsMultiPart() == false, "expected no multipart");
+		t_assertm(mh.GetBoundary().Length() == 0, "expected no multipart seperator");
+		t_assertm(mh.GetContentLength() == -1, "expected -1, since field is not set");
+		assertEqualm("", mh.Lookup("NotThere", ""), "expected 'NotThere' to be emtpy");
+
+		assertAnyEqual(result, mh.GetInfo());
+	}
+
+	Anything result1;
+	// test a simple header
+	testinput =
+		"Connection: Keep-Alive\r\n"
+		"User-Agent: Mozilla/4.7 [en] (WinNT; U)\r\n"
+		"Host: sentosa.hsr.ch:2929\r\n"
+		"Set-Cookie2: Test1=test_value1; expires=Sat, 01-Jan-2001 01:01:01 GMT; path=/;\r\n"
+		"Set-Cookie2: Test2=test_value2; expires=Sat, 02-Jan-2002 02:02:02 GMT; path=/;\r\n"
+		"Set-Cookie2: Test3=test_value3; expires=Sat, 03-Jan-2003 03:03:03 GMT; path=/;\r\n"
+		"\r\n";
+	Trace("TestInput: <" << testinput << ">");
+	result1["CONNECTION"] = "Keep-Alive";
+	result1["USER-AGENT"] = "Mozilla/4.7 [en] (WinNT; U)";
+	result1["HOST"] = "sentosa.hsr.ch:2929";
+	result1["SET-COOKIE2"][0L] = "Test1=test_value1; expires=Sat, 01-Jan-2001 01:01:01 GMT; path=/;";
+	result1["SET-COOKIE2"][1L] = "Test2=test_value2; expires=Sat, 02-Jan-2002 02:02:02 GMT; path=/;";
+	result1["SET-COOKIE2"][2L] = "Test3=test_value3; expires=Sat, 03-Jan-2003 03:03:03 GMT; path=/;";
+
+	{
+		MIMEHeader mh;
+		StringStream is(testinput);
+
+		// basic checks of success
+		t_assertm(mh.DoReadHeader(is), "expected header parsing to succeed");
+
+		// sanity checks
+		t_assertm(mh.IsMultiPart() == false, "expected no multipart");
+		t_assertm(mh.GetBoundary().Length() == 0, "expected no multipart seperator");
+		t_assertm(mh.GetContentLength() == -1, "expected -1, since field is not set");
+		assertEqualm("", mh.Lookup("NotThere", ""), "expected 'NotThere' to be emtpy");
+
+		assertAnyEqual(result1, mh.GetInfo());
+	}
+}
+
 void MIMEHeaderTest::MultiPartHeaderTest()
 {
 	StartTrace(MIMEHeaderTest.MultiPartHeaderTest);
@@ -359,6 +449,7 @@ Test *MIMEHeaderTest::suite ()
 	TestSuite *testSuite = new TestSuite;
 
 	testSuite->addTest (NEW_CASE(MIMEHeaderTest, SimpleHeaderTest));
+	testSuite->addTest (NEW_CASE(MIMEHeaderTest, SetCookieTest));
 	testSuite->addTest (NEW_CASE(MIMEHeaderTest, MultiPartHeaderTest));
 	testSuite->addTest (NEW_CASE(MIMEHeaderTest, PartHeaderTest));
 
