@@ -38,6 +38,8 @@ public:
 private:
 	void RenderHeader(ostream &reply, Context &ctx, const ROAnything &config);
 	void RenderValues(ostream &reply, Context &ctx, const ROAnything &config);
+	void RenderMultipleLineHeaderField(ostream &reply, Context &ctx, const String &slot, const ROAnything &config);
+
 };
 
 #endif

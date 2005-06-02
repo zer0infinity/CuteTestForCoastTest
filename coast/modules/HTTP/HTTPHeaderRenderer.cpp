@@ -38,23 +38,42 @@ void HTTPHeaderRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnythin
 
 void HTTPHeaderRenderer::RenderHeader(ostream &reply, Context &ctx, const ROAnything &config)
 {
+	StartTrace(HTTPHeaderRenderer.RenderHeader);
 	for (long i = 0; i < config.GetSize(); i++) {
 		String slot = config.SlotName(i);
 		if (slot.Length() == 0) {
 			Renderer::Render(reply, ctx, config[i]);
 		} else {
-			reply << slot << ": ";
-			RenderValues(reply, ctx, config[i]);
-			reply << ENDL;
+			String slotUpperCase(slot);
+			slotUpperCase.ToUpper();
+			if ( slotUpperCase == "SET-COOKIE" ) {
+				RenderMultipleLineHeaderField(reply, ctx, slot, config[i]);
+			} else {
+				reply << slot << ": ";
+				RenderValues(reply, ctx, config[i]);
+				reply << ENDL;
+			}
 		}
 	}
 }
+
 void HTTPHeaderRenderer::RenderValues(ostream &reply, Context &ctx, const ROAnything &config)
 {
+	StartTrace(HTTPHeaderRenderer.RenderValues);
 	Render(reply, ctx, config[0L]);
 	for (long i = 1; i < config.GetSize(); i++) {
 		reply << ", ";
 		Renderer::Render(reply, ctx, config[i]);
+	}
+}
+
+void HTTPHeaderRenderer::RenderMultipleLineHeaderField(ostream &reply, Context &ctx, const String &slot, const ROAnything &config)
+{
+	StartTrace(HTTPHeaderRenderer.RenderMultipleLineHeaderField);
+	for (long i = 0; i < config.GetSize(); i++) {
+		reply << slot << ": ";
+		Renderer::Render(reply, ctx, config[i]);
+		reply << ENDL;
 	}
 }
 
