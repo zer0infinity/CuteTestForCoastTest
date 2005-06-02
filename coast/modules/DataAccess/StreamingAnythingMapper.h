@@ -76,6 +76,8 @@ public:
 		\return true if the Anything could be read successful and put into ctx */
 	virtual bool DoPutStream(const char *key, istream &is, Context &ctx, ROAnything script);
 
+	virtual bool DoPutAnyWithSlotname(const char *key, Anything value, Context &ctx, ROAnything roaScript, const char *slotname);
+
 private:
 	StreamToAnythingMapper();
 	StreamToAnythingMapper(const StreamToAnythingMapper &);

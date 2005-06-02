@@ -53,47 +53,22 @@ bool StreamToAnythingMapper::DoPutStream(const char *key, istream &is, Context &
 		DAAccessTimer(StreamToAnythingMapper.DoPutStream, "importing from stream", ctx);
 		importok = anyResult.Import(is);
 	}
-	Assert(importok);
-	TraceAny(anyResult, "anything imported from stream:");
 	if ( importok ) {
-		if (script.IsNull() || script.GetSize() == 0) {
-			// no more script to run
-			Trace("Script is empty or null...");
-			importok = DoFinalPutAny(key, anyResult, ctx);
-		} else if (script.GetType() != Anything::eArray) {
-			// we found a simple value in script use it as a new key in final put
-			Trace("Script is a simple value:" << script.AsCharPtr());
-			importok = DoFinalPutAny(script.AsCharPtr(key), anyResult, ctx);
-		} else {
-			// now for the scripting case, similar to Renderers
-			TraceAny(script, "Got a script. Starting interpretation foreach slot...");
-			for (long i = 0; importok && i < script.GetSize(); i++) {
-				String slotname(script.SlotName(i));
-				ResultMapper *m;
-				if (slotname.Length() <= 0) {
-					Trace("Anonymous slot, call myself again with script[" << i << "]");
-					importok = DoPutAny(key, anyResult, ctx, script[i]);
-				} else if ((m = ResultMapper::FindResultMapper(slotname))) {
-					Trace("Slotname equals mapper: " << slotname);
-					if (script[i].IsNull()) {
-						// fallback to mappers original config
-						Trace("Slotval is null. Calling " << slotname << " with it's default config...");
-						importok = m->Put(key, anyResult, ctx);
-					} else {
-						Trace("Calling " << slotname << " with script[" << i << "][\"" << NotNull(key) << "\"]...");
-						importok = m->DoPutAny(key, anyResult, ctx, DoSelectScript(key, script[i], ctx));
-					}
-				} else {
-					Trace("Slotname " << slotname << " is not a mapper (not found).");
-					Trace("Using [" << slotname << "] as lookup key in result anything");
-					Anything anyValue;
-					if ( anyResult.LookupPath(anyValue, slotname) ) {
-						TraceAny(anyValue, "Calling myself again with Anything looked up at [" << slotname << "] and with script[" << i << "]");
-						importok = DoPutAny(key, anyValue, ctx, script[i]);
-					}
-				}
-			}
-		}
+		TraceAny(anyResult, "anything imported from stream:");
+		importok = DoPutAny(key, anyResult, ctx, script);
 	}
 	return importok;
+}
+
+bool StreamToAnythingMapper::DoPutAnyWithSlotname(const char *key, Anything value, Context &ctx, ROAnything roaScript, const char *slotname)
+{
+	StartTrace1(StreamToAnythingMapper.DoPutAnyWithSlotname, "key [" << NotNull(key) << "] slotname [" << NotNull(slotname) << "]");
+	Trace("Using slotname [" << slotname << "] as Lookup path in value");
+	bool bRet = true;	// do not fail when lookup fails!
+	Anything anyValue;
+	if ( value.LookupPath(anyValue, slotname) ) {
+		TraceAny(anyValue, "Calling myself again with Anything looked up at [" << slotname << "]");
+		bRet = DoPutAny(key, anyValue, ctx, roaScript);
+	}
+	return bRet;
 }
