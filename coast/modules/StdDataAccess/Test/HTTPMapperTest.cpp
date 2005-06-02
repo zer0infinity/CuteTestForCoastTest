@@ -41,52 +41,59 @@ void HTTPMapperTest::FDTest1()
 {
 	StartTrace(HTTPMapperTest.FDTest1);
 
-	String httpOutput("<");
+	String httpOutput;
 
 	OStringStream os(httpOutput);
 	Anything dummy;
 	Anything testInput;
 	GetTestInput(dummy, "TestData");
 	testInput = dummy["TestFDPost1"];
-	TraceAny(testInput, "TestFDPost input: ");
+	TraceAny(testInput, "TestFDPost1 input: ");
 
 	Context ctx(testInput, dummy, (Server *)0, (Session *)0, (Role *)0);
 	ParameterMapper httpmapper("finvalstatic1");
 	httpmapper.CheckConfig("ParameterMapper");
-
 	t_assert(httpmapper.Get("Input", os, ctx));
-	os << ">" << flush;
 
-	Trace("httpRequest: " << httpOutput);
+	String result;
+	result = PrepareResults(dummy["TestFDPost1Result"]);
+	assertEquals(result, httpOutput);
+	os << flush;
+	Trace("Resulting httpRequest: " << httpOutput);
+	Trace("Expected  httpRequest: " << result);
 }
 
 void HTTPMapperTest::FDTest2()
 {
 	StartTrace(HTTPMapperTest.FDTest2);
 
-	String httpOutput("<");
+	String httpOutput;
 
 	OStringStream os(httpOutput);
 	Anything dummy;
 	Anything testInput;
 	GetTestInput(dummy, "TestData");
 	testInput = dummy["TestFDPost2"];
-	TraceAny(testInput, "TestFDPost input: ");
+	TraceAny(testInput, "TestFDPost2 input: ");
 
 	Context ctx(testInput, dummy, (Server *)0, (Session *)0, (Role *)0);
 	ParameterMapper httpmapper("finvalstatic2");
 	httpmapper.CheckConfig("ParameterMapper");
 	t_assert(httpmapper.Get("Input", os, ctx));
-	os << ">" << flush;
 
-	Trace("httpRequest: " << httpOutput);
+	String result;
+	result = PrepareResults(dummy["TestFDPost2Result"]);
+	assertEquals(result, httpOutput);
+	os << flush;
+	Trace("Resulting httpRequest: " << httpOutput);
+	Trace("Expected  httpRequest: " << result);
 }
 
 void HTTPMapperTest::FDTest3()
 {
 	StartTrace(HTTPMapperTest.FDTest3);
 
-	String httpOutput("<");
+	String httpOutput;
 
 	OStringStream os(httpOutput);
 	Anything dummy;
@@ -100,9 +107,33 @@ void HTTPMapperTest::FDTest3()
 
 	// should fail because postparams is empty
 	t_assert(!httpmapper.Get("Input", os, ctx));
-	os << ">" << flush;
+}
 
-	Trace("httpRequest: " << httpOutput);
+void HTTPMapperTest::FDTest4()
+{
+	StartTrace(HTTPMapperTest.FDTest4);
+
+	String httpOutput;
+
+	OStringStream os(httpOutput);
+	Anything dummy;
+	GetTestInput(dummy, "TestData");
+
+	Context ctx(dummy["TestFDGet4"]["env"], dummy["TestFDGet4"]["query"], (Server *)0, (Session *)0, (Role *)0);
+	ParameterMapper httpmapper("fdtest4");
+	httpmapper.CheckConfig("ParameterMapper");
+
+	Anything tmpStore(ctx.GetTmpStore());
+
+	t_assert(httpmapper.Get("Input", os, ctx));
+
+	String result;
+	result = PrepareResults(dummy["TestFDGet4Result"]);
+	assertEquals(result, httpOutput);
+	os << flush;
+	Trace("Resulting httpRequest: " << httpOutput);
+	Trace("Expected  httpRequest: " << result);
+
 }
 
 void HTTPMapperTest::GetTestInput(Anything &testInput, const char *testname)
@@ -112,6 +143,17 @@ void HTTPMapperTest::GetTestInput(Anything &testInput, const char *testname)
 		testInput.Import((*Ios));
 		delete Ios;
 	}
+}
+
+String HTTPMapperTest::PrepareResults(ROAnything resultsAsAny)
+{
+	String results;
+	long l;
+	for ( l = 0; l < resultsAsAny.GetSize() - 1; l ++ ) {
+		results << resultsAsAny[l].AsString() << "\r\n";
+	}
+	results << resultsAsAny[l].AsString();
+	return results;
 }
 
 void HTTPMapperTest::HTTPBodyMapperBadStream()
@@ -137,6 +179,7 @@ Test *HTTPMapperTest::suite ()
 	testSuite->addTest (NEW_CASE(HTTPMapperTest, FDTest1));
 	testSuite->addTest (NEW_CASE(HTTPMapperTest, FDTest2));
 	testSuite->addTest (NEW_CASE(HTTPMapperTest, FDTest3));
+	testSuite->addTest (NEW_CASE(HTTPMapperTest, FDTest4));
 	testSuite->addTest (NEW_CASE(HTTPMapperTest, HTTPBodyMapperBadStream));
 
 	return testSuite;

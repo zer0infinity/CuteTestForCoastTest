@@ -11,6 +11,7 @@
 
 //---- baseclass include -------------------------------------------------
 #include "TestCase.h"
+#include "Anything.h"
 
 //---- forward declaration -----------------------------------------------
 class Anything;
@@ -47,10 +48,12 @@ protected:
 	void FDTest1();
 	void FDTest2();
 	void FDTest3();
+	void FDTest4();
 
 	void HTTPBodyMapperBadStream();
 
 	void GetTestInput(Anything &testInput, const char *testname);
+	String PrepareResults(ROAnything resultsAsAny);
 
 private:
 	// use careful, you inhibit subclass use
