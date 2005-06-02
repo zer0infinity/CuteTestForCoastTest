@@ -12,39 +12,7 @@
 #include "config_stddataaccess.h"
 #include "Mapper.h"
 
-/* ************************* Removed to prove obsoleteness, 16.1.2004, kvg
-//! Reads headerfields from stream and stores them under Mapper.HTTPHeader.FieldName
-//! May have a slot /Suppress in its config which lists headers to suppress
-class EXPORTDECL_STDDATAACCESS HTTPHeaderResultMapper : public EagerResultMapper
-{
-public:
-	HTTPHeaderResultMapper(const char *name) : EagerResultMapper(name) { }
-	~HTTPHeaderResultMapper()	{ }
-
-	//! support for prototype pattern, implements standard api
-	IFAObject *Clone() const {	return new HTTPHeaderResultMapper(fName); }
-
-	//! parses header field output
-	//! \param key not used
-	//! \param is the istream we read from until an empty line
-	//! \param ctx the context for this call
-	//! \param config has optionally a list of header names to suppress
-	// 				  under slot /Suppress
-	bool DoPutStream(const char *key, istream &is, Context &ctx,  ROAnything config);
-
-	//! Returns the default slot to store results under, that is "Mapper.HTTPHeader"
-	String DoGetDestinationSlot(Context &ctx)
-	{ return "Mapper.HTTPHeader"; }
-
-private:
-	HTTPHeaderResultMapper();
-	HTTPHeaderResultMapper(const HTTPHeaderResultMapper &);
-	HTTPHeaderResultMapper &operator=(const HTTPHeaderResultMapper &);
-};
-*/
-
 // --------------------- HTTPHeaderParameterMapper -------------------------
-
 class EXPORTDECL_STDDATAACCESS HTTPHeaderParameterMapper : public EagerParameterMapper
 {
 public:
@@ -70,7 +38,6 @@ private:
 };
 
 // ------------------------- HTTPBodyResultMapper -------------------------
-
 class EXPORTDECL_STDDATAACCESS HTTPBodyResultMapper : public ResultMapper
 {
 public:
@@ -93,7 +60,6 @@ private:
 };
 
 // ------------------------- HTTPBodyParameterMapper -------------------------
-
 class EXPORTDECL_STDDATAACCESS HTTPBodyParameterMapper : public ParameterMapper
 {
 public:
