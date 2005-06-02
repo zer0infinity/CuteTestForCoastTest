@@ -32,6 +32,14 @@
 		/MainSwitch						10
 		/EnableAll						10
 	}
+	/HTTPMimeHeaerMapper {
+		/MainSwitch						10
+		/EnableAll						10
+	}
+	/HTTPMimeHeaerMapperTest {
+		/MainSwitch						10
+		/EnableAll						10
+	}
 	/HTTPBodyMapper {
 		/MainSwitch						0
 		/EnableAll						20
