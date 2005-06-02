@@ -22,10 +22,7 @@
 #include "Socket.h"
 #include "StringStream.h"
 #include "Dbg.h"
-
-#ifdef DEBUG
 #include "SysLog.h"
-#endif
 
 //--- c-library modules used ---------------------------------------------------
 
@@ -585,6 +582,25 @@ bool Context::PopStore(String &key)
 	}
 	TraceAny(fStore, "fStore:");
 	return false;
+}
+
+Context::PushPopEntry::PushPopEntry(Context &ctx, const char *key, Anything &store)
+	: fCtx(ctx)
+	, fStoreName(key)
+	, fanyStore(store)
+{
+	fCtx.PushStore(fStoreName, fanyStore);
+}
+
+Context::PushPopEntry::~PushPopEntry()
+{
+	String strPoppedStore;
+	bool bPopCode = fCtx.PopStore(strPoppedStore);
+	if ( !bPopCode ) {
+		SYSWARNING("tried to pop Store when no more Store to pop available");
+	} else if ( fStoreName != strPoppedStore ) {
+		SYSWARNING("names of pushed [" << fStoreName << "] and popped [" << strPoppedStore << "] Stores were not identical!");
+	}
 }
 
 LookupInterface *Context::Find(const char *key) const

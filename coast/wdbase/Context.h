@@ -55,18 +55,33 @@ public:
 	//! \param s the Request anything
 	void PushRequest(const Anything &request);
 
-	//!push a store object
-	//! \param s the Request anything
+	/*! Pop the top pushed stack element.
+		\return true if not empty; otherwise false
+		\note Do only Pop elements pushed with Push() interfaces here. Otherways the name history of PushStore elements will get screwed up! */
+	bool Pop();
+
+	/*! Push the given Anything on top of the lookup stack. This is a very convenient way to pass arguments to subsequent context based operations.
+		\param key Name of passed object. This name does not have to be unique, it is only used for information purpose. This means a PushStore with the same name does not overwrite an already existing stack element with the same name.
+		\param store An Anything containing specific params/infos.
+		\note Do not forget to pop the pushed Anything after operation! You should use a PushPopEntry whenever possible instead. */
 	void PushStore(const char *key, Anything &store);
 
-	//!pop a store -> remove it completly
-	//! \param key fills in the stores key if stack is not empty
-	//! \return returns true if found; otherwise false
+	/*! Pop the previously pushed store from the lookup stack.
+		\param key Name of the popped element. Can be used to check if the correct element was popped off the stack.
+		\return true if a store could be popped
+		\note The internal tmp store, stack element 0, can not be popped and remains always on the stack! */
 	bool PopStore(String &key);
 
-	//!pop the top interface
-	//! \return returns true if not empty; otherwise false
-	bool Pop();
+	/*! Convenience inner class to manage PushStore and PopStore calls. Less error prone than doing it manually. */
+	class EXPORTDECL_WDBASE PushPopEntry
+	{
+		Context &fCtx;
+		String fStoreName;
+		Anything &fanyStore;
+	public:
+		PushPopEntry(Context &ctx, const char *key, Anything &store);
+		~PushPopEntry();
+	};
 
 	//!find a configurable object by name; always use SafeCast Macro (dynamic_cast if available)
 	//! \param key the key only a simple key can match
@@ -334,6 +349,7 @@ private:
 	friend class ContextTest;
 	friend class SessionReleaser;
 };
+
 class EXPORTDECL_WDBASE SessionReleaser
 {
 public:
@@ -348,6 +364,7 @@ public:
 	void Use() const {
 		/* dummy */
 	}
+
 private:
 	Context &fContext;
 	bool	fWasLockedByMe;
