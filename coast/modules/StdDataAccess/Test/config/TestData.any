@@ -8,7 +8,7 @@
 
 {
 
-        /TestFDPost {
+      /TestFDPost1 {
 			/HTTPHeader {
 			  /CONNECTION "Keep-Alive"
 			  /USER-AGENT "Mozilla/4.51 [en] (WinNT; U)"
@@ -29,7 +29,6 @@
 			  }
 			  /COOKIE {
 				/FINXSCUSTNO "CH12246"
-				/FDState	 "foobaz"
 			  }
 			  /CONTENT-TYPE "application/x-www-form-urlencoded"
 			  /CONTENT-LENGTH 84
@@ -40,35 +39,19 @@
 			/HTTPBody "Password=gaef&Login+%21=+++L+O+G+I+N+++&JSCRIPTACTIVE=Enabled&UserID=tkgae2&CustNo=CH12246"
 	  }
 
-        /TestFDPost1 {
-			/HTTPHeader {
-			  /CONNECTION "Keep-Alive"
-			  /USER-AGENT "Mozilla/4.51 [en] (WinNT; U)"
-			  /ACCEPT {
-				"image/gif"
-				"image/x-xbitmap"
-				"image/jpeg"
-				"image/pjpeg"
-				"image/png"
-				"*/*"
-			  }
-			  /ACCEPT-ENCODING "gzip"
-			  /ACCEPT-LANGUAGE "de-CH"
-			  /ACCEPT-CHARSET {
-				"iso-8859-1"
-				"*"
-				"utf-8"
-			  }
-			  /COOKIE {
-				/FINXSCUSTNO "CH12246"
-			  }
-			  /CONTENT-TYPE "application/x-www-form-urlencoded"
-			  /CONTENT-LENGTH 84
-			}
-			/URI "/finVAL/XS.ISA?Action=Login"
-			/Method "POST"
-			/HTTPVersion "HTTP/1.0"
-			/HTTPBody "Password=gaef&Login+%21=+++L+O+G+I+N+++&JSCRIPTACTIVE=Enabled&UserID=tkgae2&CustNo=CH12246"
+	  /TestFDPost1Result {
+		"POST /finVAL/XS.ISA?Action=Login HTTP/1.0"
+		"CONNECTION: Keep-Alive"
+		"USER-AGENT: Mozilla/4.51 [en] (WinNT; U)"
+		"ACCEPT: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, image/png, */*"
+		"ACCEPT-ENCODING: gzip"
+		"ACCEPT-LANGUAGE: de-CH"
+		"ACCEPT-CHARSET: iso-8859-1, *, utf-8"
+		"COOKIE: FINXSCUSTNO=CH12246"
+		"CONTENT-TYPE: application/x-www-form-urlencoded"
+		"CONTENT-LENGTH: 84"
+		""
+		"Password=gaef&Login+%21=+++L+O+G+I+N+++&JSCRIPTACTIVE=Enabled&UserID=tkgae2&CustNo=CH12246"
 	  }
 
 	  /TestFDPost2 {
@@ -116,6 +99,25 @@
 		  }
 		}
 	}
+	/TestFDPost2Result {
+		"POST /finVAL/XS.ISA?Action=Login HTTP/1.0"
+		"REFERER: http://sentosa.ifa.ch:1919/finVAL/"
+		"CONNECTION: Keep-Alive"
+		"USER-AGENT: Mozilla/4.51 [en] (WinNT; U)"
+		"HOST: sentosa.ifa.ch:1919"
+		"ACCEPT: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, image/png, */*"
+		"ACCEPT-ENCODING: gzip"
+		"ACCEPT-LANGUAGE: de-CH"
+		"ACCEPT-CHARSET: iso-8859-1, *, utf-8"
+		"AUTHORIZATION: Basic YmlycmVyOmJpYTE5"
+		"COOKIE: FINXSCUSTNO=CH12246"
+		"CONTENT-TYPE: application/x-www-form-urlencoded"
+		"CONTENT-LENGTH: 90"
+		"REMOTE_ADDR: 193.247.78.6"
+		"REMOTE_HOST: paris.hsr.ch"
+		""
+		"Password=gaef&Login+%21=+++L+O+G+I+N+++&JSCRIPTACTIVE=Enabled&UserID=tkgae2&CustNo=CH12246"
+	}
 	/TestFDPost3 {
 		/query {
 			"finVAL"
@@ -149,5 +151,70 @@
 			  }
 			}
 		}
+	}
+	/TestFDGet4 {
+		/query {
+			"finVAL"
+			/AppPref "/finVAL"
+			/URI_PARAM "/"
+		}
+		/env {
+			/REQUEST_METHOD "GET"
+			/REQUEST_URI "/finVAL/"
+			/SERVER_PROTOCOL "HTTP/1.0"
+			/header {
+				/CONNECTION "Keep-Alive"
+				/USER-AGENT "Mozilla/4.51 [en] (WinNT; U)"
+				/ACCEPT {
+					"image/gif"
+					"image/x-xbitmap"
+					"image/jpeg"
+					"image/pjpeg"
+					"image/png"
+					"*/*"
+				}
+				/ACCEPT-ENCODING "gzip"
+				/ACCEPT-LANGUAGE "de-CH"
+				/ACCEPT-CHARSET {
+					"iso-8859-1"
+					"*"
+					"utf-8"
+				}
+			  /COOKIE {
+				/FINXSCUSTNO "CH12246"
+				/FD_STATE "somestate"
+			  }
+			  /SET-COOKIE {
+				"Test1=test_value1; expires=Sat, 01-Jan-2001 01:01:01 GMT; path=/;"
+				"Test2=test_value2; expires=Sat, 02-Jan-2002 02:02:02 GMT; path=/;"
+				"Test1=test_value3; expires=Sat, 03-Jan-2003 03:03:03 GMT; path=/;"
+			  }
+			  /SET-COOKIE2 {
+				"Test1=test_value1; expires=Sat, 01-Jan-2001 01:01:01 GMT; path=/;"
+				"Test2=test_value2; expires=Sat, 02-Jan-2002 02:02:02 GMT; path=/;"
+				"Test1=test_value3; expires=Sat, 03-Jan-2003 03:03:03 GMT; path=/;"
+			  }
+			}
+			/URI "/finVAL/XS.ISA?Action=Login"
+			/HTTPVersion "HTTP/1.0"
+			/HTTPBody "some content"
+		}
+	}
+	/TestFDGet4Result
+	{
+		"GET / HTTP/1.0"
+		"CONNECTION: Keep-Alive"
+		"USER-AGENT: Mozilla/4.51 [en] (WinNT; U)"
+		"ACCEPT: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, image/png, */*"
+		"ACCEPT-ENCODING: gzip"
+		"ACCEPT-LANGUAGE: de-CH"
+		"ACCEPT-CHARSET: iso-8859-1, *, utf-8"
+		"COOKIE: FINXSCUSTNO=CH12246; FD_STATE=somestate"
+		"SET-COOKIE: Test1=test_value1; expires=Sat, 01-Jan-2001 01:01:01 GMT; path=/;"
+		"SET-COOKIE: Test2=test_value2; expires=Sat, 02-Jan-2002 02:02:02 GMT; path=/;"
+		"SET-COOKIE: Test1=test_value3; expires=Sat, 03-Jan-2003 03:03:03 GMT; path=/;"
+		"SET-COOKIE2: Test1=test_value1; expires=Sat, 01-Jan-2001 01:01:01 GMT; path=/;, Test2=test_value2; expires=Sat, 02-Jan-2002 02:02:02 GMT; path=/;, Test1=test_value3; expires=Sat, 03-Jan-2003 03:03:03 GMT; path=/;"
+		""
+		"some content"
 	}
 }
