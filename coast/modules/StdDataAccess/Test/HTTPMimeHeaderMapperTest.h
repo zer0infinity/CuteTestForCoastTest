@@ -53,6 +53,8 @@ public:
 	void AddHeadersTest();
 	//! test suppress and add with config of HTTPMimeHeaderMapper
 	void SuppressAndAddHeadersTest();
+	//! test fields which occur more then once
+	void FieldsOccursMoreThanOnceHeaderTest();
 
 };
 
