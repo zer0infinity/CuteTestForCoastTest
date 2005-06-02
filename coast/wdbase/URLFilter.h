@@ -66,7 +66,7 @@ public:
 
 	//! unscramble elements defined in filterTags of query this normally results in an updated query
 	//!: caution if the same tags exist in different scrambled tags, they are set overriden by the first one
-	virtual bool UnscrambleState(Anything &query, const ROAnything &filterTags, Context &ctx);
+	virtual bool UnscrambleState(Anything &query, const ROAnything &unscramblers, Context &ctx);
 
 	//! filters a single slot by removing it from the query
 	//! \return returns true if slotname is not null (ignoring whether slotName is in query or not)

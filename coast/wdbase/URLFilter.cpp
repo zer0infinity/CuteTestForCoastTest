@@ -144,26 +144,26 @@ bool URLFilter::FilterState(Anything &query, const ROAnything &filterTags, Conte
 	return retCode;
 }
 
-bool URLFilter::UnscrambleState(Anything &query, const ROAnything &filterTags, Context &ctx)
+bool URLFilter::UnscrambleState(Anything &query, const ROAnything &unscramblers, Context &ctx)
 {
 	StartTrace(URLFilter.UnscrambleState);
 
 	SubTraceAny(query, query, "Query: ");
-	SubTraceAny(filterTags, filterTags, "Filter: ");
+	SubTraceAny(unscramblers, unscramblers, "Filter: ");
 
 	bool retCode = true;
-	long numOfFilters = filterTags.GetSize();
+	long numOfFilters = unscramblers.GetSize();
 	for (long i = 0; i < numOfFilters; i++) {
-		ROAnything filter(filterTags[i]);
-		String filterVal;
+		ROAnything filter(unscramblers[i]);
+		String tagToUnscramble;
 		if (filter.GetType() != Anything::eCharPtr) {
 			// assume renderer specification
-			Renderer::RenderOnString(filterVal, ctx, filter);
+			Renderer::RenderOnString(tagToUnscramble, ctx, filter);
 		} else {
-			filterVal = filter.AsCharPtr(0);
+			tagToUnscramble = filter.AsCharPtr(0);
 		}
-		// simple filter just remove it from query
-		retCode = DoUnscrambleState(query, filterVal, ctx) && retCode;
+		// simple specification
+		retCode = DoUnscrambleState(query, tagToUnscramble, ctx) && retCode;
 	}
 	return retCode;
 }
