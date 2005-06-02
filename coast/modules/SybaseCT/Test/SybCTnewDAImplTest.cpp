@@ -68,7 +68,7 @@ void SybCTnewDAImplTest::UninitializedExecTest()
 
 	TraceAny(params, "Input params:");
 	Context ctx;
-	ctx.PushStore("Params", params);
+	Context::PushPopEntry aEntry(ctx, "Params", params);
 
 	SybCTnewDAImpl da("SybSearchTestCoded");
 	da.CheckConfig("SybCTnewDAImpl");

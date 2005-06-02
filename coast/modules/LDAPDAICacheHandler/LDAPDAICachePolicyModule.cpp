@@ -126,7 +126,7 @@ Anything LDAPDAIDataAcccessLoader::Load(const char *ldapDa)
 	StartTrace(LDAPDAIDataAcccessLoader.Load);
 	Anything theResult(Storage::Global());
 	Context ctx;
-	ctx.PushStore("LdapLoader", fConfig);
+	Context::PushPopEntry aEntry(ctx, "LdapLoader", fConfig);
 
 	if (ldapDa != "") {
 		DataAccess da(ldapDa);
@@ -143,8 +143,6 @@ Anything LDAPDAIDataAcccessLoader::Load(const char *ldapDa)
 	}
 
 	TraceAny(theResult, "LDAP-Result for " << ldapDa << " cache.");
-	String storeName;
-	ctx.PopStore(storeName);
 	return theResult;
 }
 
@@ -158,7 +156,7 @@ Anything LDAPDAIActionLoader::Load(const char *ldapDaAction)
 	StartTrace(LDAPDAIActionLoader.Load);
 	Anything theResult(Storage::Global());
 	Context ctx;
-	ctx.PushStore("LdapLoader", fConfig);
+	Context::PushPopEntry aEntry(ctx, "LdapLoader", fConfig);
 	if (ldapDaAction != "") {
 		Anything tmpStore = ctx.GetTmpStore();
 		String transition;
@@ -179,10 +177,7 @@ Anything LDAPDAIActionLoader::Load(const char *ldapDaAction)
 			SysLog::WriteToStderr(msg);
 		}
 	}
-	String storeName;
-	ctx.PopStore(storeName);
 	return (theResult);
-
 }
 
 //---- LDAPDAICacheGetter ---------------------------------------------------------
