@@ -14,6 +14,169 @@
 	}
 	/TestCases
 	{
+		/WholeHeaderConfig
+		{
+
+			/Env
+			{
+				/Data
+				{
+					"adummyheaderline"
+				}
+			}
+			/Renderer
+			{
+				/HTTPHeaderRenderer
+				{
+					/HeaderSlot "Data"
+				}
+			}
+			/Expected "adummyheaderline"
+		}
+		/SingleLine1
+		{
+
+			/Env
+			{
+				/Data
+				{
+					/WWW-Authenticate "NTLM"
+				}
+			}
+			/Renderer
+			{
+				/HTTPHeaderRenderer
+				{
+					/HeaderSlot "Data"
+				}
+			}
+			/Expected "WWW-Authenticate: NTLM\r\n"
+		}
+		/SingleLine2
+		{
+
+			/Env
+			{
+				/Data
+				{
+					/WWW-Authenticate "NTLM"
+				}
+			}
+			/Renderer
+			{
+				/HTTPHeaderRenderer "Data"
+			}
+			/Expected "WWW-Authenticate: NTLM\r\n"
+		}
+		/SingleLineMultiValue
+		{
+
+			/Env
+			{
+				/Data
+				{
+					/WWW-Authenticate
+					{
+						"NTLM"
+						"Negotiate"
+						"Basic"
+					}
+				}
+			}
+			/Renderer
+			{
+				/HTTPHeaderRenderer
+				{
+					/HeaderSlot "Data"
+				}
+			}
+			/Expected "WWW-Authenticate: NTLM, Negotiate, Basic\r\n"
+		}
+		/MultiLine
+		{
+
+			/Env
+			{
+				/Data
+				{
+					/WWW-Authenticate	"NTLM"
+					/Connection			"close"
+					/Content-Type		"text/html"
+				}
+			}
+			/Renderer
+			{
+				/HTTPHeaderRenderer
+				{
+					/HeaderSlot "Data"
+				}
+			}
+			/Expected
+					"WWW-Authenticate: NTLM\r\nConnection: close\r\nContent-Type: text/html\r\n"
+		}
+		/MultiValues1
+		{
+
+			/Env
+			{
+				/Data
+				{
+					/set-cookie
+					{
+						"Test1=test_value1; expires=Sat, 01-Jan-2001 01:01:01 GMT; path=/;"
+						"Test2=test_value2; expires=Sat, 02-Jan-2002 02:02:02 GMT; path=/;"
+						"Test3=test_value3; expires=Sat, 03-Jan-2003 03:03:03 GMT; path=/;"
+					}
+					/set-cookie2
+					{
+						"Test1=test_value1; expires=Sat, 01-Jan-2001 01:01:01 GMT; path=/;"
+						"Test2=test_value2; expires=Sat, 02-Jan-2002 02:02:02 GMT; path=/;"
+						"Test3=test_value3; expires=Sat, 03-Jan-2003 03:03:03 GMT; path=/;"
+					}
+					/Connection			"close"
+					/Content-Type		"text/html"
+				}
+			}
+			/Renderer
+			{
+				/HTTPHeaderRenderer
+				{
+					/HeaderSlot "Data"
+				}
+			}
+			/Expected
+"set-cookie: Test1=test_value1; expires=Sat, 01-Jan-2001 01:01:01 GMT; path=/;\r\nset-cookie: Test2=test_value2; expires=Sat, 02-Jan-2002 02:02:02 GMT; path=/;\r\nset-cookie: Test3=test_value3; expires=Sat, 03-Jan-2003 03:03:03 GMT; path=/;\r\nset-cookie2: Test1=test_value1; expires=Sat, 01-Jan-2001 01:01:01 GMT; path=/;, Test2=test_value2; expires=Sat, 02-Jan-2002 02:02:02 GMT; path=/;, Test3=test_value3; expires=Sat, 03-Jan-2003 03:03:03 GMT; path=/;\r\nConnection: close\r\nContent-Type: text/html\r\n"
+		}
+		/MultiValues2
+		{
+
+			/Env
+			{
+				/Data
+				{
+					/set-cookie
+					{
+						"Test1=test_value1; expires=Sat, 01-Jan-2001 01:01:01 GMT; path=/;"
+					}
+					/set-cookie2
+					{
+						"Test1=test_value1; expires=Sat, 01-Jan-2001 01:01:01 GMT; path=/;"
+					}
+					/Connection			"close"
+					/Content-Type		"text/html"
+				}
+			}
+			/Renderer
+			{
+				/HTTPHeaderRenderer
+				{
+					/HeaderSlot "Data"
+				}
+			}
+			/Expected
+"set-cookie: Test1=test_value1; expires=Sat, 01-Jan-2001 01:01:01 GMT; path=/;\r\nset-cookie2: Test1=test_value1; expires=Sat, 01-Jan-2001 01:01:01 GMT; path=/;\r\nConnection: close\r\nContent-Type: text/html\r\n"
+		}
+
 		/HTTPHeaderRendererTest1
 		{
 			/Env
