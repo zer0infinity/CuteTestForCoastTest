@@ -96,8 +96,8 @@
 						}
 						/gaga		notMatchedSlotWillNotAppear
 						/XYZ {
-							/RootMappedXYZ {
-								/RootMapper *
+							/RootMapper {
+								/Out RootMappedXYZ
 							}
 						}
 						unnamedSlot
