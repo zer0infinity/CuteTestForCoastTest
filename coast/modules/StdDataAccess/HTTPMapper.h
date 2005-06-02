@@ -35,6 +35,8 @@ private:
 	HTTPHeaderParameterMapper();
 	HTTPHeaderParameterMapper(const HTTPHeaderParameterMapper &);
 	HTTPHeaderParameterMapper &operator=(const HTTPHeaderParameterMapper &);
+	void HandleOneLineForHeaderField(ostream &os, const String &slotname, ROAnything rvalue);
+	bool HandleMoreLinesForHeaderField(ostream &os, const String &slotname, ROAnything rvalue);
 };
 
 // ------------------------- HTTPBodyResultMapper -------------------------

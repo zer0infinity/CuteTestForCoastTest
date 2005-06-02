@@ -122,6 +122,41 @@ bool HTTPHeaderResultMapper::DoPutStream(const char *, istream &is, Context &ctx
 
 RegisterParameterMapper(HTTPHeaderParameterMapper);
 
+void HTTPHeaderParameterMapper::HandleOneLineForHeaderField(ostream &os, const String &slotname, ROAnything rvalue)
+{
+	StartTrace(HTTPHeaderParameterMapper.HandleOneLineForHeaderFields);
+
+	os << slotname << ": ";
+	Trace("Header[" << slotname << "]=<" << rvalue.AsCharPtr() << ">");
+	long elSz = rvalue.GetSize();
+	for (long j = 0; j < elSz; j++) {
+		if ( slotname == "COOKIE" ) {
+			os << NotNull(rvalue.SlotName(j)) << '=';
+		}
+		os << rvalue[j].AsCharPtr("");
+		if (j < (elSz - 1)) {
+			os << (( slotname == "COOKIE" ) ? "; " : ", ");
+		}
+	}
+	os << ENDL;
+}
+
+bool HTTPHeaderParameterMapper::HandleMoreLinesForHeaderField(ostream &os, const String &slotname, ROAnything rvalue)
+{
+	StartTrace(HTTPHeaderParameterMapper.HandleOneLineForHeaderFields);
+
+	Trace("Header[" << slotname << "]=<" << rvalue.AsCharPtr() << ">");
+	long elSz = rvalue.GetSize();
+	bool handled = false;
+	for (long j = 0; j < elSz; j++) {
+		if ( slotname == "SET-COOKIE" ) {
+			handled = true;
+			os << slotname << ": "  << rvalue[j].AsCharPtr("") << ENDL;
+		}
+	}
+	return handled;
+}
+
 bool HTTPHeaderParameterMapper::DoGetStream(const char *key, ostream &os, Context &ctx,  ROAnything info)
 {
 	StartTrace1(HTTPHeaderParameterMapper.DoGetStream, "Key:<" << NotNull(key) << ">");
@@ -151,19 +186,9 @@ bool HTTPHeaderParameterMapper::DoGetStream(const char *key, ostream &os, Contex
 				} else {
 					rvalue = value;
 				}
-				os << slotname << ": ";
-				Trace("Header[" << slotname << "]=<" << rvalue.AsCharPtr() << ">");
-				long elSz = rvalue.GetSize();
-				for (long j = 0; j < elSz; j++) {
-					if ( slotname == "COOKIE" ) {
-						os << NotNull(rvalue.SlotName(j)) << '=';
-					}
-					os << rvalue[j].AsCharPtr("");
-					if (j < (elSz - 1)) {
-						os << (( slotname == "COOKIE" ) ? "; " : ", ");
-					}
+				if ( !HandleMoreLinesForHeaderField(os, slotname, rvalue) ) {
+					HandleOneLineForHeaderField(os, slotname, rvalue);
 				}
-				os << ENDL;
 			}
 		}
 	} else {
