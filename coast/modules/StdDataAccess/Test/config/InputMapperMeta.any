@@ -94,11 +94,11 @@
 			/URI				*
 			" "
 			/HTTPVersion		"HTTP/1.0"
-			"\n"
+			"\r\n"
 			/HTTPHeader {
 				/HTTPHeaderParameterMapper	*
 			}
-			"\n"
+			"\r\n"
 			/HTTPBody {
 				/HTTPBodyMapper	*
 			}
@@ -113,11 +113,11 @@
 			/env.REQUEST_URI		*
 			" "
 			/env.SERVER_PROTOCOL	*
-			"\n"
+			"\r\n"
 			/env.header {
 					/HTTPHeaderParameterMapper *
 			}
-			"\n"
+			"\r\n"
 			/query.postparams {
 				/HTTPBodyMapper	*
 			}
@@ -138,6 +138,25 @@
 			}
 			"\n"
 			/postparams {
+				/HTTPBodyMapper	*
+			}
+		}
+	}
+
+	/fdtest4
+	{
+		/Input {
+			/REQUEST_METHOD				*
+			" "
+			/URI_PARAM					*
+			" "
+			/SERVER_PROTOCOL			*
+			"\r\n"
+			/header {
+					/HTTPHeaderParameterMapper 	*
+			}
+			"\r\n"
+			/HTTPBody {
 				/HTTPBodyMapper	*
 			}
 		}
