@@ -45,12 +45,12 @@
 		/EnableAll	11
 	}
 	/DataAccessTest {
-		/MainSwitch 10
-		/EnableAll	20
+		/MainSwitch 1100
+		/EnableAll	1100
 	}
 	/LoopBackDAImplTest {
-		/MainSwitch 11
-		/EnableAll	11
+		/MainSwitch 1100
+		/EnableAll	1100
 	}
 	/RegisterableObject {
 		/MainSwitch 0
