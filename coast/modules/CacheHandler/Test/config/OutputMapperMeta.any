@@ -8,4 +8,7 @@
 
 {
 
+	/LDAPListMapper {
+		/AppendAnyAlways 1
+	}
 }

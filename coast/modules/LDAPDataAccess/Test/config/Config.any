@@ -27,10 +27,8 @@
 	}
 
 	/DataAccessImpls {
-
 		/LDAPDAImpl {
 			"ldapDaImplTest"
-			#"ldapSearchTest"
 
 			"ldapNirvanaTestCfg"
 			"ldapWrongBindDNTestCfg"
@@ -84,7 +82,7 @@
 
 	/Mappers {
 		/Input {
-			/Mapper {
+			/ParameterMapper {
 				"ldapNirvanaTestCfg"
 				"ldapWrongBindDNTestCfg"
 				"ldapWrongBindPWTestCfg"
@@ -125,7 +123,7 @@
 			}
 		}
 		/Output {
-			/Mapper {
+			/ResultMapper {
 				"ldapNirvanaTestCfg"
 				"ldapWrongBindDNTestCfg"
 				"ldapWrongBindPWTestCfg"
@@ -133,34 +131,34 @@
 				"ldapDelTest"
 				"ldapDADelUserGAGA"
 				"ldapDAAddUserGAGA"
-			}
-			/LDAPListMapper {
-				"ldapDaImplEnvTestCfg"
-				"ldapSearchTestCfg"
-				"ldapSearchTest2Cfg"
-				"ldapQueryCodedInConfiguration"
-				"SearchForGivenService"
-				"ldapEmptySearch"
-				"ldapCompareTest"
-				"ldapCompareTest1"
-				"ldapModifyTest"
-				"ldapDASearchESID"
-				"ldapDASearchHEXID"
-				"ldapDASearchUID"
-				"ldapDASearchOUuser"
-				"ldapDASearchO"
-				"ldapDASearchONoMapping"
-				"ldapDASearchOPlainBinary"
-				"ldapDASearchC"
-				"ldapDASearchOUcontainer"
-				"ldapDASearchSID"
-				"ldapDASearchPEID"
-				"ldapDASearchOUcluster"
-				"ldapDASearchOTID"
-				"ldapModifyUIDTest"
-				"ldapDASearchUserGAGA"
-				"ldapDAModifyUserGAGA"
-				"ldapDACompareUserGAGA"
+				/LDAPListMapper {
+					"ldapDaImplEnvTestCfg"
+					"ldapSearchTestCfg"
+					"ldapSearchTest2Cfg"
+					"ldapQueryCodedInConfiguration"
+					"SearchForGivenService"
+					"ldapEmptySearch"
+					"ldapCompareTest"
+					"ldapCompareTest1"
+					"ldapModifyTest"
+					"ldapDASearchESID"
+					"ldapDASearchHEXID"
+					"ldapDASearchUID"
+					"ldapDASearchOUuser"
+					"ldapDASearchO"
+					"ldapDASearchONoMapping"
+					"ldapDASearchOPlainBinary"
+					"ldapDASearchC"
+					"ldapDASearchOUcontainer"
+					"ldapDASearchSID"
+					"ldapDASearchPEID"
+					"ldapDASearchOUcluster"
+					"ldapDASearchOTID"
+					"ldapModifyUIDTest"
+					"ldapDASearchUserGAGA"
+					"ldapDAModifyUserGAGA"
+					"ldapDACompareUserGAGA"
+				}
 			}
 			/LDAPListWithPrimaryKeyMapper
 			{

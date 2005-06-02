@@ -59,14 +59,13 @@
 		}
 		/Output
 		{
-			/Mapper
+			/ResultMapper
 			{
 				TestDA4 TestDA4Action
-			}
-			/LDAPListMapper
-			{
-				TestDA1 TestDA2 TestDA3  TestDA5
-				TestDA1Action TestDA2Action TestDA3Action  TestDA5Action
+				/LDAPListMapper {
+					TestDA1 TestDA2 TestDA3  TestDA5
+					TestDA1Action TestDA2Action TestDA3Action  TestDA5Action
+				}
 			}
 		}
 	}

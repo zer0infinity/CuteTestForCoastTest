@@ -12,4 +12,7 @@
 	{
 		/PrimaryKey  aid
 	}
+	/LDAPListMapper {
+		/AppendAnyAlways 1
+	}
 }
