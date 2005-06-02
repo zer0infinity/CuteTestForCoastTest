@@ -53,15 +53,28 @@ bool MIMEHeader::DoReadHeader(istream &in, long maxlinelen, long maxheaderlen)
 	return true;
 }
 
+MIMEHeader::ProcessMode MIMEHeader::GetDoSplitHeaderFieldsState(const String &fieldNameUpperCase)
+{
+	StartTrace(MIMEHeader.GetDoSplitHeaderFieldsState);
+	MIMEHeader::ProcessMode splitHeaderFields;
+	if ( fieldNameUpperCase == "SET-COOKIE" ) {
+		splitHeaderFields = eDoNotSplitHeaderFields;
+	} else {
+		splitHeaderFields = fSplitHeaderFields;
+	}
+	return splitHeaderFields;
+}
+
 bool MIMEHeader::DoParseHeaderLine(String &line)
 {
 	StartTrace1(MIMEHeader.DoParseHeaderLine, "Line: <<" << line << "\n>>");
 
 	TrimEOL(line);
 	String fieldname;
-	ParseField(line, fieldname);
+	GetNormalizedFieldName(line, fieldname);
 	String fieldNameUpperCase(fieldname);
 	fieldNameUpperCase.ToUpper();
+	ParseField(line, GetDoSplitHeaderFieldsState(fieldNameUpperCase));
 	if (fieldNameUpperCase == "CONTENT-DISPOSITION" ) {
 		if ( fSplitHeaderFields == eDoSplitHeaderFields ) {
 			fHeader[fieldname] = SplitLine(fHeader[fieldname].AsCharPtr());
@@ -83,17 +96,29 @@ Anything MIMEHeader::SplitLine(const String &line, URLUtils::NormalizeTag shift)
 	return values;
 }
 
-bool MIMEHeader::ParseField(String &line, String &fieldname)
+long MIMEHeader::GetNormalizedFieldName(String &line, String &fieldname)
 {
-	StartTrace1(MIMEHeader.ParseField, "Line: <<<" << line << ">>>");
+	StartTrace1(MIMEHeader.GetNormalizedFieldName, "Line: <<<" << line << ">>>");
 	// following headerfield specification of HTTP/1.1 RFC 2068
 	long pos = 0;
 	pos = line.StrChr(':');
 	if (pos > 0) {
 		fieldname = line.SubString(0, pos);
 		Normalize(fieldname);
+	}
+	Trace("Fieldname: " << fieldname << " Position of ':' is: " << pos);
+	return pos;
+}
+
+bool MIMEHeader::ParseField(String &line, MIMEHeader::ProcessMode splitHeaderFields)
+{
+	StartTrace1(MIMEHeader.ParseField, "Line: <<<" << line << ">>>");
+	// following headerfield specification of HTTP/1.1 RFC 2068
+	String fieldname;
+	long pos = GetNormalizedFieldName(line, fieldname);
+	if ( pos > 0 ) {
 		String fieldvalue;
-		if ( fSplitHeaderFields == eDoSplitHeaderFields ) {
+		if ( splitHeaderFields == eDoSplitHeaderFields ) {
 			StringTokenizer st1(((const char *)line) + pos + 1, ',');
 			while (st1.NextToken(fieldvalue)) {
 				if ( fieldvalue.Length() ) {
@@ -103,7 +128,7 @@ bool MIMEHeader::ParseField(String &line, String &fieldname)
 				}
 			}
 		}
-		if ( fSplitHeaderFields == eDoNotSplitHeaderFields ) {
+		if ( splitHeaderFields == eDoNotSplitHeaderFields ) {
 			fieldvalue = line.SubString(pos + 1);
 			if ( fieldvalue.Length() ) {
 				URLUtils::TrimBlanks(fieldvalue);

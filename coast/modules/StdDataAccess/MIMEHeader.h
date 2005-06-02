@@ -72,11 +72,14 @@ public:
 	//!consume \n at end of line if any
 	bool ConsumeEOL(istream &in) const;
 
+	// get name of header field and return the index where the delimiting ":" was found in the string
+	long GetNormalizedFieldName(String &line, String &fieldname);
+
 protected:
 	//! parse a line with fieldname ": " value
 	//! stores value as string in fHeader[Normalize(fieldname)]
 	//! \param fieldname out the normalized fieldname
-	bool ParseField(String &line, String &fieldname);
+	bool ParseField(String &line, MIMEHeader::ProcessMode splitHeaderFields);
 
 	//!split ';' seperated list of key=value pairs into anything
 	Anything SplitLine(const String &line, URLUtils::NormalizeTag shift = URLUtils::eUpshift);
@@ -87,6 +90,9 @@ protected:
 	// method to subclass if the lookup behaviour shall deviate from the standard
 	// implementation (i.e. allow more Anys to be searched, hierarchical, etc)
 	virtual bool DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const;
+
+	// determine the processing mode depending on the config passed to MIMEHeader and the header field name
+	MIMEHeader::ProcessMode GetDoSplitHeaderFieldsState(const String &fieldNameUpperCase);
 
 	//!contains the request/reply header
 	Anything fHeader;
