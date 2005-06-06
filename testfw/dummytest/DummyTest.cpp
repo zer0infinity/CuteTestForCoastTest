@@ -15,7 +15,7 @@
 
 //--- module under test --------------------------------------------------------
 
-DummyTest::DummyTest(TString tstrName) : TestCase(name) {}
+DummyTest::DummyTest(TString tstrName) : TestCase(tstrName) {}
 
 DummyTest::~DummyTest() {}
 
