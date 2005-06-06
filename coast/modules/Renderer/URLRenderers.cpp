@@ -29,7 +29,7 @@ void LinkRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &confi
 	StartTrace(LinkRenderer.Render);
 	TraceAny(config, "config");
 
-	reply << "<A HREF=\"";
+	reply << "<a href=\"";
 
 	// generate URL string
 	Renderer *r = Renderer::FindRenderer("URLRenderer");
@@ -49,7 +49,7 @@ void LinkRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &confi
 	}
 
 	// end of link
-	reply << ("</A>");
+	reply << ("</a>");
 }
 
 //---- URLPrinter -------------------------------------------------------
@@ -258,9 +258,9 @@ BaseURLRenderer::BaseURLRenderer(const char *name) : BaseURLPrinter(name)
 void BaseURLRenderer::RenderAll(ostream &reply, Context &context, const ROAnything &config)
 {
 	if (context.Lookup("UseBaseURL").AsLong(0L) != 0L) {
-		reply << "<BASE HREF=\"";
+		reply << "<base href=\"";
 		BaseURLPrinter::RenderAll(reply, context, config);
-		reply << "\"></BASE>\n";
+		reply << "\"/>\n";
 	}
 }
 
