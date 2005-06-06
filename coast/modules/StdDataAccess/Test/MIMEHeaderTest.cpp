@@ -133,7 +133,6 @@ void MIMEHeaderTest::SimpleHeaderTest()
 
 		assertAnyEqual(result1, mh.GetInfo());
 	}
-
 }
 
 void MIMEHeaderTest::SetCookieTest()
@@ -151,6 +150,9 @@ void MIMEHeaderTest::SetCookieTest()
 		"Set-Cookie: Test1=test_value1; expires=Sat, 01-Jan-2001 01:01:01 GMT; path=/;\r\n"
 		"Set-Cookie: Test2=test_value2; expires=Sat, 02-Jan-2002 02:02:02 GMT; path=/;\r\n"
 		"Set-Cookie: Test3=test_value3; expires=Sat, 03-Jan-2003 03:03:03 GMT; path=/;\r\n"
+		"Set-Cookie2: Test4=test_value4; expires=Sat, 04-Jan-2001 01:01:01 GMT; path=/;\r\n"
+		"Set-Cookie2: Test5=test_value5; expires=Sat, 05-Jan-2002 02:02:02 GMT; path=/;\r\n"
+		"Set-Cookie2: Test6=test_value6; expires=Sat, 06-Jan-2003 03:03:03 GMT; path=/;\r\n"
 		"\r\n";
 	Trace("TestInput: <" << testinput << ">");
 	result["CONNECTION"] = "Keep-Alive";
@@ -159,7 +161,12 @@ void MIMEHeaderTest::SetCookieTest()
 	result["SET-COOKIE"][0L] = "Test1=test_value1; expires=Sat, 01-Jan-2001 01:01:01 GMT; path=/;";
 	result["SET-COOKIE"][1L] = "Test2=test_value2; expires=Sat, 02-Jan-2002 02:02:02 GMT; path=/;";
 	result["SET-COOKIE"][2L] = "Test3=test_value3; expires=Sat, 03-Jan-2003 03:03:03 GMT; path=/;";
-
+	result["SET-COOKIE2"][0L] = "Test4=test_value4; expires=Sat";
+	result["SET-COOKIE2"][1L] = "04-Jan-2001 01:01:01 GMT; path=/;";
+	result["SET-COOKIE2"][2L] = "Test5=test_value5; expires=Sat";
+	result["SET-COOKIE2"][3L] = "05-Jan-2002 02:02:02 GMT; path=/;";
+	result["SET-COOKIE2"][4L] = "Test6=test_value6; expires=Sat";
+	result["SET-COOKIE2"][5L] = "06-Jan-2003 03:03:03 GMT; path=/;";
 	{
 		MIMEHeader mh;
 		StringStream is(testinput);
@@ -175,6 +182,11 @@ void MIMEHeaderTest::SetCookieTest()
 
 		assertAnyEqual(result, mh.GetInfo());
 	}
+	Anything anyCookie2;
+	anyCookie2.Append("Test4=test_value4; expires=Sat, 04-Jan-2001 01:01:01 GMT; path=/;");
+	anyCookie2.Append("Test5=test_value5; expires=Sat, 05-Jan-2002 02:02:02 GMT; path=/;");
+	anyCookie2.Append("Test6=test_value6; expires=Sat, 06-Jan-2003 03:03:03 GMT; path=/;");
+	result["SET-COOKIE2"] = anyCookie2;
 	{
 		MIMEHeader mh(URLUtils::eUpshift, MIMEHeader::eDoNotSplitHeaderFields);
 		StringStream is(testinput);
@@ -189,40 +201,6 @@ void MIMEHeaderTest::SetCookieTest()
 		assertEqualm("", mh.Lookup("NotThere", ""), "expected 'NotThere' to be emtpy");
 
 		assertAnyEqual(result, mh.GetInfo());
-	}
-
-	Anything result1;
-	// test a simple header
-	testinput =
-		"Connection: Keep-Alive\r\n"
-		"User-Agent: Mozilla/4.7 [en] (WinNT; U)\r\n"
-		"Host: sentosa.hsr.ch:2929\r\n"
-		"Set-Cookie2: Test1=test_value1; expires=Sat, 01-Jan-2001 01:01:01 GMT; path=/;\r\n"
-		"Set-Cookie2: Test2=test_value2; expires=Sat, 02-Jan-2002 02:02:02 GMT; path=/;\r\n"
-		"Set-Cookie2: Test3=test_value3; expires=Sat, 03-Jan-2003 03:03:03 GMT; path=/;\r\n"
-		"\r\n";
-	Trace("TestInput: <" << testinput << ">");
-	result1["CONNECTION"] = "Keep-Alive";
-	result1["USER-AGENT"] = "Mozilla/4.7 [en] (WinNT; U)";
-	result1["HOST"] = "sentosa.hsr.ch:2929";
-	result1["SET-COOKIE2"][0L] = "Test1=test_value1; expires=Sat, 01-Jan-2001 01:01:01 GMT; path=/;";
-	result1["SET-COOKIE2"][1L] = "Test2=test_value2; expires=Sat, 02-Jan-2002 02:02:02 GMT; path=/;";
-	result1["SET-COOKIE2"][2L] = "Test3=test_value3; expires=Sat, 03-Jan-2003 03:03:03 GMT; path=/;";
-
-	{
-		MIMEHeader mh;
-		StringStream is(testinput);
-
-		// basic checks of success
-		t_assertm(mh.DoReadHeader(is), "expected header parsing to succeed");
-
-		// sanity checks
-		t_assertm(mh.IsMultiPart() == false, "expected no multipart");
-		t_assertm(mh.GetBoundary().Length() == 0, "expected no multipart seperator");
-		t_assertm(mh.GetContentLength() == -1, "expected -1, since field is not set");
-		assertEqualm("", mh.Lookup("NotThere", ""), "expected 'NotThere' to be emtpy");
-
-		assertAnyEqual(result1, mh.GetInfo());
 	}
 }
 

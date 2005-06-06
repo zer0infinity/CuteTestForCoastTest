@@ -28,6 +28,7 @@
 		}
 	}
 	/HTTPMimeHeaderMapper { # dummy, but not empty
+		/DoNotSplitHeaderFields 1
 	}
 	/HTTPMimeHeaderWithSuppress {
 		/Suppress {
