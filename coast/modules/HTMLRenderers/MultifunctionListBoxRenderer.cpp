@@ -151,8 +151,11 @@ void HeaderListRenderer::RenderSortIcon(ostream &reply, Context &c, const ROAnyt
 
 	ROAnything roSortIcon = config["SortIcon"];
 	if (!roSortIcon.IsNull()) {
-
-		reply << "<A class=linkLabel HREF=\"\" onClick=\" document.forms[" << strFormName << "].action='";
+		String strStyle;
+		if ( roSortIcon.IsDefined("LinkStyle") ) {
+			strStyle << "class=\"" << roSortIcon["LinkStyle"].AsString() << "\" ";
+		}
+		reply << "<a " << strStyle << "href=\"\" onClick=\" document.forms[" << strFormName << "].action='";
 
 		Renderer *pRenderer = Renderer::FindRenderer("URLRenderer");
 		if (pRenderer) {
@@ -173,8 +176,7 @@ void HeaderListRenderer::RenderSortIcon(ostream &reply, Context &c, const ROAnyt
 				Render(reply, c, imageConfig);
 			}
 
-			reply << "</A>";
-
+			reply << "</a>";
 		}
 	}
 }
@@ -402,9 +404,6 @@ void MultifunctionListBoxRenderer::RenderAll(ostream &reply, Context &c, const R
 		MultifunctionListBoxRenderer::RenderFormName(strFormName, c, config);
 
 		reply << "\n<!-- BEGIN [" << strBoxName << "] -->\n";
-
-		reply << "<!-- specific styles -->\n";
-		RenderStyleSheet(reply, c, config);
 
 		reply << "<!-- begin of backgroundtable -->\n";
 		reply << "<table width=\"10%\"";

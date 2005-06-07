@@ -134,6 +134,7 @@
 //				/Params {
 //					/Button		mandatory query name{ {/Lookup MultifunctionListBoxName} "_Search" }
 //				}
+//				/LinkStyle		String		optional, stylesheet definition for sorticons surrounding link, ex: "class=SortIconLinkStyle"
 //				/ImageAscending { mandatory, Renderespec for Ascending gif/Icon
 //					...
 //				}
