@@ -70,13 +70,13 @@ void ImageRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &conf
 	StartTrace(ImageRenderer.Render);
 	TraceAny(config, "config");
 
-	reply << ("<IMG SRC=\"");
+	reply << ("<img src=\"");
 
 	RenderPathAndFilename(reply, c, config);
 
 	reply << ("\"");
 	PrintOptions3(reply, c, config);
-	reply << (">");
+	reply << ("/>");
 }
 
 //---- FigureRenderer --------------------------------------------------------------
@@ -102,15 +102,15 @@ void FigureRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &con
 		// default: image has border, text that is displayed if no image is loaded
 		// is the same as the image caption
 
-		String options(" BORDER=1 ALT=\"");
+		String options(" border=1 alt=\"");
 		options << caption << "\"";
 		newConfig["Options"] = options;
 	}
 
 	// CAPTION does not seem to work properly on all browsers.. workaround used
-	reply << "<TABLE CELLSPACING=0 CELLPADDING=0>\n";
-	reply << "<TR><TD>";
+	reply << "<table cellspacing=0 cellpadding=0>\n";
+	reply << "<tr><td>";
 	ImageRenderer::RenderAll(reply, c, newConfig);
-	reply << "</TD>\n";
-	reply << "<TR><TD><FONT SIZE=-1>" << caption << "</FONT></TD></TABLE>\n";
+	reply << "</td></tr>\n";
+	reply << "<tr><td><font size=\"-1\">" << caption << "</font></td></tr></table>\n";
 }
