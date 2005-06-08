@@ -106,7 +106,7 @@ bool SSLSocket::ShouldRetry(SSL *ssl, int res, bool handshake)
 	} else if (SSL_ERROR_ZERO_RETURN) { // clean  way to handle peer did not send data
 		// Do not report SSL error
 		String msg("SSLSocket: end of data (connection closed) on file descriptor: ");
-		msg << GetFd() << (handshake) ? " at Handshake" : " at normal r/w";
+		msg << GetFd() << handshake ? " at Handshake" : " at normal r/w";
 		SysLog::Info(msg);
 		return false;
 	}
