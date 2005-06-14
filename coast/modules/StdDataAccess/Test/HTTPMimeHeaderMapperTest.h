@@ -55,7 +55,8 @@ public:
 	void SuppressAndAddHeadersTest();
 	//! test fields which occur more then once
 	void FieldsOccursMoreThanOnceHeaderTest();
-
+	//! show effect of DoNotSplitHeaderFields set off (do split header fields, default)
+	void FieldsOccursMoreThanOnceHeaderTestDoSplit();
 };
 
 #endif

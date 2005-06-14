@@ -67,6 +67,17 @@ void HTTPMimeHeaderMapperTest::FieldsOccursMoreThanOnceHeaderTest()
 	assertAnyEqual(fConfig["fieldsOccursMoreThanOnceHeaderResult"], ctx.GetTmpStore()["Mapper"]["HTTPHeader"]);
 }
 
+void HTTPMimeHeaderMapperTest::FieldsOccursMoreThanOnceHeaderTestDoSplit()
+{
+	StartTrace(HTTPMimeHeaderMapperTest.FieldsOccursMoreThanOnceHeaderTest);
+	IStringStream is(fConfig["fieldsOccursMoreThanOnceHeaderDoSplit"].AsCharPtr());
+	HTTPMimeHeaderMapper m("HTTPMimeHeaderMapperDoSplitHeaderFields");
+	m.CheckConfig("ResultMapper");
+	Context ctx;
+	t_assert(((ResultMapper &)m).Put("", is, ctx)); // key not necessary
+	assertAnyEqual(fConfig["fieldsOccursMoreThanOnceHeaderDoSplitResult"], ctx.GetTmpStore()["Mapper"]["HTTPHeader"]);
+}
+
 void HTTPMimeHeaderMapperTest::CorrectedDateHeadersTest()
 {
 	StartTrace(HTTPMimeHeaderMapperTest.CorrectedDateHeadersTest);
@@ -138,5 +149,6 @@ Test *HTTPMimeHeaderMapperTest::suite ()
 	ADD_CASE(testSuite, HTTPMimeHeaderMapperTest, SuppressAndAddHeadersTest);
 	ADD_CASE(testSuite, HTTPMimeHeaderMapperTest, LiteralSuppressedHeadersTest);
 	ADD_CASE(testSuite, HTTPMimeHeaderMapperTest, FieldsOccursMoreThanOnceHeaderTest);
+	ADD_CASE(testSuite, HTTPMimeHeaderMapperTest, FieldsOccursMoreThanOnceHeaderTestDoSplit);
 	return testSuite;
 }

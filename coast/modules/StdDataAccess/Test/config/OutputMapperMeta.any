@@ -30,6 +30,11 @@
 	/HTTPMimeHeaderMapper { # dummy, but not empty
 		/DoNotSplitHeaderFields 1
 	}
+
+	/HTTPMimeHeaderMapperDoSplitHeaderFields { # dummy, but not empty
+		/DoNotSplitHeaderFields 0
+	}
+
 	/HTTPMimeHeaderWithSuppress {
 		/Suppress {
 			"Connection"
