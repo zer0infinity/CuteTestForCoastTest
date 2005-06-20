@@ -144,6 +144,15 @@
 			/Address	"localhost"
 			/Port		443
 				/Version 1111
+		}
+	}
+	/SessionIdTest
+	{
+		{
+			/Address "dylan"
+			/Port	 "443"
+			/Version 1111
+		}
 		{
 			/Address "gugus"
 			/Port	 "443"
