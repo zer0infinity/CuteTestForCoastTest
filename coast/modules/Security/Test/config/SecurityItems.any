@@ -24,4 +24,19 @@
 	/mysign {
 		/Key "A key for signing"
 	}
+	/BlowfishTest1
+	{
+		#! Key file for scrambling algorithm
+		/Key		"kimdojogoeswildverywild"
+	}
+	/BlowfishTest2
+	{
+		#! Key file for scrambling algorithm
+		/Key		"kimdojogoeswild"
+	}
+	/BlowfishTest3
+	{
+		#! Key file for scrambling algorithm
+		/KeyLoc		"BlowfishTest3KeyFile.txt"
+	}
 }

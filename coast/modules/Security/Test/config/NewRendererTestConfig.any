@@ -1,0 +1,251 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/EnvForAllCases {
+	}
+	/TestCases
+	{
+		/Base64RendererTest
+		{
+			/TmpStore
+			{
+				/Encoded "\377\377alphbushyourself/&#?"
+			}
+			/Renderer
+			{
+				/Base64Renderer { /ContextLookupRenderer Encoded }
+			}
+			/Expected       "//9hbHBoYnVzaHlvdXJzZWxmLyYjPw=="
+		}
+		/Base64WDRendererTest1
+		{
+			/TmpStore
+			{
+				/Encoded "\377\377alpha"
+			}
+			/Renderer
+			{
+				/Base64WDRenderer { /ContextLookupRenderer Encoded }
+			}
+			/Expected      "$$9hbHBoYQ=="
+		}
+		/Base64WDRendererTest2
+		{
+			/TmpStore
+			{
+				/Encoded "\0\357\376"
+			}
+			/Renderer
+			{
+				/Base64WDRenderer { /ContextLookupRenderer Encoded }
+			}
+			/Expected      "AO$-"
+		}
+		/MD5RendererTest1
+		{
+			/TmpStore
+			{
+				/ToSign "Ali Baba und die 40 Indianer"
+			}
+			/Renderer
+			{
+				/MD5Renderer {
+								/ToSign { /ContextLookupRenderer ToSign }
+							 }
+			}
+			/Expected      "KFcBRonj6FHndQldt8854g=="
+		}
+		/MD5RendererTest2
+		{
+			/TmpStore
+			{
+				/ToSign "Ali Baba und die 40 Indianer"
+			}
+			/Renderer
+			{
+				/MD5Renderer {
+								/ToSign { /ContextLookupRenderer ToSign }
+								/Mode   "Base64"
+							 }
+			}
+			/Expected      "KFcBRonj6FHndQldt8854g=="
+		}
+		/MD5RendererTest3
+		{
+			/TmpStore
+			{
+				/ToSign "Kim Dojo goes wild today"
+				/Mode 	"Base64"
+			}
+			/Renderer
+			{
+				/MD5Renderer {
+								/ToSign { /ContextLookupRenderer ToSign }
+#								/Mode   { /ContextLookupRenderer Mode }
+							 }
+			}
+			/Expected      "jeBX5JJXdB4QW9p71t7a2Q=="
+		}
+		/MD5RendererTest4
+		{
+			/TmpStore
+			{
+				/ToSign *
+			}
+			/Renderer
+			{
+				/MD5Renderer {
+								/ToSign { /ContextLookupRenderer ToSign }
+								/Mode   "Hex"
+							 }
+			}
+			/Expected      "D41D8CD98F00B204E9800998ECF8427E"
+		}
+		/MD5RendererTest5
+		{
+			/TmpStore
+			{
+				/ToSign "a"
+			}
+			/Renderer
+			{
+				/MD5Renderer {
+								/ToSign { /ContextLookupRenderer ToSign }
+								/Mode   "Hex"
+							 }
+			}
+			/Expected      "0CC175B9C0F1B6A831C399E269772661"
+		}
+		/MD5RendererTest6
+		{
+			/TmpStore
+			{
+				/ToSign "abc"
+			}
+			/Renderer
+			{
+				/MD5Renderer {
+								/ToSign { /ContextLookupRenderer ToSign }
+								/Mode   "Hex"
+							 }
+			}
+			/Expected      "900150983CD24FB0D6963F7D28E17F72"
+		}
+		/MD5RendererTest6
+		{
+			/TmpStore
+			{
+				/ToSign "message digest"
+			}
+			/Renderer
+			{
+				/MD5Renderer {
+								/ToSign { /ContextLookupRenderer ToSign }
+								/Mode   "Hex"
+							 }
+			}
+			/Expected      "F96B697D7CB7938D525A2F31AAF161D0"
+		}
+		/MD5RendererTest7
+		{
+			/TmpStore
+			{
+				/ToSign "abcdefghijklmnopqrstuvwxyz"
+			}
+			/Renderer
+			{
+				/MD5Renderer {
+								/ToSign { /ContextLookupRenderer ToSign }
+								/Mode   "Hex"
+							 }
+			}
+			/Expected      "C3FCD3D76192E4007DFB496CCA67E13B"
+		}
+		/MD5RendererTest8
+		{
+			/TmpStore
+			{
+				/ToSign "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+			}
+			/Renderer
+			{
+				/MD5Renderer {
+								/ToSign { /ContextLookupRenderer ToSign }
+								/Mode   "Hex"
+							 }
+			}
+			/Expected      "D174AB98D277D9F5A5611C2C9F419D9F"
+		}
+		/MD5RendererTest8
+		{
+			/TmpStore
+			{
+				/ToSign		"12345678901234567890123456789012345678901234567890123456789012345678901234567890"
+
+			}
+			/Renderer
+			{
+				/MD5Renderer {
+								/ToSign { /ContextLookupRenderer ToSign }
+								/Mode   "Hex"
+							 }
+			}
+			/Expected      "57EDF4A22BE3C955AC49DA2E2107B67A"
+		}
+		/BlowfishRendererTest1
+		{
+			/TmpStore
+			{
+				/Base64ArmouredKey		"qNGhtXvyvjpybwX1I+1Pyw=="
+				/BlowfishSecurityItem	"BlowfishTest1"
+			}
+			/Renderer
+			{
+				/BlowfishRenderer {
+								/Base64ArmouredKey { /ContextLookupRenderer Base64ArmouredKey }
+								/BlowfishSecurityItem { /ContextLookupRenderer  BlowfishSecurityItem }
+							 }
+			}
+			/Expected      "password"
+		}
+		/BlowfishRendererTest2
+		{
+			/TmpStore
+			{
+				/Base64ArmouredKey		"WVMktA8QWEQ="
+				/BlowfishSecurityItem	"BlowfishTest2"
+			}
+			/Renderer
+			{
+				/BlowfishRenderer {
+								/Base64ArmouredKey { /ContextLookupRenderer Base64ArmouredKey }
+								/BlowfishSecurityItem { /ContextLookupRenderer  BlowfishSecurityItem }
+							 }
+			}
+			/Expected      "hank"
+		}
+		/BlowfishRendererTest3
+		{
+			/TmpStore
+			{
+				/Base64ArmouredKey		"8zCnVKa03C0=="
+				/BlowfishSecurityItem	"BlowfishTest3"
+			}
+			/Renderer
+			{
+				/BlowfishRenderer {
+								/Base64ArmouredKey { /ContextLookupRenderer Base64ArmouredKey }
+								/BlowfishSecurityItem { /ContextLookupRenderer  BlowfishSecurityItem }
+							 }
+			}
+			/Expected      "nasowas"
+		}
+	}
+}

@@ -8,7 +8,7 @@
 
 {
 
-        /LowerBound		00
+        /LowerBound		0
         /UpperBound		320
         /DumpAnythings	1
 
@@ -26,7 +26,7 @@
         }
         /SecurityItem {
         	/MainSwitch		300
-			/EnableAll		110
+			/EnableAll		310
 
 			/Encode	310
 			/DoLoadConfig 310
@@ -65,5 +65,16 @@
 			/DoScrambleTest 300
 
 		}
-
+		/Base64Renderer {
+			/MainSwitch		300
+			/EnableAll		310
+		}
+		/MD5Renderer {
+			/MainSwitch		300
+			/EnableAll		310
+		}
+		/BlowfishRenderer {
+			/MainSwitch		300
+			/EnableAll		310
+		}
 }
