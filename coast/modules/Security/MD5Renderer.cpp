@@ -29,6 +29,7 @@ void MD5Renderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &conf
 {
 	StartTrace(MD5Renderer.RenderAll);
 	String textToHash, resultingHash, b64EncodedText;
+	TraceAny(config, "config");
 	Renderer::RenderOnString(textToHash, ctx, config["ToSign"]);
 	MD5Signer::DoHash(textToHash, resultingHash);
 	if ( config["Mode"].AsString("Base64") == "Base64" ) {
