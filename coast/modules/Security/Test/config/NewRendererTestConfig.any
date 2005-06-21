@@ -138,7 +138,7 @@
 			}
 			/Expected      "900150983CD24FB0D6963F7D28E17F72"
 		}
-		/MD5RendererTest6
+		/MD5RendererTest7
 		{
 			/TmpStore
 			{
@@ -153,7 +153,7 @@
 			}
 			/Expected      "F96B697D7CB7938D525A2F31AAF161D0"
 		}
-		/MD5RendererTest7
+		/MD5RendererTest8
 		{
 			/TmpStore
 			{
@@ -168,7 +168,7 @@
 			}
 			/Expected      "C3FCD3D76192E4007DFB496CCA67E13B"
 		}
-		/MD5RendererTest8
+		/MD5RendererTest9
 		{
 			/TmpStore
 			{
@@ -183,7 +183,7 @@
 			}
 			/Expected      "D174AB98D277D9F5A5611C2C9F419D9F"
 		}
-		/MD5RendererTest8
+		/MD5RendererTest10
 		{
 			/TmpStore
 			{
