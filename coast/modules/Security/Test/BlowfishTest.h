@@ -44,6 +44,8 @@ public:
 	void scrambleSameKeyButDifferentIvec();
 	void scrambleLongerStringDifferent();
 	void scrambleCarefullyPaddedString();
+	void cbcCrossPlatform();
+
 protected:
 	void DoScrambleUnscramble(Scrambler &bfscrambler, Scrambler &bfscrambler2);
 	void DoDifferentKey(Scrambler &bfscrambler, Scrambler &bfscrambler2);
