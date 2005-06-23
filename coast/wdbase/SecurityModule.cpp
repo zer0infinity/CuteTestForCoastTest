@@ -133,12 +133,23 @@ bool SecurityItem::Init(ROAnything config)
 bool SecurityItem::DoLoadKeyFile(const char *name, String &key)
 {
 	StartTrace1(SecurityItem.DoLoadKeyFile, name);
-	Anything content;
-	if (!System::LoadConfigFile(content, name, "")) {
-		return false;
+	// search file with path
+	// open file with relative path
+	String resolvedFileName =  System::GetFilePath(name, (const char *)0);
+	iostream *Ios = System::OpenIStream(resolvedFileName, "");
+	if ( Ios ) {
+		String sBuf(4096);
+		char *buf = (char *)(const char *) sBuf;
+		while ( !(Ios->eof()) ) {
+			Ios->getline(buf, 4096);
+			key.Append(buf);
+		}
+		delete Ios;
+		return (key.Length() > 0L);
+
 	}
-	key = content[0L].AsString();
-	return true;
+	Trace("Unable to open file: [" << name << " resolved: [" << resolvedFileName << "]");
+	return false;
 }
 
 String SecurityItem::GenerateRandomString(long length)
