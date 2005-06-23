@@ -15,6 +15,8 @@
 //--- standard modules used ----------------------------------------------------
 #include "TestSuite.h"
 #include "Dbg.h"
+#include "Base64.h"
+#include "System.h"
 
 /* Lets use the DES test vectors :-) */
 #define NUM_TESTS 34
@@ -198,6 +200,7 @@ Test *BlowfishTest::suite ()
 	ADD_CASE(testSuite, BlowfishTest, scrambleLongerStringDifferent);
 	ADD_CASE(testSuite, BlowfishTest, scrambleCarefullyPaddedString);
 	ADD_CASE(testSuite, BlowfishTest, scrambleSameKeyButDifferentIvec);
+	ADD_CASE(testSuite, BlowfishTest, cbcCrossPlatform);
 
 	return testSuite;
 }
@@ -336,6 +339,62 @@ void BlowfishTest::scrambleSameKeyButDifferentIvec()
 	t_assert(bcsn.DoDecode(decn, scrn));
 	assertEqual(text, dec0);
 	assertEqual(text, decn);
+}
+
+void BlowfishTest::cbcCrossPlatform()
+{
+	StartTrace(BlowfishTest.cbcCrossPlatform);
+//	Anything config;
+//	config["Key"]="A simple Key";
+//	config["InitVec0"] = 4711L;
+//	config["InitVec1"] = (long)0xabcdef12;
+//	BlowfishCBCScrambler bcsn("nonzero");
+//	t_assert(bcsn.Init(config));
+//	unsigned int ui;
+//	unsigned int lowbound = 0;
+//	unsigned int highbound = 256;
+//	String text;
+//	Anything result;
+//	for ( ui = lowbound; ui < highbound; ui++ )
+//	{
+//		text.Append((char) ui);
+//		String scrn;
+//		bcsn.DoEncode(scrn,text);
+//		Base64 base64("base64");
+//		String bscn64Encoded;
+//		base64.DoEncode( bscn64Encoded, scrn );
+////		Trace("Run: " << (long) ui << "BFCBC BASE64: " << bscn64Encoded);
+//		result[(long) ui] = bscn64Encoded;
+//	}
+//	TraceAny(result,"result");
+//
+//	ostream *os0 = System::OpenOStream("/tmp/CBCResult","any", ios::out);
+//	if ( os0 )
+//	{
+//		result.Export( *os0, 0 );
+//		delete os0;
+//	}
+//	else
+//	{
+//		Trace("Problem writing file.");
+//	}
+//
+//	Anything cbcResult;
+//	t_assert(System::LoadConfigFile(cbcResult,"CBCResult","any"));
+//	t_assert(!cbcResult.IsNull());
+//	text = "";
+//	for ( ui=lowbound; ui < highbound;  ui++ )
+//	{
+//		text.Append((char) ui);
+//		Base64 base64("base64");
+//		String bscn64Decoded = cbcResult[(long) ui].AsString();
+//		String decodedString;
+//		base64.DoDecode( decodedString, bscn64Decoded );
+//		bcsn.DoDecode(decodedString,bscn64Decoded); // might fail or succeed, but should be wrong
+//		assertEqual(text,decodedString);
+//		Trace("DecodedString: " << decodedString);
+//		Trace("Text: " << text);
+//	}
 }
 
 void BlowfishTest::scrambleLongerStringTheSame()
