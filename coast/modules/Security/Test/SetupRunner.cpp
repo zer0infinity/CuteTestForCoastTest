@@ -18,9 +18,6 @@
 #include "Base64Test.h"
 #include "ScrambleStateTest.h"
 #include "TableCompressorTest.h"
-#include "Base64WDRendererTest.h"
-#include "Base64RendererTest.h"
-#include "MD5RendererTest.h"
 #include "NewRendererTest.h"
 
 void setupRunner(TestRunner &runner)
@@ -31,8 +28,5 @@ void setupRunner(TestRunner &runner)
 	ADD_SUITE(runner, BlowfishTest);
 	ADD_SUITE(runner, ScrambleStateTest);
 	ADD_SUITE(runner, TableCompressorTest);
-	ADD_SUITE(runner, Base64WDRendererTest);
-	ADD_SUITE(runner, Base64RendererTest);
-	ADD_SUITE(runner, MD5RendererTest);
 	ADD_SUITE(runner, NewRendererTest);
 } // setupRunner

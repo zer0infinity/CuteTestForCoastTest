@@ -8,7 +8,7 @@
 
 {
 
-        /LowerBound		0
+        /LowerBound		300
         /UpperBound		320
         /DumpAnythings	1
 
@@ -24,6 +24,10 @@
         	/MainSwitch		100
 			/EnableAll		110
         }
+        /Scrambler {
+        	/MainSwitch		320
+			/EnableAll		320
+        }
         /SecurityItem {
         	/MainSwitch		300
 			/EnableAll		310
@@ -33,8 +37,12 @@
 			/Init 310
         }
         /BlowfishScrambler {
-        	/MainSwitch		200
-			/EnableAll		210
+        	/MainSwitch		300
+			/EnableAll		320
+        }
+		/BlowfishCBCScrambler {
+        	/MainSwitch		300
+			/EnableAll		320
         }
         /Base64Encoder{
         	/MainSwitch		100

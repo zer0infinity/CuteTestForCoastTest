@@ -12,7 +12,7 @@
 		/Key "A Brain Dead Key"
 	}
 	/mybs0 {
-		/KeyLoc "keyfile.any"
+		/KeyLoc "config/keyfile.txt"
 	}
 	/mybc {
 		/Key "My simple and non random key"
@@ -37,6 +37,19 @@
 	/BlowfishTest3
 	{
 		#! Key file for scrambling algorithm
-		/KeyLoc		"BlowfishTest3KeyFile.txt"
+		/KeyLoc		"config/BlowfishTest3KeyFile.txt"
 	}
+	/BlowfishTest4
+	{
+		#! Key file for scrambling algorithm
+		/KeyLoc		"config/BlowfishTest4KeyFile.txt"
+	}
+	/BlowfishTest5 {
+		/Key "gugus gugus"
+		# Initialization vector of 2 x 32 bits, factually extends the key
+		# of a BlowfishCBCScrambler
+#		/InitVec0 0x01234567
+#		/InitVec1 0x89ABCDEF
+	}
+
 }

@@ -42,6 +42,11 @@
 					BlowfishTest1
 					BlowfishTest2
 					BlowfishTest3
+					BlowfishTest4
+					/BlowfishCBCScrambler
+					{
+						BlowfishTest5
+					}
 				}
 			}
 		}

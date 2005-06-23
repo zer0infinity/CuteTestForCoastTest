@@ -88,7 +88,7 @@
 			{
 				/MD5Renderer {
 								/ToSign { /ContextLookupRenderer ToSign }
-#								/Mode   { /ContextLookupRenderer Mode }
+								/Mode   "Base64"
 							 }
 			}
 			/Expected      "jeBX5JJXdB4QW9p71t7a2Q=="
@@ -247,5 +247,38 @@
 			}
 			/Expected      "nasowas"
 		}
+		/BlowfishRendererTest4
+		{
+			/TmpStore
+			{
+				/Base64ArmouredKey		"N7tPieX5wyU="
+				/BlowfishSecurityItem	"BlowfishTest4"
+			}
+			/Renderer
+			{
+				/BlowfishRenderer {
+								/Base64ArmouredKey { /ContextLookupRenderer Base64ArmouredKey }
+								/BlowfishSecurityItem { /ContextLookupRenderer  BlowfishSecurityItem }
+							 }
+			}
+			/Expected      "nasowas"
+		}
+#		/BlowfishRendererTest5
+#		{
+#			/TmpStore
+#			{
+#				/Base64ArmouredKey		"Xafd//ckT1TY6pBAHyXYDg=="
+#
+#				/BlowfishSecurityItem	"BlowfishTest5"
+#			}
+#			/Renderer
+#			{
+#				/BlowfishRenderer {
+#								/Base64ArmouredKey { /ContextLookupRenderer Base64ArmouredKey }
+#								/BlowfishSecurityItem { /ContextLookupRenderer  BlowfishSecurityItem }
+#							 }
+#			}
+#			/Expected      "nasowas"
+#		}
 	}
 }
