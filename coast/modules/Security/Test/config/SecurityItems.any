@@ -12,7 +12,7 @@
 		/Key "A Brain Dead Key"
 	}
 	/mybs0 {
-		/KeyLoc "config/keyfile.txt"
+		/KeyLoc "keyfile.txt"
 	}
 	/mybc {
 		/Key "My simple and non random key"
@@ -37,12 +37,12 @@
 	/BlowfishTest3
 	{
 		#! Key file for scrambling algorithm
-		/KeyLoc		"config/BlowfishTest3KeyFile.txt"
+		/KeyLoc		"BlowfishTest3KeyFile.txt"
 	}
 	/BlowfishTest4
 	{
 		#! Key file for scrambling algorithm
-		/KeyLoc		"config/BlowfishTest4KeyFile.txt"
+		/KeyLoc		"BlowfishTest4KeyFile.txt"
 	}
 	/BlowfishTest5 {
 		/Key "gugus gugus"
