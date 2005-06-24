@@ -714,5 +714,82 @@
 			/Expected	"Kurt%20ist%20zu%20Dumm%20%2F%20fuer%20diese%20Arbeit"
 #                        01234567890123456789012345678901234567890123456789x123456789
 		}
+		/DecimalFormatRendererFormTest {
+			/Env {
+				/InString				"1234.12345"
+				/InScale				"3"
+				/InDecimalSeparator		"."
+			}
+			/Renderer {
+				/DecimalFormatRenderer {
+					/String				{ /Lookup InString }
+					/Scale				{ /Lookup InScale }
+					/DecimalSeparator	{ /Lookup InDecimalSeparator }
+				}
+			}
+			/Expected	"1234.123"
+		}
+		/DecimalFormatRendererRemoveScaleTest {
+			/Env {
+				/InString				"1234345.123"
+				/InScale				"0"
+				/InDecimalSeparator		"."
+			}
+			/Renderer {
+				/DecimalFormatRenderer {
+					/String				{ /Lookup InString }
+					/Scale				{ /Lookup InScale }
+					/DecimalSeparator	{ /Lookup InDecimalSeparator }
+				}
+			}
+			/Expected	"1234345"
+		}
+		/DecimalFormatRendererScaleFillerTest {
+			/Env {
+				/InString				"1234345.12"
+				/InScale				"5"
+				/InDecimalSeparator		"."
+			}
+			/Renderer {
+				/DecimalFormatRenderer {
+					/String				{ /Lookup InString }
+					/Scale				{ /Lookup InScale }
+					/DecimalSeparator	{ /Lookup InDecimalSeparator }
+				}
+			}
+			/Expected	"1234345.12000"
+		}
+		/DecimalFormatRendererNoScaleTest {
+			/Env {
+				/InString				"1234345"
+				/InScale				"0"
+				/InDecimalSeparator		"."
+			}
+			/Renderer {
+				/DecimalFormatRenderer {
+					/String				{ /Lookup InString }
+					/Scale				{ /Lookup InScale }
+					/DecimalSeparator	{ /Lookup InDecimalSeparator }
+				}
+			}
+			/Expected	"1234345"
+		}
+		/DecimalFormatRendererAddScaleTest {
+			/Env {
+				/InString				"1234345"
+				/InScale				"2"
+				/InDecimalSeparator		"."
+			}
+			/Renderer {
+				/DecimalFormatRenderer {
+					/String				{ /Lookup InString }
+					/Scale				{ /Lookup InScale }
+					/DecimalSeparator	{ /Lookup InDecimalSeparator }
+				}
+			}
+			/Expected	"1234345.00"
+		}
+
 	}
+
 }
