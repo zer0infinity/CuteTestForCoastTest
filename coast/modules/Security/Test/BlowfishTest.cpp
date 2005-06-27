@@ -17,6 +17,7 @@
 #include "Dbg.h"
 #include "Base64.h"
 #include "System.h"
+#include "StringStream.h"
 
 /* Lets use the DES test vectors :-) */
 #define NUM_TESTS 34
@@ -344,31 +345,33 @@ void BlowfishTest::scrambleSameKeyButDifferentIvec()
 void BlowfishTest::cbcCrossPlatform()
 {
 	StartTrace(BlowfishTest.cbcCrossPlatform);
-//	Anything config;
-//	config["Key"]="A simple Key";
-//	config["InitVec0"] = 4711L;
-//	config["InitVec1"] = (long)0xabcdef12;
-//	BlowfishCBCScrambler bcsn("nonzero");
-//	t_assert(bcsn.Init(config));
-//	unsigned int ui;
-//	unsigned int lowbound = 0;
-//	unsigned int highbound = 256;
-//	String text;
-//	Anything result;
-//	for ( ui = lowbound; ui < highbound; ui++ )
+	Anything config;
+	config["Key"] = "A simple Key";
+	config["InitVec0"] = 4711L;
+	config["InitVec1"] = (long)0xabcdef12;
+	BlowfishCBCScrambler bcsn("nonzero");
+	t_assert(bcsn.Init(config));
+	long index;
+	long lowbound =  0L;
+	long highbound = 255L;
+	String reference;
+	Anything result;
+
+	// Start cbcResult generation code
+//	for ( index = highbound; index >= lowbound; index-- )
 //	{
-//		text.Append((char) ui);
-//		String scrn;
-//		bcsn.DoEncode(scrn,text);
+//		reference.Append((char) index);
+//		String bfcbcEncoded;
+//		bcsn.DoEncode(bfcbcEncoded,reference);
 //		Base64 base64("base64");
-//		String bscn64Encoded;
-//		base64.DoEncode( bscn64Encoded, scrn );
-////		Trace("Run: " << (long) ui << "BFCBC BASE64: " << bscn64Encoded);
-//		result[(long) ui] = bscn64Encoded;
+//		String bfcbcBase64Encoded;
+//		base64.DoEncode( bfcbcBase64Encoded, bfcbcEncoded );
+//		result[index] = bfcbcBase64Encoded;
 //	}
 //	TraceAny(result,"result");
-//
-//	ostream *os0 = System::OpenOStream("/tmp/CBCResult","any", ios::out);
+//	String resolvedFileName =  System::GetFilePath("CBCResult.any", (const char *)0);
+//	Trace("resolved FileName: " << resolvedFileName);
+//	ostream *os0 = System::OpenOStream(resolvedFileName,"", ios::out);
 //	if ( os0 )
 //	{
 //		result.Export( *os0, 0 );
@@ -376,25 +379,32 @@ void BlowfishTest::cbcCrossPlatform()
 //	}
 //	else
 //	{
-//		Trace("Problem writing file.");
+//		t_assert(true==false);
+//		assertEqualm(true,false,"Problem writing reference file CBCResult.any.");
 //	}
-//
-//	Anything cbcResult;
-//	t_assert(System::LoadConfigFile(cbcResult,"CBCResult","any"));
-//	t_assert(!cbcResult.IsNull());
-//	text = "";
-//	for ( ui=lowbound; ui < highbound;  ui++ )
-//	{
-//		text.Append((char) ui);
-//		Base64 base64("base64");
-//		String bscn64Decoded = cbcResult[(long) ui].AsString();
-//		String decodedString;
-//		base64.DoDecode( decodedString, bscn64Decoded );
-//		bcsn.DoDecode(decodedString,bscn64Decoded); // might fail or succeed, but should be wrong
-//		assertEqual(text,decodedString);
-//		Trace("DecodedString: " << decodedString);
-//		Trace("Text: " << text);
-//	}
+//	reference = "";
+	// End cbcResult generation code
+
+	Anything cbcResult;
+	t_assert(System::LoadConfigFile(cbcResult, "CBCResult", "any"));
+	t_assert(!cbcResult.IsNull());
+	for ( index = highbound; index >= lowbound; index-- ) {
+		reference.Append((char) index);
+		Base64 base64("base64");
+		String bfcbcBase64Encoded = cbcResult[index].AsString();
+		String bfcbcEncoded, decodedString;
+		base64.DoDecode( bfcbcEncoded, bfcbcBase64Encoded );
+		bcsn.DoDecode(decodedString, bfcbcEncoded); // might fail or succeed, but should be wrong
+		assertEqual(reference, decodedString);
+		String strBuf1;
+		OStringStream stream1(strBuf1);
+		reference.DumpAsHex(stream1);
+		Trace("Reference string: " << reference);
+		String strBuf2;
+		OStringStream stream2(strBuf2);
+		decodedString.DumpAsHex(stream2);
+		Trace("Decoded string  : " << decodedString);
+	}
 }
 
 void BlowfishTest::scrambleLongerStringTheSame()
@@ -664,6 +674,7 @@ void BlowfishTest::rawECBCyphers()
 
 		t_assert(memcmp(&(cipher_data[n][0]), out, 8) == 0);
 		if (memcmp(&(cipher_data[n][0]), out, 8) != 0) {
+			assertEqualm(true, false, "Expected BF_ecb_encrypt blowfish error encrypting test to pass");
 			printf("BF_ecb_encrypt blowfish error encrypting\n");
 			printf("got     :");
 			for (i = 0; i < 8; i++) {
@@ -679,6 +690,7 @@ void BlowfishTest::rawECBCyphers()
 		bfscrambler.DoECB_multipleBlockDecrypt(out, 8);
 		t_assert(memcmp(&(plain_data[n][0]), &out, 8) == 0);
 		if (memcmp(&(plain_data[n][0]), &out, 8) != 0) {
+			assertEqualm(true, false, "Expected BF_ecb_encrypt error decrypting test to pass");
 			printf("BF_ecb_encrypt error decrypting\n");
 			printf("got     :");
 			for (i = 0; i < 8; i++) {
