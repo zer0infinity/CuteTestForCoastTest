@@ -263,22 +263,22 @@
 			}
 			/Expected      "nasowas"
 		}
-#		/BlowfishRendererTest5
-#		{
-#			/TmpStore
-#			{
-#				/Base64ArmouredKey		"Xafd//ckT1TY6pBAHyXYDg=="
-#
-#				/BlowfishSecurityItem	"BlowfishTest5"
-#			}
-#			/Renderer
-#			{
-#				/BlowfishRenderer {
-#								/Base64ArmouredKey { /ContextLookupRenderer Base64ArmouredKey }
-#								/BlowfishSecurityItem { /ContextLookupRenderer  BlowfishSecurityItem }
-#							 }
-#			}
-#			/Expected      "nasowas"
-#		}
+		/BlowfishRendererTest5
+		{
+			/TmpStore
+			{
+				/Base64ArmouredKey		"n9DN4em1bN0="
+
+				/BlowfishSecurityItem	"BlowfishTest5"
+			}
+			/Renderer
+			{
+				/BlowfishRenderer {
+								/Base64ArmouredKey { /ContextLookupRenderer Base64ArmouredKey }
+								/BlowfishSecurityItem { /ContextLookupRenderer  BlowfishSecurityItem }
+							 }
+			}
+			/Expected      "nasowas"
+		}
 	}
 }
