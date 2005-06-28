@@ -280,5 +280,45 @@
 			}
 			/Expected      "nasowas"
 		}
+		/BasicAuthenticationRendererTest1
+		{
+			/TmpStore
+			{
+				/User					"user"
+				/Password				"password"
+				/Scheme					"UltraBasic"
+				/BasicAuthorizationHeaderFieldName	"Fancyfield"
+			}
+			/Renderer
+			{
+				/BasicAuthenticationRenderer {
+								/User { /ContextLookupRenderer User }
+								/Password { /ContextLookupRenderer  Password }
+								/Scheme { /ContextLookupRenderer  Scheme }
+								/Basic { /ContextLookupRenderer  Basic }
+								/BasicAuthorizationHeaderFieldName { /ContextLookupRenderer  BasicAuthorizationHeaderFieldName }
+							 }
+			}
+			/Expected      "Fancyfield: UltraBasic dXNlcjpwYXNzd29yZA=="
+		}
+		/BasicAuthenticationRendererTest2
+		{
+			/TmpStore
+			{
+				/User					"user"
+				/Password				"password"
+			}
+			/Renderer
+			{
+				/BasicAuthenticationRenderer {
+								/User { /ContextLookupRenderer User }
+								/Password { /ContextLookupRenderer  Password }
+								/Scheme { /ContextLookupRenderer  Scheme }
+								/Basic { /ContextLookupRenderer  Basic }
+								/BasicAuthorizationHeaderFieldName { /ContextLookupRenderer  BasicAuthorizationHeaderFieldName }
+							 }
+			}
+			/Expected      "Authorization: Basic dXNlcjpwYXNzd29yZA=="
+		}
 	}
 }
