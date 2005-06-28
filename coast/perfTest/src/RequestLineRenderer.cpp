@@ -136,6 +136,7 @@ void RequestLineRenderer::RenderAll(ostream &reply, Context &c, const ROAnything
 			// encode the string and add the authorization slot to the request
 			Anything someData;
 			String strUserPass;
+			String authorizationHeaderFieldName;
 			if (myTmpStore.LookupPath(someData, "CurrentServer.User")) {
 				String strData;
 				RenderOnString(strData, c, someData);
@@ -149,11 +150,19 @@ void RequestLineRenderer::RenderAll(ostream &reply, Context &c, const ROAnything
 				strUserPass << strData;
 				Trace("Pass:[" << strData << "]");
 			}
+			if (myTmpStore.LookupPath(someData, "CurrentServer.BasicAuthorizationHeaderFieldName")) {
+				RenderOnString(authorizationHeaderFieldName, c, someData);
+				Trace("authorizationHeaderFieldName: " << authorizationHeaderFieldName << "Length: " << authorizationHeaderFieldName.Length());
+			}
+			if ( authorizationHeaderFieldName.Length() == 0L ) {
+				authorizationHeaderFieldName = "Authorization";
+			}
+			Trace("Authorization header field name:[" << authorizationHeaderFieldName << "]");
 			Encoder *base64 = Encoder::FindEncoder("Base64Regular");
 			String encodeddata(strUserPass.Length() * 4 / 3);
 			if (base64) {
 				base64->DoEncode(encodeddata, strUserPass);
-				replyDebugBuffer << "\r\nAuthorization: Basic " << encodeddata;
+				replyDebugBuffer << "\r\n" << authorizationHeaderFieldName << ": Basic " << encodeddata;
 				Trace("string [" << strUserPass << "] encoded [" << encodeddata << "]");
 			} else {
 				SysLog::Warning("Base64 encoder not found! Authorization not added to request!");
