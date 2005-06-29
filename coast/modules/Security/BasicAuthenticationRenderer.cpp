@@ -28,11 +28,11 @@ void BasicAuthenticationRenderer::RenderAll(ostream &reply, Context &ctx, const 
 {
 	StartTrace(BasicAuthenticationRenderer.RenderAll);
 	// see RFC 2617 for details
-	String user, password, scheme, authorizationHeaderFieldName;
+	String user, password, scheme, proxy;
 	Renderer::RenderOnString(user, ctx, config["User"]);
 	Renderer::RenderOnString(password, ctx, config["Password"]);
 	Renderer::RenderOnString(scheme, ctx, config["Scheme"]);
-	Renderer::RenderOnString(authorizationHeaderFieldName, ctx, config["BasicAuthorizationHeaderFieldName"]);
+	Renderer::RenderOnString(proxy, ctx, config["Proxy"]);
 	if ( (user.Length() == 0L) || (password.Length() == 0L) ) {
 		String msg;
 		msg.Append("Authorization: Missing userid/password");
@@ -40,8 +40,10 @@ void BasicAuthenticationRenderer::RenderAll(ostream &reply, Context &ctx, const 
 		Trace(msg);
 		reply << msg;
 	}
-	if ( authorizationHeaderFieldName.Length() == 0L ) {
-		authorizationHeaderFieldName = "Authorization";
+	if ( proxy.AsLong(0L) == false ) {
+		proxy = "Authorization";
+	} else {
+		proxy = "Proxy-Authorization";
 	}
 	if ( scheme.Length() == 0L ) {
 		scheme = "Basic";
@@ -51,7 +53,7 @@ void BasicAuthenticationRenderer::RenderAll(ostream &reply, Context &ctx, const 
 	String b64EncodedText;
 	Base64Regular(fName).DoEncode(b64EncodedText, userPass);
 	String authHeaderLine;
-	authHeaderLine << authorizationHeaderFieldName << ": " << scheme << " " << b64EncodedText;
+	authHeaderLine << proxy << ": " << scheme << " " << b64EncodedText;
 	Trace("AuthHeaderLine: " << authHeaderLine << " User: [" << user << "[ Password [" << password << "]");
 	reply << authHeaderLine;
 }
