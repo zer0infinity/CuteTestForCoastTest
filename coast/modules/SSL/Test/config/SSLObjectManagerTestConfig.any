@@ -13,10 +13,10 @@
 		{
 			/Config
 			{
-				/Address	"localhost"
-				/Port		443
+				/Address	"dylan"
 ####												  -cert servercert.pem -key serverkey.pem -Verify 4 -CAfile fullchain.pem -debug
 ####												  and type "HTTP" as the server's response in GetCtxTest.
+				/Port		22222
 				/UseThreadLocalMemoryMemory		1
 				/SSLVerifyDepth 3
 				/KeyFileClient	"cert_files/clientkey.pem"
@@ -27,7 +27,7 @@
 				/VerifyCertifiedEntity 1
 				/SessionResumption 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -62,10 +62,10 @@
 		{
 			/Config
 			{
-				/Address	"localhost"
-				/Port		443
+				/Address	"dylan"
 ####												  -cert servercert.pem -key serverkey.pem -Verify 4 -CAfile fullchain.pem -debug
 ####												  and type "HTTP" as the server's response in GetCtxTest.
+				/Port		22222
 				/UseThreadLocalMemoryMemory		1
 				/SSLClientSessionTimeout	1
 				/SSLVerifyDepth 3
@@ -77,7 +77,7 @@
 				/VerifyCertifiedEntity 1
 				/SessionResumption 1
 				/CertVerifyStringIsFilter 0
-					/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -92,10 +92,10 @@
 		{
 			/Config
 			{
-				/Address	"localhost"
-				/Port		443
+				/Address	"dylan"
 ####												  -cert servercert.pem -key serverkey.pem -Verify 4 -CAfile fullchain.pem -debug
 ####												  and type "HTTP" as the server's response in GetCtxTest.
+				/Port		22222
 				/UseThreadLocalMemoryMemory		1
 				/SSLClientSessionTimeout	1
 				/SSLVerifyDepth 3
@@ -107,7 +107,7 @@
 				/VerifyCertifiedEntity 1
 				/SessionResumption 0
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -121,7 +121,7 @@
 	/SessionResumptionTest
 	{
 		{
-			/Address	"localhost"
+			/Address	"dylan"
 			/Port		443
 ####											  -cert servercert.pem -key serverkey.pem -Verify 4 -CAfile fullchain.pem -debug
 ####											  and type "HTTP" as the server's response in GetCtxTest.
@@ -135,15 +135,14 @@
 			/VerifyCertifiedEntity 1
 			/SessionResumption 1
 			/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+			/CertVerifyString		"emailAddress=hank@wildplanet.com,CN=hank,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 		}
 	}
 	/GetDefaultCtxTest
 	{
 		{
-			/Address	"localhost"
-			/Port		443
-				/Version 1111
+			/Address	"dylan"
+			/Port		22222
 		}
 	}
 	/SessionIdTest
