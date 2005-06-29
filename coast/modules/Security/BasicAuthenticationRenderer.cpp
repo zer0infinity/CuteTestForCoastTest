@@ -54,6 +54,6 @@ void BasicAuthenticationRenderer::RenderAll(ostream &reply, Context &ctx, const 
 	Base64Regular(fName).DoEncode(b64EncodedText, userPass);
 	String authHeaderLine;
 	authHeaderLine << proxy << ": " << scheme << " " << b64EncodedText;
-	Trace("AuthHeaderLine: " << authHeaderLine << " User: [" << user << "[ Password [" << password << "]");
+	Trace("AuthHeaderLine: " << authHeaderLine << " User: [" << user << "] Password [" << password << "]");
 	reply << authHeaderLine;
 }
