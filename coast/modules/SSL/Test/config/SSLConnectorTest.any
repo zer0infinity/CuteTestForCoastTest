@@ -9,11 +9,11 @@
 {
 
 	/InternalSSLhost {
-		/ip		"marvin.hsr.loc"
-		/port		443
+		/ip		"dylan"
+		/port		22222
 	}
 	/RemoteSSLhost {
-		/name	"tonga.hsr.loc"
+		/name	"www.tklink.com"
 		/port		443
 		/faultyport	8081
 	}
