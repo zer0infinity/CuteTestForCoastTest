@@ -287,7 +287,7 @@
 				/User					"user"
 				/Password				"password"
 				/Scheme					"UltraBasic"
-				/BasicAuthorizationHeaderFieldName	"Fancyfield"
+				/Proxy					1
 			}
 			/Renderer
 			{
@@ -296,10 +296,10 @@
 								/Password { /ContextLookupRenderer  Password }
 								/Scheme { /ContextLookupRenderer  Scheme }
 								/Basic { /ContextLookupRenderer  Basic }
-								/BasicAuthorizationHeaderFieldName { /ContextLookupRenderer  BasicAuthorizationHeaderFieldName }
+								/Proxy { /ContextLookupRenderer  Proxy }
 							 }
 			}
-			/Expected      "Fancyfield: UltraBasic dXNlcjpwYXNzd29yZA=="
+			/Expected      "Proxy-Authorization: UltraBasic dXNlcjpwYXNzd29yZA=="
 		}
 		/BasicAuthenticationRendererTest2
 		{
@@ -313,9 +313,6 @@
 				/BasicAuthenticationRenderer {
 								/User { /ContextLookupRenderer User }
 								/Password { /ContextLookupRenderer  Password }
-								/Scheme { /ContextLookupRenderer  Scheme }
-								/Basic { /ContextLookupRenderer  Basic }
-								/BasicAuthorizationHeaderFieldName { /ContextLookupRenderer  BasicAuthorizationHeaderFieldName }
 							 }
 			}
 			/Expected      "Authorization: Basic dXNlcjpwYXNzd29yZA=="
