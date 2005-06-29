@@ -203,13 +203,13 @@
 		{
 			/TmpStore
 			{
-				/Base64ArmouredKey		"qNGhtXvyvjpybwX1I+1Pyw=="
+				/Base64ArmouredInput		"qNGhtXvyvjpybwX1I+1Pyw=="
 				/BlowfishSecurityItem	"BlowfishTest1"
 			}
 			/Renderer
 			{
 				/BlowfishRenderer {
-								/Base64ArmouredKey { /ContextLookupRenderer Base64ArmouredKey }
+								/Base64ArmouredInput { /ContextLookupRenderer Base64ArmouredInput }
 								/BlowfishSecurityItem { /ContextLookupRenderer  BlowfishSecurityItem }
 							 }
 			}
@@ -219,13 +219,13 @@
 		{
 			/TmpStore
 			{
-				/Base64ArmouredKey		"WVMktA8QWEQ="
+				/Base64ArmouredInput		"WVMktA8QWEQ="
 				/BlowfishSecurityItem	"BlowfishTest2"
 			}
 			/Renderer
 			{
 				/BlowfishRenderer {
-								/Base64ArmouredKey { /ContextLookupRenderer Base64ArmouredKey }
+								/Base64ArmouredInput { /ContextLookupRenderer Base64ArmouredInput }
 								/BlowfishSecurityItem { /ContextLookupRenderer  BlowfishSecurityItem }
 							 }
 			}
@@ -235,13 +235,13 @@
 		{
 			/TmpStore
 			{
-				/Base64ArmouredKey		"8zCnVKa03C0=="
+				/Base64ArmouredInput		"8zCnVKa03C0=="
 				/BlowfishSecurityItem	"BlowfishTest3"
 			}
 			/Renderer
 			{
 				/BlowfishRenderer {
-								/Base64ArmouredKey { /ContextLookupRenderer Base64ArmouredKey }
+								/Base64ArmouredInput { /ContextLookupRenderer Base64ArmouredInput }
 								/BlowfishSecurityItem { /ContextLookupRenderer  BlowfishSecurityItem }
 							 }
 			}
@@ -251,13 +251,13 @@
 		{
 			/TmpStore
 			{
-				/Base64ArmouredKey		"N7tPieX5wyU="
+				/Base64ArmouredInput		"N7tPieX5wyU="
 				/BlowfishSecurityItem	"BlowfishTest4"
 			}
 			/Renderer
 			{
 				/BlowfishRenderer {
-								/Base64ArmouredKey { /ContextLookupRenderer Base64ArmouredKey }
+								/Base64ArmouredInput { /ContextLookupRenderer Base64ArmouredInput }
 								/BlowfishSecurityItem { /ContextLookupRenderer  BlowfishSecurityItem }
 							 }
 			}
@@ -267,14 +267,14 @@
 		{
 			/TmpStore
 			{
-				/Base64ArmouredKey		"n9DN4em1bN0="
+				/Base64ArmouredInput		"n9DN4em1bN0="
 
 				/BlowfishSecurityItem	"BlowfishTest5"
 			}
 			/Renderer
 			{
 				/BlowfishRenderer {
-								/Base64ArmouredKey { /ContextLookupRenderer Base64ArmouredKey }
+								/Base64ArmouredInput { /ContextLookupRenderer Base64ArmouredInput }
 								/BlowfishSecurityItem { /ContextLookupRenderer  BlowfishSecurityItem }
 							 }
 			}

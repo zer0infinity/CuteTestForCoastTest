@@ -30,23 +30,25 @@ void BlowfishRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything 
 {
 	StartTrace(BlowfishRenderer.RenderAll);
 
-	String blowfishSecurityItem, base64ArmouredKey, armouredKey, key;
-	RenderOnString(base64ArmouredKey, ctx, config["Base64ArmouredKey"]);
+	String blowfishSecurityItem, base64ArmouredInput, deArmouredInput, decodedInput;
+	RenderOnString(base64ArmouredInput, ctx, config["Base64ArmouredInput"]);
 	RenderOnString(blowfishSecurityItem, ctx, config["BlowfishSecurityItem"]);
-	Trace("BlowfishSecurityItem: " << blowfishSecurityItem << " Base64ArmouredKey: " << base64ArmouredKey);
-	Base64("DecryptAppKey").DoDecode(armouredKey, base64ArmouredKey);
+	Trace("BlowfishSecurityItem: " << blowfishSecurityItem << " Base64ArmouredInput: " << base64ArmouredInput);
+	Base64("DecryptAppdecodedInput").DoDecode(deArmouredInput, base64ArmouredInput);
 	Scrambler *scrambler = Scrambler::FindScrambler(blowfishSecurityItem);
 	String msg;
-	msg << "BlowfishRenderer: BlowfishSecurityItem: " << blowfishSecurityItem << " Base64ArmouredKey: " << base64ArmouredKey;
+	msg << "BlowfishRenderer: BlowfishSecurityItem: " << blowfishSecurityItem <<
+		" Base64ArmouredInput: " << base64ArmouredInput <<
+		" DeArmouredInput: " << deArmouredInput;
 	if (scrambler) {
-		if (!scrambler->DoDecode(key, armouredKey)) {
-			msg << " Couldn't decode armoured key";
+		if (!scrambler->DoDecode(decodedInput, deArmouredInput)) {
+			msg << " Couldn't decode Base64ArmouredInput";
 			Trace(msg);
 			SysLog::Error(msg);
 			reply << msg;
 		} else {
-			Trace("decoded appKey =" << key);
-			reply << key;
+			Trace("decoded Input: [" << decodedInput << "]");
+			reply << decodedInput;
 		}
 	} else {
 		msg << " BlowfishSecurityItem not configured";
