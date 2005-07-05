@@ -201,6 +201,7 @@ void Session::SetRole(Role *newRole, Context &ctx)
 
 Role *Session::GetRole(Context &ctx) const
 {
+	StartTrace(Session.GetRole);
 	// assumption fMutex is already set by caller
 	Role *role = 0;
 	String role_name = ((ROAnything)fStore)["RoleName"].AsString("");
@@ -214,6 +215,7 @@ Role *Session::GetRole(Context &ctx) const
 			((Session *)this)->PutInStore("RoleName", role_name);
 		}
 	}
+	Trace("RoleName: [" << role_name << "]");
 	return role;
 }
 
