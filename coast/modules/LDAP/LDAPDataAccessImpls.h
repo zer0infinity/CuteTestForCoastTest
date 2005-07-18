@@ -66,8 +66,8 @@ public:
 		return new LDAPAbstractDAI(fName);
 	};
 
-	/*! executes the transaction
-		\param c The context of the transaction */
+	//! executes the transaction
+	//  param c The context of the transaction */
 	virtual bool Exec(Context &c, ParameterMapper *getter, ResultMapper *putter);
 
 protected:
