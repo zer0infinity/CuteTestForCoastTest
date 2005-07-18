@@ -67,7 +67,9 @@ LDAPConnection::LDAPConnection(ROAnything connectionParams)
 	fMapUTF8 = connectionParams["MapUTF8"].AsBool(true);
 	fUseLdapConnectionManager = ( connectionParams["PooledConnections"].AsLong(0L) > 0L );
 	fRebindTimeout = connectionParams["RebindTimeout"].AsLong(0L);
+	fTryAutoRebind = connectionParams["TryAutoRebind"].AsLong(0L) > 0L;
 	TraceAny(connectionParams, "ConnectionParams");
+	fShouldRetry = false;
 }
 
 LDAPConnection::~LDAPConnection()
@@ -290,7 +292,7 @@ bool LDAPConnection::Bind(String bindName, String bindPW, int &msgId, LDAPErrorH
 	return true;
 }
 
-bool LDAPConnection::WaitForResult(int msgId, Anything &result, LDAPErrorHandler eh)
+bool LDAPConnection::WaitForResult(int msgId, Anything &result, LDAPErrorHandler &eh)
 {
 	StartTrace(LDAPConnection.WaitForResult);
 
@@ -328,6 +330,9 @@ bool LDAPConnection::WaitForResult(int msgId, Anything &result, LDAPErrorHandler
 			Trace("WaitForResult [Timeout != 0] encountered a timeout ...");
 			errMsg << "Asynchronous Wait4Result: The request <" << (long) msgId << "> timed out.";
 			HandleWait4ResultError(msgId, errMsg, eh);
+			if ( fUseLdapConnectionManager && fTryAutoRebind ) {
+				eh.SetShouldRetry(true);
+			}
 			finished = true;
 		} else {
 			// received a result
