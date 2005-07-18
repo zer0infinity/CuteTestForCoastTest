@@ -13,13 +13,14 @@
 #include "Dbg.h"
 #include "SysLog.h"
 #include "StringStream.h"
+#include "TimeStamp.h"
 
 //--- c-modules used -----------------------------------------------------------
 
 //---- LDAPErrorHandler ----------------------------------------------------------------
 
 LDAPErrorHandler::LDAPErrorHandler(Context &ctx, ParameterMapper *in, ResultMapper *out, String daName)
-	: fCtx(ctx), fIn(in), fOut(out), fName(daName)
+	: fCtx(ctx), fIn(in), fOut(out), fName(daName), fShouldRetry(false)
 {}
 
 LDAPErrorHandler::~LDAPErrorHandler()
@@ -40,7 +41,11 @@ void LDAPErrorHandler::HandleSessionError(LDAP *handle, String msg)
 		error["LdapCode"] = rc;
 		error["LdapMsg"] = ldap_err2string(rc);
 	} else {
-		error["LdapMsg"] = "Connection does not exist (no handle available).";
+		if ( fShouldRetry == false ) {
+			error["LdapMsg"] = "Connection does not exist (no handle available).";
+		} else {
+			error["LdapMsg"] = "Connection failure using LDAPPooledConnections.";
+		}
 	}
 
 	// get connection parameters + append
@@ -80,7 +85,7 @@ String LDAPErrorHandler::WriteSysLog(Anything error, String &msg)
 	error.PrintOn(ossSysLog, false);
 	ossSysLog.flush();
 	// log all ldap session errors in SysLog
-	SysLog::Error(msg << " " << fName << " " << sSysLog);
+	SysLog::Error(TimeStamp::Now().AsString() << " " <<  msg << " " << fName << " " << sSysLog);
 	String msgAsString;
 	msgAsString << "LdapDataAccess: [" << fName << "]";
 	for ( long l = 0; l < error.GetSize(); l++ ) {
@@ -118,6 +123,20 @@ bool LDAPErrorHandler::GetError(Anything &error)
 	key << "LDAPError." << fName;
 	Trace("ReadKey: " << key);
 	return fIn->Get(key, error, fCtx);
+}
+
+void LDAPErrorHandler::CleanUp()
+{
+	StartTrace(LDAPErrorHandler.CleanUp);
+	Anything tmp = fCtx.GetTmpStore();
+	tmp["LDAPError"].Remove(fName);
+	if ( tmp["LDAPError"].GetSize() == 0L ) {
+		tmp.Remove("LDAPError");
+	}
+	tmp["LDAPResult"].Remove(fName);
+	if ( tmp["LDAPResult"].GetSize() == 0L ) {
+		tmp.Remove("LDAPResult");
+	}
 }
 
 Anything LDAPErrorHandler::GetQueryParams()

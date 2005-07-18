@@ -64,6 +64,7 @@ void LDAPConnectionTest::ConnectionTest()
 			params["BindPW"] 			= cConfig["LDAPBindPW"].AsString();
 			params["PooledConnections"]	= cConfig["LDAPPooledConnections"].AsLong(0L);
 			params["RebindTimeout"]		= cConfig["LDAPRebindTimeout"].AsLong(3600L);
+			params["TryAutoRebind"]			= cConfig["LDAPTryAutoRebind"].AsLong(0L);
 
 			Context ctx;
 			ParameterMapper pm("ConnectionTestParameterMapper");

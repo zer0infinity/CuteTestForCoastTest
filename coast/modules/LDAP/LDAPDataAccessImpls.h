@@ -90,6 +90,10 @@ protected:
 		return true;
 	}
 
+	//! executes the transaction
+	// param c The context of the transaction
+	bool DoExec(Context &c, ParameterMapper *getter, ResultMapper *putter, LDAPErrorHandler &eh);
+
 private:
 	// constructor
 	LDAPAbstractDAI();

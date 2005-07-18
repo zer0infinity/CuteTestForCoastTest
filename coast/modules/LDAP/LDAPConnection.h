@@ -54,7 +54,7 @@ public:
 	//! \param result	returned result (not changed if not successful).
 	//!                 all attributes in result will be normalized to lowercase!
 	//! \param eh		error handler object
-	bool WaitForResult(int msgId, Anything &result, LDAPErrorHandler eh);
+	bool WaitForResult(int msgId, Anything &result, LDAPErrorHandler &eh);
 
 	//! Dump Connection handle as hex string
 	static String DumpConnectionHandle(LDAP *handle);
@@ -69,6 +69,7 @@ protected:
 	bool fUseLdapConnectionManager;
 	long fRebindTimeout;
 	String fUniqueConnectionId;
+	bool fTryAutoRebind;
 
 private:
 	//! init connection

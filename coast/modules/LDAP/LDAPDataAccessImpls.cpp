@@ -32,8 +32,25 @@ bool LDAPAbstractDAI::Exec( Context &ctx, ParameterMapper *getter, ResultMapper 
 {
 	StartTrace(LDAPAbstractDAI.Exec);
 	Trace("Executing LDAP data access: " << fName);
-
 	LDAPErrorHandler eh(ctx, getter, putter, fName);
+
+	bool ret = false;
+	if ( (ret = DoExec(ctx, getter, putter, eh)) == true ) {
+		// LDAP transaction completed successfully
+		return ret;
+	}
+	if ( eh.GetShouldRetry() ) {
+		eh.HandleSessionError((LDAP *) NULL, "Will try a rebind (LDAP might have been restarted.)");
+		eh.CleanUp();
+		return DoExec(ctx, getter, putter, eh);
+	}
+	return ret;
+}
+
+bool LDAPAbstractDAI::DoExec( Context &ctx, ParameterMapper *getter, ResultMapper *putter, LDAPErrorHandler &eh)
+{
+	StartTrace(LDAPAbstractDAI.DoExec);
+	Trace("Executing LDAP data access: " << fName);
 
 	// 1. get + check query
 	Anything query;
@@ -57,6 +74,7 @@ bool LDAPAbstractDAI::Exec( Context &ctx, ParameterMapper *getter, ResultMapper 
 	cp["BindPW"] = bindPw = ctx.Lookup("LDAPBindPW", "");
 	cp["MapUTF8"] = !ctx.Lookup("NoHTMLCharMapping", 0L);
 	cp["PooledConnections"] = ctx.Lookup("LDAPPooledConnections", 0L);
+	cp["TryAutoRebind"] = ctx.Lookup("LDAPTryAutoRebind", 0L);
 	cp["RebindTimeout"] = ctx.Lookup("LDAPRebindTimeout", 3600L);
 
 	// store connection params in ctx (lookup for error-handling)

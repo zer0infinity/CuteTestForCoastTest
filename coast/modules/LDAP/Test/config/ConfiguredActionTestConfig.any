@@ -25,6 +25,7 @@
 		/LDAPConnectionTimeout	5
 		/LDAPTimeout	10
 		/LDAPPooledConnections 0
+		/LDAPTryAutoRebind		0
 	}
 
 	/LDAPConfig_Pooled
@@ -36,6 +37,7 @@
 		/LDAPConnectionTimeout	5
 		/LDAPTimeout	10
 		/LDAPPooledConnections 1
+		/LDAPTryAutoRebind			1
 		/LDAPRebindTimeout 60
 	}
 
@@ -128,6 +130,7 @@
 				/LDAPConnectionTimeout	5
 				/LDAPTimeout	10
 				/LDAPPooledConnections 0
+				/LDAPTryAutoRebind		0
 
 				# test config
 				/LDAPBase		"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
@@ -168,6 +171,7 @@
 				/LDAPConnectionTimeout	5
 				/LDAPTimeout	10
 				/LDAPPooledConnections 1
+				/LDAPTryAutoRebind			1
 				/LDAPRebindTimeout 60
 
 				# test config

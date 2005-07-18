@@ -69,7 +69,6 @@ LDAPConnection::LDAPConnection(ROAnything connectionParams)
 	fRebindTimeout = connectionParams["RebindTimeout"].AsLong(0L);
 	fTryAutoRebind = connectionParams["TryAutoRebind"].AsLong(0L) > 0L;
 	TraceAny(connectionParams, "ConnectionParams");
-	fShouldRetry = false;
 }
 
 LDAPConnection::~LDAPConnection()

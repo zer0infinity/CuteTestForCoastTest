@@ -38,12 +38,25 @@ public:
 	virtual Anything GetConnectionParams();
 	virtual void PutConnectionParams(Anything cp);
 
+	//! Set ShouldRetry flag This flag is used when LDAPPooledConnections are used
+	virtual void SetShouldRetry(bool shouldRetry) {
+		fShouldRetry = shouldRetry;
+	};
+	//! Query ShouldRetry flag
+	virtual bool GetShouldRetry() {
+		return fShouldRetry;
+	};
+
+	//! Clean up LDAPError and LDAPResultSlot in Context's tmp store
+	virtual void LDAPErrorHandler::CleanUp();
+
 protected:
 	Context &fCtx;
 	ParameterMapper *fIn;
 	ResultMapper *fOut;
 	String fName;
 	Anything fQueryParams, fConnectionParams;
+	bool fShouldRetry;
 
 private:
 	void WriteError(Anything &error);
