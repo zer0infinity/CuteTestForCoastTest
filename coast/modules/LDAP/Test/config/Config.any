@@ -42,6 +42,9 @@
 
 				"LDAPSearchQuery_LookupTkrefactor_NotPooled"
 				"LDAPSearchQuery_LookupTkrefactor_Pooled"
+
+				"LDAPConnectionManagerTest_Query"
+				"LDAPConnectionManagerTest_Query_Added"
 			}
 
 			/LDAPDeleteDAI {
@@ -49,6 +52,7 @@
 				"LDAPDeleteTest_NonExisting"
 				"LDAPDeleteTest_ExistingLeaf_NotPooled"
 				"LDAPDeleteTest_ExistingLeaf_Pooled"
+				"LDAPConnectionManagerTest_Delete"
 			}
 
 			/LDAPCompareDAI {
@@ -58,6 +62,7 @@
 				"LDAPCompareTest_UnequalValue"
 				"LDAPCompareTest_MissingAttrNameParam"
 				"LDAPCompareTest_MissingAttrValueParam"
+				"LDAPConnectionManagerTest_Compare"
 			}
 
 			/LDAPAddDAI {
@@ -68,6 +73,7 @@
 				"LDAPAddTest_NonExistingAttribute"
 				"LDAPAddTest_MissingAttrsParam"
 				"LDAPAddTest_SingleValues"
+				"LDAPConnectionManagerTest_Add"
 			}
 
 			/LDAPModifyDAI {
@@ -81,6 +87,7 @@
 				"LDAPModifyTest_DeleteNonExistingValue"
 				"LDAPModifyTest_DeleteAndAddWholeAttr_NotPooled"
 				"LDAPModifyTest_DeleteAndAddWholeAttr_Pooled"
+				"LDAPConnectionManagerTest_MultipleModify"
 			}
 		}
 	}
@@ -103,6 +110,13 @@
 
 				"LDAPSearchQuery_LookupTkrefactor_NotPooled"
 				"LDAPSearchQuery_LookupTkrefactor_Pooled"
+
+				"LDAPConnectionManagerTest_Query"
+				"LDAPConnectionManagerTest_Query_Added"
+				"LDAPConnectionManagerTest_Delete"
+				"LDAPConnectionManagerTest_Add"
+				"LDAPConnectionManagerTest_MultipleModify"
+				"LDAPConnectionManagerTest_Compare"
 
 				"LDAPDeleteTest_NonLeaf"
 				"LDAPDeleteTest_NonExisting"
@@ -153,6 +167,13 @@
 
 				"LDAPSearchQuery_LookupTkrefactor_NotPooled"
 				"LDAPSearchQuery_LookupTkrefactor_Pooled"
+
+				"LDAPConnectionManagerTest_Query"
+				"LDAPConnectionManagerTest_Delete"
+				"LDAPConnectionManagerTest_Add"
+				"LDAPConnectionManagerTest_Query_Added"
+				"LDAPConnectionManagerTest_MultipleModify"
+				"LDAPConnectionManagerTest_Compare"
 
 				"LDAPDeleteTest_NonLeaf"
 				"LDAPDeleteTest_NonExisting"
