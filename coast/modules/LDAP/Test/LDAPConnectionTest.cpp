@@ -59,12 +59,12 @@ void LDAPConnectionTest::ConnectionTest()
 			params["Server"] 			= cConfig["LDAPServer"].AsString();
 			params["Port"] 				= cConfig["LDAPPort"].AsLong();
 			params["Timeout"] 			= cConfig["LDAPTimeout"].AsLong();
-			params["ConnectionTimeout"] = cConfig["LDAPConnectionTimeout"].AsLong();
+			params["ConnectionTimeout"] = cConfig["LDAPConnectionTimeout"].AsLong(0);
 			params["BindName"] 			= cConfig["LDAPBindName"].AsString();
 			params["BindPW"] 			= cConfig["LDAPBindPW"].AsString();
 			params["PooledConnections"]	= cConfig["LDAPPooledConnections"].AsLong(0L);
 			params["RebindTimeout"]		= cConfig["LDAPRebindTimeout"].AsLong(3600L);
-			params["TryAutoRebind"]			= cConfig["LDAPTryAutoRebind"].AsLong(0L);
+			params["TryAutoRebind"]		= cConfig["LDAPTryAutoRebind"].AsLong(0L);
 
 			Context ctx;
 			ParameterMapper pm("ConnectionTestParameterMapper");
