@@ -404,8 +404,8 @@
 				{
 					/LDAPResult {
 						/LDAPSearchTest_ScopeSubTree {
-							/NumberOfResultMessages 61
-							/NumberOfEntries 60
+							/NumberOfResultMessages 62
+							/NumberOfEntries 61
 						}
 					}
 				}
@@ -427,8 +427,8 @@
 				{
 					/LDAPResult {
 						/LDAPSearchTest_ScopeSubTree {
-							/NumberOfResultMessages 61
-							/NumberOfEntries 60
+							/NumberOfResultMessages 62
+							/NumberOfEntries 61
 						}
 					}
 				}
