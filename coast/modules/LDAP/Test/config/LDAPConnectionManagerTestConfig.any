@@ -400,4 +400,405 @@
 			}
 		}
 	}
+	/TestAutoRebind
+	{
+ 		{
+ 			/ConfiguredActionTestAction
+ 			{
+ 				/LDAPConnectionManagerTest_Query
+ 				{
+ 					/TmpStore	%LDAPConnectionData
+ 					/TheAction
+ 					{
+ 						/CallDA 	LDAPConnectionManagerTest_Query
+ 					}
+ 					/ExpectedResult	1
+ 					/Result
+ 					{
+ 						/Delim	"^"
+ 						/TmpStore
+ 						{
+ 						 /LDAPResult {
+ 							/LDAPConnectionManagerTest_Query {
+ 							  /Type "LDAP_RES_SEARCH_ENTRY"
+ 							  /Query {
+ 								/Base "uid=connectionmanagertest,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+ 								/Scope 0
+ 								/ScopeStringRepr "one"
+ 								/Filter "(objectclass=*)"
+ 								/AttrsOnly 0
+ 								/SizeLimit 0
+ 								/TimeLimit -1
+ 								/Attrs *
+ 							  }
+ 							  /NumberOfResultMessages 2
+ 							  /NumberOfEntries 1
+ 							  /SizeLimitExceeded 0
+ 							  /Entries {
+ 								/uid=connectionmanagertest,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch {
+ 								  /objectclass {
+ 									"person"
+ 									"client"
+ 									"tkfModify"
+ 									"top"
+ 								  }
+ 								  /uid 	"connectionmanagertest"
+ 								  /sn "connectionmanagertest"
+ 								  /cn "connectionmanagertest"
+ 								  /language "D"
+ 								  /ifs-id "connectionmanagertest"
+ 								  /pd-dn "cn=CH10601-connectionmanagertest,dc=tkfpd.hsr.ch"
+ 								  /userpassword "{SHA}8HMddz0wJeXIdx5j+4I3y3W+ne0="
+ 								  /passwordexp "20010624_11:55:37"
+ 								  /tkfmodtime "20010424_11:55:37"
+ 								  /childmodtime "20010426_09:27:20"
+ 								  /tids {
+ 									"153.046.248.014"
+ 									"172.016.001.041"
+ 									"172.016.200.013"
+ 									"195.112.074.110"
+ 									"172.016.003.077"
+ 									"153.046.030.066"
+ 									"153.046.016.001"
+ 									"153.046.016.009"
+ 									"HOST"
+ 									"230.001.240.000"
+ 								  }
+ 								}
+ 							  }
+ 							}
+ 						  }
+ 						}
+ 					}
+ 				}
+ 			}
+ 		}
+ 		{
+ 			/ConfiguredActionTestAction
+ 			{
+ 				/LDAPConnectionManagerTest_Delete
+ 				{
+ 					/TmpStore	%LDAPConnectionData
+ 					/TheAction
+ 					{
+ 						/CallDA 	LDAPConnectionManagerTest_Delete
+ 					}
+ 					/ExpectedResult	1
+ 					/Result
+ 					{
+ 						/Delim	"^"
+ 						/TmpStore
+ 						{
+ 						  /LDAPResult {
+ 							/LDAPConnectionManagerTest_Delete {
+ 							  /Type "LDAP_RES_DELETE"
+ 							  /Query {
+ 								/Base "uid=connectionmanagertest,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+ 							  }
+ 							  /NumberOfResultMessages 1
+ 							  /NumberOfEntries 0
+ 							  /SizeLimitExceeded 0
+ 							  /Entries *
+ 							}
+ 						  }
+ 						  /ResultMapper {
+ 							/DestinationSlot ""
+ 						  }
+ 						}
+ 					}
+ 				}
+ 			}
+ 		}
+ 		{
+ 			/ConfiguredActionTestAction
+ 			{
+ 				/LDAPConnectionManagerTest_Query
+ 				{
+ 					/TmpStore	%LDAPConnectionData
+ 					/TheAction
+ 					{
+ 						/CallDA 	LDAPConnectionManagerTest_Query
+ 					}
+ 					/ExpectedResult	0
+ 					/Result
+ 					{
+ 						/Delim	"^"
+ 						/TmpStore
+ 						{
+						  /LDAPError {
+							/LDAPConnectionManagerTest_Query {
+							  /Msg "LDAP request failed."
+							  /LdapCode 32
+							  /LdapMsg "No such object"
+							  /LdapConnectionParams {
+								/Server "surlej.hsr.ch"
+								/Port 49999
+								/Timeout 10
+								/ConnectionTimeout 5
+								/BindName "cn=Directory Manager"
+								/BindPW "all2test"
+								/MapUTF8 1
+								/PooledConnections 1
+								/TryAutoRebind 1
+								/RebindTimeout 0
+							  }
+	                          /MsgAsString "LdapDataAccess: [LDAPConnectionManagerTest_Query] Msg [LDAP request failed.] LdapCode [32] LdapMsg [No such object] LdapConnectionParams [{/Server \"surlej.hsr.ch\"/Port 49999/Timeout 10/ConnectionTimeout 5/BindName \"cn=Directory Manager\"/BindPW \"WipedOut\"/MapUTF8 1/PooledConnections 1/TryAutoRebind 1/RebindTimeout 0}]"
+		                    }
+			              }
+ 						}
+ 					}
+ 				}
+ 			}
+ 		}
+ 		{
+ 			/ConfiguredActionTestAction
+ 			{
+ 				/LDAPConnectionManagerTest_Add
+ 				{
+ 					/TmpStore	%LDAPConnectionData
+ 					/TheAction
+ 					{
+ 						/CallDA 	LDAPConnectionManagerTest_Add
+ 					}
+ 					/ExpectedResult	1
+ 					/Result
+ 					{
+ 						/Delim	"^"
+ 						/TmpStore
+ 						{
+ 						  /LDAPResult {
+ 							/LDAPConnectionManagerTest_Add {
+ 							  /Type "LDAP_RES_ADD"
+ 							  /Query {
+ 								/Base "uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+ 								/Attrs {
+ 								  /objectclass {
+ 									"client"
+ 									"tkfModify"
+ 									"person"
+ 								  }
+ 								  /uid "connectionmanagertest_added"
+ 								  /cn "added cn"
+ 								  /sn "added sn"
+ 								  /tids {
+ 									"555.666.777.888"
+ 									"111.222.333.444"
+ 								  }
+ 								}
+ 							  }
+ 							  /NumberOfResultMessages 1
+ 							  /NumberOfEntries 0
+ 							  /SizeLimitExceeded 0
+ 							  /Entries *
+ 							}
+ 						  }
+ 						}
+ 					}
+ 				}
+ 			}
+ 		}
+ 		{
+ 			/ConfiguredActionTestAction
+ 			{
+ 				/LDAPConnectionManagerTest_Query_Added
+ 				{
+ 					/TmpStore	%LDAPConnectionData
+ 					/TheAction
+ 					{
+ 						/CallDA 	LDAPConnectionManagerTest_Query_Added
+ 					}
+ 					/ExpectedResult	1
+ 					/Result
+ 					{
+ 						/Delim	"^"
+ 						/TmpStore
+ 						{
+ 						  /LDAPResult {
+ 							/LDAPConnectionManagerTest_Query_Added {
+ 							  /Type "LDAP_RES_SEARCH_ENTRY"
+ 							  /Query {
+ 								/Base "uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+ 								/Scope 0
+ 								/ScopeStringRepr "one"
+ 								/Filter "(objectclass=*)"
+ 								/AttrsOnly 0
+ 								/SizeLimit 0
+ 								/TimeLimit -1
+ 								/Attrs *
+ 							  }
+ 							  /NumberOfResultMessages 2
+ 							  /NumberOfEntries 1
+ 							  /SizeLimitExceeded 0
+ 							  /Entries {
+ 								/uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch {
+ 								  /objectclass {
+ 									"client"
+ 									"tkfModify"
+ 									"person"
+ 									"top"
+ 								  }
+ 								  /uid "connectionmanagertest_added"
+ 								  /cn "added cn"
+ 								  /sn "added sn"
+ 								  /tids {
+ 									"555.666.777.888"
+ 									"111.222.333.444"
+ 								  }
+ 								}
+ 							  }
+ 							}
+ 						  }
+ 						}
+ 					}
+ 				}
+ 			}
+ 		}
+		{
+			/ConfiguredActionTestAction
+			{
+				/LDAPConnectionManagerTest_MultipleModify
+				{
+ 					/TmpStore	%LDAPConnectionData
+					/TheAction
+					{
+						/CallDA 	LDAPConnectionManagerTest_MultipleModify
+					}
+					/ExpectedResult	1
+					/Result
+					{
+						/Delim	"^"
+						/TmpStore
+						{
+						  /LDAPResult {
+							/LDAPConnectionManagerTest_MultipleModify {
+							  /Type "LDAP_RES_MODIFY"
+							  /Query {
+								/Base "uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+								/Mods {
+								  /delete {
+									/tids "555.666.777.888"
+								  }
+								  /add {
+									/tids {
+									  "111.111.111.111"
+									  "222.222.222.222"
+									}
+								  }
+								  /replace {
+									/sn "changed sn"
+								  }
+								}
+							  }
+							  /NumberOfResultMessages 1
+							  /NumberOfEntries 0
+							  /SizeLimitExceeded 0
+							  /Entries *
+							}
+						  }
+						}
+					}
+				}
+			}
+		}
+ 		{
+ 			/ConfiguredActionTestAction
+ 			{
+ 				/LDAPConnectionManagerTest_Query_Added
+ 				{
+ 					/TmpStore	%LDAPConnectionData
+ 					/TheAction
+ 					{
+ 						/CallDA 	LDAPConnectionManagerTest_Query_Added
+ 					}
+ 					/ExpectedResult	1
+ 					/Result
+ 					{
+ 						/Delim	"^"
+ 						/TmpStore
+ 						{
+						  /LDAPResult {
+							/LDAPConnectionManagerTest_Query_Added {
+							  /Type "LDAP_RES_SEARCH_ENTRY"
+							  /Query {
+								/Base "uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+								/Scope 0
+								/ScopeStringRepr "one"
+								/Filter "(objectclass=*)"
+								/AttrsOnly 0
+								/SizeLimit 0
+								/TimeLimit -1
+								/Attrs *
+							  }
+							  /NumberOfResultMessages 2
+							  /NumberOfEntries 1
+							  /SizeLimitExceeded 0
+							  /Entries {
+								/uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch {
+								  /objectclass {
+									"client"
+									"tkfModify"
+									"person"
+									"top"
+								  }
+								  /uid "connectionmanagertest_added"
+								  /cn "added cn"
+								  /tids {
+									"111.222.333.444"
+									"111.111.111.111"
+									"222.222.222.222"
+								  }
+								  /sn "changed sn"
+								}
+							  }
+							}
+						  }
+ 						}
+ 					}
+ 				}
+ 			}
+ 		}
+ 		{
+ 			/ConfiguredActionTestAction
+ 			{
+ 				/LDAPConnectionManagerTest_Compare
+ 				{
+ 					/TmpStore	%LDAPConnectionData
+ 					/TheAction
+ 					{
+ 						/CallDA 	LDAPConnectionManagerTest_Compare
+ 					}
+ 					/ExpectedResult	1
+ 					/Result
+ 					{
+ 						/Delim	"^"
+ 						/TmpStore
+ 						{
+						  /LDAPResult {
+							/LDAPConnectionManagerTest_Compare {
+							  /Type "LDAP_RES_COMPARE"
+							  /Equal 1
+							  /LdapCode 6
+							  /LdapMsg "Compare true"
+							}
+						  }
+						}
+ 					}
+ 				}
+ 			}
+ 		}
+
+	}
+
+	/LDAPConnectionData
+	{
+		/LDAPServer		"surlej.hsr.ch"
+		/LDAPPort		"49999"
+		/LDAPBindName	"cn=Directory Manager"
+		/LDAPBindPW		"all2test"
+		/LDAPConnectionTimeout	5
+		/LDAPTimeout	10
+		/LDAPPooledConnections 1
+		/LDAPTryAutoRebind			1
+		/LDAPRebindTimeout 0
+	}
 }
