@@ -10,11 +10,11 @@
 #define _LDAPConnectionManagerTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "ConfiguredActionTest.h"
 
 //---- LDAPConnectionManagerTest ----------------------------------------------------------
 //! <B>Tests LDAPConnecton and LDAPErrorHandler</B>
-class LDAPConnectionManagerTest : public ConfiguredTestCase
+class LDAPConnectionManagerTest : public ConfiguredActionTest
 {
 public:
 	//--- constructors
@@ -38,6 +38,11 @@ public:
 
 	//! describe this Test
 	void testLDAPConnectionManager();
+	void testAutoRebind();
+
+	String GetLdapConnectionManagerId(const String &server, long port, const String &bindName,
+									  const String &bindPW, long connectionTimeout);
+
 };
 
 #endif

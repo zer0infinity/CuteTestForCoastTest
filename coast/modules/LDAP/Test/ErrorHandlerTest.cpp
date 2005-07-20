@@ -94,20 +94,34 @@ void ErrorHandlerTest::testHandleError()
 	TraceAny(error, "Error1");
 	assertEqual(error["Msg"].AsString(), "HandleError1");
 	assertEqual(error.GetSize(), 3L);
-	fCtx->GetTmpStore().Remove("LDAPError");
+	eh.CleanUp();
+	t_assert(!(fCtx->GetTmpStore().IsDefined("LDAPError")));
 
 	eh.HandleError("HandleError2", info);
 	t_assert(eh.GetError(error));
 	TraceAny(error, "Error2");
 	assertEqual(error["Msg"].AsString(), "HandleError2");
 	assertAnyEqual(error["AdditionalInfo"], info);
-	fCtx->GetTmpStore().Remove("LDAPError");
+	eh.CleanUp();
+	t_assert(!(fCtx->GetTmpStore().IsDefined("LDAPError")));
 
 	eh.HandleError("HandleError3", info, "MyErrorArgs");
 	t_assert(eh.GetError(error));
 	TraceAny(error, "Error3");
 	assertEqual(error["Msg"].AsString(), "HandleError3");
 	assertAnyEqual(error["MyErrorArgs"], info);
+}
+
+void ErrorHandlerTest::testShouldRetry()
+{
+	StartTrace(ErrorHandlerTest.testHandleError);
+
+	LDAPErrorHandler eh(*fCtx, fGet, fPut, "TestHandleError");
+
+	eh.SetShouldRetry(true);
+	assertEquals(true, eh.GetShouldRetry());
+	eh.SetShouldRetry(false);
+	assertEqual(false, eh.GetShouldRetry());
 }
 
 void ErrorHandlerTest::testParamAccess()
@@ -147,6 +161,7 @@ Test *ErrorHandlerTest::suite ()
 	ADD_CASE(testSuite, ErrorHandlerTest, testParamAccess);
 	ADD_CASE(testSuite, ErrorHandlerTest, testHandleError);
 	ADD_CASE(testSuite, ErrorHandlerTest, testHandleConnectionError);
+	ADD_CASE(testSuite, ErrorHandlerTest, testShouldRetry);
 
 	return testSuite;
 }

@@ -45,6 +45,7 @@ public:
 	void testHandleError();
 	void testHandleConnectionError();
 	void testParamAccess();
+	void testShouldRetry();
 
 private:
 	Context *fCtx;

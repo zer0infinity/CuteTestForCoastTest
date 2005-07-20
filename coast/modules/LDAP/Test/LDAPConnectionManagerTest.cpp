@@ -28,7 +28,7 @@
 
 //---- LDAPConnectionManagerTest ----------------------------------------------------------------
 LDAPConnectionManagerTest::LDAPConnectionManagerTest(TString tstrName)
-	: ConfiguredTestCase(tstrName, "LDAPConnectionManagerTestConfig")
+	: ConfiguredActionTest(tstrName, "LDAPConnectionManagerTestConfig")
 {
 	StartTrace(LDAPConnectionManagerTest.Ctor);
 }
@@ -42,13 +42,13 @@ LDAPConnectionManagerTest::~LDAPConnectionManagerTest()
 void LDAPConnectionManagerTest::setUp ()
 {
 	StartTrace(LDAPConnectionManagerTest.setUp);
-	ConfiguredTestCase::setUp();
+	ConfiguredActionTest::setUp();
 }
 
 void LDAPConnectionManagerTest::tearDown ()
 {
 	StartTrace(LDAPConnectionManagerTest.tearDown);
-	ConfiguredTestCase::tearDown();
+	ConfiguredActionTest::tearDown();
 }
 
 void LDAPConnectionManagerTest::testLDAPConnectionManager()
@@ -91,6 +91,33 @@ void LDAPConnectionManagerTest::testLDAPConnectionManager()
 	}
 }
 
+void LDAPConnectionManagerTest::testAutoRebind()
+{
+	StartTrace(LDAPConnectionManagerTest.testAutoRebind);
+
+	FOREACH_ENTRY("TestAutoRebind", caseConfig, caseName) {
+		Trace("At entry " << i);
+		TraceAny(caseConfig["ConfiguredActionTestAction"], "ConfiguredActionTestAction");
+		String uniqueConnectionId = GetLdapConnectionManagerId(fConfig["LDAPConnectionData"]["LDAPServer"].AsString(),
+									fConfig["LDAPConnectionData"]["LDAPPort"].AsLong(0),
+									fConfig["LDAPConnectionData"]["LDAPBindName"].AsString(),
+									fConfig["LDAPConnectionData"]["LDAPBindPW"].AsString(),
+									fConfig["LDAPConnectionData"]["LDAPConnectionTimeout"].AsLong() * 1000L);
+		Trace("uniqueConnectionId: " << uniqueConnectionId);
+		String testCaseName = caseConfig["ConfiguredActionTestAction"].SlotName(0);
+		DoTest(PrepareConfig(caseConfig["ConfiguredActionTestAction"][0L].DeepClone()), testCaseName);
+//		System::MicroSleep(15 * 1000000L);
+	}
+}
+
+String LDAPConnectionManagerTest::GetLdapConnectionManagerId(const String &server, long port, const String &bindName,
+		const String &bindPW, long connectionTimeout)
+{
+	StartTrace(LDAPConnectionManagerTest.GetLdapConnectionManagerId);
+	return	String("ThreadId[") << Thread::MyId() << "] Host[" << server << "] Port[" << port << "] DN[" <<
+			bindName << "] BindPW[" << bindPW << "] ConnTimeout[" << connectionTimeout << "]";
+}
+
 // builds up a suite of ConfiguredTestCases, add a line for each testmethod
 Test *LDAPConnectionManagerTest::suite ()
 {
@@ -98,6 +125,7 @@ Test *LDAPConnectionManagerTest::suite ()
 	TestSuite *testSuite = new TestSuite;
 
 	ADD_CASE(testSuite, LDAPConnectionManagerTest, testLDAPConnectionManager);
+	ADD_CASE(testSuite, LDAPConnectionManagerTest, testAutoRebind);
 
 	return testSuite;
 }

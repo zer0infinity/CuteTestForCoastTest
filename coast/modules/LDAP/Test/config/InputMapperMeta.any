@@ -376,4 +376,59 @@
 			}
 		}
 	}
+
+	# ----- definitions for LDAPConnectionManagerTest
+	/LDAPConnectionManagerTest_Query{
+		/LDAPBase		"uid=connectionmanagertest,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPScope		"one"
+	}
+	/LDAPConnectionManagerTest_Query_Added{
+		/LDAPBase	"uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPScope		"one"
+	}
+
+	/LDAPConnectionManagerTest_Delete {
+		/LDAPBase		"uid=connectionmanagertest,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+	}
+
+	/LDAPConnectionManagerTest_Add {
+		/LDAPBase	"uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPAttrs	{
+			/ConfigMapper {
+				/objectclass { "client" "tkfModify" "person" }
+				/uid "connectionmanagertest_added"
+				/cn "added cn"
+				/sn "added sn"
+				/tids {
+					"555.666.777.888"
+					"111.222.333.444"
+				}
+			}
+		}
+	}
+	/LDAPConnectionManagerTest_MultipleModify {
+		/LDAPBase	"uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPMods {
+			/ConfigMapper {
+				/Delete {
+					/tids "555.666.777.888"
+				}
+				/Add {
+					/tids {
+						"111.111.111.111"
+						"222.222.222.222"
+					}
+				}
+				/Replace {
+					/sn "changed sn"
+				}
+			}
+		}
+	}
+	/LDAPConnectionManagerTest_Compare {
+		/LDAPBase	"uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPAttrName	"tids"
+		/LDAPAttrValue	"111.111.111.111"
+	}
+
 }
