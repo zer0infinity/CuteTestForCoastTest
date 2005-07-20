@@ -325,7 +325,7 @@ bool LDAPConnection::WaitForResult(int msgId, Anything &result, LDAPErrorHandler
 			HandleWait4ResultError(msgId, errMsg, eh);
 			finished = true;
 		} else if (resultCode == 0 || (resultCode == -1 && fSearchTimeout != 0)) {
-			// timeout, abandon
+			// resultCode 0 means timeout, abandon
 			Trace("WaitForResult [Timeout != 0] encountered a timeout ...");
 			errMsg << "Asynchronous Wait4Result: The request <" << (long) msgId << "> timed out.";
 			HandleWait4ResultError(msgId, errMsg, eh);
