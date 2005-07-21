@@ -829,9 +829,15 @@ bool HttpFlowController::PrepareRequest(Context &ctx, bool &bPrepareRequestSucce
 	tmpStore["CurrentServer"].Remove("formContents");
 
 	TraceAny(tmpStore, "<----tmp store is" );
-
 	if ( ctx.Lookup("IsAbsPath", 0L) ) {
-		URLUtils::HandleURI2( tmpStore["CurrentServer"], ctx.Lookup("AbsPath", "/"), tmpStore["PreviousPage"]["BASE"].AsCharPtr("") );
+		ROAnything rendererSpec;
+		ctx.Lookup("AbsPath", rendererSpec);
+		String absPath = Renderer::RenderToString(ctx, rendererSpec);
+		if (absPath.Length() == 0L) {
+			absPath.Append("/");
+		}
+		Trace("absPath: " << absPath);
+		URLUtils::HandleURI2( tmpStore["CurrentServer"], absPath, tmpStore["PreviousPage"]["BASE"].AsCharPtr("") );
 	} else {
 		bPrepareRequestSucceeded = DoProcessLinksFormsAndFrames(ctx); // no relocations expected here
 	}
