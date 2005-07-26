@@ -546,6 +546,7 @@ void SessionListManagerTest::GetASessionsInfoTest()
 	String sessionId;
 	Session *s;
 	SessionListManager *sessionListManager = SafeCast(WDModule::FindWDModule("SessionListManager"), SessionListManager);
+	sessionListManager->fMaxSessionsAllowed = 3;
 	Anything expected;
 	Anything resultedSessionListInfo = MetaThing();
 	if (   t_assertm(sessionListManager != 0, "expected SessionListManager module to be there") ) {
