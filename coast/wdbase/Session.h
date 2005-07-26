@@ -102,7 +102,7 @@ public:
 	//!notify session when added, removed, disabled from session list. (Overwrite this method.)
 	virtual void Notify(ESessionEvt evt, Context &ctx);
 	//! returns information about session
-	virtual void GetSessionInfo(Anything &sessionListInfo, Context &ctx, const char *slotName);
+	virtual bool GetSessionInfo(Anything &sessionListInfo, Context &ctx, const char *slotName);
 
 protected:
 	//!returns configured timeout

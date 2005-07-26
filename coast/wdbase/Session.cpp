@@ -144,9 +144,10 @@ long Session::GetAccessCounter() const
 	return fAccessCounter;
 }
 
-void Session::GetSessionInfo(Anything &sessionListInfo, Context &ctx, const char *slotName)
+bool Session::GetSessionInfo(Anything &sessionListInfo, Context &ctx, const char *slotName)
 {
 	StartTrace(Session.GetSessionInfo);
+	bool ret = true;
 	if ( !IsBusy() ) {
 		Trace("Session not busy");
 		ctx.Push(this);
@@ -157,11 +158,13 @@ void Session::GetSessionInfo(Anything &sessionListInfo, Context &ctx, const char
 		String action;
 		// this is just the fallback action when no other action and/or config is defined
 		action = "SessionInfo";
-		Action::ExecAction(action, ctx, roaConfig);
+		ret = Action::ExecAction(action, ctx, roaConfig);
 	} else {
 		Trace("Session busy");
 		sessionListInfo["List"][slotName]["info"] = "< Session busy >";
+		ret = false;
 	}
+	return ret;
 }
 
 long Session::GetTimeout(Context &ctx) const

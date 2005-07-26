@@ -724,9 +724,9 @@ bool SessionListManager::GetASessionsInfo(Anything &sessionInfo, const String &s
 	}
 	sessionInfo = MetaThing();
 	ctx.GetTmpStore()["SessionInfo"] = sessionInfo;
-	s->GetSessionInfo(sessionInfo, ctx, "SessionInfo");
+	bool ret = s->GetSessionInfo(sessionInfo, ctx, "SessionInfo");
 	ctx.Push(originalSession);
-	return true;
+	return ret;
 }
 
 //---- SessionFactory -----------------------------------------------------------
