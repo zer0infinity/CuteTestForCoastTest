@@ -879,7 +879,8 @@ bool Session::Info(Anything &info, Context &ctx)
 	info["Last"] = GetAccessTime();
 	info["Timeout"] = GetTimeout(ctx);
 	info["Referenced"] = GetRefCount();
-	info["SessionStore"] = GetStoreGlobal();
+	// Don't allow unintentional alteration of session store
+	info["SessionStore"] = GetStoreGlobal().DeepClone();
 	return true;
 }
 
