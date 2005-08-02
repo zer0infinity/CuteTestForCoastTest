@@ -147,7 +147,7 @@ long Session::GetAccessCounter() const
 bool Session::GetSessionInfo(Anything &sessionListInfo, Context &ctx, const char *slotName)
 {
 	StartTrace(Session.GetSessionInfo);
-	bool ret = true;
+	bool ret = false;
 	if ( !IsBusy() ) {
 		Trace("Session not busy");
 		ctx.Push(this);
@@ -162,7 +162,6 @@ bool Session::GetSessionInfo(Anything &sessionListInfo, Context &ctx, const char
 	} else {
 		Trace("Session busy");
 		sessionListInfo["List"][slotName]["info"] = "< Session busy >";
-		ret = false;
 	}
 	return ret;
 }
