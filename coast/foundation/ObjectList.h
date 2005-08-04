@@ -66,9 +66,17 @@ public:
 	ObjectList(const char *name, Allocator *a = Storage::Global())
 		: fShutdown(false)
 		, fDestructiveShutdown(false)
-		, fName(name, -1, a)
 		, fpAlloc(a)
+		, fName(name, -1, fpAlloc)
 	{}
+
+	ObjectList(const ObjectList<Tp> &aList)
+		: std::list<Tp>(aList)
+		, fShutdown(aList.fShutdown)
+		, fDestructiveShutdown(false)	// set to false not to accidentally delete an element twice
+		, fpAlloc(aList.fpAlloc ? aList.fpAlloc : Storage::Global())
+		, fName(aList.fName, -1, fpAlloc) {
+	}
 
 	virtual ~ObjectList() {
 		StartTrace1(ObjectList.~ObjectList, (fDestructiveShutdown ? "destructive" : ""));
@@ -149,13 +157,11 @@ protected:
 	bool			fDestructiveShutdown;
 
 private:
-	//!standard copy constructor prohibited
-	ObjectList(const ObjectList<Tp> &);
 	//!standard assignement operator prohibited
 	void operator=(const ObjectList<Tp> &);
 
-	String			fName;
 	Allocator		*fpAlloc;
+	String			fName;
 };
 
 #endif
