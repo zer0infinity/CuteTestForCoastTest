@@ -52,6 +52,7 @@
 #include "WebAppServiceTest.h"
 #include "TimeStampTest.h"
 #include "ThreadedTimeStampTest.h"
+#include "ConfiguredLookupAdapterTest.h"
 
 #if !defined(WIN32)
 #include "SetupCase.h"
@@ -104,6 +105,7 @@ void setupRunner(TestRunner &runner)
 	ADD_SUITE(runner, RequestProcessorTest);
 	ADD_SUITE(runner, ROAnyLookupAdapterTest);
 	ADD_SUITE(runner, ROAnyConfNamedObjectLookupAdapterTest);
+	ADD_SUITE(runner, ConfiguredLookupAdapterTest);
 	ADD_SUITE(runner, SecurityModuleTest);
 	ADD_SUITE(runner, URLEncoderTest);
 	ADD_SUITE(runner, SessionListManagerTest);
