@@ -40,6 +40,7 @@
 #include "PipeExecutorTest.h"
 #include "ConnectorArgsTest.h"
 #include "ObjectListTest.h"
+#include "TimeStampTest.h"
 
 #ifndef __370__
 #if !defined(WIN32)
@@ -93,6 +94,7 @@ void setupRunner(TestRunner &runner)
 	ADD_SUITE(runner, AnyBuiltInSortTest);
 	ADD_SUITE(runner, ConnectorArgsTest);
 	ADD_SUITE(runner, ObjectListTest);
+	ADD_SUITE(runner, TimeStampTest);
 
 	// put last since cirtical system paths are manipulated that may
 	// affect proper operation of other tests

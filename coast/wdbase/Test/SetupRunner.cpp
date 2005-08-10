@@ -50,7 +50,6 @@
 #include "ContextLookupRendererTest.h"
 #include "PageNameRendererTest.h"
 #include "WebAppServiceTest.h"
-#include "TimeStampTest.h"
 #include "ThreadedTimeStampTest.h"
 #include "ConfiguredLookupAdapterTest.h"
 
@@ -70,7 +69,6 @@ void setupRunner(TestRunner &runner)
 	ADD_SUITE(runner, SetupCase);
 #endif
 
-	ADD_SUITE(runner, TimeStampTest);
 //	ADD_SUITE(runner,ThreadedTimeStampTest);
 	ADD_SUITE(runner, ActionCoreTest);
 	ADD_SUITE(runner, InterruptHandlerTest);
