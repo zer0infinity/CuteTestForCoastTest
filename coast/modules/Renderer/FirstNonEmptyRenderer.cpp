@@ -26,8 +26,10 @@ void FirstNonEmptyRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnyt
 	StartTrace(FirstNonEmptyRenderer.RenderAll);
 	for (long i = 0; i < config.GetSize(); i++) {
 		String result;
+		TraceAny(config[i], "Trying at index [" << i << "]");
 		Renderer::RenderOnString(result, ctx, config[i]);
 		if (result.Length() > 0) {
+			Trace("Found at index  [" << i << "]: " << result);
 			reply << result;
 			return;
 		}
