@@ -17,7 +17,7 @@
 //! <B>Abstract base action for copying data from a source into one destination slot.</B><BR>Configuration:
 //! <PRE>
 //! {
-//!		/Destination {
+//!		/Destination {					destination slot must be given,even if empty
 //!			/Store						optional, default TempStore [Role|Session|Request|TempStore], Store where the data is copied to
 //!			/Slot		Rendererspec	optional, Slotname in Store where the data is copied to
 //!										if omitted, DestinationSlotname will be used
@@ -69,7 +69,7 @@ protected:
 //! <B>Copies data from context into slots in a store.</B><BR>Configuration:
 //! <PRE>
 //! {
-//!		/Destination {
+//!		/Destination {					destination slot must be given,even if empty
 //!			/Store						optional, default TempStore [Role|Session|Request|TempStore], Store where the data is copied to
 //!			/Slot		Rendererspec	optional, Slotname in Store where the data is copied to
 //!										if omitted, DestinationSlotname will be used
@@ -115,7 +115,7 @@ protected:
 //! <B>Copies data from the Query into a store.</B><BR>Configuration:
 //! <PRE>
 //! {
-//!		/Destination {
+//!		/Destination {					destination slot must be given,even if empty
 //!			/Store						optional, default TempStore [Role|Session|Request|TempStore], Store where the data is copied to
 //!			/Slot		Rendererspec	optional, Slotname in Store where the data is copied to
 //!										if omitted, DestinationSlotname will be used
@@ -162,7 +162,7 @@ protected:
 //! <B>Copies data from the Query into a store slot if they are not emtpy.</B><BR>Configuration:
 //! <PRE>
 //! {
-//!		/Destination {
+//!		/Destination {					destination slot must be given,even if empty
 //!			/Store						optional, default TempStore [Role|Session|Request|TempStore], Store where the data is copied to
 //!			/Slot		Rendererspec	optional, Slotname in Store where the data is copied to
 //!										if omitted, DestinationSlotname will be used
