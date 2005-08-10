@@ -10,13 +10,15 @@
 #define _TimeStampTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "TestCase.h"
+#include "Anything.h"
 
 //---- TimeStampTest ----------------------------------------------------------
-//! <B>Test of AccessManagerModule and FDLdapAccessManager</B>
-
-class TimeStampTest : public ConfiguredTestCase
+class TimeStampTest : public TestCase
 {
+	Anything fConfig;
+	ROAnything fTestCaseConfig;
+
 public:
 	//--- constructors
 

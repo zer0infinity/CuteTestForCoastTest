@@ -28,7 +28,7 @@
 
 //---- TimeStampTest ----------------------------------------------------------------
 TimeStampTest::TimeStampTest(TString tstrName)
-	: ConfiguredTestCase(tstrName, "TimeStampTestConfig")
+	: TestCase(tstrName)
 {
 	StartTrace(TimeStampTest.Ctor);
 }
@@ -42,13 +42,19 @@ TimeStampTest::~TimeStampTest()
 void TimeStampTest::setUp ()
 {
 	StartTrace(TimeStampTest.setUp);
-	ConfiguredTestCase::setUp();
+	istream *is = System::OpenStream(getClassName(), "any");
+	if ( is ) {
+		fConfig.Import( *is );
+		delete is;
+		fTestCaseConfig = fConfig[name()];
+	} else {
+		t_assertm( false, TString("could not read ") << getClassName() << ".any" );
+	}
 }
 
 void TimeStampTest::tearDown ()
 {
 	StartTrace(TimeStampTest.tearDown);
-	ConfiguredTestCase::tearDown();
 }
 
 void TimeStampTest::testBasicOperators()

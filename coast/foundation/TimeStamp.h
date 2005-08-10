@@ -9,7 +9,7 @@
 #ifndef _TimeStamp_H
 #define _TimeStamp_H
 
-#include "config_wdbase.h"
+#include "config_foundation.h"
 #include "ITOString.h"
 #include <time.h>
 
@@ -18,7 +18,7 @@
 /*!
 The external representation is "%Y%m%d%H%M%S" relative to timezone GMT.
 */
-class EXPORTDECL_WDBASE TimeStamp
+class EXPORTDECL_FOUNDATION TimeStamp
 {
 	friend class TimeStampTest;
 public:
@@ -162,7 +162,7 @@ public:
 	}
 
 protected:
-	struct EXPORTDECL_WDBASE intTimeRep {
+	struct EXPORTDECL_FOUNDATION intTimeRep {
 		char	cCent;
 		char	cYear;
 		char	cMonth;
