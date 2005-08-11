@@ -41,6 +41,7 @@
 #include "ConnectorArgsTest.h"
 #include "ObjectListTest.h"
 #include "TimeStampTest.h"
+#include "ConversionUtilsTest.h"
 
 #ifndef __370__
 #if !defined(WIN32)
@@ -95,6 +96,7 @@ void setupRunner(TestRunner &runner)
 	ADD_SUITE(runner, ConnectorArgsTest);
 	ADD_SUITE(runner, ObjectListTest);
 	ADD_SUITE(runner, TimeStampTest);
+	ADD_SUITE(runner, ConversionUtilsTest);
 
 	// put last since cirtical system paths are manipulated that may
 	// affect proper operation of other tests
