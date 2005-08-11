@@ -11,9 +11,79 @@
 
 #include "config_compress.h"
 #include "StringStream.h"
+#include "TimeStamp.h"
 #include "zlib.h"
 
-class ZipIStream;
+struct EXPORTDECL_COMPRESS GzipHdr {
+	GzipHdr();
+
+	bool IsValid();
+	TimeStamp GetModificationTime() const;
+	void SetModificationTime(TimeStamp aStamp);
+
+	friend EXPORTDECL_COMPRESS ostream &operator<<(ostream &os, GzipHdr &header);
+	friend EXPORTDECL_COMPRESS istream &operator>>(istream &is, GzipHdr &header);
+
+	unsigned char ID1;					/* gzip magic header[0] */
+	unsigned char ID2;					/* gzip magic header[1] */
+
+	unsigned char CompressionMethod;	/* 0-7 are reserved, 8 denotes the 'deflate' method used by gzip */
+	enum eCompressionMethod {
+		eDeflate = Z_DEFLATED,
+	};
+
+	unsigned char Flags;
+	enum {
+		eFTEXT = 0x01,					/* set if the content is propably ASCII text, optional indication */
+		eFHCRC = 0x02,					/* set if a header crc16 sum is present */
+		eFEXTRA = 0x04,					/* set if an extra field is present */
+		eFNAME = 0x08,					/* set if an original, zero terminated, file name is present */
+		eFCOMMENT = 0x10,				/* set if a zero terminated file comment is present */
+	};
+
+	enum {
+		eModificationTimeLen = 4
+	};
+	unsigned char ModificationTime[eModificationTimeLen];	/* original file time if present, time of compression or left 0 */
+
+	unsigned char ExtraFlags;			/* set if deflate compression method is given */
+	enum eExtraFlags {
+		eUnspecified = 0,
+		eMaxCompression = 2,
+		eFastestCompression = 4,
+	};
+
+	unsigned char OperatingSystem;
+	enum eOperatingSystem {
+		eFAT = 0,
+		eAmiga = 1,
+		eVMS = 2,
+		eUnix = 3,
+		eVM_CMS = 4,
+		eAtari_TOS = 5,
+		eHPFS = 6,
+		eMacintosh = 7,
+		eZ_System = 8,
+		eCP_M = 9,
+		eTOPS_20 = 10,
+		eNTFS = 11,
+		eQDOS = 12,
+		eAcorn_RISCOS = 13,
+		ePrime_PRIMOS = 15,
+		eUnknownOS = 255,
+	};
+
+	unsigned short XLEN;
+	String ExtraField;
+
+	String FileName;
+
+	String Comment;
+
+	unsigned short CRC16;
+
+	bool fbValid;
+};
 
 //---- ZipStreamBuf ----------------------------------------------------------
 //! Does not do anything in particular except hold a few static constants.
@@ -21,26 +91,20 @@ class ZipIStream;
 //! this would result in a very complex class.
 class EXPORTDECL_COMPRESS ZipStreamBuf : public streambuf
 {
+	friend class ZipStreamTest;
 public:
 	ZipStreamBuf(Allocator *alloc);
 
-	static const unsigned char fgcGzSimpleHeader[10];	// definition og GzHeader see RFC 1952
-
 protected:
-	static const unsigned char fgcZDeflated;
-
-	// os code
-	static const unsigned char fgcOsCode;
-	static const long fgcStoreSize;
-
 	bool isInitialized;
 	Allocator *fAllocator;
-	unsigned long fCrcData, fCrcHeader;
+	unsigned long fCrcData;
 	z_stream_s fZip;
 	//! the storage of the holding area buffer
 	String fStore;
 	//! the storage of the compressed buffer
 	String fCompressed;
+	GzipHdr fHeader;
 
 private:
 	ZipStreamBuf(const ZipStreamBuf &);
@@ -57,6 +121,11 @@ public:
 	~ZipIStreamBuf();
 
 	void close();
+
+	bool getExtraField(String &strBuf);
+	bool getFilename(String &strFilename);
+	bool getComment(String &strComment);
+	TimeStamp getModificationTime();
 
 protected:
 	//! consumes chars of the put area
@@ -90,6 +159,7 @@ private:
 //! wrap other ostream objects with compression compression
 class EXPORTDECL_COMPRESS ZipOStreamBuf : public ZipStreamBuf
 {
+	friend class ZipStreamTest;
 public:
 	//--- constructors
 	ZipOStreamBuf(ostream &, Allocator *a = Storage::Current());
@@ -106,6 +176,14 @@ public:
 	//! flushes the buffer and sets streampos to 0 it is not possible to seek on a socket
 	virtual streampos seekoff(streamoff, ios::seek_dir, int mode = ios::in | ios::out);
 #endif
+
+	void setHeaderCRC(bool bFlag = true);
+	int setCompression(int comp_level, int comp_strategy = Z_DEFAULT_STRATEGY);
+	void setExtraField(const String &strBuf);
+	void setFilename(String strFilename);
+	void setComment(String strComment);
+	void setModificationTime(TimeStamp aStamp);
+
 protected:
 	//! consumes chars of the put area
 	virtual int overflow(int c = EOF);
@@ -119,11 +197,67 @@ protected:
 	void flushCompressed();
 	void flushCompressedIfNecessary();
 	void putLong(unsigned long);
-	int setCompression(int comp_level, int comp_strategy);
 
 	ostream *fOs;
+	int fCompLevel, fCompStrategy;
 };
 
+namespace ZipStream
+{
+	struct _CRCType {
+		bool fCrc;
+	};
+	EXPORTDECL_COMPRESS inline _CRCType setHeaderCRC(bool bFlag = true)
+	{
+		_CRCType aType = { bFlag };
+		return aType;
+	}
+	struct _CprsType {
+		int comp_level;
+		int comp_strategy;
+	};
+	EXPORTDECL_COMPRESS inline _CprsType setCompression(int comp_level, int comp_strategy = Z_DEFAULT_STRATEGY)
+	{
+		_CprsType aType = { comp_level, comp_strategy };
+		return aType;
+	}
+	struct _EFType {
+		String fBuf;
+	};
+	EXPORTDECL_COMPRESS inline _EFType setExtraField(const String &strBuf)
+	{
+		_EFType aArgument;
+		aArgument.fBuf = strBuf;
+		return aArgument;
+	}
+	struct _FnameType {
+		String fBuf;
+	};
+	EXPORTDECL_COMPRESS inline _FnameType setFilename(String strFilename)
+	{
+		_FnameType aArgument;
+		aArgument.fBuf = strFilename;
+		return aArgument;
+	}
+	struct _CommType {
+		String fBuf;
+	};
+	EXPORTDECL_COMPRESS inline _CommType setComment(String strComment)
+	{
+		_CommType aArgument;
+		aArgument.fBuf = strComment;
+		return aArgument;
+	}
+	struct _ModTType {
+		TimeStamp fStamp;
+	};
+	EXPORTDECL_COMPRESS inline _ModTType setModificationTime(TimeStamp aStamp)
+	{
+		_ModTType aArgument;
+		aArgument.fStamp = aStamp;
+		return aArgument;
+	}
+}
 //---- ZipOStream ----------------------------------------------------------
 //! wrap other ostream objects with compression
 class EXPORTDECL_COMPRESS ZipOStream : public ostream
@@ -140,11 +274,36 @@ public:
 	~ZipOStream() {
 		close();
 	}
-	ZipStreamBuf *rdbuf()  {
+	ZipOStreamBuf *rdbuf()  {
 		return &fBuf;
 	}
 	void close() {
 		fBuf.close();
+	}
+
+	friend EXPORTDECL_COMPRESS inline ZipOStream &operator<<(ZipOStream &os, ZipStream::_CRCType aArgs) {
+		os.fBuf.setHeaderCRC(aArgs.fCrc);
+		return os;
+	}
+	friend EXPORTDECL_COMPRESS inline ZipOStream &operator<<(ZipOStream &os, ZipStream::_CprsType aArgs) {
+		os.fBuf.setCompression(aArgs.comp_level, aArgs.comp_strategy);
+		return os;
+	}
+	friend EXPORTDECL_COMPRESS inline ZipOStream &operator<<(ZipOStream &os, ZipStream::_EFType aArgs) {
+		os.fBuf.setExtraField(aArgs.fBuf);
+		return os;
+	}
+	friend EXPORTDECL_COMPRESS inline ZipOStream &operator<<(ZipOStream &os, ZipStream::_FnameType aArgs) {
+		os.fBuf.setFilename(aArgs.fBuf);
+		return os;
+	}
+	friend EXPORTDECL_COMPRESS inline ZipOStream &operator<<(ZipOStream &os, ZipStream::_CommType aArgs) {
+		os.fBuf.setComment(aArgs.fBuf);
+		return os;
+	}
+	friend EXPORTDECL_COMPRESS inline ZipOStream &operator<<(ZipOStream &os, ZipStream::_ModTType aArgs) {
+		os.fBuf.setModificationTime(aArgs.fStamp);
+		return os;
 	}
 protected:
 	ZipOStreamBuf fBuf;
@@ -166,12 +325,26 @@ public:
 	~ZipIStream() {
 		close();
 	}
-	ZipStreamBuf *rdbuf()  {
+	ZipIStreamBuf *rdbuf()  {
 		return &fBuf;
 	}
 	void close() {
 		fBuf.close();
 	}
+
+	bool getExtraField(String &strBuf) {
+		return fBuf.getExtraField(strBuf);
+	}
+	bool getFilename(String &strFilename) {
+		return fBuf.getFilename(strFilename);
+	}
+	bool getComment(String &strComment) {
+		return fBuf.getComment(strComment);
+	}
+	TimeStamp getModificationTime() {
+		return fBuf.getModificationTime();
+	}
+
 protected:
 	ZipIStreamBuf fBuf;
 };
