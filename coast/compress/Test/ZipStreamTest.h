@@ -11,7 +11,7 @@
 
 //---- baseclass include -------------------------------------------------
 
-#include "ITOString.h"
+#include "Anything.h"
 #include "TestCase.h"
 
 //---- ZipStreamTest ----------------------------------------------------------
@@ -40,7 +40,7 @@ public:
 	void tearDown ();
 
 	//!test the gzip header after init
-	void GzipHeaderCheck();
+	void GzipHdrWriteTest();
 	//!test the gzip file creation and reading
 	void GzipSimpleFileCheck();
 	//!test the gzip file creation and reading for a bigger file
@@ -56,8 +56,14 @@ public:
 	//!describe this testcase
 	void StringGetlineTest();
 
+	void GzipHdrTest();
+	void ReadGzipHdrFileTest();
+	void SetCompressionTest();
+
 private:
 	void VerifyFile(const char *fileName);
+	Anything fConfig;
+	ROAnything fTestCaseConfig;
 };
 
 #endif

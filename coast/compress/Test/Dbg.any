@@ -9,18 +9,28 @@
 {
 
 	/LowerBound		0 		# define lower bound of debug range, 0 turns it off completly
-	/UpperBound		1		# define upper bound of debug range
+	/UpperBound		150		# define upper bound of debug range
 	/DumpAnythings  1		# print full Anythings
 
-	/ZipIStreamBuf
-	{
+	/GzipHdr {
+		/MainSwitch						10
+		/EnableAll						10
+	}
+	/ZipOStream {
+		/MainSwitch						50
+		/EnableAll						50
+	}
+	/ZipOStreamBuf  {
+		/MainSwitch						50
+		/EnableAll						50
+	}
+	/ZipIStream {
 		/MainSwitch						150
 		/EnableAll						150
 	}
-	/ZipOStreamBuf
-	{
-		/MainSwitch						50
-		/EnableAll						50
+	/ZipIStreamBuf  {
+		/MainSwitch						150
+		/EnableAll						150
 	}
 	/ZipStreamTest {
 		/MainSwitch						150

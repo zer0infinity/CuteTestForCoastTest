@@ -1,0 +1,67 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/ReadGzipHdrFileTest {
+		/InvalidBuffer {
+			/BinaryData ""
+			/Valid		0
+			/ModTime	""
+			/Flags		0
+			/Os			255
+			/Xlen		0
+			/ExtraField ""
+			/FileName	""
+			/Comment	""
+		}
+		/IncompleteHeader {
+			/BinaryData "\x12\x34"
+			/Valid		0
+		}
+		/InvalidMagicNumber {
+			/BinaryData "\x12\x34\x08\x00\x00\x00\x00\x00\x00\x03"
+			/Valid		0
+		}
+		/CorrectHeader {
+			/BinaryData "\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\x03"
+			/Valid		1
+			/Os			3
+			/Flags		0
+		}
+		/CorrectHeaderWithCRC {
+			/BinaryData "\x1f\x8b\x08\x02\x00\x00\x00\x00\x00\x03\xa7\x77"
+			/Valid		1
+			/Flags		2
+		}
+		/CorrectHeaderWithModtime {
+			/BinaryData "\x1f\x8b\x08\x00\x01\x00\x00\x00\x00\x03"
+			/Valid		1
+			/ModTime	"19700101000001"
+		}
+		/ExtraFlagWith2ByteContent {
+			/BinaryData "\x1f\x8b\x08\x04\x00\x00\x00\x00\x00\x03\x02\x00\x55\xAA"
+			/Valid		1
+			/Flags		4
+			/Xlen		2
+			/ExtraField "\x55\xAA"
+		}
+		/FilenameFlagWith10ByteFilename {
+			/BinaryData "\x1f\x8b\x08\x08\x00\x00\x00\x00\x00\x030123456789\x00"
+			/Valid		1
+			/Flags		8
+			/FileName	"0123456789"
+		}
+		/CommentFlagWith10ByteComment {
+			/BinaryData "\x1f\x8b\x08\x10\x00\x00\x00\x00\x00\x030123456789\x00"
+			/Valid		1
+			/Flags		16
+			/Comment	"0123456789"
+		}
+	}
+}

@@ -21,6 +21,7 @@
 
 //--- c-modules used -----------------------------------------------------------
 #include <stdlib.h>
+#include "gzio.h"
 
 //---- ZipStreamTest ----------------------------------------------------------------
 ZipStreamTest::ZipStreamTest(TString tstrName) : TestCase(tstrName)
@@ -37,6 +38,14 @@ ZipStreamTest::~ZipStreamTest()
 void ZipStreamTest::setUp ()
 {
 	StartTrace(ZipStreamTest.setUp);
+	istream *is = System::OpenStream(getClassName(), "any");
+	if ( is ) {
+		fConfig.Import( *is );
+		delete is;
+		fTestCaseConfig = fConfig[name()];
+	} else {
+		t_assertm( false, TString("could not read ") << getClassName() << ".any" );
+	}
 }
 
 void ZipStreamTest::tearDown ()
@@ -45,6 +54,143 @@ void ZipStreamTest::tearDown ()
 }
 
 static String content("Hello Hello Peter\nhallo\n");
+
+void ZipStreamTest::GzipHdrTest()
+{
+	StartTrace(ZipStreamTest.GzipHdrTest);
+	GzipHdr aHeader;
+	assertEqual(gz_magic[0], aHeader.ID1);
+	assertEqual(gz_magic[1], aHeader.ID2);
+	assertEqual(GzipHdr::eDeflate, aHeader.CompressionMethod);
+	assertEqual(0, aHeader.Flags);
+	assertEqual(0L, aHeader.ModificationTime[0]);
+	assertEqual(0L, aHeader.ModificationTime[1]);
+	assertEqual(0L, aHeader.ModificationTime[2]);
+	assertEqual(0L, aHeader.ModificationTime[3]);
+	assertEqual(GzipHdr::eUnspecified, aHeader.ExtraFlags);
+#if defined(WIN32)
+#  if !defined(__CYGWIN__)  /* Cygwin is Unix, not Win32 */
+#    define OS_CODE  GzipHdr::eNTFS
+#  endif
+#elif defined(__linux__) || defined(__sun)
+#  define OS_CODE  GzipHdr::eUnix
+#endif
+	assertEqual(OS_CODE, aHeader.OperatingSystem);
+	assertEqual(4L, (long) & (aHeader.ModificationTime) - (long)&aHeader);
+	assertEqual(8L, (long) & (aHeader.ExtraFlags) - (long)&aHeader);
+	assertEqual(9L, (long) & (aHeader.OperatingSystem) - (long)&aHeader);
+	t_assert( aHeader.fbValid );
+}
+
+void ZipStreamTest::GzipHdrWriteTest()
+{
+	StartTrace(ZipStreamTest.GzipHdrWriteTest);
+	OStringStream os;
+	ZipOStream zos(os);
+	t_assert(os.flush() != NULL);
+	assertEqual(0L, os.str().Length());
+
+	zos << flush;
+
+	// header must be written after first byte streamd to stream
+	assertEqual(10L, os.str().Length());
+	GzipHdr aHeader;
+	StringStream streamHeader;
+	streamHeader << aHeader << flush;
+
+	String writtenHeader = os.str();
+	writtenHeader.Trim(10);
+	assertCharPtrEqual(streamHeader.str(), writtenHeader);
+}
+
+void ZipStreamTest::ReadGzipHdrFileTest()
+{
+	StartTrace(ZipStreamTest.ReadGzipHdrFileTest);
+	for (long lIdx = 0; lIdx < fTestCaseConfig.GetSize(); lIdx++) {
+		ROAnything roaConfig = fTestCaseConfig[lIdx];
+		String strCprs(roaConfig["BinaryData"].AsString());
+		TString strCase = fTestCaseConfig.SlotName(lIdx);
+		if ( !strCase.Length() ) {
+			strCase << "idx:" << lIdx;
+		}
+		IStringStream stream(strCprs);
+		ZipIStream zis(stream);
+		char cDummy;
+		zis >> cDummy;
+		ZipIStreamBuf *pBuf = zis.rdbuf();
+		const GzipHdr &aHeader = pBuf->fHeader;
+		if ( t_assertm( aHeader.fbValid == roaConfig["Valid"].AsBool(false), TString("failure at ") << strCase ) && aHeader.fbValid ) {
+			long lFlags = 0L;
+			if ( roaConfig.IsDefined("ModTime") ) {
+				TimeStamp aStampExpected(roaConfig["ModTime"].AsString());
+				TimeStamp aStampHeader = aHeader.GetModificationTime();
+				t_assertm(aStampExpected == aStampHeader, strCase);
+				assertCharPtrEqualm(aStampExpected.AsString(), aStampHeader.AsString(), strCase);
+			}
+			if ( roaConfig.IsDefined("Flags") ) {
+				lFlags = roaConfig["Flags"].AsLong();
+				assertEqualm(lFlags, (long)(aHeader.Flags), strCase);
+			}
+			if ( roaConfig.IsDefined("Os") ) {
+				assertEqualm(roaConfig["Os"].AsLong(255), (long)(aHeader.OperatingSystem), strCase);
+			}
+			if ( lFlags & GzipHdr::eFEXTRA ) {
+				assertEqualm(roaConfig["Xlen"].AsLong(0), (long)aHeader.XLEN, strCase);
+				if ( roaConfig.IsDefined("ExtraField") ) {
+					assertEqualRawm( roaConfig["ExtraField"].AsString(), aHeader.ExtraField, strCase);
+				}
+			}
+			if ( lFlags & GzipHdr::eFNAME ) {
+				assertCharPtrEqualm( roaConfig["FileName"].AsString("undefined"), aHeader.FileName, strCase);
+			}
+			if ( lFlags & GzipHdr::eFCOMMENT ) {
+				assertCharPtrEqualm( roaConfig["Comment"].AsString("undefined"), aHeader.Comment, strCase);
+			}
+		}
+	}
+}
+
+void ZipStreamTest::SetCompressionTest()
+{
+	StartTrace(ZipStreamTest.SetCompressionTest);
+	String strFileName("MultCprsTest");
+	ostream *os = System::OpenOStream (strFileName, "gz", ios::binary);
+	if (!t_assert(os != NULL)) {
+		return;
+	}
+	ZipOStream zos(*os);
+	t_assert(!!zos);
+	zos << ZipStream::setFilename("MySpecialFileName");
+	zos << ZipStream::setComment("Hello, this is my comment");
+	zos << ZipStream::setModificationTime(TimeStamp("20041224012345"));
+	zos << ZipStream::setHeaderCRC();
+	zos << content << flush;
+	for (long lCprs = 0L; lCprs < Z_BEST_COMPRESSION; lCprs++) {
+		zos << ZipStream::setCompression(lCprs) << content << flush;
+	}
+	t_assert(!!zos);
+	zos.close();
+	delete os;
+
+	// should check for consistency of the file
+	VerifyFile(String(strFileName) << ".gz");
+
+	istream *is = System::OpenIStream(strFileName, "gz", ios::binary);
+	if (!t_assert(is != NULL)) {
+		return;
+	}
+	ZipIStream zis(*is);
+	t_assert(!!zis);
+	String strRead;
+	while (!!zis && !zis.eof()) {
+		String buff(1024);
+		long nread = zis.read((char *)(const char *)buff, buff.Capacity()).gcount();
+		strRead.Append((const char *)buff, nread);
+	}
+	t_assert(!zis != 0);
+	zis.close();
+	delete is;
+}
 
 void ZipStreamTest::GzipZlibTest()
 {
@@ -65,7 +211,7 @@ void ZipStreamTest::GzipZlibTest()
 }
 static String ReadStream(istream &is)
 {
-	StartTrace(TestSequence.ReadStream);
+	StartTrace(ZipStreamTest.ReadStream);
 
 	String ret(Storage::Global());
 
@@ -300,27 +446,6 @@ void ZipStreamTest::GzipCorruptInputCheck()
 	zis2.close();
 }
 
-void ZipStreamTest::GzipHeaderCheck()
-{
-	StartTrace(ZipStreamTest.GzipHeaderCheck);
-	OStringStream os;
-	ZipOStream zos(os);
-	t_assert(os.flush() != NULL);
-	assertEqual(0L, os.str().Length());
-
-	zos << 'a';
-	zos.flush();
-
-	// header must be written after first byte streamd to stream
-	assertEqual(10L, sizeof(ZipOStreamBuf::fgcGzSimpleHeader));
-	t_assert(os.str().Length() == 10L);
-	String headerstr((const char *)ZipOStreamBuf::fgcGzSimpleHeader, 10L);
-
-	String writtenHeader = os.str();
-	writtenHeader.Trim(10);
-	assertEqual(headerstr, writtenHeader);
-}
-
 void ZipStreamTest::StringGetlineTest()
 {
 	StartTrace(ZipStreamTest.StringGetlineTest);
@@ -344,24 +469,6 @@ void ZipStreamTest::StringGetlineTest()
 	zis.close();
 }
 
-// builds up a suite of testcases, add a line for each testmethod
-Test *ZipStreamTest::suite ()
-{
-	StartTrace(ZipStreamTest.suite);
-	TestSuite *testSuite = new TestSuite;
-
-	ADD_CASE(testSuite, ZipStreamTest, GzipHeaderCheck);
-	ADD_CASE(testSuite, ZipStreamTest, GzipSimpleFileCheck);
-	ADD_CASE(testSuite, ZipStreamTest, GzipBigFileCheck);
-	ADD_CASE(testSuite, ZipStreamTest, GzipLongFileCheck);
-	ADD_CASE(testSuite, ZipStreamTest, GzipZlibTest);
-	ADD_CASE(testSuite, ZipStreamTest, GzipCorruptInputCheck);
-	ADD_CASE(testSuite, ZipStreamTest, GzipConstantBufferCheck);
-	ADD_CASE(testSuite, ZipStreamTest, StringGetlineTest);
-
-	return testSuite;
-}
-
 void ZipStreamTest::VerifyFile(const char *fileName)
 {
 	const long length = content.Length();
@@ -374,4 +481,24 @@ void ZipStreamTest::VerifyFile(const char *fileName)
 	delete[] buffer;
 	int err = gzclose(inFile);
 	t_assert(err == Z_OK);
+}
+
+// builds up a suite of testcases, add a line for each testmethod
+Test *ZipStreamTest::suite ()
+{
+	StartTrace(ZipStreamTest.suite);
+	TestSuite *testSuite = new TestSuite;
+
+	ADD_CASE(testSuite, ZipStreamTest, GzipHdrTest);
+	ADD_CASE(testSuite, ZipStreamTest, GzipHdrWriteTest);
+	ADD_CASE(testSuite, ZipStreamTest, ReadGzipHdrFileTest);
+	ADD_CASE(testSuite, ZipStreamTest, SetCompressionTest);
+	ADD_CASE(testSuite, ZipStreamTest, GzipSimpleFileCheck);
+	ADD_CASE(testSuite, ZipStreamTest, GzipBigFileCheck);
+	ADD_CASE(testSuite, ZipStreamTest, GzipLongFileCheck);
+	ADD_CASE(testSuite, ZipStreamTest, GzipZlibTest);
+	ADD_CASE(testSuite, ZipStreamTest, GzipCorruptInputCheck);
+	ADD_CASE(testSuite, ZipStreamTest, GzipConstantBufferCheck);
+	ADD_CASE(testSuite, ZipStreamTest, StringGetlineTest);
+	return testSuite;
 }
