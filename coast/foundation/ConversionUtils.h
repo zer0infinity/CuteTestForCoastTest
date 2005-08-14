@@ -9,6 +9,7 @@
 #ifndef _ConversionUtils_H
 #define _ConversionUtils_H
 
+#include "config.h"
 #if defined(DEBUG)
 #include "StringStream.h"
 #endif

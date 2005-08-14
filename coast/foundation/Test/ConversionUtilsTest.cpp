@@ -16,6 +16,7 @@
 #include "ConversionUtils.h"
 
 //--- standard modules used ----------------------------------------------------
+#include "ITOString.h"
 #include "Dbg.h"
 
 //--- c-modules used -----------------------------------------------------------
