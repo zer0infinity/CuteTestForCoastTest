@@ -75,10 +75,10 @@ protected:
 	static SSLObjectManager *fgSSLObjectManager;
 
 	//!The rw lock that protects the ssl context store
-	RWLock fSSLCtxStoreRWLock;
+	Mutex fSSLCtxStoreMutex;
 
 	//!The rw lock that protects the ssl sessionId store
-	RWLock fSSLSessionIdStoreRWLock;
+	Mutex fSSLSessionIdStoreMutex;
 
 	//!The Anything containing the SSL Context objects
 	Anything fSSLCtxStore;

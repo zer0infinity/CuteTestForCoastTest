@@ -36,8 +36,8 @@ RegisterModule(SSLObjectManager);
 //---- SSLObjectManager ----------------------------------------------------------------
 SSLObjectManager::SSLObjectManager(const char *name)
 	: WDModule(name)
-	, fSSLCtxStoreRWLock("SSLCtxStoreRWLock")
-	, fSSLSessionIdStoreRWLock("SSLSessionIdStoreRWLock")
+	, fSSLCtxStoreMutex("SSLCtxStoreMutex")
+	, fSSLSessionIdStoreMutex("SSLSessionIdStoreMutex")
 	, fSSLCtxStore(Storage::Global())
 	, fSSLSessionIdStore(Storage::Global())
 {
@@ -58,7 +58,7 @@ SSL_CTX *SSLObjectManager::GetCtx(const String &ip, const String &port, ROAnythi
 	TraceAny(sslModuleCfg, "sslModuleCfg");
 	TRACE_LOCK_START("GetCtx");
 	{
-		RWLockEntry me(fSSLCtxStoreRWLock, true);
+		MutexEntry me(fSSLCtxStoreMutex);
 		me.Use();
 		if ( ( sslctx = (SSL_CTX *) fSSLCtxStore[ip][port].AsIFAObject(0)) != (SSL_CTX *) NULL ) {
 			Trace("Found ssl context for ip: " << ip << " port:  " << port);
@@ -68,19 +68,20 @@ SSL_CTX *SSLObjectManager::GetCtx(const String &ip, const String &port, ROAnythi
 	if (!(sslModuleCfg.IsNull())) {
 		Trace("Creating ssl context [SSLModule with config] for ip: " << ip << " port:  " << port);
 		{
-			RWLockEntry me(fSSLCtxStoreRWLock, false);
+			MutexEntry me(fSSLCtxStoreMutex);
 			me.Use();
 			sslctx = SSLModule::GetSSLClientCtx(sslModuleCfg);
+			fSSLCtxStore[ip][port] = (IFAObject *) sslctx;
 		}
 	} else {
 		Trace("Creating ssl context [default SSLV23_client_method] for ip: " << ip << " port:  " << port);
 		{
-			RWLockEntry me(fSSLCtxStoreRWLock, false);
+			MutexEntry me(fSSLCtxStoreMutex);
 			me.Use();
 			sslctx = SSL_CTX_new(SSLv23_client_method());
+			fSSLCtxStore[ip][port] = (IFAObject *) sslctx;
 		}
 	}
-	fSSLCtxStore[ip][port] = (IFAObject *) sslctx;
 	return sslctx;
 }
 
@@ -90,7 +91,7 @@ bool SSLObjectManager::RemoveCtx(const String &ip, const String &port)
 	SSL_CTX *sslctx;
 	TRACE_LOCK_START("GetCtx");
 	{
-		RWLockEntry me(fSSLCtxStoreRWLock, true);
+		MutexEntry me(fSSLCtxStoreMutex);
 		me.Use();
 		if ( ( sslctx = (SSL_CTX *) fSSLCtxStore[ip][port].AsIFAObject(0)) != (SSL_CTX *) NULL ) {
 			Trace("Found ssl context for ip: " << ip << " port:  " << port);
@@ -109,7 +110,7 @@ SSL_SESSION *SSLObjectManager::GetSessionId(const String &ip, const String &port
 	thrId.Append( Thread::MyId());
 	TRACE_LOCK_START("GetSessionId");
 	{
-		RWLockEntry me(fSSLSessionIdStoreRWLock, true);
+		MutexEntry me(fSSLSessionIdStoreMutex);
 		me.Use();
 
 		Trace("Got SessionId for: " << ip << " port:  " << port <<
@@ -127,7 +128,7 @@ void SSLObjectManager::SetSessionId(const String &ip, const String &port, SSL_SE
 	SSL_SESSION *sslSessionStored = NULL;
 	TRACE_LOCK_START("SetSessionId");
 	{
-		RWLockEntry me(fSSLSessionIdStoreRWLock, false);
+		MutexEntry me(fSSLSessionIdStoreMutex);
 		me.Use();
 		// If there is already a session stored in this slot, free it
 		sslSessionStored = (SSL_SESSION *) fSSLSessionIdStore[ip][port][thrId]["session"].AsIFAObject(0);
@@ -156,7 +157,7 @@ bool SSLObjectManager::Finis()
 	StartTrace(SSLObjectManager.Finis);
 	{
 		TraceAny(fSSLCtxStore, "fSSLCfSSLCtxStoretxStoreRWLock");
-		RWLockEntry me(fSSLCtxStoreRWLock, false);
+		MutexEntry me(fSSLCtxStoreMutex);
 		me.Use();
 		for ( long ip = 0; ip < fSSLCtxStore.GetSize(); ip++) {
 			for ( long port = 0; port < fSSLCtxStore[ip].GetSize(); port++) {
@@ -171,7 +172,7 @@ bool SSLObjectManager::Finis()
 	}
 	{
 		TraceAny(fSSLSessionIdStore, "fSSLSessionIdStore");
-		RWLockEntry me(fSSLSessionIdStoreRWLock, false);
+		MutexEntry me(fSSLSessionIdStoreMutex);
 		me.Use();
 		for (long ip = 0; ip < fSSLSessionIdStore.GetSize(); ip++) {
 			for ( long port = 0; port < fSSLSessionIdStore[ip].GetSize(); port++) {
