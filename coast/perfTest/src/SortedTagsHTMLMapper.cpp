@@ -24,7 +24,7 @@ bool SortedTagsHTMLMapper::DoPutStream(const char *key, istream &is, Context &ct
 	// config is ignored
 	StartTrace1(SortedTagsHTMLMapper.PutStream, NotNull(key));
 
-	bool analyseReply = ctx.Lookup("SortedTagsHTMLMapperanalyseReply", 0L);
+	bool analyseReply = ctx.Lookup("SortedTagsHTMLMapperAnalyseReply", 0L);
 
 	if ( !analyseReply ) {
 		analyseReply = (ctx.Lookup("IsAbsPath", 0L) == 0);
