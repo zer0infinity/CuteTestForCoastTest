@@ -156,7 +156,7 @@ bool SSLObjectManager::Finis()
 {
 	StartTrace(SSLObjectManager.Finis);
 	{
-		TraceAny(fSSLCtxStore, "fSSLCfSSLCtxStoretxStoreRWLock");
+		TraceAny(fSSLCtxStore, "fSSLCtxStore");
 		MutexEntry me(fSSLCtxStoreMutex);
 		me.Use();
 		for ( long ip = 0; ip < fSSLCtxStore.GetSize(); ip++) {
