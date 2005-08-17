@@ -24,14 +24,14 @@ bool SortedTagsHTMLMapper::DoPutStream(const char *key, istream &is, Context &ct
 	// config is ignored
 	StartTrace1(SortedTagsHTMLMapper.PutStream, NotNull(key));
 
-	bool analizeReply = ctx.Lookup("SortedTagsHTMLMapperAnalizeReply", 0L);
+	bool analyseReply = ctx.Lookup("SortedTagsHTMLMapperanalyseReply", 0L);
 
-	if ( !analizeReply ) {
-		analizeReply = (ctx.Lookup("IsAbsPath", 0L) == 0);
+	if ( !analyseReply ) {
+		analyseReply = (ctx.Lookup("IsAbsPath", 0L) == 0);
 	}
 
-	Trace("analizeReply is: " << analizeReply);
-	if ( key && analizeReply) {
+	Trace("analyseReply is: " << analyseReply);
+	if ( key && analyseReply) {
 		AAT_HTMLReader mr(&is);
 		Anything fAllReq;
 		MyHTMLWriter mw(fAllReq);
@@ -45,7 +45,7 @@ bool SortedTagsHTMLMapper::DoPutStream(const char *key, istream &is, Context &ct
 		return (  DoFinalPutAny(key, fAllReq, ctx) &&  !mw.GetReqFailed() );
 	}
 
-	return (!analizeReply ? DoFinalPutStream("Output", is, ctx) : false);
+	return (!analyseReply ? DoFinalPutStream("Output", is, ctx) : false);
 }
 
 bool SortedTagsHTMLMapper::Put(const char *key, const String &value, Context &ctx)
