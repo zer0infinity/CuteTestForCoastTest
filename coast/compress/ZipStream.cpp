@@ -15,6 +15,7 @@
 #include "ConversionUtils.h"
 
 //--- c-modules used -----------------------------------------------------------
+#include <string.h>	// memset
 #include "gzio.h"	// DEF_MEM_LEVEL
 
 // following section copied out of zutil.h
