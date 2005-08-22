@@ -145,7 +145,7 @@ istream &operator>>(istream &is, GzipHdr &header)
 			strHeader.Append(char(header.XLEN & 0xff));
 			strHeader.Append(char((header.XLEN >> 8) & 0xff));
 			if ( bCont ) {
-				char *pArr = new (char)[header.XLEN];
+				char *pArr = new char[header.XLEN];
 				if ( ( bCont = !is.read(pArr, header.XLEN).eof() ) ) {
 					header.ExtraField.Trim(0);
 					header.ExtraField.Append((void *)pArr, header.XLEN);
