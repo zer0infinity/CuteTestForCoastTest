@@ -22,11 +22,7 @@ RegisterRenderer(GetEnvRenderer);
 
 GetEnvRenderer::GetEnvRenderer(const char *name)
 	: LookupRenderer(name)
-	, fTheEnvironment(Storage::Global())
 {
-	StartTrace(GetEnvRenderer.GetEnvRenderer);
-	System::GetProcessEnvironment(fTheEnvironment);
-	TraceAny(fTheEnvironment, "the environment");
 }
 
 GetEnvRenderer::~GetEnvRenderer() { }
@@ -34,8 +30,10 @@ GetEnvRenderer::~GetEnvRenderer() { }
 ROAnything GetEnvRenderer::DoLookup(Context &context, const char *name, char delim, char indexdelim)
 {
 	StartTrace1(GetEnvRenderer.DoLookup, "LookupName [" << NotNull(name) << "]");
+	Anything anyEnv = context.GetTmpStore()["_GetEnvRenderer_"];
+	System::GetProcessEnvironment(anyEnv);
 	ROAnything roaResult;
-	((ROAnything)fTheEnvironment).LookupPath(roaResult, name, delim, indexdelim);
+	((ROAnything)anyEnv).LookupPath(roaResult, name, delim, indexdelim);
 	TraceAny(roaResult, "result");
 	return roaResult;
 }

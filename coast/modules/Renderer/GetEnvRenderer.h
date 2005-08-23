@@ -40,7 +40,6 @@ protected:
 	//! \param delim a character specifying the named slot delimiter
 	//! \param indexdelim a character specifying the unnamed slot delimiter (array indices)
 	virtual ROAnything DoLookup(Context &context, const char *name, char delim, char indexdelim);
-	Anything fTheEnvironment;
 };
 
 #endif
