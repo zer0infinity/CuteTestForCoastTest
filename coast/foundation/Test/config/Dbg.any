@@ -104,6 +104,10 @@
 		/EnableAll						120
 		/FilterQuery					550
 	}
+	/Pipe {
+		/MainSwitch						1000
+		/EnableAll						1000
+	}
 	/PipeExecutor {
 		/MainSwitch						1000
 		/EnableAll						1000
