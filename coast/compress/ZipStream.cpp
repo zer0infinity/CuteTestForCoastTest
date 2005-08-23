@@ -120,13 +120,7 @@ ostream &operator<<(ostream &os, GzipHdr &header)
 		strHeader.Append(char(header.CRC16 & 0xff));
 		strHeader.Append(char((header.CRC16 >> 8) & 0xff));
 	}
-#if defined(DEBUG)
-	{
-		OStringStream ostr;
-		strHeader.DumpAsHex(ostr);
-		Trace("Writing a Header of " << strHeader.Length() << "bytes:\n" << ostr.str());
-	}
-#endif
+	Trace("Writing a Header of " << strHeader.Length() << "bytes:\n" << strHeader.DumpAsHex());
 	os.write(strHeader, strHeader.Length());
 	return os;
 }
