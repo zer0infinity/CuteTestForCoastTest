@@ -291,18 +291,19 @@ void String::Dump() const
 	SysLog::Info(logMsg.Append("String::Dump: length ").Append(Length()).Append(", capacity ").Append(Capacity())  );
 }
 
-ostream &String::DumpAsHex(ostream &os, long dumpwidth) const
+String String::DumpAsHex(long dumpwidth, const char *pcENDL) const
 {
+	String strResult;
 	if (Length() > 0) {
+		static String hexcode("0123456789ABCDEF", -1, Storage::Global());
 		String outbuf;
 		long lTotalLen = (4L * dumpwidth + 1L);
-		String hexcode("0123456789ABCDEF");
 		long x = 0L;
 		for (long l = 0; l < Length(); l++, x++) {
 			if (l % dumpwidth == 0) {
 				x = 0L;
 				if (l > 0) {
-					os << outbuf << endl;
+					strResult.Append(outbuf).Append(pcENDL);
 				}
 				// fill/clear the whole string with spaces
 				for (long q = 0; q < lTotalLen; q++) {
@@ -319,8 +320,20 @@ ostream &String::DumpAsHex(ostream &os, long dumpwidth) const
 			}
 			outbuf.PutAt(3L * dumpwidth + 1L + x, c);
 		}
-		os << outbuf << flush;
-		outbuf = "";
+		strResult.Append(outbuf);
+	}
+	return strResult;
+}
+
+ostream &String::DumpAsHex(ostream &os, long dumpwidth) const
+{
+	if (Length() > 0) {
+		String strBuf = DumpAsHex(dumpwidth), strToken;
+		StringTokenizer aTok(strBuf, '\n');
+		while ( aTok.NextToken(strToken) ) {
+			os << strToken << endl;
+		}
+		os << flush;
 	}
 	return os;
 }

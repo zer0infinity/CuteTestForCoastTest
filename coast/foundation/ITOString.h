@@ -296,8 +296,16 @@ public:
 	//! on stdout
 	ostream &IntPrintOn(ostream &os, const char quote = '\"') const;
 
-	//! output routine to dump the string content as hexadecimal numbers in the form:
-	//!
+	/*! output routine to dump the string content as hexadecimal numbers in the form: 30 31 32 33  0123
+		\param dumpwidth number of buffered characters to trace per line into output string
+		\param pcENDL line terminating character(s)
+		\return hexdump of stringbuffer as new string */
+	String DumpAsHex(long dumpwidth = 16L, const char *pcENDL = "\n") const;
+
+	/*! output routine to dump the string content as hexadecimal numbers to the given stream
+		\param os the stream to print the hexdump onto
+		\param dumpwidth number of buffered characters to trace into output string
+		\return given stream reference */
 	ostream &DumpAsHex(ostream &os, long dumpwidth = 16L) const;
 
 	//! internal input routine with masking and embedding in quote characters
