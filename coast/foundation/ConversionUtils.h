@@ -73,16 +73,6 @@ namespace ConversionUtils
 		}
 		return stream;
 	}
-
-	inline void TraceBuffer(String &strBuffer, long hexlen = 16L)
-	{
-#if defined(DEBUG)
-		String myOutString;
-		StringStream myoutstream(myOutString);
-		strBuffer.DumpAsHex(myoutstream, hexlen) << flush;
-		StatTrace(ConversionUtils.TraceBuffer, "Buffer content [ \n"  << myOutString <<  "\n]", Storage::Current());
-#endif
-	}
 }
 
 #endif
