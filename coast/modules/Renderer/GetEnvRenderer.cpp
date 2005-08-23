@@ -30,8 +30,9 @@ GetEnvRenderer::~GetEnvRenderer() { }
 ROAnything GetEnvRenderer::DoLookup(Context &context, const char *name, char delim, char indexdelim)
 {
 	StartTrace1(GetEnvRenderer.DoLookup, "LookupName [" << NotNull(name) << "]");
-	Anything anyEnv = context.GetTmpStore()["_GetEnvRenderer_"];
+	Anything anyEnv;
 	System::GetProcessEnvironment(anyEnv);
+	context.GetTmpStore()["_GetEnvRenderer_"] = anyEnv;
 	ROAnything roaResult;
 	((ROAnything)anyEnv).LookupPath(roaResult, name, delim, indexdelim);
 	TraceAny(roaResult, "result");
