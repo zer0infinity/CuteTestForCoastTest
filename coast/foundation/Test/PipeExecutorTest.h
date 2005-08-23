@@ -11,6 +11,7 @@
 
 //---- baseclass include -------------------------------------------------
 #include "TestCase.h"
+#include "Anything.h"
 
 //---- forward declaration -----------------------------------------------
 
@@ -18,6 +19,8 @@
 //!
 class PipeExecutorTest : public TestCase
 {
+	Anything fConfig;
+	ROAnything fTestCaseConfig;
 public:
 	//--- constructors
 	PipeExecutorTest(TString tstrName);
@@ -34,8 +37,11 @@ public:
 	void PrepareEnvTest(); // check for mechanism working
 	void PrepareParamTest(); // check for mechanism working
 	void DummyKillTest(); // check for mechanism working
+	void ShellInvocationTest();
 
-	void CopyCompleteEnvironmentTest(); // check for mechanism working
+	void setUp();
+	void tearDown();
+
 	static Test *suite ();
 };
 

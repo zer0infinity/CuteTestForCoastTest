@@ -33,6 +33,23 @@ PipeExecutorTest::~PipeExecutorTest()
 	StartTrace(PipeExecutorTest.Dtor);
 }
 
+void PipeExecutorTest::setUp()
+{
+	StartTrace(PipeExecutorTest.setUp);
+	istream *is = System::OpenStream(getClassName(), "any");
+	if ( is ) {
+		fConfig.Import( *is );
+		delete is;
+		fTestCaseConfig = fConfig[name()];
+	} else {
+		t_assertm( false, TString("could not read ") << getClassName() << ".any" );
+	}
+}
+
+void PipeExecutorTest::tearDown()
+{
+}
+
 void PipeExecutorTest::EchoEnvTest()
 {
 	StartTrace(PipeExecutorTest.EchoEnvTest);
@@ -263,6 +280,68 @@ void PipeExecutorTest::DummyKillTest()
 	assertEqual(-1, Execute.TerminateChild());
 }
 
+void PipeExecutorTest::ShellInvocationTest()
+{
+	StartTrace(PipeExecutorTest.ShellInvocationTest);
+	for (long lIdx = 0; lIdx < fTestCaseConfig.GetSize(); lIdx++) {
+		ROAnything roaExpected = fTestCaseConfig[lIdx]["Expected"], roaParams = fTestCaseConfig[lIdx]["Params"];
+		TString strCase = fTestCaseConfig.SlotName(lIdx);
+		if ( !strCase.Length() ) {
+			strCase << "idx:" << lIdx;
+		}
+
+		Anything env;
+		if ( roaParams.IsDefined("Env") ) {
+			if ( roaParams["Env"].IsNull() ) {
+				System::GetProcessEnvironment(env);
+			} else {
+				env = roaParams["Env"].DeepClone();
+			}
+		}
+		TraceAny(env, "environment to use:");
+		String fullname, toExec = roaParams["Executable"].AsString();
+#if defined(WIN32)
+		System::FindFile(fullname, toExec);
+#else
+		fullname << toExec;
+#endif
+		Trace("Executable [" << fullname << "]");
+		bool bUseStderr = roaParams["UseStderr"].AsBool(false);
+		PipeExecutor Execute(fullname, env, roaParams["Path"].AsString("."), roaParams["Timeout"].AsLong(1000L), bUseStderr);
+		TString tstrMsg("Executing ");
+		tstrMsg << fullname << " failed";
+		if ( t_assertm( Execute.Start() == roaExpected["ExecOk"].AsBool(false), tstrMsg) && roaExpected["ExecOk"].AsBool(false) ) {
+			ostream *os = Execute.GetStream();
+			t_assertm(os != NULL, "could not get stdout to write to!");
+			istream *is = Execute.GetStream(), *isErr = NULL;
+			t_assertm(is != NULL, "could not get stdin to read from!");
+			if ( bUseStderr ) {
+				isErr = Execute.GetStderr();
+				t_assertm(isErr != NULL, "could not get stderr to read from!");
+			}
+			if (is && os) {
+				t_assertm(!!(*os), "expected stdout to be good");
+				t_assertm(!!(*is), "expected stdin to be good");
+				(*os) << roaParams["Command"].AsString("notdefined") << endl;
+				t_assertm(Execute.ShutDownWriting(), "shutdown writing side failed");
+				OStringStream aShellOutput, aErrOutput;
+				long lRecv = 0, lToRecv = 2048;
+				while ( StringStream::PlainCopyStream2Stream(is, aShellOutput, lRecv, lToRecv) && lRecv == lToRecv ) ;
+				t_assert(lRecv > 0);
+				Trace("Path [" << aShellOutput.str() << "]");
+				assertCharPtrEqual(roaExpected["Output"].AsString(""), aShellOutput.str());
+				if ( bUseStderr && isErr ) {
+					while ( StringStream::PlainCopyStream2Stream(isErr, aErrOutput, lRecv, lToRecv) && lRecv == lToRecv ) ;
+					t_assert(lRecv == 0);
+					Trace("Stderr [" << aErrOutput.str() << "]");
+					assertCharPtrEqual(roaExpected["Error"].AsString(""), aErrOutput.str());
+				}
+			}
+			assertEqual(0, Execute.TerminateChild()); // everything is over
+		}
+	}
+}
+
 Test *PipeExecutorTest::suite ()
 {
 	StartTrace(PipeExecutorTest.suite);
@@ -277,5 +356,6 @@ Test *PipeExecutorTest::suite ()
 	ADD_CASE(testSuite, PipeExecutorTest, FailExecTest);
 	ADD_CASE(testSuite, PipeExecutorTest, DummyKillTest);
 	ADD_CASE(testSuite, PipeExecutorTest, KillTest);
+	ADD_CASE(testSuite, PipeExecutorTest, ShellInvocationTest);
 	return testSuite;
 }
