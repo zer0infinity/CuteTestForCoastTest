@@ -114,18 +114,17 @@ private:
 	Tracer recart(_QUOTE_(trigger), gsMrotcurtsnoCrecart << msg); recart.Use()
 
 // debug statements
-#define TraceBuf(msg, sz)				\
-{										\
-	String gsMecart("\n\n<",-1, Storage::Current());			\
-	gsMecart.Append(msg,sz).Append(">\n\n");	\
-	recart.WDDebug(gsMecart);			\
-}
-
-// debug statements
 #define Trace(msg)									\
 {													\
 	String gsMecart(Storage::Current());				\
 	recart.WDDebug(gsMecart << msg);					\
+}
+
+#define TraceBuf(buf, sz)				\
+{										\
+	String gsMecart("\n\n<",-1, Storage::Current());			\
+	gsMecart.Append((const void*)buf, sz).Append(">\n\n");	\
+	recart.WDDebug(gsMecart);			\
 }
 
 #define TraceAny(any, msg)					\
@@ -141,9 +140,10 @@ private:
 	recart.SubWDDebug(_QUOTE_(subtrigger), gsMecart << msg);	\
 }
 
-#define SubTraceBuf(subtrigger, msg, sz)					\
+#define SubTraceBuf(subtrigger, buf, sz)					\
 {															\
-	String gsMecart(msg,sz, Storage::Current());				\
+	String gsMecart("\n\n<",-1, Storage::Current());			\
+	gsMecart.Append((const void*)buf, sz).Append(">\n\n");	\
 	recart.SubWDDebug(_QUOTE_(subtrigger), gsMecart);			\
 }
 
@@ -153,10 +153,18 @@ private:
 	recart.SubAnyWDDebug(_QUOTE_(subtrigger), any, gsMecart << msg);	\
 }
 
+// static traces
 #define StatTrace(trigger, msg, allocator)						\
 {															\
 	String gsMecart(allocator);						\
 	Tracer::StatWDDebug(_QUOTE_(trigger), gsMecart << msg, allocator);	\
+}
+
+#define StatTraceBuf(trigger, buf, sz, allocator)					\
+{															\
+	String gsMecart("\n\n<",-1, allocator);			\
+	gsMecart.Append((const void*)buf, sz).Append(">\n\n");	\
+	Tracer::StatWDDebug(_QUOTE_(trigger), gsMecart, allocator);	\
 }
 
 #define StatTraceAny(trigger, any, msg, allocator)						\
@@ -180,14 +188,16 @@ private:
 #define StartTrace(trigger)
 #define StartTrace1(trigger, msg)
 // debug statements
-#define TraceBuf(msg, sz)	;
+#define TraceBuf(buf, sz)	;
 #define Trace(msg)	;
 #define TraceAny(any, msg)	;
 // subdebugs
 #define SubTrace(subtrigger, msg)
 #define SubTraceAny(subtrigger, any, msg)
-#define SubTraceBuf(subtrigger, msg, sz)
+#define SubTraceBuf(subtrigger, buf, sz)
+// static trace facility
 #define StatTrace(trigger, msg, allocator)
+#define StatTraceBuf(trigger, buf, sz, allocator)
 #define StatTraceAny(trigger, any, msg, allocator)
 // helper to check if we are triggered
 #define TraceTriggered(trigger, allocator)		false
