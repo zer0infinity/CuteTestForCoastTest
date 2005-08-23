@@ -1716,72 +1716,42 @@ void StringTest::ReplaceTest()
 
 void StringTest::DumpAsHexTest()
 {
-	String teststring;
+	String teststring("0123456789ABCDEF");
 	{
-		teststring = "0123456789ABCDEF";
-		String expected, answer;
-		OStringStream os(&answer), os2(&expected);
-		os2 << "30 31 32 33 34 35 36 37 38 39 41 42 43 44 45 46  0123456789ABCDEF" << flush;
-		teststring.DumpAsHex(os);
-		assertEqual(expected, answer);
+		String expected("30 31 32 33 34 35 36 37 38 39 41 42 43 44 45 46  0123456789ABCDEF"), answer;
+		answer = teststring.DumpAsHex();
+		assertEqual(expected.Length(), answer.Length());
+		assertCharPtrEqual(expected, answer);
 	}
 	{
-		teststring = "0123456789ABCDEF";
-		String expected, answer;
-		OStringStream os(&answer), os2(&expected);
-		os2 << "30 31 32 33 34 35 36 37  01234567" << endl;
-		os2 << "38 39 41 42 43 44 45 46  89ABCDEF" << flush;
-		teststring.DumpAsHex(os, 8L);
-		assertEqual(expected, answer);
+		String expected("30 31 32 33 34 35 36 37  01234567\n38 39 41 42 43 44 45 46  89ABCDEF"), answer;
+		answer = teststring.DumpAsHex(8L);
+		assertEqual(expected.Length(), answer.Length());
+		assertCharPtrEqual(expected, answer);
 	}
 	{
-		teststring = "0123456789ABCDEF";
-		String expected, answer;
-		OStringStream os(&answer), os2(&expected);
-		os2 << "30 31 32 33  0123" << endl;
-		os2 << "34 35 36 37  4567" << endl;
-		os2 << "38 39 41 42  89AB" << endl;
-		os2 << "43 44 45 46  CDEF" << flush;
-		teststring.DumpAsHex(os, 4L);
-		assertEqual(expected, answer);
+		String expected("30 31 32 33 34 35 36 37  01234567\r\n38 39 41 42 43 44 45 46  89ABCDEF"), answer;
+		answer = teststring.DumpAsHex(8L, "\r\n");
+		assertEqual(expected.Length(), answer.Length());
+		assertCharPtrEqual(expected, answer);
 	}
 	{
-		teststring = "0123456789ABCDEF";
-		String expected, answer;
-		OStringStream os(&answer), os2(&expected);
-		os2 << "30 31  01" << endl;
-		os2 << "32 33  23" << endl;
-		os2 << "34 35  45" << endl;
-		os2 << "36 37  67" << endl;
-		os2 << "38 39  89" << endl;
-		os2 << "41 42  AB" << endl;
-		os2 << "43 44  CD" << endl;
-		os2 << "45 46  EF" << flush;
-		teststring.DumpAsHex(os, 2L);
-		assertEqual(expected, answer);
+		String expected("30 31 32 33  0123\n34 35 36 37  4567\n38 39 41 42  89AB\n43 44 45 46  CDEF"), answer;
+		answer = teststring.DumpAsHex(4L);
+		assertEqual(expected.Length(), answer.Length());
+		assertCharPtrEqual(expected, answer);
 	}
 	{
-		teststring = "0123456789ABCDEF";
-		String expected, answer;
-		OStringStream os(&answer), os2(&expected);
-		os2 << "30  0" << endl;
-		os2 << "31  1" << endl;
-		os2 << "32  2" << endl;
-		os2 << "33  3" << endl;
-		os2 << "34  4" << endl;
-		os2 << "35  5" << endl;
-		os2 << "36  6" << endl;
-		os2 << "37  7" << endl;
-		os2 << "38  8" << endl;
-		os2 << "39  9" << endl;
-		os2 << "41  A" << endl;
-		os2 << "42  B" << endl;
-		os2 << "43  C" << endl;
-		os2 << "44  D" << endl;
-		os2 << "45  E" << endl;
-		os2 << "46  F" << flush;
-		teststring.DumpAsHex(os, 1L);
-		assertEqual(expected, answer);
+		String expected("30 31  01\n32 33  23\n34 35  45\n36 37  67\n38 39  89\n41 42  AB\n43 44  CD\n45 46  EF"), answer;
+		answer = teststring.DumpAsHex(2L);
+		assertEqual(expected.Length(), answer.Length());
+		assertCharPtrEqual(expected, answer);
+	}
+	{
+		String expected("30  0\n31  1\n32  2\n33  3\n34  4\n35  5\n36  6\n37  7\n38  8\n39  9\n41  A\n42  B\n43  C\n44  D\n45  E\n46  F"), answer;
+		answer = teststring.DumpAsHex(1L);
+		assertEqual(expected.Length(), answer.Length());
+		assertCharPtrEqual(expected, answer);
 	}
 	{
 		teststring = "";
@@ -1790,7 +1760,7 @@ void StringTest::DumpAsHexTest()
 		}
 		String expected, answer;
 		OStringStream os(&answer), os2(&expected);
-		os2 << "00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F  ................" << flush;
+		os2 << "00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F  ................" << endl << flush;
 		teststring.DumpAsHex(os);
 		assertEqual(expected, answer);
 	}
@@ -1799,7 +1769,7 @@ void StringTest::DumpAsHexTest()
 		String expected, answer;
 		OStringStream os(&answer), os2(&expected);
 		os2 << "41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 50  ABCDEFGHIJKLMNOP" << endl;
-		os2 << "51 52 53 54 55 56 51 57 58 59 5A                 QRSTUVQWXYZ     " << flush;
+		os2 << "51 52 53 54 55 56 51 57 58 59 5A                 QRSTUVQWXYZ     " << endl << flush;
 		teststring.DumpAsHex(os);
 		assertEqual(expected, answer);
 	}
@@ -1825,7 +1795,7 @@ void StringTest::DumpAsHexTest()
 		os2 << "C0 C1 C2 C3 C4 C5 C6 C7 C8 C9 CA CB CC CD CE CF  ................" << endl;
 		os2 << "D0 D1 D2 D3 D4 D5 D6 D7 D8 D9 DA DB DC DD DE DF  ................" << endl;
 		os2 << "E0 E1 E2 E3 E4 E5 E6 E7 E8 E9 EA EB EC ED EE EF  ................" << endl;
-		os2 << "F0 F1 F2 F3 F4 F5 F6 F7 F8 F9 FA FB FC FD FE FF  ................" << flush;
+		os2 << "F0 F1 F2 F3 F4 F5 F6 F7 F8 F9 FA FB FC FD FE FF  ................" << endl << flush;
 		teststring.DumpAsHex(os);
 		assertEqual(expected, answer);
 	}
