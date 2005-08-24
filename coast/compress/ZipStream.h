@@ -91,9 +91,9 @@ struct EXPORTDECL_COMPRESS GzipHdr {
 //! this would result in a very complex class.
 class EXPORTDECL_COMPRESS ZipStreamBuf : public streambuf
 {
-	friend class ZipStreamTest;
 public:
 	ZipStreamBuf(Allocator *alloc);
+	virtual const GzipHdr &Header() = 0;
 
 protected:
 	bool isInitialized;
@@ -117,10 +117,11 @@ class EXPORTDECL_COMPRESS ZipIStreamBuf : public ZipStreamBuf
 public:
 	//--- constructors
 	ZipIStreamBuf(istream &zis, istream &, Allocator *alloc = Storage::Current());
-
 	~ZipIStreamBuf();
 
 	void close();
+
+	virtual const GzipHdr &Header();
 
 	bool getExtraField(String &strBuf);
 	bool getFilename(String &strFilename);
@@ -159,11 +160,9 @@ private:
 //! wrap other ostream objects with compression compression
 class EXPORTDECL_COMPRESS ZipOStreamBuf : public ZipStreamBuf
 {
-	friend class ZipStreamTest;
 public:
 	//--- constructors
 	ZipOStreamBuf(ostream &, Allocator *a = Storage::Current());
-
 	~ZipOStreamBuf();
 
 	//! not much to do when synchronizing, just insert string termination character
@@ -176,6 +175,8 @@ public:
 	//! flushes the buffer and sets streampos to 0 it is not possible to seek on a socket
 	virtual streampos seekoff(streamoff, ios::seek_dir, int mode = ios::in | ios::out);
 #endif
+
+	virtual const GzipHdr &Header();
 
 	void setHeaderCRC(bool bFlag = true);
 	int setCompression(int comp_level, int comp_strategy = Z_DEFAULT_STRATEGY);

@@ -13,6 +13,7 @@
 #include "Anything.h"
 #include "Dbg.h"
 #include "ConversionUtils.h"
+#include "SysLog.h"
 
 //--- c-modules used -----------------------------------------------------------
 #include <string.h>	// memset
@@ -212,6 +213,11 @@ ZipOStreamBuf::~ZipOStreamBuf()
 	close();
 }
 
+const GzipHdr &ZipOStreamBuf::Header()
+{
+	return fHeader;
+}
+
 void ZipOStreamBuf::close()
 {
 	StartTrace(ZipOStreamBuf.close);
@@ -287,10 +293,8 @@ int ZipOStreamBuf::sync()
 {
 	StartTrace(ZipOStreamBuf.sync);
 
-	if (!isInitialized) {
-		zipinit();
-		isInitialized = true;
-	}
+	// ensure buffer is initialized
+	zipinit();
 
 	fZip.next_in = (unsigned char *) pbase();
 	fZip.avail_in = pptr() - pbase();
@@ -368,7 +372,11 @@ static void ZipFree(void *a, voidpf address)
 void ZipOStreamBuf::setHeaderCRC(bool bFlag)
 {
 	StartTrace(ZipOStreamBuf.setHeaderCRC);
-	bFlag ? ( fHeader.Flags |= GzipHdr::eFHCRC ) : ( fHeader.Flags ^= GzipHdr::eFHCRC );
+	if ( !isInitialized ) {
+		bFlag ? ( fHeader.Flags |= GzipHdr::eFHCRC ) : ( fHeader.Flags ^= GzipHdr::eFHCRC );
+	} else {
+		SYSINFO("wrote header already, unable to modify header crc flag");
+	}
 }
 
 int ZipOStreamBuf::setCompression(int comp_level, int comp_strategy)
@@ -386,74 +394,89 @@ int ZipOStreamBuf::setCompression(int comp_level, int comp_strategy)
 void ZipOStreamBuf::setExtraField(const String &strBuf)
 {
 	StartTrace(ZipOStreamBuf.setExtraField);
-	if ( strBuf.Length() ) {
-		fHeader.Flags |= GzipHdr::eFEXTRA;
-		fHeader.XLEN = strBuf.Length();
-		fHeader.ExtraField = strBuf;
+	if ( !isInitialized ) {
+		if ( strBuf.Length() ) {
+			fHeader.Flags |= GzipHdr::eFEXTRA;
+			fHeader.XLEN = strBuf.Length();
+			fHeader.ExtraField = strBuf;
+		} else {
+			fHeader.Flags ^= GzipHdr::eFEXTRA;
+			fHeader.XLEN = 0;
+			fHeader.ExtraField.Trim(0);
+		}
 	} else {
-		fHeader.Flags ^= GzipHdr::eFEXTRA;
-		fHeader.XLEN = 0;
-		fHeader.ExtraField.Trim(0);
+		SYSINFO("wrote header already, unable to modify extra buffer");
 	}
 }
 
 void ZipOStreamBuf::setFilename(String strFilename)
 {
 	StartTrace1(ZipOStreamBuf.setFilename, "Given Filename [" << strFilename << "]");
-	if ( strFilename.Length() ) {
-		fHeader.Flags |= GzipHdr::eFNAME;
-		fHeader.FileName = strFilename;
+	if ( !isInitialized ) {
+		if ( strFilename.Length() ) {
+			fHeader.Flags |= GzipHdr::eFNAME;
+			fHeader.FileName = strFilename;
+		} else {
+			fHeader.Flags ^= GzipHdr::eFNAME;
+			fHeader.FileName.Trim(0);
+		}
 	} else {
-		fHeader.Flags ^= GzipHdr::eFNAME;
-		fHeader.FileName.Trim(0);
+		SYSINFO("wrote header already, unable to modify filename");
 	}
 }
 
 void ZipOStreamBuf::setComment(String strComment)
 {
 	StartTrace1(ZipOStreamBuf.setComment, "Given Comment [" << strComment << "]");
-	if ( strComment.Length() ) {
-		fHeader.Flags |= GzipHdr::eFCOMMENT;
-		fHeader.Comment = strComment;
+	if ( !isInitialized ) {
+		if ( strComment.Length() ) {
+			fHeader.Flags |= GzipHdr::eFCOMMENT;
+			fHeader.Comment = strComment;
+		} else {
+			fHeader.Flags ^= GzipHdr::eFCOMMENT;
+			fHeader.Comment.Trim(0);
+		}
 	} else {
-		fHeader.Flags ^= GzipHdr::eFCOMMENT;
-		fHeader.Comment.Trim(0);
+		SYSINFO("wrote header already, unable to modify comment");
 	}
 }
 
 void ZipOStreamBuf::setModificationTime(TimeStamp aStamp)
 {
 	StartTrace1(ZipOStreamBuf.setModificationTime, "TimeStamp [" << aStamp.AsString());
-	fHeader.SetModificationTime(aStamp);
+	if ( !isInitialized ) {
+		fHeader.SetModificationTime(aStamp);
+	} else {
+		SYSINFO("wrote header already, unable to modify time");
+	}
 }
 
 void ZipOStreamBuf::zipinit()
 {
 	StartTrace(ZipOStreamBuf.zipinit);
-	(*fOs) << fHeader;
+	if ( !isInitialized ) {
+		isInitialized = true;
 
-	fZip.next_in = 0;
-	fZip.avail_in = 0;
-	fZip.next_out = 0;
-	fZip.avail_out = 0;
-	fZip.zalloc = ZipAlloc;
-	fZip.zfree = ZipFree;
-	fZip.opaque = fAllocator;
+		(*fOs) << fHeader;
 
-	long err = deflateInit2(&fZip,
-							fCompLevel,
-							Z_DEFLATED,
-							-MAX_WBITS,
-							DEF_MEM_LEVEL,
-							fCompStrategy);
-	fZip.next_in = (unsigned char *)(const char *)fStore;
-	fZip.next_out = (unsigned char *)(const char *)fCompressed;
-	fZip.avail_out = fCompressed.Capacity();
-	Assert(Z_OK == err);
-	if (Z_OK != err) {
-		Trace("zlib error " << err);
+		fZip.next_in = 0;
+		fZip.avail_in = 0;
+		fZip.next_out = 0;
+		fZip.avail_out = 0;
+		fZip.zalloc = ZipAlloc;
+		fZip.zfree = ZipFree;
+		fZip.opaque = fAllocator;
+
+		long err = deflateInit2(&fZip, fCompLevel, Z_DEFLATED, -MAX_WBITS, DEF_MEM_LEVEL, fCompStrategy);
+		fZip.next_in = (unsigned char *)(const char *)fStore;
+		fZip.next_out = (unsigned char *)(const char *)fCompressed;
+		fZip.avail_out = fCompressed.Capacity();
+		Assert(Z_OK == err);
+		if (Z_OK != err) {
+			Trace("zlib error " << err);
+		}
+		fCrcData = crc32(0L, Z_NULL, 0);
 	}
-	fCrcData = crc32(0L, Z_NULL, 0);
 }
 
 ZipIStreamBuf::ZipIStreamBuf(istream &zis, istream &is, Allocator *alloc)
@@ -470,10 +493,18 @@ ZipIStreamBuf::~ZipIStreamBuf()
 	close();
 }
 
+const GzipHdr &ZipIStreamBuf::Header()
+{
+	if ( !isInitialized ) {
+		zipinit();
+	}
+	return fHeader;
+}
+
 bool ZipIStreamBuf::getExtraField(String &strBuf)
 {
-	if ( fHeader.Flags & GzipHdr::eFEXTRA ) {
-		strBuf = fHeader.ExtraField;
+	if ( Header().Flags & GzipHdr::eFEXTRA ) {
+		strBuf = Header().ExtraField;
 		return true;
 	}
 	return false;
@@ -481,8 +512,8 @@ bool ZipIStreamBuf::getExtraField(String &strBuf)
 
 bool ZipIStreamBuf::getFilename(String &strFilename)
 {
-	if ( fHeader.Flags & GzipHdr::eFNAME ) {
-		strFilename = fHeader.FileName;
+	if ( Header().Flags & GzipHdr::eFNAME ) {
+		strFilename = Header().FileName;
 		return true;
 	}
 	return false;
@@ -490,8 +521,8 @@ bool ZipIStreamBuf::getFilename(String &strFilename)
 
 bool ZipIStreamBuf::getComment(String &strComment)
 {
-	if ( fHeader.Flags & GzipHdr::eFCOMMENT ) {
-		strComment = fHeader.Comment;
+	if ( Header().Flags & GzipHdr::eFCOMMENT ) {
+		strComment = Header().Comment;
 		return true;
 	}
 	return false;
@@ -499,7 +530,7 @@ bool ZipIStreamBuf::getComment(String &strComment)
 
 TimeStamp ZipIStreamBuf::getModificationTime()
 {
-	return fHeader.GetModificationTime();
+	return Header().GetModificationTime();
 }
 
 unsigned long ZipIStreamBuf::getLong()
@@ -567,9 +598,7 @@ void ZipIStreamBuf::close()
 void ZipIStreamBuf::xinit()
 {
 	StartTrace(ZipIStreamBuf.xinit);
-
 	setp(0, 0);
-	fStore = "";
 	pinit(0);
 }
 
@@ -585,36 +614,40 @@ void ZipIStreamBuf::zipinit()
 {
 	StartTrace(ZipIStreamBuf.zipinit);
 
-	fZip.next_in = 0;
-	fZip.avail_in = 0;
-	fZip.next_out = 0;
-	fZip.avail_out = 0;
-	fZip.zalloc = ZipAlloc;
-	fZip.zfree = ZipFree;
-	fZip.opaque = fAllocator;
+	if (!isInitialized) {
+		isInitialized = true;
 
-	fZipErr = inflateInit2(&fZip, -MAX_WBITS);
+		fZip.next_in = 0;
+		fZip.avail_in = 0;
+		fZip.next_out = 0;
+		fZip.avail_out = 0;
+		fZip.zalloc = ZipAlloc;
+		fZip.zfree = ZipFree;
+		fZip.opaque = fAllocator;
 
-	fZip.avail_in = 0;
+		fZipErr = inflateInit2(&fZip, -MAX_WBITS);
 
-	Assert(Z_OK == fZipErr);
+		fZip.avail_in = 0;
 
-	if (Z_OK == fZipErr) {
-		(*fIs) >> fHeader;
-		if ( !fHeader.IsValid() ) {
-			Trace("Incomplete or wrong header");
+		Assert(Z_OK == fZipErr);
+
+		if (Z_OK == fZipErr) {
+			(*fIs) >> fHeader;
+			if ( !fHeader.IsValid() ) {
+				Trace("Incomplete or wrong header");
 #if defined(WIN32) && !defined(ONLY_STD_IOSTREAM)
-			fZis.clear(ios::badbit | fZis.rdstate());
+				fZis.clear(ios::badbit | fZis.rdstate());
 #else
-			fZis.setstate(ios::badbit);
+				fZis.setstate(ios::badbit);
 #endif
-			fZipErr = Z_DATA_ERROR;
+				fZipErr = Z_DATA_ERROR;
+			}
+		} else {
+			Trace("zlib error " << fZipErr);
 		}
-	} else {
-		Trace("zlib error " << fZipErr);
-	}
 
-	fCrcData = crc32(0L, Z_NULL, 0);
+		fCrcData = crc32(0L, Z_NULL, 0);
+	}
 }
 
 // assume fCompressed is empty
@@ -679,10 +712,8 @@ int ZipIStreamBuf::sync()
 {
 	StartTrace(ZipIStreamBuf.sync);
 
-	if (!isInitialized) {
-		zipinit();
-		isInitialized = true;
-	}
+	// ensure buffer is initialized
+	zipinit();
 
 	if (fZipErr == Z_OK && (gptr() >= egptr())) {
 		fillCompressed();
