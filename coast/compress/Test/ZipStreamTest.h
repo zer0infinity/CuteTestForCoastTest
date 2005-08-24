@@ -58,6 +58,8 @@ public:
 
 	void GzipHdrTest();
 	void ReadGzipHdrFileTest();
+	void ReadHeaderInfoTest();
+	void WriteHeaderInfoTest();
 	void SetCompressionTest();
 
 private:

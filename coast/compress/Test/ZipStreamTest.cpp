@@ -115,10 +115,8 @@ void ZipStreamTest::ReadGzipHdrFileTest()
 		}
 		IStringStream stream(strCprs);
 		ZipIStream zis(stream);
-		char cDummy;
-		zis >> cDummy;
 		ZipIStreamBuf *pBuf = zis.rdbuf();
-		const GzipHdr &aHeader = pBuf->fHeader;
+		const GzipHdr &aHeader = pBuf->Header();
 		if ( t_assertm( aHeader.fbValid == roaConfig["Valid"].AsBool(false), TString("failure at ") << strCase ) && aHeader.fbValid ) {
 			long lFlags = 0L;
 			if ( roaConfig.IsDefined("ModTime") ) {
@@ -147,6 +145,71 @@ void ZipStreamTest::ReadGzipHdrFileTest()
 				assertCharPtrEqualm( roaConfig["Comment"].AsString("undefined"), aHeader.Comment, strCase);
 			}
 		}
+	}
+}
+
+void ZipStreamTest::ReadHeaderInfoTest()
+{
+	StartTrace(ZipStreamTest.ReadHeaderInfoTest);
+	for (long lIdx = 0; lIdx < fTestCaseConfig.GetSize(); lIdx++) {
+		ROAnything roaConfig = fTestCaseConfig[lIdx];
+		String strCprs(roaConfig["BinaryData"].AsString());
+		TString strCase = fTestCaseConfig.SlotName(lIdx);
+		if ( !strCase.Length() ) {
+			strCase << "idx:" << lIdx;
+		}
+		IStringStream stream(strCprs);
+		ZipIStream zis(stream);
+
+		if ( roaConfig.IsDefined("ModTime") ) {
+			TimeStamp aStampExpected(roaConfig["ModTime"].AsString());
+			TimeStamp aStampHeader = zis.getModificationTime();
+			assertCharPtrEqualm(aStampExpected.AsString(), aStampHeader.AsString(), strCase);
+		}
+		String strComment, strExtraField, strFilename;
+		if ( roaConfig.IsDefined("Comment") ) {
+			t_assert(zis.getComment(strComment));
+			assertCharPtrEqual(roaConfig["Comment"].AsString(), strComment);
+		}
+		if ( roaConfig.IsDefined("ExtraField") ) {
+			t_assert(zis.getExtraField(strExtraField));
+			assertCharPtrEqual(roaConfig["ExtraField"].AsString(), strExtraField);
+		}
+		if ( roaConfig.IsDefined("FileName") ) {
+			t_assert(zis.getFilename(strFilename));
+			assertCharPtrEqual(roaConfig["FileName"].AsString(), strFilename);
+		}
+	}
+}
+
+void ZipStreamTest::WriteHeaderInfoTest()
+{
+	StartTrace(ZipStreamTest.WriteHeaderInfoTest);
+	for (long lIdx = 0; lIdx < fTestCaseConfig.GetSize(); lIdx++) {
+		ROAnything roaConfig = fTestCaseConfig[lIdx];
+		String strCprs(roaConfig["BinaryData"].AsString());
+		TString strCase = fTestCaseConfig.SlotName(lIdx);
+		if ( !strCase.Length() ) {
+			strCase << "idx:" << lIdx;
+		}
+		OStringStream stream;
+		ZipOStream zos(stream);
+
+		if ( roaConfig.IsDefined("ModTime") ) {
+			zos << ZipStream::setModificationTime(TimeStamp(roaConfig["ModTime"].AsString()));
+		}
+		if ( roaConfig.IsDefined("Comment") ) {
+			zos << ZipStream::setComment(roaConfig["Comment"].AsString());
+		}
+		if ( roaConfig.IsDefined("FileName") ) {
+			zos << ZipStream::setFilename(roaConfig["FileName"].AsString());
+		}
+		if ( roaConfig.IsDefined("Content") ) {
+			zos << roaConfig["Content"].AsString();
+		}
+		zos << flush;
+		zos.close();
+		assertEqualRaw(strCprs, stream.str());
 	}
 }
 
@@ -492,6 +555,8 @@ Test *ZipStreamTest::suite ()
 	ADD_CASE(testSuite, ZipStreamTest, GzipHdrTest);
 	ADD_CASE(testSuite, ZipStreamTest, GzipHdrWriteTest);
 	ADD_CASE(testSuite, ZipStreamTest, ReadGzipHdrFileTest);
+	ADD_CASE(testSuite, ZipStreamTest, ReadHeaderInfoTest);
+	ADD_CASE(testSuite, ZipStreamTest, WriteHeaderInfoTest);
 	ADD_CASE(testSuite, ZipStreamTest, SetCompressionTest);
 	ADD_CASE(testSuite, ZipStreamTest, GzipSimpleFileCheck);
 	ADD_CASE(testSuite, ZipStreamTest, GzipBigFileCheck);

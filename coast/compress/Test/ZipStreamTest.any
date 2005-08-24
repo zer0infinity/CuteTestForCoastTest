@@ -64,4 +64,42 @@
 			/Comment	"0123456789"
 		}
 	}
+	/ReadHeaderInfoTest {
+		/CorrectHeaderWithModtime {
+			/BinaryData "\x1f\x8b\x08\x00\x01\x00\x00\x00\x00\x03"
+			/ModTime	"19700101000001"
+		}
+		/ExtraFlagWith2ByteContent {
+			/BinaryData "\x1f\x8b\x08\x04\x00\x00\x00\x00\x00\x03\x02\x00\x55\xAA"
+			/ExtraField "\x55\xAA"
+		}
+		/FilenameFlagWith10ByteFilename {
+			/BinaryData "\x1f\x8b\x08\x08\x00\x00\x00\x00\x00\x030123456789\x00"
+			/FileName	"0123456789"
+		}
+		/CommentFlagWith10ByteComment {
+			/BinaryData "\x1f\x8b\x08\x10\x00\x00\x00\x00\x00\x030123456789\x00"
+			/Comment	"0123456789"
+		}
+	}
+	/WriteHeaderInfoTest {
+		/CorrectHeaderWithModtime {
+			/BinaryData "\x1f\x8b\x08\x00\x01\x00\x00\x00\x00\x03\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+			/ModTime	"19700101000001"
+		}
+		/FilenameFlagWith10ByteFilename {
+			/BinaryData "\x1f\x8b\x08\x08\x00\x00\x00\x00\x00\x030123456789\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+			/FileName	"0123456789"
+		}
+		/CommentFlagWith10ByteComment {
+			/BinaryData "\x1f\x8b\x08\x10\x00\x00\x00\x00\x00\x030123456789\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+			/Comment	"0123456789"
+		}
+		/SimpleContentWithFilenameAndComment {
+			/BinaryData "\x1f\x8b\x08\x18\x00\x00\x00\x00\x00\x03MyFile\x00Hello!\x00\x8B\xCC\x2C\x28\xC8\x4C\xCD\x00\x00\xFC\xEB\xD2\x8A\x07\x00\x00\x00"
+			/Comment	"Hello!"
+			/FileName	"MyFile"
+			/Content	"Yippieh"
+		}
+	}
 }
