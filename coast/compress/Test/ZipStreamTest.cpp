@@ -38,13 +38,8 @@ ZipStreamTest::~ZipStreamTest()
 void ZipStreamTest::setUp ()
 {
 	StartTrace(ZipStreamTest.setUp);
-	istream *is = System::OpenStream(getClassName(), "any");
-	if ( is ) {
-		fConfig.Import( *is );
-		delete is;
+	if ( t_assertm( System::LoadConfigFile(fConfig, getClassName(), "any"), TString("expected ") << getClassName() << " to be readable!" ) ) {
 		fTestCaseConfig = fConfig[name()];
-	} else {
-		t_assertm( false, TString("could not read ") << getClassName() << ".any" );
 	}
 }
 

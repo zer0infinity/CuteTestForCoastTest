@@ -37,8 +37,8 @@ AnySorterTest::~AnySorterTest()
 void AnySorterTest::setUp ()
 {
 	StartTrace(AnySorterTest.setUp);
-	if ( !System::LoadConfigFile(fConfig, "AnySorterTest", "any") ) {
-		assertEqual( "'read AnySorterTest.any'", "'could not read AnySorterTest.any'" );
+	if ( t_assertm( System::LoadConfigFile(fConfig, getClassName(), "any"), TString("expected ") << getClassName() << " to be readable!" ) ) {
+		fTestCaseConfig = fConfig[name()];
 	}
 }
 
@@ -50,31 +50,21 @@ void AnySorterTest::tearDown ()
 void AnySorterTest::testAnySorter()
 {
 	StartTrace(AnySorterTest.testAnySorter);
-	ROAnything roaTestConfig;
-	if ( t_assert(((ROAnything)fConfig).LookupPath(roaTestConfig, "TestAnySorter")) ) {
-		ROAnything cConfig(roaTestConfig[0L]);
-		for (long lIdx = 0; lIdx < roaTestConfig.GetSize(); lIdx++, cConfig = roaTestConfig[lIdx]) {
-			TraceAny(cConfig, "the config");
-			Anything sorted;
-			AnySorter::EMode mode(cConfig["Mode"].AsString() == "asc" ? AnySorter::asc : AnySorter::desc);
-			bool sortCritIsNumber(cConfig["SortCritIsNumber"].AsBool(0));
-			sorted = cConfig["TestArray"].DeepClone();
-			AnySorter::SortByKeyInArray(cConfig["SortKey"].AsString(), sorted, mode, sortCritIsNumber);
-			assertAnyEqual(	cConfig["ExpectedResult"], sorted);
-		}
+	ROAnything cConfig(fTestCaseConfig[0L]);
+	for (long lIdx = 0; lIdx < fTestCaseConfig.GetSize(); lIdx++, cConfig = fTestCaseConfig[lIdx]) {
+		TraceAny(cConfig, "the config");
+		Anything sorted;
+		AnySorter::EMode mode(cConfig["Mode"].AsString() == "asc" ? AnySorter::asc : AnySorter::desc);
+		bool sortCritIsNumber(cConfig["SortCritIsNumber"].AsBool(0));
+		sorted = cConfig["TestArray"].DeepClone();
+		AnySorter::SortByKeyInArray(cConfig["SortKey"].AsString(), sorted, mode, sortCritIsNumber);
+		assertAnyEqual(	cConfig["ExpectedResult"], sorted);
 	}
-}
-
-void AnySorterTest::testCase()
-{
-	StartTrace(AnySorterTest.testCase);
 }
 
 Test *AnySorterTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
-
-	ADD_CASE(testSuite, AnySorterTest, testCase);
 	ADD_CASE(testSuite, AnySorterTest, testAnySorter);
 	return testSuite;
 }
