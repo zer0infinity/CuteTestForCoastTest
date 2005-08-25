@@ -8,8 +8,7 @@
 
 {
 
-	/TestAnySorter
-	{
+	/testAnySorter {
 		{
 			/SortKey crit
 			/Mode asc

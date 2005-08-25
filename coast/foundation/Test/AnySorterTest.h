@@ -20,6 +20,7 @@
 class AnySorterTest : public TestCase
 {
 	Anything fConfig;
+	ROAnything fTestCaseConfig;
 public:
 	//--- constructors
 
@@ -40,9 +41,6 @@ public:
 
 	//! deletes the environment for this test
 	void tearDown ();
-
-	//! describe this testcase
-	void testCase();
 
 	void testAnySorter();
 };
