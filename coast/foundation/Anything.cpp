@@ -3856,7 +3856,7 @@ void SlotFinder::Operate(Anything &source, Anything &dest, const ROAnything &con
 	long destIdx = -1L;
 	if (SlotFinder::IntOperate(dest, destSlotname, destIdx, delim, indexdelim)) {
 		if (destSlotname.Length()) {
-			if (!dest.IsDefined(destSlotname)) {
+			if ( !dest.IsDefined(destSlotname) || dest[destSlotname].IsNull() ) {
 				Trace("adding slot [" << destSlotname << "]");
 				dest[destSlotname] = MetaThing();
 			}
