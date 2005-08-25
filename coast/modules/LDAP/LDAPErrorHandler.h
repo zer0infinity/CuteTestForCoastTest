@@ -19,6 +19,7 @@
 class EXPORTDECL_LDAPDA LDAPErrorHandler
 {
 public:
+	enum eRetryState { eRetry, eRetryAlreadyDone, eNoRetry };
 	//--- constructors
 	LDAPErrorHandler(Context &ctx, ParameterMapper *getter, ResultMapper *putter, String daName);
 	virtual ~LDAPErrorHandler();
@@ -39,16 +40,18 @@ public:
 	virtual void PutConnectionParams(Anything cp);
 
 	//! Set ShouldRetry flag This flag is used when LDAPPooledConnections are used
-	virtual void SetShouldRetry(bool shouldRetry) {
-		fShouldRetry = shouldRetry;
-	};
+	virtual void SetRetryState(eRetryState retryState);
 	//! Query ShouldRetry flag
-	virtual bool GetShouldRetry() {
-		return fShouldRetry;
-	};
+	virtual eRetryState GetRetryState();
 
 	//! Clean up LDAPError and LDAPResultSlot in Context's tmp store
 	virtual void LDAPErrorHandler::CleanUp();
+
+	//! Translate eRetryState into string
+	String RetryStateAsString(eRetryState retryState);
+
+	//! Is retry state set to eRetry ?
+	bool IsRetry();
 
 protected:
 	Context &fCtx;
@@ -56,7 +59,7 @@ protected:
 	ResultMapper *fOut;
 	String fName;
 	Anything fQueryParams, fConnectionParams;
-	bool fShouldRetry;
+	eRetryState fRetryState;
 
 private:
 	void WriteError(Anything &error);

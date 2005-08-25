@@ -17,7 +17,7 @@
 #include "DataAccessImpl.h"
 
 //--- other includes ---
-#include "LDAPConnection.h"
+#include "PersistentLDAPConnection.h"
 
 //---- LDAPAbstractDAI ----------------------------------------------------------
 //! <B>Mother of all LDAP DA Impl classes.</B>
@@ -79,7 +79,7 @@ protected:
 
 	//! abstract hook, called by Exec after connection
 	//! returns message id of started request
-	virtual int DoLDAPRequest(LDAPConnection &lc, ROAnything query) {
+	virtual int DoLDAPRequest(LDAPConnection *lc, ROAnything query) {
 		Assert(false);
 		return -1;
 	}
@@ -103,6 +103,9 @@ private:
 
 	// builds a query from pieces in config/store
 	void GetQuery(ParameterMapper *getter, Context &ctx, Anything &query);
+
+	// Factory method, creates LDAPConnections
+	LDAPConnection *LDAPConnectionFactory(ROAnything cp);
 };
 
 // =========================================================================
@@ -149,7 +152,7 @@ protected:
 
 	//! hook, called by Exec after connection.
 	//! returns message id of started add request
-	int DoLDAPRequest(LDAPConnection &lc, ROAnything query);
+	int DoLDAPRequest(LDAPConnection *lc, ROAnything query);
 
 private:
 	// constructor
@@ -193,7 +196,7 @@ protected:
 
 	//! hook, called by Exec after connection.
 	//! returns message id of started compare request
-	int DoLDAPRequest(LDAPConnection &lc, ROAnything query);
+	int DoLDAPRequest(LDAPConnection *lc, ROAnything query);
 
 private:
 	// constructor
@@ -231,7 +234,7 @@ public:
 protected:
 	//! hook, called by Exec after connection.
 	//! returns message id of started delete request
-	int DoLDAPRequest(LDAPConnection &lc, ROAnything query);
+	int DoLDAPRequest(LDAPConnection *lc, ROAnything query);
 
 private:
 	// constructor
@@ -308,7 +311,7 @@ protected:
 
 	//! hook, called by Exec after connection.
 	//! returns message id of started replace request
-	int DoLDAPRequest(LDAPConnection &lc, ROAnything query);
+	int DoLDAPRequest(LDAPConnection *lc, ROAnything query);
 
 private:
 	// constructor
@@ -355,7 +358,7 @@ protected:
 
 	//! hook, called by Exec after connection.
 	//! returns message id of started search request
-	int DoLDAPRequest(LDAPConnection &lc, ROAnything query);
+	int DoLDAPRequest(LDAPConnection *lc, ROAnything query);
 
 private:
 	// constructor

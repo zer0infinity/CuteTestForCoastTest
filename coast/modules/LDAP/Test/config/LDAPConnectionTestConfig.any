@@ -47,8 +47,8 @@
 					/PooledConnections 0
 					/RebindTimeout 0
 					/TryAutoRebind		0
-				}
-				/MsgAsString "LdapDataAccess: [DataAccess_0] Msg [Binding request failed. [Server: 'nonexisting.server.loc', Port: '49999']  (Authorized bind.)] LdapCode [91] LdapMsg [Can't connect to the LDAP server] LdapConnectionParams [{/Server \"nonexisting.server.loc\"/Port 49999/Timeout 10/ConnectionTimeout 5/BindName \"cn=Directory Manager\"/BindPW \"WipedOut\"/PooledConnections 0/RebindTimeout 0/TryAutoRebind 0}]"
+					/MaxConnections 2				}
+				/MsgAsString "LdapDataAccess: [DataAccess_0] Msg [Binding request failed. [Server: 'nonexisting.server.loc', Port: '49999']  (Authorized bind.)] LdapCode [91] LdapMsg [Can't connect to the LDAP server] LdapConnectionParams [{/Server \"nonexisting.server.loc\"/Port 49999/Timeout 10/ConnectionTimeout 5/BindName \"cn=Directory Manager\"/BindPW \"WipedOut\"/PooledConnections 0/RebindTimeout 0/TryAutoRebind 0/MaxConnections 2}]"
 			}
 		}
 
@@ -125,8 +125,8 @@
 					/PooledConnections 0
 					/RebindTimeout 0
 					/TryAutoRebind		0
+					/MaxConnections 2
 				}
-				/MsgAsString "LdapDataAccess: [DataAccess_2] Msg [LDAP request failed.] LdapCode [32] LdapMsg [No such object] LdapConnectionParams [{/Server \"surlej.hsr.ch\"/Port 49999/Timeout 10/ConnectionTimeout 5/BindName \"cn=WrongBindName\"/BindPW \"WipedOut\"/PooledConnections 0/RebindTimeout 0/TryAutoRebind 0}]"
 			}
 		}
 
@@ -159,8 +159,8 @@
 					/PooledConnections 0
 					/RebindTimeout 0
 					/TryAutoRebind		0
+					/MaxConnections 2
 				}
-				/MsgAsString "LdapDataAccess: [DataAccess_3] Msg [LDAP request failed.] LdapCode [49] LdapMsg [Invalid credentials] LdapConnectionParams [{/Server \"surlej.hsr.ch\"/Port 49999/Timeout 10/ConnectionTimeout 5/BindName \"cn=Directory Manager\"/BindPW \"WipedOut\"/PooledConnections 0/RebindTimeout 0/TryAutoRebind 0}]"
 			}
 		}
 		#	Pooled connect, first
@@ -172,8 +172,9 @@
 			/LDAPBindPW		"ifaifaifa"
 			/LDAPTimeout	10
 			/LDAPConnectionTimeout 5
+			/LDAPMaxConnections	   2
 			/ConnectIsOk	1
-			/ConnectRet 	"eRebindOk"
+			/ConnectRet 	"eOk"
 			/LDAPPooledConnections 1
 			/LDAPTryAutoRebind			1
 			/LDAPRebindTimeout 600
@@ -190,6 +191,7 @@
 			/ConnectIsOk	1
 			/ConnectRet 	"eOk"
 			/LDAPPooledConnections 1
+			/LDAPMaxConnections	   2
 			/LDAPTryAutoRebind			1
 			/LDAPRebindTimeout 600
 		}

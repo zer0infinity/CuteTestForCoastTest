@@ -11,6 +11,7 @@
 
 //---- baseclass include -------------------------------------------------
 #include "ConfiguredActionTest.h"
+#include "LDAPConnection.h"
 
 //---- LDAPConnectionManagerTest ----------------------------------------------------------
 //! <B>Tests LDAPConnecton and LDAPErrorHandler</B>
@@ -39,10 +40,10 @@ public:
 	//! describe this Test
 	void testLDAPConnectionManager();
 	void testAutoRebind();
+	void testNoAutoRebind();
 
-	String GetLdapConnectionManagerId(const String &server, long port, const String &bindName,
-									  const String &bindPW, long connectionTimeout);
-
+private:
+	LDAP *CreateBadConnectionHandle(const String &name, String &badConnectionPoolId, long &maxBadConnections);
 };
 
 #endif

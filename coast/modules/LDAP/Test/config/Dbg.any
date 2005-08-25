@@ -84,6 +84,13 @@
 		/Bind							400
 		/TransformResult				400
 	}
+	/PersistentLDAPConnection {
+		/MainSwitch						400
+		/EnableAll						401
+		/WaitForResult					400
+		/Bind							400
+		/TransformResult				400
+	}
 	/LDAPConnectionManager {
 		/MainSwitch						400
 		/EnableAll						401

@@ -8,7 +8,18 @@
 
 {
 
-	/testLDAPConnectionManager
+	/TestAutoRebindBadConnection
+	{
+		/LDAPServer		"127.0.0.1"
+		/LDAPPort		"389"
+		/LDAPBindName	"gugus"
+		/LDAPBindPW		"dada"
+		/LDAPPooledConnections	1
+		/LDAPMaxConnections		2
+		/LDAPConnectionTimeout  1
+	}
+
+	/TestLDAPConnectionManager
 	{
 		# 0 Getting not existing handle, then setting handle
 		{
@@ -20,8 +31,9 @@
 					{
 						/Data
 						{
-							/UniqueConnectionId		"FristConnection"
+							/PoolId		"FristConnection"
 							/LDAPRebindTimeout			2
+							/LDAPMaxConnections		1
 							/SleepTime				3
 						}
 						/Expected
@@ -37,7 +49,8 @@
 						{
 
 							/LDAPPort		"49999"
-							/UniqueConnectionId		"FristConnection"
+							/PoolId		"FristConnection"
+							/LDAPMaxConnections		1
 						}
 						/Expected
 						{
@@ -47,7 +60,7 @@
 				}
 			}
 		}
-		# 1 Getting this handle with valid timeout, resetting it
+		# 1 Getting this handle with valid timeout, re-setting it
 		{
 			/NumberOfRuns 1
 			/Suite
@@ -57,8 +70,9 @@
 					{
 						/Data
 						{
-							/UniqueConnectionId		"FristConnection"
+							/PoolId		"FristConnection"
 							/LDAPRebindTimeout		3
+							/LDAPMaxConnections		1
 							/SleepTime				1
 						}
 						/Expected
@@ -67,24 +81,9 @@
 						}
 					}
 				}
-				{
-					/Set
-					{
-						/Data
-						{
-
-							/LDAPPort		"49999"
-							/UniqueConnectionId		"FristConnection"
-						}
-						/Expected
-						{
-							/Return				1
-						}
-					}
-				}
 			}
 		}
-		# 2 Getting this handle with rebind timeout ok expired
+		# 2 Getting this handle with rebind timeout ok
 		{
 			/NumberOfRuns 1
 			/Suite
@@ -94,8 +93,9 @@
 					{
 						/Data
 						{
-							/UniqueConnectionId		"FristConnection"
-							/LDAPRebindTimeout		1
+							/PoolId		"FristConnection"
+							/LDAPRebindTimeout		2
+							/LDAPMaxConnections		1
 							/SleepTime				0
 						}
 						/Expected
@@ -106,33 +106,19 @@
 				}
 			}
 		}
-		# 3 Setting another handle, retrieving it with timeout not ok
+		# 3 Now the rebind timeout is triggered because we sleep longer then rebind timeout
 		{
 			/NumberOfRuns 1
 			/Suite
 			{
 				{
-					/Set
-					{
-						/Data
-						{
-
-							/LDAPPort		"49999"
-							/UniqueConnectionId		"FristConnection"
-						}
-						/Expected
-						{
-							/Return				1
-						}
-					}
-				}
-				{
 					/Get
 					{
 						/Data
 						{
-							/UniqueConnectionId		"FristConnection"
+							/PoolId		"FristConnection"
 							/LDAPRebindTimeout		1
+							/LDAPMaxConnections		1
 							/SleepTime				2
 						}
 						/Expected
@@ -153,8 +139,9 @@
 					{
 						/Data
 						{
-							/UniqueConnectionId		"FristConnection"
+							/PoolId		"FristConnection"
 							/LDAPRebindTimeout			15
+							/LDAPMaxConnections		1
 							/SleepTime				1
 						}
 						/Expected
@@ -165,11 +152,26 @@
 				}
 			}
 		}
-		# 5 Setting new handle, retrieving it (no rebind)
+		# 5 Setting new handle
 		{
 			/NumberOfRuns 1
 			/Suite
 			{
+				{
+					/Get
+					{
+						/Data
+						{
+							/PoolId		"SecondConnection"
+							/LDAPRebindTimeout		0
+							/LDAPMaxConnections		1
+						}
+						/Expected
+						{
+							/MustRebind				1
+						}
+					}
+				}
 				{
 					/Set
 					{
@@ -177,7 +179,8 @@
 						{
 
 							/LDAPPort		"49999"
-							/UniqueConnectionId		"SecondConnection"
+							/PoolId		"SecondConnection"
+							/LDAPMaxConnections		1
 						}
 						/Expected
 						{
@@ -185,13 +188,22 @@
 						}
 					}
 				}
+			}
+		}
+		# 6 Retrieving handel with RebindTimeout set to "ignore"
+		#	Then setting a null-handle
+		{
+			/NumberOfRuns 1
+			/Suite
+			{
 				{
 					/Get
 					{
 						/Data
 						{
-							/UniqueConnectionId		"SecondConnection"
+							/PoolId		"SecondConnection"
 							/LDAPRebindTimeout		0
+							/LDAPMaxConnections		1
 						}
 						/Expected
 						{
@@ -199,20 +211,14 @@
 						}
 					}
 				}
-			}
-		}
-		# 6 Setting nullhandle, retrieving it
-		{
-			/NumberOfRuns 1
-			/Suite
-			{
 				{
 					/Set
 					{
 						/Data
 						{
 							/NullHandle				1
-							/UniqueConnectionId		"SecondConnection"
+							/PoolId		"SecondConnection"
+							/LDAPMaxConnections		1
 						}
 						/Expected
 						{
@@ -220,13 +226,23 @@
 						}
 					}
 				}
+			}
+		}
+
+		# 7 Retrieving the nullhandle triggers MustRebind
+		#	independent of RebindTimeout
+		{
+			/NumberOfRuns 1
+			/Suite
+			{
 				{
 					/Get
 					{
 						/Data
 						{
-							/UniqueConnectionId		"SecondConnection"
+							/PoolId		"SecondConnection"
 							/LDAPRebindTimeout		0
+							/LDAPMaxConnections		1
 						}
 						/Expected
 						{
@@ -236,7 +252,7 @@
 				}
 			}
 		}
-		# 7 Getting another handle (no rebind)
+		# 8 Setting another handle
 		{
 			/NumberOfRuns 1
 			/Suite
@@ -246,7 +262,8 @@
 					{
 						/Data
 						{
-							/UniqueConnectionId		"ThirdConnection"
+							/PoolId		"ThirdConnection"
+							/LDAPMaxConnections		1
 						}
 						/Expected
 						{
@@ -261,7 +278,8 @@
 						{
 
 							/LDAPPort		"49999"
-							/UniqueConnectionId		"ThirdConnection"
+							/PoolId		"ThirdConnection"
+							/LDAPMaxConnections		1
 						}
 						/Expected
 						{
@@ -271,7 +289,7 @@
 				}
 			}
 		}
-		# 8 Getting this handle 20 times
+		# 9 Getting this handle 20 times
 		{
 			/NumberOfRuns 20
 			/Suite
@@ -281,7 +299,8 @@
 					{
 						/Data
 						{
-							/UniqueConnectionId		"ThirdConnection"
+							/PoolId		"ThirdConnection"
+							/LDAPMaxConnections		1
 						}
 						/Expected
 						{
@@ -291,50 +310,7 @@
 				}
 			}
 		}
-		# 9 Resetting this handle with NULL
-		{
-			/NumberOfRuns 1
-			/Suite
-			{
-				{
-					/Set
-					{
-						/Data
-						{
-							/NullHandle				1
-							/UniqueConnectionId		"ThirdConnection"
-						}
-						/Expected
-						{
-							/Return				1
-						}
-					}
-				}
-			}
-		}
-		# 10 Setting this handle
-		{
-			/NumberOfRuns 1
-			/Suite
-			{
-				{
-					/Set
-					{
-						/Data
-						{
-
-							/LDAPPort		"49999"
-							/UniqueConnectionId		"ThirdConnection"
-						}
-						/Expected
-						{
-							/Return				1
-						}
-					}
-				}
-			}
-		}
-		# 11 Getting this handle, valid rebind timeout
+		# 10 Resetting this handle with NULL
 		{
 			/NumberOfRuns 1
 			/Suite
@@ -344,8 +320,83 @@
 					{
 						/Data
 						{
-							/UniqueConnectionId		"ThirdConnection"
-							/LDAPRebindTimeout		2
+							/PoolId		"ThirdConnection"
+							/LDAPMaxConnections		1
+						}
+						/Expected
+						{
+							/MustRebind				0
+						}
+					}
+				}
+				{
+					/Set
+					{
+						/Data
+						{
+							/NullHandle				1
+							/PoolId		"ThirdConnection"
+							/LDAPMaxConnections		1
+						}
+						/Expected
+						{
+							/Return				1
+						}
+					}
+				}
+			}
+		}
+		# 11 Getting this handle results in MustRebind
+		#	Then setting this handle again
+		{
+			/NumberOfRuns 1
+			/Suite
+			{
+				{
+					/Get
+					{
+						/Data
+						{
+							/PoolId		"ThirdConnection"
+							/LDAPMaxConnections		1
+						}
+						/Expected
+						{
+							/MustRebind				1
+						}
+					}
+				}
+				{
+					/Set
+					{
+						/Data
+						{
+
+							/LDAPPort		"49999"
+							/PoolId		"ThirdConnection"
+							/LDAPMaxConnections		1
+						}
+						/Expected
+						{
+							/Return				1
+						}
+					}
+				}
+			}
+		}
+		# 12 Getting this handle, valid rebind timeout
+		{
+			/NumberOfRuns 3
+			/Suite
+			{
+				{
+					/Get
+					{
+						/Data
+						{
+							/PoolId		"ThirdConnection"
+							/LDAPRebindTimeout		4			# 1 second delay, 3 runs = 3 sec
+							/LDAPMaxConnections		1
 							/SleepTime				1
 						}
 						/Expected
@@ -356,7 +407,7 @@
 				}
 			}
 		}
-		# 12 Getting this handle, not  valid rebind timeout
+		# 14 Re-Setting this handle
 		{
 			/NumberOfRuns 1
 			/Suite
@@ -366,9 +417,47 @@
 					{
 						/Data
 						{
-							/UniqueConnectionId		"ThirdConnection"
+							/PoolId		"ForthConnection"
+							/LDAPMaxConnections		1
+						}
+						/Expected
+						{
+							/MustRebind				1
+						}
+					}
+				}
+				{
+					/Set
+					{
+						/Data
+						{
+
+							/LDAPPort		"49999"
+							/PoolId		"ForthConnection"
+							/LDAPMaxConnections		1
+						}
+						/Expected
+						{
+							/Return				1
+						}
+					}
+				}
+			}
+		}
+		# 15 Getting this handle, not  valid rebind timeout
+		{
+			/NumberOfRuns 1
+			/Suite
+			{
+				{
+					/Get
+					{
+						/Data
+						{
+							/PoolId		"ForthConnection"
 							/LDAPRebindTimeout		1
-							/SleepTime				2
+							/LDAPMaxConnections		1
+							/SleepTime				1
 						}
 						/Expected
 						{
@@ -378,7 +467,7 @@
 				}
 			}
 		}
-		# 13 Getting this handle with no rebind timeout is ok.
+		# 16 Getting this handle with no rebind timeout is ok.
 		{
 			/NumberOfRuns 1
 			/Suite
@@ -388,8 +477,9 @@
 					{
 						/Data
 						{
-							/UniqueConnectionId		"ThirdConnection"
+							/PoolId		"ForthConnection"
 							/LDAPRebindTimeout		0
+							/LDAPMaxConnections		1
 						}
 						/Expected
 						{
@@ -402,12 +492,85 @@
 	}
 	/TestAutoRebind
 	{
+		# Prerun entry, just to obtain a valid connection handle
+ 		{
+ 			/ConfiguredActionTestAction
+ 			{
+ 				/LDAPConnectionManagerTest_StableQuery
+ 				{
+ 					/TmpStore	%LDAPConnectionDataAutoRetry
+ 					/TheAction
+ 					{
+ 						/CallDA 	LDAPConnectionManagerTest_StableQuery
+ 					}
+ 					/ExpectedResult	1
+ 					/Result
+ 					{
+ 						/Delim	"^"
+ 						/TmpStore
+ 						{
+ 						 /LDAPResult {
+							  /LDAPConnectionManagerTest_StableQuery {
+								/Type "LDAP_RES_SEARCH_ENTRY"
+								/Query {
+								  /Base "uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+								  /Scope 0
+								  /ScopeStringRepr "one"
+								  /Filter "(objectclass=*)"
+								  /AttrsOnly 0
+								  /SizeLimit 0
+								  /TimeLimit -1
+								  /Attrs *
+								}
+								/NumberOfResultMessages 2
+								/NumberOfEntries 1
+								/SizeLimitExceeded 0
+								/Entries {
+								  /uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch {
+									/objectclass {
+									  "person"
+									  "client"
+									  "tkfModify"
+									  "top"
+									}
+									/uid "tkgae"
+									/sn "tkgae"
+									/cn "tkgae"
+									/language "D"
+									/ifs-id "tkgae"
+									/pd-dn "cn=CH10601-tkgae,dc=tkfpd.hsr.ch"
+									/userpassword "{SHA}8HMddz0wJeXIdx5j+4I3y3W+ne0="
+									/passwordexp "20010624_11:55:37"
+									/tkfmodtime "20010424_11:55:37"
+									/childmodtime "20010426_09:27:20"
+									/tids {
+									  "153.046.248.014"
+									  "172.016.001.041"
+									  "172.016.200.013"
+									  "195.112.074.110"
+									  "172.016.003.077"
+									  "153.046.030.066"
+									  "153.046.016.001"
+									  "153.046.016.009"
+									  "HOST"
+									  "230.001.240.000"
+									}
+								  }
+								}
+							  }
+							}
+ 						}
+ 					}
+ 				}
+ 			}
+ 		}
+ 		# 1
  		{
  			/ConfiguredActionTestAction
  			{
  				/LDAPConnectionManagerTest_Query
  				{
- 					/TmpStore	%LDAPConnectionData
+ 					/TmpStore	%LDAPConnectionDataAutoRetry
  					/TheAction
  					{
  						/CallDA 	LDAPConnectionManagerTest_Query
@@ -472,49 +635,51 @@
  					}
  				}
  			}
- 		}
- 		{
- 			/ConfiguredActionTestAction
- 			{
- 				/LDAPConnectionManagerTest_Delete
- 				{
- 					/TmpStore	%LDAPConnectionData
- 					/TheAction
- 					{
- 						/CallDA 	LDAPConnectionManagerTest_Delete
- 					}
- 					/ExpectedResult	1
- 					/Result
- 					{
- 						/Delim	"^"
- 						/TmpStore
- 						{
- 						  /LDAPResult {
- 							/LDAPConnectionManagerTest_Delete {
- 							  /Type "LDAP_RES_DELETE"
- 							  /Query {
- 								/Base "uid=connectionmanagertest,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
- 							  }
- 							  /NumberOfResultMessages 1
- 							  /NumberOfEntries 0
- 							  /SizeLimitExceeded 0
- 							  /Entries *
- 							}
- 						  }
- 						  /ResultMapper {
- 							/DestinationSlot ""
- 						  }
- 						}
- 					}
- 				}
- 			}
- 		}
+		}
+		# 2
+		{
+			/ConfiguredActionTestAction
+			{
+				/LDAPConnectionManagerTest_Delete
+				{
+					/TmpStore	%LDAPConnectionDataAutoRetry
+					/TheAction
+					{
+						/CallDA 	LDAPConnectionManagerTest_Delete
+					}
+					/ExpectedResult	1
+					/Result
+					{
+						/Delim	"^"
+						/TmpStore
+						{
+						  /LDAPResult {
+							/LDAPConnectionManagerTest_Delete {
+							  /Type "LDAP_RES_DELETE"
+							  /Query {
+								/Base "uid=connectionmanagertest,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+							  }
+							  /NumberOfResultMessages 1
+							  /NumberOfEntries 0
+							  /SizeLimitExceeded 0
+							  /Entries *
+							}
+						  }
+						  /ResultMapper {
+							/DestinationSlot ""
+						  }
+						}
+					}
+				}
+			}
+		}
+		# 3
  		{
  			/ConfiguredActionTestAction
  			{
  				/LDAPConnectionManagerTest_Query
  				{
- 					/TmpStore	%LDAPConnectionData
+ 					/TmpStore	%LDAPConnectionDataAutoRetry
  					/TheAction
  					{
  						/CallDA 	LDAPConnectionManagerTest_Query
@@ -539,10 +704,10 @@
 								/BindPW "all2test"
 								/MapUTF8 1
 								/PooledConnections 1
+								/MaxConnections 2
 								/TryAutoRebind 1
 								/RebindTimeout 0
 							  }
-	                          /MsgAsString "LdapDataAccess: [LDAPConnectionManagerTest_Query] Msg [LDAP request failed.] LdapCode [32] LdapMsg [No such object] LdapConnectionParams [{/Server \"surlej.hsr.ch\"/Port 49999/Timeout 10/ConnectionTimeout 5/BindName \"cn=Directory Manager\"/BindPW \"WipedOut\"/MapUTF8 1/PooledConnections 1/TryAutoRebind 1/RebindTimeout 0}]"
 		                    }
 			              }
  						}
@@ -550,12 +715,13 @@
  				}
  			}
  		}
+ 		# 4
  		{
  			/ConfiguredActionTestAction
  			{
  				/LDAPConnectionManagerTest_Add
  				{
- 					/TmpStore	%LDAPConnectionData
+ 					/TmpStore	%LDAPConnectionDataAutoRetry
  					/TheAction
  					{
  						/CallDA 	LDAPConnectionManagerTest_Add
@@ -597,12 +763,13 @@
  				}
  			}
  		}
+ 		# 5
  		{
  			/ConfiguredActionTestAction
  			{
  				/LDAPConnectionManagerTest_Query_Added
  				{
- 					/TmpStore	%LDAPConnectionData
+ 					/TmpStore	%LDAPConnectionDataAutoRetry
  					/TheAction
  					{
  						/CallDA 	LDAPConnectionManagerTest_Query_Added
@@ -653,12 +820,13 @@
  				}
  			}
  		}
+ 		# 6
 		{
 			/ConfiguredActionTestAction
 			{
 				/LDAPConnectionManagerTest_MultipleModify
 				{
- 					/TmpStore	%LDAPConnectionData
+ 					/TmpStore	%LDAPConnectionDataAutoRetry
 					/TheAction
 					{
 						/CallDA 	LDAPConnectionManagerTest_MultipleModify
@@ -700,12 +868,13 @@
 				}
 			}
 		}
+		# 7
  		{
  			/ConfiguredActionTestAction
  			{
  				/LDAPConnectionManagerTest_Query_Added
  				{
- 					/TmpStore	%LDAPConnectionData
+ 					/TmpStore	%LDAPConnectionDataAutoRetry
  					/TheAction
  					{
  						/CallDA 	LDAPConnectionManagerTest_Query_Added
@@ -757,12 +926,13 @@
  				}
  			}
  		}
+ 		# 8
  		{
  			/ConfiguredActionTestAction
  			{
  				/LDAPConnectionManagerTest_Compare
  				{
- 					/TmpStore	%LDAPConnectionData
+ 					/TmpStore	%LDAPConnectionDataAutoRetry
  					/TheAction
  					{
  						/CallDA 	LDAPConnectionManagerTest_Compare
@@ -786,19 +956,319 @@
  				}
  			}
  		}
-
 	}
 
-	/LDAPConnectionData
+	/TestNoAutoRetryOkQuery
 	{
-		/LDAPServer		"surlej.hsr.ch"
+ 		{
+ 			/ConfiguredActionTestAction
+ 			{
+ 				/LDAPConnectionManagerTest_StableQuery
+ 				{
+ 					/TmpStore	%LDAPConnectionDataNoAutoRetry
+ 					/TheAction
+ 					{
+ 						/CallDA 	LDAPConnectionManagerTest_StableQuery
+ 					}
+ 					/ExpectedResult	1
+ 					/Result
+ 					{
+ 						/Delim	"^"
+ 						/TmpStore
+ 						{
+ 						 /LDAPResult {
+							  /LDAPConnectionManagerTest_StableQuery {
+								/Type "LDAP_RES_SEARCH_ENTRY"
+								/Query {
+								  /Base "uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+								  /Scope 0
+								  /ScopeStringRepr "one"
+								  /Filter "(objectclass=*)"
+								  /AttrsOnly 0
+								  /SizeLimit 0
+								  /TimeLimit -1
+								  /Attrs *
+								}
+								/NumberOfResultMessages 2
+								/NumberOfEntries 1
+								/SizeLimitExceeded 0
+								/Entries {
+								  /uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch {
+									/objectclass {
+									  "person"
+									  "client"
+									  "tkfModify"
+									  "top"
+									}
+									/uid "tkgae"
+									/sn "tkgae"
+									/cn "tkgae"
+									/language "D"
+									/ifs-id "tkgae"
+									/pd-dn "cn=CH10601-tkgae,dc=tkfpd.hsr.ch"
+									/userpassword "{SHA}8HMddz0wJeXIdx5j+4I3y3W+ne0="
+									/passwordexp "20010624_11:55:37"
+									/tkfmodtime "20010424_11:55:37"
+									/childmodtime "20010426_09:27:20"
+									/tids {
+									  "153.046.248.014"
+									  "172.016.001.041"
+									  "172.016.200.013"
+									  "195.112.074.110"
+									  "172.016.003.077"
+									  "153.046.030.066"
+									  "153.046.016.001"
+									  "153.046.016.009"
+									  "HOST"
+									  "230.001.240.000"
+									}
+								  }
+								}
+							  }
+							}
+ 						}
+ 					}
+ 				}
+ 			}
+ 		}
+	}
+	/TestNoAutoRebind
+	{
+		# 0
+ 		{
+ 			/ConfiguredActionTestAction
+ 			{
+ 				/LDAPConnectionManagerTest_Query
+ 				{
+ 					/TmpStore	%LDAPConnectionDataNoAutoRetry
+ 					/TheAction
+ 					{
+ 						/CallDA 	LDAPConnectionManagerTest_Query
+ 					}
+ 					/ExpectedResult	0
+ 					/Result
+ 					{
+ 						/Delim	"^"
+ 						/TmpStore
+ 						{
+						  /LDAPError {
+							/LDAPConnectionManagerTest_Query {
+							  /Msg "Asynchronous Wait4Result: The request <-1> timed out. Request abandoned: binding handle was invalid, ldap_abandon not called"
+							  /LdapCode 85
+							  /LdapMsg "Timed out"
+							  /LdapConnectionParams {
+								/Server "surlej.hsr.ch"
+								/Port 49999
+								/Timeout 10
+								/ConnectionTimeout 5
+								/BindName "cn=Directory Manager"
+								/BindPW "all2test"
+								/MapUTF8 1
+								/PooledConnections 1
+								/MaxConnections 2
+								/TryAutoRebind 0
+								/RebindTimeout 0
+							  }
+							}
+						  }
+ 						}
+ 					}
+ 				}
+ 			}
+ 		}
+		# 1
+		{
+			/ConfiguredActionTestAction
+			{
+				/LDAPConnectionManagerTest_Delete
+				{
+					/TmpStore	%LDAPConnectionDataNoAutoRetry
+					/TheAction
+					{
+						/CallDA 	LDAPConnectionManagerTest_Delete
+					}
+					/ExpectedResult	0
+					/Result
+					{
+						/Delim	"^"
+						/TmpStore
+						{
+						  /LDAPError {
+							/LDAPConnectionManagerTest_Delete {
+							  /Msg "Asynchronous Wait4Result: The request <-1> timed out. Request abandoned: binding handle was invalid, ldap_abandon not called"
+							  /LdapCode 85
+							  /LdapMsg "Timed out"
+							  /LdapConnectionParams {
+								/Server "surlej.hsr.ch"
+								/Port 49999
+								/Timeout 10
+								/ConnectionTimeout 5
+								/BindName "cn=Directory Manager"
+								/BindPW "all2test"
+								/MapUTF8 1
+								/PooledConnections 1
+								/MaxConnections 2
+								/TryAutoRebind 0
+								/RebindTimeout 0
+							  }
+								}
+						  }
+						}
+					}
+				}
+			}
+		}
+ 		# 3
+ 		{
+ 			/ConfiguredActionTestAction
+ 			{
+ 				/LDAPConnectionManagerTest_Add
+ 				{
+ 					/TmpStore	%LDAPConnectionDataNoAutoRetry
+ 					/TheAction
+ 					{
+ 						/CallDA 	LDAPConnectionManagerTest_Add
+ 					}
+ 					/ExpectedResult	0
+ 					/Result
+ 					{
+ 						/Delim	"^"
+ 						/TmpStore
+ 						{
+						  /LDAPError {
+							/LDAPConnectionManagerTest_Add {
+							  /Msg "Asynchronous Wait4Result: The request <-1> timed out. Request abandoned: binding handle was invalid, ldap_abandon not called"
+							  /LdapCode 85
+							  /LdapMsg "Timed out"
+							  /LdapConnectionParams {
+								/Server "surlej.hsr.ch"
+								/Port 49999
+								/Timeout 10
+								/ConnectionTimeout 5
+								/BindName "cn=Directory Manager"
+								/BindPW "all2test"
+								/MapUTF8 1
+								/PooledConnections 1
+								/MaxConnections 2
+								/TryAutoRebind 0
+								/RebindTimeout 0
+							  }
+							}
+ 						  }
+ 						}
+ 					}
+ 				}
+ 			}
+ 		}
+ 		# 4
+		{
+			/ConfiguredActionTestAction
+			{
+				/LDAPConnectionManagerTest_MultipleModify
+				{
+ 					/TmpStore	%LDAPConnectionDataNoAutoRetry
+					/TheAction
+					{
+						/CallDA 	LDAPConnectionManagerTest_MultipleModify
+					}
+					/ExpectedResult	0
+					/Result
+					{
+						/Delim	"^"
+						/TmpStore
+						{
+						  /LDAPError {
+							/LDAPConnectionManagerTest_MultipleModify {
+							  /Msg "Asynchronous Wait4Result: The request <-1> timed out. Request abandoned: binding handle was invalid, ldap_abandon not called"
+							  /LdapCode 85
+							  /LdapMsg "Timed out"
+							  /LdapConnectionParams {
+								/Server "surlej.hsr.ch"
+								/Port 49999
+								/Timeout 10
+								/ConnectionTimeout 5
+								/BindName "cn=Directory Manager"
+								/BindPW "all2test"
+								/MapUTF8 1
+								/PooledConnections 1
+								/MaxConnections 2
+								/TryAutoRebind 0
+								/RebindTimeout 0
+							  }
+							}
+						  }
+						}
+					}
+				}
+			}
+		}
+ 		{
+ 			/ConfiguredActionTestAction
+ 			{
+ 				/LDAPConnectionManagerTest_Compare
+ 				{
+ 					/TmpStore	%LDAPConnectionDataNoAutoRetry
+ 					/TheAction
+ 					{
+ 						/CallDA 	LDAPConnectionManagerTest_Compare
+ 					}
+ 					/ExpectedResult	0
+ 					/Result
+ 					{
+ 						/Delim	"^"
+ 						/TmpStore
+ 						{
+						  /LDAPError {
+							/LDAPConnectionManagerTest_Compare {
+							  /Msg "Asynchronous Wait4Result: The request <-1> timed out. Request abandoned: binding handle was invalid, ldap_abandon not called"
+							  /LdapCode 85
+							  /LdapMsg "Timed out"
+							  /LdapConnectionParams {
+								/Server "surlej.hsr.ch"
+								/Port 49999
+								/Timeout 10
+								/ConnectionTimeout 5
+								/BindName "cn=Directory Manager"
+								/BindPW "all2test"
+								/MapUTF8 1
+								/PooledConnections 1
+								/MaxConnections 2
+								/TryAutoRebind 0
+								/RebindTimeout 0
+							  }
+							}
+						  }
+						}
+ 					}
+ 				}
+ 			}
+ 		}
+	}
+	/LDAPConnectionDataAutoRetry
+	{
+		/LDAPServer		"marvin.hsr.loc"
 		/LDAPPort		"49999"
 		/LDAPBindName	"cn=Directory Manager"
-		/LDAPBindPW		"all2test"
+		/LDAPBindPW		"ifaifaifa"
 		/LDAPConnectionTimeout	5
-		/LDAPTimeout	10
-		/LDAPPooledConnections 1
-		/LDAPTryAutoRebind			1
-		/LDAPRebindTimeout 0
+		/LDAPTimeout			10
+		/LDAPPooledConnections	1
+		/LDAPMaxConnections		2
+		/LDAPTryAutoRebind		1
+		/LDAPRebindTimeout		0
+	}
+
+	/LDAPConnectionDataNoAutoRetry
+	{
+		/LDAPServer		"marvin.hsr.loc"
+		/LDAPPort		"49999"
+		/LDAPBindName	"cn=Directory Manager"
+		/LDAPBindPW		"ifaifaifa"
+		/LDAPConnectionTimeout	5
+		/LDAPTimeout			10
+		/LDAPPooledConnections	1
+		/LDAPMaxConnections		2
+		/LDAPTryAutoRebind		0
+		/LDAPRebindTimeout 		0
 	}
 }

@@ -19,11 +19,28 @@
 
 //--- LDAPAbstractDAI -----------------------------------------------------
 
-bool DumpTmpStore(Context &ctx, bool ret)
+void ReleaseHandleInfo(Context &ctx, LDAPConnection *lc)
 {
-	StartTrace(LDAPAbstractDAI.DumpTmpStore);
+	StartTrace(LDAPAbstractDAI.ReleaseHandleInfo);
 	TraceAny(ctx.GetTmpStore(), "tmp store dump:");
-	return ret;
+	lc->ReleaseHandleInfo();
+	if ( lc != (LDAPConnection *) NULL ) {
+		Trace("Deleting lc");
+		delete lc;
+	}
+}
+
+void TryReleaseHandleInfo(Context &ctx, LDAPConnection *lc, LDAPErrorHandler &eh)
+{
+	StartTrace(LDAPAbstractDAI.TryReleaseHandleInfo);
+	if ( eh.GetRetryState() != LDAPErrorHandler::eRetry ) {
+		Trace("Calling ReleaseHandleInfo");
+		lc->ReleaseHandleInfo();
+	}
+	if ( lc != (LDAPConnection *) NULL ) {
+		Trace("Deleting lc");
+		delete lc;
+	}
 }
 
 RegisterDataAccessImpl(LDAPAbstractDAI);
@@ -39,13 +56,24 @@ bool LDAPAbstractDAI::Exec( Context &ctx, ParameterMapper *getter, ResultMapper 
 		// LDAP transaction completed successfully
 		return ret;
 	}
-	if ( eh.GetShouldRetry() ) {
+	if ( eh.GetRetryState() == LDAPErrorHandler::eRetry ) {
 		Trace("Will try a rebind (LDAP might have been restarted.) for DataAccess: " << fName);
 		eh.HandleSessionError((LDAP *) NULL, "Will try a rebind (LDAP might have been restarted.)");
 		eh.CleanUp();
+		eh.SetRetryState(LDAPErrorHandler::eRetryAlreadyDone);
 		return DoExec(ctx, getter, putter, eh);
 	}
 	return ret;
+}
+
+LDAPConnection *LDAPAbstractDAI::LDAPConnectionFactory(ROAnything cp)
+{
+	StartTrace(LDAPAbstractDAI.LDAPConnectionFactory);
+	if ( cp["PooledConnections"].AsLong(0) == 0L ) {
+		return new LDAPConnection(cp);
+	} else {
+		return new PersistentLDAPConnection(cp);
+	}
 }
 
 bool LDAPAbstractDAI::DoExec( Context &ctx, ParameterMapper *getter, ResultMapper *putter, LDAPErrorHandler &eh)
@@ -56,7 +84,8 @@ bool LDAPAbstractDAI::DoExec( Context &ctx, ParameterMapper *getter, ResultMappe
 	// 1. get + check query
 	Anything query;
 	if ( !DoGetQuery(getter, ctx, query, eh) ) {
-		return DumpTmpStore(ctx, false);
+		TraceAny(ctx.GetTmpStore(), "tmp store dump:");
+		return false;
 	}
 	Trace("Got query and checked it: query is ok");
 
@@ -75,43 +104,47 @@ bool LDAPAbstractDAI::DoExec( Context &ctx, ParameterMapper *getter, ResultMappe
 	cp["BindPW"] = bindPw = ctx.Lookup("LDAPBindPW", "");
 	cp["MapUTF8"] = !ctx.Lookup("NoHTMLCharMapping", 0L);
 	cp["PooledConnections"] = ctx.Lookup("LDAPPooledConnections", 0L);
+	cp["MaxConnections"] = ctx.Lookup("LDAPMaxConnections", 0L);
 	cp["TryAutoRebind"] = ctx.Lookup("LDAPTryAutoRebind", 0L);
 	cp["RebindTimeout"] = ctx.Lookup("LDAPRebindTimeout", 3600L);
 
 	// store connection params in ctx (lookup for error-handling)
 	eh.PutConnectionParams(cp);
 
-	LDAPConnection lc(cp);
-	if ( !lc.Connect(cp, eh) ) {
-		return DumpTmpStore(ctx, false);
+	LDAPConnection *lc = LDAPConnectionFactory(cp);
+	if ( lc == (LDAPConnection *) NULL ) {
+		eh.HandleError("Fatal LDAP error. Could not create LDAP connection on heap.");
+		return false;
+	}
+
+	if ( !(lc->Connect(cp, eh)) ) {
+		ReleaseHandleInfo(ctx, lc);
+		return false;
 	}
 	Trace("Connection to server established: " << bindName << "@" << server << ":" << port);
-
 	// 4. request ldap operation, then wait for result (loop)
 	int msgId = DoLDAPRequest(lc, query);
 	Trace("LDAP request sent");
 
 	Anything result;
-	if ( !lc.WaitForResult(msgId, result, eh) ) {
-		return DumpTmpStore(ctx, false);
+	if ( !(lc->WaitForResult(msgId, result, eh)) ) {
+		TryReleaseHandleInfo(ctx, lc, eh);
+		return false;
 	}
 	Trace("Received LDAP result(s)");
-
 	// 5. check result
 	if ( !DoCheckResult(result, eh) ) {
-		return DumpTmpStore(ctx, false);
+		ReleaseHandleInfo(ctx, lc);
+		return false;
 	}
 	Trace("Result is ok");
-
 	// 6. store result
 	String key("LDAPResult.");
 	key << fName;
 	bool storedOk = putter->Put(key, result, ctx);
 	Trace("Result stored successfully : " << storedOk);
-
-	// --> unbind is handled automatically by destructor of connection
-	// error is stored under LDAPError, if any occurred
-	return DumpTmpStore(ctx, true);
+	ReleaseHandleInfo(ctx, lc);
+	return true;
 }
 
 bool LDAPAbstractDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &query, LDAPErrorHandler eh)
@@ -171,7 +204,7 @@ bool LDAPAddDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &que
 	return true;
 }
 
-int LDAPAddDAI::DoLDAPRequest(LDAPConnection &lc, ROAnything query)
+int LDAPAddDAI::DoLDAPRequest(LDAPConnection *lc, ROAnything query)
 {
 	StartTrace(LDAPAddDAI.DoLDAPRequest);
 	TraceAny(query, "Query for add request:");
@@ -205,7 +238,7 @@ int LDAPAddDAI::DoLDAPRequest(LDAPConnection &lc, ROAnything query)
 
 	// send request
 	Trace("Sending request...");
-	int msgId = ldap_add(lc.GetConnection(), base, ldapmods);
+	int msgId = ldap_add(lc->GetConnection(), base, ldapmods);
 
 	// free used memory
 	Trace("Freeing memory...");
@@ -252,7 +285,7 @@ bool LDAPCompareDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything 
 	return true;
 }
 
-int LDAPCompareDAI::DoLDAPRequest(LDAPConnection &lc, ROAnything query)
+int LDAPCompareDAI::DoLDAPRequest(LDAPConnection *lc, ROAnything query)
 {
 	StartTrace(LDAPCompareDAI.DoLDAPRequest);
 	TraceAny(query, "Query for compare request:");
@@ -263,7 +296,7 @@ int LDAPCompareDAI::DoLDAPRequest(LDAPConnection &lc, ROAnything query)
 	String attrVal = query["AttrValue"].AsString();
 
 	// send request
-	return ldap_compare(lc.GetConnection(), base, attrName, attrVal);
+	return ldap_compare(lc->GetConnection(), base, attrName, attrVal);
 }
 
 // =========================================================================
@@ -271,7 +304,7 @@ int LDAPCompareDAI::DoLDAPRequest(LDAPConnection &lc, ROAnything query)
 //--- LDAPDeleteDAI -----------------------------------------------------
 RegisterDataAccessImpl(LDAPDeleteDAI);
 
-int LDAPDeleteDAI::DoLDAPRequest(LDAPConnection &lc, ROAnything query)
+int LDAPDeleteDAI::DoLDAPRequest(LDAPConnection *lc, ROAnything query)
 {
 	StartTrace(LDAPDeleteDAI.DoLDAPRequest);
 	TraceAny(query, "Query for delete request:");
@@ -280,7 +313,7 @@ int LDAPDeleteDAI::DoLDAPRequest(LDAPConnection &lc, ROAnything query)
 	String base = query["Base"].AsString();
 
 	// send request
-	return ldap_delete(lc.GetConnection(), base);
+	return ldap_delete(lc->GetConnection(), base);
 }
 
 // =========================================================================
@@ -338,7 +371,7 @@ bool LDAPModifyDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &
 	return true;
 }
 
-int LDAPModifyDAI::DoLDAPRequest(LDAPConnection &lc, ROAnything query)
+int LDAPModifyDAI::DoLDAPRequest(LDAPConnection *lc, ROAnything query)
 {
 	// ------------------------------------------------------------
 	// hint: look at syntax of modify request in .h file, this will
@@ -410,7 +443,7 @@ int LDAPModifyDAI::DoLDAPRequest(LDAPConnection &lc, ROAnything query)
 	ldapmods[totalmods] = NULL; // terminate list of mods
 
 	// send request
-	int msgId = ldap_modify(lc.GetConnection(), base, ldapmods);
+	int msgId = ldap_modify(lc->GetConnection(), base, ldapmods);
 
 	// free used memory
 	if (ldapmods) {
@@ -485,7 +518,7 @@ bool LDAPSearchDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &
 	return true;
 }
 
-int LDAPSearchDAI::DoLDAPRequest(LDAPConnection &lc, ROAnything query)
+int LDAPSearchDAI::DoLDAPRequest(LDAPConnection *lc, ROAnything query)
 {
 	StartTrace(LDAPSearchDAI.DoLDAPRequest);
 	TraceAny(query, "Query for search request:");
@@ -502,7 +535,7 @@ int LDAPSearchDAI::DoLDAPRequest(LDAPConnection &lc, ROAnything query)
 	timeval tv;
 	timeval *tvp;
 	if (timeout < 0) {
-		tv.tv_sec =  lc.GetSearchTimeout();
+		tv.tv_sec =  lc->GetSearchTimeout();
 		tv.tv_usec = 0;
 	} else if (timeout > 0) {
 		tv.tv_sec  = timeout;
@@ -527,7 +560,7 @@ int LDAPSearchDAI::DoLDAPRequest(LDAPConnection &lc, ROAnything query)
 
 	// send request + free allocated memory
 	int msgId;
-	int ret = ldap_search_ext(lc.GetConnection(), base, scope, filter, attrs, attrsonly, NULL, NULL, tvp, sizeLimit, &msgId);
+	int ret = ldap_search_ext(lc->GetConnection(), base, scope, filter, attrs, attrsonly, NULL, NULL, tvp, sizeLimit, &msgId);
 	free(attrs);
 
 	return (ret == LDAP_SUCCESS ? msgId : -1);

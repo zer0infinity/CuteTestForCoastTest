@@ -20,7 +20,7 @@
 //---- LDAPErrorHandler ----------------------------------------------------------------
 
 LDAPErrorHandler::LDAPErrorHandler(Context &ctx, ParameterMapper *in, ResultMapper *out, String daName)
-	: fCtx(ctx), fIn(in), fOut(out), fName(daName), fShouldRetry(false)
+	: fCtx(ctx), fIn(in), fOut(out), fName(daName), fRetryState(eNoRetry)
 {}
 
 LDAPErrorHandler::~LDAPErrorHandler()
@@ -41,7 +41,7 @@ void LDAPErrorHandler::HandleSessionError(LDAP *handle, String msg)
 		error["LdapCode"] = rc;
 		error["LdapMsg"] = ldap_err2string(rc);
 	} else {
-		if ( fShouldRetry == false ) {
+		if ( fRetryState == eNoRetry ) {
 			error["LdapMsg"] = "Connection does not exist (no handle available).";
 		} else {
 			error["LdapMsg"] = "Connection failure using LDAPPooledConnections.";
@@ -157,4 +157,44 @@ Anything LDAPErrorHandler::GetConnectionParams()
 void LDAPErrorHandler::PutConnectionParams(Anything cp)
 {
 	fConnectionParams = cp;
+}
+
+void LDAPErrorHandler::SetRetryState(eRetryState retryState)
+{
+	StartTrace(LDAPErrorHandler.SetRetryState);
+	Trace("Setting: [" << RetryStateAsString(retryState) << "]");
+	fRetryState = retryState;
+}
+
+LDAPErrorHandler::eRetryState LDAPErrorHandler::GetRetryState()
+{
+	StartTrace(LDAPErrorHandler.GetRetryState);
+	Trace("Getting: [" << RetryStateAsString(fRetryState) << "]");
+	return fRetryState;
+}
+
+bool LDAPErrorHandler::IsRetry()
+{
+	StartTrace(LDAPErrorHandler.IsRetry);
+	bool ret =	(fRetryState == LDAPErrorHandler::eRetryAlreadyDone);
+	Trace("IsRetry: " << ret);
+	return ret;
+}
+
+String LDAPErrorHandler::RetryStateAsString(eRetryState retryState)
+{
+	switch ( retryState) {
+		case eRetry:
+			return "eRetry";
+			break;
+		case eRetryAlreadyDone:
+			return "eRetryAlreadyDone";
+			break;
+		case eNoRetry:
+			return "eNoRetry";
+			break;
+		default:
+			return "Unknown!";
+			break;
+	}
 }

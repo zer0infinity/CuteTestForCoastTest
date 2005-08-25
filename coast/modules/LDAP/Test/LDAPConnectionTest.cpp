@@ -65,6 +65,7 @@ void LDAPConnectionTest::ConnectionTest()
 			params["PooledConnections"]	= cConfig["LDAPPooledConnections"].AsLong(0L);
 			params["RebindTimeout"]		= cConfig["LDAPRebindTimeout"].AsLong(3600L);
 			params["TryAutoRebind"]		= cConfig["LDAPTryAutoRebind"].AsLong(0L);
+			params["MaxConnections"]	= cConfig["LDAPMaxConnections"].AsLong(2L);
 
 			Context ctx;
 			ParameterMapper pm("ConnectionTestParameterMapper");
@@ -81,7 +82,6 @@ void LDAPConnectionTest::ConnectionTest()
 			LDAPConnection::EConnectState eConnectState = lc.DoConnect(params, eh);
 			String result(LDAPConnection::ConnectRetToString(eConnectState));
 			Trace("Connect result: " << result);
-
 			// check for errors
 			Anything error;
 			if ( !eh.GetError(error) ) {
@@ -97,6 +97,8 @@ void LDAPConnectionTest::ConnectionTest()
 			if (!ret) {
 				assertAnyEqual(cConfig["Error"], error);
 			}
+			// now release sema and lock
+			lc.ReleaseHandleInfo();
 		}
 	}
 }

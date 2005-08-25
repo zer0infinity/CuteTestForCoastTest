@@ -17,7 +17,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-#include "LDAPConnection.h"
+#include "PersistentLDAPConnection.h"
 
 //--- c-modules used -----------------------------------------------------------
 
@@ -59,12 +59,12 @@ void ErrorHandlerTest::testHandleConnectionError()
 
 	// define server only, for everything else take defaults
 	cp["Server"] = "nonexisting.server.li";
-	LDAPConnection lc(cp);
+	PersistentLDAPConnection plc(cp);
 
 	// do test (connection params will provoke error which will be handled)
 	LDAPErrorHandler eh(*fCtx, fGet, fPut, daName);
 	eh.PutConnectionParams(cp);
-	t_assertm( !lc.Connect(cp, eh), "Could connect, but shouldn't!");
+	t_assertm( !plc.Connect(cp, eh), "Could connect, but shouldn't!");
 
 	Anything error;
 	t_assertm(eh.GetError(error), "Found no error, but should!");
@@ -118,10 +118,12 @@ void ErrorHandlerTest::testShouldRetry()
 
 	LDAPErrorHandler eh(*fCtx, fGet, fPut, "TestHandleError");
 
-	eh.SetShouldRetry(true);
-	assertEquals(true, eh.GetShouldRetry());
-	eh.SetShouldRetry(false);
-	assertEqual(false, eh.GetShouldRetry());
+	eh.SetRetryState(LDAPErrorHandler::eRetry);
+	assertEquals(LDAPErrorHandler::eRetry, eh.GetRetryState());
+	eh.SetRetryState(LDAPErrorHandler::eNoRetry);
+	assertEquals(LDAPErrorHandler::eNoRetry, eh.GetRetryState());
+	eh.SetRetryState(LDAPErrorHandler::eRetryAlreadyDone);
+	assertEquals(LDAPErrorHandler::eRetryAlreadyDone, eh.GetRetryState());
 }
 
 void ErrorHandlerTest::testParamAccess()

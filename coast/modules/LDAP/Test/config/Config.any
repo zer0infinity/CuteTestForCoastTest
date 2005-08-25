@@ -16,6 +16,12 @@
 		DataAccessImplsModule
 		MappersModule
 		ActionsModule
+		LDAPConnectionManager
+	}
+
+	/LDAPConnectionManager
+	{
+		/DefMaxConnections 2
 	}
 	/Actions {
 		/CallDataAccessAction	{ CallDA }
@@ -43,6 +49,7 @@
 				"LDAPSearchQuery_LookupTkrefactor_NotPooled"
 				"LDAPSearchQuery_LookupTkrefactor_Pooled"
 
+				"LDAPConnectionManagerTest_StableQuery"
 				"LDAPConnectionManagerTest_Query"
 				"LDAPConnectionManagerTest_Query_Added"
 			}
@@ -111,6 +118,7 @@
 				"LDAPSearchQuery_LookupTkrefactor_NotPooled"
 				"LDAPSearchQuery_LookupTkrefactor_Pooled"
 
+				"LDAPConnectionManagerTest_StableQuery"
 				"LDAPConnectionManagerTest_Query"
 				"LDAPConnectionManagerTest_Query_Added"
 				"LDAPConnectionManagerTest_Delete"
@@ -168,6 +176,7 @@
 				"LDAPSearchQuery_LookupTkrefactor_NotPooled"
 				"LDAPSearchQuery_LookupTkrefactor_Pooled"
 
+				"LDAPConnectionManagerTest_StableQuery"
 				"LDAPConnectionManagerTest_Query"
 				"LDAPConnectionManagerTest_Delete"
 				"LDAPConnectionManagerTest_Add"
