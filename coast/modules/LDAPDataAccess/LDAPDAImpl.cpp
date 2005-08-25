@@ -357,16 +357,19 @@ bool LDAPDAImpl::CheckSearchResult(int opRet, bool &outcome, LDAPMessage *result
 	}
 	switch (opRet) {
 		case LDAP_RES_SEARCH_ENTRY: {
+			Trace("opRet:LDAP_RES_SEARCH_ENTRY");
 			GetData( result, ldapHdl, c, out);
 			return 0;
 		}
 		case LDAP_RES_SEARCH_RESULT: {
+			Trace("opRet:LDAP_RES_SEARCH_RESULT");
 			char *matched_msg = NULL;   // don't need this
 			char *error_msg = NULL;     // don't need this
 			LDAPControl **serverctrls;
 			// don't free the memory
 			int parse_rc = ldap_parse_result( ldapHdl, result, &opRet, &matched_msg, &error_msg, NULL, &serverctrls, 0 );
 			if ( parse_rc != LDAP_SUCCESS ) {
+				Trace("!LDAP_SUCCESS");
 				LDAPParams params(c, in);
 				String msg("LDAPSearch  Base[");
 				msg << params.Base() << "] Filter[" << params.Filter() << "] " << ldap_err2string( opRet );
@@ -379,6 +382,7 @@ bool LDAPDAImpl::CheckSearchResult(int opRet, bool &outcome, LDAPMessage *result
 				outcome = false;
 			} else {
 				if (opRet != LDAP_SUCCESS) {
+					Trace("opRet:!LDAP_SUCCESS");
 					LDAPParams params(c, in);
 					String msg("LDAPSearch  Base[");
 					msg << params.Base() << "] Filter[" << params.Filter() << "] " << ldap_err2string( opRet );
@@ -399,6 +403,7 @@ bool LDAPDAImpl::CheckSearchResult(int opRet, bool &outcome, LDAPMessage *result
 					out->Put("Error", msg, c);
 					outcome = false;
 				} else {
+					Trace("search was success");
 					// A search is ok even when nothing is found. Check and
 					// create empty result slot.
 					Anything tmpStore;
@@ -416,8 +421,10 @@ bool LDAPDAImpl::CheckSearchResult(int opRet, bool &outcome, LDAPMessage *result
 			return 1;
 		}
 		case LDAP_RES_SEARCH_REFERENCE:
+			Trace("opRet:LDAP_RES_SEARCH_REFERENCE");
 			return 0;
 		default:
+			Trace("default-case");
 			return 1;
 	}
 #else
@@ -540,7 +547,6 @@ void LDAPDAImpl::GetData( LDAPMessage * /* result */  e, LDAP *ldapHdl, Context 
 				}
 
 			}
-//			ldap_value_free( vals );
 			ldap_value_free_len( vals );
 		}
 		if ( a ) {
@@ -552,7 +558,6 @@ void LDAPDAImpl::GetData( LDAPMessage * /* result */  e, LDAP *ldapHdl, Context 
 	}
 	out->Put("LDAPResult", nextResult, c);
 	TraceAny(nextResult, "LDAPResult:");
-	nextResult = Anything();
 #endif
 }
 
