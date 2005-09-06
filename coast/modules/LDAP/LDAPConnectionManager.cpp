@@ -96,17 +96,23 @@ Anything LDAPConnectionManager::HandleRebindTimoeut(Anything &returned, long reb
 	TimeStamp now = TimeStamp().Now();
 	TimeStamp lastRebind(returned["LastRebind"].AsString());
 	bool mustRebind;
+	String msg;
 	if ( handle == (LDAP *) NULL ) {
+		msg << "Rebind because connection handle is [NULL]";
+		SysLog::Info(msg);
+		Trace(msg);
 		mustRebind = true;
 	} else {
 		if ( rebindTimeout != 0L ) {
 			mustRebind =  ( ((lastRebind + rebindTimeout) <=  now) );
+			msg << "Now: " << now << " LastRebind: " << lastRebind  << " RebindTimeout: " <<
+				rebindTimeout << " Must rebind: " << mustRebind;
+			SysLog::Info(msg);
+			Trace(msg);
 		} else {
 			mustRebind = false;
 		}
 	}
-	Trace("Now: " << now << " LastRebind: " << lastRebind  << " RebindTimeout: "
-		  << rebindTimeout << " Must rebind: " << mustRebind);
 	returned["Handle"] 		= (IFAObject * )handle;
 	returned["MustRebind"]	= mustRebind;
 	TraceAny(returned, "Returning:");
