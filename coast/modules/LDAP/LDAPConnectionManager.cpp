@@ -105,10 +105,12 @@ Anything LDAPConnectionManager::HandleRebindTimoeut(Anything &returned, long reb
 	} else {
 		if ( rebindTimeout != 0L ) {
 			mustRebind =  ( ((lastRebind + rebindTimeout) <=  now) );
-			msg << "Now: " << now << " LastRebind: " << lastRebind  << " RebindTimeout: " <<
-				rebindTimeout << " Must rebind: " << mustRebind;
-			SysLog::Info(msg);
-			Trace(msg);
+			if ( mustRebind ) {
+				msg << "Now: " << now << " LastRebind: " << lastRebind  << " RebindTimeout: " <<
+					rebindTimeout << " Must rebind: " << mustRebind;
+				SysLog::Info(msg);
+				Trace(msg);
+			}
 		} else {
 			mustRebind = false;
 		}
