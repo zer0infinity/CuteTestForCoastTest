@@ -246,7 +246,7 @@ bool LDAPConnectionManager::ReleaseHandleInfo(long maxConnections, const String 
 				String msg;
 				msg << "Releasing LDAP connection at entry: [" << slotIndex << "] for connection pool: " << poolId;
 				Trace(msg);
-				SysLog::Info(msg);
+//				SysLog::Info(msg);
 			}
 		}
 	}
