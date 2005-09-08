@@ -19,8 +19,10 @@
 #include "Session.h"
 #include "Registry.h"
 #include "PeriodicAction.h"
-#include "Renderer.h"
+#include "TimeStamp.h"
+#include "StringStream.h"
 #include "Dbg.h"
+#include "Context.h"
 
 //--- c-library modules used ---------------------------------------------------
 #if !defined (WIN32)
@@ -449,7 +451,8 @@ long SessionListManager::CleanupSessions(Context &ctx, bool forceLock)
 		}
 		if (wasLocked) {
 			if (fLogToCerr) {
-				String m("SLM::CleanupSessions got mutex (Start cleaning).\n");
+				String m;
+				m << "SLM::CleanupSessions got mutex (Start cleaning). Time: [" << TimeStamp::Now().AsString() << "]\n";
 				SysLog::WriteToStderr(m);
 			}
 			wasLocked = true;
@@ -473,20 +476,16 @@ long SessionListManager::CleanupSessions(Context &ctx, bool forceLock)
 			// Deleted:  These sessions was sent the eRemoved event and then they where destructed
 			// Disabled: Kept under SLM control, but no more accesible (avoid destruction of session
 			//           objects still in use by requests)
-			String dateString;
-			Anything def;
-			def["DateRenderer"]["Format"] = "%a, %m-%d-%Y %T %Z";
-			Renderer::RenderOnString(dateString, ctx, def);
 			OStringStream os;
-			os	<<	"Sessions statistics at: " << dateString << endl <<
-				"Sessions now Active   : <" << setw(7) << szActiveAfter << ">  " <<
+			os	<< "Sessions now Active   : <" << setw(7) << szActiveAfter << ">  " <<
 				"Deleted  : <" << setw(7) << (szActiveBefore - szActiveAfter) << ">  " <<
 				"Disabled : <" << setw(9) << szDisabled << ">" << endl;
 			SysLog::WriteToStderr(os.str());
 		}
 	}
 	if (fLogToCerr) {
-		String m("SLM::CleanupSessions leave.\n");
+		String m;
+		m << "SLM::CleanupSessions leave.    (End   cleaning). Time: [" << TimeStamp::Now().AsString() << "]\n";
 		SysLog::WriteToStderr(m);
 	}
 	return szActiveAfter;
