@@ -115,11 +115,17 @@ protected:
 	//!singleton cache
 	static LDAPConnectionManager *fgLDAPConnectionManager;
 
-	//!The mutexthat protects the ldap connection pools structure
+	//!The mutex that protects the ldap connection pools structure
 	Mutex fLdapConnectionStoreMutex;
+
+	//!The mutex that protects the free list structure
+	Mutex fFreeListMutex;
 
 	//!The connection pools structure
 	Anything fLdapConnectionStore;
+
+	//!The freelist - reduce time we spend locked iterating over fLdapConnectionStore
+	Anything fFreeList;
 
 	//! The maximum number of connections per connection "type"
 	long fDefMaxConnections;
@@ -149,6 +155,12 @@ protected:
 
 	//! Decide wether to do a rebind because a LDAPRebindTimeout was specified
 	Anything HandleRebindTimoeut(Anything &returned, long rebindTimeout, LDAP *handle);
+
+	//! Get the next unused entry from the free list structure
+	long GetUnusedFreeListEntry(long maxConnections, const String &poolId);
+
+	//! Get the free list entry the current thread is using
+	long GetThisThreadsFreeListEntry(long maxConnections, const String &poolId);
 
 private:
 

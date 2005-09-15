@@ -37,7 +37,9 @@ RegisterModule(LDAPConnectionManager);
 LDAPConnectionManager::LDAPConnectionManager(const char *name)
 	: WDModule(name)
 	, fLdapConnectionStoreMutex("LdapConnectionStoreMutex", Storage::Global())
+	, fFreeListMutex("FreeListMutex", Storage::Global())
 	, fLdapConnectionStore(Storage::Global())
+	, fFreeList(Storage::Global())
 	, fDefMaxConnections(0L)
 {
 	StartTrace1(LDAPConnectionManager.LDAPConnectionManager, "Name:<" << NotNull(name) << ">");
@@ -185,16 +187,57 @@ bool LDAPConnectionManager::GetHandleInfo(long maxConnections, const String &poo
 	return ret;
 }
 
+long LDAPConnectionManager::GetUnusedFreeListEntry(long maxConnections, const String &poolId)
+{
+	StartTrace(LDAPConnectionManager.GetAndLockSlot);
+	// Because we use a counting semaphore, we know that we should get one unlocked entry
+	long myId = Thread::MyId();
+	MutexEntry me(fFreeListMutex);
+	me.Use();
+	{
+		for (long l = 0 ; l < maxConnections; l++ ) {
+			if ( fFreeList[poolId][l].AsLong(-1L) == -1L ) {
+				fFreeList[poolId][l] = Thread::MyId();
+				Trace("Found freelist entry: [" << poolId << "] at index: [" << l << "] thread: [" << myId << "]");
+				return l;
+			}
+		}
+	}
+	// We should never end up here
+	Trace("NO free entry: [" << poolId << "] We should not end up here !!!!!");
+	return -1L;
+}
+
+long LDAPConnectionManager::GetThisThreadsFreeListEntry(long maxConnections, const String &poolId)
+{
+	StartTrace(LDAPConnectionManager.GetAndLockSlot);
+	// Because we use a counting semaphore, we know that we should get one unlocked entry
+	long myId = Thread::MyId();
+	MutexEntry me(fFreeListMutex);
+	me.Use();
+	{
+		for (long l = 0 ; l < maxConnections; l++ ) {
+			if ( fFreeList[poolId][l].AsLong(-1L) == myId ) {
+				Trace("Found freelist entry: [" << poolId << "] at index: [" << l << "] thread: [" << myId << "]");
+				return l;
+			}
+		}
+	}
+	// We should never end up here
+	Trace("NO free entry: [" << poolId << "] We should not end up here !!!!!");
+	return -1L;
+}
+
 long LDAPConnectionManager::GetAndLockSlot(long maxConnections, const String &poolId)
 {
 	StartTrace(LDAPConnectionManager.GetAndLockSlot);
 	// Because we use a counting semaphore, we know that we should get one unlocked entry
 	Mutex *mutex = (Mutex *) NULL;
-	long l;
-	MutexEntry me(fLdapConnectionStoreMutex);
-	me.Use();
-	{
-		for (l = 0 ; l < maxConnections; l++ ) {
+	long l = GetUnusedFreeListEntry(maxConnections, poolId);
+	if ( l != -1L ) {
+		MutexEntry me(fLdapConnectionStoreMutex);
+		me.Use();
+		{
 			mutex = (Mutex * ) fLdapConnectionStore[poolId]["Mutexes"][l].AsIFAObject(0);
 			if ( mutex != (Mutex * ) NULL ) {
 				TRACE_LOCK_START("GetAndLockSlot");
@@ -227,20 +270,26 @@ bool LDAPConnectionManager::ReleaseHandleInfo(long maxConnections, const String 
 	StartTrace(LDAPConnectionManager.ReleaseHandleInfo);
 	Trace("maxConnections: " << maxConnections << " fDefMaxConnections: " << fDefMaxConnections);
 	maxConnections = (maxConnections != 0L) ? maxConnections :  fDefMaxConnections;
-	long slotIndex = ReGetLockedSlot(maxConnections, poolId);
+	long slotIndex = GetThisThreadsFreeListEntry(maxConnections, poolId);
 	bool ret = ( slotIndex != -1L );
 	if ( ret ) {
-		MutexEntry me(fLdapConnectionStoreMutex);
-		me.Use();
+		Semaphore *sema = (Semaphore *) NULL;
+		MutexEntry me1(fLdapConnectionStoreMutex);
+		me1.Use();
 		{
-			// We hold the lock, safe access now
 			Mutex *mutex = (Mutex * ) fLdapConnectionStore[poolId]["Mutexes"][slotIndex].AsIFAObject(0);
 			if ( mutex != (Mutex *) NULL ) {
 				Trace("Unlocking mutex for: " << poolId << " at index: " << slotIndex);
-				// Unlocking the mutex must be done before releasing the semaphore
 				mutex->Unlock();
 			}
-			Semaphore *sema = (Semaphore * ) fLdapConnectionStore[poolId]["Sema"].AsIFAObject(0);
+			sema = (Semaphore * ) fLdapConnectionStore[poolId]["Sema"].AsIFAObject(0);
+		}
+		MutexEntry me2(fFreeListMutex);
+		me2.Use();
+		{
+			fFreeList[poolId][slotIndex] = -1L;
+			Trace("Releasing freelist entry: [" << poolId << "] at index: [" << slotIndex << "]");
+			// Sema must be released at the end of all housekeeping to be done
 			if ( sema != ( Semaphore *) NULL ) {
 				sema->Release();
 				String msg;
@@ -291,20 +340,15 @@ long LDAPConnectionManager::ReGetLockedSlot(long maxConnections, const String &p
 {
 	StartTrace(LDAPConnectionManager.ReGetLockedSlot);
 	// Because we use a counting semaphore, we know that there will be at least one unlocked entry, (MaxCount - semaphore count)
-	MutexEntry me(fLdapConnectionStoreMutex);
-	me.Use();
-	{
+	long l = GetThisThreadsFreeListEntry(maxConnections, poolId);
+	if ( l != -1L ) {
+		// Was mutex locked by the same thread (us)?
 		Mutex *mutex = (Mutex *) NULL;
-		for (long l = 0; l < maxConnections; l++ ) {
-			mutex = (Mutex * ) fLdapConnectionStore[poolId]["Mutexes"][l].AsIFAObject(0);
-			if ( mutex != (Mutex * ) NULL ) {
-				// Was mutex locked by the same thread (us)?
-				if ( mutex->IsLockedByMe() ) {
-					Trace("Found handle for: [" << poolId << "] at index: [" << l << "]");
-					return l;
-				}
-			}
-		}
+		mutex = (Mutex * ) fLdapConnectionStore[poolId]["Mutexes"][l].AsIFAObject(0);
+		Assert(mutex != (Mutex *) NULL);
+		Assert(mutex->IsLockedByMe());
+		Trace("Found handle for: [" << poolId << "] at index: [" << l << "]");
+		return l;
 	}
 	String msg;
 	msg << "ReGetLockedSlot failed for poolId: [" << poolId << "]failed!";
