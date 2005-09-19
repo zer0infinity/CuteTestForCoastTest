@@ -14,7 +14,21 @@
 #include "LDAPErrorHandler.h"
 
 //---- LDAPConnection ----------------------------------------------------------
-//! <B>Wraps an LDAP connection and handles connecting and disconnecting.</B>
+//! <B>Not persitent	LDAP connection.</B>
+//!
+//!						Below values apply to LDAPConnections and PersistentLDAPConnections
+///!/Server				IP or DNS name of the target server. Default is localhost.
+//!	/Port				Port of the target ldap server. Default is 389
+//!	/ConnnectionTimeout	How many seconds to wait until connection is established, abort when timeout is reached. Default is 10 sec.
+//!						<b>Important:</b> connection pools are distinguished by Server/Port/DN/Password/ConnectionTimeout
+//!						If you need different pools for the same Server/Port/DN/Password vary the ConnectionTimeout
+//!						in order to create different pools.
+//!	/Timeout			Timeout for the executed ldap op (search, compare), abort when timeout is reached. Default is 10 sec.
+//!	/BindName			The distinguished name (dn) we bind with. If /BindName is not given or "anonymous" a anonymous bind
+//!						takes place.
+//!	/BindPW				The bind password
+//!	/MapUTF8			Translate string results to html-escape sequences. Default is yes.
+//!
 
 class EXPORTDECL_LDAPDA LDAPConnection
 {
