@@ -166,6 +166,19 @@ void LDAPErrorHandler::SetRetryState(eRetryState retryState)
 	fRetryState = retryState;
 }
 
+void LDAPErrorHandler::SetShouldRetry()
+{
+	StartTrace(LDAPErrorHandler.SetShouldRetry);
+	String msg;
+	if (!IsRetry()) {
+		fRetryState = LDAPErrorHandler::eRetry;
+		msg << "Setting retry state: [" << RetryStateAsString(fRetryState) << "]";
+	} else {
+		msg << "Retry already attempted. Not setting retry state: [" << RetryStateAsString(fRetryState) << "]";
+	}
+	SysLog::Info(msg);
+}
+
 LDAPErrorHandler::eRetryState LDAPErrorHandler::GetRetryState()
 {
 	StartTrace(LDAPErrorHandler.GetRetryState);
@@ -176,7 +189,7 @@ LDAPErrorHandler::eRetryState LDAPErrorHandler::GetRetryState()
 bool LDAPErrorHandler::IsRetry()
 {
 	StartTrace(LDAPErrorHandler.IsRetry);
-	bool ret =	(fRetryState == LDAPErrorHandler::eRetryAlreadyDone);
+	bool ret =	(fRetryState == LDAPErrorHandler::eIsInRetrySequence);
 	Trace("IsRetry: " << ret);
 	return ret;
 }
@@ -187,8 +200,8 @@ String LDAPErrorHandler::RetryStateAsString(eRetryState retryState)
 		case eRetry:
 			return "eRetry";
 			break;
-		case eRetryAlreadyDone:
-			return "eRetryAlreadyDone";
+		case eIsInRetrySequence:
+			return "eIsInRetrySequence";
 			break;
 		case eNoRetry:
 			return "eNoRetry";

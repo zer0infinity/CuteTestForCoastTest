@@ -186,7 +186,7 @@ bool PersistentLDAPConnection::WaitForResult(int msgId, Anything &result, LDAPEr
 			errMsg << "Asynchronous Wait4Result: The request <" << (long) msgId << "> timed out.";
 			HandleWait4ResultError(msgId, errMsg, eh);
 			if ( fTryAutoRebind ) {
-				eh.SetRetryState(LDAPErrorHandler::eRetry);
+				eh.SetShouldRetry();
 			}
 			finished = true;
 		} else {

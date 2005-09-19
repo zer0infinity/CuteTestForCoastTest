@@ -19,7 +19,7 @@
 class EXPORTDECL_LDAPDA LDAPErrorHandler
 {
 public:
-	enum eRetryState { eRetry, eRetryAlreadyDone, eNoRetry };
+	enum eRetryState { eRetry, eIsInRetrySequence, eNoRetry };
 	//--- constructors
 	LDAPErrorHandler(Context &ctx, ParameterMapper *getter, ResultMapper *putter, String daName);
 	virtual ~LDAPErrorHandler();
@@ -43,6 +43,10 @@ public:
 	virtual void SetRetryState(eRetryState retryState);
 	//! Query ShouldRetry flag
 	virtual eRetryState GetRetryState();
+	//! Set retry state when not in a retry sequence, otherwise don't set the retry state
+	//! The two cases need to be distinguished because otherwise the connection handle would
+	//! not be released in the case where the retry itself failes.
+	virtual void SetShouldRetry();
 
 	//! Clean up LDAPError and LDAPResultSlot in Context's tmp store
 	virtual void LDAPErrorHandler::CleanUp();

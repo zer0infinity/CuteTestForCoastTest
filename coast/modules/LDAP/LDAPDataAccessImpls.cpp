@@ -60,7 +60,7 @@ bool LDAPAbstractDAI::Exec( Context &ctx, ParameterMapper *getter, ResultMapper 
 		Trace("Will try a rebind (LDAP might have been restarted.) for DataAccess: " << fName);
 		eh.HandleSessionError((LDAP *) NULL, "Will try a rebind (LDAP might have been restarted.)");
 		eh.CleanUp();
-		eh.SetRetryState(LDAPErrorHandler::eRetryAlreadyDone);
+		eh.SetRetryState(LDAPErrorHandler::eIsInRetrySequence);
 		return DoExec(ctx, getter, putter, eh);
 	}
 	return ret;

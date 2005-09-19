@@ -122,8 +122,8 @@ void ErrorHandlerTest::testShouldRetry()
 	assertEquals(LDAPErrorHandler::eRetry, eh.GetRetryState());
 	eh.SetRetryState(LDAPErrorHandler::eNoRetry);
 	assertEquals(LDAPErrorHandler::eNoRetry, eh.GetRetryState());
-	eh.SetRetryState(LDAPErrorHandler::eRetryAlreadyDone);
-	assertEquals(LDAPErrorHandler::eRetryAlreadyDone, eh.GetRetryState());
+	eh.SetRetryState(LDAPErrorHandler::eIsInRetrySequence);
+	assertEquals(LDAPErrorHandler::eIsInRetrySequence, eh.GetRetryState());
 }
 
 void ErrorHandlerTest::testParamAccess()
