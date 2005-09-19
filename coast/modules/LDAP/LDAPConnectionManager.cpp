@@ -191,7 +191,6 @@ long LDAPConnectionManager::GetUnusedFreeListEntry(long maxConnections, const St
 {
 	StartTrace(LDAPConnectionManager.GetAndLockSlot);
 	// Because we use a counting semaphore, we know that we should get one unlocked entry
-	long myId = Thread::MyId();
 	MutexEntry me(fFreeListMutex);
 	me.Use();
 	{
