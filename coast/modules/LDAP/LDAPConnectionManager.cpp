@@ -197,7 +197,7 @@ long LDAPConnectionManager::GetUnusedFreeListEntry(long maxConnections, const St
 		for (long l = 0 ; l < maxConnections; l++ ) {
 			if ( fFreeList[poolId][l].AsLong(-1L) == -1L ) {
 				fFreeList[poolId][l] = Thread::MyId();
-				Trace("Found freelist entry: [" << poolId << "] at index: [" << l << "] thread: [" << myId << "]");
+				Trace("Found freelist entry: [" << poolId << "] at index: [" << l << "] thread: [" << Thread::MyId() << "]");
 				return l;
 			}
 		}
