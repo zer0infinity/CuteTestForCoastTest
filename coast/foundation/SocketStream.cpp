@@ -15,6 +15,8 @@
 #include "System.h"
 #include "Dbg.h"
 
+//#define STREAM_TRACE
+
 //--- c-library modules used ---------------------------------------------------
 #if !defined(WIN32)
 #include <sys/socket.h> // used for send and recv
@@ -272,6 +274,9 @@ long SocketStreamBuf::DoWrite(const char *buf, long len)
 
 	if ( bytesSent > 0 ) {
 		AddWriteCount( bytesSent );
+#ifdef STREAM_TRACE
+		SysLog::WriteToStderr(buf, bytesSent);
+#endif
 	}
 
 	return (Ios && Ios->good()) ? bytesSent : EOF;
@@ -302,6 +307,11 @@ long SocketStreamBuf::DoRead(char *buf, long len) const
 			}
 		} else {
 			Ios->clear(fSocket->HadTimeout() ? ios::failbit : ios::badbit);
+#ifdef STREAM_TRACE
+			if ( bytesRead > 0 ) {
+				SysLog::WriteToStderr(buf, len);
+			}
+#endif
 		}
 	}
 	return bytesRead;
