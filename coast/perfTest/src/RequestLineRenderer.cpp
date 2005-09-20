@@ -19,15 +19,17 @@ RegisterRenderer(RequestLineRenderer);
 
 RequestLineRenderer::RequestLineRenderer(const char *name) : Renderer(name)
 {
+	StartTrace(RequestLineRenderer.Ctor);
 }
 
 RequestLineRenderer::~RequestLineRenderer()
 {
+	StartTrace(RequestLineRenderer.Dtor);
 }
 
 void RequestLineRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
 {
-	StartTrace(RequestLineRenderer.Render);
+	StartTrace(RequestLineRenderer.RenderAll);
 	TraceAny(config, "config");
 	String buffer;
 	{
