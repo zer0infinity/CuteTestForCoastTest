@@ -29,7 +29,7 @@ RequestLineRenderer::~RequestLineRenderer()
 
 void RequestLineRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
 {
-	StartTrace(RequestLineRenderer.RenderAll);
+	StartTrace(RequestLineRenderer.Render);
 	TraceAny(config, "config");
 	String buffer;
 	{
