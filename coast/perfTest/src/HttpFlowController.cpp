@@ -104,18 +104,8 @@ void HttpFlowController::DoProcessSetCookie(String &cookieInfo, Context &ctx)
 				if ( tmpStore["CurrentServer"].IsDefined("ServerName") ) {
 					explicitDomainName = tmpStore["CurrentServer"]["ServerName"].AsString("");
 					Trace( "Set Domain to->" << explicitDomainName);
-					// problem, now assume the cookie is meant for whole domain, rather that restricting is explicitly here
-					// problem is that when servers with default ports arrive, we must not set the port i.e. ports of 80 or 443 result in
-					// just the domain without port being set
-
-					if ( tmpStore["CurrentServer"].IsDefined("Port") ) {
-						String tmpPortStr = tmpStore["CurrentServer"]["Port"].AsString("");
-						// hard coded- watchout!
-						if ( tmpPortStr != "80" && tmpPortStr != "" && tmpPortStr != "443" ) {
-							explicitDomainName << ":" << tmpPortStr;
-							Trace( "And add port->" << tmpPortStr);
-						}
-					}
+					// If the cookie contains no domain, we assign all cookies independent for what port they are intended
+					// to the same domain (localhost), because this is what we would expect to be done by the browser in this case.
 				}
 			}
 			explicitDomainName.ToUpper();
@@ -829,7 +819,7 @@ bool HttpFlowController::PrepareRequest(Context &ctx, bool &bPrepareRequestSucce
 	tmpStore["CurrentServer"].Remove("formContents");
 
 	TraceAny(tmpStore, "<----tmp store is" );
-	if ( ctx.Lookup("IsAbsPath", 0L) ) {
+	if ( ctx.Lookup("IsAbsPath", 0L) && !fDoRelocate ) {
 		ROAnything rendererSpec;
 		ctx.Lookup("AbsPath", rendererSpec);
 		String absPath = Renderer::RenderToString(ctx, rendererSpec);
@@ -899,9 +889,9 @@ bool HttpFlowController::AnalyseReply(Context &ctx)
 	long respCode = tmpStore["Mapper"]["HTTPResponse"]["Code"].AsLong(0);
 	String respMsg = tmpStore["Mapper"]["HTTPResponse"]["Msg"].AsString("no message, possible timeout");
 
-	if (respCode != 200L) {
+	if ((respCode != 200L) && (respCode != 302L)) {
 		String eMsg = "";
-		eMsg << "HTTP Response Code from Server is not 200 but <" << respCode <<
+		eMsg << "HTTP Response Code from Server is not 200 or 302 but <" << respCode <<
 			 ">; Message = " << respMsg;
 
 		if (tmpStore["Mapper"].IsDefined("RequestMade")) { // only happens in debug version
@@ -941,16 +931,17 @@ bool HttpFlowController::AnalyseReply(Context &ctx)
 bool HttpFlowController::DoRelocate(Context &ctx)
 {
 	StartTrace(HttpFlowController.DoRelocate);
+	return DoMetaRefreshRelocate(ctx)  || DoLocationRelocate(ctx);
+}
+
+bool HttpFlowController::DoMetaRefreshRelocate(Context &ctx)
+{
+	StartTrace(HttpFlowController.DoMetaRefreshRelocate);
 
 	Anything tmpStore = ctx.GetTmpStore();
 	Anything refresh;
 
 	if (tmpStore.LookupPath(refresh, "Mapper.Output.Meta.refresh") ) {
-		{
-			String anyRes = "";
-			OStringStream os(&anyRes);
-			os << tmpStore["CurrentServer"];
-		}
 		tmpStore["CurrentServer"]["Method"] = "GET";
 		// refresh, relocation possible
 		// If refresh meta then see if page different and relocate by ----> Not Checked yet !!!!
@@ -986,12 +977,34 @@ bool HttpFlowController::DoRelocate(Context &ctx)
 			Trace( "String 1 contents are" << myString2 );
 
 			URLUtils::HandleURI2( tmpStore["CurrentServer"], myString2 );
-			{
-				String anyRes = "";
-				OStringStream os(&anyRes);
-				os << tmpStore["CurrentServer"];
-			}
+			TraceAny( tmpStore["CurrentServer"], "<-Result of HandledURI" );
+			return true;
+		}
+	}
+	return false;
+}
 
+bool HttpFlowController::DoLocationRelocate(Context &ctx)
+{
+	StartTrace(HttpFlowController.DoLocationRelocate);
+
+	Anything tmpStore = ctx.GetTmpStore();
+	Anything refresh;
+
+	// HTTP Response code must be 302
+	// Location header contains the whole refresh path
+	if ( (tmpStore["Mapper"]["HTTPResponse"]["Code"].AsLong(0L) == 302L ) &&
+		 (tmpStore.LookupPath(refresh, "Mapper.HTTPHeader.location")) ) {
+		{
+			String anyRes = "";
+			OStringStream os(&anyRes);
+			os << tmpStore["CurrentServer"];
+		}
+		tmpStore["CurrentServer"]["Method"] = "GET";
+		String refreshURL = refresh.AsString();
+		Trace("Location header is: " << refreshURL);
+		if (refreshURL.Length() > 0 ) {
+			URLUtils::HandleURI2( tmpStore["CurrentServer"], refreshURL );
 			TraceAny( tmpStore["CurrentServer"], "<-Result of HandledURI" );
 			return true;
 		}

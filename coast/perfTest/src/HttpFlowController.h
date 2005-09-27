@@ -64,6 +64,8 @@ private:
 	HttpFlowController &operator=(const HttpFlowController &);
 
 	bool DoRelocate(Context &ctx);
+	bool DoMetaRefreshRelocate(Context &ctx);
+	bool DoLocationRelocate(Context &ctx);
 	void ProcessSetCookie(Context &ctx);
 	void DoProcessSetCookie(String &cookieInfo, Context &ctx);
 	bool DoProcessToken( Context &ctx, bool &boJump );
