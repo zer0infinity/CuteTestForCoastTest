@@ -307,12 +307,12 @@ long SocketStreamBuf::DoRead(char *buf, long len) const
 			}
 		} else {
 			Ios->clear(fSocket->HadTimeout() ? ios::failbit : ios::badbit);
-#ifdef STREAM_TRACE
-			if ( bytesRead > 0 ) {
-				SysLog::WriteToStderr(buf, len);
-			}
-#endif
 		}
+#ifdef STREAM_TRACE
+		if ( bytesRead > 0 ) {
+			SysLog::WriteToStderr(buf, bytesRead);
+		}
+#endif
 	}
 	return bytesRead;
 }
