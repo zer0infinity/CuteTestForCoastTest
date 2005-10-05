@@ -89,12 +89,12 @@ Anything LDAPConnectionManager::GetLdapConnection(bool isLocked, long maxConnect
 		returned["LastRebind"] = TimeStamp::Min().AsString();
 	}
 	Trace("Get: " << poolId << " "  << PersistentLDAPConnection::DumpConnectionHandle(handle) << " Ret: " << ret);
-	return HandleRebindTimoeut(returned, rebindTimeout, handle);
+	return HandleRebindTimeout(returned, rebindTimeout, handle);
 }
 
-Anything LDAPConnectionManager::HandleRebindTimoeut(Anything &returned, long rebindTimeout, LDAP *handle)
+Anything LDAPConnectionManager::HandleRebindTimeout(Anything &returned, long rebindTimeout, LDAP *handle)
 {
-	StartTrace(LDAPConnectionManager.HandleRebindTimoeut);
+	StartTrace(LDAPConnectionManager.HandleRebindTimeout);
 	TimeStamp now = TimeStamp().Now();
 	TimeStamp lastRebind(returned["LastRebind"].AsString());
 	bool mustRebind;

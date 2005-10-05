@@ -154,7 +154,7 @@ protected:
 	bool ReplaceHandlesForConnectionPool(const String &poolId, LDAP *handle);
 
 	//! Decide wether to do a rebind because a LDAPRebindTimeout was specified
-	Anything HandleRebindTimoeut(Anything &returned, long rebindTimeout, LDAP *handle);
+	Anything HandleRebindTimeout(Anything &returned, long rebindTimeout, LDAP *handle);
 
 	//! Get the next unused entry from the free list structure
 	long GetUnusedFreeListEntry(long maxConnections, const String &poolId);
