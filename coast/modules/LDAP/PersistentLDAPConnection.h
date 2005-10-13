@@ -47,6 +47,7 @@
 class EXPORTDECL_LDAPDA PersistentLDAPConnection: public LDAPConnection
 {
 public:
+
 	//! create a new persistent ldap connection
 	//! \params see above. connectionParams an Anything that contains Server, Port,
 	//!		   Timeout and MapUTF8 parameters
@@ -69,6 +70,9 @@ public:
 	//! Release handle when using LDAPConnectionManager
 	bool ReleaseHandleInfo();
 
+	//! Called by THRKEYDELETE (LDAPConnectionManager)
+	static void tsd_destruct(void *tsd);
+
 protected:
 
 	//! does the Connect and reports details what it has done.
@@ -76,11 +80,30 @@ protected:
 	bool Bind(String bindName, String bindPW, int &msgId, LDAPErrorHandler eh);
 
 private:
+	//! Function to set up thread-specific data.
+	static void tsd_setup();
+	//! Function for setting an LDAP error.
+	static void set_ld_error( int err, char *matched, char *errmsg, void *dummy );
+	//! Function for getting an LDAP error.
+	static int get_ld_error( char **matched, char **errmsg, void *dummy );
+	//! Function for setting errno.
+	static void set_errno( int err );
+	//! Function for getting errno.
+	static int get_errno( void);
+
 	long 	fRebindTimeout;
 	String	fPoolId;
 	bool	fTryAutoRebind;
 	int		fMaxConnections;
 	int		fPooledConnections;
+
+	/* Error structure. */
+	struct ldap_error_struct {
+		int  le_errno;
+		char  *le_matched;
+		char  *le_errmsg;
+	};
+	typedef struct ldap_error_struct ldap_error;
 
 	//! Hook when using LDAPConnectionManager
 	LDAPConnection::EConnectState DoConnectHook(ROAnything bindParams, LDAPErrorHandler &eh);
@@ -96,6 +119,10 @@ private:
 
 	//! Issue error message and abadon connection if connection was already established
 	void HandleWait4ResultError(int msgId, String &errMsg, LDAPErrorHandler eh);
+
+	//! set errno handler because the ldap lib does not know whether threads are used or not. By calling
+	//! this wrapper functions to errno, at compile time the right (thread safe errno macro) is used.
+	bool SetErrnoHandler(LDAPErrorHandler eh);
 
 	//! These test classes acesse private methods of PersistentLDAPConnection
 	friend class LDAPConnectionManager;

@@ -22,11 +22,10 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- ErrorHandlerTest ----------------------------------------------------------------
-ErrorHandlerTest::ErrorHandlerTest(TString tstrName) : TestCase(tstrName)
+ErrorHandlerTest::ErrorHandlerTest(TString tstrName) : ConfiguredTestCase(tstrName, "ErrorHandlerTestTestConfig")
 {
 	StartTrace(ErrorHandlerTest.Ctor);
 }
-
 ErrorHandlerTest::~ErrorHandlerTest()
 {
 	StartTrace(ErrorHandlerTest.Dtor);
@@ -39,6 +38,10 @@ void ErrorHandlerTest::setUp ()
 	fCtx = new Context();
 	fPut = new RootMapper("");
 	fGet = new ParameterMapper("");
+	ConfiguredTestCase::setUp();
+	fGlobalConfig = LoadConfigFile("Config"); // replace semantic of SetupCase
+	t_assert(fGlobalConfig.IsDefined("Modules"));
+	WDModule::Install(fGlobalConfig);
 }
 
 void ErrorHandlerTest::tearDown ()
@@ -47,6 +50,8 @@ void ErrorHandlerTest::tearDown ()
 	delete fCtx;
 	delete fPut;
 	delete fGet;
+	WDModule::Terminate(fGlobalConfig);
+	ConfiguredTestCase::tearDown();
 }
 
 void ErrorHandlerTest::testHandleConnectionError()

@@ -23,6 +23,78 @@
 
 //--- c-modules used -----------------------------------------------------------
 
+/* Function to set up thread-specific data. */
+void PersistentLDAPConnection::tsd_setup()
+{
+	StartTrace(PersistentLDAPConnection.tsd_setup);
+	void *tsd = NULL;
+	if ( GETTLSDATA(LDAPConnectionManager::fgErrnoKey, tsd, void) ) {
+		Trace("Thread specific data for fgErrnoKey already set up. Thread [" << Thread::MyId() << "]");
+		return;
+	}
+
+	tsd = (void *) calloc( 1, sizeof(struct ldap_error) );
+	if ( !SETTLSDATA(LDAPConnectionManager::fgErrnoKey, tsd) ) {
+		Trace("Setting Thread specific data for fgErrnoKey failed. Thread [" << Thread::MyId() << "]");
+	}
+}
+
+void PersistentLDAPConnection::tsd_destruct(void *tsd)
+{
+	StartTrace(PersistentLDAPConnection.tsd_destruct);
+	if ( tsd != (void *) NULL ) {
+		free(tsd);
+	}
+}
+
+/* Function for setting an LDAP error. */
+void PersistentLDAPConnection::set_ld_error( int err, char *matched, char *errmsg, void *dummy )
+{
+	StartTrace(PersistentLDAPConnection.set_ld_error);
+
+	PersistentLDAPConnection::ldap_error *le = NULL;
+	GETTLSDATA(LDAPConnectionManager::fgErrnoKey, le, ldap_error);
+	le->le_errno = err;
+	if ( le->le_matched != NULL ) {
+		ldap_memfree( le->le_matched );
+	}
+	le->le_matched = matched;
+	if ( le->le_errmsg != NULL ) {
+		ldap_memfree( le->le_errmsg );
+	}
+	le->le_errmsg = errmsg;
+}
+
+/* Function for getting an LDAP error. */
+int PersistentLDAPConnection::get_ld_error( char **matched, char **errmsg, void *dummy )
+{
+	StartTrace(PersistentLDAPConnection.get_ld_error);
+
+	PersistentLDAPConnection::ldap_error *le = NULL;
+	GETTLSDATA(LDAPConnectionManager::fgErrnoKey, le, ldap_error);
+	if ( matched != NULL ) {
+		*matched = le->le_matched;
+	}
+	if ( errmsg != NULL ) {
+		*errmsg = le->le_errmsg;
+	}
+	return( le->le_errno );
+}
+
+/* Function for setting errno. */
+void PersistentLDAPConnection::set_errno( int err )
+{
+	StartTrace(PersistentLDAPConnection.set_errno);
+	errno = err;
+}
+
+/* Function for getting errno. */
+int PersistentLDAPConnection::get_errno( void )
+{
+	StartTrace(PersistentLDAPConnection.get_errno);
+	return( errno );
+}
+
 PersistentLDAPConnection::PersistentLDAPConnection(ROAnything connectionParams) : LDAPConnection(connectionParams)
 {
 	StartTrace(PersistentLDAPConnection.PersistentLDAPConnection);
@@ -42,6 +114,31 @@ int PersistentLDAPConnection::GetMaxConnections()
 {
 	StartTrace(PersistentLDAPConnection.GetMaxConnections);
 	return fMaxConnections;
+}
+
+bool PersistentLDAPConnection::SetErrnoHandler(LDAPErrorHandler eh)
+{
+	StartTrace(PersistentLDAPConnection.SetErrnoHandler);
+
+	tsd_setup();
+	struct ldap_thread_fns  tfns;
+
+	/* Set the function pointers for dealing with mutexes
+	and error information. */
+	memset( &tfns, '\0', sizeof(struct ldap_thread_fns) );
+	tfns.ltf_get_errno = get_errno;
+	tfns.ltf_set_errno = set_errno;
+	tfns.ltf_get_lderrno = get_ld_error;
+	tfns.ltf_set_lderrno = set_ld_error;
+	tfns.ltf_lderrno_arg = NULL;
+
+	/* Set up this session to use those function pointers. */
+	if ( ::ldap_set_option( fHandle, LDAP_OPT_THREAD_FN_PTRS, (void *) &tfns ) != LDAP_SUCCESS ) {
+		Trace("ldap_set_option: LDAP_OPT_THREAD_FN_PTRS FAILED");
+		eh.HandleSessionError(fHandle, "Could not set errno handlers.");
+		return false;
+	}
+	return true;
 }
 
 PersistentLDAPConnection::EConnectState PersistentLDAPConnection::DoConnectHook(ROAnything bindParams, LDAPErrorHandler &eh)
@@ -117,6 +214,7 @@ LDAPConnection::EConnectState PersistentLDAPConnection::DoConnect(ROAnything bin
 	long maxConnections = bindParams["MaxConnections"].AsLong(0);
 	PersistentLDAPConnection::EConnectState eConnectState = PersistentLDAPConnection::eNok;
 	if ( (eConnectState = DoConnectHook(bindParams, eh)) == PersistentLDAPConnection::eOk ) {
+		SetErrnoHandler(eh);
 		return eConnectState;
 	}
 	// get connection handle
@@ -125,10 +223,13 @@ LDAPConnection::EConnectState PersistentLDAPConnection::DoConnect(ROAnything bin
 	}
 
 	// set protocol, timeout and rebind procedure
-	if ( !SetProtocol(eh) || !SetConnectionTimeout(eh) || !SetSearchTimeout(eh) /* || !SetRebindProc(eh) */  ) {
+	if ( !SetProtocol(eh)			||
+		 !SetConnectionTimeout(eh)	||
+		 !SetSearchTimeout(eh)		||
+		 !SetErrnoHandler(eh)
+		 /* || !SetRebindProc(eh) */  ) {
 		return eSetOptionsNok;
 	}
-
 	// send bind request (asynchronous)
 	int msgId;
 	if ( !Bind(bindName, bindPW, msgId, eh) ) {

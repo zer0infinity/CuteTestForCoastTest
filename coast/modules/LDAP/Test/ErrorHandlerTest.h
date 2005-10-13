@@ -10,7 +10,7 @@
 #define _ErrorHandlerTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "TestCase.h"
+#include "ConfiguredTestCase.h"
 #include "Context.h"
 #include "Mapper.h"
 
@@ -20,7 +20,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class ErrorHandlerTest : public TestCase
+class ErrorHandlerTest : public ConfiguredTestCase
 {
 public:
 	//--- constructors
@@ -51,6 +51,7 @@ private:
 	Context *fCtx;
 	ParameterMapper *fGet;
 	ResultMapper *fPut;
+	Anything fGlobalConfig;
 };
 
 #endif
