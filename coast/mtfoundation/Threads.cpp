@@ -34,7 +34,6 @@ public:
 		}
 	}
 	~CleanupInitializer() {
-		StartTrace(CleanupInitializer.~CleanupInitializer);
 		if (THRKEYDELETE(Thread::fgCleanerKey) != 0) {
 			SysLog::Error("CleanupInitializer::TLS key delete failed" );
 		}
@@ -190,6 +189,9 @@ bool Thread::Start(Allocator *pAllocator, ROAnything args)
 				bool ret = STARTTHREAD(this, b, &fThreadId, ThreadWrapper);
 				if ( ret ) {
 					SetState(eStarted, args);
+					if ( fAllocator->GetId() == 0 ) {
+						fAllocator->SetId(fThreadId);
+					}
 				}
 				delete [] b;
 				Trace("Start MyId(" << MyId() << ") started GetId( " << (long)fThreadId << ")" );
@@ -732,7 +734,7 @@ SimpleMutex::SimpleMutex(const char *name, Allocator *a)
 
 SimpleMutex::~SimpleMutex()
 {
-	StartTrace1(SimpleMutex.~SimpleMutex, fName);
+	StatTrace(SimpleMutex.~SimpleMutex, fName, Storage::Current());
 	if ( !DELETEMUTEX(fMutex) ) {
 		SysLog::Error("DELETEMUTEX failed");
 	}
