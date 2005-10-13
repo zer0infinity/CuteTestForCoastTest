@@ -14,6 +14,8 @@
 #include "MemHeader.h"
 #include "ITOStorage.h"
 
+class Mutex;
+
 #ifdef MEM_DEBUG
 
 //! multithreading safe memory allocation tracker (only available if MEM_DEBUG enabled)
@@ -56,6 +58,9 @@ public:
 	//! must be called before threading is activated
 	static void Initialize(); // register MT_Storage capability with Storage
 
+	//! must be called before threading is deactivated
+	static void Finalize(); // de-register MT_Storage capability
+
 	//!does ref counting for allocators with mutex protection; global mutex might be slightly inefficient
 	static void RefAllocator(Allocator *wdallocator);
 
@@ -63,6 +68,8 @@ public:
 	static void UnrefAllocator(Allocator *wdallocator);
 
 	static THREADKEY fgAllocatorKey;
+	static bool fgInitialized;
+	static Mutex *fgAllocatorInit;
 };
 
 #endif
