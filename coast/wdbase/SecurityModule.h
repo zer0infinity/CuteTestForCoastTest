@@ -23,6 +23,8 @@ class EXPORTDECL_WDBASE SecurityItem: public HierarchConfNamed
 {
 public:
 	SecurityItem(const char *name) : HierarchConfNamed(name) { }
+	virtual ~SecurityItem() {}
+
 	//doesn't implement clone since this class is somehow abstract
 	virtual IFAObject *Clone() const = 0;
 	virtual void InitKey(const String &key) {} // deliberately non-const! useful for Scrambler and Signer
