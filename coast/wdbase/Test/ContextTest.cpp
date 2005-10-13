@@ -106,8 +106,7 @@ void ContextTest::EmptyConstructorTest ()
 	assertEqual("noStore", popStoreKey);
 	t_assert(ctx.GetStore("tmp", result));
 	assertAnyEqualm(tmpStore, result, "tmpStore should still be there");
-
-} // RequestConstructorTest
+}
 
 void ContextTest::SocketCtorTests()
 {
@@ -140,7 +139,6 @@ void ContextTest::SocketCtorTests()
 		Socket *s = ctx.GetSocket();
 		t_assert(!s);
 		assertAnyEqualm(empty, ctx.Lookup("ClientInfo"), "expected ClientInfo to be empty");
-
 	}
 
 	//--- null socket pointer case ---------
@@ -150,7 +148,6 @@ void ContextTest::SocketCtorTests()
 		Socket *s = ctx.GetSocket();
 		t_assert(!s);
 		assertAnyEqualm(empty, ctx.Lookup("ClientInfo"), "expected ClientInfo to be empty");
-
 	}
 }
 
@@ -392,7 +389,6 @@ void ContextTest::RemoveTest()
 	assertEqual("not found", ctx.Lookup("ContextTestRole", "not found"));
 	assertEqual("not there", ctx.Lookup("ContextTestPage").AsCharPtr("not there"));
 	assertEqual("not found", ctx.Lookup("InGuestOnly", "not found"));
-
 }
 
 void ContextTest::LookupTests ()
@@ -553,21 +549,26 @@ void ContextTest::MoreThanOnePushWithSameKey()
 	request["header"]["HOST"] = "sentosa";
 	request["header"]["URI"] = "/";
 	request["body"] = "test&it&now";
+	request["bottomslot"] = "yuppieh";
 
 	//now the information of the store should be found
 	assertEqual("sentosa", ctx.Lookup("header.HOST", "right"));
 	assertEqual("/", ctx.Lookup("header.URI", "no"));
 	assertEqual("test&it&now", ctx.Lookup("body").AsCharPtr("yes"));
+	assertEqual("yuppieh", ctx.Lookup("bottomslot").AsCharPtr("yes"));
 
 	env["header"]["HOST"] = "aarau";
 	env["header"]["URI"] = "/finval/";
 	env["body"] = "new&test&now";
+	env["topslot"] = "ole";
 	ctx.PushStore("Store.request", env);
 
 	//now the information of the store should be found (but with new values)
 	assertEqual("aarau", ctx.Lookup("header.HOST", "right"));
 	assertEqual("/finval/", ctx.Lookup("header.URI", "no"));
 	assertEqual("new&test&now", ctx.Lookup("body").AsCharPtr("yes"));
+	assertEqual("ole", ctx.Lookup("topslot").AsCharPtr("yes"));
+	assertEqual("yuppieh", ctx.Lookup("bottomslot").AsCharPtr("yes"));
 
 	t_assert(ctx.PopStore(popStoreKey));
 	assertEqual("Store.request", popStoreKey);
@@ -576,6 +577,8 @@ void ContextTest::MoreThanOnePushWithSameKey()
 	assertEqual("sentosa", ctx.Lookup("header.HOST", "right"));
 	assertEqual("/", ctx.Lookup("header.URI", "no"));
 	assertEqual("test&it&now", ctx.Lookup("body").AsCharPtr("yes"));
+	assertEqual("yuppieh", ctx.Lookup("bottomslot").AsCharPtr("yes"));
+	assertEqual("yes", ctx.Lookup("topslot").AsCharPtr("yes"));
 
 	t_assert(ctx.PopStore(popStoreKey));
 	assertEqual("Store.request", popStoreKey);
@@ -584,6 +587,8 @@ void ContextTest::MoreThanOnePushWithSameKey()
 	assertEqual("right", ctx.Lookup("header.HOST", "right"));
 	assertEqual("no", ctx.Lookup("header.URI", "no"));
 	assertEqual("yes", ctx.Lookup("body").AsCharPtr("yes"));
+	assertEqual("yes", ctx.Lookup("topslot").AsCharPtr("yes"));
+	assertEqual("yes", ctx.Lookup("bottomslot").AsCharPtr("yes"));
 
 	Anything newStore = "foo";
 	ctx.PushStore("Store.request", newStore);
@@ -595,7 +600,7 @@ void ContextTest::MoreThanOnePushWithSameKey()
 	assertEqual("aarau", ctx.Lookup("header.HOST", "right"));
 	assertEqual("/finval/", ctx.Lookup("header.URI", "no"));
 	assertEqual("new&test&now", ctx.Lookup("body").AsCharPtr("yes"));
-
+	assertEqual("foo", ctx.Lookup(":0").AsCharPtr("yes"));
 }
 
 void ContextTest::MoreThanOnePushWithSameKeyPrefix()
@@ -611,13 +616,34 @@ void ContextTest::MoreThanOnePushWithSameKeyPrefix()
 	ctx.PushStore("Store", request0);
 
 	request0["request"] =  "bah";
+	request0["bottomslot"] =  "yuppieh";
 	assertEqual("bah", ctx.Lookup("request", "not found"));
+	assertEqual("yuppieh", ctx.Lookup("bottomslot", "not found"));
 
+	// pay attention, the key has no LookupPath semantics!
 	ctx.PushStore("Store.request", request1);
-	assertEqual("bah", ctx.Lookup("request", "not found"));
 	request1["request"] = "foo";
+	request1["middleslot"] = "ole";
 	assertEqual("foo", ctx.Lookup("request", "not found"));
+	assertEqual("yuppieh", ctx.Lookup("bottomslot", "not found"));
+	assertEqual("ole", ctx.Lookup("middleslot", "not found"));
 
+	env["request"] = "bar";
+	env["topslot"] = "gugus";
+	ctx.PushStore("Store", env);
+	assertEqual("bar", ctx.Lookup("request", "not found"));
+	assertEqual("gugus", ctx.Lookup("topslot", "not found"));
+	assertEqual("yuppieh", ctx.Lookup("bottomslot", "not found"));
+	assertEqual("ole", ctx.Lookup("middleslot", "not found"));
+
+	// show behavior of pop-store
+	String strKey;
+	ctx.PopStore(strKey);
+	assertCharPtrEqual("Store", strKey);
+	assertEqual("foo", ctx.Lookup("request", "not found"));
+	assertEqual("yuppieh", ctx.Lookup("bottomslot", "not found"));
+	assertEqual("ole", ctx.Lookup("middleslot", "not found"));
+	assertEqual("not found", ctx.Lookup("topslot", "not found"));
 }
 
 void ContextTest::StoreTests()
@@ -902,7 +928,6 @@ void ContextTest::RoleStoreTest()
 		assertEqual("two", ctx.Lookup("testKey", "none"));
 		assertEqual("there two", ctx.Lookup("test.one", "not there"));
 		assertAnyEqualm(s.GetRoleStoreGlobal(), ctx.GetRoleStore(), "expected beeing the same anything");
-
 	}
 	{
 		Context ctx;
@@ -925,7 +950,6 @@ void ContextTest::RoleStoreTest()
 		assertEqual("three", ctx.Lookup("testKey", "none"));
 		assertEqual("there tree", ctx.Lookup("test.one", "not there"));
 		assertAnyEqualm(s.GetRoleStoreGlobal(), ctx.GetRoleStore(), "expected beeing the same anything");
-
 	}
 }
 
@@ -1030,7 +1054,6 @@ void ContextTest::ObjectAccessTests()
 	t_assertm(ctx.Pop(), "Pops Sorver object");
 	assertEqual(0, ctx.fStackSz);
 	t_assertm(ctx.Pop() == false, "Empty stack");
-
 }
 
 void ContextTest::SetNGetPage()
@@ -1057,8 +1080,8 @@ void ContextTest::SetNGetPage()
 	assertEqual("SecondPage", ctx.Lookup("ContextItem", "not found"));
 
 	assertEqual((long)p, (long)ctx.GetPage());
-
 }
+
 void ContextTest::SetNGetRole()
 {
 	StartTrace(ContextTest.SetNGetRole);
@@ -1104,8 +1127,8 @@ public:
 			reply << "Session unlocked";
 		}
 	}
-
 };
+
 RegisterRenderer(TestSessionLockRenderer);
 
 void ContextTest::SessionUnlockingTest()
@@ -1151,7 +1174,6 @@ void ContextTest::SessionUnlockingTest()
 }
 
 Test *ContextTest::suite ()
-// collect all test cases for the RegistryStream
 {
 	TestSuite *testSuite = new TestSuite;
 
@@ -1174,4 +1196,4 @@ Test *ContextTest::suite ()
 	testSuite->addTest (NEW_CASE(ContextTest, SessionUnlockingTest));
 
 	return testSuite;
-} // suite
+}
