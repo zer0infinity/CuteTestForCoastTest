@@ -89,4 +89,20 @@
 		/MainSwitch 		10
 		/EnableAll			10
 	}
+	/CallRenderer {
+		/MainSwitch 		0
+		/EnableAll			11
+	}
+	/Context {
+		/MainSwitch 		0
+		/EnableAll			0
+		/DoLookup			11
+		/LookupStores		11
+		/IntGetStore		11
+		/PushStore			11
+	}
+	/ContextLookupRenderer {
+		/MainSwitch 		0
+		/EnableAll			11
+	}
 }
