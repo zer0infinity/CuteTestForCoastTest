@@ -85,7 +85,7 @@ public:
 
 	RowAccessor &operator=(const RowAccessor &aka);
 #if !defined(OPERATOR_NEW_ARRAY_NOT_SUPPORTED)
-	static void *operator new[](size_t size, Allocator *a);
+	static void *operator new[](size_t size, Allocator *a) throw();
 	static void operator delete[](void *ptr);
 #endif
 protected:
@@ -123,7 +123,7 @@ RowAccessor &RowAccessor::operator=(const RowAccessor &ra)
 
 #if !defined(OPERATOR_NEW_ARRAY_NOT_SUPPORTED)
 
-void *RowAccessor::operator new[](size_t size, Allocator *a)
+void *RowAccessor::operator new[](size_t size, Allocator *a) throw()
 {
 	if (a) {
 		void *mem = a->Calloc(1, size + sizeof(Allocator *));
