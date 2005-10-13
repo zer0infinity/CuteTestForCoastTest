@@ -107,8 +107,12 @@ void Renderer::Render(ostream &reply, Context &c, const ROAnything &info)
 					r->RenderAll(reply, c, info);
 				}
 			} else {
-				String logMsg("Renderer::Render: Type: ");
-				logMsg.Append(type).Append(" not found");
+				String logMsg;
+				{
+					OStringStream logStream(logMsg);
+					logStream << "Renderer::Render: No renderer found with name [" << type << "], config [";
+					info.PrintOn(logStream, false) << "] discarding config";
+				}
 				SysLog::Warning(logMsg);
 			} // if (r)if (type)
 		} else { // new type configuration
@@ -127,15 +131,18 @@ void Renderer::Render(ostream &reply, Context &c, const ROAnything &info)
 					r->RenderAll(reply, c, info[i]);
 				} // renderer found
 				else {
-					Trace("Render, recurse renderer config");
+					Trace("Render, No renderer found with name " << slotname);
 					// Not a renderername or no slotname
 					// - ignore it and try to interpret the slots content
 					// PS: we should consider to diversify again
 					// by not rendering non-anonymous slots...
 					if (slotname.Length() > 0) {
-						Trace( "Render, No renderer, found for " << slotname << " Do recursive call back to this routine with 1st slot as info" );
-						String logMsg("Renderer::Render: Slot: ");
-						logMsg.Append(slotname).Append(" not found");
+						String logMsg;
+						{
+							OStringStream logStream(logMsg);
+							logStream << "Renderer::Render: No renderer found with name [" << slotname << "], config [";
+							info.PrintOn(logStream, false) << "] calling Render with config of " << slotname << " again";
+						}
 						SysLog::Warning(logMsg);
 					}
 					Render(reply, c, info[i]);
