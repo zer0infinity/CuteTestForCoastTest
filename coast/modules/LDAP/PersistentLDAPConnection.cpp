@@ -22,6 +22,7 @@
 #include "MD5.h"
 
 //--- c-modules used -----------------------------------------------------------
+#include <stdlib.h>
 
 /* Function to set up thread-specific data. */
 void PersistentLDAPConnection::tsd_setup()
