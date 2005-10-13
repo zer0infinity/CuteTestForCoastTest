@@ -11,8 +11,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-#include "ITOStorage.h"
-#include "ITOString.h"
+#include "SysLog.h"
 
 //---- FinalCleaner ----------------------------------------------------------
 static FinalCleaner fgCleanerManager;
@@ -28,7 +27,6 @@ FinalCleaner::FinalCleaner()
 FinalCleaner::~FinalCleaner()
 {
 	if ( this == &fgCleanerManager ) {
-		Storage::SetHooks(0);
 		TerminateTracer();
 		while (fNext) {
 			FinalCleaner *ch = fNext;
