@@ -25,6 +25,7 @@
 #include "PersistentLDAPConnection.h"
 
 LDAPConnectionManager *LDAPConnectionManager::fgLDAPConnectionManager = 0;
+THREADKEY LDAPConnectionManager::fgErrnoKey = 0;
 
 LDAPConnectionManager *LDAPConnectionManager::LDAPCONNMGR()
 {
@@ -365,6 +366,11 @@ bool LDAPConnectionManager::Init(const Anything &config)
 	TraceAny(moduleConfig, "moduleConfig");
 	fDefMaxConnections = moduleConfig["DefMaxConnections"].AsLong(2L);
 	Trace("fDefMaxConnections: " << fDefMaxConnections);
+	if ( THRKEYCREATE(LDAPConnectionManager::fgErrnoKey, 0) ) { //PersistentLDAPConnection::tsd_destruct))
+		Trace("Thread key creation for fgErrnoKey failed.");
+		SysLog::Error("Thread key creation for fgErrnoKey failed.");
+//		return false;
+	}
 	SysLog::WriteToStderr(String("\t") << fName << " Default is [" << fDefMaxConnections << "] connections per pool\n");
 	SysLog::WriteToStderr(String("\t") << fName << ". done\n");
 	return ResetInit(config);
@@ -412,6 +418,7 @@ bool LDAPConnectionManager::Finis()
 		}
 		fLdapConnectionStore = Anything(Storage::Global());
 	}
+	THRKEYDELETE(LDAPConnectionManager::fgErrnoKey);
 	return ret;
 }
 
