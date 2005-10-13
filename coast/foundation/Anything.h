@@ -315,6 +315,10 @@ public:
 		used for assertAnyEqual macro in Test.h of the Testframework */
 	static String CompareForTestCases(const ROAnything &expected, const ROAnything &actual, bool &result);
 
+	/*! ensure the given anything is really an array
+		\param anyToEnsure anything to check and adjust if not already an AnyArrayImpl */
+	static void EnsureArrayImpl(Anything &anyToEnsure);
+
 	void Accept(AnyVisitor &v, long lIdx = -1, const char *slotname = 0) const;
 	//!in-core sort of Anything by its keys, fast!
 	void SortByKey();
@@ -420,12 +424,23 @@ public:
 		\param config the configuration
 		\post dest.LookupPath(config["Slot"].AsString("")) = source */
 	static void Operate(Anything &source, Anything &dest, const Anything &config);
+
 	/*! puts the Anything source into dest using a <I>LookupPath</I>-like slot specification in config /Slot
 		\param source The Anything that provides the data, remains unchanged
 		\param dest The Anything that is updated
 		\param config the configuration
 		\post dest.LookupPath(config["Slot"].AsString("")) = source */
 	static void Operate(Anything &source, Anything &dest, const ROAnything &config);
+
+	/*! puts the Anything source into dest using a <I>LookupPath</I>-like slot specification
+		\param source The Anything that provides the data, remains unchanged
+		\param dest The Anything that is updated
+		\param destSlotname slotname to put destination Anything into
+		\param append set to true if the source anything should be appended to existing content
+		\param delim LookupPath' slot delimiter '
+		\param delimIdx LookupPath' index delimiter '
+		\post dest.LookupPath(destSlotname, delim, delimIdx)[.Append] = source */
+	static void Operate(Anything &source, Anything &dest, String destSlotname, bool append = false, char delim = '.', char indexdelim = ':');
 };
 
 //---- SlotCleaner -----------------------------------------------------------
@@ -435,7 +450,7 @@ The config Anything should have the form
 <PRE>
 {
 	/Slot	Level1.Level2	mandatory, spec producing the Slot that is assigned to source - if it does not exists it is created
-	/RemoveLast				optional, bool(0L|1L), default false(0L), remove last slot in given path
+	/RemoveLast				optional, bool(0L|1L), default false(0L), remove last slot in given path otherwise the whole Anything at path will be removed
 	/Delim   				optional, default ".", first char is taken as delimiter for named slots
 	/IndexDelim				optional, default ":", first char is taken as delimiter for indexed slots
 }</PRE>
@@ -451,11 +466,21 @@ public:
 		\param config the configuration
 		\post dest.LookupPath(config["Slot"].AsString("")) is removed */
 	static void Operate(Anything &dest, const Anything &config);
+
 	/*! removes the Anything from dest using a <I>LookupPath</I>-like slot specification in config /Slot
 		\param dest The Anything that is updated
 		\param config the configuration
 		\post dest.LookupPath(config["Slot"].AsString("")) is removed */
 	static void Operate(Anything &dest, const ROAnything &config);
+
+	/*! removes the Anything from dest using a <I>LookupPath</I>-like slot specification
+		\param dest The Anything that is updated
+		\param slotName name of slot to remove
+		\param removeLast set to true if only the last element within the slotName should be removed
+		\param delim LookupPath' slot delimiter '
+		\param indexdelim LookupPath' index delimiter '
+		\post dest.LookupPath(slotName, delim, indexdelim) is removed */
+	static void Operate(Anything &dest, String slotName, bool removeLast = false, char delim = '.', char indexdelim = ':');
 };
 
 //---- SlotCopier -----------------------------------------------------------

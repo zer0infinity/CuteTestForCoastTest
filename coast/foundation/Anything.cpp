@@ -1082,6 +1082,7 @@ public:
 	class EXPORTDECL_FOUNDATION AnyIntCompare
 	{
 	public:
+		virtual ~AnyIntCompare() {};
 		virtual int	Compare(AnyArrayImpl &that, long leftInt, long rightInt) const {
 			return 0;
 		}
@@ -1817,6 +1818,18 @@ long Anything::GetSize() const
 Anything::EType Anything::GetType() const
 {
 	return GetImpl() ? GetImpl()->GetType() : Anything::eNull;
+}
+
+void Anything::EnsureArrayImpl(Anything &anyToEnsure)
+{
+	if ( anyToEnsure.GetType() != Anything::eArray ) {
+		// behave friendly if current slot is not an array impl, eg don't lose current entry
+		MetaThing expander;
+		if ( !anyToEnsure.IsNull() ) {
+			expander.Append(anyToEnsure);
+		}
+		anyToEnsure = expander;
+	}
 }
 
 long Anything::AsLong(long dflt) const
@@ -3959,22 +3972,15 @@ void SlotPutter::Operate(Anything &source, Anything &dest, const ROAnything &con
 	TraceAny(config, "Config");
 	TraceAny(source, "Source");
 	TraceAny(dest, "Destination");
+	Operate(source, dest, config["Slot"].AsString(""), config["Append"].AsBool(false), config["Delim"].AsCharPtr(".")[0L], config["IndexDelim"].AsCharPtr(":")[0L] );
+}
 
-	String	destSlotname = config["Slot"].AsString("");
-	char	delim = config["Delim"].AsCharPtr(".")[0L];
-	char	indexdelim = config["IndexDelim"].AsCharPtr(":")[0L];
-	bool	append = config["Append"].AsBool(false);
+void SlotPutter::Operate(Anything &source, Anything &dest, String destSlotname, bool append, char delim, char indexdelim )
+{
+	StartTrace(SlotPutter.Operate);
 	Trace("Destination slotname[" << destSlotname << "]");
-
 	// ensure that the destination anything is real
-	if (dest.IsNull()) {
-		dest = MetaThing();
-	} else if (dest.GetType() != Anything::eArray) {
-		// behave friendly if current slot is not an array impl, eg don't lose current entry
-		MetaThing expander;
-		expander.Append(dest);
-		dest = expander;
-	}
+	Anything::EnsureArrayImpl(dest);
 
 	Anything work = dest;
 	long destIdx = -1L;
@@ -4011,15 +4017,17 @@ void SlotCleaner::Operate(Anything &dest, const ROAnything &config)
 {
 	StartTrace(SlotCleaner.Operate);
 	TraceAny(config, "Config");
+	Operate(dest, config["Slot"].AsString(""), (config["RemoveLast"].AsLong(0L) == 1L), config["Delim"].AsCharPtr(".")[0L], config["IndexDelim"].AsCharPtr(":")[0L]);
+}
 
-	String slotName = config["Slot"].AsString("");
+void SlotCleaner::Operate(Anything &dest, String slotName, bool removeLast, char delim, char indexdelim)
+{
+	StartTrace(SlotCleaner.Operate);
+
 	if (slotName.Length()) {
+		Trace("Destination slotname [" << slotName << "]");
 		// first of all, get the correct store
 		Anything anyParent = dest;
-		bool removeLast = (config["RemoveLast"].AsLong(0L) == 1L);
-		char delim = config["Delim"].AsCharPtr(".")[0L];
-		char indexdelim = config["IndexDelim"].AsCharPtr(":")[0L];
-		Trace("Destination slotname [" << slotName << "]");
 
 		// test if the path to be deleted exists in the store, avoids creation of nonexisting slot
 		Anything anySlotTest;
