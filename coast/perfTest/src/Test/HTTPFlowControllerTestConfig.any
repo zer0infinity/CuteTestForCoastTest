@@ -30,7 +30,7 @@
 				/TmpStore {
 					/result {
 						/ErrorMessage {
-							"In step:1<no label found>HTTP Response Code from Server is not 200 but <400>; Message = no message, possible timeout"
+							"In step:1<no label found>HTTP Response Code from Server is not 200 or 302 but <400>; Message = no message, possible timeout"
 						}
 					}
 					/CurrentServer {
