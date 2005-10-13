@@ -49,7 +49,7 @@
 				/ParallelQueries	5
 				/InterfacesPathName	"config/interfaces"
 			}
-			/SYB_FKISQA {
+			/FKIS_QA {
 				/ParallelQueries	20
 				/InterfacesPathName	"config/interfaces"
 			}

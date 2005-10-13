@@ -172,7 +172,7 @@
 	/SybTestThreadDA {
 		/SybDBUser  webgui
 		/SybDBPW	webgui
-		/SybDBHost	SYB_FKISQA
+		/SybDBHost	FKIS_QA
 		/SQL
 		{
 			/RendererMapper

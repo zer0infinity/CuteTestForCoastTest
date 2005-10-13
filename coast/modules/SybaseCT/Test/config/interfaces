@@ -1,6 +1,6 @@
-SYB_FKISQA
-    query tcp ether fkisqa 4100
-    master tcp ether fkisqa 4100
+FKIS_QA
+    query tcp ether svzqfkis01 4500
+    master tcp ether svzqfkis01 4500
 
 feadntsrv1
 	master tcp ether feadntsrv1 4100
