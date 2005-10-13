@@ -43,6 +43,8 @@ protected:
 	//! \param testCaseName in - name of the test for output
 	virtual void DoTest(Anything config, const char *testCaseName);
 
+	using ConfiguredActionTest::DoTest;
+
 	//! Prepares the config for the TestCase
 	//! \param originalConfig the original Configuration
 	//! \return if originalConfig contains a slot UseConfig the config of the TestCase specified there is returned , else originalConfig
