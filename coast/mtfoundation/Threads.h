@@ -323,6 +323,7 @@ class EXPORTDECL_MTFOUNDATION CleanupHandler
 public:
 	//!Constructor does nothing
 	CleanupHandler() {}
+	virtual ~CleanupHandler() {}
 
 	//!subclasses implement cleanup of thread specific storage
 	virtual bool DoCleanup() = 0;
