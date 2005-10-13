@@ -155,11 +155,11 @@ public:
 
 	//!refcounting support
 	void Ref() 		{
-		fRefCnt++;
+		++fRefCnt;
 	}
 	//!refcounting support
 	void Unref() 	{
-		fRefCnt--;
+		--fRefCnt;
 	}
 	//!refcounting support
 	virtual long RefCnt()	{
@@ -258,7 +258,11 @@ protected:
 };
 
 //!wrapper class to provide protocol for dispatching if non standard (GlobalAllocator) is used
-struct EXPORTDECL_FOUNDATION StorageHooks {
+class EXPORTDECL_FOUNDATION StorageHooks
+{
+public:
+	StorageHooks() {};
+	virtual ~StorageHooks() {};
 	//!initialize storage subsystem
 	virtual void Initialize() = 0;
 	//!finalize storage subsystem
@@ -301,6 +305,7 @@ protected:
 	friend class MT_Storage;
 	friend class MTStorageHooks;
 	friend class TestStorageHooks;
+	friend class MTStorageHookInitializer;
 	friend class Server;
 	friend class SessionTest;
 	friend class FinalCleaner;
@@ -310,9 +315,7 @@ protected:
 	friend class AnythingPerfTest;
 
 	//! used by mt system to redefine the hooks for mt-local storage policy
-	static void SetHooks(StorageHooks *h) {
-		fgHooks = h;
-	}
+	static void SetHooks(StorageHooks *h);
 
 	//!temporarily disable thread local storage policies e.g. to reinitialize server
 	static void ForceGlobalStorage(bool b) {
@@ -333,7 +336,7 @@ protected:
 #endif
 
 	//!exchange this object when MT_Storage is used
-	static struct StorageHooks *fgHooks;
+	static StorageHooks *fgHooks;
 
 	//!flag to force global store temporarily
 	static bool fgForceGlobal;
@@ -348,6 +351,7 @@ class EXPORTDECL_FOUNDATION TestStorageHooks : public StorageHooks
 {
 public:
 	TestStorageHooks(Allocator *allocator);
+	virtual ~TestStorageHooks() {};
 	virtual void Initialize();
 	virtual void Finalize();
 	virtual Allocator *Global();

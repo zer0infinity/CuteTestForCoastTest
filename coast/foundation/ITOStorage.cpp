@@ -12,6 +12,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "SysLog.h"
 #include "MemHeader.h"
+#include "IFAObject.h"
 
 //--- c-library modules used ---------------------------------------------------
 #include <stdlib.h>
@@ -190,6 +191,19 @@ Allocator *Storage::fgGlobalPool = 0;
 StorageHooks *Storage::fgHooks = 0; // exchange this object when MT_Storage is used
 bool Storage::fgForceGlobal = false;
 
+class EXPORTDECL_FOUNDATION StorageInitializer : public FinalCleaner
+{
+public:
+	StorageInitializer()	{
+		Storage::Initialize();
+	}
+	~StorageInitializer()	{
+		Storage::Finalize();
+	}
+};
+
+static StorageInitializer *psgStorageInitializer = new StorageInitializer();
+
 Allocator *Storage::Current()
 {
 	if (fgHooks && !fgForceGlobal) {
@@ -197,6 +211,7 @@ Allocator *Storage::Current()
 	}
 	return Storage::DoGlobal();
 }
+
 Allocator *Storage::Global()
 {
 	if (fgHooks && !fgForceGlobal) {
@@ -207,13 +222,10 @@ Allocator *Storage::Global()
 
 void Storage::Initialize()
 {
+	Storage::DoInitialize();
 	if (fgHooks && !fgForceGlobal) {
 		fgHooks->Initialize();
 	}
-	Allocator *ga = Storage::DoGlobal(); // init here, because of potential race condition
-	Storage::DoInitialize();
-	// dummy for using ga...
-	ga->Free(0);
 }
 
 void Storage::Finalize()
@@ -228,7 +240,6 @@ void Storage::DoInitialize()
 {
 	static bool once = true;
 	if (once) {
-		PoolTrackStat(Storage::DoGlobal());
 		once = false;
 	}
 }
@@ -251,6 +262,26 @@ Allocator *Storage::DoGlobal()
 	}
 	return Storage::fgGlobalPool;
 }
+
+void Storage::SetHooks(StorageHooks *h)
+{
+	if ( h != NULL ) {
+		if ( fgHooks ) {
+			StorageHooks *pCurr = fgHooks;
+			fgHooks = NULL;
+			pCurr->Finalize();
+		}
+		fgHooks = h;
+		fgHooks->Initialize();
+	} else {
+		if ( fgHooks ) {
+			h = fgHooks;
+			fgHooks = NULL;
+			h->Finalize();
+		}
+	}
+}
+
 //--- Allocator -------------------------------------------------
 Allocator::Allocator(long allocatorid) : fAllocatorId(allocatorid), fRefCnt(0) { }
 Allocator::~Allocator()
@@ -305,7 +336,7 @@ MemoryHeader *Allocator::RealMemStart(void *vp)
 }
 
 //---- GlobalAllocator ------------------------------------------
-GlobalAllocator::GlobalAllocator() : Allocator(13L)
+GlobalAllocator::GlobalAllocator() : Allocator(11223344L)
 {
 #ifdef MEM_DEBUG
 	fTracker = Storage::MakeMemTracker("GlobalAllocator");
@@ -402,9 +433,8 @@ Allocator *TestStorageHooks::Current()
 
 void TestStorageHooks::Initialize()
 {
-	if ( !fgInitialized ) { // need mutex??? not yet, we do not run MT
+	if ( !fgInitialized ) {
 		fgInitialized = true;
-		Storage::DoInitialize();
 	}
 }
 
