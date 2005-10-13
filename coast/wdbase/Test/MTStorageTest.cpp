@@ -53,17 +53,12 @@ MTStorageTest::~MTStorageTest()
 }
 
 void MTStorageTest::setUp ()
-// setup connector for this TestCase
 {
-	// setting up a hardcoded debug context
-	MT_Storage::Initialize();
-
-} // setUp
+}
 
 void MTStorageTest::tearDown ()
 {
-
-} // tearDown
+}
 
 void MTStorageTest::GlobalAllocatorTiming()
 {

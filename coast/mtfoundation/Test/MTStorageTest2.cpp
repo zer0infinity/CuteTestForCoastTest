@@ -95,7 +95,6 @@ void MTStorageTest2::setUp()
 {
 	StartTrace1(MTStorageTest2.setUp, "ThrdId: " << Thread::MyId());
 	// setting up a hardcoded debug context
-	MT_Storage::Initialize();
 	if (!fGlobal) {
 		fGlobal = Storage::Global();
 	}

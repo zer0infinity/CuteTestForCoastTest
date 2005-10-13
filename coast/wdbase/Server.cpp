@@ -147,7 +147,6 @@ Server::~Server()
 int Server::GlobalInit(int argc, char *argv[], const Anything &config)
 {
 	StartTrace(Server.GlobalInit);
-	MT_Storage::Initialize();
 
 	// make sure we have a session list manager initialized
 	SessionListManager::SLM()->Init(config);
