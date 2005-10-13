@@ -238,6 +238,7 @@ class EXPORTDECL_WDBASE HierarchConfNamed : public ConfNamedObject
 public:
 	//!named object constructor
 	HierarchConfNamed(const char *);
+	virtual ~HierarchConfNamed() {}
 
 	//!creates a new object through cloning and configuring it by setting super pointer
 	//! generates a cloned object with a different name
