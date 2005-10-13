@@ -9,7 +9,7 @@
 {
 
 	/LowerBound		0
-	/UpperBound		3100
+	/UpperBound		33
 	/DumpAnythings	1
 
 	/ConfiguredTestCase {
@@ -141,14 +141,24 @@
 		/EnableAll	0
 	}
 	/Context {
-		/MainSwitch	10000
-		/EnableAll	0
-		/Find 10000
-		/FindIndex 10000
-		/SetPage  10000
-		/GetPage 10000
-		/Replace 10000
-		/Remove 10000
+		/MainSwitch		33
+		/EnableAll		0
+		/Find 			10000
+		/FindIndex 		10000
+		/SetPage  		10000
+		/GetPage 		10000
+		/Replace 		10000
+		/Remove 		10000
+		/PushStore		33
+		/PopStore		33
+		/DoLookup		0
+		/LookupStores	33
+		/GetStore		33
+		/IntGetStore	33
+	}
+	/ContextTest {
+		/MainSwitch	33
+		/EnableAll	33
 	}
 	/ConfNamedObject {
 		/MainSwitch	1000
@@ -299,7 +309,7 @@
 		/EnableAll	7100
 	}
 	/LeaderFollowerPool {
-		/MainSwitch	33
+		/MainSwitch	0
 		/EnableAll	33
 	}
 	/MasterServerTest {
@@ -371,7 +381,7 @@
 		/EnableAll				33
 	}
 	/WorkerPoolManager {
-		/MainSwitch				33
+		/MainSwitch				0
 		/EnableAll				33
 	}
 	/WorkerThread {
@@ -392,7 +402,7 @@
 		/EnableAll				330
 	}
 	/SimpleTestServer {
-		/MainSwitch				33
+		/MainSwitch				0
 		/EnableAll				33
 	}
 	/SimpleTestApp {

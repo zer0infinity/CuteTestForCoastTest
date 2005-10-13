@@ -7,6 +7,7 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
+
 	/LowerBound			0 		# debugging on or off
 	/UpperBound			60		# override switch: turns everything on
 	/DumpAnythings		1		# print full Anythings
@@ -122,8 +123,8 @@
 		/EnableAll		50
 	}
 	/MT_Storage {
-		/MainSwitch		40
-		/EnableAll		50
+		/MainSwitch		51
+		/EnableAll		60
 	}
 	/SystemAPITest {
 		/MainSwitch		60
@@ -146,13 +147,13 @@
 	}
 
 	/LeaderFollowerPool {
-		/MainSwitch		100
-		/EnableAll		120
+		/MainSwitch		51
+		/EnableAll		60
 	}
 
 	/LeaderFollowerPoolTest {
-		/MainSwitch		100
-		/EnableAll		120
+		/MainSwitch		51
+		/EnableAll		60
 	}
 
 	/TestReactor {
