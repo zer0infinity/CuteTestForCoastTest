@@ -74,6 +74,8 @@
 class EXPORTDECL_LDAPDA LDAPConnectionManager: public WDModule
 {
 public:
+	static THREADKEY fgErrnoKey;
+
 	//!it exists only one since it is a not cloned
 	LDAPConnectionManager(const char *name);
 
