@@ -1658,16 +1658,14 @@
 				/RadioOn	"Hallo"
 			}
 			/Renderer {
-				/Radio3 {
-					/RadioButtonRenderer	{
-						/Name   "x1"
-						/Value	"pos2"
-						/EvaluateChecked 	{
-							/ConditionalRenderer {
-								/ContextCondition  RadioOn 		# initially set button
-								/Defined	1					# because RadioOn is defined in
-								/Undefined	0					# the Context
-							}
+				/RadioButtonRenderer	{
+					/Name   "x1"
+					/Value	"pos2"
+					/EvaluateChecked 	{
+						/ConditionalRenderer {
+							/ContextCondition  RadioOn 		# initially set button
+							/Defined	1					# because RadioOn is defined in
+							/Undefined	0					# the Context
 						}
 					}
 				}
@@ -1679,16 +1677,14 @@
 				/RadioOff	"Hallo"
 			}
 			/Renderer {
-				/Radio3 {
-					/RadioButtonRenderer	{
-						/Name   "x1"
-						/Value	"pos2"
-						/EvaluateChecked 	{
-							/ConditionalRenderer {
-								/ContextCondition  RadioOn 		# initially button not set
-								/Defined	1					# because RadioOn is not defined in
-								/Undefined	0					# the Context
-							}
+				/RadioButtonRenderer	{
+					/Name   "x1"
+					/Value	"pos2"
+					/EvaluateChecked 	{
+						/ConditionalRenderer {
+							/ContextCondition  RadioOn 		# initially button not set
+							/Defined	1					# because RadioOn is not defined in
+							/Undefined	0					# the Context
 						}
 					}
 				}
@@ -2818,6 +2814,40 @@
 							/Parameters
 							{
 								/foo2	{  /Lookup "bar" "hui2" }
+							}
+						}
+					}
+					/Parameters
+					{
+						/foo1	{  /Lookup "bar" "hui1" }
+					}
+				}
+			}
+			/Expected       "foohui1foohui2"
+		}
+		/CallRendererTestNestingWithSameParamSlotname
+		{
+			/Env
+			{
+				/foo	"Peter"
+				/bar	"foo"
+				/goo	"bar"
+			}
+			/Renderer
+			{
+				/CallRenderer
+				{
+					/Renderer
+					{
+						/CallRenderer
+						{
+							/Renderer
+							{
+								{ /Lookup foo1 }
+							}
+							/Parameters
+							{
+								/foo1	{  /Lookup "bar" "hui2" }
 							}
 						}
 					}
