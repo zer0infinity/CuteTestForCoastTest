@@ -62,7 +62,7 @@ int ThreadPoolManager::Start(bool usePoolStorage, int poolStorageSize, int numOf
 				Allocator *pAlloc = Storage::Global();
 				if (usePoolStorage) {
 					// use different memory manager for each thread
-					pAlloc = MT_Storage::MakePoolAllocator(poolStorageSize, numOfPoolBucketSizes);
+					pAlloc = MT_Storage::MakePoolAllocator(poolStorageSize, numOfPoolBucketSizes, 0);
 				}
 				t->Start( pAlloc );
 			}
