@@ -97,13 +97,13 @@ ContextLookupRenderer::ContextLookupRenderer(const char *name)
 ROAnything ContextLookupRenderer::DoLookup(Context &context, const char *name, char delim, char indexdelim)
 {
 	StartTrace(ContextLookupRenderer.DoLookup);
-	TraceAny(context.Lookup(name, delim, indexdelim), "ContextLookupRenderer.DoLookup will return:" );
-	return context.Lookup(name, delim, indexdelim);
+	ROAnything roaRet = context.Lookup(name, delim, indexdelim);
+	TraceAny(roaRet, "ContextLookupRenderer.DoLookup will return:" );
+	return roaRet;
 }
 
 //---- StoreLookupRenderer ----------------------------------------------------------------
 // lookup is exclusively done in tmpStore
-
 RegisterRenderer(StoreLookupRenderer);
 
 StoreLookupRenderer::StoreLookupRenderer(const char *name) : LookupRenderer(name)
@@ -112,17 +112,13 @@ StoreLookupRenderer::StoreLookupRenderer(const char *name) : LookupRenderer(name
 
 ROAnything StoreLookupRenderer::DoLookup(Context &context, const char *name, char delim, char indexdelim)
 {
-	Anything tmpStore = context.GetTmpStore();
-	Anything data(tmpStore.GetAllocator()); // avoid DANGER of deepclone
-	if (tmpStore.LookupPath(data, name, delim, indexdelim)) {
-		return data;
-	}
-	return ROAnything();
+	ROAnything roaRet;
+	((ROAnything)context.GetTmpStore()).LookupPath(roaRet, name, delim, indexdelim);
+	return roaRet;
 }
 
 //---- QueryLookupRenderer ----------------------------------------------------------------
 // lookup is exclusively done in query
-
 RegisterRenderer(QueryLookupRenderer);
 
 QueryLookupRenderer::QueryLookupRenderer(const char *name) : LookupRenderer(name)
@@ -131,10 +127,7 @@ QueryLookupRenderer::QueryLookupRenderer(const char *name) : LookupRenderer(name
 
 ROAnything QueryLookupRenderer::DoLookup(Context &context, const char *name, char delim, char indexdelim)
 {
-	Anything query = context.GetQuery();
-	Anything data(query.GetAllocator());
-	if (query.LookupPath(data, name, delim, indexdelim)) {
-		return data;
-	}
-	return ROAnything();
+	ROAnything roaRet;
+	((ROAnything)context.GetQuery()).LookupPath(roaRet, name, delim, indexdelim);
+	return roaRet;
 }
