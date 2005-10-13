@@ -36,8 +36,6 @@ public:
 		\return returns true if bind succeeds */
 	virtual bool Init(int maxParallelRequests, ROAnything args, bool useThreadLocalStorage);
 
-	using LeaderFollowerPool::Init;
-
 	//!initialize reactor
 	virtual bool InitReactor(ROAnything args);
 
