@@ -122,10 +122,10 @@ public:
 	//!returns byte-length of last written request on socket, if no socket active result is zero
 	long GetWriteCount();
 
-	//!access the stores by name
-	//! \param key the path to the store
-	//! \param result the anything representing the store
-	//! \return bool if the store exists else false
+	/*! access the stores by name
+		\param key the path to the store
+		\param result the anything representing the store in case of success
+		\return true if the store exists, false otherwise */
 	bool GetStore(const char *key, Anything &result);
 
 	//!process action token
@@ -282,8 +282,12 @@ protected:
 	//! \return index >= 0 if the object was found, -1 otherwise
 	long FindIndex(const char *key) const;
 
-	//!insures that a pushed store is always an array
-	void InsureArrayStore(Anything &store);
+	/*! access a stacked store by name
+		\param key the path to the store
+		\param result the anything representing the store in case of success
+		\param bFullStore set to true if the whole stack should be returned, otherwise the top element will be returned only
+		\return true if the store exists, false otherwise */
+	bool IntGetStore(const char *key, Anything &result, bool bFullStore) const;
 
 	//!relese session lock, if configured to do so
 	//!returns true, if we really held the session lock

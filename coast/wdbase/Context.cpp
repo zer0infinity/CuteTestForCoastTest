@@ -268,134 +268,6 @@ Anything &Context::GetBuiltinStore(const char *key)
 	return fStore[key][top];
 }
 
-//--- lookup immutable objects ----------------
-/*
-original sacred sequence of lookups
-bool Context::DoLookup(const char *key, ROAnything &result, char delim) const
-{
-	StartTrace1(Context.Lookup, "key: <" << NotNull(key) << ">");
-
-	ROAnything tmpStore(fTmpStore);
-	//test for path expression
-	Assert(key);
-	if ( tmpStore.LookupPath(result, key, delim) )
-	{
-		Trace(key << " found in TmpStore");
-		return true;
-	}
-	ROAnything roleStore(fRoleStore);
-	if ( roleStore.LookupPath(result, key, delim) )
-	{
-		Trace(key << " found in roleStore");
-		return true;
-	}
-	if (fRole && fRole->Lookup(key, result, delim))
-	{
-		Trace(key << " found in fRole");
-		return true;
-	}
-	if (fSession && fSession->Lookup(key, result, delim))
-	{
-		Trace(key << " found in fSession");
-		return true;
-	}
-
-	LocalizedStrings *ls= LocalizedStrings::LocStr();
-	if (ls && ls->Lookup(key, result))
-	{
-		Trace(key << " found in LocalizedStrings");
-		return true;
-	}
-
-	if (fPage && fPage->Lookup(key, result, delim))
-	{
-		Trace(key << " found in fPage");
-		return true;
-	}
-
-	if (fServer && fServer->Lookup(key, result, delim))		// look in server first because of
-															// string lookup
-	{
-		Trace(key << " found in fServer");
-		return true;
-	}
-
-	ROAnything env(fEnvStore);
- 	if ( env.LookupPath(result, key) )
- 		return true;
-
-	ROAnything query(fQueryStore);
- 	if ( query.LookupPath(result, key, delim) )
- 		return true;
-
-	Trace(key << " not found");
-	return false;
-}
-
-bool Context::DoLookup(const char *key, ROAnything &result, char delim) const
-{
-	StartTrace1(Context.Lookup, "key: <" << NotNull(key) << ">");
-
-	ROAnything tmpStore(fTmpStore);
-	//test for path expression
-	Assert(key);
-
-	// policy: stores before configs
-	if ( tmpStore.LookupPath(result, key, delim) )
-	{
-		Trace(key << " found in TmpStore");
-		return true;
-	}
-	ROAnything roleStore(fRoleStore);
-	if ( roleStore.LookupPath(result, key, delim) )
-	{
-		Trace(key << " found in roleStore");
-		return true;
-	}
-
-	if (fRole && fRole->Lookup(key, result, delim))
-	{
-		Trace(key << " found in fRole");
-		return true;
-	}
-	if (fSession && fSession->Lookup(key, result, delim))
-	{
-		Trace(key << " found in fSession");
-		return true;
-	}
-	LocalizedStrings *ls= LocalizedStrings::LocStr();
-	if (ls && ls->Lookup(key, result))
-	{
-		Trace(key << " found in LocalizedStrings");
-		return true;
-	}
-
-	if (fPage && fPage->Lookup(key, result, delim))
-	{
-		Trace(key << " found in fPage");
-		return true;
-	}
-
-	if (fServer && fServer->Lookup(key, result, delim))		// look in server first because of
-															// string lookup
-	{
-		Trace(key << " found in fServer");
-		return true;
-	}
-
-	// legacy
-	ROAnything env(fEnvStore);
- 	if ( env.LookupPath(result, key) )
- 		return true;
-
-	ROAnything query(fQueryStore);
- 	if ( query.LookupPath(result, key, delim) )
- 		return true;
-
-	Trace(key << " not found");
-	return false;
-}
-*/
 void Context::CollectLinkState(Anything &a)
 {
 	Role *r = GetRole();
@@ -479,8 +351,6 @@ void Context::HTMLDebugStores(ostream &reply)
 #endif
 }
 
-//---- new implementation ---------------------------------------------
-
 void Context::Push(LookupInterface *li)
 {
 	StartTrace(Context.Push);
@@ -538,30 +408,66 @@ void Context::PushRequest(const Anything &request)
 	TraceAny(fRequest, "Request: ");
 }
 
-void Context::InsureArrayStore(Anything &store)
+// set these values to '.' or ':' respectively to enable full LookupPath semantics for fStore
+// BUT keep in mind that this will break stack semantics because of the underlying Anything behavior!
+static const char sgcStoreDelim = '\0';
+static const char sgcStoreDelimIdx = '\0';
+
+bool Context::IntGetStore(const char *key, Anything &result, bool bFullStore) const
 {
-	if ( store.GetType() != Anything::eArray ) {
-		MetaThing newStore;
-		if ( !store.IsNull() ) {
-			newStore.Append(store);
+	StartTrace1(Context.IntGetStore, "key:<" << NotNull(key) << ">");
+	Anything storeStack;
+
+	if ( key && fStore.LookupPath(storeStack, key, sgcStoreDelim, sgcStoreDelimIdx) ) {
+		if ( !bFullStore ) {
+			long stackindex = storeStack.GetSize() - 1;
+			if ( stackindex >= 0 ) {
+				result = storeStack[stackindex];
+				return true;
+			}
+		} else {
+			result = storeStack;
+			return true;
 		}
-		store = newStore;
 	}
+	return false;
+}
+
+bool Context::GetStore(const char *key, Anything &result)
+{
+	StartTrace1(Context.GetStore, "key:<" << NotNull(key) << ">");
+
+	if ( key && IntGetStore(key, result, false) ) {
+		return true;
+	}
+
+	if (key && strcmp(key, "Session") == 0) {
+		result = GetSessionStore();
+		return true;
+	}
+
+	if (key && strcmp(key, "Role") == 0) {
+		result = GetRoleStoreGlobal();
+		return true;
+	}
+
+	Trace("failed");
+	return false;
 }
 
 void Context::PushStore(const char *key, Anything &store)
 {
-	//FIXME: push store operations might be generalizable like lookup interface
 	StartTrace1(Context.PushStore, "key:<" << NotNull(key) << ">");
 	TraceAny(store, "Store to put:");
 
 	if ( key ) {
-		InsureArrayStore(store);
+		Anything::EnsureArrayImpl(store);
+		SlotPutter::Operate(store, fStore, key, true, sgcStoreDelim, sgcStoreDelimIdx);
 		fStoreHistory.Append(key);
-		fStore[key].Append(store);
-		fStoreSz++;
+		++fStoreSz;
+		TraceAny(fStoreHistory, "StoreHistory");
 	}
-	TraceAny(fStore, "fStore:");
+	TraceAny(fStore, "fStore and size:" << fStoreSz);
 }
 
 bool Context::PopStore(String &key)
@@ -570,15 +476,15 @@ bool Context::PopStore(String &key)
 
 	if ( fStoreSz > 1 ) { // never pop the tmp store
 		long at = fStoreHistory.GetSize() - 1;
-		key = fStoreHistory[at].AsCharPtr("");
+		key = fStoreHistory[at].AsString();
 		fStoreHistory.Remove(at);
-
-		long stack = fStore[key].GetSize() - 1;
-		if ( stack >= 0 ) {
-			fStore[key].Remove(stack);
-			fStoreSz--;
-			return true;
+		Anything anyStoreEntry;
+		bool bRemoveStackElementOnly = ( IntGetStore(key, anyStoreEntry, true) && ( anyStoreEntry.GetSize() > 1L) );
+		if ( bRemoveStackElementOnly ) {
+			--fStoreSz;
 		}
+		SlotCleaner::Operate(fStore, key, true /*bRemoveStackElementOnly*/, sgcStoreDelim, sgcStoreDelimIdx );
+		return true;
 	}
 	TraceAny(fStore, "fStore:");
 	return false;
@@ -692,18 +598,22 @@ bool Context::DoLookup(const char *key, ROAnything &result, char delim, char ind
 bool Context::LookupStores(const char *key, ROAnything &result, char delim, char indexdelim) const
 {
 	StartTrace1(Context.LookupStores, "key:<" << NotNull(key) << ">");
-	ROAnything store;
-	long last = fStore.GetSize() - 1;
-	long stack;
-	for (long i = last; i >= 0; i--) {
-		stack = fStore[i].GetSize() - 1;
 
-		if ((stack >= 0) && ROAnything(fStore)[i][stack].LookupPath(result, key, delim, indexdelim)) {
-			// stores are arranged as stacks
-			// pushing the same name several times means hiding older stores
-			// we use always the top element for lookups
-			Trace("found");
-			return true;
+	for ( long i = fStoreHistory.GetSize(); --i >= 0; ) {
+		const char *pcStore = fStoreHistory[i].AsCharPtr();
+		Anything anyStore;
+		if ( IntGetStore(pcStore, anyStore, true) ) {
+			Trace("outer index:" << i << " store [" << pcStore << "]");
+			for ( long lStackIdx = anyStore.GetSize(); --lStackIdx >= 0; ) {
+				Trace("inner index:" << lStackIdx);
+				if ( ROAnything(anyStore)[lStackIdx].LookupPath(result, key, delim, indexdelim) ) {
+					// stores are arranged as stacks
+					// pushing the same name several times means pushing it on top of the existing stack
+					// lookups are eager, if a key is not found at top of stack we go through the whole stack
+					Trace("found value at " << pcStore << ':' << lStackIdx << '.' << key );
+					return true;
+				}
+			}
 		}
 	}
 
@@ -800,33 +710,6 @@ long Context::GetReadCount()
 long Context::GetWriteCount()
 {
 	return (fSocket) ? fSocket->GetWriteCount() : 0;
-}
-
-bool Context::GetStore(const char *key, Anything &store)
-{
-	StartTrace1(Context.GetStore, "key:<" << NotNull(key) << ">");
-	Anything storeStack;
-
-	if (key && fStore.LookupPath(storeStack, key)) {
-		long stackindex = storeStack.GetSize() - 1;
-		if ( stackindex >= 0 ) {
-			store = storeStack[stackindex];
-			return true;
-		}
-	}
-
-	if (key && strcmp(key, "Session") == 0) {
-		store = GetSessionStore();
-		return true;
-	}
-
-	if (key && strcmp(key, "Role") == 0) {
-		store = GetRoleStoreGlobal();
-		return true;
-	}
-
-	Trace("failed");
-	return false;
 }
 
 bool Context::Process(String &token)
