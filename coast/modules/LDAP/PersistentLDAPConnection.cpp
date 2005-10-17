@@ -20,9 +20,10 @@
 #include "StringStream.h"
 #include "Base64.h"
 #include "MD5.h"
+#include "SysLog.h"
 
 //--- c-modules used -----------------------------------------------------------
-#include <stdlib.h>
+#include <string.h>
 
 /* Function to set up thread-specific data. */
 void PersistentLDAPConnection::tsd_setup()
@@ -38,12 +39,14 @@ void PersistentLDAPConnection::tsd_setup()
 	if ( !SETTLSDATA(LDAPConnectionManager::fgErrnoKey, tsd) ) {
 		Trace("Setting Thread specific data for fgErrnoKey failed. Thread [" << Thread::MyId() << "]");
 	}
+	SysLog::Info(String("PersistentLDAPConnection::tsdsetup() Setting thread specific data. Thread [") <<  Thread::MyId() << "]");
 }
 
 void PersistentLDAPConnection::tsd_destruct(void *tsd)
 {
 	StartTrace(PersistentLDAPConnection.tsd_destruct);
 	if ( tsd != (void *) NULL ) {
+		SysLog::Info(String("PersistentLDAPConnection::tsd_destruct() Releasing thread specific data. Thread [") <<  Thread::MyId() << "]");
 		free(tsd);
 	}
 }
@@ -104,6 +107,7 @@ PersistentLDAPConnection::PersistentLDAPConnection(ROAnything connectionParams) 
 	fMaxConnections = connectionParams["MaxConnections"].AsLong(0L);
 	TraceAny(connectionParams, "ConnectionParams");
 	fPoolId = "";
+	tsd_setup();
 }
 
 PersistentLDAPConnection::~PersistentLDAPConnection()
@@ -121,7 +125,6 @@ bool PersistentLDAPConnection::SetErrnoHandler(LDAPErrorHandler eh)
 {
 	StartTrace(PersistentLDAPConnection.SetErrnoHandler);
 
-	tsd_setup();
 	struct ldap_thread_fns  tfns;
 
 	/* Set the function pointers for dealing with mutexes
@@ -215,7 +218,6 @@ LDAPConnection::EConnectState PersistentLDAPConnection::DoConnect(ROAnything bin
 	long maxConnections = bindParams["MaxConnections"].AsLong(0);
 	PersistentLDAPConnection::EConnectState eConnectState = PersistentLDAPConnection::eNok;
 	if ( (eConnectState = DoConnectHook(bindParams, eh)) == PersistentLDAPConnection::eOk ) {
-		SetErrnoHandler(eh);
 		return eConnectState;
 	}
 	// get connection handle
