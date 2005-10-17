@@ -11,15 +11,14 @@
 
 #include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 
-class EXPORTDECL_FOUNDATION String;
+//---- Tracer --------------------------------------------------------------------------
+#ifdef DEBUG
+#include "ITOString.h"
+
 class EXPORTDECL_FOUNDATION Anything;
 class EXPORTDECL_FOUNDATION ROAnything;
 class EXPORTDECL_FOUNDATION TracerHelper;
 
-//---- Tracer --------------------------------------------------------------------------
-
-#ifdef DEBUG
-#include "ITOString.h"
 //!class and macros, that provide tracing support
 //!This macros help keep the coding expense for inserting trace statements
 //!into the source-code at a minimum.<P>
