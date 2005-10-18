@@ -408,6 +408,7 @@ The config Anything should have the form
 <PRE>
 {
 	/Slot	Level1.Level2	mandatory, spec producing the Slot that is assigned to source - if it does not exists it is created
+	/Append   				optional, default false, append source to destination, overwrite otherwise
 	/Delim   				optional, default ".", first char is taken as delimiter for named slots
 	/IndexDelim				optional, default ":", first char is taken as delimiter for indexed slots
 }</PRE>
