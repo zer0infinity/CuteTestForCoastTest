@@ -115,7 +115,6 @@ void AnythingPerfTest::LookupTest()
 	PoolAllocator p(1, 16384, 10);
 
 	TestStorageHooks tsh(&p);
-	Storage::SetHooks(&tsh);
 
 	Anything a(&p);
 	a["key"] = "foo";
@@ -150,7 +149,6 @@ void AnythingPerfTest::LookupTest()
 	RunLookupPathLoop("adrs:10", b, iterations);
 	RunLookupPathLoop("1:10", b, iterations);
 
-	Storage::SetHooks(0);
 	t_assertm(true, "dummy assertion to generate summary output");
 }
 
@@ -181,7 +179,7 @@ void AnythingPerfTest::DoFunctorTest(T value, const char *pName, LoopFunctor pFu
 	PoolAllocator p(1, 32768, 20);
 
 	TestStorageHooks tsh(&p);
-	Storage::SetHooks(&tsh);
+
 	const long iterations = 10000;
 
 	{
@@ -227,7 +225,6 @@ void AnythingPerfTest::DoFunctorTest(T value, const char *pName, LoopFunctor pFu
 		a["key2"]["third"] = value;
 		(this->*pFunc)(String("22 any ") << pName, a, iterations);
 	}
-	Storage::SetHooks(0);
 	t_assertm(true, "dummy assertion to generate summary output");
 }
 
