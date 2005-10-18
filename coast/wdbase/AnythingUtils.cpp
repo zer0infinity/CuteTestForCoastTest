@@ -100,18 +100,6 @@ void StorePutter::Operate(Anything &source, Context &c, const ROAnything &config
 {
 	StartTrace(StorePutter.Operate);
 	TraceAny(config, "Config");
-
-	Anything clonedConfig = config.DeepClone();
-	String destSlotname;
-	Renderer::RenderOnString(destSlotname, c, config["Slot"]);
-	clonedConfig["Slot"] = destSlotname;
-	if (config.IsDefined("Delim")) {
-		clonedConfig["Delim"] = config["Delim"].AsCharPtr(".")[0L];
-	}
-	if (config.IsDefined("IndexDelim")) {
-		clonedConfig["IndexDelim"] = config["IndexDelim"].AsCharPtr(":")[0L];
-	}
-
-	String store = config["Store"].AsString("");
-	SlotPutter::Operate(source, StoreFinder::FindStore(c, store), clonedConfig);
+	String strStoreName = config["Store"].AsString("");
+	SlotPutter::Operate(source, StoreFinder::FindStore(c, strStoreName), Renderer::RenderToString(c, config["Slot"]), config["Append"].AsBool(false), config["Delim"].AsCharPtr(".")[0L], config["IndexDelim"].AsCharPtr(":")[0L]);
 }
