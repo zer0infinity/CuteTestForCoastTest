@@ -764,12 +764,12 @@ bool SimpleMutex::TryLock()
 
 //---- Mutex ------------------------------------------------------------
 long Mutex::fgMutexId = 0;
-#if defined(__sun)
+#if defined(__sun) && !defined(USE_POSIX)
 MUTEX Mutex::fgMutexIdMutex = DEFAULTMUTEX;
-#elif defined (__linux__) || defined(_AIX)
-MUTEX Mutex::fgMutexIdMutex = PTHREAD_MUTEX_INITIALIZER;
-#elif WIN32
+#elif defined(WIN32)
 MUTEX Mutex::fgMutexIdMutex = ::CreateMutex(NULL, false, NULL);
+#else // assume posix threads defined (__linux__) || defined(_AIX)
+MUTEX Mutex::fgMutexIdMutex = PTHREAD_MUTEX_INITIALIZER;
 #endif
 
 THREADKEY Mutex::fgCountTableKey = 0;	// WIN32 defined it 0xFFFFFFFF !!

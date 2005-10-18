@@ -112,7 +112,7 @@ static void AdjustTimeToAbsolut(long &s, long &n)
 	}
 }
 
-#if defined(__sun)
+#if defined(__sun) && !defined(USE_POSIX)
 THREADWRAPPERFUNCDECL(ThreadWrapper, thread)
 {
 	Thread *t = (Thread *) thread;	// we should better check this....
