@@ -265,7 +265,7 @@ void SessionTest::UseSessionStoreTest()
 	StartTrace(SessionTest.UseSessionStoreTest);
 	PoolAllocator pa(1, 8 * 1024, 21);
 	TestStorageHooks tsh(&pa);
-	Storage::SetHooks(&tsh);
+
 	Context theCtx;
 	Session s("TestSession", theCtx);
 	{
@@ -306,8 +306,6 @@ void SessionTest::UseSessionStoreTest()
 
 		//--- should be still the same since they are aliased
 		assertEqualm("next try", ctx.Lookup("Test3", "not found"), "context should find session store items");
-
-		Storage::SetHooks(0);
 	}
 }
 
