@@ -265,7 +265,7 @@ void ConnectorTest::allocatorConstructorTest()
 	{
 		PoolAllocator pa(1, 8 * 1024, 21);
 		TestStorageHooks tsh(&pa);
-		Storage::SetHooks(&tsh);
+
 		Connector connector(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port"].AsLong(), 0L, String(), 0L, true);
 		Socket *socket = connector.MakeSocket();
 
@@ -277,11 +277,10 @@ void ConnectorTest::allocatorConstructorTest()
 			t_assert( Ios != NULL);
 		}
 		delete socket;
-		Storage::SetHooks(0);
 	}
 	{
 		TestStorageHooks tsh(Storage::Global());
-		Storage::SetHooks(&tsh);
+
 		Connector connector(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port"].AsLong(), false);
 		Socket *socket = connector.MakeSocket();
 
@@ -293,7 +292,6 @@ void ConnectorTest::allocatorConstructorTest()
 			t_assert( Ios != NULL);
 		}
 		delete socket;
-		Storage::SetHooks(0);
 	}
 }
 
