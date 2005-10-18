@@ -40,7 +40,7 @@ ColumnData::~ColumnData()
 	(Storage::Global())->Free(indicator);
 }
 
-void *ColumnData::operator new[](size_t size, Allocator *a)
+void *ColumnData::operator new[](size_t size, Allocator *a) throw()
 {
 	if (a) {
 		void *mem = a->Calloc(1, size + sizeof(Allocator *));
