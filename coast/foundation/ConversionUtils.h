@@ -10,6 +10,8 @@
 #define _ConversionUtils_H
 
 #include "config.h"
+
+#include "ITOString.h"
 #if defined(DEBUG)
 #include "StringStream.h"
 #endif
