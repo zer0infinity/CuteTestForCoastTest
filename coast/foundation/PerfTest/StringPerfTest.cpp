@@ -72,7 +72,7 @@ void StringPerfTest::RunPreallocLoop(const char *str, const long iterations)
 void StringPerfTest::RunPoolAllocLoop(const char *str, const long iterations)
 {
 	DiffTimer dt;
-	PoolAllocator p(1, ((strlen(str)*iterations + 1) / 256 + 100), 21);
+	PoolAllocator p(1, ((strlen(str) + 16)*iterations * 3 / 1024), 21);
 	String out( &p );
 	for (long i = 0; i < iterations; i++) {
 		out << str;
