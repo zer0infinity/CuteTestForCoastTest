@@ -35,7 +35,7 @@ void PersistentLDAPConnection::tsd_setup()
 		return;
 	}
 
-	tsd = (void *) calloc( 1, sizeof(struct ldap_error) );
+	tsd = (void *) calloc( 1, sizeof(ldap_error) );
 	if ( !SETTLSDATA(LDAPConnectionManager::fgErrnoKey, tsd) ) {
 		Trace("Setting Thread specific data for fgErrnoKey failed. Thread [" << Thread::MyId() << "]");
 	}
