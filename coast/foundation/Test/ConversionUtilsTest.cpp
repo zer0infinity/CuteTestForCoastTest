@@ -16,7 +16,6 @@
 #include "ConversionUtils.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "ITOString.h"
 #include "Dbg.h"
 
 //--- c-modules used -----------------------------------------------------------
@@ -44,7 +43,7 @@ void ConversionUtilsTest::tearDown ()
 }
 
 #define TestSpecificValue(valType, value, from, order) \
-	{ valType myX; \
+	{ valType myX = 0; \
 	ConversionUtils::GetValueFromBuffer(strBuf, myX, from, order); \
 	assertEqual((valType)value, myX); }
 
