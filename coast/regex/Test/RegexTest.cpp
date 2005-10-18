@@ -19,10 +19,8 @@
 #include "System.h"
 #include "StringStream.h"
 #include "RECompiler.h"
-#if TESTWITHPOOLALLOCATOR
-/* reactivate for more allocator testing if needed, requires change to ITOStorage.h*/
 #include "PoolAllocator.h"
-#endif
+#include "TestTimer.h"
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
@@ -410,7 +408,6 @@ void RegexTest::GrepSlotNamesTest()
 	t_assert(res.IsDefined("RegexTest"));
 }
 
-#if TESTWITHPOOLALLOCATOR
 void RegexTest::TimingWithPoolAllocator()
 {
 	StartTrace(RegexTest.TimingWithPoolAllocator);
@@ -422,30 +419,25 @@ void RegexTest::TimingWithPoolAllocator()
 	Trace("MatchConfig");
 	TimeaTestWithPoolAllocator((CaseMemberPtr)&RegexTest::MatchConfig);
 }
-// SOP: requires change to ITOStorage.h: friend RegexTest
-// should discuss if SetHooks should be made public or a hook/forward to
-// sethooks be done in class TestCase and this made friend of Storage
 
 void RegexTest::TimeaTestWithPoolAllocator(CaseMemberPtr testtotime)
 {
-	StartTrace(RegexTest.TimingWithPoolAllocator);//SOP delibaretely same as TimingWithPoolAllocator
+	StartTrace(RegexTest.TimeaTestWithPoolAllocator);
 
 	TestTimer tt;
 	tt.Start();
 	(this->*testtotime)();
 	long firstrun = tt.Diff();
 	Trace("elapsed time standard allocator:" << firstrun);
-	PoolAllocator pa(1);
+	// need at least a bit more than 1MB pool size
+	PoolAllocator pa(123, 2 * 1024, 21);
 	TestStorageHooks tsh(&pa);
-	Storage::SetHooks(&tsh);
 	tt.Start();
 	(this->*testtotime)();
 	long secondrun = tt.Diff();
-	Storage::SetHooks(0);
 	Trace("elapsed time pool allocator:" << secondrun);
 	t_assert(secondrun < firstrun); // assume pool allocator is faster
 }
-#endif
 
 // builds up a suite of testcases, add a line for each testmethod
 Test *RegexTest::suite ()
@@ -460,13 +452,10 @@ Test *RegexTest::suite ()
 	testSuite->addTest (NEW_CASE(RegexTest, MatchAStar));
 	testSuite->addTest (NEW_CASE(RegexTest, LargeLiteralTest));
 	testSuite->addTest (NEW_CASE(RegexTest, BackRefTest));
-#if TESTWITHPOOLALLOCATOR
 	testSuite->addTest (NEW_CASE(RegexTest, TimingWithPoolAllocator));
-#else
 	testSuite->addTest (NEW_CASE(RegexTest, ShortLiteralTest));
 	testSuite->addTest (NEW_CASE(RegexTest, LargeDotStarTest));
 	testSuite->addTest (NEW_CASE(RegexTest, MatchConfig));
-#endif
 	testSuite->addTest (NEW_CASE(RegexTest, MatchFlagsTest));
 	testSuite->addTest (NEW_CASE(RegexTest, SplitTest));
 	testSuite->addTest (NEW_CASE(RegexTest, SubstTest));

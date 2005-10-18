@@ -82,11 +82,9 @@ public:
 	void GrepTest();
 	//!test "grepping" for Anything slot names
 	void GrepSlotNamesTest();
-#if TESTWITHPOOLALLOCATOR
 	//!run ShortLiteralTest twice with and without a poolallocator
 	void TimingWithPoolAllocator();
 	void TimeaTestWithPoolAllocator(CaseMemberPtr testtotime);
-#endif
 };
 
 #endif
