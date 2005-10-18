@@ -306,16 +306,10 @@ protected:
 	friend class MTStorageHooks;
 	friend class TestStorageHooks;
 	friend class MTStorageHookInitializer;
-	friend class Server;
-	friend class SessionTest;
-	friend class FinalCleaner;
-	friend class SocketTest;
-	friend class SSLConnectorTest;
-	friend class ConnectorTest;
-	friend class AnythingPerfTest;
+	friend class Server;	// needs ForceGlobalStorage() for re-initialization
 
 	//! used by mt system to redefine the hooks for mt-local storage policy
-	static void SetHooks(StorageHooks *h);
+	static StorageHooks *SetHooks(StorageHooks *h);
 
 	//!temporarily disable thread local storage policies e.g. to reinitialize server
 	static void ForceGlobalStorage(bool b) {
@@ -351,7 +345,7 @@ class EXPORTDECL_FOUNDATION TestStorageHooks : public StorageHooks
 {
 public:
 	TestStorageHooks(Allocator *allocator);
-	virtual ~TestStorageHooks() {};
+	virtual ~TestStorageHooks();
 	virtual void Initialize();
 	virtual void Finalize();
 	virtual Allocator *Global();
@@ -361,7 +355,7 @@ public:
 #endif
 
 	Allocator *fAllocator;
-	static bool fgInitialized;
+	StorageHooks *fpOldHook;
 };
 
 #endif		//not defined _ITOStorage_H

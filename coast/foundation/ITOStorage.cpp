@@ -263,23 +263,17 @@ Allocator *Storage::DoGlobal()
 	return Storage::fgGlobalPool;
 }
 
-void Storage::SetHooks(StorageHooks *h)
+StorageHooks *Storage::SetHooks(StorageHooks *h)
 {
-	if ( h != NULL ) {
-		if ( fgHooks ) {
-			StorageHooks *pCurr = fgHooks;
-			fgHooks = NULL;
-			pCurr->Finalize();
-		}
-		fgHooks = h;
-		fgHooks->Initialize();
-	} else {
-		if ( fgHooks ) {
-			h = fgHooks;
-			fgHooks = NULL;
-			h->Finalize();
-		}
+	StorageHooks *pOldHook = fgHooks;
+	if ( fgHooks ) {
+		fgHooks->Finalize();
 	}
+	fgHooks = h;
+	if ( fgHooks != NULL ) {
+		fgHooks->Initialize();
+	}
+	return pOldHook;
 }
 
 //--- Allocator -------------------------------------------------
@@ -412,14 +406,9 @@ void finalize()
 }
 #endif
 
-bool TestStorageHooks::fgInitialized = false;
-void TestStorageHooks::Finalize()
-{
-}
-
 Allocator *TestStorageHooks::Global()
 {
-	return 	Storage::DoGlobal();
+	return Storage::DoGlobal();
 }
 
 Allocator *TestStorageHooks::Current()
@@ -433,14 +422,23 @@ Allocator *TestStorageHooks::Current()
 
 void TestStorageHooks::Initialize()
 {
-	if ( !fgInitialized ) {
-		fgInitialized = true;
-	}
+}
+
+void TestStorageHooks::Finalize()
+{
 }
 
 TestStorageHooks::TestStorageHooks(Allocator *wdallocator)
 	: fAllocator(wdallocator)
+	, fpOldHook(NULL)
 {
+	fpOldHook = Storage::SetHooks(this);
+}
+
+TestStorageHooks::~TestStorageHooks()
+{
+	StorageHooks *pHook = Storage::SetHooks(fpOldHook);
+	Assert( pHook == this && "another Storage::SetHook() was called without restoring old Hook!");
 }
 
 #ifdef MEM_DEBUG
