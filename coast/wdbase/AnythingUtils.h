@@ -99,6 +99,7 @@ public:
 	//! 	/Store	Role			# opt, The Store where the Slot is lookuped
 	//!								# (Known Stores are Role,Session,Request,default TempStore)
 	//! 	/Slot	Level1.Level2	# Rendererspec producing the Slot that is assigned to source - if it does not exists it is created
+	//!		/Append   				optional [0|1], default 0, append source to destination, overwrite otherwise
 	//!		/Delim   				optional, default ".", first char is taken as delimiter for named slots
 	//!		/IndexDelim				optional, default ":", first char is taken as delimiter for indexed slots
 	//! }</PRE>
