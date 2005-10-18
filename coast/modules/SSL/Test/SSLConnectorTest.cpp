@@ -84,7 +84,7 @@ void SSLConnectorTest::allocatorConstructorTest()
 	{
 		PoolAllocator pa(1, 8 * 1024, 21);
 		TestStorageHooks tsh(&pa);
-		Storage::SetHooks(&tsh);
+
 		SSLConnector connector(fConfig["InternalSSLhost"]["ip"].AsString(), fConfig["InternalSSLhost"]["port"].AsLong(), 0L,
 							   (SSL_CTX *) NULL, (const char *) NULL, 0L, true);
 		Socket *socket = connector.MakeSocket();
@@ -97,11 +97,10 @@ void SSLConnectorTest::allocatorConstructorTest()
 			t_assert( Ios != NULL);
 		}
 		delete socket;
-		Storage::SetHooks(0);
 	}
 	{
 		TestStorageHooks tsh(Storage::Global());
-		Storage::SetHooks(&tsh);
+
 		SSLConnector connector(fConfig["InternalSSLhost"]["ip"].AsString(), fConfig["InternalSSLhost"]["port"].AsLong(), 0L,
 							   (SSL_CTX *) NULL, (const char *) NULL, 0L, false);
 		Socket *socket = connector.MakeSocket();
@@ -114,7 +113,6 @@ void SSLConnectorTest::allocatorConstructorTest()
 			t_assert( Ios != NULL);
 		}
 		delete socket;
-		Storage::SetHooks(0);
 	}
 }
 
