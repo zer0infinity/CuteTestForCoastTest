@@ -8,7 +8,7 @@
 
 {
 
-	/LowerBound		10 #110 		# debugging on or off
+	/LowerBound		0 #110 		# debugging on or off
 	/UpperBound		11 #0 		# override switch: turns everything on
 	/DumpAnythings 	1 			# print full Anythings
 
