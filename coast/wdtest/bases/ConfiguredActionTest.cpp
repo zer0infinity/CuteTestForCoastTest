@@ -25,14 +25,14 @@
 //--- c-library modules used ---------------------------------------------------
 
 //---- ConfiguredActionTest ----------------------------------------------------------------
-ConfiguredActionTest::ConfiguredActionTest(TString tname) :
-	ConfiguredTestCase(tname, "ConfiguredActionTestConfig")
+ConfiguredActionTest::ConfiguredActionTest(TString tname)
+	: ConfiguredTestCase(tname, "ConfiguredActionTestConfig")
 {
 	StartTrace(ConfiguredActionTest.Ctor);
 }
 
-ConfiguredActionTest::ConfiguredActionTest(TString tname, TString configFileName ) :
-	ConfiguredTestCase(tname, configFileName)
+ConfiguredActionTest::ConfiguredActionTest(TString tname, TString configFileName )
+	: ConfiguredTestCase(tname, configFileName)
 {
 	StartTrace(ConfiguredActionTest.Ctor);
 }
@@ -96,13 +96,10 @@ Anything ConfiguredActionTest::PrepareConfig(Anything originalConfig)
 	Anything result = PrepareConfig(fTestCaseConfig[useConfigName].DeepClone());
 
 	Anything replaceList = originalConfig["Replace"];
-	Anything slotPutConfig;
 
 	long sz = replaceList.GetSize();
-	for (long i = 0; i < sz; i++) {
-		String destSlot = replaceList.SlotName(i);
-		slotPutConfig["Slot"] = destSlot;
-		SlotPutter::Operate(replaceList[i], result, slotPutConfig);
+	for (long i = 0; i < sz; ++i) {
+		SlotPutter::Operate(replaceList[i], result, String(replaceList.SlotName(i)));
 	}
 
 	TraceAny(result, "Patched Config");
@@ -251,5 +248,4 @@ Test *ConfiguredActionTest::suite ()
 
 	testSuite->addTest (NEW_CASE(ConfiguredActionTest, RunTestCases));
 	return testSuite;
-
-} // suite
+}
