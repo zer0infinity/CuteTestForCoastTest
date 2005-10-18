@@ -224,14 +224,15 @@ bool SecurityModule::Init(const Anything &config)
 
 bool SecurityModule::ResetInit(const Anything &config)
 {
-	StartTrace(SecurityModule.ResetFinis);
+	StartTrace(SecurityModule.ResetInit);
 	Anything moduleConfig(config[fName]);
 	if (moduleConfig.IsDefined("DoNotReset") && moduleConfig["DoNotReset"].AsBool(0) == 1) {
 		String msg;
 		msg << "\t" << fName << "  Configured not to call Init() on reset\n";
 		SysLog::WriteToStderr(msg);
+		return true;
 	}
-	return true;
+	return SecurityModule::Init(config);
 }
 
 bool SecurityModule::ResetFinis(const Anything &config)
