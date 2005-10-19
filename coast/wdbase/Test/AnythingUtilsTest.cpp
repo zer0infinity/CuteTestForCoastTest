@@ -50,8 +50,7 @@ void AnythingUtilsTest::StoreCopierTest()
 		Context c;
 		PutInStore(source, c.GetTmpStore());
 
-		StoreCopier asc;
-		asc.Operate(c, result, copyList, config["Delim"].AsCharPtr(".")[0L], config["IndexDelim"].AsCharPtr(":")[0L]);
+		StoreCopier::Operate(c, result, copyList, config["Delim"].AsCharPtr(".")[0L], config["IndexDelim"].AsCharPtr(":")[0L]);
 
 		ROAnything expectedStore(config["Result"]);
 		assertAnyEqualm(expectedStore, result, TString(name()) << "." << fQuery.SlotName(l));
@@ -67,8 +66,7 @@ void AnythingUtilsTest::StorePutterTest ()
 	Anything destinations = fQuery["Destinations"];
 	long sz = destinations.GetSize();
 	for ( long i = 0; i < sz; i++ ) {
-		StorePutter sp;
-		sp.Operate(toStore, c, destinations[i]);
+		StorePutter::Operate(toStore, c, destinations[i]);
 	}
 
 	TraceAny(c.GetTmpStore(), "TempStore after");
@@ -92,8 +90,7 @@ void AnythingUtilsTest::StorePutterReplaceTest ()
 	Anything rStore = fConfig["RoleStore1"];
 	PutInStore(rStore, c.GetRoleStoreGlobal());
 
-	StorePutter sp;
-	sp.Operate(toStore, c, config);
+	StorePutter::Operate(toStore, c, config);
 
 	TraceAny(c.GetRoleStoreGlobal(), "RoleStore after");
 
@@ -113,8 +110,7 @@ void AnythingUtilsTest::StorePutterReplaceRenderedTest ()
 
 	TraceAny(c.GetRoleStoreGlobal(), "RoleStore before");
 	assertAnyEqual(rStore, c.GetRoleStoreGlobal());
-	StorePutter sp;
-	sp.Operate(toStore, c, config);
+	StorePutter::Operate(toStore, c, config);
 
 	TraceAny(c.GetRoleStoreGlobal(), "RoleStore after");
 
@@ -129,8 +125,7 @@ void AnythingUtilsTest::StorePutterEmptySlotTest ()
 	Context c;
 	Anything config = fQuery["Destination"];
 	Anything toStore = fQuery["ToStore"];
-	StorePutter sp;
-	sp.Operate(toStore, c, config);
+	StorePutter::Operate(toStore, c, config);
 
 	TraceAny(c.GetTmpStore(), "TempStore after");
 
@@ -147,8 +142,7 @@ void AnythingUtilsTest::StoreFinderTest ()
 	PutInStore(rStore, c.GetRoleStoreGlobal());
 
 	Anything foundResult;
-	StoreFinder sf;
-	sf.Operate(c, foundResult, config);
+	StoreFinder::Operate(c, foundResult, config);
 
 	Anything expectedStore(fConfig["Results"]["StoreFinderTest"]);
 	assertAnyEqual(expectedStore, foundResult);
@@ -157,7 +151,7 @@ void AnythingUtilsTest::StoreFinderTest ()
 	PutInStore(fConfig["SessionStore"], c.GetSessionStore());
 
 	Anything foundResult2;
-	sf.Operate(c, foundResult2, config);
+	StoreFinder::Operate(c, foundResult2, config);
 	assertAnyEqual(expectedStore, foundResult2);
 }
 
@@ -171,17 +165,13 @@ void AnythingUtilsTest::StoreFinderRenderedTest ()
 	PutInStore(rStore, c.GetRoleStoreGlobal());
 
 	Anything foundResult;
-	StoreFinder sf;
-	sf.Operate(c, foundResult, config);
+	StoreFinder::Operate(c, foundResult, config);
 
 	Anything expectedStore(fConfig["Results"]["StoreFinderTest"]);
 	assertAnyEqual(expectedStore, foundResult);
 }
 
 Test *AnythingUtilsTest::suite ()
-/* what: return the whole suite of tests for AnythingUtilsTest, add all top level
-		 test functions here.
-*/
 {
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, AnythingUtilsTest, StoreCopierTest);
@@ -192,4 +182,4 @@ Test *AnythingUtilsTest::suite ()
 	ADD_CASE(testSuite, AnythingUtilsTest, StorePutterReplaceRenderedTest);
 	ADD_CASE(testSuite, AnythingUtilsTest, StorePutterEmptySlotTest);
 	return testSuite;
-} // suite
+}
