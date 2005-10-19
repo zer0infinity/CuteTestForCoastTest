@@ -37,10 +37,12 @@ void OptionsPrinter::RenderAll(ostream &reply, Context &c, const ROAnything &con
 			reply  << name ;
 			// render option value
 			reply << "=\"";
+			TraceAny(config[i], "config of option [" << name << "]");
 			Render(reply, c, config[i]);  // value is rendererd
 			reply << '\"';
 		}       // if name is ok
 		else {
+			TraceAny(config[i], "config of unnamed option");
 			Render(reply, c, config[i]);  // value is rendererd
 		}
 	} // loop
