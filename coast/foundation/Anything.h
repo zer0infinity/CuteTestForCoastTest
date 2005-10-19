@@ -385,14 +385,24 @@ public:
 		\param source The source Anything in which the slot should be found
 		\param dest The Anything reference to the slot found
 		\param config the configuration
-		\post dest.IsNull() == false. */
+		\post dest = source.LookupPath(config["Slot"].AsString("")) */
 	static void Operate(Anything &source, Anything &dest, const Anything &config);
+
 	/*! looks up the slot in the given Anything, creates it if not found.
 		\param source The source Anything in which the slot should be found
 		\param dest The Anything reference to the slot found
 		\param config the configuration
-		\post dest.IsNull() == false. */
+		\post dest = source.LookupPath(config["Slot"].AsString("")) */
 	static void Operate(Anything &source, Anything &dest, const ROAnything &config);
+
+	/*! looks up the slot in the given Anything, creates it if not found.
+		\param source The source Anything in which the slot should be found
+		\param dest The Anything reference to the slot found
+		\param destSlotname name of slot to find using LookupPath semantics
+		\param delim LookupPath' slot delimiter '
+		\param indexdelim LookupPath' index delimiter '
+		\post dest = source.LookupPath(destSlotname, delim, indexdelim) */
+	static void Operate(Anything &source, Anything &dest, String destSlotname, char delim = '.', char indexdelim = ':' );
 
 	/*! returns the source Anything in such way that an assignment can be made in the form dest[destSlotname] = xxx; or dest[destIdx] = xxx;
 		\param dest resulting Anything, one level below for easy assignment operations
