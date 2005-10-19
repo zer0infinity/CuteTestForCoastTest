@@ -6,15 +6,13 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "Renderer.h"
-#include "AnythingUtils.h"
-#include "Context.h"
-#include "Dbg.h"
-
 //--- interface include --------------------------------------------------------
 #include "CopyActions.h"
+
+//--- standard modules used ----------------------------------------------------
+#include "Renderer.h"
+#include "AnythingUtils.h"
+#include "Dbg.h"
 
 //---- CopyAction ----------------------------------------------------------------
 // abstract base class - Not registered
@@ -30,13 +28,12 @@ bool CopyAction::DoExecAction(String &transitionToken, Context &ctx, const ROAny
 	//check mandatory configuration slot
 	ROAnything destConfig;
 	ROAnything copyList;
-	if (! (config.LookupPath(destConfig, "Destination") &&
-		   config.LookupPath(copyList, "CopyList")) ) {
+	if (! (config.LookupPath(destConfig, "Destination") && config.LookupPath(copyList, "CopyList")) ) {
 		return false;
 	}
 
 	Anything data, anydestConfig;
-	anydestConfig = destConfig.DeepClone();
+	anydestConfig = destConfig.DeepClone(Storage::Current());
 	if (config.IsDefined("Delim")) {
 		Trace("copying delim [" << config["Delim"].AsCharPtr(".")[0L] << "] to destination getter config");
 		anydestConfig["Delim"] = config["Delim"].AsCharPtr(".")[0L];
@@ -90,7 +87,7 @@ void CopyQueryAction::Copy(Anything &dest, const ROAnything &copyList, const ROA
 	StartTrace(CopyQueryAction.Copy);
 
 	Trace("delim [" << config["Delim"].AsCharPtr(".")[0L] << "], indexdelim [" << config["IndexDelim"].AsCharPtr(":")[0L] << "]");
-	Anything query = ctx.GetQuery();
+	Anything &query = ctx.GetQuery();
 
 	SlotCopier::Operate(query, dest, copyList, config["Delim"].AsCharPtr(".")[0L], config["IndexDelim"].AsCharPtr(":")[0L]);
 }
@@ -112,7 +109,7 @@ bool CopyQueryIfNotEmptyAction::DoExecAction(String &transitionToken, Context &c
 		return false;
 	}
 
-	Anything query = ctx.GetQuery();
+	Anything &query = ctx.GetQuery();
 	char delim = config["Delim"].AsCharPtr(".")[0L];
 	char indexdelim = config["IndexDelim"].AsCharPtr(":")[0L];
 
@@ -120,7 +117,7 @@ bool CopyQueryIfNotEmptyAction::DoExecAction(String &transitionToken, Context &c
 	for (long i = 0; i < sz; i++) {
 		String sourceSlot = copyList.SlotName(i);
 		Anything content;
-		if ( sourceSlot && query.LookupPath(content, sourceSlot, delim, indexdelim) && content.AsString("") != "" ) {
+		if ( sourceSlot && query.LookupPath(content, sourceSlot, delim, indexdelim) && content.AsString().Length() ) {
 			Trace("Not empty slot: " << sourceSlot << " contains >" << content.AsCharPtr("") << "<");
 			return CopyQueryAction::DoExecAction(transitionToken, ctx, config);
 		}
