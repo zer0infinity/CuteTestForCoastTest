@@ -19,11 +19,6 @@
 class EXPORTDECL_WDBASE StoreCopier
 {
 public:
-
-	//!deprecated use static API
-	StoreCopier() {};
-	virtual ~StoreCopier() {};
-
 	//! Copies slots from context to dest according to config
 	//! The config Anything should have the form
 	//! <PRE>{
@@ -42,6 +37,10 @@ public:
 	//!param: indexdelim - delimiting character for indexed slots
 	static void Operate(Context &c, Anything &dest, const Anything &config, char delim = '.', char indexdelim = ':');
 	static void Operate(Context &c, Anything &dest, const ROAnything &config, char delim = '.', char indexdelim = ':');
+
+private:
+	//!deprecated use static API
+	StoreCopier();
 };
 
 //---- StoreFinder -----------------------------------------------------------
@@ -51,11 +50,6 @@ public:
 class EXPORTDECL_WDBASE StoreFinder
 {
 public:
-
-	//!deprecated use static API
-	StoreFinder() {};
-	virtual ~StoreFinder() {};
-
 	//! looks up the slot in the store, creates it if not found.
 	//! The config Anything should have the form
 	//! <PRE>{
@@ -79,6 +73,10 @@ public:
 	//! \param storeName name of the store
 	//! \return a Store from the context accroding to storeName  (Role -> RoleStore, Session-> SessionStore, Request, everything else ->TmpStore )
 	static Anything &FindStore(Context &c, String &storeName);
+
+private:
+	//!deprecated use static API
+	StoreFinder();
 };
 
 //---- StorePutter -----------------------------------------------------------
@@ -88,11 +86,6 @@ public:
 class EXPORTDECL_WDBASE StorePutter
 {
 public:
-
-	//!deprecated use static API
-	StorePutter() {};
-	virtual ~StorePutter() {};
-
 	//! looks up the slot in the store, creates it if not found.
 	//! The config Anything should have the form
 	//! <PRE>{
@@ -112,6 +105,10 @@ public:
 	//! \post c.LookupPath(config["Slot"].AsString("")) = source
 	static void Operate(Anything &source, Context &c, const Anything &config);
 	static void Operate(Anything &source, Context &c, const ROAnything &config);
+
+private:
+	//!deprecated use static API
+	StorePutter();
 };
 
 #endif		//ifndef _ANYTHINGUTILS_H
