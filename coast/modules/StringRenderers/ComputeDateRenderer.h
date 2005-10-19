@@ -10,6 +10,7 @@
 #define _ComputeDateRenderer_H
 
 //---- baseclass include -------------------------------------------------
+#include "config_hikups.h"
 #include "Renderer.h"
 
 //---- ComputeDateRenderer ----------------------------------------------------------
@@ -50,7 +51,7 @@
 
 // NOTE: Unix dates will break somewhen around year 2036
 
-class ComputeDateRenderer : public Renderer
+class EXPORTDECL_HIKUPS ComputeDateRenderer : public Renderer
 {
 public:
 	//--- constructors

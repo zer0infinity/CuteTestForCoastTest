@@ -10,14 +10,11 @@
 #define _SlotNameRenderer_H
 
 //---- Renderer include -------------------------------------------------
+#include "config_hikups.h"
 #include "Renderer.h"
 
-class Context;
-class ROAnything;
-class ostream;
-
 //---- SlotNameRenderer ----------------------------------------------------------
-class SlotNameRenderer : public Renderer
+class EXPORTDECL_HIKUPS SlotNameRenderer : public Renderer
 {
 public:
 	//--- constructors

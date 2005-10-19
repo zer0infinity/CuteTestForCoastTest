@@ -10,14 +10,11 @@
 #define _ReplaceExtChrRenderer_H
 
 //---- Renderer include -------------------------------------------------
+#include "config_hikups.h"
 #include "Renderer.h"
 
-class Context;
-class ROAnything;
-class ostream;
-
 //---- ReplaceExtChrRenderer ----------------------------------------------------------
-class ReplaceExtChrRenderer : public Renderer
+class EXPORTDECL_HIKUPS ReplaceExtChrRenderer : public Renderer
 {
 public:
 	//--- constructors

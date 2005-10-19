@@ -6,15 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#include <iostream.h>
-
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "Context.h"
-#include "Dbg.h"
-
 //--- interface ------------
 #include "ReplaceExtChrRenderer.h"
+
+//--- standard modules used ----------------------------------------------------
+#include "Dbg.h"
 
 //---- ReplaceExtChrRenderer ---------------------------------------------------------------
 RegisterRenderer(ReplaceExtChrRenderer);

@@ -6,20 +6,15 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- c-modules used -----------------------------------------------------------
-#include <time.h>
-// #include <ctime>
-#include <iostream.h>
-
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "System.h"
-#include "SysLog.h"
-#include "Context.h"
-#include "Dbg.h"
-
 //--- interface include -------------------------------------------------------
 #include "ComputeDateRenderer.h"
+
+//--- standard modules used ----------------------------------------------------
+#include "System.h"
+#include "SysLog.h"
+#include "Dbg.h"
+
+//--- c-modules used -----------------------------------------------------------
 
 //---- ComputDateRenderer ----------------------------------------------------------------
 RegisterRenderer(ComputeDateRenderer);
@@ -71,7 +66,7 @@ void ComputeDateRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnythi
 	long lDayfromidx = -1L, lMonthfromidx = -1L, lMonthAbbrfromidx = -1L, lYearfromidx = -1L, lHourfromidx = -1L, lHour12fromidx = -1L, lAmPmfromidx = -1L, lMinutefromidx = -1L, lSecondfromidx = -1L;
 
 	if (config.IsDefined("FromDate")) { // first mandantory datetime
-		Renderer::RenderOnString( strFromDate, ctx, config["FromDate"] );
+		strFromDate = Renderer::RenderToString( ctx, config["FromDate"] );
 		if (config.IsDefined("InputFormat")) { // first mandantory datetime
 			Renderer::RenderOnString( strInputFormat, ctx, config["InputFormat"]);
 		} else {
@@ -168,7 +163,6 @@ void ComputeDateRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnythi
 		Trace("date1.tm_isdst:" << (long)(date1.tm_isdst) );
 
 		reply << (long)timefrom; 	// output is seconds since 00:00:00 UTC, January 1, 1970
-
 	} else {
 		SysLog::Warning("ComputeDateRenderer::RenderAll: mandatory 'FromDate' slot is missing in configuration!");
 	}
