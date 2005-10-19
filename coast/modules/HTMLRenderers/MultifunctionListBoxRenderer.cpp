@@ -1120,7 +1120,7 @@ void MultifunctionListBoxRenderer::RenderAddButton(ostream &reply, Context &c, c
 			ROAnything optionsConfig = roButton["Options"];
 			TraceAny(optionsConfig, "options of AddButton");
 			if (optionsConfig.IsDefined("OnClick")) {
-				RenderOnString(strOnClick, c, roButton["Options"]);
+				RenderOnString(strOnClick, c, optionsConfig["OnClick"]);
 				Trace("specified strOnClick is : " << strOnClick);
 				addFunction << "	return false;" << ENDL;
 			}
@@ -1709,7 +1709,7 @@ void MultifunctionListBoxRenderer::RenderPrintScripts(ostream &reply, Context &c
 	strPrintWindowHeader << "	var winOptions = winCommOpts;\n";
 	strPrintWindowHeader << "	var winPrintPreview = window.open('','Print', winOptions);\n";
 	strPrintWindowHeader << "	winPrintPreview.document.open('text/html');\n";
-	strPrintWindowHeader << "	winPrintPreview.document.writeln('<HTML><HEAD><TITLE>Drucken...</TITLE></HEAD>');\n";
+	strPrintWindowHeader << "	winPrintPreview.document.writeln('<HTML><HEAD><TITLE>Drucken...<\\/TITLE><\\/HEAD>');\n";
 	strPrintWindowHeader << "	winPrintPreview.document.writeln('<BODY>');\n";
 	reply << strPrintWindowHeader;
 	//
@@ -1730,13 +1730,13 @@ void MultifunctionListBoxRenderer::RenderPrintScripts(ostream &reply, Context &c
 			String strName;
 			RenderOnString(strName, c, theList[lx]["Name"]);
 			String strClass = (0 == lx) ? "\"ListingHeaderTableCellName\"" : "\"ListingHeaderTableCellNameLR\"";
-			reply << "	winPrintPreview.document.writeln('   <td class=" << strClass << ">" << strName  << "</td>');\n";
+			reply << "	winPrintPreview.document.writeln('   <td class=" << strClass << ">" << strName  << "<\\/td>');\n";
 			String strDesc;
 			RenderOnString(strDesc, c, theList[lx]["Desc"]);
-			reply << "	winPrintPreview.document.writeln('   <td class=\"ListingHeaderTableDetail\">" << strDesc  << "</td>');\n";
+			reply << "	winPrintPreview.document.writeln('   <td class=\"ListingHeaderTableDetail\">" << strDesc  << "<\\/td>');\n";
 		}
-		reply << "	winPrintPreview.document.writeln('</tr></table>');\n";
-		reply << "	winPrintPreview.document.writeln('</td></tr></table>');\n";
+		reply << "	winPrintPreview.document.writeln('<\\/tr><\\/table>');\n";
+		reply << "	winPrintPreview.document.writeln('<\\/td><\\/tr><\\/table>');\n";
 	}
 
 	reply << "	winPrintPreview.document.writeln('<TABLE BORDER=1>');\n";
@@ -1746,7 +1746,7 @@ void MultifunctionListBoxRenderer::RenderPrintScripts(ostream &reply, Context &c
 		reply << "  RenderPrintTableRows(" << strBoxName << "Properties, winPrintPreview.document);\n";
 	}
 	// end printingtable
-	reply << "	winPrintPreview.document.writeln('</TABLE>');\n";
+	reply << "	winPrintPreview.document.writeln('<\\/TABLE>');\n";
 
 	// render navigation
 	String strPrintWindowNavigation;
@@ -1754,11 +1754,11 @@ void MultifunctionListBoxRenderer::RenderPrintScripts(ostream &reply, Context &c
 	strPrintWindowNavigation << "	winPrintPreview.document.writeln('<INPUT TYPE=\"HIDDEN\" NAME=\"fld_dummy\" VALUE=\"\">');\n";
 	strPrintWindowNavigation << "	winPrintPreview.document.writeln('<INPUT TYPE=\"SUBMIT\" NAME=\"" << strBoxName << "_Print\" VALUE=\"Drucken\" OnClick=\"print();return false;\" class=\"FormButton\">');\n";
 	strPrintWindowNavigation << "	winPrintPreview.document.writeln('<INPUT TYPE=\"BUTTON\" VALUE=\"Schliessen\" OnClick=\"self.close();return false;\" class=\"FormButton\">');\n";
-	strPrintWindowNavigation << "	winPrintPreview.document.writeln('</FORM>');\n";
+	strPrintWindowNavigation << "	winPrintPreview.document.writeln('<\\/FORM>');\n";
 	reply << strPrintWindowNavigation;
 
-	reply << "	winPrintPreview.document.writeln('</BODY>');\n";
-	reply << "	winPrintPreview.document.writeln('</HTML>');\n";
+	reply << "	winPrintPreview.document.writeln('<\\/BODY>');\n";
+	reply << "	winPrintPreview.document.writeln('<\\/HTML>');\n";
 	reply << "	winPrintPreview.document.close();\n";
 	reply << "}\n";
 }
