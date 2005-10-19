@@ -10,8 +10,8 @@
 #include "AnythingUtils.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "StringStream.h"
 #include "Renderer.h"
+#include "SysLog.h"
 #include "Dbg.h"
 
 //-- StoreCopier ---------------------------------------------------------------
@@ -34,13 +34,12 @@ void StoreCopier::Operate(Context &c, Anything &dest, const ROAnything &config, 
 		String destSlot;
 		Renderer::RenderOnString(destSlot, c, config[i]);
 		if ( sourceLookupName && destSlot ) {
-			dest[destSlot] = c.Lookup(sourceLookupName, delim, indexdelim).DeepClone();
+			dest[destSlot] = c.Lookup(sourceLookupName, delim, indexdelim).DeepClone(dest.GetAllocator());
 		}
 	}
 }
 
 //-- StoreFinder ---------------------------------------------------------------
-
 void StoreFinder::Operate(Context &c, Anything &dest, const Anything &config)
 {
 	StartTrace(StoreFinder.Operate);
@@ -54,7 +53,10 @@ void StoreFinder::Operate(Context &context, Anything &dest, const ROAnything &co
 	TraceAny(config, "Config");
 
 	String store = config["Store"].AsString("");
-	dest = FindStore(context, store);
+	Anything &anyStore = FindStore(context, store);
+	if ( !dest.SetAllocator(anyStore.GetAllocator()) ) {
+		SYSWARNING("Tried to set allocator on Anything having an Impl already! Keep in mind that you might be operating on a copy!");
+	}
 
 	String destSlotname;
 	Renderer::RenderOnString(destSlotname, context, config["Slot"]);
@@ -68,7 +70,7 @@ void StoreFinder::Operate(Context &context, Anything &dest, const ROAnything &co
 		anyConfig["IndexDelim"] = config["IndexDelim"].AsCharPtr(":")[0L];
 	}
 
-	SlotFinder::Operate(dest, dest, anyConfig);
+	SlotFinder::Operate(anyStore, dest, anyConfig);
 }
 
 Anything &StoreFinder::FindStore(Context &c, String &storeName)
