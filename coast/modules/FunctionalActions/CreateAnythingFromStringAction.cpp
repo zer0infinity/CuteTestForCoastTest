@@ -11,9 +11,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "AnythingUtils.h"
-#include "StringStream.h"
 #include "SysLog.h"
-#include "Context.h"
 #include "Renderer.h"
 #include "Dbg.h"
 
@@ -52,8 +50,7 @@ bool CreateAnythingFromStringAction::DoExecAction(String &transitionToken, Conte
 		return false;
 	}
 
-	StorePutter sp;
-	sp.Operate(newAny, ctx, destConfig);
+	StorePutter::Operate(newAny, ctx, destConfig);
 
 	return true;
 }
