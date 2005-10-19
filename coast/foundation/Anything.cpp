@@ -1822,10 +1822,13 @@ Anything::EType Anything::GetType() const
 
 void Anything::EnsureArrayImpl(Anything &anyToEnsure)
 {
+	StartTrace(Anything.EnsureArrayImpl);
 	if ( anyToEnsure.GetType() != Anything::eArray ) {
+		Trace("is not array");
 		// behave friendly if current slot is not an array impl, eg don't lose current entry
-		MetaThing expander;
+		MetaThing expander(anyToEnsure.GetAllocator());
 		if ( !anyToEnsure.IsNull() ) {
+			Trace("was not Null");
 			expander.Append(anyToEnsure);
 		}
 		anyToEnsure = expander;
@@ -3859,30 +3862,31 @@ void SlotFinder::Operate(Anything &source, Anything &dest, const ROAnything &con
 {
 	StartTrace(SlotFinder.Operate);
 	TraceAny(config, "Config");
-	TraceAny(source, "Source");
-
-	String destSlotname = config["Slot"].AsString("");
-	char delim = config["Delim"].AsCharPtr(".")[0L];
-	char indexdelim = config["IndexDelim"].AsCharPtr(":")[0L];
+	Operate(source, dest, config["Slot"].AsString(""), config["Delim"].AsCharPtr(".")[0L], config["IndexDelim"].AsCharPtr(":")[0L]);
+}
+void SlotFinder::Operate(Anything &source, Anything &dest, String destSlotname, char delim, char indexdelim )
+{
+	StartTrace(SlotFinder.Operate);
 	Trace("Destination slotname [" << destSlotname << "]");
+	SubTraceAny(TraceAny, source, "Source");
 	dest = source;
 	long destIdx = -1L;
-	if (SlotFinder::IntOperate(dest, destSlotname, destIdx, delim, indexdelim)) {
+	if ( IntOperate(dest, destSlotname, destIdx, delim, indexdelim) ) {
 		if (destSlotname.Length()) {
 			if ( !dest.IsDefined(destSlotname) || dest[destSlotname].IsNull() ) {
 				Trace("adding slot [" << destSlotname << "]");
-				dest[destSlotname] = MetaThing();
+				dest[destSlotname] = MetaThing(dest.GetAllocator());
 			}
 			dest = dest[destSlotname];
 		} else {
 			if (!dest.IsDefined(destIdx)) {
 				Trace("adding indexslot [" << destIdx << "]");
-				dest[destIdx] = MetaThing();
+				dest[destIdx] = MetaThing(dest.GetAllocator());
 			}
 			dest = dest.At(destIdx);
 		}
 	}
-	TraceAny(dest, "Destination is finally:");
+	SubTraceAny(TraceAny, dest, "Destination is finally:");
 }
 
 bool SlotFinder::IntOperate(Anything &dest, String &destSlotname, long &destIdx, char delim, char indexdelim)
@@ -3898,10 +3902,10 @@ bool SlotFinder::IntOperate(Anything &dest, String &destSlotname, long &destIdx,
 			if (IntOperate(dest, s, destIdx)) {
 				// ensure that we have a valid anything
 				if (dest[s].GetType() == Anything::eNull) {
-					dest[s] = MetaThing();
+					dest[s] = MetaThing(dest.GetAllocator());
 				}
 				dest = dest[s];
-				TraceAny(dest, "dest so far");
+				SubTraceAny(TraceAny, dest, "dest so far");
 			}
 		}
 		destSlotname.TrimFront(lIdxDelim + 1);
@@ -3923,11 +3927,11 @@ bool SlotFinder::IntOperate(Anything &dest, String &destSlotname, long &destIdx,
 		if (destSlotname.Length()) {
 			// ensure that we have a valid anything
 			if (dest[destIdx].GetType() == Anything::eNull) {
-				dest[destIdx] = MetaThing();
+				dest[destIdx] = MetaThing(dest.GetAllocator());
 			}
 			// adjusting dest anything with slotindex
 			dest = dest[destIdx];
-			TraceAny(dest, "dest so far");
+			SubTraceAny(TraceAny, dest, "dest so far");
 			Trace("calling IntOperate(" << destSlotname << ")");
 			return IntOperate(dest, destSlotname, destIdx, delim, indexdelim);
 		} else {
@@ -3945,14 +3949,14 @@ bool SlotFinder::IntOperate(Anything &dest, String &destSlotname, long &destIdx,
 		if (keepOn) {
 			if ( !dest.IsDefined(k) || dest[k].IsNull() ) {
 				// insert non-existing slots on the fly
-				dest[k] = MetaThing();
+				dest[k] = MetaThing(dest.GetAllocator());
 			}
 		} else {
 			destSlotname = k;
 			return true;
 		}
 		dest = dest[k];
-		TraceAny(dest, "dest so far");
+		SubTraceAny(TraceAny, dest, "dest so far");
 	}
 	return false;
 }
@@ -3971,7 +3975,7 @@ void SlotPutter::Operate(Anything &source, Anything &dest, const ROAnything &con
 	StartTrace(SlotPutter.Operate);
 	TraceAny(config, "Config");
 	TraceAny(source, "Source");
-	TraceAny(dest, "Destination");
+	SubTraceAny(TraceAny, dest, "Destination");
 	Operate(source, dest, config["Slot"].AsString(""), config["Append"].AsBool(false), config["Delim"].AsCharPtr(".")[0L], config["IndexDelim"].AsCharPtr(":")[0L] );
 }
 
@@ -3979,10 +3983,13 @@ void SlotPutter::Operate(Anything &source, Anything &dest, String destSlotname, 
 {
 	StartTrace(SlotPutter.Operate);
 	Trace("Destination slotname[" << destSlotname << "]");
+	Trace("sourceImpl:" << (long)source.GetType() << " destImpl:" << (long)dest.GetType());
+	Trace("source any alloc:" << (long)source.GetAllocator() << " dest.alloc:" << (long)dest.GetAllocator());
+	SubTraceAny(TraceAny, source, "source");
 	// ensure that the destination anything is real
 	Anything::EnsureArrayImpl(dest);
 
-	Anything work = dest;
+	Anything work(dest, dest.GetAllocator());
 	long destIdx = -1L;
 	if (SlotFinder::IntOperate(work, destSlotname, destIdx, delim, indexdelim)) {
 		if (append) {
@@ -4003,6 +4010,7 @@ void SlotPutter::Operate(Anything &source, Anything &dest, String destSlotname, 
 			}
 		}
 	}
+	SubTraceAny(TraceAny, dest, "destination after");
 }
 
 //-- SlotCleaner ---------------------------------------------------------------
@@ -4027,10 +4035,10 @@ void SlotCleaner::Operate(Anything &dest, String slotName, bool removeLast, char
 	if (slotName.Length()) {
 		Trace("Destination slotname [" << slotName << "]");
 		// first of all, get the correct store
-		Anything anyParent = dest;
+		Anything anyParent(dest, dest.GetAllocator());
 
 		// test if the path to be deleted exists in the store, avoids creation of nonexisting slot
-		Anything anySlotTest;
+		Anything anySlotTest(dest.GetAllocator());
 		if (anyParent.LookupPath(anySlotTest, slotName, delim, indexdelim)) {
 			// use SlotFinders IntOperate to get the correct parent anything and the slotname/index
 			// to remove from
@@ -4085,7 +4093,7 @@ void SlotCopier::Operate(Anything &source, Anything &dest, const ROAnything &con
 		String sourceSlot = config.SlotName(i);
 		String destSlot = config[i].AsCharPtr(0);
 		Trace("copying [" << sourceSlot << "] to [" << destSlot << "]");
-		Anything content;
+		Anything content(dest.GetAllocator());
 		if ( sourceSlot && destSlot && source.LookupPath(content, sourceSlot, delim, indexdelim ) ) {
 			dest[destSlot] = content;
 		}
