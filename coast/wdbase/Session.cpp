@@ -56,6 +56,7 @@ Session::Session(const char *name, Context &ctx)
 	, fBrowser(Storage::Global())
 	, fRefCount(0L)
 {
+	StartTrace(Session.Session);
 	fStore["RoleStore"] = MetaThing(fStore.GetAllocator());
 }
 
