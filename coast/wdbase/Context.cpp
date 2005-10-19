@@ -254,6 +254,7 @@ Anything &Context::GetRoleStoreGlobal()
 
 Anything &Context::GetSessionStore()
 {
+	StartTrace1(Context.GetSessionStore, "fCopySessionStore: " << ( fCopySessionStore ? "true" : "false") );
 	return fCopySessionStore ? fSessionStoreCurrent : fSessionStoreGlobal;
 }
 
@@ -402,7 +403,7 @@ void Context::Push(Session *s)
 
 void Context::PushRequest(const Anything &request)
 {
-	StartTrace1(Context.Push, "session");
+	StartTrace1(Context.PushRequest, "request");
 
 	fRequest = request;
 	TraceAny(fRequest, "Request: ");
