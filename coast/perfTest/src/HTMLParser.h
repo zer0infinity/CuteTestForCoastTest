@@ -35,6 +35,8 @@ enum EAlign {
 class EXPORTDECL_PERFTEST HTMLParser
 {
 public:
+	HTMLParser();
+	virtual ~HTMLParser() {};
 
 	enum TagType {
 		eUNKNOWN = -1, eNONE = 0,
@@ -89,8 +91,6 @@ public:
 #endif
 	};
 
-	HTMLParser();
-
 	virtual long IntParse();
 
 	virtual Unicode IntGet();
@@ -143,19 +143,19 @@ class EXPORTDECL_PERFTEST AAT_HTMLReader
 public:
 	AAT_HTMLReader(istream *fp = 0);
 
-	virtual Unicode Get();
-	virtual void PutBack(char c);
+	Unicode Get();
+	void PutBack(char c);
 
 protected:
 	istream *fFile;
-
 };
+
 //---- AAT_HTMLWriter ---------------------------------------------------------------------------
 class EXPORTDECL_PERFTEST AAT_HTMLWriter
 {
 public:
-	AAT_HTMLWriter()
-	{ }
+	AAT_HTMLWriter() { }
+	virtual ~AAT_HTMLWriter() { }
 
 	virtual void Put(char c);
 	virtual void Put(Unicode c);
@@ -170,6 +170,7 @@ public:
 
 	virtual void Error(long line, const String &msg);
 };
+
 //---- AAT_StdHTMLParser -----
 class EXPORTDECL_PERFTEST AAT_StdHTMLParser : public HTMLParser
 {
@@ -198,7 +199,6 @@ private:
 //---- MyHTMLWriter ---------------------------------------------------------------------------
 class EXPORTDECL_PERFTEST MyHTMLWriter : public AAT_HTMLWriter
 {
-
 public:
 	MyHTMLWriter( Anything &urls ) : fUrls(urls), fStoreTitle(0), fRequestFailed(0), fFormNr(-1), fTitle(""), fAllStringsInPage(""), fInScript(false)
 	{ }
@@ -225,18 +225,13 @@ protected:
 	void RenderFontTag(int t, const char *s, Anything &node);
 	void RenderBASETag(int t, const char *s, Anything &node);
 	void RenderScriptTag(int t, const char *s, Anything &node);
-//	void RenderBodyTag(int t, const char*s, Anything &node);
 	void RenderTitleTag(int t, const char *s, Anything &node);
 	void RenderMetaTag(int t, const char *s, Anything &node);
 	void RenderFrameTag(int t, const char *s, Anything &node);
-//	void RenderFramesetTag(int t, const char*s, Anything &node);
 	void RenderFormTag(int t, const char *s, Anything &node);
 	void RenderInputTag(int t, const char *s, Anything &node);
 	void RenderSelectTag(int t, const char *s, Anything &node);
-//	bool Expand2AbsRequest(String &req, String &expanded);
-//	void RenderPBoWHeader();
-//	void RenderPBoWFooter();
-//	void RenderImageLink(String &req);
+
 protected:
 
 	Anything &fUrls;
