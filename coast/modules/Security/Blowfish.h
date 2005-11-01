@@ -28,12 +28,13 @@ public:
 #define BF_ROUNDS       16
 #define BF_BLOCK        8
 #define BF_LONG unsigned long
+
 	struct BlowfishKey {
 		BF_LONG P[BF_ROUNDS+2];
 		BF_LONG S[4*256];
-	} ;
-protected:
+	};
 
+protected:
 	//! pad to BF_BLOCK bytes, Coast default is to append 0-bytes plus a counting byte
 	virtual void PadToBlockSize(String &result, const String &cleartext) const;
 	//! remove padding added, but do a sanity check, return false if padding looks insane
