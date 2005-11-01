@@ -57,7 +57,7 @@ class EXPORTDECL_SYBASECT SybCTnewDA : public IFAObject
 		CS_SMALLINT	*indicator;
 		CS_CHAR		*value;
 		CS_INT		*valuelen;
-		static void *operator new[](size_t size, Allocator *a);
+		static void *operator new[](size_t size, Allocator *a) throw();
 		static void operator delete[](void *ptr);
 #if defined(WIN32) && (_MSC_VER >= 1200) // VC6 or greater
 		static void operator delete[](void *ptr, Allocator *a);

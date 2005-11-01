@@ -71,7 +71,7 @@ CS_RETCODE SybCTnewDA::ColumnData::AllocateIndicator(CS_INT num_rows)
 	return CS_SUCCEED;
 }
 
-void *SybCTnewDA::ColumnData::operator new[](size_t size, Allocator *a)
+void *SybCTnewDA::ColumnData::operator new[](size_t size, Allocator *a) throw()
 {
 	if (a) {
 		void *mem = a->Calloc(1, size + sizeof(Allocator *));
