@@ -11,11 +11,8 @@
 
 //--- c-library modules used ---------------------------------------------------
 #include "config_ssl.h"
-#include <stdio.h>
 
-#include <openssl/x509.h>
 #include <openssl/ssl.h>
-#include <openssl/rsa.h>
 #include <openssl/err.h>
 #include <openssl/rand.h>
 
