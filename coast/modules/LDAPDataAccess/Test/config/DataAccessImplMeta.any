@@ -45,7 +45,7 @@
 	/ldapDaImplEnvTestCfg {
 		/Server		"marvin.hsr.loc"
 		/Port		"49999"
-		/GetDNComponents 1L
+		/GetDNComponents 1
 	}
 	/ldapSearchTestCfg {
 		/Server		"marvin.hsr.loc"
