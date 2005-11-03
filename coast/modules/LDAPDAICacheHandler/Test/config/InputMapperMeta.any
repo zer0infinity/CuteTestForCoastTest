@@ -15,7 +15,7 @@
 	{
 		/LDAPFilter 	"(objectclass=*)"
 		/LDAPBase "ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch" # search base
-		/LDAPTimeout	30	# query timeout in seconds
+		/LDAPTimeLimit	30	# query timeout in seconds
 		/LDAPSizeLimit	2000	# result size limit
 		/LDAPScope		"subtree"
 	}
@@ -25,7 +25,7 @@
 	{
 		/LDAPFilter 	"(objectclass=*)"
 		/LDAPBase "uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch" # search base
-		/LDAPTimeout	30	# query timeout in seconds
+		/LDAPTimeLimit	30	# query timeout in seconds
 		/LDAPSizeLimit	2000	# result size limit
 		/LDAPScope		"subtree"
 	}
@@ -35,7 +35,7 @@
 	{
 		/LDAPFilter 	"(objectclass=*)"
 		/LDAPBase "uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch" # search base
-		/LDAPTimeout	30	# query timeout in seconds
+		/LDAPTimeLimit	30	# query timeout in seconds
 		/LDAPSizeLimit	2000	# result size limit
 		/LDAPScope		"base"
 	}
@@ -45,7 +45,7 @@
 	{
 		/LDAPFilter 	"(uid=tkgae)"
 		/LDAPBase "ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch" # search base
-		/LDAPTimeout	30	# query timeout in seconds
+		/LDAPTimeLimit	30	# query timeout in seconds
 		/LDAPSizeLimit	2000	# result size limit
 		/LDAPScope		"subtree"
 	}
@@ -56,7 +56,7 @@
 		/LDAPFilter	"(uid=tkgae)"
 		/LDAPBase "ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch" # search base
 		/LDAPAttrs { "pd-dn" }  # attribute we would like to compare
-		/LDAPTimeout	30	# query timeout in seconds
+		/LDAPTimeLimit	30	# query timeout in seconds
 		/LDAPSizeLimit	2000	# result size limit
 		/LDAPScope		"subtree"
 	}
@@ -66,7 +66,7 @@
 	{
 		/LDAPFilter	"(objectclass=notexistent)"
 		/LDAPBase "uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch" # search base
-		/LDAPTimeout	30	# query timeout in seconds
+		/LDAPTimeLimit	30	# query timeout in seconds
 		/LDAPSizeLimit	200	# result size limit
 		/LDAPScope		base
 	}
