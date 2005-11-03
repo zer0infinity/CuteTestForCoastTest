@@ -72,7 +72,7 @@ bool LdapCachePolicyModule::InitialLoad(const Anything &dataAccesses, LdapCacheP
 		LdapDataAccessLoader ldl;
 		LdapActionLoader lal;
 		Anything tmp;
-		for (int i = 0; i < dataAccesses.GetSize(); i++) {
+		for (int i = 0; i < dataAccesses.GetSize(); ++i) {
 			String toDo(dataAccesses[i].AsString());
 			if ( daType == dataaccess ) {
 				Trace("Loading ldl with: " << toDo);
@@ -94,7 +94,7 @@ bool LdapCachePolicyModule::CheckContractIsFulfilled(String &failedDataAccesses,
 {
 	StartTrace(LdapCachePolicyModule.CheckContractIsFulfilled);
 	bool ret(true);
-	for (int i = 0; i < dataAccesses.GetSize(); i++) {
+	for (int i = 0; i < dataAccesses.GetSize(); ++i) {
 		String daToDo(dataAccesses[i].AsString());
 		Trace("Checking with: " << daToDo);
 
@@ -123,23 +123,25 @@ LdapDataAccessLoader::~LdapDataAccessLoader() { }
 Anything LdapDataAccessLoader::Load(const char *ldapDa)
 {
 	StartTrace(LdapDataAccessLoader.Load);
-	Anything theResult(Storage::Global());
-	Context ctx;
-	if (ldapDa != "") {
-		Anything tmpStore = ctx.GetTmpStore();
-		bool retCode = DataAccess(ldapDa).StdExec(ctx);
-		TraceAny(tmpStore["Mapper"], "Returned" << ldapDa);
-		Trace("Result of DataAccess " << ldapDa << " is: " << retCode);
-		if ( retCode &&
-			 tmpStore["Mapper"]["Info"]["LdapSearchFoundEntryButNoData"].AsLong() == 0 ) {
-			theResult = tmpStore["Mapper"]["LDAPResult"];
+	Anything theResult;
+	if ( String(ldapDa).Length() ) {
+		Context ctx;
+		if ( DataAccess(ldapDa).StdExec(ctx) ) {
+			String strResultSlot = ctx.Lookup("ResultMapper.DestinationSlot", "Mapper");
+			ROAnything roaResult;
+			if ( ctx.Lookup(strResultSlot, roaResult ) ) {
+				TraceAny(roaResult, "Results for [" << ldapDa << "]");
+				if ( roaResult["Info"]["LdapSearchFoundEntryButNoData"].AsLong() == 0 ) {
+					theResult = roaResult["LDAPResult"].DeepClone();
+				}
+			}
 		} else {
 			String msg;
 			msg << "\tLdapCachePolicyModule::Load Unable to exec LDAP query for: " << ldapDa << "\n";
 			SysLog::WriteToStderr(msg);
 		}
 	}
-	return (theResult);
+	return theResult;
 }
 
 //--- LdapDataAccessLoader -----------------------------------------------
@@ -149,28 +151,30 @@ LdapActionLoader::~LdapActionLoader() { }
 Anything LdapActionLoader::Load(const char *ldapDaAction)
 {
 	StartTrace(LdapActionLoader.Load);
-	Anything theResult(Storage::Global());
-	Context ctx;
-	if (ldapDaAction != "") {
-		Anything tmpStore = ctx.GetTmpStore();
+	Anything theResult;
+	if ( String(ldapDaAction).Length() ) {
+		Context ctx;
 		String transition;
 		Anything config;
 		// Default constructs an action config containing the name of the LdapDataAccess to execute
 		// This may be overridden by the action implementing the DataAccess(es).
 		config[ldapDaAction]["DataAccess"] = ldapDaAction;
-		bool retCode = Action::ExecAction(transition, ctx, config);
-		TraceAny(tmpStore["Mapper"], "Returned: " << ldapDaAction);
-		Trace("Result of DataAccess " << ldapDaAction << " is: " << retCode);
-		if (retCode &&
-			tmpStore["Mapper"]["Info"]["LdapSearchFoundEntryButNoData"].AsLong() == 0) {
-			theResult = tmpStore["Mapper"]["LDAPResult"];
+		if ( Action::ExecAction(transition, ctx, config) ) {
+			String strResultSlot = ctx.Lookup("ResultMapper.DestinationSlot", "Mapper");
+			ROAnything roaResult;
+			if ( ctx.Lookup(strResultSlot, roaResult ) ) {
+				TraceAny(roaResult, "Results for [" << ldapDaAction << "]");
+				if ( roaResult["Info"]["LdapSearchFoundEntryButNoData"].AsLong() == 0 ) {
+					theResult = roaResult["LDAPResult"].DeepClone();
+				}
+			}
 		} else {
 			String msg;
 			msg << "\tLdapCachePolicyModule::Load Unable to exec LDAP query for: " << ldapDaAction << "\n";
 			SysLog::WriteToStderr(msg);
 		}
 	}
-	return (theResult);
+	return theResult;
 }
 
 //---- LdapCacheGetter ---------------------------------------------------------
