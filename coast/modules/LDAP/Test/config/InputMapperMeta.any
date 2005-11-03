@@ -380,17 +380,17 @@
 	# ----- definitions for LDAPConnectionManagerTest
 	/LDAPConnectionManagerTest_Query{
 		/LDAPBase		"uid=connectionmanagertest,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
-		/LDAPScope		"one"
+		/LDAPScope		"base"
 	}
 
 	/LDAPConnectionManagerTest_StableQuery{
 		/LDAPBase		"uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
-		/LDAPScope		"one"
+		/LDAPScope		"base"
 	}
 
 	/LDAPConnectionManagerTest_Query_Added{
-		/LDAPBase	"uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
-		/LDAPScope		"one"
+		/LDAPBase		"uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPScope		"base"
 	}
 
 	/LDAPConnectionManagerTest_Delete {

@@ -515,7 +515,7 @@
 								/Query {
 								  /Base "uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
 								  /Scope 0
-								  /ScopeStringRepr "one"
+								  /ScopeStringRepr "base"
 								  /Filter "(objectclass=*)"
 								  /AttrsOnly 0
 								  /SizeLimit 0
@@ -587,7 +587,7 @@
  							  /Query {
  								/Base "uid=connectionmanagertest,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
  								/Scope 0
- 								/ScopeStringRepr "one"
+ 								/ScopeStringRepr "base"
  								/Filter "(objectclass=*)"
  								/AttrsOnly 0
  								/SizeLimit 0
@@ -786,7 +786,7 @@
  							  /Query {
  								/Base "uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
  								/Scope 0
- 								/ScopeStringRepr "one"
+ 								/ScopeStringRepr "base"
  								/Filter "(objectclass=*)"
  								/AttrsOnly 0
  								/SizeLimit 0
@@ -891,7 +891,7 @@
 							  /Query {
 								/Base "uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
 								/Scope 0
-								/ScopeStringRepr "one"
+								/ScopeStringRepr "base"
 								/Filter "(objectclass=*)"
 								/AttrsOnly 0
 								/SizeLimit 0
@@ -982,7 +982,7 @@
 								/Query {
 								  /Base "uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
 								  /Scope 0
-								  /ScopeStringRepr "one"
+								  /ScopeStringRepr "base"
 								  /Filter "(objectclass=*)"
 								  /AttrsOnly 0
 								  /SizeLimit 0
