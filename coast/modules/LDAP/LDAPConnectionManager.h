@@ -13,7 +13,6 @@
 #include "config_LDAPDA.h"
 #include "WDModule.h"
 #include "Threads.h"
-#include "Anything.h"
 #include "ldap.h"
 
 //---- LDAPConnectionManager ----------------------------------------------------------
@@ -165,7 +164,6 @@ protected:
 	long GetThisThreadsFreeListEntry(long maxConnections, const String &poolId);
 
 private:
-
 	LDAPConnectionManager(const LDAPConnectionManager &);
 	LDAPConnectionManager &operator=(const LDAPConnectionManager &);
 	// use careful, you inhibit subclass use
