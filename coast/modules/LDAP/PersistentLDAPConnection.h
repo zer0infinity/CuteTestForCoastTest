@@ -11,14 +11,13 @@
 
 //---- baseclass include --------------------------------------------------
 #include "config_LDAPDA.h"
-#include "LDAPErrorHandler.h"
 #include "LDAPConnection.h"
 
 //---- PersistentLDAPConnection ----------------------------------------------------------
 //! <B>Persistent 		LDAP connections used by LDAPConnectonManger.</B>
 //!
 //!						Below values apply to LDAPConnections and PersistentLDAPConnections
-///!/Server				IP or DNS name of the target server. Default is localhost.
+//! /Server				IP or DNS name of the target server. Default is localhost.
 //!	/Port				Port of the target ldap server. Default is 389
 //!	/ConnnectionTimeout	How many seconds to wait until connection is established, abort when timeout is reached. Default is 10 sec.
 //!						<b>Important:</b> connection pools are distinguished by Server/Port/DN/Password/ConnectionTimeout
@@ -43,7 +42,6 @@
 //!	/RebindTimeout		If set to 0, this setting is ignored. Otherwise a connection is re-established after the /RebindTimeout
 //!						second. Evaluation of this value takes place every time a LDAP operation on this connection is executed.
 //!						Default is to ignore this setting.
-
 class EXPORTDECL_LDAPDA PersistentLDAPConnection: public LDAPConnection
 {
 public:
@@ -59,25 +57,28 @@ public:
 	//! return max number of connections to use for connection type
 	int GetMaxConnections();
 
-	//! wait for result (with connection-specific timeout)
-	//! returns false if error occurred or timeout
-	//! \param msgId 	id of message to wait for
-	//! \param result	returned result (not changed if not successful).
-	//!                 all attributes in result will be normalized to lowercase!
-	//! \param eh		error handler object
-	bool WaitForResult(int msgId, Anything &result, LDAPErrorHandler &eh);
-
-	//! Release handle when using LDAPConnectionManager
-	bool ReleaseHandleInfo();
-
 	//! Called by THRKEYDELETE (LDAPConnectionManager)
 	static void tsd_destruct(void *tsd);
 
 protected:
+	//! Release handle when using LDAPConnectionManager
+	virtual bool DoReleaseHandleInfo();
+
+	/*! handle the case of a bind failure, eg. disconnect
+		\param eh error handling structure
+		\param errMsg callers message to possibly print out */
+	virtual void DoHandleBindFailure(LDAPErrorHandler &eh, String &errMsg);
+
+	/*! handle the case of a timeout when waiting for a result, maybe try to rebind etc.
+		\param eh error handling structure */
+	virtual void DoHandleWaitForResultTimeout(LDAPErrorHandler &eh);
+
+	/*! handle additional steps to to after a WaitForResult error has occured
+		\param eh error handling structure */
+	virtual void DoHandleWait4ResultError(LDAPErrorHandler &eh);
 
 	//! does the Connect and reports details what it has done.
-	LDAPConnection::EConnectState DoConnect(ROAnything bindParams, LDAPErrorHandler eh);
-	bool Bind(String bindName, String bindPW, int &msgId, LDAPErrorHandler eh);
+	LDAPConnection::EConnectState DoConnect(ROAnything bindParams, LDAPErrorHandler &eh);
 
 private:
 	//! Function to set up thread-specific data.
@@ -117,12 +118,9 @@ private:
 	//! create a base64 armoured md5 hash
 	static String Base64ArmouredMD5Hash(const String &text);
 
-	//! Issue error message and abadon connection if connection was already established
-	void HandleWait4ResultError(int msgId, String &errMsg, LDAPErrorHandler eh);
-
 	//! set errno handler because the ldap lib does not know whether threads are used or not. By calling
 	//! this wrapper functions to errno, at compile time the right (thread safe errno macro) is used.
-	bool SetErrnoHandler(LDAPErrorHandler eh);
+	bool SetErrnoHandler(LDAPErrorHandler &eh);
 
 	//! These test classes acesse private methods of PersistentLDAPConnection
 	friend class LDAPConnectionManager;

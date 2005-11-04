@@ -12,18 +12,15 @@
 //--- project modules used -----------------------------------------------------
 #include "LDAPMessageEntry.h"
 #include "LDAPConnectionManager.h"
-#include "ldap-extension.h"
 
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-#include "Threads.h"
 #include "StringStream.h"
 #include "Base64.h"
 #include "MD5.h"
 #include "SysLog.h"
 
 //--- c-modules used -----------------------------------------------------------
-#include <string.h>
 
 /* Function to set up thread-specific data. */
 void PersistentLDAPConnection::tsd_setup()
@@ -121,7 +118,7 @@ int PersistentLDAPConnection::GetMaxConnections()
 	return fMaxConnections;
 }
 
-bool PersistentLDAPConnection::SetErrnoHandler(LDAPErrorHandler eh)
+bool PersistentLDAPConnection::SetErrnoHandler(LDAPErrorHandler &eh)
 {
 	StartTrace(PersistentLDAPConnection.SetErrnoHandler);
 
@@ -163,50 +160,20 @@ PersistentLDAPConnection::EConnectState PersistentLDAPConnection::DoConnectHook(
 	return eConnectState;
 }
 
-bool PersistentLDAPConnection::ReleaseHandleInfo()
+bool PersistentLDAPConnection::DoReleaseHandleInfo()
 {
-	StartTrace(PersistentLDAPConnection.ReleaseHandleInfo);
-	bool ret = LDAPConnectionManager::LDAPCONNMGR()->ReleaseHandleInfo(fMaxConnections, fPoolId);
-	return ret;
+	StartTrace(PersistentLDAPConnection.DoReleaseHandleInfo);
+	return LDAPConnectionManager::LDAPCONNMGR()->ReleaseHandleInfo(fMaxConnections, fPoolId);
 }
 
-bool PersistentLDAPConnection::Bind(String bindName, String bindPW, int &msgId, LDAPErrorHandler eh)
+void PersistentLDAPConnection::DoHandleBindFailure(LDAPErrorHandler &eh, String &errMsg)
 {
-	StartTrace(LDAPConnection.PersistentLDAPConnection);
-
-	String errMsg = "Binding request failed. ";
-	errMsg << "[Server: '" << fServer << "', Port: '" << fPort << "'] ";
-
-	if ( bindName.IsEqual("") || bindName.IsEqual("Anonymous") ) {
-		Trace("Binding as Anonymous");
-		errMsg << " (Anonymous bind.)";
-		msgId = ::ldap_simple_bind( fHandle, NULL, NULL );
-	} else {
-		errMsg << " (Authorized bind.)";
-
-		if ( bindPW == "undefined" ) {
-			Trace("Bindpassword NOT OK: pwd = ["  << bindPW << "]");
-			eh.HandleSessionError(fHandle, errMsg);
-			return false;
-		} else {
-			Trace("Binding with <" << bindName << "><" << bindPW << ">");
-			msgId = ::ldap_simple_bind( fHandle, bindName, bindPW );
-		}
-	}
-
-	// bind request successful?
-	if ( msgId == -1 ) {
-		Trace("Binding request FAILED!");
-		eh.HandleSessionError(fHandle, errMsg);
-		Disconnect();
-		return false;
-	}
-
-	Trace("Binding request SUCCEEDED, waiting for connection...");
-	return true;
+	StartTrace1(PersistentLDAPConnection.DoHandleBindFailure, "Binding request FAILED!");
+	eh.HandleSessionError(fHandle, errMsg);
+	Disconnect();
 }
 
-LDAPConnection::EConnectState PersistentLDAPConnection::DoConnect(ROAnything bindParams, LDAPErrorHandler eh)
+LDAPConnection::EConnectState PersistentLDAPConnection::DoConnect(ROAnything bindParams, LDAPErrorHandler &eh)
 {
 	StartTrace(PersistentLDAPConnection.DoConnect);
 
@@ -251,94 +218,17 @@ LDAPConnection::EConnectState PersistentLDAPConnection::DoConnect(ROAnything bin
 	return ret ? PersistentLDAPConnection::eOk : PersistentLDAPConnection::eBindNok;
 }
 
-bool PersistentLDAPConnection::WaitForResult(int msgId, Anything &result, LDAPErrorHandler &eh)
+void PersistentLDAPConnection::DoHandleWaitForResultTimeout(LDAPErrorHandler &eh)
 {
-	StartTrace(PersistentLDAPConnection.WaitForResult);
-
-	timeval tv;
-	tv.tv_sec  = fSearchTimeout;
-	tv.tv_usec = 0;
-
-	timeval *tvp = (fSearchTimeout == 0) ? NULL : &tv;
-
-	bool finished = false;
-	bool success = false;
-
-	String errMsg;
-	int resultCode;
-
-	LDAPMessage *ldapResult;
-	LDAPMessageEntry lmAutoDestruct(&ldapResult);	// automatic destructor for LDAPMessage
-	lmAutoDestruct.Use();
-
-	while (!finished) {
-		// wait for result
-		resultCode = ldap_result(fHandle, msgId, 1, tvp, &ldapResult);
-
-		// check result
-		if (resultCode == -1 && fSearchTimeout == 0) {
-			// error, abandon!
-			Trace("WaitForResult [Timeout: 0] received an error");
-			int opRet;
-			ldap_parse_result( fHandle, ldapResult, &opRet, NULL, NULL, NULL, NULL, 0 );
-			errMsg << "Synchronous Wait4Result: ErrorCode: [" << (long)opRet << "] ErrorMsg: " << ldap_err2string( opRet );
-			HandleWait4ResultError(msgId, errMsg, eh);
-			finished = true;
-		} else if (resultCode == 0 || (resultCode == -1 && fSearchTimeout != 0)) {
-			// resultCode 0 means timeout, abandon
-			Trace("WaitForResult [Timeout != 0] encountered a timeout ...");
-			errMsg << "Asynchronous Wait4Result: The request <" << (long) msgId << "> timed out.";
-			HandleWait4ResultError(msgId, errMsg, eh);
-			if ( fTryAutoRebind ) {
-				eh.SetShouldRetry();
-			}
-			finished = true;
-		} else {
-			// received a result
-			int errCode = ldap_result2error(fHandle, ldapResult, 0);
-			if (errCode == LDAP_SUCCESS || errCode == LDAP_SIZELIMIT_EXCEEDED) {
-				Trace("WaitForResult recieved a result and considers it to be ok ...");
-				success = true;
-
-				// transform LDAPResult into an Anything with Meta Information
-				TransformResult(ldapResult, result, eh.GetQueryParams());
-
-				// add extra flag to inform client, if sizelimit was exceeded
-				if (errCode == LDAP_SIZELIMIT_EXCEEDED) {
-					result["SizeLimitExceeded"] = 1;
-				}
-			} else if (errCode == LDAP_COMPARE_FALSE || errCode == LDAP_COMPARE_TRUE) {
-				Trace("WaitForResult recieved a result and considers it to be ok (compare) ...");
-				success = true;
-
-				// this is a bit special
-				int rc;
-				ldap_get_option(fHandle, LDAP_OPT_ERROR_NUMBER, &rc);
-				result["Type"] = "LDAP_RES_COMPARE";
-				result["Equal"] = (errCode == LDAP_COMPARE_TRUE);
-				result["LdapCode"] = rc;
-				result["LdapMsg"] = ldap_err2string(rc);
-			} else {
-				Trace("WaitForResult recieved a result and considers it to be WRONG ...");
-				errMsg = "LDAP request failed.";
-				eh.HandleSessionError(fHandle, errMsg);
-			}
-			finished = true;
-		}
+	StartTrace(PersistentLDAPConnection.DoHandleWaitForResultTimeout);
+	if ( fTryAutoRebind ) {
+		eh.SetShouldRetry();
 	}
-	return success;
 }
 
-void PersistentLDAPConnection::HandleWait4ResultError(int msgId, String &errMsg, LDAPErrorHandler eh)
+void PersistentLDAPConnection::DoHandleWait4ResultError(LDAPErrorHandler &eh)
 {
-	StartTrace(PersistentLDAPConnection.HandleWait4ResultError);
-	if ( msgId != -1 ) {
-		int errCode = ldap_abandon(fHandle, msgId);
-		errMsg << " Request abandoned: " << (errCode == LDAP_SUCCESS ? " successfully." : " FAILED!");
-	} else {
-		errMsg << " Request abandoned: binding handle was invalid, ldap_abandon not called";
-	}
-	eh.HandleSessionError(fHandle, errMsg);
+	StartTrace(PersistentLDAPConnection.DoHandleWait4ResultError);
 	// Invalidate our handle because LDAP server might be down, will rebind next time!
 	LDAPConnectionManager::LDAPCONNMGR()->SetLdapConnection(GetMaxConnections(), fPoolId, (LDAP *) NULL);
 }

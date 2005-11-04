@@ -35,8 +35,6 @@ class EXPORTDECL_LDAPDA LDAPConnection
 public:
 	enum EConnectState { eOk, eNok, eMustRebind, eMustNotRebind, eRebindOk, eInitNok, eBindNok, eSetOptionsNok };
 
-//	static int  LDAP_CALL LDAP_CALLBACK RebindProc( LDAP *ld, char **dnp, char **passwdp, int *authmethodp, int freeit, void *arg );
-
 	//! create a new ldap session
 	//! \param connectionParams an Anything that contains Server, Port,
 	//!		   Timeout and MapUTF8 parameters
@@ -45,16 +43,16 @@ public:
 	LDAPConnection(ROAnything connectionParams);
 	virtual ~LDAPConnection();
 
-	//! wait for result (with connection-specific timeout)
-	//! returns false if error occurred or timeout
-	//! \param msgId 	id of message to wait for
-	//! \param result	returned result (not changed if not successful).
-	//!                 all attributes in result will be normalized to lowercase!
-	//! \param eh		error handler object
-	virtual bool WaitForResult(int msgId, Anything &result, LDAPErrorHandler &eh);
+	/*! wait for result (with connection-specific timeout)
+		\param msgId 	id of message to wait for
+		\param result	returned result (not changed if not successful).
+		                all attributes in result will be normalized to lowercase!
+		\param eh		error handler object
+		\return false if error occurred or timeout */
+	bool WaitForResult(int msgId, Anything &result, LDAPErrorHandler &eh);
 
-	//! Release handle when using LDAPConnectionManager - this method does nothing here!
-	virtual bool ReleaseHandleInfo();
+	//! Release handle when using LDAPConnectionManager
+	bool ReleaseHandleInfo();
 
 	//! connect to server (init, bind). returns true, if connection succeeded.
 	//! connection is automatically closed when this object dies.
@@ -62,7 +60,7 @@ public:
 	//! If some of those slots are not present, the following defaults
 	//! are taken: bindname="", bindpw="" (if bindname="", anonymous
 	//! bind is attempted)
-	bool Connect(ROAnything bindParams, LDAPErrorHandler eh);
+	bool Connect(ROAnything bindParams, LDAPErrorHandler &eh);
 
 	//! return connection handle
 	LDAP *GetConnection();
@@ -84,11 +82,27 @@ protected:
 	LDAP		*fHandle;
 	bool		fMapUTF8;
 
+	//! Release handle, eg. Disconnect
+	virtual bool DoReleaseHandleInfo();
+
 	//! bind (asynchronous)
-	virtual bool Bind(String BindName, String BindPW, int &msgId, LDAPErrorHandler eh);
+	virtual bool Bind(String BindName, String BindPW, int &msgId, LDAPErrorHandler &eh);
+
+	/*! handle the case of a bind failure, for this connection type we do not disconnect because this case is handled elsewhere
+		\param eh error handling structure
+		\param errMsg callers message to possibly print out */
+	virtual void DoHandleBindFailure(LDAPErrorHandler &eh, String &errMsg);
+
+	/*! handle the case of a timeout when waiting for a result, maybe try to rebind etc.
+		\param eh error handling structure */
+	virtual void DoHandleWaitForResultTimeout(LDAPErrorHandler &eh) {}
+
+	/*! handle additional steps to to after a WaitForResult error has occured
+		\param eh error handling structure */
+	virtual void DoHandleWait4ResultError(LDAPErrorHandler &eh) {}
 
 	//! does the Connect and reports details what it has done.
-	virtual LDAPConnection::EConnectState DoConnect(ROAnything bindParams, LDAPErrorHandler eh);
+	virtual LDAPConnection::EConnectState DoConnect(ROAnything bindParams, LDAPErrorHandler &eh);
 
 	//! determine Connect() return code
 	static bool IsConnectOk(LDAPConnection::EConnectState eConnectState);
@@ -107,22 +121,18 @@ protected:
 	void TransformResult(LDAPMessage *ldapResult, Anything &result, Anything qp);
 
 	//! init connection
-	LDAP *Init(LDAPErrorHandler eh);
+	LDAP *Init(LDAPErrorHandler &eh);
 
 	//! set ldap protocol
-	bool SetProtocol(LDAPErrorHandler eh);
+	bool SetProtocol(LDAPErrorHandler &eh);
 
 	//! set ldap timelimit for searches
-	bool SetSearchTimeout(LDAPErrorHandler eh);
+	bool SetSearchTimeout(LDAPErrorHandler &eh);
 
 	//! set ldap connection timeout - important to avoid deadlocks caused by hanging ldap connects
-	bool SetConnectionTimeout(LDAPErrorHandler eh);
+	bool SetConnectionTimeout(LDAPErrorHandler &eh);
 
 private:
-
-	//! set rebind procedure (in re-authenticates and when chasing referals)
-//	bool SetRebindProc(LDAPErrorHandler eh);
-
 	//! converts textual attribute values from UTF-8 to HTML format
 	//! (LDAPv3 uses UTF-8). conversion is changes the passed string.
 	void MapUTF8Chars(String &str);
@@ -131,7 +141,7 @@ private:
 	String GetTypeStr(int msgType);
 
 	//! Issue error message and abadon connection
-	virtual void HandleWait4ResultError(int msgId, String &errMsg, LDAPErrorHandler eh);
+	void HandleWait4ResultError(int msgId, String &errMsg, LDAPErrorHandler &eh);
 
 	//! These test classes acesse private methods of LDAPConnection
 	friend class LDAPConnectionManagerTest;
