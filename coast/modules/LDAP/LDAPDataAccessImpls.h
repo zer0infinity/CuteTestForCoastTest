@@ -84,12 +84,6 @@ protected:
 		return -1;
 	}
 
-	//! hook, called by Exec after completion of LDAP op
-	//! by default does no checking, may be overridden by subclasses
-	virtual bool DoCheckResult(ROAnything result, LDAPErrorHandler eh) {
-		return true;
-	}
-
 	//! executes the transaction
 	// param c The context of the transaction
 	bool DoExec(Context &c, ParameterMapper *getter, ResultMapper *putter, LDAPErrorHandler &eh);

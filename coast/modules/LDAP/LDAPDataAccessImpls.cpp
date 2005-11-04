@@ -13,6 +13,7 @@
 #include "Renderer.h"
 
 //--- standard modules used ----------------------------------------------------
+#include "SysLog.h"
 #include "Dbg.h"
 
 //--- c-modules used -----------------------------------------------------------
@@ -132,13 +133,7 @@ bool LDAPAbstractDAI::DoExec( Context &ctx, ParameterMapper *getter, ResultMappe
 		return false;
 	}
 	Trace("Received LDAP result(s)");
-	// 5. check result
-	if ( !DoCheckResult(result, eh) ) {
-		ReleaseHandleInfo(ctx, lc);
-		return false;
-	}
-	Trace("Result is ok");
-	// 6. store result
+	// 5. store result
 	String key("LDAPResult.");
 	key << fName;
 	bool storedOk = putter->Put(key, result, ctx);
@@ -459,9 +454,6 @@ int LDAPModifyDAI::DoLDAPRequest(LDAPConnection *lc, ROAnything query)
 
 // =========================================================================
 
-//--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
-
 //--- LDAPSearchDAI -----------------------------------------------------
 RegisterDataAccessImpl(LDAPSearchDAI);
 
@@ -489,13 +481,12 @@ bool LDAPSearchDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &
 	// glue rest of query together (and use defaults, where necessary)
 
 	// scope (optional, default = base)
+	scope = LDAP_SCOPE_BASE;	// default
 	scopeStr.ToLower();
 	if (scopeStr.IsEqual("subtree")) {
 		scope = LDAP_SCOPE_SUBTREE;
 	} else if (scopeStr.IsEqual("onelevel")) {
 		scope = LDAP_SCOPE_ONELEVEL;
-	} else {
-		scope = LDAP_SCOPE_BASE;    // default
 	}
 	query["Scope"] = scope;
 	query["ScopeStringRepr"] = scopeStr;
