@@ -37,7 +37,6 @@
 			/name	"www.swisscom.com"
 			/ip		"138.190.1.60"
 		}
-		/fortify	%simpleDNS2IPTest.fortify
 		/localhost {
 			/name	"localhost"
 			/ip		"127.0.0.1"
