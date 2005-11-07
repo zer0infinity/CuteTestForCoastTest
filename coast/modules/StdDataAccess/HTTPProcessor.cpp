@@ -11,12 +11,11 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "Timers.h"
-#include "MIMEHeader.h"
 #include "RequestBodyParser.h"
 #include "RequestReader.h"
 #include "Server.h"
 #include "HTTPProtocolReplyRenderer.h"
-#include "Dbg.h"
+#include "AnyIterators.h"
 
 //--- c-library modules used ---------------------------------------------------
 
@@ -137,18 +136,16 @@ bool HTTPProcessor::IsZipEncodingAcceptedByClient(Context &ctx)
 {
 	StartTrace(HTTPProcessor.IsZipEncodingAcceptedByClient);
 
-	Anything args(ctx.GetRequest());
-	TraceAny(args, "Aaarrggs");
-	TraceAny(args["env"]["header"], "Aaarrggs env header");
+	TraceAny(ctx.GetRequest(), "Request");
 
-	Anything accEncoding;
+	ROAnything roaEncoding;
 
-	if (!ctx.Lookup("DisableZipEncoding", 0L) && args.LookupPath(accEncoding, "env.header.ACCEPT-ENCODING") ) {
-		AnythingLeafIterator iter(accEncoding);
+	if (!ctx.Lookup("DisableZipEncoding", 0L) && ctx.Lookup("header.ACCEPT-ENCODING", roaEncoding) ) {
+		AnyExtensions::LeafIterator<ROAnything> iter(roaEncoding);
 
-		Anything currAny;
-		while (iter.Next(currAny)) {
-			String enc = currAny.AsString("---");
+		ROAnything roaCurrAny;
+		while (iter.Next(roaCurrAny)) {
+			String enc = roaCurrAny.AsString("---");
 			enc.ToLower();
 			if (enc.IsEqual("gzip")) {
 				return true;
@@ -162,13 +159,10 @@ bool HTTPProcessor::DoKeepConnectionAlive(Context &ctx)
 {
 	StartTrace(HTTPProcessor.DoKeepConnectionAlive);
 
-	Anything req(ctx.GetRequest()["env"]);
-
-	String protocol = req["SERVER_PROTOCOL"].AsString();
-
-	String connection = req["header"]["CONNECTION"].AsString();
+	String protocol = ctx.Lookup("SERVER_PROTOCOL", "");
+	String connection = ctx.Lookup("header.CONNECTION", "");
 	connection.ToLower();
-
+	Trace("Protocol [" << protocol << "] connection [" << connection << "]");
 	bool keepAlive = protocol.IsEqual("HTTP/1.1") && connection.IsEqual("keep-alive");
 	Trace("Keep connection alive: " << keepAlive ? "Yes" : "No");
 

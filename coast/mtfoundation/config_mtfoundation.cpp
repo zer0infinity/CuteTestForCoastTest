@@ -15,6 +15,7 @@
 #include "SysLog.h"
 #include "Threads.h"
 #include "StringStream.h"
+#include "AnyIterators.h"
 DWORD fgThreadPtrKey;
 Anything fgThreads;
 SimpleMutex fgThreadsMutex("fgThreadsMutex");
@@ -30,8 +31,8 @@ void EXPORTDECL_MTFOUNDATION TerminateKilledThreads()
 			fgThreads.PrintOn(stream) << "\n";
 			stream.flush();
 			SysLog::WriteToStderr(strbuf);
-			AnythingIterator aIter(fgThreads);
-			Anything aAny;
+			AnyExtensions::Iterator<ROAnything> aIter(fgThreads);
+			ROAnything aAny;
 			while (aIter.Next(aAny)) {
 				Thread *pThr = (Thread *)aAny["Addr"].AsIFAObject();
 				SysLog::Warning(String("  Thread[") << aAny["Name"].AsString() << "] Handle[" << aAny["id"].AsLong() << "] Addr [" << (long)aAny["Addr"].AsIFAObject() << "]");

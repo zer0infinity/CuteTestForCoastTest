@@ -17,6 +17,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "System.h"
+#include "AnyIterators.h"
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
@@ -49,7 +50,7 @@ void ResolverTest::simpleDNS2IPTest()
 {
 	StartTrace(ResolverTest.simpleDNS2IPTest);
 
-	AnythingIterator aIter(fConfig["simpleDNS2IPTest"]);
+	AnyExtensions::Iterator<Anything> aIter(fConfig["simpleDNS2IPTest"]);
 	Anything aAny;
 	long lCount = 0;
 	String expIP, resIP;
@@ -66,7 +67,7 @@ void ResolverTest::simpleIP2DNSTest()
 {
 	StartTrace(ResolverTest.simpleIP2DNSTest);
 
-	AnythingIterator aIter(fConfig["simpleIP2DNSTest"]);
+	AnyExtensions::Iterator<Anything> aIter(fConfig["simpleIP2DNSTest"]);
 	Anything aAny;
 	long lCount = 0;
 	String expDN, resDN, ip;

@@ -17,6 +17,7 @@
 #include "IFAObject.h"
 #include "System.h"
 #include "Dbg.h"
+#include "AnyIterators.h"
 
 //--- c-library modules used ---------------------------------------------------
 #include <string.h>
@@ -3523,22 +3524,37 @@ void AnythingTest::SlotPutterAppendTest()
 	assertAnyEqual(expectedStore, rStore);
 }
 
-void AnythingTest::AnythingLeafIteratorTest ()
+void AnythingTest::AnythingLeafIteratorTest()
 {
 	StartTrace(AnythingTest.AnythingLeafIteratorTest);
-	// Set up
-	Anything iterateMe = fQuery["IterateThis"];
-
-	Anything foundResult;
-	AnythingLeafIterator iter(iterateMe);
-
-	Anything akt;
-	while (iter.Next(akt)) {
-		foundResult.Append(akt);
-	}
-
 	Anything expectedStore(fConfig["Results"][name()]);
-	assertAnyEqual(expectedStore, foundResult);
+	{
+		// Set up
+		Anything iterateMe = fQuery["IterateThis"];
+
+		Anything foundResult;
+		AnyExtensions::LeafIterator<Anything> iter(iterateMe);
+
+		Anything akt;
+		while (iter.Next(akt)) {
+			foundResult.Append(akt);
+		}
+		assertAnyEqual(expectedStore, foundResult);
+	}
+	{
+		// Set up
+		ROAnything iterateMe = fQuery["IterateThis"];
+
+		Anything foundResult;
+		AnyExtensions::LeafIterator<ROAnything> iter(iterateMe);
+
+		ROAnything akt;
+		while (iter.Next(akt)) {
+			foundResult.Append(akt.DeepClone());
+		}
+
+		assertAnyEqual(expectedStore, foundResult);
+	}
 }
 
 void AnythingTest::SlotnameSorterTest()
