@@ -523,57 +523,6 @@ public:
 	static void Operate(Anything &source, Anything &dest, const ROAnything &config, char delim = '.', char indexdelim = ':');
 };
 
-//---- AnythingIterator -----------------------------------------------------------
-/*! Iterates simply over the anythings slots, staying always on the uppermost level
- */
-class EXPORTDECL_FOUNDATION AnythingIterator
-{
-public:
-	/*! Constructor
-		\param a the Anything to iterate on */
-	AnythingIterator(Anything &a);
-	virtual ~AnythingIterator();
-
-	/*! Gets the next Anything
-		\param a out - reference to the next element
-		\return true, if there was a next element, false if the iteration has finished */
-	virtual bool Next(Anything &a);
-
-protected:
-	/*! Get the next element based on some criteria, subclasses could implement special behavior
-		\param a reference to the next Anything
-		\return true if a matching next element was found, false otherwise */
-	virtual bool DoGetNext(Anything &a);
-
-	Anything	fAny;
-	long		fPosition;
-
-private:
-	AnythingIterator();
-	AnythingIterator(const AnythingIterator &);
-	AnythingIterator &operator=(const AnythingIterator &);
-};
-
-//---- AnythingLeafIterator -----------------------------------------------------------
-/*! Iterates through the whole Anything structure, and returns all Leafs (i.e. Type!=eArray)
- */
-class EXPORTDECL_FOUNDATION AnythingLeafIterator: public AnythingIterator
-{
-public:
-	/*! Constructor
-		\param a the Anything to iterate on */
-	AnythingLeafIterator(Anything &a);
-	virtual ~AnythingLeafIterator();
-
-	/*! Gets the next Anything
-		\param a out - reference to the next element
-		\return true, if there was a next element, false if the iteration has finished */
-	virtual bool Next(Anything &a);
-
-protected:
-	AnythingLeafIterator *subIter;
-};
-
 //---- AnyComparer -----------------------------------------------------------
 /*! Interface for comparing Anythings. Subclasses may be used to sort Any-Arrays by value
  * see AnyComparers.h

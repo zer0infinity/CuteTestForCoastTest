@@ -4088,8 +4088,7 @@ void SlotCopier::Operate(Anything &source, Anything &dest, const ROAnything &con
 	StartTrace(SlotCopier.Operate);
 	TraceAny(config, "Config");
 
-	long sz = config.GetSize();
-	for (long i = 0; i < sz; i++) {
+	for (long i = 0, sz = config.GetSize(); i < sz; ++i) {
 		String sourceSlot = config.SlotName(i);
 		String destSlot = config[i].AsCharPtr(0);
 		Trace("copying [" << sourceSlot << "] to [" << destSlot << "]");
@@ -4098,85 +4097,6 @@ void SlotCopier::Operate(Anything &source, Anything &dest, const ROAnything &con
 			dest[destSlot] = content;
 		}
 	}
-}
-
-//-- AnythingIterator ---------------------------------------------------------------
-AnythingIterator::AnythingIterator(Anything &a) : fAny(a), fPosition(-1)
-{
-	StartTrace(AnythingIterator.Ctor);
-}
-
-AnythingIterator::~AnythingIterator()
-{
-	StartTrace(AnythingIterator.Dtor);
-}
-
-bool AnythingIterator::Next(Anything &a)
-{
-	StartTrace(AnythingIterator.Next);
-	return DoGetNext(a);
-}
-
-bool AnythingIterator::DoGetNext(Anything &a)
-{
-	StartTrace(AnythingIterator.DoGetNext);
-	if ( ++fPosition < fAny.GetSize() ) {
-		a = fAny[fPosition];
-		return true;
-	}
-	return false;
-}
-
-//----- AnythingLeafIterator -------------------------------------
-AnythingLeafIterator::AnythingLeafIterator(Anything &a)
-	: AnythingIterator(a)
-	, subIter(0)
-{
-	StartTrace(AnythingLeafIterator.Ctor);
-}
-
-AnythingLeafIterator::~AnythingLeafIterator()
-{
-	StartTrace(AnythingLeafIterator.Dtor);
-	delete subIter;
-}
-
-bool AnythingLeafIterator::Next(Anything &a)
-{
-	StartTrace(AnythingLeafIterator.Next);
-	if (subIter) {
-		// We are already descended into the Anything
-		if (subIter->Next(a)) {
-			// He has found the next
-			return true;
-		} else {
-			// He has done his Job
-			delete subIter;
-			subIter = 0;
-		}
-	}
-	// Move to the Next slot that holds something different from an empty
-	// Array
-	long size = fAny.GetSize();
-	bool found = false;
-	while ( !found && ++fPosition < size ) {
-		Anything next = fAny[fPosition];
-		if (next.GetType() == Anything::eArray) {
-			if (next.GetSize() > 0) {
-				// its an Array and not empty, we have to descend
-				subIter = new AnythingLeafIterator(next);
-				if (subIter->Next(a)) {
-					// Ok it has got one
-					found = true;
-				}
-			}
-		} else {
-			// a leaf
-			a = next;
-			found = true;
-		}
-	}
-	return found;
 }
 
 //----- SlotnameSorter -------------------------------------
