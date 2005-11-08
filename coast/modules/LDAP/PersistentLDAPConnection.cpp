@@ -21,6 +21,7 @@
 #include "SysLog.h"
 
 //--- c-modules used -----------------------------------------------------------
+#include <string.h>		// used for memset on older compilers
 
 /* Function to set up thread-specific data. */
 void PersistentLDAPConnection::tsd_setup()
