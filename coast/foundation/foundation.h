@@ -27,12 +27,16 @@
 
 #if defined(ONLY_STD_IOSTREAM)
 #define WD_IOVERSION	"_STDIO"
+#else
+#define WD_IOVERSION	""
 #endif
-#define WD_BUILDFLAGS ( WD_OPTFLAG WD_IOVERSION )
+#define WD_BUILDFLAGS		WD_OPTFLAG WD_IOVERSION
 #if defined(__GNUG__)
-#define WD_COMPILER ( "GCC_" __VERSION__ )
+#define WD_COMPILER		"GCC_"  __VERSION__
 #elif defined(WIN32) && defined(_MSC_VER)
-#define WD_COMPILER ( "MSC_" ##_MSC_VER )
+#define WD_COMPILER		"MSC_" _MSC_VER
+#else
+#define WD_COMPILER		"CompilerUnknown"
 #endif
 
 // symbol concatenation operator
