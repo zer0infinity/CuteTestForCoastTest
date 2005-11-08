@@ -1,2522 +1,454 @@
 {
-  /"20041208140817" {
-    /IndexLoopAsCharPtr100000 80
-    /IndexLoopAsString100000 204
-    /"KeyLoopAsCharPtr[key]100000" 141
-    /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 195
-    /"ROLookupPathLoop[key]100000" 107
-    /"LookupPathLoop[key]100000" 121
-    /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 187
-    /"LookupPathLoop[keywhichissomewhatlonger]100000" 199
-    /"ROLookupPathLoop[key.which.is.not.there]100000" 313
-    /"LookupPathLoop[key.which.is.not.there]100000" 333
-    /"ROLookupPathLoop[key.which.is.more.complex]100000" 466
-    /"LookupPathLoop[key.which.is.more.complex]100000" 493
-    /"KeyLoopAsCharPtr[hsnr]100000" 140
-    /"KeyLoopAsCharPtr[name]100000" 139
-    /"KeyLoopAsCharPtr[noth]100000" 142
-    /"KeyLoopAsCharPtr[adrs]100000" 147
-    /"ROLookupPathLoop[adrs]100000" 110
-    /"LookupPathLoop[adrs]100000" 124
-    /"ROLookupPathLoop[adrs.postleitzahl]100000" 224
-    /"LookupPathLoop[adrs.postleitzahl]100000" 233
-    /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 222
-    /"LookupPathLoop[adrs.Ortsnamentag]100000" 234
-    /"ROLookupPathLoop[adrs.nottheretag ]100000" 157
-    /"LookupPathLoop[adrs.nottheretag ]100000" 167
-    /"ROLookupPathLoop[adrs:0]100000" 203
-    /"LookupPathLoop[adrs:0]100000" 229
-    /"ROLookupPathLoop[adrs:10]100000" 134
-    /"LookupPathLoop[adrs:10]100000" 146
-    /"ROLookupPathLoop[1:10]100000" 65
-    /"LookupPathLoop[1:10]100000" 72
-  }
-  /"20041208140823" {
-    /"DeepCloneLoop[Null-Any]10000" 5
-    /"DeepCloneLoop[MetaThing]10000" 312
-    /"DeepCloneLoop[1 any long 1L]10000" 383
-    /"DeepCloneLoop[2 any long 1L]10000" 436
-    /"DeepCloneLoop[11 any long 1L]10000" 660
-    /"DeepCloneLoop[12 any long 1L]10000" 713
-    /"DeepCloneLoop[22 any long 1L]10000" 1099
-    /"DeepCloneLoop[1 any float 0.1234]10000" 383
-    /"DeepCloneLoop[2 any float 0.1234]10000" 436
-    /"DeepCloneLoop[11 any float 0.1234]10000" 660
-    /"DeepCloneLoop[12 any float 0.1234]10000" 711
-    /"DeepCloneLoop[22 any float 0.1234]10000" 1097
-    /"DeepCloneLoop[1 any float 4433.1234]10000" 384
-    /"DeepCloneLoop[2 any float 4433.1234]10000" 439
-    /"DeepCloneLoop[11 any float 4433.1234]10000" 659
-    /"DeepCloneLoop[12 any float 4433.1234]10000" 712
-    /"DeepCloneLoop[22 any float 4433.1234]10000" 1098
-    /"DeepCloneLoop[1 any char* guguseli]10000" 383
-    /"DeepCloneLoop[2 any char* guguseli]10000" 436
-    /"DeepCloneLoop[11 any char* guguseli]10000" 659
-    /"DeepCloneLoop[12 any char* guguseli]10000" 712
-    /"DeepCloneLoop[22 any char* guguseli]10000" 1093
-    /"DeepCloneLoop[1 any String guguseli]10000" 383
-    /"DeepCloneLoop[2 any String guguseli]10000" 436
-    /"DeepCloneLoop[11 any String guguseli]10000" 661
-    /"DeepCloneLoop[12 any String guguseli]10000" 712
-    /"DeepCloneLoop[22 any String guguseli]10000" 1093
-  }
-  /"20041208140842" {
-    /"PrintOnPrettyLoop[Null-Any]10000" 2
-    /"PrintOnPrettyLoop[MetaThing]10000" 16
-    /"PrintOnPrettyLoop[1 any long 1L]10000" 72
-    /"PrintOnPrettyLoop[2 any long 1L]10000" 128
-    /"PrintOnPrettyLoop[11 any long 1L]10000" 135
-    /"PrintOnPrettyLoop[12 any long 1L]10000" 193
-    /"PrintOnPrettyLoop[22 any long 1L]10000" 391
-    /"PrintOnPrettyLoop[1 any float 0.1234]10000" 73
-    /"PrintOnPrettyLoop[2 any float 0.1234]10000" 130
-    /"PrintOnPrettyLoop[11 any float 0.1234]10000" 136
-    /"PrintOnPrettyLoop[12 any float 0.1234]10000" 197
-    /"PrintOnPrettyLoop[22 any float 0.1234]10000" 403
-    /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 76
-    /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 135
-    /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 146
-    /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 201
-    /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 413
-    /"PrintOnPrettyLoop[1 any char* guguseli]10000" 77
-    /"PrintOnPrettyLoop[2 any char* guguseli]10000" 139
-    /"PrintOnPrettyLoop[11 any char* guguseli]10000" 138
-    /"PrintOnPrettyLoop[12 any char* guguseli]10000" 204
-    /"PrintOnPrettyLoop[22 any char* guguseli]10000" 397
-    /"PrintOnPrettyLoop[1 any String guguseli]10000" 76
-    /"PrintOnPrettyLoop[2 any String guguseli]10000" 138
-    /"PrintOnPrettyLoop[11 any String guguseli]10000" 139
-    /"PrintOnPrettyLoop[12 any String guguseli]10000" 206
-    /"PrintOnPrettyLoop[22 any String guguseli]10000" 394
-  }
-  /"20041208141556" {
-    /IndexLoopAsCharPtr100000 71
-    /IndexLoopAsString100000 195
-    /"KeyLoopAsCharPtr[key]100000" 127
-    /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 181
-    /"ROLookupPathLoop[key]100000" 108
-    /"LookupPathLoop[key]100000" 107
-    /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 189
-    /"LookupPathLoop[keywhichissomewhatlonger]100000" 186
-    /"ROLookupPathLoop[key.which.is.not.there]100000" 311
-    /"LookupPathLoop[key.which.is.not.there]100000" 290
-    /"ROLookupPathLoop[key.which.is.more.complex]100000" 471
-    /"LookupPathLoop[key.which.is.more.complex]100000" 433
-    /"KeyLoopAsCharPtr[hsnr]100000" 123
-    /"KeyLoopAsCharPtr[name]100000" 121
-    /"KeyLoopAsCharPtr[noth]100000" 125
-    /"KeyLoopAsCharPtr[adrs]100000" 132
-    /"ROLookupPathLoop[adrs]100000" 112
-    /"LookupPathLoop[adrs]100000" 111
-    /"ROLookupPathLoop[adrs.postleitzahl]100000" 228
-    /"LookupPathLoop[adrs.postleitzahl]100000" 210
-    /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 224
-    /"LookupPathLoop[adrs.Ortsnamentag]100000" 208
-    /"ROLookupPathLoop[adrs.nottheretag ]100000" 156
-    /"LookupPathLoop[adrs.nottheretag ]100000" 150
-    /"ROLookupPathLoop[adrs:0]100000" 206
-    /"LookupPathLoop[adrs:0]100000" 189
-    /"ROLookupPathLoop[adrs:10]100000" 136
-    /"LookupPathLoop[adrs:10]100000" 127
-    /"ROLookupPathLoop[1:10]100000" 66
-    /"LookupPathLoop[1:10]100000" 65
-  }
-  /"20041208141602" {
-    /"DeepCloneLoop[Null-Any]10000" 5
-    /"DeepCloneLoop[MetaThing]10000" 308
-    /"DeepCloneLoop[1 any long 1L]10000" 379
-    /"DeepCloneLoop[2 any long 1L]10000" 431
-    /"DeepCloneLoop[11 any long 1L]10000" 649
-    /"DeepCloneLoop[12 any long 1L]10000" 702
-    /"DeepCloneLoop[22 any long 1L]10000" 1074
-    /"DeepCloneLoop[1 any float 0.1234]10000" 377
-    /"DeepCloneLoop[2 any float 0.1234]10000" 430
-    /"DeepCloneLoop[11 any float 0.1234]10000" 652
-    /"DeepCloneLoop[12 any float 0.1234]10000" 702
-    /"DeepCloneLoop[22 any float 0.1234]10000" 1076
-    /"DeepCloneLoop[1 any float 4433.1234]10000" 380
-    /"DeepCloneLoop[2 any float 4433.1234]10000" 433
-    /"DeepCloneLoop[11 any float 4433.1234]10000" 649
-    /"DeepCloneLoop[12 any float 4433.1234]10000" 703
-    /"DeepCloneLoop[22 any float 4433.1234]10000" 1077
-    /"DeepCloneLoop[1 any char* guguseli]10000" 378
-    /"DeepCloneLoop[2 any char* guguseli]10000" 428
-    /"DeepCloneLoop[11 any char* guguseli]10000" 647
-    /"DeepCloneLoop[12 any char* guguseli]10000" 703
-    /"DeepCloneLoop[22 any char* guguseli]10000" 1075
-    /"DeepCloneLoop[1 any String guguseli]10000" 378
-    /"DeepCloneLoop[2 any String guguseli]10000" 430
-    /"DeepCloneLoop[11 any String guguseli]10000" 650
-    /"DeepCloneLoop[12 any String guguseli]10000" 704
-    /"DeepCloneLoop[22 any String guguseli]10000" 1090
-  }
-  /"20041208141621" {
-    /"PrintOnPrettyLoop[Null-Any]10000" 2
-    /"PrintOnPrettyLoop[MetaThing]10000" 15
-    /"PrintOnPrettyLoop[1 any long 1L]10000" 72
-    /"PrintOnPrettyLoop[2 any long 1L]10000" 128
-    /"PrintOnPrettyLoop[11 any long 1L]10000" 136
-    /"PrintOnPrettyLoop[12 any long 1L]10000" 196
-    /"PrintOnPrettyLoop[22 any long 1L]10000" 396
-    /"PrintOnPrettyLoop[1 any float 0.1234]10000" 73
-    /"PrintOnPrettyLoop[2 any float 0.1234]10000" 131
-    /"PrintOnPrettyLoop[11 any float 0.1234]10000" 141
-    /"PrintOnPrettyLoop[12 any float 0.1234]10000" 200
-    /"PrintOnPrettyLoop[22 any float 0.1234]10000" 410
-    /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 76
-    /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 145
-    /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 145
-    /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 203
-    /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 419
-    /"PrintOnPrettyLoop[1 any char* guguseli]10000" 75
-    /"PrintOnPrettyLoop[2 any char* guguseli]10000" 139
-    /"PrintOnPrettyLoop[11 any char* guguseli]10000" 140
-    /"PrintOnPrettyLoop[12 any char* guguseli]10000" 207
-    /"PrintOnPrettyLoop[22 any char* guguseli]10000" 402
-    /"PrintOnPrettyLoop[1 any String guguseli]10000" 76
-    /"PrintOnPrettyLoop[2 any String guguseli]10000" 139
-    /"PrintOnPrettyLoop[11 any String guguseli]10000" 140
-    /"PrintOnPrettyLoop[12 any String guguseli]10000" 206
-    /"PrintOnPrettyLoop[22 any String guguseli]10000" 397
-  }
-  /"20041208142924" {
-    /IndexLoopAsCharPtr100000 71
-    /IndexLoopAsString100000 196
-    /"KeyLoopAsCharPtr[key]100000" 124
-    /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 179
-    /"ROLookupPathLoop[key]100000" 106
-    /"LookupPathLoop[key]100000" 104
-    /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 187
-    /"LookupPathLoop[keywhichissomewhatlonger]100000" 186
-    /"ROLookupPathLoop[key.which.is.not.there]100000" 310
-    /"LookupPathLoop[key.which.is.not.there]100000" 289
-    /"ROLookupPathLoop[key.which.is.more.complex]100000" 471
-    /"LookupPathLoop[key.which.is.more.complex]100000" 430
-    /"KeyLoopAsCharPtr[hsnr]100000" 125
-    /"KeyLoopAsCharPtr[name]100000" 123
-    /"KeyLoopAsCharPtr[noth]100000" 126
-    /"KeyLoopAsCharPtr[adrs]100000" 129
-    /"ROLookupPathLoop[adrs]100000" 111
-    /"LookupPathLoop[adrs]100000" 110
-    /"ROLookupPathLoop[adrs.postleitzahl]100000" 224
-    /"LookupPathLoop[adrs.postleitzahl]100000" 209
-    /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 224
-    /"LookupPathLoop[adrs.Ortsnamentag]100000" 209
-    /"ROLookupPathLoop[adrs.nottheretag ]100000" 159
-    /"LookupPathLoop[adrs.nottheretag ]100000" 150
-    /"ROLookupPathLoop[adrs:0]100000" 204
-    /"LookupPathLoop[adrs:0]100000" 195
-    /"ROLookupPathLoop[adrs:10]100000" 135
-    /"LookupPathLoop[adrs:10]100000" 127
-    /"ROLookupPathLoop[1:10]100000" 67
-    /"LookupPathLoop[1:10]100000" 66
-  }
-  /"20041208142930" {
-    /"DeepCloneLoop[Null-Any]10000" 5
-    /"DeepCloneLoop[MetaThing]10000" 306
-    /"DeepCloneLoop[1 any long 1L]10000" 378
-    /"DeepCloneLoop[2 any long 1L]10000" 431
-    /"DeepCloneLoop[11 any long 1L]10000" 651
-    /"DeepCloneLoop[12 any long 1L]10000" 701
-    /"DeepCloneLoop[22 any long 1L]10000" 1076
-    /"DeepCloneLoop[1 any float 0.1234]10000" 377
-    /"DeepCloneLoop[2 any float 0.1234]10000" 430
-    /"DeepCloneLoop[11 any float 0.1234]10000" 651
-    /"DeepCloneLoop[12 any float 0.1234]10000" 702
-    /"DeepCloneLoop[22 any float 0.1234]10000" 1077
-    /"DeepCloneLoop[1 any float 4433.1234]10000" 381
-    /"DeepCloneLoop[2 any float 4433.1234]10000" 433
-    /"DeepCloneLoop[11 any float 4433.1234]10000" 650
-    /"DeepCloneLoop[12 any float 4433.1234]10000" 704
-    /"DeepCloneLoop[22 any float 4433.1234]10000" 1078
-    /"DeepCloneLoop[1 any char* guguseli]10000" 379
-    /"DeepCloneLoop[2 any char* guguseli]10000" 430
-    /"DeepCloneLoop[11 any char* guguseli]10000" 648
-    /"DeepCloneLoop[12 any char* guguseli]10000" 702
-    /"DeepCloneLoop[22 any char* guguseli]10000" 1079
-    /"DeepCloneLoop[1 any String guguseli]10000" 377
-    /"DeepCloneLoop[2 any String guguseli]10000" 432
-    /"DeepCloneLoop[11 any String guguseli]10000" 659
-    /"DeepCloneLoop[12 any String guguseli]10000" 702
-    /"DeepCloneLoop[22 any String guguseli]10000" 1078
-  }
-  /"20041208142948" {
-    /"PrintOnPrettyLoop[Null-Any]10000" 2
-    /"PrintOnPrettyLoop[MetaThing]10000" 15
-    /"PrintOnPrettyLoop[1 any long 1L]10000" 72
-    /"PrintOnPrettyLoop[2 any long 1L]10000" 129
-    /"PrintOnPrettyLoop[11 any long 1L]10000" 136
-    /"PrintOnPrettyLoop[12 any long 1L]10000" 195
-    /"PrintOnPrettyLoop[22 any long 1L]10000" 375
-    /"PrintOnPrettyLoop[1 any float 0.1234]10000" 74
-    /"PrintOnPrettyLoop[2 any float 0.1234]10000" 132
-    /"PrintOnPrettyLoop[11 any float 0.1234]10000" 136
-    /"PrintOnPrettyLoop[12 any float 0.1234]10000" 200
-    /"PrintOnPrettyLoop[22 any float 0.1234]10000" 388
-    /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 77
-    /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 138
-    /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 142
-    /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 203
-    /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 393
-    /"PrintOnPrettyLoop[1 any char* guguseli]10000" 76
-    /"PrintOnPrettyLoop[2 any char* guguseli]10000" 140
-    /"PrintOnPrettyLoop[11 any char* guguseli]10000" 139
-    /"PrintOnPrettyLoop[12 any char* guguseli]10000" 207
-    /"PrintOnPrettyLoop[22 any char* guguseli]10000" 400
-    /"PrintOnPrettyLoop[1 any String guguseli]10000" 76
-    /"PrintOnPrettyLoop[2 any String guguseli]10000" 139
-    /"PrintOnPrettyLoop[11 any String guguseli]10000" 139
-    /"PrintOnPrettyLoop[12 any String guguseli]10000" 204
-    /"PrintOnPrettyLoop[22 any String guguseli]10000" 402
-  }
-  /"20041208154131" {
-    /IndexLoopAsCharPtr100000 71
-    /IndexLoopAsString100000 197
-    /"KeyLoopAsCharPtr[key]100000" 123
-    /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 177
-    /"ROLookupPathLoop[key]100000" 107
-    /"LookupPathLoop[key]100000" 105
-    /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 190
-    /"LookupPathLoop[keywhichissomewhatlonger]100000" 187
-    /"ROLookupPathLoop[key.which.is.not.there]100000" 313
-    /"LookupPathLoop[key.which.is.not.there]100000" 287
-    /"ROLookupPathLoop[key.which.is.more.complex]100000" 472
-    /"LookupPathLoop[key.which.is.more.complex]100000" 433
-    /"KeyLoopAsCharPtr[hsnr]100000" 123
-    /"KeyLoopAsCharPtr[name]100000" 122
-    /"KeyLoopAsCharPtr[noth]100000" 122
-    /"KeyLoopAsCharPtr[adrs]100000" 129
-    /"ROLookupPathLoop[adrs]100000" 111
-    /"LookupPathLoop[adrs]100000" 110
-    /"ROLookupPathLoop[adrs.postleitzahl]100000" 223
-    /"LookupPathLoop[adrs.postleitzahl]100000" 209
-    /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 221
-    /"LookupPathLoop[adrs.Ortsnamentag]100000" 211
-    /"ROLookupPathLoop[adrs.nottheretag ]100000" 157
-    /"LookupPathLoop[adrs.nottheretag ]100000" 152
-    /"ROLookupPathLoop[adrs:0]100000" 207
-    /"LookupPathLoop[adrs:0]100000" 192
-    /"ROLookupPathLoop[adrs:10]100000" 137
-    /"LookupPathLoop[adrs:10]100000" 130
-    /"ROLookupPathLoop[1:10]100000" 67
-    /"LookupPathLoop[1:10]100000" 64
-  }
-  /"20041208154137" {
-    /"DeepCloneLoop[Null-Any]10000" 5
-    /"DeepCloneLoop[MetaThing]10000" 308
-    /"DeepCloneLoop[1 any long 1L]10000" 378
-    /"DeepCloneLoop[2 any long 1L]10000" 430
-    /"DeepCloneLoop[11 any long 1L]10000" 650
-    /"DeepCloneLoop[12 any long 1L]10000" 703
-    /"DeepCloneLoop[22 any long 1L]10000" 1076
-    /"DeepCloneLoop[1 any float 0.1234]10000" 377
-    /"DeepCloneLoop[2 any float 0.1234]10000" 432
-    /"DeepCloneLoop[11 any float 0.1234]10000" 650
-    /"DeepCloneLoop[12 any float 0.1234]10000" 700
-    /"DeepCloneLoop[22 any float 0.1234]10000" 1077
-    /"DeepCloneLoop[1 any float 4433.1234]10000" 379
-    /"DeepCloneLoop[2 any float 4433.1234]10000" 433
-    /"DeepCloneLoop[11 any float 4433.1234]10000" 653
-    /"DeepCloneLoop[12 any float 4433.1234]10000" 706
-    /"DeepCloneLoop[22 any float 4433.1234]10000" 1077
-    /"DeepCloneLoop[1 any char* guguseli]10000" 379
-    /"DeepCloneLoop[2 any char* guguseli]10000" 432
-    /"DeepCloneLoop[11 any char* guguseli]10000" 652
-    /"DeepCloneLoop[12 any char* guguseli]10000" 704
-    /"DeepCloneLoop[22 any char* guguseli]10000" 1074
-    /"DeepCloneLoop[1 any String guguseli]10000" 379
-    /"DeepCloneLoop[2 any String guguseli]10000" 430
-    /"DeepCloneLoop[11 any String guguseli]10000" 650
-    /"DeepCloneLoop[12 any String guguseli]10000" 703
-    /"DeepCloneLoop[22 any String guguseli]10000" 1077
-  }
-  /"20041208154155" {
-    /"PrintOnPrettyLoop[Null-Any]10000" 2
-    /"PrintOnPrettyLoop[MetaThing]10000" 15
-    /"PrintOnPrettyLoop[1 any long 1L]10000" 72
-    /"PrintOnPrettyLoop[2 any long 1L]10000" 129
-    /"PrintOnPrettyLoop[11 any long 1L]10000" 136
-    /"PrintOnPrettyLoop[12 any long 1L]10000" 194
-    /"PrintOnPrettyLoop[22 any long 1L]10000" 373
-    /"PrintOnPrettyLoop[1 any float 0.1234]10000" 73
-    /"PrintOnPrettyLoop[2 any float 0.1234]10000" 130
-    /"PrintOnPrettyLoop[11 any float 0.1234]10000" 136
-    /"PrintOnPrettyLoop[12 any float 0.1234]10000" 199
-    /"PrintOnPrettyLoop[22 any float 0.1234]10000" 386
-    /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 77
-    /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 138
-    /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 142
-    /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 200
-    /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 392
-    /"PrintOnPrettyLoop[1 any char* guguseli]10000" 75
-    /"PrintOnPrettyLoop[2 any char* guguseli]10000" 138
-    /"PrintOnPrettyLoop[11 any char* guguseli]10000" 139
-    /"PrintOnPrettyLoop[12 any char* guguseli]10000" 205
-    /"PrintOnPrettyLoop[22 any char* guguseli]10000" 399
-    /"PrintOnPrettyLoop[1 any String guguseli]10000" 76
-    /"PrintOnPrettyLoop[2 any String guguseli]10000" 138
-    /"PrintOnPrettyLoop[11 any String guguseli]10000" 137
-    /"PrintOnPrettyLoop[12 any String guguseli]10000" 206
-    /"PrintOnPrettyLoop[22 any String guguseli]10000" 394
-  }
-  /"20041208164618" {
-    /IndexLoopAsCharPtr100000 83
-    /IndexLoopAsString100000 172
-    /"KeyLoopAsCharPtr[key]100000" 138
-    /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 188
-    /"ROLookupPathLoop[key]100000" 103
-    /"LookupPathLoop[key]100000" 123
-    /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 189
-    /"LookupPathLoop[keywhichissomewhatlonger]100000" 206
-    /"ROLookupPathLoop[key.which.is.not.there]100000" 300
-    /"LookupPathLoop[key.which.is.not.there]100000" 334
-    /"ROLookupPathLoop[key.which.is.more.complex]100000" 452
-    /"LookupPathLoop[key.which.is.more.complex]100000" 491
-    /"KeyLoopAsCharPtr[hsnr]100000" 137
-    /"KeyLoopAsCharPtr[name]100000" 132
-    /"KeyLoopAsCharPtr[noth]100000" 134
-    /"KeyLoopAsCharPtr[adrs]100000" 144
-    /"ROLookupPathLoop[adrs]100000" 109
-    /"LookupPathLoop[adrs]100000" 130
-    /"ROLookupPathLoop[adrs.postleitzahl]100000" 216
-    /"LookupPathLoop[adrs.postleitzahl]100000" 238
-    /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 218
-    /"LookupPathLoop[adrs.Ortsnamentag]100000" 239
-    /"ROLookupPathLoop[adrs.nottheretag ]100000" 150
-    /"LookupPathLoop[adrs.nottheretag ]100000" 168
-    /"ROLookupPathLoop[adrs:0]100000" 199
-    /"LookupPathLoop[adrs:0]100000" 236
-    /"ROLookupPathLoop[adrs:10]100000" 131
-    /"LookupPathLoop[adrs:10]100000" 148
-    /"ROLookupPathLoop[1:10]100000" 64
-    /"LookupPathLoop[1:10]100000" 75
-  }
-  /"20041208164624" {
-    /"DeepCloneLoop[Null-Any]10000" 5
-    /"DeepCloneLoop[MetaThing]10000" 259
-    /"DeepCloneLoop[1 any long 1L]10000" 315
-    /"DeepCloneLoop[2 any long 1L]10000" 359
-    /"DeepCloneLoop[11 any long 1L]10000" 556
-    /"DeepCloneLoop[12 any long 1L]10000" 594
-    /"DeepCloneLoop[22 any long 1L]10000" 912
-    /"DeepCloneLoop[1 any float 0.1234]10000" 315
-    /"DeepCloneLoop[2 any float 0.1234]10000" 362
-    /"DeepCloneLoop[11 any float 0.1234]10000" 558
-    /"DeepCloneLoop[12 any float 0.1234]10000" 593
-    /"DeepCloneLoop[22 any float 0.1234]10000" 913
-    /"DeepCloneLoop[1 any float 4433.1234]10000" 316
-    /"DeepCloneLoop[2 any float 4433.1234]10000" 361
-    /"DeepCloneLoop[11 any float 4433.1234]10000" 555
-    /"DeepCloneLoop[12 any float 4433.1234]10000" 593
-    /"DeepCloneLoop[22 any float 4433.1234]10000" 911
-    /"DeepCloneLoop[1 any char* guguseli]10000" 315
-    /"DeepCloneLoop[2 any char* guguseli]10000" 358
-    /"DeepCloneLoop[11 any char* guguseli]10000" 556
-    /"DeepCloneLoop[12 any char* guguseli]10000" 594
-    /"DeepCloneLoop[22 any char* guguseli]10000" 914
-    /"DeepCloneLoop[1 any String guguseli]10000" 315
-    /"DeepCloneLoop[2 any String guguseli]10000" 359
-    /"DeepCloneLoop[11 any String guguseli]10000" 557
-    /"DeepCloneLoop[12 any String guguseli]10000" 591
-    /"DeepCloneLoop[22 any String guguseli]10000" 912
-  }
-  /"20041208164639" {
-    /"PrintOnPrettyLoop[Null-Any]10000" 2
-    /"PrintOnPrettyLoop[MetaThing]10000" 15
-    /"PrintOnPrettyLoop[1 any long 1L]10000" 66
-    /"PrintOnPrettyLoop[2 any long 1L]10000" 119
-    /"PrintOnPrettyLoop[11 any long 1L]10000" 128
-    /"PrintOnPrettyLoop[12 any long 1L]10000" 182
-    /"PrintOnPrettyLoop[22 any long 1L]10000" 350
-    /"PrintOnPrettyLoop[1 any float 0.1234]10000" 68
-    /"PrintOnPrettyLoop[2 any float 0.1234]10000" 122
-    /"PrintOnPrettyLoop[11 any float 0.1234]10000" 129
-    /"PrintOnPrettyLoop[12 any float 0.1234]10000" 187
-    /"PrintOnPrettyLoop[22 any float 0.1234]10000" 358
-    /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 70
-    /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 126
-    /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 134
-    /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 189
-    /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 365
-    /"PrintOnPrettyLoop[1 any char* guguseli]10000" 74
-    /"PrintOnPrettyLoop[2 any char* guguseli]10000" 134
-    /"PrintOnPrettyLoop[11 any char* guguseli]10000" 135
-    /"PrintOnPrettyLoop[12 any char* guguseli]10000" 199
-    /"PrintOnPrettyLoop[22 any char* guguseli]10000" 385
-    /"PrintOnPrettyLoop[1 any String guguseli]10000" 73
-    /"PrintOnPrettyLoop[2 any String guguseli]10000" 133
-    /"PrintOnPrettyLoop[11 any String guguseli]10000" 135
-    /"PrintOnPrettyLoop[12 any String guguseli]10000" 200
-    /"PrintOnPrettyLoop[22 any String guguseli]10000" 387
-  }
-  /"20041209093013" {
-    /IndexLoopAsCharPtr100000 250
-    /IndexLoopAsString100000 980
-    /"KeyLoopAsCharPtr[key]100000" 390
-    /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 610
-    /"ROLookupPathLoop[key]100000" 250
-    /"LookupPathLoop[key]100000" 310
-    /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 480
-    /"LookupPathLoop[keywhichissomewhatlonger]100000" 540
-    /"ROLookupPathLoop[key.which.is.not.there]100000" 770
-    /"LookupPathLoop[key.which.is.not.there]100000" 860
-    /"ROLookupPathLoop[key.which.is.more.complex]100000" 1280
-    /"LookupPathLoop[key.which.is.more.complex]100000" 1300
-    /"KeyLoopAsCharPtr[hsnr]100000" 400
-    /"KeyLoopAsCharPtr[name]100000" 360
-    /"KeyLoopAsCharPtr[noth]100000" 440
-    /"KeyLoopAsCharPtr[adrs]100000" 450
-    /"ROLookupPathLoop[adrs]100000" 270
-    /"LookupPathLoop[adrs]100000" 350
-    /"ROLookupPathLoop[adrs.postleitzahl]100000" 560
-    /"LookupPathLoop[adrs.postleitzahl]100000" 770
-    /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 560
-    /"LookupPathLoop[adrs.Ortsnamentag]100000" 640
-    /"ROLookupPathLoop[adrs.nottheretag ]100000" 430
-    /"LookupPathLoop[adrs.nottheretag ]100000" 460
-    /"ROLookupPathLoop[adrs:0]100000" 450
-    /"LookupPathLoop[adrs:0]100000" 550
-    /"ROLookupPathLoop[adrs:10]100000" 290
-    /"LookupPathLoop[adrs:10]100000" 340
-    /"ROLookupPathLoop[1:10]100000" 180
-    /"LookupPathLoop[1:10]100000" 200
-  }
-  /"20041209093029" {
-    /"DeepCloneLoop[Null-Any]10000" 10
-    /"DeepCloneLoop[MetaThing]10000" 1490
-    /"DeepCloneLoop[1 any long 1L]10000" 1760
-    /"DeepCloneLoop[2 any long 1L]10000" 2070
-    /"DeepCloneLoop[11 any long 1L]10000" 3080
-    /"DeepCloneLoop[12 any long 1L]10000" 3350
-    /"DeepCloneLoop[22 any long 1L]10000" 5020
-    /"DeepCloneLoop[1 any float 0.1234]10000" 1780
-    /"DeepCloneLoop[2 any float 0.1234]10000" 2080
-    /"DeepCloneLoop[11 any float 0.1234]10000" 3050
-    /"DeepCloneLoop[12 any float 0.1234]10000" 3360
-    /"DeepCloneLoop[22 any float 0.1234]10000" 5020
-    /"DeepCloneLoop[1 any float 4433.1234]10000" 1880
-    /"DeepCloneLoop[2 any float 4433.1234]10000" 1940
-    /"DeepCloneLoop[11 any float 4433.1234]10000" 3210
-    /"DeepCloneLoop[12 any float 4433.1234]10000" 3240
-    /"DeepCloneLoop[22 any float 4433.1234]10000" 5040
-    /"DeepCloneLoop[1 any char* guguseli]10000" 1760
-    /"DeepCloneLoop[2 any char* guguseli]10000" 1950
-    /"DeepCloneLoop[11 any char* guguseli]10000" 3230
-    /"DeepCloneLoop[12 any char* guguseli]10000" 3380
-    /"DeepCloneLoop[22 any char* guguseli]10000" 5040
-    /"DeepCloneLoop[1 any String guguseli]10000" 1770
-    /"DeepCloneLoop[2 any String guguseli]10000" 2100
-    /"DeepCloneLoop[11 any String guguseli]10000" 3090
-    /"DeepCloneLoop[12 any String guguseli]10000" 3380
-    /"DeepCloneLoop[22 any String guguseli]10000" 5050
-  }
-  /"20041209093154" {
-    /"PrintOnPrettyLoop[Null-Any]10000" 30
-    /"PrintOnPrettyLoop[MetaThing]10000" 70
-    /"PrintOnPrettyLoop[1 any long 1L]10000" 400
-    /"PrintOnPrettyLoop[2 any long 1L]10000" 710
-    /"PrintOnPrettyLoop[11 any long 1L]10000" 750
-    /"PrintOnPrettyLoop[12 any long 1L]10000" 1200
-    /"PrintOnPrettyLoop[22 any long 1L]10000" 2060
-    /"PrintOnPrettyLoop[1 any float 0.1234]10000" 460
-    /"PrintOnPrettyLoop[2 any float 0.1234]10000" 790
-    /"PrintOnPrettyLoop[11 any float 0.1234]10000" 770
-    /"PrintOnPrettyLoop[12 any float 0.1234]10000" 1250
-    /"PrintOnPrettyLoop[22 any float 0.1234]10000" 2190
-    /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 440
-    /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 790
-    /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 870
-    /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 1140
-    /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 2230
-    /"PrintOnPrettyLoop[1 any char* guguseli]10000" 480
-    /"PrintOnPrettyLoop[2 any char* guguseli]10000" 1010
-    /"PrintOnPrettyLoop[11 any char* guguseli]10000" 810
-    /"PrintOnPrettyLoop[12 any char* guguseli]10000" 1250
-    /"PrintOnPrettyLoop[22 any char* guguseli]10000" 2450
-    /"PrintOnPrettyLoop[1 any String guguseli]10000" 610
-    /"PrintOnPrettyLoop[2 any String guguseli]10000" 870
-    /"PrintOnPrettyLoop[11 any String guguseli]10000" 810
-    /"PrintOnPrettyLoop[12 any String guguseli]10000" 1260
-    /"PrintOnPrettyLoop[22 any String guguseli]10000" 2570
-  }
-  /"20041209094153" {
-    /IndexLoopAsCharPtr100000 250
-    /IndexLoopAsString100000 720
-    /"KeyLoopAsCharPtr[key]100000" 400
-    /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 580
-    /"ROLookupPathLoop[key]100000" 250
-    /"LookupPathLoop[key]100000" 320
-    /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 480
-    /"LookupPathLoop[keywhichissomewhatlonger]100000" 550
-    /"ROLookupPathLoop[key.which.is.not.there]100000" 890
-    /"LookupPathLoop[key.which.is.not.there]100000" 860
-    /"ROLookupPathLoop[key.which.is.more.complex]100000" 1170
-    /"LookupPathLoop[key.which.is.more.complex]100000" 1310
-    /"KeyLoopAsCharPtr[hsnr]100000" 380
-    /"KeyLoopAsCharPtr[name]100000" 380
-    /"KeyLoopAsCharPtr[noth]100000" 410
-    /"KeyLoopAsCharPtr[adrs]100000" 530
-    /"ROLookupPathLoop[adrs]100000" 270
-    /"LookupPathLoop[adrs]100000" 340
-    /"ROLookupPathLoop[adrs.postleitzahl]100000" 560
-    /"LookupPathLoop[adrs.postleitzahl]100000" 640
-    /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 560
-    /"LookupPathLoop[adrs.Ortsnamentag]100000" 660
-    /"ROLookupPathLoop[adrs.nottheretag ]100000" 400
-    /"LookupPathLoop[adrs.nottheretag ]100000" 470
-    /"ROLookupPathLoop[adrs:0]100000" 430
-    /"LookupPathLoop[adrs:0]100000" 740
-    /"ROLookupPathLoop[adrs:10]100000" 310
-    /"LookupPathLoop[adrs:10]100000" 350
-    /"ROLookupPathLoop[1:10]100000" 180
-    /"LookupPathLoop[1:10]100000" 200
-  }
-  /"20041209094209" {
-    /"DeepCloneLoop[Null-Any]10000" 20
-    /"DeepCloneLoop[MetaThing]10000" 1450
-    /"DeepCloneLoop[1 any long 1L]10000" 2240
-    /"DeepCloneLoop[2 any long 1L]10000" 2670
-    /"DeepCloneLoop[11 any long 1L]10000" 3450
-    /"DeepCloneLoop[12 any long 1L]10000" 4020
-    /"DeepCloneLoop[22 any long 1L]10000" 6350
-    /"DeepCloneLoop[1 any float 0.1234]10000" 2450
-    /"DeepCloneLoop[2 any float 0.1234]10000" 3060
-    /"DeepCloneLoop[11 any float 0.1234]10000" 3680
-    /"DeepCloneLoop[12 any float 0.1234]10000" 4420
-    /"DeepCloneLoop[22 any float 0.1234]10000" 7180
-    /"DeepCloneLoop[1 any float 4433.1234]10000" 2530
-    /"DeepCloneLoop[2 any float 4433.1234]10000" 3340
-    /"DeepCloneLoop[11 any float 4433.1234]10000" 3640
-    /"DeepCloneLoop[12 any float 4433.1234]10000" 4620
-    /"DeepCloneLoop[22 any float 4433.1234]10000" 7620
-    /"DeepCloneLoop[1 any char* guguseli]10000" 1740
-    /"DeepCloneLoop[2 any char* guguseli]10000" 2050
-    /"DeepCloneLoop[11 any char* guguseli]10000" 2960
-    /"DeepCloneLoop[12 any char* guguseli]10000" 3250
-    /"DeepCloneLoop[22 any char* guguseli]10000" 4870
-    /"DeepCloneLoop[1 any String guguseli]10000" 1740
-    /"DeepCloneLoop[2 any String guguseli]10000" 2050
-    /"DeepCloneLoop[11 any String guguseli]10000" 2960
-    /"DeepCloneLoop[12 any String guguseli]10000" 3300
-    /"DeepCloneLoop[22 any String guguseli]10000" 4920
-  }
-  /"20041209094348" {
-    /"PrintOnPrettyLoop[Null-Any]10000" 20
-    /"PrintOnPrettyLoop[MetaThing]10000" 70
-    /"PrintOnPrettyLoop[1 any long 1L]10000" 290
-    /"PrintOnPrettyLoop[2 any long 1L]10000" 500
-    /"PrintOnPrettyLoop[11 any long 1L]10000" 630
-    /"PrintOnPrettyLoop[12 any long 1L]10000" 1000
-    /"PrintOnPrettyLoop[22 any long 1L]10000" 1640
-    /"PrintOnPrettyLoop[1 any float 0.1234]10000" 570
-    /"PrintOnPrettyLoop[2 any float 0.1234]10000" 1020
-    /"PrintOnPrettyLoop[11 any float 0.1234]10000" 870
-    /"PrintOnPrettyLoop[12 any float 0.1234]10000" 1500
-    /"PrintOnPrettyLoop[22 any float 0.1234]10000" 2640
-    /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 720
-    /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 1440
-    /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 1020
-    /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 1650
-    /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 3350
-    /"PrintOnPrettyLoop[1 any char* guguseli]10000" 430
-    /"PrintOnPrettyLoop[2 any char* guguseli]10000" 790
-    /"PrintOnPrettyLoop[11 any char* guguseli]10000" 750
-    /"PrintOnPrettyLoop[12 any char* guguseli]10000" 1280
-    /"PrintOnPrettyLoop[22 any char* guguseli]10000" 2230
-    /"PrintOnPrettyLoop[1 any String guguseli]10000" 430
-    /"PrintOnPrettyLoop[2 any String guguseli]10000" 780
-    /"PrintOnPrettyLoop[11 any String guguseli]10000" 760
-    /"PrintOnPrettyLoop[12 any String guguseli]10000" 1290
-    /"PrintOnPrettyLoop[22 any String guguseli]10000" 2230
-  }
-  /"20041216103323" {
-    /IndexLoopAsCharPtr100000 74
-    /IndexLoopAsString100000 172
-    /"KeyLoopAsCharPtr[key]100000" 127
-    /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 189
-    /"ROLookupPathLoop[key]100000" 105
-    /"LookupPathLoop[key]100000" 107
-    /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 199
-    /"LookupPathLoop[keywhichissomewhatlonger]100000" 206
-    /"ROLookupPathLoop[key.which.is.not.there]100000" 302
-    /"LookupPathLoop[key.which.is.not.there]100000" 296
-    /"ROLookupPathLoop[key.which.is.more.complex]100000" 464
-    /"LookupPathLoop[key.which.is.more.complex]100000" 440
-    /"KeyLoopAsCharPtr[hsnr]100000" 126
-    /"KeyLoopAsCharPtr[name]100000" 127
-    /"KeyLoopAsCharPtr[noth]100000" 129
-    /"KeyLoopAsCharPtr[adrs]100000" 132
-    /"ROLookupPathLoop[adrs]100000" 110
-    /"LookupPathLoop[adrs]100000" 112
-    /"ROLookupPathLoop[adrs.postleitzahl]100000" 220
-    /"LookupPathLoop[adrs.postleitzahl]100000" 216
-    /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 221
-    /"LookupPathLoop[adrs.Ortsnamentag]100000" 218
-    /"ROLookupPathLoop[adrs.nottheretag ]100000" 148
-    /"LookupPathLoop[adrs.nottheretag ]100000" 149
-    /"ROLookupPathLoop[adrs:0]100000" 200
-    /"LookupPathLoop[adrs:0]100000" 202
-    /"ROLookupPathLoop[adrs:10]100000" 134
-    /"LookupPathLoop[adrs:10]100000" 133
-    /"ROLookupPathLoop[1:10]100000" 64
-    /"LookupPathLoop[1:10]100000" 64
-  }
-  /"20041216103329" {
-    /"DeepCloneLoop[Null-Any]10000" 4
-    /"DeepCloneLoop[MetaThing]10000" 259
-    /"DeepCloneLoop[1 any long 1L]10000" 318
-    /"DeepCloneLoop[2 any long 1L]10000" 363
-    /"DeepCloneLoop[11 any long 1L]10000" 552
-    /"DeepCloneLoop[12 any long 1L]10000" 597
-    /"DeepCloneLoop[22 any long 1L]10000" 915
-    /"DeepCloneLoop[1 any float 0.1234]10000" 316
-    /"DeepCloneLoop[2 any float 0.1234]10000" 359
-    /"DeepCloneLoop[11 any float 0.1234]10000" 550
-    /"DeepCloneLoop[12 any float 0.1234]10000" 595
-    /"DeepCloneLoop[22 any float 0.1234]10000" 916
-    /"DeepCloneLoop[1 any float 4433.1234]10000" 318
-    /"DeepCloneLoop[2 any float 4433.1234]10000" 362
-    /"DeepCloneLoop[11 any float 4433.1234]10000" 554
-    /"DeepCloneLoop[12 any float 4433.1234]10000" 596
-    /"DeepCloneLoop[22 any float 4433.1234]10000" 916
-    /"DeepCloneLoop[1 any char* guguseli]10000" 318
-    /"DeepCloneLoop[2 any char* guguseli]10000" 362
-    /"DeepCloneLoop[11 any char* guguseli]10000" 554
-    /"DeepCloneLoop[12 any char* guguseli]10000" 597
-    /"DeepCloneLoop[22 any char* guguseli]10000" 913
-    /"DeepCloneLoop[1 any String guguseli]10000" 316
-    /"DeepCloneLoop[2 any String guguseli]10000" 361
-    /"DeepCloneLoop[11 any String guguseli]10000" 551
-    /"DeepCloneLoop[12 any String guguseli]10000" 594
-    /"DeepCloneLoop[22 any String guguseli]10000" 916
-  }
-  /"20041216103344" {
-    /"PrintOnPrettyLoop[Null-Any]10000" 3
-    /"PrintOnPrettyLoop[MetaThing]10000" 15
-    /"PrintOnPrettyLoop[1 any long 1L]10000" 67
-    /"PrintOnPrettyLoop[2 any long 1L]10000" 119
-    /"PrintOnPrettyLoop[11 any long 1L]10000" 130
-    /"PrintOnPrettyLoop[12 any long 1L]10000" 185
-    /"PrintOnPrettyLoop[22 any long 1L]10000" 354
-    /"PrintOnPrettyLoop[1 any float 0.1234]10000" 69
-    /"PrintOnPrettyLoop[2 any float 0.1234]10000" 123
-    /"PrintOnPrettyLoop[11 any float 0.1234]10000" 131
-    /"PrintOnPrettyLoop[12 any float 0.1234]10000" 190
-    /"PrintOnPrettyLoop[22 any float 0.1234]10000" 365
-    /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 72
-    /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 129
-    /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 136
-    /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 194
-    /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 369
-    /"PrintOnPrettyLoop[1 any char* guguseli]10000" 75
-    /"PrintOnPrettyLoop[2 any char* guguseli]10000" 137
-    /"PrintOnPrettyLoop[11 any char* guguseli]10000" 136
-    /"PrintOnPrettyLoop[12 any char* guguseli]10000" 205
-    /"PrintOnPrettyLoop[22 any char* guguseli]10000" 397
-    /"PrintOnPrettyLoop[1 any String guguseli]10000" 75
-    /"PrintOnPrettyLoop[2 any String guguseli]10000" 138
-    /"PrintOnPrettyLoop[11 any String guguseli]10000" 137
-    /"PrintOnPrettyLoop[12 any String guguseli]10000" 205
-    /"PrintOnPrettyLoop[22 any String guguseli]10000" 396
-  }
-  /"20041216141355" {
-    /IndexLoopAsCharPtr100000 72
-    /IndexLoopAsString100000 172
-    /"KeyLoopAsCharPtr[key]100000" 129
-    /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 189
-    /"ROLookupPathLoop[key]100000" 106
-    /"LookupPathLoop[key]100000" 107
-    /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 196
-    /"LookupPathLoop[keywhichissomewhatlonger]100000" 200
-    /"ROLookupPathLoop[key.which.is.not.there]100000" 300
-    /"LookupPathLoop[key.which.is.not.there]100000" 291
-    /"ROLookupPathLoop[key.which.is.more.complex]100000" 458
-    /"LookupPathLoop[key.which.is.more.complex]100000" 448
-    /"KeyLoopAsCharPtr[hsnr]100000" 126
-    /"KeyLoopAsCharPtr[name]100000" 125
-    /"KeyLoopAsCharPtr[noth]100000" 126
-    /"KeyLoopAsCharPtr[adrs]100000" 132
-    /"ROLookupPathLoop[adrs]100000" 108
-    /"LookupPathLoop[adrs]100000" 111
-    /"ROLookupPathLoop[adrs.postleitzahl]100000" 224
-    /"LookupPathLoop[adrs.postleitzahl]100000" 216
-    /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 225
-    /"LookupPathLoop[adrs.Ortsnamentag]100000" 218
-    /"ROLookupPathLoop[adrs.nottheretag ]100000" 151
-    /"LookupPathLoop[adrs.nottheretag ]100000" 150
-    /"ROLookupPathLoop[adrs:0]100000" 203
-    /"LookupPathLoop[adrs:0]100000" 203
-    /"ROLookupPathLoop[adrs:10]100000" 133
-    /"LookupPathLoop[adrs:10]100000" 131
-    /"ROLookupPathLoop[1:10]100000" 62
-    /"LookupPathLoop[1:10]100000" 64
-  }
-  /"20041216141401" {
-    /"DeepCloneLoop[Null-Any]10000" 5
-    /"DeepCloneLoop[MetaThing]10000" 260
-    /"DeepCloneLoop[1 any long 1L]10000" 318
-    /"DeepCloneLoop[2 any long 1L]10000" 362
-    /"DeepCloneLoop[11 any long 1L]10000" 561
-    /"DeepCloneLoop[12 any long 1L]10000" 598
-    /"DeepCloneLoop[22 any long 1L]10000" 917
-    /"DeepCloneLoop[1 any float 0.1234]10000" 318
-    /"DeepCloneLoop[2 any float 0.1234]10000" 364
-    /"DeepCloneLoop[11 any float 0.1234]10000" 558
-    /"DeepCloneLoop[12 any float 0.1234]10000" 596
-    /"DeepCloneLoop[22 any float 0.1234]10000" 916
-    /"DeepCloneLoop[1 any float 4433.1234]10000" 318
-    /"DeepCloneLoop[2 any float 4433.1234]10000" 365
-    /"DeepCloneLoop[11 any float 4433.1234]10000" 560
-    /"DeepCloneLoop[12 any float 4433.1234]10000" 597
-    /"DeepCloneLoop[22 any float 4433.1234]10000" 920
-    /"DeepCloneLoop[1 any char* guguseli]10000" 319
-    /"DeepCloneLoop[2 any char* guguseli]10000" 364
-    /"DeepCloneLoop[11 any char* guguseli]10000" 561
-    /"DeepCloneLoop[12 any char* guguseli]10000" 599
-    /"DeepCloneLoop[22 any char* guguseli]10000" 926
-    /"DeepCloneLoop[1 any String guguseli]10000" 319
-    /"DeepCloneLoop[2 any String guguseli]10000" 363
-    /"DeepCloneLoop[11 any String guguseli]10000" 561
-    /"DeepCloneLoop[12 any String guguseli]10000" 601
-    /"DeepCloneLoop[22 any String guguseli]10000" 918
-  }
-  /"20041216141416" {
-    /"PrintOnPrettyLoop[Null-Any]10000" 3
-    /"PrintOnPrettyLoop[MetaThing]10000" 15
-    /"PrintOnPrettyLoop[1 any long 1L]10000" 67
-    /"PrintOnPrettyLoop[2 any long 1L]10000" 119
-    /"PrintOnPrettyLoop[11 any long 1L]10000" 128
-    /"PrintOnPrettyLoop[12 any long 1L]10000" 185
-    /"PrintOnPrettyLoop[22 any long 1L]10000" 352
-    /"PrintOnPrettyLoop[1 any float 0.1234]10000" 68
-    /"PrintOnPrettyLoop[2 any float 0.1234]10000" 121
-    /"PrintOnPrettyLoop[11 any float 0.1234]10000" 130
-    /"PrintOnPrettyLoop[12 any float 0.1234]10000" 188
-    /"PrintOnPrettyLoop[22 any float 0.1234]10000" 362
-    /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 72
-    /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 127
-    /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 136
-    /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 191
-    /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 370
-    /"PrintOnPrettyLoop[1 any char* guguseli]10000" 75
-    /"PrintOnPrettyLoop[2 any char* guguseli]10000" 135
-    /"PrintOnPrettyLoop[11 any char* guguseli]10000" 137
-    /"PrintOnPrettyLoop[12 any char* guguseli]10000" 202
-    /"PrintOnPrettyLoop[22 any char* guguseli]10000" 394
-    /"PrintOnPrettyLoop[1 any String guguseli]10000" 75
-    /"PrintOnPrettyLoop[2 any String guguseli]10000" 136
-    /"PrintOnPrettyLoop[11 any String guguseli]10000" 136
-    /"PrintOnPrettyLoop[12 any String guguseli]10000" 202
-    /"PrintOnPrettyLoop[22 any String guguseli]10000" 394
-  }
-  /"20050322150740" {
-    /IndexLoopAsCharPtr100000 174
-    /IndexLoopAsString100000 512
-    /"KeyLoopAsCharPtr[key]100000" 384
-    /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 686
-    /"ROLookupPathLoop[key]100000" 271
-    /"LookupPathLoop[key]100000" 284
-    /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 607
-    /"LookupPathLoop[keywhichissomewhatlonger]100000" 630
-    /"ROLookupPathLoop[key.which.is.not.there]100000" 850
-    /"LookupPathLoop[key.which.is.not.there]100000" 842
-    /"ROLookupPathLoop[key.which.is.more.complex]100000" 1340
-    /"LookupPathLoop[key.which.is.more.complex]100000" 1330
-    /"KeyLoopAsCharPtr[hsnr]100000" 405
-    /"KeyLoopAsCharPtr[name]100000" 403
-    /"KeyLoopAsCharPtr[noth]100000" 389
-    /"KeyLoopAsCharPtr[adrs]100000" 403
-    /"ROLookupPathLoop[adrs]100000" 284
-    /"LookupPathLoop[adrs]100000" 297
-    /"ROLookupPathLoop[adrs.postleitzahl]100000" 680
-    /"LookupPathLoop[adrs.postleitzahl]100000" 685
-    /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 689
-    /"LookupPathLoop[adrs.Ortsnamentag]100000" 684
-    /"ROLookupPathLoop[adrs.nottheretag ]100000" 475
-    /"LookupPathLoop[adrs.nottheretag ]100000" 481
-    /"ROLookupPathLoop[adrs:0]100000" 502
-    /"LookupPathLoop[adrs:0]100000" 528
-    /"ROLookupPathLoop[adrs:10]100000" 345
-    /"LookupPathLoop[adrs:10]100000" 344
-    /"ROLookupPathLoop[1:10]100000" 150
-    /"LookupPathLoop[1:10]100000" 160
-  }
-  /"20050322150756" {
-    /"DeepCloneLoop[Null-Any]10000" 7
-    /"DeepCloneLoop[MetaThing]10000" 775
-    /"DeepCloneLoop[1 any long 1L]10000" 971
-    /"DeepCloneLoop[2 any long 1L]10000" 1109
-    /"DeepCloneLoop[11 any long 1L]10000" 1727
-    /"DeepCloneLoop[12 any long 1L]10000" 1827
-    /"DeepCloneLoop[22 any long 1L]10000" 2814
-    /"DeepCloneLoop[1 any float 0.1234]10000" 971
-    /"DeepCloneLoop[2 any float 0.1234]10000" 1108
-    /"DeepCloneLoop[11 any float 0.1234]10000" 1722
-    /"DeepCloneLoop[12 any float 0.1234]10000" 1825
-    /"DeepCloneLoop[22 any float 0.1234]10000" 2810
-    /"DeepCloneLoop[1 any float 4433.1234]10000" 972
-    /"DeepCloneLoop[2 any float 4433.1234]10000" 1115
-    /"DeepCloneLoop[11 any float 4433.1234]10000" 1719
-    /"DeepCloneLoop[12 any float 4433.1234]10000" 1829
-    /"DeepCloneLoop[22 any float 4433.1234]10000" 2812
-    /"DeepCloneLoop[1 any char* guguseli]10000" 980
-    /"DeepCloneLoop[2 any char* guguseli]10000" 1119
-    /"DeepCloneLoop[11 any char* guguseli]10000" 1723
-    /"DeepCloneLoop[12 any char* guguseli]10000" 1834
-    /"DeepCloneLoop[22 any char* guguseli]10000" 2821
-    /"DeepCloneLoop[1 any String guguseli]10000" 978
-    /"DeepCloneLoop[2 any String guguseli]10000" 1115
-    /"DeepCloneLoop[11 any String guguseli]10000" 1687
-    /"DeepCloneLoop[12 any String guguseli]10000" 1832
-    /"DeepCloneLoop[22 any String guguseli]10000" 2823
-  }
-  /"20050322150843" {
-    /"PrintOnPrettyLoop[Null-Any]10000" 5
-    /"PrintOnPrettyLoop[MetaThing]10000" 20
-    /"PrintOnPrettyLoop[1 any long 1L]10000" 129
-    /"PrintOnPrettyLoop[2 any long 1L]10000" 238
-    /"PrintOnPrettyLoop[11 any long 1L]10000" 223
-    /"PrintOnPrettyLoop[12 any long 1L]10000" 334
-    /"PrintOnPrettyLoop[22 any long 1L]10000" 646
-    /"PrintOnPrettyLoop[1 any float 0.1234]10000" 129
-    /"PrintOnPrettyLoop[2 any float 0.1234]10000" 237
-    /"PrintOnPrettyLoop[11 any float 0.1234]10000" 222
-    /"PrintOnPrettyLoop[12 any float 0.1234]10000" 336
-    /"PrintOnPrettyLoop[22 any float 0.1234]10000" 654
-    /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 132
-    /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 247
-    /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 229
-    /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 343
-    /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 664
-    /"PrintOnPrettyLoop[1 any char* guguseli]10000" 126
-    /"PrintOnPrettyLoop[2 any char* guguseli]10000" 236
-    /"PrintOnPrettyLoop[11 any char* guguseli]10000" 219
-    /"PrintOnPrettyLoop[12 any char* guguseli]10000" 334
-    /"PrintOnPrettyLoop[22 any char* guguseli]10000" 651
-    /"PrintOnPrettyLoop[1 any String guguseli]10000" 125
-    /"PrintOnPrettyLoop[2 any String guguseli]10000" 237
-    /"PrintOnPrettyLoop[11 any String guguseli]10000" 220
-    /"PrintOnPrettyLoop[12 any String guguseli]10000" 332
-    /"PrintOnPrettyLoop[22 any String guguseli]10000" 654
-  }
-  /"20050401084222" {
-    /IndexLoopAsCharPtr100000 75
-    /IndexLoopAsString100000 197
-    /"KeyLoopAsCharPtr[key]100000" 131
-    /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 182
-    /"ROLookupPathLoop[key]100000" 108
-    /"LookupPathLoop[key]100000" 117
-    /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 206
-    /"LookupPathLoop[keywhichissomewhatlonger]100000" 191
-    /"ROLookupPathLoop[key.which.is.not.there]100000" 313
-    /"LookupPathLoop[key.which.is.not.there]100000" 312
-    /"ROLookupPathLoop[key.which.is.more.complex]100000" 475
-    /"LookupPathLoop[key.which.is.more.complex]100000" 466
-    /"KeyLoopAsCharPtr[hsnr]100000" 127
-    /"KeyLoopAsCharPtr[name]100000" 127
-    /"KeyLoopAsCharPtr[noth]100000" 128
-    /"KeyLoopAsCharPtr[adrs]100000" 134
-    /"ROLookupPathLoop[adrs]100000" 108
-    /"LookupPathLoop[adrs]100000" 114
-    /"ROLookupPathLoop[adrs.postleitzahl]100000" 222
-    /"LookupPathLoop[adrs.postleitzahl]100000" 223
-    /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 221
-    /"LookupPathLoop[adrs.Ortsnamentag]100000" 217
-    /"ROLookupPathLoop[adrs.nottheretag ]100000" 158
-    /"LookupPathLoop[adrs.nottheretag ]100000" 157
-    /"ROLookupPathLoop[adrs:0]100000" 205
-    /"LookupPathLoop[adrs:0]100000" 204
-    /"ROLookupPathLoop[adrs:10]100000" 134
-    /"LookupPathLoop[adrs:10]100000" 134
-    /"ROLookupPathLoop[1:10]100000" 69
-    /"LookupPathLoop[1:10]100000" 73
-  }
-  /"20050401084228" {
-    /"DeepCloneLoop[Null-Any]10000" 5
-    /"DeepCloneLoop[MetaThing]10000" 342
-    /"DeepCloneLoop[1 any long 1L]10000" 381
-    /"DeepCloneLoop[2 any long 1L]10000" 433
-    /"DeepCloneLoop[11 any long 1L]10000" 674
-    /"DeepCloneLoop[12 any long 1L]10000" 732
-    /"DeepCloneLoop[22 any long 1L]10000" 1201
-    /"DeepCloneLoop[1 any float 0.1234]10000" 387
-    /"DeepCloneLoop[2 any float 0.1234]10000" 463
-    /"DeepCloneLoop[11 any float 0.1234]10000" 681
-    /"DeepCloneLoop[12 any float 0.1234]10000" 773
-    /"DeepCloneLoop[22 any float 0.1234]10000" 1149
-    /"DeepCloneLoop[1 any float 4433.1234]10000" 386
-    /"DeepCloneLoop[2 any float 4433.1234]10000" 513
-    /"DeepCloneLoop[11 any float 4433.1234]10000" 679
-    /"DeepCloneLoop[12 any float 4433.1234]10000" 733
-    /"DeepCloneLoop[22 any float 4433.1234]10000" 1125
-    /"DeepCloneLoop[1 any char* guguseli]10000" 390
-    /"DeepCloneLoop[2 any char* guguseli]10000" 459
-    /"DeepCloneLoop[11 any char* guguseli]10000" 794
-    /"DeepCloneLoop[12 any char* guguseli]10000" 765
-    /"DeepCloneLoop[22 any char* guguseli]10000" 1121
-    /"DeepCloneLoop[1 any String guguseli]10000" 408
-    /"DeepCloneLoop[2 any String guguseli]10000" 497
-    /"DeepCloneLoop[11 any String guguseli]10000" 675
-    /"DeepCloneLoop[12 any String guguseli]10000" 774
-    /"DeepCloneLoop[22 any String guguseli]10000" 1122
-  }
-  /"20050401084248" {
-    /"PrintOnPrettyLoop[Null-Any]10000" 2
-    /"PrintOnPrettyLoop[MetaThing]10000" 15
-    /"PrintOnPrettyLoop[1 any long 1L]10000" 70
-    /"PrintOnPrettyLoop[2 any long 1L]10000" 125
-    /"PrintOnPrettyLoop[11 any long 1L]10000" 135
-    /"PrintOnPrettyLoop[12 any long 1L]10000" 195
-    /"PrintOnPrettyLoop[22 any long 1L]10000" 401
-    /"PrintOnPrettyLoop[1 any float 0.1234]10000" 74
-    /"PrintOnPrettyLoop[2 any float 0.1234]10000" 135
-    /"PrintOnPrettyLoop[11 any float 0.1234]10000" 140
-    /"PrintOnPrettyLoop[12 any float 0.1234]10000" 201
-    /"PrintOnPrettyLoop[22 any float 0.1234]10000" 404
-    /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 77
-    /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 139
-    /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 142
-    /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 205
-    /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 389
-    /"PrintOnPrettyLoop[1 any char* guguseli]10000" 77
-    /"PrintOnPrettyLoop[2 any char* guguseli]10000" 137
-    /"PrintOnPrettyLoop[11 any char* guguseli]10000" 138
-    /"PrintOnPrettyLoop[12 any char* guguseli]10000" 203
-    /"PrintOnPrettyLoop[22 any char* guguseli]10000" 396
-    /"PrintOnPrettyLoop[1 any String guguseli]10000" 75
-    /"PrintOnPrettyLoop[2 any String guguseli]10000" 136
-    /"PrintOnPrettyLoop[11 any String guguseli]10000" 137
-    /"PrintOnPrettyLoop[12 any String guguseli]10000" 204
-    /"PrintOnPrettyLoop[22 any String guguseli]10000" 393
-  }
-  /"20050401103348" {
-    /IndexLoopAsCharPtr100000 75
-    /IndexLoopAsString100000 194
-    /"KeyLoopAsCharPtr[key]100000" 131
-    /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 182
-    /"ROLookupPathLoop[key]100000" 108
-    /"LookupPathLoop[key]100000" 109
-    /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 192
-    /"LookupPathLoop[keywhichissomewhatlonger]100000" 191
-    /"ROLookupPathLoop[key.which.is.not.there]100000" 311
-    /"LookupPathLoop[key.which.is.not.there]100000" 302
-    /"ROLookupPathLoop[key.which.is.more.complex]100000" 464
-    /"LookupPathLoop[key.which.is.more.complex]100000" 456
-    /"KeyLoopAsCharPtr[hsnr]100000" 128
-    /"KeyLoopAsCharPtr[name]100000" 128
-    /"KeyLoopAsCharPtr[noth]100000" 129
-    /"KeyLoopAsCharPtr[adrs]100000" 135
-    /"ROLookupPathLoop[adrs]100000" 108
-    /"LookupPathLoop[adrs]100000" 114
-    /"ROLookupPathLoop[adrs.postleitzahl]100000" 223
-    /"LookupPathLoop[adrs.postleitzahl]100000" 221
-    /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 223
-    /"LookupPathLoop[adrs.Ortsnamentag]100000" 221
-    /"ROLookupPathLoop[adrs.nottheretag ]100000" 155
-    /"LookupPathLoop[adrs.nottheretag ]100000" 158
-    /"ROLookupPathLoop[adrs:0]100000" 206
-    /"LookupPathLoop[adrs:0]100000" 203
-    /"ROLookupPathLoop[adrs:10]100000" 135
-    /"LookupPathLoop[adrs:10]100000" 133
-    /"ROLookupPathLoop[1:10]100000" 66
-    /"LookupPathLoop[1:10]100000" 70
-  }
-  /"20050401103354" {
-    /"DeepCloneLoop[Null-Any]10000" 5
-    /"DeepCloneLoop[MetaThing]10000" 313
-    /"DeepCloneLoop[1 any long 1L]10000" 388
-    /"DeepCloneLoop[2 any long 1L]10000" 454
-    /"DeepCloneLoop[11 any long 1L]10000" 686
-    /"DeepCloneLoop[12 any long 1L]10000" 717
-    /"DeepCloneLoop[22 any long 1L]10000" 1110
-    /"DeepCloneLoop[1 any float 0.1234]10000" 387
-    /"DeepCloneLoop[2 any float 0.1234]10000" 439
-    /"DeepCloneLoop[11 any float 0.1234]10000" 669
-    /"DeepCloneLoop[12 any float 0.1234]10000" 716
-    /"DeepCloneLoop[22 any float 0.1234]10000" 1094
-    /"DeepCloneLoop[1 any float 4433.1234]10000" 387
-    /"DeepCloneLoop[2 any float 4433.1234]10000" 439
-    /"DeepCloneLoop[11 any float 4433.1234]10000" 680
-    /"DeepCloneLoop[12 any float 4433.1234]10000" 713
-    /"DeepCloneLoop[22 any float 4433.1234]10000" 1111
-    /"DeepCloneLoop[1 any char* guguseli]10000" 387
-    /"DeepCloneLoop[2 any char* guguseli]10000" 442
-    /"DeepCloneLoop[11 any char* guguseli]10000" 676
-    /"DeepCloneLoop[12 any char* guguseli]10000" 719
-    /"DeepCloneLoop[22 any char* guguseli]10000" 1104
-    /"DeepCloneLoop[1 any String guguseli]10000" 389
-    /"DeepCloneLoop[2 any String guguseli]10000" 441
-    /"DeepCloneLoop[11 any String guguseli]10000" 677
-    /"DeepCloneLoop[12 any String guguseli]10000" 717
-    /"DeepCloneLoop[22 any String guguseli]10000" 1107
-  }
-  /"20050401103413" {
-    /"PrintOnPrettyLoop[Null-Any]10000" 2
-    /"PrintOnPrettyLoop[MetaThing]10000" 15
-    /"PrintOnPrettyLoop[1 any long 1L]10000" 71
-    /"PrintOnPrettyLoop[2 any long 1L]10000" 127
-    /"PrintOnPrettyLoop[11 any long 1L]10000" 135
-    /"PrintOnPrettyLoop[12 any long 1L]10000" 193
-    /"PrintOnPrettyLoop[22 any long 1L]10000" 370
-    /"PrintOnPrettyLoop[1 any float 0.1234]10000" 73
-    /"PrintOnPrettyLoop[2 any float 0.1234]10000" 130
-    /"PrintOnPrettyLoop[11 any float 0.1234]10000" 137
-    /"PrintOnPrettyLoop[12 any float 0.1234]10000" 198
-    /"PrintOnPrettyLoop[22 any float 0.1234]10000" 384
-    /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 77
-    /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 138
-    /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 140
-    /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 202
-    /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 391
-    /"PrintOnPrettyLoop[1 any char* guguseli]10000" 74
-    /"PrintOnPrettyLoop[2 any char* guguseli]10000" 136
-    /"PrintOnPrettyLoop[11 any char* guguseli]10000" 137
-    /"PrintOnPrettyLoop[12 any char* guguseli]10000" 205
-    /"PrintOnPrettyLoop[22 any char* guguseli]10000" 395
-    /"PrintOnPrettyLoop[1 any String guguseli]10000" 76
-    /"PrintOnPrettyLoop[2 any String guguseli]10000" 136
-    /"PrintOnPrettyLoop[11 any String guguseli]10000" 140
-    /"PrintOnPrettyLoop[12 any String guguseli]10000" 206
-    /"PrintOnPrettyLoop[22 any String guguseli]10000" 396
-  }
-  /"20050401112908" {
-    /IndexLoopAsCharPtr100000 73
-    /IndexLoopAsString100000 195
-    /"KeyLoopAsCharPtr[key]100000" 128
-    /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 180
-    /"ROLookupPathLoop[key]100000" 105
-    /"LookupPathLoop[key]100000" 111
-    /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 187
-    /"LookupPathLoop[keywhichissomewhatlonger]100000" 192
-    /"ROLookupPathLoop[key.which.is.not.there]100000" 309
-    /"LookupPathLoop[key.which.is.not.there]100000" 305
-    /"ROLookupPathLoop[key.which.is.more.complex]100000" 466
-    /"LookupPathLoop[key.which.is.more.complex]100000" 457
-    /"KeyLoopAsCharPtr[hsnr]100000" 125
-    /"KeyLoopAsCharPtr[name]100000" 125
-    /"KeyLoopAsCharPtr[noth]100000" 127
-    /"KeyLoopAsCharPtr[adrs]100000" 131
-    /"ROLookupPathLoop[adrs]100000" 108
-    /"LookupPathLoop[adrs]100000" 113
-    /"ROLookupPathLoop[adrs.postleitzahl]100000" 224
-    /"LookupPathLoop[adrs.postleitzahl]100000" 219
-    /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 223
-    /"LookupPathLoop[adrs.Ortsnamentag]100000" 219
-    /"ROLookupPathLoop[adrs.nottheretag ]100000" 157
-    /"LookupPathLoop[adrs.nottheretag ]100000" 157
-    /"ROLookupPathLoop[adrs:0]100000" 203
-    /"LookupPathLoop[adrs:0]100000" 202
-    /"ROLookupPathLoop[adrs:10]100000" 134
-    /"LookupPathLoop[adrs:10]100000" 133
-    /"ROLookupPathLoop[1:10]100000" 68
-    /"LookupPathLoop[1:10]100000" 68
-  }
-  /"20050401112914" {
-    /"DeepCloneLoop[Null-Any]10000" 5
-    /"DeepCloneLoop[MetaThing]10000" 307
-    /"DeepCloneLoop[1 any long 1L]10000" 381
-    /"DeepCloneLoop[2 any long 1L]10000" 432
-    /"DeepCloneLoop[11 any long 1L]10000" 655
-    /"DeepCloneLoop[12 any long 1L]10000" 707
-    /"DeepCloneLoop[22 any long 1L]10000" 1084
-    /"DeepCloneLoop[1 any float 0.1234]10000" 380
-    /"DeepCloneLoop[2 any float 0.1234]10000" 431
-    /"DeepCloneLoop[11 any float 0.1234]10000" 657
-    /"DeepCloneLoop[12 any float 0.1234]10000" 707
-    /"DeepCloneLoop[22 any float 0.1234]10000" 1085
-    /"DeepCloneLoop[1 any float 4433.1234]10000" 381
-    /"DeepCloneLoop[2 any float 4433.1234]10000" 434
-    /"DeepCloneLoop[11 any float 4433.1234]10000" 655
-    /"DeepCloneLoop[12 any float 4433.1234]10000" 708
-    /"DeepCloneLoop[22 any float 4433.1234]10000" 1087
-    /"DeepCloneLoop[1 any char* guguseli]10000" 381
-    /"DeepCloneLoop[2 any char* guguseli]10000" 434
-    /"DeepCloneLoop[11 any char* guguseli]10000" 657
-    /"DeepCloneLoop[12 any char* guguseli]10000" 708
-    /"DeepCloneLoop[22 any char* guguseli]10000" 1085
-    /"DeepCloneLoop[1 any String guguseli]10000" 381
-    /"DeepCloneLoop[2 any String guguseli]10000" 434
-    /"DeepCloneLoop[11 any String guguseli]10000" 659
-    /"DeepCloneLoop[12 any String guguseli]10000" 707
-    /"DeepCloneLoop[22 any String guguseli]10000" 1086
-  }
-  /"20050401112932" {
-    /"PrintOnPrettyLoop[Null-Any]10000" 2
-    /"PrintOnPrettyLoop[MetaThing]10000" 15
-    /"PrintOnPrettyLoop[1 any long 1L]10000" 71
-    /"PrintOnPrettyLoop[2 any long 1L]10000" 126
-    /"PrintOnPrettyLoop[11 any long 1L]10000" 134
-    /"PrintOnPrettyLoop[12 any long 1L]10000" 194
-    /"PrintOnPrettyLoop[22 any long 1L]10000" 371
-    /"PrintOnPrettyLoop[1 any float 0.1234]10000" 73
-    /"PrintOnPrettyLoop[2 any float 0.1234]10000" 130
-    /"PrintOnPrettyLoop[11 any float 0.1234]10000" 136
-    /"PrintOnPrettyLoop[12 any float 0.1234]10000" 198
-    /"PrintOnPrettyLoop[22 any float 0.1234]10000" 381
-    /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 75
-    /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 135
-    /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 140
-    /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 201
-    /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 392
-    /"PrintOnPrettyLoop[1 any char* guguseli]10000" 74
-    /"PrintOnPrettyLoop[2 any char* guguseli]10000" 135
-    /"PrintOnPrettyLoop[11 any char* guguseli]10000" 136
-    /"PrintOnPrettyLoop[12 any char* guguseli]10000" 203
-    /"PrintOnPrettyLoop[22 any char* guguseli]10000" 395
-    /"PrintOnPrettyLoop[1 any String guguseli]10000" 75
-    /"PrintOnPrettyLoop[2 any String guguseli]10000" 136
-    /"PrintOnPrettyLoop[11 any String guguseli]10000" 136
-    /"PrintOnPrettyLoop[12 any String guguseli]10000" 204
-    /"PrintOnPrettyLoop[22 any String guguseli]10000" 392
-  }
-  /"20050411111441" {
-    /IndexLoopAsCharPtr100000 179
-    /IndexLoopAsString100000 517
-    /"KeyLoopAsCharPtr[key]100000" 388
-    /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 692
-    /"ROLookupPathLoop[key]100000" 274
-    /"LookupPathLoop[key]100000" 288
-    /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 612
-    /"LookupPathLoop[keywhichissomewhatlonger]100000" 617
-    /"ROLookupPathLoop[key.which.is.not.there]100000" 860
-    /"LookupPathLoop[key.which.is.not.there]100000" 846
-    /"ROLookupPathLoop[key.which.is.more.complex]100000" 1353
-    /"LookupPathLoop[key.which.is.more.complex]100000" 1327
-    /"KeyLoopAsCharPtr[hsnr]100000" 408
-    /"KeyLoopAsCharPtr[name]100000" 407
-    /"KeyLoopAsCharPtr[noth]100000" 394
-    /"KeyLoopAsCharPtr[adrs]100000" 405
-    /"ROLookupPathLoop[adrs]100000" 292
-    /"LookupPathLoop[adrs]100000" 305
-    /"ROLookupPathLoop[adrs.postleitzahl]100000" 688
-    /"LookupPathLoop[adrs.postleitzahl]100000" 688
-    /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 690
-    /"LookupPathLoop[adrs.Ortsnamentag]100000" 687
-    /"ROLookupPathLoop[adrs.nottheretag ]100000" 472
-    /"LookupPathLoop[adrs.nottheretag ]100000" 473
-    /"ROLookupPathLoop[adrs:0]100000" 510
-    /"LookupPathLoop[adrs:0]100000" 528
-    /"ROLookupPathLoop[adrs:10]100000" 347
-    /"LookupPathLoop[adrs:10]100000" 349
-    /"ROLookupPathLoop[1:10]100000" 153
-    /"LookupPathLoop[1:10]100000" 162
-  }
-  /"20050411111458" {
-    /"DeepCloneLoop[Null-Any]10000" 8
-    /"DeepCloneLoop[MetaThing]10000" 754
-    /"DeepCloneLoop[1 any long 1L]10000" 943
-    /"DeepCloneLoop[2 any long 1L]10000" 1084
-    /"DeepCloneLoop[11 any long 1L]10000" 1632
-    /"DeepCloneLoop[12 any long 1L]10000" 1772
-    /"DeepCloneLoop[22 any long 1L]10000" 2748
-    /"DeepCloneLoop[1 any float 0.1234]10000" 943
-    /"DeepCloneLoop[2 any float 0.1234]10000" 1082
-    /"DeepCloneLoop[11 any float 0.1234]10000" 1636
-    /"DeepCloneLoop[12 any float 0.1234]10000" 1776
-    /"DeepCloneLoop[22 any float 0.1234]10000" 2735
-    /"DeepCloneLoop[1 any float 4433.1234]10000" 942
-    /"DeepCloneLoop[2 any float 4433.1234]10000" 1081
-    /"DeepCloneLoop[11 any float 4433.1234]10000" 1633
-    /"DeepCloneLoop[12 any float 4433.1234]10000" 1773
-    /"DeepCloneLoop[22 any float 4433.1234]10000" 2741
-    /"DeepCloneLoop[1 any char* guguseli]10000" 940
-    /"DeepCloneLoop[2 any char* guguseli]10000" 1078
-    /"DeepCloneLoop[11 any char* guguseli]10000" 1625
-    /"DeepCloneLoop[12 any char* guguseli]10000" 1763
-    /"DeepCloneLoop[22 any char* guguseli]10000" 2721
-    /"DeepCloneLoop[1 any String guguseli]10000" 941
-    /"DeepCloneLoop[2 any String guguseli]10000" 1076
-    /"DeepCloneLoop[11 any String guguseli]10000" 1625
-    /"DeepCloneLoop[12 any String guguseli]10000" 1767
-    /"DeepCloneLoop[22 any String guguseli]10000" 2722
-  }
-  /"20050411111543" {
-    /"PrintOnPrettyLoop[Null-Any]10000" 5
-    /"PrintOnPrettyLoop[MetaThing]10000" 20
-    /"PrintOnPrettyLoop[1 any long 1L]10000" 127
-    /"PrintOnPrettyLoop[2 any long 1L]10000" 235
-    /"PrintOnPrettyLoop[11 any long 1L]10000" 223
-    /"PrintOnPrettyLoop[12 any long 1L]10000" 332
-    /"PrintOnPrettyLoop[22 any long 1L]10000" 643
-    /"PrintOnPrettyLoop[1 any float 0.1234]10000" 124
-    /"PrintOnPrettyLoop[2 any float 0.1234]10000" 229
-    /"PrintOnPrettyLoop[11 any float 0.1234]10000" 217
-    /"PrintOnPrettyLoop[12 any float 0.1234]10000" 329
-    /"PrintOnPrettyLoop[22 any float 0.1234]10000" 650
-    /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 130
-    /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 245
-    /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 227
-    /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 342
-    /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 669
-    /"PrintOnPrettyLoop[1 any char* guguseli]10000" 128
-    /"PrintOnPrettyLoop[2 any char* guguseli]10000" 240
-    /"PrintOnPrettyLoop[11 any char* guguseli]10000" 219
-    /"PrintOnPrettyLoop[12 any char* guguseli]10000" 335
-    /"PrintOnPrettyLoop[22 any char* guguseli]10000" 662
-    /"PrintOnPrettyLoop[1 any String guguseli]10000" 128
-    /"PrintOnPrettyLoop[2 any String guguseli]10000" 236
-    /"PrintOnPrettyLoop[11 any String guguseli]10000" 218
-    /"PrintOnPrettyLoop[12 any String guguseli]10000" 333
-    /"PrintOnPrettyLoop[22 any String guguseli]10000" 653
-  }
-  /"20050414142933" {
-    /IndexLoopAsCharPtr100000 77
-    /IndexLoopAsString100000 202
-    /"KeyLoopAsCharPtr[key]100000" 135
-    /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 192
-    /"ROLookupPathLoop[key]100000" 103
-    /"LookupPathLoop[key]100000" 112
-    /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 196
-    /"LookupPathLoop[keywhichissomewhatlonger]100000" 200
-    /"ROLookupPathLoop[key.which.is.not.there]100000" 314
-    /"LookupPathLoop[key.which.is.not.there]100000" 304
-    /"ROLookupPathLoop[key.which.is.more.complex]100000" 471
-    /"LookupPathLoop[key.which.is.more.complex]100000" 457
-    /"KeyLoopAsCharPtr[hsnr]100000" 131
-    /"KeyLoopAsCharPtr[name]100000" 132
-    /"KeyLoopAsCharPtr[noth]100000" 133
-    /"KeyLoopAsCharPtr[adrs]100000" 138
-    /"ROLookupPathLoop[adrs]100000" 109
-    /"LookupPathLoop[adrs]100000" 114
-    /"ROLookupPathLoop[adrs.postleitzahl]100000" 228
-    /"LookupPathLoop[adrs.postleitzahl]100000" 224
-    /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 225
-    /"LookupPathLoop[adrs.Ortsnamentag]100000" 223
-    /"ROLookupPathLoop[adrs.nottheretag ]100000" 152
-    /"LookupPathLoop[adrs.nottheretag ]100000" 153
-    /"ROLookupPathLoop[adrs:0]100000" 205
-    /"LookupPathLoop[adrs:0]100000" 213
-    /"ROLookupPathLoop[adrs:10]100000" 136
-    /"LookupPathLoop[adrs:10]100000" 134
-    /"ROLookupPathLoop[1:10]100000" 63
-    /"LookupPathLoop[1:10]100000" 69
-  }
-  /"20050414142939" {
-    /"DeepCloneLoop[Null-Any]10000" 5
-    /"DeepCloneLoop[MetaThing]10000" 325
-    /"DeepCloneLoop[1 any long 1L]10000" 397
-    /"DeepCloneLoop[2 any long 1L]10000" 452
-    /"DeepCloneLoop[11 any long 1L]10000" 685
-    /"DeepCloneLoop[12 any long 1L]10000" 734
-    /"DeepCloneLoop[22 any long 1L]10000" 1117
-    /"DeepCloneLoop[1 any float 0.1234]10000" 396
-    /"DeepCloneLoop[2 any float 0.1234]10000" 451
-    /"DeepCloneLoop[11 any float 0.1234]10000" 684
-    /"DeepCloneLoop[12 any float 0.1234]10000" 733
-    /"DeepCloneLoop[22 any float 0.1234]10000" 1120
-    /"DeepCloneLoop[1 any float 4433.1234]10000" 397
-    /"DeepCloneLoop[2 any float 4433.1234]10000" 451
-    /"DeepCloneLoop[11 any float 4433.1234]10000" 686
-    /"DeepCloneLoop[12 any float 4433.1234]10000" 732
-    /"DeepCloneLoop[22 any float 4433.1234]10000" 1124
-    /"DeepCloneLoop[1 any char* guguseli]10000" 395
-    /"DeepCloneLoop[2 any char* guguseli]10000" 450
-    /"DeepCloneLoop[11 any char* guguseli]10000" 686
-    /"DeepCloneLoop[12 any char* guguseli]10000" 732
-    /"DeepCloneLoop[22 any char* guguseli]10000" 1116
-    /"DeepCloneLoop[1 any String guguseli]10000" 397
-    /"DeepCloneLoop[2 any String guguseli]10000" 449
-    /"DeepCloneLoop[11 any String guguseli]10000" 685
-    /"DeepCloneLoop[12 any String guguseli]10000" 730
-    /"DeepCloneLoop[22 any String guguseli]10000" 1113
-  }
-  /"20050414142958" {
-    /"PrintOnPrettyLoop[Null-Any]10000" 2
-    /"PrintOnPrettyLoop[MetaThing]10000" 15
-    /"PrintOnPrettyLoop[1 any long 1L]10000" 72
-    /"PrintOnPrettyLoop[2 any long 1L]10000" 128
-    /"PrintOnPrettyLoop[11 any long 1L]10000" 135
-    /"PrintOnPrettyLoop[12 any long 1L]10000" 196
-    /"PrintOnPrettyLoop[22 any long 1L]10000" 379
-    /"PrintOnPrettyLoop[1 any float 0.1234]10000" 73
-    /"PrintOnPrettyLoop[2 any float 0.1234]10000" 131
-    /"PrintOnPrettyLoop[11 any float 0.1234]10000" 137
-    /"PrintOnPrettyLoop[12 any float 0.1234]10000" 201
-    /"PrintOnPrettyLoop[22 any float 0.1234]10000" 390
-    /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 76
-    /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 138
-    /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 144
-    /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 205
-    /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 410
-    /"PrintOnPrettyLoop[1 any char* guguseli]10000" 76
-    /"PrintOnPrettyLoop[2 any char* guguseli]10000" 138
-    /"PrintOnPrettyLoop[11 any char* guguseli]10000" 139
-    /"PrintOnPrettyLoop[12 any char* guguseli]10000" 208
-    /"PrintOnPrettyLoop[22 any char* guguseli]10000" 405
-    /"PrintOnPrettyLoop[1 any String guguseli]10000" 77
-    /"PrintOnPrettyLoop[2 any String guguseli]10000" 139
-    /"PrintOnPrettyLoop[11 any String guguseli]10000" 139
-    /"PrintOnPrettyLoop[12 any String guguseli]10000" 207
-    /"PrintOnPrettyLoop[22 any String guguseli]10000" 401
-  }
-  /"20050414154918" {
-    /IndexLoopAsCharPtr100000 75
-    /IndexLoopAsString100000 199
-    /"KeyLoopAsCharPtr[key]100000" 133
-    /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 193
-    /"ROLookupPathLoop[key]100000" 103
-    /"LookupPathLoop[key]100000" 113
-    /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 194
-    /"LookupPathLoop[keywhichissomewhatlonger]100000" 200
-    /"ROLookupPathLoop[key.which.is.not.there]100000" 313
-    /"LookupPathLoop[key.which.is.not.there]100000" 301
-    /"ROLookupPathLoop[key.which.is.more.complex]100000" 472
-    /"LookupPathLoop[key.which.is.more.complex]100000" 453
-    /"KeyLoopAsCharPtr[hsnr]100000" 129
-    /"KeyLoopAsCharPtr[name]100000" 132
-    /"KeyLoopAsCharPtr[noth]100000" 128
-    /"KeyLoopAsCharPtr[adrs]100000" 136
-    /"ROLookupPathLoop[adrs]100000" 108
-    /"LookupPathLoop[adrs]100000" 116
-    /"ROLookupPathLoop[adrs.postleitzahl]100000" 225
-    /"LookupPathLoop[adrs.postleitzahl]100000" 224
-    /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 223
-    /"LookupPathLoop[adrs.Ortsnamentag]100000" 220
-    /"ROLookupPathLoop[adrs.nottheretag ]100000" 153
-    /"LookupPathLoop[adrs.nottheretag ]100000" 153
-    /"ROLookupPathLoop[adrs:0]100000" 203
-    /"LookupPathLoop[adrs:0]100000" 210
-    /"ROLookupPathLoop[adrs:10]100000" 133
-    /"LookupPathLoop[adrs:10]100000" 133
-    /"ROLookupPathLoop[1:10]100000" 63
-    /"LookupPathLoop[1:10]100000" 65
-  }
-  /"20050414154924" {
-    /"DeepCloneLoop[Null-Any]10000" 5
-    /"DeepCloneLoop[MetaThing]10000" 323
-    /"DeepCloneLoop[1 any long 1L]10000" 396
-    /"DeepCloneLoop[2 any long 1L]10000" 449
-    /"DeepCloneLoop[11 any long 1L]10000" 675
-    /"DeepCloneLoop[12 any long 1L]10000" 729
-    /"DeepCloneLoop[22 any long 1L]10000" 1112
-    /"DeepCloneLoop[1 any float 0.1234]10000" 396
-    /"DeepCloneLoop[2 any float 0.1234]10000" 450
-    /"DeepCloneLoop[11 any float 0.1234]10000" 677
-    /"DeepCloneLoop[12 any float 0.1234]10000" 730
-    /"DeepCloneLoop[22 any float 0.1234]10000" 1112
-    /"DeepCloneLoop[1 any float 4433.1234]10000" 395
-    /"DeepCloneLoop[2 any float 4433.1234]10000" 449
-    /"DeepCloneLoop[11 any float 4433.1234]10000" 674
-    /"DeepCloneLoop[12 any float 4433.1234]10000" 728
-    /"DeepCloneLoop[22 any float 4433.1234]10000" 1112
-    /"DeepCloneLoop[1 any char* guguseli]10000" 393
-    /"DeepCloneLoop[2 any char* guguseli]10000" 447
-    /"DeepCloneLoop[11 any char* guguseli]10000" 673
-    /"DeepCloneLoop[12 any char* guguseli]10000" 728
-    /"DeepCloneLoop[22 any char* guguseli]10000" 1113
-    /"DeepCloneLoop[1 any String guguseli]10000" 394
-    /"DeepCloneLoop[2 any String guguseli]10000" 449
-    /"DeepCloneLoop[11 any String guguseli]10000" 675
-    /"DeepCloneLoop[12 any String guguseli]10000" 727
-    /"DeepCloneLoop[22 any String guguseli]10000" 1111
-  }
-  /"20050414154943" {
-    /"PrintOnPrettyLoop[Null-Any]10000" 2
-    /"PrintOnPrettyLoop[MetaThing]10000" 15
-    /"PrintOnPrettyLoop[1 any long 1L]10000" 71
-    /"PrintOnPrettyLoop[2 any long 1L]10000" 127
-    /"PrintOnPrettyLoop[11 any long 1L]10000" 134
-    /"PrintOnPrettyLoop[12 any long 1L]10000" 195
-    /"PrintOnPrettyLoop[22 any long 1L]10000" 375
-    /"PrintOnPrettyLoop[1 any float 0.1234]10000" 73
-    /"PrintOnPrettyLoop[2 any float 0.1234]10000" 131
-    /"PrintOnPrettyLoop[11 any float 0.1234]10000" 137
-    /"PrintOnPrettyLoop[12 any float 0.1234]10000" 201
-    /"PrintOnPrettyLoop[22 any float 0.1234]10000" 386
-    /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 77
-    /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 136
-    /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 142
-    /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 202
-    /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 393
-    /"PrintOnPrettyLoop[1 any char* guguseli]10000" 75
-    /"PrintOnPrettyLoop[2 any char* guguseli]10000" 140
-    /"PrintOnPrettyLoop[11 any char* guguseli]10000" 139
-    /"PrintOnPrettyLoop[12 any char* guguseli]10000" 206
-    /"PrintOnPrettyLoop[22 any char* guguseli]10000" 401
-    /"PrintOnPrettyLoop[1 any String guguseli]10000" 75
-    /"PrintOnPrettyLoop[2 any String guguseli]10000" 139
-    /"PrintOnPrettyLoop[11 any String guguseli]10000" 140
-    /"PrintOnPrettyLoop[12 any String guguseli]10000" 209
-    /"PrintOnPrettyLoop[22 any String guguseli]10000" 405
-  }
-  /"20050414180644" {
-    /IndexLoopAsCharPtr100000 75
-    /IndexLoopAsString100000 204
-    /"KeyLoopAsCharPtr[key]100000" 131
-    /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 192
-    /"ROLookupPathLoop[key]100000" 104
-    /"LookupPathLoop[key]100000" 109
-    /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 197
-    /"LookupPathLoop[keywhichissomewhatlonger]100000" 199
-    /"ROLookupPathLoop[key.which.is.not.there]100000" 312
-    /"LookupPathLoop[key.which.is.not.there]100000" 298
-    /"ROLookupPathLoop[key.which.is.more.complex]100000" 470
-    /"LookupPathLoop[key.which.is.more.complex]100000" 449
-    /"KeyLoopAsCharPtr[hsnr]100000" 130
-    /"KeyLoopAsCharPtr[name]100000" 129
-    /"KeyLoopAsCharPtr[noth]100000" 132
-    /"KeyLoopAsCharPtr[adrs]100000" 137
-    /"ROLookupPathLoop[adrs]100000" 108
-    /"LookupPathLoop[adrs]100000" 116
-    /"ROLookupPathLoop[adrs.postleitzahl]100000" 225
-    /"LookupPathLoop[adrs.postleitzahl]100000" 222
-    /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 227
-    /"LookupPathLoop[adrs.Ortsnamentag]100000" 219
-    /"ROLookupPathLoop[adrs.nottheretag ]100000" 155
-    /"LookupPathLoop[adrs.nottheretag ]100000" 150
-    /"ROLookupPathLoop[adrs:0]100000" 204
-    /"LookupPathLoop[adrs:0]100000" 208
-    /"ROLookupPathLoop[adrs:10]100000" 135
-    /"LookupPathLoop[adrs:10]100000" 132
-    /"ROLookupPathLoop[1:10]100000" 63
-    /"LookupPathLoop[1:10]100000" 68
-  }
-  /"20050414180650" {
-    /"DeepCloneLoop[Null-Any]10000" 5
-    /"DeepCloneLoop[MetaThing]10000" 325
-    /"DeepCloneLoop[1 any long 1L]10000" 395
-    /"DeepCloneLoop[2 any long 1L]10000" 450
-    /"DeepCloneLoop[11 any long 1L]10000" 680
-    /"DeepCloneLoop[12 any long 1L]10000" 734
-    /"DeepCloneLoop[22 any long 1L]10000" 1124
-    /"DeepCloneLoop[1 any float 0.1234]10000" 395
-    /"DeepCloneLoop[2 any float 0.1234]10000" 451
-    /"DeepCloneLoop[11 any float 0.1234]10000" 680
-    /"DeepCloneLoop[12 any float 0.1234]10000" 732
-    /"DeepCloneLoop[22 any float 0.1234]10000" 1123
-    /"DeepCloneLoop[1 any float 4433.1234]10000" 396
-    /"DeepCloneLoop[2 any float 4433.1234]10000" 450
-    /"DeepCloneLoop[11 any float 4433.1234]10000" 679
-    /"DeepCloneLoop[12 any float 4433.1234]10000" 731
-    /"DeepCloneLoop[22 any float 4433.1234]10000" 1116
-    /"DeepCloneLoop[1 any char* guguseli]10000" 396
-    /"DeepCloneLoop[2 any char* guguseli]10000" 450
-    /"DeepCloneLoop[11 any char* guguseli]10000" 673
-    /"DeepCloneLoop[12 any char* guguseli]10000" 733
-    /"DeepCloneLoop[22 any char* guguseli]10000" 1113
-    /"DeepCloneLoop[1 any String guguseli]10000" 394
-    /"DeepCloneLoop[2 any String guguseli]10000" 449
-    /"DeepCloneLoop[11 any String guguseli]10000" 677
-    /"DeepCloneLoop[12 any String guguseli]10000" 730
-    /"DeepCloneLoop[22 any String guguseli]10000" 1116
-  }
-  /"20050414180709" {
-    /"PrintOnPrettyLoop[Null-Any]10000" 2
-    /"PrintOnPrettyLoop[MetaThing]10000" 15
-    /"PrintOnPrettyLoop[1 any long 1L]10000" 71
-    /"PrintOnPrettyLoop[2 any long 1L]10000" 128
-    /"PrintOnPrettyLoop[11 any long 1L]10000" 134
-    /"PrintOnPrettyLoop[12 any long 1L]10000" 194
-    /"PrintOnPrettyLoop[22 any long 1L]10000" 376
-    /"PrintOnPrettyLoop[1 any float 0.1234]10000" 73
-    /"PrintOnPrettyLoop[2 any float 0.1234]10000" 131
-    /"PrintOnPrettyLoop[11 any float 0.1234]10000" 136
-    /"PrintOnPrettyLoop[12 any float 0.1234]10000" 200
-    /"PrintOnPrettyLoop[22 any float 0.1234]10000" 384
-    /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 76
-    /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 136
-    /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 142
-    /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 203
-    /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 390
-    /"PrintOnPrettyLoop[1 any char* guguseli]10000" 75
-    /"PrintOnPrettyLoop[2 any char* guguseli]10000" 137
-    /"PrintOnPrettyLoop[11 any char* guguseli]10000" 139
-    /"PrintOnPrettyLoop[12 any char* guguseli]10000" 207
-    /"PrintOnPrettyLoop[22 any char* guguseli]10000" 400
-    /"PrintOnPrettyLoop[1 any String guguseli]10000" 75
-    /"PrintOnPrettyLoop[2 any String guguseli]10000" 138
-    /"PrintOnPrettyLoop[11 any String guguseli]10000" 140
-    /"PrintOnPrettyLoop[12 any String guguseli]10000" 209
-    /"PrintOnPrettyLoop[22 any String guguseli]10000" 400
-  }
-  /"20050414195941" {
-    /IndexLoopAsCharPtr100000 66
-    /IndexLoopAsString100000 156
-    /"KeyLoopAsCharPtr[key]100000" 121
-    /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 184
-    /"ROLookupPathLoop[key]100000" 107
-    /"LookupPathLoop[key]100000" 105
-    /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 202
-    /"LookupPathLoop[keywhichissomewhatlonger]100000" 198
-    /"ROLookupPathLoop[key.which.is.not.there]100000" 322
-    /"LookupPathLoop[key.which.is.not.there]100000" 296
-    /"ROLookupPathLoop[key.which.is.more.complex]100000" 473
-    /"LookupPathLoop[key.which.is.more.complex]100000" 438
-    /"KeyLoopAsCharPtr[hsnr]100000" 118
-    /"KeyLoopAsCharPtr[name]100000" 119
-    /"KeyLoopAsCharPtr[noth]100000" 119
-    /"KeyLoopAsCharPtr[adrs]100000" 125
-    /"ROLookupPathLoop[adrs]100000" 108
-    /"LookupPathLoop[adrs]100000" 109
-    /"ROLookupPathLoop[adrs.postleitzahl]100000" 225
-    /"LookupPathLoop[adrs.postleitzahl]100000" 213
-    /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 232
-    /"LookupPathLoop[adrs.Ortsnamentag]100000" 214
-    /"ROLookupPathLoop[adrs.nottheretag ]100000" 164
-    /"LookupPathLoop[adrs.nottheretag ]100000" 156
-    /"ROLookupPathLoop[adrs:0]100000" 204
-    /"LookupPathLoop[adrs:0]100000" 191
-    /"ROLookupPathLoop[adrs:10]100000" 135
-    /"LookupPathLoop[adrs:10]100000" 132
-    /"ROLookupPathLoop[1:10]100000" 66
-    /"LookupPathLoop[1:10]100000" 64
-  }
-  /"20050414195947" {
-    /"DeepCloneLoop[Null-Any]10000" 5
-    /"DeepCloneLoop[MetaThing]10000" 251
-    /"DeepCloneLoop[1 any long 1L]10000" 310
-    /"DeepCloneLoop[2 any long 1L]10000" 350
-    /"DeepCloneLoop[11 any long 1L]10000" 537
-    /"DeepCloneLoop[12 any long 1L]10000" 585
-    /"DeepCloneLoop[22 any long 1L]10000" 895
-    /"DeepCloneLoop[1 any float 0.1234]10000" 307
-    /"DeepCloneLoop[2 any float 0.1234]10000" 350
-    /"DeepCloneLoop[11 any float 0.1234]10000" 535
-    /"DeepCloneLoop[12 any float 0.1234]10000" 584
-    /"DeepCloneLoop[22 any float 0.1234]10000" 896
-    /"DeepCloneLoop[1 any float 4433.1234]10000" 308
-    /"DeepCloneLoop[2 any float 4433.1234]10000" 351
-    /"DeepCloneLoop[11 any float 4433.1234]10000" 535
-    /"DeepCloneLoop[12 any float 4433.1234]10000" 589
-    /"DeepCloneLoop[22 any float 4433.1234]10000" 899
-    /"DeepCloneLoop[1 any char* guguseli]10000" 305
-    /"DeepCloneLoop[2 any char* guguseli]10000" 349
-    /"DeepCloneLoop[11 any char* guguseli]10000" 533
-    /"DeepCloneLoop[12 any char* guguseli]10000" 580
-    /"DeepCloneLoop[22 any char* guguseli]10000" 889
-    /"DeepCloneLoop[1 any String guguseli]10000" 306
-    /"DeepCloneLoop[2 any String guguseli]10000" 346
-    /"DeepCloneLoop[11 any String guguseli]10000" 533
-    /"DeepCloneLoop[12 any String guguseli]10000" 573
-    /"DeepCloneLoop[22 any String guguseli]10000" 883
-  }
-  /"20050414200002" {
-    /"PrintOnPrettyLoop[Null-Any]10000" 3
-    /"PrintOnPrettyLoop[MetaThing]10000" 15
-    /"PrintOnPrettyLoop[1 any long 1L]10000" 67
-    /"PrintOnPrettyLoop[2 any long 1L]10000" 119
-    /"PrintOnPrettyLoop[11 any long 1L]10000" 131
-    /"PrintOnPrettyLoop[12 any long 1L]10000" 187
-    /"PrintOnPrettyLoop[22 any long 1L]10000" 354
-    /"PrintOnPrettyLoop[1 any float 0.1234]10000" 69
-    /"PrintOnPrettyLoop[2 any float 0.1234]10000" 121
-    /"PrintOnPrettyLoop[11 any float 0.1234]10000" 133
-    /"PrintOnPrettyLoop[12 any float 0.1234]10000" 191
-    /"PrintOnPrettyLoop[22 any float 0.1234]10000" 365
-    /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 73
-    /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 129
-    /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 138
-    /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 195
-    /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 371
-    /"PrintOnPrettyLoop[1 any char* guguseli]10000" 76
-    /"PrintOnPrettyLoop[2 any char* guguseli]10000" 138
-    /"PrintOnPrettyLoop[11 any char* guguseli]10000" 138
-    /"PrintOnPrettyLoop[12 any char* guguseli]10000" 204
-    /"PrintOnPrettyLoop[22 any char* guguseli]10000" 393
-    /"PrintOnPrettyLoop[1 any String guguseli]10000" 76
-    /"PrintOnPrettyLoop[2 any String guguseli]10000" 135
-    /"PrintOnPrettyLoop[11 any String guguseli]10000" 137
-    /"PrintOnPrettyLoop[12 any String guguseli]10000" 202
-    /"PrintOnPrettyLoop[22 any String guguseli]10000" 389
-  }
-  /"20050420114051" {
-    /IndexLoopAsCharPtr100000 74
-    /IndexLoopAsString100000 196
-    /"KeyLoopAsCharPtr[key]100000" 128
-    /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 180
-    /"ROLookupPathLoop[key]100000" 104
-    /"LookupPathLoop[key]100000" 111
-    /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 186
-    /"LookupPathLoop[keywhichissomewhatlonger]100000" 192
-    /"ROLookupPathLoop[key.which.is.not.there]100000" 307
-    /"LookupPathLoop[key.which.is.not.there]100000" 306
-    /"ROLookupPathLoop[key.which.is.more.complex]100000" 465
-    /"LookupPathLoop[key.which.is.more.complex]100000" 465
-    /"KeyLoopAsCharPtr[hsnr]100000" 125
-    /"KeyLoopAsCharPtr[name]100000" 125
-    /"KeyLoopAsCharPtr[noth]100000" 126
-    /"KeyLoopAsCharPtr[adrs]100000" 132
-    /"ROLookupPathLoop[adrs]100000" 108
-    /"LookupPathLoop[adrs]100000" 117
-    /"ROLookupPathLoop[adrs.postleitzahl]100000" 224
-    /"LookupPathLoop[adrs.postleitzahl]100000" 221
-    /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 226
-    /"LookupPathLoop[adrs.Ortsnamentag]100000" 226
-    /"ROLookupPathLoop[adrs.nottheretag ]100000" 159
-    /"LookupPathLoop[adrs.nottheretag ]100000" 159
-    /"ROLookupPathLoop[adrs:0]100000" 203
-    /"LookupPathLoop[adrs:0]100000" 206
-    /"ROLookupPathLoop[adrs:10]100000" 135
-    /"LookupPathLoop[adrs:10]100000" 135
-    /"ROLookupPathLoop[1:10]100000" 68
-    /"LookupPathLoop[1:10]100000" 68
-  }
-  /"20050420114057" {
-    /"DeepCloneLoop[Null-Any]10000" 5
-    /"DeepCloneLoop[MetaThing]10000" 322
-    /"DeepCloneLoop[1 any long 1L]10000" 393
-    /"DeepCloneLoop[2 any long 1L]10000" 446
-    /"DeepCloneLoop[11 any long 1L]10000" 673
-    /"DeepCloneLoop[12 any long 1L]10000" 726
-    /"DeepCloneLoop[22 any long 1L]10000" 1109
-    /"DeepCloneLoop[1 any float 0.1234]10000" 396
-    /"DeepCloneLoop[2 any float 0.1234]10000" 443
-    /"DeepCloneLoop[11 any float 0.1234]10000" 674
-    /"DeepCloneLoop[12 any float 0.1234]10000" 732
-    /"DeepCloneLoop[22 any float 0.1234]10000" 1111
-    /"DeepCloneLoop[1 any float 4433.1234]10000" 394
-    /"DeepCloneLoop[2 any float 4433.1234]10000" 446
-    /"DeepCloneLoop[11 any float 4433.1234]10000" 674
-    /"DeepCloneLoop[12 any float 4433.1234]10000" 724
-    /"DeepCloneLoop[22 any float 4433.1234]10000" 1107
-    /"DeepCloneLoop[1 any char* guguseli]10000" 393
-    /"DeepCloneLoop[2 any char* guguseli]10000" 445
-    /"DeepCloneLoop[11 any char* guguseli]10000" 671
-    /"DeepCloneLoop[12 any char* guguseli]10000" 722
-    /"DeepCloneLoop[22 any char* guguseli]10000" 1103
-    /"DeepCloneLoop[1 any String guguseli]10000" 392
-    /"DeepCloneLoop[2 any String guguseli]10000" 444
-    /"DeepCloneLoop[11 any String guguseli]10000" 675
-    /"DeepCloneLoop[12 any String guguseli]10000" 721
-    /"DeepCloneLoop[22 any String guguseli]10000" 1103
-  }
-  /"20050420114115" {
-    /"PrintOnPrettyLoop[Null-Any]10000" 2
-    /"PrintOnPrettyLoop[MetaThing]10000" 16
-    /"PrintOnPrettyLoop[1 any long 1L]10000" 71
-    /"PrintOnPrettyLoop[2 any long 1L]10000" 127
-    /"PrintOnPrettyLoop[11 any long 1L]10000" 133
-    /"PrintOnPrettyLoop[12 any long 1L]10000" 192
-    /"PrintOnPrettyLoop[22 any long 1L]10000" 369
-    /"PrintOnPrettyLoop[1 any float 0.1234]10000" 72
-    /"PrintOnPrettyLoop[2 any float 0.1234]10000" 130
-    /"PrintOnPrettyLoop[11 any float 0.1234]10000" 134
-    /"PrintOnPrettyLoop[12 any float 0.1234]10000" 197
-    /"PrintOnPrettyLoop[22 any float 0.1234]10000" 380
-    /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 75
-    /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 135
-    /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 140
-    /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 201
-    /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 386
-    /"PrintOnPrettyLoop[1 any char* guguseli]10000" 75
-    /"PrintOnPrettyLoop[2 any char* guguseli]10000" 136
-    /"PrintOnPrettyLoop[11 any char* guguseli]10000" 138
-    /"PrintOnPrettyLoop[12 any char* guguseli]10000" 204
-    /"PrintOnPrettyLoop[22 any char* guguseli]10000" 394
-    /"PrintOnPrettyLoop[1 any String guguseli]10000" 75
-    /"PrintOnPrettyLoop[2 any String guguseli]10000" 136
-    /"PrintOnPrettyLoop[11 any String guguseli]10000" 138
-    /"PrintOnPrettyLoop[12 any String guguseli]10000" 205
-    /"PrintOnPrettyLoop[22 any String guguseli]10000" 397
-  }
-  /"20050510214931" {
-    /IndexLoopAsCharPtr100000 150
-    /IndexLoopAsString100000 390
-    /"KeyLoopAsCharPtr[key]100000" 250
-    /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 380
-    /"ROLookupPathLoop[key]100000" 170
-    /"LookupPathLoop[key]100000" 190
-    /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 310
-    /"LookupPathLoop[keywhichissomewhatlonger]100000" 320
-    /"ROLookupPathLoop[key.which.is.not.there]100000" 540
-    /"LookupPathLoop[key.which.is.not.there]100000" 510
-    /"ROLookupPathLoop[key.which.is.more.complex]100000" 810
-    /"LookupPathLoop[key.which.is.more.complex]100000" 790
-    /"KeyLoopAsCharPtr[hsnr]100000" 240
-    /"KeyLoopAsCharPtr[name]100000" 240
-    /"KeyLoopAsCharPtr[noth]100000" 260
-    /"KeyLoopAsCharPtr[adrs]100000" 270
-    /"ROLookupPathLoop[adrs]100000" 180
-    /"LookupPathLoop[adrs]100000" 200
-    /"ROLookupPathLoop[adrs.postleitzahl]100000" 390
-    /"LookupPathLoop[adrs.postleitzahl]100000" 390
-    /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 390
-    /"LookupPathLoop[adrs.Ortsnamentag]100000" 390
-    /"ROLookupPathLoop[adrs.nottheretag ]100000" 270
-    /"LookupPathLoop[adrs.nottheretag ]100000" 280
-    /"ROLookupPathLoop[adrs:0]100000" 370
-    /"LookupPathLoop[adrs:0]100000" 350
-    /"ROLookupPathLoop[adrs:10]100000" 240
-    /"LookupPathLoop[adrs:10]100000" 240
-    /"ROLookupPathLoop[1:10]100000" 110
-    /"LookupPathLoop[1:10]100000" 130
-  }
-  /"20050510214941" {
-    /"DeepCloneLoop[Null-Any]10000" 10
-    /"DeepCloneLoop[MetaThing]10000" 840
-    /"DeepCloneLoop[1 any long 1L]10000" 980
-    /"DeepCloneLoop[2 any long 1L]10000" 1070
-    /"DeepCloneLoop[11 any long 1L]10000" 1680
-    /"DeepCloneLoop[12 any long 1L]10000" 1800
-    /"DeepCloneLoop[22 any long 1L]10000" 2760
-    /"DeepCloneLoop[1 any float 0.1234]10000" 990
-    /"DeepCloneLoop[2 any float 0.1234]10000" 1090
-    /"DeepCloneLoop[11 any float 0.1234]10000" 1720
-    /"DeepCloneLoop[12 any float 0.1234]10000" 1820
-    /"DeepCloneLoop[22 any float 0.1234]10000" 2780
-    /"DeepCloneLoop[1 any float 4433.1234]10000" 990
-    /"DeepCloneLoop[2 any float 4433.1234]10000" 1100
-    /"DeepCloneLoop[11 any float 4433.1234]10000" 1710
-    /"DeepCloneLoop[12 any float 4433.1234]10000" 1830
-    /"DeepCloneLoop[22 any float 4433.1234]10000" 2760
-    /"DeepCloneLoop[1 any char* guguseli]10000" 990
-    /"DeepCloneLoop[2 any char* guguseli]10000" 1100
-    /"DeepCloneLoop[11 any char* guguseli]10000" 1710
-    /"DeepCloneLoop[12 any char* guguseli]10000" 1820
-    /"DeepCloneLoop[22 any char* guguseli]10000" 2780
-    /"DeepCloneLoop[1 any String guguseli]10000" 980
-    /"DeepCloneLoop[2 any String guguseli]10000" 1090
-    /"DeepCloneLoop[11 any String guguseli]10000" 1710
-    /"DeepCloneLoop[12 any String guguseli]10000" 1820
-    /"DeepCloneLoop[22 any String guguseli]10000" 2770
-  }
-  /"20050510215027" {
-    /"PrintOnPrettyLoop[Null-Any]10000" 0
-    /"PrintOnPrettyLoop[MetaThing]10000" 20
-    /"PrintOnPrettyLoop[1 any long 1L]10000" 120
-    /"PrintOnPrettyLoop[2 any long 1L]10000" 230
-    /"PrintOnPrettyLoop[11 any long 1L]10000" 210
-    /"PrintOnPrettyLoop[12 any long 1L]10000" 320
-    /"PrintOnPrettyLoop[22 any long 1L]10000" 620
-    /"PrintOnPrettyLoop[1 any float 0.1234]10000" 140
-    /"PrintOnPrettyLoop[2 any float 0.1234]10000" 250
-    /"PrintOnPrettyLoop[11 any float 0.1234]10000" 220
-    /"PrintOnPrettyLoop[12 any float 0.1234]10000" 330
-    /"PrintOnPrettyLoop[22 any float 0.1234]10000" 660
-    /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 140
-    /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 250
-    /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 220
-    /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 330
-    /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 660
-    /"PrintOnPrettyLoop[1 any char* guguseli]10000" 120
-    /"PrintOnPrettyLoop[2 any char* guguseli]10000" 220
-    /"PrintOnPrettyLoop[11 any char* guguseli]10000" 210
-    /"PrintOnPrettyLoop[12 any char* guguseli]10000" 320
-    /"PrintOnPrettyLoop[22 any char* guguseli]10000" 630
-    /"PrintOnPrettyLoop[1 any String guguseli]10000" 120
-    /"PrintOnPrettyLoop[2 any String guguseli]10000" 220
-    /"PrintOnPrettyLoop[11 any String guguseli]10000" 210
-    /"PrintOnPrettyLoop[12 any String guguseli]10000" 330
-    /"PrintOnPrettyLoop[22 any String guguseli]10000" 630
-  }
-  /"20050511235205" {
-    /IndexLoopAsCharPtr100000 150
-    /IndexLoopAsString100000 360
-    /"KeyLoopAsCharPtr[key]100000" 240
-    /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 360
-    /"ROLookupPathLoop[key]100000" 170
-    /"LookupPathLoop[key]100000" 190
-    /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 310
-    /"LookupPathLoop[keywhichissomewhatlonger]100000" 330
-    /"ROLookupPathLoop[key.which.is.not.there]100000" 530
-    /"LookupPathLoop[key.which.is.not.there]100000" 510
-    /"ROLookupPathLoop[key.which.is.more.complex]100000" 800
-    /"LookupPathLoop[key.which.is.more.complex]100000" 760
-    /"KeyLoopAsCharPtr[hsnr]100000" 230
-    /"KeyLoopAsCharPtr[name]100000" 230
-    /"KeyLoopAsCharPtr[noth]100000" 240
-    /"KeyLoopAsCharPtr[adrs]100000" 250
-    /"ROLookupPathLoop[adrs]100000" 180
-    /"LookupPathLoop[adrs]100000" 190
-    /"ROLookupPathLoop[adrs.postleitzahl]100000" 390
-    /"LookupPathLoop[adrs.postleitzahl]100000" 370
-    /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 400
-    /"LookupPathLoop[adrs.Ortsnamentag]100000" 380
-    /"ROLookupPathLoop[adrs.nottheretag ]100000" 280
-    /"LookupPathLoop[adrs.nottheretag ]100000" 280
-    /"ROLookupPathLoop[adrs:0]100000" 370
-    /"LookupPathLoop[adrs:0]100000" 350
-    /"ROLookupPathLoop[adrs:10]100000" 250
-    /"LookupPathLoop[adrs:10]100000" 240
-    /"ROLookupPathLoop[1:10]100000" 100
-    /"LookupPathLoop[1:10]100000" 120
-  }
-  /"20050511235215" {
-    /"DeepCloneLoop[Null-Any]10000" 10
-    /"DeepCloneLoop[MetaThing]10000" 710
-    /"DeepCloneLoop[1 any long 1L]10000" 870
-    /"DeepCloneLoop[2 any long 1L]10000" 940
-    /"DeepCloneLoop[11 any long 1L]10000" 1490
-    /"DeepCloneLoop[12 any long 1L]10000" 1560
-    /"DeepCloneLoop[22 any long 1L]10000" 2380
-    /"DeepCloneLoop[1 any float 0.1234]10000" 850
-    /"DeepCloneLoop[2 any float 0.1234]10000" 940
-    /"DeepCloneLoop[11 any float 0.1234]10000" 1470
-    /"DeepCloneLoop[12 any float 0.1234]10000" 1560
-    /"DeepCloneLoop[22 any float 0.1234]10000" 2380
-    /"DeepCloneLoop[1 any float 4433.1234]10000" 860
-    /"DeepCloneLoop[2 any float 4433.1234]10000" 930
-    /"DeepCloneLoop[11 any float 4433.1234]10000" 1480
-    /"DeepCloneLoop[12 any float 4433.1234]10000" 1560
-    /"DeepCloneLoop[22 any float 4433.1234]10000" 2380
-    /"DeepCloneLoop[1 any char* guguseli]10000" 860
-    /"DeepCloneLoop[2 any char* guguseli]10000" 940
-    /"DeepCloneLoop[11 any char* guguseli]10000" 1470
-    /"DeepCloneLoop[12 any char* guguseli]10000" 1560
-    /"DeepCloneLoop[22 any char* guguseli]10000" 2390
-    /"DeepCloneLoop[1 any String guguseli]10000" 860
-    /"DeepCloneLoop[2 any String guguseli]10000" 940
-    /"DeepCloneLoop[11 any String guguseli]10000" 1470
-    /"DeepCloneLoop[12 any String guguseli]10000" 1550
-    /"DeepCloneLoop[22 any String guguseli]10000" 2370
-  }
-  /"20050511235255" {
-    /"PrintOnPrettyLoop[Null-Any]10000" 10
-    /"PrintOnPrettyLoop[MetaThing]10000" 20
-    /"PrintOnPrettyLoop[1 any long 1L]10000" 120
-    /"PrintOnPrettyLoop[2 any long 1L]10000" 200
-    /"PrintOnPrettyLoop[11 any long 1L]10000" 200
-    /"PrintOnPrettyLoop[12 any long 1L]10000" 290
-    /"PrintOnPrettyLoop[22 any long 1L]10000" 570
-    /"PrintOnPrettyLoop[1 any float 0.1234]10000" 120
-    /"PrintOnPrettyLoop[2 any float 0.1234]10000" 220
-    /"PrintOnPrettyLoop[11 any float 0.1234]10000" 210
-    /"PrintOnPrettyLoop[12 any float 0.1234]10000" 310
-    /"PrintOnPrettyLoop[22 any float 0.1234]10000" 610
-    /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 130
-    /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 220
-    /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 210
-    /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 300
-    /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 600
-    /"PrintOnPrettyLoop[1 any char* guguseli]10000" 120
-    /"PrintOnPrettyLoop[2 any char* guguseli]10000" 220
-    /"PrintOnPrettyLoop[11 any char* guguseli]10000" 200
-    /"PrintOnPrettyLoop[12 any char* guguseli]10000" 320
-    /"PrintOnPrettyLoop[22 any char* guguseli]10000" 610
-    /"PrintOnPrettyLoop[1 any String guguseli]10000" 120
-    /"PrintOnPrettyLoop[2 any String guguseli]10000" 220
-    /"PrintOnPrettyLoop[11 any String guguseli]10000" 200
-    /"PrintOnPrettyLoop[12 any String guguseli]10000" 320
-    /"PrintOnPrettyLoop[22 any String guguseli]10000" 610
-  }
-  /"20050512103400" {
-    /IndexLoopAsCharPtr100000 77
-    /IndexLoopAsString100000 196
-    /"KeyLoopAsCharPtr[key]100000" 136
-    /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 201
-    /"ROLookupPathLoop[key]100000" 109
-    /"LookupPathLoop[key]100000" 116
-    /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 196
-    /"LookupPathLoop[keywhichissomewhatlonger]100000" 223
-    /"ROLookupPathLoop[key.which.is.not.there]100000" 324
-    /"LookupPathLoop[key.which.is.not.there]100000" 317
-    /"ROLookupPathLoop[key.which.is.more.complex]100000" 510
-    /"LookupPathLoop[key.which.is.more.complex]100000" 464
-    /"KeyLoopAsCharPtr[hsnr]100000" 128
-    /"KeyLoopAsCharPtr[name]100000" 132
-    /"KeyLoopAsCharPtr[noth]100000" 129
-    /"KeyLoopAsCharPtr[adrs]100000" 134
-    /"ROLookupPathLoop[adrs]100000" 114
-    /"LookupPathLoop[adrs]100000" 112
-    /"ROLookupPathLoop[adrs.postleitzahl]100000" 227
-    /"LookupPathLoop[adrs.postleitzahl]100000" 227
-    /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 234
-    /"LookupPathLoop[adrs.Ortsnamentag]100000" 237
-    /"ROLookupPathLoop[adrs.nottheretag ]100000" 170
-    /"LookupPathLoop[adrs.nottheretag ]100000" 163
-    /"ROLookupPathLoop[adrs:0]100000" 216
-    /"LookupPathLoop[adrs:0]100000" 216
-    /"ROLookupPathLoop[adrs:10]100000" 144
-    /"LookupPathLoop[adrs:10]100000" 137
-    /"ROLookupPathLoop[1:10]100000" 66
-    /"LookupPathLoop[1:10]100000" 70
-  }
-  /"20050512103406" {
-    /"DeepCloneLoop[Null-Any]10000" 5
-    /"DeepCloneLoop[MetaThing]10000" 282
-    /"DeepCloneLoop[1 any long 1L]10000" 338
-    /"DeepCloneLoop[2 any long 1L]10000" 380
-    /"DeepCloneLoop[11 any long 1L]10000" 583
-    /"DeepCloneLoop[12 any long 1L]10000" 676
-    /"DeepCloneLoop[22 any long 1L]10000" 976
-    /"DeepCloneLoop[1 any float 0.1234]10000" 353
-    /"DeepCloneLoop[2 any float 0.1234]10000" 393
-    /"DeepCloneLoop[11 any float 0.1234]10000" 577
-    /"DeepCloneLoop[12 any float 0.1234]10000" 627
-    /"DeepCloneLoop[22 any float 0.1234]10000" 967
-    /"DeepCloneLoop[1 any float 4433.1234]10000" 347
-    /"DeepCloneLoop[2 any float 4433.1234]10000" 391
-    /"DeepCloneLoop[11 any float 4433.1234]10000" 623
-    /"DeepCloneLoop[12 any float 4433.1234]10000" 653
-    /"DeepCloneLoop[22 any float 4433.1234]10000" 964
-    /"DeepCloneLoop[1 any char* guguseli]10000" 338
-    /"DeepCloneLoop[2 any char* guguseli]10000" 387
-    /"DeepCloneLoop[11 any char* guguseli]10000" 608
-    /"DeepCloneLoop[12 any char* guguseli]10000" 640
-    /"DeepCloneLoop[22 any char* guguseli]10000" 1025
-    /"DeepCloneLoop[1 any String guguseli]10000" 342
-    /"DeepCloneLoop[2 any String guguseli]10000" 403
-    /"DeepCloneLoop[11 any String guguseli]10000" 599
-    /"DeepCloneLoop[12 any String guguseli]10000" 653
-    /"DeepCloneLoop[22 any String guguseli]10000" 1000
-  }
-  /"20050512103424" {
-    /"PrintOnPrettyLoop[Null-Any]10000" 2
-    /"PrintOnPrettyLoop[MetaThing]10000" 16
-    /"PrintOnPrettyLoop[1 any long 1L]10000" 71
-    /"PrintOnPrettyLoop[2 any long 1L]10000" 126
-    /"PrintOnPrettyLoop[11 any long 1L]10000" 136
-    /"PrintOnPrettyLoop[12 any long 1L]10000" 193
-    /"PrintOnPrettyLoop[22 any long 1L]10000" 388
-    /"PrintOnPrettyLoop[1 any float 0.1234]10000" 71
-    /"PrintOnPrettyLoop[2 any float 0.1234]10000" 137
-    /"PrintOnPrettyLoop[11 any float 0.1234]10000" 154
-    /"PrintOnPrettyLoop[12 any float 0.1234]10000" 198
-    /"PrintOnPrettyLoop[22 any float 0.1234]10000" 386
-    /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 76
-    /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 140
-    /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 144
-    /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 218
-    /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 391
-    /"PrintOnPrettyLoop[1 any char* guguseli]10000" 78
-    /"PrintOnPrettyLoop[2 any char* guguseli]10000" 144
-    /"PrintOnPrettyLoop[11 any char* guguseli]10000" 144
-    /"PrintOnPrettyLoop[12 any char* guguseli]10000" 216
-    /"PrintOnPrettyLoop[22 any char* guguseli]10000" 412
-    /"PrintOnPrettyLoop[1 any String guguseli]10000" 78
-    /"PrintOnPrettyLoop[2 any String guguseli]10000" 142
-    /"PrintOnPrettyLoop[11 any String guguseli]10000" 142
-    /"PrintOnPrettyLoop[12 any String guguseli]10000" 212
-    /"PrintOnPrettyLoop[22 any String guguseli]10000" 409
-  }
-  /"20050512105505" {
-    /IndexLoopAsCharPtr100000 77
-    /IndexLoopAsString100000 177
-    /"KeyLoopAsCharPtr[key]100000" 132
-    /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 180
-    /"ROLookupPathLoop[key]100000" 104
-    /"LookupPathLoop[key]100000" 111
-    /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 195
-    /"LookupPathLoop[keywhichissomewhatlonger]100000" 195
-    /"ROLookupPathLoop[key.which.is.not.there]100000" 312
-    /"LookupPathLoop[key.which.is.not.there]100000" 302
-    /"ROLookupPathLoop[key.which.is.more.complex]100000" 472
-    /"LookupPathLoop[key.which.is.more.complex]100000" 452
-    /"KeyLoopAsCharPtr[hsnr]100000" 125
-    /"KeyLoopAsCharPtr[name]100000" 124
-    /"KeyLoopAsCharPtr[noth]100000" 131
-    /"KeyLoopAsCharPtr[adrs]100000" 134
-    /"ROLookupPathLoop[adrs]100000" 108
-    /"LookupPathLoop[adrs]100000" 113
-    /"ROLookupPathLoop[adrs.postleitzahl]100000" 221
-    /"LookupPathLoop[adrs.postleitzahl]100000" 221
-    /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 223
-    /"LookupPathLoop[adrs.Ortsnamentag]100000" 223
-    /"ROLookupPathLoop[adrs.nottheretag ]100000" 157
-    /"LookupPathLoop[adrs.nottheretag ]100000" 157
-    /"ROLookupPathLoop[adrs:0]100000" 208
-    /"LookupPathLoop[adrs:0]100000" 212
-    /"ROLookupPathLoop[adrs:10]100000" 139
-    /"LookupPathLoop[adrs:10]100000" 135
-    /"ROLookupPathLoop[1:10]100000" 65
-    /"LookupPathLoop[1:10]100000" 66
-  }
-  /"20050512105511" {
-    /"DeepCloneLoop[Null-Any]10000" 5
-    /"DeepCloneLoop[MetaThing]10000" 268
-    /"DeepCloneLoop[1 any long 1L]10000" 328
-    /"DeepCloneLoop[2 any long 1L]10000" 373
-    /"DeepCloneLoop[11 any long 1L]10000" 577
-    /"DeepCloneLoop[12 any long 1L]10000" 612
-    /"DeepCloneLoop[22 any long 1L]10000" 942
-    /"DeepCloneLoop[1 any float 0.1234]10000" 329
-    /"DeepCloneLoop[2 any float 0.1234]10000" 373
-    /"DeepCloneLoop[11 any float 0.1234]10000" 576
-    /"DeepCloneLoop[12 any float 0.1234]10000" 616
-    /"DeepCloneLoop[22 any float 0.1234]10000" 946
-    /"DeepCloneLoop[1 any float 4433.1234]10000" 330
-    /"DeepCloneLoop[2 any float 4433.1234]10000" 374
-    /"DeepCloneLoop[11 any float 4433.1234]10000" 579
-    /"DeepCloneLoop[12 any float 4433.1234]10000" 617
-    /"DeepCloneLoop[22 any float 4433.1234]10000" 950
-    /"DeepCloneLoop[1 any char* guguseli]10000" 327
-    /"DeepCloneLoop[2 any char* guguseli]10000" 371
-    /"DeepCloneLoop[11 any char* guguseli]10000" 575
-    /"DeepCloneLoop[12 any char* guguseli]10000" 615
-    /"DeepCloneLoop[22 any char* guguseli]10000" 941
-    /"DeepCloneLoop[1 any String guguseli]10000" 327
-    /"DeepCloneLoop[2 any String guguseli]10000" 373
-    /"DeepCloneLoop[11 any String guguseli]10000" 571
-    /"DeepCloneLoop[12 any String guguseli]10000" 613
-    /"DeepCloneLoop[22 any String guguseli]10000" 945
-  }
-  /"20050512105527" {
-    /"PrintOnPrettyLoop[Null-Any]10000" 2
-    /"PrintOnPrettyLoop[MetaThing]10000" 16
-    /"PrintOnPrettyLoop[1 any long 1L]10000" 70
-    /"PrintOnPrettyLoop[2 any long 1L]10000" 123
-    /"PrintOnPrettyLoop[11 any long 1L]10000" 133
-    /"PrintOnPrettyLoop[12 any long 1L]10000" 191
-    /"PrintOnPrettyLoop[22 any long 1L]10000" 364
-    /"PrintOnPrettyLoop[1 any float 0.1234]10000" 71
-    /"PrintOnPrettyLoop[2 any float 0.1234]10000" 126
-    /"PrintOnPrettyLoop[11 any float 0.1234]10000" 134
-    /"PrintOnPrettyLoop[12 any float 0.1234]10000" 196
-    /"PrintOnPrettyLoop[22 any float 0.1234]10000" 376
-    /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 74
-    /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 133
-    /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 136
-    /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 198
-    /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 384
-    /"PrintOnPrettyLoop[1 any char* guguseli]10000" 77
-    /"PrintOnPrettyLoop[2 any char* guguseli]10000" 140
-    /"PrintOnPrettyLoop[11 any char* guguseli]10000" 142
-    /"PrintOnPrettyLoop[12 any char* guguseli]10000" 209
-    /"PrintOnPrettyLoop[22 any char* guguseli]10000" 405
-    /"PrintOnPrettyLoop[1 any String guguseli]10000" 78
-    /"PrintOnPrettyLoop[2 any String guguseli]10000" 140
-    /"PrintOnPrettyLoop[11 any String guguseli]10000" 142
-    /"PrintOnPrettyLoop[12 any String guguseli]10000" 211
-    /"PrintOnPrettyLoop[22 any String guguseli]10000" 406
-  }
-  /"20050512162128" {
-    /IndexLoopAsCharPtr100000 75
-    /IndexLoopAsString100000 200
-    /"KeyLoopAsCharPtr[key]100000" 131
-    /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 181
-    /"ROLookupPathLoop[key]100000" 106
-    /"LookupPathLoop[key]100000" 108
-    /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 187
-    /"LookupPathLoop[keywhichissomewhatlonger]100000" 189
-    /"ROLookupPathLoop[key.which.is.not.there]100000" 310
-    /"LookupPathLoop[key.which.is.not.there]100000" 292
-    /"ROLookupPathLoop[key.which.is.more.complex]100000" 465
-    /"LookupPathLoop[key.which.is.more.complex]100000" 437
-    /"KeyLoopAsCharPtr[hsnr]100000" 125
-    /"KeyLoopAsCharPtr[name]100000" 124
-    /"KeyLoopAsCharPtr[noth]100000" 128
-    /"KeyLoopAsCharPtr[adrs]100000" 134
-    /"ROLookupPathLoop[adrs]100000" 110
-    /"LookupPathLoop[adrs]100000" 112
-    /"ROLookupPathLoop[adrs.postleitzahl]100000" 218
-    /"LookupPathLoop[adrs.postleitzahl]100000" 212
-    /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 218
-    /"LookupPathLoop[adrs.Ortsnamentag]100000" 210
-    /"ROLookupPathLoop[adrs.nottheretag ]100000" 154
-    /"LookupPathLoop[adrs.nottheretag ]100000" 151
-    /"ROLookupPathLoop[adrs:0]100000" 205
-    /"LookupPathLoop[adrs:0]100000" 207
-    /"ROLookupPathLoop[adrs:10]100000" 135
-    /"LookupPathLoop[adrs:10]100000" 135
-    /"ROLookupPathLoop[1:10]100000" 63
-    /"LookupPathLoop[1:10]100000" 64
-  }
-  /"20050512162134" {
-    /"DeepCloneLoop[Null-Any]10000" 5
-    /"DeepCloneLoop[MetaThing]10000" 315
-    /"DeepCloneLoop[1 any long 1L]10000" 386
-    /"DeepCloneLoop[2 any long 1L]10000" 437
-    /"DeepCloneLoop[11 any long 1L]10000" 670
-    /"DeepCloneLoop[12 any long 1L]10000" 717
-    /"DeepCloneLoop[22 any long 1L]10000" 1100
-    /"DeepCloneLoop[1 any float 0.1234]10000" 391
-    /"DeepCloneLoop[2 any float 0.1234]10000" 441
-    /"DeepCloneLoop[11 any float 0.1234]10000" 674
-    /"DeepCloneLoop[12 any float 0.1234]10000" 728
-    /"DeepCloneLoop[22 any float 0.1234]10000" 1102
-    /"DeepCloneLoop[1 any float 4433.1234]10000" 391
-    /"DeepCloneLoop[2 any float 4433.1234]10000" 443
-    /"DeepCloneLoop[11 any float 4433.1234]10000" 675
-    /"DeepCloneLoop[12 any float 4433.1234]10000" 727
-    /"DeepCloneLoop[22 any float 4433.1234]10000" 1108
-    /"DeepCloneLoop[1 any char* guguseli]10000" 387
-    /"DeepCloneLoop[2 any char* guguseli]10000" 439
-    /"DeepCloneLoop[11 any char* guguseli]10000" 671
-    /"DeepCloneLoop[12 any char* guguseli]10000" 723
-    /"DeepCloneLoop[22 any char* guguseli]10000" 1105
-    /"DeepCloneLoop[1 any String guguseli]10000" 386
-    /"DeepCloneLoop[2 any String guguseli]10000" 437
-    /"DeepCloneLoop[11 any String guguseli]10000" 669
-    /"DeepCloneLoop[12 any String guguseli]10000" 718
-    /"DeepCloneLoop[22 any String guguseli]10000" 1104
-  }
-  /"20050512162153" {
-    /"PrintOnPrettyLoop[Null-Any]10000" 2
-    /"PrintOnPrettyLoop[MetaThing]10000" 15
-    /"PrintOnPrettyLoop[1 any long 1L]10000" 72
-    /"PrintOnPrettyLoop[2 any long 1L]10000" 130
-    /"PrintOnPrettyLoop[11 any long 1L]10000" 137
-    /"PrintOnPrettyLoop[12 any long 1L]10000" 198
-    /"PrintOnPrettyLoop[22 any long 1L]10000" 402
-    /"PrintOnPrettyLoop[1 any float 0.1234]10000" 74
-    /"PrintOnPrettyLoop[2 any float 0.1234]10000" 133
-    /"PrintOnPrettyLoop[11 any float 0.1234]10000" 141
-    /"PrintOnPrettyLoop[12 any float 0.1234]10000" 202
-    /"PrintOnPrettyLoop[22 any float 0.1234]10000" 418
-    /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 77
-    /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 146
-    /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 146
-    /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 204
-    /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 425
-    /"PrintOnPrettyLoop[1 any char* guguseli]10000" 76
-    /"PrintOnPrettyLoop[2 any char* guguseli]10000" 138
-    /"PrintOnPrettyLoop[11 any char* guguseli]10000" 138
-    /"PrintOnPrettyLoop[12 any char* guguseli]10000" 206
-    /"PrintOnPrettyLoop[22 any char* guguseli]10000" 402
-    /"PrintOnPrettyLoop[1 any String guguseli]10000" 76
-    /"PrintOnPrettyLoop[2 any String guguseli]10000" 137
-    /"PrintOnPrettyLoop[11 any String guguseli]10000" 138
-    /"PrintOnPrettyLoop[12 any String guguseli]10000" 206
-    /"PrintOnPrettyLoop[22 any String guguseli]10000" 403
-  }
-  /"20050512202246" {
-    /IndexLoopAsCharPtr100000 74
-    /IndexLoopAsString100000 199
-    /"KeyLoopAsCharPtr[key]100000" 129
-    /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 181
-    /"ROLookupPathLoop[key]100000" 105
-    /"LookupPathLoop[key]100000" 106
-    /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 185
-    /"LookupPathLoop[keywhichissomewhatlonger]100000" 189
-    /"ROLookupPathLoop[key.which.is.not.there]100000" 307
-    /"LookupPathLoop[key.which.is.not.there]100000" 289
-    /"ROLookupPathLoop[key.which.is.more.complex]100000" 467
-    /"LookupPathLoop[key.which.is.more.complex]100000" 432
-    /"KeyLoopAsCharPtr[hsnr]100000" 125
-    /"KeyLoopAsCharPtr[name]100000" 125
-    /"KeyLoopAsCharPtr[noth]100000" 129
-    /"KeyLoopAsCharPtr[adrs]100000" 133
-    /"ROLookupPathLoop[adrs]100000" 109
-    /"LookupPathLoop[adrs]100000" 112
-    /"ROLookupPathLoop[adrs.postleitzahl]100000" 219
-    /"LookupPathLoop[adrs.postleitzahl]100000" 211
-    /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 217
-    /"LookupPathLoop[adrs.Ortsnamentag]100000" 211
-    /"ROLookupPathLoop[adrs.nottheretag ]100000" 153
-    /"LookupPathLoop[adrs.nottheretag ]100000" 151
-    /"ROLookupPathLoop[adrs:0]100000" 203
-    /"LookupPathLoop[adrs:0]100000" 204
-    /"ROLookupPathLoop[adrs:10]100000" 134
-    /"LookupPathLoop[adrs:10]100000" 131
-    /"ROLookupPathLoop[1:10]100000" 62
-    /"LookupPathLoop[1:10]100000" 63
-  }
-  /"20050512202252" {
-    /"DeepCloneLoop[Null-Any]10000" 5
-    /"DeepCloneLoop[MetaThing]10000" 315
-    /"DeepCloneLoop[1 any long 1L]10000" 387
-    /"DeepCloneLoop[2 any long 1L]10000" 437
-    /"DeepCloneLoop[11 any long 1L]10000" 667
-    /"DeepCloneLoop[12 any long 1L]10000" 719
-    /"DeepCloneLoop[22 any long 1L]10000" 1105
-    /"DeepCloneLoop[1 any float 0.1234]10000" 385
-    /"DeepCloneLoop[2 any float 0.1234]10000" 436
-    /"DeepCloneLoop[11 any float 0.1234]10000" 668
-    /"DeepCloneLoop[12 any float 0.1234]10000" 719
-    /"DeepCloneLoop[22 any float 0.1234]10000" 1108
-    /"DeepCloneLoop[1 any float 4433.1234]10000" 386
-    /"DeepCloneLoop[2 any float 4433.1234]10000" 439
-    /"DeepCloneLoop[11 any float 4433.1234]10000" 668
-    /"DeepCloneLoop[12 any float 4433.1234]10000" 717
-    /"DeepCloneLoop[22 any float 4433.1234]10000" 1102
-    /"DeepCloneLoop[1 any char* guguseli]10000" 386
-    /"DeepCloneLoop[2 any char* guguseli]10000" 438
-    /"DeepCloneLoop[11 any char* guguseli]10000" 670
-    /"DeepCloneLoop[12 any char* guguseli]10000" 723
-    /"DeepCloneLoop[22 any char* guguseli]10000" 1102
-    /"DeepCloneLoop[1 any String guguseli]10000" 386
-    /"DeepCloneLoop[2 any String guguseli]10000" 437
-    /"DeepCloneLoop[11 any String guguseli]10000" 669
-    /"DeepCloneLoop[12 any String guguseli]10000" 719
-    /"DeepCloneLoop[22 any String guguseli]10000" 1102
-  }
-  /"20050512202311" {
-    /"PrintOnPrettyLoop[Null-Any]10000" 2
-    /"PrintOnPrettyLoop[MetaThing]10000" 15
-    /"PrintOnPrettyLoop[1 any long 1L]10000" 73
-    /"PrintOnPrettyLoop[2 any long 1L]10000" 130
-    /"PrintOnPrettyLoop[11 any long 1L]10000" 137
-    /"PrintOnPrettyLoop[12 any long 1L]10000" 197
-    /"PrintOnPrettyLoop[22 any long 1L]10000" 382
-    /"PrintOnPrettyLoop[1 any float 0.1234]10000" 74
-    /"PrintOnPrettyLoop[2 any float 0.1234]10000" 133
-    /"PrintOnPrettyLoop[11 any float 0.1234]10000" 137
-    /"PrintOnPrettyLoop[12 any float 0.1234]10000" 202
-    /"PrintOnPrettyLoop[22 any float 0.1234]10000" 395
-    /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 77
-    /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 139
-    /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 142
-    /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 203
-    /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 402
-    /"PrintOnPrettyLoop[1 any char* guguseli]10000" 75
-    /"PrintOnPrettyLoop[2 any char* guguseli]10000" 138
-    /"PrintOnPrettyLoop[11 any char* guguseli]10000" 137
-    /"PrintOnPrettyLoop[12 any char* guguseli]10000" 206
-    /"PrintOnPrettyLoop[22 any char* guguseli]10000" 404
-    /"PrintOnPrettyLoop[1 any String guguseli]10000" 76
-    /"PrintOnPrettyLoop[2 any String guguseli]10000" 138
-    /"PrintOnPrettyLoop[11 any String guguseli]10000" 139
-    /"PrintOnPrettyLoop[12 any String guguseli]10000" 206
-    /"PrintOnPrettyLoop[22 any String guguseli]10000" 402
-  }
-  /"20050513083224" {
-    /IndexLoopAsCharPtr100000 77
-    /IndexLoopAsString100000 176
-    /"KeyLoopAsCharPtr[key]100000" 130
-    /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 179
-    /"ROLookupPathLoop[key]100000" 103
-    /"LookupPathLoop[key]100000" 111
-    /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 199
-    /"LookupPathLoop[keywhichissomewhatlonger]100000" 200
-    /"ROLookupPathLoop[key.which.is.not.there]100000" 309
-    /"LookupPathLoop[key.which.is.not.there]100000" 299
-    /"ROLookupPathLoop[key.which.is.more.complex]100000" 467
-    /"LookupPathLoop[key.which.is.more.complex]100000" 450
-    /"KeyLoopAsCharPtr[hsnr]100000" 126
-    /"KeyLoopAsCharPtr[name]100000" 128
-    /"KeyLoopAsCharPtr[noth]100000" 127
-    /"KeyLoopAsCharPtr[adrs]100000" 133
-    /"ROLookupPathLoop[adrs]100000" 105
-    /"LookupPathLoop[adrs]100000" 113
-    /"ROLookupPathLoop[adrs.postleitzahl]100000" 216
-    /"LookupPathLoop[adrs.postleitzahl]100000" 218
-    /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 219
-    /"LookupPathLoop[adrs.Ortsnamentag]100000" 217
-    /"ROLookupPathLoop[adrs.nottheretag ]100000" 154
-    /"LookupPathLoop[adrs.nottheretag ]100000" 153
-    /"ROLookupPathLoop[adrs:0]100000" 201
-    /"LookupPathLoop[adrs:0]100000" 211
-    /"ROLookupPathLoop[adrs:10]100000" 136
-    /"LookupPathLoop[adrs:10]100000" 138
-    /"ROLookupPathLoop[1:10]100000" 64
-    /"LookupPathLoop[1:10]100000" 70
-  }
-  /"20050513083230" {
-    /"DeepCloneLoop[Null-Any]10000" 5
-    /"DeepCloneLoop[MetaThing]10000" 271
-    /"DeepCloneLoop[1 any long 1L]10000" 329
-    /"DeepCloneLoop[2 any long 1L]10000" 372
-    /"DeepCloneLoop[11 any long 1L]10000" 573
-    /"DeepCloneLoop[12 any long 1L]10000" 625
-    /"DeepCloneLoop[22 any long 1L]10000" 956
-    /"DeepCloneLoop[1 any float 0.1234]10000" 332
-    /"DeepCloneLoop[2 any float 0.1234]10000" 376
-    /"DeepCloneLoop[11 any float 0.1234]10000" 576
-    /"DeepCloneLoop[12 any float 0.1234]10000" 626
-    /"DeepCloneLoop[22 any float 0.1234]10000" 956
-    /"DeepCloneLoop[1 any float 4433.1234]10000" 331
-    /"DeepCloneLoop[2 any float 4433.1234]10000" 376
-    /"DeepCloneLoop[11 any float 4433.1234]10000" 573
-    /"DeepCloneLoop[12 any float 4433.1234]10000" 632
-    /"DeepCloneLoop[22 any float 4433.1234]10000" 973
-    /"DeepCloneLoop[1 any char* guguseli]10000" 333
-    /"DeepCloneLoop[2 any char* guguseli]10000" 381
-    /"DeepCloneLoop[11 any char* guguseli]10000" 583
-    /"DeepCloneLoop[12 any char* guguseli]10000" 634
-    /"DeepCloneLoop[22 any char* guguseli]10000" 969
-    /"DeepCloneLoop[1 any String guguseli]10000" 332
-    /"DeepCloneLoop[2 any String guguseli]10000" 385
-    /"DeepCloneLoop[11 any String guguseli]10000" 589
-    /"DeepCloneLoop[12 any String guguseli]10000" 625
-    /"DeepCloneLoop[22 any String guguseli]10000" 961
-  }
-  /"20050513083246" {
-    /"PrintOnPrettyLoop[Null-Any]10000" 2
-    /"PrintOnPrettyLoop[MetaThing]10000" 16
-    /"PrintOnPrettyLoop[1 any long 1L]10000" 71
-    /"PrintOnPrettyLoop[2 any long 1L]10000" 126
-    /"PrintOnPrettyLoop[11 any long 1L]10000" 138
-    /"PrintOnPrettyLoop[12 any long 1L]10000" 192
-    /"PrintOnPrettyLoop[22 any long 1L]10000" 368
-    /"PrintOnPrettyLoop[1 any float 0.1234]10000" 72
-    /"PrintOnPrettyLoop[2 any float 0.1234]10000" 132
-    /"PrintOnPrettyLoop[11 any float 0.1234]10000" 137
-    /"PrintOnPrettyLoop[12 any float 0.1234]10000" 198
-    /"PrintOnPrettyLoop[22 any float 0.1234]10000" 376
-    /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 75
-    /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 132
-    /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 140
-    /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 202
-    /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 390
-    /"PrintOnPrettyLoop[1 any char* guguseli]10000" 78
-    /"PrintOnPrettyLoop[2 any char* guguseli]10000" 147
-    /"PrintOnPrettyLoop[11 any char* guguseli]10000" 142
-    /"PrintOnPrettyLoop[12 any char* guguseli]10000" 212
-    /"PrintOnPrettyLoop[22 any char* guguseli]10000" 404
-    /"PrintOnPrettyLoop[1 any String guguseli]10000" 79
-    /"PrintOnPrettyLoop[2 any String guguseli]10000" 142
-    /"PrintOnPrettyLoop[11 any String guguseli]10000" 142
-    /"PrintOnPrettyLoop[12 any String guguseli]10000" 211
-    /"PrintOnPrettyLoop[22 any String guguseli]10000" 410
-  }
-  /"20050513180303" {
-    /IndexLoopAsCharPtr100000 76
-    /IndexLoopAsString100000 210
-    /"KeyLoopAsCharPtr[key]100000" 138
-    /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 189
-    /"ROLookupPathLoop[key]100000" 105
-    /"LookupPathLoop[key]100000" 112
-    /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 189
-    /"LookupPathLoop[keywhichissomewhatlonger]100000" 190
-    /"ROLookupPathLoop[key.which.is.not.there]100000" 316
-    /"LookupPathLoop[key.which.is.not.there]100000" 306
-    /"ROLookupPathLoop[key.which.is.more.complex]100000" 499
-    /"LookupPathLoop[key.which.is.more.complex]100000" 487
-    /"KeyLoopAsCharPtr[hsnr]100000" 128
-    /"KeyLoopAsCharPtr[name]100000" 126
-    /"KeyLoopAsCharPtr[noth]100000" 135
-    /"KeyLoopAsCharPtr[adrs]100000" 149
-    /"ROLookupPathLoop[adrs]100000" 111
-    /"LookupPathLoop[adrs]100000" 116
-    /"ROLookupPathLoop[adrs.postleitzahl]100000" 229
-    /"LookupPathLoop[adrs.postleitzahl]100000" 214
-    /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 222
-    /"LookupPathLoop[adrs.Ortsnamentag]100000" 228
-    /"ROLookupPathLoop[adrs.nottheretag ]100000" 175
-    /"LookupPathLoop[adrs.nottheretag ]100000" 151
-    /"ROLookupPathLoop[adrs:0]100000" 206
-    /"LookupPathLoop[adrs:0]100000" 212
-    /"ROLookupPathLoop[adrs:10]100000" 149
-    /"LookupPathLoop[adrs:10]100000" 132
-    /"ROLookupPathLoop[1:10]100000" 74
-    /"LookupPathLoop[1:10]100000" 65
-  }
-  /"20050513180309" {
-    /"DeepCloneLoop[Null-Any]10000" 5
-    /"DeepCloneLoop[MetaThing]10000" 361
-    /"DeepCloneLoop[1 any long 1L]10000" 424
-    /"DeepCloneLoop[2 any long 1L]10000" 539
-    /"DeepCloneLoop[11 any long 1L]10000" 690
-    /"DeepCloneLoop[12 any long 1L]10000" 759
-    /"DeepCloneLoop[22 any long 1L]10000" 1157
-    /"DeepCloneLoop[1 any float 0.1234]10000" 404
-    /"DeepCloneLoop[2 any float 0.1234]10000" 467
-    /"DeepCloneLoop[11 any float 0.1234]10000" 714
-    /"DeepCloneLoop[12 any float 0.1234]10000" 800
-    /"DeepCloneLoop[22 any float 0.1234]10000" 1209
-    /"DeepCloneLoop[1 any float 4433.1234]10000" 411
-    /"DeepCloneLoop[2 any float 4433.1234]10000" 461
-    /"DeepCloneLoop[11 any float 4433.1234]10000" 688
-    /"DeepCloneLoop[12 any float 4433.1234]10000" 751
-    /"DeepCloneLoop[22 any float 4433.1234]10000" 1195
-    /"DeepCloneLoop[1 any char* guguseli]10000" 431
-    /"DeepCloneLoop[2 any char* guguseli]10000" 479
-    /"DeepCloneLoop[11 any char* guguseli]10000" 694
-    /"DeepCloneLoop[12 any char* guguseli]10000" 746
-    /"DeepCloneLoop[22 any char* guguseli]10000" 1148
-    /"DeepCloneLoop[1 any String guguseli]10000" 467
-    /"DeepCloneLoop[2 any String guguseli]10000" 490
-    /"DeepCloneLoop[11 any String guguseli]10000" 740
-    /"DeepCloneLoop[12 any String guguseli]10000" 783
-    /"DeepCloneLoop[22 any String guguseli]10000" 1171
-  }
-  /"20050513180329" {
-    /"PrintOnPrettyLoop[Null-Any]10000" 2
-    /"PrintOnPrettyLoop[MetaThing]10000" 15
-    /"PrintOnPrettyLoop[1 any long 1L]10000" 73
-    /"PrintOnPrettyLoop[2 any long 1L]10000" 134
-    /"PrintOnPrettyLoop[11 any long 1L]10000" 153
-    /"PrintOnPrettyLoop[12 any long 1L]10000" 211
-    /"PrintOnPrettyLoop[22 any long 1L]10000" 437
-    /"PrintOnPrettyLoop[1 any float 0.1234]10000" 77
-    /"PrintOnPrettyLoop[2 any float 0.1234]10000" 169
-    /"PrintOnPrettyLoop[11 any float 0.1234]10000" 143
-    /"PrintOnPrettyLoop[12 any float 0.1234]10000" 216
-    /"PrintOnPrettyLoop[22 any float 0.1234]10000" 405
-    /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 78
-    /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 141
-    /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 145
-    /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 215
-    /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 414
-    /"PrintOnPrettyLoop[1 any char* guguseli]10000" 80
-    /"PrintOnPrettyLoop[2 any char* guguseli]10000" 140
-    /"PrintOnPrettyLoop[11 any char* guguseli]10000" 139
-    /"PrintOnPrettyLoop[12 any char* guguseli]10000" 212
-    /"PrintOnPrettyLoop[22 any char* guguseli]10000" 432
-    /"PrintOnPrettyLoop[1 any String guguseli]10000" 79
-    /"PrintOnPrettyLoop[2 any String guguseli]10000" 145
-    /"PrintOnPrettyLoop[11 any String guguseli]10000" 144
-    /"PrintOnPrettyLoop[12 any String guguseli]10000" 210
-    /"PrintOnPrettyLoop[22 any String guguseli]10000" 408
-  }
-  /"20050514000803" {
-    /IndexLoopAsCharPtr100000 160
-    /IndexLoopAsString100000 390
-    /"KeyLoopAsCharPtr[key]100000" 260
-    /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 370
-    /"ROLookupPathLoop[key]100000" 180
-    /"LookupPathLoop[key]100000" 190
-    /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 310
-    /"LookupPathLoop[keywhichissomewhatlonger]100000" 330
-    /"ROLookupPathLoop[key.which.is.not.there]100000" 530
-    /"LookupPathLoop[key.which.is.not.there]100000" 530
-    /"ROLookupPathLoop[key.which.is.more.complex]100000" 820
-    /"LookupPathLoop[key.which.is.more.complex]100000" 780
-    /"KeyLoopAsCharPtr[hsnr]100000" 250
-    /"KeyLoopAsCharPtr[name]100000" 240
-    /"KeyLoopAsCharPtr[noth]100000" 270
-    /"KeyLoopAsCharPtr[adrs]100000" 260
-    /"ROLookupPathLoop[adrs]100000" 180
-    /"LookupPathLoop[adrs]100000" 200
-    /"ROLookupPathLoop[adrs.postleitzahl]100000" 380
-    /"LookupPathLoop[adrs.postleitzahl]100000" 390
-    /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 390
-    /"LookupPathLoop[adrs.Ortsnamentag]100000" 380
-    /"ROLookupPathLoop[adrs.nottheretag ]100000" 280
-    /"LookupPathLoop[adrs.nottheretag ]100000" 280
-    /"ROLookupPathLoop[adrs:0]100000" 360
-    /"LookupPathLoop[adrs:0]100000" 360
-    /"ROLookupPathLoop[adrs:10]100000" 240
-    /"LookupPathLoop[adrs:10]100000" 240
-    /"ROLookupPathLoop[1:10]100000" 120
-    /"LookupPathLoop[1:10]100000" 120
-  }
-  /"20050514000814" {
-    /"DeepCloneLoop[Null-Any]10000" 10
-    /"DeepCloneLoop[MetaThing]10000" 820
-    /"DeepCloneLoop[1 any long 1L]10000" 980
-    /"DeepCloneLoop[2 any long 1L]10000" 1070
-    /"DeepCloneLoop[11 any long 1L]10000" 1700
-    /"DeepCloneLoop[12 any long 1L]10000" 1770
-    /"DeepCloneLoop[22 any long 1L]10000" 2710
-    /"DeepCloneLoop[1 any float 0.1234]10000" 970
-    /"DeepCloneLoop[2 any float 0.1234]10000" 1070
-    /"DeepCloneLoop[11 any float 0.1234]10000" 1670
-    /"DeepCloneLoop[12 any float 0.1234]10000" 1780
-    /"DeepCloneLoop[22 any float 0.1234]10000" 2730
-    /"DeepCloneLoop[1 any float 4433.1234]10000" 970
-    /"DeepCloneLoop[2 any float 4433.1234]10000" 1060
-    /"DeepCloneLoop[11 any float 4433.1234]10000" 1680
-    /"DeepCloneLoop[12 any float 4433.1234]10000" 1780
-    /"DeepCloneLoop[22 any float 4433.1234]10000" 2730
-    /"DeepCloneLoop[1 any char* guguseli]10000" 970
-    /"DeepCloneLoop[2 any char* guguseli]10000" 1060
-    /"DeepCloneLoop[11 any char* guguseli]10000" 1680
-    /"DeepCloneLoop[12 any char* guguseli]10000" 1780
-    /"DeepCloneLoop[22 any char* guguseli]10000" 2710
-    /"DeepCloneLoop[1 any String guguseli]10000" 960
-    /"DeepCloneLoop[2 any String guguseli]10000" 1070
-    /"DeepCloneLoop[11 any String guguseli]10000" 1680
-    /"DeepCloneLoop[12 any String guguseli]10000" 1770
-    /"DeepCloneLoop[22 any String guguseli]10000" 2710
-  }
-  /"20050514000859" {
-    /"PrintOnPrettyLoop[Null-Any]10000" 0
-    /"PrintOnPrettyLoop[MetaThing]10000" 20
-    /"PrintOnPrettyLoop[1 any long 1L]10000" 120
-    /"PrintOnPrettyLoop[2 any long 1L]10000" 210
-    /"PrintOnPrettyLoop[11 any long 1L]10000" 210
-    /"PrintOnPrettyLoop[12 any long 1L]10000" 310
-    /"PrintOnPrettyLoop[22 any long 1L]10000" 600
-    /"PrintOnPrettyLoop[1 any float 0.1234]10000" 120
-    /"PrintOnPrettyLoop[2 any float 0.1234]10000" 230
-    /"PrintOnPrettyLoop[11 any float 0.1234]10000" 210
-    /"PrintOnPrettyLoop[12 any float 0.1234]10000" 330
-    /"PrintOnPrettyLoop[22 any float 0.1234]10000" 640
-    /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 130
-    /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 250
-    /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 210
-    /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 330
-    /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 640
-    /"PrintOnPrettyLoop[1 any char* guguseli]10000" 120
-    /"PrintOnPrettyLoop[2 any char* guguseli]10000" 220
-    /"PrintOnPrettyLoop[11 any char* guguseli]10000" 200
-    /"PrintOnPrettyLoop[12 any char* guguseli]10000" 320
-    /"PrintOnPrettyLoop[22 any char* guguseli]10000" 620
-    /"PrintOnPrettyLoop[1 any String guguseli]10000" 120
-    /"PrintOnPrettyLoop[2 any String guguseli]10000" 220
-    /"PrintOnPrettyLoop[11 any String guguseli]10000" 200
-    /"PrintOnPrettyLoop[12 any String guguseli]10000" 310
-    /"PrintOnPrettyLoop[22 any String guguseli]10000" 630
+  /bondo_OPT_DBG_STDIO_GCC_3.3.2 {
+    /"20051108130101" {
+      /IndexLoopAsCharPtr100000 75
+      /IndexLoopAsString100000 205
+      /"KeyLoopAsCharPtr[key]100000" 131
+      /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 183
+      /"ROLookupPathLoop[key]100000" 103
+      /"LookupPathLoop[key]100000" 108
+      /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 188
+      /"LookupPathLoop[keywhichissomewhatlonger]100000" 187
+      /"ROLookupPathLoop[key.which.is.not.there]100000" 316
+      /"LookupPathLoop[key.which.is.not.there]100000" 306
+      /"ROLookupPathLoop[key.which.is.more.complex]100000" 475
+      /"LookupPathLoop[key.which.is.more.complex]100000" 457
+      /"KeyLoopAsCharPtr[hsnr]100000" 128
+      /"KeyLoopAsCharPtr[name]100000" 126
+      /"KeyLoopAsCharPtr[noth]100000" 131
+      /"KeyLoopAsCharPtr[adrs]100000" 137
+      /"ROLookupPathLoop[adrs]100000" 109
+      /"LookupPathLoop[adrs]100000" 112
+      /"ROLookupPathLoop[adrs.postleitzahl]100000" 226
+      /"LookupPathLoop[adrs.postleitzahl]100000" 221
+      /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 227
+      /"LookupPathLoop[adrs.Ortsnamentag]100000" 222
+      /"ROLookupPathLoop[adrs.nottheretag ]100000" 157
+      /"LookupPathLoop[adrs.nottheretag ]100000" 155
+      /"ROLookupPathLoop[adrs:0]100000" 204
+      /"LookupPathLoop[adrs:0]100000" 208
+      /"ROLookupPathLoop[adrs:10]100000" 139
+      /"LookupPathLoop[adrs:10]100000" 137
+      /"ROLookupPathLoop[1:10]100000" 67
+      /"LookupPathLoop[1:10]100000" 66
+    }
+    /"20051108130107" {
+      /"DeepCloneLoop[Null-Any]10000" 4
+      /"DeepCloneLoop[MetaThing]10000" 313
+      /"DeepCloneLoop[1 any long 1L]10000" 382
+      /"DeepCloneLoop[2 any long 1L]10000" 434
+      /"DeepCloneLoop[11 any long 1L]10000" 662
+      /"DeepCloneLoop[12 any long 1L]10000" 715
+      /"DeepCloneLoop[22 any long 1L]10000" 1093
+      /"DeepCloneLoop[1 any float 0.1234]10000" 383
+      /"DeepCloneLoop[2 any float 0.1234]10000" 433
+      /"DeepCloneLoop[11 any float 0.1234]10000" 661
+      /"DeepCloneLoop[12 any float 0.1234]10000" 714
+      /"DeepCloneLoop[22 any float 0.1234]10000" 1094
+      /"DeepCloneLoop[1 any float 4433.1234]10000" 383
+      /"DeepCloneLoop[2 any float 4433.1234]10000" 435
+      /"DeepCloneLoop[11 any float 4433.1234]10000" 661
+      /"DeepCloneLoop[12 any float 4433.1234]10000" 714
+      /"DeepCloneLoop[22 any float 4433.1234]10000" 1095
+      /"DeepCloneLoop[1 any char* guguseli]10000" 383
+      /"DeepCloneLoop[2 any char* guguseli]10000" 435
+      /"DeepCloneLoop[11 any char* guguseli]10000" 664
+      /"DeepCloneLoop[12 any char* guguseli]10000" 713
+      /"DeepCloneLoop[22 any char* guguseli]10000" 1094
+      /"DeepCloneLoop[1 any String guguseli]10000" 383
+      /"DeepCloneLoop[2 any String guguseli]10000" 434
+      /"DeepCloneLoop[11 any String guguseli]10000" 662
+      /"DeepCloneLoop[12 any String guguseli]10000" 715
+      /"DeepCloneLoop[22 any String guguseli]10000" 1094
+    }
+    /"20051108130125" {
+      /"PrintOnPrettyLoop[Null-Any]10000" 2
+      /"PrintOnPrettyLoop[MetaThing]10000" 15
+      /"PrintOnPrettyLoop[1 any long 1L]10000" 71
+      /"PrintOnPrettyLoop[2 any long 1L]10000" 127
+      /"PrintOnPrettyLoop[11 any long 1L]10000" 133
+      /"PrintOnPrettyLoop[12 any long 1L]10000" 191
+      /"PrintOnPrettyLoop[22 any long 1L]10000" 370
+      /"PrintOnPrettyLoop[1 any float 0.1234]10000" 73
+      /"PrintOnPrettyLoop[2 any float 0.1234]10000" 130
+      /"PrintOnPrettyLoop[11 any float 0.1234]10000" 135
+      /"PrintOnPrettyLoop[12 any float 0.1234]10000" 197
+      /"PrintOnPrettyLoop[22 any float 0.1234]10000" 378
+      /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 75
+      /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 137
+      /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 140
+      /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 200
+      /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 383
+      /"PrintOnPrettyLoop[1 any char* guguseli]10000" 75
+      /"PrintOnPrettyLoop[2 any char* guguseli]10000" 137
+      /"PrintOnPrettyLoop[11 any char* guguseli]10000" 137
+      /"PrintOnPrettyLoop[12 any char* guguseli]10000" 204
+      /"PrintOnPrettyLoop[22 any char* guguseli]10000" 391
+      /"PrintOnPrettyLoop[1 any String guguseli]10000" 75
+      /"PrintOnPrettyLoop[2 any String guguseli]10000" 138
+      /"PrintOnPrettyLoop[11 any String guguseli]10000" 137
+      /"PrintOnPrettyLoop[12 any String guguseli]10000" 205
+      /"PrintOnPrettyLoop[22 any String guguseli]10000" 390
+    }
+    /"20051108130906" {
+      /IndexLoopAsCharPtr100000 73
+      /IndexLoopAsString100000 202
+      /"KeyLoopAsCharPtr[key]100000" 128
+      /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 184
+      /"ROLookupPathLoop[key]100000" 107
+      /"LookupPathLoop[key]100000" 105
+      /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 188
+      /"LookupPathLoop[keywhichissomewhatlonger]100000" 187
+      /"ROLookupPathLoop[key.which.is.not.there]100000" 313
+      /"LookupPathLoop[key.which.is.not.there]100000" 301
+      /"ROLookupPathLoop[key.which.is.more.complex]100000" 472
+      /"LookupPathLoop[key.which.is.more.complex]100000" 457
+      /"KeyLoopAsCharPtr[hsnr]100000" 128
+      /"KeyLoopAsCharPtr[name]100000" 126
+      /"KeyLoopAsCharPtr[noth]100000" 129
+      /"KeyLoopAsCharPtr[adrs]100000" 134
+      /"ROLookupPathLoop[adrs]100000" 107
+      /"LookupPathLoop[adrs]100000" 112
+      /"ROLookupPathLoop[adrs.postleitzahl]100000" 226
+      /"LookupPathLoop[adrs.postleitzahl]100000" 221
+      /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 226
+      /"LookupPathLoop[adrs.Ortsnamentag]100000" 221
+      /"ROLookupPathLoop[adrs.nottheretag ]100000" 159
+      /"LookupPathLoop[adrs.nottheretag ]100000" 155
+      /"ROLookupPathLoop[adrs:0]100000" 206
+      /"LookupPathLoop[adrs:0]100000" 208
+      /"ROLookupPathLoop[adrs:10]100000" 138
+      /"LookupPathLoop[adrs:10]100000" 139
+      /"ROLookupPathLoop[1:10]100000" 70
+      /"LookupPathLoop[1:10]100000" 66
+    }
+    /"20051108130912" {
+      /"DeepCloneLoop[Null-Any]10000" 4
+      /"DeepCloneLoop[MetaThing]10000" 311
+      /"DeepCloneLoop[1 any long 1L]10000" 380
+      /"DeepCloneLoop[2 any long 1L]10000" 433
+      /"DeepCloneLoop[11 any long 1L]10000" 659
+      /"DeepCloneLoop[12 any long 1L]10000" 712
+      /"DeepCloneLoop[22 any long 1L]10000" 1098
+      /"DeepCloneLoop[1 any float 0.1234]10000" 381
+      /"DeepCloneLoop[2 any float 0.1234]10000" 434
+      /"DeepCloneLoop[11 any float 0.1234]10000" 663
+      /"DeepCloneLoop[12 any float 0.1234]10000" 712
+      /"DeepCloneLoop[22 any float 0.1234]10000" 1103
+      /"DeepCloneLoop[1 any float 4433.1234]10000" 382
+      /"DeepCloneLoop[2 any float 4433.1234]10000" 433
+      /"DeepCloneLoop[11 any float 4433.1234]10000" 662
+      /"DeepCloneLoop[12 any float 4433.1234]10000" 713
+      /"DeepCloneLoop[22 any float 4433.1234]10000" 1092
+      /"DeepCloneLoop[1 any char* guguseli]10000" 381
+      /"DeepCloneLoop[2 any char* guguseli]10000" 433
+      /"DeepCloneLoop[11 any char* guguseli]10000" 661
+      /"DeepCloneLoop[12 any char* guguseli]10000" 715
+      /"DeepCloneLoop[22 any char* guguseli]10000" 1101
+      /"DeepCloneLoop[1 any String guguseli]10000" 382
+      /"DeepCloneLoop[2 any String guguseli]10000" 433
+      /"DeepCloneLoop[11 any String guguseli]10000" 661
+      /"DeepCloneLoop[12 any String guguseli]10000" 715
+      /"DeepCloneLoop[22 any String guguseli]10000" 1094
+    }
+    /"20051108130930" {
+      /"PrintOnPrettyLoop[Null-Any]10000" 2
+      /"PrintOnPrettyLoop[MetaThing]10000" 15
+      /"PrintOnPrettyLoop[1 any long 1L]10000" 70
+      /"PrintOnPrettyLoop[2 any long 1L]10000" 126
+      /"PrintOnPrettyLoop[11 any long 1L]10000" 133
+      /"PrintOnPrettyLoop[12 any long 1L]10000" 193
+      /"PrintOnPrettyLoop[22 any long 1L]10000" 368
+      /"PrintOnPrettyLoop[1 any float 0.1234]10000" 72
+      /"PrintOnPrettyLoop[2 any float 0.1234]10000" 129
+      /"PrintOnPrettyLoop[11 any float 0.1234]10000" 133
+      /"PrintOnPrettyLoop[12 any float 0.1234]10000" 196
+      /"PrintOnPrettyLoop[22 any float 0.1234]10000" 378
+      /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 74
+      /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 136
+      /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 139
+      /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 199
+      /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 381
+      /"PrintOnPrettyLoop[1 any char* guguseli]10000" 74
+      /"PrintOnPrettyLoop[2 any char* guguseli]10000" 136
+      /"PrintOnPrettyLoop[11 any char* guguseli]10000" 136
+      /"PrintOnPrettyLoop[12 any char* guguseli]10000" 203
+      /"PrintOnPrettyLoop[22 any char* guguseli]10000" 392
+      /"PrintOnPrettyLoop[1 any String guguseli]10000" 74
+      /"PrintOnPrettyLoop[2 any String guguseli]10000" 136
+      /"PrintOnPrettyLoop[11 any String guguseli]10000" 138
+      /"PrintOnPrettyLoop[12 any String guguseli]10000" 204
+      /"PrintOnPrettyLoop[22 any String guguseli]10000" 393
+    }
+    /"20051108134743" {
+      /IndexLoopAsCharPtr100000 73
+      /IndexLoopAsString100000 198
+      /"KeyLoopAsCharPtr[key]100000" 130
+      /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 182
+      /"ROLookupPathLoop[key]100000" 107
+      /"LookupPathLoop[key]100000" 105
+      /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 188
+      /"LookupPathLoop[keywhichissomewhatlonger]100000" 186
+      /"ROLookupPathLoop[key.which.is.not.there]100000" 317
+      /"LookupPathLoop[key.which.is.not.there]100000" 300
+      /"ROLookupPathLoop[key.which.is.more.complex]100000" 478
+      /"LookupPathLoop[key.which.is.more.complex]100000" 449
+      /"KeyLoopAsCharPtr[hsnr]100000" 126
+      /"KeyLoopAsCharPtr[name]100000" 127
+      /"KeyLoopAsCharPtr[noth]100000" 131
+      /"KeyLoopAsCharPtr[adrs]100000" 134
+      /"ROLookupPathLoop[adrs]100000" 111
+      /"LookupPathLoop[adrs]100000" 110
+      /"ROLookupPathLoop[adrs.postleitzahl]100000" 226
+      /"LookupPathLoop[adrs.postleitzahl]100000" 217
+      /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 226
+      /"LookupPathLoop[adrs.Ortsnamentag]100000" 215
+      /"ROLookupPathLoop[adrs.nottheretag ]100000" 161
+      /"LookupPathLoop[adrs.nottheretag ]100000" 156
+      /"ROLookupPathLoop[adrs:0]100000" 208
+      /"LookupPathLoop[adrs:0]100000" 205
+      /"ROLookupPathLoop[adrs:10]100000" 139
+      /"LookupPathLoop[adrs:10]100000" 134
+      /"ROLookupPathLoop[1:10]100000" 68
+      /"LookupPathLoop[1:10]100000" 65
+    }
+    /"20051108134749" {
+      /"DeepCloneLoop[Null-Any]10000" 4
+      /"DeepCloneLoop[MetaThing]10000" 313
+      /"DeepCloneLoop[1 any long 1L]10000" 383
+      /"DeepCloneLoop[2 any long 1L]10000" 433
+      /"DeepCloneLoop[11 any long 1L]10000" 662
+      /"DeepCloneLoop[12 any long 1L]10000" 715
+      /"DeepCloneLoop[22 any long 1L]10000" 1104
+      /"DeepCloneLoop[1 any float 0.1234]10000" 382
+      /"DeepCloneLoop[2 any float 0.1234]10000" 435
+      /"DeepCloneLoop[11 any float 0.1234]10000" 666
+      /"DeepCloneLoop[12 any float 0.1234]10000" 716
+      /"DeepCloneLoop[22 any float 0.1234]10000" 1105
+      /"DeepCloneLoop[1 any float 4433.1234]10000" 384
+      /"DeepCloneLoop[2 any float 4433.1234]10000" 436
+      /"DeepCloneLoop[11 any float 4433.1234]10000" 664
+      /"DeepCloneLoop[12 any float 4433.1234]10000" 716
+      /"DeepCloneLoop[22 any float 4433.1234]10000" 1102
+      /"DeepCloneLoop[1 any char* guguseli]10000" 382
+      /"DeepCloneLoop[2 any char* guguseli]10000" 434
+      /"DeepCloneLoop[11 any char* guguseli]10000" 663
+      /"DeepCloneLoop[12 any char* guguseli]10000" 716
+      /"DeepCloneLoop[22 any char* guguseli]10000" 1098
+      /"DeepCloneLoop[1 any String guguseli]10000" 386
+      /"DeepCloneLoop[2 any String guguseli]10000" 436
+      /"DeepCloneLoop[11 any String guguseli]10000" 664
+      /"DeepCloneLoop[12 any String guguseli]10000" 716
+      /"DeepCloneLoop[22 any String guguseli]10000" 1098
+    }
+    /"20051108134807" {
+      /"PrintOnPrettyLoop[Null-Any]10000" 2
+      /"PrintOnPrettyLoop[MetaThing]10000" 15
+      /"PrintOnPrettyLoop[1 any long 1L]10000" 70
+      /"PrintOnPrettyLoop[2 any long 1L]10000" 126
+      /"PrintOnPrettyLoop[11 any long 1L]10000" 133
+      /"PrintOnPrettyLoop[12 any long 1L]10000" 192
+      /"PrintOnPrettyLoop[22 any long 1L]10000" 367
+      /"PrintOnPrettyLoop[1 any float 0.1234]10000" 72
+      /"PrintOnPrettyLoop[2 any float 0.1234]10000" 130
+      /"PrintOnPrettyLoop[11 any float 0.1234]10000" 134
+      /"PrintOnPrettyLoop[12 any float 0.1234]10000" 196
+      /"PrintOnPrettyLoop[22 any float 0.1234]10000" 380
+      /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 75
+      /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 138
+      /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 141
+      /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 201
+      /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 385
+      /"PrintOnPrettyLoop[1 any char* guguseli]10000" 75
+      /"PrintOnPrettyLoop[2 any char* guguseli]10000" 138
+      /"PrintOnPrettyLoop[11 any char* guguseli]10000" 137
+      /"PrintOnPrettyLoop[12 any char* guguseli]10000" 204
+      /"PrintOnPrettyLoop[22 any char* guguseli]10000" 394
+      /"PrintOnPrettyLoop[1 any String guguseli]10000" 74
+      /"PrintOnPrettyLoop[2 any String guguseli]10000" 137
+      /"PrintOnPrettyLoop[11 any String guguseli]10000" 136
+      /"PrintOnPrettyLoop[12 any String guguseli]10000" 202
+      /"PrintOnPrettyLoop[22 any String guguseli]10000" 390
+    }
+    /"20051108140355" {
+      /IndexLoopAsCharPtr100000 73
+      /IndexLoopAsString100000 202
+      /"KeyLoopAsCharPtr[key]100000" 129
+      /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 183
+      /"ROLookupPathLoop[key]100000" 107
+      /"LookupPathLoop[key]100000" 104
+      /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 188
+      /"LookupPathLoop[keywhichissomewhatlonger]100000" 189
+      /"ROLookupPathLoop[key.which.is.not.there]100000" 322
+      /"LookupPathLoop[key.which.is.not.there]100000" 303
+      /"ROLookupPathLoop[key.which.is.more.complex]100000" 474
+      /"LookupPathLoop[key.which.is.more.complex]100000" 463
+      /"KeyLoopAsCharPtr[hsnr]100000" 127
+      /"KeyLoopAsCharPtr[name]100000" 128
+      /"KeyLoopAsCharPtr[noth]100000" 130
+      /"KeyLoopAsCharPtr[adrs]100000" 137
+      /"ROLookupPathLoop[adrs]100000" 108
+      /"LookupPathLoop[adrs]100000" 111
+      /"ROLookupPathLoop[adrs.postleitzahl]100000" 223
+      /"LookupPathLoop[adrs.postleitzahl]100000" 218
+      /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 227
+      /"LookupPathLoop[adrs.Ortsnamentag]100000" 220
+      /"ROLookupPathLoop[adrs.nottheretag ]100000" 160
+      /"LookupPathLoop[adrs.nottheretag ]100000" 155
+      /"ROLookupPathLoop[adrs:0]100000" 206
+      /"LookupPathLoop[adrs:0]100000" 205
+      /"ROLookupPathLoop[adrs:10]100000" 137
+      /"LookupPathLoop[adrs:10]100000" 136
+      /"ROLookupPathLoop[1:10]100000" 68
+      /"LookupPathLoop[1:10]100000" 67
+    }
+    /"20051108140401" {
+      /"DeepCloneLoop[Null-Any]10000" 4
+      /"DeepCloneLoop[MetaThing]10000" 312
+      /"DeepCloneLoop[1 any long 1L]10000" 380
+      /"DeepCloneLoop[2 any long 1L]10000" 431
+      /"DeepCloneLoop[11 any long 1L]10000" 660
+      /"DeepCloneLoop[12 any long 1L]10000" 714
+      /"DeepCloneLoop[22 any long 1L]10000" 1092
+      /"DeepCloneLoop[1 any float 0.1234]10000" 381
+      /"DeepCloneLoop[2 any float 0.1234]10000" 433
+      /"DeepCloneLoop[11 any float 0.1234]10000" 661
+      /"DeepCloneLoop[12 any float 0.1234]10000" 711
+      /"DeepCloneLoop[22 any float 0.1234]10000" 1092
+      /"DeepCloneLoop[1 any float 4433.1234]10000" 383
+      /"DeepCloneLoop[2 any float 4433.1234]10000" 434
+      /"DeepCloneLoop[11 any float 4433.1234]10000" 661
+      /"DeepCloneLoop[12 any float 4433.1234]10000" 711
+      /"DeepCloneLoop[22 any float 4433.1234]10000" 1092
+      /"DeepCloneLoop[1 any char* guguseli]10000" 381
+      /"DeepCloneLoop[2 any char* guguseli]10000" 435
+      /"DeepCloneLoop[11 any char* guguseli]10000" 661
+      /"DeepCloneLoop[12 any char* guguseli]10000" 715
+      /"DeepCloneLoop[22 any char* guguseli]10000" 1091
+      /"DeepCloneLoop[1 any String guguseli]10000" 382
+      /"DeepCloneLoop[2 any String guguseli]10000" 434
+      /"DeepCloneLoop[11 any String guguseli]10000" 662
+      /"DeepCloneLoop[12 any String guguseli]10000" 713
+      /"DeepCloneLoop[22 any String guguseli]10000" 1093
+    }
+    /"20051108140419" {
+      /"PrintOnPrettyLoop[Null-Any]10000" 2
+      /"PrintOnPrettyLoop[MetaThing]10000" 15
+      /"PrintOnPrettyLoop[1 any long 1L]10000" 70
+      /"PrintOnPrettyLoop[2 any long 1L]10000" 126
+      /"PrintOnPrettyLoop[11 any long 1L]10000" 133
+      /"PrintOnPrettyLoop[12 any long 1L]10000" 192
+      /"PrintOnPrettyLoop[22 any long 1L]10000" 367
+      /"PrintOnPrettyLoop[1 any float 0.1234]10000" 73
+      /"PrintOnPrettyLoop[2 any float 0.1234]10000" 129
+      /"PrintOnPrettyLoop[11 any float 0.1234]10000" 134
+      /"PrintOnPrettyLoop[12 any float 0.1234]10000" 196
+      /"PrintOnPrettyLoop[22 any float 0.1234]10000" 381
+      /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 75
+      /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 134
+      /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 139
+      /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 199
+      /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 388
+      /"PrintOnPrettyLoop[1 any char* guguseli]10000" 74
+      /"PrintOnPrettyLoop[2 any char* guguseli]10000" 137
+      /"PrintOnPrettyLoop[11 any char* guguseli]10000" 136
+      /"PrintOnPrettyLoop[12 any char* guguseli]10000" 204
+      /"PrintOnPrettyLoop[22 any char* guguseli]10000" 396
+      /"PrintOnPrettyLoop[1 any String guguseli]10000" 74
+      /"PrintOnPrettyLoop[2 any String guguseli]10000" 136
+      /"PrintOnPrettyLoop[11 any String guguseli]10000" 137
+      /"PrintOnPrettyLoop[12 any String guguseli]10000" 203
+      /"PrintOnPrettyLoop[22 any String guguseli]10000" 397
+    }
+    /"20051108140559" {
+      /IndexLoopAsCharPtr100000 75
+      /IndexLoopAsString100000 203
+      /"KeyLoopAsCharPtr[key]100000" 132
+      /"KeyLoopAsCharPtr[keywhichissomewhatlonger]100000" 184
+      /"ROLookupPathLoop[key]100000" 102
+      /"LookupPathLoop[key]100000" 108
+      /"ROLookupPathLoop[keywhichissomewhatlonger]100000" 189
+      /"LookupPathLoop[keywhichissomewhatlonger]100000" 189
+      /"ROLookupPathLoop[key.which.is.not.there]100000" 319
+      /"LookupPathLoop[key.which.is.not.there]100000" 309
+      /"ROLookupPathLoop[key.which.is.more.complex]100000" 477
+      /"LookupPathLoop[key.which.is.more.complex]100000" 457
+      /"KeyLoopAsCharPtr[hsnr]100000" 125
+      /"KeyLoopAsCharPtr[name]100000" 128
+      /"KeyLoopAsCharPtr[noth]100000" 128
+      /"KeyLoopAsCharPtr[adrs]100000" 135
+      /"ROLookupPathLoop[adrs]100000" 108
+      /"LookupPathLoop[adrs]100000" 113
+      /"ROLookupPathLoop[adrs.postleitzahl]100000" 228
+      /"LookupPathLoop[adrs.postleitzahl]100000" 219
+      /"ROLookupPathLoop[adrs.Ortsnamentag]100000" 226
+      /"LookupPathLoop[adrs.Ortsnamentag]100000" 221
+      /"ROLookupPathLoop[adrs.nottheretag ]100000" 158
+      /"LookupPathLoop[adrs.nottheretag ]100000" 153
+      /"ROLookupPathLoop[adrs:0]100000" 204
+      /"LookupPathLoop[adrs:0]100000" 208
+      /"ROLookupPathLoop[adrs:10]100000" 139
+      /"LookupPathLoop[adrs:10]100000" 136
+      /"ROLookupPathLoop[1:10]100000" 68
+      /"LookupPathLoop[1:10]100000" 66
+    }
+    /"20051108140604" {
+      /"DeepCloneLoop[Null-Any]10000" 4
+      /"DeepCloneLoop[MetaThing]10000" 323
+      /"DeepCloneLoop[1 any long 1L]10000" 392
+      /"DeepCloneLoop[2 any long 1L]10000" 444
+      /"DeepCloneLoop[11 any long 1L]10000" 683
+      /"DeepCloneLoop[12 any long 1L]10000" 734
+      /"DeepCloneLoop[22 any long 1L]10000" 1125
+      /"DeepCloneLoop[1 any float 0.1234]10000" 394
+      /"DeepCloneLoop[2 any float 0.1234]10000" 447
+      /"DeepCloneLoop[11 any float 0.1234]10000" 680
+      /"DeepCloneLoop[12 any float 0.1234]10000" 735
+      /"DeepCloneLoop[22 any float 0.1234]10000" 1124
+      /"DeepCloneLoop[1 any float 4433.1234]10000" 392
+      /"DeepCloneLoop[2 any float 4433.1234]10000" 446
+      /"DeepCloneLoop[11 any float 4433.1234]10000" 683
+      /"DeepCloneLoop[12 any float 4433.1234]10000" 735
+      /"DeepCloneLoop[22 any float 4433.1234]10000" 1125
+      /"DeepCloneLoop[1 any char* guguseli]10000" 393
+      /"DeepCloneLoop[2 any char* guguseli]10000" 444
+      /"DeepCloneLoop[11 any char* guguseli]10000" 684
+      /"DeepCloneLoop[12 any char* guguseli]10000" 737
+      /"DeepCloneLoop[22 any char* guguseli]10000" 1128
+      /"DeepCloneLoop[1 any String guguseli]10000" 393
+      /"DeepCloneLoop[2 any String guguseli]10000" 444
+      /"DeepCloneLoop[11 any String guguseli]10000" 684
+      /"DeepCloneLoop[12 any String guguseli]10000" 737
+      /"DeepCloneLoop[22 any String guguseli]10000" 1128
+    }
+    /"20051108140623" {
+      /"PrintOnPrettyLoop[Null-Any]10000" 2
+      /"PrintOnPrettyLoop[MetaThing]10000" 15
+      /"PrintOnPrettyLoop[1 any long 1L]10000" 71
+      /"PrintOnPrettyLoop[2 any long 1L]10000" 126
+      /"PrintOnPrettyLoop[11 any long 1L]10000" 134
+      /"PrintOnPrettyLoop[12 any long 1L]10000" 191
+      /"PrintOnPrettyLoop[22 any long 1L]10000" 366
+      /"PrintOnPrettyLoop[1 any float 0.1234]10000" 72
+      /"PrintOnPrettyLoop[2 any float 0.1234]10000" 130
+      /"PrintOnPrettyLoop[11 any float 0.1234]10000" 133
+      /"PrintOnPrettyLoop[12 any float 0.1234]10000" 196
+      /"PrintOnPrettyLoop[22 any float 0.1234]10000" 383
+      /"PrintOnPrettyLoop[1 any float 4433.1234]10000" 75
+      /"PrintOnPrettyLoop[2 any float 4433.1234]10000" 135
+      /"PrintOnPrettyLoop[11 any float 4433.1234]10000" 138
+      /"PrintOnPrettyLoop[12 any float 4433.1234]10000" 200
+      /"PrintOnPrettyLoop[22 any float 4433.1234]10000" 390
+      /"PrintOnPrettyLoop[1 any char* guguseli]10000" 74
+      /"PrintOnPrettyLoop[2 any char* guguseli]10000" 136
+      /"PrintOnPrettyLoop[11 any char* guguseli]10000" 136
+      /"PrintOnPrettyLoop[12 any char* guguseli]10000" 202
+      /"PrintOnPrettyLoop[22 any char* guguseli]10000" 397
+      /"PrintOnPrettyLoop[1 any String guguseli]10000" 74
+      /"PrintOnPrettyLoop[2 any String guguseli]10000" 137
+      /"PrintOnPrettyLoop[11 any String guguseli]10000" 137
+      /"PrintOnPrettyLoop[12 any String guguseli]10000" 203
+      /"PrintOnPrettyLoop[22 any String guguseli]10000" 396
+    }
   }
 }
