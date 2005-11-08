@@ -27,14 +27,17 @@ namespace AnyExtensions
 	{
 	public:
 		typedef XThing PlainType;
-		typedef XThing	&RefType;
+		typedef XThing &PlainTypeRef;
 		typedef long PositionType;
-		typedef long &PositionRefType;
-		typedef const long &PositionRefTypeConst;
+		typedef long &PositionTypeRef;
+		typedef const long &ConstPositionTypeRef;
+		typedef long SizeType;
+		typedef long &SizeTypeRef;
+		typedef const long &ConstSizeTypeRef;
 
 		/*! Constructor
 			\param a the Anything to iterate on */
-		Iterator(RefType a)
+		Iterator(PlainTypeRef a)
 			: fAny(a)
 			, fPosition(-1)
 			, fSize(a.GetSize()) {
@@ -47,40 +50,60 @@ namespace AnyExtensions
 		/*! Gets the next Anything
 			\param a out - reference to the next element
 			\return true, if there was a next element, false if the iteration has finished */
-		bool Next(RefType a) {
+		bool Next(PlainTypeRef a) {
 			return DoGetNext(a);
 		}
 
 		/*! Gets the next Anything
 			\param a out - reference to the next element
 			\return true, if there was a next element, false if the iteration has finished */
-		bool operator()(RefType a) {
+		bool operator()(PlainTypeRef a) {
 			return Next(a);
 		}
 
 		/*! Get current index into base (RO)Anything
 			\return current iterator index */
-		PositionRefTypeConst Index() const {
+		ConstPositionTypeRef Index() const {
 			return fPosition;
 		}
 
 	protected:
-		RefType GetAny() {
+		PlainTypeRef GetAny() {
 			return fAny;
 		}
-		PositionRefType GetPosition() {
+
+		/*! Get current index into base (RO)Anything for modification
+			\return current iterator index */
+		PositionTypeRef IndexRef() {
 			return fPosition;
 		}
-		long GetSize() {
+
+		bool SetIndex(PositionType lPos) {
+			if ( lPos >= 0L && lPos < MaxIndex() ) {
+				IndexRef() = lPos;
+				return true;
+			}
+			return false;
+		}
+
+		virtual bool NextIndex() {
+			if ( ++IndexRef() < MaxIndex() ) {
+				return true;
+			}
+			--IndexRef();
+			return false;
+		}
+
+		ConstSizeTypeRef MaxIndex() {
 			return fSize;
 		}
 
 		/*! Get the next element based on some criteria, subclasses could implement special behavior
 			\param a reference to the next Anything
 			\return true if a matching next element was found, false otherwise */
-		virtual bool DoGetNext(RefType a) {
+		virtual bool DoGetNext(PlainTypeRef a) {
 			StartTrace(Iterator.DoGetNext);
-			if ( ++GetPosition() < GetSize() ) {
+			if ( NextIndex() ) {
 				a = GetAny()[Index()];
 				return true;
 			}
@@ -90,7 +113,7 @@ namespace AnyExtensions
 	private:
 		PlainType		fAny;
 		PositionType	fPosition;
-		long			fSize;
+		SizeType		fSize;
 
 		Iterator();
 		Iterator(const Iterator &);
@@ -107,11 +130,11 @@ namespace AnyExtensions
 		typedef Iterator<XThing> BaseIterator;
 		typedef LeafIterator<XThing> ThisIterator;
 		typedef typename BaseIterator::PlainType PlainType;
-		typedef typename BaseIterator::RefType RefType;
+		typedef typename BaseIterator::PlainTypeRef PlainTypeRef;
 
 		/*! Constructor
 			\param a the Anything to iterate on */
-		LeafIterator(RefType a)
+		LeafIterator(PlainTypeRef a)
 			: BaseIterator(a)
 			, subIter(0) {
 			StartTrace(LeafIterator.Ctor);
@@ -126,7 +149,7 @@ namespace AnyExtensions
 		/*! Get the next element based on some criteria, subclasses could implement special behavior
 			\param a reference to the next Anything
 			\return true if a matching next element was found, false otherwise */
-		virtual bool DoGetNext(RefType a) {
+		virtual bool DoGetNext(PlainTypeRef a) {
 			StartTrace(LeafIterator.DoGetNext);
 			if ( subIter ) {
 				// We are already descended into the Anything
@@ -154,7 +177,6 @@ namespace AnyExtensions
 					a = next;
 					found = true;
 				}
-				next = PlainType();
 			}
 			return found;
 		}
