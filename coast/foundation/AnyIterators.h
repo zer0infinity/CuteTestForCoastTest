@@ -30,6 +30,7 @@ namespace AnyExtensions
 		typedef XThing	&RefType;
 		typedef long PositionType;
 		typedef long &PositionRefType;
+		typedef const long &PositionRefTypeConst;
 
 		/*! Constructor
 			\param a the Anything to iterate on */
@@ -47,13 +48,19 @@ namespace AnyExtensions
 			\param a out - reference to the next element
 			\return true, if there was a next element, false if the iteration has finished */
 		bool Next(RefType a) {
-			StartTrace(Iterator.Next);
 			return DoGetNext(a);
 		}
 
-		/*! Get current index into iterator
+		/*! Gets the next Anything
+			\param a out - reference to the next element
+			\return true, if there was a next element, false if the iteration has finished */
+		bool operator()(RefType a) {
+			return Next(a);
+		}
+
+		/*! Get current index into base (RO)Anything
 			\return current iterator index */
-		PositionType Index() {
+		PositionRefTypeConst Index() const {
 			return fPosition;
 		}
 
@@ -74,7 +81,7 @@ namespace AnyExtensions
 		virtual bool DoGetNext(RefType a) {
 			StartTrace(Iterator.DoGetNext);
 			if ( ++GetPosition() < GetSize() ) {
-				a = GetAny()[GetPosition()];
+				a = GetAny()[Index()];
 				return true;
 			}
 			return false;
