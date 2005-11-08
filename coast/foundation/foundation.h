@@ -9,6 +9,32 @@
 #ifndef _CONFIG_H
 #define _CONFIG_H
 
+#if defined(__GNUG__)
+#if defined(__OPTIMIZE__) && defined(DEBUG)
+#define WD_OPTFLAG	"OPT_DBG"
+#elif defined(__OPTIMIZE__) && !defined(DEBUG)
+#define WD_OPTFLAG	"OPT"
+#else
+#define WD_OPTFLAG	"DBG"
+#endif
+#else
+#if !defined(DEBUG)
+#define WD_OPTFLAG	"OPT"
+#else
+#define WD_OPTFLAG	"DBG"
+#endif
+#endif
+
+#if defined(ONLY_STD_IOSTREAM)
+#define WD_IOVERSION	"_STDIO"
+#endif
+#define WD_BUILDFLAGS ( WD_OPTFLAG WD_IOVERSION )
+#if defined(__GNUG__)
+#define WD_COMPILER ( "GCC_" __VERSION__ )
+#elif defined(WIN32) && defined(_MSC_VER)
+#define WD_COMPILER ( "MSC_" ##_MSC_VER )
+#endif
+
 // symbol concatenation operator
 #define _NAME1_(name) name
 #define _NAME2_(name1,name2) name1##name2
