@@ -259,8 +259,7 @@ public:
 		\return true if the path matched an Anything, else false
 		\note Unmatched slots of the path expression <b>will not be created</b> in this Anything */
 	bool LookupPath(Anything &result, const char *path, char delimSlot = '.', char delimIdx = ':') const;
-	/*! similar to LookupPath but returns const reference. No failure indication */
-	const Anything &LookupPathRef(const char *path, char delimSlot = '.', char delimIdx = ':') const;
+
 	/*! returns a const char * representation of the implementation if any is set else the default
 		this method doesn't copy memory */
 	const char *AsCharPtr(const char *dflt = 0) const;
