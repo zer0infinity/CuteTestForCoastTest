@@ -18,7 +18,7 @@
 class StatisticTestCase : public TestCase
 {
 	Anything fStatistics;
-	String fFilename, fDatetime;
+	String fFilename, fDatetime, fHostName;
 
 public:
 	//--- constructors
