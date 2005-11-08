@@ -39,7 +39,7 @@ void StatisticTestCase::LoadData()
 	}
 	fDatetime = GenTimeStamp();
 	System::HostName(fHostName);
-	fHostName << '_' << WD_BUILDFLAGS;
+	fHostName << '_' << WD_BUILDFLAGS << '_' << WD_COMPILER;
 	TraceAny(fStatistics, "filename of statistics file is [" << fFilename << "], timestamp [" << fDatetime << "]");
 }
 
