@@ -33,11 +33,14 @@ long IFAHash(const char *key, long &len, char stop1 = '\0', char stop2 = '\0')
 	register const unsigned char *p = (const unsigned char *)key;
 
 	if (key) {
-		while (*p && *p != stop1 && *p != stop2) {
-			h = (h << 4) + *p++;
+		register unsigned char pV = *p;
+		while (pV && pV != stop1 && pV != stop2) {
+			h = (h << 4) + pV;
+			++p;
 			if ((g = (h & 0xf0000000))) {
 				h = (h ^ (g >> 24)) ^ g;
 			}
+			pV = *p;
 		}
 	}
 	len = (long)(p) - (long)(key);
@@ -565,7 +568,7 @@ public:
 		fXrefs.Append(patch);
 	}
 	void	Patch(Anything &any) {
-		for (long i = 0; i < fXrefs.GetSize(); i++) {
+		for (long i = 0; i < fXrefs.GetSize(); ++i) {
 			Anything preslot, slot, ref, anyIdx;
 			String strSlotName;
 			strSlotName = fXrefs[i][0L].AsString();
@@ -1197,7 +1200,7 @@ AnyArrayImpl::~AnyArrayImpl()
 {
 	if (fContents) {
 		// free the buffers themselves
-		for (int j = 0; j < fNumOfBufs; j++) {
+		for (int j = 0; j < fNumOfBufs; ++j) {
 #if defined(OPERATOR_NEW_ARRAY_NOT_SUPPORTED)
 			for ( int k = 0; k < fBufSize; k++) {
 				fContents[j][k].~AnyKeyAssoc();
@@ -1326,7 +1329,7 @@ long AnyArrayImpl::Contains(const char *k)
 
 	long i; 	// external slot index
 	long at;	// internal buffer index
-	for (i = 0; i < fSize; i++) {
+	for (i = 0; i < fSize; ++i) {
 		at = IntAt(i);	// calculate the internal index
 		Assert(at >= 0 && at < fCapacity);
 		if ( strcmp(fContents[IntAtBuf(at)][IntAtSlot(at)].Value().AsCharPtr(""), k) == 0 ) {
@@ -1438,7 +1441,7 @@ void AnyArrayImpl::Expand(long newsize)
 		AnyKeyAssoc **old = fContents;
 		fContents = (AnyKeyAssoc **)fAllocator->Calloc(fNumOfBufs, sizeof(AnyKeyAssoc *));
 		if (fContents) {
-			for (long bufs = 0; bufs < numOfExistingBufs; bufs++) {
+			for (long bufs = 0; bufs < numOfExistingBufs; ++bufs) {
 				fContents[bufs] = old[bufs];
 			}
 			fAllocator->Free(old); // frees the old ptr buffer array not the contents buffer
@@ -1454,7 +1457,7 @@ void AnyArrayImpl::Expand(long newsize)
 
 	// allocate the needed buffers
 	if (allocOk) {
-		for (long i = numOfExistingBufs; i < fNumOfBufs && allocOk; i++) {
+		for (long i = numOfExistingBufs; i < fNumOfBufs && allocOk; ++i) {
 			Assert(fAllocator != 0);
 			//#if defined(PURE_LEAK) || defined(__linux__)
 			//			fAllocator = fAllocator ? fAllocator : Storage::Current();
@@ -1470,7 +1473,7 @@ void AnyArrayImpl::Expand(long newsize)
 
 				allocOk = false;
 			} else {
-				for ( long keyAssocKeyCnt = 0L; keyAssocKeyCnt < fBufSize; keyAssocKeyCnt++ ) {
+				for ( long keyAssocKeyCnt = 0L; keyAssocKeyCnt < fBufSize; ++keyAssocKeyCnt ) {
 					fContents[i][keyAssocKeyCnt].Init(fAllocator);
 				}
 			}
@@ -1491,7 +1494,7 @@ void AnyArrayImpl::AllocMemory()
 
 	// allocate the buffers holding the
 	// Any Key Assocs
-	for (long i = 0; i < fNumOfBufs; i++) {
+	for (long i = 0; i < fNumOfBufs; ++i) {
 		// must not use calloc to ensure proper initialization of Anything instance variables
 		Assert(fAllocator != 0);
 //#if defined(PURE_LEAK) || defined(__linux__)
@@ -1508,7 +1511,7 @@ void AnyArrayImpl::AllocMemory()
 			String msg("Memory allocation failed!");
 			SYSERROR(msg);
 		} else {
-			for ( long keyAssocKeyCnt = 0L; keyAssocKeyCnt < fBufSize; keyAssocKeyCnt++ ) {
+			for ( long keyAssocKeyCnt = 0L; keyAssocKeyCnt < fBufSize; ++keyAssocKeyCnt ) {
 				fContents[i][keyAssocKeyCnt].Init(fAllocator);
 			}
 		}
@@ -1518,7 +1521,7 @@ void AnyArrayImpl::AllocMemory()
 void AnyArrayImpl::PrintKeys()
 {
 	long hash = -1;
-	for (long i = 0; i < fSize; i++) {
+	for (long i = 0; i < fSize; ++i) {
 		long at = IntAt(i);
 		if (fKeys) {
 			hash = 	fKeys->At(fContents[IntAtBuf(at)][IntAtSlot(at)].Key());
@@ -1552,7 +1555,7 @@ AnyImpl *AnyArrayImpl::DoDeepClone(Allocator *a, Anything &xreftable)
 	refEntry = (IFAObject *)ret;
 	long count = this->GetSize();
 
-	for (long i = 0 ; i < count; i++) {
+	for (long i = 0 ; i < count; ++i) {
 		ret->At(this->SlotName(i)) = this->At(i).DeepClone(a, xreftable);
 	}
 	return ret;
@@ -1637,7 +1640,7 @@ void AnyArrayImpl::MergeByComparer(long lo, long hi, long m, const AnyIntCompare
 #else
 	long a[sz];					// temporary array of lower half
 #endif
-	for (k = 0, i = lo; i <= m && k < sz; i++, k++) {
+	for (k = 0, i = lo; i <= m && k < sz; ++i, ++k) {
 		a[k] = IntAt(i);
 	}
 	Assert(k == sz);
@@ -1649,10 +1652,10 @@ void AnyArrayImpl::MergeByComparer(long lo, long hi, long m, const AnyIntCompare
 		Assert(i < j);
 		if (comparer.Compare(*this, a[k], IntAt(j)) <= 0) {
 			fInd->SetIndex(i, a[k]);
-			k++;
+			++k;
 		} else {
 			fInd->SetIndex(i, IntAt(j));
-			j++;
+			++j;
 		}
 		i++;
 	}
@@ -1660,8 +1663,8 @@ void AnyArrayImpl::MergeByComparer(long lo, long hi, long m, const AnyIntCompare
 	while ( k < sz && i < j ) {
 		Assert(j > hi);
 		fInd->SetIndex(i, a[k]);
-		i++;
-		k++;
+		++i;
+		++k;
 	}
 	Assert(i == j);
 	Assert(k == sz);
@@ -1705,7 +1708,7 @@ void AnyArrayImpl::RecreateKeyTabe()
 {
 	if (fKeys) {
 		fKeys->Clear();
-		for (long i = 0; i < fSize; i++) {
+		for (long i = 0; i < fSize; ++i) {
 			const char *sn = SlotName(i);
 			if (sn) {
 				fKeys->Append(sn, i);
@@ -2155,6 +2158,7 @@ Anything &Anything::operator= (const char *s)
 	}
 	return *this;
 }
+
 Anything &Anything::operator= (const String &s)
 {
 	Allocator *a = GetAllocator();
@@ -2169,6 +2173,7 @@ Anything &Anything::operator= (const String &s)
 	}
 	return *this;
 }
+
 Anything &Anything::operator= (const Anything &a)
 {
 	if (GetImpl() != a.GetImpl()) {
@@ -2306,13 +2311,13 @@ class PrettyAnyPrinter: public SimpleAnyPrinter
 protected:
 	long	fLevel;
 	void Tab() {
-		for (long i = 0; i < fLevel; i++) {
+		for (long i = 0; i < fLevel; ++i) {
 			fOs.put(' ').put(' ');
 		}
 	}
 	void ArrayBefore(const ROAnything value, const AnyImpl *id, long index, const char *slotname) {
 		fOs << "{\n"; // } trick sniff
-		fLevel++;
+		++fLevel;
 	}
 	void ArrayBeforeElement(long lIdx, const String &key) {
 		Tab();
@@ -2322,7 +2327,7 @@ protected:
 		fOs << '\n';
 	}
 	void ArrayAfter(const ROAnything value, const AnyImpl *id, long index, const char *slotname) {
-		fLevel--;
+		--fLevel;
 		Tab(); // { trick sniff
 		fOs << '}';
 	}
@@ -3075,18 +3080,24 @@ void AnyKeyAssoc::operator delete[](void *ptr)
 }
 #endif
 AnyKeyAssoc::AnyKeyAssoc(const Anything &value, const char *key)
-	: fValue(value), fKey(key, -1, value.GetAllocator()),  fAllocator(value.GetAllocator())
+	: fValue(value)
+	, fKey(key, -1, value.GetAllocator())
+	, fAllocator(value.GetAllocator())
 {
 }
 
 AnyKeyAssoc::AnyKeyAssoc(const AnyKeyAssoc &aka)
-	: fValue(aka.fValue), fKey(aka.fKey), fAllocator(aka.fValue.GetAllocator())
+	: fValue(aka.fValue)
+	, fKey(aka.fKey)
+	, fAllocator(aka.fValue.GetAllocator())
 {
 }
 
 // used when allocating arrays... CAUTION: elements then must be initialized manually with Init()!
 AnyKeyAssoc::AnyKeyAssoc()
-	: fValue((Allocator *)0), fKey((Allocator *)0), fAllocator(0)
+	: fValue((Allocator *)0)
+	, fKey((Allocator *)0)
+	, fAllocator(0)
 {
 }
 
@@ -3129,19 +3140,18 @@ long IFANextPrime(long x)
 	if (x <= 3) {
 		return 3;
 	}
-
-	if (x % 2 == 0) {
-		x++;
+	if ( !(x & 0x01) ) {
+		++x;
 	}
 
 	for (;;) {
 		long n;
-		for (n = 3; (n *n <= x) && ((x % n) != 0); n += 2)
-			;
+		for (n = 3; (n *n <= x) && ((x % n) != 0); ++++n) {
+		}
 		if (n * n > x) {
 			return x;
 		}
-		x += 2;
+		++++x;
 	}
 }
 
@@ -3211,23 +3221,11 @@ long AnyKeyTable::DoHash(const char *key, bool append, long sizehint, u_long has
 				if (keylen == keyAtVal.Length()) {
 					const char *keyPtr = key, *keyAtValPtr = keyAtVal;
 					const char *eptr = keyPtr + keylen;
-#if 0 /* Optimization which does not increase speed on Linux */
-					const long *kl = (const long *) keyPtr;
-					const long *kavl = (const long *)keyAtValPtr;
-					const long iter = keylen / sizeof(long);
-					for (int j = 0; j < iter; j++) {
-						if (*kl++ != *kavl++) {
-							goto loop;
-						}
-					}
-					// compare remainder
-					keyPtr += iter * sizeof(long);
-					keyAtValPtr += iter * sizeof(long);
-#endif
-					for ( ; keyPtr < eptr; ++keyPtr, ++keyAtValPtr)
+					for ( ; keyPtr < eptr; ++keyPtr, ++keyAtValPtr) {
 						if ( *keyPtr != *keyAtValPtr ) {
 							goto loop;
 						}
+					}
 					return i; // we found the key
 				}
 			}
@@ -3258,7 +3256,7 @@ long AnyKeyTable::Append(const char *key, long atIndex)
 }
 void AnyKeyTable::Update(long fromIndex)
 {
-	for (long i = 0; i < fCapacity; i++) {
+	for (long i = 0; i < fCapacity; ++i) {
 		long lIdx = fHashTable[i];
 		if ( lIdx == fromIndex ) {
 			fHashTable[i] = -2;    // mark as deleted
@@ -3290,7 +3288,7 @@ void AnyKeyTable::Rehash(long newCap)
 
 	// iterate over the old table and rehash
 	// values
-	for ( long i = 0; i < oldCapacity; i++ ) {
+	for ( long i = 0; i < oldCapacity; ++i ) {
 		register long slot = ot[i];
 
 		if (slot > -1) {	// assumption: we found an index for a key
@@ -3308,7 +3306,7 @@ void AnyKeyTable::Rehash(long newCap)
 
 void AnyKeyTable::PrintHash()
 {
-	for (long i = 0; i < fCapacity; i++) {
+	for (long i = 0; i < fCapacity; ++i) {
 		if ( fHashTable[i] > -1 ) {
 			String m;
 			m << "[" << i << "]<" << fHashTable[i] << "> ";
@@ -3434,13 +3432,13 @@ void AnyIndTable::InitEmpty(long oldCap, long newCap)
 	}
 
 	// copy the empty index array
-	for (i = 0; i < sz; i++)	{
+	for (i = 0; i < sz; ++i)	{
 		fEmptyTable[i] = old[i];
 	}
 
 	// fill in straight index (never used so far)
 	if ( sz < newCap )
-		for (i = sz; i < newCap; i++) {
+		for (i = sz; i < newCap; ++i) {
 			fEmptyTable[i] = i;
 		}
 
@@ -3455,13 +3453,13 @@ void AnyIndTable::InitIndices(long slot, long *ot)
 
 	// copy old indices if they exist
 	if ( ot ) {
-		for (i = 0; i < fSize; i++) {
+		for (i = 0; i < fSize; ++i) {
 			fIndexTable[i] = ot[i];
 		}
 	}
 
 	// reuse deleted slots if they exist
-	for (i = fSize; i <= slot; i++) {
+	for (i = fSize; i <= slot; ++i) {
 		fIndexTable[i] = fEmptyTable[i];
 	}
 	fSize = slot + 1;
@@ -3505,7 +3503,7 @@ void AnyIndTable::Remove(long slot)
 	fEmptyTable[fSize-1] = fIndexTable[slot];
 
 	// shift the table down
-	for (long i = slot; i < fSize - 1; i++) {
+	for (long i = slot; i < fSize - 1; ++i) {
 		fIndexTable[i] = fIndexTable[i+1];
 	}
 
@@ -3532,7 +3530,7 @@ void AnyIndTable::PrintTable()
 {
 	String m("IndexTable: \n");
 	SysLog::WriteToStderr(m);
-	for ( long i = 0; i < fSize; i++) {
+	for ( long i = 0; i < fSize; ++i) {
 		String m1;
 		m1 << "[" << i << "]<" << fIndexTable[i] << ">" << "\n";
 		SysLog::WriteToStderr(m);
