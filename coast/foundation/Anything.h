@@ -350,6 +350,7 @@ protected:
 	friend class AnyArrayImpl;
 	friend class ROAnything;
 	friend class AnyKeyAssoc;
+	friend struct Sorter;
 
 	Anything(AnyImpl *);
 	AnyImpl *GetImpl()const;

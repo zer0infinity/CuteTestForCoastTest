@@ -52,7 +52,10 @@ class EXPORTDECL_FOUNDATION InputContext
 {
 public:
 	// constructor
-	InputContext(istream &is, const char *fname = 0) : fIs(is), fLine(1), fFileName(fname) { }
+	InputContext(istream &is, const char *fname = 0)
+		: fIs(is)
+		, fLine(1)
+		, fFileName(fname) { }
 
 	// destructor
 	~InputContext() {}
@@ -76,6 +79,17 @@ public:
 		return fIs.good();
 	}
 
+	long &LineRef() {
+		return fLine;
+	}
+	istream &StreamRef() {
+		return fIs;
+	}
+	const String &FileName() {
+		return fFileName;
+	}
+
+private:
 	istream &fIs;
 	long fLine;
 	String fFileName;
@@ -95,11 +109,20 @@ public:
 			   // we have found a lexical or syntax error
 			   eStringError, eError
 			 };
-	int       fToken; // enum above or character value
-	String    fText; // the characters that form the token, lex would say yytext[]
 	AnythingToken(InputContext &context); // read next token from is
 	static bool isNameDelimiter(char c); // implement single place where we check for delims
+
+	const int &Token() {
+		return fToken;
+	}
+	const String &Text() {
+		return fText;
+	}
+
 private:
+	int       fToken; // enum above or character value
+	String    fText; // the characters that form the token, lex would say yytext[]
+
 	char    DoReadOctalOrHex(InputContext &context);
 	char    DoReadNumber(InputContext &context, char firstchar);
 	char    DoReadDigits(InputContext &context);
@@ -141,7 +164,7 @@ AnythingToken::AnythingToken(InputContext &context) : fToken(0)
 					while (context.Get(c) && isspace((unsigned char)c)) {// consume spaces
 						// adjust line count!
 						if ('\n' == c || '\r' == c) {
-							context.fLine++;
+							++context.LineRef();
 						}
 						c = 0;
 					}
@@ -157,7 +180,7 @@ AnythingToken::AnythingToken(InputContext &context) : fToken(0)
 						fText.Append(c);
 					} while (!isspace( (unsigned char) c) && context.Get(c));
 					if ('\n' == c || '\r' == c) {
-						context.fLine++;
+						++context.LineRef();
 					}
 					fToken = AnythingToken::eError;
 					return;
@@ -255,7 +278,7 @@ AnythingToken::AnythingToken(InputContext &context) : fToken(0)
 					} else if (isspace( (unsigned char) c)) {
 						// ignore it but count line changes
 						if ('\n' == c || '\r' == c) {
-							context.fLine++;
+							++context.LineRef();
 						}
 					} else {
 						// this is a lexical error
@@ -271,9 +294,9 @@ AnythingToken::AnythingToken(InputContext &context) : fToken(0)
 void AnythingToken::DoReadString(InputContext &context, char firstchar)
 {
 	if (firstchar) {
-		context.Putback(firstchar);    // leave double quote on the stream
+		context.Putback(firstchar); // leave double quote on the stream
 	}
-	long linebreakswithinstring =  fText.IntReadFrom(context.fIs, firstchar);
+	long linebreakswithinstring =  fText.IntReadFrom(context.StreamRef(), firstchar);
 	if (linebreakswithinstring < 0) {
 		// if someone puts "hello""
 		// in an any file the mismatched double quote opens a string only
@@ -287,7 +310,7 @@ void AnythingToken::DoReadString(InputContext &context, char firstchar)
 		fToken = AnythingToken::eString;
 	}
 	// adjust line number automatically
-	context.fLine += linebreakswithinstring;
+	context.LineRef() += linebreakswithinstring;
 }
 
 void AnythingToken::DoReadBinBuf(InputContext &context)
@@ -295,38 +318,40 @@ void AnythingToken::DoReadBinBuf(InputContext &context)
 	// context's line count is not adjusted in the case of binary buffers
 	// first read in the length of the buffer
 	long length = 0;
-	context.fIs >> length; // we do not need DoReadNumber here.
+	context.StreamRef() >> length; // we do not need DoReadNumber here.
 	// we need to check a formatting error on the stream here!
-	if (!context.fIs.good()) { // a syntax error
+	if ( !context.StreamRef().good() ) {
+		// a syntax error
 		fToken = AnythingToken::eError;
-		context.fIs.clear(); // try again
+		context.StreamRef().clear(); // try again
 	}
 	// now we read ';' as a separator
 	char c = 0;
 	context.Get(c);
-	if (';' != c) {
+	if ( ';' != c ) {
 		// this is an error
 		// skip to ] or eof and set token to eError
 		fToken = AnythingToken::eError;
-		while (']' != c && context.Get(c));
+		while ( ']' != c && context.Get(c) ) {
+		}
 		return;
 	}
 	// now read in the binary buffer, this can be done via fText
 	fText.Trim(0); // to ensure nothing nasty happens
-	fText.Append(context.fIs, length);
-	if (fText.Length() != length) {
+	fText.Append(context.StreamRef(), length);
+	if ( fText.Length() != length ) {
 		// we have a premature EOF.
 		fToken = AnythingToken::eError;
 	}
 	context.Get(c);
-	if (']' != c) {
+	if ( ']' != c ) {
 		fToken = AnythingToken::eError;
-		while (']' != c && context.Get(c));
+		while ( ']' != c && context.Get(c) ) {
+		}
 	}
 	if (fToken != AnythingToken::eError) {
 		fToken = AnythingToken::eBinaryBuf;
 	}
-
 }
 
 char AnythingToken::DoReadName(InputContext &context, char firstchar)
@@ -535,7 +560,8 @@ public:
 		fParseLevel.Trim(trim);
 	}
 };
-class PrinterXrefHandler: public AnyXrefHandler
+
+class PrinterXrefHandler : public AnyXrefHandler
 {
 	String	ToId(long id) {
 		return String().Append(id);
@@ -552,7 +578,8 @@ public:
 	}
 
 };
-class ParserXrefHandler: public AnyXrefHandler
+
+class ParserXrefHandler : public AnyXrefHandler
 {
 public:
 	void DefinePatchRef(long lIdx) {
@@ -615,8 +642,9 @@ public:
 	bool    DoParseSequence(Anything &a, ParserXrefHandler &xrefs);
 	bool    DoParseArrayKey(Anything &a);
 	bool    MakeSimpleAny(AnythingToken &tok, Anything &a);
+
 private:
-	void 	ImportIncludeAny(Anything &element, String &url);
+	void 	ImportIncludeAny(Anything &element, const String &url);
 	void    Error(const char *text, const char *what);
 	InputContext &fContext;
 };
@@ -626,8 +654,8 @@ class EXPORTDECL_FOUNDATION AnyImpl
 {
 public:
 	AnyImpl(Allocator *a)
-		: fRefCount(1),
-		  fAllocator((a) ? a : Storage::Current())			{  }
+		: fRefCount(1)
+		, fAllocator((a) ? a : Storage::Current())			{  }
 	virtual ~AnyImpl() 								{
 		Assert(fRefCount <= 0);
 	}
@@ -653,7 +681,7 @@ public:
 	virtual void Accept(AnyVisitor &v, long lIdx, const char *slotname) const = 0;
 
 	void Ref() {
-		fRefCount++;
+		++fRefCount;
 	}
 	void Unref() {
 		if (--fRefCount <= 0) {
@@ -895,7 +923,8 @@ public:
 #endif
 	static void operator delete[](void *ptr);
 #endif
-protected:
+
+private:
 	Anything 	fValue;
 	String 		fKey;
 	Allocator 	*fAllocator;
@@ -947,6 +976,7 @@ protected:
 	long DoHash(const char *key, bool append = false, long sizehint = -1, u_long hashhint = 0) const;
 	void Rehash(long newCap);
 
+private:
 	AnyArrayImpl *fKeyTable;	// shared with AnyArrayImpl
 	long *fHashTable;
 	long fThreshold, fCapacity;
@@ -982,6 +1012,7 @@ protected:
 	void Clear();
 	void PrintTable();
 
+private:
 	long *fIndexTable;
 	long *fEmptyTable;
 	long fCapacity;
@@ -998,12 +1029,14 @@ static const char *gcArrayText = "AnyArrayImpl";
 
 class EXPORTDECL_FOUNDATION AnyArrayImpl : public AnyImpl
 {
-public:
 	AnyKeyAssoc **fContents;
 	AnyKeyTable *fKeys;
 	AnyIndTable *fInd;
 	long fCapacity, fSize;
 	long fBufSize, fNumOfBufs;
+
+	friend class AnyKeyTable;
+
 public:
 	AnyArrayImpl(Allocator *a);
 	~AnyArrayImpl();
@@ -2429,9 +2462,9 @@ bool Anything::Import(istream &is, const char *fname)
 	if (! !is) {
 		InputContext context(is, fname);
 		AnythingParser p(context);
-		if (!p.DoParse(*this)) {
+		if ( !p.DoParse(*this) ) {
 			// there has been a syntax error
-			String m("Anything::Import "), strFName(context.fFileName);
+			String m("Anything::Import "), strFName(context.FileName());
 			bool bHasExt = true;
 			if ( !strFName.Length() && fname != NULL ) {
 				strFName << fname;
@@ -3156,11 +3189,11 @@ long IFANextPrime(long x)
 }
 
 AnyKeyTable::AnyKeyTable(AnyArrayImpl *table, long initCapacity)
-	: fKeyTable(table),
-	  fHashTable(0),
-	  fThreshold(0),
-	  fCapacity(0),
-	  fAllocator(fKeyTable->fAllocator)
+	: fKeyTable(table)
+	, fHashTable(0)
+	, fThreshold(0)
+	, fCapacity(0)
+	, fAllocator(fKeyTable->fAllocator)
 {
 	InitTable(initCapacity);
 }
@@ -3592,7 +3625,7 @@ bool AnythingParser::DoParse(Anything &any)
 	ParserXrefHandler xrefs;
 	AnythingToken tok(fContext);
 	bool ok = false;
-	if ( '{' == tok.fToken) {
+	if ( '{' == tok.Token()) {
 		ok = DoParseSequence(any, xrefs);
 	} else {
 		ok = MakeSimpleAny(tok, any);
@@ -3625,19 +3658,19 @@ bool AnythingParser::DoParseSequence(Anything &any, ParserXrefHandler &xrefs)
 		AnythingToken tok(fContext);
 //		Trace("Tok[" << tok.fText << "]");
 	restart:    // for behaving nicely in case of a syntax error
-		switch (tok.fToken) {
+		switch (tok.Token()) {
 			case '}' : // '{' this is to cheat sniff
 				return ok; // we are done...
 			case AnythingToken::eError:
 				lastok = false; // try to resync
-				Error("syntax error invalid token", tok.fText);
+				Error("syntax error invalid token", tok.Text());
 				break;
 			case AnythingToken::eNullSym:
 				// premature EOF
 				return false;
 
 			case AnythingToken::eInclude : {
-				ImportIncludeAny(element, tok.fText);
+				ImportIncludeAny(element, tok.Text());
 				any.Append(element);
 				break;
 			}
@@ -3647,7 +3680,7 @@ bool AnythingParser::DoParseSequence(Anything &any, ParserXrefHandler &xrefs)
 				// we use '%' to devide the slotNamePath and the index of the unnamed slot
 				// to keep the order of the inserted slots as requested we need
 				// to add a dummy slot which will be linked in a second step
-				element = tok.fText;
+				element = tok.Text();
 				long lIdx = any.Append(element);
 				// add temporary for resolving reference after anything is fully parsed
 				xrefs.DefinePatchRef(lIdx);
@@ -3655,20 +3688,20 @@ bool AnythingParser::DoParseSequence(Anything &any, ParserXrefHandler &xrefs)
 			}
 			case AnythingToken::eIndex :
 //			Trace("AnythingToken::eIndex");
-				key = tok.fText; // remember index
+				key = tok.Text(); // remember index
 //            Trace("key:" << key);
 				if (key.Length() > 0) {
 					if (any.IsDefined(key)) {
 						// double definition, should be a warning....
-						Error("Anything index double defined, last takes precedence", tok.fText);
+						Error("Anything index double defined, last takes precedence", tok.Text());
 						// key = "";
 						// leave ok OK, because we haven't ok = false;
 					}
 				}
 				tok = AnythingToken(fContext); // get next one
-				if (AnythingToken::eRef == tok.fToken) {
+				if ( AnythingToken::eRef == tok.Token() ) {
 					// link it to the given slotname (must exist)
-					element = tok.fText;
+					element = tok.Text();
 					any[key] = element;
 
 					// add temporary for resolving reference after anything is fully parsed
@@ -3676,11 +3709,11 @@ bool AnythingParser::DoParseSequence(Anything &any, ParserXrefHandler &xrefs)
 					// to keep the order of the inserted slots as requested we need
 					// to add a dummy slot which will be linked in a second step
 					break;
-				} else if (AnythingToken::eInclude == tok.fToken) {
-					ImportIncludeAny(element, tok.fText);
+				} else if (AnythingToken::eInclude == tok.Token()) {
+					ImportIncludeAny(element, tok.Text());
 					any[key] = element;
 					break;
-				} else if (AnythingToken::eIndex == tok.fToken) {
+				} else if (AnythingToken::eIndex == tok.Token()) {
 					// this is an error
 					Error("missing Anything at index ", key);
 					if (key.Length() > 0) {
@@ -3692,7 +3725,7 @@ bool AnythingParser::DoParseSequence(Anything &any, ParserXrefHandler &xrefs)
 				}
 				// No break here! Fall through, read simple Anything
 			default:
-				if ('{' == tok.fToken) {
+				if ( '{' == tok.Token() ) {
 					long lIdx = 0;
 					String marklevel = xrefs.GetCurrentLevel();
 					if (key.Length() > 0) {
@@ -3727,54 +3760,54 @@ bool AnythingParser::MakeSimpleAny(AnythingToken &tok, Anything &any)
 {
 	Allocator *a = (any.GetAllocator()) ? any.GetAllocator() : Storage::Current();
 	Assert(a != 0);
-	switch (tok.fToken) {
+	switch ( tok.Token() ) {
 		case '*' :
 			any = Anything(a);
 			break;
 		case AnythingToken::eStringError:
 			// notify user about error but behave nicely if string is not empty
-			Error("syntax error: invalid string constant (missing quote)", tok.fText);
-			if (tok.fText.Length() <= 0) {
+			Error("syntax error: invalid string constant (missing quote)", tok.Text());
+			if (tok.Text().Length() <= 0) {
 				// ignore empty strings otherwise fall through!
 				return false;
 			}
 		case AnythingToken::eString: // string impl
-			any = tok.fText;
+			any = tok.Text();
 			break;
 			// long impl.
 		case AnythingToken::eDecimalNumber:
-			any = atol(tok.fText);
+			any = atol(tok.Text());
 			break;
 		case AnythingToken::eOctalNumber:
-			any = static_cast<long>(strtoul((const char *)tok.fText, 0, 8)); // AB: use explicit cast to make g++ happy
+			any = static_cast<long>(strtoul((const char *)tok.Text(), 0, 8)); // AB: use explicit cast to make g++ happy
 			// we do not check for conversion errors here
 			break;
 		case AnythingToken::eHexNumber:
-			any = static_cast<long>(strtoul((const char *)tok.fText, 0, 16)); // AB: use explicit cast to make g++ happy
+			any = static_cast<long>(strtoul((const char *)tok.Text(), 0, 16)); // AB: use explicit cast to make g++ happy
 			// we do not check for conversion errors here
 			break;
 		case AnythingToken::eFloatNumber:
-			any = atof(tok.fText);
+			any = atof(tok.Text());
 			// we do not check for conversion errors here
 			break;
 		case AnythingToken::eBinaryBuf:
 			// oops we cannot yet assign a binary-buf impl ?
 			// but a temporary anything should be sufficient
-			any = Anything((void *)(const char *)tok.fText, tok.fText.Length(), a);
+			any = Anything((void *)(const char *)tok.Text(), tok.Text().Length(), a);
 			break;
 		case AnythingToken::eObject:
 			// make it an AnyObjectImpl
-			any = Anything((IFAObject *)atol(tok.fText), a);
+			any = Anything((IFAObject *)atol(tok.Text()), a);
 			break;
 		default:
 			// this is an error
-			Error("syntax error invalid token", tok.fText);
+			Error("syntax error invalid token", tok.Text());
 			return false;
 	}
 	return true;
 }
 
-void AnythingParser::ImportIncludeAny(Anything &element, String &url)
+void AnythingParser::ImportIncludeAny(Anything &element, const String &url)
 {
 //	StartTrace(AnythingParser.ImportIncludeAny);
 	Anything query;
@@ -3819,14 +3852,14 @@ void AnythingParser::ImportIncludeAny(Anything &element, String &url)
 void AnythingParser::Error(const char *msg, const char *toktext)
 {
 	// put a space in front to give poor Sniff a chance
-	String m(fContext.fFileName);
+	String m(fContext.FileName());
 	bool bHasExt = true;
 	if ( !m.Length() ) {
 		m << "<NoName>";
 	} else {
 		bHasExt = (m.SubString(m.Length() - 4L) == ".any");
 	}
-	m << (bHasExt ? ":" : ".any:") << fContext.fLine << " " << msg << " [" << toktext << "]";
+	m << (bHasExt ? ":" : ".any:") << fContext.LineRef() << " " << msg << " [" << toktext << "]";
 	SYSWARNING(m);
 	m << "\n";
 	SysLog::WriteToStderr(m);
