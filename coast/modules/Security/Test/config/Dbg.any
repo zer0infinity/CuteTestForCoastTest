@@ -8,81 +8,77 @@
 
 {
 
-        /LowerBound		0
-        /UpperBound		320
-        /DumpAnythings	1
+	/LowerBound		0
+	/UpperBound		320
+	/DumpAnythings	1
 
-        /Base64 {
-			/MainSwitch		310
-			/EnableAll		320
-        }
-        /Encoder {
-        	/MainSwitch		100
-			/EnableAll		110
-        }
-        /Signer {
-        	/MainSwitch		100
-			/EnableAll		110
-        }
-        /Scrambler {
-        	/MainSwitch		320
-			/EnableAll		320
-        }
-        /SecurityItem {
-        	/MainSwitch		300
-			/EnableAll		310
+	/Base64 {
+		/MainSwitch		310
+		/EnableAll		320
+	}
+	/Encoder {
+		/MainSwitch		100
+		/EnableAll		110
+	}
+	/Signer {
+		/MainSwitch		100
+		/EnableAll		110
+	}
+	/Scrambler {
+		/MainSwitch		320
+		/EnableAll		320
+	}
+	/SecurityItem {
+		/MainSwitch		300
+		/EnableAll		310
 
-			/Encode	310
-			/DoLoadConfig 310
-			/Init 310
-        }
-        /BlowfishScrambler {
-        	/MainSwitch		300
-			/EnableAll		320
-        }
-		/BlowfishCBCScrambler {
-        	/MainSwitch		300
-			/EnableAll		320
-        }
-        /Base64Encoder{
-        	/MainSwitch		100
-			/EnableAll		110
-        }
-        /Scrambler {
-        	/MainSwitch		100
-			/EnableAll		110
-        }
-        /TableCompressor {
-        	/MainSwitch		100
-			/EnableAll		130
-			/Init	100
-			/DoLoadConfig 100
-			/DoGetConfigName 100
+		/Encode	310
+		/DoLoadConfig 310
+		/Init 310
+	}
+	/BlowfishScrambler {
+		/MainSwitch		300
+		/EnableAll		320
+	}
+	/BlowfishCBCScrambler {
+		/MainSwitch		300
+		/EnableAll		320
+	}
+	/Base64Encoder{
+		/MainSwitch		100
+		/EnableAll		110
+	}
+	/TableCompressor {
+		/MainSwitch		100
+		/EnableAll		130
+		/Init	100
+		/DoLoadConfig 100
+		/DoGetConfigName 100
 
-        }
-        /SecurityModule{
-			/MainSwitch		300
-			/EnableAll		310
+	}
+	/SecurityModule{
+		/MainSwitch		300
+		/EnableAll		310
 
-			/UnscrambleState 100
-		}
-		/ScrambleStateTest {
-			/MainSwitch		300
-			/EnableAll		310
+		/UnscrambleState 100
+	}
+	/ScrambleStateTest {
+		/MainSwitch		300
+		/EnableAll		310
 
-			/DoScrambleTest 300
+		/DoScrambleTest 300
 
-		}
-		/Base64Renderer {
-			/MainSwitch		300
-			/EnableAll		310
-		}
-		/MD5Renderer {
-			/MainSwitch		300
-			/EnableAll		310
-		}
-		/BlowfishRenderer {
-			/MainSwitch		300
-			/EnableAll		310
-		}
+	}
+	/Base64Renderer {
+		/MainSwitch		300
+		/EnableAll		310
+	}
+	/MD5Renderer {
+		/MainSwitch		300
+		/EnableAll		310
+	}
+	/BlowfishRenderer {
+		/MainSwitch		300
+		/EnableAll		310
+	}
 }
