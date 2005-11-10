@@ -543,19 +543,32 @@ void SessionListManagerTest::GetASessionsInfoTest()
 	StartTrace(SessionListManagerTest.GetASessionsInfoTest);
 
 	Context ctx;
-	String sessionId;
-	Session *s;
+	String sessionId1;
+	String sessionId2;
+	Session *s1;
+	Session *s2;
 	SessionListManager *sessionListManager = SafeCast(WDModule::FindWDModule("SessionListManager"), SessionListManager);
 	sessionListManager->fMaxSessionsAllowed = 3;
 	Anything expected;
 	Anything resultedSessionListInfo = MetaThing();
 	if (   t_assertm(sessionListManager != 0, "expected SessionListManager module to be there") ) {
-		s = sessionListManager->CreateSession(sessionId, ctx);
-		t_assertm(s->Info(expected[sessionId], ctx), "Expected session info to be available");
+		s1 = sessionListManager->CreateSession(sessionId1, ctx);
+		t_assertm(s1->Info(expected[sessionId1], ctx), "Expected session info to be available");
 		Anything config;
-		t_assertm(sessionListManager->GetASessionsInfo(resultedSessionListInfo, sessionId, ctx, config), "Expected GetASessionsInfo to succeed");
-		TraceAny(resultedSessionListInfo, "Session Info for: " << sessionId);
+		t_assertm(sessionListManager->GetASessionsInfo(resultedSessionListInfo, sessionId1, ctx, config), "Expected GetASessionsInfo to succeed");
+		TraceAny(resultedSessionListInfo, "Session Info for: " << sessionId1);
 		TraceAny(expected, "Expected:");
+		assertAnyEqualm(expected, resultedSessionListInfo, "expected session list information to match");
+		t_assertm(!sessionListManager->GetASessionsInfo(resultedSessionListInfo, "dosnotexist", ctx, config), "Expected GetASessionsInfo to fail");
+
+		s2 = sessionListManager->CreateSession(sessionId2, ctx);
+		t_assertm(s1->Info(expected[sessionId1], ctx), "Expected session info to be available");
+		t_assertm(sessionListManager->GetASessionsInfo(resultedSessionListInfo, sessionId1, ctx, config), "Expected GetASessionsInfo to succeed");
+		TraceAny(resultedSessionListInfo, "Session Info for: " << sessionId1);
+		TraceAny(expected, "Expected:");
+		// Original session's refcount is incremented in GetASessionsInfo (session in ctx is not equal session for which
+		// GetASessinInfo looks up the session info.
+		expected[sessionId1]["Referenced"] = expected[sessionId1]["Referenced"].AsLong(0L) + 1L;
 		assertAnyEqualm(expected, resultedSessionListInfo, "expected session list information to match");
 		t_assertm(!sessionListManager->GetASessionsInfo(resultedSessionListInfo, "dosnotexist", ctx, config), "Expected GetASessionsInfo to fail");
 	}

@@ -153,6 +153,8 @@ void Context::InitSession(Session *s)
 			fSession->fMutex.Lock();
 			if (sessionIsDifferent) {
 				fSession->Ref();
+				Trace("After fSession->Ref() id: [" << fSession->GetId() <<
+					  "] refCount: [" << fSession->GetRefCount() << "]");
 			}
 			if (fCopySessionStore) {
 				fSessionStoreCurrent = fSession->GetStoreGlobal().DeepClone(fSessionStoreCurrent.GetAllocator());
@@ -175,6 +177,8 @@ void Context::InitSession(Session *s)
 					saveSession->fMutex.Lock();
 				}
 				saveSession->UnRef();
+				Trace("After saveSession->UnRef() id: [" << saveSession->GetId() <<
+					  "] refCount: [" << saveSession->GetRefCount() << "]");
 				if (fUnlockSession) {
 					Trace("InitSession old s: About to unlock <" << saveSession->GetId() << ">");
 					saveSession->fMutex.Unlock();

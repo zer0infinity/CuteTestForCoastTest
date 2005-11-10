@@ -309,7 +309,7 @@ void SessionListManager::AddSession(const String &id, Session *session, Context 
 
 Session *SessionListManager::IntLookupSession(const String &id, Context &ctx)
 {
-	StartTrace1(SessionListManager.IntLookup, "id <" << id << ">");
+	StartTrace1(SessionListManager.IntLookupSession, "id <" << id << ">");
 	TRACE_LOCK_START("IntLookupSession");
 	Session *s = 0;
 	{
@@ -717,14 +717,35 @@ bool SessionListManager::GetASessionsInfo(Anything &sessionInfo, const String &s
 	StartTrace(SessionListManager.GetASessionsInfo);
 	TRACE_LOCK_START("GetASessionsInfo");
 	Session *originalSession = ctx.GetSession();
-	Session *s = IntLookupSession(sessionId, ctx);
+	Session *s = (Session *) NULL;
+	MutexEntry mutex(fSessionsMutex);
+	mutex.Use();
+	{
+		Anything session;
+		if ( fSessions.LookupPath(session, sessionId) ) {
+			s = SafeCast(session.AsIFAObject(0), Session);
+		}
+	}
 	if (!s) {
 		return false;
+	}
+	// If we query our own session, Context.InitSession will not decrement refcounts
+	// because old and new sessions are the same.
+	bool tmpIncrementRefCount = (originalSession != s);
+	if (tmpIncrementRefCount) {
+		originalSession->fMutex.Lock();
+		originalSession->Ref();
+		originalSession->fMutex.Unlock();
 	}
 	sessionInfo = MetaThing();
 	ctx.GetTmpStore()["SessionInfo"] = sessionInfo;
 	bool ret = s->GetSessionInfo(sessionInfo, ctx, "SessionInfo");
 	ctx.Push(originalSession);
+	if (tmpIncrementRefCount) {
+		originalSession->fMutex.Lock();
+		originalSession->UnRef();
+		originalSession->fMutex.Unlock();
+	}
 	return ret;
 }
 

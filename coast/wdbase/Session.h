@@ -234,6 +234,7 @@ protected:
 	long 	fRefCount;
 
 	friend class Context;
+	friend class SessionListManager;
 
 	// for testing internals:
 	friend class PageTransitionTest;
