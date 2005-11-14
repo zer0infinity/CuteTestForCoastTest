@@ -110,7 +110,7 @@ long RendererDispatcher::FindURIPrefixInList(const String &requestURI, const ROA
 	StartTrace(RendererDispatcher.FindURIPrefixInList);
 
 	long apSz = uriPrefixList.GetSize();
-	for (long i = 0; i < apSz; i++) {
+	for (long i = 0; i < apSz; ++i) {
 		const char *uriPrefix = uriPrefixList.SlotName(i);
 		if ( uriPrefix && requestURI.StartsWith(uriPrefix) ) {
 			return i;

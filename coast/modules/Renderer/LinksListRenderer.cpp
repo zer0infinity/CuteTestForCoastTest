@@ -80,7 +80,7 @@ bool LinksListRenderer::GetList(Context &c, const ROAnything &config, Anything &
 
 		list.Append(newSlot);
 
-		pageNo++;
+		++pageNo;
 	}
 	TraceAny(list, "List at the End");
 

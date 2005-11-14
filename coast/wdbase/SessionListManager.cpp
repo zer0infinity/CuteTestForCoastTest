@@ -498,7 +498,7 @@ Anything SessionListManager::DoCleanup(Anything &sessionList, Anything &sessions
 	long szBefore = sessionList.GetSize();
 	Trace("szBefore: " << szBefore);
 	long secs = time(0);
-	for (long i = szBefore - 1; i >= 0; i--) {
+	for (long i = szBefore - 1; i >= 0; --i) {
 		Session *s = SafeCast(sessionList[i].AsIFAObject(0), Session);
 
 		if (s && s->IsDeletable(secs, ctx, roleNotRelevant)) {
@@ -521,7 +521,7 @@ void SessionListManager::DoDeleteSessions(const Anything &sessions2Delete, Conte
 
 	long sz = sessions2Delete.GetSize();
 	Trace("have to delete " << sz << " sessions");
-	for (long i = 0; i < sz; i++) {
+	for (long i = 0; i < sz; ++i) {
 		Session *s = SafeCast(sessions2Delete[i].AsIFAObject(0), Session);
 		if (s) {
 			Trace("notifying (Session::eRemoved) session &" << (long)s);
@@ -694,7 +694,7 @@ bool SessionListManager::SessionListInfo(Anything &sessionListInfo, Context &ctx
 		long pageSize = config["PageSize"].AsLong((szSessionListSize > 10L) ? 10L : szSessionListSize);
 		pageSize = (szSessionListSize < start + pageSize) ? szSessionListSize - start : pageSize;
 
-		for (long i = start; i < start + pageSize; i++) {
+		for (long i = start; i < start + pageSize; ++i) {
 			Session *s = SafeCast(fSessions[i].AsIFAObject(0), Session);
 			if ( s ) {
 				const char *slotName = fSessions.SlotName(i);

@@ -130,7 +130,7 @@ void MD5Context::Update(unsigned char const *buf, unsigned len)
 
 	t = fBits[0];
 	if ((fBits[0] = t + ((uint32) len << 3)) < t) {
-		fBits[1]++;    /* Carry from low to high */
+		++fBits[1];		/* Carry from low to high */
 	}
 	fBits[1] += len >> 29;
 

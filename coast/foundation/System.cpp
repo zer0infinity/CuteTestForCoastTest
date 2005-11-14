@@ -390,11 +390,11 @@ void System::GetProcessEnvironment(Anything &anyEnv)
 	StartTrace(System.GetProcessEnvironment);
 #if defined(WIN32)
 	extern char **_environ;
-	for (long i = 0; _environ && _environ[i] ; i++) {
+	for (long i = 0; _environ && _environ[i] ; ++i) {
 		String entry(_environ[i]);
 #else
 	extern char **environ;
-	for (long i = 0; environ && environ[i] ; i++) {
+	for (long i = 0; environ && environ[i] ; ++i) {
 		String entry(environ[i]);
 #endif
 		Trace("entry = <" << entry << ">");

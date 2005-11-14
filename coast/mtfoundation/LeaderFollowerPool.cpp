@@ -155,7 +155,7 @@ bool LeaderFollowerPool::InitReactor(ROAnything args)
 		return false;
 	}
 
-	for (long i = 0; i < argSz; i++) {
+	for (long i = 0; i < argSz; ++i) {
 		Acceptor *acceptor = (Acceptor *)args[i].AsIFAObject(0);
 		if ( acceptor ) {
 			int retVal;
@@ -260,7 +260,7 @@ HandleSet::~HandleSet()
 {
 	StartTrace1(HandleSet.Dtor, "fDemuxTableSz: [" << fDemuxTable.GetSize() << "]");
 	TraceAny(fDemuxTable, "fDemuxTable: ");
-	for (long i = fDemuxTable.GetSize() - 1; i >= 0; i--) {
+	for (long i = fDemuxTable.GetSize() - 1; i >= 0; --i) {
 		Acceptor *acceptor = (Acceptor *)fDemuxTable[i].AsIFAObject();
 		delete acceptor;
 	}
@@ -290,8 +290,8 @@ Acceptor *HandleSet::WaitForEvents(long timeout)
 #else
 	pollfd fds[NOFDS];
 #endif
-	long i = 0L;
-	for (i = 0; i < NOFDS; i++) {
+	long i = 0L, sz = 0;
+	for (i = 0; i < NOFDS; ++i) {
 #if !defined(USE_SELECT)
 		fds[i].events = POLLIN;
 		fds[i].fd = -1;
@@ -326,7 +326,7 @@ Acceptor *HandleSet::WaitForEvents(long timeout)
 		return 0;    // timeout, no error
 	}
 	if ( retCode > 0 ) {
-		for (i = 0; i < fDemuxTable.GetSize(); i++) {
+		for (i = 0, sz = fDemuxTable.GetSize(); i < sz; ++i) {
 			long index = (fLastAcceptorUsedIndex + 1 + i) % NOFDS;
 			Acceptor *a = (Acceptor *)fDemuxTable[index].AsIFAObject(0);
 			if (a) {

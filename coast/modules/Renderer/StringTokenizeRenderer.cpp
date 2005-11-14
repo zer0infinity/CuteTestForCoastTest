@@ -70,7 +70,7 @@ void StringTokenizeRenderer::BuildTokenList(Context &ctx, const ROAnything &conf
 		while ( lDiff >= 0L ) {
 			anyOutputTokenList.Append(lStart);
 			lStart += lIncr;
-			lDiff--;
+			--lDiff;
 		}
 	}
 
@@ -158,7 +158,7 @@ void StringTokenizeRenderer::BuildOutputString(Context &ctx, const ROAnything &c
 
 	// create string to return
 	Trace("Number of Tokens:" << anyTokensToOutput.GetSize());
-	for (long lIdx = 0L; lIdx < anyTokensToOutput.GetSize(); lIdx++) {
+	for (long lIdx = 0L, sz = anyTokensToOutput.GetSize(); lIdx < sz; ++lIdx) {
 		long lTokIdx = anyTokensToOutput[lIdx].AsLong(0L);
 		Trace("abs of lTokIdx: " << (long)abs(lTokIdx));
 		if ( abs(lTokIdx) < anyTokens.GetSize() ) {

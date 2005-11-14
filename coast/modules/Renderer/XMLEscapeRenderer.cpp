@@ -37,7 +37,7 @@ void XMLEscapeRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything
 	StartTrace(XMLEscapeRenderer.RenderAll);
 	String input(Renderer::RenderToString(ctx, config));
 
-	for (long i = 0; i < input.Length(); i++) {
+	for (long i = 0, sz = input.Length(); i < sz; ++i) {
 		char c = input[i];
 		for (int iI = 0; entitity_map[iI]; iI += 2) {
 			if (c == entitity_map[iI][0]) {

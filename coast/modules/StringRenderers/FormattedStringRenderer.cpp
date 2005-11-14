@@ -78,16 +78,16 @@ void FormattedStringRenderer::RenderAll(ostream &reply, Context &c, const ROAnyt
 		}
 	}
 	Trace("LeftFills: " << lLeftFill << ", RightFill : " << lRightFill );
-	for ( long iL = 0; iL < lLeftFill; iL++ ) {
+	for ( long iL = 0; iL < lLeftFill; ++iL) {
 		result << filler;
 	}
 	{
 		// fill spaces within string with given filler
-		for (long i = 0; i < value.Length(); i++) {
+		for (long i = 0, szv = value.Length(); i < szv; ++i) {
 			if (value[i] == ' ') {
 				result << filler;
 			} else if (value[i] == '\t') {
-				for (long l = 0; l < nSpaces; l++) {
+				for (long l = 0; l < nSpaces; ++l) {
 					result << filler;
 				}
 			} else {
@@ -96,7 +96,7 @@ void FormattedStringRenderer::RenderAll(ostream &reply, Context &c, const ROAnyt
 			//Trace("Result: [" << result << "] value: [" << value << "] posn:" << posn);
 		}
 	}
-	for ( long iR = 0; iR < lRightFill; iR++ ) {
+	for ( long iR = 0; iR < lRightFill; ++iR ) {
 		result << filler;
 	}
 	Trace("Rendered Value: [" << result << "]");

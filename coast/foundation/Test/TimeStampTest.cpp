@@ -61,11 +61,11 @@ void TimeStampTest::testBasicOperators()
 {
 	StartTrace(TimeStampTest.testBasicOperators);
 	TraceAny(fTestCaseConfig, "Tests config");
-	for (long i = 0; i < fTestCaseConfig.GetSize(); i++) {
+	for (long i = 0; i < fTestCaseConfig.GetSize(); ++i) {
 		ROAnything cConfig = fTestCaseConfig[i];
 		TraceAny(cConfig, "current config");
 		long upper(cConfig["NumberOfRuns"].AsLong(1));
-		for ( long l = 0; l < upper; l++ ) {
+		for ( long l = 0; l < upper; ++l ) {
 			Trace("At testindex: " << i);
 			TimeStamp ts1(cConfig["Date"].AsString());
 			TimeStamp ts2(cConfig["Date"].AsString());
@@ -126,11 +126,11 @@ void TimeStampTest::testBasicOperators()
 void TimeStampTest::testArithmeticOperators()
 {
 	StartTrace(TimeStampTest.testArithmeticOperators);
-	for (long i = 0; i < fTestCaseConfig.GetSize(); i++) {
+	for (long i = 0; i < fTestCaseConfig.GetSize(); ++i) {
 		ROAnything cConfig = fTestCaseConfig[i];
 		Trace("At testindex: " << i);
 		long upper(cConfig["NumberOfRuns"].AsLong(1));
-		for ( long l = 0; l < upper; l ++ ) {
+		for ( long l = 0; l < upper; ++l ) {
 			TimeStamp ts1(cConfig["Date"].AsString());
 			TimeStamp result;
 			result = ts1 + cConfig["AmountSec"].AsLong();
@@ -147,7 +147,7 @@ void TimeStampTest::testArithmeticOperators()
 void TimeStampTest::testConstructors()
 {
 	StartTrace(TimeStampTest.testArithmeticOperators);
-	for (long i = 0; i < fTestCaseConfig.GetSize(); i++) {
+	for (long i = 0; i < fTestCaseConfig.GetSize(); ++i) {
 		ROAnything cConfig = fTestCaseConfig[i];
 		Trace("At testindex: " << i);
 		TimeStamp result(cConfig["ExpectedResult"].AsString());
@@ -168,7 +168,7 @@ void TimeStampTest::testConstructors()
 void TimeStampTest::testEmptyStringConstructor()
 {
 	StartTrace(TimeStampTest.testEmptyStringConstructor);
-	for (long i = 0; i < fTestCaseConfig.GetSize(); i++) {
+	for (long i = 0; i < fTestCaseConfig.GetSize(); ++i) {
 		ROAnything cConfig = fTestCaseConfig[i];
 		Trace("At testindex: " << i);
 		TimeStamp ts("");
@@ -183,7 +183,7 @@ void TimeStampTest::testEmptyStringConstructor()
 void TimeStampTest::testEmptyConstructor()
 {
 	StartTrace(TimeStampTest.testEmptyStringConstructor);
-	for (long i = 0; i < fTestCaseConfig.GetSize(); i++) {
+	for (long i = 0; i < fTestCaseConfig.GetSize(); ++i) {
 		ROAnything cConfig = fTestCaseConfig[i];
 		Trace("At testindex: " << i);
 		TimeStamp tsNow = TimeStamp::Now();
@@ -200,7 +200,7 @@ void TimeStampTest::testEmptyConstructor()
 void TimeStampTest::testRemoveNonNumericalChars()
 {
 	StartTrace(TimeStampTest.testRemoveNonNumericalChars);
-	for (long i = 0; i < fTestCaseConfig.GetSize(); i++) {
+	for (long i = 0; i < fTestCaseConfig.GetSize(); ++i) {
 		ROAnything cConfig = fTestCaseConfig[i];
 		Trace("At testindex: " << i);
 		TimeStamp taintedOne(cConfig["DateTainted"].AsString());
@@ -217,7 +217,7 @@ void TimeStampTest::testRemoveNonNumericalChars()
 void TimeStampTest::testAssignmentOperator()
 {
 	StartTrace(TimeStampTest.testAssignmentOperator);
-	for (long i = 0; i < fTestCaseConfig.GetSize(); i++) {
+	for (long i = 0; i < fTestCaseConfig.GetSize(); ++i) {
 		ROAnything cConfig = fTestCaseConfig[i];
 		Trace("At testindex: " << i);
 		TimeStamp one(cConfig["DateOne"].AsString());
@@ -240,7 +240,7 @@ void TimeStampTest::testAssignmentOperator()
 void TimeStampTest::testAsString()
 {
 	StartTrace(TimeStampTest.testAsString);
-	for (long i = 0; i < fTestCaseConfig.GetSize(); i++) {
+	for (long i = 0; i < fTestCaseConfig.GetSize(); ++i) {
 		ROAnything cConfig = fTestCaseConfig[i];
 		Trace("At testindex: " << i);
 		TimeStamp ts(cConfig["Date"].AsString());
@@ -379,7 +379,7 @@ void TimeStampTest::CtorTest()
 void TimeStampTest::WeekdayTest()
 {
 	StartTrace(TimeStampTest.WeekDayTest);
-	for (long i = 0; i < fTestCaseConfig.GetSize(); i++) {
+	for (long i = 0; i < fTestCaseConfig.GetSize(); ++i) {
 		ROAnything cConfig = fTestCaseConfig[i];
 		Trace("At testindex: " << i);
 		TimeStamp ts(cConfig["Date"].AsString());
@@ -391,7 +391,7 @@ void TimeStampTest::WeekdayTest()
 void TimeStampTest::DayOfYearTest()
 {
 	StartTrace(TimeStampTest.DayOfYearTest);
-	for (long i = 0; i < fTestCaseConfig.GetSize(); i++) {
+	for (long i = 0; i < fTestCaseConfig.GetSize(); ++i) {
 		ROAnything cConfig = fTestCaseConfig[i];
 		Trace("At testindex: " << i);
 		TimeStamp ts(cConfig["Date"].AsString());
@@ -403,7 +403,7 @@ void TimeStampTest::DayOfYearTest()
 void TimeStampTest::WeekOfYearTest()
 {
 	StartTrace(TimeStampTest.WeekOfYearTest);
-	for (long i = 0; i < fTestCaseConfig.GetSize(); i++) {
+	for (long i = 0; i < fTestCaseConfig.GetSize(); ++i) {
 		ROAnything cConfig = fTestCaseConfig[i];
 		TraceAny(cConfig, "At testindex: " << i);
 		TimeStamp ts(cConfig["Date"].AsString());

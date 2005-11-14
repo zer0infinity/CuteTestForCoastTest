@@ -27,9 +27,7 @@ long FloorRenderer::FindSlot(String &key, const ROAnything &list)
 	long i = 0;
 	long sz = list.GetSize();
 	while ((i < sz) && (key.Compare(list.SlotName(i)) >= 0) ) {
-		i++;
+		++i;
 	}
-
-	i--;
-	return i;
+	return --i;
 }

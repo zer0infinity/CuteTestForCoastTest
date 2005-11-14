@@ -184,12 +184,12 @@ protected:
 			long lIdx = (fStructPos >> 1);
 			((char *)this)[lIdx] *= 10;
 			((char *)this)[lIdx] += c - '0';
-			fStructPos++;
+			++fStructPos;
 		}
 		void Reset() {
 			fStructPos = 0;
 			cTerminator = 0;
-			for (long lIdx = 0; lIdx < ((&cTerminator) - (char *)this); lIdx++) {
+			for (long lIdx = 0; lIdx < ((&cTerminator) - (char *)this); ++lIdx) {
 				((char *)this)[lIdx] = 0;
 			}
 		}

@@ -55,7 +55,7 @@ void TextTestResult::printCauses(ostream &stream, TestLocList &causes)
 				<< " "
 				<< cause->getMessage()
 				<< endl;
-		i++;
+		++i;
 	}
 }
 

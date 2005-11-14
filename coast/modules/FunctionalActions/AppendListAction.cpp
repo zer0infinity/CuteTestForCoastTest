@@ -36,8 +36,8 @@ void ContextSlotAppender::Operate(Context &c, Anything &dest, const ROAnything &
 	StartTrace(ContextSlotAppender.Operate);
 	TraceAny(config, "Config");
 
-	long sz = config.GetSize(), idx;
-	for (long i = 0; i < sz; i++) {
+	long sz = config.GetSize(), idx, szd = 0;
+	for (long i = 0; i < sz; ++i) {
 		String sourceLookupName = config.SlotName(i);
 		String destSlot;
 		Renderer::RenderOnString(destSlot, c, config[i]);
@@ -46,12 +46,12 @@ void ContextSlotAppender::Operate(Context &c, Anything &dest, const ROAnything &
 		if ( sourceLookupName && destSlot && c.Lookup(sourceLookupName, roaLookedUp)) {
 			TraceAny(((ROAnything)dest)[destSlot], "current destination");
 			Anything res;
-			for ( idx = 0; idx < dest[destSlot].GetSize(); idx++ ) {
+			for ( idx = 0, szd = dest[destSlot].GetSize(); idx < szd; ++idx) {
 				res[ String() << idx ] = dest[destSlot][idx];
 			}
 			Anything src = roaLookedUp.DeepClone();
 			TraceAny(src, "anything to append");
-			for ( long newIdx = 0; newIdx < src.GetSize(); newIdx++ ) {
+			for ( long newIdx = 0, szs = src.GetSize(); newIdx < szs; ++newIdx ) {
 				res[ String() << idx + newIdx ] = src[newIdx];
 			}
 			dest[destSlot] = res;

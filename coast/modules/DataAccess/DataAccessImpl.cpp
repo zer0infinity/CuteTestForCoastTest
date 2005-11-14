@@ -153,7 +153,7 @@ bool LoopBackDAImpl::Exec(Context &c, ParameterMapper *input, ResultMapper *outp
 
 	if (Lookup("transfer", config)) {
 		TraceAny(config, "Config: ");
-		for (long i = 0; i < config.GetSize(); i++) {
+		for (long i = 0, sz = config.GetSize(); i < sz; ++i) {
 			const char *slotname = config.SlotName(i);
 			if (slotname) {
 				String inputStr;

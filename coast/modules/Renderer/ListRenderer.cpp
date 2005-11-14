@@ -67,7 +67,7 @@ void ListRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &confi
 
 		// Entries
 		long sz = list.GetSize();
-		for (int i = 0; i < sz; i++) {
+		for (int i = 0; i < sz; ++i) {
 			// prepare data for rendering
 			StoreEntryData(c, config, list, i, entryStoreName);
 
@@ -163,14 +163,14 @@ long ListRenderer::EntryHeaderNrToBeRendered(Context &c, const ROAnything &confi
 {
 	long render = -1;
 	if (config.IsDefined("EntryHeaders")) {
-		entryIndex++;
+		++entryIndex;
 		long startingEntry = config["EHStartingEntry"].AsLong(1);
 		if (entryIndex >= startingEntry) {
 			long sz = config["EntryHeaders"].GetSize();
 			render = (entryIndex - startingEntry) % sz;
 		}
 	} else if (config.IsDefined("EntryHeader") ) {
-		entryIndex++;
+		++entryIndex;
 		long startingEntry = config["EHStartingEntry"].AsLong(1);
 		long everyXEntries = config["EHEveryXEntries"].AsLong(1);
 
@@ -187,7 +187,7 @@ bool ListRenderer::EntryFooterHasToBeRendered(Context &c, const ROAnything &conf
 {
 	bool render(false);
 	if (config.IsDefined("EntryFooter") ) {
-		entryIndex++;
+		++entryIndex;
 		long startingEntry = config["EFStartingEntry"].AsLong(1);
 		long everyXEntries = config["EFEveryXEntries"].AsLong(1);
 

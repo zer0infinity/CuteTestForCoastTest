@@ -46,7 +46,7 @@ void AppletRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &con
 		long idx = config.FindIndex("Params");
 		if (idx >= 0) {
 			ROAnything params = config[idx];
-			for (long j = 0; j < params.GetSize(); j++) {
+			for (long j = 0, sz = params.GetSize(); j < sz; ++j) {
 				reply << "<PARAM name=" << params.SlotName(j) << " value=\"";
 				Render(reply, c, params[j]);
 				reply << "\">";

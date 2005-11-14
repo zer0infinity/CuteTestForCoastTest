@@ -598,7 +598,7 @@ int MasterServer::Init()
 		fNumServers = serverModules.GetSize();
 		if ( fNumServers > 0 ) {
 			fServerThreads = new ServerThread[fNumServers];
-			for (long i = 0; (retCode == 0) && (i < fNumServers); i++) {
+			for (long i = 0; (retCode == 0) && (i < fNumServers); ++i) {
 				TraceAny(serverModules[i], "initializing server");
 				retCode = fServerThreads[i].Init(serverModules[i]);
 			}
@@ -615,7 +615,7 @@ int MasterServer::ReInit(const Anything &config)
 	fgConfig = config;
 	CheckConfig("Application", true);
 	long retCode = 0;
-	for (long i = 0; (retCode == 0) && (i < fNumServers); i++) {
+	for (long i = 0; (retCode == 0) && (i < fNumServers); ++i) {
 		// terminates each server thread
 		retCode = fServerThreads[i].ReInit(config);
 	}
@@ -632,7 +632,7 @@ int MasterServer::BlockRequests()
 	long retCode = 0;
 	Trace("blocking [" << fNumServers << "] servers");
 
-	for (long i = 0; (retCode == 0) && (i < fNumServers); i++) {
+	for (long i = 0; (retCode == 0) && (i < fNumServers); ++i) {
 		// terminates each server thread
 		retCode = fServerThreads[i].BlockRequests();
 		if ( retCode != 0 ) {
@@ -648,7 +648,7 @@ int MasterServer::UnblockRequests()
 	StartTrace(MasterServer.UnblockRequests);
 	// start blocking all requests and terminate master server thread
 	long retCode = Server::UnblockRequests();
-	for (long i = 0; (retCode == 0) && (i < fNumServers); i++) {
+	for (long i = 0; (retCode == 0) && (i < fNumServers); ++i) {
 		// terminates each server thread
 		retCode = fServerThreads[i].UnblockRequests();
 		if ( retCode != 0 ) {
@@ -663,7 +663,7 @@ bool MasterServer::IsReady(bool ready, long timeout)
 	StartTrace1(MasterServer.IsReady, "ready: [" << ready << "] timeout: [" << timeout << "]");
 
 	bool success = true;
-	for (long i = 0; i < fNumServers; i++) {
+	for (long i = 0; i < fNumServers; ++i) {
 		success = fServerThreads[i].IsReady(ready, timeout) && success;
 	}
 	return Server::IsReady(ready, timeout) && success;
@@ -673,7 +673,7 @@ bool MasterServer::StartServers()
 {
 	StartTrace(MasterServer.StartServers);
 	bool success = true;
-	for (long i = 0; i < fNumServers; i++) {
+	for (long i = 0; i < fNumServers; ++i) {
 		success = fServerThreads[i].Start() && success;
 	}
 	return success;
@@ -693,7 +693,7 @@ int MasterServer::Run()
 void MasterServer::PrepareShutdown(long retCode)
 {
 	StartTrace(MasterServer.PrepareShutdown);
-	for (long i = 0; i < fNumServers; i++) {
+	for (long i = 0; i < fNumServers; ++i) {
 		fServerThreads[i].PrepareShutdown(retCode);
 	}
 	Server::PrepareShutdown(retCode);
@@ -706,7 +706,7 @@ int MasterServer::Terminate(int val)
 	m << "\tTerminating Master: <" << fName << ">\n";
 	SysLog::WriteToStderr(m);
 	Anything retval(val);
-	for (long i = 0; i < fNumServers; i++) {
+	for (long i = 0; i < fNumServers; ++i) {
 		fServerThreads[i].Terminate(2, retval);
 	}
 	delete [] fServerThreads;

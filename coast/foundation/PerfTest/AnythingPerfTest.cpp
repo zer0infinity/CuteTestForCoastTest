@@ -48,7 +48,7 @@ void AnythingPerfTest::RunIndexLoopAsCharPtr(long index, const Anything &a, cons
 {
 	DiffTimer dt;
 	String out;
-	for (long i = 0; i < iterations; i++) {
+	for (long i = 0; i < iterations; ++i) {
 		out = a[index].AsCharPtr("lookup hallo");
 	}
 	long lDiff = dt.Diff();
@@ -60,7 +60,7 @@ void AnythingPerfTest::RunIndexLoopAsString(long index, const Anything &a, const
 {
 	DiffTimer dt;
 	String out;
-	for (long i = 0; i < iterations; i++) {
+	for (long i = 0; i < iterations; ++i) {
 		out = a[index].AsString("lookup hallo");
 	}
 	long lDiff = dt.Diff();
@@ -72,7 +72,7 @@ void AnythingPerfTest::RunKeyLoop(const char *key, const Anything &a, const long
 {
 	DiffTimer dt;
 	String out;
-	for (long i = 0; i < iterations; i++) {
+	for (long i = 0; i < iterations; ++i) {
 		out = a[key].AsCharPtr("lookup hallo");
 	}
 	long lDiff = dt.Diff();
@@ -86,7 +86,7 @@ void AnythingPerfTest::RunLookupPathLoop(const char *key, const Anything &a, con
 	DiffTimer dt;
 	const char *out;
 	Anything result;
-	for (long i = 0; i < iterations; i++) {
+	for (long i = 0; i < iterations; ++i) {
 		a.LookupPath(result, key);
 		out = result.AsCharPtr("lookup hallo");
 	}
@@ -100,7 +100,7 @@ void AnythingPerfTest::RunROLookupPathLoop(const char *key, const ROAnything &a,
 	DiffTimer dt;
 	const char *out;
 	ROAnything result;
-	for (long i = 0; i < iterations; i++) {
+	for (long i = 0; i < iterations; ++i) {
 		a.LookupPath(result, key);
 		out = result.AsCharPtr("lookup hallo");
 	}
@@ -232,7 +232,7 @@ void AnythingPerfTest::RunDeepCloneLoop(const char *pName, const Anything &a, co
 {
 	DiffTimer dt;
 	Anything result;
-	for (long i = 0; i < iterations; i++) {
+	for (long i = 0; i < iterations; ++i) {
 		result = a.DeepClone();
 	}
 	long lDiff = dt.Diff();
@@ -245,7 +245,7 @@ void AnythingPerfTest::RunPrintOnPrettyLoop(const char *pName, const Anything &a
 	DiffTimer dt;
 	String strBuf;
 	OStringStream stream(&strBuf);
-	for (long i = 0; i < iterations; i++) {
+	for (long i = 0; i < iterations; ++i) {
 		a.PrintOn(stream, true);
 	}
 	long lDiff = dt.Diff();

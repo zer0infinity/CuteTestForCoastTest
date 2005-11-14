@@ -24,7 +24,7 @@ FirstNonEmptyRenderer::~FirstNonEmptyRenderer() { }
 void FirstNonEmptyRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(FirstNonEmptyRenderer.RenderAll);
-	for (long i = 0; i < config.GetSize(); i++) {
+	for (long i = 0, sz = config.GetSize(); i < sz; ++i) {
 		String result;
 		TraceAny(config[i], "Trying at index [" << i << "]");
 		Renderer::RenderOnString(result, ctx, config[i]);

@@ -511,27 +511,27 @@ void BlowfishScrambler::InitKey(const String &keyin)
 
 	d = data;
 	end = &(data[len]);
-	for (i = 0; i < (BF_ROUNDS + 2); i++) {
-		ri = *(d++);
-		if (d >= end) {
+	for (i = 0; i < (BF_ROUNDS + 2); ++i) {
+		ri = *d;
+		if (++d >= end) {
 			d = data;
 		}
 
 		ri <<= 8;
-		ri |= *(d++);
-		if (d >= end) {
+		ri |= *d;
+		if (++d >= end) {
 			d = data;
 		}
 
 		ri <<= 8;
-		ri |= *(d++);
-		if (d >= end) {
+		ri |= *d;
+		if (++d >= end) {
 			d = data;
 		}
 
 		ri <<= 8;
-		ri |= *(d++);
-		if (d >= end) {
+		ri |= *d;
+		if (++d >= end) {
 			d = data;
 		}
 
@@ -564,7 +564,7 @@ void BlowfishScrambler::DoECB_multipleBlockEncrypt(unsigned char *blockPtr, unsi
 
 	length /= BF_BLOCK;
 	unsigned char *savePtr = blockPtr;
-	for (i = 0; i < length; i++) {
+	for (i = 0; i < length; ++i) {
 		BF_ECB_encrypt(blockPtr, blockPtr);
 		blockPtr += BF_BLOCK;
 	}
@@ -581,7 +581,7 @@ bool BlowfishScrambler::DoECB_multipleBlockDecrypt(unsigned char *blockPtr, unsi
 
 	length /= BF_BLOCK;
 	unsigned char *savePtr = blockPtr;
-	for (i = 0; i < length; i++) {
+	for (i = 0; i < length; ++i) {
 		BF_ECB_decrypt(blockPtr, blockPtr);
 		blockPtr += BF_BLOCK;
 	}

@@ -33,7 +33,7 @@ void CharReplaceRenderer::RenderAll(ostream &reply, Context &c, const ROAnything
 			char rChar = replaceChar[0L];
 			long sz = charsToReplace.Length();
 			long charpos = 0L;
-			for (long i = 0; i < sz; i++) {
+			for (long i = 0; i < sz; ++i) {
 				while ((charpos = original.StrChr(charsToReplace[i], charpos)) >= 0L) {
 					original.PutAt(charpos, rChar);
 				}
@@ -42,7 +42,7 @@ void CharReplaceRenderer::RenderAll(ostream &reply, Context &c, const ROAnything
 		} else {
 			// remove characters
 			long sz = original.Length();
-			for (long i = 0; i < sz; i++) {
+			for (long i = 0; i < sz; ++i) {
 				if (charsToReplace.StrChr(original[i]) < 0) {
 					reply << original[i];
 				}

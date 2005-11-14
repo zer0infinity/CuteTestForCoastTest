@@ -101,7 +101,7 @@ void ZipStreamTest::GzipHdrWriteTest()
 void ZipStreamTest::ReadGzipHdrFileTest()
 {
 	StartTrace(ZipStreamTest.ReadGzipHdrFileTest);
-	for (long lIdx = 0; lIdx < fTestCaseConfig.GetSize(); lIdx++) {
+	for (long lIdx = 0; lIdx < fTestCaseConfig.GetSize(); ++lIdx) {
 		ROAnything roaConfig = fTestCaseConfig[lIdx];
 		String strCprs(roaConfig["BinaryData"].AsString());
 		TString strCase = fTestCaseConfig.SlotName(lIdx);
@@ -146,7 +146,7 @@ void ZipStreamTest::ReadGzipHdrFileTest()
 void ZipStreamTest::ReadHeaderInfoTest()
 {
 	StartTrace(ZipStreamTest.ReadHeaderInfoTest);
-	for (long lIdx = 0; lIdx < fTestCaseConfig.GetSize(); lIdx++) {
+	for (long lIdx = 0; lIdx < fTestCaseConfig.GetSize(); ++lIdx) {
 		ROAnything roaConfig = fTestCaseConfig[lIdx];
 		String strCprs(roaConfig["BinaryData"].AsString());
 		TString strCase = fTestCaseConfig.SlotName(lIdx);
@@ -180,7 +180,7 @@ void ZipStreamTest::ReadHeaderInfoTest()
 void ZipStreamTest::WriteHeaderInfoTest()
 {
 	StartTrace(ZipStreamTest.WriteHeaderInfoTest);
-	for (long lIdx = 0; lIdx < fTestCaseConfig.GetSize(); lIdx++) {
+	for (long lIdx = 0; lIdx < fTestCaseConfig.GetSize(); ++lIdx) {
 		ROAnything roaConfig = fTestCaseConfig[lIdx];
 		String strCprs(roaConfig["BinaryData"].AsString());
 		TString strCase = fTestCaseConfig.SlotName(lIdx);
@@ -223,7 +223,7 @@ void ZipStreamTest::SetCompressionTest()
 	zos << ZipStream::setModificationTime(TimeStamp("20041224012345"));
 	zos << ZipStream::setHeaderCRC();
 	zos << content << flush;
-	for (long lCprs = 0L; lCprs < Z_BEST_COMPRESSION; lCprs++) {
+	for (long lCprs = 0L; lCprs < Z_BEST_COMPRESSION; ++lCprs) {
 		zos << ZipStream::setCompression(lCprs) << content << flush;
 	}
 	t_assert(!!zos);
@@ -357,7 +357,7 @@ void ZipStreamTest::GzipConstantBufferCheck()
 	srand(12345);
 	char inFile[89000];
 	{
-		for (unsigned i = 0; i < sizeof(inFile); i++) {
+		for (unsigned i = 0; i < sizeof(inFile); ++i) {
 			inFile[i] = (char) rand();
 		}
 	}
@@ -390,7 +390,7 @@ void ZipStreamTest::GzipConstantBufferCheck()
 
 	t_assert(sizeof(inFile) == decoded.Length());
 	{
-		for (unsigned i = 0; i < sizeof(inFile); i++) {
+		for (unsigned i = 0; i < sizeof(inFile); ++i) {
 			if (!t_assert(inFile[i] == decoded[(long)i])) {
 				break;
 			}
@@ -408,7 +408,7 @@ void ZipStreamTest::GzipConstantBufferCheck()
 
 	t_assert(sizeof(inFile) == decoded2.Length());
 	{
-		for (unsigned i = 0; i < sizeof(inFile); i++) {
+		for (unsigned i = 0; i < sizeof(inFile); ++i) {
 			if (!t_assert(inFile[i] == decoded2[(long)i])) {
 				break;
 			}
@@ -423,7 +423,7 @@ void ZipStreamTest::GzipBigFileCheck()
 	srand(12345);
 	char inFile[1024*64];
 	{
-		for (unsigned i = 0; i < sizeof(inFile); i++) {
+		for (unsigned i = 0; i < sizeof(inFile); ++i) {
 			inFile[i] = (char) rand();
 		}
 	}
@@ -456,7 +456,7 @@ void ZipStreamTest::GzipBigFileCheck()
 	t_assert(!zis.bad());
 	zis.close();
 
-	for (unsigned i = 0; i < sizeof(inFile); i++) {
+	for (unsigned i = 0; i < sizeof(inFile); ++i) {
 		if ( !t_assert(inFile[i] == outFile[i])) {
 			Trace("files not equal: " << (long)i);
 			break;
@@ -516,7 +516,7 @@ void ZipStreamTest::StringGetlineTest()
 	String strLine;
 	long lCount = 0;
 	while ( !!zis && !getline(zis, strLine).bad() && !zis.eof() ) {
-		lCount++;
+		++lCount;
 		Trace("count: " << lCount);
 		Trace("read [" << strLine << "]");
 	}

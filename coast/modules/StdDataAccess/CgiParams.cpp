@@ -33,7 +33,7 @@ void CgiParams::AddToEnvironment(Context &ctx, Anything &env, ROAnything additio
 {
 	StartTrace(CgiParams.AddToEnvironment);
 
-	for (long i = 0; i < additionalenv.GetSize(); i++) {
+	for (long i = 0, sz = additionalenv.GetSize(); i < sz; ++i) {
 		const char *sn = additionalenv.SlotName(i);
 		if (sn) {
 			env[sn] = Renderer::RenderToString(ctx, additionalenv[sn]);

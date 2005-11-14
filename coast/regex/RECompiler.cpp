@@ -62,7 +62,7 @@ static posixtable _posixtable[] = {
 #endif
 static long posixLookup(const String &cmp)
 {
-	for (long i = 0; i < (long)(sizeof(_posixtable) / sizeof(struct posixtable)); i++) {
+	for (long i = 0; i < (long)(sizeof(_posixtable) / sizeof(struct posixtable)); ++i) {
 		if (cmp == _posixtable[i].name) {
 			return i;
 		}
@@ -154,7 +154,7 @@ bool RECompiler::bracket(long &min, long &optional)
 	min = ReadNumber(1);
 	// If end of expr, optional limit is 0 {
 	if (fPattern.At(fPatternIdx) == '}') {
-		fPatternIdx++;
+		++fPatternIdx;
 		return true;
 	}
 	// Must have at least {m,} and maybe {m,n}.
@@ -164,7 +164,7 @@ bool RECompiler::bracket(long &min, long &optional)
 	}
 	// If {m,} max is unlimited {
 	if (fPattern.At(fPatternIdx) == '}') {
-		fPatternIdx++;
+		++fPatternIdx;
 		optional = bracketUnbounded;
 		return true;
 	}
@@ -305,7 +305,7 @@ long RECompiler::PosixCharacterClass()
 	// POSIX character classes are denoted with lowercase ASCII strings
 	int idxStart = fPatternIdx;
 	while (islower(fPattern.At(fPatternIdx))) {
-		fPatternIdx++;
+		++fPatternIdx;
 	}
 
 	// Should be a ":]" to terminate the POSIX character class
@@ -346,7 +346,7 @@ long RECompiler::characterClass()
 	// Check for POSIX character class
 	if (fPattern.At(fPatternIdx) == ':') {
 		// Skip colon
-		fPatternIdx++;
+		++fPatternIdx;
 		return PosixCharacterClass();
 	}
 
@@ -493,7 +493,7 @@ endClass:
 		range.Complement();
 	}
 	// Absorb the ']' end of class marker
-	fPatternIdx++;
+	++fPatternIdx;
 
 	// Emit character class definition
 	fInstruction[ret][RE::offsetOpdata] = Anything((void *)&range, sizeof(range));
@@ -715,7 +715,7 @@ Anything RECompiler::CopyProgram(long from, long len)
 	StartTrace(RECompiler.CopyProgram);
 	MetaThing res(fInstruction.GetAllocator());
 
-	for (long i = from; i < from + len; i++) {
+	for (long i = from; i < from + len; ++i) {
 		res.Append(fInstruction[i].DeepClone());
 	}
 	return res;
@@ -826,7 +826,7 @@ long RECompiler::closure(bool &isnullable)
 			isnullable = true;
 		case '+':
 			// Eat closure character
-			fPatternIdx++;
+			++fPatternIdx;
 		case '{': // }
 			if (terminalIsNullable) {
 				syntaxError("Closure operand can't be nullable");
@@ -837,7 +837,7 @@ long RECompiler::closure(bool &isnullable)
 
 	// If the next character is a '?', make the closure non-greedy (reluctant)
 	if (fPattern.At(fPatternIdx) == '?') {
-		fPatternIdx++;
+		++fPatternIdx;
 		greedy = false;
 	}
 
@@ -962,7 +962,7 @@ long RECompiler::expr(bool &isnullable)
 	if (fNofParentheses < 1) {
 		fNofParentheses = 1;
 	} else if (fPattern.At(fPatternIdx) == '(') {
-		fPatternIdx++;
+		++fPatternIdx;
 		paren = true;
 		ret = AppendNode(RE::OP_OPEN, fNofParentheses++);
 	}
@@ -980,7 +980,7 @@ long RECompiler::expr(bool &isnullable)
 	isnullable = isnullable || branchnullable;
 	// Loop through branches
 	while (fPatternIdx < fPattern.Length() && fPattern.At(fPatternIdx) == '|') {
-		fPatternIdx++;
+		++fPatternIdx;
 		branch = this->Branch(branchnullable);
 		if (branch < 0) {
 			return branch;
@@ -992,7 +992,7 @@ long RECompiler::expr(bool &isnullable)
 	long end;
 	if (paren) {
 		if (fPattern.At(fPatternIdx) == ')') {
-			fPatternIdx++;
+			++fPatternIdx;
 		} else {
 			syntaxError("Missing close paren");
 			return -1;

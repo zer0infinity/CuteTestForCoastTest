@@ -184,7 +184,7 @@ void URLPrinter::BuildPrivateState(ostream &, Context &c, const ROAnything &conf
 	// parameter list
 	ROAnything params;
 	if (config.LookupPath(params, "Params")) {
-		for (long i = 0; i < params.GetSize(); i++) {
+		for (long i = 0, sz = params.GetSize(); i < sz; ++i) {
 			String name = params.SlotName(i);
 			if (name.IsEqual("")) {
 				name = "P";

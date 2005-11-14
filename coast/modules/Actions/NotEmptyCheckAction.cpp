@@ -68,7 +68,7 @@ bool NotEmptyCheckAction::DoCheck(String &fieldToCheck, Context &ctx, const ROAn
 	StartTrace(NotEmptyCheckAction.DoCheck);
 
 	long sz = fieldToCheck.Length();
-	for (long i = 0; i < sz; i++)	{
+	for (long i = 0; i < sz; ++i)	{
 		if (fieldToCheck[i] != ' ') {
 			return true;
 		}

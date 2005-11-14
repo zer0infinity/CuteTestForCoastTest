@@ -65,7 +65,7 @@ bool PartialListRenderer::GetList(Context &c, const ROAnything &config, Anything
 	long start = startPosn;
 	long end = endPosn < sz ? endPosn : sz;
 
-	for ( long i = start ; i <= end; i++ ) {
+	for ( long i = start ; i <= end; ++i) {
 		String slotname = fullList.SlotName(i);
 		if (slotname != "") {
 			list[slotname] = fullList[i];

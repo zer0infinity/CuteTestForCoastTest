@@ -178,7 +178,7 @@ PipeExecutor::CgiEnv::CgiEnv(Anything &env, Allocator &a)
 	fEnv = static_cast<char **>(fAlloc.Calloc(env.GetSize() + 1, sizeof(char *)));
 	if (fEnv) {
 		long i = 0;
-		for (; i < env.GetSize(); i++) {
+		for (long sz = env.GetSize(); i < sz; ++i) {
 			String s = env.SlotName(i);
 			s << "=" << env[i].AsCharPtr();
 			tmp[i] = s;
@@ -207,7 +207,7 @@ PipeExecutor::CgiParam::CgiParam(Anything param, Allocator &a)
 	fParams = static_cast<char **>(fAlloc.Calloc(param.GetSize() + 1, sizeof(char *)));
 	if (fParams) {
 		long i = 0;
-		for (; i < param.GetSize(); i++) {
+		for (long sz = param.GetSize(); i < sz; ++i) {
 			fParams[i] = (char *)param[i].AsCharPtr(0);
 		}
 		fParams[i] = 0;

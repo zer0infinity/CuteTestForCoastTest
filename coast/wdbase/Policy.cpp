@@ -36,16 +36,14 @@ bool AliasInstaller::Install(const Anything &installerSpec, Registry *r)
 	long isSz = installerSpec.GetSize();
 	bool installationSuccess = true;
 	SysLog::WriteToStderr(String("\t") << fCategory);
-	for (long l = 0; l < isSz; l++) {
-
+	for (long l = 0; l < isSz; ++l) {
 		const char *s = installerSpec.SlotName(l);
 
 		Trace("Installing <" << NotNull(s) << ">");
 
 		Anything a = installerSpec[l];
-		for (long j = 0; j < a.GetSize(); j++) {
+		for (long j = 0, sz = a.GetSize(); j < sz; ++j) {
 			Anything k = a[j];
-
 			RegisterableObject *t = (RegisterableObject *) r->Find(s);
 
 			if (t) {
@@ -87,7 +85,7 @@ bool HierarchyInstaller::Install(const Anything &installerSpec, Registry *r)
 	long isSz = installerSpec.GetSize();
 	bool installSuccess = true;
 	SysLog::WriteToStderr(String("\t") << fCategory);
-	for (long l = 0; l < isSz; l++) {
+	for (long l = 0; l < isSz; ++l) {
 		const char *s = installerSpec.SlotName(l);
 		installSuccess = InstallTree(GetLeaf(s, 0, r), s, installerSpec[l], r);
 	}
@@ -144,7 +142,7 @@ bool HierarchyInstaller::InstallTree(HierarchConfNamed *root, const char *rootNa
 	bool installSuccess = InstallRoot(root, rootName);
 	Trace("root " << rootName << " success: " << (installSuccess ? "true" : "false"));
 	long subTreeSz = tree.GetSize();
-	for (int i = 0; i < subTreeSz; i++) {
+	for (int i = 0; i < subTreeSz; ++i) {
 		bool subtree = true;
 		const char *leafName = tree.SlotName(i);
 		if (!leafName) {
@@ -221,7 +219,7 @@ bool AliasTerminator::Terminate(Registry *r)
 
 	long sz = removeSet.GetSize();
 
-	for (long i = sz - 1; i >= 0; i--) {
+	for (long i = sz - 1; i >= 0; --i) {
 		ro = (RegisterableObject *)removeSet[i].AsIFAObject(0);
 		delete ro;
 	}

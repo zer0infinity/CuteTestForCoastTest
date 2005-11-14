@@ -100,7 +100,7 @@ String TimeStamp::RemoveNonNumericalChars(const String &externalTimeRep)
 {
 	String ret;
 	long lExt = externalTimeRep.Length();
-	for (long i = 0; i < lExt; i++) {
+	for (long i = 0; i < lExt; ++i) {
 		const char c = externalTimeRep.At(i);
 		if ( c && isdigit(c) ) {
 			ret.Append(c);
@@ -122,9 +122,9 @@ bool TimeStamp::IntDoInit(const String &externalTimeRep)
 	// fill missing chars from pattern
 	long lRepLen = fRep.Length(), lMax = pattern.Length();
 	while ( lRepLen < lMax ) {
-		const char c = pattern[lRepLen++];
-		fRep.Append(c);
-		fTimeStruct.AddCharacter(c);
+		fRep.Append((char)pattern[lRepLen]);
+		fTimeStruct.AddCharacter((char)pattern[lRepLen]);
+		++lRepLen;
 	}
 	Trace("fRep: " << fRep);
 	if ( !fTimeStruct.IsValidDate() ) {
@@ -338,7 +338,7 @@ time_t TimeStamp::intTimeRep::AsTimeT() const
 	Trace("number of leap years to account for:" << ((year - 1) / 4 - 1969 / 4));
 	lTime += (((year - 1) / 4 - 1969 / 4)) * TimeStamp::DAY;
 	// count leap years before current year, since 1970
-	for (int i = 0; i < cMonth - 1; i++) {
+	for (int i = 0; i < cMonth - 1; ++i) {
 		lTime += MDAYS[i] * TimeStamp::DAY;
 	}
 	// leap-year adjustment
@@ -369,7 +369,7 @@ bool TimeStamp::intTimeRep::InitFromTimeT(time_t lTime)
 	while ( days >= ( lYearDays = (TimeStamp::IsLeap(y) ? 366 : 365) ) ) {
 		// could be optimized but runs max about 80 times...
 		days -= lYearDays;
-		y++;
+		++y;
 	}
 	cCent = y / 100;
 	cYear = y % 100;
@@ -377,7 +377,7 @@ bool TimeStamp::intTimeRep::InitFromTimeT(time_t lTime)
 	int i = 0;
 	// Leap Year February Adjust
 #define LYFA(theyear,mindex) ((1==mindex&&TimeStamp::IsLeap(theyear))?1:0)
-	for (i = 0; i < 12; i ++) {
+	for (i = 0; i < 12; ++i) {
 		if (days >= MDAYS[i] + LYFA(y, i)) {
 			days -= MDAYS[i] + LYFA(y, i);
 		} else {
@@ -409,7 +409,7 @@ int TimeStamp::intTimeRep::DayOfYear() const
 {
 	StartTrace(TimeStamp.DayOfYear);
 	int lDay = 0;
-	for (int i = 0; i < cMonth - 1; i++) {
+	for (int i = 0; i < cMonth - 1; ++i) {
 		lDay += MDAYS[i] + LYFA(cYear, i);
 	}
 	lDay += cDay;
@@ -432,7 +432,7 @@ int TimeStamp::intTimeRep::WeekOfYear() const
 		case TimeStamp::eFriday:
 		case TimeStamp::eSaturday:
 		case TimeStamp::eSunday:
-			lWeek--;
+			--lWeek;
 		case TimeStamp::eTuesday:
 		case TimeStamp::eWednesday:
 		case TimeStamp::eThursday:

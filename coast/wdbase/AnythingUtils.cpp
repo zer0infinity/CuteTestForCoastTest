@@ -29,7 +29,7 @@ void StoreCopier::Operate(Context &c, Anything &dest, const ROAnything &config, 
 
 	Trace("delim [" << delim << "], indexdelim [" << indexdelim << "]");
 	long sz = config.GetSize();
-	for (long i = 0; i < sz; i++) {
+	for (long i = 0; i < sz; ++i) {
 		String sourceLookupName = config.SlotName(i);
 		String destSlot;
 		Renderer::RenderOnString(destSlot, c, config[i]);

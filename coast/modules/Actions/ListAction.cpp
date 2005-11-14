@@ -62,7 +62,7 @@ bool ListAction::DoExecAction(String &transitionToken, Context &ctx, const ROAny
 		Anything tempStore = ctx.GetTmpStore();
 		ROAnything entryAction = config["EntryAction"];
 		long sz = list.GetSize();
-		for (int i = 0; i < sz; i++) {
+		for (int i = 0; i < sz; ++i) {
 			tempStore[entryStoreName] = list[i];
 			if (hasSlotname) {
 				tempStore[slotnameSlotname] = list.SlotName(i);

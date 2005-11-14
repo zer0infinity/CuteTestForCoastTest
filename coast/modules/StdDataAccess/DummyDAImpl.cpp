@@ -87,7 +87,7 @@ String DummyDAImpl::GetReplyMatchingRequest( Anything &recording, Context &conte
 
 	if ( tmpStore.IsDefined("TestStepNo" ) ) {
 		testStepNo = tmpStore["TestStepNo"].AsLong(-1L);
-		testStepNo++;
+		++testStepNo;
 	}
 	tmpStore["TestStepNo"] = testStepNo;
 

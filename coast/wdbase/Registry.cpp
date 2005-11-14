@@ -187,7 +187,7 @@ Registry *Registry::RemoveRegistry(const char *category)
 void Registry::FinalizeRegArray(Anything &registries)
 {
 	long sz = registries.GetSize();
-	for (long i = sz - 1; i >= 0; i--) {
+	for (long i = sz - 1; i >= 0; --i) {
 		Registry *r = (Registry *)registries[i].AsIFAObject(0);
 		if ( r ) {
 			const char *category = registries.SlotName(i);
@@ -296,7 +296,7 @@ RegisterableObject *RegistryIterator::Next(String &key)
 			key = table.SlotName(fStart);
 			Trace("key<" << key << ">");
 			obj = (RegisterableObject *)table[fStart].AsIFAObject(0);
-			(fForward) ? fStart++ : fStart--;
+			(fForward) ? ++fStart : --fStart;
 		}
 	}
 
@@ -315,7 +315,7 @@ RegisterableObject *RegistryIterator::RemoveNext(String &key)
 			Anything table(fRegistry->GetTable());
 
 			if (fForward) {
-				fStart--;
+				--fStart;
 			}
 			table.Remove((fForward) ? fStart : fStart + 1);
 		}

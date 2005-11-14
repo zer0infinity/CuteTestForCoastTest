@@ -87,7 +87,7 @@ void GzipHdr::SetModificationTime(TimeStamp aStamp)
 	StartTrace(GzipHdr.SetModificationTime);
 	long lModTime = aStamp.AsLong();
 	Trace("Modtime " << aStamp.AsString() << ", as long:" << lModTime);
-	for (long lIdx = 0; lIdx < GzipHdr::eModificationTimeLen; lIdx++) {
+	for (long lIdx = 0; lIdx < GzipHdr::eModificationTimeLen; ++lIdx) {
 		ModificationTime[lIdx] = ( lModTime & 0xff );
 		lModTime >>= 8;
 	}
@@ -256,7 +256,7 @@ void ZipOStreamBuf::close()
 
 void ZipOStreamBuf::putLong(unsigned long value)
 {
-	for (size_t n = 0; n < sizeof(value); n++) {
+	for (size_t n = 0; n < sizeof(value); ++n) {
 		fOs->put(char((value & 0xff)));
 		value >>= 8;
 	}
@@ -536,15 +536,12 @@ TimeStamp ZipIStreamBuf::getModificationTime()
 unsigned long ZipIStreamBuf::getLong()
 {
 	unsigned long value = 0;
-	for (size_t n = 0; n < sizeof(value); n++) {
+	for (size_t n = 0; n < sizeof(value); ++n) {
 		if (fZip.avail_in < 1) {
 			fillCompressed();
 		}
-
-		unsigned char ucRead = *fZip.next_in++;
-		fZip.avail_in--;
-
-		value += ucRead << (8 * n);
+		value += *fZip.next_in++ << (n << 3);
+		--fZip.avail_in;
 	}
 	return value;
 }

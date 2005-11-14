@@ -299,14 +299,14 @@ String String::DumpAsHex(long dumpwidth, const char *pcENDL) const
 		String outbuf;
 		long lTotalLen = (4L * dumpwidth + 1L);
 		long x = 0L;
-		for (long l = 0; l < Length(); l++, x++) {
+		for (long l = 0, sz = Length(); l < sz; ++l, ++x) {
 			if (l % dumpwidth == 0) {
 				x = 0L;
 				if (l > 0) {
 					strResult.Append(outbuf).Append(pcENDL);
 				}
 				// fill/clear the whole string with spaces
-				for (long q = 0; q < lTotalLen; q++) {
+				for (long q = 0; q < lTotalLen; ++q) {
 					outbuf.PutAt(q, ' ');
 				}
 			}
@@ -457,7 +457,7 @@ bool String::StartsWith(const char *pattern) const
 {
 	if ( pattern ) {
 		if ( GetImpl() ) {
-			for (const char *content = GetContent();; content++, pattern++) {
+			for (const char *content = GetContent(); ; ++content, ++pattern) {
 				if (!(*pattern)) {
 					return true;
 				} else if (!(*content)) {
@@ -511,11 +511,10 @@ long String::StrRChr(char c, long start) const
 	long result = -1;
 	if ( GetImpl() && start <= Length() ) {
 		const char *res = GetContent() + start - 1 ; // this is not functional for binary strings!! strrchr(GetContent(), c);
-		while ( ( res >= GetContent() ) && ( (*res) != c ) )
+		while ( ( res >= GetContent() ) && ( (*res) != c ) ) {
 			// PT: some really quick thinking of mine: it only took me 10 minutes
 			//     to figure out it should say >= above ... (guess I leave soon)
-		{
-			res--;
+			--res;
 		}
 		if (res >= GetContent()) {
 			result = res - GetContent();
@@ -702,15 +701,14 @@ long String::ContainsCharAbove(unsigned highMark, const String excludeSet)
 		return 0;
 	}
 	long excludeSetLength = excludeSet.Length();
-	for ( long i = 0; i < Length(); i ++) {
+	for ( long i = 0, sz = Length(); i < sz; ++i) {
 		unsigned char c = At(i);
 		if ( c > highMark ) {
 			if ( excludeSetLength == 0L ) {
 				return i;
 			} else {
 				bool found = false;
-				for ( long ii = 0; ii < excludeSetLength; ii++) {
-
+				for ( long ii = 0; ii < excludeSetLength; ++ii) {
 					if ( found = ((unsigned char) excludeSet.At(ii) == c) ) {
 						break;
 					}
@@ -727,8 +725,10 @@ long String::ContainsCharAbove(unsigned highMark, const String excludeSet)
 String &String::ToLower()
 {
 	if (GetImpl()) {
-		for (char *s = GetContent(); *s; s++) {
+		char *s = GetContent();
+		while ( *s ) {
 			*s = tolower(*s);
+			++s;
 		}
 	}
 	return *this;
@@ -737,8 +737,10 @@ String &String::ToLower()
 String &String::ToUpper()
 {
 	if (GetImpl()) {
-		for (char *s = GetContent(); *s; s++) {
+		char *s = GetContent();
+		while ( *s ) {
 			*s = toupper(*s);
+			++s;
 		}
 	}
 	return *this;
@@ -773,9 +775,10 @@ ostream &String::IntPrintOn(ostream &os, const char quote) const
 	if (quote) {
 		os.put(quote);
 		// iterate the string and look for characters to mask
-		for ( long i = 0; i < Length(); i ++) {
-			unsigned char c = At(i);
-			if (! isprint( (unsigned char) c)) { // http server doesn't like / unencoded in path expressions
+		unsigned char c = '\0';
+		for ( long i = 0, sz = Length(); i < sz; ++i) {
+			c = At(i);
+			if ( !isprint(c) ) { // http server doesn't like / unencoded in path expressions
 				// use hex \0x20 rep: PS' simple converter
 				os.put('\\');
 				if (c == '\n') {
@@ -794,7 +797,7 @@ ostream &String::IntPrintOn(ostream &os, const char quote) const
 				}
 				os.put(c);
 			}
-		} // for
+		}
 		os.put(quote);
 	} else {
 		// no quoting, keep fingers crossed that no special chars are
@@ -893,14 +896,14 @@ long String::IntReadFrom(istream &is, const char quote)
 				// PS: post CR for safe \r\n handling in strings
 				else if ('\r' == c) {
 					// need to check for masked \r\n sequences
-					newlinecounter++;
+					++newlinecounter;
 					is.get(c);
 					if ('\n' != c) {
 						is.putback(c);    // do not ignore it.
 					}
 				} else if (c == '\n') {
 					// a masked newline is ignored, take it as a continuation line
-					newlinecounter++;
+					++newlinecounter;
 				} else {
 					// unknown stuff take it literally
 					this->Append('\\');
@@ -955,7 +958,7 @@ String &String::AppendAsHex(unsigned char cc)
 
 String &String::AppendAsHex(const unsigned char *cc, long len, char delimiter)
 {
-	for (long i = 0; i < len; i++) {
+	for (long i = 0; i < len; ++i) {
 		AppendAsHex(cc[i]);
 		if ( (delimiter != '\0') && (i + 1 < len) ) {
 			Append(delimiter);
@@ -1054,7 +1057,10 @@ String String::Add(const String &s) const
 
 //---- StringTokenizer ---------------------------------------------------------
 StringTokenizer::StringTokenizer(const char *s, char delimiter)
-	: fString(s), fTokEnd(fString), fDelimiter(delimiter), fLength((s) ? (long)strlen(s) : -1L)
+	: fString(s)
+	, fTokEnd(fString)
+	, fDelimiter(delimiter)
+	, fLength((s) ? (long)strlen(s) : -1L)
 {
 }
 
@@ -1064,20 +1070,19 @@ bool StringTokenizer::NextToken(String &token)
 
 	if ( (fLength > 0) && (fTokEnd <= fString + fLength) ) {
 		// still got something to work with
-
 		const char *tokStart = fTokEnd;
 		while (*(fTokEnd) != '\0' && *fTokEnd != fDelimiter) {
-			fTokEnd++;
+			++fTokEnd;
 		}
 
 		if (*(fTokEnd) == fDelimiter) {
 			// found delimiter
 			token = String(tokStart, (fTokEnd - tokStart));
-			fTokEnd++;		// start of next token
+			++fTokEnd;		// start of next token
 		} else {
 			// no delimiter... whole string is the token
 			token = String(tokStart);
-			fTokEnd++;
+			++fTokEnd;
 		}
 		return true;
 	} else {
@@ -1092,7 +1097,7 @@ String StringTokenizer::GetRemainder(bool boIncludeDelim)
 	if (boIncludeDelim) {
 		const char *tokStart = fTokEnd;
 		if (tokStart > fString) {
-			tokStart--;
+			--tokStart;
 		}
 		return String(tokStart);
 	} else {
@@ -1131,7 +1136,7 @@ String StringTokenizer2::GetRemainder(bool boIncludeDelim)
 	long start = fPos;
 	if (boIncludeDelim) {
 		if (start > 0) {
-			start--;
+			--start;
 		}
 		return fString.SubString(start);
 	} else {
@@ -1147,7 +1152,7 @@ bool StringTokenizer2::HasMoreTokens(long start, long &end)
 	const char *delims = (const char *)fDelimiters;
 	long l = fString.Length();
 	while (end < l && strchr(delims, fString[end]) == 0) {
-		end++;
+		++end;
 	}
 	return start < l;
 }
@@ -1264,7 +1269,7 @@ unsafe_ostream &operator<<(unsafe_ostream &os, const String &s)
 		size_t padlen = width - len;
 		char c = os.fill();
 
-		while (padlen--) {
+		while (--padlen >= 0) {
 			os.put(c);
 		}
 		os.width(0); // the iostream documentation states this behaviour
@@ -1297,7 +1302,7 @@ ostream &operator<<(ostream &os, const String &s)
 		size_t padlen = width - len;
 		char c = os.fill();
 
-		while (padlen--) {
+		while ( --padlen >= 0 ) {
 			os.put(c);
 		}
 		os.width(0); // the iostream documentation states this behaviour

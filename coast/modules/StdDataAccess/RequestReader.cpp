@@ -37,7 +37,7 @@ bool RequestReader::ReadLine(iostream &Ios, String &line, const Anything &client
 	while ( Ios.get(c).good() ) {
 		// read in characterwise
 		line << c;
-		counter++;
+		++counter;
 		// error handling
 		if ( ((counter > maxLineSz)) && !CheckReqLineSize(Ios, line.Length(), line, clientInfo)) {
 			Trace("Error in read line '" << line << "'");

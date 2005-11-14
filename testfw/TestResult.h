@@ -97,7 +97,7 @@ inline void TestResult::addSuccess (TestLocation *loc)
 // Informs the result that a test will be started.
 inline void TestResult::startTest (Test *test)
 {
-	fRunTests++;
+	++fRunTests;
 	fTimer.Start();
 }
 

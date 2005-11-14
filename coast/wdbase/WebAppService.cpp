@@ -121,14 +121,14 @@ void WebAppService::ExtractPostBodyFields(Anything &query, const Anything &reque
 
 	Anything reqBody = requestBody;
 	long sz = reqBody.GetSize();
-	for (long i = 0; i < sz; i++) {
+	for (long i = 0; i < sz; ++i) {
 		String fieldName = reqBody[i]["header"]["CONTENT-DISPOSITION"]["NAME"].AsString();
 		if (fieldName != "") {
 			if (reqBody[i]["body"].GetSize() == 1) {
 				query[fieldName] = reqBody[i]["body"][0L];
 			} else {
 				long ssz = reqBody[i]["body"].GetSize();
-				for (long ii = 0; ii < ssz; ii++) {
+				for (long ii = 0; ii < ssz; ++ii) {
 					query[fieldName].Append(reqBody[i]["body"][ii]);
 				}
 			}
@@ -167,7 +167,7 @@ void WebAppService::DecodeWDQuery(Anything &query, const Anything &request)
 void WebAppService::Add2Query(Anything &query, const Anything &queryItems, bool overwrite)
 {
 	StartTrace(WebAppService.Add2Query);
-	for (long i = 0; i < queryItems.GetSize(); i++) {
+	for (long i = 0, sz = queryItems.GetSize(); i < sz; ++i) {
 		const char *slotname = queryItems.SlotName(i);
 		if ( slotname ) {
 			if (overwrite || !query.IsDefined(slotname)) {

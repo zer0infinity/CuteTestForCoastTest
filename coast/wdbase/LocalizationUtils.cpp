@@ -62,14 +62,14 @@ void LocalizationUtils::BuildLanguageMap(Context &context)
 {
 	StartTrace(LocalizationUtils.BuildLanguageMap);
 	ROAnything langKeyMap = context.Lookup("LanguageKeyMap");
-	for ( long i = 0; i < langKeyMap.GetSize(); i++) {
+	for ( long i = 0, sz = langKeyMap.GetSize(); i < sz; ++i) {
 		const char *lang = langKeyMap.SlotName(i);
 		ROAnything languages = langKeyMap[i];
-		for ( long j = 0; j < languages.GetSize(); j++) {
+		for ( long j = 0, szl = languages.GetSize(); j < szl; ++j) {
 			fgLanguageMap[ languages[j].AsCharPtr("") ] = lang;
-		} // for
-	} // for
-} // BuildLanguageMap
+		}
+	}
+}
 
 const char *LocalizationUtils::FindLanguageKey(Context &c, const char *dftLang)
 {
@@ -80,7 +80,7 @@ const char *LocalizationUtils::FindLanguageKey(Context &c, const char *dftLang)
 	Anything env = c.GetEnvStore();
 	Anything header = env["header"];
 	TraceAny(header, "header");
-	long i = 0;
+	long i = 0, sz = 0;
 
 	ROAnything langKeyMap = c.Lookup("LanguageKeyMap");
 	TraceAny(langKeyMap, "LanguageKeyMap");
@@ -97,7 +97,7 @@ const char *LocalizationUtils::FindLanguageKey(Context &c, const char *dftLang)
 		}
 		// accesses to fgLanguageMap will always encounter the initialized fgLanguageMap
 		Anything languages = header["ACCEPT-LANGUAGE"];
-		for ( i = 0; i < languages.GetSize(); i++) {
+		for ( i = 0, sz = languages.GetSize(); i < sz; ++i) {
 			if ( fgLanguageMap.IsDefined(languages[i].AsCharPtr("") ) ) {
 				Trace("returning language [" << fgLanguageMap[languages[i].AsCharPtr("")].AsCharPtr("") << "]");
 				return fgLanguageMap[languages[i].AsCharPtr("")].AsCharPtr("");

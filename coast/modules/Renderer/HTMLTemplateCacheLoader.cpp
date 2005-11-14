@@ -99,7 +99,7 @@ void HTMLTemplateCacheBuilder::BuildCache(const Anything &config)
 		CacheDir(filepath, cache, &htcl, langDirMap, fileNameMap);
 
 		// search over localized dirs
-		for ( long j = 0; j < langDirMap.GetSize(); j++) {
+		for ( long j = 0, sz = langDirMap.GetSize(); j < sz; ++j) {
 			//reset filepath
 			filepath = rootDir;
 			filepath << System::Sep() << templateDir;
@@ -128,7 +128,7 @@ void HTMLTemplateCacheBuilder::CacheDir(const char *filepath, CacheHandler *cach
 	String fileKey;
 
 	// process all files
-	for ( long i = 0; i < fileList.GetSize(); i++ ) {
+	for ( long i = 0, sz = fileList.GetSize(); i < sz; ++i ) {
 		const char *file = fileList[i].AsCharPtr("");
 		fileKey << filepath << System::Sep() << file;
 		// smothen path not to load relative-path files more than once
@@ -136,7 +136,7 @@ void HTMLTemplateCacheBuilder::CacheDir(const char *filepath, CacheHandler *cach
 		// ignore results, they are stored in the cachehandler anyway
 		cache->Load("HTML", fileKey, htcl);
 		// store away the name,langKey to fileKey mapping
-		for (long j = 0; j < langDirMap.GetSize(); j++) {
+		for (long j = 0, szl = langDirMap.GetSize(); j < szl; ++j) {
 			const char *langKey = langDirMap.SlotName(j);
 			fileNameMap[file][langKey] = fileKey;
 		}
@@ -154,7 +154,7 @@ void HTMLTemplateCacheBuilder::CacheDir(const char *filepath, CacheHandler *cach
 	String fileKey;
 
 	// process all files
-	for ( long i = 0; i < fileList.GetSize(); i++ ) {
+	for ( long i = 0, sz = fileList.GetSize(); i < sz; ++i ) {
 		const char *file = fileList[i].AsCharPtr("");
 		fileKey << filepath << System::Sep() << file;
 		// smothen path not to load relative-path files more than once

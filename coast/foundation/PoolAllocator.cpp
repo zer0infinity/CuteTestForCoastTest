@@ -76,12 +76,11 @@ void PoolAllocator::Initialize()
 	// initialize data structures used by the allocator
 	long sz = 16;
 
-	for (long i = 0; i < (long)fNumOfPoolBucketSizes; i++) {
+	for (long i = 0; i < (long)fNumOfPoolBucketSizes; ++i) {
 		fPoolBuckets[i].fSize = sz;
 		fPoolBuckets[i].fUsableSize = sz - MemoryHeader::AlignedSize();	// optimization
 		fPoolBuckets[i].fFirstFree = NULL;
-
-		sz *= 2;
+		sz <<= 1;
 	}
 	fPoolBuckets[fNumOfPoolBucketSizes].fSize = 0;
 	fPoolBuckets[fNumOfPoolBucketSizes].fFirstFree = ((char *)fPoolMemory) + fAllocSz;
@@ -183,7 +182,7 @@ void *PoolAllocator::Alloc(u_long allocSize)
 				// try to split a larger bucket
 				PoolBucket *requestedBucket = bucket;
 				while ( bucket && !bucket->fFirstFree ) {
-					bucket++;    // get next larger available bucket
+					++bucket; 		// get next larger available bucket
 				}
 
 				if ( bucket && bucket->fFirstFree && bucket->fSize > 0 ) {
@@ -194,7 +193,7 @@ void *PoolAllocator::Alloc(u_long allocSize)
 					char *buketEnd = ((char *)mh) + requestedBucket->fSize * nbuckets;
 					Assert((char *)mh + mh->fSize + MemoryHeader::AlignedSize() == buketEnd);
 
-					for (long i = 0; i < nbuckets; i++) {
+					for (long i = 0; i < nbuckets; ++i) {
 						// create new buckets of requested size
 						mh = MakeHeaderFromBucket(requestedBucket, buketEnd);
 						buketEnd -= requestedBucket->fSize;
@@ -256,8 +255,9 @@ void PoolAllocator::InsertFreeHeaderIntoBucket(MemoryHeader *mh, PoolBucket *buc
 PoolBucket *PoolAllocator::FindBucketBySize( u_long allocSize)
 {
 	// find smallest bucket suitable to store allocSize
-	for (u_long order = 0; order < fNumOfPoolBucketSizes; order++) {
-		if (fPoolBuckets[order].fSize >= allocSize ) { // yeah it fits
+	for (u_long order = 0; order < fNumOfPoolBucketSizes; ++order) {
+		if (fPoolBuckets[order].fSize >= allocSize ) {
+			// yeah it fits
 			return fPoolBuckets + order;
 		}
 	}

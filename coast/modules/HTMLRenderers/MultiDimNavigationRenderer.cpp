@@ -98,9 +98,9 @@ void MultiDimNavigationRenderer::RenderAll(ostream &reply, Context &c, const ROA
 	long columnNrMax = eltsProLine.AsLong(1);
 
 	reply << "<table border=" << borderWidth << " cellpadding=" << cellpadding << " cellspacing=" << cellspacing <<  " width=\"" << tableWidth << "%\">";
-	for ( long lineNr = 0; lineNr < lineNrMax; lineNr++ ) {
+	for ( long lineNr = 0; lineNr < lineNrMax; ++lineNr ) {
 		reply << "<tr>";
-		for ( long columnNr = 0; columnNr < columnNrMax; columnNr++ ) {
+		for ( long columnNr = 0; columnNr < columnNrMax; ++columnNr ) {
 			reply << "<td align=center ";
 			if (tdBGColor.Length()) {
 				reply << "BGColor=\"" <<  tdBGColor << "\" ";

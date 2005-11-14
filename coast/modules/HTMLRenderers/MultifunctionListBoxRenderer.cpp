@@ -615,7 +615,7 @@ void MultifunctionListBoxRenderer::RenderBoxRow(ostream &reply, Context &c, cons
 					}
 					if (bHasOptions) {
 						TraceAny(rendererConfig["Options"], "options before");
-						for (long i = 0; i < roOptions.GetSize(); i++) {
+						for (long i = 0, sz = roOptions.GetSize(); i < sz; ++i) {
 							Trace("appending at [" << roOptions.SlotName(i) << "]");
 							TraceAny(roOptions[i], "content:");
 							rendererConfig["Options"][roOptions.SlotName(i)] = roOptions[i].DeepClone();
@@ -646,7 +646,7 @@ void MultifunctionListBoxRenderer::RenderColumnInputFields(ostream &reply, Conte
 		if (config.IsDefined("ColList") && Lookup(config["ColList"], c, config, theList)) {
 			// check if editable fields should be rendered
 			bool bExist = false;
-			for (long lx = 0; lx < theList.GetSize(); lx++) {
+			for (long lx = 0L, sz = theList.GetSize(); lx < sz; ++lx) {
 				bool bHidden = MultifunctionListBoxRenderer::IsHiddenField(c, theList[lx]);
 				bool bEditable = MultifunctionListBoxRenderer::IsEditableField(c, theList[lx]);
 				bool bPulldown =  MultifunctionListBoxRenderer::IsPulldownField(c, theList[lx]);
@@ -1288,20 +1288,20 @@ void MultifunctionListBoxRenderer::RenderNavigation(ostream &reply, Context &c, 
 			// take order of buttons according to definition in config
 			String strButtonName;
 			Anything anyAllButtonNames;
-			long lIdx = 0;
-			anyAllButtonNames[lIdx++] = "PrevButton";
-			anyAllButtonNames[lIdx++] = "NextButton";
-			anyAllButtonNames[lIdx++] = "SearchButton";
-			anyAllButtonNames[lIdx++] = "ClearButton";
-			anyAllButtonNames[lIdx++] = "PrintButton";
-			anyAllButtonNames[lIdx++] = "SaveButton";
-			anyAllButtonNames[lIdx++] = "ResetButton";
-			anyAllButtonNames[lIdx++] = "AddButton";
-			anyAllButtonNames[lIdx++] = "DeleteButton";
-			anyAllButtonNames[lIdx++] = "ExportButton";
+			long lIdx = -1;
+			anyAllButtonNames[++lIdx] = "PrevButton";
+			anyAllButtonNames[++lIdx] = "NextButton";
+			anyAllButtonNames[++lIdx] = "SearchButton";
+			anyAllButtonNames[++lIdx] = "ClearButton";
+			anyAllButtonNames[++lIdx] = "PrintButton";
+			anyAllButtonNames[++lIdx] = "SaveButton";
+			anyAllButtonNames[++lIdx] = "ResetButton";
+			anyAllButtonNames[++lIdx] = "AddButton";
+			anyAllButtonNames[++lIdx] = "DeleteButton";
+			anyAllButtonNames[++lIdx] = "ExportButton";
 			TraceAny(navigationConfig, "navigationConfig");
 			// render buttons specified in config
-			for (long szButtons = 0; szButtons < navigationConfig.GetSize(); szButtons++) {
+			for (long szButtons = 0, szb = navigationConfig.GetSize(); szButtons < szb; ++szButtons) {
 				strButtonName = navigationConfig.SlotName(szButtons);
 				Trace("rendering specified button [" << strButtonName << "]");
 				DoRenderButton(reply, c, navigationConfig, config, strButtonName);
@@ -1405,7 +1405,7 @@ void MultifunctionListBoxRenderer::RenderScripts(ostream &reply, Context &c, con
 
 		long lHiddenOffset = 0L;
 		String strColumnSize, strColumnAlign, strColumnIntName, strColumnKeys, strColumnName;
-		for (long lx = 0; lx < theList.GetSize(); lx++) {
+		for (long lx = 0, sz = theList.GetSize(); lx < sz; ++lx) {
 			bool bHidden = MultifunctionListBoxRenderer::IsHiddenField(c, theList[lx]);
 			bool bEditable = MultifunctionListBoxRenderer::IsEditableField(c, theList[lx]);
 			bool bPulldown = MultifunctionListBoxRenderer::IsPulldownField(c, theList[lx]);
@@ -1491,7 +1491,7 @@ void MultifunctionListBoxRenderer::RenderScripts(ostream &reply, Context &c, con
 				}
 			} else {
 				// this is needed as correction to the field index if we have hidden fields
-				lHiddenOffset++;
+				++lHiddenOffset;
 			}
 		}
 
@@ -1726,7 +1726,7 @@ void MultifunctionListBoxRenderer::RenderPrintScripts(ostream &reply, Context &c
 		TraceAny(theList, "theList");
 		reply << "	winPrintPreview.document.writeln('<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#000000\"><tr><td>');\n";
 		reply << "	winPrintPreview.document.writeln('<table border=\"0\" cellspacing=\"1\" cellpadding=\"3\" bgcolor=\"#FFFF99\" class=\"ListingHeaderBorder\"><tr>');\n";
-		for (long lx = 0; lx < theList.GetSize(); lx++) {
+		for (long lx = 0, sz = theList.GetSize(); lx < sz; ++lx) {
 			String strName;
 			RenderOnString(strName, c, theList[lx]["Name"]);
 			String strClass = (0 == lx) ? "\"ListingHeaderTableCellName\"" : "\"ListingHeaderTableCellNameLR\"";
@@ -2094,7 +2094,7 @@ void ColumnInputFieldRenderer::AppendAny(const ROAnything &roaSource, Anything &
 {
 	StartTrace(ColumnInputFieldRenderer.AppendAny);
 	TraceAny(anyDest, "anything before");
-	for (long i = 0; i < roaSource.GetSize(); i++) {
+	for (long i = 0, sz = roaSource.GetSize(); i < sz; ++i) {
 		Trace("appending at [" << roaSource.SlotName(i) << "]");
 		TraceAny(roaSource[i], "content:");
 		anyDest[roaSource.SlotName(i)] = roaSource[i].DeepClone();

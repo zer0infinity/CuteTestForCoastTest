@@ -92,7 +92,7 @@ void HTTPProcessor::SetWDClientInfo(Context &ctx)
 {
 	Anything args(ctx.GetRequest());
 	long sz = args["ClientInfo"].GetSize();
-	for (long i = 0; i < sz; i++) {
+	for (long i = 0; i < sz; ++i) {
 		args["env"]["header"][args["ClientInfo"].SlotName(i)] = args["ClientInfo"][i];
 	}
 	args["env"]["header"]["REMOTE-ADDR"] = args["ClientInfo"]["REMOTE_ADDR"].AsCharPtr("localhost");

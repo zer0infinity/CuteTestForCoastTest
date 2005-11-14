@@ -56,7 +56,7 @@ int ThreadPoolManager::Start(bool usePoolStorage, int poolStorageSize, int numOf
 {
 	StartTrace(ThreadPoolManager.Start);
 	if ( GetPoolSize() > 0 ) {
-		for (long i = 0; i < GetPoolSize(); i++) {
+		for (long i = 0, sz = GetPoolSize(); i < sz; ++i) {
 			Thread *t = DoGetThread(i);
 			if ( t ) {
 				Allocator *pAlloc = Storage::Global();
@@ -124,7 +124,7 @@ int ThreadPoolManager::DoTerminate(long lWaitToTerminate)
 {
 	StartTrace(ThreadPoolManager.DoTerminate);
 	int result = 0, iSign = 1;
-	for (long i = 0; i < GetPoolSize(); i++) {
+	for (long i = 0, sz = GetPoolSize(); i < sz; ++i) {
 		Thread *lt = (Thread *)DoGetThread(i);
 		if ( !lt ) {
 			SYSERROR("could not get Thread at position " << i);
@@ -132,7 +132,7 @@ int ThreadPoolManager::DoTerminate(long lWaitToTerminate)
 		} else {
 			// count only the non-terminated threads
 			if ( !lt->Terminate(lWaitToTerminate) ) {
-				result++;
+				++result;
 				SYSERROR("Termination of thread[" << i << "] failed!");
 				Trace("Termination of thread[" << i << "] failed!");
 			}
@@ -153,12 +153,12 @@ void ThreadPoolManager::Update(Thread *t, ROAnything roaStateArgs)
 		TraceAny(roaStateArgs, "state event received");
 		switch ( roaStateArgs["ThreadState"]["New"].AsLong(-1)) {
 			case Thread::eTerminated:
-				fRunningThreads--;
+				--fRunningThreads;
 				break;
 
 			case Thread::eRunning:
-				fStartedThreads++;
-				fRunningThreads++;
+				++fStartedThreads;
+				++fRunningThreads;
 				break;
 			case Thread::eCreated:
 			case Thread::eStartRequested:
@@ -184,7 +184,7 @@ bool ThreadPoolManager::DoAllocPool(long poolSize, ROAnything roaThreadArgs)
 {
 	StartTrace(ThreadPoolManager.DoAllocPool);
 
-	for (long i = 0; i < poolSize; i++) {
+	for (long i = 0; i < poolSize; ++i) {
 		Thread *t = DoAllocThread(DoGetConfig(i, roaThreadArgs));
 		if (!t) {
 			Trace("Alloc of thread[" << i << "] failed");
@@ -199,7 +199,7 @@ bool ThreadPoolManager::InitPool(ROAnything roaThreadArgs)
 {
 	StartTrace(ThreadPoolManager.InitPool);
 	TraceAny(roaThreadArgs, "roaThreadArgs");
-	for (long i = 0; i < GetPoolSize(); i++) {
+	for (long i = 0, sz = GetPoolSize(); i < sz; ++i) {
 		Thread *t = DoGetThread(i);
 		if ( !t ) {
 			SYSWARNING("could not allocate thread[" << i << "]");
@@ -217,7 +217,7 @@ bool ThreadPoolManager::InitPool(ROAnything roaThreadArgs)
 void ThreadPoolManager::DoDeletePool()
 {
 	StartTrace(ThreadPoolManager.DoDeletePool);
-	for (long i = GetPoolSize() - 1; i >= 0; i--) {
+	for (long i = GetPoolSize() - 1; i >= 0; --i) {
 		Thread *t = DoGetThread(i);
 		fThreadPool.Remove(i);
 		delete t;
@@ -350,7 +350,7 @@ bool WorkerPoolManager::Terminate(long secs)
 	bool success = true;
 	if (!fTerminated) {
 		Trace("i am still not terminated, have to Terminate " << fPoolSize << " workers with timeout " << secs << "s");
-		for (long i = 0; i < fPoolSize; i++) {
+		for (long i = 0; i < fPoolSize; ++i) {
 			Trace("at worker " << i);
 			WorkerThread *hs = DoGetWorker(i);
 			success = (hs->Terminate(secs) && success);
@@ -392,7 +392,7 @@ int WorkerPoolManager::InitPool(bool usePoolStorage, long poolStorageSize, int n
 {
 	StartTrace(WorkerPoolManager.InitPool);
 	Trace("fPoolSize = " << fPoolSize);
-	for (long i = 0; i < fPoolSize; i++) {
+	for (long i = 0; i < fPoolSize; ++i) {
 		Trace("initializing worker number " << i << usePoolStorage ? "with pool allocator" : "with global allocator");
 		WorkerThread *wt = DoGetWorker(i);
 		Trace("got worker at " << long(wt));
@@ -450,7 +450,7 @@ void WorkerPoolManager::Update(Thread *pObserved, ROAnything aUpdateArgs)
 		TraceAny(aUpdateArgs, "state event received");
 		switch ( aUpdateArgs["RunningState"]["New"].AsLong(-1) ) {
 			case Thread::eReady:
-				fCurrentParallelRequests--;
+				--fCurrentParallelRequests;
 				Trace("Requests still running: " << fCurrentParallelRequests);
 				if (fStatEvtHandler) {
 					fStatEvtHandler->HandleStatEvt(WPMStatHandler::eLeave);
@@ -458,7 +458,7 @@ void WorkerPoolManager::Update(Thread *pObserved, ROAnything aUpdateArgs)
 				break;
 
 			case Thread::eWorking:
-				fCurrentParallelRequests++;
+				++fCurrentParallelRequests;
 				Trace("Requests now running: " << fCurrentParallelRequests);
 				if (fStatEvtHandler) {
 					fStatEvtHandler->HandleStatEvt(WPMStatHandler::eEnter);
@@ -521,7 +521,7 @@ bool WorkerPoolManager::AwaitEmpty(long sec)
 		fMutex.Unlock();						// unlock so other threads can check back
 		Thread::Wait(1);						// wait for 1 second
 		fMutex.Lock();							// reacquire the mutex
-		msgCount ++;
+		++msgCount;
 		if ((msgCount % 5) == 0) {
 			OStringStream os;
 			os << "MaxSecToWait: " << setw(4) << sec <<

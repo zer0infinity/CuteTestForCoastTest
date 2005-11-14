@@ -130,7 +130,7 @@ Application *Application::GetGlobalApplication(String &applicationName)
 		Anything applicationConf;
 
 		if (fgConfig.LookupPath(applicationConf, "Application") ) {
-			for (long i = 0; i < applicationConf.GetSize() && !application; i++) {
+			for (long i = 0, sz = applicationConf.GetSize() && !application; i < sz; ++i) {
 				// iterate over the applicationname list
 				applicationName = applicationConf[i].AsCharPtr(0);
 				if ( applicationName.Length() > 0 ) {

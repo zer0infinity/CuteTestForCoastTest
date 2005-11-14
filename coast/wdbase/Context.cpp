@@ -149,7 +149,7 @@ void Context::InitSession(Session *s)
 		// first handle pushed session because it might get deleted underway
 		fSession = s;
 		if (fSession) {
-			Trace("InitSession new s: About to   lock <" << fSession->GetId() << ">");
+			Trace("new s: About to   lock <" << fSession->GetId() << ">");
 			fSession->fMutex.Lock();
 			if (sessionIsDifferent) {
 				fSession->Ref();
@@ -158,7 +158,7 @@ void Context::InitSession(Session *s)
 			}
 			if (fCopySessionStore) {
 				fSessionStoreCurrent = fSession->GetStoreGlobal().DeepClone(fSessionStoreCurrent.GetAllocator());
-				Trace("InitSession new s: About to unlock <" << fSession->GetId() << ">");
+				Trace("new s: About to unlock <" << fSession->GetId() << ">");
 			} else {
 				fSessionStoreGlobal = fSession->GetStoreGlobal();
 			}
@@ -173,14 +173,14 @@ void Context::InitSession(Session *s)
 		if (saveSession) {
 			if (sessionIsDifferent) {
 				if (fUnlockSession) {
-					Trace("InitSession old s: About to lock <" << saveSession->GetId() << ">");
+					Trace("old s: About to lock <" << saveSession->GetId() << ">");
 					saveSession->fMutex.Lock();
 				}
 				saveSession->UnRef();
 				Trace("After saveSession->UnRef() id: [" << saveSession->GetId() <<
 					  "] refCount: [" << saveSession->GetRefCount() << "]");
 				if (fUnlockSession) {
-					Trace("InitSession old s: About to unlock <" << saveSession->GetId() << ">");
+					Trace("old s: About to unlock <" << saveSession->GetId() << ">");
 					saveSession->fMutex.Unlock();
 				}
 			}
@@ -368,7 +368,7 @@ bool Context::Pop()
 
 	if ( fStackSz > 0 ) {
 		fLookupStack.Remove(fStackSz);
-		fStackSz--;
+		--fStackSz;
 		fLookupStack[0L].Remove(fStackSz);
 		Trace("Stack[" << fStackSz << "]");
 		return true;
@@ -385,7 +385,7 @@ void Context::DoPush(const char *key, LookupInterface *li)
 		fLookupStack[0L].Append(key);
 		fLookupStack.Append((IFAObject *)li);
 		Trace("Stack[" << fStackSz << "]");
-		fStackSz++;
+		++fStackSz;
 	}
 }
 
@@ -538,7 +538,7 @@ long Context::FindIndex(const char *key) const
 	long result = -1;
 
 	if ( key ) {
-		for (long i = fStackSz - 1; i >= 0; i--) {
+		for (long i = fStackSz - 1; i >= 0; --i) {
 			if ( fLookupStack[0L][i] == key ) {
 				result = i;
 				break;
@@ -561,7 +561,7 @@ long Context::Remove(const char *key)
 	if ( index >= 0 ) {
 		fLookupStack.Remove(index + 1);
 		fLookupStack[0L].Remove(index);
-		fStackSz--;
+		--fStackSz;
 	}
 	TraceAny(fLookupStack, "Lookup Stack after");
 	return index;
@@ -650,7 +650,7 @@ bool Context::LookupObjects(const char *key, ROAnything &result, char delim, cha
 	StartTrace1(Context.LookupObjects, "key:<" << NotNull(key) << ">");
 
 	// iterate over objects backwards; sequence of push defines lookup sequence in reverse -> first pushed last searched
-	for (long i = fStackSz; i >= 1; i--) {
+	for (long i = fStackSz; i >= 1; --i) {
 		String searchObject(fLookupStack[0L][i-1].AsCharPtr("anon"));
 		Trace("searching[" << i - 1L << "]<" << searchObject << ">");
 		LookupInterface *li = (LookupInterface *)fLookupStack[i].AsIFAObject(0);

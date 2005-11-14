@@ -31,7 +31,7 @@ namespace ConversionUtils
 		long lValSize = sizeof(valueType);
 		Trace("value size:" << lValSize);
 		lValue = 0;
-		for (long lIdx = 0; lIdx < lValSize; lIdx++) {
+		for (long lIdx = 0; lIdx < lValSize; ++lIdx) {
 			switch ( order ) {
 				case eMSB2LSB:
 					Trace("MSB2LSB mode");

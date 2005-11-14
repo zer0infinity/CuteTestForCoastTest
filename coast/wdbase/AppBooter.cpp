@@ -88,7 +88,7 @@ AppBooter::~AppBooter()	{ }
 
 void AppBooter::HandleArgs(int argc, char *argv[], Anything &args )
 {
-	for (long i = 0; i < argc; i++) {
+	for (long i = 0; i < argc; ++i) {
 		URLUtils::Pair(argv[i], '=', args);
 	}
 }
@@ -190,7 +190,7 @@ void AppBooter::MergeConfigWithArgs(Anything &config, const Anything &args)
 	TraceAny(config, "config:");
 
 	// fill in command line arguments into the applications configuration
-	for (long i = 0; i < args.GetSize(); i++) {
+	for (long i = 0; i < args.GetSize(); ++i) {
 		String slot = args.SlotName(i);
 		if ( slot.Length() ) {
 			// store params at top level to allow overriding of Config.any settings
@@ -304,7 +304,7 @@ bool AppBooter::OpenLibs(const Anything &config)
 	if (config.LookupPath(libConfig, "DLL")) {
 		long sz = libConfig.GetSize();
 
-		for (long i = 0; i < sz; i++) {
+		for (long i = 0; i < sz; ++i) {
 			const char *dllName = libConfig[i].AsCharPtr(0);
 			if ( dllName ) {
 				Trace("opening DLL [" << dllName << "]");
@@ -332,7 +332,7 @@ bool AppBooter::CloseLibs()
 	long sz = fLibArray.GetSize();
 	TraceAny(fLibArray, "libraries");
 	bool ret = true;
-	for (long i = sz - 1; i >= 0; i--) {
+	for (long i = sz - 1; i >= 0; --i) {
 		Sys(DynLibLoader) dllLoader(fLibArray.SlotName(i), fLibArray[i].AsLong(0));
 		if ( !dllLoader.DLClose() ) {
 			// PS: we've got an error
@@ -360,7 +360,7 @@ Application *AppBooter::FindApplication(ROAnything config, String &applicationNa
 	Application *application = 0;
 
 	if (config.LookupPath(applicationConf, "Application") || config.LookupPath(applicationConf, "Server")  ) {
-		for (long i = 0; i < applicationConf.GetSize() && !application; i++) {
+		for (long i = 0, sz = applicationConf.GetSize() && !application; i < sz; ++i) {
 			// iterate over the applicationname list
 			applicationName = applicationConf[i].AsCharPtr(0);
 			if ( applicationName.Length() > 0 ) {

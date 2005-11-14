@@ -39,7 +39,7 @@ void HTTPHeaderRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnythin
 void HTTPHeaderRenderer::RenderHeader(ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(HTTPHeaderRenderer.RenderHeader);
-	for (long i = 0; i < config.GetSize(); i++) {
+	for (long i = 0, sz = config.GetSize(); i < sz; ++i) {
 		String slot = config.SlotName(i);
 		if (slot.Length() == 0) {
 			Renderer::Render(reply, ctx, config[i]);
@@ -61,7 +61,7 @@ void HTTPHeaderRenderer::RenderValues(ostream &reply, Context &ctx, const ROAnyt
 {
 	StartTrace(HTTPHeaderRenderer.RenderValues);
 	Render(reply, ctx, config[0L]);
-	for (long i = 1; i < config.GetSize(); i++) {
+	for (long i = 1, sz = config.GetSize(); i < sz; ++i) {
 		reply << ", ";
 		Renderer::Render(reply, ctx, config[i]);
 	}
@@ -70,7 +70,7 @@ void HTTPHeaderRenderer::RenderValues(ostream &reply, Context &ctx, const ROAnyt
 void HTTPHeaderRenderer::RenderMultipleLineHeaderField(ostream &reply, Context &ctx, const String &slot, const ROAnything &config)
 {
 	StartTrace(HTTPHeaderRenderer.RenderMultipleLineHeaderField);
-	for (long i = 0; i < config.GetSize(); i++) {
+	for (long i = 0, sz = config.GetSize(); i < sz; ++i) {
 		reply << slot << ": ";
 		Renderer::Render(reply, ctx, config[i]);
 		reply << ENDL;

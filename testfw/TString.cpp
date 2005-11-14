@@ -227,8 +227,8 @@ void TString::DumpAsHex(TString &outbuf, long dumpwidth) const
 		// set string width to TotalLen
 		TString tmpBuf;
 		tmpBuf.Set(0, 0, lTotalLen);
-		long x = 0L, l = 0L;
-		for (l = 0; l < Length(); l++, x++) {
+		long x = 0L, l = 0L, sz = 0;
+		for (l = 0, sz = Length(); l < sz; ++l, ++x) {
 			if (l % dumpwidth == 0) {
 				x = 0L;
 				if (l > 0) {
@@ -236,7 +236,7 @@ void TString::DumpAsHex(TString &outbuf, long dumpwidth) const
 					outbuf.Append(tmpBuf) << '\0';
 				}
 				// fill/clear the whole string with spaces
-				for (long q = 0L; q < lTotalLen; q++) {
+				for (long q = 0L; q < lTotalLen; ++q) {
 					tmpBuf.fCont[q] = ' ';
 				}
 			}
@@ -273,7 +273,7 @@ long TString::DiffDumpAsHex(TString &outbuf, const TString &strRight) const
 		tmpBuf.Set(0, 0, lTotalLen);
 		long x = 0L, l = 0L;
 		bool bEqual = true;
-		for (l = 0; l < maxLength; l++, x++) {
+		for (l = 0; l < maxLength; ++l, ++x) {
 			if (l % dumpwidth == 0) {
 				x = 0L;
 				if (l > 0) {
@@ -286,19 +286,19 @@ long TString::DiffDumpAsHex(TString &outbuf, const TString &strRight) const
 					tmpBuf.Set(0, "expected", -1);
 					l1 = tmpBuf.Length();
 					tmpBuf.Set(lWidth, " | ", -1);
-					for (q = l1; q < sepPos; q++) {
+					for (q = l1; q < sepPos; ++q) {
 						tmpBuf.fCont[q] = ' ';
 					}
 					tmpBuf.Set(rightOffset, "differences", -1);
 					l1 = tmpBuf.Length();
 					tmpBuf.Set(0, 0, lTotalLen);
-					for (q = l1; q < lTotalLen; q++) {
+					for (q = l1; q < lTotalLen; ++q) {
 						tmpBuf.fCont[q] = ' ';
 					}
 					outbuf.Append(tmpBuf) << LF;
 				}
 				// fill/clear the whole string with spaces
-				for (long q = 0L; q < lTotalLen; q++) {
+				for (long q = 0L; q < lTotalLen; ++q) {
 					tmpBuf.fCont[q] = ' ';
 				}
 				// add separator to string
@@ -379,7 +379,7 @@ unsafe_ostream &operator<<(unsafe_ostream &os, const TString &s)
 		size_t padlen = width - len;
 		char c = os.fill();
 
-		while (padlen--) {
+		while (--padlen >= 0) {
 			os.put(c);
 		}
 		os.width(0); // the iostream documentation states this behaviour
@@ -408,7 +408,7 @@ ostream &operator<<(ostream &os, const TString &s)
 		size_t padlen = width - len;
 		char c = os.fill();
 
-		while (padlen--) {
+		while (--padlen >= 0) {
 			os.put(c);
 		}
 		os.width(0); // the iostream documentation states this behaviour

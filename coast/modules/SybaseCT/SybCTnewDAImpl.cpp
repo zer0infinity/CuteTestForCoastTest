@@ -76,7 +76,7 @@ bool SybCTnewDAImpl::Init(ROAnything config)
 			fgListOfSybCT["Size"] = nrOfSybCTs;
 			fgpResourcesSema = new Semaphore(nrOfSybCTs);
 			String server, user;
-			for ( long i = 0; i < nrOfSybCTs; i++ ) {
+			for ( long i = 0; i < nrOfSybCTs; ++i ) {
 				SybCTnewDA *pCT = new SybCTnewDA(fg_cs_context);
 				DoPutbackConnection(pCT, false, server, user);
 			}
@@ -107,7 +107,7 @@ bool SybCTnewDAImpl::Finis()
 		fgInitialized = false;
 	}
 	if ( bInitialized ) {
-		for (long lCount = 0L; lCount < fgListOfSybCT["Size"].AsLong(0L) && fgpResourcesSema->Acquire(); lCount++) {
+		for (long lCount = 0L; lCount < fgListOfSybCT["Size"].AsLong(0L) && fgpResourcesSema->Acquire(); ++lCount) {
 			SybCTnewDA *pSyb = NULL;
 			bool bIsOpen = false;
 			String strServer, strUser;
@@ -143,10 +143,10 @@ bool SybCTnewDAImpl::IntGetOpen(SybCTnewDA *&pSyb, bool &bIsOpen, const String &
 			strToLookup << '.' << user;
 		}
 		Trace("Lookup name [" << strToLookup << "]");
-		for (long lIdx = 0; lIdx < anyTimeStamp.GetSize(); lIdx++) {
+		for (long lIdx = 0; lIdx < anyTimeStamp.GetSize(); ++lIdx) {
 			Anything anyTS(Storage::Global());
 			anyTS = anyTimeStamp[lIdx];
-			for (long lTimeSub = 0L; lTimeSub < anyTS.GetSize(); lTimeSub++) {
+			for (long lTimeSub = 0L; lTimeSub < anyTS.GetSize(); ++lTimeSub) {
 				if ( ( strToLookup.Length() <= 0 ) || strToLookup == anyTS[lTimeSub][1L].AsString() ) {
 					Trace("removing subentry :" << lIdx << ":" << lTimeSub);
 					anyEntry = anyTS[lTimeSub];

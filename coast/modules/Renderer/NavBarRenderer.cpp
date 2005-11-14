@@ -79,7 +79,7 @@ void NavBarRenderer::RenderLevel(ostream &reply, Context &c, const ROAnything &c
 	// Entries
 	Anything list = info["Entries"];
 	long size(list.GetSize());
-	for (int i = 0; (i < size); i++) {
+	for (int i = 0; (i < size); ++i) {
 		// prepare data for rendering
 		Anything entry = list[i];
 		tempStore[entryStoreName] = entry;

@@ -68,7 +68,7 @@ bool TimeLoggingAction::GenLogEntries(const String &entryPath, const ROAnything 
 	if ( entry.SlotName(0L) ) { // it is an anonymous array
 		// assume a substructure we traverse recursively
 		String path;
-		for (long i = 0; i < entriesSz; i++) {
+		for (long i = 0; i < entriesSz; ++i) {
 			if ( entryPath.Length() > 0 ) {
 				path = entryPath;
 				path << ".";
@@ -83,7 +83,7 @@ bool TimeLoggingAction::GenLogEntries(const String &entryPath, const ROAnything 
 		}
 	} else {
 		// assume an array of timing entries
-		for (long i = 0; i < entriesSz; i++) {
+		for (long i = 0; i < entriesSz; ++i) {
 			if (!GenLogEntry(entryPath, entry[i], ctx, channel)) {
 				return false;
 			}

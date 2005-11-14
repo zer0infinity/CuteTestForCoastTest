@@ -46,7 +46,7 @@ bool LFListenerPool::Init(int maxParallelRequests, ROAnything args, bool useThre
 	StartTrace(LFListenerPool.Init);
 	Anything leaderFollowerConfig;
 
-	for (long i = 0; i < args.GetSize(); i++) {
+	for (long i = 0; i < args.GetSize(); ++i) {
 		const char *acceptorName = args[i].AsCharPtr("AcceptorFactory");
 
 		Trace("AcceptorFactory: " << acceptorName);
@@ -197,7 +197,7 @@ bool RequestReactor::AwaitEmpty(long sec)
 			   (tstart + sec > tnow)) {	// check for timeout
 			Thread::Wait(1);				// wait for 1 second
 			tnow = time(0);					// calculate new time
-			msgCount++;						// message interval count
+			++msgCount;						// message interval count
 			if ((msgCount % 5) == 0) {      // tell us the story.
 				OStringStream os;
 				os << "MaxSecToWait: " << setw(4) << sec <<

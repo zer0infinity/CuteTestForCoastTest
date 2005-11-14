@@ -100,7 +100,7 @@ void TestRunner::run (int ac, char **av)
 		return;
 	} // if
 
-	for (int i = 1; i < ac; i++) {
+	for (int i = 1; i < ac; ++i) {
 		testCase = av [i];
 		testCase.ToUpper();
 		if ( testCase == "-H" ) {
@@ -111,13 +111,12 @@ void TestRunner::run (int ac, char **av)
 			continue;
 		} else if (testCase == "-LOG") {
 			if (i < ac - 1) {
-				i++;
-				setLogToFileNamed(av[i]);
+				setLogToFileNamed(av[++i]);
 			} // if
 			continue;
 		} else if (testCase == "-OUT") {
 			if (i < ac - 1) {
-				i++;
+				++i;
 				int outfile = open(av[i], O_RDWR | O_CREAT | O_TRUNC, 0660);
 				if (outfile > 0) {	// make it stdout
 					cout << "redirecting output to " << av[i] << endl;
@@ -131,7 +130,7 @@ void TestRunner::run (int ac, char **av)
 			continue;
 		} else if (testCase == "-ERR") {
 			if (i < ac - 1) {
-				i++;
+				++i;
 				int outfile = open(av[i], O_RDWR | O_CREAT | O_TRUNC, 0660);
 				if (outfile > 0) {	// make it stdout
 					cerr << "redirecting errors to " << av[i] << endl;

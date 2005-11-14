@@ -94,7 +94,7 @@ bool Role::CheckLevel(const String &queryRoleName) const
 	// first find out the level of the current Role
 	bLevelOK = queryRoleName.IsEqual(superName);
 	while (!bLevelOK && r && (r = (Role *)r->GetSuper())) {
-		lThisLevel++;
+		++lThisLevel;
 		r->GetName(superName);
 		if (queryRoleName.IsEqual(superName)) {
 			bLevelOK = true;
@@ -106,7 +106,7 @@ bool Role::CheckLevel(const String &queryRoleName) const
 	long lQueryLevel = 0L;
 	r = Role::FindRole(queryRoleName);
 	while (r && (r = (Role *)r->GetSuper())) {
-		lQueryLevel++;
+		++lQueryLevel;
 	}
 	Trace("query Role <" << queryRoleName << "> has Level " << lQueryLevel);
 #endif
@@ -131,7 +131,7 @@ void Role::PrepareTmpStore(Context &c)
 		Anything fields = query["fields"];
 		Anything tmpStore = c.GetTmpStore();
 
-		for (int i = 0; i < stateFullList.GetSize(); i++) {
+		for (int i = 0, szf = stateFullList.GetSize(); i < szf; ++i) {
 			const char *stateName = stateFullList[i].AsCharPtr(0);
 
 			if (stateName) {
@@ -235,7 +235,7 @@ void Role::CollectLinkState(Anything &stateIn, Context &c)
 	if (Lookup("StateFull", stateFullList)) {
 		Anything tmpStore = c.GetTmpStore();
 
-		for (int i = 0; i < stateFullList.GetSize(); i++) {
+		for (int i = 0, szf = stateFullList.GetSize(); i < szf; ++i) {
 			const char *stateName = stateFullList[i].AsCharPtr(0);
 			if (stateName) {
 				if (!stateIn.IsDefined(stateName) && tmpStore.IsDefined(stateName)) {

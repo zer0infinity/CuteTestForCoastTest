@@ -181,11 +181,11 @@ bool operator!=(const TString &s1, const char *s2)
 //!  (could be done faster with a table)
 inline void TString::ToUpper()
 {
-	for (long i = 0; i < Length(); i++) {
+	for (long i = 0, sz = Length(); i < sz; ++i) {
 		if (('a' <= fCont[i]) && (fCont[i] <= 'z')) {
 			fCont[i] = fCont[i] - 'a' + 'A';
-		} // if
-	} // for
-} // ToUpper
+		}
+	}
+}
 
 #endif

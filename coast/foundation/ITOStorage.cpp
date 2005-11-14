@@ -94,7 +94,7 @@ void MemTracker::SetId(long id)
 void MemTracker::TrackAlloc(u_long allocSz)
 {
 	fAllocated += allocSz;
-	fNumAllocs++;
+	++fNumAllocs;
 	fSizeAllocated += allocSz;
 	fMaxAllocated = itoMAX(fMaxAllocated, fAllocated);
 }
@@ -102,7 +102,7 @@ void MemTracker::TrackAlloc(u_long allocSz)
 void MemTracker::TrackFree(u_long allocSz)
 {
 	fAllocated -= allocSz;
-	fNumFrees++;
+	++fNumFrees;
 	fSizeFreed += allocSz;
 }
 

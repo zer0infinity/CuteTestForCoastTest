@@ -543,7 +543,7 @@ CS_RETCODE SybCTnewDA::DoFetchData(DaParams &params, CS_COMMAND *cmd, const CS_I
 	// If an error occurs within the for loop, a break is used to get out
 	// of the loop and the data that was allocated is free'd before
 	// returning.
-	for (i = 0; i < num_cols; i++) {
+	for (i = 0; i < num_cols; ++i) {
 		// Get the column description.  ct_describe() fills the
 		// datafmt parameter with a description of the column.
 		retcode = ct_describe(cmd, (i + 1), &datafmt[i]);
@@ -604,7 +604,7 @@ CS_RETCODE SybCTnewDA::DoFetchData(DaParams &params, CS_COMMAND *cmd, const CS_I
 	}
 	Trace("max number of rows to totally fetch: " << lMaxRows);
 
-	for (i = 0; i < num_cols; i++) {
+	for (i = 0; i < num_cols; ++i) {
 		Trace("processing column [" << datafmt[i].name << "]");
 		// Allocate memory for the column string
 		Trace("value mem: " << (long)num_rows << " rows with maxlength of " << (long)datafmt[i].maxlength << " bytes");
@@ -654,7 +654,7 @@ CS_RETCODE SybCTnewDA::DoFetchData(DaParams &params, CS_COMMAND *cmd, const CS_I
 		if ( ( res_type != CS_STATUS_RESULT ) && bTitlesOnce ) {
 			// put column name information
 			Anything temp;
-			for (long col = 0; col < num_cols; col++) {
+			for (long col = 0; col < num_cols; ++col) {
 				Trace("colname@" << col << " [" << datafmt[col].name << "]" );
 				temp[datafmt[col].name] = (long)col;
 			}
@@ -804,10 +804,10 @@ bool SybCTnewDA::DoFillResults(DaParams &params, CS_INT totalrows, CS_INT numrow
 	DAAccessTimer(SybCTnewDAImpl.DoFillResults, *(params.fpDAName), *(params.fpContext));
 
 	Trace("resultformat [" << (bTitlesOnce ? "TitlesOnce" : "TitlesAlways") << "]");
-	for (CS_INT row = 0; bRet && row < numrows; row++) {
+	for (CS_INT row = 0; bRet && row < numrows; ++row) {
 		// We have a row.  Loop through the columns displaying the column values.
 		Anything temp;
-		for (CS_INT col = 0; col < numcols; col++) {
+		for (CS_INT col = 0; col < numcols; ++col) {
 			if ( bTitlesOnce ) {
 				temp.Append( EX_GET_COLUMN_VALUE(coldata, row, col, colfmt) );
 			} else {
@@ -925,7 +925,7 @@ bool SybCTnewDA::PutMessages(DaParams &daParams, Anything &anyMessages)
 	StartTrace(SybCTnewDA.PutMessages);
 	bool bRet = false;
 	if ( daParams.fpOut != NULL && daParams.fpContext != NULL ) {
-		for (long lIdx = 0; lIdx < anyMessages.GetSize(); lIdx++) {
+		for (long lIdx = 0; lIdx < anyMessages.GetSize(); ++lIdx) {
 			String strSlotname = anyMessages.SlotName(lIdx);
 			TraceAny(anyMessages[lIdx], "Putting slot [" << strSlotname << "]");
 			(daParams.fpOut)->Put(strSlotname, anyMessages[lIdx], *(daParams.fpContext));

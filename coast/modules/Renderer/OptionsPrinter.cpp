@@ -30,7 +30,7 @@ void OptionsPrinter::RenderAll(ostream &reply, Context &c, const ROAnything &con
 	StartTrace(OptionsPrinter.Render);
 	TraceAny(config, "config");
 
-	for ( int i = 0; i < config.GetSize(); i++ ) {
+	for ( int i = 0, sz = config.GetSize(); i < sz; ++i ) {
 		String name = config.SlotName(i);
 		reply << ' ';
 		if ( name.Length() > 0 ) {

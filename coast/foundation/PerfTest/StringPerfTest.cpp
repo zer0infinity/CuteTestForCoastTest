@@ -49,7 +49,7 @@ void StringPerfTest::RunLoop(const char *str, const long iterations)
 {
 	DiffTimer dt;
 	String out;
-	for (long i = 0; i < iterations; i++) {
+	for (long i = 0; i < iterations; ++i) {
 		out << str;
 	}
 	long lDiff = dt.Diff();
@@ -61,7 +61,7 @@ void StringPerfTest::RunPreallocLoop(const char *str, const long iterations)
 {
 	DiffTimer dt;
 	String out(strlen(str)*iterations + 1);
-	for (long i = 0; i < iterations; i++) {
+	for (long i = 0; i < iterations; ++i) {
 		out << str;
 	}
 	long lDiff = dt.Diff();
@@ -74,7 +74,7 @@ void StringPerfTest::RunPoolAllocLoop(const char *str, const long iterations)
 	DiffTimer dt;
 	PoolAllocator p(1, ((strlen(str) + 16)*iterations * 3 / 1024), 21);
 	String out( &p );
-	for (long i = 0; i < iterations; i++) {
+	for (long i = 0; i < iterations; ++i) {
 		out << str;
 	}
 	long lDiff = dt.Diff();

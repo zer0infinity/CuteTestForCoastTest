@@ -38,7 +38,7 @@ void Base64::DoEncode(String &encStr, const String &str) const
 	long index = 0;
 
 	const char *buf = str;
-	for ( long i = 0; i < blocks; i++, index += 3 ) {
+	for ( long i = 0; i < blocks; ++i, index += 3 ) {
 		c1 = buf[index+0L];
 		c2 = buf[index+1L];
 		c3 = buf[index+2L];
@@ -82,7 +82,7 @@ bool Base64::DoDecode(String &str, const String &encStr) const
 	long remBytes = encStr.Length() % cBlockSize; // should be 0
 	long index = 0;
 
-	for ( long i = 0; i < blocks; i++, index += 4 ) {
+	for ( long i = 0; i < blocks; ++i, index += 4 ) {
 		cr1 = encStr[index+0L];
 		cr2 = encStr[index+1L];
 		cr3 = encStr[index+2L];

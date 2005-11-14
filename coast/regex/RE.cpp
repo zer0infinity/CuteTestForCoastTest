@@ -50,7 +50,7 @@ String RE::SimplePatternToFullRegularExpression(const String &pattern)
 {
 	StartTrace(RE.SimplePatternToFullRegularExpression);
 	String buf;
-	for (long i = 0; i < pattern.Length(); i++) {
+	for (long i = 0; i < pattern.Length(); ++i) {
 		char c = pattern[i];
 		switch (c) {
 			case '*':
@@ -244,7 +244,7 @@ long RE::MatchNodes(long firstNode, long lastNode, long idxStart)
 					 (fMatchFlags & DOT_MATCHES_NEWLINE) != DOT_MATCHES_NEWLINE)) {
 					return -1;
 				}
-				idx++;
+				++idx;
 				break;
 			case OP_ATOM: {
 				String atom = fProgram[node][RE::offsetOpdata].AsCharPtr();
@@ -277,7 +277,7 @@ long RE::MatchNodes(long firstNode, long lastNode, long idxStart)
 					Assert(cset); // internal error
 					return -1;
 				}
-				idx++;
+				++idx;
 				break;
 			}
 			case OP_BRANCH: {
@@ -365,7 +365,7 @@ bool RE::ContainedIn(const String &search, long i)
 	// Can we optimize the search by looking for a prefix string?
 	if (fPrefix.Length() <= 0) {
 		// Unprefixed matching must try for a match at each character
-		for ( ; fSearch.Length() > (i - 1); i++)        {
+		for ( ; fSearch.Length() > (i - 1); ++i) {
 			// Try a match at index i
 			if (MatchAt(i)) {
 				return true;
@@ -405,7 +405,7 @@ Anything RE::Split(const String &s)
 		long newpos = GetEndRegister(0);
 		if (newpos == pos) {
 			res.Append(s.SubString(pos, start + 1 - pos));
-			newpos++;
+			++newpos;
 		} else {
 			res.Append(s.SubString(pos, start - pos));
 		}
@@ -432,7 +432,7 @@ String RE::Subst(const String &substituteIn, const String &substitution, bool re
 		ret.Append(substitution);
 		long newpos = GetEndRegister(0);
 		if (newpos == pos) {
-			newpos++;
+			++newpos;
 		}
 		pos = newpos;
 		if (!replaceall) {
@@ -450,7 +450,7 @@ Anything RE::Grep(Anything search)
 	StartTrace(RE.Grep);
 	TraceAny(search, "input");
 	Anything res;
-	for (long i = 0; i < search.GetSize(); i++) {
+	for (long i = 0; i < search.GetSize(); ++i) {
 		String s = search[i].AsString();
 		if (ContainedIn(s)) {
 			const char *sname = search.SlotName(i);
@@ -469,7 +469,7 @@ Anything RE::GrepSlotNames(Anything search)
 	StartTrace(RE.GrepSlotNames);
 	TraceAny(search, "input");
 	Anything res;
-	for (long i = 0; i < search.GetSize(); i++) {
+	for (long i = 0; i < search.GetSize(); ++i) {
 		String s = search.SlotName(i);
 		if (ContainedIn(s)) {
 			if (s.Length() > 0) {

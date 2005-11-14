@@ -60,8 +60,7 @@ bool TitlesOnceColsAction::DoExecAction(String &transitionToken, Context &ctx, c
 
 	Anything list, tempStore = ctx.GetTmpStore();
 	long idxMax = listNameAny.GetSize(), seqNr = 0;
-	for ( long idx = 0L; idx < idxMax; idx++ ) {
-
+	for ( long idx = 0L; idx < idxMax; ++idx ) {
 		Anything any;
 		String intName = listNameAny[idx]["IntName"].AsString();
 		any[intName]["Lookup"] = ( String("SelectBoxOption:") <<  titlesListAny[ intName ].AsString() );

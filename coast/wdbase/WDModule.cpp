@@ -272,7 +272,7 @@ WDModule *ConfiguredWDMIterator::Next()
 {
 	String moduleName(fModules[fIndex][0L].AsCharPtr("NoModule"));
 	WDModule *wdm = WDModule::FindWDModule(moduleName);
-	(fForward) ? fIndex++ : fIndex--;
+	(fForward) ? ++fIndex : --fIndex;
 	if ( !wdm ) {
 		SysLog::WriteToStderr(moduleName << " not found.\n");
 	}

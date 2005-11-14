@@ -66,7 +66,7 @@ AllocatorUnref::~AllocatorUnref()
 		if (a) {
 #ifdef MEM_DEBUG
 			long lMaxCount = 3L;
-			while ( ( a->CurrentlyAllocated() > 0L ) && ( lMaxCount-- > 0L ) ) {
+			while ( ( a->CurrentlyAllocated() > 0L ) && ( --lMaxCount >= 0L ) ) {
 				// give some 20ms slices to finish everything
 				// it is in almost every case Trace-logging when enabled
 				// normally only used in opt-wdbg or dbg mode
@@ -230,7 +230,7 @@ void Thread::NotifyAll(Anything evt)
 	SimpleMutexEntry me(fObserversMutex);
 	me.Use();
 
-	for (long i = 0; i < fObservers.GetSize(); i++) {
+	for (long i = 0, sz = fObservers.GetSize(); i < sz; ++i) {
 		ThreadObserver *to = (ThreadObserver *)fObservers[i].AsIFAObject(0);
 		if (to) {
 			to->Update(this, evt);
@@ -586,13 +586,13 @@ void Thread::IntRun()
 	if (SetState(eRunning)) {
 		{
 			SimpleMutexEntry me(fgNumOfThreadsMutex);
-			fgNumOfThreads++;
+			++fgNumOfThreads;
 		}
 		// do the real work
 		Run();
 		{
 			SimpleMutexEntry me(fgNumOfThreadsMutex);
-			fgNumOfThreads--;
+			--fgNumOfThreads;
 		}
 	} else {
 		Trace("SetState(eRunning) failed MyId(" << MyId() << ") GetId( " << (long)GetId() << ")" );
@@ -657,7 +657,7 @@ bool Thread::CleanupThreadStorage()
 
 	Anything *handlerList = 0;
 	if (GETTLSDATA(fgCleanerKey, handlerList, Anything) && handlerList) {
-		for (long i = (handlerList->GetSize() - 1); i >= 0; i--) {
+		for (long i = (handlerList->GetSize() - 1); i >= 0; --i) {
 			CleanupHandler *handler = (CleanupHandler *)((*handlerList)[i].AsIFAObject(0));
 			if (handler) {
 				handler->DoCleanup();
@@ -956,14 +956,14 @@ bool Mutex::TryLock() {
 		if (lCount == 0) {
 			// mutex acquired for the first time
 			fLocker = Thread::MyId();
-			lCount++;
+			++lCount;
 			SetCount(lCount);
 #ifdef TRACE_LOCKS_IMPL
 			SysLog::WriteToStderr(String("[") << fName << " Id " << GetId() << "]<" << GetCount() << "," << fLocker << "> TL" << "\n");
 #endif
 		} else {
 			// consecutive acquire
-			lCount += 1;
+			++lCount;
 			SetCount(lCount);
 			UNLOCKMUTEX(fMutex);
 #ifdef TRACE_LOCKS_IMPL

@@ -114,7 +114,7 @@ bool CopyQueryIfNotEmptyAction::DoExecAction(String &transitionToken, Context &c
 	char indexdelim = config["IndexDelim"].AsCharPtr(":")[0L];
 
 	long sz = copyList.GetSize();
-	for (long i = 0; i < sz; i++) {
+	for (long i = 0; i < sz; ++i) {
 		String sourceSlot = copyList.SlotName(i);
 		Anything content;
 		if ( sourceSlot && query.LookupPath(content, sourceSlot, delim, indexdelim) && content.AsString().Length() ) {

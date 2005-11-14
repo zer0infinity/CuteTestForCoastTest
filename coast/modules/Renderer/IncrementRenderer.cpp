@@ -40,7 +40,7 @@ void IncrementRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &
 		TraceAny(conv, "string ready for conversion to long");
 		long val = conv.AsLong();
 		Trace("IncValue as long  is :" << val);
-		val++;
+		++val;
 		Trace("IncValue as long incremented is :" << val);
 		Anything conv2 = Anything( val );
 		TraceAny(conv2, "number ready for conversion to String");

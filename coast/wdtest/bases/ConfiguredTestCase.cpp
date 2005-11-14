@@ -75,7 +75,7 @@ void ConfiguredTestCase::PutInStore(const Anything &source, Anything &dest)
 	StartTrace(ConfiguredTestCase.PutInStore);
 
 	long sz = source.GetSize();
-	for (long i = 0; i < sz; i++) {
+	for (long i = 0; i < sz; ++i) {
 		dest[source.SlotName(i)] = source[i].DeepClone();
 	}
 }

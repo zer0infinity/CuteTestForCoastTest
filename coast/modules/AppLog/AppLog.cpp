@@ -73,7 +73,7 @@ bool AppLogModule::Init(const Anything &config)
 		Trace("raw LogDir [" << strLogDir << "]");
 		Trace("raw RotateDir [" << strRotateDir << "]");
 		// generate for each server its respective logchannels
-		for (long i = 0; i < numOfServers; i++) {
+		for (long i = 0; i < numOfServers; ++i) {
 			const char *servername = servers.SlotName(i);
 			Server *s;
 			if ( servername && (s = Server::FindServer(servername)) ) {
@@ -106,11 +106,11 @@ bool AppLogModule::Finis()
 	SysLog::WriteToStderr("\tTerminating Application Logging");
 	TerminateLogRotator();
 	String strDoNotRotate("DoNotRotate");
-	for (long i = 0; i < fLogConnections.GetSize(); i++) {
+	for (long i = 0, sz = fLogConnections.GetSize(); i < sz; ++i) {
 		TraceAny(fLogConnections[i], "config of server [" << fLogConnections.SlotName(i) << "]");
 		// ServerConfigs with DoNotRotate slot are duplicates, so do not delete their channels!
 		if ( !fLogConnections[i].IsDefined("DoNotRotate") ) {
-			for (long j = 0; j < fLogConnections[i].GetSize(); j++) {
+			for (long j = 0, szj = fLogConnections[i].GetSize(); j < szj; ++j) {
 				Trace("finishing channel [" << fLogConnections[i].SlotName(j) << "]");
 				IFAObject *logchannel = fLogConnections[i][j][0L].AsIFAObject(0);
 				if (logchannel) {
@@ -140,7 +140,7 @@ bool AppLogModule::MakeChannels(const char *servername, const Anything &config)
 
 	if ( numOfChannels > 0 ) {
 		// has its own definition of logging
-		for (long i = 0; i < numOfChannels; i++) {
+		for (long i = 0; i < numOfChannels; ++i) {
 			String strChannelName = anyChannels.SlotName(i);
 			if ( strChannelName.Length() ) {
 				Anything channel = anyChannels[i];
@@ -195,11 +195,11 @@ bool AppLogModule::DoRotateLogs()
 {
 	StartTrace(AppLogModule.DoRotateLogs);
 	long configSz = fROLogConnections.GetSize();
-	for (long i = 0; i < configSz; i++) {
+	for (long i = 0; i < configSz; ++i) {
 		const char *servername = fROLogConnections.SlotName(i);
 		ROAnything roaLogChannels = fROLogConnections[i];
 		long roaLogChannelsSz = roaLogChannels.GetSize();
-		for (long j = 0; j < roaLogChannelsSz; j++) {
+		for (long j = 0; j < roaLogChannelsSz; ++j) {
 			const char *channelname = roaLogChannels.SlotName(j);
 			if ( channelname && servername ) {
 				bool doNotRotate = false;
@@ -466,7 +466,7 @@ void AppLogChannel::WriteHeader(ostream &os)
 	ROAnything header = fChannelInfo["Header"];
 
 	Trace("os state before writing header: " << (long)os.rdstate());
-	for (long i = 0; i < header.GetSize(); i++) {
+	for (long i = 0, szh = header.GetSize(); i < szh; ++i) {
 		os << header[i].AsCharPtr("");
 		if (!os) {
 			SYSERROR("Write Header to logfile failed");
@@ -522,7 +522,7 @@ long LogRotator::GetSecondsToWait()
 	long deltahour = (fHour - tt->tm_hour);
 
 	if ( deltamin < 0 ) {
-		deltahour--;
+		--deltahour;
 		deltamin += 60;
 	}
 	if ( deltahour < 0 ) {

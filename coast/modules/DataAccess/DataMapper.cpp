@@ -34,7 +34,7 @@ void FixedSizeMapper::Pad(String &value, long length, char pad)
 		value.Trim(length);
 	} else {
 		long oldlength = value.Length();
-		for (long i = oldlength; i < length; i++) {
+		for (long i = oldlength; i < length; ++i) {
 			value.Append(pad);
 		}
 	}

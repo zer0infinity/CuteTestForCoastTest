@@ -44,7 +44,7 @@ void WPMStatHandler::HandleStatEvt(long evt)
 			if ( fCurrentParallelRequests == 0 ) {
 				fTimer.Start();
 			}
-			fCurrentParallelRequests++;
+			++fCurrentParallelRequests;
 			if (fMaxParallelRequests < fCurrentParallelRequests) {
 				fMaxParallelRequests = fCurrentParallelRequests;
 			}
@@ -53,11 +53,11 @@ void WPMStatHandler::HandleStatEvt(long evt)
 		break;
 
 		case eLeave: {
-			fCurrentParallelRequests--;
+			--fCurrentParallelRequests;
 			if ( fCurrentParallelRequests == 0 ) {
 				fTotalTime += fTimer.Reset();
 			}
-			fTotalRequests++;
+			++fTotalRequests;
 		}
 		break;
 

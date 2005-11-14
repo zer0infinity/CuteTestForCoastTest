@@ -99,7 +99,7 @@ void StatisticTestCase::ExportCsvStatistics(long lModulus)
 		AnyExtensions::Iterator<ROAnything> aDateIterator(roaHostEntry);
 		while ( aDateIterator.Next(roaDateEntry) ) {
 			if ( aDateIterator.Index() % lModulus == 0 ) {
-				lDestDateIdx++;
+				++lDestDateIdx;
 			}
 			const char *pDT = roaHostEntry.SlotName(aDateIterator.Index());
 			anyCsv["TestName"][lDestDateIdx] = pDT;

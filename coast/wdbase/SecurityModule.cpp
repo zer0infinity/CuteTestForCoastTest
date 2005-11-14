@@ -36,9 +36,8 @@ long SecurityItem::GetNamePrefixFromEncodedText(String &scramblername, const Str
 {
 	StartTrace(SecurityItem.GetNamePrefixFromEncodedText);
 	Trace("Scrambled Text: " << encodedText);
-	long i;
 	scramblername.Trim(0L);
-	for (i = 0; i <= encodedText.Length() && ':' != encodedText[i] && '-' != encodedText[i]; i++) {
+	for (long i = 0, sz = encodedText.Length(); i <= sz && ':' != encodedText[i] && '-' != encodedText[i]; ++i) {
 		scramblername.Append(encodedText[i]);
 	}
 

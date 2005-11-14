@@ -17,19 +17,19 @@
 
 REBitSet::REBitSet(bool setall)
 {
-	for (unsigned i = 0; i < fgcSize; i++) {
+	for (unsigned i = 0; i < fgcSize; ++i) {
 		fSet[i] = setall ? ~0L : 0L;
 	}
 }
 REBitSet::REBitSet(const REBitSet &b)
 {
-	for (unsigned i = 0; i < fgcSize; i++) {
+	for (unsigned i = 0; i < fgcSize; ++i) {
 		fSet[i] = b.fSet[i];
 	}
 }
 REBitSet::REBitSet(const unsigned long s[fgcSize])
 {
-	for (unsigned i = 0; i < fgcSize; i++) {
+	for (unsigned i = 0; i < fgcSize; ++i) {
 		fSet[i] = s[i];
 	}
 }
@@ -37,7 +37,7 @@ REBitSet::REBitSet(const unsigned long s[fgcSize])
 bool REBitSet::IsEqual(const REBitSet &b)const
 {
 	bool res = true;
-	for (unsigned i = 0; res && i < fgcSize; i++) {
+	for (unsigned i = 0; res && i < fgcSize; ++i) {
 		res = (fSet[i] == b.fSet[i]) && res;
 	}
 	return res;
@@ -45,7 +45,7 @@ bool REBitSet::IsEqual(const REBitSet &b)const
 bool REBitSet::IsSubSet(const REBitSet &b)const
 {
 	bool res = true;
-	for (unsigned i = 0; res && i < fgcSize; i++) {
+	for (unsigned i = 0; res && i < fgcSize; ++i) {
 		res = ((fSet[i] & b.fSet[i]) == fSet[i]) && res;
 	}
 	return res;
@@ -54,7 +54,7 @@ bool REBitSet::IsSubSet(const REBitSet &b)const
 REBitSet REBitSet::operator~() const
 {
 	REBitSet res;
-	for (unsigned i = 0; i < fgcSize; i++) {
+	for (unsigned i = 0; i < fgcSize; ++i) {
 		res.fSet[i] = ~fSet[i];
 	}
 	return res;
@@ -62,28 +62,28 @@ REBitSet REBitSet::operator~() const
 
 REBitSet &REBitSet::Complement()
 {
-	for (unsigned i = 0; i < fgcSize; i++) {
+	for (unsigned i = 0; i < fgcSize; ++i) {
 		fSet[i] = ~fSet[i];
 	}
 	return *this;
 }
 REBitSet &REBitSet::operator=(const REBitSet &b)
 {
-	for (unsigned i = 0; i < fgcSize; i++) {
+	for (unsigned i = 0; i < fgcSize; ++i) {
 		fSet[i] = b.fSet[i];
 	}
 	return *this;
 }
 REBitSet &REBitSet::operator|=(const REBitSet &b)
 {
-	for (unsigned i = 0; i < fgcSize; i++) {
+	for (unsigned i = 0; i < fgcSize; ++i) {
 		fSet[i] |= b.fSet[i];
 	}
 	return *this;
 }
 REBitSet &REBitSet::operator&=(const REBitSet &b)
 {
-	for (unsigned i = 0; i < fgcSize; i++) {
+	for (unsigned i = 0; i < fgcSize; ++i) {
 		fSet[i] &= b.fSet[i];
 	}
 	return *this;
@@ -91,14 +91,14 @@ REBitSet &REBitSet::operator&=(const REBitSet &b)
 
 REBitSet &REBitSet::operator^=(const REBitSet &b)
 {
-	for (unsigned i = 0; i < fgcSize; i++) {
+	for (unsigned i = 0; i < fgcSize; ++i) {
 		fSet[i] ^= b.fSet[i];
 	}
 	return *this;
 }
 REBitSet &REBitSet::operator-=(const REBitSet &b)
 {
-	for (unsigned i = 0; i < fgcSize; i++) {
+	for (unsigned i = 0; i < fgcSize; ++i) {
 		fSet[i] &= ~b.fSet[i];
 	}
 	return *this;
@@ -107,7 +107,7 @@ REBitSet &REBitSet::operator-=(const REBitSet &b)
 REBitSet &REBitSet::Set(unsigned char from, unsigned char to)
 {
 	unsigned toidx = to;
-	for (unsigned c = from; c <= toidx; c++) {
+	for (unsigned c = from; c <= toidx; ++c) {
 		this->Set((unsigned char)c);
 	}
 
