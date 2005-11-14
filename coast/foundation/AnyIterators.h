@@ -166,7 +166,7 @@ namespace AnyExtensions
 			bool found = false;
 			PlainType next;
 			while ( !found && BaseIterator::DoGetNext(next) ) {
-				if ( next.GetType() == Anything::eArray ) {
+				if ( next.GetType() == AnyArrayType ) {
 					if ( next.GetSize() > 0 ) {
 						// its an Array and not empty, we have to descend
 						subIter = new ThisIterator(next);

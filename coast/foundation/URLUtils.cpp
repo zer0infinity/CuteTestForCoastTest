@@ -25,7 +25,7 @@
 static void Convert(String &str)
 {
 	if (str.Length() > 0) {
-		for (long l = 0; l < str.Length(); l++) {
+		for (long l = 0; l < str.Length(); ++l) {
 			if (str[l] == '+') {
 				str.PutAt(l, ' ');
 			}
@@ -45,7 +45,7 @@ void URLUtils::Pair(const char *buf, char delim, Anything &any, NormalizeTag nor
 			char *pclean = (char *)p;
 			if ( *pclean == '"' || *pclean == '\'') {
 				pclean[strlen(p)-1] = '\0';
-				p++;
+				++p;
 			}
 			Normalize(key, normKey);
 
@@ -107,12 +107,12 @@ void URLUtils::DecodeAll(Anything &a)
 	String str;
 	Anything at;
 
-	for (long i = 0; i < a.GetSize(); i++) {
+	for (long i = 0, sz = a.GetSize(); i < sz; ++i) {
 		at = a[i];
-		if ( at.GetType() == Anything::eCharPtr ) {
+		if ( at.GetType() == AnyCharPtrType ) {
 			str = at.AsCharPtr("");
 			a[i] = URLUtils::urlDecode(str);
-		} else if ( at.GetType() == Anything::eArray ) {
+		} else if ( at.GetType() == AnyArrayType ) {
 			DecodeAll(at);
 		}
 	}
@@ -168,7 +168,7 @@ String URLUtils::HTMLDecode(const String &instr)
 	String res, str(instr);
 	long length(str.Length());
 	if (length > 0) {
-		for (long lPos = 0; lPos < length; lPos++) {
+		for (long lPos = 0; lPos < length; ++lPos) {
 			DecodeSpecialHTMLChars(str, res, lPos);
 		}
 	}
@@ -302,7 +302,7 @@ String URLUtils::urlDecode(const String &instr, URLUtils::URLCheckStatus &eUrlCh
 	char c ;		// current character
 	long length(str.Length());
 	if (length > 0) {
-		for (long lPos = 0; lPos < length; lPos++) {
+		for (long lPos = 0; lPos < length; ++lPos) {
 			if ((c = str[lPos]) == '%') {
 				// Escape: next 5 chars are %uxxxx representation of the actual character
 				if ( (c = str[lPos]) == '%' && ((lPos + 1L < length) && (str[lPos+1L] == 'u' ||  str[lPos+1L] == 'U')) ) {
@@ -442,7 +442,7 @@ bool URLUtils::DoUrlEncode(const String &str, const String exclusionSet, String 
 	// to be escaped too: "<>\"#%{}|\\^~[]`"
 	// for path encoding we need to escape "?;" too
 	if (str.Length() > 0) {
-		for (long l = 0; l < str.Length(); l++) {
+		for (long l = 0, sz = str.Length(); l < sz; ++l) {
 			c = str[l];
 			unsigned int ui = c;
 			if ( ui <= 0x20 ||
@@ -543,7 +543,7 @@ void URLUtils::HandleURI(Anything &query, const String &uri)
 		Anything queryInfo;
 		URLUtils::Split( queryString, '&', queryInfo);
 		URLUtils::DecodeAll(queryInfo);
-		for (long i = 0; i < queryInfo.GetSize(); i++) {
+		for (long i = 0, sz = queryInfo.GetSize(); i < sz; ++i) {
 			const char *slot = queryInfo.SlotName(i);
 			if ( slot ) {
 				query[slot] = queryInfo[i];
@@ -712,16 +712,14 @@ void URLUtils::HandleURI2(Anything &query, const String &currentUri, const char 
 
 String URLUtils::EncodeFormContent(Anything &kVPairs )
 {
-
 	StartTrace(URLUtils.EncodeFormContent);
 	TraceAny( kVPairs, "input key value pairs" );
 
 	String localString = "";
-	int i;
-
-	for (i = 0; i < kVPairs.GetSize() - 1; i++ ) {
+	int i, sz;
+	for (i = 0, sz = kVPairs.GetSize() - 1; i < sz; ++i ) {
 		Trace( "localString->" << localString );
-		localString << kVPairs.SlotName(i) << "=" <<  kVPairs[i].AsString("") << "&";
+		localString << kVPairs.SlotName(i) << "=" << kVPairs[i].AsString("") << "&";
 	}
 	localString << kVPairs.SlotName(i) << "=" <<  kVPairs[i].AsString("");
 	Trace( "localStringEND->" << localString );
@@ -744,7 +742,7 @@ void URLUtils::TrimChars(String &str, bool front, char c)
 	if ( front ) {
 		at = 0;
 		while ( c == str[at] ) {
-			at++;
+			++at;
 		}
 		if (at) {
 			str.TrimFront(at);
@@ -752,7 +750,7 @@ void URLUtils::TrimChars(String &str, bool front, char c)
 	} else {
 		at = str.Length() - 1;
 		while ( c == str[at] ) {
-			at--;
+			--at;
 		}
 		if (at != (str.Length() - 1)) {
 			str.Trim(at + 1);
@@ -767,7 +765,7 @@ String URLUtils::HTMLEscape(const String &toEscape)
 	String escPostfix(";");
 	String escapedString;
 	long length(toEscape.Length());
-	for (long i = 0; i < length; i ++ ) {
+	for (long i = 0; i < length; ++i ) {
 		unsigned int work = (unsigned char) toEscape[i];
 		if ( isalnum(work) ) {
 			escapedString.Append((char) work);

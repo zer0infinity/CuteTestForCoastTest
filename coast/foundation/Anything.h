@@ -11,9 +11,9 @@
 
 #include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include "ITOString.h"
+#include "AnyImplTypes.h"
 
 class EXPORTDECL_FOUNDATION AnyImpl;
-class EXPORTDECL_FOUNDATION AnyArrayImpl;
 class EXPORTDECL_FOUNDATION MetaThing;
 class EXPORTDECL_FOUNDATION ROAnything;
 class EXPORTDECL_FOUNDATION IFAObject;
@@ -55,15 +55,6 @@ class EXPORTDECL_FOUNDATION Anything
 {
 public:
 	//! Type information, can be retrieved with GetType().
-	enum EType {
-		eNull,
-		eCharPtr,
-		eArray,
-		eLong,
-		eDouble,
-		eVoidBuf,
-		eObject
-	};
 
 	//! Constructs an Anything of type eNull (without allocator info... allocator is only used for impls)
 	Anything( Allocator *a = Storage::Current());
@@ -109,8 +100,8 @@ public:
 	Anything DeepClone(Allocator *a = Storage::Current()) const;
 
 	/*! Retrieve this Anything's type information
-		\return the type of this Anything, see EType. */
-	EType GetType() const;
+		\return the type of this Anything, see AnyImplType. */
+	AnyImplType GetType() const;
 
 	/*! Checks if this Anything is empty i.e. of type eNull
 		\return <I>true</I> if this Anything is of type eNull; <i>false</i> otherwise */
@@ -361,6 +352,48 @@ protected:
 		unsigned long bits;
 	};
 	friend class AnythingTest;
+};
+
+EXPORTDECL_FOUNDATION long IFAHash(const char *key, long &len, char stop1 = '\0', char stop2 = '\0');
+
+//---- AnyKeyAssoc --------------------------------------------------
+class EXPORTDECL_FOUNDATION AnyKeyAssoc
+{
+public:
+	AnyKeyAssoc(const Anything &value, const char *key = 0);
+	AnyKeyAssoc(const AnyKeyAssoc &aka);
+	AnyKeyAssoc();
+	~AnyKeyAssoc();
+	void Init(Allocator *a);
+	Anything &Value() {
+		return fValue;
+	}
+	const Anything &Value() const {
+		return fValue;
+	}
+	const String &Key() {
+		return fKey;
+	}
+	const String &Key() const	 {
+		return fKey;
+	}
+	void SetKey(const char *key);
+	void SetValue(const Anything &val);
+	AnyKeyAssoc &operator=(const AnyKeyAssoc &aka);
+
+	// new[] is needed to properly initialize instance variables (i.e. Anything)
+#if !defined(OPERATOR_NEW_ARRAY_NOT_SUPPORTED)
+	static void *operator new[](size_t size, Allocator *a);
+#if defined(WIN32) && (_MSC_VER >= 1200) // VC6 or greater
+	static void operator delete[](void *ptr, Allocator *a);
+#endif
+	static void operator delete[](void *ptr);
+#endif
+
+private:
+	Anything 	fValue;
+	String 		fKey;
+	Allocator 	*fAllocator;
 };
 
 //---- SlotFinder -----------------------------------------------------------
@@ -647,8 +680,8 @@ public:
 	Anything DeepClone(Allocator *a = Storage::Current()) const;
 
 	/*! Retrieve this ROAnything's type information
-		\return the type of this ROAnything, see Enumeration Anything::EType. */
-	Anything::EType GetType() const;
+		\return the type of this ROAnything, see Enumeration AnyImplType. */
+	AnyImplType GetType() const;
 	/*! Checks if this ROAnything is empty i.e. of type eNull
 		\return <I>true</I> if this ROAnything is of type eNull; <i>false</i> otherwise */
 	bool IsNull() const;

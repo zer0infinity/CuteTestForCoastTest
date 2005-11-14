@@ -23,7 +23,7 @@ void AnyUtils::ShowDifferences( String &masterString, String &inputString, ostre
 		*verbose << "- Show First Difference: -" << endl;
 		*verbose << "Size Master:" << masterString.Length() << " Size Input:" << inputString.Length() << endl;
 
-		for ( long j = 0; j < masterString.Length(); j++ ) {
+		for ( long j = 0, sz = masterString.Length(); j < sz; ++j ) {
 			if ( masterString[j] != inputString[j] ) {
 				*verbose << masterString[j] << "<-[";
 				if ( inputString[j] != '\0' ) {
@@ -66,11 +66,11 @@ bool AnyUtils::AnyCompareEqual( const ROAnything &inputAny, const ROAnything &ma
 	// only slots actually appearing in the "master" are tested, others are ignored..
 	//-------------------------------
 
-	if ( masterAny.GetType() == Anything::eArray ) {
+	if ( masterAny.GetType() == AnyArrayType ) {
 		bool result = true; // match is presupposed
 
 		// recursive comparison of anything, on
-		for ( long i = 0; i < masterAny.GetSize(); i++ ) {
+		for ( long i = 0, szm = masterAny.GetSize(); i < szm; ++i ) {
 			ROAnything anySlotCfg;
 			String mySlotname = masterAny.SlotName(i);
 			if ( !mySlotname.Length() ) {
@@ -80,7 +80,7 @@ bool AnyUtils::AnyCompareEqual( const ROAnything &inputAny, const ROAnything &ma
 				Trace("MasterSlotname [" << newPath << "]");
 				// try to find null as slotname match in input any, must iterate through all "null" slotname members for this
 				bool found = false;
-				for ( long j = 0; j < inputAny.GetSize(); j++ ) {
+				for ( long j = 0, szi = inputAny.GetSize(); j < szi; ++j ) {
 					String myInSlotname = inputAny.SlotName(j);
 					if ( !myInSlotname.Length() ) {
 						myInSlotname.Append(delimIdx).Append(j);
@@ -148,23 +148,23 @@ long AnyUtils::DoAnyMerge(Anything &anyMaster, const ROAnything &roaToMerge, boo
 	SubTraceAny(TraceInputAny, roaToMerge, "input content:");
 	long lHitCount = 0L;
 	// roaToMerge serves as master defining the slots to add/modify
-	if ( roaToMerge.GetType() == Anything::eArray ) {
+	if ( roaToMerge.GetType() == AnyArrayType ) {
 		if ( roaToMerge.GetSize() ) {
 			// prepare temporary index any of master
 			Anything anyMasterIdx;
-			for ( long m = 0; m < anyMaster.GetSize(); m++ ) {
-				if ( ( anyMaster.SlotName(m) == NULL ) && ( anyMaster[m].GetType() == Anything::eArray ) ) {
+			for ( long m = 0, szm = anyMaster.GetSize(); m < szm; ++m ) {
+				if ( ( anyMaster.SlotName(m) == NULL ) && ( anyMaster[m].GetType() == AnyArrayType ) ) {
 					Trace("is index:" << m);
 					anyMasterIdx[anyMasterIdx.GetSize()] = m;
 				}
 			}
 			TraceAny(anyMasterIdx, "MasterIndexes");
 			// recursive comparison of anything, on
-			for ( long i = 0; i < roaToMerge.GetSize(); i++ ) {
+			for ( long i = 0, sz = roaToMerge.GetSize(); i < sz; ++i ) {
 				String strInputSlotname = roaToMerge.SlotName(i);
 				Trace("current input slotname [" << strInputSlotname << "], anyType:" << (long)roaToMerge[i].GetType() );
 				// first check for leaf
-				if ( roaToMerge[i].GetType() != Anything::eArray ) {
+				if ( roaToMerge[i].GetType() != AnyArrayType ) {
 					if ( strInputSlotname.Length() ) {
 						Trace("noArray:named: simple entry, value [" << roaToMerge[i].AsString() << "]");
 						if ( !anyMaster.IsDefined(strInputSlotname) || bOverwriteSlots ) {
@@ -183,7 +183,7 @@ long AnyUtils::DoAnyMerge(Anything &anyMaster, const ROAnything &roaToMerge, boo
 							}
 						} else {
 							Trace("noArray:unnamed: leaf already defined, incrementing match count");
-							lHitCount++;
+							++lHitCount;
 						}
 					}
 				} else {
@@ -207,14 +207,14 @@ long AnyUtils::DoAnyMerge(Anything &anyMaster, const ROAnything &roaToMerge, boo
 							// 1. favorize entry with highest matchcount
 							// 2. for equal match counts, check if one of them has the same array-index as the ToMerge-any
 							long lMaxIdx = -1, lMaxVal = -1, lSameCount = 1;
-							for (long lIdx = anyMatches.GetSize() - 1L; lIdx >= 0L; lIdx--) {
+							for (long lIdx = anyMatches.GetSize() - 1L; lIdx >= 0L; --lIdx) {
 								if ( anyMatches[lIdx].AsLong(-1L) > lMaxVal ) {
 									lMaxVal = anyMatches[lIdx].AsLong(-1L);
 									lMaxIdx = lIdx;
 									lSameCount = 1;
 									Trace("new maxcount:" << lMaxVal);
 								} else if ( anyMatches[lIdx].AsLong(-1L) == lMaxVal ) {
-									lSameCount++;
+									++lSameCount;
 									lMaxIdx = lIdx;
 									Trace("lower equal match found at:" << lIdx);
 								} else {
@@ -265,7 +265,7 @@ long AnyUtils::DoAnyMerge(Anything &anyMaster, const ROAnything &roaToMerge, boo
 		// do a direct comparison
 		if ( ( anyMaster.IsNull() && roaToMerge.IsNull() ) || ( anyMaster.AsString().IsEqual(roaToMerge.AsString()) ) ) {
 			Trace("content equal");
-			lHitCount++;
+			++lHitCount;
 		} else {
 			Trace("content unequal, overwrite: " << (bOverwriteSlots ? "yes" : "no"));
 			if ( !bTest && bOverwriteSlots ) {
@@ -339,10 +339,10 @@ static void DoPrintSimpleXML( ostream &os, ROAnything output)
 	if (output.IsNull()) {
 		return;
 	}
-	if (Anything::eArray == output.GetType()) {
+	if (AnyArrayType == output.GetType()) {
 		// iterate and recurse...
 		os << "<any:seq>";
-		for (long i = 0; i < output.GetSize(); i++) {
+		for (long i = 0, sz = output.GetSize(); i < sz; ++i) {
 			const char *slotname = output.SlotName(i);
 			if (slotname) {
 				os << '<' << slotname << '>';
@@ -362,7 +362,7 @@ static void DoPrintSimpleXML( ostream &os, ROAnything output)
 
 void AnyUtils::PrintSimpleXML( ostream &os, ROAnything output)
 {
-	if (! output.IsNull() && Anything::eArray != output.GetType()) {
+	if (! output.IsNull() && AnyArrayType != output.GetType()) {
 		DoPrintEltXML(os, output);
 	} else {
 		DoPrintSimpleXML(os, output);

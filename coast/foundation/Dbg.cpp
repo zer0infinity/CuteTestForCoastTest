@@ -42,7 +42,7 @@ public:
 		SysLog::WriteToStderr(fStrBuf);
 	}
 	void Tab(int n) {
-		for (int i = 0; i < n; i++) {
+		for (int i = 0; i < n; ++i) {
 			fStream << "  ";
 		}
 	}
@@ -64,7 +64,7 @@ Tracer::Tracer(const char *trigger)
 	if (fTriggered) {
 		TracerHelper hlp(fgLevel, fpAlloc);
 		hlp.GetStream() << fTrigger << ": --- entering ---\n";
-		fgLevel++;
+		++fgLevel;
 	}
 }
 
@@ -77,14 +77,14 @@ Tracer::Tracer(const char *trigger, const char *msg)
 	if (fTriggered) {
 		TracerHelper hlp(fgLevel, fpAlloc);
 		hlp.GetStream() << fTrigger << ": " << fpMsg << " --- entering ---\n";
-		fgLevel++;
+		++fgLevel;
 	}
 }
 
 Tracer::~Tracer()
 {
 	if (fTriggered) {
-		fgLevel--;
+		--fgLevel;
 		TracerHelper hlp(fgLevel, fpAlloc);
 		hlp.GetStream() << fTrigger << ":";
 		if (fpMsg) {
@@ -179,7 +179,7 @@ bool Tracer::CheckWDDebug(const char *trigger, Allocator *pAlloc)
 	}
 	static bool trying = false;	// FIXME: hack until recursive mutex are implemented
 
-	if (fgWDDebugContext.GetType() == Anything::eNull) {
+	if (fgWDDebugContext.GetType() == AnyNullType) {
 		if ( trying ) {
 			return false;
 		}
@@ -297,7 +297,7 @@ void Tracer::Reset()
 		fgROWDDebugContext = fgWDDebugContext;
 		delete ifp;
 	}
-	if (fgWDDebugContext.GetType() != Anything::eNull) {
+	if (fgWDDebugContext.GetType() != AnyNullType) {
 		fgLowerBound = fgWDDebugContext["LowerBound"].AsLong(0);
 		fgUpperBound = fgWDDebugContext["UpperBound"].AsLong(0);
 		fgAlwaysOn = fgWDDebugContext["AlwaysOn"].AsLong(0);

@@ -394,7 +394,7 @@ Anything GenericXMLParser::ProcessArgs(const String &renderer, const String &arg
 		IStringStream is(args);
 		readit.Import(is);
 		// now we need to adjust it to become an array if it isn't already:
-		if (Anything::eArray != readit.GetType()) {
+		if (AnyArrayType != readit.GetType()) {
 			aargs[0L] = readit;
 		} else {
 			aargs = readit;
@@ -483,7 +483,7 @@ int GenericXMLParser::Get()
 	if (fReader && !fReader->eof()) {
 		c = fReader->get();
 		if ('\n' == c) {
-			fLine++;
+			++fLine;
 		}
 	}
 	return c;
@@ -503,7 +503,7 @@ void GenericXMLParser::PutBack(char c)
 		fReader->putback(c);
 	}
 	if ('\n' == c) {
-		fLine--;
+		--fLine;
 	}
 }
 
@@ -647,7 +647,7 @@ void GenericXMLParser::Error(const char *msg)
 }
 void GenericXMLPrinter::PrintXml(ostream &os, ROAnything domany)
 {
-	for (long i = 0; i < domany.GetSize(); i++) {
+	for (long i = 0, sz = domany.GetSize(); i < sz; ++i) {
 		if (!domany.SlotName(i)) {
 			// do not go down for /Errors slot
 			DoPrintXml(os, domany[i]);
@@ -656,7 +656,7 @@ void GenericXMLPrinter::PrintXml(ostream &os, ROAnything domany)
 }
 void GenericXMLPrinter::DoPrintXml(ostream &os, ROAnything subdomany)
 {
-	if (subdomany.GetType() == Anything::eArray) {
+	if (subdomany.GetType() == AnyArrayType) {
 		String tag = subdomany.SlotName(0L);
 		if (tag.Length()) {
 			if ('?' == tag[0L]) {
@@ -669,7 +669,7 @@ void GenericXMLPrinter::DoPrintXml(ostream &os, ROAnything subdomany)
 				DoPrintXmlDtd(os, subdomany);
 			} else {
 				DoPrintXmlTag(os, tag, subdomany[0L]);
-				for (long i = 1; i < subdomany.GetSize(); i++) {
+				for (long i = 1, sz = subdomany.GetSize(); i < sz; ++i) {
 					DoPrintXml(os, subdomany[i]);
 				}
 				os << "</" << tag << '>';
@@ -678,14 +678,14 @@ void GenericXMLPrinter::DoPrintXml(ostream &os, ROAnything subdomany)
 			// this is an error...
 			os << "<!-- error in DOM anything input, missing tag -->";
 		}
-	} else if (subdomany.GetType() != Anything::eNull) {
+	} else if (subdomany.GetType() != AnyNullType) {
 		os << subdomany.AsString();
 	}
 }
 void GenericXMLPrinter::DoPrintXmlTag(ostream &os, const String &tag, ROAnything attributes)
 {
 	os << '<' << tag ;
-	for (long i = 0L; i < attributes.GetSize(); i++) {
+	for (long i = 0L, sz = attributes.GetSize(); i < sz; ++i) {
 		os << ' ' << attributes.SlotName(i) << "=\"" << attributes[i].AsString() << '"';
 	}
 	os << '>';
@@ -726,7 +726,7 @@ void GenericXMLPrinter::DoPrintXmlDtd(ostream &os, ROAnything subdomany)
 		os << '>'; // done, external id
 	} else { // DTD elements given
 		os << " [";
-		for (long i = 0L; i < subdomany[2L].GetSize(); i++) {
+		for (long i = 0L, sz = subdomany[2L].GetSize(); i < sz; ++i) {
 			DoPrintXmlSubDtd(os, subdomany[2L][i]);
 		}
 		os << "]>";
@@ -735,7 +735,7 @@ void GenericXMLPrinter::DoPrintXmlDtd(ostream &os, ROAnything subdomany)
 
 void GenericXMLPrinter::DoPrintXmlSubDtd(ostream &os, ROAnything subdomany)
 {
-	if (subdomany.GetType() == Anything::eArray) {
+	if (subdomany.GetType() == AnyArrayType) {
 		String tag = subdomany.SlotName(0L);
 		if (tag.Length()) {
 			if ('?' == tag[0L]) {
@@ -751,7 +751,7 @@ void GenericXMLPrinter::DoPrintXmlSubDtd(ostream &os, ROAnything subdomany)
 			// this is an error...
 			os << "<!-- error in DOM anything input, missing tag -->";
 		}
-	} else if (subdomany.GetType() != Anything::eNull) {
+	} else if (subdomany.GetType() != AnyNullType) {
 		os << subdomany.AsString();
 	}
 }
