@@ -49,7 +49,7 @@ void LDAPErrorHandler::HandleSessionError(LDAP *handle, String msg)
 	}
 
 	// get connection parameters + append
-	error["LdapConnectionParams"] = GetConnectionParams();
+	error["LdapConnectionParams"] = GetConnectionParams().DeepClone();
 
 	String msgAsString = WriteSysLog(error, msg);
 	error["MsgAsString"] = msgAsString;
@@ -67,7 +67,7 @@ void LDAPErrorHandler::HandleError(String msg, Anything args, String argDescr)
 	}
 
 	// get query parameters + append
-	error["LdapQueryParams"] = GetQueryParams();
+	error["LdapQueryParams"] = GetQueryParams().DeepClone();
 
 	String msgAsString = WriteSysLog(error, msg);
 	error["MsgAsString"] = msgAsString;
@@ -88,8 +88,8 @@ String LDAPErrorHandler::WriteSysLog(Anything error, String &msg)
 	SysLog::Error(TimeStamp::Now().AsString() << " " <<  msg << " " << fName << " " << sSysLog);
 	String msgAsString;
 	msgAsString << "LdapDataAccess: [" << fName << "]";
-	for ( long l = 0; l < error.GetSize(); l++ ) {
-		if ( error[l].GetType() == Anything::eArray ) {
+	for ( long l = 0; l < error.GetSize(); ++l ) {
+		if ( error[l].GetType() == AnyArrayType ) {
 			String sMsgDetails;
 			OStringStream ossMsgDetails(&sMsgDetails);
 			error[l].PrintOn(ossMsgDetails, false);
@@ -139,9 +139,9 @@ void LDAPErrorHandler::CleanUp()
 	}
 }
 
-Anything LDAPErrorHandler::GetQueryParams()
+ROAnything LDAPErrorHandler::GetQueryParams()
 {
-	return fQueryParams.IsNull() ? "None available, sorry." : fQueryParams;
+	return (ROAnything)fQueryParams;
 }
 
 void LDAPErrorHandler::PutQueryParams(Anything qp)
@@ -149,9 +149,9 @@ void LDAPErrorHandler::PutQueryParams(Anything qp)
 	fQueryParams = qp;
 }
 
-Anything LDAPErrorHandler::GetConnectionParams()
+ROAnything LDAPErrorHandler::GetConnectionParams()
 {
-	return fConnectionParams.IsNull() ? "None available, sorry." : fConnectionParams;
+	return (ROAnything)fConnectionParams;
 }
 
 void LDAPErrorHandler::PutConnectionParams(Anything cp)

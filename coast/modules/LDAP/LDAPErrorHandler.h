@@ -34,10 +34,11 @@ public:
 	// (returns false, if none was found)
 	virtual bool GetError(Anything &error);
 
-	virtual Anything GetQueryParams();
-	virtual void PutQueryParams(Anything qp);
-	virtual Anything GetConnectionParams();
-	virtual void PutConnectionParams(Anything cp);
+	ROAnything GetQueryParams();
+	ROAnything GetConnectionParams();
+
+	void PutQueryParams(Anything qp);
+	void PutConnectionParams(Anything cp);
 
 	//! Set ShouldRetry flag This flag is used when LDAPPooledConnections are used
 	virtual void SetRetryState(eRetryState retryState);
