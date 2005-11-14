@@ -429,7 +429,6 @@ void LocalizationUtilsTest::LangKeyEmptyLanguagesEmptyKeyMap()
 } // LangKeyEmptyLanguagesEmptyKeyMap
 
 void LocalizationUtilsTest::LangKeyMissingLanguages()
-// Missing languages ( anything: EType = eNull ), take default language
 {
 	Anything EnvStore(fContext.GetEnvStore());
 	Anything header = EnvStore["header"];
@@ -449,7 +448,6 @@ void LocalizationUtilsTest::LangKeyMissingLanguages()
 } // LangKeyMissingLanguages
 
 void LocalizationUtilsTest::LangKeyMissingKeyMap()
-// Missing key map ( anything: EType = eNull ), take default language
 {
 	Anything TmpStore(fContext.GetTmpStore());
 	TmpStore.Remove("LanguageKeyMap");
@@ -457,10 +455,9 @@ void LocalizationUtilsTest::LangKeyMissingKeyMap()
 	String TestString( LocalizationUtils::FindLanguageKey( fContext, "DefKey") );
 	assertEqual( "DefKey", TestString );
 
-} // LangKeyMissingKeyMap
+}
 
 void LocalizationUtilsTest::LangKeyMissingLanguagesMissingKeyMap()
-// Missing languages and missing key map ( anything: EType = eNull ), take default language
 {
 	Anything TmpStore(fContext.GetTmpStore());
 	TmpStore.Remove("LanguageKeyMap");
