@@ -92,7 +92,7 @@ void HTMLTemplateRenderer::RenderAll(ostream &reply, Context &context, const ROA
 		ROAnything templ;
 		if (args.IsDefined("Template")) {
 			templ = args["Template"];
-		} else if (Anything::eArray == args.GetType() || Anything::eCharPtr == args.GetType()) {
+		} else if (AnyArrayType == args.GetType() || AnyCharPtrType == args.GetType()) {
 			templ = args; // PS: allow shorthand notation
 		} else {
 			// bail out.
@@ -104,7 +104,7 @@ void HTMLTemplateRenderer::RenderAll(ostream &reply, Context &context, const ROA
 		}
 		String buf;
 
-		for (long i = 0, size = templ.GetSize(); i < size; i++) {
+		for (long i = 0, size = templ.GetSize(); i < size; ++i) {
 			// PS: only append anonymous entries to allow for future parameters
 			// PS: this will take care of things like /Options /Method in subclass FormRenderer
 			if (0 == templ.SlotName(i)) {

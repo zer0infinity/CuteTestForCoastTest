@@ -52,7 +52,7 @@ void TableRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &any)
 		}
 	}
 
-	for (long i = startRow; (i < eData.GetSize()) && (i < startRow + rowsPerPage); i++) {
+	for (long i = startRow, sz = eData.GetSize(); (i < sz) && (i < startRow + rowsPerPage); ++i) {
 		const char *rowColor = GetColor(i, rowColors);
 		if (rowColor) {
 			reply << "<TR BGCOLOR=\"#" << rowColor << "\">";
@@ -126,7 +126,7 @@ void TableRenderer::PrintHeader(ostream &reply, Context &c, const ROAnything &tb
 	} else {
 		reply << ("<TR>");
 	}
-	for (long r = 0; r < tbColHeader.GetSize(); r++) {
+	for (long r = 0, sz = tbColHeader.GetSize(); r < sz; ++r) {
 		ROAnything header = tbColHeader[r]["Title"];
 		PrintOptions(reply, "TH", header);
 		if (titleFGColor) {
@@ -149,7 +149,7 @@ void TableRenderer::PrintRow(ostream &reply, Context &c, const ROAnything &row)
 	StartTrace1(TableRenderer.PrintRow, "");
 	TraceAny(row, "Table Row");
 
-	for (long i = 0; i < row.GetSize(); i++) {
+	for (long i = 0, sz = row.GetSize(); i < sz; ++i) {
 		ROAnything body = row[i]["Body"];
 		PrintOptions(reply, "TD", body);
 		Render(reply, c, body["Render"]);
@@ -185,9 +185,9 @@ void ItemRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &confi
 					Anything data = row[attr];
 					OStringStream form;
 					form.precision(2);
-					if (data.GetType() == Anything::eDouble) {
+					if (data.GetType() == AnyDoubleType) {
 						form << data.AsDouble(0.0);
-					} else if (data.GetType() == Anything::eLong) {
+					} else if (data.GetType() == AnyLongType) {
 						form << (double) data.AsLong(0);
 					} else {
 						form << data.AsCharPtr("");

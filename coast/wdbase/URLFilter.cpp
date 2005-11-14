@@ -30,14 +30,14 @@ bool URLFilter::HandleCookie(Anything &query, Anything &env, const ROAnything &f
 	bool ret = true;
 	if ( env.LookupPath(cookies, "WDCookies") ) {
 		long numOfFilters = filterCookieConf.GetSize();
-		for (long i = 0; i < numOfFilters; i++) {
+		for (long i = 0; i < numOfFilters; ++i) {
 			String filterVal;
 			RenderFilterVal(filterVal, filterCookieConf[i], ctx);
 			const char *slotName = filterVal;
 			env["NrOfCookies"][slotName] = 0L;
 			if ( cookies.IsDefined(slotName) &&
 				 !query.IsDefined(slotName) ) {
-				if ( cookies[slotName].GetType() != Anything::eArray ) {
+				if ( cookies[slotName].GetType() != AnyArrayType ) {
 					// don't override existing tags
 					query[slotName] = cookies[slotName];
 					env["NrOfCookies"][slotName] = 1L;
@@ -56,7 +56,7 @@ bool URLFilter::HandleCookie(Anything &query, Anything &env, const ROAnything &f
 		SubTraceAny(query, query, "Query after: ");
 	} else {
 		long numOfFilters = filterCookieConf.GetSize();
-		for (long i = 0; i < numOfFilters; i++) {
+		for (long i = 0; i < numOfFilters; ++i) {
 			String filterVal;
 			RenderFilterVal(filterVal, filterCookieConf[i], ctx);
 			env["NrOfCookies"][filterVal] = 0L;
@@ -70,7 +70,7 @@ void URLFilter::RenderFilterVal(String &filterVal, const ROAnything &filterCooki
 {
 	StartTrace(URLFilter.RenderFilterVal);
 	ROAnything filter(filterCookieConf);
-	if (filter.GetType() != Anything::eCharPtr) {
+	if (filter.GetType() != AnyCharPtrType) {
 		// assume renderer specification
 		Renderer::RenderOnString(filterVal, ctx, filter);
 	} else {
@@ -109,12 +109,12 @@ bool URLFilter::FilterState(Anything &query, const ROAnything &filterTags, Conte
 	bool retCode = true;
 
 	long numOfFilters = filterTags.GetSize();
-	for (long i = 0; i < numOfFilters; i++) {
+	for (long i = 0; i < numOfFilters; ++i) {
 		const char *slotName = filterTags.SlotName(i);
 		ROAnything filter(filterTags[i]);
 		if (!slotName) {
 			String filterVal;
-			if (filter.GetType() != Anything::eCharPtr) {
+			if (filter.GetType() != AnyCharPtrType) {
 				// assume renderer expression
 				Renderer::RenderOnString(filterVal, ctx, filter);
 			} else {
@@ -153,10 +153,10 @@ bool URLFilter::UnscrambleState(Anything &query, const ROAnything &unscramblers,
 
 	bool retCode = true;
 	long numOfFilters = unscramblers.GetSize();
-	for (long i = 0; i < numOfFilters; i++) {
+	for (long i = 0; i < numOfFilters; ++i) {
 		ROAnything filter(unscramblers[i]);
 		String tagToUnscramble;
-		if (filter.GetType() != Anything::eCharPtr) {
+		if (filter.GetType() != AnyCharPtrType) {
 			// assume renderer specification
 			Renderer::RenderOnString(tagToUnscramble, ctx, filter);
 		} else {
@@ -203,7 +203,7 @@ bool URLFilter::DoUnscrambleState(Anything &query, const char *slotName, Context
 				SubTraceAny(slot, a, "---- unscrambled [" << slotName << "] ----------");
 				// PS unroll loop condition
 				long sz = a.GetSize();
-				for (long i = 0; i < sz; i++) {
+				for (long i = 0; i < sz; ++i) {
 					const char *slot = a.SlotName(i);
 					if (slot && !query.IsDefined(slot)) {
 						// get the private state

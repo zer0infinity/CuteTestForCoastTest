@@ -88,14 +88,14 @@ bool LDAPQueryMapper::DoGet(ostream &os, Context &ctx,  ROAnything config,  ROAn
 	bool retVal = true;
 	long sz = query.GetSize();
 	ROAnything queryItem;
-	for (long i = 0; i < sz; i++) {
+	for (long i = 0; i < sz; ++i) {
 		queryItem = query[i];
 
 		// build final inner expression
 		const char *slotName = query.SlotName(i);
 		if ( slotName ) {
 			os << "(";
-			if ( queryItem.GetType() == Anything::eCharPtr ) {
+			if ( queryItem.GetType() == AnyCharPtrType ) {
 				const char *qvalue = queryItem.AsCharPtr("");
 
 				if (config.IsDefined("Map")) {
@@ -162,7 +162,7 @@ bool LDAPParamMapper::DoGetAny(const char *key, Anything &value, Context &ctx,  
 			TraceAny(config, "config");
 			long sz = config.GetSize();
 			ROAnything paramItem;
-			for (long i = 0; i < sz; i++) {
+			for (long i = 0; i < sz; ++i) {
 				paramItem = config[i];
 				// build final inner expression
 				const char *slotName = config.SlotName(i);
@@ -208,13 +208,13 @@ bool LDAPDNameMapper::DoGet(ostream &os, Context &ctx,  ROAnything config,  ROAn
 	bool retVal = true;
 	long sz = query.GetSize();
 	ROAnything queryItem;
-	for (long i = 0; i < sz; i++) {
+	for (long i = 0; i < sz; ++i) {
 		queryItem = query[i];
 
 		// build final inner expression
 		const char *slotName = query.SlotName(i);
 		if ( slotName ) {
-			if ( queryItem.GetType() == Anything::eCharPtr ) {
+			if ( queryItem.GetType() == AnyCharPtrType ) {
 				const char *qvalue = queryItem.AsCharPtr("");
 
 				if (config.IsDefined("Map")) {
@@ -279,7 +279,7 @@ bool LDAPModifyValsMapper::DoGetAny(const char *key, Anything &value, Context &c
 	if ( key ) {
 		if (!config.IsNull()) {
 			long modsize = config.GetSize();
-			for ( long i = 0; i < modsize; i++ ) {
+			for ( long i = 0; i < modsize; ++i ) {
 				Anything tempmod = config[i].DeepClone();
 				if ( tempmod.IsDefined("Mode") ) {
 					value[i]["Mode"] = tempmod["Mode"];
@@ -296,7 +296,7 @@ bool LDAPModifyValsMapper::DoGetAny(const char *key, Anything &value, Context &c
 				if ( tempmod.IsDefined("Values") ) {
 					long valsize = tempmod["Values"].GetSize();
 					Anything tempval = tempmod["Values"];
-					for ( long m = 0; m < valsize; m++ ) {
+					for ( long m = 0; m < valsize; ++m ) {
 						if ( tempval[m].IsDefined("Map") ) {
 							String modifyVal;
 							{

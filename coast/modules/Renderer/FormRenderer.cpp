@@ -236,7 +236,7 @@ void SelectBoxRenderer::RenderAll(ostream &reply, Context &context, const ROAnyt
 
 			long listEntries = list.GetSize();
 			// puts the list entries to <OPTION>-tags
-			for (long i = 0; i < listEntries; i++) {
+			for (long i = 0; i < listEntries; ++i) {
 				reply << "<OPTION";
 				ROAnything opt = list[i]["Options"];
 				if ( !opt.IsNull() ) {
@@ -338,7 +338,7 @@ void OptionListRenderer::RenderSelected(ostream &reply, Context &c, const ROAnyt
 	RenderOnString(strSel, c, selectedConfig);
 	if (strSel.Length()) {
 		ROAnything result = c.Lookup(strSel);
-		if (result.GetType() == Anything::eLong && result.AsBool()) {
+		if (result.GetType() == AnyLongType && result.AsBool()) {
 			reply << " SELECTED";
 		}
 	}

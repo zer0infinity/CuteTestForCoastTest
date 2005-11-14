@@ -437,7 +437,7 @@ void Session::RenderNextPage(ostream &reply, Context &ctx, const ROAnything &roa
 		TRACE_LOCK_START("RenderNextPage");
 		AccessTimer at(this);
 		at.Use();
-		fAccessCounter++;
+		++fAccessCounter;
 		DoRenderNextPage(reply, ctx);
 		fMutex.Unlock();
 	} else {
@@ -646,7 +646,7 @@ void Session::SaveToDelayed(Context &context, String &transition, String &pagena
 		if (context.Lookup("DelayedEnvironment", preserve)) {
 			Anything env(context.GetEnvStore());
 			Anything delayedEnv;
-			for (long i = 0; i < preserve.GetSize(); i++) {
+			for (long i = 0, sz = preserve.GetSize(); i < sz; ++i) {
 				const char *slot = preserve[i].AsCharPtr("");
 				delayedEnv[slot] = env[slot];
 			}
@@ -751,7 +751,7 @@ bool Session::RetrieveFromDelayed(Context &context, String &action, String &curr
 			if (delayed.LookupPath(previousEnv, "delayedEnv")) {
 				delayed.Remove("delayedEnv");
 				Anything env(context.GetEnvStore());
-				for (long i = 0; i < previousEnv.GetSize(); i++) {
+				for (long i = 0, sz = previousEnv.GetSize(); i < sz; ++i) {
 					const char *slot = previousEnv.SlotName(i);
 					env[slot] = previousEnv[i]; // this will copy
 				}
@@ -832,8 +832,8 @@ Role *Session::CheckRoleExchange(const char *action, Context &c)
 
 	Role *r = 0;
 	String roleName;
-	Anything::EType tp = roleInfo[action].GetType();
-	if ((Anything::eArray == tp) && (r = GetRole(c))) {
+	AnyImplType tp = roleInfo[action].GetType();
+	if ((AnyArrayType == tp) && (r = GetRole(c))) {
 		String oldrole;
 		r->GetName(oldrole);
 		roleName = roleInfo[action][oldrole].AsCharPtr(0);
@@ -888,7 +888,7 @@ bool Session::Ref()
 {
 	// Assumption mutex is set by caller (method is protected)
 	StartTrace(Session.Ref);
-	fRefCount++;
+	++fRefCount;
 	Trace("Session: <" << fId << "> ++RefCount is: <" << fRefCount << ">");
 	return true;
 }
@@ -898,7 +898,7 @@ bool Session::UnRef()
 	// Assumption mutex is set by caller (method is protected)
 	StartTrace(Session.UnRef);
 	String msg;
-	fRefCount--;
+	--fRefCount;
 	Trace("Session: <" << fId << "> --RefCount is: <" << fRefCount << ">");
 	if (fRefCount < 0) {
 		msg << "Session: <" << fId << "> --RefCount is NEGATIVE: <" << fRefCount << ">";
@@ -928,7 +928,7 @@ void Session::Normalize(Anything &query)
 
 	//Separate fields
 	long s = query.GetSize();
-	for (long i = 0; i < s; i++) {
+	for (long i = 0; i < s; ++i) {
 		String slotname = query.SlotName(i);
 		if (! slotname.IsEqual("")) {
 			if (slotname.SubString(0, FR_FIELDPREFIX.Length()).IsEqual(FR_FIELDPREFIX)) {

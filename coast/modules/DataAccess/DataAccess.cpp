@@ -103,7 +103,7 @@ bool DataAccess::GetMyParameterMapper(Context &c, ParameterMapper *&pm)
 
 	// look into own config
 	ROAnything script = c.Lookup("ParameterMapperScript");
-	if (script.GetType() == Anything::eArray) {
+	if (script.GetType() == AnyArrayType) {
 		isScriptInterpreter = true;
 
 		Trace("Parameter script found. Using interpreter.");
@@ -139,7 +139,7 @@ bool DataAccess::GetMyResultMapper(Context &c, ResultMapper *&rm)
 
 	// look into own config
 	ROAnything script = c.Lookup("ResultMapperScript");
-	if (script.GetType() == Anything::eArray) {
+	if (script.GetType() == AnyArrayType) {
 		isScriptInterpreter = true;
 
 		Trace("Result script found. Using interpreter.");

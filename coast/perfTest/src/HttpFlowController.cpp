@@ -43,7 +43,7 @@ void HttpFlowController::ProcessSetCookie(Context &ctx)
 	Anything setCookie = tmpStore["Mapper"]["HTTPHeader"]["set-cookie"];
 
 	// Process all cookies, loop if we're an Array
-	if ( setCookie.GetType() == Anything::eArray ) {
+	if ( setCookie.GetType() == AnyArrayType ) {
 		for (long i = 0; i < setCookie.GetSize(); i++ ) {
 			cookieInfo = setCookie[i].AsString();
 			DoProcessSetCookie(cookieInfo, ctx);

@@ -19,8 +19,8 @@
 static void SuppressListToLower(ROAnything suppressList, Anything &suppressListToLower)
 {
 	const long size = suppressList.GetSize();
-	for (long i = 0; i < size; i++) {
-		if (suppressList[i].GetType() == Anything::eArray) {
+	for (long i = 0; i < size; ++i) {
+		if (suppressList[i].GetType() == AnyArrayType) {
 			SuppressListToLower(suppressList[i], suppressListToLower);
 		} else {
 			String tmp;
@@ -129,7 +129,7 @@ void HTTPHeaderParameterMapper::HandleOneLineForHeaderField(ostream &os, const S
 	os << slotname << ": ";
 	Trace("Header[" << slotname << "]=<" << rvalue.AsCharPtr() << ">");
 	long elSz = rvalue.GetSize();
-	for (long j = 0; j < elSz; j++) {
+	for (long j = 0; j < elSz; ++j) {
 		if ( slotname == "COOKIE" ) {
 			os << NotNull(rvalue.SlotName(j)) << '=';
 		}
@@ -148,7 +148,7 @@ bool HTTPHeaderParameterMapper::HandleMoreLinesForHeaderField(ostream &os, const
 	Trace("Header[" << slotname << "]=<" << rvalue.AsCharPtr() << ">");
 	long elSz = rvalue.GetSize();
 	bool handled = false;
-	for (long j = 0; j < elSz; j++) {
+	for (long j = 0; j < elSz; ++j) {
 		if ( slotname == "SET-COOKIE" ) {
 			handled = true;
 			os << slotname << ": "  << rvalue[j].AsCharPtr("") << ENDL;
@@ -171,7 +171,7 @@ bool HTTPHeaderParameterMapper::DoGetStream(const char *key, ostream &os, Contex
 
 	if ( !headerfields.IsNull() ) {
 		// map a configured set of headerfields
-		for (long i = 0; i < headerfields.GetSize(); i++) {
+		for (long i = 0, szh = headerfields.GetSize(); i < szh; ++i) {
 			String slotname = headerfields.SlotName(i);
 			Anything value;
 			ROAnything rvalue;
@@ -247,7 +247,7 @@ bool HTTPBodyParameterMapper::DoFinalGetStream(const char *key, ostream &os, Con
 	if ( !params.IsNull() ) {
 		// map a configured set of params
 		long bPSz = params.GetSize();
-		for (long i = 0; i < bPSz; i++) {
+		for (long i = 0; i < bPSz; ++i) {
 			const char *lookupVal = params.SlotName(i);
 			if (!lookupVal) {
 				lookupVal = params[i].AsCharPtr("");

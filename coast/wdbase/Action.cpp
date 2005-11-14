@@ -62,9 +62,9 @@ bool Action::ExecAction(String &transitionToken, Context &c, const ROAnything &c
 	StartTrace1(Action.ExecAction, "<" << transitionToken << ">");
 	bool result(false);
 	switch (config.GetType()) {
-		case Anything::eArray: {
+		case AnyArrayType: {
 			long sz = config.GetSize();
-			for (long i = 0; i < sz; i++) {
+			for (long i = 0; i < sz; ++i) {
 				String slotname = config.SlotName(i);
 				if (slotname.Length() > 0) {
 					result = CallAction(slotname, transitionToken, c, config[i]);
@@ -78,7 +78,7 @@ bool Action::ExecAction(String &transitionToken, Context &c, const ROAnything &c
 		}
 		break;
 
-		case Anything::eCharPtr:
+		case AnyCharPtrType:
 			transitionToken = config.AsString();
 			result = CallAction(transitionToken, transitionToken, c, ROAnything());
 			break;

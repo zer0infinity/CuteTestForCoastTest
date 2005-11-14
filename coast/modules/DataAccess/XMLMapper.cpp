@@ -50,7 +50,7 @@ bool XMLMapper::DoPutAny(const char *key, Anything value, Context &ctx, ROAnythi
 	Iterate(value, pathSoFar, slotIndex, slotName, bFound, result);
 	TraceAny(result, "Result");
 #ifdef XML_MAPPER_TRACING
-	for (long l = 0; l < result.GetSize(); l++) {
+	for (long l = 0, sz = result.GetSize(); l < sz; ++l) {
 		Anything verify;
 		value.LookupPath(verify, result[l].AsString(), fDelim, fIndexDelim);
 		TraceAny(verify, "verify");
@@ -71,9 +71,9 @@ bool XMLMapper::Iterate(Anything currentAny, String pathSoFar, long slotIndex, S
 			pathSoFar << fDelim << slotName;
 		}
 	}
-	for ( long l = 0; l < currentAny.GetSize(); l++ ) {
+	for ( long l = 0, sz = currentAny.GetSize(); l < sz; ++l ) {
 		Anything newAny = currentAny;
-		if (newAny.GetType() == Anything::eArray) {
+		if (newAny.GetType() == AnyArrayType) {
 			slotName = newAny.SlotName(l);
 			if (fConfig["Elements"].Contains(slotName)) {
 				bFound = true;

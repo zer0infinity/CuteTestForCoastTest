@@ -41,7 +41,7 @@ void CallRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &con
 ROAnything CallRenderer::IntGetCallee(Context &ctx, ROAnything callee)
 {
 	StartTrace(CallRenderer.IntGetCallee);
-	if (callee.GetType() != Anything::eArray) {
+	if (callee.GetType() != AnyArrayType) {
 		const char *callname = callee.AsCharPtr(0);
 		if (!ctx.Lookup(callname, callee)) {
 			String msg;
@@ -63,7 +63,7 @@ Anything CallRenderer::DoGetPositionalParameters(Context &ctx, const ROAnything 
 {
 	StartTrace(CallRenderer.DoGetPositionalParameters);
 	Anything result;
-	for (long i = 1; i < config.GetSize(); i ++) {
+	for (long i = 1, sz = config.GetSize(); i < sz; ++i) {
 		result[String("$")<<i] = config[i].DeepClone();
 	}
 	return result;
@@ -79,7 +79,7 @@ EagerCallRenderer::~EagerCallRenderer() { }
 Anything EagerCallRenderer::DoGetParameters(Context &ctx, const ROAnything &config)
 {
 	Anything result;
-	for (long i = 0; i < config.GetSize(); i ++) {
+	for (long i = 0, sz = config.GetSize(); i < sz; ++i) {
 		result[config.SlotName(i)] = Renderer::RenderToString(ctx, config[i]);
 	}
 	return result;
@@ -89,7 +89,7 @@ Anything EagerCallRenderer::DoGetPositionalParameters(Context &ctx, const ROAnyt
 {
 	StartTrace(PositionalCallRenderer.DoGetPositionalParameters);
 	Anything result;
-	for (long i = 1; i < config.GetSize(); i ++) {
+	for (long i = 1, sz = config.GetSize(); i < sz; ++i) {
 		result[String("$")<<i] = Renderer::RenderToString(ctx, config[i]);
 	}
 	return result;

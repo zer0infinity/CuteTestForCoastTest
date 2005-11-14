@@ -258,7 +258,7 @@ void BasicTableRenderer::RenderAll(ostream &reply, Context &c, const ROAnything 
 		if (!reportData.IsNull()) {
 			ROAnything sectionConfigs;
 			if (outline.LookupPath(sectionConfigs, "Body")) {
-				for (long i = 0; i < sectionConfigs.GetSize(); i++) {
+				for (long i = 0, szs = sectionConfigs.GetSize(); i < szs; ++i) {
 					ROAnything sectionConfig = sectionConfigs[i];
 					ROAnything key;
 					if (sectionConfig.LookupPath(key, "DataSource")) {
@@ -314,8 +314,8 @@ void BasicTableRenderer::PrintBodySection(const ROAnything &config, int &row, os
 	long     dataSize = 1;
 
 	//check if record-count == 1 or n
-	if ((sectionData.GetType() == Anything::eArray) &&
-		(sectionData[0L].GetType() == Anything::eArray)) {
+	if ((sectionData.GetType() == AnyArrayType) &&
+		(sectionData[0L].GetType() == AnyArrayType)) {
 
 		dataSize = sectionData.GetSize();	// total number of rows
 	}
@@ -332,8 +332,7 @@ void BasicTableRenderer::PrintBodySection(const ROAnything &config, int &row, os
 			RowAccessor *accessors =
 				SetupRowAccessors(config, c, itemConfigs, &rowSize, isBold, true);
 
-			for (long i = 0; i < dataSize; i++) {
-
+			for (long i = 0; i < dataSize; ++i) {
 				// 'sectionData' is expected to either contain an array
 				// of structurally equivalent accociative Anything arrays
 				// (each of which is used to create one row of the table)
@@ -341,7 +340,7 @@ void BasicTableRenderer::PrintBodySection(const ROAnything &config, int &row, os
 				// is used to create one row
 
 				Anything item;
-				if (sectionData[0L].GetType() == Anything::eArray) {
+				if (sectionData[0L].GetType() == AnyArrayType) {
 					item = sectionData[i];
 				} else {
 					item = sectionData;
@@ -373,7 +372,7 @@ RowAccessor *BasicTableRenderer::SetupRowAccessors(const ROAnything &conf, Conte
 	RowAccessor *accessors = new (wdallocator) RowAccessor[(*rowSize)];
 #endif
 
-	for (long i = 0; i < (*rowSize); i++) {
+	for (long i = 0; i < (*rowSize); ++i) {
 		ROAnything elmt = rowMeta[i];				// meta for one element
 		ROAnything fmt, f;
 		if (elmt.LookupPath(f, "FormatCell")) {
@@ -429,7 +428,7 @@ RowAccessor *BasicTableRenderer::SetupRowAccessors(const ROAnything &conf, Conte
 			// arbitrary render is used / a simple string is always used
 			// for a context lookup!
 
-			if (a.GetType() == Anything::eCharPtr) {
+			if (a.GetType() == AnyCharPtrType) {
 				// no renderer set.. -> lookup
 				Anything mutableA = a.DeepClone();
 				accessor.SetConfig(mutableA);
@@ -462,7 +461,7 @@ RowAccessor *BasicTableRenderer::SetupRowAccessors(const ROAnything &conf, Conte
 		} else  if (elmt.LookupPath(a, "UseFastLookup")) {
 
 			// page specific lookup renderer
-			if (a.GetType() == Anything::eCharPtr) {
+			if (a.GetType() == AnyCharPtrType) {
 				Anything config;
 				//	config["LookupName"]= a.AsCharPtr();
 				config.Append(a.AsCharPtr());
@@ -504,7 +503,7 @@ void BasicTableRenderer::PrintRow(int &row, ostream &reply, Context &c,
 {
 	PrintNewLine(row, reply, rowColors, invertHeaders);
 
-	for (long i = 0; i < rowSize; i++) {
+	for (long i = 0; i < rowSize; ++i) {
 		RowAccessor &accessor = accessors[i];
 
 		if (accessor.GetNewline()) {							// create new line

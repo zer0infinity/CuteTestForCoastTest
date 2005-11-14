@@ -34,7 +34,7 @@ bool HTMLComparer::Compare(String &report)
 	report << "Difference in ";
 	long sz = fPathStack.GetSize();
 	TraceAny(fPathStack, "Pathstack");
-	for (long i = sz - 1; i >= 0; i--) {
+	for (long i = sz - 1; i >= 0; --i) {
 		report << fPathStack[i].AsString("");
 		if (i > 0) {
 			report << ".";
@@ -49,13 +49,13 @@ bool HTMLComparer::DoCompareAny(Anything &master, Anything &slave)
 {
 	StartTrace(HTMLComparer.DoCompareAny);
 
-	Anything::EType masterType = master.GetType();
-	Anything::EType slaveType = slave.GetType();
+	AnyImplType masterType = master.GetType();
+	AnyImplType slaveType = slave.GetType();
 	if (masterType != slaveType || master.GetSize() != slave.GetSize()) {
 		return false;
 	}
 
-	if (masterType == Anything::eArray) {
+	if (masterType == AnyArrayType) {
 		return DoCompareAnyArray(master, slave);
 	} else {
 		String masterString = master.AsString("X");
@@ -86,7 +86,7 @@ bool HTMLComparer::DoCompareAnyArray(Anything &master, Anything &slave)
 	StartTrace(HTMLComparer.DoCompareAnyArray);
 
 	long sz = master.GetSize();
-	for (long i = 0; i < sz; i++) {
+	for (long i = 0; i < sz; ++i) {
 		Anything masterSlot = master[i];
 		String masterSlotName = master.SlotName(i);
 		Anything slaveSlot = slave[i];

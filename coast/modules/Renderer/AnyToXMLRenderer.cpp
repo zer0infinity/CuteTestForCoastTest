@@ -69,7 +69,7 @@ void AnyToXMLRenderer::RenderNamedChilds(ostream &reply, ROAnything &list)
 	StartTrace(AnyToXMLRenderer.RenderNamedChilds);
 
 	long sz = list.GetSize();
-	for ( long i = 0; i < sz; i++) {
+	for ( long i = 0; i < sz; ++i) {
 		String slotname = list.SlotName(i);
 		if (!slotname.Length()) {
 			SysLog::Error("Unnamed child in RenderNamedChilds found");
@@ -82,7 +82,7 @@ void AnyToXMLRenderer::RenderNamedChilds(ostream &reply, ROAnything &list)
 			RenderUnnamedChilds(reply, slotname, element);
 		} else {
 			reply << "<" << slotname << ">";
-			if (element.GetType() == Anything::eArray) {
+			if (element.GetType() == AnyArrayType) {
 				// Childs with slotnames
 				RenderNamedChilds(reply, element);
 			} else {
@@ -98,15 +98,14 @@ void AnyToXMLRenderer::RenderUnnamedChilds(ostream &reply, String &tagname, ROAn
 	StartTrace(AnyToXMLRenderer.RenderUnnamedChilds);
 
 	long sz = list.GetSize();
-	for ( long i = 0; i < sz; i++) {
-
+	for ( long i = 0; i < sz; ++i) {
 		ROAnything element = list[i];
 		if (HasUnnamedChilds(element)) {
 			// Unnamed childs -> should not happen
 			SysLog::Error("Unnamed childs of an unnamed child found");
 		} else {
 			reply << "<" << tagname << ">";
-			if (element.GetType() == Anything::eArray) {
+			if (element.GetType() == AnyArrayType) {
 				// Childs with slotnames
 				RenderNamedChilds(reply, element);
 			} else {
@@ -119,6 +118,6 @@ void AnyToXMLRenderer::RenderUnnamedChilds(ostream &reply, String &tagname, ROAn
 
 bool AnyToXMLRenderer::HasUnnamedChilds(ROAnything element)
 {
-	return (element.GetType() == Anything::eArray && !element.SlotName(0));
+	return (element.GetType() == AnyArrayType && !element.SlotName(0));
 }
 

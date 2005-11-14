@@ -68,7 +68,7 @@ void ConfiguredActionTest::RunTestCases()
 		String warning;
 		warning << "ConfiguredActionTest not complete : Running only " << runOnlySz << " Testcases";
 		t_assertm(false, (const char *)warning);
-		for (long i = 0; i < runOnlySz; i++) {
+		for (long i = 0; i < runOnlySz; ++i) {
 			String testCaseName = fConfig["RunOnly"][i].AsString("Unknown");
 			testCases[testCaseName] = fTestCaseConfig[testCaseName];
 		}
@@ -78,7 +78,7 @@ void ConfiguredActionTest::RunTestCases()
 	}
 
 	long sz = testCases.GetSize();
-	for (long i = 0; i < sz; i++) {
+	for (long i = 0; i < sz; ++i) {
 		String testCaseName = testCases.SlotName(i);
 		DoTest(PrepareConfig(testCases[i]), testCaseName);
 	}
@@ -149,7 +149,7 @@ void ConfiguredActionTest::DoCheckStore(ROAnything anyInput, ROAnything anyMaste
 
 		ROAnything luResult;
 		if ( !pathList.IsNull() ) {
-			for (long i = 0; i < pathList.GetSize(); i++) {
+			for (long i = 0, sz = pathList.GetSize(); i < sz; ++i) {
 				if ( anyInput.LookupPath(luResult, pathList[i].AsCharPtr()) ) {
 					// error, if lookup succeeds
 					String strfail(testCaseName);
@@ -165,10 +165,10 @@ void ConfiguredActionTest::GeneratePathList(Anything &pathList, ROAnything &notE
 {
 	StartTrace(ConfiguredActionTest.GeneratePathList);
 
-	for (long i = 0; i < notExpected.GetSize(); i++) {
+	for (long i = 0, sz = notExpected.GetSize(); i < sz; ++i) {
 		String path(pathSoFar);
 		path << notExpected.SlotName(i);
-		if (notExpected[i].GetType() == Anything::eArray ) {
+		if (notExpected[i].GetType() == AnyArrayType ) {
 			// continue recursively
 			ROAnything next(notExpected[i]);
 			path << ".";

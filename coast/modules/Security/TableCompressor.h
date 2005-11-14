@@ -70,7 +70,7 @@ protected:
 	//!expands state at index with information found at other places in config
 	void ExpandConfig(long index, Anything &state, ROAnything config);
 
-	//!installs a part of found config in state if part is Anything::eArray it descents recursively
+	//!installs a part of found config in state if part is AnyArrayType it descents recursively
 	void InstallConfig(long index, Anything &state, ROAnything part);
 
 	//!calculates a short key "a" "ab" out of the position in the list

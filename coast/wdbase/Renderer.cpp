@@ -69,9 +69,9 @@ void Renderer::Render(ostream &reply, Context &c, const ROAnything &info)
 	//----------------------------------------
 	// if info contains a simple type we render
 	// it directly onto the output reply
-	if (info.GetType() == Anything::eCharPtr ||
-		info.GetType() == Anything::eLong ||
-		info.GetType() == Anything::eDouble) {
+	if (info.GetType() == AnyCharPtrType ||
+		info.GetType() == AnyLongType ||
+		info.GetType() == AnyDoubleType) {
 		long len;
 		const char *buf = info.AsCharPtr("", len);
 		Trace( "Basic renderable leaf found--> " << NotNull(buf) );
@@ -83,7 +83,7 @@ void Renderer::Render(ostream &reply, Context &c, const ROAnything &info)
 	// if info is an array we assume it is a
 	// renderer specification
 	Renderer *r = 0; // this is our marker, makes logic simpler (PS)
-	if (info.GetType() == Anything::eArray) {
+	if (info.GetType() == AnyArrayType) {
 		Trace( "Render, is eArray" );
 		// Check for old style configuration
 		if (info.IsDefined("Type")) {
@@ -119,7 +119,7 @@ void Renderer::Render(ostream &reply, Context &c, const ROAnything &info)
 			Trace( "Render, NEW Type style" );
 
 			// treat as a collection of renderer specifications, Sequence Renderer
-			for (long i = 0, size = info.GetSize(); i < size; i++) {
+			for (long i = 0, size = info.GetSize(); i < size; ++i) {
 				// Check if slot has a name and if this is a renderer
 				// otherwise interpret the slot content
 				String slotname(info.SlotName(i));
@@ -146,10 +146,10 @@ void Renderer::Render(ostream &reply, Context &c, const ROAnything &info)
 						SysLog::Warning(logMsg);
 					}
 					Render(reply, c, info[i]);
-				} // end not a renderername or no slotname
-			} // loop over all slots
-		} // else no /Type defined
-	} // info.GetType() == Anything::eArray
+				}
+			}
+		}
+	}
 }
 
 void Renderer::RenderOnString(String &s, Context &c, const ROAnything &info)
@@ -191,8 +191,8 @@ void Renderer::PrintOptions2(ostream &reply, const ROAnything &any)
 {
 	if (any.IsDefined("Options")) {
 		ROAnything layout = any["Options"];
-		if (layout.GetType() == Anything::eArray) {
-			for (long i = 0; i < layout.GetSize(); i++) {
+		if (layout.GetType() == AnyArrayType) {
+			for (long i = 0, sz = layout.GetSize(); i < sz; ++i) {
 				reply << ' ' << layout[i].AsCharPtr("");
 			}
 		} else {

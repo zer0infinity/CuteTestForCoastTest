@@ -57,7 +57,7 @@ void TableCompressor::DoCompress(String &scrambledText, const Anything &dataIn)
 
 //	 compress it by short keys in table
 	long dataSz = dataIn.GetSize();
-	for (long i = 0; i < dataSz; i++) {
+	for (long i = 0; i < dataSz; ++i) {
 		const char *slotname = dataIn.SlotName(i);
 		if (slotname) {
 			if ( keyTable.IsDefined(slotname) ) {
@@ -102,7 +102,7 @@ bool TableCompressor::DoExpand(Anything &dataOut, const String &scrambledText)
 	if ( dataIn.Import(is) ) {
 		// expand it to long internal keys
 		long dataSz = dataIn.GetSize();
-		for (long i = 0; i < dataSz; i++) {
+		for (long i = 0; i < dataSz; ++i) {
 			const char *slotname = dataIn.SlotName(i);
 			if (slotname) {
 				if ( keyTable.IsDefined(slotname) ) {
@@ -142,16 +142,16 @@ void TableCompressor::MakeTable(ROAnything baseState, const char *tag, ROAnythin
 		Anything aSlot;
 		const char *slotname = 0;
 
-		for (i = sz - 1; i >= 0; i--) {
+		for (i = sz - 1; i >= 0; --i) {
 			aSlot = state[i];
-			if ( aSlot.GetType() == Anything::eArray ) {
+			if ( aSlot.GetType() == AnyArrayType ) {
 				ExpandConfig(i, state, config);
 			}
 		}
 
-		for (i = 0; i < sz; i++) {
+		for (i = 0; i < sz; ++i) {
 			aSlot = state[i];
-			if ( aSlot.GetType() == Anything::eCharPtr ) {
+			if ( aSlot.GetType() == AnyCharPtrType ) {
 				slotname = aSlot.AsCharPtr("");
 			}
 			if ( slotname ) {
@@ -173,7 +173,7 @@ void TableCompressor::MakeReverseTable(ROAnything state, const char *tag, const 
 		Anything revKeyTable;
 		const char *slotname;
 
-		for (long i = 0; i < sz; i++) {
+		for (long i = 0; i < sz; ++i) {
 			slotname = state.SlotName(i);
 			revKeyTable[state[i].AsCharPtr("")] = slotname;
 		}
@@ -207,13 +207,15 @@ void TableCompressor::InstallConfig(long index, Anything &state, ROAnything part
 	TraceAny(part, "Part: ");
 	long sz = part.GetSize();
 	const char *slotname = 0;
-	for (long i = 0; i < sz; i++) {
+	for (long i = 0; i < sz; ++i) {
 		slotname = part.SlotName(i);
 		if ( slotname ) {
-			state[index++] = slotname;
+			state[index] = slotname;
+			++index;
 			InstallConfig(index, state, part[i]);
-		} else if (part[i].GetType() == Anything::eCharPtr) {
-			state[index++] = part[i].AsCharPtr();
+		} else if (part[i].GetType() == AnyCharPtrType) {
+			state[index] = part[i].AsCharPtr();
+			++index;
 		}
 		slotname = 0;
 	}

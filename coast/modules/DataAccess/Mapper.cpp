@@ -258,7 +258,7 @@ bool ParameterMapper::DoGetAny(const char *key, Anything &value, Context &ctx, R
 		return DoFinalGetAny(key, value, ctx);
 	}
 
-	if (script.GetType() != Anything::eArray) {
+	if (script.GetType() != AnyArrayType) {
 		// we found a simple value, append it, Append because of scripting
 		Trace("Script is a simple value:" << script.AsString());
 		PlaceIntoAnyOrAppendIfNotEmpty(value, script);
@@ -269,7 +269,7 @@ bool ParameterMapper::DoGetAny(const char *key, Anything &value, Context &ctx, R
 	// now for the scripting case, similar to Renderers
 	// interpret as long as you get return values. stop if you don't
 	bool retval = true;
-	for (long i = 0; retval && i < script.GetSize(); i++) {
+	for (long i = 0, sz = script.GetSize(); retval && i < sz; ++i) {
 		String slotname(script.SlotName(i));
 		ParameterMapper *m;
 		if (slotname.Length() <= 0) {
@@ -304,7 +304,7 @@ bool ParameterMapper::DoGetStream(const char *key, ostream &os, Context &ctx, RO
 		return DoFinalGetStream(key, os, ctx);
 	}
 
-	if (script.GetType() != Anything::eArray) {
+	if (script.GetType() != AnyArrayType) {
 		// we found a simple value, append it, Append because of scripting
 		Trace("Script is a simple value, write it on stream...");
 		os << script.AsCharPtr();
@@ -314,7 +314,7 @@ bool ParameterMapper::DoGetStream(const char *key, ostream &os, Context &ctx, RO
 	// now for the scripting case, similar to Renderers
 	TraceAny(script, "Got a script. Starting interpretation foreach slot...");
 	bool retval = true;
-	for (long i = 0; retval && i < script.GetSize(); i++) {
+	for (long i = 0, sz = script.GetSize(); retval && i < sz; ++i) {
 		String slotname(script.SlotName(i));
 		ParameterMapper *m;
 		if (slotname.Length() <= 0) {
@@ -359,7 +359,7 @@ bool ParameterMapper::DoFinalGetAny(const char *key, Anything &value, Context &c
 
 static void PlaceAnyOnStream(ostream &os, ROAnything value)
 {
-	if (value.GetType() == Anything::eArray) {
+	if (value.GetType() == AnyArrayType) {
 		os << value;
 	} else {
 		os << value.AsCharPtr("");
@@ -538,7 +538,7 @@ bool ResultMapper::DoPutAny(const char *key, Anything value, Context &ctx, ROAny
 		// no more script to run
 		Trace("Script is empty or null...");
 		retval = DoFinalPutAny(key, value, ctx);
-	} else if (script.GetType() != Anything::eArray) {
+	} else if (script.GetType() != AnyArrayType) {
 		// we found a simple value in script use it as a new key in final put
 		Trace("Script is a simple value:" << script.AsString());
 		retval = DoFinalPutAny(script.AsCharPtr(key), value, ctx);
@@ -546,7 +546,7 @@ bool ResultMapper::DoPutAny(const char *key, Anything value, Context &ctx, ROAny
 		// now for the scripting case, similar to Renderers
 		TraceAny(script, "Got a script. Starting interpretation foreach slot...");
 
-		for (long i = 0; retval && i < script.GetSize(); i++) {
+		for (long i = 0, sz = script.GetSize(); retval && i < sz; ++i) {
 			String slotname(script.SlotName(i));
 			ResultMapper *m;
 			ROAnything roaScript(script[i]);
@@ -596,7 +596,7 @@ bool ResultMapper::DoPutStream(const char *key, istream &is, Context &ctx, ROAny
 		// no more script to run
 		Trace("Script is empty or null...");
 		retval = DoFinalPutStream(key, is, ctx);
-	} else if (script.GetType() != Anything::eArray) {
+	} else if (script.GetType() != AnyArrayType) {
 		// we found a simple value in script use it as a new key in final put
 		Trace("Script is a simple value:" << script.AsString());
 		retval = DoFinalPutStream(script.AsCharPtr(key), is, ctx);
@@ -604,7 +604,7 @@ bool ResultMapper::DoPutStream(const char *key, istream &is, Context &ctx, ROAny
 		// now for the scripting case, similar to Renderers
 		TraceAny(script, "Got a script. Starting interpretation foreach slot...");
 
-		for (long i = 0; retval && i < script.GetSize(); i++) {
+		for (long i = 0, sz = script.GetSize(); retval && i < sz; ++i) {
 			String slotname(script.SlotName(i));
 			ResultMapper *m;
 			ROAnything roaScript(script[i]);
@@ -765,8 +765,8 @@ bool ConfigMapper::DoGetAny(const char *key, Anything &value, Context &ctx, ROAn
 
 void ConfigMapper::EvaluateConfig(ROAnything config, Anything &value, Context &ctx)
 {
-	if (config.GetType() == Anything::eArray) {
-		for (int i = 0; i < config.GetSize(); i++) {
+	if (config.GetType() == AnyArrayType) {
+		for (int i = 0, sz = config.GetSize(); i < sz; ++i) {
 			if ( String(config.SlotName(i)).IsEqual("MapperScript") ) {
 				// must start scripting again (no key given)
 				EagerParameterMapper epm("temp");

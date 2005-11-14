@@ -75,12 +75,12 @@ void HTTPMimeHeaderMapper::CorrectDateFormats(Anything &header)
 		"date",
 		"expires"
 	};
-	for (int i = 0; i < (int)(sizeof(keylist) / sizeof(keylist[0])); i++) {
+	for (int i = 0; i < (int)(sizeof(keylist) / sizeof(keylist[0])); ++i) {
 		const char *key = keylist[i];
-		if (header.IsDefined(key) && header[key].GetType() == Anything::eArray) {
+		if (header.IsDefined(key) && header[key].GetType() == AnyArrayType) {
 			String newvalue;
 			Anything oldvalue(header[key]);
-			for (long j = 0L; j < oldvalue.GetSize(); j ++) {
+			for (long j = 0L, sz = oldvalue.GetSize(); j < sz; ++j) {
 				if (newvalue.Length() > 0) {
 					newvalue.Append(", ");
 				}
@@ -93,7 +93,7 @@ void HTTPMimeHeaderMapper::CorrectDateFormats(Anything &header)
 
 void HTTPMimeHeaderMapper::SuppressHeaders(Anything &header, ROAnything &suppresslist)
 {
-	for (long i = 0; i < suppresslist.GetSize(); i++) {
+	for (long i = 0, sz = suppresslist.GetSize(); i < sz; ++i) {
 		String keytosuppress = suppresslist[i].AsCharPtr();
 		keytosuppress.ToLower();
 		if (header.IsDefined(keytosuppress)) {
@@ -104,7 +104,7 @@ void HTTPMimeHeaderMapper::SuppressHeaders(Anything &header, ROAnything &suppres
 
 void HTTPMimeHeaderMapper::AddHeaders(Anything &header, ROAnything &addlist)
 {
-	for (long i = 0; i < addlist.GetSize(); i++) {
+	for (long i = 0, sz = addlist.GetSize(); i < sz; ++i) {
 		String key(addlist.SlotName(i));
 		String hdr(addlist[i].AsString());
 		// normalize key to lower-type (header info stays as is)

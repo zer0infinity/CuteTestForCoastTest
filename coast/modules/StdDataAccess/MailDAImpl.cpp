@@ -390,10 +390,10 @@ SMTPState *MailRCPTState::HandleState(Anything fMsgData, iostream &Ios)
 		return FindSMTPState("MailERRORState");
 	}
 
-	if ( rcpts.GetType() == Anything::eCharPtr ) {
+	if ( rcpts.GetType() == AnyCharPtrType ) {
 		return SMTPState::HandleState(fMsgData, Ios);
 	}
-	if ( rcpts.GetType() == Anything::eArray ) {
+	if ( rcpts.GetType() == AnyArrayType ) {
 		SMTPState *st = this;
 		SMTPState *error = FindSMTPState("MailERRORState");
 		long i = 0;
@@ -401,7 +401,7 @@ SMTPState *MailRCPTState::HandleState(Anything fMsgData, iostream &Ios)
 			Anything a;
 			a["To"] = rcpts[i];
 			st = SMTPState::HandleState(a, Ios);
-			i++;
+			++i;
 		}
 		return st;
 	}
@@ -449,8 +449,8 @@ bool MailSENDState::ProduceMsg(Anything &context, ostream &os)
 	os << "From: ";
 	os << context["From"].AsCharPtr("");
 	os << "\nTo: ";
-	if ( context["To"].GetType() == Anything::eArray ) {
-		for ( long i = 0; i < context["To"].GetSize(); i++) {
+	if ( context["To"].GetType() == AnyArrayType ) {
+		for ( long i = 0, sz = context["To"].GetSize(); i < sz; ++i) {
 			os << context["To"][i].AsCharPtr("");
 			if ( i < context["To"].GetSize() - 1 ) {
 				os << ", ";
@@ -494,7 +494,7 @@ void MailSENDState::ProduceMultipartMsg(Anything &context, ostream &os)
 
 	Encoder *base64 = Encoder::FindEncoder("Base64Regular");
 
-	for (long i = 0; i < attach.GetSize(); i++) {
+	for (long i = 0, sz = attach.GetSize(); i < sz; ++i) {
 		String name(attach[i]["FileName"].AsString("noname"));
 
 		// the following might prove inefficient for large files...

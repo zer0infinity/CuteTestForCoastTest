@@ -224,7 +224,7 @@ Anything TemplateParser::ProcessArgs(const String &renderer, const String &args)
 		IStringStream is(args);
 		readit.Import(is);
 		// now we need to adjust it to become an array if it isn't already:
-		if (Anything::eArray != readit.GetType()) {
+		if (AnyArrayType != readit.GetType()) {
 			aargs[0L] = readit;
 		} else {
 			aargs = readit;
@@ -328,9 +328,9 @@ void TemplateParser::CompactHTMLBlocks(Anything &cache)
 	Anything a(cache.GetAllocator());
 	Anything compactedCache(cache.GetAllocator());
 	String htmlBlock;
-	for (long i = 0; i < cache.GetSize(); i++) {
+	for (long i = 0, sz = cache.GetSize(); i < sz; ++i) {
 		a = cache[i];
-		if (a.GetType() == Anything::eCharPtr) {
+		if (a.GetType() == AnyCharPtrType) {
 			htmlBlock.Append(a.AsCharPtr(""));
 		} else {
 			// otherwise it is a renderer spec in an AnyArray
@@ -404,7 +404,7 @@ int TemplateParser::Get()
 	if (fReader && fReader->good()) {
 		c = fReader->get();
 		if ('\n' == c) {
-			fLine++;
+			++fLine;
 		}
 	}
 	return c;
@@ -424,7 +424,7 @@ void TemplateParser::PutBack(char c)
 		fReader->putback(c);
 	}
 	if ('\n' == c) {
-		fLine--;
+		--fLine;
 	}
 }
 
@@ -474,7 +474,7 @@ bool TemplateParser::ParseTag(String &tag, Anything &tagAttributes)
 				String name;
 				Anything value;
 				if (ParseAttribute(name, value)) {
-					if (Anything::eArray == value.GetType()) {
+					if (AnyArrayType == value.GetType()) {
 						needsrendering = true;
 					}
 
@@ -583,11 +583,11 @@ Anything TemplateParser::RenderTagAsLiteral(String &tagName, Anything &tagAttrib
 	// otherwise, we can place it literally
 	String tag("<");
 	tag.Append(tagName);
-	for (long i = 0; i < tagAttributes.GetSize(); i++) {
+	for (long i = 0, sz = tagAttributes.GetSize(); i < sz; ++i) {
 		tag.Append(' ');
 		if (tagAttributes.SlotName(i)) {
 			tag.Append(tagAttributes.SlotName(i));
-			if (Anything::eCharPtr == tagAttributes[i].GetType()) {
+			if (AnyCharPtrType == tagAttributes[i].GetType()) {
 				tag.Append("=\"");
 				tag.Append(tagAttributes[i].AsCharPtr(""));
 				tag.Append('"');
@@ -751,10 +751,10 @@ void TemplateParser::ParseAnything(int endChar)
 		}
 		switch (c) {
 			case '{':
-				bl++;
+				++bl;
 				break;
 			case '}':
-				bl--;
+				--bl;
 				break;
 			case '"': // skip string without considering braces
 				collectany.Append(char(c));
