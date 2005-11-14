@@ -703,6 +703,7 @@
 								/BindName "cn=Directory Manager"
 								/BindPW "all2test"
 								/MapUTF8 1
+								/PlainBinaryValues 0
 								/PooledConnections 1
 								/MaxConnections 2
 								/TryAutoRebind 1
