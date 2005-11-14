@@ -28,7 +28,6 @@ LDAPConnection::LDAPConnection(ROAnything connectionParams)
 	// A reasonable connection timeout default
 	fConnectionTimeout = connectionParams["ConnectionTimeout"].AsLong(10);
 	fConnectionTimeout *= 1000;
-	fMapUTF8 = connectionParams["MapUTF8"].AsBool(true);
 	TraceAny(connectionParams, "ConnectionParams");
 	fHandle = (LDAP *) NULL;
 }
@@ -274,7 +273,7 @@ bool LDAPConnection::WaitForResult(int msgId, Anything &result, LDAPErrorHandler
 				success = true;
 
 				// transform LDAPResult into an Anything with Meta Information
-				TransformResult(ldapResult, result, eh.GetQueryParams());
+				TransformResult(ldapResult, result, eh);
 
 				// add extra flag to inform client, if sizelimit was exceeded
 				if (errCode == LDAP_SIZELIMIT_EXCEEDED) {
@@ -315,10 +314,11 @@ void LDAPConnection::HandleWait4ResultError(int msgId, String &errMsg, LDAPError
 	DoHandleWait4ResultError(eh);
 }
 
-void LDAPConnection::TransformResult(LDAPMessage *ldapResult, Anything &result, Anything query)
+void LDAPConnection::TransformResult(LDAPMessage *ldapResult, Anything &result, LDAPErrorHandler &eh)
 {
 	StartTrace(LDAPConnection.TransformResult);
-	Trace("Do UTF8 to HTML mapping: " << fMapUTF8);
+	TraceAny(eh.GetQueryParams(), "QueryParams");
+	TraceAny(eh.GetConnectionParams(), "ConnectionParams");
 
 	String type = GetTypeStr(ldap_msgtype(ldapResult));
 	Trace("Type of result: " << type);
@@ -326,7 +326,7 @@ void LDAPConnection::TransformResult(LDAPMessage *ldapResult, Anything &result, 
 	if (type.Length() > 0) {
 		// meta information about the result
 		result["Type"] = type;
-		result["Query"] = query;
+		result["Query"] = eh.GetQueryParams().DeepClone();
 		int nofResults = ldap_count_messages(fHandle, ldapResult);
 		result["NumberOfResultMessages"] = nofResults;
 		int nofEntries = ldap_count_entries(fHandle, ldapResult);
@@ -376,9 +376,9 @@ void LDAPConnection::TransformResult(LDAPMessage *ldapResult, Anything &result, 
 					for (int i = 0; i < nofVals; ++i) {
 						valStr = String((void *)vals[i]->bv_val, (long)vals[i]->bv_len);
 
-						// Map UTF8-chars?
-						MapUTF8Chars(valStr);
-
+						if ( !eh.GetConnectionParams()["PlainBinaryValues"].AsBool(false) ) {
+							MapUTF8Chars(valStr, eh.GetConnectionParams()["MapUTF8"].AsBool(true));
+						}
 						if (i == 0) {
 							entries[dn][attrString] = valStr;
 						} else {
@@ -438,10 +438,10 @@ bool LDAPConnection::Disconnect(LDAP *handle)
 	return true;
 }
 
-void LDAPConnection::MapUTF8Chars(String &str)
+void LDAPConnection::MapUTF8Chars(String &str, bool bMapUTF8)
 {
 	StartTrace(LDAPConnection.MapUTF8Chars);
-	// kgu: the following is legacy code from the old system
+	Trace("Do UTF8 to HTML mapping: " << (bMapUTF8 ? "yes" : "no"));
 
 	String result;
 	for (long i = 0; i < str.Length(); ) {
@@ -450,7 +450,7 @@ void LDAPConnection::MapUTF8Chars(String &str)
 		unsigned long utfChar = ldap_utf8getcc(&theChar);
 		i += (theChar - theStartChar); // one utf8 symbol might be several characters
 
-		if ( fMapUTF8 ) {
+		if ( bMapUTF8 ) {
 			switch (utfChar) {
 				case 'Æ':
 				case 252:
@@ -515,7 +515,8 @@ void LDAPConnection::MapUTF8Chars(String &str)
 					result.Append((char)utfChar);
 			}
 		} else {
-			// undo UTF8-encoding
+			// append UTF8 like normal character
+			// might lead to loss of data!
 			result.Append((char)utfChar);
 		}
 	}

@@ -80,7 +80,6 @@ protected:
 	int			fConnectionTimeout;
 	int			fSearchTimeout;
 	LDAP		*fHandle;
-	bool		fMapUTF8;
 
 	//! Release handle, eg. Disconnect
 	virtual bool DoReleaseHandleInfo();
@@ -118,7 +117,7 @@ protected:
 
 	//! transforms ldapMessage (i.e. result) into an Anything
 	//! ALL attribute names are normalized to lowercase!!
-	void TransformResult(LDAPMessage *ldapResult, Anything &result, Anything qp);
+	void TransformResult(LDAPMessage *ldapResult, Anything &result, LDAPErrorHandler &eh);
 
 	//! init connection
 	LDAP *Init(LDAPErrorHandler &eh);
@@ -135,7 +134,7 @@ protected:
 private:
 	//! converts textual attribute values from UTF-8 to HTML format
 	//! (LDAPv3 uses UTF-8). conversion is changes the passed string.
-	void MapUTF8Chars(String &str);
+	void MapUTF8Chars(String &str, bool bMapUTF8);
 
 	//! returns a human readable string describing the message type code
 	String GetTypeStr(int msgType);
