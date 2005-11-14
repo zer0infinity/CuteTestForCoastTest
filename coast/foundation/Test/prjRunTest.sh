@@ -23,4 +23,5 @@ function cleanupTest
 	echo
 	# delete generated files
 	rm -f include.any config/PipeExecutorTest.txt
+	rm -f tmp/*.res tmp/*.tst tmp/*.txt testout2.txt
 }
