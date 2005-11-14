@@ -136,19 +136,18 @@ void ErrorHandlerTest::testParamAccess()
 	StartTrace(ErrorHandlerTest.testParamAccess);
 
 	Anything qp, cp;
-	Anything rqp, rcp;
+	ROAnything rqp, rcp;
 	LDAPErrorHandler eh(*fCtx, fGet, fPut, "TestParamAccess");
-	String notFound("None available, sorry.");
 
 	// just a dummy slot for each
 	qp["Base"] = "cn=CH,dc=any.server.com";
 	cp["Server"] = "any.server.com";
 
 	rqp = eh.GetQueryParams();
-	assertEqualm(notFound, rqp.AsString(), "Found query params, but shouldn't!");
+	t_assertm( rqp.IsNull() , "Found query params, but shouldn't!");
 
 	rcp = eh.GetConnectionParams();
-	assertEqualm(notFound, rcp.AsString(), "Found connection params, but shouldn't!");
+	t_assertm( rcp.IsNull(), "Found connection params, but shouldn't!");
 
 	eh.PutConnectionParams(cp);
 	rcp = eh.GetConnectionParams();
