@@ -246,7 +246,7 @@ void GenericXMLParserTest::configuredTests()
 	TString cName(tConfig.SlotName(0L));
 	for (long i = 0; i < tConfig.GetSize(); i++, cConfig = tConfig[i], cName = tConfig.SlotName(i)) {
 		String strInput;
-		if ( cConfig["Input"].GetType() == Anything::eArray ) {
+		if ( cConfig["Input"].GetType() == AnyArrayType ) {
 			for (long j = 0; j < cConfig["Input"].GetSize(); j++) {
 				strInput << cConfig["Input"][j].AsString();
 			}

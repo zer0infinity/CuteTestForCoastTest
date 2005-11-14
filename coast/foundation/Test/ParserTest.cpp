@@ -174,35 +174,35 @@ void  ParserTest::scanAnything( Anything any0 )
 		slotNm.Append( "; Type:" );
 
 		switch ( anyTest.GetType() ) {
-			case Anything::eLong: {
+			case AnyLongType: {
 				slotNm.Append( "eLong" );
 				slotNm.Append( "; Value: " );
 				ParserTest::anyOutput[ (const char *)slotNm ] = anyTest.AsLong();
 			}
 			break;
 
-			case Anything::eDouble: {
+			case AnyDoubleType: {
 				slotNm.Append( "eDouble" );
 				slotNm.Append( "; Value: " );
 				ParserTest::anyOutput[ (const char *)slotNm ] = anyTest.AsDouble();
 			}
 			break;
 
-			case Anything::eNull: {
+			case AnyNullType: {
 				slotNm.Append( "eNull" );
 				slotNm.Append( "; Value: " );
 				ParserTest::anyOutput[ (const char *)slotNm ] = "NULL";
 			}
 			break;
 
-			case Anything::eCharPtr: {
+			case AnyCharPtrType: {
 				slotNm.Append( "eCharPtr" );
 				slotNm.Append( "; Value: " );
 				ParserTest::anyOutput[ (const char *)slotNm ] = anyTest.AsCharPtr();
 			}
 			break;
 
-			case Anything::eArray: {
+			case AnyArrayType: {
 				slotNm.Append( "eArray" );
 				slotNm.Append( "; Value: " );
 				ParserTest::anyOutput[ (const char *)slotNm ] = "...";
@@ -210,14 +210,14 @@ void  ParserTest::scanAnything( Anything any0 )
 			}
 			break;
 
-			case Anything::eVoidBuf: {
+			case AnyVoidBufType: {
 				slotNm.Append( "eVoidBuf" );
 				slotNm.Append( "; Value: " );
 				ParserTest::anyOutput[ (const char *)slotNm ] = anyTest.AsCharPtr();
 			}
 			break;
 
-			case Anything::eObject: {
+			case AnyObjectType: {
 				slotNm.Append( "eObject" );
 				slotNm.Append( "; Value: " );
 				ParserTest::anyOutput[ (const char *)slotNm ] = anyTest;
@@ -256,7 +256,7 @@ void ParserTest::IntParseSimpleTypeLong(const String &inp, long exp)
 
 	IStringStream is0(inp);
 	anyTest.Import( is0 );
-	t_assert( anyTest.GetType() == Anything::eLong );
+	t_assert( anyTest.GetType() == AnyLongType );
 	assertEqual(exp, anyTest.AsLong());
 	assertEqual(1,  anyTest.GetSize());
 }
@@ -280,21 +280,21 @@ void ParserTest::parseSimpleTypeLong ()
 	IStringStream is4(input4);
 	anyTest.Import( is4 ); // mustn't crash
 	//t_assert( anyTest.AsLong() == 1316134911 ); // bad test result platform dependant
-	t_assert( anyTest.GetType() == Anything::eLong );
+	t_assert( anyTest.GetType() == AnyLongType );
 	t_assert( anyTest.GetSize() == 1 );
 
 	String input5 		= "-9999999999999";
 	IStringStream is5(input5);
 	anyTest.Import( is5 );// mustn't crash
 	//t_assert( anyTest.AsLong() == -1316134911 );// bad test result platform dependant
-	t_assert( anyTest.GetType() == Anything::eLong );
+	t_assert( anyTest.GetType() == AnyLongType );
 	t_assert( anyTest.GetSize() == 1 );
 
 	String inputx = "0xfffffffe";
 	IStringStream isx(inputx);
 	anyTest.Import( isx );
 	assertEqual(0xfffffffe, anyTest.AsLong(0));
-	t_assert( anyTest.GetType() == Anything::eLong );
+	t_assert( anyTest.GetType() == AnyLongType );
 	t_assert( anyTest.GetSize() == 1 );
 
 }
@@ -307,7 +307,7 @@ void ParserTest::parseSimpleTypeDouble ()
 	IStringStream is0(input0);
 	anyTest.Import( is0 );
 	t_assert( anyTest.AsDouble() == 0 );
-	t_assert( anyTest.GetType() == Anything::eDouble );
+	t_assert( anyTest.GetType() == AnyDoubleType );
 	t_assert( anyTest.GetSize() == 1 );
 
 #ifndef __370__
@@ -324,7 +324,7 @@ void ParserTest::parseSimpleTypeDouble ()
 	t_assert( anyTest.AsDouble() == 1.0123456789E+30 );
 #endif
 
-	t_assert( anyTest.GetType() == Anything::eDouble );
+	t_assert( anyTest.GetType() == AnyDoubleType );
 	t_assert( anyTest.GetSize() == 1 );
 
 #ifndef __370__
@@ -340,7 +340,7 @@ void ParserTest::parseSimpleTypeDouble ()
 	t_assert( anyTest.AsDouble() == -1.0123456789E+30 );
 #endif
 
-	t_assert( anyTest.GetType() == Anything::eDouble );
+	t_assert( anyTest.GetType() == AnyDoubleType );
 	t_assert( anyTest.GetSize() == 1 );
 
 #ifndef __370__
@@ -356,7 +356,7 @@ void ParserTest::parseSimpleTypeDouble ()
 	t_assert( anyTest.AsDouble() == 1.0123456789E-30 );
 #endif
 
-	t_assert( anyTest.GetType() == Anything::eDouble );
+	t_assert( anyTest.GetType() == AnyDoubleType );
 	t_assert( anyTest.GetSize() == 1 );
 
 #ifndef __370__
@@ -372,21 +372,21 @@ void ParserTest::parseSimpleTypeDouble ()
 	t_assert( anyTest.AsDouble() == -1.0123456789E-30 );
 #endif
 
-	t_assert( anyTest.GetType() == Anything::eDouble );
+	t_assert( anyTest.GetType() == AnyDoubleType );
 	t_assert( anyTest.GetSize() == 1 );
 
 	String input6 		= "-1.0123456789E-350";
 	IStringStream is6(input6);
 	anyTest.Import( is6 );
 	t_assert( anyTest.AsDouble() == 0 );
-	t_assert( anyTest.GetType() == Anything::eDouble );
+	t_assert( anyTest.GetType() == AnyDoubleType );
 	t_assert( anyTest.GetSize() == 1 );
 
 	String input7 		= "1.0123456789E-350";
 	IStringStream is7(input7);
 	anyTest.Import( is7 );
 	t_assert( anyTest.AsDouble() == 0 );
-	t_assert( anyTest.GetType() == Anything::eDouble );
+	t_assert( anyTest.GetType() == AnyDoubleType );
 	t_assert( anyTest.GetSize() == 1 );
 
 	String input8 		= "1.0123456789E+350";
@@ -405,7 +405,7 @@ void ParserTest::parseSimpleTypeDouble ()
 		//t_assert((tt=="Infinity") || (tt=="infinity") || (tt=="Inf")); // Inf vs Infinity for operator<<(double)
 #endif
 	}
-	t_assert( anyTest.GetType() == Anything::eDouble );
+	t_assert( anyTest.GetType() == AnyDoubleType );
 	t_assert( anyTest.GetSize() == 1 );
 
 	String input9 		= "-1.0123456789E+350";
@@ -424,7 +424,7 @@ void ParserTest::parseSimpleTypeDouble ()
 #endif
 
 	}
-	t_assert( anyTest.GetType() == Anything::eDouble );
+	t_assert( anyTest.GetType() == AnyDoubleType );
 	t_assert( anyTest.GetSize() == 1 );
 }
 
@@ -435,7 +435,7 @@ void ParserTest::importEmptyStream()
 	Anything any0;
 	any0.Import( is );
 	t_assert( any0.GetSize() == 0 );
-	t_assert( any0.GetType() == Anything::eNull );
+	t_assert( any0.GetType() == AnyNullType );
 }
 
 void ParserTest::assertParsedAsDouble(const char *in, double val, int id)
@@ -450,9 +450,9 @@ void ParserTest::assertParsedAsDouble(const char *in, double val, int id)
 	IStringStream is(&str);
 
 	is >> any;
-	assertEqual(Anything::eDouble, any.GetType());
+	assertEqual(AnyDoubleType, any.GetType());
 
-	if (Anything::eDouble == any.GetType()) {
+	if (AnyDoubleType == any.GetType()) {
 		assertDoublesEqual(any.AsDouble(), val, 1E-8);
 	} else {
 		assertEqual(-1, id);
@@ -473,9 +473,9 @@ void ParserTest::assertParsedAsLong(const char *in, long val, int id)
 	IStringStream is(&str);
 
 	is >> any;
-	assertEqual(Anything::eLong, any.GetType());
+	assertEqual(AnyLongType, any.GetType());
 
-	if (Anything::eLong == any.GetType()) {
+	if (AnyLongType == any.GetType()) {
 		assertEqual(val, any.AsLong());
 	} else {
 		assertEqual(-1, id);
@@ -496,9 +496,9 @@ void ParserTest::assertParsedAsString(const char *in, int id)
 	IStringStream is(&str);
 
 	is >> any;
-	assertEqual(Anything::eCharPtr, any.GetType());
+	assertEqual(AnyCharPtrType, any.GetType());
 
-	if (Anything::eCharPtr == any.GetType()) {
+	if (AnyCharPtrType == any.GetType()) {
 		assertEqual(in, any.AsCharPtr());
 	} else {
 		assertEqual(-1, id);
@@ -671,7 +671,7 @@ void ParserTest::parseSimpleTypeNull ()
 	String input0 = "";
 	IStringStream is0(input0);
 	anyTest.Import( is0 );						//ERROR: 0:0:Anything::Import :syntax error
-	t_assert( anyTest.GetType() == Anything::eNull );
+	t_assert( anyTest.GetType() == AnyNullType );
 	t_assert( anyTest.GetSize() == 0 );
 	t_assert( anyTest.AsDouble() == 0 );
 	t_assert( anyTest.AsCharPtr() == NULL );
@@ -681,7 +681,7 @@ void ParserTest::parseSimpleTypeNull ()
 	IStringStream is1(input1);
 	anyTest.Import( is1 );
 	//t_assert( anyTest.AsDouble() == 0 );
-	t_assert( anyTest.GetType() == Anything::eNull );
+	t_assert( anyTest.GetType() == AnyNullType );
 	t_assert( anyTest.GetSize() == 0 );
 	t_assert( anyTest.AsDouble() == 0 );
 	t_assert( anyTest.AsCharPtr() == NULL );
@@ -690,7 +690,7 @@ void ParserTest::parseSimpleTypeNull ()
 	String input2 = "\01";
 	IStringStream is2(input2);
 	anyTest.Import( is2 );
-	t_assert( anyTest.GetType() == Anything::eNull );
+	t_assert( anyTest.GetType() == AnyNullType );
 	t_assert( anyTest.GetSize() == 0 );
 	t_assert( anyTest.AsDouble() == 0 );
 }
@@ -708,7 +708,7 @@ void ParserTest::parseSimpleTypeCharPtr ()
 	String input0 = "1234567890L";
 	IStringStream is0(input0);
 	anyTest.Import( is0 );
-	t_assert( anyTest.GetType() == Anything::eCharPtr );		// Because of the L at the end
+	t_assert( anyTest.GetType() == AnyCharPtrType );		// Because of the L at the end
 	t_assert( anyTest.GetSize() == 1 );
 	if ( anyTest.AsCharPtr() ) {
 		assertCharPtrEqual( anyTest.AsCharPtr(), "1234567890L" );
@@ -718,7 +718,7 @@ void ParserTest::parseSimpleTypeCharPtr ()
 	String input1 = "aAbB01234";
 	IStringStream is1(input1);
 	anyTest.Import( is1 );
-	t_assert( anyTest.GetType() == Anything::eCharPtr );
+	t_assert( anyTest.GetType() == AnyCharPtrType );
 	t_assert( anyTest.GetSize() == 1 );
 	if ( anyTest.AsCharPtr() ) {
 		assertCharPtrEqual( anyTest.AsCharPtr(), "aAbB01234" );
@@ -728,7 +728,7 @@ void ParserTest::parseSimpleTypeCharPtr ()
 	String input2 = "\"aAbB01234\"";
 	IStringStream is2(input2);
 	anyTest.Import( is2 );
-	t_assert( anyTest.GetType() == Anything::eCharPtr );
+	t_assert( anyTest.GetType() == AnyCharPtrType );
 	t_assert( anyTest.GetSize() == 1 );
 	if ( anyTest.AsCharPtr() ) {
 		assertCharPtrEqual( anyTest.AsCharPtr(), "aAbB01234" );
@@ -740,7 +740,7 @@ void ParserTest::parseSimpleTypeCharPtr ()
 	String input3 = "\"aAbB01\"234\"";
 	IStringStream is3(input3);
 	anyTest.Import( is3 );
-	t_assert( anyTest.GetType() == Anything::eCharPtr );
+	t_assert( anyTest.GetType() == AnyCharPtrType );
 	t_assert( anyTest.GetSize() == 1 );
 	if ( anyTest.AsCharPtr() ) {
 		assertCharPtrEqual( anyTest.AsCharPtr(), "aAbB01" );
@@ -758,7 +758,7 @@ void ParserTest::parseSimpleTypeCharPtr ()
 	input4.Append("\"");
 	IStringStream is4(input4);
 	anyTest.Import( is4 );
-	t_assert( anyTest.GetType() == Anything::eCharPtr );
+	t_assert( anyTest.GetType() == AnyCharPtrType );
 	t_assert( anyTest.GetSize() == 1 );
 
 	// korrekte Syntax (alle char mit Esc-Seq.)
@@ -786,7 +786,7 @@ void ParserTest::parseSimpleTypeCharPtr ()
 	input5.Append("\"");
 	IStringStream is5( input5 );
 	anyTest.Import( is5 );
-	t_assert( anyTest.GetType() == Anything::eCharPtr );
+	t_assert( anyTest.GetType() == AnyCharPtrType );
 	t_assert( anyTest.GetSize() == 1 );
 	for ( i = 1; i < 256; i++ ) {
 		t_assert( anyTest.AsCharPtr()[i-1] == (char)i );
@@ -825,7 +825,7 @@ void ParserTest::parseSimpleTypeCharPtr ()
 	input6.Append("\"");
 	IStringStream is6( input6 );
 	anyTest.Import( is6 );
-	t_assert( anyTest.GetType() == Anything::eCharPtr );
+	t_assert( anyTest.GetType() == AnyCharPtrType );
 	t_assert( anyTest.GetSize() == 1 );
 
 	for ( i = 1; i < 256; i++ ) {
@@ -837,12 +837,12 @@ void ParserTest::parseSimpleTypeCharPtr ()
 	String input7 = "!abc";
 	IStringStream is7(input7);
 	anyTest.Import( is7 );
-	t_assert( anyTest.GetType() == Anything::eNull );
+	t_assert( anyTest.GetType() == AnyNullType );
 	t_assert( anyTest.GetSize() == 0 );
 	if ( anyTest.AsCharPtr() ) {
 		assertCharPtrEqual( anyTest.AsCharPtr(), "!abc" );
 	}
-	t_assert( anyTest.GetType() == Anything::eNull);
+	t_assert( anyTest.GetType() == AnyNullType);
 	t_assert( anyTest.GetSize() == 0 );
 }
 
@@ -905,89 +905,89 @@ void ParserTest::parseMixedAnything ()
 		}
 
 		anyHlp["A"].SlotName(0L);
-		t_assert( anyHlp["A"].At(0L).GetType() == Anything::eLong );
+		t_assert( anyHlp["A"].At(0L).GetType() == AnyLongType );
 		t_assert( anyHlp["A"].At(0L).GetSize() == 1 );
 		t_assert( anyHlp["A"].At(0L).AsLong() == 123 );
 
 		anyHlp["A"].SlotName(1L);
-		t_assert( anyHlp["A"].At(1L).GetType() == Anything::eCharPtr );
+		t_assert( anyHlp["A"].At(1L).GetType() == AnyCharPtrType );
 		t_assert( anyHlp["A"].At(1L).GetSize() == 1 );
 		if ( anyHlp["A"].At(1L).AsCharPtr() ) {
 			assertCharPtrEqual( anyHlp["A"].At(1L).AsCharPtr(), "123L" );
 		}
 
 		anyHlp["A"].SlotName(2L);
-		t_assert( anyHlp["A"].At(2L).GetType() == Anything::eCharPtr );
+		t_assert( anyHlp["A"].At(2L).GetType() == AnyCharPtrType );
 		t_assert( anyHlp["A"].At(2L).GetSize() == 1 );
 		if ( anyHlp["A"].At(2L).AsCharPtr() ) {
 			assertCharPtrEqual( anyHlp["A"].At(2L).AsCharPtr(), "String" );
 		}
 
 		//anyHlp["A"].At[3].SlotName(0L);
-		t_assert( anyHlp["A"].At(3L).At(0L).GetType() == Anything::eLong );
+		t_assert( anyHlp["A"].At(3L).At(0L).GetType() == AnyLongType );
 		t_assert( anyHlp["A"].At(3L).At(0L).GetSize() == 1 );
 		t_assert( anyHlp["A"].At(3L).At(0L).AsLong() == 0 );
 
 		//anyHlp["A"].At[3].SlotName(1L);
-		t_assert( anyHlp["A"].At(3L).At(1L).GetType() == Anything::eLong );
+		t_assert( anyHlp["A"].At(3L).At(1L).GetType() == AnyLongType );
 		t_assert( anyHlp["A"].At(3L).At(1L).GetSize() == 1 );
 		t_assert( anyHlp["A"].At(3L).At(1L).AsLong() == 1 );
 
 		//anyHlp["A"].At[3].SlotName(2L);
-		t_assert( anyHlp["A"].At(3L).At(2L).GetType() == Anything::eLong );
+		t_assert( anyHlp["A"].At(3L).At(2L).GetType() == AnyLongType );
 		t_assert( anyHlp["A"].At(3L).At(2L).GetSize() == 1 );
 		t_assert( anyHlp["A"].At(3L).At(2L).AsLong() == 2 );
 
 		//anyHlp["A"].At[3].SlotName(3L);
-		t_assert( anyHlp["A"].At(3L).At(3L).GetType() == Anything::eLong );
+		t_assert( anyHlp["A"].At(3L).At(3L).GetType() == AnyLongType );
 		t_assert( anyHlp["A"].At(3L).At(3L).GetSize() == 1 );
 		t_assert( anyHlp["A"].At(3L).At(3L).AsLong()  == 3 );
 
 		//anyHlp["A"].At[3].SlotName(4L);
-		t_assert( anyHlp["A"].At(3L).At(4L).GetType() == Anything::eLong );
+		t_assert( anyHlp["A"].At(3L).At(4L).GetType() == AnyLongType );
 		t_assert( anyHlp["A"].At(3L).At(4L).GetSize() == 1 );
 		t_assert( anyHlp["A"].At(3L).At(4L).AsLong()  == 4 );
 
 		anyHlp["A"].At(3L).At(5L)["B"].SlotName(0L);
-		t_assert( anyHlp["A"].At(3L).At(5L)["B"].At(0L).GetType() == Anything::eCharPtr );
+		t_assert( anyHlp["A"].At(3L).At(5L)["B"].At(0L).GetType() == AnyCharPtrType );
 		t_assert( anyHlp["A"].At(3L).At(5L)["B"].At(0L).GetSize() == 1 );
 		if ( anyHlp["A"].At(3L).At(5L)["B"].At(0L).AsCharPtr() ) {
 			assertCharPtrEqual( anyHlp["A"].At(3L).At(5L)["B"].At(0L).AsCharPtr(), "ABC" );
 		}
 
 		anyHlp["A"].At(3L).At(5L)["B"].SlotName(1L);
-		t_assert( anyHlp["A"].At(3L).At(5L)["B"].At(1L).GetType() == Anything::eCharPtr );
+		t_assert( anyHlp["A"].At(3L).At(5L)["B"].At(1L).GetType() == AnyCharPtrType );
 		t_assert( anyHlp["A"].At(3L).At(5L)["B"].At(1L).GetSize() == 1 );
 		if ( anyHlp["A"].At(3L).At(5L)["B"].At(1L).AsCharPtr() ) {
 			assertCharPtrEqual( anyHlp["A"].At(3L).At(5L)["B"].At(1L).AsCharPtr(), "BCD" );
 		}
 
 		anyHlp["A"].At(3L).At(5L)["B"].SlotName(2L);
-		t_assert( anyHlp["A"].At(3L).At(5L)["B"].At(2L).GetType() == Anything::eCharPtr );
+		t_assert( anyHlp["A"].At(3L).At(5L)["B"].At(2L).GetType() == AnyCharPtrType );
 		t_assert( anyHlp["A"].At(3L).At(5L)["B"].At(2L).GetSize() == 1 );
 		if ( anyHlp["A"].At(3L).At(5L)["B"].At(2L).AsCharPtr() ) {
 			assertCharPtrEqual( anyHlp["A"].At(3L).At(5L)["B"].At(2L).AsCharPtr(), "CDE" );
 		}
 
 		anyHlp["A"].At(3L).At(5L)["B"].At(3L)["C"]["D"]["E"].SlotName(0L);
-		t_assert( anyHlp["A"].At(3L).At(5L)["B"].At(3L)["C"]["D"]["E"].At(0L).GetType() == Anything::eLong );
+		t_assert( anyHlp["A"].At(3L).At(5L)["B"].At(3L)["C"]["D"]["E"].At(0L).GetType() == AnyLongType );
 		t_assert( anyHlp["A"].At(3L).At(5L)["B"].At(3L)["C"]["D"]["E"].At(0L).GetSize() == 1 );
 		t_assert( anyHlp["A"].At(3L).At(5L)["B"].At(3L)["C"]["D"]["E"].At(0L).AsLong() == 1 );
 
 		anyHlp["A"].At(3L).At(5L)["B"].At(3L)["C"]["D"]["E"].SlotName(1L);
-		t_assert( anyHlp["A"].At(3L).At(5L)["B"].At(3L)["C"]["D"]["E"].At(1L).GetType() == Anything::eLong );
+		t_assert( anyHlp["A"].At(3L).At(5L)["B"].At(3L)["C"]["D"]["E"].At(1L).GetType() == AnyLongType );
 		t_assert( anyHlp["A"].At(3L).At(5L)["B"].At(3L)["C"]["D"]["E"].At(1L).GetSize() == 1 );
 		t_assert( anyHlp["A"].At(3L).At(5L)["B"].At(3L)["C"]["D"]["E"].At(1L).AsLong() == 2 );
 
-		t_assert( anyHlp["A"].At(3L).At(5L)["B"].At(3L)["C"]["F"].GetType() == Anything::eDouble );
+		t_assert( anyHlp["A"].At(3L).At(5L)["B"].At(3L)["C"]["F"].GetType() == AnyDoubleType );
 		t_assert( anyHlp["A"].At(3L).At(5L)["B"].At(3L)["C"]["F"].GetSize() == 1 );
 		t_assert( anyHlp["A"].At(3L).At(5L)["B"].At(3L)["C"]["F"].AsDouble() == 1e34 );
 
-		t_assert( anyHlp["G"].GetType() == Anything::eLong );
+		t_assert( anyHlp["G"].GetType() == AnyLongType );
 		t_assert( anyHlp["G"].GetSize() == 1 );
 		t_assert( anyHlp["G"].AsLong() == 123 );
 
-		t_assert( anyHlp["H"].GetType() == Anything::eLong );
+		t_assert( anyHlp["H"].GetType() == AnyLongType );
 		t_assert( anyHlp["H"].GetSize() == 1 );
 		t_assert( anyHlp["H"].AsLong() == 1234 );
 		if ( anyHlp["I"].AsCharPtr() ) {
@@ -1020,7 +1020,7 @@ void  ParserTest::testSemantic0()
 	any = any1;
 
 	// Check if the anything-object is the expected one
-	t_assert( any[0L].GetType() == Anything::eLong );
+	t_assert( any[0L].GetType() == AnyLongType );
 	t_assert( any[0L].AsLong() == 1L );
 	t_assert( any[0L] == '\x01' );
 	if ( any.SlotName(0L) != NULL ) {
@@ -1028,58 +1028,58 @@ void  ParserTest::testSemantic0()
 		t_assert( 0 == 1 );
 	}
 
-	t_assert( any[1L].GetType() == Anything::eCharPtr );
+	t_assert( any[1L].GetType() == AnyCharPtrType );
 	assertCharPtrEqual( any[1L].AsCharPtr(), "\x01" );
 	if (any.SlotName(1L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
 		t_assert( 0 == 1 );
 	}
 
-	t_assert( any[2L].GetType() == Anything::eCharPtr );
+	t_assert( any[2L].GetType() == AnyCharPtrType );
 	assertCharPtrEqual( any[2L].AsCharPtr(), "\\\\" );
 	if (any.SlotName(2L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
 		t_assert( 0 == 1 );
 	}
 
-	t_assert( any[3L].GetType() == Anything::eCharPtr );
+	t_assert( any[3L].GetType() == AnyCharPtrType );
 	assertCharPtrEqual( any[3L].AsCharPtr(), "\\\\x41" );
 	if (any.SlotName(3L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
 		t_assert( 0 == 1 );
 	}
 
-	t_assert( any[4L].GetType() == Anything::eCharPtr );
+	t_assert( any[4L].GetType() == AnyCharPtrType );
 	assertCharPtrEqual( any[4L].AsCharPtr(), "\x41" );
 	if (any.SlotName(4L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
 		t_assert( 0 == 1 );
 	}
 
-	t_assert( any["{}"].GetType() == Anything::eLong );
+	t_assert( any["{}"].GetType() == AnyLongType );
 	t_assert( any["{}"].AsLong() == 1L );
-	t_assert( any[5L].GetType() == Anything::eLong );
+	t_assert( any[5L].GetType() == AnyLongType );
 	t_assert( any[5L].AsLong() == 1L );
 	assertCharPtrEqual( any.SlotName(5L), "{}" );
 	t_assert( any.FindIndex("{}") == 5 );
 
-	t_assert( any["SlotName0"].GetType() == Anything::eNull );
-	t_assert( any[6L].GetType() == Anything::eNull );
+	t_assert( any["SlotName0"].GetType() == AnyNullType );
+	t_assert( any[6L].GetType() == AnyNullType );
 	assertCharPtrEqual( any.SlotName(6L), "SlotName0" );
 	t_assert( any.FindIndex("SlotName0") == 6 );
 
-	t_assert( any["SlotName1"].GetType() == Anything::eCharPtr );
+	t_assert( any["SlotName1"].GetType() == AnyCharPtrType );
 	assertCharPtrEqual( any["SlotName1"].AsCharPtr(), "{}" );
-	t_assert( any[7L].GetType() == Anything::eCharPtr );
+	t_assert( any[7L].GetType() == AnyCharPtrType );
 	assertCharPtrEqual( any[7L].AsCharPtr(), "{}" );
 	assertCharPtrEqual( any.SlotName(7L), "SlotName1" );
 	t_assert( any.FindIndex("SlotName1") == 7 );
 
-	t_assert( any["SlotName2"].GetType() == Anything::eCharPtr );
+	t_assert( any["SlotName2"].GetType() == AnyCharPtrType );
 
 	char testString[10] = "\"\"{}\"\"";
 	assertCharPtrEqual( any["SlotName2"].AsCharPtr(), testString ); // dummy
-	t_assert( any[8L].GetType() == Anything::eCharPtr );
+	t_assert( any[8L].GetType() == AnyCharPtrType );
 	assertCharPtrEqual( any[8L].AsCharPtr(), testString );
 	assertCharPtrEqual( any.SlotName(8L), "SlotName2" );
 	t_assert( any.FindIndex("SlotName2") == 8 );
@@ -1109,10 +1109,10 @@ void ParserTest::testSemantic1()
 	any = any1;
 
 	// Check if the anything-object is the expected one
-	t_assert( any.GetType() == Anything::eArray );
+	t_assert( any.GetType() == AnyArrayType );
 	t_assert( any.GetSize() == 12 );
-	t_assert( any["SlotName0"].GetType() == Anything::eCharPtr );
-	t_assert( any[0L].GetType() == Anything::eCharPtr );
+	t_assert( any["SlotName0"].GetType() == AnyCharPtrType );
+	t_assert( any[0L].GetType() == AnyCharPtrType );
 
 	char testString[10] = "\"\"";
 	assertCharPtrEqual( any["SlotName0"].AsCharPtr(), testString );
@@ -1122,79 +1122,79 @@ void ParserTest::testSemantic1()
 	assertCharPtrEqual( any.SlotName(0L), "SlotName0" );
 	t_assert( any.FindIndex("SlotName0") == 0 );
 
-	t_assert( any[1L].GetType() == Anything::eNull );
+	t_assert( any[1L].GetType() == AnyNullType );
 	if (any.SlotName(1L) != NULL) {
 		// SlotName should be NULL but it is not:  errMsg
 		t_assert(0 == 1);
 	}
 
-	t_assert(any[2L].GetType() == Anything::eCharPtr);
-	assertCharPtrEqual(any[2L].AsCharPtr(), testString);
+	t_assert( any[2L].GetType() == AnyCharPtrType );
+	assertCharPtrEqual( any[2L].AsCharPtr(), testString );
 	//assertCharPtrEqual( any[2L].AsCharPtr(), "\"\"" );
 	if (any.SlotName(2L) != NULL) {
 		// SlotName should be NULL but it is not:  errMsg
 		t_assert(0 == 1);
 	}
 
-	t_assert(any["#ab"].GetType() == Anything::eLong);
-	t_assert(any["#ab"].AsLong() == 3);
-	t_assert(any[3L].GetType() == Anything::eLong);
-	t_assert(any[3L].AsLong() == 3);
-	assertCharPtrEqual(any.SlotName(3L), "#ab");
-	t_assert(any.FindIndex("#ab") == 3);
+	t_assert( any["#ab"].GetType() == AnyLongType );
+	t_assert( any["#ab"].AsLong() == 3 );
+	t_assert( any[3L].GetType() == AnyLongType );
+	t_assert( any[3L].AsLong() == 3 );
+	assertCharPtrEqual( any.SlotName(3L), "#ab" );
+	t_assert( any.FindIndex("#ab") == 3 );
 
-	t_assert(any["a#b"].GetType() == Anything::eLong);
-	t_assert(any["a#b"].AsLong() == 4);
-	t_assert(any[4L].GetType() == Anything::eLong);
-	t_assert(any[4L].AsLong() == 4);
-	assertCharPtrEqual(any.SlotName(4L), "a#b");
-	t_assert(any.FindIndex("a#b") == 4);
+	t_assert( any["a#b"].GetType() == AnyLongType );
+	t_assert( any["a#b"].AsLong() == 4 );
+	t_assert( any[4L].GetType() == AnyLongType );
+	t_assert( any[4L].AsLong() == 4 );
+	assertCharPtrEqual( any.SlotName(4L), "a#b" );
+	t_assert( any.FindIndex("a#b") == 4 );
 
-	t_assert(any["ab#"].GetType() == Anything::eLong);
-	t_assert(any["ab#"].AsLong() == 5);
-	t_assert(any[5L].GetType() == Anything::eLong);
-	t_assert(any[5L].AsLong() == 5);
-	assertCharPtrEqual(any.SlotName(5L), "ab#");
-	t_assert(any.FindIndex("ab#") == 5);
+	t_assert( any["ab#"].GetType() == AnyLongType );
+	t_assert( any["ab#"].AsLong() == 5 );
+	t_assert( any[5L].GetType() == AnyLongType );
+	t_assert( any[5L].AsLong() == 5 );
+	assertCharPtrEqual( any.SlotName(5L), "ab#" );
+	t_assert( any.FindIndex("ab#") == 5 );
 	// {
-	t_assert( any["}ab"].GetType() == Anything::eLong );	// {
+	t_assert( any["}ab"].GetType() == AnyLongType );	// {
 	t_assert( any["}ab"].AsLong() == 6 );
-	t_assert( any[6L].GetType() == Anything::eLong );
+	t_assert( any[6L].GetType() == AnyLongType );
 	t_assert( any[6L].AsLong() == 6 );	// {
 	assertCharPtrEqual( any.SlotName(6L), "}ab" );	// {
 	t_assert( any.FindIndex("}ab") == 6 );
 	// {
-	t_assert( any["a}b"].GetType() == Anything::eLong ); // {
+	t_assert( any["a}b"].GetType() == AnyLongType ); // {
 	t_assert( any["a}b"].AsLong() == 7 );
-	t_assert( any[7L].GetType() == Anything::eLong );
+	t_assert( any[7L].GetType() == AnyLongType );
 	t_assert( any[7L].AsLong() == 7 );	// {
 	assertCharPtrEqual( any.SlotName(7L), "a}b" );	// {
 	t_assert( any.FindIndex("a}b") == 7 );
 	// {
-	t_assert( any["ab}"].GetType() == Anything::eLong ); // {
+	t_assert( any["ab}"].GetType() == AnyLongType ); // {
 	t_assert( any["ab}"].AsLong() == 8 );
-	t_assert( any[8L].GetType() == Anything::eLong );
+	t_assert( any[8L].GetType() == AnyLongType );
 	t_assert( any[8L].AsLong() == 8 ); // {
 	assertCharPtrEqual( any.SlotName(8L), "ab}" ); // {
 	t_assert( any.FindIndex("ab}") == 8 );
 
-	t_assert( any["{ab"].GetType() == Anything::eLong );// }
+	t_assert( any["{ab"].GetType() == AnyLongType );// }
 	t_assert( any["{ab"].AsLong() == 9 );// }
-	t_assert( any[9L].GetType() == Anything::eLong );
+	t_assert( any[9L].GetType() == AnyLongType );
 	t_assert( any[9L].AsLong() == 9 );
 	assertCharPtrEqual( any.SlotName(9L), "{ab" );// }
 	t_assert( any.FindIndex("{ab") == 9 );// }
 
-	t_assert( any["a{b"].GetType() == Anything::eLong );// }
+	t_assert( any["a{b"].GetType() == AnyLongType );// }
 	t_assert( any["a{b"].AsLong() == 10 );// }
-	t_assert( any[10L].GetType() == Anything::eLong );
+	t_assert( any[10L].GetType() == AnyLongType );
 	t_assert( any[10L].AsLong() == 10 );
 	assertCharPtrEqual( any.SlotName(10L), "a{b" );// }
 	t_assert( any.FindIndex("a{b") == 10 );// }
 
-	t_assert( any["ab{"].GetType() == Anything::eLong );// }
+	t_assert( any["ab{"].GetType() == AnyLongType );// }
 	t_assert( any["ab{"].AsLong() == 11 );// }
-	t_assert( any[11L].GetType() == Anything::eLong );
+	t_assert( any[11L].GetType() == AnyLongType );
 	t_assert( any[11L].AsLong() == 11 );
 	assertCharPtrEqual( any.SlotName(11L), "ab{" );// }
 	t_assert( any.FindIndex("ab{") == 11 );// }
@@ -1219,21 +1219,23 @@ void  ParserTest::testSemantic2() {
 	any = any1;
 
 	// Check if the anything-object is the expected one
-	t_assert( any.GetType() == Anything::eArray );
+	t_assert( any.GetType() == AnyArrayType );
 	t_assert( any.GetSize() == 2 );
-	t_assert( any["a"].GetType() == Anything::eArray );
+	t_assert( any["a"].GetType() == AnyArrayType );
 	t_assert( any["a"].GetSize() == 2 );
-	t_assert( any[0L].GetType() == Anything::eArray );
+	t_assert( any[0L].GetType() == AnyArrayType );
 	t_assert( any[0L].GetSize() == 2 );
-	t_assert( any["a"][0L].GetType() == Anything::eCharPtr );
-	assertCharPtrEqual( any["a"][0L].AsCharPtr(), "b" );
-	t_assert( any["a"][1L].GetType() == Anything::eLong );
+	if ( assertEqual( AnyCharPtrType, any["a"][0L].GetType() ) ) {
+		assertCharPtrEqual( any["a"][0L].AsCharPtr(), "b" );
+	}
+	t_assert( any["a"][1L].GetType() == AnyLongType );
 	t_assert( any["a"][1L].AsLong() == 1 );
-	t_assert( any[0L][0L].GetType() == Anything::eCharPtr );
-	assertCharPtrEqual( any[0L][0L].AsCharPtr(), "b" );
-	t_assert( any[0L][1L].GetType() == Anything::eLong );
+	if ( assertEqual( AnyCharPtrType, any[0L][0L].GetType() ) ) {
+		assertCharPtrEqual( any[0L][0L].AsCharPtr(), "b" );
+	}
+	t_assert( any[0L][1L].GetType() == AnyLongType );
 	t_assert( any[0L][1L].AsLong() == 1 );
-	t_assert( any[1L].GetType() ==  Anything::eLong );
+	t_assert( any[1L].GetType() ==  AnyLongType );
 	t_assert( any[1L].AsLong() == 9 );
 	assertCharPtrEqual( any.SlotName(0L), "a" );
 	t_assert( any.FindIndex("a") == 0 );
@@ -1279,17 +1281,17 @@ void  ParserTest::testSemantic3() {
 	any = any1;
 
 	// Check if the anything-object is the expected one
-	t_assert( any.GetType() == Anything::eArray );
+	t_assert( any.GetType() == AnyArrayType );
 	t_assert( any.GetSize() == 2 );
-	t_assert( any["ab"].GetType() == Anything::eArray );
+	t_assert( any["ab"].GetType() == AnyArrayType );
 	t_assert( any["ab"].GetSize() == 1 );
-	t_assert( any[0L].GetType() == Anything::eArray );
+	t_assert( any[0L].GetType() == AnyArrayType );
 	t_assert( any[0L].GetSize() == 1 );
-	t_assert( any["ab"][0L].GetType() == Anything::eLong );
+	t_assert( any["ab"][0L].GetType() == AnyLongType );
 	t_assert( any["ab"][0L].AsLong() == 2 );
-	t_assert( any[0L][0L].GetType() == Anything::eLong );
+	t_assert( any[0L][0L].GetType() == AnyLongType );
 	t_assert( any[0L][0L].AsLong() == 2 );
-	t_assert( any[1L].GetType() ==  Anything::eLong );
+	t_assert( any[1L].GetType() ==  AnyLongType );
 	t_assert( any[1L].AsLong() == 0 );
 	assertCharPtrEqual( any.SlotName(0L), "ab" );
 	t_assert( any.FindIndex("ab") == 0 );
@@ -1326,15 +1328,15 @@ void  ParserTest::testSemantic4() {
 	any = any1;
 
 	// Check if the anything-object is the expected one
-	t_assert( any.GetType() == Anything::eArray );
+	t_assert( any.GetType() == AnyArrayType );
 	t_assert( any.GetSize() == 1 );
-	t_assert( any["ab"].GetType() == Anything::eArray );
+	t_assert( any["ab"].GetType() == AnyArrayType );
 	t_assert( any["ab"].GetSize() == 1 );
-	t_assert( any[0L].GetType() == Anything::eArray );
+	t_assert( any[0L].GetType() == AnyArrayType );
 	t_assert( any[0L].GetSize() == 1 );
-	t_assert( any["ab"][0L].GetType() == Anything::eCharPtr );//{
+	t_assert( any["ab"][0L].GetType() == AnyCharPtrType );//{
 	assertCharPtrEqual( any["ab"][0L].AsCharPtr(), "2}6" );
-	t_assert( any[0L][0L].GetType() == Anything::eCharPtr );//{
+	t_assert( any[0L][0L].GetType() == AnyCharPtrType );//{
 	assertCharPtrEqual( any[0L][0L].AsCharPtr(), "2}6" );
 	assertCharPtrEqual( any.SlotName(0L), "ab" );
 	t_assert( any.FindIndex("ab") == 0 );
@@ -1364,11 +1366,11 @@ void  ParserTest::testSemantic5() {
 	any = any1;
 
 	// Check if the anything-object is the expected one
-	t_assert( any.GetType() == Anything::eArray );
+	t_assert( any.GetType() == AnyArrayType );
 	t_assert( any.GetSize() == 1 );
-	t_assert( any["{ab"].GetType() == Anything::eCharPtr );// }
+	t_assert( any["{ab"].GetType() == AnyCharPtrType );// }
 	t_assert( any["{ab"].GetSize() == 1 );// }
-	t_assert( any[0L].GetType() == Anything::eCharPtr );
+	t_assert( any[0L].GetType() == AnyCharPtrType );
 	t_assert( any[0L].GetSize() == 1 );
 	assertCharPtrEqual( any["{ab"].AsCharPtr(), "2}7" );//{
 	assertCharPtrEqual( any[0L].AsCharPtr(), "2}7" );
@@ -1392,11 +1394,11 @@ void  ParserTest::testSemantic6() {
 	any = any1;
 
 	// Check if the anything-object is the expected one
-	t_assert( any.GetType() == Anything::eArray );
+	t_assert( any.GetType() == AnyArrayType );
 	t_assert( any.GetSize() == 1 );
-	t_assert( any["a{b"].GetType() == Anything::eCharPtr );// }
+	t_assert( any["a{b"].GetType() == AnyCharPtrType );// }
 	t_assert( any["a{b"].GetSize() == 1 );// }
-	t_assert( any[0L].GetType() == Anything::eCharPtr );
+	t_assert( any[0L].GetType() == AnyCharPtrType );
 	t_assert( any[0L].GetSize() == 1 );
 	assertCharPtrEqual( any["a{b"].AsCharPtr(), "2}8" );//{
 	assertCharPtrEqual( any[0L].AsCharPtr(), "2}8" );
@@ -1420,11 +1422,11 @@ void ParserTest::testSemantic7() {
 	any = any1;
 
 	// Check if the anything-object is the expected one
-	t_assert( any.GetType() == Anything::eArray );
+	t_assert( any.GetType() == AnyArrayType );
 	t_assert( any.GetSize() == 1 );
-	t_assert( any["ab{"].GetType() == Anything::eCharPtr );// }
+	t_assert( any["ab{"].GetType() == AnyCharPtrType );// }
 	t_assert( any["ab{"].GetSize() == 1 );
-	t_assert( any[0L].GetType() == Anything::eCharPtr );
+	t_assert( any[0L].GetType() == AnyCharPtrType );
 	t_assert( any[0L].GetSize() == 1 );
 	assertCharPtrEqual( any["ab{"].AsCharPtr(), "2}9" );
 	assertCharPtrEqual( any[0L].AsCharPtr(), "2}9" );
@@ -1454,21 +1456,21 @@ void ParserTest::testSemantic8() {
 	any = any1;
 
 	// Check if the anything-object is the expected one
-	t_assert( any.GetType() == Anything::eArray );
+	t_assert( any.GetType() == AnyArrayType );
 	t_assert( any.GetSize() == 4 );
 	String slot("\"Slot\"Name\"");
-	t_assert( any[slot].GetType() == Anything::eLong );
+	t_assert( any[slot].GetType() == AnyLongType );
 	t_assert( any[slot].GetSize() == 1 );
-	t_assert( any[0L].GetType() == Anything::eLong );
+	t_assert( any[0L].GetType() == AnyLongType );
 	t_assert( any[0L].GetSize() == 1 );
 	t_assert( any[slot].AsLong() == 33 );
 	t_assert( any[0L].AsLong() == 33 );
 	assertCharPtrEqual( any.SlotName(0L), slot );
 	t_assert( any.FindIndex(slot) == 0 );
 	String slot2("Slot\"Name\"");
-	t_assert( any[slot2].GetType() == Anything::eLong );
+	t_assert( any[slot2].GetType() == AnyLongType );
 	t_assert( any[slot2].GetSize() == 1 );
-	t_assert( any[1L].GetType() == Anything::eLong );
+	t_assert( any[1L].GetType() == AnyLongType );
 	t_assert( any[1L].GetSize() == 1 );
 	t_assert( any[slot2].AsLong() == 34 );
 	t_assert( any[1L].AsLong() == 34 );
@@ -1477,14 +1479,14 @@ void ParserTest::testSemantic8() {
 	t_assert( any.FindIndex(slot2) == 1L );
 
 	String slot3("/Slot\"Name");
-	t_assert( any[2L].GetType() == Anything::eCharPtr );
+	t_assert( any[2L].GetType() == AnyCharPtrType );
 	t_assert( any[2L].GetSize() == 1 );
 	assertCharPtrEqual( any[2L].AsCharPtr(), slot3 );
 	if ( any.SlotName(2L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
 		t_assert( 0 == 1 );
 	}
-	t_assert( any[3L].GetType() == Anything::eLong );
+	t_assert( any[3L].GetType() == AnyLongType );
 	t_assert( any[3L].GetSize() == 1 );
 	t_assert( any[3L].AsLong() == 35 );
 	if ( any.SlotName(3L) != NULL ) {
@@ -1516,38 +1518,38 @@ void ParserTest::testSemantic9() {
 	any = any1;
 
 	// Check if the anything-object is the expected one
-	t_assert( any.GetType() == Anything::eArray );
+	t_assert( any.GetType() == AnyArrayType );
 	t_assert( any.GetSize() == 4 );
-	t_assert( any["/ab"].GetType() == Anything::eLong );
+	t_assert( any["/ab"].GetType() == AnyLongType );
 	t_assert( any["/ab"].GetSize() == 1 );
-	t_assert( any[0L].GetType() == Anything::eLong );
+	t_assert( any[0L].GetType() == AnyLongType );
 	t_assert( any[0L].GetSize() == 1 );
 	t_assert( any["/ab"].AsLong() == 9 );
 	t_assert( any[0L].AsLong() == 9 );
 	assertCharPtrEqual( any.SlotName(0L), "/ab" );
 	t_assert( any.FindIndex("/ab") == 0 );
 
-	t_assert( any["a/b"].GetType() == Anything::eLong );
+	t_assert( any["a/b"].GetType() == AnyLongType );
 	t_assert( any["a/b"].GetSize() == 1 );
-	t_assert( any[1L].GetType() == Anything::eLong );
+	t_assert( any[1L].GetType() == AnyLongType );
 	t_assert( any[1L].GetSize() == 1 );
 	t_assert( any["a/b"].AsLong() == 10 );
 	t_assert( any[1L].AsLong() == 10 );
 	assertCharPtrEqual( any.SlotName(1L), "a/b" );
 	t_assert( any.FindIndex("a/b") == 1 );
 
-	t_assert( any["ab/"].GetType() == Anything::eLong );
+	t_assert( any["ab/"].GetType() == AnyLongType );
 	t_assert( any["ab/"].GetSize() == 1 );
-	t_assert( any[2L].GetType() == Anything::eLong );
+	t_assert( any[2L].GetType() == AnyLongType );
 	t_assert( any[2L].GetSize() == 1 );
 	t_assert( any["ab/"].AsLong() == 11 );
 	t_assert( any[2L].AsLong() == 11 );
 	assertCharPtrEqual( any.SlotName(2L), "ab/" );
 	t_assert( any.FindIndex("ab/") == 2 );
 
-	t_assert( any["0"].GetType() == Anything::eCharPtr );
+	t_assert( any["0"].GetType() == AnyCharPtrType );
 	t_assert( any["0"].GetSize() == 1 );
-	t_assert( any[3L].GetType() == Anything::eCharPtr );
+	t_assert( any[3L].GetType() == AnyCharPtrType );
 	t_assert( any[3L].GetSize() == 1 );
 	assertCharPtrEqual( any["0"].AsCharPtr(), "d"  );
 	assertCharPtrEqual( any[3L].AsCharPtr(), "d" );
@@ -1566,36 +1568,36 @@ void ParserTest::testSemantic9() {
 //  /"ab/" "2/9"
 //}
 
-	t_assert( any["/ab"].GetType() == Anything::eCharPtr );
+	t_assert( any["/ab"].GetType() == AnyCharPtrType );
 	t_assert( any["/ab"].GetSize() == 1 );
-	t_assert( any[0L].GetType() == Anything::eCharPtr );
+	t_assert( any[0L].GetType() == AnyCharPtrType );
 	t_assert( any[0L].GetSize() == 1 );
 	assertCharPtrEqual( any["/ab"].AsCharPtr(), "2/7");
 	assertCharPtrEqual( any[0L].AsCharPtr(), "2/7" );
 	assertCharPtrEqual( any.SlotName(0L), "/ab" );
 	t_assert( any.FindIndex("/ab") == 0 );
 
-	t_assert( any["a/b"].GetType() == Anything::eCharPtr );
+	t_assert( any["a/b"].GetType() == AnyCharPtrType );
 	t_assert( any["a/b"].GetSize() == 1 );
-	t_assert( any[1L].GetType() == Anything::eCharPtr );
+	t_assert( any[1L].GetType() == AnyCharPtrType );
 	t_assert( any[1L].GetSize() == 1 );
 	assertCharPtrEqual( any["a/b"].AsCharPtr(), "2/8");
 	assertCharPtrEqual( any[1L].AsCharPtr(), "2/8" );
 	assertCharPtrEqual( any.SlotName(1L), "a/b" );
 	t_assert( any.FindIndex("a/b") == 1 );
 
-	t_assert( any["ab/"].GetType() == Anything::eCharPtr );
+	t_assert( any["ab/"].GetType() == AnyCharPtrType );
 	t_assert( any["ab/"].GetSize() == 1 );
-	t_assert( any[2L].GetType() == Anything::eCharPtr );
+	t_assert( any[2L].GetType() == AnyCharPtrType );
 	t_assert( any[2L].GetSize() == 1 );
 	assertCharPtrEqual( any["ab/"].AsCharPtr(), "2/9");
 	assertCharPtrEqual( any[2L].AsCharPtr(), "2/9" );
 	assertCharPtrEqual( any.SlotName(2L), "ab/" );
 	t_assert( any.FindIndex("ab/") == 2 );
 
-	t_assert( any["0"].GetType() == Anything::eCharPtr );
+	t_assert( any["0"].GetType() == AnyCharPtrType );
 	t_assert( any["0"].GetSize() == 1 );
-	t_assert( any[3L].GetType() == Anything::eCharPtr );
+	t_assert( any[3L].GetType() == AnyCharPtrType );
 	t_assert( any[3L].GetSize() == 1 );
 	assertCharPtrEqual( any["0"].AsCharPtr(), "d"  );
 	assertCharPtrEqual( any[3L].AsCharPtr(), "d" );
@@ -1626,43 +1628,43 @@ void ParserTest::testSemantic10() {
 	any = any1;
 
 	// Check if the anything-object is the expected one
-	t_assert( any["a"].GetType() == Anything::eNull );
+	t_assert( any["a"].GetType() == AnyNullType );
 	t_assert( any["a"].GetSize() == 0 );
-	t_assert( any[0L].GetType() == Anything::eNull );
+	t_assert( any[0L].GetType() == AnyNullType );
 	t_assert( any[0L].GetSize() == 0 );
 	assertCharPtrEqual( any.SlotName(0L), "a" );
 	t_assert( any.FindIndex("a") == 0L );
 
-	t_assert( any["a{"].GetType() == Anything::eCharPtr );// }
+	t_assert( any["a{"].GetType() == AnyCharPtrType );// }
 	t_assert( any["a{"].GetSize() == 1 );// }
-	t_assert( any[1L].GetType() == Anything::eCharPtr );
+	t_assert( any[1L].GetType() == AnyCharPtrType );
 	t_assert( any[1L].GetSize() == 1 );
 	assertCharPtrEqual( any["a{"].AsCharPtr(), "}"  );//{
 	assertCharPtrEqual( any[1L].AsCharPtr(), "}" );
 	assertCharPtrEqual( any.SlotName(1L), "a{" );// }
 	t_assert( any.FindIndex("a{") == 1L );// }
 
-	t_assert( any["{a"].GetType() == Anything::eCharPtr );// }
+	t_assert( any["{a"].GetType() == AnyCharPtrType );// }
 	t_assert( any["{a"].GetSize() == 1 );// }
-	t_assert( any[2L].GetType() == Anything::eCharPtr );
+	t_assert( any[2L].GetType() == AnyCharPtrType );
 	t_assert( any[2L].GetSize() == 1 );
 	assertCharPtrEqual( any["{a"].AsCharPtr(), "}"  );//{
 	assertCharPtrEqual( any[2L].AsCharPtr(), "}" );
 	assertCharPtrEqual( any.SlotName(2L), "{a" );// }
 	t_assert( any.FindIndex("{a") == 2L );// }
 	//{
-	t_assert( any["}"].GetType() == Anything::eCharPtr );//{
+	t_assert( any["}"].GetType() == AnyCharPtrType );//{
 	t_assert( any["}"].GetSize() == 1 );
-	t_assert( any[3L].GetType() == Anything::eCharPtr );
+	t_assert( any[3L].GetType() == AnyCharPtrType );
 	t_assert( any[3L].GetSize() == 1 );//{
 	assertCharPtrEqual( any[_QUOTE_(})].AsCharPtr(), "b"  );
 	assertCharPtrEqual( any[3L].AsCharPtr(), "b" );//{
 	assertCharPtrEqual( any.SlotName(3L), "}" );//{
 	t_assert( any.FindIndex("}") == 3L );
 
-	t_assert( any["{"].GetType() == Anything::eCharPtr );// }
+	t_assert( any["{"].GetType() == AnyCharPtrType );// }
 	t_assert( any["{"].GetSize() == 1 );// }
-	t_assert( any[4L].GetType() == Anything::eCharPtr );
+	t_assert( any[4L].GetType() == AnyCharPtrType );
 	t_assert( any[4L].GetSize() == 1 );
 	assertCharPtrEqual( any["{"].AsCharPtr(), "c"  );// }
 	assertCharPtrEqual( any[4L].AsCharPtr(), "c" );
@@ -1690,9 +1692,9 @@ void ParserTest::testSemantic11() {
 
 	// Check if the anything-object is the expected one
 	String slot("\"Slo{t}Name\"");
-	t_assert( any[slot].GetType() == Anything::eCharPtr );
+	t_assert( any[slot].GetType() == AnyCharPtrType );
 	t_assert( any[slot].GetSize() == 1 );
-	t_assert( any[0L].GetType() == Anything::eCharPtr );
+	t_assert( any[0L].GetType() == AnyCharPtrType );
 	t_assert( any[0L].GetSize() == 1 );
 
 	char testString[10] = "\"a\\\"{}c\"";
@@ -1701,9 +1703,9 @@ void ParserTest::testSemantic11() {
 	assertCharPtrEqual( any.SlotName(0L), slot );
 	t_assert( any.FindIndex(slot) == 0L );	//{
 	String slot2("\"Slot}Name\"");
-	t_assert( any[slot2].GetType() == Anything::eCharPtr );
+	t_assert( any[slot2].GetType() == AnyCharPtrType );
 	t_assert( any[slot2].GetSize() == 1 );
-	t_assert( any[1L].GetType() == Anything::eCharPtr );
+	t_assert( any[1L].GetType() == AnyCharPtrType );
 	t_assert( any[1L].GetSize() == 1 );
 	assertCharPtrEqual( any[slot2].AsCharPtr(), testString );
 	assertCharPtrEqual( any[1L].AsCharPtr(), testString );
@@ -1731,16 +1733,16 @@ void ParserTest::testSemantic12() {
 	any = any1;
 
 	// Check if the anything-object is the expected one
-	t_assert( any[0L].GetType() == Anything::eNull );
+	t_assert( any[0L].GetType() == AnyNullType );
 	t_assert( any[0L].GetSize() == 0 );
 	if ( any.SlotName(0L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
 		t_assert( 0 == 1 );
 	}
 
-	t_assert( any["Test155"].GetType() == Anything::eArray );
+	t_assert( any["Test155"].GetType() == AnyArrayType );
 	t_assert( any["Test155"].GetSize() == 1 );
-	t_assert( any[1L].GetType() == Anything::eArray );
+	t_assert( any[1L].GetType() == AnyArrayType );
 	t_assert( any[1L].GetSize() == 1 );
 	assertCharPtrEqual( any["Test155"][0L].AsCharPtr(), "a" );
 	assertCharPtrEqual( any[1L][0L].AsCharPtr(), "a" );
@@ -1775,15 +1777,15 @@ void ParserTest::testSemantic13() {
 	any = any1;
 
 	// Check if the anything-object is the expected one
-	t_assert( any[0L].GetType() == Anything::eNull );
+	t_assert( any[0L].GetType() == AnyNullType );
 	t_assert( any[0L].GetSize() == 0 );
-	t_assert( any["SlotName"].GetType() == Anything::eNull );
+	t_assert( any["SlotName"].GetType() == AnyNullType );
 	t_assert( any["SlotName"].GetSize() == 0 );
 	assertCharPtrEqual( any.SlotName(0L), "SlotName" );
 
-	t_assert( any["Test155"].GetType() == Anything::eArray );
+	t_assert( any["Test155"].GetType() == AnyArrayType );
 	t_assert( any["Test155"].GetSize() == 1 );
-	t_assert( any[1L].GetType() == Anything::eArray );
+	t_assert( any[1L].GetType() == AnyArrayType );
 	t_assert( any[1L].GetSize() == 1 );
 	assertCharPtrEqual( any["Test155"][0L].AsCharPtr(), "a" );
 	assertCharPtrEqual( any[1L][0L].AsCharPtr(), "a" );
@@ -1821,37 +1823,37 @@ void ParserTest::testSemantic14() {
 	any = any1;
 
 	// Check if the anything-object is the expected one
-	t_assert( any[0L].GetType() == Anything::eNull );
+	t_assert( any[0L].GetType() == AnyNullType );
 	t_assert( any[0L].GetSize() == 0 );
 	if ( any.SlotName(0L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
 		t_assert( 0 == 1 );
 	}
 
-	t_assert( any[1L].GetType() == Anything::eNull );
+	t_assert( any[1L].GetType() == AnyNullType );
 	t_assert( any[1L].GetSize() == 0 );
 	if ( any.SlotName(1L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
 		t_assert( 0 == 1 );
 	}
 
-	t_assert( any[2L].GetType() == Anything::eNull );
+	t_assert( any[2L].GetType() == AnyNullType );
 	t_assert( any[2L].GetSize() == 0 );
-	t_assert( any["a"].GetType() == Anything::eNull );
+	t_assert( any["a"].GetType() == AnyNullType );
 	t_assert( any["a"].GetSize() == 0 );
 	assertCharPtrEqual( any.SlotName(2L), "a" );
 	t_assert( any.FindIndex("a") == 2L );
 
-	t_assert( any[3L].GetType() == Anything::eNull );
+	t_assert( any[3L].GetType() == AnyNullType );
 	t_assert( any[3L].GetSize() == 0 );
-	t_assert( any["b"].GetType() == Anything::eNull );
+	t_assert( any["b"].GetType() == AnyNullType );
 	t_assert( any["b"].GetSize() == 0 );
 	assertCharPtrEqual( any.SlotName(3L), "b" );
 	t_assert( any.FindIndex("b") == 3L );
 
-	t_assert( any[4L].GetType() == Anything::eNull );
+	t_assert( any[4L].GetType() == AnyNullType );
 	t_assert( any[4L].GetSize() == 0 );
-	t_assert( any["c"].GetType() == Anything::eNull );
+	t_assert( any["c"].GetType() == AnyNullType );
 	t_assert( any["c"].GetSize() == 0 );
 	assertCharPtrEqual( any.SlotName(4L), "c" );
 	t_assert( any.FindIndex("c") == 4L );
@@ -1870,7 +1872,7 @@ void ParserTest::testSemantic15() {
 	any = any1;
 
 	// Check if the anything-object is the expected one
-	t_assert( any.GetType() == Anything::eCharPtr );
+	t_assert( any.GetType() == AnyCharPtrType );
 	t_assert( any.GetSize() == 1 );
 	assertCharPtrEqual( any.AsCharPtr(), "{}" );
 	if ( any.SlotName(0L) != NULL ) {
@@ -1881,7 +1883,7 @@ void ParserTest::testSemantic15() {
 	// Check if anything-objects can change correctly
 	any = 34L;
 	// Check if the anything-object is the expected one
-	t_assert( any.GetType() == Anything::eLong );
+	t_assert( any.GetType() == AnyLongType );
 	t_assert( any.GetSize() == 1 );
 	t_assert( any.AsLong() == 34 );
 	if ( any.SlotName(0L) != NULL ) {
@@ -1892,7 +1894,7 @@ void ParserTest::testSemantic15() {
 	// Check if anything-objects can change correctly
 	any = 34.3E-56;
 	// Check if the anything-object is the expected one
-	t_assert( any.GetType() == Anything::eDouble );
+	t_assert( any.GetType() == AnyDoubleType );
 	t_assert( any.GetSize() == 1 );
 	t_assert( any.AsDouble() == 34.3E-56 );
 	if ( any.SlotName(0L) != NULL ) {
@@ -1921,20 +1923,20 @@ void ParserTest::testSemantic16() {
 	any = any1;
 
 	// Check if the anything-object is the expected one
-	t_assert( any.GetType() == Anything::eArray );
+	t_assert( any.GetType() == AnyArrayType );
 	t_assert( any.GetSize() == 1 );
 
-	t_assert( any["Test147"].GetType() == Anything::eArray );
-	t_assert( any[0L].GetType() == Anything::eArray );
+	t_assert( any["Test147"].GetType() == AnyArrayType );
+	t_assert( any[0L].GetType() == AnyArrayType );
 	t_assert( any["Test147"].GetSize() == 2 );
 	t_assert( any[0L].GetSize() == 2 );
 	assertCharPtrEqual( any.SlotName(0L), "Test147" );
 	t_assert( any.FindIndex("Test147") == 0L );
 
-	t_assert( any["Test147"][0L].GetType() == Anything::eCharPtr );
-	t_assert( any["Test147"]["Test147Dup"].GetType() == Anything::eCharPtr );
-	t_assert( any[0L]["Test147Dup"].GetType() == Anything::eCharPtr );
-	t_assert( any[0L][0L].GetType() == Anything::eCharPtr );
+	t_assert( any["Test147"][0L].GetType() == AnyCharPtrType );
+	t_assert( any["Test147"]["Test147Dup"].GetType() == AnyCharPtrType );
+	t_assert( any[0L]["Test147Dup"].GetType() == AnyCharPtrType );
+	t_assert( any[0L][0L].GetType() == AnyCharPtrType );
 
 	t_assert( any["Test147"][0L].GetSize() == 1 );
 	t_assert( any["Test147"]["Test147Dup"].GetSize() == 1 );
@@ -1952,8 +1954,8 @@ void ParserTest::testSemantic16() {
 	t_assert( any["Test147"].FindIndex("Test147Dup") == 0L );
 	t_assert( any[0L].FindIndex("Test147Dup") == 0L );
 
-	t_assert( any["Test147"][1L].GetType() == Anything::eLong );
-	t_assert( any[0L][1L].GetType() == Anything::eLong );
+	t_assert( any["Test147"][1L].GetType() == AnyLongType );
+	t_assert( any[0L][1L].GetType() == AnyLongType );
 
 	t_assert( any["Test147"][1L].GetSize() == 1 );
 	t_assert( any[0L][1L].GetSize() == 1 );
@@ -1983,13 +1985,13 @@ void ParserTest::testSemantic17() {
 	any = any1;
 
 	// Check if the anything-object is the expected one
-	t_assert( any.GetType() == Anything::eArray );
+	t_assert( any.GetType() == AnyArrayType );
 	t_assert( any.GetSize() == 1 );
 	t_assert( any.FindIndex("Test145") == 0 );
 	assertCharPtrEqual( any.SlotName(0L), "Test145" );
 
-	t_assert( any["Test145"].GetType() == Anything::eNull );
-	t_assert( any[0L].GetType() == Anything::eNull );
+	t_assert( any["Test145"].GetType() == AnyNullType );
+	t_assert( any[0L].GetType() == AnyNullType );
 	t_assert( any["Test145"].GetSize() == 0 );
 	t_assert( any[0L].GetSize() == 0 );
 }
@@ -2022,39 +2024,39 @@ void ParserTest::testSemantic18() {
 	any = any1;
 
 	// Check if the anything-object is the expected one
-	t_assert( any.GetType() == Anything::eArray );
+	t_assert( any.GetType() == AnyArrayType );
 	t_assert( any.GetSize() == 1 );
 	t_assert( any.FindIndex("Test143") == 0 );
 	assertCharPtrEqual( any.SlotName(0L), "Test143" );
 
-	t_assert( any["Test143"].GetType() == Anything::eArray );
+	t_assert( any["Test143"].GetType() == AnyArrayType );
 	t_assert( any["Test143"].GetSize() == 1 );
-	t_assert( any[0L].GetType() == Anything::eArray );
+	t_assert( any[0L].GetType() == AnyArrayType );
 	t_assert( any[0L].GetSize() == 1 );
 	assertCharPtrEqual( any.SlotName(0L), "Test143" );
 
-	t_assert( any[0L][0L].GetType() == Anything::eArray );
+	t_assert( any[0L][0L].GetType() == AnyArrayType );
 	t_assert( any[0L][0L].GetSize() == 1 );
 	if ( any["Test143"].SlotName(0L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
 		t_assert( 0 == 1 );
 	}
 
-	t_assert( any[0L][0L][0L].GetType() == Anything::eArray );
+	t_assert( any[0L][0L][0L].GetType() == AnyArrayType );
 	t_assert( any[0L][0L][0L].GetSize() == 1 );
 	if ( any["Test143"][0L].SlotName(0L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
 		t_assert( 0 == 1 );
 	}
 
-	t_assert( any[0L][0L][0L][0L].GetType() == Anything::eArray );
+	t_assert( any[0L][0L][0L][0L].GetType() == AnyArrayType );
 	t_assert( any[0L][0L][0L][0L].GetSize() == 1 );
 	if ( any["Test143"][0L][0L].SlotName(0L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
 		t_assert( 0 == 1 );
 	}
 
-	t_assert( any[0L][0L][0L][0L][0L].GetType() == Anything::eNull );
+	t_assert( any[0L][0L][0L][0L][0L].GetType() == AnyNullType );
 	t_assert( any[0L][0L][0L][0L][0L].GetSize() == 0 );
 	if ( any["Test143"][0L][0L][0L].SlotName(0L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
@@ -2091,21 +2093,21 @@ void ParserTest::testSemantic19() {
 	any = any1;
 
 	// Check if the anything-object is the expected one
-	t_assert( any.GetType() == Anything::eArray );
+	t_assert( any.GetType() == AnyArrayType );
 	t_assert( any.GetSize() == 8 );
 	t_assert( any.FindIndex("Test150") == 0 );
 	assertCharPtrEqual( any.SlotName(0L), "Test150" );
 
-	t_assert( any["Test150"].GetType() == Anything::eCharPtr );
+	t_assert( any["Test150"].GetType() == AnyCharPtrType );
 	t_assert( any["Test150"].GetSize() == 1 );
-	t_assert( any[0L].GetType() == Anything::eCharPtr );
+	t_assert( any[0L].GetType() == AnyCharPtrType );
 	t_assert( any[0L].GetSize() == 1 );
 	assertCharPtrEqual( any[0L].AsCharPtr(), "abc" );
 	assertCharPtrEqual( any["Test150"].AsCharPtr(), "abc" );
 	assertCharPtrEqual( any.SlotName(0L), "Test150" );
 	t_assert( any.FindIndex("Test150") == 0L );
 
-	t_assert( any[1L].GetType() == Anything::eCharPtr );
+	t_assert( any[1L].GetType() == AnyCharPtrType );
 	t_assert( any[1L].GetSize() == 1 );
 	assertCharPtrEqual( any[1L].AsCharPtr(), "dfg" );
 	if ( any.SlotName(1L) != NULL ) {
@@ -2113,7 +2115,7 @@ void ParserTest::testSemantic19() {
 		t_assert( 0 == 1 );
 	}
 
-	t_assert( any[2L].GetType() == Anything::eCharPtr );
+	t_assert( any[2L].GetType() == AnyCharPtrType );
 	t_assert( any[2L].GetSize() == 1 );
 	assertCharPtrEqual( any[2L].AsCharPtr(), "\\String1\"" );//"
 	if ( any.SlotName(2L) != NULL ) {
@@ -2121,7 +2123,7 @@ void ParserTest::testSemantic19() {
 		t_assert( 0 == 1 );
 	}
 
-	t_assert( any[3L].GetType() == Anything::eCharPtr );
+	t_assert( any[3L].GetType() == AnyCharPtrType );
 	t_assert( any[3L].GetSize() == 1 );
 	assertCharPtrEqual( any[3L].AsCharPtr(), "\\String2" );
 	if ( any.SlotName(3L) != NULL ) {
@@ -2129,7 +2131,7 @@ void ParserTest::testSemantic19() {
 		t_assert( 0 == 1 );
 	}
 
-	t_assert( any[4L].GetType() == Anything::eCharPtr );
+	t_assert( any[4L].GetType() == AnyCharPtrType );
 	t_assert( any[4L].GetSize() == 1 );
 	assertCharPtrEqual( any[4L].AsCharPtr(), "/String3\"" );//"
 	if ( any.SlotName(4L) != NULL ) {
@@ -2137,7 +2139,7 @@ void ParserTest::testSemantic19() {
 		t_assert( 0 == 1 );
 	}
 
-	t_assert( any[5L].GetType() == Anything::eCharPtr );
+	t_assert( any[5L].GetType() == AnyCharPtrType );
 	t_assert( any[5L].GetSize() == 1 );
 	assertCharPtrEqual( any[5L].AsCharPtr(), "/String4" );
 	if ( any.SlotName(5L) != NULL ) {
@@ -2145,7 +2147,7 @@ void ParserTest::testSemantic19() {
 		t_assert( 0 == 1 );
 	}
 
-	t_assert( any[6L].GetType() == Anything::eCharPtr );
+	t_assert( any[6L].GetType() == AnyCharPtrType );
 	t_assert( any[6L].GetSize() == 1 );
 	assertCharPtrEqual( any[6L].AsCharPtr(), "\\" );
 	if ( any.SlotName(6L) != NULL ) {
@@ -2153,7 +2155,7 @@ void ParserTest::testSemantic19() {
 		t_assert( 0 == 1 );
 	}
 
-	t_assert( any[7L].GetType() == Anything::eCharPtr );
+	t_assert( any[7L].GetType() == AnyCharPtrType );
 	t_assert( any[7L].GetSize() == 1 );
 	assertCharPtrEqual( any[7L].AsCharPtr(), "/" );
 	if ( any.SlotName(7L) != NULL ) {
@@ -2179,10 +2181,10 @@ void ParserTest::testSemantic20() {
 	any = any1;
 
 	// Check if the anything-object is the expected one
-	t_assert( any.GetType() == Anything::eArray );
+	t_assert( any.GetType() == AnyArrayType );
 	t_assert( any.GetSize() == 2 );
 
-	t_assert( any[0L].GetType() == Anything::eCharPtr );
+	t_assert( any[0L].GetType() == AnyCharPtrType );
 	t_assert( any[0L].GetSize() == 1 );
 	char testString[10] = "\"\\xGH\"";
 	assertCharPtrEqual( any[0L].AsCharPtr(), testString );
@@ -2192,7 +2194,7 @@ void ParserTest::testSemantic20() {
 		t_assert( 0 == 1 );
 	}
 
-	t_assert( any[1L].GetType() == Anything::eCharPtr );
+	t_assert( any[1L].GetType() == AnyCharPtrType );
 	t_assert( any[1L].GetSize() == 1 );
 
 	char testString2[10] = "\"\\GH\"";
@@ -2229,46 +2231,46 @@ void ParserTest::testSemantic21() {
 	any = any1;
 
 	// Check if the anything-object is the expected one
-	t_assert( any.GetType() == Anything::eArray );
+	t_assert( any.GetType() == AnyArrayType );
 	t_assert( any.GetSize() == 6 );
 
-	t_assert( any[0L].GetType() == Anything::eCharPtr );
-	t_assert( any["SlotName0"].GetType() == Anything::eCharPtr );
+	t_assert( any[0L].GetType() == AnyCharPtrType );
+	t_assert( any["SlotName0"].GetType() == AnyCharPtrType );
 	t_assert( any[0L].GetSize() == 1 );
 	t_assert( any["SlotName0"].GetSize() == 1 );
 	assertCharPtrEqual( any[0L].AsCharPtr(), "abc" );
 	assertCharPtrEqual( any.SlotName(0L), "SlotName0" );
 
-	t_assert( any[1L].GetType() == Anything::eCharPtr );
-	t_assert( any["SlotName1"].GetType() == Anything::eCharPtr );
+	t_assert( any[1L].GetType() == AnyCharPtrType );
+	t_assert( any["SlotName1"].GetType() == AnyCharPtrType );
 	t_assert( any[1L].GetSize() == 1 );
 	t_assert( any["SlotName1"].GetSize() == 1 );
 	assertCharPtrEqual( any[1L].AsCharPtr(), "de\x0E" );
 	assertCharPtrEqual( any.SlotName(1L), "SlotName1" );
 
-	t_assert( any[2L].GetType() == Anything::eCharPtr );
-	t_assert( any["SlotName2"].GetType() == Anything::eCharPtr );
+	t_assert( any[2L].GetType() == AnyCharPtrType );
+	t_assert( any["SlotName2"].GetType() == AnyCharPtrType );
 	t_assert( any[2L].GetSize() == 1 );
 	t_assert( any["SlotName2"].GetSize() == 1 );
 	assertCharPtrEqual( any[2L].AsCharPtr(), "fg" );	// 0ctal, end of C-string
 	assertCharPtrEqual( any[2L].AsCharPtr(), "fg\0e" );
 	assertCharPtrEqual( any.SlotName(2L), "SlotName2" );
 
-	t_assert( any[3L].GetType() == Anything::eCharPtr );
-	t_assert( any["SlotName3"].GetType() == Anything::eCharPtr );
+	t_assert( any[3L].GetType() == AnyCharPtrType );
+	t_assert( any["SlotName3"].GetType() == AnyCharPtrType );
 	t_assert( any[3L].GetSize() == 1 );
 	t_assert( any["SlotName3"].GetSize() == 1 );
 	assertCharPtrEqual( any[3L].AsCharPtr(), "hi" );
 	assertCharPtrEqual( any.SlotName(3L), "SlotName3" );
 
-	t_assert( any[4L].GetType() == Anything::eCharPtr );
-	t_assert( any["SlotName4"].GetType() == Anything::eCharPtr );
+	t_assert( any[4L].GetType() == AnyCharPtrType );
+	t_assert( any["SlotName4"].GetType() == AnyCharPtrType );
 	t_assert( any[4L].GetSize() == 1 );
 	t_assert( any["SlotName4"].GetSize() == 1 );
 	assertCharPtrEqual( any[4L].AsCharPtr(), "jm" );
 	assertCharPtrEqual( any.SlotName(4L), "SlotName4" );
 
-	t_assert( any["SlotName5"].GetType() == Anything::eCharPtr );
+	t_assert( any["SlotName5"].GetType() == AnyCharPtrType );
 	t_assert( any["SlotName5"].AsString() == String((void *)"n\0p", 3));
 	// write and readback of \0 successful
 }
@@ -2291,18 +2293,18 @@ void ParserTest::testSemantic22() {
 	any = any1;
 
 	// Check if the anything-object is the expected one
-	t_assert( any.GetType() == Anything::eArray );
+	t_assert( any.GetType() == AnyArrayType );
 	t_assert( any.GetSize() == 2 );
 
-	t_assert( any[0L].GetType() == Anything::eCharPtr );
-	t_assert( any["SlotName0"].GetType() == Anything::eCharPtr );
+	t_assert( any[0L].GetType() == AnyCharPtrType );
+	t_assert( any["SlotName0"].GetType() == AnyCharPtrType );
 	t_assert( any[0L].GetSize() == 1 );
 	t_assert( any["SlotName0"].GetSize() == 1 );
 	assertCharPtrEqual( any[0L].AsCharPtr(), "# Kein Kommentar" );
 	assertCharPtrEqual( any.SlotName(0L), "SlotName0" );
 
-	t_assert( any[1L].GetType() == Anything::eCharPtr );
-	t_assert( any["SlotName1"].GetType() == Anything::eCharPtr );
+	t_assert( any[1L].GetType() == AnyCharPtrType );
+	t_assert( any["SlotName1"].GetType() == AnyCharPtrType );
 	t_assert( any[1L].GetSize() == 1 );
 	t_assert( any["SlotName1"].GetSize() == 1 );
 	assertCharPtrEqual( any[1L].AsCharPtr(), "# Kein Kommentar" );
@@ -2331,7 +2333,7 @@ void ParserTest::testSemantic23() {
 	for ( i = 0; i < iMax; i++ ) {
 		switch (i) {
 			case 48: {
-				t_assert( any[i].GetType() == Anything::eCharPtr );
+				t_assert( any[i].GetType() == AnyCharPtrType );
 				t_assert( any[i].GetSize() == 1 );
 				assertCharPtrEqual( any[i].AsCharPtr(), "a" );
 				if ( any.SlotName(i) != NULL ) {
@@ -2342,10 +2344,10 @@ void ParserTest::testSemantic23() {
 			break;
 
 			case 49: {
-				t_assert( any[i].GetType() == Anything::eCharPtr );
+				t_assert( any[i].GetType() == AnyCharPtrType );
 				t_assert( any[i].GetSize() == 1 );
 				assertCharPtrEqual( any[i].AsCharPtr(), "b" );
-				t_assert( any["\x30"].GetType() == Anything::eCharPtr );
+				t_assert( any["\x30"].GetType() == AnyCharPtrType );
 				t_assert( any["\x30"].GetSize() == 1 );
 				assertCharPtrEqual( any["\x30"].AsCharPtr(), "b" );
 				assertCharPtrEqual( any.SlotName(i), "\x30" );
@@ -2355,7 +2357,7 @@ void ParserTest::testSemantic23() {
 			break;
 
 			case 3: {
-				t_assert( any[i].GetType() == Anything::eCharPtr );
+				t_assert( any[i].GetType() == AnyCharPtrType );
 				t_assert( any[i].GetSize() == 1 );
 				assertCharPtrEqual( any[i].AsCharPtr(), "c" );
 				if ( any.SlotName(i) != NULL ) {
@@ -2366,10 +2368,10 @@ void ParserTest::testSemantic23() {
 			break;
 
 			case 50: {
-				t_assert( any[i].GetType() == Anything::eCharPtr );
+				t_assert( any[i].GetType() == AnyCharPtrType );
 				t_assert( any[i].GetSize() == 1 );
 				assertCharPtrEqual( any[i].AsCharPtr(), "g" );
-				t_assert( any["\x3"].GetType() == Anything::eCharPtr );
+				t_assert( any["\x3"].GetType() == AnyCharPtrType );
 				t_assert( any["\x3"].GetSize() == 1 );
 				assertCharPtrEqual( any["\x3"].AsCharPtr(), "g" );
 				assertCharPtrEqual( any.SlotName(i), "\x3" );
@@ -2379,7 +2381,7 @@ void ParserTest::testSemantic23() {
 			break;
 
 			case 24: {
-				t_assert( any[i].GetType() == Anything::eCharPtr );
+				t_assert( any[i].GetType() == AnyCharPtrType );
 				t_assert( any[i].GetSize() == 1 );
 				assertCharPtrEqual( any[i].AsCharPtr(), "e" );
 				if ( any.SlotName(i) != NULL ) {
@@ -2390,10 +2392,10 @@ void ParserTest::testSemantic23() {
 			break;
 
 			case 51: {
-				t_assert( any[i].GetType() == Anything::eCharPtr );
+				t_assert( any[i].GetType() == AnyCharPtrType );
 				t_assert( any[i].GetSize() == 1 );
 				assertCharPtrEqual( any[i].AsCharPtr(), "f" );
-				t_assert( any["\30"].GetType() == Anything::eCharPtr );
+				t_assert( any["\30"].GetType() == AnyCharPtrType );
 				t_assert( any["\30"].GetSize() == 1 );
 				assertCharPtrEqual( any["\30"].AsCharPtr(), "f" );
 				assertCharPtrEqual( any.SlotName(i), "\30" );
@@ -2402,10 +2404,10 @@ void ParserTest::testSemantic23() {
 			break;
 
 			case 52: {
-				t_assert( any[i].GetType() == Anything::eCharPtr );
+				t_assert( any[i].GetType() == AnyCharPtrType );
 				t_assert( any[i].GetSize() == 1 );
 				assertCharPtrEqual( any[i].AsCharPtr(), "g" );
-				t_assert( any["\3"].GetType() == Anything::eCharPtr );
+				t_assert( any["\3"].GetType() == AnyCharPtrType );
 				t_assert( any["\3"].GetSize() == 1 );
 				assertCharPtrEqual( any["\3"].AsCharPtr(), "d" );
 				assertCharPtrEqual( any.SlotName(i), "\3" );
@@ -2414,7 +2416,7 @@ void ParserTest::testSemantic23() {
 			break;
 
 			default: {
-				t_assert( any[i].GetType() == Anything::eNull );
+				t_assert( any[i].GetType() == AnyNullType );
 				t_assert( any[i].GetSize() == 0 );
 				if ( any.SlotName(i) != NULL ) {
 					// SlotName should be NULL but it is not:  errMsg
@@ -2448,10 +2450,10 @@ void ParserTest::testSemantic24() {
 	any = any1;
 
 	// Check if the anything-object is the expected one
-	t_assert( any.GetType() == Anything::eArray );
+	t_assert( any.GetType() == AnyArrayType );
 	t_assert( any.GetSize() == 4 );
 
-	t_assert( any[0L].GetType() == Anything::eCharPtr );
+	t_assert( any[0L].GetType() == AnyCharPtrType );
 	t_assert( any[0L].GetSize() == 1 );
 	assertCharPtrEqual( any[0L].AsCharPtr(), "/a" );
 	if ( any.SlotName(0L) != NULL ) {
@@ -2459,7 +2461,7 @@ void ParserTest::testSemantic24() {
 		t_assert( 0 == 1 );
 	}
 
-	t_assert( any[1L].GetType() == Anything::eCharPtr );
+	t_assert( any[1L].GetType() == AnyCharPtrType );
 	t_assert( any[1L].GetSize() == 1 );
 	assertCharPtrEqual( any[1L].AsCharPtr(), " String" );
 	if ( any.SlotName(1L) != NULL ) {
@@ -2467,8 +2469,8 @@ void ParserTest::testSemantic24() {
 		t_assert( 0 == 1 );
 	}
 
-	t_assert( any[2L].GetType() == Anything::eCharPtr );
-	t_assert( any["a"].GetType() == Anything::eCharPtr );
+	t_assert( any[2L].GetType() == AnyCharPtrType );
+	t_assert( any["a"].GetType() == AnyCharPtrType );
 	t_assert( any[2L].GetSize() == 1 );
 	t_assert( any["a"].GetSize() == 1 );
 	assertCharPtrEqual( any[2L].AsCharPtr(), " String" );
@@ -2476,8 +2478,8 @@ void ParserTest::testSemantic24() {
 	assertCharPtrEqual( any.SlotName(2L), "a" );
 	t_assert( any.FindIndex("a") == 2L );
 
-	t_assert( any[3L].GetType() == Anything::eCharPtr );
-	t_assert( any[" String"].GetType() == Anything::eCharPtr );
+	t_assert( any[3L].GetType() == AnyCharPtrType );
+	t_assert( any[" String"].GetType() == AnyCharPtrType );
 	t_assert( any[3L].GetSize() == 1 );
 	t_assert( any[" String"].GetSize() == 1 );
 	assertCharPtrEqual( any[3L].AsCharPtr(), "a" );
@@ -2517,19 +2519,19 @@ void ParserTest::testSemantic25() {
 	any = any1;
 
 	// Check if the anything-object is the expected one
-	t_assert( any.GetType() == Anything::eArray );
+	t_assert( any.GetType() == AnyArrayType );
 	t_assert( any.GetSize() == 2 );
 
-	t_assert( any[0L].GetType() == Anything::eCharPtr );
+	t_assert( any[0L].GetType() == AnyCharPtrType );
 	t_assert( any[0L].GetSize() == 1 );
 	assertCharPtrEqual( any[0L].AsCharPtr(), "A" );
-	t_assert( any["a"].GetType() == Anything::eCharPtr );
+	t_assert( any["a"].GetType() == AnyCharPtrType );
 	t_assert( any["a"].GetSize() == 1 );
 	assertCharPtrEqual( any["a"].AsCharPtr(), "A" );
 	assertCharPtrEqual( any.SlotName(0L), "a" );
 	t_assert( any.FindIndex("a") == 0L );
 
-	t_assert( any[1L].GetType() == Anything::eCharPtr );
+	t_assert( any[1L].GetType() == AnyCharPtrType );
 	t_assert( any[1L].GetSize() == 1 );
 	assertCharPtrEqual( any[1L].AsCharPtr(), "A" );
 	if ( any.SlotName(1L) != NULL ) {
@@ -2566,37 +2568,37 @@ void ParserTest::testSemantic26() {
 	any = any1;
 
 	// Check if the anything-object is the expected one
-	t_assert( any.GetType() == Anything::eArray );
+	t_assert( any.GetType() == AnyArrayType );
 	t_assert( any.GetSize() == 1 );
 
-	t_assert( any[0L].GetType() == Anything::eArray );
+	t_assert( any[0L].GetType() == AnyArrayType );
 	t_assert( any[0L].GetSize() == 2 );
 	assertCharPtrEqual( any[0L][0L].AsCharPtr(), "A" );
-	t_assert( any["a"].GetType() == Anything::eArray );
+	t_assert( any["a"].GetType() == AnyArrayType );
 	t_assert( any["a"].GetSize() == 2 );
 	assertCharPtrEqual( any["a"][0L].AsCharPtr(), "A" );
 	assertCharPtrEqual( any.SlotName(0L), "a" );
 	t_assert( any.FindIndex("a") == 0L );
 
-	t_assert( any[0L][1L].GetType() == Anything::eArray );
+	t_assert( any[0L][1L].GetType() == AnyArrayType );
 	t_assert( any[0L][1L].GetSize() == 2 );
 	assertCharPtrEqual( any[0L][1L][0L].AsCharPtr(), "B" );
-	t_assert( any["a"]["a"].GetType() == Anything::eArray );
+	t_assert( any["a"]["a"].GetType() == AnyArrayType );
 	t_assert( any["a"]["a"].GetSize() == 2 );
 	assertCharPtrEqual( any["a"]["a"][0L].AsCharPtr(), "B" );
 	assertCharPtrEqual( any["a"].SlotName(1L), "a" );
 	t_assert( any["a"].FindIndex("a") == 1L );
 
-	t_assert( any[0L][1L][1L].GetType() == Anything::eArray );
+	t_assert( any[0L][1L][1L].GetType() == AnyArrayType );
 	t_assert( any[0L][1L][1L].GetSize() == 2 );
 	assertCharPtrEqual( any[0L][1L][1L][0L].AsCharPtr(), "C" );
-	t_assert( any["a"]["a"]["a"].GetType() == Anything::eArray );
+	t_assert( any["a"]["a"]["a"].GetType() == AnyArrayType );
 	t_assert( any["a"]["a"]["a"].GetSize() == 2 );
 	assertCharPtrEqual( any["a"]["a"]["a"][0L].AsCharPtr(), "C" );
 	assertCharPtrEqual( any["a"]["a"].SlotName(1L), "a" );
 	t_assert( any["a"]["a"].FindIndex("a") == 1L );
 
-	t_assert( any[0L][1L][1L][1L].GetType() == Anything::eCharPtr );
+	t_assert( any[0L][1L][1L][1L].GetType() == AnyCharPtrType );
 	assertCharPtrEqual( any[0L][1L][1L].SlotName(1L), "a" );
 	t_assert( any[0L][1L][1L].FindIndex("D") < 0L );	// Because the type is eCharPtr and not eArray
 }
@@ -2742,14 +2744,14 @@ void ParserTest::testSemantic32() {
 	t_assert( anyTemp1["a"].AsLong() == 1 );
 	t_assert( any[0L].AsLong() == 0L );
 	t_assert( any[1L].AsLong() == 0L );
-	t_assert( any[2L].GetType() == Anything::eNull );
+	t_assert( any[2L].GetType() == AnyNullType );
 
 	any["a"].Remove(1L);
 	t_assert( anyTemp0["a"].AsLong() == 0 );
 	t_assert( anyTemp1["a"].AsLong() == 1 );
 	t_assert( any[0L].AsLong() == 0L );
-	t_assert( any[1L].GetType() == Anything::eNull );
-	t_assert( any[2L].GetType() == Anything::eNull );
+	t_assert( any[1L].GetType() == AnyNullType );
+	t_assert( any[2L].GetType() == AnyNullType );
 
 }
 //	testSemantic32
@@ -2764,11 +2766,11 @@ void ParserTest::testSemantic33() {
 	anyTemp1["b"] = 1L;
 	any.Append(anyTemp0);
 	any.Append(anyTemp1);
-	t_assert( anyTemp0.GetType() == Anything::eArray );
-	t_assert( anyTemp1.GetType() == Anything::eArray );
-	t_assert( any.GetType() == Anything::eArray );
-	t_assert( any[0L].GetType() == Anything::eArray );
-	t_assert( any[1L].GetType() == Anything::eArray );
+	t_assert( anyTemp0.GetType() == AnyArrayType );
+	t_assert( anyTemp1.GetType() == AnyArrayType );
+	t_assert( any.GetType() == AnyArrayType );
+	t_assert( any[0L].GetType() == AnyArrayType );
+	t_assert( any[1L].GetType() == AnyArrayType );
 	t_assert( any[0L]["a"].AsLong() == anyTemp0["a"].AsLong() );
 	t_assert( any[1L]["b"].AsLong() == anyTemp1["b"].AsLong() );
 	// Change something
@@ -2781,13 +2783,13 @@ void ParserTest::testSemantic33() {
 	// Change the type of anyTemp0/1 from eArray to eLong;
 	anyTemp0 = 4L;
 	anyTemp1 = 5L;
-	t_assert( anyTemp0.GetType() == Anything::eLong );
-	t_assert( anyTemp1.GetType() == Anything::eLong );
+	t_assert( anyTemp0.GetType() == AnyLongType );
+	t_assert( anyTemp1.GetType() == AnyLongType );
 	t_assert( anyTemp0.AsLong() == 4 );
 	t_assert( anyTemp1.AsLong() == 5 );
 	// Because anyTemp0/1 are not eArray, they are not referenced by "any" anymore.
-	t_assert( any[0L].GetType() == Anything::eArray );
-	t_assert( any[1L].GetType() == Anything::eArray );
+	t_assert( any[0L].GetType() == AnyArrayType );
+	t_assert( any[1L].GetType() == AnyArrayType );
 	t_assert( any[0L]["a"].AsLong() == 2 );
 	t_assert( any[1L]["b"].AsLong() == 3 );
 
@@ -2797,21 +2799,21 @@ void ParserTest::testSemantic33() {
 	t_assert( anyTemp0.AsLong() == 6 );
 	t_assert( anyTemp1.AsLong() == 7 );
 	// Because anyTemp0/1 are not eArray, they are not referenced by "any" anymore.
-	t_assert( any[0L].GetType() == Anything::eArray );
-	t_assert( any[1L].GetType() == Anything::eArray );
+	t_assert( any[0L].GetType() == AnyArrayType );
+	t_assert( any[1L].GetType() == AnyArrayType );
 	t_assert( any[0L]["a"].AsLong() == 2 );
 	t_assert( any[1L]["b"].AsLong() == 3 );
 
 	// Do a change
 	anyTemp0["a"] = 8L;
 	anyTemp1["b"] = 9L;
-	t_assert( anyTemp0.GetType() == Anything::eArray );
-	t_assert( anyTemp1.GetType() == Anything::eArray );
+	t_assert( anyTemp0.GetType() == AnyArrayType );
+	t_assert( anyTemp1.GetType() == AnyArrayType );
 	t_assert( anyTemp0["a"].AsLong() == 8 );
 	t_assert( anyTemp1["b"].AsLong() == 9 );
 	// Because anyTemp0/1 are not eArray, they are not referenced by "any" anymore.
-	t_assert( any[0L].GetType() == Anything::eArray );
-	t_assert( any[1L].GetType() == Anything::eArray );
+	t_assert( any[0L].GetType() == AnyArrayType );
+	t_assert( any[1L].GetType() == AnyArrayType );
 	t_assert( any[0L]["a"].AsLong() == 2 );
 	t_assert( any[1L]["b"].AsLong() == 3 );
 

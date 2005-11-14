@@ -188,7 +188,7 @@ void AnythingTest::testDefaultConstr()
 
 	Anything anyHlp;
 
-	t_assert( fNull.GetType() == fNull.eNull );
+	t_assert( fNull.GetType() == AnyNullType );
 	t_assert( fNull.IsNull() == true );
 	t_assert( fNull.IsNull() == true );
 	t_assert( fNull.IsNull() == bool(1) );
@@ -244,7 +244,7 @@ void AnythingTest::testIntConstr()
 
 	Anything anyHlp = fBool;
 
-	t_assert( fBool.GetType() == fBool.eLong );
+	t_assert( fBool.GetType() == AnyLongType );
 	t_assert( fBool.IsNull() == false );
 	t_assert( fBool.IsNull() == false );
 	t_assert( fBool.IsNull() == 0 );
@@ -287,7 +287,7 @@ void AnythingTest::testLongConstr()
 
 	Anything anyHlp = fLong;
 
-	t_assert( fLong.GetType() == fLong.eLong );
+	t_assert( fLong.GetType() == AnyLongType );
 	t_assert( fLong.IsNull() == false );
 	t_assert( fLong.IsNull() == false );
 	t_assert( fLong.IsNull() == 0 );
@@ -344,7 +344,7 @@ void AnythingTest::testDoubleConstr0()
 
 	Anything anyHlp = fDouble;
 
-	t_assert( fDouble.GetType() == fDouble.eDouble );
+	t_assert( fDouble.GetType() == AnyDoubleType );
 	t_assert( fDouble.IsNull() == false );
 	t_assert( fDouble.IsNull() == false );
 	t_assert( fDouble.IsNull() == 0 );
@@ -401,7 +401,7 @@ void AnythingTest::testDoubleConstr1()
 
 	Anything anyHlp = fDouble2;
 
-	t_assert( fDouble2.GetType() == fDouble2.eDouble );
+	t_assert( fDouble2.GetType() == AnyDoubleType );
 	t_assert( fDouble2.IsNull() == false );
 	t_assert( fDouble2.IsNull() == false );
 	t_assert( fDouble2.IsNull() == 0 );
@@ -454,7 +454,7 @@ void AnythingTest::testFloatConstr()
 
 	Anything anyHlp = fFloat;
 
-	t_assert( fFloat.GetType() == fFloat.eDouble );
+	t_assert( fFloat.GetType() == AnyDoubleType );
 	t_assert( fFloat.IsNull() == false );
 	t_assert( fFloat.IsNull() == false );
 	t_assert( fFloat.IsNull() == 0 );
@@ -524,7 +524,7 @@ void AnythingTest::testCharStarConstr()
 
 	Anything	anyCharStar( charStarTest ), anyHlp = fString;
 
-	t_assert( anyCharStar.GetType() == anyCharStar.eCharPtr );
+	t_assert( anyCharStar.GetType() == AnyCharPtrType );
 	t_assert( anyCharStar.IsNull() == false );
 	t_assert( anyCharStar.IsNull() == false );
 	t_assert( anyCharStar.IsNull() == 0 );
@@ -580,7 +580,7 @@ void AnythingTest::testCharStarLongConstr0()
 
 	anyHlp = anyStringLen;
 
-	t_assert( anyStringLen.GetType() == anyStringLen.eCharPtr );
+	t_assert( anyStringLen.GetType() == AnyCharPtrType );
 	t_assert( anyStringLen.IsNull() == false );
 	t_assert( anyStringLen.IsNull() == false );
 	t_assert( anyStringLen.IsNull() == 0 );
@@ -639,7 +639,7 @@ void AnythingTest::testCharStarLongConstr1()
 
 	anyHlp = anyStringLen;
 
-	t_assert( anyStringLen.GetType() == anyStringLen.eCharPtr );
+	t_assert( anyStringLen.GetType() == AnyCharPtrType );
 	t_assert( anyStringLen.IsNull() == false );
 	t_assert( anyStringLen.IsNull() == false );
 	t_assert( anyStringLen.IsNull() == 0 );
@@ -733,7 +733,7 @@ void AnythingTest::testStringConstr()
 	String		stringTest = "A String";
 	Anything	anyString( stringTest ), anyHlp = fString;
 
-	t_assert( anyString.GetType() == anyString.eCharPtr );
+	t_assert( anyString.GetType() == AnyCharPtrType );
 	t_assert( anyString.IsNull() == false );
 	t_assert( anyString.IsNull() == false );
 	t_assert( anyString.IsNull() == 0 );
@@ -791,7 +791,7 @@ void AnythingTest::testStringConstr()
 
 	String voidstr((void *)"abc\0ef", 5); // string with 0 byte included
 	Anything avoidstr(voidstr);
-	t_assert(avoidstr.GetType() == Anything::eCharPtr);
+	t_assert(avoidstr.GetType() == AnyCharPtrType);
 	t_assert(avoidstr.AsString() == voidstr); // does it remain the same
 	assertEqual(voidstr.Length(), avoidstr.AsString().Length());
 }
@@ -802,14 +802,14 @@ void AnythingTest::testEmptyVoidStarLenConstr()
 	memset(test, '\0', 10);
 	Anything anyTest( (void *)0, 10);
 
-	t_assert( anyTest.GetType() == Anything::eVoidBuf );
+	t_assert( anyTest.GetType() == AnyVoidBufType );
 	t_assert( anyTest.IsNull() == false );
 	t_assert( anyTest.GetSize() == 1 );
 	t_assert( anyTest.AsCharPtr(0) != 0 );
 	t_assert( memcmp( (const char *) test, anyTest.AsCharPtr(), sizeof(test) ) == 0 );
 
 	Anything anyTest1( (void *)test, 0 ); // we do not allocate something
-	t_assert( anyTest1.GetType() == Anything::eVoidBuf );
+	t_assert( anyTest1.GetType() == AnyVoidBufType );
 	t_assert( anyTest1.IsNull() == false );
 	t_assert( anyTest1.GetSize() == 1 );
 	t_assert( anyTest1.AsCharPtr(0) == 0 );
@@ -817,7 +817,7 @@ void AnythingTest::testEmptyVoidStarLenConstr()
 	test[0] = '1';
 	test[5] = '6';
 	Anything anyTest2( (void *)test, 10 );
-	t_assert( anyTest2.GetType() == Anything::eVoidBuf );
+	t_assert( anyTest2.GetType() == AnyVoidBufType );
 	t_assert( anyTest2.IsNull() == false );
 	t_assert( anyTest2.GetSize() == 1 );
 	t_assert( anyTest2.AsCharPtr(0) != 0 );
@@ -830,7 +830,7 @@ void AnythingTest::testVoidStarLenConstr()
 	Anything	anyTest( (void *)&arrTest, (long)sizeof(arrTest) );
 	Anything	anyHlp = anyTest;
 
-	t_assert( anyTest.GetType() == Anything::eVoidBuf );
+	t_assert( anyTest.GetType() == AnyVoidBufType );
 	t_assert( anyTest.IsNull() == false );
 	t_assert( anyTest.IsNull() == false );
 	t_assert( anyTest.IsNull() == 0 );
@@ -905,7 +905,7 @@ void AnythingTest::testIFAObjectStarConstr()
 	// We use a DummyIFAObj, it is the simples IFAObject that can be instantiated
 	Anything anyIFAObj( &testObj ), anyHlp = anyIFAObj;
 
-	t_assert( anyIFAObj.GetType() == anyIFAObj.eObject );
+	t_assert( anyIFAObj.GetType() == AnyObjectType );
 	t_assert( anyIFAObj.IsNull() == false );
 	t_assert( anyIFAObj.IsNull() == false );
 	t_assert( anyIFAObj.IsNull() == 0 );
@@ -968,7 +968,7 @@ void AnythingTest::testIFAObjectStarConstr()
 	// t_assert( anyIFAObj.At(-1L) == NULL );		// ABORT ????	Anything.cpp:1358
 	anyIFAObj.Remove( 0L );
 	t_assert( (anyIFAObj.At(0L)).AsLong() == 0 );
-	t_assert( anyIFAObj[0L].GetType() == Anything::eNull );
+	t_assert( anyIFAObj[0L].GetType() == AnyNullType );
 }
 
 void AnythingTest::testAnythingConstr()
@@ -1349,16 +1349,16 @@ void AnythingTest::KeyAccess2 ()
 	for ( i = 0; i < 1000; i++ ) {
 		if ( i < 300 ) {
 			t_assert( array[i] == i );
-			t_assert( array[i].GetType() == array[i].eLong );
+			t_assert( array[i].GetType() == AnyLongType );
 		} else if ( i < 500 ) {
 			t_assert( array[i] == (float)i + 0.12 );
-			t_assert( array[i].GetType() == array[i].eDouble );
+			t_assert( array[i].GetType() == AnyDoubleType );
 		} else if ( i < 800 ) {
 			t_assert( array[i] == -(float)i - 0.12 );
-			t_assert( array[i].GetType() == array[i].eDouble );
+			t_assert( array[i].GetType() == AnyDoubleType );
 		} else {
 			t_assert( array[i] == "Test" );
-			t_assert( array[i].GetType() == array[i].eCharPtr );
+			t_assert( array[i].GetType() == AnyCharPtrType );
 		}
 	}
 }
@@ -1498,11 +1498,11 @@ void AnythingTest::EmptyAccess0 ()
 	assertEqual(0, (long)test.SlotName(0));
 
 	lengthBefore = test.GetSize();
-	t_assert(test[""].GetType() == Anything::eNull);
+	t_assert(test[""].GetType() == AnyNullType);
 	// empty slotname still not present
 	assertEqual(lengthBefore + 1, test.GetSize());
 	// the above read access generated a new NullAnything
-	t_assert(test[1].GetType() == Anything::eNull);
+	t_assert(test[1].GetType() == AnyNullType);
 
 	test["something"] = "Test";
 	assertEqual("Test", test[2].AsCharPtr(""));
@@ -1511,7 +1511,7 @@ void AnythingTest::EmptyAccess0 ()
 	// even after another assignment
 	assertEqual(lengthBefore + 1, test.GetSize());
 	// and again the number of slots increases
-	t_assert(test[3].GetType() == Anything::eNull);
+	t_assert(test[3].GetType() == AnyNullType);
 
 	test[""] = "nothing";
 	t_assert(test[""].AsString("really nothing") == "really nothing");
@@ -1710,243 +1710,243 @@ void AnythingTest::testType()
 	String   MyString( "Another String" );
 
 	// Simple Types
-	t_assert( TypeChange.GetType() == Anything::eNull );
+	t_assert( TypeChange.GetType() == AnyNullType );
 
 	TypeChange = 12L;
-	t_assert( TypeChange.GetType() == Anything::eLong );
+	t_assert( TypeChange.GetType() == AnyLongType );
 
 	TypeChange = (char *)"Ein String";
-	t_assert( TypeChange.GetType() == Anything::eCharPtr );
+	t_assert( TypeChange.GetType() == AnyCharPtrType );
 
 	TypeChange = (long)34;
-	t_assert( TypeChange.GetType() == Anything::eLong );
+	t_assert( TypeChange.GetType() == AnyLongType );
 
 	TypeChange = (double)300.44;
-	t_assert( TypeChange.GetType() == Anything::eDouble );
+	t_assert( TypeChange.GetType() == AnyDoubleType );
 
 	TypeChange = (long)56;
-	t_assert( TypeChange.GetType() == Anything::eLong );
+	t_assert( TypeChange.GetType() == AnyLongType );
 
 	TypeChange = MyString;
-	t_assert( TypeChange.GetType() == Anything::eCharPtr );
+	t_assert( TypeChange.GetType() == AnyCharPtrType );
 
 	TypeChange = (float)1.37;
-	t_assert( TypeChange.GetType() == Anything::eDouble );
+	t_assert( TypeChange.GetType() == AnyDoubleType );
 
 	TypeChange = AnyLong;
-	t_assert( TypeChange.GetType() == Anything::eLong );
+	t_assert( TypeChange.GetType() == AnyLongType );
 
 	// Array
 	ArrayTypeTest[""] = ( "Noch ein String" );
-	t_assert( ArrayTypeTest.GetType() == Anything::eArray );
-	t_assert( ArrayTypeTest[0L].GetType() == Anything::eCharPtr );
+	t_assert( ArrayTypeTest.GetType() == AnyArrayType );
+	t_assert( ArrayTypeTest[0L].GetType() == AnyCharPtrType );
 
 	ArrayTypeTest[""] = ( 12L );
-	t_assert( ArrayTypeTest.GetType() == Anything::eArray );
-	t_assert( ArrayTypeTest[0L].GetType() == Anything::eCharPtr );
-	t_assert( ArrayTypeTest[ 1].GetType() == Anything::eLong );
+	t_assert( ArrayTypeTest.GetType() == AnyArrayType );
+	t_assert( ArrayTypeTest[0L].GetType() == AnyCharPtrType );
+	t_assert( ArrayTypeTest[ 1].GetType() == AnyLongType );
 
 	ArrayTypeTest[""] = ( (long)34 );
-	t_assert( ArrayTypeTest.GetType() == Anything::eArray );
-	t_assert( ArrayTypeTest[0L].GetType() == Anything::eCharPtr );
-	t_assert( ArrayTypeTest[ 1].GetType() == Anything::eLong );
-	t_assert( ArrayTypeTest[ 2].GetType() == Anything::eLong );
+	t_assert( ArrayTypeTest.GetType() == AnyArrayType );
+	t_assert( ArrayTypeTest[0L].GetType() == AnyCharPtrType );
+	t_assert( ArrayTypeTest[ 1].GetType() == AnyLongType );
+	t_assert( ArrayTypeTest[ 2].GetType() == AnyLongType );
 
 	ArrayTypeTest[""] = ( (long)56 );
-	t_assert( ArrayTypeTest.GetType() == Anything::eArray );
-	t_assert( ArrayTypeTest[0L].GetType() == Anything::eCharPtr );
-	t_assert( ArrayTypeTest[ 1].GetType() == Anything::eLong );
-	t_assert( ArrayTypeTest[ 2].GetType() == Anything::eLong );
-	t_assert( ArrayTypeTest[ 3].GetType() == Anything::eLong );
+	t_assert( ArrayTypeTest.GetType() == AnyArrayType );
+	t_assert( ArrayTypeTest[0L].GetType() == AnyCharPtrType );
+	t_assert( ArrayTypeTest[ 1].GetType() == AnyLongType );
+	t_assert( ArrayTypeTest[ 2].GetType() == AnyLongType );
+	t_assert( ArrayTypeTest[ 3].GetType() == AnyLongType );
 
 	ArrayTypeTest[""] = ( (float)98.765 );
-	t_assert( ArrayTypeTest.GetType() == Anything::eArray );
-	t_assert( ArrayTypeTest[0L].GetType() == Anything::eCharPtr );
-	t_assert( ArrayTypeTest[ 1].GetType() == Anything::eLong );
-	t_assert( ArrayTypeTest[ 2].GetType() == Anything::eLong );
-	t_assert( ArrayTypeTest[ 3].GetType() == Anything::eLong );
-	t_assert( ArrayTypeTest[ 4].GetType() == Anything::eDouble );
+	t_assert( ArrayTypeTest.GetType() == AnyArrayType );
+	t_assert( ArrayTypeTest[0L].GetType() == AnyCharPtrType );
+	t_assert( ArrayTypeTest[ 1].GetType() == AnyLongType );
+	t_assert( ArrayTypeTest[ 2].GetType() == AnyLongType );
+	t_assert( ArrayTypeTest[ 3].GetType() == AnyLongType );
+	t_assert( ArrayTypeTest[ 4].GetType() == AnyDoubleType );
 
 	ArrayTypeTest[""] = ( (double)12.345 );
-	t_assert( ArrayTypeTest.GetType() == Anything::eArray );
-	t_assert( ArrayTypeTest[0L].GetType() == Anything::eCharPtr );
-	t_assert( ArrayTypeTest[ 1].GetType() == Anything::eLong );
-	t_assert( ArrayTypeTest[ 2].GetType() == Anything::eLong );
-	t_assert( ArrayTypeTest[ 3].GetType() == Anything::eLong );
-	t_assert( ArrayTypeTest[ 4].GetType() == Anything::eDouble );
-	t_assert( ArrayTypeTest[ 5].GetType() == Anything::eDouble );
+	t_assert( ArrayTypeTest.GetType() == AnyArrayType );
+	t_assert( ArrayTypeTest[0L].GetType() == AnyCharPtrType );
+	t_assert( ArrayTypeTest[ 1].GetType() == AnyLongType );
+	t_assert( ArrayTypeTest[ 2].GetType() == AnyLongType );
+	t_assert( ArrayTypeTest[ 3].GetType() == AnyLongType );
+	t_assert( ArrayTypeTest[ 4].GetType() == AnyDoubleType );
+	t_assert( ArrayTypeTest[ 5].GetType() == AnyDoubleType );
 
 	ArrayTypeTest[0L] = 12L;
-	t_assert( ArrayTypeTest[0L].GetType() == Anything::eLong );
+	t_assert( ArrayTypeTest[0L].GetType() == AnyLongType );
 
 	ArrayTypeTest[0L] = (char *)"Ein String";
-	t_assert( ArrayTypeTest[0L].GetType() == Anything::eCharPtr );
+	t_assert( ArrayTypeTest[0L].GetType() == AnyCharPtrType );
 
 	ArrayTypeTest[0L] = 34L;
-	t_assert( ArrayTypeTest[0L].GetType() == Anything::eLong );
+	t_assert( ArrayTypeTest[0L].GetType() == AnyLongType );
 
 	ArrayTypeTest[0L] = (double)300.44;
-	t_assert( ArrayTypeTest[0L].GetType() == Anything::eDouble );
+	t_assert( ArrayTypeTest[0L].GetType() == AnyDoubleType );
 
 	ArrayTypeTest[0L] = (long)56;
-	t_assert( ArrayTypeTest[0L].GetType() == Anything::eLong );
+	t_assert( ArrayTypeTest[0L].GetType() == AnyLongType );
 
 	ArrayTypeTest[0L] = (float)1.37;
-	t_assert( ArrayTypeTest[0L].GetType() == Anything::eDouble );
+	t_assert( ArrayTypeTest[0L].GetType() == AnyDoubleType );
 
 	ArrayTypeTest[0L] = AnyLong;
-	t_assert( ArrayTypeTest[0L].GetType() == Anything::eLong );
+	t_assert( ArrayTypeTest[0L].GetType() == AnyLongType );
 
 	ArrayTypeTest[0L] = MyString;
-	t_assert( ArrayTypeTest[0L].GetType() == Anything::eCharPtr );
+	t_assert( ArrayTypeTest[0L].GetType() == AnyCharPtrType );
 
 	SubAnything = ArrayTypeTest;
 	ArrayTypeTest.Append( SubAnything );		// this will lead to a leak!
-	t_assert( ArrayTypeTest.GetType() == Anything::eArray );
-	t_assert( ArrayTypeTest[0L].GetType() == Anything::eCharPtr );
-	t_assert( ArrayTypeTest[ 1].GetType() == Anything::eLong );
-	t_assert( ArrayTypeTest[ 2].GetType() == Anything::eLong );
-	t_assert( ArrayTypeTest[ 3].GetType() == Anything::eLong );
-	t_assert( ArrayTypeTest[ 4].GetType() == Anything::eDouble );
-	t_assert( ArrayTypeTest[ 5].GetType() == Anything::eDouble );
-	t_assert( ArrayTypeTest[ 6].GetType() == Anything::eArray );
-	t_assert( ArrayTypeTest[6][0L].GetType() == Anything::eCharPtr );
-	t_assert( ArrayTypeTest[6][ 1].GetType() == Anything::eLong );
-	t_assert( ArrayTypeTest[6][ 2].GetType() == Anything::eLong );
-	t_assert( ArrayTypeTest[6][ 3].GetType() == Anything::eLong );
-	t_assert( ArrayTypeTest[6][ 4].GetType() == Anything::eDouble );
-	t_assert( ArrayTypeTest[6][ 5].GetType() == Anything::eDouble );
+	t_assert( ArrayTypeTest.GetType() == AnyArrayType );
+	t_assert( ArrayTypeTest[0L].GetType() == AnyCharPtrType );
+	t_assert( ArrayTypeTest[ 1].GetType() == AnyLongType );
+	t_assert( ArrayTypeTest[ 2].GetType() == AnyLongType );
+	t_assert( ArrayTypeTest[ 3].GetType() == AnyLongType );
+	t_assert( ArrayTypeTest[ 4].GetType() == AnyDoubleType );
+	t_assert( ArrayTypeTest[ 5].GetType() == AnyDoubleType );
+	t_assert( ArrayTypeTest[ 6].GetType() == AnyArrayType );
+	t_assert( ArrayTypeTest[6][0L].GetType() == AnyCharPtrType );
+	t_assert( ArrayTypeTest[6][ 1].GetType() == AnyLongType );
+	t_assert( ArrayTypeTest[6][ 2].GetType() == AnyLongType );
+	t_assert( ArrayTypeTest[6][ 3].GetType() == AnyLongType );
+	t_assert( ArrayTypeTest[6][ 4].GetType() == AnyDoubleType );
+	t_assert( ArrayTypeTest[6][ 5].GetType() == AnyDoubleType );
 
 	ArrayTypeTest[0L] = 12L;
-	t_assert( ArrayTypeTest[6][0L].GetType() == Anything::eLong );
+	t_assert( ArrayTypeTest[6][0L].GetType() == AnyLongType );
 
 	ArrayTypeTest[6][0L] = (char *)"Ein String";
-	t_assert( ArrayTypeTest[6][0L].GetType() == Anything::eCharPtr );
+	t_assert( ArrayTypeTest[6][0L].GetType() == AnyCharPtrType );
 
 	ArrayTypeTest[6][0L] = (long)34;
-	t_assert( ArrayTypeTest[6][0L].GetType() == Anything::eLong );
+	t_assert( ArrayTypeTest[6][0L].GetType() == AnyLongType );
 
 	ArrayTypeTest[6][0L] = (double)300.44;
-	t_assert( ArrayTypeTest[6][0L].GetType() == Anything::eDouble );
+	t_assert( ArrayTypeTest[6][0L].GetType() == AnyDoubleType );
 
 	ArrayTypeTest[6][0L] = (long)56;
-	t_assert( ArrayTypeTest[6][0L].GetType() == Anything::eLong );
+	t_assert( ArrayTypeTest[6][0L].GetType() == AnyLongType );
 
 	ArrayTypeTest[6][0L] = MyString;
-	t_assert( ArrayTypeTest[6][0L].GetType() == Anything::eCharPtr );
+	t_assert( ArrayTypeTest[6][0L].GetType() == AnyCharPtrType );
 
 	ArrayTypeTest[6][0L] = (float)1.37;
-	t_assert( ArrayTypeTest[6][0L].GetType() == Anything::eDouble );
+	t_assert( ArrayTypeTest[6][0L].GetType() == AnyDoubleType );
 
 	ArrayTypeTest[6][0L] = AnyLong;
-	t_assert( ArrayTypeTest[6][0L].GetType() == Anything::eLong );
+	t_assert( ArrayTypeTest[6][0L].GetType() == AnyLongType );
 
 	ArrayTypeTest.Remove(6L);		// break circular dependency to avoid leak
 
 	// Array
 	KeyTypeTest["0"] = "Noch ein String";
-	t_assert( KeyTypeTest.GetType() == Anything::eArray );
-	t_assert( KeyTypeTest["0"].GetType() == Anything::eCharPtr );
+	t_assert( KeyTypeTest.GetType() == AnyArrayType );
+	t_assert( KeyTypeTest["0"].GetType() == AnyCharPtrType );
 
 	KeyTypeTest["1"] = ( 12L );
-	t_assert( KeyTypeTest.GetType() == Anything::eArray );
-	t_assert( KeyTypeTest["0"].GetType() == Anything::eCharPtr );
-	t_assert( KeyTypeTest["1"].GetType() == Anything::eLong );
+	t_assert( KeyTypeTest.GetType() == AnyArrayType );
+	t_assert( KeyTypeTest["0"].GetType() == AnyCharPtrType );
+	t_assert( KeyTypeTest["1"].GetType() == AnyLongType );
 
 	KeyTypeTest["2"] = ( (long)34 );
-	t_assert( KeyTypeTest.GetType() == Anything::eArray );
-	t_assert( KeyTypeTest["0"].GetType() == Anything::eCharPtr );
-	t_assert( KeyTypeTest["1"].GetType() == Anything::eLong );
-	t_assert( KeyTypeTest["2"].GetType() == Anything::eLong );
+	t_assert( KeyTypeTest.GetType() == AnyArrayType );
+	t_assert( KeyTypeTest["0"].GetType() == AnyCharPtrType );
+	t_assert( KeyTypeTest["1"].GetType() == AnyLongType );
+	t_assert( KeyTypeTest["2"].GetType() == AnyLongType );
 
 	KeyTypeTest["3"] = ( (long)56 );
-	t_assert( KeyTypeTest.GetType() == Anything::eArray );
-	t_assert( KeyTypeTest["0"].GetType() == Anything::eCharPtr );
-	t_assert( KeyTypeTest["1"].GetType() == Anything::eLong );
-	t_assert( KeyTypeTest["2"].GetType() == Anything::eLong );
-	t_assert( KeyTypeTest["3"].GetType() == Anything::eLong );
+	t_assert( KeyTypeTest.GetType() == AnyArrayType );
+	t_assert( KeyTypeTest["0"].GetType() == AnyCharPtrType );
+	t_assert( KeyTypeTest["1"].GetType() == AnyLongType );
+	t_assert( KeyTypeTest["2"].GetType() == AnyLongType );
+	t_assert( KeyTypeTest["3"].GetType() == AnyLongType );
 
 	KeyTypeTest["4"] = ( (float)98.765 );
-	t_assert( KeyTypeTest.GetType() == Anything::eArray );
-	t_assert( KeyTypeTest["0"].GetType() == Anything::eCharPtr );
-	t_assert( KeyTypeTest["1"].GetType() == Anything::eLong );
-	t_assert( KeyTypeTest["2"].GetType() == Anything::eLong );
-	t_assert( KeyTypeTest["3"].GetType() == Anything::eLong );
-	t_assert( KeyTypeTest["4"].GetType() == Anything::eDouble );
+	t_assert( KeyTypeTest.GetType() == AnyArrayType );
+	t_assert( KeyTypeTest["0"].GetType() == AnyCharPtrType );
+	t_assert( KeyTypeTest["1"].GetType() == AnyLongType );
+	t_assert( KeyTypeTest["2"].GetType() == AnyLongType );
+	t_assert( KeyTypeTest["3"].GetType() == AnyLongType );
+	t_assert( KeyTypeTest["4"].GetType() == AnyDoubleType );
 
 	KeyTypeTest["5"] = ( (double)12.345 );
-	t_assert( KeyTypeTest.GetType() == Anything::eArray );
-	t_assert( KeyTypeTest["0"].GetType() == Anything::eCharPtr );
-	t_assert( KeyTypeTest["1"].GetType() == Anything::eLong );
-	t_assert( KeyTypeTest["2"].GetType() == Anything::eLong );
-	t_assert( KeyTypeTest["3"].GetType() == Anything::eLong );
-	t_assert( KeyTypeTest["4"].GetType() == Anything::eDouble );
-	t_assert( KeyTypeTest["5"].GetType() == Anything::eDouble );
+	t_assert( KeyTypeTest.GetType() == AnyArrayType );
+	t_assert( KeyTypeTest["0"].GetType() == AnyCharPtrType );
+	t_assert( KeyTypeTest["1"].GetType() == AnyLongType );
+	t_assert( KeyTypeTest["2"].GetType() == AnyLongType );
+	t_assert( KeyTypeTest["3"].GetType() == AnyLongType );
+	t_assert( KeyTypeTest["4"].GetType() == AnyDoubleType );
+	t_assert( KeyTypeTest["5"].GetType() == AnyDoubleType );
 
 	KeyTypeTest["0"] = 12L;
-	t_assert( KeyTypeTest["0"].GetType() == Anything::eLong );
+	t_assert( KeyTypeTest["0"].GetType() == AnyLongType );
 
 	KeyTypeTest["0"] = (char *)"Ein String";
-	t_assert( KeyTypeTest["0"].GetType() == Anything::eCharPtr );
+	t_assert( KeyTypeTest["0"].GetType() == AnyCharPtrType );
 
 	KeyTypeTest["0"] = (long)34;
-	t_assert( KeyTypeTest["0"].GetType() == Anything::eLong );
+	t_assert( KeyTypeTest["0"].GetType() == AnyLongType );
 
 	KeyTypeTest["0"] = (double)300.44;
-	t_assert( KeyTypeTest["0"].GetType() == Anything::eDouble );
+	t_assert( KeyTypeTest["0"].GetType() == AnyDoubleType );
 
 	KeyTypeTest["0"] = (long)56;
-	t_assert( KeyTypeTest["0"].GetType() == Anything::eLong );
+	t_assert( KeyTypeTest["0"].GetType() == AnyLongType );
 
 	KeyTypeTest["0"] = (float)1.37;
-	t_assert( KeyTypeTest["0"].GetType() == Anything::eDouble );
+	t_assert( KeyTypeTest["0"].GetType() == AnyDoubleType );
 
 	KeyTypeTest["0"] = AnyLong;
-	t_assert( KeyTypeTest["0"].GetType() == Anything::eLong );
+	t_assert( KeyTypeTest["0"].GetType() == AnyLongType );
 
 	KeyTypeTest["0"] = MyString;
-	t_assert( KeyTypeTest["0"].GetType() == Anything::eCharPtr );
+	t_assert( KeyTypeTest["0"].GetType() == AnyCharPtrType );
 
 	SubAnything = KeyTypeTest;
 	KeyTypeTest["6"] = ( SubAnything );
-	t_assert( KeyTypeTest.GetType() == Anything::eArray );
-	t_assert( KeyTypeTest["0"].GetType() == Anything::eCharPtr );
-	t_assert( KeyTypeTest["1"].GetType() == Anything::eLong );
-	t_assert( KeyTypeTest["2"].GetType() == Anything::eLong );
-	t_assert( KeyTypeTest["3"].GetType() == Anything::eLong );
-	t_assert( KeyTypeTest["4"].GetType() == Anything::eDouble );
-	t_assert( KeyTypeTest["5"].GetType() == Anything::eDouble );
-	t_assert( KeyTypeTest["6"].GetType() == Anything::eArray );
-	t_assert( KeyTypeTest["6"]["0"].GetType() == Anything::eCharPtr );
-	t_assert( KeyTypeTest["6"]["1"].GetType() == Anything::eLong );
-	t_assert( KeyTypeTest["6"]["2"].GetType() == Anything::eLong );
-	t_assert( KeyTypeTest["6"]["3"].GetType() == Anything::eLong );
-	t_assert( KeyTypeTest["6"]["4"].GetType() == Anything::eDouble );
-	t_assert( KeyTypeTest["6"]["5"].GetType() == Anything::eDouble );
+	t_assert( KeyTypeTest.GetType() == AnyArrayType );
+	t_assert( KeyTypeTest["0"].GetType() == AnyCharPtrType );
+	t_assert( KeyTypeTest["1"].GetType() == AnyLongType );
+	t_assert( KeyTypeTest["2"].GetType() == AnyLongType );
+	t_assert( KeyTypeTest["3"].GetType() == AnyLongType );
+	t_assert( KeyTypeTest["4"].GetType() == AnyDoubleType );
+	t_assert( KeyTypeTest["5"].GetType() == AnyDoubleType );
+	t_assert( KeyTypeTest["6"].GetType() == AnyArrayType );
+	t_assert( KeyTypeTest["6"]["0"].GetType() == AnyCharPtrType );
+	t_assert( KeyTypeTest["6"]["1"].GetType() == AnyLongType );
+	t_assert( KeyTypeTest["6"]["2"].GetType() == AnyLongType );
+	t_assert( KeyTypeTest["6"]["3"].GetType() == AnyLongType );
+	t_assert( KeyTypeTest["6"]["4"].GetType() == AnyDoubleType );
+	t_assert( KeyTypeTest["6"]["5"].GetType() == AnyDoubleType );
 
 	KeyTypeTest["6"]["0"] = 12L;
-	t_assert( KeyTypeTest["6"]["0"].GetType() == Anything::eLong );
+	t_assert( KeyTypeTest["6"]["0"].GetType() == AnyLongType );
 
 	KeyTypeTest["6"]["0"] = (char *)"Ein String";
-	t_assert( KeyTypeTest["6"]["0"].GetType() == Anything::eCharPtr );
+	t_assert( KeyTypeTest["6"]["0"].GetType() == AnyCharPtrType );
 
 	KeyTypeTest["6"]["0"] = (long)34;
-	t_assert( KeyTypeTest["6"]["0"].GetType() == Anything::eLong );
+	t_assert( KeyTypeTest["6"]["0"].GetType() == AnyLongType );
 
 	KeyTypeTest["6"]["0"] = (double)300.44;
-	t_assert( KeyTypeTest["6"]["0"].GetType() == Anything::eDouble );
+	t_assert( KeyTypeTest["6"]["0"].GetType() == AnyDoubleType );
 
 	KeyTypeTest["6"]["0"] = (long)56;
-	t_assert( KeyTypeTest["6"]["0"].GetType() == Anything::eLong );
+	t_assert( KeyTypeTest["6"]["0"].GetType() == AnyLongType );
 
 	KeyTypeTest["6"]["0"] = MyString;
-	t_assert( KeyTypeTest["6"]["0"].GetType() == Anything::eCharPtr );
+	t_assert( KeyTypeTest["6"]["0"].GetType() == AnyCharPtrType );
 
 	KeyTypeTest["6"]["0"] = (float)1.37;
-	t_assert( KeyTypeTest["6"]["0"].GetType() == Anything::eDouble );
+	t_assert( KeyTypeTest["6"]["0"].GetType() == AnyDoubleType );
 
 	KeyTypeTest["6"]["0"] = AnyLong;
-	t_assert( KeyTypeTest["6"]["0"].GetType() == Anything::eLong );
+	t_assert( KeyTypeTest["6"]["0"].GetType() == AnyLongType );
 
 	KeyTypeTest.Remove("6");	// break circular dependency to avoid leak
 }
@@ -2647,7 +2647,7 @@ void AnythingTest::testDeepClone2()
 	t_assert( anyOriginal.GetSize() == sizeBefore + 1 );
 
 	// Check type of any0
-	t_assert( any0.GetType() == Anything::eArray );
+	t_assert( any0.GetType() == AnyArrayType );
 	// Check size anyOriginal
 	t_assert( any0.GetSize() == sizeBefore + 1 );
 	// Check values of any0
@@ -2678,7 +2678,7 @@ void AnythingTest::testDeepClone3()
 	t_assert( anyOriginal.GetSize() == sizeBefore );
 
 	// Check type of any0
-	t_assert( any0.GetType() == Anything::eArray );
+	t_assert( any0.GetType() == AnyArrayType );
 	// Check size anyOriginal
 	t_assert( any0.GetSize() == sizeBefore );
 	// Check values of any0
@@ -2721,17 +2721,17 @@ void AnythingTest::testDeepClone4()
 	assertEqual( -2, any0.AsLong(-2) );
 
 	// check clone
-	t_assert( any1.GetType() == Anything::eNull );
+	t_assert( any1.GetType() == AnyNullType );
 }
 
 void AnythingTest::testDeepClone5()
 {
 	Anything	any0, any1 = 1L;
-	t_assert( any0.GetType() == Anything::eNull );
-	t_assert( any1.GetType() == Anything::eLong );
+	t_assert( any0.GetType() == AnyNullType );
+	t_assert( any1.GetType() == AnyLongType );
 
 	any1 = any0.DeepClone();
-	t_assert( any1.GetType() == Anything::eNull );
+	t_assert( any1.GetType() == AnyNullType );
 } // testeDeepClone5
 
 void AnythingTest::testReadFails()
