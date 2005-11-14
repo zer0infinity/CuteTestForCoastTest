@@ -17,25 +17,25 @@
 //--- c-library modules used ---------------------------------------------------
 
 //! shuffles anys where lookuppath is not defined towards the end, keeping their original sequence
-class SpecialLookupComparer : public AnyLookupValueComparer
+SpecialLookupComparer::SpecialLookupComparer(const char *lookuppath, const AnyComparer &theValueComparer)
+	: AnyLookupValueComparer(lookuppath, theValueComparer)
 {
-public:
-	SpecialLookupComparer(const char *lookuppath, const AnyComparer &theValueComparer)
-		: AnyLookupValueComparer(lookuppath, theValueComparer) {}
-	int Compare(const Anything &left, const Anything &right)const {
-		// would require more efficient LookupPath version to avoid copies (potential deepclones)
-		Anything intleft, intright;
-		bool leftfound = left.LookupPath(intleft, lookup);
-		bool rightfound = right.LookupPath(intright, lookup);
-		if (!leftfound && rightfound) {
-			return 1;
-		}
-		if (!rightfound) {
-			return -1;
-		}
-		return ac.Compare(intleft, intright);
+}
+
+int SpecialLookupComparer::Compare(const Anything &left, const Anything &right) const
+{
+	// would require more efficient LookupPath version to avoid copies (potential deepclones)
+	Anything intleft, intright;
+	bool leftfound = left.LookupPath(intleft, lookup);
+	bool rightfound = right.LookupPath(intright, lookup);
+	if (!leftfound && rightfound) {
+		return 1;
 	}
-};
+	if (!rightfound) {
+		return -1;
+	}
+	return ac.Compare(intleft, intright);
+}
 
 void AnySorter::SortByKeyInArray(const String &sortFieldName, Anything &toSort, EMode mode, bool sortCritIsNumber)
 {

@@ -10,9 +10,12 @@
 #define _ANYSORTER_H
 
 #include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
+#include "AnyComparers.h"
+
 //!---- Forward declarations ---------------------------------------------------------
 class String;
 class Anything;
+
 //---- AnySorter ---------------------------------------------------------------------
 //! Sorts Array-Anything
 class EXPORTDECL_FOUNDATION AnySorter
@@ -29,4 +32,110 @@ public:
 		\param sortCritIsNumber set to true if criteria is a numeric value */
 	static void SortByKeyInArray(const String &sortFieldName, Anything &toSort, EMode mode = asc, bool sortCritIsNumber = false);
 };
+
+class SpecialLookupComparer : public AnyLookupValueComparer
+{
+public:
+	SpecialLookupComparer(const char *lookuppath, const AnyComparer &theValueComparer);
+	int Compare(const Anything &left, const Anything &right) const;
+};
+
+namespace AnyExtensions
+{
+//	struct ValueComparer
+//	{
+//		static int Compare(AnyArrayImpl &that, long leftInt, long rightInt) const
+//		{
+//			return 0;
+//		}
+//	};
+//	struct KeyComparer
+//	{
+//		static int Compare(AnyArrayImpl &that, long leftInt, long rightInt) const
+//		{
+//			return that.IntKey(leftInt).Compare(that.IntKey(rightInt));
+//		}
+//	};
+//
+//	template
+//	<
+//		class Comparer
+//	>
+//	struct MergeSortAlgo : public Comparer
+//1	{
+//		static void Sort(AnyArrayImpl& aImpl)
+//		{
+//			MergeSortByComparer(0, aImpl.GetSize()-1);
+//		}
+//		static void MergeSort(AnyArrayImpl& aImpl, long low, long high)
+//		{
+//			if (low >= high) return;
+//			long middle= (low+high)/2;
+//			MergeSort(aImpl, low, middle);
+//			MergeSort(aImpl, middle+1, high);
+//			Merge(aImpl, low, high, middle);
+//		}
+//		static void Merge(AnyArrayImpl& aImpl, long lo, long hi, long m)
+//		{
+//			if (hi < m+1 || lo > m) return; // nothing to merge
+//			long i, j, k;
+//			const long sz=m-lo+1;
+//		#if defined(WIN32) && (_MSC_VER <= 1200) // VC6 or lower
+//			long *a = new long[sz];		// temporary array of lower half
+//		#else
+//			long a[sz];					// temporary array of lower half
+//		#endif
+//			for (k=0,i=lo; i <=m && k < sz;++i, ++k)
+//				a[k]=aImpl.IntAt(i);
+//			Assert(k == sz);
+//			Assert(i > m);
+//			j=m+1;
+//			k=0; i=lo;
+//			while (k<sz && j <=hi)
+//			{
+//				Assert(i<j);
+//				if (Compare(aImpl, a[k], aImpl.IntAt(j)) <= 0)
+//				{
+//					fInd->SetIndex(i, a[k]);
+//					++k;
+//				}
+//				else
+//				{
+//					fInd->SetIndex(i, aImpl.IntAt(j));
+//					++j;
+//				}
+//				i++;
+//			}
+//			// copy the remainder
+//			while ( k < sz && i < j )
+//			{
+//				Assert(j > hi);
+//				fInd->SetIndex(i, a[k]);
+//				++i;++k;
+//			}
+//			Assert(i == j);
+//			Assert(k == sz);
+//		#if defined(WIN32) && (_MSC_VER <= 1200) // VC6 or lower
+//			delete[] a;
+//		#endif
+//		}
+//	};
+
+	template
+	<
+	template <class> class ComparerPolicy /*= KeyComparer*/,
+			 template <class> class SortPolicy /*= MergeSortAlgo*/
+			 >
+	struct Sorter
+	{
+		static void Sort(Anything &a) {
+//			if ( a.GetType() == AnyArrayType )
+			{
+//				SortPolicy<ComparerPolicy>::Sort(*a.GetImpl());
+//				RecreateKeyTabe();
+			}
+		}
+	};
+};
+
 #endif
