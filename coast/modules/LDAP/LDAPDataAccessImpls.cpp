@@ -104,11 +104,13 @@ bool LDAPAbstractDAI::DoExec( Context &ctx, ParameterMapper *getter, ResultMappe
 	cp["BindName"] = bindName = ctx.Lookup("LDAPBindName", "");
 	cp["BindPW"] = bindPw = ctx.Lookup("LDAPBindPW", "");
 	cp["MapUTF8"] = !ctx.Lookup("NoHTMLCharMapping", 0L);
+	cp["PlainBinaryValues"] = ctx.Lookup("PlainBinaryValues", 0L);
 	cp["PooledConnections"] = ctx.Lookup("LDAPPooledConnections", 0L);
 	cp["MaxConnections"] = ctx.Lookup("LDAPMaxConnections", 0L);
 	cp["TryAutoRebind"] = ctx.Lookup("LDAPTryAutoRebind", 0L);
 	cp["RebindTimeout"] = ctx.Lookup("LDAPRebindTimeout", 3600L);
 
+	TraceAny(cp, "connection/query params");
 	// store connection params in ctx (lookup for error-handling)
 	eh.PutConnectionParams(cp);
 
@@ -186,7 +188,7 @@ bool LDAPAddDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &que
 
 	// attrs must contain attr/value
 	long nofAttrs = attrs.GetSize();
-	for (long i = 0; i < nofAttrs; i++) {
+	for (long i = 0; i < nofAttrs; ++i) {
 		if ( String(attrs.SlotName(i)).Length() <= 0 ) {
 			String msg;
 			msg << "All values listed under 'Attrs' must have an associated attribute name.";
@@ -214,14 +216,14 @@ int LDAPAddDAI::DoLDAPRequest(LDAPConnection *lc, ROAnything query)
 	LDAPMod *mod;
 	char **vals = NULL;
 
-	for ( long i = 0; i < size; i++ ) {
+	for ( long i = 0; i < size; ++i ) {
 		mod = new LDAPMod;
 		mod->mod_op = LDAP_MOD_ADD;
 		mod->mod_type = (char *)attrs.SlotName(i);
 
 		vsize = attrs[i].GetSize();
 		vals = new char*[ vsize + 1 ];
-		for ( long j = 0; j < vsize; j++ ) {
+		for ( long j = 0; j < vsize; ++j ) {
 			vals[j] = (char *)attrs[i][j].AsCharPtr();
 		}
 		vals[vsize] = NULL;	// terminate
@@ -238,7 +240,7 @@ int LDAPAddDAI::DoLDAPRequest(LDAPConnection *lc, ROAnything query)
 	// free used memory
 	Trace("Freeing memory...");
 	if (ldapmods) {
-		for ( long k = 0; k < size; k++ ) {
+		for ( long k = 0; k < size; ++k ) {
 			delete [] ldapmods[k]->mod_values;
 			delete ldapmods[k];
 		}
@@ -340,7 +342,7 @@ bool LDAPModifyDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &
 	Anything checkedMods;
 	int size = mods.GetSize();
 	String slotname;
-	for (int i = 0; i < size; i++) {
+	for (int i = 0; i < size; ++i) {
 		slotname = mods.SlotName(i);
 		slotname.ToLower();				// normalize
 		if (   slotname.IsEqual("add")
@@ -382,7 +384,7 @@ int LDAPModifyDAI::DoLDAPRequest(LDAPConnection *lc, ROAnything query)
 	// count total number of modifications (= sum over all attribute mods)
 	long size = mods.GetSize();
 	long totalmods = 0, i = 0;
-	for ( i = 0; i < size; i++ ) {
+	for ( i = 0; i < size; ++i ) {
 		totalmods += mods[i].GetSize();
 	}
 
@@ -396,7 +398,7 @@ int LDAPModifyDAI::DoLDAPRequest(LDAPConnection *lc, ROAnything query)
 	int modcode;
 	int counter = 0;
 
-	for ( i = 0; i < size; i++ ) {
+	for ( i = 0; i < size; ++i ) {
 		modname = mods.SlotName(i);
 
 		if ( modname.IsEqual("add") ) {
@@ -411,7 +413,7 @@ int LDAPModifyDAI::DoLDAPRequest(LDAPConnection *lc, ROAnything query)
 		// each is an individual modification again
 		// this means, we have a total of i*j modifications
 		attrmods = mods[i];
-		for ( long j = 0; j < attrmods.GetSize(); j++ ) {
+		for ( long j = 0, sza = attrmods.GetSize(); j < sza; ++j ) {
 			mod = new LDAPMod;
 			mod->mod_op = modcode;
 			mod->mod_type = (char *)attrmods.SlotName(j);	// name of attribute
@@ -424,7 +426,7 @@ int LDAPModifyDAI::DoLDAPRequest(LDAPConnection *lc, ROAnything query)
 			} else {
 				vsize = attrmods[j].GetSize();	// # values for attribute
 				vals = new char*[ vsize + 1 ];
-				for ( long k = 0; k < vsize; k++ ) {
+				for ( long k = 0; k < vsize; ++k ) {
 					vals[k] = (char *)attrmods[j][k].AsCharPtr();
 				}
 				vals[vsize] = NULL;	// terminate list of values
@@ -442,7 +444,7 @@ int LDAPModifyDAI::DoLDAPRequest(LDAPConnection *lc, ROAnything query)
 
 	// free used memory
 	if (ldapmods) {
-		for ( i = 0; i < totalmods; i++ ) {
+		for ( i = 0; i < totalmods; ++i ) {
 			delete [] ldapmods[i]->mod_values;
 			delete ldapmods[i];
 		}
@@ -544,7 +546,7 @@ int LDAPSearchDAI::DoLDAPRequest(LDAPConnection *lc, ROAnything query)
 			SysLog::WriteToStderr(crashmsg, sizeof(crashmsg));
 			return -1;
 		}
-		for (long i = 0; i < size; i++) {
+		for (long i = 0; i < size; ++i) {
 			attrs[i] = (char *)query["Attrs"][i].AsCharPtr("");
 		}
 	}
