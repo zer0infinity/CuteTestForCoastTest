@@ -31,7 +31,7 @@ void DateRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &con
 	TraceAny(config, "config");
 
 	long configSize = 0;
-	if (config.GetType() == Anything::eArray) {
+	if (config.GetType() == AnyArrayType) {
 		configSize = config.GetSize();
 	}
 
@@ -60,9 +60,9 @@ void DateRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &con
 
 	ROAnything d;
 	if (config.LookupPath(d, "Date")) {
-		if (d.GetType() == Anything::eLong ) {
+		if (d.GetType() == AnyLongType ) {
 			now = d.AsLong(0);				// check for 'Date' slot
-		} else if (d.GetType() == Anything::eArray) { // it is a renderer
+		} else if (d.GetType() == AnyArrayType) { // it is a renderer
 			String aDate;
 			Renderer::RenderOnString(aDate, ctx, d);
 			Anything anyDate = aDate;

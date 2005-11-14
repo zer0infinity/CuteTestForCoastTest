@@ -33,7 +33,7 @@ void ConditionalRenderer::TestCondition(Context &context, const ROAnything &conf
 
 			if (result.IsNull()) {
 				res = "Undefined";
-			} else if (result.GetType() == Anything::eLong) {
+			} else if (result.GetType() == AnyLongType) {
 				res =  result.AsBool() ? "True" : "False";
 			} else {
 				res = "Defined";
@@ -100,10 +100,10 @@ void SwitchRenderer::RenderAll(ostream &reply, Context &context, const ROAnythin
 		if (condname.Length() > 0) {
 			// lookup data
 			ROAnything result = context.Lookup(condname);
-			if ((result.GetType() == Anything::eCharPtr) || // accept only these simple types
-				(result.GetType() == Anything::eLong) ||
-				(result.GetType() == Anything::eDouble) ||
-				(result.GetType() == Anything::eNull) ) {	// PFM: accept empty result
+			if ((result.GetType() == AnyCharPtrType) || // accept only these simple types
+				(result.GetType() == AnyLongType) ||
+				(result.GetType() == AnyDoubleType) ||
+				(result.GetType() == AnyNullType) ) {	// PFM: accept empty result
 				// get different alternatives for renderer specifications
 
 				String slot = result.AsString("");

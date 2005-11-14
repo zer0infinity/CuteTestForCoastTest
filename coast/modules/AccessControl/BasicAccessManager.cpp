@@ -191,7 +191,7 @@ bool BasicAccessManager::GetAllowedEntitiesFor(Anything who, Anything &allowed)
 	TraceAny(who, "who =");
 
 	// is who a set of groups?
-	if (who.GetType() == Anything::eArray) {
+	if (who.GetType() == AnyArrayType) {
 		return edac->GetAllowedEntitiesForGroups(who, allowed);
 	}
 

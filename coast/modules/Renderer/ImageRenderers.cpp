@@ -26,7 +26,7 @@ bool ImageLocationRenderer::RenderPathAndFilename(ostream &reply, Context &c,
 {
 	ROAnything name;
 	if (!config.LookupPath(name, "ImageName")) {
-		if (config.GetType() == Anything::eArray) {
+		if (config.GetType() == AnyArrayType) {
 			name = config[0L];
 		}
 	}

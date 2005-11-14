@@ -103,11 +103,11 @@ void HTMLCacheLoaderTest::SimpleMacroBuildCacheTest()
 	t_assert(!cache.IsNull());
 	assertEqual(3, cache.GetSize());
 #if 1 // new cache format
-	t_assert(cache[0L].GetType() == Anything::eCharPtr);
+	t_assert(cache[0L].GetType() == AnyCharPtrType);
 	assertCharPtrEqual("a macro ", cache[0L].AsString());
-	t_assert(cache[2L].GetType() == Anything::eCharPtr);
+	t_assert(cache[2L].GetType() == AnyCharPtrType);
 	assertCharPtrEqual(" with text", cache[2L].AsString());
-	t_assert(cache[1L].GetType() == Anything::eArray);
+	t_assert(cache[1L].GetType() == AnyArrayType);
 	String rname = cache[1L].SlotName(0L);
 	assertCharPtrEqual("HTMLTemplateRenderer", cache[1L].SlotName(0L));
 	t_assert(cache[1L]["HTMLTemplateRenderer"].IsDefined("Template"));
@@ -143,11 +143,11 @@ void HTMLCacheLoaderTest::SimpleCommentBuildCacheTest()
 	t_assert(!cache.IsNull());
 	assertEqual(3, cache.GetSize());
 #if 1
-	t_assert(cache[0L].GetType() == Anything::eCharPtr);
+	t_assert(cache[0L].GetType() == AnyCharPtrType);
 	assertCharPtrEqual("a macro ", cache[0L].AsString());
-	t_assert(cache[2L].GetType() == Anything::eCharPtr);
+	t_assert(cache[2L].GetType() == AnyCharPtrType);
 	assertCharPtrEqual(" with text", cache[2L].AsString());
-	t_assert(cache[1L].GetType() == Anything::eArray);
+	t_assert(cache[1L].GetType() == AnyArrayType);
 	String rname = cache[1L].SlotName(0L);
 	assertCharPtrEqual("HTMLTemplateRenderer", cache[1L].SlotName(0L));
 	t_assert(cache[1L]["HTMLTemplateRenderer"].IsDefined("Template"));

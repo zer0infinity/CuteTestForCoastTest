@@ -59,7 +59,7 @@ void LookupRenderer::RenderAll(ostream &reply, Context &context, const ROAnythin
 		ROAnything data = DoLookup(context, lookup, delim.AsCharPtr(".")[0L], indexdelim.AsCharPtr(":")[0L]);
 		TraceAny(data, "found: ");
 
-		if (data.GetType() != Anything::eNull) {
+		if (data.GetType() != AnyNullType) {
 			Render(reply, context, data);
 			return;
 		}
@@ -81,7 +81,7 @@ void LookupRenderer::RenderAll(ostream &reply, Context &context, const ROAnythin
 			dft = config[1L];
 		}
 	}
-	if (dft.GetType() != Anything::eNull) {
+	if (dft.GetType() != AnyNullType) {
 		Render(reply, context, dft);
 	}
 }

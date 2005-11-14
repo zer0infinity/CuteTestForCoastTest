@@ -346,13 +346,13 @@ void RECompilerTest::TestEscape()
 	RECompiler rc;
 	Anything p = rc.compile("\\040");
 	TraceAny(p, "program ");
-	t_assert(p["program"][1L][RE::offsetOpdata].GetType() == Anything::eCharPtr);
+	t_assert(p["program"][1L][RE::offsetOpdata].GetType() == AnyCharPtrType);
 	assertEqual(" ", p["program"][1L][RE::offsetOpdata].AsCharPtr());
 	p = rc.compile("\\x21");
-	t_assert(p["program"][1L][RE::offsetOpdata].GetType() == Anything::eCharPtr);
+	t_assert(p["program"][1L][RE::offsetOpdata].GetType() == AnyCharPtrType);
 	assertEqual("!", p["program"][1L][RE::offsetOpdata].AsCharPtr());
 	p = rc.compile("\\t");
-	t_assert(p["program"][1L][RE::offsetOpdata].GetType() == Anything::eCharPtr);
+	t_assert(p["program"][1L][RE::offsetOpdata].GetType() == AnyCharPtrType);
 	assertEqual("\t", p["program"][1L][RE::offsetOpdata].AsCharPtr());
 	p = rc.compile("\\s");
 	assertEqual(RE::OP_ANYOF, p["program"][1L][RE::offsetOpcode].AsLong(-1));
@@ -372,11 +372,11 @@ void RECompilerTest::TestAtom()
 	RECompiler rc;
 	Anything p = rc.compile("a");
 	TraceAny(p, "program ");
-	t_assert(p["program"][1L][RE::offsetOpdata].GetType() == Anything::eCharPtr);
+	t_assert(p["program"][1L][RE::offsetOpdata].GetType() == AnyCharPtrType);
 	assertEqual("a", p["program"][1L][RE::offsetOpdata].AsCharPtr());
 	p = rc.compile("abc*");
 	TraceAny(p, "program ");
-	t_assert(p["program"][1L][RE::offsetOpdata].GetType() == Anything::eCharPtr);
+	t_assert(p["program"][1L][RE::offsetOpdata].GetType() == AnyCharPtrType);
 	assertEqual("ab", p["program"][1L][RE::offsetOpdata].AsCharPtr());
 
 // do not match yet...
@@ -389,7 +389,7 @@ void RECompilerTest::TestCharClass()
 	RECompiler rc;
 	Anything p = rc.compile("[a]");
 	TraceAny(p, "program ");
-	t_assert(p["program"][1L][RE::offsetOpdata].GetType() == Anything::eVoidBuf);
+	t_assert(p["program"][1L][RE::offsetOpdata].GetType() == AnyVoidBufType);
 	REBitSet *s = (REBitSet *)(p["program"][1L][RE::offsetOpdata].AsCharPtr(0));
 	t_assert(s != NULL);
 	if (s) {
@@ -397,7 +397,7 @@ void RECompilerTest::TestCharClass()
 		t_assert(!s->IsMember('b'));
 	}
 	Anything cp = rc.compile("[^a]");
-	t_assert(cp["program"][1L][RE::offsetOpdata].GetType() == Anything::eVoidBuf);
+	t_assert(cp["program"][1L][RE::offsetOpdata].GetType() == AnyVoidBufType);
 
 	REBitSet *scp = (REBitSet *)(cp["program"][1L][RE::offsetOpdata].AsCharPtr(0));
 	t_assert(scp != NULL);
@@ -415,7 +415,7 @@ void RECompilerTest::TestCharClass()
 	}
 
 	p = rc.compile("[abc]");
-	t_assert(p["program"][1L][RE::offsetOpdata].GetType() == Anything::eVoidBuf);
+	t_assert(p["program"][1L][RE::offsetOpdata].GetType() == AnyVoidBufType);
 	s = (REBitSet *)(p["program"][1L][RE::offsetOpdata].AsCharPtr(0));
 	t_assert(s != NULL);
 	if (s) {
@@ -425,7 +425,7 @@ void RECompilerTest::TestCharClass()
 		t_assert(!s->IsMember('D'));
 	}
 	Anything q = rc.compile("[a-c]");
-	t_assert(q["program"][1L][RE::offsetOpdata].GetType() == Anything::eVoidBuf);
+	t_assert(q["program"][1L][RE::offsetOpdata].GetType() == AnyVoidBufType);
 	REBitSet *qs = (REBitSet *)(q["program"][1L][RE::offsetOpdata].AsCharPtr(0));
 	t_assert(qs != NULL);
 	if (qs && s) {
@@ -434,7 +434,7 @@ void RECompilerTest::TestCharClass()
 	}
 	p = rc.compile("[a-]");
 	t_assert(0 < p.GetSize());
-	t_assert(p["program"][1L][RE::offsetOpdata].GetType() == Anything::eVoidBuf);
+	t_assert(p["program"][1L][RE::offsetOpdata].GetType() == AnyVoidBufType);
 	s = (REBitSet *)(p["program"][1L][RE::offsetOpdata].AsCharPtr(0));
 	t_assert(s != NULL);
 	if (s) {
@@ -447,7 +447,7 @@ void RECompilerTest::TestCharClass()
 
 	p = rc.compile("[\\s\\w]");
 	t_assert(0 < p.GetSize());
-	t_assert(p["program"][1L][RE::offsetOpdata].GetType() == Anything::eVoidBuf);
+	t_assert(p["program"][1L][RE::offsetOpdata].GetType() == AnyVoidBufType);
 	s = (REBitSet *)(p["program"][1L][RE::offsetOpdata].AsCharPtr(0));
 	t_assert(s != NULL);
 	if (s) {

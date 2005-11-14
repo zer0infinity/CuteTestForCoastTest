@@ -85,7 +85,7 @@ void CgiCallerTest::DoExecTest(Context &ctx)
 	assertEqual(200L, ctx.Lookup("Mapper.ResponseCode", 400L));
 	assertEqual("Ok", ctx.Lookup("Mapper.ResponseMsg", "Not found"));
 	ROAnything abody = ctx.Lookup("Mapper.HTTPBody");
-	t_assertm(abody.GetType() == Anything::eCharPtr, "body should be string");
+	t_assertm(abody.GetType() == AnyCharPtrType, "body should be string");
 	String body = abody.AsString("");
 	Trace("body:\n" << body);
 	String expected = "Content-type: text/plain\n\n"
