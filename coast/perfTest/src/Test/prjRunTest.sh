@@ -33,5 +33,6 @@ function callTest
 # remove generated files ...
 function cleanupTest
 {
-	echo
+	echo "removing generated files..."
+	rm -f time.txt
 }

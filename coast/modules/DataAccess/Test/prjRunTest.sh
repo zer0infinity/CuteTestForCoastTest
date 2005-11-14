@@ -19,4 +19,5 @@ function callTest
 function cleanupTest
 {
 	echo
+	rm -f WriteTestFile.txt
 }

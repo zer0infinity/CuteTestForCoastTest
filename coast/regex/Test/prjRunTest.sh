@@ -29,4 +29,5 @@ function callTest
 function cleanupTest
 {
 	echo
+	rm -f REPosixBitSets.h
 }

@@ -79,5 +79,6 @@ function cleanupTest
 	elif [ "${CURSYSTEM}" = "SunOS" -o "${CURSYSTEM}" = "Linux" ] ; then
 		doCleanupRemote
 	fi
+	rm -f rexec.err rexec.out
 	return 0;
 }
