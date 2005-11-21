@@ -45,6 +45,14 @@ public:
 		Dijkstras UP method */
 	void Release();
 
+#if !defined(WIN32) && ( !defined(__sun) || defined(USE_POSIX) )
+
+	/*! Returns the actual value of the semaphore without altering its value. If the seamphore is locked, the return value
+		is either zero or negative. The absolute value of the methods return code indicates the threads waiting for the
+		semaphore. */
+	int GetCount(int &svalue);
+#endif
+
 	//!dummy method to prevent optimizing compilers from optimizing away unused variables
 	void Use() const { }
 

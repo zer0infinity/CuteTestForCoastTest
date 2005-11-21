@@ -467,16 +467,24 @@ void ThreadsTest::SimpleSemaphoreTest()
 {
 	StartTrace(ThreadsTest.SimpleSemaphoreTest);
 	// single resource sema test
+
 	Semaphore sema(1);
+	CheckSemaphoreCount(sema, 1);
 
 	sema.Acquire();
 	// since it is a single resource sema acquiring it again must fail
 	t_assertm(sema.TryAcquire() == false, "Should not acquire sema again!");
+	CheckSemaphoreCount(sema, 0);
+
 	SemaTestThread tt1(sema);
 	tt1.Start();
 	t_assertm(tt1.CheckState(Thread::eRunning, 10), "State should be eRunning");
+	CheckSemaphoreCount(sema, 0);
+
 	sema.Release();
 	t_assertm(tt1.CheckState(Thread::eTerminated, 10), "State should be eTerminated");
+	CheckSemaphoreCount(sema, 1);
+
 	// acquiring it again must succeed now
 	t_assertm(sema.TryAcquire() == true, "Thread had problems with semaphore!");
 	sema.Release();
@@ -487,21 +495,28 @@ void ThreadsTest::MultiSemaphoreTest()
 	StartTrace(ThreadsTest.MultiSemaphoreTest);
 	// multiple resources sema test
 	Semaphore sema(5);
+	CheckSemaphoreCount(sema, 5);
 
 	// acquire 4 times
 	sema.Acquire();
 	sema.Acquire();
 	sema.Acquire();
 	sema.Acquire();
+	CheckSemaphoreCount(sema, 1);
+
 	// acquiring it again must succeed now
 	t_assertm(sema.TryAcquire() == true, "Thread had problems with semaphore!");
 	sema.Release();
 	// 4 acqd
+	CheckSemaphoreCount(sema, 1);
+
 	SemaTestThread tt1(sema, false), tt2(sema, false), tt3(sema, false), tt4(sema, false), tt5(sema, false);
 	// this thread should be able to acquire sema and then terminate
+
 	tt1.Start();
 	// this thread should have acquired the fifth sema so its state should be Terminated
 	t_assertm(tt1.CheckState(Thread::eTerminated, 1), "State should be eTerminated");
+	CheckSemaphoreCount(sema, 0);
 	t_assertm(sema.TryAcquire() == false, "should have no more resources");
 	// 5 acqd
 	// now start 5 threads and check if all block first and then all terminate after releasing the semas
@@ -521,20 +536,26 @@ void ThreadsTest::MultiSemaphoreTest()
 	sema.Release();
 	sema.Release();
 	sema.Release();
+	CheckSemaphoreCount(sema, 0);
+
 	// now all threads should have terminated
 	t_assertm(tt1.CheckState(Thread::eTerminated, 1), "State should be eTerminated");
 	t_assertm(tt2.CheckState(Thread::eTerminated, 1), "State should be eTerminated");
 	t_assertm(tt3.CheckState(Thread::eTerminated, 1), "State should be eTerminated");
 	t_assertm(tt4.CheckState(Thread::eTerminated, 1), "State should be eTerminated");
 	t_assertm(tt5.CheckState(Thread::eTerminated, 1), "State should be eTerminated");
+	CheckSemaphoreCount(sema, 0);
 	t_assertm(sema.TryAcquire() == false, "should still have no more resources");
 	sema.Release();
 	sema.Release();
 	sema.Release();
 	sema.Release();
 	sema.Release();
+	CheckSemaphoreCount(sema, 5);
 	t_assertm(sema.TryAcquire() == true, "should be able to reaquire semaphore");
+	CheckSemaphoreCount(sema, 4);
 	sema.Release();
+	CheckSemaphoreCount(sema, 5);
 }
 
 void ThreadsTest::SimpleConditionsTest()
@@ -701,4 +722,15 @@ void ThreadsTest::RecursiveMutexTest()
 	SimpleRecursiveTryLockTest();
 	TwoThreadRecursiveTest();
 	TwoThreadRecursiveTryLockTest();
+}
+
+void ThreadsTest::CheckSemaphoreCount(Semaphore &sema, int expected)
+{
+	StartTrace(ThreadsTest.SimpleRecursiveTryLockTest);
+#if !defined(WIN32) && ( !defined(__sun) || defined(USE_POSIX) )
+	int count;
+	int ret = sema.GetCount(count);
+	assertEqual(ret, 0);
+	assertEqual(count, expected);
+#endif
 }

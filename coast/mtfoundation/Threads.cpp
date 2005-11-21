@@ -702,6 +702,15 @@ bool Semaphore::TryAcquire()
 	return TRYSEMALOCK(fSemaphore);
 }
 
+#if !defined(WIN32) && ( !defined(__sun) || defined(USE_POSIX) )
+int Semaphore::GetCount(int &count)
+{
+	StatTrace(Semaphore.GetCount, "Sema&:" << (long)&fSemaphore, Storage::Current());
+
+	return GETSEMACOUNT(fSemaphore, count);
+}
+#endif
+
 void Semaphore::Release()
 {
 	StatTrace(Semaphore.Release, "Sema&:" << (long)&fSemaphore, Storage::Current());
