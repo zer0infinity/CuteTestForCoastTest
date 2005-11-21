@@ -257,6 +257,7 @@ extern "C" {
 #define LOCKSEMA(sema)				(sem_wait((sem_t*) &sema) == 0)
 #define UNLOCKSEMA(sema)			(sem_post((sem_t*) &sema) == 0)
 #define TRYSEMALOCK(sema)			(sem_trywait((sem_t*)&sema) == 0)
+#define GETSEMACOUNT(sema, count)	(sem_getvalue((sem_t*) &sema, &count))
 
 //--- read write locks
 #define RWLOCK						rwlock_t
