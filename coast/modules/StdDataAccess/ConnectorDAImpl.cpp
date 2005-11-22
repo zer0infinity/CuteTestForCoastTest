@@ -196,8 +196,9 @@ bool ConnectorDAImpl::DoExec(Socket *pSocket, Context &context, ParameterMapper 
 	{
 		DAAccessTimer(ConnectorDAImpl.DoExec, "reading", context);
 		long lRetCode = 0L;
+		Trace("waiting on ReadyForReading, CheckReadyTimeout:" << lCheckReadyTimeout);
 		if ( pSocket->IsReadyForReading(lCheckReadyTimeout, lRetCode) ) {
-			Trace("waiting on output from other party");
+			Trace("waiting on output from other party, SocketStreamTimeout:" << lSocketStreamTimeout);
 			DiffTimer aReadTimer;
 			TimeoutModifier aTimeoutModifier((SocketStream *) pIos, lSocketStreamTimeout);
 			aTimeoutModifier.Use();
@@ -226,8 +227,9 @@ bool ConnectorDAImpl::SendInput(iostream *pIos, Socket *s, long lCheckReadyTimeo
 
 	if ( pIos ) {
 		long lRetCode = 0L;
+		Trace("waiting on ReadyForWriting, CheckReadyTimeout:" << lCheckReadyTimeout);
 		if ( s->IsReadyForWriting(lCheckReadyTimeout, lRetCode) ) {
-			Trace("writing input to other party");
+			Trace("writing input to other party, SocketStreamTimeout:" << lSocketStreamTimeout);
 			TimeoutModifier aTimeoutModifier((SocketStream *) pIos, lSocketStreamTimeout);
 			aTimeoutModifier.Use();
 			bool retCode = in->Get("Input", *pIos, context);
