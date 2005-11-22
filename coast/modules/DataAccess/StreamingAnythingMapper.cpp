@@ -13,6 +13,7 @@
 #include "StringStream.h"
 #include "Dbg.h"
 #include "Timers.h"
+#include "SysLog.h"
 
 //--- c-library modules used ---------------------------------------------------
 
@@ -56,6 +57,8 @@ bool StreamToAnythingMapper::DoPutStream(const char *key, istream &is, Context &
 	if ( importok ) {
 		TraceAny(anyResult, "anything imported from stream:");
 		importok = DoPutAny(key, anyResult, ctx, script);
+	} else {
+		SYSWARNING("importing Anything from stream failed!");
 	}
 	return importok;
 }
@@ -69,6 +72,7 @@ bool StreamToAnythingMapper::DoPutAnyWithSlotname(const char *key, Anything valu
 	if ( value.LookupPath(anyValue, slotname) ) {
 		TraceAny(anyValue, "Calling myself again with Anything looked up at [" << slotname << "]");
 		bRet = DoPutAny(key, anyValue, ctx, roaScript);
+		Trace("RetCode of DoPutAny:" << (bRet ? "true" : "false"));
 	}
 	return bRet;
 }
