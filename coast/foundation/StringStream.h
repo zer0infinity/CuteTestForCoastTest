@@ -133,8 +133,8 @@ protected: // seekxxx are protected in the std..
 #else
 	typedef streampos pos_type;
 	typedef	streamoff off_type;
-	typedef int 	openmode;
 	typedef ios::seek_dir seekdir;
+	typedef ios::openmode openmode;
 #endif
 
 	/*! standard iostream behavior, adjust put or get position absolutely */
@@ -248,17 +248,13 @@ public:
 		\param s use *s as the underlying input buffer, no copying, most efficient */
 	IStringStream(String *s)
 		: StringStreambase(s, ios::in)
-#if defined(ONLY_STD_IOSTREAM)
 		, istream(&fSSBuf)
-#endif
 	{ }
 	/*! ctor, take String value as input, read input from copy of s
 		\param s use s contents as initial buffer content for input */
 	IStringStream(const String &s)
 		: StringStreambase(s, ios::in)
-#if defined(ONLY_STD_IOSTREAM)
 		, istream(&fSSBuf)
-#endif
 	{ }
 	//! dtor, not much to do
 	~IStringStream() { }
@@ -349,34 +345,26 @@ public:
 	//! ctor, allocate new string object internally for output
 	OStringStream(int mode = ios::out)
 		: StringStreambase(mode | ios::out)
-#if defined(ONLY_STD_IOSTREAM)
 		, ostream(&fSSBuf)
-#endif
 	{  }
 	/*! ctor, take s as output target
 		\param s use *s as the underlying output buffer directly, no copying */
 	OStringStream(String *s, int mode = ios::app)
 		: StringStreambase(s, mode | ios::out)
-#if defined(ONLY_STD_IOSTREAM)
 		, ostream(&fSSBuf)
-#endif
 	{  }
 	/*! ctor, take s as initial content, makes sense with mode containting ios::app|ios::ate
 		\param s use s contents as initial content */
 	OStringStream(const String &s, int mode = ios::out)
 		: StringStreambase(s, mode | ios::out)
-#if defined(ONLY_STD_IOSTREAM)
 		, ostream(&fSSBuf)
-#endif
 	{  }
 	/*! ctor, take s as output target
 		i am not sure if compiler will take this correctly with the const String& constructor, needs to be tested
 		\param s use s contents as initial content */
 	OStringStream(String &s, int mode = ios::app)
 		: StringStreambase(&s, mode | ios::out)
-#if defined(ONLY_STD_IOSTREAM)
 		, ostream(&fSSBuf)
-#endif
 	{  }
 	//! dtor, not much to do
 	~OStringStream() { }
@@ -389,26 +377,20 @@ public:
 	//! ctor, allocate new string object internally for in/output
 	StringStream(int mode = ios::out | ios::in)
 		: StringStreambase(mode)
-#if defined(ONLY_STD_IOSTREAM)
 		, iostream(&fSSBuf)
-#endif
 	{  }
 	/*! ctor, take s as output target, resp. input source
 		\param s use *s as the underlying output buffer directly, no copying */
 	StringStream(String *s, int mode = ios::out | ios::in)
 		: StringStreambase(s, mode)
-#if defined(ONLY_STD_IOSTREAM)
 		, iostream(&fSSBuf)
-#endif
 	{  }
 	/*! ctor, take s as initial content,
 		makes sense with mode containting ios::app|ios::ate|ios::in
 		\param s use s contents as initial content */
 	StringStream(const String &s, int mode = ios::out | ios::in)
 		: StringStreambase(s, mode)
-#if defined(ONLY_STD_IOSTREAM)
 		, iostream(&fSSBuf)
-#endif
 	{  }
 	/*! ctor, take s as output target and input source
 		i am not sure if compiler will take this correctly with the const String&
@@ -416,9 +398,7 @@ public:
 		\param s use s contents as initial content */
 	StringStream(String &s, int mode = ios::out | ios::in)
 		: StringStreambase(&s, mode | ios::out)
-#if defined(ONLY_STD_IOSTREAM)
 		, iostream(&fSSBuf)
-#endif
 	{  }
 	//! dtor, not much to do
 	~StringStream() { }
