@@ -69,21 +69,18 @@ void Renderer::Render(ostream &reply, Context &c, const ROAnything &info)
 	//----------------------------------------
 	// if info contains a simple type we render
 	// it directly onto the output reply
-	if (info.GetType() == AnyCharPtrType ||
-		info.GetType() == AnyLongType ||
-		info.GetType() == AnyDoubleType) {
+	AnyImplType aImplType = info.GetType();
+	Renderer *r = 0; // this is our marker, makes logic simpler (PS)
+	if ( aImplType == AnyCharPtrType || aImplType == AnyLongType || aImplType == AnyDoubleType ) {
 		long len;
 		const char *buf = info.AsCharPtr("", len);
 		Trace( "Basic renderable leaf found--> " << NotNull(buf) );
 		reply.write(buf, len);
-		return;
 	}
-	Trace("Renderer Renders ?????????????????? ");
 	//----------------------------------------
 	// if info is an array we assume it is a
 	// renderer specification
-	Renderer *r = 0; // this is our marker, makes logic simpler (PS)
-	if (info.GetType() == AnyArrayType) {
+	else if ( aImplType == AnyArrayType) {
 		Trace( "Render, is eArray" );
 		// Check for old style configuration
 		if (info.IsDefined("Type")) {
@@ -154,16 +151,18 @@ void Renderer::Render(ostream &reply, Context &c, const ROAnything &info)
 
 void Renderer::RenderOnString(String &s, Context &c, const ROAnything &info)
 {
-	OStringStream os(&s, ios::app);
+	OStringStream os(s);
 	Render(os, c, info);
 	os.flush();
 }
+
 String Renderer::RenderToString(Context &c, const ROAnything &info)
 {
 	String result;
 	RenderOnString(result, c, info);
 	return result;
 }
+
 void Renderer::RenderOnStringWithDefault(String &s, Context &c, const ROAnything &info, Anything def)
 {
 	ROAnything inf = info;
@@ -172,12 +171,14 @@ void Renderer::RenderOnStringWithDefault(String &s, Context &c, const ROAnything
 	}
 	RenderOnString(s, c, inf);
 }
+
 String Renderer::RenderToStringWithDefault(Context &c, const ROAnything &info, Anything def)
 {
 	String result;
 	RenderOnStringWithDefault(result, c, info, def);
 	return result;
 }
+
 void Renderer::PrintOptions(ostream &reply, const char *tag, const ROAnything &any)
 {
 	reply << '<' << tag;

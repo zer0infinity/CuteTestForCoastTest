@@ -71,7 +71,7 @@ AnyLongImpl::AnyLongImpl(long l, Allocator *a)
 	, fLong(l)
 	, fBuf(a)
 {
-	OStringStream out(&fBuf);
+	OStringStream out(fBuf);
 	out << fLong;
 }
 
@@ -138,7 +138,7 @@ AnyDoubleImpl::AnyDoubleImpl(double d, Allocator *a)
 	, fDouble(d)
 	, fBuf(a)
 {
-	OStringStream out(&fBuf);
+	OStringStream out(fBuf);
 	out.precision(20); // safety margin, 16 should be OK for doubles
 	out << fDouble;
 }
@@ -146,24 +146,17 @@ AnyDoubleImpl::AnyDoubleImpl(double d, Allocator *a)
 String AnyDoubleImpl::AsString(const char *) const
 {
 	return fBuf;
-//	OStringStream out;
-////		out.precision(20); // safety margin, 16 should be OK for doubles
-//	out << fDouble << flush;
-//	return out.str();
 }
 
 const char *AnyDoubleImpl::AsCharPtr(const char *dflt) const
 {
 	return (const char *)fBuf;
-//	return dflt;
 }
 
 const char *AnyDoubleImpl::AsCharPtr(const char *dflt, long &buflen) const
 {
 	buflen = fBuf.Length();
 	return (const char *)fBuf;
-//	buflen=0L;
-//	return dflt;
 }
 
 AnyImpl *AnyDoubleImpl::DoDeepClone(Allocator *a, Anything &xreftable)

@@ -31,7 +31,7 @@ void StoreCopier::Operate(Context &c, Anything &dest, const ROAnything &config, 
 	long sz = config.GetSize();
 	for (long i = 0; i < sz; ++i) {
 		String sourceLookupName = config.SlotName(i);
-		String destSlot;
+		String destSlot(32);
 		Renderer::RenderOnString(destSlot, c, config[i]);
 		if ( sourceLookupName && destSlot ) {
 			dest[destSlot] = c.Lookup(sourceLookupName, delim, indexdelim).DeepClone(dest.GetAllocator());
@@ -58,7 +58,7 @@ void StoreFinder::Operate(Context &context, Anything &dest, const ROAnything &co
 		SYSWARNING("Tried to set allocator on Anything having an Impl already! Keep in mind that you might be operating on a copy!");
 	}
 
-	String destSlotname;
+	String destSlotname(40);
 	Renderer::RenderOnString(destSlotname, context, config["Slot"]);
 	Trace("Destination slotname [" << destSlotname << "]");
 	Anything anyConfig;

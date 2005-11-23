@@ -334,7 +334,7 @@ bool AppLogChannel::LogAll(Context &ctx, const ROAnything &config)
 	StartTrace(AppLogChannel.LogAll);
 	if ( fLogStream && fLogStream->good() ) {
 		TraceAny(config, "config: ");
-		String logMsg;
+		String logMsg(128);
 		Renderer::RenderOnString(logMsg, ctx, config);
 
 		if (!fChannelInfo["SuppressEmptyLines"].AsBool(false) || logMsg.Length()) {
