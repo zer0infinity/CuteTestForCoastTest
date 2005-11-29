@@ -18,7 +18,7 @@
 class StatisticTestCase : public TestCase
 {
 	Anything fStatistics;
-	String fFilename, fDatetime, fHostName;
+	String fFilename, fDatetime, fHostName, fFlags;
 
 public:
 	//--- constructors
@@ -43,6 +43,7 @@ protected:
 	void AddStatisticOutput(String strTestName, long lMilliTime);
 	//! export timing values in csv style
 	void ExportCsvStatistics(long lModulus);
+	double RecurseExportCsvStatistics(Anything &anyCsv, ROAnything roaLoopOn, long &lLevel);
 };
 
 #endif

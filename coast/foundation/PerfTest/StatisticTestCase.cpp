@@ -39,7 +39,7 @@ void StatisticTestCase::LoadData()
 	}
 	fDatetime = GenTimeStamp();
 	System::HostName(fHostName);
-	fHostName << '_' << WD_BUILDFLAGS << '_' << WD_COMPILER;
+	fFlags << WD_BUILDFLAGS << '_' << WD_COMPILER;
 	TraceAny(fStatistics, "filename of statistics file is [" << fFilename << "], timestamp [" << fDatetime << "]");
 }
 
@@ -81,52 +81,71 @@ String StatisticTestCase::GenTimeStamp()
 void StatisticTestCase::AddStatisticOutput(String strTestName, long lMilliTime)
 {
 	StartTrace(StatisticTestCase.AddStatisticOutput);
-	fStatistics[fHostName][fDatetime][strTestName] = lMilliTime;
+	fStatistics[strTestName][fHostName][WD_BUILDFLAGS][WD_COMPILER][fDatetime] = lMilliTime;
+}
+
+double StatisticTestCase::RecurseExportCsvStatistics(Anything &anyCsv, ROAnything roaLoopOn, long &lLevel)
+{
+	StartTrace(StatisticTestCase.RecurseExportCsvStatistics);
+	long lEntryLevel = lLevel;
+	Trace("total levels:" << lLevel);
+	long lEntries = 0;
+	double dAverage = 0.0;
+	AnyExtensions::Iterator<ROAnything> aEntryIterator(roaLoopOn);
+	ROAnything roaEntry;
+	while ( aEntryIterator.Next(roaEntry) ) {
+		const char *pEntryName = roaLoopOn.SlotName(aEntryIterator.Index());
+		double dValue = 0.0;
+		if ( roaEntry.GetType() == AnyArrayType ) {
+			lEntryLevel = lLevel;
+			dValue = RecurseExportCsvStatistics(anyCsv, roaEntry, ++lEntryLevel);
+			Trace("recursion level:" << lEntryLevel);
+		} else {
+			dValue = (double)roaEntry.AsLong(0L);
+		}
+		long lIdx = 0;
+		String strOut;
+		for ( lIdx = 0; lIdx < lLevel; ++lIdx) {
+			strOut << ',';
+		}
+		strOut << pEntryName;
+		for ( lIdx = lLevel; lIdx <= lEntryLevel; ++lIdx) {
+			strOut << ',';
+		}
+		strOut << dValue;
+		Trace("appending [" << strOut << "]");
+		anyCsv.Append(strOut);
+
+		dAverage += dValue;
+		++lEntries;
+	}
+	lLevel = lEntryLevel;
+	if ( lEntries > 0 ) {
+		dAverage /= (double)lEntries;
+	}
+	return dAverage;
 }
 
 void StatisticTestCase::ExportCsvStatistics(long lModulus)
 {
 	StartTrace(StatisticTestCase.ExportCsvStatistics);
 	Anything anyCsv;
-	long lDestDateIdx = 0L;
 	TraceAny(fStatistics, "Collected Statistics");
-	ROAnything roaStatistics(fStatistics), roaHostEntry;
-	AnyExtensions::Iterator<ROAnything> aHostIterator(roaStatistics);
-	while ( aHostIterator.Next(roaHostEntry) ) {
-		const char *pHostName = roaStatistics.SlotName(aHostIterator.Index());
-		TraceAny(roaHostEntry, "current entry for host [" << pHostName << "]");
-		ROAnything roaDateEntry;
-		AnyExtensions::Iterator<ROAnything> aDateIterator(roaHostEntry);
-		while ( aDateIterator.Next(roaDateEntry) ) {
-			if ( aDateIterator.Index() % lModulus == 0 ) {
-				++lDestDateIdx;
-			}
-			const char *pDT = roaHostEntry.SlotName(aDateIterator.Index());
-			anyCsv["TestName"][lDestDateIdx] = pDT;
-			anyCsv["HostName"][lDestDateIdx] = pHostName;
-			TraceAny(roaDateEntry, "date entry per [" << pDT << "]");
-			ROAnything roaCaseEntry;
-			AnyExtensions::Iterator<ROAnything> aCaseIterator(roaDateEntry);
-			while ( aCaseIterator.Next(roaCaseEntry) ) {
-				const char *pCaseName = roaDateEntry.SlotName(aCaseIterator.Index());
-				anyCsv[pCaseName][lDestDateIdx] = roaCaseEntry.AsCharPtr();
-			}
-		}
-	}
+	long lLevel = 1;
+	double dTotalAvg = RecurseExportCsvStatistics(anyCsv, fStatistics, lLevel);
+
 	TraceAny(anyCsv, "collected");
 	iostream *pStream = System::OpenOStream(getClassName(), "csv");
 	if ( t_assert(pStream != NULL) ) {
-		ROAnything roaRowEntry, roaCvs(anyCsv);
-		AnyExtensions::Iterator<ROAnything> aRowIterator(roaCvs);
-		while ( aRowIterator.Next(roaRowEntry) ) {
-			(*pStream) << roaCvs.SlotName(aRowIterator.Index()) << ',';
-			ROAnything roaCol;
-			AnyExtensions::Iterator<ROAnything> aColIterator(roaRowEntry);
-			while ( aColIterator.Next(roaCol) ) {
-				(*pStream) << roaCol.AsString() << ',';
-			}
-			(*pStream) << "\r\n";
+		for ( long lRowIdx = anyCsv.GetSize(); --lRowIdx >= 0; ) {
+			Trace("printing line [" << anyCsv[lRowIdx].AsCharPtr() << "]");
+			(*pStream) << anyCsv[lRowIdx].AsCharPtr() << "\r\n";
 		}
 	}
+	(*pStream) << "Total Average";
+	for ( long lIdx = 0; lIdx <= lLevel; ++lIdx) {
+		(*pStream) << ',';
+	}
+	(*pStream) << dTotalAvg << "\r\n";
 	delete pStream;
 }
