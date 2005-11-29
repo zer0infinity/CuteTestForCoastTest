@@ -28,37 +28,35 @@ public:
 	}
 };
 
-//---- ROAnythingSimpleTest --------------------------------------------------
-ROAnythingSimpleTest::ROAnythingSimpleTest(TString tname) : TestCase(tname)
+//---- ROSimpleAnythingTest --------------------------------------------------
+ROSimpleAnythingTest::ROSimpleAnythingTest(TString tname) : TestCase(tname)
 {
 }
 
-ROAnythingSimpleTest::~ROAnythingSimpleTest()
+ROSimpleAnythingTest::~ROSimpleAnythingTest()
 {
 }
 
-void ROAnythingSimpleTest::setUp ()
+void ROSimpleAnythingTest::setUp ()
 // setup connector for this TestCase
 {
 }
 
-void ROAnythingSimpleTest::tearDown ()
+void ROSimpleAnythingTest::tearDown ()
 {
 }
 
-void ROAnythingSimpleTest::ConstructorsAndConversions()
+void ROSimpleAnythingTest::ConstructorsAndConversions()
 {
 	EmptyConstructor();
 	AnyConstructor();
 } // ConstructorsAndConversions
 
-void ROAnythingSimpleTest::AssignmentsAndConversions()
+void ROSimpleAnythingTest::AssignmentsAndConversions()
 {
-//	EmptyAssignement();
-//	AnyAssignement();
 } // AssignmentsAndConversions
 
-void ROAnythingSimpleTest::EmptyConstructor()
+void ROSimpleAnythingTest::EmptyConstructor()
 {
 	ROAnything roTest;
 	DummyROIFAObj dummyIFA;
@@ -81,7 +79,7 @@ void ROAnythingSimpleTest::EmptyConstructor()
 	assertEqual((long)&dummyIFA, (long)roTest.AsIFAObject(&dummyIFA));
 }
 
-void ROAnythingSimpleTest::AnyConstructor()
+void ROSimpleAnythingTest::AnyConstructor()
 {
 	AnyIntConstructor();
 	AnyBoolConstructor();
@@ -91,7 +89,7 @@ void ROAnythingSimpleTest::AnyConstructor()
 	AnyIFAObjConstructor();
 }
 
-void ROAnythingSimpleTest::AnyIntConstructor()
+void ROSimpleAnythingTest::AnyIntConstructor()
 {
 	const int cTestVal = 7;
 	Anything anyTest(cTestVal);
@@ -116,7 +114,7 @@ void ROAnythingSimpleTest::AnyIntConstructor()
 	assertEqual((long)&dummyIFA, (long)roTest.AsIFAObject(&dummyIFA));
 }
 
-void ROAnythingSimpleTest::AnyBoolConstructor()
+void ROSimpleAnythingTest::AnyBoolConstructor()
 {
 	const bool cTestVal = true;
 	Anything anyTest(cTestVal);
@@ -141,7 +139,7 @@ void ROAnythingSimpleTest::AnyBoolConstructor()
 	assertEqual((long)&dummyIFA, (long)roTest.AsIFAObject(&dummyIFA));
 }
 
-void ROAnythingSimpleTest::AnyLongConstructor()
+void ROSimpleAnythingTest::AnyLongConstructor()
 {
 	const long cTestVal = 1234L;
 	Anything anyTest(cTestVal);
@@ -166,27 +164,22 @@ void ROAnythingSimpleTest::AnyLongConstructor()
 	assertEqual((long)&dummyIFA, (long)roTest.AsIFAObject(&dummyIFA));
 }
 
-void ROAnythingSimpleTest::AnyFloatConstructor()
+void ROSimpleAnythingTest::AnyFloatConstructor()
 {
 	const float cTestVal = float(22.22);
 	Anything anyTest(cTestVal);
 	ROAnything roTest(anyTest);
 	DummyROIFAObj dummyIFA;
 
-	String testString;
-	OStringStream out(&testString);
-	out.precision(20);
-	out << cTestVal << flush;
-
 	// test standard defaults
-	assertEqual(testString.SubString(0, 5), roTest.AsString().SubString(0, 5));
+	assertEqual("22.21", roTest.AsString().SubString(0, 5));
 	assertEqual((long)cTestVal, roTest.AsLong(0));
 	assertEqual(false, roTest.AsBool());
 	assertEqual((long)cTestVal, (long)roTest.AsDouble());
 	assertEqual(0L, (long)roTest.AsIFAObject());
 
 	// test custom defaults
-	assertEqual(testString.SubString(0, 5), roTest.AsString("test").SubString(0, 5));
+	assertEqual("22.21", roTest.AsString("test").SubString(0, 5));
 	assertEqual((long)cTestVal, roTest.AsLong(10));
 	assertEqual((long)cTestVal, roTest.AsLong(0L));
 	assertEqual((long)cTestVal, roTest.AsLong(-10));
@@ -196,7 +189,7 @@ void ROAnythingSimpleTest::AnyFloatConstructor()
 	assertEqual((long)&dummyIFA, (long)roTest.AsIFAObject(&dummyIFA));
 }
 
-void ROAnythingSimpleTest::AnyDoubleConstructor()
+void ROSimpleAnythingTest::AnyDoubleConstructor()
 {
 	const float cTestVal = float(33.33);
 	Anything anyTest(cTestVal);
@@ -221,7 +214,7 @@ void ROAnythingSimpleTest::AnyDoubleConstructor()
 	assertEqual((long)&dummyIFA, (long)roTest.AsIFAObject(&dummyIFA));
 }
 
-void ROAnythingSimpleTest::AnyIFAObjConstructor()
+void ROSimpleAnythingTest::AnyIFAObjConstructor()
 {
 	DummyROIFAObj cTestVal("foo");
 	Anything anyTest(&cTestVal);
@@ -246,12 +239,12 @@ void ROAnythingSimpleTest::AnyIFAObjConstructor()
 	assertEqual((long)&cTestVal, (long)roTest.AsIFAObject(&dummyIFA));
 }
 
-Test *ROAnythingSimpleTest::suite ()
+Test *ROSimpleAnythingTest::suite ()
 // collect all test cases for the SocketStream
 {
 	TestSuite *testSuite = new TestSuite;
-	ADD_CASE(testSuite, ROAnythingSimpleTest, ConstructorsAndConversions);
-	ADD_CASE(testSuite, ROAnythingSimpleTest, AssignmentsAndConversions);
+	ADD_CASE(testSuite, ROSimpleAnythingTest, ConstructorsAndConversions);
+	ADD_CASE(testSuite, ROSimpleAnythingTest, AssignmentsAndConversions);
 
 	return testSuite;
 } // suite

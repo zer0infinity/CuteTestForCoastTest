@@ -16,19 +16,19 @@
 #include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 class EXPORTDECL_FOUNDATION ROAnything;
 
-//---- ROAnythingSimpleTest ----------------------------------------------------------
+//---- ROSimpleAnythingTest ----------------------------------------------------------
 //!TestCases for the ROAnything class Simple types part
-class ROAnythingSimpleTest : public TestCase
+class ROSimpleAnythingTest : public TestCase
 {
 public:
 	//--- constructors
 
 	//!TestCases for the Socket classes
 	//! \param name name of the test
-	ROAnythingSimpleTest(TString tstrName);
+	ROSimpleAnythingTest(TString tstrName);
 
 	//!destroys the test case
-	~ROAnythingSimpleTest();
+	~ROSimpleAnythingTest();
 
 	//--- public api
 
