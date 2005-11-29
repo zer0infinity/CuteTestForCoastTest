@@ -36,4 +36,6 @@ function cleanupTest
 {
 	echo
 	rm -f WriteTestFile.txt
+	rm -rf $PRJCONFIGPATH/cert_files
+	rm -rf $PRJCONFIGPATH/cert_hashes
 }

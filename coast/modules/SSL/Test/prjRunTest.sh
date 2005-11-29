@@ -33,4 +33,6 @@ function callTest
 function cleanupTest
 {
 	echo
+	rm -rf $PRJCONFIGPATH/cert_files
+	rm -rf $PRJCONFIGPATH/cert_hashes
 }
