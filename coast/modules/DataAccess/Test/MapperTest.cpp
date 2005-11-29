@@ -213,21 +213,14 @@ void MapperTest::GetTests()
 		assertEqualm(9, l, "long unchanged");
 	}
 
-	String testString1_9, testString9_1;
-	OStringStream out1_9(&testString1_9), out9_1(&testString9_1);
-	out1_9.precision(20);
-	out1_9 << 1.9 << flush;
-	out9_1.precision(20);
-	out9_1 << 9.1 << flush;
-
 	{
 		String s;
 		t_assert(mapper.Get("AKeyInConfig", s, ctx));
-		assertEqualm(testString1_9, s, "String from config");
+		assertEqualm("1.9", s, "String from config");
 		t_assert(mapper.Get("AKeyFromContext", s, ctx));
-		assertEqualm(testString9_1, s, "String from context");
+		assertEqualm("9.1", s, "String from context");
 		t_assert(!mapper.Get("AKeyThatDoesNotExist", s, ctx));
-		assertEqualm(testString9_1, s, "String unchanged");
+		assertEqualm("9.1", s, "String unchanged");
 	}
 
 	{
@@ -235,7 +228,7 @@ void MapperTest::GetTests()
 		OStringStream os(s);
 		t_assert(mapper.Get("AKeyInConfig", os, ctx));
 		os.flush();
-		assertEqualm(testString1_9, s, "Stream from config");
+		assertEqualm("1.9", s, "Stream from config");
 	}
 
 	{
@@ -243,10 +236,10 @@ void MapperTest::GetTests()
 		OStringStream os(s);
 		t_assert(mapper.Get("AKeyFromContext", os, ctx));
 		os.flush();
-		assertEqualm(testString9_1, s, "Stream from context");
+		assertEqualm("9.1", s, "Stream from context");
 		t_assert(!mapper.Get("AKeyThatDoesNotExist", os, ctx));
 		os.flush();
-		assertEqualm(testString9_1, s, "Stream unchanged");
+		assertEqualm("9.1", s, "Stream unchanged");
 	}
 
 	{

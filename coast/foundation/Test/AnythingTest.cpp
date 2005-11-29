@@ -353,8 +353,8 @@ void AnythingTest::testDoubleConstr0()
 	t_assert( !(fDouble != anyHlp) );
 	t_assert( fDouble.IsEqual(anyHlp) );
 
-	t_assert( String("7.125") == fDouble.AsCharPtr() );
-	t_assert( String("7.125") == fDouble.AsCharPtr("Default") );
+	assertCharPtrEqual( "7.125", fDouble.AsCharPtr() );
+	assertCharPtrEqual( "7.125", fDouble.AsCharPtr("Default") );
 	t_assert( memcmp( fDouble.AsCharPtr(0), "7.125", strlen("7.125") ) == 0 );
 	t_assert( fDouble.AsLong() == 7 );
 	t_assert( fDouble.AsLong(1234) == 7 );
@@ -370,10 +370,10 @@ void AnythingTest::testDoubleConstr0()
 	t_assert( fDouble.AsIFAObject(&testObj) != &testObjDummy );
 	t_assert( fDouble.AsIFAObject() == NULL );
 
-	t_assert( (fDouble.AsString()).Length() == 5  );
+	assertEqual( 5L, fDouble.AsString().Length() );
 	t_assert( (fDouble.AsString()).Capacity() >= (fDouble.AsString()).Length() );
-	t_assert( fDouble.AsString() == "7.125" );
-	t_assert( fDouble.AsString("Default") == "7.125" );
+	assertCharPtrEqual( "7.125", fDouble.AsString() );
+	assertCharPtrEqual( "7.125", fDouble.AsString("Default") );
 
 	t_assert( fDouble.Contains("testSlot") == false );
 	t_assert( fDouble.FindValue("testSlot") < 0L );
@@ -410,14 +410,9 @@ void AnythingTest::testDoubleConstr1()
 	t_assert( !(fDouble2 != anyHlp) );
 	t_assert( fDouble2.IsEqual(anyHlp) );
 
-	String testString;
-	OStringStream out(&testString);
-	out.precision(20);
-	out << 8.1 << flush;
-
-	assertCharPtrEqual( testString.SubString(0, 6), fDouble2.AsString().SubString(0, 6) );
-	assertCharPtrEqual( testString, fDouble2.AsString() );
-	assertCharPtrEqual( testString, fDouble2.AsString("Default") );
+	assertCharPtrEqual( "8.1", fDouble2.AsString().SubString(0, 6) );
+	assertCharPtrEqual( "8.1", fDouble2.AsString() );
+	assertCharPtrEqual( "8.1", fDouble2.AsString("Default") );
 	assertEqual( 8L, fDouble2.AsLong() );
 	assertEqual( 8L, fDouble2.AsLong(1234) );
 	t_assert( !fDouble2.AsBool() );
@@ -467,15 +462,8 @@ void AnythingTest::testFloatConstr()
 	fFloat = -24.490123456789;
 	double testDouble = -24.490123456789;
 	assertDoublesEqual( testDouble, fFloat.AsDouble(0), 0.000000000001 );
-	// double to string conversion (using class String) uses default precision of 6 digits
-	// we use precision of 20 here to have at least the same as an AnyDoubleImpl uses
-	String testString;
-	OStringStream out(&testString);
-	out.precision(20);
-	out << testDouble << flush;
-	// double to string conversion (using class AnyDoubleImpl) uses precision of 20 digits!
-	assertCharPtrEqual( testString.SubString(0, 14), fFloat.AsString().SubString(0, 14) );
-	assertCharPtrEqual( testString, fFloat.AsString());
+	assertCharPtrEqual( "-24.4901234567", fFloat.AsString().SubString(0, 14) );
+	assertCharPtrEqual( "-24.490123456789", fFloat.AsString() );
 	assertLongsEqual( -24L, fFloat.AsLong() );
 	assertLongsEqual( -24L, fFloat.AsLong(1234) );
 	t_assert( !fFloat.AsBool() );
@@ -491,8 +479,8 @@ void AnythingTest::testFloatConstr()
 	t_assert( fFloat.AsIFAObject(&testObj) != &testObjDummy );
 	t_assert( fFloat.AsIFAObject() == NULL );
 
-	assertEqual( testString.Length(), fFloat.AsString().Length() );
-	assertCharPtrEqual( testString, fFloat.AsString("Default") );
+	assertEqual( 16, fFloat.AsString().Length() );
+	assertCharPtrEqual( "-24.490123456789", fFloat.AsString("Default") );
 
 	t_assert( !fFloat.Contains("testSlot") );
 	t_assert( fFloat.FindValue("testSlot") < 0L );
@@ -3353,7 +3341,7 @@ void AnythingTest::AsCharPtrBufLen()
 	Anything anydouble(2.01);
 	long doublelen;
 	anydouble.AsCharPtr("", doublelen);
-	t_assert( doublelen >= 18 );
+	t_assert( 3 <= doublelen );
 
 	//--- AnyLongImpl
 	Anything anylong(100);
