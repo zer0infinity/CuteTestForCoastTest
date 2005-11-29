@@ -1220,10 +1220,9 @@ public:
 			// this section is just for the impossible case where...
 			// keep track of precision, so we can read in our
 			// numbers anyway
-			int prec = fOs.precision();
-			fOs.precision(20); // safety margin, 16 should be OK for doubles
-			fOs << value;
-			fOs.precision(prec); // restore default
+			String strBuf;
+			AnyDoubleImpl::DoubleToString(value, strBuf);
+			fOs << strBuf;
 		}
 	}
 	virtual void	VisitVoidBuf(const String &value, const AnyImpl *, long lIdx, const char *slotname) {
