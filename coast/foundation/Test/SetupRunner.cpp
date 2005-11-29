@@ -42,6 +42,7 @@
 #include "ObjectListTest.h"
 #include "TimeStampTest.h"
 #include "ConversionUtilsTest.h"
+#include "AnyImplsTest.h"
 
 #ifndef __370__
 #if !defined(WIN32)
@@ -70,6 +71,7 @@ void setupRunner(TestRunner &runner)
 	ADD_SUITE(runner, DiffTimerTest);
 	ADD_SUITE(runner, StringTest);
 	runner.addTest("Work", StringTest::worksuite ());
+	ADD_SUITE(runner, AnyImplsTest);
 	ADD_SUITE(runner, AnythingTest);
 	ADD_SUITE(runner, AnySorterTest);
 	ADD_SUITE(runner, AcceptorTest);
@@ -89,7 +91,7 @@ void setupRunner(TestRunner &runner)
 #endif
 	ADD_SUITE(runner, DbgTest);
 	ADD_SUITE(runner, StorageTest);
-	ADD_SUITE(runner, ROAnythingSimpleTest);
+	ADD_SUITE(runner, ROSimpleAnythingTest);
 	ADD_SUITE(runner, SysLogTest);
 	ADD_SUITE(runner, GenericXMLParserTest);
 	ADD_SUITE(runner, AnyBuiltInSortTest);
