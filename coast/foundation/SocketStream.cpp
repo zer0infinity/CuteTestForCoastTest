@@ -11,7 +11,6 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "SysLog.h"
-#include "Socket.h"
 #include "System.h"
 #include "Dbg.h"
 
@@ -171,12 +170,13 @@ int SocketStreamBuf::overflow( int c )
 		setp(startw(), endw());	// reinitialize put area
 	}
 
-	if (c != EOF && (pptr() < epptr())) // guard against recursion
+	if (c != EOF && (pptr() < epptr())) { // guard against recursion
 #if defined(__GNUG__) && !defined(ONLY_STD_IOSTREAM) /* only gnu defined xput_char() std uses sputc() */
 		xput_char(c);	// without check
 #else
 		sputc(c);
 #endif
+	}
 	return 0L;  // return 0 if successful
 } // overflow
 
@@ -274,7 +274,7 @@ long SocketStreamBuf::DoWrite(const char *buf, long len)
 
 	if ( bytesSent > 0 ) {
 		AddWriteCount( bytesSent );
-#ifdef STREAM_TRACE
+#if defined(STREAM_TRACE)
 		SysLog::WriteToStderr(buf, bytesSent);
 #endif
 	}
@@ -299,9 +299,11 @@ long SocketStreamBuf::DoRead(char *buf, long len) const
 				SysLog::Error(msg);
 				Ios->clear(ios::badbit);
 			} else if ( bytesRead == 0 ) {
+#if defined(STREAM_TRACE)
 				String msg("Socket:    end of data (read)              on file descriptor: ");
 				msg << fSocket->GetFd();
 				SysLog::Info(msg);
+#endif
 				// socket is closed, stream recognizes this via
 				// streambuf::underflow() returning eof, if no more bytes are available
 			}

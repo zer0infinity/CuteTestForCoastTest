@@ -12,23 +12,28 @@
 //--- standard modules used ----------------------------------------------------
 #include "SysLog.h"
 #include "System.h"
-#include "SSLAPI.h"
 #include "SSLSocketStream.h"
-#include "Dbg.h"
-#include "SSLModule.h" // may need to move auxiliary static methods to SSLSocket instead
 #include "Resolver.h" // to verify host name versus certificate
 #include "SSLSocketUtils.h"
 #include "SSLObjectManager.h"
 
+//#define STREAM_TRACE
+
 //--- SSLSocket ----------------------
 SSLSocket::SSLSocket(SSL_CTX *ctx, int socket, const Anything &clientInfo, bool doClose, long  timeout, Allocator *a)
-	: Socket(socket, clientInfo, doClose, timeout, a), fContext(ctx), fPeerCert(0), fSSLSocketArgs()
+	: Socket(socket, clientInfo, doClose, timeout, a)
+	, fContext(ctx)
+	, fPeerCert(0)
+	, fSSLSocketArgs()
 {
 	StartTrace1(SSLSocket.Ctor, "using allocator: [" << (long)a << "]");
 }
 
 SSLSocket::SSLSocket(SSLSocketArgs &sslSocketArgs, SSL_CTX *ctx, int socket, const Anything &clientInfo, bool doClose, long  timeout, Allocator *a)
-	: Socket(socket, clientInfo, doClose, timeout, a), fContext(ctx), fPeerCert(0), fSSLSocketArgs(sslSocketArgs)
+	: Socket(socket, clientInfo, doClose, timeout, a)
+	, fContext(ctx)
+	, fPeerCert(0)
+	, fSSLSocketArgs(sslSocketArgs)
 {
 	StartTrace1(SSLSocket.Ctor, "using allocator: [" << (long)a << "]");
 }
@@ -40,9 +45,7 @@ SSLSocket::~SSLSocket()
 
 unsigned long SSLSocket::GetSSLError(SSL *ssl, int res)
 {
-	return ssl ?
-		   SSL_get_error(ssl, res) :
-		   ERR_get_error();
+	return ( ssl ? SSL_get_error(ssl, res) : ERR_get_error() );
 }
 
 void SSLSocket::ReportSSLError( unsigned long err)
@@ -104,10 +107,12 @@ bool SSLSocket::ShouldRetry(SSL *ssl, int res, bool handshake)
 	} else if (SSL_ERROR_WANT_WRITE == err) {
 		return IsReadyForWriting();
 	} else if (SSL_ERROR_ZERO_RETURN) { // clean  way to handle peer did not send data
+#if defined(STREAM_TRACE)
 		// Do not report SSL error
 		String msg("SSLSocket: end of data (connection closed) on file descriptor: ");
 		msg << GetFd() << (handshake ? " at Handshake" : " at normal r/w");
 		SysLog::Info(msg);
+#endif
 		return false;
 	}
 	ReportSSLError(err);
