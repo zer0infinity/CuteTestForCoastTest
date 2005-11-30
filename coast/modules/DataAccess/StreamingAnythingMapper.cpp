@@ -32,8 +32,7 @@ bool AnythingToStreamMapper::DoFinalGetStream(const char *key, ostream &os, Cont
 
 		if ( !anyValue.IsNull() ) {
 			DAAccessTimer(AnythingToStreamMapper.DoFinalGetStream, "exporting to stream", ctx);
-			os << anyValue;
-			os << flush;
+			os << anyValue << flush;
 			TraceAny(anyValue, "written to stream:");
 			return true;
 		}
@@ -49,16 +48,38 @@ bool StreamToAnythingMapper::DoPutStream(const char *key, istream &is, Context &
 {
 	StartTrace1(StreamToAnythingMapper.DoPutStream, NotNull(key));
 	Anything anyResult;
-	bool importok;
+	String strBuf(4096);
+	bool importok = false;
+	long lToCopy = 4096L, lCopied = 0L, lTotal = 0L;
+	bool bSuccess = true;
 	{
-		DAAccessTimer(StreamToAnythingMapper.DoPutStream, "importing from stream", ctx);
-		importok = anyResult.Import(is);
+		OStringStream ostr(strBuf);
+		DAAccessTimer(StreamToAnythingMapper.DoPutStream, "copying from stream", ctx);
+		while ( ( bSuccess = StringStream::PlainCopyStream2Stream(&is, ostr, lCopied, lToCopy) ) && ( lCopied >= lToCopy ) ) {
+			lTotal += lCopied;
+		}
+		lTotal += lCopied;
 	}
-	if ( importok ) {
-		TraceAny(anyResult, "anything imported from stream:");
-		importok = DoPutAny(key, anyResult, ctx, script);
+	if ( bSuccess ) {
+		Trace("Length of received content:" << lTotal);
+		SubTrace(TraceBuf, "content [" << strBuf << "]");
+		{
+			DAAccessTimer(StreamToAnythingMapper.DoPutStream, "importing Anything", ctx);
+#if 0
+			String strDump = strBuf.DumpAsHex(32);
+			SysLog::WriteToStderr(strDump);
+#endif
+			IStringStream istr(strBuf);
+			importok = anyResult.Import(istr, "ImportingFromStream");
+		}
+		if ( importok ) {
+			TraceAny(anyResult, "anything imported from stream:");
+			importok = DoPutAny(key, anyResult, ctx, script);
+		} else {
+			SYSWARNING("importing Anything from stream failed: total input-length:" << lTotal);
+		}
 	} else {
-		SYSWARNING("importing Anything from stream failed!");
+		SYSWARNING("receiving stream content failed: bytes received so far:" << lTotal);
 	}
 	return importok;
 }
