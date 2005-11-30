@@ -26,7 +26,7 @@ public:
 		StartTrace(CountEntry.CountEntry);
 		SimpleMutexEntry sme(fMutex);
 		sme.Use();
-		fCount++;
+		++fCount;
 		Trace("count:" << fCount);
 	}
 	~CountEntry() {
@@ -34,7 +34,7 @@ public:
 		SimpleMutexEntry sme(fMutex);
 		sme.Use();
 		if (fCount > 0L) {
-			fCount--;
+			--fCount;
 		}
 		Trace("count:" << fCount);
 		Trace("signalling condition");
@@ -167,9 +167,9 @@ bool Queue::DoPut(Anything &anyElement)
 		MutexEntry me(fQueueLock);
 		me.Use();
 		long lSize = fAnyQueue.Append(anyElement);
-		fPutCount++;
+		++fPutCount;
 		// need to increment lSize because Append returns index of appended Anything
-		lSize++;
+		++lSize;
 		fMaxLoad = itoMAX( fMaxLoad, lSize );
 		bRet = true;
 		fSemaFullSlots.Release();
@@ -208,7 +208,7 @@ bool Queue::DoGet(Anything &anyElement)
 		if ( fAnyQueue.GetSize() ) {
 			anyElement = fAnyQueue.At(0L);
 			fAnyQueue.Remove(0L);
-			fGetCount++;
+			++fGetCount;
 			bRet = true;
 		} else {
 			SYSERROR("accessed empty Queue!?");
@@ -311,7 +311,7 @@ void Queue::GetStatistics(Anything &anyStatistics)
 		long lSecDiff(lCurSec - anyStatistics["CreateTime"]["sec"].AsLong());
 		long lUSecDiff(lCurUSec - anyStatistics["CreateTime"]["usec"].AsLong());
 		if ( lUSecDiff < 0L ) {
-			lSecDiff--;
+			--lSecDiff;
 			lUSecDiff += 1000000L;
 		}
 		anyStatistics["LifeTime"]["sec"] = lSecDiff;
