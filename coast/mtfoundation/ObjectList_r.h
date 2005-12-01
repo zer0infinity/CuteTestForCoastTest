@@ -36,41 +36,30 @@ public:
 		ObjectList<Tp>::fShutdown = true;
 		if ( ObjectList<Tp>::fDestructiveShutdown == false ) {
 			// let the workers empty the list and destruct its elements
-			while ( !ObjectList<Tp>::IntIsEmpty() ) {
+			while ( !ObjectList<Tp>::DoIsEmpty() ) {
 				fCondEmpty.Wait(fMutex);
 			}
 		}
 		// if the list was in destructive shutdown, let the baseclass remove and destruct the elements
 	}
 
-	virtual bool InsertTail(const typename std::list<Tp>::value_type &newObjPtr) {
-		StartTrace(ObjectList_r.InsertTail);
-		SimpleMutexEntry me(fMutex);
-		if ( !ObjectList<Tp>::IsShuttingDown() && ObjectList<Tp>::InsertTail(newObjPtr) ) {
-			fCondFull.BroadCast();
-			Trace("success");
-			return true;
-		}
-		Trace("failure");
-		return false;
-	}
-
+private:
 	/*! removes the head element of the list
 		\param aElement reference to a receiving element, depending on the type (pointer, element) an assignment operator of the element is required!
 		\param lSecs time in seconds after which the wait will be aborted, specify 0 for endless wait
 		\param lNanosecs time in nanoseconds (10e-9) after which the wait will be aborted, specify 0 for endless wait
 		\return true only when an element could be get, false in case the list was empty, we are in shutdown mode or a timeout occured */
-	virtual bool RemoveHead(typename std::list<Tp>::reference aElement, long lSecs = 0L, long lNanosecs = 0L) {
-		StartTrace(ObjectList_r.RemoveHead);
+	virtual bool DoRemoveHead(typename std::list<Tp>::reference aElement, long lSecs = 0L, long lNanosecs = 0L) {
+		StartTrace(ObjectList_r.DoRemoveHead);
 		SimpleMutexEntry me(fMutex);
 		// wait on new element
-		while ( !ObjectList<Tp>::IsShuttingDown() && ObjectList<Tp>::IntIsEmpty() ) {
+		while ( !ObjectList<Tp>::IsShuttingDown() && ObjectList<Tp>::DoIsEmpty() ) {
 			if ( fCondFull.TimedWait(fMutex, lSecs, lNanosecs) == TIMEOUTCODE ) {
 				Trace("premature exit because of a timeout and empty list");
 				return false;
 			}
 		}
-		if ( !ObjectList<Tp>::IsShuttingDown() && ObjectList<Tp>::RemoveHead(aElement) ) {
+		if ( !ObjectList<Tp>::IsShuttingDown() && ObjectList<Tp>::DoRemoveHead(aElement) ) {
 			fCondEmpty.Signal();
 			Trace("got an element");
 			return true;
@@ -79,38 +68,49 @@ public:
 		return false;
 	}
 
-	/*! returns the current number of elements in the list
-		/return number of elements */
-	virtual size_t GetSize() {
-		StartTrace(ObjectList_r.GetSize);
-		size_t tmpSz = 0;
-		{
-			SimpleMutexEntry me(fMutex);
-			tmpSz = ObjectList<Tp>::IntGetSize();
-		}
-		Trace("current size:" << (long)tmpSz);
-		return tmpSz;
-	}
-
 	/*! Method to be called to signal that we want to destroy the list. If the elements should still be consumed by the workers reading from the list false should be passed as argument. If a 'destructive' shutdown is wanted true should be passed.
 		\param bDestructive set to true if the list should not be emptied by the workers, otherways the call blocks until the list empty */
-	virtual void SignalShutdown(bool bDestructive = false) {
-		StartTrace1(ObjectList_r.SignalShutdown, (bDestructive ? "destructive" : ""));
+	virtual void DoSignalShutdown(bool bDestructive = false) {
+		StartTrace1(ObjectList_r.DoSignalShutdown, (bDestructive ? "destructive" : ""));
 		{
 			SimpleMutexEntry me(fMutex);
 			if ( bDestructive == false ) {
 				Trace("waiting on workerThreads to drain the list");
-				while ( !ObjectList<Tp>::IntIsEmpty() ) {
+				while ( !ObjectList<Tp>::DoIsEmpty() ) {
 					fCondEmpty.Wait(fMutex);
 				}
 			}
-			ObjectList<Tp>::SignalShutdown(bDestructive);
+			ObjectList<Tp>::DoSignalShutdown(bDestructive);
 		}
 		// wake up the workerThreads such that they recheck the shutdown flag
 		fCondFull.BroadCast();
 	}
 
-private:
+	/*! returns the current number of elements in the list
+		/return number of elements */
+	virtual size_t DoGetSize() const {
+		StartTrace(ObjectList_r.DoGetSize);
+		size_t tmpSz = 0;
+		{
+			SimpleMutexEntry me(const_cast<SimpleMutex &>(fMutex));
+			tmpSz = ObjectList<Tp>::DoGetSize();
+		}
+		Trace("current size:" << (long)tmpSz);
+		return tmpSz;
+	}
+
+	virtual bool DoInsertTail(const typename std::list<Tp>::value_type &newObjPtr) {
+		StartTrace(ObjectList_r.DoInsertTail);
+		SimpleMutexEntry me(fMutex);
+		if ( !ObjectList<Tp>::IsShuttingDown() && ObjectList<Tp>::DoInsertTail(newObjPtr) ) {
+			fCondFull.BroadCast();
+			Trace("success");
+			return true;
+		}
+		Trace("failure");
+		return false;
+	}
+
 	//!standard copy constructor prohibited
 	ObjectList_r(const ObjectList_r<Tp> &);
 	//!standard assignement operator prohibited
