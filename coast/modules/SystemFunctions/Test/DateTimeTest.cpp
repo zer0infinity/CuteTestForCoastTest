@@ -23,7 +23,7 @@
 
 //---- DateTimeTest ----------------------------------------------------------------
 DateTimeTest::DateTimeTest(TString tstrName)
-	: ConfiguredTestCase(name, "DateTimeTestConfig")
+	: ConfiguredTestCase(tstrName, "DateTimeTestConfig")
 {
 	StartTrace(DateTimeTest.Ctor);
 }
