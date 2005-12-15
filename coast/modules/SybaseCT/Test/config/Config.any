@@ -37,21 +37,21 @@
 	/SybaseModule {
 		/SybCTDAImpl {
 			/ParallelQueries		20
-			/InterfacesPathName		"config/interfaces"
+			/InterfacesPathName		"config/interfaces.any"
 		}
 		/SybCTnewDAImpl {
 			/ParallelQueries		1
 			/CloseConnectionTimeout	60
-			/InterfacesPathName		"config/interfaces"
+			/InterfacesPathName		"config/interfaces.any"
 		}
 		/SybCTPoolDAImpl {
 			/HIKU_INT2 {
 				/ParallelQueries	5
-				/InterfacesPathName	"config/interfaces"
+				/InterfacesPathName	"config/interfaces.any"
 			}
 			/FKIS_QA {
 				/ParallelQueries	20
-				/InterfacesPathName	"config/interfaces"
+				/InterfacesPathName	"config/interfaces.any"
 			}
 		}
 	}
@@ -315,7 +315,7 @@
 			/SybCTnewDAImpl {
 				/ParallelQueries		10
 				/CloseConnectionTimeout	60
-				/InterfacesPathName		"config/interfaces"
+				/InterfacesPathName		"config/interfaces.any"
 			}
 		}
 	}
