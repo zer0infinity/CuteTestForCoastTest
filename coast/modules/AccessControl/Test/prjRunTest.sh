@@ -28,4 +28,5 @@ function callTest
 function cleanupTest
 {
 	echo
+	rm -f FileTestActerDB.any FileTestRightsDB.any FileTestUserDB.any 2>/dev/null
 }
