@@ -35,12 +35,15 @@ SybCTnewDATest::~SybCTnewDATest()
 void SybCTnewDATest::setUp ()
 {
 	StartTrace(SybCTnewDATest.setUp);
-} // setUp
+	if ( t_assertm( System::LoadConfigFile(fConfig, getClassName(), "any"), TString("expected ") << getClassName() << " to be readable!" ) ) {
+		fTestCaseConfig = fConfig[name()];
+	}
+}
 
 void SybCTnewDATest::tearDown ()
 {
 	StartTrace(SybCTnewDATest.tearDown);
-} // tearDown
+}
 
 void SybCTnewDATest::InitOpenSetConPropTest()
 {
@@ -51,42 +54,44 @@ void SybCTnewDATest::InitOpenSetConPropTest()
 		StartTrace(SybCTnewDATest.InitOpenSetConPropTest);
 		StartTraceMem(SybCTnewDATest.InitOpenSetConPropTest);
 		Anything anyCtxMessages(Storage::Global());
-		String strInterfacesFileName("config/interfaces");
-		CS_CONTEXT *context;
-		Context ctx;
-		ParameterMapper aParamMapper("aParamMapper");
-		ResultMapper aResultMapper("aResultMapper");
-		String strDAName(name());
-		// create context
-		if (t_assertm(SybCTnewDA::Init(&context, &anyCtxMessages, strInterfacesFileName, 5) == CS_SUCCEED, "Context should have been created")) {
-			SybCTnewDA sybct(context);
-			SybCTnewDA::DaParams myParams(&ctx, &aParamMapper, &aResultMapper, &strDAName);
-			if (t_assertm(sybct.Open( myParams, "wdtester", "all2test", "HIKU_INT2", "SimpleQueryTest"), "dbOpen should have succeeded")) {
-				SybCTnewDA::DaParams outParams;
-				if ( t_assertm(sybct.GetConProps(CS_USERDATA, (CS_VOID **)&outParams, CS_SIZEOF(SybCTnewDA::DaParams)) == CS_SUCCEED, "expected setting of properties to succeed") ) {
-					assertEqual((long)myParams.fpContext, (long)outParams.fpContext);
-					assertEqual((long)myParams.fpIn, (long)outParams.fpIn);
-					assertEqual((long)myParams.fpOut, (long)outParams.fpOut);
-				}
-				myParams.fpContext = (Context *)12345;
-				myParams.fpIn = (ParameterMapper *)7777;
-				myParams.fpOut = (ResultMapper *)9999;
-				if ( t_assertm(sybct.SetConProps(CS_USERDATA, (CS_VOID *)&myParams, CS_SIZEOF(SybCTnewDA::DaParams)) == CS_SUCCEED, "expected setting of properties to succeed") ) {
+		String strInterfacesFileName = fConfig["InterfacesFile"].AsString();
+		if ( t_assertm(strInterfacesFileName.Length(), "expected non-empty interfaces filename") ) {
+			CS_CONTEXT *context;
+			Context ctx;
+			ParameterMapper aParamMapper("aParamMapper");
+			ResultMapper aResultMapper("aResultMapper");
+			String strDAName(name());
+			// create context
+			if (t_assertm(SybCTnewDA::Init(&context, &anyCtxMessages, strInterfacesFileName, 5) == CS_SUCCEED, "Context should have been created")) {
+				SybCTnewDA sybct(context);
+				SybCTnewDA::DaParams myParams(&ctx, &aParamMapper, &aResultMapper, &strDAName);
+				if (t_assertm(sybct.Open( myParams, "wdtester", "all2test", "HIKU_INT2", "SimpleQueryTest"), "dbOpen should have succeeded")) {
+					SybCTnewDA::DaParams outParams;
 					if ( t_assertm(sybct.GetConProps(CS_USERDATA, (CS_VOID **)&outParams, CS_SIZEOF(SybCTnewDA::DaParams)) == CS_SUCCEED, "expected setting of properties to succeed") ) {
-						assertEqual(12345, (long)outParams.fpContext);
-						assertEqual(7777, (long)outParams.fpIn);
-						assertEqual(9999, (long)outParams.fpOut);
+						assertEqual((long)myParams.fpContext, (long)outParams.fpContext);
+						assertEqual((long)myParams.fpIn, (long)outParams.fpIn);
+						assertEqual((long)myParams.fpOut, (long)outParams.fpOut);
 					}
+					myParams.fpContext = (Context *)12345;
+					myParams.fpIn = (ParameterMapper *)7777;
+					myParams.fpOut = (ResultMapper *)9999;
+					if ( t_assertm(sybct.SetConProps(CS_USERDATA, (CS_VOID *)&myParams, CS_SIZEOF(SybCTnewDA::DaParams)) == CS_SUCCEED, "expected setting of properties to succeed") ) {
+						if ( t_assertm(sybct.GetConProps(CS_USERDATA, (CS_VOID **)&outParams, CS_SIZEOF(SybCTnewDA::DaParams)) == CS_SUCCEED, "expected setting of properties to succeed") ) {
+							assertEqual(12345, (long)outParams.fpContext);
+							assertEqual(7777, (long)outParams.fpIn);
+							assertEqual(9999, (long)outParams.fpOut);
+						}
+					}
+					TraceAny(ctx.GetTmpStore(), "TempStore");
+					sybct.Close();
 				}
-				TraceAny(ctx.GetTmpStore(), "TempStore");
-				sybct.Close();
-			}
-			sybct.Finis(context);
-			TraceAny(anyCtxMessages, "Messages");
-			// trace messages which occurred without a connection
-			while (anyCtxMessages.GetSize()) {
-				SysLog::Warning(String() << anyCtxMessages[0L].AsCharPtr() << "\n");
-				anyCtxMessages.Remove(0L);
+				sybct.Finis(context);
+				TraceAny(anyCtxMessages, "Messages");
+				// trace messages which occurred without a connection
+				while (anyCtxMessages.GetSize()) {
+					SysLog::Warning(String() << anyCtxMessages[0L].AsCharPtr() << "\n");
+					anyCtxMessages.Remove(0L);
+				}
 			}
 		}
 	}
@@ -104,35 +109,37 @@ void SybCTnewDATest::SimpleQueryTest()
 		StartTrace(SybCTnewDATest.SimpleQueryTest);
 		StartTraceMem(SybCTnewDATest.SimpleQueryTest);
 		Anything anyCtxMessages(Storage::Global());
-		String strInterfacesFileName("config/interfaces");
-		CS_CONTEXT *context;
-		// create context
-		Context ctx;
-		ParameterMapper aParamMapper("NewDAInpuMapper");
-		aParamMapper.CheckConfig("ParameterMapper");
-		ResultMapper aResultMapper("SybCTnewDAImpl");
-		aResultMapper.CheckConfig("ResultMapper");
-		String strDAName(name());
-		// create context
-		if (t_assertm(SybCTnewDA::Init(&context, &anyCtxMessages, strInterfacesFileName, 5) == CS_SUCCEED, "Context should have been created")) {
-			SybCTnewDA sybct(context);
-			SybCTnewDA::DaParams myParams(&ctx, &aParamMapper, &aResultMapper, &strDAName);
-			if (t_assertm(sybct.Open( myParams, "wdtester", "all2test", "HIKU_INT2", "SimpleQueryTest"), "dbOpen should have succeeded")) {
-				if (t_assert(sybct.SqlExec(myParams, "use pub2"))) {
-					if ( t_assert(sybct.SqlExec(myParams, "select * from authors") ) ) {
-						TraceAny(ctx.GetTmpStore()["TestOutput"], "TestOutput");
-						assertEqual(23, ctx.GetTmpStore()["TestOutput"]["QueryCount"].AsLong(-1));
+		String strInterfacesFileName = fConfig["InterfacesFile"].AsString();
+		if ( t_assertm(strInterfacesFileName.Length(), "expected non-empty interfaces filename") ) {
+			CS_CONTEXT *context;
+			// create context
+			Context ctx;
+			ParameterMapper aParamMapper("NewDAInpuMapper");
+			aParamMapper.CheckConfig("ParameterMapper");
+			ResultMapper aResultMapper("SybCTnewDAImpl");
+			aResultMapper.CheckConfig("ResultMapper");
+			String strDAName(name());
+			// create context
+			if (t_assertm(SybCTnewDA::Init(&context, &anyCtxMessages, strInterfacesFileName, 5) == CS_SUCCEED, "Context should have been created")) {
+				SybCTnewDA sybct(context);
+				SybCTnewDA::DaParams myParams(&ctx, &aParamMapper, &aResultMapper, &strDAName);
+				if (t_assertm(sybct.Open( myParams, "wdtester", "all2test", "HIKU_INT2", "SimpleQueryTest"), "dbOpen should have succeeded")) {
+					if (t_assert(sybct.SqlExec(myParams, "use pub2"))) {
+						if ( t_assert(sybct.SqlExec(myParams, "select * from authors") ) ) {
+							TraceAny(ctx.GetTmpStore()["TestOutput"], "TestOutput");
+							assertEqual(23, ctx.GetTmpStore()["TestOutput"]["QueryCount"].AsLong(-1));
+						}
 					}
+					TraceAny(ctx.GetTmpStore(), "TempStore");
+					sybct.Close();
 				}
-				TraceAny(ctx.GetTmpStore(), "TempStore");
-				sybct.Close();
-			}
-			sybct.Finis(context);
-			TraceAny(anyCtxMessages, "Messages");
-			// trace messages which occurred without a connection
-			while (anyCtxMessages.GetSize()) {
-				SysLog::Warning(String() << anyCtxMessages[0L].AsCharPtr() << "\n");
-				anyCtxMessages.Remove(0L);
+				sybct.Finis(context);
+				TraceAny(anyCtxMessages, "Messages");
+				// trace messages which occurred without a connection
+				while (anyCtxMessages.GetSize()) {
+					SysLog::Warning(String() << anyCtxMessages[0L].AsCharPtr() << "\n");
+					anyCtxMessages.Remove(0L);
+				}
 			}
 		}
 	}
@@ -150,36 +157,38 @@ void SybCTnewDATest::LimitedMemoryTest()
 		StartTrace(SybCTnewDATest.LimitedMemoryTest);
 		StartTraceMem(SybCTnewDATest.LimitedMemoryTest);
 		Anything anyCtxMessages(Storage::Global());
-		String strInterfacesFileName("config/interfaces");
-		CS_CONTEXT *context;
-		// create context
-		Context ctx;
-		ParameterMapper aParamMapper("NewDAInpuMapper");
-		aParamMapper.CheckConfig("ParameterMapper");
-		ResultMapper aResultMapper("SybCTnewDAImpl");
-		aResultMapper.CheckConfig("ResultMapper");
-		String strDAName(name());
-		// create context
-		if (t_assertm(SybCTnewDA::Init(&context, &anyCtxMessages, strInterfacesFileName, 5) == CS_SUCCEED, "Context should have been created")) {
-			SybCTnewDA sybct(context);
-			SybCTnewDA::DaParams myParams(&ctx, &aParamMapper, &aResultMapper, &strDAName);
-			if (t_assertm(sybct.Open( myParams, "wdtester", "all2test", "HIKU_INT2", "SimpleQueryTest"), "dbOpen should have succeeded")) {
-				if ( t_assert(sybct.SqlExec(myParams, "use pub2")) ) {
-					// we must get a failure here because of the memory limit
-					if ( t_assert(sybct.SqlExec(myParams, "select * from authors", "TitlesAlways", 4L) == false) ) {
-						TraceAny(ctx.GetTmpStore()["TestOutput"], "TestOutput");
-						assertEqual(11, ctx.GetTmpStore()["TestOutput"]["QueryCount"].AsLong(-1));
+		String strInterfacesFileName = fConfig["InterfacesFile"].AsString();
+		if ( t_assertm(strInterfacesFileName.Length(), "expected non-empty interfaces filename") ) {
+			CS_CONTEXT *context;
+			// create context
+			Context ctx;
+			ParameterMapper aParamMapper("NewDAInpuMapper");
+			aParamMapper.CheckConfig("ParameterMapper");
+			ResultMapper aResultMapper("SybCTnewDAImpl");
+			aResultMapper.CheckConfig("ResultMapper");
+			String strDAName(name());
+			// create context
+			if (t_assertm(SybCTnewDA::Init(&context, &anyCtxMessages, strInterfacesFileName, 5) == CS_SUCCEED, "Context should have been created")) {
+				SybCTnewDA sybct(context);
+				SybCTnewDA::DaParams myParams(&ctx, &aParamMapper, &aResultMapper, &strDAName);
+				if (t_assertm(sybct.Open( myParams, "wdtester", "all2test", "HIKU_INT2", "SimpleQueryTest"), "dbOpen should have succeeded")) {
+					if ( t_assert(sybct.SqlExec(myParams, "use pub2")) ) {
+						// we must get a failure here because of the memory limit
+						if ( t_assert(sybct.SqlExec(myParams, "select * from authors", "TitlesAlways", 4L) == false) ) {
+							TraceAny(ctx.GetTmpStore()["TestOutput"], "TestOutput");
+							assertEqual(11, ctx.GetTmpStore()["TestOutput"]["QueryCount"].AsLong(-1));
+						}
 					}
+					TraceAny(ctx.GetTmpStore(), "TempStore");
+					sybct.Close();
 				}
-				TraceAny(ctx.GetTmpStore(), "TempStore");
-				sybct.Close();
-			}
-			sybct.Finis(context);
-			TraceAny(anyCtxMessages, "Messages");
-			// trace messages which occurred without a connection
-			while (anyCtxMessages.GetSize()) {
-				SysLog::Warning(String() << anyCtxMessages[0L].AsCharPtr() << "\n");
-				anyCtxMessages.Remove(0L);
+				sybct.Finis(context);
+				TraceAny(anyCtxMessages, "Messages");
+				// trace messages which occurred without a connection
+				while (anyCtxMessages.GetSize()) {
+					SysLog::Warning(String() << anyCtxMessages[0L].AsCharPtr() << "\n");
+					anyCtxMessages.Remove(0L);
+				}
 			}
 		}
 	}

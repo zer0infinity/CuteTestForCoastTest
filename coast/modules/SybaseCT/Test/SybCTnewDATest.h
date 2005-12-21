@@ -11,11 +11,14 @@
 
 //---- baseclass include -------------------------------------------------
 #include "TestCase.h"
+#include "Anything.h"
 
 //---- SybCTnewDATest ----------------------------------------------------------
 //:TestCases description
 class SybCTnewDATest : public TestCase
 {
+	Anything fConfig;
+	ROAnything fTestCaseConfig;
 public:
 	//--- constructors
 
