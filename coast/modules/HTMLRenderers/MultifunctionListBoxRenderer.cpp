@@ -705,10 +705,10 @@ void MultifunctionListBoxRenderer::RenderAdditionalFilters(ostream &reply, Conte
 	}
 }
 
-void MultifunctionListBoxRenderer::RenderPrintButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config)
+bool MultifunctionListBoxRenderer::RenderPrintButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config)
 {
 	StartTrace(MultifunctionListBoxRenderer.RenderPrintButton);
-
+	bool bRet = false;
 	String strBoxName, strButtonName, strOnClick, strFormName;
 
 	MultifunctionListBoxRenderer::GetBoxName(strBoxName, c);
@@ -716,41 +716,40 @@ void MultifunctionListBoxRenderer::RenderPrintButton(ostream &reply, Context &c,
 	strButtonName << strBoxName << "_Print";
 	strOnClick << strBoxName << "_DoPrintNow(this.form);";
 
-	ROAnything roDoNotCreateButton = navConfig["HidePrintButton"];
-	if (roDoNotCreateButton.IsNull()) {
-		ROAnything roButton = navConfig["PrintButton"];
-		if (!roButton.IsNull()) {
-			Renderer *pRenderer = Renderer::FindRenderer("ButtonRenderer");
-			if (pRenderer) {
-				Anything buttonConfig;
-				reply << "<td align=center>";
-				buttonConfig["Name"] = strButtonName;
-				buttonConfig["Label"] = "Drucken";
-				if (roButton.IsDefined("Label")) {
-					// override default
-					buttonConfig["Label"] = roButton["Label"].DeepClone();
-				}
-				if (roButton.IsDefined("Options")) {
-					// override default
-					buttonConfig["Options"] = roButton["Options"].DeepClone();
-				} else {
-					buttonConfig["Options"]["OnClick"] = strOnClick << "return false;";
-
-				}
-				buttonConfig["Options"]["class"] = "FormButton";
-				pRenderer->RenderAll(reply, c, buttonConfig);
-				reply << "</td>\n";
+	ROAnything roButton = navConfig["PrintButton"];
+	if (!roButton.IsNull()) {
+		Renderer *pRenderer = Renderer::FindRenderer("ButtonRenderer");
+		if (pRenderer) {
+			Anything buttonConfig;
+			reply << "<td align=center>";
+			buttonConfig["Name"] = strButtonName;
+			buttonConfig["Label"] = "Drucken";
+			if (roButton.IsDefined("Label")) {
+				// override default
+				buttonConfig["Label"] = roButton["Label"].DeepClone();
 			}
-		} else {
-			c.GetTmpStore()[String("JS_") << strButtonName] = strOnClick;
+			if (roButton.IsDefined("Options")) {
+				// override default
+				buttonConfig["Options"] = roButton["Options"].DeepClone();
+			} else {
+				buttonConfig["Options"]["OnClick"] = strOnClick << "return false;";
+
+			}
+			buttonConfig["Options"]["class"] = "FormButton";
+			pRenderer->RenderAll(reply, c, buttonConfig);
+			reply << "</td>\n";
+			bRet = true;
 		}
+	} else {
+		c.GetTmpStore()[String("JS_") << strButtonName] = strOnClick;
 	}
+	return bRet;
 }
 
-void MultifunctionListBoxRenderer::RenderExportButton(ostream &reply, Context &ctx, const ROAnything &navConfig, const ROAnything &config)
+bool MultifunctionListBoxRenderer::RenderExportButton(ostream &reply, Context &ctx, const ROAnything &navConfig, const ROAnything &config)
 {
 	StartTrace(MultifunctionListBoxRenderer.RenderExportButton);
-
+	bool bRet = false;
 	String strBoxName, strButtonName, strOnClick, strFormName;
 
 	TraceAny(config, "config");
@@ -817,15 +816,18 @@ void MultifunctionListBoxRenderer::RenderExportButton(ostream &reply, Context &c
 			pRenderer->RenderAll(reply, ctx, buttonConfig);
 			reply << strEndParagraphTag;
 			reply << "</td>\n";
+			bRet = true;
 		}
 	} else {
 		ctx.GetTmpStore()[String("JS_") << strButtonName] = strOnClick;
 	}
+	return bRet;
 }
 
-void MultifunctionListBoxRenderer::RenderPrevButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config)
+bool MultifunctionListBoxRenderer::RenderPrevButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config)
 {
 	StartTrace(MultifunctionListBoxRenderer.RenderPrevButton);
+	bool bRet = false;
 	String strBoxName, strButtonName;
 	MultifunctionListBoxRenderer::GetBoxName(strBoxName, c);
 	strButtonName << strBoxName << "_Prev";
@@ -844,13 +846,16 @@ void MultifunctionListBoxRenderer::RenderPrevButton(ostream &reply, Context &c, 
 			buttonConfig["Options"]["class"] = "FormButton";
 			pRenderer->RenderAll(reply, c, buttonConfig);
 			reply << "</td>\n";
+			bRet = true;
 		}
 	}
+	return bRet;
 }
 
-void MultifunctionListBoxRenderer::RenderNextButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config)
+bool MultifunctionListBoxRenderer::RenderNextButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config)
 {
 	StartTrace(MultifunctionListBoxRenderer.RenderNextButton);
+	bool bRet = false;
 	String strBoxName, strButtonName;
 	MultifunctionListBoxRenderer::GetBoxName(strBoxName, c);
 	strButtonName << strBoxName << "_Next";
@@ -868,13 +873,16 @@ void MultifunctionListBoxRenderer::RenderNextButton(ostream &reply, Context &c, 
 			}
 			pRenderer->RenderAll(reply, c, buttonConfig);
 			reply << "</td>\n";
+			bRet = true;
 		}
 	}
+	return bRet;
 }
 
-void MultifunctionListBoxRenderer::RenderSearchButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config)
+bool MultifunctionListBoxRenderer::RenderSearchButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config)
 {
 	StartTrace(MultifunctionListBoxRenderer.RenderSearchButton);
+	bool bRet = false;
 	String strBoxName, strButtonName, strOnClick, strFormName;
 	MultifunctionListBoxRenderer::GetBoxName(strBoxName, c);
 	MultifunctionListBoxRenderer::GetFormName(strFormName, c);
@@ -896,15 +904,18 @@ void MultifunctionListBoxRenderer::RenderSearchButton(ostream &reply, Context &c
 			buttonConfig["Options"]["class"] = "FormButton";
 			pRenderer->RenderAll(reply, c, buttonConfig);
 			reply << "</td>\n";
+			bRet = true;
 		}
 	} else {
 		c.GetTmpStore()[String("JS_") << strButtonName] = strOnClick;
 	}
+	return bRet;
 }
 
-void MultifunctionListBoxRenderer::RenderClearButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config)
+bool MultifunctionListBoxRenderer::RenderClearButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config)
 {
 	StartTrace(MultifunctionListBoxRenderer.RenderClearButton);
+	bool bRet = false;
 	String strBoxName, strButtonName, strOnClick, strFormName;
 	MultifunctionListBoxRenderer::GetBoxName(strBoxName, c);
 	MultifunctionListBoxRenderer::GetFormName(strFormName, c);
@@ -926,16 +937,18 @@ void MultifunctionListBoxRenderer::RenderClearButton(ostream &reply, Context &c,
 			buttonConfig["Options"]["class"] = "FormButton";
 			pRenderer->RenderAll(reply, c, buttonConfig);
 			reply << "</td>\n";
+			bRet = true;
 		}
 	} else {
 		c.GetTmpStore()[String("JS_") << strButtonName] = strOnClick;
 	}
+	return bRet;
 }
 
-void MultifunctionListBoxRenderer::RenderSaveButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config)
+bool MultifunctionListBoxRenderer::RenderSaveButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config)
 {
 	StartTrace(MultifunctionListBoxRenderer.RenderSaveButton);
-
+	bool bRet = false;
 	String strBoxName, strButtonName, strFormName;
 	MultifunctionListBoxRenderer::GetBoxName(strBoxName, c);
 	MultifunctionListBoxRenderer::GetFormName(strFormName, c);
@@ -951,7 +964,7 @@ void MultifunctionListBoxRenderer::RenderSaveButton(ostream &reply, Context &c, 
 	String strProps = strBoxName, strFormPath;
 	strProps << "Properties";
 
-	String strFunction, strOnClick;
+	String strFunction(1024L), strOnClick;
 	StringStream saveFunction(strFunction);
 
 	if (bDoButton) {
@@ -1011,20 +1024,22 @@ void MultifunctionListBoxRenderer::RenderSaveButton(ostream &reply, Context &c, 
 			buttonConfig["Options"]["OnClick"] = strOnClick;
 			buttonConfig["Options"]["class"] = "FormButton";
 			pRenderer->RenderAll(reply, c, buttonConfig);
-			reply << "</td>\n";
 			reply << strFunction;
+			reply << "</td>\n";
+			bRet = true;
 		}
 	} else {
 		reply << strFunction;
 		strOnClick << strBoxName << "_SaveButtonClicked(this);";
 		c.GetTmpStore()[String("JS_") << strButtonName] = strOnClick;
 	}
+	return bRet;
 }
 
-void MultifunctionListBoxRenderer::RenderResetButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config)
+bool MultifunctionListBoxRenderer::RenderResetButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config)
 {
 	StartTrace(MultifunctionListBoxRenderer.RenderResetButton);
-
+	bool bRet = false;
 	String strBoxName, strButtonName, strFormName;
 	MultifunctionListBoxRenderer::GetBoxName(strBoxName, c);
 	MultifunctionListBoxRenderer::GetFormName(strFormName, c);
@@ -1057,16 +1072,18 @@ void MultifunctionListBoxRenderer::RenderResetButton(ostream &reply, Context &c,
 			buttonConfig["Options"]["class"] = "FormButton";
 			pRenderer->RenderAll(reply, c, buttonConfig);
 			reply << "</td>\n";
+			bRet = true;
 		}
 	} else {
 		c.GetTmpStore()[String("JS_") << strButtonName] = strOnClick;
 	}
+	return bRet;
 }
 
-void MultifunctionListBoxRenderer::RenderAddButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config)
+bool MultifunctionListBoxRenderer::RenderAddButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config)
 {
 	StartTrace(MultifunctionListBoxRenderer.RenderAddButton);
-
+	bool bRet = false;
 	String strBoxName, strButtonName, strFormName;
 	MultifunctionListBoxRenderer::GetBoxName(strBoxName, c);
 	MultifunctionListBoxRenderer::GetFormName(strFormName, c);
@@ -1081,7 +1098,7 @@ void MultifunctionListBoxRenderer::RenderAddButton(ostream &reply, Context &c, c
 	String strProps = strBoxName, strFormPath;
 	strProps << "Properties";
 
-	String strFunction, strOnClick, strSpecifiedOnClick;
+	String strFunction(1024L), strOnClick, strSpecifiedOnClick;
 	StringStream addFunction(strFunction);
 
 	if (bDoButton) { // if rendering this button is needed
@@ -1148,20 +1165,22 @@ void MultifunctionListBoxRenderer::RenderAddButton(ostream &reply, Context &c, c
 			buttonConfig["Options"]["OnClick"] = strOnClick;
 			buttonConfig["Options"]["class"] = "FormButton";
 			pRenderer->RenderAll(reply, c, buttonConfig);
-			reply << "</td>\n";
 			reply << strFunction;
+			reply << "</td>\n";
+			bRet = true;
 		}
 	} else {
 		reply << strFunction;
 		strOnClick << "return " << strBoxName << "_AddButtonClicked(this);";
 		c.GetTmpStore()[String("JS_") << strButtonName] = strOnClick;
 	}
+	return bRet;
 }
 
-void MultifunctionListBoxRenderer::RenderDeleteButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config)
+bool MultifunctionListBoxRenderer::RenderDeleteButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config)
 {
 	StartTrace(MultifunctionListBoxRenderer.RenderDeleteButton);
-
+	bool bRet = false;
 	String strBoxName, strButtonName;
 	MultifunctionListBoxRenderer::GetBoxName(strBoxName, c);
 	strButtonName << strBoxName << "_Delete";
@@ -1179,7 +1198,7 @@ void MultifunctionListBoxRenderer::RenderDeleteButton(ostream &reply, Context &c
 	String strFormName, strFormPath;
 	MultifunctionListBoxRenderer::GetFormName(strFormName, c);
 
-	String strFunction, strOnClick;
+	String strFunction(1024L), strOnClick;
 	StringStream deleteFunction(strFunction);
 
 	if (bDoButton) {
@@ -1242,14 +1261,16 @@ void MultifunctionListBoxRenderer::RenderDeleteButton(ostream &reply, Context &c
 			buttonConfig["Options"]["OnClick"] = strOnClick;
 			buttonConfig["Options"]["class"] = "FormButton";
 			pRenderer->RenderAll(reply, c, buttonConfig);
-			reply << "</td>\n";
 			reply << strFunction;
+			reply << "</td>\n";
+			bRet = true;
 		}
 	} else {
 		reply << strFunction;
 		strOnClick << strBoxName << "_DeleteButtonClicked(this);";
 		c.GetTmpStore()[String("JS_") << strButtonName] = strOnClick;
 	}
+	return bRet;
 }
 
 void MultifunctionListBoxRenderer::RenderStatusMessage(ostream &reply, Context &c, const ROAnything &config, const long &nColumns)
@@ -1273,88 +1294,89 @@ void MultifunctionListBoxRenderer::RenderNavigation(ostream &reply, Context &c, 
 	bool bHasNavigation = (config.LookupPath(navigationConfig, "Navigation"));
 
 	if (bHasNavigation || bBoxEditable) {
-		reply << "<table border=" << navigationConfig["BorderWidth"].AsLong(0L);
-		ROAnything roBgColor;
-		String strBgColor;
-		if (navigationConfig.LookupPath(roBgColor, "BgColor")) {
-			strBgColor << " bgcolor='";
-			RenderOnString(strBgColor, c, roBgColor);
-			strBgColor << "'";
-		}
-		reply << strBgColor;
-		reply << " cellpadding=0 cellspacing=1><tr>\n";
-
+		// take order of buttons according to definition in config
+		String strButtonName;
+		Anything anyAllButtonNames;
+		long lIdx = -1;
+		anyAllButtonNames[++lIdx] = "PrevButton";
+		anyAllButtonNames[++lIdx] = "NextButton";
+		anyAllButtonNames[++lIdx] = "SearchButton";
+		anyAllButtonNames[++lIdx] = "ClearButton";
+		anyAllButtonNames[++lIdx] = "PrintButton";
+		anyAllButtonNames[++lIdx] = "SaveButton";
+		anyAllButtonNames[++lIdx] = "ResetButton";
+		anyAllButtonNames[++lIdx] = "AddButton";
+		anyAllButtonNames[++lIdx] = "DeleteButton";
+		anyAllButtonNames[++lIdx] = "ExportButton";
+		TraceAny(navigationConfig, "navigationConfig");
+		// render buttons specified in config
+		bool bHasButtonsRendered = false;
+		String strButtonBuffer(1024L), strScriptBuffer(1024L);
 		{
-			// take order of buttons according to definition in config
-			String strButtonName;
-			Anything anyAllButtonNames;
-			long lIdx = -1;
-			anyAllButtonNames[++lIdx] = "PrevButton";
-			anyAllButtonNames[++lIdx] = "NextButton";
-			anyAllButtonNames[++lIdx] = "SearchButton";
-			anyAllButtonNames[++lIdx] = "ClearButton";
-			anyAllButtonNames[++lIdx] = "PrintButton";
-			anyAllButtonNames[++lIdx] = "SaveButton";
-			anyAllButtonNames[++lIdx] = "ResetButton";
-			anyAllButtonNames[++lIdx] = "AddButton";
-			anyAllButtonNames[++lIdx] = "DeleteButton";
-			anyAllButtonNames[++lIdx] = "ExportButton";
-			TraceAny(navigationConfig, "navigationConfig");
-			// render buttons specified in config
+			OStringStream streamOut(strButtonBuffer);
 			for (long szButtons = 0, szb = navigationConfig.GetSize(); szButtons < szb; ++szButtons) {
 				strButtonName = navigationConfig.SlotName(szButtons);
 				Trace("rendering specified button [" << strButtonName << "]");
-				DoRenderButton(reply, c, navigationConfig, config, strButtonName);
+				bHasButtonsRendered = ( DoRenderButton(streamOut, c, navigationConfig, config, strButtonName) || bHasButtonsRendered );
 				if ((lIdx = anyAllButtonNames.FindValue(strButtonName)) >= 0L) {
 					anyAllButtonNames.Remove(lIdx);
 				}
 			}
-			TraceAny(anyAllButtonNames, "unused Buttons");
-			// render other 'buttons', eg at least the scripts into TmpStore
+		}
+		Trace("ButtonsRendered:" << (bHasButtonsRendered ? "yes" : "no") << " length of temporary stream buffer:" << strButtonBuffer.Length());
+		TraceAny(anyAllButtonNames, "unused Buttons");
+		{
+			OStringStream streamOut(strScriptBuffer);
 			while (anyAllButtonNames.GetSize() > 0) {
-				Trace("rendering scripts of button [" << anyAllButtonNames[0L].AsString() << "]");
-				DoRenderButton(reply, c, navigationConfig, config, anyAllButtonNames[0L].AsString());
+				Trace("force creation of replacement script for unrendered button [" << anyAllButtonNames[0L].AsString() << "]");
+				DoRenderButton(streamOut, c, navigationConfig, config, anyAllButtonNames[0L].AsString());
 				anyAllButtonNames.Remove(0L);
 			}
 		}
-		reply << "</tr>\n</table>\n";
+		Trace("content of stream [" << strScriptBuffer << "]");
+		if ( bHasButtonsRendered ) {
+			reply << "<table border=" << navigationConfig["BorderWidth"].AsLong(0L);
+			ROAnything roBgColor;
+			if (navigationConfig.LookupPath(roBgColor, "BgColor")) {
+				reply << " bgcolor='";
+				Render(reply, c, roBgColor);
+				reply << "'";
+			}
+			reply << " cellpadding=0 cellspacing=1><tr>\n";
+			// strBuffer should contain at least one <td>...</td>
+			reply << strButtonBuffer;
+			reply << "</tr>\n</table>\n";
+		}
+		reply << strScriptBuffer;
 	}
 }
 
-void MultifunctionListBoxRenderer::DoRenderButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config, const String &strButtonName)
+bool MultifunctionListBoxRenderer::DoRenderButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config, const String &strButtonName)
 {
 	StartTrace(MultifunctionListBoxRenderer.DoRenderButton);
+	bool bRet = false;
 	if (strButtonName == "PrevButton") {
-		RenderPrevButton(reply, c, navConfig, config);
+		bRet = RenderPrevButton(reply, c, navConfig, config);
+	} else if (strButtonName == "NextButton") {
+		bRet = RenderNextButton(reply, c, navConfig, config);
+	} else if (strButtonName == "SearchButton") {
+		bRet = RenderSearchButton(reply, c, navConfig, config);
+	} else if (strButtonName == "ClearButton") {
+		bRet = RenderClearButton(reply, c, navConfig, config);
+	} else if (strButtonName == "PrintButton") {
+		bRet = RenderPrintButton(reply, c, navConfig, config);
+	} else if (strButtonName == "SaveButton") {
+		bRet = RenderSaveButton(reply, c, navConfig, config);
+	} else if (strButtonName == "ResetButton") {
+		bRet = RenderResetButton(reply, c, navConfig, config);
+	} else if (strButtonName == "AddButton") {
+		bRet = RenderAddButton(reply, c, navConfig, config);
+	} else if (strButtonName == "DeleteButton") {
+		bRet = RenderDeleteButton(reply, c, navConfig, config);
+	} else if (strButtonName == "ExportButton") {
+		bRet = RenderExportButton(reply, c, navConfig, config);
 	}
-	if (strButtonName == "NextButton") {
-		RenderNextButton(reply, c, navConfig, config);
-	}
-	if (strButtonName == "SearchButton") {
-		RenderSearchButton(reply, c, navConfig, config);
-	}
-	if (strButtonName == "ClearButton") {
-		RenderClearButton(reply, c, navConfig, config);
-	}
-	if (strButtonName == "PrintButton") {
-		RenderPrintButton(reply, c, navConfig, config);
-	}
-
-	if (strButtonName == "SaveButton") {
-		RenderSaveButton(reply, c, navConfig, config);
-	}
-	if (strButtonName == "ResetButton") {
-		RenderResetButton(reply, c, navConfig, config);
-	}
-	if (strButtonName == "AddButton") {
-		RenderAddButton(reply, c, navConfig, config);
-	}
-	if (strButtonName == "DeleteButton") {
-		RenderDeleteButton(reply, c, navConfig, config);
-	}
-	if (strButtonName == "ExportButton") {
-		RenderExportButton(reply, c, navConfig, config);
-	}
+	return bRet;
 }
 
 void MultifunctionListBoxRenderer::RenderScripts(ostream &reply, Context &c, const ROAnything &config)

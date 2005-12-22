@@ -197,23 +197,23 @@ private:
 	void RenderAdditionalFilters(ostream &reply, Context &c, const ROAnything &config, const long &nColumns);
 	void RenderStatusMessage(ostream &reply, Context &c, const ROAnything &config, const long &nColumns);
 	void RenderNavigation(ostream &reply, Context &c, const ROAnything &config);
-	void DoRenderButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config, const String &strButtonName);
+	bool DoRenderButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config, const String &strButtonName);
 	void RenderScripts(ostream &reply, Context &c, const ROAnything &config);
 	void RenderPrintScripts(ostream &reply, Context &c, const ROAnything &config);
 	void RenderHiddenFieldsForEdit(ostream &reply, Context &c, const ROAnything &config);
 	void RenderBoxName(String &boxName, Context &c, const ROAnything &config);
 	void RenderFormName(String &formName, Context &c, const ROAnything &config);
 
-	void RenderPrevButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
-	void RenderNextButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
-	void RenderSearchButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
-	void RenderClearButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
-	void RenderPrintButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
-	void RenderExportButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
-	void RenderSaveButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
-	void RenderResetButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
-	void RenderAddButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
-	void RenderDeleteButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
+	bool RenderPrevButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
+	bool RenderNextButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
+	bool RenderSearchButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
+	bool RenderClearButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
+	bool RenderPrintButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
+	bool RenderExportButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
+	bool RenderSaveButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
+	bool RenderResetButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
+	bool RenderAddButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
+	bool RenderDeleteButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
 
 	bool Lookup(const ROAnything &nameConfig, Context &c, const ROAnything &config, Anything &result);
 
