@@ -26,7 +26,7 @@
 
 //--- c-library modules used ---------------------------------------------------
 
-const String Context::DebugStoreSeparator("<!--separator 54353021345321784456 -->");
+const String Context::DebugStoreSeparator("<!-- separator 54353021345321784456 -->");
 
 //---- Context ------------------------------------------------------------------
 Context::Context() :
@@ -310,9 +310,9 @@ void Context::HTMLDebugStores(ostream &reply)
 #ifdef DEBUG
 	if ( Tracer::CheckWDDebug("Context.HTMLWDDebug", Storage::Current()) ) {
 		reply << DebugStoreSeparator;
-		reply << "<p><hr>\n<xmp>\n";
 		Session *s = fSession;
 		if (s) {
+			reply << "<hr>\n<pre>\n";
 			reply << "Session-Nummer: " << s->GetId() << "\n";
 			reply << "Access-Counter: " << s->GetAccessCounter() << "\n";
 			reply << "Access-Time:    " << s->GetAccessTime() << "\n";
@@ -333,12 +333,12 @@ void Context::HTMLDebugStores(ostream &reply)
 
 		// show Lookup stack on html page
 		if ( Tracer::CheckWDDebug("Context.HTMLWDDebug.LookupStack", Storage::Current()) ) {
-			reply << "</xmp><hr><xmp>Lookup stack:\n" << fLookupStack << "\n";
+			reply << "Lookup stack:\n" << fLookupStack << "\n";
 		}
 
 		// show tmp store on html page
 		if ( Tracer::CheckWDDebug("Context.HTMLWDDebug.TmpStore", Storage::Current()) ) {
-			reply << "</xmp><hr><xmp>Tmp store:\n" << fStore << "\n";
+			reply << "Tmp store:\n" << fStore << "\n";
 		}
 
 		// show session store on html page
@@ -348,10 +348,9 @@ void Context::HTMLDebugStores(ostream &reply)
 
 		// show request store on html page
 		if ( Tracer::CheckWDDebug("Context.HTMLWDDebug.EnvStore", Storage::Current()) ) {
-			reply << "</xmp><hr><xmp>Request:\n" << fRequest << "\n";
+			reply << "Request:\n" << fRequest << "\n";
 		}
-
-		reply << "</xmp>\n";
+		reply << "</pre>\n";
 	}
 #endif
 }

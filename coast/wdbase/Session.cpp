@@ -67,7 +67,6 @@ Session::~Session()
 	logMsg << " " << fId;
 	SysLog::Info(logMsg);
 	{
-		// !!!! needs mutex
 		MutexEntry me(fMutex);
 		me.Use();
 		if (fRefCount != 0) {
@@ -286,7 +285,7 @@ void Session::HTMLDebugStore(ostream &reply)
 {
 #ifdef DEBUG
 	if ( Tracer::CheckWDDebug( "Session.HTMLSessionStore", Storage::Current() ) ) {
-		reply << "</xmp><hr><xmp>Session Store:\n" << fStore << "\n";
+		reply << "Session Store:\n" << fStore << "\n";
 	}
 #endif
 }
