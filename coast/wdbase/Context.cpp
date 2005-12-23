@@ -310,9 +310,9 @@ void Context::HTMLDebugStores(ostream &reply)
 #ifdef DEBUG
 	if ( Tracer::CheckWDDebug("Context.HTMLWDDebug", Storage::Current()) ) {
 		reply << DebugStoreSeparator;
+		reply << "<hr>\n<pre>\n";
 		Session *s = fSession;
 		if (s) {
-			reply << "<hr>\n<pre>\n";
 			reply << "Session-Nummer: " << s->GetId() << "\n";
 			reply << "Access-Counter: " << s->GetAccessCounter() << "\n";
 			reply << "Access-Time:    " << s->GetAccessTime() << "\n";
