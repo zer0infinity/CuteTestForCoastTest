@@ -155,7 +155,7 @@ void HeaderListRenderer::RenderSortIcon(ostream &reply, Context &c, const ROAnyt
 		if ( roSortIcon.IsDefined("LinkStyle") ) {
 			strStyle << "class=\"" << roSortIcon["LinkStyle"].AsString() << "\" ";
 		}
-		reply << "<a " << strStyle << "href=\"\" onClick=\" document.forms[" << strFormName << "].action='";
+		reply << "<a " << strStyle << "href=\"#\" onClick=\" document.forms[" << strFormName << "].action='";
 
 		Renderer *pRenderer = Renderer::FindRenderer("URLRenderer");
 		if (pRenderer) {
