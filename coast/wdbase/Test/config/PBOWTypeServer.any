@@ -9,9 +9,6 @@
 {
 
 #--- Server configuration ----------------------------------------------------
-	/ActiveRequests		50					# number of parallel pending requests
-	/SessionTimeout  	500 				# timeout in seconds
-
 	/ListenerPool {
 		TCP4242
 	}
