@@ -228,7 +228,7 @@ void LDAPConnection::DoHandleBindFailure(LDAPErrorHandler &eh, String &errMsg)
 bool LDAPConnection::WaitForResult(int msgId, Anything &result, LDAPErrorHandler &eh)
 {
 	StartTrace(LDAPConnection.WaitForResult);
-
+	Trace("msgId: [" << msgId << "]");
 	timeval tv;
 	tv.tv_sec  = fSearchTimeout;
 	tv.tv_usec = 0;
