@@ -86,6 +86,7 @@ void NewRendererTest::TestRenderers()
 			reply.flush();
 		}
 		result.Append(']');
+		Trace ("RESULT:\n" << result);
 		assertEqualm(expected, result, message);
 	}
 }
