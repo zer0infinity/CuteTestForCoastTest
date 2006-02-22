@@ -19,6 +19,7 @@
 <B>Configuration:</B><PRE>
 {
 	/File2Load	Rendererspec	mandatory, name of the file 2 load
+	/Quiet		Rendererspec    defaults to "no" -> error message is rendered on stream
 }
 </PRE>
 */

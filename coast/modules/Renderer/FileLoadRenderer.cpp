@@ -29,15 +29,23 @@ void FileLoadRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything 
 	StartTrace(FileLoadRenderer.RenderAll);
 
 	String fileName;
+	String quietRendered;
+	bool quiet = false;
 	RenderOnString(fileName, ctx, config["File2Load"]);
+	RenderOnString(quietRendered, ctx, config["Quiet"]);
+	quiet = (quietRendered == "yes") ? true : false;
 
 	if (fileName.Length() == 0) {
-		reply << "FileLoadRenderer: File2Load Param missing.";
+		if ( !quiet ) {
+			reply << "FileLoadRenderer: File2Load Param missing.";
+		}
 		return;
 	}
 	iostream *is = System::OpenStream(fileName, String(), ios::in | ios::binary);
-	if (!is) {
-		reply << "FileLoadRenderer: File " << fileName << " not found.";
+	if (!is ) {
+		if ( !quiet ) {
+			reply << "FileLoadRenderer: File " << fileName << " not found.";
+		}
 	} else {
 		reply << is->rdbuf();
 		delete(is);

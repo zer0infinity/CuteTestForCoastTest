@@ -2340,6 +2340,24 @@
 				/Expected       "FileLoadRenderer: File foobar not found."
 		}
 		{
+				/TmpStore
+				{
+					/QuietLookupToken "yes"
+				}
+				/Env
+				{
+				}
+				/Renderer
+				{
+						/FileLoadRenderer
+						{
+								/File2Load	"foobar"
+								/Quiet		{ /Lookup QuietLookupToken }
+						}
+				}
+				/Expected       ""
+		}
+		{
 				/Env
 				{
 				}
@@ -2350,6 +2368,19 @@
 						}
 				}
 				/Expected       "FileLoadRenderer: File2Load Param missing."
+		}
+		{
+				/Env
+				{
+				}
+				/Renderer
+				{
+						/FileLoadRenderer
+						{
+							/Quiet		"yes"
+						}
+				}
+				/Expected       ""
 		}
 		{
 				/Env
