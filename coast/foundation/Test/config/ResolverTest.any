@@ -13,10 +13,6 @@
 			/name	"ns1.ip-plus.net"
 			/ip		"164.128.36.34"
 		}
-		/fortify {
-			/name	"www.fortify.net"
-			/ip		"198.65.143.195"
-		}
 		/noHostToBeFound {
 			/name	"NotExisting.Nowhere.NoDomain"
 			/ip		"127.0.0.1"
