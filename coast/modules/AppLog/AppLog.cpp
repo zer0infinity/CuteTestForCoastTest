@@ -545,13 +545,11 @@ void LogRotator::Run()
 	while ( IsRunning() ) {
 		CheckRunningState(eWorking, GetSecondsToWait());
 
-		// check the alive flag
-		if (!IsRunning()) {
-			break;
+		// rotate only if we are still running and not already in termination sequence
+		if ( IsRunning() && !CheckState(eTerminationRequested, 0, 0) ) {
+			// rotate the log files
+			AppLogModule::RotateLogs();
 		}
-
-		// rotate the log files
-		AppLogModule::RotateLogs();
 	}
 	Trace("terminating...");
 }
