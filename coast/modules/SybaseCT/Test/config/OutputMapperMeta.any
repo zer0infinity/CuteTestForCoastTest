@@ -10,7 +10,7 @@
 
 	/SybCTnewDAImpl {
 		/DestinationSlot	TestOutput
-		/AppendAnyAlways	1
+		/PutPolicy			Append
 		/QueryCount			{ /ResultMapper * }
 		/QuerySource		{ /ResultMapper * }
 		/QueryTitles		{ /ResultMapper * }

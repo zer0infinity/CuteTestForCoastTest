@@ -9,6 +9,6 @@
 {
 
 	/LDAPListMapper {
-		/AppendAnyAlways 1
+		/PutPolicy	Append
 	}
 }

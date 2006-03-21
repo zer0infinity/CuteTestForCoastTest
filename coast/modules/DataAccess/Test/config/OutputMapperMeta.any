@@ -135,7 +135,7 @@
 	}
 	/AppendingResultMapper {
 		/DestinationSlot	AppendAnyMapper
-		/AppendAnyAlways	1
+		/PutPolicy			Append
 		/long {
 			"lKey"
 		}
