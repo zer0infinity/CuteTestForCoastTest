@@ -184,7 +184,9 @@ private:
 This Mapper supports behavior configuration. Put the following into OutputMapperMeta.any for the corresponding Mapper alias name.
 <B>Configuration:</B><PRE>
 {
-	/AppendAnyAlways		long		optional, default 0, if set to value != 0 Put(key, Anything) will always append the given Anything at slot key. Otherways the Anything will only be appended when the slot already exists.
+	/PutPolicy		String		optional, default "Put" or "Append" if a value already exists
+								"Put": always a non-array-any slot, set value as 'slots' content
+								"Append": always an array-any slot, append value below slot
 }</PRE>
 */
 class EXPORTDECL_DATAACCESS ResultMapper : public HierarchConfNamed

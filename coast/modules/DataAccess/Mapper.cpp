@@ -677,7 +677,8 @@ bool ResultMapper::DoFinalPutAny(const char *key, Anything value, Context &ctx)
 
 	Anything anyTarget;
 	DoGetDestinationAny(kPrefix, anyTarget, ctx);
-	if ( ( Lookup("AppendAnyAlways", 0L) != 0L ) || anyTarget.IsDefined(kKey) ) {
+	String strPutPolicy = Lookup("PutPolicy", ( anyTarget.IsDefined(kKey) ? "Append" : "Put" ) );
+	if ( strPutPolicy == "Append" ) {
 		Trace("appending value");
 		anyTarget[kKey].Append(value);
 	} else {
