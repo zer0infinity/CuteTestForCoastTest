@@ -28,33 +28,26 @@ void SlotNameRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &c
 	String value, index;
 	ROAnything roaSlotConfig;
 
-	if (config.LookupPath(roaSlotConfig, "PathName")) {
+	if ( config.LookupPath(roaSlotConfig, "PathName") ) {
 		RenderOnString(value, c, roaSlotConfig);
 	} else {
 		Trace("Error in SlotNameRenderer::RenderAll, PathName not defined");
-		reply << String("");
 		return;
 	}
-	//cerr << "PathName: [" << value << "]" << endl;
 	Trace("PathName: [" << value << "]");
 	ROAnything roAnyTemp = c.Lookup(value);
-	//cerr << "roAnyTemp: [" << roAnyTemp << "]" << endl;
 
-	if (config.LookupPath(roaSlotConfig, "Index")) {
+	if ( config.LookupPath(roaSlotConfig, "Index") ) {
 		RenderOnString(index, c, roaSlotConfig);
 	} else {
 		Trace("Error in SlotNameRenderer::RenderAll, Index not defined");
-		reply << String("");
 		return;
 	}
 	Trace("Index: [" << index << "]");
-	//cerr << "Index: [" << index << "]" << endl;
 
 	long i = index.AsLong(-1);
-	if ( i < 0 ) {
-		reply << "";
-	} else {
-		//cerr << "SlotName: [" << roAnyTemp.SlotName( i ) << "]" << endl;
+	if ( i >= 0 ) {
+		Trace("SlotName: [" << roAnyTemp.SlotName( i ) << "]");
 		reply << roAnyTemp.SlotName( i );
 	}
 }

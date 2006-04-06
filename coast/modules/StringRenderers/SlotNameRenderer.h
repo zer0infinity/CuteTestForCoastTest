@@ -10,17 +10,43 @@
 #define _SlotNameRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_hikups.h"
+#include "config_StringRenderers.h"
 #include "Renderer.h"
 
 //---- SlotNameRenderer ----------------------------------------------------------
-class EXPORTDECL_HIKUPS SlotNameRenderer : public Renderer
+//! <b>Renderers the name of an Array-Anything slot to the given index, if any.</b>
+/*!
+<b>Configuration:</b><pre>
+{
+	/PathName	Rendererspec		mandatory, Rendered result is the path to the Anything of which the name of the slot to the given Index will be output
+	/Index		Rendererspec		mandatory, Rendered result defines the index of the array entry whose slotname will be output. Will not output anything in case of an out of bound index.
+}
+</pre>
+Example:
+<pre>
+/MyAny {
+	/A01	First
+	/B01	Second
+	/C01	Last
+}
+{ /SlotNameRenderer {
+	/PathName	MyAny
+	/Index		1
+} }
+</pre>
+Renders : "B01"
+*/
+class EXPORTDECL_STRINGRENDERERS SlotNameRenderer : public Renderer
 {
 public:
 	//--- constructors
 	SlotNameRenderer(const char *name);
 	~SlotNameRenderer();
 
+	//! Render the requested slotname
+	/*! \param reply stream to generate output on
+		\param c Context used for output generation
+		\param config configuration which drives the output generation */
 	virtual void RenderAll(ostream &reply, Context &c, const ROAnything &config);
 };
 
