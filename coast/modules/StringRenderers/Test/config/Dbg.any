@@ -8,11 +8,15 @@
 
 {
 
-	/LowerBound		10
+	/LowerBound		0
 	/UpperBound		10
 	/DumpAnythings	1
 
 	/NotEmptyCheckAction {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/StringReplaceRenderer {
 		/MainSwitch	10
 		/EnableAll	10
 	}
