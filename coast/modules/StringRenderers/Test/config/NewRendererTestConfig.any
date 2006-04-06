@@ -789,7 +789,91 @@
 			}
 			/Expected	"1234345.00"
 		}
-
+		/SlotNameRendererNamedTest1 {
+			/Env {
+				/MyAny {
+					/NamedSlot0 {
+					}
+					/NamedSlot1 {
+					}
+					/NamedSlot2 {
+					}
+					/NamedSlot3 {
+					}
+				}
+			}
+			/Renderer {
+				/SlotNameRenderer {
+					/PathName	MyAny
+					/Index		2
+				}
+			}
+			/Expected	"NamedSlot2"
+		}
+		/SlotNameRendererNamedTest2 {
+			/Env {
+				/MyAny {
+					/NamedSlot0 {
+					}
+					/NamedSlot1 {
+					}
+					/NamedSlot2 {
+					}
+					/NamedSlot3 {
+					}
+				}
+			}
+			/Renderer {
+				/SlotNameRenderer {
+					/PathName	MyAny
+					/Index		4
+				}
+			}
+			/Expected	""
+		}
+		/SlotNameRendererNamedTest3 {
+			/Env {
+				/MyAny {
+					/NamedSlot0 {
+					}
+					/NamedSlot1 {
+					}
+					{
+					}
+					/NamedSlot3 {
+					}
+				}
+			}
+			/Renderer {
+				/SlotNameRenderer {
+					/PathName	MyAny
+					/Index		2
+				}
+			}
+			/Expected	""
+		}
+		/SlotNameRendererNamedTest4 {
+			/Env {
+				/MyAny {
+					/NamedSlot0 {
+					}
+					/NamedSlot1 {
+						/SubSlot0 {}
+						/SubSlot1 {}
+					}
+					{
+					}
+					/NamedSlot3 {
+					}
+				}
+			}
+			/Renderer {
+				/SlotNameRenderer {
+					/PathName	MyAny.NamedSlot1
+					/Index		1
+				}
+			}
+			/Expected	"SubSlot1"
+		}
 	}
-
 }
