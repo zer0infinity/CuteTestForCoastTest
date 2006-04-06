@@ -875,5 +875,101 @@
 			}
 			/Expected	"SubSlot1"
 		}
+		/StringReplaceRendererTest1 {
+			/Env {
+				/MyString "fooBar, gagaGugus"
+			}
+			/Renderer {
+				/StringReplaceRenderer {
+					/String	{ /ContextLookupRenderer MyString }
+					/ReplaceConfig {
+						/foo	""
+						/gaga	""
+					}
+				}
+			}
+			/Expected	"Bar, Gugus"
+		}
+		/StringReplaceRendererTest2 {
+			/Env {
+				/MyString "fooBar, gagaGugus foogaga"
+			}
+			/Renderer {
+				/StringReplaceRenderer {
+					/String	{ /ContextLookupRenderer MyString }
+					/ReplaceConfig {
+						/foo	"bar"
+						/gaga	"yup"
+					}
+				}
+			}
+			/Expected	"barBar, yupGugus baryup"
+		}
+		/ComputeDateRendererTest1 {
+			/Env {
+			}
+			/Renderer {
+				/ComputeDateRenderer {
+					/FromDate		"01 Jan 1970 00:00:00"
+					/InputFormat	"dd bbb YYYY HH:MM:SS"
+				}
+			}
+			/Expected	"0"
+		}
+		/ComputeDateRendererTest2 {
+			/Env {
+			}
+			/Renderer {
+				/ComputeDateRenderer {
+					/FromDate		"01 Jan 1970 00:00:10"
+					/InputFormat	"dd bbb YYYY HH:MM:SS"
+				}
+			}
+			/Expected	"10"
+		}
+		/ComputeDateRendererTest3 {
+			/Env {
+			}
+			/Renderer {
+				/ComputeDateRenderer {
+					/FromDate		"01 Jan 1970"
+					/InputFormat	"dd bbb YYYY"
+				}
+			}
+			/Expected	"0"
+		}
+		/ComputeDateRendererTest4 {
+			/Env {
+			}
+			/Renderer {
+				/ComputeDateRenderer {
+					/FromDate		"Jan 01 1970"
+					/InputFormat	"bbb dd YYYY"
+				}
+			}
+			/Expected	"0"
+		}
+		/ComputeDateRendererTest5 {
+			/Env {
+			}
+			/Renderer {
+				/ComputeDateRenderer {
+					/FromDate		"01 Jan 1970 00:00AM"
+					/InputFormat	"dd bbb YYYY HH:MMpp"
+				}
+			}
+			/Expected	"0"
+		}
+		/ComputeDateRendererTest6 {
+			/Env {
+			}
+			/Renderer {
+				/ComputeDateRenderer {
+					/FromDate		"01 Jan 1970 12:00PM"
+					/InputFormat	"dd bbb YYYY HH:MMpp"
+				}
+			}
+			/Expected	"43200"
+		}
 	}
 }
