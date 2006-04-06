@@ -6,21 +6,60 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#ifndef _ReplaceExtChrRenderer_H
-#define _ReplaceExtChrRenderer_H
+#ifndef _StringReplaceRenderer_H
+#define _StringReplaceRenderer_H
 
 //---- Renderer include -------------------------------------------------
-#include "config_hikups.h"
+#include "config_StringRenderers.h"
 #include "Renderer.h"
 
-//---- ReplaceExtChrRenderer ----------------------------------------------------------
-class EXPORTDECL_HIKUPS ReplaceExtChrRenderer : public Renderer
+//---- StringReplaceRenderer ----------------------------------------------------------
+//! <b>Replaces strings within a specified string.</b>
+/*!
+<b>Configuration:</b><pre>
+{
+	/String				Rendererspec	mandatory, Rendered result is the string in which to search and replace
+	/ReplaceConfig {					mandatory, Rendered result defines the index of the array entry whose slotname will be output. Will not output anything in case of an out of bound index.
+		/Search		Replace
+		...
+	}
+}
+</pre>
+Example1:
+<pre>
+{ /StringReplaceRenderer {
+	/String		"fooBar, gagaGugus"
+	/ReplaceConfig {
+		/foo	""
+		/gaga	""
+	}
+} }
+</pre>
+Renders : "Bar, Gugus"
+
+Example2:
+<pre>
+{ /StringReplaceRenderer {
+	/String		"fooBar, gagaGugus"
+	/ReplaceConfig {
+		/foo	"my"
+		/gaga	"your"
+	}
+} }
+</pre>
+Renders : "myBar, yourGugus"
+*/
+class EXPORTDECL_STRINGRENDERERS StringReplaceRenderer : public Renderer
 {
 public:
 	//--- constructors
-	ReplaceExtChrRenderer(const char *name);
-	~ReplaceExtChrRenderer();
+	StringReplaceRenderer(const char *name);
+	~StringReplaceRenderer();
 
+	//! Renders the search/replace string
+	/*! \param reply stream to generate output on
+		\param c Context used for output generation
+		\param config configuration which drives the output generation */
 	virtual void RenderAll(ostream &reply, Context &c, const ROAnything &config);
 };
 

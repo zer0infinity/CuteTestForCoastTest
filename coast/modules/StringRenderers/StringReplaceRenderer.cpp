@@ -7,60 +7,58 @@
  */
 
 //--- interface ------------
-#include "ReplaceExtChrRenderer.h"
+#include "StringReplaceRenderer.h"
 
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 
-//---- ReplaceExtChrRenderer ---------------------------------------------------------------
-RegisterRenderer(ReplaceExtChrRenderer);
+//---- StringReplaceRenderer ---------------------------------------------------------------
+RegisterRenderer(StringReplaceRenderer);
 
-ReplaceExtChrRenderer::ReplaceExtChrRenderer(const char *name) : Renderer(name) { }
-
-ReplaceExtChrRenderer::~ReplaceExtChrRenderer() { }
-
-void ReplaceExtChrRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+StringReplaceRenderer::StringReplaceRenderer(const char *name)
+	: Renderer(name)
 {
-	StartTrace(ReplaceExtChrRenderer.RenderAll);
+}
+
+StringReplaceRenderer::~StringReplaceRenderer()
+{
+}
+
+void StringReplaceRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+{
+	StartTrace(StringReplaceRenderer.RenderAll);
 
 	TraceAny(config, "config");
 
-	String strDestination, strTmpSource, strSource;
-	RenderOnString(strSource, c, config["StringToReplace"]);
-	strDestination = strTmpSource = strSource;
+	String strDestination, strSource;
+	RenderOnString(strSource, c, config["String"]);
 	ROAnything roaMapAny;
-	if (config.LookupPath(roaMapAny, "ReplaceStrings")) {
+	if ( config.LookupPath(roaMapAny, "ReplaceConfig") ) {
 		TraceAny(roaMapAny, " config");
-		long lsize = roaMapAny.GetSize();
-		if ( lsize > 0 ) {
-			strDestination = "";
-			for (long cfgIdx = 0L; cfgIdx < lsize; cfgIdx++) { // loop over replacestrings-list
-				String currSlot = roaMapAny.SlotName(cfgIdx);
-				String currValue = roaMapAny[currSlot].AsString("");
-				//TODO: prevent loop for each replacestring -> RegExpRenderer
-				String rString = currSlot;
-				long startIdx = 0L, lstIdx = 0L;
-				long lsize = strTmpSource.Length();
-				// returns -1 if there no rString can be found
-				while ((startIdx = strTmpSource.Contains(rString)) >= 0L) {
-					String tmpString = strTmpSource.SubString(lstIdx, startIdx); //
-					strDestination.Append(tmpString);
-					strDestination.Append(currValue);
-					lstIdx = (startIdx + rString.Length());
-					strTmpSource = strTmpSource.SubString(lstIdx, lsize);
-					lsize = strTmpSource.Length();
-				}
-				if (lstIdx > 0L) {
-					//
-					strDestination.Append(strTmpSource);
-					strTmpSource = "";
-					strTmpSource = strDestination;
-				}
+		String strTmpSource = strSource;
+		for ( long cfgIdx = 0L, lSize = roaMapAny.GetSize(); cfgIdx < lSize; ++cfgIdx ) {
+			strDestination.Trim(0);
+			String sString = roaMapAny.SlotName(cfgIdx);
+			String rString = roaMapAny[sString].AsString();
+			//TODO: prevent loop for each replacestring -> RegExpRenderer
+			long startIdx = 0L;
+			// returns -1 if there no sString can be found
+			while ( ( startIdx = strTmpSource.Contains(sString) ) >= 0L ) {
+				String tmpString = strTmpSource.SubString(0, startIdx);
+				Trace("search string [" << sString << "] at index:" << startIdx << " segment up to sString [" << tmpString << "]");
+				strDestination.Append(tmpString);
+				strDestination.Append(rString);
+				strTmpSource.TrimFront(startIdx + sString.Length());
+				Trace("remaining inputstring [" << strTmpSource << "]");
+				Trace("Destination so far [" << strDestination << "]");
 			}
-			if (strDestination.Length() <= 0L) {
-				strDestination = strSource;
-			}
+			Trace("appending remainder [" << strTmpSource << "]");
+			strDestination.Append(strTmpSource);
+			strTmpSource = strDestination;
 		}
+	} else {
+		strDestination = strSource;
 	}
+	Trace("destination to append [" << strDestination << "]");
 	reply << strDestination;
 }
