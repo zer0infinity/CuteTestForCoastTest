@@ -12,6 +12,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "System.h"
 #include "SysLog.h"
+#include "TimeStamp.h"
 #include "Dbg.h"
 
 //--- c-modules used -----------------------------------------------------------
@@ -20,9 +21,9 @@
 RegisterRenderer(ComputeDateRenderer);
 
 //---- ComputeDateRenderer ----------------------------------------------------------------
-ComputeDateRenderer::ComputeDateRenderer(const char *name) : Renderer(name)
+ComputeDateRenderer::ComputeDateRenderer(const char *name)
+	: Renderer(name)
 {
-
 	fMonthTable["---"] = 0L;
 	fMonthTable["Jan"] = 1L;
 	fMonthTable["Feb"] = 2L;
@@ -36,24 +37,22 @@ ComputeDateRenderer::ComputeDateRenderer(const char *name) : Renderer(name)
 	fMonthTable["Oct"] = 10L;
 	fMonthTable["Nov"] = 11L;
 	fMonthTable["Dec"] = 12L;
-
 }
 
-ComputeDateRenderer::~ComputeDateRenderer() { }
+ComputeDateRenderer::~ComputeDateRenderer()
+{
+}
 
 long ComputeDateRenderer::GetMonthIndex( String month )
 {
 	StartTrace(ComputeDateRenderer.GetMonthIndex);
-
+	long idx = 0;
 	Trace( "month = [" << month << "]" );
 	if ( fMonthTable.IsDefined(month) ) {
-		long idx =  fMonthTable[month].AsLong(0);
-		Trace( "index = [" << idx << "]" );
-		return idx;
-	} else {
-		Trace( "index = [0]" );
-		return 0;
+		idx =  fMonthTable[month].AsLong(0);
 	}
+	Trace( "index = [" << idx << "]" );
+	return idx;
 }
 
 void ComputeDateRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
@@ -61,7 +60,6 @@ void ComputeDateRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnythi
 	StartTrace(ComputeDateRenderer.RenderAll);
 	TraceAny(config, "config");
 
-	time_t timefrom;
 	String strFromDate, strInputFormat;
 	long lDayfromidx = -1L, lMonthfromidx = -1L, lMonthAbbrfromidx = -1L, lYearfromidx = -1L, lHourfromidx = -1L, lHour12fromidx = -1L, lAmPmfromidx = -1L, lMinutefromidx = -1L, lSecondfromidx = -1L;
 
@@ -94,26 +92,26 @@ void ComputeDateRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnythi
 		Trace( "lMinutefromidx: at index <" << lMinutefromidx << ">" );
 		Trace( "lSecondfromidx: at index <" << lSecondfromidx << ">" );
 
-		struct tm date1;
+		char iCent = 19, iYear = 70, iMonth = 1, iDay = 1, iHour = 0, iMin = 0, iSec = 0;
 		if ( lDayfromidx >= 0 ) {
 			Trace( "Daysubstring: <" << strFromDate.SubString(lDayfromidx, 2) << ">" );
-			date1.tm_mday = (int)strFromDate.SubString(lDayfromidx, 2).AsLong(0L);
+			iDay = (char)strFromDate.SubString(lDayfromidx, 2).AsLong(0L);
 		}
 		if ( lMonthAbbrfromidx >= 0 ) {
 			Trace( "Monthabbrsubstring: <" << strFromDate.SubString(lMonthAbbrfromidx, 3) << ">" );
-			date1.tm_mon = GetMonthIndex(strFromDate.SubString(lMonthAbbrfromidx, 3)) - 1 ;
+			iMonth = (char)GetMonthIndex(strFromDate.SubString(lMonthAbbrfromidx, 3));
 		} else {
 			Trace( "Monthsubstring: <" << strFromDate.SubString(lMonthfromidx, 2) << ">" );
-			date1.tm_mon = (int)strFromDate.SubString(lMonthfromidx, 2).AsLong(0L) - 1 ;
+			iMonth = (char)strFromDate.SubString(lMonthfromidx, 2).AsLong(0L);
 		}
 		if ( lYearfromidx >= 0 ) {
 			Trace( "Yearsubstring: <" << strFromDate.SubString(lYearfromidx, 4) << ">" );
-			date1.tm_year = (int)strFromDate.SubString(lYearfromidx, 4).AsLong(0L) - 1900 ;
+			iYear = (char)(strFromDate.SubString(lYearfromidx, 4).AsLong(0L) % 100);
+			iCent = (char)(strFromDate.SubString(lYearfromidx, 4).AsLong(0L) / 100);
 		}
-		date1.tm_hour = 0;
 		if ( lHourfromidx >= 0 ) {
 			Trace( "Hoursubstring: <" << strFromDate.SubString(lHourfromidx, 2) << ">" );
-			date1.tm_hour = (int)strFromDate.SubString(lHourfromidx, 2).AsLong(0L);
+			iHour = (char)strFromDate.SubString(lHourfromidx, 2).AsLong(0L);
 		}
 		if ( lHour12fromidx >= 0 && lAmPmfromidx >= 0) {
 			int hour12 = (int)strFromDate.SubString(lHour12fromidx, 2).AsLong(0L) ;
@@ -122,47 +120,28 @@ void ComputeDateRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnythi
 			Trace( "AmPmsubstring: <" << amPm << ">" );
 			if ( amPm == "p" || amPm == "P" ) {
 				if ( hour12 == 12 ) {
-					date1.tm_hour = hour12 ;
+					iHour = hour12 ;
 				} else {
-					date1.tm_hour = hour12 + 12 ;
+					iHour = hour12 + 12 ;
 				}
 			} else {
 				if ( hour12 == 12 ) {
-					date1.tm_hour = 0 ;
+					iHour = 0 ;
 				} else {
-					date1.tm_hour = hour12 ;
+					iHour = hour12 ;
 				}
 			}
 		}
-		date1.tm_min = 0;
 		if ( lMinutefromidx >= 0 ) {
 			Trace( "Minutesubstring: <" << strFromDate.SubString(lMinutefromidx, 2) << ">" );
-			date1.tm_min = (int)strFromDate.SubString(lMinutefromidx, 2).AsLong(0L);
+			iMin = (int)strFromDate.SubString(lMinutefromidx, 2).AsLong(0L);
 		}
-		date1.tm_sec = 0;
 		if ( lSecondfromidx >= 0 ) {
 			Trace( "Secondsubstring: <" << strFromDate.SubString(lSecondfromidx, 2) << ">" );
-			date1.tm_sec = (int)strFromDate.SubString(lSecondfromidx, 2).AsLong(0L);
+			iSec = (int)strFromDate.SubString(lSecondfromidx, 2).AsLong(0L);
 		}
-		Trace("date1.tm_mday:" << (long)date1.tm_mday) ;
-		Trace("date1.tm_mon:" << (long)date1.tm_mon );
-		Trace("date1.tm_year:" << (long)date1.tm_year );
-		Trace("date1.tm_hour:" << (long)date1.tm_hour );
-		Trace("date1.tm_min:" << (long)date1.tm_min );
-		Trace("date1.tm_sec:" << (long)(date1.tm_sec) );
-		Trace("date1.tm_isdst:" << (long)(date1.tm_isdst) );
-
-		timefrom = mktime( &date1 ); 		// convert struct tm to seconds
-
-		Trace("date1.tm_mday:" << (long)date1.tm_mday) ;
-		Trace("date1.tm_mon:" << (long)date1.tm_mon );
-		Trace("date1.tm_year:" << (long)date1.tm_year );
-		Trace("date1.tm_hour:" << (long)date1.tm_hour );
-		Trace("date1.tm_min:" << (long)date1.tm_min );
-		Trace("date1.tm_sec:" << (long)(date1.tm_sec) );
-		Trace("date1.tm_isdst:" << (long)(date1.tm_isdst) );
-
-		reply << (long)timefrom; 	// output is seconds since 00:00:00 UTC, January 1, 1970
+		// output is seconds since 00:00:00 UTC, January 1, 1970
+		reply << TimeStamp(iCent, iYear, iMonth, iDay, iHour, iMin, iSec).AsLong();
 	} else {
 		SysLog::Warning("ComputeDateRenderer::RenderAll: mandatory 'FromDate' slot is missing in configuration!");
 	}

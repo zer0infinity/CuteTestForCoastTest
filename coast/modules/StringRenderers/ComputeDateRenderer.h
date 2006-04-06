@@ -10,66 +10,74 @@
 #define _ComputeDateRenderer_H
 
 //---- baseclass include -------------------------------------------------
-#include "config_hikups.h"
+#include "config_StringRenderers.h"
 #include "Renderer.h"
 
 //---- ComputeDateRenderer ----------------------------------------------------------
-//: comment Renderer
-//	Structure of config:
-//<PRE>	{
-//		/DateFrom					Formatted Date/Timestring (valid from  Jan 1 1970 00:00 till Jan 19 2038 03:14
-//		/InputFormat				Rendererspec, default: dd.mm.YYYY (00:00:00)
-//									* dd 	for day of month as decimal number
-//									* mm 	for month as decimal number
-//									*    or
-//									* bbb 	for month as English abbreviated month name
-//									* YYYY 	for year with century as decimal number
-//									* HH for hour (24-hour clock) as decimal number
-//									*    or
-//									* II for hour (12-hour clock) and pp for 'am' or 'pm'
-//									* MM for minute as decimal number
-//									* SS for second as decimal number
-//									* -------------yy still to be implemented
-//									returns this time in seconds (can be used as input for DateRenderer)
-//	}</PRE>
-//	Example 1:
-//<PRE>	{
-//		/DateFrom					"31.12.2002"
-//	}</PRE>
-//	Example 2:
-//<PRE>	{
-//		/DateFrom					"Feb 01 2002"
-//		/InputFormat				"bbb dd YYYY"
-//	}</PRE>
-//<PRE>	{
-//		/DateFrom					"Feb 01 2002 12:05:02"
-//		/InputFormat				"bbb dd YYYY HH:MM:SS"
-//	}</PRE>
-// The follow features are missing :
-// Just the operators "+", "-" and Offset
-// Localization of time values (GMT-offset) is not implemented.
-
-// NOTE: Unix dates will break somewhen around year 2036
-
-class EXPORTDECL_HIKUPS ComputeDateRenderer : public Renderer
+//! <b>Converts the given Date/Time according to the specified format into a bunch of seconds (unix-time, seconds since 1. Jan. 1970 00:00)</b>
+/*!
+<b>Configuration:</b><pre>
+{
+	/FromDate					Formatted Date/Timestring (valid from  Jan 1 1970 00:00 till Jan 19 2038 03:14
+	/InputFormat				Rendererspec, default: dd.mm.YYYY (00:00:00)
+								* dd 	for day of month as decimal number
+								* mm 	for month as decimal number
+								*    or
+								* bbb 	for month as English abbreviated month name
+								* YYYY 	for year with century as decimal number
+								* HH for hour (24-hour clock) as decimal number
+								*    or
+								* II for hour (12-hour clock) and pp for 'am' or 'pm'
+								* MM for minute as decimal number
+								* SS for second as decimal number
+								* -------------yy still to be implemented
+								returns this time in seconds (can be used as input for DateRenderer)
+}</pre>
+Example 1:
+<pre>
+{
+	/FromDate					"31.12.2002"
+}</pre>
+Example 2:
+<pre>
+{
+	/FromDate					"Feb 01 2002"
+	/InputFormat				"bbb dd YYYY"
+}</pre>
+Example 3:
+<pre>
+{
+	/FromDate					"Feb 01 2002 12:05:02"
+	/InputFormat				"bbb dd YYYY HH:MM:SS"
+}</pre>
+Example 4:
+<pre>
+{
+	/FromDate					"Feb 01 2002 12:05:02AM"
+	/InputFormat				"bbb dd YYYY HH:MM:SSpp"
+}</pre>
+The follow features are missing :
+Just the operators "+", "-" and Offset
+Localization of time values (GMT-offset) is not implemented.
+*/
+class EXPORTDECL_STRINGRENDERERS ComputeDateRenderer : public Renderer
 {
 public:
-	//--- constructors
 	ComputeDateRenderer(const char *name);
 	~ComputeDateRenderer();
 
-	//--- public api
-	//:single line description of newmethod
-	// further explanation of the purpose of the method
-	// this may contain <B>HTML-Tags</B>
-	// ...
-	//!param: aParam - explanation of aParam (important : paramname - explanation )
-	//!retv: explanation of return value
-	//!prec: explanation of precondition for the method call
-	//!postc: explanation of postcondition for the method call
+	//! Render the requested slotname
+	/*! \param reply stream to generate output on
+		\param c Context used for output generation
+		\param config configuration which drives the output generation */
 	void RenderAll(ostream &reply, Context &ctx, const ROAnything &config);
+
 protected:
+	//! Render the requested slotname
+	/*! \param month english month abbreviation to be converted into a number
+		\return month number, Jan == 1 */
 	long GetMonthIndex( String month );
+
 private:
 	Anything fMonthTable;
 };
