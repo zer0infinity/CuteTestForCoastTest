@@ -8,7 +8,8 @@
 
 {
 
-	/RunOnly {}
+	/RunOnly {
+	}
 	/RunTestCases {
 		/FirstTestName {
 			/TmpStore {
@@ -340,6 +341,219 @@
 						/Slot2 1234
 						{
 							/sub1 "datasub1"
+						}
+					}
+				}
+			}
+		}
+		/BuildAnyFromSeparatedListActionRecSepTest {
+			/TmpStore {
+				/MyText	"1234;abcde;fghik;\r\n5678;lmnop;qrstuv;"
+			}
+			/TheAction {
+				/BuildAnyFromSeparatedListAction {
+					/Destination {
+						/Slot	ResultSlot
+					}
+					/Text	          { /Lookup MyText }
+					/RecordSeparator  "\r\n"
+				}
+			}
+			/Result {
+				/TmpStore {
+					/ResultSlot {
+						"1234;abcde;fghik;"
+						"5678;lmnop;qrstuv;"
+					}
+				}
+			}
+		}
+		/BuildAnyFromSeparatedListActionRecSepNumberedTest {
+			/TmpStore {
+				/MyText	"1234;abcde;fghik;\r\n5678;lmnop;qrstuv;"
+			}
+			/TheAction {
+				/BuildAnyFromSeparatedListAction {
+					/Destination {
+						/Slot	ResultSlot
+					}
+					/Text	          { /Lookup MyText }
+					/RecordSeparator  "\r\n"
+					/useSlotName		1
+				}
+			}
+			/Result {
+				/TmpStore {
+					/ResultSlot {
+						/0	"1234;abcde;fghik;"
+						/1	"5678;lmnop;qrstuv;"
+					}
+				}
+			}
+		}
+		/BuildAnyFromSeparatedListActionRecAndFieldSepTest {
+			/TmpStore {
+				/MyText	"1234;abcde;fghik\r\n5678;lmnop;qrstuv"
+			}
+			/TheAction {
+				/BuildAnyFromSeparatedListAction {
+					/Destination {
+						/Slot	ResultSlot
+					}
+					/Text	          { /Lookup MyText }
+					/RecordSeparator  "\r\n"
+					/FieldSeparator	  ";"
+				}
+			}
+			/Result {
+				/TmpStore {
+					/ResultSlot {
+						{
+							"1234"
+							"abcde"
+							"fghik"
+						}
+						{
+							"5678"
+							"lmnop"
+							"qrstuv"
+						}
+					}
+				}
+			}
+		}
+		/BuildAnyFromSeparatedListActionRecAndFieldSepNumberedTest {
+			/TmpStore {
+				/MyText	"1234;abcde;fghik\r\n5678;lmnop;qrstuv"
+			}
+			/TheAction {
+				/BuildAnyFromSeparatedListAction {
+					/Destination {
+						/Store	Role
+						/Slot	ResultSlot
+					}
+					/Text	          { /Lookup MyText }
+					/RecordSeparator  "\r\n"
+					/FieldSeparator	  ";"
+					/useSlotName		1
+				}
+			}
+			/Result {
+				/RoleStore {
+					/ResultSlot {
+						/"0"  {
+							/0	"1234"
+							/1	"abcde"
+							/2	"fghik"
+						}
+						/"1"  {
+							/0	"5678"
+							/1	"lmnop"
+							/2	"qrstuv"
+						}
+					}
+				}
+			}
+		}
+		/BuildAnyFromSeparatedListActionHeaderRowTest {
+			/TmpStore {
+				/MyText	"row1;row2;row3\r\nr1z2;r2z2;r3z2\r\n1234;abcde;fghik\r\n5678;lmnop;qrstuv"
+			}
+			/TheAction {
+				/BuildAnyFromSeparatedListAction {
+					/Destination {
+						/Store	Role
+						/Slot	ResultSlot
+					}
+					/Text	          { /Lookup MyText }
+					/RecordSeparator  "\r\n"
+					/FieldSeparator	  ";"
+					/useSlotName		1
+					/NumberOfHeaderRows 2
+					/HeaderSeparator	"_"
+				}
+			}
+			/Result {
+				/RoleStore {
+					/ResultSlot {
+						/"0"  {
+							/row1_r1z2	"1234"
+							/row2_r2z2	"abcde"
+							/row3_r3z2	"fghik"
+						}
+						/"1"  {
+							/row1_r1z2	"5678"
+							/row2_r2z2	"lmnop"
+							/row3_r3z2	"qrstuv"
+						}
+					}
+				}
+			}
+		}
+		/BuildAnyFromSeparatedListActionHeaderSepTest {
+			/TmpStore {
+				/MyText	"row1;row2;row3\r\nr1z2;r2z2;r3z2\r\n1234;abcde;fghik\r\n5678;lmnop;qrstuv"
+			}
+			/TheAction {
+				/BuildAnyFromSeparatedListAction {
+					/Destination {
+						/Store	Role
+						/Slot	ResultSlot
+					}
+					/Text	          { /Lookup MyText }
+					/RecordSeparator  "\r\n"
+					/FieldSeparator	  ";"
+					/useSlotName		1
+					/NumberOfHeaderRows 2
+				}
+			}
+			/Result {
+				/RoleStore {
+					/ResultSlot {
+						/"0"  {
+							/row1r1z2	"1234"
+							/row2r2z2	"abcde"
+							/row3r3z2	"fghik"
+						}
+						/"1"  {
+							/row1r1z2	"5678"
+							/row2r2z2	"lmnop"
+							/row3r3z2	"qrstuv"
+						}
+					}
+				}
+			}
+		}
+		/BuildAnyFromSeparatedListActionHeaderNoSlotTest {
+			/TmpStore {
+				/MyText	"row1;row2;row3\r\nr1z2;r2z2;r3z2\r\n1234;abcde;fghik\r\n5678;lmnop;qrstuv"
+			}
+			/TheAction {
+				/BuildAnyFromSeparatedListAction {
+					/Destination {
+						/Store	Role
+						/Slot	ResultSlot
+					}
+					/Text	          { /Lookup MyText }
+					/RecordSeparator  "\r\n"
+					/FieldSeparator	  ";"
+					/useSlotName		0
+					/NumberOfHeaderRows 2
+					/HeaderSeparator	"_"
+				}
+			}
+			/Result {
+				/RoleStore {
+					/ResultSlot {
+						{
+							"1234"
+							"abcde"
+							"fghik"
+						}
+						{
+							"5678"
+							"lmnop"
+							"qrstuv"
 						}
 					}
 				}
