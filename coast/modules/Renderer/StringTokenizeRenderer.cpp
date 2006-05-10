@@ -41,7 +41,12 @@ void StringTokenizeRenderer::BuildTokenList(Context &ctx, const ROAnything &conf
 {
 	StartTrace(StringTokenizeRenderer.BuildTokenList);
 
-	String strRenderToken = config["RenderToken"].AsString("");
+	ROAnything roaRenderToken;
+	String strRenderToken;
+	if (config.LookupPath(roaRenderToken, "RenderToken")) {
+		RenderOnString(strRenderToken, ctx, roaRenderToken);
+	}
+
 	Trace("RenderToken: [" << strRenderToken << "]");
 	long lMaxTokens = anyTokens.GetSize() - 1L;
 

@@ -20,7 +20,7 @@
 {
 	/String			Rendererspec	mandatory, string to be tokenized according to given token
 	/Token			Rendererspec	mandatory, token to split the given string into pieces
-	/RenderToken	String|Long		optional, default 1, single index or list of indizes to be rendered beginning with 1
+	/RenderToken	Rendererspec	optional, default 1, single index or list of indizes to be rendered beginning with 1
 									- use negative values to indicate reverse order indizes, eg. -1 is the last token
 									- a token list can be specified but must be separated by ';'
 									- to specify a token range a '-' must be given between the two numbers
