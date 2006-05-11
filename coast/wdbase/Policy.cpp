@@ -95,7 +95,7 @@ bool HierarchyInstaller::Install(const Anything &installerSpec, Registry *r)
 
 bool HierarchyInstaller::HasSuper(HierarchConfNamed *super, const char *name)
 {
-	StartTrace1(HierarchyInstaller.HasSuper, "name [" << NotNull(name) << "]");
+	StartTrace1(HierarchyInstaller.HasSuper, "name [" << NotNull(name) << "] addr:" << (long)super);
 	if (!name) {
 		return false;
 	}
@@ -111,6 +111,7 @@ bool HierarchyInstaller::HasSuper(HierarchConfNamed *super, const char *name)
 			return true;
 		}
 		super = super->GetSuper();
+		Trace("super-class of [" << superName << "] addr:" << (long)super);
 	}
 	return false;
 }
@@ -140,7 +141,7 @@ bool HierarchyInstaller::InstallTree(HierarchConfNamed *root, const char *rootNa
 {
 	StartTrace(HierarchyInstaller.InstallTree);
 	bool installSuccess = InstallRoot(root, rootName);
-	Trace("root " << rootName << " success: " << (installSuccess ? "true" : "false"));
+	Trace("root [" << rootName << "] success: " << (installSuccess ? "true" : "false"));
 	long subTreeSz = tree.GetSize();
 	for (int i = 0; i < subTreeSz; ++i) {
 		bool subtree = true;

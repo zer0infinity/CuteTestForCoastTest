@@ -85,18 +85,20 @@ bool Role::CheckLevel(const String &queryRoleName) const
 {
 	StartTrace(Role.CheckLevel);
 	const Role *r = this;
-	String superName(fName);
+	String strRoleName(fName);
+	Trace("my role name [" << strRoleName << "]");
 
 	bool bLevelOK = false;
 	long lThisLevel = 0L;
 
 	// we iterate over the role hierarchy to find out the role level
 	// first find out the level of the current Role
-	bLevelOK = queryRoleName.IsEqual(superName);
+	bLevelOK = queryRoleName.IsEqual(strRoleName);
 	while (!bLevelOK && r && (r = (Role *)r->GetSuper())) {
 		++lThisLevel;
-		r->GetName(superName);
-		if (queryRoleName.IsEqual(superName)) {
+		r->GetName(strRoleName);
+		Trace("Super role name [" << strRoleName << "]");
+		if (queryRoleName.IsEqual(strRoleName)) {
 			bLevelOK = true;
 		}
 	}
@@ -289,7 +291,7 @@ bool Role::Verify(Context &c, String &transition, String &pagename)
 
 	// check the level of the role it is defined in the config
 	// assuming some levels of roles (e.g. Guest < Customer < PaymentCustomer)
-	if (CheckLevel(name)) {
+	if ( CheckLevel(name) ) {
 		// We have the right role level
 		// let's check the query parameters
 		Trace("role level is OK");
