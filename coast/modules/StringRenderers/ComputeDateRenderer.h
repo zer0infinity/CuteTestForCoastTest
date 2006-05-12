@@ -13,6 +13,7 @@
 #include "config_StringRenderers.h"
 #include "Renderer.h"
 
+class TimeStamp;
 //---- ComputeDateRenderer ----------------------------------------------------------
 //! <b>Converts the given Date/Time according to the specified format into a bunch of seconds (unix-time, seconds since 1. Jan. 1970 00:00)</b>
 /*!
@@ -54,7 +55,7 @@ Example 4:
 <pre>
 {
 	/FromDate					"Feb 01 2002 12:05:02AM"
-	/InputFormat				"bbb dd YYYY HH:MM:SSpp"
+	/InputFormat				"bbb dd YYYY II:MM:SSpp"
 }</pre>
 The follow features are missing :
 Just the operators "+", "-" and Offset
@@ -72,14 +73,16 @@ public:
 		\param config configuration which drives the output generation */
 	void RenderAll(ostream &reply, Context &ctx, const ROAnything &config);
 
-protected:
-	//! Render the requested slotname
+	//! convert the given from date string into a TimeStamp using the specified scan format
+	/*! \param strFromDate date string to convert
+		\param strInputFormat string defining the format of the strFromDate string, syntax as described
+		\return TimeStamp of the given FromDate if it could be converted, 19700101000000 otherwise */
+	static TimeStamp ConvertToTimeStamp(const String &strFromDate, const String &strInputFormat);
+
+	//! return a month index given the english month abbreviation
 	/*! \param month english month abbreviation to be converted into a number
 		\return month number, Jan == 1 */
-	long GetMonthIndex( String month );
-
-private:
-	Anything fMonthTable;
+	static long GetMonthIndex( String month );
 };
 
 #endif
