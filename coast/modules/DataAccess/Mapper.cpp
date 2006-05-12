@@ -635,19 +635,17 @@ bool ResultMapper::DoPutStream(const char *key, istream &is, Context &ctx, ROAny
 void ResultMapper::DoGetDestinationAny(const char *key, Anything &targetAny, Context &ctx)
 {
 	StartTrace1(ResultMapper.DoGetDestinationAny, NotNull(key));
-
 	String path = GetDestinationSlot(ctx), kPrefix(key);
+	char cDelim = Lookup("Delim", ".")[0L], cIndexDelim = Lookup("IndexDelim", ":")[0L];
+
 	if (path.Length() > 0 && kPrefix.Length()) {
-		path << "." << kPrefix;
+		path << cDelim << kPrefix;
 	} else {
 		path << kPrefix;
 	}
-	Anything conf;
-	conf["Slot"] = path;
 	Trace("Path for slotfinder: [" << path << "]");
-
 	if (path.Length() > 0) {
-		SlotFinder::Operate(ctx.GetTmpStore(), targetAny, conf);
+		SlotFinder::Operate(ctx.GetTmpStore(), targetAny, path, cDelim, cIndexDelim);
 	} else {
 		targetAny = ctx.GetTmpStore();
 	}
