@@ -61,16 +61,8 @@ void StoreFinder::Operate(Context &context, Anything &dest, const ROAnything &co
 	String destSlotname(40);
 	Renderer::RenderOnString(destSlotname, context, config["Slot"]);
 	Trace("Destination slotname [" << destSlotname << "]");
-	Anything anyConfig;
-	anyConfig["Slot"] = destSlotname;
-	if (config.IsDefined("Delim")) {
-		anyConfig["Delim"] = config["Delim"].AsCharPtr(".")[0L];
-	}
-	if (config.IsDefined("IndexDelim")) {
-		anyConfig["IndexDelim"] = config["IndexDelim"].AsCharPtr(":")[0L];
-	}
 
-	SlotFinder::Operate(anyStore, dest, anyConfig);
+	SlotFinder::Operate(anyStore, dest, destSlotname, config["Delim"].AsCharPtr(".")[0L], config["IndexDelim"].AsCharPtr(":")[0L]);
 }
 
 Anything &StoreFinder::FindStore(Context &c, String &storeName)
