@@ -27,6 +27,15 @@ TimeStampRenderer::~TimeStampRenderer() { }
 void TimeStampRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(TimeStampRenderer.RenderAll);
+	ROAnything roaUxTimeSpec;
 	TimeStamp aStamp;
+	if ( !config.LookupPath(roaUxTimeSpec, "UnixTime") && config.GetSize() ) {
+		roaUxTimeSpec = config[0L];
+	}
+	TraceAny(roaUxTimeSpec, "UnixTime-spec");
+	if ( !roaUxTimeSpec.IsNull() ) {
+		time_t tTime = Renderer::RenderToStringWithDefault(ctx, roaUxTimeSpec, 0L).AsLong(0L);
+		aStamp = TimeStamp(tTime);
+	}
 	reply << aStamp.AsString();
 }

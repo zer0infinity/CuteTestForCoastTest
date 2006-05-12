@@ -19,8 +19,15 @@
 /*!
 <B>Configuration:</B><PRE>
 {
+	/UnixTime 	Rendererspec		optional, default current time, unix time to use for timestamp
+}
+or just
+{
+	Rendererspec	optional, default current time, unix time to use for timestamp
+}
+{
 }</PRE>
-This renderer simply creates a TimeStamp object from current system time and puts the human readable String onto the reply stream.
+This renderer simply creates a TimeStamp object from current system time or given unix time value and puts the human readable String onto the reply stream.
 The output format is fixed to the format returned from the object.
 Currently it is (in strftime format): "%Y%m%d%H%M%S"
 */
