@@ -144,7 +144,6 @@ bool LDAPConnectionManager::SetLdapConnection(long maxConnections, const String 
 		Trace("handleInfo type: " << handleInfo.GetType());
 		handleInfo["Handle"]  	= (IFAObject *) handle;
 		handleInfo["LastRebind"]  = TimeStamp::Now().AsString();
-		handleInfo["MustRebind"]  = 0;
 		SetHandleInfo(maxConnections, poolId, handleInfo);
 	}
 	Trace("Set: " << poolId << " "  <<
