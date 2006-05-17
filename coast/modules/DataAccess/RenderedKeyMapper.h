@@ -9,6 +9,8 @@
 #ifndef _RenderedKeyMapper_H
 #define _RenderedKeyMapper_H
 
+#include "config_dataaccess.h"
+
 //---- ResultMapper include -------------------------------------------------
 #include "Mapper.h"
 
@@ -22,7 +24,7 @@
 }</PRE>
 The value Anything to put will be temporarily pushed onto the context to allow lookups within.
 */
-class RenderedKeyMapper : public ResultMapper
+class EXPORTDECL_DATAACCESS RenderedKeyMapper : public ResultMapper
 {
 public:
 	//--- constructors
