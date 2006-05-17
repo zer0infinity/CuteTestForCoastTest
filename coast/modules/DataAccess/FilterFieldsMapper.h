@@ -9,8 +9,9 @@
 #ifndef _FilterFieldsMapper_H
 #define _FilterFieldsMapper_H
 
+#include "config_dataaccess.h"
+
 //---- ResultMapper include -------------------------------------------------
-#include "config_hikups.h"
 #include "Mapper.h"
 
 //---- FilterFieldsMapper ----------------------------------------------------------
@@ -23,7 +24,7 @@
 	}
 }</PRE>
 */
-class EXPORTDECL_HIKUPS FilterFieldsMapper : public ResultMapper
+class EXPORTDECL_DATAACCESS FilterFieldsMapper : public ResultMapper
 {
 public:
 	//--- constructors
