@@ -84,35 +84,34 @@ bool Role::Synchronize(Context &)
 bool Role::CheckLevel(const String &queryRoleName) const
 {
 	StartTrace(Role.CheckLevel);
-	const Role *r = this;
 	String strRoleName(fName);
 	Trace("my role name [" << strRoleName << "]");
 
-	bool bLevelOK = false;
-	long lThisLevel = 0L;
-
-	// we iterate over the role hierarchy to find out the role level
-	// first find out the level of the current Role
-	bLevelOK = queryRoleName.IsEqual(strRoleName);
-	while (!bLevelOK && r && (r = (Role *)r->GetSuper())) {
-		++lThisLevel;
-		r->GetName(strRoleName);
-		Trace("Super role name [" << strRoleName << "]");
-		if (queryRoleName.IsEqual(strRoleName)) {
-			bLevelOK = true;
-		}
-	}
-	Trace("this  Role <" << fName << "> has Level " << lThisLevel);
+	bool bLevelOk = false;
+	if ( !( bLevelOk = queryRoleName.IsEqual(strRoleName) ) ) {
 #if defined(DEBUG)
-	// just for informational purpose
-	long lQueryLevel = 0L;
-	r = Role::FindRole(queryRoleName);
-	while (r && (r = (Role *)r->GetSuper())) {
-		++lQueryLevel;
-	}
-	Trace("query Role <" << queryRoleName << "> has Level " << lQueryLevel);
+		// the role level is not really relevant because the role name decides if we are in the correct role
+		// this code is just fo informational purposes
+		GetRoleLevel( this );
+		GetRoleLevel( Role::FindRole(queryRoleName) );
 #endif
-	return bLevelOK;
+	}
+	return bLevelOk;
+}
+
+long Role::GetRoleLevel(const Role *pRole) const
+{
+	StartTrace(Role.GetRoleLevel);
+	long lLevel = 0;
+	String strRoleName;
+	if ( pRole ) {
+		pRole->GetName(strRoleName);
+	}
+	while ( pRole && ( pRole = (Role *)pRole->GetSuper() ) ) {
+		++lLevel;
+	}
+	Trace("Role <" << strRoleName << "> has Level " << lLevel);
+	return lLevel;
 }
 
 long Role::GetTimeout()

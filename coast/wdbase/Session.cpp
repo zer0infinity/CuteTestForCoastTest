@@ -209,10 +209,11 @@ Role *Session::GetRole(Context &ctx) const
 	String role_name = ((ROAnything)fStore)["RoleName"].AsString("");
 	if (role_name.Length() > 0) {
 		role = Role::FindRole(role_name);
+		Trace("RoleName of fStore: [" << role_name << "]");
 	} else {
 		role_name = Role::GetDefaultRoleName(ctx);
 		role = Role::FindRoleWithDefault(role_name, ctx);
-
+		Trace("Default RoleName: [" << role_name << "]");
 		if (role) {
 			((Session *)this)->PutInStore("RoleName", role_name);
 		}
@@ -491,7 +492,7 @@ void Session::DoRenderBusyPage(ostream &reply, Context &ctx)
 void Session::DoFindNextPage(Context &context, String &transition, String &currentpage)
 {
 	StartTrace(Session.DoFindNextPage);
-	Trace( "before transition =<" << transition << "> page = <" << currentpage << ">" << " role = <" << GetRoleName(context) << ">");
+	Trace( "before transition =<" << transition << "> page = <" << currentpage << ">" << " role of session = <" << GetRoleName(context) << ">");
 	bool done = false;
 	GetRole(context)->PrepareTmpStore(context);
 	do {
@@ -515,10 +516,10 @@ void Session::DoFindNextPage(Context &context, String &transition, String &curre
 		}
 		done = PreparePage(context, transition, currentpage) || done;
 		if ( ! done ) {
-			Trace("intermediate transition =<" << transition << "> page = <" << currentpage << "> role = <" << GetRoleName(context) << ">");
+			Trace("intermediate transition =<" << transition << "> page = <" << currentpage << "> role of session = <" << GetRoleName(context) << ">");
 		}
 	} while (!done);
-	Trace("after transition =<" << transition << "> page = <" << currentpage << "> role = <" << NotNullStr(GetRoleName(context)) << ">");
+	Trace("after transition =<" << transition << "> page = <" << currentpage << "> role of session = <" << NotNullStr(GetRoleName(context)) << ">");
 }
 
 void Session::SetupContext(Context &context, String &transition, String &pagename)
@@ -740,9 +741,10 @@ bool Session::RetrieveFromDelayed(Context &context, String &action, String &curr
 {
 	StartTrace1(Session.RetrieveFromDelayed, "Session: <" << fId << "> Action: <" << action << "> CurrentPage: <" << currentpage << ">");
 	// but first we have to check whether the current action triggers a role exchange has already happened
-	Anything query(context.GetQuery());
-	if (fStore.IsDefined("delayed") && query.IsDefined("delayedIndex")) {
-		long index = query["delayedIndex"].AsLong(0);
+	ROAnything roaQuery(context.GetQuery());
+	TraceAny(((ROAnything)fStore)["delayed"], "delayed content in session");
+	if (fStore.IsDefined("delayed") && roaQuery.IsDefined("delayedIndex")) {
+		long index = roaQuery["delayedIndex"].AsLong(0);
 		if ( index >= 0 ) {
 			Anything delayed(fStore["delayed"][index], fStore.GetAllocator());
 			// restore old environment
@@ -750,10 +752,12 @@ bool Session::RetrieveFromDelayed(Context &context, String &action, String &curr
 			if (delayed.LookupPath(previousEnv, "delayedEnv")) {
 				delayed.Remove("delayedEnv");
 				Anything env(context.GetEnvStore());
+				TraceAny(env, "env before modification");
 				for (long i = 0, sz = previousEnv.GetSize(); i < sz; ++i) {
 					const char *slot = previousEnv.SlotName(i);
 					env[slot] = previousEnv[i]; // this will copy
 				}
+				TraceAny(env, "modified env");
 			}
 			context.SetQuery(fStore["delayed"][index]);
 			fStore["delayed"].Remove(index);
@@ -768,12 +772,15 @@ bool Session::RetrieveFromDelayed(Context &context, String &action, String &curr
 			} else {
 				transition = "Home";
 			}
+			Trace("transition [" << transition << "]");
 			String lastAction(delayed["action"].AsCharPtr(transition));
 			const char *lastpage = delayed["page"].AsCharPtr(context.Lookup("StartPage", "HomePage"));
+			Trace("lastpage [" << lastpage << "] lastAction [" << lastAction << "]");
 			if ( lastAction.Length() > 0 ) {
 				// yes there was really something to do
 				action = lastAction;
 				currentpage = lastpage;
+				Trace("final action [" << action << "] on page [" << currentpage << "]");
 				return true; // re-iterate in RenderNextPage
 			}
 		}

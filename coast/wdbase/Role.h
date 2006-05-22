@@ -117,6 +117,9 @@ protected:
 	//! default implementation allows "Logout" for all roles
 	//! \param transition paramater from query["action"] (called action for historical reasons)
 	virtual bool TransitionAlwaysOK(const String &transition);
+
+private:
+	long GetRoleLevel(const Role *pRole) const;
 };
 
 #define RegisterRole(name) RegisterObject(name, Role)
