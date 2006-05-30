@@ -76,7 +76,7 @@ void SSLObjectManagerTest::UsePassedInCtxTest()
 			TraceAny(clientInfo, "clientInfo");
 			assertEqual(cConfig["Results"]["SSLCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["SSLCertVerifyStatus"]["SSL"]["Ok"].AsBool(0));
 			assertEqual(cConfig["Results"]["AppLevelCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["AppLevelCertVerifyStatus"].AsBool(0));
-			assertEqual(cConfig["Results"]["IsCertCheckPassed"].AsBool(1), sc.IsCertCheckPassed(cConfig["Config"]));
+			assertEqual(cConfig["Results"]["IsCertCheckPassed"].AsBool(1), s->IsCertCheckPassed(cConfig["Config"]));
 
 			if (t_assert(s1 != NULL) && t_assert(s != NULL)) {
 				TraceAny(s->ClientInfo(), "peer info");
@@ -115,7 +115,7 @@ void SSLObjectManagerTest::ReUseCreatedCtxTest()
 			TraceAny(clientInfo, "clientInfo");
 			assertEqual(cConfig["Results"]["SSLCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["SSLCertVerifyStatus"]["SSL"]["Ok"].AsBool(0));
 			assertEqual(cConfig["Results"]["AppLevelCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["AppLevelCertVerifyStatus"].AsBool(0));
-			assertEqual(cConfig["Results"]["IsCertCheckPassed"].AsBool(1), sc.IsCertCheckPassed(cConfig["Config"]));
+			assertEqual(cConfig["Results"]["IsCertCheckPassed"].AsBool(1), s->IsCertCheckPassed(cConfig["Config"]));
 
 			if (t_assert(s1 != NULL) && t_assert(s != NULL)) {
 				TraceAny(s->ClientInfo(), "peer info");
@@ -147,7 +147,7 @@ void SSLObjectManagerTest::SessionResumptionWithMinimumConfigTest()
 			TraceAny(clientInfo, "clientInfo");
 			assertEqual(cConfig["Results"]["SSLCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["SSLCertVerifyStatus"]["SSL"]["Ok"].AsBool(0));
 			assertEqual(cConfig["Results"]["AppLevelCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["AppLevelCertVerifyStatus"].AsBool(0));
-			assertEqual(cConfig["Results"]["IsCertCheckPassed"].AsBool(1), sc.IsCertCheckPassed(cConfig["Config"]));
+			assertEqual(cConfig["Results"]["IsCertCheckPassed"].AsBool(1), s->IsCertCheckPassed(cConfig["Config"]));
 			if ( ii == 0 || ii == 256 ) {
 				assertEquals(0, clientInfo["SSL"]["SessionIsResumed"].AsLong(1));
 			} else {
@@ -191,7 +191,7 @@ void SSLObjectManagerTest::SessionResumptionTest()
 			TraceAny(clientInfo, "clientInfo");
 			assertEqual(cConfig["Results"]["SSLCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["SSLCertVerifyStatus"]["SSL"]["Ok"].AsBool(0));
 			assertEqual(cConfig["Results"]["AppLevelCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["AppLevelCertVerifyStatus"].AsBool(0));
-			assertEqual(cConfig["Results"]["IsCertCheckPassed"].AsBool(1), sc.IsCertCheckPassed(cConfig["Config"]));
+			assertEqual(cConfig["Results"]["IsCertCheckPassed"].AsBool(1), s->IsCertCheckPassed(cConfig["Config"]));
 			if ( ii == 0 || ii == 256 ) {
 				assertEquals(0, clientInfo["SSL"]["SessionIsResumed"].AsLong(1));
 			} else {
@@ -235,7 +235,7 @@ void SSLObjectManagerTest::NoSessionResumptionTest()
 			TraceAny(clientInfo, "clientInfo");
 			assertEqual(cConfig["Results"]["SSLCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["SSLCertVerifyStatus"]["SSL"]["Ok"].AsBool(0));
 			assertEqual(cConfig["Results"]["AppLevelCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["AppLevelCertVerifyStatus"].AsBool(0));
-			assertEqual(cConfig["Results"]["IsCertCheckPassed"].AsBool(1), sc.IsCertCheckPassed(cConfig["Config"]));
+			assertEqual(cConfig["Results"]["IsCertCheckPassed"].AsBool(1), s->IsCertCheckPassed(cConfig["Config"]));
 			assertEquals(0, clientInfo["SSL"]["SessionIsResumed"].AsLong(1));
 			if (t_assert(s1 != NULL) && t_assert(s != NULL)) {
 				(*s1) << "GET / HTTP/1.0" << ENDL << ENDL << flush;

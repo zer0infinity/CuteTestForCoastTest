@@ -314,7 +314,7 @@ void SSLConnectorTest::getSessionIDTest()
 	}
 
 	TraceAny(sock1->ClientInfo(), "ClientInfo");
-	t_assert(sslConnector1.IsCertCheckPassed(Anything()));
+	t_assert(sock1->IsCertCheckPassed(Anything()));
 	String session_id1(sock1->ClientInfo()["SSL"]["SessionId"].AsString());
 	t_assert(session_id1.Length() > 3);
 	Trace("session_id_length: " << session_id1.Length());
@@ -328,7 +328,7 @@ void SSLConnectorTest::getSessionIDTest()
 	}
 
 	TraceAny(sock2->ClientInfo(), "ClientInfo");
-	t_assert(sslConnector2.IsCertCheckPassed(Anything()));
+	t_assert(sock2->IsCertCheckPassed(Anything()));
 	String session_id2(sock2->ClientInfo()["SSL"]["SessionId"].AsString());
 	t_assert(session_id2.Length() > 3);
 //	assertEqual(session_id1, session_id2); // session reuse does not work yet
