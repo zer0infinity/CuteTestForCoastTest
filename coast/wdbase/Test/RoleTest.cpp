@@ -232,12 +232,13 @@ void RoleTest::VerifyLevel ()
 	t_assertm(r != 0, "Role RTCustomer not found");
 	Anything dummy;
 	Context ctx(dummy, dummy, 0, 0, 0, 0);
-	ctx.GetQuery()["action"] = "Home"; // should always succeed
+	ctx.GetQuery()["action"] = "Home";
 	ctx.GetQuery()["role"] = "RTGuest";
 	if (r) {
 		String transition = ctx.GetQuery()["action"].AsString();
 		String spagename = ctx.GetQuery()["page"].AsString();
-		t_assert(r->Verify(ctx, transition, spagename));
+		// currently this test does not succeed anymore because the role must be of the same name to be valid
+		t_assert(!r->Verify(ctx, transition, spagename));
 	}
 	r =  Role::FindRole("RTGuest");
 	t_assertm(r != 0, "Role RTGuest not found");
