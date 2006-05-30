@@ -93,6 +93,15 @@ public:
 	//!returns amount of bytes wrote from belonging iostream:
 	virtual long GetWriteCount() const;
 
+	//! Application queries the overall outcome of the ssl handshake. The returncode
+	//! depends on the settings given to SSLModule (used for SSL_CTX creation)
+	//! and the per-request parameters (affecting the SSL "object") given in
+	//! SSLSocketArgs. If the parameters given result in the net effect of not
+	//! checking the certifiate at all, true is returned.
+	//! For this reason IsCertCheckPassed may be called even if no cert checking is
+	//! needed/required.
+	virtual bool IsCertCheckPassed(ROAnything config);
+
 protected:
 	virtual iostream *DoMakeStream();
 	virtual int PrepareSocket(SSL *) = 0;
@@ -180,14 +189,6 @@ public:
 	SSLConnector(ROAnything config, SSL_CTX *, bool deleteCtx = true);
 
 	virtual ~SSLConnector();
-	//! Application queries the overall outcome of the ssl handshake. The returncode
-	//! depends on the settings given to SSLModule (used for SSL_CTX creation)
-	//! and the per-request parameters (affecting the SSL "object") given in
-	//! SSLSocketArgs. If the parameters given result in the net effect of not
-	//! checking the certifiate at all, true is returned.
-	//! For this reason IsCertCheckPassed may be called even if no cert checking is
-	//! needed/required.
-	bool IsCertCheckPassed(ROAnything config);
 
 protected:
 

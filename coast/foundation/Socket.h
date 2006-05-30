@@ -193,6 +193,12 @@ public:
 		\return true in case of success */
 	static bool SetSockoptReuseAddr(int socketfd, bool bReuse = true);
 
+	//!Providing default implementation of this method to avoid runtime errors
+	// if people are calling me based upon a Socket *
+	virtual bool IsCertCheckPassed(ROAnything config) {
+		return false;
+	}
+
 protected:
 	//! DoMakeStream allocates a socket iostream, overwrite these method if you need something specific
 	virtual iostream *DoMakeStream();
@@ -408,13 +414,9 @@ public:
 		return fConnectTimeout;
 	}
 
-	//!Providing default implementation of this method to avoid runtime errors.
-	virtual bool IsCertCheckPassed(ROAnything config) {
-		return false;
-	}
-
 	//!returns the information collected in the socket used by Connector
 	Anything ClientInfo();
+
 protected:
 	//! creates a Socket object everytime, the caller is responsible for destruction
 	//! \param  doClose - specifies for the socket to be created whether the socket will be closed on destruction

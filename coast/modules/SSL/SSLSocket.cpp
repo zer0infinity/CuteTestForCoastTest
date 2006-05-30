@@ -360,6 +360,37 @@ bool SSLSocket::CheckPeerCertificate(SSL *ssl,  Anything &sslinfo)
 	return ret;
 }
 
+bool SSLSocket::IsCertCheckPassed(ROAnything config)
+{
+	StartTrace(SSLSocket.IsCertCheckPassed);
+	TraceAny(config, "the Config");
+
+	Anything clientInfo(ClientInfo());
+	TraceAny(clientInfo, "ClientInfo");
+	Trace(fSSLSocketArgs.ShowState());
+
+	// No peer verification requested, no callback installed, no application layer check specified...
+	if ((config["SSLVerifyPeerCert"].AsLong(0) 			== 0) &&
+		(config["SSLVerifyFailIfNoPeerCert"].AsLong(0)	== 0) &&
+		(config["SSLUseAppCallback"].AsLong(0)			== 0) &&
+		(fSSLSocketArgs.VerifyCertifiedEntity() == 0)) {
+		Trace("Returning true");
+		return true;
+	}
+	// We must verify certified entity....
+	if ( fSSLSocketArgs.VerifyCertifiedEntity() ) {
+		bool ret = clientInfo["SSL"]["Peer"]["AppLevelCertVerifyStatus"].AsLong(0) != 0L;
+		Trace("Returning " << ret);
+		return ret;
+	}
+	if (clientInfo["SSL"]["Peer"]["SSLCertVerifyStatus"]["SSL"]["Ok"].AsLong(0) == 1) {
+		Trace("Returning true");
+		return true;
+	}
+	Trace("Returning false");
+	return false;
+}
+
 //Anything SSLSocket::GetPeer()
 //{
 //	Anything result;
@@ -618,37 +649,6 @@ Socket *SSLConnector::MakeSocket(bool doClose)
 		}
 	}
 	return s;
-}
-
-bool SSLConnector::IsCertCheckPassed(ROAnything config)
-{
-	StartTrace(SSLConnector.IsCertCheckPassed);
-	TraceAny(config, "the Config");
-
-	Anything clientInfo(ClientInfo());
-	TraceAny(clientInfo, "ClientInfo");
-	Trace(fSSLSocketArgs.ShowState());
-
-	// No peer verification requested, no callback installed, no application layer check specified...
-	if ((config["SSLVerifyPeerCert"].AsLong(0) 			== 0) &&
-		(config["SSLVerifyFailIfNoPeerCert"].AsLong(0)	== 0) &&
-		(config["SSLUseAppCallback"].AsLong(0)			== 0) &&
-		(fSSLSocketArgs.VerifyCertifiedEntity() == 0)) {
-		Trace("Returning true");
-		return true;
-	}
-	// We must verify certified entity....
-	if ( fSSLSocketArgs.VerifyCertifiedEntity() ) {
-		bool ret = clientInfo["SSL"]["Peer"]["AppLevelCertVerifyStatus"].AsLong(0) != 0L;
-		Trace("Returning " << ret);
-		return ret;
-	}
-	if (clientInfo["SSL"]["Peer"]["SSLCertVerifyStatus"]["SSL"]["Ok"].AsLong(0) == 1) {
-		Trace("Returning true");
-		return true;
-	}
-	Trace("Returning false");
-	return false;
 }
 
 Socket *SSLConnector::DoMakeSocket(int socket, Anything &clientInfo, bool doClose)

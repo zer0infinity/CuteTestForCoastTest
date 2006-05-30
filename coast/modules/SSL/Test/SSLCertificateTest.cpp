@@ -60,7 +60,7 @@ void SSLCertificateTest::clientCertificateTest()
 		Anything clientInfo(sc.ClientInfo());
 		assertEqual(cConfig["Results"]["SSLCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["SSLCertVerifyStatus"]["SSL"]["Ok"].AsBool(0));
 		assertEqual(cConfig["Results"]["AppLevelCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["AppLevelCertVerifyStatus"].AsBool(0));
-		assertEqual(cConfig["Results"]["IsCertCheckPassed"].AsBool(1), sc.IsCertCheckPassed(cConfig["Config"]));
+		assertEqual(cConfig["Results"]["IsCertCheckPassed"].AsBool(1), s->IsCertCheckPassed(cConfig["Config"]));
 		if ( cConfig["Results"]["GetRequestOk"].AsBool(1) ) {
 			if (t_assert(s1 != NULL) && t_assert(s != NULL)) {
 				TraceAny(s->ClientInfo(), "peer info");
