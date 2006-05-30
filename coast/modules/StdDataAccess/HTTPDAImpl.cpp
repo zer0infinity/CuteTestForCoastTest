@@ -100,7 +100,7 @@ bool HTTPDAImpl::DoExec(Connector *csc, ConnectorParams *cps, Context &context, 
 		if ( s ) {
 			Ios = csc->GetStream();
 			if ( cps->UseSSL() ) {
-				if ( csc->IsCertCheckPassed(context.Lookup("SSLModuleCfg")) == false ) {
+				if ( s->IsCertCheckPassed(context.Lookup("SSLModuleCfg")) == false ) {
 					return false;
 				}
 			}
