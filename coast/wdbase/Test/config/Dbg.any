@@ -20,6 +20,10 @@
 		/MainSwitch	0
 		/EnableAll	33
 	}
+	/RoleTest {
+		/MainSwitch	0
+		/EnableAll	33
+	}
 	/Registry {
 		/MainSwitch	0
 		/EnableAll	33
@@ -63,7 +67,7 @@
 		/EnableAll	1221
 	}
 	/AcceptorFactory {
-		/MainSwitch	0
+		/MainSwitch	33
 		/EnableAll	33
 	}
 	/ListenerThread {
@@ -141,7 +145,7 @@
 		/EnableAll	0
 	}
 	/Context {
-		/MainSwitch		33
+		/MainSwitch		0
 		/EnableAll		0
 		/Find 			10000
 		/FindIndex 		10000
@@ -157,7 +161,7 @@
 		/IntGetStore	33
 	}
 	/ContextTest {
-		/MainSwitch	33
+		/MainSwitch	0
 		/EnableAll	33
 	}
 	/ConfNamedObject {
@@ -309,16 +313,16 @@
 		/EnableAll	7100
 	}
 	/LeaderFollowerPool {
-		/MainSwitch	0
+		/MainSwitch	33
 		/EnableAll	33
 	}
 	/MasterServerTest {
-		/MainSwitch	33
-		/EnableAll	0
+		/MainSwitch	0
+		/EnableAll	33
 	}
 	/MasterServer {
-		/MainSwitch	33
-		/EnableAll	0
+		/MainSwitch	0
+		/EnableAll	33
 	}
 	/ServerThread {
 		/MainSwitch	0
@@ -330,10 +334,14 @@
 		/DoLookup	-33
 	}
 	/ServerTest {
-		/MainSwitch	33
+		/MainSwitch	0
 		/EnableAll	33
 	}
 	/ServerThreadPoolsManager {
+		/MainSwitch	0
+		/EnableAll	33
+	}
+	/ServerLFThreadPoolsManager {
 		/MainSwitch	0
 		/EnableAll	33
 	}
@@ -350,7 +358,7 @@
 		/EnableAll	33
 	}
 	/SimpleListenerPoolTest {
-		/MainSwitch				33
+		/MainSwitch				0
 		/EnableAll				34
 		/DoTestConnect			33
 	}
@@ -359,7 +367,7 @@
 		/EnableAll				34
 	}
 	/ListenerPoolTest {
-		/MainSwitch				33
+		/MainSwitch				0
 		/EnableAll				34
 		/DoTestConnect			33
 	}
@@ -406,7 +414,7 @@
 		/EnableAll				33
 	}
 	/SimpleTestApp {
-		/MainSwitch				33
+		/MainSwitch				0
 		/EnableAll				33
 	}
 	/TimeStamp {
