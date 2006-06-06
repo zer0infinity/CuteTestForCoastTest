@@ -53,9 +53,7 @@
 #include "ThreadedTimeStampTest.h"
 #include "ConfiguredLookupAdapterTest.h"
 
-#if !defined(WIN32)
-#include "SetupCase.h"
-#else
+#if defined(WIN32)
 #include "config_bases.h"
 void bases()
 {
@@ -65,11 +63,7 @@ void bases()
 
 void setupRunner(TestRunner &runner)
 {
-#if !defined(WIN32)
-	ADD_SUITE(runner, SetupCase);
-#endif
-
-//	ADD_SUITE(runner,ThreadedTimeStampTest);
+	ADD_SUITE(runner, ThreadedTimeStampTest);
 	ADD_SUITE(runner, ActionCoreTest);
 	ADD_SUITE(runner, InterruptHandlerTest);
 	ADD_SUITE(runner, LocalizedStringsTest);
@@ -108,5 +102,4 @@ void setupRunner(TestRunner &runner)
 	ADD_SUITE(runner, URLEncoderTest);
 	ADD_SUITE(runner, SessionListManagerTest);
 	ADD_SUITE(runner, WDModuleTest);
-
 } // setupRunner
