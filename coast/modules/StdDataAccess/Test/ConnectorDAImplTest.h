@@ -10,7 +10,7 @@
 #define _ConnectorDAImplTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 #include "Socket.h"
 #include "Threads.h"
 
@@ -22,7 +22,7 @@ class AcceptorThread;
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class ConnectorDAImplTest : public ConfiguredTestCase
+class ConnectorDAImplTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors
@@ -40,9 +40,12 @@ public:
 	void setUp ();
 	//! deletes the environment for this test
 	void tearDown ();
+
 	//! describe this testcase
 	void SendReceiveOnceTest();
 	void RecreateSocketTest();
+
+	TString getConfigFileName();
 
 	bool IsSocketValid(int socketFd);
 

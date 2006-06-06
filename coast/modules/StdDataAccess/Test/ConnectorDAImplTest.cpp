@@ -74,11 +74,16 @@ protected:
 
 //---- ConnectorDAImplTest ----------------------------------------------------------------
 ConnectorDAImplTest::ConnectorDAImplTest(TString strName)
-	: ConfiguredTestCase(strName, "ConnectorDAImplTestConfig")
+	: TestCaseType(strName)
 	, fCallBack(0)
 	, fAcceptorThread(0)
 {
-	StartTrace(ConnectorDAImplTest.Ctor);
+	StartTrace(ConnectorDAImplTest.ConnectorDAImplTest);
+}
+
+TString ConnectorDAImplTest::getConfigFileName()
+{
+	return "ConnectorDAImplTestConfig";
 }
 
 ConnectorDAImplTest::~ConnectorDAImplTest()
@@ -86,14 +91,12 @@ ConnectorDAImplTest::~ConnectorDAImplTest()
 	StartTrace(ConnectorDAImplTest.Dtor);
 }
 
-// setup for this TestCase
 void ConnectorDAImplTest::setUp ()
 {
 	StartTrace(ConnectorDAImplTest.setUp);
-	ConfiguredTestCase::setUp();
 
-	TraceAny(fTestCaseConfig, "TestCaseConfig");
-	ROAnything roaConfig(fTestCaseConfig);
+	TraceAny(GetTestCaseConfig(), "TestCaseConfig");
+	ROAnything roaConfig(GetTestCaseConfig());
 	String strHost = roaConfig["Address"].AsString();
 	long   lPort = roaConfig["Port"].AsLong();
 
@@ -122,7 +125,6 @@ void ConnectorDAImplTest::setUp ()
 void ConnectorDAImplTest::tearDown ()
 {
 	StartTrace(ConnectorDAImplTest.tearDown);
-	ConfiguredTestCase::tearDown();
 
 	if (fAcceptorThread) {
 		fAcceptorThread->Terminate();
@@ -147,13 +149,13 @@ bool ConnectorDAImplTest::IsSocketValid(int socketFd)
 void ConnectorDAImplTest::SendReceiveOnceTest()
 {
 	StartTrace(ConnectorDAImplTest.SendReceiveOnceTest);
-	TraceAny(fTestCaseConfig, "TestCaseConfig");
-
-	Context ctx(fTestCaseConfig);
+	TraceAny(GetTestCaseConfig(), "TestCaseConfig");
+	Anything anyEnv = GetTestCaseConfig().DeepClone();
+	Context ctx(anyEnv);
 	DataAccess aDA("SendReceiveOnce");
 	t_assert(aDA.StdExec(ctx));
 	Anything anyExpected;
-	StringStream stream(fTestCaseConfig["Input"].AsString());
+	StringStream stream(GetTestCaseConfig()["Input"].AsString());
 	anyExpected.Import(stream);
 	assertAnyEqual(anyExpected, fCallBack->GetLastRequest());
 	TraceAny(ctx.GetTmpStore(), "TmpStore");
@@ -162,9 +164,9 @@ void ConnectorDAImplTest::SendReceiveOnceTest()
 void ConnectorDAImplTest::RecreateSocketTest()
 {
 	StartTrace(ConnectorDAImplTest.RecreateSocketTest);
-	TraceAny(fTestCaseConfig, "TestCaseConfig");
-
-	Context ctx(fTestCaseConfig);
+	TraceAny(GetTestCaseConfig(), "TestCaseConfig");
+	Anything anyEnv = GetTestCaseConfig().DeepClone();
+	Context ctx(anyEnv);
 	{
 		DataAccess aDA("RecreateSocket");
 		ctx.GetTmpStore()["Input"] = "{ \"Kurt hat recht\" }";

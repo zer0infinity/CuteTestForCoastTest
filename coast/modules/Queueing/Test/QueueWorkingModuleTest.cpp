@@ -26,9 +26,14 @@
 
 //---- QueueWorkingModuleTest ----------------------------------------------------------------
 QueueWorkingModuleTest::QueueWorkingModuleTest(TString tstrName)
-	: ConfiguredTestCase(tstrName, "QueueWorkingModuleTestConfig")
+	: TestCaseType(tstrName)
 {
-	StartTrace(QueueWorkingModuleTest.Ctor);
+	StartTrace(QueueWorkingModuleTest.QueueWorkingModuleTest);
+}
+
+TString QueueWorkingModuleTest::getConfigFileName()
+{
+	return "QueueWorkingModuleTestConfig";
 }
 
 QueueWorkingModuleTest::~QueueWorkingModuleTest()
@@ -36,34 +41,20 @@ QueueWorkingModuleTest::~QueueWorkingModuleTest()
 	StartTrace(QueueWorkingModuleTest.Dtor);
 }
 
-// setup for this ConfiguredTestCase
-void QueueWorkingModuleTest::setUp ()
-{
-	StartTrace(QueueWorkingModuleTest.setUp);
-	ConfiguredTestCase::setUp();
-	TraceAny(fTestCaseConfig, "TestCaseConfig");
-}
-
-void QueueWorkingModuleTest::tearDown ()
-{
-	StartTrace(QueueWorkingModuleTest.tearDown);
-	ConfiguredTestCase::tearDown();
-}
-
 void QueueWorkingModuleTest::InitFinisNoModuleConfigTest()
 {
 	StartTrace(QueueWorkingModuleTest.InitFinisNoModuleConfigTest);
 	QueueWorkingModule aModule("QueueWorkingModule");
-	t_assertm( !aModule.Init(fTestCaseConfig["ModuleConfig"]), "module init should have failed due to missing configuration" );
+	t_assertm( !aModule.Init(GetTestCaseConfig()["ModuleConfig"]), "module init should have failed due to missing configuration" );
 }
 
 void QueueWorkingModuleTest::InitFinisDefaultsTest()
 {
 	StartTrace(QueueWorkingModuleTest.InitFinisDefaultsTest);
 	QueueWorkingModule aModule("QueueWorkingModule");
-	if ( t_assertm( aModule.Init(fTestCaseConfig["ModuleConfig"]), "module init should have succeeded" ) ) {
+	if ( t_assertm( aModule.Init(GetTestCaseConfig()["ModuleConfig"]), "module init should have succeeded" ) ) {
 		if ( t_assert( aModule.fpContext != NULL ) ) {
-			assertAnyEqual(fTestCaseConfig["ModuleConfig"]["QueueWorkingModule"], aModule.fpContext->GetEnvStore());
+			assertAnyEqual(GetTestCaseConfig()["ModuleConfig"]["QueueWorkingModule"], aModule.fpContext->GetEnvStore());
 		}
 		if ( t_assert( aModule.fpQueue != NULL ) ) {
 			assertEqualm(0L, aModule.fpQueue->GetSize(), "expected queue to be empty");
@@ -82,11 +73,11 @@ void QueueWorkingModuleTest::InitFinisTest()
 {
 	StartTrace(QueueWorkingModuleTest.InitFinisTest);
 	QueueWorkingModule aModule("QueueWorkingModule");
-	if ( t_assertm( aModule.Init(fTestCaseConfig["ModuleConfig"]), "module init should have succeeded" ) ) {
+	if ( t_assertm( aModule.Init(GetTestCaseConfig()["ModuleConfig"]), "module init should have succeeded" ) ) {
 		if ( t_assert( aModule.fpContext != NULL ) ) {
 			// check for invalid Server
 			t_assertm( NULL == aModule.fpContext->GetServer(), "server must be NULL because of non-existing server");
-			assertAnyEqual(fTestCaseConfig["ModuleConfig"]["QueueWorkingModule"], aModule.fpContext->GetEnvStore());
+			assertAnyEqual(GetTestCaseConfig()["ModuleConfig"]["QueueWorkingModule"], aModule.fpContext->GetEnvStore());
 		}
 		if ( t_assert( aModule.fpQueue != NULL ) ) {
 			assertEqualm(0L, aModule.fpQueue->GetSize(), "expected queue to be empty");
@@ -115,7 +106,7 @@ void QueueWorkingModuleTest::GetAndPutbackTest()
 		// fails because of uninitialized queue
 		t_assert( !aModule.GetElement(anyMsg) );
 	}
-	aModule.IntInitQueue(fTestCaseConfig["ModuleConfig"]["QueueWorkingModule"]);
+	aModule.IntInitQueue(GetTestCaseConfig()["ModuleConfig"]["QueueWorkingModule"]);
 	{
 		Anything anyMsg;
 		// must still fail because of dead-state
@@ -153,7 +144,7 @@ void QueueWorkingModuleTest::GetAndPutbackTest()
 	}
 }
 
-// builds up a suite of ConfiguredTestCases, add a line for each testmethod
+// builds up a suite of tests, add a line for each testmethod
 Test *QueueWorkingModuleTest::suite ()
 {
 	StartTrace(QueueWorkingModuleTest.suite);

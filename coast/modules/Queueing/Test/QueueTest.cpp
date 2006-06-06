@@ -122,7 +122,7 @@ private:
 	long fConsumed;
 };
 //---- QueueTest ----------------------------------------------------------------
-QueueTest::QueueTest(TString tstrName) : TestCase(tstrName)
+QueueTest::QueueTest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(QueueTest.Ctor);
 }
@@ -130,17 +130,6 @@ QueueTest::QueueTest(TString tstrName) : TestCase(tstrName)
 QueueTest::~QueueTest()
 {
 	StartTrace(QueueTest.Dtor);
-}
-
-// setup for this TestCase
-void QueueTest::setUp ()
-{
-	StartTrace(QueueTest.setUp);
-}
-
-void QueueTest::tearDown ()
-{
-	StartTrace(QueueTest.tearDown);
 }
 
 void QueueTest::SimplePutGetTest()

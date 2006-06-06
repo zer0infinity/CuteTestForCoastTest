@@ -16,10 +16,9 @@
 #include "SysLog.h"
 
 //--- c-modules used -----------------------------------------------------------
+#include <time.h>
 #if !defined(WIN32)
 #include <sys/time.h>
-#else
-#include <time.h>
 #endif
 
 #if defined(WIN32)

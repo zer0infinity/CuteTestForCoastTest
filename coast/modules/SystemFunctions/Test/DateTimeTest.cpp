@@ -23,27 +23,19 @@
 
 //---- DateTimeTest ----------------------------------------------------------------
 DateTimeTest::DateTimeTest(TString tstrName)
-	: ConfiguredTestCase(tstrName, "DateTimeTestConfig")
+	: TestCaseType(tstrName)
 {
-	StartTrace(DateTimeTest.Ctor);
+	StartTrace(DateTimeTest.DateTimeTest);
+}
+
+TString DateTimeTest::getConfigFileName()
+{
+	return "DateTimeTestConfig";
 }
 
 DateTimeTest::~DateTimeTest()
 {
 	StartTrace(DateTimeTest.Dtor);
-}
-
-// setup for this ConfiguredTestCase
-void DateTimeTest::setUp ()
-{
-	StartTrace(DateTimeTest.setUp);
-	ConfiguredTestCase::setUp();
-}
-
-void DateTimeTest::tearDown ()
-{
-	StartTrace(DateTimeTest.tearDown);
-	ConfiguredTestCase::tearDown();
 }
 
 void DateTimeTest::GetTimeZoneTest()
@@ -61,7 +53,7 @@ void DateTimeTest::GetTimeZoneTest()
 	t_assertm( (lSecUTC == lSecLoc) || (lSecUTCOneMore == lSecLoc), "expected timezone correction to work and be within 1 second difference");
 }
 
-// builds up a suite of ConfiguredTestCases, add a line for each testmethod
+// builds up a suite of tests, add a line for each testmethod
 Test *DateTimeTest::suite ()
 {
 	StartTrace(DateTimeTest.suite);
