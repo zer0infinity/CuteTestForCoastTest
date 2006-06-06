@@ -27,7 +27,7 @@ ServiceDispatchersModule::~ServiceDispatchersModule()
 {
 }
 
-bool ServiceDispatchersModule::Init(const Anything &config)
+bool ServiceDispatchersModule::Init(const ROAnything config)
 {
 	if (config.IsDefined("ServiceDispatchers")) {
 		HierarchyInstaller ai("ServiceDispatcher");
@@ -36,7 +36,7 @@ bool ServiceDispatchersModule::Init(const Anything &config)
 	return false;
 }
 
-bool ServiceDispatchersModule::ResetFinis(const Anything &config)
+bool ServiceDispatchersModule::ResetFinis(const ROAnything config)
 {
 	AliasTerminator at("ServiceDispatcher");
 	return RegisterableObject::ResetTerminate("ServiceDispatcher", &at);

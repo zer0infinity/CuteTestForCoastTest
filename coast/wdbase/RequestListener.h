@@ -21,10 +21,10 @@ public:
 	AcceptorFactoriesModule(const char *);
 	~AcceptorFactoriesModule();
 
-	virtual bool Init(const Anything &config);
+	virtual bool Init(const ROAnything config);
 	virtual bool Finis();
-	virtual bool ResetInit(const Anything &config);
-	virtual bool ResetFinis(const Anything &config);
+	virtual bool ResetInit(const ROAnything config);
+	virtual bool ResetFinis(const ROAnything config);
 };
 
 //---- AcceptorFactory -----------------------------------------------------------

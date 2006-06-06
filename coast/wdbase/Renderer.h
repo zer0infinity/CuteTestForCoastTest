@@ -21,8 +21,8 @@ public:
 	RenderersModule(const char *name);
 	~RenderersModule();
 
-	virtual bool Init(const Anything &config);
-	virtual bool ResetFinis(const Anything &);
+	virtual bool Init(const ROAnything config);
+	virtual bool ResetFinis(const ROAnything );
 	virtual bool Finis();
 };
 

@@ -34,7 +34,7 @@ PagesModule::~PagesModule()
 {
 }
 
-bool PagesModule::Init(const Anything &config)
+bool PagesModule::Init(const ROAnything config)
 {
 	if (config.IsDefined("Pages")) {
 		HierarchyInstaller hi("Page");
@@ -43,7 +43,7 @@ bool PagesModule::Init(const Anything &config)
 	return false;
 }
 
-bool PagesModule::ResetFinis(const Anything &config)
+bool PagesModule::ResetFinis(const ROAnything config)
 {
 	AliasTerminator at("Page");
 	return RegisterableObject::ResetTerminate("Page", &at);

@@ -32,7 +32,7 @@ TimeLoggingModule::~TimeLoggingModule()
 {
 }
 
-bool TimeLoggingModule::Init(const Anything &config)
+bool TimeLoggingModule::Init(const ROAnything config)
 {
 	StartTrace(TimeLoggingModule.Init);
 	SubTraceAny(FullConfig, config, "Config: ");
@@ -55,13 +55,13 @@ bool TimeLoggingModule::Finis()
 	return true;
 }
 
-bool TimeLoggingModule::ResetInit(const Anything &config)
+bool TimeLoggingModule::ResetInit(const ROAnything config)
 {
 	StartTrace(TimeLoggingModule.ResetInit);
 	return WDModule::ResetInit(config);
 }
 
-bool TimeLoggingModule::ResetFinis(const Anything &config)
+bool TimeLoggingModule::ResetFinis(const ROAnything config)
 {
 	StartTrace(TimeLoggingModule.ResetFinis);
 	return WDModule::ResetFinis(config);

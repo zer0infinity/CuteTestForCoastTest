@@ -26,7 +26,7 @@ ServerPoolsManagerInterfacesModule::~ServerPoolsManagerInterfacesModule()
 {
 }
 
-bool ServerPoolsManagerInterfacesModule::Init(const Anything &config)
+bool ServerPoolsManagerInterfacesModule::Init(const ROAnything config)
 {
 	if (config.IsDefined("ServerPoolsManagerInterfaces")) {
 		AliasInstaller ai("ServerPoolsManagerInterface");
@@ -35,7 +35,7 @@ bool ServerPoolsManagerInterfacesModule::Init(const Anything &config)
 	return false;
 }
 
-bool ServerPoolsManagerInterfacesModule::ResetFinis(const Anything &)
+bool ServerPoolsManagerInterfacesModule::ResetFinis(const ROAnything )
 {
 	AliasTerminator at("ServerPoolsManagerInterface");
 	return RegisterableObject::ResetTerminate("ServerPoolsManagerInterface", &at);

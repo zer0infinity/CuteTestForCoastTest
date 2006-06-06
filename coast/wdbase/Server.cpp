@@ -51,7 +51,7 @@ ServersModule::~ServersModule()
 {
 }
 
-bool ServersModule::Init(const Anything &config)
+bool ServersModule::Init(const ROAnything config)
 {
 	StartTrace(ServersModule.Init);
 	if (config.IsDefined("Servers")) {
@@ -82,12 +82,12 @@ void ServersModule::CheckServerConfigs()
 	}
 }
 
-bool ServersModule::ResetFinis(const Anything &)
+bool ServersModule::ResetFinis(const ROAnything )
 {
 	return true; // do nothing here
 }
 
-bool ServersModule::ResetInit(const Anything &config)
+bool ServersModule::ResetInit(const ROAnything config)
 {
 	StartTrace(ServersModule.ResetInit);
 	CheckServerConfigs(); // force reload of configuration
@@ -294,7 +294,7 @@ long Server::GetThreadPoolSize()
 	return ConfNamedObject::Lookup("ThreadPoolSize", 25L);
 }
 
-int Server::ReInit(const Anything &)
+int Server::ReInit(const ROAnything )
 {
 	StartTrace(Server.ReInit);
 	long ret = SetupDispatcher(); // hidden dependency in module init/termination sequence!
@@ -609,10 +609,10 @@ int MasterServer::Init()
 	return retCode;
 }
 
-int MasterServer::ReInit(const Anything &config)
+int MasterServer::ReInit(const ROAnything config)
 {
 	StartTrace(MasterServer.ReInit);
-	fgConfig = config;
+	fgConfig = config.DeepClone();
 	CheckConfig("Application", true);
 	long retCode = 0;
 	for (long i = 0; (retCode == 0) && (i < fNumServers); ++i) {
@@ -754,7 +754,7 @@ int ServerThread::Init(ROAnything config)
 	return -1;
 }
 
-int ServerThread::ReInit(const Anything &config)
+int ServerThread::ReInit(const ROAnything config)
 {
 	if (fServer) {
 		return fServer->ReInit(config);

@@ -32,10 +32,10 @@ public:
 	ServersModule(const char *);
 	~ServersModule();
 
-	virtual bool Init(const Anything &config);
+	virtual bool Init(const ROAnything config);
 	virtual bool Finis();
-	virtual bool ResetInit(const Anything &);
-	virtual bool ResetFinis(const Anything &);
+	virtual bool ResetInit(const ROAnything );
+	virtual bool ResetFinis(const ROAnything );
 	virtual void CheckServerConfigs();
 	// access implicitely protected by Server::fgReInitMutex
 	static	Server *GetServerForReInit() {
@@ -81,7 +81,7 @@ public:
 	virtual int Init();
 
 	//!reintialization of the servers Thread Pool for request processing (RequestThreadsManager) and Acceptors (ListenerPool)
-	virtual int ReInit(const Anything &config);
+	virtual int ReInit(const ROAnything config);
 	//!starts the session cleaner thread and the ListenerPool, waits for termination
 	virtual int Run();
 	//!stops the ListenerPool and waits for requests to terminate; server is shutdown
@@ -206,7 +206,7 @@ public:
 	virtual int Init();
 	//! life-cycle of the server init run terminate
 	//!: intialization of the Server and its modules
-	virtual int ReInit(const Anything &config);
+	virtual int ReInit(const ROAnything config);
 	//! accepting requests
 	virtual int Run();
 	//! termination of the Server modules
@@ -240,7 +240,7 @@ public:
 	virtual void PrepareShutdown(long retCode);
 	virtual int BlockRequests();
 	virtual int  UnblockRequests();
-	virtual int ReInit(const Anything &config);
+	virtual int ReInit(const ROAnything config);
 
 	//!check if server is ready and running
 	bool IsReady(bool ready, long timeout);

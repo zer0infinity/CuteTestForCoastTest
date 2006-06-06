@@ -61,7 +61,7 @@ LocalizationModule::~LocalizationModule()
 	StartTrace(LocalizationModule.~LocalizationModule);
 }
 
-bool LocalizationModule::Init(const Anything &config)
+bool LocalizationModule::Init(const ROAnything config)
 {
 	StartTrace(LocalizationModule.Init);
 	// add localized strings

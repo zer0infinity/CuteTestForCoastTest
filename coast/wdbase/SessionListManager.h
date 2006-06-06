@@ -28,8 +28,8 @@ public:
 	SessionFactoriesModule(const char *name);
 	~SessionFactoriesModule();
 
-	virtual bool Init(const Anything &config);
-	virtual bool ResetFinis(const Anything &);
+	virtual bool Init(const ROAnything config);
+	virtual bool ResetFinis(const ROAnything );
 	virtual bool Finis();
 };
 
@@ -91,13 +91,13 @@ public:
 
 	//--- module initialization termination ---
 	//!initialize SessionList during initialization phase
-	virtual bool Init(const Anything &config);
+	virtual bool Init(const ROAnything config);
 	//!finalize SessionList (delete all Sessions) during termination phase
 	virtual bool Finis();
 	//!terminate SessionListManager for reset
-	virtual bool ResetFinis(const Anything &);
+	virtual bool ResetFinis(const ROAnything );
 	//!reinitializes max values and restarts session cleaner thread
-	virtual bool ResetInit(const Anything &config);
+	virtual bool ResetInit(const ROAnything config);
 
 	//!create a session if possible; try to cleanup if fMaxSessionsAllowed is reached
 	virtual Session *CreateSession(String &id, Context &ctx);

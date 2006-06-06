@@ -22,7 +22,7 @@ public:
 	LocalizationModule(const char *name);
 	~LocalizationModule();
 
-	virtual bool Init(const Anything &config);
+	virtual bool Init(const ROAnything config);
 	virtual bool Finis();
 };
 

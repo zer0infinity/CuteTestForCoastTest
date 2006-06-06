@@ -27,7 +27,7 @@ RolesModule::~RolesModule()
 {
 }
 
-bool RolesModule::Init(const Anything &config)
+bool RolesModule::Init(const ROAnything config)
 {
 	if (config.IsDefined("Roles")) {
 		HierarchyInstaller hi("Role");
@@ -36,7 +36,7 @@ bool RolesModule::Init(const Anything &config)
 	return false;
 }
 
-bool RolesModule::ResetFinis(const Anything &config)
+bool RolesModule::ResetFinis(const ROAnything config)
 {
 	AliasTerminator at("Role");
 	return RegisterableObject::ResetTerminate("Role", &at);
@@ -299,7 +299,7 @@ bool Role::Verify(Context &c, String &transition, String &pagename)
 
 	// We have a level which is too low for this
 	// query, we can't proceed without authentication
-	Trace("role level too low");
+	Trace("role level not equal");
 	return false;
 }
 

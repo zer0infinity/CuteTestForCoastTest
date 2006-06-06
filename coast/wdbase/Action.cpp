@@ -25,7 +25,7 @@ ActionsModule::~ActionsModule()
 {
 }
 
-bool ActionsModule::Init(const Anything &config)
+bool ActionsModule::Init(const ROAnything config)
 {
 	if (config.IsDefined("Actions")) {
 		AliasInstaller ai("Action");
@@ -34,7 +34,7 @@ bool ActionsModule::Init(const Anything &config)
 	return false;
 }
 
-bool ActionsModule::ResetFinis(const Anything &)
+bool ActionsModule::ResetFinis(const ROAnything )
 {
 	AliasTerminator at("Action");
 	return RegisterableObject::ResetTerminate("Action", &at);

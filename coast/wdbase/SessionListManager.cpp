@@ -106,7 +106,7 @@ SessionListManager::~SessionListManager()
 	Finis();
 }
 
-bool SessionListManager::Init(const Anything &config)
+bool SessionListManager::Init(const ROAnything config)
 {
 	StartTrace(SessionListManager.Init);
 	TraceAny(config, "Config: ");
@@ -125,7 +125,7 @@ bool SessionListManager::Finis()
 	return true;
 }
 
-bool SessionListManager::ResetFinis(const Anything &)
+bool SessionListManager::ResetFinis(const ROAnything )
 {
 	StartTrace(SessionListManager.ResetFinis);
 	if (fSessionCleaner) {
@@ -148,7 +148,7 @@ bool SessionListManager::ResetFinis(const Anything &)
 	return true;
 }
 
-bool SessionListManager::ResetInit(const Anything &config)
+bool SessionListManager::ResetInit(const ROAnything config)
 {
 	StartTrace(SessionListManager.ResetInit);
 	TraceAny(config, "Config: ");
@@ -830,7 +830,7 @@ SessionFactoriesModule::~SessionFactoriesModule()
 {
 }
 
-bool SessionFactoriesModule::Init(const Anything &config)
+bool SessionFactoriesModule::Init(const ROAnything config)
 {
 	StartTrace(SessionFactoriesModule.Init);
 	TraceAny(config, "config");
@@ -841,7 +841,7 @@ bool SessionFactoriesModule::Init(const Anything &config)
 	return false;
 }
 
-bool SessionFactoriesModule::ResetFinis(const Anything &config)
+bool SessionFactoriesModule::ResetFinis(const ROAnything config)
 {
 	StartTrace(SessionFactoriesModule.ResetFinis);
 	AliasTerminator at("SessionFactory");

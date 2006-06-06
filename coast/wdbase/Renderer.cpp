@@ -25,7 +25,7 @@ RenderersModule::~RenderersModule()
 {
 }
 
-bool RenderersModule::Init(const Anything &config)
+bool RenderersModule::Init(const ROAnything config)
 {
 	if (config.IsDefined("Renderers")) {
 		AliasInstaller ai("Renderer");
@@ -34,7 +34,7 @@ bool RenderersModule::Init(const Anything &config)
 	return false;
 }
 
-bool RenderersModule::ResetFinis(const Anything &config)
+bool RenderersModule::ResetFinis(const ROAnything config)
 {
 	AliasTerminator at("Renderer");
 	return RegisterableObject::ResetTerminate("Renderer", &at);

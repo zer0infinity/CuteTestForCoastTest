@@ -65,14 +65,14 @@ int HTTPChunkedStreamBuf::sync()
 	return 0;
 }
 
-streampos HTTPChunkedStreamBuf::seekpos(streampos, int mode)
+HTTPChunkedStreamBuf::pos_type HTTPChunkedStreamBuf::seekpos(pos_type, openmode mode)
 {
-	return streampos(0);
+	return pos_type(0);
 }
 
-streampos HTTPChunkedStreamBuf::seekoff(streamoff, ios::seek_dir, int mode)
+HTTPChunkedStreamBuf::pos_type HTTPChunkedStreamBuf::seekoff(off_type, seekdir, openmode mode)
 {
-	return streampos(0);
+	return pos_type(0);
 }
 
 int HTTPChunkedStreamBuf::overflow(int c)

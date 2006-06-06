@@ -146,7 +146,7 @@ CacheHandlerModule::~CacheHandlerModule()
 {
 }
 
-bool CacheHandlerModule::Init(const Anything &)
+bool CacheHandlerModule::Init(const ROAnything )
 {
 	SysLog::WriteToStderr("\tCacheHandler");
 	if (CacheHandler::Get()) {

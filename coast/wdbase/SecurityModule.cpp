@@ -178,7 +178,7 @@ SecurityModule::~SecurityModule()
 {
 }
 
-bool SecurityModule::Init(const Anything &config)
+bool SecurityModule::Init(const ROAnything config)
 /* in: config: Server configuration
   ret: true if successful, false otherwise.
  what: Only writes a message and installs itself
@@ -197,7 +197,7 @@ bool SecurityModule::Init(const Anything &config)
 #else
 	srand((long)GetHRTIME());
 #endif
-	Anything moduleConfig(config[fName]);
+	ROAnything moduleConfig(config[fName]);
 	TraceAny(moduleConfig, "ModuleConfig");
 
 	fgScrambler = moduleConfig["Scrambler"].AsCharPtr("Scrambler");
@@ -221,11 +221,11 @@ bool SecurityModule::Init(const Anything &config)
 	return result;
 }
 
-bool SecurityModule::ResetInit(const Anything &config)
+bool SecurityModule::ResetInit(const ROAnything config)
 {
 	StartTrace(SecurityModule.ResetInit);
-	Anything moduleConfig(config[fName]);
-	if (moduleConfig.IsDefined("DoNotReset") && moduleConfig["DoNotReset"].AsBool(0) == 1) {
+	ROAnything moduleConfig(config[fName]);
+	if ( moduleConfig["DoNotReset"].AsBool(0) == 1 ) {
 		String msg;
 		msg << "\t" << fName << "  Configured not to call Init() on reset\n";
 		SysLog::WriteToStderr(msg);
@@ -234,11 +234,11 @@ bool SecurityModule::ResetInit(const Anything &config)
 	return SecurityModule::Init(config);
 }
 
-bool SecurityModule::ResetFinis(const Anything &config)
+bool SecurityModule::ResetFinis(const ROAnything config)
 {
 	StartTrace(SecurityModule.ResetFinis);
-	Anything moduleConfig(config[fName]);
-	if (moduleConfig.IsDefined("DoNotReset") && moduleConfig["DoNotReset"].AsBool(0) == 1) {
+	ROAnything moduleConfig(config[fName]);
+	if ( moduleConfig["DoNotReset"].AsBool(0) == 1 ) {
 		String msg;
 		msg << "\t" << fName << "  Configured not to call Finis() on reset\n";
 		SysLog::WriteToStderr(msg);

@@ -29,7 +29,7 @@ AcceptorFactoriesModule::~AcceptorFactoriesModule()
 	StartTrace(AcceptorFactoriesModule.Dtor);
 }
 
-bool AcceptorFactoriesModule::Init(const Anything &config)
+bool AcceptorFactoriesModule::Init(const ROAnything config)
 {
 	StartTrace(AcceptorFactoriesModule.Init);
 	if (config.IsDefined("AcceptorFactories")) {
@@ -42,24 +42,24 @@ bool AcceptorFactoriesModule::Init(const Anything &config)
 bool AcceptorFactoriesModule::Finis()
 {
 	StartTrace(AcceptorFactoriesModule.Finis);
-
 	return StdFinis("AcceptorFactory", "AcceptorFactories");
 }
 
-bool AcceptorFactoriesModule::ResetInit(const Anything &config)
+bool AcceptorFactoriesModule::ResetInit(const ROAnything config)
 {
 	// do nothing
 	return true;
 }
 
-bool AcceptorFactoriesModule::ResetFinis(const Anything &)
+bool AcceptorFactoriesModule::ResetFinis(const ROAnything )
 {
 	// do nothing
 	return true;
 }
 
 //---- AcceptorFactory -----------------------------------------------------------
-AcceptorFactory::AcceptorFactory(const char *AcceptorFactoryName) : HierarchConfNamed(AcceptorFactoryName)
+AcceptorFactory::AcceptorFactory(const char *AcceptorFactoryName)
+	: HierarchConfNamed(AcceptorFactoryName)
 {
 	StartTrace1(AcceptorFactory.Ctor, NotNull(AcceptorFactoryName));
 }

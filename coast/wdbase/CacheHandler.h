@@ -22,7 +22,7 @@ public:
 	CacheHandlerModule(const char *name);
 	~CacheHandlerModule();
 
-	virtual bool Init(const Anything &config);
+	virtual bool Init(const ROAnything config);
 	virtual bool Finis();
 };
 

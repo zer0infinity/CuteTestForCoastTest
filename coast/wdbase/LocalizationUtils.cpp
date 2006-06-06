@@ -78,7 +78,7 @@ const char *LocalizationUtils::FindLanguageKey(Context &c, const char *dftLang)
 	// the browsers accept language list
 	bool	useBrowserPrefs = (c.Lookup("UseBrowserLang", 0L) != 0);
 	Anything env = c.GetEnvStore();
-	Anything header = env["header"];
+	ROAnything header = ((ROAnything)env)["header"];
 	TraceAny(header, "header");
 	long i = 0, sz = 0;
 
@@ -96,7 +96,7 @@ const char *LocalizationUtils::FindLanguageKey(Context &c, const char *dftLang)
 			}
 		}
 		// accesses to fgLanguageMap will always encounter the initialized fgLanguageMap
-		Anything languages = header["ACCEPT-LANGUAGE"];
+		ROAnything languages = header["ACCEPT-LANGUAGE"];
 		for ( i = 0, sz = languages.GetSize(); i < sz; ++i) {
 			if ( fgLanguageMap.IsDefined(languages[i].AsCharPtr("") ) ) {
 				Trace("returning language [" << fgLanguageMap[languages[i].AsCharPtr("")].AsCharPtr("") << "]");

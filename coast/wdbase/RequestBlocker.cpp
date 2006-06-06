@@ -96,7 +96,7 @@ bool RequestBlocker::IsBlocked()
 	return theState;
 }
 
-bool RequestBlocker::Init(const Anything &config)
+bool RequestBlocker::Init(const ROAnything config)
 {
 	StartTrace(RequestBlocker.Init);
 	return ResetInit(config);
@@ -109,13 +109,13 @@ bool RequestBlocker::Finis()
 	return true;
 }
 
-bool RequestBlocker::ResetFinis(const Anything &)
+bool RequestBlocker::ResetFinis(const ROAnything )
 {
 	StartTrace(RequestBlocker.ResetFinis);
 	return true;
 }
 
-bool RequestBlocker::ResetInit(const Anything &config)
+bool RequestBlocker::ResetInit(const ROAnything config)
 {
 	StartTrace(RequestBlocker.ResetInit);
 	return true;

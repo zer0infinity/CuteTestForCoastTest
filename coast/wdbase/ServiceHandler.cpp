@@ -48,7 +48,7 @@ ServiceHandlersModule::~ServiceHandlersModule()
 {
 }
 
-bool ServiceHandlersModule::Init(const Anything &config)
+bool ServiceHandlersModule::Init(const ROAnything config)
 {
 	if (config.IsDefined("ServiceHandlers")) {
 		HierarchyInstaller ai("ServiceHandler");
@@ -57,7 +57,7 @@ bool ServiceHandlersModule::Init(const Anything &config)
 	return false;
 }
 
-bool ServiceHandlersModule::ResetFinis(const Anything &config)
+bool ServiceHandlersModule::ResetFinis(const ROAnything config)
 {
 	AliasTerminator at("ServiceHandler");
 	return RegisterableObject::ResetTerminate("ServiceHandler", &at);

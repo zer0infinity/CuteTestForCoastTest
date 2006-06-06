@@ -179,10 +179,10 @@ public:
 	// Module methods
 	SecurityModule(const char *name);
 	virtual ~SecurityModule();
-	virtual bool Init(const Anything &config);
-	virtual bool ResetInit(const Anything &config);
+	virtual bool Init(const ROAnything config);
+	virtual bool ResetInit(const ROAnything config);
 	virtual bool Finis();
-	virtual bool ResetFinis(const Anything &);
+	virtual bool ResetFinis(const ROAnything );
 
 	// URL encryption an decryption
 	static void ScrambleState(String &result, const Anything &state);
