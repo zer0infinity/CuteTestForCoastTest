@@ -4,8 +4,8 @@
 function prepareTest
 {
 	echo
-	chmod u+w ${CONFIGDIRABS}/AnythingPerfTest.any
-	chmod u+w ${CONFIGDIRABS}/StringPerfTest.any
+	chmod u+w ${CONFIGDIRABS}/AnythingPerfTest.stat.any 2>/dev/null
+	chmod u+w ${CONFIGDIRABS}/StringPerfTest.stat.any 2>/dev/null
 }
 
 ## call to wdtest or whatever you want to call
