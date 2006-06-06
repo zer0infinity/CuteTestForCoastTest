@@ -10,17 +10,7 @@
 #define IT_TESTFW_TESTCASE_H
 
 #include "Test.h"
-
-class TestCase;
-
-typedef void (TestCase::* CaseMemberPtr)();
-
-// testcase *tst;
-//	NEW_CASE(&tst, ..., TEST1, FOO);
-
-#define NEW_CASE(TESTCASE,CASEMEMBER) \
-	 (TESTCASE *)(((new TESTCASE(#CASEMEMBER))->setTheTest((CaseMemberPtr)\
-				    &TESTCASE##::##CASEMEMBER))->setClassName(#TESTCASE))
+#include "TestResult.h"
 
 //---- ##Class## ----------------------------------------------------------
 //! <B>A TestCase defines the fixture to run multiple tests</B>
@@ -35,11 +25,11 @@ typedef void (TestCase::* CaseMemberPtr)();
  can be no side effects among test runs.
  Here is an example:
 <PRE>
- class MathTest : public TestCase {
+ class MathTest : public TestFramework::TestCase {
      protected: int m_value1;
      protected: int m_value2;
      public: MathTest (TString tstrName)
-                 : TestCase (tstrName) {
+                 : TestCaseType(tstrName) {
      }
      protected: void setUp () {
          m_value1 = 2;
@@ -52,7 +42,7 @@ typedef void (TestCase::* CaseMemberPtr)();
  with the fixture. Verify the expected results with assertions specified
  by calling cu_assert on the expression you want to test:
 <PRE>
-    protected: void testAdd () {
+    protected: void AddTest() {
         int result = value1 + value2;
         cu_assert (result == 5);
     }
@@ -61,12 +51,12 @@ typedef void (TestCase::* CaseMemberPtr)();
  The following code creates an instance of MathTest which
  executes only the testAdd method:
 <PRE>
- Test *test = NEW_CASE(MathTest, testAdd);
+ Test *test = NEW_CASE(MathTest, AddTest);
  test.run ();
 
  or the following to add a test to a TestSuite:
 
- ADD_CASE(testSuite, MathTest, testAdd);
+ ADD_CASE(testSuite, MathTest, AddTest);
 </PRE>
 
  The tests to be run can be collected into a TestSuite. CppUnit provides
@@ -87,56 +77,148 @@ typedef void (TestCase::* CaseMemberPtr)();
  see @TestResult and @TestSuite.
  *
  */
-class TestCase : public Test
+
+namespace TestFramework
 {
-protected:
-	const TString		fName;
-	CaseMemberPtr fTheTest;
 
-public:
-	TestCase		(TString Name);
-	virtual				~TestCase		();
+	template
+	<
+	typename dummy
+	>
+	class NoStatisticPolicy
+	{
+		NoStatisticPolicy(const NoStatisticPolicy &);
+	public:
+		typedef NoStatisticPolicy<dummy> StatisticPolicyType;
 
-	virtual void		run				(TestResult *result);
-	virtual TestResult  *run			();
-	virtual int			countTestCases	();
-	TString				name			();
-	TString				toString		();
-	TestCase 			*setTheTest(CaseMemberPtr p_TheTest);
-	void thisTest() {}
+		NoStatisticPolicy()	{}
 
-protected:
-	virtual void		setUp			();
-	virtual void		tearDown		();
-	virtual void		runTest			();
+		~NoStatisticPolicy() {}
 
-};
+		class CatchTime
+		{
+		public:
+			CatchTime(TString, StatisticPolicyType *) {}
+			~CatchTime() {}
+		};
+		typedef typename StatisticPolicyType::CatchTime CatchTimeType;
 
-inline TestCase::TestCase (TString tname) : fName (tname)
-{}
+	protected:
+		void ExportCsvStatistics() {}
+		void AddStatisticOutput(TString, long) {}
+		void LoadData(TString, TString) {}
+		void StoreData() {}
+	};
 
-inline TestCase::~TestCase ()
-{}
+	template
+	<
+	typename dummy
+	>
+	class NoConfigPolicy
+	{
+		NoConfigPolicy(const NoConfigPolicy &);
+	public:
+		typedef NoConfigPolicy<dummy> ConfigPolicyType;
 
-inline int TestCase::countTestCases ()
-{
-	return 1;
-}
+		NoConfigPolicy() {}
 
-inline TString TestCase::name ()
-{
-	return fName;
-}
+		virtual ~NoConfigPolicy() {}
 
-inline void TestCase::setUp ()
-{}
+	protected:
+		bool loadConfig(TString, TString) {
+			return true;
+		}
+		void unloadConfig() {}
+		virtual TString getConfigFileName() {
+			return "";
+		}
+	};
 
-inline void TestCase::tearDown ()
-{}
+	template
+	<
+	template <typename> class ConfigPolicy = NoConfigPolicy,
+			 template <typename> class StatisticPolicy = NoStatisticPolicy,
+			 typename dummy = int
+			 >
+	class TestCaseT
+		: public Test
+		, public StatisticPolicy<dummy>
+		, public ConfigPolicy<dummy>
+	{
+		TestCaseT();
+		TestCaseT(const TestCaseT &);
+	public:
+		typedef TestCaseT<ConfigPolicy, StatisticPolicy, dummy> TestCaseType;
+		typedef void (TestCaseType::*CaseMemberPtr)();
 
-inline TString TestCase::toString ()
-{
-	return TString (this->getClassName ()) << "." << name ();
-}
+		typedef StatisticPolicy<dummy> StatisticPolicyType;
+		typedef ConfigPolicy<dummy> ConfigPolicyType;
+		typedef typename StatisticPolicyType::CatchTime CatchTimeType;
+
+		TestCaseT(TString tname)
+			: fName(tname)
+		{}
+		virtual ~TestCaseT()
+		{}
+
+		virtual void run(TestResult *result) {
+			Test::run(result);
+			result->startTest (this);
+
+			StatisticPolicyType::LoadData(getClassName(), name());
+			t_assertm( ConfigPolicyType::loadConfig(getClassName(), name()), TString("expected ") << ConfigPolicyType::getConfigFileName() << " to be readable!" );
+
+			setUp();
+			doRunTest();
+			tearDown();
+
+			ConfigPolicyType::unloadConfig();
+			StatisticPolicyType::StoreData();
+
+			result->endTest(this);
+		}
+
+		virtual TestResult *run() {
+			TestResult *result = new TestResult;
+			run (result);
+			return result;
+		}
+
+		virtual int countTestCases() {
+			return 1;
+		}
+
+		TString name() {
+			return fName;
+		}
+
+		TString	toString() {
+			return TString (this->getClassName()) << "." << name();
+		}
+
+		TestCaseType *setTheTest(CaseMemberPtr p_TheTest) {
+			fTheTest = p_TheTest;
+			return this;
+		}
+
+	protected:
+		virtual void setUp() {}
+
+		virtual void tearDown() {}
+
+		virtual void doRunTest() {
+			(this->*fTheTest)();
+		}
+
+	protected:
+		const TString	fName;
+		CaseMemberPtr	fTheTest;
+	};
+
+	typedef TestCaseT<NoConfigPolicy, NoStatisticPolicy, int> TestCase;
+
+#define NEW_CASE(TESTCASE,CASEMEMBER)	(TESTCASE *)(((new TESTCASE(#CASEMEMBER))->setTheTest( (TESTCASE::CaseMemberPtr)&TESTCASE::CASEMEMBER) )->setClassName(#TESTCASE))
+
+}	// end namespace TestFramework
 
 #endif
