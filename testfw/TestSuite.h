@@ -18,8 +18,8 @@ class TestList;
  * It runs a collection of test cases. Here is an example.
  *
  * TestSuite *suite= new TestSuite();
- * suite->addTest(new MathTest("testAdd"));
- * suite->addTest(new MathTest("testDivideByZero"));
+ * suite->addTest(new MathTest("AddTest"));
+ * suite->addTest(new MathTest("DivideByZeroTest"));
  *
  * Note that TestSuites assume lifetime
  * control for any tests added to them.
@@ -35,7 +35,9 @@ public:
 	void				run				(TestResult *result);
 	int					countTestCases	();
 	void				addTest			(Test *test);
-	TString				toString		();
+	TString				toString		() {
+		return this->getClassName ();
+	}
 	Test 				*setClassName(const char *aName) {
 		fClassName = aName;
 		return this;
@@ -45,13 +47,6 @@ private:
 	TestList			*fTests;
 };
 
-// Returns a string representation of the test suite.
-inline TString TestSuite::toString ()
-{
-	return this->getClassName ();
-}
-
-#define ADD_CASE(SUITE,TESTCASE,CASEMEMBER) \
-			(SUITE)->addTest(NEW_CASE(TESTCASE,CASEMEMBER));
+#define ADD_CASE(SUITE,TESTCASE,CASEMEMBER)		(SUITE)->addTest(NEW_CASE(TESTCASE,CASEMEMBER));
 
 #endif
