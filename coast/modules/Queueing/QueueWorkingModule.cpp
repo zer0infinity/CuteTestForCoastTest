@@ -85,11 +85,13 @@ void QueueWorkingModule::Log(Anything &anyStatus, const char *channel)
 	}
 }
 
-bool QueueWorkingModule::Init(const Anything &config)
+bool QueueWorkingModule::Init(const ROAnything config)
 {
 	StartTrace(QueueWorkingModule.Init);
 	SubTraceAny(FullConfig, config, "Config: ");
-	if ( config.LookupPath(fConfig, fName) ) {
+	ROAnything roaConfig;
+	if ( config.LookupPath(roaConfig, fName) ) {
+		fConfig = roaConfig.DeepClone();
 		TraceAny(fConfig, "Module config");
 		fErrorLogName = GetNamedConfig("Logging")["ErrorChannel"].AsCharPtr("ErrorLog");
 		fWarningLogName = GetNamedConfig("Logging")["WarningChannel"].AsCharPtr("WarningLog");
@@ -132,21 +134,21 @@ bool QueueWorkingModule::Finis()
 	return true;
 }
 
-bool QueueWorkingModule::ResetInit(const Anything &config)
+bool QueueWorkingModule::ResetInit(const ROAnything config)
 {
 	StartTrace(QueueWorkingModule.ResetInit);
 	// calls Init
 	return WDModule::ResetInit(config);
 }
 
-bool QueueWorkingModule::ResetFinis(const Anything &config)
+bool QueueWorkingModule::ResetFinis(const ROAnything config)
 {
 	StartTrace(QueueWorkingModule.ResetFinis);
 	// calls Finis
 	return WDModule::ResetFinis(config);
 }
 
-void QueueWorkingModule::IntInitQueue(ROAnything roaConfig)
+void QueueWorkingModule::IntInitQueue(const ROAnything roaConfig)
 {
 	StartTrace(QueueWorkingModule.IntInitQueue);
 	long lQueueSize = roaConfig["QueueSize"].AsLong(100L);

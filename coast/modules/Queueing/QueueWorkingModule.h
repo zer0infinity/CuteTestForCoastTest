@@ -37,13 +37,13 @@ public:
 	~QueueWorkingModule();
 
 	//! implementers should initialize module using config
-	virtual bool Init(const Anything &config);
+	virtual bool Init(const ROAnything config);
 	//! implementers should terminate module expecting destruction
 	virtual bool Finis();
 	//! initializes module after termination for reinitialization; default uses Init; check if this applies
-	virtual bool ResetInit(const Anything &config);
+	virtual bool ResetInit(const ROAnything config);
 	//! terminates module for reinitialization; default uses Finis; check if this applies
-	virtual bool ResetFinis(const Anything &config);
+	virtual bool ResetFinis(const ROAnything config);
 
 	inline bool IsAlive() {
 		return fAlive == 0xf007f007;
@@ -79,7 +79,7 @@ protected:
 	void Log(Anything &anyStatus, const char *channel);
 
 private:
-	void IntInitQueue(ROAnything roaConfig);
+	void IntInitQueue(const ROAnything roaConfig);
 
 	Anything	fConfig;
 	Queue		*fpQueue;
