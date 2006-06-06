@@ -33,17 +33,16 @@ LDAPDAICachePolicyModule::~LDAPDAICachePolicyModule()
 	StartTrace(LDAPDAICachePolicyModule.~LDAPDAICachePolicyModule);
 }
 
-bool LDAPDAICachePolicyModule::Init(const Anything &config)
+bool LDAPDAICachePolicyModule::Init(const ROAnything config)
 {
 	StartTrace(LDAPDAICachePolicyModule.Init);
-	Anything LDAPDAICachePolicyModuleConfig;
+	ROAnything LDAPDAICachePolicyModuleConfig;
 	config.LookupPath(LDAPDAICachePolicyModuleConfig, "LDAPDAICachePolicyModule");
 	TraceAny(LDAPDAICachePolicyModuleConfig, "LDAPDAICachePolicyModule:");
 
-	Anything dataAccesses(config["LDAPDAICachePolicyModule"]["LDAPDAIDataAccess"]);
-	Anything dataAccessActions(config["LDAPDAICachePolicyModule"]["LDAPDAIDataAccessAction"]);
-	if ( dataAccesses.GetSize() 		== 0 &&
-		 dataAccessActions.GetSize()	== 0 ) {
+	ROAnything dataAccesses(config["LDAPDAICachePolicyModule"]["LDAPDAIDataAccess"]);
+	ROAnything dataAccessActions(config["LDAPDAICachePolicyModule"]["LDAPDAIDataAccessAction"]);
+	if ( dataAccesses.GetSize() == 0 && dataAccessActions.GetSize() == 0 ) {
 		SysLog::WriteToStderr("\tLDAPDAICachePolicyModule::Init can't read needed configuration data.\n");
 		return false;
 	}
@@ -63,7 +62,7 @@ bool LDAPDAICachePolicyModule::Init(const Anything &config)
 	return true;
 }
 
-bool LDAPDAICachePolicyModule::InitialLoad(const Anything &dataAccesses, LDAPDAICachePolicyModule::EDataAccessType daType, const Anything &config )
+bool LDAPDAICachePolicyModule::InitialLoad(const ROAnything dataAccesses, LDAPDAICachePolicyModule::EDataAccessType daType, const Anything &config )
 {
 	StartTrace(LDAPDAICachePolicyModule.InitialLoad);
 	CacheHandler *cache = CacheHandler::Get();
@@ -90,7 +89,7 @@ bool LDAPDAICachePolicyModule::InitialLoad(const Anything &dataAccesses, LDAPDAI
 	return ret;
 }
 
-bool LDAPDAICachePolicyModule::CheckContractIsFulfilled(String &failedDataAccesses, const Anything &dataAccesses)
+bool LDAPDAICachePolicyModule::CheckContractIsFulfilled(String &failedDataAccesses, const ROAnything dataAccesses)
 {
 	StartTrace(LDAPDAICachePolicyModule.CheckContractIsFulfilled);
 	bool ret(true);

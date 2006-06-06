@@ -29,12 +29,12 @@ AccessControllersModule::AccessControllersModule(const char *name) : WDModule(na
 
 AccessControllersModule::~AccessControllersModule() {}
 
-bool AccessControllersModule::Init(const Anything &config)
+bool AccessControllersModule::Init(const ROAnything config)
 {
 	StartTrace(AccessControllersModule.Init);
 
 	if (config.IsDefined("AccessControllers")) {
-		Anything controllers(config["AccessControllers"]);
+		ROAnything controllers(config["AccessControllers"]);
 
 		AliasInstaller ai1("UserDataAccessController");
 		bool ret = RegisterableObject::Install(controllers["User"], "UserDataAccessController", &ai1);
@@ -49,7 +49,7 @@ bool AccessControllersModule::Init(const Anything &config)
 	return false;
 }
 
-bool AccessControllersModule::ResetFinis(const Anything &)
+bool AccessControllersModule::ResetFinis(const ROAnything )
 {
 	StartTrace(AccessControllersModule.ResetFinis);
 

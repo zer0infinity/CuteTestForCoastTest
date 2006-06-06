@@ -28,18 +28,18 @@ WorkerPoolManagerModule::~WorkerPoolManagerModule()
 	Finis();
 }
 
-bool WorkerPoolManagerModule::Init(const Anything &config)
+bool WorkerPoolManagerModule::Init(const ROAnything config)
 {
 	StartTrace(WorkerPoolManagerModule.Init);
 	TraceAny(config, "WorkerPoolManagerModule's config");
 	long l = 0L;
-	Anything myCfg;
+	ROAnything myCfg;
 	if (config.LookupPath(myCfg, "WorkerPoolManagerModule")) {
 		// initialize WorkerPools for the listed pools
 		if (myCfg.IsDefined("Pools")) {
-			Anything &pools = myCfg["Pools"];
+			ROAnything pools = myCfg["Pools"];
 			for (l = 0L; l < pools.GetSize(); l++) {
-				Anything &anySub = pools[l];
+				ROAnything anySub = pools[l];
 				String poolName(pools.SlotName(l));
 				TraceAny(anySub, "initializing Pool for " << poolName << " with config");
 				WorkerPoolManagerModulePoolManager *pPool = new WorkerPoolManagerModulePoolManager(String("WorkerPoolManagerModulePoolManager:") << poolName);

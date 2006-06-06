@@ -142,7 +142,7 @@ static void thread_cleanup()
 	cleanCryptoMutexes(fgNofCryptoMutexes);
 	ERR_remove_state(0);
 }
-bool SSLModule::Init(const Anything &config)
+bool SSLModule::Init(const ROAnything config)
 {
 	StartTrace(SSLModule.Init);
 	thread_setup();
@@ -448,9 +448,6 @@ Acceptor *SSLAcceptorFactory::MakeAcceptor(AcceptorCallBack *ac)
 {
 	StartTrace(SSLAcceptorFactory.MakeAcceptor);
 
-//	SSLModule *sslModule=(SSLModule*)WDModule::FindWDModule("SSLModule");
-//	if(!sslModule) return 0;
-//
 	SSL_CTX *sslCtx = SSLModule::GetSSLCtx(this);
 	if (!sslCtx) {
 		return 0;

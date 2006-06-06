@@ -58,12 +58,12 @@ public:
 	LdapCachePolicyModule(const char *name);
 	~LdapCachePolicyModule();
 
-	virtual bool Init(const Anything &config);
+	virtual bool Init(const ROAnything config);
 	virtual bool Finis();
 private:
-	bool InitialLoad(const Anything &dataAccesses, LdapCachePolicyModule::EDataAccessType daType);
+	bool InitialLoad(const ROAnything dataAccesses, LdapCachePolicyModule::EDataAccessType daType);
 //! Design by Contract: Every configured LDAPDataAccessImpl query must return data
-	bool CheckContractIsFulfilled(String &failedDataAccesseses, const Anything &dataAccesses);
+	bool CheckContractIsFulfilled(String &failedDataAccesseses, const ROAnything dataAccesses);
 	friend class LdapCacheLoaderTest;
 
 	// Instance variables

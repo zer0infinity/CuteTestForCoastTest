@@ -33,19 +33,19 @@ SybaseModule::~SybaseModule()
 	Finis();
 }
 
-bool SybaseModule::Init(const Anything &config)
+bool SybaseModule::Init(const ROAnything config)
 {
 	StartTrace(SybaseModule.Init);
 
 	long l = 0L;
-	Anything myCfg;
+	ROAnything myCfg;
 	if (config.LookupPath(myCfg, "SybaseModule")) {
 		TraceAny(myCfg, "SybaseModuleConfig");
 		// initialize WorkerPools for the listed servers
 		if (myCfg.IsDefined("SybCTPoolDAImpl")) {
-			Anything &servers = myCfg["SybCTPoolDAImpl"];
+			ROAnything servers = myCfg["SybCTPoolDAImpl"];
 			for (l = 0L; l < servers.GetSize(); l++) {
-				Anything &anySub = servers[l];
+				ROAnything anySub = servers[l];
 				String srvName(servers.SlotName(l));
 				TraceAny(anySub, "initializing Pool for " << srvName << " with config");
 				SybCTPoolManager *pPool = new SybCTPoolManager(String("SybaseCTPool:") << srvName);

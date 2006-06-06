@@ -33,17 +33,16 @@ LdapCachePolicyModule::~LdapCachePolicyModule()
 	StartTrace(LdapCachePolicyModule.~LdapCachePolicyModule);
 }
 
-bool LdapCachePolicyModule::Init(const Anything &config)
+bool LdapCachePolicyModule::Init(const ROAnything config)
 {
 	StartTrace(LdapCachePolicyModule.Init);
-	Anything ldapCachePolicyModuleConfig;
+	ROAnything ldapCachePolicyModuleConfig;
 	config.LookupPath(ldapCachePolicyModuleConfig, "LdapCachePolicyModule");
 	TraceAny(ldapCachePolicyModuleConfig, "LdapCachePolicyModule:");
 
-	Anything dataAccesses(config["LdapCachePolicyModule"]["LdapDataAccess"]);
-	Anything dataAccessActions(config["LdapCachePolicyModule"]["LdapDataAccessAction"]);
-	if ( dataAccesses.GetSize() 		== 0 &&
-		 dataAccessActions.GetSize()	== 0 ) {
+	ROAnything dataAccesses(ldapCachePolicyModuleConfig["LdapDataAccess"]);
+	ROAnything dataAccessActions(ldapCachePolicyModuleConfig["LdapDataAccessAction"]);
+	if ( dataAccesses.GetSize() == 0 && dataAccessActions.GetSize() == 0 ) {
 		SysLog::WriteToStderr("\tLdapCachePolicyModule::Init can't read needed configuration data.\n");
 		return false;
 	}
@@ -63,7 +62,7 @@ bool LdapCachePolicyModule::Init(const Anything &config)
 	return true;
 }
 
-bool LdapCachePolicyModule::InitialLoad(const Anything &dataAccesses, LdapCachePolicyModule::EDataAccessType daType)
+bool LdapCachePolicyModule::InitialLoad(const ROAnything dataAccesses, LdapCachePolicyModule::EDataAccessType daType)
 {
 	StartTrace(LdapCachePolicyModule.InitialLoad);
 	CacheHandler *cache = CacheHandler::Get();
@@ -71,7 +70,6 @@ bool LdapCachePolicyModule::InitialLoad(const Anything &dataAccesses, LdapCacheP
 	if (cache) {
 		LdapDataAccessLoader ldl;
 		LdapActionLoader lal;
-		Anything tmp;
 		for (int i = 0; i < dataAccesses.GetSize(); ++i) {
 			String toDo(dataAccesses[i].AsString());
 			if ( daType == dataaccess ) {
@@ -90,7 +88,7 @@ bool LdapCachePolicyModule::InitialLoad(const Anything &dataAccesses, LdapCacheP
 	return ret;
 }
 
-bool LdapCachePolicyModule::CheckContractIsFulfilled(String &failedDataAccesses, const Anything &dataAccesses)
+bool LdapCachePolicyModule::CheckContractIsFulfilled(String &failedDataAccesses, const ROAnything dataAccesses)
 {
 	StartTrace(LdapCachePolicyModule.CheckContractIsFulfilled);
 	bool ret(true);

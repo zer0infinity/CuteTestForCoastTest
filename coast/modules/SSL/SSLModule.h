@@ -27,7 +27,7 @@ public:
 	// Module methods
 	SSLModule(const char *name);
 	virtual ~SSLModule();
-	virtual bool Init(const Anything &config);
+	virtual bool Init(const ROAnything config);
 	virtual bool Finis();
 
 	// verification

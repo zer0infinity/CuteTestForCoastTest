@@ -54,8 +54,8 @@ public:
 	AccessControllersModule(const char *);
 	~AccessControllersModule();
 
-	virtual bool Init(const Anything &config);
-	virtual bool ResetFinis(const Anything &config);
+	virtual bool Init(const ROAnything config);
+	virtual bool ResetFinis(const ROAnything config);
 	virtual bool Finis();
 };
 
