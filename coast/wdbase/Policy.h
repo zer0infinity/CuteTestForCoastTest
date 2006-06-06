@@ -21,7 +21,7 @@ public:
 	InstallerPolicy(const char *category) : fCategory(category) { }
 	virtual ~InstallerPolicy() { }
 
-	virtual bool Install(const Anything &installerSpec, Registry *r) = 0;
+	virtual bool Install(const ROAnything installerSpec, Registry *r) = 0;
 
 protected:
 	virtual void TellSuccess(bool success);
@@ -64,7 +64,7 @@ public:
 	AliasInstaller(const char *cat);
 	virtual ~AliasInstaller();
 
-	virtual bool Install(const Anything &installerSpec, Registry *r);
+	virtual bool Install(const ROAnything installerSpec, Registry *r);
 };
 
 //---- AliasTerminator ------------------------------------------------------
@@ -87,7 +87,7 @@ public:
 	HierarchyInstaller(const char *cat);
 	virtual ~HierarchyInstaller();
 
-	virtual bool Install(const Anything &installerSpec, Registry *r);
+	virtual bool Install(const ROAnything installerSpec, Registry *r);
 
 protected:
 
@@ -95,7 +95,7 @@ protected:
 	bool HasSuper(HierarchConfNamed *super, const char *name);
 
 	bool InstallRoot(HierarchConfNamed *root, const char *name);
-	bool InstallTree(HierarchConfNamed *root, const char *rootName, const Anything &tree, Registry *r);
+	bool InstallTree(HierarchConfNamed *root, const char *rootName, const ROAnything tree, Registry *r);
 
 	HierarchConfNamed *GetLeaf(const char *leafName, HierarchConfNamed *root, Registry *r);
 };

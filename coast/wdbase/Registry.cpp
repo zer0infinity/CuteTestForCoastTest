@@ -73,7 +73,7 @@ bool Registry::Terminate(TerminationPolicy *terminator)
 // according to installer policy
 // no mutex is set exclusive access
 // has to be guaranteed by caller
-bool Registry::Install(const Anything &installerSpec, InstallerPolicy *ip)
+bool Registry::Install(const ROAnything installerSpec, InstallerPolicy *ip)
 {
 	StartTrace1(Registry.Install, " in &" << (long)this);
 	TraceAny(GetTable(), "Table");

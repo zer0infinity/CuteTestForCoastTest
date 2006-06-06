@@ -63,13 +63,13 @@ public:
 	// this method gets called during initialization
 
 	//!installs additional objects according to installerspec and installer policy into category
-	static bool Install(const Anything &installerSpec, const char *category, InstallerPolicy *ip);
+	static bool Install(const ROAnything installerSpec, const char *category, InstallerPolicy *ip);
 	//!terminates category removing all objects from the registry as implemented by the termination policy
 	static bool Terminate(const char *category, TerminationPolicy *tp);
 	//!terminates category removing only the objects which are not installed by the static initializers to allow reinitialization
 	static bool ResetTerminate(const char *category, TerminationPolicy *terminator);
 	//!terminates category removing only the objects which are not installed by the static initializers and installs again with installerSpec
-	static bool Reset(const Anything &installerSpec, const char *category, InstallerPolicy *installer, TerminationPolicy *terminator);
+	static bool Reset(const ROAnything installerSpec, const char *category, InstallerPolicy *installer, TerminationPolicy *terminator);
 
 	friend class WDModuleTest;
 

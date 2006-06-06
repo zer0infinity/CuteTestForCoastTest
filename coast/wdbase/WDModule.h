@@ -28,20 +28,20 @@ public:
 	~WDModule();
 
 	//!implementers should initialize module using config
-	virtual bool Init(const Anything &config) = 0;
+	virtual bool Init(const ROAnything roaConfig) = 0;
 	//!implementers should terminate module expecting destruction
 	virtual bool Finis() = 0;
 	//!initializes module after termination for reinitialization; default uses Init
-	virtual bool ResetInit(const Anything &config);
+	virtual bool ResetInit(const ROAnything roaConfig);
 	//!terminates module for reinitialization; default uses Finis
-	virtual bool ResetFinis(const Anything &config);
+	virtual bool ResetFinis(const ROAnything roaConfig);
 
 	//!installs a list of "Modules" defined in config or all modules registered so far
-	static int Install(const Anything &config);
+	static int Install(const ROAnything roaConfig);
 	//!terminates a list of "Modules" defined in config or all modules registered
-	static int Terminate(const Anything &config);
+	static int Terminate(const ROAnything roaConfig);
 	//!resets all modules terminating with oldconfig and reinitialising with config
-	static int Reset(const Anything &oldconfig, const Anything &config);
+	static int Reset(const ROAnything roaOldconfig, const ROAnything roaConfig);
 
 	RegCacheDef(WDModule);	// FindWDModule()
 
@@ -49,9 +49,9 @@ protected:
 	//!terminating a category of RegisterableObjects using title as name on cerr
 	virtual bool StdFinis(const char *category, const char *title);
 	//!installing modules after terminating for reset
-	static int ResetInstall(const Anything &config);
+	static int ResetInstall(const ROAnything roaConfig);
 	//!terminating modules for reset
-	static int ResetTerminate(const Anything &config);
+	static int ResetTerminate(const ROAnything roaConfig);
 
 private:
 	//!should not be used

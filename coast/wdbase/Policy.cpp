@@ -30,7 +30,7 @@ void InstallerPolicy::TellSuccess(bool success)
 AliasInstaller::AliasInstaller(const char *category): InstallerPolicy(category) { }
 AliasInstaller::~AliasInstaller() { }
 
-bool AliasInstaller::Install(const Anything &installerSpec, Registry *r)
+bool AliasInstaller::Install(const ROAnything installerSpec, Registry *r)
 {
 	StartTrace1(AliasInstaller.Install, "Category: " << fCategory);
 	long isSz = installerSpec.GetSize();
@@ -41,9 +41,9 @@ bool AliasInstaller::Install(const Anything &installerSpec, Registry *r)
 
 		Trace("Installing <" << NotNull(s) << ">");
 
-		Anything a = installerSpec[l];
+		ROAnything a = installerSpec[l];
 		for (long j = 0, sz = a.GetSize(); j < sz; ++j) {
-			Anything k = a[j];
+			ROAnything k = a[j];
 			RegisterableObject *t = (RegisterableObject *) r->Find(s);
 
 			if (t) {
@@ -77,7 +77,7 @@ bool AliasInstaller::Install(const Anything &installerSpec, Registry *r)
 HierarchyInstaller::HierarchyInstaller(const char *cat) : InstallerPolicy(cat) { }
 HierarchyInstaller::~HierarchyInstaller() { }
 
-bool HierarchyInstaller::Install(const Anything &installerSpec, Registry *r)
+bool HierarchyInstaller::Install(const ROAnything installerSpec, Registry *r)
 {
 	StartTrace(HierarchyInstaller.Install);
 	TraceAny(installerSpec, "");
@@ -137,7 +137,7 @@ bool HierarchyInstaller::InstallRoot(HierarchConfNamed *root, const char *name)
 	return false;
 }
 
-bool HierarchyInstaller::InstallTree(HierarchConfNamed *root, const char *rootName, const Anything &tree, Registry *r)
+bool HierarchyInstaller::InstallTree(HierarchConfNamed *root, const char *rootName, const ROAnything tree, Registry *r)
 {
 	StartTrace(HierarchyInstaller.InstallTree);
 	bool installSuccess = InstallRoot(root, rootName);

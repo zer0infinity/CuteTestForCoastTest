@@ -32,7 +32,7 @@ RegisterableObject::RegisterableObject(const char *name)
 
 // support for registerable named objects
 // class API
-bool RegisterableObject::Install(const Anything &installerSpec, const char *category, InstallerPolicy *installer)
+bool RegisterableObject::Install(const ROAnything installerSpec, const char *category, InstallerPolicy *installer)
 {
 	// this method installs a list of clones or aliases into the registry
 	// the basic assumption is that at least one object is already registered
@@ -47,7 +47,7 @@ bool RegisterableObject::Install(const Anything &installerSpec, const char *cate
 	return false;
 }
 
-bool RegisterableObject::Reset(const Anything &installerSpec, const char *category, InstallerPolicy *installer, TerminationPolicy *terminator)
+bool RegisterableObject::Reset(const ROAnything installerSpec, const char *category, InstallerPolicy *installer, TerminationPolicy *terminator)
 {
 	if ( ResetTerminate(category, terminator) ) {
 		return Install(installerSpec, category, installer);

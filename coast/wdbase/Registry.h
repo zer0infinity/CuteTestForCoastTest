@@ -32,7 +32,7 @@ public:
 	//!installs objects into registry driven by installerSpec using InstallerPolicy ip
 	//! \param installerSpec an Anything defining the Objects aliasing or hierarchy structure which should be installed
 	//! \param ip the InstallerPolicy that interprets the installerSpec; it creates and installs objects in the registry as necessary
-	bool Install(const Anything &installerSpec, InstallerPolicy *ip);
+	bool Install(const ROAnything installerSpec, InstallerPolicy *ip);
 
 	//!cleans up registry according to the TerminationPolicy supplied; the registry is no longer usable after that
 	//! \param tp the TerminationPolicy that implements the clean up process, since objects can be registered under several names you can't delete them directly
