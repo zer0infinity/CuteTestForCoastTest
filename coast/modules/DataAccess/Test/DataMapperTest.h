@@ -20,7 +20,7 @@
 //! further explanation of the purpose of the class
 //! this may contain <B>HTML-Tags</B>
 //! ...
-class DataMapperTest : public TestCase
+class DataMapperTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors

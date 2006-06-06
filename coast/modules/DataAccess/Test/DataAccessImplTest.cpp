@@ -23,28 +23,22 @@
 
 //---- DataAccessImplTest ----------------------------------------------------------------
 Test *DataAccessImplTest::suite ()
-// collect all test cases for the RegistryStream
 {
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(DataAccessImplTest, GetConfigNameTest));
-	testSuite->addTest (NEW_CASE(DataAccessImplTest, DoLoadConfigTest));
+	ADD_CASE(testSuite, DataAccessImplTest, GetConfigNameTest);
+	ADD_CASE(testSuite, DataAccessImplTest, DoLoadConfigTest);
 
 	return testSuite;
 
-} // suite
+}
 
-DataAccessImplTest::DataAccessImplTest(TString tname) : TestCase(tname)
+DataAccessImplTest::DataAccessImplTest(TString tname) : TestCaseType(tname)
 {
 
 }
 
 DataAccessImplTest::~DataAccessImplTest()
-{
-
-}
-
-void DataAccessImplTest::setUp ()
 {
 
 }

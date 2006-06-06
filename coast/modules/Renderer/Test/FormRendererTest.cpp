@@ -20,7 +20,7 @@
 //--- interface include --------------------------------------------------------
 #include "FormRendererTest.h"
 
-FormRendererTest::FormRendererTest (TString tname) : TestCase(tname),
+FormRendererTest::FormRendererTest (TString tname) : TestCaseType(tname),
 	fEnvironment(), fRole("FRTestRole"),
 	fContext( fEnvironment, Anything(), 0, 0, &fRole, 0 ),
 	fFormRenderer("FormRenderer")
@@ -30,15 +30,12 @@ FormRendererTest::FormRendererTest (TString tname) : TestCase(tname),
 void FormRendererTest::setUp ()
 {
 	fContext.SetLanguage("D");
-	TestCase::setUp();
 }
 
 Test *FormRendererTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
-
-	testSuite->addTest (NEW_CASE(FormRendererTest, TestCase0));
-
+	ADD_CASE(testSuite, FormRendererTest, TestCase0);
 	return testSuite;
 }
 

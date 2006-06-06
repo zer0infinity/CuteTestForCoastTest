@@ -13,6 +13,7 @@
 #include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
+#include "System.h"
 #include "Renderer.h"
 #include "Server.h"
 #include "Session.h"
@@ -22,8 +23,14 @@
 
 //---- NewRendererTest ----------------------------------------------------------------
 NewRendererTest::NewRendererTest(TString tname)
-	: ConfiguredTestCase(tname, "NewRendererTestConfig")
+	: TestCaseType(tname)
 {
+	StartTrace(NewRendererTest.NewRendererTest);
+}
+
+TString NewRendererTest::getConfigFileName()
+{
+	return "NewRendererTestConfig";
 }
 
 NewRendererTest::~NewRendererTest()
@@ -32,9 +39,8 @@ NewRendererTest::~NewRendererTest()
 
 void NewRendererTest::setUp()
 {
-	ConfiguredTestCase::setUp();
-	t_assert(fConfig.IsDefined("TestCases"));
-	fGlobalConfig = LoadConfigFile("Config");
+	t_assert(GetConfig().IsDefined("TestCases"));
+	t_assertm( System::LoadConfigFile(fGlobalConfig, "Config", "any"), TString("expected Config.any to be readable!" ));
 	t_assert(fGlobalConfig.IsDefined("Modules"));
 	Application::InitializeGlobalConfig(fGlobalConfig);
 	WDModule::Install(fGlobalConfig);
@@ -45,7 +51,6 @@ void NewRendererTest::tearDown()
 	t_assert(fGlobalConfig.IsDefined("Modules"));
 	WDModule::Terminate(fGlobalConfig);
 	Application::InitializeGlobalConfig(Anything());
-	ConfiguredTestCase::tearDown();
 }
 
 void NewRendererTest::TestRenderers()
@@ -62,7 +67,7 @@ void NewRendererTest::TestRenderers()
 	t_assert(theRole != NULL);
 	theSession.Init("TestSession", ctx);
 
-	Anything testCases = fConfig["TestCases"];
+	Anything testCases = GetConfig()["TestCases"].DeepClone();
 	long sz = testCases.GetSize();
 
 	for (long i = 0 ; i < sz; i++ ) {
@@ -74,7 +79,7 @@ void NewRendererTest::TestRenderers()
 			message << ":" << i;
 		}
 
-		Context c(fConfig["EnvForAllCases"], testCases[i]["Env"], theServer, &theSession, theRole, thePage);
+		Context c(GetConfig()["EnvForAllCases"].DeepClone(), testCases[i]["Env"], theServer, &theSession, theRole, thePage);
 		PutInStore(testCases[i]["TmpStore"], c.GetTmpStore());
 		PutInStore(testCases[i]["SessionStore"], c.GetSessionStore());
 		String result("[");
@@ -92,11 +97,8 @@ void NewRendererTest::TestRenderers()
 }
 
 Test *NewRendererTest::suite ()
-// collect all test cases for the SocketStream
 {
 	TestSuite *testSuite = new TestSuite;
-
-	testSuite->addTest (NEW_CASE(NewRendererTest, TestRenderers));
-
+	ADD_CASE(testSuite, NewRendererTest, TestRenderers);
 	return testSuite;
-} // suite
+}

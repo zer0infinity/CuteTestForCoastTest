@@ -17,31 +17,36 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
+#include "System.h"
 #include "PersistentLDAPConnection.h"
 
 //--- c-modules used -----------------------------------------------------------
 
 //---- ErrorHandlerTest ----------------------------------------------------------------
-ErrorHandlerTest::ErrorHandlerTest(TString tstrName) : ConfiguredTestCase(tstrName, "ErrorHandlerTestTestConfig")
+ErrorHandlerTest::ErrorHandlerTest(TString tstrName)
+	: TestCaseType(tstrName)
 {
-	StartTrace(ErrorHandlerTest.Ctor);
+	StartTrace(ErrorHandlerTest.ErrorHandlerTest);
 }
+
+TString ErrorHandlerTest::getConfigFileName()
+{
+	return "Config";
+}
+
 ErrorHandlerTest::~ErrorHandlerTest()
 {
 	StartTrace(ErrorHandlerTest.Dtor);
 }
 
-// setup for this TestCase
 void ErrorHandlerTest::setUp ()
 {
 	StartTrace(ErrorHandlerTest.setUp);
 	fCtx = new Context();
 	fPut = new RootMapper("");
 	fGet = new ParameterMapper("");
-	ConfiguredTestCase::setUp();
-	fGlobalConfig = LoadConfigFile("Config"); // replace semantic of SetupCase
-	t_assert(fGlobalConfig.IsDefined("Modules"));
-	WDModule::Install(fGlobalConfig);
+	t_assert(GetConfig().IsDefined("Modules"));
+	WDModule::Install(GetConfig());
 }
 
 void ErrorHandlerTest::tearDown ()
@@ -50,13 +55,12 @@ void ErrorHandlerTest::tearDown ()
 	delete fCtx;
 	delete fPut;
 	delete fGet;
-	WDModule::Terminate(fGlobalConfig);
-	ConfiguredTestCase::tearDown();
+	WDModule::Terminate(GetConfig());
 }
 
-void ErrorHandlerTest::testHandleConnectionError()
+void ErrorHandlerTest::HandleConnectionErrorTest()
 {
-	StartTrace(ErrorHandlerTest.testHandleConnectionError);
+	StartTrace(ErrorHandlerTest.HandleConnectionErrorTest);
 
 	// set up LDAP connection
 	String daName("Dummy");
@@ -81,9 +85,9 @@ void ErrorHandlerTest::testHandleConnectionError()
 	}
 }
 
-void ErrorHandlerTest::testHandleError()
+void ErrorHandlerTest::HandleErrorTest()
 {
-	StartTrace(ErrorHandlerTest.testHandleError);
+	StartTrace(ErrorHandlerTest.HandleErrorTest);
 
 	LDAPErrorHandler eh(*fCtx, fGet, fPut, "TestHandleError");
 
@@ -117,9 +121,9 @@ void ErrorHandlerTest::testHandleError()
 	assertAnyEqual(error["MyErrorArgs"], info);
 }
 
-void ErrorHandlerTest::testShouldRetry()
+void ErrorHandlerTest::ShouldRetryTest()
 {
-	StartTrace(ErrorHandlerTest.testHandleError);
+	StartTrace(ErrorHandlerTest.HandleErrorTest);
 
 	LDAPErrorHandler eh(*fCtx, fGet, fPut, "TestHandleError");
 
@@ -131,9 +135,9 @@ void ErrorHandlerTest::testShouldRetry()
 	assertEquals(LDAPErrorHandler::eIsInRetrySequence, eh.GetRetryState());
 }
 
-void ErrorHandlerTest::testParamAccess()
+void ErrorHandlerTest::ParamAccessTest()
 {
-	StartTrace(ErrorHandlerTest.testParamAccess);
+	StartTrace(ErrorHandlerTest.ParamAccessTest);
 
 	Anything qp, cp;
 	ROAnything rqp, rcp;
@@ -163,11 +167,9 @@ Test *ErrorHandlerTest::suite ()
 {
 	StartTrace(ErrorHandlerTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	ADD_CASE(testSuite, ErrorHandlerTest, testParamAccess);
-	ADD_CASE(testSuite, ErrorHandlerTest, testHandleError);
-	ADD_CASE(testSuite, ErrorHandlerTest, testHandleConnectionError);
-	ADD_CASE(testSuite, ErrorHandlerTest, testShouldRetry);
-
+	ADD_CASE(testSuite, ErrorHandlerTest, ParamAccessTest);
+	ADD_CASE(testSuite, ErrorHandlerTest, HandleErrorTest);
+	ADD_CASE(testSuite, ErrorHandlerTest, HandleConnectionErrorTest);
+	ADD_CASE(testSuite, ErrorHandlerTest, ShouldRetryTest);
 	return testSuite;
 }

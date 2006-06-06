@@ -21,7 +21,7 @@
 //--- c-library modules used ---------------------------------------------------
 
 //---- RendererDispatcherTest ----------------------------------------------------------------
-RendererDispatcherTest::RendererDispatcherTest(TString tname) : TestCase(tname)
+RendererDispatcherTest::RendererDispatcherTest(TString tname) : TestCaseType(tname)
 {
 	StartTrace(RendererDispatcherTest.Ctor);
 }
@@ -30,17 +30,6 @@ RendererDispatcherTest::~RendererDispatcherTest()
 {
 	StartTrace(RendererDispatcherTest.Dtor);
 }
-
-// setup for this TestCase
-void RendererDispatcherTest::setUp ()
-{
-	StartTrace(RendererDispatcherTest.setUp);
-} // setUp
-
-void RendererDispatcherTest::tearDown ()
-{
-	StartTrace(RendererDispatcherTest.tearDown);
-} // tearDown
 
 void RendererDispatcherTest::FindServiceNameTest()
 {
@@ -92,7 +81,7 @@ Test *RendererDispatcherTest::suite ()
 	StartTrace(RendererDispatcherTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(RendererDispatcherTest, FindServiceNameTest));
+	ADD_CASE(testSuite, RendererDispatcherTest, FindServiceNameTest);
 
 	return testSuite;
-} // suite
+}

@@ -9,16 +9,78 @@
 {
 
 	/WriteFileTest {
-		/TmpStore {
-			/Filename	"WriteTestFile"
-			/Extension	"txt"
-			/FileContent	"The message is \n\n Hallo !!"
-		}
-		/TheAction {
-			/CallDA {
-				/DataAccess		TestFileWrite
+		{
+			/TmpStore {
+				/Filename		"WriteTestFile"
+				/Extension		"txt"
+				/FileContent	"The message is \n\n Hallo !!"
 			}
+			/TheAction {
+				/CallDA {
+					/DataAccess		TestFileWrite
+				}
+			}
+			/Result	"The message is \n\n Hallo !!"
 		}
-		/Result	"The message is \n\n Hallo !!"
+		{
+			/TmpStore {
+				/Filename		"WriteTestFile"
+				/Extension		"txt"
+				/FileContent	"guguseli"
+			}
+			/TheAction {
+				/CallDA {
+					/DataAccess		TestFileWrite
+				}
+			}
+			/ExpectedResult	0
+			/Result	"The message is \n\n Hallo !!"
+		}
+		{
+			/TmpStore {
+				/Filename		"WriteTestFile"
+				/Extension		"txt"
+				/FileContent	"guguseli"
+				/Mode			"noreplace"
+			}
+			/TheAction {
+				/CallDA {
+					/DataAccess		TestFileWrite
+				}
+			}
+			/ExpectedResult	0
+			/Result	"The message is \n\n Hallo !!"
+		}
+		{
+			/TmpStore {
+				/Filename		"WriteTestFile"
+				/Extension		"txt"
+				/FileContent	"The message is \n\n Hallo !!"
+				/Mode			"append"
+			}
+			/TheAction {
+				/CallDA {
+					/DataAccess		TestFileWrite
+				}
+			}
+			/ExpectedResult	1
+			/Result	"The message is \n\n Hallo !!The message is \n\n Hallo !!"
+		}
+		{
+			/TmpStore {
+				/Filename		"WriteTestFile"
+				/Extension		"txt"
+				/FileContent	"truncated content\ntest this!"
+				/Mode			"truncate"
+			}
+			/TheAction {
+				/CallDA {
+					/DataAccess		TestFileWrite
+				}
+			}
+			/ExpectedResult	1
+			/Result	"truncated content\ntest this!"
+		}
 	}
 }
+

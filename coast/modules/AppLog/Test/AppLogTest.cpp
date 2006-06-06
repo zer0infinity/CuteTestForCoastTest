@@ -27,9 +27,14 @@
 
 //---- AppLogTest ----------------------------------------------------------------
 AppLogTest::AppLogTest(TString tname)
-	: ConfiguredTestCase(tname, "Config")
+	: TestCaseType(tname)
 {
-	StartTrace(AppLogTest.Ctor);
+	StartTrace(AppLogTest.AppLogTest);
+}
+
+TString AppLogTest::getConfigFileName()
+{
+	return "Config";
 }
 
 AppLogTest::~AppLogTest()
@@ -55,7 +60,7 @@ void AppLogTest::LogOkTest()
 
 	WDModule *pModule = WDModule::FindWDModule("AppLogModule");
 	if ( t_assertm(pModule != NULL, "expected AppLogModule to be registered") ) {
-		if ( t_assert(pModule->Init(fConfig)) ) {
+		if ( t_assert(pModule->Init(GetConfig())) ) {
 			Server *server = Server::FindServer("TestServer");
 
 			Context ctx;
@@ -92,7 +97,7 @@ void AppLogTest::LogOkToVirtualServerTest()
 
 	WDModule *pModule = WDModule::FindWDModule("AppLogModule");
 	if ( t_assertm(pModule != NULL, "expected AppLogModule to be registered") ) {
-		if ( t_assert(pModule->Init(fConfig)) ) {
+		if ( t_assert(pModule->Init(GetConfig())) ) {
 			Server *server = Server::FindServer("AnotherServerWithoutLogConfigButShouldUseChannelsOfTestServer");
 
 			Context ctx;
@@ -128,24 +133,24 @@ void AppLogTest::LoggingActionTest()
 
 	WDModule *pModule = WDModule::FindWDModule("AppLogModule");
 	if ( t_assertm(pModule != NULL, "expected AppLogModule to be registered") ) {
-		if ( t_assert(pModule->Init(fConfig)) ) {
+		if ( t_assert(pModule->Init(GetConfig())) ) {
 			Server *server = Server::FindServer("TestServer");
 
 			Context ctx;
 			ctx.SetServer(server);
 			ctx.GetTmpStore()["TestMsg"] = "Action logging Test";
 			String token("AccessTestAction");
-			t_assertm(Action::ExecAction(token, ctx, fConfig[token]), "Action Logging 1");
+			t_assertm(Action::ExecAction(token, ctx, GetConfig()[token]), "Action Logging 1");
 			assertEqual("AccessTestAction", token);
 
 			ctx.GetTmpStore()["ErrorMsg"] = "Action logging Error 1";
 			token = "ErrorlogTestAction";
-			t_assertm(Action::ExecAction(token, ctx, fConfig[token]), "Action Logging 2");
+			t_assertm(Action::ExecAction(token, ctx, GetConfig()[token]), "Action Logging 2");
 			assertEqual("ErrorlogTestAction", token);
 
 			ctx.GetTmpStore()["ErrorMsg"] = "Action logging Error 2";
 			token = "NoChannelTestAction";
-			t_assertm(!Action::ExecAction(token, ctx, fConfig[token]), "Action Logging 3");
+			t_assertm(!Action::ExecAction(token, ctx, GetConfig()[token]), "Action Logging 3");
 			assertEqual("NoChannelTestAction", token);
 
 			CheckFile(ctx, "AccessLog2", "Access2Header\nAction logging Test - Test\n");
@@ -161,7 +166,7 @@ void AppLogTest::TimeLoggingActionTest()
 
 	WDModule *pModule = WDModule::FindWDModule("AppLogModule");
 	if ( t_assertm(pModule != NULL, "expected AppLogModule to be registered") ) {
-		if ( t_assert(pModule->Init(fConfig)) ) {
+		if ( t_assert(pModule->Init(GetConfig())) ) {
 			Server *server = Server::FindServer("TestServer");
 
 			Context ctx;
@@ -197,7 +202,7 @@ void AppLogTest::TimeLoggingActionTest()
 			}
 
 			String token("TimeLogTestAction");
-			t_assertm(Action::ExecAction(token, ctx, fConfig[token]), "Action Time Logging 1");
+			t_assertm(Action::ExecAction(token, ctx, GetConfig()[token]), "Action Time Logging 1");
 			assertEqual("TimeLogTestAction", token);
 
 			CheckFile(ctx, "TimeLog1", "TimeLogTestHeader\n<Method.Test.SubA>: AppLogTimeTest->10 ms\n<Method.Test.SubB>: AppLogTimeTest->10 ms\n<Request.Cycle>: AppLogTimeTest->10 ms\n");
@@ -248,4 +253,4 @@ Test *AppLogTest::suite ()
 
 	return testSuite;
 
-} // suite
+}

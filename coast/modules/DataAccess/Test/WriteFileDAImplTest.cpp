@@ -27,9 +27,14 @@
 
 //---- WriteFileDAImplTest ----------------------------------------------------------------
 WriteFileDAImplTest::WriteFileDAImplTest(TString tname)
-	: ConfiguredActionTest(tname, "WriteFileDAImplTestConfig")
+	: ConfiguredActionTest(tname)
 {
-	StartTrace(WriteFileDAImplTest.Ctor);
+	StartTrace(WriteFileDAImplTest.WriteFileDAImplTest);
+}
+
+TString WriteFileDAImplTest::getConfigFileName()
+{
+	return "WriteFileDAImplTestConfig";
 }
 
 WriteFileDAImplTest::~WriteFileDAImplTest()
@@ -37,15 +42,15 @@ WriteFileDAImplTest::~WriteFileDAImplTest()
 	StartTrace(WriteFileDAImplTest.Dtor);
 }
 
-bool WriteFileDAImplTest::CompareResult()
+bool WriteFileDAImplTest::CompareResult(TString strResult)
 {
 	StartTrace(WriteFileDAImplTest.CompareResult);
 	bool bRet = false;
 	iostream *fp = System::OpenStream("WriteTestFile", "txt");
 	if (t_assert(fp != 0)) {
 		OStringStream os;
-		os << fp->rdbuf();
-		bRet = assertEqual(fTestCaseConfig["Result"].AsString(), os.str());
+		os << fp->rdbuf() << flush;
+		bRet = assertEqual(strResult, os.str());
 	}
 	return bRet;
 }
@@ -57,51 +62,19 @@ void WriteFileDAImplTest::WriteFileTest()
 	String testCaseName(name());
 	System::IO::unlink("./WriteTestFile.txt");
 	Context ctx;
-	DoTestWithContext(fTestCaseConfig, testCaseName, ctx);
-	t_assert(CompareResult());
-
-	// Write again should fail because of default flag 'noreplace'
-	fTestCaseConfig["ExpectedResult"] = false;
-	String strContent = fTestCaseConfig["TmpStore"]["FileContent"].AsString();
-	fTestCaseConfig["TmpStore"]["FileContent"] = "guguseli";
-	DoTestWithContext(fTestCaseConfig, testCaseName, ctx);
-	t_assert(CompareResult());
-
-	// Write again should fail because of default flag 'noreplace'
-	fTestCaseConfig["TmpStore"]["Mode"] = "noreplace";
-	DoTestWithContext(fTestCaseConfig, testCaseName, ctx);
-	t_assert(CompareResult());
-
-	// try to append something to the file, should succeed again
-	fTestCaseConfig["ExpectedResult"] = true;
-	fTestCaseConfig["TmpStore"]["FileContent"] = strContent;
-	Anything anyModes;
-	anyModes.Append("append");
-	fTestCaseConfig["TmpStore"]["Mode"] = anyModes;
-	String strResult = fTestCaseConfig["Result"].AsString();
-	strResult << strResult;
-	fTestCaseConfig["Result"] = strResult;
-	DoTestWithContext(fTestCaseConfig, testCaseName, ctx);
-	t_assert(CompareResult());
-
-	// truncate the file with some new content
-	strResult = "truncated content\ntest this!";
-	fTestCaseConfig["TmpStore"]["FileContent"] = strResult;
-	fTestCaseConfig["Result"] = strResult;
-	anyModes = "truncate";
-	fTestCaseConfig["TmpStore"]["Mode"] = anyModes;
-	DoTestWithContext(fTestCaseConfig, testCaseName, ctx);
-	t_assert(CompareResult());
+	ROAnything roaConfig;
+	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(roaConfig) ) {
+		DoTestWithContext(roaConfig, testCaseName, ctx);
+		t_assert(CompareResult(roaConfig["Result"].AsCharPtr()));
+	}
 }
 
-// builds up a suite of ConfiguredTestCases, add a line for each testmethod
+// builds up a suite of tests, add a line for each testmethod
 Test *WriteFileDAImplTest::suite ()
 {
 	StartTrace(WriteFileDAImplTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
 	ADD_CASE(testSuite, WriteFileDAImplTest, WriteFileTest);
-
 	return testSuite;
-
-} // suite
+}

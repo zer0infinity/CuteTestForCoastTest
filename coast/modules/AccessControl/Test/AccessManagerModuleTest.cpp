@@ -69,9 +69,9 @@ RegisterAccessManager(MyAccessManager);
 
 //---- AccessManagerModuleTest ----------------------------------------------------------------
 AccessManagerModuleTest::AccessManagerModuleTest(TString tstrName)
-	: ConfiguredTestCase(tstrName, "AccessManagerModuleTest")
+	: TestCaseType(tstrName)
 {
-	StartTrace(AccessManagerModuleTest.Ctor);
+	StartTrace(AccessManagerModuleTest.AccessManagerModuleTest);
 }
 
 AccessManagerModuleTest::~AccessManagerModuleTest()
@@ -79,26 +79,17 @@ AccessManagerModuleTest::~AccessManagerModuleTest()
 	StartTrace(AccessManagerModuleTest.Dtor);
 }
 
-// setup for this TestCase
 void AccessManagerModuleTest::setUp ()
 {
 	StartTrace(AccessManagerModuleTest.setUp);
-
-	ConfiguredTestCase::setUp();
-	WDModule::Install(fConfig);
+	WDModule::Install(GetConfig());
 }
 
 void AccessManagerModuleTest::tearDown ()
 {
 	StartTrace(AccessManagerModuleTest.tearDown);
 
-	WDModule::Terminate(fConfig);
-	ConfiguredTestCase::tearDown();
-}
-
-void AccessManagerModuleTest::testCase()
-{
-	StartTrace(AccessManagerModuleTest.testCase);
+	WDModule::Terminate(GetConfig());
 }
 
 String GetName(RegisterableObject *o)
@@ -108,9 +99,9 @@ String GetName(RegisterableObject *o)
 	return ret;
 }
 
-void AccessManagerModuleTest::testInit()
+void AccessManagerModuleTest::InitTest()
 {
-	StartTrace(AccessManagerModuleTest.testInit);
+	StartTrace(AccessManagerModuleTest.InitTest);
 
 	AccessManager *am_alpha = AccessManagerModule::GetAccessManager("alpha");
 	t_assert(am_alpha != NULL);
@@ -138,18 +129,18 @@ void AccessManagerModuleTest::testInit()
 	t_assertm(typeid(TestAccessManager) == typeid(*am_gamma), typeid(*am_gamma).name());
 }
 
-void AccessManagerModuleTest::testFinis()
+void AccessManagerModuleTest::FinisTest()
 {
-	StartTrace(AccessManagerModuleTest.testFinis);
+	StartTrace(AccessManagerModuleTest.FinisTest);
 
 	AccessManager *am_alpha = AccessManagerModule::GetAccessManager("alpha");
 	t_assert(am_alpha != NULL);
 	assertEquals("alpha", GetName(am_alpha));
 
-	WDModule::Terminate(fConfig);
+	WDModule::Terminate(GetConfig());
 
 	am_alpha = AccessManagerModule::GetAccessManager("alpha");
-	t_assert(am_alpha == 0);
+	t_assert(0 == am_alpha);
 
 	AccessManager *am = AccessManagerModule::GetAccessManager("TestAccessManager");
 	t_assert(am != NULL);
@@ -161,10 +152,7 @@ Test *AccessManagerModuleTest::suite ()
 {
 	StartTrace(AccessManagerModuleTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	ADD_CASE(testSuite, AccessManagerModuleTest, testCase);
-	ADD_CASE(testSuite, AccessManagerModuleTest, testInit);
-	ADD_CASE(testSuite, AccessManagerModuleTest, testFinis);
-
+	ADD_CASE(testSuite, AccessManagerModuleTest, InitTest);
+	ADD_CASE(testSuite, AccessManagerModuleTest, FinisTest);
 	return testSuite;
 }

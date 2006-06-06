@@ -14,7 +14,7 @@
 
 //---- HTTPProtocolReplyRendererTest ----------------------------------------------------------
 //! TestCases description
-class HTTPProtocolReplyRendererTest : public TestCase
+class HTTPProtocolReplyRendererTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -31,12 +31,6 @@ public:
 	//! builds up a suite of testcases for this test
 	static Test *suite ();
 
-	//! sets the environment for this test
-	void setUp ();
-
-	//! deletes the environment for this test
-	void tearDown ();
-
 	//! check if a success HTTP reply can be rendered
 	void RequestSuccessfulReplyLine();
 	//! check for a non-rendered reason phrase
@@ -48,10 +42,7 @@ public:
 	void ConnectionCloseTest();
 
 	//! check the status code to reason phrase mapper
-	void HTTPProtocolReplyRendererTest::DefaultReasonPhraseTest();
-
-	//! describe this testcase
-	void testCase();
+	void DefaultReasonPhraseTest();
 };
 
 #endif

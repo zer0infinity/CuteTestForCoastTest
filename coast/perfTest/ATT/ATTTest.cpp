@@ -28,15 +28,20 @@
 
 //---- ATTTest ----------------------------------------------------------------
 ATTTest::ATTTest(TString tname)
-	: ConfiguredTestCase(tname, "ATTTestConfig"),
-	  fNrOfTests(0),
-	  fNrOfErrors(0),
-	  fNrOfSteps(0),
-	  fNrOfStepErrors(0),
-	  fResultOutput(""),
-	  fSummaryOutput("")
+	: TestCaseType(tname)
+	, fNrOfTests(0)
+	, fNrOfErrors(0)
+	, fNrOfSteps(0)
+	, fNrOfStepErrors(0)
+	, fResultOutput("")
+	, fSummaryOutput("")
 {
-	StartTrace(ATTTest.Ctor);
+	StartTrace(ATTTest.ATTTest);
+}
+
+TString ATTTest::getConfigFileName()
+{
+	return "ATTTestConfig";
 }
 
 ATTTest::~ATTTest()
@@ -67,9 +72,9 @@ void ATTTest::RunTheStressers()
 {
 	StartTrace(ATTTest.RunTheStressers);
 
-	long sz = fTestCaseConfig.GetSize();
+	long sz = GetTestCaseConfig().GetSize();
 	for (long i = 0; i < sz; i++) {
-		Anything testRuns = fTestCaseConfig[i];
+		ROAnything testRuns = GetTestCaseConfig()[i];
 
 		String stresserName = testRuns.AsString("Default");
 		Trace("Running " << stresserName);
@@ -182,38 +187,38 @@ void ATTTest::PrepareResults(Anything result)
 	oss << "</xmp><hr>";
 }
 
-// builds up a suite of ConfiguredTestCases, add a line for each testmethod
+// builds up a suite of tests, add a line for each testmethod
 Test *DoneScenariosTest::suite ()
 {
 	StartTrace(DoneScenariosTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(DoneScenariosTest, DoneScenarios));
+	ADD_CASE(testSuite, DoneScenariosTest, DoneScenarios);
 
 	return testSuite;
 
-} // suite
+}
 
-// builds up a suite of ConfiguredTestCases, add a line for each testmethod
+// builds up a suite of tests, add a line for each testmethod
 Test *RunOnlyScenariosTest::suite ()
 {
 	StartTrace(RunOnlyScenariosTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(RunOnlyScenariosTest, RunOnlyScenarios));
+	ADD_CASE(testSuite, RunOnlyScenariosTest, RunOnlyScenarios);
 
 	return testSuite;
 
-} // suite
+}
 
-// builds up a suite of ConfiguredTestCases, add a line for each testmethod
+// builds up a suite of tests, add a line for each testmethod
 Test *InWorkScenariosTest::suite ()
 {
 	StartTrace(InWorkScenariosTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(InWorkScenariosTest, InWorkScenarios));
+	ADD_CASE(testSuite, InWorkScenariosTest, InWorkScenarios);
 
 	return testSuite;
 
-} // suite
+}

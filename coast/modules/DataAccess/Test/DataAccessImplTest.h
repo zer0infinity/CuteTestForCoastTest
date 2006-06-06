@@ -19,7 +19,7 @@
 //! further explanation of the purpose of the class
 //! this may contain <B>HTML-Tags</B>
 //! ...
-class DataAccessImplTest : public TestCase
+class DataAccessImplTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -27,8 +27,6 @@ public:
 	~DataAccessImplTest();
 
 	static Test *suite ();
-
-	void setUp();
 
 	//--- public api
 	void GetConfigNameTest();

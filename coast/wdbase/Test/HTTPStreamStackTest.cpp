@@ -24,7 +24,7 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- HTTPStreamStackTest ----------------------------------------------------------------
-HTTPStreamStackTest::HTTPStreamStackTest(TString tstrName) : TestCase(tstrName)
+HTTPStreamStackTest::HTTPStreamStackTest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(HTTPStreamStackTest.Ctor);
 }
@@ -32,17 +32,6 @@ HTTPStreamStackTest::HTTPStreamStackTest(TString tstrName) : TestCase(tstrName)
 HTTPStreamStackTest::~HTTPStreamStackTest()
 {
 	StartTrace(HTTPStreamStackTest.Dtor);
-}
-
-// setup for this TestCase
-void HTTPStreamStackTest::setUp ()
-{
-	StartTrace(HTTPStreamStackTest.setUp);
-}
-
-void HTTPStreamStackTest::tearDown ()
-{
-	StartTrace(HTTPStreamStackTest.tearDown);
 }
 
 //! Test with no special encoding
@@ -129,21 +118,14 @@ void HTTPStreamStackTest::ChunkedGzipEncoding()
 	assertEqual(expected.str(), out.str());
 }
 
-void HTTPStreamStackTest::testCase()
-{
-	StartTrace(HTTPStreamStackTest.testCase);
-}
 // builds up a suite of testcases, add a line for each testmethod
 Test *HTTPStreamStackTest::suite ()
 {
 	StartTrace(HTTPStreamStackTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	testSuite->addTest (NEW_CASE(HTTPStreamStackTest, NoEncoding));
-	testSuite->addTest (NEW_CASE(HTTPStreamStackTest, ChunkedOnlyEncoding));
-	testSuite->addTest (NEW_CASE(HTTPStreamStackTest, GzipOnlyEncoding));
-	testSuite->addTest (NEW_CASE(HTTPStreamStackTest, ChunkedGzipEncoding));
-	testSuite->addTest (NEW_CASE(HTTPStreamStackTest, testCase));
-
+	ADD_CASE(testSuite, HTTPStreamStackTest, NoEncoding);
+	ADD_CASE(testSuite, HTTPStreamStackTest, ChunkedOnlyEncoding);
+	ADD_CASE(testSuite, HTTPStreamStackTest, GzipOnlyEncoding);
+	ADD_CASE(testSuite, HTTPStreamStackTest, ChunkedGzipEncoding);
 	return testSuite;
 }

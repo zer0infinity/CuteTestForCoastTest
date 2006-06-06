@@ -14,7 +14,7 @@
 
 //---- BasicRendererTest ----------------------------------------------------------
 //!Test the core functionality of base class Renderer
-class BasicRendererTest : public TestCase
+class BasicRendererTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -33,9 +33,6 @@ public:
 
 	//!sets the environment for this test
 	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
 
 	//!test the rendering of a simple string
 	void RenderASimpleString();

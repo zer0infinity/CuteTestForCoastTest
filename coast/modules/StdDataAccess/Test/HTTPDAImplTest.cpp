@@ -29,22 +29,26 @@
 //---- HTTPDAImplTest ----------------------------------------------------------------
 //---- RequestReaderTest ----------------------------------------------------------------
 HTTPDAImplTest::HTTPDAImplTest(TString tstrName)
-	: ConfiguredTestCase(tstrName, "HTTPDAImplTestConfig")
+	: TestCaseType(tstrName)
 {
-	StartTrace(HTTPDAImplTest.Ctor);
+	StartTrace(HTTPDAImplTest.HTTPDAImplTest);
+}
+
+TString HTTPDAImplTest::getConfigFileName()
+{
+	return "HTTPDAImplTestConfig";
 }
 
 void HTTPDAImplTest::setUp ()
 {
-	Anything dummy;
-	ConfiguredTestCase::setUp();
-	WDModule *ssl = WDModule::FindWDModule("SSLModule");
-	ssl->Init(dummy);
+	WDModule *sslmodule = WDModule::FindWDModule("SSLModule");
+	sslmodule->ResetInit(Anything());
 }
 
 void HTTPDAImplTest::tearDown ()
 {
-	ConfiguredTestCase::tearDown();
+	WDModule *sslmodule = WDModule::FindWDModule("SSLModule");
+	sslmodule->ResetFinis(Anything());
 }
 
 void HTTPDAImplTest::useSSLTest()
@@ -67,8 +71,9 @@ void HTTPDAImplTest::SSLTests()
 {
 	StartTrace(HTTPDAImplTest.SSLTests);
 
-	FOREACH_ENTRY("SSLTests", cConfig, cName) {
-		Trace("SSLTests: At entry: " << i);
+	ROAnything cConfig;
+	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(cConfig) ) {
 		TraceAny(cConfig, "SSLTests config");
 		ParameterMapper in("SSLTests");
 		in.CheckConfig("ParameterMapper");
@@ -94,8 +99,9 @@ void HTTPDAImplTest::SSLNirvanaConnectTests()
 {
 	StartTrace(HTTPDAImplTest.SSLTests);
 
-	FOREACH_ENTRY("SSLNirvanaConnectTests", cConfig, cName) {
-		Trace("SSLTests: At entry: " << i);
+	ROAnything cConfig;
+	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(cConfig) ) {
 		TraceAny(cConfig, "SSLTests config");
 		ParameterMapper in("SSLTests");
 		in.CheckConfig("ParameterMapper");
@@ -144,14 +150,11 @@ void HTTPDAImplTest::ErrorHandlingTest()
 }
 
 Test *HTTPDAImplTest::suite ()
-// collect all test cases for the SocketStream
 {
 	TestSuite *testSuite = new TestSuite;
-
-	testSuite->addTest (NEW_CASE(HTTPDAImplTest, useSSLTest));
-	testSuite->addTest (NEW_CASE(HTTPDAImplTest, ErrorHandlingTest));
-	testSuite->addTest (NEW_CASE(HTTPDAImplTest, SSLTests));
-	testSuite->addTest (NEW_CASE(HTTPDAImplTest, SSLNirvanaConnectTests));
-
+	ADD_CASE(testSuite, HTTPDAImplTest, useSSLTest);
+	ADD_CASE(testSuite, HTTPDAImplTest, ErrorHandlingTest);
+	ADD_CASE(testSuite, HTTPDAImplTest, SSLTests);
+	ADD_CASE(testSuite, HTTPDAImplTest, SSLNirvanaConnectTests);
 	return testSuite;
-} // suite
+}

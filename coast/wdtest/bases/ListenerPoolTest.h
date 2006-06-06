@@ -10,7 +10,7 @@
 #define _ListenerPoolTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 #include "Socket.h"
 #include "Threads.h"
 
@@ -18,7 +18,7 @@ class Connector;
 
 //---- ListenerPoolTest ----------------------------------------------------------
 //!TestCases description
-class ListenerPoolTest : public ConfiguredTestCase
+class ListenerPoolTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors
@@ -37,6 +37,7 @@ public:
 
 	void setUp ();
 	void tearDown();
+	TString getConfigFileName();
 
 	//!Everything works fine within this testcase
 	void PoolTest();

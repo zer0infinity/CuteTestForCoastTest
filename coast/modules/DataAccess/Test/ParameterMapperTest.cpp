@@ -23,7 +23,7 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- ParameterMapperTest ----------------------------------------------------------------
-ParameterMapperTest::ParameterMapperTest(TString tstrName) : TestCase(tstrName)
+ParameterMapperTest::ParameterMapperTest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(ParameterMapperTest.Ctor);
 }
@@ -33,20 +33,9 @@ ParameterMapperTest::~ParameterMapperTest()
 	StartTrace(ParameterMapperTest.Dtor);
 }
 
-// setup for this TestCase
-void ParameterMapperTest::setUp ()
+void ParameterMapperTest::DoSelectScriptTest()
 {
-	StartTrace(ParameterMapperTest.setUp);
-}
-
-void ParameterMapperTest::tearDown ()
-{
-	StartTrace(ParameterMapperTest.tearDown);
-}
-
-void ParameterMapperTest::testDoSelectScript()
-{
-	StartTrace(ParameterMapperTest.testDoSelectScript);
+	StartTrace(ParameterMapperTest.DoSelectScriptTest);
 
 	Anything script, empty;
 	script["KeyA"] = "a";
@@ -56,9 +45,9 @@ void ParameterMapperTest::testDoSelectScript()
 	assertAnyEqual(pm.DoSelectScript("KeyNonex", script, ctx), empty);
 }
 
-void ParameterMapperTest::testDoLoadConfig()
+void ParameterMapperTest::DoLoadConfigTest()
 {
-	StartTrace(ParameterMapperTest.testDoLoadConfig);
+	StartTrace(ParameterMapperTest.DoLoadConfigTest);
 
 	ParameterMapper pm("ParameterMapperTest");
 
@@ -66,9 +55,9 @@ void ParameterMapperTest::testDoLoadConfig()
 	t_assertm(!pm.DoLoadConfig("NonExistingMapper"), "Found a config, but shouldn't!");
 }
 
-void ParameterMapperTest::testDoGetConfigName()
+void ParameterMapperTest::DoGetConfigNameTest()
 {
-	StartTrace(ParameterMapperTest.testDoGetConfigName);
+	StartTrace(ParameterMapperTest.DoGetConfigNameTest);
 
 	String configName;
 	ParameterMapper pm("");
@@ -79,9 +68,9 @@ void ParameterMapperTest::testDoGetConfigName()
 	assertEqual("SomeOtherMapperMeta", configName);
 }
 
-void ParameterMapperTest::testPlaceIntoAnyOrAppendIfNotEmpty()
+void ParameterMapperTest::PlaceIntoAnyOrAppendIfNotEmptyTest()
 {
-	StartTrace(ParameterMapperTest.testPlaceIntoAnyOrAppendIfNotEmpty);
+	StartTrace(ParameterMapperTest.PlaceIntoAnyOrAppendIfNotEmptyTest);
 
 	Anything val = "aValue", val2 = "bValue", empty;
 	t_assert(empty.GetSize() == 0);
@@ -95,9 +84,9 @@ void ParameterMapperTest::testPlaceIntoAnyOrAppendIfNotEmpty()
 	t_assert(empty.Contains("bValue"));
 }
 
-void ParameterMapperTest::testDoFinalGetAny()
+void ParameterMapperTest::DoFinalGetAnyTest()
 {
-	StartTrace(ParameterMapperTest.testDoFinalGetAny);
+	StartTrace(ParameterMapperTest.DoFinalGetAnyTest);
 
 	ParameterMapper pm("");
 	Anything res, store;
@@ -110,9 +99,9 @@ void ParameterMapperTest::testDoFinalGetAny()
 	t_assert(!pm.DoFinalGetAny("unknownKey", res, ctx));
 }
 
-void ParameterMapperTest::testDoFinalGetStream()
+void ParameterMapperTest::DoFinalGetStreamTest()
 {
-	StartTrace(ParameterMapperTest.testDoFinalGetStream);
+	StartTrace(ParameterMapperTest.DoFinalGetStreamTest);
 
 	ParameterMapper pm("");
 	Anything store, res;
@@ -127,9 +116,9 @@ void ParameterMapperTest::testDoFinalGetStream()
 	t_assert(!pm.DoFinalGetStream("unknownKey", os, ctx));
 }
 
-void ParameterMapperTest::testDoGetAny()
+void ParameterMapperTest::DoGetAnyTest()
 {
-	StartTrace(ParameterMapperTest.testDoGetAny);
+	StartTrace(ParameterMapperTest.DoGetAnyTest);
 
 	SimpleAnyLoader sal;
 	Anything scripts = sal.Load("MapperTestScripts");
@@ -192,9 +181,9 @@ void ParameterMapperTest::testDoGetAny()
 	t_assert(res.IsNull());
 }
 
-void ParameterMapperTest::testDoGetStream()
+void ParameterMapperTest::DoGetStreamTest()
 {
-	StartTrace(ParameterMapperTest.testDoFinalGetStream);
+	StartTrace(ParameterMapperTest.DoFinalGetStreamTest);
 
 	// Implementation forwards to DoGetAny(), so we just do a sanity-check
 
@@ -212,9 +201,9 @@ void ParameterMapperTest::testDoGetStream()
 	assertEqual(os.str(), "aValueToGetxyz");
 }
 
-void ParameterMapperTest::testGet()
+void ParameterMapperTest::GetTest()
 {
-	StartTrace(ParameterMapperTest.testGet);
+	StartTrace(ParameterMapperTest.GetTest);
 
 	Anything store;
 	store["sKey"] = "ChristmasIsComing";
@@ -260,9 +249,9 @@ void ParameterMapperTest::testGet()
 	t_assert(empty.IsNull());
 }
 
-void ParameterMapperTest::testEagerDoSelectScript()
+void ParameterMapperTest::EagerDoSelectScriptTest()
 {
-	StartTrace(ParameterMapperTest.testEagerDoSelectScript);
+	StartTrace(ParameterMapperTest.EagerDoSelectScriptTest);
 
 	Anything script;
 	script["KeyA"] = "a";
@@ -272,9 +261,9 @@ void ParameterMapperTest::testEagerDoSelectScript()
 	assertAnyEqual(epm.DoSelectScript("KeyNonex", script, ctx), script);
 }
 
-void ParameterMapperTest::testEagerGet()
+void ParameterMapperTest::EagerGetTest()
 {
-	StartTrace(ParameterMapperTest.testEagerGet);
+	StartTrace(ParameterMapperTest.EagerGetTest);
 
 	EagerParameterMapper epm("EagerParameterMapperTest");
 	epm.CheckConfig("ParameterMapper");
@@ -295,9 +284,9 @@ void ParameterMapperTest::testEagerGet()
 	assertEqual("really", str);
 }
 
-void ParameterMapperTest::testDoSetSourceSlotDynamically()
+void ParameterMapperTest::DoSetSourceSlotDynamicallyTest()
 {
-	StartTrace(ParameterMapperTest.testDoSetSourceSlotDynamically);
+	StartTrace(ParameterMapperTest.DoSetSourceSlotDynamicallyTest);
 
 	Context ctx;
 	ParameterMapper pm("DynamicFetcher");
@@ -314,9 +303,9 @@ void ParameterMapperTest::testDoSetSourceSlotDynamically()
 	assertEquals("Mapper.foo.bar", pm.DoGetSourceSlot(ctx));
 }
 
-void ParameterMapperTest::testDoGetSourceSlotWithPath()
+void ParameterMapperTest::DoGetSourceSlotWithPathTest()
 {
-	StartTrace(ParameterMapperTest.testDoGetSourceSlotWithPath);
+	StartTrace(ParameterMapperTest.DoGetSourceSlotWithPathTest);
 
 	Context ctx;
 	ParameterMapper pm("PMTest");
@@ -340,20 +329,20 @@ Test *ParameterMapperTest::suite ()
 	StartTrace(ParameterMapperTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	ADD_CASE(testSuite, ParameterMapperTest, testDoSelectScript);
-	ADD_CASE(testSuite, ParameterMapperTest, testDoLoadConfig);
-	ADD_CASE(testSuite, ParameterMapperTest, testDoGetConfigName);
-	ADD_CASE(testSuite, ParameterMapperTest, testPlaceIntoAnyOrAppendIfNotEmpty);
-	ADD_CASE(testSuite, ParameterMapperTest, testDoFinalGetAny);
-	ADD_CASE(testSuite, ParameterMapperTest, testDoFinalGetStream);
-	ADD_CASE(testSuite, ParameterMapperTest, testDoGetAny);
-	ADD_CASE(testSuite, ParameterMapperTest, testDoGetStream);
-	ADD_CASE(testSuite, ParameterMapperTest, testGet);
-	ADD_CASE(testSuite, ParameterMapperTest, testDoSetSourceSlotDynamically);
-	ADD_CASE(testSuite, ParameterMapperTest, testDoGetSourceSlotWithPath);
+	ADD_CASE(testSuite, ParameterMapperTest, DoSelectScriptTest);
+	ADD_CASE(testSuite, ParameterMapperTest, DoLoadConfigTest);
+	ADD_CASE(testSuite, ParameterMapperTest, DoGetConfigNameTest);
+	ADD_CASE(testSuite, ParameterMapperTest, PlaceIntoAnyOrAppendIfNotEmptyTest);
+	ADD_CASE(testSuite, ParameterMapperTest, DoFinalGetAnyTest);
+	ADD_CASE(testSuite, ParameterMapperTest, DoFinalGetStreamTest);
+	ADD_CASE(testSuite, ParameterMapperTest, DoGetAnyTest);
+	ADD_CASE(testSuite, ParameterMapperTest, DoGetStreamTest);
+	ADD_CASE(testSuite, ParameterMapperTest, GetTest);
+	ADD_CASE(testSuite, ParameterMapperTest, DoSetSourceSlotDynamicallyTest);
+	ADD_CASE(testSuite, ParameterMapperTest, DoGetSourceSlotWithPathTest);
 
-	ADD_CASE(testSuite, ParameterMapperTest, testEagerDoSelectScript);
-	ADD_CASE(testSuite, ParameterMapperTest, testEagerGet);
+	ADD_CASE(testSuite, ParameterMapperTest, EagerDoSelectScriptTest);
+	ADD_CASE(testSuite, ParameterMapperTest, EagerGetTest);
 
 	return testSuite;
 }

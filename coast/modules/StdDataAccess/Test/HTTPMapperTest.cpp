@@ -21,7 +21,7 @@
 #include "Dbg.h"
 
 //---- HTTPMapperTest ----------------------------------------------------------------
-HTTPMapperTest::HTTPMapperTest(TString tname) : TestCase(tname)
+HTTPMapperTest::HTTPMapperTest(TString tname) : TestCaseType(tname)
 {
 }
 
@@ -29,14 +29,6 @@ HTTPMapperTest::~HTTPMapperTest()
 {
 }
 
-void HTTPMapperTest::setUp ()
-// setup connector for this TestCase
-{
-} // setUp
-
-void HTTPMapperTest::tearDown ()
-{
-} // tearDown
 void HTTPMapperTest::FDTest1()
 {
 	StartTrace(HTTPMapperTest.FDTest1);
@@ -172,16 +164,15 @@ void HTTPMapperTest::HTTPBodyMapperBadStream()
 }
 
 Test *HTTPMapperTest::suite ()
-// collect all test cases for the SocketStream
 {
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(HTTPMapperTest, FDTest1));
-	testSuite->addTest (NEW_CASE(HTTPMapperTest, FDTest2));
-	testSuite->addTest (NEW_CASE(HTTPMapperTest, FDTest3));
-	testSuite->addTest (NEW_CASE(HTTPMapperTest, FDTest4));
-	testSuite->addTest (NEW_CASE(HTTPMapperTest, HTTPBodyMapperBadStream));
+	ADD_CASE(testSuite, HTTPMapperTest, FDTest1);
+	ADD_CASE(testSuite, HTTPMapperTest, FDTest2);
+	ADD_CASE(testSuite, HTTPMapperTest, FDTest3);
+	ADD_CASE(testSuite, HTTPMapperTest, FDTest4);
+	ADD_CASE(testSuite, HTTPMapperTest, HTTPBodyMapperBadStream);
 
 	return testSuite;
 
-} // suite
+}

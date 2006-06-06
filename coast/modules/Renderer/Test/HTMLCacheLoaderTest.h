@@ -10,13 +10,11 @@
 #define _HTMLCacheLoaderTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "TestCase.h"
-
-#include "Anything.h"
+#include "FoundationTestTypes.h"
 
 //---- HTMLCacheLoaderTest ----------------------------------------------------------
 //:TestCases description
-class HTMLCacheLoaderTest : public TestCase
+class HTMLCacheLoaderTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors
@@ -39,6 +37,8 @@ public:
 	//!deletes the environment for this test
 	void tearDown ();
 
+	TString getConfigFileName();
+
 	//!test simplest cache Loading
 	void LoadEmptyCacheTest();
 	//!test simple cache Building
@@ -54,10 +54,6 @@ public:
 //	void BuildCacheOldStyleTest();
 	//!check if we really create a cache
 	void CheckCacheIsLoaded();
-	//!describe this testcase
-	void testCase();
-protected:
-	Anything fGlobalConfig;
 };
 
 #endif

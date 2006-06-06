@@ -28,9 +28,9 @@ const char *localHost = "127.0.0.1";
 const long localPort = 7183;
 
 ConnectorAcceptorTest::ConnectorAcceptorTest(TString tname)
-	:	TestCase(tname),
-		fCallBack(0),
-		fAcceptorThread(0)
+	: TestCaseType(tname),
+	  fCallBack(0),
+	  fAcceptorThread(0)
 {
 	StartTrace(ConnectorAcceptorTest.Ctor);
 }
@@ -41,10 +41,8 @@ ConnectorAcceptorTest::~ConnectorAcceptorTest()
 }
 
 void ConnectorAcceptorTest::setUp ()
-// what: Setup the variables for all test cases in this class
 {
 	StartTrace(ConnectorAcceptorTest.setUp);
-	TestCase::setUp();
 	fCallBack = new EBCDICEchoMsgCallBack();
 	fAcceptorThread = new AcceptorThread(new Acceptor(localHost, localPort, 2, fCallBack));
 	t_assert(fCallBack != 0);
@@ -77,7 +75,7 @@ void ConnectorAcceptorTest::tearDown ()
 		delete fAcceptorThread;
 		fAcceptorThread = 0;
 	} // if
-} // tearDown
+}
 
 void ConnectorAcceptorTest::basicOperation ()
 {

@@ -18,7 +18,6 @@
 //--- standard modules used ----------------------------------------------------
 #include "Registry.h"
 #include "Context.h"
-#include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
 #if !defined(WIN32)
@@ -26,9 +25,10 @@
 #endif
 
 //---- RoleTest ----------------------------------------------------------------
-RoleTest::RoleTest(TString tname) : ConfiguredTestCase(tname, "RoleTest")
+RoleTest::RoleTest(TString tname)
+	: TestCaseType(tname)
 {
-	StartTrace(RoleTest.Ctor);
+	StartTrace(RoleTest.RoleTest);
 }
 
 RoleTest::~RoleTest()
@@ -37,28 +37,24 @@ RoleTest::~RoleTest()
 }
 
 void RoleTest::setUp ()
-// setup RoleModule for this TestCase
 {
 	StartTrace(RoleTest.setUp);
-	ConfiguredTestCase::setUp();
 	t_assert(Role::FindRole("Role") != NULL);
-	t_assert(fConfig.IsDefined("Roles"));
-	t_assert(fConfig.IsDefined("Modules"));
-	t_assert(fConfig["Modules"].Contains("RolesModule"));
+	t_assert(GetConfig().IsDefined("Roles"));
+	t_assert(GetConfig().IsDefined("Modules"));
+	t_assert(GetConfig()["Modules"].Contains("RolesModule"));
 	// ensure installation of modules
-	WDModule::Install(fConfig);
+	WDModule::Install(GetConfig());
 	t_assert(Role::FindRole("Role") != NULL);
-} // setUp
+}
 
 void RoleTest::tearDown ()
 {
 	StartTrace(RoleTest.tearDown);
 	t_assert(Role::FindRole("Role") != NULL);
-
-	WDModule::Terminate(fConfig);
+	WDModule::Terminate(GetConfig());
 	t_assert(Role::FindRole("Role") != NULL);
-	ConfiguredTestCase::tearDown();
-} // tearDown
+}
 
 void RoleTest::GetNewPageName ()
 {
@@ -135,10 +131,9 @@ void RoleTest::GetNewPageName ()
 		t_assert(r->GetNewPageName(ctx, transition, pagename));
 		assertEqual("AnyPageYouLike", pagename);;
 		assertEqual("PreprocessAction", transition);
-
 	}
-
 }
+
 void RoleTest::Synchronize ()
 {
 	// this test is somehow dummy, because Role::Synchronize does not do much
@@ -155,7 +150,6 @@ void RoleTest::Synchronize ()
 	t_assertm(r != 0, "Role RTGuest not found");
 	if (r) {
 		t_assert(r->Synchronize(ctx));
-
 	}
 }
 void RoleTest::CollectLinkState ()
@@ -301,8 +295,7 @@ void RoleTest::CheckInstalled ()
 			ROAnything map;
 			t_assert(r->Lookup("Map", map)); // ensure Map is configured
 		}
-	} // while
-
+	}
 }
 
 void RoleTest::FindRoleWithDefault()
@@ -332,24 +325,21 @@ void RoleTest::GetDefaultRoleName()
 	ctx.PushStore("x", newrole);
 	assertEqual("Fantasy", Role::GetDefaultRoleName(ctx));
 
-	Context ctx2(fConfig, dummy, 0, 0, 0, 0);
+	Context ctx2(GetConfig().DeepClone(), dummy, 0, 0, 0, 0);
 	assertEqual("MyRole", Role::GetDefaultRoleName(ctx2));
 }
 
 Test *RoleTest::suite ()
-// collect all test cases for the RegistryStream
 {
 	TestSuite *testSuite = new TestSuite;
-
-	testSuite->addTest (NEW_CASE(RoleTest, CheckInstalled));
-	testSuite->addTest (NEW_CASE(RoleTest, GetNewPageName));
-	testSuite->addTest (NEW_CASE(RoleTest, VerifyLogout));
-	testSuite->addTest (NEW_CASE(RoleTest, VerifyLevel));
-	testSuite->addTest (NEW_CASE(RoleTest, Synchronize));
-	testSuite->addTest (NEW_CASE(RoleTest, PrepareTmpStore));
-	testSuite->addTest (NEW_CASE(RoleTest, CollectLinkState));
-	testSuite->addTest (NEW_CASE(RoleTest, FindRoleWithDefault));
-	testSuite->addTest (NEW_CASE(RoleTest, GetDefaultRoleName));
+	ADD_CASE(testSuite, RoleTest, CheckInstalled);
+	ADD_CASE(testSuite, RoleTest, GetNewPageName);
+	ADD_CASE(testSuite, RoleTest, VerifyLogout);
+	ADD_CASE(testSuite, RoleTest, VerifyLevel);
+	ADD_CASE(testSuite, RoleTest, Synchronize);
+	ADD_CASE(testSuite, RoleTest, PrepareTmpStore);
+	ADD_CASE(testSuite, RoleTest, CollectLinkState);
+	ADD_CASE(testSuite, RoleTest, FindRoleWithDefault);
+	ADD_CASE(testSuite, RoleTest, GetDefaultRoleName);
 	return testSuite;
-
-} // suite
+}

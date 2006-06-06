@@ -12,12 +12,13 @@
 //---- TestCase include -------------------------------------------------
 #include "TestCase.h"
 #include "Anything.h"
+
 //---- ScrambleStateTest ----------------------------------------------------------
 //!single line description of the class
 //! further explanation of the purpose of the class
 //! this may contain <B>HTML-Tags</B>
 //! ...
-class ScrambleStateTest : public TestCase
+class ScrambleStateTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -38,13 +39,6 @@ protected:
 
 	//--- member variables declaration
 	Anything fStdContextAny;
-
-private:
-	// use careful, you inhibit subclass use
-	//--- private class api
-
-	//--- private member variables
-
 };
 
 #endif

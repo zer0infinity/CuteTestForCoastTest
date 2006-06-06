@@ -23,7 +23,7 @@
 //--- c-library modules used ---------------------------------------------------
 
 //---- RequestProcessorTest ----------------------------------------------------------------
-RequestProcessorTest::RequestProcessorTest(TString tname) : TestCase(tname)
+RequestProcessorTest::RequestProcessorTest(TString tname) : TestCaseType(tname)
 {
 	StartTrace(RequestProcessorTest.Ctor);
 }
@@ -32,17 +32,6 @@ RequestProcessorTest::~RequestProcessorTest()
 {
 	StartTrace(RequestProcessorTest.Dtor);
 }
-
-// setup for this TestCase
-void RequestProcessorTest::setUp ()
-{
-	StartTrace(RequestProcessorTest.setUp);
-} // setUp
-
-void RequestProcessorTest::tearDown ()
-{
-	StartTrace(RequestProcessorTest.tearDown);
-} // tearDown
 
 void RequestProcessorTest::InitTest()
 {
@@ -108,11 +97,11 @@ Test *RequestProcessorTest::suite ()
 	StartTrace(RequestProcessorTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(RequestProcessorTest, InitTest));
-	testSuite->addTest (NEW_CASE(RequestProcessorTest, ProcessRequestTest));
+	ADD_CASE(testSuite, RequestProcessorTest, InitTest);
+	ADD_CASE(testSuite, RequestProcessorTest, ProcessRequestTest);
 
 	return testSuite;
-} // suite
+}
 
 //--- LoopbackProcessor ----------------------------------------------
 RegisterRequestProcessor(LoopbackProcessor);

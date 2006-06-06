@@ -20,7 +20,7 @@ class GlobalAllocator;
 
 //---- MTStorageTest ----------------------------------------------------------
 //!Test driver for tracing facility
-class MTStorageTest : public TestCase, ThreadObserver
+class MTStorageTest : public TestFramework::TestCase, ThreadObserver
 {
 public:
 	//!constructors
@@ -29,12 +29,6 @@ public:
 
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
-
-	//!sets the environment for this test
-	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
 
 	void WaitForStart();
 	virtual void Update(Thread *t, ROAnything roaStateArgs);
@@ -49,13 +43,6 @@ protected:
 	Condition fFinishedCond;
 	long fFinished;
 	bool fStarted;
-
-private:
-	// use careful, you inhibit subclass use
-	//--- private class api
-
-	//--- private member variables
-
 };
 
 #endif

@@ -14,7 +14,7 @@
 class Context;
 
 //---- LocalizationUtilsTest -----------------------------------------------------------
-class LocalizationUtilsTest : public TestCase
+class LocalizationUtilsTest : public TestFramework::TestCase
 {
 public:
 	LocalizationUtilsTest(TString tstrName);

@@ -19,7 +19,7 @@
 //! further explanation of the purpose of the class
 //! this may contain <B>HTML-Tags</B>
 //! ...
-class Base64Test : public TestCase
+class Base64Test : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -28,22 +28,12 @@ public:
 
 	static Test *suite ();
 
-	void setUp();
-
 	void EncodeDecodeTest();
 	void EncodeDecodeOriginalTest();
 
 protected:
 	//--- subclass api
 	int CalcEncodedLength( int Decodedlength );
-	//--- member variables declaration
-
-private:
-	// use careful, you inhibit subclass use
-	//--- private class api
-
-	//--- private member variables
-
 };
 
 #endif

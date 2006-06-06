@@ -29,7 +29,7 @@ Test *ScrambleStateTest::suite ()
 
 	return testSuite;
 }
-ScrambleStateTest::ScrambleStateTest(TString tstrName) : TestCase(tstrName)
+ScrambleStateTest::ScrambleStateTest(TString tstrName) : TestCaseType(tstrName)
 {
 }
 

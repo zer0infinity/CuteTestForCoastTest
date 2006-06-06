@@ -8,8 +8,7 @@
 
 {
 
-	/ConfigMapperTest {
-
+	/ConfigTest {
 		/LiteralConfig {
 			/TmpStore {
 				# not used (no lookups)

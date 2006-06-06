@@ -64,7 +64,7 @@
 		# give names of access managers to test (all, if none given)
 	}
 
-	/Tests
+	/RegularAccessManagersTest
 	{
 		# ---------------- tests for Basic AccessManager -----------------
 
@@ -223,8 +223,8 @@
 
 		/MockAM
 		{
-			/Validate 			%Tests.BasicAM.Validate
-			/AuthenticateWeak 	%Tests.BasicAM.AuthenticateWeak
+			/Validate 			%RegularAccessManagersTest.BasicAM.Validate
+			/AuthenticateWeak 	%RegularAccessManagersTest.BasicAM.AuthenticateWeak
 			/AuthenticateStrong {
 				/StrongAuth_Failure_UnknownUser
 				{
@@ -259,9 +259,9 @@
 					/resultRole		"loginOk"
 				}
 			}
-			/ChangePassword 	%Tests.BasicAM.ChangePassword
-			/ResetPassword 		%Tests.BasicAM.ResetPassword
-			/IsAllowed 			%Tests.BasicAM.IsAllowed
+			/ChangePassword 	%RegularAccessManagersTest.BasicAM.ChangePassword
+			/ResetPassword 		%RegularAccessManagersTest.BasicAM.ResetPassword
+			/IsAllowed 			%RegularAccessManagersTest.BasicAM.IsAllowed
 			/GetAllowed {
 				/GetAllowed_UnknownUser
 				{

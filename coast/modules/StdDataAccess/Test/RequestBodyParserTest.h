@@ -10,11 +10,11 @@
 #define _RequestBodyParserTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 
 //---- RequestBodyParserTest ----------------------------------------------------------
 //!TestCases description
-class RequestBodyParserTest : public ConfiguredTestCase
+class RequestBodyParserTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors
@@ -31,11 +31,7 @@ public:
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
 
-	//!sets the environment for this test
-	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
+	TString getConfigFileName();
 
 	//!describe this testcase
 	void ReadToBoundaryTest();

@@ -28,7 +28,7 @@ public:
 
 	//--- public api
 
-	//! builds up a suite of ConfiguredTestCases for this test
+	//! builds up a suite of tests
 	static Test *suite ();
 
 	//! sets the environment for this test
@@ -37,10 +37,12 @@ public:
 	//! deletes the environment for this test
 	void tearDown ();
 
+	TString getConfigFileName();
+
 	//! describe this Test
-	void testLDAPConnectionManager();
-	void testAutoRebind();
-	void testNoAutoRebind();
+	void ConnectionManagerTest();
+	void AutoRebindTest();
+	void NoAutoRebindTest();
 
 private:
 	LDAP *CreateBadConnectionHandle(const String &name, String &badConnectionPoolId, long &maxBadConnections);

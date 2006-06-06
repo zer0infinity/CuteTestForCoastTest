@@ -41,7 +41,7 @@ public:
 //---- PeriodicActionTest ----------------------------------------------------------------
 long PeriodicActionTest::fgCalled = 0;
 
-PeriodicActionTest::PeriodicActionTest(TString tname) : TestCase(tname)
+PeriodicActionTest::PeriodicActionTest(TString tname) : TestCaseType(tname)
 {
 	StartTrace(PeriodicActionTest.Ctor);
 }
@@ -51,20 +51,9 @@ PeriodicActionTest::~PeriodicActionTest()
 	StartTrace(PeriodicActionTest.Dtor);
 }
 
-// setup for this TestCase
-void PeriodicActionTest::setUp ()
+void PeriodicActionTest::PeriodicTest()
 {
-	StartTrace(PeriodicActionTest.setUp);
-} // setUp
-
-void PeriodicActionTest::tearDown ()
-{
-	StartTrace(PeriodicActionTest.tearDown);
-} // tearDown
-
-void PeriodicActionTest::testPeriodicAction()
-{
-	StartTrace(PeriodicActionTest.testPeriodicAction);
+	StartTrace(PeriodicActionTest.PeriodicTest);
 
 	PeriodicAction pa("PeriodicTestAction", 1L);
 	assertEqual("PeriodicTestAction", pa.fAction);
@@ -101,12 +90,9 @@ Test *PeriodicActionTest::suite ()
 {
 	StartTrace(PeriodicActionTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	testSuite->addTest (NEW_CASE(PeriodicActionTest, testPeriodicAction));
-
+	ADD_CASE(testSuite, PeriodicActionTest, PeriodicTest);
 	return testSuite;
-
-} // suite
+}
 
 RegisterAction(PeriodicTestAction);
 

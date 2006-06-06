@@ -10,11 +10,11 @@
 #define _HTMLComparerTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 
 //---- HTMLComparerTest ----------------------------------------------------------
 //!TestCases description
-class HTMLComparerTest : public ConfiguredTestCase
+class HTMLComparerTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors
@@ -31,14 +31,13 @@ public:
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
 
+	TString getConfigFileName();
+
 	//! compares two HTML Any tree that are considererd equal
 	void NoDifferenceComparison();
 
 	//! compares two HTML Any tree that are not considererd equal
 	void DifferenceComparison();
-
-protected:
-
 };
 
 #endif

@@ -38,46 +38,44 @@ SelectBoxRendererTest::~SelectBoxRendererTest()
 /*     Init                                                      */
 /*===============================================================*/
 void SelectBoxRendererTest::setUp ()
-// setup config for all the renderers in this TestCase
 {
 	FieldRendererTest::setUp();
-} // setUp
+}
 
 Test *SelectBoxRendererTest::suite ()
-// collect all test cases for the SelectBoxRenderer
 {
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(SelectBoxRendererTest, TestCaseEmptyConf));
-	testSuite->addTest (NEW_CASE(SelectBoxRendererTest, TestCase0));
-	testSuite->addTest (NEW_CASE(SelectBoxRendererTest, TestCase1));
-	testSuite->addTest (NEW_CASE(SelectBoxRendererTest, TestCase2));
-	testSuite->addTest (NEW_CASE(SelectBoxRendererTest, TestCase3));
-	testSuite->addTest (NEW_CASE(SelectBoxRendererTest, TestCaseWithoutName));
-	testSuite->addTest (NEW_CASE(SelectBoxRendererTest, TestCaseWithoutLabel));
-	testSuite->addTest (NEW_CASE(SelectBoxRendererTest, TestCaseWithoutValue));
-	testSuite->addTest (NEW_CASE(SelectBoxRendererTest, TestCaseWithoutSource));
-	testSuite->addTest (NEW_CASE(SelectBoxRendererTest, TestCaseWithoutMultiple));
-	testSuite->addTest (NEW_CASE(SelectBoxRendererTest, TestCaseWithoutChecked));
-	testSuite->addTest (NEW_CASE(SelectBoxRendererTest, TestCaseWithoutOptions));
-	testSuite->addTest (NEW_CASE(SelectBoxRendererTest, TestCaseWrong ));
-	testSuite->addTest (NEW_CASE(SelectBoxRendererTest, TestCaseWithList ));
-	testSuite->addTest (NEW_CASE(SelectBoxRendererTest, TestCaseWithLookupList ));
-	testSuite->addTest (NEW_CASE(SelectBoxRendererTest, TestCaseWithListAndLookupList ));
-	testSuite->addTest (NEW_CASE(SelectBoxRendererTest, TestCaseWithListAndLookupListSkipped ));
-	testSuite->addTest (NEW_CASE(SelectBoxRendererTest, TestCaseWithUndefList ));
-	testSuite->addTest (NEW_CASE(SelectBoxRendererTest, TestCaseWithListAndUndefLookupList ));
-	testSuite->addTest (NEW_CASE(SelectBoxRendererTest, TestCaseAllAttributes ));
-	testSuite->addTest (NEW_CASE(SelectBoxRendererTest, TestCaseNameAndMultiple ));
-	testSuite->addTest (NEW_CASE(SelectBoxRendererTest, TestCaseListWithUndefOptions ));
-	testSuite->addTest (NEW_CASE(SelectBoxRendererTest, TestOptionRenderer ));
-	testSuite->addTest (NEW_CASE(SelectBoxRendererTest, TestOptionRendererOld ));
-	testSuite->addTest (NEW_CASE(SelectBoxRendererTest, TestFaultOptionRenderer ));
-	testSuite->addTest (NEW_CASE(SelectBoxRendererTest, TestFaultOptionRendererOld ));
-	testSuite->addTest (NEW_CASE(SelectBoxRendererTest, TestOptionSelectUnselectRenderer ));
+	ADD_CASE(testSuite, SelectBoxRendererTest, TestCaseEmptyConf);
+	ADD_CASE(testSuite, SelectBoxRendererTest, TestCase0);
+	ADD_CASE(testSuite, SelectBoxRendererTest, TestCase1);
+	ADD_CASE(testSuite, SelectBoxRendererTest, TestCase2);
+	ADD_CASE(testSuite, SelectBoxRendererTest, TestCase3);
+	ADD_CASE(testSuite, SelectBoxRendererTest, TestCaseWithoutName);
+	ADD_CASE(testSuite, SelectBoxRendererTest, TestCaseWithoutLabel);
+	ADD_CASE(testSuite, SelectBoxRendererTest, TestCaseWithoutValue);
+	ADD_CASE(testSuite, SelectBoxRendererTest, TestCaseWithoutSource);
+	ADD_CASE(testSuite, SelectBoxRendererTest, TestCaseWithoutMultiple);
+	ADD_CASE(testSuite, SelectBoxRendererTest, TestCaseWithoutChecked);
+	ADD_CASE(testSuite, SelectBoxRendererTest, TestCaseWithoutOptions);
+	ADD_CASE(testSuite, SelectBoxRendererTest, TestCaseWrong);
+	ADD_CASE(testSuite, SelectBoxRendererTest, TestCaseWithList);
+	ADD_CASE(testSuite, SelectBoxRendererTest, TestCaseWithLookupList);
+	ADD_CASE(testSuite, SelectBoxRendererTest, TestCaseWithListAndLookupList);
+	ADD_CASE(testSuite, SelectBoxRendererTest, TestCaseWithListAndLookupListSkipped);
+	ADD_CASE(testSuite, SelectBoxRendererTest, TestCaseWithUndefList);
+	ADD_CASE(testSuite, SelectBoxRendererTest, TestCaseWithListAndUndefLookupList);
+	ADD_CASE(testSuite, SelectBoxRendererTest, TestCaseAllAttributes);
+	ADD_CASE(testSuite, SelectBoxRendererTest, TestCaseNameAndMultiple);
+	ADD_CASE(testSuite, SelectBoxRendererTest, TestCaseListWithUndefOptions);
+	ADD_CASE(testSuite, SelectBoxRendererTest, TestOptionRenderer);
+	ADD_CASE(testSuite, SelectBoxRendererTest, TestOptionRendererOld);
+	ADD_CASE(testSuite, SelectBoxRendererTest, TestFaultOptionRenderer);
+	ADD_CASE(testSuite, SelectBoxRendererTest, TestFaultOptionRendererOld);
+	ADD_CASE(testSuite, SelectBoxRendererTest, TestOptionSelectUnselectRenderer);
 	return testSuite;
 
-} // suite
+}
 
 /*===============================================================*/
 /*     Check where all is correctly defined                      */

@@ -17,7 +17,7 @@ class Registry;
 
 //---- RegistryTest ----------------------------------------------------------
 //!TestCases for the Registry class
-class RegistryTest : public TestCase
+class RegistryTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -37,9 +37,6 @@ public:
 	//!sets the environment for this test
 	void setUp ();
 
-	//!deletes the environment for this test
-	void tearDown ();
-
 protected:
 	void	Constructor ();
 	void	GetRegistry ();
@@ -49,15 +46,6 @@ protected:
 	void	TerminateTest ();
 
 	Registry *fRegistry;
-
-	//--- member variables declaration
-
-private:
-	// use careful, you inhibit subclass use
-	//--- private class api
-
-	//--- private member variables
-
 };
 
 #endif

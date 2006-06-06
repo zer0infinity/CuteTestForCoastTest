@@ -25,7 +25,8 @@
 #include <stdlib.h>
 
 //---- HTTPFileLoaderTest ----------------------------------------------------------------
-HTTPFileLoaderTest::HTTPFileLoaderTest(TString tname) : TestCase(tname)
+HTTPFileLoaderTest::HTTPFileLoaderTest(TString tname)
+	: TestCaseType(tname)
 {
 	StartTrace(HTTPFileLoaderTest.Ctor);
 }
@@ -34,17 +35,6 @@ HTTPFileLoaderTest::~HTTPFileLoaderTest()
 {
 	StartTrace(HTTPFileLoaderTest.Dtor);
 }
-
-// setup for this TestCase
-void HTTPFileLoaderTest::setUp ()
-{
-	StartTrace(HTTPFileLoaderTest.setUp);
-} // setUp
-
-void HTTPFileLoaderTest::tearDown ()
-{
-	StartTrace(HTTPFileLoaderTest.tearDown);
-} // tearDown
 
 void HTTPFileLoaderTest::ReplyHeaderTest()
 {
@@ -174,9 +164,9 @@ Test *HTTPFileLoaderTest::suite ()
 	StartTrace(HTTPFileLoaderTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(HTTPFileLoaderTest, ReplyHeaderTest));
-	testSuite->addTest (NEW_CASE(HTTPFileLoaderTest, ExecTest));
+	ADD_CASE(testSuite, HTTPFileLoaderTest, ReplyHeaderTest);
+	ADD_CASE(testSuite, HTTPFileLoaderTest, ExecTest);
 
 	return testSuite;
 
-} // suite
+}

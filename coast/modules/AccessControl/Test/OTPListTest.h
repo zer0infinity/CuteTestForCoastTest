@@ -10,14 +10,14 @@
 #define _OTPListTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 
 class OTPList;
 class TokenDataAccessController;
 
 //---- OTPListTest ----------------------------------------------------------
 //! <B>Tests OTPList implementations.</B>
-class OTPListTest : public ConfiguredTestCase
+class OTPListTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors
@@ -30,7 +30,7 @@ public:
 
 	//--- public api
 
-	//! builds up a suite of ConfiguredTestCases for this test
+	//! builds up a suite of tests
 	static Test *suite ();
 
 	//! sets the environment for this test
@@ -40,10 +40,12 @@ public:
 	void tearDown ();
 
 	//! tests the implementation of a MockOTPList with a config
-	void testMockOTPList();
+	void MockOTPListTest();
 
 	//! tests the implementation of a MockOTPList without a config
-	void testAlwaysTrueMockOTPList();
+	void AlwaysTrueMockOTPListTest();
+
+	TString getConfigFileName();
 
 private:
 	//! run standard and extra tests for a given OtpListImpl

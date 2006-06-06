@@ -16,7 +16,7 @@ class ROAnything;
 
 //---- StressAppTest ----------------------------------------------------------
 //!TestCases for the StressApp class
-class StressAppTest : public TestCase
+class StressAppTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -32,12 +32,6 @@ public:
 
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
-
-	//!sets the environment for this test
-	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
 
 	// the testcases
 	void AppRunTest();

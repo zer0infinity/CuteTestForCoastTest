@@ -21,7 +21,7 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- NTLMCryptTest ----------------------------------------------------------------
-NTLMCryptTest::NTLMCryptTest(TString tstrName) : TestCase(tstrName)
+NTLMCryptTest::NTLMCryptTest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(NTLMCryptTest.Ctor);
 }
@@ -29,17 +29,6 @@ NTLMCryptTest::NTLMCryptTest(TString tstrName) : TestCase(tstrName)
 NTLMCryptTest::~NTLMCryptTest()
 {
 	StartTrace(NTLMCryptTest.Dtor);
-}
-
-// setup for this TestCase
-void NTLMCryptTest::setUp ()
-{
-	StartTrace(NTLMCryptTest.setUp);
-}
-
-void NTLMCryptTest::tearDown ()
-{
-	StartTrace(NTLMCryptTest.tearDown);
 }
 
 void NTLMCryptTest::DecodeClientMsg()

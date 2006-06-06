@@ -28,8 +28,10 @@ public:
 
 	//--- public api
 
-	//!builds up a suite of ConfiguredTestCases for this test
+	//!builds up a suite of tests
 	static Test *suite ();
+
+	TString getConfigFileName();
 
 	//!Performs a mapping and checks the Stores
 	void BasicFunctionTest();

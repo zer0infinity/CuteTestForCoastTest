@@ -24,7 +24,7 @@
 #include "Dbg.h"
 
 //---- SessionListManagerTest ----------------------------------------------------------------
-SessionListManagerTest::SessionListManagerTest(TString tname) : TestCase(tname)
+SessionListManagerTest::SessionListManagerTest(TString tname) : TestCaseType(tname)
 {
 	StartTrace(SessionListManagerTest.Ctor);
 }
@@ -33,13 +33,12 @@ SessionListManagerTest::~SessionListManagerTest()
 	StartTrace(SessionListManagerTest.Dtor);
 }
 
-// setup for this TestCase
 void SessionListManagerTest::setUp ()
 {
 	StartTrace(SessionListManagerTest.setUp);
 	WDModule *secm = WDModule::FindWDModule("SecurityModule");
 	secm->Init(Anything());
-} // setUp
+}
 
 void SessionListManagerTest::tearDown ()
 {
@@ -49,7 +48,7 @@ void SessionListManagerTest::tearDown ()
 	SessionListManager *sessionListManager = SafeCast(WDModule::FindWDModule("SessionListManager"), SessionListManager);
 	sessionListManager->ForcedSessionCleanUp(ctx);
 
-} // tearDown
+}
 
 void SessionListManagerTest::InitFinisTest()
 {
@@ -716,20 +715,20 @@ Test *SessionListManagerTest::suite ()
 	StartTrace(SessionListManagerTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(SessionListManagerTest, InitFinisTest));
-	testSuite->addTest (NEW_CASE(SessionListManagerTest, ReInitTest));
-	testSuite->addTest (NEW_CASE(SessionListManagerTest, CreateSessionTest));
-	testSuite->addTest (NEW_CASE(SessionListManagerTest, LookupSessionTest));
-	testSuite->addTest (NEW_CASE(SessionListManagerTest, DisableSessionTest));
-	testSuite->addTest (NEW_CASE(SessionListManagerTest, CleanupSessionTest));
-	testSuite->addTest (NEW_CASE(SessionListManagerTest, StdFilterQueryTest));
-	testSuite->addTest (NEW_CASE(SessionListManagerTest, SessionListInfoTest));
-	testSuite->addTest (NEW_CASE(SessionListManagerTest, GetASessionsInfoTest));
-	testSuite->addTest (NEW_CASE(SessionListManagerTest, SessionFactoryTest));
-	testSuite->addTest (NEW_CASE(SessionListManagerTest, SessionAccountingTest));
-	testSuite->addTest (NEW_CASE(SessionListManagerTest, AddSameSessionNTimesTest));
-	testSuite->addTest (NEW_CASE(SessionListManagerTest, UniqueInstanceIdTest));
+	ADD_CASE(testSuite, SessionListManagerTest, InitFinisTest);
+	ADD_CASE(testSuite, SessionListManagerTest, ReInitTest);
+	ADD_CASE(testSuite, SessionListManagerTest, CreateSessionTest);
+	ADD_CASE(testSuite, SessionListManagerTest, LookupSessionTest);
+	ADD_CASE(testSuite, SessionListManagerTest, DisableSessionTest);
+	ADD_CASE(testSuite, SessionListManagerTest, CleanupSessionTest);
+	ADD_CASE(testSuite, SessionListManagerTest, StdFilterQueryTest);
+	ADD_CASE(testSuite, SessionListManagerTest, SessionListInfoTest);
+	ADD_CASE(testSuite, SessionListManagerTest, GetASessionsInfoTest);
+	ADD_CASE(testSuite, SessionListManagerTest, SessionFactoryTest);
+	ADD_CASE(testSuite, SessionListManagerTest, SessionAccountingTest);
+	ADD_CASE(testSuite, SessionListManagerTest, AddSameSessionNTimesTest);
+	ADD_CASE(testSuite, SessionListManagerTest, UniqueInstanceIdTest);
 
 	return testSuite;
 
-} // suite
+}

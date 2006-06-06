@@ -13,28 +13,25 @@
 #include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "StringStream.h"
 #include "Page.h"
 #include "Server.h"
 #include "Role.h"
 #include "Action.h"
 #include "AnyUtils.h"
 #include "Timers.h"
-#include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
 
 //---- ConfiguredActionTest ----------------------------------------------------------------
 ConfiguredActionTest::ConfiguredActionTest(TString tname)
-	: ConfiguredTestCase(tname, "ConfiguredActionTestConfig")
+	: TestCaseType(tname)
 {
-	StartTrace(ConfiguredActionTest.Ctor);
+	StartTrace(ConfiguredActionTest.ConfiguredActionTest);
 }
 
-ConfiguredActionTest::ConfiguredActionTest(TString tname, TString configFileName )
-	: ConfiguredTestCase(tname, configFileName)
+TString ConfiguredActionTest::getConfigFileName()
 {
-	StartTrace(ConfiguredActionTest.Ctor);
+	return "ConfiguredActionTestConfig";
 }
 
 ConfiguredActionTest::~ConfiguredActionTest()
@@ -45,8 +42,7 @@ ConfiguredActionTest::~ConfiguredActionTest()
 void ConfiguredActionTest::setUp()
 {
 	StartTrace(ConfiguredActionTest.setUp);
-	ConfiguredTestCase::setUp();
-	fGlobalConfig = LoadConfigFile("Config"); // replace semantic of SetupCase
+	t_assertm( System::LoadConfigFile(fGlobalConfig, "Config", "any"), TString("expected Config.any to be readable!" ));
 	t_assert(fGlobalConfig.IsDefined("Modules"));
 	WDModule::Install(fGlobalConfig);
 }
@@ -55,7 +51,6 @@ void ConfiguredActionTest::tearDown()
 {
 	StartTrace(ConfiguredActionTest.tearDown);
 	WDModule::Terminate(fGlobalConfig);
-	ConfiguredTestCase::tearDown();
 }
 
 void ConfiguredActionTest::RunTestCases()
@@ -63,18 +58,18 @@ void ConfiguredActionTest::RunTestCases()
 	StartTrace(ConfiguredActionTest.RunTestCases);
 
 	Anything testCases;
-	long runOnlySz = fConfig["RunOnly"].GetSize();
+	long runOnlySz = GetConfig()["RunOnly"].GetSize();
 	if (runOnlySz > 0) {
 		String warning;
 		warning << "ConfiguredActionTest not complete : Running only " << runOnlySz << " Testcases";
 		t_assertm(false, (const char *)warning);
 		for (long i = 0; i < runOnlySz; ++i) {
-			String testCaseName = fConfig["RunOnly"][i].AsString("Unknown");
-			testCases[testCaseName] = fTestCaseConfig[testCaseName];
+			String testCaseName = GetConfig()["RunOnly"][i].AsString("Unknown");
+			testCases[testCaseName] = GetTestCaseConfig()[testCaseName].DeepClone();
 		}
 		TraceAny(testCases, "TestCases");
 	} else {
-		testCases = fTestCaseConfig;
+		testCases = GetTestCaseConfig().DeepClone();
 	}
 
 	long sz = testCases.GetSize();
@@ -93,7 +88,7 @@ Anything ConfiguredActionTest::PrepareConfig(Anything originalConfig)
 	}
 
 	String useConfigName = originalConfig["UseConfig"].AsString();
-	Anything result = PrepareConfig(fTestCaseConfig[useConfigName].DeepClone());
+	Anything result = PrepareConfig(GetTestCaseConfig()[useConfigName].DeepClone());
 
 	Anything replaceList = originalConfig["Replace"];
 
@@ -200,6 +195,12 @@ void ConfiguredActionTest::DoCheckStores(ROAnything expected, Context &ctxToChec
 	}
 }
 
+void ConfiguredActionTest::DoTestWithContext(ROAnything testCase, const String &testCaseName, Context &ctx)
+{
+	StartTrace(ConfiguredActionTest.DoTestWithContext);
+	DoTestWithContext(testCase.DeepClone(), testCaseName, ctx);
+}
+
 void ConfiguredActionTest::DoTestWithContext(Anything testCase, const String &testCaseName, Context &ctx)
 {
 	StartTrace(ConfiguredActionTest.DoTestWithContext);
@@ -213,8 +214,8 @@ void ConfiguredActionTest::DoTestWithContext(Anything testCase, const String &te
 	PutInStore(testCase["Query"], ctx.GetQuery());
 	PutInStore(testCase["Env"], ctx.GetEnvStore());
 
-	if (!testCase.IsDefined("Server") && fConfig.IsDefined("Server")) {
-		testCase["Server"] = fConfig["Server"];
+	if (!testCase.IsDefined("Server") && GetConfig().IsDefined("Server")) {
+		testCase["Server"] = GetConfig()["Server"].DeepClone();
 	}
 	if (testCase.IsDefined("Server")) {
 		Server *s = Server::FindServer(testCase["Server"].AsCharPtr("Server"));
@@ -246,6 +247,6 @@ Test *ConfiguredActionTest::suite ()
 	StartTrace(ConfiguredActionTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(ConfiguredActionTest, RunTestCases));
+	ADD_CASE(testSuite, ConfiguredActionTest, RunTestCases);
 	return testSuite;
 }

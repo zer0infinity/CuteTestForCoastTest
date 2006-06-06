@@ -20,9 +20,15 @@
 //--- interface include --------------------------------------------------------
 #include "CopyActionsTest.h"
 
-CopyActionsTest::CopyActionsTest(TString tname) : ConfiguredTestCase(tname, "CopyActionsTestConfig")
+CopyActionsTest::CopyActionsTest(TString tname)
+	: TestCaseType(tname)
 {
-	StartTrace(CopyActionsTest.Ctor);
+	StartTrace(CopyActionsTest.CopyActionsTest);
+}
+
+TString CopyActionsTest::getConfigFileName()
+{
+	return "CopyActionsTestConfig";
 }
 
 CopyActionsTest::~CopyActionsTest()
@@ -35,12 +41,9 @@ void CopyActionsTest::CopyActionTest()
 	StartTrace(CopyActionsTest.CopyActionTest);
 	// Set up
 	Context c;
-	Anything rStore = fConfig["RoleStore"];
-	PutInStore(rStore, c.GetRoleStoreGlobal());
-	Anything query = fConfig["Query"];
-	PutInStore(query, c.GetQuery());
-	Anything tStore = fConfig["TempStore"];
-	PutInStore(tStore, c.GetTmpStore());
+	PutInStore(GetConfig()["RoleStore"].DeepClone(), c.GetRoleStoreGlobal());
+	PutInStore(GetConfig()["Query"].DeepClone(), c.GetQuery());
+	PutInStore(GetConfig()["TempStore"].DeepClone(), c.GetTmpStore());
 
 	// Process
 	String ret1 = ExecAction("Copy1", c, true);
@@ -72,34 +75,26 @@ void CopyActionsTest::CopyActionTest()
 	assertEqual("CopyWrongConfig1", retw1);
 	assertEqual("CopyWrongConfig2", retw2);
 
-	Anything sessionStore = c.GetSessionStore();
-	Anything expectedSessionStore(fConfig["Results"]["SessionStore"]);
-	assertAnyEqual(expectedSessionStore, sessionStore);
+	assertAnyEqual(GetConfig()["Results"]["SessionStore"], c.GetSessionStore());
 
-	Anything tmpStore = c.GetTmpStore();
-	Anything expectedTempStore(fConfig["Results"]["TempStoreCopyResult"]);
+	ROAnything tmpStore = c.GetTmpStore();
+	ROAnything expectedTempStore(GetConfig()["Results"]["TempStoreCopyResult"]);
 	assertAnyEqual(expectedTempStore, tmpStore["CopyResult"]);
-	expectedTempStore = fConfig["Results"]["Copy6Result"];
+	expectedTempStore = GetConfig()["Results"]["Copy6Result"];
 	assertAnyEqual(expectedTempStore, tmpStore["Copy6Fields"]);
 }
 
 String CopyActionsTest::ExecAction(String token, Context &c, bool expectedResult)
 {
 	StartTrace(CopyActionsTest.ExecAction);
-
 	ROAnything config = c.Lookup(token);
-
 	t_assert(Action::ExecAction(token, c, config) == expectedResult);
-
 	return token;
 }
 
 Test *CopyActionsTest::suite ()
-/* what: return the whole suite of tests for CopyActionsTest, add all top level
-		 test functions here.
-*/
 {
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, CopyActionsTest, CopyActionTest);
 	return testSuite;
-} // suite
+}

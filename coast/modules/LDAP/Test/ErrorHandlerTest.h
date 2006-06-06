@@ -10,7 +10,7 @@
 #define _ErrorHandlerTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 #include "Context.h"
 #include "Mapper.h"
 
@@ -20,7 +20,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class ErrorHandlerTest : public ConfiguredTestCase
+class ErrorHandlerTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors
@@ -42,10 +42,12 @@ public:
 	//! deletes the environment for this test
 	void tearDown ();
 
-	void testHandleError();
-	void testHandleConnectionError();
-	void testParamAccess();
-	void testShouldRetry();
+	TString getConfigFileName();
+
+	void HandleErrorTest();
+	void HandleConnectionErrorTest();
+	void ParamAccessTest();
+	void ShouldRetryTest();
 
 private:
 	Context *fCtx;

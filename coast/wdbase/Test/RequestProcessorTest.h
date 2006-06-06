@@ -15,7 +15,7 @@
 
 //---- RequestProcessorTest ----------------------------------------------------------
 //!test cases for RequestProcessor
-class RequestProcessorTest : public TestCase
+class RequestProcessorTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -29,12 +29,6 @@ public:
 
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
-
-	//!sets the environment for this test
-	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
 
 	//!test initialization of request processor
 	void InitTest();

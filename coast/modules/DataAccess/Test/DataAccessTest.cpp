@@ -27,19 +27,18 @@
 
 //---- DataAccessTest ----------------------------------------------------------------
 Test *DataAccessTest::suite ()
-// collect all test cases for the RegistryStream
 {
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(DataAccessTest, GetImplTest));
-	testSuite->addTest (NEW_CASE(DataAccessTest, ExecTest));
-	testSuite->addTest (NEW_CASE(DataAccessTest, SessionUnlockTest));
+	ADD_CASE(testSuite, DataAccessTest, GetImplTest);
+	ADD_CASE(testSuite, DataAccessTest, ExecTest);
+	ADD_CASE(testSuite, DataAccessTest, SessionUnlockTest);
 
 	return testSuite;
 
-} // suite
+}
 
-DataAccessTest::DataAccessTest(TString tname) : TestCase(tname)
+DataAccessTest::DataAccessTest(TString tname) : TestCaseType(tname)
 {
 
 }
@@ -50,7 +49,6 @@ DataAccessTest::~DataAccessTest()
 }
 
 void DataAccessTest::setUp ()
-// setup connector for this TestCase
 {
 	iostream *Ios = System::OpenStream("Config", "any");
 	if ( Ios ) {
@@ -58,7 +56,7 @@ void DataAccessTest::setUp ()
 		delete Ios;
 	}
 	WDModule::Install(fConfig);
-} // setUp
+}
 
 void DataAccessTest::GetImplTest()
 {
@@ -76,10 +74,9 @@ void DataAccessTest::GetImplTest()
 	DataAccess daTestNone(daName);
 	DataAccessImpl *none = daTestNone.GetImpl(daName, ctx);
 
-	t_assert( none == 0 );
+	t_assert( !none );
 	String str(tmpStore["DataAccess"][daName]["Error"][0L].AsCharPtr());
 	t_assert(str.Contains("DataAccessImpl::FindDataAccessImpl returned 0 for daTestNone"));
-
 }
 
 void DataAccessTest::ExecTest()

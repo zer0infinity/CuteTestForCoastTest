@@ -25,7 +25,7 @@
 //--- c-library modules used ---------------------------------------------------
 
 //---- SimpleDAServiceTest ----------------------------------------------------------------
-SimpleDAServiceTest::SimpleDAServiceTest(TString tname) : TestCase(tname)
+SimpleDAServiceTest::SimpleDAServiceTest(TString tname) : TestCaseType(tname)
 {
 	StartTrace(SimpleDAServiceTest.Ctor);
 
@@ -35,17 +35,6 @@ SimpleDAServiceTest::~SimpleDAServiceTest()
 {
 	StartTrace(SimpleDAServiceTest.Dtor);
 }
-
-// setup for this TestCase
-void SimpleDAServiceTest::setUp ()
-{
-	StartTrace(SimpleDAServiceTest.setUp);
-} // setUp
-
-void SimpleDAServiceTest::tearDown ()
-{
-	StartTrace(SimpleDAServiceTest.tearDown);
-} // tearDown
 
 //:use the ServiceDispatcher to obtain a simple service
 void SimpleDAServiceTest::SimpleDispatch()
@@ -103,13 +92,13 @@ Test *SimpleDAServiceTest::suite ()
 	StartTrace(SimpleDAServiceTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(SimpleDAServiceTest, SimpleDispatch));
-	testSuite->addTest (NEW_CASE(SimpleDAServiceTest, SimpleServiceCall));
-	testSuite->addTest (NEW_CASE(SimpleDAServiceTest, FailedServiceCall));
+	ADD_CASE(testSuite, SimpleDAServiceTest, SimpleDispatch);
+	ADD_CASE(testSuite, SimpleDAServiceTest, SimpleServiceCall);
+	ADD_CASE(testSuite, SimpleDAServiceTest, FailedServiceCall);
 
 	return testSuite;
 
-} // suite
+}
 
 class TestHTTPProcessor : public RequestProcessor
 {

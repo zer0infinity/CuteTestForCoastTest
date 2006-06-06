@@ -22,7 +22,7 @@
 
 //---- SybCTnewDAImplTest ----------------------------------------------------------------
 SybCTnewDAImplTest::SybCTnewDAImplTest(TString tstrName)
-	: TestCase(tstrName)
+	: TestCaseType(tstrName)
 	, fbWasInitialized(false)
 {
 	StartTrace(SybCTnewDAImplTest.Ctor);
@@ -33,7 +33,6 @@ SybCTnewDAImplTest::~SybCTnewDAImplTest()
 	StartTrace(SybCTnewDAImplTest.Dtor);
 }
 
-// setup for this TestCase
 void SybCTnewDAImplTest::setUp()
 {
 	StartTrace(SybCTnewDAImplTest.setUp);
@@ -191,9 +190,9 @@ void SybCTnewDAImplTest::DoPutbackConnectionTest()
 	}
 }
 
-void SybCTnewDAImplTest::testCase()
+void SybCTnewDAImplTest::SimpleDATest()
 {
-	StartTrace(SybCTnewDAImplTest.testCase);
+	StartTrace(SybCTnewDAImplTest.SimpleDATest);
 
 	Anything params;
 	params["SybDBUser"] = "wdtester";
@@ -244,8 +243,7 @@ Test *SybCTnewDAImplTest::suite ()
 	ADD_CASE(testSuite, SybCTnewDAImplTest, InitTest);
 	ADD_CASE(testSuite, SybCTnewDAImplTest, DoGetConnectionTest);
 	ADD_CASE(testSuite, SybCTnewDAImplTest, DoPutbackConnectionTest);
-///	ADD_CASE(testSuite, SybCTnewDAImplTest, testCase);
-
+///	ADD_CASE(testSuite, SybCTnewDAImplTest, SimpleDATest);
 	return testSuite;
 
-} // suite
+}

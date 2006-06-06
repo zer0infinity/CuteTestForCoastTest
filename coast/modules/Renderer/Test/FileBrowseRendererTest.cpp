@@ -37,12 +37,6 @@ FileBrowseRendererTest::~FileBrowseRendererTest()
 	fFieldRenderer = 0;
 };
 
-void FileBrowseRendererTest::setUp ()
-// what: Setup the variables for all test cases in this class
-{
-	// TestCase::setUp();
-};
-
 Test *FileBrowseRendererTest::suite ()
 /* what: return the whole suite of tests for FileBrowseRendererTest, add all top level
 		 test functions here.
@@ -52,7 +46,7 @@ Test *FileBrowseRendererTest::suite ()
 	ADD_CASE(testSuite, FileBrowseRendererTest, TestCase0);
 
 	return testSuite;
-} // suite
+}
 
 void FileBrowseRendererTest::TestCase0()
 {

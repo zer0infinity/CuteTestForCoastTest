@@ -16,19 +16,17 @@
 #include "TemplateParser.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
 #include "Renderer.h"
 #include "CacheHandler.h"
 #include "AnyUtils.h"
-#include "System.h"
 
 //--- c-modules used -----------------------------------------------------------
 
 //---- TemplateParserTest ----------------------------------------------------------------
 TemplateParserTest::TemplateParserTest(TString tstrName)
-	: ConfiguredTestCase(tstrName, "TemplateParserTest")
+	: TestCaseType(tstrName)
 {
-	StartTrace(TemplateParserTest.Ctor);
+	StartTrace(TemplateParserTest.TemplateParserTest);
 }
 
 TemplateParserTest::~TemplateParserTest()
@@ -39,17 +37,14 @@ TemplateParserTest::~TemplateParserTest()
 void TemplateParserTest::setUp()
 {
 	StartTrace(ConfiguredActionTest.setUp);
-	ConfiguredTestCase::setUp();
-	fGlobalConfig = LoadConfigFile("Config"); // replace semantic of SetupCase
-	t_assert(fGlobalConfig.IsDefined("Modules"));
-	WDModule::Install(fGlobalConfig);
+	t_assert(GetConfig().IsDefined("Modules"));
+	WDModule::Install(GetConfig());
 }
 
 void TemplateParserTest::tearDown()
 {
 	StartTrace(ConfiguredActionTest.tearDown);
-	WDModule::Terminate(fGlobalConfig);
-	ConfiguredTestCase::tearDown();
+	WDModule::Terminate(GetConfig());
 }
 
 void TemplateParserTest::BuildEmptyCache()

@@ -10,7 +10,7 @@
 #define _WebAppServiceTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 
 //---- WebAppServiceTest ----------------------------------------------------------
 //! <B>single line description of the class</B>
@@ -18,11 +18,9 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class WebAppServiceTest : public ConfiguredTestCase
+class WebAppServiceTest : public TestFramework::TestCaseWithConfig
 {
 public:
-	//--- constructors
-
 	//! ConfiguredTestCase constructor
 	//! \param name name of the test
 	WebAppServiceTest(TString tstrName);
@@ -30,16 +28,10 @@ public:
 	//! destroys the test case
 	~WebAppServiceTest();
 
-	//--- public api
-
-	//! builds up a suite of ConfiguredTestCases for this test
+	//! builds up a suite of tests
 	static Test *suite ();
 
-	//! sets the environment for this test
-	void setUp ();
-
-	//! deletes the environment for this test
-	void tearDown ();
+	TString getConfigFileName();
 
 	void PrepareRequestTest();
 	void BuildQueryTest();

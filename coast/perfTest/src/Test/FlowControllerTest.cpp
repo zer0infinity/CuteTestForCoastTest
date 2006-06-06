@@ -28,7 +28,6 @@ FlowControllerTest::~FlowControllerTest()
 {
 }
 
-// setup for this TestCase
 void FlowControllerTest::setUp ()
 {
 	StressAppTest::setUp();
@@ -42,11 +41,7 @@ void FlowControllerTest::setUp ()
 	fConfig.Import(*ifp);
 	delete ifp;
 
-} // setUp
-
-void FlowControllerTest::tearDown ()
-{
-} // tearDown
+}
 
 //Test with Full configuration
 void FlowControllerTest::FullConfigurationTest()
@@ -136,16 +131,16 @@ Test *FlowControllerTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(FlowControllerTest, FullConfigurationTest));
-	testSuite->addTest (NEW_CASE(FlowControllerTest, NumberOfRuns0ConfigurationTest));
-	testSuite->addTest (NEW_CASE(FlowControllerTest, WithoutNumberOfRunsConfigurationTest));
-	testSuite->addTest (NEW_CASE(FlowControllerTest, WithoutPreRunConfigurationTest));
-	testSuite->addTest (NEW_CASE(FlowControllerTest, WithoutRunConfigurationTest));
-	testSuite->addTest (NEW_CASE(FlowControllerTest, RunOnlyConfigurationTest));
-	testSuite->addTest (NEW_CASE(FlowControllerTest, RunOnlyOneStepConfigurationTest));
-	testSuite->addTest (NEW_CASE(FlowControllerTest, PreRunOnlyConfigurationTest));
-	testSuite->addTest (NEW_CASE(FlowControllerTest, InvalidConfigurationTest));
+	ADD_CASE(testSuite, FlowControllerTest, FullConfigurationTest);
+	ADD_CASE(testSuite, FlowControllerTest, NumberOfRuns0ConfigurationTest);
+	ADD_CASE(testSuite, FlowControllerTest, WithoutNumberOfRunsConfigurationTest);
+	ADD_CASE(testSuite, FlowControllerTest, WithoutPreRunConfigurationTest);
+	ADD_CASE(testSuite, FlowControllerTest, WithoutRunConfigurationTest);
+	ADD_CASE(testSuite, FlowControllerTest, RunOnlyConfigurationTest);
+	ADD_CASE(testSuite, FlowControllerTest, RunOnlyOneStepConfigurationTest);
+	ADD_CASE(testSuite, FlowControllerTest, PreRunOnlyConfigurationTest);
+	ADD_CASE(testSuite, FlowControllerTest, InvalidConfigurationTest);
 
 	return testSuite;
 
-} // suite
+}

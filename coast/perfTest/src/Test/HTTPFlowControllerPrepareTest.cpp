@@ -23,11 +23,16 @@
 #include <stdlib.h>
 
 //---- HTTPFlowControllerPrepareTest ----------------------------------------------------------------
-HTTPFlowControllerPrepareTest::HTTPFlowControllerPrepareTest(TString tstrName) : HTTPFlowControllerTest(tstrName, "HTTPFlowControllerPrepareTestConfig")
-{ }
+HTTPFlowControllerPrepareTest::HTTPFlowControllerPrepareTest(TString tstrName)
+	: HTTPFlowControllerTest(tstrName)
+{
+	StartTrace(HTTPFlowControllerPrepareTest.HTTPFlowControllerPrepareTest);
+}
 
-HTTPFlowControllerPrepareTest::HTTPFlowControllerPrepareTest(TString tstrName, TString configFileName) : HTTPFlowControllerTest(tstrName, configFileName)
-{ }
+TString HTTPFlowControllerPrepareTest::getConfigFileName()
+{
+	return "HTTPFlowControllerPrepareTestConfig";
+}
 
 HTTPFlowControllerPrepareTest::~HTTPFlowControllerPrepareTest()
 {
@@ -35,7 +40,6 @@ HTTPFlowControllerPrepareTest::~HTTPFlowControllerPrepareTest()
 
 void HTTPFlowControllerPrepareTest::DoCommandTest()
 {
-
 	HttpFlowController fc("DoCommandTestFlowController");
 	fc.CheckConfig("FlowController");
 
@@ -89,11 +93,8 @@ void HTTPFlowControllerPrepareTest::ProcessSetCookieTest()
 Test *HTTPFlowControllerPrepareTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
-
-//	testSuite->addTest (NEW_CASE(HTTPFlowControllerPrepareTest, RunTestCases));
-//	testSuite->addTest (NEW_CASE(HTTPFlowControllerPrepareTest, DoCommandTest));
-	testSuite->addTest (NEW_CASE(HTTPFlowControllerPrepareTest, ProcessSetCookieTest));
-
+//	ADD_CASE(testSuite, HTTPFlowControllerPrepareTest, RunTestCases);
+//	ADD_CASE(testSuite, HTTPFlowControllerPrepareTest, DoCommandTest);
+	ADD_CASE(testSuite, HTTPFlowControllerPrepareTest, ProcessSetCookieTest);
 	return testSuite;
-
-} // suite
+}

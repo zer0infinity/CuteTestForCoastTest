@@ -10,11 +10,11 @@
 #define _LocalizedStringsTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 
 //---- LocalizedStringsTest ----------------------------------------------------------
 //!ConfiguredTestCases description
-class LocalizedStringsTest : public ConfiguredTestCase
+class LocalizedStringsTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors
@@ -28,7 +28,7 @@ public:
 
 	//--- public api
 
-	//!builds up a suite of ConfiguredTestCases for this test
+	//!builds up a suite of tests
 	static Test *suite ();
 
 	//!sets the environment for this test
@@ -37,11 +37,10 @@ public:
 	//!deletes the environment for this test
 	void tearDown ();
 
+	TString getConfigFileName();
+
 	//!describe this Test
 	void test();
-
-protected:
-
 };
 
 #endif

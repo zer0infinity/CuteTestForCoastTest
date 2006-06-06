@@ -10,11 +10,11 @@
 #define _ATTTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 
 //---- ATTTest ----------------------------------------------------------
 //!ConfiguredTestCases description
-class ATTTest : public ConfiguredTestCase
+class ATTTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors
@@ -28,8 +28,10 @@ public:
 
 	//--- public api
 
-	//!builds up a suite of ConfiguredTestCases for this test
+	//!builds up a suite of tests
 	static Test *suite ();
+
+	TString getConfigFileName();
 
 protected:
 	//!runs a number of stressers
@@ -61,7 +63,7 @@ public:
 	//!destroys the test case
 	~DoneScenariosTest() {};
 
-	//!builds up a suite of ConfiguredTestCases for this test
+	//!builds up a suite of tests
 	static Test *suite ();
 
 	//!Run the scenarios that are done and that should not fail anymore
@@ -79,7 +81,7 @@ public:
 	//!destroys the test case
 	~InWorkScenariosTest() {};
 
-	//!builds up a suite of ConfiguredTestCases for this test
+	//!builds up a suite of tests
 	static Test *suite ();
 
 	//!Run the scenarios that are in work // can fail
@@ -97,7 +99,7 @@ public:
 	//!destroys the test case
 	~RunOnlyScenariosTest() {};
 
-	//!builds up a suite of ConfiguredTestCases for this test
+	//!builds up a suite of tests
 	static Test *suite ();
 
 	//!Run the scenarios that are in work // can fail

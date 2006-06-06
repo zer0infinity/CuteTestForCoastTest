@@ -23,7 +23,7 @@
 #include "HTTPChunkedOStream.h"
 
 //---- HTTPChunkedOStreamTest ----------------------------------------------------------------
-HTTPChunkedOStreamTest::HTTPChunkedOStreamTest(TString tstrName) : TestCase(tstrName)
+HTTPChunkedOStreamTest::HTTPChunkedOStreamTest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(HTTPChunkedOStreamTest.Ctor);
 }
@@ -33,21 +33,6 @@ HTTPChunkedOStreamTest::~HTTPChunkedOStreamTest()
 	StartTrace(HTTPChunkedOStreamTest.Dtor);
 }
 
-// setup for this TestCase
-void HTTPChunkedOStreamTest::setUp ()
-{
-	StartTrace(HTTPChunkedOStreamTest.setUp);
-}
-
-void HTTPChunkedOStreamTest::tearDown ()
-{
-	StartTrace(HTTPChunkedOStreamTest.tearDown);
-}
-
-void HTTPChunkedOStreamTest::testCase()
-{
-	StartTrace(HTTPChunkedOStreamTest.testCase);
-}
 void HTTPChunkedOStreamTest::OverflowTest()
 {
 	StartTrace(HTTPChunkedOStreamTest.OverflowTest);
@@ -114,11 +99,11 @@ Test *HTTPChunkedOStreamTest::suite ()
 	StartTrace(HTTPChunkedOStreamTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(HTTPChunkedOStreamTest, SimpleFlush));
-	testSuite->addTest (NEW_CASE(HTTPChunkedOStreamTest, SimpleWithClose));
-	testSuite->addTest (NEW_CASE(HTTPChunkedOStreamTest, SimpleCloseNoFlush));
-	testSuite->addTest (NEW_CASE(HTTPChunkedOStreamTest, OverflowTest));
-	testSuite->addTest (NEW_CASE(HTTPChunkedOStreamTest, HexManipulator));
+	ADD_CASE(testSuite, HTTPChunkedOStreamTest, SimpleFlush);
+	ADD_CASE(testSuite, HTTPChunkedOStreamTest, SimpleWithClose);
+	ADD_CASE(testSuite, HTTPChunkedOStreamTest, SimpleCloseNoFlush);
+	ADD_CASE(testSuite, HTTPChunkedOStreamTest, OverflowTest);
+	ADD_CASE(testSuite, HTTPChunkedOStreamTest, HexManipulator);
 
 	return testSuite;
 }

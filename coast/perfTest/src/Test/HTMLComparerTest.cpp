@@ -20,9 +20,15 @@
 #include "HTMLComparerTest.h"
 
 //---- HTMLComparerTest ----------------------------------------------------------------
-HTMLComparerTest::HTMLComparerTest(TString tstrName) : ConfiguredTestCase(tstrName, "HTMLComparerTestConfig")
+HTMLComparerTest::HTMLComparerTest(TString tstrName)
+	: TestCaseType(tstrName)
 {
-	StartTrace(HTMLComparerTest.Ctor);
+	StartTrace(HTMLComparerTest.HTMLComparerTest);
+}
+
+TString HTMLComparerTest::getConfigFileName()
+{
+	return "HTMLComparerTestConfig";
 }
 
 HTMLComparerTest::~HTMLComparerTest()
@@ -34,10 +40,10 @@ void HTMLComparerTest::NoDifferenceComparison()
 {
 	StartTrace(HTMLComparerTest.NoDifferenceComparison);
 
-	long sz = fTestCaseConfig.GetSize();
+	long sz = GetTestCaseConfig().GetSize();
 	for (long i = 0; i < sz; i++) {
-		Anything thisCase = fTestCaseConfig[i];
-		String thisCaseName = fTestCaseConfig.SlotName(i);
+		Anything thisCase = GetTestCaseConfig()[i].DeepClone();
+		String thisCaseName = GetTestCaseConfig().SlotName(i);
 		Anything t1 = thisCase["Master"];
 		Anything t2 = thisCase["Slave"];
 
@@ -54,10 +60,10 @@ void HTMLComparerTest::DifferenceComparison()
 {
 	StartTrace(HTMLComparerTest.DifferenceComparison);
 
-	long sz = fTestCaseConfig.GetSize();
+	long sz = GetTestCaseConfig().GetSize();
 	for (long i = 0; i < sz; i++) {
-		Anything thisCase = fTestCaseConfig[i];
-		String thisCaseName = fTestCaseConfig.SlotName(i);
+		Anything thisCase = GetTestCaseConfig()[i].DeepClone();
+		String thisCaseName = GetTestCaseConfig().SlotName(i);
 
 		Anything t1 = thisCase["Master"];
 		Anything t2 = thisCase["Slave"];
@@ -74,9 +80,7 @@ Test *HTMLComparerTest::suite ()
 {
 	StartTrace(HTMLComparerTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	testSuite->addTest (NEW_CASE(HTMLComparerTest, NoDifferenceComparison));
-	testSuite->addTest (NEW_CASE(HTMLComparerTest, DifferenceComparison));
-
+	ADD_CASE(testSuite, HTMLComparerTest, NoDifferenceComparison);
+	ADD_CASE(testSuite, HTMLComparerTest, DifferenceComparison);
 	return testSuite;
-} // suite
+}

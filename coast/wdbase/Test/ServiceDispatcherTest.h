@@ -10,10 +10,10 @@
 #define _ServiceDispatcherTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 //---- ServiceDispatcherTest ----------------------------------------------------------
 //!Tests dispatching of standard handler
-class ServiceDispatcherTest : public ConfiguredTestCase
+class ServiceDispatcherTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors

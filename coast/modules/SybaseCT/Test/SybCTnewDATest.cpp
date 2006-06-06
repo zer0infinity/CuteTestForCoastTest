@@ -21,7 +21,7 @@
 #include "Dbg.h"
 
 //---- SybCTnewDATest ----------------------------------------------------------------
-SybCTnewDATest::SybCTnewDATest(TString tstrName) : TestCase(tstrName)
+SybCTnewDATest::SybCTnewDATest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(SybCTnewDATest.Ctor);
 }
@@ -29,20 +29,6 @@ SybCTnewDATest::SybCTnewDATest(TString tstrName) : TestCase(tstrName)
 SybCTnewDATest::~SybCTnewDATest()
 {
 	StartTrace(SybCTnewDATest.Dtor);
-}
-
-// setup for this TestCase
-void SybCTnewDATest::setUp ()
-{
-	StartTrace(SybCTnewDATest.setUp);
-	if ( t_assertm( System::LoadConfigFile(fConfig, getClassName(), "any"), TString("expected ") << getClassName() << " to be readable!" ) ) {
-		fTestCaseConfig = fConfig[name()];
-	}
-}
-
-void SybCTnewDATest::tearDown ()
-{
-	StartTrace(SybCTnewDATest.tearDown);
 }
 
 void SybCTnewDATest::InitOpenSetConPropTest()
@@ -54,7 +40,7 @@ void SybCTnewDATest::InitOpenSetConPropTest()
 		StartTrace(SybCTnewDATest.InitOpenSetConPropTest);
 		StartTraceMem(SybCTnewDATest.InitOpenSetConPropTest);
 		Anything anyCtxMessages(Storage::Global());
-		String strInterfacesFileName = fConfig["InterfacesFile"].AsString();
+		String strInterfacesFileName = GetConfig()["InterfacesFile"].AsString();
 		if ( t_assertm(strInterfacesFileName.Length(), "expected non-empty interfaces filename") ) {
 			CS_CONTEXT *context;
 			Context ctx;
@@ -109,7 +95,7 @@ void SybCTnewDATest::SimpleQueryTest()
 		StartTrace(SybCTnewDATest.SimpleQueryTest);
 		StartTraceMem(SybCTnewDATest.SimpleQueryTest);
 		Anything anyCtxMessages(Storage::Global());
-		String strInterfacesFileName = fConfig["InterfacesFile"].AsString();
+		String strInterfacesFileName = GetConfig()["InterfacesFile"].AsString();
 		if ( t_assertm(strInterfacesFileName.Length(), "expected non-empty interfaces filename") ) {
 			CS_CONTEXT *context;
 			// create context
@@ -157,7 +143,7 @@ void SybCTnewDATest::LimitedMemoryTest()
 		StartTrace(SybCTnewDATest.LimitedMemoryTest);
 		StartTraceMem(SybCTnewDATest.LimitedMemoryTest);
 		Anything anyCtxMessages(Storage::Global());
-		String strInterfacesFileName = fConfig["InterfacesFile"].AsString();
+		String strInterfacesFileName = GetConfig()["InterfacesFile"].AsString();
 		if ( t_assertm(strInterfacesFileName.Length(), "expected non-empty interfaces filename") ) {
 			CS_CONTEXT *context;
 			// create context

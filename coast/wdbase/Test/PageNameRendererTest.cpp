@@ -21,7 +21,7 @@
 
 //---- PageNameRendererTest ----------------------------------------------------------------
 PageNameRendererTest::PageNameRendererTest(TString tname)
-	: TestCase(tname)
+	: TestCaseType(tname)
 {
 	StartTrace(PageNameRendererTest.Ctor);
 }
@@ -64,8 +64,8 @@ Test *PageNameRendererTest::suite ()
 	StartTrace(PageNameRendererTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(PageNameRendererTest, RenderTest));
+	ADD_CASE(testSuite, PageNameRendererTest, RenderTest);
 
 	return testSuite;
 
-} // suite
+}

@@ -20,7 +20,7 @@
 #include "TestSuite.h"
 
 //---- NameUsingOutputMapperTest ----------------------------------------------------------------
-NameUsingOutputMapperTest::NameUsingOutputMapperTest(TString tname) : TestCase(tname)
+NameUsingOutputMapperTest::NameUsingOutputMapperTest(TString tname) : TestCaseType(tname)
 {
 	StartTrace(NameUsingOutputMapperTest.Ctor);
 }
@@ -29,17 +29,6 @@ NameUsingOutputMapperTest::~NameUsingOutputMapperTest()
 {
 	StartTrace(NameUsingOutputMapperTest.Dtor);
 }
-
-// setup for this TestCase
-void NameUsingOutputMapperTest::setUp ()
-{
-	StartTrace(NameUsingOutputMapperTest.setUp);
-} // setUp
-
-void NameUsingOutputMapperTest::tearDown ()
-{
-	StartTrace(NameUsingOutputMapperTest.tearDown);
-} // tearDown
 
 //:tests if the data is put into the tempstore under the name of the Mapper
 void NameUsingOutputMapperTest::NonConfiguredDestinationTest()
@@ -114,9 +103,9 @@ Test *NameUsingOutputMapperTest::suite ()
 	StartTrace(NameUsingOutputMapperTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(NameUsingOutputMapperTest, NonConfiguredDestinationTest));
-	testSuite->addTest (NEW_CASE(NameUsingOutputMapperTest, ConfiguredDestinationTest));
+	ADD_CASE(testSuite, NameUsingOutputMapperTest, NonConfiguredDestinationTest);
+	ADD_CASE(testSuite, NameUsingOutputMapperTest, ConfiguredDestinationTest);
 
 	return testSuite;
 
-} // suite
+}

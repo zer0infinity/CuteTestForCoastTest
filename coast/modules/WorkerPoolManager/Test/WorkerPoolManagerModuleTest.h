@@ -10,8 +10,8 @@
 #define _WorkerPoolManagerModuleTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
-#include "WorkerPoolManagerModule.h"
+#include "FoundationTestTypes.h"
+class WorkerPoolManagerModule;
 
 //---- WorkerPoolManagerModuleTest ----------------------------------------------------------
 //! <B>single line description of the class</B>
@@ -19,7 +19,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class WorkerPoolManagerModuleTest : public ConfiguredTestCase
+class WorkerPoolManagerModuleTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors
@@ -32,20 +32,16 @@ public:
 
 	//--- public api
 
-	//! builds up a suite of ConfiguredTestCases for this test
+	//! builds up a suite of tests
 	static Test *suite ();
 
-	//! sets the environment for this test
-	void setUp ();
-
-	//! deletes the environment for this test
-	void tearDown ();
+	TString getConfigFileName();
 
 	//! describe this Test
-	void test();
 	void TestWorkerOne();
 	void TestWorkerTwo();
 	void TestReset();
+
 private:
 	void Check(ROAnything cConfig, WorkerPoolManagerModule *pModule);
 };

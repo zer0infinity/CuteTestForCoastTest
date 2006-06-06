@@ -17,17 +17,20 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "TimeStampTestThread.h"
-#include "StringStream.h"
 #include "AnyUtils.h"
 #include "SysLog.h"
-#include "System.h"
-#include "Dbg.h"
 
 //---- ThreadedTimeStampTest ----------------------------------------------------------------
 ThreadedTimeStampTest::ThreadedTimeStampTest(TString tstrName)
-	: ConfiguredTestCase(tstrName, "ThreadedTimeStampTestConfig"), fCheckMutex("ThreadedTimeStampTest")
+	: TestCaseType(tstrName)
+	, fCheckMutex("ThreadedTimeStampTest")
 {
-	StartTrace(ThreadedTimeStampTest.Ctor);
+	StartTrace(ThreadedTimeStampTest.ThreadedTimeStampTest);
+}
+
+TString ThreadedTimeStampTest::getConfigFileName()
+{
+	return "ThreadedTimeStampTestConfig";
 }
 
 ThreadedTimeStampTest::~ThreadedTimeStampTest()
@@ -35,47 +38,30 @@ ThreadedTimeStampTest::~ThreadedTimeStampTest()
 	StartTrace(ThreadedTimeStampTest.Dtor);
 }
 
-// setup for this TestCase
-void ThreadedTimeStampTest::setUp ()
-{
-	StartTrace(ThreadedTimeStampTest.setUp);
-	ConfiguredTestCase::setUp();
-}
-
-void ThreadedTimeStampTest::tearDown ()
-{
-	StartTrace(ThreadedTimeStampTest.tearDown);
-	ConfiguredTestCase::tearDown();
-}
-
 // builds up a suite of testcases, add a line for each testmethod
 Test *ThreadedTimeStampTest::suite ()
 {
 	StartTrace(ThreadedTimeStampTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	testSuite->addTest (NEW_CASE(ThreadedTimeStampTest, TimestampConcurrencyTest));
+	ADD_CASE(testSuite, ThreadedTimeStampTest, TimestampConcurrencyTest);
+	ADD_CASE(testSuite, ThreadedTimeStampTest, ExportCsvStatistics);
 	return testSuite;
-
-} // suite
+}
 
 void ThreadedTimeStampTest::TimestampConcurrencyTest()
 {
 	StartTrace(ThreadedTimeStampTest.TimestampConcurrencyTest);
-	iostream *pIos = System::OpenOStream("ThreadedTimeStampTest", "txt", ios::app);
-	(*pIos) << setw(95) << setfill('-') << "---\n" << flush;
-	for (long i = 0; i < fTestCaseConfig.GetSize(); i++) {
-		ROAnything cConfig = fTestCaseConfig[i];
-		Trace("At testindex: " << i);
-		long numberOfRuns(cConfig["NumberOfRuns"].AsLong());
-		long numberOfThreads(cConfig["NumberOfThreads"].AsLong());
-		long concurrencyFactor(cConfig["ConcurrencyFactor"].AsLong());
-		DoTimeStampConcurrencyTest(pIos, numberOfRuns, numberOfThreads, concurrencyFactor, cConfig);
+	ROAnything roaConfig;
+	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(roaConfig) ) {
+		long numberOfRuns(roaConfig["NumberOfRuns"].AsLong());
+		long numberOfThreads(roaConfig["NumberOfThreads"].AsLong());
+		long concurrencyFactor(roaConfig["ConcurrencyFactor"].AsLong());
+		DoTimeStampConcurrencyTest(numberOfRuns, numberOfThreads, concurrencyFactor, roaConfig);
 	}
-	delete pIos;
 }
 
-void ThreadedTimeStampTest::DoTimeStampConcurrencyTest(iostream *pIos, long numberOfRuns, long numberOfThreads, long concurrencyFactor, ROAnything roaConfig)
+void ThreadedTimeStampTest::DoTimeStampConcurrencyTest(long numberOfRuns, long numberOfThreads, long concurrencyFactor, ROAnything roaConfig)
 {
 	StartTrace(ThreadedTimeStampTest.DoTimeStampConcurrencyTest);
 	SamplePoolManager wpm("InitTestPool");
@@ -92,10 +78,13 @@ void ThreadedTimeStampTest::DoTimeStampConcurrencyTest(iostream *pIos, long numb
 	strRemainder << "Threads: " << (numberOfThreads > 9 ? "" : " ") << numberOfThreads << " Concurrency: " << concurrencyFactor << " Runs: " << numberOfRuns << " UTC-Test: " << (roaConfig["UTCCtorTest"].AsBool(false) ? "true " : "false") << " Compare: " << (roaConfig["CompareStamps"].AsBool(false) ? "true " : "false") << "\n";
 	Trace(TimeStamp().AsString() << " Start    " << strRemainder);
 	SysLog::WriteToStderr(strRemainder);
-	for (long i = 0; i < numberOfThreads * concurrencyFactor; i++) {
-		wpm.Enter(config);
+	{
+		CatchTimeType aTimer(TString("DoTimeStampConcurrencyTest_") << (roaConfig["UTCCtorTest"].AsBool(false) ? "UTC" : "Local") << (roaConfig["CompareStamps"].AsBool(false) ? "_Compare" : "") << "_" << numberOfThreads << "_" << numberOfRuns, this);
+		for (long i = 0; i < numberOfThreads * concurrencyFactor; i++) {
+			wpm.Enter(config);
+		}
+		t_assert(wpm.AwaitEmpty(1000));
 	}
-	t_assert(wpm.AwaitEmpty(1000));
 	Trace(TimeStamp().AsString() << " End      " << strRemainder);
 	t_assert(wpm.Terminate());
 
@@ -105,7 +94,6 @@ void ThreadedTimeStampTest::DoTimeStampConcurrencyTest(iostream *pIos, long numb
 	expected["PoolSize"] = numberOfThreads;
 	expected["TotalRequests"] = numberOfThreads * concurrencyFactor;
 	assertAnyCompareEqual(expected, statistic, "Expected", '.', ':');
-	(*pIos) << setfill(' ') << TimeStamp().AsString() << ' ' << setw(6) << statistic["TotalTime"].AsLong(0) << "ms " << strRemainder << flush;
 }
 
 void ThreadedTimeStampTest::CheckNumberOfRuns(long numberOfRuns, long doneRuns, String threadName)

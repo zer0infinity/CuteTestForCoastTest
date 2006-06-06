@@ -24,7 +24,7 @@
 #include "Context.h"
 
 //---- HTTPProtocolReplyRendererTest ----------------------------------------------------------------
-HTTPProtocolReplyRendererTest::HTTPProtocolReplyRendererTest(TString tstrName) : TestCase(tstrName)
+HTTPProtocolReplyRendererTest::HTTPProtocolReplyRendererTest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(HTTPProtocolReplyRendererTest.Ctor);
 }
@@ -34,21 +34,6 @@ HTTPProtocolReplyRendererTest::~HTTPProtocolReplyRendererTest()
 	StartTrace(HTTPProtocolReplyRendererTest.Dtor);
 }
 
-// setup for this TestCase
-void HTTPProtocolReplyRendererTest::setUp ()
-{
-	StartTrace(HTTPProtocolReplyRendererTest.setUp);
-}
-
-void HTTPProtocolReplyRendererTest::tearDown ()
-{
-	StartTrace(HTTPProtocolReplyRendererTest.tearDown);
-}
-
-void HTTPProtocolReplyRendererTest::testCase()
-{
-	StartTrace(HTTPProtocolReplyRendererTest.testCase);
-}
 void HTTPProtocolReplyRendererTest::ReasonLessErrorReplyLine()
 {
 	StartTrace(HTTPProtocolReplyRendererTest.ReasonLessErrorReplyLine);
@@ -131,13 +116,10 @@ Test *HTTPProtocolReplyRendererTest::suite ()
 {
 	StartTrace(HTTPProtocolReplyRendererTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	testSuite->addTest (NEW_CASE(HTTPProtocolReplyRendererTest, testCase));
-	testSuite->addTest (NEW_CASE(HTTPProtocolReplyRendererTest, RequestSuccessfulReplyLine));
-	testSuite->addTest (NEW_CASE(HTTPProtocolReplyRendererTest, ReasonLessReplyLine));
-	testSuite->addTest (NEW_CASE(HTTPProtocolReplyRendererTest, ConnectionCloseTest));
-	testSuite->addTest (NEW_CASE(HTTPProtocolReplyRendererTest, ReasonLessErrorReplyLine));
-	testSuite->addTest (NEW_CASE(HTTPProtocolReplyRendererTest, DefaultReasonPhraseTest));
-
+	ADD_CASE(testSuite, HTTPProtocolReplyRendererTest, RequestSuccessfulReplyLine);
+	ADD_CASE(testSuite, HTTPProtocolReplyRendererTest, ReasonLessReplyLine);
+	ADD_CASE(testSuite, HTTPProtocolReplyRendererTest, ConnectionCloseTest);
+	ADD_CASE(testSuite, HTTPProtocolReplyRendererTest, ReasonLessErrorReplyLine);
+	ADD_CASE(testSuite, HTTPProtocolReplyRendererTest, DefaultReasonPhraseTest);
 	return testSuite;
 }

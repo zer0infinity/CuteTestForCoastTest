@@ -18,7 +18,7 @@
 #include "DataMapper.h"
 
 //---- RendererMapperTest ----------------------------------------------------------------
-RendererMapperTest::RendererMapperTest(TString tname) : TestCase(tname)
+RendererMapperTest::RendererMapperTest(TString tname) : TestCaseType(tname)
 {
 }
 
@@ -30,8 +30,8 @@ Test *RendererMapperTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(RendererMapperTest, StdGetTest));
-	testSuite->addTest (NEW_CASE(RendererMapperTest, GetOnAnyTest));
+	ADD_CASE(testSuite, RendererMapperTest, StdGetTest);
+	ADD_CASE(testSuite, RendererMapperTest, GetOnAnyTest);
 
 	return testSuite;
 }
@@ -76,7 +76,6 @@ void RendererMapperTest::GetOnAnyTest()
 }
 
 void RendererMapperTest::setUp ()
-// setup connector for this TestCase
 {
 	iostream *Ios = System::OpenStream("StdContext", "any");
 	if ( Ios ) {

@@ -8,7 +8,7 @@
 
 {
 
-	/TestReadMinimalInput
+	/ReadMinimalInputTest
 	{
 		{
 			/RequestLine "\r\n\r\n"
@@ -90,7 +90,7 @@
 		}
 	}
 
-	/TestCleanupRequestLine
+	/CleanupRequestLineTest
 	{
 		# 0
 		{

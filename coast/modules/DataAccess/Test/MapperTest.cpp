@@ -49,7 +49,7 @@ Test *MapperTest::suite ()
 	return testSuite;
 }
 
-MapperTest::MapperTest(TString tname) : TestCase(tname)
+MapperTest::MapperTest(TString tname) : TestCaseType(tname)
 {
 }
 

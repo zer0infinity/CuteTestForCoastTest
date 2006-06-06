@@ -16,15 +16,19 @@
 #include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
 
 //--- c-modules used -----------------------------------------------------------
 
 //---- WebAppServiceTest ----------------------------------------------------------------
 WebAppServiceTest::WebAppServiceTest(TString tstrName)
-	: ConfiguredTestCase(tstrName, "WebAppServiceTestConfig")
+	: TestCaseType(tstrName)
 {
-	StartTrace(WebAppServiceTest.Ctor);
+	StartTrace(WebAppServiceTest.WebAppServiceTest);
+}
+
+TString WebAppServiceTest::getConfigFileName()
+{
+	return "WebAppServiceTestConfig";
 }
 
 WebAppServiceTest::~WebAppServiceTest()
@@ -32,25 +36,14 @@ WebAppServiceTest::~WebAppServiceTest()
 	StartTrace(WebAppServiceTest.Dtor);
 }
 
-// setup for this ConfiguredTestCase
-void WebAppServiceTest::setUp ()
-{
-	StartTrace(WebAppServiceTest.setUp);
-	ConfiguredTestCase::setUp();
-}
-
-void WebAppServiceTest::tearDown ()
-{
-	StartTrace(WebAppServiceTest.tearDown);
-	ConfiguredTestCase::tearDown();
-}
-
 void WebAppServiceTest::BuildQueryTest()
 {
 	StartTrace(WebAppServiceTest.BuildQueryTest);
 	WebAppService *pService = SafeCast(ServiceHandler::FindServiceHandler("WebAppService"), WebAppService);
 	if (t_assert(pService != NULL)) {
-		RUN_ENTRY("BuildQueryTest", cConfig) {
+		ROAnything cConfig;
+		AnyExtensions::Iterator<ROAnything> aEntryIterator(GetConfig()["BuildQueryTest"]);
+		while ( aEntryIterator.Next(cConfig) ) {
 			Anything query;
 			ROAnything expected(cConfig["Expected"]);
 			String pathString(cConfig["Path"].AsString()), queryString(cConfig["Query"].AsString());
@@ -65,7 +58,9 @@ void WebAppServiceTest::Add2QueryTest()
 	StartTrace(WebAppServiceTest.Add2QueryTest);
 	WebAppService *pService = SafeCast(ServiceHandler::FindServiceHandler("WebAppService"), WebAppService);
 	if (t_assert(pService != NULL)) {
-		RUN_ENTRY("Add2QueryTest", cConfig) {
+		ROAnything cConfig;
+		AnyExtensions::Iterator<ROAnything> aEntryIterator(GetConfig()["Add2QueryTest"]);
+		while ( aEntryIterator.Next(cConfig) ) {
 			Anything query(cConfig["Query"].DeepClone()), anyItems(cConfig["Add2Query"].DeepClone());
 			bool bOverWrite = cConfig["OverWrite"].AsBool(false);
 			ROAnything expectedQuery(cConfig["Expected"]);
@@ -81,7 +76,9 @@ void WebAppServiceTest::DecodeWDQueryTest()
 
 	WebAppService *pService = SafeCast(ServiceHandler::FindServiceHandler("WebAppService"), WebAppService);
 	if (t_assert(pService != NULL)) {
-		RUN_ENTRY("DecodeWDQueryTest", cConfig) {
+		ROAnything cConfig;
+		AnyExtensions::Iterator<ROAnything> aEntryIterator(GetConfig()["DecodeWDQueryTest"]);
+		while ( aEntryIterator.Next(cConfig) ) {
 			Anything query(cConfig["Query"].DeepClone()), request(cConfig["Request"].DeepClone());
 			ROAnything expectedQuery(cConfig["Expected"]);
 			pService->SplitURI2PathAndQuery(request);
@@ -97,7 +94,9 @@ void WebAppServiceTest::PrepareRequestTest()
 
 	WebAppService *pService = SafeCast(ServiceHandler::FindServiceHandler("WebAppService"), WebAppService);
 	if (t_assert(pService != NULL)) {
-		RUN_ENTRY("PrepareRequestTest", cConfig) {
+		ROAnything cConfig;
+		AnyExtensions::Iterator<ROAnything> aEntryIterator(GetConfig()["PrepareRequestTest"]);
+		while ( aEntryIterator.Next(cConfig) ) {
 			Anything request(cConfig["Request"].DeepClone());
 			Context ctx(request);
 			ROAnything expected(cConfig["Expected"]);
@@ -142,17 +141,15 @@ void WebAppServiceTest::SplitURI2PathAndQueryTest()
 	}
 }
 
-// builds up a suite of ConfiguredTestCases, add a line for each testmethod
+// builds up a suite of tests, add a line for each testmethod
 Test *WebAppServiceTest::suite ()
 {
 	StartTrace(WebAppServiceTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
 	ADD_CASE(testSuite, WebAppServiceTest, PrepareRequestTest);
 	ADD_CASE(testSuite, WebAppServiceTest, BuildQueryTest);
 	ADD_CASE(testSuite, WebAppServiceTest, Add2QueryTest);
 	ADD_CASE(testSuite, WebAppServiceTest, DecodeWDQueryTest);
 	ADD_CASE(testSuite, WebAppServiceTest, SplitURI2PathAndQueryTest);
-
 	return testSuite;
 }

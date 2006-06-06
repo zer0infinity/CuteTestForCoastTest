@@ -38,9 +38,6 @@ public:
 	//!sets the environment for this test
 	void setUp ();
 
-	//!deletes the environment for this test
-	void tearDown ();
-
 	// the testcases
 	void TestRemoteStresser();
 	void TestMultiRemoteStresser();

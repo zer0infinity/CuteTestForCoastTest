@@ -6,28 +6,25 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
-#include "Role.h"
-#include "Registry.h"
-#include "Context.h"
-#include "StringStream.h"
-#include "PoolAllocator.h"
-#include "Role.h"
-#include "Dbg.h"
-
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
+//--- interface include --------------------------------------------------------
+#include "SessionTest.h"
 
 //--- module under test --------------------------------------------------------
 #include "Session.h"
 
-//--- interface include --------------------------------------------------------
-#include "SessionTest.h"
+//--- test modules used --------------------------------------------------------
+#include "TestSuite.h"
+
+//--- standard modules used ----------------------------------------------------
+#include "Role.h"
+#include "Registry.h"
+#include "PoolAllocator.h"
 
 //---- SessionTest ----------------------------------------------------------------
-SessionTest::SessionTest(TString tname) : ConfiguredTestCase(tname, "SessionTest")
+SessionTest::SessionTest(TString tname)
+	: TestCaseType(tname)
 {
-	StartTrace(SessionTest.Ctor);
+	StartTrace(SessionTest.SessionTest);
 }
 
 SessionTest::~SessionTest()
@@ -36,31 +33,29 @@ SessionTest::~SessionTest()
 }
 
 void SessionTest::setUp ()
-// setup RoleModule for this TestCase
 {
 	StartTrace(SessionTest.setUp);
-	ConfiguredTestCase::setUp();
-	t_assert(fConfig.IsDefined("Roles"));
-	Anything dummy;
-	t_assert(fConfig.LookupPath(dummy, "Roles.Role.RTGuest"));
+	t_assert(GetConfig().IsDefined("Roles"));
+	ROAnything dummy;
+	t_assert(GetConfig().LookupPath(dummy, "Roles.Role.RTGuest"));
 	assertEqual("RTCustomer", dummy[0L].AsCharPtr());
-	t_assert(fConfig.IsDefined("Modules"));
+	t_assert(GetConfig().IsDefined("Modules"));
 
 	// ensure installation of modules
-	WDModule::Install(fConfig);
-} // setUp
+	WDModule::Install(GetConfig());
+}
 
 void SessionTest::tearDown ()
 {
 	StartTrace(SessionTest.tearDown);
-	WDModule::Terminate(fConfig);
-	ConfiguredTestCase::tearDown();
-} // tearDown
+	WDModule::Terminate(GetConfig());
+}
 
 static Role *GetDefaultRole(Context &ctx)
 {
 	return Role::FindRoleWithDefault(Role::GetDefaultRoleName(ctx), ctx);
 }
+
 void SessionTest::SetGetRole ()
 {
 	StartTrace(SessionTest.SetGetRole);
@@ -314,7 +309,9 @@ void SessionTest::VerifyTest()
 	StartTrace(SessionTest.VerifyTest);
 
 	Context theCtx;
-	RUN_ENTRY("VerifyTest", cConfig) {
+	ROAnything cConfig;
+	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(cConfig) ) {
 		Session s("TestSession", theCtx);
 		{
 			Anything args;
@@ -463,7 +460,8 @@ void SessionTest::CheckRoleExchangeTest()
 	StartTrace(SessionTest.CheckRoleExchangeTest);
 
 	Context theCtx;
-	Context::PushPopEntry aEntry(theCtx, "fConfig", fConfig);
+	Anything anyContent = GetConfig().DeepClone();
+	Context::PushPopEntry aEntry(theCtx, "fConfig", anyContent);
 
 	STTestSession s("dummysession", theCtx);
 
@@ -476,22 +474,18 @@ void SessionTest::CheckRoleExchangeTest()
 }
 
 Test *SessionTest::suite ()
-// collect all test cases for the RegistryStream
 {
 	TestSuite *testSuite = new TestSuite;
-
-	testSuite->addTest (NEW_CASE(SessionTest, CheckInstalled));
-	testSuite->addTest (NEW_CASE(SessionTest, SetGetRole));
-
-	testSuite->addTest (NEW_CASE(SessionTest, TestInit));
-	testSuite->addTest (NEW_CASE(SessionTest, RetrieveFromDelayed));
-	testSuite->addTest (NEW_CASE(SessionTest, DoFindNextPageLogin));
-	testSuite->addTest (NEW_CASE(SessionTest, UseSessionStoreTest));
-	testSuite->addTest (NEW_CASE(SessionTest, VerifyTest));
-	testSuite->addTest (NEW_CASE(SessionTest, InfoTest));
-	testSuite->addTest (NEW_CASE(SessionTest, IsDeletableTest));
-	testSuite->addTest (NEW_CASE(SessionTest, SetupContextTest));
-	testSuite->addTest (NEW_CASE(SessionTest, CheckRoleExchangeTest));
-
+	ADD_CASE(testSuite, SessionTest, CheckInstalled);
+	ADD_CASE(testSuite, SessionTest, SetGetRole);
+	ADD_CASE(testSuite, SessionTest, TestInit);
+	ADD_CASE(testSuite, SessionTest, RetrieveFromDelayed);
+	ADD_CASE(testSuite, SessionTest, DoFindNextPageLogin);
+	ADD_CASE(testSuite, SessionTest, UseSessionStoreTest);
+	ADD_CASE(testSuite, SessionTest, VerifyTest);
+	ADD_CASE(testSuite, SessionTest, InfoTest);
+	ADD_CASE(testSuite, SessionTest, IsDeletableTest);
+	ADD_CASE(testSuite, SessionTest, SetupContextTest);
+	ADD_CASE(testSuite, SessionTest, CheckRoleExchangeTest);
 	return testSuite;
-} // suite
+}

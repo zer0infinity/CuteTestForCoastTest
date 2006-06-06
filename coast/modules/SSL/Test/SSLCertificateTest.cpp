@@ -11,6 +11,7 @@
 
 //--- module under test --------------------------------------------------------
 #include "SSLSocket.h"
+
 //--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
 
@@ -21,9 +22,9 @@
 
 //---- SSLCertificateTest ----------------------------------------------------------------
 SSLCertificateTest::SSLCertificateTest(TString tstrName)
-	: ConfiguredTestCase(tstrName, "SSLCertificateTest")
+	: TestCaseType(tstrName)
 {
-	StartTrace(SSLCertificateTest.Ctor);
+	StartTrace(SSLCertificateTest.SSLCertificateTest);
 }
 
 SSLCertificateTest::~SSLCertificateTest()
@@ -31,29 +32,12 @@ SSLCertificateTest::~SSLCertificateTest()
 	StartTrace(SSLCertificateTest.Dtor);
 }
 
-// setup for this ConfiguredTestCase
-void SSLCertificateTest::setUp ()
+void SSLCertificateTest::ClientCertificateTest()
 {
-	StartTrace(SSLCertificateTest.setUp);
-	ConfiguredTestCase::setUp();
-}
-
-void SSLCertificateTest::tearDown ()
-{
-	StartTrace(SSLCertificateTest.tearDown);
-	ConfiguredTestCase::tearDown();
-}
-
-void SSLCertificateTest::test()
-{
-	t_assert(false);
-}
-
-void SSLCertificateTest::clientCertificateTest()
-{
-	StartTrace(SSLCertificateTest.clientCertificateTest);
-	FOREACH_ENTRY("ClientCertificateTest", cConfig, cName) {
-		Trace("ClientCertificateTest: At entry: " << i);
+	StartTrace(SSLCertificateTest.ClientCertificateTest);
+	ROAnything cConfig;
+	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(cConfig) ) {
 		SSLConnector sc(cConfig["Config"], (SSL_CTX *) NULL); // add a new connector type using a config
 		iostream *s1 = sc.GetStream();
 		Socket *s = sc.Use();
@@ -72,14 +56,11 @@ void SSLCertificateTest::clientCertificateTest()
 			}
 		}
 	}
-
-//	t_assert(false);
-	//check
-} // getStreamTest
-void SSLCertificateTest::checkServerCertificateTest()
+}
+void SSLCertificateTest::CheckServerCertificateTest()
 {
-	StartTrace(SSLCertificateTest.checkServerCertificateTest);
-	ROAnything scfg(fConfig["RemoteCertificateHost"]);
+	StartTrace(SSLCertificateTest.CheckServerCertificateTest);
+	ROAnything scfg(GetConfig()["RemoteCertificateHost"]);
 	SSLConnector sc(scfg, (SSL_CTX *) NULL); // add a new connector type using a config
 	iostream *s1 = sc.GetStream();
 	Socket *s = sc.Use();
@@ -91,17 +72,13 @@ void SSLCertificateTest::checkServerCertificateTest()
 		t_assert(!!(*s1));
 		assertEqual( "HTTP", reply.SubString(0, 4)) ;
 	}
-	//check server cert
-} // getStreamTest
-
-// builds up a suite of ConfiguredTestCases, add a line for each testmethod
+}
+// builds up a suite of tests, add a line for each testmethod
 Test *SSLCertificateTest::suite ()
 {
 	StartTrace(SSLCertificateTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	ADD_CASE(testSuite, SSLCertificateTest, clientCertificateTest);
-	ADD_CASE(testSuite, SSLCertificateTest, checkServerCertificateTest);
-
+	ADD_CASE(testSuite, SSLCertificateTest, ClientCertificateTest);
+	ADD_CASE(testSuite, SSLCertificateTest, CheckServerCertificateTest);
 	return testSuite;
 }

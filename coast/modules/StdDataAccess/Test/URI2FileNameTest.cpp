@@ -22,7 +22,7 @@
 //--- c-library modules used ---------------------------------------------------
 
 //---- URI2FileNameTest ----------------------------------------------------------------
-URI2FileNameTest::URI2FileNameTest(TString tname) : TestCase(tname)
+URI2FileNameTest::URI2FileNameTest(TString tname) : TestCaseType(tname)
 {
 	StartTrace(URI2FileNameTest.Ctor);
 }
@@ -149,8 +149,8 @@ Test *URI2FileNameTest::suite ()
 	StartTrace(URI2FileNameTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(URI2FileNameTest, Uri2FilenameTest));
+	ADD_CASE(testSuite, URI2FileNameTest, Uri2FilenameTest);
 
 	return testSuite;
 
-} // suite
+}

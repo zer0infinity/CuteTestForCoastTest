@@ -7,6 +7,7 @@ function prepareTest
 {
 	export WD_DOLOG=1
 	export WDTESTPIDFILE=config/wdbasetest.pid
+	chmod u+w ${CONFIGDIRABS}/ThreadedTimeStampTest.stat.any 2>/dev/null
 }
 
 ## call to wdtest or whatever you want to call

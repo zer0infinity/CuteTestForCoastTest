@@ -23,7 +23,7 @@
 #include "HTMLParserTest.h"
 
 //---- HTMLParserTest ----------------------------------------------------------------
-HTMLParserTest::HTMLParserTest(TString tstrName) : TestCase(tstrName)
+HTMLParserTest::HTMLParserTest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(HTMLParserTest.Ctor);
 
@@ -33,17 +33,6 @@ HTMLParserTest::~HTMLParserTest()
 {
 	StartTrace(HTMLParserTest.Dtor);
 }
-
-// setup for this TestCase
-void HTMLParserTest::setUp ()
-{
-	StartTrace(HTMLParserTest.setUp);
-} // setUp
-
-void HTMLParserTest::tearDown ()
-{
-	StartTrace(HTMLParserTest.tearDown);
-} // tearDown
 
 void HTMLParserTest::ParseFileTest()
 {
@@ -78,8 +67,8 @@ Test *HTMLParserTest::suite ()
 	StartTrace(HTMLParserTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(HTMLParserTest, ParseFileTest));
+	ADD_CASE(testSuite, HTMLParserTest, ParseFileTest);
 
 	return testSuite;
 
-} // suite
+}

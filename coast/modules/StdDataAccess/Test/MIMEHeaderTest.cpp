@@ -22,7 +22,7 @@
 #include "MIMEHeaderTest.h"
 
 //---- MIMEHeaderTest ----------------------------------------------------------------
-MIMEHeaderTest::MIMEHeaderTest(TString tname) : TestCase(tname)
+MIMEHeaderTest::MIMEHeaderTest(TString tname) : TestCaseType(tname)
 {
 	StartTrace(MIMEHeaderTest.Ctor);
 }
@@ -31,17 +31,6 @@ MIMEHeaderTest::~MIMEHeaderTest()
 {
 	StartTrace(MIMEHeaderTest.Dtor);
 }
-
-// setup for this TestCase
-void MIMEHeaderTest::setUp ()
-{
-	StartTrace(MIMEHeaderTest.setUp);
-} // setUp
-
-void MIMEHeaderTest::tearDown ()
-{
-	StartTrace(MIMEHeaderTest.tearDown);
-} // tearDown
 
 void MIMEHeaderTest::SimpleHeaderTest()
 {
@@ -426,11 +415,11 @@ Test *MIMEHeaderTest::suite ()
 	StartTrace(MIMEHeaderTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(MIMEHeaderTest, SimpleHeaderTest));
-	testSuite->addTest (NEW_CASE(MIMEHeaderTest, SetCookieTest));
-	testSuite->addTest (NEW_CASE(MIMEHeaderTest, MultiPartHeaderTest));
-	testSuite->addTest (NEW_CASE(MIMEHeaderTest, PartHeaderTest));
+	ADD_CASE(testSuite, MIMEHeaderTest, SimpleHeaderTest);
+	ADD_CASE(testSuite, MIMEHeaderTest, SetCookieTest);
+	ADD_CASE(testSuite, MIMEHeaderTest, MultiPartHeaderTest);
+	ADD_CASE(testSuite, MIMEHeaderTest, PartHeaderTest);
 
 	return testSuite;
 
-} // suite
+}

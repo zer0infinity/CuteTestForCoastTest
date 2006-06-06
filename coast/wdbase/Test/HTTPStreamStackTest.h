@@ -14,7 +14,7 @@
 
 //---- HTTPStreamStackTest ----------------------------------------------------------
 //! TestCases description
-class HTTPStreamStackTest : public TestCase
+class HTTPStreamStackTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -31,12 +31,6 @@ public:
 	//! builds up a suite of testcases for this test
 	static Test *suite ();
 
-	//! sets the environment for this test
-	void setUp ();
-
-	//! deletes the environment for this test
-	void tearDown ();
-
 	//! Test with no special encoding
 	void NoEncoding();
 
@@ -48,9 +42,6 @@ public:
 
 	//! Test with chunked and gzip encoding
 	void ChunkedGzipEncoding();
-
-	//! describe this testcase
-	void testCase();
 };
 
 #endif

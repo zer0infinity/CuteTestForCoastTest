@@ -18,31 +18,29 @@
 //--- interface include --------------------------------------------------------
 #include "AnyToXMLTest.h"
 
-AnyToXMLTest::AnyToXMLTest(TString tname) : TestCase(tname), fAnyToXMLRenderer("TestedRenderer")
+AnyToXMLTest::AnyToXMLTest(TString tname)
+	: TestCaseType(tname)
+	, fAnyToXMLRenderer("TestedRenderer")
+{}
 
-{};
+AnyToXMLTest::~AnyToXMLTest()
+{}
 
-AnyToXMLTest::~AnyToXMLTest() {};
-
-void AnyToXMLTest::setUp ()
+void AnyToXMLTest::setUp()
 {
-	TestCase::setUp();
-
 	String configFilename("AnyToXMLTestConfig");
 
 	istream *ifp = System::OpenStream(configFilename, "any");
 
-	if (ifp) {	// found
+	if (ifp) {
 		fConfig.Import(*ifp, configFilename);
 		delete ifp;
 	}
-
 };
 
 // Produce an XML out of an Anything
 void AnyToXMLTest::AnythingToXMLTest()
 {
-
 	DoTest("Test1", "XMLOutput");
 	DoTest("Test2", "XMLOutput");
 }

@@ -27,9 +27,15 @@
 #endif
 
 //---- InterruptHandlerTest ----------------------------------------------------------------
-InterruptHandlerTest::InterruptHandlerTest(TString tname) : ConfiguredTestCase(tname, "Config")
+InterruptHandlerTest::InterruptHandlerTest(TString tname)
+	: TestCaseType(tname)
 {
-	StartTrace(InterruptHandlerTest.Ctor);
+	StartTrace(InterruptHandlerTest.InterruptHandlerTest);
+}
+
+TString InterruptHandlerTest::getConfigFileName()
+{
+	return "Config";
 }
 
 InterruptHandlerTest::~InterruptHandlerTest()
@@ -37,23 +43,20 @@ InterruptHandlerTest::~InterruptHandlerTest()
 	StartTrace(InterruptHandlerTest.Dtor);
 }
 
-// setup for this TestCase
 void InterruptHandlerTest::setUp ()
 {
 	StartTrace(InterruptHandlerTest.setUp);
-	ConfiguredTestCase::setUp();
-	t_assert(fConfig.IsDefined("Modules"));
-	Application::InitializeGlobalConfig(fConfig);
-	WDModule::Install(fConfig);
-} // setUp
+	t_assert(GetConfig().IsDefined("Modules"));
+	Application::InitializeGlobalConfig(GetConfig().DeepClone());
+	WDModule::Install(GetConfig());
+}
 
 void InterruptHandlerTest::tearDown ()
 {
 	StartTrace(InterruptHandlerTest.tearDown);
-	WDModule::Terminate(fConfig);
+	WDModule::Terminate(GetConfig());
 	Application::InitializeGlobalConfig(Anything());
-	ConfiguredTestCase::tearDown();
-} // tearDown
+}
 
 void InterruptHandlerTest::PidFileHandlingTest()
 {
@@ -124,8 +127,8 @@ Test *InterruptHandlerTest::suite ()
 	StartTrace(InterruptHandlerTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(InterruptHandlerTest, PidFileHandlingTest));
+	ADD_CASE(testSuite, InterruptHandlerTest, PidFileHandlingTest);
 
 	return testSuite;
 
-} // suite
+}

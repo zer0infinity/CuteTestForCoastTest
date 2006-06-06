@@ -15,7 +15,7 @@
 
 //---- SessionListManagerTest ----------------------------------------------------------
 //!TestCases description
-class SessionListManagerTest : public TestCase
+class SessionListManagerTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors

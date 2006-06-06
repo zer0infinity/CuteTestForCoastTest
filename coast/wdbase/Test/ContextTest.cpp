@@ -26,8 +26,14 @@
 
 //---- ContextTest ----------------------------------------------------------------
 ContextTest::ContextTest(TString tname)
-	: ConfiguredTestCase(tname, "Config")
+	: TestCaseType(tname)
 {
+	StartTrace(ContextTest.ContextTest);
+}
+
+TString ContextTest::getConfigFileName()
+{
+	return "Config";
 }
 
 ContextTest::~ContextTest()
@@ -35,13 +41,10 @@ ContextTest::~ContextTest()
 }
 
 void ContextTest::setUp ()
-// setup connector for this TestCase
 {
-	ConfiguredTestCase::setUp();
-
-	t_assert(fConfig.IsDefined("Modules"));
-	Application::InitializeGlobalConfig(fConfig);
-	WDModule::Install(fConfig);
+	t_assert(GetConfig().IsDefined("Modules"));
+	Application::InitializeGlobalConfig(GetConfig().DeepClone());
+	WDModule::Install(GetConfig());
 	Server *s;
 	if (t_assert((s = Server::FindServer("Server")) != NULL)) {
 		ROAnything result;
@@ -51,11 +54,9 @@ void ContextTest::setUp ()
 
 void ContextTest::tearDown ()
 {
-	t_assert(fConfig.IsDefined("Modules"));
-
-	WDModule::Terminate(fConfig);
+	t_assert(GetConfig().IsDefined("Modules"));
+	WDModule::Terminate(GetConfig());
 	Application::InitializeGlobalConfig(Anything());
-	ConfiguredTestCase::tearDown();
 }
 
 void ContextTest::RequestConstructorTest ()
@@ -1177,23 +1178,23 @@ Test *ContextTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(ContextTest, VerySimplePush));
-	testSuite->addTest (NEW_CASE(ContextTest, RequestConstructorTest));
-	testSuite->addTest (NEW_CASE(ContextTest, EmptyConstructorTest));
-	testSuite->addTest (NEW_CASE(ContextTest, SocketCtorTests));
-	testSuite->addTest (NEW_CASE(ContextTest, LookupTests));
-	testSuite->addTest (NEW_CASE(ContextTest, ObjectAccessTests));
-	testSuite->addTest (NEW_CASE(ContextTest, RequestSettingTest));
-	testSuite->addTest (NEW_CASE(ContextTest, StoreTests));
-	testSuite->addTest (NEW_CASE(ContextTest, SessionPushTest));
-	testSuite->addTest (NEW_CASE(ContextTest, SessionStoreTest));
-	testSuite->addTest (NEW_CASE(ContextTest, RoleStoreTest));
-	testSuite->addTest (NEW_CASE(ContextTest, FindReplace));
-	testSuite->addTest (NEW_CASE(ContextTest, RemoveTest));
-	testSuite->addTest (NEW_CASE(ContextTest, SetNGetPage));
-	testSuite->addTest (NEW_CASE(ContextTest, SetNGetRole));
-	testSuite->addTest (NEW_CASE(ContextTest, RefCountTest));
-	testSuite->addTest (NEW_CASE(ContextTest, SessionUnlockingTest));
+	ADD_CASE(testSuite, ContextTest, VerySimplePush);
+	ADD_CASE(testSuite, ContextTest, RequestConstructorTest);
+	ADD_CASE(testSuite, ContextTest, EmptyConstructorTest);
+	ADD_CASE(testSuite, ContextTest, SocketCtorTests);
+	ADD_CASE(testSuite, ContextTest, LookupTests);
+	ADD_CASE(testSuite, ContextTest, ObjectAccessTests);
+	ADD_CASE(testSuite, ContextTest, RequestSettingTest);
+	ADD_CASE(testSuite, ContextTest, StoreTests);
+	ADD_CASE(testSuite, ContextTest, SessionPushTest);
+	ADD_CASE(testSuite, ContextTest, SessionStoreTest);
+	ADD_CASE(testSuite, ContextTest, RoleStoreTest);
+	ADD_CASE(testSuite, ContextTest, FindReplace);
+	ADD_CASE(testSuite, ContextTest, RemoveTest);
+	ADD_CASE(testSuite, ContextTest, SetNGetPage);
+	ADD_CASE(testSuite, ContextTest, SetNGetRole);
+	ADD_CASE(testSuite, ContextTest, RefCountTest);
+	ADD_CASE(testSuite, ContextTest, SessionUnlockingTest);
 
 	return testSuite;
 }

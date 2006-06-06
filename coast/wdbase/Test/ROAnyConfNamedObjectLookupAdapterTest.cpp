@@ -28,7 +28,7 @@ RegCacheImpl(TestConfNamedObj);				// FindTestConfNamedObj()
 RegisterTestConfNamedObj(TestConfNamedObj);
 
 //---- ROAnyConfNamedObjectLookupAdapterTest ----------------------------------------------------------------
-ROAnyConfNamedObjectLookupAdapterTest::ROAnyConfNamedObjectLookupAdapterTest(TString tstrName) : TestCase(tstrName)
+ROAnyConfNamedObjectLookupAdapterTest::ROAnyConfNamedObjectLookupAdapterTest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(ROAnyConfNamedObjectLookupAdapterTest.Ctor);
 }
@@ -38,25 +38,9 @@ ROAnyConfNamedObjectLookupAdapterTest::~ROAnyConfNamedObjectLookupAdapterTest()
 	StartTrace(ROAnyConfNamedObjectLookupAdapterTest.Dtor);
 }
 
-// setup for this TestCase
-void ROAnyConfNamedObjectLookupAdapterTest::setUp ()
+void ROAnyConfNamedObjectLookupAdapterTest::LookupTest()
 {
-	StartTrace(ROAnyConfNamedObjectLookupAdapterTest.setUp);
-}
-
-void ROAnyConfNamedObjectLookupAdapterTest::tearDown ()
-{
-	StartTrace(ROAnyConfNamedObjectLookupAdapterTest.tearDown);
-}
-
-void ROAnyConfNamedObjectLookupAdapterTest::testCase()
-{
-	StartTrace(ROAnyConfNamedObjectLookupAdapterTest.testCase);
-}
-
-void ROAnyConfNamedObjectLookupAdapterTest::testLookup()
-{
-	StartTrace(ROAnyConfNamedObjectLookupAdapterTest.testLookup);
+	StartTrace(ROAnyConfNamedObjectLookupAdapterTest.LookupTest);
 
 	Anything base;
 	TestConfNamedObj *tcfno = TestConfNamedObj::FindTestConfNamedObj("TestConfNamedObj");
@@ -99,18 +83,15 @@ Test *ROAnyConfNamedObjectLookupAdapterTest::suite ()
 {
 	StartTrace(ROAnyConfNamedObjectLookupAdapterTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	ADD_CASE(testSuite, ROAnyConfNamedObjectLookupAdapterTest, testCase);
-	ADD_CASE(testSuite, ROAnyConfNamedObjectLookupAdapterTest, testLookup);
-	ADD_CASE(testSuite, ROAnyConfNamedObjectLookupAdapterTest, testNoConfNamedObject);
-	ADD_CASE(testSuite, ROAnyConfNamedObjectLookupAdapterTest, testNothingAtAll);
-
+	ADD_CASE(testSuite, ROAnyConfNamedObjectLookupAdapterTest, LookupTest);
+	ADD_CASE(testSuite, ROAnyConfNamedObjectLookupAdapterTest, NoConfNamedObjectTest);
+	ADD_CASE(testSuite, ROAnyConfNamedObjectLookupAdapterTest, NothingAtAllTest);
 	return testSuite;
 }
 
-void ROAnyConfNamedObjectLookupAdapterTest::testNoConfNamedObject()
+void ROAnyConfNamedObjectLookupAdapterTest::NoConfNamedObjectTest()
 {
-	StartTrace(ROAnyConfNamedObjectLookupAdapterTest.testNoConfNamedObject);
+	StartTrace(ROAnyConfNamedObjectLookupAdapterTest.NoConfNamedObjectTest);
 
 	Anything base;
 
@@ -132,9 +113,9 @@ void ROAnyConfNamedObjectLookupAdapterTest::testNoConfNamedObject()
 	assertEquals(4L, la.Lookup("FromConfigLong", 4L));
 }
 
-void ROAnyConfNamedObjectLookupAdapterTest::testNothingAtAll()
+void ROAnyConfNamedObjectLookupAdapterTest::NothingAtAllTest()
 {
-	StartTrace(ROAnyConfNamedObjectLookupAdapterTest.testNothingAtAll);
+	StartTrace(ROAnyConfNamedObjectLookupAdapterTest.NothingAtAllTest);
 
 	Anything base;
 	ROAnything robase(base);

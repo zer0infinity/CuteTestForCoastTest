@@ -17,7 +17,6 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "ServiceHandler.h"
-#include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
 #if !defined(WIN32)
@@ -46,10 +45,9 @@ protected:
 
 //---- ServiceDispatcherTest ----------------------------------------------------------------
 ServiceDispatcherTest::ServiceDispatcherTest(TString tname)
-	: ConfiguredTestCase(tname, "ServiceDispatcherTest")
+	: TestCaseType(tname)
 {
-	StartTrace(ServiceDispatcherTest.Ctor);
-
+	StartTrace(ServiceDispatcherTest.ServiceDispatcherTest);
 }
 
 ServiceDispatcherTest::~ServiceDispatcherTest()
@@ -57,23 +55,20 @@ ServiceDispatcherTest::~ServiceDispatcherTest()
 	StartTrace(ServiceDispatcherTest.Dtor);
 }
 
-// setup for this TestCase
 void ServiceDispatcherTest::setUp ()
 {
 	StartTrace(ServiceDispatcherTest.setUp);
-	ConfiguredTestCase::setUp();
-	t_assert(fConfig.IsDefined("Modules"));
-	t_assert(fConfig["Modules"].Contains("ServiceDispatchersModule"));
+	t_assert(GetConfig().IsDefined("Modules"));
+	t_assert(GetConfig()["Modules"].Contains("ServiceDispatchersModule"));
 	// ensure installation of modules
-	WDModule::Install(fConfig);
-} // setUp
+	WDModule::Install(GetConfig());
+}
 
 void ServiceDispatcherTest::tearDown ()
 {
 	StartTrace(ServiceDispatcherTest.tearDown);
-	WDModule::Terminate(fConfig);
-	ConfiguredTestCase::tearDown();
-} // tearDown
+	WDModule::Terminate(GetConfig());
+}
 
 void ServiceDispatcherTest::FindTests()
 {
@@ -141,13 +136,10 @@ Test *ServiceDispatcherTest::suite ()
 {
 	StartTrace(ServiceDispatcherTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	testSuite->addTest (NEW_CASE(ServiceDispatcherTest, FindTests));
-	testSuite->addTest (NEW_CASE(ServiceDispatcherTest, ServiceDispatcherModuleTest));
-
+	ADD_CASE(testSuite, ServiceDispatcherTest, FindTests);
+	ADD_CASE(testSuite, ServiceDispatcherTest, ServiceDispatcherModuleTest);
 	return testSuite;
-
-} // suite
+}
 
 RegisterServiceHandler(TestService);
 //---- TestService ----------------------------------------------------------------

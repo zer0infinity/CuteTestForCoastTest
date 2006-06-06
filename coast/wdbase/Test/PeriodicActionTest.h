@@ -17,7 +17,7 @@ class Context;
 
 //---- PeriodicActionTest ----------------------------------------------------------
 //!tests for PeriodicAction thread
-class PeriodicActionTest : public TestCase
+class PeriodicActionTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -34,14 +34,8 @@ public:
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
 
-	//!sets the environment for this test
-	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
-
 	//!test periodic action thread
-	void testPeriodicAction();
+	void PeriodicTest();
 
 	//!keep it simple just increment counter
 	static void ActionCalled(Context &ctx);
@@ -50,7 +44,6 @@ protected:
 	static long fgCalled;
 	static Condition fgCalledCond;
 	static Mutex fgCalledMutex;
-
 };
 
 #endif

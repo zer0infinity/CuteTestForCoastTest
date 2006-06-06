@@ -26,12 +26,12 @@ public:
 };
 
 //---- FormRendererTest -----------------------------------------------------------
-class FormRendererTest : public TestCase
+class FormRendererTest : public TestFramework::TestCase
 {
 protected:
 
 public:
-	FormRendererTest (TString tstrName); // : TestCase (name) {}
+	FormRendererTest (TString tstrName);
 	virtual ~FormRendererTest();
 	virtual void	setUp ();
 	static Test		*suite ();

@@ -10,13 +10,13 @@
 #define _TransitionTests_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 
 //---- forward declaration -----------------------------------------------
 
 //---- TransitionTests ----------------------------------------------------------
 //!TestCases for Coast state transitions
-class TransitionTests : public ConfiguredTestCase
+class TransitionTests : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors
@@ -39,6 +39,8 @@ public:
 	//!deletes the environment for this test
 	void tearDown ();
 
+	TString getConfigFileName();
+
 	//! main
 	void RunRequestSequence();
 
@@ -50,17 +52,8 @@ public:
 protected:
 	Anything	fBookmarkedRequest;
 
-	bool EvalRequest(Anything request, Anything &returned);
-	Anything AddSessionInfo(Anything request, Anything context);
-
-	//--- member variables declaration
-
-private:
-	// use careful, you inhibit subclass use
-	//--- private class api
-
-	//--- private member variables
-
+	bool EvalRequest(ROAnything request, Anything &returned);
+	Anything AddSessionInfo(ROAnything request, Anything context);
 };
 
 #endif

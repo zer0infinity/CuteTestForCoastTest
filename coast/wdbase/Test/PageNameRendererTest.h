@@ -14,7 +14,7 @@
 
 //---- PageNameRendererTest ----------------------------------------------------------
 //!TestCases description
-class PageNameRendererTest : public TestCase
+class PageNameRendererTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors

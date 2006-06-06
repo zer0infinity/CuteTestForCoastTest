@@ -23,7 +23,7 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- GetEnvRendererTest ----------------------------------------------------------------
-GetEnvRendererTest::GetEnvRendererTest(TString tstrName) : TestCase(tstrName)
+GetEnvRendererTest::GetEnvRendererTest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(GetEnvRendererTest.Ctor);
 }
@@ -33,20 +33,9 @@ GetEnvRendererTest::~GetEnvRendererTest()
 	StartTrace(GetEnvRendererTest.Dtor);
 }
 
-// setup for this TestCase
-void GetEnvRendererTest::setUp ()
+void GetEnvRendererTest::EnvTest()
 {
-	StartTrace(GetEnvRendererTest.setUp);
-}
-
-void GetEnvRendererTest::tearDown ()
-{
-	StartTrace(GetEnvRendererTest.tearDown);
-}
-
-void GetEnvRendererTest::testCase()
-{
-	StartTrace(GetEnvRendererTest.testCase);
+	StartTrace(GetEnvRendererTest.EnvTest);
 	String user = System::EnvGet("USER");
 	Context ctx;
 	Anything config;
@@ -62,8 +51,6 @@ Test *GetEnvRendererTest::suite ()
 {
 	StartTrace(GetEnvRendererTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	ADD_CASE(testSuite, GetEnvRendererTest, testCase);
-
+	ADD_CASE(testSuite, GetEnvRendererTest, EnvTest);
 	return testSuite;
 }

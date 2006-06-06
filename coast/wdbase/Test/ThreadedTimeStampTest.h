@@ -10,17 +10,15 @@
 #define _ThreadedTimeStampTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 #include "Threads.h"
 class Mutex;
 
 //---- ThreadedTimeStampTest ----------------------------------------------------------
 //!TestCases description
-class ThreadedTimeStampTest : public ConfiguredTestCase
+class ThreadedTimeStampTest : public TestFramework::TestCaseWithConfigAndStatistics
 {
 public:
-	//--- constructors
-
 	//!TestCase constructor
 	//! \param name name of the test
 	ThreadedTimeStampTest(TString tstrName);
@@ -28,16 +26,10 @@ public:
 	//!destroys the test case
 	~ThreadedTimeStampTest();
 
-	//--- public api
-
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
 
-	//!sets the environment for this test
-	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
+	TString getConfigFileName();
 
 	//!test initialization
 	void TimestampConcurrencyTest();
@@ -48,7 +40,7 @@ public:
 
 protected:
 	// guards asserts
-	void DoTimeStampConcurrencyTest(iostream *pIos, long numberOfRuns, long numberOfThreads, long concurrencyFactor, ROAnything roaConfig);
+	void DoTimeStampConcurrencyTest(long numberOfRuns, long numberOfThreads, long concurrencyFactor, ROAnything roaConfig);
 	Mutex fCheckMutex;
 };
 

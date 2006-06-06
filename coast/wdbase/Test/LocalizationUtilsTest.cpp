@@ -20,12 +20,11 @@
 
 //--- c-library modules used ---------------------------------------------------
 
-LocalizationUtilsTest::LocalizationUtilsTest (TString tname) : TestCase(tname),
+LocalizationUtilsTest::LocalizationUtilsTest (TString tname) : TestCaseType(tname),
 	fContext( MetaThing(), Anything(), 0, 0, 0, 0 ) {};
 LocalizationUtilsTest::~LocalizationUtilsTest() {};
 
 void LocalizationUtilsTest::setUp ()
-// setup standard config for tests in this TestCase
 {
 	System::SetRootDir("."); // Root is usually local
 
@@ -52,7 +51,7 @@ void LocalizationUtilsTest::setUp ()
 	LangDirMap["Key2"] = "Localized_I";
 	LangDirMap["Key3"] = "Localized_E";
 	TmpStore["LanguageDirMap"] = LangDirMap;
-} // setUp
+}
 
 void LocalizationUtilsTest::EvalNullLangEmptyConfigWODefault()
 // 'lang' is a NULL pointer 'config' is an empty anything, without default Language
@@ -652,48 +651,47 @@ void LocalizationUtilsTest::OpenStreamDefaultTemplateDir()
 } // OpenStreamDefaultTemplateDir
 
 Test *LocalizationUtilsTest::suite ()
-// collect all test cases for LocalizationUtils
 {
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, EvalNullLangEmptyConfigWODefault));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, EvalEmptyLangEmptyConfigWODefault));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, EvalEmptyConfigWODefault));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, EvalNormalCaseWODefault));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, EvalNullLangEmptyConfigWithDefault));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, EvalEmptyLangEmptyConfigWithDefault));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, EvalEmptyConfigWithDefault));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, EvalNormalCaseWithDefault));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, EvalAnyNullLangEmptyConfigWODefault));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, EvalAnyEmptyLangEmptyConfigWODefault));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, EvalAnyEmptyConfigWODefault));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, EvalAnyNormalCaseWODefault));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, EvalAnyNullLangEmptyConfigWithDefault));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, EvalAnyEmptyLangEmptyConfigWithDefault));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, EvalAnyEmptyConfigWithDefault));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, EvalAnyNormalCaseWithDefault));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, LangKeyKey0));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, LangKeyKey1));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, LangKeyKey2));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, LangKeyKey3));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, LangKeyKeyOneLang));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, LangKeyBadAndGoodLanguages));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, LangKeyEmptyLanguages));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, LangKeyEmptyKeyMap));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, LangKeyEmptyLanguagesEmptyKeyMap));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, LangKeyMissingLanguages));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, LangKeyMissingKeyMap));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, LangKeyMissingLanguagesMissingKeyMap));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, LangKeyDoNotUseBrowserLang));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, OpenStreamLangD));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, OpenStreamLangDAbsolut));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, OpenStreamLangF));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, OpenStreamLangF1stTemplateDirWrong));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, OpenStreamLangDDefault));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, OpenStreamLangDDefaultAbsolut));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, OpenStreamLangDDefaultAbsolut1stTemplateDirWrong));
-	testSuite->addTest (NEW_CASE(LocalizationUtilsTest, OpenStreamDefaultTemplateDir));
+	ADD_CASE(testSuite, LocalizationUtilsTest, EvalNullLangEmptyConfigWODefault);
+	ADD_CASE(testSuite, LocalizationUtilsTest, EvalEmptyLangEmptyConfigWODefault);
+	ADD_CASE(testSuite, LocalizationUtilsTest, EvalEmptyConfigWODefault);
+	ADD_CASE(testSuite, LocalizationUtilsTest, EvalNormalCaseWODefault);
+	ADD_CASE(testSuite, LocalizationUtilsTest, EvalNullLangEmptyConfigWithDefault);
+	ADD_CASE(testSuite, LocalizationUtilsTest, EvalEmptyLangEmptyConfigWithDefault);
+	ADD_CASE(testSuite, LocalizationUtilsTest, EvalEmptyConfigWithDefault);
+	ADD_CASE(testSuite, LocalizationUtilsTest, EvalNormalCaseWithDefault);
+	ADD_CASE(testSuite, LocalizationUtilsTest, EvalAnyNullLangEmptyConfigWODefault);
+	ADD_CASE(testSuite, LocalizationUtilsTest, EvalAnyEmptyLangEmptyConfigWODefault);
+	ADD_CASE(testSuite, LocalizationUtilsTest, EvalAnyEmptyConfigWODefault);
+	ADD_CASE(testSuite, LocalizationUtilsTest, EvalAnyNormalCaseWODefault);
+	ADD_CASE(testSuite, LocalizationUtilsTest, EvalAnyNullLangEmptyConfigWithDefault);
+	ADD_CASE(testSuite, LocalizationUtilsTest, EvalAnyEmptyLangEmptyConfigWithDefault);
+	ADD_CASE(testSuite, LocalizationUtilsTest, EvalAnyEmptyConfigWithDefault);
+	ADD_CASE(testSuite, LocalizationUtilsTest, EvalAnyNormalCaseWithDefault);
+	ADD_CASE(testSuite, LocalizationUtilsTest, LangKeyKey0);
+	ADD_CASE(testSuite, LocalizationUtilsTest, LangKeyKey1);
+	ADD_CASE(testSuite, LocalizationUtilsTest, LangKeyKey2);
+	ADD_CASE(testSuite, LocalizationUtilsTest, LangKeyKey3);
+	ADD_CASE(testSuite, LocalizationUtilsTest, LangKeyKeyOneLang);
+	ADD_CASE(testSuite, LocalizationUtilsTest, LangKeyBadAndGoodLanguages);
+	ADD_CASE(testSuite, LocalizationUtilsTest, LangKeyEmptyLanguages);
+	ADD_CASE(testSuite, LocalizationUtilsTest, LangKeyEmptyKeyMap);
+	ADD_CASE(testSuite, LocalizationUtilsTest, LangKeyEmptyLanguagesEmptyKeyMap);
+	ADD_CASE(testSuite, LocalizationUtilsTest, LangKeyMissingLanguages);
+	ADD_CASE(testSuite, LocalizationUtilsTest, LangKeyMissingKeyMap);
+	ADD_CASE(testSuite, LocalizationUtilsTest, LangKeyMissingLanguagesMissingKeyMap);
+	ADD_CASE(testSuite, LocalizationUtilsTest, LangKeyDoNotUseBrowserLang);
+	ADD_CASE(testSuite, LocalizationUtilsTest, OpenStreamLangD);
+	ADD_CASE(testSuite, LocalizationUtilsTest, OpenStreamLangDAbsolut);
+	ADD_CASE(testSuite, LocalizationUtilsTest, OpenStreamLangF);
+	ADD_CASE(testSuite, LocalizationUtilsTest, OpenStreamLangF1stTemplateDirWrong);
+	ADD_CASE(testSuite, LocalizationUtilsTest, OpenStreamLangDDefault);
+	ADD_CASE(testSuite, LocalizationUtilsTest, OpenStreamLangDDefaultAbsolut);
+	ADD_CASE(testSuite, LocalizationUtilsTest, OpenStreamLangDDefaultAbsolut1stTemplateDirWrong);
+	ADD_CASE(testSuite, LocalizationUtilsTest, OpenStreamDefaultTemplateDir);
 
 	return testSuite;
 
-} // suite
+}

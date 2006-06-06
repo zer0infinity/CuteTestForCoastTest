@@ -22,9 +22,14 @@
 
 //---- BasicAuthenticationDataTest ----------------------------------------------------------------
 BasicAuthenticationDataTest::BasicAuthenticationDataTest(TString tstrName)
-	: ConfiguredTestCase(tstrName, "BasicAuthenticationDataTestConfig")
+	: TestCaseType(tstrName)
 {
-	StartTrace(BasicAuthenticationDataTest.Ctor);
+	StartTrace(BasicAuthenticationDataTest.BasicAuthenticationDataTest);
+}
+
+TString BasicAuthenticationDataTest::getConfigFileName()
+{
+	return "BasicAuthenticationDataTestConfig";
 }
 
 BasicAuthenticationDataTest::~BasicAuthenticationDataTest()
@@ -32,24 +37,15 @@ BasicAuthenticationDataTest::~BasicAuthenticationDataTest()
 	StartTrace(BasicAuthenticationDataTest.Dtor);
 }
 
-// setup for this ConfiguredTestCase
-void BasicAuthenticationDataTest::setUp ()
+void BasicAuthenticationDataTest::AuthenticationTest()
 {
-	StartTrace(BasicAuthenticationDataTest.setUp);
-	ConfiguredTestCase::setUp();
-}
+	StartTrace(BasicAuthenticationDataTest.AuthenticationTest);
 
-void BasicAuthenticationDataTest::tearDown ()
-{
-	StartTrace(BasicAuthenticationDataTest.tearDown);
-	ConfiguredTestCase::tearDown();
-}
-
-void BasicAuthenticationDataTest::test()
-{
-	StartTrace(BasicAuthenticationDataTest.test);
-
-	FOREACH_ENTRY("TestCases", cConfig, cName) {
+	ROAnything cConfig;
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(cConfig) ) {
+		TString cName;
+		aEntryIterator.SlotName(cName);
 		BasicAuthenticationData bad(cConfig["Input"].AsString());
 
 		bool expCorrect = cConfig["Correct"].AsBool();
@@ -61,13 +57,11 @@ void BasicAuthenticationDataTest::test()
 	}
 }
 
-// builds up a suite of ConfiguredTestCases, add a line for each testmethod
+// builds up a suite of tests, add a line for each testmethod
 Test *BasicAuthenticationDataTest::suite ()
 {
 	StartTrace(BasicAuthenticationDataTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	ADD_CASE(testSuite, BasicAuthenticationDataTest, test);
-
+	ADD_CASE(testSuite, BasicAuthenticationDataTest, AuthenticationTest);
 	return testSuite;
 }

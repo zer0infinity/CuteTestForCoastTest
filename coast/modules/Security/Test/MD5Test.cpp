@@ -21,15 +21,10 @@
 
 //--- c-library modules used ---------------------------------------------------
 
-MD5Test::MD5Test(TString tname) : TestCase(tname)
+MD5Test::MD5Test(TString tname) : TestCaseType(tname)
 {};
 
 MD5Test::~MD5Test() {}
-
-void MD5Test::setUp ()
-{
-	TestCase::setUp();
-};
 
 Test *MD5Test::suite ()
 /* what: return the whole suite of tests for renderers, we could add the suites

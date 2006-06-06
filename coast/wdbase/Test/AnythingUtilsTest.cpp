@@ -6,37 +6,38 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "Role.h"
-#include "Context.h"
-#include "Dbg.h"
-
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
+//--- interface include --------------------------------------------------------
+#include "AnythingUtilsTest.h"
 
 //--- module under test --------------------------------------------------------
 #include "AnythingUtils.h"
 
-//--- interface include --------------------------------------------------------
-#include "AnythingUtilsTest.h"
+//--- test modules used --------------------------------------------------------
+#include "TestSuite.h"
 
-AnythingUtilsTest::AnythingUtilsTest(TString tname) : ConfiguredTestCase(tname, "AnythingUtilsTestConfig")
+//--- standard modules used ----------------------------------------------------
+
+AnythingUtilsTest::AnythingUtilsTest(TString tname)
+	: TestCaseType(tname)
 {
-	StartTrace(AnythingUtilsTest.Ctor);
+	StartTrace(AnythingUtilsTest.AnythingUtilsTest);
+}
+
+TString AnythingUtilsTest::getConfigFileName()
+{
+	return "AnythingUtilsTestConfig";
 }
 
 AnythingUtilsTest::~AnythingUtilsTest()
 {
-	StartTrace(AnythingUtilsTest.Dtor);
-};
+	StartTrace(AnythingUtilsTest.~AnythingUtilsTest);
+}
 
 void AnythingUtilsTest::setUp()
 {
 	StartTrace(AnythingUtilsTest.setUp);
-	ConfiguredTestCase::setUp();
-	fQuery = fConfig["Queries"][name()];
-};
+	fQuery = GetConfig()["Queries"][name()].DeepClone();
+}
 
 void AnythingUtilsTest::StoreCopierTest()
 {
@@ -73,8 +74,8 @@ void AnythingUtilsTest::StorePutterTest ()
 	TraceAny(c.GetRoleStoreGlobal(), "RoleStore after");
 	TraceAny(c.GetSessionStore(), "SessionStore after");
 
-	Anything expectedStore(fConfig["Results"][name()]["Store"]);
-	Anything expectedSessionStore(fConfig["Results"][name()]["SessionStore"]);
+	ROAnything expectedStore(GetConfig()["Results"][name()]["Store"]);
+	ROAnything expectedSessionStore(GetConfig()["Results"][name()]["SessionStore"]);
 	assertAnyEqual(expectedStore, c.GetTmpStore());
 	assertAnyEqual(expectedStore, c.GetRoleStoreGlobal());
 	assertAnyEqual(expectedSessionStore, c.GetSessionStore());
@@ -87,14 +88,14 @@ void AnythingUtilsTest::StorePutterReplaceTest ()
 	Context c;
 	Anything toStore = fQuery["ToStore"];
 	Anything config = fQuery["Destination"];
-	Anything rStore = fConfig["RoleStore1"];
+	Anything rStore = GetConfig()["RoleStore1"].DeepClone();
 	PutInStore(rStore, c.GetRoleStoreGlobal());
 
 	StorePutter::Operate(toStore, c, config);
 
 	TraceAny(c.GetRoleStoreGlobal(), "RoleStore after");
 
-	Anything expectedStore(fConfig["Results"]["StorePutterTest"]["Store"]);
+	ROAnything expectedStore(GetConfig()["Results"]["StorePutterTest"]["Store"]);
 	assertAnyEqual(expectedStore, c.GetRoleStoreGlobal());
 }
 
@@ -105,7 +106,7 @@ void AnythingUtilsTest::StorePutterReplaceRenderedTest ()
 	Context c;
 	Anything toStore = fQuery["ToStore"];
 	Anything config = fQuery["Destination"];
-	Anything rStore = fConfig["RoleStore1"];
+	Anything rStore = GetConfig()["RoleStore1"].DeepClone();
 	PutInStore(rStore, c.GetRoleStoreGlobal());
 
 	TraceAny(c.GetRoleStoreGlobal(), "RoleStore before");
@@ -114,7 +115,7 @@ void AnythingUtilsTest::StorePutterReplaceRenderedTest ()
 
 	TraceAny(c.GetRoleStoreGlobal(), "RoleStore after");
 
-	Anything expectedStore(fConfig["Results"]["StorePutterTest"]["Store"]);
+	ROAnything expectedStore(GetConfig()["Results"]["StorePutterTest"]["Store"]);
 	assertAnyEqual(expectedStore, c.GetRoleStoreGlobal());
 }
 
@@ -128,7 +129,6 @@ void AnythingUtilsTest::StorePutterEmptySlotTest ()
 	StorePutter::Operate(toStore, c, config);
 
 	TraceAny(c.GetTmpStore(), "TempStore after");
-
 	assertEqual(0, c.GetTmpStore().GetSize());
 }
 
@@ -138,17 +138,18 @@ void AnythingUtilsTest::StoreFinderTest ()
 	// Set up
 	Context c;
 	Anything config = fQuery["ToFind"];
-	Anything rStore = fConfig["RoleStore1"];
+	Anything rStore = GetConfig()["RoleStore1"].DeepClone();
 	PutInStore(rStore, c.GetRoleStoreGlobal());
 
 	Anything foundResult;
 	StoreFinder::Operate(c, foundResult, config);
 
-	Anything expectedStore(fConfig["Results"]["StoreFinderTest"]);
+	ROAnything expectedStore(GetConfig()["Results"]["StoreFinderTest"]);
 	assertAnyEqual(expectedStore, foundResult);
 
 	config = fQuery["SessionToFind"];
-	PutInStore(fConfig["SessionStore"], c.GetSessionStore());
+	rStore = GetConfig()["SessionStore"].DeepClone();
+	PutInStore(rStore, c.GetSessionStore());
 
 	Anything foundResult2;
 	StoreFinder::Operate(c, foundResult2, config);
@@ -161,13 +162,13 @@ void AnythingUtilsTest::StoreFinderRenderedTest ()
 	// Set up
 	Context c;
 	Anything config = fQuery["ToFind"];
-	Anything rStore = fConfig["RoleStore1"];
+	Anything rStore = GetConfig()["RoleStore1"].DeepClone();
 	PutInStore(rStore, c.GetRoleStoreGlobal());
 
 	Anything foundResult;
 	StoreFinder::Operate(c, foundResult, config);
 
-	Anything expectedStore(fConfig["Results"]["StoreFinderTest"]);
+	ROAnything expectedStore(GetConfig()["Results"]["StoreFinderTest"]);
 	assertAnyEqual(expectedStore, foundResult);
 }
 

@@ -16,7 +16,7 @@ class Anything;
 class String;
 
 //---- AnyToXMLTest -----------------------------------------------------------
-class AnyToXMLTest : public TestCase
+class AnyToXMLTest : public TestFramework::TestCase
 {
 public:
 	AnyToXMLTest(TString tstrName);

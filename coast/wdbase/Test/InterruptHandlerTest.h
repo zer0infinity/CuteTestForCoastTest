@@ -10,11 +10,11 @@
 #define _InterruptHandlerTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 
 //---- InterruptHandlerTest ----------------------------------------------------------
 //!TestCases description
-class InterruptHandlerTest : public ConfiguredTestCase
+class InterruptHandlerTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors
@@ -37,11 +37,10 @@ public:
 	//!deletes the environment for this test
 	void tearDown ();
 
+	TString getConfigFileName();
+
 	//!describe this testcase
 	void PidFileHandlingTest();
-
-protected:
-
 };
 
 #endif

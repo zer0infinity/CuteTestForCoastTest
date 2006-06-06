@@ -30,42 +30,40 @@ StringRendererTest::~StringRendererTest() {};
 /*      Suite init                                                                 */
 /*=================================================================================*/
 Test *StringRendererTest::suite ()
-// collect all test cases for the StringRenderer
 {
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(StringRendererTest, langGE));
-	testSuite->addTest (NEW_CASE(StringRendererTest, langGEWithoutText));
-	testSuite->addTest (NEW_CASE(StringRendererTest, langGEDefaultWithoutText));
-	testSuite->addTest (NEW_CASE(StringRendererTest, langGEalone));
+	ADD_CASE(testSuite, StringRendererTest, langGE);
+	ADD_CASE(testSuite, StringRendererTest, langGEWithoutText);
+	ADD_CASE(testSuite, StringRendererTest, langGEDefaultWithoutText);
+	ADD_CASE(testSuite, StringRendererTest, langGEalone);
 
-	testSuite->addTest (NEW_CASE(StringRendererTest, langFR));
-	testSuite->addTest (NEW_CASE(StringRendererTest, langFRWithoutText));
-	testSuite->addTest (NEW_CASE(StringRendererTest, langFRDefaultWithoutText));
-	testSuite->addTest (NEW_CASE(StringRendererTest, langFRalone));
+	ADD_CASE(testSuite, StringRendererTest, langFR);
+	ADD_CASE(testSuite, StringRendererTest, langFRWithoutText);
+	ADD_CASE(testSuite, StringRendererTest, langFRDefaultWithoutText);
+	ADD_CASE(testSuite, StringRendererTest, langFRalone);
 
-	testSuite->addTest (NEW_CASE(StringRendererTest, langEN));
-	testSuite->addTest (NEW_CASE(StringRendererTest, langENWithoutText));
-	testSuite->addTest (NEW_CASE(StringRendererTest, langENDefaultWithoutText));
-	testSuite->addTest (NEW_CASE(StringRendererTest, langENalone));
+	ADD_CASE(testSuite, StringRendererTest, langEN);
+	ADD_CASE(testSuite, StringRendererTest, langENWithoutText);
+	ADD_CASE(testSuite, StringRendererTest, langENDefaultWithoutText);
+	ADD_CASE(testSuite, StringRendererTest, langENalone);
 
-	testSuite->addTest (NEW_CASE(StringRendererTest, langIT));
-	testSuite->addTest (NEW_CASE(StringRendererTest, langITWithoutText));
-	testSuite->addTest (NEW_CASE(StringRendererTest, langITDefaultWithoutText));
-	testSuite->addTest (NEW_CASE(StringRendererTest, langITalone));
+	ADD_CASE(testSuite, StringRendererTest, langIT);
+	ADD_CASE(testSuite, StringRendererTest, langITWithoutText);
+	ADD_CASE(testSuite, StringRendererTest, langITDefaultWithoutText);
+	ADD_CASE(testSuite, StringRendererTest, langITalone);
 
-	testSuite->addTest (NEW_CASE(StringRendererTest, langDefault));
-	testSuite->addTest (NEW_CASE(StringRendererTest, langDefaultWithoutText));
-	testSuite->addTest (NEW_CASE(StringRendererTest, langDefaultalone));
+	ADD_CASE(testSuite, StringRendererTest, langDefault);
+	ADD_CASE(testSuite, StringRendererTest, langDefaultWithoutText);
+	ADD_CASE(testSuite, StringRendererTest, langDefaultalone);
 
-	testSuite->addTest (NEW_CASE(StringRendererTest, noText));
+	ADD_CASE(testSuite, StringRendererTest, noText);
 
 	return testSuite;
 
-} // suite
+}
 
 void StringRendererTest::setUp ()
-// setup config for all the renderers in this TestCase
 {
 	RendererTest::setUp();
 	fConfig["D"] = "Deutsch";
@@ -73,7 +71,7 @@ void StringRendererTest::setUp ()
 	fConfig["E"] = "English";
 	fConfig["I"] = "Italiano";
 	fConfig["Default"] = "Default language";
-} // setUp
+}
 
 /*=================================================================================*/
 /*      Tests for language == German                                               */

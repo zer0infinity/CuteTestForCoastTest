@@ -10,12 +10,12 @@
 #define _HTTPDAImplTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 
 //---- HTTPDAImplTest ----------------------------------------------------------
 //!TestClass for for HTMLParser functionality
 
-class HTTPDAImplTest : public ConfiguredTestCase
+class HTTPDAImplTest : public TestFramework::TestCaseWithConfig
 {
 public:
 
@@ -34,6 +34,8 @@ public:
 
 	//!delete set up for connector test does nothing so far
 	void tearDown ();
+
+	TString getConfigFileName();
 
 protected:
 	//--- tests for public api of class connector

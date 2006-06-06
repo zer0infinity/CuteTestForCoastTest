@@ -31,7 +31,6 @@ public:
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
 
-protected:
-
+	TString getConfigFileName();
 };
 #endif

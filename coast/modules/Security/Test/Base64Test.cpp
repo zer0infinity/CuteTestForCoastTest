@@ -33,15 +33,11 @@ Test *Base64Test::suite ()
 	return testSuite;
 
 }
-Base64Test::Base64Test(TString tname) : TestCase(tname)
+Base64Test::Base64Test(TString tname) : TestCaseType(tname)
 {
 }
 
 Base64Test::~Base64Test()
-{
-}
-
-void Base64Test::setUp ()
 {
 }
 

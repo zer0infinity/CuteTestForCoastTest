@@ -26,28 +26,20 @@
 
 //---- RequestBodyParserTest ----------------------------------------------------------------
 RequestBodyParserTest::RequestBodyParserTest(TString tname)
-	: ConfiguredTestCase(tname, "RequestBodyParserTestConfig")
+	: TestCaseType(tname)
 {
-	StartTrace(RequestBodyParserTest.Ctor);
+	StartTrace(RequestBodyParserTest.RequestBodyParserTest);
+}
+
+TString RequestBodyParserTest::getConfigFileName()
+{
+	return "RequestBodyParserTestConfig";
 }
 
 RequestBodyParserTest::~RequestBodyParserTest()
 {
 	StartTrace(RequestBodyParserTest.Dtor);
 }
-
-// setup for this TestCase
-void RequestBodyParserTest::setUp ()
-{
-	StartTrace(RequestBodyParserTest.setUp);
-	ConfiguredTestCase::setUp();
-} // setUp
-
-void RequestBodyParserTest::tearDown ()
-{
-	StartTrace(RequestBodyParserTest.tearDown);
-	ConfiguredTestCase::tearDown();
-} // tearDown
 
 void RequestBodyParserTest::ReadMultiPartPost()
 {
@@ -66,8 +58,8 @@ void RequestBodyParserTest::ReadMultiPartPost()
 
 		delete is;
 
-		t_assert(!fConfig.IsNull());
-		assertAnyEqual(fConfig["MultiPartResult"], result);
+		t_assert(!GetConfig().IsNull());
+		assertAnyEqual(GetConfig()["MultiPartResult"], result);
 	}
 	// This sequence takes advantage of the String::SubString
 	// feature to return the whole remainder of the string starting
@@ -104,7 +96,11 @@ void RequestBodyParserTest::ReadToBoundaryTestWithStreamFailure()
 {
 	StartTrace(RequestBodyParserTest.ReadToBoundaryTestWithStreamFailure);
 
-	FOREACH_ENTRY("ReadToBoundaryTestWithStreamFailure", cConfig, cName) {
+	ROAnything cConfig;
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(cConfig) ) {
+		TString cName;
+		aEntryIterator.SlotName(cName);
 		String result, strInput(cConfig["Input"].AsCharPtr());
 		Trace("input to parse [" << strInput << "]");
 		StringStream tiss(strInput);
@@ -160,7 +156,11 @@ void RequestBodyParserTest::ReadToBoundaryTestWithStreamFailure()
 void RequestBodyParserTest::ReadToBoundaryTest()
 {
 	Context ctx;
-	FOREACH_ENTRY("ReadToBoundaryTest", cConfig, cName) {
+	ROAnything cConfig;
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(cConfig) ) {
+		TString cName;
+		aEntryIterator.SlotName(cName);
 		String result;
 		IStringStream tiss(Renderer::RenderToString(ctx, cConfig["Input"]));
 		MIMEHeader mh;
@@ -311,10 +311,9 @@ Test *RequestBodyParserTest::suite ()
 {
 	StartTrace(RequestBodyParserTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	testSuite->addTest (NEW_CASE(RequestBodyParserTest, ReadToBoundaryTest));
-	testSuite->addTest (NEW_CASE(RequestBodyParserTest, ReadToBoundaryTestWithStreamFailure));
-	testSuite->addTest (NEW_CASE(RequestBodyParserTest, ParseMultiPartTest));
-	testSuite->addTest (NEW_CASE(RequestBodyParserTest, ReadMultiPartPost));
+	ADD_CASE(testSuite, RequestBodyParserTest, ReadToBoundaryTest);
+	ADD_CASE(testSuite, RequestBodyParserTest, ReadToBoundaryTestWithStreamFailure);
+	ADD_CASE(testSuite, RequestBodyParserTest, ParseMultiPartTest);
+	ADD_CASE(testSuite, RequestBodyParserTest, ReadMultiPartPost);
 	return testSuite;
-} // suite
+}

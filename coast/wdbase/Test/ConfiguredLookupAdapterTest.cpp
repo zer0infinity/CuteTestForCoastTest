@@ -16,15 +16,19 @@
 #include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
 
 //--- c-modules used -----------------------------------------------------------
 
 //---- ConfiguredLookupAdapterTest ----------------------------------------------------------------
 ConfiguredLookupAdapterTest::ConfiguredLookupAdapterTest(TString tstrName)
-	: ConfiguredTestCase(tstrName, "ConfiguredLookupAdapterTestConfig")
+	: TestCaseType(tstrName)
 {
-	StartTrace(ConfiguredLookupAdapterTest.Ctor);
+	StartTrace(ConfiguredLookupAdapterTest.ConfiguredLookupAdapterTest);
+}
+
+TString ConfiguredLookupAdapterTest::getConfigFileName()
+{
+	return "ConfiguredLookupAdapterTestConfig";
 }
 
 ConfiguredLookupAdapterTest::~ConfiguredLookupAdapterTest()
@@ -32,39 +36,25 @@ ConfiguredLookupAdapterTest::~ConfiguredLookupAdapterTest()
 	StartTrace(ConfiguredLookupAdapterTest.Dtor);
 }
 
-// setup for this ConfiguredTestCase
-void ConfiguredLookupAdapterTest::setUp ()
+void ConfiguredLookupAdapterTest::LookupTest()
 {
-	StartTrace(ConfiguredLookupAdapterTest.setUp);
-	ConfiguredTestCase::setUp();
-}
-
-void ConfiguredLookupAdapterTest::tearDown ()
-{
-	StartTrace(ConfiguredLookupAdapterTest.tearDown);
-	ConfiguredTestCase::tearDown();
-}
-
-void ConfiguredLookupAdapterTest::testConfiguredLookupAdapter()
-{
-	StartTrace(ConfiguredLookupAdapterTest.test);
-	FOREACH_ENTRY("TestConfiguredLookupAdapter", caseConfig, testName) {
+	StartTrace(ConfiguredLookupAdapterTest.LookupTest);
+	ROAnything caseConfig;
+	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(caseConfig) ) {
 		ROAnything conf(caseConfig["Config"]);
 		ROAnything def(caseConfig["Default"]);
-
 		ConfiguredLookupAdapter cla(conf, def);
 		assertEquals(caseConfig["ExpectedString"].AsString(), cla.Lookup(caseConfig["LookupPathString"].AsString(), ""));
 		assertEquals(caseConfig["ExpectedLong"].AsLong(1L), cla.Lookup(caseConfig["LookupPathLong"].AsString(""), 0L));
 	}
 }
 
-// builds up a suite of ConfiguredTestCases, add a line for each testmethod
+// builds up a suite of tests, add a line for each testmethod
 Test *ConfiguredLookupAdapterTest::suite ()
 {
 	StartTrace(ConfiguredLookupAdapterTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	ADD_CASE(testSuite, ConfiguredLookupAdapterTest, testConfiguredLookupAdapter);
-
+	ADD_CASE(testSuite, ConfiguredLookupAdapterTest, LookupTest);
 	return testSuite;
 }

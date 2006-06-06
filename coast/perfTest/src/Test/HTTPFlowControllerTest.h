@@ -37,6 +37,8 @@ public:
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
 
+	TString getConfigFileName();
+
 protected:
 	//! Generic Test run - driven by TestCase Name
 	virtual void DoTest(Anything testCase, const char *testCaseName);

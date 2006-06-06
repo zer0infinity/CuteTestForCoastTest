@@ -10,15 +10,12 @@
 #define _SybCTnewDATest_H
 
 //---- baseclass include -------------------------------------------------
-#include "TestCase.h"
-#include "Anything.h"
+#include "FoundationTestTypes.h"
 
 //---- SybCTnewDATest ----------------------------------------------------------
 //:TestCases description
-class SybCTnewDATest : public TestCase
+class SybCTnewDATest : public TestFramework::TestCaseWithConfig
 {
-	Anything fConfig;
-	ROAnything fTestCaseConfig;
 public:
 	//--- constructors
 
@@ -33,12 +30,6 @@ public:
 
 	//:builds up a suite of testcases for this test
 	static Test *suite ();
-
-	//:sets the environment for this test
-	void setUp ();
-
-	//:deletes the environment for this test
-	void tearDown ();
 
 	//:describe this testcase
 	void InitOpenSetConPropTest();

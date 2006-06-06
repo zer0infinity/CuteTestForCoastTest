@@ -19,7 +19,7 @@ To understand the results of those tests, you should additionally
 consult "InputMapperMeta.any" and "MapperTestScripts.any".
 */
 
-class ParameterMapperTest : public TestCase
+class ParameterMapperTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -35,26 +35,20 @@ public:
 	//! builds up a suite of testcases for this test
 	static Test *suite ();
 
-	//! sets the environment for this test
-	void setUp ();
+	void DoSelectScriptTest();
+	void DoLoadConfigTest();
+	void DoGetConfigNameTest();
+	void PlaceIntoAnyOrAppendIfNotEmptyTest();
+	void DoFinalGetAnyTest();
+	void DoFinalGetStreamTest();
+	void DoGetAnyTest();
+	void DoGetStreamTest();
+	void GetTest();
+	void DoSetSourceSlotDynamicallyTest();
+	void DoGetSourceSlotWithPathTest();
 
-	//! deletes the environment for this test
-	void tearDown ();
-
-	void testDoSelectScript();
-	void testDoLoadConfig();
-	void testDoGetConfigName();
-	void testPlaceIntoAnyOrAppendIfNotEmpty();
-	void testDoFinalGetAny();
-	void testDoFinalGetStream();
-	void testDoGetAny();
-	void testDoGetStream();
-	void testGet();
-	void testDoSetSourceSlotDynamically();
-	void testDoGetSourceSlotWithPath();
-
-	void testEagerDoSelectScript();
-	void testEagerGet();
+	void EagerDoSelectScriptTest();
+	void EagerGetTest();
 };
 
 #endif

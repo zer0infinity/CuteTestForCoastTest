@@ -16,7 +16,7 @@
 
 //---- PageRelatedRendererTest ----------------------------------------------------------
 //!Test driver for tracing facility
-class PageRelatedRendererTest : public TestCase
+class PageRelatedRendererTest : public TestFramework::TestCase
 {
 public:
 	//!constructors
@@ -26,23 +26,8 @@ public:
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
 
-	//!sets the environment for this test
-	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
-
 protected:
-	//--- subclass api
-
 	void trivialTest();
-
-private:
-	// use careful, you inhibit subclass use
-	//--- private class api
-
-	//--- private member variables
-
 };
 
 #endif

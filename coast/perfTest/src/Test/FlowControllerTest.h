@@ -34,9 +34,6 @@ public:
 	//!sets the environment for this test
 	void setUp ();
 
-	//!deletes the environment for this test
-	void tearDown ();
-
 	//!Test with Full configuration
 	void FullConfigurationTest();
 

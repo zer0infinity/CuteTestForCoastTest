@@ -39,7 +39,6 @@ RemoteStresserTest::~RemoteStresserTest()
 }
 
 void RemoteStresserTest::setUp ()
-// setup connector for this TestCase
 {
 	StressAppTest::setUp();
 	if (!fStressServer) {
@@ -66,10 +65,6 @@ void RemoteStresserTest::setUp ()
 			fStressServer = 0;
 		}
 	}
-}
-
-void RemoteStresserTest::tearDown ()
-{
 }
 
 void RemoteStresserTest::TestRemoteStresser()
@@ -122,7 +117,7 @@ void RemoteStresserTest::TestMultiRemoteStresser()
 Test *RemoteStresserTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
-	testSuite->addTest (NEW_CASE(RemoteStresserTest, TestRemoteStresser));
+	ADD_CASE(testSuite, RemoteStresserTest, TestRemoteStresser);
 
 	return testSuite;
-} // suite
+}

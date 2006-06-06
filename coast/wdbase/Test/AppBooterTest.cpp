@@ -27,7 +27,7 @@
 #endif
 
 //---- AppBooterTest ----------------------------------------------------------------
-AppBooterTest::AppBooterTest(TString tname) : TestCase(tname)
+AppBooterTest::AppBooterTest(TString tname) : TestCaseType(tname)
 {
 	StartTrace(AppBooterTest.Ctor);
 }
@@ -35,16 +35,6 @@ AppBooterTest::AppBooterTest(TString tname) : TestCase(tname)
 AppBooterTest::~AppBooterTest()
 {
 	StartTrace(AppBooterTest.Dtor);
-}
-
-void AppBooterTest::setUp ()
-{
-	StartTrace(AppBooterTest.setUp);
-}
-
-void AppBooterTest::tearDown ()
-{
-	StartTrace(AppBooterTest.tearDown);
 }
 
 void AppBooterTest::HandleNullArgsTest()
@@ -352,13 +342,13 @@ Test *AppBooterTest::suite ()
 	StartTrace(AppBooterTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(AppBooterTest, HandleNullArgsTest));
-	testSuite->addTest (NEW_CASE(AppBooterTest, HandleUnstructuredArgsTest));
-	testSuite->addTest (NEW_CASE(AppBooterTest, HandleStructuredArgsTest));
-	testSuite->addTest (NEW_CASE(AppBooterTest, PrepareBootFileLoadingTest));
-	testSuite->addTest (NEW_CASE(AppBooterTest, MergeConfigWithArgsTest));
-	testSuite->addTest (NEW_CASE(AppBooterTest, OpenLibsTest));
-	testSuite->addTest (NEW_CASE(AppBooterTest, RunTest));
+	ADD_CASE(testSuite, AppBooterTest, HandleNullArgsTest);
+	ADD_CASE(testSuite, AppBooterTest, HandleUnstructuredArgsTest);
+	ADD_CASE(testSuite, AppBooterTest, HandleStructuredArgsTest);
+	ADD_CASE(testSuite, AppBooterTest, PrepareBootFileLoadingTest);
+	ADD_CASE(testSuite, AppBooterTest, MergeConfigWithArgsTest);
+	ADD_CASE(testSuite, AppBooterTest, OpenLibsTest);
+	ADD_CASE(testSuite, AppBooterTest, RunTest);
 
 	return testSuite;
 }

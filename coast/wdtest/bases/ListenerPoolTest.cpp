@@ -16,9 +16,6 @@
 #include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "StringStream.h"
-#include "Dbg.h"
-#include "Socket.h"
 
 class TestCallBack : public AcceptorCallBack
 {
@@ -29,7 +26,6 @@ public:
 
 protected:
 	TestReceiver *fReceiver;
-
 };
 
 AcceptorCallBack *TestCallBackFactory::MakeCallBack()
@@ -135,9 +131,14 @@ RegisterAcceptorFactory(FakeAcceptorFactory);
 
 //---- ListenerPoolTest ----------------------------------------------------------------
 ListenerPoolTest::ListenerPoolTest(TString tname)
-	: ConfiguredTestCase(tname, "Config")
+	: TestCaseType(tname)
 {
-	StartTrace(ListenerPoolTest.Ctor);
+	StartTrace(ListenerPoolTest.ListenerPoolTest);
+}
+
+TString ListenerPoolTest::getConfigFileName()
+{
+	return "Config";
 }
 
 ListenerPoolTest::~ListenerPoolTest()
@@ -148,19 +149,17 @@ ListenerPoolTest::~ListenerPoolTest()
 void ListenerPoolTest::setUp ()
 {
 	StartTrace(ListenerPoolTest.setUp);
-	ConfiguredTestCase::setUp();
-	t_assert(fConfig.IsDefined("AcceptorFactories"));
-	t_assert(fConfig.IsDefined("Modules"));
+	t_assert(GetConfig().IsDefined("AcceptorFactories"));
+	t_assert(GetConfig().IsDefined("Modules"));
 
 	// ensure installation of modules
-	t_assert(WDModule::Install(fConfig) == 0);
-} // setUp
+	t_assert(WDModule::Install(GetConfig()) == 0);
+}
 
 void ListenerPoolTest::tearDown ()
 {
 	StartTrace(ListenerPoolTest.tearDown);
-	WDModule::Terminate(fConfig);
-	ConfiguredTestCase::tearDown();
+	WDModule::Terminate(GetConfig());
 }
 
 void ListenerPoolTest::PoolTest()

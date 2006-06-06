@@ -14,7 +14,7 @@
 
 //---- LoopBackDAImplTest ----------------------------------------------------------
 //!testcases for LoopBackDAImpl
-class LoopBackDAImplTest : public TestCase
+class LoopBackDAImplTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -29,17 +29,8 @@ public:
 	void ExecTest();
 
 protected:
-	//--- subclass api
-
 	//--- member variables declaration
 	Anything fStdContextAny;
-
-private:
-	// use careful, you inhibit subclass use
-	//--- private class api
-
-	//--- private member variables
-
 };
 
 #endif

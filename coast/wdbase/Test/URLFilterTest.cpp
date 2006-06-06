@@ -6,26 +6,25 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "Threads.h"
-#include "Context.h"
-#include "Dbg.h"
-#include "SecurityModule.h"
-#include "Application.h"
-
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
+//--- interface include --------------------------------------------------------
+#include "URLFilterTest.h"
 
 //--- module under test --------------------------------------------------------
 #include "URLFilter.h"
 
-//--- interface include --------------------------------------------------------
-#include "URLFilterTest.h"
+//--- test modules used --------------------------------------------------------
+#include "TestSuite.h"
+
+//--- standard modules used ----------------------------------------------------
+#include "Context.h"
+#include "SecurityModule.h"
+#include "Application.h"
 
 //---- URLFilterTest ----------------------------------------------------------------
-URLFilterTest::URLFilterTest(TString tname) : ConfiguredTestCase(tname, "Config")
+URLFilterTest::URLFilterTest(TString tname)
+	: TestCaseType(tname)
 {
+	StartTrace(URLFilterTest.URLFilterTest);
 }
 
 URLFilterTest::~URLFilterTest()
@@ -33,21 +32,14 @@ URLFilterTest::~URLFilterTest()
 }
 
 void URLFilterTest::setUp ()
-// setup connector for this TestCase
 {
-	ConfiguredTestCase::setUp();
-	fConfig["Modules"].Append("SecurityModule");
-	Application::InitializeGlobalConfig(fConfig);
-	WDModule::Install(fConfig);
+	t_assert(GetConfig()["Modules"].Contains("SecurityModule"));
+	WDModule::Install(GetConfig());
 }
 
 void URLFilterTest::tearDown ()
 {
-	t_assert(fConfig.IsDefined("Modules"));
-	t_assert(fConfig["Modules"].Contains("SecurityModule"));
-	WDModule::Terminate(fConfig);
-	Application::InitializeGlobalConfig(Anything());
-	ConfiguredTestCase::tearDown();
+	WDModule::Terminate(GetConfig());
 }
 
 // handle simple things first
@@ -134,7 +126,6 @@ void URLFilterTest::DoUnscrambleStateTest()
 	querySz = query.GetSize();
 	t_assert(!urlFilter.DoUnscrambleState(query, 0, ctx));
 	t_assertm(query.GetSize() == querySz, "expected size to be the same");
-
 }
 
 void URLFilterTest::FilterStateTest()
@@ -476,17 +467,14 @@ void URLFilterTest::HandleQueryTest()
 }
 
 Test *URLFilterTest::suite ()
-// collect all test cases for the RegistryStream
 {
 	TestSuite *testSuite = new TestSuite;
-
-	testSuite->addTest (NEW_CASE(URLFilterTest, DoFilterStateTest));
-	testSuite->addTest (NEW_CASE(URLFilterTest, DoUnscrambleStateTest));
-	testSuite->addTest (NEW_CASE(URLFilterTest, FilterStateTest));
-	testSuite->addTest (NEW_CASE(URLFilterTest, UnscrambleStateTest));
-	testSuite->addTest (NEW_CASE(URLFilterTest, HandleCookieTest));
-	testSuite->addTest (NEW_CASE(URLFilterTest, HandleMultipleCookiesTest));
-	testSuite->addTest (NEW_CASE(URLFilterTest, HandleQueryTest));
-
+	ADD_CASE(testSuite, URLFilterTest, DoFilterStateTest);
+	ADD_CASE(testSuite, URLFilterTest, DoUnscrambleStateTest);
+	ADD_CASE(testSuite, URLFilterTest, FilterStateTest);
+	ADD_CASE(testSuite, URLFilterTest, UnscrambleStateTest);
+	ADD_CASE(testSuite, URLFilterTest, HandleCookieTest);
+	ADD_CASE(testSuite, URLFilterTest, HandleMultipleCookiesTest);
+	ADD_CASE(testSuite, URLFilterTest, HandleQueryTest);
 	return testSuite;
-} // suite
+}

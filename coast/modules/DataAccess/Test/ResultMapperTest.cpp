@@ -23,7 +23,7 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- ResultMapperTest ----------------------------------------------------------------
-ResultMapperTest::ResultMapperTest(TString tstrName) : TestCase(tstrName)
+ResultMapperTest::ResultMapperTest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(ResultMapperTest.Ctor);
 }
@@ -33,20 +33,9 @@ ResultMapperTest::~ResultMapperTest()
 	StartTrace(ResultMapperTest.Dtor);
 }
 
-// setup for this TestCase
-void ResultMapperTest::setUp ()
+void ResultMapperTest::DoSelectScriptTest()
 {
-	StartTrace(ResultMapperTest.setUp);
-}
-
-void ResultMapperTest::tearDown ()
-{
-	StartTrace(ResultMapperTest.tearDown);
-}
-
-void ResultMapperTest::testDoSelectScript()
-{
-	StartTrace(ResultMapperTest.testDoSelectScript);
+	StartTrace(ResultMapperTest.DoSelectScriptTest);
 
 	Anything script, empty;
 	script["Sub"] = "a";
@@ -56,9 +45,9 @@ void ResultMapperTest::testDoSelectScript()
 	assertAnyEqual(rm.DoSelectScript("Nonex", script, ctx), empty);
 }
 
-void ResultMapperTest::testDoLoadConfig()
+void ResultMapperTest::DoLoadConfigTest()
 {
-	StartTrace(ResultMapperTest.testDoLoadConfig);
+	StartTrace(ResultMapperTest.DoLoadConfigTest);
 
 	ResultMapper rm("ResultMapperTest");
 
@@ -66,9 +55,9 @@ void ResultMapperTest::testDoLoadConfig()
 	t_assertm(!rm.DoLoadConfig("NonExistingMapper"), "Found a config, but shouldn't!");
 }
 
-void ResultMapperTest::testDoGetConfigName()
+void ResultMapperTest::DoGetConfigNameTest()
 {
-	StartTrace(ResultMapperTest.testDoGetConfigName);
+	StartTrace(ResultMapperTest.DoGetConfigNameTest);
 
 	String configName;
 	ResultMapper rm("");
@@ -79,9 +68,9 @@ void ResultMapperTest::testDoGetConfigName()
 	assertEqual("SomeOtherMapperMeta", configName);
 }
 
-void ResultMapperTest::testDoFinalPutAny()
+void ResultMapperTest::DoFinalPutAnyTest()
 {
-	StartTrace(ResultMapperTest.testDoFinalPutAny);
+	StartTrace(ResultMapperTest.DoFinalPutAnyTest);
 
 	ResultMapper rm("");
 	Context ctx;
@@ -104,7 +93,7 @@ void ResultMapperTest::testDoFinalPutAny()
 	t_assert(res.Contains(b.AsString()));
 }
 
-void ResultMapperTest::testDoFinalPutStream()
+void ResultMapperTest::DoFinalPutStreamTest()
 {
 	// uses DoFinalPutAny in the end, so just do a sanity check
 	String msg = "MessageToStore";
@@ -118,9 +107,9 @@ void ResultMapperTest::testDoFinalPutStream()
 	assertEqual(msg, res.AsString());
 }
 
-void ResultMapperTest::testDoPutAny()
+void ResultMapperTest::DoPutAnyTest()
 {
-	StartTrace(ResultMapperTest.testDoPutAny);
+	StartTrace(ResultMapperTest.DoPutAnyTest);
 
 	SimpleAnyLoader sal;
 	Anything scripts = sal.Load("MapperTestScripts");
@@ -159,9 +148,9 @@ void ResultMapperTest::testDoPutAny()
 	TraceAny(ctx.GetTmpStore(), "tmp");
 }
 
-void ResultMapperTest::testDoPutStream()
+void ResultMapperTest::DoPutStreamTest()
 {
-	StartTrace(ResultMapperTest.testDoFinalPutStream);
+	StartTrace(ResultMapperTest.DoFinalPutStreamTest);
 
 	// cannot "distribute" a stream like in example above, since
 	// stream will be consumed when accessed - no renewal
@@ -197,9 +186,9 @@ void ResultMapperTest::testDoPutStream()
 	assertEqualm("", res.AsString(), "Should be empty, because stream was consumed!");
 }
 
-void ResultMapperTest::testPut()
+void ResultMapperTest::PutTest()
 {
-	StartTrace(ResultMapperTest.testPut);
+	StartTrace(ResultMapperTest.PutTest);
 
 	ResultMapper rm("ResultMapperTest");
 	rm.CheckConfig("ResultMapper");
@@ -268,9 +257,9 @@ void ResultMapperTest::testPut()
 	assertAnyEqual(anyExp, tmp["AppendAnyMapper"]["lKey"]);
 }
 
-void ResultMapperTest::testEagerDoSelectScript()
+void ResultMapperTest::EagerDoSelectScriptTest()
 {
-	StartTrace(ParameterMapperTest.testEagerDoSelectScript);
+	StartTrace(ParameterMapperTest.EagerDoSelectScriptTest);
 
 	Anything script;
 	script["Sub"] = "a";
@@ -280,9 +269,9 @@ void ResultMapperTest::testEagerDoSelectScript()
 	assertAnyEqual(erm.DoSelectScript("Nonex", script, ctx), script);
 }
 
-void ResultMapperTest::testEagerPut()
+void ResultMapperTest::EagerPutTest()
 {
-	StartTrace(ResultMapperTest.testEagerPut);
+	StartTrace(ResultMapperTest.EagerPutTest);
 
 	// eager mapper gets a script in any case, even if key is not found
 	// which leads to a distribution of the information
@@ -303,9 +292,9 @@ void ResultMapperTest::testEagerPut()
 	assertEqual(os2.str(), os.str());
 }
 
-void ResultMapperTest::testDoSetDestinationSlotDynamically()
+void ResultMapperTest::DoSetDestinationSlotDynamicallyTest()
 {
-	StartTrace(ResultMapperTest.testSetDestinationSlot);
+	StartTrace(ResultMapperTest.SetDestinationSlotTest);
 
 	Context ctx;
 	ResultMapper rm("DynamicStorer");
@@ -322,9 +311,9 @@ void ResultMapperTest::testDoSetDestinationSlotDynamically()
 	assertCharPtrEqual("Mapper.foo.bar", rm.GetDestinationSlot(ctx));
 }
 
-void ResultMapperTest::testDoGetDestinationSlotWithPath()
+void ResultMapperTest::DoGetDestinationSlotWithPathTest()
 {
-	StartTrace(ResultMapperTest.testDoGetDestinationSlotWithPath);
+	StartTrace(ResultMapperTest.DoGetDestinationSlotWithPathTest);
 
 	Context ctx;
 	PathTestMapper ptm("");
@@ -351,18 +340,18 @@ Test *ResultMapperTest::suite ()
 	StartTrace(ResultMapperTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	ADD_CASE(testSuite, ResultMapperTest, testDoLoadConfig);
-	ADD_CASE(testSuite, ResultMapperTest, testDoSelectScript);
-	ADD_CASE(testSuite, ResultMapperTest, testDoGetConfigName);
-	ADD_CASE(testSuite, ResultMapperTest, testDoFinalPutAny);
-	ADD_CASE(testSuite, ResultMapperTest, testDoFinalPutStream);
-	ADD_CASE(testSuite, ResultMapperTest, testDoPutAny);
-	ADD_CASE(testSuite, ResultMapperTest, testDoPutStream);
-	ADD_CASE(testSuite, ResultMapperTest, testPut);
-	ADD_CASE(testSuite, ResultMapperTest, testDoSetDestinationSlotDynamically);
-	ADD_CASE(testSuite, ResultMapperTest, testDoGetDestinationSlotWithPath);
+	ADD_CASE(testSuite, ResultMapperTest, DoLoadConfigTest);
+	ADD_CASE(testSuite, ResultMapperTest, DoSelectScriptTest);
+	ADD_CASE(testSuite, ResultMapperTest, DoGetConfigNameTest);
+	ADD_CASE(testSuite, ResultMapperTest, DoFinalPutAnyTest);
+	ADD_CASE(testSuite, ResultMapperTest, DoFinalPutStreamTest);
+	ADD_CASE(testSuite, ResultMapperTest, DoPutAnyTest);
+	ADD_CASE(testSuite, ResultMapperTest, DoPutStreamTest);
+	ADD_CASE(testSuite, ResultMapperTest, PutTest);
+	ADD_CASE(testSuite, ResultMapperTest, DoSetDestinationSlotDynamicallyTest);
+	ADD_CASE(testSuite, ResultMapperTest, DoGetDestinationSlotWithPathTest);
 
-	ADD_CASE(testSuite, ResultMapperTest, testEagerDoSelectScript);
-	ADD_CASE(testSuite, ResultMapperTest, testEagerPut);
+	ADD_CASE(testSuite, ResultMapperTest, EagerDoSelectScriptTest);
+	ADD_CASE(testSuite, ResultMapperTest, EagerPutTest);
 	return testSuite;
 }

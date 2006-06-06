@@ -10,11 +10,11 @@
 #define _LogTimerTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "TestCase.h"
 
 //---- LogTimerTest ----------------------------------------------------------
 //!TestCases description
-class LogTimerTest : public ConfiguredTestCase
+class LogTimerTest : public TestFramework::TestCase
 {
 public:
 	//!TestCase constructor

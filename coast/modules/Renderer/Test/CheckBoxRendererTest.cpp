@@ -38,37 +38,35 @@ CheckBoxRendererTest::~CheckBoxRendererTest()
 /*     Init                                                      */
 /*===============================================================*/
 void CheckBoxRendererTest::setUp ()
-// setup config for all the renderers in this TestCase
 {
 	FieldRendererTest::setUp();
-} // setUp
+}
 
 Test *CheckBoxRendererTest::suite ()
-// collect all test cases for the CheckBoxRenderer
 {
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(CheckBoxRendererTest, TestCaseEmptyConf));
-	testSuite->addTest (NEW_CASE(CheckBoxRendererTest, TestCase0));
-	testSuite->addTest (NEW_CASE(CheckBoxRendererTest, TestCase1));
-	testSuite->addTest (NEW_CASE(CheckBoxRendererTest, TestCase2));
-	testSuite->addTest (NEW_CASE(CheckBoxRendererTest, TestCase3));
-	testSuite->addTest (NEW_CASE(CheckBoxRendererTest, TestCaseWithoutName));
-	testSuite->addTest (NEW_CASE(CheckBoxRendererTest, TestCaseWithoutLabel));
-	testSuite->addTest (NEW_CASE(CheckBoxRendererTest, TestCaseWithoutValue));
-	testSuite->addTest (NEW_CASE(CheckBoxRendererTest, TestCaseWithoutSource));
-	testSuite->addTest (NEW_CASE(CheckBoxRendererTest, TestCaseWithoutMultiple));
-	testSuite->addTest (NEW_CASE(CheckBoxRendererTest, TestCaseWithoutChecked ));
-	testSuite->addTest (NEW_CASE(CheckBoxRendererTest, TestCaseWithoutOptions));
-	testSuite->addTest (NEW_CASE(CheckBoxRendererTest, TestCaseWrong ));
-	testSuite->addTest (NEW_CASE(CheckBoxRendererTest, TestOptionRenderer ));
-	testSuite->addTest (NEW_CASE(CheckBoxRendererTest, TestFaultOptionRenderer ));
-	testSuite->addTest (NEW_CASE(CheckBoxRendererTest, TestOptionRendererOld ));
-	testSuite->addTest (NEW_CASE(CheckBoxRendererTest, TestFaultOptionRendererOld ));
+	ADD_CASE(testSuite, CheckBoxRendererTest, TestCaseEmptyConf);
+	ADD_CASE(testSuite, CheckBoxRendererTest, TestCase0);
+	ADD_CASE(testSuite, CheckBoxRendererTest, TestCase1);
+	ADD_CASE(testSuite, CheckBoxRendererTest, TestCase2);
+	ADD_CASE(testSuite, CheckBoxRendererTest, TestCase3);
+	ADD_CASE(testSuite, CheckBoxRendererTest, TestCaseWithoutName);
+	ADD_CASE(testSuite, CheckBoxRendererTest, TestCaseWithoutLabel);
+	ADD_CASE(testSuite, CheckBoxRendererTest, TestCaseWithoutValue);
+	ADD_CASE(testSuite, CheckBoxRendererTest, TestCaseWithoutSource);
+	ADD_CASE(testSuite, CheckBoxRendererTest, TestCaseWithoutMultiple);
+	ADD_CASE(testSuite, CheckBoxRendererTest, TestCaseWithoutChecked);
+	ADD_CASE(testSuite, CheckBoxRendererTest, TestCaseWithoutOptions);
+	ADD_CASE(testSuite, CheckBoxRendererTest, TestCaseWrong);
+	ADD_CASE(testSuite, CheckBoxRendererTest, TestOptionRenderer);
+	ADD_CASE(testSuite, CheckBoxRendererTest, TestFaultOptionRenderer);
+	ADD_CASE(testSuite, CheckBoxRendererTest, TestOptionRendererOld);
+	ADD_CASE(testSuite, CheckBoxRendererTest, TestFaultOptionRendererOld);
 
 	return testSuite;
 
-} // suite
+}
 
 /*===============================================================*/
 /*     Check where all is correctly defined                      */

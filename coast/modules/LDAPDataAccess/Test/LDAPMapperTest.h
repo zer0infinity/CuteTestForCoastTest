@@ -21,7 +21,7 @@
 //! further explanation of the purpose of the class
 //! this may contain <B>HTML-Tags</B>
 //! ...
-class LDAPMapperTest : public TestCase
+class LDAPMapperTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -33,12 +33,6 @@ public:
 	//! this method generates the tests for the LDAPMapper classes
 	//! \return a new test is created by this method
 	static Test *suite ();
-
-	//!generate set up for connector test does nothing so far
-	void setUp ();
-
-	//!delete set up for connector test does nothing so far
-	void tearDown ();
 
 protected:
 	//--- tests for public api of class connector
@@ -63,14 +57,6 @@ protected:
 
 	//!tests the mapper which special dname settings
 	void LDAPAddTest();
-
-	//--- member variables declaration
-private:
-	// use careful, you inhibit subclass use
-	//--- private class api
-
-	//--- private member variables
-
 };
 
 #endif

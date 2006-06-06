@@ -9,17 +9,16 @@
 #ifndef _AnythingUtilsTest_h_
 #define _AnythingUtilsTest_h_
 
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 
-class Role;
 //---- AnythingUtilsTest -----------------------------------------------------------
-
-class AnythingUtilsTest : public ConfiguredTestCase
+class AnythingUtilsTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	AnythingUtilsTest(TString tstrName);
 	virtual ~AnythingUtilsTest();
 
+	virtual TString getConfigFileName();
 	virtual void setUp();
 
 	static Test *suite();
@@ -32,7 +31,6 @@ public:
 	void StoreFinderTest();
 
 protected:
-
 	Anything	fQuery;
 };
 

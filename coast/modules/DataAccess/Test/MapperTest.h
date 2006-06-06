@@ -20,7 +20,7 @@ class Context;
 //! further explanation of the purpose of the class
 //! this may contain <B>HTML-Tags</B>
 //! ...
-class MapperTest : public TestCase
+class MapperTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -55,12 +55,6 @@ public:
 protected:
 	//--- member variables declaration
 	Anything fStdContextAny;
-private:
-	// use careful, you inhibit subclass use
-	//--- private class api
-
-	//--- private member variables
-
 };
 
 #endif

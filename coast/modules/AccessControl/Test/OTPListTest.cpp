@@ -54,9 +54,14 @@ private:
 
 //---- OTPListTest ----------------------------------------------------------------
 OTPListTest::OTPListTest(TString tstrName)
-	: ConfiguredTestCase(tstrName, "OTPListTestConfig")
+	: TestCaseType(tstrName)
 {
-	StartTrace(OTPListTest.Ctor);
+	StartTrace(OTPListTest.OTPListTest);
+}
+
+TString OTPListTest::getConfigFileName()
+{
+	return "OTPListTestConfig";
 }
 
 OTPListTest::~OTPListTest()
@@ -64,19 +69,16 @@ OTPListTest::~OTPListTest()
 	StartTrace(OTPListTest.Dtor);
 }
 
-// setup for this ConfiguredTestCase
 void OTPListTest::setUp ()
 {
 	StartTrace(OTPListTest.setUp);
-	ConfiguredTestCase::setUp();
-	WDModule::Install(fConfig["Config"]);
+	WDModule::Install(GetConfig()["Config"]);
 }
 
 void OTPListTest::tearDown ()
 {
 	StartTrace(OTPListTest.tearDown);
-	ConfiguredTestCase::tearDown();
-	WDModule::Terminate(fConfig["Config"]);
+	WDModule::Terminate(GetConfig()["Config"]);
 }
 
 void OTPListTest::RunOtpTests(String implName, OTPList *impl, TokenDataAccessController *tdac)
@@ -87,7 +89,7 @@ void OTPListTest::RunOtpTests(String implName, OTPList *impl, TokenDataAccessCon
 	long win, dist;
 
 	Trace("Running tests for " << implName << "...");
-	Anything tests = fConfig["Tests"][implName];
+	ROAnything tests = GetConfig()["Tests"][implName];
 	for (long i = 0; i < tests.GetSize(); i++) {
 		Trace("Executing test: " << tests.SlotName(i));
 		tid = tests[i]["TokId"].AsString();
@@ -109,9 +111,9 @@ void OTPListTest::RunOtpTests(String implName, OTPList *impl, TokenDataAccessCon
 
 }
 
-void OTPListTest::testAlwaysTrueMockOTPList()
+void OTPListTest::AlwaysTrueMockOTPListTest()
 {
-	StartTrace(OTPListTest.testAlwaysTrueMockOTPList);
+	StartTrace(OTPListTest.AlwaysTrueMockOTPListTest);
 
 	String implName = "AlwaysTrueOtp";
 	OTPList *impl = OTPList::FindOTPList(implName);
@@ -121,9 +123,9 @@ void OTPListTest::testAlwaysTrueMockOTPList()
 	}
 }
 
-void OTPListTest::testMockOTPList()
+void OTPListTest::MockOTPListTest()
 {
-	StartTrace(OTPListTest.testMockOTPList);
+	StartTrace(OTPListTest.MockOTPListTest);
 
 	String implName = "MockOtp";
 	MockOTPList *impl = static_cast<MockOTPList *>(OTPList::FindOTPList(implName));
@@ -135,15 +137,12 @@ void OTPListTest::testMockOTPList()
 	}
 }
 
-// builds up a suite of ConfiguredTestCases, add a line for each testmethod
+// builds up a suite of tests, add a line for each testmethod
 Test *OTPListTest::suite ()
 {
 	StartTrace(OTPListTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	ADD_CASE(testSuite, OTPListTest, testAlwaysTrueMockOTPList);
-	ADD_CASE(testSuite, OTPListTest, testMockOTPList);
-//	ADD_CASE(testSuite,OTPListTest, testFileOTPList);
-
+	ADD_CASE(testSuite, OTPListTest, AlwaysTrueMockOTPListTest);
+	ADD_CASE(testSuite, OTPListTest, MockOTPListTest);
 	return testSuite;
 }

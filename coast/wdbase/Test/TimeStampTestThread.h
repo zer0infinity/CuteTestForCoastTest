@@ -14,7 +14,6 @@
 
 //---- forward declaration -----------------------------------------------
 //---- TestWorker -----------------------------------------------
-
 class TestWorker : public WorkerThread
 {
 public:

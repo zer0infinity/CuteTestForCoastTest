@@ -22,10 +22,15 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- SSLObjectManagerTest ----------------------------------------------------------------
-SSLObjectManagerTest::SSLObjectManagerTest(TString tstrName) :
-	ConfiguredTestCase(tstrName, "SSLObjectManagerTestConfig")
+SSLObjectManagerTest::SSLObjectManagerTest(TString tstrName)
+	: TestCaseType(tstrName)
 {
-	StartTrace(SSLObjectManagerTest.Ctor);
+	StartTrace(SSLObjectManagerTest.SSLObjectManagerTest);
+}
+
+TString SSLObjectManagerTest::getConfigFileName()
+{
+	return "SSLObjectManagerTestConfig";
 }
 
 SSLObjectManagerTest::~SSLObjectManagerTest()
@@ -33,29 +38,12 @@ SSLObjectManagerTest::~SSLObjectManagerTest()
 	StartTrace(SSLObjectManagerTest.Dtor);
 }
 
-// setup for this TestCase
-void SSLObjectManagerTest::setUp ()
-{
-	StartTrace(SSLObjectManagerTest.setUp);
-	ConfiguredTestCase::setUp();
-}
-
-void SSLObjectManagerTest::tearDown ()
-{
-	StartTrace(SSLObjectManagerTest.tearDown);
-}
-
-void SSLObjectManagerTest::testCase()
-{
-	StartTrace(SSLObjectManagerTest.testCase);
-	ConfiguredTestCase::tearDown();
-}
-
 void SSLObjectManagerTest::UsePassedInCtxTest()
 {
 	StartTrace(SSLObjectManagerTest.UsePassedInCtxTest);
-	FOREACH_ENTRY("UsePassedInCtxTest", cConfig, cName) {
-		Trace("At entry: " << i);
+	ROAnything cConfig;
+	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(cConfig) ) {
 		SSLObjectManager::SSLOBJMGR()->RemoveCtx(cConfig["Config"]["Address"].AsString(), cConfig["Config"]["Port"].AsString());
 		TraceAny(cConfig, "cConfig");
 		for (int ii = 0; ii < 10; ii++) {
@@ -93,8 +81,9 @@ void SSLObjectManagerTest::UsePassedInCtxTest()
 void SSLObjectManagerTest::ReUseCreatedCtxTest()
 {
 	StartTrace(SSLObjectManagerTest.ReUseCreatedCtxTest);
-	FOREACH_ENTRY("ReUseCreatedCtxTest", cConfig, cName) {
-		Trace("At entry: " << i);
+	ROAnything cConfig;
+	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(cConfig) ) {
 		SSLObjectManager::SSLOBJMGR()->RemoveCtx(cConfig["Config"]["Address"].AsString(), cConfig["Config"]["Port"].AsString());
 		TraceAny(cConfig, "cConfig");
 		for (int ii = 0; ii < 10; ii++) {
@@ -133,8 +122,9 @@ void SSLObjectManagerTest::SessionResumptionWithMinimumConfigTest()
 {
 	StartTrace(SSLObjectManagerTest.SessionResumptionWithMinimumConfigTest);
 
-	FOREACH_ENTRY("SessionResumptionTest", cConfig, cName) {
-		Trace("At entry: " << i);
+	ROAnything cConfig;
+	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(cConfig) ) {
 		TraceAny(cConfig, "cConfig");
 		// empty  context built up by other test
 		SSLObjectManager::SSLOBJMGR()->RemoveCtx(cConfig["Config"]["Address"].AsString(), cConfig["Config"]["Port"].AsString());
@@ -168,8 +158,9 @@ void SSLObjectManagerTest::SessionResumptionTest()
 {
 	StartTrace(SSLObjectManagerTest.SessionResumptionTest);
 
-	FOREACH_ENTRY("SessionResumptionTest", cConfig, cName) {
-		Trace("At entry: " << i);
+	ROAnything cConfig;
+	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(cConfig) ) {
 		TraceAny(cConfig, "cConfig");
 		// empty  context built up by other test
 		SSLObjectManager::SSLOBJMGR()->RemoveCtx(cConfig["Config"]["Address"].AsString(), cConfig["Config"]["Port"].AsString());
@@ -212,8 +203,9 @@ void SSLObjectManagerTest::NoSessionResumptionTest()
 {
 	StartTrace(SSLObjectManagerTest.NoSessionResumptionTest);
 
-	FOREACH_ENTRY("NoSessionResumptionTest", cConfig, cName) {
-		Trace("At entry: " << i);
+	ROAnything cConfig;
+	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(cConfig) ) {
 		TraceAny(cConfig, "cConfig");
 		// empty  context built up by other test
 		SSLObjectManager::SSLOBJMGR()->RemoveCtx(cConfig["Config"]["Address"].AsString(), cConfig["Config"]["Port"].AsString());
@@ -251,8 +243,9 @@ void SSLObjectManagerTest::NoSessionResumptionTest()
 void SSLObjectManagerTest::GetDefaultCtxTest()
 {
 	StartTrace(SSLObjectManagerTest.GetDefaultCtxTest);
-	FOREACH_ENTRY("GetDefaultCtxTest", cConfig, cName) {
-		Trace("At entry: " << i);
+	ROAnything cConfig;
+	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(cConfig) ) {
 		SSLObjectManager::SSLOBJMGR()->RemoveCtx(cConfig["Address"].AsString(), cConfig["Port"].AsString());
 		TraceAny(cConfig, "cConfig");
 		for (int ii = 0; ii < 10; ii++) {
@@ -282,8 +275,9 @@ void SSLObjectManagerTest::SessionIdTest()
 {
 	StartTrace(SSLObjectManagerTest.SessionIdTest);
 	{
-		FOREACH_ENTRY("SessionIdTest", cConfig, cName) {
-			Trace("At entry: " << i);
+		ROAnything cConfig;
+		AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
+		while ( aEntryIterator.Next(cConfig) ) {
 			SSL_SESSION sslSession;
 			sslSession.session_id_length = sizeof(sslSession);
 			long expected(cConfig["Version"].AsLong(0));
@@ -302,8 +296,6 @@ Test *SSLObjectManagerTest::suite ()
 {
 	StartTrace(SSLObjectManagerTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-//	ADD_CASE(testSuite, SSLObjectManagerTest, testCase);
 	ADD_CASE(testSuite, SSLObjectManagerTest, UsePassedInCtxTest);
 	ADD_CASE(testSuite, SSLObjectManagerTest, ReUseCreatedCtxTest);
 	ADD_CASE(testSuite, SSLObjectManagerTest, GetDefaultCtxTest);

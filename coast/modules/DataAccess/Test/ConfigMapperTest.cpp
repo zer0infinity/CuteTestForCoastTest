@@ -16,15 +16,19 @@
 #include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
 
 //--- c-modules used -----------------------------------------------------------
 
 //---- ConfigMapperTest ----------------------------------------------------------------
 ConfigMapperTest::ConfigMapperTest(TString tstrName)
-	: ConfiguredTestCase(tstrName, "ConfigMapperTestConfig")
+	: TestCaseType(tstrName)
 {
-	StartTrace(ConfigMapperTest.Ctor);
+	StartTrace(ConfigMapperTest.ConfigMapperTest);
+}
+
+TString ConfigMapperTest::getConfigFileName()
+{
+	return "ConfigMapperTestConfig";
 }
 
 ConfigMapperTest::~ConfigMapperTest()
@@ -32,24 +36,15 @@ ConfigMapperTest::~ConfigMapperTest()
 	StartTrace(ConfigMapperTest.Dtor);
 }
 
-// setup for this ConfiguredTestCase
-void ConfigMapperTest::setUp ()
+void ConfigMapperTest::ConfigTest()
 {
-	StartTrace(ConfigMapperTest.setUp);
-	ConfiguredTestCase::setUp();
-}
+	StartTrace(ConfigMapperTest.ConfigTest);
 
-void ConfigMapperTest::tearDown ()
-{
-	StartTrace(ConfigMapperTest.tearDown);
-	ConfiguredTestCase::tearDown();
-}
-
-void ConfigMapperTest::testConfigMapper()
-{
-	StartTrace(ConfigMapperTest.testConfigMapper);
-
-	FOREACH_ENTRY("ConfigMapperTest", caseConfig, caseName) {
+	ROAnything caseConfig;
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(caseConfig) ) {
+		TString caseName;
+		aEntryIterator.SlotName(caseName);
 		Trace("Running " << caseName << " Test");
 
 		// prepare tmp store
@@ -68,13 +63,11 @@ void ConfigMapperTest::testConfigMapper()
 	}
 }
 
-// builds up a suite of ConfiguredTestCases, add a line for each testmethod
+// builds up a suite of tests, add a line for each testmethod
 Test *ConfigMapperTest::suite ()
 {
 	StartTrace(ConfigMapperTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	ADD_CASE(testSuite, ConfigMapperTest, testConfigMapper);
-
+	ADD_CASE(testSuite, ConfigMapperTest, ConfigTest);
 	return testSuite;
 }

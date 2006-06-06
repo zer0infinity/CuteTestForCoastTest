@@ -17,14 +17,9 @@
 //--- interface include --------------------------------------------------------
 #include "EBCDICTableTest.h"
 
-EBCDICTableTest::EBCDICTableTest(TString tname) : TestCase(tname) {}
+EBCDICTableTest::EBCDICTableTest(TString tname) : TestCaseType(tname) {}
 
 EBCDICTableTest::~EBCDICTableTest() {};
-
-void EBCDICTableTest::setUp ()
-{
-	TestCase::setUp();
-};
 
 void EBCDICTableTest::WholeTable ()
 {
@@ -56,4 +51,4 @@ Test *EBCDICTableTest::suite ()
 	ADD_CASE(testSuite, EBCDICTableTest, WholeTable);
 
 	return testSuite;
-} // suite
+}

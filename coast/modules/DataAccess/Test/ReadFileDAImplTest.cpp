@@ -21,7 +21,7 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- ReadFileDAImplTest ----------------------------------------------------------------
-ReadFileDAImplTest::ReadFileDAImplTest(TString tstrName) : TestCase(tstrName)
+ReadFileDAImplTest::ReadFileDAImplTest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(ReadFileDAImplTest.Ctor);
 }
@@ -29,17 +29,6 @@ ReadFileDAImplTest::ReadFileDAImplTest(TString tstrName) : TestCase(tstrName)
 ReadFileDAImplTest::~ReadFileDAImplTest()
 {
 	StartTrace(ReadFileDAImplTest.Dtor);
-}
-
-// setup for this TestCase
-void ReadFileDAImplTest::setUp ()
-{
-	StartTrace(ReadFileDAImplTest.setUp);
-}
-
-void ReadFileDAImplTest::tearDown ()
-{
-	StartTrace(ReadFileDAImplTest.tearDown);
 }
 
 void ReadFileDAImplTest::GetFileNameTest()

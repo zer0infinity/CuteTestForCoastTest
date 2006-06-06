@@ -10,7 +10,7 @@
 #define _SSLModuleTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 
 //---- SSLModuleTest ----------------------------------------------------------
 //! <B>really brief class description</B>
@@ -18,7 +18,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class SSLModuleTest : public ConfiguredTestCase
+class SSLModuleTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors
@@ -34,15 +34,10 @@ public:
 	//! builds up a suite of testcases for this test
 	static Test *suite ();
 
-	//! sets the environment for this test
-	void setUp ();
-
-	//! deletes the environment for this test
-	void tearDown ();
+	TString getConfigFileName();
 
 	//! describe this testcase
-	void testCase();
-	void testLoadCertAndKey();
+	void LoadCertAndKeyTest();
 };
 
 #endif

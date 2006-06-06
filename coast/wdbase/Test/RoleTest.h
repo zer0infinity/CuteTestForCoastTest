@@ -10,11 +10,11 @@
 #define _RoleTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 
 //---- RoleTest ----------------------------------------------------------
 //!TestCases for the Registry class
-class RoleTest : public ConfiguredTestCase
+class RoleTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors
@@ -38,7 +38,7 @@ public:
 	void tearDown ();
 
 protected:
-	void	CheckInstalled ();
+	void CheckInstalled ();
 	void GetNewPageName ();
 	void VerifyLogout ();
 	void VerifyLevel ();
@@ -47,12 +47,6 @@ protected:
 	void CollectLinkState();
 	void FindRoleWithDefault();
 	void GetDefaultRoleName();
-	//--- member variables declaration
-
-private:
-	// use careful, you inhibit subclass use
-	//--- private class api
-	//--- private member variables
 };
 
 #endif

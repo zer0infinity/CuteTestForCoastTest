@@ -24,20 +24,11 @@
 #include "PageRelatedRendererTest.h"
 
 //---- PageRelatedRendererTest ----------------------------------------------------------------
-PageRelatedRendererTest::PageRelatedRendererTest(TString tname) : TestCase(tname)
+PageRelatedRendererTest::PageRelatedRendererTest(TString tname) : TestCaseType(tname)
 {
 }
 
 PageRelatedRendererTest::~PageRelatedRendererTest()
-{
-}
-
-void PageRelatedRendererTest::setUp()
-// setup connector for this TestCase
-{
-}
-
-void PageRelatedRendererTest::tearDown()
 {
 }
 
@@ -103,9 +94,8 @@ void PageRelatedRendererTest::trivialTest()
 }
 
 Test *PageRelatedRendererTest::suite()
-// collect all test cases for the SocketStream
 {
 	TestSuite *testSuite = new TestSuite;
-	testSuite->addTest (NEW_CASE(PageRelatedRendererTest, trivialTest));
+	ADD_CASE(testSuite, PageRelatedRendererTest, trivialTest);
 	return testSuite;
 }

@@ -21,7 +21,7 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- HTTPResponseMapperTest ----------------------------------------------------------------
-HTTPResponseMapperTest::HTTPResponseMapperTest(TString tstrName) : TestCase(tstrName)
+HTTPResponseMapperTest::HTTPResponseMapperTest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(HTTPResponseMapperTest.Ctor);
 }
@@ -29,17 +29,6 @@ HTTPResponseMapperTest::HTTPResponseMapperTest(TString tstrName) : TestCase(tstr
 HTTPResponseMapperTest::~HTTPResponseMapperTest()
 {
 	StartTrace(HTTPResponseMapperTest.Dtor);
-}
-
-// setup for this TestCase
-void HTTPResponseMapperTest::setUp ()
-{
-	StartTrace(HTTPResponseMapperTest.setUp);
-}
-
-void HTTPResponseMapperTest::tearDown ()
-{
-	StartTrace(HTTPResponseMapperTest.tearDown);
 }
 
 void HTTPResponseMapperTest::TestParsedResponse()

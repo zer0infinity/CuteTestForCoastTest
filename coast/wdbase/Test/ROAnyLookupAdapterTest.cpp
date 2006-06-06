@@ -24,7 +24,7 @@
 #include "ROAnyLookupAdapterTest.h"
 
 //---- ROAnyLookupAdapterTest ----------------------------------------------------------------
-ROAnyLookupAdapterTest::ROAnyLookupAdapterTest(TString tstrName) : TestCase(tstrName)
+ROAnyLookupAdapterTest::ROAnyLookupAdapterTest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(ROAnyLookupAdapterTest.Ctor);
 }
@@ -34,25 +34,9 @@ ROAnyLookupAdapterTest::~ROAnyLookupAdapterTest()
 	StartTrace(ROAnyLookupAdapterTest.Dtor);
 }
 
-// setup for this TestCase
-void ROAnyLookupAdapterTest::setUp ()
+void ROAnyLookupAdapterTest::LookupTest()
 {
-	StartTrace(ROAnyLookupAdapterTest.setUp);
-}
-
-void ROAnyLookupAdapterTest::tearDown ()
-{
-	StartTrace(ROAnyLookupAdapterTest.tearDown);
-}
-
-void ROAnyLookupAdapterTest::testCase()
-{
-	StartTrace(ROAnyLookupAdapterTest.testCase);
-}
-
-void ROAnyLookupAdapterTest::testLookup()
-{
-	StartTrace(ROAnyLookupAdapterTest.testLookup);
+	StartTrace(ROAnyLookupAdapterTest.LookupTest);
 
 	Anything base;
 
@@ -76,9 +60,6 @@ Test *ROAnyLookupAdapterTest::suite ()
 {
 	StartTrace(ROAnyLookupAdapterTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	ADD_CASE(testSuite, ROAnyLookupAdapterTest, testCase);
-	ADD_CASE(testSuite, ROAnyLookupAdapterTest, testLookup);
-
+	ADD_CASE(testSuite, ROAnyLookupAdapterTest, LookupTest);
 	return testSuite;
 }

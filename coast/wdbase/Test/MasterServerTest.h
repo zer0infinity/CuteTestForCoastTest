@@ -10,14 +10,13 @@
 #define _MasterServerTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 
 //---- forward declaration -----------------------------------------------
-class Registry;
 
 //---- MasterServerTest ----------------------------------------------------------
 //!TestCases for the Registry class
-class MasterServerTest : public ConfiguredTestCase
+class MasterServerTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors
@@ -46,15 +45,9 @@ public:
 	//! test initialization - run - reset - run - termination sequences
 	void InitRunResetRunTerminateTest();
 
-	//! run a test sequence
-	void RunTestSequence();
-
-protected:
-
 private:
-	Anything fCheckPorts;
-//	Anything fTestConfig;
-
+	//! run a test sequence
+	void RunTestSequence(ROAnything roaConfig);
 };
 
 #endif

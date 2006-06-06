@@ -6,36 +6,33 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- c-library modules used ---------------------------------------------------
-#include <stdlib.h>
-
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "Threads.h"
-#include "Dbg.h"
-
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
+//--- interface include --------------------------------------------------------
+#include "URLEncoderTest.h"
 
 //--- module under test --------------------------------------------------------
 #include "URLEncoder.h"
 
-//--- interface include --------------------------------------------------------
-#include "URLEncoderTest.h"
+//--- test modules used --------------------------------------------------------
+#include "TestSuite.h"
+
+//--- standard modules used ----------------------------------------------------
+#include "Dbg.h"
+
+//--- c-library modules used ---------------------------------------------------
+#include <stdlib.h>
 
 //---- URLEncoderTest ----------------------------------------------------------------
 Test *URLEncoderTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
-
 	ADD_CASE(testSuite, URLEncoderTest, EncodeDecodeTest);
 	ADD_CASE(testSuite, URLEncoderTest, EncodeTest);
 	ADD_CASE(testSuite, URLEncoderTest, DecodeTest);
-
 	return testSuite;
 }
 
-URLEncoderTest::URLEncoderTest(TString tname) : TestCase(tname)
+URLEncoderTest::URLEncoderTest(TString tname)
+	: TestCaseType(tname)
 {
 }
 

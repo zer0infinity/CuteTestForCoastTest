@@ -10,7 +10,7 @@
 #define _AccessManagerTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 
 class AccessManager;
 
@@ -26,7 +26,7 @@ They have a config themselves, which in turn defines the backends
 (i.e. AccessControllers) that they utilize to get access to user-
 and token information.
 */
-class AccessManagerTest : public ConfiguredTestCase
+class AccessManagerTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors
@@ -49,11 +49,13 @@ public:
 	//! deletes the environment for this test
 	void tearDown ();
 
+	TString getConfigFileName();
+
 	// tests an access manager
 	void doTestAccessManager(ROAnything config, AccessManager *am);
 
 	// tests all regular access managers defined/registered in the config
-	void testRegularAccessManagers();
+	void RegularAccessManagersTest();
 };
 
 #endif

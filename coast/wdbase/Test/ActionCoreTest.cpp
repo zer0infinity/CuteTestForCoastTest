@@ -20,7 +20,7 @@
 //--- c-library modules used ---------------------------------------------------
 
 //---- ActionCoreTest ----------------------------------------------------------------
-ActionCoreTest::ActionCoreTest(TString tname) : TestCase(tname)
+ActionCoreTest::ActionCoreTest(TString tname) : TestCaseType(tname)
 {
 	StartTrace(ActionCoreTest.Ctor);
 }
@@ -29,17 +29,6 @@ ActionCoreTest::~ActionCoreTest()
 {
 	StartTrace(ActionCoreTest.Dtor);
 }
-
-// setup for this TestCase
-void ActionCoreTest::setUp ()
-{
-	StartTrace(ActionCoreTest.setUp);
-} // setUp
-
-void ActionCoreTest::tearDown ()
-{
-	StartTrace(ActionCoreTest.tearDown);
-} // tearDown
 
 void ActionCoreTest::ConsistentTransitionHandling()
 {
@@ -239,13 +228,10 @@ void ActionCoreTest::AbortedActionSequence()
 Test *ActionCoreTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
-
-	testSuite->addTest (NEW_CASE(ActionCoreTest, ConsistentTransitionHandling));
-	testSuite->addTest (NEW_CASE(ActionCoreTest, EmptyConfigurationTransitionHandling));
-	testSuite->addTest (NEW_CASE(ActionCoreTest, ConfiguredTransitionHandling));
-	testSuite->addTest (NEW_CASE(ActionCoreTest, ActionSequence));
-	testSuite->addTest (NEW_CASE(ActionCoreTest, AbortedActionSequence));
-
+	ADD_CASE(testSuite, ActionCoreTest, ConsistentTransitionHandling);
+	ADD_CASE(testSuite, ActionCoreTest, EmptyConfigurationTransitionHandling);
+	ADD_CASE(testSuite, ActionCoreTest, ConfiguredTransitionHandling);
+	ADD_CASE(testSuite, ActionCoreTest, ActionSequence);
+	ADD_CASE(testSuite, ActionCoreTest, AbortedActionSequence);
 	return testSuite;
-
-} // suite
+}

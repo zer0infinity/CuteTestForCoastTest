@@ -24,15 +24,15 @@ Test *DataMapperTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(DataMapperTest, StdGetTest));
-	testSuite->addTest (NEW_CASE(DataMapperTest, NegativGetTest));
-	testSuite->addTest (NEW_CASE(DataMapperTest, FixedSizeTest));
-	testSuite->addTest (NEW_CASE(DataMapperTest, UppercaseTest));
+	ADD_CASE(testSuite, DataMapperTest, StdGetTest);
+	ADD_CASE(testSuite, DataMapperTest, NegativGetTest);
+	ADD_CASE(testSuite, DataMapperTest, FixedSizeTest);
+	ADD_CASE(testSuite, DataMapperTest, UppercaseTest);
 
 	return testSuite;
 }
 
-DataMapperTest::DataMapperTest(TString tname) : TestCase(tname)
+DataMapperTest::DataMapperTest(TString tname) : TestCaseType(tname)
 {
 }
 

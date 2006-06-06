@@ -35,20 +35,12 @@ public:
 	//! builds up a suite of testcases for this test
 	static Test *suite ();
 
-	//! sets the environment for this test
-	void setUp ();
-
-	//! deletes the environment for this test
-	void tearDown ();
-
 	//! render an empty list
 	void EmptyList();
 	//! render an one element list
 	void OneElement();
 	//! render an multiple element list, first non-empty is done
 	void MultipleElements();
-	//! describe this testcase
-	void testCase();
 };
 
 #endif

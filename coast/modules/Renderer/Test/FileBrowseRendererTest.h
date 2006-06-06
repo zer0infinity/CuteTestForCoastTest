@@ -13,7 +13,6 @@
 #include "TextFieldRendererTest.h"
 
 //---- FileBrowseRendererTest -----------------------------------------------------------
-
 class FileBrowseRendererTest : public TextFieldRendererTest
 {
 public:
@@ -21,7 +20,7 @@ public:
 	virtual ~FileBrowseRendererTest();
 
 	static Test *suite ();
-	void setUp ();
+
 protected:
 	// Generic test cases
 	void TestCase0();

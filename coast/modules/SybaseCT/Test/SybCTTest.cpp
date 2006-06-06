@@ -22,7 +22,7 @@
 
 //---- SybCTTest ----------------------------------------------------------------
 SybCTTest::SybCTTest(TString tstrName)
-	: TestCase(tstrName)
+	: TestCaseType(tstrName)
 {
 	StartTrace(SybCTTest.Ctor);
 }
@@ -32,31 +32,17 @@ SybCTTest::~SybCTTest()
 	StartTrace(SybCTTest.Dtor);
 }
 
-// setup for this TestCase
-void SybCTTest::setUp ()
-{
-	StartTrace(SybCTTest.setUp);
-	if ( t_assertm( System::LoadConfigFile(fConfig, getClassName(), "any"), TString("expected ") << getClassName() << " to be readable!" ) ) {
-		fTestCaseConfig = fConfig[name()];
-	}
-}
-
-void SybCTTest::tearDown ()
-{
-	StartTrace(SybCTTest.tearDown);
-}
-
-void SybCTTest::testSybCTTest()
+void SybCTTest::SybCTTestTest()
 {
 #if defined(MEM_DEBUG)
 	Storage::PrintStatistic();
 #endif
 	{
-		StartTrace(SybCTTest.testSybCTTest);
-		StartTraceMem(SybCTTest.testSybCTTest);
+		StartTrace(SybCTTest.SybCTTestTest);
+		StartTraceMem(SybCTTest.SybCTTestTest);
 		Anything anyMessages(Storage::Global());
 		Anything anyCtxMessages(Storage::Global());
-		String strInterfacesFileName = fConfig["InterfacesFile"].AsString();
+		String strInterfacesFileName = GetConfig()["InterfacesFile"].AsString();
 		if ( t_assertm(strInterfacesFileName.Length(), "expected non-empty interfaces filename") ) {
 			CS_CONTEXT *context;
 			// create context
@@ -105,7 +91,7 @@ void SybCTTest::LimitedMemoryTest()
 		StartTraceMem(SybCTTest.LimitedMemoryTest);
 		Anything anyMessages(Storage::Global());
 		Anything anyCtxMessages(Storage::Global());
-		String strInterfacesFileName = fConfig["InterfacesFile"].AsString();
+		String strInterfacesFileName = GetConfig()["InterfacesFile"].AsString();
 		if ( t_assertm(strInterfacesFileName.Length(), "expected non-empty interfaces filename") ) {
 			CS_CONTEXT *context;
 			// create context
@@ -151,10 +137,7 @@ Test *SybCTTest::suite ()
 {
 	StartTrace(SybCTTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	testSuite->addTest (NEW_CASE(SybCTTest, testSybCTTest));
-	testSuite->addTest (NEW_CASE(SybCTTest, LimitedMemoryTest));
-
+	ADD_CASE(testSuite, SybCTTest, SybCTTestTest);
+	ADD_CASE(testSuite, SybCTTest, LimitedMemoryTest);
 	return testSuite;
-
-} // suite
+}

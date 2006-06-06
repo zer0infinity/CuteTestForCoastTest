@@ -21,7 +21,7 @@
 #include "CgiParamsTest.h"
 
 //---- CgiParamsTest ----------------------------------------------------------------
-CgiParamsTest::CgiParamsTest(TString tstrName) : TestCase(tstrName)
+CgiParamsTest::CgiParamsTest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(CgiParamsTest.Ctor);
 }
@@ -30,17 +30,6 @@ CgiParamsTest::~CgiParamsTest()
 {
 	StartTrace(CgiParamsTest.Dtor);
 }
-
-// setup for this TestCase
-void CgiParamsTest::setUp ()
-{
-	StartTrace(CgiParamsTest.setUp);
-} // setUp
-
-void CgiParamsTest::tearDown ()
-{
-	StartTrace(CgiParamsTest.tearDown);
-} // tearDown
 
 void CgiParamsTest::EnvironTest()
 {
@@ -75,8 +64,8 @@ Test *CgiParamsTest::suite ()
 	StartTrace(CgiParamsTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(CgiParamsTest, EnvironTest));
+	ADD_CASE(testSuite, CgiParamsTest, EnvironTest);
 
 	return testSuite;
 
-} // suite
+}

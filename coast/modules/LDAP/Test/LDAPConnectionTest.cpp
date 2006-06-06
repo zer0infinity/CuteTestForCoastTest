@@ -25,9 +25,14 @@
 
 //---- LDAPConnectionTest ----------------------------------------------------------------
 LDAPConnectionTest::LDAPConnectionTest(TString tstrName)
-	: ConfiguredTestCase(tstrName, "LDAPConnectionTestConfig")
+	: TestCaseType(tstrName)
 {
-	StartTrace(LDAPConnectionTest.Ctor);
+	StartTrace(LDAPConnectionTest.LDAPConnectionTest);
+}
+
+TString LDAPConnectionTest::getConfigFileName()
+{
+	return "LDAPConnectionTestConfig";
 }
 
 LDAPConnectionTest::~LDAPConnectionTest()
@@ -35,25 +40,12 @@ LDAPConnectionTest::~LDAPConnectionTest()
 	StartTrace(LDAPConnectionTest.Dtor);
 }
 
-// setup for this ConfiguredTestCase
-void LDAPConnectionTest::setUp ()
-{
-	StartTrace(LDAPConnectionTest.setUp);
-	ConfiguredTestCase::setUp();
-}
-
-void LDAPConnectionTest::tearDown ()
-{
-	StartTrace(LDAPConnectionTest.tearDown);
-	ConfiguredTestCase::tearDown();
-}
-
 void LDAPConnectionTest::ConnectionTest()
 {
 	StartTrace(LDAPConnectionTest.ConnectionTest);
-	FOREACH_ENTRY("ConnectionTest", cConfig, caseName) {
-		Trace("At test entry: " << i);
-
+	ROAnything cConfig;
+	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(cConfig) ) {
 		for ( long l = 0; l < cConfig["NumberOfConnects"].AsLong(1); l++ ) {
 			Anything params;
 			params["Server"] 			= cConfig["LDAPServer"].AsString();
@@ -72,7 +64,7 @@ void LDAPConnectionTest::ConnectionTest()
 			ResultMapper rm("ConnectionTestResultMapper");
 			rm.CheckConfig("ResultMapper");
 			String da("DataAccess_");
-			da << i;
+			da << aEntryIterator.Index();
 
 			LDAPErrorHandler eh(ctx, &pm, &rm, da);
 			eh.PutConnectionParams(params);
@@ -103,13 +95,11 @@ void LDAPConnectionTest::ConnectionTest()
 	}
 }
 
-// builds up a suite of ConfiguredTestCases, add a line for each testmethod
+// builds up a suite of tests, add a line for each testmethod
 Test *LDAPConnectionTest::suite ()
 {
 	StartTrace(LDAPConnectionTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
 	ADD_CASE(testSuite, LDAPConnectionTest, ConnectionTest);
-
 	return testSuite;
 }

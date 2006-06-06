@@ -36,7 +36,7 @@ protected:
 To understand the results of those tests, you should additionally
 consult "OutputMapperMeta.any" and "MapperTestScripts.any".
 */
-class ResultMapperTest : public TestCase
+class ResultMapperTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -52,25 +52,19 @@ public:
 	//! builds up a suite of testcases for this test
 	static Test *suite ();
 
-	//! sets the environment for this test
-	void setUp ();
+	void DoSelectScriptTest();
+	void DoLoadConfigTest();
+	void DoGetConfigNameTest();
+	void DoFinalPutAnyTest();
+	void DoFinalPutStreamTest();
+	void DoPutAnyTest();
+	void DoPutStreamTest();
+	void PutTest();
+	void DoSetDestinationSlotDynamicallyTest();
+	void DoGetDestinationSlotWithPathTest();
 
-	//! deletes the environment for this test
-	void tearDown ();
-
-	void testDoSelectScript();
-	void testDoLoadConfig();
-	void testDoGetConfigName();
-	void testDoFinalPutAny();
-	void testDoFinalPutStream();
-	void testDoPutAny();
-	void testDoPutStream();
-	void testPut();
-	void testDoSetDestinationSlotDynamically();
-	void testDoGetDestinationSlotWithPath();
-
-	void testEagerDoSelectScript();
-	void testEagerPut();
+	void EagerDoSelectScriptTest();
+	void EagerPutTest();
 };
 
 #endif

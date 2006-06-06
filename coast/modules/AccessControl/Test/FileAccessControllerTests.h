@@ -10,7 +10,7 @@
 #define _FileAccessControllerTests_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 
 class UserDataAccessController;
 class TokenDataAccessController;
@@ -26,18 +26,21 @@ public:
 
 //---- FileAccessControllerTests ----------------------------------------------------------
 //! <B>Tests functionality of FileAccessControllers (FileUDAC, FileTDAC, FileEDAC)
-class FileAccessControllerTests : public ConfiguredTestCase
+class FileAccessControllerTests : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors
-	FileAccessControllerTests(TString tstrName) : ConfiguredTestCase(tstrName, "FileAccessControllerTestsConfig") {}
-	FileAccessControllerTests(TString tstrName, const char *file) : ConfiguredTestCase(tstrName, file) {}
+	FileAccessControllerTests(TString tstrName)
+		: TestCaseType(tstrName) {}
 	~FileAccessControllerTests() {};
 
+	TString getConfigFileName() {
+		return "FileAccessControllerTestsConfig";
+	}
 	//--- public api
 	static bool createTestFile(String daName, ROAnything data);
 
-	//! builds up a suite of ConfiguredTestCases for this test
+	//! builds up a suite of tests
 	static Test *suite ();
 
 	//! sets the environment for this test
@@ -52,14 +55,13 @@ public:
 	void doTestEDAC(EntityDataAccessController *edac);
 
 	//! Tests functionality of FileUDAC (FileUserDataAccessController)
-	void testFileUDAC();
+	void FileUDACTest();
 
 	//! Tests functionality of FileTDAC (FileTokenDataAccessController)
-	void testFileTDAC();
+	void FileTDACTest();
 
 	//! Tests functionality of FileEDAC (FileEntityDataAccessController)
-	void testFileEDAC();
-
+	void FileEDACTest();
 };
 
 #endif

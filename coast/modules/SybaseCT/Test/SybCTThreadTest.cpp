@@ -28,9 +28,14 @@
 
 //---- SybCTThreadTest ----------------------------------------------------------------
 SybCTThreadTest::SybCTThreadTest(TString tstrName)
-	: ConfiguredTestCase(tstrName, "Config")
+	: TestCaseType(tstrName)
 {
-	StartTrace(SybCTThreadTest.Ctor);
+	StartTrace(SybCTThreadTest.SybCTThreadTest);
+}
+
+TString SybCTThreadTest::getConfigFileName()
+{
+	return "Config";
 }
 
 SybCTThreadTest::~SybCTThreadTest()
@@ -38,11 +43,9 @@ SybCTThreadTest::~SybCTThreadTest()
 	StartTrace(SybCTThreadTest.Dtor);
 }
 
-// setup for this ConfiguredTestCase
 void SybCTThreadTest::setUp ()
 {
 	StartTrace(SybCTThreadTest.setUp);
-	ConfiguredTestCase::setUp();
 	fbWasInitialized = SybCTnewDAImpl::fgInitialized;
 	if ( fbWasInitialized ) {
 		SybCTnewDAImpl::Finis();
@@ -54,12 +57,8 @@ void SybCTThreadTest::tearDown ()
 	StartTrace(SybCTThreadTest.tearDown);
 	// set initialized state back here
 	if ( fbWasInitialized ) {
-		Anything anyConfig;
-		if ( t_assert(System::LoadConfigFile(anyConfig, "Config")) ) {
-			t_assert(SybCTnewDAImpl::Init(anyConfig));
-		}
+		t_assert(SybCTnewDAImpl::Init(GetConfig()));
 	}
-	ConfiguredTestCase::tearDown();
 }
 
 class SybTestThread : public Thread
@@ -82,7 +81,8 @@ protected:
 void SybCTThreadTest::Run(long id, const char *goodDAName, const char *failDAName)
 {
 	for (int i = 0; i < 10; i++) {
-		Context ctx(fConfig);
+		Anything aEnv = GetConfig().DeepClone();
+		Context ctx(aEnv);
 
 		DataAccess da(goodDAName);
 		t_assert(da.StdExec(ctx));
@@ -116,8 +116,8 @@ void SybCTThreadTest::SybCTPoolDAImplTest()
 void SybCTThreadTest::SybCTnewDAImplTest()
 {
 	StartTrace(SybCTThreadTest.SybCTnewDAImplTest);
-	TraceAny(fTestCaseConfig, "case config");
-	if ( t_assert(SybCTnewDAImpl::Init(fTestCaseConfig)) ) {
+	TraceAny(GetTestCaseConfig(), "case config");
+	if ( t_assert(SybCTnewDAImpl::Init(GetTestCaseConfig())) ) {
 		DiffTimer aTimer;
 		DoTest("SybTestThreadnewDA", "SybTestThreadnewDAWithError");
 		SysLog::WriteToStderr(String("elapsed time for SybCTnewDAImplTest:") << (long)aTimer.Diff() << "ms\n");
@@ -145,7 +145,7 @@ void SybCTThreadTest::DoTest(const char *goodDAName, const char *failDAName)
 	}
 }
 
-// builds up a suite of ConfiguredTestCases, add a line for each testmethod
+// builds up a suite of tests, add a line for each testmethod
 Test *SybCTThreadTest::suite ()
 {
 	StartTrace(SybCTThreadTest.suite);

@@ -28,7 +28,6 @@ URLRendererTest::~URLRendererTest() {};
 /*     Init                                                      */
 /*===============================================================*/
 void URLRendererTest::setUp ()
-// setup config for all the renderers in this TestCase
 {
 	RendererTest::setUp();
 
@@ -38,10 +37,9 @@ void URLRendererTest::setUp ()
 	fConfig["Params"]["p2"] = "Par2";
 	fConfig["Params"]["p3"] = "Par3";
 
-} // setUp
+}
 
 Test *URLRendererTest::suite ()
-// collect all test cases for the URLRenderer
 {
 	TestSuite *testSuite = new TestSuite;
 
@@ -52,7 +50,7 @@ Test *URLRendererTest::suite ()
 
 	return testSuite;
 
-} // suite
+}
 
 /*===============================================================*/
 /*     Check found cases where all is correctly defined          */

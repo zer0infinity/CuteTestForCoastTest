@@ -10,7 +10,7 @@
 #define _ConfiguredLookupAdapterTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 
 //---- ConfiguredLookupAdapterTest ----------------------------------------------------------
 //! <B>LookupAdapter providing a configured default</B>
@@ -20,7 +20,7 @@ the second argument is looked up. Unlike the LookupInterface's default
 values you can define your own default configuration which is looked up.
 See testcases for samples.
 */
-class ConfiguredLookupAdapterTest : public ConfiguredTestCase
+class ConfiguredLookupAdapterTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors
@@ -33,17 +33,13 @@ public:
 
 	//--- public api
 
-	//! builds up a suite of ConfiguredTestCases for this test
+	//! builds up a suite of tests
 	static Test *suite ();
 
-	//! sets the environment for this test
-	void setUp ();
-
-	//! deletes the environment for this test
-	void tearDown ();
+	TString getConfigFileName();
 
 	//! Test lookups for longs and Strings
-	void testConfiguredLookupAdapter();
+	void LookupTest();
 };
 
 #endif

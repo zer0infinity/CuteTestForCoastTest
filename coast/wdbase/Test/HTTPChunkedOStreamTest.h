@@ -14,7 +14,7 @@
 
 //---- HTTPChunkedOStreamTest ----------------------------------------------------------
 //! TestCases description
-class HTTPChunkedOStreamTest : public TestCase
+class HTTPChunkedOStreamTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -31,14 +31,6 @@ public:
 	//! builds up a suite of testcases for this test
 	static Test *suite ();
 
-	//! sets the environment for this test
-	void setUp ();
-
-	//! deletes the environment for this test
-	void tearDown ();
-
-	//! describe this testcase
-	void testCase();
 	//! make a small chunk size and overflow it
 	void OverflowTest();
 	//! just close the stream without a flush
@@ -49,7 +41,6 @@ public:
 	void SimpleFlush();
 	//! test if the hex manipulator is switched off after chunk header
 	void HexManipulator();
-
 };
 
 #endif

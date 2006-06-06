@@ -10,7 +10,7 @@
 #define _SSLCertificateTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 
 //---- SSLCertificateTest ----------------------------------------------------------
 //! <B>single line description of the class</B>
@@ -18,7 +18,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class SSLCertificateTest : public ConfiguredTestCase
+class SSLCertificateTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors
@@ -32,20 +32,12 @@ public:
 
 	//--- public api
 
-	//! builds up a suite of ConfiguredTestCases for this test
+	//! builds up a suite of tests
 	static Test *suite ();
 
-	//! sets the environment for this test
-	void setUp ();
-
-	//! deletes the environment for this test
-	void tearDown ();
-
 	//! describe this Test
-	void test();
-	void clientCertificateTest();
-	void checkServerCertificateTest();
-	void convertDNTest();
+	void ClientCertificateTest();
+	void CheckServerCertificateTest();
 };
 
 #endif

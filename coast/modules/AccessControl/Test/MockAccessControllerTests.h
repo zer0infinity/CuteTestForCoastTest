@@ -10,7 +10,7 @@
 #define _MockAccessControllerTests_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 #include "FileAccessControllerTests.h"
 
 //---- MockAccessControllerTests ------------------------------------------
@@ -22,12 +22,14 @@ class MockAccessControllerTests : public FileAccessControllerTests
 {
 public:
 	//--- constructors
-	MockAccessControllerTests(TString tstrName) : FileAccessControllerTests(tstrName, "MockAccessControllerTestsConfig") {}
+	MockAccessControllerTests(TString tstrName)
+		: FileAccessControllerTests(tstrName)
+	{}
 	~MockAccessControllerTests() {};
 
 	//--- public api
 
-	//! builds up a suite of ConfiguredTestCases for this test
+	//! builds up a suite of tests
 	static Test *suite ();
 
 	//! sets the environment for this test
@@ -36,9 +38,13 @@ public:
 	//! deletes the environment for this test
 	void tearDown ();
 
-	void testMockUDAC();
-	void testMockTDAC();
-	void testMockEDAC();
+	TString getConfigFileName() {
+		return "MockAccessControllerTestsConfig";
+	}
+
+	void MockUDACTest();
+	void MockTDACTest();
+	void MockEDACTest();
 };
 
 #endif

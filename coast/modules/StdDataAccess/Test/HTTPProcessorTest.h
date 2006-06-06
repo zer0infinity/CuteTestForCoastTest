@@ -10,14 +10,14 @@
 #define _HTTPProcessorTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 
 //--- module under test --------------------------------------------------------
 #include "HTTPProcessor.h"
 
 //---- HTTPProcessorTest ----------------------------------------------------------
 //!Test the HTTPProcessor
-class HTTPProcessorTest : public ConfiguredTestCase
+class HTTPProcessorTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors
@@ -37,11 +37,13 @@ public:
 	//!sets the environment for this test
 	void setUp ();
 
-	void TestIsZipEncodingAcceptedByClient();
+	TString getConfigFileName();
+
+	void IsZipEncodingAcceptedByClientTest();
 
 	//!tests input read method
 	void DoReadInputTest();
-	void testDoReadInputWithError();
+	void DoReadInputWithErrorTest();
 
 	//!tests input read method too
 	void DoReadMinimalInputTest();

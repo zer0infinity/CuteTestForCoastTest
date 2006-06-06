@@ -17,7 +17,7 @@
 //! further explanation of the purpose of the class
 //! this may contain <B>HTML-Tags</B>
 //! ...
-class DataAccessTest : public TestCase
+class DataAccessTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -33,16 +33,8 @@ public:
 	void SessionUnlockTest();
 
 protected:
-	//--- subclass api
-
 	//--- member variables declaration
 	Anything fConfig;
-private:
-	// use careful, you inhibit subclass use
-	//--- private class api
-
-	//--- private member variables
-
 };
 
 #endif

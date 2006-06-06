@@ -33,11 +33,10 @@ FieldRendererTest::~FieldRendererTest() {};
 /*     Init                                                      */
 /*===============================================================*/
 void FieldRendererTest::setUp ()
-// setup config for all the renderers in this TestCase
 {
 	RendererTest::setUp();
 	fCurrentTestMethod = "Test-Method has been forgotten";
-} // setUp
+}
 
 Test *FieldRendererTest::suite ()
 /* what: return the whole suite of tests for renderers, we could add the suites

@@ -22,18 +22,9 @@
 #include "Dbg.h"
 
 //---- StressAppTest ----------------------------------------------------------------
-StressAppTest::StressAppTest(TString tstrName) : TestCase(tstrName) { }
+StressAppTest::StressAppTest(TString tstrName) : TestCaseType(tstrName) { }
 
 StressAppTest::~StressAppTest()
-{
-}
-
-void StressAppTest::setUp ()
-// setup connector for this TestCase
-{
-}
-
-void StressAppTest::tearDown ()
 {
 }
 
@@ -131,15 +122,14 @@ void StressAppTest::CheckSum(ROAnything result)
 }
 
 Test *StressAppTest::suite ()
-// collect all test cases for the StressAppStream
 {
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(StressAppTest, AppRunTest));
-	testSuite->addTest (NEW_CASE(StressAppTest, ThreadedStresserRunnerTest));
-	testSuite->addTest (NEW_CASE(StressAppTest, FlowControlDAStresserTest));
-	testSuite->addTest (NEW_CASE(StressAppTest, DataAccessStresserTest));
-	testSuite->addTest (NEW_CASE(StressAppTest, StressProcessorTest));
+	ADD_CASE(testSuite, StressAppTest, AppRunTest);
+	ADD_CASE(testSuite, StressAppTest, ThreadedStresserRunnerTest);
+	ADD_CASE(testSuite, StressAppTest, FlowControlDAStresserTest);
+	ADD_CASE(testSuite, StressAppTest, DataAccessStresserTest);
+	ADD_CASE(testSuite, StressAppTest, StressProcessorTest);
 
 	return testSuite;
-} // suite
+}

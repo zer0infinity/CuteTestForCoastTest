@@ -22,9 +22,14 @@
 
 //---- LocalizedStringsTest ----------------------------------------------------------------
 LocalizedStringsTest::LocalizedStringsTest(TString tstrName)
-	: ConfiguredTestCase(tstrName, "LocalizedStringsTestConfig")
+	: TestCaseType(tstrName)
 {
-	StartTrace(LocalizedStringsTest.Ctor);
+	StartTrace(LocalizedStringsTest.LocalizedStringsTest);
+}
+
+TString LocalizedStringsTest::getConfigFileName()
+{
+	return "LocalizedStringsTestConfig";
 }
 
 LocalizedStringsTest::~LocalizedStringsTest()
@@ -32,23 +37,18 @@ LocalizedStringsTest::~LocalizedStringsTest()
 	StartTrace(LocalizedStringsTest.Dtor);
 }
 
-// setup for this ConfiguredTestCase
 void LocalizedStringsTest::setUp ()
 {
 	StartTrace(LocalizedStringsTest.setUp);
-	ConfiguredTestCase::setUp();
-
-	t_assert(fConfig.IsDefined("Modules"));
-	t_assert(fConfig["Modules"].Contains("LocalizationModule"));
-	WDModule::Install(fConfig);
+	t_assert(GetConfig().IsDefined("Modules"));
+	t_assert(GetConfig()["Modules"].Contains("LocalizationModule"));
+	WDModule::Install(GetConfig());
 }
 
 void LocalizedStringsTest::tearDown ()
 {
 	StartTrace(LocalizedStringsTest.tearDown);
-
-	WDModule::Terminate(fConfig);
-	ConfiguredTestCase::tearDown();
+	WDModule::Terminate(GetConfig());
 }
 
 void LocalizedStringsTest::test()
@@ -65,13 +65,13 @@ void LocalizedStringsTest::test()
 	}
 }
 
-// builds up a suite of ConfiguredTestCases, add a line for each testmethod
+// builds up a suite of tests, add a line for each testmethod
 Test *LocalizedStringsTest::suite ()
 {
 	StartTrace(LocalizedStringsTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(LocalizedStringsTest, test));
+	ADD_CASE(testSuite, LocalizedStringsTest, test);
 
 	return testSuite;
-} // suite
+}

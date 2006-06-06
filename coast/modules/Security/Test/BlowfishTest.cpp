@@ -170,15 +170,10 @@ unsigned char key_out[KEY_TEST_NUM][8] = {
 	{0x05, 0x04, 0x4B, 0x62, 0xFA, 0x52, 0xD0, 0x80},
 };
 
-BlowfishTest::BlowfishTest(TString tstrName) : TestCase(tstrName)
+BlowfishTest::BlowfishTest(TString tstrName) : TestCaseType(tstrName)
 {};
 
 BlowfishTest::~BlowfishTest() {}
-
-void BlowfishTest::setUp ()
-{
-	TestCase::setUp();
-};
 
 Test *BlowfishTest::suite ()
 /* what: return the whole suite of tests for renderers, we could add the suites
@@ -379,7 +374,6 @@ void BlowfishTest::cbcCrossPlatform()
 //	}
 //	else
 //	{
-//		t_assert(true==false);
 //		assertEqualm(true,false,"Problem writing reference file CBCResult.any.");
 //	}
 //	reference = "";

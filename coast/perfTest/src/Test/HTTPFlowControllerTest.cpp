@@ -22,13 +22,16 @@
 #include "HTTPFlowControllerTest.h"
 
 //---- HTTPFlowControllerTest ----------------------------------------------------------------
-HTTPFlowControllerTest::HTTPFlowControllerTest(TString tstrName) : ConfiguredActionTest(tstrName, "HTTPFlowControllerTestConfig"),
-	fCtx()
-{ }
+HTTPFlowControllerTest::HTTPFlowControllerTest(TString tstrName)
+	: ConfiguredActionTest(tstrName)
+{
+	StartTrace(HTTPFlowControllerTest.HTTPFlowControllerTest);
+}
 
-HTTPFlowControllerTest::HTTPFlowControllerTest(TString tstrName, TString configFileName) : ConfiguredActionTest(tstrName, configFileName),
-	fCtx()
-{ }
+TString HTTPFlowControllerTest::getConfigFileName()
+{
+	return "HTTPFlowControllerTestConfig";
+}
 
 HTTPFlowControllerTest::~HTTPFlowControllerTest()
 {
@@ -38,19 +41,14 @@ HTTPFlowControllerTest::~HTTPFlowControllerTest()
 void HTTPFlowControllerTest::DoTest(Anything testCase, const char *testCaseName)
 {
 	StartTrace1(HTTPFlowControllerTest.DoTest, "<" << testCaseName << ">");
-
 	DoTestWithContext(testCase, testCaseName, fCtx);
 	DoCheckStores(testCase["Result"], fCtx, testCaseName);
-
 }
 
 // builds up a suite of testcases, add a line for each testmethod
 Test *HTTPFlowControllerTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
-
-	testSuite->addTest (NEW_CASE(HTTPFlowControllerTest, RunTestCases));
-
+	ADD_CASE(testSuite, HTTPFlowControllerTest, RunTestCases);
 	return testSuite;
-
-} // suite
+}

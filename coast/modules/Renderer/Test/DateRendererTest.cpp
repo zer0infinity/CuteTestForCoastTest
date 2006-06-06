@@ -26,7 +26,6 @@ DateRendererTest::DateRendererTest (TString tname) : RendererTest(tname) {};
 DateRendererTest::~DateRendererTest() {};
 
 void DateRendererTest::setUp ()
-// setup config for all the renderers in this TestCase
 {
 	RendererTest::setUp();
 	fConfig["Format"] = "%C";
@@ -248,20 +247,19 @@ void DateRendererTest::emptyConfig2()
 }
 
 Test *DateRendererTest::suite ()
-// collect all test cases for the DateRenderer
 {
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(DateRendererTest, simpleFormat));
-	testSuite->addTest (NEW_CASE(DateRendererTest, DifferentFormats1));
-	testSuite->addTest (NEW_CASE(DateRendererTest, DifferentFormats2));
-	testSuite->addTest (NEW_CASE(DateRendererTest, DifferentFormats3));
-	testSuite->addTest (NEW_CASE(DateRendererTest, RelativeTimeFormat));
-	testSuite->addTest (NEW_CASE(DateRendererTest, AbsolutTimeFormat));
-	testSuite->addTest (NEW_CASE(DateRendererTest, GMTTime));
-	testSuite->addTest (NEW_CASE(DateRendererTest, emptyConfig1));
-	testSuite->addTest (NEW_CASE(DateRendererTest, emptyConfig2));
+	ADD_CASE(testSuite, DateRendererTest, simpleFormat);
+	ADD_CASE(testSuite, DateRendererTest, DifferentFormats1);
+	ADD_CASE(testSuite, DateRendererTest, DifferentFormats2);
+	ADD_CASE(testSuite, DateRendererTest, DifferentFormats3);
+	ADD_CASE(testSuite, DateRendererTest, RelativeTimeFormat);
+	ADD_CASE(testSuite, DateRendererTest, AbsolutTimeFormat);
+	ADD_CASE(testSuite, DateRendererTest, GMTTime);
+	ADD_CASE(testSuite, DateRendererTest, emptyConfig1);
+	ADD_CASE(testSuite, DateRendererTest, emptyConfig2);
 
 	return testSuite;
 
-} // suite
+}

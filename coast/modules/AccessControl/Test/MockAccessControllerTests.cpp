@@ -24,60 +24,55 @@
 void MockAccessControllerTests::setUp ()
 {
 	StartTrace(MockAccessControllerTests.setUp);
-
-	ConfiguredTestCase::setUp();
-	WDModule::Install(fConfig["Config"]);
+	WDModule::Install(GetConfig()["Config"]);
 }
 
 void MockAccessControllerTests::tearDown ()
 {
 	StartTrace(MockAccessControllerTests.tearDown);
 
-	WDModule::Terminate(fConfig["Config"]);
-	ConfiguredTestCase::tearDown();
+	WDModule::Terminate(GetConfig()["Config"]);
 }
 
-void MockAccessControllerTests::testMockUDAC()
+void MockAccessControllerTests::MockUDACTest()
 {
-	StartTrace(MockAccessControllerTests.testMockUDAC);
+	StartTrace(MockAccessControllerTests.MockUDACTest);
 
 	MockUDAC *mudac = static_cast<MockUDAC *>(UserDataAccessController::FindUserDataAccessController("MockUserData"));
 	doTestUDAC(mudac);
 
 	// check results
-	assertAnyEqual(fConfig["Results"]["MockUDACTest"], mudac->GetMockedState());
+	assertAnyEqual(GetConfig()["Results"]["MockUDACTest"], mudac->GetMockedState());
 }
 
-void MockAccessControllerTests::testMockTDAC()
+void MockAccessControllerTests::MockTDACTest()
 {
-	StartTrace(MockAccessControllerTests.testMockTDAC);
+	StartTrace(MockAccessControllerTests.MockTDACTest);
 
 	MockTDAC *mtdac = static_cast<MockTDAC *>(TokenDataAccessController::FindTokenDataAccessController("MockTokenData"));
 	doTestTDAC(mtdac);
 
 	// check results
-	assertAnyEqual(fConfig["Results"]["MockTDACTest"], mtdac->GetMockedState());
+	assertAnyEqual(GetConfig()["Results"]["MockTDACTest"], mtdac->GetMockedState());
 }
 
-void MockAccessControllerTests::testMockEDAC()
+void MockAccessControllerTests::MockEDACTest()
 {
-	StartTrace(MockAccessControllerTests.testMockEDAC);
+	StartTrace(MockAccessControllerTests.MockEDACTest);
 
 	MockEDAC *medac = static_cast<MockEDAC *>(EntityDataAccessController::FindEntityDataAccessController("MockEntityData"));
 	doTestEDAC(medac);
 
 	// check results
-	assertAnyEqual(fConfig["Results"]["MockEDACTest"], medac->GetMockedState());
+	assertAnyEqual(GetConfig()["Results"]["MockEDACTest"], medac->GetMockedState());
 }
 
 Test *MockAccessControllerTests::suite ()
 {
 	StartTrace(FileUDACTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	ADD_CASE(testSuite, MockAccessControllerTests, testMockUDAC);
-	ADD_CASE(testSuite, MockAccessControllerTests, testMockTDAC);
-	ADD_CASE(testSuite, MockAccessControllerTests, testMockEDAC);
-
+	ADD_CASE(testSuite, MockAccessControllerTests, MockUDACTest);
+	ADD_CASE(testSuite, MockAccessControllerTests, MockTDACTest);
+	ADD_CASE(testSuite, MockAccessControllerTests, MockEDACTest);
 	return testSuite;
 }

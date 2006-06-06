@@ -38,36 +38,34 @@ RadioButtonRendererTest::~RadioButtonRendererTest()
 /*     Init                                                      */
 /*===============================================================*/
 void RadioButtonRendererTest::setUp ()
-// setup config for all the renderers in this TestCase
 {
 	FieldRendererTest::setUp();
-} // setUp
+}
 
 Test *RadioButtonRendererTest::suite ()
-// collect all test cases for the RadioButtonRenderer
 {
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(RadioButtonRendererTest, TestCaseEmptyConf));
-	testSuite->addTest (NEW_CASE(RadioButtonRendererTest, TestCase0));
-	testSuite->addTest (NEW_CASE(RadioButtonRendererTest, TestCase1));
-	testSuite->addTest (NEW_CASE(RadioButtonRendererTest, TestCase2));
-	testSuite->addTest (NEW_CASE(RadioButtonRendererTest, TestCase3));
-	testSuite->addTest (NEW_CASE(RadioButtonRendererTest, TestCaseWithoutName));
-	testSuite->addTest (NEW_CASE(RadioButtonRendererTest, TestCaseWithoutLabel));
-	testSuite->addTest (NEW_CASE(RadioButtonRendererTest, TestCaseWithoutValue));
-	testSuite->addTest (NEW_CASE(RadioButtonRendererTest, TestCaseWithoutSource));
-	testSuite->addTest (NEW_CASE(RadioButtonRendererTest, TestCaseWithoutMultiple));
-	testSuite->addTest (NEW_CASE(RadioButtonRendererTest, TestCaseWithoutChecked));
-	testSuite->addTest (NEW_CASE(RadioButtonRendererTest, TestCaseWithoutOptions));
-	testSuite->addTest (NEW_CASE(RadioButtonRendererTest, TestCaseWrong ));
-	testSuite->addTest (NEW_CASE(RadioButtonRendererTest, TestOptionRenderer ));
-	testSuite->addTest (NEW_CASE(RadioButtonRendererTest, TestOptionRendererOld ));
-	testSuite->addTest (NEW_CASE(RadioButtonRendererTest, TestFaultOptionRenderer ));
-	testSuite->addTest (NEW_CASE(RadioButtonRendererTest, TestFaultOptionRendererOld ));
+	ADD_CASE(testSuite, RadioButtonRendererTest, TestCaseEmptyConf);
+	ADD_CASE(testSuite, RadioButtonRendererTest, TestCase0);
+	ADD_CASE(testSuite, RadioButtonRendererTest, TestCase1);
+	ADD_CASE(testSuite, RadioButtonRendererTest, TestCase2);
+	ADD_CASE(testSuite, RadioButtonRendererTest, TestCase3);
+	ADD_CASE(testSuite, RadioButtonRendererTest, TestCaseWithoutName);
+	ADD_CASE(testSuite, RadioButtonRendererTest, TestCaseWithoutLabel);
+	ADD_CASE(testSuite, RadioButtonRendererTest, TestCaseWithoutValue);
+	ADD_CASE(testSuite, RadioButtonRendererTest, TestCaseWithoutSource);
+	ADD_CASE(testSuite, RadioButtonRendererTest, TestCaseWithoutMultiple);
+	ADD_CASE(testSuite, RadioButtonRendererTest, TestCaseWithoutChecked);
+	ADD_CASE(testSuite, RadioButtonRendererTest, TestCaseWithoutOptions);
+	ADD_CASE(testSuite, RadioButtonRendererTest, TestCaseWrong);
+	ADD_CASE(testSuite, RadioButtonRendererTest, TestOptionRenderer);
+	ADD_CASE(testSuite, RadioButtonRendererTest, TestOptionRendererOld);
+	ADD_CASE(testSuite, RadioButtonRendererTest, TestFaultOptionRenderer);
+	ADD_CASE(testSuite, RadioButtonRendererTest, TestFaultOptionRendererOld);
 
 	return testSuite;
-} // suite
+}
 
 /*===============================================================*/
 /*     Check where all is correctly defined                      */

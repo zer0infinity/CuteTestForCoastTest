@@ -65,7 +65,7 @@ private:
 
 //---- ConnectorAcceptorTest ---------------------------------------------------
 
-class ConnectorAcceptorTest : public TestCase
+class ConnectorAcceptorTest : public TestFramework::TestCase
 {
 public:
 	ConnectorAcceptorTest(TString tstrName);

@@ -9,14 +9,14 @@
 #ifndef _CopyActionsTest_h_
 #define _CopyActionsTest_h_
 
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 
 class Context;
 class String;
 
 //---- CopyActionsTest -----------------------------------------------------------
 
-class CopyActionsTest : public ConfiguredTestCase
+class CopyActionsTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	CopyActionsTest(TString tstrName);
@@ -24,6 +24,7 @@ public:
 
 	static Test *suite();
 
+	TString getConfigFileName();
 	void CopyActionTest();
 
 protected:

@@ -32,21 +32,16 @@ bool FileCreator::CreateFile(String dataAccessName, ROAnything data)
 void FileAccessControllerTests::setUp ()
 {
 	StartTrace(FileAccessControllerTests.setUp);
-
-	ConfiguredTestCase::setUp();
-	WDModule::Install(fConfig["Config"]);
+	WDModule::Install(GetConfig()["Config"]);
 }
 
 void FileAccessControllerTests::tearDown ()
 {
 	StartTrace(FileUDACTest.tearDown);
-
-	WDModule::Terminate(fConfig["Config"]);
-	ConfiguredTestCase::tearDown();
+	WDModule::Terminate(GetConfig()["Config"]);
 }
 
 // -------------------- UDAC Tests ----------------------
-
 void FileAccessControllerTests::doTestUDAC(UserDataAccessController *udac)
 {
 	StartTrace(FileAccessControllerTests.doTestUDAC);
@@ -84,12 +79,12 @@ void FileAccessControllerTests::doTestUDAC(UserDataAccessController *udac)
 	}
 }
 
-void FileAccessControllerTests::testFileUDAC()
+void FileAccessControllerTests::FileUDACTest()
 {
-	StartTrace(FileAccessControllerTests.testFileUDAC);
+	StartTrace(FileAccessControllerTests.FileUDACTest);
 
 	// create test file
-	t_assertm( FileCreator::CreateFile("WriteUserData", fConfig["InitData"]["UDACTest"]), "Creation of test file failed"	);
+	t_assertm( FileCreator::CreateFile("WriteUserData", GetConfig()["InitData"]["UDACTest"]), "Creation of test file failed"	);
 
 	// do generic tests
 	UserDataAccessController *fudac = UserDataAccessController::FindUserDataAccessController("UserDataFile");
@@ -99,14 +94,13 @@ void FileAccessControllerTests::testFileUDAC()
 	Context c;
 	t_assert(DataAccess("ReadUserData").StdExec(c));
 	TraceAny(c.GetTmpStore()["FileContent"], "FileContentAfterTest");
-	assertAnyEqual(fConfig["FileContent"]["UDACTest"], c.GetTmpStore()["FileContent"]);
+	assertAnyEqual(GetConfig()["FileContent"]["UDACTest"], c.GetTmpStore()["FileContent"]);
 
 	// clean up
 	System::IO::unlink("config/FileTestUserDB.any");
 }
 
 // -------------------- TDAC Tests ----------------------
-
 void FileAccessControllerTests::doTestTDAC(TokenDataAccessController *tdac)
 {
 	StartTrace(FileAccessControllerTests.doTestTDAC);
@@ -132,12 +126,12 @@ void FileAccessControllerTests::doTestTDAC(TokenDataAccessController *tdac)
 	}
 }
 
-void FileAccessControllerTests::testFileTDAC()
+void FileAccessControllerTests::FileTDACTest()
 {
-	StartTrace(FileAccessControllerTests.testFileTDAC);
+	StartTrace(FileAccessControllerTests.FileTDACTest);
 
 	// create test file
-	t_assertm( FileCreator::CreateFile("WriteTokenData", fConfig["InitData"]["TDACTest"]), "Creation of test file failed"	);
+	t_assertm( FileCreator::CreateFile("WriteTokenData", GetConfig()["InitData"]["TDACTest"]), "Creation of test file failed"	);
 
 	// do generic tests
 	TokenDataAccessController *ftdac = TokenDataAccessController::FindTokenDataAccessController("TokenDataFile");
@@ -147,14 +141,13 @@ void FileAccessControllerTests::testFileTDAC()
 	Context c;
 	t_assert(DataAccess("ReadTokenData").StdExec(c));
 	TraceAny(c.GetTmpStore()["FileContent"], "FileContentAfterTest");
-	assertAnyEqual(fConfig["FileContent"]["TDACTest"], c.GetTmpStore()["FileContent"]);
+	assertAnyEqual(GetConfig()["FileContent"]["TDACTest"], c.GetTmpStore()["FileContent"]);
 
 	// clean up
 	System::IO::unlink("config/FileTestActerDB.any");
 }
 
 // -------------------- EDAC Tests ----------------------
-
 void FileAccessControllerTests::doTestEDAC(EntityDataAccessController *edac)
 {
 	StartTrace(FileAccessControllerTests.doTestEDAC);
@@ -203,12 +196,12 @@ void FileAccessControllerTests::doTestEDAC(EntityDataAccessController *edac)
 	}
 }
 
-void FileAccessControllerTests::testFileEDAC()
+void FileAccessControllerTests::FileEDACTest()
 {
-	StartTrace(FileAccessControllerTests.testFileEDAC);
+	StartTrace(FileAccessControllerTests.FileEDACTest);
 
 	// create test file
-	t_assertm( FileCreator::CreateFile("WriteEntityData", fConfig["InitData"]["EDACTest"]), "Creation of test file failed"	);
+	t_assertm( FileCreator::CreateFile("WriteEntityData", GetConfig()["InitData"]["EDACTest"]), "Creation of test file failed"	);
 
 	// do generic tests
 	EntityDataAccessController *fedac = EntityDataAccessController::FindEntityDataAccessController("EntityDataFile");
@@ -218,23 +211,19 @@ void FileAccessControllerTests::testFileEDAC()
 	Context c;
 	t_assert(DataAccess("ReadEntityData").StdExec(c));
 	TraceAny(c.GetTmpStore()["FileContent"], "FileContentAfterTest");
-	assertAnyEqual(fConfig["FileContent"]["EDACTest"], c.GetTmpStore()["FileContent"]);
+	assertAnyEqual(GetConfig()["FileContent"]["EDACTest"], c.GetTmpStore()["FileContent"]);
 
 	// clean up
 	System::IO::unlink("config/FileTestRightsDB.any");
 }
 
 // ------------------------- suite ------------------------------
-
 Test *FileAccessControllerTests::suite ()
 {
 	StartTrace(FileAccessControllerTests.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	ADD_CASE(testSuite, FileAccessControllerTests, testFileUDAC);
-	ADD_CASE(testSuite, FileAccessControllerTests, testFileTDAC);
-	ADD_CASE(testSuite, FileAccessControllerTests, testFileEDAC);
-
+	ADD_CASE(testSuite, FileAccessControllerTests, FileUDACTest);
+	ADD_CASE(testSuite, FileAccessControllerTests, FileTDACTest);
+	ADD_CASE(testSuite, FileAccessControllerTests, FileEDACTest);
 	return testSuite;
 }
-

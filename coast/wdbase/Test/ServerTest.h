@@ -10,14 +10,13 @@
 #define _ServerTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 
 //---- forward declaration -----------------------------------------------
-class Registry;
 
 //---- ServerTest ----------------------------------------------------------
 //!TestCases for the Registry class
-class ServerTest : public ConfiguredTestCase
+class ServerTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors
@@ -48,11 +47,6 @@ public:
 
 	//! run a test sequence
 	void RunTestSequence();
-
-protected:
-
-private:
-
 };
 
 #endif

@@ -20,7 +20,7 @@ class TableCompressor;
 //! further explanation of the purpose of the class
 //! this may contain <B>HTML-Tags</B>
 //! ...
-class TableCompressorTest : public TestCase
+class TableCompressorTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -48,12 +48,6 @@ public:
 protected:
 	//--- subclass api
 	void MakeTestTable(TableCompressor *);
-	//--- member variables declaration
-
-private:
-	// use careful, you inhibit subclass use
-	//--- private class api
-	//--- private member variables
 };
 
 #endif

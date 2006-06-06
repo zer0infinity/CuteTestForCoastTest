@@ -26,7 +26,7 @@
 #include "Threads.h"
 
 //---- LdapCachePolicyTest ----------------------------------------------------------------
-LdapCachePolicyTest::LdapCachePolicyTest(TString tstrName) : TestCase(tstrName)
+LdapCachePolicyTest::LdapCachePolicyTest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(LdapCachePolicyTest.Ctor);
 }
@@ -36,7 +36,6 @@ LdapCachePolicyTest::~LdapCachePolicyTest()
 	StartTrace(LdapCachePolicyTest.Dtor);
 }
 
-// setup for this TestCase
 void LdapCachePolicyTest::setUp ()
 {
 	StartTrace(LdapCachePolicyTest.setUp);
@@ -120,19 +119,13 @@ void LdapCachePolicyTest::CallsInARow()
 	}
 }
 
-void LdapCachePolicyTest::testCase()
-{
-	StartTrace(LdapCachePolicyTest.testCase);
-//	t_assert(false);
-}
-
 // builds up a suite of testcases, add a line for each testmethod
 Test *LdapCachePolicyTest::suite ()
 {
 	StartTrace(LdapCachePolicyTest.suite);
 	TestSuite *testSuite = new TestSuite;
-	testSuite->addTest (NEW_CASE(LdapCachePolicyTest, NoDataReadTest));
-	testSuite->addTest (NEW_CASE(LdapCachePolicyTest, CallsInARow));
-	testSuite->addTest (NEW_CASE(LdapCachePolicyTest, ReInitTest));
+	ADD_CASE(testSuite, LdapCachePolicyTest, NoDataReadTest);
+	ADD_CASE(testSuite, LdapCachePolicyTest, CallsInARow);
+	ADD_CASE(testSuite, LdapCachePolicyTest, ReInitTest);
 	return testSuite;
 }

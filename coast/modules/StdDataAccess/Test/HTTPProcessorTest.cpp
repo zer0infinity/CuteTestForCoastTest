@@ -30,10 +30,14 @@ static String common =
 
 //---- HTTPProcessorTest ----------------------------------------------------------------
 HTTPProcessorTest::HTTPProcessorTest(TString tname)
-	: ConfiguredTestCase(tname, "HTTPProcessorTestConfig")
+	: TestCaseType(tname)
 {
-	StartTrace(HTTPProcessorTest.Ctor);
+	StartTrace(HTTPProcessorTest.HTTPProcessorTest);
+}
 
+TString HTTPProcessorTest::getConfigFileName()
+{
+	return "HTTPProcessorTestConfig";
 }
 
 HTTPProcessorTest::~HTTPProcessorTest()
@@ -41,22 +45,19 @@ HTTPProcessorTest::~HTTPProcessorTest()
 	StartTrace(HTTPProcessorTest.Dtor);
 }
 
-// setup for this TestCase
 void HTTPProcessorTest::setUp ()
 {
 	StartTrace(HTTPProcessorTest.setUp);
-	ConfiguredTestCase::setUp();
 
 	fArgTemplate["env"]["REMOTE_ADDR"] = "127.0.0.1";
 	fArgTemplate["env"]["HTTP_USER_AGENT"] = "Testframework";
 	fArgTemplate["query"]["adr"] = "127.0.0.2";
 	fArgTemplate["query"]["port"] = 2412;
+}
 
-} // setUp
-
-void HTTPProcessorTest::testDoReadInputWithError()
+void HTTPProcessorTest::DoReadInputWithErrorTest()
 {
-	StartTrace(HTTPProcessorTest.testDoReadInputWithError);
+	StartTrace(HTTPProcessorTest.DoReadInputWithErrorTest);
 	HTTPProcessor fds("test");
 	String expected = "";
 
@@ -139,7 +140,7 @@ void HTTPProcessorTest::testDoReadInputWithCfg( HTTPProcessor &fds, String expec
 
 void HTTPProcessorTest::BuildResult( String &reply, String &fullreply, String result )
 {
-	StartTrace(HTTPProcessorTest.testDoReadInputWithCfg);
+	StartTrace(HTTPProcessorTest.BuildResult);
 	fullreply << reply << result;
 	long pos = fullreply.Contains("</html>" );
 	if (pos >= 0) {
@@ -294,7 +295,6 @@ void HTTPProcessorTest::DoReadMinimalInputTest()
 	assertEqual( expected, reply );
 	Trace(uri);
 	Trace(expected);
-
 }
 
 void HTTPProcessorTest::FileUploadTest()
@@ -303,11 +303,11 @@ void HTTPProcessorTest::FileUploadTest()
 
 	HTTPProcessor hp("TestMe");
 	Context ctx;
-	String input(fTestCaseConfig["Request"].AsString());
+	String input(GetTestCaseConfig()["Request"].AsString());
 	StringStream is1(input);
 	hp.DoReadInput(is1, ctx);
 
-	assertAnyEqualm(fTestCaseConfig["Results"]["REQUEST_BODY"], ctx.GetEnvStore()["REQUEST_BODY"], name());
+	assertAnyEqualm(GetTestCaseConfig()["Results"]["REQUEST_BODY"], ctx.GetEnvStore()["REQUEST_BODY"], name());
 }
 
 void HTTPProcessorTest::RenderProtocolStatusWithoutHTTPStatus()
@@ -364,9 +364,13 @@ void HTTPProcessorTest::KeepConnection()
 	t_assert(!hp.DoKeepConnectionAlive(ctx));
 }
 
-void HTTPProcessorTest::TestIsZipEncodingAcceptedByClient()
+void HTTPProcessorTest::IsZipEncodingAcceptedByClientTest()
 {
-	FOREACH_ENTRY("IsZipEncodingAcceptedByClientTest", caseConfig, caseName) {
+	ROAnything caseConfig;
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(caseConfig) ) {
+		TString caseName;
+		aEntryIterator.SlotName(caseName);
 		Context ctx;
 		ctx.GetTmpStore() = caseConfig["TmpStore"].DeepClone();
 		ctx.GetRequest() = caseConfig["Request"].DeepClone();
@@ -381,14 +385,12 @@ Test *HTTPProcessorTest::suite ()
 {
 	StartTrace(HTTPProcessorTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	testSuite->addTest (NEW_CASE(HTTPProcessorTest, TestIsZipEncodingAcceptedByClient));
-	testSuite->addTest (NEW_CASE(HTTPProcessorTest, DoReadInputTest));
-	testSuite->addTest (NEW_CASE(HTTPProcessorTest, testDoReadInputWithError));
-	testSuite->addTest (NEW_CASE(HTTPProcessorTest, DoReadMinimalInputTest));
-	testSuite->addTest (NEW_CASE(HTTPProcessorTest, FileUploadTest));
-	testSuite->addTest (NEW_CASE(HTTPProcessorTest, RenderProtocolStatusWithoutHTTPStatus));
-	testSuite->addTest (NEW_CASE(HTTPProcessorTest, KeepConnection));
+	ADD_CASE(testSuite, HTTPProcessorTest, IsZipEncodingAcceptedByClientTest);
+	ADD_CASE(testSuite, HTTPProcessorTest, DoReadInputTest);
+	ADD_CASE(testSuite, HTTPProcessorTest, DoReadInputWithErrorTest);
+	ADD_CASE(testSuite, HTTPProcessorTest, DoReadMinimalInputTest);
+	ADD_CASE(testSuite, HTTPProcessorTest, FileUploadTest);
+	ADD_CASE(testSuite, HTTPProcessorTest, RenderProtocolStatusWithoutHTTPStatus);
+	ADD_CASE(testSuite, HTTPProcessorTest, KeepConnection);
 	return testSuite;
-
-} // suite
+}

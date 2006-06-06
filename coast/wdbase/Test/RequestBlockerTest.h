@@ -14,7 +14,7 @@
 
 //---- RequestBlockerTest ----------------------------------------------------------
 //!test for RequestBlocker, migrated from mtfoundation/Test/ThreadsTest
-class RequestBlockerTest : public TestCase
+class RequestBlockerTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -32,17 +32,8 @@ public:
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
 
-	//!sets the environment for this test
-	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
-
 	//!test RB singleton, which is a RWLock implementtion
 	virtual void RBTest();
-
-protected:
-
 };
 
 #endif

@@ -38,37 +38,35 @@ HiddenFieldRendererTest::~HiddenFieldRendererTest()
 /*     Init                                                      */
 /*===============================================================*/
 void HiddenFieldRendererTest::setUp ()
-// setup config for all the renderers in this TestCase
 {
 	FieldRendererTest::setUp();
-} // setUp
+}
 
 Test *HiddenFieldRendererTest::suite ()
-// collect all test cases for the HiddenFieldRenderer
 {
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(HiddenFieldRendererTest, TestCaseEmptyConf));
-	testSuite->addTest (NEW_CASE(HiddenFieldRendererTest, TestCase0));
-	testSuite->addTest (NEW_CASE(HiddenFieldRendererTest, TestCase1));
-	testSuite->addTest (NEW_CASE(HiddenFieldRendererTest, TestCase2));
-	testSuite->addTest (NEW_CASE(HiddenFieldRendererTest, TestCase3));
-	testSuite->addTest (NEW_CASE(HiddenFieldRendererTest, TestCaseWithoutName));
-	testSuite->addTest (NEW_CASE(HiddenFieldRendererTest, TestCaseWithoutLabel));
-	testSuite->addTest (NEW_CASE(HiddenFieldRendererTest, TestCaseWithoutValue));
-	testSuite->addTest (NEW_CASE(HiddenFieldRendererTest, TestCaseWithoutSource));
-	testSuite->addTest (NEW_CASE(HiddenFieldRendererTest, TestCaseWithoutMultiple));
-	testSuite->addTest (NEW_CASE(HiddenFieldRendererTest, TestCaseWithoutChecked));
-	testSuite->addTest (NEW_CASE(HiddenFieldRendererTest, TestCaseWithoutOptions));
-	testSuite->addTest (NEW_CASE(HiddenFieldRendererTest, TestCaseWrong ));
-	testSuite->addTest (NEW_CASE(HiddenFieldRendererTest, TestOptionRenderer));
-	testSuite->addTest (NEW_CASE(HiddenFieldRendererTest, TestFaultOptionRenderer));
-	testSuite->addTest (NEW_CASE(HiddenFieldRendererTest, TestOptionRendererOld));
-	testSuite->addTest (NEW_CASE(HiddenFieldRendererTest, TestFaultOptionRendererOld ));
+	ADD_CASE(testSuite, HiddenFieldRendererTest, TestCaseEmptyConf);
+	ADD_CASE(testSuite, HiddenFieldRendererTest, TestCase0);
+	ADD_CASE(testSuite, HiddenFieldRendererTest, TestCase1);
+	ADD_CASE(testSuite, HiddenFieldRendererTest, TestCase2);
+	ADD_CASE(testSuite, HiddenFieldRendererTest, TestCase3);
+	ADD_CASE(testSuite, HiddenFieldRendererTest, TestCaseWithoutName);
+	ADD_CASE(testSuite, HiddenFieldRendererTest, TestCaseWithoutLabel);
+	ADD_CASE(testSuite, HiddenFieldRendererTest, TestCaseWithoutValue);
+	ADD_CASE(testSuite, HiddenFieldRendererTest, TestCaseWithoutSource);
+	ADD_CASE(testSuite, HiddenFieldRendererTest, TestCaseWithoutMultiple);
+	ADD_CASE(testSuite, HiddenFieldRendererTest, TestCaseWithoutChecked);
+	ADD_CASE(testSuite, HiddenFieldRendererTest, TestCaseWithoutOptions);
+	ADD_CASE(testSuite, HiddenFieldRendererTest, TestCaseWrong);
+	ADD_CASE(testSuite, HiddenFieldRendererTest, TestOptionRenderer);
+	ADD_CASE(testSuite, HiddenFieldRendererTest, TestFaultOptionRenderer);
+	ADD_CASE(testSuite, HiddenFieldRendererTest, TestOptionRendererOld);
+	ADD_CASE(testSuite, HiddenFieldRendererTest, TestFaultOptionRendererOld);
 
 	return testSuite;
 
-} // suite
+}
 
 /*===============================================================*/
 /*     Check where all is correctly defined                      */

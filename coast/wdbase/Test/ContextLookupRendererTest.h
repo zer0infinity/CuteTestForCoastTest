@@ -15,7 +15,7 @@
 
 //---- ContextLookupRendererTest -----------------------------------------------------------
 
-class ContextLookupRendererTest : public TestCase
+class ContextLookupRendererTest : public TestFramework::TestCase
 {
 public:
 	ContextLookupRendererTest(TString tstrName);

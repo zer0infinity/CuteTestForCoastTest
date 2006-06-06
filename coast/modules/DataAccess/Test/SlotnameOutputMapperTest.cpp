@@ -20,9 +20,14 @@
 
 //---- SlotnameOutputMapperTest ----------------------------------------------------------------
 SlotnameOutputMapperTest::SlotnameOutputMapperTest(TString tname)
-	: ConfiguredActionTest(tname, "SlotnameOutputMapperTestConfig")
+	: ConfiguredActionTest(tname)
 {
-	StartTrace(SlotnameOutputMapperTest.Ctor);
+	StartTrace(SlotnameOutputMapperTest.SlotnameOutputMapperTest);
+}
+
+TString SlotnameOutputMapperTest::getConfigFileName()
+{
+	return "SlotnameOutputMapperTestConfig";
 }
 
 SlotnameOutputMapperTest::~SlotnameOutputMapperTest()
@@ -38,8 +43,8 @@ void SlotnameOutputMapperTest::BasicFunctionTest()
 	som.CheckConfig("ResultMapper");
 
 	Context ctx;
-	som.Put("Data", fTestCaseConfig["AnyToPut"], ctx);
-	DoCheckStores(fTestCaseConfig["Result"], ctx, name());
+	som.Put("Data", GetTestCaseConfig()["AnyToPut"].DeepClone(), ctx);
+	DoCheckStores(GetTestCaseConfig()["Result"], ctx, name());
 }
 
 void SlotnameOutputMapperTest::OverwriteOrAppendTest()
@@ -50,20 +55,17 @@ void SlotnameOutputMapperTest::OverwriteOrAppendTest()
 	som.CheckConfig("ResultMapper");
 
 	Context ctx;
-	som.Put("Data", fTestCaseConfig["AnyToPut"][0L], ctx);
-	som.Put("Data", fTestCaseConfig["AnyToPut"][1L], ctx);
-	DoCheckStores(fTestCaseConfig["Result"], ctx, name());
+	som.Put("Data", GetTestCaseConfig()["AnyToPut"][0L].DeepClone(), ctx);
+	som.Put("Data", GetTestCaseConfig()["AnyToPut"][1L].DeepClone(), ctx);
+	DoCheckStores(GetTestCaseConfig()["Result"], ctx, name());
 }
 
-// builds up a suite of ConfiguredTestCases, add a line for each testmethod
+// builds up a suite of tests, add a line for each testmethod
 Test *SlotnameOutputMapperTest::suite ()
 {
 	StartTrace(SlotnameOutputMapperTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
 	ADD_CASE(testSuite, SlotnameOutputMapperTest, BasicFunctionTest);
 	ADD_CASE(testSuite, SlotnameOutputMapperTest, OverwriteOrAppendTest);
-
 	return testSuite;
-
-} // suite
+}

@@ -21,7 +21,7 @@ class Anything;
 //! further explanation of the purpose of the class
 //! this may contain <B>HTML-Tags</B>
 //! ...
-class HTTPMapperTest : public TestCase
+class HTTPMapperTest : public TestFramework::TestCase
 {
 public:
 
@@ -34,12 +34,6 @@ public:
 	//! this method generates the tests for the HTMLParser classed
 	//! \return a new test is created by this method
 	static Test *suite ();
-
-	//!generate set up for connector test does nothing so far
-	void setUp ();
-
-	//!delete set up for connector test does nothing so far
-	void tearDown ();
 
 protected:
 	//--- tests for public api of class connector
@@ -54,13 +48,6 @@ protected:
 
 	void GetTestInput(Anything &testInput, const char *testname);
 	String PrepareResults(ROAnything resultsAsAny);
-
-private:
-	// use careful, you inhibit subclass use
-	//--- private class api
-
-	//--- private member variables
-
 };
 
 #endif

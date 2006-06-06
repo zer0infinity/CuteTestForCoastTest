@@ -28,7 +28,7 @@ Test *SecurityModuleTest::suite ()
 	return testSuite;
 }
 
-SecurityModuleTest::SecurityModuleTest(TString tname) : TestCase(tname)
+SecurityModuleTest::SecurityModuleTest(TString tname) : TestCaseType(tname)
 {
 }
 

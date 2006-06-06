@@ -10,7 +10,7 @@
 #define _ConfiguredActionTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 
 class Context;
 class Anything;
@@ -104,16 +104,16 @@ This means that the following paths must not exist in the result context:
 </pre>
 \note You can only check for absence of named slots (so far). Values are not checked, thus * must be provided as leaf (or any other dummy) for correct syntax.
  */
-class ConfiguredActionTest : public ConfiguredTestCase
+class ConfiguredActionTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	/*! TestCase constructor
 		\param name name of the test */
 	ConfiguredActionTest(TString tstrName);
-	/*! TestCase constructor
-		\param name name of the test
-		\param configFileName name of the tests config file */
-	ConfiguredActionTest(TString tstrName, TString configFileName);
+//	/*! TestCase constructor
+//		\param name name of the test
+//		\param configFileName name of the tests config file */
+//	ConfiguredActionTest(TString tstrName, TString configFileName);
 
 	//! TestCase destructor
 	~ConfiguredActionTest();
@@ -123,6 +123,8 @@ public:
 
 	//! deletes the environment for this test
 	void tearDown ();
+
+	TString getConfigFileName();
 
 	//! loop over the slots in ConfiguredActionTestConfig.any
 	void RunTestCases();
@@ -148,6 +150,8 @@ protected:
 		\param testCase the test case's config
 		\param testCaseName String that is printed with failure messages */
 	virtual void DoTestWithContext(Anything testCase, const String &testCaseName, Context &ctx);
+
+	void DoTestWithContext(ROAnything testCase, const String &testCaseName, Context &ctx);
 
 	/*!	Prepares the config of the testcase
 		implements config sharing, configured with /UseConfig slot

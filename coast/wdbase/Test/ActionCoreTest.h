@@ -14,7 +14,7 @@
 
 //---- ActionCoreTest ----------------------------------------------------------
 //!TestCases description
-class ActionCoreTest : public TestCase
+class ActionCoreTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -31,12 +31,6 @@ public:
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
 
-	//!sets the environment for this test
-	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
-
 	//!checks if the transition token is handled according to the unconfigured Action
 	void ConsistentTransitionHandling();
 
@@ -51,9 +45,6 @@ public:
 
 	//!runs a sequence of actions until the first one fail
 	void AbortedActionSequence();
-
-protected:
-
 };
 
 #endif

@@ -21,7 +21,7 @@
 
 //---- SSLSocketArgsTest ----------------------------------------------------------------
 
-SSLSocketArgsTest::SSLSocketArgsTest(TString tname) : TestCase(tname)
+SSLSocketArgsTest::SSLSocketArgsTest(TString tname) : TestCaseType(tname)
 {
 }
 
@@ -30,22 +30,9 @@ SSLSocketArgsTest::~SSLSocketArgsTest()
 	StartTrace(SSLSocketArgsTest.Dtor);
 }
 
-void SSLSocketArgsTest::setUp ()
+void SSLSocketArgsTest::ArgsTest()
 {
-} // setUp
-
-void SSLSocketArgsTest::tearDown ()
-{
-} // tearDown
-
-void SSLSocketArgsTest::test()
-{
-	StartTrace(SSLSocketArgsTest.test);
-}
-
-void SSLSocketArgsTest::testSSLSocketArgs()
-{
-	StartTrace(SSLSocketArgsTest.test);
+	StartTrace(SSLSocketArgsTest.ArgsTest);
 	SSLSocketArgs sslsa(true, "gugus", true, true);
 	assertEqual(sslsa.VerifyCertifiedEntity(), true);
 	assertEqual(sslsa.CertVerifyString(), "gugus");
@@ -80,14 +67,11 @@ void SSLSocketArgsTest::testSSLSocketArgs()
 	assertEqual(sslsa4.SessionResumption(), true);
 }
 
-// builds up a suite of ConfiguredTestCases, add a line for each testmethod
+// builds up a suite of tests, add a line for each testmethod
 Test *SSLSocketArgsTest::suite ()
 {
 	StartTrace(SSLSocketArgsTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	ADD_CASE(testSuite, SSLSocketArgsTest, test);
-	ADD_CASE(testSuite, SSLSocketArgsTest, testSSLSocketArgs);
-
+	ADD_CASE(testSuite, SSLSocketArgsTest, ArgsTest);
 	return testSuite;
 }

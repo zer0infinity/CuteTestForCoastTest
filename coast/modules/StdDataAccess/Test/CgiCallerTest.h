@@ -14,7 +14,7 @@
 class Context;
 //---- CgiCallerTest ----------------------------------------------------------
 //!Tests the cgi caller
-class CgiCallerTest : public TestCase
+class CgiCallerTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors

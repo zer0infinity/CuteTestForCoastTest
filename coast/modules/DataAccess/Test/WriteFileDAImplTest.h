@@ -31,11 +31,13 @@ public:
 	//!builds up a suite of Tests for this test
 	static Test *suite ();
 
+	TString getConfigFileName();
+
 	//!describe this Test
 	void WriteFileTest();
 
 protected:
-	bool CompareResult();
+	bool CompareResult(TString strResult);
 };
 
 #endif

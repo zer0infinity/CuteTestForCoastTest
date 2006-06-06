@@ -16,10 +16,7 @@
 #include "AuthenticationService.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "StringStream.h"
 #include "SecurityModule.h"
-#include "Context.h"
-#include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
 
@@ -47,9 +44,14 @@ RegisterServiceHandler(AuthTestService);
 
 //---- AuthenticationServiceTest ----------------------------------------------------------------
 AuthenticationServiceTest::AuthenticationServiceTest(TString tstrName)
-	: ConfiguredActionTest(tstrName, "AuthenticationServiceTestConfig")
+	: ConfiguredActionTest(tstrName)
 {
-	StartTrace(AuthenticationServiceTest.Ctor);
+	StartTrace(AuthenticationServiceTest.AuthenticationServiceTest);
+}
+
+TString AuthenticationServiceTest::getConfigFileName()
+{
+	return "AuthenticationServiceTestConfig";
 }
 
 AuthenticationServiceTest::~AuthenticationServiceTest()
@@ -128,7 +130,7 @@ void AuthenticationServiceTest::NoConfigTest()
 	DoTest( ash, ctx, expectedMsg );
 
 	// but can also find config data elsewhere in context
-	PutInStore(fTestCaseConfig["TmpStore"], ctx.GetTmpStore());
+	PutInStore(GetTestCaseConfig()["TmpStore"].DeepClone(), ctx.GetTmpStore());
 
 	String errorMsg;
 	ConnCloseMessage(errorMsg, "AuthTest", "AuthTest");
@@ -223,16 +225,16 @@ void AuthenticationServiceTest::MakeAuthenticationInfo(Context &ctx, String user
 	TraceAny(env, "env with Authorization header");
 }
 
-// builds up a suite of ConfiguredTestCases, add a line for each testmethod
+// builds up a suite of tests, add a line for each testmethod
 Test *AuthenticationServiceTest::suite ()
 {
 	StartTrace(AuthenticationServiceTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(AuthenticationServiceTest, OkTest));
-	testSuite->addTest (NEW_CASE(AuthenticationServiceTest, AuthenticationFailedTest));
-	testSuite->addTest (NEW_CASE(AuthenticationServiceTest, ServiceNotFoundTest));
-	testSuite->addTest (NEW_CASE(AuthenticationServiceTest, NoConfigTest));
+	ADD_CASE(testSuite, AuthenticationServiceTest, OkTest);
+	ADD_CASE(testSuite, AuthenticationServiceTest, AuthenticationFailedTest);
+	ADD_CASE(testSuite, AuthenticationServiceTest, ServiceNotFoundTest);
+	ADD_CASE(testSuite, AuthenticationServiceTest, NoConfigTest);
 
 	return testSuite;
-} // suite
+}

@@ -22,7 +22,7 @@
 #include "RegistryIteratorTest.h"
 
 //---- RegistryIteratorTest ----------------------------------------------------------------
-RegistryIteratorTest::RegistryIteratorTest(TString tname) : TestCase(tname)
+RegistryIteratorTest::RegistryIteratorTest(TString tname) : TestCaseType(tname)
 {
 	StartTrace(RegistryIteratorTest.Ctor);
 }
@@ -31,17 +31,6 @@ RegistryIteratorTest::~RegistryIteratorTest()
 {
 	StartTrace(RegistryIteratorTest.Dtor);
 }
-
-// setup for this TestCase
-void RegistryIteratorTest::setUp ()
-{
-	StartTrace(RegistryIteratorTest.setUp);
-} // setUp
-
-void RegistryIteratorTest::tearDown ()
-{
-	StartTrace(RegistryIteratorTest.tearDown);
-} // tearDown
 
 void RegistryIteratorTest::IterateOverNullRegistry()
 {
@@ -220,12 +209,12 @@ Test *RegistryIteratorTest::suite ()
 	StartTrace(RegistryIteratorTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(RegistryIteratorTest, IterateOverNullRegistry));
-	testSuite->addTest (NEW_CASE(RegistryIteratorTest, IterateOverEmptyRegistry));
-	testSuite->addTest (NEW_CASE(RegistryIteratorTest, IterateOverOneElementRegistry));
-	testSuite->addTest (NEW_CASE(RegistryIteratorTest, IterateOverNElementRegistry));
-	testSuite->addTest (NEW_CASE(RegistryIteratorTest, IterateWhileRemoving));
+	ADD_CASE(testSuite, RegistryIteratorTest, IterateOverNullRegistry);
+	ADD_CASE(testSuite, RegistryIteratorTest, IterateOverEmptyRegistry);
+	ADD_CASE(testSuite, RegistryIteratorTest, IterateOverOneElementRegistry);
+	ADD_CASE(testSuite, RegistryIteratorTest, IterateOverNElementRegistry);
+	ADD_CASE(testSuite, RegistryIteratorTest, IterateWhileRemoving);
 
 	return testSuite;
 
-} // suite
+}

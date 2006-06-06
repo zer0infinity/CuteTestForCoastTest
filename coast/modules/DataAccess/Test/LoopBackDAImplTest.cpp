@@ -23,17 +23,16 @@
 
 //---- LoopBackDAImplTest ----------------------------------------------------------------
 Test *LoopBackDAImplTest::suite ()
-// collect all test cases for the RegistryStream
 {
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(LoopBackDAImplTest, ExecTest));
+	ADD_CASE(testSuite, LoopBackDAImplTest, ExecTest);
 
 	return testSuite;
 
-} // suite
+}
 
-LoopBackDAImplTest::LoopBackDAImplTest(TString tname) : TestCase(tname)
+LoopBackDAImplTest::LoopBackDAImplTest(TString tname) : TestCaseType(tname)
 {
 
 }
@@ -44,7 +43,6 @@ LoopBackDAImplTest::~LoopBackDAImplTest()
 }
 
 void LoopBackDAImplTest::setUp ()
-// setup connector for this TestCase
 {
 	iostream *Ios = System::OpenStream("LoopBackDAImplTest", "any");
 	if ( Ios ) {
@@ -52,7 +50,7 @@ void LoopBackDAImplTest::setUp ()
 		delete Ios;
 	}
 
-} // setUp
+}
 
 void LoopBackDAImplTest::ExecTest()
 {

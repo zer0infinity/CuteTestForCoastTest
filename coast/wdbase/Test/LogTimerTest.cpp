@@ -22,9 +22,9 @@
 
 //---- LogTimerTest ----------------------------------------------------------------
 LogTimerTest::LogTimerTest(TString tname)
-	: ConfiguredTestCase(tname, "Config")
+	: TestCaseType(tname)
 {
-	StartTrace(LogTimerTest.Ctor);
+	StartTrace(LogTimerTest.LogTimerTest);
 }
 
 LogTimerTest::~LogTimerTest()
@@ -119,9 +119,6 @@ Test *LogTimerTest::suite ()
 {
 	StartTrace(LogTimerTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	testSuite->addTest (NEW_CASE(LogTimerTest, MethodTimerTest));
-
+	ADD_CASE(testSuite, LogTimerTest, MethodTimerTest);
 	return testSuite;
-
-} // suite
+}

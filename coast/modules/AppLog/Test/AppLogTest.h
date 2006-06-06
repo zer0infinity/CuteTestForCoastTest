@@ -10,13 +10,13 @@
 #define _AppLogTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 
 class Context;
 
 //---- AppLogTest ----------------------------------------------------------
 //!TestCases description
-class AppLogTest : public ConfiguredTestCase
+class AppLogTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors
@@ -32,6 +32,8 @@ public:
 
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
+
+	TString getConfigFileName();
 
 	//!log into two channels and checks the files afterwards
 	void LogOkTest();

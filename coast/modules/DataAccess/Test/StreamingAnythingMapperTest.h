@@ -15,7 +15,7 @@
 //---- StreamingAnythingMapperTest ----------------------------------------------------------
 //!TestClass for StreamingAnythingMapper functionality
 //! this mapper should handle Anythings exported and imported to client streams properly
-class StreamingAnythingMapperTest : public TestCase
+class StreamingAnythingMapperTest : public TestFramework::TestCase
 {
 public:
 
@@ -29,23 +29,10 @@ public:
 	//! \return a new test is created by this method
 	static Test *suite ();
 
-	//!set up for tests does nothing so far
-	void setUp ();
-
-	//!delete set up for tests does nothing so far
-	void tearDown ();
-
 	//! Stream an Anything from context on client's stream
 	void GetTest();
 	//! Reads an Anything form client's stream and stores it in context
 	void PutTest();
-
-private:
-	// use careful, you inhibit subclass use
-	//--- private class api
-
-	//--- private member variables
-
 };
 
 #endif

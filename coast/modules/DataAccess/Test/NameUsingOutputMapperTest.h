@@ -17,7 +17,7 @@ class Context;
 class ResultMapper;
 //---- NameUsingOutputMapperTest ----------------------------------------------------------
 //!Tests the NameUsingOutputMapper
-class NameUsingOutputMapperTest : public TestCase
+class NameUsingOutputMapperTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -33,12 +33,6 @@ public:
 
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
-
-	//!sets the environment for this test
-	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
 
 	//!tests if the data is put into the configured Destination
 	void ConfiguredDestinationTest();

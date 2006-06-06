@@ -28,48 +28,46 @@ ConditionalRendererTest::~ConditionalRendererTest() {};
 /*     Init                                                      */
 /*===============================================================*/
 void ConditionalRendererTest::setUp ()
-// setup config for all the renderers in this TestCase
 {
 	RendererTest::setUp();
-} // setUp
+}
 
 Test *ConditionalRendererTest::suite ()
-// collect all test cases for the ConditionalRenderer
 {
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(ConditionalRendererTest, CondTrue));
-	testSuite->addTest (NEW_CASE(ConditionalRendererTest, CondFalse));
-	testSuite->addTest (NEW_CASE(ConditionalRendererTest, CondDefined));
-	testSuite->addTest (NEW_CASE(ConditionalRendererTest, CondUndefined));
-	testSuite->addTest (NEW_CASE(ConditionalRendererTest, CondError));
+	ADD_CASE(testSuite, ConditionalRendererTest, CondTrue);
+	ADD_CASE(testSuite, ConditionalRendererTest, CondFalse);
+	ADD_CASE(testSuite, ConditionalRendererTest, CondDefined);
+	ADD_CASE(testSuite, ConditionalRendererTest, CondUndefined);
+	ADD_CASE(testSuite, ConditionalRendererTest, CondError);
 
-	testSuite->addTest (NEW_CASE(ConditionalRendererTest, CondOnlyTrue));
-	testSuite->addTest (NEW_CASE(ConditionalRendererTest, CondOnlyFalse));
-	testSuite->addTest (NEW_CASE(ConditionalRendererTest, CondOnlyDefined));
-	testSuite->addTest (NEW_CASE(ConditionalRendererTest, CondOnlyUndefined));
-	testSuite->addTest (NEW_CASE(ConditionalRendererTest, CondOnlyError));
+	ADD_CASE(testSuite, ConditionalRendererTest, CondOnlyTrue);
+	ADD_CASE(testSuite, ConditionalRendererTest, CondOnlyFalse);
+	ADD_CASE(testSuite, ConditionalRendererTest, CondOnlyDefined);
+	ADD_CASE(testSuite, ConditionalRendererTest, CondOnlyUndefined);
+	ADD_CASE(testSuite, ConditionalRendererTest, CondOnlyError);
 
-	testSuite->addTest (NEW_CASE(ConditionalRendererTest, CondMissingTrue));
-	testSuite->addTest (NEW_CASE(ConditionalRendererTest, CondMissingFalse));
-	testSuite->addTest (NEW_CASE(ConditionalRendererTest, CondMissingDefined));
-	testSuite->addTest (NEW_CASE(ConditionalRendererTest, CondMissingUndefined));
-	testSuite->addTest (NEW_CASE(ConditionalRendererTest, CondMissingError));
+	ADD_CASE(testSuite, ConditionalRendererTest, CondMissingTrue);
+	ADD_CASE(testSuite, ConditionalRendererTest, CondMissingFalse);
+	ADD_CASE(testSuite, ConditionalRendererTest, CondMissingDefined);
+	ADD_CASE(testSuite, ConditionalRendererTest, CondMissingUndefined);
+	ADD_CASE(testSuite, ConditionalRendererTest, CondMissingError);
 
-	testSuite->addTest (NEW_CASE(ConditionalRendererTest, CondTrueWithoutTrueDefined));
-	testSuite->addTest (NEW_CASE(ConditionalRendererTest, CondFalseWithoutFalseDefined));
+	ADD_CASE(testSuite, ConditionalRendererTest, CondTrueWithoutTrueDefined);
+	ADD_CASE(testSuite, ConditionalRendererTest, CondFalseWithoutFalseDefined);
 
-	testSuite->addTest (NEW_CASE(ConditionalRendererTest, CondTrueConfUndefined));
-	testSuite->addTest (NEW_CASE(ConditionalRendererTest, CondFalseConfUndefined));
-	testSuite->addTest (NEW_CASE(ConditionalRendererTest, CondDefinedConfUndefined));
-	testSuite->addTest (NEW_CASE(ConditionalRendererTest, CondUndefinedConfUndefined));
-	testSuite->addTest (NEW_CASE(ConditionalRendererTest, CondErrorConfUndefined));
+	ADD_CASE(testSuite, ConditionalRendererTest, CondTrueConfUndefined);
+	ADD_CASE(testSuite, ConditionalRendererTest, CondFalseConfUndefined);
+	ADD_CASE(testSuite, ConditionalRendererTest, CondDefinedConfUndefined);
+	ADD_CASE(testSuite, ConditionalRendererTest, CondUndefinedConfUndefined);
+	ADD_CASE(testSuite, ConditionalRendererTest, CondErrorConfUndefined);
 
-	testSuite->addTest (NEW_CASE(ConditionalRendererTest, TestTrueFalseCase));
+	ADD_CASE(testSuite, ConditionalRendererTest, TestTrueFalseCase);
 
 	return testSuite;
 
-} // suite
+}
 
 /*===============================================================*/
 /*     Check the single cases where all is correctly defined     */

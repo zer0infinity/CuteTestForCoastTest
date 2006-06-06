@@ -21,7 +21,7 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- BasicRendererTest ----------------------------------------------------------------
-BasicRendererTest::BasicRendererTest(TString tstrName) : TestCase(tstrName)
+BasicRendererTest::BasicRendererTest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(BasicRendererTest.Ctor);
 }
@@ -31,7 +31,6 @@ BasicRendererTest::~BasicRendererTest()
 	StartTrace(BasicRendererTest.Dtor);
 }
 
-// setup for this TestCase
 void BasicRendererTest::setUp ()
 {
 	StartTrace(BasicRendererTest.setUp);
@@ -39,10 +38,6 @@ void BasicRendererTest::setUp ()
 	// should init renderer module and dll loading itself.
 }
 
-void BasicRendererTest::tearDown ()
-{
-	StartTrace(BasicRendererTest.tearDown);
-}
 void BasicRendererTest::RenderASimpleString()
 {
 	StartTrace(BasicRendererTest.RenderASimpleString);
@@ -117,11 +112,11 @@ Test *BasicRendererTest::suite ()
 	StartTrace(BasicRendererTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(BasicRendererTest, RenderASimpleString));
-	testSuite->addTest (NEW_CASE(BasicRendererTest, RenderOnStringTest));
-	testSuite->addTest (NEW_CASE(BasicRendererTest, RenderOnStringDefaultTest));
-	testSuite->addTest (NEW_CASE(BasicRendererTest, RenderASimpleList));
-	testSuite->addTest (NEW_CASE(BasicRendererTest, RenderWithConfig));
+	ADD_CASE(testSuite, BasicRendererTest, RenderASimpleString);
+	ADD_CASE(testSuite, BasicRendererTest, RenderOnStringTest);
+	ADD_CASE(testSuite, BasicRendererTest, RenderOnStringDefaultTest);
+	ADD_CASE(testSuite, BasicRendererTest, RenderASimpleList);
+	ADD_CASE(testSuite, BasicRendererTest, RenderWithConfig);
 
 	return testSuite;
 }

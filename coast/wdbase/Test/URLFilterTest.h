@@ -10,13 +10,13 @@
 #define _URLFilterTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 
 //---- forward declaration -----------------------------------------------
 
 //---- URLFilterTest ----------------------------------------------------------
 //!TestCases for the Registry class
-class URLFilterTest : public ConfiguredTestCase
+class URLFilterTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors
@@ -51,17 +51,6 @@ public:
 	void HandleCookieTest();
 	void HandleMultipleCookiesTest();
 	void HandleQueryTest();
-
-protected:
-
-	//--- member variables declaration
-
-private:
-	// use careful, you inhibit subclass use
-	//--- private class api
-
-	//--- private member variables
-
 };
 
 #endif

@@ -32,30 +32,22 @@ Test *LDAPMapperTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(LDAPMapperTest, QueryFilterTest));
-	testSuite->addTest (NEW_CASE(LDAPMapperTest, BasicParamTest));
-	testSuite->addTest (NEW_CASE(LDAPMapperTest, DNameTest));
-	testSuite->addTest (NEW_CASE(LDAPMapperTest, FieldMapperTest1));
-	testSuite->addTest (NEW_CASE(LDAPMapperTest, FieldMapperTest2));
-	testSuite->addTest (NEW_CASE(LDAPMapperTest, ModifyValsTest));
-	testSuite->addTest (NEW_CASE(LDAPMapperTest, LDAPAddTest));
+	ADD_CASE(testSuite, LDAPMapperTest, QueryFilterTest);
+	ADD_CASE(testSuite, LDAPMapperTest, BasicParamTest);
+	ADD_CASE(testSuite, LDAPMapperTest, DNameTest);
+	ADD_CASE(testSuite, LDAPMapperTest, FieldMapperTest1);
+	ADD_CASE(testSuite, LDAPMapperTest, FieldMapperTest2);
+	ADD_CASE(testSuite, LDAPMapperTest, ModifyValsTest);
+	ADD_CASE(testSuite, LDAPMapperTest, LDAPAddTest);
 
 	return testSuite;
 }
 
-LDAPMapperTest::LDAPMapperTest(TString tname) : TestCase(tname)
+LDAPMapperTest::LDAPMapperTest(TString tname) : TestCaseType(tname)
 {
 }
 
 LDAPMapperTest::~LDAPMapperTest()
-{
-}
-
-void LDAPMapperTest::setUp ()
-{
-}
-
-void LDAPMapperTest::tearDown ()
 {
 }
 

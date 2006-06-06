@@ -58,22 +58,20 @@ Context *BasicTableRendererTest::CreateContext(const char *demodata)
 }
 
 void BasicTableRendererTest::setUp ()
-// setup config for all the renderers in this TestCase
 {
 	RendererTest::setUp();
-} // setUp
+}
 
 Test *BasicTableRendererTest::suite ()
-// collect all test cases for the URLRenderer
 {
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(BasicTableRendererTest, CanUseInvertedHeaders));
-	testSuite->addTest (NEW_CASE(BasicTableRendererTest, FullFledged));
+	ADD_CASE(testSuite, BasicTableRendererTest, CanUseInvertedHeaders);
+	ADD_CASE(testSuite, BasicTableRendererTest, FullFledged);
 
 	return testSuite;
 
-} // suite
+}
 
 /*===============================================================*/
 /*     Check found cases where all is correctly defined          */

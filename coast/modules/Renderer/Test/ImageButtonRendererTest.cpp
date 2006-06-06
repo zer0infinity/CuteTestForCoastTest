@@ -38,38 +38,36 @@ ImageButtonRendererTest::~ImageButtonRendererTest()
 /*     Init                                                      */
 /*===============================================================*/
 void ImageButtonRendererTest::setUp ()
-// setup config for all the renderers in this TestCase
 {
 	FieldRendererTest::setUp();
-} // setUp
+}
 
 Test *ImageButtonRendererTest::suite ()
-// collect all test cases for the ImageButtonRenderer
 {
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(ImageButtonRendererTest, TestCaseEmptyConf));
-	testSuite->addTest (NEW_CASE(ImageButtonRendererTest, TestCase0));
-	testSuite->addTest (NEW_CASE(ImageButtonRendererTest, TestCase1));
-	testSuite->addTest (NEW_CASE(ImageButtonRendererTest, TestCase2));
-	testSuite->addTest (NEW_CASE(ImageButtonRendererTest, TestCase3));
-	testSuite->addTest (NEW_CASE(ImageButtonRendererTest, TestCaseWithoutName));
-	testSuite->addTest (NEW_CASE(ImageButtonRendererTest, TestCaseWithoutLabel));
-	testSuite->addTest (NEW_CASE(ImageButtonRendererTest, TestCaseWithoutValue));
-	testSuite->addTest (NEW_CASE(ImageButtonRendererTest, TestCaseWithoutSource));
-	testSuite->addTest (NEW_CASE(ImageButtonRendererTest, TestCaseWithoutMultiple));
-	testSuite->addTest (NEW_CASE(ImageButtonRendererTest, TestCaseWithoutChecked));
-	testSuite->addTest (NEW_CASE(ImageButtonRendererTest, TestCaseWithoutOptions));
-	testSuite->addTest (NEW_CASE(ImageButtonRendererTest, TestCaseWrong ));
-	testSuite->addTest (NEW_CASE(ImageButtonRendererTest, ConfigurationWithRenderer ));
-	testSuite->addTest (NEW_CASE(ImageButtonRendererTest, TestOptionRenderer));
-	testSuite->addTest (NEW_CASE(ImageButtonRendererTest, TestFaultOptionRenderer));
-	testSuite->addTest (NEW_CASE(ImageButtonRendererTest, TestOptionRendererOld ));
-	testSuite->addTest (NEW_CASE(ImageButtonRendererTest, TestFaultOptionRendererOld ));
+	ADD_CASE(testSuite, ImageButtonRendererTest, TestCaseEmptyConf);
+	ADD_CASE(testSuite, ImageButtonRendererTest, TestCase0);
+	ADD_CASE(testSuite, ImageButtonRendererTest, TestCase1);
+	ADD_CASE(testSuite, ImageButtonRendererTest, TestCase2);
+	ADD_CASE(testSuite, ImageButtonRendererTest, TestCase3);
+	ADD_CASE(testSuite, ImageButtonRendererTest, TestCaseWithoutName);
+	ADD_CASE(testSuite, ImageButtonRendererTest, TestCaseWithoutLabel);
+	ADD_CASE(testSuite, ImageButtonRendererTest, TestCaseWithoutValue);
+	ADD_CASE(testSuite, ImageButtonRendererTest, TestCaseWithoutSource);
+	ADD_CASE(testSuite, ImageButtonRendererTest, TestCaseWithoutMultiple);
+	ADD_CASE(testSuite, ImageButtonRendererTest, TestCaseWithoutChecked);
+	ADD_CASE(testSuite, ImageButtonRendererTest, TestCaseWithoutOptions);
+	ADD_CASE(testSuite, ImageButtonRendererTest, TestCaseWrong);
+	ADD_CASE(testSuite, ImageButtonRendererTest, ConfigurationWithRenderer);
+	ADD_CASE(testSuite, ImageButtonRendererTest, TestOptionRenderer);
+	ADD_CASE(testSuite, ImageButtonRendererTest, TestFaultOptionRenderer);
+	ADD_CASE(testSuite, ImageButtonRendererTest, TestOptionRendererOld);
+	ADD_CASE(testSuite, ImageButtonRendererTest, TestFaultOptionRendererOld);
 
 	return testSuite;
 
-} // suite
+}
 
 /*===============================================================*/
 /*     Check where all is correctly defined                      */

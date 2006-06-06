@@ -13,14 +13,11 @@
 #include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "StringStream.h"
 #include "Context.h"
 #include "Role.h"
-#include "WDModule.h"
 #include "AnyUtils.h"
 #include "Server.h"
 #include "Session.h"
-#include "Dbg.h"
 
 class PTTestSession: public Session
 {
@@ -43,45 +40,45 @@ public:
 
 //---- PageTransitionTest ----------------------------------------------------------------
 PageTransitionTest::PageTransitionTest(TString tname)
-	: ConfiguredActionTest(tname, "PageTransitionTestConfig")
+	: ConfiguredActionTest(tname)
 {
-	StartTrace(PageTransitionTest.Ctor);
+	StartTrace(PageTransitionTest.PageTransitionTest);
+}
+
+TString PageTransitionTest::getConfigFileName()
+{
+	return "PageTransitionTestConfig";
 }
 
 PageTransitionTest::~PageTransitionTest()
 {
 	StartTrace(PageTransitionTest.Dtor);
-
 }
 
-// setup for this TestCase
 void PageTransitionTest::setUp ()
 {
 	StartTrace1(PageTransitionTest.setUp, " : >" << name() << "<");
-
 	ConfiguredActionTest::setUp();
-
 	fServer = Server::FindServer("Server");
 	t_assert ( fServer != 0);
 	fServer->CheckConfig("Server");
-
-} // setUp
+}
 
 void PageTransitionTest::RunTestCases()
 {
 	StartTrace(PageTransitionTest.RunTestCases);
 
 	Anything testCases;
-	long runOnlySz = fConfig["RunOnly"].GetSize();
+	long runOnlySz = GetConfig()["RunOnly"].GetSize();
 	if (runOnlySz > 0) {
 		cout << "PageTransitionTest not complete : Running only " << runOnlySz << " Testcases" << endl;
 		for (long i = 0; i < runOnlySz; i++) {
-			String testCaseName = fConfig["RunOnly"][i].AsString("Unknown");
-			testCases[testCaseName] = fConfig["TestCases"][testCaseName];
+			String testCaseName = GetConfig()["RunOnly"][i].AsString("Unknown");
+			testCases[testCaseName] = GetConfig()["TestCases"][testCaseName].DeepClone();
 		}
 		TraceAny(testCases, "TestCases");
 	} else {
-		testCases = fConfig["TestCases"];
+		testCases = GetConfig()["TestCases"].DeepClone();
 	}
 
 	long sz = testCases.GetSize();
@@ -100,7 +97,7 @@ Anything PageTransitionTest::PrepareConfig(Anything originalConfig)
 	}
 
 	String useConfigName = originalConfig["UseConfig"].AsString();
-	Anything result = PrepareConfig(fConfig["TestCases"][useConfigName].DeepClone());
+	Anything result = PrepareConfig(GetConfig()["TestCases"][useConfigName].DeepClone());
 
 	Anything replaceList = originalConfig["Replace"];
 	Anything slotPutConfig;
@@ -122,7 +119,7 @@ void PageTransitionTest::DoTest(Anything config, const char *testCaseName)
 	// SetUp  -------------------------------------------------
 	Context theContext(config);
 	theContext.SetServer(fServer);
-	PTTestSession theSession("PTTestSession", fConfig["Database"].AsString("test"), theContext);
+	PTTestSession theSession("PTTestSession", GetConfig()["Database"].AsString("test"), theContext);
 	theContext.Push(&theSession);
 	theContext.SetRole(theSession.GetRole(theContext));
 
@@ -152,7 +149,7 @@ void PageTransitionTest::DoTest(Anything config, const char *testCaseName)
 	assertEqualm(expected["NewRole"].AsString("x"), roleName, testCaseName);
 
 	// Remove Timestamps etc from Stores
-	Anything removeFromTempStoreList = fConfig["RemoveLists"]["TempStore"];
+	Anything removeFromTempStoreList = GetConfig()["RemoveLists"]["TempStore"].DeepClone();
 	Anything tempStore = theContext.GetTmpStore();
 	long sz = removeFromTempStoreList.GetSize(), i;
 	for (i = 0; i < sz; i++) {
@@ -163,7 +160,7 @@ void PageTransitionTest::DoTest(Anything config, const char *testCaseName)
 		}
 	}
 
-	Anything removeFromSessionStoreList = fConfig["RemoveLists"]["SessionStore"];
+	Anything removeFromSessionStoreList = GetConfig()["RemoveLists"]["SessionStore"].DeepClone();
 	Anything sessionStore = theContext.GetSessionStore();
 	long sz2 = removeFromSessionStoreList.GetSize();
 	for (i = 0; i < sz2; i++) {
@@ -184,8 +181,8 @@ Test *PageTransitionTest::suite ()
 	StartTrace(PageTransitionTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(PageTransitionTest, RunTestCases));
+	ADD_CASE(testSuite, PageTransitionTest, RunTestCases);
 
 	return testSuite;
 
-} // suite
+}

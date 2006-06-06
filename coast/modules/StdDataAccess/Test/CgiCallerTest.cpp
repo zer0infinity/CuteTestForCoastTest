@@ -22,7 +22,7 @@
 //--- c-library modules used ---------------------------------------------------
 
 //---- CgiCallerTest ----------------------------------------------------------------
-CgiCallerTest::CgiCallerTest(TString tstrName) : TestCase(tstrName)
+CgiCallerTest::CgiCallerTest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(CgiCallerTest.Ctor);
 }
@@ -102,8 +102,8 @@ Test *CgiCallerTest::suite ()
 	StartTrace(CgiCallerTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(CgiCallerTest, ExecOkTests));
-	testSuite->addTest (NEW_CASE(CgiCallerTest, TestSplitPath));
+	ADD_CASE(testSuite, CgiCallerTest, ExecOkTests);
+	ADD_CASE(testSuite, CgiCallerTest, TestSplitPath);
 
 	return testSuite;
-} // suite
+}

@@ -19,7 +19,7 @@
 #include "System.h"
 
 ContextLookupRendererTest::ContextLookupRendererTest (TString tname)
-	: TestCase(tname)
+	: TestCaseType(tname)
 	, fContext(Anything(), Anything(), 0, 0, 0, 0)
 	, fReply()
 	, fConfig()
@@ -27,10 +27,9 @@ ContextLookupRendererTest::ContextLookupRendererTest (TString tname)
 ContextLookupRendererTest::~ContextLookupRendererTest() {};
 
 void ContextLookupRendererTest::setUp ()
-// setup config for all the renderers in this TestCase
 {
 
-} // setUp
+}
 
 void ContextLookupRendererTest::ContextCharPtr()
 // test the date renderer with simple formatting strings
@@ -304,22 +303,21 @@ void ContextLookupRendererTest::NestedLookupWithoutSlotnames()
 } // NestedLookupWithoutSlotnames
 
 Test *ContextLookupRendererTest::suite ()
-// collect all test cases for the ContextLookupRenderer
 {
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(ContextLookupRendererTest, ContextCharPtr));
-	testSuite->addTest (NEW_CASE(ContextLookupRendererTest, ContextLong));
-	testSuite->addTest (NEW_CASE(ContextLookupRendererTest, ContextDouble));
-	testSuite->addTest (NEW_CASE(ContextLookupRendererTest, ContextNull));
-	testSuite->addTest (NEW_CASE(ContextLookupRendererTest, ContextCharPtrConfigArray));
-	testSuite->addTest (NEW_CASE(ContextLookupRendererTest, ContextCharPtrDef));
-	testSuite->addTest (NEW_CASE(ContextLookupRendererTest, ContextLongDef));
-	testSuite->addTest (NEW_CASE(ContextLookupRendererTest, ContextDoubleDef));
-	testSuite->addTest (NEW_CASE(ContextLookupRendererTest, ContextNullDef));
-	testSuite->addTest (NEW_CASE(ContextLookupRendererTest, NestedLookup));
-	testSuite->addTest (NEW_CASE(ContextLookupRendererTest, NestedLookupWithoutSlotnames));
+	ADD_CASE(testSuite, ContextLookupRendererTest, ContextCharPtr);
+	ADD_CASE(testSuite, ContextLookupRendererTest, ContextLong);
+	ADD_CASE(testSuite, ContextLookupRendererTest, ContextDouble);
+	ADD_CASE(testSuite, ContextLookupRendererTest, ContextNull);
+	ADD_CASE(testSuite, ContextLookupRendererTest, ContextCharPtrConfigArray);
+	ADD_CASE(testSuite, ContextLookupRendererTest, ContextCharPtrDef);
+	ADD_CASE(testSuite, ContextLookupRendererTest, ContextLongDef);
+	ADD_CASE(testSuite, ContextLookupRendererTest, ContextDoubleDef);
+	ADD_CASE(testSuite, ContextLookupRendererTest, ContextNullDef);
+	ADD_CASE(testSuite, ContextLookupRendererTest, NestedLookup);
+	ADD_CASE(testSuite, ContextLookupRendererTest, NestedLookupWithoutSlotnames);
 
 	return testSuite;
 
-} // suite
+}

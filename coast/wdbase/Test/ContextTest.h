@@ -10,13 +10,13 @@
 #define _ContextTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 
 class Registry;
 
 //---- ContextTest ----------------------------------------------------------
 //!TestCases for the Context class
-class ContextTest : public ConfiguredTestCase
+class ContextTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors
@@ -37,6 +37,8 @@ public:
 
 	//!deletes the environment for this test
 	void tearDown ();
+
+	TString getConfigFileName();
 
 	//!test constructor with an anything containing request infos
 	void RequestConstructorTest();
@@ -89,17 +91,6 @@ public:
 	void RefCountTest();
 	//!Test the Session unlocking mechanism within Page Rendering
 	void SessionUnlockingTest();
-
-protected:
-
-	//--- member variables declaration
-
-private:
-	// use careful, you inhibit subclass use
-	//--- private class api
-
-	//--- private member variables
-
 };
 
 #endif

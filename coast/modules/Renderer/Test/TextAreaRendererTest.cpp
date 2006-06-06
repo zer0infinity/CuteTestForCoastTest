@@ -37,53 +37,51 @@ TextAreaRendererTest::~TextAreaRendererTest()
 /*     Init                                                      */
 /*===============================================================*/
 void TextAreaRendererTest::setUp ()
-// setup config for all the renderers in this TestCase
 {
 	FieldRendererTest::setUp();
-} // setUp
+}
 
 Test *TextAreaRendererTest::suite ()
-// collect all test cases for the ContextLookupRenderer
 {
 	TestSuite *testSuite = new TestSuite;
 
 	// Generic test done for each type of FieldRenderer
-	testSuite->addTest (NEW_CASE(TextAreaRendererTest, TestCaseEmptyConf));
-	testSuite->addTest (NEW_CASE(TextAreaRendererTest, TestCase0));
-	testSuite->addTest (NEW_CASE(TextAreaRendererTest, TestCase1));
-	testSuite->addTest (NEW_CASE(TextAreaRendererTest, TestCase2));
-	testSuite->addTest (NEW_CASE(TextAreaRendererTest, TestCase3));
-	testSuite->addTest (NEW_CASE(TextAreaRendererTest, TestCaseWithoutName));
-	testSuite->addTest (NEW_CASE(TextAreaRendererTest, TestCaseWithoutLabel));
-	testSuite->addTest (NEW_CASE(TextAreaRendererTest, TestCaseWithoutValue));
-	testSuite->addTest (NEW_CASE(TextAreaRendererTest, TestCaseWithoutSource));
-	testSuite->addTest (NEW_CASE(TextAreaRendererTest, TestCaseWithoutMultiple));
-	testSuite->addTest (NEW_CASE(TextAreaRendererTest, TestCaseWithoutChecked ));
-	testSuite->addTest (NEW_CASE(TextAreaRendererTest, TestCaseWithoutOptions));
-	testSuite->addTest (NEW_CASE(TextAreaRendererTest, TestCaseWrong ));
-	testSuite->addTest (NEW_CASE(TextAreaRendererTest, TestOptionRenderer ));
-	testSuite->addTest (NEW_CASE(TextAreaRendererTest, TestOptionRendererOld ));
-	testSuite->addTest (NEW_CASE(TextAreaRendererTest, TestFaultOptionRenderer ));
-	testSuite->addTest (NEW_CASE(TextAreaRendererTest, TestFaultOptionRendererOld ));
+	ADD_CASE(testSuite, TextAreaRendererTest, TestCaseEmptyConf);
+	ADD_CASE(testSuite, TextAreaRendererTest, TestCase0);
+	ADD_CASE(testSuite, TextAreaRendererTest, TestCase1);
+	ADD_CASE(testSuite, TextAreaRendererTest, TestCase2);
+	ADD_CASE(testSuite, TextAreaRendererTest, TestCase3);
+	ADD_CASE(testSuite, TextAreaRendererTest, TestCaseWithoutName);
+	ADD_CASE(testSuite, TextAreaRendererTest, TestCaseWithoutLabel);
+	ADD_CASE(testSuite, TextAreaRendererTest, TestCaseWithoutValue);
+	ADD_CASE(testSuite, TextAreaRendererTest, TestCaseWithoutSource);
+	ADD_CASE(testSuite, TextAreaRendererTest, TestCaseWithoutMultiple);
+	ADD_CASE(testSuite, TextAreaRendererTest, TestCaseWithoutChecked);
+	ADD_CASE(testSuite, TextAreaRendererTest, TestCaseWithoutOptions);
+	ADD_CASE(testSuite, TextAreaRendererTest, TestCaseWrong);
+	ADD_CASE(testSuite, TextAreaRendererTest, TestOptionRenderer);
+	ADD_CASE(testSuite, TextAreaRendererTest, TestOptionRendererOld);
+	ADD_CASE(testSuite, TextAreaRendererTest, TestFaultOptionRenderer);
+	ADD_CASE(testSuite, TextAreaRendererTest, TestFaultOptionRendererOld);
 
 	// Specific test ONLY for TextAreaRenderer
-	testSuite->addTest (NEW_CASE(TextAreaRendererTest, AllAttributesTextArea ));
-	testSuite->addTest (NEW_CASE(TextAreaRendererTest, WidthTextArea ));
-	testSuite->addTest (NEW_CASE(TextAreaRendererTest, HeightTextArea ));
-	testSuite->addTest (NEW_CASE(TextAreaRendererTest, WrapTextArea ));
-	testSuite->addTest (NEW_CASE(TextAreaRendererTest, Options4TextArea ));
-	testSuite->addTest (NEW_CASE(TextAreaRendererTest, Options3TextArea ));
-	testSuite->addTest (NEW_CASE(TextAreaRendererTest, Options2TextArea ));
-	testSuite->addTest (NEW_CASE(TextAreaRendererTest, Option1TextArea ));
-	testSuite->addTest (NEW_CASE(TextAreaRendererTest, OptionsNoSlotName2TextArea ));
-	testSuite->addTest (NEW_CASE(TextAreaRendererTest, OptionNoSlotName1TextArea ));
-	testSuite->addTest (NEW_CASE(TextAreaRendererTest, OptionsMixedTextArea	));
-	testSuite->addTest (NEW_CASE(TextAreaRendererTest, NoOptionsTextArea ));
-	testSuite->addTest (NEW_CASE(TextAreaRendererTest, TextTextArea ));
+	ADD_CASE(testSuite, TextAreaRendererTest, AllAttributesTextArea);
+	ADD_CASE(testSuite, TextAreaRendererTest, WidthTextArea);
+	ADD_CASE(testSuite, TextAreaRendererTest, HeightTextArea);
+	ADD_CASE(testSuite, TextAreaRendererTest, WrapTextArea);
+	ADD_CASE(testSuite, TextAreaRendererTest, Options4TextArea);
+	ADD_CASE(testSuite, TextAreaRendererTest, Options3TextArea);
+	ADD_CASE(testSuite, TextAreaRendererTest, Options2TextArea);
+	ADD_CASE(testSuite, TextAreaRendererTest, Option1TextArea);
+	ADD_CASE(testSuite, TextAreaRendererTest, OptionsNoSlotName2TextArea);
+	ADD_CASE(testSuite, TextAreaRendererTest, OptionNoSlotName1TextArea);
+	ADD_CASE(testSuite, TextAreaRendererTest, OptionsMixedTextArea);
+	ADD_CASE(testSuite, TextAreaRendererTest, NoOptionsTextArea);
+	ADD_CASE(testSuite, TextAreaRendererTest, TextTextArea);
 
 	return testSuite;
 
-} // suite
+}
 
 /*=================================================================================*/
 /* Generic tests done for each type of FieldRendererTest                           */

@@ -23,7 +23,7 @@
 //--- c-library modules used ---------------------------------------------------
 
 //---- PageTest ----------------------------------------------------------------
-PageTest::PageTest(TString tname) : TestCase(tname)
+PageTest::PageTest(TString tname) : TestCaseType(tname)
 {
 	StartTrace(PageTest.Ctor);
 }
@@ -33,7 +33,6 @@ PageTest::~PageTest()
 	StartTrace(PageTest.Dtor);
 }
 
-// setup for this TestCase
 void PageTest::setUp ()
 {
 	StartTrace(PageTest.setUp);
@@ -51,12 +50,7 @@ void PageTest::setUp ()
 	} else {
 		cerr << "couldn't find TestAction" << endl;
 	}
-} // setUp
-
-void PageTest::tearDown ()
-{
-	StartTrace(PageTest.tearDown);
-} // tearDown
+}
 
 void PageTest::FinishTest()
 {
@@ -144,9 +138,9 @@ Test *PageTest::suite ()
 	StartTrace(PageTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(PageTest, FinishTest));
-	testSuite->addTest (NEW_CASE(PageTest, PrepareTest));
+	ADD_CASE(testSuite, PageTest, FinishTest);
+	ADD_CASE(testSuite, PageTest, PrepareTest);
 
 	return testSuite;
 
-} // suite
+}

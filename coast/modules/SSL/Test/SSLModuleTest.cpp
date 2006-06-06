@@ -16,16 +16,20 @@
 #include "SSLModule.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
 #include "ROAnyLookupAdapter.h"
 
 //--- c-modules used -----------------------------------------------------------
 
 //---- SSLModuleTest ----------------------------------------------------------------
-SSLModuleTest::SSLModuleTest(TString tstrName) :
-	ConfiguredTestCase(tstrName, "SSLModuleTestConfig")
+SSLModuleTest::SSLModuleTest(TString tstrName)
+	: TestCaseType(tstrName)
 {
-	StartTrace(SSLModuleTest.Ctor);
+	StartTrace(SSLModuleTest.SSLModuleTest);
+}
+
+TString SSLModuleTest::getConfigFileName()
+{
+	return "SSLModuleTestConfig";
 }
 
 SSLModuleTest::~SSLModuleTest()
@@ -33,29 +37,12 @@ SSLModuleTest::~SSLModuleTest()
 	StartTrace(SSLModuleTest.Dtor);
 }
 
-// setup for this TestCase
-void SSLModuleTest::setUp ()
-{
-	StartTrace(SSLModuleTest.setUp);
-	ConfiguredTestCase::setUp();
-}
-
-void SSLModuleTest::tearDown ()
-{
-	StartTrace(SSLModuleTest.tearDown);
-	ConfiguredTestCase::tearDown();
-}
-
-void SSLModuleTest::testCase()
-{
-	StartTrace(SSLModuleTest.testCase);
-}
-
-void SSLModuleTest::testLoadCertAndKey()
+void SSLModuleTest::LoadCertAndKeyTest()
 {
 	StartTrace(SSLModuleTest.LoadCertAndKeyTest);
-	FOREACH_ENTRY("LoadCertAndKeyTest", cConfig, cName) {
-		Trace("At entry: " << i);
+	ROAnything cConfig;
+	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(cConfig) ) {
 		TraceAny(cConfig, "cConfig");
 		ROAnyLookupAdapter rola(cConfig["Config"]);
 		if ( cConfig["TestData"]["ClientOrServer"].AsString() == "Client" ) {
@@ -82,8 +69,6 @@ Test *SSLModuleTest::suite ()
 {
 	StartTrace(SSLModuleTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	ADD_CASE(testSuite, SSLModuleTest, testCase);
-	ADD_CASE(testSuite, SSLModuleTest, testLoadCertAndKey);
+	ADD_CASE(testSuite, SSLModuleTest, LoadCertAndKeyTest);
 	return testSuite;
 }

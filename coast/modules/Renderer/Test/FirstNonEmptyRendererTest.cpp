@@ -30,17 +30,6 @@ FirstNonEmptyRendererTest::~FirstNonEmptyRendererTest()
 	StartTrace(FirstNonEmptyRendererTest.Dtor);
 }
 
-// setup for this TestCase
-void FirstNonEmptyRendererTest::setUp ()
-{
-	StartTrace(FirstNonEmptyRendererTest.setUp);
-}
-
-void FirstNonEmptyRendererTest::tearDown ()
-{
-	StartTrace(FirstNonEmptyRendererTest.tearDown);
-}
-
 void FirstNonEmptyRendererTest::EmptyList()
 {
 	StartTrace(FirstNonEmptyRendererTest.EmptyList);

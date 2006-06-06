@@ -19,19 +19,17 @@
 
 //---- MD5Test -----------------------------------------------------------
 
-class MD5Test : public TestCase
+class MD5Test : public TestFramework::TestCase
 {
 public:
 	MD5Test(TString tstrName);
 	virtual ~MD5Test();
 
-	virtual void setUp ();
 	static Test *suite ();
 	//! check signing ability of MD5Signer
 	void signCheck();
 	//! test plain hash value calculation of MD5Signer
 	void hashCheck();
-
 };
 
 #endif

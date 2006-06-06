@@ -6,23 +6,26 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "Dbg.h"
+//--- interface include --------------------------------------------------------
+#include "MailDATest.h"
+
+//--- module under test --------------------------------------------------------
 
 //--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
 
-//--- module under test --------------------------------------------------------
-
-//--- interface include --------------------------------------------------------
-#include "MailDATest.h"
+//--- standard modules used ----------------------------------------------------
 
 //---- MailDATest ----------------------------------------------------------------
 MailDATest::MailDATest(TString tname)
-	: ConfiguredActionTest(tname, "MailDATestConfig")
+	: ConfiguredActionTest(tname)
 {
-	StartTrace(MailDATest.Ctor);
+	StartTrace(MailDATest.MailDATest);
+}
+
+TString MailDATest::getConfigFileName()
+{
+	return "MailDATestConfig";
 }
 
 MailDATest::~MailDATest()
@@ -35,8 +38,6 @@ Test *MailDATest::suite ()
 {
 	StartTrace(MailDATest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	testSuite->addTest (NEW_CASE(MailDATest, RunTestCases));
-
+	ADD_CASE(testSuite, MailDATest, RunTestCases);
 	return testSuite;
-} // suite
+}

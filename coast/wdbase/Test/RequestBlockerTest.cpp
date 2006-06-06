@@ -62,7 +62,7 @@ void RBRunner::Run()
 }
 
 //---- RequestBlockerTest ----------------------------------------------------------------
-RequestBlockerTest::RequestBlockerTest(TString tstrName) : TestCase(tstrName)
+RequestBlockerTest::RequestBlockerTest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(RequestBlockerTest.Ctor);
 }
@@ -71,17 +71,6 @@ RequestBlockerTest::~RequestBlockerTest()
 {
 	StartTrace(RequestBlockerTest.Dtor);
 }
-
-// setup for this TestCase
-void RequestBlockerTest::setUp ()
-{
-	StartTrace(RequestBlockerTest.setUp);
-} // setUp
-
-void RequestBlockerTest::tearDown ()
-{
-	StartTrace(RequestBlockerTest.tearDown);
-} // tearDown
 
 void RequestBlockerTest::QueryRB(bool compare, bool checkIt, TString tname)
 {
@@ -162,8 +151,8 @@ Test *RequestBlockerTest::suite ()
 	StartTrace(RequestBlockerTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(RequestBlockerTest, RBTest));
+	ADD_CASE(testSuite, RequestBlockerTest, RBTest);
 
 	return testSuite;
 
-} // suite
+}

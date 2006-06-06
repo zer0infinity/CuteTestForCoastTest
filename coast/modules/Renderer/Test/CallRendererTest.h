@@ -43,12 +43,6 @@ public:
 	//! builds up a suite of testcases for this test
 	static Test *suite ();
 
-	//! sets the environment for this test
-	void setUp ();
-
-	//! deletes the environment for this test
-	void tearDown ();
-
 	//! Call a CallRenderer with an empty config
 	void EmptyCallTest();
 	//! Call a CallRenderer with an simple lookup config

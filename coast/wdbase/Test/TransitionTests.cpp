@@ -84,8 +84,15 @@ bool LoginAction::DoAction(String &action, Context &c)
 }
 
 //---- TransitionTests ----------------------------------------------------------------
-TransitionTests::TransitionTests(TString tname) : ConfiguredTestCase(tname, "PBOWTypeConfig")
+TransitionTests::TransitionTests(TString tname)
+	: TestCaseType(tname)
 {
+	StartTrace(TransitionTests.TransitionTests);
+}
+
+TString TransitionTests::getConfigFileName()
+{
+	return "PBOWTypeConfig";
 }
 
 TransitionTests::~TransitionTests()
@@ -94,29 +101,27 @@ TransitionTests::~TransitionTests()
 
 void TransitionTests::setUp ()
 {
-	ConfiguredTestCase::setUp();
-	t_assert(fConfig.IsDefined("Roles"));
-	t_assert(fConfig.IsDefined("Modules"));
-	t_assert(fConfig.IsDefined("Servers"));
+	t_assert(GetConfig().IsDefined("Roles"));
+	t_assert(GetConfig().IsDefined("Modules"));
+	t_assert(GetConfig().IsDefined("Servers"));
 
 	WDModule *svcs = WDModule::FindWDModule("ServersModule");
-	svcs->Init(fConfig);
+	svcs->Init(GetConfig());
 
 	// ensure installation of modules
-	WDModule::Install(fConfig);
+	WDModule::Install(GetConfig());
 }
 
 void TransitionTests::tearDown ()
 {
-	WDModule::Terminate(fConfig);
-	ConfiguredTestCase::tearDown();
-} // tearDown
+	WDModule::Terminate(GetConfig());
+}
 
-bool TransitionTests::EvalRequest(Anything request, Anything &returned)
+bool TransitionTests::EvalRequest(ROAnything request, Anything &returned)
 {
 	// connect to the server
 	String reply;
-	Connector connector("127.0.0.1", fConfig["testport"].AsLong());
+	Connector connector("127.0.0.1", GetConfig()["testport"].AsLong());
 	iostream *Ios = connector.Use()->GetStream();
 	t_assert(Ios != 0);
 
@@ -154,7 +159,7 @@ bool TransitionTests::EvalRequest(Anything request, Anything &returned)
 	return false;
 }
 
-Anything TransitionTests::AddSessionInfo(Anything request, Anything context)
+Anything TransitionTests::AddSessionInfo(ROAnything request, Anything context)
 {
 	Anything result = request.DeepClone();
 
@@ -166,7 +171,7 @@ Anything TransitionTests::AddSessionInfo(Anything request, Anything context)
 	String s;
 	SecurityModule::ScrambleState(s, sessionInfo);
 
-	if (fConfig["UseBaseURL"].AsBool(false)) {
+	if (GetConfig()["UseBaseURL"].AsBool(false)) {
 		result["query"]["X1"] = s;
 	} else {
 		result["query"]["X"] = s;
@@ -189,11 +194,11 @@ void TransitionTests::PBOWLoginSequence1()
 	Anything r1, r2;
 
 	// -- get default page & session id
-	t_assert(EvalRequest(fConfig["DefaultRequest"], r1));
+	t_assert(EvalRequest(GetConfig()["DefaultRequest"], r1));
 	assertEqual("PBOWLoginPage", r1["page"].AsString());
 
 	// -- perform unsuccessful login using existing session id
-	Anything c1 = AddSessionInfo(fConfig["BadLoginRequest"], r1);
+	Anything c1 = AddSessionInfo(GetConfig()["BadLoginRequest"], r1);
 	t_assert(EvalRequest(c1, r2));
 	assertEqual("PBOWLoginPage", r2["page"].AsString());
 
@@ -212,11 +217,11 @@ void TransitionTests::PBOWLoginSequence2()
 	Anything r1, r2, r3, r4;
 
 	// -- get default page & session id
-	t_assert(EvalRequest(fConfig["DefaultRequest"], r1));
+	t_assert(EvalRequest(GetConfig()["DefaultRequest"], r1));
 	assertEqual("PBOWLoginPage", r1["page"].AsString());
 
 	// -- perform successful login using existing session id
-	Anything c1 = AddSessionInfo(fConfig["GoodLoginRequest"], r1);
+	Anything c1 = AddSessionInfo(GetConfig()["GoodLoginRequest"], r1);
 	t_assert(EvalRequest(c1, r2));
 	assertEqual("PBOWCustomerOnlyPage", r2["page"].AsString());
 
@@ -224,7 +229,7 @@ void TransitionTests::PBOWLoginSequence2()
 	assertEqual(r1["sessionId"].AsString(), r2["sessionId"].AsString());
 
 	// -- get other privileged page using existing session id
-	Anything c2 = AddSessionInfo(fConfig["CustomerRequest2"], r2);
+	Anything c2 = AddSessionInfo(GetConfig()["CustomerRequest2"], r2);
 	t_assert(EvalRequest(c2, r3));
 	assertEqual("PBOWCustomerOnlyPage2", r3["page"].AsString());
 
@@ -232,7 +237,7 @@ void TransitionTests::PBOWLoginSequence2()
 	assertEqual(r2["sessionId"].AsString(), r3["sessionId"].AsString());
 
 	// -- logout (overwrite r3)
-	Anything c3 = AddSessionInfo(fConfig["LogoutRequest"], r3);
+	Anything c3 = AddSessionInfo(GetConfig()["LogoutRequest"], r3);
 	t_assert(EvalRequest(c3, r3));
 	assertEqual("PBOWLoginPage", r3["page"].AsString());
 
@@ -240,7 +245,7 @@ void TransitionTests::PBOWLoginSequence2()
 	fBookmarkedRequest = c2;
 
 	// -- perform successful login using existing session id
-	Anything c4 = AddSessionInfo(fConfig["GoodLoginRequest"], r3);
+	Anything c4 = AddSessionInfo(GetConfig()["GoodLoginRequest"], r3);
 	t_assert(EvalRequest(c4, r4));
 	assertEqual("PBOWCustomerOnlyPage", r4["page"].AsString());
 
@@ -248,7 +253,7 @@ void TransitionTests::PBOWLoginSequence2()
 	assertEqual(r4["sessionId"].AsString(), r3["sessionId"].AsString());
 
 	// -- logout (overwrite r4)
-	c3 = AddSessionInfo(fConfig["LogoutRequest"], r4);
+	c3 = AddSessionInfo(GetConfig()["LogoutRequest"], r4);
 	t_assert(EvalRequest(c3, r4));
 	assertEqual("PBOWLoginPage", r4["page"].AsString());
 }
@@ -266,7 +271,7 @@ void TransitionTests::PBOWFailedBookmarkSequence()
 	assertEqual("PBOWLoginPage", r1["page"].AsString());	// login must be enforced
 
 	// -- perform unsuccessful login using existing session id
-	Anything c1 = AddSessionInfo(fConfig["BadLoginRequest"], r1);
+	Anything c1 = AddSessionInfo(GetConfig()["BadLoginRequest"], r1);
 	t_assert(EvalRequest(c1, r2));
 	assertEqual("PBOWLoginPage", r2["page"].AsString());
 
@@ -289,7 +294,7 @@ void TransitionTests::PBOWBookmarkSequence()
 
 	// -- perform successful login using existing session id...
 	//    original request should be satisfied...
-	Anything c1 = AddSessionInfo(fConfig["GoodLoginRequest"], r1);
+	Anything c1 = AddSessionInfo(GetConfig()["GoodLoginRequest"], r1);
 	t_assert(EvalRequest(c1, r2));
 	assertEqual("PBOWCustomerOnlyPage2", r2["page"].AsString());
 
@@ -297,7 +302,7 @@ void TransitionTests::PBOWBookmarkSequence()
 	assertEqual(r1["sessionId"].AsString(), r2["sessionId"].AsString());
 
 	// -- logout (overwrite r3)
-	Anything c3 = AddSessionInfo(fConfig["LogoutRequest"], r3);
+	Anything c3 = AddSessionInfo(GetConfig()["LogoutRequest"], r3);
 	t_assert(EvalRequest(c3, r3));
 	assertEqual("PBOWLoginPage", r3["page"].AsString());
 }
@@ -329,9 +334,6 @@ void TransitionTests::RunRequestSequence()
 Test *TransitionTests::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
-
-	testSuite->addTest (NEW_CASE(TransitionTests, RunRequestSequence));
-
+	ADD_CASE(testSuite, TransitionTests, RunRequestSequence);
 	return testSuite;
-
-} // suite
+}

@@ -12,20 +12,25 @@
 //--- module under test --------------------------------------------------------
 #include "WorkerPoolManagerModule.h"
 #include "WorkerPoolManagerModulePoolManager.h"
+
 //--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
 #include "DiffTimer.h"
 
 //--- c-modules used -----------------------------------------------------------
 
 //---- WorkerPoolManagerModuleTest ----------------------------------------------------------------
 WorkerPoolManagerModuleTest::WorkerPoolManagerModuleTest(TString tstrName)
-	: ConfiguredTestCase(tstrName, "WorkerPoolManagerModuleTestConfig")
+	: TestCaseType(tstrName)
 {
-	StartTrace(WorkerPoolManagerModuleTest.Ctor);
+	StartTrace(WorkerPoolManagerModuleTest.WorkerPoolManagerModuleTest);
+}
+
+TString WorkerPoolManagerModuleTest::getConfigFileName()
+{
+	return "WorkerPoolManagerModuleTestConfig";
 }
 
 WorkerPoolManagerModuleTest::~WorkerPoolManagerModuleTest()
@@ -33,33 +38,22 @@ WorkerPoolManagerModuleTest::~WorkerPoolManagerModuleTest()
 	StartTrace(WorkerPoolManagerModuleTest.Dtor);
 }
 
-// setup for this ConfiguredTestCase
-void WorkerPoolManagerModuleTest::setUp ()
-{
-	StartTrace(WorkerPoolManagerModuleTest.setUp);
-	ConfiguredTestCase::setUp();
-}
-
-void WorkerPoolManagerModuleTest::tearDown ()
-{
-	StartTrace(WorkerPoolManagerModuleTest.tearDown);
-	ConfiguredTestCase::tearDown();
-}
-
 void WorkerPoolManagerModuleTest::TestReset ()
 {
 	StartTrace(WorkerPoolManagerModuleTest.TestReset);
-	WDModule::Reset(fConfig["ConfigOne"], fConfig["ConfigTwo"]);
+	WDModule::Reset(GetConfig()["ConfigOne"], GetConfig()["ConfigTwo"]);
 }
 
 void WorkerPoolManagerModuleTest::TestWorkerOne()
 {
 	StartTrace(WorkerPoolManagerModuleTest.TestWorkerOne);
 
-	WDModule::Install(fConfig["ConfigOne"]);
+	WDModule::Install(GetConfig()["ConfigOne"]);
 	WorkerPoolManagerModule *pModule = (WorkerPoolManagerModule *)WDModule::FindWDModule("WorkerPoolManagerModule");
 	t_assertm(pModule != NULL, "Module should be found");
-	FOREACH_ENTRY("TestWorkerOne", cConfig, testName) {
+	ROAnything cConfig;
+	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(cConfig) ) {
 		Check(cConfig, pModule);
 	}
 }
@@ -70,10 +64,12 @@ void WorkerPoolManagerModuleTest::TestWorkerTwo()
 
 	WorkerPoolManagerModule *pModule = (WorkerPoolManagerModule *)WDModule::FindWDModule("WorkerPoolManagerModule");
 	t_assertm(pModule != NULL, "Module should be found");
-	FOREACH_ENTRY("TestWorkerTwo", cConfig, testName) {
+	ROAnything cConfig;
+	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(cConfig) ) {
 		Check(cConfig, pModule);
 	}
-	WDModule::Terminate(fConfig["ConfigTwo"]);
+	WDModule::Terminate(GetConfig()["ConfigTwo"]);
 }
 
 void WorkerPoolManagerModuleTest::Check(ROAnything cConfig, WorkerPoolManagerModule *pModule)
@@ -104,22 +100,13 @@ void WorkerPoolManagerModuleTest::Check(ROAnything cConfig, WorkerPoolManagerMod
 	}
 }
 
-void WorkerPoolManagerModuleTest::test()
-{
-	StartTrace(WorkerPoolManagerModuleTest.test);
-//	t_assertm(false,"test me");
-}
-
-// builds up a suite of ConfiguredTestCases, add a line for each testmethod
+// builds up a suite of tests, add a line for each testmethod
 Test *WorkerPoolManagerModuleTest::suite ()
 {
 	StartTrace(WorkerPoolManagerModuleTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	ADD_CASE(testSuite, WorkerPoolManagerModuleTest, test);
 	ADD_CASE(testSuite, WorkerPoolManagerModuleTest, TestWorkerOne);
 	ADD_CASE(testSuite, WorkerPoolManagerModuleTest, TestReset);
 	ADD_CASE(testSuite, WorkerPoolManagerModuleTest, TestWorkerTwo);
-
 	return testSuite;
 }

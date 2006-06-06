@@ -23,7 +23,7 @@
 #include "RegistryTest.h"
 
 //---- RegistryTest ----------------------------------------------------------------
-RegistryTest::RegistryTest(TString tname) : TestCase(tname), fRegistry(0)
+RegistryTest::RegistryTest(TString tname) : TestCaseType(tname), fRegistry(0)
 {
 }
 
@@ -34,12 +34,7 @@ RegistryTest::~RegistryTest()
 void RegistryTest::setUp ()
 {
 	fRegistry = Registry::GetRegistry(fName);
-} // setUp
-
-void RegistryTest::tearDown ()
-{
-
-} // tearDown
+}
 
 void RegistryTest::InstallAliases ( )
 {
@@ -240,17 +235,16 @@ void RegistryTest::InstallHierarchyConfig()
 }
 
 Test *RegistryTest::suite ()
-// collect all test cases for the RegistryStream
 {
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(RegistryTest, Constructor));
-	testSuite->addTest (NEW_CASE(RegistryTest, GetRegistry));
-	testSuite->addTest (NEW_CASE(RegistryTest, InstallAliases));
-	testSuite->addTest (NEW_CASE(RegistryTest, InstallHierarchy));
-	testSuite->addTest (NEW_CASE(RegistryTest, InstallHierarchyConfig));
-	testSuite->addTest (NEW_CASE(RegistryTest, TerminateTest));
+	ADD_CASE(testSuite, RegistryTest, Constructor);
+	ADD_CASE(testSuite, RegistryTest, GetRegistry);
+	ADD_CASE(testSuite, RegistryTest, InstallAliases);
+	ADD_CASE(testSuite, RegistryTest, InstallHierarchy);
+	ADD_CASE(testSuite, RegistryTest, InstallHierarchyConfig);
+	ADD_CASE(testSuite, RegistryTest, TerminateTest);
 
 	return testSuite;
 
-} // suite
+}

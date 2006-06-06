@@ -38,36 +38,34 @@ ButtonRendererTest::~ButtonRendererTest()
 /*     Init                                                      */
 /*===============================================================*/
 void ButtonRendererTest::setUp ()
-// setup config for all the renderers in this TestCase
 {
 	FieldRendererTest::setUp();
-} // setUp
+}
 
 Test *ButtonRendererTest::suite ()
-// collect all test cases for the ButtonRenderer
 {
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(ButtonRendererTest, TestCaseEmptyConf));
-	testSuite->addTest (NEW_CASE(ButtonRendererTest, TestCase0));
-	testSuite->addTest (NEW_CASE(ButtonRendererTest, TestCase1));
-	testSuite->addTest (NEW_CASE(ButtonRendererTest, TestCase2));
-	testSuite->addTest (NEW_CASE(ButtonRendererTest, TestCase3));
-	testSuite->addTest (NEW_CASE(ButtonRendererTest, TestCaseWithoutName));
-	testSuite->addTest (NEW_CASE(ButtonRendererTest, TestCaseWithoutLabel));
-	testSuite->addTest (NEW_CASE(ButtonRendererTest, TestCaseWithoutValue));
-	testSuite->addTest (NEW_CASE(ButtonRendererTest, TestCaseWithoutSource));
-	testSuite->addTest (NEW_CASE(ButtonRendererTest, TestCaseWithoutMultiple));
-	testSuite->addTest (NEW_CASE(ButtonRendererTest, TestCaseWithoutChecked ));
-	testSuite->addTest (NEW_CASE(ButtonRendererTest, TestCaseWithoutOptions));
-	testSuite->addTest (NEW_CASE(ButtonRendererTest, TestCaseWrong ));
-	testSuite->addTest (NEW_CASE(ButtonRendererTest, TestOptionRenderer ));
-	testSuite->addTest (NEW_CASE(ButtonRendererTest, TestOptionRendererOld ));
-	testSuite->addTest (NEW_CASE(ButtonRendererTest, TestFaultOptionRenderer ));
-	testSuite->addTest (NEW_CASE(ButtonRendererTest, TestFaultOptionRendererOld ));
+	ADD_CASE(testSuite, ButtonRendererTest, TestCaseEmptyConf);
+	ADD_CASE(testSuite, ButtonRendererTest, TestCase0);
+	ADD_CASE(testSuite, ButtonRendererTest, TestCase1);
+	ADD_CASE(testSuite, ButtonRendererTest, TestCase2);
+	ADD_CASE(testSuite, ButtonRendererTest, TestCase3);
+	ADD_CASE(testSuite, ButtonRendererTest, TestCaseWithoutName);
+	ADD_CASE(testSuite, ButtonRendererTest, TestCaseWithoutLabel);
+	ADD_CASE(testSuite, ButtonRendererTest, TestCaseWithoutValue);
+	ADD_CASE(testSuite, ButtonRendererTest, TestCaseWithoutSource);
+	ADD_CASE(testSuite, ButtonRendererTest, TestCaseWithoutMultiple);
+	ADD_CASE(testSuite, ButtonRendererTest, TestCaseWithoutChecked);
+	ADD_CASE(testSuite, ButtonRendererTest, TestCaseWithoutOptions);
+	ADD_CASE(testSuite, ButtonRendererTest, TestCaseWrong);
+	ADD_CASE(testSuite, ButtonRendererTest, TestOptionRenderer);
+	ADD_CASE(testSuite, ButtonRendererTest, TestOptionRendererOld);
+	ADD_CASE(testSuite, ButtonRendererTest, TestFaultOptionRenderer);
+	ADD_CASE(testSuite, ButtonRendererTest, TestFaultOptionRendererOld);
 
 	return testSuite;
-} // suite
+}
 
 /*===============================================================*/
 /*     Check where all is correctly defined                      */

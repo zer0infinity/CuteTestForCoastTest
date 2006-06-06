@@ -35,10 +35,9 @@ TextFieldRendererTest::~TextFieldRendererTest()
 };
 
 void TextFieldRendererTest::setUp ()
-// setup config for all the renderers in this TestCase
 {
 
-} // setUp
+}
 
 void TextFieldRendererTest::TestCase0()
 {
@@ -177,26 +176,25 @@ void TextFieldRendererTest::NoOptionsTextArea()
 }
 
 Test *TextFieldRendererTest::suite ()
-// collect all test cases for the ContextLookupRenderer
 {
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(TextFieldRendererTest, TestCase0 ));
-	testSuite->addTest (NEW_CASE(TextFieldRendererTest, TestCase1 ));
-	testSuite->addTest (NEW_CASE(TextFieldRendererTest, TestValue ));
-	testSuite->addTest (NEW_CASE(TextFieldRendererTest, TestOptionRenderer ));
-	testSuite->addTest (NEW_CASE(TextFieldRendererTest, TestOptionRendererOld ));
-	testSuite->addTest (NEW_CASE(TextFieldRendererTest, TestUnreadable ));
-	testSuite->addTest (NEW_CASE(TextFieldRendererTest, TestSize ));
-	testSuite->addTest (NEW_CASE(TextFieldRendererTest, TestMaxlength ));
-	testSuite->addTest (NEW_CASE(TextFieldRendererTest, Options4TextArea ));
-	testSuite->addTest (NEW_CASE(TextFieldRendererTest, Options3TextArea ));
-	testSuite->addTest (NEW_CASE(TextFieldRendererTest, Options2TextArea ));
-	testSuite->addTest (NEW_CASE(TextFieldRendererTest, Option1TextArea ));
-	testSuite->addTest (NEW_CASE(TextFieldRendererTest, OptionsNoSlotName2TextArea ));
-	testSuite->addTest (NEW_CASE(TextFieldRendererTest, OptionNoSlotName1TextArea ));
-	testSuite->addTest (NEW_CASE(TextFieldRendererTest, OptionsMixedTextArea	));
-	testSuite->addTest (NEW_CASE(TextFieldRendererTest, NoOptionsTextArea ));
+	ADD_CASE(testSuite, TextFieldRendererTest, TestCase0);
+	ADD_CASE(testSuite, TextFieldRendererTest, TestCase1);
+	ADD_CASE(testSuite, TextFieldRendererTest, TestValue);
+	ADD_CASE(testSuite, TextFieldRendererTest, TestOptionRenderer);
+	ADD_CASE(testSuite, TextFieldRendererTest, TestOptionRendererOld);
+	ADD_CASE(testSuite, TextFieldRendererTest, TestUnreadable);
+	ADD_CASE(testSuite, TextFieldRendererTest, TestSize);
+	ADD_CASE(testSuite, TextFieldRendererTest, TestMaxlength);
+	ADD_CASE(testSuite, TextFieldRendererTest, Options4TextArea);
+	ADD_CASE(testSuite, TextFieldRendererTest, Options3TextArea);
+	ADD_CASE(testSuite, TextFieldRendererTest, Options2TextArea);
+	ADD_CASE(testSuite, TextFieldRendererTest, Option1TextArea);
+	ADD_CASE(testSuite, TextFieldRendererTest, OptionsNoSlotName2TextArea);
+	ADD_CASE(testSuite, TextFieldRendererTest, OptionNoSlotName1TextArea);
+	ADD_CASE(testSuite, TextFieldRendererTest, OptionsMixedTextArea);
+	ADD_CASE(testSuite, TextFieldRendererTest, NoOptionsTextArea);
 
 	return testSuite;
-} // suite
+}

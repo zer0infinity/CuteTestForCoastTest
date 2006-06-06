@@ -17,12 +17,9 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "Socket.h"
-#include "DiffTimer.h"
-#include "StringStream.h"
 #include "WPMStatHandler.h"
 #include "WDModule.h"
 #include "RequestProcessor.h"
-#include "Dbg.h"
 
 //--- TestRequestReactor ----
 //:test driver for lf pool testing
@@ -38,7 +35,8 @@ protected:
 };
 
 TestProcessor::TestProcessor(LFListenerPoolTest *test)
-	:	RequestProcessor("TestProcessor"), fTest(test)
+	: RequestProcessor("TestProcessor")
+	, fTest(test)
 {
 	StartTrace(TestProcessor.Ctor);
 }
@@ -56,9 +54,9 @@ void TestProcessor::ProcessRequest(Context &ctx)
 
 //---- LFListenerPoolTest ----------------------------------------------------------------
 LFListenerPoolTest::LFListenerPoolTest(TString tstrName)
-	: ConfiguredTestCase(tstrName, "Config")
+	: TestCaseType(tstrName)
 {
-	StartTrace(LFListenerPoolTest.Ctor);
+	StartTrace(LFListenerPoolTest.LFListenerPoolTest);
 }
 
 LFListenerPoolTest::~LFListenerPoolTest()
@@ -66,21 +64,17 @@ LFListenerPoolTest::~LFListenerPoolTest()
 	StartTrace(LFListenerPoolTest.Dtor);
 }
 
-// setup for this TestCase
 void LFListenerPoolTest::setUp ()
 {
 	StartTrace(LFListenerPoolTest.setUp);
-	ConfiguredTestCase::setUp();
-
-	t_assert(fConfig.IsDefined("Modules"));
-	WDModule::Install(fConfig);
+	t_assert(GetConfig().IsDefined("Modules"));
+	WDModule::Install(GetConfig());
 }
 
 void LFListenerPoolTest::tearDown ()
 {
 	StartTrace(LFListenerPoolTest.tearDown);
-	WDModule::Terminate(fConfig);
-	ConfiguredTestCase::tearDown();
+	WDModule::Terminate(GetConfig());
 }
 
 void LFListenerPoolTest::NoReactorTest()
@@ -88,10 +82,10 @@ void LFListenerPoolTest::NoReactorTest()
 	StartTrace(LFListenerPoolTest.NoReactorTest);
 	LFListenerPool lfp(0);
 
-	Trace("ip:" << fConfig["Testhost"]["ip"].AsString() << " : port:" << fConfig["Testhost"]["port"].AsLong());
-	Acceptor ac1(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port"].AsLong(), 5, 0);
+	Trace("ip:" << GetConfig()["Testhost"]["ip"].AsString() << " : port:" << GetConfig()["Testhost"]["port"].AsLong());
+	Acceptor ac1(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port"].AsLong(), 5, 0);
 	Anything lfpConfig;
-	lfpConfig[String("Accept") << fConfig["Testhost"]["port"].AsString()] = (IFAObject *)&ac1;
+	lfpConfig[String("Accept") << GetConfig()["Testhost"]["port"].AsString()] = (IFAObject *)&ac1;
 	if ( t_assertm( !lfp.Init(2, lfpConfig, true), "no reactor is configured; init should fail")) {
 		t_assertm(lfp.GetPoolSize() == 0, "expected no threads in pool");
 		t_assertm(lfp.Start(true, 1000, 10) == -1, "expected Start to fail");
@@ -279,7 +273,7 @@ bool LFListenerPoolTest::EventProcessed(Socket *socket)
 void LFListenerPoolTest::ProcessOneEvent()
 {
 	StartTrace(LeaderFollowerPoolTest.ProcessOneEvent);
-	Connector c1(fConfig["Testhost"]["ip"].AsString(), fConfig["TCP5010"]["Port"].AsLong());
+	Connector c1(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["TCP5010"]["Port"].AsLong());
 	String reply1;
 
 	if ( t_assert(c1.GetStream() != NULL) ) {
@@ -295,9 +289,9 @@ void LFListenerPoolTest::ProcessOneEvent()
 void LFListenerPoolTest::ProcessManyEvents()
 {
 	StartTrace(LeaderFollowerPoolTest.ProcessManyEvents);
-	Connector c1(fConfig["Testhost"]["ip"].AsString(), fConfig["TCP5010"]["Port"].AsLong());
-	Connector c2(fConfig["Testhost"]["ip"].AsString(), fConfig["TCP5011"]["Port"].AsLong());
-	Connector c3(fConfig["Testhost"]["ip"].AsString(), fConfig["TCP5012"]["Port"].AsLong());
+	Connector c1(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["TCP5010"]["Port"].AsLong());
+	Connector c2(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["TCP5011"]["Port"].AsLong());
+	Connector c3(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["TCP5012"]["Port"].AsLong());
 	String reply1;
 	String reply2;
 	String reply3;
@@ -325,8 +319,8 @@ void LFListenerPoolTest::ProcessManyEvents()
 void LFListenerPoolTest::ProcessTwoEvents()
 {
 	StartTrace(LeaderFollowerPoolTest.ProcessTwoEvents);
-	Connector c1(fConfig["Testhost"]["ip"].AsString(), fConfig["TCP5010"]["Port"].AsLong());
-	Connector c2(fConfig["Testhost"]["ip"].AsString(), fConfig["TCP5011"]["Port"].AsLong());
+	Connector c1(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["TCP5010"]["Port"].AsLong());
+	Connector c2(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["TCP5011"]["Port"].AsLong());
 	String reply1;
 	String reply2;
 
@@ -351,13 +345,13 @@ Test *LFListenerPoolTest::suite ()
 	StartTrace(LFListenerPoolTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(LFListenerPoolTest, NoReactorTest));
-	testSuite->addTest (NEW_CASE(LFListenerPoolTest, NoFactoryTest));
-	testSuite->addTest (NEW_CASE(LFListenerPoolTest, OneAcceptorTest));
-	testSuite->addTest (NEW_CASE(LFListenerPoolTest, TwoAcceptorsTest));
-	testSuite->addTest (NEW_CASE(LFListenerPoolTest, ManyAcceptorsTest));
-	testSuite->addTest (NEW_CASE(LFListenerPoolTest, InvalidAcceptorTest));
-	testSuite->addTest (NEW_CASE(LFListenerPoolTest, InvalidReactorTest));
+	ADD_CASE(testSuite, LFListenerPoolTest, NoReactorTest);
+	ADD_CASE(testSuite, LFListenerPoolTest, NoFactoryTest);
+	ADD_CASE(testSuite, LFListenerPoolTest, OneAcceptorTest);
+	ADD_CASE(testSuite, LFListenerPoolTest, TwoAcceptorsTest);
+	ADD_CASE(testSuite, LFListenerPoolTest, ManyAcceptorsTest);
+	ADD_CASE(testSuite, LFListenerPoolTest, InvalidAcceptorTest);
+	ADD_CASE(testSuite, LFListenerPoolTest, InvalidReactorTest);
 
 	return testSuite;
-} // suite
+}

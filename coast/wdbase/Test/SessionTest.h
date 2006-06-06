@@ -10,7 +10,7 @@
 #define _SessionTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 #include "Context.h"
 
 //---- forward declaration -----------------------------------------------
@@ -18,7 +18,7 @@ class STTestSession;
 
 //---- SessionTest ----------------------------------------------------------
 //!TestCases for the Session class
-class SessionTest : public ConfiguredTestCase
+class SessionTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors

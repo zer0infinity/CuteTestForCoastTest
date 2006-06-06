@@ -29,9 +29,14 @@
 
 //---- AccessManagerTest ----------------------------------------------------------------
 AccessManagerTest::AccessManagerTest(TString tstrName)
-	: ConfiguredTestCase(tstrName, "AccessManagerTestConfig")
+	: TestCaseType(tstrName)
 {
-	StartTrace(AccessManagerTest.Ctor);
+	StartTrace(AccessManagerTest.AccessManagerTest);
+}
+
+TString AccessManagerTest::getConfigFileName()
+{
+	return "AccessManagerTestConfig";
 }
 
 AccessManagerTest::~AccessManagerTest()
@@ -39,29 +44,25 @@ AccessManagerTest::~AccessManagerTest()
 	StartTrace(AccessManagerTest.Dtor);
 }
 
-// setup for this TestCase
 void AccessManagerTest::setUp ()
 {
 	StartTrace(AccessManagerTest.setUp);
-
-	ConfiguredTestCase::setUp();
 	// must install modules BEFORE we can use data accesses to create test files!
-	WDModule::Install(fConfig["Config"]);
+	WDModule::Install(GetConfig()["Config"]);
 	// create test files
-	t_assertm( FileCreator::CreateFile("WriteUserData", fConfig["InitData"]["UserFile"]), "Creation of test file failed" );
-	t_assertm( FileCreator::CreateFile("WriteTokenData", fConfig["InitData"]["TokenFile"]), "Creation of test file failed" );
-	t_assertm( FileCreator::CreateFile("WriteEntityData", fConfig["InitData"]["EntityFile"]), "Creation of test file failed" );
+	t_assertm( FileCreator::CreateFile("WriteUserData", GetConfig()["InitData"]["UserFile"]), "Creation of test file failed" );
+	t_assertm( FileCreator::CreateFile("WriteTokenData", GetConfig()["InitData"]["TokenFile"]), "Creation of test file failed" );
+	t_assertm( FileCreator::CreateFile("WriteEntityData", GetConfig()["InitData"]["EntityFile"]), "Creation of test file failed" );
 }
 
 void AccessManagerTest::tearDown ()
 {
 	StartTrace(AccessManagerTest.tearDown);
 
-	WDModule::Terminate(fConfig["Config"]);
+	WDModule::Terminate(GetConfig()["Config"]);
 	System::IO::unlink("config/FileTestUserDB.any");
 	System::IO::unlink("config/FileTestActerDB.any");
 	System::IO::unlink("config/FileTestRightsDB.any");
-	ConfiguredTestCase::tearDown();
 }
 
 void AccessManagerTest::doTestAccessManager(ROAnything config, AccessManager *am)
@@ -180,21 +181,24 @@ void AccessManagerTest::doTestAccessManager(ROAnything config, AccessManager *am
 		assertEqual(testconf["result"].AsBool(false), res);
 		assertAnyEqual(testconf["resultAllowed"], allowedEntities);
 	}
-
 }
 
-void AccessManagerTest::testRegularAccessManagers()
+void AccessManagerTest::RegularAccessManagersTest()
 {
-	StartTrace(AccessManagerTest.testRegularAccessManagers);
+	StartTrace(AccessManagerTest.RegularAccessManagersTest);
 
-	AccessManager *am;
+	AccessManager *am = NULL;
 
 	// run tests for registered/configured access managers (have names)
-	FOREACH_ENTRY("Tests", caseConfig, strName) {
-		Trace("Running tests for '" << strName << "' access manager ...");
-		if ( fConfig["RunOnly"].GetSize() == 0 || fConfig["RunOnly"].Contains(strName) ) {
+	ROAnything caseConfig;
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(caseConfig) ) {
+		TString strName;
+		aEntryIterator.SlotName(strName);
+		Trace("Running tests for '" << NotNull(strName) << "' access manager ...");
+		if ( GetConfig()["RunOnly"].GetSize() == 0 || GetConfig()["RunOnly"].Contains(strName) ) {
 			am = AccessManagerModule::GetAccessManager(strName);
-			if (t_assert(am)) {
+			if (t_assertm(am, TString("expected AccessManager [") << strName << "] to be registered")) {
 				doTestAccessManager(caseConfig, am);
 			}
 		} else {
@@ -212,8 +216,6 @@ Test *AccessManagerTest::suite ()
 {
 	StartTrace(AccessManagerTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	ADD_CASE(testSuite, AccessManagerTest, testRegularAccessManagers);
-
+	ADD_CASE(testSuite, AccessManagerTest, RegularAccessManagersTest);
 	return testSuite;
 }

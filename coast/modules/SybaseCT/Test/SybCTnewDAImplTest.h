@@ -14,7 +14,7 @@
 
 //---- SybCTnewDAImplTest ----------------------------------------------------------
 //:TestCases description
-class SybCTnewDAImplTest : public TestCase
+class SybCTnewDAImplTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -42,7 +42,7 @@ public:
 	void InitTest();
 	void DoGetConnectionTest();
 	void DoPutbackConnectionTest();
-	void testCase();
+	void SimpleDATest();
 
 	bool fbWasInitialized;
 };

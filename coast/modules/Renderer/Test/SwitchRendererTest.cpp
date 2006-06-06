@@ -29,38 +29,36 @@ SwitchRendererTest::~SwitchRendererTest() {};
 /*     Init                                                      */
 /*===============================================================*/
 void SwitchRendererTest::setUp ()
-// setup config for all the renderers in this TestCase
 {
 	RendererTest::setUp();
-} // setUp
+}
 
 Test *SwitchRendererTest::suite ()
-// collect all test cases for the SwitchRenderer
 {
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(SwitchRendererTest, TestCaseA));
-	testSuite->addTest (NEW_CASE(SwitchRendererTest, TestCaseB));
-	testSuite->addTest (NEW_CASE(SwitchRendererTest, TestCaseC));
-	testSuite->addTest (NEW_CASE(SwitchRendererTest, TestCaseNotFoundWithDefault));
-	testSuite->addTest (NEW_CASE(SwitchRendererTest, TestCaseNotFoundWithoutDefault));
+	ADD_CASE(testSuite, SwitchRendererTest, TestCaseA);
+	ADD_CASE(testSuite, SwitchRendererTest, TestCaseB);
+	ADD_CASE(testSuite, SwitchRendererTest, TestCaseC);
+	ADD_CASE(testSuite, SwitchRendererTest, TestCaseNotFoundWithDefault);
+	ADD_CASE(testSuite, SwitchRendererTest, TestCaseNotFoundWithoutDefault);
 
-	testSuite->addTest (NEW_CASE(SwitchRendererTest, TestCaseEmptyKeyWithDefault));
-	testSuite->addTest (NEW_CASE(SwitchRendererTest, TestCaseEmptyKeyWithIsEmpty));
+	ADD_CASE(testSuite, SwitchRendererTest, TestCaseEmptyKeyWithDefault);
+	ADD_CASE(testSuite, SwitchRendererTest, TestCaseEmptyKeyWithIsEmpty);
 
-	testSuite->addTest (NEW_CASE(SwitchRendererTest, TestCaseAWithoutCases));
-	testSuite->addTest (NEW_CASE(SwitchRendererTest, TestCaseBWithoutCases));
-	testSuite->addTest (NEW_CASE(SwitchRendererTest, TestCaseCWithoutCases));
+	ADD_CASE(testSuite, SwitchRendererTest, TestCaseAWithoutCases);
+	ADD_CASE(testSuite, SwitchRendererTest, TestCaseBWithoutCases);
+	ADD_CASE(testSuite, SwitchRendererTest, TestCaseCWithoutCases);
 
-	testSuite->addTest (NEW_CASE(SwitchRendererTest, TestCaseAWithoutContextLookupName));
-	testSuite->addTest (NEW_CASE(SwitchRendererTest, TestCaseBWithoutContextLookupName));
-	testSuite->addTest (NEW_CASE(SwitchRendererTest, TestCaseCWithoutContextLookupName));
-	testSuite->addTest (NEW_CASE(SwitchRendererTest, TestCaseNotFoundWithoutContextLookupName));
-	testSuite->addTest (NEW_CASE(SwitchRendererTest, TestCaseLookupEmpty));
+	ADD_CASE(testSuite, SwitchRendererTest, TestCaseAWithoutContextLookupName);
+	ADD_CASE(testSuite, SwitchRendererTest, TestCaseBWithoutContextLookupName);
+	ADD_CASE(testSuite, SwitchRendererTest, TestCaseCWithoutContextLookupName);
+	ADD_CASE(testSuite, SwitchRendererTest, TestCaseNotFoundWithoutContextLookupName);
+	ADD_CASE(testSuite, SwitchRendererTest, TestCaseLookupEmpty);
 
 	return testSuite;
 
-} // suite
+}
 
 /*===============================================================*/
 /*     Check found cases where all is correctly defined          */

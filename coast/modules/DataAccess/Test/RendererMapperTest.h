@@ -18,7 +18,7 @@
 //! further explanation of the purpose of the class
 //! this may contain <B>HTML-Tags</B>
 //! ...
-class RendererMapperTest : public TestCase
+class RendererMapperTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors

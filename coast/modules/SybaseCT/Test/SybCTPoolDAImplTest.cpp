@@ -21,7 +21,7 @@
 #include "AnyUtils.h"
 
 //---- SybCTPoolDAImplTest ----------------------------------------------------------------
-SybCTPoolDAImplTest::SybCTPoolDAImplTest(TString tstrName) : TestCase(tstrName)
+SybCTPoolDAImplTest::SybCTPoolDAImplTest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(SybCTPoolDAImplTest.Ctor);
 }
@@ -31,20 +31,9 @@ SybCTPoolDAImplTest::~SybCTPoolDAImplTest()
 	StartTrace(SybCTPoolDAImplTest.Dtor);
 }
 
-// setup for this TestCase
-void SybCTPoolDAImplTest::setUp ()
+void SybCTPoolDAImplTest::SimpleDATest()
 {
-	StartTrace(SybCTPoolDAImplTest.setUp);
-} // setUp
-
-void SybCTPoolDAImplTest::tearDown ()
-{
-	StartTrace(SybCTPoolDAImplTest.tearDown);
-} // tearDown
-
-void SybCTPoolDAImplTest::testCase()
-{
-	StartTrace(SybCTPoolDAImplTest.testCase);
+	StartTrace(SybCTPoolDAImplTest.SimpleDATest);
 
 	Anything params;
 	params["SybDBUser"] = "wdtester";
@@ -90,9 +79,6 @@ Test *SybCTPoolDAImplTest::suite ()
 {
 	StartTrace(SybCTPoolDAImplTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	testSuite->addTest (NEW_CASE(SybCTPoolDAImplTest, testCase));
-
+	ADD_CASE(testSuite, SybCTPoolDAImplTest, SimpleDATest);
 	return testSuite;
-
-} // suite
+}

@@ -10,7 +10,7 @@
 #define _SSLConnectorTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 
 //---- forward declaration -----------------------------------------------
 #include "Anything.h"
@@ -22,7 +22,7 @@ class SSLConnector;
 //! further explanation of the purpose of the class
 //! this may contain <B>HTML-Tags</B>
 //! ...
-class SSLConnectorTest : public ConfiguredTestCase
+class SSLConnectorTest : public TestFramework::TestCaseWithConfig
 {
 public:
 

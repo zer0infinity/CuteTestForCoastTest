@@ -18,7 +18,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class ROAnyLookupAdapterTest : public TestCase
+class ROAnyLookupAdapterTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -35,16 +35,7 @@ public:
 	//! builds up a suite of testcases for this test
 	static Test *suite ();
 
-	//! sets the environment for this test
-	void setUp ();
-
-	//! deletes the environment for this test
-	void tearDown ();
-
-	//! describe this testcase
-	void testCase();
-
-	void testLookup();
+	void LookupTest();
 };
 
 #endif

@@ -32,17 +32,6 @@ CallRendererTest::~CallRendererTest()
 	StartTrace(CallRendererTest.Dtor);
 }
 
-// setup for this TestCase
-void CallRendererTest::setUp ()
-{
-	StartTrace(CallRendererTest.setUp);
-}
-
-void CallRendererTest::tearDown ()
-{
-	StartTrace(CallRendererTest.tearDown);
-}
-
 void CallRendererTest::EmptyCallTest()
 {
 	StartTrace(CallRendererTest.EmptyCallTest);

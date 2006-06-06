@@ -10,7 +10,7 @@
 #define _AccessManagerModuleTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 
 //---- AccessManagerModuleTest ----------------------------------------------------------
 //! <B>really brief class description</B>
@@ -18,7 +18,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class AccessManagerModuleTest : public ConfiguredTestCase
+class AccessManagerModuleTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors
@@ -41,13 +41,9 @@ public:
 	//! deletes the environment for this test
 	void tearDown ();
 
-	//! describe this testcase
-	void testCase();
+	void InitTest();
 
-	void testInit();
-
-	void testFinis();
-
+	void FinisTest();
 };
 
 #endif

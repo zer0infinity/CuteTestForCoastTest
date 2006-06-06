@@ -16,7 +16,7 @@
 #include "StringStream.h"
 
 //---- RendererTest -----------------------------------------------------------
-class RendererTest : public TestCase
+class RendererTest : public TestFramework::TestCase
 {
 public:
 	RendererTest(TString tstrName);

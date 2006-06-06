@@ -20,24 +20,13 @@
 #include "Dbg.h"
 
 //---- StreamingAnythingMapperTest ----------------------------------------------------------------
-StreamingAnythingMapperTest::StreamingAnythingMapperTest(TString tname) : TestCase(tname)
+StreamingAnythingMapperTest::StreamingAnythingMapperTest(TString tname) : TestCaseType(tname)
 {
 }
 
 StreamingAnythingMapperTest::~StreamingAnythingMapperTest()
 {
 }
-
-void StreamingAnythingMapperTest::setUp ()
-// setup connector for this TestCase
-{
-
-} // setUp
-
-void StreamingAnythingMapperTest::tearDown ()
-{
-
-} // tearDown
 
 void StreamingAnythingMapperTest::GetTest()
 {
@@ -79,13 +68,12 @@ void StreamingAnythingMapperTest::PutTest()
 }
 
 Test *StreamingAnythingMapperTest::suite ()
-// collect all test cases for the SocketStream
 {
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(StreamingAnythingMapperTest, PutTest));
-	testSuite->addTest (NEW_CASE(StreamingAnythingMapperTest, GetTest));
+	ADD_CASE(testSuite, StreamingAnythingMapperTest, PutTest);
+	ADD_CASE(testSuite, StreamingAnythingMapperTest, GetTest);
 
 	return testSuite;
 
-} // suite
+}

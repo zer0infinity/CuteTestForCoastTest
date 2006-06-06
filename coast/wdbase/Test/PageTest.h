@@ -17,7 +17,7 @@ class Anything;
 
 //---- PageTest ----------------------------------------------------------
 //!TestCases description
-class PageTest : public TestCase
+class PageTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -36,9 +36,6 @@ public:
 
 	//!sets the environment for this test
 	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
 
 	//!describe this testcase
 	void FinishTest();

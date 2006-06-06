@@ -17,7 +17,7 @@ class Registry;
 
 //---- WDModuleTest ----------------------------------------------------------
 //!TestCases for Coast state transitions
-class WDModuleTest : public TestCase
+class WDModuleTest : public TestFramework::TestCase
 {
 public:
 	//!TestCases
@@ -46,12 +46,6 @@ public:
 
 protected:
 	Registry *fOrigWDModuleRegistry;
-	//--- member variables declaration
-
-private:
-	// use careful, you inhibit subclass use
-	//--- private class api
-	//--- private member variables
 };
 
 #endif

@@ -20,15 +20,13 @@
 //--- interface include --------------------------------------------------------
 #include "XMLBodyMapperTest.h"
 
-XMLBodyMapperTest::XMLBodyMapperTest(TString tname) : TestCase(tname), fXMLBodyMapper("TestedMapper")
+XMLBodyMapperTest::XMLBodyMapperTest(TString tname) : TestCaseType(tname), fXMLBodyMapper("TestedMapper")
 {};
 
 XMLBodyMapperTest::~XMLBodyMapperTest() {};
 
 void XMLBodyMapperTest::setUp ()
 {
-	TestCase::setUp();
-
 	String configFilename("XMLBodyMapperTestConfig");
 
 	istream *ifp = System::OpenStream(configFilename, "any");

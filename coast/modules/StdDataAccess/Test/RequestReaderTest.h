@@ -10,7 +10,7 @@
 #define _RequestReaderTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 
 //---- RequestReaderTest ----------------------------------------------------
 
@@ -18,7 +18,7 @@
 
 class TimeSeries;
 
-class RequestReaderTest : public ConfiguredTestCase
+class RequestReaderTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors
@@ -35,20 +35,11 @@ public:
 	//! builds up a suite of testcases for this test
 	static Test *suite ();
 
-	//! sets the environment for this test
-	void setUp ();
-
-	//! deletes the environment for this test
-	void tearDown ();
+	TString getConfigFileName();
 
 	//! describe this testcase
-	void testCase();
-
-	void testReadMinimalInput();
-	void testCleanupRequestLine();
-
-private:
-
+	void ReadMinimalInputTest();
+	void CleanupRequestLineTest();
 };
 
 #endif

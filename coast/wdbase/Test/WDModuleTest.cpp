@@ -33,16 +33,16 @@ class TestModuleTrue: public WDModule
 {
 public:
 	TestModuleTrue() : WDModule("TestModuleTrue") {}
-	virtual bool Init(const Anything &config) {
+	virtual bool Init(const ROAnything config) {
 		return true;
 	}
 	virtual bool Finis() {
 		return true;
 	}
-	virtual bool ResetFinis(const Anything &config) {
+	virtual bool ResetFinis(const ROAnything config) {
 		return true;
 	}
-	virtual bool ResetInit(const Anything &config) {
+	virtual bool ResetInit(const ROAnything config) {
 		return true;
 	}
 };
@@ -52,22 +52,22 @@ class TestModuleFalse: public WDModule
 
 public:
 	TestModuleFalse() : WDModule("TestModuleFalse") {}
-	virtual bool Init(const Anything &config) {
+	virtual bool Init(const ROAnything config) {
 		return false;
 	}
 	virtual bool Finis() {
 		return false;
 	}
-	virtual bool ResetFinis(const Anything &config) {
+	virtual bool ResetFinis(const ROAnything config) {
 		return false;
 	}
-	virtual bool ResetInit(const Anything &config) {
+	virtual bool ResetInit(const ROAnything config) {
 		return false;
 	}
 };
 
 //---- WDModuleTest ----------------------------------------------------------------
-WDModuleTest::WDModuleTest(TString tname) : TestCase(tname)
+WDModuleTest::WDModuleTest(TString tname) : TestCaseType(tname)
 {
 }
 
@@ -100,7 +100,7 @@ void WDModuleTest::tearDown ()
 	WDModule::FindWDModule("dummy");
 	WDModule::ResetCache(false);
 
-} // tearDown
+}
 
 void WDModuleTest::InstallTest()
 {
@@ -221,16 +221,15 @@ void WDModuleTest::ResetWithDiffConfigsTest()
 }
 
 Test *WDModuleTest::suite ()
-// collect all test cases for the RegistryStream
 {
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(WDModuleTest, InstallTest));
-	testSuite->addTest (NEW_CASE(WDModuleTest, Install2Test));
-	testSuite->addTest (NEW_CASE(WDModuleTest, TerminateTest));
-	testSuite->addTest (NEW_CASE(WDModuleTest, ResetTest));
-	testSuite->addTest (NEW_CASE(WDModuleTest, ResetWithDiffConfigsTest));
+	ADD_CASE(testSuite, WDModuleTest, InstallTest);
+	ADD_CASE(testSuite, WDModuleTest, Install2Test);
+	ADD_CASE(testSuite, WDModuleTest, TerminateTest);
+	ADD_CASE(testSuite, WDModuleTest, ResetTest);
+	ADD_CASE(testSuite, WDModuleTest, ResetWithDiffConfigsTest);
 
 	return testSuite;
 
-} // suite
+}

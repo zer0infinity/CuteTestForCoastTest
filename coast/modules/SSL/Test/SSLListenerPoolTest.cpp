@@ -82,7 +82,9 @@ void SSLListenerPoolTest::PoolTest()
 void SSLListenerPoolTest::DoTestConnect()
 {
 	StartTrace(SSLListenerPoolTest.DoTestConnect);
-	FOREACH_ENTRY("SSLListenerPoolTest", cConfig, cName) {
+	ROAnything cConfig;
+	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetConfig()["SSLListenerPoolTest"]);
+	while ( aEntryIterator.Next(cConfig) ) {
 		TraceAny(cConfig, "cConfig");
 		Trace(cConfig["SSLConnector"].AsLong(1));
 		Anything data = cConfig["Data"].DeepClone();
@@ -95,7 +97,7 @@ void SSLListenerPoolTest::DoTestConnect()
 			if ( cConfig["SSLConnector"].AsLong(1) == 1 ) {
 				if ( cConfig["ConnectorToUse"].AsString() != "" ) {
 					// deep clone, no side effect when adding Timeout
-					Anything connectorConfig = fTestCaseConfig[cConfig["ConnectorToUse"].AsString()].DeepClone();
+					Anything connectorConfig = GetTestCaseConfig()[cConfig["ConnectorToUse"].AsString()].DeepClone();
 					if ( cConfig.IsDefined("TimeoutToUse") ) {
 						connectorConfig["Timeout"] = cConfig["TimeoutToUse"].AsLong(0L);
 					}
@@ -142,13 +144,8 @@ Test *SSLListenerPoolTest::suite ()
 {
 	StartTrace(SSLListenerPoolTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	testSuite->addTest (NEW_CASE(SSLListenerPoolTest, PoolTest));
-//#if !defined(WIN32)
-//	testSuite->addTest (NEW_CASE(SSLListenerPoolTest, InitFailureTest)); // test does not work on WIN32
-//#endif
-	testSuite->addTest (NEW_CASE(SSLListenerPoolTest, NullCallBackFactoryTest));
-	testSuite->addTest (NEW_CASE(SSLListenerPoolTest, InitFailureNullAcceptorTest));
+	ADD_CASE(testSuite, SSLListenerPoolTest, PoolTest);
+	ADD_CASE(testSuite, SSLListenerPoolTest, NullCallBackFactoryTest);
+	ADD_CASE(testSuite, SSLListenerPoolTest, InitFailureNullAcceptorTest);
 	return testSuite;
-
-} // suite
+}

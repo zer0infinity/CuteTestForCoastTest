@@ -10,7 +10,7 @@
 #define _NewRendererTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 
 //---- NewRendererTest ----------------------------------------------------------
 //!TestClass for Renderers
@@ -24,7 +24,7 @@
 //! }</PRE>
 //! There is also a Toplevel slot <B>/EnvForAllCases</B> specifing an Anything that serves
 //! as Context for all TestCases
-class NewRendererTest : public ConfiguredTestCase
+class NewRendererTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors
@@ -38,6 +38,7 @@ public:
 
 	void setUp();
 	void tearDown();
+	TString getConfigFileName();
 
 	//!Testcase runs all configured RendererSpecs
 	void TestRenderers();

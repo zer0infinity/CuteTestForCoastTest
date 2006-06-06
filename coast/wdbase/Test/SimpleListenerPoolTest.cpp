@@ -6,22 +6,21 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "Socket.h"
-#include "Dbg.h"
-
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
+//--- interface include --------------------------------------------------------
+#include "SimpleListenerPoolTest.h"
 
 //--- module under test --------------------------------------------------------
 #include "RequestListener.h"
 
-//--- interface include --------------------------------------------------------
-#include "SimpleListenerPoolTest.h"
+//--- test modules used --------------------------------------------------------
+#include "TestSuite.h"
+
+//--- standard modules used ----------------------------------------------------
+#include "AnyIterators.h"
 
 //---- SimpleListenerPoolTest ----------------------------------------------------------------
-SimpleListenerPoolTest::SimpleListenerPoolTest(TString tname) : ListenerPoolTest(tname)
+SimpleListenerPoolTest::SimpleListenerPoolTest(TString tname)
+	: ListenerPoolTest(tname)
 {
 	StartTrace(SimpleListenerPoolTest.Ctor);
 }
@@ -70,7 +69,9 @@ void SimpleListenerPoolTest::DoTestConnect()
 {
 	StartTrace(SimpleListenerPoolTest.DoTestConnect);
 
-	FOREACH_ENTRY("SimpleListenerPoolTest", cConfig, cName) {
+	ROAnything cConfig;
+	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetConfig()["SimpleListenerPoolTest"]);
+	while ( aEntryIterator.Next(cConfig) ) {
 		TraceAny(cConfig, "cConfig");
 
 		Connector c("localhost",
@@ -95,14 +96,11 @@ Test *SimpleListenerPoolTest::suite ()
 {
 	StartTrace(SimpleListenerPoolTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	testSuite->addTest (NEW_CASE(SimpleListenerPoolTest, PoolTest));
+	ADD_CASE(testSuite, SimpleListenerPoolTest, PoolTest);
 #if !defined(WIN32)
-	testSuite->addTest (NEW_CASE(SimpleListenerPoolTest, InitFailureTest));	// test does not work on WIN32
+	ADD_CASE(testSuite, SimpleListenerPoolTest, InitFailureTest);	// test does not work on WIN32
 #endif
-	testSuite->addTest (NEW_CASE(SimpleListenerPoolTest, NullCallBackFactoryTest));
-	testSuite->addTest (NEW_CASE(SimpleListenerPoolTest, InitFailureNullAcceptorTest));
-
+	ADD_CASE(testSuite, SimpleListenerPoolTest, NullCallBackFactoryTest);
+	ADD_CASE(testSuite, SimpleListenerPoolTest, InitFailureNullAcceptorTest);
 	return testSuite;
-
-} // suite
+}

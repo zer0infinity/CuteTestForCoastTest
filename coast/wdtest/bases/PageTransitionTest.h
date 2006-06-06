@@ -29,6 +29,8 @@ public:
 	//!sets up the test case
 	virtual void setUp();
 
+	TString getConfigFileName();
+
 	//--- public api
 
 	//!builds up a suite of testcases for this test

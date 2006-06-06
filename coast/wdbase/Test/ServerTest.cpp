@@ -17,18 +17,17 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "Socket.h"
-#include "StringStream.h"
 #include "Context.h"
-#include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
 
 #define TESTHOST "localhost"
 
 //---- ServerTest ----------------------------------------------------------------
-ServerTest::ServerTest(TString tname) : ConfiguredTestCase(tname, "Config")
+ServerTest::ServerTest(TString tname)
+	: TestCaseType(tname)
 {
-	StartTrace(ServerTest.Ctor);
+	StartTrace(ServerTest.ServerTest);
 }
 
 ServerTest::~ServerTest()
@@ -39,10 +38,9 @@ ServerTest::~ServerTest()
 void ServerTest::setUp ()
 {
 	StartTrace(ServerTest.setUp);
-	ConfiguredTestCase::setUp();
-	t_assert(fConfig.IsDefined("Modules"));
-	Application::InitializeGlobalConfig(fConfig);
-	WDModule::Install(fConfig);
+	t_assert(GetConfig().IsDefined("Modules"));
+	Application::InitializeGlobalConfig(GetConfig().DeepClone());
+	WDModule::Install(GetConfig());
 	Server *s;
 	if (t_assert((s = Server::FindServer("Server")) != NULL)) {
 		ROAnything result;
@@ -54,10 +52,8 @@ void ServerTest::setUp ()
 void ServerTest::tearDown ()
 {
 	StartTrace(ServerTest.tearDown);
-	WDModule::Terminate(fConfig);
+	WDModule::Terminate(GetConfig());
 	Application::InitializeGlobalConfig(Anything());
-
-	ConfiguredTestCase::tearDown();
 }
 
 void ServerTest::InitRunTerminateTest()
@@ -178,8 +174,8 @@ void ServerTest::RunTestSequence()
 	Anything replyMessage2;
 	testMessage1 = "Hallo there first message";
 	testMessage2 = "Hallo there second message";
-	Connector c1(TESTHOST, fConfig["TCP5010"]["Port"].AsLong());
-	Connector c2(TESTHOST, fConfig["TCP5011"]["Port"].AsLong());
+	Connector c1(TESTHOST, GetConfig()["TCP5010"]["Port"].AsLong());
+	Connector c2(TESTHOST, GetConfig()["TCP5011"]["Port"].AsLong());
 
 	if (t_assert(c1.GetStream() != NULL) && t_assert(c2.GetStream() != NULL)) {
 		testMessage1.PrintOn((*c1.GetStream()));

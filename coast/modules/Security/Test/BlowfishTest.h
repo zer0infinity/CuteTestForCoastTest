@@ -17,16 +17,16 @@
 
 #include "TestCase.h"
 #define NUM_TESTS 34
+
 //---- BlowfishTest -----------------------------------------------------------
 class Scrambler;
 
-class BlowfishTest : public TestCase
+class BlowfishTest : public TestFramework::TestCase
 {
 public:
 	BlowfishTest(TString tstrName);
 	virtual ~BlowfishTest();
 
-	virtual void setUp ();
 	static Test *suite ();
 
 	void scrambleUnscramble();
@@ -49,7 +49,6 @@ public:
 protected:
 	void DoScrambleUnscramble(Scrambler &bfscrambler, Scrambler &bfscrambler2);
 	void DoDifferentKey(Scrambler &bfscrambler, Scrambler &bfscrambler2);
-
 };
 
 #endif

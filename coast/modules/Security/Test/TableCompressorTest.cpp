@@ -41,7 +41,7 @@ Test *TableCompressorTest::suite ()
 	return testSuite;
 }
 
-TableCompressorTest::TableCompressorTest(TString tname) : TestCase(tname)
+TableCompressorTest::TableCompressorTest(TString tname) : TestCaseType(tname)
 {
 }
 

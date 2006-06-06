@@ -41,7 +41,7 @@ protected:
 };
 
 //---- MTStorageTest ----------------------------------------------------------------
-MTStorageTest::MTStorageTest(TString tname) : TestCase(tname), fFinishedMutex("Finish"), fFinished(0), fStarted(false)
+MTStorageTest::MTStorageTest(TString tname) : TestCaseType(tname), fFinishedMutex("Finish"), fFinished(0), fStarted(false)
 {
 #if !defined(__linux__) && !defined(_AIX) && !defined(WIN32)
 	thr_setconcurrency(3);
@@ -49,14 +49,6 @@ MTStorageTest::MTStorageTest(TString tname) : TestCase(tname), fFinishedMutex("F
 }
 
 MTStorageTest::~MTStorageTest()
-{
-}
-
-void MTStorageTest::setUp ()
-{
-}
-
-void MTStorageTest::tearDown ()
 {
 }
 
@@ -166,8 +158,8 @@ void MTStorageTest::PoolAllocatorTiming()
 Test *MTStorageTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
-	testSuite->addTest (NEW_CASE(MTStorageTest, GlobalAllocatorTiming));
-	testSuite->addTest (NEW_CASE(MTStorageTest, PoolAllocatorTiming));
+	ADD_CASE(testSuite, MTStorageTest, GlobalAllocatorTiming);
+	ADD_CASE(testSuite, MTStorageTest, PoolAllocatorTiming);
 	return testSuite;
 }
 

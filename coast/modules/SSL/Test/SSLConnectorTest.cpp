@@ -16,8 +16,6 @@
 #include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
-#include "System.h"
 #include "SSLModule.h"
 #include "Resolver.h"
 #include "PoolAllocator.h"
@@ -25,14 +23,13 @@
 //--- c-library modules used ---------------------------------------------------
 #if defined(WIN32)
 #include <io.h>
-#else
-#include <unistd.h>
 #endif
 
 //---- SSLConnectorTest ----------------------------------------------------------------
 SSLConnectorTest::SSLConnectorTest(TString tname)
-	: ConfiguredTestCase(tname, "SSLConnectorTest")
+	: TestCaseType(tname)
 {
+	StartTrace(SSLConnectorTest.SSLConnectorTest);
 }
 
 SSLConnectorTest::~SSLConnectorTest()
@@ -40,33 +37,26 @@ SSLConnectorTest::~SSLConnectorTest()
 }
 
 void SSLConnectorTest::setUp ()
-// setup sslConnector for this TestCase
 {
 	StartTrace(SSLConnectorTest.setUp);
 	WDModule *sslmodule = WDModule::FindWDModule("SSLModule");
 	sslmodule->ResetInit(Anything());
-	ConfiguredTestCase::setUp();
-	TraceAny(fConfig, "config:");
-
-} // setUp
+}
 
 void SSLConnectorTest::tearDown ()
 {
 	StartTrace(SSLConnectorTest.tearDown);
-
-	ConfiguredTestCase::tearDown();
 	WDModule *sslmodule = WDModule::FindWDModule("SSLModule");
 	sslmodule->ResetFinis(Anything());
-
-} // tearDown
+}
 
 void SSLConnectorTest::simpleConstructorTest()
 {
-	SSLConnector sslConnector(fConfig["InternalSSLhost"]["ip"].AsString(), fConfig["InternalSSLhost"]["port"].AsLong());
+	SSLConnector sslConnector(GetConfig()["InternalSSLhost"]["ip"].AsString(), GetConfig()["InternalSSLhost"]["port"].AsLong());
 
 	// assert the internal state of the sslConnector
-	assertEqual( Resolver::DNS2IPAddress(fConfig["InternalSSLhost"]["ip"].AsString()), sslConnector.GetAddress() );
-	assertEqual( fConfig["InternalSSLhost"]["port"].AsLong(), sslConnector.fPort );
+	assertEqual( Resolver::DNS2IPAddress(GetConfig()["InternalSSLhost"]["ip"].AsString()), sslConnector.GetAddress() );
+	assertEqual( GetConfig()["InternalSSLhost"]["port"].AsLong(), sslConnector.fPort );
 	assertEqual( (long)NULL, (long)sslConnector.fSocket );
 
 	// assert the funtionality of the public api
@@ -85,7 +75,7 @@ void SSLConnectorTest::allocatorConstructorTest()
 		PoolAllocator pa(1, 8 * 1024, 21);
 		TestStorageHooks tsh(&pa);
 
-		SSLConnector connector(fConfig["InternalSSLhost"]["ip"].AsString(), fConfig["InternalSSLhost"]["port"].AsLong(), 0L,
+		SSLConnector connector(GetConfig()["InternalSSLhost"]["ip"].AsString(), GetConfig()["InternalSSLhost"]["port"].AsLong(), 0L,
 							   (SSL_CTX *) NULL, (const char *) NULL, 0L, true);
 		Socket *socket = connector.MakeSocket();
 
@@ -101,7 +91,7 @@ void SSLConnectorTest::allocatorConstructorTest()
 	{
 		TestStorageHooks tsh(Storage::Global());
 
-		SSLConnector connector(fConfig["InternalSSLhost"]["ip"].AsString(), fConfig["InternalSSLhost"]["port"].AsLong(), 0L,
+		SSLConnector connector(GetConfig()["InternalSSLhost"]["ip"].AsString(), GetConfig()["InternalSSLhost"]["port"].AsLong(), 0L,
 							   (SSL_CTX *) NULL, (const char *) NULL, 0L, false);
 		Socket *socket = connector.MakeSocket();
 
@@ -136,8 +126,8 @@ void SSLConnectorTest::ConnectAndAssert(const char *host, long port, long timeou
 	if ( shouldFail ) {
 		assertMsg << " has failed";
 		assertEqual(assertMsg, realMsg);
-		t_assertm( sslConnector.Use() == NULL , msg);
-		t_assertm( sslConnector.GetStream() == NULL , msg);
+		t_assertm(NULL == sslConnector.Use(), msg);
+		t_assertm(NULL == sslConnector.GetStream(), msg);
 	} else {
 		assertMsg << " has not failed";
 		assertEqual(assertMsg, realMsg);
@@ -148,8 +138,8 @@ void SSLConnectorTest::ConnectAndAssert(const char *host, long port, long timeou
 
 void SSLConnectorTest::timeOutTest()
 {
-	ConnectAndAssert(fConfig["RemoteSSLhost"]["name"].AsString(), fConfig["RemoteSSLhost"]["port"].AsLong(), 1000L, false);
-	ConnectAndAssert(fConfig["RemoteSSLhost"]["name"].AsString(), fConfig["RemoteSSLhost"]["faultyport"].AsLong(), 100L, true);
+	ConnectAndAssert(GetConfig()["RemoteSSLhost"]["name"].AsString(), GetConfig()["RemoteSSLhost"]["port"].AsLong(), 1000L, false);
+	ConnectAndAssert(GetConfig()["RemoteSSLhost"]["name"].AsString(), GetConfig()["RemoteSSLhost"]["faultyport"].AsLong(), 100L, true);
 } // timeOutTest
 
 void SSLConnectorTest::faultyConstructorTest()
@@ -167,11 +157,11 @@ void SSLConnectorTest::faultyConstructorTest()
 void SSLConnectorTest::makeSocketTest()
 {
 	// connect to http server on localhost
-	SSLConnector sslConnector(fConfig["InternalSSLhost"]["ip"].AsString(), fConfig["InternalSSLhost"]["port"].AsLong());
+	SSLConnector sslConnector(GetConfig()["InternalSSLhost"]["ip"].AsString(), GetConfig()["InternalSSLhost"]["port"].AsLong());
 
 	// assert the internal state
-	assertEqual( Resolver::DNS2IPAddress(fConfig["InternalSSLhost"]["ip"].AsString()), sslConnector.GetAddress() );
-	assertEqual( fConfig["InternalSSLhost"]["port"].AsLong(), sslConnector.fPort );
+	assertEqual( Resolver::DNS2IPAddress(GetConfig()["InternalSSLhost"]["ip"].AsString()), sslConnector.GetAddress() );
+	assertEqual( GetConfig()["InternalSSLhost"]["port"].AsLong(), sslConnector.fPort );
 	assertEqual( (long)NULL, (long)sslConnector.fSocket );
 
 	// check basic functionality
@@ -213,11 +203,11 @@ void SSLConnectorTest::makeSocketTest()
 void SSLConnectorTest::makeSocketWithReuseTest()
 {
 	// connect to https server on localhost
-	SSLConnector sslConnector(fConfig["InternalSSLhost"]["ip"].AsString(), fConfig["InternalSSLhost"]["port"].AsLong());
+	SSLConnector sslConnector(GetConfig()["InternalSSLhost"]["ip"].AsString(), GetConfig()["InternalSSLhost"]["port"].AsLong());
 
 	// assert the internal state
-	assertEqual( Resolver::DNS2IPAddress(fConfig["InternalSSLhost"]["ip"].AsString()), sslConnector.GetAddress() );
-	assertEqual( fConfig["InternalSSLhost"]["port"].AsLong(), sslConnector.fPort );
+	assertEqual( Resolver::DNS2IPAddress(GetConfig()["InternalSSLhost"]["ip"].AsString()), sslConnector.GetAddress() );
+	assertEqual( GetConfig()["InternalSSLhost"]["port"].AsLong(), sslConnector.fPort );
 	assertEqual( (long)NULL, (long)sslConnector.fSocket );
 
 	// check basic functionality
@@ -257,7 +247,7 @@ void SSLConnectorTest::makeSocketWithReuseTest()
 
 void SSLConnectorTest::useSocketTest()
 {
-	SSLConnector sslConnector(fConfig["InternalSSLhost"]["ip"].AsString(), fConfig["InternalSSLhost"]["port"].AsLong());
+	SSLConnector sslConnector(GetConfig()["InternalSSLhost"]["ip"].AsString(), GetConfig()["InternalSSLhost"]["port"].AsLong());
 
 	Socket *s1 = sslConnector.Use();
 	Socket *s2 = sslConnector.Use();
@@ -274,7 +264,7 @@ void SSLConnectorTest::getStreamTest()
 	// timeout 0=blocking, >0 non blocking socket
 	// less than one second(1000) unreliable on marvin (solaris)
 	for (long timeout = 0; timeout <= 2000; timeout += 1000) {
-		SSLConnector sslConnector(fConfig["InternalSSLhost"]["ip"].AsString(), fConfig["InternalSSLhost"]["port"].AsLong(), timeout);
+		SSLConnector sslConnector(GetConfig()["InternalSSLhost"]["ip"].AsString(), GetConfig()["InternalSSLhost"]["port"].AsLong(), timeout);
 		iostream *s1 = sslConnector.GetStream();
 		iostream *s2 = sslConnector.GetStream();
 		TString markfailuretimeout("timeout = ");
@@ -305,7 +295,7 @@ void SSLConnectorTest::getSessionIDTest()
 {
 	StartTrace(SSLConnectorTest.getSessionIDTest);
 
-	SSLConnector sslConnector1(fConfig["InternalSSLhost"]["ip"].AsString(), fConfig["InternalSSLhost"]["port"].AsLong(), 1000);
+	SSLConnector sslConnector1(GetConfig()["InternalSSLhost"]["ip"].AsString(), GetConfig()["InternalSSLhost"]["port"].AsLong(), 1000);
 
 	t_assert(sslConnector1.GetStream());
 	Socket *sock1 = sslConnector1.Use();
@@ -319,7 +309,7 @@ void SSLConnectorTest::getSessionIDTest()
 	t_assert(session_id1.Length() > 3);
 	Trace("session_id_length: " << session_id1.Length());
 
-	SSLConnector sslConnector2(fConfig["InternalSSLhost"]["ip"].AsString(), fConfig["InternalSSLhost"]["port"].AsLong(), 1000);
+	SSLConnector sslConnector2(GetConfig()["InternalSSLhost"]["ip"].AsString(), GetConfig()["InternalSSLhost"]["port"].AsLong(), 1000);
 
 	t_assert(sslConnector2.GetStream());
 	Socket *sock2 = sslConnector2.Use();
@@ -336,7 +326,6 @@ void SSLConnectorTest::getSessionIDTest()
 }
 
 Test *SSLConnectorTest::suite ()
-// collect all test cases for the SocketStream
 {
 	TestSuite *testSuite = new TestSuite;
 
@@ -352,4 +341,4 @@ Test *SSLConnectorTest::suite ()
 
 	return testSuite;
 
-} // suite
+}

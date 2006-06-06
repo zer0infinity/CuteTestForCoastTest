@@ -30,8 +30,10 @@ public:
 
 	//--- public api
 
-	//!builds up a suite of ConfiguredTestCases for this test
+	//!builds up a suite of tests
 	static Test *suite ();
+
+	TString getConfigFileName();
 
 	//!Authentication is Ok
 	void OkTest();

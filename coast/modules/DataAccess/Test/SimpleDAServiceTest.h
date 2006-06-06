@@ -14,7 +14,7 @@
 
 //---- SimpleDAServiceTest ----------------------------------------------------------
 //!TestCases description
-class SimpleDAServiceTest : public TestCase
+class SimpleDAServiceTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -31,21 +31,12 @@ public:
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
 
-	//!sets the environment for this test
-	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
-
 	//!use the ServiceDispatcher to obtain a simple service
 	void SimpleDispatch();
 	//! try to use it with a very simple DataAccess backend
 	void SimpleServiceCall();
 	//! try to use it with a missing DataAccess backend
 	void FailedServiceCall();
-
-protected:
-
 };
 
 #endif

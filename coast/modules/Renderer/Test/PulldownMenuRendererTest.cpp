@@ -38,46 +38,44 @@ PulldownMenuRendererTest::~PulldownMenuRendererTest()
 /*     Init                                                      */
 /*===============================================================*/
 void PulldownMenuRendererTest::setUp ()
-// setup config for all the renderers in this TestCase
 {
 	FieldRendererTest::setUp();
-} // setUp
+}
 
 Test *PulldownMenuRendererTest::suite ()
-// collect all test cases for the PulldownMenuRenderer
 {
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(PulldownMenuRendererTest, TestCaseEmptyConf));
-	testSuite->addTest (NEW_CASE(PulldownMenuRendererTest, TestCase0));
-	testSuite->addTest (NEW_CASE(PulldownMenuRendererTest, TestCase1));
-	testSuite->addTest (NEW_CASE(PulldownMenuRendererTest, TestCase2));
-	testSuite->addTest (NEW_CASE(PulldownMenuRendererTest, TestCase3));
-	testSuite->addTest (NEW_CASE(PulldownMenuRendererTest, TestCaseWithoutName));
-	testSuite->addTest (NEW_CASE(PulldownMenuRendererTest, TestCaseWithoutLabel));
-	testSuite->addTest (NEW_CASE(PulldownMenuRendererTest, TestCaseWithoutValue));
-	testSuite->addTest (NEW_CASE(PulldownMenuRendererTest, TestCaseWithoutSource));
-	testSuite->addTest (NEW_CASE(PulldownMenuRendererTest, TestCaseWithoutMultiple));
-	testSuite->addTest (NEW_CASE(PulldownMenuRendererTest, TestCaseWithoutChecked));
-	testSuite->addTest (NEW_CASE(PulldownMenuRendererTest, TestCaseWithoutOptions));
-	testSuite->addTest (NEW_CASE(PulldownMenuRendererTest, TestCaseWrong ));
-	testSuite->addTest (NEW_CASE(PulldownMenuRendererTest, TestCaseWithList ));
-	testSuite->addTest (NEW_CASE(PulldownMenuRendererTest, TestCaseWithLookupList ));
-	testSuite->addTest (NEW_CASE(PulldownMenuRendererTest, TestCaseWithListAndLookupList ));
-	testSuite->addTest (NEW_CASE(PulldownMenuRendererTest, TestCaseWithListAndLookupListSkipped ));
-	testSuite->addTest (NEW_CASE(PulldownMenuRendererTest, TestCaseWithUndefList ));
-	testSuite->addTest (NEW_CASE(PulldownMenuRendererTest, TestCaseWithListAndUndefLookupList ));
-	testSuite->addTest (NEW_CASE(PulldownMenuRendererTest, TestCaseAllAttributes ));
-	testSuite->addTest (NEW_CASE(PulldownMenuRendererTest, TestCaseNameAndMultiple ));
-	testSuite->addTest (NEW_CASE(PulldownMenuRendererTest, TestCaseListWithUndefOptions ));
-	testSuite->addTest (NEW_CASE(PulldownMenuRendererTest, TestOptionRenderer ));
-	testSuite->addTest (NEW_CASE(PulldownMenuRendererTest, TestFaultOptionRenderer ));
-	testSuite->addTest (NEW_CASE(PulldownMenuRendererTest, TestOptionRendererOld ));
-	testSuite->addTest (NEW_CASE(PulldownMenuRendererTest, TestFaultOptionRendererOld ));
+	ADD_CASE(testSuite, PulldownMenuRendererTest, TestCaseEmptyConf);
+	ADD_CASE(testSuite, PulldownMenuRendererTest, TestCase0);
+	ADD_CASE(testSuite, PulldownMenuRendererTest, TestCase1);
+	ADD_CASE(testSuite, PulldownMenuRendererTest, TestCase2);
+	ADD_CASE(testSuite, PulldownMenuRendererTest, TestCase3);
+	ADD_CASE(testSuite, PulldownMenuRendererTest, TestCaseWithoutName);
+	ADD_CASE(testSuite, PulldownMenuRendererTest, TestCaseWithoutLabel);
+	ADD_CASE(testSuite, PulldownMenuRendererTest, TestCaseWithoutValue);
+	ADD_CASE(testSuite, PulldownMenuRendererTest, TestCaseWithoutSource);
+	ADD_CASE(testSuite, PulldownMenuRendererTest, TestCaseWithoutMultiple);
+	ADD_CASE(testSuite, PulldownMenuRendererTest, TestCaseWithoutChecked);
+	ADD_CASE(testSuite, PulldownMenuRendererTest, TestCaseWithoutOptions);
+	ADD_CASE(testSuite, PulldownMenuRendererTest, TestCaseWrong);
+	ADD_CASE(testSuite, PulldownMenuRendererTest, TestCaseWithList);
+	ADD_CASE(testSuite, PulldownMenuRendererTest, TestCaseWithLookupList);
+	ADD_CASE(testSuite, PulldownMenuRendererTest, TestCaseWithListAndLookupList);
+	ADD_CASE(testSuite, PulldownMenuRendererTest, TestCaseWithListAndLookupListSkipped);
+	ADD_CASE(testSuite, PulldownMenuRendererTest, TestCaseWithUndefList);
+	ADD_CASE(testSuite, PulldownMenuRendererTest, TestCaseWithListAndUndefLookupList);
+	ADD_CASE(testSuite, PulldownMenuRendererTest, TestCaseAllAttributes);
+	ADD_CASE(testSuite, PulldownMenuRendererTest, TestCaseNameAndMultiple);
+	ADD_CASE(testSuite, PulldownMenuRendererTest, TestCaseListWithUndefOptions);
+	ADD_CASE(testSuite, PulldownMenuRendererTest, TestOptionRenderer);
+	ADD_CASE(testSuite, PulldownMenuRendererTest, TestFaultOptionRenderer);
+	ADD_CASE(testSuite, PulldownMenuRendererTest, TestOptionRendererOld);
+	ADD_CASE(testSuite, PulldownMenuRendererTest, TestFaultOptionRendererOld);
 
 	return testSuite;
 
-} // suite
+}
 
 /*===============================================================*/
 /*     Check where all is correctly defined                      */

@@ -10,14 +10,13 @@
 #define _LFListenerPoolTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 
 class Socket;
-class Context;
 
 //---- LFListenerPoolTest ----------------------------------------------------------
 //!TestCases description
-class LFListenerPoolTest : public ConfiguredTestCase
+class LFListenerPoolTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors

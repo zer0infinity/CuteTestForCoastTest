@@ -14,7 +14,7 @@
 
 //---- SybCTPoolDAImplTest ----------------------------------------------------------
 //:TestCases description
-class SybCTPoolDAImplTest : public TestCase
+class SybCTPoolDAImplTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -31,17 +31,8 @@ public:
 	//:builds up a suite of testcases for this test
 	static Test *suite ();
 
-	//:sets the environment for this test
-	void setUp ();
-
-	//:deletes the environment for this test
-	void tearDown ();
-
 	//:describe this testcase
-	void testCase();
-
-protected:
-
+	void SimpleDATest();
 };
 
 #endif

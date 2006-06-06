@@ -10,7 +10,7 @@
 #define _TemplateParserTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "FoundationTestTypes.h"
 
 //---- TemplateParserTest ----------------------------------------------------------
 //! <B>really brief class description</B>
@@ -18,7 +18,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class TemplateParserTest : public ConfiguredTestCase
+class TemplateParserTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors

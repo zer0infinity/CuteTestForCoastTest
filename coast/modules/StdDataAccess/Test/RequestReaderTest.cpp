@@ -26,9 +26,14 @@
 
 //---- RequestReaderTest ----------------------------------------------------------------
 RequestReaderTest::RequestReaderTest(TString tstrName)
-	: ConfiguredTestCase(tstrName, "RequestReaderTestConfig")
+	: TestCaseType(tstrName)
 {
-	StartTrace(RequestReaderTest.Ctor);
+	StartTrace(RequestReaderTest.RequestReaderTest);
+}
+
+TString RequestReaderTest::getConfigFileName()
+{
+	return "RequestReaderTestConfig";
 }
 
 RequestReaderTest::~RequestReaderTest()
@@ -36,31 +41,13 @@ RequestReaderTest::~RequestReaderTest()
 	StartTrace(RequestReaderTest.Dtor);
 }
 
-// setup for this TestCase
-void RequestReaderTest::setUp ()
+void RequestReaderTest::CleanupRequestLineTest()
 {
-	StartTrace(RequestReaderTest.setUp);
-	ConfiguredTestCase::setUp();
-}
+	StartTrace(RequestReaderTest.CleanupRequestLineTest);
 
-void RequestReaderTest::tearDown ()
-{
-	StartTrace(RequestReaderTest.tearDown);
-	ConfiguredTestCase::tearDown();
-}
-
-void RequestReaderTest::testCase()
-{
-	StartTrace(RequestReaderTest.testCase);
-}
-
-void RequestReaderTest::testCleanupRequestLine()
-{
-	StartTrace(RequestReaderTest.CleanupTest);
-
-	FOREACH_ENTRY("TestCleanupRequestLine", cConfig, cName) {
-		Trace("TestCleanupRequestLine At testindex: " << i << " --------------------------------------------");
-
+	ROAnything cConfig;
+	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(cConfig) ) {
 		Context ctx;
 		MIMEHeader header;
 		HTTPProcessor httpProc("HTTPProc");
@@ -93,13 +80,14 @@ void RequestReaderTest::testCleanupRequestLine()
 	}
 }
 
-void RequestReaderTest::testReadMinimalInput()
+void RequestReaderTest::ReadMinimalInputTest()
 {
-	StartTrace(RequestReaderTest.testReadInput);
+	StartTrace(RequestReaderTest.ReadMinimalInputTest);
 
 	// Fill ts object
-	FOREACH_ENTRY("TestReadMinimalInput", cConfig, cName) {
-		Trace("TestReadMinimalInput At testindex: " << i << " --------------------------------------------");
+	ROAnything cConfig;
+	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(cConfig) ) {
 		Context ctx;
 		MIMEHeader header;
 		HTTPProcessor httpProc("HTTPProc");
@@ -116,13 +104,13 @@ void RequestReaderTest::testReadMinimalInput()
 		Anything request(reader.GetRequest());
 
 		if ( cConfig["Expected"].IsDefined("REQUEST_METHOD") ) {
-			assertEqualm(cConfig["Expected"]["REQUEST_METHOD"].AsString(), request["REQUEST_METHOD"].AsString(), TString("At index: ") << i);
+			assertEqualm(cConfig["Expected"]["REQUEST_METHOD"].AsString(), request["REQUEST_METHOD"].AsString(), TString("At index: ") << aEntryIterator.Index());
 		}
 		if ( cConfig["Expected"].IsDefined("FirstResponseLine") ) {
 			StringTokenizer2 st(uri, "\r\n");
 			String tok;
 			st.NextToken(tok);
-			assertEqualm(cConfig["Expected"]["FirstResponseLine"].AsString(), tok, TString("At index: ") << i);
+			assertEqualm(cConfig["Expected"]["FirstResponseLine"].AsString(), tok, TString("At index: ") << aEntryIterator.Index());
 		}
 	}
 }
@@ -131,9 +119,7 @@ Test *RequestReaderTest::suite ()
 {
 	StartTrace(RequestBodyParserTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	testSuite->addTest (NEW_CASE(RequestReaderTest, testCase));
-	testSuite->addTest (NEW_CASE(RequestReaderTest, testReadMinimalInput));
-	testSuite->addTest (NEW_CASE(RequestReaderTest, testCleanupRequestLine));
+	ADD_CASE(testSuite, RequestReaderTest, ReadMinimalInputTest);
+	ADD_CASE(testSuite, RequestReaderTest, CleanupRequestLineTest);
 	return testSuite;
-} // suite
+}

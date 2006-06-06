@@ -15,7 +15,7 @@
 
 //---- LDAPDAICachePolicyTest ----------------------------------------------------------
 //:TestCases description
-class LDAPDAICachePolicyTest : public TestCase
+class LDAPDAICachePolicyTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -48,8 +48,6 @@ public:
 	//!LDAP query doesn't deliver any data, Module init should fail
 	void NoDataReadTest();
 
-	//!describe this testcase
-	void testCase();
 protected:
 	Anything fGlobalConfig;
 };

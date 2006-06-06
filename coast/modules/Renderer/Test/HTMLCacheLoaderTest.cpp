@@ -16,14 +16,13 @@
 #include "HTMLTemplateCacheLoader.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
-#include "System.h"
 #include "Application.h"
 #include "TemplateParser.h"
 #include "HTMLTemplateRenderer.h"
 
 //---- HTMLCacheLoaderTest ----------------------------------------------------------------
-HTMLCacheLoaderTest::HTMLCacheLoaderTest(TString tstrName) : TestCase(tstrName)
+HTMLCacheLoaderTest::HTMLCacheLoaderTest(TString tstrName)
+	: TestCaseType(tstrName)
 {
 	StartTrace(HTMLCacheLoaderTest.Ctor);
 }
@@ -33,22 +32,25 @@ HTMLCacheLoaderTest::~HTMLCacheLoaderTest()
 	StartTrace(HTMLCacheLoaderTest.Dtor);
 }
 
-// setup for this TestCase
+TString HTMLCacheLoaderTest::getConfigFileName()
+{
+	return "Config";
+}
+
 void HTMLCacheLoaderTest::setUp ()
 {
 	StartTrace(HTMLCacheLoaderTest.setUp);
-	t_assert(System::LoadConfigFile(fGlobalConfig, "Config"));
-	t_assert(fGlobalConfig.IsDefined("Modules"));
-	Application::InitializeGlobalConfig(fGlobalConfig);
-	WDModule::Install(fGlobalConfig);
+	t_assert(GetConfig().IsDefined("Modules"));
+	Application::InitializeGlobalConfig(GetConfig().DeepClone());
+	WDModule::Install(GetConfig());
 }
 
 void HTMLCacheLoaderTest::tearDown ()
 {
 	StartTrace(HTMLCacheLoaderTest.tearDown);
 
-	t_assert(fGlobalConfig.IsDefined("Modules"));
-	WDModule::Terminate(fGlobalConfig);
+	t_assert(GetConfig().IsDefined("Modules"));
+	WDModule::Terminate(GetConfig());
 	Application::InitializeGlobalConfig(Anything());
 }
 void HTMLCacheLoaderTest::LoadEmptyCacheTest()
@@ -219,25 +221,18 @@ void HTMLCacheLoaderTest::CheckCacheIsLoaded()
 	t_assert(HTMLTemplateRenderer::fgNameMap.GetSize() > 0);
 }
 
-void HTMLCacheLoaderTest::testCase()
-{
-	StartTrace(HTMLCacheLoaderTest.testCase);
-//	t_assert(false);
-}
-
 // builds up a suite of testcases, add a line for each testmethod
 Test *HTMLCacheLoaderTest::suite ()
 {
 	StartTrace(HTMLCacheLoaderTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(HTMLCacheLoaderTest, LoadEmptyCacheTest));
-	testSuite->addTest (NEW_CASE(HTMLCacheLoaderTest, SimpleBuildCacheTest));
-	testSuite->addTest (NEW_CASE(HTMLCacheLoaderTest, SimpleMacroBuildCacheTest));
-	testSuite->addTest (NEW_CASE(HTMLCacheLoaderTest, SimpleCommentBuildCacheTest));
-	testSuite->addTest (NEW_CASE(HTMLCacheLoaderTest, ConsecutiveCommentBuildCacheTest));
-	testSuite->addTest (NEW_CASE(HTMLCacheLoaderTest, CheckCacheIsLoaded));
-	testSuite->addTest (NEW_CASE(HTMLCacheLoaderTest, testCase));
+	ADD_CASE(testSuite, HTMLCacheLoaderTest, LoadEmptyCacheTest);
+	ADD_CASE(testSuite, HTMLCacheLoaderTest, SimpleBuildCacheTest);
+	ADD_CASE(testSuite, HTMLCacheLoaderTest, SimpleMacroBuildCacheTest);
+	ADD_CASE(testSuite, HTMLCacheLoaderTest, SimpleCommentBuildCacheTest);
+	ADD_CASE(testSuite, HTMLCacheLoaderTest, ConsecutiveCommentBuildCacheTest);
+	ADD_CASE(testSuite, HTMLCacheLoaderTest, CheckCacheIsLoaded);
 
 	return testSuite;
 }
