@@ -130,6 +130,11 @@ protected: // seekxxx are protected in the std..
 	typedef std::streambuf::off_type	off_type;
 	typedef std::ios::seekdir	seekdir;
 	typedef std::ios::openmode	openmode;
+#elif defined(WIN32) && !defined(ONLY_STD_IOSTREAM)
+	typedef streampos pos_type;
+	typedef	streamoff off_type;
+	typedef ios::seek_dir seekdir;
+	typedef ios::open_mode openmode;
 #else
 	typedef streampos pos_type;
 	typedef	streamoff off_type;
@@ -138,9 +143,9 @@ protected: // seekxxx are protected in the std..
 #endif
 
 	/*! standard iostream behavior, adjust put or get position absolutely */
-	virtual pos_type seekpos(pos_type pos, openmode mode = ios::in | ios::out);
+	virtual pos_type seekpos(pos_type pos, openmode mode = (openmode)(ios::in | ios::out) );
 	/*! standard iostream behavior, adjust put or get position relatively */
-	virtual pos_type seekoff(off_type off, seekdir dir, openmode mode = ios::in | ios::out);
+	virtual pos_type seekoff(off_type off, seekdir dir, openmode mode = (openmode)(ios::in | ios::out) );
 
 protected:
 	/*! standard iostream behavior, extends the String
