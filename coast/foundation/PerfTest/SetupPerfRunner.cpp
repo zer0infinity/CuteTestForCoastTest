@@ -6,15 +6,14 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-
 //--- interface include --------------------------------------------------------
 #include "TestRunner.h"
 
 //--- test cases -------------------------------------------------------------
 #include "AnythingPerfTest.h"
 #include "StringPerfTest.h"
+
+//--- standard modules used ----------------------------------------------------
 
 void setupRunner(TestRunner &runner)
 {
