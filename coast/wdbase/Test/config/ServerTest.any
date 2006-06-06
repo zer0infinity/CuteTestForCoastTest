@@ -1,0 +1,60 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2006, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	# important for GlobalReInit to load this file again!
+	/WD_BOOTFILE	ServerTest
+
+	/Application "SimpleTestApp"
+
+	/AppId	wdbasetest
+
+	/Modules {
+		AcceptorFactoriesModule
+		ServerPoolsManagerInterfacesModule
+		ServersModule
+		ServiceDispatchersModule
+	}
+
+	/ServerPoolsManagerInterfaces {
+		/ServerThreadPoolsManager 	{
+			AcceptorsWorkers
+		}
+		/ServerLFThreadPoolsManager {
+			LeaderFollower
+		}
+	}
+	/Servers {
+		/Server {
+			AcceptorWorkerServer
+			AcceptorWorkerServer3
+			AcceptorWorkerServer2
+			LeaderFollowerServer
+			SimpleTestServer
+		}
+	}
+	/ServiceDispatchers {
+		/ServiceDispatcher {
+			/TestDispatcher { SecondTestDipatcher }
+		}
+	}
+
+	/AcceptorFactories {
+		/AcceptorFactory {
+			TCP5010  TCP5011
+		}
+	}
+
+	/TCP5010 {
+	  /Port	55010
+	}
+	/TCP5011 {
+	  /Port	55011
+	}
+}
