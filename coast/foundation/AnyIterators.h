@@ -22,22 +22,29 @@ namespace AnyExtensions
 //---- Iterator -----------------------------------------------------------
 	/*! Iterates simply over the (RO)Anythings slots, staying always on the uppermost level
 	 */
-	template < class XThing >
+	template
+	<
+	class XThing,
+		  class XRetThing = XThing,
+		  class SlotNameType = String
+		  >
 	class Iterator
 	{
 	public:
 		typedef XThing PlainType;
 		typedef XThing &PlainTypeRef;
+		typedef XRetThing &PlainRetTypeRef;
 		typedef long PositionType;
 		typedef long &PositionTypeRef;
 		typedef const long &ConstPositionTypeRef;
 		typedef long SizeType;
 		typedef long &SizeTypeRef;
 		typedef const long &ConstSizeTypeRef;
+		typedef SlotNameType &SlotNameTypeRef;
 
 		/*! Constructor
 			\param a the Anything to iterate on */
-		Iterator(PlainTypeRef a)
+		explicit Iterator(PlainType a)
 			: fAny(a)
 			, fPosition(-1)
 			, fSize(a.GetSize()) {
@@ -50,14 +57,14 @@ namespace AnyExtensions
 		/*! Gets the next Anything
 			\param a out - reference to the next element
 			\return true, if there was a next element, false if the iteration has finished */
-		bool Next(PlainTypeRef a) {
+		bool Next(PlainRetTypeRef a) {
 			return DoGetNext(a);
 		}
 
 		/*! Gets the next Anything
 			\param a out - reference to the next element
 			\return true, if there was a next element, false if the iteration has finished */
-		bool operator()(PlainTypeRef a) {
+		bool operator()(PlainRetTypeRef a) {
 			return Next(a);
 		}
 
@@ -65,6 +72,17 @@ namespace AnyExtensions
 			\return current iterator index */
 		ConstPositionTypeRef Index() const {
 			return fPosition;
+		}
+
+		/*! Get slotname of current position if any
+			\param
+			\return true if it is a named slot and slotname could be retrieved */
+		bool SlotName(SlotNameTypeRef strSlotName) const {
+			const char *pcSN = fAny.SlotName(fPosition);
+			if ( pcSN != NULL ) {
+				strSlotName = pcSN;
+			}
+			return ( pcSN != NULL );
 		}
 
 	protected:
@@ -101,7 +119,7 @@ namespace AnyExtensions
 		/*! Get the next element based on some criteria, subclasses could implement special behavior
 			\param a reference to the next Anything
 			\return true if a matching next element was found, false otherwise */
-		virtual bool DoGetNext(PlainTypeRef a) {
+		virtual bool DoGetNext(PlainRetTypeRef a) {
 			StartTrace(Iterator.DoGetNext);
 			if ( NextIndex() ) {
 				a = GetAny()[Index()];
