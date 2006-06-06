@@ -15,14 +15,14 @@
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
 #include "Dbg.h"
-#include "DiffTimer.h"
 #include "PoolAllocator.h"
 #include "System.h"
 
 //--- c-library modules used ---------------------------------------------------
 
 //---- AnythingPerfTest ----------------------------------------------------------------
-AnythingPerfTest::AnythingPerfTest(TString tstrName) : StatisticTestCase(tstrName)
+AnythingPerfTest::AnythingPerfTest(TString tstrName)
+	: TestCaseType(tstrName)
 {
 	StartTrace(AnythingPerfTest.Ctor);
 }
@@ -32,81 +32,54 @@ AnythingPerfTest::~AnythingPerfTest()
 	StartTrace(AnythingPerfTest.Dtor);
 }
 
-void AnythingPerfTest::setUp()
-{
-	StartTrace(AnythingPerfTest.setUp);
-	StatisticTestCase::setUp();
-}
-
-void AnythingPerfTest::tearDown()
-{
-	StartTrace(AnythingPerfTest.tearDown);
-	StatisticTestCase::tearDown();
-}
-
 void AnythingPerfTest::RunIndexLoopAsCharPtr(long index, const Anything &a, const long iterations)
 {
-	DiffTimer dt;
+	CatchTimeType aTimer(TString("IndexLoopAsCharPtr") << iterations, this);
 	String out;
 	for (long i = 0; i < iterations; ++i) {
 		out = a[index].AsCharPtr("lookup hallo");
 	}
-	long lDiff = dt.Diff();
-	String strName("IndexLoopAsCharPtr");
-	AddStatisticOutput(strName << iterations, lDiff);
 }
 
 void AnythingPerfTest::RunIndexLoopAsString(long index, const Anything &a, const long iterations)
 {
-	DiffTimer dt;
+	CatchTimeType aTimer(TString("IndexLoopAsString") << iterations, this);
 	String out;
 	for (long i = 0; i < iterations; ++i) {
 		out = a[index].AsString("lookup hallo");
 	}
-	long lDiff = dt.Diff();
-	String strName("IndexLoopAsString");
-	AddStatisticOutput(strName << iterations, lDiff);
 }
 
 void AnythingPerfTest::RunKeyLoop(const char *key, const Anything &a, const long iterations)
 {
-	DiffTimer dt;
+	CatchTimeType aTimer(TString("KeyLoopAsCharPtr[") << key << "]" << iterations, this);
 	String out;
 	for (long i = 0; i < iterations; ++i) {
 		out = a[key].AsCharPtr("lookup hallo");
 	}
-	long lDiff = dt.Diff();
-	String strName("KeyLoopAsCharPtr[");
-	AddStatisticOutput(strName << key << "]" << iterations, lDiff);
 }
 
 void AnythingPerfTest::RunLookupPathLoop(const char *key, const Anything &a, const long iterations)
 {
 	RunROLookupPathLoop(key, a, iterations);
-	DiffTimer dt;
+	CatchTimeType aTimer(TString("LookupPathLoop[") << key << "]" << iterations, this);
 	const char *out;
 	Anything result;
 	for (long i = 0; i < iterations; ++i) {
 		a.LookupPath(result, key);
 		out = result.AsCharPtr("lookup hallo");
 	}
-	long lDiff = dt.Diff();
-	String strName("LookupPathLoop[");
-	AddStatisticOutput(strName << key << "]" << iterations, lDiff);
 }
 
 void AnythingPerfTest::RunROLookupPathLoop(const char *key, const ROAnything &a, const long iterations)
 {
-	DiffTimer dt;
+	CatchTimeType aTimer(TString("ROLookupPathLoop[") << key << "]" << iterations, this);
 	const char *out;
 	ROAnything result;
 	for (long i = 0; i < iterations; ++i) {
 		a.LookupPath(result, key);
 		out = result.AsCharPtr("lookup hallo");
 	}
-	long lDiff = dt.Diff();
-	String strName("ROLookupPathLoop[");
-	AddStatisticOutput(strName << key << "]" << iterations, lDiff);
 }
 
 void AnythingPerfTest::LookupTest()
@@ -230,32 +203,21 @@ void AnythingPerfTest::DoFunctorTest(T value, const char *pName, LoopFunctor pFu
 
 void AnythingPerfTest::RunDeepCloneLoop(const char *pName, const Anything &a, const long iterations)
 {
-	DiffTimer dt;
+	CatchTimeType aTimer(TString("DeepCloneLoop[") << pName << "]" << iterations, this);
 	Anything result;
 	for (long i = 0; i < iterations; ++i) {
 		result = a.DeepClone();
 	}
-	long lDiff = dt.Diff();
-	String strName("DeepCloneLoop[");
-	AddStatisticOutput(strName << pName << "]" << iterations, lDiff);
 }
 
 void AnythingPerfTest::RunPrintOnPrettyLoop(const char *pName, const Anything &a, const long iterations)
 {
-	DiffTimer dt;
+	CatchTimeType aTimer(TString("PrintOnPrettyLoop[") << pName << "]" << iterations, this);
 	String strBuf;
 	OStringStream stream(&strBuf);
 	for (long i = 0; i < iterations; ++i) {
 		a.PrintOn(stream, true);
 	}
-	long lDiff = dt.Diff();
-	String strName("PrintOnPrettyLoop[");
-	AddStatisticOutput(strName << pName << "]" << iterations, lDiff);
-}
-
-void AnythingPerfTest::ExportCsvStatistics()
-{
-	StatisticTestCase::ExportCsvStatistics(3L);
 }
 
 // builds up a suite of testcases, add a line for each testmethod

@@ -13,16 +13,15 @@
 #include "StringPerfTest.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "DiffTimer.h"
 #include "PoolAllocator.h"
-#include "StringStream.h"
 #include "System.h"
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
 
 //---- StringPerfTest ----------------------------------------------------------------
-StringPerfTest::StringPerfTest(TString tstrName) : StatisticTestCase(tstrName)
+StringPerfTest::StringPerfTest(TString tstrName)
+	: TestCaseType(tstrName)
 {
 	StartTrace(StringPerfTest.Ctor);
 }
@@ -32,54 +31,32 @@ StringPerfTest::~StringPerfTest()
 	StartTrace(StringPerfTest.Dtor);
 }
 
-// setup for this TestCase
-void StringPerfTest::setUp()
-{
-	StartTrace(StringPerfTest.setUp);
-	StatisticTestCase::setUp();
-}
-
-void StringPerfTest::tearDown()
-{
-	StartTrace(StringPerfTest.tearDown);
-	StatisticTestCase::tearDown();
-}
-
 void StringPerfTest::RunLoop(const char *str, const long iterations)
 {
-	DiffTimer dt;
+	CatchTimeType aTimer(TString("RunLoop[") << str << ']' << iterations, this);
 	String out;
 	for (long i = 0; i < iterations; ++i) {
 		out << str;
 	}
-	long lDiff = dt.Diff();
-	String strName("RunLoop[");
-	AddStatisticOutput(strName << str << ']' << iterations, lDiff);
 }
 
 void StringPerfTest::RunPreallocLoop(const char *str, const long iterations)
 {
-	DiffTimer dt;
+	CatchTimeType aTimer(TString("RunPreallocLoop[") << str << ']' << iterations, this);
 	String out(strlen(str)*iterations + 1);
 	for (long i = 0; i < iterations; ++i) {
 		out << str;
 	}
-	long lDiff = dt.Diff();
-	String strName("RunPreallocLoop[");
-	AddStatisticOutput(strName << str << ']' << iterations, lDiff);
 }
 
 void StringPerfTest::RunPoolAllocLoop(const char *str, const long iterations)
 {
-	DiffTimer dt;
+	CatchTimeType aTimer(TString("RunPoolAllocLoop[") << str << ']' << iterations, this);
 	PoolAllocator p(1, ((strlen(str) + 16)*iterations * 3 / 1024), 21);
 	String out( &p );
 	for (long i = 0; i < iterations; ++i) {
 		out << str;
 	}
-	long lDiff = dt.Diff();
-	String strName("RunPoolAllocLoop[");
-	AddStatisticOutput(strName << str << ']' << iterations, lDiff);
 }
 
 void StringPerfTest::referenceTest()
@@ -101,11 +78,6 @@ void StringPerfTest::referenceTest()
 	System::MicroSleep(1000L);
 	RunPoolAllocLoop(sample1, iterations);
 	t_assertm(true, "dummy assertion to generate summary output");
-}
-
-void StringPerfTest::ExportCsvStatistics()
-{
-	StatisticTestCase::ExportCsvStatistics(1L);
 }
 
 // builds up a suite of testcases, add a line for each testmethod

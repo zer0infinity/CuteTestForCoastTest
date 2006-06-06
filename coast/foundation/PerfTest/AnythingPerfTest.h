@@ -10,19 +10,13 @@
 #define _AnythingPerfTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "StatisticTestCase.h"
-#include "Anything.h"
-
-class AnythingPerfTest;
-typedef void (AnythingPerfTest::* LoopFunctor)(const char *pName, const Anything &a, const long iterations);
+#include "FoundationTestTypes.h"
 
 //---- AnythingPerfTest ----------------------------------------------------------
 //!TestCases description
-class AnythingPerfTest : public StatisticTestCase
+class AnythingPerfTest : public TestFramework::TestCaseWithStatistics
 {
 public:
-	//--- constructors
-
 	//!TestCase constructor
 	//! \param name name of the test
 	AnythingPerfTest(TString tstrName);
@@ -35,12 +29,6 @@ public:
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
 
-	//!sets the environment for this test
-	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
-
 	//!describe this testcase
 	void LookupTest();
 
@@ -48,10 +36,11 @@ public:
 	void DeepCloneTest();
 	void PrintOnTest();
 
-	void ExportCsvStatistics();
-
 protected:
+	typedef void (AnythingPerfTest::* LoopFunctor)(const char *pName, const Anything &a, const long iterations);
+
 	template <typename T> void DoFunctorTest(T value, const char *pName, LoopFunctor pFunc);
+
 	void RunIndexLoopAsCharPtr(long index, const Anything &a, const long iterations);
 	void RunIndexLoopAsString(long index, const Anything &a, const long iterations);
 	void RunKeyLoop(const char *key, const Anything &a, const long iterations);

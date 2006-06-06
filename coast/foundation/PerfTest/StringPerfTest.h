@@ -10,15 +10,13 @@
 #define _StringPerfTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "StatisticTestCase.h"
+#include "FoundationTestTypes.h"
 
 //---- StringPerfTest ----------------------------------------------------------
 //!TestCases description
-class StringPerfTest : public StatisticTestCase
+class StringPerfTest : public TestFramework::TestCaseWithStatistics
 {
 public:
-	//--- constructors
-
 	//!TestCase constructor
 	//! \param name name of the test
 	StringPerfTest(TString tstrName);
@@ -31,16 +29,8 @@ public:
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
 
-	//!sets the environment for this test
-	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
-
 	//!describe this testcase
 	void referenceTest();
-
-	void ExportCsvStatistics();
 
 protected:
 	void RunLoop(const char *str, const long iterations);
