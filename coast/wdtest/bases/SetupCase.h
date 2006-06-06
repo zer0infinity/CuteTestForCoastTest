@@ -10,14 +10,15 @@
 #define _SetupCase_H
 
 //---- baseclass include -------------------------------------------------
-#include "ConfiguredTestCase.h"
+#include "TestCase.h"
+#include "Anything.h"
 class Server;
 
 //---- SetupCase ----------------------------------------------------------
 //! No tests - but prepares the Modules and may initalize a Server
 //! Loads to config files : Config.any and TestConfig.any and uses both to install modules.
 //! Config.any gets installed first, therefore TestConfig may redefine some registered objects.
-class SetupCase : public ConfiguredTestCase
+class SetupCase : public TestFramework::TestCase
 {
 public:
 	//!TestCase constructor
@@ -33,14 +34,14 @@ public:
 	static Test *suite ();
 
 	//! If TestConfig.any contains a slot /InitServer, this case initializes the Server named by it.
-	void dummy();
+// 	void dummy();
 
 protected:
 	//! The tests Configuration
-	Anything fTestConfig;
+//    Anything fTestConfig;
 	//! The 'real project' Configuration
 	Anything fMainConfig;
-	Server *fServer;
+//	Server *fServer;
 };
 
 #endif

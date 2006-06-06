@@ -22,7 +22,9 @@
 //--- c-library modules used ---------------------------------------------------
 
 //---- SetupCase ----------------------------------------------------------------
-SetupCase::SetupCase(TString tname) : ConfiguredTestCase(tname, "SetupTestConfig"), fServer(0)
+SetupCase::SetupCase(TString tname)
+	: TestCaseType(tname)
+//, fServer(0)
 {
 	StartTrace(SetupCase.Ctor);
 
@@ -41,57 +43,59 @@ SetupCase::SetupCase(TString tname) : ConfiguredTestCase(tname, "SetupTestConfig
 		}
 	}
 	// additional configuration
-	fTestConfig["WD_BOOTFILE"] = "TestConfig";
-	ifp = System::OpenStream("TestConfig", "any");
-	if (ifp) {
-		// TestConfig file can be loaded
-		delete ifp;
-		ifp = NULL;
-		if (!AppBooter().Boot(fTestConfig)) {
-			SysLog::Error("configuration error in TestConfig.any! exiting...");
-			// force program abortion, using throw because there is no other way to exit from
-			// a ctor
-			throw;
-		}
-	}
+//	fTestConfig["WD_BOOTFILE"]= "TestConfig";
+//	ifp = System::OpenStream("TestConfig","any");
+//	if (ifp)
+//	{ // TestConfig file can be loaded
+//		delete ifp;
+//		ifp = NULL;
+//		if (!AppBooter().Boot(fTestConfig))
+//		{
+//			SysLog::Error("configuration error in TestConfig.any! exiting...");
+//			// force program abortion, using throw because there is no other way to exit from
+//			// a ctor
+//			throw;
+//		}
+//	}
 }
 
 SetupCase::~SetupCase()
 {
 	StartTrace(SetupCase.Dtor);
 
-	if (fServer) {
-		fServer->Terminate(0);
-		fServer = 0;
-	}
+//	if (fServer)
+//	{
+//		fServer->Terminate(0);
+//		fServer=0;
+//	}
 
-	if (!fTestConfig.IsNull()) {
-		WDModule::Terminate(fTestConfig);
-	}
+//	if(!fTestConfig.IsNull())
+//	{
+//		WDModule::Terminate(fTestConfig);
+//	}
 
 	if (!fMainConfig.IsNull()) {
 		WDModule::Terminate(fMainConfig);
 	}
 }
 
-void SetupCase::dummy ()
-{
-	if (fTestConfig.IsDefined("InitServer")) {
-		String serverName = fTestConfig["InitServer"].AsString();
-		fServer = Server::FindServer(serverName);
-		t_assert ( fServer != 0 );
-		if (fServer) {
-			t_assert(fServer->Init() == 0);
-		}
-	}
-}
+//void SetupCase::dummy ()
+//{
+//  if(fTestConfig.IsDefined("InitServer")) {
+//	String serverName=fTestConfig["InitServer"].AsString();
+//	fServer=Server::FindServer(serverName);
+//	t_assert ( fServer != 0 );
+//	if (fServer) { t_assert(fServer->Init()==0); }
+//  }
+//}
+
 // builds up a suite of testcases, add a line for each testmethod
 Test *SetupCase::suite ()
 {
 	StartTrace(SetupCase.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	ADD_CASE(testSuite, SetupCase, dummy);
+//	ADD_CASE(testSuite,SetupCase,dummy);
 
 	return testSuite;
-} // suite
+}
