@@ -19,7 +19,7 @@ public:
 	StressersModule(const char *);
 	~StressersModule();
 
-	virtual bool Init(const Anything &config);
+	virtual bool Init(const ROAnything config);
 	virtual bool Finis();
 };
 

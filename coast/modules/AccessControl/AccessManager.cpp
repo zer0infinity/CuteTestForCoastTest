@@ -21,7 +21,7 @@ RegisterModule(AccessManagerModule);
 // initialize static fields
 AccessManager	*AccessManagerModule::fgMainAccessManager = 0;
 
-bool AccessManagerModule::Init(const Anything &config)
+bool AccessManagerModule::Init(const ROAnything config)
 {
 	StartTrace(AccessManagerModule.Init);
 	bool ok = true;

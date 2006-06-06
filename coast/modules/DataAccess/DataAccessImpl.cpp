@@ -59,7 +59,7 @@ DataAccessImplsModule::~DataAccessImplsModule()
 {
 }
 
-bool DataAccessImplsModule::Init(const Anything &config)
+bool DataAccessImplsModule::Init(const ROAnything config)
 {
 	// installation of transaction implementation objects for the different backends
 	// data provider
@@ -70,7 +70,7 @@ bool DataAccessImplsModule::Init(const Anything &config)
 	return false;
 }
 
-bool DataAccessImplsModule::ResetFinis(const Anything &config)
+bool DataAccessImplsModule::ResetFinis(const ROAnything config)
 {
 	AliasTerminator at("DataAccessImpl");
 	return RegisterableObject::ResetTerminate("DataAccessImpl", &at);

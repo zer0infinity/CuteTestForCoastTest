@@ -51,7 +51,7 @@ public:
 	AppLogModule(const char *name);
 	~AppLogModule();
 
-	virtual bool Init(const Anything &config);
+	virtual bool Init(const ROAnything config);
 	virtual bool Finis();
 
 	//!bottleneck routine for logging

@@ -28,12 +28,12 @@ MappersModule::~MappersModule()
 {
 }
 
-bool MappersModule::Init(const Anything &config)
+bool MappersModule::Init(const ROAnything config)
 {
 	StartTrace(MappersModule.Init);
 	// installation of different mapping objects for the different backend objects
 	if (config.IsDefined("Mappers")) {
-		Anything mappers(config["Mappers"]);
+		ROAnything mappers(config["Mappers"]);
 
 		HierarchyInstaller ai1("ParameterMapper");
 		HierarchyInstaller ai2("ResultMapper");
@@ -43,7 +43,7 @@ bool MappersModule::Init(const Anything &config)
 	return false;
 }
 
-bool MappersModule::ResetFinis(const Anything &config)
+bool MappersModule::ResetFinis(const ROAnything config)
 {
 	// installation of different mapping objects for the different backend objects
 	AliasTerminator at1("ParameterMapper");

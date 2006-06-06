@@ -145,7 +145,7 @@ void SSLObjectManager::SetSessionId(const String &ip, const String &port, SSL_SE
 		  " session: " << SessionIdAsHex(sslSession));
 }
 
-bool SSLObjectManager::Init(const Anything &config)
+bool SSLObjectManager::Init(const ROAnything config)
 {
 	StartTrace(SSLObjectManager.Init);
 	SysLog::WriteToStderr(String("\t") << fName << ". done\n");
@@ -198,13 +198,13 @@ void SSLObjectManager::EmptySessionIdStore()
 	fSSLSessionIdStore = Anything(Storage::Global());
 }
 
-bool SSLObjectManager::ResetFinis(const Anything &)
+bool SSLObjectManager::ResetFinis(const ROAnything )
 {
 	StartTrace(SSLObjectManager.ResetFinis);
 	return true;
 }
 
-bool SSLObjectManager::ResetInit(const Anything &config)
+bool SSLObjectManager::ResetInit(const ROAnything config)
 {
 	StartTrace(SSLObjectManager.ResetInit);
 	return true;

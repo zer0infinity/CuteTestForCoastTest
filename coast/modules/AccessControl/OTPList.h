@@ -23,7 +23,7 @@ public:
 	OTPListsModule(const char *name) : WDModule(name) {};
 	~OTPListsModule() {};
 
-	virtual bool Init(const Anything &config);
+	virtual bool Init(const ROAnything config);
 	virtual bool Finis();
 };
 

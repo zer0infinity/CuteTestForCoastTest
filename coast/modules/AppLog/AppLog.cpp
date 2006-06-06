@@ -50,18 +50,18 @@ AppLogModule::~AppLogModule()
 {
 }
 
-bool AppLogModule::Init(const Anything &config)
+bool AppLogModule::Init(const ROAnything config)
 {
 	// initialization of application logging tries a socket connection
 	// defined in the configuration file
 	SysLog::WriteToStderr("\tStarting Application Logging");
 	bool retCode = true;
-	Anything appLogConfig;
+	ROAnything appLogConfig;
 	StartTrace(AppLogModule.Init);
 
-	if ( config.LookupPath(appLogConfig, "AppLogModule") && appLogConfig.IsDefined("Servers") && appLogConfig["Servers"].GetSize() ) {
+	if ( config.LookupPath(appLogConfig, "AppLogModule") && appLogConfig["Servers"].GetSize() ) {
 		TraceAny(appLogConfig, "AppLogConfig:");
-		Anything servers(appLogConfig["Servers"]);
+		ROAnything servers(appLogConfig["Servers"]);
 		long numOfServers = servers.GetSize();
 		String strLogDir, strRotateDir;
 		strLogDir = appLogConfig["LogDir"].AsCharPtr("log");
@@ -78,7 +78,7 @@ bool AppLogModule::Init(const Anything &config)
 			Server *s;
 			if ( servername && (s = Server::FindServer(servername)) ) {
 				Anything cfg;
-				cfg["Channels"] = servers[i];
+				cfg["Channels"] = servers[i].DeepClone();
 				cfg["LogDir"] = strLogDir;
 				cfg["RotateDir"] = strRotateDir;
 				retCode = retCode && MakeChannels(servername, cfg);

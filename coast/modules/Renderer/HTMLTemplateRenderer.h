@@ -92,7 +92,7 @@ public:
 
 	void RenderAll(ostream &reply, Context &c, const ROAnything &config);
 
-	static void BuildCache(const Anything &config);
+	static void BuildCache(const ROAnything config);
 	virtual class TemplateParser *GetParser();
 
 private:

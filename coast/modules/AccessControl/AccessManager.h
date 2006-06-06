@@ -30,7 +30,7 @@ public:
 	~AccessManagerModule() {};
 
 	//! implementers should initialize module using config
-	virtual bool Init(const Anything &config);
+	virtual bool Init(const ROAnything config);
 	//! implementers should terminate module expecting destruction
 	virtual bool Finis();
 

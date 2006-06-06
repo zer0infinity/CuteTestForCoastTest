@@ -36,7 +36,7 @@ public:
 	//!param: c - The context of the transaction
 	virtual bool Exec(Context &c, ParameterMapper *, ResultMapper *);
 
-	static bool Init(const Anything &config);
+	static bool Init(const ROAnything config);
 	//:implementers should terminate module expecting destruction
 	static bool Finis();
 

@@ -115,7 +115,7 @@ StressersModule::~StressersModule()
 {
 }
 
-bool StressersModule::Init(const Anything &config)
+bool StressersModule::Init(const ROAnything config)
 {
 	StartTrace(StressersModule.Init);
 	TraceAny(config, "Config");

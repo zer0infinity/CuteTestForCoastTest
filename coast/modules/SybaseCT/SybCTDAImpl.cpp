@@ -37,13 +37,13 @@ SybCTDAImpl::~SybCTDAImpl()
 	StartTrace(SybCTDAImpl.~SybCTDAImpl);
 }
 
-bool SybCTDAImpl::Init(const Anything &config)
+bool SybCTDAImpl::Init(const ROAnything config)
 {
 	StartTrace(SybCTDAImpl.Init);
 	if (!fgInitialized) {
 		MutexEntry me(fgStructureMutex);
 		me.Use();
-		Anything myCfg;
+		ROAnything myCfg;
 		String strInterfacesPathName;
 		long nrOfSybCTs = 5L;
 		// check if the number of SybCTs is specified in Config

@@ -30,7 +30,7 @@ TemplatesCacheModule::~TemplatesCacheModule()
 {
 }
 
-bool TemplatesCacheModule::Init(const Anything &config)
+bool TemplatesCacheModule::Init(const ROAnything config)
 {
 	HTMLTemplateRenderer::BuildCache(config);
 	return true;
@@ -74,12 +74,12 @@ void HTMLTemplateCacheLoader::BuildCache(Anything &cache, istream &reader, const
 }
 
 //--- HTMLTemplateCacheBuilder ------------------------------------------------------
-void HTMLTemplateCacheBuilder::BuildCache(const Anything &config)
+void HTMLTemplateCacheBuilder::BuildCache(const ROAnything config)
 {
 	StartTrace(HTMLTemplateCacheBuilder.BuildCache);
 	SysLog::WriteToStderr("\tBuilding HTML Templates cache");
 
-	Anything langDirMap(config["LanguageDirMap"]);
+	ROAnything langDirMap(config["LanguageDirMap"]);
 
 	StringTokenizer st(config["TemplateDir"].AsCharPtr("config/HTMLTemplates"), ':');
 	String rootDir(System::GetRootDir());
@@ -120,7 +120,7 @@ void HTMLTemplateCacheBuilder::BuildCache(const Anything &config)
 	SysLog::WriteToStderr(" done\n");
 }
 
-void HTMLTemplateCacheBuilder::CacheDir(const char *filepath, CacheHandler *cache, CacheLoadPolicy *htcl, const Anything &langDirMap, Anything &fileNameMap)
+void HTMLTemplateCacheBuilder::CacheDir(const char *filepath, CacheHandler *cache, CacheLoadPolicy *htcl, const ROAnything langDirMap, Anything &fileNameMap)
 {
 	StartTrace1(HTMLTemplateCacheBuilder.CacheDir, "cache-path [" << filepath << "]");
 	// get all files of this directory

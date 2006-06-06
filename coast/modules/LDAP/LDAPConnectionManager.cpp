@@ -356,7 +356,7 @@ long LDAPConnectionManager::ReGetLockedSlot(long maxConnections, const String &p
 	return -1L;
 }
 
-bool LDAPConnectionManager::Init(const Anything &config)
+bool LDAPConnectionManager::Init(const ROAnything config)
 {
 	StartTrace(LDAPConnectionManager.Init);
 	TraceAny(config, "Config: ");
@@ -427,14 +427,14 @@ void LDAPConnectionManager::EmptyLdapConnectionStore()
 	fLdapConnectionStore = Anything(Storage::Global());
 }
 
-bool LDAPConnectionManager::ResetFinis(const Anything &)
+bool LDAPConnectionManager::ResetFinis(const ROAnything )
 {
 	StartTrace(LDAPConnectionManager.ResetFinis);
 	// Do not allow to reset this module!
 	return true;
 }
 
-bool LDAPConnectionManager::ResetInit(const Anything &config)
+bool LDAPConnectionManager::ResetInit(const ROAnything config)
 {
 	StartTrace(LDAPConnectionManager.ResetInit);
 	// Do not allow to reset this module!

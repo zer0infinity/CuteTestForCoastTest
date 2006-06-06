@@ -94,13 +94,13 @@ public:
 
 	//--- module initialization termination ---
 	//!initialize
-	virtual bool Init(const Anything &config);
+	virtual bool Init(const ROAnything config);
 	//!finalize
 	virtual bool Finis();
 	//!terminate LDAPConnectionManager for reset
-	virtual bool ResetFinis(const Anything &);
+	virtual bool ResetFinis(const ROAnything );
 	//!reinitializes
-	virtual bool ResetInit(const Anything &config);
+	virtual bool ResetInit(const ROAnything config);
 
 	//!support reinit
 	virtual void EnterReInit();

@@ -26,7 +26,7 @@ public:
 	TemplatesCacheModule(const char *name);
 	~TemplatesCacheModule();
 
-	virtual bool Init(const Anything &config);
+	virtual bool Init(const ROAnything config);
 	virtual bool Finis();
 };
 
@@ -91,10 +91,10 @@ public:
 	HTMLTemplateCacheBuilder() { }
 	~HTMLTemplateCacheBuilder() { }
 
-	void BuildCache(const Anything &config);
+	void BuildCache(const ROAnything config);
 
 private:
-	void CacheDir(const char *filepath, CacheHandler *cache, CacheLoadPolicy *htcl, const Anything &langDirMap, Anything &fileNameMap);
+	void CacheDir(const char *filepath, CacheHandler *cache, CacheLoadPolicy *htcl, const ROAnything langDirMap, Anything &fileNameMap);
 	void CacheDir(const char *filepath, CacheHandler *cache, CacheLoadPolicy *htcl, const char *langDir, Anything &fileNameMap);
 };
 

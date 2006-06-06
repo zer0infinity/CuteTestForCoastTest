@@ -28,7 +28,7 @@ ROAnything HTMLTemplateRenderer::fgNameMap;
 HTMLTemplateRenderer::HTMLTemplateRenderer(const char *name) : Renderer(name)
 {
 }
-void HTMLTemplateRenderer::BuildCache(const Anything &config)
+void HTMLTemplateRenderer::BuildCache(const ROAnything config)
 {
 	StartTrace(HTMLTemplateRenderer.BuildCache);
 

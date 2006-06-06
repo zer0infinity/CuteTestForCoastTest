@@ -20,7 +20,7 @@
 //---- OTPListsModule -----------------------------------------------------------
 RegisterModule(OTPListsModule);
 
-bool OTPListsModule::Init(const Anything &config)
+bool OTPListsModule::Init(const ROAnything config)
 {
 	if (config.IsDefined("OTPLists")) {
 		AliasInstaller ai("OTPList");

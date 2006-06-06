@@ -217,7 +217,7 @@ FlowControllersModule::~FlowControllersModule()
 {
 }
 
-bool FlowControllersModule::Init(const Anything &config)
+bool FlowControllersModule::Init(const ROAnything config)
 {
 	StartTrace(FlowControllersModule.Init);
 	TraceAny(config["FlowControllers"], " Config ");
