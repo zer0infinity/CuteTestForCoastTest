@@ -8,59 +8,62 @@
 
 {
 
+	/NumberOfRuns			10000
+	/NumberOfRunsThreaded	1000
+
 	/TimestampConcurrencyTest
 	{
 		{
-			/NumberOfRuns		100000
+			/NumberOfRuns		%NumberOfRuns
 			/NumberOfThreads	1
 			/ConcurrencyFactor	1
 			/CompareStamps		0
 			/UTCCtorTest		0
 		}
 		{
-			/NumberOfRuns		100000
+			/NumberOfRuns		%NumberOfRuns
 			/NumberOfThreads	1
 			/ConcurrencyFactor	1
 			/CompareStamps		1
 			/UTCCtorTest		0
 		}
 		{
-			/NumberOfRuns		100000
+			/NumberOfRuns		%NumberOfRuns
 			/NumberOfThreads	1
 			/ConcurrencyFactor	1
 			/CompareStamps		0
 			/UTCCtorTest		1
 		}
 		{
-			/NumberOfRuns		100000
+			/NumberOfRuns		%NumberOfRuns
 			/NumberOfThreads	1
 			/ConcurrencyFactor	1
 			/CompareStamps		1
 			/UTCCtorTest		1
 		}
 		{
-			/NumberOfRuns		100000
+			/NumberOfRuns		%NumberOfRunsThreaded
 			/NumberOfThreads	10
 			/ConcurrencyFactor	1
 			/CompareStamps		0
 			/UTCCtorTest		0
 		}
 		{
-			/NumberOfRuns		100000
+			/NumberOfRuns		%NumberOfRunsThreaded
 			/NumberOfThreads	10
 			/ConcurrencyFactor	1
 			/CompareStamps		1
 			/UTCCtorTest		0
 		}
 		{
-			/NumberOfRuns		100000
+			/NumberOfRuns		%NumberOfRunsThreaded
 			/NumberOfThreads	10
 			/ConcurrencyFactor	1
 			/CompareStamps		0
 			/UTCCtorTest		1
 		}
 		{
-			/NumberOfRuns		100000
+			/NumberOfRuns		%NumberOfRunsThreaded
 			/NumberOfThreads	10
 			/ConcurrencyFactor	1
 			/CompareStamps		1

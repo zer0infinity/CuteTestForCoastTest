@@ -15,13 +15,6 @@
 		TCP5010 TCP5011
 	}
 
-	/TCP5010 {
-		/Port 55010
-	}
-	/TCP5011 {
-		/Port 55011
-	}
-
 	#---- Worker pool configurations
 	/ThreadPoolSize			10							# number of parallel pending requests
 #	/UsePoolStorage			0							# use preallocated memory

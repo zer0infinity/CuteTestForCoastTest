@@ -15,4 +15,9 @@
 		TCP5020 TCP5021
 	}
 
+	#---- Worker pool configurations
+	/ThreadPoolSize			10							# number of parallel pending requests
+#	/UsePoolStorage			0							# use preallocated memory
+#	/PoolStorageSize		1000
+#	/NumOfPoolBucketSizes	20
 }

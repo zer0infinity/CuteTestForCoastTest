@@ -8,6 +8,46 @@
 
 {
 
+	/Modules {
+		AcceptorFactoriesModule
+		ServerPoolsManagerInterfacesModule
+	}
+	/ServerPoolsManagerInterfaces {
+		/ServerThreadPoolsManager 	{
+			AcceptorsWorkers
+		}
+		/ServerLFThreadPoolsManager {
+			LeaderFollower
+			MasterLeaderFollower
+		}
+	}
+	# -- Config for Acceptor Factories  in  ListenerPoolTest
+	/AcceptorFactories {
+		/AcceptorFactory {
+			TCP5010  TCP5011 TCP5012
+		}
+		/FakeAcceptorFactory { Fake }
+	}
+	/TCP5010 {
+	  /Port	55010
+	}
+	/TCP5011 {
+	  /Port	55011
+	}
+	/TCP5012 {
+	  /Port	55012
+	}
+	/TCP4242 {
+	  /Port	54242
+	}
+	/TCP4343 {
+	  /Port	54343
+	}
+
+	/ListenerPool {
+		TCP4242
+	}
+
 	/Testhost {
 		/ip			"127.0.0.1"
 		/port		1919

@@ -80,12 +80,6 @@
 		/DoLogging	0
 	}
 
-	# common TestCase configuration
-	/Testhost {
-		/ip			"127.0.0.1"
-		/port		1919
-	}
-
 	# -- Config for Acceptor Factories  in  ListenerPoolTest
 	/AcceptorFactories {
 		/AcceptorFactory {
