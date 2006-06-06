@@ -765,6 +765,7 @@ const char *System::GetPathList()
 
 Anything System::DirFileList(const char *dir, const char *extension)
 {
+	StartTrace(System.DirFileList);
 	Anything list;
 //  PS: not needed because we have a default parameter....
 //	if (!extension)
@@ -818,16 +819,17 @@ Anything System::DirFileList(const char *dir, const char *extension)
 	while ( (direntp = readdir(fp)) )
 #endif
 		{
-
 			String name = direntp->d_name;
+			Trace("current entry [" << name << "]");
 			long start = name.Length() - truncext;
-			if ( (start > 0) 		&&
-				 strcmp(name, ".") 	&&
-				 strcmp(name, "..") &&
-				 (name.CompareN(strExtension, truncext, start) == 0) ) {
+			if ( (start > 0) && strcmp(name, ".") != 0 && strcmp(name, "..") != 0 && (name.CompareN(strExtension, truncext, start) == 0) ) {
 				// append filename without extension
+				Trace("appending entry [" << name.SubString(0, start) << "]");
 				list.Append(Anything(name, start));
 			}
+		}
+		if ( direntp ) {
+			Trace("last entry [" << NotNull(direntp->d_name) << "]");
 		}
 		::free(direntpSave);
 		closedir(fp);
