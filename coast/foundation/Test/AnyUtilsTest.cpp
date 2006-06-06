@@ -23,12 +23,8 @@
 
 //--- c-library modules used ---------------------------------------------------
 
-AnyUtilsTest::AnyUtilsTest (TString tname) : TestCase(tname) {};
+AnyUtilsTest::AnyUtilsTest (TString tname) : TestCaseType(tname) {};
 AnyUtilsTest::~AnyUtilsTest() {};
-
-void AnyUtilsTest::setUp ()
-{
-} // setUp
 
 void AnyUtilsTest::CompareTest()
 {
@@ -137,19 +133,16 @@ void AnyUtilsTest::MergeTest()
 }
 
 Test *AnyUtilsTest::suite ()
-// collect all test cases for the DateRenderer
 {
 	TestSuite *testSuite = new TestSuite;
-
-	testSuite->addTest (NEW_CASE(AnyUtilsTest, CompareTest));
-	testSuite->addTest (NEW_CASE(AnyUtilsTest, printEmptyXmlTest));
-	testSuite->addTest (NEW_CASE(AnyUtilsTest, printSimpleXmlTest));
-	testSuite->addTest (NEW_CASE(AnyUtilsTest, printSequenceXmlTest));
-	testSuite->addTest (NEW_CASE(AnyUtilsTest, printHashXmlTest));
-	testSuite->addTest (NEW_CASE(AnyUtilsTest, printMixedXmlTest));
-
+	ADD_CASE(testSuite, AnyUtilsTest, CompareTest);
+	ADD_CASE(testSuite, AnyUtilsTest, printEmptyXmlTest);
+	ADD_CASE(testSuite, AnyUtilsTest, printSimpleXmlTest);
+	ADD_CASE(testSuite, AnyUtilsTest, printSequenceXmlTest);
+	ADD_CASE(testSuite, AnyUtilsTest, printHashXmlTest);
+	ADD_CASE(testSuite, AnyUtilsTest, printMixedXmlTest);
 	ADD_CASE(testSuite, AnyUtilsTest, CompareTest);
 	ADD_CASE(testSuite, AnyUtilsTest, MergeTest);
 
 	return testSuite;
-} // suite
+}

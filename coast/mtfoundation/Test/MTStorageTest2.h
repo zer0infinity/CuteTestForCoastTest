@@ -19,7 +19,7 @@ class GlobalAllocator;
 
 //---- MTStorageTest2 ----------------------------------------------------------
 //!Test driver for tracing facility
-class MTStorageTest2 : public TestCase
+class MTStorageTest2 : public TestFramework::TestCase
 {
 public:
 	//!constructors

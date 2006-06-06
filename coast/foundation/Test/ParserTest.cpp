@@ -19,7 +19,7 @@
 #include "TestSuite.h"
 
 //---- ParserTest ---------------------------------------------------------
-ParserTest::ParserTest (TString tname) : TestCase(tname)
+ParserTest::ParserTest (TString tname) : TestCaseType(tname)
 {
 }
 
@@ -32,12 +32,6 @@ void ParserTest::setUp ()
 	anyTemp2 = undefAny;
 	anyTemp3 = undefAny;
 	anyTemp4 = undefAny;
-}
-
-Test *ParserTest::worksuite ()
-{
-	TestSuite *testSuite = new TestSuite;
-	return testSuite;
 }
 
 Test *ParserTest::suite ()
@@ -55,45 +49,45 @@ Test *ParserTest::suite ()
 	ADD_CASE(testSuite, ParserTest, importEmptyStream );
 	ADD_CASE(testSuite, ParserTest, readWriteAnything );
 	ADD_CASE(testSuite, ParserTest, parseTestFiles );
-	ADD_CASE(testSuite, ParserTest, testSemantic0 );
-	ADD_CASE(testSuite, ParserTest, testSemantic1 );
-	ADD_CASE(testSuite, ParserTest, testSemantic2 );
-	ADD_CASE(testSuite, ParserTest, testSemantic3 );
-	ADD_CASE(testSuite, ParserTest, testSemantic4 );
-	ADD_CASE(testSuite, ParserTest, testSemantic5 );
-	ADD_CASE(testSuite, ParserTest, testSemantic6 );
-	ADD_CASE(testSuite, ParserTest, testSemantic7 );
-	ADD_CASE(testSuite, ParserTest, testSemantic8 );
-	ADD_CASE(testSuite, ParserTest, testSemantic9 );
+	ADD_CASE(testSuite, ParserTest, Semantic0Test);
+	ADD_CASE(testSuite, ParserTest, Semantic1Test);
+	ADD_CASE(testSuite, ParserTest, Semantic2Test);
+	ADD_CASE(testSuite, ParserTest, Semantic3Test);
+	ADD_CASE(testSuite, ParserTest, Semantic4Test);
+	ADD_CASE(testSuite, ParserTest, Semantic5Test);
+	ADD_CASE(testSuite, ParserTest, Semantic6Test);
+	ADD_CASE(testSuite, ParserTest, Semantic7Test);
+	ADD_CASE(testSuite, ParserTest, Semantic8Test);
+	ADD_CASE(testSuite, ParserTest, Semantic9Test);
 
-	ADD_CASE(testSuite, ParserTest, testSemantic10 );
-	ADD_CASE(testSuite, ParserTest, testSemantic11 );
-	ADD_CASE(testSuite, ParserTest, testSemantic12 );
-	ADD_CASE(testSuite, ParserTest, testSemantic13 );
-	ADD_CASE(testSuite, ParserTest, testSemantic14 );
-	ADD_CASE(testSuite, ParserTest, testSemantic15 );
-	ADD_CASE(testSuite, ParserTest, testSemantic16 );
-	ADD_CASE(testSuite, ParserTest, testSemantic17 );
-	ADD_CASE(testSuite, ParserTest, testSemantic18 );
-	ADD_CASE(testSuite, ParserTest, testSemantic19 );
+	ADD_CASE(testSuite, ParserTest, Semantic10Test);
+	ADD_CASE(testSuite, ParserTest, Semantic11Test);
+	ADD_CASE(testSuite, ParserTest, Semantic12Test);
+	ADD_CASE(testSuite, ParserTest, Semantic13Test);
+	ADD_CASE(testSuite, ParserTest, Semantic14Test);
+	ADD_CASE(testSuite, ParserTest, Semantic15Test);
+	ADD_CASE(testSuite, ParserTest, Semantic16Test);
+	ADD_CASE(testSuite, ParserTest, Semantic17Test);
+	ADD_CASE(testSuite, ParserTest, Semantic18Test);
+	ADD_CASE(testSuite, ParserTest, Semantic19Test);
 
-	ADD_CASE(testSuite, ParserTest, testSemantic20 );
-	ADD_CASE(testSuite, ParserTest, testSemantic21 );
-	ADD_CASE(testSuite, ParserTest, testSemantic22 );
-	ADD_CASE(testSuite, ParserTest, testSemantic23 );
-	ADD_CASE(testSuite, ParserTest, testSemantic24 );
-	ADD_CASE(testSuite, ParserTest, testSemantic25 );
-	ADD_CASE(testSuite, ParserTest, testSemantic26 );
-	ADD_CASE(testSuite, ParserTest, testSemantic27 );
-	ADD_CASE(testSuite, ParserTest, testSemantic28 );
-	ADD_CASE(testSuite, ParserTest, testSemantic29 );
+	ADD_CASE(testSuite, ParserTest, Semantic20Test);
+	ADD_CASE(testSuite, ParserTest, Semantic21Test);
+	ADD_CASE(testSuite, ParserTest, Semantic22Test);
+	ADD_CASE(testSuite, ParserTest, Semantic23Test);
+	ADD_CASE(testSuite, ParserTest, Semantic24Test);
+	ADD_CASE(testSuite, ParserTest, Semantic25Test);
+	ADD_CASE(testSuite, ParserTest, Semantic26Test);
+	ADD_CASE(testSuite, ParserTest, Semantic27Test);
+	ADD_CASE(testSuite, ParserTest, Semantic28Test);
+	ADD_CASE(testSuite, ParserTest, Semantic29Test);
 
-	ADD_CASE(testSuite, ParserTest, testSemantic30 );
-	ADD_CASE(testSuite, ParserTest, testSemantic31 );
-	ADD_CASE(testSuite, ParserTest, testSemantic32 );
-	ADD_CASE(testSuite, ParserTest, testSemantic33 );
+	ADD_CASE(testSuite, ParserTest, Semantic30Test);
+	ADD_CASE(testSuite, ParserTest, Semantic31Test);
+	ADD_CASE(testSuite, ParserTest, Semantic32Test);
+	ADD_CASE(testSuite, ParserTest, Semantic33Test);
 
-	ADD_CASE(testSuite, ParserTest, testQuotedSlotname ); // PS
+	ADD_CASE(testSuite, ParserTest, QuotedSlotnameTest); // PS
 
 	ADD_CASE(testSuite, ParserTest, slashSlotnames );
 
@@ -1000,7 +994,7 @@ void ParserTest::parseMixedAnything ()
 /*                    Tests, ob Anythings richtig interpretiert                     */
 /*==================================================================================*/
 
-void  ParserTest::testSemantic0()
+void  ParserTest::Semantic0Test()
 {
 	// Init an anything-object for testing
 	Anything any = emptyAny;
@@ -1025,35 +1019,35 @@ void  ParserTest::testSemantic0()
 	t_assert( any[0L] == '\x01' );
 	if ( any.SlotName(0L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 
 	t_assert( any[1L].GetType() == AnyCharPtrType );
 	assertCharPtrEqual( any[1L].AsCharPtr(), "\x01" );
 	if (any.SlotName(1L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 
 	t_assert( any[2L].GetType() == AnyCharPtrType );
 	assertCharPtrEqual( any[2L].AsCharPtr(), "\\\\" );
 	if (any.SlotName(2L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 
 	t_assert( any[3L].GetType() == AnyCharPtrType );
 	assertCharPtrEqual( any[3L].AsCharPtr(), "\\\\x41" );
 	if (any.SlotName(3L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 
 	t_assert( any[4L].GetType() == AnyCharPtrType );
 	assertCharPtrEqual( any[4L].AsCharPtr(), "\x41" );
 	if (any.SlotName(4L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 
 	t_assert( any["{}"].GetType() == AnyLongType );
@@ -1086,7 +1080,7 @@ void  ParserTest::testSemantic0()
 }
 // testSemantic0
 
-void ParserTest::testSemantic1()
+void ParserTest::Semantic1Test()
 {
 	// Init an anything-object for testing
 	Anything any = emptyAny;
@@ -1125,7 +1119,7 @@ void ParserTest::testSemantic1()
 	t_assert( any[1L].GetType() == AnyNullType );
 	if (any.SlotName(1L) != NULL) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert(0 == 1);
+		t_assert( false );
 	}
 
 	t_assert( any[2L].GetType() == AnyCharPtrType );
@@ -1133,7 +1127,7 @@ void ParserTest::testSemantic1()
 	//assertCharPtrEqual( any[2L].AsCharPtr(), "\"\"" );
 	if (any.SlotName(2L) != NULL) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert(0 == 1);
+		t_assert( false );
 	}
 
 	t_assert( any["#ab"].GetType() == AnyLongType );
@@ -1201,7 +1195,7 @@ void ParserTest::testSemantic1()
 }
 // testSemantic1
 
-void  ParserTest::testSemantic2() {
+void  ParserTest::Semantic2Test() {
 	// Init an anything-object for testing
 	Anything any = emptyAny;
 	anyTemp0.Append("b");
@@ -1241,29 +1235,29 @@ void  ParserTest::testSemantic2() {
 	t_assert( any.FindIndex("a") == 0 );
 	if ( any["a"].SlotName(0L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 	if ( any["a"].SlotName(1L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 	if ( any[0L].SlotName(0L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 	if ( any[0L].SlotName(1L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 	if ( any.SlotName(1L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 
 }
 // testSemantic2
 
-void  ParserTest::testSemantic3() {
+void  ParserTest::Semantic3Test() {
 	// Init an anything-object for testing
 	Anything any = emptyAny;
 	anyTemp0.Append(2);
@@ -1297,20 +1291,20 @@ void  ParserTest::testSemantic3() {
 	t_assert( any.FindIndex("ab") == 0 );
 	if ( any["ab"].SlotName(0L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 	if ( any[0L].SlotName(0L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 	if ( any.SlotName(1L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 }
 // testSemantic3
 
-void  ParserTest::testSemantic4() {
+void  ParserTest::Semantic4Test() {
 	// Init an anything-object for testing
 	Anything any = emptyAny;//{
 	anyTemp0.Append( "2}6" );
@@ -1342,16 +1336,16 @@ void  ParserTest::testSemantic4() {
 	t_assert( any.FindIndex("ab") == 0 );
 	if ( any["ab"].SlotName(0L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 	if ( any[0L].SlotName(0L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 }
 // testSemantic4
 
-void  ParserTest::testSemantic5() {
+void  ParserTest::Semantic5Test() {
 	// Init an anything-object for testing
 	Anything any = emptyAny;
 	any["{ab" ] = "2}7";
@@ -1377,9 +1371,9 @@ void  ParserTest::testSemantic5() {
 	assertCharPtrEqual( any.SlotName(0L), "{ab" );// }
 	t_assert( any.FindIndex("{ab") == 0 );// }
 }
-}
 // testSemantic5
-void  ParserTest::testSemantic6() {
+
+void  ParserTest::Semantic6Test() {
 	// Init an anything-object for testing
 	Anything any = emptyAny;
 	any[_QUOTE_(a{b) ] = _QUOTE_(2}8);
@@ -1407,7 +1401,7 @@ void  ParserTest::testSemantic6() {
 }
 // testSemantic6
 
-void ParserTest::testSemantic7() {
+void ParserTest::Semantic7Test() {
 	// Init an anything-object for testing
 	Anything any = emptyAny;
 	any[_QUOTE_(ab{) ] = _QUOTE_(2}9);
@@ -1435,7 +1429,7 @@ void ParserTest::testSemantic7() {
 }
 // testSemantic7
 
-void ParserTest::testSemantic8() {
+void ParserTest::Semantic8Test() {
 	// Init an anything-object for testing
 	Anything any = emptyAny;
 	any["\"Slot\"Name\""] = 33;				//	0
@@ -1484,19 +1478,19 @@ void ParserTest::testSemantic8() {
 	assertCharPtrEqual( any[2L].AsCharPtr(), slot3 );
 	if ( any.SlotName(2L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 	t_assert( any[3L].GetType() == AnyLongType );
 	t_assert( any[3L].GetSize() == 1 );
 	t_assert( any[3L].AsLong() == 35 );
 	if ( any.SlotName(3L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 }
 // testSemantic8
 
-void ParserTest::testSemantic9() {
+void ParserTest::Semantic9Test() {
 	// Init an anything-object for testing
 	Anything any = emptyAny;
 	any["/ab"] = 9L;							//	0
@@ -1606,7 +1600,7 @@ void ParserTest::testSemantic9() {
 }
 // testSemantic9
 
-void ParserTest::testSemantic10() {
+void ParserTest::Semantic10Test() {
 	// Init an anything-object for testing
 	Anything any = emptyAny;
 	any["a"] = emptyAny;		//	0
@@ -1673,7 +1667,7 @@ void ParserTest::testSemantic10() {
 }
 // testSemantic10
 
-void ParserTest::testSemantic11() {
+void ParserTest::Semantic11Test() {
 	// Init an anything-object for testing
 	Anything any = emptyAny;
 	any["\"Slo{t}Name\""] = "\"a\\\"{}c\"";				//	0 {
@@ -1714,7 +1708,7 @@ void ParserTest::testSemantic11() {
 }
 // testSemantic11
 
-void ParserTest::testSemantic12() {
+void ParserTest::Semantic12Test() {
 	// Init an anything-object for testing
 	Anything any = emptyAny;
 	anyTemp0.Append("a");
@@ -1737,7 +1731,7 @@ void ParserTest::testSemantic12() {
 	t_assert( any[0L].GetSize() == 0 );
 	if ( any.SlotName(0L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 
 	t_assert( any["Test155"].GetType() == AnyArrayType );
@@ -1749,16 +1743,16 @@ void ParserTest::testSemantic12() {
 	assertCharPtrEqual( any.SlotName(1L), "Test155" );
 	if ( any["Test155"].SlotName(0L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 	if ( any[1L].SlotName(0L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 }
 // testSemantic12
 
-void ParserTest::testSemantic13() {
+void ParserTest::Semantic13Test() {
 	// Init an anything-object for testing
 	Anything any = emptyAny;
 	anyTemp0.Append("a");
@@ -1792,16 +1786,16 @@ void ParserTest::testSemantic13() {
 	assertCharPtrEqual( any.SlotName(1L), "Test155" );
 	if ( any["Test155"].SlotName(0L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 	if ( any[1L].SlotName(0L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 }
 // testSemantic13
 
-void ParserTest::testSemantic14() {
+void ParserTest::Semantic14Test() {
 	// Init an anything-object for testing
 	Anything any = emptyAny;
 	any.Append( emptyAny );
@@ -1827,14 +1821,14 @@ void ParserTest::testSemantic14() {
 	t_assert( any[0L].GetSize() == 0 );
 	if ( any.SlotName(0L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 
 	t_assert( any[1L].GetType() == AnyNullType );
 	t_assert( any[1L].GetSize() == 0 );
 	if ( any.SlotName(1L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 
 	t_assert( any[2L].GetType() == AnyNullType );
@@ -1860,7 +1854,7 @@ void ParserTest::testSemantic14() {
 }
 // testSemantic14
 
-void ParserTest::testSemantic15() {
+void ParserTest::Semantic15Test() {
 	// Init an anything-object for testing
 	Anything any = emptyAny;
 	any = "{}";
@@ -1877,7 +1871,7 @@ void ParserTest::testSemantic15() {
 	assertCharPtrEqual( any.AsCharPtr(), "{}" );
 	if ( any.SlotName(0L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 
 	// Check if anything-objects can change correctly
@@ -1888,7 +1882,7 @@ void ParserTest::testSemantic15() {
 	t_assert( any.AsLong() == 34 );
 	if ( any.SlotName(0L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 
 	// Check if anything-objects can change correctly
@@ -1899,12 +1893,12 @@ void ParserTest::testSemantic15() {
 	t_assert( any.AsDouble() == 34.3E-56 );
 	if ( any.SlotName(0L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 }
 // testSemantic15
 
-void ParserTest::testSemantic16() {
+void ParserTest::Semantic16Test() {
 	// Init an anything-object for testing
 	Anything any = emptyAny;
 	anyTemp0["Test147Dup"] = "a";
@@ -1962,16 +1956,16 @@ void ParserTest::testSemantic16() {
 
 	if ( any["Test147"].SlotName(1L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 	if ( any[0L].SlotName(1L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 }
 // testSemantic16
 
-void ParserTest::testSemantic17() {
+void ParserTest::Semantic17Test() {
 	// Init an anything-object for testing
 	Anything any = emptyAny;
 	any["Test145"] = emptyAny;
@@ -1997,7 +1991,7 @@ void ParserTest::testSemantic17() {
 }
 // testSemantic17
 
-void ParserTest::testSemantic18() {
+void ParserTest::Semantic18Test() {
 	// Init an anything-object for testing
 	Anything any = emptyAny;
 	anyTemp0 = emptyAny;
@@ -2039,33 +2033,33 @@ void ParserTest::testSemantic18() {
 	t_assert( any[0L][0L].GetSize() == 1 );
 	if ( any["Test143"].SlotName(0L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 
 	t_assert( any[0L][0L][0L].GetType() == AnyArrayType );
 	t_assert( any[0L][0L][0L].GetSize() == 1 );
 	if ( any["Test143"][0L].SlotName(0L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 
 	t_assert( any[0L][0L][0L][0L].GetType() == AnyArrayType );
 	t_assert( any[0L][0L][0L][0L].GetSize() == 1 );
 	if ( any["Test143"][0L][0L].SlotName(0L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 
 	t_assert( any[0L][0L][0L][0L][0L].GetType() == AnyNullType );
 	t_assert( any[0L][0L][0L][0L][0L].GetSize() == 0 );
 	if ( any["Test143"][0L][0L][0L].SlotName(0L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 }
 // testSemantic18
 
-void ParserTest::testSemantic19() {
+void ParserTest::Semantic19Test() {
 	// Init an anything-object for testing
 	Anything any = emptyAny;
 	any["Test150"] = "abc";
@@ -2112,7 +2106,7 @@ void ParserTest::testSemantic19() {
 	assertCharPtrEqual( any[1L].AsCharPtr(), "dfg" );
 	if ( any.SlotName(1L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 
 	t_assert( any[2L].GetType() == AnyCharPtrType );
@@ -2120,7 +2114,7 @@ void ParserTest::testSemantic19() {
 	assertCharPtrEqual( any[2L].AsCharPtr(), "\\String1\"" );//"
 	if ( any.SlotName(2L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 
 	t_assert( any[3L].GetType() == AnyCharPtrType );
@@ -2128,7 +2122,7 @@ void ParserTest::testSemantic19() {
 	assertCharPtrEqual( any[3L].AsCharPtr(), "\\String2" );
 	if ( any.SlotName(3L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 
 	t_assert( any[4L].GetType() == AnyCharPtrType );
@@ -2136,7 +2130,7 @@ void ParserTest::testSemantic19() {
 	assertCharPtrEqual( any[4L].AsCharPtr(), "/String3\"" );//"
 	if ( any.SlotName(4L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 
 	t_assert( any[5L].GetType() == AnyCharPtrType );
@@ -2144,7 +2138,7 @@ void ParserTest::testSemantic19() {
 	assertCharPtrEqual( any[5L].AsCharPtr(), "/String4" );
 	if ( any.SlotName(5L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 
 	t_assert( any[6L].GetType() == AnyCharPtrType );
@@ -2152,7 +2146,7 @@ void ParserTest::testSemantic19() {
 	assertCharPtrEqual( any[6L].AsCharPtr(), "\\" );
 	if ( any.SlotName(6L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 
 	t_assert( any[7L].GetType() == AnyCharPtrType );
@@ -2160,12 +2154,12 @@ void ParserTest::testSemantic19() {
 	assertCharPtrEqual( any[7L].AsCharPtr(), "/" );
 	if ( any.SlotName(7L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 }
 // testSemantic19
 
-void ParserTest::testSemantic20() {
+void ParserTest::Semantic20Test() {
 	// Init an anything-object for testing
 	Anything any = emptyAny;
 	any.Append( "\"\\xGH\"" );
@@ -2191,7 +2185,7 @@ void ParserTest::testSemantic20() {
 	//assertCharPtrEqual( any[0L].AsCharPtr(), "\"\\xGH\"" );
 	if ( any.SlotName(0L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 
 	t_assert( any[1L].GetType() == AnyCharPtrType );
@@ -2202,12 +2196,12 @@ void ParserTest::testSemantic20() {
 	//assertCharPtrEqual( any[1L].AsCharPtr(), "\"\\GH\"" );
 	if ( any.SlotName(1L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 }
 // testSemantic20
 
-void ParserTest::testSemantic21() {
+void ParserTest::Semantic21Test() {
 	// Init an anything-object for testing
 	Anything any = emptyAny;
 	any["SlotName0"] = "abc";
@@ -2276,7 +2270,7 @@ void ParserTest::testSemantic21() {
 }
 // testSemantic21
 
-void ParserTest::testSemantic22() {
+void ParserTest::Semantic22Test() {
 	// Init an anything-object for testing
 	Anything any = emptyAny;
 	any["SlotName0"] = "# Kein Kommentar";
@@ -2312,7 +2306,7 @@ void ParserTest::testSemantic22() {
 }
 // testSemantic22
 
-void ParserTest::testSemantic23() {
+void ParserTest::Semantic23Test() {
 	// Init an anything-object for testing
 	Anything any = emptyAny;
 	any['\x30'] = "a";		// any[0..47] = *;   any[48] = "a"
@@ -2338,7 +2332,7 @@ void ParserTest::testSemantic23() {
 				assertCharPtrEqual( any[i].AsCharPtr(), "a" );
 				if ( any.SlotName(i) != NULL ) {
 					// SlotName should be NULL but it is not:  errMsg
-					t_assert( 0 == 1 );
+					t_assert( false );
 				}
 			}
 			break;
@@ -2362,7 +2356,7 @@ void ParserTest::testSemantic23() {
 				assertCharPtrEqual( any[i].AsCharPtr(), "c" );
 				if ( any.SlotName(i) != NULL ) {
 					// SlotName should be NULL but it is not:  errMsg
-					t_assert( 0 == 1 );
+					t_assert( false );
 				}
 			}
 			break;
@@ -2386,7 +2380,7 @@ void ParserTest::testSemantic23() {
 				assertCharPtrEqual( any[i].AsCharPtr(), "e" );
 				if ( any.SlotName(i) != NULL ) {
 					// SlotName should be NULL but it is not:  errMsg
-					t_assert( 0 == 1 );
+					t_assert( false );
 				}
 			}
 			break;
@@ -2420,7 +2414,7 @@ void ParserTest::testSemantic23() {
 				t_assert( any[i].GetSize() == 0 );
 				if ( any.SlotName(i) != NULL ) {
 					// SlotName should be NULL but it is not:  errMsg
-					t_assert( 0 == 1 );
+					t_assert( false );
 				}
 			}
 			break;
@@ -2429,7 +2423,7 @@ void ParserTest::testSemantic23() {
 }
 // testSemantic23
 
-void ParserTest::testSemantic24() {
+void ParserTest::Semantic24Test() {
 	// Init an anything-object for testing
 	Anything any = emptyAny;
 	any.Append( "/a" );
@@ -2458,7 +2452,7 @@ void ParserTest::testSemantic24() {
 	assertCharPtrEqual( any[0L].AsCharPtr(), "/a" );
 	if ( any.SlotName(0L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 
 	t_assert( any[1L].GetType() == AnyCharPtrType );
@@ -2466,7 +2460,7 @@ void ParserTest::testSemantic24() {
 	assertCharPtrEqual( any[1L].AsCharPtr(), " String" );
 	if ( any.SlotName(1L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 
 	t_assert( any[2L].GetType() == AnyCharPtrType );
@@ -2489,7 +2483,7 @@ void ParserTest::testSemantic24() {
 }
 // testSemantic24
 
-void ParserTest::testSemantic25() {
+void ParserTest::Semantic25Test() {
 	// Init an anything-object for testing
 	Anything any = emptyAny;
 
@@ -2536,12 +2530,12 @@ void ParserTest::testSemantic25() {
 	assertCharPtrEqual( any[1L].AsCharPtr(), "A" );
 	if ( any.SlotName(1L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
-		t_assert( 0 == 1 );
+		t_assert( false );
 	}
 }
 // testSemantic25
 
-void ParserTest::testSemantic26() {
+void ParserTest::Semantic26Test() {
 	// Init an anything-object for testing
 	Anything any = emptyAny;
 
@@ -2604,7 +2598,7 @@ void ParserTest::testSemantic26() {
 }
 // testSemantic26
 
-void ParserTest::testSemantic27() {
+void ParserTest::Semantic27Test() {
 	// Init an anything-object for testing
 	Anything any;
 
@@ -2657,7 +2651,7 @@ void ParserTest::testSemantic28Prep( Anything *any ) {
 }
 //	testSemantic28Prep
 
-void ParserTest::testSemantic28() {
+void ParserTest::Semantic28Test() {
 	// Init an anything-object for testing
 	Anything *any;
 	any = new Anything();
@@ -2681,7 +2675,7 @@ void ParserTest::testSemantic29Prep( Anything *any ) {
 }
 //	testSemantic29Prep
 
-void ParserTest::testSemantic29() {
+void ParserTest::Semantic29Test() {
 	// Init an anything-object for testing
 	Anything *any;
 	any = new Anything();
@@ -2705,7 +2699,7 @@ void ParserTest::testSemantic30Prep( Anything &any ) {
 }
 //	testSemantic30Prep
 
-void ParserTest::testSemantic30() {
+void ParserTest::Semantic30Test() {
 	// Init an anything-object for testing
 	Anything any;
 
@@ -2713,7 +2707,7 @@ void ParserTest::testSemantic30() {
 }
 //	testSemantic30
 
-void ParserTest::testSemantic31() {
+void ParserTest::Semantic31Test() {
 	// Init an anything-object for testing
 	Anything any, anyHlp0, anyHlp1;
 
@@ -2727,7 +2721,7 @@ void ParserTest::testSemantic31() {
 }
 //	testSemantic31
 
-void ParserTest::testSemantic32() {
+void ParserTest::Semantic32Test() {
 	// Init an anything-object for testing
 	Anything any;
 
@@ -2756,7 +2750,7 @@ void ParserTest::testSemantic32() {
 }
 //	testSemantic32
 
-void ParserTest::testSemantic33() {
+void ParserTest::Semantic33Test() {
 	// Init an anything-object for testing
 	Anything any;
 
@@ -2820,7 +2814,7 @@ void ParserTest::testSemantic33() {
 }
 //	testSemantic33
 // testquotedslotname PS 7.6.99
-void ParserTest::testQuotedSlotname() {
+void ParserTest::QuotedSlotnameTest() {
 	// test if OutputContext::PrintKey matches parser
 #define TESTQUOTE(xslot) \
     {    \
@@ -3032,7 +3026,6 @@ void ParserTest::readWriteAnything() {
 				#######\
 }";
 	input[161] = "{ /SlotName0  \" # Kein Kommentar \" }";
-	//input[162] = "{ /SlotName0  Kein\#Kommentar }";
 	input[162] = "{ /SlotName0  Kein\\#Kommentar }";
 	input[163] = "{ /SlotName0  Kein\x23Kommentar }";		// \x23 == #
 	input[164] = "{ /SlotName0  Kein\\x23Kommentar }";

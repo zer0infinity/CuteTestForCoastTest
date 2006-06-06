@@ -22,7 +22,7 @@
 //--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
 
-StringTest::StringTest (TString tname) : TestCase(tname)
+StringTest::StringTest (TString tname) : TestCaseType(tname)
 {
 }
 
@@ -36,39 +36,31 @@ void StringTest::setUp ()
 	fLong = "a somewhat longer string";
 }
 
-Test *StringTest::worksuite ()
-{
-	TestSuite *testSuite = new TestSuite;
-	return testSuite;
-}
-
 Test *StringTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
-
-	testSuite->addTest (NEW_CASE(StringTest, constructors));
-	testSuite->addTest (NEW_CASE(StringTest, appendsChar));
-	testSuite->addTest (NEW_CASE(StringTest, appendsCharChain));
-	testSuite->addTest (NEW_CASE(StringTest, appendsNullPtr));
-	testSuite->addTest (NEW_CASE(StringTest, appendsString));
-	testSuite->addTest (NEW_CASE(StringTest, appendsLong));
-	testSuite->addTest (NEW_CASE(StringTest, appendsDouble));
-	testSuite->addTest (NEW_CASE(StringTest, appendsAsHex));
-	testSuite->addTest (NEW_CASE(StringTest, appendsTwoHexAsChar));
-	testSuite->addTest (NEW_CASE(StringTest, appendsFile));       // ??????
-	testSuite->addTest (NEW_CASE(StringTest, appendsWithDelimiter));
-	testSuite->addTest (NEW_CASE(StringTest, methods));
-	testSuite->addTest (NEW_CASE(StringTest, TestCapacity));
-	testSuite->addTest (NEW_CASE(StringTest, GetLine));
-	testSuite->addTest (NEW_CASE(StringTest, OptimizedConstructorOrAssignment));
-	testSuite->addTest (NEW_CASE(StringTest, trimFrontEmpty));
-	testSuite->addTest (NEW_CASE(StringTest, EmptyAllocatorTest));
-	testSuite->addTest (NEW_CASE(StringTest, DumpAsHexTest));
-	testSuite->addTest (NEW_CASE(StringTest, ReplaceTest));
-	testSuite->addTest (NEW_CASE(StringTest, TestFirstCharOf));
-	testSuite->addTest (NEW_CASE(StringTest, TestLastCharOf));
-	testSuite->addTest (NEW_CASE(StringTest, TestContainsCharAbove));
-
+	ADD_CASE(testSuite, StringTest, constructors);
+	ADD_CASE(testSuite, StringTest, appendsChar);
+	ADD_CASE(testSuite, StringTest, appendsCharChain);
+	ADD_CASE(testSuite, StringTest, appendsNullPtr);
+	ADD_CASE(testSuite, StringTest, appendsString);
+	ADD_CASE(testSuite, StringTest, appendsLong);
+	ADD_CASE(testSuite, StringTest, appendsDouble);
+	ADD_CASE(testSuite, StringTest, appendsAsHex);
+	ADD_CASE(testSuite, StringTest, appendsTwoHexAsChar);
+	ADD_CASE(testSuite, StringTest, appendsFile);       // ??????
+	ADD_CASE(testSuite, StringTest, appendsWithDelimiter);
+	ADD_CASE(testSuite, StringTest, methods);
+	ADD_CASE(testSuite, StringTest, TestCapacity);
+	ADD_CASE(testSuite, StringTest, GetLine);
+	ADD_CASE(testSuite, StringTest, OptimizedConstructorOrAssignment);
+	ADD_CASE(testSuite, StringTest, trimFrontEmpty);
+	ADD_CASE(testSuite, StringTest, EmptyAllocatorTest);
+	ADD_CASE(testSuite, StringTest, DumpAsHexTest);
+	ADD_CASE(testSuite, StringTest, ReplaceTest);
+	ADD_CASE(testSuite, StringTest, TestFirstCharOf);
+	ADD_CASE(testSuite, StringTest, TestLastCharOf);
+	ADD_CASE(testSuite, StringTest, TestContainsCharAbove);
 	return testSuite;
 }
 
@@ -76,13 +68,13 @@ void StringTest::constructors ()
 {
 	// Init a string without parameters
 	String empty;
-	t_assert (empty == "");
+	assertEqual("", empty);
 	t_assert (empty.Length() == 0);
 	t_assert (empty.Capacity() >= 0);
 
 	// Init a string only with the Capacity
 	String emptyCap(50);
-	t_assert (emptyCap == "");
+	assertEqual("", emptyCap);
 	t_assert ( strcmp((const char *)emptyCap, "") == 0 );
 	t_assert ( memcmp((const char *)emptyCap, "",
 					  strlen((const char *)emptyCap) ) == 0 );
@@ -90,7 +82,7 @@ void StringTest::constructors ()
 	t_assert (emptyCap.Capacity() >= 50);
 
 	String emptyCap0(-1);
-	t_assert (emptyCap0 == "");
+	assertEqual("", emptyCap0);
 	t_assert (emptyCap0.Length() == 0);
 	t_assert(0 <= emptyCap0.Capacity());
 
@@ -125,7 +117,7 @@ void StringTest::constructors ()
 
 	// Init a string only with a 'charChain'
 	String stringCharChain( "CharChain" );
-	t_assert (stringCharChain == "CharChain");
+	assertEqual("CharChain", stringCharChain);
 	t_assert ( memcmp( (const char *)stringCharChain, "CharChain", stringCharChain.Length() ) == 0 );
 	t_assert (stringCharChain.Length() == (long)strlen("CharChain"));
 	t_assert (stringCharChain.Capacity() >= stringCharChain.Length());
@@ -151,7 +143,7 @@ void StringTest::constructors ()
 
 	String stringStr1(empty);
 	t_assert (stringStr1 == empty);
-	t_assert (stringStr1 == "");
+	assertEqual("", stringStr1);
 	t_assert (stringStr1.Length() == empty.Length() );
 	//PS? t_assert (stringStr1.Capacity() == empty.Capacity() );
 	t_assert (stringStr1.Capacity() >= stringStr1.Length() );
@@ -159,7 +151,7 @@ void StringTest::constructors ()
 
 	String stringStr2(emptyCap);
 	t_assert (stringStr2 == emptyCap);
-	t_assert (stringStr2 == "");
+	assertEqual("", stringStr2);
 	t_assert (stringStr2.Length() == emptyCap.Length() );
 	// t_assert (stringStr2.Capacity() == emptyCap.Capacity() );		// ???? capacity not copied
 	t_assert (stringStr2.Length() == 0 );
@@ -170,9 +162,9 @@ void StringTest::constructors ()
 	t_assert (empty == one);
 
 	String oneString("1");
-	t_assert (oneString == "1");
+	assertEqual("1", oneString);
 	t_assert (oneString.Length() == 1);
-	t_assert (fShort == "short");
+	assertEqual("short", fShort);
 	t_assert (fShort != "Short");  // == fails
 }
 
@@ -1121,7 +1113,7 @@ void StringTest::appendsFile ()
 	if ( is3 ) {
 		String  str3;
 		str3.Append( *is3, 0 );
-		t_assert (str3 == "");
+		assertEqual("", str3);
 		t_assert (str3.Length() == 0);
 		//t_assert (str3.Capacity() == 1);
 		t_assert ( str3.Capacity() >= str3.Length() );
@@ -1135,7 +1127,7 @@ void StringTest::appendsFile ()
 	if (is4) {
 		String  str4;
 		str4.Append( *is4, 'a' );  // 'a' = 97
-		t_assert (str4 == "01234");
+		assertEqual("01234", str4);
 		t_assert (str4.Length() == 5);
 		t_assert (str4.Capacity() >= 'a' + 1);
 		t_assert ( str4.Capacity() >= str4.Length() );
@@ -1974,14 +1966,14 @@ void StringTest::intPrintOn0()
 	IStringStream is2(forStream);
 
 	is2 >> str;
-	t_assert(str == "This");
+	assertEqual("This", str);
 	t_assert(is2.good() != 0);
 	is2 >> str;
-	t_assert(str == "test");
+	assertEqual("test", str);
 	t_assert(is2.good() != 0);
 	t_assert(!is2.eof());		// space at the end is not eof!
 	is2 >> str;
-	t_assert(str == "");
+	assertEqual("", str);
 	t_assert(is2.good() == 0);
 	t_assert(is2.eof() != 0);
 

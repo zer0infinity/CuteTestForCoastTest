@@ -14,7 +14,7 @@
 
 //---- DbgTest ----------------------------------------------------------
 //!testcases for Tracer class
-class DbgTest : public TestCase
+class DbgTest : public TestFramework::TestCase
 {
 public:
 	//!constructors
@@ -24,11 +24,6 @@ public:
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
 
-	//!sets the environment for this test
-	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
 #ifdef DEBUG
 	//!tests the Socket class with a fd from Connector
 	void CheckTriggerTest();

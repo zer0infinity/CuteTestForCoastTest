@@ -14,7 +14,7 @@
 
 //---- PipeTest ----------------------------------------------------------
 //!TestCases description
-class PipeTest : public TestCase
+class PipeTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -31,21 +31,12 @@ public:
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
 
-	//!sets the environment for this test
-	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
-
 	//!test the constructor Pipe(fdin,fdout,doclose,timeout)
 	void simpleConstructorTest();
 	//!test the constructor Pipe(doclose,timeout)
 	void defaultConstructorTest();
 	//!test the blocking of a pipe itself by writing a lot of stuff.
 	void simpleBlockingTest();
-
-protected:
-
 };
 
 #endif

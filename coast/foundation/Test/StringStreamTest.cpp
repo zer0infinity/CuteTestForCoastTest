@@ -27,19 +27,10 @@ const char *const StringStreamTest::fgcContent =
 	"it consists of several lines of simple Text\n"
 	"and will be written to a string using the StringStream iostream\n";
 
-StringStreamTest::StringStreamTest(TString tname) : TestCase(tname)
+StringStreamTest::StringStreamTest(TString tname) : TestCaseType(tname)
 {};
 
 StringStreamTest::~StringStreamTest() {}
-
-void StringStreamTest::setUp ()
-{
-	TestCase::setUp();
-};
-
-void StringStreamTest::tearDown ()
-{
-}
 
 void StringStreamTest::OperatorShiftLeftWithReadBuf()
 {

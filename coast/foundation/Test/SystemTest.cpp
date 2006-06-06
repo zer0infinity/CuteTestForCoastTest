@@ -17,7 +17,6 @@
 
 //--- standard modules used -------------------------------------------------
 #include "DiffTimer.h"
-#include "Dbg.h"
 #include "SysLog.h"
 
 //--- c-library modules used ---------------------------------------------------
@@ -29,31 +28,12 @@
 #endif
 
 //---- SystemTest --------------------------------------------------------
-SystemTest::SystemTest(TString tname) : TestCase(tname)
+SystemTest::SystemTest(TString tname)
+	: TestCaseType(tname)
 {
 }
 
 SystemTest::~SystemTest()
-{
-}
-
-void SystemTest::setUp ()
-{
-	istream *is = System::OpenStream("SystemTest", "any");
-	if ( is ) {
-		fConfig.Import( *is );
-		delete is;
-	} else {
-		t_assertm( false, "could not read SystemTest.any" );
-	}
-}
-
-void SystemTest::tearDown ()
-{
-	fConfig = Anything();
-}
-
-void SystemTest::initialSetup()
 {
 }
 
@@ -1012,11 +992,11 @@ void SystemTest::IOStreamTest ()
 		// Resultat ist wie erwartet oder falsch  ????
 		// str6 << *is2;  Compilierbar aber falsches Resultat
 		*is2 >> str6;
-		t_assert( str6 == "qwertzuiopasdfghjklyxcvbnm" );
+		assertEqual("qwertzuiopasdfghjklyxcvbnm", str6);
 		t_assert( str6.Length() == (long)strlen("qwertzuiopasdfghjklyxcvbnm") );
 		t_assert( str6.Capacity() >= str6.Length() );
 		*is3 >> str6;
-		t_assert( str6 == "0123456789" );
+		assertEqual("0123456789", str6);
 		t_assert( str6.Length() == (long)strlen("0123456789") );
 		t_assert( str6.Capacity() >= str6.Length() );
 		delete is2;
@@ -1131,7 +1111,7 @@ void SystemTest::LoadConfigFileTest()
 void SystemTest::MkRmDirTest()
 {
 	StartTrace(SystemTest.MkRmDirTest);
-	String strTmpDir = fConfig["TmpDir"].AsString("/tmp");
+	String strTmpDir = GetConfig()["TmpDir"].AsString("/tmp");
 	String str1LevelRel(name());
 	String str2LevelRel(str1LevelRel);
 	str2LevelRel.Append(System::cSep).Append("Level2");
@@ -1170,7 +1150,7 @@ void SystemTest::MkRmDirTest()
 void SystemTest::MakeRemoveDirectoryTest()
 {
 	StartTrace(SystemTest.MakeRemoveDirectoryTest);
-	String strTmpDir = fConfig["TmpDir"].AsString("/tmp");
+	String strTmpDir = GetConfig()["TmpDir"].AsString("/tmp");
 	String str1LevelRel(name());
 	String str2LevelRel(str1LevelRel);
 	str2LevelRel.Append(System::cSep).Append("Level2");
@@ -1245,7 +1225,7 @@ void SystemTest::BlocksLeftOnFSTest()
 	// can only test that we have still some space left, nothing more for now
 	ul_long ulBlocks = 0;
 	unsigned long ulBlockSize = 0;
-	String fsPath(fConfig["BlocksLeftOnFSTest"]["FS"].AsString("/"));
+	String fsPath(GetConfig()["BlocksLeftOnFSTest"]["FS"].AsString("/"));
 	if ( t_assertm(System::BlocksLeftOnFS(fsPath, ulBlocks, ulBlockSize), "expected function call to succeed") ) {
 		t_assertm(ulBlocks > 0, "expected some blocks left on device");
 		t_assertm(ulBlockSize > 0, "expected block size not to be 0");
@@ -1254,10 +1234,8 @@ void SystemTest::BlocksLeftOnFSTest()
 }
 
 Test *SystemTest::suite ()
-// collect all test cases for the SocketStream
 {
 	TestSuite *testSuite = new TestSuite;
-
 	ADD_CASE(testSuite, SystemTest, DoSingleSelectTest);
 	ADD_CASE(testSuite, SystemTest, initPathTest);
 	ADD_CASE(testSuite, SystemTest, pathListTest);
@@ -1281,7 +1259,5 @@ Test *SystemTest::suite ()
 	ADD_CASE(testSuite, SystemTest, GetFileSizeTest);
 	ADD_CASE(testSuite, SystemTest, BlocksLeftOnFSTest);
 	ADD_CASE(testSuite, SystemTest, statTests);	// needs to be last
-	ADD_CASE(testSuite, SystemTest, initialSetup);	// needs to be last
-
 	return testSuite;
 }

@@ -22,7 +22,7 @@
 #include <stdlib.h>
 
 //---- AnyBuiltInSortTest ----------------------------------------------------------------
-AnyBuiltInSortTest::AnyBuiltInSortTest(TString tstrName) : TestCase(tstrName)
+AnyBuiltInSortTest::AnyBuiltInSortTest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(AnyBuiltInSortTest.Ctor);
 }
@@ -32,16 +32,6 @@ AnyBuiltInSortTest::~AnyBuiltInSortTest()
 	StartTrace(AnyBuiltInSortTest.Dtor);
 }
 
-// setup for this TestCase
-void AnyBuiltInSortTest::setUp ()
-{
-	StartTrace(AnyBuiltInSortTest.setUp);
-}
-
-void AnyBuiltInSortTest::tearDown ()
-{
-	StartTrace(AnyBuiltInSortTest.tearDown);
-}
 bool AnyBuiltInSortTest::checksorted(const Anything &a, bool shouldfail)
 {
 	for (long i = 0; i < a.GetSize() - 1; i++) {
@@ -219,17 +209,12 @@ void AnyBuiltInSortTest::SortIsStable()
 		}
 
 }
-void AnyBuiltInSortTest::testCase()
-{
-	StartTrace(AnyBuiltInSortTest.testCase);
-//	t_assertm(false, "test me!");
-}
+
 // builds up a suite of testcases, add a line for each testmethod
 Test *AnyBuiltInSortTest::suite ()
 {
 	StartTrace(AnyBuiltInSortTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
 	ADD_CASE(testSuite, AnyBuiltInSortTest, SortEmpty);
 	ADD_CASE(testSuite, AnyBuiltInSortTest, SortOne);
 	ADD_CASE(testSuite, AnyBuiltInSortTest, SortTwo);
@@ -237,7 +222,5 @@ Test *AnyBuiltInSortTest::suite ()
 	ADD_CASE(testSuite, AnyBuiltInSortTest, SortMany);
 	ADD_CASE(testSuite, AnyBuiltInSortTest, SortManyStringValues);
 	ADD_CASE(testSuite, AnyBuiltInSortTest, SortIsStable);
-	ADD_CASE(testSuite, AnyBuiltInSortTest, testCase);
-
 	return testSuite;
 }

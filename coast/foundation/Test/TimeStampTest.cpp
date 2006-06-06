@@ -18,9 +18,6 @@
 //--- project modules used -----------------------------------------------------
 
 //--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
-#include "System.h"
-#include "DiffTimer.h"
 #include "SysLog.h"
 
 //--- c-modules used -----------------------------------------------------------
@@ -28,7 +25,7 @@
 
 //---- TimeStampTest ----------------------------------------------------------------
 TimeStampTest::TimeStampTest(TString tstrName)
-	: TestCase(tstrName)
+	: TestCaseType(tstrName)
 {
 	StartTrace(TimeStampTest.Ctor);
 }
@@ -38,221 +35,249 @@ TimeStampTest::~TimeStampTest()
 	StartTrace(TimeStampTest.Dtor);
 }
 
-// setup for this TestCase
-void TimeStampTest::setUp ()
+void TimeStampTest::BasicOperatorsTest()
 {
-	StartTrace(TimeStampTest.setUp);
-	istream *is = System::OpenStream(getClassName(), "any");
-	if ( is ) {
-		fConfig.Import( *is );
-		delete is;
-		fTestCaseConfig = fConfig[name()];
-	} else {
-		t_assertm( false, TString("could not read ") << getClassName() << ".any" );
-	}
-}
+	StartTrace(TimeStampTest.BasicOperatorsTest);
 
-void TimeStampTest::tearDown ()
-{
-	StartTrace(TimeStampTest.tearDown);
-}
+	ROAnything roaConfig;
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(roaConfig) ) {
+		TString strCase;
+		if ( !aEntryIterator.SlotName(strCase) ) {
+			strCase << "idx:" << aEntryIterator.Index();
+		}
 
-void TimeStampTest::testBasicOperators()
-{
-	StartTrace(TimeStampTest.testBasicOperators);
-	TraceAny(fTestCaseConfig, "Tests config");
-	for (long i = 0; i < fTestCaseConfig.GetSize(); ++i) {
-		ROAnything cConfig = fTestCaseConfig[i];
-		TraceAny(cConfig, "current config");
-		long upper(cConfig["NumberOfRuns"].AsLong(1));
+		TraceAny(roaConfig, "current config");
+		long upper(roaConfig["NumberOfRuns"].AsLong(1));
 		for ( long l = 0; l < upper; ++l ) {
-			Trace("At testindex: " << i);
-			TimeStamp ts1(cConfig["Date"].AsString());
-			TimeStamp ts2(cConfig["Date"].AsString());
-			TimeStamp tsAfter(cConfig["DateAfter"].AsString());
-			TimeStamp tsBefore(cConfig["DateBefore"].AsString());
-			TimeStamp dateAddResult(cConfig["DateAddResult"].AsString());
+			TimeStamp ts1(roaConfig["Date"].AsString());
+			TimeStamp ts2(roaConfig["Date"].AsString());
+			TimeStamp tsAfter(roaConfig["DateAfter"].AsString());
+			TimeStamp tsBefore(roaConfig["DateBefore"].AsString());
+			TimeStamp dateAddResult(roaConfig["DateAddResult"].AsString());
 
 			//operator ==
-			t_assertm(ts1 == ts2, TString("Expected == test to pass at testindex:") << i);
-			t_assertm(ts1.IsEqual(ts2), TString("Expected == test to pass at testindex:") << i);
-			t_assertm(!(ts1 == tsAfter), TString("Expected == test to pass at testindex:") << i);
-			t_assertm(ts1.IsEqual(tsAfter) == false, TString("Expected == test to pass at testindex:") << i);
+			t_assertm(ts1 == ts2, TString("Expected == test to pass at ") << strCase);
+			t_assertm(ts1.IsEqual(ts2), TString("Expected == test to pass at ") << strCase);
+			t_assertm(!(ts1 == tsAfter), TString("Expected == test to pass at ") << strCase);
+			t_assertm(ts1.IsEqual(tsAfter) == false, TString("Expected == test to pass at ") << strCase);
 
 			//operator !=
-			t_assertm(tsAfter != tsBefore, TString("Expected != test to pass at testindex:") << i);
-			t_assertm(tsAfter.IsNotEqual(tsBefore), TString("Expected != test to pass at testindex:") << i);
-			t_assertm(!(ts1 != ts1), TString("Expected != test to pass at testindex:") << i);
-			t_assertm(ts1.IsNotEqual(ts1) == false, TString("Expected != test to pass at testindex:") << i);
+			t_assertm(tsAfter != tsBefore, TString("Expected != test to pass at ") << strCase);
+			t_assertm(tsAfter.IsNotEqual(tsBefore), TString("Expected != test to pass at ") << strCase);
+			t_assertm(!(ts1 != ts1), TString("Expected != test to pass at ") << strCase);
+			t_assertm(ts1.IsNotEqual(ts1) == false, TString("Expected != test to pass at ") << strCase);
 
 			//operator >
-			t_assertm(tsAfter > ts2, TString("Expected > test to pass at testindex:") << i);
-			t_assertm(tsAfter.IsAfter(ts1), TString("Expected > test to pass at testindex:") << i);
-			t_assertm(!(tsBefore > tsAfter), TString("Expected > test to pass at testindex:") << i);
-			t_assertm(tsBefore.IsAfter(tsAfter) == false, TString("Expected > test to pass at testindex:") << i);
-			t_assertm(!(tsAfter > tsAfter), TString("Expected > boundary test to pass at testindex:") << i);
+			t_assertm(tsAfter > ts2, TString("Expected > test to pass at ") << strCase);
+			t_assertm(tsAfter.IsAfter(ts1), TString("Expected > test to pass at ") << strCase);
+			t_assertm(!(tsBefore > tsAfter), TString("Expected > test to pass at ") << strCase);
+			t_assertm(tsBefore.IsAfter(tsAfter) == false, TString("Expected > test to pass at ") << strCase);
+			t_assertm(!(tsAfter > tsAfter), TString("Expected > boundary test to pass at ") << strCase);
 
 			//operator <
-			t_assertm(tsBefore < ts2, TString("Expected < test to pass at testindex:") << i);
-			t_assertm(tsBefore.IsBefore(ts1), TString("Expected < test to pass at testindex:") << i);
-			t_assertm(!(tsAfter < tsBefore), TString("Expected < test to pass at testindex:") << i);
-			t_assertm(tsAfter.IsBefore(tsBefore) == false, TString("Expected < test to pass at testindex:") << i);
-			t_assertm(!(tsBefore < tsBefore), TString("Expected < boundary test to pass at testindex:") << i);
+			t_assertm(tsBefore < ts2, TString("Expected < test to pass at ") << strCase);
+			t_assertm(tsBefore.IsBefore(ts1), TString("Expected < test to pass at ") << strCase);
+			t_assertm(!(tsAfter < tsBefore), TString("Expected < test to pass at ") << strCase);
+			t_assertm(tsAfter.IsBefore(tsBefore) == false, TString("Expected < test to pass at ") << strCase);
+			t_assertm(!(tsBefore < tsBefore), TString("Expected < boundary test to pass at ") << strCase);
 
 			//operator >=
-			t_assertm(tsAfter >= ts2, TString("Expected >= test to pass at testindex:") << i);
-			t_assertm(tsAfter.IsAfterEqual(ts1), TString("Expected >= test to pass at testindex:") << i);
-			t_assertm(!(tsBefore >= tsAfter), TString("Expected >= test to pass at testindex:") << i);
-			t_assertm(tsBefore.IsAfterEqual(tsAfter) == false, TString("Expected >= test to pass at testindex:") << i);
-			t_assertm((tsAfter >= tsAfter), TString("Expected >= boundary test to pass at testindex:") << i);
+			t_assertm(tsAfter >= ts2, TString("Expected >= test to pass at ") << strCase);
+			t_assertm(tsAfter.IsAfterEqual(ts1), TString("Expected >= test to pass at ") << strCase);
+			t_assertm(!(tsBefore >= tsAfter), TString("Expected >= test to pass at ") << strCase);
+			t_assertm(tsBefore.IsAfterEqual(tsAfter) == false, TString("Expected >= test to pass at ") << strCase);
+			t_assertm((tsAfter >= tsAfter), TString("Expected >= boundary test to pass at ") << strCase);
 
 			//operator <=
-			t_assertm(tsBefore <= ts2, TString("Expected <= test to pass at testindex:") << i);
-			t_assertm(tsBefore.IsBeforeEqual(ts1), TString("Expected <= test to pass at testindex:") << i);
-			t_assertm(!(tsAfter <= tsBefore), TString("Expected <= test to pass at testindex:") << i);
-			t_assertm(tsAfter.IsBeforeEqual(tsBefore) == false, TString("Expected <= test to pass at testindex:") << i);
-			t_assertm((tsBefore <= tsBefore), TString("Expected <= boundary test to pass at testindex:") << i);
+			t_assertm(tsBefore <= ts2, TString("Expected <= test to pass at ") << strCase);
+			t_assertm(tsBefore.IsBeforeEqual(ts1), TString("Expected <= test to pass at ") << strCase);
+			t_assertm(!(tsAfter <= tsBefore), TString("Expected <= test to pass at ") << strCase);
+			t_assertm(tsAfter.IsBeforeEqual(tsBefore) == false, TString("Expected <= test to pass at ") << strCase);
+			t_assertm((tsBefore <= tsBefore), TString("Expected <= boundary test to pass at ") << strCase);
 
 			//combined expression
-			t_assertm( ( ts1 + cConfig["LongToAdd"].AsLong() ) >= dateAddResult, TString("Expected combined expressiont test to pass at testindex:") << i);
-			t_assertm( ( ts1 + cConfig["LongToAdd"].AsLong() ) <= dateAddResult, TString("Expected combined expressiont test to pass at testindex:") << i);
-			t_assertm(!( ( ts1 + cConfig["LongToAdd"].AsLong() ) <  dateAddResult ), TString("Expected combined expressiont test to pass at testindex:") << i);
-			t_assertm(!( ( ts1 + cConfig["LongToAdd"].AsLong() ) >  dateAddResult ), TString("Expected combined expressiont test to pass at testindex:") << i);
-			t_assertm(  ts1 == ts2, TString("Expected ts1 not to have changed at testindex:") << i);
+			t_assertm( ( ts1 + roaConfig["LongToAdd"].AsLong() ) >= dateAddResult, TString("Expected combined expressiont test to pass at ") << strCase);
+			t_assertm( ( ts1 + roaConfig["LongToAdd"].AsLong() ) <= dateAddResult, TString("Expected combined expressiont test to pass at ") << strCase);
+			t_assertm(!( ( ts1 + roaConfig["LongToAdd"].AsLong() ) <  dateAddResult ), TString("Expected combined expressiont test to pass at ") << strCase);
+			t_assertm(!( ( ts1 + roaConfig["LongToAdd"].AsLong() ) >  dateAddResult ), TString("Expected combined expressiont test to pass at ") << strCase);
+			t_assertm(  ts1 == ts2, TString("Expected ts1 not to have changed at ") << strCase);
 		}
 	}
 }
 
-void TimeStampTest::testArithmeticOperators()
+void TimeStampTest::ArithmeticOperatorsTest()
 {
-	StartTrace(TimeStampTest.testArithmeticOperators);
-	for (long i = 0; i < fTestCaseConfig.GetSize(); ++i) {
-		ROAnything cConfig = fTestCaseConfig[i];
-		Trace("At testindex: " << i);
-		long upper(cConfig["NumberOfRuns"].AsLong(1));
+	StartTrace(TimeStampTest.ArithmeticOperatorsTest);
+	ROAnything roaConfig;
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(roaConfig) ) {
+		TString strCase;
+		if ( !aEntryIterator.SlotName(strCase) ) {
+			strCase << "idx:" << aEntryIterator.Index();
+		}
+
+		TraceAny(roaConfig, "current config");
+		long upper(roaConfig["NumberOfRuns"].AsLong(1));
 		for ( long l = 0; l < upper; ++l ) {
-			TimeStamp ts1(cConfig["Date"].AsString());
+			TimeStamp ts1(roaConfig["Date"].AsString());
 			TimeStamp result;
-			result = ts1 + cConfig["AmountSec"].AsLong();
-			assertCharPtrEqualm(cConfig["ExpectedResult"].AsString(), result.AsString(), "Expected + test to pass");
+			result = ts1 + roaConfig["AmountSec"].AsLong();
+			assertCharPtrEqualm(roaConfig["ExpectedResult"].AsString(), result.AsString(), TString("Expected + test to pass at ") << strCase);
 			Trace("result after operator+ is: " << result.AsString());
 
-			result = result - cConfig["AmountSec"].AsLong();
-			assertCharPtrEqualm(cConfig["Date"].AsString(), result.AsString(), "Expected - test to pass");
+			result = result - roaConfig["AmountSec"].AsLong();
+			assertCharPtrEqualm(roaConfig["Date"].AsString(), result.AsString(), TString("Expected - test to pass at ") << strCase);
 			Trace("result after operator- is: " << result.AsString());
 		}
 	}
 }
 
-void TimeStampTest::testConstructors()
+void TimeStampTest::ConstructorsTest()
 {
-	StartTrace(TimeStampTest.testArithmeticOperators);
-	for (long i = 0; i < fTestCaseConfig.GetSize(); ++i) {
-		ROAnything cConfig = fTestCaseConfig[i];
-		Trace("At testindex: " << i);
-		TimeStamp result(cConfig["ExpectedResult"].AsString());
-		// Check result is ok.
-		t_assertm(cConfig["ExpectedResult"].AsString() == result.AsString(), "Expected result initialization test to pass");
+	StartTrace(TimeStampTest.ArithmeticOperatorsTest);
+	ROAnything roaConfig;
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(roaConfig) ) {
+		TString strCase;
+		if ( !aEntryIterator.SlotName(strCase) ) {
+			strCase << "idx:" << aEntryIterator.Index();
+		}
 
-		TimeStamp copyConstTs(cConfig["ExpectedResult"].AsString());
-		t_assertm(copyConstTs == result, "Expected copy constructor test to pass");
-		t_assertm(cConfig["ExpectedResult"].AsString() == copyConstTs.AsString(), "Expected copy constructor test to pass");
+		TraceAny(roaConfig, "current config");
+		TimeStamp result(roaConfig["ExpectedResult"].AsString());
+		// Check result is ok.
+		t_assertm(roaConfig["ExpectedResult"].AsString() == result.AsString(), TString("Expected result initialization test to pass at ") << strCase);
+
+		TimeStamp copyConstTs(roaConfig["ExpectedResult"].AsString());
+		t_assertm(copyConstTs == result, TString("Expected copy constructor test to pass at ") << strCase);
+		t_assertm(roaConfig["ExpectedResult"].AsString() == copyConstTs.AsString(), TString("Expected copy constructor test to pass at ") << strCase);
 
 		TimeStamp setTs;
-		setTs.Set(cConfig["ExpectedResult"].AsString());
-		t_assertm(setTs == result, "Expected Set() test to pass");
-		t_assertm(cConfig["ExpectedResult"].AsString() == setTs.AsString(), "Expected copy constructor test to pass");
+		setTs.Set(roaConfig["ExpectedResult"].AsString());
+		t_assertm(setTs == result, TString("Expected Set() test to pass at ") << strCase);
+		t_assertm(roaConfig["ExpectedResult"].AsString() == setTs.AsString(), TString("Expected copy constructor test to pass at ") << strCase);
 	}
 }
 
-void TimeStampTest::testEmptyStringConstructor()
+void TimeStampTest::EmptyStringConstructorTest()
 {
-	StartTrace(TimeStampTest.testEmptyStringConstructor);
-	for (long i = 0; i < fTestCaseConfig.GetSize(); ++i) {
-		ROAnything cConfig = fTestCaseConfig[i];
-		Trace("At testindex: " << i);
+	StartTrace(TimeStampTest.EmptyStringConstructorTest);
+	ROAnything roaConfig;
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(roaConfig) ) {
+		TString strCase;
+		if ( !aEntryIterator.SlotName(strCase) ) {
+			strCase << "idx:" << aEntryIterator.Index();
+		}
+
+		TraceAny(roaConfig, "current config");
 		TimeStamp ts("");
-		t_assertm(cConfig["ExpectedResult"].AsString() == ts.AsString(), "Expected constructor with empty string test to pass");
+		t_assertm(roaConfig["ExpectedResult"].AsString() == ts.AsString(), TString("Expected constructor with empty string test to pass at ") << strCase);
 		Trace(ts.AsString());
 		TimeStamp tsTwo;
 		tsTwo.Set("");
-		t_assertm(cConfig["ExpectedResult"].AsString() == tsTwo.AsString(), "Expected set with empty string test to pass");
+		t_assertm(roaConfig["ExpectedResult"].AsString() == tsTwo.AsString(), TString("Expected set with empty string test to pass at ") << strCase);
 	}
 }
 
-void TimeStampTest::testEmptyConstructor()
+void TimeStampTest::EmptyConstructorTest()
 {
-	StartTrace(TimeStampTest.testEmptyStringConstructor);
-	for (long i = 0; i < fTestCaseConfig.GetSize(); ++i) {
-		ROAnything cConfig = fTestCaseConfig[i];
-		Trace("At testindex: " << i);
+	StartTrace(TimeStampTest.EmptyStringConstructorTest);
+	ROAnything roaConfig;
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(roaConfig) ) {
+		TString strCase;
+		if ( !aEntryIterator.SlotName(strCase) ) {
+			strCase << "idx:" << aEntryIterator.Index();
+		}
+
+		TraceAny(roaConfig, "current config");
 		TimeStamp tsNow = TimeStamp::Now();
 		TimeStamp tsDefConstructor;
-		t_assertm(tsNow <= tsDefConstructor, "Expected empty constructor to generate timestamp with Now date.");
+		t_assertm(tsNow <= tsDefConstructor, TString("Expected empty constructor to generate timestamp with Now date. at ") << strCase);
 		Trace("tsNow: " << tsNow.AsString() << " tsDefConstructor: " << tsDefConstructor.AsString());
 		// Generates 19700101000000
 		TimeStamp ts2(0);
-		t_assertm(cConfig["ExpectedResult"].AsString() == ts2.AsString(), "Expected set with empty string test to pass");
+		t_assertm(roaConfig["ExpectedResult"].AsString() == ts2.AsString(), TString("Expected set with empty string test to pass at ") << strCase);
 		Trace(ts2.AsString());
 	}
 }
 
-void TimeStampTest::testRemoveNonNumericalChars()
+void TimeStampTest::RemoveNonNumericalCharsTest()
 {
-	StartTrace(TimeStampTest.testRemoveNonNumericalChars);
-	for (long i = 0; i < fTestCaseConfig.GetSize(); ++i) {
-		ROAnything cConfig = fTestCaseConfig[i];
-		Trace("At testindex: " << i);
-		TimeStamp taintedOne(cConfig["DateTainted"].AsString());
-		assertEqualm(cConfig["DateUntainted"].AsCharPtr(), taintedOne.AsString(), TString("Expected RemoveNonNumericalChars test to pass at index ") << i);
+	StartTrace(TimeStampTest.RemoveNonNumericalCharsTest);
+	ROAnything roaConfig;
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(roaConfig) ) {
+		TString strCase;
+		if ( !aEntryIterator.SlotName(strCase) ) {
+			strCase << "idx:" << aEntryIterator.Index();
+		}
+
+		TraceAny(roaConfig, "current config");
+		TimeStamp taintedOne(roaConfig["DateTainted"].AsString());
+		assertEqualm(roaConfig["DateUntainted"].AsCharPtr(), taintedOne.AsString(), TString("Expected RemoveNonNumericalChars test to pass at ") << strCase);
 		Trace("untainted: " << taintedOne.AsString());
-		Trace("expeced: " << cConfig["DateUntainted"].AsString());
+		Trace("expeced: " << roaConfig["DateUntainted"].AsString());
 		TimeStamp taintedTwo;
-		taintedTwo.Set(cConfig["DateTainted"].AsString());
-		assertEqualm(cConfig["DateUntainted"].AsCharPtr(), taintedTwo.AsString(), TString("Expected RemoveNonNumericalChars test to pass at index ") << i);
+		taintedTwo.Set(roaConfig["DateTainted"].AsString());
+		assertEqualm(roaConfig["DateUntainted"].AsCharPtr(), taintedTwo.AsString(), TString("Expected RemoveNonNumericalChars test to pass at ") << strCase);
 		Trace("untainted: " << taintedOne.AsString());
 	}
 }
 
-void TimeStampTest::testAssignmentOperator()
+void TimeStampTest::AssignmentOperatorTest()
 {
-	StartTrace(TimeStampTest.testAssignmentOperator);
-	for (long i = 0; i < fTestCaseConfig.GetSize(); ++i) {
-		ROAnything cConfig = fTestCaseConfig[i];
-		Trace("At testindex: " << i);
-		TimeStamp one(cConfig["DateOne"].AsString());
-		t_assertm(cConfig["DateOne"].AsString() == one.AsString(), "Expected result initialization test to pass");
+	StartTrace(TimeStampTest.AssignmentOperatorTest);
+	ROAnything roaConfig;
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(roaConfig) ) {
+		TString strCase;
+		if ( !aEntryIterator.SlotName(strCase) ) {
+			strCase << "idx:" << aEntryIterator.Index();
+		}
 
-		TimeStamp two(cConfig["DateTwo"].AsString());
-		t_assertm(cConfig["DateTwo"].AsString() == two.AsString(), "Expected result initialization test to pass");
+		TraceAny(roaConfig, "current config");
+		TimeStamp one(roaConfig["DateOne"].AsString());
+		t_assertm(roaConfig["DateOne"].AsString() == one.AsString(), TString("Expected result initialization test to pass at ") << strCase);
 
-		TimeStamp three(cConfig["DateThree"].AsString());
-		t_assertm(cConfig["DateThree"].AsString() == three.AsString(), "Expected result initialization test to pass");
+		TimeStamp two(roaConfig["DateTwo"].AsString());
+		t_assertm(roaConfig["DateTwo"].AsString() == two.AsString(), TString("Expected result initialization test to pass at ") << strCase);
+
+		TimeStamp three(roaConfig["DateThree"].AsString());
+		t_assertm(roaConfig["DateThree"].AsString() == three.AsString(), TString("Expected result initialization test to pass at ") << strCase);
 
 		one = two = three;
 
-		t_assertm(cConfig["DateThree"].AsString() == one.AsString(), "Expected assignment test to pass");
-		t_assertm(cConfig["DateThree"].AsString() == two.AsString(), "Expected assignment test to pass");
-		t_assertm(cConfig["DateThree"].AsString() == three.AsString(), "Expected assignment test to pass");
+		t_assertm(roaConfig["DateThree"].AsString() == one.AsString(), TString("Expected assignment test to pass at ") << strCase);
+		t_assertm(roaConfig["DateThree"].AsString() == two.AsString(), TString("Expected assignment test to pass at ") << strCase);
+		t_assertm(roaConfig["DateThree"].AsString() == three.AsString(), TString("Expected assignment test to pass at ") << strCase);
 	}
 }
 
-void TimeStampTest::testAsString()
+void TimeStampTest::AsStringTest()
 {
-	StartTrace(TimeStampTest.testAsString);
-	for (long i = 0; i < fTestCaseConfig.GetSize(); ++i) {
-		ROAnything cConfig = fTestCaseConfig[i];
-		Trace("At testindex: " << i);
-		TimeStamp ts(cConfig["Date"].AsString());
-		t_assertm(cConfig["Date"].AsString() == ts.AsString(), "Expected AsString test to pass");
-		t_assertm(cConfig["DateWithZ"].AsString() == ts.AsStringWithZ(), "Expected AsStringWithZ test to pass");
+	StartTrace(TimeStampTest.AsStringTest);
+	ROAnything roaConfig;
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(roaConfig) ) {
+		TString strCase;
+		if ( !aEntryIterator.SlotName(strCase) ) {
+			strCase << "idx:" << aEntryIterator.Index();
+		}
+
+		TraceAny(roaConfig, "current config");
+		TimeStamp ts(roaConfig["Date"].AsString());
+		t_assertm(roaConfig["Date"].AsString() == ts.AsString(), TString("Expected AsString test to pass at ") << strCase);
+		t_assertm(roaConfig["DateWithZ"].AsString() == ts.AsStringWithZ(), TString("Expected AsStringWithZ test to pass at ") << strCase);
 		Trace("The String with Z: " << ts);
 	}
 }
 
-void TimeStampTest::testInvalid()
+void TimeStampTest::InvalidTest()
 {
-	StartTrace(TimeStampTest.testInvalid);
+	StartTrace(TimeStampTest.InvalidTest);
 	TimeStamp result(-1);
 	t_assertm(!result.IsValid(), "Expected invalid value");
 	assertEqualm("19691231235959", result.AsString(), "Expected result not valid");
@@ -271,9 +296,9 @@ void TimeStampTest::testInvalid()
 	assertEqualm("19691231235959", tsMin.AsString(), "Date must be invalid now");
 }
 
-void TimeStampTest::testStaticMethods()
+void TimeStampTest::StaticMethodsTest()
 {
-	StartTrace(TimeStampTest.testStaticMethods);
+	StartTrace(TimeStampTest.StaticMethodsTest);
 	{
 		t_assertm("20371231235959Z" == TimeStamp::Max().AsStringWithZ(), "Expected max test to pass");
 		t_assertm("20371231235959" == TimeStamp::Max().AsString(), "Expected max test to pass");
@@ -379,35 +404,53 @@ void TimeStampTest::CtorTest()
 void TimeStampTest::WeekdayTest()
 {
 	StartTrace(TimeStampTest.WeekDayTest);
-	for (long i = 0; i < fTestCaseConfig.GetSize(); ++i) {
-		ROAnything cConfig = fTestCaseConfig[i];
-		Trace("At testindex: " << i);
-		TimeStamp ts(cConfig["Date"].AsString());
+	ROAnything roaConfig;
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(roaConfig) ) {
+		TString strCase;
+		if ( !aEntryIterator.SlotName(strCase) ) {
+			strCase << "idx:" << aEntryIterator.Index();
+		}
+
+		TraceAny(roaConfig, "current config");
+		TimeStamp ts(roaConfig["Date"].AsString());
 		Trace("Date [" << ts.AsString() << "]");
-		assertEqualm(cConfig["Weekday"].AsLong(-1), ts.Weekday(), "Expected same weekday number");
+		assertEqualm(roaConfig["Weekday"].AsLong(-1), ts.Weekday(), TString("Expected same weekday number at ") << strCase);
 	}
 }
 
 void TimeStampTest::DayOfYearTest()
 {
 	StartTrace(TimeStampTest.DayOfYearTest);
-	for (long i = 0; i < fTestCaseConfig.GetSize(); ++i) {
-		ROAnything cConfig = fTestCaseConfig[i];
-		Trace("At testindex: " << i);
-		TimeStamp ts(cConfig["Date"].AsString());
+	ROAnything roaConfig;
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(roaConfig) ) {
+		TString strCase;
+		if ( !aEntryIterator.SlotName(strCase) ) {
+			strCase << "idx:" << aEntryIterator.Index();
+		}
+
+		TraceAny(roaConfig, "current config");
+		TimeStamp ts(roaConfig["Date"].AsString());
 		Trace("Date [" << ts.AsString() << "]");
-		assertEqualm(cConfig["DayOfYear"].AsLong(-1), ts.DayOfYear(), "Expected same day of year");
+		assertEqualm(roaConfig["DayOfYear"].AsLong(-1), ts.DayOfYear(), TString("Expected same day of year at ") << strCase);
 	}
 }
 
 void TimeStampTest::WeekOfYearTest()
 {
 	StartTrace(TimeStampTest.WeekOfYearTest);
-	for (long i = 0; i < fTestCaseConfig.GetSize(); ++i) {
-		ROAnything cConfig = fTestCaseConfig[i];
-		TraceAny(cConfig, "At testindex: " << i);
-		TimeStamp ts(cConfig["Date"].AsString());
-		assertEqualm(cConfig["WeekOfYear"].AsLong(-1), ts.WeekOfYear(), TString("Expected same week of year [") << cConfig["Date"].AsString() << "]");
+	ROAnything roaConfig;
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(roaConfig) ) {
+		TString strCase;
+		if ( !aEntryIterator.SlotName(strCase) ) {
+			strCase << "idx:" << aEntryIterator.Index();
+		}
+
+		TraceAny(roaConfig, "current config");
+		TimeStamp ts(roaConfig["Date"].AsString());
+		assertEqualm(roaConfig["WeekOfYear"].AsLong(-1), ts.WeekOfYear(), TString("Expected same week of year [") << roaConfig["Date"].AsString() << "] at " << strCase);
 	}
 }
 
@@ -416,17 +459,16 @@ Test *TimeStampTest::suite ()
 {
 	StartTrace(TimeStampTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	ADD_CASE(testSuite, TimeStampTest, testBasicOperators);
-	ADD_CASE(testSuite, TimeStampTest, testAssignmentOperator);
-	ADD_CASE(testSuite, TimeStampTest, testArithmeticOperators);
-	ADD_CASE(testSuite, TimeStampTest, testConstructors);
-	ADD_CASE(testSuite, TimeStampTest, testInvalid);
-	ADD_CASE(testSuite, TimeStampTest, testRemoveNonNumericalChars);
-	ADD_CASE(testSuite, TimeStampTest, testEmptyStringConstructor);
-	ADD_CASE(testSuite, TimeStampTest, testAsString);
-	ADD_CASE(testSuite, TimeStampTest, testEmptyConstructor);
-	ADD_CASE(testSuite, TimeStampTest, testStaticMethods);
+	ADD_CASE(testSuite, TimeStampTest, BasicOperatorsTest);
+	ADD_CASE(testSuite, TimeStampTest, AssignmentOperatorTest);
+	ADD_CASE(testSuite, TimeStampTest, ArithmeticOperatorsTest);
+	ADD_CASE(testSuite, TimeStampTest, ConstructorsTest);
+	ADD_CASE(testSuite, TimeStampTest, InvalidTest);
+	ADD_CASE(testSuite, TimeStampTest, RemoveNonNumericalCharsTest);
+	ADD_CASE(testSuite, TimeStampTest, EmptyStringConstructorTest);
+	ADD_CASE(testSuite, TimeStampTest, AsStringTest);
+	ADD_CASE(testSuite, TimeStampTest, EmptyConstructorTest);
+	ADD_CASE(testSuite, TimeStampTest, StaticMethodsTest);
 	ADD_CASE(testSuite, TimeStampTest, ModifiersTest);
 	ADD_CASE(testSuite, TimeStampTest, CtorTest);
 	ADD_CASE(testSuite, TimeStampTest, WeekdayTest);

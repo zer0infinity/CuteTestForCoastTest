@@ -18,7 +18,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class AnyBuiltInSortTest : public TestCase
+class AnyBuiltInSortTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -34,11 +34,6 @@ public:
 	//! builds up a suite of testcases for this test
 	static Test *suite ();
 
-	//! sets the environment for this test
-	void setUp ();
-
-	//! deletes the environment for this test
-	void tearDown ();
 	//! empty any can be sorted
 	void SortEmpty();
 	//! one element always sorted
@@ -57,8 +52,6 @@ public:
 	//! without keys, elements should keep their order
 	void SortIsStable();
 
-	//! describe this testcase
-	void testCase();
 protected:
 	bool checksorted(const Anything &a, bool shouldfail = false);
 	bool checksortedbyvalue(const Anything &a, bool shouldfail = false);

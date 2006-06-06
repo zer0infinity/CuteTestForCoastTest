@@ -16,7 +16,7 @@
 
 //---- DiffTimerTest ----------------------------------------------------------
 //!testcases for DiffTimer class
-class DiffTimerTest : public TestCase
+class DiffTimerTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -26,12 +26,6 @@ public:
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
 
-	//!sets the environment for this test
-	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
-
 	//!tests assumption about the constructor
 	void ConstructorTest();
 	//!tests scaling of time measurements beware of overflows
@@ -40,16 +34,6 @@ public:
 	void DiffTest();
 	//!a simulated time test
 	void SimulatedDiffTest();
-
-protected:
-	//--- subclass api
-
-private:
-	// use careful, you inhibit subclass use
-	//--- private class api
-
-	//--- private member variables
-
 };
 
 #endif

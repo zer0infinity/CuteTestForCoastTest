@@ -16,14 +16,12 @@
 #include "ResolverTest.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
-#include "AnyIterators.h"
-#include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
 
 //---- ResolverTest ------------------------------------------------------------
-ResolverTest::ResolverTest(TString tname) : TestCase(tname)
+ResolverTest::ResolverTest(TString tname)
+	: TestCaseType(tname)
 {
 }
 
@@ -31,64 +29,45 @@ ResolverTest::~ResolverTest()
 {
 }
 
-void ResolverTest::setUp ()
-{
-	istream *is = System::OpenStream("ResolverTest", "any");
-	if ( is ) {
-		fConfig.Import( *is );
-		delete is;
-	} else {
-		assertEqual( "'read ResolverTest.any'", "'could not read ResolverTest.any'" );
-	}
-} // setUp
-
-void ResolverTest::tearDown ()
-{
-} // tearDown
-
 void ResolverTest::simpleDNS2IPTest()
 {
 	StartTrace(ResolverTest.simpleDNS2IPTest);
-
-	AnyExtensions::Iterator<Anything> aIter(fConfig["simpleDNS2IPTest"]);
-	Anything aAny;
-	long lCount = 0;
-	String expIP, resIP;
-
-	while (aIter.Next(aAny)) {
-		expIP = aAny["ip"].AsString();
-		resIP = Resolver::DNS2IPAddress(aAny["name"].AsString());
-
-		assertEqualm(expIP, resIP, TString("Failed at: simpleDNS2IPTest.") << fConfig["simpleDNS2IPTest"].SlotName(lCount++));
+	ROAnything roaConfig;
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(roaConfig) ) {
+		TString strCase;
+		if ( !aEntryIterator.SlotName(strCase) ) {
+			strCase << "idx:" << aEntryIterator.Index();
+		}
+		String expIP, resIP;
+		expIP = roaConfig["ip"].AsString();
+		resIP = Resolver::DNS2IPAddress(roaConfig["name"].AsString());
+		assertEqualm(expIP, resIP, TString("Failed at: ") << strCase);
 	}
 }
 
 void ResolverTest::simpleIP2DNSTest()
 {
 	StartTrace(ResolverTest.simpleIP2DNSTest);
-
-	AnyExtensions::Iterator<Anything> aIter(fConfig["simpleIP2DNSTest"]);
-	Anything aAny;
-	long lCount = 0;
-	String expDN, resDN, ip;
-
-	while (aIter.Next(aAny)) {
-		expDN = aAny["name"].AsCharPtr();
-		ip = aAny["ip"].AsString();
+	ROAnything roaConfig;
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(roaConfig) ) {
+		TString strCase;
+		if ( !aEntryIterator.SlotName(strCase) ) {
+			strCase << "idx:" << aEntryIterator.Index();
+		}
+		String expDN, resDN, ip;
+		expDN = roaConfig["name"].AsCharPtr();
+		ip = roaConfig["ip"].AsString();
 		resDN = Resolver::IPAddress2DNS(ip);
-
-		assertEqualm(expDN, resDN, TString("Failed at: simpleIP2DNSTest.") << fConfig["simpleIP2DNSTest"].SlotName(lCount++));
+		assertEqualm(expDN, resDN, TString("Failed at ") << strCase);
 	}
 }
 
 Test *ResolverTest::suite ()
-// collect all test cases for the SocketStream
 {
 	TestSuite *testSuite = new TestSuite;
-
-	testSuite->addTest (NEW_CASE(ResolverTest, simpleDNS2IPTest));
-	testSuite->addTest (NEW_CASE(ResolverTest, simpleIP2DNSTest));
-
+	ADD_CASE(testSuite, ResolverTest, simpleDNS2IPTest);
+	ADD_CASE(testSuite, ResolverTest, simpleIP2DNSTest);
 	return testSuite;
-
-} // suite
+}

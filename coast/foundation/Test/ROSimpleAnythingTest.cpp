@@ -29,20 +29,11 @@ public:
 };
 
 //---- ROSimpleAnythingTest --------------------------------------------------
-ROSimpleAnythingTest::ROSimpleAnythingTest(TString tname) : TestCase(tname)
+ROSimpleAnythingTest::ROSimpleAnythingTest(TString tname) : TestCaseType(tname)
 {
 }
 
 ROSimpleAnythingTest::~ROSimpleAnythingTest()
-{
-}
-
-void ROSimpleAnythingTest::setUp ()
-// setup connector for this TestCase
-{
-}
-
-void ROSimpleAnythingTest::tearDown ()
 {
 }
 
@@ -240,11 +231,10 @@ void ROSimpleAnythingTest::AnyIFAObjConstructor()
 }
 
 Test *ROSimpleAnythingTest::suite ()
-// collect all test cases for the SocketStream
 {
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, ROSimpleAnythingTest, ConstructorsAndConversions);
 	ADD_CASE(testSuite, ROSimpleAnythingTest, AssignmentsAndConversions);
 
 	return testSuite;
-} // suite
+}

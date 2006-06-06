@@ -31,7 +31,7 @@
 
 //---- PipeTest ----------------------------------------------------------------
 PipeTest::PipeTest(TString tstrName)
-	: TestCase(tstrName)
+	: TestCaseType(tstrName)
 {
 	StartTrace(PipeTest.Ctor);
 }
@@ -40,17 +40,6 @@ PipeTest::~PipeTest()
 {
 	StartTrace(PipeTest.Dtor);
 }
-
-// setup for this TestCase
-void PipeTest::setUp ()
-{
-	StartTrace(PipeTest.setUp);
-} // setUp
-
-void PipeTest::tearDown ()
-{
-	StartTrace(PipeTest.tearDown);
-} // tearDown
 
 void PipeTest::simpleBlockingTest()
 {
@@ -196,9 +185,9 @@ Test *PipeTest::suite ()
 	StartTrace(PipeTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(PipeTest, simpleConstructorTest));
-	testSuite->addTest (NEW_CASE(PipeTest, defaultConstructorTest));
-	testSuite->addTest (NEW_CASE(PipeTest, simpleBlockingTest));
+	ADD_CASE(testSuite, PipeTest, simpleConstructorTest);
+	ADD_CASE(testSuite, PipeTest, defaultConstructorTest);
+	ADD_CASE(testSuite, PipeTest, simpleBlockingTest);
 
 	return testSuite;
-} // suite
+}

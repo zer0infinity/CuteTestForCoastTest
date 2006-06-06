@@ -13,7 +13,7 @@
 
 //---- StrSpecialTest -----------------------------------------------------------
 //!some special tests for String
-class StrSpecialTest : public TestCase
+class StrSpecialTest : public TestFramework::TestCase
 {
 public:
 	StrSpecialTest(TString tstrName);

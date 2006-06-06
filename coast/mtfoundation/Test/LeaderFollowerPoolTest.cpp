@@ -17,8 +17,6 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "Socket.h"
-#include "System.h"
-#include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
 #if !defined(WIN32)
@@ -40,8 +38,8 @@ protected:
 
 //---- LeaderFollowerPoolTest ----------------------------------------------------------------
 LeaderFollowerPoolTest::LeaderFollowerPoolTest(TString tstrName)
-	: 	TestCase(tstrName),
-		fEvents(0)
+	: TestCaseType(tstrName)
+	, fEvents(0)
 {
 	StartTrace(LeaderFollowerPoolTest.Ctor);
 }
@@ -51,31 +49,14 @@ LeaderFollowerPoolTest::~LeaderFollowerPoolTest()
 	StartTrace(LeaderFollowerPoolTest.Dtor);
 }
 
-void LeaderFollowerPoolTest::setUp ()
-{
-	StartTrace(LeaderFollowerPoolTest.setUp);
-	istream *is = System::OpenStream("LeaderFollowerPoolTest", "any");
-	if ( is ) {
-		fConfig.Import( *is );
-		delete is;
-	} else {
-		assertEqual( "'read LeaderFollowerPoolTest.any'", "'could not read LeaderFollowerPoolTest.any'" );
-	}
-}
-
-void LeaderFollowerPoolTest::tearDown ()
-{
-	StartTrace(LeaderFollowerPoolTest.tearDown);
-}
-
 void LeaderFollowerPoolTest::NoReactorTest()
 {
 	StartTrace(LeaderFollowerPoolTest.NoReactorTest);
 	LeaderFollowerPool lfp(0);
 
-	Acceptor ac1(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port1"].AsLong(), 5, 0);
+	Acceptor ac1(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port1"].AsLong(), 5, 0);
 	Anything lfpConfig;
-	lfpConfig[String("Accept") << fConfig["Testhost"]["port1"].AsString()] = (IFAObject *)&ac1;
+	lfpConfig[String("Accept") << GetConfig()["Testhost"]["port1"].AsString()] = (IFAObject *)&ac1;
 	if ( t_assertm( !lfp.Init(2, lfpConfig), "no reactor is configured; init should fail") ) {
 		t_assertm(lfp.GetPoolSize() == 0, "expected no threads in pool");
 		t_assertm(lfp.Start(true, 1000, 10) == -1, "expected Start to fail");
@@ -100,9 +81,9 @@ void LeaderFollowerPoolTest::OneAcceptorTest()
 
 	LeaderFollowerPool lfp(new TestReactor(this));
 
-	Acceptor ac1(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port1"].AsLong(), 5, 0);
+	Acceptor ac1(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port1"].AsLong(), 5, 0);
 	Anything lfpConfig;
-	lfpConfig[String("Accept") << fConfig["Testhost"]["port1"].AsString()] = (IFAObject *)&ac1;
+	lfpConfig[String("Accept") << GetConfig()["Testhost"]["port1"].AsString()] = (IFAObject *)&ac1;
 	if ( t_assertm( lfp.Init(3, lfpConfig), "some port maybe already bound")) {
 		if (t_assert(lfp.Start(true, 1000, 10) == 0 )) {
 			ProcessOneEvent();
@@ -118,11 +99,11 @@ void LeaderFollowerPoolTest::TwoAcceptorsTest()
 
 	LeaderFollowerPool lfp(new TestReactor(this));
 
-	Acceptor ac1(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port1"].AsLong(), 5, 0);
-	Acceptor ac2(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port2"].AsLong(), 5, 0);
+	Acceptor ac1(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port1"].AsLong(), 5, 0);
+	Acceptor ac2(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port2"].AsLong(), 5, 0);
 	Anything lfpConfig;
-	lfpConfig[String("Accept") << fConfig["Testhost"]["port1"].AsString()] = (IFAObject *)&ac1;
-	lfpConfig[String("Accept") << fConfig["Testhost"]["port2"].AsString()] = (IFAObject *)&ac2;
+	lfpConfig[String("Accept") << GetConfig()["Testhost"]["port1"].AsString()] = (IFAObject *)&ac1;
+	lfpConfig[String("Accept") << GetConfig()["Testhost"]["port2"].AsString()] = (IFAObject *)&ac2;
 	if ( t_assertm( lfp.Init(2, lfpConfig), "some port maybe already bound")) {
 		if (t_assert(lfp.Start(false, 1000, 10) == 0 )) {
 			ProcessTwoEvents();
@@ -138,13 +119,13 @@ void LeaderFollowerPoolTest::ManyAcceptorsTest()
 	{
 		LeaderFollowerPool lfp(new TestReactor(this));
 
-		Acceptor ac1(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port1"].AsLong(), 5, 0);
-		Acceptor ac2(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port2"].AsLong(), 5, 0);
-		Acceptor ac3(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port3"].AsLong(), 5, 0);
+		Acceptor ac1(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port1"].AsLong(), 5, 0);
+		Acceptor ac2(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port2"].AsLong(), 5, 0);
+		Acceptor ac3(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port3"].AsLong(), 5, 0);
 		Anything lfpConfig;
-		lfpConfig[String("Accept") << fConfig["Testhost"]["port1"].AsString()] = (IFAObject *)&ac1;
-		lfpConfig[String("Accept") << fConfig["Testhost"]["port2"].AsString()] = (IFAObject *)&ac2;
-		lfpConfig[String("Accept") << fConfig["Testhost"]["port3"].AsString()] = (IFAObject *)&ac3;
+		lfpConfig[String("Accept") << GetConfig()["Testhost"]["port1"].AsString()] = (IFAObject *)&ac1;
+		lfpConfig[String("Accept") << GetConfig()["Testhost"]["port2"].AsString()] = (IFAObject *)&ac2;
+		lfpConfig[String("Accept") << GetConfig()["Testhost"]["port3"].AsString()] = (IFAObject *)&ac3;
 		if ( t_assertm( !lfp.Init(0, lfpConfig), "should not allow LFPool to run without threads") ) {
 			t_assertm(lfp.GetPoolSize() == 0, "expected no threads in pool");
 			t_assertm(lfp.Start(true, 1000, 10) == -1, "expected Start to fail");
@@ -153,13 +134,13 @@ void LeaderFollowerPoolTest::ManyAcceptorsTest()
 	{
 		LeaderFollowerPool lfp(new TestReactor(this));
 
-		Acceptor ac1(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port1"].AsLong(), 5, 0);
-		Acceptor ac2(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port2"].AsLong(), 5, 0);
-		Acceptor ac3(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port3"].AsLong(), 5, 0);
+		Acceptor ac1(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port1"].AsLong(), 5, 0);
+		Acceptor ac2(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port2"].AsLong(), 5, 0);
+		Acceptor ac3(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port3"].AsLong(), 5, 0);
 		Anything lfpConfig;
-		lfpConfig[String("Accept") << fConfig["Testhost"]["port1"].AsString()] = (IFAObject *)&ac1;
-		lfpConfig[String("Accept") << fConfig["Testhost"]["port2"].AsString()] = (IFAObject *)&ac2;
-		lfpConfig[String("Accept") << fConfig["Testhost"]["port3"].AsString()] = (IFAObject *)&ac3;
+		lfpConfig[String("Accept") << GetConfig()["Testhost"]["port1"].AsString()] = (IFAObject *)&ac1;
+		lfpConfig[String("Accept") << GetConfig()["Testhost"]["port2"].AsString()] = (IFAObject *)&ac2;
+		lfpConfig[String("Accept") << GetConfig()["Testhost"]["port3"].AsString()] = (IFAObject *)&ac3;
 		if ( t_assertm( lfp.Init(1, lfpConfig), "some port maybe already bound")) {
 			if (t_assert(lfp.Start(false, 1000, 10) == 0 )) {
 				ProcessManyEvents();
@@ -171,13 +152,13 @@ void LeaderFollowerPoolTest::ManyAcceptorsTest()
 	{
 		LeaderFollowerPool lfp(new TestReactor(this));
 
-		Acceptor ac1(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port1"].AsLong(), 5, 0);
-		Acceptor ac2(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port2"].AsLong(), 5, 0);
-		Acceptor ac3(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port3"].AsLong(), 5, 0);
+		Acceptor ac1(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port1"].AsLong(), 5, 0);
+		Acceptor ac2(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port2"].AsLong(), 5, 0);
+		Acceptor ac3(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port3"].AsLong(), 5, 0);
 		Anything lfpConfig;
-		lfpConfig[String("Accept") << fConfig["Testhost"]["port1"].AsString()] = (IFAObject *)&ac1;
-		lfpConfig[String("Accept") << fConfig["Testhost"]["port2"].AsString()] = (IFAObject *)&ac2;
-		lfpConfig[String("Accept") << fConfig["Testhost"]["port3"].AsString()] = (IFAObject *)&ac3;
+		lfpConfig[String("Accept") << GetConfig()["Testhost"]["port1"].AsString()] = (IFAObject *)&ac1;
+		lfpConfig[String("Accept") << GetConfig()["Testhost"]["port2"].AsString()] = (IFAObject *)&ac2;
+		lfpConfig[String("Accept") << GetConfig()["Testhost"]["port3"].AsString()] = (IFAObject *)&ac3;
 		if ( t_assertm( lfp.Init(2, lfpConfig), "some port maybe already bound")) {
 			if (t_assert(lfp.Start(false, 1000, 10) == 0 )) {
 				ProcessManyEvents();
@@ -189,13 +170,13 @@ void LeaderFollowerPoolTest::ManyAcceptorsTest()
 	{
 		LeaderFollowerPool lfp(new TestReactor(this));
 
-		Acceptor ac1(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port1"].AsLong(), 5, 0);
-		Acceptor ac2(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port2"].AsLong(), 5, 0);
-		Acceptor ac3(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port3"].AsLong(), 5, 0);
+		Acceptor ac1(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port1"].AsLong(), 5, 0);
+		Acceptor ac2(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port2"].AsLong(), 5, 0);
+		Acceptor ac3(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port3"].AsLong(), 5, 0);
 		Anything lfpConfig;
-		lfpConfig[String("Accept") << fConfig["Testhost"]["port1"].AsString()] = (IFAObject *)&ac1;
-		lfpConfig[String("Accept") << fConfig["Testhost"]["port2"].AsString()] = (IFAObject *)&ac2;
-		lfpConfig[String("Accept") << fConfig["Testhost"]["port3"].AsString()] = (IFAObject *)&ac3;
+		lfpConfig[String("Accept") << GetConfig()["Testhost"]["port1"].AsString()] = (IFAObject *)&ac1;
+		lfpConfig[String("Accept") << GetConfig()["Testhost"]["port2"].AsString()] = (IFAObject *)&ac2;
+		lfpConfig[String("Accept") << GetConfig()["Testhost"]["port3"].AsString()] = (IFAObject *)&ac3;
 		if ( t_assertm( lfp.Init(3, lfpConfig), "some port maybe already bound")) {
 			if (t_assert(lfp.Start(true, 1000, 10) == 0 )) {
 				ProcessManyEvents();
@@ -207,13 +188,13 @@ void LeaderFollowerPoolTest::ManyAcceptorsTest()
 	{
 		LeaderFollowerPool lfp(new TestReactor(this));
 
-		Acceptor ac1(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port1"].AsLong(), 5, 0);
-		Acceptor ac2(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port2"].AsLong(), 5, 0);
-		Acceptor ac3(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port3"].AsLong(), 5, 0);
+		Acceptor ac1(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port1"].AsLong(), 5, 0);
+		Acceptor ac2(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port2"].AsLong(), 5, 0);
+		Acceptor ac3(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port3"].AsLong(), 5, 0);
 		Anything lfpConfig;
-		lfpConfig[String("Accept") << fConfig["Testhost"]["port1"].AsString()] = (IFAObject *)&ac1;
-		lfpConfig[String("Accept") << fConfig["Testhost"]["port2"].AsString()] = (IFAObject *)&ac2;
-		lfpConfig[String("Accept") << fConfig["Testhost"]["port3"].AsString()] = (IFAObject *)&ac3;
+		lfpConfig[String("Accept") << GetConfig()["Testhost"]["port1"].AsString()] = (IFAObject *)&ac1;
+		lfpConfig[String("Accept") << GetConfig()["Testhost"]["port2"].AsString()] = (IFAObject *)&ac2;
+		lfpConfig[String("Accept") << GetConfig()["Testhost"]["port3"].AsString()] = (IFAObject *)&ac3;
 		if ( t_assertm( lfp.Init(4, lfpConfig), "some port maybe already bound")) {
 			if (t_assert(lfp.Start(true, 1000, 10) == 0 )) {
 				ProcessManyEvents();
@@ -230,9 +211,9 @@ void LeaderFollowerPoolTest::InvalidAcceptorTest()
 
 	LeaderFollowerPool lfp(new TestReactor(this));
 
-	Acceptor ac1(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port"].AsLong(), 5, 0);
+	Acceptor ac1(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port"].AsLong(), 5, 0);
 	Anything lfpConfig;
-	lfpConfig[String("Accept") << fConfig["Testhost"]["port"].AsString()] = (IFAObject *)&ac1;
+	lfpConfig[String("Accept") << GetConfig()["Testhost"]["port"].AsString()] = (IFAObject *)&ac1;
 	if ( t_assertm( !lfp.Init(3, lfpConfig), "should not bind to already bound port and needs root privilege anyway") ) {
 		t_assertm(lfp.GetPoolSize() == 0, "expected no threads in pool");
 		t_assertm(lfp.Start(true, 1000, 10) == -1, "expected Start to fail");
@@ -245,11 +226,11 @@ void LeaderFollowerPoolTest::InvalidAcceptorsTest()
 
 	LeaderFollowerPool lfp(new TestReactor(this));
 
-	Acceptor ac1(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port1"].AsLong(), 5, 0);
-	Acceptor ac2(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port"].AsLong(), 5, 0);
+	Acceptor ac1(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port1"].AsLong(), 5, 0);
+	Acceptor ac2(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port"].AsLong(), 5, 0);
 	Anything lfpConfig;
-	lfpConfig[String("Accept") << fConfig["Testhost"]["port1"].AsString()] = (IFAObject *)&ac1;
-	lfpConfig[String("Accept") << fConfig["Testhost"]["port"].AsString()] = (IFAObject *)&ac2;
+	lfpConfig[String("Accept") << GetConfig()["Testhost"]["port1"].AsString()] = (IFAObject *)&ac1;
+	lfpConfig[String("Accept") << GetConfig()["Testhost"]["port"].AsString()] = (IFAObject *)&ac2;
 	if ( t_assertm( !lfp.Init(2, lfpConfig), "should not bind to already bound port and needs root privilege anyway") ) {
 		t_assertm(lfp.GetPoolSize() == 0, "expected no threads in pool");
 		t_assertm(lfp.Start(true, 1000, 10) == -1, "expected Start to fail");
@@ -258,8 +239,8 @@ void LeaderFollowerPoolTest::InvalidAcceptorsTest()
 
 void LeaderFollowerPoolTest::ProcessTwoEvents()
 {
-	Connector c1(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port1"].AsLong());
-	Connector c2(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port2"].AsLong());
+	Connector c1(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port1"].AsLong());
+	Connector c2(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port2"].AsLong());
 	String reply1;
 	String reply2;
 
@@ -280,9 +261,9 @@ void LeaderFollowerPoolTest::ProcessTwoEvents()
 
 void LeaderFollowerPoolTest::ProcessManyEvents()
 {
-	Connector c1(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port1"].AsLong());
-	Connector c2(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port2"].AsLong());
-	Connector c3(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port3"].AsLong());
+	Connector c1(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port1"].AsLong());
+	Connector c2(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port2"].AsLong());
+	Connector c3(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port3"].AsLong());
 	String reply1;
 	String reply2;
 	String reply3;
@@ -312,7 +293,7 @@ void LeaderFollowerPoolTest::ProcessManyEvents()
 void LeaderFollowerPoolTest::ProcessOneEvent()
 {
 	StartTrace(LeaderFollowerPoolTest.ProcessOneEvent);
-	Connector c1(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port1"].AsLong());
+	Connector c1(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port1"].AsLong());
 	String reply1;
 
 	if ( t_assert(c1.GetStream() != NULL) ) {
@@ -343,15 +324,15 @@ Test *LeaderFollowerPoolTest::suite ()
 	StartTrace(LeaderFollowerPoolTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(LeaderFollowerPoolTest, NoReactorTest));
-	testSuite->addTest (NEW_CASE(LeaderFollowerPoolTest, NoAcceptorsTest));
-	testSuite->addTest (NEW_CASE(LeaderFollowerPoolTest, OneAcceptorTest));
-	testSuite->addTest (NEW_CASE(LeaderFollowerPoolTest, TwoAcceptorsTest));
-	testSuite->addTest (NEW_CASE(LeaderFollowerPoolTest, ManyAcceptorsTest));
+	ADD_CASE(testSuite, LeaderFollowerPoolTest, NoReactorTest);
+	ADD_CASE(testSuite, LeaderFollowerPoolTest, NoAcceptorsTest);
+	ADD_CASE(testSuite, LeaderFollowerPoolTest, OneAcceptorTest);
+	ADD_CASE(testSuite, LeaderFollowerPoolTest, TwoAcceptorsTest);
+	ADD_CASE(testSuite, LeaderFollowerPoolTest, ManyAcceptorsTest);
 // WIN32 allows to bind the same port multiple times... so the following tests can not be done
 #if !defined(WIN32)
-	testSuite->addTest (NEW_CASE(LeaderFollowerPoolTest, InvalidAcceptorTest));
-	testSuite->addTest (NEW_CASE(LeaderFollowerPoolTest, InvalidAcceptorsTest));
+	ADD_CASE(testSuite, LeaderFollowerPoolTest, InvalidAcceptorTest);
+	ADD_CASE(testSuite, LeaderFollowerPoolTest, InvalidAcceptorsTest);
 #endif
 	return testSuite;
 }

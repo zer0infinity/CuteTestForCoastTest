@@ -16,15 +16,14 @@
 #include "ZipStream.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
-#include "Dbg.h"
 
 //--- c-modules used -----------------------------------------------------------
 #include <stdlib.h>
 #include "gzio.h"
 
 //---- ZipStreamTest ----------------------------------------------------------------
-ZipStreamTest::ZipStreamTest(TString tstrName) : TestCase(tstrName)
+ZipStreamTest::ZipStreamTest(TString tstrName)
+	: TestCaseType(tstrName)
 {
 	StartTrace(ZipStreamTest.Ctor);
 }
@@ -32,20 +31,6 @@ ZipStreamTest::ZipStreamTest(TString tstrName) : TestCase(tstrName)
 ZipStreamTest::~ZipStreamTest()
 {
 	StartTrace(ZipStreamTest.Dtor);
-}
-
-// setup for this TestCase
-void ZipStreamTest::setUp ()
-{
-	StartTrace(ZipStreamTest.setUp);
-	if ( t_assertm( System::LoadConfigFile(fConfig, getClassName(), "any"), TString("expected ") << getClassName() << " to be readable!" ) ) {
-		fTestCaseConfig = fConfig[name()];
-	}
-}
-
-void ZipStreamTest::tearDown ()
-{
-	StartTrace(ZipStreamTest.tearDown);
 }
 
 static String content("Hello Hello Peter\nhallo\n");
@@ -101,13 +86,14 @@ void ZipStreamTest::GzipHdrWriteTest()
 void ZipStreamTest::ReadGzipHdrFileTest()
 {
 	StartTrace(ZipStreamTest.ReadGzipHdrFileTest);
-	for (long lIdx = 0; lIdx < fTestCaseConfig.GetSize(); ++lIdx) {
-		ROAnything roaConfig = fTestCaseConfig[lIdx];
-		String strCprs(roaConfig["BinaryData"].AsString());
-		TString strCase = fTestCaseConfig.SlotName(lIdx);
-		if ( !strCase.Length() ) {
-			strCase << "idx:" << lIdx;
+	ROAnything roaConfig;
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(roaConfig) ) {
+		TString strCase;
+		if ( !aEntryIterator.SlotName(strCase) ) {
+			strCase << "idx:" << aEntryIterator.Index();
 		}
+		String strCprs(roaConfig["BinaryData"].AsString());
 		IStringStream stream(strCprs);
 		ZipIStream zis(stream);
 		ZipIStreamBuf *pBuf = zis.rdbuf();
@@ -146,13 +132,14 @@ void ZipStreamTest::ReadGzipHdrFileTest()
 void ZipStreamTest::ReadHeaderInfoTest()
 {
 	StartTrace(ZipStreamTest.ReadHeaderInfoTest);
-	for (long lIdx = 0; lIdx < fTestCaseConfig.GetSize(); ++lIdx) {
-		ROAnything roaConfig = fTestCaseConfig[lIdx];
-		String strCprs(roaConfig["BinaryData"].AsString());
-		TString strCase = fTestCaseConfig.SlotName(lIdx);
-		if ( !strCase.Length() ) {
-			strCase << "idx:" << lIdx;
+	ROAnything roaConfig;
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(roaConfig) ) {
+		TString strCase;
+		if ( !aEntryIterator.SlotName(strCase) ) {
+			strCase << "idx:" << aEntryIterator.Index();
 		}
+		String strCprs(roaConfig["BinaryData"].AsString());
 		IStringStream stream(strCprs);
 		ZipIStream zis(stream);
 
@@ -180,13 +167,14 @@ void ZipStreamTest::ReadHeaderInfoTest()
 void ZipStreamTest::WriteHeaderInfoTest()
 {
 	StartTrace(ZipStreamTest.WriteHeaderInfoTest);
-	for (long lIdx = 0; lIdx < fTestCaseConfig.GetSize(); ++lIdx) {
-		ROAnything roaConfig = fTestCaseConfig[lIdx];
-		String strCprs(roaConfig["BinaryData"].AsString());
-		TString strCase = fTestCaseConfig.SlotName(lIdx);
-		if ( !strCase.Length() ) {
-			strCase << "idx:" << lIdx;
+	ROAnything roaConfig;
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(roaConfig) ) {
+		TString strCase;
+		if ( !aEntryIterator.SlotName(strCase) ) {
+			strCase << "idx:" << aEntryIterator.Index();
 		}
+		String strCprs(roaConfig["BinaryData"].AsString());
 		OStringStream stream;
 		ZipOStream zos(stream);
 

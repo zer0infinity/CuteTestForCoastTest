@@ -81,7 +81,7 @@ void DataProviderThread::Run()
 }
 
 //---- MTStorageTest2 ----------------------------------------------------------------
-MTStorageTest2::MTStorageTest2(TString tname) : TestCase(tname), fGlobal(0), fPool(0)
+MTStorageTest2::MTStorageTest2(TString tname) : TestCaseType(tname), fGlobal(0), fPool(0)
 {
 	StartTrace1(MTStorageTest2.Ctor, "ThrdId: " << Thread::MyId());
 }
@@ -267,11 +267,11 @@ void MTStorageTest2::reusePoolTest()
 Test *MTStorageTest2::suite()
 {
 	TestSuite *testSuite = new TestSuite;
-	testSuite->addTest (NEW_CASE(MTStorageTest2, trivialTest));
-	testSuite->addTest (NEW_CASE(MTStorageTest2, twoThreadTest));
-	testSuite->addTest (NEW_CASE(MTStorageTest2, twoThreadAssignmentTest));
-	testSuite->addTest (NEW_CASE(MTStorageTest2, twoThreadCopyConstructorTest));
-	testSuite->addTest (NEW_CASE(MTStorageTest2, twoThreadArrayAccessTest));
-	testSuite->addTest (NEW_CASE(MTStorageTest2, reusePoolTest));
+	ADD_CASE(testSuite, MTStorageTest2, trivialTest);
+	ADD_CASE(testSuite, MTStorageTest2, twoThreadTest);
+	ADD_CASE(testSuite, MTStorageTest2, twoThreadAssignmentTest);
+	ADD_CASE(testSuite, MTStorageTest2, twoThreadCopyConstructorTest);
+	ADD_CASE(testSuite, MTStorageTest2, twoThreadArrayAccessTest);
+	ADD_CASE(testSuite, MTStorageTest2, reusePoolTest);
 	return testSuite;
 }

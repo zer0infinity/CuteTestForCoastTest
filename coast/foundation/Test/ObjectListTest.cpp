@@ -22,7 +22,7 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- ObjectListTest ----------------------------------------------------------------
-ObjectListTest::ObjectListTest(TString tstrName) : TestCase(tstrName)
+ObjectListTest::ObjectListTest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(ObjectListTest.Ctor);
 }
@@ -30,17 +30,6 @@ ObjectListTest::ObjectListTest(TString tstrName) : TestCase(tstrName)
 ObjectListTest::~ObjectListTest()
 {
 	StartTrace(ObjectListTest.Dtor);
-}
-
-// setup for this TestCase
-void ObjectListTest::setUp ()
-{
-	StartTrace(ObjectListTest.setUp);
-}
-
-void ObjectListTest::tearDown ()
-{
-	StartTrace(ObjectListTest.tearDown);
 }
 
 void ObjectListTest::CtorTest()

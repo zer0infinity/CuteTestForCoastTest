@@ -22,7 +22,7 @@
 //--- c-library modules used ---------------------------------------------------
 
 //---- DiffTimerTest ----------------------------------------------------------------
-DiffTimerTest::DiffTimerTest(TString tname) : TestCase(tname)
+DiffTimerTest::DiffTimerTest(TString tname) : TestCaseType(tname)
 {
 }
 
@@ -33,22 +33,12 @@ DiffTimerTest::~DiffTimerTest()
 Test *DiffTimerTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
-	testSuite->addTest (NEW_CASE(DiffTimerTest, ConstructorTest));
-	testSuite->addTest (NEW_CASE(DiffTimerTest, ScaleTest));
-	testSuite->addTest (NEW_CASE(DiffTimerTest, DiffTest));
-	testSuite->addTest (NEW_CASE(DiffTimerTest, SimulatedDiffTest));
+	ADD_CASE(testSuite, DiffTimerTest, ConstructorTest);
+	ADD_CASE(testSuite, DiffTimerTest, ScaleTest);
+	ADD_CASE(testSuite, DiffTimerTest, DiffTest);
+	ADD_CASE(testSuite, DiffTimerTest, SimulatedDiffTest);
 	return testSuite;
 
-}
-
-//:sets the environment for this test
-void DiffTimerTest::setUp ()
-{
-}
-
-//:deletes the environment for this test
-void DiffTimerTest::tearDown ()
-{
 }
 
 void DiffTimerTest::ConstructorTest()

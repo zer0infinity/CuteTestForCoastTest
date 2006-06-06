@@ -9,30 +9,26 @@
 #ifndef _StringTokenizer2Test_H
 #define _StringTokenizer2Test_H
 
-#ifndef _StringTokenizer2_h_
-#define _StringTokenizer2_h_
-
 #include "TestCase.h"
 
 //---- forward declaration -----------------------------------------------
-#include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include "ITOString.h"
+
 //---- StringTokenizer -----------------------------------------------------------
 //!testcases for StringTokenizer2
-class StringTokenizer2Test : public TestCase
+class StringTokenizer2Test : public TestFramework::TestCase
 {
 protected:
 	String fShort;
 	String fLong;
 
 public:
-	StringTokenizer2Test (TString tstrName); // : TestCase (name) {}
+	StringTokenizer2Test (TString tstrName);
 
 	virtual void			setUp ();
-	static Test				*worksuite ();
 	static Test				*suite ();
 
-	void			constrMethodsAll ();
+	void constrMethodsAll ();
 	void constrMethods0 ();
 	void constrMethods1 ();
 	void constrMethods2 ();
@@ -59,5 +55,4 @@ public:
 	void getRemainder();
 };
 
-#endif
 #endif		//not defined _StringTokenizer2Test_H

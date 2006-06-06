@@ -6,6 +6,7 @@ export WD_PATH=config:.
 function prepareTest
 {
 	echo
+	chmod u+w ${CONFIGDIRABS}/TimeStampTest.stat.any 2>/dev/null
 }
 
 ## call to wdtest or whatever you want to call

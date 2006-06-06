@@ -22,7 +22,7 @@
 #include "WorkerPoolManagerTest.h"
 
 //---- WorkerPoolManagerTest ----------------------------------------------------------------
-WorkerPoolManagerTest::WorkerPoolManagerTest(TString tname) : TestCase(tname), fCheckMutex("WorkerPoolManager")
+WorkerPoolManagerTest::WorkerPoolManagerTest(TString tname) : TestCaseType(tname), fCheckMutex("WorkerPoolManager")
 {
 	StartTrace(WorkerPoolManagerTest.Ctor);
 }
@@ -43,17 +43,6 @@ Test *WorkerPoolManagerTest::suite ()
 
 	return testSuite;
 }
-
-// setup for this TestCase
-void WorkerPoolManagerTest::setUp ()
-{
-	StartTrace(WorkerPoolManagerTest.setUp);
-} // setUp
-
-void WorkerPoolManagerTest::tearDown ()
-{
-	StartTrace(WorkerPoolManagerTest.tearDown);
-} // tearDown
 
 void WorkerPoolManagerTest::InitTest()
 {

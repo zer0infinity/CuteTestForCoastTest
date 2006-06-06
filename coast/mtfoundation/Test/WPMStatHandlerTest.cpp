@@ -22,7 +22,7 @@
 #include "WPMStatHandlerTest.h"
 
 //---- WPMStatHandlerTest ----------------------------------------------------------------
-WPMStatHandlerTest::WPMStatHandlerTest(TString tname) : TestCase(tname)
+WPMStatHandlerTest::WPMStatHandlerTest(TString tname) : TestCaseType(tname)
 {
 	StartTrace(WPMStatHandlerTest.Ctor);
 
@@ -32,17 +32,6 @@ WPMStatHandlerTest::~WPMStatHandlerTest()
 {
 	StartTrace(WPMStatHandlerTest.Dtor);
 }
-
-// setup for this TestCase
-void WPMStatHandlerTest::setUp ()
-{
-	StartTrace(WPMStatHandlerTest.setUp);
-} // setUp
-
-void WPMStatHandlerTest::tearDown ()
-{
-	StartTrace(WPMStatHandlerTest.tearDown);
-} // tearDown
 
 bool WPMStatHandlerTest::AssertState(const WPMStatHandler &wpm, const Anything &state)
 {
@@ -159,10 +148,10 @@ Test *WPMStatHandlerTest::suite ()
 	StartTrace(WPMStatHandlerTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(WPMStatHandlerTest, ConstructorTest));
-	testSuite->addTest (NEW_CASE(WPMStatHandlerTest, StatEvtTests));
-	testSuite->addTest (NEW_CASE(WPMStatHandlerTest, StatisticTests));
+	ADD_CASE(testSuite, WPMStatHandlerTest, ConstructorTest);
+	ADD_CASE(testSuite, WPMStatHandlerTest, StatEvtTests);
+	ADD_CASE(testSuite, WPMStatHandlerTest, StatisticTests);
 
 	return testSuite;
 
-} // suite
+}

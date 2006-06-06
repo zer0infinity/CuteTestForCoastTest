@@ -17,15 +17,12 @@
 
 //--- c-library modules used ---------------------------------------------------
 
-SS1Test::SS1Test(TString tname) : TestCase(tname)
-{};
+SS1Test::SS1Test(TString tname)
+	: TestCaseType(tname)
+{}
 
-SS1Test::~SS1Test() {}
-
-void SS1Test::setUp ()
-{
-	TestCase::setUp();
-};
+SS1Test::~SS1Test()
+{}
 
 Test *SS1Test::suite ()
 /* what: return the suite of tests

@@ -6,23 +6,23 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- c-library modules used ---------------------------------------------------
-#include <stdlib.h>
-
-//--- standard modules used ----------------------------------------------------
-#include "ITOString.h"
-#include "Dbg.h"
-
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
-//--- module under test --------------------------------------------------------
-#include "SysLog.h"
-
 //--- interface include --------------------------------------------------------
 #include "SysLogTest.h"
 
+//--- module under test --------------------------------------------------------
+#include "SysLog.h"
+
+//--- test modules used --------------------------------------------------------
+#include "TestSuite.h"
+
+//--- standard modules used ----------------------------------------------------
+#include "Dbg.h"
+
+//--- c-library modules used ---------------------------------------------------
+#include <stdlib.h>
+
 //---- SysLogTest ----------------------------------------------------------------
-SysLogTest::SysLogTest(TString tname) : TestCase(tname)
+SysLogTest::SysLogTest(TString tname) : TestCaseType(tname)
 {
 	StartTrace(SysLogTest.Ctor);
 }
@@ -57,7 +57,7 @@ Test *SysLogTest::suite ()
 	StartTrace(SysLogTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(SysLogTest, TestFlags));
+	ADD_CASE(testSuite, SysLogTest, TestFlags);
 
 	return testSuite;
-} // suite
+}

@@ -9,23 +9,20 @@
 #ifndef _AcceptorTest_H
 #define _AcceptorTest_H
 
-//---- baseclass include -------------------------------------------------
-#include "TestCase.h"
+//---- TestFramework include -------------------------------------------------
+#include "FoundationTestTypes.h"
 
 //---- forward declaration -----------------------------------------------
-#include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
-class EXPORTDECL_FOUNDATION Acceptor;
-class EXPORTDECL_FOUNDATION Socket;
-#include "Anything.h"
+class Socket;
+
 //---- AcceptorTest ----------------------------------------------------------
 //!TestClass for Acceptor functionality
 //! further explanation of the purpose of the class
 //! this may contain <B>HTML-Tags</B>
 //! ...
-class AcceptorTest : public TestCase
+class AcceptorTest : public TestFramework::TestCaseWithConfig
 {
 public:
-
 	//--- constructors
 	AcceptorTest(TString tstrName);
 	~AcceptorTest();
@@ -35,12 +32,6 @@ public:
 	//! this method generates the tests for the Acceptor classed
 	//! \return a new test is created by this method
 	static Test *suite ();
-
-	//!generate set up for connector test does nothing so far
-	void setUp ();
-
-	//!delete set up for connector test does nothing so far
-	void tearDown ();
 
 	//!tests  resolution of parameter as dns name to ipaddress
 	void dnsNameParam();
@@ -55,8 +46,6 @@ public:
 protected:
 	friend class TestCallBack;
 	void TestSocket(Socket *s);
-
-	Anything fConfig;
 };
 
 #endif

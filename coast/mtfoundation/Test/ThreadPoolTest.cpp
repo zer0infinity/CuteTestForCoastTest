@@ -20,7 +20,7 @@
 
 //---- ThreadPoolTest ----------------------------------------------------------------
 ThreadPoolTest::ThreadPoolTest(TString tname)
-	: TestCase(tname)
+	: TestCaseType(tname)
 {
 	StartTrace(ThreadPoolTest.Ctor);
 }
@@ -29,17 +29,6 @@ ThreadPoolTest::~ThreadPoolTest()
 {
 	StartTrace(ThreadPoolTest.Dtor);
 }
-
-// setup for this TestCase
-void ThreadPoolTest::setUp ()
-{
-	StartTrace(ThreadPoolTest.setUp);
-} // setUp
-
-void ThreadPoolTest::tearDown ()
-{
-	StartTrace(ThreadPoolTest.tearDown);
-} // tearDown
 
 void ThreadPoolTest::JoinTest()
 {
@@ -158,9 +147,9 @@ Test *ThreadPoolTest::suite ()
 	StartTrace(ThreadPoolTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(ThreadPoolTest, JoinTest));
-	testSuite->addTest (NEW_CASE(ThreadPoolTest, TerminateTest));
-	testSuite->addTest (NEW_CASE(ThreadPoolTest, PoolManagerTest));
+	ADD_CASE(testSuite, ThreadPoolTest, JoinTest);
+	ADD_CASE(testSuite, ThreadPoolTest, TerminateTest);
+	ADD_CASE(testSuite, ThreadPoolTest, PoolManagerTest);
 
 	return testSuite;
-} // suite
+}

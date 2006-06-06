@@ -9,16 +9,14 @@
 #ifndef _SocketStreamTest_H
 #define _SocketStreamTest_H
 
-#include "TestCase.h"
+#include "FoundationTestTypes.h"
 
 //---- forward declaration -----------------------------------------------
-#include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
-class EXPORTDECL_FOUNDATION Connector;
-class EXPORTDECL_FOUNDATION String;
+class Connector;
 
 //---- SocketStreamTest -----------------------------------------------------------
 //!testcases for the SocketStream class
-class SocketStreamTest : public TestCase
+class SocketStreamTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	SocketStreamTest(TString tstrName);
@@ -36,12 +34,10 @@ public:
 	void opLeftShiftTest();
 
 protected:
-
 	void parseParams(String &line, Anything &request);
 
 private:
 	Connector	*fConnector;
-	Anything	fConfig;
 };
 
 #endif

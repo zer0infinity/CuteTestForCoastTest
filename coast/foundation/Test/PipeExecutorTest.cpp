@@ -16,14 +16,12 @@
 #include "PipeExecutor.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
-#include "StringStream.h"
-#include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
 
 //---- PipeExecutorTest ----------------------------------------------------------------
-PipeExecutorTest::PipeExecutorTest(TString className) : TestCase(className)
+PipeExecutorTest::PipeExecutorTest(TString className)
+	: TestCaseType(className)
 {
 	StartTrace(PipeExecutorTest.Ctor);
 }
@@ -31,23 +29,6 @@ PipeExecutorTest::PipeExecutorTest(TString className) : TestCase(className)
 PipeExecutorTest::~PipeExecutorTest()
 {
 	StartTrace(PipeExecutorTest.Dtor);
-}
-
-void PipeExecutorTest::setUp()
-{
-	StartTrace(PipeExecutorTest.setUp);
-	istream *is = System::OpenStream(getClassName(), "any");
-	if ( is ) {
-		fConfig.Import( *is );
-		delete is;
-		fTestCaseConfig = fConfig[name()];
-	} else {
-		t_assertm( false, TString("could not read ") << getClassName() << ".any" );
-	}
-}
-
-void PipeExecutorTest::tearDown()
-{
 }
 
 void PipeExecutorTest::EchoEnvTest()
@@ -283,13 +264,14 @@ void PipeExecutorTest::DummyKillTest()
 void PipeExecutorTest::ShellInvocationTest()
 {
 	StartTrace(PipeExecutorTest.ShellInvocationTest);
-	for (long lIdx = 0; lIdx < fTestCaseConfig.GetSize(); lIdx++) {
-		ROAnything roaExpected = fTestCaseConfig[lIdx]["Expected"], roaParams = fTestCaseConfig[lIdx]["Params"];
-		TString strCase = fTestCaseConfig.SlotName(lIdx);
-		if ( !strCase.Length() ) {
-			strCase << "idx:" << lIdx;
+	ROAnything roaConfig;
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(roaConfig) ) {
+		TString strCase;
+		if ( !aEntryIterator.SlotName(strCase) ) {
+			strCase << "idx:" << aEntryIterator.Index();
 		}
-
+		ROAnything roaExpected = roaConfig["Expected"], roaParams = roaConfig["Params"];
 		Anything env;
 		if ( roaParams.IsDefined("Env") ) {
 			if ( roaParams["Env"].IsNull() ) {
@@ -332,7 +314,7 @@ void PipeExecutorTest::ShellInvocationTest()
 				assertCharPtrEqual(roaExpected["Output"].AsString(""), aShellOutput.str());
 				if ( bUseStderr && isErr ) {
 					while ( StringStream::PlainCopyStream2Stream(isErr, aErrOutput, lRecv, lToRecv) && lRecv == lToRecv ) ;
-					t_assert(lRecv == 0);
+					assertEqual(0, lRecv);
 					Trace("Stderr [" << aErrOutput.str() << "]");
 					assertCharPtrEqual(roaExpected["Error"].AsString(""), aErrOutput.str());
 				}

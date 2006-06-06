@@ -58,19 +58,11 @@ void setupRunner(TestRunner &runner)
 	// removed because of name clash
 #endif
 	ADD_SUITE(runner, StringTokenizer2Test);
-
-	// Use this work suite to debug a failing TestCase
-	TestSuite *testSuite = new TestSuite;
-	// insert your work to test here
-	ADD_CASE(testSuite, StringTest, EmptyAllocatorTest );
-	runner.addTest ("TestInWork", testSuite);
-
 	ADD_SUITE(runner, PipeTest);
 	ADD_SUITE(runner, PipeStreamTest);
 	ADD_SUITE(runner, PipeExecutorTest);
 	ADD_SUITE(runner, DiffTimerTest);
 	ADD_SUITE(runner, StringTest);
-	runner.addTest("Work", StringTest::worksuite ());
 	ADD_SUITE(runner, AnyImplsTest);
 	ADD_SUITE(runner, AnythingTest);
 	ADD_SUITE(runner, AnySorterTest);

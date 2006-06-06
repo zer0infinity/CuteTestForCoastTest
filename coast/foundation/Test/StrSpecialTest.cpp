@@ -17,15 +17,14 @@
 //--- interface include --------------------------------------------------------
 #include "StrSpecialTest.h"
 
-StrSpecialTest::StrSpecialTest (TString tname) : TestCase(tname)
+StrSpecialTest::StrSpecialTest (TString tname) : TestCaseType(tname)
 {};
 StrSpecialTest::~StrSpecialTest() {};
 
 void StrSpecialTest::setUp ()
-// setup config for all the renderers in this TestCase
 {
 
-} // setUp
+}
 void StrSpecialTest::simpleAppendTest()
 {
 	String s("Hallo");
@@ -51,12 +50,9 @@ void StrSpecialTest::umlauteTest()
 }
 
 Test *StrSpecialTest::suite ()
-// collect all test cases for the DateRenderer
 {
 	TestSuite *testSuite = new TestSuite;
-
-	testSuite->addTest (NEW_CASE(StrSpecialTest, simpleAppendTest));
-	testSuite->addTest (NEW_CASE(StrSpecialTest, umlauteTest));
-
+	ADD_CASE(testSuite, StrSpecialTest, simpleAppendTest);
+	ADD_CASE(testSuite, StrSpecialTest, umlauteTest);
 	return testSuite;
-} // suite
+}

@@ -6,22 +6,19 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "StringStream.h"
-#include "System.h"
-#include "Socket.h"
-
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
+//--- interface include -----------
+#include "SocketStreamTest.h"
 
 //--- module under test --------------------------------------------------------
 #include "SocketStream.h"
 
-//--- interface include -----------
-#include "SocketStreamTest.h"
+//--- test modules used --------------------------------------------------------
+#include "TestSuite.h"
 
-SocketStreamTest::SocketStreamTest(TString tname) : TestCase(tname)
+//--- standard modules used ----------------------------------------------------
+
+SocketStreamTest::SocketStreamTest(TString tname)
+	: TestCaseType(tname)
 {
 }
 SocketStreamTest::~SocketStreamTest()
@@ -30,23 +27,16 @@ SocketStreamTest::~SocketStreamTest()
 
 void SocketStreamTest::setUp()
 {
-	istream *is = System::OpenStream("SocketStreamTest", "any");
-	if ( is ) {
-		fConfig.Import( *is );
-		delete is;
-	} else {
-		assertEqual( "'read SocketStreamTest.any'", "'could not read SocketStreamTest.any'" );
-	}
-	// try to reach the http server on the local host
-	fConnector = new Connector(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port"].AsLong(), 1000L); // PS: wait only one second
-} // setUp
+	// try to reach the test 'server' on the local host
+	fConnector = new Connector(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port"].AsLong(), 1000L); // PS: wait only one second
+}
 
 void SocketStreamTest::tearDown ()
 {
 	// close socket connection
 	delete fConnector;
 	fConnector = 0;
-} // tearDown
+}
 
 void SocketStreamTest::simpleRead()
 {
@@ -106,10 +96,10 @@ void SocketStreamTest::simpleWrite()
 
 void SocketStreamTest::timeoutTest()
 {
-	Connector connector(fConfig["Timeouthost"]["name"].AsString(), fConfig["Timeouthost"]["port"].AsLong(), 5000L);
+	Connector connector(GetConfig()["Timeouthost"]["name"].AsString(), GetConfig()["Timeouthost"]["port"].AsLong(), 5000L);
 	Socket *socket = connector.MakeSocket();
 	// http server doesn't run if assert fails
-	if ( t_assertm( socket != NULL, TString("socket creation to [") << fConfig["Timeouthost"]["name"].AsString() << ":" << fConfig["Timeouthost"]["port"].AsLong() << "] failed" ) ) {
+	if ( t_assertm( socket != NULL, TString("socket creation to [") << GetConfig()["Timeouthost"]["name"].AsString() << ":" << GetConfig()["Timeouthost"]["port"].AsLong() << "] failed" ) ) {
 		t_assert(socket->IsReadyForWriting());
 		SocketStream Ios(socket);
 		t_assert(!!Ios); // make sure Ios is valid
@@ -133,10 +123,10 @@ void SocketStreamTest::timeoutTest()
 void SocketStreamTest::opLeftShiftTest()
 {
 	const long theTimeout = 1000L;
-	Connector connector(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port"].AsLong(), 1000L);
+	Connector connector(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port"].AsLong(), 1000L);
 	Socket *socket = connector.MakeSocket();
 
-	if ( t_assertm( socket != NULL, TString("socket creation to [") << fConfig["Testhost"]["name"].AsString() << ":" << fConfig["Testhost"]["port"].AsLong() << "] failed"  ) ) {
+	if ( t_assertm( socket != NULL, TString("socket creation to [") << GetConfig()["Testhost"]["name"].AsString() << ":" << GetConfig()["Testhost"]["port"].AsLong() << "] failed"  ) ) {
 		assertEqual(theTimeout, socket->GetTimeout());
 		SocketStream Ios(socket);
 		t_assert(!!Ios); // make sure Ios is valid
@@ -157,10 +147,10 @@ void SocketStreamTest::opLeftShiftTest()
 
 void SocketStreamTest::parseHTTPReplyTest()
 {
-	Connector connector(fConfig["Replyhost"]["name"].AsString(), fConfig["Replyhost"]["port"].AsLong(), 2000L);
+	Connector connector(GetConfig()["Replyhost"]["name"].AsString(), GetConfig()["Replyhost"]["port"].AsLong(), 2000L);
 	Socket *socket = connector.MakeSocket();
 
-	if ( t_assertm( socket != NULL, TString("socket creation to [") << fConfig["Replyhost"]["name"].AsString() << ":" << fConfig["Replyhost"]["port"].AsLong() << "] failed"  ) ) { // http server doesn't run if assert fails
+	if ( t_assertm( socket != NULL, TString("socket creation to [") << GetConfig()["Replyhost"]["name"].AsString() << ":" << GetConfig()["Replyhost"]["port"].AsLong() << "] failed"  ) ) { // http server doesn't run if assert fails
 		SocketStream Ios(socket, 1000L); // wait at most a second
 		assertEqual(1000L, Ios.rdbuf()->GetTimeout());
 		t_assert(!!Ios); // make sure Ios is valid
@@ -230,15 +220,14 @@ void SocketStreamTest::parseParams(String &line, Anything &request)
 }
 
 Test *SocketStreamTest::suite ()
-// collect all test cases for the SocketStream
 {
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(SocketStreamTest, simpleRead));
-	testSuite->addTest (NEW_CASE(SocketStreamTest, parseHTTPReplyTest));
-	testSuite->addTest (NEW_CASE(SocketStreamTest, opLeftShiftTest));
-	testSuite->addTest (NEW_CASE(SocketStreamTest, timeoutTest));
+	ADD_CASE(testSuite, SocketStreamTest, simpleRead);
+	ADD_CASE(testSuite, SocketStreamTest, parseHTTPReplyTest);
+	ADD_CASE(testSuite, SocketStreamTest, opLeftShiftTest);
+	ADD_CASE(testSuite, SocketStreamTest, timeoutTest);
 
 	return testSuite;
 
-} // suite
+}

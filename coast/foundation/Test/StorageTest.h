@@ -13,13 +13,11 @@
 #include "TestCase.h"
 
 //---- forward declaration -----------------------------------------------
-#include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
-class EXPORTDECL_FOUNDATION Allocator;
-class EXPORTDECL_FOUNDATION GlobalAllocator;
+class Allocator;
 
 //---- StorageTest ----------------------------------------------------------
 //!testcases for Storage class
-class StorageTest : public TestCase
+class StorageTest : public TestFramework::TestCase
 {
 public:
 	//!constructors
@@ -29,11 +27,6 @@ public:
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
 
-	//!sets the environment for this test
-	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
 	//!tests the Socket class with a fd from Connector
 	void PoolSizeHintTest();
 	void AllocatorTiming();
@@ -48,18 +41,9 @@ public:
 	void AnyPathology();
 
 protected:
-	//--- subclass api
-
 	void DoTimingWith(TString allocatorName, Allocator *gAlloc);
 	void SimpleAllocTest(TString allocatorName, Allocator *gAlloc);
 	void SimpleSizeHintTest(TString allocatorName, Allocator *gAlloc);
-
-private:
-	// use careful, you inhibit subclass use
-	//--- private class api
-
-	//--- private member variables
-
 };
 
 #endif

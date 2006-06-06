@@ -10,12 +10,11 @@
 #define _SystemTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "TestCase.h"
-#include "Anything.h"
+#include "FoundationTestTypes.h"
 
 //---- SystemTest ----------------------------------------------------------
 //!testcases for System
-class SystemTest : public TestCase
+class SystemTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//!constructors
@@ -25,14 +24,7 @@ public:
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
 
-	//!sets the environment for this test
-	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
-
 	//!tests pathlist accessor
-	void initialSetup();
 	void initPathTest();
 	void pathListTest();
 	void rooDirTest();
@@ -59,9 +51,6 @@ public:
 	void LoadConfigFileTest();
 
 	void TimeTest();
-
-private:
-	Anything fConfig;
 };
 
 #endif

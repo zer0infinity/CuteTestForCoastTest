@@ -26,7 +26,7 @@
 //--- c-library modules used ---------------------------------------------------
 
 //---- RegexTest ----------------------------------------------------------------
-RegexTest::RegexTest(TString tstrName) : TestCase(tstrName)
+RegexTest::RegexTest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(RegexTest.Ctor);
 }
@@ -35,17 +35,6 @@ RegexTest::~RegexTest()
 {
 	StartTrace(RegexTest.Dtor);
 }
-
-// setup for this TestCase
-void RegexTest::setUp ()
-{
-	StartTrace(RegexTest.setUp);
-} // setUp
-
-void RegexTest::tearDown ()
-{
-	StartTrace(RegexTest.tearDown);
-} // tearDown
 
 void RegexTest::MatchLiteral()
 {
@@ -445,22 +434,22 @@ Test *RegexTest::suite ()
 	StartTrace(RegexTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(RegexTest, MatchLiteral));
-	testSuite->addTest (NEW_CASE(RegexTest, MatchDot));
-	testSuite->addTest (NEW_CASE(RegexTest, MatchDotDotDot));
-	testSuite->addTest (NEW_CASE(RegexTest, MatchDotStar));
-	testSuite->addTest (NEW_CASE(RegexTest, MatchAStar));
-	testSuite->addTest (NEW_CASE(RegexTest, LargeLiteralTest));
-	testSuite->addTest (NEW_CASE(RegexTest, BackRefTest));
-	testSuite->addTest (NEW_CASE(RegexTest, TimingWithPoolAllocator));
-	testSuite->addTest (NEW_CASE(RegexTest, ShortLiteralTest));
-	testSuite->addTest (NEW_CASE(RegexTest, LargeDotStarTest));
-	testSuite->addTest (NEW_CASE(RegexTest, MatchConfig));
-	testSuite->addTest (NEW_CASE(RegexTest, MatchFlagsTest));
-	testSuite->addTest (NEW_CASE(RegexTest, SplitTest));
-	testSuite->addTest (NEW_CASE(RegexTest, SubstTest));
-	testSuite->addTest (NEW_CASE(RegexTest, GrepTest));
-	testSuite->addTest (NEW_CASE(RegexTest, GrepSlotNamesTest));
+	ADD_CASE(testSuite, RegexTest, MatchLiteral);
+	ADD_CASE(testSuite, RegexTest, MatchDot);
+	ADD_CASE(testSuite, RegexTest, MatchDotDotDot);
+	ADD_CASE(testSuite, RegexTest, MatchDotStar);
+	ADD_CASE(testSuite, RegexTest, MatchAStar);
+	ADD_CASE(testSuite, RegexTest, LargeLiteralTest);
+	ADD_CASE(testSuite, RegexTest, BackRefTest);
+	ADD_CASE(testSuite, RegexTest, TimingWithPoolAllocator);
+	ADD_CASE(testSuite, RegexTest, ShortLiteralTest);
+	ADD_CASE(testSuite, RegexTest, LargeDotStarTest);
+	ADD_CASE(testSuite, RegexTest, MatchConfig);
+	ADD_CASE(testSuite, RegexTest, MatchFlagsTest);
+	ADD_CASE(testSuite, RegexTest, SplitTest);
+	ADD_CASE(testSuite, RegexTest, SubstTest);
+	ADD_CASE(testSuite, RegexTest, GrepTest);
+	ADD_CASE(testSuite, RegexTest, GrepSlotNamesTest);
 
 	return testSuite;
-} // suite
+}

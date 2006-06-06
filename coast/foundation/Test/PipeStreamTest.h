@@ -14,7 +14,7 @@
 
 //---- PipeStreamTest ----------------------------------------------------------
 //!TestCases description
-class PipeStreamTest : public TestCase
+class PipeStreamTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -30,12 +30,6 @@ public:
 
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
-
-	//!sets the environment for this test
-	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
 
 	//!simple write and read
 	void SimpleWriteandRead();

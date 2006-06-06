@@ -13,14 +13,13 @@
 
 //---- URLUtilsTest -----------------------------------------------------------
 //!testcases for URLUtils
-class URLUtilsTest : public TestCase
+class URLUtilsTest : public TestFramework::TestCase
 {
 public:
 	URLUtilsTest(TString tstrName);
 	virtual ~URLUtilsTest();
 
 	static Test *suite ();
-	void setUp ();
 	void urlDecodeTest();
 	void ExhaustiveUrlDecodeTest();
 	void ExhaustiveHTMLDecodeTest();
@@ -41,9 +40,6 @@ public:
 	void CheckUrlEncodingTest();
 	void CheckUrlArgEncodingTest();
 	void CheckUrlPathContainsUnsafeCharsTest();
-
-protected:
-
 };
 
 #endif

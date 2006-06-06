@@ -26,7 +26,7 @@
 #endif
 
 //---- SystemAPITest ----------------------------------------------------------------
-SystemAPITest::SystemAPITest(TString tname) : TestCase(tname)
+SystemAPITest::SystemAPITest(TString tname) : TestCaseType(tname)
 {
 	StartTrace(SystemAPITest.Ctor);
 }
@@ -36,31 +36,20 @@ SystemAPITest::~SystemAPITest()
 	StartTrace(SystemAPITest.Dtor);
 }
 
-// setup for this TestCase
-void SystemAPITest::setUp ()
-{
-	StartTrace(SystemAPITest.setUp);
-} // setUp
-
-void SystemAPITest::tearDown ()
-{
-	StartTrace(SystemAPITest.tearDown);
-} // tearDown
-
 // builds up a suite of testcases, add a line for each testmethod
 Test *SystemAPITest::suite ()
 {
 	StartTrace(SystemAPITest.suite);
 	TestSuite *testSuite = new TestSuite;
-	testSuite->addTest (NEW_CASE(SystemAPITest, MUTEXTest));
-	testSuite->addTest (NEW_CASE(SystemAPITest, SEMATest));
-	testSuite->addTest (NEW_CASE(SystemAPITest, CONDITIONTimedWaitTimeoutTest));
-	testSuite->addTest (NEW_CASE(SystemAPITest, CONDITIONSignalSingleTest));
-	testSuite->addTest (NEW_CASE(SystemAPITest, CONDITIONSignalManyTest));
-	testSuite->addTest (NEW_CASE(SystemAPITest, CONDITIONBroadcastSingleTest));
-	testSuite->addTest (NEW_CASE(SystemAPITest, CONDITIONBroadcastManyTest));
+	ADD_CASE(testSuite, SystemAPITest, MUTEXTest);
+	ADD_CASE(testSuite, SystemAPITest, SEMATest);
+	ADD_CASE(testSuite, SystemAPITest, CONDITIONTimedWaitTimeoutTest);
+	ADD_CASE(testSuite, SystemAPITest, CONDITIONSignalSingleTest);
+	ADD_CASE(testSuite, SystemAPITest, CONDITIONSignalManyTest);
+	ADD_CASE(testSuite, SystemAPITest, CONDITIONBroadcastSingleTest);
+	ADD_CASE(testSuite, SystemAPITest, CONDITIONBroadcastManyTest);
 	return testSuite;
-} // suite
+}
 
 class SimpleTestThread
 {

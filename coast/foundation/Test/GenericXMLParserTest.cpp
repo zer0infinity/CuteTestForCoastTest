@@ -16,12 +16,10 @@
 #include "GenericXMLParser.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
-#include "StringStream.h"
-#include "System.h"
 
 //---- GenericXMLParserTest ----------------------------------------------------------------
-GenericXMLParserTest::GenericXMLParserTest(TString tstrName) : TestCase(tstrName)
+GenericXMLParserTest::GenericXMLParserTest(TString tstrName)
+	: TestCaseType(tstrName)
 {
 	StartTrace(GenericXMLParserTest.Ctor);
 }
@@ -29,25 +27,6 @@ GenericXMLParserTest::GenericXMLParserTest(TString tstrName) : TestCase(tstrName
 GenericXMLParserTest::~GenericXMLParserTest()
 {
 	StartTrace(GenericXMLParserTest.Dtor);
-}
-
-// setup for this TestCase
-void GenericXMLParserTest::setUp ()
-{
-	StartTrace(GenericXMLParserTest.setUp);
-	istream *is = System::OpenStream("GenericXMLParserTestConfig", "any");
-	if ( is ) {
-		fConfig.Import( *is );
-		delete is;
-	} else {
-		t_assertm( false, "could not read GenericXMLParserTestConfig.any" );
-	}
-}
-
-void GenericXMLParserTest::tearDown ()
-{
-	StartTrace(GenericXMLParserTest.tearDown);
-	fConfig = Anything();
 }
 
 void GenericXMLParserTest::simpleEmptyTag()
@@ -240,23 +219,25 @@ void GenericXMLParserTest::configuredTests()
 {
 	StartTrace(GenericXMLParserTest.configuredTests);
 
-	ROAnything tConfig(fConfig["ConfiguredTests"]);
-	t_assert(!tConfig.IsNull());
-	ROAnything cConfig(tConfig[0L]);
-	TString cName(tConfig.SlotName(0L));
-	for (long i = 0; i < tConfig.GetSize(); i++, cConfig = tConfig[i], cName = tConfig.SlotName(i)) {
+	ROAnything roaConfig;
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(roaConfig) ) {
+		TString strCase;
+		if ( !aEntryIterator.SlotName(strCase) ) {
+			strCase << "idx:" << aEntryIterator.Index();
+		}
 		String strInput;
-		if ( cConfig["Input"].GetType() == AnyArrayType ) {
-			for (long j = 0; j < cConfig["Input"].GetSize(); j++) {
-				strInput << cConfig["Input"][j].AsString();
+		if ( roaConfig["Input"].GetType() == AnyArrayType ) {
+			for (long j = 0; j < roaConfig["Input"].GetSize(); j++) {
+				strInput << roaConfig["Input"][j].AsString();
 			}
 		} else {
-			strInput = cConfig["Input"].AsString();
+			strInput = roaConfig["Input"].AsString();
 		}
 		IStringStream iss(strInput);
 		GenericXMLParser p;
 		Anything result = p.Parse(iss);
-		assertAnyEqualm(cConfig["Expected"], result, cName);
+		assertAnyEqualm(roaConfig["Expected"], result, TString("Failed at ") << strCase);
 	}
 }
 
@@ -265,7 +246,6 @@ Test *GenericXMLParserTest::suite ()
 {
 	StartTrace(GenericXMLParserTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
 	ADD_CASE(testSuite, GenericXMLParserTest, simpleEmptyTag);
 	ADD_CASE(testSuite, GenericXMLParserTest, simpleAttributeTag);
 	ADD_CASE(testSuite, GenericXMLParserTest, simpleBodyTag);
@@ -277,6 +257,5 @@ Test *GenericXMLParserTest::suite ()
 	ADD_CASE(testSuite, GenericXMLParserTest, simpleXMLError);
 	ADD_CASE(testSuite, GenericXMLParserTest, simpleParsePrint);
 	ADD_CASE(testSuite, GenericXMLParserTest, configuredTests);
-
 	return testSuite;
 }

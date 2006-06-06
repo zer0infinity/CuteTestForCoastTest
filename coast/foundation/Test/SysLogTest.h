@@ -14,7 +14,7 @@
 
 //---- SysLogTest ----------------------------------------------------------
 //!testcases for the SysLog class
-class SysLogTest : public TestCase
+class SysLogTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors

@@ -6,13 +6,12 @@
 #include "TestCase.h"
 
 //---- DummyTest -----------------------------------------------------------
-class DummyTest : public TestCase
+class DummyTest : public TestFramework::TestCase
 {
 public:
 	DummyTest(TString tstrName);
 	virtual ~DummyTest();
 
-	virtual void setUp ();
 	static Test *suite ();
 	void dummyTest ();
 };

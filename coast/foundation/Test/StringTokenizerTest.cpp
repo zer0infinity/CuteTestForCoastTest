@@ -17,7 +17,7 @@
 
 //--- c-library modules used ---------------------------------------------------
 
-StringTokenizerTest::StringTokenizerTest (TString tname) : TestCase(tname)
+StringTokenizerTest::StringTokenizerTest (TString tname) : TestCaseType(tname)
 {
 }
 
@@ -27,25 +27,16 @@ void StringTokenizerTest::setUp ()
 	fLong = "a somewhat longer string";
 }
 
-Test *StringTokenizerTest::worksuite ()
-{
-	TestSuite *testSuite = new TestSuite;
-
-	testSuite->addTest (NEW_CASE(StringTokenizerTest, constructors));
-
-	return testSuite;
-}
-
 Test *StringTokenizerTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(StringTokenizerTest, constructors));
-	testSuite->addTest (NEW_CASE(StringTokenizerTest, constrMethodsAll));
-	testSuite->addTest (NEW_CASE(StringTokenizerTest, nextTokenNormal));
-	testSuite->addTest (NEW_CASE(StringTokenizerTest, nextTokenEmpty));
-	testSuite->addTest (NEW_CASE(StringTokenizerTest, getRemainder));
-	testSuite->addTest (NEW_CASE(StringTokenizerTest, resetTest));
+	ADD_CASE(testSuite, StringTokenizerTest, constructors);
+	ADD_CASE(testSuite, StringTokenizerTest, constrMethodsAll);
+	ADD_CASE(testSuite, StringTokenizerTest, nextTokenNormal);
+	ADD_CASE(testSuite, StringTokenizerTest, nextTokenEmpty);
+	ADD_CASE(testSuite, StringTokenizerTest, getRemainder);
+	ADD_CASE(testSuite, StringTokenizerTest, resetTest);
 
 	return testSuite;
 }
@@ -59,52 +50,52 @@ void StringTokenizerTest::constrMethods0 ()
 	t_assert( st.fDelimiter == '0' );
 
 	ret = st.NextToken(token);
-	t_assert( token == "" );	// ????  Empty token if String begins with a delimiter
-	t_assert( ret == true );
+	assertEqual("", token);	// ????  Empty token if String begins with a delimiter
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "12345" );
-	t_assert( ret == true );
+	assertEqual("12345", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "6789" );
-	t_assert( ret == true );
+	assertEqual("6789", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "123" );
-	t_assert( ret == true );
+	assertEqual("123", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "456" );
-	t_assert( ret == true );
+	assertEqual("456", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "789" );
-	t_assert( ret == true );
+	assertEqual("789", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "123" );
-	t_assert( ret == true );
+	assertEqual("123", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "4567" );
-	t_assert( ret == true );
+	assertEqual("4567", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "9" );
-	t_assert( ret == true );
+	assertEqual("9", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "12" );
-	t_assert( ret == true );
+	assertEqual("12", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "12" );
-	t_assert( ret == false );
+	assertEqual("12", token);
+	assertEqual(false, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "12" );
-	t_assert( ret == false );
+	assertEqual("12", token);
+	assertEqual(false, ret);
 }
 
 void StringTokenizerTest::constrMethods1 ()
@@ -117,32 +108,32 @@ void StringTokenizerTest::constrMethods1 ()
 	t_assert( st.fDelimiter == '1' );
 
 	ret = st.NextToken(token);
-	t_assert( token == "0" );
-	t_assert( ret == true );
+	assertEqual("0", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "2345067890" );
-	t_assert( ret == true );
+	assertEqual("2345067890", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "23045607890" );
-	t_assert( ret == true );
+	assertEqual("23045607890", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "2304567090" );
-	t_assert( ret == true );
+	assertEqual("2304567090", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "2" );
-	t_assert( ret == true );
+	assertEqual("2", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "2" );
-	t_assert( ret == false );
+	assertEqual("2", token);
+	assertEqual(false, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "2" );
-	t_assert( ret == false );
+	assertEqual("2", token);
+	assertEqual(false, ret);
 }
 
 void StringTokenizerTest::constrMethods2 ()
@@ -155,28 +146,28 @@ void StringTokenizerTest::constrMethods2 ()
 	t_assert( st.fDelimiter == '2' );
 
 	ret = st.NextToken(token);
-	t_assert( token == "01" );
-	t_assert( ret == true );
+	assertEqual("01", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "3450678901" );
-	t_assert( ret == true );
+	assertEqual("3450678901", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "30456078901" );
-	t_assert( ret == true );
+	assertEqual("30456078901", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "3045670901" );
-	t_assert( ret == true );
+	assertEqual("3045670901", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "" );		// PT: new version has correct behavior
-	t_assert( ret == true );
+	assertEqual("", token);		// PT: new version has correct behavior
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "" );
-	t_assert( ret == false );
+	assertEqual("", token);
+	assertEqual(false, ret);
 }
 
 void StringTokenizerTest::constrMethods3 ()
@@ -189,28 +180,28 @@ void StringTokenizerTest::constrMethods3 ()
 	t_assert( st.fDelimiter == '3' );
 
 	ret = st.NextToken(token);
-	t_assert( token == "012" );
-	t_assert( ret == true );
+	assertEqual("012", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "4506789012" );
-	t_assert( ret == true );
+	assertEqual("4506789012", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "04560789012" );
-	t_assert( ret == true );
+	assertEqual("04560789012", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "0456709012" );
-	t_assert( ret == true );
+	assertEqual("0456709012", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "0456709012" );
-	t_assert( ret == false );
+	assertEqual("0456709012", token);
+	assertEqual(false, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "0456709012" );
-	t_assert( ret == false );
+	assertEqual("0456709012", token);
+	assertEqual(false, ret);
 }
 
 void StringTokenizerTest::constrMethods4 ()
@@ -223,28 +214,28 @@ void StringTokenizerTest::constrMethods4 ()
 	t_assert( st.fDelimiter == '4' );
 
 	ret = st.NextToken(token);
-	t_assert( token == "0123" );
-	t_assert( ret == true );
+	assertEqual("0123", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "50678901230" );
-	t_assert( ret == true );
+	assertEqual("50678901230", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "56078901230" );
-	t_assert( ret == true );
+	assertEqual("56078901230", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "56709012" );
-	t_assert( ret == true );
+	assertEqual("56709012", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "56709012" );
-	t_assert( ret == false );
+	assertEqual("56709012", token);
+	assertEqual(false, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "56709012" );
-	t_assert( ret == false );
+	assertEqual("56709012", token);
+	assertEqual(false, ret);
 }
 
 void StringTokenizerTest::constrMethods5 ()
@@ -257,28 +248,28 @@ void StringTokenizerTest::constrMethods5 ()
 	t_assert( st.fDelimiter == '5' );
 
 	ret = st.NextToken(token);
-	t_assert( token == "01234" );
-	t_assert( ret == true );
+	assertEqual("01234", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "06789012304" );
-	t_assert( ret == true );
+	assertEqual("06789012304", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "60789012304" );
-	t_assert( ret == true );
+	assertEqual("60789012304", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "6709012" );
-	t_assert( ret == true );
+	assertEqual("6709012", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "6709012" );
-	t_assert( ret == false );
+	assertEqual("6709012", token);
+	assertEqual(false, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "6709012" );
-	t_assert( ret == false );
+	assertEqual("6709012", token);
+	assertEqual(false, ret);
 }
 
 void StringTokenizerTest::constrMethods6 ()
@@ -291,28 +282,28 @@ void StringTokenizerTest::constrMethods6 ()
 	t_assert( st.fDelimiter == '6' );
 
 	ret = st.NextToken(token);
-	t_assert( token == "0123450" );
-	t_assert( ret == true );
+	assertEqual("0123450", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "7890123045" );
-	t_assert( ret == true );
+	assertEqual("7890123045", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "07890123045" );
-	t_assert( ret == true );
+	assertEqual("07890123045", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "709012" );
-	t_assert( ret == true );
+	assertEqual("709012", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "709012" );
-	t_assert( ret == false );
+	assertEqual("709012", token);
+	assertEqual(false, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "709012" );
-	t_assert( ret == false );
+	assertEqual("709012", token);
+	assertEqual(false, ret);
 }
 
 void StringTokenizerTest::constrMethods7 ()
@@ -325,28 +316,28 @@ void StringTokenizerTest::constrMethods7 ()
 	t_assert( st.fDelimiter == '7' );
 
 	ret = st.NextToken(token);
-	t_assert( token == "01234506" );
-	t_assert( ret == true );
+	assertEqual("01234506", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "89012304560" );
-	t_assert( ret == true );
+	assertEqual("89012304560", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "8901230456" );
-	t_assert( ret == true );
+	assertEqual("8901230456", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "09012" );
-	t_assert( ret == true );
+	assertEqual("09012", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "09012" );
-	t_assert( ret == false );
+	assertEqual("09012", token);
+	assertEqual(false, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "09012" );
-	t_assert( ret == false );
+	assertEqual("09012", token);
+	assertEqual(false, ret);
 }
 
 void StringTokenizerTest::constrMethods8 ()
@@ -359,24 +350,24 @@ void StringTokenizerTest::constrMethods8 ()
 	t_assert( st.fDelimiter == '8' );
 
 	ret = st.NextToken(token);
-	t_assert( token == "012345067" );
-	t_assert( ret == true );
+	assertEqual("012345067", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "90123045607" );
-	t_assert( ret == true );
+	assertEqual("90123045607", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "901230456709012" );
-	t_assert( ret == true );
+	assertEqual("901230456709012", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "901230456709012" );
-	t_assert( ret == false );
+	assertEqual("901230456709012", token);
+	assertEqual(false, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "901230456709012" );
-	t_assert( ret == false );
+	assertEqual("901230456709012", token);
+	assertEqual(false, ret);
 }
 
 void StringTokenizerTest::constrMethods9 ()
@@ -389,28 +380,28 @@ void StringTokenizerTest::constrMethods9 ()
 	t_assert( st.fDelimiter == '9' );
 
 	ret = st.NextToken(token);
-	t_assert( token == "0123450678" );
-	t_assert( ret == true );
+	assertEqual("0123450678", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "01230456078" );
-	t_assert( ret == true );
+	assertEqual("01230456078", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "0123045670" );
-	t_assert( ret == true );
+	assertEqual("0123045670", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "012" );
-	t_assert( ret == true );
+	assertEqual("012", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "012" );
-	t_assert( ret == false );
+	assertEqual("012", token);
+	assertEqual(false, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "012" );
-	t_assert( ret == false );
+	assertEqual("012", token);
+	assertEqual(false, ret);
 }
 
 void StringTokenizerTest::constrMethods10 ()
@@ -423,14 +414,14 @@ void StringTokenizerTest::constrMethods10 ()
 	t_assert( st.fDelimiter == 'a' );
 
 	ret = st.NextToken(token);
-	// t_assert( token == "" );
-	// t_assert( ret == false );  // ?????  Token found even if the string does not contain the delimiter-char
-	t_assert( token == "0123450678901230456078901230456709012" );
-	t_assert( ret == true );
+	// assertEqual("", token);
+	// assertEqual(false, ret);  // ?????  Token found even if the string does not contain the delimiter-char
+	assertEqual("0123450678901230456078901230456709012", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "0123450678901230456078901230456709012" );
-	t_assert( ret == false );
+	assertEqual("0123450678901230456078901230456709012", token);
+	assertEqual(false, ret);
 }
 
 void StringTokenizerTest::constrMethods11 ()
@@ -444,12 +435,12 @@ void StringTokenizerTest::constrMethods11 ()
 	t_assert( st.fDelimiter ==  'a' );
 
 	ret = st.NextToken(token);
-	t_assert( token == "" );
-	t_assert( ret == false );
+	assertEqual("", token);
+	assertEqual(false, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "" );
-	t_assert( ret == false );
+	assertEqual("", token);
+	assertEqual(false, ret);
 }
 
 void StringTokenizerTest::constrMethods12 ()
@@ -463,16 +454,16 @@ void StringTokenizerTest::constrMethods12 ()
 	t_assert( st.fDelimiter ==  0x0);
 
 	ret = st.NextToken(token);
-	t_assert( token == "abc" );
-	t_assert( ret == true );
+	assertEqual("abc", token);
+	assertEqual(true, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "abc" );
-	t_assert( ret == false );
+	assertEqual("abc", token);
+	assertEqual(false, ret);
 
 	ret = st.NextToken(token);
-	t_assert( token == "abc" );
-	t_assert( ret == false );
+	assertEqual("abc", token);
+	assertEqual(false, ret);
 }
 
 void StringTokenizerTest::constrMethodsAll ()
@@ -516,18 +507,18 @@ void StringTokenizerTest::nextTokenNormal ()
 
 	// first round
 	ret = st0.NextToken(token);
-	t_assert( token == "foo" );
-	t_assert( ret == true );
+	assertEqual("foo", token);
+	assertEqual(true, ret);
 
 	// second round
 	ret = st0.NextToken(token);
-	t_assert( token == "bar" );
-	t_assert( ret == true );
+	assertEqual("bar", token);
+	assertEqual(true, ret);
 
 	// third round
 	ret = st0.NextToken(token);
-	t_assert( token == "bar" );
-	t_assert( ret == false );
+	assertEqual("bar", token);
+	assertEqual(false, ret);
 
 }
 
@@ -545,8 +536,8 @@ void StringTokenizerTest::nextTokenEmpty ()
 
 	// first round
 	ret = st0.NextToken(token);
-	t_assert( token == "" );
-	t_assert( ret == false );
+	assertEqual("", token);
+	assertEqual(false, ret);
 
 }
 
@@ -564,35 +555,35 @@ void StringTokenizerTest::resetTest ()
 
 	// first round
 	ret = st0.NextToken(token);
-	t_assert( token == "foo" );
-	t_assert( ret == true );
+	assertEqual("foo", token);
+	assertEqual(true, ret);
 
 	// second round
 	ret = st0.NextToken(token);
-	t_assert( token == "bar" );
-	t_assert( ret == true );
+	assertEqual("bar", token);
+	assertEqual(true, ret);
 
 	// third round
 	ret = st0.NextToken(token);
-	t_assert( token == "bar" );
-	t_assert( ret == false );
+	assertEqual("bar", token);
+	assertEqual(false, ret);
 
 	st0.Reset();
 
 	// first round
 	ret = st0.NextToken(token);
-	t_assert( token == "foo" );
-	t_assert( ret == true );
+	assertEqual("foo", token);
+	assertEqual(true, ret);
 
 	// second round
 	ret = st0.NextToken(token);
-	t_assert( token == "bar" );
-	t_assert( ret == true );
+	assertEqual("bar", token);
+	assertEqual(true, ret);
 
 	// third round
 	ret = st0.NextToken(token);
-	t_assert( token == "bar" );
-	t_assert( ret == false );
+	assertEqual("bar", token);
+	assertEqual(false, ret);
 
 }
 
@@ -604,28 +595,28 @@ void StringTokenizerTest::getRemainder()
 
 	// first round
 	remainder = st0.GetRemainder();
-	t_assert( remainder == "foo:bar:" );
+	assertEqual("foo:bar:", remainder);
 	remainder = st0.GetRemainder(true);
-	t_assert( remainder == "foo:bar:" );
+	assertEqual("foo:bar:", remainder);
 
 	// second round
 	st0.NextToken(token);
 	remainder = st0.GetRemainder();
-	t_assert( remainder == "bar:" );
+	assertEqual("bar:", remainder);
 	remainder = st0.GetRemainder(true);
-	t_assert( remainder == ":bar:" );
+	assertEqual(":bar:", remainder);
 
 	// third round
 	st0.NextToken(token);
 	remainder = st0.GetRemainder();
-	t_assert( remainder == "" );
+	assertEqual("", remainder);
 	remainder = st0.GetRemainder(true);
-	t_assert( remainder == ":" );
+	assertEqual(":", remainder);
 
 	// fourth round
 	st0.NextToken(token);
 	remainder = st0.GetRemainder();
-	t_assert( remainder == "" );
+	assertEqual("", remainder);
 	remainder = st0.GetRemainder(true);
-	t_assert( remainder == "" );
+	assertEqual("", remainder);
 }

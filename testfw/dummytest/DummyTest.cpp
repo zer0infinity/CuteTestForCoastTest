@@ -15,15 +15,12 @@
 
 //--- module under test --------------------------------------------------------
 
-DummyTest::DummyTest(TString tstrName) : TestCase(tstrName) {}
+DummyTest::DummyTest(TString tstrName)
+	: TestCaseType(tstrName)
+{}
 
-DummyTest::~DummyTest() {}
-
-// what: Setup the variables for all test cases in this class
-void DummyTest::setUp ()
-{
-	TestCase::setUp();
-}
+DummyTest::~DummyTest()
+{}
 
 void DummyTest::dummyTest ()
 {
@@ -45,6 +42,5 @@ Test *DummyTest::suite ()
 	// what: return the whole suite of tests for DummyTest, add all top level test functions here.
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, DummyTest, dummyTest);
-
 	return testSuite;
 }

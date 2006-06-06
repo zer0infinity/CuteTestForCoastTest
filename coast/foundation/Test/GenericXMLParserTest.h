@@ -10,8 +10,7 @@
 #define _GenericXMLParserTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "TestCase.h"
-#include "Anything.h"
+#include "FoundationTestTypes.h"
 
 //---- GenericXMLParserTest ----------------------------------------------------------
 //! <B>really brief class description</B>
@@ -19,11 +18,9 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class GenericXMLParserTest : public TestCase
+class GenericXMLParserTest : public TestFramework::TestCaseWithConfig
 {
 public:
-	//--- constructors
-
 	//! TestCase constructor
 	//! \param name name of the test
 	GenericXMLParserTest(TString tstrName);
@@ -31,16 +28,8 @@ public:
 	//! destroys the test case
 	~GenericXMLParserTest();
 
-	//--- public api
-
 	//! builds up a suite of testcases for this test
 	static Test *suite ();
-
-	//! sets the environment for this test
-	void setUp ();
-
-	//! deletes the environment for this test
-	void tearDown ();
 
 	//! describe this testcase
 	void simpleEmptyTag();
@@ -54,9 +43,6 @@ public:
 	void simpleXMLError();
 	void simpleParsePrint();
 	void configuredTests();
-
-private:
-	Anything fConfig;
 };
 
 #endif

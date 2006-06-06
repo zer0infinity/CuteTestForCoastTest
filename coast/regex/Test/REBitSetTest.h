@@ -14,7 +14,7 @@
 
 //---- REBitSetTest ----------------------------------------------------------
 //!TestCases description
-class REBitSetTest : public TestCase
+class REBitSetTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -30,12 +30,6 @@ public:
 
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
-
-	//!sets the environment for this test
-	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
 
 	//!test all operators
 	void ManyTests();

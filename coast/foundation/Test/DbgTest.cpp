@@ -20,19 +20,11 @@
 
 //---- DbgTest ----------------------------------------------------------------
 DbgTest::DbgTest(TString tname)
-	: TestCase(tname)
+	: TestCaseType(tname)
 {
 }
 
 DbgTest::~DbgTest()
-{
-}
-
-void DbgTest::setUp ()
-{
-}
-
-void DbgTest::tearDown ()
 {
 }
 
@@ -248,15 +240,14 @@ void DbgTest::CheckMacrosCompile()
 }
 
 Test *DbgTest::suite ()
-// collect all test cases for the SocketStream
 {
 	TestSuite *testSuite = new TestSuite;
 #ifdef DEBUG
-	testSuite->addTest (NEW_CASE(DbgTest, CheckTriggerTest));
-	testSuite->addTest (NEW_CASE(DbgTest, CheckContextTriggerFailure));
-	testSuite->addTest (NEW_CASE(DbgTest, CheckTriggerTestFile));
+	ADD_CASE(testSuite, DbgTest, CheckTriggerTest);
+	ADD_CASE(testSuite, DbgTest, CheckContextTriggerFailure);
+	ADD_CASE(testSuite, DbgTest, CheckTriggerTestFile);
 #endif
-	testSuite->addTest (NEW_CASE(DbgTest, CheckMacrosCompile));
+	ADD_CASE(testSuite, DbgTest, CheckMacrosCompile);
 	return testSuite;
 
-} // suite
+}

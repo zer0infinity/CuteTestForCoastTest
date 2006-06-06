@@ -13,7 +13,7 @@
 #include "Anything.h"
 //---- ParserTest -----------------------------------------------------------
 //!testcases for AnythingParser
-class ParserTest : public TestCase
+class ParserTest : public TestFramework::TestCase
 {
 protected:
 	Anything	emptyAny, anyTemp0, anyTemp1,
@@ -32,9 +32,8 @@ protected:
 	void 		assertParsedAsString(const char *in, int id);
 
 public:
-	ParserTest (TString tstrName); // : TestCase (name) {}
+	ParserTest (TString tstrName);
 	virtual void			setUp ();
-	static Test				*worksuite ();
 	static Test				*suite ();
 
 	void	anythingTests();
@@ -50,45 +49,45 @@ public:
 	void		importEmptyStream();
 	void		readWriteAnything();
 	void		parseTestFiles();
-	void	testSemanticAnything();
-	void		testSemantic0();
-	void		testSemantic1();
-	void		testSemantic2();
-	void		testSemantic3();
-	void		testSemantic4();
-	void		testSemantic5();
-	void		testSemantic6();
-	void		testSemantic7();
-	void		testSemantic8();
-	void		testSemantic9();
-	void		testSemantic10();
-	void		testSemantic11();
-	void		testSemantic12();
-	void		testSemantic13();
-	void		testSemantic14();
-	void		testSemantic15();
-	void		testSemantic16();
-	void		testSemantic17();
-	void		testSemantic18();
-	void		testSemantic19();
-	void		testSemantic20();
-	void		testSemantic21();
-	void		testSemantic22();
-	void		testSemantic23();
-	void		testSemantic24();
-	void		testSemantic25();
-	void		testSemantic26();
-	void		testSemantic27();
+	void	SemanticAnythingTest();
+	void		Semantic0Test();
+	void		Semantic1Test();
+	void		Semantic2Test();
+	void		Semantic3Test();
+	void		Semantic4Test();
+	void		Semantic5Test();
+	void		Semantic6Test();
+	void		Semantic7Test();
+	void		Semantic8Test();
+	void		Semantic9Test();
+	void		Semantic10Test();
+	void		Semantic11Test();
+	void		Semantic12Test();
+	void		Semantic13Test();
+	void		Semantic14Test();
+	void		Semantic15Test();
+	void		Semantic16Test();
+	void		Semantic17Test();
+	void		Semantic18Test();
+	void		Semantic19Test();
+	void		Semantic20Test();
+	void		Semantic21Test();
+	void		Semantic22Test();
+	void		Semantic23Test();
+	void		Semantic24Test();
+	void		Semantic25Test();
+	void		Semantic26Test();
+	void		Semantic27Test();
 	void		testSemantic28Prep( Anything *any );
-	void		testSemantic28();
+	void		Semantic28Test();
 	void		testSemantic29Prep( Anything *any );
-	void		testSemantic29();
+	void		Semantic29Test();
 	void		testSemantic30Prep( Anything &any );
-	void		testSemantic30();
-	void		testSemantic31();
-	void		testSemantic32();
-	void		testSemantic33();
+	void		Semantic30Test();
+	void		Semantic31Test();
+	void		Semantic32Test();
+	void		Semantic33Test();
 
-	void        testQuotedSlotname();
+	void        QuotedSlotnameTest();
 };
 #endif

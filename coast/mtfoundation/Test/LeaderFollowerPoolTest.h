@@ -10,18 +10,15 @@
 #define _LeaderFollowerPoolTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "TestCase.h"
-#include "Anything.h"
+#include "FoundationTestTypes.h"
 
 class Socket;
 
 //---- LeaderFollowerPoolTest ----------------------------------------------------------
 //!tests LeaderFollowerPool
-class LeaderFollowerPoolTest : public TestCase
+class LeaderFollowerPoolTest : public TestFramework::TestCaseWithConfig
 {
 public:
-	//--- constructors
-
 	//!TestCase constructor
 	//! \param name name of the test
 	LeaderFollowerPoolTest(TString tstrName);
@@ -29,16 +26,8 @@ public:
 	//!destroys the test case
 	~LeaderFollowerPoolTest();
 
-	//--- public api
-
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
-
-	//!sets the environment for this test
-	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
 
 	//!test pool without acceptors
 	void NoReactorTest();
@@ -73,11 +62,8 @@ public:
 	//!reactor callback
 	virtual bool EventProcessed(Socket *);
 
-//	void FindHandleTest();
-
 protected:
 	long fEvents;
-	Anything	fConfig;
 };
 
 #endif

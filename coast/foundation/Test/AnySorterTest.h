@@ -9,21 +9,16 @@
 #ifndef _AnySorterTest_H
 #define _AnySorterTest_H
 
-#include "TestCase.h"
+//---- TestFramework include -------------------------------------------------
+#include "FoundationTestTypes.h"
 
 //---- forward declaration -----------------------------------------------
-#include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
-#include "Anything.h"
 
 //---- AnySorterTest -----------------------------------------------------------
 //!testcases for AnySorterTest
-class AnySorterTest : public TestCase
+class AnySorterTest : public TestFramework::TestCaseWithConfig
 {
-	Anything fConfig;
-	ROAnything fTestCaseConfig;
 public:
-	//--- constructors
-
 	//! TestCase constructor
 	//! \param name name of the test
 	AnySorterTest(TString tstrName);
@@ -36,12 +31,6 @@ public:
 	//! builds up a suite of testcases for this test
 	static Test *suite ();
 
-	//! sets the environment for this test
-	void setUp ();
-
-	//! deletes the environment for this test
-	void tearDown ();
-
-	void testAnySorter();
+	void SorterTest();
 };
 #endif

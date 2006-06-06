@@ -9,25 +9,19 @@
 #ifndef _SS1Test_h_
 #define _SS1Test_h_
 
-/* Purpose: Test the interface of the StringStream
-   Initial Autor: Peter
-*/
-
 #include "TestCase.h"
 
 //---- SS1Test -----------------------------------------------------------
 //!testcases for StringStream
-class SS1Test : public TestCase
+class SS1Test : public TestFramework::TestCase
 {
 public:
 	SS1Test(TString tstrName);
 	virtual ~SS1Test();
 
-	virtual void setUp ();
 	static Test *suite ();
 
 	void SimpleTest();
-
 };
 
 #endif

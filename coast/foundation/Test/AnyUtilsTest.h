@@ -15,14 +15,13 @@
 
 //---- AnyUtilsTest -----------------------------------------------------------
 //!testcases for AnyUtils
-class AnyUtilsTest : public TestCase
+class AnyUtilsTest : public TestFramework::TestCase
 {
 public:
 	AnyUtilsTest(TString tstrName);
 	virtual ~AnyUtilsTest();
 
 	static Test *suite ();
-	void setUp ();
 	void CompareTest();
 	void printEmptyXmlTest();
 	void printSimpleXmlTest();

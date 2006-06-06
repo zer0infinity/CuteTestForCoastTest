@@ -13,12 +13,10 @@
 #include "TestCase.h"
 
 //---- forward declaration -----------------------------------------------
-#include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
-class EXPORTDECL_FOUNDATION ROAnything;
 
 //---- ROSimpleAnythingTest ----------------------------------------------------------
 //!TestCases for the ROAnything class Simple types part
-class ROSimpleAnythingTest : public TestCase
+class ROSimpleAnythingTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -34,12 +32,6 @@ public:
 
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
-
-	//!sets the environment for this test
-	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
 
 	// Testcases
 	void ConstructorsAndConversions();

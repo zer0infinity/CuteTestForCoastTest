@@ -10,18 +10,12 @@
 #define _TimeStampTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "TestCase.h"
-#include "Anything.h"
+#include "FoundationTestTypes.h"
 
 //---- TimeStampTest ----------------------------------------------------------
-class TimeStampTest : public TestCase
+class TimeStampTest : public TestFramework::TestCaseWithConfigAndStatistics
 {
-	Anything fConfig;
-	ROAnything fTestCaseConfig;
-
 public:
-	//--- constructors
-
 	//! TestCase constructor
 	//! \param name name of the test
 	TimeStampTest(TString tstrName);
@@ -29,28 +23,20 @@ public:
 	//! destroys the test case
 	~TimeStampTest();
 
-	//--- public api
-
 	//! builds up a suite of testcases for this test
 	static Test *suite ();
 
-	//! sets the environment for this test
-	void setUp ();
-
-	//! deletes the environment for this test
-	void tearDown ();
-
 	//! describe this testcase
-	void testBasicOperators();
-	void testArithmeticOperators();
-	void testAssignmentOperator();
-	void testConstructors();
-	void testInvalid();
-	void testRemoveNonNumericalChars();
-	void testEmptyStringConstructor();
-	void testAsString();
-	void testEmptyConstructor();
-	void testStaticMethods();
+	void BasicOperatorsTest();
+	void ArithmeticOperatorsTest();
+	void AssignmentOperatorTest();
+	void ConstructorsTest();
+	void InvalidTest();
+	void RemoveNonNumericalCharsTest();
+	void EmptyStringConstructorTest();
+	void AsStringTest();
+	void EmptyConstructorTest();
+	void StaticMethodsTest();
 	void ModifiersTest();
 	void CtorTest();
 	void WeekdayTest();

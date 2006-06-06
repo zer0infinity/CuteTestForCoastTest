@@ -10,18 +10,15 @@
 #define _SocketTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "TestCase.h"
+#include "FoundationTestTypes.h"
 
 //---- forward declaration -----------------------------------------------
-#include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
-#include "Anything.h"
+
 //---- SocketTest ----------------------------------------------------------
 //!TestCases for the Socket class
-class SocketTest : public TestCase
+class SocketTest : public TestFramework::TestCaseWithConfig
 {
 public:
-	//--- constructors
-
 	//!TestCases for the Socket classes
 	//! \param name name of the test
 	SocketTest(TString tstrName);
@@ -29,16 +26,8 @@ public:
 	//!destroys the test case
 	~SocketTest();
 
-	//--- public api
-
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
-
-	//!sets the environment for this test
-	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
 
 	//!tests the Socket class with a fd from Connector
 	void simpleConstructorTest();
@@ -65,9 +54,6 @@ public:
 
 	//--- subclass api
 	static bool IsNonBlocking(int fd);
-
-private:
-	Anything	fConfig;
 };
 
 #endif

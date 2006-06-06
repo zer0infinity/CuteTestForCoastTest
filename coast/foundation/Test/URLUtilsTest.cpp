@@ -26,12 +26,8 @@
 // utility
 static void Dump(ostream &os, const Anything &data, const String &str);
 
-URLUtilsTest::URLUtilsTest (TString tname) : TestCase(tname) {};
+URLUtilsTest::URLUtilsTest (TString tname) : TestCaseType(tname) {};
 URLUtilsTest::~URLUtilsTest() {};
-
-void URLUtilsTest::setUp ()
-{
-}
 
 void URLUtilsTest::CheckUrlEncodingTest()
 {
@@ -1676,27 +1672,26 @@ void URLUtilsTest::TrimBlanksTest ()
 }
 
 Test *URLUtilsTest::suite ()
-// collect all test cases for the DateRenderer
 {
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(URLUtilsTest, urlDecodeTest));
-	testSuite->addTest (NEW_CASE(URLUtilsTest, ExhaustiveUrlDecodeTest));
-	testSuite->addTest (NEW_CASE(URLUtilsTest, ExhaustiveHTMLDecodeTest));
-	testSuite->addTest (NEW_CASE(URLUtilsTest, HTMLDecodeTest));
-	testSuite->addTest (NEW_CASE(URLUtilsTest, urlEncodeTest));
-	testSuite->addTest (NEW_CASE(URLUtilsTest, PairTest));
-	testSuite->addTest (NEW_CASE(URLUtilsTest, SplitTest));
-	testSuite->addTest (NEW_CASE(URLUtilsTest, DecodeAllTest));
-	testSuite->addTest (NEW_CASE(URLUtilsTest, HandleURITest));
-	testSuite->addTest (NEW_CASE(URLUtilsTest, HandleURI2Test));
-	testSuite->addTest (NEW_CASE(URLUtilsTest, TrimBlanksTest));
-	testSuite->addTest (NEW_CASE(URLUtilsTest, HTMLEscapeTest));
-	testSuite->addTest (NEW_CASE(URLUtilsTest, RemoveUnwantedCharsTest));
-	testSuite->addTest (NEW_CASE(URLUtilsTest, CheckUrlEncodingTest));
-	testSuite->addTest (NEW_CASE(URLUtilsTest, CheckUrlArgEncodingTest));
-	testSuite->addTest (NEW_CASE(URLUtilsTest, CheckUrlPathContainsUnsafeCharsTest));
+	ADD_CASE(testSuite, URLUtilsTest, urlDecodeTest);
+	ADD_CASE(testSuite, URLUtilsTest, ExhaustiveUrlDecodeTest);
+	ADD_CASE(testSuite, URLUtilsTest, ExhaustiveHTMLDecodeTest);
+	ADD_CASE(testSuite, URLUtilsTest, HTMLDecodeTest);
+	ADD_CASE(testSuite, URLUtilsTest, urlEncodeTest);
+	ADD_CASE(testSuite, URLUtilsTest, PairTest);
+	ADD_CASE(testSuite, URLUtilsTest, SplitTest);
+	ADD_CASE(testSuite, URLUtilsTest, DecodeAllTest);
+	ADD_CASE(testSuite, URLUtilsTest, HandleURITest);
+	ADD_CASE(testSuite, URLUtilsTest, HandleURI2Test);
+	ADD_CASE(testSuite, URLUtilsTest, TrimBlanksTest);
+	ADD_CASE(testSuite, URLUtilsTest, HTMLEscapeTest);
+	ADD_CASE(testSuite, URLUtilsTest, RemoveUnwantedCharsTest);
+	ADD_CASE(testSuite, URLUtilsTest, CheckUrlEncodingTest);
+	ADD_CASE(testSuite, URLUtilsTest, CheckUrlArgEncodingTest);
+	ADD_CASE(testSuite, URLUtilsTest, CheckUrlPathContainsUnsafeCharsTest);
 
 	return testSuite;
 
-} // suite
+}

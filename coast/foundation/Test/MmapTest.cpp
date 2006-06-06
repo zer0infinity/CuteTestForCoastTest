@@ -42,15 +42,10 @@ const char *const MmapTest::fgcContent =
 
 const char *const MmapTest::fgcFilename = "tmp/MmapTest.txt";
 
-MmapTest::MmapTest(TString tname) : TestCase(tname)
+MmapTest::MmapTest(TString tname) : TestCaseType(tname)
 {};
 
 MmapTest::~MmapTest() {}
-
-void MmapTest::setUp ()
-{
-	TestCase::setUp();
-};
 
 Test *MmapTest::suite ()
 /* what: return the whole suite of tests for IFAMmapStream,

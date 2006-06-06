@@ -16,12 +16,12 @@
 #include "AcceptorTest.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
 
 //--- c-library modules used ---------------------------------------------------
 
 //---- AcceptorTest ----------------------------------------------------------------
-AcceptorTest::AcceptorTest(TString tname) : TestCase(tname)
+AcceptorTest::AcceptorTest(TString tname)
+	: TestCaseType(tname)
 {
 }
 
@@ -29,29 +29,15 @@ AcceptorTest::~AcceptorTest()
 {
 }
 
-void AcceptorTest::setUp ()
-{
-	istream *is = System::OpenStream("AcceptorTest", "any");
-	if ( is ) {
-		fConfig.Import( *is );
-		delete is;
-	} else {
-		assertEqual( "'read AcceptorTest.any'", "'could not read AcceptorTest.any'" );
-	}
-} // setUp
-
-void AcceptorTest::tearDown ()
-{
-} // tearDown
 void AcceptorTest::dnsNameParam()
 {
-	Acceptor acceptor(fConfig["dnsNameParam"]["name"].AsString(), 0, 0, 0);
-	assertEqual( fConfig["dnsNameParam"]["ip"].AsString(), acceptor.GetAddress() );
+	Acceptor acceptor(GetConfig()["dnsNameParam"]["name"].AsString(), 0, 0, 0);
+	assertEqual( GetConfig()["dnsNameParam"]["ip"].AsString(), acceptor.GetAddress() );
 }
 
 void AcceptorTest::getPort()
 {
-	Acceptor acceptor(fConfig["Localhost"]["ip"].AsString(), 0, 0, 0);
+	Acceptor acceptor(GetConfig()["Localhost"]["ip"].AsString(), 0, 0, 0);
 
 	assertEqual( 0, acceptor.GetPort() );
 	assertEqual(0, acceptor.PrepareAcceptLoop());
@@ -87,12 +73,12 @@ void AcceptorTest::acceptOnceTest()
 	// the program cannot run otherwise
 #ifdef __sun
 	TestCallBack *cb = new TestCallBack(this);
-	Acceptor acceptor(fConfig["acceptOnceTest"]["ip"].AsString(), 0, 1, cb);
+	Acceptor acceptor(GetConfig()["acceptOnceTest"]["ip"].AsString(), 0, 1, cb);
 
 	t_assert(0 == acceptor.PrepareAcceptLoop());
 	t_assert( 0 != acceptor.GetPort() );
 
-	Connector connector(fConfig["acceptOnceTest"]["ip"].AsString(), acceptor.GetPort());
+	Connector connector(GetConfig()["acceptOnceTest"]["ip"].AsString(), acceptor.GetPort());
 	if (t_assert(connector.Use() != NULL)) { // should try a connect to acceptor; not yet accepting
 		acceptor.RunAcceptLoop(true);
 	}
@@ -101,7 +87,6 @@ void AcceptorTest::acceptOnceTest()
 }
 
 Test *AcceptorTest::suite ()
-// collect all test cases for the SocketStream
 {
 	TestSuite *testSuite = new TestSuite;
 

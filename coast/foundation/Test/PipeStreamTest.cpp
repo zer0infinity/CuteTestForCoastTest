@@ -21,7 +21,7 @@
 
 //---- PipeStreamTest ----------------------------------------------------------------
 PipeStreamTest::PipeStreamTest(TString className)
-	: TestCase(className)
+	: TestCaseType(className)
 {
 	StartTrace(PipeStreamTest.Ctor);
 }
@@ -30,17 +30,6 @@ PipeStreamTest::~PipeStreamTest()
 {
 	StartTrace(PipeStreamTest.Dtor);
 }
-
-// setup for this TestCase
-void PipeStreamTest::setUp ()
-{
-	StartTrace(PipeStreamTest.setUp);
-} // setUp
-
-void PipeStreamTest::tearDown ()
-{
-	StartTrace(PipeStreamTest.tearDown);
-} // tearDown
 
 void PipeStreamTest::SimpleWriteandRead()
 {
@@ -135,10 +124,10 @@ Test *PipeStreamTest::suite ()
 	StartTrace(PipeStreamTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(PipeStreamTest, SimpleWriteandRead));
-	testSuite->addTest (NEW_CASE(PipeStreamTest, MoreWriteandRead));
-	testSuite->addTest (NEW_CASE(PipeStreamTest, LoopWriteandRead));
-	testSuite->addTest (NEW_CASE(PipeStreamTest, PipeAndFork));
+	ADD_CASE(testSuite, PipeStreamTest, SimpleWriteandRead);
+	ADD_CASE(testSuite, PipeStreamTest, MoreWriteandRead);
+	ADD_CASE(testSuite, PipeStreamTest, LoopWriteandRead);
+	ADD_CASE(testSuite, PipeStreamTest, PipeAndFork);
 
 	return testSuite;
 }

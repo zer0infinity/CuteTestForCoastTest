@@ -29,7 +29,8 @@
 #endif
 
 //---- SocketTest ------------------------------------------------------------
-SocketTest::SocketTest(TString tname) : TestCase(tname)
+SocketTest::SocketTest(TString tname)
+	: TestCaseType(tname)
 {
 }
 
@@ -37,24 +38,9 @@ SocketTest::~SocketTest()
 {
 }
 
-void SocketTest::setUp ()
-{
-	istream *is = System::OpenStream("SocketTest", "any");
-	if ( is ) {
-		fConfig.Import( *is );
-		delete is;
-	} else {
-		assertEqual( "'read SocketTest.any'", "'could not read SocketTest.any'" );
-	}
-} // setUp
-
-void SocketTest::tearDown ()
-{
-} // tearDown
-
 void SocketTest::simpleConstructorTest()
 {
-	Connector connector(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port"].AsLong());
+	Connector connector(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port"].AsLong());
 	Socket *socket = connector.MakeSocket();
 
 	if ( t_assert( socket != NULL ) ) { // fails without HTTP Server
@@ -72,7 +58,7 @@ void SocketTest::allocatorConstructorTest()
 	PoolAllocator pa(1, 8 * 1024, 21);
 	TestStorageHooks tsh(&pa);
 
-	Connector connector(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port"].AsLong());
+	Connector connector(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port"].AsLong());
 	connector.SetThreadLocal();
 	Socket *socket = connector.MakeSocket();
 
@@ -108,11 +94,11 @@ void SocketTest::faultyConstructorTest()
 
 void SocketTest::httpClientTest()
 {
-	Connector connector(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["port"].AsLong());
+	Connector connector(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port"].AsLong());
 	Socket *socket = connector.MakeSocket();
 
-	assertEqual( fConfig["Testhost"]["ip"].AsString(), connector.GetAddress() );
-	assertEqual( fConfig["Testhost"]["port"].AsLong(), connector.fPort );
+	assertEqual( GetConfig()["Testhost"]["ip"].AsString(), connector.GetAddress() );
+	assertEqual( GetConfig()["Testhost"]["port"].AsLong(), connector.fPort );
 	assertEqual( (long)NULL, (long)connector.fSocket );
 
 	if ( t_assert( socket != NULL ) ) { // fails without HTTP Server
@@ -120,17 +106,17 @@ void SocketTest::httpClientTest()
 		t_assert( socketfd > 0L );
 
 		// this one sets the connect timeout
-		socket->SetTimeout(fConfig["GetStreamTimeout"].AsLong(5000L));
+		socket->SetTimeout(GetConfig()["GetStreamTimeout"].AsLong(5000L));
 		iostream *Ios = socket->GetStream();
 		t_assert( Ios != NULL);
 		if ( Ios ) {
 			String query("GET / HTTP/1.0");
 			String reply;
 			long lRetCode;
-			if ( t_assertm(socket->IsReadyForWriting(fConfig["ReadyForWritingTimeout"].AsLong(5000L), lRetCode), TString("expected no timeout for sending http request to [") << connector.GetAddress() << ':' << connector.fPort << "]") && t_assert(lRetCode > 0) ) {
+			if ( t_assertm(socket->IsReadyForWriting(GetConfig()["ReadyForWritingTimeout"].AsLong(5000L), lRetCode), TString("expected no timeout for sending http request to [") << connector.GetAddress() << ':' << connector.fPort << "]") && t_assert(lRetCode > 0) ) {
 				(*Ios) << query << endl << endl;
 				t_assert(!!(*Ios)); // make sure Ios is valid
-				if ( t_assertm(socket->IsReadyForReading(fConfig["ReadyForReadingTimeout"].AsLong(5000L), lRetCode), TString("expected no timeout for reading HTTP reply [") << connector.GetAddress() << ':' << connector.fPort << "]") && t_assert(lRetCode > 0) ) {
+				if ( t_assertm(socket->IsReadyForReading(GetConfig()["ReadyForReadingTimeout"].AsLong(5000L), lRetCode), TString("expected no timeout for reading HTTP reply [") << connector.GetAddress() << ':' << connector.fPort << "]") && t_assert(lRetCode > 0) ) {
 					(*Ios) >> reply;
 					assertEqual( "HTTP", reply.SubString(0, 4) ); // test first line of reply by http server
 					t_assert(!!(*Ios));
@@ -145,11 +131,11 @@ void SocketTest::httpClientTest()
 
 void SocketTest::faultyClientTest()
 {
-	Connector connector(fConfig["Testhost"]["ip"].AsString(), fConfig["Testhost"]["faultyport"].AsLong(), fConfig["ConnectorTimeout"].AsLong(10000L));  // this port should not be in use check with /etc/services
+	Connector connector(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["faultyport"].AsLong(), GetConfig()["ConnectorTimeout"].AsLong(10000L));  // this port should not be in use check with /etc/services
 	Socket *socket = connector.MakeSocket();
 
-	assertEqual( fConfig["Testhost"]["ip"].AsString(), connector.GetAddress() );
-	assertEqual( fConfig["Testhost"]["faultyport"].AsLong(), connector.fPort );
+	assertEqual( GetConfig()["Testhost"]["ip"].AsString(), connector.GetAddress() );
+	assertEqual( GetConfig()["Testhost"]["faultyport"].AsLong(), connector.fPort );
 
 	t_assert( socket == NULL );
 	delete socket;
@@ -157,11 +143,11 @@ void SocketTest::faultyClientTest()
 
 void SocketTest::MakeInetAddrTest()
 {
-	ROAnything roTestConfig = fConfig["MakeInetAddrTest"]["IpAddr"];
+	ROAnything roTestConfig = GetConfig()["MakeInetAddrTest"]["IpAddr"];
 	for (long i = 0; i < roTestConfig.GetSize(); i++) {
 		assertEqualm(roTestConfig[i].AsLong(), ntohl(EndPoint::MakeInetAddr(roTestConfig.SlotName(i))), TString("Failed at Addr [") << roTestConfig.SlotName(i) << "]");
 	}
-	unsigned long localInetAddr(fConfig["MakeInetAddrTest"]["LocalHost"].AsLong(0L));
+	unsigned long localInetAddr(GetConfig()["MakeInetAddrTest"]["LocalHost"].AsLong(0L));
 	assertEqualm( localInetAddr , ntohl(EndPoint::MakeInetAddr("")), "Expected localhosts addr");
 	assertEqualm( INADDR_ANY , EndPoint::MakeInetAddr("", true), "Expected any ip addr");
 }
@@ -210,13 +196,13 @@ Test *SocketTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(SocketTest, simpleConstructorTest));
-	testSuite->addTest (NEW_CASE(SocketTest, allocatorConstructorTest));
-	testSuite->addTest (NEW_CASE(SocketTest, faultyConstructorTest));
-	testSuite->addTest (NEW_CASE(SocketTest, httpClientTest));
-	testSuite->addTest (NEW_CASE(SocketTest, faultyClientTest));
-	testSuite->addTest (NEW_CASE(SocketTest, MakeInetAddrTest));
-	testSuite->addTest (NEW_CASE(SocketTest, AppendToClientInfoTest));
+	ADD_CASE(testSuite, SocketTest, simpleConstructorTest);
+	ADD_CASE(testSuite, SocketTest, allocatorConstructorTest);
+	ADD_CASE(testSuite, SocketTest, faultyConstructorTest);
+	ADD_CASE(testSuite, SocketTest, httpClientTest);
+	ADD_CASE(testSuite, SocketTest, faultyClientTest);
+	ADD_CASE(testSuite, SocketTest, MakeInetAddrTest);
+	ADD_CASE(testSuite, SocketTest, AppendToClientInfoTest);
 	ADD_CASE(testSuite, SocketTest, SetToNonBlockingTest);
 
 	return testSuite;

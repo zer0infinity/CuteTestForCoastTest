@@ -25,7 +25,7 @@
 //--- c-library modules used ---------------------------------------------------
 
 //---- RECompilerTest ----------------------------------------------------------------
-RECompilerTest::RECompilerTest(TString tstrName) : TestCase(tstrName)
+RECompilerTest::RECompilerTest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(RECompilerTest.Ctor);
 }
@@ -34,17 +34,6 @@ RECompilerTest::~RECompilerTest()
 {
 	StartTrace(RECompilerTest.Dtor);
 }
-
-// setup for this TestCase
-void RECompilerTest::setUp ()
-{
-	StartTrace(RECompilerTest.setUp);
-} // setUp
-
-void RECompilerTest::tearDown ()
-{
-	StartTrace(RECompilerTest.tearDown);
-} // tearDown
 
 struct a_test {
 	long expected;
@@ -483,23 +472,23 @@ Test *RECompilerTest::suite ()
 	StartTrace(RECompilerTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(RECompilerTest, TestAppendNode));
-	testSuite->addTest (NEW_CASE(RECompilerTest, TestInsertNode));
-	testSuite->addTest (NEW_CASE(RECompilerTest, TestSetNextOfEnd));
-	testSuite->addTest (NEW_CASE(RECompilerTest, TestGenerateQuestion));
-	testSuite->addTest (NEW_CASE(RECompilerTest, TestRepeatTerminal));
-	testSuite->addTest (NEW_CASE(RECompilerTest, TestCharClass));
-	testSuite->addTest (NEW_CASE(RECompilerTest, TestAtom));
-	testSuite->addTest (NEW_CASE(RECompilerTest, TestTerminal));
-	testSuite->addTest (NEW_CASE(RECompilerTest, TestClosure));
-	testSuite->addTest (NEW_CASE(RECompilerTest, TestBranch));
-	testSuite->addTest (NEW_CASE(RECompilerTest, TestExpr));
-	testSuite->addTest (NEW_CASE(RECompilerTest, TestEscape));
-	testSuite->addTest (NEW_CASE(RECompilerTest, SimpleCompile));
-	testSuite->addTest (NEW_CASE(RECompilerTest, SuspectedCompile));
-	testSuite->addTest (NEW_CASE(RECompilerTest, TestBackRefMatch));
-	testSuite->addTest (NEW_CASE(RECompilerTest, TestAllCompilationTests));
+	ADD_CASE(testSuite, RECompilerTest, TestAppendNode);
+	ADD_CASE(testSuite, RECompilerTest, TestInsertNode);
+	ADD_CASE(testSuite, RECompilerTest, TestSetNextOfEnd);
+	ADD_CASE(testSuite, RECompilerTest, TestGenerateQuestion);
+	ADD_CASE(testSuite, RECompilerTest, TestRepeatTerminal);
+	ADD_CASE(testSuite, RECompilerTest, TestCharClass);
+	ADD_CASE(testSuite, RECompilerTest, TestAtom);
+	ADD_CASE(testSuite, RECompilerTest, TestTerminal);
+	ADD_CASE(testSuite, RECompilerTest, TestClosure);
+	ADD_CASE(testSuite, RECompilerTest, TestBranch);
+	ADD_CASE(testSuite, RECompilerTest, TestExpr);
+	ADD_CASE(testSuite, RECompilerTest, TestEscape);
+	ADD_CASE(testSuite, RECompilerTest, SimpleCompile);
+	ADD_CASE(testSuite, RECompilerTest, SuspectedCompile);
+	ADD_CASE(testSuite, RECompilerTest, TestBackRefMatch);
+	ADD_CASE(testSuite, RECompilerTest, TestAllCompilationTests);
 
 	return testSuite;
 
-} // suite
+}

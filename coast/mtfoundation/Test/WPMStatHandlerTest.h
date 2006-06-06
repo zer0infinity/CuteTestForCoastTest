@@ -16,7 +16,7 @@ class WPMStatHandler;
 
 //---- WPMStatHandlerTest ----------------------------------------------------------
 //!TestCases description
-class WPMStatHandlerTest : public TestCase
+class WPMStatHandlerTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -33,12 +33,6 @@ public:
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
 
-	//!sets the environment for this test
-	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
-
 	//!test the state of the statistics after construction
 	void ConstructorTest();
 	//!test behavior for the statistic events
@@ -49,7 +43,6 @@ public:
 protected:
 	//!bottleneck to assert state
 	bool AssertState(const WPMStatHandler &wpm, const Anything &state);
-
 };
 
 #endif

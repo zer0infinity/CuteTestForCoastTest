@@ -21,7 +21,7 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- AnyImplsTest ----------------------------------------------------------------
-AnyImplsTest::AnyImplsTest(TString tstrName) : TestCase(tstrName)
+AnyImplsTest::AnyImplsTest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(AnyImplsTest.Ctor);
 }
@@ -31,20 +31,9 @@ AnyImplsTest::~AnyImplsTest()
 	StartTrace(AnyImplsTest.Dtor);
 }
 
-// setup for this TestCase
-void AnyImplsTest::setUp ()
-{
-	StartTrace(AnyImplsTest.setUp);
-}
-
-void AnyImplsTest::tearDown ()
-{
-	StartTrace(AnyImplsTest.tearDown);
-}
-
 void AnyImplsTest::DoubleToStringTest()
 {
-	StartTrace(AnyImplsTest.testCase);
+	StartTrace(AnyImplsTest.DoubleToStringTest);
 	{
 		String strBuf;
 		double dValue = 1.0;

@@ -15,13 +15,15 @@
 #include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
+#include "Socket.h"
 #include "Dbg.h"
 
 //--- c-modules used -----------------------------------------------------------
 
 //---- ConnectorArgsTest ----------------------------------------------------------------
 
-ConnectorArgsTest::ConnectorArgsTest(TString tname) : TestCase(tname)
+ConnectorArgsTest::ConnectorArgsTest(TString tname)
+	: TestCaseType(tname)
 {
 }
 
@@ -30,22 +32,9 @@ ConnectorArgsTest::~ConnectorArgsTest()
 	StartTrace(ConnectorArgsTest.Dtor);
 }
 
-void ConnectorArgsTest::setUp ()
+void ConnectorArgsTest::ArgsTest()
 {
-} // setUp
-
-void ConnectorArgsTest::tearDown ()
-{
-} // tearDown
-
-void ConnectorArgsTest::test()
-{
-	StartTrace(ConnectorArgsTest.test);
-}
-
-void ConnectorArgsTest::testConnectorArgs()
-{
-	StartTrace(ConnectorArgsTest.test);
+	StartTrace(ConnectorArgsTest.ArgsTest);
 	ConnectorArgs ca("192.168.1.1", 9999, 40);
 	assertEqual(ca.IPAddress(), "192.168.1.1");
 	assertEqual(ca.Port(), 9999);
@@ -73,14 +62,11 @@ void ConnectorArgsTest::testConnectorArgs()
 	assertEqual(ca4.ConnectTimeout(), 40);
 }
 
-// builds up a suite of ConfiguredTestCases, add a line for each testmethod
+// builds up a suite of tests, add a line for each testmethod
 Test *ConnectorArgsTest::suite ()
 {
 	StartTrace(ConnectorArgsTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	ADD_CASE(testSuite, ConnectorArgsTest, test);
-	ADD_CASE(testSuite, ConnectorArgsTest, testConnectorArgs);
-
+	ADD_CASE(testSuite, ConnectorArgsTest, ArgsTest);
 	return testSuite;
 }

@@ -15,7 +15,7 @@
 //---- SystemAPITest ----------------------------------------------------------
 //!TestCases description
 struct condthreadparam;
-class SystemAPITest : public TestCase
+class SystemAPITest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
@@ -31,12 +31,6 @@ public:
 
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
-
-	//!sets the environment for this test
-	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
 
 protected:
 	void PrintResult(Anything result );

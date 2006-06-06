@@ -16,15 +16,14 @@
 #include "AnySorter.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
-#include "System.h"
+#include "AnyIterators.h"
 
 //--- c-library modules used ---------------------------------------------------
 
 //---- AnySorterTest ---------------------------------------------------------
 
 AnySorterTest::AnySorterTest (TString tname)
-	: TestCase(tname)
+	: TestCaseType(tname)
 {
 }
 
@@ -33,25 +32,12 @@ AnySorterTest::~AnySorterTest()
 	StartTrace(AnySorterTest.Dtor);
 }
 
-// setup for this TestCase
-void AnySorterTest::setUp ()
+void AnySorterTest::SorterTest()
 {
-	StartTrace(AnySorterTest.setUp);
-	if ( t_assertm( System::LoadConfigFile(fConfig, getClassName(), "any"), TString("expected ") << getClassName() << " to be readable!" ) ) {
-		fTestCaseConfig = fConfig[name()];
-	}
-}
-
-void AnySorterTest::tearDown ()
-{
-	StartTrace(AnySorterTest.tearDown);
-}
-
-void AnySorterTest::testAnySorter()
-{
-	StartTrace(AnySorterTest.testAnySorter);
-	ROAnything cConfig(fTestCaseConfig[0L]);
-	for (long lIdx = 0; lIdx < fTestCaseConfig.GetSize(); lIdx++, cConfig = fTestCaseConfig[lIdx]) {
+	StartTrace(AnySorterTest.SorterTest);
+	ROAnything cConfig;
+	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(cConfig) ) {
 		TraceAny(cConfig, "the config");
 		Anything sorted;
 		AnySorter::EMode mode(cConfig["Mode"].AsString() == "asc" ? AnySorter::asc : AnySorter::desc);
@@ -65,6 +51,6 @@ void AnySorterTest::testAnySorter()
 Test *AnySorterTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
-	ADD_CASE(testSuite, AnySorterTest, testAnySorter);
+	ADD_CASE(testSuite, AnySorterTest, SorterTest);
 	return testSuite;
 }

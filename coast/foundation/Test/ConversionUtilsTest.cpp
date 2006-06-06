@@ -21,7 +21,7 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- ConversionUtilsTest ----------------------------------------------------------------
-ConversionUtilsTest::ConversionUtilsTest(TString tstrName) : TestCase(tstrName)
+ConversionUtilsTest::ConversionUtilsTest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(ConversionUtilsTest.Ctor);
 }
@@ -29,17 +29,6 @@ ConversionUtilsTest::ConversionUtilsTest(TString tstrName) : TestCase(tstrName)
 ConversionUtilsTest::~ConversionUtilsTest()
 {
 	StartTrace(ConversionUtilsTest.Dtor);
-}
-
-// setup for this TestCase
-void ConversionUtilsTest::setUp ()
-{
-	StartTrace(ConversionUtilsTest.setUp);
-}
-
-void ConversionUtilsTest::tearDown ()
-{
-	StartTrace(ConversionUtilsTest.tearDown);
 }
 
 #define TestSpecificValue(valType, value, from, order) \

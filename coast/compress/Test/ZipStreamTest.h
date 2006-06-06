@@ -10,17 +10,13 @@
 #define _ZipStreamTest_H
 
 //---- baseclass include -------------------------------------------------
-
-#include "Anything.h"
-#include "TestCase.h"
+#include "FoundationTestTypes.h"
 
 //---- ZipStreamTest ----------------------------------------------------------
 //! TestCases description
-class ZipStreamTest : public TestCase
+class ZipStreamTest : public TestFramework::TestCaseWithConfig
 {
 public:
-	//--- constructors
-
 	//!TestCase constructor
 	//! \param name name of the test
 	ZipStreamTest(TString tstrName);
@@ -28,16 +24,8 @@ public:
 	//!destroys the test case
 	~ZipStreamTest();
 
-	//--- public api
-
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
-
-	//!sets the environment for this test
-	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
 
 	//!test the gzip header after init
 	void GzipHdrWriteTest();
@@ -64,8 +52,6 @@ public:
 
 private:
 	void VerifyFile(const char *fileName);
-	Anything fConfig;
-	ROAnything fTestCaseConfig;
 };
 
 #endif

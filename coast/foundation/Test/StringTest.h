@@ -12,22 +12,21 @@
 #include "TestCase.h"
 
 //---- forward declaration -----------------------------------------------
-#include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include "ITOString.h"
+
 //---- StringTest -----------------------------------------------------------
 //!testcases for String
-class StringTest : public TestCase
+class StringTest : public TestFramework::TestCase
 {
 protected:
 	String fShort;
 	String fLong;
 
 public:
-	StringTest (TString tstrName); // : TestCase (name) {}
+	StringTest (TString tstrName);
 	virtual ~StringTest();
 
 	virtual void			setUp ();
-	static Test				*worksuite ();
 	static Test				*suite ();
 
 	void			constructors ();

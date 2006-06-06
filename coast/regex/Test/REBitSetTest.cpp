@@ -23,7 +23,7 @@
 #include <ctype.h>
 
 //---- REBitSetTest ----------------------------------------------------------------
-REBitSetTest::REBitSetTest(TString tstrName) : TestCase(tstrName)
+REBitSetTest::REBitSetTest(TString tstrName) : TestCaseType(tstrName)
 {
 	StartTrace(REBitSetTest.Ctor);
 }
@@ -33,19 +33,9 @@ REBitSetTest::~REBitSetTest()
 	StartTrace(REBitSetTest.Dtor);
 }
 
-// setup for this TestCase
-void REBitSetTest::setUp ()
-{
-	StartTrace(REBitSetTest.setUp);
-} // setUp
-
-void REBitSetTest::tearDown ()
-{
-	StartTrace(REBitSetTest.tearDown);
-} // tearDown
 void REBitSetTest::ManyTests()
 {
-	StartTrace(REBitSetTest.testCase);
+	StartTrace(REBitSetTest.ManyTests);
 
 	REBitSet empty;
 	REBitSet full(true);
@@ -182,11 +172,11 @@ Test *REBitSetTest::suite ()
 	StartTrace(REBitSetTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	testSuite->addTest (NEW_CASE(REBitSetTest, ManyTests));
-	testSuite->addTest (NEW_CASE(REBitSetTest, SetTo255));
-	testSuite->addTest (NEW_CASE(REBitSetTest, TestPredicateSet));
-	testSuite->addTest (NEW_CASE(REBitSetTest, GeneratePosixSets));
+	ADD_CASE(testSuite, REBitSetTest, ManyTests);
+	ADD_CASE(testSuite, REBitSetTest, SetTo255);
+	ADD_CASE(testSuite, REBitSetTest, TestPredicateSet);
+	ADD_CASE(testSuite, REBitSetTest, GeneratePosixSets);
 
 	return testSuite;
 
-} // suite
+}

@@ -10,21 +10,19 @@
 #define _StringStreamTest_h_
 
 #include "TestCase.h"
+
 //---- forward declaration -----------------------------------------------
-#include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
-class EXPORTDECL_FOUNDATION String;
+class String;
 
 //---- StringStreamTest -----------------------------------------------------------
 //!testcases for StringStream
-class StringStreamTest : public TestCase
+class StringStreamTest : public TestFramework::TestCase
 {
 public:
 	StringStreamTest(TString tstrName);
 	virtual ~StringStreamTest();
 
 	static Test *suite ();
-	virtual void setUp ();
-	void tearDown ();
 
 	void FormatTests();
 	void SimpleWrite();
@@ -44,6 +42,7 @@ public:
 	void OperatorShiftRightWithUnsignedLongLong();
 
 	static const char *const fgcContent;
+
 protected:
 	void testformat(const String &source, long expect, bool mustfail, const TString &msg);
 	void testformat(const String &source, double expect, bool mustfail, const TString &msg);

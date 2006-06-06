@@ -10,11 +10,11 @@
 #define _ConnectorTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "TestCase.h"
+#include "FoundationTestTypes.h"
 
 //---- ConnectorTest ----------------------------------------------------------
 //!testcases for Connector class
-class ConnectorTest : public TestCase
+class ConnectorTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors
@@ -27,14 +27,7 @@ public:
 	//! \return a new test is created by this method
 	static Test *suite ();
 
-	//!generate set up for connector test does nothing so far
-	void setUp ();
-
-	//!delete set up for connector test does nothing so far
-	void tearDown ();
-
 	//--- tests for public api of class connector
-
 	//!tests connector constructor with localhost and port 80
 	void simpleConstructorTest();
 
@@ -66,8 +59,6 @@ private:
 	// use careful, you inhibit subclass use
 	//--- private class api
 	void ConnectAndAssert(const char *host, long port, long timeout, bool threadLocal, bool shouldFail);
-	//--- private member variables
-	Anything	fConfig;
 };
 
 #endif

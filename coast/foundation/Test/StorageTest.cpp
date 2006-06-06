@@ -23,19 +23,11 @@
 //--- c-library modules used ---------------------------------------------------
 
 //---- StorageTest ----------------------------------------------------------------
-StorageTest::StorageTest(TString tname) : TestCase(tname)
+StorageTest::StorageTest(TString tname) : TestCaseType(tname)
 {
 }
 
 StorageTest::~StorageTest()
-{
-}
-
-void StorageTest::setUp ()
-{
-}
-
-void StorageTest::tearDown ()
 {
 }
 
@@ -319,14 +311,13 @@ void StorageTest::AnyAssignment()
 }
 
 Test *StorageTest::suite ()
-// collect all test cases for the SocketStream
 {
 	TestSuite *testSuite = new TestSuite;
-	testSuite->addTest (NEW_CASE(StorageTest, PoolSizeHintTest));
-	testSuite->addTest (NEW_CASE(StorageTest, SimpleCallocSetsToZeroTest));
-	testSuite->addTest (NEW_CASE(StorageTest, AllocatorTest));
-	testSuite->addTest (NEW_CASE(StorageTest, AllocatorTiming));
-	testSuite->addTest (NEW_CASE(StorageTest, LeakTest));
-	testSuite->addTest (NEW_CASE(StorageTest, AnyAssignment));
+	ADD_CASE(testSuite, StorageTest, PoolSizeHintTest);
+	ADD_CASE(testSuite, StorageTest, SimpleCallocSetsToZeroTest);
+	ADD_CASE(testSuite, StorageTest, AllocatorTest);
+	ADD_CASE(testSuite, StorageTest, AllocatorTiming);
+	ADD_CASE(testSuite, StorageTest, LeakTest);
+	ADD_CASE(testSuite, StorageTest, AnyAssignment);
 	return testSuite;
 }

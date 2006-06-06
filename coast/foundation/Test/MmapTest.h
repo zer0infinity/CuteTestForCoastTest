@@ -17,13 +17,12 @@
 
 //---- MmapTest -----------------------------------------------------------
 //!testcases for Mmap class
-class MmapTest : public TestCase
+class MmapTest : public TestFramework::TestCase
 {
 public:
 	MmapTest(TString tstrName);
 	virtual ~MmapTest();
 
-	virtual void setUp ();
 	static Test *suite ();
 
 	void LargeWrite();

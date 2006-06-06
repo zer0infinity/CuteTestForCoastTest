@@ -15,21 +15,20 @@
 #include "TestCase.h"
 
 //---- forward declaration -----------------------------------------------
-#include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include "ITOString.h"
+
 //---- StringTokenizer -----------------------------------------------------------
 //!testcases for StringTokenizer
-class StringTokenizerTest : public TestCase
+class StringTokenizerTest : public TestFramework::TestCase
 {
 protected:
 	String fShort;
 	String fLong;
 
 public:
-	StringTokenizerTest (TString tstrName); // : TestCase (name) {}
+	StringTokenizerTest (TString tstrName);
 
 	virtual void			setUp ();
-	static Test				*worksuite ();
 	static Test				*suite ();
 	void					constrMethodsAll ();
 	void	constrMethods0 ();

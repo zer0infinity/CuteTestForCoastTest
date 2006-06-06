@@ -10,17 +10,14 @@
 #define _PipeExecutorTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "TestCase.h"
-#include "Anything.h"
+#include "FoundationTestTypes.h"
 
 //---- forward declaration -----------------------------------------------
 
 //---- PipeExecutorTest ----------------------------------------------------------
 //!
-class PipeExecutorTest : public TestCase
+class PipeExecutorTest : public TestFramework::TestCaseWithConfig
 {
-	Anything fConfig;
-	ROAnything fTestCaseConfig;
 public:
 	//--- constructors
 	PipeExecutorTest(TString tstrName);
@@ -38,9 +35,6 @@ public:
 	void PrepareParamTest(); // check for mechanism working
 	void DummyKillTest(); // check for mechanism working
 	void ShellInvocationTest();
-
-	void setUp();
-	void tearDown();
 
 	static Test *suite ();
 };

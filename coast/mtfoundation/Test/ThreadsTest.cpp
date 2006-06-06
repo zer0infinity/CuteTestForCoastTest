@@ -46,7 +46,7 @@ void ExecCountThread::Run()
 }
 
 //---- ThreadsTest ----------------------------------------------------------------
-ThreadsTest::ThreadsTest(TString tname) : TestCase(tname), fMutex(tname)
+ThreadsTest::ThreadsTest(TString tname) : TestCaseType(tname), fMutex(tname)
 {
 }
 
@@ -57,28 +57,18 @@ ThreadsTest::~ThreadsTest()
 Test *ThreadsTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
-	testSuite->addTest (NEW_CASE(ThreadsTest, SimpleSemaphoreTest));
-	testSuite->addTest (NEW_CASE(ThreadsTest, MultiSemaphoreTest));
-	testSuite->addTest (NEW_CASE(ThreadsTest, SimpleMutexTest));
-	testSuite->addTest (NEW_CASE(ThreadsTest, TimedRunTest));
-	testSuite->addTest (NEW_CASE(ThreadsTest, RecursiveMutexTest));
-	testSuite->addTest (NEW_CASE(ThreadsTest, MutexLockIterationTest));
-	testSuite->addTest (NEW_CASE(ThreadsTest, SimpleConditionsTest));
-	testSuite->addTest (NEW_CASE(ThreadsTest, ThreadHookArgsTest));
-	testSuite->addTest (NEW_CASE(ThreadsTest, ThreadStateTransitionTest));
-	testSuite->addTest (NEW_CASE(ThreadsTest, ThreadRunningStateTransitionTest));
-	testSuite->addTest (NEW_CASE(ThreadsTest, ThreadObjectReuseTest));
+	ADD_CASE(testSuite, ThreadsTest, SimpleSemaphoreTest);
+	ADD_CASE(testSuite, ThreadsTest, MultiSemaphoreTest);
+	ADD_CASE(testSuite, ThreadsTest, SimpleMutexTest);
+	ADD_CASE(testSuite, ThreadsTest, TimedRunTest);
+	ADD_CASE(testSuite, ThreadsTest, RecursiveMutexTest);
+	ADD_CASE(testSuite, ThreadsTest, MutexLockIterationTest);
+	ADD_CASE(testSuite, ThreadsTest, SimpleConditionsTest);
+	ADD_CASE(testSuite, ThreadsTest, ThreadHookArgsTest);
+	ADD_CASE(testSuite, ThreadsTest, ThreadStateTransitionTest);
+	ADD_CASE(testSuite, ThreadsTest, ThreadRunningStateTransitionTest);
+	ADD_CASE(testSuite, ThreadsTest, ThreadObjectReuseTest);
 	return testSuite;
-}
-
-//:sets the environment for this test
-void ThreadsTest::setUp ()
-{
-}
-
-//:deletes the environment for this test
-void ThreadsTest::tearDown ()
-{
 }
 
 void ThreadsTest::ThreadRunningStateTransitionTest()

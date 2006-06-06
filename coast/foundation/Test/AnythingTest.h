@@ -12,12 +12,11 @@
 #include "TestCase.h"
 
 //---- forward declaration -----------------------------------------------
-#include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include "Anything.h"
 
 //---- AnythingTest -----------------------------------------------------------
 //!testcases for Anything
-class AnythingTest : public TestCase
+class AnythingTest : public TestFramework::TestCase
 {
 protected:
 	Anything fString;
@@ -40,25 +39,24 @@ public:
 	AnythingTest (TString tstrName);
 
 	virtual void	setUp ();
-	static Test	*worksuite ();
 	static Test	*suite ();
 	void		Constructors ();
-	void		testDefaultConstr ();
-	void		testIntConstr ();
-	void		testLongConstr ();
-	void		testFloatConstr ();
-	void		testDoubleConstr0 ();
-	void		testDoubleConstr1 ();
-	void		testCharStarConstr ();
-	void		testCharStarLongConstr0 ();
-	void		testCharStarLongConstr1 ();
-	void		testCharStarLongConstr2 ();
-	void		testCharStarLongConstr3 ();
-	void		testStringConstr ();
-	void		testVoidStarLenConstr ();
-	void		testEmptyVoidStarLenConstr ();
-	void		testIFAObjectStarConstr ();
-	void		testAnythingConstr ();
+	void		DefaultConstrTest();
+	void		IntConstrTest();
+	void		LongConstrTest();
+	void		FloatConstrTest();
+	void		DoubleConstr0Test();
+	void		DoubleConstr1Test();
+	void		CharStarConstrTest();
+	void		CharStarLongConstr0Test();
+	void		CharStarLongConstr1Test();
+	void		CharStarLongConstr2Test();
+	void		CharStarLongConstr3Test();
+	void		StringConstrTest();
+	void		VoidStarLenConstrTest();
+	void		EmptyVoidStarLenConstrTest();
+	void		IFAObjectStarConstrTest();
+	void		AnythingConstrTest();
 	void		ImportTest ();
 
 	void		KeyDeletion ();
@@ -82,33 +80,33 @@ public:
 	void		EmptyAccess0 ();
 	void		EmptyAccess1 ();
 
-	void		testReadFails();
-	void		testWriteRead ();
-	void		testWriteRead0 ();
-	void		testWriteRead1 ();
-	void		testWriteRead5 ();
-	void		testWriteRead7 ();
-	void		testWriteRead8 ();
+	void		ReadFailsTest();
+	void		WriteReadTest();
+	void		WriteRead0Test();
+	void		WriteRead1Test();
+	void		WriteRead5Test();
+	void		WriteRead7Test();
+	void		WriteRead8Test();
 	void		AnyIncludeTest();
-	void		testDeepClone0();
-	void		testDeepClone1();
-	void		testDeepClone2();
-	void		testDeepClone3();
-	void		testDeepClone4();
-	void		testDeepClone5();
+	void		DeepClone0Test();
+	void		DeepClone1Test();
+	void		DeepClone2Test();
+	void		DeepClone3Test();
+	void		DeepClone4Test();
+	void		DeepClone5Test();
 
-	void		testLookUp();
+	void		LookUpTest();
 	void		EmptyLookup ();
 	void		invPathLookup ();
-	void		testLookUp0 ();
-	void		testLookUp1 ();
-//	void		testLookUp2 ();
-//	void		testLookUp3 ();
-//	void		testLookUp4 ();
-	void 		testLookUpWithSpecialChars ();
-	void		testLookupCaseSensitive();
+	void		LookUp0Test();
+	void		LookUp1Test();
+//	void		LookUp2Test();
+//	void		LookUp3Test();
+//	void		LookUp4Test();
+	void 		LookUpWithSpecialCharsTest();
+	void		LookupCaseSensitiveTest();
 	void 		LookupPathByIndex ();
-	void        testType ();
+	void        TypeTest();
 	void        RefSlotTest ();
 	void		SuccessiveAssignments();
 
