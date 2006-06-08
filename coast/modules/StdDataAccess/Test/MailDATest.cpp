@@ -38,6 +38,6 @@ Test *MailDATest::suite ()
 {
 	StartTrace(MailDATest.suite);
 	TestSuite *testSuite = new TestSuite;
-	ADD_CASE(testSuite, MailDATest, RunTestCases);
+	ADD_CASE(testSuite, MailDATest, TestCases);
 	return testSuite;
 }

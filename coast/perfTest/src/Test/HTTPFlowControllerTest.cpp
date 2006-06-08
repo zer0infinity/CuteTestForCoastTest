@@ -49,6 +49,6 @@ void HTTPFlowControllerTest::DoTest(Anything testCase, const char *testCaseName)
 Test *HTTPFlowControllerTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
-	ADD_CASE(testSuite, HTTPFlowControllerTest, RunTestCases);
+	ADD_CASE(testSuite, HTTPFlowControllerTest, TestCases);
 	return testSuite;
 }

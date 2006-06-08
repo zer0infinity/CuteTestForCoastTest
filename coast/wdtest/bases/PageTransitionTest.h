@@ -37,7 +37,7 @@ public:
 	static Test *suite ();
 
 	//! Runs the Testcases from PageTransitionTestConfig.any
-	void RunTestCases();
+	void TestCases();
 
 protected:
 	//! performs the test with configuration config

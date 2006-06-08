@@ -64,9 +64,9 @@ void PageTransitionTest::setUp ()
 	fServer->CheckConfig("Server");
 }
 
-void PageTransitionTest::RunTestCases()
+void PageTransitionTest::TestCases()
 {
-	StartTrace(PageTransitionTest.RunTestCases);
+	StartTrace(PageTransitionTest.TestCases);
 
 	Anything testCases;
 	long runOnlySz = GetConfig()["RunOnly"].GetSize();
@@ -181,7 +181,7 @@ Test *PageTransitionTest::suite ()
 	StartTrace(PageTransitionTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
-	ADD_CASE(testSuite, PageTransitionTest, RunTestCases);
+	ADD_CASE(testSuite, PageTransitionTest, TestCases);
 
 	return testSuite;
 
