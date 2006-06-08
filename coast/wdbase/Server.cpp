@@ -144,7 +144,7 @@ Server::~Server()
 }
 
 // intialization of the Server and its modules
-int Server::GlobalInit(int argc, char *argv[], const Anything &config)
+int Server::GlobalInit(int argc, char *argv[], const ROAnything config)
 {
 	StartTrace(Server.GlobalInit);
 

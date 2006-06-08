@@ -68,7 +68,7 @@ public:
 		return new Server(fName);
 	}
 	//!initialization of the Server and its modules
-	virtual int GlobalInit(int argc, char *argv[], const Anything &config);
+	virtual int GlobalInit(int argc, char *argv[], const ROAnything config);
 	//!starts up the server; an InterruptHandler is set up to catch signals for shutdown, reset etc.
 	virtual int GlobalRun();
 
