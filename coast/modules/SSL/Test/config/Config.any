@@ -6,47 +6,32 @@
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
 {
-
-#--- Modules ------------------------------------
-	/Modules {
-		SSLModule
-		AcceptorFactoriesModule
-	}
-	/AcceptorFactories {
-		/SSLAcceptorFactory {
-				 /TCP5010 { TCP5012 TCP5013 TCP5014 TCP5015 TCP5016 TCP5017 TCP5018 TCP5019 TCP5020 }
-		}
-		# Not a SSL acceptor factory!
-		/AcceptorFactory {
-			TCP5011
-		}
-	}
-		# -- Config for Acceptor Factories  in  ListenerPoolTest
+	# -- Config for Acceptor Factories  in  ListenerPoolTest
 	# These are the SLLServerSocket test cases.
-		/TCP5010 {
+	/TCP5010 {
 		/Address "127.0.0.1"
 		/Port	5010
 		/KeyFileServer	"cert_files/clientkey.pem"
 		/CertFileServer	"cert_files/clientcrt.pem"
-		}
+	}
 	# Expecting send/recieve to fail
-		/TCP5011 {
-			/Port	5011
-		}
+	/TCP5011 {
+		/Port	5011
+	}
 	# Check peer cert, this test should be ok.
 	# Expecting send/recieve to be ok
-		/TCP5012 {
-			/Port	5012
+	/TCP5012 {
+		/Port	5012
 		/KeyFileServer	"cert_files/serverkey.pem"
 		/CertFileServer	"cert_files/serverchain.pem"
-			/SSLPeerCAFile "cert_files/fullchain.pem" #"subca1cert.pem"
-			/SSLVerifyDepth 2
-			/SSLVerifyPeerCert 1
-			/SSLVerifyFailIfNoPeerCert 1
-		}
+		/SSLPeerCAFile "cert_files/fullchain.pem" #"subca1cert.pem"
+		/SSLVerifyDepth 2
+		/SSLVerifyPeerCert 1
+		/SSLVerifyFailIfNoPeerCert 1
+	}
 	# Expecting send/recieve to be ok
-		/TCP5013 {
-			/Port	5013
+	/TCP5013 {
+		/Port	5013
 		/KeyFileServer	"cert_files/serverkey.pem"
 		/CertFileServer	"cert_files/serverchain.pem"
 		/SSLPeerCAFile "cert_files/fullchain.pem" #"subca1cert.pem"
@@ -56,10 +41,10 @@
 		/VerifyCertifiedEntity 1
 		/CertVerifyStringIsFilter 0
 		/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ClientSite,L=ZH,ST=ZH,C=CH"
-		}
+	}
 	# Expecting send/recieve to be ok
-		/TCP5014 {
-			/Port	5014
+	/TCP5014 {
+		/Port	5014
 		/KeyFileServer	"cert_files/serverkey.pem"
 		/CertFileServer	"cert_files/serverchain.pem"
 		/SSLPeerCAFile "cert_files/fullchain.pem" #"subca1cert.pem"
@@ -126,9 +111,9 @@
 		/VerifyCertifiedEntity 1
 		/CertVerifyStringIsFilter 0
 		/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ClientSite,L=ZH,ST=ZH,C=CH"
-		}
+	}
 	# Expecting send/recieve to be ok
-		/TCP5020 {
+	/TCP5020 {
 		/Port	5020
 		/KeyFileServer	"cert_files/rootCA1key.pem"
 		/CertFileServer	"cert_files/rootCA1crt.pem"
@@ -139,351 +124,5 @@
 		/VerifyCertifiedEntity 1
 		/CertVerifyStringIsFilter 0
 		/CertVerifyString		"emailAddress=rootca1@wildplanet.com,CN=RootCA1,OU=CertIssueing,O=RootCA1,L=ZH,ST=ZH,C=CH"
-		}
-	/PoolTest {
-		# Check peer's (server) cert, don't show cert to peer
-		/Connector5010 {
-			/Address "127.0.0.1"
-			/Port 5010
-			/SSLVerifyDepth 2
-			/SSLPeerCAFile "cert_files/fullchain.pem"
-			/SSLVerifyPeerCert 1
-			/SSLVerifyFailIfNoPeerCert 1
-		}
-		# Check peer's (server) cert, show cert to peer
-		/Connector5012 {
-			/Address "127.0.0.1"
-			/Port 5012
-			/KeyFileClient	"cert_files/clientkey.pem"
-			/CertFileClient	"cert_files/clientcrt.pem"
-			/SSLVerifyDepth 2
-			/SSLPeerCAFile "cert_files/fullchain.pem"
-			/SSLVerifyPeerCert 1
-			/SSLVerifyFailIfNoPeerCert 1
-		}
-		# Check peer's (server) cert, show cert to peer
-		/Connector5013 {
-			/Address "127.0.0.1"
-			/Port 5013
-			/SessionResumption 1
-			/KeyFileClient	"cert_files/clientkey.pem"
-			/CertFileClient	"cert_files/clientcrt.pem"
-			/SSLVerifyDepth 2
-			/SSLPeerCAFile "cert_files/fullchain.pem"
-			/SSLVerifyPeerCert 1
-			/SSLVerifyFailIfNoPeerCert 1
-		}
-		# Check peer's (server) cert, show cert to peer
-		/Connector5014{
-			/Address "127.0.0.1"
-			/Port 5014
-			/KeyFileClient	"cert_files/clientkey.pem"
-			/CertFileClient	"cert_files/clientcrt.pem"
-			/SSLVerifyDepth 2
-			/SSLPeerCAFile "cert_files/fullchain.pem"
-			/SSLVerifyPeerCert 1
-			/SSLVerifyFailIfNoPeerCert 1
-		}
-		/Connector5015 {
-			/Address "127.0.0.1"
-			/Port 5015
-			/KeyFileClient	"cert_files/clientkey.pem"
-			/CertFileClient	"cert_files/clientcrt.pem"
-		}
-		/Connector5016 {
-			/Address "127.0.0.1"
-			/Port 5016
-			/KeyFileClient	"cert_files/clientkey.pem"
-			/CertFileClient	"cert_files/clientcrt.pem"
-		}
-		/Connector5017 {
-			/Address "127.0.0.1"
-			/Port 5017
-			/KeyFileClient	"cert_files/clientkey.pem"
-			/CertFileClient	"cert_files/clientcrt.pem"
-		}
-		/Connector5018 {
-			/Address "127.0.0.1"
-			/Port 5018
-			/SSLVerifyDepth 2
-			/SSLPeerCAFile "cert_files/fullchain.pem"
-			/SSLVerifyPeerCert 1
-			/SSLVerifyFailIfNoPeerCert 1
-		}
-		# Check peer's (server) cert, show cert to peer
-		/Connector5019 {
-			/Address "127.0.0.1"
-			/Port 5019
-			/KeyFileClient	"cert_files/clientkey.pem"
-			/CertFileClient	"cert_files/clientcrt.pem"
-			/SSLVerifyDepth 2
-			/SSLPeerCAFile "cert_files/fullchain.pem"
-			/SSLVerifyPeerCert 1
-			/SSLVerifyFailIfNoPeerCert 1
-		}
-		/Connector5020 {
-			/Address "127.0.0.1"
-			/Port 5020
-			/KeyFileClient	"cert_files/rootCA1key.pem"
-			/CertFileClient	"cert_files/rootCA1crt.pem"
-			/SSLVerifyDepth 2
-			/SSLPeerCAFile "cert_files/rootCA1crt.pem"
-			/SSLVerifyPeerCert 1
-			/SSLVerifyFailIfNoPeerCert 1
-		}
-	}
-	/SSLListenerPoolTest
-	{
-		{
-			/DoSendReceiveWithFailure 0
-			/SSLConnector		1
-			/ConnectorToUse	"Connector5010"
-			/Data
-			{
-				/MessageToSend	"5010_timeout_0"
-				/ChecksToDo
-				{
-				}
-			}
-		}
-		{
-			/SSLConnector		0
-			/PortToUse			5011
-			/TimeoutToUse		0
-			/Data
-			{
-				/MessageToSend	"5011_timeout_0"
-				/ChecksToDo
-				{
-				}
-			}
-		}
-		{
-			/DoSendReceiveWithFailure 0
-			/SSLConnector		1
-			/ConnectorToUse	"Connector5012"
-			/Data
-			{
-				/MessageToSend	"5012_timeout_0"
-				/ChecksToDo
-				{
-					/"SSL.Peer.AppLevelCertVerifyStatus" 0
-					/"SSL.Peer.SSLCertVerifyStatus.SSL.Ok" 1
-				}
-			}
-		}
-		{
-			/DoSendReceiveWithFailure 0
-			/SSLConnector		1
-			/NumberOfConnects	2
-			/ConnectorToUse	"Connector5013"
-			/Data
-			{
-				/MessageToSend	"5013_timeout_0"
-				/ChecksToDo
-				{
-					/"SSL.Peer.AppLevelCertVerifyStatus" 1
-					/"SSL.Peer.SSLCertVerifyStatus.SSL.Ok" 1
-					/"SSL.Peer.Whole"	"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ClientSite,L=ZH,ST=ZH,C=CH"
-				}
-				/LastChecksToDo
-				{
-					/"SSL.Peer.AppLevelCertVerifyStatus" 1
-					/"SSL.Peer.SSLCertVerifyStatus.SSL.Ok" 1
-					/"SSL.Peer.Whole"	"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ClientSite,L=ZH,ST=ZH,C=CH"
-					/"SSL.SessionIsResumed" 1
-				}
-			}
-		}
-		{
-			/DoSendReceiveWithFailure 0
-			/SSLConnector		1
-			/ConnectorToUse	"Connector5020"
-			/Data
-			{
-				/MessageToSend	"5020_timeout_0"
-				/ChecksToDo
-				{
-					/"SSL.Peer.AppLevelCertVerifyStatus" 1
-					/"SSL.Peer.SSLCertVerifyStatus.SSL.Ok" 1
-					/"SSL.Peer.Whole" "emailAddress=rootca1@wildplanet.com,CN=RootCA1,OU=CertIssueing,O=RootCA1,L=ZH,ST=ZH,C=CH"
-				}
-			}
-		}
-		{
-			/DoSendReceiveWithFailure 0
-			/SSLConnector		1
-			/ConnectorToUse	"Connector5014"
-			/Data
-			{
-				/MessageToSend	"5014_timeout_0"
-				/ChecksToDo
-				{
-					/"SSL.Peer.AppLevelCertVerifyStatus" 1
-					/"SSL.Peer.SSLCertVerifyStatus.SSL.Ok" 1
-				}
-			}
-		}
-		{
-			/DoSendReceiveWithFailure 0
-			/SSLConnector		1
-			/PortToUse			5010
-			/TimeoutToUse		1000
-			/UseThreadLocalMemory 1
-			/Data
-			{
-				/MessageToSend	"5010_timeout_1000"
-				/ChecksToDo
-				{
-				}
-			}
-		}
-		{
-			/DoSendReceiveWithFailure 0
-			/SSLConnector		0
-			/PortToUse			5011
-			/TimeoutToUse		1000
-			/UseThreadLocalMemory 1
-			/Data
-			{
-				/MessageToSend	"5011_timeout_1000"
-				/ChecksToDo
-				{
-				}
-			}
-		}
-		{
-			/DoSendReceiveWithFailure 0
-			/SSLConnector		1
-			/ConnectorToUse		"Connector5012"
-			/UseThreadLocalMemory 1
-			/TimeoutToUse		1000
-			/Data
-			{
-				/MessageToSend	"5012_timeout_1000"
-				/ChecksToDo
-				{
-				}
-			}
-		}
-		{
-			/DoSendReceiveWithFailure 0
-			/SSLConnector		1
-			/ConnectorToUse	"Connector5012"
-			/TimeoutToUse		2000
-			/UseThreadLocalMemory 1
-			/Data
-			{
-				/MessageToSend	"5012_timeout_2000"
-				/ChecksToDo
-				{
-				}
-			}
-		}
-		{
-			/DoSendReceiveWithFailure 0
-			/SSLConnector		0
-			/PortToUse			5011
-			/TimeoutToUse		2000
-			/UseThreadLocalMemory 1
-			/Data
-			{
-				/MessageToSend	"5011_timeout_2000"
-				/ChecksToDo
-				{
-				}
-			}
-		}
-#	# a non-SSL Connector to an SSL-Acceptor
-		{
-			/DoSendReceiveWithFailure	1
-			/IOSGoodAfterSend			1
-			/IOSGoodBeforeSend	1
-			/SSLConnector		0
-			/PortToUse			5012
-			/TimeoutToUse		2000
-			/UseThreadLocalMemory 1
-			/Data
-			{
-				/MessageToSend	"5011_timeout_2000"
-				/ChecksToDo
-				{
-				}
-			}
-		}
-#	# a SSL Connector to an non-SSL-Acceptor
-		{
-			/DoSendReceiveWithFailure 1
-			/IOSGoodAfterSend	0
-			/IOSGoodBeforeSend	0
-			/SSLConnector		1
-			/PortToUse			5011
-			/TimeoutToUse		1000
-			/Data
-			{
-				/MessageToSend	"5011_timeout_1000"
-				/ChecksToDo
-				{
-				}
-			}
-		}
-		{
-			/DoSendReceiveWithFailure 0
-			/SSLConnector		1
-			/ConnectorToUse		"Connector5016"
-			/TimeoutToUse		1000
-			/UseThreadLocalMemory 1
-			/Data
-			{
-				/MessageToSend	"5016_timeout_1000"
-				/ChecksToDo
-				{
-				}
-			}
-		}
-		{
-			/DoSendReceiveWithFailure 0
-			/SSLConnector		1
-			/ConnectorToUse		"Connector5017"
-			/TimeoutToUse		1000
-			/UseThreadLocalMemory 1
-			/Data
-			{
-				/MessageToSend	"5017_timeout_1000"
-				/ChecksToDo
-				{
-				}
-			}
-		}
-		{
-			/DoSendReceiveWithFailure 1
-			/IOSGoodBeforeSend			0
-			/IOSGoodAfterSend			0
-			/SSLConnector		1
-			/ConnectorToUse		"Connector5018"
-			/TimeoutToUse		1000
-			/UseThreadLocalMemory 1
-			/Data
-			{
-				/MessageToSend	"5018_timeout_1000"
-				/ChecksToDo
-				{
-				}
-			}
-		}
-		{
-			/DoSendReceiveWithFailure 1
-			/IOSGoodBeforeSend			0
-			/IOSGoodAfterSend			0
-			/SSLConnector		1
-			/ConnectorToUse	"Connector5019"
-			/Data
-			{
-				/MessageToSend	"5019_timeout_0"
-				/ChecksToDo
-				{
-				}
-			}
-		}
 	}
 }
