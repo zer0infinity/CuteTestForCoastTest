@@ -10,12 +10,11 @@
 #define _LdapCachePolicyTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "TestCase.h"
-#include "Anything.h"
+#include "WDBaseTestPolicies.h"
 
 //---- LdapCachePolicyTest ----------------------------------------------------------
 //:TestCases description
-class LdapCachePolicyTest : public TestFramework::TestCase
+class LdapCachePolicyTest : public TestFramework::TestCaseWithCaseConfigDllAndModuleLoading
 {
 public:
 	//--- constructors
@@ -32,13 +31,6 @@ public:
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
 
-	//!sets the environment for this test
-	void setUp ();
-	void setUp (const String &configName);
-
-	//!deletes the environment for this test
-	void tearDown ();
-
 	//!Do some reinits to check behaviour on reset.
 	void ReInitTest();
 
@@ -47,9 +39,6 @@ public:
 
 	//!LDAP query doesn't deliver any data, Module init should fail
 	void NoDataReadTest();
-
-protected:
-	Anything fGlobalConfig;
 };
 
 #endif

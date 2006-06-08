@@ -16,12 +16,9 @@
 #include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
 #include "Timers.h"
 #include "Server.h"
 #include "Action.h"
-#include "MmapStream.h"
-#include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
 
@@ -32,11 +29,6 @@ AppLogTest::AppLogTest(TString tname)
 	StartTrace(AppLogTest.AppLogTest);
 }
 
-TString AppLogTest::getConfigFileName()
-{
-	return "Config";
-}
-
 AppLogTest::~AppLogTest()
 {
 	StartTrace(AppLogTest.Dtor);
@@ -45,13 +37,14 @@ AppLogTest::~AppLogTest()
 void AppLogTest::ApplogModuleNotInitializedTest()
 {
 	StartTrace(AppLogTest.ApplogModuleNotInitializedTest);
-
-	Server *server = Server::FindServer("TestServer");
-	Context ctx;
-	ctx.SetServer(server);
-	ctx.GetTmpStore()["TestMsg"] = "Access log Test 1";
-	t_assertm(!AppLogModule::Log(ctx, "AccessLog"), "expected configured logger not to be found");
-	t_assertm(!AppLogModule::Log(ctx, "ErrorLog"), "expected configured logger not to be found");
+	Server *server = NULL;
+	if ( t_assert( ( server = Server::FindServer("TestServer") ) ) ) {
+		Context ctx;
+		ctx.SetServer(server);
+		ctx.GetTmpStore()["TestMsg"] = "Access log Test 1";
+		t_assertm(!AppLogModule::Log(ctx, "AccessLog"), "expected configured logger not to be found");
+		t_assertm(!AppLogModule::Log(ctx, "ErrorLog"), "expected configured logger not to be found");
+	}
 }
 
 void AppLogTest::LogOkTest()
@@ -60,9 +53,8 @@ void AppLogTest::LogOkTest()
 
 	WDModule *pModule = WDModule::FindWDModule("AppLogModule");
 	if ( t_assertm(pModule != NULL, "expected AppLogModule to be registered") ) {
-		if ( t_assert(pModule->Init(GetConfig())) ) {
-			Server *server = Server::FindServer("TestServer");
-
+		Server *server = NULL;
+		if ( t_assert( ( server = Server::FindServer("TestServer") ) ) ) {
 			Context ctx;
 			ctx.SetServer(server);
 			ctx.GetTmpStore()["TestMsg"] = "Access log Test 1";
@@ -85,8 +77,6 @@ void AppLogTest::LogOkTest()
 
 			CheckFile(ctx, "RelativeLogDir", "# Relative-File\n");
 			CheckFile(ctx, "AbsoluteLogDir", "# Absolute-File\n");
-
-			pModule->Finis();
 		}
 	}
 }
@@ -97,9 +87,8 @@ void AppLogTest::LogOkToVirtualServerTest()
 
 	WDModule *pModule = WDModule::FindWDModule("AppLogModule");
 	if ( t_assertm(pModule != NULL, "expected AppLogModule to be registered") ) {
-		if ( t_assert(pModule->Init(GetConfig())) ) {
-			Server *server = Server::FindServer("AnotherServerWithoutLogConfigButShouldUseChannelsOfTestServer");
-
+		Server *server = NULL;
+		if ( t_assert( ( server = Server::FindServer("AnotherServerWithoutLogConfigButShouldUseChannelsOfTestServer") ) ) ) {
 			Context ctx;
 			ctx.SetServer(server);
 			ctx.GetTmpStore()["TestMsg"] = "Access log Test 1";
@@ -121,8 +110,6 @@ void AppLogTest::LogOkToVirtualServerTest()
 			CheckFile(ctx, "ErrorLog", "ErrorlogTestHeader\nError 1 - Test\nError 2 - Test\n");
 			CheckFile(ctx, "RelativeLogDir", "# Relative-File\n");
 			CheckFile(ctx, "AbsoluteLogDir", "# Absolute-File\n");
-
-			pModule->Finis();
 		}
 	}
 }
@@ -133,9 +120,8 @@ void AppLogTest::LoggingActionTest()
 
 	WDModule *pModule = WDModule::FindWDModule("AppLogModule");
 	if ( t_assertm(pModule != NULL, "expected AppLogModule to be registered") ) {
-		if ( t_assert(pModule->Init(GetConfig())) ) {
-			Server *server = Server::FindServer("TestServer");
-
+		Server *server = NULL;
+		if ( t_assert( ( server = Server::FindServer("TestServer") ) ) ) {
 			Context ctx;
 			ctx.SetServer(server);
 			ctx.GetTmpStore()["TestMsg"] = "Action logging Test";
@@ -155,7 +141,6 @@ void AppLogTest::LoggingActionTest()
 
 			CheckFile(ctx, "AccessLog2", "Access2Header\nAction logging Test - Test\n");
 			CheckFile(ctx, "ErrorLog2", "Errorlog2TestHeader\nAction logging Error 1 - Test\n");
-			pModule->Finis();
 		}
 	}
 }
@@ -166,12 +151,10 @@ void AppLogTest::TimeLoggingActionTest()
 
 	WDModule *pModule = WDModule::FindWDModule("AppLogModule");
 	if ( t_assertm(pModule != NULL, "expected AppLogModule to be registered") ) {
-		if ( t_assert(pModule->Init(GetConfig())) ) {
-			Server *server = Server::FindServer("TestServer");
-
+		Server *server = NULL;
+		if ( t_assert( ( server = Server::FindServer("TestServer") ) ) ) {
 			Context ctx;
 			ctx.SetServer(server);
-
 			{
 				String msg("AppLogTimeTest");
 				ctx.GetTmpStore() = MetaThing();
@@ -202,11 +185,10 @@ void AppLogTest::TimeLoggingActionTest()
 			}
 
 			String token("TimeLogTestAction");
-			t_assertm(Action::ExecAction(token, ctx, GetConfig()[token]), "Action Time Logging 1");
+			t_assertm(Action::ExecAction(token, ctx, GetTestCaseConfig()[token]), "Action Time Logging 1");
 			assertEqual("TimeLogTestAction", token);
 
 			CheckFile(ctx, "TimeLog1", "TimeLogTestHeader\n<Method.Test.SubA>: AppLogTimeTest->10 ms\n<Method.Test.SubB>: AppLogTimeTest->10 ms\n<Request.Cycle>: AppLogTimeTest->10 ms\n");
-			pModule->Finis();
 		}
 	}
 }
@@ -244,13 +226,10 @@ Test *AppLogTest::suite ()
 {
 	StartTrace(AppLogTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
 	ADD_CASE(testSuite, AppLogTest, ApplogModuleNotInitializedTest);
 	ADD_CASE(testSuite, AppLogTest, LogOkTest);
 	ADD_CASE(testSuite, AppLogTest, LogOkToVirtualServerTest);
 	ADD_CASE(testSuite, AppLogTest, LoggingActionTest);
 	ADD_CASE(testSuite, AppLogTest, TimeLoggingActionTest);
-
 	return testSuite;
-
 }
