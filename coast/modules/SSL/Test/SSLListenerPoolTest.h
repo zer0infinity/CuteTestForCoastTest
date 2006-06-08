@@ -26,7 +26,7 @@ public:
 	//!destroys the test case
 	~SSLListenerPoolTest();
 
-	virtual void PoolTest();
+	void PoolTest();
 
 	//--- public api
 
