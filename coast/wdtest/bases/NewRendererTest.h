@@ -10,7 +10,7 @@
 #define _NewRendererTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
+#include "WDBaseTestPolicies.h"
 
 //---- NewRendererTest ----------------------------------------------------------
 //!TestClass for Renderers
@@ -24,7 +24,8 @@
 //! }</PRE>
 //! There is also a Toplevel slot <B>/EnvForAllCases</B> specifing an Anything that serves
 //! as Context for all TestCases
-class NewRendererTest : public TestFramework::TestCaseWithConfig
+//class NewRendererTest : public TestFramework::TestCaseWithConfig
+class NewRendererTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors
@@ -36,15 +37,12 @@ public:
 	//! \return a new test is created by this method
 	static Test *suite ();
 
-	void setUp();
-	void tearDown();
-	TString getConfigFileName();
+	TString getConfigFileName() {
+		return "NewRendererTestConfig";
+	}
 
 	//!Testcase runs all configured RendererSpecs
-	void TestRenderers();
-
-protected:
-	Anything fGlobalConfig;
+	void TestCases();
 };
 
 #endif

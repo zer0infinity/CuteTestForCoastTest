@@ -13,13 +13,12 @@
 #include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
+#include "AnyIterators.h"
 #include "Renderer.h"
 #include "Server.h"
 #include "Session.h"
 #include "Page.h"
 #include "Role.h"
-#include "Dbg.h"
 
 //---- NewRendererTest ----------------------------------------------------------------
 NewRendererTest::NewRendererTest(TString tname)
@@ -28,77 +27,65 @@ NewRendererTest::NewRendererTest(TString tname)
 	StartTrace(NewRendererTest.NewRendererTest);
 }
 
-TString NewRendererTest::getConfigFileName()
-{
-	return "NewRendererTestConfig";
-}
-
 NewRendererTest::~NewRendererTest()
 {
 }
 
-void NewRendererTest::setUp()
+void NewRendererTest::TestCases()
 {
-	t_assert(GetConfig().IsDefined("TestCases"));
-	t_assertm( System::LoadConfigFile(fGlobalConfig, "Config", "any"), TString("expected Config.any to be readable!" ));
-	t_assert(fGlobalConfig.IsDefined("Modules"));
-	Application::InitializeGlobalConfig(fGlobalConfig);
-	WDModule::Install(fGlobalConfig);
-}
+	StartTrace(NewRendererTest.TestCases);
 
-void NewRendererTest::tearDown()
-{
-	t_assert(fGlobalConfig.IsDefined("Modules"));
-	WDModule::Terminate(fGlobalConfig);
-	Application::InitializeGlobalConfig(Anything());
-}
+	if ( t_assertm( !GetTestCaseConfig().IsNull(), "no Tests configured!" ) ) {
+		Server *theServer = Server::FindServer("Server");
+		t_assert(theServer != NULL);
+		Context ctx;
+		Session theSession("TestSession", ctx);
+		Page *thePage = Page::FindPage("TestPage");
+		t_assert(thePage != NULL);
+		Role *theRole = Role::FindRole("TestRole");
+		t_assert(theRole != NULL);
+		theSession.Init("TestSession", ctx);
 
-void NewRendererTest::TestRenderers()
-{
-	StartTrace(NewRendererTest.TestRenderers);
+		AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
+		ROAnything roaCaseConfig;
+		t_assertm( GetConfig()["RunOnly"].GetSize() == 0L, "running only subset of tests");
+		TraceAny(GetConfig()["RunOnly"], "run only config")
+		while ( aEntryIterator.Next(roaCaseConfig) ) {
+			TString slotToCheck;
+			aEntryIterator.SlotName(slotToCheck);
+			Trace("current testslot [" << slotToCheck << "]");
+			if ( ( GetConfig()["RunOnly"].GetSize() == 0L ) || GetConfig()["RunOnly"].Contains((const char *)slotToCheck) ) {
+				TString message;
+				message << getConfigFileName() << ".any:0 at " << name();
+				if (slotToCheck.Length()) {
+					message << "." << slotToCheck;
+				} else {
+					message << ":" << aEntryIterator.Index();
+				}
 
-	Server *theServer = Server::FindServer("Server");
-	t_assert(theServer != NULL);
-	Context ctx;
-	Session theSession("TestSession", ctx);
-	Page *thePage = Page::FindPage("TestPage");
-	t_assert(thePage != NULL);
-	Role *theRole = Role::FindRole("TestRole");
-	t_assert(theRole != NULL);
-	theSession.Init("TestSession", ctx);
-
-	Anything testCases = GetConfig()["TestCases"].DeepClone();
-	long sz = testCases.GetSize();
-
-	for (long i = 0 ; i < sz; i++ ) {
-		TString slotToCheck = testCases.SlotName(i);
-		TString message = "NewRendererTestConfig.any:0 at TestCases";
-		if (slotToCheck.Length()) {
-			message << "." << slotToCheck;
-		} else {
-			message << ":" << i;
+				Context c(GetConfig()["EnvForAllCases"].DeepClone(), roaCaseConfig["Env"].DeepClone(), theServer, &theSession, theRole, thePage);
+				PutInStore(roaCaseConfig["TmpStore"], c.GetTmpStore());
+				PutInStore(roaCaseConfig["SessionStore"], c.GetSessionStore());
+				TraceAny(roaCaseConfig["Renderer"], "running renderer at [" << slotToCheck << "]");
+				String result("[");
+				String expected("[");
+				expected << roaCaseConfig["Expected"].AsCharPtr("") << "]";
+				{
+					OStringStream reply(result);
+					Renderer::Render(reply, c, roaCaseConfig["Renderer"]);
+					reply.flush();
+				}
+				result.Append(']');
+				// message << ":\n" << result;
+				assertEqualm(expected, result, message);
+			}
 		}
-
-		Context c(GetConfig()["EnvForAllCases"].DeepClone(), testCases[i]["Env"], theServer, &theSession, theRole, thePage);
-		PutInStore(testCases[i]["TmpStore"], c.GetTmpStore());
-		PutInStore(testCases[i]["SessionStore"], c.GetSessionStore());
-		String result("[");
-		String expected("[");
-		expected << testCases[i]["Expected"].AsCharPtr("") << "]";
-		{
-			OStringStream reply(result);
-			Renderer::Render(reply, c, testCases[i]["Renderer"]);
-			reply.flush();
-		}
-		result.Append(']');
-		// message << ":\n" << result;
-		assertEqualm(expected, result, message);
 	}
 }
 
 Test *NewRendererTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
-	ADD_CASE(testSuite, NewRendererTest, TestRenderers);
+	ADD_CASE(testSuite, NewRendererTest, TestCases);
 	return testSuite;
 }
