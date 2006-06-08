@@ -13,15 +13,9 @@
 
 //--- test cases ---------------------------------------------------------------
 #include "AppLogTest.h"
-#if !defined(WIN32)
-#include "SetupCase.h"
-#endif
 
 void setupRunner(TestRunner &runner)
 {
 	// add a whole suite with the ADD_SUITE(runner,"Suites's Classname") macro
-#if !defined(WIN32)
-	ADD_SUITE(runner, SetupCase);
-#endif
 	ADD_SUITE(runner, AppLogTest);
 }

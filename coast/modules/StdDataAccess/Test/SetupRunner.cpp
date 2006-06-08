@@ -30,15 +30,8 @@
 #include "NewRendererTest.h"
 #include "RequestReaderTest.h"
 
-#if !defined(WIN32)
-#include "SetupCase.h"
-#endif
-
 void setupRunner(TestRunner &runner)
 {
-#if !defined(WIN32)
-	ADD_SUITE(runner, SetupCase);
-#endif
 	ADD_SUITE(runner, HTTPDAImplTest);
 	ADD_SUITE(runner, HTTPMapperTest);
 	ADD_SUITE(runner, XMLBodyMapperTest);

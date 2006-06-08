@@ -17,16 +17,10 @@
 #include "SybCTPoolDAImplTest.h"
 #include "ConfiguredActionTest.h"
 #include "SybCTThreadTest.h"
-#if !defined(WIN32)
-#include "SetupCase.h"
-#endif
 
 void setupRunner(TestRunner &runner)
 {
 	// execute tests in test dir with defined structure
-#if !defined(WIN32)
-	ADD_SUITE(runner, SetupCase);
-#endif
 	ADD_SUITE(runner, SybCTTest);
 	ADD_SUITE(runner, SybCTDAImplTest);
 	ADD_SUITE(runner, SybCTnewDATest);
