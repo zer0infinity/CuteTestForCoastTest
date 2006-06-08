@@ -8,11 +8,23 @@
 
 {
 
-	/LowerBound		10
+	/LowerBound		0
 	/UpperBound		10
 	/DumpAnythings	1
 
 	/NotEmptyCheckAction {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/NewRendererTest {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/WDModule {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/AppBooter {
 		/MainSwitch	10
 		/EnableAll	10
 	}

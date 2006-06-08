@@ -43,11 +43,11 @@
 		/EnableAll	40
 	}
 	/Server {
-		/MainSwitch	0
+		/MainSwitch	30
 		/EnableAll	40
 	}
 	/AppBooter {
-		/MainSwitch	0
+		/MainSwitch	30
 		/EnableAll	40
 	}
 	/TimeLogger {
@@ -55,6 +55,10 @@
 		/EnableAll	40
 	}
 	/TimeLoggingAction {
+		/MainSwitch	30
+		/EnableAll	40
+	}
+	/WDModule {
 		/MainSwitch	30
 		/EnableAll	40
 	}
