@@ -93,8 +93,8 @@ void HTTPFlowControllerPrepareTest::ProcessSetCookieTest()
 Test *HTTPFlowControllerPrepareTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
-//	ADD_CASE(testSuite, HTTPFlowControllerPrepareTest, RunTestCases);
-//	ADD_CASE(testSuite, HTTPFlowControllerPrepareTest, DoCommandTest);
+	ADD_CASE(testSuite, HTTPFlowControllerPrepareTest, TestCases);
+	ADD_CASE(testSuite, HTTPFlowControllerPrepareTest, DoCommandTest);
 	ADD_CASE(testSuite, HTTPFlowControllerPrepareTest, ProcessSetCookieTest);
 	return testSuite;
 }
