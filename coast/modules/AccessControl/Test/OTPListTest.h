@@ -10,14 +10,14 @@
 #define _OTPListTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
+#include "WDBaseTestPolicies.h"
 
 class OTPList;
 class TokenDataAccessController;
 
 //---- OTPListTest ----------------------------------------------------------
 //! <B>Tests OTPList implementations.</B>
-class OTPListTest : public TestFramework::TestCaseWithConfig
+class OTPListTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors
@@ -32,12 +32,6 @@ public:
 
 	//! builds up a suite of tests
 	static Test *suite ();
-
-	//! sets the environment for this test
-	void setUp ();
-
-	//! deletes the environment for this test
-	void tearDown ();
 
 	//! tests the implementation of a MockOTPList with a config
 	void MockOTPListTest();

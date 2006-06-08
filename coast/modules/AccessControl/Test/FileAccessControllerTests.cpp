@@ -29,18 +29,6 @@ bool FileCreator::CreateFile(String dataAccessName, ROAnything data)
 	return DataAccess(dataAccessName).StdExec(c);
 }
 
-void FileAccessControllerTests::setUp ()
-{
-	StartTrace(FileAccessControllerTests.setUp);
-	WDModule::Install(GetConfig()["Config"]);
-}
-
-void FileAccessControllerTests::tearDown ()
-{
-	StartTrace(FileUDACTest.tearDown);
-	WDModule::Terminate(GetConfig()["Config"]);
-}
-
 // -------------------- UDAC Tests ----------------------
 void FileAccessControllerTests::doTestUDAC(UserDataAccessController *udac)
 {

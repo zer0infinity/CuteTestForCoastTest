@@ -6,19 +6,18 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
+//--- interface include --------------------------------------------------------
+#include "AccessManagerModuleTest.h"
 
 //--- module under test --------------------------------------------------------
 #include "AccessManager.h"
 
-//--- interface include --------------------------------------------------------
-#include "AccessManagerModuleTest.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
+//--- test modules used --------------------------------------------------------
+#include "TestSuite.h"
 
 //--- project modules used -----------------------------------------------------
+
+//--- standard modules used ----------------------------------------------------
 
 //--- c-modules used -----------------------------------------------------------
 #include <typeinfo>
@@ -79,19 +78,6 @@ AccessManagerModuleTest::~AccessManagerModuleTest()
 	StartTrace(AccessManagerModuleTest.Dtor);
 }
 
-void AccessManagerModuleTest::setUp ()
-{
-	StartTrace(AccessManagerModuleTest.setUp);
-	WDModule::Install(GetConfig());
-}
-
-void AccessManagerModuleTest::tearDown ()
-{
-	StartTrace(AccessManagerModuleTest.tearDown);
-
-	WDModule::Terminate(GetConfig());
-}
-
 String GetName(RegisterableObject *o)
 {
 	String ret;
@@ -137,14 +123,16 @@ void AccessManagerModuleTest::FinisTest()
 	t_assert(am_alpha != NULL);
 	assertEquals("alpha", GetName(am_alpha));
 
-	WDModule::Terminate(GetConfig());
+	WDModule *pModule = WDModule::FindWDModule("AccessManagerModule");
+	if ( t_assertm(pModule != NULL, "expected AccessManagerModule to be registered") ) {
+		pModule->Finis();
+		am_alpha = AccessManagerModule::GetAccessManager("alpha");
+		t_assert(0 == am_alpha);
 
-	am_alpha = AccessManagerModule::GetAccessManager("alpha");
-	t_assert(0 == am_alpha);
-
-	AccessManager *am = AccessManagerModule::GetAccessManager("TestAccessManager");
-	t_assert(am != NULL);
-	t_assertm(typeid(TestAccessManager) == typeid(*am), typeid(*am).name());
+		AccessManager *am = AccessManagerModule::GetAccessManager("TestAccessManager");
+		t_assert(am != NULL);
+		t_assertm(typeid(TestAccessManager) == typeid(*am), typeid(*am).name());
+	}
 }
 
 // builds up a suite of testcases, add a line for each testmethod

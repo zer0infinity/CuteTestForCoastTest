@@ -31,12 +31,6 @@ public:
 	//! builds up a suite of tests
 	static Test *suite ();
 
-	//! sets the environment for this test
-	void setUp ();
-
-	//! deletes the environment for this test
-	void tearDown ();
-
 	TString getConfigFileName();
 
 	//! describe this Test

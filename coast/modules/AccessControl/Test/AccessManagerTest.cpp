@@ -6,18 +6,17 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
+//--- interface include --------------------------------------------------------
+#include "AccessManagerTest.h"
 
 //--- module under test --------------------------------------------------------
 #include "AccessManager.h"
 
-//--- interface include --------------------------------------------------------
-#include "AccessManagerTest.h"
+//--- test modules used --------------------------------------------------------
+#include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
-#include "System.h"
+#include "AnyIterators.h"
 #include "FileAccessControllerTests.h"
 
 //--- project modules used -----------------------------------------------------
@@ -47,8 +46,6 @@ AccessManagerTest::~AccessManagerTest()
 void AccessManagerTest::setUp ()
 {
 	StartTrace(AccessManagerTest.setUp);
-	// must install modules BEFORE we can use data accesses to create test files!
-	WDModule::Install(GetConfig()["Config"]);
 	// create test files
 	t_assertm( FileCreator::CreateFile("WriteUserData", GetConfig()["InitData"]["UserFile"]), "Creation of test file failed" );
 	t_assertm( FileCreator::CreateFile("WriteTokenData", GetConfig()["InitData"]["TokenFile"]), "Creation of test file failed" );
@@ -58,8 +55,6 @@ void AccessManagerTest::setUp ()
 void AccessManagerTest::tearDown ()
 {
 	StartTrace(AccessManagerTest.tearDown);
-
-	WDModule::Terminate(GetConfig()["Config"]);
 	System::IO::unlink("config/FileTestUserDB.any");
 	System::IO::unlink("config/FileTestActerDB.any");
 	System::IO::unlink("config/FileTestRightsDB.any");

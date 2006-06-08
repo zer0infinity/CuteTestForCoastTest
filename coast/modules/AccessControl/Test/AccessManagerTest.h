@@ -10,7 +10,7 @@
 #define _AccessManagerTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
+#include "WDBaseTestPolicies.h"
 
 class AccessManager;
 
@@ -26,7 +26,7 @@ They have a config themselves, which in turn defines the backends
 (i.e. AccessControllers) that they utilize to get access to user-
 and token information.
 */
-class AccessManagerTest : public TestFramework::TestCaseWithConfig
+class AccessManagerTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors

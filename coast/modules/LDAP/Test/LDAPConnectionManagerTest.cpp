@@ -10,19 +10,14 @@
 #include "LDAPConnectionManagerTest.h"
 
 //--- module under test --------------------------------------------------------
-#include "PersistentLDAPConnection.h"
 #include "LDAPConnectionManager.h"
 
 //--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
-#include "LDAPErrorHandler.h"
-#include "Context.h"
-#include "Mapper.h"
-#include "Anything.h"
-#include "System.h"
+#include "PersistentLDAPConnection.h"
+#include "AnyIterators.h"
 
 //--- c-modules used -----------------------------------------------------------
 
@@ -41,18 +36,6 @@ TString LDAPConnectionManagerTest::getConfigFileName()
 LDAPConnectionManagerTest::~LDAPConnectionManagerTest()
 {
 	StartTrace(LDAPConnectionManagerTest.Dtor);
-}
-
-void LDAPConnectionManagerTest::setUp ()
-{
-	StartTrace(LDAPConnectionManagerTest.setUp);
-	ConfiguredActionTest::setUp();
-}
-
-void LDAPConnectionManagerTest::tearDown ()
-{
-	StartTrace(LDAPConnectionManagerTest.tearDown);
-	ConfiguredActionTest::tearDown();
 }
 
 void LDAPConnectionManagerTest::ConnectionManagerTest()

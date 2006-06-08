@@ -69,18 +69,6 @@ OTPListTest::~OTPListTest()
 	StartTrace(OTPListTest.Dtor);
 }
 
-void OTPListTest::setUp ()
-{
-	StartTrace(OTPListTest.setUp);
-	WDModule::Install(GetConfig()["Config"]);
-}
-
-void OTPListTest::tearDown ()
-{
-	StartTrace(OTPListTest.tearDown);
-	WDModule::Terminate(GetConfig()["Config"]);
-}
-
 void OTPListTest::RunOtpTests(String implName, OTPList *impl, TokenDataAccessController *tdac)
 {
 	StartTrace(OTPListTest.RunOtpTests);

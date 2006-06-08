@@ -10,7 +10,7 @@
 #define _AccessManagerModuleTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
+#include "WDBaseTestPolicies.h"
 
 //---- AccessManagerModuleTest ----------------------------------------------------------
 //! <B>really brief class description</B>
@@ -18,7 +18,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class AccessManagerModuleTest : public TestFramework::TestCaseWithConfig
+class AccessManagerModuleTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors
@@ -35,14 +35,7 @@ public:
 	//! builds up a suite of testcases for this test
 	static Test *suite ();
 
-	//! sets the environment for this test
-	void setUp ();
-
-	//! deletes the environment for this test
-	void tearDown ();
-
 	void InitTest();
-
 	void FinisTest();
 };
 

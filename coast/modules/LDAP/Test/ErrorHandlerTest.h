@@ -10,8 +10,7 @@
 #define _ErrorHandlerTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
-#include "Context.h"
+#include "WDBaseTestPolicies.h"
 #include "Mapper.h"
 
 //---- ErrorHandlerTest ----------------------------------------------------------
@@ -20,7 +19,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class ErrorHandlerTest : public TestFramework::TestCaseWithConfig
+class ErrorHandlerTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors
@@ -42,8 +41,6 @@ public:
 	//! deletes the environment for this test
 	void tearDown ();
 
-	TString getConfigFileName();
-
 	void HandleErrorTest();
 	void HandleConnectionErrorTest();
 	void ParamAccessTest();
@@ -53,7 +50,6 @@ private:
 	Context *fCtx;
 	ParameterMapper *fGet;
 	ResultMapper *fPut;
-	Anything fGlobalConfig;
 };
 
 #endif

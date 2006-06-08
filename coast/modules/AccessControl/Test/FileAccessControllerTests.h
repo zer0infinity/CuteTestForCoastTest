@@ -10,7 +10,7 @@
 #define _FileAccessControllerTests_H
 
 //---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
+#include "WDBaseTestPolicies.h"
 
 class UserDataAccessController;
 class TokenDataAccessController;
@@ -26,7 +26,7 @@ public:
 
 //---- FileAccessControllerTests ----------------------------------------------------------
 //! <B>Tests functionality of FileAccessControllers (FileUDAC, FileTDAC, FileEDAC)
-class FileAccessControllerTests : public TestFramework::TestCaseWithConfig
+class FileAccessControllerTests : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors
@@ -42,12 +42,6 @@ public:
 
 	//! builds up a suite of tests
 	static Test *suite ();
-
-	//! sets the environment for this test
-	void setUp ();
-
-	//! deletes the environment for this test
-	void tearDown ();
 
 	// general testing methods
 	void doTestUDAC(UserDataAccessController *udac);

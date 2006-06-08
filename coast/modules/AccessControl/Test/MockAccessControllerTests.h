@@ -10,7 +10,6 @@
 #define _MockAccessControllerTests_H
 
 //---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
 #include "FileAccessControllerTests.h"
 
 //---- MockAccessControllerTests ------------------------------------------
@@ -31,12 +30,6 @@ public:
 
 	//! builds up a suite of tests
 	static Test *suite ();
-
-	//! sets the environment for this test
-	void setUp ();
-
-	//! deletes the environment for this test
-	void tearDown ();
 
 	TString getConfigFileName() {
 		return "MockAccessControllerTestsConfig";

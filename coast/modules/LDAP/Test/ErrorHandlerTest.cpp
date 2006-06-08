@@ -9,15 +9,13 @@
 //--- interface include --------------------------------------------------------
 #include "ErrorHandlerTest.h"
 
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
-
 //--- module under test --------------------------------------------------------
 #include "LDAPErrorHandler.h"
 
+//--- test modules used --------------------------------------------------------
+#include "TestSuite.h"
+
 //--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
-#include "System.h"
 #include "PersistentLDAPConnection.h"
 
 //--- c-modules used -----------------------------------------------------------
@@ -27,11 +25,6 @@ ErrorHandlerTest::ErrorHandlerTest(TString tstrName)
 	: TestCaseType(tstrName)
 {
 	StartTrace(ErrorHandlerTest.ErrorHandlerTest);
-}
-
-TString ErrorHandlerTest::getConfigFileName()
-{
-	return "Config";
 }
 
 ErrorHandlerTest::~ErrorHandlerTest()
@@ -46,7 +39,6 @@ void ErrorHandlerTest::setUp ()
 	fPut = new RootMapper("");
 	fGet = new ParameterMapper("");
 	t_assert(GetConfig().IsDefined("Modules"));
-	WDModule::Install(GetConfig());
 }
 
 void ErrorHandlerTest::tearDown ()
@@ -55,7 +47,6 @@ void ErrorHandlerTest::tearDown ()
 	delete fCtx;
 	delete fPut;
 	delete fGet;
-	WDModule::Terminate(GetConfig());
 }
 
 void ErrorHandlerTest::HandleConnectionErrorTest()

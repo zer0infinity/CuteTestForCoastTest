@@ -21,19 +21,6 @@
 
 //--- c-modules used -----------------------------------------------------------
 
-void MockAccessControllerTests::setUp ()
-{
-	StartTrace(MockAccessControllerTests.setUp);
-	WDModule::Install(GetConfig()["Config"]);
-}
-
-void MockAccessControllerTests::tearDown ()
-{
-	StartTrace(MockAccessControllerTests.tearDown);
-
-	WDModule::Terminate(GetConfig()["Config"]);
-}
-
 void MockAccessControllerTests::MockUDACTest()
 {
 	StartTrace(MockAccessControllerTests.MockUDACTest);
