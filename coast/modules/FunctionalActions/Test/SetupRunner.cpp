@@ -6,22 +6,16 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "StringStream.h"
-#include "Context.h"
-
 //--- interface include --------------------------------------------------------
 #include "TestRunner.h"
 
 //--- test cases ---------------------------------------------------------------
-#include "SetupCase.h"
 #include "ConfiguredActionTest.h"
+
+//--- standard modules used ----------------------------------------------------
 
 void setupRunner(TestRunner &runner)
 {
 	// add a whole suite with the ADD_SUITE(runner,"Suites's Classname") macro
-	ADD_SUITE(runner, SetupCase);
 	ADD_SUITE(runner, ConfiguredActionTest);
 }
-
