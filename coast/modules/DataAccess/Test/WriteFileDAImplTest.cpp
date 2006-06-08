@@ -6,23 +6,19 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
-
 //--- interface include --------------------------------------------------------
 #include "WriteFileDAImplTest.h"
 
+//--- test modules used --------------------------------------------------------
+#include "TestSuite.h"
+
 //--- standard modules used ----------------------------------------------------
-#include "StringStream.h"
-#include "System.h"
 #include "Context.h"
-#include "Dbg.h"
+#include "AnyIterators.h"
 
 //--- c-library modules used ---------------------------------------------------
 #if defined(WIN32)
 #include <io.h>
-#else
-#include <unistd.h>
 #endif
 
 //---- WriteFileDAImplTest ----------------------------------------------------------------
