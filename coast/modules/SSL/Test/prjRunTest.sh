@@ -15,8 +15,8 @@ function prepareTest
 	cp $PRJCONFIGPATH/$certdir/*.pem $PRJCONFIGPATH/cert_hashes
 	rehashwrapper.sh -d $PRJCONFIGPATH/cert_hashes -t
 	# create dir (might not exist)
-	mkdir /tmp/SSLSocketTestHashedCerts # > /dev/null 2>&1
-	rm -f /tmp/SSLSocketTestHashedCerts/* #> /dev/null 2>&1
+	mkdir /tmp/SSLSocketTestHashedCerts 2>/dev/null
+	rm -f /tmp/SSLSocketTestHashedCerts/* 2>/dev/null
 	cp  $PRJCONFIGPATH/cert_hashes/* /tmp/SSLSocketTestHashedCerts # > /dev/null 2>&1
 	chmod -f 777 /tmp/SSLSocketTestHashedCerts
 }
@@ -35,4 +35,5 @@ function cleanupTest
 	echo
 	rm -rf $PRJCONFIGPATH/cert_files
 	rm -rf $PRJCONFIGPATH/cert_hashes
+	rm -rf /tmp/SSLSocketTestHashedCerts 2>/dev/null
 }
