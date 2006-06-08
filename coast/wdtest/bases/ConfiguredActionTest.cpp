@@ -42,20 +42,12 @@ ConfiguredActionTest::~ConfiguredActionTest()
 void ConfiguredActionTest::setUp()
 {
 	StartTrace(ConfiguredActionTest.setUp);
-	t_assertm( System::LoadConfigFile(fGlobalConfig, "Config", "any"), TString("expected Config.any to be readable!" ));
-	t_assert(fGlobalConfig.IsDefined("Modules"));
-	WDModule::Install(fGlobalConfig);
+	t_assert(GetConfig().IsDefined("Modules"));
 }
 
-void ConfiguredActionTest::tearDown()
+void ConfiguredActionTest::TestCases()
 {
-	StartTrace(ConfiguredActionTest.tearDown);
-	WDModule::Terminate(fGlobalConfig);
-}
-
-void ConfiguredActionTest::RunTestCases()
-{
-	StartTrace(ConfiguredActionTest.RunTestCases);
+	StartTrace(ConfiguredActionTest.TestCases);
 
 	Anything testCases;
 	long runOnlySz = GetConfig()["RunOnly"].GetSize();
@@ -74,6 +66,9 @@ void ConfiguredActionTest::RunTestCases()
 
 	long sz = testCases.GetSize();
 	for (long i = 0; i < sz; ++i) {
+		if ( i > 0 ) {
+			cerr << ".";
+		}
 		String testCaseName = testCases.SlotName(i);
 		DoTest(PrepareConfig(testCases[i]), testCaseName);
 	}
@@ -246,7 +241,6 @@ Test *ConfiguredActionTest::suite ()
 {
 	StartTrace(ConfiguredActionTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
-	ADD_CASE(testSuite, ConfiguredActionTest, RunTestCases);
+	ADD_CASE(testSuite, ConfiguredActionTest, TestCases);
 	return testSuite;
 }

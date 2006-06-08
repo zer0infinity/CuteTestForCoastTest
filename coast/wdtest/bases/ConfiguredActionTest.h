@@ -10,10 +10,9 @@
 #define _ConfiguredActionTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
+#include "WDBaseTestPolicies.h"
 
 class Context;
-class Anything;
 
 //---- ConfiguredActionTest ----------------------------------------------------------
 //!<b>generic test case for configured action testing</b>
@@ -25,11 +24,11 @@ To use this testing method you have to do the following steps:
 
 The config's format :
 <PRE>
-/RunOnly {							optional, only run the specified named tests defined in RunTestCases. This always leads to one failure telling you that only selected tests were run!
+/RunOnly {							optional, only run the specified named tests defined in TestCases. This always leads to one failure telling you that only selected tests were run!
 	TestCaseNameToTestExclusively
 	...
 }
-/RunTestCases {
+/TestCases {
 	/FirstTestCaseName	{				the name is used by assert*m macros as testCaseName
 		/TheAction {					mandatory, this script will be executed as action-script
 			ActionScript to execute
@@ -104,16 +103,12 @@ This means that the following paths must not exist in the result context:
 </pre>
 \note You can only check for absence of named slots (so far). Values are not checked, thus * must be provided as leaf (or any other dummy) for correct syntax.
  */
-class ConfiguredActionTest : public TestFramework::TestCaseWithConfig
+class ConfiguredActionTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	/*! TestCase constructor
 		\param name name of the test */
 	ConfiguredActionTest(TString tstrName);
-//	/*! TestCase constructor
-//		\param name name of the test
-//		\param configFileName name of the tests config file */
-//	ConfiguredActionTest(TString tstrName, TString configFileName);
 
 	//! TestCase destructor
 	~ConfiguredActionTest();
@@ -121,13 +116,10 @@ public:
 	//! sets the environment for this test
 	void setUp ();
 
-	//! deletes the environment for this test
-	void tearDown ();
-
 	TString getConfigFileName();
 
 	//! loop over the slots in ConfiguredActionTestConfig.any
-	void RunTestCases();
+	void TestCases();
 
 	//--- public api
 	//! builds up a suite of testcases for this test
@@ -184,9 +176,6 @@ protected:
 
 	//! helper method to generate a list of paths out of an anything
 	virtual void GeneratePathList(Anything &pathList, ROAnything &input, String pathSoFar, char delimSlot);
-
-	//Server *fServer;
-	Anything fGlobalConfig;
 };
 
 #endif
