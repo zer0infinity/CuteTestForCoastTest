@@ -1,0 +1,96 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2006, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/NoDataReadTest {
+		/DLL {
+			ldapdataaccess
+		}
+		/Modules {
+			MappersModule
+			DataAccessImplsModule
+			ActionsModule
+		}
+		/Actions {
+		}
+		/LdapCachePolicyModule {
+			/LdapDataAccess { NoDataDA }
+			/LdapDataAccessAction	  { NoDataDAAction }
+		}
+	#!	DataAccessImpl definitions, edit when new backend needed
+		/DataAccessImpls {
+			/LDAPDAImpl {
+				NoDataDA
+				NoDataDAAction
+			}
+		}
+		/Mappers {
+			/Input {
+				/ParameterMapper {
+					NoDataDA
+					NoDataDAAction
+				}
+			}
+			/Output {
+				/ResultMapper {
+					/LDAPListMapper {
+						NoDataDA
+						NoDataDAAction
+					}
+				}
+			}
+		}
+	}
+	/ReInitTest {
+		/DLL {
+			ldapdataaccess
+		}
+		/Modules {
+			MappersModule
+			DataAccessImplsModule
+			ActionsModule
+			/LdapCachePolicyModule {
+				"LdapCachePolicyModule"
+				/Mandatory 1
+			}
+		}
+		/Actions {
+			/LdapDataAccessTestAction	{ TestDA1Action TestDA2Action }
+		}
+
+		/LdapCachePolicyModule {
+			/LdapDataAccess 			{ TestDA1 TestDA2 }
+			/LdapDataAccessAction		{ TestDA1Action TestDA2Action }
+		}
+	#!	DataAccessImpl definitions, edit when new backend needed
+		/DataAccessImpls {
+			/LDAPDAImpl {
+				TestDA1 TestDA2
+				TestDA1Action TestDA2Action
+			}
+		}
+		/Mappers {
+			/Input {
+				/ParameterMapper {
+					TestDA1 TestDA2
+					TestDA1Action TestDA2Action
+				}
+			}
+			/Output {
+				/ResultMapper {
+					/LDAPListMapper {
+						TestDA1 TestDA2
+						TestDA1Action TestDA2Action
+					}
+				}
+			}
+		}
+	}
+	/CallsInARow %ReInitTest
+}

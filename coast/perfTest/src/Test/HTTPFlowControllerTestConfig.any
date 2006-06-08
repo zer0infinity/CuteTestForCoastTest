@@ -8,7 +8,87 @@
 
 {
 
-	/RunTestCases {
+	/DLL {
+		security
+		stddataaccess
+		actions
+		perftesttest
+	}
+	/Modules {
+		ActionsModule
+		DataAccessImplsModule
+		CacheHandlerModule
+		MappersModule
+		FlowControllersModule
+	}
+
+	/Actions {
+		/CallDataAccessAction			{ CallDA }
+		/FlowControllerPerformAnalyzeAction			{ PerformAnalyze }
+		/FlowControllerPrepareRequestAction			{ PrepareRequest }
+	}
+	/DataAccessImpls {
+		/HTTPDAImpl {
+			AWebServer
+			ItopiaCh
+			HostUnknown
+			AStressServer
+			GetResult
+		}
+		/HTTPFileLoader {
+			GetHTMLTestFile
+			GetTreeMappedHTMLFile
+		}
+	}
+	/Mappers {
+		/Input {
+			/ParameterMapper {
+				GetResult
+				AWebServer
+				ItopiaCh
+				HostUnknown
+				GetHTMLTestFile
+				GetTreeMappedHTMLFile
+			}
+			/AnythingToStreamMapper {
+				AStressServer
+			}
+		}
+		/Output {
+			/ResultMapper {
+				AWebServer
+				ItopiaCh
+			}
+			/StreamToAnythingMapper {
+				AStressServer
+			}
+			/HTMLTreeAndSortedTagsMapper {
+				GetHTMLTestFile
+				GetResultTree
+			}
+			/HTMLTreeMapper {
+				GetTreeMappedHTMLFile
+			}
+			/SortedTagsHTMLMapper {
+				GetResult
+				HostUnknown
+			}
+		}
+	}
+	/FlowControllers {
+		/FlowController {
+			ItopiaHomeFlow
+		}
+		/HttpFlowController {
+			AnalyzeTestHTTPFlowController
+			PrepareTestHTTPFlowController
+			DataAccessFailsFlow
+		}
+	}
+
+######## Test specific section ########
+
+	/TestCases {
 		# HTTPFlowControllerAnalyzeTests
 		# config : /Token { { /must Hallo } { /mustnot Tschuess } { /must Goodbye } { /mustnot Ciao } }
 		/ResponseCodeWrong {

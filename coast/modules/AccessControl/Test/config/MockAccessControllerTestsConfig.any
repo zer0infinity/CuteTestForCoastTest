@@ -8,23 +8,20 @@
 
 {
 
-	/Config
+	/Modules
 	{
-		/Modules
-		{
-			AccessControllersModule
+		AccessControllersModule
+	}
+	/AccessControllers
+	{
+		/User {
+			/MockUDAC {	MockUserData }
 		}
-		/AccessControllers
-		{
-			/User {
-				/MockUDAC {	MockUserData }
-			}
-			/Token {
-				/MockTDAC {	MockTokenData }
-			}
-			/Entity {
-				/MockEDAC {	MockEntityData }
-			}
+		/Token {
+			/MockTDAC {	MockTokenData }
+		}
+		/Entity {
+			/MockEDAC {	MockEntityData }
 		}
 	}
 
@@ -34,5 +31,4 @@
 		/MockTDACTest	!FileAccessControllerTestsConfig.any?FileContent.TDACTest
 		/MockEDACTest	!FileAccessControllerTestsConfig.any?FileContent.EDACTest
 	}
-
 }

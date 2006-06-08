@@ -8,12 +8,56 @@
 
 {
 
-	/Mailhost	smtp.hsr.loc
-	/Helo		hsr.loc
-	/FromName	TestUser@hsr.ch
-	/ToName		slzh@hsr.ch
+	/DLL {
+		renderers
+	}
+	/Modules {
+		DataAccessImplsModule
+		ActionsModule
+		MappersModule
+		RenderersModule
+	}
 
-	/RunTestCases {
+	/Actions {
+		/CallDataAccessAction		{ CallDA }
+	}
+	/Renderers {
+		/SwitchRenderer 		{ Switch }
+		/ContextLookupRenderer 	{ Lookup }
+	}
+	/DataAccessImpls {
+		/MailDAImpl {
+			TestMail
+		}
+		/CgiCaller {
+			CgiExecTest
+		}
+	}
+
+	/Mappers {
+		/Input {
+			/ParameterMapper {
+				TestMail
+			}
+			/CgiParams { CgiExecTest }
+		}
+		/Output {
+			/ResultMapper {
+				TestMail
+				ExecTestOut
+				CgiExecTest
+			}
+		}
+	}
+
+######## Test specific section ########
+
+	/Mailhost	pop.bluewin.ch
+	/Helo		hank.com
+	/FromName	pfm@bluewin.ch
+	/ToName		{ pfm@bluewin.ch }
+
+	/TestCases {
 		/MailDAOkTestWithHelo	{
 			/TheAction	{ /CallDA	{ /DataAccess TestMail } }
 			/Query {

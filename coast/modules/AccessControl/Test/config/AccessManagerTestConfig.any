@@ -8,7 +8,65 @@
 
 {
 
-	/Config		!Config.any
+	/Modules {
+		DataAccessImplsModule
+		MappersModule
+		AccessControllersModule
+		AccessManagerModule
+	}
+
+	/AccessControllers
+	{
+		/User {
+			/FileUDAC 	{ UserData }
+#			/MockUDAC 	{ MockUserData }
+		}
+		/Token {
+			/FileTDAC 	{ TokenData }
+#			/MockTDAC 	{ MockTokenData }
+		}
+		/Entity {
+			/FileEDAC 	{ EntityData }
+#			/MockEDAC 	{ MockEntityData }
+		}
+	}
+
+	/AccessManagers
+	{
+		/BasicAccessManager 	{ BasicAM ActerAM }
+		/MockAccessManager		{ MockAM }
+	}
+	/DefaultAccessManager	BasicAM
+
+	/DataAccessImpls
+	{
+		/ReadFileDAImpl {
+			ReadUserData
+			ReadTokenData
+			ReadEntityData
+		}
+		/WriteFileDAImpl {
+			WriteUserData
+			WriteTokenData
+			WriteEntityData
+		}
+	}
+	/Mappers {
+		/Input {
+			/ParameterMapper {
+				ReadUserData
+				ReadTokenData
+				ReadEntityData
+			}
+		}
+		/Output {
+			/ResultMapper {
+				ReadUserData
+				ReadTokenData
+				ReadEntityData
+			}
+		}
+	}
 
 	/InitData {
 		# --- contents of user file

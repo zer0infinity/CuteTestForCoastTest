@@ -8,6 +8,217 @@
 
 {
 
+	/DLL {
+		libldapdataaccess2
+	}
+	/Modules {
+		DataAccessImplsModule
+		MappersModule
+		ActionsModule
+		LDAPConnectionManager
+	}
+
+	/LDAPConnectionManager
+	{
+		/DefMaxConnections 2
+	}
+	/Actions {
+		/CallDataAccessAction	{ CallDA }
+		/ConditionalAction	{ Cond }
+	}
+
+	/DataAccessImpls {
+
+		/LDAPAbstractDAI {
+
+			/LDAPSearchDAI {
+				"LDAPTest_LookupTmpAndEnv"
+
+				"LDAPSearchTest_IllegalQuery"
+				"LDAPSearchTest_ScopeBase"
+				"LDAPSearchTest_ScopeOneLevel"
+				"LDAPSearchTest_ScopeSubTree"
+				"LDAPSearchTest_SizeLimit"
+				"LDAPSearchTest_AttrSelection"
+				"LDAPSearchTest_AttrsOnly"
+				"LDAPSearchTest_Filter"
+				"LDAPSearchTest_WrongDN"
+				"LDAPSearchTest_EmptyResult"
+
+				"LDAPSearchQuery_LookupTkrefactor_NotPooled"
+				"LDAPSearchQuery_LookupTkrefactor_Pooled"
+
+				"LDAPConnectionManagerTest_StableQuery"
+				"LDAPConnectionManagerTest_Query"
+				"LDAPConnectionManagerTest_Query_Added"
+			}
+
+			/LDAPDeleteDAI {
+				"LDAPDeleteTest_NonLeaf"
+				"LDAPDeleteTest_NonExisting"
+				"LDAPDeleteTest_ExistingLeaf_NotPooled"
+				"LDAPDeleteTest_ExistingLeaf_Pooled"
+				"LDAPConnectionManagerTest_Delete"
+			}
+
+			/LDAPCompareDAI {
+				"LDAPCompareTest_NonExistingEntry"
+				"LDAPCompareTest_NonExistingAttribute"
+				"LDAPCompareTest_EqualValue"
+				"LDAPCompareTest_UnequalValue"
+				"LDAPCompareTest_MissingAttrNameParam"
+				"LDAPCompareTest_MissingAttrValueParam"
+				"LDAPConnectionManagerTest_Compare"
+			}
+
+			/LDAPAddDAI {
+				"LDAPAddTest_ExistingEntry"
+				"LDAPAddTest_NonExistingEntry_NotPooled"
+				"LDAPAddTest_NonExistingEntry_Pooled"
+				"LDAPAddTest_MissingRequiredAttributes"
+				"LDAPAddTest_NonExistingAttribute"
+				"LDAPAddTest_MissingAttrsParam"
+				"LDAPAddTest_SingleValues"
+				"LDAPConnectionManagerTest_Add"
+			}
+
+			/LDAPModifyDAI {
+				"LDAPModifyTest_UnknownAttribute"
+				"LDAPModifyTest_AddExistingValue"
+				"LDAPModifyTest_DeleteRequiredAttribute"
+				"LDAPModifyTest_MultipleModify_NotPooled"
+				"LDAPModifyTest_MultipleModify_Pooled"
+				"LDAPModifyTest_WrongMods"
+				"LDAPModifyTest_EmptyModsGiven"
+				"LDAPModifyTest_DeleteNonExistingValue"
+				"LDAPModifyTest_DeleteAndAddWholeAttr_NotPooled"
+				"LDAPModifyTest_DeleteAndAddWholeAttr_Pooled"
+				"LDAPConnectionManagerTest_MultipleModify"
+			}
+		}
+	}
+
+	/Mappers {
+		/Input {
+			/ParameterMapper {
+				"LDAPTest_LookupTmpAndEnv"
+
+				"LDAPSearchTest_IllegalQuery"
+				"LDAPSearchTest_ScopeBase"
+				"LDAPSearchTest_ScopeOneLevel"
+				"LDAPSearchTest_ScopeSubTree"
+				"LDAPSearchTest_SizeLimit"
+				"LDAPSearchTest_AttrSelection"
+				"LDAPSearchTest_AttrsOnly"
+				"LDAPSearchTest_Filter"
+				"LDAPSearchTest_WrongDN"
+				"LDAPSearchTest_EmptyResult"
+
+				"LDAPSearchQuery_LookupTkrefactor_NotPooled"
+				"LDAPSearchQuery_LookupTkrefactor_Pooled"
+
+				"LDAPConnectionManagerTest_StableQuery"
+				"LDAPConnectionManagerTest_Query"
+				"LDAPConnectionManagerTest_Query_Added"
+				"LDAPConnectionManagerTest_Delete"
+				"LDAPConnectionManagerTest_Add"
+				"LDAPConnectionManagerTest_MultipleModify"
+				"LDAPConnectionManagerTest_Compare"
+
+				"LDAPDeleteTest_NonLeaf"
+				"LDAPDeleteTest_NonExisting"
+				"LDAPDeleteTest_ExistingLeaf_NotPooled"
+				"LDAPDeleteTest_ExistingLeaf_Pooled"
+
+				"LDAPCompareTest_NonExistingEntry"
+				"LDAPCompareTest_NonExistingAttribute"
+				"LDAPCompareTest_EqualValue"
+				"LDAPCompareTest_UnequalValue"
+				"LDAPCompareTest_MissingAttrNameParam"
+				"LDAPCompareTest_MissingAttrValueParam"
+
+				"LDAPAddTest_ExistingEntry"
+				"LDAPAddTest_NonExistingEntry_NotPooled"
+				"LDAPAddTest_NonExistingEntry_Pooled"
+				"LDAPAddTest_MissingRequiredAttributes"
+				"LDAPAddTest_NonExistingAttribute"
+				"LDAPAddTest_MissingAttrsParam"
+				"LDAPAddTest_SingleValues"
+
+				"LDAPModifyTest_UnknownAttribute"
+				"LDAPModifyTest_AddExistingValue"
+				"LDAPModifyTest_DeleteRequiredAttribute"
+				"LDAPModifyTest_MultipleModify_NotPooled"
+				"LDAPModifyTest_MultipleModify_Pooled"
+				"LDAPModifyTest_WrongMods"
+				"LDAPModifyTest_EmptyModsGiven"
+				"LDAPModifyTest_DeleteNonExistingValue"
+				"LDAPModifyTest_DeleteAndAddWholeAttr_NotPooled"
+				"LDAPModifyTest_DeleteAndAddWholeAttr_Pooled"
+			}
+		}
+		/Output {
+			/RootMapper {
+				"LDAPTest_LookupTmpAndEnv"
+
+				"LDAPSearchTest_IllegalQuery"
+				"LDAPSearchTest_ScopeBase"
+				"LDAPSearchTest_ScopeOneLevel"
+				"LDAPSearchTest_ScopeSubTree"
+				"LDAPSearchTest_SizeLimit"
+				"LDAPSearchTest_AttrSelection"
+				"LDAPSearchTest_AttrsOnly"
+				"LDAPSearchTest_Filter"
+				"LDAPSearchTest_WrongDN"
+				"LDAPSearchTest_EmptyResult"
+
+				"LDAPSearchQuery_LookupTkrefactor_NotPooled"
+				"LDAPSearchQuery_LookupTkrefactor_Pooled"
+
+				"LDAPConnectionManagerTest_StableQuery"
+				"LDAPConnectionManagerTest_Query"
+				"LDAPConnectionManagerTest_Delete"
+				"LDAPConnectionManagerTest_Add"
+				"LDAPConnectionManagerTest_Query_Added"
+				"LDAPConnectionManagerTest_MultipleModify"
+				"LDAPConnectionManagerTest_Compare"
+
+				"LDAPDeleteTest_NonLeaf"
+				"LDAPDeleteTest_NonExisting"
+				"LDAPDeleteTest_ExistingLeaf_NotPooled"
+				"LDAPDeleteTest_ExistingLeaf_Pooled"
+
+				"LDAPCompareTest_NonExistingEntry"
+				"LDAPCompareTest_NonExistingAttribute"
+				"LDAPCompareTest_EqualValue"
+				"LDAPCompareTest_UnequalValue"
+				"LDAPCompareTest_MissingAttrNameParam"
+				"LDAPCompareTest_MissingAttrValueParam"
+
+				"LDAPAddTest_ExistingEntry"
+				"LDAPAddTest_NonExistingEntry_NotPooled"
+				"LDAPAddTest_NonExistingEntry_Pooled"
+				"LDAPAddTest_MissingRequiredAttributes"
+				"LDAPAddTest_NonExistingAttribute"
+				"LDAPAddTest_MissingAttrsParam"
+				"LDAPAddTest_SingleValues"
+
+				"LDAPModifyTest_UnknownAttribute"
+				"LDAPModifyTest_AddExistingValue"
+				"LDAPModifyTest_DeleteRequiredAttribute"
+				"LDAPModifyTest_MultipleModify_NotPooled"
+				"LDAPModifyTest_MultipleModify_Pooled"
+				"LDAPModifyTest_WrongMods"
+				"LDAPModifyTest_EmptyModsGiven"
+				"LDAPModifyTest_DeleteNonExistingValue"
+				"LDAPModifyTest_DeleteAndAddWholeAttr_NotPooled"
+				"LDAPModifyTest_DeleteAndAddWholeAttr_Pooled"
+			}
+		}
+	}
+
+######## Test specific section ########
+
 	/TestAutoRebindBadConnection
 	{
 		/LDAPServer		"127.0.0.1"

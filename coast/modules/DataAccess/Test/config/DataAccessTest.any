@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------------------------------
-# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# Copyright (c) 2006, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
 # All rights reserved.
 #
 # This library/application is free software; you can redistribute and/or modify it under the terms of
@@ -17,11 +17,12 @@
 	}
 
 	/Actions {
-		/CallDataAccessAction { CallDA }
+		/CallDataAccessAction	{ CallDA }
 	}
+
 	/DataAccessImpls {
 		/LoopBackDAImpl {
-			daTest CallDAOkTest CallDANotOkTest
+			LoopBackDATest daTest CallDAOkTest CallDANotOkTest
 			NameUsingTestWithLocalConfig NameUsingTestWithEmptyLocalConfig NameUsingTestWithNullConfig
 		}
 		/MapperTestDAImpl {
@@ -74,7 +75,7 @@
 					OutputMapperConfig
 					OutputMapperConfigDerived
 				}
-				daTest CallDAOkTest CallDANotOkTest
+				daTest LoopBackDATest CallDAOkTest CallDANotOkTest
 				NameUsingTestWithLocalConfig NameUsingTestWithEmptyLocalConfig NameUsingTestWithNullConfig
 				MyTestHardCodedInputMapperConfig
 				MyTestDAImplMetaConfig
@@ -99,7 +100,7 @@
 		}
 		/Output {
 			/Mapper {
-				MapperTestDAImpl daTest CallDAOkTest CallDANotOkTest
+				MapperTestDAImpl daTest LoopBackDATest CallDAOkTest CallDANotOkTest
 				MyTestDAImplMetaConfig
 				/MyTestInputMapperConfig {
 					MyTestInputMapperConfigDerived
@@ -136,148 +137,10 @@
 		}
 	}
 
-######## Test specific section ########
-
-	/BasicFunctionTest {
-		/AnyToPut {
-			{
-				/ACategory Kat1
-				/AKey Value1
-				/Data XY
-			}
-			{
-				/ACategory Kat2
-				/AKey Value1
-				/Data XYZ
-			}
-			{
-				/ACategory Kat1
-				/AKey Value2
-				/Data XxYy
-			}
-			{
-				/ACategory Kat2
-				/AKey Value2
-				/Data XxYyZz
-			}
-			{
-				/ACategory Kat1
-				/AKey Value3
-				/Data XxxYyy
-			}
-		}
-		/Result {
-			/SessionStore {
-				/AnyWithSlotnames {
-					/Kat1	{
-						/Value1 {
-							/ACategory Kat1
-							/AKey Value1
-							/Data XY
-						}
-						/Value2 {
-							/ACategory Kat1
-							/AKey Value2
-							/Data XxYy
-						}
-						/Value3 {
-							/ACategory Kat1
-							/AKey Value3
-							/Data XxxYyy
-						}
-					}
-					/Kat2	{
-						/Value1 {
-							/ACategory Kat2
-							/AKey Value1
-							/Data XYZ
-						}
-						/Value2 {
-							/ACategory Kat2
-							/AKey Value2
-							/Data XxYyZz
-						}
-					}
-				}
-			}
-		}
-	}
-	/OverwriteOrAppendTest {
-		/AnyToPut {
-			{
-				{
-					/ACategory Kat1
-					/AKey Value1
-					/Data XY
-				}
-				{
-					/ACategory Kat2
-					/AKey Value1
-					/Data XYZ
-				}
-				{
-					/ACategory Kat1
-					/AKey Value2
-					/Data XxYy
-				}
-				{
-					/ACategory Kat2
-					/AKey Value2
-					/Data XxYyZz
-				}
-				{
-					/ACategory Kat1
-					/AKey Value3
-					/Data XxxYyy
-				}
-			}
-			{
-				{
-					/ACategory Kat1
-					/AKey Value1
-					/Data AB
-				}
-				{
-					/ACategory Kat2
-					/AKey Value1
-					/Data ABC
-				}
-			}
-		}
-		/Result {
-			/SessionStore {
-				/AnyWithSlotnames {
-					/Kat1	{
-						/Value1 {
-							/ACategory Kat1
-							/AKey Value1
-							/Data AB
-						}
-						/Value2 {
-							/ACategory Kat1
-							/AKey Value2
-							/Data XxYy
-						}
-						/Value3 {
-							/ACategory Kat1
-							/AKey Value3
-							/Data XxxYyy
-						}
-					}
-					/Kat2	{
-						/Value1 {
-							/ACategory Kat2
-							/AKey Value1
-							/Data ABC
-						}
-						/Value2 {
-							/ACategory Kat2
-							/AKey Value2
-							/Data XxYyZz
-						}
-					}
-				}
-			}
-		}
+	/ExecTest {
+		/Message "Hello"
+		/Header "Loopback try"
+		/Footer "coast bsshht"
+		/Control "XXX"
 	}
 }

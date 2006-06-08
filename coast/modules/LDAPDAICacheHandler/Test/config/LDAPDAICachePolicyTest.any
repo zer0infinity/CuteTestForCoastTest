@@ -1,0 +1,114 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2006, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/LDAPServer		"surlej.hsr.ch"
+	/LDAPPort		"49999"
+	/LDAPBindName	"cn=Directory Manager"
+	/LDAPBindPW		"all2test"
+	/LDAPTimeout	10
+
+	/NoDataReadTest {
+		/DLL {
+			ldapdataaccess2
+		}
+		/Modules {
+			MappersModule
+			DataAccessImplsModule
+			ActionsModule
+		}
+		/Actions {
+		}
+		/LDAPDAICachePolicyModule {
+			/LDAPDAIDataAccess { NoDataDA }
+			/LDAPDAIDataAccessAction	  { NoDataDAAction }
+		}
+	#!	DataAccessImpl definitions, edit when new backend needed
+		/DataAccessImpls {
+			/LDAPAbstractDAI {
+				/LDAPSearchDAI {
+					NoDataDA
+					NoDataDAAction
+				}
+			}
+		}
+		/Mappers {
+			/Input {
+				/ParameterMapper {
+					NoDataDA
+					NoDataDAAction
+				}
+			}
+			/Output {
+				/ResultMapper {
+					/LDAPListMapper {
+						NoDataDA
+						NoDataDAAction
+					}
+				}
+			}
+		}
+		/LDAPServer		%LDAPServer
+		/LDAPPort		%LDAPPort
+		/LDAPBindName	%LDAPBindName
+		/LDAPBindPW		%LDAPBindPW
+		/LDAPTimeout	%LDAPTimeout
+	}
+	/ReInitTest {
+		/DLL {
+			ldapdataaccess2
+		}
+		/Modules {
+			MappersModule
+			DataAccessImplsModule
+			ActionsModule
+			/LDAPDAICachePolicyModule {
+				"LDAPDAICachePolicyModule"
+				/Mandatory 1
+			}
+		}
+		/Actions {
+			/LDAPDAIDataAccessTestAction	{ TestDA1Action TestDA2Action }
+		}
+
+		/LDAPDAICachePolicyModule {
+			/LDAPDAIDataAccess 			{ TestDA1 TestDA2 }
+			/LDAPDAIDataAccessAction	{ TestDA1Action TestDA2Action }
+		}
+	#!	DataAccessImpl definitions, edit when new backend needed
+		/DataAccessImpls {
+			/LDAPAbstractDAI {
+				/LDAPSearchDAI {
+					TestDA1 TestDA2
+					TestDA1Action TestDA2Action
+				}
+			}
+		}
+		/Mappers {
+			/Input {
+				/ParameterMapper {
+					TestDA1 TestDA2
+					TestDA1Action TestDA2Action
+				}
+			}
+			/Output {
+				/RootMapper {
+					TestDA1 TestDA2
+					TestDA1Action TestDA2Action
+				}
+			}
+		}
+		/LDAPServer		%LDAPServer
+		/LDAPPort		%LDAPPort
+		/LDAPBindName	%LDAPBindName
+		/LDAPBindPW		%LDAPBindPW
+		/LDAPTimeout	%LDAPTimeout
+	}
+	/CallsInARow %ReInitTest
+}

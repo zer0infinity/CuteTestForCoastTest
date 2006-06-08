@@ -82,19 +82,19 @@
 		RenderersModule
 		AcceptorFactoriesModule
 		SessionListManager
+		ServersModule
 	}
 
 	/SessionListManager {
-	  /MaxSessionsAllowed 50
-	  /CleanerTimeout 720
-	  /CleanerAction None
-	  /SessionFactory SessionFactory
+		/MaxSessionsAllowed 50
+		/CleanerTimeout 720
+		/CleanerAction None
+		/SessionFactory SessionFactory
 	}
 	/AcceptorFactories {
 		/AcceptorFactory {
 			TCP4242
 		}
-
 	}
 
 	/SecurityModule { # SOP: use base items, because we do not want dependency on libsecurity.so

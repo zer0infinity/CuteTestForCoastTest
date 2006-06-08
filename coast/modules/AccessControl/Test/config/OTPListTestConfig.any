@@ -8,25 +8,12 @@
 
 {
 
-	/Config
-	{
-		/Modules {
-			OTPListsModule
-#			AccessControllersModule
-#			DataAccessImplsModule
-		}
+	/Modules {
+		OTPListsModule
+	}
 
-		/OTPLists {
-			/MockOTPList	{ MockOtp AlwaysTrueOtp }
-		}
-
-		/AccessControllers {
-			# might need this for file based OtpLists
-		}
-
-		/DataAccessImpls {
-			# might need this for file based OtpLists
-		}
+	/OTPLists {
+		/MockOTPList	{ MockOtp AlwaysTrueOtp }
 	}
 
 	/Tests {

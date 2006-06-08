@@ -8,6 +8,56 @@
 
 {
 
+	/DLL {
+		renderers
+	}
+	/Modules {
+		DataAccessImplsModule
+		ActionsModule
+		MappersModule
+		RenderersModule
+		AccessManagerModule
+	}
+
+	/Actions {
+		/CallDataAccessAction		{ CallDA }
+	}
+	/Renderers {
+		/SwitchRenderer 		{ Switch }
+		/ContextLookupRenderer 	{ Lookup }
+	}
+	/DataAccessImpls {
+		/MailDAImpl {
+			TestMail
+		}
+		/CgiCaller {
+			CgiExecTest
+		}
+	}
+	/Mappers {
+		/Input {
+			/ParameterMapper {
+				TestMail
+			}
+			/CgiParams { CgiExecTest }
+		}
+		/Output {
+			/ResultMapper {
+				TestMail
+				ExecTestOut
+				CgiExecTest
+			}
+		}
+	}
+	/AccessManagers {
+		/MockAccessManager {
+			AuthenticationServiceAccessManager
+		}
+	}
+	/DefaultAccessManager	MockAccessManager
+
+######## Test specific section ########
+
 	/NoConfigTest {
 		/TmpStore {
 			/Realm			AuthTest

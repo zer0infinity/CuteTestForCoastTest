@@ -8,88 +8,89 @@
 
 {
 
-	/ConfigOne
-	{
-		/WorkerPoolManagerModule
-		{
-			/Pools
-			{
-				/ConfigOnePoolOne
-				{
+	/DLL {
+		workerpoolmanagermodule
+	}
+	/Modules {
+		WorkerPoolManagerModule
+	}
+
+######## Test specific section ########
+
+	/TestWorkerOne {
+		/Modules {
+			WorkerPoolManagerModule
+		}
+		/WorkerPoolManagerModule {
+			/Pools {
+				/ConfigOnePoolOne {
 					/Workers 1
 					/WorkerInitialConfig "ConfigOnePoolOneQueue"
 				}
-				/ConfigOnePoolTwo
-				{
+				/ConfigOnePoolTwo {
 					/Workers 5
 					/WorkerInitialConfig "ConfigOnePoolTwoQueue"
 				}
-				/ConfigOnePoolThree
-				{
+				/ConfigOnePoolThree {
 					/Workers 10
 					/WorkerInitialConfig "ConfigOnePoolThreeQueue"
 				}
 			}
 		}
-	}
-	/TestWorkerOne
-	{
-		{
-			/Pool		"ConfigOnePoolOne"
-			/Message	"ConfigOne Pool One worker: This is for you"
-			/ExpectedWorkerInitialConfig "ConfigOnePoolOneQueue"
-		}
-		{
-			/Pool		"ConfigOnePoolTwo"
-			/Message	"ConfigOnePool Two worker: This is for you"
-			/ExpectedWorkerInitialConfig "ConfigOnePoolTwoQueue"
-		}
-		{
-			/Pool		"ConfigOnePoolThree"
-			/Message	"ConfigOne Pool Three worker: This is for you"
-			/ExpectedWorkerInitialConfig "ConfigOnePoolThreeQueue"
-		}
-	}
-	/ConfigTwo
-	{
-		/WorkerPoolManagerModule
-		{
-			/Pools
+		/Tests {
 			{
-				/ConfigTwoPoolOne
-				{
+				/Pool		"ConfigOnePoolOne"
+				/Message	"ConfigOne Pool One worker: This is for you"
+				/ExpectedWorkerInitialConfig "ConfigOnePoolOneQueue"
+			}
+			{
+				/Pool		"ConfigOnePoolTwo"
+				/Message	"ConfigOnePool Two worker: This is for you"
+				/ExpectedWorkerInitialConfig "ConfigOnePoolTwoQueue"
+			}
+			{
+				/Pool		"ConfigOnePoolThree"
+				/Message	"ConfigOne Pool Three worker: This is for you"
+				/ExpectedWorkerInitialConfig "ConfigOnePoolThreeQueue"
+			}
+		}
+	}
+	/TestWorkerTwo {
+		/Modules {
+			WorkerPoolManagerModule
+		}
+		/WorkerPoolManagerModule {
+			/Pools {
+				/ConfigTwoPoolOne {
 					/Workers 10
 					/WorkerInitialConfig "ConfigTwoPoolOneQueue"
 				}
-				/ConfigTwoPoolTwo
-				{
+				/ConfigTwoPoolTwo {
 					/Workers 15
 					/WorkerInitialConfig "ConfigTwoPoolTwoQueue"
 				}
-				/ConfigTwoPoolThree
-				{
+				/ConfigTwoPoolThree {
 					/Workers 20
 					/WorkerInitialConfig "ConfigTwoPoolThreeQueue"
 				}
 			}
 		}
-	}
-	/TestWorkerTwo
-	{
-		{
-			/Pool		"ConfigTwoPoolOne"
-			/Message	"ConfigTwo Pool One worker: New This is for you"
-			/ExpectedWorkerInitialConfig "ConfigTwoPoolOneQueue"
-		}
-		{
-			/Pool		"ConfigTwoPoolTwo"
-			/Message	"ConfigTwo Pool Two worker: New This is for you"
-			/ExpectedWorkerInitialConfig "ConfigTwoPoolTwoQueue"
-		}
-		{
-			/Pool		"ConfigTwoPoolThree"
-			/Message	"ConfigTwo Pool Three worker: This is for you"
-			/ExpectedWorkerInitialConfig "ConfigTwoPoolThreeQueue"
+		/Tests {
+			{
+				/Pool		"ConfigTwoPoolOne"
+				/Message	"ConfigTwo Pool One worker: New This is for you"
+				/ExpectedWorkerInitialConfig "ConfigTwoPoolOneQueue"
+			}
+			{
+				/Pool		"ConfigTwoPoolTwo"
+				/Message	"ConfigTwo Pool Two worker: New This is for you"
+				/ExpectedWorkerInitialConfig "ConfigTwoPoolTwoQueue"
+			}
+			{
+				/Pool		"ConfigTwoPoolThree"
+				/Message	"ConfigTwo Pool Three worker: This is for you"
+				/ExpectedWorkerInitialConfig "ConfigTwoPoolThreeQueue"
+			}
 		}
 	}
 }

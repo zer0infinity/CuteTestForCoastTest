@@ -1,0 +1,224 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2006, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/DLL {
+		applog
+		dataaccess
+		renderers
+	}
+	/Modules {
+		ActionsModule
+		RenderersModule
+		SybaseModule
+		DataAccessImplsModule
+		MappersModule
+		AppLogModule
+	}
+
+	# uncomment the server slot for enabling TimeLogging
+	/Server	Server
+
+	/Actions {
+		/CallDataAccessAction	{ CallDA }
+	}
+	/Renderers {
+		/SwitchRenderer 		{ Switch }
+		/ContextLookupRenderer 	{ Lookup }
+	}
+	/SybaseModule {
+		/SybCTDAImpl {
+			/ParallelQueries		20
+			/InterfacesPathName		"config/interfaces.any"
+		}
+		/SybCTnewDAImpl {
+			/ParallelQueries		1
+			/CloseConnectionTimeout	60
+			/InterfacesPathName		"config/interfaces.any"
+		}
+		/SybCTPoolDAImpl {
+			/HIKU_INT2 {
+				/ParallelQueries	5
+				/InterfacesPathName	"config/interfaces.any"
+			}
+			/FKIS_QA {
+				/ParallelQueries	20
+				/InterfacesPathName	"config/interfaces.any"
+			}
+		}
+	}
+
+	/DataAccessImpls {
+		/SybCTDAImpl {
+			/SybLocalSa {
+				SybShowDatabases
+				SybDeleteFromDatabase
+			}
+			/SybLocalTest {
+				SybSearchTest
+				SybLimitedSearchTest
+				SybLimitedSearchByParam
+				SybLimitedSearchByParamOverride
+				SybInsertDatabases
+#				SybTestTypeConversions
+				SybErrorTest
+				SybDeleteStoredProcedureTest
+				SybCreateStoredProcedureTest
+				SybExecuteStoredProcedureTest
+				SybSingleRowForSingleSelects
+				SybMultipleRowsForMultipleSelects
+
+				/SybTestThreadDA {
+					SybTestThreadDAWithError
+				}
+			}
+		}
+		/SybCTPoolDAImpl {
+			/SybPoolLocalSa {
+				SybPoolShowDatabases
+				SybPoolDeleteFromDatabase
+			}
+			/SybPoolLocalTest {
+				SybPoolSearchTest
+				SybPoolInsertDatabases
+#				SybPoolTestTypeConversions
+				SybPoolErrorTest
+				SybPoolDeleteStoredProcedureTest
+				SybPoolCreateStoredProcedureTest
+				SybPoolExecuteStoredProcedureTest
+				SybPoolSingleRowForSingleSelects
+				SybPoolMultipleRowsForMultipleSelects
+				SybPoolSeparatedTitlesFromRows
+
+				/SybTestThreadPoolDA {
+					SybTestThreadPoolDAWithError
+				}
+			}
+		}
+		/SybCTnewDAImpl {
+			/SybNewLocal {
+				SybNewDASearchTest
+				/SybTestThreadnewDA {
+					SybTestThreadnewDAWithError
+				}
+			}
+		}
+	}
+
+	/Mappers {
+		/Input {
+			/ParameterMapper {
+				/SybLocalSa {
+					/SybShowDatabases {
+						SybPoolShowDatabases
+					}
+					/SybDeleteFromDatabase {
+						SybPoolDeleteFromDatabase
+					}
+				}
+				/SybLocalTest {
+					/SybSearchTest {
+						SybPoolSearchTest
+						SybNewDASearchTest
+					}
+					SybLimitedSearchTest
+					/SybLimitedSearchByParam {
+						SybLimitedSearchByParamOverride
+					}
+					/SybInsertDatabases {
+						SybPoolInsertDatabases
+					}
+#					SybTestTypeConversions
+#					SybPoolTestTypeConversions
+					/SybErrorTest {
+						SybPoolErrorTest
+					}
+					/SybDeleteStoredProcedureTest {
+						SybPoolDeleteStoredProcedureTest
+					}
+					/SybCreateStoredProcedureTest {
+						SybPoolCreateStoredProcedureTest
+					}
+					/SybExecuteStoredProcedureTest {
+						SybPoolExecuteStoredProcedureTest
+					}
+					/SybSingleRowForSingleSelects {
+						SybPoolSingleRowForSingleSelects
+					}
+					/SybMultipleRowsForMultipleSelects {
+						SybPoolMultipleRowsForMultipleSelects
+					}
+					SybPoolSeparatedTitlesFromRows
+				}
+				/SybTestThreadDA {
+					SybTestThreadPoolDA
+					SybTestThreadnewDA
+					/SybTestThreadDAWithError {
+						SybTestThreadPoolDAWithError
+						SybTestThreadnewDAWithError
+					}
+				}
+			}
+		}
+		/Output {
+			/ResultMapper {
+				/SybCTnewDAImpl {
+					SybNewDASearchTest
+					SybTestThreadnewDA
+					SybTestThreadnewDAWithError
+				}
+			}
+			/NameUsingOutputMapper {
+				SybSearchTest
+				SybLimitedSearchTest
+				SybLimitedSearchByParam
+				SybLimitedSearchByParamOverride
+				SybShowDatabases
+				SybInsertDatabases
+				SybDeleteFromDatabase
+#				SybTestTypeConversions
+				SybErrorTest
+				SybDeleteStoredProcedureTest
+				SybCreateStoredProcedureTest
+				SybExecuteStoredProcedureTest
+				SybSingleRowForSingleSelects
+				SybMultipleRowsForMultipleSelects
+				SybTestThreadDA
+				SybTestThreadDAWithError
+
+				SybPoolSearchTest
+				SybPoolShowDatabases
+				SybPoolInsertDatabases
+				SybPoolDeleteFromDatabase
+#				SybPoolTestTypeConversions
+				SybPoolErrorTest
+				SybPoolDeleteStoredProcedureTest
+				SybPoolCreateStoredProcedureTest
+				SybPoolExecuteStoredProcedureTest
+				SybPoolSingleRowForSingleSelects
+				SybPoolMultipleRowsForMultipleSelects
+				SybPoolSeparatedTitlesFromRows
+				SybTestThreadPoolDA
+				SybTestThreadPoolDAWithError
+			}
+		}
+	}
+
+######## Test specific section ########
+
+	/SybCTnewDAImplTest {
+		/SybaseModule {
+			/SybCTnewDAImpl {
+				/ParallelQueries		10
+				/CloseConnectionTimeout	60
+				/InterfacesPathName		"config/interfaces.any"
+			}
+		}
+	}
+}

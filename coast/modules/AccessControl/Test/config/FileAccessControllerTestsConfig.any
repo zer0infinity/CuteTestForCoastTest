@@ -8,56 +8,50 @@
 
 {
 
-	/Config
+	/Modules
 	{
-		/Modules
-		{
-			DataAccessImplsModule
-			MappersModule
-			AccessControllersModule
+		DataAccessImplsModule
+		MappersModule
+		AccessControllersModule
+	}
+	/AccessControllers
+	{
+		/Entity {
+			/FileEDAC {	EntityDataFile }
 		}
-		/AccessControllers
-		{
-			/Entity {
-				/FileEDAC {	EntityDataFile }
-			}
-			/Token {
-				/FileTDAC {	TokenDataFile }
-			}
-			/User {
-				/FileUDAC {	UserDataFile }
+		/Token {
+			/FileTDAC {	TokenDataFile }
+		}
+		/User {
+			/FileUDAC {	UserDataFile }
+		}
+	}
+	/DataAccessImpls
+	{
+		/ReadFileDAImpl {
+			ReadEntityData
+			ReadTokenData
+			ReadUserData
+		}
+		/WriteFileDAImpl {
+			WriteEntityData
+			WriteTokenData
+			WriteUserData
+		}
+	}
+	/Mappers {
+		/Input {
+			/ParameterMapper {
+				ReadUserData
+				ReadTokenData
+				ReadEntityData
 			}
 		}
-		/DataAccessImpls
-		{
-			/DataAccessImpl
-			{
-				/ReadFileDAImpl {
-					ReadEntityData
-					ReadTokenData
-					ReadUserData
-				}
-				/WriteFileDAImpl {
-					WriteEntityData
-					WriteTokenData
-					WriteUserData
-				}
-			}
-		}
-		/Mappers {
-			/Input {
-				/ParameterMapper {
-					ReadUserData
-					ReadTokenData
-					ReadEntityData
-				}
-			}
-			/Output {
-				/ResultMapper {
-					ReadUserData
-					ReadTokenData
-					ReadEntityData
-				}
+		/Output {
+			/ResultMapper {
+				ReadUserData
+				ReadTokenData
+				ReadEntityData
 			}
 		}
 	}
