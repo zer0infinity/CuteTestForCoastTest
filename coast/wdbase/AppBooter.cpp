@@ -277,8 +277,6 @@ void AppBooter::Halt(const Anything &config)
 
 	CloseLibs();
 
-	TerminateTracer();
-
 	SysLog::Terminate();
 }
 
