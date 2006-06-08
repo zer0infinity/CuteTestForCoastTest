@@ -104,17 +104,6 @@ void TransitionTests::setUp ()
 	t_assert(GetConfig().IsDefined("Roles"));
 	t_assert(GetConfig().IsDefined("Modules"));
 	t_assert(GetConfig().IsDefined("Servers"));
-
-	WDModule *svcs = WDModule::FindWDModule("ServersModule");
-	svcs->Init(GetConfig());
-
-	// ensure installation of modules
-	WDModule::Install(GetConfig());
-}
-
-void TransitionTests::tearDown ()
-{
-	WDModule::Terminate(GetConfig());
 }
 
 bool TransitionTests::EvalRequest(ROAnything request, Anything &returned)

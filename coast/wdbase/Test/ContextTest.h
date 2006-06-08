@@ -10,13 +10,13 @@
 #define _ContextTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
+#include "WDBaseTestPolicies.h"
 
 class Registry;
 
 //---- ContextTest ----------------------------------------------------------
 //!TestCases for the Context class
-class ContextTest : public TestFramework::TestCaseWithConfig
+class ContextTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors
@@ -34,11 +34,6 @@ public:
 
 	//!sets the environment for this test
 	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
-
-	TString getConfigFileName();
 
 	//!test constructor with an anything containing request infos
 	void RequestConstructorTest();

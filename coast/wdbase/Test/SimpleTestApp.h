@@ -27,7 +27,7 @@ public:
 	}
 
 	//! GlobalInit: installs ressources shared among all instances
-	virtual int GlobalInit(int argc, char *argv[], const Anything &config);
+	virtual int GlobalInit(int argc, char *argv[], const ROAnything config);
 	//!starts up the application; an InterruptHandler is set up to catch signals for shutdown, reset etc.
 	virtual int GlobalRun();
 	//! frees ressources shared among all instances
@@ -70,7 +70,7 @@ public:
 	}
 
 	//! GlobalInit: installs ressources shared among all instances
-	virtual int GlobalInit(int argc, char *argv[], const Anything &config);
+	virtual int GlobalInit(int argc, char *argv[], const ROAnything config);
 	//!starts up the application; an InterruptHandler is set up to catch signals for shutdown, reset etc.
 	virtual int GlobalRun();
 	//! frees ressources shared among all instances

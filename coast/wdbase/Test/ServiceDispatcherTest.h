@@ -10,10 +10,11 @@
 #define _ServiceDispatcherTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
+#include "WDBaseTestPolicies.h"
+
 //---- ServiceDispatcherTest ----------------------------------------------------------
 //!Tests dispatching of standard handler
-class ServiceDispatcherTest : public TestFramework::TestCaseWithConfig
+class ServiceDispatcherTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors
@@ -33,17 +34,11 @@ public:
 	//!sets the environment for this test
 	void setUp ();
 
-	//!deletes the environment for this test
-	void tearDown ();
-
 	//!tests the find protocol of the service dispatcher class
 	void FindTests();
 
 	//!tests the ServiceDispatcherModule
 	void ServiceDispatcherModuleTest();
-
-protected:
-
 };
 
 #endif

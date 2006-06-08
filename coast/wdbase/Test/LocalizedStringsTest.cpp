@@ -6,19 +6,16 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "WDModule.h"
-#include "Dbg.h"
-
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
+//--- interface include --------------------------------------------------------
+#include "LocalizedStringsTest.h"
 
 //--- module under test --------------------------------------------------------
 #include "LocalizedStrings.h"
 
-//--- interface include --------------------------------------------------------
-#include "LocalizedStringsTest.h"
+//--- test modules used --------------------------------------------------------
+#include "TestSuite.h"
+
+//--- standard modules used ----------------------------------------------------
 
 //---- LocalizedStringsTest ----------------------------------------------------------------
 LocalizedStringsTest::LocalizedStringsTest(TString tstrName)
@@ -42,13 +39,6 @@ void LocalizedStringsTest::setUp ()
 	StartTrace(LocalizedStringsTest.setUp);
 	t_assert(GetConfig().IsDefined("Modules"));
 	t_assert(GetConfig()["Modules"].Contains("LocalizationModule"));
-	WDModule::Install(GetConfig());
-}
-
-void LocalizedStringsTest::tearDown ()
-{
-	StartTrace(LocalizedStringsTest.tearDown);
-	WDModule::Terminate(GetConfig());
 }
 
 void LocalizedStringsTest::test()
@@ -70,8 +60,6 @@ Test *LocalizedStringsTest::suite ()
 {
 	StartTrace(LocalizedStringsTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
 	ADD_CASE(testSuite, LocalizedStringsTest, test);
-
 	return testSuite;
 }

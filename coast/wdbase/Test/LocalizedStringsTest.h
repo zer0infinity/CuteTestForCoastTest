@@ -10,11 +10,11 @@
 #define _LocalizedStringsTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
+#include "WDBaseTestPolicies.h"
 
 //---- LocalizedStringsTest ----------------------------------------------------------
 //!ConfiguredTestCases description
-class LocalizedStringsTest : public TestFramework::TestCaseWithConfig
+class LocalizedStringsTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors
@@ -33,9 +33,6 @@ public:
 
 	//!sets the environment for this test
 	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
 
 	TString getConfigFileName();
 

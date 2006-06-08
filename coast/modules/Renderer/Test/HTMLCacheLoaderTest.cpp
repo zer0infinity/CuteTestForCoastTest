@@ -16,7 +16,6 @@
 #include "HTMLTemplateCacheLoader.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "Application.h"
 #include "TemplateParser.h"
 #include "HTMLTemplateRenderer.h"
 
@@ -32,27 +31,6 @@ HTMLCacheLoaderTest::~HTMLCacheLoaderTest()
 	StartTrace(HTMLCacheLoaderTest.Dtor);
 }
 
-TString HTMLCacheLoaderTest::getConfigFileName()
-{
-	return "Config";
-}
-
-void HTMLCacheLoaderTest::setUp ()
-{
-	StartTrace(HTMLCacheLoaderTest.setUp);
-	t_assert(GetConfig().IsDefined("Modules"));
-	Application::InitializeGlobalConfig(GetConfig().DeepClone());
-	WDModule::Install(GetConfig());
-}
-
-void HTMLCacheLoaderTest::tearDown ()
-{
-	StartTrace(HTMLCacheLoaderTest.tearDown);
-
-	t_assert(GetConfig().IsDefined("Modules"));
-	WDModule::Terminate(GetConfig());
-	Application::InitializeGlobalConfig(Anything());
-}
 void HTMLCacheLoaderTest::LoadEmptyCacheTest()
 {
 	StartTrace(HTMLCacheLoaderTest.LoadEmptyCacheTest);
@@ -226,13 +204,11 @@ Test *HTMLCacheLoaderTest::suite ()
 {
 	StartTrace(HTMLCacheLoaderTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
 	ADD_CASE(testSuite, HTMLCacheLoaderTest, LoadEmptyCacheTest);
 	ADD_CASE(testSuite, HTMLCacheLoaderTest, SimpleBuildCacheTest);
 	ADD_CASE(testSuite, HTMLCacheLoaderTest, SimpleMacroBuildCacheTest);
 	ADD_CASE(testSuite, HTMLCacheLoaderTest, SimpleCommentBuildCacheTest);
 	ADD_CASE(testSuite, HTMLCacheLoaderTest, ConsecutiveCommentBuildCacheTest);
 	ADD_CASE(testSuite, HTMLCacheLoaderTest, CheckCacheIsLoaded);
-
 	return testSuite;
 }

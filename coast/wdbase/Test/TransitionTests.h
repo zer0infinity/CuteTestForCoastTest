@@ -10,13 +10,13 @@
 #define _TransitionTests_H
 
 //---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
+#include "WDBaseTestPolicies.h"
 
 //---- forward declaration -----------------------------------------------
 
 //---- TransitionTests ----------------------------------------------------------
 //!TestCases for Coast state transitions
-class TransitionTests : public TestFramework::TestCaseWithConfig
+class TransitionTests : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors
@@ -35,9 +35,6 @@ public:
 
 	//!sets the environment for this test
 	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
 
 	TString getConfigFileName();
 

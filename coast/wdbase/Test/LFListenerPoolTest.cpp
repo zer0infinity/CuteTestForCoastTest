@@ -6,19 +6,18 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
+//--- interface include --------------------------------------------------------
+#include "LFListenerPoolTest.h"
 
 //--- module under test --------------------------------------------------------
 #include "LFListenerPool.h"
 
-//--- interface include --------------------------------------------------------
-#include "LFListenerPoolTest.h"
+//--- test modules used --------------------------------------------------------
+#include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
 #include "Socket.h"
 #include "WPMStatHandler.h"
-#include "WDModule.h"
 #include "RequestProcessor.h"
 
 //--- TestRequestReactor ----
@@ -68,13 +67,6 @@ void LFListenerPoolTest::setUp ()
 {
 	StartTrace(LFListenerPoolTest.setUp);
 	t_assert(GetConfig().IsDefined("Modules"));
-	WDModule::Install(GetConfig());
-}
-
-void LFListenerPoolTest::tearDown ()
-{
-	StartTrace(LFListenerPoolTest.tearDown);
-	WDModule::Terminate(GetConfig());
 }
 
 void LFListenerPoolTest::NoReactorTest()

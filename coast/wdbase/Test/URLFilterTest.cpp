@@ -18,7 +18,6 @@
 //--- standard modules used ----------------------------------------------------
 #include "Context.h"
 #include "SecurityModule.h"
-#include "Application.h"
 
 //---- URLFilterTest ----------------------------------------------------------------
 URLFilterTest::URLFilterTest(TString tname)
@@ -34,12 +33,6 @@ URLFilterTest::~URLFilterTest()
 void URLFilterTest::setUp ()
 {
 	t_assert(GetConfig()["Modules"].Contains("SecurityModule"));
-	WDModule::Install(GetConfig());
-}
-
-void URLFilterTest::tearDown ()
-{
-	WDModule::Terminate(GetConfig());
 }
 
 // handle simple things first

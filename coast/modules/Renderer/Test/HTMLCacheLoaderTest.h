@@ -10,11 +10,11 @@
 #define _HTMLCacheLoaderTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
+#include "WDBaseTestPolicies.h"
 
 //---- HTMLCacheLoaderTest ----------------------------------------------------------
 //:TestCases description
-class HTMLCacheLoaderTest : public TestFramework::TestCaseWithConfig
+class HTMLCacheLoaderTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors
@@ -31,14 +31,6 @@ public:
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
 
-	//!sets the environment for this test
-	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
-
-	TString getConfigFileName();
-
 	//!test simplest cache Loading
 	void LoadEmptyCacheTest();
 	//!test simple cache Building
@@ -50,8 +42,6 @@ public:
 	//!test two comment cache Building using <!--#wd Lookup foo --><!-- hui --><!--#wd Lookup bar -->
 	void ConsecutiveCommentBuildCacheTest();
 
-	//!test simple old way of parsing and cache building
-//	void BuildCacheOldStyleTest();
 	//!check if we really create a cache
 	void CheckCacheIsLoaded();
 };

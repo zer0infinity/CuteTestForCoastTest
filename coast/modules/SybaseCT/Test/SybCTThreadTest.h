@@ -10,7 +10,7 @@
 #define _SybCTThreadTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
+#include "WDBaseTestPolicies.h"
 
 //---- SybCTThreadTest ----------------------------------------------------------
 //! <B>single line description of the class</B>
@@ -18,7 +18,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class SybCTThreadTest : public TestFramework::TestCaseWithConfig
+class SybCTThreadTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors
@@ -40,8 +40,6 @@ public:
 
 	//! deletes the environment for this test
 	void tearDown ();
-
-	TString getConfigFileName();
 
 	//! describe this Test
 	void SybCTDAImplTest();

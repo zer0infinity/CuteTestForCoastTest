@@ -10,15 +10,14 @@
 #define _ListenerPoolTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
+#include "WDBaseTestPolicies.h"
 #include "Socket.h"
-#include "Threads.h"
 
 class Connector;
 
 //---- ListenerPoolTest ----------------------------------------------------------
 //!TestCases description
-class ListenerPoolTest : public TestFramework::TestCaseWithConfig
+class ListenerPoolTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors
@@ -36,8 +35,6 @@ public:
 	//! static Test *suite ();
 
 	void setUp ();
-	void tearDown();
-	TString getConfigFileName();
 
 	//!Everything works fine within this testcase
 	void PoolTest();

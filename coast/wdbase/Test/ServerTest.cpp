@@ -39,21 +39,12 @@ void ServerTest::setUp ()
 {
 	StartTrace(ServerTest.setUp);
 	t_assert(GetConfig().IsDefined("Modules"));
-	Application::InitializeGlobalConfig(GetConfig().DeepClone());
-	WDModule::Install(GetConfig());
 	Server *s;
 	if (t_assert((s = Server::FindServer("Server")) != NULL)) {
 		ROAnything result;
 		t_assert(s->Lookup("TCP5010", result));
 		TraceAny(result, "server lookup TCP5010");
 	}
-}
-
-void ServerTest::tearDown ()
-{
-	StartTrace(ServerTest.tearDown);
-	WDModule::Terminate(GetConfig());
-	Application::InitializeGlobalConfig(Anything());
 }
 
 void ServerTest::InitRunTerminateTest()

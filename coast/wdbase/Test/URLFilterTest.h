@@ -10,13 +10,13 @@
 #define _URLFilterTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
+#include "WDBaseTestPolicies.h"
 
 //---- forward declaration -----------------------------------------------
 
 //---- URLFilterTest ----------------------------------------------------------
 //!TestCases for the Registry class
-class URLFilterTest : public TestFramework::TestCaseWithConfig
+class URLFilterTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors
@@ -35,9 +35,6 @@ public:
 
 	//!sets the environment for this test
 	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
 
 	// handle simple things first
 	void DoFilterStateTest();

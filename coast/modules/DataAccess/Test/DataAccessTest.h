@@ -10,14 +10,14 @@
 #define _DataAccessTest_H
 
 //---- TestCase include -------------------------------------------------
-#include "TestCase.h"
+#include "WDBaseTestPolicies.h"
 
 //---- DataAccessTest ----------------------------------------------------------
 //!single line description of the class
 //! further explanation of the purpose of the class
 //! this may contain <B>HTML-Tags</B>
 //! ...
-class DataAccessTest : public TestFramework::TestCase
+class DataAccessTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors
@@ -26,15 +26,9 @@ public:
 
 	static Test *suite ();
 
-	void setUp();
-
 	void GetImplTest();
 	void ExecTest();
 	void SessionUnlockTest();
-
-protected:
-	//--- member variables declaration
-	Anything fConfig;
 };
 
 #endif

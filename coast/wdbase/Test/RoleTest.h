@@ -10,11 +10,11 @@
 #define _RoleTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
+#include "WDBaseTestPolicies.h"
 
 //---- RoleTest ----------------------------------------------------------
 //!TestCases for the Registry class
-class RoleTest : public TestFramework::TestCaseWithConfig
+class RoleTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors
@@ -33,9 +33,6 @@ public:
 
 	//!sets the environment for this test
 	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
 
 protected:
 	void CheckInstalled ();

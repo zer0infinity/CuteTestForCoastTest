@@ -9,11 +9,11 @@
 //--- interface include --------------------------------------------------------
 #include "ContextTest.h"
 
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
-
 //--- module under test --------------------------------------------------------
 #include "Context.h"
+
+//--- test modules used --------------------------------------------------------
+#include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
 #include "StringStreamSocket.h"
@@ -31,11 +31,6 @@ ContextTest::ContextTest(TString tname)
 	StartTrace(ContextTest.ContextTest);
 }
 
-TString ContextTest::getConfigFileName()
-{
-	return "Config";
-}
-
 ContextTest::~ContextTest()
 {
 }
@@ -43,20 +38,11 @@ ContextTest::~ContextTest()
 void ContextTest::setUp ()
 {
 	t_assert(GetConfig().IsDefined("Modules"));
-	Application::InitializeGlobalConfig(GetConfig().DeepClone());
-	WDModule::Install(GetConfig());
 	Server *s;
 	if (t_assert((s = Server::FindServer("Server")) != NULL)) {
 		ROAnything result;
 		t_assert(s->Lookup("TCP5010", result));
 	}
-}
-
-void ContextTest::tearDown ()
-{
-	t_assert(GetConfig().IsDefined("Modules"));
-	WDModule::Terminate(GetConfig());
-	Application::InitializeGlobalConfig(Anything());
 }
 
 void ContextTest::RequestConstructorTest ()
@@ -1177,7 +1163,6 @@ void ContextTest::SessionUnlockingTest()
 Test *ContextTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
-
 	ADD_CASE(testSuite, ContextTest, VerySimplePush);
 	ADD_CASE(testSuite, ContextTest, RequestConstructorTest);
 	ADD_CASE(testSuite, ContextTest, EmptyConstructorTest);
@@ -1195,6 +1180,5 @@ Test *ContextTest::suite ()
 	ADD_CASE(testSuite, ContextTest, SetNGetRole);
 	ADD_CASE(testSuite, ContextTest, RefCountTest);
 	ADD_CASE(testSuite, ContextTest, SessionUnlockingTest);
-
 	return testSuite;
 }

@@ -10,7 +10,7 @@
 #define _TemplateParserTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
+#include "WDBaseTestPolicies.h"
 
 //---- TemplateParserTest ----------------------------------------------------------
 //! <B>really brief class description</B>
@@ -18,7 +18,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class TemplateParserTest : public TestFramework::TestCaseWithConfig
+class TemplateParserTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors
@@ -34,12 +34,6 @@ public:
 
 	//! builds up a suite of testcases for this test
 	static Test *suite ();
-
-	//! sets the environment for this test
-	void setUp ();
-
-	//! deletes the environment for this test
-	void tearDown ();
 
 	//! build empty cache
 	void BuildEmptyCache();
@@ -74,9 +68,6 @@ public:
 	void NoTagWithinJavascript();
 	//! test all possible kinds of configured transition tokens, e.g. slot in page and token in role-token-map
 	void BuildFormWithConfiguredTransitionTokens();
-
-private:
-	Anything fGlobalConfig;
 };
 
 #endif

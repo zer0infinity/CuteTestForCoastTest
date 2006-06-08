@@ -33,11 +33,6 @@ SybCTThreadTest::SybCTThreadTest(TString tstrName)
 	StartTrace(SybCTThreadTest.SybCTThreadTest);
 }
 
-TString SybCTThreadTest::getConfigFileName()
-{
-	return "Config";
-}
-
 SybCTThreadTest::~SybCTThreadTest()
 {
 	StartTrace(SybCTThreadTest.Dtor);
@@ -55,10 +50,6 @@ void SybCTThreadTest::setUp ()
 void SybCTThreadTest::tearDown ()
 {
 	StartTrace(SybCTThreadTest.tearDown);
-	// set initialized state back here
-	if ( fbWasInitialized ) {
-		t_assert(SybCTnewDAImpl::Init(GetConfig()));
-	}
 }
 
 class SybTestThread : public Thread
@@ -150,10 +141,8 @@ Test *SybCTThreadTest::suite ()
 {
 	StartTrace(SybCTThreadTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
 	ADD_CASE(testSuite, SybCTThreadTest, SybCTDAImplTest);
 	ADD_CASE(testSuite, SybCTThreadTest, SybCTPoolDAImplTest);
 	ADD_CASE(testSuite, SybCTThreadTest, SybCTnewDAImplTest);
-
 	return testSuite;
 }

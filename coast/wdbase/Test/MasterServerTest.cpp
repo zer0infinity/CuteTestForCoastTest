@@ -18,6 +18,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "Socket.h"
 #include "Context.h"
+#include "AnyIterators.h"
 
 //--- c-library modules used ---------------------------------------------------
 
@@ -39,21 +40,12 @@ void MasterServerTest::setUp ()
 {
 	StartTrace(MasterServerTest.setUp);
 	t_assert(GetConfig().IsDefined("Modules"));
-	Application::InitializeGlobalConfig(GetConfig().DeepClone());
-	WDModule::Install(GetConfig());
 	Server *s;
 	if (t_assert((s = Server::FindServer("Server")) != NULL)) {
 		ROAnything result;
 		t_assert(s->Lookup("TCP5010", result));
 		TraceAny(result, "server lookup TCP5010");
 	}
-}
-
-void MasterServerTest::tearDown ()
-{
-	StartTrace(MasterServerTest.tearDown);
-	WDModule::Terminate(GetConfig());
-	Application::InitializeGlobalConfig(Anything());
 }
 
 void MasterServerTest::InitRunTerminateTest()

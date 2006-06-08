@@ -27,10 +27,10 @@ public:
 	~SimpleListenerPoolTest();
 
 	//--- public api
-	virtual void PoolTest();
-
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
+
+	void PoolTest();
 
 protected:
 	virtual void DoTestConnect();

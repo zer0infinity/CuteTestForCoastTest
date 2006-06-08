@@ -59,7 +59,7 @@ SimpleTestApp::~SimpleTestApp()
 	StartTrace(SimpleTestApp.Dtor);
 }
 
-int SimpleTestApp::GlobalInit(int argc, char *argv[], const Anything &config)
+int SimpleTestApp::GlobalInit(int argc, char *argv[], const ROAnything config)
 {
 	StartTrace(SimpleTestApp.GlobalInit);
 	MethodTracker track("GlobalInit", fTest);
@@ -129,7 +129,7 @@ SimpleTestServer::~SimpleTestServer()
 	StartTrace(SimpleTestServer.Dtor);
 }
 
-int SimpleTestServer::GlobalInit(int argc, char *argv[], const Anything &config)
+int SimpleTestServer::GlobalInit(int argc, char *argv[], const ROAnything config)
 {
 	StartTrace(SimpleTestServer.GlobalInit);
 	MethodTracker track("GlobalInit", fTest);

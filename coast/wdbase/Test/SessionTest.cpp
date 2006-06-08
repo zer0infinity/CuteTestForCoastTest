@@ -19,6 +19,7 @@
 #include "Role.h"
 #include "Registry.h"
 #include "PoolAllocator.h"
+#include "AnyIterators.h"
 
 //---- SessionTest ----------------------------------------------------------------
 SessionTest::SessionTest(TString tname)
@@ -40,15 +41,6 @@ void SessionTest::setUp ()
 	t_assert(GetConfig().LookupPath(dummy, "Roles.Role.RTGuest"));
 	assertEqual("RTCustomer", dummy[0L].AsCharPtr());
 	t_assert(GetConfig().IsDefined("Modules"));
-
-	// ensure installation of modules
-	WDModule::Install(GetConfig());
-}
-
-void SessionTest::tearDown ()
-{
-	StartTrace(SessionTest.tearDown);
-	WDModule::Terminate(GetConfig());
 }
 
 static Role *GetDefaultRole(Context &ctx)

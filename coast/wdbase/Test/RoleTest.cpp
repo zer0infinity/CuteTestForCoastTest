@@ -43,17 +43,6 @@ void RoleTest::setUp ()
 	t_assert(GetConfig().IsDefined("Roles"));
 	t_assert(GetConfig().IsDefined("Modules"));
 	t_assert(GetConfig()["Modules"].Contains("RolesModule"));
-	// ensure installation of modules
-	WDModule::Install(GetConfig());
-	t_assert(Role::FindRole("Role") != NULL);
-}
-
-void RoleTest::tearDown ()
-{
-	StartTrace(RoleTest.tearDown);
-	t_assert(Role::FindRole("Role") != NULL);
-	WDModule::Terminate(GetConfig());
-	t_assert(Role::FindRole("Role") != NULL);
 }
 
 void RoleTest::GetNewPageName ()

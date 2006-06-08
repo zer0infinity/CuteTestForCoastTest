@@ -34,19 +34,6 @@ TemplateParserTest::~TemplateParserTest()
 	StartTrace(TemplateParserTest.Dtor);
 }
 
-void TemplateParserTest::setUp()
-{
-	StartTrace(ConfiguredActionTest.setUp);
-	t_assert(GetConfig().IsDefined("Modules"));
-	WDModule::Install(GetConfig());
-}
-
-void TemplateParserTest::tearDown()
-{
-	StartTrace(ConfiguredActionTest.tearDown);
-	WDModule::Terminate(GetConfig());
-}
-
 void TemplateParserTest::BuildEmptyCache()
 {
 	StartTrace(TemplateParserTest.BuildEmptyCache);
@@ -56,6 +43,7 @@ void TemplateParserTest::BuildEmptyCache()
 	cache = p.Parse(is);
 	t_assert(cache.IsNull());
 }
+
 void TemplateParserTest::BuildLiteralCache()
 {
 	StartTrace(TemplateParserTest.BuildLiteralCache);

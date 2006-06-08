@@ -10,11 +10,11 @@
 #define _InterruptHandlerTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
+#include "WDBaseTestPolicies.h"
 
 //---- InterruptHandlerTest ----------------------------------------------------------
 //!TestCases description
-class InterruptHandlerTest : public TestFramework::TestCaseWithConfig
+class InterruptHandlerTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors
@@ -33,11 +33,6 @@ public:
 
 	//!sets the environment for this test
 	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
-
-	TString getConfigFileName();
 
 	//!describe this testcase
 	void PidFileHandlingTest();

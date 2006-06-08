@@ -117,8 +117,6 @@ public:
 		return 0;
 	}
 
-protected:
-
 private:
 	// block the following default elements of this class
 	// because they're not allowed to be used
@@ -136,11 +134,6 @@ ListenerPoolTest::ListenerPoolTest(TString tname)
 	StartTrace(ListenerPoolTest.ListenerPoolTest);
 }
 
-TString ListenerPoolTest::getConfigFileName()
-{
-	return "Config";
-}
-
 ListenerPoolTest::~ListenerPoolTest()
 {
 	StartTrace(ListenerPoolTest.Dtor);
@@ -151,20 +144,6 @@ void ListenerPoolTest::setUp ()
 	StartTrace(ListenerPoolTest.setUp);
 	t_assert(GetConfig().IsDefined("AcceptorFactories"));
 	t_assert(GetConfig().IsDefined("Modules"));
-
-	// ensure installation of modules
-	t_assert(WDModule::Install(GetConfig()) == 0);
-}
-
-void ListenerPoolTest::tearDown ()
-{
-	StartTrace(ListenerPoolTest.tearDown);
-	WDModule::Terminate(GetConfig());
-}
-
-void ListenerPoolTest::PoolTest()
-{
-	StartTrace(ListenerPoolTest.PoolTest);
 }
 
 void ListenerPoolTest::DoSendReceive(Connector *c, String msg)

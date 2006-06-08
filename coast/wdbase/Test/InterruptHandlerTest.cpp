@@ -16,9 +16,7 @@
 #include "InterruptHandlerTest.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
 #include "Server.h"
-#include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
 #include <stdlib.h>
@@ -33,11 +31,6 @@ InterruptHandlerTest::InterruptHandlerTest(TString tname)
 	StartTrace(InterruptHandlerTest.InterruptHandlerTest);
 }
 
-TString InterruptHandlerTest::getConfigFileName()
-{
-	return "Config";
-}
-
 InterruptHandlerTest::~InterruptHandlerTest()
 {
 	StartTrace(InterruptHandlerTest.Dtor);
@@ -47,15 +40,6 @@ void InterruptHandlerTest::setUp ()
 {
 	StartTrace(InterruptHandlerTest.setUp);
 	t_assert(GetConfig().IsDefined("Modules"));
-	Application::InitializeGlobalConfig(GetConfig().DeepClone());
-	WDModule::Install(GetConfig());
-}
-
-void InterruptHandlerTest::tearDown ()
-{
-	StartTrace(InterruptHandlerTest.tearDown);
-	WDModule::Terminate(GetConfig());
-	Application::InitializeGlobalConfig(Anything());
 }
 
 void InterruptHandlerTest::PidFileHandlingTest()
@@ -126,9 +110,6 @@ Test *InterruptHandlerTest::suite ()
 {
 	StartTrace(InterruptHandlerTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
 	ADD_CASE(testSuite, InterruptHandlerTest, PidFileHandlingTest);
-
 	return testSuite;
-
 }

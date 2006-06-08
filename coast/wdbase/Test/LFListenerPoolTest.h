@@ -10,13 +10,13 @@
 #define _LFListenerPoolTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
+#include "WDBaseTestPolicies.h"
 
 class Socket;
 
 //---- LFListenerPoolTest ----------------------------------------------------------
 //!TestCases description
-class LFListenerPoolTest : public TestFramework::TestCaseWithConfig
+class LFListenerPoolTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors
@@ -35,9 +35,6 @@ public:
 
 	//!sets the environment for this test
 	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
 
 	//!describe this testcase
 	void NoFactoryTest();
@@ -61,7 +58,7 @@ public:
 	void InvalidReactorTest();
 
 	//!processor callback
-	virtual bool EventProcessed(Socket *);
+	bool EventProcessed(Socket *);
 
 protected:
 	//!client side api to call into pool from test

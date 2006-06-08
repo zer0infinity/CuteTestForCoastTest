@@ -10,11 +10,11 @@
 #define _SybCTPoolDAImplTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "TestCase.h"
+#include "WDBaseTestPolicies.h"
 
 //---- SybCTPoolDAImplTest ----------------------------------------------------------
 //:TestCases description
-class SybCTPoolDAImplTest : public TestFramework::TestCase
+class SybCTPoolDAImplTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors

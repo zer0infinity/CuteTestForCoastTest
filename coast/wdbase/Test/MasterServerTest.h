@@ -10,13 +10,13 @@
 #define _MasterServerTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
+#include "WDBaseTestPolicies.h"
 
 //---- forward declaration -----------------------------------------------
 
 //---- MasterServerTest ----------------------------------------------------------
 //!TestCases for the Registry class
-class MasterServerTest : public TestFramework::TestCaseWithConfig
+class MasterServerTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors
@@ -35,9 +35,6 @@ public:
 
 	//!sets the environment for this test
 	void setUp ();
-
-	//!deletes the environment for this test
-	void tearDown ();
 
 	//! test initialization - run - termination sequences
 	void InitRunTerminateTest();

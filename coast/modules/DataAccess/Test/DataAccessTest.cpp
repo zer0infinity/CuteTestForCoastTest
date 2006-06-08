@@ -6,56 +6,38 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
+//--- interface include --------------------------------------------------------
+#include "DataAccessTest.h"
 
 //--- module under test --------------------------------------------------------
 #include "DataAccessImpl.h"
 
-//--- interface include --------------------------------------------------------
-#include "DataAccessTest.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "System.h"
-#include "Dbg.h"
-#include "Session.h"
-
-//--- c-library modules used ---------------------------------------------------
+//--- test modules used --------------------------------------------------------
+#include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
 #include "DataAccess.h"
+#include "Session.h"
+
+//--- c-library modules used ---------------------------------------------------
 
 //---- DataAccessTest ----------------------------------------------------------------
 Test *DataAccessTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
-
 	ADD_CASE(testSuite, DataAccessTest, GetImplTest);
 	ADD_CASE(testSuite, DataAccessTest, ExecTest);
 	ADD_CASE(testSuite, DataAccessTest, SessionUnlockTest);
-
 	return testSuite;
-
 }
 
-DataAccessTest::DataAccessTest(TString tname) : TestCaseType(tname)
+DataAccessTest::DataAccessTest(TString tname)
+	: TestCaseType(tname)
 {
-
 }
 
 DataAccessTest::~DataAccessTest()
 {
-
-}
-
-void DataAccessTest::setUp ()
-{
-	iostream *Ios = System::OpenStream("Config", "any");
-	if ( Ios ) {
-		fConfig.Import((*Ios));
-		delete Ios;
-	}
-	WDModule::Install(fConfig);
 }
 
 void DataAccessTest::GetImplTest()
@@ -83,16 +65,7 @@ void DataAccessTest::ExecTest()
 {
 	StartTrace(DataAccessTest.ExecTest);
 	Anything dummy;
-	Anything loopBackDATestCtx;
-
-	iostream *Ios = System::OpenStream("LoopBackDAImplTest", "any");
-	if ( Ios ) {
-		loopBackDATestCtx.Import((*Ios));
-		delete Ios;
-	}
-
-	TraceAny(loopBackDATestCtx, "Input Ctx:");
-	Context ctx(loopBackDATestCtx, dummy, 0, 0, 0, 0);
+	Context ctx(GetTestCaseConfig().DeepClone(), dummy, 0, 0, 0, 0);
 	Anything tmpStore(ctx.GetTmpStore());
 
 	const char *daName = "LoopBackDATest";
@@ -103,7 +76,6 @@ void DataAccessTest::ExecTest()
 	assertEqual("Loopback try", tmpStore["Mapper"]["hReply"].AsCharPtr());
 	assertEqual("coast bsshht", tmpStore["Mapper"]["fReply"].AsCharPtr());
 	assertEqual("XXX", tmpStore["Mapper"]["cReply"].AsCharPtr());
-
 }
 
 class SessionUnlockTestDAImpl : public DataAccessImpl

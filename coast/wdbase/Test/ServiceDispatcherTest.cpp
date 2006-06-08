@@ -6,14 +6,14 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
+//--- interface include --------------------------------------------------------
+#include "ServiceDispatcherTest.h"
 
 //--- module under test --------------------------------------------------------
 #include "ServiceDispatcher.h"
 
-//--- interface include --------------------------------------------------------
-#include "ServiceDispatcherTest.h"
+//--- test modules used --------------------------------------------------------
+#include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
 #include "ServiceHandler.h"
@@ -60,14 +60,6 @@ void ServiceDispatcherTest::setUp ()
 	StartTrace(ServiceDispatcherTest.setUp);
 	t_assert(GetConfig().IsDefined("Modules"));
 	t_assert(GetConfig()["Modules"].Contains("ServiceDispatchersModule"));
-	// ensure installation of modules
-	WDModule::Install(GetConfig());
-}
-
-void ServiceDispatcherTest::tearDown ()
-{
-	StartTrace(ServiceDispatcherTest.tearDown);
-	WDModule::Terminate(GetConfig());
 }
 
 void ServiceDispatcherTest::FindTests()

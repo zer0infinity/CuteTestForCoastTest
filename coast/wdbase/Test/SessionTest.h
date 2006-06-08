@@ -10,7 +10,7 @@
 #define _SessionTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
+#include "WDBaseTestPolicies.h"
 #include "Context.h"
 
 //---- forward declaration -----------------------------------------------
@@ -18,7 +18,7 @@ class STTestSession;
 
 //---- SessionTest ----------------------------------------------------------
 //!TestCases for the Session class
-class SessionTest : public TestFramework::TestCaseWithConfig
+class SessionTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors
@@ -38,11 +38,8 @@ public:
 	//!sets the environment for this test
 	void setUp ();
 
-	//!deletes the environment for this test
-	void tearDown ();
-
 	//!test usage of session store with context
-	void    UseSessionStoreTest();
+	void UseSessionStoreTest();
 
 	//!test Session::Verify method
 	void VerifyTest ();
@@ -60,7 +57,6 @@ public:
 	void CheckRoleExchangeTest();
 
 protected:
-
 	void	CheckInstalled ();
 	void    TestInit();
 	void    RenderNextPageError();
@@ -69,8 +65,6 @@ protected:
 	void    SetGetRole();
 	void    RetrieveFromDelayed();
 	void    IntCheckRoleExchange(char *source_role, char *target_role, char *transition, STTestSession &s, Context &theCtx, bool should_succeed);
-	//--- member variables declaration
-
 };
 
 #endif
