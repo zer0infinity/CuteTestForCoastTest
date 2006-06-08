@@ -326,7 +326,7 @@ bool WDModuleCaller::SetModuleName(WDModule *wdm)
 bool WDModuleCaller::CheckMandatory()
 {
 	if (fModuleName.Length() > 0) {
-		return (fModules[fModuleName].IsDefined("Mandatory") && fModules[fModuleName]["Mandatory"].AsBool(true));
+		return fModules[fModuleName]["Mandatory"].AsBool(false);
 	}
 	return false;
 }
