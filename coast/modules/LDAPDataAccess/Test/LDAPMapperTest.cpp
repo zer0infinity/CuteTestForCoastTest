@@ -8,24 +8,23 @@
 
 #if defined(sun) || defined(WIN32) || defined(__linux__)
 
-//--- c-library modules used ---------------------------------------------------
-#include <stdlib.h>
-
-//--- standard modules used ----------------------------------------------------
-#include "StringStream.h"
-#include "System.h"
-#include "LDAPAPI.h"
-#include "LDAPDAImpl.h"
-#include "Dbg.h"
-
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
+//--- interface include --------------------------------------------------------
+#include "LDAPMapperTest.h"
 
 //--- module under test --------------------------------------------------------
 #include "LDAPMapper.h"
 
-//--- interface include --------------------------------------------------------
-#include "LDAPMapperTest.h"
+//--- test modules used --------------------------------------------------------
+#include "TestSuite.h"
+
+//--- standard modules used ----------------------------------------------------
+#include "StringStream.h"
+#include "System.h"
+#include "LDAPDAImpl.h"
+#include "Dbg.h"
+
+//--- c-library modules used ---------------------------------------------------
+#include <stdlib.h>
 
 //---- LDAPMapperTest ----------------------------------------------------------------
 Test *LDAPMapperTest::suite ()
