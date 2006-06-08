@@ -8,6 +8,172 @@
 
 {
 
+	/DLL {
+		actions
+		renderers
+		ldapdataaccess
+	}
+	/Modules {
+		ActionsModule
+		RenderersModule
+		DataAccessImplsModule
+		MappersModule
+	}
+
+	/Actions {
+		/CallDataAccessAction	{ CallDA }
+		/ConditionalAction	{ Cond }
+	}
+	/Renderers {
+		/SwitchRenderer 		{ Switch }
+		/ContextLookupRenderer 	{ Lookup }
+	}
+	/DataAccessImpls {
+		/LDAPDAImpl {
+			"ldapDaImplTest"
+
+			"ldapNirvanaTestCfg"
+			"ldapWrongBindDNTestCfg"
+			"ldapWrongBindPWTestCfg"
+			"ldapDaImplEnvTestCfg"
+			"ldapSearchTestCfg"
+			"ldapSearchTest2Cfg"
+			"ldapQueryCodedInConfiguration"
+			"SearchForGivenService"
+			"ldapEmptySearch"
+			"TimeLimitExceededTest"
+			"ldapDASearchESID"
+			"ldapDASearchHEXID"
+			"ldapDASearchUID"
+			"ldapDASearchOUuser"
+			"ldapDASearchC"
+			"ldapDASearchOUcontainer"
+			"ldapDASearchSID"
+			"ldapDASearchPEID"
+			"ldapDASearchOUcluster"
+			"ldapDASearchOTID"
+			"ldapDASearchUserGAGA"
+			/"ldapDASearchO"
+			{
+				"ldapDASearchONoMapping"
+				"ldapDASearchOPlainBinary"
+			}
+		}
+		/LDAPCompareDAImpl {
+			"ldapCompareTest"
+			"ldapCompareTest1"
+			"ldapDACompareUserGAGA"
+		}
+		/LDAPModifyDAImpl {
+			"ldapModifyTest"
+			"ldapModifyUIDTest"
+			"ldapDAModifyUserGAGA"
+		}
+		/LDAPAddDAImpl {
+			"ldapAddTest"
+			"ldapDAAddUserGAGA"
+		}
+		/LDAPDelDAImpl {
+			"ldapDelTest"
+			"ldapDADelUserGAGA"
+		}
+		/MapperTestDAImpl {
+			"ListMapperTestDA"
+		}
+	}
+
+	/Mappers {
+		/Input {
+			/ParameterMapper {
+				"ldapNirvanaTestCfg"
+				"ldapWrongBindDNTestCfg"
+				"ldapWrongBindPWTestCfg"
+				"ldapSearchTestCfg"
+				"ldapSearchTest2Cfg"
+				"ldapQueryCodedInConfiguration"
+				"SearchForGivenService"
+				"TimeLimitExceededTest"
+				"ldapCompareTest"
+				"ldapCompareTest1"
+				"ldapModifyTest"
+				"ldapAddTest"
+				"ldapDelTest"
+				"ldapDASearchESID"
+				"ldapDASearchHEXID"
+				"ldapDASearchUID"
+				"ldapDASearchOUuser"
+				"ldapDASearchO"
+				"ldapDASearchONoMapping"
+				"ldapDASearchOPlainBinary"
+				"ldapDASearchC"
+				"ldapDASearchOUcontainer"
+				"ldapDASearchSID"
+				"ldapDASearchPEID"
+				"ldapDASearchOUcluster"
+				"ldapDASearchOTID"
+				"ldapModifyUIDTest"
+				"ldapDADelUserGAGA"
+				"ldapDASearchUserGAGA"
+				"ldapDAAddUserGAGA"
+				"ldapDAModifyUserGAGA"
+				"ldapDACompareUserGAGA"
+				"ListMapperTestDA"
+			}
+			/LDAPParamMapper {
+				"ldapDaImplEnvTestCfg"
+				"ldapEmptySearch"
+			}
+		}
+		/Output {
+			/ResultMapper {
+				"ldapNirvanaTestCfg"
+				"ldapWrongBindDNTestCfg"
+				"ldapWrongBindPWTestCfg"
+				"ldapAddTest"
+				"ldapDelTest"
+				"ldapDADelUserGAGA"
+				"ldapDAAddUserGAGA"
+				/LDAPListMapper {
+					"ldapDaImplEnvTestCfg"
+					"ldapSearchTestCfg"
+					"ldapSearchTest2Cfg"
+					"ldapQueryCodedInConfiguration"
+					"SearchForGivenService"
+					"ldapEmptySearch"
+					"ldapCompareTest"
+					"ldapCompareTest1"
+					"ldapModifyTest"
+					"ldapDASearchESID"
+					"ldapDASearchHEXID"
+					"ldapDASearchUID"
+					"ldapDASearchOUuser"
+					"ldapDASearchO"
+					"ldapDASearchONoMapping"
+					"ldapDASearchOPlainBinary"
+					"ldapDASearchC"
+					"ldapDASearchOUcontainer"
+					"ldapDASearchSID"
+					"ldapDASearchPEID"
+					"ldapDASearchOUcluster"
+					"ldapDASearchOTID"
+					"ldapModifyUIDTest"
+					"ldapDASearchUserGAGA"
+					"ldapDAModifyUserGAGA"
+					"ldapDACompareUserGAGA"
+				}
+			}
+			/LDAPListWithPrimaryKeyMapper
+			{
+				"ListMapperTestDA"
+			}
+			/NameUsingOutputMapper {
+				TimeLimitExceededTest
+			}
+		}
+	}
+
+######## Test specific section ########
+
 	/RunOnly
 	{
 ## --- all old ldap testcases: ---
@@ -36,7 +202,7 @@
 #		"LDAPListMapperTest"
 	}
 
-	/RunTestCases
+	/TestCases
 	{
 		/ldapNirvanaTestCfg
 		{

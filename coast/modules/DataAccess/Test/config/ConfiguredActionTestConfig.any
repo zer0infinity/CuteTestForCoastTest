@@ -8,9 +8,139 @@
 
 {
 
+	/DLL {
+	}
+	/Modules {
+		DataAccessImplsModule
+		MappersModule
+		ActionsModule
+	}
+
+	/Actions {
+		/CallDataAccessAction { CallDA }
+	}
+	/DataAccessImpls {
+		/LoopBackDAImpl {
+			daTest CallDAOkTest CallDANotOkTest
+			NameUsingTestWithLocalConfig NameUsingTestWithEmptyLocalConfig NameUsingTestWithNullConfig
+		}
+		/MapperTestDAImpl {
+			/MyTestInputMapperConfig {
+				MyTestInputMapperConfigDerived
+			}
+			MyTestHardCodedInputMapperConfig
+			MyTestDAImplMetaConfig
+			MyTestParamConfig
+			/OutputMapperConfig {
+				OutputMapperConfigDerived
+			}
+			MyTestTmpStoreConfig
+			MyTestGeneric
+			MyTestRendererDA
+			MyTestTransferConfigTmpStore
+			MyTestTransferConfigParams
+
+			DATest_NoMappersGiven
+			DATest_OnlyResultMapperGiven
+			DATest_StdMappers_NoScript
+			DATest_StdMappers_Script
+			DATest_StdMappers_ComplexScript
+			DATest_StdMappers_MoreComplexScript
+			DATest_NonexistingMapper
+			DATest_UseFallbackMapper
+		}
+		/ReadFileDAImpl {
+			SimpleFileReadTest
+			ReadAnythingDA
+		}
+		/WriteFileDAImpl {
+			TestFileWrite
+		}
+		/ReadXMLFileDAImpl {
+			TestFileXMLReadDAImpl
+			TestFileXMLReadDAImplXMLMapper
+			TestFileXMLReadDAImplXMLMapperTwo
+			TestFileXMLReadDAImplXMLMapperThree
+			TestFileXMLReadDAImplXMLMapperFour
+		}
+	}
+	/Mappers {
+		/Input {
+			/EagerParameterMapper {
+				HardCodedMapper
+			}
+			/Mapper {
+				/MapperTestDAImpl {
+					OutputMapperConfig
+					OutputMapperConfigDerived
+				}
+				daTest CallDAOkTest CallDANotOkTest
+				NameUsingTestWithLocalConfig NameUsingTestWithEmptyLocalConfig NameUsingTestWithNullConfig
+				MyTestHardCodedInputMapperConfig
+				MyTestDAImplMetaConfig
+				/MyTestInputMapperConfig {
+					MyTestInputMapperConfigDerived
+				}
+				MyTestParamConfig
+				MyTestTmpStoreConfig
+				MyTestGeneric
+				MyTestRendererDA
+				MyTestTransferConfigTmpStore
+				MyTestTransferConfigParams
+				SimpleFileReadTest
+				TestFileWrite
+				TestFileXMLReadDAImpl
+				ReadAnythingDA
+				TestFileXMLReadDAImplXMLMapper
+				TestFileXMLReadDAImplXMLMapperTwo
+				TestFileXMLReadDAImplXMLMapperThree
+				TestFileXMLReadDAImplXMLMapperFour
+			}
+		}
+		/Output {
+			/Mapper {
+				MapperTestDAImpl daTest CallDAOkTest CallDANotOkTest
+				MyTestDAImplMetaConfig
+				/MyTestInputMapperConfig {
+					MyTestInputMapperConfigDerived
+				}
+				MyTestHardCodedInputMapperConfig
+				MyTestParamConfig
+				/OutputMapperConfig {
+					OutputMapperConfigDerived
+				}
+				MyTestTmpStoreConfig
+				MyTestGeneric
+				MyTestRendererDA
+				MyTestTransferConfigTmpStore
+				MyTestTransferConfigParams
+				SimpleFileReadTest
+				TestFileWrite
+				TestFileXMLReadDAImpl
+				ReadAnythingDA
+				NameUsingTestWithLocalConfig
+				NameUsingTestWithEmptyLocalConfig
+				NameUsingTestWithNullConfig
+
+				DATest_OnlyResultMapperGiven
+			}
+			/NameUsingOutputMapper {
+				QueryCountMapper
+			}
+			/XMLMapper {
+				TestFileXMLReadDAImplXMLMapper
+				TestFileXMLReadDAImplXMLMapperTwo
+				TestFileXMLReadDAImplXMLMapperThree
+				TestFileXMLReadDAImplXMLMapperFour
+			}
+		}
+	}
+
+######## Test specific section ########
+
 	/RunOnly {
 	}
-	/RunTestCases {
+	/TestCases {
 
 	# ------ data access tests for refactored data access 16/03/04 --------
 		/DATest_NoMappersGiven {

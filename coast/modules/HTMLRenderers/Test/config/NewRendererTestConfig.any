@@ -8,10 +8,30 @@
 
 {
 
+	/DLL {}
+	/Modules {
+		PagesModule
+		RolesModule
+		RenderersModule
+	}
+	/Pages {
+		/Page	{ TestPage }
+	}
+	/Roles {
+		/Role	{ TestRole }
+	}
+	/Renderers {
+		/ContextLookupRenderer { Lookup }
+	}
+
+######## Test specific section ########
+
 	/EnvForAllCases {
 	}
+
 	/RunOnly {
 	}
+
 	/TestCases {
 		/TestName {
 			/Env {
@@ -38,23 +58,10 @@
 					"</form>"
 				}
 			}
-			/TheAction {
-				/CallDataAccessAction {
-					/DataAccess	SortedTagDA
-					/Parameters {
-						/transfer {
-							/RenderedSlot	MyOutputTree
-						}
-						/DataType StringStream
-					}
-				}
+			/Renderer {
+				/ContextLookupRenderer myRenderer
 			}
-			/ExpectedResult 1
-			/Result {
-				/TmpStore {
-					/Mapper *
-				}
-			}
+			/Expected	!"OptionBoxTestConfig.any?MultifunctionListBoxRendererTestOutput"
 		}
 	}
 }

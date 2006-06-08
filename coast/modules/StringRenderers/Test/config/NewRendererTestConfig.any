@@ -8,10 +8,30 @@
 
 {
 
+	/DLL {}
+	/Modules {
+		PagesModule
+		RolesModule
+		RenderersModule
+	}
+	/Pages {
+		/Page	{ TestPage }
+	}
+	/Roles {
+		/Role	{ TestRole }
+	}
+	/Renderers {
+		/ContextLookupRenderer { Lookup }
+	}
+
+######## Test specific section ########
+
 	/EnvForAllCases {
 	}
+
 	/RunOnly {
 	}
+
 	/TestCases {
 ## ComputeRenderer-Tests
 		/ComputeRendererSimpleAddition {

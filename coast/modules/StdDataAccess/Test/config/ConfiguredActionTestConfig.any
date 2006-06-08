@@ -8,8 +8,54 @@
 
 {
 
-	/RunOnly {  }
-	/RunTestCases {
+	/DLL {
+		renderers
+	}
+	/Modules {
+		DataAccessImplsModule
+		ActionsModule
+		MappersModule
+		RenderersModule
+	}
+
+	/Actions {
+		/CallDataAccessAction		{ CallDA }
+	}
+	/Renderers {
+		/SwitchRenderer 		{ Switch }
+		/ContextLookupRenderer 	{ Lookup }
+	}
+	/DataAccessImpls {
+		/MailDAImpl {
+			TestMail
+		}
+		/CgiCaller {
+			CgiExecTest
+		}
+	}
+
+	/Mappers {
+		/Input {
+			/ParameterMapper {
+				TestMail
+			}
+			/CgiParams { CgiExecTest }
+		}
+		/Output {
+			/ResultMapper {
+				TestMail
+				ExecTestOut
+				CgiExecTest
+			}
+		}
+	}
+
+######## Test specific section ########
+
+	/RunOnly {
+	}
+
+	/TestCases {
 	  /OkCase {
 		/TmpStore {
 		  /REQUEST_URI "/testcgi.sh"

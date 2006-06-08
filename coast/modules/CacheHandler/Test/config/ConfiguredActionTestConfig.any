@@ -7,11 +7,64 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
+
+	/DLL {
+		ldapdataaccess
+	}
+	/Modules {
+		ActionsModule
+		CacheHandlerModule
+		MappersModule
+		DataAccessImplsModule
+		/LdapCachePolicyModule {
+			"LdapCachePolicyModule"
+			/Mandatory 1
+		}
+	}
+	/Actions {
+		/CallLdapCacheAction	{ CLCA }
+		/LdapDataAccessTestAction	{ TestDA1Action TestDA2Action TestDA3Action TestDA4Action TestDA5Action }
+	}
+	/LdapCachePolicyModule {
+		/LdapDataAccess 			{ TestDA1 TestDA2 TestDA3 TestDA4 TestDA5 }
+		/LdapDataAccessAction		{ TestDA1Action TestDA2Action TestDA3Action TestDA4Action TestDA5Action }
+	}
+	/DataAccessImpls {
+		/LDAPDAImpl {
+			TestDA1 TestDA2 TestDA3 TestDA4 TestDA5
+			TestDA1Action TestDA2Action TestDA3Action TestDA4Action TestDA5Action
+		}
+	}
+	/Mappers
+	{
+		/Input
+		{
+			/ParameterMapper
+			{
+				TestDA1 TestDA2 TestDA3  TestDA4 TestDA5
+				TestDA1Action TestDA2Action TestDA3Action TestDA4Action TestDA5Action
+			}
+		}
+		/Output
+		{
+			/ResultMapper
+			{
+				TestDA4 TestDA4Action
+				/LDAPListMapper {
+					TestDA1 TestDA2 TestDA3  TestDA5
+					TestDA1Action TestDA2Action TestDA3Action  TestDA5Action
+				}
+			}
+		}
+	}
+
+######## Test specific section ########
+
 	/RunOnly
 	{
 	}
 
-	/RunTestCases
+	/TestCases
 	{
 		/NixFoundGroupCfg
  		{

@@ -8,8 +8,51 @@
 
 {
 
+	/DLL {
+	}
+	/Modules {
+		PagesModule
+		RolesModule
+		RenderersModule
+		SecurityModule
+	}
+	/Pages {
+		/Page	{ TestPage }
+	}
+	/Roles {
+		/Role	{ TestRole }
+	}
+	/Renderers {
+		/ContextLookupRenderer { Lookup }
+	}
+	/SecurityModule
+	{
+		/SecurityItems {
+			/Scrambler
+			{
+				/BlowfishScrambler
+				{
+					BlowfishTest1
+					BlowfishTest2
+					BlowfishTest3
+					BlowfishTest4
+					/BlowfishCBCScrambler
+					{
+						BlowfishTest5
+					}
+				}
+			}
+		}
+	}
+
+######## Test specific section ########
+
 	/EnvForAllCases {
 	}
+
+	/RunOnly {
+	}
+
 	/TestCases
 	{
 		/Base64RendererTest

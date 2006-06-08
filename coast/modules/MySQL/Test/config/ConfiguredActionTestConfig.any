@@ -8,7 +8,47 @@
 
 {
 
-	/RunTestCases {
+	/DLL {
+	}
+	/Modules {
+		DataAccessImplsModule
+		MappersModule
+		ActionsModule
+	}
+
+	/Actions {
+		/CallDataAccessAction	{ CallDA }
+	}
+	/DataAccessImpls {
+		/MySQLDAImpl {
+			/SelectTest {
+				SelectTestWithoutQueryCount WrongPasswordTest
+			}
+			InsertTest DeleteTest
+			SQLErrorTest WrongPortTest WrongHostTest
+		}
+	}
+	/Mappers {
+		/Input {
+			/Mapper {
+				SelectTest SelectTestWithoutQueryCount
+				InsertTest DeleteTest WrongPasswordTest
+				SQLErrorTest WrongPortTest WrongHostTest
+			}
+		}
+		/Output {
+			/NameUsingOutputMapper {
+				SelectTest SelectTestWithoutQueryCount
+				InsertTest DeleteTest WrongPasswordTest
+				SQLErrorTest WrongPortTest WrongHostTest
+			}
+
+		}
+	}
+
+######## Test specific section ########
+
+	/TestCases {
 		/InsertTest {
 			/TmpStore {
 				/Host		zaphod
