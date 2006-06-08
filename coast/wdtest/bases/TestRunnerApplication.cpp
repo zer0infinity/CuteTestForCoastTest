@@ -33,7 +33,7 @@ TestRunnerApplication::~TestRunnerApplication()
 }
 
 // GlobalInit: keeps argc and argv for later use
-int TestRunnerApplication::GlobalInit(int argc, char *argv[], const Anything &config)
+int TestRunnerApplication::GlobalInit(int argc, char *argv[], const ROAnything config)
 {
 	StartTrace(TestRunnerApplication.GlobalInit);
 	fgArgc = argc;

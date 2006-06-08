@@ -26,7 +26,7 @@ public:
 	//! \pre application is ready to be runned
 	virtual int Run();
 	// GlobalInit: keeps argc and argv for later use
-	virtual int GlobalInit(int argc, char *argv[], const Anything &config);
+	virtual int GlobalInit(int argc, char *argv[], const ROAnything config);
 
 protected:
 	int fgArgc;
