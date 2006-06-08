@@ -17,7 +17,7 @@
 #include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "DiffTimer.h"
+#include "AnyIterators.h"
 
 //--- c-modules used -----------------------------------------------------------
 
@@ -28,31 +28,19 @@ WorkerPoolManagerModuleTest::WorkerPoolManagerModuleTest(TString tstrName)
 	StartTrace(WorkerPoolManagerModuleTest.WorkerPoolManagerModuleTest);
 }
 
-TString WorkerPoolManagerModuleTest::getConfigFileName()
-{
-	return "WorkerPoolManagerModuleTestConfig";
-}
-
 WorkerPoolManagerModuleTest::~WorkerPoolManagerModuleTest()
 {
 	StartTrace(WorkerPoolManagerModuleTest.Dtor);
-}
-
-void WorkerPoolManagerModuleTest::TestReset ()
-{
-	StartTrace(WorkerPoolManagerModuleTest.TestReset);
-	WDModule::Reset(GetConfig()["ConfigOne"], GetConfig()["ConfigTwo"]);
 }
 
 void WorkerPoolManagerModuleTest::TestWorkerOne()
 {
 	StartTrace(WorkerPoolManagerModuleTest.TestWorkerOne);
 
-	WDModule::Install(GetConfig()["ConfigOne"]);
 	WorkerPoolManagerModule *pModule = (WorkerPoolManagerModule *)WDModule::FindWDModule("WorkerPoolManagerModule");
 	t_assertm(pModule != NULL, "Module should be found");
 	ROAnything cConfig;
-	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
+	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig()["Tests"]);
 	while ( aEntryIterator.Next(cConfig) ) {
 		Check(cConfig, pModule);
 	}
@@ -65,11 +53,10 @@ void WorkerPoolManagerModuleTest::TestWorkerTwo()
 	WorkerPoolManagerModule *pModule = (WorkerPoolManagerModule *)WDModule::FindWDModule("WorkerPoolManagerModule");
 	t_assertm(pModule != NULL, "Module should be found");
 	ROAnything cConfig;
-	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
+	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig()["Tests"]);
 	while ( aEntryIterator.Next(cConfig) ) {
 		Check(cConfig, pModule);
 	}
-	WDModule::Terminate(GetConfig()["ConfigTwo"]);
 }
 
 void WorkerPoolManagerModuleTest::Check(ROAnything cConfig, WorkerPoolManagerModule *pModule)
@@ -85,10 +72,7 @@ void WorkerPoolManagerModuleTest::Check(ROAnything cConfig, WorkerPoolManagerMod
 			workerConfig["results"] = (IFAObject *)&results;
 			// this call blocks until the worker has finished working
 			{
-				Trace("starting worker");
-				DiffTimer aTimer;
 				pPool->Work(workerConfig);
-				Trace("Worker used: " << aTimer.Diff() << "ms");
 			}
 
 			// check the result
@@ -106,7 +90,6 @@ Test *WorkerPoolManagerModuleTest::suite ()
 	StartTrace(WorkerPoolManagerModuleTest.suite);
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, WorkerPoolManagerModuleTest, TestWorkerOne);
-	ADD_CASE(testSuite, WorkerPoolManagerModuleTest, TestReset);
 	ADD_CASE(testSuite, WorkerPoolManagerModuleTest, TestWorkerTwo);
 	return testSuite;
 }

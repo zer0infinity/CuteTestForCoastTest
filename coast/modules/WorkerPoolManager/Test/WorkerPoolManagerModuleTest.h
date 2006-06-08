@@ -10,7 +10,7 @@
 #define _WorkerPoolManagerModuleTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
+#include "WDBaseTestPolicies.h"
 class WorkerPoolManagerModule;
 
 //---- WorkerPoolManagerModuleTest ----------------------------------------------------------
@@ -19,7 +19,7 @@ class WorkerPoolManagerModule;
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class WorkerPoolManagerModuleTest : public TestFramework::TestCaseWithConfig
+class WorkerPoolManagerModuleTest : public TestFramework::TestCaseWithCaseConfigDllAndModuleLoading
 {
 public:
 	//--- constructors
@@ -35,12 +35,13 @@ public:
 	//! builds up a suite of tests
 	static Test *suite ();
 
-	TString getConfigFileName();
+	TString getConfigFileName() {
+		return "WorkerPoolManagerModuleTestConfig";
+	}
 
 	//! describe this Test
 	void TestWorkerOne();
 	void TestWorkerTwo();
-	void TestReset();
 
 private:
 	void Check(ROAnything cConfig, WorkerPoolManagerModule *pModule);

@@ -6,27 +6,20 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- c-modules used -----------------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "Dbg.h"
+//--- interface include --------------------------------------------------------
+#include "LDAPDAICachePolicyTest.h"
+//--- module under test --------------------------------------------------------
+#include "LDAPDAICachePolicyModule.h"
 
 //--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
 
-//--- module under test --------------------------------------------------------
-
-//--- interface include --------------------------------------------------------
-#include "LDAPDAICachePolicyTest.h"
-#include "LDAPDAICachePolicyModule.h"
-#include "System.h"
-#include "StringStream.h"
-#include "Application.h"
-#include "Threads.h"
+//--- standard modules used ----------------------------------------------------
+//--- c-modules used -----------------------------------------------------------
 
 //---- LDAPDAICachePolicyTest ----------------------------------------------------------------
-LDAPDAICachePolicyTest::LDAPDAICachePolicyTest(TString tstrName) : TestCaseType(tstrName)
+LDAPDAICachePolicyTest::LDAPDAICachePolicyTest(TString tstrName)
+	: TestCaseType(tstrName)
 {
 	StartTrace(LDAPDAICachePolicyTest.Ctor);
 }
@@ -36,87 +29,51 @@ LDAPDAICachePolicyTest::~LDAPDAICachePolicyTest()
 	StartTrace(LDAPDAICachePolicyTest.Dtor);
 }
 
-void LDAPDAICachePolicyTest::setUp ()
-{
-	StartTrace(LDAPDAICachePolicyTest.setUp);
-	t_assert(System::LoadConfigFile(fGlobalConfig, "Config"));
-	t_assert(fGlobalConfig.IsDefined("Modules"));
-	Application::InitializeGlobalConfig(fGlobalConfig);
-	assertEqualm(0, WDModule::Install(fGlobalConfig), "WDModule::Install should have worked.");
-}
-
-void LDAPDAICachePolicyTest::setUp (const String &configName)
-{
-	StartTrace(LDAPDAICachePolicyTest.setUp);
-	t_assert(System::LoadConfigFile(fGlobalConfig, configName));
-	TraceAny(fGlobalConfig, "Global Config");
-	t_assert(fGlobalConfig.IsDefined("Modules"));
-	Application::InitializeGlobalConfig(fGlobalConfig);
-	// Will fail because of NoDataDA and LdapCachePolicyModule return
-	// code check is mandatory
-	assertEqualm(-1, WDModule::Install(fGlobalConfig), "WDModule::Install should have failed.");
-}
-
-void LDAPDAICachePolicyTest::tearDown ()
-{
-	StartTrace(LDAPDAICachePolicyTest.tearDown);
-	t_assert(fGlobalConfig.IsDefined("Modules"));
-	WDModule::Terminate(fGlobalConfig);
-}
-
 void LDAPDAICachePolicyTest::NoDataReadTest()
 {
 	StartTrace(LDAPDAICachePolicyTest.NoDataReadTest);
-	setUp();
-	tearDown();
-	setUp(String("NoDataQueryConfig"));
-	// re-install "good" config
-	tearDown();
-	setUp();
+	WDModule *pModule = WDModule::FindWDModule("LDAPDAICachePolicyModule");
+	if ( t_assertm(pModule != NULL, "expected LDAPDAICachePolicyModule to be registered") ) {
+		t_assertm( !pModule->Init(GetTestCaseConfig()), "LDAPDAICachePolicyModule init should have failed because a relevant dataaccess failed");
+	}
 }
 
 void LDAPDAICachePolicyTest::ReInitTest()
 {
 	StartTrace(LDAPDAICachePolicyTest.ReInitTest);
-	int i;
-	for (i = 0; i < 5; i++) {
+	WDModule *pModule = WDModule::FindWDModule("LDAPDAICachePolicyModule");
+	if ( t_assertm(pModule != NULL, "expected LDAPDAICachePolicyModule to be registered") ) {
 		ROAnything result;
 		t_assert(LDAPDAICacheGetter::Get(result, "TestDA1", ":0.name"));
 		assertEqualm("ifs APPL. User Directory", result.AsString(), "Reset test failed.");
 		t_assert(LDAPDAICacheGetter::Get(result, "TestDA2", ":0.pd-dn"));
 		assertEqualm("cn=CH10601-tkgae,dc=tkfpd.hsr.ch", result.AsString(), "Reset test failed.");
-		assertEqualm(0, WDModule::Reset(fGlobalConfig, fGlobalConfig), "WDModule::Reset should have worked");
-		break;
-	}
-	for (i = 0; i < 5; i++) {
-		ROAnything result;
+
+		// simulate a WDModule::Reset()
+		if ( t_assertm( pModule->ResetFinis(GetTestCaseConfig()), "ResetFinis should have worked") ) {
+			t_assertm( pModule->ResetInit(GetTestCaseConfig()), "ResetFinis should have worked");
+		}
+
 		t_assert(LDAPDAICacheGetter::Get(result, "TestDA1Action", ":0.name"));
 		assertEqualm("ifs APPL. User Directory", result.AsString(), "Reset test failed.");
 		t_assert(LDAPDAICacheGetter::Get(result, "TestDA2Action", ":0.pd-dn"));
 		assertEqualm("cn=CH10601-tkgae,dc=tkfpd.hsr.ch", result.AsString(), "Reset test failed.");
-		assertEqualm(0, WDModule::Reset(fGlobalConfig, fGlobalConfig), "WDModule::Reset should have worked");
-		break;
 	}
 }
 
 void LDAPDAICachePolicyTest::CallsInARow()
 {
-	StartTrace(LDAPDAICachePolicyTest.ReInitTest);
-	int i;
-	for (i = 0; i < 5; i++) {
-		ROAnything result;
-		t_assert(LDAPDAICacheGetter::Get(result, "TestDA1", ":0.name"));
-		assertEqualm("ifs APPL. User Directory", result.AsString(), "Reset test failed.");
-		t_assert(LDAPDAICacheGetter::Get(result, "TestDA2", ":0.pd-dn"));
-		assertEqualm("cn=CH10601-tkgae,dc=tkfpd.hsr.ch", result.AsString(), "Reset test failed.");
-	}
-	for (i = 0; i < 5; i++) {
-		ROAnything result;
-		t_assert(LDAPDAICacheGetter::Get(result, "TestDA1Action", ":0.name"));
-		assertEqualm("ifs APPL. User Directory", result.AsString(), "Reset test failed.");
-		t_assert(LDAPDAICacheGetter::Get(result, "TestDA2Action", ":0.pd-dn"));
-		assertEqualm("cn=CH10601-tkgae,dc=tkfpd.hsr.ch", result.AsString(), "Reset test failed.");
-	}
+	StartTrace(LDAPDAICachePolicyTest.CallsInARow);
+	ROAnything result;
+	t_assert(LDAPDAICacheGetter::Get(result, "TestDA1", ":0.name"));
+	assertEqualm("ifs APPL. User Directory", result.AsString(), "Reset test failed.");
+	t_assert(LDAPDAICacheGetter::Get(result, "TestDA2", ":0.pd-dn"));
+	assertEqualm("cn=CH10601-tkgae,dc=tkfpd.hsr.ch", result.AsString(), "Reset test failed.");
+
+	t_assert(LDAPDAICacheGetter::Get(result, "TestDA1Action", ":0.name"));
+	assertEqualm("ifs APPL. User Directory", result.AsString(), "Reset test failed.");
+	t_assert(LDAPDAICacheGetter::Get(result, "TestDA2Action", ":0.pd-dn"));
+	assertEqualm("cn=CH10601-tkgae,dc=tkfpd.hsr.ch", result.AsString(), "Reset test failed.");
 }
 
 // builds up a suite of testcases, add a line for each testmethod
