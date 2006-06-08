@@ -8,10 +8,10 @@
 
 {
 
-	/LDAPServer		"surlej.hsr.ch"
+	/LDAPServer		"marvin.hsr.loc"
 	/LDAPPort		"49999"
 	/LDAPBindName	"cn=Directory Manager"
-	/LDAPBindPW		"all2test"
+	/LDAPBindPW		"ifaifaifa"
 	/LDAPTimeout	10
 
 	/NoDataReadTest {

@@ -21,15 +21,15 @@
 
 	/useSSLTest
 	{
-		/Server				"tonga.zh.hsr.ch"
-		/Port				"443"
+		/Server				"dylan.hank.com"
+		/Port				"22222"
 		/UseSSL				1
 		/Timeout			30
 		/UseThreadLocalMemory 0
 	}
 
 	/ErrorHandlingTest {
-		/Server				"153.46.30.25"
+		/Server				"dylan.hank.com"
 		/Port				"8181"
 		/UseSSL				0
 		/Timeout			1

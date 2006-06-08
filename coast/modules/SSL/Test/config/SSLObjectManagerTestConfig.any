@@ -155,17 +155,17 @@
 		{
 			/Address "gugus"
 			/Port	 "443"
-				/Version 2222
+			/Version 2222
 		}
 		{
 			/Address "dada"
 			/Port	 "443"
-				/Version 3333
+			/Version 3333
 		}
 		{
 			/Address "gugus"
 			/Port	 "9999"
-				/Version 4444
-			}
+			/Version 4444
+		}
 	}
 }
