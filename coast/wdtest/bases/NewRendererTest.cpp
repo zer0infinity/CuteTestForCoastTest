@@ -55,6 +55,7 @@ void NewRendererTest::TestCases()
 			aEntryIterator.SlotName(slotToCheck);
 			Trace("current testslot [" << slotToCheck << "]");
 			if ( ( GetConfig()["RunOnly"].GetSize() == 0L ) || GetConfig()["RunOnly"].Contains((const char *)slotToCheck) ) {
+				cerr << ".";
 				TString message;
 				message << getConfigFileName() << ".any:0 at " << name();
 				if (slotToCheck.Length()) {
