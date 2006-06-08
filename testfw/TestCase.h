@@ -83,7 +83,7 @@ namespace TestFramework
 
 	template
 	<
-	typename dummy
+	class dummy
 	>
 	class NoStatisticPolicy
 	{
@@ -112,7 +112,7 @@ namespace TestFramework
 
 	template
 	<
-	typename dummy
+	class dummy
 	>
 	class NoConfigPolicy
 	{
@@ -138,7 +138,7 @@ namespace TestFramework
 	<
 	template <typename> class ConfigPolicy = NoConfigPolicy,
 			 template <typename> class StatisticPolicy = NoStatisticPolicy,
-			 typename dummy = int
+			 class dummy = int
 			 >
 	class TestCaseT
 		: public Test

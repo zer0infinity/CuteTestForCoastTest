@@ -27,7 +27,7 @@ namespace TestFramework
 
 	template
 	<
-	typename dummy
+	class dummy
 	>
 	class AnythingStatisticTestPolicy
 	{
