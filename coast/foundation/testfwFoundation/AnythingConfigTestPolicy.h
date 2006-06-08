@@ -27,24 +27,32 @@ namespace TestFramework
 
 	template
 	<
-	typename dummy
+	class dummy
 	>
 	class AnythingConfigTestPolicy
 	{
-		Anything fConfig;
-		ROAnything fTestCaseConfig;
-		TString fCfgFileName;
-
 	public:
 		typedef AnythingConfigTestPolicy<dummy> ConfigPolicyType;
 
 		AnythingConfigTestPolicy() {};
 		virtual ~AnythingConfigTestPolicy() {};
 
+		bool loadConfig(TString strClassName, TString strTestName) {
+			return DoLoadConfig(strClassName, strTestName);
+		}
+
+		void unloadConfig() {
+			DoUnloadConfig();
+		}
+
 	protected:
+		Anything fConfig;
+		ROAnything fTestCaseConfig;
+		TString fCfgFileName, fTestCaseName;
+
 		template< class InputType >
 		void PutInStore(InputType source, Anything &dest) {
-			StartTrace(ConfigPolicy.PutInStore);
+			StartTrace(AnythingConfigTestPolicy.PutInStore);
 
 			long sz = source.GetSize();
 			for (long i = 0; i < sz; ++i) {
@@ -59,13 +67,16 @@ namespace TestFramework
 		ROAnything GetConfig() {
 			return fConfig;
 		}
+
 		ROAnything GetTestCaseConfig() {
 			return fTestCaseConfig;
 		}
-		bool loadConfig(TString strClassName, TString strTestName) {
-			StartTrace(ConfigPolicy.setUp);
+
+		virtual bool DoLoadConfig(TString strClassName, TString strTestName) {
+			StartTrace(AnythingConfigTestPolicy.DoLoadConfig);
 			bool bRetCode = false;
 			fCfgFileName = strClassName;
+			fTestCaseName = strTestName;
 			if ( fCfgFileName != getConfigFileName() ) {
 				fCfgFileName = getConfigFileName();
 			}
@@ -76,7 +87,8 @@ namespace TestFramework
 			TraceAny(fTestCaseConfig, "config of TestCase [" << strTestName << "]");
 			return bRetCode;
 		}
-		void unloadConfig() {
+
+		virtual void DoUnloadConfig() {
 			fTestCaseConfig = ROAnything();
 			fConfig = Anything();
 		}
