@@ -8,9 +8,34 @@
 
 {
 
+	/DLL {
+		renderers
+	}
+	/Modules {
+		ActionsModule
+		RenderersModule
+	}
+
+	/Actions {
+		/LoopAction 	{ Loop }
+		/ListAction 	{ List }
+		/RemoveAction	{ Remove }
+		/RendererDispatchAction { RDispatch }
+		/ConditionalAction		{ Condition }
+		/NotEmptyCheckAction	{ CheckNotEmpty }
+		/EmailAddressCheckAction { CheckEmailAddress }
+		/CopyContextAction	{ Copy }
+	}
+	/Renderers {
+		/SwitchRenderer 		{ Switch }
+		/ContextLookupRenderer 	{ Lookup }
+	}
+
+######## Test specific section ########
+
 	/RunOnly {
 	}
-	/RunTestCases {
+	/TestCases {
 		/FirstTestName {
 			/TmpStore {
 			}
