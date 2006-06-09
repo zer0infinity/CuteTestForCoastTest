@@ -14,10 +14,14 @@
 		DataAccessImplsModule
 		MappersModule
 		ActionsModule
+		RenderersModule
 	}
 
 	/Actions {
 		/CallDataAccessAction { CallDA }
+	}
+	/Renderers {
+		/ContextLookupRenderer	{ Lookup }
 	}
 	/DataAccessImpls {
 		/LoopBackDAImpl {
@@ -25,6 +29,7 @@
 			NameUsingTestWithLocalConfig NameUsingTestWithEmptyLocalConfig NameUsingTestWithNullConfig
 		}
 		/MapperTestDAImpl {
+			ExtListingsTest
 			/MyTestInputMapperConfig {
 				MyTestInputMapperConfigDerived
 			}
@@ -69,7 +74,8 @@
 			/EagerParameterMapper {
 				HardCodedMapper
 			}
-			/Mapper {
+			/ParameterMapper {
+				ExtListingsTest
 				/MapperTestDAImpl {
 					OutputMapperConfig
 					OutputMapperConfigDerived
@@ -98,7 +104,9 @@
 			}
 		}
 		/Output {
-			/Mapper {
+			/ResultMapper {
+				ExtListingsTest
+				/CompareValuesMapper {}
 				MapperTestDAImpl daTest CallDAOkTest CallDANotOkTest
 				MyTestDAImplMetaConfig
 				/MyTestInputMapperConfig {
@@ -1131,6 +1139,148 @@
 					}
 					/ParsedXMLAsAny %XMLResult
 				  }
+				}
+			}
+		}
+		/ExtListingsTestLess {
+			/TmpStore {
+				/Operator			"<"
+				/DateTime			1095379201
+				/In {
+					/Value			"1095379200"
+				}
+			}
+			/TheAction {
+				/CallDA { ExtListingsTest }
+			}
+			/ExpectedResult	1
+			/Result {
+				/TmpStore {
+					/DBselectExtListings {
+						/QueryResult {
+							{
+								/Value			"1095379200"
+							}
+						}
+					}
+				}
+			}
+		}
+		/ExtListingsTestLessNoMatch {
+			/TmpStore {
+				/Operator			"<"
+				/DateTime			1095379200
+				/In {
+					/Value			"1095379200"
+				}
+			}
+			/TheAction {
+				/CallDA { ExtListingsTest }
+			}
+			/ExpectedResult	1
+			/NotResult {
+				/TmpStore {
+					/DBselectExtListings.QueryResult *
+				}
+			}
+		}
+		/ExtListingsTestEqual {
+			/TmpStore {
+				/DateTime			1095379200
+				/In {
+					/Value			"1095379200"
+				}
+			}
+			/TheAction {
+				/CallDA { ExtListingsTest }
+			}
+			/ExpectedResult	1
+			/Result {
+				/TmpStore {
+					/DBselectExtListings {
+						/QueryResult {
+							{
+								/Value "1095379200"
+							}
+						}
+					}
+				}
+			}
+		}
+		/ExtListingsTestEqualNoMatch {
+			/TmpStore {
+				/DateTime			1095379201
+				/In {
+					/Value			"1095379200"
+				}
+			}
+			/TheAction {
+				/CallDA { ExtListingsTest }
+			}
+			/ExpectedResult	1
+			/NotResult {
+				/TmpStore {
+					/DBselectExtListings.QueryResult *
+				}
+			}
+		}
+		/ExtListingsTestGreater {
+			/TmpStore {
+				/Operator			">"
+				/DateTime			1095379199
+				/In {
+					/Value			"1095379200"
+				}
+			}
+			/TheAction {
+				/CallDA { ExtListingsTest }
+			}
+			/ExpectedResult	1
+			/Result {
+				/TmpStore {
+					/DBselectExtListings {
+						/QueryResult {
+							{
+								/Value			"1095379200"
+							}
+						}
+					}
+				}
+			}
+		}
+		/ExtListingsTestGreaterNoMatch {
+			/TmpStore {
+				/Operator			">"
+				/DateTime			1095379200
+				/In {
+					/Value			"1095379200"
+				}
+			}
+			/TheAction {
+				/CallDA { ExtListingsTest }
+			}
+			/ExpectedResult	1
+			/NotResult {
+				/TmpStore {
+					/DBselectExtListings.QueryResult *
+				}
+			}
+		}
+		/ExtListingsTestIllegalOperator {
+			/TmpStore {
+				/Operator			"UnDeFiNeD"
+				/DateTime			1095379200
+				/In {
+					/Value			"1095379200"
+				}
+			}
+			/TheAction {
+				/CallDA { ExtListingsTest }
+			}
+			/ExpectedResult	1
+			/NotResult {
+				/TmpStore {
+					/DBselectExtListings.QueryResult *
 				}
 			}
 		}

@@ -165,4 +165,17 @@
 			/StreamToAnythingMapper *
 		}
 	}
+
+	/ExtListingsTest {
+		/DestinationSlot	DBselectExtListings
+		/QueryResult {
+			/CompareValuesMapper *
+		}
+	}
+	/CompareValuesMapper {
+		/PutPolicy		Append
+		/Operator		{ /Lookup { Operator "==" } }
+		/LeftValue		{ /Lookup Value }
+		/RightValue 	{ /Lookup DateTime }
+	}
 }

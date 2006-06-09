@@ -41,6 +41,12 @@
 	/MyTestInputMapperConfig {
 		/DataType	Anything
 	}
+	/ExtListingsTest {
+		/transfer	{
+			/In	QueryResult
+		}
+		/DataType	Anything
+	}
 
 	# use standard mappers for i/o
 	/DATest_StdMappers_NoScript {
