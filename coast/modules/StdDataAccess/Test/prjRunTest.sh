@@ -17,7 +17,6 @@ function prepareTest
 	cp $PRJCONFIGPATH/$certdir/*.pem $PRJCONFIGPATH/cert_hashes
 	rehashwrapper.sh -t -d $PRJCONFIGPATH/cert_hashes
 	# Linking hashed certificate directory to one common place
-	rm /tmp/SSLSocketTestHashedCerts > /dev/null 2>&1
 	ln -s $PRJCONFIGPATH/cert_hashes /tmp/SSLSocketTestHashedCerts > /dev/null 2>&1
 	chmod -f 777 /tmp/SSLSocketTestHashedCerts
 }
@@ -36,6 +35,7 @@ function cleanupTest
 {
 	echo
 	rm -f WriteTestFile.txt
+	rm /tmp/SSLSocketTestHashedCerts > /dev/null 2>&1
 	rm -rf $PRJCONFIGPATH/cert_files
 	rm -rf $PRJCONFIGPATH/cert_hashes
 }
