@@ -131,9 +131,11 @@
 		/EnableAll	0
 	}
 	/ConfiguredActionTest {
-		/MainSwitch	0
+		/MainSwitch		1100
 		/EnableAll	0
 		/DoTestWithContext	1000
+		/DoCheckStores	100
+		/DoCheckStore	100
 	}
 	/ParameterMapper {
 		/MainSwitch 1100
@@ -174,6 +176,10 @@
 		/EnableAll		1100
 	}
 	/AnythingToStreamMapper {
+		/MainSwitch		1100
+		/EnableAll		1100
+	}
+	/CompareValuesMapper {
 		/MainSwitch		1100
 		/EnableAll		1100
 	}
