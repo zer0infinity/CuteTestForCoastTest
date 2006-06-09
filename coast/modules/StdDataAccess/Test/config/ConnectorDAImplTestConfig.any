@@ -8,6 +8,42 @@
 
 {
 
+	/DLL {
+		stddataaccess
+		HPSPerfTest
+	}
+	/Modules {
+		DataAccessImplsModule
+		MappersModule
+	}
+	/DataAccessImpls {
+		/ConnectorDAImpl {
+			HPSMessageTest
+			SendReceiveOnce
+			RecreateSocket
+		}
+	}
+	/Mappers {
+		/Input {
+			/Mapper {
+				HPSMessageTest
+				SendReceiveOnce
+				RecreateSocket
+			}
+		}
+		/Output {
+			/Mapper {
+				HPSMessageTest
+			}
+			/StreamToAnythingMapper {
+				SendReceiveOnce
+				RecreateSocket
+			}
+		}
+	}
+
+######## Test specific section ########
+
 	/SendReceiveOnceTest {
 		/Address 	"127.0.0.1"
 		/Port 		7183
