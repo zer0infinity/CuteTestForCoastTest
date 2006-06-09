@@ -10,7 +10,7 @@
 #define _ConnectorDAImplTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
+#include "WDBaseTestPolicies.h"
 #include "Socket.h"
 #include "Threads.h"
 
@@ -22,7 +22,7 @@ class AcceptorThread;
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class ConnectorDAImplTest : public TestFramework::TestCaseWithConfig
+class ConnectorDAImplTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors
