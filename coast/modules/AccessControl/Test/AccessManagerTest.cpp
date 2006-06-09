@@ -190,7 +190,7 @@ void AccessManagerTest::RegularAccessManagersTest()
 	while ( aEntryIterator.Next(caseConfig) ) {
 		TString strName;
 		aEntryIterator.SlotName(strName);
-		Trace("Running tests for '" << NotNull(strName) << "' access manager ...");
+		Trace("Running tests for '" << strName << "' access manager ...");
 		if ( GetConfig()["RunOnly"].GetSize() == 0 || GetConfig()["RunOnly"].Contains(strName) ) {
 			am = AccessManagerModule::GetAccessManager(strName);
 			if (t_assertm(am, TString("expected AccessManager [") << strName << "] to be registered")) {
