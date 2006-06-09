@@ -38,7 +38,8 @@ bool CompareValuesMapper::DoPutAny(const char *key, Anything value, Context &ctx
 	ROAnything roaRightValue, roaLeftValue, roaOperator;
 	if ( Lookup("RightValue", roaRightValue) && Lookup("LeftValue", roaLeftValue) && Lookup("Operator", roaOperator) ) {
 		String strRightValue, strOperator, strLeftValue;
-		TraceAny(roaLeftValue, "spec how to obtain value to compare");
+		TraceAny(roaLeftValue, "spec how to obtain left value to compare");
+		TraceAny(roaRightValue, "spec how to obtain right value to compare");
 		{
 			Context::PushPopEntry aEntry(ctx, "PutterValue", value);
 			Renderer::RenderOnString(strLeftValue, ctx, roaLeftValue);
@@ -48,18 +49,18 @@ bool CompareValuesMapper::DoPutAny(const char *key, Anything value, Context &ctx
 
 		Trace("now testing for [" << strLeftValue << " " << strOperator << " " << strRightValue << "]");
 		bool bPutResult = false;
-		if ( strOperator.IsEqual(">") ) {
-			bPutResult = (strLeftValue.AsLong(0L) > strRightValue.AsLong(0L));
-		} else if ( strOperator.IsEqual("<") ) {
-			bPutResult = (strLeftValue.AsLong(0L) < strRightValue.AsLong(0L));
-		} else if ( strOperator.IsEqual(">=") ) {
-			bPutResult = (strLeftValue.AsLong(0L) >= strRightValue.AsLong(0L));
-		} else if ( strOperator.IsEqual("<=") ) {
-			bPutResult = (strLeftValue.AsLong(0L) <= strRightValue.AsLong(0L));
-		} else if ( strOperator.IsEqual("==") ) {
+		if ( strOperator.IsEqual("==") ) {
 			bPutResult = (strLeftValue.AsLong(0L) == strRightValue.AsLong(0L));
 		} else if ( strOperator.IsEqual("!=") ) {
 			bPutResult = (strLeftValue.AsLong(0L) != strRightValue.AsLong(0L));
+		} else if ( strOperator.IsEqual(">=") ) {	// must be before < because of possible partial match
+			bPutResult = (strLeftValue.AsLong(0L) >= strRightValue.AsLong(0L));
+		} else if ( strOperator.IsEqual(">") ) {
+			bPutResult = (strLeftValue.AsLong(0L) > strRightValue.AsLong(0L));
+		} else if ( strOperator.IsEqual("<=") ) {	// must be before < because of possible partial match
+			bPutResult = (strLeftValue.AsLong(0L) <= strRightValue.AsLong(0L));
+		} else if ( strOperator.IsEqual("<") ) {
+			bPutResult = (strLeftValue.AsLong(0L) < strRightValue.AsLong(0L));
 		}
 		if ( bPutResult ) {
 			Trace("comparison yields true, putting result");
