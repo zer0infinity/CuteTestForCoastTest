@@ -3081,6 +3081,35 @@
 			}
 			/Expected	""
 		}
+		/ListSizeRendererNotExistingListTestWithDefault {
+			/Env {
+				/TheList	{
+					/Slot1	{
+						/Name		"A"
+						/Ort		"B"
+					}
+					/Slot2	{
+						/Name		"C"
+						/Ort		"D"
+					}
+					/Slot3	{
+						/Name		"E"
+						/Ort		"F"
+					}
+					/Slot4	{
+						/Name		"G"
+						/Ort		"H"
+					}
+				}
+			}
+			/Renderer {
+				/ListSizeRenderer {
+					/ListData	TheGagaList
+					/Default	0
+				}
+			}
+			/Expected	"0"
+		}
 		/ListSizeRendererUnnamedSlotTest {
 			/Env {
 				/TheList	{
@@ -3106,6 +3135,58 @@
 				/ListSizeRenderer TheList
 			}
 			/Expected	"4"
+		}
+		/ListSizeRendererUnnamedSlotInvalidListTest {
+			/Env {
+				/TheList	{
+					/Slot1	{
+						/Name		"A"
+						/Ort		"B"
+					}
+					/Slot2	{
+						/Name		"C"
+						/Ort		"D"
+					}
+					/Slot3	{
+						/Name		"E"
+						/Ort		"F"
+					}
+					/Slot4	{
+						/Name		"G"
+						/Ort		"H"
+					}
+				}
+			}
+			/Renderer {
+				/ListSizeRenderer InvalidList
+			}
+			/Expected	""
+		}
+		/ListSizeRendererUnnamedSlotInvalidListTestWithDefault {
+			/Env {
+				/TheList	{
+					/Slot1	{
+						/Name		"A"
+						/Ort		"B"
+					}
+					/Slot2	{
+						/Name		"C"
+						/Ort		"D"
+					}
+					/Slot3	{
+						/Name		"E"
+						/Ort		"F"
+					}
+					/Slot4	{
+						/Name		"G"
+						/Ort		"H"
+					}
+				}
+			}
+			/Renderer {
+				/ListSizeRenderer { InvalidList 0 }
+			}
+			/Expected	"0"
 		}
 		/UnTaintRendererOneTest
 		{

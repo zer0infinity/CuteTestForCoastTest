@@ -18,11 +18,12 @@
 /*!
 <B>Configuration:</B><PRE>
 {
-	/ListData	Rendererspec	mandatory	Defines Anything whose size shall be rendered
+	/ListData		Rendererspec	mandatory, Defines Anything whose size shall be rendered
+	/Default		Rendererspec	optional, default if LookupName name slot was not found
 }
 or shorthand:
 {
-	Data-Rendererspec
+	Data-Rendererspec	"default renderer specification"
 }</PRE>
 This renderer may be handy when constructing tables. It may sometimes
 be handy to know the number of columns/rows, so as to be able to generate

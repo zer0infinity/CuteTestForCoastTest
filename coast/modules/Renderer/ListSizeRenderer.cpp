@@ -38,6 +38,14 @@ void ListSizeRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything 
 			long size = roaData.GetSize();
 			Trace("ListData size is: " << size);
 			reply << size;
+			return;
 		}
+	}
+	ROAnything dft;
+	if (!config.LookupPath(dft, "Default", '\000')) {
+		dft = config[1L];
+	}
+	if (dft.GetType() != AnyNullType) {
+		Render(reply, ctx, dft);
 	}
 }
