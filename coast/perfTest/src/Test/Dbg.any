@@ -1,6 +1,6 @@
 {
 	/LowerBound		0
-	/UpperBound		9
+	/UpperBound		10
 	/DumpAnythings	1
 
 	/StressApp {
@@ -16,49 +16,40 @@
 		/EnableAll	0
 		/GetResult	10
 	}
-
 	/Stresser {
 		/MainSwitch	9
 		/EnableAll	10
 	}
-
 	/DummyStresser {
 		/MainSwitch	9
 		/EnableAll	10
 	}
-
 	/DataAccessStresser {
 		/MainSwitch	9
 		/EnableAll	9
 		/GetResult	1505
 		/Run 		1505
 	}
-
 	/ThreadedStresserRunner {
 		/MainSwitch	9
 		/EnableAll	10
 	}
-
 	/RemoteStresser {
 		/MainSwitch	9
 		/EnableAll	9
 	}
-
 	/RemoteStresserTest {
 		/MainSwitch	9
 		/EnableAll	9
 	}
-
 	/FlowController {
 		/MainSwitch	9
 		/EnableAll	9
 	}
-
 	/HttpFlowController {
 		/MainSwitch	105
 		/EnableAll	105
 	}
-
 	/FlowControlDAStresser {
 		/MainSwitch	9
 		/EnableAll	9
@@ -104,14 +95,16 @@
 		/MainSwitch	0
 		/EnableAll	10
 	}
-
 	/Action {
 		/MainSwitch	0
 		/EnableAll	10
 	}
-
 	/Application {
 		/MainSwitch	0
+		/EnableAll	10
+	}
+	/TestRunnerApplication {
+		/MainSwitch	9
 		/EnableAll	10
 	}
 	/StressersModule {
