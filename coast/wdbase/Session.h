@@ -237,7 +237,6 @@ protected:
 	friend class SessionListManager;
 
 	// for testing internals:
-	friend class PageTransitionTest;
 	friend class SessionTest;
 	friend class SessionListManagerTest;
 	friend class ContextTest;
