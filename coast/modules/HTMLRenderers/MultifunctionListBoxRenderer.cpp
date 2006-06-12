@@ -95,10 +95,9 @@ void HeaderListRenderer::DoRenderSortIcons(ostream &reply, Context &c, const ROA
 			strSortOrderDesc = listItem["Sortable"].AsString();
 			strSortOrderDesc.Append(" desc");
 
-			ROAnything sortVar;
-			if ( c.Lookup("Sort", sortVar)) {
-				strTmpSort = sortVar[0L].AsString();
-			}
+			long lSortColumn = c.Lookup("SortColumn", -1L);
+			long lCurrentColumn = c.Lookup("HeaderColumnIndex", -1L);
+			strTmpSort = c.Lookup("SortOrder", "");
 
 			// gets the sortorder from tempstore
 			// strTmpSort= c.GetTmpStore()["Sort"].AsString();
@@ -107,42 +106,41 @@ void HeaderListRenderer::DoRenderSortIcons(ostream &reply, Context &c, const ROA
 			ROAnything imageAscConfig;
 			ROAnything imageDescConfig;
 			// Is already a sortorder chosen
-			if ( strTmpSort.Length() > 0 ) {
-				if ( strTmpSort == strSortOrderAsc ) {
+			if ( lCurrentColumn == lSortColumn ) {
+				if ( strTmpSort.IsEqual("asc") ) {
 					if (roSortIcon.LookupPath(imageAscConfig, "ImageAscChosen")) {
-						RenderSortIcon(reply, c, config, strSortOrderAsc, imageAscConfig);
+						RenderSortIcon(reply, c, config, strSortOrderAsc, "asc", imageAscConfig);
 					}
 				} else {
 					if (roSortIcon.LookupPath(imageAscConfig, "ImageAscending")) {
-						RenderSortIcon(reply, c, config, strSortOrderAsc, imageAscConfig);
+						RenderSortIcon(reply, c, config, strSortOrderAsc, "asc", imageAscConfig);
 					}
 				}
-				if ( strTmpSort == strSortOrderDesc ) {
+				if ( strTmpSort.IsEqual("desc") ) {
 					if (roSortIcon.LookupPath(imageDescConfig, "ImageDescChosen")) {
-						RenderSortIcon(reply, c, config, strSortOrderDesc, imageDescConfig);
+						RenderSortIcon(reply, c, config, strSortOrderDesc, "desc", imageDescConfig);
 					}
 				} else {
 					if (roSortIcon.LookupPath(imageDescConfig, "ImageDescending")) {
-						RenderSortIcon(reply, c, config, strSortOrderDesc, imageDescConfig);
+						RenderSortIcon(reply, c, config, strSortOrderDesc, "desc", imageDescConfig);
 					}
 				}
 			}
 			// no temporary sortorder chosen
 			else {
 				if (roSortIcon.LookupPath(imageAscConfig, "ImageAscending")) {
-					RenderSortIcon(reply, c, config, strSortOrderAsc, imageAscConfig);
+					RenderSortIcon(reply, c, config, strSortOrderAsc, "asc", imageAscConfig);
 				}
 
 				if (roSortIcon.LookupPath(imageDescConfig, "ImageDescending")) {
-					RenderSortIcon(reply, c, config, strSortOrderDesc, imageDescConfig);
+					RenderSortIcon(reply, c, config, strSortOrderDesc, "desc", imageDescConfig);
 				}
 			}
-
 		}
 	}
 }
 
-void HeaderListRenderer::RenderSortIcon(ostream &reply, Context &c, const ROAnything &config, String strSortOrder, const ROAnything &imageConfig)
+void HeaderListRenderer::RenderSortIcon(ostream &reply, Context &c, const ROAnything &config, String strSortString, String strSortOrder, const ROAnything &imageConfig)
 {
 	StartTrace(MultifunctionListBoxRenderer.RenderSortIcons);
 
@@ -166,7 +164,9 @@ void HeaderListRenderer::RenderSortIcon(ostream &reply, Context &c, const ROAnyt
 			if (roSortIcon.IsDefined("Params")) {
 				// take the configured values
 				urlConfig["Params"] = roSortIcon["Params"].DeepClone();
-				urlConfig["Params"]["Sort"] = strSortOrder;
+				urlConfig["Params"]["Sort"] = strSortString;
+				urlConfig["Params"]["SortOrder"] = strSortOrder;
+				urlConfig["Params"]["SortColumn"] = c.Lookup("HeaderColumnIndex", -1L);
 			}
 
 			pRenderer->RenderAll(reply, c, urlConfig);
@@ -175,7 +175,6 @@ void HeaderListRenderer::RenderSortIcon(ostream &reply, Context &c, const ROAnyt
 			if (!imageConfig.IsNull()) {
 				Render(reply, c, imageConfig);
 			}
-
 			reply << "</a>";
 		}
 	}
@@ -511,6 +510,7 @@ void MultifunctionListBoxRenderer::RenderHeader(ostream &reply, Context &c, cons
 				rendererConfig["CellOptions"]["Options"]["class"] = "SelectBoxHeader";
 			}
 			rendererConfig["EntryRenderer"] = "dummy";
+			rendererConfig["IndexSlot"] = "HeaderColumnIndex";
 
 			// we fill in the SortIcon Slot
 			ROAnything roSortIcons;

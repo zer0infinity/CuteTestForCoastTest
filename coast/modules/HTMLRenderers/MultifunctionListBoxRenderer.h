@@ -230,7 +230,7 @@ public:
 protected:
 	void RenderEntry(ostream &reply, Context &c, const ROAnything &config, const ROAnything &entryRendererConfig, Anything &listItem);
 	void DoRenderSortIcons(ostream &reply, Context &c, const ROAnything &config, Anything &listItem);
-	void RenderSortIcon(ostream &reply, Context &c, const ROAnything &config, String strSortOrder, const ROAnything &imageConfig);
+	void RenderSortIcon(ostream &reply, Context &c, const ROAnything &config, String strSortString, String strSortOrder, const ROAnything &imageConfig);
 	bool IsSortableColumn(Context &c, const ROAnything &toCheckConfig);
 };
 
