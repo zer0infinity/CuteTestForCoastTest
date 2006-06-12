@@ -44,15 +44,25 @@ void TemplateParser::DoParse()
 	Anything tag;
 
 	while ((c = Get()) != 0 && c != EOF) {
+		Trace("char [" << (c ? (char)c : ' ') << "]");
 		switch (c) {
 			case '<':
 				Store(reply);
 				lookahead = Peek();
 				switch (lookahead) {
-					case '!':
-						Store(reply);
-						Store(OldStyleComment());
+					case '!': {
+						int cE = Get(), cN = Peek();
+						Trace("currently at <" << (char)cE << (char)cN);
+						PutBack(cE);
+						// do not parse DOCTYPE tag as comment!
+						if ( cN == '-' ) {
+							Store(reply);
+							Store(OldStyleComment());
+						} else {
+							reply << (char)c;
+						}
 						break;
+					}
 					case '/': {
 						Get();
 						String tagname = ParseName();
@@ -71,11 +81,12 @@ void TemplateParser::DoParse()
 					}
 					case '?':
 					case '%' : {
-						c = Get();
+						int cT = Get();
 						if (IsEmptyOrWd()) {
-							ParseAnything(c);
+							ParseAnything(cT);
 							break;
 						} // else fall through, it was a unknown tag...
+						PutBack(cT);
 					}
 					default:
 						if (IsValidNameChar(lookahead)) {
@@ -98,9 +109,12 @@ void TemplateParser::DoParse()
 				}
 				break;
 			case '[':
-				Store(reply);
-				Store(Macro());
-				break;
+				lookahead = Peek();
+				if ( lookahead == '[' ) {
+					Store(reply);
+					Store(Macro());
+					break;
+				}
 			default:
 				reply << ((char)c);
 		}
@@ -301,12 +315,12 @@ Anything TemplateParser::Macro( )
 
 void TemplateParser::Store(String &literal)
 {
-	StartTrace(TemplateParser.Store);
 	StoreInto(fCache, literal);
 }
+
 void TemplateParser::StoreInto(Anything &cache, String &literal)
 {
-	StartTrace(TemplateParser.Store);
+	StartTrace1(TemplateParser.StoreInto, "literal [" << literal << "]");
 	if (literal.Length() > 0) {
 		cache.Append(Anything(literal));
 		literal = "";
@@ -315,7 +329,7 @@ void TemplateParser::StoreInto(Anything &cache, String &literal)
 
 void TemplateParser::Store(const Anything &rendererspec)
 {
-	StartTrace(TemplateParser.Store2);
+	StartTrace(TemplateParser.StoreAny);
 	if (!rendererspec.IsNull()) {
 		fCache.Append(rendererspec);
 	}
@@ -346,6 +360,7 @@ void TemplateParser::CompactHTMLBlocks(Anything &cache)
 	TraceAny(compactedCache, "Compacted:");
 	cache = compactedCache;
 }
+
 void TemplateParser::SkipWhitespace()
 {
 	StartTrace(TemplateParser.SkipWhitespace);
@@ -357,10 +372,12 @@ void TemplateParser::SkipWhitespace()
 		c = Get();
 	}
 }
+
 bool TemplateParser::IsValidNameChar(int c)
 {
-	StartTrace(TemplateParser.IsValidNameChar);
-	return (isalpha(c) || '-' == c || '_' == c || '.' == c || ':' == c);
+	bool bIsValid = (isalpha(c) || '-' == c || '_' == c || '.' == c || ':' == c);
+	StatTrace(TemplateParser.IsValidNameChar, "is " << (bIsValid ? "" : "not ") << "valid", Storage::Current());
+	return bIsValid;
 }
 
 String TemplateParser::ParseName()
@@ -369,8 +386,7 @@ String TemplateParser::ParseName()
 	String theName;
 	int c; // Unicode?
 	while (!IsGood() && (c = Peek()) != EOF && c != 0) {
-		if (IsValidNameChar(c)
-			|| (isdigit(c) && theName.Length() > 0)) {
+		if ( IsValidNameChar(c) || (isdigit(c) && theName.Length() > 0) ) {
 			theName.Append((char)Get());
 		} else {
 			break;
@@ -399,7 +415,6 @@ String TemplateParser::ParseUpToWhitespaceOrMacroEnd()
 
 int TemplateParser::Get()
 {
-	StartTrace(TemplateParser.Get);
 	int c = 0;
 	if (fReader && fReader->good()) {
 		c = fReader->get();
@@ -407,19 +422,23 @@ int TemplateParser::Get()
 			++fLine;
 		}
 	}
+	StatTrace(TemplateParser.Get, "char [" << (c ? (char)c : ' ') << "]", Storage::Current());
 	return c;
 }
+
 int TemplateParser::Peek()
 {
-	StartTrace(TemplateParser.Peek);
+	int c = 0;
 	if (fReader && fReader->good()) {
-		return fReader->peek();
+		c = fReader->peek();
 	}
-	return 0;
+	StatTrace(TemplateParser.Peek, "char [" << (c ? (char)c : ' ') << "]", Storage::Current());
+	return c;
 }
+
 void TemplateParser::PutBack(char c)
 {
-	StartTrace(TemplateParser.PutBack);
+	StatTrace(TemplateParser.PutBack, "char [" << (char)c << "]", Storage::Current());
 	if (fReader) {
 		fReader->putback(c);
 	}
@@ -430,7 +449,6 @@ void TemplateParser::PutBack(char c)
 
 bool TemplateParser::IsGood()
 {
-	StartTrace(TemplateParser.IsGood);
 	return !(fReader && fReader->good());
 }
 
@@ -439,7 +457,7 @@ bool TemplateParser::ParseTag(String &tag, Anything &tagAttributes)
 	StartTrace(TemplateParser.ParseTag);
 	bool needsrendering = false;
 	tag = ParseName();
-	Trace("tag = " << tag);
+	Trace("tag = <" << tag << ">");
 	while (!IsGood()) {
 		SkipWhitespace();
 		int c = Peek();
@@ -597,6 +615,7 @@ Anything TemplateParser::RenderTagAsLiteral(String &tagName, Anything &tagAttrib
 		}
 	}
 	tag.Append('>');
+	Trace("rendered tag [" << tag << "]");
 	return tag;
 }
 
@@ -708,8 +727,8 @@ bool TemplateParser::IsSpecialTag(String &tagName, Anything &tagAttributes)
 
 bool TemplateParser::IsEmptyOrWd()
 {
-	StartTrace(TemplateParser.IsEmptyOrWd);
 	int c = Peek();
+	StatTrace(TemplateParser.IsEmptyOrWd, "char [" << (char)c << "]", Storage::Current());
 	if (!isspace(c)) {
 		if (tolower(c) == 'w') {
 			Get();
@@ -880,20 +899,40 @@ Anything FormTemplateParser::ProcessSpecialTag(String &tagName, Anything &tagAtt
 void ScriptTemplateParser::DoParse()
 {
 	StartTrace(ScriptTemplateParser.DoParse);
-	int c;
+	int c, lookahead;
 	String reply;
 	Anything tag;
 
 	while ((c = Get()) != 0 && c != EOF) {
 		switch (c) {
-			case '[':
+			case '<':
 				Store(reply);
-				Store(Macro());
+				lookahead = Peek();
+				switch (lookahead) {
+					case '?':
+					case '%' : {
+						int cT = Get();
+						if (IsEmptyOrWd()) {
+							ParseAnything(cT);
+							break;
+						} // else fall through, it was a unknown tag...
+						PutBack(cT);
+					}
+					default:
+						// it cannot be a tag, so just append the '<'
+						reply << (char)c;
+				}
 				break;
+			case '[':
+				lookahead = Peek();
+				if ( lookahead == '[' ) {
+					Store(reply);
+					Store(Macro());
+					break;
+				}
 			default:
 				reply << ((char)c);
 		}
 	}
 	Store(reply);
 }
-
