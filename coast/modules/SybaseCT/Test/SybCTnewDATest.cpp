@@ -164,6 +164,12 @@ void SybCTnewDATest::LimitedMemoryTest()
 							TraceAny(ctx.GetTmpStore()["TestOutput"], "TestOutput");
 							assertEqual(11, ctx.GetTmpStore()["TestOutput"]["QueryCount"].AsLong(-1));
 						}
+						ctx.GetTmpStore()["TestOutput"] = Anything();
+						// we must get a failure here because of the row limit
+						if ( t_assert(sybct.SqlExec(myParams, "select * from authors", "TitlesAlways", 0L, 5L) == false) ) {
+							TraceAny(ctx.GetTmpStore()["TestOutput"], "TestOutput");
+							assertEqual(5, ctx.GetTmpStore()["TestOutput"]["QueryCount"].AsLong(-1));
+						}
 					}
 					TraceAny(ctx.GetTmpStore(), "TempStore");
 					sybct.Close();

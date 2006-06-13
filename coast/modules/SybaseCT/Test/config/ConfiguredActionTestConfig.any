@@ -787,6 +787,59 @@
 				}
 			}
 		}
+		/SybNewDASearchMaxRowsTest {
+			/TheAction {
+				/CallDA {
+					SybNewDASearchTest
+					/Parameters {
+						/SQL	"select * from authors"
+						/SybDBMaxRows	13
+					}
+				}
+			}
+			/ExpectedResult	0
+			/Result {
+				/TmpStore {
+					/TestOutput {
+						/Query {
+							"select * from authors"
+						}
+						/QueryCount	13
+						/QueryResult	ignore
+						/QuerySource	"HIKU_INT2"
+						/MainMsgErr "Query aborted! Query would exceed 13 rows!"
+						/MainMsgErrNumber "49152"
+					}
+				}
+			}
+		}
+		/SybNewDASearchMaxSizeMaxRowsTest {
+			/TheAction {
+				/CallDA {
+					SybNewDASearchTest
+					/Parameters {
+						/SQL	"select * from authors"
+						/SybDBMaxResultSize	6
+						/SybDBMaxRows	13
+					}
+				}
+			}
+			/ExpectedResult	0
+			/Result {
+				/TmpStore {
+					/TestOutput {
+						/Query {
+							"select * from authors"
+						}
+						/QueryCount	13
+						/QueryResult	ignore
+						/QuerySource	"HIKU_INT2"
+						/MainMsgErr "Query aborted! Query would exceed memory limit of 6 kB or 13 rows!"
+						/MainMsgErrNumber "49152"
+					}
+				}
+			}
+		}
 		/SybNewDASearchAllResultsTitlesOnceTest {
 			/TheAction {
 				/CallDA {
