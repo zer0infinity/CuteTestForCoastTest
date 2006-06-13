@@ -103,7 +103,7 @@ public:
 
 	bool Open(DaParams &params, String user, String password, String server, String appl);
 	// use either TitlesAlways or TitlesOnce as second param
-	bool SqlExec(DaParams &params, String cmd, String resultformat = "TitlesAlways", const long lMaxResultSize = 0L );
+	bool SqlExec(DaParams &params, String cmd, String resultformat = "TitlesAlways", const long lMaxResultSize = 0L, const long lMaxRows = -1L);
 	bool Close(bool bForce = false);
 
 	static bool GetMessageAny(CS_CONTEXT *context, Anything **anyMessage);
@@ -114,7 +114,7 @@ protected:
 	//--- subclass api
 	void	Warning(DaParams &params, String str);
 	void	Error(DaParams &params, String str);
-	CS_RETCODE	DoFetchData(DaParams &params, CS_COMMAND *cmd, const CS_INT res_type, const String &resultformat, const long &lMaxResultSize );
+	CS_RETCODE	DoFetchData(DaParams &params, CS_COMMAND *cmd, const CS_INT res_type, const String &resultformat, const long lMaxResultSize, const long lParMaxRows);
 	CS_INT 		DisplayDlen(CS_DATAFMT *column);
 	bool	DoFillResults(DaParams &params, CS_INT totalrows, CS_INT numrows, CS_INT numcols, CS_DATAFMT *colfmt, EX_COLUMN_DATA *coldata, bool bTitlesOnce );
 	static bool IntGetConProps(CS_CONNECTION *connection, CS_INT property, CS_VOID **propvalue, CS_INT propsize);

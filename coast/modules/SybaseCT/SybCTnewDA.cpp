@@ -320,7 +320,7 @@ bool SybCTnewDA::Open(DaParams &params, String user, String password, String ser
 	return false;
 }
 
-bool SybCTnewDA::SqlExec(DaParams &params, String query, String resultformat, long lMaxResultSize )
+bool SybCTnewDA::SqlExec(DaParams &params, String query, String resultformat, const long lMaxResultSize, const long lMaxRows)
 {
 	StartTrace(SybCTnewDA.SqlExec);
 	DAAccessTimer(SybCTnewDAImpl.SqlExec, *(params.fpDAName), *(params.fpContext));
@@ -407,11 +407,19 @@ bool SybCTnewDA::SqlExec(DaParams &params, String query, String resultformat, lo
 						Trace("CS_STATUS_RESULT");
 						break;
 				}
-				retcode = DoFetchData(params, cmd, res_type, resultformat, lMaxResultSize);
+				retcode = DoFetchData(params, cmd, res_type, resultformat, lMaxResultSize, lMaxRows);
 				if (retcode == CS_MEM_ERROR) {
-					Warning(params, "SqlExec: rows limited due to MemoryLimit!");
 					Anything anyData;
-					anyData["MainMsgErr"] = String("Query aborted! Query would exceed memory limit of ") << lMaxResultSize << " kB!";
+					if ( lMaxResultSize != 0L && lMaxRows != -1L ) {
+						Warning(params, "SqlExec: rows limited due to MemoryLimit or MaxRows!");
+						anyData["MainMsgErr"] = String("Query aborted! Query would exceed memory limit of ") << lMaxResultSize << " kB or " << lMaxRows << " rows!";
+					} else if ( lMaxResultSize != 0L ) {
+						Warning(params, "SqlExec: rows limited due to MemoryLimit!");
+						anyData["MainMsgErr"] = String("Query aborted! Query would exceed memory limit of ") << lMaxResultSize << " kB!";
+					} else if ( lMaxRows != -1L ) {
+						Warning(params, "SqlExec: rows limited due to MaxRows!");
+						anyData["MainMsgErr"] = String("Query aborted! Query would exceed ") << lMaxRows << " rows!";
+					}
 					anyData["MainMsgErrNumber"] = 49152L;
 					PutMessages(params, anyData);
 					query_code = retcode;
@@ -469,7 +477,7 @@ bool SybCTnewDA::SqlExec(DaParams &params, String query, String resultformat, lo
 	return (query_code == CS_SUCCEED);
 }
 
-CS_RETCODE SybCTnewDA::DoFetchData(DaParams &params, CS_COMMAND *cmd, const CS_INT res_type, const String &resultformat, const long &lMaxResultSize)
+CS_RETCODE SybCTnewDA::DoFetchData(DaParams &params, CS_COMMAND *cmd, const CS_INT res_type, const String &resultformat, const long lMaxResultSize, const long lParMaxRows)
 {
 	StartTrace(SybCTnewDA.DoFetchData);
 	DAAccessTimer(SybCTnewDAImpl.DoFetchData, *(params.fpDAName), *(params.fpContext));
@@ -592,16 +600,17 @@ CS_RETCODE SybCTnewDA::DoFetchData(DaParams &params, CS_COMMAND *cmd, const CS_I
 	} else {
 		num_rows = MAX_MEM_BLOCK_SIZE / rowsize;
 	}
-	Trace("max number of rows to fetch at once: " << (long)num_rows);
 	// calculate max amount of rows to read without exceeding a given memory limit
 	if (lMaxResultSize == 0) {
 		lMaxRows = LONG_MAX;
 	} else {
 		lMaxRows = (lMaxResultSize * 1024) / rowsize;
-		if (lMaxRows < num_rows) {
-			num_rows = lMaxRows;
-		}
 	}
+	if ( lParMaxRows != -1L ) {
+		lMaxRows = itoMIN(lMaxRows, lParMaxRows);
+	}
+	num_rows = itoMIN(lMaxRows, num_rows);
+	Trace("max number of rows to fetch at once: " << (long)num_rows);
 	Trace("max number of rows to totally fetch: " << lMaxRows);
 
 	for (i = 0; i < num_cols; ++i) {

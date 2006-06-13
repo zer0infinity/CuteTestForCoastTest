@@ -272,10 +272,11 @@ bool SybCTnewDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out)
 			if ( bIsOpen ) {
 				String command;
 				if ( DoPrepareSQL(command, ctx, in) ) {
-					String resultformat, resultsize;
+					String resultformat, resultsize, resultmaxrows;
 					in->Get( "SybDBResultFormat", resultformat, ctx);
 					in->Get( "SybDBMaxResultSize", resultsize, ctx);
-					if ( !(bRet = pSyb->SqlExec( daParams, command, resultformat, resultsize.AsLong(0L) ) ) ) {
+					in->Get( "SybDBMaxRows", resultmaxrows, ctx);
+					if ( !(bRet = pSyb->SqlExec( daParams, command, resultformat, resultsize.AsLong(0L), resultmaxrows.AsLong(-1L) ) ) ) {
 						SYSWARNING("could not execute the sql command or it was aborted");
 						//					// maybe a close is better here to reduce the risk of further failures
 						//					pSyb->Close();
