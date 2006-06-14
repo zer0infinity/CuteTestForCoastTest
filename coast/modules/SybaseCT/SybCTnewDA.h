@@ -28,13 +28,6 @@
 #define	CTLIB_VERSION	CS_VERSION_125
 #define	BLK_VERSION		BLK_VERSION_125
 
-#ifndef MAX
-#define MAX(X,Y)	(((X) > (Y)) ? (X) : (Y))
-#endif
-
-#ifndef MIN
-#define MIN(X,Y)	(((X) < (Y)) ? (X) : (Y))
-#endif
 // Maximum character buffer for displaying a column
 #define MAX_CHAR_BUF	4096
 // Maximum size of memory block to be used during array binding

@@ -408,20 +408,17 @@ bool SybCTnewDA::SqlExec(DaParams &params, String query, String resultformat, co
 						break;
 				}
 				retcode = DoFetchData(params, cmd, res_type, resultformat, lMaxResultSize, lMaxRows);
-				if (retcode == CS_MEM_ERROR) {
-					Anything anyData;
+				// abortion due to reached memory limit or given row count will be signalled using CS_MEM_ERROR
+				// catch this but do not result in failure because it was a programmers wish
+				if ( ( retcode == CS_MEM_ERROR ) && ( ( lMaxResultSize != 0L ) || ( lMaxRows != -1L ) ) ) {
 					if ( lMaxResultSize != 0L && lMaxRows != -1L ) {
-						Warning(params, "SqlExec: rows limited due to MemoryLimit or MaxRows!");
-						anyData["MainMsgErr"] = String("Query aborted! Query would exceed memory limit of ") << lMaxResultSize << " kB or " << lMaxRows << " rows!";
+						Warning(params, "SqlExec: rows limited due to SybDBMaxResultSize or SybDBMaxRows!");
 					} else if ( lMaxResultSize != 0L ) {
-						Warning(params, "SqlExec: rows limited due to MemoryLimit!");
-						anyData["MainMsgErr"] = String("Query aborted! Query would exceed memory limit of ") << lMaxResultSize << " kB!";
+						Warning(params, "SqlExec: rows limited due to SybDBMaxResultSize!");
 					} else if ( lMaxRows != -1L ) {
-						Warning(params, "SqlExec: rows limited due to MaxRows!");
-						anyData["MainMsgErr"] = String("Query aborted! Query would exceed ") << lMaxRows << " rows!";
+						Warning(params, "SqlExec: rows limited due to SybDBMaxRows!");
 					}
-					anyData["MainMsgErrNumber"] = 49152L;
-					PutMessages(params, anyData);
+					// need to pass CS_MEM_ERROR as query_code to force abortion of still running query
 					query_code = retcode;
 				} else if (retcode != CS_SUCCEED) {
 					Error(params, "SqlExec: ex_fetch_data() failed");
@@ -438,6 +435,10 @@ bool SybCTnewDA::SqlExec(DaParams &params, String query, String resultformat, co
 			retcode = ct_cancel(NULL, cmd, CS_CANCEL_ALL);
 			if (retcode != CS_SUCCEED) {
 				Error(params, "SqlExec: ct_cancel() failed");
+			}
+			// must adjust query_code again to force successful termination of method
+			if ( ( query_code == CS_MEM_ERROR ) && ( ( lMaxResultSize != 0L ) || ( lMaxRows != -1L ) ) ) {
+				query_code = CS_SUCCEED;
 			}
 			break;
 		}
@@ -755,12 +756,12 @@ CS_INT SybCTnewDA::DisplayDlen(CS_DATAFMT *column)
 		case CS_VARCHAR_TYPE:
 		case CS_TEXT_TYPE:
 		case CS_IMAGE_TYPE:
-			len = MIN(column->maxlength, MAX_CHAR_BUF);
+			len = itoMIN(column->maxlength, MAX_CHAR_BUF);
 			break;
 
 		case CS_BINARY_TYPE:
 		case CS_VARBINARY_TYPE:
-			len = MIN((2 * column->maxlength) + 2, MAX_CHAR_BUF);
+			len = itoMIN((2 * column->maxlength) + 2, MAX_CHAR_BUF);
 			break;
 
 		case CS_BIT_TYPE:
@@ -801,7 +802,7 @@ CS_INT SybCTnewDA::DisplayDlen(CS_DATAFMT *column)
 			break;
 	}
 
-	return MAX(strlen(column->name) + 1, (unsigned)len);
+	return itoMAX(strlen(column->name) + 1, (unsigned)len);
 }
 
 bool SybCTnewDA::DoFillResults(DaParams &params, CS_INT totalrows, CS_INT numrows, CS_INT numcols, CS_DATAFMT *colfmt, EX_COLUMN_DATA *coldata, bool bTitlesOnce )
