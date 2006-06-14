@@ -797,7 +797,6 @@
 					}
 				}
 			}
-			/ExpectedResult	0
 			/Result {
 				/TmpStore {
 					/TestOutput {
@@ -807,8 +806,6 @@
 						/QueryCount	13
 						/QueryResult	ignore
 						/QuerySource	"HIKU_INT2"
-						/MainMsgErr "Query aborted! Query would exceed 13 rows!"
-						/MainMsgErrNumber "49152"
 					}
 				}
 			}
@@ -824,7 +821,6 @@
 					}
 				}
 			}
-			/ExpectedResult	0
 			/Result {
 				/TmpStore {
 					/TestOutput {
@@ -834,8 +830,9 @@
 						/QueryCount	13
 						/QueryResult	ignore
 						/QuerySource	"HIKU_INT2"
-						/MainMsgErr "Query aborted! Query would exceed memory limit of 6 kB or 13 rows!"
-						/MainMsgErrNumber "49152"
+						/Messages {
+							"SybCTnewDA::SqlExec: rows limited due to SybDBMaxResultSize or SybDBMaxRows!"
+						}
 					}
 				}
 			}

@@ -159,14 +159,14 @@ void SybCTnewDATest::LimitedMemoryTest()
 				SybCTnewDA::DaParams myParams(&ctx, &aParamMapper, &aResultMapper, &strDAName);
 				if (t_assertm(sybct.Open( myParams, "wdtester", "all2test", "HIKU_INT2", "SimpleQueryTest"), "dbOpen should have succeeded")) {
 					if ( t_assert(sybct.SqlExec(myParams, "use pub2")) ) {
-						// we must get a failure here because of the memory limit
-						if ( t_assert(sybct.SqlExec(myParams, "select * from authors", "TitlesAlways", 4L) == false) ) {
+						// we must get a success here even though we bailed out due to a memory limit
+						if ( t_assert( sybct.SqlExec(myParams, "select * from authors", "TitlesAlways", 4L) ) ) {
 							TraceAny(ctx.GetTmpStore()["TestOutput"], "TestOutput");
 							assertEqual(11, ctx.GetTmpStore()["TestOutput"]["QueryCount"].AsLong(-1));
 						}
 						ctx.GetTmpStore()["TestOutput"] = Anything();
-						// we must get a failure here because of the row limit
-						if ( t_assert(sybct.SqlExec(myParams, "select * from authors", "TitlesAlways", 0L, 5L) == false) ) {
+						// we must get a success here even though we bailed out due to a row limit
+						if ( t_assert( sybct.SqlExec(myParams, "select * from authors", "TitlesAlways", 0L, 5L) ) ) {
 							TraceAny(ctx.GetTmpStore()["TestOutput"], "TestOutput");
 							assertEqual(5, ctx.GetTmpStore()["TestOutput"]["QueryCount"].AsLong(-1));
 						}
