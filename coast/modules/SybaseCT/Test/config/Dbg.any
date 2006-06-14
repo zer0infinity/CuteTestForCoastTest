@@ -35,14 +35,14 @@
 	}
 ### SybCTnewDA section
 	/SybCTnewDA {
-		/MainSwitch						0
-		/EnableAll						10
+		/MainSwitch						10
+		/EnableAll						0
 		/SybCT_clientmsg_handler		10
 		/SybCT_csmsg_handler			10
 		/SybCT_servermsg_handler		-10
 		/SqlExec						10
 		/DoFillResults					-10
-		/DoFetchData					-10
+		/DoFetchData					10
 		/AllocateValue					-10
 		/AllocateIndicator				-10
 		/AllocateValuelen				-10
