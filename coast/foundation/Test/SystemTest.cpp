@@ -39,18 +39,23 @@ SystemTest::~SystemTest()
 
 void SystemTest::DoSingleSelectTest()
 {
+	StartTrace(SystemTest.DoSingleSelectTest);
 	// assume writability of stdout
 	assertEqual(1L, System::DoSingleSelect(1, 100, false, true));
 	// just wait 100ms
 	const long waittime = 1000L;
 	DiffTimer dt(1000L);//1ms accuracy
 	int iSSRet = System::DoSingleSelect(0, waittime, false, false);
-	long difft = dt.Diff() - waittime;
+	long difft = dt.Diff();
+	Trace("time waited: " << difft << "ms, return code of function:" << iSSRet);
+	difft -= waittime;
+	Trace("difference to expected waittime of " << waittime << "ms : " << difft << "ms");
 	assertEqual(0L, iSSRet);
 	if ( iSSRet < 0 ) {
 		SYSERROR("error in DoSingleSelect [" << SysLog::LastSysError() << "]");
 	}
-	t_assertm(difft >= 0, "assume waiting long enough");
+	// need some tolerance on some systems, eg. older SunOS5.6
+	t_assertm(difft >= -10, TString("assume waiting long enough >=-10ms, diff was:") << difft << "ms");
 	t_assertm(difft < waittime / 5, (const char *)(String("assume 20% (20ms) accuracy, but was ") << difft));
 	// sanity check negative value
 	t_assert(System::DoSingleSelect(-1, 0, true, false) < 0);
