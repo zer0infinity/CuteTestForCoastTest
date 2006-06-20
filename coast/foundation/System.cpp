@@ -121,8 +121,8 @@ int System::DoSingleSelect(int fd, long timeout, bool bRead, bool bWrite)
 	t.tv_usec = 1000 * (timeout % 1000);
 
 	bool bArg(bRead || bWrite);
-// NB: windows seems to be happy with first param is 0 ?? is this true? YES (hum)
-	return ::select (	fd + 1,
+	// FD_SETSIZE is ignored in WIN32 select call, on Ux systems it specifies the number of valid fds in the set
+	return ::select (	FD_SETSIZE,
 						bRead ? &readfds   : NULL,
 						bWrite ? &writefds  : NULL,
 						bArg  ? &exceptfds : NULL,

@@ -35,6 +35,8 @@ typedef long uid_t;
 #define POLLERR		0x008
 #define POLLHUP		0x010
 #define POLLNVAL	0x020
+// following macro is for compatibility reasons, it is ignored in WIN32 select call
+#define FD_SETSIZE	0
 #else
 #include <unistd.h>
 #endif
