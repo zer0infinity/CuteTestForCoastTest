@@ -1,8 +1,8 @@
 #!/bin/ksh
 _SYBASE_DIR=/sybasehome/sybase12
 DB_NAME=pub2
-DB_USER=-Uwdtester
-DB_PASSWD=-P"all2test"
+DB_USER=-Usa
+DB_PASSWD=-P"sagamma01h"
 DB_SHELL=isql
 DB_IMPORTFILE='config/createPub2.sql'
 DB_DROPFILE='config/dropPub2.sql'
