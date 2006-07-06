@@ -2,10 +2,10 @@ use master
 go
 set nocount on
 
-print 'Removing the "pubs2" database'
+print 'Removing the "pub2" database'
 if exists (select * from master.dbo.sysdatabases
-		where name = "pubs2")
+		where name = "pub2")
 begin
-	drop database pubs2
+	drop database pub2
 end
 go
