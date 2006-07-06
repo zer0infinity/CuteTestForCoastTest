@@ -230,4 +230,10 @@
 	/NewDAInpuMapper {
 #		/ShowQueryCount	0
 	}
+	/LoginTimeoutMapper {
+		/LoginTimeout	5
+	}
+	/ResultTimeoutMapper {
+		/ResultTimeout	5
+	}
 }
