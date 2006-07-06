@@ -23,7 +23,7 @@ go
 
 sp_changedbowner wdtester , true
 go
-use pub2R
+use pub2
 go
 checkpoint
 go
@@ -1302,6 +1302,14 @@ from    titles
 where   lower(title_id) like @title_id
 return @@rowcount
 go
+create procedure waitSomeSeconds( @timeToWait char(8) = "00:00:10" )
+as
+begin
+	waitfor delay @timeToWait
+	print "was delayed for %1!", @timeToWait
+	return 1
+end
+go
 grant exec on history_proc to public
 grant exec on discount_proc to public
 grant exec on titleid_proc to public
@@ -1310,6 +1318,7 @@ grant exec on storeid_proc to public
 grant exec on insert_sales_proc to public
 grant exec on insert_salesdetail_proc to public
 grant exec on title_proc to public
+grant exec on waitSomeSeconds to public
 go
 grant create procedure to public
 go
@@ -1337,6 +1346,7 @@ begin
 	grant exec on history_proc to guest
 	grant exec on discount_proc to guest
 	grant exec on titleid_proc to guest
+	grant exec on waitSomeSeconds to guest
 	grant exec on storename_proc to guest
 	grant exec on storeid_proc to guest
 	grant exec on insert_sales_proc to guest
