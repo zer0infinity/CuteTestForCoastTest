@@ -9,4 +9,13 @@
 {
 
 	/InterfacesFile	"config/interfaces.any"
+
+	/LoginTimeoutTest {
+		/Connections	25
+		/Timeout		!InputMapperMeta.any?LoginTimeoutMapper.LoginTimeout
+	}
+	/ResultTimeoutTest {
+		/TimeToWait		10
+		/ResultTimeout	!InputMapperMeta.any?ResultTimeoutMapper.ResultTimeout
+	}
 }
