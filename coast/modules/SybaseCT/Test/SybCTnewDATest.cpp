@@ -16,6 +16,7 @@
 #include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
+#include "DiffTimer.h"
 #include "SysLog.h"
 #include "System.h"
 #include "Dbg.h"
@@ -189,15 +190,113 @@ void SybCTnewDATest::LimitedMemoryTest()
 #endif
 }
 
+void SybCTnewDATest::LoginTimeoutTest()
+{
+	StartTrace(SybCTnewDATest.LoginTimeoutTest);
+	Anything anyCtxMessages(Storage::Global());
+	String strInterfacesFileName = GetConfig()["InterfacesFile"].AsString();
+	if ( t_assertm(strInterfacesFileName.Length(), "expected non-empty interfaces filename") ) {
+		long lMaxConnections = GetTestCaseConfig()["Connections"].AsLong(26L);
+		// create context
+		CS_CONTEXT *context;
+		if (t_assertm(SybCTnewDA::Init(&context, &anyCtxMessages, strInterfacesFileName, lMaxConnections) == CS_SUCCEED, "Context should have been created")) {
+			IntLoginTimeoutTest(context, lMaxConnections, 1L);
+			TraceAny(anyCtxMessages, "Messages");
+			// trace messages which occurred without a connection
+			while (anyCtxMessages.GetSize()) {
+				SysLog::Warning(String() << anyCtxMessages[0L].AsCharPtr() << "\n");
+				anyCtxMessages.Remove(0L);
+			}
+			SybCTnewDA::Finis(context);
+		}
+	}
+}
+
+void SybCTnewDATest::IntLoginTimeoutTest(CS_CONTEXT *context, long lMaxNumber, long lCurrent)
+{
+	StartTrace1(SybCTnewDATest.IntLoginTimeoutTest, String() << lCurrent);
+	ParameterMapper aParamMapper("LoginTimeoutMapper");
+	aParamMapper.CheckConfig("ParameterMapper");
+	ResultMapper aResultMapper("SybCTnewDAImpl");
+	aResultMapper.CheckConfig("ResultMapper");
+	SybCTnewDA sybct(context);
+	Context ctx;
+	String strDAName(name());
+	strDAName << lCurrent;
+	SybCTnewDA::DaParams myParams(&ctx, &aParamMapper, &aResultMapper, &strDAName);
+	DiffTimer aTimer;
+	if ( sybct.Open( myParams, "wdtester", "all2test", "HIKU_INT2", "LoginTimeoutTest") ) {
+		long lDTime = aTimer.Diff();
+		long lTimeout = GetTestCaseConfig()["Timeout"].AsLong(5L) * 1000L;
+		Trace("time used in Open: " << lDTime << "ms, Timeout is: " << lTimeout << "ms");
+		if ( lDTime < 400L ) {
+			// regular case, no login timeout
+			t_assert(true);
+		} else {
+			// login timeout occured
+			t_assertm( lDTime >= lTimeout, TString("expected timeout to be more than ") << lTimeout << "ms");
+		}
+		if ( lCurrent <= lMaxNumber ) {
+			IntLoginTimeoutTest(context, lMaxNumber, ++lCurrent);
+		}
+		TraceAny(ctx.GetTmpStore(), "TempStore");
+		sybct.Close();
+	}
+}
+
+void SybCTnewDATest::ResultTimeoutTest()
+{
+	StartTrace(SybCTnewDATest.ResultTimeoutTest);
+	Anything anyCtxMessages(Storage::Global());
+	String strInterfacesFileName = GetConfig()["InterfacesFile"].AsString();
+	if ( t_assertm(strInterfacesFileName.Length(), "expected non-empty interfaces filename") ) {
+		CS_CONTEXT *context;
+		// create context
+		Context ctx;
+		ParameterMapper aParamMapper("ResultTimeoutMapper");
+		aParamMapper.CheckConfig("ParameterMapper");
+		ResultMapper aResultMapper("SybCTnewDAImpl");
+		aResultMapper.CheckConfig("ResultMapper");
+		String strDAName(name());
+		// create context
+		if (t_assertm(SybCTnewDA::Init(&context, &anyCtxMessages, strInterfacesFileName, 5) == CS_SUCCEED, "Context should have been created")) {
+			SybCTnewDA sybct(context);
+			SybCTnewDA::DaParams myParams(&ctx, &aParamMapper, &aResultMapper, &strDAName);
+			if (t_assertm(sybct.Open( myParams, "wdtester", "all2test", "HIKU_INT2", "ResultTimeoutTest"), "dbOpen should have succeeded")) {
+				DiffTimer aTimer;
+				if (t_assert(sybct.SqlExec(myParams, "use pub2"))) {
+					String strQuery("exec waitSomeSeconds \"00:00:");
+					strQuery << GetTestCaseConfig()["TimeToWait"].AsString("20") << "\"";
+					t_assertm( !sybct.SqlExec(myParams, strQuery), "exec should have failed because of result timeout" );
+					TraceAny(ctx.GetTmpStore()["TestOutput"], "TestOutput");
+					long lDTime = aTimer.Diff();
+					long lResultTimeout = GetTestCaseConfig()["ResultTimeout"].AsLong(10L) * 1000L;
+					long lWaitTimeout = GetTestCaseConfig()["TimeToWait"].AsLong(20L) * 1000L;
+					t_assertm( ( ( abs( lDTime - lResultTimeout ) < 1000 ) && ( lDTime < lWaitTimeout ) ), TString("expected elapsed time ") << lDTime << "ms to be between " << lResultTimeout << "ms and " << lWaitTimeout << "ms");
+				}
+				TraceAny(ctx.GetTmpStore(), "TempStore");
+				sybct.Close();
+			}
+			sybct.Finis(context);
+			TraceAny(anyCtxMessages, "Messages");
+			// trace messages which occurred without a connection
+			while (anyCtxMessages.GetSize()) {
+				SysLog::Warning(String() << anyCtxMessages[0L].AsCharPtr() << "\n");
+				anyCtxMessages.Remove(0L);
+			}
+		}
+	}
+}
+
 // builds up a suite of testcases, add a line for each testmethod
 Test *SybCTnewDATest::suite ()
 {
 	StartTrace(SybCTnewDATest.suite);
 	TestSuite *testSuite = new TestSuite;
-
 	ADD_CASE(testSuite, SybCTnewDATest, InitOpenSetConPropTest);
 	ADD_CASE(testSuite, SybCTnewDATest, SimpleQueryTest);
 	ADD_CASE(testSuite, SybCTnewDATest, LimitedMemoryTest);
-
+	ADD_CASE(testSuite, SybCTnewDATest, LoginTimeoutTest);
+	ADD_CASE(testSuite, SybCTnewDATest, ResultTimeoutTest);
 	return testSuite;
 }

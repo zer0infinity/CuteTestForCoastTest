@@ -11,6 +11,7 @@
 
 //---- baseclass include -------------------------------------------------
 #include "FoundationTestTypes.h"
+#include "cstypes.h"
 
 //---- SybCTnewDATest ----------------------------------------------------------
 //:TestCases description
@@ -35,6 +36,11 @@ public:
 	void InitOpenSetConPropTest();
 	void SimpleQueryTest();
 	void LimitedMemoryTest();
+	void LoginTimeoutTest();
+	void ResultTimeoutTest();
+
+private:
+	void IntLoginTimeoutTest(CS_CONTEXT *context, long lMaxNumber, long lCurrent);
 };
 
 #endif
