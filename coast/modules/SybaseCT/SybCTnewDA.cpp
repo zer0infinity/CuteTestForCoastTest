@@ -9,6 +9,9 @@
 //--- interface include --------------------------------------------------------
 #include "SybCTnewDA.h"
 
+//--- project modules used -----------------------------------------------------
+#include "oserror.h"
+
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "SysLog.h"
@@ -294,6 +297,48 @@ bool SybCTnewDA::Open(DaParams &params, String user, String password, String ser
 						}
 					}
 
+					// Set LoginTimeout if specified
+					long lLoginTimeout = CS_NO_LIMIT;
+					if ( (retcode == CS_SUCCEED) && (params.fpIn)->Get( "LoginTimeout", lLoginTimeout, *(params.fpContext)) ) {
+						CS_INT lOldTimeout = CS_NO_LIMIT;
+						if ( ( retcode = ct_config(fContext, CS_GET, CS_LOGIN_TIMEOUT, &lOldTimeout, CS_UNUSED, NULL) ) != CS_SUCCEED ) {
+							Warning(params, "Open: retrieval of CS_LOGIN_TIMEOUT failed");
+						}
+						if ( lOldTimeout == CS_NO_LIMIT ) {
+							Trace("old CS_LOGIN_TIMEOUT value: <unlimited>");
+						} else {
+							Trace("old CS_LOGIN_TIMEOUT value: " << (long)lOldTimeout << "s");
+						}
+						if ( ( lLoginTimeout > 0L || lLoginTimeout == CS_NO_LIMIT ) && ( lOldTimeout != (CS_INT)lLoginTimeout ) ) {
+							Trace("setting CS_LOGIN_TIMEOUT to " << lLoginTimeout << "s");
+							CS_INT iLoginTimeout = (CS_INT)lLoginTimeout;
+							if ( ( retcode = ct_config(fContext, CS_SET, CS_LOGIN_TIMEOUT, (CS_VOID *)&iLoginTimeout, CS_UNUSED, NULL) ) != CS_SUCCEED ) {
+								Warning(params, "Open: setting CS_LOGIN_TIMEOUT failed");
+							}
+						}
+					}
+
+					// Set ResultTimeout if specified
+					long lTimeout = CS_NO_LIMIT;
+					if ( (retcode == CS_SUCCEED) && (params.fpIn)->Get( "ResultTimeout", lTimeout, *(params.fpContext)) ) {
+						CS_INT lOldTimeout = CS_NO_LIMIT;
+						if ( ( retcode = ct_config(fContext, CS_GET, CS_TIMEOUT, &lOldTimeout, CS_UNUSED, NULL) ) != CS_SUCCEED ) {
+							Warning(params, "Open: retrieval of CS_TIMEOUT failed");
+						}
+						if ( lOldTimeout == CS_NO_LIMIT ) {
+							Trace("old CS_TIMEOUT value: <unlimited>");
+						} else {
+							Trace("old CS_TIMEOUT value: " << (long)lOldTimeout << "s");
+						}
+						if ( ( lTimeout > 0L || lTimeout == CS_NO_LIMIT ) && ( lOldTimeout != (CS_INT)lTimeout ) ) {
+							Trace("setting CS_TIMEOUT to " << lTimeout << "s");
+							CS_INT iTimeout = (CS_INT)lTimeout;
+							if ( ( retcode = ct_config(fContext, CS_SET, CS_TIMEOUT, (CS_VOID *)&iTimeout, CS_UNUSED, NULL) ) != CS_SUCCEED ) {
+								Warning(params, "Open: setting CS_TIMEOUT failed");
+							}
+						}
+					}
+
 					// Open a Server fConnection.
 					if ( retcode == CS_SUCCEED ) {
 						if ( server.Length() ) {
@@ -464,6 +509,11 @@ bool SybCTnewDA::SqlExec(DaParams &params, String query, String resultformat, co
 				Trace("CS_FAIL");
 				query_code = CS_FAIL;
 			}
+			break;
+		case CS_CANCELED:
+			Trace("command has been CS_CANCELED");
+			ct_cmd_drop(cmd);
+			query_code = CS_FAIL;
 			break;
 		case CS_FAIL:
 			Trace("CS_FAIL");
@@ -960,9 +1010,19 @@ CS_RETCODE SybCTnewDA_servermsg_handler(CS_CONTEXT *context, CS_CONNECTION *conn
 			Anything anyData, anyRef;
 			anyData["Messages"] = MetaThing();
 			anyRef = anyData["Messages"];
-			anyRef["severity"] = (long)srvmsg->severity;
-			anyRef["msgno"] = (long)srvmsg->msgnumber;
-			anyRef["msgstate"] = (long)srvmsg->state;
+			CS_MSGNUM lMsgNumber = srvmsg->msgnumber;
+			anyRef["MsgNumber"] = (long)lMsgNumber;
+			anyRef["State"] = (long)srvmsg->state;
+			// it only makes sense to decode the msgnumber if the severity is in decodable range
+			// currently, only codes up to 7 are in range
+			if ( CS_SEVERITY(lMsgNumber) <= CS_SV_FATAL ) {
+				anyRef["Severity"] = CS_SEVERITY(lMsgNumber);
+				anyRef["Number"] = CS_NUMBER(lMsgNumber);
+				anyRef["Origin"] = CS_ORIGIN(lMsgNumber);
+				anyRef["Layer"] = CS_LAYER(lMsgNumber);
+			} else {
+				anyRef["Severity"] = (long)srvmsg->severity;
+			}
 			String text = NotNull(srvmsg->text);
 			// if a "\n" trails the text, cut it away
 			if (text[text.Length()-1L] == '\n') {
@@ -977,7 +1037,7 @@ CS_RETCODE SybCTnewDA_servermsg_handler(CS_CONTEXT *context, CS_CONNECTION *conn
 				anyRef["procname"] = NotNull(srvmsg->proc);
 			}
 			// The msgtext of the first severity unequal 0 must saved
-			if ( (long)srvmsg->msgnumber != 5701L && (long)srvmsg->msgnumber != 0L ) {
+			if ( (long)srvmsg->msgnumber != SQLSRV_ENVDB && (long)srvmsg->msgnumber != 0L ) {
 				String help;
 				help << "[" << anyRef["msgtext"].AsString("") << "]";
 				anyData["MainMsgErr"] = help;
@@ -1014,21 +1074,30 @@ CS_RETCODE SybCTnewDA_clientmsg_handler(CS_CONTEXT *context, CS_CONNECTION *conn
 			Anything anyData, anyRef;
 			anyData["Messages"] = MetaThing();
 			anyRef = anyData["Messages"];
-			anyRef["severity"] = (long)CS_SEVERITY(errmsg->msgnumber);
-			anyRef["msgno"] = (long)CS_NUMBER(errmsg->msgnumber);
-			anyRef["origin"] = (long)CS_ORIGIN(errmsg->msgnumber);
+			CS_MSGNUM lMsgNumber = errmsg->msgnumber;
+			anyRef["MsgNumber"] = (long)lMsgNumber;
+			// it only makes sense to decode the msgnumber if the severity is in decodable range
+			// currently, only codes up to 7 are in range
+			if ( CS_SEVERITY(lMsgNumber) <= CS_SV_FATAL ) {
+				anyRef["Severity"] = CS_SEVERITY(lMsgNumber);
+				anyRef["Number"] = CS_NUMBER(lMsgNumber);
+				anyRef["Origin"] = CS_ORIGIN(lMsgNumber);
+				anyRef["Layer"] = CS_LAYER(lMsgNumber);
+			} else {
+				anyRef["Severity"] = (long)errmsg->severity;
+			}
+
 			String text = NotNull(errmsg->msgstring);
 			// if a "\n" trails the text, cut it away
 			if (text[text.Length()-1L] == '\n') {
 				text.Trim(text.Length() - 1);
 			}
 			anyRef["msgtext"] = text;
-			anyRef["layer"] = (long)CS_LAYER(errmsg->msgnumber);
 			if (errmsg->osstringlen > 0) {
 				anyRef["osstring"] = NotNull(errmsg->osstring);
 			}
 			// The msgtext of the first severity unequal 0 must saved
-			if ( (long)CS_NUMBER(errmsg->msgnumber) != 5701L && (long)CS_NUMBER(errmsg->msgnumber) != 0L ) {
+			if ( (long)errmsg->msgnumber != SQLSRV_ENVDB && (long)CS_NUMBER(errmsg->msgnumber) != 0L ) {
 				String help;
 				help << "[" << anyRef["msgtext"].AsString("") << "]";
 				anyData["MainMsgErr"] = help;
@@ -1041,6 +1110,42 @@ CS_RETCODE SybCTnewDA_clientmsg_handler(CS_CONTEXT *context, CS_CONNECTION *conn
 			}
 			if ( !bFuncCode ) {
 				SysLog::Error("SybCTnewDA_clientmsg_handler: could not put messages using Mapper");
+			}
+
+#define ERROR_SNOL(e, s, n, o, l) \
+	( (CS_SEVERITY(e) == s) && (CS_NUMBER(e) == n) \
+	&& (CS_ORIGIN(e) == o) && (CS_LAYER(e) == l ) )
+
+			if ( ERROR_SNOL(errmsg->msgnumber, CS_SV_RETRY_FAIL, 63, 2, 1) ) {
+				Trace("a kind of timeout error occured");
+				// Read from server timed out. Timeouts happen on synchronous
+				// connections only, and you must have set one or both of the
+				// following context properties to see them:
+				//  CS_TIMEOUT for results timeouts
+				//  CS_LOGIN_TIMEOUT for login-attempt timeouts
+
+				// If we return CS_FAIL, the connection is marked as dead and
+				// unrecoverable.  If we return CS_SUCCEED, the timeout
+				// continues for another quantum.
+
+				// We kill the connection for login timeouts, and send a
+				// cancel for results timeouts. We determine which case we
+				// have via the CS_LOGIN_STATUS property.
+				CS_INT status = 0;
+				if ( ct_con_props(connection, CS_GET, CS_LOGIN_STATUS, (CS_VOID *)&status, CS_UNUSED, NULL) != CS_SUCCEED ) {
+					SysLog::Error("SybCTnewDA_clientmsg_handler: could not retrieve CS_LOGIN_STATUS");
+					return CS_FAIL;
+				}
+
+				if (status) {
+					// Results timeout
+					SysLog::Warning("SybCTnewDA_clientmsg_handler: cancelling the query due to a result timeout...");
+					(CS_VOID)ct_cancel(connection, (CS_COMMAND *)NULL, CS_CANCEL_ATTN);
+				} else {
+					// Login timeout
+					SysLog::Warning("SybCTnewDA_clientmsg_handler: aborting connection(login) attempt...");
+					return CS_FAIL;
+				}
 			}
 		} else {
 			SysLog::Error("SybCTnewDA_clientmsg_handler: could not get Message anything");
@@ -1064,16 +1169,25 @@ CS_RETCODE SybCTnewDA_csmsg_handler(CS_CONTEXT *context, CS_CLIENTMSG *errmsg)
 		}
 		if ( bFuncCode ) {
 			Anything anyData;
-			anyData["severity"] = (long)CS_SEVERITY(errmsg->msgnumber);
-			anyData["msgno"] = (long)CS_NUMBER(errmsg->msgnumber);
-			anyData["origin"] = (long)CS_ORIGIN(errmsg->msgnumber);
+			CS_MSGNUM lMsgNumber = errmsg->msgnumber;
+			anyData["MsgNumber"] = (long)lMsgNumber;
+			// it only makes sense to decode the msgnumber if the severity is in decodable range
+			// currently, only codes up to 7 are in range
+			if ( CS_SEVERITY(lMsgNumber) <= CS_SV_FATAL ) {
+				anyData["Severity"] = CS_SEVERITY(lMsgNumber);
+				anyData["Number"] = CS_NUMBER(lMsgNumber);
+				anyData["Origin"] = CS_ORIGIN(lMsgNumber);
+				anyData["Layer"] = CS_LAYER(lMsgNumber);
+			} else {
+				anyData["Severity"] = (long)errmsg->severity;
+			}
+
 			String text = NotNull(errmsg->msgstring);
 			// if a "\n" trails the text, cut it away
 			if (text[text.Length()-1L] == '\n') {
 				text.Trim(text.Length() - 1);
 			}
 			anyData["msgtext"] = text;
-			anyData["layer"] = (long)CS_LAYER(errmsg->msgnumber);
 			if (errmsg->osstringlen > 0) {
 				anyData["osstring"] = NotNull(errmsg->osstring);
 			}
@@ -1085,7 +1199,7 @@ CS_RETCODE SybCTnewDA_csmsg_handler(CS_CONTEXT *context, CS_CLIENTMSG *errmsg)
 				(*pAny)["Messages"].Append(anyData);
 				// The msgtext of the first severity unequal 0 must saved
 				if ( !(*pAny).IsDefined("MainMsgErr")
-					 && (long)CS_NUMBER(errmsg->msgnumber) != 5701L
+					 && (long)errmsg->msgnumber != SQLSRV_ENVDB
 					 && (long)CS_NUMBER(errmsg->msgnumber) != 0L ) {
 					String help;
 					help << "[" << anyData["msgtext"].AsString("") << "]";
