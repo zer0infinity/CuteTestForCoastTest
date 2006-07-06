@@ -9,7 +9,7 @@
 {
 
 	/LowerBound		0		# debugging on or off
-	/UpperBound		10		# override switch: turns everything on
+	/UpperBound		11		# override switch: turns everything on
 	/DumpAnythings  1		# print full Anythings
 
 	/SybCT {
@@ -37,12 +37,14 @@
 	/SybCTnewDA {
 		/MainSwitch						10
 		/EnableAll						0
-		/SybCT_clientmsg_handler		10
-		/SybCT_csmsg_handler			10
-		/SybCT_servermsg_handler		-10
+		/SybCTnewDA_clientmsg_handler	10
+		/SybCTnewDA_csmsg_handler		10
+		/SybCTnewDA_servermsg_handler	10
+		/Init							10
+		/Open							10
 		/SqlExec						10
 		/DoFillResults					-10
-		/DoFetchData					10
+		/DoFetchData					0
 		/AllocateValue					-10
 		/AllocateIndicator				-10
 		/AllocateValuelen				-10
@@ -52,12 +54,12 @@
 		/IntGetConProps					-10
 	}
 	/SybCTnewDATest {
-		/MainSwitch						0
-		/EnableAll						10
+		/MainSwitch						10
+		/EnableAll						0
 	}
 	/SybCTnewDAImpl {
 		/MainSwitch						11
-		/EnableAll						11
+		/EnableAll						0
 		/DoPrepareSQL					-10
 	}
 	/SybCTnewDAImplTest {
