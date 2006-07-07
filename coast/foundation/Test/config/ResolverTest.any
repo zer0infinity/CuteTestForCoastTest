@@ -15,7 +15,6 @@
 		}
 		/noHostToBeFound {
 			/name	"NotExisting.Nowhere.NoDomain"
-			/ip		"127.0.0.1"
 			/ip		"172.16.2.5"
 		}
 	}
