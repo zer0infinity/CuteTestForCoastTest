@@ -172,10 +172,6 @@
 		/MainSwitch						0
 		/EnableAll						10
 	}
-	/TestRunnerApplication {
-		/MainSwitch						0
-		/EnableAll						10
-	}
 	/SecurityModule {
 		/MainSwitch						0
 		/EnableAll						10
