@@ -494,6 +494,8 @@ void Session::DoFindNextPage(Context &context, String &transition, String &curre
 	StartTrace(Session.DoFindNextPage);
 	Trace( "before transition =<" << transition << "> page = <" << currentpage << ">" << " role of session = <" << GetRoleName(context) << ">");
 	bool done = false;
+	long lLoopCount = 0;
+	String strLastTransition(transition), strLastPage(currentpage), strInitialPage(currentpage);
 	GetRole(context)->PrepareTmpStore(context);
 	do {
 	starttransition:
@@ -515,10 +517,23 @@ void Session::DoFindNextPage(Context &context, String &transition, String &curre
 			currentpage = context.Lookup("ErrorPage", "ErrorPage");
 		}
 		done = PreparePage(context, transition, currentpage) || done;
-		if ( ! done ) {
+		if ( !done ) {
+			if ( strLastTransition == transition && strLastPage == currentpage ) {
+				// increment loop counter to be able to break when we detect no change in transition and page over time
+				++lLoopCount;
+				Trace("Detected same transition [" << transition << "] and page [" << currentpage << "] as before!, LoopCount:" << lLoopCount);
+			} else {
+				strLastTransition = transition;
+				strLastPage = currentpage;
+				lLoopCount = 0;
+			}
+			Trace("last transition =<" << strLastTransition << "> page = <" << strLastPage << ">");
 			Trace("intermediate transition =<" << transition << "> page = <" << currentpage << "> role of session = <" << GetRoleName(context) << ">");
 		}
-	} while (!done);
+	} while ( !done && ( lLoopCount < 2L ) );
+	if ( !done ) {
+		SYSERROR("Cancelled DoFindNextPage due to potential endless loop on Page [" << strLastPage << "] and Token [" << strLastTransition << "], InitialPage was [" << strInitialPage << "]");
+	}
 	Trace("after transition =<" << transition << "> page = <" << currentpage << "> role of session = <" << NotNullStr(GetRoleName(context)) << ">");
 }
 
