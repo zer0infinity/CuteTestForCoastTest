@@ -15,7 +15,7 @@
 //!  code. Before the usage of the macros in a method you have to invoke TRACE_LOCK_START(methodname)
 //!  set #define TRACE_LOCKS to enable the macros.
 //!  Sample may be found in SessionListManager.cpp
-//!  To examine the lock parity, enable syslogging with WD_DOLOG=1 and use the following script
+//!  To examine the lock parity, enable syslogging with WD_DOLOG=2 and use the following script
 //!  (Done in K-shell, of course)
 
 //  ---- snipp
