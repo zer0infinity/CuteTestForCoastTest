@@ -13,7 +13,21 @@
 #include "ITOString.h"
 
 //--- SysLog ----------------------------------------------------------
-//!API for syslog access
+/*! <b>API for syslog access</b>
+This is the Coast system logging API. It is used for system-level and application-level logging.
+The values of <tt>WD_LOGONCERR</tt> and <tt>WD_DOLOG</tt> control the level of severities shown either on the console or in the syslog. Possible values are:
+<pre>
+1: DEBUG
+2: INFO
+3: WARNING
+4: ERROR
+5: ALERT
+</pre>
+All messages with a severity above or equal the specified value will log on the appropriate channel.<br>
+The loggers behavior is to write ALERT messages into syslog and to log ERROR and ALERT messages to the console by default.
+
+The flag <tt>TRACE_STATICALLOC</tt> shows you the allocation and deletion of all statically allocated objects used in Coast.
+*/
 class EXPORTDECL_FOUNDATION SysLog
 {
 public:
@@ -27,19 +41,31 @@ public:
 	static void Terminate();
 
 	/*--- logging API -------------------------------------*/
-	//! severity LOG_DEBUG for tracing server activity during development and deployment
+
+	/*! define importancy levels in increasing order for easier */
+	enum eLogLevel {
+		eNone,
+		eDEBUG,
+		eINFO,
+		eWARNING,
+		eERR,
+		eALERT,
+		eLast
+	};
+
+	//! severity eDEBUG for tracing server activity during development and deployment
 	static void Debug(const char *msg);
 
-	//! severity LOG_INFO for general information log general useful information about server activity
+	//! severity eINFO for general information log general useful information about server activity
 	static void Info(const char *msg);
 
-	//! severity LOG_WARNING	for information about inconsistent state or potential dangerous situation
+	//! severity eWARNING	for information about inconsistent state or potential dangerous situation
 	static void Warning(const char *msg);
 
-	//! severity LOG_ERR for outright errors during operation of the server without fatal results
+	//! severity eERR for outright errors during operation of the server without fatal results
 	static void Error(const char *msg);
 
-	//! severity LOG_ALERT for fatal errors this call triggers also an alert on  the operator console
+	//! severity eALERT for fatal errors this call triggers also an alert on  the operator console
 	static void Alert(const char *msg);
 
 	//! for use by the Assert() macro defined in config.h
@@ -76,19 +102,19 @@ protected:
 	virtual ~SysLog();
 
 	//!template method
-	virtual void DoLog(long level, const char *msg);
+	virtual void DoLog(eLogLevel level, const char *msg);
 
 	//!do a system dependent log call
-	virtual void DoSystemLevelLog(long level, const char *msg) = 0;
+	virtual void DoSystemLevelLog(eLogLevel level, const char *msg) = 0;
 
 	//!write log messages to cerr with a level a string indicating the level if preprocessor flags are set accordingly
-	virtual void DoLogTrace(long level, const char *msg);
+	virtual void DoLogTrace(eLogLevel level, const char *msg);
 
 	//!write log messages to cerr if preprocessor flags are set accordingly
 	virtual void DoTraceLevel(const char *level, const char *msg);
 
 	//! bottleneck routine used by the other methods, you can use severity levels directly
-	static void Log(long level, const char *msg);
+	static void Log(eLogLevel level, const char *msg);
 
 private:
 	//! fgSysLog is the system dependent variable that calls a system's log api
@@ -97,8 +123,8 @@ private:
 	//! Init is called normally in the bootstrap process once but then the syslog
 	//! might already be in use
 	static SysLog *fgSysLog;
-	static bool fgDoSystemLevelLog;
-	static bool fgDoLogOnCerr;
+	static eLogLevel fgDoSystemLevelLog;
+	static eLogLevel fgDoLogOnCerr;
 };
 
 #define	SYSDEBUG(msg) \
@@ -131,7 +157,7 @@ public:
 	~UnixSysLog();
 
 protected:
-	virtual void DoSystemLevelLog(long level, const char *msg);
+	virtual void DoSystemLevelLog(eLogLevel level, const char *msg);
 };
 #endif
 
@@ -144,7 +170,7 @@ public:
 	~S370SysLog() { }
 
 protected:
-	virtual void DoSystemLevelLog(long level, const char *msg);
+	virtual void DoSystemLevelLog(eLogLevel level, const char *msg);
 };
 #endif
 
@@ -157,7 +183,7 @@ public:
 	~Win32SysLog();
 
 protected:
-	virtual void DoSystemLevelLog(long level, const char *msg);
+	virtual void DoSystemLevelLog(eLogLevel level, const char *msg);
 
 	HANDLE fLogHandle;
 };

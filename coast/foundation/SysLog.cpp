@@ -8,9 +8,6 @@
 
 //--- interface include --------------------------------------------------------
 #include "SysLog.h"
-//#define LOG_TRACE 1
-//#define LOG_HIGH_TRACE
-//#define LOG_LOW_TRACE
 #if defined(WIN32)
 #define IOSTREAM_IS_THREADSAFE
 #endif
@@ -25,35 +22,14 @@
 #include <unistd.h> /* for ::write() */
 #include <string.h>
 #endif
-
-#if defined(__sun) ||defined(__linux__) || defined(__aix__)
+#if defined(__sun) || defined(__linux__) || defined(__aix__)
 #include <syslog.h>
 #endif
 
-#if defined(WIN32)
-enum {
-	LOG_DEBUG,
-	LOG_INFO,
-	LOG_WARNING,
-	LOG_ERR,
-	LOG_ALERT
-};
-#endif
-
-#ifdef __370__
-enum {
-	LOG_DEBUG,
-	LOG_INFO,
-	LOG_WARNING,
-	LOG_ERR,
-	LOG_ALERT
-};
-#endif
-
 //--- SysLog ----------------------------------------------------------
-SysLog	*SysLog::fgSysLog = 0;
-bool	SysLog::fgDoSystemLevelLog = false;
-bool	SysLog::fgDoLogOnCerr = false;
+SysLog *SysLog::fgSysLog = 0;
+SysLog::eLogLevel SysLog::fgDoSystemLevelLog = SysLog::eALERT;
+SysLog::eLogLevel SysLog::fgDoLogOnCerr = SysLog::eERR;
 
 //--- module initialization/termination
 void SysLog::Init(const char *appId)
@@ -70,16 +46,19 @@ void SysLog::Init(const char *appId)
 		appId = "Coast";
 	}
 
-	if (System::EnvGet("WD_DOLOG") == "1") {
-		fgDoSystemLevelLog = true;
+	String strValue = System::EnvGet("WD_DOLOG");
+	int iValue = (int)strValue.AsLong(eNone);
+	if ( ( eNone < iValue ) && ( iValue < eLast ) ) {
+		fgDoSystemLevelLog = (eLogLevel)iValue;
 	}
-
-	if (System::EnvGet("WD_LOGONCERR") == "1") {
-		fgDoLogOnCerr = true;
+	strValue = System::EnvGet("WD_LOGONCERR");
+	iValue = (int)strValue.AsLong(eNone);
+	if ( ( eNone < iValue ) && ( iValue < eLast ) ) {
+		fgDoLogOnCerr = (eLogLevel)iValue;
 	}
 
 	// initialize the syslog channel
-	if ( (fgDoSystemLevelLog || fgDoLogOnCerr) && !fgSysLog ) {
+	if ( !fgSysLog ) {
 		// open the syslog channel for this application
 		// there is always only one syslog channel per application
 #if defined(__sun) || defined(__linux__) || defined(__aix__)
@@ -104,51 +83,51 @@ void SysLog::Terminate()
 
 //--- logging API -------------------------------------
 
-// severity LOG_DEBUG for tracing server
+// severity eDEBUG for tracing server
 // activity during development and
 // deployment
 void SysLog::Debug(const char *msg)
 {
-	Log(LOG_DEBUG, msg);
+	Log(eDEBUG, msg);
 }
 
-// severity LOG_INFO for general information
+// severity eINFO for general information
 // log general useful information about server
 // activity
 void SysLog::Info(const char *msg)
 {
-	Log(LOG_INFO, msg);
+	Log(eINFO, msg);
 }
 
-// severity LOG_WARNING	for information about
+// severity eWARNING	for information about
 // inconsistent state or potential dangerous
 // situation
 void SysLog::Warning(const char *msg)
 {
-	Log(LOG_WARNING, msg);
+	Log(eWARNING, msg);
 }
 
-// severity LOG_ERR for outright errors
+// severity eERR for outright errors
 // during operation of the server without
 // fatal results
 void SysLog::Error(const char *msg)
 {
-	Log(LOG_ERR, msg);
+	Log(eERR, msg);
 }
 
-// severity LOG_ALERT for fatal errors
+// severity eALERT for fatal errors
 // this call triggers also an alert on
 // the operator console
 void SysLog::Alert(const char *msg)
 {
-	Log(LOG_ALERT, msg);
+	Log(eALERT, msg);
 }
 
 // bottleneck routine used by others
 // here you can use severity levels directly
-void SysLog::Log(long level, const char *msg)
+void SysLog::Log(eLogLevel level, const char *msg)
 {
-	if ((fgDoLogOnCerr || fgDoSystemLevelLog || InitOnce()) && fgSysLog) {
+	if ( InitOnce() ) {
 		fgSysLog->DoLog(level, msg);
 	}
 }
@@ -159,9 +138,8 @@ bool SysLog::InitOnce()
 	if (!once) {
 		once = true;
 		Init(0);
-		return (fgDoLogOnCerr || fgDoSystemLevelLog);
 	}
-	return false;
+	return (fgSysLog != NULL);
 }
 
 //--- utilities ------------------------------------
@@ -265,12 +243,14 @@ SysLog::~SysLog()
 {
 }
 
-void SysLog::DoLog(long level, const char *msg)
+void SysLog::DoLog(eLogLevel level, const char *msg)
 {
-	if (fgDoSystemLevelLog) {
+	// override logging parameter if it is an alert message
+	if ( level >= fgDoSystemLevelLog ) {
 		DoSystemLevelLog(level, msg);
 	}
-	if (fgDoLogOnCerr) {
+	// override logging parameter if it is an error or alert message
+	if ( level >= fgDoLogOnCerr ) {
 		DoLogTrace(level, msg);
 	}
 }
@@ -283,22 +263,22 @@ void SysLog::DoTraceLevel(const char *level, const char *msg)
 	SysLog::WriteToStderr(finalMessage, finalMessage.Length());
 }
 
-void SysLog::DoLogTrace(long level, const char *logMsg)
+void SysLog::DoLogTrace(eLogLevel level, const char *logMsg)
 {
 	switch (level) {
-		case LOG_DEBUG:
+		case eDEBUG:
 			DoTraceLevel("DEBUG: ", logMsg);
 			break;
-		case LOG_INFO:
+		case eINFO:
 			DoTraceLevel("INFO: ", logMsg);
 			break;
-		case LOG_WARNING:
+		case eWARNING:
 			DoTraceLevel("WARNING: ", logMsg);
 			break;
-		case LOG_ERR:
+		case eERR:
 			DoTraceLevel("ERROR: ", logMsg);
 			break;
-		case LOG_ALERT:
+		case eALERT:
 			DoTraceLevel("ALERT: ", logMsg);
 			break;
 
@@ -322,16 +302,34 @@ UnixSysLog::~UnixSysLog()
 	::closelog();
 }
 
-void UnixSysLog::DoSystemLevelLog(long level, const char *logMsg)
+void UnixSysLog::DoSystemLevelLog(eLogLevel level, const char *logMsg)
 {
-	::syslog(level, "%s", (const char *)logMsg);
+	// need to do a remapping of internal code to unix specific code now
+	long lLevel = LOG_DEBUG;
+	switch (level) {
+		case eINFO:
+			lLevel = LOG_INFO;
+			break;
+		case eWARNING:
+			lLevel = LOG_WARNING;
+			break;
+		case eERR:
+			lLevel = LOG_ERR;
+			break;
+		case eALERT:
+			lLevel = LOG_ALERT;
+			break;
+		default:
+			break;
+	};
+	::syslog(lLevel, "%s", (const char *)logMsg);
 }
 
 #endif
 
 #if defined(__370__)
 
-void S370SysLog::DoSystemLevelLog(long level, const char *msg)
+void S370SysLog::DoSystemLevelLog(eLogLevel level, const char *msg)
 {
 	cerr << "level " << level << ": " << logMsg << endl;
 }
@@ -354,18 +352,18 @@ Win32SysLog::~Win32SysLog()
 	::DeregisterEventSource( fLogHandle );
 }
 
-void Win32SysLog::DoSystemLevelLog(long level, const char *logMsg)
+void Win32SysLog::DoSystemLevelLog(eLogLevel level, const char *logMsg)
 {
 	WORD evtType = EVENTLOG_INFORMATION_TYPE;
 	LPCTSTR str[1];
 	str[0] = logMsg;
 
 	switch (level) {
-		case LOG_WARNING:
+		case eWARNING:
 			evtType = EVENTLOG_WARNING_TYPE;
 			break;
-		case LOG_ERR:
-		case LOG_ALERT:
+		case eERR:
+		case eALERT:
 			evtType = EVENTLOG_ERROR_TYPE;
 			break;
 		default:
