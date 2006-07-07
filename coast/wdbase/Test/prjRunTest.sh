@@ -5,7 +5,6 @@ export WD_PATH=config:.
 ## add test specific things before the call to callTest
 function prepareTest
 {
-	export WD_DOLOG=1
 	export WDTESTPIDFILE=config/wdbasetest.pid
 	chmod u+w ${CONFIGDIRABS}/ThreadedTimeStampTest.stat.any 2>/dev/null
 }
