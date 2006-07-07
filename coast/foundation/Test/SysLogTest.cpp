@@ -35,7 +35,6 @@ SysLogTest::~SysLogTest()
 void SysLogTest::setUp ()
 {
 	StartTrace(SysLogTest.setUp);
-	::putenv("WD_LOGONCERR=1");
 	SysLog::Init("SysLogTest");
 }
 
