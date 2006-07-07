@@ -26,18 +26,6 @@ LOGDIR=.
 # overwrite this one ONLY if the WD_PATH variable points to the wrong place
 #WD_PATH=.
 
-# enable logging on syslog, but do not override existing setting
-if [ -z $WD_DOLOG ]; then
-	# you shouldn't use this at ifs
-#	export WD_DOLOG=1
-	_foodummy=1	# need a statement in if
-fi
-# enable logging on cerr, but do not override existing setting
-if [ -z $WD_LOGONCERR ]; then
-#	export WD_LOGONCERR=1
-	_foodummy=1	# need a statement in if
-fi
-
 ############################################################################
 #
 # from here on you can add your own variables which you can use in the
