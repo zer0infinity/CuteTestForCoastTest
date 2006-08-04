@@ -100,7 +100,7 @@ function doCleanupRemote
 function checkTestExe
 {
 	if [ -x "${TEST_EXE}" ]; then
-		return 1;
+		return 0;			## XXX: set to 1 if INT2 is available again XXX ##
 	else
 		return 0;
 	fi;
