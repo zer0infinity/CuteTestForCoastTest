@@ -106,12 +106,13 @@ bool HierarchyInstaller::HasSuper(HierarchConfNamed *super, const char *name)
 	// check for equal names in the parent relationship
 	while (super) {
 		super->GetName(superName);
+		Trace("current class is [" << superName << "] addr:" << (long)super);
 		if ( superName == name ) {
-			Trace("found super class [" << superName << "]");
+			Trace("super class found with same name");
 			return true;
 		}
 		super = super->GetSuper();
-		Trace("super-class of [" << superName << "] addr:" << (long)super);
+		Trace("next super-class is [" << (super ? super->GetName() : "<null>") << "] addr:" << (long)super);
 	}
 	return false;
 }
@@ -130,8 +131,6 @@ bool HierarchyInstaller::InstallRoot(HierarchConfNamed *root, const char *name)
 			Trace("");
 			return false;
 		}
-		Trace("force to load configuration if not already loaded");
-		root->CheckConfig(fCategory, true);
 		return true;
 	}
 	return false;
@@ -174,21 +173,21 @@ HierarchConfNamed *HierarchyInstaller::GetLeaf(const char *leafName, HierarchCon
 	Trace("leaf [" << leafName << "] " << (leaf ? "" : "not ") << "found in registry");
 	String rootName("//");
 
-	if (!leaf) {
+	if ( !leaf ) {
 		if (root) {
 			root->GetName(rootName);
-			Trace("clone Page, trying ConfiguredClone for [" << rootName << "]");
+			Trace("cloning [" << rootName << "]");
+			// configured cloning also forces loading of objects configuration (CheckConfig())
 			leaf = (HierarchConfNamed *) root->ConfiguredClone(fCategory, leafName, true);
 		}
 		if (leaf && (rootName != leafName)) {
-			Trace("registering leaf [" << leafName << "]");
+			Trace("registering [" << leafName << "] in registry");
 			r->RegisterRegisterableObject(leafName, leaf);
 		}
-	}
-	if ( leaf ) {
-		SysLog::WriteToStderr(".", 1);
+	} else {
 		leaf->CheckConfig(fCategory, true);
 	}
+	SysLog::WriteToStderr(".", 1);
 
 	return leaf;
 }
