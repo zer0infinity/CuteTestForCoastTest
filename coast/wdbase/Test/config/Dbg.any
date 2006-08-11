@@ -165,10 +165,14 @@
 		/EnableAll	33
 	}
 	/ConfNamedObject {
-		/MainSwitch	1000
-		/EnableAll	1010
+		/MainSwitch			0
+		/EnableAll			33
 	}
 	/HierarchConfNamed {
+		/MainSwitch			0
+		/EnableAll			33
+	}
+	/HierarchyInstaller {
 		/MainSwitch			0
 		/EnableAll			33
 	}
