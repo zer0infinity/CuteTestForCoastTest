@@ -1,4 +1,11 @@
-#!/bin/ksh
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2006, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
 _SYBASE_DIR=/sybasehome/sybase12
 DB_NAME=pub2
 DB_USER=-Usa
@@ -100,7 +107,7 @@ function doCleanupRemote
 function checkTestExe
 {
 	if [ -x "${TEST_EXE}" ]; then
-		return 0;			## XXX: set to 1 if INT2 is available again XXX ##
+		return 1;
 	else
 		return 0;
 	fi;
