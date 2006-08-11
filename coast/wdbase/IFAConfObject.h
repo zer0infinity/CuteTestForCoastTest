@@ -169,10 +169,10 @@ private:
 };
 
 //---- ConfNamedObject ----------------------------------------------------------
-//!configurable object; api for configuration support with default implementation
-//! ConfNamedObject provides a protocol for handling configuration data
-//! it already provides a default implementation that is sufficient
-//! for most classes ( eg. Role and Page )
+/*! configurable object; api for configuration support with default implementation
+ConfNamedObject provides a protocol for handling configuration data
+it already provides a default implementation that is sufficient
+for most classes ( eg. Role and Page ) */
 class EXPORTDECL_WDBASE ConfNamedObject : public RegisterableObject, public virtual LookupInterface
 {
 public:
@@ -181,11 +181,12 @@ public:
 	//!does nothing
 	~ConfNamedObject();
 
-	//!creates a new object through cloning and configuring it
-	//! generates a cloned object with a different name
-	//! it sets the correct name and loads the configuration
-	//! data if possible
-	virtual ConfNamedObject *ConfiguredClone(const char *category, const char *name, bool forceReload = false);
+	/*! Public api to create a cloned object. The real work is delegated to the virtual Do.. method. After successful cloning, the objects configuration data gets loaded if possible.
+		\param category Name of the category in which the objects configuration will be stored in the Cache
+		\param name Name of the clone
+		\param forceReload If set to true, the objects configuration will always be loaded for new
+		\return New object clone with initialized configuration */
+	ConfNamedObject *ConfiguredClone(const char *category, const char *name, bool forceReload = false);
 
 	//! overriden to load config for statically registered objects
 	virtual void Register(const char *name, const char *category);
@@ -200,7 +201,12 @@ protected:
 	//!the configuration of this object
 	ROAnything fConfig;
 
-	// subclass hooks
+	/*! Creates a new object through cloning. Generates a cloned object with a different name.
+		\param category Name of the category in which the objects configuration will be stored in the Cache
+		\param name Name of the clone
+		\param forceReload If set to true, the objects configuration will always be loaded for new
+		\return New object clone, name is set but configuration will be initialized in calling method */
+	virtual ConfNamedObject *DoConfiguredClone(const char *category, const char *name, bool forceReload);
 
 	//!generate the config file name
 	//! generate the config file name (without extension, which is assumed to be any)
@@ -240,21 +246,23 @@ public:
 	HierarchConfNamed(const char *);
 	virtual ~HierarchConfNamed() {}
 
-	//!creates a new object through cloning and configuring it by setting super pointer
-	//! generates a cloned object with a different name
-	//! it sets the correct name and loads the configuration
-	//! data if possible
-	virtual ConfNamedObject *ConfiguredClone(const char *category, const char *name, bool forceReload = false);
-
-	//!implement lookup of immutable configuration
-	virtual bool DoLookup(const char *key, class ROAnything &resultconst, char delim, char indexdelim) const;
-
 	//! hierarchical relationship API; set super object
 	virtual void SetSuper(HierarchConfNamed *super);
+
 	//! hierarchical relationship API; get super object
 	virtual HierarchConfNamed *GetSuper() const;
 
 protected:
+	/*! Creates a new object through cloning. Generates a cloned object with a different name.
+		\param category Name of the category in which the objects configuration will be stored in the Cache
+		\param name Name of the clone
+		\param forceReload If set to true, the objects configuration will always be loaded for new
+		\return New object clone, name is set but configuration will be initialized in calling method */
+	virtual ConfNamedObject *DoConfiguredClone(const char *category, const char *name, bool forceReload);
+
+	//!implement lookup of immutable configuration
+	virtual bool DoLookup(const char *key, class ROAnything &resultconst, char delim, char indexdelim) const;
+
 	//!pointer to super object
 	HierarchConfNamed *fSuper;
 
