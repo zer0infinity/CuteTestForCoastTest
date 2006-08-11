@@ -213,6 +213,10 @@
 ######## Test specific section ########
 
 	/SybCTnewDAImplTest {
+		#---- Worker pool configurations
+		/ThreadPoolSize					10
+		/PoolStorageSize				2000
+		/NumOfPoolBucketSizes			20
 		/SybaseModule {
 			/SybCTnewDAImpl {
 				/ParallelQueries		10
@@ -221,4 +225,11 @@
 			}
 		}
 	}
+	/SybCTPoolDAImplTest {
+		#---- Worker pool configurations
+		/ThreadPoolSize					10
+		/PoolStorageSize				2000
+		/NumOfPoolBucketSizes			20
+	}
+	/SybCTDAImplTest	%SybCTPoolDAImplTest
 }

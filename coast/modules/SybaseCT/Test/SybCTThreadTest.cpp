@@ -119,10 +119,11 @@ void SybCTThreadTest::DoTest(const char *goodDAName, const char *failDAName)
 {
 	StartTrace(SybCTThreadTest.DoTest);
 
-	const long nThreads = 10;
-	const long lPoolSize = 1000;
-	const long lPoolBuckets = 20L;
-	SybTestThread *threadArray[nThreads];
+	long nThreads = GetTestCaseConfig()["ThreadPoolSize"].AsLong(10L);
+	u_long lPoolSize = (u_long)GetTestCaseConfig()["PoolStorageSize"].AsLong(1000L);
+	u_long lPoolBuckets = (u_long)GetTestCaseConfig()["NumOfPoolBucketSizes"].AsLong(20L);
+
+	SybTestThread **threadArray = new SybTestThread*[nThreads];
 	long i = 0;
 	for (i = 0; i < nThreads; i++) {
 		threadArray[i] = new SybTestThread(*this, i, goodDAName, failDAName);
@@ -134,6 +135,7 @@ void SybCTThreadTest::DoTest(const char *goodDAName, const char *failDAName)
 	for (i = 0; i < nThreads; i++) {
 		delete threadArray[i];
 	}
+	delete[] threadArray;
 }
 
 // builds up a suite of tests, add a line for each testmethod
