@@ -125,10 +125,21 @@ void ConfNamedObject::Register(const char *name, const char *category)
 ConfNamedObject *ConfNamedObject::ConfiguredClone(const char *category, const char *name, bool forceReload)
 {
 	StartTrace1(ConfNamedObject.ConfiguredClone, "cat <" << NotNull(category) << "> name <" << fName << ">");
+	// allow subclasses to do specific cloning stuff
+	ConfNamedObject *cno = DoConfiguredClone(category, name, forceReload);
+	if ( cno ) {
+		// always do a CheckConfig for the newly created clone to initialize its configuration
+		cno->CheckConfig(category, forceReload);
+	}
+	return cno;
+}
+
+ConfNamedObject *ConfNamedObject::DoConfiguredClone(const char *category, const char *name, bool forceReload)
+{
+	StartTrace1(ConfNamedObject.DoConfiguredClone, "cat <" << NotNull(category) << "> name <" << fName << ">");
 	ConfNamedObject *cno = (ConfNamedObject *)this->Clone();
 	if ( cno ) {
 		cno->SetName(name);
-		cno->CheckConfig(category, forceReload);
 	}
 	return cno;
 }
@@ -192,17 +203,19 @@ HierarchConfNamed::HierarchConfNamed(const char *name) : ConfNamedObject(name)
 	fSuper = 0;
 }
 
-ConfNamedObject *HierarchConfNamed::ConfiguredClone(const char *category, const char *name, bool forceReload)
+ConfNamedObject *HierarchConfNamed::DoConfiguredClone(const char *category, const char *name, bool forceReload)
 {
-	HierarchConfNamed *cno = (HierarchConfNamed *)ConfNamedObject::ConfiguredClone(category, name);
-
+	StartTrace1(HierarchConfNamed.DoConfiguredClone, "using [" << fName << "] as clone-base for [" << name << "]" );
+	HierarchConfNamed *cno = (HierarchConfNamed *)ConfNamedObject::DoConfiguredClone(category, name, forceReload);
 	if ( cno ) {
-		cno->SetSuper(fSuper);
+		// assign superclass, this is important to retrieve hierarchic configuration through Lookup()
+		Trace("my superclass is [" << (fSuper ? fSuper->GetName() : "<unknown>") << "]");
+		Trace("setting myself [" << GetName() << "] as superclass for [" << name << "]");
+		cno->SetSuper(this);
 	}
 	return cno;
 }
 
-// hierarchical relationship API
 void HierarchConfNamed::SetSuper(HierarchConfNamed *super)
 {
 	fSuper = super;
