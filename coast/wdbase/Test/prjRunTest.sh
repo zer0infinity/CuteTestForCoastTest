@@ -1,4 +1,10 @@
-#!/bin/ksh
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2006, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
 
 export WD_PATH=config:.
 
@@ -28,7 +34,7 @@ function cleanupTest
 			case "${CURSYSTEM}" in
 				SunOS)
 					SYSLOGFILE=/var/adm/messages;
-					SYSLOGMSG='((Coast)|(wdbasetest))'"\[$WDTESTPID\]:.*libfake: ld\.so\.1: .*`basename ${TEST_EXE}`: fatal: libfake\.so: open failed: No such file or directory";
+					SYSLOGMSG='((Coast)|(wdbasetest))'"\[$WDTESTPID\]:.*libfake: ld\.so\.1: `basename ${TEST_EXE}`: fatal: libfake\.so: open failed: No such file or directory";
 					egrep "$SYSLOGMSG" $SYSLOGFILE >/dev/null;
 					RESULT=$?
 					rm $WDTESTPIDFILE;
