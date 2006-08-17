@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -x
-
 OPENSSL_PATH=/usr/bin
 openssl_bin=${OPENSSL_PATH}/openssl
 if [ -z $OPENSSL_PATH ]
