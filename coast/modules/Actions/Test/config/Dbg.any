@@ -17,7 +17,7 @@
 		/EnableAll	10
 	}
 	/RegisterableObject {
-		/MainSwitch	10
+		/MainSwitch	0
 		/EnableAll	20
 	}
 	/Action {
@@ -82,8 +82,12 @@
 		/EnableAll	1030
 	}
 	/StoreFinder {
-		/MainSwitch	1020
-		/EnableAll	1030
+		/MainSwitch	33
+		/EnableAll	33
+	}
+	/SlotFinder {
+		/MainSwitch	33
+		/EnableAll	33
 	}
 	/StoreCopier {
 		/MainSwitch	33
