@@ -1007,6 +1007,9 @@
 					/Slot	Beware.Of.Automatic.Construction.Of.NotExisting
 				} }
 				{ /Remove {
+					/Slot { List3 "." Remove } # Render this
+				} }
+				{ /Remove {
 					/Store	Role
 					/Slot	List.Remove
 				} }
@@ -1025,9 +1028,6 @@
 				{ /Remove {
 					/Store	Role
 					/Slot	"List2.Sub 1.Remove"
-				} }
-				{ /Remove {
-					/Slot { List3 "." Remove } # Render this
 				} }
 			}
 			/Result {
