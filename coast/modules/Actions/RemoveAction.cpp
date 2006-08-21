@@ -32,15 +32,16 @@ bool RemoveAction::DoExecAction(String &transitionToken, Context &ctx, const ROA
 	Renderer::RenderOnString(slotName, ctx, config["Slot"]);
 	if (slotName.Length()) {
 		// first of all, get the correct store
-		Anything anyParent;
-		String store = config["Store"].AsString("");
+		String store = config["Store"].AsString("TmpStore");
 		char delim = config["Delim"].AsCharPtr(".")[0L];
 		char indexdelim = config["IndexDelim"].AsCharPtr(":")[0L];
-		Trace(String("store used [") << (store.Length() >= 0L ? (const char *)store : "TmpStore") << "]");
-		anyParent = StoreFinder::FindStore(ctx, store);
+		// must use reference here to prevent copying the content due to different allocator locations
+		Anything &anyStore = StoreFinder::FindStore(ctx, store), anyParent(anyStore, anyStore.GetAllocator());
+		SubTraceAny(TraceContent, anyParent, String("content in store [") << store << "], looking for slot [" << slotName << "]");
 
 		// test if the path to be deleted exists in the store, avoids creation of nonexisting slot
-		Anything anySlotTest;
+		// also avoid content copying here using same allocator as parent any
+		Anything anySlotTest(anyParent.GetAllocator());
 		if (anyParent.LookupPath(anySlotTest, slotName, delim, indexdelim)) {
 			// use SlotFinders IntOperate to get the correct parent anything and the slotname/index
 			// to remove from
