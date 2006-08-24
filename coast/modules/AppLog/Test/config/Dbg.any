@@ -8,9 +8,9 @@
 
 {
 
-	/LowerBound 0
-	/UpperBound	40
-	/DumpAnythings 1
+	/LowerBound		0
+	/UpperBound		40
+	/DumpAnythings	1
 
 	/AppLogTest {
 		/MainSwitch	30
@@ -61,5 +61,20 @@
 	/WDModule {
 		/MainSwitch	30
 		/EnableAll	40
+	}
+	/LogRotator {
+		/MainSwitch		30
+		/EnableAll		40
+	}
+	/System {
+		/MainSwitch		30
+		/EnableAll		0
+		/DirFileList	30
+	}
+	/Thread {
+		/MainSwitch		30
+		/EnableAll		0
+		/CheckState		30
+		/IntCheckState	30
 	}
 }
