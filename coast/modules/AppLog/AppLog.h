@@ -27,7 +27,8 @@ conveniently. The method of this class are called by Coast
 {
 	/LogDir					String				optional, default "log", relative - to WD_ROOT - or absolute path of logfile location
 	/RotateDir				String				optional, default <LogDir>/rotate, relative - to WD_ROOT - or absolute path to store away logfiles during rotate or module startup
-	/RotateTime				String				optional, default "24:00", time of rotation, rotation will be done daily at the given time
+	/RotateTime				String				optional, default "24:00", time of rotation hh:mm[:ss], rotation will be done daily at the given time, seconds can be optionally specified
+	/RotateSecond			Long				optional, default 0, second in day when rotation takes place, takes precedence in case RotateTime is also given
 	/Servers {				Anything			mandatory, list of registered servernames to have logging for, the ServersModule <b>must</b> be initialized before AppLogModule
 		/ServerName	{		Anything			mandatory, name of the registered server to create AppLogChannels for \note If the channel list is empty and the ServerName has a superclass Server with logging config, both servers will log into the same logfiles
 			/ChannelName {	Anything			optional (see above), name of the named AppLogChannel to create
@@ -35,6 +36,7 @@ conveniently. The method of this class are called by Coast
 				/Format		Rendererspec		mandatory, Renderer specification for logging output, rendering will be done for each line of logging, can be a time consuming operation if a complex script is given
 				/Header		Anything or String	optional, single string or list of strings which get printed first in the newly created logfile
 				/SuppressEmptyLines	long		optional, default 0, set to 1 if you want to suppress logging of empty rendered log messages
+				/DoNotRotate	long			optional, default 0 (false), if set to 1, this log-channel will not rotate its logfile at the specified time
 			}
 			...
 		}
@@ -67,8 +69,11 @@ protected:
 	//!Opens the log streams for one server
 	bool MakeChannels(const char *servername, const Anything &config);
 
-	// log rotation
-	bool StartLogRotator(const char *waittime); // in hour:minutes
+	/*! Start thread to rotate log files
+		\param rotateTime hour:minute to rotate logfiles at
+		\param lRotateSecond second in day when to rotate the log files
+		\return true in case the rotator thread could be initialized and started */
+	bool StartLogRotator(const char *rotateTime, long lRotateSecond);
 	bool TerminateLogRotator();
 	bool DoRotateLogs();
 	static bool RotateLogs();
@@ -94,6 +99,9 @@ public:
 	bool LogAll(Context &ctx, const ROAnything &config);
 
 	bool Rotate();
+	ROAnything GetChannelInfo() {
+		return fChannelInfo;
+	}
 
 	static String GenTimeStamp(const String &format);
 

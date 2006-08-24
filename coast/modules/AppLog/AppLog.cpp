@@ -26,13 +26,13 @@
 class EXPORTDECL_APPLOG LogRotator : public Thread
 {
 public:
-	LogRotator(const char *rotateTime);
+	LogRotator(const char *rotateTime, long lRotateSecond = 0L);
 
 protected:
 	long GetSecondsToWait();
 	void Run();
 	//! when to rotate
-	long fHour, fMinute;
+	long fRotateSecond;
 };
 
 //---- AppLogModule -----------------------------------------------------------
@@ -86,7 +86,7 @@ bool AppLogModule::Init(const ROAnything config)
 			SysLog::WriteToStderr(".", 1);
 		}
 		TraceAny(fLogConnections, "LogConnections: ");
-		if (retCode && StartLogRotator(appLogConfig["RotateTime"].AsCharPtr("24:00"))) {
+		if (retCode && StartLogRotator(appLogConfig["RotateTime"].AsCharPtr("24:00"), appLogConfig["RotateSecond"].AsLong(0L)) ) {
 			fgAppLogModule = this;
 			fROLogConnections = fLogConnections;
 			SysLog::WriteToStderr(" done\n");
@@ -213,9 +213,9 @@ bool AppLogModule::DoRotateLogs()
 	return true;
 }
 
-bool AppLogModule::StartLogRotator(const char *waittime)
+bool AppLogModule::StartLogRotator(const char *rotateTime, long lRotateSecond)
 {
-	fRotator = new LogRotator(waittime);
+	fRotator = new LogRotator(rotateTime, lRotateSecond);
 
 	if (fRotator) {
 		return fRotator->Start();
@@ -243,8 +243,8 @@ AppLogChannel *AppLogModule::GetLogChannel(const char *servername, const char *l
 	doNotRotate = false;
 	ROAnything loggerConfig;
 	if ( servername && logChannel && fROLogConnections.LookupPath(loggerConfig, servername) && loggerConfig.IsDefined(logChannel) ) {
-		TraceAny(loggerConfig, "logger config for server [" << servername << "]");
 		doNotRotate = loggerConfig["DoNotRotate"].AsBool(false);
+		TraceAny(loggerConfig, "logs for server [" << servername << "] must " << (doNotRotate ? "not " : "") << "be rotated");
 		logger = SafeCast(loggerConfig[logChannel].AsIFAObject(0), AppLogChannel);
 	} else {
 		SYSERROR("log channel [" << servername << '.' << NotNull(logChannel) << "] not found");
@@ -326,7 +326,7 @@ AppLogChannel::~AppLogChannel()
 bool AppLogChannel::Log(Context &ctx)
 {
 	StartTrace(AppLogChannel.Log);
-	return LogAll(ctx, fChannelInfo["Format"]);
+	return LogAll(ctx, GetChannelInfo()["Format"]);
 }
 
 bool AppLogChannel::LogAll(Context &ctx, const ROAnything &config)
@@ -337,7 +337,7 @@ bool AppLogChannel::LogAll(Context &ctx, const ROAnything &config)
 		String logMsg(128);
 		Renderer::RenderOnString(logMsg, ctx, config);
 
-		if (!fChannelInfo["SuppressEmptyLines"].AsBool(false) || logMsg.Length()) {
+		if (!GetChannelInfo()["SuppressEmptyLines"].AsBool(false) || logMsg.Length()) {
 			MutexEntry me(fChannelMutex);
 			me.Use();
 			Trace("fLogStream state before logging: " << (long)fLogStream->rdstate());
@@ -444,26 +444,39 @@ bool AppLogChannel::RotateLog(const String &logdirName, const String &rotatedirN
 bool AppLogChannel::Rotate()
 {
 	StartTrace(AppLogChannel.Rotate);
-	MutexEntry me(fChannelMutex);
-	me.Use();
-	if ( fLogStream ) {
-		delete fLogStream;
-		fLogStream = NULL;
+	bool bSuccess = true;
+	// check if this channel must be rotated
+	TraceAny(GetChannelInfo(), "channel info");
+	ostream *pStream = NULL;
+	{
+		MutexEntry me(fChannelMutex);
+		me.Use();
+		pStream = fLogStream;
 	}
-	String logfileName;
-	fLogStream = OpenLogStream(fChannelInfo, logfileName);
-	if ( fLogStream ) {
-		WriteHeader(*fLogStream);
-	} else {
-		SYSERROR("Rotation of [" << logfileName << "] failed");
+	// must enter here in case the logfile does not exist yet
+	if ( !pStream || GetChannelInfo()["DoNotRotate"].AsBool(false) == false ) {
+		MutexEntry me(fChannelMutex);
+		me.Use();
+		if ( fLogStream ) {
+			delete fLogStream;
+			fLogStream = NULL;
+		}
+		String logfileName;
+		fLogStream = OpenLogStream(GetChannelInfo(), logfileName);
+		if ( fLogStream ) {
+			WriteHeader(*fLogStream);
+		} else {
+			SYSERROR("Rotation of [" << logfileName << "] failed");
+		}
+		bSuccess = ( fLogStream != NULL );
 	}
-	return ( fLogStream != NULL );
+	return bSuccess;
 }
 
 void AppLogChannel::WriteHeader(ostream &os)
 {
 	StartTrace(AppLogChannel.WriteHeader);
-	ROAnything header = fChannelInfo["Header"];
+	ROAnything header = GetChannelInfo()["Header"];
 
 	Trace("os state before writing header: " << (long)os.rdstate());
 	for (long i = 0, szh = header.GetSize(); i < szh; ++i) {
@@ -493,45 +506,39 @@ String AppLogChannel::GenTimeStamp(const String &format)
 }
 
 //--- LogRotator ----------------------
-LogRotator::LogRotator(const char *rotateTime)
+LogRotator::LogRotator(const char *rotateTime, long lRotateSecond)
 	: Thread("LogRotator")
-	, fHour(0)
-	, fMinute(0)
+	, fRotateSecond(lRotateSecond)
 {
-	StartTrace1(LogRotator.LogRotator, "Rotate time: " << NotNull(rotateTime));
-	StringTokenizer st(rotateTime, ':');
-	String hour;
-	String minute;
+	StartTrace(LogRotator.LogRotator);
+	if ( fRotateSecond == 0 ) {
+		StringTokenizer st(rotateTime, ':');
+		String hour, minute, second;
 
-	if (!(st.NextToken(hour) && st.NextToken(minute))) {
-		SYSERROR("wrong time format [" << rotateTime << "]");
-	} else {
-		fHour = hour.AsLong(0) % 24;
-		fMinute = minute.AsLong(0) % 60;
+		if ( !(st.NextToken(hour) && st.NextToken(minute)) ) {
+			SYSERROR("wrong time format [" << rotateTime << "]");
+		} else {
+			// optional seconds spec
+			st.NextToken(second);
+			fRotateSecond = ( ( minute.AsLong(0) % 60 * 60 ) + hour.AsLong(0) % 24 ) * 60 + second.AsLong(0);
+		}
 	}
+	Trace("RotateTime [" << rotateTime << "] param lRotateSecond: " << lRotateSecond << " -> fRotateSecond: " << fRotateSecond);
 }
 
 long LogRotator::GetSecondsToWait()
 {
 	StartTrace(LogRotator.GetSecondsToWait);
+
 	time_t now = time(0);
 	struct tm res, *tt;
 	tt = System::LocalTime(&now, &res);
 
-	long deltamin = (fMinute - tt->tm_min);
-	long deltahour = (fHour - tt->tm_hour);
-
-	if ( deltamin < 0 ) {
-		--deltahour;
-		deltamin += 60;
-	}
-	if ( deltahour < 0 ) {
-		deltahour += 24;
-	}
-
-	long lSecondsToWait = (deltahour * 60 * 60) + deltamin * 60;
-	if ( lSecondsToWait == 0 ) {
-		lSecondsToWait = 24 * 60 * 60;
+	long lCurrentSecondInDay = ( ( ( ( tt->tm_hour * 60 ) + tt->tm_min ) * 60 ) + tt->tm_sec ) % 86400;
+	Trace("fRotateSecond: " << fRotateSecond << " lCurrentSecondInDay: " << lCurrentSecondInDay);
+	long lSecondsToWait = fRotateSecond - lCurrentSecondInDay;
+	if ( lSecondsToWait <= 0 ) {
+		lSecondsToWait += 86400;
 	}
 
 	Assert(lSecondsToWait > 0);
@@ -546,7 +553,9 @@ void LogRotator::Run()
 		CheckRunningState(eWorking, GetSecondsToWait());
 
 		// rotate only if we are still running and not already in termination sequence
-		if ( IsRunning() && !CheckState(eTerminationRequested, 0, 0) ) {
+		// never try to call CheckState() without at least a nanosecond to wait
+		// -> otherwise we will block until program termination...
+		if ( IsRunning() && !CheckState(eTerminationRequested, 0, 1) ) {
 			// rotate the log files
 			AppLogModule::RotateLogs();
 		}
