@@ -36,6 +36,8 @@ public:
 	void LogOkTest();
 	//!log into channels of 'virtual' server without own config but using TestServer config
 	void LogOkToVirtualServerTest();
+	//! test logfile rotation
+	void LogRotatorTest();
 	//!pass null pointer a channel
 	void ApplogModuleNotInitializedTest();
 	//!test the logging action
