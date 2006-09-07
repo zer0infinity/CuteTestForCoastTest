@@ -40,12 +40,11 @@ SimpleDAServiceTest::~SimpleDAServiceTest()
 void SimpleDAServiceTest::SimpleDispatch()
 {
 	StartTrace(SimpleDAServiceTest.SimpleDispatch);
-
 	{
 		// test with objects configuration
 		Context ctx;
 		ServiceDispatcher sd("TestSimpleDAService");
-		ctx.Push(&sd);
+		ctx.Push("TestSimpleDAService", &sd);
 
 		sd.CheckConfig("ServiceDispatcher");
 		ServiceHandler *sh = sd.FindServiceHandler(ctx);
@@ -56,7 +55,8 @@ void SimpleDAServiceTest::SimpleDispatch()
 			sh->GetName(servicename);
 			assertEqualm("SimpleDataAccessService", servicename, "expected to find test TestSimpleDAService name");
 		}
-		ctx.Pop();
+		String strKey;
+		ctx.Pop(strKey);
 	}
 }
 //: try to use it with a very simple DataAccess backend
@@ -78,7 +78,7 @@ void SimpleDAServiceTest::FailedServiceCall()
 	Context ctx(config);
 
 	ServiceDispatcher sd("TestSimpleDAService");
-	ctx.Push(&sd);
+	ctx.Push("TestSimpleDAService", &sd);
 
 	OStringStream reply;
 	sd.Dispatch2Service(reply, ctx);
