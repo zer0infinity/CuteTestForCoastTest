@@ -14,7 +14,7 @@
 #include "Dbg.h"
 
 RegisterRenderer(HeaderListRenderer);
-void HeaderListRenderer::RenderEntry(ostream &reply, Context &c, const ROAnything &config, const ROAnything &entryRendererConfig, Anything &listItem)
+void HeaderListRenderer::RenderEntry(ostream &reply, Context &c, const ROAnything &config, const ROAnything &entryRendererConfig, const ROAnything &listItem, Anything &anyRenderState)
 {
 	StartTrace(HeaderListRenderer.RenderEntry);
 	TraceAny(entryRendererConfig, "entryRendererConfig");
@@ -26,7 +26,7 @@ void HeaderListRenderer::RenderEntry(ostream &reply, Context &c, const ROAnythin
 			PrintOptions3(reply, c, config["CellOptions"]);
 		}
 		reply << ">";
-		Renderer *pRenderer = Renderer::FindRenderer("FormattedStringRenderer");
+		static Renderer *pRenderer = Renderer::FindRenderer("FormattedStringRenderer");
 		if (pRenderer) {
 			Anything formatConfig;
 			String strName;
@@ -34,22 +34,22 @@ void HeaderListRenderer::RenderEntry(ostream &reply, Context &c, const ROAnythin
 			formatConfig["Value"] = strName;
 
 			if (listItem.IsDefined("HeaderAlign")) {
-				formatConfig["Align"] = listItem["HeaderAlign"];
+				formatConfig["Align"] = listItem["HeaderAlign"].DeepClone();
 			} else {
 				formatConfig["Align"] = "center";
 			}
 
-			Anything anyWidth;
+			ROAnything roaWidth;
 			String strWidth;
-			if (listItem.LookupPath(anyWidth, "Width")) {
-				RenderOnString(strWidth, c, anyWidth);
+			if (listItem.LookupPath(roaWidth, "Width")) {
+				RenderOnString(strWidth, c, roaWidth);
 			}
 			long lWidth = strWidth.AsLong(strName.Length());
 
 			// Have we got any data in the Box?
 			long dataSize = 0L;
-			if (config.IsDefined("PlainListSize")) {
-				dataSize = config["PlainListSize"].AsLong(0L);
+			if (config.IsDefined("ListDataSize")) {
+				dataSize = config["ListDataSize"].AsLong(0L);
 			}
 			if (config.IsDefined("SortIcon")) {
 				if (listItem.IsDefined("Sortable") && dataSize > 1) {
@@ -63,7 +63,7 @@ void HeaderListRenderer::RenderEntry(ostream &reply, Context &c, const ROAnythin
 			}
 			formatConfig["Width"] = (lWidth + 1);
 			if (listItem.IsDefined("Filler")) {
-				formatConfig["Filler"] = listItem["Filler"];
+				formatConfig["Filler"] = listItem["Filler"].DeepClone();
 			} else {
 				formatConfig["Filler"] = "&nbsp;";
 			}
@@ -82,7 +82,7 @@ void HeaderListRenderer::RenderEntry(ostream &reply, Context &c, const ROAnythin
 	}
 }
 
-void HeaderListRenderer::DoRenderSortIcons(ostream &reply, Context &c, const ROAnything &config, Anything &listItem)
+void HeaderListRenderer::DoRenderSortIcons(ostream &reply, Context &c, const ROAnything &config, const ROAnything &listItem)
 {
 	ROAnything roSortIcon = config["SortIcon"];
 	if (!roSortIcon.IsNull()) {
@@ -155,7 +155,7 @@ void HeaderListRenderer::RenderSortIcon(ostream &reply, Context &c, const ROAnyt
 		}
 		reply << "<a " << strStyle << "href=\"#\" onClick=\" document.forms[" << strFormName << "].action='";
 
-		Renderer *pRenderer = Renderer::FindRenderer("URLRenderer");
+		static Renderer *pRenderer = Renderer::FindRenderer("URLRenderer");
 		if (pRenderer) {
 			Anything urlConfig;
 			if (roSortIcon.IsDefined("Action")) {
@@ -298,7 +298,7 @@ bool MultifunctionListBoxRenderer::IsDataTypeDefined(Context &c, const ROAnythin
 void MultifunctionListBoxRenderer::RenderCellName(String &cellName, Context &c, const ROAnything &cellItem)
 {
 	StartTrace(MultifunctionListBoxRenderer.RenderCellName);
-	Renderer *pCharReplRenderer = Renderer::FindRenderer("CharReplaceRenderer");
+	static Renderer *pCharReplRenderer = Renderer::FindRenderer("CharReplaceRenderer");
 	if (pCharReplRenderer) {
 		Anything charReplaceConfig;
 
@@ -321,7 +321,7 @@ void MultifunctionListBoxRenderer::RenderBoxName(String &boxName, Context &c, co
 	StartTrace(MultifunctionListBoxRenderer.RenderBoxName);
 	ROAnything n = config["Name"];
 	if ( ! n.IsNull() ) {
-		Renderer *pCharReplRenderer = Renderer::FindRenderer("CharReplaceRenderer");
+		static Renderer *pCharReplRenderer = Renderer::FindRenderer("CharReplaceRenderer");
 		if (pCharReplRenderer) {
 			Anything charReplaceConfig;
 
@@ -478,7 +478,7 @@ void MultifunctionListBoxRenderer::RenderStyleSheet(ostream &reply, Context &c, 
 void MultifunctionListBoxRenderer::RenderHeader(ostream &reply, Context &c, const ROAnything &config, long &nColumns)
 {
 	StartTrace(MultifunctionListBoxRenderer.RenderHeader);
-	Renderer *pRenderer = Renderer::FindRenderer("HeaderListRenderer");
+	static Renderer *pRenderer = Renderer::FindRenderer("HeaderListRenderer");
 
 	if (pRenderer) {
 		ROAnything theList;
@@ -494,9 +494,9 @@ void MultifunctionListBoxRenderer::RenderHeader(ostream &reply, Context &c, cons
 			reply << "\n<!-- lets insert a row for the column header -->\n";
 			Anything rendererConfig;
 			ROAnything roOptions;
-			rendererConfig["ListData"] = theList.DeepClone();
+			rendererConfig["ListName"] = theList.DeepClone();
 			ROAnything roBgColor;
-			String strBgColor;
+			String strBgColor, strClass;
 			if (config.LookupPath(roBgColor, "Header.BgColor")) {
 				strBgColor << " bgcolor='";
 				RenderOnString(strBgColor, c, roBgColor);
@@ -505,9 +505,11 @@ void MultifunctionListBoxRenderer::RenderHeader(ostream &reply, Context &c, cons
 			rendererConfig["ListHeader"] = String("<tr") << strBgColor << ">\n";
 			if (config.LookupPath(roOptions, "Header.Options")) {
 				rendererConfig["CellOptions"]["Options"] = roOptions.DeepClone();
+				Renderer::RenderOnString(strClass, c, roOptions["class"]);
 			} else {
 				// render default style
 				rendererConfig["CellOptions"]["Options"]["class"] = "SelectBoxHeader";
+				strClass = "SelectBoxHeader";
 			}
 			rendererConfig["EntryRenderer"] = "dummy";
 			rendererConfig["IndexSlot"] = "HeaderColumnIndex";
@@ -517,12 +519,12 @@ void MultifunctionListBoxRenderer::RenderHeader(ostream &reply, Context &c, cons
 			if ( config.LookupPath(roSortIcons, "SortIcon")) {
 				rendererConfig["SortIcon"] = roSortIcons.DeepClone();
 			}
-			if (config.IsDefined("PlainList")) {
+			if (config.IsDefined("ListName")) {
 				String strListName;
-				Renderer::RenderOnString(strListName, c, config["PlainList"]);
+				Renderer::RenderOnString(strListName, c, config["ListName"]);
 				ROAnything roaPlainList;
 				if (strListName.Length() && c.Lookup(strListName, roaPlainList)) {
-					rendererConfig["PlainListSize"] = roaPlainList.GetSize();
+					rendererConfig["ListDataSize"] = roaPlainList.GetSize();
 				}
 			}
 
@@ -536,7 +538,7 @@ void MultifunctionListBoxRenderer::RenderHeader(ostream &reply, Context &c, cons
 			Trace("visible columns:" << nColumns);
 
 			// to simulate scroller column
-			reply << "<th>&nbsp;&nbsp;</th>\n";
+			reply << "<th class='" << strClass << "'>&nbsp;&nbsp;</th>\n";
 			reply << "</tr>\n";
 		} else {
 			SysLog::Warning("No ColumnList given");
@@ -585,8 +587,8 @@ void MultifunctionListBoxRenderer::RenderBoxRow(ostream &reply, Context &c, cons
 					if (config.IsDefined("Multiple")) {
 						rendererConfig["Multiple"] = config["Multiple"].DeepClone();
 					}
-					if (config.IsDefined("PlainList")) {
-						rendererConfig["PlainList"] = config["PlainList"].DeepClone();
+					if (config.IsDefined("ListName")) {
+						rendererConfig["ListName"] = config["ListName"].DeepClone();
 					}
 					if (config.IsDefined("ValueRenderer")) {
 						rendererConfig["ValueRenderer"] = config["ValueRenderer"].DeepClone();
@@ -596,7 +598,7 @@ void MultifunctionListBoxRenderer::RenderBoxRow(ostream &reply, Context &c, cons
 					}
 
 					Anything columnRendererConfig;
-					columnRendererConfig["ListData"] = config["ColList"].DeepClone();
+					columnRendererConfig["ListName"] = config["ColList"].DeepClone();
 					columnRendererConfig["EntryStore"] = "ColumnEntryStore";
 					columnRendererConfig["IndexSlot"] = "ColumnIndexSlot";
 					columnRendererConfig["SlotnameSlot"] = "ColumnSlotnameSlot";
@@ -638,7 +640,7 @@ void MultifunctionListBoxRenderer::RenderBoxRow(ostream &reply, Context &c, cons
 void MultifunctionListBoxRenderer::RenderColumnInputFields(ostream &reply, Context &c, const ROAnything &config, const long &nColumns)
 {
 	StartTrace(MultifunctionListBoxRenderer.RenderColumnInputFields);
-	Renderer *pRenderer = Renderer::FindRenderer("ColumnInputFieldRenderer");
+	static Renderer *pRenderer = Renderer::FindRenderer("ColumnInputFieldRenderer");
 
 	if (pRenderer) {
 		TraceAny(config, "config");
@@ -660,7 +662,7 @@ void MultifunctionListBoxRenderer::RenderColumnInputFields(ostream &reply, Conte
 			}
 			if (bExist) {
 				Anything rendererConfig;
-				rendererConfig["ListData"] = config["ColList"].DeepClone();
+				rendererConfig["ListName"] = config["ColList"].DeepClone();
 				rendererConfig["IndexSlot"] = "ColumnIndex";
 				rendererConfig["EntryStore"] = "Column";
 				rendererConfig["SlotnameSlot"] = "SubColumnSlotnameSlot";
@@ -718,7 +720,7 @@ bool MultifunctionListBoxRenderer::RenderPrintButton(ostream &reply, Context &c,
 
 	ROAnything roButton = navConfig["PrintButton"];
 	if (!roButton.IsNull()) {
-		Renderer *pRenderer = Renderer::FindRenderer("ButtonRenderer");
+		static Renderer *pRenderer = Renderer::FindRenderer("ButtonRenderer");
 		if (pRenderer) {
 			Anything buttonConfig;
 			reply << "<td align=center>";
@@ -833,7 +835,7 @@ bool MultifunctionListBoxRenderer::RenderPrevButton(ostream &reply, Context &c, 
 	strButtonName << strBoxName << "_Prev";
 	ROAnything roButton = navConfig["PrevButton"];
 	if (!roButton.IsNull()) {
-		Renderer *pRenderer = Renderer::FindRenderer("ButtonRenderer");
+		static Renderer *pRenderer = Renderer::FindRenderer("ButtonRenderer");
 		if (pRenderer) {
 			Anything buttonConfig;
 			reply << "<td align=center>";
@@ -861,7 +863,7 @@ bool MultifunctionListBoxRenderer::RenderNextButton(ostream &reply, Context &c, 
 	strButtonName << strBoxName << "_Next";
 	ROAnything roButton = navConfig["NextButton"];
 	if (!roButton.IsNull()) {
-		Renderer *pRenderer = Renderer::FindRenderer("ButtonRenderer");
+		static Renderer *pRenderer = Renderer::FindRenderer("ButtonRenderer");
 		if (pRenderer) {
 			Anything buttonConfig;
 			reply << "<td align=center>";
@@ -890,7 +892,7 @@ bool MultifunctionListBoxRenderer::RenderSearchButton(ostream &reply, Context &c
 	strOnClick << strBoxName << "_ProcessEditFieldScripts(" << "document.forms[" << strFormName << "])";
 	ROAnything roButton = navConfig["SearchButton"];
 	if (!roButton.IsNull()) {
-		Renderer *pRenderer = Renderer::FindRenderer("ButtonRenderer");
+		static Renderer *pRenderer = Renderer::FindRenderer("ButtonRenderer");
 		if (pRenderer) {
 			Anything buttonConfig;
 			reply << "<td align=center>";
@@ -923,7 +925,7 @@ bool MultifunctionListBoxRenderer::RenderClearButton(ostream &reply, Context &c,
 	strOnClick << strBoxName << "_ClearEditFields(" << "document.forms[" << strFormName << "])";
 	ROAnything roButton = navConfig["ClearButton"];
 	if (!roButton.IsNull()) {
-		Renderer *pRenderer = Renderer::FindRenderer("ButtonRenderer");
+		static Renderer *pRenderer = Renderer::FindRenderer("ButtonRenderer");
 		if (pRenderer) {
 			Anything buttonConfig;
 			reply << "<td align=center>";
@@ -987,8 +989,8 @@ bool MultifunctionListBoxRenderer::RenderSaveButton(ostream &reply, Context &c, 
 	saveFunction << "{" << ENDL;
 	saveFunction << "	var bIsModified = " << strProps << ".IsModified();" << ENDL;
 
-	if (bDoButton && roButton.IsDefined("PreSaveScript")) {
-		Render(saveFunction, c, roButton["PreSaveScript"]);
+	if (bDoButton && roButton.IsDefined("PreDoScript")) {
+		Render(saveFunction, c, roButton["PreDoScript"]);
 	}
 
 	saveFunction << "	if (bIsModified) {" << ENDL;
@@ -1011,7 +1013,7 @@ bool MultifunctionListBoxRenderer::RenderSaveButton(ostream &reply, Context &c, 
 	if (bDoButton) {
 		strOnClick << "return " << strBoxName << "_SaveButtonClicked(this);";
 
-		Renderer *pRenderer = Renderer::FindRenderer("ButtonRenderer");
+		static Renderer *pRenderer = Renderer::FindRenderer("ButtonRenderer");
 		if (pRenderer) {
 			Anything buttonConfig;
 			reply << "<td align=center>";
@@ -1057,7 +1059,7 @@ bool MultifunctionListBoxRenderer::RenderResetButton(ostream &reply, Context &c,
 
 	ROAnything roButton = navConfig["ResetButton"];
 	if (bHasNavigation && bBoxEditable && !roButton.IsNull()) {
-		Renderer *pRenderer = Renderer::FindRenderer("ButtonRenderer");
+		static Renderer *pRenderer = Renderer::FindRenderer("ButtonRenderer");
 		if (pRenderer) {
 			Anything buttonConfig;
 			reply << "<td align=center>";
@@ -1119,6 +1121,12 @@ bool MultifunctionListBoxRenderer::RenderAddButton(ostream &reply, Context &c, c
 	addFunction << "function " << strBoxName << "_AddButtonClicked(buttonObj)" << ENDL;
 	addFunction << "{" << ENDL;
 	addFunction << "	var bIsAdded = " << strProps << ".IsAdded();" << ENDL;
+	addFunction << "	var bIsModified = " << strProps << ".IsModified();" << ENDL;
+
+	if (bDoButton && roButton.IsDefined("PreDoScript")) {
+		Render(addFunction, c, roButton["PreDoScript"]);
+	}
+
 	addFunction << "    if (bIsAdded)" << ENDL;
 	addFunction << "    {" << ENDL;
 	if (bLineMode) { // if edit a complete line is desired
@@ -1152,7 +1160,7 @@ bool MultifunctionListBoxRenderer::RenderAddButton(ostream &reply, Context &c, c
 	if (bHasNavigation && bBoxEditable && !roButton.IsNull()) {
 		strOnClick << "return " << strBoxName << "_AddButtonClicked(this);";
 		Trace("common strOnClick is : " << strOnClick);
-		Renderer *pRenderer = Renderer::FindRenderer("ButtonRenderer");
+		static Renderer *pRenderer = Renderer::FindRenderer("ButtonRenderer");
 		if (pRenderer) {
 			Anything buttonConfig;
 			reply << "<td align=center>";
@@ -1223,8 +1231,8 @@ bool MultifunctionListBoxRenderer::RenderDeleteButton(ostream &reply, Context &c
 	deleteFunction << "	row=listbox.selectedIndex;" << ENDL;
 	deleteFunction << "	var bDoDelete = ((row>=0) && confirm('Wollen Sie die selektierte Zeile wirklich löschen?') );" << ENDL;
 
-	if (bDoButton && roButton.IsDefined("PreDeleteScript")) {
-		Render(deleteFunction, c, roButton["PreDeleteScript"]);
+	if (bDoButton && roButton.IsDefined("PreDoScript")) {
+		Render(deleteFunction, c, roButton["PreDoScript"]);
 	}
 
 	deleteFunction << "	if ( bDoDelete ) {" << ENDL;
@@ -1248,7 +1256,7 @@ bool MultifunctionListBoxRenderer::RenderDeleteButton(ostream &reply, Context &c
 
 	if (bDoButton) {
 		strOnClick << "return " << strBoxName << "_DeleteButtonClicked(this);";
-		Renderer *pRenderer = Renderer::FindRenderer("ButtonRenderer");
+		static Renderer *pRenderer = Renderer::FindRenderer("ButtonRenderer");
 		if (pRenderer) {
 			Anything buttonConfig;
 			reply << "<td align=center>";
@@ -1425,8 +1433,7 @@ void MultifunctionListBoxRenderer::RenderScripts(ostream &reply, Context &c, con
 		// clear selectedindex in the box.
 		strClearFields << "    myform.fld_" << strBoxName << ".selectedIndex = -1;\n";
 
-		long lHiddenOffset = 0L;
-		String strColumnSize, strColumnAlign, strColumnIntName, strColumnKeys, strColumnName;
+		String strColumnSize, strColumnAlign, strColumnIntName, strColumnKeys, strColumnName, strColumnHidden;
 		for (long lx = 0, sz = theList.GetSize(); lx < sz; ++lx) {
 			bool bHidden = MultifunctionListBoxRenderer::IsHiddenField(c, theList[lx]);
 			bool bEditable = MultifunctionListBoxRenderer::IsEditableField(c, theList[lx]);
@@ -1436,84 +1443,78 @@ void MultifunctionListBoxRenderer::RenderScripts(ostream &reply, Context &c, con
 			}
 			TraceAny(theList[lx], "checking:");
 			Trace("hidden:" << (bHidden ? "true" : "false") << " editable:" << (bEditable ? "true" : "false"));
-			if (!bHidden) {
-				long lColIndex = lx - lHiddenOffset;
-				String strCellName;
-				MultifunctionListBoxRenderer::RenderCellName(strCellName, c, theList[lx]);
 
-				// if box is editable or box should be rendered on Client
-				if ((bBoxEditable) || (bHasPrintButton) || (bHasExportButton)) {
-					RenderOnString(strColumnSize, c, theList[lx]["Width"]);
-					if (theList[lx].IsDefined("Align")) {
-						RenderOnString(strColumnAlign, c, theList[lx]["Align"]);
-					} else {
-						strColumnAlign << "left";
-					}
-					strColumnIntName << strCellName;
-					if (theList[lx].IsDefined("IsKey")) {
-						strColumnKeys << "1";
-					} else {
-						strColumnKeys << "0";
-					}
-					if (theList[lx].IsDefined("Name")) {
-						RenderOnString(strColumnName, c, theList[lx]["Name"]);
-					} else {
-						RenderOnString(strColumnName, c, theList[lx]["IntName"]);
-					}
-					if (lx < theList.GetSize() - 1) {
-						strColumnSize << ";";
-						strColumnAlign << ";";
-						strColumnIntName << ";";
-						strColumnKeys << ";";
-						strColumnName << ";";
-					}
+			String strCellName;
+			MultifunctionListBoxRenderer::RenderCellName(strCellName, c, theList[lx]);
+
+			// if box is editable or box should be rendered on Client
+			if ((bBoxEditable) || (bHasPrintButton) || (bHasExportButton)) {
+				RenderOnString(strColumnSize, c, theList[lx]["Width"]);
+				if (theList[lx].IsDefined("Align")) {
+					RenderOnString(strColumnAlign, c, theList[lx]["Align"]);
+				} else {
+					strColumnAlign << "left";
+				}
+				strColumnIntName << strCellName;
+				strColumnKeys << (theList[lx].IsDefined("IsKey") ? "1" : "0");
+				strColumnHidden << (bHidden ? "1" : "0");
+
+				if (theList[lx].IsDefined("Name")) {
+					RenderOnString(strColumnName, c, theList[lx]["Name"]);
+				} else {
+					RenderOnString(strColumnName, c, theList[lx]["IntName"]);
+				}
+				if (lx < theList.GetSize() - 1) {
+					strColumnSize << ';';
+					strColumnAlign << ';';
+					strColumnIntName << ';';
+					strColumnKeys << ';';
+					strColumnName << ';';
+					strColumnHidden << ';';
+				}
+			}
+
+			if (bEditable) {
+				bFoundEditFields = true;
+				Trace("found a not hidden and editable item");
+				// clear edit field
+				strClearFields << "    myform.fld_edt" << strBoxName << "_" << strCellName << ".value = \"\";\n";
+
+				String strValue;
+				if (theList[lx].IsDefined("OnSearchScript")) {
+					RenderOnString(strValue, c, theList[lx]["OnSearchScript"]);
+					strProcessFields << "    if (" << strValue << " == false)\n";
+					strProcessFields << "      return false;\n";
 				}
 
-				if (bEditable) {
-					bFoundEditFields = true;
-					Trace("found a not hidden and editable item");
-					// clear edit field
-					strClearFields << "    myform.fld_edt" << strBoxName << "_" << strCellName << ".value = \"\";\n";
+				strOnChangeFields << "      document.forms[" << strFormName << "].fld_edt" << strBoxName << "_" << strCellName << ".value = (Column[" << lx << "] == undefined )?\"\":Column[" << lx << "];\n";
+			} else if (bPulldown) {
+				bFoundPulldownFields = true;
+				Trace("found a not hidden pulldown field");
 
-					String strValue;
-					if (theList[lx].IsDefined("OnSearchScript")) {
-						RenderOnString(strValue, c, theList[lx]["OnSearchScript"]);
-						strProcessFields << "    if (" << strValue << " == false)\n";
-						strProcessFields << "      return false;\n";
-					}
+				String strVarName("document.forms[");
+				strVarName << strFormName << "].fld_cbo" << strBoxName << "_" << strCellName;
+				// if we find a defaultSelected definition we use this index when clearing the fields else -1 (nothing selected)
+				strClearFields << "    var " << strCellName << "Idx = -1;\n";
+				strClearFields << "    for(var " << strCellName << " = 0; " << strCellName << " < " << strVarName << ".length; " << strCellName << "++)\n";
+				strClearFields << "    {\n";
+				strClearFields << "      if (" << strVarName << ".options[" << strCellName << "].defaultSelected)\n";
+				strClearFields << "      {\n";
+				strClearFields << "        " << strCellName << "Idx = " << strCellName << ";\n";
+				strClearFields << "        break;\n";
+				strClearFields << "      }\n";
+				strClearFields << "    }\n";
+				strClearFields << "    " << strVarName << ".selectedIndex = " << strCellName << "Idx;\n";
 
-					strOnChangeFields << "      document.forms[" << strFormName << "].fld_edt" << strBoxName << "_" << strCellName << ".value = (Column[" << lColIndex << "] == undefined )?\"\":Column[" << lColIndex << "];\n";
-				} else if (bPulldown) {
-					bFoundPulldownFields = true;
-					Trace("found a not hidden pulldown field");
-
-					String strVarName("document.forms[");
-					strVarName << strFormName << "].fld_cbo" << strBoxName << "_" << strCellName;
-					// if we find a defaultSelected definition we use this index when clearing the fields else -1 (nothing selected)
-					strClearFields << "    var " << strCellName << "Idx = -1;\n";
-					strClearFields << "    for(var " << strCellName << " = 0; " << strCellName << " < " << strVarName << ".length; " << strCellName << "++)\n";
-					strClearFields << "    {\n";
-					strClearFields << "      if (" << strVarName << ".options[" << strCellName << "].defaultSelected)\n";
-					strClearFields << "      {\n";
-					strClearFields << "        " << strCellName << "Idx = " << strCellName << ";\n";
-					strClearFields << "        break;\n";
-					strClearFields << "      }\n";
-					strClearFields << "    }\n";
-					strClearFields << "    " << strVarName << ".selectedIndex = " << strCellName << "Idx;\n";
-
-					// compare the text in the column against the .text of the option to find the correct index
-					strOnChangeFields << "      for(var " << strCellName << " = 0; " << strCellName << " < " << strVarName << ".length; " << strCellName << "++)\n";
-					strOnChangeFields << "      {\n";
-					strOnChangeFields << "        if (" << strVarName << ".options[" << strCellName << "].text == Column[" << lColIndex << "])\n";
-					strOnChangeFields << "        {\n";
-					strOnChangeFields << "          " << strVarName << ".selectedIndex = " << strCellName << ";\n";
-					strOnChangeFields << "          break;\n";
-					strOnChangeFields << "        }\n";
-					strOnChangeFields << "      }\n";
-				}
-			} else {
-				// this is needed as correction to the field index if we have hidden fields
-				++lHiddenOffset;
+				// compare the text in the column against the .text of the option to find the correct index
+				strOnChangeFields << "      for(var " << strCellName << " = 0; " << strCellName << " < " << strVarName << ".length; " << strCellName << "++)\n";
+				strOnChangeFields << "      {\n";
+				strOnChangeFields << "        if (" << strVarName << ".options[" << strCellName << "].text == Column[" << lx << "])\n";
+				strOnChangeFields << "        {\n";
+				strOnChangeFields << "          " << strVarName << ".selectedIndex = " << strCellName << ";\n";
+				strOnChangeFields << "          break;\n";
+				strOnChangeFields << "        }\n";
+				strOnChangeFields << "      }\n";
 			}
 		}
 
@@ -1542,6 +1543,7 @@ void MultifunctionListBoxRenderer::RenderScripts(ostream &reply, Context &c, con
 				reply << "  {\n";
 				reply << "    var indx = selbox.selectedIndex;\n";
 				reply << "    var text = selbox[indx].value;\n";
+				reply << "    var myform = selbox.form;\n";
 				reply << "    Column = text.split(" << strBoxName << "Properties.ValueSep);\n";
 				reply << "    var bDoChange = " << (bBoxEditable ? "true" : "false") << ";\n";
 				if (config.IsDefined("OnChangeScript")) {
@@ -1665,10 +1667,10 @@ void MultifunctionListBoxRenderer::RenderScripts(ostream &reply, Context &c, con
 				Render(reply, c, roaTitleSpec);
 				reply << "\");\n";
 
-				Renderer *pListRenderer = FindRenderer("ListRenderer");
+				static Renderer *pListRenderer = FindRenderer("ListRenderer");
 				if (pListRenderer) {
 					Anything anyListSpec;
-					anyListSpec["ListData"] = config["PlainList"].DeepClone();
+					anyListSpec["ListName"] = config["ListName"].DeepClone();
 					anyListSpec["EntryStore"] = "SelectBoxOption";
 					anyListSpec["IndexSlot"] = "SelectBoxOptionIndex";
 
@@ -1694,6 +1696,7 @@ void MultifunctionListBoxRenderer::RenderScripts(ostream &reply, Context &c, con
 					reply << ", \"" << strColumnAlign << "\"";
 					reply << ", \"" << strColumnIntName << "\"";
 					reply << ", \"" << strColumnKeys << "\"";
+					reply << ", \"" << strColumnHidden << "\"";
 					reply << ", \"" << strColumnName << "\");\n";
 					// render the column separator info
 					reply << "  " << strBoxName << "Properties.SetColumnSep(\"";
@@ -1791,7 +1794,7 @@ void MultifunctionListBoxRenderer::RenderHiddenFieldsForEdit(ostream &reply, Con
 
 	if (config["EditableList"].AsLong(0L) == 1L) {
 		// add fields to submit added, deleted or changed fields
-		Renderer *pRenderer = FindRenderer("HiddenFieldRenderer");
+		static Renderer *pRenderer = FindRenderer("HiddenFieldRenderer");
 		if (pRenderer) {
 			Anything anyHidden;
 			String strBoxName;
@@ -1817,15 +1820,15 @@ public:
 	~MultiOptionListRenderer() {};
 
 protected:
-	virtual void RenderText(ostream &reply, Context &c, const ROAnything &config, const ROAnything &textConfig, Anything &listItem);
+	virtual void RenderText(ostream &reply, Context &c, const ROAnything &config, const ROAnything &textConfig, const ROAnything &listItem);
 };
 
 RegisterRenderer(MultiOptionListRenderer);
 
-void MultiOptionListRenderer::RenderText(ostream &reply, Context &c, const ROAnything &config, const ROAnything &textConfig, Anything &listItem)
+void MultiOptionListRenderer::RenderText(ostream &reply, Context &c, const ROAnything &config, const ROAnything &textConfig, const ROAnything &listItem)
 {
 	StartTrace(MultiOptionListRenderer.RenderText);
-	Renderer *pRenderer = Renderer::FindRenderer("MultiColumnRenderer");
+	static Renderer *pRenderer = Renderer::FindRenderer("MultiColumnRenderer");
 	if (pRenderer) {
 		TraceAny(textConfig, "MultiColumnRenderer-Config");
 		pRenderer->RenderAll(reply, c, textConfig);
@@ -1840,23 +1843,23 @@ public:
 	~MultiColumnRenderer() {};
 
 protected:
-	void RenderEntry(ostream &reply, Context &c, const ROAnything &config, const ROAnything &entryRendererConfig, Anything &listItem);
-	void RenderEntryFooter(ostream &reply, Context &c, const ROAnything &entryFooter, Anything &listItem);
+	void RenderEntry(ostream &reply, Context &c, const ROAnything &config, const ROAnything &entryRendererConfig, const ROAnything &listItem, Anything &anyRenderState);
+	void RenderEntryFooter(ostream &reply, Context &c, const ROAnything &entryFooter, const ROAnything &listItem, Anything &anyRenderState);
 };
 
 RegisterRenderer(MultiColumnRenderer);
 
-static void CopyWithDefault(Anything &source, Anything &destination, const char *slot, const String &deflt = "")
+static void CopyWithDefault(const ROAnything &source, Anything &destination, const char *slot, const String &deflt = "")
 {
-	Anything valueAny;
+	ROAnything valueAny;
 	if (source.LookupPath(valueAny, slot)) {
-		destination[slot] = valueAny;
+		destination[slot] = valueAny.DeepClone();
 	} else if (deflt.Length() > 0) {
 		destination[slot] = deflt;
 	}
 }
 
-void MultiColumnRenderer::RenderEntry(ostream &reply, Context &c, const ROAnything &config, const ROAnything &entryRendererConfig, Anything &listItem)
+void MultiColumnRenderer::RenderEntry(ostream &reply, Context &c, const ROAnything &config, const ROAnything &entryRendererConfig, const ROAnything &listItem, Anything &anyRenderState)
 {
 	StartTrace(MultiColumnRenderer.RenderEntry);
 	static Renderer *pRenderer = Renderer::FindRenderer("FormattedStringRenderer");
@@ -1864,10 +1867,10 @@ void MultiColumnRenderer::RenderEntry(ostream &reply, Context &c, const ROAnythi
 	bool boHide = MultifunctionListBoxRenderer::IsHiddenField(c, listItem);
 	if (!boHide) {
 		if (pRenderer) {
-			Anything valueAny;
+			ROAnything valueAny;
 			if (listItem.LookupPath(valueAny, "Value")) {
 				Anything formatConfig;
-				formatConfig["Value"] = valueAny;
+				formatConfig["Value"] = valueAny.DeepClone();
 				CopyWithDefault(listItem, formatConfig, "Align", "left");
 				CopyWithDefault(listItem, formatConfig, "Width", "");
 				CopyWithDefault(listItem, formatConfig, "Filler", "&nbsp;");
@@ -1878,7 +1881,7 @@ void MultiColumnRenderer::RenderEntry(ostream &reply, Context &c, const ROAnythi
 	}
 }
 
-void MultiColumnRenderer::RenderEntryFooter(ostream &reply, Context &c, const ROAnything &entryFooter, Anything &listItem)
+void MultiColumnRenderer::RenderEntryFooter(ostream &reply, Context &c, const ROAnything &entryFooter, const ROAnything &listItem, Anything &anyRenderState)
 {
 	StartTrace(MultiColumnRenderer.RenderEntryFooter);
 	bool boHide = MultifunctionListBoxRenderer::IsHiddenField(c, listItem);
@@ -1897,8 +1900,8 @@ public:
 	~ColumnInputFieldRenderer() {};
 
 protected:
-	void RenderEntry(ostream &reply, Context &c, const ROAnything &config, const ROAnything &entryRendererConfig, Anything &listItem);
-	void RenderListHeader(ostream &reply, Context &c, const ROAnything &listHeader, Anything &list);
+	void RenderEntry(ostream &reply, Context &c, const ROAnything &config, const ROAnything &entryRendererConfig, const ROAnything &listItem, Anything &anyRenderState);
+	void RenderListHeader(ostream &reply, Context &c, const ROAnything &listHeader);
 
 private:
 	void RenderBgColor(ostream &reply, Context &c, const ROAnything &config, const ROAnything &listItem);
@@ -1912,13 +1915,10 @@ private:
 
 RegisterRenderer(ColumnInputFieldRenderer);
 
-void ColumnInputFieldRenderer::RenderListHeader(ostream &reply, Context &c, const ROAnything &listHeader, Anything &list)
+void ColumnInputFieldRenderer::RenderListHeader(ostream &reply, Context &c, const ROAnything &listHeader)
 {
 	StartTrace(ColumnInputFieldRenderer.RenderListHeader);
-	if (c.GetTmpStore().IsDefined("VisibleColumnIndex")) {
-		c.GetTmpStore().Remove("VisibleColumnIndex");
-	}
-	ListRenderer::RenderListHeader(reply, c, listHeader, list);
+	ListRenderer::RenderListHeader(reply, c, listHeader);
 }
 
 void ColumnInputFieldRenderer::RenderBgColor(ostream &reply, Context &c, const ROAnything &config, const ROAnything &listItem)
@@ -1990,7 +1990,7 @@ void ColumnInputFieldRenderer::RenderCellEnd(ostream &reply, Context &c, const R
 void ColumnInputFieldRenderer::RenderEditField(ostream &reply, Context &c, const ROAnything &config, const ROAnything &listItem, const long &lColumnIndex)
 {
 	StartTrace(ColumnInputFieldRenderer.RenderEditField);
-	Renderer *pRenderer = Renderer::FindRenderer("TextFieldRenderer");
+	static Renderer *pRenderer = Renderer::FindRenderer("TextFieldRenderer");
 	if (pRenderer) {
 		Anything textFieldConfig;
 		String strCellName, strBoxName, strFormName;
@@ -2129,7 +2129,7 @@ void ColumnInputFieldRenderer::RenderPulldownField(ostream &reply, Context &c, c
 	StartTrace(ColumnInputFieldRenderer.RenderPulldownField);
 	ROAnything roaPulldown;
 
-	Renderer *pRenderer = Renderer::FindRenderer("PulldownMenuRenderer");
+	static Renderer *pRenderer = Renderer::FindRenderer("PulldownMenuRenderer");
 	if (pRenderer && listItem.LookupPath(roaPulldown, "Pulldown")) {
 		TraceAny(roaPulldown, "roaPulldown");
 		Anything pulldownConfig;
@@ -2137,14 +2137,14 @@ void ColumnInputFieldRenderer::RenderPulldownField(ostream &reply, Context &c, c
 		MultifunctionListBoxRenderer::RenderCellName(strCellName, c, listItem);
 		MultifunctionListBoxRenderer::GetBoxName(strBoxName, c);
 		pulldownConfig["Name"] = String("cbo") << strBoxName << "_" << strCellName;
-		if (roaPulldown.IsDefined("PlainList")) {
-			pulldownConfig["PlainList"] = roaPulldown["PlainList"].DeepClone();
+		if (roaPulldown.IsDefined("ListName")) {
+			pulldownConfig["ListName"] = roaPulldown["ListName"].DeepClone();
 		}
-		if (roaPulldown.IsDefined("PrependList")) {
-			pulldownConfig["PrependList"] = roaPulldown["PrependList"].DeepClone();
+		if (roaPulldown.IsDefined("PrependListName")) {
+			pulldownConfig["PrependListName"] = roaPulldown["PrependListName"].DeepClone();
 		}
-		if (roaPulldown.IsDefined("AppendList")) {
-			pulldownConfig["AppendList"] = roaPulldown["AppendList"].DeepClone();
+		if (roaPulldown.IsDefined("AppendListName")) {
+			pulldownConfig["AppendListName"] = roaPulldown["AppendListName"].DeepClone();
 		}
 		if (roaPulldown.IsDefined("TextRenderer")) {
 			pulldownConfig["TextRenderer"] = roaPulldown["TextRenderer"].DeepClone();
@@ -2186,15 +2186,14 @@ void ColumnInputFieldRenderer::RenderPulldownField(ostream &reply, Context &c, c
 	}
 }
 
-void ColumnInputFieldRenderer::RenderEntry(ostream &reply, Context &c, const ROAnything &config, const ROAnything &entryRendererConfig, Anything &listItem)
+void ColumnInputFieldRenderer::RenderEntry(ostream &reply, Context &c, const ROAnything &config, const ROAnything &entryRendererConfig, const ROAnything &listItem, Anything &anyRenderState)
 {
 	StartTrace(ColumnInputFieldRenderer.RenderEntry);
 	bool boHide = MultifunctionListBoxRenderer::IsHiddenField(c, listItem);
 	if (!boHide) {
-		long lColumnIndex = c.GetTmpStore()["VisibleColumnIndex"].AsLong(0L);
+		long lColumnIndex = c.Lookup("ColumnIndex", 0L);
 		TraceAny(config, "config");
 		TraceAny(entryRendererConfig, "entryRendererConfig");
-		Anything anyPulldown;
 		String strBoxName;
 		MultifunctionListBoxRenderer::GetBoxName(strBoxName, c);
 		TraceAny(listItem, "listItem");
@@ -2208,10 +2207,6 @@ void ColumnInputFieldRenderer::RenderEntry(ostream &reply, Context &c, const ROA
 		} else {
 			reply << "&nbsp;";
 		}
-
 		RenderCellEnd(reply, c, config, listItem);
-
-		// when column is not hidden adjust index of visible columns
-		c.GetTmpStore()["VisibleColumnIndex"] = lColumnIndex + 1L;
 	}
 }

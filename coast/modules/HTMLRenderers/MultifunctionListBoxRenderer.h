@@ -20,7 +20,7 @@
 //		/Name						Name of the HTML element
 //		/Size						Size (rows) of the box
 //		/ColList					slotname to list with definition of columns
-//		/PlainList					Slotname to lookup which contains the values of the fields
+//		/ListName					Slotname to lookup which contains the values of the fields
 //		/ValueRenderer				Rendererspec to set Value field of Option
 //		/SelectedRenderer			Rendererspec, leaving a Slotname to lookup which evaluates to 1 when needed
 //		/OnChangeScript				optional, called everytime the listbox gets a Changed event
@@ -96,14 +96,14 @@
 //			}
 //			/SaveButton {			extends specification above with the following slot
 //				...
-//				/PreSaveScript		optional, Rendererspec, specify an inline script which extends
+//				/PreDoScript		optional, Rendererspec, specify an inline script which extends
 //									the default <boxname>_SaveButtonScript(buttonObj) before doing the real work
 //									-> this allows for instance to update or check things before 'saving' and if
 //									   something is wrong to stop the process of submitting the form
 //			}
 //			/DeleteButton {			extends specification above with the following slot
 //				...
-//				/PreDeleteScript	optional, Rendererspec, specify an inline script which extends
+//				/PreDoScript	optional, Rendererspec, specify an inline script which extends
 //									the default <boxname>_DeleteButtonScript(buttonObj) before doing the real work
 //									-> this allows for instance to update or check things before 'deleting' and if
 //									   something is wrong to stop the process of submitting the form
@@ -228,8 +228,8 @@ public:
 	~HeaderListRenderer() {};
 
 protected:
-	void RenderEntry(ostream &reply, Context &c, const ROAnything &config, const ROAnything &entryRendererConfig, Anything &listItem);
-	void DoRenderSortIcons(ostream &reply, Context &c, const ROAnything &config, Anything &listItem);
+	void RenderEntry(ostream &reply, Context &c, const ROAnything &config, const ROAnything &entryRendererConfig, const ROAnything &listItem, Anything &anyRenderState);
+	void DoRenderSortIcons(ostream &reply, Context &c, const ROAnything &config, const ROAnything &listItem);
 	void RenderSortIcon(ostream &reply, Context &c, const ROAnything &config, String strSortString, String strSortOrder, const ROAnything &imageConfig);
 	bool IsSortableColumn(Context &c, const ROAnything &toCheckConfig);
 };
