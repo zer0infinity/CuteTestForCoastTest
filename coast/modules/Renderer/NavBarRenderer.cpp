@@ -6,13 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "Context.h"
-#include "Dbg.h"
-
 //--- interface include --------------------------------------------------------
 #include "NavBarRenderer.h"
+
+//--- standard modules used ----------------------------------------------------
+#include "Dbg.h"
 
 static String ENRTY_STORE_NAME_DEFAULT("EntryData");
 //---- NavBarRenderer ---------------------------------------------------------
@@ -33,7 +31,7 @@ void NavBarRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &con
 	TraceAny(config, "config");
 	Anything info;
 
-	// Check for mandatory configuration and presence of ListData
+	// Check for mandatory configuration and presence of ListName
 	if (config.IsDefined("Info")	  &&
 		GetInfo(c, config, info) ) {
 		// retrieve the Slotname where the entryData have to be stored
@@ -151,7 +149,7 @@ bool NavBarRenderer::GetInfo(Context &c, const ROAnything &config, Anything &inf
 	if ( tempStore.IsDefined(infoDataName) ) {
 		info = tempStore[infoDataName];
 		found = true;
-	} // if ListData is in tempStore
+	} // if ListName is in tempStore
 	else {
 		ROAnything ROinfo = c.Lookup(infoDataName);
 		if ( ! ROinfo.IsNull() ) {
@@ -162,4 +160,3 @@ bool NavBarRenderer::GetInfo(Context &c, const ROAnything &config, Anything &inf
 
 	return found;
 }
-

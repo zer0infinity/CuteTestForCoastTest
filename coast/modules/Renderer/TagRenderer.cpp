@@ -32,31 +32,29 @@ void TagRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config
 	TraceAny(config, "config");
 
 	ROAnything ROtag;
-	if (config.LookupPath(ROtag, "Tag")) {
+	if ( config.LookupPath(ROtag, "Tag") ) {
 		// open start tag
-		String tag = ROtag.AsString("");
-		reply << '<' << tag << " ";
+		String tag = ROtag.AsString();
+		if ( tag.Length() ) {
+			reply << '<' << tag;
 
-		// check for options
-		ROAnything options;
-		if (config.LookupPath(options, "Options")) {
-			OptionsPrinter op("dummy");
-			op.RenderAll(reply, c, config);
-		}
-//        PrintOptions3(reply,c,config);
+			// render options
+			PrintOptions3(reply, c, config);
 
-		// close start tag
-		reply << ">\n" ;
+			// close start tag
+			reply << ">\n" ;
 
-		ROAnything content;
-		if (config.LookupPath(content, "Content")) {
-			// render content
-			Render(reply, c, content);
-		}
+			ROAnything content;
+			if ( config.LookupPath(content, "Content") ) {
+				// render content
+				Render(reply, c, content);
+			}
 
-		// render end tag
-		if (! config.IsDefined("NoEndTag")) { // suppressed if config contains slot /NoEndTag
-			reply << "</" << tag << ">\n";
+			// render end tag
+			// suppressed if config contains slot /NoEndTag
+			if ( !config.IsDefined("NoEndTag") ) {
+				reply << "</" << tag << ">\n";
+			}
 		}
 	}
 }

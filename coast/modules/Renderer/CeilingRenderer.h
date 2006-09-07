@@ -18,7 +18,7 @@
 /*!
 <B>Configuration:</B><PRE>
 {
-	/ListData	Rendererspec		mandatory, Rendered result is looked up, the returned list defines the key-value list
+	/ListName	Rendererspec		mandatory, Rendered result is looked up, the returned list defines the key-value list
 	/Key		Rendererspec		mandatory, Rendered result defines the Key.
 }
 </PRE>
@@ -30,7 +30,7 @@ Example:
 	/C01	Last
 }
 { /CeilingRenderer {
-	/ListData	TheList
+	/ListName	TheList
 	/Key		B99
 } }
 </PRE>
@@ -44,11 +44,11 @@ public:
 	~CeilingRenderer();
 
 protected:
-	//!finds the first slot in <I>list</I>, that is greater or equal than <I>key</I>
-	//! \param key the Key to compare with.
-	//! \param list list whose slots are compared.
-	//! \return the index of the matching slot, -1 if no match.
-	//! \pre the lists slots are sorted ascending
+	/*! finds the first slot in <I>list</I>, that is greater or equal than <I>key</I>
+		\param key the Key to compare with.
+		\param list list whose slots are compared.
+		\return the index of the matching slot, -1 if no match.
+		\pre the lists slots are sorted ascending */
 	virtual long FindSlot(String &key, const ROAnything &list);
 };
 

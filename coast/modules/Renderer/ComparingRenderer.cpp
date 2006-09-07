@@ -15,7 +15,8 @@
 //--- c-library modules used ---------------------------------------------------
 
 //---- ComparingRenderer ---------------------------------------------------------------
-ComparingRenderer::ComparingRenderer(const char *name) : Renderer(name) { }
+ComparingRenderer::ComparingRenderer(const char *name)
+	: Renderer(name) { }
 
 ComparingRenderer::~ComparingRenderer() { }
 
@@ -23,7 +24,7 @@ void ComparingRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &
 {
 	StartTrace(ComparingRenderer.RenderAll);
 	String listDataName;
-	RenderOnString(listDataName, c, config["ListData"]);
+	RenderOnString(listDataName, c, config["ListName"]);
 	ROAnything list = c.Lookup(listDataName);
 	TraceAny(list, "The List");
 

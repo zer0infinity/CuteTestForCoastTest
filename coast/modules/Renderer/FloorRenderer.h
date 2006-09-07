@@ -18,7 +18,7 @@
 /*!
 <B>Configuration:</B><PRE>
 {
-	/ListData	Rendererspec		mandatory, lookup key to an Anything with a list of key-value pairs which must be sorted lexically ascending
+	/ListName	Rendererspec		mandatory, lookup key to an Anything with a list of key-value pairs which must be sorted lexically ascending
 	/Key		Rendererspec		mandatory, value to test Slotnames of List-Anything against
 }
 </PRE>
@@ -30,7 +30,7 @@
 	/C01	Last
 }
 { /FloorRenderer {
-	/ListData	TheList
+	/ListName	TheList
 	/Key		B99
 } }
 </PRE>
@@ -44,11 +44,11 @@ public:
 	~FloorRenderer();
 
 protected:
-	//!finds the last slot in <I>list</I>, that is lower than <I>key</I>
-	//! \param key the Key to compare with.
-	//! \param list list whose slots are compared.
-	//! \return the index of the matching slot, -1 if no match.
-	//! \pre the lists slots are sorted ascending
+	/*! finds the last slot in <I>list</I>, that is lower than <I>key</I>
+		\param key the Key to compare with.
+		\param list list whose slots are compared.
+		\return the index of the matching slot, -1 if no match.
+		\pre the lists slots are sorted ascending */
 	virtual long FindSlot(String &key, const ROAnything &list);
 };
 

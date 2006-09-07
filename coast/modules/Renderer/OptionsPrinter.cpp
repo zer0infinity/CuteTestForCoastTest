@@ -33,17 +33,18 @@ void OptionsPrinter::RenderAll(ostream &reply, Context &c, const ROAnything &con
 	for ( int i = 0, sz = config.GetSize(); i < sz; ++i ) {
 		String name = config.SlotName(i);
 		reply << ' ';
-		if ( name.Length() > 0 ) {
-			reply  << name ;
+		if ( name.Length() ) {
+			reply << name.ToLower();
 			// render option value
 			reply << "=\"";
 			TraceAny(config[i], "config of option [" << name << "]");
-			Render(reply, c, config[i]);  // value is rendererd
+			// value is rendererd
+			Render(reply, c, config[i]);
 			reply << '\"';
-		}       // if name is ok
-		else {
+		} else {
 			TraceAny(config[i], "config of unnamed option");
-			Render(reply, c, config[i]);  // value is rendererd
+			// value is rendererd
+			Render(reply, c, config[i]);
 		}
-	} // loop
+	}
 }

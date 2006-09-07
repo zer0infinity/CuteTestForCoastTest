@@ -6,13 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "Context.h"
-#include "Dbg.h"
-
 //--- interface include --------------------------------------------------------
 #include "ContainsRenderer.h"
+
+//--- standard modules used ----------------------------------------------------
+#include "Dbg.h"
 
 //---- ContainsRenderer ---------------------------------------------------------------
 RegisterRenderer(ContainsRenderer);
@@ -26,7 +24,7 @@ void ContainsRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &c
 	StartTrace(ContainsRenderer.RenderAll);
 
 	String listDataName;
-	RenderOnString(listDataName, c, config["ListData"]);
+	RenderOnString(listDataName, c, config["ListName"]);
 	ROAnything list = c.Lookup(listDataName);
 	TraceAny(list, "The List");
 

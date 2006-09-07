@@ -18,7 +18,7 @@
 /*!
 <B>Configuration:</B><PRE>
 {
-	/ListData		Rendererspec	mandatory, Defines Anything whose size shall be rendered
+	/ListName		Rendererspec	mandatory, Defines Anything whose size shall be rendered
 	/Default		Rendererspec	optional, default if LookupName name slot was not found
 }
 or shorthand:

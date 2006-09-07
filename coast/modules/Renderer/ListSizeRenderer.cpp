@@ -26,7 +26,7 @@ void ListSizeRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything 
 	StartTrace(ListSizeRenderer.RenderAll);
 
 	ROAnything data;
-	if (!config.LookupPath(data, "ListData", '\000')) {
+	if (!config.LookupPath(data, "ListName", '\000')) {
 		data = config[0L];
 	}
 
@@ -36,7 +36,7 @@ void ListSizeRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything 
 		ROAnything roaData = ctx.Lookup(str);
 		if ( !roaData.IsNull() ) {
 			long size = roaData.GetSize();
-			Trace("ListData size is: " << size);
+			Trace("ListName size is: " << size);
 			reply << size;
 			return;
 		}
