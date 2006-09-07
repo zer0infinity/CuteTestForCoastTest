@@ -205,7 +205,7 @@ void Renderer::PrintOptions2(ostream &reply, const ROAnything &any)
 void Renderer::PrintOptions3(ostream &reply, Context &c, const ROAnything &config)
 {
 	ROAnything opts;
-	if (config.LookupPath(opts, "Options")) {
+	if ( config.LookupPath(opts, "Options") ) {
 		Renderer *op = FindRenderer("OptionsPrinter");
 		if (op) {
 			op->RenderAll(reply, c, opts);
