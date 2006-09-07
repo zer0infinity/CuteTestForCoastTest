@@ -538,7 +538,7 @@
 		{
 			/Renderer {
 				/FloorRenderer	{
-					/ListData    RoundClosures
+					/ListName    RoundClosures
 					/Key		"200002041359"
 				}
 			}
@@ -547,7 +547,7 @@
 		{
 			/Renderer {
 				/FloorRenderer	{
-					/ListData    RoundClosures
+					/ListName    RoundClosures
 					/Key		"200002041400"
 				}
 			}
@@ -556,7 +556,7 @@
 		{
 			/Renderer {
 				/FloorRenderer	{
-					/ListData    RoundClosures
+					/ListName    RoundClosures
 					/Key		"200002041401"
 				}
 			}
@@ -565,7 +565,7 @@
 		{
 			/Renderer {
 				/FloorRenderer	{
-					/ListData    RoundClosures
+					/ListName    RoundClosures
 					/Key		"200001041359"
 				}
 			}
@@ -574,7 +574,7 @@
 		{
 			/Renderer {
 				/FloorRenderer	{
-					/ListData    RoundClosures
+					/ListName    RoundClosures
 					/Key		"200002021400"
 				}
 			}
@@ -583,7 +583,7 @@
 		{
 			/Renderer {
 				/FloorRenderer	{
-					/ListData    RoundClosures
+					/ListName    RoundClosures
 					/Key		"200003041359"
 				}
 			}
@@ -592,7 +592,7 @@
 		{
 			/Renderer {
 				/FloorRenderer	{
-					/ListData    RoundClosures
+					/ListName    RoundClosures
 					/Key		"200002051400"
 				}
 			}
@@ -610,7 +610,7 @@
 			}
 			/Renderer {
 				/FloorRenderer	{
-					/ListData    Unsorted
+					/ListName    Unsorted
 					/Key		"Epsilon"
 				}
 			}
@@ -620,7 +620,7 @@
 		{
 			/Renderer {
 				/CeilingRenderer	{
-					/ListData    RoundClosures
+					/ListName    RoundClosures
 					/Key		"200002041359"
 				}
 			}
@@ -629,7 +629,7 @@
 		{
 			/Renderer {
 				/CeilingRenderer	{
-					/ListData    RoundClosures
+					/ListName    RoundClosures
 					/Key		"200002041400"
 				}
 			}
@@ -638,7 +638,7 @@
 		{
 			/Renderer {
 				/CeilingRenderer	{
-					/ListData    RoundClosures
+					/ListName    RoundClosures
 					/Key		"200002041401"
 				}
 			}
@@ -647,7 +647,7 @@
 		{
 			/Renderer {
 				/CeilingRenderer	{
-					/ListData    RoundClosures
+					/ListName    RoundClosures
 					/Key		"200001041359"
 				}
 			}
@@ -656,7 +656,7 @@
 		{
 			/Renderer {
 				/CeilingRenderer	{
-					/ListData    RoundClosures
+					/ListName    RoundClosures
 					/Key		"200002021400"
 				}
 			}
@@ -665,7 +665,7 @@
 		{
 			/Renderer {
 				/CeilingRenderer	{
-					/ListData    RoundClosures
+					/ListName    RoundClosures
 					/Key		"200003041359"
 				}
 			}
@@ -674,7 +674,7 @@
 		{
 			/Renderer {
 				/CeilingRenderer	{
-					/ListData    RoundClosures
+					/ListName    RoundClosures
 					/Key		"200002051400"
 				}
 			}
@@ -691,7 +691,7 @@
 			}
 			/Renderer {
 				/CeilingRenderer	{
-					/ListData    Unsorted
+					/ListName    Unsorted
 					/Key		"Epsilon"
 				}
 			}
@@ -807,33 +807,33 @@
 			}
 			/Renderer {
 				{ /ContainsRenderer {	# Results "Yes"
-					/ListData		{ /ContextLookupRenderer	WhichList }
+					/ListName		{ /ContextLookupRenderer	WhichList }
 					/ValueToCheck	{ /ContextLookupRenderer	WhichValue }
 					/True	"Yes"
 					/False	"No"
 				} }
 				{ /ContainsRenderer {	# Results "Yes"
-					/ListData		{ /ContextLookupRenderer	WhichList }
+					/ListName		{ /ContextLookupRenderer	WhichList }
 					/ValueToCheck	123
 					/True	"Yes"
 					/False	"No"
 				} }
 				{ /ContainsRenderer {	# Results "False"
-					/ListData		TheList
+					/ListName		TheList
 					/ValueToCheck	"BC"
 					/True	{ /ContextLookupRenderer	Found }
 					/False	{ /ContextLookupRenderer	NotFound }
 				} }
 				{ /ContainsRenderer {	# Results ""
-					/ListData		TheList
+					/ListName		TheList
 					/ValueToCheck	"456"
 				} }
 				{ /ContainsRenderer {	# Results ""
-					/ListData		TheList
+					/ListName		TheList
 					/ValueToCheck	"4567"
 				} }
 				{ /ContainsRenderer {	# Results "No"
-					/ListData		TheList
+					/ListName		TheList
 					/True	"Yes"
 					/False	"No"
 				} }
@@ -846,12 +846,12 @@
 					/ValueToCheck	"AB"
 				} }
 				{ /ContainsRenderer {	# Results ""
-					/ListData		TheList
+					/ListName		TheList
 				} }
 			}
 			/Expected	"YesYesFalseNoNo"
 		}
-		{
+		/ListRendererTest1 {
 			/Env {
 				/TheList	{
 					/Slot1	{
@@ -870,7 +870,7 @@
 			}
 			/Renderer {
 				/ListRenderer	{
-					/ListData    TheList
+					/ListName    TheList
 					/ListHeader    "<"
 					/ListFooter		">"
 					/EntryHeader	{ /ContextLookupRenderer SlotName }
@@ -886,7 +886,7 @@
 			}
 			/Expected	"<Slot1AB0Slot2CD1Slot3EF2>"
 		}
-		{
+		/ListRendererTest2 {
 			/Env {
 				/TheList	{
 					/Slot1	{
@@ -909,7 +909,7 @@
 			}
 			/Renderer {
 				/ListRenderer	{
-					/ListData    TheList
+					/ListName    TheList
 					/ListHeader    "<"
 					/ListFooter		">"
 					/EntryHeaders	{
@@ -928,230 +928,230 @@
 			}
 			/Expected	"<<Slot1>AB0{Slot2}CD1<Slot3>EF2{Slot4}GH3>"
 		}
-		{
+		/ListRendererTest3 {
 			/Env {
 				/TheList	{ 0 1 2 3 4 5 6 7 8 9 10 }
 			}
 			/Renderer {
-				/PartialListRenderer	{
-					/StartPosn 3
-					/EndPosn 6
-					/ListData    TheList
+				/ListRenderer	{
+					/Start 3
+					/End 6
+					/ListName    TheList
 					/EntryRenderer	{ /ContextLookupRenderer EntryData }
 				}
 			}
 			/Expected	"3456"
 		}
-		{
+		/ListRendererTest4 {
 			/Env {
 				/TheList	{ 0 1 2 3 4 5 6 7 8 9 10 }
 				/Three 3
 				/Six 6
 			}
 			/Renderer {
-				/PartialListRenderer	{
-					/StartPosn	{ /ContextLookupRenderer Three }
-					/EndPosn 	{ /ContextLookupRenderer Six }
-					/ListData    TheList
+				/ListRenderer	{
+					/Start	{ /ContextLookupRenderer Three }
+					/End 	{ /ContextLookupRenderer Six }
+					/ListName    TheList
 					/EntryRenderer	{ /ContextLookupRenderer EntryData }
 				}
 			}
 			/Expected	"3456"
 		}
-		{
+		/ListRendererTest5 {
 			/Env {
 				/TheList	{ 0 1 2 3 4 5 6 7 8 9 10 }
 			}
 			/Renderer {
-				/PartialListRenderer	{
-					/StartPosn 0
-					/EndPosn 6
-					/ListData    TheList
+				/ListRenderer	{
+					/Start 0
+					/End 6
+					/ListName    TheList
 					/EntryRenderer	{ /ContextLookupRenderer EntryData }
 				}
 			}
 			/Expected	"0123456"
 		}
-		{
+		/ListRendererTest6 {
 			/Env {
 				/TheList	{ 0 1 2 3 4 5 6 7 8 9 10 }
 			}
 			/Renderer {
-				/PartialListRenderer	{
-					/StartPosn -5
-					/EndPosn 6
-					/ListData    TheList
+				/ListRenderer	{
+					/Start -5
+					/End 6
+					/ListName    TheList
 					/EntryRenderer	{ /ContextLookupRenderer EntryData }
 				}
 			}
 			/Expected	"0123456"
 		}
-		{
+		/ListRendererTest7 {
 			/Env {
 				/TheList	{ 0 1 2 3 4 5 6 7 8 9 10 }
 			}
 			/Renderer {
-				/PartialListRenderer	{
-					/StartPosn 6
-					/EndPosn 10
-					/ListData    TheList
+				/ListRenderer	{
+					/Start 6
+					/End 10
+					/ListName    TheList
 					/EntryRenderer	{ /ContextLookupRenderer EntryData }
 				}
 			}
 			/Expected	"678910"
 		}
-		{
+		/ListRendererTest8 {
 			/Env {
 				/TheList	{ 0 1 2 3 4 5 6 7 8 9 10 }
 			}
 			/Renderer {
-				/PartialListRenderer	{
-					/StartPosn 6
-					/EndPosn 12
-					/ListData    TheList
+				/ListRenderer	{
+					/Start 6
+					/End 12
+					/ListName    TheList
 					/IndexSlot	Index
 					/EntryRenderer	{ /ContextLookupRenderer Index }
 				}
 			}
 			/Expected	"01234"
 		}
-		{
+		/ListRendererTest9 {
 			/Env {
 				/TheList	{ 0 1 2 3 4 5 6 7 8 9 10 }
 			}
 			/Renderer {
-				/PartialListRenderer	{
-					/StartPosn 6
-					/EndPosn 6
-					/ListData    TheList
+				/ListRenderer	{
+					/Start 6
+					/End 6
+					/ListName    TheList
 					/EntryRenderer	{ /ContextLookupRenderer EntryData }
 				}
 			}
 			/Expected	"6"
 		}
-		{
+		/ListRendererTest10 {
 			/Env {
 				/TheList	{ 0 1 2 3 4 5 6 7 8 9 10 }
 			}
 			/Renderer {
-				/PartialListRenderer	{
-					/StartPosn 6
-					/ListData    TheList
+				/ListRenderer	{
+					/Start 6
+					/ListName    TheList
 					/EntryRenderer	{ /ContextLookupRenderer EntryData }
 				}
 			}
 			/Expected	"678910"
 		}
-		{
+		/ListRendererTest11 {
 			/Env {
 				/TheList	{ 0 1 2 3 4 5 6 7 8 9 10 }
 			}
 			/Renderer {
-				/PartialListRenderer	{
-					/EndPosn 6
-					/ListData    TheList
+				/ListRenderer	{
+					/End 6
+					/ListName    TheList
 					/EntryRenderer	{ /ContextLookupRenderer EntryData }
 				}
 			}
 			/Expected	"0123456"
 		}
-		{
+		/ListRendererTest12 {
 			/Env {
 				/TheList	{ 0 1 2 3 4 5 6 7 8 9 10 }
 			}
 			/Renderer {
-				/PartialListRenderer	{
-					/ListData    TheList
+				/ListRenderer	{
+					/ListName    TheList
 					/EntryRenderer	{ /ContextLookupRenderer EntryData }
 				}
 			}
 			/Expected	"012345678910"
 		}
-		{
+		/ListRendererTest13 {
 			/Env {
 				/TheList	{ 0 1 2 3 4 5 6 7 8 9 10 }
 			}
 			/Renderer {
-				/PartialListRenderer	{
-					/StartPosn 6
-					/EndPosn 3
-					/ListData    TheList
+				/ListRenderer	{
+					/Start 6
+					/End 3
+					/ListName    TheList
 					/EntryRenderer	{ /ContextLookupRenderer EntryData }
 				}
 			}
 			/Expected	""
 		}
-		{
+		/ListRendererTest14 {
 			/Env {
 				/TheList	{ 0 1 2 3 4 5 6 7 8 9 10 }
 			}
 			/Renderer {
-				/PartialListRenderer	{
-					/StartPosn -6
-					/EndPosn -3
-					/ListData    TheList
+				/ListRenderer	{
+					/Start -6
+					/End -3
+					/ListName    TheList
 					/EntryRenderer	{ /ContextLookupRenderer EntryData }
 				}
 			}
 			/Expected	""
 		}
-		{
+		/ListRendererTest15 {
 			/Env {
 				/TheList	{ 0 1 2 3 4 5 6 7 8 9 10 }
 			}
 			/Renderer {
-				/PartialListRenderer	{
-					/StartPosn -3
-					/EndPosn -6
-					/ListData    TheList
+				/ListRenderer	{
+					/Start -3
+					/End -6
+					/ListName    TheList
 					/EntryRenderer	{ /ContextLookupRenderer EntryData }
 				}
 			}
 			/Expected	""
 		}
-		{
+		/ListRendererTest16 {
 			/Env {
 				/TheList	{ 0 1 2 3 4 5 6 7 8 9 10 }
 			}
 			/Renderer {
-				/PartialListRenderer	{
-					/EndPosn -6
-					/ListData    TheList
+				/ListRenderer	{
+					/End -6
+					/ListName    TheList
 					/EntryRenderer	{ /ContextLookupRenderer EntryData }
 				}
 			}
 			/Expected	""
 		}
-		{
+		/ListRendererTest17 {
 			/Env {
 				/TheList	{ 0 1 2 3  }
 			}
 			/Renderer {
-				/PartialListRenderer	{
-					/StartPosn 5
-					/EndPosn 6
-					/ListData    TheList
+				/ListRenderer	{
+					/Start 5
+					/End 6
+					/ListName    TheList
 					/EntryRenderer	{ /ContextLookupRenderer EntryData }
 				}
 			}
 			/Expected	""
 		}
-		{
+		/ListRendererTest18 {
 			/Env {
 				/TheList	{   }
 			}
 			/Renderer {
-				/PartialListRenderer	{
-					/StartPosn 0
-					/EndPosn 6
-					/ListData    TheList
+				/ListRenderer	{
+					/Start 0
+					/End 6
+					/ListName    TheList
 					/IndexSlot Index
 					/EntryRenderer	{ /ContextLookupRenderer Index }
 				}
 			}
 			/Expected	""
 		}
-		{ # Full ListRenderer config
+		/ListRendererTest19 { # Full ListRenderer config
 			/Env {
 				/TheList {
 					/"A"  1
@@ -1167,10 +1167,10 @@
 				}
 			}
 			/Renderer {
-				/PartialListRenderer	{
-					/StartPosn 0
-					/EndPosn 9
-					/ListData    TheList
+				/ListRenderer	{
+					/Start 0
+					/End 9
+					/ListName    TheList
 					/ListHeader    "<"
 					/ListFooter		">"
 					/EntryHeader	"["
@@ -1192,234 +1192,13 @@
 			}
 			/Expected	"<A0:1[B1:2]C2:3[D3:4E4:5[F5:6]G6:7[H7:8I8:9[J9:10>"
 		}
-		{
-			/Env {
-				/TheList {
-					/"A"  1
-					/"B"  2
-					/"C"  3
-					/"D"  4
-					/"E"  5
-					/"F"  6
-					/"G"  7
-					/"H"  8
-					/"I"  9
-					/"J"  10
-					/"K"  11
-				}
-			}
-			/Renderer {
-				/LinksListRenderer	{
-					/Increment 5
-					/ListData    TheList
-					/EntryRenderer	{
-						{ /ContextLookupRenderer EntryData.Number }
-						":"
-						{ /ContextLookupRenderer EntryData.StartPosn }
-						"-"
-						{ /ContextLookupRenderer EntryData.EndPosn }
-						" "
-					}
-				}
-			}
-			/Expected	"0:0-4 1:5-9 2:10-10 "
-		}
-		{
-			/Env {
-				/TheList {
-					/"A"  1
-					/"B"  2
-					/"C"  3
-					/"D"  4
-					/"E"  5
-					/"F"  6
-					/"G"  7
-					/"H"  8
-					/"I"  9
-					/"J"  10
-					/"K"  11
-				}
-			}
-			/Renderer {
-				/LinksListRenderer	{
-					/Increment 3
-					/ListData    TheList
-					/EntryRenderer	{
-						{ /ContextLookupRenderer EntryData.Number }
-						":"
-						{ /ContextLookupRenderer EntryData.StartPosn }
-						"-"
-						{ /ContextLookupRenderer EntryData.EndPosn }
-						" "
-					}
-				}
-			}
-			/Expected	"0:0-2 1:3-5 2:6-8 3:9-10 "
-		}
-		{
-			/Env {
-				/Gap 3
-				/TheList {
-					/"A"  1
-					/"B"  2
-					/"C"  3
-					/"D"  4
-					/"E"  5
-					/"F"  6
-					/"G"  7
-					/"H"  8
-					/"I"  9
-					/"J"  10
-					/"K"  11
-				}
-			}
-			/Renderer {
-				/LinksListRenderer	{
-					/Increment { /ContextLookupRenderer Gap }
-					/ListData    { The List }
-					/EntryRenderer	{
-						{ /ContextLookupRenderer EntryData.Number }
-						":"
-						{ /ContextLookupRenderer EntryData.StartPosn }
-						"-"
-						{ /ContextLookupRenderer EntryData.EndPosn }
-						" "
-					}
-				}
-			}
-			/Expected	"0:0-2 1:3-5 2:6-8 3:9-10 "
-		}
-		{
-			/Env {
-				/TheList {
-					/"A"  1
-					/"B"  2
-					/"C"  3
-					/"D"  4
-					/"E"  5
-					/"F"  6
-					/"G"  7
-					/"H"  8
-					/"I"  9
-					/"J"  10
-					/"K"  11
-				}
-			}
-			/Renderer {
-				/LinksListRenderer	{
-					/Increment 0
-					/ListData    TheList
-					/EntryRenderer	{
-						{ /ContextLookupRenderer EntryData.Number }
-						":"
-						{ /ContextLookupRenderer EntryData.StartPosn }
-						"-"
-						{ /ContextLookupRenderer EntryData.EndPosn }
-						" "
-					}
-				}
-			}
-			/Expected	"0:0-10 "
-		}
-		{
-			/Env {
-				/TheList {
-					/"A"  1
-					/"B"  2
-					/"C"  3
-					/"D"  4
-					/"E"  5
-					/"F"  6
-					/"G"  7
-					/"H"  8
-					/"I"  9
-					/"J"  10
-					/"K"  11
-				}
-			}
-			/Renderer {
-				/LinksListRenderer	{
-					/Increment -4		# sign is ignored
-					/ListData    TheList
-					/EntryRenderer	{
-						{ /ContextLookupRenderer EntryData.Number }
-						":"
-						{ /ContextLookupRenderer EntryData.StartPosn }
-						"-"
-						{ /ContextLookupRenderer EntryData.EndPosn }
-						" "
-					}
-				}
-			}
-			/Expected	"0:0-3 1:4-7 2:8-10 "
-		}
-		{
-			/Env {
-				/TheList {
-					/"A"  1
-					/"B"  2
-					/"C"  3
-					/"D"  4
-					/"E"  5
-					/"F"  6
-					/"G"  7
-					/"H"  8
-					/"I"  9
-					/"J"  10
-					/"K"  11
-				}
-			}
-			/Renderer {
-				/LinksListRenderer	{
-					/Increment 56
-					/ListData    TheList
-					/EntryRenderer	{
-						{ /ContextLookupRenderer EntryData.Number }
-						":"
-						{ /ContextLookupRenderer EntryData.StartPosn }
-						"-"
-						{ /ContextLookupRenderer EntryData.EndPosn }
-						" "
-					}
-				}
-			}
-			/Expected	"0:0-10 "
-		}
-		{ # Empty List
-			/Env {
-				/TheList {
-				}
-			}
-			/Renderer {
-				/LinksListRenderer	{
-					/Increment 56
-					/ListData    TheList
-					/EntryRenderer	{ /ContextLookupRenderer EntryData }
-				}
-			}
-			/Expected	""
-		}
-		{ # Increment missing
-			/Env {
-				/TheList {
-				}
-			}
-			/Renderer {
-				/LinksListRenderer	{
-					/ListData    TheList
-					/EntryRenderer	{ /ContextLookupRenderer EntryData }
-				}
-			}
-			/Expected	""
-		}
-
-		{
+		/ListRendererTest20 {
 			/Env {
 				/TheList	{ 1 2 3 4 5 6 7 8 9 10 }
 			}
 			/Renderer {
 				/ListRenderer	{
-					/ListData    TheList
+					/ListName    TheList
 					/ListHeader    "<"
 					/ListFooter		">"
 					/EntryHeader	"["
@@ -1437,7 +1216,32 @@
 			}
 			/Expected	"<1[2]3[45[6]7[89[10>"
 		}
-		{
+		/ListRendererTest21 {
+			/Env {
+			}
+			/Renderer {
+				/ListRenderer	{
+					/ListData {
+						1 2 3 4 5 6 7 8 9 10
+					}
+					/ListHeader    "<"
+					/ListFooter		">"
+					/EntryHeader	"["
+					/EHStartingEntry 2
+					/EHEveryXEntries 2
+					/EntryFooter	"]"
+					/EFStartingEntry 2
+					/EFEveryXEntries 4
+					/EFSuppressLast		1
+					/EntryStore		Record
+					/EntryRenderer    {
+						{ /ContextLookupRenderer   Record }
+					}
+				}
+			}
+			/Expected	"<1[2]3[45[6]7[89[10>"
+		}
+		/SelBoxTest1 {
 			/Env	{
 				/ListBoxList	{
 					/A { /Name AName  /Key	A }
@@ -1453,7 +1257,7 @@
 				/SelectBoxRenderer {
 					/Name	 "TestList"
 					/Size   2      #optional (default=1 -> pulldown menu)
-					/PlainList		ListBoxList
+					/ListName		ListBoxList
 					/TextRenderer	{
 						{ /ContextLookupRenderer	SelectBoxOption.Name }
 						"-"
@@ -1470,9 +1274,9 @@
 					}
 				}
 			}
-			/Expected	"<SELECT NAME=\"fld_TestList\" SIZE=\"2\">\n<OPTION VALUE=\"A\">AName-A\n<OPTION VALUE=\"B\">BName-AB\n<OPTION VALUE=\"C\" SELECTED>CName-C\n<OPTION VALUE=\"D\">DName-D\n</SELECT>\n"
+			/Expected	"<select name=\"fld_TestList\" size=\"2\">\n<option value=\"A\">AName-A</option>\n<option value=\"B\">BName-AB</option>\n<option value=\"C\" selected>CName-C</option>\n<option value=\"D\">DName-D</option>\n</select>\n"
 		}
-		{
+		/SelBoxTest2 {
 			/Env	{
 				/ListBoxList	{
 					/A { /Name AName  /Key	A }
@@ -1480,11 +1284,11 @@
 					/C { /Name CName  /Key	C }
 					/D { /Name DName  /Key	D }
 				}
-				/PrependList {
+				/PrependListName {
 					/P1	{ /Name P1Name /Key P1 }
 					/P2	{ /Name P2Name /Key P2 }
 				}
-				/AppendList {
+				/AppendListName {
 					/A1	{ /Name A1Name /Key A1 }
 					/A2	{ /Name A2Name /Key A2 }
 				}
@@ -1496,9 +1300,9 @@
 				/SelectBoxRenderer {
 					/Name	 "TestList"
 					/Size   2      #optional (default=1 -> pulldown menu)
-					/PlainList		ListBoxList
-					/PrependList	PrependList
-					/AppendList		AppendList
+					/ListName		ListBoxList
+					/PrependListName	PrependListName
+					/AppendListName		AppendListName
 					/TextRenderer	{
 						{ /ContextLookupRenderer	SelectBoxOption.Name }
 						"-"
@@ -1515,9 +1319,9 @@
 					}
 				}
 			}
-			/Expected	"<SELECT NAME=\"fld_TestList\" SIZE=\"2\">\n<OPTION VALUE=\"P1\">P1Name-P1\n<OPTION VALUE=\"P2\">P2Name-P2\n<OPTION VALUE=\"A\">AName-A\n<OPTION VALUE=\"B\">BName-AB\n<OPTION VALUE=\"C\" SELECTED>CName-C\n<OPTION VALUE=\"D\">DName-D\n<OPTION VALUE=\"A1\">A1Name-A1\n<OPTION VALUE=\"A2\">A2Name-A2\n</SELECT>\n"
+			/Expected	"<select name=\"fld_TestList\" size=\"2\">\n<option value=\"P1\">P1Name-P1</option>\n<option value=\"P2\">P2Name-P2</option>\n<option value=\"A\">AName-A</option>\n<option value=\"B\">BName-AB</option>\n<option value=\"C\" selected>CName-C</option>\n<option value=\"D\">DName-D</option>\n<option value=\"A1\">A1Name-A1</option>\n<option value=\"A2\">A2Name-A2</option>\n</select>\n"
 		}
-		{
+		/SelBoxTest3 {
 			/Env	{
 				/ListBoxList	{
 					/A { /Name AName  /Key	A }
@@ -1534,7 +1338,7 @@
 				/SelectBoxRenderer {
 					/Name	 "TestList"
 					/Size   { /Lookup Size }
-					/PlainList		ListBoxList
+					/ListName		ListBoxList
 					/TextRenderer	{
 						{ /ContextLookupRenderer	SelectBoxOption.Name }
 						"-"
@@ -1551,9 +1355,9 @@
 					}
 				}
 			}
-			/Expected	"<SELECT NAME=\"fld_TestList\" SIZE=\"4\">\n<OPTION VALUE=\"A\">AName-A\n<OPTION VALUE=\"B\">BName-AB\n<OPTION VALUE=\"C\" SELECTED>CName-C\n<OPTION VALUE=\"D\">DName-D\n</SELECT>\n"
+			/Expected	"<select name=\"fld_TestList\" size=\"4\">\n<option value=\"A\">AName-A</option>\n<option value=\"B\">BName-AB</option>\n<option value=\"C\" selected>CName-C</option>\n<option value=\"D\">DName-D</option>\n</select>\n"
 		}
-		{
+		/SelBoxTest4 {
 			/Env	{
 				/ListBoxList	{
 					/A { /Name AName  /Key	A }
@@ -1572,7 +1376,7 @@
 					/Name	 "TestList"
 					/Size   { /Lookup Size }
 					/Multiple	{ /Lookup Multiple }
-					/PlainList		ListBoxList
+					/ListName		ListBoxList
 					/TextRenderer	{
 						{ /ContextLookupRenderer	SelectBoxOption.Name }
 						"-"
@@ -1589,9 +1393,9 @@
 					}
 				}
 			}
-			/Expected	"<SELECT NAME=\"fld_TestList\" SIZE=\"4\" MULTIPLE>\n<OPTION VALUE=\"A\">AName-A\n<OPTION VALUE=\"B\">BName-AB\n<OPTION VALUE=\"C\" SELECTED>CName-C\n<OPTION VALUE=\"D\">DName-D\n</SELECT>\n"
+			/Expected	"<select name=\"fld_TestList\" size=\"4\" multiple>\n<option value=\"A\">AName-A</option>\n<option value=\"B\">BName-AB</option>\n<option value=\"C\" selected>CName-C</option>\n<option value=\"D\">DName-D</option>\n</select>\n"
 		}
-		{
+		/SelBoxTest5 {
 			/Env	{
 				/ListBoxList	{
 					/A { /Name AName  /Key	A }
@@ -1610,7 +1414,7 @@
 					/Name	 "TestList"
 					/Size   { /Lookup Size }
 					/Multiple	{ /Lookup Multiple }
-					/PlainList		ListBoxList
+					/ListName		ListBoxList
 					/TextRenderer	{
 						{ /ContextLookupRenderer	SelectBoxOption.Name }
 						"-"
@@ -1627,9 +1431,9 @@
 					}
 				}
 			}
-			/Expected	"<SELECT NAME=\"fld_TestList\" SIZE=\"4\">\n<OPTION VALUE=\"A\">AName-A\n<OPTION VALUE=\"B\">BName-AB\n<OPTION VALUE=\"C\" SELECTED>CName-C\n<OPTION VALUE=\"D\">DName-D\n</SELECT>\n"
+			/Expected	"<select name=\"fld_TestList\" size=\"4\">\n<option value=\"A\">AName-A</option>\n<option value=\"B\">BName-AB</option>\n<option value=\"C\" selected>CName-C</option>\n<option value=\"D\">DName-D</option>\n</select>\n"
 		}
-		{
+		/SelBoxTest6 {
 			/Env	{
 				/ListBoxList	{
 					/A { /Name AName  /Key	A }
@@ -1647,7 +1451,7 @@
 					/Name	 "TestList"
 					/Size   { /Lookup Size }
 					/Multiple	{ /Lookup Multiple }
-					/PlainList		ListBoxList
+					/ListName		ListBoxList
 					/TextRenderer	{
 						{ /ContextLookupRenderer	SelectBoxOption.Name }
 						"-"
@@ -1664,7 +1468,131 @@
 					}
 				}
 			}
-			/Expected	"<SELECT NAME=\"fld_TestList\" SIZE=\"4\">\n<OPTION VALUE=\"A\">AName-A\n<OPTION VALUE=\"B\">BName-AB\n<OPTION VALUE=\"C\" SELECTED>CName-C\n<OPTION VALUE=\"D\">DName-D\n</SELECT>\n"
+			/Expected	"<select name=\"fld_TestList\" size=\"4\">\n<option value=\"A\">AName-A</option>\n<option value=\"B\">BName-AB</option>\n<option value=\"C\" selected>CName-C</option>\n<option value=\"D\">DName-D</option>\n</select>\n"
+		}
+		/SelBoxTest7 {
+			/Env {
+				/OptGroupRenderTstListe01 {
+					"65_7_1"
+					"65_12_1"
+					"66_1_1"
+					"66_7_1"
+					"66_12_1"
+				}
+			}
+			/Renderer {
+				/SelectBoxRenderer {
+					/Name 		"MyTest01"
+					/Size		15
+					/ListName  OptGroupRenderTstListe01
+					/ValueRenderer { /Lookup  SelectBoxOption }
+					/TextRenderer  { /Lookup  SelectBoxOption }
+					/OptionGroup {
+						/KeyRenderer {
+							/StringTokenizeRenderer {
+								/String			{ /Lookup SelectBoxOption }
+								/Token			"_"
+								/RenderToken	1
+							}
+						}
+						/LabelRenderer {
+							/StringTokenizeRenderer {
+								/String			{ /Lookup SelectBoxOption }
+								/Token			"_"
+								/RenderToken	1
+							}
+						}
+					}
+				}
+			}
+			/Expected "<select name=\"fld_MyTest01\" size=\"15\">\n<optgroup label='65'>\n<option value=\"65_7_1\">65_7_1</option>\n<option value=\"65_12_1\">65_12_1</option>\n</optgroup>\n<optgroup label='66'>\n<option value=\"66_1_1\">66_1_1</option>\n<option value=\"66_7_1\">66_7_1</option>\n<option value=\"66_12_1\">66_12_1</option>\n</optgroup>\n</select>\n"
+
+		}
+		/SelBoxTest8 {
+			/Env {
+				/OptGroupRenderTstListe02 {
+					"65_7_1"
+					"65_7_2"
+					"66_1_3"
+					"66_1_4"
+					"66_1_5"
+				}
+			}
+			/Renderer {
+				/SelectBoxRenderer {
+					/Name 		"MyTest02"
+					/Size		15
+					/ListName  OptGroupRenderTstListe02
+					/ValueRenderer { /Lookup  SelectBoxOption }
+					/TextRenderer  { /Lookup  SelectBoxOption }
+					/OptionGroup {
+						/KeyRenderer {
+							/StringTokenizeRenderer {
+								/String			{ /Lookup SelectBoxOption }
+								/Token			"_"
+								/RenderToken	2
+							}
+						}
+						/LabelRenderer {
+							/StringTokenizeRenderer {
+								/String			{ /Lookup SelectBoxOption }
+								/Token			"_"
+								/RenderToken	2
+							}
+						}
+					}
+				}
+			}
+			/Expected "<select name=\"fld_MyTest02\" size=\"15\">\n<optgroup label='7'>\n<option value=\"65_7_1\">65_7_1</option>\n<option value=\"65_7_2\">65_7_2</option>\n</optgroup>\n<optgroup label='1'>\n<option value=\"66_1_3\">66_1_3</option>\n<option value=\"66_1_4\">66_1_4</option>\n<option value=\"66_1_5\">66_1_5</option>\n</optgroup>\n</select>\n"
+		}
+		/SelBoxTest9 {
+			/Env {
+				/LabelreferenzListe {
+					/65 "BC65"
+					/66 "BC66"
+				}
+				/OptGroupRenderTstListe03 {
+					"65_7_1"
+					"66_1_3"
+				}
+			}
+			/Renderer {
+				/SelectBoxRenderer {
+					/Name 		"MyTest03"
+					/Size		15
+					/ListName  OptGroupRenderTstListe03
+					/ValueRenderer { /Lookup  SelectBoxOption }
+					/TextRenderer  { /Lookup  SelectBoxOption }
+					/OptionGroup {
+						/KeyRenderer {
+							/StringTokenizeRenderer {
+								/String			{ /Lookup SelectBoxOption }
+								/Token			"_"
+								/RenderToken	1
+							}
+						}
+						/LabelRenderer {
+							/StringTokenizeRenderer {
+								/String			{ /Lookup SelectBoxOption }
+								/Token			"_"
+								/RenderToken	1
+							}
+							" - "
+							/Lookup {
+								{
+									LabelreferenzListe.
+									/StringTokenizeRenderer {
+										/String			{ /Lookup SelectBoxOption }
+										/Token			"_"
+										/RenderToken	1
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			/Expected "<select name=\"fld_MyTest03\" size=\"15\">\n<optgroup label='65 - BC65'>\n<option value=\"65_7_1\">65_7_1</option>\n</optgroup>\n<optgroup label='66 - BC66'>\n<option value=\"66_1_3\">66_1_3</option>\n</optgroup>\n</select>\n"
 		}
 		{
 			/Renderer	{
@@ -2097,7 +2025,7 @@
 					/Layout { TEST }
 				}
 			}
-			/Expected "<FORM ACTION=\"wdgateway?X=Encoder-Scrambler-Signer-Compressor-%7B%2Frole%20%22TestRole%22%2FsessionId%20%22TestSession%22%2Fpage%20%22TestPage%22%2Faction%20%22Test%22%2FTestId%20%22Test%22%7D\" METHOD=\"GET\" ENCTYPE=\"multipart/form-data\" TARGET=\"_blank\" Name=\"TestForm\"><INPUT TYPE=HIDDEN NAME=\"X\" VALUE=\"Encoder-Scrambler-Signer-Compressor-%7B%2Frole%20%22TestRole%22%2FsessionId%20%22TestSession%22%2Fpage%20%22TestPage%22%2Faction%20%22Test%22%2FTestId%20%22Test%22%7D\">TEST</FORM>"
+			/Expected "<FORM ACTION=\"wdgateway?X=Encoder-Scrambler-Signer-Compressor-%7B%2Frole%20%22TestRole%22%2FsessionId%20%22TestSession%22%2Fpage%20%22TestPage%22%2Faction%20%22Test%22%2FTestId%20%22Test%22%7D\" METHOD=\"GET\" ENCTYPE=\"multipart/form-data\" TARGET=\"_blank\" name=\"TestForm\"><INPUT TYPE=HIDDEN NAME=\"X\" VALUE=\"Encoder-Scrambler-Signer-Compressor-%7B%2Frole%20%22TestRole%22%2FsessionId%20%22TestSession%22%2Fpage%20%22TestPage%22%2Faction%20%22Test%22%2FTestId%20%22Test%22%7D\">TEST</FORM>"
 		}
 		{ # Form Renderer Method POST
 			/Renderer {
@@ -2115,7 +2043,7 @@
 					/Layout { TEST }
 				}
 			}
-			/Expected "<FORM ACTION=\"wdgateway?X=Encoder-Scrambler-Signer-Compressor-%7B%2Frole%20%22TestRole%22%2FsessionId%20%22TestSession%22%2Fpage%20%22TestPage%22%2Faction%20%22Test%22%2FTestId%20%22Test%22%7D\" METHOD=\"POST\" ENCTYPE=\"multipart/form-data\" TARGET=\"_blank\" Name=\"TestForm\">TEST</FORM>"
+			/Expected "<FORM ACTION=\"wdgateway?X=Encoder-Scrambler-Signer-Compressor-%7B%2Frole%20%22TestRole%22%2FsessionId%20%22TestSession%22%2Fpage%20%22TestPage%22%2Faction%20%22Test%22%2FTestId%20%22Test%22%7D\" METHOD=\"POST\" ENCTYPE=\"multipart/form-data\" TARGET=\"_blank\" name=\"TestForm\">TEST</FORM>"
 		}
 		{ # Form Renderer Method GET mit Base URL
 			/Env {
@@ -2136,7 +2064,7 @@
 					/Layout { TEST }
 				}
 			}
-			/Expected "<FORM ACTION=\"X2=Encoder-Scrambler-Signer-Compressor-%7B%2Faction%20%22Test%22%2FTestId%20%22Test%22%7D\" METHOD=\"GET\" ENCTYPE=\"multipart/form-data\" TARGET=\"_blank\" Name=\"TestForm\">TEST</FORM>"
+			/Expected "<FORM ACTION=\"X2=Encoder-Scrambler-Signer-Compressor-%7B%2Faction%20%22Test%22%2FTestId%20%22Test%22%7D\" METHOD=\"GET\" ENCTYPE=\"multipart/form-data\" TARGET=\"_blank\" name=\"TestForm\">TEST</FORM>"
 		}
 		{ # Form Renderer Method POST mit Base URL
 			/Env {
@@ -2157,7 +2085,7 @@
 					/Layout { TEST }
 				}
 			}
-			/Expected "<FORM ACTION=\"X2=Encoder-Scrambler-Signer-Compressor-%7B%2Faction%20%22Test%22%2FTestId%20%22Test%22%7D\" METHOD=\"POST\" ENCTYPE=\"multipart/form-data\" TARGET=\"_blank\" Name=\"TestForm\">TEST</FORM>"
+			/Expected "<FORM ACTION=\"X2=Encoder-Scrambler-Signer-Compressor-%7B%2Faction%20%22Test%22%2FTestId%20%22Test%22%7D\" METHOD=\"POST\" ENCTYPE=\"multipart/form-data\" TARGET=\"_blank\" name=\"TestForm\">TEST</FORM>"
 		}
 		{ # Form Renderer minimal config test
 			/Renderer {
@@ -3048,7 +2976,7 @@
 			}
 			/Renderer {
 				/ListSizeRenderer {
-					/ListData	TheList
+					/ListName	TheList
 				}
 			}
 			/Expected	"4"
@@ -3076,7 +3004,7 @@
 			}
 			/Renderer {
 				/ListSizeRenderer {
-					/ListData	TheGagaList
+					/ListName	TheGagaList
 				}
 			}
 			/Expected	""
@@ -3104,7 +3032,7 @@
 			}
 			/Renderer {
 				/ListSizeRenderer {
-					/ListData	TheGagaList
+					/ListName	TheGagaList
 					/Default	0
 				}
 			}
