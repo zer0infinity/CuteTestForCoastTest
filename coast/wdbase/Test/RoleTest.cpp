@@ -311,9 +311,8 @@ void RoleTest::GetDefaultRoleName()
 	assertEqual("Role", Role::GetDefaultRoleName(ctx));
 	Anything newrole;
 	newrole["DefaultRole"] = "Fantasy";
-	ctx.PushStore("x", newrole);
+	Context::PushPopEntry<Anything> aEntry(ctx, "x", newrole);
 	assertEqual("Fantasy", Role::GetDefaultRoleName(ctx));
-
 	Context ctx2(GetConfig().DeepClone(), dummy, 0, 0, 0, 0);
 	assertEqual("MyRole", Role::GetDefaultRoleName(ctx2));
 }

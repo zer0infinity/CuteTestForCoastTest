@@ -46,7 +46,7 @@ void LogTimerTest::MethodTimerTest()
 		Anything setup;
 		setup["EnabledValues"]["Log"]["Times"]["Method"]["Test"] = true;
 		setup["SimulatedValues"]["Log"]["Times"]["Method"]["Test"] = 10;
-		Context::PushPopEntry aEntry(ctx, "setup", setup);
+		Context::PushPopEntry<Anything> aEntry(ctx, "setup", setup);
 		Anything expected;
 		Anything data;
 		data["Time"] = 10L;
@@ -65,7 +65,7 @@ void LogTimerTest::MethodTimerTest()
 		Anything setup;
 		setup["EnabledValues"]["Log"]["Times"]["Method"]["Test"] = true;
 		setup["SimulatedValues"]["Log"]["Times"]["Method"]["Test"] = 10;
-		Context::PushPopEntry aEntry(ctx, "setup", setup);
+		Context::PushPopEntry<Anything> aEntry(ctx, "setup", setup);
 		Anything expected;
 		Anything data;
 		data["Time"] = 10L;
@@ -92,7 +92,7 @@ void LogTimerTest::MethodTimerTest()
 		setup["EnabledValues"]["Log"]["Times"]["Method"]["Test"]["SubB"] = true;
 		setup["SimulatedValues"]["Log"]["Times"]["Method"]["Test"]["SubA"] = 10;
 		setup["SimulatedValues"]["Log"]["Times"]["Method"]["Test"]["SubB"] = 10;
-		Context::PushPopEntry aEntry(ctx, "setup", setup);
+		Context::PushPopEntry<Anything> aEntry(ctx, "setup", setup);
 		Anything expected;
 		Anything data;
 		data["Time"] = 10L;

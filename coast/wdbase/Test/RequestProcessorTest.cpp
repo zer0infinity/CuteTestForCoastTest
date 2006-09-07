@@ -117,15 +117,13 @@ void LoopbackProcessor::DoReadInput(iostream &Ios, Context &ctx)
 	StartTrace(LoopbackProcessor.DoReadInput);
 	Anything request;
 	request.Import(Ios);
-
-	ctx.PushStore("Request", request);
+	ctx.Push("Request", request);
 }
 
 void LoopbackProcessor::DoProcessRequest(ostream &reply, Context &ctx)
 {
 	StartTrace(LoopbackProcessor.DoProcessRequest);
 	Anything request;
-
 	if ( ctx.GetStore("Request", request) ) {
 		request.PrintOn(reply);
 	}

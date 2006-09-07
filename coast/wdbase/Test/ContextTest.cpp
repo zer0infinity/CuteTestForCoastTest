@@ -88,7 +88,8 @@ void ContextTest::EmptyConstructorTest ()
 	assertAnyEqual(empty, result);
 	t_assert(ctx.GetStore("tmp", result));
 	assertAnyEqualm(tmpStore, result, "tmpStore should always be there");
-	t_assert(ctx.Pop() == false);
+	String strKey;
+	t_assert(ctx.Pop(strKey) == false);
 	t_assert(ctx.PopStore(popStoreKey) == false);
 	assertEqual("noStore", popStoreKey);
 	t_assert(ctx.GetStore("tmp", result));
@@ -157,7 +158,7 @@ void ContextTest::SimplePushNoPop()
 	assertEqual("yes", ctx.Lookup("foo").AsCharPtr("yes"));
 
 	//push a lookup interface
-	ctx.Push(Role::FindRole("Role"));
+	ctx.Push("Role", Role::FindRole("Role"));
 
 	//lookups find everything in the first object
 	assertEqual("Role", ctx.Lookup("ContextItem", "not found"));
@@ -165,7 +166,7 @@ void ContextTest::SimplePushNoPop()
 	assertEqual("not there", ctx.Lookup("ContextTestPage").AsCharPtr("not there"));
 
 	//push a second interface
-	ctx.Push(Page::FindPage("Page"));
+	ctx.Push("Page", Page::FindPage("Page"));
 
 	//lookups find things first in the second object than in the first object
 	assertEqual("Page", ctx.Lookup("ContextItem", "not found"));
@@ -200,7 +201,8 @@ void ContextTest::SimpleNamedPushPop()
 	assertEqual("found", ctx.Lookup("ContextTestPage").AsCharPtr("not found"));
 
 	//pop the interface
-	t_assert(ctx.Pop());
+	String strKey;
+	t_assert(ctx.Pop(strKey));
 
 	//lookups find everything in the first object
 	assertEqual("Role", ctx.Lookup("ContextItem", "not found"));
@@ -208,7 +210,7 @@ void ContextTest::SimpleNamedPushPop()
 	assertEqual("not there", ctx.Lookup("ContextTestPage").AsCharPtr("not there"));
 
 	//pop the interface
-	t_assert(ctx.Pop());
+	t_assert(ctx.Pop(strKey));
 
 	//empty context always returns default information
 	assertEqual("right", ctx.Lookup("foo", "right"));
@@ -217,7 +219,7 @@ void ContextTest::SimpleNamedPushPop()
 
 	ctx.Push("Page", 0);
 	//pop the interface should fail
-	t_assert(ctx.Pop() == false);
+	t_assert(ctx.Pop(strKey) == false);
 	assertEqual(0, ctx.fStackSz);
 
 }
@@ -283,7 +285,8 @@ void ContextTest::FindReplace()
 	assertEqual("SecretKey", ctx.Lookup("InGuestOnly", "not found"));
 	assertEqual(3, ctx.fStackSz);
 
-	t_assert(ctx.Pop());
+	String strKey;
+	t_assert(ctx.Pop(strKey));
 	assertEqual("not found anymore", ctx.Lookup("InGuestOnly", "not found anymore"));
 	t_assert(p == ctx.GetPage());
 	t_assert(r == ctx.GetRole());
@@ -402,7 +405,7 @@ void ContextTest::SimplePushPop()
 	request["header"]["URI"] = "/";
 	request["body"] = "test&it&now";
 
-	ctx.PushStore("StoreTest.request", request);
+	ctx.Push("StoreTest.request", request);
 
 	//now the information of the store should be found
 	assertEqual("sentosa", ctx.Lookup("header.HOST", "right"));
@@ -432,7 +435,7 @@ void ContextTest::SimplePushWithEmptyStore()
 	//define an initial content of a store which is empty but already an array
 	MetaThing request;
 	String popStoreKey;
-	ctx.PushStore("StoreTest.request", request);
+	ctx.Push("StoreTest.request", request);
 
 	//now the information of the store still empty
 	assertEqual("right", ctx.Lookup("header.HOST", "right"));
@@ -440,15 +443,20 @@ void ContextTest::SimplePushWithEmptyStore()
 	assertEqual("yes", ctx.Lookup("body").AsCharPtr("yes"));
 
 	//now fill in some information
-	ctx.GetStore("Store.request", request);
-	request["header"]["HOST"] = "sentosa";
-	request["header"]["URI"] = "/";
-	request["body"] = "test&it&now";
+	t_assertm(!ctx.GetStore("Store.request", request), "expected GetStore() to fail because of non existent stack entry! Check changed stack behavior");
+	Anything anyPushedRequest;
+	anyPushedRequest["header"]["HOST"] = "sentosa";
+	anyPushedRequest["header"]["URI"] = "/";
+	anyPushedRequest["body"] = "test&it&now";
 
+	ctx.Push("Store.request", anyPushedRequest);
 	//now the information of the store should be found
 	assertEqual("sentosa", ctx.Lookup("header.HOST", "right"));
 	assertEqual("/", ctx.Lookup("header.URI", "no"));
 	assertEqual("test&it&now", ctx.Lookup("body").AsCharPtr("yes"));
+
+	t_assert(ctx.PopStore(popStoreKey));
+	assertEqual("Store.request", popStoreKey);
 
 	t_assert(ctx.PopStore(popStoreKey));
 	assertEqual("StoreTest.request", popStoreKey);
@@ -467,7 +475,7 @@ void ContextTest::MoreThanOnePush()
 	MetaThing request;
 	MetaThing env;
 	String popStoreKey;
-	ctx.PushStore("Store.request", request);
+	ctx.Push("Store.request", request);
 
 	//now the information of the store still empty
 	assertEqual("right", ctx.Lookup("header.HOST", "right"));
@@ -485,7 +493,7 @@ void ContextTest::MoreThanOnePush()
 	assertEqual("/", ctx.Lookup("header.URI", "no"));
 	assertEqual("test&it&now", ctx.Lookup("body").AsCharPtr("yes"));
 
-	ctx.PushStore("Store.env", env);
+	ctx.Push("Store.env", env);
 	//now the information of the store should be found (still the same)
 	assertEqual("sentosa", ctx.Lookup("header.HOST", "right"));
 	assertEqual("/", ctx.Lookup("header.URI", "no"));
@@ -522,10 +530,10 @@ void ContextTest::MoreThanOnePushWithSameKey()
 	Context ctx;
 
 	//define an initial content of a store which is empty but already an array
-	Anything request;
+	MetaThing request;
 	Anything env;
 	String popStoreKey;
-	ctx.PushStore("Store.request", request);
+	ctx.Push("Store.request", request);
 
 	//now the information of the store still empty
 	assertEqual("right", ctx.Lookup("header.HOST", "right"));
@@ -548,7 +556,7 @@ void ContextTest::MoreThanOnePushWithSameKey()
 	env["header"]["URI"] = "/finval/";
 	env["body"] = "new&test&now";
 	env["topslot"] = "ole";
-	ctx.PushStore("Store.request", env);
+	ctx.Push("Store.request", env);
 
 	//now the information of the store should be found (but with new values)
 	assertEqual("aarau", ctx.Lookup("header.HOST", "right"));
@@ -578,7 +586,11 @@ void ContextTest::MoreThanOnePushWithSameKey()
 	assertEqual("yes", ctx.Lookup("bottomslot").AsCharPtr("yes"));
 
 	Anything newStore = "foo";
-	ctx.PushStore("Store.request", newStore);
+	ctx.Push("Store.request", newStore);
+	assertEqual("right", ctx.Lookup("header.HOST", "right"));
+	assertEqual("foo", ctx.Lookup(":0").AsCharPtr("yes"));
+
+	// due to reference semantics, we can freely add other values
 	newStore["header"]["HOST"] = "aarau";
 	newStore["header"]["URI"] = "/finval/";
 	newStore["body"] = "new&test&now";
@@ -596,11 +608,11 @@ void ContextTest::MoreThanOnePushWithSameKeyPrefix()
 	Context ctx;
 
 	//define an initial content of a store which is empty but already an array
-	Anything request0;
-	Anything request1;
+	MetaThing request0;
+	MetaThing request1;
 	Anything env;
 	String popStoreKey;
-	ctx.PushStore("Store", request0);
+	ctx.Push("Store", request0);
 
 	request0["request"] =  "bah";
 	request0["bottomslot"] =  "yuppieh";
@@ -608,7 +620,7 @@ void ContextTest::MoreThanOnePushWithSameKeyPrefix()
 	assertEqual("yuppieh", ctx.Lookup("bottomslot", "not found"));
 
 	// pay attention, the key has no LookupPath semantics!
-	ctx.PushStore("Store.request", request1);
+	ctx.Push("Store.request", request1);
 	request1["request"] = "foo";
 	request1["middleslot"] = "ole";
 	assertEqual("foo", ctx.Lookup("request", "not found"));
@@ -617,7 +629,7 @@ void ContextTest::MoreThanOnePushWithSameKeyPrefix()
 
 	env["request"] = "bar";
 	env["topslot"] = "gugus";
-	ctx.PushStore("Store", env);
+	ctx.Push("Store", env);
 	assertEqual("bar", ctx.Lookup("request", "not found"));
 	assertEqual("gugus", ctx.Lookup("topslot", "not found"));
 	assertEqual("yuppieh", ctx.Lookup("bottomslot", "not found"));
@@ -730,7 +742,7 @@ void ContextTest::SessionPushTest()
 			Context ctx;
 			Anything env;
 			env["Context"]["CopySessionStore"] = true;
-			ctx.PushStore("test", env);
+			ctx.Push("test", env);
 
 			// session store is always there even without session
 			// but it will not survive the ctx
@@ -778,7 +790,7 @@ void ContextTest::SessionPushTest()
 			Context ctx;
 			Anything env;
 			env["Context"]["UnlockSession"] = true;
-			ctx.PushStore("test", env);
+			ctx.Push("test", env);
 
 			t_assert((s.GetRefCount()) == 0);
 			ctx.Push(&s); // Push it, should be unlocked then
@@ -802,7 +814,7 @@ void ContextTest::SessionPushTest()
 			Context ctx;
 			Anything env;
 
-			ctx.PushStore("test", env);
+			ctx.Push("test", env);
 
 			t_assert((s.GetRefCount()) == 0);
 			ctx.Push(&s); // Push it, should be locked then
@@ -1034,13 +1046,14 @@ void ContextTest::ObjectAccessTests()
 	}
 
 	assertEqual(3, ctx.fStackSz);
-	t_assertm(ctx.Pop(), "Pops Page object");
+	String strKey;
+	t_assertm(ctx.Pop(strKey), "Pops Page object");
 	assertEqual(2, ctx.fStackSz);
-	t_assertm(ctx.Pop(), "Pops Role object");
+	t_assertm(ctx.Pop(strKey), "Pops Role object");
 	assertEqual(1, ctx.fStackSz);
-	t_assertm(ctx.Pop(), "Pops Sorver object");
+	t_assertm(ctx.Pop(strKey), "Pops Sorver object");
 	assertEqual(0, ctx.fStackSz);
-	t_assertm(ctx.Pop() == false, "Empty stack");
+	t_assertm(ctx.Pop(strKey) == false, "Empty stack");
 }
 
 void ContextTest::SetNGetPage()

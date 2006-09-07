@@ -57,7 +57,7 @@ void RendererDispatcherTest::FindServiceNameTest()
 		Context ctx(args);
 		RendererDispatcher sd("TestRenderDispatcher");
 		sd.CheckConfig("ServiceDispatcher");
-		ctx.Push(&sd);
+		ctx.Push("ServiceDispatcher", &sd);
 		assertEqual("SimpleService", ctx.Lookup("URIPrefix2ServiceMap./simpleServiceURL/", "NoService"));
 		t_assertm(sd.FindServiceHandler(ctx) == 0, "expected to find no handler");
 		assertEqualm("SimpleService", sd.FindServiceName(ctx), "expected to find SimpleService name");
@@ -69,7 +69,7 @@ void RendererDispatcherTest::FindServiceNameTest()
 		Context ctx(args);
 		RendererDispatcher sd("TestRenderDispatcher");
 		sd.CheckConfig("ServiceDispatcher");
-		ctx.Push(&sd);
+		ctx.Push("ServiceDispatcher", &sd);
 		t_assertm(sd.FindServiceHandler(ctx) == 0, "expected to find no handler");
 		assertEqualm("LookupedService", sd.FindServiceName(ctx), "expected to find LookupedService name");
 	}

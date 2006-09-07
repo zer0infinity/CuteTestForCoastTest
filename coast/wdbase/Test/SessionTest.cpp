@@ -452,8 +452,7 @@ void SessionTest::CheckRoleExchangeTest()
 	StartTrace(SessionTest.CheckRoleExchangeTest);
 
 	Context theCtx;
-	Anything anyContent = GetConfig().DeepClone();
-	Context::PushPopEntry aEntry(theCtx, "fConfig", anyContent);
+	Context::PushPopEntry<ROAnything> aEntry(theCtx, "fConfig", GetConfig());
 
 	STTestSession s("dummysession", theCtx);
 

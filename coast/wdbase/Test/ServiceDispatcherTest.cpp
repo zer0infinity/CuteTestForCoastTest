@@ -85,12 +85,13 @@ void ServiceDispatcherTest::FindTests()
 		// test with objects configuration
 		Context ctx;
 		ServiceDispatcher sd("TestServiceDispatcher");
-		ctx.Push(&sd);
+		ctx.Push("TestServiceDispatcher", &sd);
 
 		sd.CheckConfig("ServiceDispatcher");
 		t_assertm(sd.FindServiceHandler(ctx) != 0, "expected to find TestService handler");
 		assertEqualm("TestService", sd.FindServiceName(ctx), "expected to find test TestService name");
-		ctx.Pop();
+		String strKey;
+		ctx.Pop(strKey);
 	}
 }
 
