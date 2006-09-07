@@ -119,7 +119,7 @@
 		}
 		/ValueRenderer {
 			{ /ListRenderer {
-				/ListData		BoxColumns.List
+				/ListName		BoxColumns.List
 				/EntryStore		ValueEntry
 				/EntryFooter	";"
 				/EFSuppressLast	1
@@ -133,7 +133,7 @@
 		}
 		/Name			ExtListingsBox
 		/Size			20
-		/PlainList		BoxInputData
+		/ListName		BoxInputData
 		/ColSep			"&nbsp;&nbsp;"
 		/ColSepWidth	2
 		/FormName		ValorsucheForm
@@ -195,7 +195,7 @@
 		}
 		/ValueRenderer {
 			{ /ListRenderer {
-				/ListData		BoxColumns.List
+				/ListName		BoxColumns.List
 				/EntryStore		ValueEntry
 				/EntryFooter	";"
 				/EFSuppressLast	1
@@ -209,7 +209,7 @@
 		}
 		/Name			ExtListingsBox
 		/Size			20
-		/PlainList		BoxInputData
+		/ListName		BoxInputData
 		/ColSep			"&nbsp;&nbsp;"
 		/ColSepWidth	2
 		/FormName		ValorsucheForm
@@ -295,8 +295,7 @@
 				/Editable 0
 				/Default	"J"
 				/Pulldown {
-					/PlainList { Column.Pulldown.List }
-					/List {
+					/ListData {
 						{ /Text "*" }
 						{ /Text "J" }
 						{ /Text "N" }

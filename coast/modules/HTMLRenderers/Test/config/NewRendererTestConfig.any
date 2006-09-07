@@ -51,7 +51,7 @@
 						/Name 			MyBox
 						/Size			10
 						/ColList		BoxColumns
-						/PlainList		BoxInputData
+						/ListName		BoxInputData
 						/ValueRenderer { /Lookup BoxColumns.Value }
 						/EditableList	1
 					}
