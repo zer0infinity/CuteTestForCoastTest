@@ -34,7 +34,7 @@ void CallRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &con
 		params = DoGetPositionalParameters(ctx, config);
 		callee = IntGetCallee(ctx, config[0L]);
 	}
-	Context::PushPopEntry aEntry(ctx, "CallRenderer", params);
+	Context::PushPopEntry<Anything> aEntry(ctx, "CallRenderer", params);
 	Renderer::Render(reply, ctx, callee);
 }
 

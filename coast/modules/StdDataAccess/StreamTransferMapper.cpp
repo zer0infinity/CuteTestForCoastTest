@@ -50,7 +50,7 @@ void StreamTransferMapper::PutResponseLineAndHeader(ostream &os, Context &ctx)
 	if (mapinfo.IsDefined("HTTPStatus")) {
 		// only create output if the body really is defined, otherwise the
 		// data access already took care, if this is ok has to be determined
-		Context::PushPopEntry aEntry(ctx, "TmpHTTPStatus", mapinfo);
+		Context::PushPopEntry<Anything> aEntry(ctx, "TmpHTTPStatus", mapinfo);
 		RequestProcessor::RenderProtocolStatus(os, ctx);
 		mapinfo.Remove("HTTPStatus");
 	} else {

@@ -41,7 +41,7 @@ bool CompareValuesMapper::DoPutAny(const char *key, Anything value, Context &ctx
 		TraceAny(roaLeftValue, "spec how to obtain left value to compare");
 		TraceAny(roaRightValue, "spec how to obtain right value to compare");
 		{
-			Context::PushPopEntry aEntry(ctx, "PutterValue", value);
+			Context::PushPopEntry<Anything> aEntry(ctx, "PutterValue", value);
 			Renderer::RenderOnString(strLeftValue, ctx, roaLeftValue);
 			Renderer::RenderOnString(strRightValue, ctx, roaRightValue);
 		}

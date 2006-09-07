@@ -37,7 +37,7 @@ bool RenderedKeyMapper::DoPutAny(const char *key, Anything value, Context &ctx, 
 	String strKey(key);
 	ROAnything roaKeySpec;
 	if ( Lookup("KeySpec", roaKeySpec) ) {
-		Context::PushPopEntry aEntry(ctx, "ValuesToLookupFirst", value);
+		Context::PushPopEntry<Anything> aEntry(ctx, "ValuesToLookupFirst", value);
 		strKey = Renderer::RenderToStringWithDefault(ctx, roaKeySpec, key);
 		Trace("new key [" << strKey << "]");
 		ROAnything roaStoreSpec;

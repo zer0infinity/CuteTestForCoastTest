@@ -532,7 +532,7 @@ bool ResultMapper::DoPutAny(const char *key, Anything value, Context &ctx, ROAny
 	// -> this allows sub-mappers, eg executed in script mode, to put into the same slot if not overridden again
 	Anything anyPath;
 	anyPath["ResultMapper"]["DestinationSlot"] = GetDestinationSlot(ctx);
-	Context::PushPopEntry aEntry(ctx, "DestSlotMarker", anyPath);
+	Context::PushPopEntry<Anything> aEntry(ctx, "DestSlotMarker", anyPath);
 
 	if (script.IsNull() || script.GetSize() == 0) {
 		// no more script to run
@@ -590,7 +590,7 @@ bool ResultMapper::DoPutStream(const char *key, istream &is, Context &ctx, ROAny
 	// -> this allows sub-mappers, eg executed in script mode, to put into the same slot if not overridden again
 	Anything anyPath;
 	anyPath["ResultMapper"]["DestinationSlot"] = GetDestinationSlot(ctx);
-	Context::PushPopEntry aEntry(ctx, "DestSlotMarker", anyPath);
+	Context::PushPopEntry<Anything> aEntry(ctx, "DestSlotMarker", anyPath);
 
 	if (script.IsNull() || script.GetSize() == 0) {
 		// no more script to run

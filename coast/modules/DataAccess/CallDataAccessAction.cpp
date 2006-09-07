@@ -42,8 +42,7 @@ bool CallDataAccessAction::DoExecAction(String &action, Context &ctx, const ROAn
 		return false;
 	}
 
-	Anything params = config["Parameters"].DeepClone();
-	Context::PushPopEntry aEntry(ctx, "ActionParameters", params);
+	Context::PushPopEntry<ROAnything> aEntry(ctx, "ActionParameters", config["Parameters"]);
 
 	Trace("DataAccess to perform : " << dataAccessName);
 	DataAccess da(dataAccessName);

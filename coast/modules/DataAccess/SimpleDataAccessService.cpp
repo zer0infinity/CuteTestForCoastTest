@@ -58,7 +58,7 @@ void SimpleDataAccessService::DoHandleService(ostream &reply, Context &ctx)
 			Anything mapinfo = tmpStore["Mapper"];
 
 			if (mapinfo.IsDefined("HTTPStatus")) {
-				Context::PushPopEntry aEntry(ctx, "TmpHTTPStatus", mapinfo);
+				Context::PushPopEntry<Anything> aEntry(ctx, "TmpHTTPStatus", mapinfo);
 				RequestProcessor::RenderProtocolStatus(reply, ctx);
 			} else {
 				Trace("no HTTPStatus");
