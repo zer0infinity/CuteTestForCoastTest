@@ -236,20 +236,6 @@ void FieldRendererTest::ConfigureFieldOptionRenderer()
 	fConfig["Options"]["1"] = RendererAny;
 }
 
-void FieldRendererTest::ConfigureFieldOptionSelectUnselectRenderer()
-{
-	fConfig["Name"] = "the name of field";
-	fConfig["Size"]	= "1";
-	fConfig["ListData"][0L]["TextRenderer"] = "Text 1";
-	fConfig["ListData"][0L]["ValueRenderer"] = "Value 1";
-	fConfig["ListData"][0L]["SelectedRenderer"] = "1";
-	fConfig["ListData"][1L]["TextRenderer"] = "Text 2";
-	fConfig["ListData"][1L]["ValueRenderer"] = "Value 2";
-	fConfig["ListData"][1L]["SelectedRenderer"] = "0";
-
-	this->RenderConf();
-}
-
 void FieldRendererTest::TestFieldOptionRenderer()
 {
 	// set up the configuration
@@ -284,12 +270,6 @@ void FieldRendererTest::TestFieldFaultOptionRendererOld()
 	this->ConfigureFieldFaultOptionRendererOld();
 	// render the configuration
 	this->RenderConf();
-}
-
-void FieldRendererTest::TestFieldOptionSelectUnselectRenderer()
-{
-	// set up the configuration
-	this->ConfigureFieldOptionSelectUnselectRenderer();
 }
 
 void FieldRendererTest::ConfigureFieldFaultOptionRenderer()
@@ -433,59 +413,6 @@ void FieldRendererTest::TestWrongField()
 /* SelectBoxRenderer and are applied only in such cases.                                 */
 /* It is of course possible to use following configurations for all other FieldRenderers */
 /*---------------------------------------------------------------------------------------*/
-void FieldRendererTest::ConfigureFieldWithList()
-{
-	fConfig["Name"] = "the name of field";
-	fConfig["Label"] = "the label of field";
-	fConfig["Value"] = "the value of field";
-	fConfig["Src"] = "the source of field";
-	fConfig["Multiple"] = 1L;
-	fConfig["Options"]["0"] = "the option nr. 0 of field";
-	fConfig["Options"]["1"] = "the option nr. 1 of field";
-	fConfig["Options"]["2"] = "the option nr. 2 of field";
-
-	Anything any0, any1, any2, any3, any4, any5, any6, any7;
-
-	any0["ValueRenderer"]    = "the value from list[0]";
-	any0["SelectedRenderer"] = "the selected from list[0]";
-	any0["TextRenderer"]                = "the text from list[0]";
-
-	any1["ValueRenderer"]    = "the value from list[1]";
-	any1["SelectedRenderer"] = "the selected from list[1]";
-
-	any2["ValueRenderer"]    = "the value from list[2]";
-	any2["TextRenderer"]                = "the text from list[2]";
-
-	any3["SelectedRenderer"] = "the selected from list[3]";
-	any3["TextRenderer"]                = "the text from list[3]";
-
-	any4["ValueRenderer"]    = "the value from list[4]";
-
-	any5["SelectedRenderer"] = "the selected from list[5]";
-
-	any6["TextRenderer"]                = "the text from list[6]";
-
-	// any7 must be empty !!!
-
-	fConfig["ListData"].Append(any0);
-	fConfig["ListData"].Append(any1);
-	fConfig["ListData"].Append(any2);
-	fConfig["ListData"].Append(any3);
-	fConfig["ListData"].Append(any4);
-	fConfig["ListData"].Append(any5);
-	fConfig["ListData"].Append(any6);
-	fConfig["ListData"].Append(any7);
-}
-
-void FieldRendererTest::TestFieldWithList()
-{
-	// fConfig["ListData"] is not mandatory
-	// set up the configuration
-	this->ConfigureFieldWithList();
-	// render the configuration
-	this->RenderConf();
-}
-
 void FieldRendererTest::ConfigureFieldWithLookupList()
 {
 	fConfig["Name"] = "the name of field";
@@ -545,87 +472,6 @@ void FieldRendererTest::TestFieldWithLookupList()
 	this->RenderConf();
 }
 
-void FieldRendererTest::ConfigureFieldWithListAndLookupList()
-{
-	fConfig["Name"] = "the name of field";
-	fConfig["Label"] = "the label of field";
-	fConfig["Value"] = "the value of field";
-	fConfig["Src"] = "the source of field";
-	fConfig["Multiple"] = 1L;
-	fConfig["Options"]["0"] = "the option nr. 0 of field";
-	fConfig["Options"]["1"] = "the option nr. 1 of field";
-	fConfig["Options"]["2"] = "the option nr. 2 of field";
-
-	Anything any0, any1;
-
-	any0["ValueRenderer"]    = "the value from ListName[0]";
-	any0["SelectedRenderer"] = "the selected from ListName[0]";
-	any0["TextRenderer"]                = "the text from ListName[0]";
-
-	// ListName
-	Anything anyList;
-	anyList.Append(any0);
-	fConfig["ListName"] = "KeyInContext";
-	Anything tmpStore(fContext.GetTmpStore());
-	tmpStore["KeyInContext"] = anyList;
-
-	// List
-	any1["ValueRenderer"]    = "the value from list[0]";
-	any1["SelectedRenderer"] = "the selected from list[0]";
-	any1["TextRenderer"]                = "the text from list[0]";
-	fConfig["ListData"].Append(any1);
-}
-
-void FieldRendererTest::TestFieldWithListAndLookupList()
-{
-	// fConfig["ListName"] is not mandatory
-	// set up the configuration
-	this->ConfigureFieldWithListAndLookupList();
-	// render the configuration:  ListName is stronger than List
-	this->RenderConf();
-}
-
-void FieldRendererTest::ConfigureFieldWithListAndLookupListSkipped()
-{
-	fConfig["Name"] = "the name of field";
-	fConfig["Label"] = "the label of field";
-	fConfig["Value"] = "the value of field";
-	fConfig["Src"] = "the source of field";
-	fConfig["Multiple"] = 1L;
-	fConfig["Options"]["0"] = "the option nr. 0 of field";
-	fConfig["Options"]["1"] = "the option nr. 1 of field";
-	fConfig["Options"]["2"] = "the option nr. 2 of field";
-
-	Anything any0, any1;
-
-	any0["ValueRenderer"]    = "the value from ListName[0]";
-	any0["SelectedRenderer"] = "the selected from ListName[0]";
-	any0["TextRenderer"]                = "the text from ListName[0]";
-
-	// ListName
-	Anything anyList;
-	anyList.Append(any0);
-	fConfig["ListName"] = "KeyInContext";
-	Anything tmpStore(fContext.GetTmpStore());
-	tmpStore["XXX"] = anyList;	// ListName is not to be found
-
-	// List
-	any1["ValueRenderer"]    = "the value from list[0]";
-	any1["SelectedRenderer"] = "the selected from list[0]";
-	any1["TextRenderer"]                = "the text from list[0]";
-	fConfig["ListData"].Append(any1);
-}
-
-void FieldRendererTest::TestFieldWithListAndLookupListSkipped()
-{
-	// fConfig["ListName"] is not mandatory
-	// set up the configuration
-	this->ConfigureFieldWithListAndLookupListSkipped();
-	// render the configuration:  ListName not found in Context,  List ignored
-	// --> RenderConf renders without List and without ListName
-	this->RenderConf();
-}
-
 void FieldRendererTest::ConfigureFieldWithUndefList()
 {
 	fConfig["Name"] = "the name of field";
@@ -643,81 +489,8 @@ void FieldRendererTest::ConfigureFieldWithUndefList()
 
 void FieldRendererTest::TestFieldWithUndefList()
 {
-	// fConfig["ListData"] is not mandatory
 	// set up the configuration
 	this->ConfigureFieldWithUndefList();
-	// render the configuration
-	this->RenderConf();
-}
-
-void FieldRendererTest::ConfigureFieldWithListAndUndefLookupList()
-{
-	fConfig["Name"] = "the name of field";
-	fConfig["Label"] = "the label of field";
-	fConfig["Value"] = "the value of field";
-	fConfig["Src"] = "the source of field";
-	fConfig["Multiple"] = 1L;
-	fConfig["Options"]["0"] = "the option nr. 0 of field";
-	fConfig["Options"]["1"] = "the option nr. 1 of field";
-	fConfig["Options"]["2"] = "the option nr. 2 of field";
-
-	Anything any0, any1;
-
-	// ListName (Undef)
-	Anything anyList;
-	anyList.Append(any0);
-	fConfig["ListName"] = "KeyInContext";
-	Anything tmpStore(fContext.GetTmpStore());
-	tmpStore["KeyInContext"] = anyList;
-
-	// List
-	any1["ValueRenderer"]    = "the value from list[0]";
-	any1["SelectedRenderer"] = "the selected from list[0]";
-	any1["TextRenderer"]                = "the text from list[0]";
-	fConfig["ListData"].Append(any1);
-}
-
-void FieldRendererTest::TestFieldWithListAndUndefLookupList()
-{
-	// fConfig["ListName"] is not mandatory
-	// set up the configuration
-	this->ConfigureFieldWithListAndUndefLookupList();
-	// render the configuration:  ListName is stronger than List + ListName is empty
-	// --> RenderConf renders without List and without ListName
-	this->RenderConf();
-}
-
-void FieldRendererTest::ConfigureAllAttributes()
-{
-	Anything Opt1, Opt2, Opt3, list;
-
-	fConfig["Name"] = "EinName";
-	fConfig["Size"] = 10;
-	fConfig["Multiple"] = 1L;
-
-	Opt1["ValueRenderer"] = 11;
-	Opt1["SelectedRenderer"] = 1;
-	Opt1["TextRenderer"] = "Das ist der Text1.";
-
-	Opt2["ValueRenderer"] = 22;
-	Opt2["SelectedRenderer"] = 2;
-	Opt2["TextRenderer"] = "Das ist der Text2.";
-
-	Opt3["ValueRenderer"] = 33;
-	Opt3["SelectedRenderer"] = 3;
-	Opt3["TextRenderer"] = "Das ist der Text3.";
-
-	list.Append( Opt1 );
-	list.Append( Opt2 );
-	list.Append( Opt3 );
-
-	fConfig["ListData"] = list;
-}
-
-void FieldRendererTest::TestAllAttributes()
-{
-	// set up the configuration
-	this->ConfigureAllAttributes();
 	// render the configuration
 	this->RenderConf();
 }
@@ -734,21 +507,6 @@ void FieldRendererTest::TestNameAndMultiple()
 {
 	// set up the configuration
 	this->ConfigureNameAndMultiple();
-	// render the configuration
-	this->RenderConf();
-}
-
-void FieldRendererTest::ConfigureListWithUndefOptions()
-{
-	Anything Opt1, EmptyOpt;
-	fConfig["Name"] = "EinName";
-	fConfig["ListData"]["Options"] = EmptyOpt;
-}
-
-void FieldRendererTest::TestListWithUndefOptions()
-{
-	// set up the configuration
-	this->ConfigureListWithUndefOptions();
 	// render the configuration
 	this->RenderConf();
 }

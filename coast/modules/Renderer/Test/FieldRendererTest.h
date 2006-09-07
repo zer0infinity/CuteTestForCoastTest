@@ -61,28 +61,14 @@ protected:
 	void TestConfigureFieldWithRenderer();
 	void ConfigureEmptyConf();
 	void TestEmptyConf();
-	void ConfigureFieldOptionSelectUnselectRenderer();
-	void TestFieldOptionSelectUnselectRenderer();
 
 	// Useful only for certain renderers
-	void ConfigureFieldWithList();
-	void TestFieldWithList();
 	void ConfigureFieldWithLookupList();
 	void TestFieldWithLookupList();
-	void ConfigureFieldWithListAndLookupList();
-	void TestFieldWithListAndLookupList();
-	void ConfigureFieldWithListAndLookupListSkipped();
-	void TestFieldWithListAndLookupListSkipped();
 	void ConfigureFieldWithUndefList();
 	void TestFieldWithUndefList();
-	void ConfigureFieldWithListAndUndefLookupList();
-	void TestFieldWithListAndUndefLookupList();
-	void ConfigureAllAttributes();
-	void TestAllAttributes();
 	void ConfigureNameAndMultiple();
 	void TestNameAndMultiple();
-	void ConfigureListWithUndefOptions();
-	void TestListWithUndefOptions();
 
 	void ConfigureValue();
 	void TestFieldValue();

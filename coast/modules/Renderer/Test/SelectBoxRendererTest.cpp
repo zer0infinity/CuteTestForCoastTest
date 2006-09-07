@@ -51,9 +51,7 @@ Test *SelectBoxRendererTest::suite ()
 	ADD_CASE(testSuite, SelectBoxRendererTest, TestCaseWithoutChecked);
 	ADD_CASE(testSuite, SelectBoxRendererTest, TestCaseWithoutOptions);
 	ADD_CASE(testSuite, SelectBoxRendererTest, TestCaseWrong);
-	ADD_CASE(testSuite, SelectBoxRendererTest, TestCaseWithListAndLookupListSkipped);
 	ADD_CASE(testSuite, SelectBoxRendererTest, TestCaseWithUndefList);
-	ADD_CASE(testSuite, SelectBoxRendererTest, TestCaseWithListAndUndefLookupList);
 	ADD_CASE(testSuite, SelectBoxRendererTest, TestCaseNameAndMultiple);
 	ADD_CASE(testSuite, SelectBoxRendererTest, TestOptionRenderer);
 	ADD_CASE(testSuite, SelectBoxRendererTest, TestOptionRendererOld);
@@ -165,30 +163,12 @@ void SelectBoxRendererTest::TestCaseWrong()
 /*===============================================================*/
 /*     Check List and ListName                                 */
 /*===============================================================*/
-void SelectBoxRendererTest::TestCaseWithListAndLookupListSkipped()
-{
-	String str("<select name=\"fld_the name of field\" size=\"1\" multiple 0=\"the option nr. 0 of field\" 1=\"the option nr. 1 of field\" 2=\"the option nr. 2 of field\">\n</select>\n");
-
-	fCurrentTestMethod = "SelectBox-TestCaseWithListAndLookupListSkipped";
-	this->TestFieldWithListAndLookupListSkipped();
-	assertCharPtrEqual( (const char *)str, fReply.str() );
-}
-
 void SelectBoxRendererTest::TestCaseWithUndefList()
 {
 	String str("<select name=\"fld_the name of field\" size=\"1\" multiple 0=\"the option nr. 0 of field\" 1=\"the option nr. 1 of field\" 2=\"the option nr. 2 of field\">\n<option></option>\n</select>\n");
 
 	fCurrentTestMethod = "SelectBox-TestCaseWithUndefList";
 	this->TestFieldWithUndefList();
-	assertCharPtrEqual( (const char *)str, fReply.str() );
-}
-
-void SelectBoxRendererTest::TestCaseWithListAndUndefLookupList()
-{
-	String str("<select name=\"fld_the name of field\" size=\"1\" multiple 0=\"the option nr. 0 of field\" 1=\"the option nr. 1 of field\" 2=\"the option nr. 2 of field\">\n<option></option>\n</select>\n");
-
-	fCurrentTestMethod = "SelectBox-TestCaseWithListAndUndefLookupList";
-	this->TestFieldWithListAndUndefLookupList();
 	assertCharPtrEqual( (const char *)str, fReply.str() );
 }
 

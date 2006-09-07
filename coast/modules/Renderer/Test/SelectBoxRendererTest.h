@@ -40,9 +40,7 @@ protected:
 	void TestCaseWithoutChecked();
 	void TestCaseWithoutOptions();
 	void TestCaseWrong();
-	void TestCaseWithListAndLookupListSkipped();
 	void TestCaseWithUndefList();
-	void TestCaseWithListAndUndefLookupList();
 	void TestCaseNameAndMultiple();
 	void TestCaseListWithUndefOptions();
 	void TestOptionRenderer();

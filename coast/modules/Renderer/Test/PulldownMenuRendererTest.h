@@ -37,9 +37,7 @@ protected:
 	void TestCaseWithoutChecked();
 	void TestCaseWithoutOptions();
 	void TestCaseWrong();
-	void TestCaseWithListAndLookupListSkipped();
 	void TestCaseWithUndefList();
-	void TestCaseWithListAndUndefLookupList();
 	void TestCaseNameAndMultiple();
 	void TestOptionRenderer();
 	void TestFaultOptionRenderer();

@@ -59,9 +59,7 @@ Test *PulldownMenuRendererTest::suite ()
 	ADD_CASE(testSuite, PulldownMenuRendererTest, TestCaseWithoutChecked);
 	ADD_CASE(testSuite, PulldownMenuRendererTest, TestCaseWithoutOptions);
 	ADD_CASE(testSuite, PulldownMenuRendererTest, TestCaseWrong);
-	ADD_CASE(testSuite, PulldownMenuRendererTest, TestCaseWithListAndLookupListSkipped);
 	ADD_CASE(testSuite, PulldownMenuRendererTest, TestCaseWithUndefList);
-	ADD_CASE(testSuite, PulldownMenuRendererTest, TestCaseWithListAndUndefLookupList);
 	ADD_CASE(testSuite, PulldownMenuRendererTest, TestCaseNameAndMultiple);
 	ADD_CASE(testSuite, PulldownMenuRendererTest, TestOptionRenderer);
 	ADD_CASE(testSuite, PulldownMenuRendererTest, TestFaultOptionRenderer);
@@ -173,30 +171,12 @@ void PulldownMenuRendererTest::TestCaseWrong()
 /*===============================================================*/
 /*     Check List and ListName                                 */
 /*===============================================================*/
-void PulldownMenuRendererTest::TestCaseWithListAndLookupListSkipped()
-{
-	String str("<select name=\"fld_the name of field\" size='1' 0=\"the option nr. 0 of field\" 1=\"the option nr. 1 of field\" 2=\"the option nr. 2 of field\">\n</select>\n");
-
-	fCurrentTestMethod = "PulldownMenu-TestCaseWithListAndLookupListSkipped";
-	this->TestFieldWithListAndLookupListSkipped();
-	assertCharPtrEqual( (const char *)str, fReply.str() );
-}
-
 void PulldownMenuRendererTest::TestCaseWithUndefList()
 {
 	String str("<select name=\"fld_the name of field\" size='1' 0=\"the option nr. 0 of field\" 1=\"the option nr. 1 of field\" 2=\"the option nr. 2 of field\">\n<option></option>\n</select>\n");
 
 	fCurrentTestMethod = "PulldownMenu-TestCaseWithUndefList";
 	this->TestFieldWithUndefList();
-	assertCharPtrEqual( (const char *)str, fReply.str() );
-}
-
-void PulldownMenuRendererTest::TestCaseWithListAndUndefLookupList()
-{
-	String str("<select name=\"fld_the name of field\" size='1' 0=\"the option nr. 0 of field\" 1=\"the option nr. 1 of field\" 2=\"the option nr. 2 of field\">\n<option></option>\n</select>\n");
-
-	fCurrentTestMethod = "PulldownMenu-TestCaseWithListAndUndefLookupList";
-	this->TestFieldWithListAndUndefLookupList();
 	assertCharPtrEqual( (const char *)str, fReply.str() );
 }
 
