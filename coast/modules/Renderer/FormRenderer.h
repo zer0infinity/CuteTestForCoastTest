@@ -91,35 +91,38 @@ protected:
 /*!
 <B>Configuration:</B><PRE>
 {
-	/Name				Rendererspec	mandatory, identifier used for the field, prefixed with fld_
-	/Size 				Rendererspec	optional, default 1, defines how many elements of the list are simultaneously displayed. If set to 1 and Multiple is undefined it degenerates to a PulldownMenuRenderer
-	/Multiple			Rendererspec	optional, default 0 [0|1], if this flag evaluates to 1, multiple entries may be selected, otherwise exactly one entry may be selected
-	/List {								optional, May contain the items used for the SELECT field.
-		{								optional, first INPUT entry of SELECT box
-			/Text		Rendererspec
-			/Options 	{...}			optional, An array of Key-Value pairs that allows to render any HTML option within the INPUT tag. Refer to OptionsPrinter for further description
-		}
-		{...}							optional, second INPUT entry of SELECT box
-		...								optional, further elements
+	/Name					Rendererspec	mandatory, identifier used for the field, prefixed with fld_
+	/Size 					Rendererspec	optional, default 1, defines how many elements of the list are simultaneously displayed. If set to 1 and Multiple is undefined it degenerates to a PulldownMenuRenderer
+	/Multiple				Rendererspec	optional, default 0 [0|1], if this flag evaluates to 1, multiple entries may be selected, otherwise exactly one entry may be selected
+	/ListName				Rendererspec	mandatory (can be omitted if ListData slot is used instead), resulting a String which is used to Lookup the List in the TempStore and the context
+	/ListData {				Anything		optional but mandatory if ListName is omitted, inline List to use for rendering, it is ignored if ListName is also specified and is not the empty list
+		...
+		...
 	}
-	/LookupList			Rendererspec	optional, takes precedence over the prameter /List, the List will be looked up in the context using the rendered value of this slot
-
-<B>Alternativly the option list can be specified like this (works analogous to the ListRenderer)</B>
-	/PlainList			Rendererspec 	mandatory, resulting in the lists lookup name
-	/TextRenderer		Rendererspec	mandatory, Used to renderer the OPTION Content
-	/ValueRenderer		Rendererspec    optional, Used to renderer the OPTION's VALUE attribute
-	/SelectedRenderer 	Rendererspec    optional, Used to renderer the OPTION's SELECTED attribute / Should result in either 0 or 1
-	/OptionListRenderer	Rendererspec	optional, Used to exchange the OPTION tag renderer with a specialized one, see also class OptionListRenderer
-	/PrependList		Rendererspec	optional, May contain items which are inserted BEFORE items from PlainList get inserted
-	/AppendList			Rendererspec	optional, May contain items which are inserted AFTER PlainList items are inserted
-
+	/TextRenderer			Rendererspec	mandatory, Used to renderer the OPTION Content
+	/ValueRenderer			Rendererspec    optional, Used to renderer the OPTION's VALUE attribute
+	/SelectedRenderer 		Rendererspec    optional, Used to renderer the OPTION's SELECTED attribute / Should result in either 0 or 1
+	/OptionListRenderer		Rendererspec	optional, Used to exchange the OPTION tag renderer with a specialized one, see also class OptionListRenderer
+	/EntryStore				Rendererspec	optional, defaults to EntryData, resulting a String which identifies the temporary entry data while rendering
+    /IndexSlot          	String			optional, denotes the slotname where the index (row number) of the actual entry is stored while rendering
+    /SlotnameSlot       	String			optional, denotes the slotname where the slotname of the actual entry is stored while rendering
+	/PrependListName		Rendererspec	optional, May contain items which are inserted BEFORE items from ListName get inserted
+	/PrependListData {		Anything		optional, similar to ListData but for PrependList
+		...
+		...
+	}
+	/AppendListName			Rendererspec	optional, May contain items which are inserted AFTER ListName items are inserted
+	/AppendListData {		Anything		optional, similar to ListData but for AppendList
+		...
+		...
+	}
 	/Options 			{...}			optional, An array of Key-Value pairs that allows to render any HTML option within the SELECT tag. Refer to OptionsPrinter for further description
 }
 </PRE>
 The renderer builds on the HTML SELECT tag.<BR>
 \note If /Size 1 and /Multiple is undefined the SelectBoxRenderer degenerates to a PulldownMenuRenderer
 
-The individual elements contained within /List or /LookupList, consist of two parts
+The individual elements contained within /ListData or /ListName, consist of two parts
 <OL>
 <LI>\b /Text - Rendererspec that produces the text in the list visible on the screen</LI>
 <LI>\b /Options - Renders options with the OPTION tag
@@ -134,24 +137,20 @@ value may be specified by setting the /Value slot (/Value may contain an arbitra
 	/Name		"exampleList"
 	/Size		25
 	/Multiple	1
-	/List {
+	/ListData {
 		{ # first entry
 			/Text {
 				/String {
 					/Default "1st list entry"
 				}
 			}
-			/Options {
-				/Value		"1"
-				/Selected	1
-			}
+			/Value		"1"
+			/Selected	1
 		}
 		{ # second entry
 			/Text	"2nd list entry"
-			/Options {
-				/Value		"2"
-				/Selected	1
-			}
+			/Value		"2"
+			/Selected	1
 		}
 		{ # third entry
 			/Text {
@@ -159,11 +158,18 @@ value may be specified by setting the /Value slot (/Value may contain an arbitra
 					/Default "3rd list entry"
 				}
 			}
-			/Options {
-				/Value		"3"
-				/Selected 	0
-			}
+			/Value		"3"
+			/Selected 	0
 		}
+	}
+	/TextRenderer {
+		/ContextLookupRenderer SelectBoxOption.Text
+	}
+	/ValueRenderer {
+		/ContextLookupRenderer SelectBoxOption.Value
+	}
+	/SelectedRenderer {
+		/ContextLookupRenderer SelectBoxOption.Selected
 	}
 }
 </PRE>
@@ -193,6 +199,9 @@ protected:
 	/TextRenderer		Rendererspec	mandatory, Used to renderer the OPTION Content
 	/ValueRenderer		Rendererspec    optional, Used to renderer the OPTION's VALUE attribute
 	/SelectedRenderer 	Rendererspec    optional, Used to renderer the OPTION's SELECTED attribute / Should result in either 0 or 1
+	/EntryStore			Rendererspec	optional, defaults to EntryData, resulting a String which identifies the temporary entry data while rendering
+    /IndexSlot          String			optional, denotes the slotname where the index (row number) of the actual entry is stored while rendering
+    /SlotnameSlot       String			optional, denotes the slotname where the slotname of the actual entry is stored while rendering
 }
 </PRE>
 */
@@ -203,10 +212,64 @@ public:
 	~OptionListRenderer() {};
 
 protected:
-	virtual void RenderEntry(ostream &reply, Context &c, const ROAnything &config, const ROAnything &entryRendererConfig, Anything &listItem);
-	virtual void RenderValue(ostream &reply, Context &c, const ROAnything &config, const ROAnything &valueConfig, Anything &listItem);
-	virtual void RenderSelected(ostream &reply, Context &c, const ROAnything &config, const ROAnything &selectedConfig, Anything &listItem);
-	virtual void RenderText(ostream &reply, Context &c, const ROAnything &config, const ROAnything &textConfig, Anything &listItem);
+	/*! renders a list entry using the given configuration
+		\param reply stream to generate output on
+		\param ctx Context to be used for output generation
+		\param config the configuration of the renderer
+		\param entryRendererConfig renderer configuration for the entry
+		\param listItem current list item data as shortcut (instead of using ctx.Lookup )
+		\param anyRenderState anything to carry information between different calls */
+	virtual void RenderEntry(ostream &reply, Context &ctx, const ROAnything &config, const ROAnything &entryRendererConfig, const ROAnything &listItem, Anything &anyRenderState);
+
+	/*! Get the EntryHeader to be rendered
+		\param config the configuration of the renderer
+		\param nr index into headers list
+		\param roaEntryHeader reference to header entry to be rendered
+		\param anyRenderState anything to carry information between different calls
+		\return true in case an entry was found and is not Null */
+	virtual bool GetEntryHeader(const ROAnything &config, long nr, ROAnything &roaEntryHeader, Anything &anyRenderState);
+
+	/*! Get the EntryFooter to be rendered
+		\param config the configuration of the renderer
+		\param roaEntryFooter reference to footer entry to be rendered
+		\param anyRenderState anything to carry information between different calls
+		\return true in case an entry was found and is not Null */
+	virtual bool GetEntryFooter(const ROAnything &config, ROAnything &roaEntryFooter, Anything &anyRenderState);
+
+	/*! Checks if the / which EntryHeader has to be rendered
+		\param ctx the context the renderer runs within
+		\param config the configuration of the renderer
+		\param anyRenderState anything to carry information between different calls
+		\return index into headers list if multiple, 0 if only one header entry, -1 if no header has to be rendered */
+	virtual long EntryHeaderNrToBeRendered(Context &ctx, const ROAnything &config, Anything &anyRenderState);
+
+	/*! Checks if the EntryFooter has to be rendered
+		\param ctx the context the renderer runs within
+		\param config the configuration of the renderer
+		\param anyRenderState anything to carry information between different calls
+		\return true if the entry footer has to be rendered */
+	virtual bool EntryFooterHasToBeRendered(Context &ctx, const ROAnything &config, Anything &anyRenderState);
+
+	/*! renders a entry header using the given configuration
+		\param reply stream to generate output on
+		\param ctx Context to be used for output generation
+		\param entryHeader renderer configuration for the entry header
+		\param listItem current list item data as shortcut (instead of using ctx.Lookup )
+		\param anyRenderState anything to carry information between different calls */
+	virtual void RenderEntryHeader(ostream &reply, Context &ctx, const ROAnything &entryHeader, const ROAnything &listItem, Anything &anyRenderState);
+
+	/*! renders a entry footer using the given configuration
+		\param reply stream to generate output on
+		\param ctx Context to be used for output generation
+		\param entryFooter renderer configuration for the entry footer
+		\param listItem current list item data as shortcut (instead of using ctx.Lookup )
+		\param anyRenderState anything to carry information between different calls */
+	virtual void RenderEntryFooter(ostream &reply, Context &ctx, const ROAnything &entryFooter, const ROAnything &listItem, Anything &anyRenderState);
+
+	virtual void RenderValue(ostream &reply, Context &c, const ROAnything &config, const ROAnything &valueConfig, const ROAnything &listItem);
+	virtual void RenderSelected(ostream &reply, Context &c, const ROAnything &config, const ROAnything &selectedConfig, const ROAnything &listItem);
+	virtual void RenderText(ostream &reply, Context &c, const ROAnything &config, const ROAnything &textConfig, const ROAnything &listItem);
+
 };
 
 //---- PulldownMenuRenderer ---------------------------------------------------------------
@@ -467,12 +530,12 @@ protected:
 		/Label		"Reset"
 	}
 }
-</PRE>
-*/
+</PRE>*/
 class EXPORTDECL_RENDERER ResetButtonRenderer : public ButtonRenderer
 {
 public:
 	ResetButtonRenderer(const char *name);
+
 protected:
 	virtual void RenderType(ostream &reply, Context &, const ROAnything &) {
 		reply << "RESET";
@@ -505,12 +568,12 @@ protected:
 		}
 	}
 }
-</PRE>
-*/
+</PRE>*/
 class EXPORTDECL_RENDERER TextFieldRenderer : public FieldRenderer
 {
 public:
 	TextFieldRenderer(const char *name) : FieldRenderer(name) {}
+
 protected:
 	virtual void RenderType(ostream &reply, Context &context, const ROAnything &config);
 	virtual void RenderOptions(ostream &reply, Context &context, const ROAnything &config);
@@ -541,13 +604,13 @@ It builds on the HTML TEXTAREA tag.
 		/Wrap		"HARD"
 	}
 }
-</PRE>
-*/
+</PRE>*/
 class EXPORTDECL_RENDERER TextAreaRenderer : public FieldRenderer
 {
 public:
 	TextAreaRenderer(const char *name);
 	virtual void RenderAll(ostream &reply, Context &context, const ROAnything &config);
+
 protected:
 	virtual void RenderType(ostream &, Context &, const ROAnything &) { }
 
@@ -561,22 +624,23 @@ protected:
 	/Default	String	optional, name of the field
 	/LookupName	String	optional, name will be looked up in the context with the given string
 }
-</PRE>
-*/
+</PRE>*/
 class EXPORTDECL_RENDERER FieldNameRenderer : public Renderer
 {
 public:
 	FieldNameRenderer(const char *name);
+
 	void RenderAll(ostream &reply, Context &context, const ROAnything &config);
 };
 
 //---- FileBrowseRenderer --------------------------------------------------------------
 //! <B>Creates a filebrowse input area</B>
-//! The configuration is equal to the TextFieldRenderer but the type is fixed to \b FILE
+/*! The configuration is equal to the TextFieldRenderer but the type is fixed to \b FILE */
 class EXPORTDECL_RENDERER FileBrowseRenderer : public TextFieldRenderer
 {
 public:
 	FileBrowseRenderer(const char *name);
+
 protected:
 	virtual void RenderType(ostream &reply, Context &, const ROAnything &) {
 		reply << "FILE";

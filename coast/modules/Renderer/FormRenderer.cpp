@@ -10,14 +10,14 @@
 #include "FormRenderer.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
 #include "Session.h"
 #include "TemplateParser.h"
 #include "Dbg.h"
 
 //---- FormRenderer -------------------------------------------------------------------
 RegisterRenderer(FormRenderer);
-FormRenderer::FormRenderer(const char *name) : HTMLTemplateRenderer(name)
+FormRenderer::FormRenderer(const char *name)
+	: HTMLTemplateRenderer(name)
 {
 }
 
@@ -44,7 +44,7 @@ void FormRenderer::RenderAll(ostream &reply, Context &context, const ROAnything 
 void FormRenderer::PrintFormBegin(ostream &reply, Context &context, const ROAnything &config)
 {
 	reply << "<FORM ACTION=\"";
-	Renderer *r = Renderer::FindRenderer("URLRenderer");
+	static Renderer *r = Renderer::FindRenderer("URLRenderer");
 	String actionURL; // Save the URL for Later use
 	{
 		OStringStream os(&actionURL);
@@ -92,7 +92,7 @@ RegisterRenderer(PulldownMenuRenderer);
 PulldownMenuRenderer::PulldownMenuRenderer(const char *name) : SelectBoxRenderer(name) {}
 void PulldownMenuRenderer::RenderOptions(ostream &reply, Context &context, const ROAnything &config)
 {
-	reply << " SIZE='1\'";
+	reply << " size='1\'";
 	FieldRenderer::RenderOptions(reply, context, config);
 }
 
@@ -182,7 +182,7 @@ bool SelectBoxRenderer::IsMultipleSelect(Context &context, const ROAnything &con
 void SelectBoxRenderer::RenderOptions(ostream &reply, Context &context, const ROAnything &config)
 {
 	// render SIZE argument
-	reply << " SIZE=\"";
+	reply << " size=\"";
 	// length of list (default 1 see HTML-Spec.)
 	String str;
 	if (config.IsDefined("Size")) {
@@ -191,7 +191,7 @@ void SelectBoxRenderer::RenderOptions(ostream &reply, Context &context, const RO
 	reply << str.AsLong(1L);
 	reply << "\"";
 	if (IsMultipleSelect(context, config)) {
-		reply << " MULTIPLE";
+		reply << " multiple";
 	}
 	FieldRenderer::RenderOptions(reply, context, config);
 }
@@ -201,10 +201,9 @@ void SelectBoxRenderer::RenderAll(ostream &reply, Context &context, const ROAnyt
 	StartTrace(SelectBoxRenderer.Render);
 	TraceAny(config, "config");
 	ROAnything n = config["Name"];
-	if ( ! n.IsNull() ) {
-
-		// streams name, size and (if defined) MULTIPLE into reply
-		reply << "<SELECT NAME=\"";
+	if ( !n.IsNull() ) {
+		// streams name, size and (if defined) multiple into reply
+		reply << "<select name=\"";
 
 		RenderName(reply, context, config);
 		reply << "\"";
@@ -213,56 +212,40 @@ void SelectBoxRenderer::RenderAll(ostream &reply, Context &context, const ROAnyt
 
 		reply << ">\n";
 
-		if (config.IsDefined("PlainList")) {
-			if (config.IsDefined("PrependList")) {
-				RenderOptionList(reply, context, config, "PrependList");
-			}
-			RenderOptionList(reply, context, config, "PlainList");
-			if (config.IsDefined("AppendList")) {
-				RenderOptionList(reply, context, config, "AppendList");
-			}
-		} else {
-			// retrieve data
-			ROAnything list = config["List"];
-			ROAnything llist = config["LookupList"];
-			// "LookupList" overrides "List" settings!
-			if (! llist.IsNull()) {
-				String lookupname;
-				RenderOnString(lookupname, context, llist);
-				if (lookupname.Length() > 0) {
-					list = context.Lookup(lookupname);
-				}
+		ROAnything roaListName, roaListData;
+		// select list to process
+		if ( config.LookupPath(roaListName, "ListName") || config.LookupPath(roaListData, "ListData") ) {
+			String strListName, strPrependListName, strAppendListName;
+			RenderOnString(strListName, context, roaListName);
+			RenderOnString(strPrependListName, context, config["PrependListName"]);
+			RenderOnString(strAppendListName, context, config["AppendListName"]);
+
+			ROAnything roaTempList;
+			if ( strPrependListName.Length() ) {
+				RenderOptionList(reply, context, config, strPrependListName);
+			} else if ( context.Lookup("PrependListData", roaTempList) ) {
+				strPrependListName = "SelectBoxData";
+				Context::PushPopEntry<ROAnything> aEntryData(context, strPrependListName, roaTempList, strPrependListName);
+				RenderOptionList(reply, context, config, strPrependListName);
 			}
 
-			long listEntries = list.GetSize();
-			// puts the list entries to <OPTION>-tags
-			for (long i = 0; i < listEntries; ++i) {
-				reply << "<OPTION";
-				ROAnything opt = list[i]["Options"];
-				if ( !opt.IsNull() ) {
-					ROAnything value = opt["Value"];
-					if ( !value.IsNull() ) {
-						reply << " VALUE=\"" ;
-						Render(reply, context, value);
-						reply << "\"";
-					}
-					if ( opt.IsDefined("Selected") ) {
-						String selectValue;
-						Renderer::RenderOnString( selectValue, context, opt["Selected"] );
-						if ( ! selectValue.IsEqual("0") ) {
-							reply << " SELECTED";
-						}
-					}
-				}
-				reply << ">";
-				ROAnything text = list[i]["Text"];
-				if ( !text.IsNull() ) {
-					Render(reply, context, text);
-				}
-				reply << "\n";
+			if ( strListName.Length() ) {
+				RenderOptionList(reply, context, config, strListName);
+			} else {
+				strListName = "SelectBoxData";
+				Context::PushPopEntry<ROAnything> aEntryData(context, strListName, roaListData, strListName);
+				RenderOptionList(reply, context, config, strListName);
+			}
+
+			if ( strAppendListName.Length() ) {
+				RenderOptionList(reply, context, config, strAppendListName);
+			} else if ( context.Lookup("AppendListData", roaTempList) ) {
+				strAppendListName = "SelectBoxData";
+				Context::PushPopEntry<ROAnything> aEntryData(context, strAppendListName, roaTempList, strAppendListName);
+				RenderOptionList(reply, context, config, strAppendListName);
 			}
 		}
-		reply << ("</SELECT>\n");
+		reply << "</select>\n";
 	} else {
 		SysLog::Warning("SelectBoxRenderer::RenderAll: mandatory 'Name' slot is missing in configuration!");
 	}
@@ -282,10 +265,10 @@ void SelectBoxRenderer::RenderOptionList(ostream &reply, Context &context, const
 	Renderer *pRenderer = Renderer::FindRenderer(strOptionRenderer);
 	if (pRenderer) {
 		Anything rendererConfig;
-		rendererConfig["ListData"] = config[listname].DeepClone();
-		rendererConfig["EntryStore"] = "SelectBoxOption";
-		rendererConfig["IndexSlot"] = "SelectBoxOptionIndex";
-		rendererConfig["SlotnameSlot"] = "SelectBoxOptionSlotname";
+		rendererConfig["ListName"] = listname;
+		rendererConfig["EntryStore"] = RenderToStringWithDefault(context, config["EntryStore"], "SelectBoxOption");
+		rendererConfig["IndexSlot"] = config["IndexSlot"].AsString("SelectBoxOptionIndex");
+		rendererConfig["SlotnameSlot"] = config["SlotnameSlot"].AsString("SelectBoxOptionSlotname");
 		rendererConfig["EntryRenderer"] = "dummy";
 		ROAnything value;
 		if ( config.LookupPath(value, "ValueRenderer") ) {
@@ -297,6 +280,12 @@ void SelectBoxRenderer::RenderOptionList(ostream &reply, Context &context, const
 		if ( config.LookupPath(value, "TextRenderer") ) {
 			rendererConfig["TextRenderer"] = value.DeepClone();
 		}
+		if ( config.LookupPath(value, "OptionGroup") ) {
+			rendererConfig["OptionGroup"] = value.DeepClone();
+		}
+		if ( config.LookupPath(value, "Options.class") ) {
+			rendererConfig["Options"]["class"] = value.DeepClone();
+		}
 		TraceAny(rendererConfig, "OptionListRenderer Config");
 		pRenderer->RenderAll(reply, context, rendererConfig);
 	}
@@ -304,13 +293,14 @@ void SelectBoxRenderer::RenderOptionList(ostream &reply, Context &context, const
 
 RegisterRenderer(OptionListRenderer);
 
-void OptionListRenderer::RenderEntry(ostream &reply, Context &c, const ROAnything &config, const ROAnything &entryRendererConfig, Anything &listItem)
+void OptionListRenderer::RenderEntry(ostream &reply, Context &c, const ROAnything &config, const ROAnything &entryRendererConfig, const ROAnything &listItem, Anything &anyRenderState)
 {
 	StartTrace(OptionListRenderer.RenderEntry);
 	ROAnything value;
 	TraceAny(listItem, "listItem");
-	reply << "<OPTION";
+	reply << "<option";
 	{
+		PrintOptions3(reply, c, config);
 		if ( config.LookupPath(value, "ValueRenderer") ) {
 			RenderValue(reply, c, config, value, listItem);
 		}
@@ -322,29 +312,129 @@ void OptionListRenderer::RenderEntry(ostream &reply, Context &c, const ROAnythin
 	if ( config.LookupPath(value, "TextRenderer") ) {
 		RenderText(reply, c, config, value, listItem);
 	}
-	reply << "\n";
+	reply << "</option>\n";
 }
-void OptionListRenderer::RenderValue(ostream &reply, Context &c, const ROAnything &config, const ROAnything &valueConfig, Anything &listItem)
+
+long OptionListRenderer::EntryHeaderNrToBeRendered(Context &ctx, const ROAnything &config, Anything &anyRenderState)
 {
-	StartTrace(OptionListRenderer.RenderValue);
-	reply << " VALUE=\"";
-	Render(reply, c, valueConfig);
-	reply << "\"";
+	StartTrace(OptionListRenderer.EntryHeaderNrToBeRendered);
+	if ( config.IsDefined("OptionGroup") ) {
+		return 0;
+	}
+	return -1;
 }
-void OptionListRenderer::RenderSelected(ostream &reply, Context &c, const ROAnything &config, const ROAnything &selectedConfig, Anything &listItem)
+
+bool OptionListRenderer::EntryFooterHasToBeRendered(Context &ctx, const ROAnything &config, Anything &anyRenderState)
 {
-	StartTrace(OptionListRenderer.RenderSelected);
-	String strSel;
-	RenderOnString(strSel, c, selectedConfig);
-	if (strSel.Length()) {
-		ROAnything result = c.Lookup(strSel);
-		if (result.GetType() == AnyLongType && result.AsBool()) {
-			reply << " SELECTED";
+	StartTrace(OptionListRenderer.EntryFooterHasToBeRendered);
+	bool render(false);
+	if ( config.IsDefined("OptionGroup") ) {
+		long lListSize = anyRenderState["ListSize"].AsLong();
+		// these indexes are 1-based, not zero!
+		long entryIndex = anyRenderState["RenderIndex"].AsLong() + 1L;
+		// need only to do this after we rendered the last item
+		render = ( entryIndex == lListSize );
+	}
+	return render;
+}
+
+bool OptionListRenderer::GetEntryHeader(const ROAnything &config, long nr, ROAnything &roaEntryHeader, Anything &anyRenderState)
+{
+	StartTrace(OptionListRenderer.GetEntryHeader);
+	if ( config.LookupPath(roaEntryHeader, "OptionGroup") ) {
+		TraceAny(roaEntryHeader, "using following optiongroup config");
+	}
+	return !roaEntryHeader.IsNull();
+}
+
+bool OptionListRenderer::GetEntryFooter(const ROAnything &config, ROAnything &roaEntryFooter, Anything &anyRenderState)
+{
+	StartTrace(OptionListRenderer.GetEntryFooter);
+	if ( config.LookupPath(roaEntryFooter, "OptionGroup") ) {
+		TraceAny(roaEntryFooter, "using following optiongroup config");
+	}
+	return !roaEntryFooter.IsNull();
+}
+
+void OptionListRenderer::RenderEntryHeader(ostream &reply, Context &ctx, const ROAnything &entryHeader, const ROAnything &listItem, Anything &anyRenderState)
+{
+	StartTrace(OptionListRenderer.RenderEntryHeader);
+	if ( !entryHeader.IsNull() ) {
+		String strCurGroupKey, strEntryKey;
+		// check if we are already inside an option group and get its key
+		if ( anyRenderState.IsDefined("GroupKey") ) {
+			strCurGroupKey = anyRenderState["GroupKey"].AsString();
+			Trace("current key in state [" << strCurGroupKey << "]");
+		}
+		// render current key
+		RenderOnStringWithDefault(strEntryKey, ctx, entryHeader["KeyRenderer"], strCurGroupKey);
+		Trace("group key of entry [" << strEntryKey << "]");
+
+		// check if the key changed and render end tag if so
+		if ( strCurGroupKey.Length() && strEntryKey.Length() && !strCurGroupKey.IsEqual(strEntryKey) ) {
+			Trace("key changed, rendering end tag");
+			// render end tag
+			reply << "</optgroup>\n";
+			strCurGroupKey.Trim(0);
+			anyRenderState.Remove("GroupKey");
+		}
+
+		// key changed
+		if ( !strCurGroupKey.Length() && strEntryKey.Length() ) {
+			String strLabel;
+			RenderOnString(strLabel, ctx, entryHeader["LabelRenderer"]);
+			// render start tag
+			reply << "<optgroup label='" << strLabel << "'>\n";
+			Trace("key changed, rendering start tag with label [" << strLabel << "]");
+			anyRenderState["GroupKey"] = strEntryKey;
 		}
 	}
 }
 
-void OptionListRenderer::RenderText(ostream &reply, Context &c, const ROAnything &config, const ROAnything &textConfig, Anything &listItem)
+void OptionListRenderer::RenderEntryFooter(ostream &reply, Context &ctx, const ROAnything &entryFooter, const ROAnything &listItem, Anything &anyRenderState)
+{
+	StartTrace(OptionListRenderer.RenderEntryFooter);
+	if ( !entryFooter.IsNull() ) {
+		// check if we are already inside an option group and get its key
+		if ( anyRenderState.IsDefined("GroupKey") ) {
+			String strCurGroupKey;
+			strCurGroupKey = anyRenderState["GroupKey"].AsString();
+			Trace("current key in state [" << strCurGroupKey << "]");
+			long lListSize = anyRenderState["ListSize"].AsLong();
+			// these indexes are 1-based, not zero!
+			long entryIndex = anyRenderState["RenderIndex"].AsLong() + 1L;
+			// need only to do this after we rendered the last item
+			if ( entryIndex == lListSize ) {
+				// render end tag
+				reply << "</optgroup>\n";
+				anyRenderState.Remove("GroupKey");
+			}
+		}
+	}
+}
+
+void OptionListRenderer::RenderValue(ostream &reply, Context &c, const ROAnything &config, const ROAnything &valueConfig, const ROAnything &listItem)
+{
+	StartTrace(OptionListRenderer.RenderValue);
+	reply << " value=\"";
+	Render(reply, c, valueConfig);
+	reply << "\"";
+}
+
+void OptionListRenderer::RenderSelected(ostream &reply, Context &c, const ROAnything &config, const ROAnything &selectedConfig, const ROAnything &listItem)
+{
+	StartTrace(OptionListRenderer.RenderSelected);
+	String strSel;
+	RenderOnString(strSel, c, selectedConfig);
+	if ( strSel.Length() ) {
+		ROAnything result = c.Lookup(strSel);
+		if ( result.GetType() == AnyLongType && result.AsBool() ) {
+			reply << " selected";
+		}
+	}
+}
+
+void OptionListRenderer::RenderText(ostream &reply, Context &c, const ROAnything &config, const ROAnything &textConfig, const ROAnything &listItem)
 {
 	StartTrace(OptionListRenderer.RenderText);
 	Render(reply, c, textConfig);
