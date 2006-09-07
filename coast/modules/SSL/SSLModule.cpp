@@ -16,7 +16,7 @@
 #include "SSLAPI.h"
 #include "DiffTimer.h"
 #include "Dbg.h"
-#include "ROAnyLookupAdapter.h"
+#include "AnyLookupInterfaceAdapter.h"
 
 //--- c-library modules used ---------------------------------------------------
 
@@ -164,7 +164,7 @@ bool SSLModule::Finis()
 SSL_CTX *SSLModule::GetSSLClientCtx(ROAnything config)
 {
 	StartTrace(SSLModule.GetSSLClientCtx);
-	ROAnyLookupAdapter object(config);
+	AnyLookupInterfaceAdapter<ROAnything> object(config);
 	return PrepareClientContext(&object);
 }
 

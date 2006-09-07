@@ -16,7 +16,7 @@
 #include "SSLModule.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "ROAnyLookupAdapter.h"
+#include "AnyLookupInterfaceAdapter.h"
 
 //--- c-modules used -----------------------------------------------------------
 
@@ -44,7 +44,7 @@ void SSLModuleTest::LoadCertAndKeyTest()
 	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
 	while ( aEntryIterator.Next(cConfig) ) {
 		TraceAny(cConfig, "cConfig");
-		ROAnyLookupAdapter rola(cConfig["Config"]);
+		AnyLookupInterfaceAdapter<ROAnything> rola(cConfig["Config"]);
 		if ( cConfig["TestData"]["ClientOrServer"].AsString() == "Client" ) {
 			SSL_CTX *ctx = SSLModule::PrepareClientContext(&rola);
 			for (long l = 0; l < cConfig["TestData"]["NumberOfRuns"].AsLong(0L); l++) {
