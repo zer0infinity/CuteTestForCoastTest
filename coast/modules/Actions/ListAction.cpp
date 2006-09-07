@@ -12,6 +12,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "Renderer.h"
 #include "Dbg.h"
+#include "AnyIterators.h"
 
 //--- c-library modules used ---------------------------------------------------
 
@@ -19,20 +20,26 @@ static String ENRTYACTION_STORE_NAME_DEFAULT("EntryData", -1, Storage::Global())
 //---- ListAction ---------------------------------------------------------------
 
 RegisterAction(ListAction);
+ListAction::ListAction(const char *name)
+	: Action(name)
+{
+}
 
-ListAction::ListAction(const char *name) : Action(name) { }
-
-ListAction::~ListAction() { }
+ListAction::~ListAction()
+{
+}
 
 bool ListAction::DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config)
 {
 	StartTrace(ListAction.DoExecAction);
-
 	TraceAny(config, "config");
-	Anything list;
+	ROAnything roaList;
 
-	// Check for mandatory configuration and presence of ListData
-	if (config.IsDefined("EntryAction") && GetList(ctx, config, list) ) {
+	// Check for mandatory configuration and presence of ListName
+	if ( config.IsDefined("EntryAction") && ( GetList(ctx, config, roaList) || config.LookupPath(roaList, "ListData") ) ) {
+		ROAnything entryAction = config["EntryAction"];
+		long lListSize = roaList.GetSize();
+
 		// retrieve the Slotname where the entryData have to be stored
 		String entryStoreName;
 		ROAnything es;
@@ -42,35 +49,47 @@ bool ListAction::DoExecAction(String &transitionToken, Context &ctx, const ROAny
 			entryStoreName = ENRTYACTION_STORE_NAME_DEFAULT;
 		}
 
-		bool hasIndex = false;
-		ROAnything indexslot;
-		String indexSlotname;
-		if (config.LookupPath(indexslot, "IndexSlot")) {
-			hasIndex = true;
-			indexSlotname = indexslot.AsString("Index");
+		String strIndexSlot, strSlotNameSlot, strSlotName;
+		strIndexSlot = config["IndexSlot"].AsString("Index");
+		strSlotNameSlot = config["SlotnameSlot"].AsString("Slotname");
+		long start = Renderer::RenderToString(ctx, config["Start"]).AsLong(0L);
+		if ( start < 0 ) {
+			start = 0L;
+		} else if ( start >= lListSize ) {
+			SYSWARNING("start index given:" << start << "is beyond list size, not executing anything!");
+			return false;
 		}
-
-		bool hasSlotname = false;
-		ROAnything nameslot;
-		String slotnameSlotname;
-		if (config.LookupPath(nameslot, "SlotnameSlot")) {
-			hasSlotname = true;
-			slotnameSlotname = nameslot.AsString("Slotname");
+		long end = Renderer::RenderToString(ctx, config["End"]).AsLong(lListSize);
+		if ( end > lListSize ) {
+			end = lListSize;
+		} else if ( end < 0 ) {
+			SYSWARNING("end index given:" << end << "is negative, not executing anything!");
+			return false;
 		}
 
 		// Entries
-		Anything tempStore = ctx.GetTmpStore();
-		ROAnything entryAction = config["EntryAction"];
-		long sz = list.GetSize();
-		for (int i = 0; i < sz; ++i) {
-			tempStore[entryStoreName] = list[i];
-			if (hasSlotname) {
-				tempStore[slotnameSlotname] = list.SlotName(i);
+		ROAnything roaEntry;
+		AnyExtensions::Iterator<ROAnything, ROAnything, String> aIterator(roaList);
+		while ( aIterator.Next(roaEntry) ) {
+			long i = aIterator.Index();
+			SubTraceAny(TraceEntry, roaEntry, "data at index:" << i);
+			if ( i < start ) {
+				continue;
+			} else if ( i > end ) {
+				break;
 			}
-			if (hasIndex) {
-				tempStore[indexSlotname] = i;
+
+			// prepare data for executing action on
+			// special case of PushPopEntry, last param specifies the segment which we simulate to start with
+			Context::PushPopEntry<ROAnything> aEntryData(ctx, entryStoreName, roaEntry, entryStoreName);
+			Anything anyAdditionalInfo;
+			anyAdditionalInfo[strIndexSlot] = ( i - start );
+			if ( aIterator.SlotName(strSlotName) ) {
+				anyAdditionalInfo[strSlotNameSlot] = strSlotName;
 			}
-			if ( !ExecEntry(transitionToken, ctx, config, entryAction, list[i], list.SlotName(i), i) ) {
+			Context::PushPopEntry<Anything> aEntryDataInfo(ctx, "EntryDataInfo", anyAdditionalInfo);
+
+			if ( !ExecEntry(transitionToken, ctx, entryAction ) ) {
 				return false;
 			}
 		}
@@ -78,32 +97,16 @@ bool ListAction::DoExecAction(String &transitionToken, Context &ctx, const ROAny
 	return true;
 }
 
-bool ListAction::ExecEntry(String &transitionToken, Context &ctx, const ROAnything &config, const ROAnything &entryAction, Anything &anyListItem, const String &strSlotname, const long &lIndex)
+bool ListAction::ExecEntry(String &transitionToken, Context &ctx, const ROAnything &entryAction)
 {
 	StartTrace(ListAction.EntryAction);
 	return ExecAction(transitionToken, ctx, entryAction);
 }
 
-bool ListAction::GetList(Context &c, const ROAnything &config, Anything &list)
+bool ListAction::GetList(Context &ctx, const ROAnything &config, ROAnything &roaList)
 {
-	// Copy pasted from ListRenderer
 	StartTrace(ListAction.GetList);
-
-	bool found(false);
-	String listDataName;
-	Renderer::RenderOnString(listDataName, c, config["ListData"]);
-
-	// Check first within TempStore - prevents us from DeepCloning
-	Anything tempStore = c.GetTmpStore();
-	if ( tempStore.IsDefined(listDataName) ) {
-		list = tempStore[listDataName];
-		found = true;
-	} else {
-		ROAnything ROlist = c.Lookup(listDataName);
-		if ( ! ROlist.IsNull() ) {
-			list = ROlist.DeepClone();
-			found = true;
-		}
-	}
-	return found;
+	String strListDataName;
+	Renderer::RenderOnString(strListDataName, ctx, config["ListName"]);
+	return ( strListDataName.Length() && ctx.Lookup(strListDataName, roaList) );
 }
