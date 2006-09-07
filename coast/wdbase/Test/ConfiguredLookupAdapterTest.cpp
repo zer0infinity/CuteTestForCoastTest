@@ -45,8 +45,8 @@ void ConfiguredLookupAdapterTest::LookupTest()
 		ROAnything conf(caseConfig["Config"]);
 		ROAnything def(caseConfig["Default"]);
 		ConfiguredLookupAdapter cla(conf, def);
-		assertEquals(caseConfig["ExpectedString"].AsString(), cla.Lookup(caseConfig["LookupPathString"].AsString(), ""));
-		assertEquals(caseConfig["ExpectedLong"].AsLong(1L), cla.Lookup(caseConfig["LookupPathLong"].AsString(""), 0L));
+		assertEqual(caseConfig["ExpectedString"].AsString(), cla.Lookup(caseConfig["LookupPathString"].AsString(), ""));
+		assertEqual(caseConfig["ExpectedLong"].AsLong(1L), cla.Lookup(caseConfig["LookupPathLong"].AsString(""), 0L));
 	}
 }
 
