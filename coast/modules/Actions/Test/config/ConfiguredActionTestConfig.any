@@ -777,8 +777,8 @@
 				/ListEntry LoopIndex
 			}
 			/TheAction {
-				{ /List {
-					/ListData	{ /Lookup	NameTheList }
+				{ /ListAction {
+					/ListName	{ /Lookup	NameTheList }
 					/EntryStore	{ /Lookup	ListEntry }
 					/EntryAction	{
 						{ /LoopTestAction * }
@@ -787,7 +787,6 @@
 			}
 			/Result {
 				/TmpStore {
-					/LoopIndex	5
 					/LoopResult	{ 2 13 31 -17 5 }
 				}
 			}
@@ -803,8 +802,8 @@
 				/ListEntry LoopIndex
 			}
 			/TheAction {
-				{ /List {
-					/ListData	{ /Lookup	NameTheList }
+				{ /ListAction {
+					/ListName	{ /Lookup	NameTheList }
 					/EntryStore	{ /Lookup	ListEntry }
 					/SlotnameSlot	EntryKey
 					/IndexSlot		EntryIndex
@@ -823,7 +822,6 @@
 			}
 			/Result {
 				/TmpStore {
-					/LoopIndex	-17
 					/ActionResultA	{
 						/Index	0
 						/Value	2
@@ -856,7 +854,6 @@
 			}
 			/Result {
 				/TmpStore {
-					/LoopIndex	3
 					/LoopResult	{
 						-4 -3 -2 -1 0 1 2 3
 					}
@@ -870,7 +867,7 @@
 			}
 			/TheAction {
 				{ /Loop {
-					/BreakOutOfLoop	0
+					/BreakOutOnFailure	0
 					/Start	{ /Lookup	LoopStart }
 					/End	{ /Lookup	LoopEnd }
 					/IndexSlot	{ Loop Index }
@@ -881,7 +878,6 @@
 			}
 			/Result {
 				/TmpStore {
-					/LoopIndex	6
 					/LoopResult	{
 						0 1 2 3 4 5
 					}
@@ -895,7 +891,7 @@
 			}
 			/TheAction {
 				{ /Loop {
-					/BreakOutOfLoop	1
+					/BreakOutOnFailure	1
 					/Start	{ /Lookup	LoopStart }
 					/End	{ /Lookup	LoopEnd }
 					/IndexSlot	{ Loop Index }
@@ -907,7 +903,6 @@
 			/ExpectedResult 0
 			/Result {
 				/TmpStore {
-					/LoopIndex	8
 					/LoopResult	{
 						5 6 7
 					}
@@ -931,7 +926,6 @@
 			}
 			/Result {
 				/TmpStore {
-					/LoopIndex	-4
 					/LoopResult	{
 						3 2 1 0 -1 -2 -3 -4
 					}
@@ -963,7 +957,7 @@
 			/TmpStore	{
 				/Stay	here
 				/Remove	me
-				/List {
+				/AList {
 					/Remove	me
 					/Stay	here
 				}
@@ -978,7 +972,7 @@
 			/RoleStore {
 				/Remove	me
 				/Stay	here
-				/List {
+				/AList {
 					/Remove	me
 					/Stay	here
 				}
@@ -1033,7 +1027,7 @@
 			/Result {
 				/TmpStore {
 					/Stay	here
-					/List {
+					/AList {
 						/Stay	here
 					}
 					/List2 {
@@ -1044,7 +1038,7 @@
 				}
 				/RoleStore {
 					/Stay	here
-					/List {
+					/AList {
 						/Stay	here
 					}
 					/List2 {
@@ -1058,7 +1052,7 @@
 			/TmpStore	{
 				/Stay	here		# index 0
 				/Remove	me			# index 1
-				/List {				# index 2
+				/AList {				# index 2
 					/Remove	me		# index 2.0
 					RemoveMeToo		# index 2.1
 					/Stay	here	# index 2.2
@@ -1086,7 +1080,7 @@
 			/Result {
 				/TmpStore {
 					/Stay	here		# index 0
-					/List {				# index 2
+					/AList {				# index 2
 						/Stay	here	# index 2.1
 					}
 				}
