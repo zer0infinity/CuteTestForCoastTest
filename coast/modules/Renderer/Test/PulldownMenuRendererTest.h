@@ -9,10 +9,6 @@
 #ifndef _PulldownMenuRendererTest_H
 #define _PulldownMenuRendererTest_H
 
-//-*-Mode: C++;-*-
-#ifndef _PulldownMenuRenderer_h_
-#define _PulldownMenuRenderer_h_
-
 #include "RendererTest.h"
 #include "FieldRendererTest.h"
 
@@ -41,20 +37,14 @@ protected:
 	void TestCaseWithoutChecked();
 	void TestCaseWithoutOptions();
 	void TestCaseWrong();
-	void TestCaseWithList();
-	void TestCaseWithLookupList();
-	void TestCaseWithListAndLookupList();
 	void TestCaseWithListAndLookupListSkipped();
 	void TestCaseWithUndefList();
 	void TestCaseWithListAndUndefLookupList();
-	void TestCaseAllAttributes();
 	void TestCaseNameAndMultiple();
-	void TestCaseListWithUndefOptions();
 	void TestOptionRenderer();
 	void TestFaultOptionRenderer();
 	void TestOptionRendererOld();
 	void TestFaultOptionRendererOld();
 };
 
-#endif
 #endif		//not defined _PulldownMenuRendererTest_H

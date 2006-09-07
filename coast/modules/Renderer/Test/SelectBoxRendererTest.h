@@ -25,7 +25,6 @@ public:
 	virtual ~SelectBoxRendererTest();
 
 	static Test *suite ();
-	void setUp ();
 
 protected:
 	void TestCaseEmptyConf();
@@ -41,13 +40,9 @@ protected:
 	void TestCaseWithoutChecked();
 	void TestCaseWithoutOptions();
 	void TestCaseWrong();
-	void TestCaseWithList();
-	void TestCaseWithLookupList();
-	void TestCaseWithListAndLookupList();
 	void TestCaseWithListAndLookupListSkipped();
 	void TestCaseWithUndefList();
 	void TestCaseWithListAndUndefLookupList();
-	void TestCaseAllAttributes();
 	void TestCaseNameAndMultiple();
 	void TestCaseListWithUndefOptions();
 	void TestOptionRenderer();
