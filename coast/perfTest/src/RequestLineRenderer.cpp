@@ -37,32 +37,29 @@ void RequestLineRenderer::RenderAll(ostream &reply, Context &c, const ROAnything
 		// logic is, if CurrentServer.Path is available, render that but if link nr is available try to render that first
 
 		// config not so interesting - does this renderer even have one??
-		Anything myTmpStore = c.GetTmpStore();
-		TraceAny( myTmpStore, "tmp store" );
-
-		Anything lookUpResult;
+		TraceAny( c.GetTmpStore(), "tmp store" );
+		ROAnything roaResult;
 		bool postIsMethod = false;
 
-		if (myTmpStore.LookupPath(lookUpResult, "CurrentServer.Method") ) {
-			Trace( "RequestMethod is->" << lookUpResult.AsString("") );
-
-			String methodName = 	lookUpResult.AsString("");
+		if ( c.Lookup("CurrentServer.Method", roaResult) ) {
+			Trace( "RequestMethod is->" << roaResult.AsString("") );
+			String methodName = 	roaResult.AsString("");
 			methodName.ToUpper();
 
 			if ( methodName == "POST" ) {
 				postIsMethod = true;
 			}
-			replyDebugBuffer << lookUpResult.AsString("") << " ";
+			replyDebugBuffer << methodName << " ";
 		} else {
 			Trace( "Default RequestMethod is-> GET" );
 			replyDebugBuffer << "GET ";
 		}
 
 		String path;
-		if (myTmpStore.LookupPath(lookUpResult, "CurrentServer.Path") ) {
-			RenderOnString(path, c, lookUpResult);
+		if ( c.Lookup("CurrentServer.Path", roaResult) ) {
+			RenderOnString(path, c, roaResult);
 			long qmarkPos = path.StrChr('?');
-			if (qmarkPos >= 0 && !postIsMethod && myTmpStore["CurrentServer"].IsDefined("formContents")) {
+			if (qmarkPos >= 0 && !postIsMethod && c.Lookup("CurrentServer.formContents", roaResult) ) {
 				path = path.SubString(0, qmarkPos);
 			}
 		} else {
@@ -72,13 +69,12 @@ void RequestLineRenderer::RenderAll(ostream &reply, Context &c, const ROAnything
 		Trace( "RequestURI is->" << path );
 		replyDebugBuffer << path;
 
-		String formContentString = "";
-
-		if (myTmpStore.LookupPath(lookUpResult, "CurrentServer.formContents") ) {
-			formContentString = myTmpStore["CurrentServer"]["formContents"].AsString("");
+		String formContentString;
+		if ( c.Lookup("CurrentServer.formContents", roaResult) ) {
+			formContentString = roaResult.AsString("");
 			// If 'Enctype' is multipart/form-data and a specific boundary was given too
 			// then "resolve" the formContent to a boundary separated multipart content:
-			String encTypeString = myTmpStore["CurrentServer"]["Enctype"].AsString();
+			String encTypeString = c.Lookup("CurrentServer.Enctype", "");
 			if ( encTypeString.Contains("multipart/form-data; boundary") == 0 ) {
 				// formContentString already resolved to boundaryseparated multiparts!
 				// no encoding required here.
@@ -91,30 +87,29 @@ void RequestLineRenderer::RenderAll(ostream &reply, Context &c, const ROAnything
 				}
 			}
 
-			if ( !postIsMethod ) { // append form content in GET to URI
+			if ( !postIsMethod ) {
+				// append form content in GET to URI
 				replyDebugBuffer << "?";
 				replyDebugBuffer << formContentString;
 			}
-
-		} else if (myTmpStore.LookupPath(lookUpResult, "CurrentServer.MsgBody")) {
-			for (long i = 0; i < myTmpStore["CurrentServer"]["MsgBody"].GetSize(); i++ ) {
-				formContentString.Append( myTmpStore["CurrentServer"]["MsgBody"].At(i).AsString("") );
+		} else if ( c.Lookup("CurrentServer.MsgBody", roaResult) ) {
+			for (long i = 0; i < roaResult.GetSize(); ++i ) {
+				formContentString.Append( roaResult[i].AsString("") );
 			}
 		}
 
 		Trace("END formContentString" << formContentString);
 
-		if (myTmpStore.LookupPath(lookUpResult, "CurrentServer.OverallProtocol") ) {
-			Trace( "RequestProtocol is->" << lookUpResult.AsString("") );
-			replyDebugBuffer << lookUpResult.AsString("");
+		if ( c.Lookup("CurrentServer.OverallProtocol", roaResult) ) {
+			Trace( "RequestProtocol is->" << roaResult.AsString("") );
+			replyDebugBuffer << roaResult.AsString("");
 		} else {
 			Anything renderedheader;
-			renderedheader["User-Agent"] = myTmpStore["CurrentServer"]["UserAgent"].AsString("Mozilla/4.51 [en] (WinNT; I)");
-			String hostHeader(myTmpStore["CurrentServer"]["ServerName"].AsString("localhost"));
-
-			renderedheader["Host"] = myTmpStore["CurrentServer"]["ServerName"].AsString("localhost");
-			if (myTmpStore["CurrentServer"].IsDefined("Port")) {
-				hostHeader << ":" << myTmpStore["CurrentServer"]["Port"].AsString("");
+			renderedheader["User-Agent"] = c.Lookup("CurrentServer.UserAgent", "Mozilla/4.51 [en] (WinNT; I)");
+			String hostHeader(c.Lookup("CurrentServer.ServerName", "localhost"));
+			long lPort = -1L;
+			if ( ( lPort = c.Lookup("CurrentServer.Port", -1L) ) != -1L ) {
+				hostHeader << ':' << lPort;
 			}
 			renderedheader["Host"] = hostHeader;
 			renderedheader["Connection"] = "Close";
@@ -134,26 +129,20 @@ void RequestLineRenderer::RenderAll(ostream &reply, Context &c, const ROAnything
 		}
 
 		// check if we have to add an authorization
-		if (myTmpStore["CurrentServer"].IsDefined("User") && myTmpStore["CurrentServer"].IsDefined("Pass")) {
+		ROAnything roaUser, roaPass;
+		if ( c.Lookup("CurrentServer.User", roaUser) && c.Lookup("CurrentServer.Pass", roaPass) ) {
 			// encode the string and add the authorization slot to the request
-			Anything someData;
 			String strUserPass;
 			String authorizationHeaderFieldName;
-			if (myTmpStore.LookupPath(someData, "CurrentServer.User")) {
-				String strData;
-				RenderOnString(strData, c, someData);
-				strUserPass << strData;
-				Trace("User:[" << strData << "]");
-			}
+			RenderOnString(strUserPass, c, roaUser);
+			Trace("User:[" << strUserPass << "]");
+
 			strUserPass << ":";
-			if (myTmpStore.LookupPath(someData, "CurrentServer.Pass")) {
-				String strData;
-				RenderOnString(strData, c, someData);
-				strUserPass << strData;
-				Trace("Pass:[" << strData << "]");
-			}
-			if (myTmpStore.LookupPath(someData, "CurrentServer.BasicAuthorizationHeaderFieldName")) {
-				RenderOnString(authorizationHeaderFieldName, c, someData);
+			RenderOnString(strUserPass, c, roaPass);
+			Trace("User:Pass:[" << strUserPass << "]");
+			ROAnything roaAuth;
+			if ( c.Lookup("CurrentServer.BasicAuthorizationHeaderFieldName", roaAuth) ) {
+				RenderOnString(authorizationHeaderFieldName, c, roaAuth);
 				Trace("authorizationHeaderFieldName: " << authorizationHeaderFieldName << "Length: " << authorizationHeaderFieldName.Length());
 			}
 			if ( authorizationHeaderFieldName.Length() == 0L ) {
@@ -177,7 +166,7 @@ void RequestLineRenderer::RenderAll(ostream &reply, Context &c, const ROAnything
 
 		if ( formContentString.Length() > 0 && postIsMethod ) {
 			replyDebugBuffer << "\r\nContent-Length: " << formContentString.Length();
-			replyDebugBuffer << "\r\nContent-Type: " << myTmpStore["CurrentServer"]["Enctype"].AsString("");
+			replyDebugBuffer << "\r\nContent-Type: " << c.Lookup("CurrentServer.Enctype", "");
 			replyDebugBuffer << "\r\n\r\n";
 			replyDebugBuffer << formContentString;
 		} else {
@@ -192,9 +181,9 @@ void RequestLineRenderer::RenderAll(ostream &reply, Context &c, const ROAnything
 		}
 		String infoMsg = "\r\nRequest to server from Thread [" ;
 		infoMsg << ThreadNumber  << "] (";
-		infoMsg << "Name:" << myTmpStore["CurrentServer"]["ServerName"].AsString("");
-		infoMsg << " IP:" << myTmpStore["CurrentServer"]["Server"].AsString("");
-		infoMsg << " Port:" << myTmpStore["CurrentServer"]["Port"].AsString("") << ")\r\n";
+		infoMsg << "Name:" << c.Lookup("CurrentServer.ServerName", "");
+		infoMsg << " IP:" << c.Lookup("CurrentServer.Server", "");
+		infoMsg << " Port:" << c.Lookup("CurrentServer.Port", "") << ")\r\n";
 		infoMsg << replyDebugBuffer.str();
 
 #ifdef DEBUG
@@ -209,7 +198,6 @@ void RequestLineRenderer::RenderAll(ostream &reply, Context &c, const ROAnything
 		String noOfCurrentEmsg = myTmpStore["result"]["ConfigStep"].AsString("");
 		long noOfMessagesSoFar = myTmpStore["result"]["InfoMessageCtr"][noOfCurrentEmsg].GetSize();
 		Anything anyMessagesSoFar(noOfMessagesSoFar);
-
 		myTmpStore["result"]["InfoMessageCtr"][noOfCurrentEmsg][anyMessagesSoFar.AsString("")] = infoMsg;
 #endif
 	}

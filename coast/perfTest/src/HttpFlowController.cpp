@@ -61,8 +61,6 @@ void HttpFlowController::DoProcessSetCookie(String &cookieInfo, Context &ctx)
 {
 	StartTrace(HttpFlowController.DoProcessSetCookie);
 
-	Anything tmpStore = ctx.GetTmpStore();
-
 	long Pos = cookieInfo.StrChr( '=' );
 	Trace( "pos = is->" << Pos << " in cookieString->" << cookieInfo );
 
@@ -101,14 +99,16 @@ void HttpFlowController::DoProcessSetCookie(String &cookieInfo, Context &ctx)
 
 			if (!explicitDomainOrPortUsed) {
 				Trace( "No domain name set"  );
-				if ( tmpStore["CurrentServer"].IsDefined("ServerName") ) {
-					explicitDomainName = tmpStore["CurrentServer"]["ServerName"].AsString("");
+				ROAnything roaName;
+				if ( ctx.Lookup("CurrentServer.ServerName", roaName) ) {
+					explicitDomainName = roaName.AsString("");
 					Trace( "Set Domain to->" << explicitDomainName);
 					// If the cookie contains no domain, we assign all cookies independent for what port they are intended
 					// to the same domain (localhost), because this is what we would expect to be done by the browser in this case.
 				}
 			}
 			explicitDomainName.ToUpper();
+			Anything tmpStore = ctx.GetTmpStore();
 			tmpStore["Cookies"][explicitDomainName][cookieName] = cookieFull;
 		}
 	}
@@ -397,21 +397,15 @@ bool HttpFlowController::DoProcessLinksFormsAndFrames(Context &ctx)
 						// success is when retval is true AND given anything is NOT NULL
 						// this is because I need to distinguish an error from a nonfound slot
 						if ( GetFormOrLinkInfo( "Form", "enctype", ctx, resultAnything ) && !resultAnything.IsNull()) {
-
 							// If boundary separation of form elements required for stresser
 							// insert given content of slot "boundarySeparated":
-							//
-							if (( resultAnything.AsString("").Contains("multipart/form-data") == 0 ) &&
-								tmpStore.LookupPath(boundary, "Form.boundarySeparated") ) {
-
-								tmpStore["CurrentServer"]["Enctype"] = resultAnything.AsString("")
-																	   << "; boundary=" << boundary.AsString("");
+							if (( resultAnything.AsString("").Contains("multipart/form-data") == 0 ) && tmpStore.LookupPath(boundary, "Form.boundarySeparated") ) {
+								tmpStore["CurrentServer"]["Enctype"] = resultAnything.AsString("") << "; boundary=" << boundary.AsString("");
 							}
 							// Otherwise:
 							else {
 								tmpStore["CurrentServer"]["Enctype"] = resultAnything.AsString(""); // Method i.e. GET or POST etc.
 							}
-
 							Trace ("Encode type is ->" << resultAnything.AsString("") );
 						} else {
 							tmpStore["CurrentServer"]["Enctype"] = "application/x-www-form-urlencoded";
@@ -856,12 +850,11 @@ void HttpFlowController::SetupSSLCtx(Anything &sslModuleCfg, Context &ctx)
 
 void HttpFlowController::PrepareConnector(Context &ctx)
 {
-	// this is the new method that also gets a config ( similar to Renderer::RenderAll )
-	// write the action code here - you don't have to override DoAction anymore
-	StartTrace(HttpFlowController.PrepareSSL);
+	StartTrace(HttpFlowController.PrepareConnector);
+	// clear content
 	Anything toPush;
 	toPush["CurrentServer"]["UseThreadLocalMemory"] = 1L;
-	if ( ctx.GetTmpStore()["CurrentServer"]["UseSSL"].AsLong(0) == 1L ) {
+	if ( ctx.Lookup("CurrentServer.UseSSL", 0L) == 1L ) {
 		Anything sslModuleCfg;
 		SetupSSLCtx(sslModuleCfg, ctx);
 		toPush["SSLModuleCfg"] 				= sslModuleCfg;
@@ -874,7 +867,7 @@ void HttpFlowController::PrepareConnector(Context &ctx)
 	// The information pushed may be needed in "follow up" requests triggered by redirects.
 	// Because the TmpStore is lost after FlowController has handled one request, we must not
 	// call PopStore.
-	ctx.PushStore(name, toPush);
+	ctx.Push(name, toPush);
 }
 
 bool HttpFlowController::AnalyseReply(Context &ctx)

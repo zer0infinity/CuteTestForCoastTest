@@ -10,6 +10,7 @@
 #include "CookieToServerRenderer.h"
 
 //--- standard modules used ----------------------------------------------------
+#include "AnyIterators.h"
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
@@ -30,55 +31,56 @@ void CookieToServerRenderer::RenderAll(ostream &reply, Context &c, const ROAnyth
 	StartTrace(CookieToServerRenderer.Render);
 	//TraceAny(config, "config");
 	// config not so interesting - does this renderer even have one??
-	Anything myTmpStore = c.GetTmpStore();
-	TraceAny( myTmpStore, "<<- Overall TMP Store" );
+	TraceAny( c.GetTmpStore(), "<<- Overall TMP Store" );
 
-	String explicitDomainName = myTmpStore["CurrentServer"]["ServerName"].AsString("");
+	String explicitDomainName = c.Lookup("CurrentServer.ServerName", "");
 	// without Port part
 	OutputCookies( explicitDomainName, reply, c );
 
-	explicitDomainName << ":" << myTmpStore["CurrentServer"]["Port"].AsString("");
+	explicitDomainName << ":" << c.Lookup("CurrentServer.Port", "");
 
 	// with Port part
 	OutputCookies( explicitDomainName, reply, c );
 }
 
-void CookieToServerRenderer::OutputCookies(String &explicitDomainName, ostream &reply, Context &c )
+void CookieToServerRenderer::OutputCookies(const String &explicitDomainName, ostream &reply, Context &c )
 {
 	StartTrace(CookieToServerRenderer.OutputCookies);
 
-	Anything myTmpStore = c.GetTmpStore();
-	Trace( "try to find" << explicitDomainName  );
-	TraceAny( myTmpStore["Cookies"],  "<<- in here" );
-	String newString = String( explicitDomainName );
+	String newString = explicitDomainName;
 	newString.ToUpper();
 
-	// Old search relied on exact match
-	//long mySlotNo= myTmpStore["Cookies"].FindIndex(newString); //
-	long mySlotNo = -1;
+	ROAnything roaAllCookieDomains;
+	if ( c.Lookup("Cookies", roaAllCookieDomains) ) {
+		Trace( "try to find" << explicitDomainName  );
+		TraceAny( roaAllCookieDomains,  "try to find [" << explicitDomainName << "] in here" );
+		// could be .y.z match cookie to be sent out
+		ROAnything roaCookies;
+		AnyExtensions::Iterator<ROAnything, ROAnything, String> aCookieIter(roaAllCookieDomains);
+		while ( aCookieIter.Next(roaCookies) ) {
+			String potPartDomain;
+			aCookieIter.SlotName(potPartDomain);
+			Trace("PotPartDomain " << potPartDomain << " NewString "  << newString);
+			long posn = newString.Contains( potPartDomain );
+			Trace("Posn " << posn <<  " potPartDomain.Length " << potPartDomain.Length() << " newString.Length "  << newString.Length());
+			if ( (posn + potPartDomain.Length()) == newString.Length() ) {
+				// match of domains at end of string...only
+				Trace( "(part) domain found at slot no" << aCookieIter.Index() );
 
-	// could be .y.z match cookie to be sent out
-	for (long i = 0; i < myTmpStore["Cookies"].GetSize(); i++ ) {
-		String potPartDomain = myTmpStore["Cookies"].SlotName(i);
-		Trace("PotPartDomain " << potPartDomain << " NewString "  << newString);
-		long posn = newString.Contains( potPartDomain );
-		Trace("Posn " << posn <<  " potPartDomain.Length " << potPartDomain.Length() << " newString.Length "  << newString.Length());
-		if ( (posn + potPartDomain.Length()) == newString.Length() ) {
-			// match of domains at end of string...only
-			Anything cookieTin = myTmpStore["Cookies"].At(i);
-			Trace( "(part) domain found at slot no" << i );
-			i = myTmpStore["Cookies"].GetSize(); // finish For loop condition set...
-
-			Trace( "result " << i );
-			reply << "\r\nCookie: ";
-			// output all cookies in the current cookie container...
-			long sz = cookieTin.GetSize();
-			for ( mySlotNo = 0; mySlotNo < sz;  mySlotNo++ ) {
-				Trace("Cookie passed to server: " << cookieTin.At(mySlotNo).AsString(""));
-				reply << cookieTin.At(mySlotNo).AsString("");
-				if (mySlotNo < sz - 1) {
-					reply << "; ";
+				reply << "\r\nCookie: ";
+				// output all cookies in the current cookie container...
+				ROAnything roaEntry;
+				AnyExtensions::Iterator<ROAnything, ROAnything, String> aDCookieIter(roaCookies);
+				if ( aDCookieIter.Next(roaEntry) ) {
+					Trace("Cookie passed to server [" << roaEntry.AsString() << "]");
+					reply << roaEntry.AsString();
+					while ( aDCookieIter.Next(roaEntry) ) {
+						Trace("Cookie passed to server [" << roaEntry.AsString() << "]");
+						reply << "; " << roaEntry.AsString();
+					}
 				}
+				// finish loop now
+				break;
 			}
 		}
 	}

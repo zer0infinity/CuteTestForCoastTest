@@ -37,7 +37,7 @@ public:
 	virtual void RenderAll(ostream &reply, Context &c, const ROAnything &config);
 
 private:
-	void OutputCookies(String &explicitDomainName, ostream &reply, Context &c );
+	void OutputCookies(const String &explicitDomainName, ostream &reply, Context &c );
 };
 
 #endif		//ifndef _CookieToServerRenderer_H
