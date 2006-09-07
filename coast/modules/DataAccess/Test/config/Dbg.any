@@ -9,16 +9,25 @@
 {
 
 	/LowerBound		0	# debugging on or off
-	/UpperBound		1100	# override switch: turns everything on
+	/UpperBound		11	# override switch: turns everything on
 	/DumpAnythings  1		# print full Anythings
 
+	/Context {
+		/MainSwitch 10
+		/EnableAll	10
+	}
+	/LookupInterface {
+		/MainSwitch 10
+		/EnableAll	10
+	}
 	/DataAccess {
-		/MainSwitch 1100
-		/EnableAll	1100
+		/MainSwitch 11
+		/EnableAll	11
 	}
 	/DataAccessImpl {
-		/MainSwitch 1100
-		/EnableAll	1100
+		/MainSwitch 11
+		/EnableAll	11
+		/DoLoadConfig	-11
 	}
 	/MapperTestDAImpl {
 		/MainSwitch 1100
@@ -29,8 +38,8 @@
 		/EnableAll	0
 	}
 	/CallDataAccessAction {
-		/MainSwitch 0
-		/EnableAll	0
+		/MainSwitch 10
+		/EnableAll	10
 	}
 	/ReadXMLFileDAImpl {
 		/MainSwitch 1000
@@ -148,8 +157,10 @@
 		/EnableAll 1100
 	}
 	/ResultMapper {
-		/MainSwitch 1100
-		/EnableAll 1100
+		/MainSwitch		11
+		/EnableAll		11
+		/DoLoadConfig	-11
+		/DoGetConfigName -11
 	}
 	/EagerResultMapper {
 		/MainSwitch 1100

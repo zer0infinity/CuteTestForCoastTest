@@ -29,12 +29,20 @@
 		/EnableAll	10
 	}
 	/SelectBoxRenderer {
-		/MainSwitch			0
+		/MainSwitch			10
 		/EnableAll			10
 		/RenderOptionList	10
 	}
+	/SelectBoxRendererTest {
+		/MainSwitch			10
+		/EnableAll			10
+	}
+	/FieldRendererTest {
+		/MainSwitch			10
+		/EnableAll			10
+	}
 	/OptionListRenderer {
-		/MainSwitch 		0
+		/MainSwitch 		10
 		/EnableAll			10
 	}
 	/TemplateParserTest {
@@ -58,27 +66,27 @@
 		/AnyCompareEqual	10
 	}
 	/StringTokenizeRenderer {
-		/MainSwitch 		11
+		/MainSwitch 		0
 		/EnableAll			11
 	}
 	/OptionsPrinter {
-		/MainSwitch	10
+		/MainSwitch	0
 		/EnableAll	10
 	}
 	/URLPrinter {
-		/MainSwitch	10
+		/MainSwitch	0
 		/EnableAll	10
 	}
 	/SimpleURLPrinter {
-		/MainSwitch	10
+		/MainSwitch	0
 		/EnableAll	10
 	}
 	/FullURLPrinter {
-		/MainSwitch	10
+		/MainSwitch	0
 		/EnableAll	10
 	}
 	/URLRenderer {
-		/MainSwitch 		10
+		/MainSwitch 		0
 		/EnableAll			10
 	}
 	/URLUtils {
@@ -86,7 +94,7 @@
 		/EnableAll			10
 	}
 	/SecurityModule {
-		/MainSwitch 		10
+		/MainSwitch 		0
 		/EnableAll			10
 	}
 	/CallRenderer {
@@ -94,15 +102,24 @@
 		/EnableAll			11
 	}
 	/Context {
-		/MainSwitch 		0
+		/MainSwitch 		10
 		/EnableAll			0
-		/DoLookup			11
-		/LookupStores		11
-		/IntGetStore		11
-		/PushStore			11
+		/DoLookup			-11
+		/LookupStores		-11
+		/IntGetStore		-11
+		/Push				0
+		/Pop				0
 	}
 	/ContextLookupRenderer {
 		/MainSwitch 		0
+		/EnableAll			11
+	}
+	/ListRenderer {
+		/MainSwitch 		10
+		/EnableAll			11
+	}
+	/AnyLookupInterfaceAdapter {
+		/MainSwitch 		10
 		/EnableAll			11
 	}
 }
