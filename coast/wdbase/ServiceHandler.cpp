@@ -31,6 +31,8 @@ void ServiceHandler::HandleService(ostream &os, Context &ctx)
 	Trace("servicename:" << fName);
 	ctx.Push("ServiceHandler", this);
 	DoHandleService(os, ctx);
+	String strKey;
+	ctx.Pop(strKey);
 }
 
 //---- registry interface

@@ -75,6 +75,8 @@ void ServiceDispatcher::Dispatch2Service(ostream &reply, Context &ctx)
 		sh = ServiceHandler::FindServiceHandler(def);
 	}
 	sh->HandleService(reply, ctx);
+	String strKey;
+	ctx.Pop(strKey);
 }
 
 ServiceHandler *ServiceDispatcher::FindServiceHandler(Context &ctx)
