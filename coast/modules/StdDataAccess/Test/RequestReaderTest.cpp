@@ -71,11 +71,11 @@ void RequestReaderTest::CleanupRequestLineTest()
 		long hasErrors = reader.HasErrors();
 		Anything errors = reader.GetErrors();
 		Trace("Checking HasErrors");
-		assertEquals(cConfig["HasErrors"].AsLong(0), hasErrors);
+		assertEqual(cConfig["HasErrors"].AsLong(0), hasErrors);
 		Trace("Checking Reason");
-		assertEquals(cConfig["Reason"].AsString(), errors["Reason"].AsString(""));
+		assertEqual(cConfig["Reason"].AsString(), errors["Reason"].AsString(""));
 		Trace("Checking ExpectedRequest");
-		assertEquals(cConfig["ExpectedRequest"].AsString(), request["REQUEST_URI"].AsString());
+		assertEqual(cConfig["ExpectedRequest"].AsString(), request["REQUEST_URI"].AsString());
 		Trace("Resulting REQUEST_URI: " << request["REQUEST_URI"].AsString());
 	}
 }

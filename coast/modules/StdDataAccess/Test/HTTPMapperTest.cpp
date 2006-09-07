@@ -49,7 +49,7 @@ void HTTPMapperTest::FDTest1()
 
 	String result;
 	result = PrepareResults(dummy["TestFDPost1Result"]);
-	assertEquals(result, httpOutput);
+	assertEqual(result, httpOutput);
 	os << flush;
 	Trace("Resulting httpRequest: " << httpOutput);
 	Trace("Expected  httpRequest: " << result);
@@ -75,7 +75,7 @@ void HTTPMapperTest::FDTest2()
 
 	String result;
 	result = PrepareResults(dummy["TestFDPost2Result"]);
-	assertEquals(result, httpOutput);
+	assertEqual(result, httpOutput);
 	os << flush;
 	Trace("Resulting httpRequest: " << httpOutput);
 	Trace("Expected  httpRequest: " << result);
@@ -121,7 +121,7 @@ void HTTPMapperTest::FDTest4()
 
 	String result;
 	result = PrepareResults(dummy["TestFDGet4Result"]);
-	assertEquals(result, httpOutput);
+	assertEqual(result, httpOutput);
 	os << flush;
 	Trace("Resulting httpRequest: " << httpOutput);
 	Trace("Expected  httpRequest: " << result);

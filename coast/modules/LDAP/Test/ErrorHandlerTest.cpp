@@ -119,11 +119,11 @@ void ErrorHandlerTest::ShouldRetryTest()
 	LDAPErrorHandler eh(*fCtx, fGet, fPut, "TestHandleError");
 
 	eh.SetRetryState(LDAPErrorHandler::eRetry);
-	assertEquals(LDAPErrorHandler::eRetry, eh.GetRetryState());
+	assertEqual(LDAPErrorHandler::eRetry, eh.GetRetryState());
 	eh.SetRetryState(LDAPErrorHandler::eNoRetry);
-	assertEquals(LDAPErrorHandler::eNoRetry, eh.GetRetryState());
+	assertEqual(LDAPErrorHandler::eNoRetry, eh.GetRetryState());
 	eh.SetRetryState(LDAPErrorHandler::eIsInRetrySequence);
-	assertEquals(LDAPErrorHandler::eIsInRetrySequence, eh.GetRetryState());
+	assertEqual(LDAPErrorHandler::eIsInRetrySequence, eh.GetRetryState());
 }
 
 void ErrorHandlerTest::ParamAccessTest()

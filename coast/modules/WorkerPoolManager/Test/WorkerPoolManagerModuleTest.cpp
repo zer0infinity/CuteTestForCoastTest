@@ -76,8 +76,8 @@ void WorkerPoolManagerModuleTest::Check(ROAnything cConfig, WorkerPoolManagerMod
 			}
 
 			// check the result
-			assertEquals(results["Got"].AsString(), cConfig["Message"].AsString());
-			assertEquals(results["WorkerInitialConfig"].AsString(), cConfig["ExpectedWorkerInitialConfig"].AsString());
+			assertEqual(results["Got"].AsString(), cConfig["Message"].AsString());
+			assertEqual(results["WorkerInitialConfig"].AsString(), cConfig["ExpectedWorkerInitialConfig"].AsString());
 			TraceAny(aMsgAny, "Message sent");
 			TraceAny(results, "Results");
 		}

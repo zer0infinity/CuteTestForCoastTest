@@ -84,7 +84,7 @@ void HTTPDAImplTest::SSLTests()
 		// We must set our ssl context individually, otherwise SSLOBJMGR takes care of it
 		SSL_CTX	 *sslctx = SSLModule::GetSSLClientCtx(cConfig["Config"]["SSLModuleCfg"].DeepClone());
 		ctx.GetTmpStore()["SSLContext"] = (IFAObject *) sslctx;
-		assertEquals(httpDAImpl.Exec(ctx, &in, &out), cConfig["Results"]["HTTPDAImplRet"].AsBool(0));
+		assertEqual(httpDAImpl.Exec(ctx, &in, &out), cConfig["Results"]["HTTPDAImplRet"].AsBool(0));
 		Anything tmp = ctx.GetTmpStore();
 		Anything clientInfo;
 		clientInfo = tmp["ClientInfoBackends"];
@@ -116,7 +116,7 @@ void HTTPDAImplTest::SSLNirvanaConnectTests()
 				sslctx = SSLModule::GetSSLClientCtx(cConfig["Config"]["SSLModuleCfg"].DeepClone());
 			}
 			ctx.GetTmpStore()["SSLContext"] = (IFAObject *) sslctx;
-			assertEquals(httpDAImpl.Exec(ctx, &in, &out), cConfig["Results"]["HTTPDAImplRet"].AsBool(0));
+			assertEqual(httpDAImpl.Exec(ctx, &in, &out), cConfig["Results"]["HTTPDAImplRet"].AsBool(0));
 			Anything tmp = ctx.GetTmpStore();
 			Anything clientInfo;
 			clientInfo = tmp["ClientInfoBackends"];

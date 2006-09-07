@@ -139,9 +139,9 @@ void SSLObjectManagerTest::SessionResumptionWithMinimumConfigTest()
 			assertEqual(cConfig["Results"]["AppLevelCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["AppLevelCertVerifyStatus"].AsBool(0));
 			assertEqual(cConfig["Results"]["IsCertCheckPassed"].AsBool(1), s->IsCertCheckPassed(cConfig["Config"]));
 			if ( ii == 0 || ii == 256 ) {
-				assertEquals(0, clientInfo["SSL"]["SessionIsResumed"].AsLong(1));
+				assertEqual(0, clientInfo["SSL"]["SessionIsResumed"].AsLong(1));
 			} else {
-				assertEquals(1, clientInfo["SSL"]["SessionIsResumed"].AsLong(0));
+				assertEqual(1, clientInfo["SSL"]["SessionIsResumed"].AsLong(0));
 			}
 			if (t_assert(s1 != NULL) && t_assert(s != NULL)) {
 				(*s1) << "GET / HTTP/1.0" << ENDL << ENDL << flush;
@@ -184,9 +184,9 @@ void SSLObjectManagerTest::SessionResumptionTest()
 			assertEqual(cConfig["Results"]["AppLevelCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["AppLevelCertVerifyStatus"].AsBool(0));
 			assertEqual(cConfig["Results"]["IsCertCheckPassed"].AsBool(1), s->IsCertCheckPassed(cConfig["Config"]));
 			if ( ii == 0 || ii == 256 ) {
-				assertEquals(0, clientInfo["SSL"]["SessionIsResumed"].AsLong(1));
+				assertEqual(0, clientInfo["SSL"]["SessionIsResumed"].AsLong(1));
 			} else {
-				assertEquals(1, clientInfo["SSL"]["SessionIsResumed"].AsLong(0));
+				assertEqual(1, clientInfo["SSL"]["SessionIsResumed"].AsLong(0));
 			}
 			if (t_assert(s1 != NULL) && t_assert(s != NULL)) {
 				(*s1) << "GET / HTTP/1.0" << ENDL << ENDL << flush;
@@ -228,7 +228,7 @@ void SSLObjectManagerTest::NoSessionResumptionTest()
 			assertEqual(cConfig["Results"]["SSLCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["SSLCertVerifyStatus"]["SSL"]["Ok"].AsBool(0));
 			assertEqual(cConfig["Results"]["AppLevelCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["AppLevelCertVerifyStatus"].AsBool(0));
 			assertEqual(cConfig["Results"]["IsCertCheckPassed"].AsBool(1), s->IsCertCheckPassed(cConfig["Config"]));
-			assertEquals(0, clientInfo["SSL"]["SessionIsResumed"].AsLong(1));
+			assertEqual(0, clientInfo["SSL"]["SessionIsResumed"].AsLong(1));
 			if (t_assert(s1 != NULL) && t_assert(s != NULL)) {
 				(*s1) << "GET / HTTP/1.0" << ENDL << ENDL << flush;
 				String reply;

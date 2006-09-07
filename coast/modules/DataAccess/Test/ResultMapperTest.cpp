@@ -324,12 +324,12 @@ void ResultMapperTest::DoGetDestinationSlotWithPathTest()
 	TraceAny(ctx.GetTmpStore(), "tmp");
 	Anything res;
 	ctx.GetTmpStore().LookupPath(res, "Mapper.x.y.z.msg");
-	assertEquals("foo", res.AsString());
+	assertEqual("foo", res.AsString());
 
 	// assign second
 	ptm.Put("msg", String("bar"), ctx);
 	ctx.GetTmpStore().LookupPath(res, "Mapper.x.y.z.msg");
-	assertEquals(2, res.GetSize());
+	assertEqual(2, res.GetSize());
 	t_assert(res.Contains("foo"));
 	t_assert(res.Contains("bar"));
 }

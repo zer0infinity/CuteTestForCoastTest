@@ -42,7 +42,7 @@ void DateRendererTest::CompareHelper(const char *format, long offset)
 	char date[maxsize];
 
 	strftime(date, maxsize, format, tt);
-	assertEquals(date, fReply.str());
+	assertEqual(date, fReply.str());
 }
 
 void DateRendererTest::simpleFormat()
@@ -146,7 +146,7 @@ void DateRendererTest::AbsolutTimeFormat()
 	char date[maxsize];
 
 	strftime(date, maxsize, format, tt);
-	assertEquals(date, fReply.str());
+	assertEqual(date, fReply.str());
 }
 
 void DateRendererTest::GMTTime()
@@ -170,7 +170,7 @@ void DateRendererTest::GMTTime()
 	char date[maxsize];
 
 	strftime(date, maxsize, format, tt);
-	assertEquals(date, fReply.str());
+	assertEqual(date, fReply.str());
 }
 
 void DateRendererTest::emptyConfig1()
@@ -201,12 +201,12 @@ void DateRendererTest::emptyConfig1()
 		strftime(date, maxsize, "%C", tt);
 #endif
 		if (date == fReply.str() || i != 4) {
-			assertEquals(date, fReply.str());
+			assertEqual(date, fReply.str());
 			break;
 		} else {
 			if (i == 4) {
 				// now the test really failed
-				assertEquals(date, fReply.str());
+				assertEqual(date, fReply.str());
 			}
 		}
 	}
@@ -235,12 +235,12 @@ void DateRendererTest::emptyConfig2()
 		strftime(date, maxsize, "%C", tt);
 #endif
 		if (date == fReply.str() || i != 4) {
-			assertEquals(date, fReply.str());
+			assertEqual(date, fReply.str());
 			break;
 		} else {
 			if (i == 4) {
 				// now the test really failed
-				assertEquals(date, fReply.str());
+				assertEqual(date, fReply.str());
 			}
 		}
 	}

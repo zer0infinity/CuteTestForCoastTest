@@ -91,27 +91,27 @@ void AccessManagerModuleTest::InitTest()
 
 	AccessManager *am_alpha = AccessManagerModule::GetAccessManager("alpha");
 	t_assert(am_alpha != NULL);
-	assertEquals("alpha", GetName(am_alpha));
+	assertEqual("alpha", GetName(am_alpha));
 	t_assertm((typeid(MyAccessManager) == typeid(*am_alpha)), typeid(*am_alpha).name());
 
 	AccessManager *am_beta = AccessManagerModule::GetAccessManager("AccessManagerBeta");
 	t_assert(am_beta != NULL);
-	assertEquals("AccessManagerBeta", GetName(am_beta));
+	assertEqual("AccessManagerBeta", GetName(am_beta));
 	t_assertm(typeid(MyAccessManager) == typeid(*am_beta), typeid(*am_beta).name());
 
 	AccessManager *am_default = AccessManagerModule::GetAccessManager();
 	t_assert(am_beta == am_default);
 
-	assertEquals("bar", am_default->Lookup("foo").AsString(""));
+	assertEqual("bar", am_default->Lookup("foo").AsString(""));
 
 	AccessManager *am_test = AccessManagerModule::GetAccessManager("TestAccessManager");
 	t_assert(am_test != NULL);
-	assertEquals("TestAccessManager", GetName(am_test));
+	assertEqual("TestAccessManager", GetName(am_test));
 	t_assertm(typeid(TestAccessManager) == typeid(*am_test), typeid(*am_test).name());
 
 	AccessManager *am_gamma = AccessManagerModule::GetAccessManager("gamma");
 	t_assert(am_gamma != NULL);
-	assertEquals("gamma", GetName(am_gamma));
+	assertEqual("gamma", GetName(am_gamma));
 	t_assertm(typeid(TestAccessManager) == typeid(*am_gamma), typeid(*am_gamma).name());
 }
 
@@ -121,7 +121,7 @@ void AccessManagerModuleTest::FinisTest()
 
 	AccessManager *am_alpha = AccessManagerModule::GetAccessManager("alpha");
 	t_assert(am_alpha != NULL);
-	assertEquals("alpha", GetName(am_alpha));
+	assertEqual("alpha", GetName(am_alpha));
 
 	WDModule *pModule = WDModule::FindWDModule("AccessManagerModule");
 	if ( t_assertm(pModule != NULL, "expected AccessManagerModule to be registered") ) {
