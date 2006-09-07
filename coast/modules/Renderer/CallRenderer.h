@@ -46,10 +46,10 @@ public:
 	CallRenderer(const char *name);
 	~CallRenderer();
 
-	//! Renders the given renderer spec on <I>reply </I> using current local parameters
-	//! \param reply out - the stream where the rendered output is written on.
-	//! \param ctx the context the renderer runs within.
-	//! \param config the configuration of the renderer.
+	/*! Renders the given renderer spec on <I>reply </I> using current local parameters
+		\param reply out - the stream where the rendered output is written on.
+		\param ctx the context the renderer runs within.
+		\param config the configuration of the renderer. */
 	virtual void RenderAll(ostream &reply, Context &ctx, const ROAnything &config);
 };
 //---- EagerCallRenderer ----------------------------------------------------------
