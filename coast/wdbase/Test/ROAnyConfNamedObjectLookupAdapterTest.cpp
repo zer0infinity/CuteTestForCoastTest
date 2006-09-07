@@ -19,7 +19,7 @@
 #include "TestSuite.h"
 
 //--- module under test --------------------------------------------------------
-#include "ROAnyLookupAdapter.h"
+#include "AnyLookupInterfaceAdapter.h"
 
 //--- interface include --------------------------------------------------------
 #include "ROAnyConfNamedObjectLookupAdapterTest.h"
@@ -55,17 +55,17 @@ void ROAnyConfNamedObjectLookupAdapterTest::LookupTest()
 	ROAnything robase(base);
 	ROAnyConfNamedObjectLookupAdapter la(robase, tcfno);
 
-	//Test ROAnyLookupAdapter functionality
-	assertEquals("bar", la.Lookup("hank", "X"));
-	assertEquals("bar", la.Lookup("compo@site", "X", '@'));
+	//Test AnyLookupInterfaceAdapter functionality
+	assertEqual("bar", la.Lookup("hank", "X"));
+	assertEqual("bar", la.Lookup("compo@site", "X", '@'));
 	t_assert(31416L == la.Lookup("long", 0L));
 	cerr << "testConfNamedObject" << "1" << endl;
-	assertEquals("X", la.Lookup("fox", "X"));
+	assertEqual("X", la.Lookup("fox", "X"));
 	cerr << "testConfNamedObject" << "2" << endl;
 
 	//Test lookups aiming at the ConfiguredNamedObject's config
-	assertEquals("FromConfigString", la.Lookup("FromConfigString", "X"));
-	assertEquals(9L, la.Lookup("FromConfigLong", 0L));
+	assertEqual("FromConfigString", la.Lookup("FromConfigString", "X"));
+	assertEqual(9L, la.Lookup("FromConfigLong", 0L));
 
 	Anything base2;
 	base2["FromConfigString"]	= "FromConfigStringBase2";
@@ -74,8 +74,8 @@ void ROAnyConfNamedObjectLookupAdapterTest::LookupTest()
 	ROAnyConfNamedObjectLookupAdapter la2(robase2, tcfno);
 
 	//Test lookups testing precedence of ROAnythings content over ConfiguredNamedObject ones
-	assertEquals("FromConfigStringBase2", la2.Lookup("FromConfigString", "X"));
-	assertEquals(999L, la2.Lookup("FromConfigLong", 0L));
+	assertEqual("FromConfigStringBase2", la2.Lookup("FromConfigString", "X"));
+	assertEqual(999L, la2.Lookup("FromConfigLong", 0L));
 }
 
 // builds up a suite of testcases, add a line for each testmethod
@@ -102,15 +102,15 @@ void ROAnyConfNamedObjectLookupAdapterTest::NoConfNamedObjectTest()
 	ROAnything robase(base);
 	ROAnyConfNamedObjectLookupAdapter la(robase, NULL);
 
-	//Test ROAnyLookupAdapter functionality
-	assertEquals("bar", la.Lookup("hank", "X"));
-	assertEquals("bar", la.Lookup("compo@site", "X", '@'));
+	//Test AnyLookupInterfaceAdapter functionality
+	assertEqual("bar", la.Lookup("hank", "X"));
+	assertEqual("bar", la.Lookup("compo@site", "X", '@'));
 	t_assert(31416L == la.Lookup("long", 0L));
-	assertEquals("X", la.Lookup("fox", "X"));
+	assertEqual("X", la.Lookup("fox", "X"));
 
 	//Test lookups aiming at the ConfiguredNamedObject's config
-	assertEquals("XXXX", la.Lookup("FromConfigString", "XXXX"));
-	assertEquals(4L, la.Lookup("FromConfigLong", 4L));
+	assertEqual("XXXX", la.Lookup("FromConfigString", "XXXX"));
+	assertEqual(4L, la.Lookup("FromConfigLong", 4L));
 }
 
 void ROAnyConfNamedObjectLookupAdapterTest::NothingAtAllTest()
@@ -121,9 +121,9 @@ void ROAnyConfNamedObjectLookupAdapterTest::NothingAtAllTest()
 	ROAnything robase(base);
 	ROAnyConfNamedObjectLookupAdapter la(robase, NULL);
 
-	//Test ROAnyLookupAdapter functionality
-	assertEquals("X", la.Lookup("hank", "X"));
-	assertEquals("X", la.Lookup("compo@site", "X", '@'));
+	//Test AnyLookupInterfaceAdapter functionality
+	assertEqual("X", la.Lookup("hank", "X"));
+	assertEqual("X", la.Lookup("compo@site", "X", '@'));
 	t_assert(0L == la.Lookup("long", 0L));
 }
 

@@ -18,7 +18,7 @@
 #include "TestSuite.h"
 
 //--- module under test --------------------------------------------------------
-#include "ROAnyLookupAdapter.h"
+#include "AnyLookupInterfaceAdapter.h"
 
 //--- interface include --------------------------------------------------------
 #include "ROAnyLookupAdapterTest.h"
@@ -38,21 +38,34 @@ void ROAnyLookupAdapterTest::LookupTest()
 {
 	StartTrace(ROAnyLookupAdapterTest.LookupTest);
 
-	Anything base;
+	{
+		Anything base;
+		base["foo"] = "bar";
+		base["long"] = 31416L;
+		base["compo"]["site"] = "bar";
 
-	base["foo"] = "bar";
-	base["long"] = 31416L;
-	base["compo"]["site"] = "bar";
+		AnyLookupInterfaceAdapter<Anything> la(base);
 
-	ROAnything robase(base);
-	ROAnyLookupAdapter la(robase);
+		assertEqual("bar", la.Lookup("foo", "X"));
+		assertEqual("bar", la.Lookup("compo@site", "X", '@'));
+		t_assert(31416L == la.Lookup("long", 0L));
+		assertEqual("X", la.Lookup("fox", "X"));
+	}
+	{
+		Anything base;
+		base["foo"] = "bar";
+		base["long"] = 31416L;
+		base["compo"]["site"] = "bar";
 
-	assertEquals("bar", la.Lookup("foo", "X"));
-	assertEquals("bar", la.Lookup("compo@site", "X", '@'));
+		AnyLookupInterfaceAdapter<Anything> la(base, "BaseLevel");
 
-	t_assert(31416L == la.Lookup("long", 0L));
-
-	assertEquals("X", la.Lookup("fox", "X"));
+		assertEqual("X", la.Lookup("foo", "X"));
+		assertAnyEqual(base, la.Lookup("BaseLevel"));
+		assertEqual("bar", la.Lookup("BaseLevel.foo", "X"));
+		assertEqual("bar", la.Lookup("BaseLevel:0", "X"));
+		assertEqual("X", la.Lookup("BaseLevel.foo.NotExisting", "X"));
+		assertEqual("bar", la.Lookup("BaseLevel.compo.site", "X"));
+	}
 }
 
 // builds up a suite of testcases, add a line for each testmethod
