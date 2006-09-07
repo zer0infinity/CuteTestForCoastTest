@@ -6,58 +6,51 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- c-library modules used ---------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "Dbg.h"
-
-//--- project modules used -----------------------------------------------------
-#include "Context.h"
-#include "Renderer.h"
-
 //--- interface include --------------------------------------------------------
 #include "LoopAction.h"
+
+//--- project modules used -----------------------------------------------------
+#include "Renderer.h"
+
+//--- standard modules used ----------------------------------------------------
+#include "Dbg.h"
+
+//--- c-library modules used ---------------------------------------------------
 
 //---- LoopAction ---------------------------------------------------------------
 RegisterAction(LoopAction);
 
-LoopAction::LoopAction(const char *name) : Action(name) { }
+LoopAction::LoopAction(const char *name)
+	: Action(name)
+{
+}
 
-LoopAction::~LoopAction() { }
+LoopAction::~LoopAction()
+{
+}
 
 bool LoopAction::DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config)
 {
 	StartTrace(LoopAction.DoExecAction);
 
-	bool breakOut = config["BreakOutOfLoop"].AsBool(0);
-	long start = GetLong(ctx, config["Start"]);
-	long end = GetLong(ctx, config["End"]);
+	bool breakOut = config["BreakOutOnFailure"].AsBool(false);
+	long start = Renderer::RenderToString(ctx, config["Start"]).AsLong(0L);
+	long end = Renderer::RenderToString(ctx, config["End"]).AsLong(0L);
 	long increment = (start < end) ? 1L : -1L;
 
-	String indexSlotName;
-	Renderer::RenderOnString(indexSlotName, ctx, config["IndexSlot"]);
+	String strIndexSlot = Renderer::RenderToString(ctx, config["IndexSlot"]);
 
-	Anything tmpStore = ctx.GetTmpStore();
 	long stop = end + increment;
 	bool ret;
 	for (long i = start; i != stop; i += increment) {
-		tmpStore[indexSlotName] = i;
+		Anything anyAdditionalInfo;
+		anyAdditionalInfo[strIndexSlot] = i;
+		Context::PushPopEntry<Anything> aEntryDataInfo(ctx, "EntryDataInfo", anyAdditionalInfo);
+
 		ret = ExecAction(transitionToken, ctx, config["Action"]);
 		if ( ret == false && breakOut ) {
 			return ret;
 		}
 	}
 	return true;
-}
-
-long LoopAction::GetLong(Context &ctx, const ROAnything &config)
-{
-	StartTrace(LoopAction.GetLong);
-
-	String str;
-	Renderer::RenderOnString(str, ctx, config);
-	long result = str.AsLong(0L);
-
-	return result;
 }
