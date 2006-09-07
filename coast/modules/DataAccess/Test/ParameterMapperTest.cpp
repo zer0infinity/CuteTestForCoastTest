@@ -92,7 +92,7 @@ void ParameterMapperTest::DoFinalGetAnyTest()
 	Anything res, store;
 	store["aKey"] = "a";
 	Context ctx;
-	Context::PushPopEntry aEntry(ctx, "test", store);
+	Context::PushPopEntry<Anything> aEntry(ctx, "test", store);
 
 	t_assert(pm.DoFinalGetAny("aKey", res, ctx));
 	t_assert(res.AsString().IsEqual("a"));
@@ -107,7 +107,7 @@ void ParameterMapperTest::DoFinalGetStreamTest()
 	Anything store, res;
 	store["aKey"] = "a";
 	Context ctx;
-	Context::PushPopEntry aEntry(ctx, "test", store);
+	Context::PushPopEntry<Anything> aEntry(ctx, "test", store);
 	OStringStream os;
 
 	// Default implementation gets value of key from context
@@ -126,7 +126,7 @@ void ParameterMapperTest::DoGetAnyTest()
 	Anything store, res, exp;
 	store["aKey"] = "a";
 	Context ctx;
-	Context::PushPopEntry aEntry(ctx, "test", store);
+	Context::PushPopEntry<Anything> aEntry(ctx, "test", store);
 	ParameterMapper pm("");
 
 	// --- 1. Mapper without script (i.e. script == empty)
@@ -192,7 +192,7 @@ void ParameterMapperTest::DoGetStreamTest()
 	Anything store, res;
 	store["aKey"] = "a";
 	Context ctx;
-	Context::PushPopEntry aEntry(ctx, "test", store);
+	Context::PushPopEntry<Anything> aEntry(ctx, "test", store);
 	ParameterMapper pm("");
 	OStringStream os;
 
@@ -213,7 +213,7 @@ void ParameterMapperTest::GetTest()
 	store["aKey"]["foo"] = "bar";
 	store["aKey"]["hello"] = "world";
 	Context ctx;
-	Context::PushPopEntry aEntry(ctx, "test", store);
+	Context::PushPopEntry<Anything> aEntry(ctx, "test", store);
 	ParameterMapper pm("ParameterMapperTest");
 	pm.CheckConfig("ParameterMapper");
 	String s;
@@ -271,7 +271,7 @@ void ParameterMapperTest::EagerGetTest()
 	store["someKey"] = "!";
 	store["anotherKey"] = "?";
 	Context ctx;
-	Context::PushPopEntry aEntry(ctx, "test", store);
+	Context::PushPopEntry<Anything> aEntry(ctx, "test", store);
 	OStringStream os;
 	String str;
 
@@ -292,15 +292,15 @@ void ParameterMapperTest::DoSetSourceSlotDynamicallyTest()
 	ParameterMapper pm("DynamicFetcher");
 
 	// without config (no path returned)
-	assertEquals("", pm.DoGetSourceSlot(ctx));
+	assertEqual("", pm.DoGetSourceSlot(ctx));
 
 	// set in tmp-store
 	ctx.GetTmpStore()["DynamicFetcher"]["SourceSlot"] = "Mapper.a.b.c";
-	assertEquals("Mapper.a.b.c", pm.DoGetSourceSlot(ctx));
+	assertEqual("Mapper.a.b.c", pm.DoGetSourceSlot(ctx));
 
 	// with config (overrides dest in tmp store)
 	pm.CheckConfig("ParameterMapper");
-	assertEquals("Mapper.foo.bar", pm.DoGetSourceSlot(ctx));
+	assertEqual("Mapper.foo.bar", pm.DoGetSourceSlot(ctx));
 }
 
 void ParameterMapperTest::DoGetSourceSlotWithPathTest()
@@ -314,13 +314,13 @@ void ParameterMapperTest::DoGetSourceSlotWithPathTest()
 	ctx.GetTmpStore()["msg"] = "foo";
 	Anything res;
 	pm.Get("msg", res, ctx);
-	assertEquals("foo", res.AsString());
+	assertEqual("foo", res.AsString());
 
 	// get dynamically
 	ctx.GetTmpStore()["PMTest"]["SourceSlot"] = "nested";
 	ctx.GetTmpStore()["nested"]["msg"] = "bar";
 	pm.Get("msg", res, ctx);
-	assertEquals("bar", res.AsString());
+	assertEqual("bar", res.AsString());
 }
 
 // builds up a suite of testcases, add a line for each testmethod
