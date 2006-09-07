@@ -217,10 +217,10 @@ void ConfiguredActionTest::DoTestWithContext(Anything testCase, const String &te
 		ctx.SetServer(s);
 	}
 	if (testCase.IsDefined("Page")) {
-		ctx.Push(Page::FindPage(testCase["Page"].AsCharPtr("Page")));
+		ctx.Push(testCase["Page"].AsCharPtr("Page"), Page::FindPage(testCase["Page"].AsCharPtr("Page")));
 	}
 	if (testCase.IsDefined("Role")) {
-		ctx.Push(Role::FindRole(testCase["Role"].AsCharPtr("Role")));
+		ctx.Push(testCase["Role"].AsCharPtr("Role"), Role::FindRole(testCase["Role"].AsCharPtr("Role")));
 	}
 	TraceAny(testCase["TmpStore"], "Language");
 	if (testCase["TmpStore"].IsDefined("Language")) {

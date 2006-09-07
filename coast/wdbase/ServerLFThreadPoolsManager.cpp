@@ -52,7 +52,7 @@ bool ServerLFThreadPoolsManager::SetupLFPool(Server *server)
 	StartTrace(ServerLFThreadPoolsManager.SetupLFPool);
 	Context ctx;
 	ctx.SetServer(server);
-	ctx.Push(this);
+	ctx.Push("ServerLFThreadPoolsManager", this);
 	fThreadPoolSz = ctx.Lookup("ThreadPoolSize", fThreadPoolSz);
 	ROAnything listenerPoolConfig;
 	if (!ctx.Lookup("ListenerPool", listenerPoolConfig)) {
@@ -83,7 +83,7 @@ int ServerLFThreadPoolsManager::Run(Server *server)
 
 	Context ctx;
 	ctx.SetServer(server);
-	ctx.Push(this);
+	ctx.Push("ServerLFThreadPoolsManager", this);
 	bool usePoolStorage = (ctx.Lookup("UsePoolStorage", 0L) != 0L);
 	u_long poolStorageSize = (u_long)ctx.Lookup("PoolStorageSize", 1000L);
 	u_long numOfPoolBucketSizes = (u_long)ctx.Lookup("NumOfPoolBucketSizes", 20L);
@@ -114,7 +114,7 @@ bool ServerLFThreadPoolsManager::BlockRequests(Server *server)
 	Trace(m);
 	Context ctx;
 	ctx.SetServer(server);
-	ctx.Push(this);
+	ctx.Push("ServerLFThreadPoolsManager", this);
 	return fLFPool->AwaitEmpty(ctx.Lookup("AwaitResetEmpty", 120L));
 }
 

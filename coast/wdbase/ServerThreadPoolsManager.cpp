@@ -70,7 +70,7 @@ bool ServerThreadPoolsManager::SetupSocket(Server *server)
 
 	Context ctx;
 	ctx.SetServer(server);
-	ctx.Push(this);
+	ctx.Push("ServerThreadPoolsManager", this);
 
 	fAcceptors =
 		new ListenerPool(
@@ -101,7 +101,7 @@ int ServerThreadPoolsManager::SetupThreadPool(bool reinit, Server *server)
 	Trace("server at " << long(server) << (reinit ? " for reinit" : " for Init"));
 	Context ctx;
 	ctx.SetServer(server);
-	ctx.Push(this);
+	ctx.Push("ServerThreadPoolsManager", this);
 	//--- Active Sessions
 	long actSessions = ctx.Lookup("ThreadPoolSize", 25L);
 	long usePoolStorage = ctx.Lookup("UsePoolStorage", 0L);
@@ -161,7 +161,7 @@ bool ServerThreadPoolsManager::BlockRequests(Server *server)
 
 	Context ctx;
 	ctx.SetServer(server);
-	ctx.Push(this);
+	ctx.Push("ServerThreadPoolsManager", this);
 	fActiveRequests->BlockRequests();
 	String m(" done\n");
 	SysLog::WriteToStderr(m);
