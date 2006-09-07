@@ -17,35 +17,41 @@
 /*!
 <B>Configuration:</B><PRE>
 {
-	/ListData			Rendererspec		mandatory, resulting a String which is used to Lookup the List in the TempStore and the context
-	/ListHeader			Rendererspec		optional, rendered before all entries
-	/ListFooter			Rendererspec		optional, rendered after after all entries
-	/EntryStore			Rendererspec		optional, defaults to EntryData, resulting a String which identifies the temporary entry data in the TempStore
-	/EntryRenderer		Rendererspec		mandatory, specification used to render each entry
-	/EntryHeader		Rendererspec		optional, rendered before each entry ( depends on EHStartingEntry and EHEveryXEntries )
-	/EntryHeaders {		Anything			optional, preceeds EntryHeader!, rendered before each entry after EHStartingEntry, cyling through this list
-		...				Rendererspec		optional
+	/ListName			Rendererspec	mandatory (can be omitted if ListData slot is used instead), resulting a String which is used to Lookup the List in the TempStore and the context
+	/ListData {			Anything		optional but mandatory if ListName is omitted, inline List to use for rendering, it is ignored if ListName is also specified and is not the empty list
+		...
+		...
 	}
-	/EHStartingEntry	long				optional, defaults to 1, ignored if there is no EntryHeader, number for which the entry header gets rendered the first time
-	/EHEveryXEntries	long				optional, defaults to 1, ignored if there is no EntryHeader, EntryHeader is rendered every X entries after the EHStartingEntry
-	/EntryFooter		Rendererspec		optional, rendered after each entry ( depends on EFStartingEntry and EFEveryXEntries )
-	/EFStartingEntry	long				optional, defaults to 1, ignored if there is no EntryFooter, number for which the entry footer gets rendered the first time
-	/EFEveryXEntries	long				optional, defaults to 1, ignored if there is no EntryFooter, EntryFooter is rendered every X entries after the EFStartingEntry
-	/EFSuppressLast		slot present		optional, ignored if there is no EntryFooter, if the slot is defined EntryFooter will not be rendered after the last entry
-    /IndexSlot          String				optional, denotes the slotname where the index (row number) of the actual entry is stored in the TempStore
-    /SlotnameSlot       String				optional, denotes the slotname where the slotname of the actual entry is stored in the TempStore
+	/ListHeader			Rendererspec	optional, rendered before all entries
+	/ListFooter			Rendererspec	optional, rendered after after all entries
+	/EntryStore			Rendererspec	optional, defaults to EntryData, resulting a String which identifies the temporary entry data while rendering
+    /IndexSlot          String			optional, denotes the slotname where the index (row number) of the actual entry is stored while rendering
+    /SlotnameSlot       String			optional, denotes the slotname where the slotname of the actual entry is stored while rendering
+	/EntryRenderer		Rendererspec	mandatory, specification used to render each entry
+	/EntryHeader		Rendererspec	optional, rendered before each entry ( depends on EHStartingEntry and EHEveryXEntries )
+	/EntryHeaders {		Anything		optional, preceeds EntryHeader!, rendered before each entry after EHStartingEntry, cyling through this list
+		...				Rendererspec	optional
+	}
+	/EHStartingEntry	long			optional, defaults to 1, ignored if there is no EntryHeader(s), list index (beginning with 1!) for which the entry header gets rendered the first time
+	/EHEveryXEntries	long			optional, defaults to 1, ignored if there is no EntryHeader, EntryHeader is rendered every X entries after the EHStartingEntry
+	/EntryFooter		Rendererspec	optional, rendered after each entry ( depends on EFStartingEntry and EFEveryXEntries )
+	/EFStartingEntry	long			optional, defaults to 1, ignored if there is no EntryFooter, number for which the entry footer gets rendered the first time
+	/EFEveryXEntries	long			optional, defaults to 1, ignored if there is no EntryFooter, EntryFooter is rendered every X entries after the EFStartingEntry
+	/EFSuppressLast		slot present	optional, ignored if there is no EntryFooter, if the slot is defined EntryFooter will not be rendered after the last entry
+	/Start				Rendererspec	optional, default 0, list index (zero based) with which to start rendering, useful when only a portion of the list should be used
+	/End				Rendererspec	optional, default size of list, list index (zero based) with which to end rendering, useful when only a portion of the list should be used
 }
 </PRE>
-Loops over the slots of an Anything looked up in the context using the rendered ListData string. For every named or unnamed slot of this list
+Loops over the slots of an Anything looked up in the context using the rendered ListName string. For every named or unnamed slot of this list
 its content will be temporarily stored in a specified slot in the temp store. The EntryRenderer specification can then use lookups to access this
 data. Additional Rendererspecs to add stylistic sugar like Headers and Footers can be added too.
 
 Process Overview:
 -# Initial config check for the EntryRenderer slot. If it fails nothing is rendered.
--# the ListRenderer looks in the TempStore for the Anything specified with /ListData. If this fails nothing is rendered.
+-# the ListRenderer looks in the TempStore for the Anything specified with /ListName. If this fails nothing is rendered.
 -# If present the ListHeader is rendererd.
--# Loop over each slot in ListData
- -# The data of the actual slot in ListData are stored in TempStore.EntryStore
+-# Loop over each slot in ListName
+ -# The data of the actual slot in ListName are stored in TempStore.EntryStore
  -# EntryHeader is rendered depending on /EHStartingEntry and /EHEveryXEntries
  -# EntryRenderer is rendererd
  -# EntryFooter is rendered depending on /EFSuppressLast,/EFStartingEntry and /EFEveryXEntries
@@ -57,31 +63,85 @@ public:
 	ListRenderer(const char *name);
 	~ListRenderer();
 
-	//! the well known Renderer main method
-	void RenderAll(ostream &reply, Context &c, const ROAnything &config);
+	/*! generates output on reply driven by config using the context given
+		\param reply stream to generate output on
+		\param ctx Context to be used for output generation
+		\param config configuration which drives the output generation */
+	void RenderAll(ostream &reply, Context &ctx, const ROAnything &config);
 
 protected:
-	//! Retrieves the List data and returns them in list
-	//! \return false if the list retrieval fails
-	/*! Maybe overwritten to fetch the list from another store
-	*/
-	virtual bool GetList(Context &c, const ROAnything &config, Anything &list);
+	/*! gets the List Data from context
+		\param ctx the context the renderer runs within
+		\param config the configuration of the renderer
+		\param roaList a reference to the list we work on
+		\return true if the list could be found in the context */
+	bool GetList(Context &ctx, const ROAnything &config, ROAnything &roaList);
 
-	//! stores the entry data in the specified temp store slot
-	/*! maybe overwritten to do additional computation and/or store the data in another store
-	*/
-	virtual void StoreEntryData(Context &c, const ROAnything &config, Anything &list, long index, String &entryStoreName);
+	/*! Get the EntryHeader to be rendered
+		\param config the configuration of the renderer
+		\param nr index into headers list
+		\param roaEntryHeader reference to header entry to be rendered
+		\param anyRenderState anything to carry information between different calls
+		\return true in case an entry was found and is not Null */
+	virtual bool GetEntryHeader(const ROAnything &config, long nr, ROAnything &roaEntryHeader, Anything &anyRenderState);
 
-	// Checks if the EntryHeader / EntryFooter should be rendererd for the actual entry index
-	// ?? Should the entry data also be passed to let subclasses make the decision depending on them too ??
-	virtual long EntryHeaderNrToBeRendered(Context &c, const ROAnything &config, Anything &list, long entryIndex);
-	virtual bool EntryFooterHasToBeRendered(Context &c, const ROAnything &config, Anything &list, long entryIndex);
+	/*! Get the EntryFooter to be rendered
+		\param config the configuration of the renderer
+		\param roaEntryFooter reference to footer entry to be rendered
+		\param anyRenderState anything to carry information between different calls
+		\return true in case an entry was found and is not Null */
+	virtual bool GetEntryFooter(const ROAnything &config, ROAnything &roaEntryFooter, Anything &anyRenderState);
 
-	virtual void RenderListHeader(ostream &reply, Context &c, const ROAnything &listHeader, Anything &list);
-	virtual void RenderListFooter(ostream &reply, Context &c, const ROAnything &listFooter, Anything &list);
-	virtual void RenderEntry(ostream &reply, Context &c, const ROAnything &config, const ROAnything &entryRendererConfig, Anything &listItem);
-	virtual void RenderEntryHeader(ostream &reply, Context &c, const ROAnything &entryHeader, Anything &listItem);
-	virtual void RenderEntryFooter(ostream &reply, Context &c, const ROAnything &entryFooter, Anything &listItem);
+	/*! Checks if the / which EntryHeader has to be rendered
+		\param ctx the context the renderer runs within
+		\param config the configuration of the renderer
+		\param anyRenderState anything to carry information between different calls
+		\return index into headers list if multiple, 0 if only one header entry, -1 if no header has to be rendered */
+	virtual long EntryHeaderNrToBeRendered(Context &ctx, const ROAnything &config, Anything &anyRenderState);
+
+	/*! Checks if the EntryFooter has to be rendered
+		\param ctx the context the renderer runs within
+		\param config the configuration of the renderer
+		\param anyRenderState anything to carry information between different calls
+		\return true if the entry footer has to be rendered */
+	virtual bool EntryFooterHasToBeRendered(Context &ctx, const ROAnything &config, Anything &anyRenderState);
+
+	/*! renders a list header using the given configuration
+		\param reply stream to generate output on
+		\param ctx Context to be used for output generation
+		\param listHeader renderer configuration for the header */
+	virtual void RenderListHeader(ostream &reply, Context &ctx, const ROAnything &listHeader);
+
+	/*! renders a list footer using the given configuration
+		\param reply stream to generate output on
+		\param ctx Context to be used for output generation
+		\param listHeader renderer configuration for the footer */
+	virtual void RenderListFooter(ostream &reply, Context &ctx, const ROAnything &listFooter);
+
+	/*! renders a list entry using the given configuration
+		\param reply stream to generate output on
+		\param ctx Context to be used for output generation
+		\param config the configuration of the renderer
+		\param entryRendererConfig renderer configuration for the entry
+		\param listItem current list item data as shortcut (instead of using ctx.Lookup )
+		\param anyRenderState anything to carry information between different calls */
+	virtual void RenderEntry(ostream &reply, Context &ctx, const ROAnything &config, const ROAnything &entryRendererConfig, const ROAnything &listItem, Anything &anyRenderState);
+
+	/*! renders a entry header using the given configuration
+		\param reply stream to generate output on
+		\param ctx Context to be used for output generation
+		\param entryHeader renderer configuration for the entry header
+		\param listItem current list item data as shortcut (instead of using ctx.Lookup )
+		\param anyRenderState anything to carry information between different calls */
+	virtual void RenderEntryHeader(ostream &reply, Context &ctx, const ROAnything &entryHeader, const ROAnything &listItem, Anything &anyRenderState);
+
+	/*! renders a entry footer using the given configuration
+		\param reply stream to generate output on
+		\param ctx Context to be used for output generation
+		\param entryFooter renderer configuration for the entry footer
+		\param listItem current list item data as shortcut (instead of using ctx.Lookup )
+		\param anyRenderState anything to carry information between different calls */
+	virtual void RenderEntryFooter(ostream &reply, Context &ctx, const ROAnything &entryFooter, const ROAnything &listItem, Anything &anyRenderState);
 };
 
 #endif		// ifndef _LISTRENDERER_H

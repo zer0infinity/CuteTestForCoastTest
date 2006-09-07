@@ -6,13 +6,12 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "Context.h"
-#include "Dbg.h"
-
 //--- interface include --------------------------------------------------------
 #include "ListRenderer.h"
+
+//--- standard modules used ----------------------------------------------------
+#include "Dbg.h"
+#include "AnyIterators.h"
 
 static String ENRTY_STORE_NAME_DEFAULT("EntryData", -1, Storage::Global());
 //---- ListRenderer ---------------------------------------------------------
@@ -26,177 +25,217 @@ ListRenderer::~ListRenderer()
 {
 }
 
-void ListRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void ListRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(ListRenderer.RenderAll);
 	TraceAny(config, "config");
-	Anything list;
+	ROAnything roaList;
 
-	// Check for mandatory configuration and presence of ListData
-	if (config.IsDefined("EntryRenderer") &&
-		GetList(c, config, list) ) {
-		// retrieve config data
-
+	// Check for mandatory configuration and presence of ListName
+	if ( config.IsDefined("EntryRenderer") && ( GetList(ctx, config, roaList) || config.LookupPath(roaList, "ListData") ) ) {
+		Anything anyRenderState;
 		ROAnything entryRendererConfig = config["EntryRenderer"];
 		ROAnything listHeader = config["ListHeader"];
 		ROAnything listFooter = config["ListFooter"];
-		Anything entryHeader;
-		if (config.IsDefined("EntryHeaders") ) {
-			entryHeader = config["EntryHeaders"].DeepClone();
-		} else {
-			entryHeader[0L] = config["EntryHeader"].DeepClone();
+		long lListSize = roaList.GetSize(), lHeaders = -1;
+		// fill in information which can be used within the following rendering methods
+		anyRenderState["ListSize"] = lListSize;
+
+		ROAnything roaEntryHeaderList, roaEntryHeader;
+		if ( config.LookupPath(roaEntryHeaderList, "EntryHeaders") ) {
+			lHeaders = roaEntryHeaderList.GetSize();
+		} else if ( config.LookupPath(roaEntryHeader, "EntryHeader") ) {
+			lHeaders = 0;
 		}
-		ROAnything entryFooter = config["EntryFooter"];
+		anyRenderState["NumHeaders"] = lHeaders;
 
 		// retrieve the Slotname where the entryData have to be stored
 		String entryStoreName;
 		ROAnything es;
 		if ( config.LookupPath(es, "EntryStore") ) {
-			RenderOnString(	entryStoreName, c, es);
-		} // if config is defined EntryStore
-		else {
+			RenderOnString(	entryStoreName, ctx, es);
+		} else {
 			entryStoreName = ENRTY_STORE_NAME_DEFAULT;
-		} // else config is defined EntryStore
+		}
 
 		// Start of the rendering process ---------------------------------------------------
 
 		// Header for the whole list
-		if ( ! listHeader.IsNull() ) {
-			RenderListHeader(reply, c, listHeader, list);
+		if ( !listHeader.IsNull() ) {
+			RenderListHeader(reply, ctx, listHeader);
 		}
 
-		// Entries
-		long sz = list.GetSize();
-		for (int i = 0; i < sz; ++i) {
-			// prepare data for rendering
-			StoreEntryData(c, config, list, i, entryStoreName);
+		String strIndexSlot, strSlotNameSlot, strSlotName;
+		strIndexSlot = config["IndexSlot"].AsString("Index");
+		strSlotNameSlot = config["SlotnameSlot"].AsString("Slotname");
+		long start = Renderer::RenderToString(ctx, config["Start"]).AsLong(0L);
+		if ( start < 0 ) {
+			start = 0L;
+		} else if ( start >= lListSize ) {
+			SYSWARNING("start index given:" << start << "is beyond list size, not rendering anything!");
+			return;
+		}
+		long end = Renderer::RenderToString(ctx, config["End"]).AsLong(lListSize);
+		if ( end > lListSize ) {
+			end = lListSize;
+		} else if ( end < 0 ) {
+			SYSWARNING("end index given:" << end << "is negative, not rendering anything!");
+			return;
+		}
+		// fill in information which can be used within the following rendering methods
+		anyRenderState["Start"] = start;
+		anyRenderState["End"] = end;
 
-			long nr = EntryHeaderNrToBeRendered(c, config, list, i);
-			if (nr >= 0) {
-				RenderEntryHeader(reply, c, entryHeader[nr], list[i]);
+		// render entries
+		ROAnything roaEntry;
+		AnyExtensions::Iterator<ROAnything, ROAnything, String> aIterator(roaList);
+		while ( aIterator.Next(roaEntry) ) {
+			long i = aIterator.Index();
+			SubTraceAny(TraceEntry, roaEntry, "data at index:" << i);
+			if ( i < start ) {
+				continue;
+			} else if ( i > end ) {
+				break;
+			}
+			// prepare data for rendering
+			// special case of PushPopEntry, last param specifies the segment which we simulate to start with
+			Context::PushPopEntry<ROAnything> aEntryData(ctx, entryStoreName, roaEntry, entryStoreName);
+			Anything anyAdditionalInfo;
+			anyAdditionalInfo[strIndexSlot] = ( i - start );
+
+			if ( aIterator.SlotName(strSlotName) ) {
+				anyAdditionalInfo[strSlotNameSlot] = strSlotName;
+			}
+			Context::PushPopEntry<Anything> aEntryDataInfo(ctx, "EntryDataInfo", anyAdditionalInfo);
+
+			// fill in some state information which can be used within the following rendering methods to transfer some state if needed
+			anyRenderState["ListIndex"] = i;
+			anyRenderState["RenderIndex"] = ( i - start );
+			if ( strSlotName.Length() ) {
+				anyRenderState["Slotname"] = strSlotName;
+			} else {
+				anyRenderState.Remove("Slotname");
+			}
+
+			long nr = EntryHeaderNrToBeRendered(ctx, config, anyRenderState);
+			if ( nr >= 0 ) {
+				// select corresponding header entry to be rendered in case there are more than just one
+				if ( GetEntryHeader(config, nr, roaEntryHeader, anyRenderState) ) {
+					RenderEntryHeader(reply, ctx, roaEntryHeader, roaEntry, anyRenderState);
+				}
 			}
 
 			//  render entry
-			RenderEntry(reply, c, config, entryRendererConfig, list[i]);
+			RenderEntry(reply, ctx, config, entryRendererConfig, roaEntry, anyRenderState);
 
-			if (EntryFooterHasToBeRendered(c, config, list, i)) {
-				RenderEntryFooter(reply, c, entryFooter, list[i]);
+			ROAnything roaEntryFooter;
+			if ( EntryFooterHasToBeRendered(ctx, config, anyRenderState) && GetEntryFooter(config, roaEntryFooter, anyRenderState) ) {
+				RenderEntryFooter(reply, ctx, roaEntryFooter, roaEntry, anyRenderState);
 			}
 		}
 
 		// Footer for the whole list
-		if ( ! listFooter.IsNull() ) {
-			RenderListFooter(reply, c, listFooter, list);
+		if ( !listFooter.IsNull() ) {
+			RenderListFooter(reply, ctx, listFooter);
 		}
-	}	// if initial checks are ok
+	}
 }
 
-void ListRenderer::RenderListHeader(ostream &reply, Context &c, const ROAnything &listHeader, Anything &list)
+void ListRenderer::RenderListHeader(ostream &reply, Context &ctx, const ROAnything &listHeader)
 {
 	StartTrace(ListRenderer.RenderListHeader);
-	Render(reply, c, listHeader);
+	Render(reply, ctx, listHeader);
 }
 
-void ListRenderer::RenderListFooter(ostream &reply, Context &c, const ROAnything &listFooter, Anything &list)
+void ListRenderer::RenderListFooter(ostream &reply, Context &ctx, const ROAnything &listFooter)
 {
 	StartTrace(ListRenderer.RenderListFooter);
-	Render(reply, c, listFooter);
+	Render(reply, ctx, listFooter);
 }
 
-void ListRenderer::RenderEntry(ostream &reply, Context &c, const ROAnything &config, const ROAnything &entryRendererConfig, Anything &listItem)
+void ListRenderer::RenderEntry(ostream &reply, Context &ctx, const ROAnything &config, const ROAnything &entryRendererConfig, const ROAnything &listItem, Anything &anyRenderState)
 {
 	StartTrace(ListRenderer.RenderEntry);
-	Render(reply, c, entryRendererConfig);
+	Render(reply, ctx, entryRendererConfig);
 }
 
-void ListRenderer::RenderEntryHeader(ostream &reply, Context &c, const ROAnything &entryHeader, Anything &listItem)
+void ListRenderer::RenderEntryHeader(ostream &reply, Context &ctx, const ROAnything &entryHeader, const ROAnything &listItem, Anything &anyRenderState)
 {
 	StartTrace(ListRenderer.RenderEntryHeader);
-	Render(reply, c, entryHeader);
+	Render(reply, ctx, entryHeader);
 }
 
-void ListRenderer::RenderEntryFooter(ostream &reply, Context &c, const ROAnything &entryFooter, Anything &listItem)
+void ListRenderer::RenderEntryFooter(ostream &reply, Context &ctx, const ROAnything &entryFooter, const ROAnything &listItem, Anything &anyRenderState)
 {
 	StartTrace(ListRenderer.RenderEntryFooter);
-	Render(reply, c, entryFooter);
+	Render(reply, ctx, entryFooter);
 }
 
-bool ListRenderer::GetList(Context &c, const ROAnything &config, Anything &list)
+bool ListRenderer::GetList(Context &ctx, const ROAnything &config, ROAnything &roaList)
 {
-	bool found(false);
-	String listDataName;
-	RenderOnString(listDataName, c, config["ListData"]);
-
-	// Check first within TempStore - prevents us from DeepCloning
-	Anything tempStore = c.GetTmpStore();
-	if ( tempStore.IsDefined(listDataName) ) {
-		list = tempStore[listDataName];
-		found = true;
-	} // if ListData is in tempStore
-	else {
-		ROAnything ROlist = c.Lookup(listDataName);
-		if ( ! ROlist.IsNull() ) {
-			list = ROlist.DeepClone();
-			found = true;
-		}	// if list data are found in Context
-	}	// else
-
-	return found;
+	StartTrace(ListRenderer.GetList);
+	String strListDataName;
+	RenderOnString(strListDataName, ctx, config["ListName"]);
+	return ( strListDataName.Length() && ctx.Lookup(strListDataName, roaList) );
 }
 
-void ListRenderer::StoreEntryData(Context &c, const ROAnything &config, Anything &list, long index, String &entryStoreName)
+long ListRenderer::EntryHeaderNrToBeRendered(Context &ctx, const ROAnything &config, Anything &anyRenderState)
 {
-	// Just stores the entry data in TempStore
-	Anything tempStore = c.GetTmpStore();
-	tempStore[entryStoreName] = list[index];
-	ROAnything indexslot;
-	if (config.LookupPath(indexslot, "IndexSlot")) {
-		tempStore[indexslot.AsString("Index")] = index;
-	}
-	ROAnything nameslot;
-	if (config.LookupPath(nameslot, "SlotnameSlot")) {
-		tempStore[nameslot.AsString("Slotname")] = list.SlotName(index);
-	}
-}
-
-long ListRenderer::EntryHeaderNrToBeRendered(Context &c, const ROAnything &config, Anything &list, long entryIndex)
-{
-	long render = -1;
-	if (config.IsDefined("EntryHeaders")) {
-		++entryIndex;
-		long startingEntry = config["EHStartingEntry"].AsLong(1);
-		if (entryIndex >= startingEntry) {
-			long sz = config["EntryHeaders"].GetSize();
-			render = (entryIndex - startingEntry) % sz;
+	StartTrace(ListRenderer.EntryHeaderNrToBeRendered);
+	long render = -1, startingEntry = config["EHStartingEntry"].AsLong(1);
+	long lNumHeaders = anyRenderState["NumHeaders"].AsLong();
+	// these indexes are 1-based, not zero!
+	long entryIndex = anyRenderState["RenderIndex"].AsLong() + 1L;
+	if ( lNumHeaders > 0 ) {
+		if ( entryIndex >= startingEntry ) {
+			render = (entryIndex - startingEntry) % lNumHeaders;
 		}
-	} else if (config.IsDefined("EntryHeader") ) {
-		++entryIndex;
-		long startingEntry = config["EHStartingEntry"].AsLong(1);
+	} else if ( lNumHeaders == 0 ) {
 		long everyXEntries = config["EHEveryXEntries"].AsLong(1);
-
-		if ((entryIndex >= startingEntry) && 						// not before startingEntry
-			((entryIndex - startingEntry) % everyXEntries == 0)) {	// check for skipped Entries
+		if ( ( entryIndex >= startingEntry ) && ( ( ( entryIndex - startingEntry ) % everyXEntries ) == 0 ) ) {
 			render = 0;
 		}
-	} // if EntryHeader is defined
+	}
 
 	return render;
 }
 
-bool ListRenderer::EntryFooterHasToBeRendered(Context &c, const ROAnything &config, Anything &list, long entryIndex)
+bool ListRenderer::EntryFooterHasToBeRendered(Context &ctx, const ROAnything &config, Anything &anyRenderState)
 {
+	StartTrace(ListRenderer.EntryFooterHasToBeRendered);
 	bool render(false);
-	if (config.IsDefined("EntryFooter") ) {
-		++entryIndex;
+	long lListSize = anyRenderState["ListSize"].AsLong();
+	// these indexes are 1-based, not zero!
+	long entryIndex = anyRenderState["RenderIndex"].AsLong() + 1L;
+	if ( config.IsDefined("EntryFooter") ) {
 		long startingEntry = config["EFStartingEntry"].AsLong(1);
 		long everyXEntries = config["EFEveryXEntries"].AsLong(1);
 
-		render = ((entryIndex >= startingEntry) && 							// not before startingEntry
-				  ((entryIndex - startingEntry) % everyXEntries == 0));		// check for skipped Entries
-
-		if ( render && ( entryIndex == list.GetSize() ) ) {				// if its the last entry
-			render = !config.IsDefined("EFSuppressLast");					// Check for suppression
+		render = ( ( entryIndex >= startingEntry ) && ( ( ( entryIndex - startingEntry ) % everyXEntries ) == 0 ) );
+		// check if its the last entry
+		if ( render && ( entryIndex == lListSize ) ) {
+			render = !config["EFSuppressLast"].AsBool(false);
 		}
 	}
 	return render;
+}
+
+bool ListRenderer::GetEntryHeader(const ROAnything &config, long nr, ROAnything &roaEntryHeader, Anything &anyRenderState)
+{
+	StartTrace(ListRenderer.GetEntryHeader);
+	ROAnything roaEntryHeaderList;
+	if ( config.LookupPath(roaEntryHeaderList, "EntryHeaders") ) {
+		roaEntryHeader = roaEntryHeaderList[nr];
+		TraceAny(roaEntryHeader, "using header entry nr: " << nr);
+	} else if ( config.LookupPath(roaEntryHeaderList, "EntryHeader") && nr == 0 ) {
+		roaEntryHeader = roaEntryHeaderList;
+		TraceAny(roaEntryHeader, "using header");
+	}
+	return !roaEntryHeader.IsNull();
+}
+
+bool ListRenderer::GetEntryFooter(const ROAnything &config, ROAnything &roaEntryFooter, Anything &anyRenderState)
+{
+	StartTrace(ListRenderer.GetEntryFooter);
+	return config.LookupPath(roaEntryFooter, "EntryFooter");
 }
