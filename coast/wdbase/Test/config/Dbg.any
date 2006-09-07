@@ -145,15 +145,15 @@
 		/EnableAll	0
 	}
 	/Context {
-		/MainSwitch		0
-		/EnableAll		0
+		/MainSwitch		33
+		/EnableAll		33
 		/Find 			10000
 		/FindIndex 		10000
 		/SetPage  		10000
 		/GetPage 		10000
 		/Replace 		10000
 		/Remove 		10000
-		/PushStore		33
+		/Push		33
 		/PopStore		33
 		/DoLookup		0
 		/LookupStores	33
@@ -161,7 +161,7 @@
 		/IntGetStore	33
 	}
 	/ContextTest {
-		/MainSwitch	0
+		/MainSwitch	33
 		/EnableAll	33
 	}
 	/ConfNamedObject {
@@ -181,7 +181,7 @@
 		/EnableAll			33
 	}
 	/LoopbackProcessor {
-		/MainSwitch	0
+		/MainSwitch	33
 		/EnableAll	33
 	}
 	/PeriodicAction {
@@ -333,9 +333,9 @@
 		/EnableAll	33
 	}
 	/Server {
-		/MainSwitch	0
+		/MainSwitch	10
 		/EnableAll	33
-		/DoLookup	-33
+		/DoLookup	33
 	}
 	/ServerTest {
 		/MainSwitch	0
@@ -389,7 +389,7 @@
 		/EnableAll				33
 	}
 	/RequestProcessor {
-		/MainSwitch				0
+		/MainSwitch				10
 		/EnableAll				33
 	}
 	/WorkerPoolManager {
@@ -437,5 +437,14 @@
 	/URLFilter {
 		/MainSwitch				5000
 		/EnableAll				5001
+	}
+	/AnyLookupInterfaceAdapter {
+		/MainSwitch				10
+		/EnableAll				10
+	}
+	/RequestProcessorTest {
+		/MainSwitch				10
+		/EnableAll				10
+		/ProcessRequestTest		10
 	}
 }
