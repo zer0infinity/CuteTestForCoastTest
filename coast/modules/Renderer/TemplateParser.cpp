@@ -14,7 +14,6 @@
 #include "Page.h"
 #include "Role.h"
 #include "Registry.h"
-#include "SysLog.h"
 #include "Session.h" /* for field prefixes, may be should be refactored, i.e. to Renderer */
 #include "Dbg.h"
 
@@ -23,7 +22,7 @@
 #include <ctype.h>
 #endif
 
-Anything TemplateParser::Parse(istream &reader, const char *filename, long startline, Allocator *a)
+Anything TemplateParser::Parse(istream &reader, const char *filename, long startline, Allocator *a, const ROAnything roaParserConfig)
 {
 	StartTrace(TemplateParser.Parse);
 	fReader = &reader;
@@ -31,6 +30,8 @@ Anything TemplateParser::Parse(istream &reader, const char *filename, long start
 	fLine = startline;
 	fCache = Anything();
 	fCache.SetAllocator(a);
+	froaConfig = roaParserConfig;
+	TraceAny(froaConfig, "ParserConfig");
 	DoParse();
 	CompactHTMLBlocks(fCache);
 	return fCache;
@@ -452,12 +453,12 @@ bool TemplateParser::IsGood()
 	return !(fReader && fReader->good());
 }
 
-bool TemplateParser::ParseTag(String &tag, Anything &tagAttributes)
+bool TemplateParser::ParseTag(String &tagName, Anything &tagAttributes)
 {
 	StartTrace(TemplateParser.ParseTag);
 	bool needsrendering = false;
-	tag = ParseName();
-	Trace("tag = <" << tag << ">");
+	tagName = ParseName();
+	Trace("tag = <" << tagName << ">");
 	while (!IsGood()) {
 		SkipWhitespace();
 		int c = Peek();
@@ -491,19 +492,20 @@ bool TemplateParser::ParseTag(String &tag, Anything &tagAttributes)
 			default: {
 				String name;
 				Anything value;
-				if (ParseAttribute(name, value)) {
+				if ( ParseAttribute(tagName, name, value) ) {
+					// found "attr=value"
 					if (AnyArrayType == value.GetType()) {
 						needsrendering = true;
 					}
-
 					tagAttributes[name] = value;
 				} else {
+					// non-value attribute
 					if (name.Length() > 0) {
 						tagAttributes.Append(name);
 					} else {
 						String msg("Unexpected character <");
 						c = Get();
-						msg.AppendAsHex((unsigned char)c).Append("> near ").Append(tag);
+						msg.AppendAsHex((unsigned char)c).Append("> near ").Append(tagName);
 						Error(msg);
 						tagAttributes.Append(String(char(c)));
 					}
@@ -513,12 +515,31 @@ bool TemplateParser::ParseTag(String &tag, Anything &tagAttributes)
 	}
 	return needsrendering;
 }
-bool TemplateParser::ParseAttribute(String &name, Anything &value)
+
+bool TemplateParser::ParseAttribute(const String &tagName, String &name, Anything &value)
 {
 	StartTrace(TemplateParser.ParseAttribute);
+	ROAnything roaTagsConfig;
 	name = ParseName();
-	name.ToLower(); // XHTML conformance all attribute names are lower case
-	Trace("attribute name:" << name);
+	Trace("non  adjusted name [" << name << "]");
+	if ( froaConfig.LookupPath(roaTagsConfig, "Tags") ) {
+		TraceAny(roaTagsConfig, "Tags configuration");
+		// check if tag specific settings are defined, otherwise use global settings
+		// LookupPath preserves roaTagsConfig if not found
+		if ( roaTagsConfig.LookupPath(roaTagsConfig, tagName) ) {
+			TraceAny(roaTagsConfig, String(tagName) << " configuration");
+		}
+	}
+	// found specific tag settings
+	String strCase = roaTagsConfig["AttrNameCase"].AsString("lower").ToLower();
+	if ( !strCase.Length() || strCase.IsEqual("lower") ) {
+		// default, XHTML conformance all attribute names are lower case
+		name.ToLower();
+	} else if ( strCase.IsEqual("upper") ) {
+		name.ToUpper();
+	}
+	// else preserve case
+	Trace("case adjusted name [" << name << "]");
 	value = "";
 	SkipWhitespace();
 	int c = Peek();
@@ -530,6 +551,7 @@ bool TemplateParser::ParseAttribute(String &name, Anything &value)
 	return true;
 	// otherwise it is a syntax error, we just ignore silently for now.
 }
+
 Anything TemplateParser::ParseValue()
 {
 	StartTrace(TemplateParser.ParseValue);

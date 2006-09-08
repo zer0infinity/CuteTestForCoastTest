@@ -14,27 +14,39 @@
 
 //---- TemplateParser ----------------------------------------------------------
 //! <B>Used to parse HTML-Templates during TemplatesCache initialization</B>
+/*!
+<B>Configuration:</B><PRE>
+{
+	/Tags {				Anything	optional, tag specific settings
+		/AttrNameCase	String		optional, [lower|upper|preserve], default lower, specify if attribute name should be case adjusted
+		...
+		/<tagname> {				optional, override above 'global' settings with tag specific setting
+			/<setting>	String		optional, use same setting-names as above, but only for specific tagname
+			...
+		}
+		...
+	}
+}</PRE> */
 class EXPORTDECL_RENDERER TemplateParser
 {
 public:
 	TemplateParser() {}
 	virtual ~TemplateParser() {}
-	Anything Parse(istream &reader, const char *filename = "NO_FILE", long startline = 1L, Allocator *a = Storage::Current());
+	Anything Parse(istream &reader, const char *filename = "NO_FILE", long startline = 1L, Allocator *a = Storage::Current(), const ROAnything roaParserConfig = ROAnything());
 
 protected:
 	virtual void DoParse();
 	Anything OldStyleComment();
 	Anything Macro();
 
-	bool ParseTag(String &tag, Anything &attributes);
+	bool ParseTag(String &tagName, Anything &attributes);
 	Anything ParseValue();
-	bool ParseAttribute(String &name, Anything &value);
+	bool ParseAttribute(const String &tagName, String &name, Anything &value);
 	virtual Anything ProcessTag(const String &tagName, Anything &tagAttributes);
 	virtual Anything ProcessSpecialTag(String &tagName, Anything &tagAttributes, bool mustrender);
 	virtual Anything ProcessFormTag(const String &tagName, Anything &tagAttributes, const String &body, long startline);
 	virtual Anything ProcessScriptTag(const String &tagName, Anything &tagAttributes, const String &body, long startline);
 	Anything RenderTagAsLiteral(String &tagName, Anything &tagAttributes);
-//	bool ProcessEndTag(String &tagName);
 	virtual bool IsSpecialTag(String &tagName, Anything &tagAttributes);
 	void ParseAnything(int endChar);
 	bool IsEmptyOrWd();
@@ -57,10 +69,12 @@ protected:
 	int Peek();
 	bool IsGood();
 	void PutBack(char c);
+
 	Anything fCache;
 	istream *fReader;
 	String	fFileName;
 	long	fLine;
+	ROAnything froaConfig;
 };
 
 //---- FormTemplateParser ----------------------------------------------------------
