@@ -79,8 +79,6 @@
 	}
 
 	/RunOnly {
-		HTMLTemplateRendererCheckGlobalLowerUpperAndPreserve
-		HTMLTemplateRendererCheckGlobalLowerUpperAndPreserveOverride
 	}
 
 	/TestCases
