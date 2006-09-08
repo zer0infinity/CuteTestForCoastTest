@@ -43,14 +43,14 @@ void LocalizationUtilsTest::setUp ()
 	TmpStore["UseBrowserLang"] = 1;
 	TmpStore["LanguageKeyMap"] = LangKeyMap;
 
-	TmpStore["TemplateDir"] = "TestDir1:TestDir2:";
+	TmpStore["HTMLTemplateConfig"]["TemplateDir"] = "TestDir1:TestDir2:";
 
 	Anything LangDirMap;
 	LangDirMap["Key0"] = "Localized_D";
 	LangDirMap["Key1"] = "Localized_F";
 	LangDirMap["Key2"] = "Localized_I";
 	LangDirMap["Key3"] = "Localized_E";
-	TmpStore["LanguageDirMap"] = LangDirMap;
+	TmpStore["HTMLTemplateConfig"]["LanguageDirMap"] = LangDirMap;
 }
 
 void LocalizationUtilsTest::EvalNullLangEmptyConfigWODefault()
@@ -559,7 +559,7 @@ void LocalizationUtilsTest::OpenStreamLangF1stTemplateDirWrong()
 	fContext.SetLanguage("Key1");
 
 	Anything TmpStore(fContext.GetTmpStore());
-	TmpStore["TemplateDir"] = "Schrott:TestDir1:TestDir2";
+	TmpStore["HTMLTemplateConfig"]["TemplateDir"] = "Schrott:TestDir1:TestDir2";
 
 	String absoluteFileName;
 	istream *is = LocalizationUtils::OpenStream( fContext, "Test", absoluteFileName );

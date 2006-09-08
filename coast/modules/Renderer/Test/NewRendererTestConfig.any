@@ -46,12 +46,24 @@
 	}
 	/DefaultRole TestRole
 
-	/TemplateDir		"config/HTMLTemplates"
-	/LanguageDirMap {	# maps language key to localized templates dir
-		/D				"."
-		#/E				"."   No E Map -> English pages are not cached !!
-		/F				"."
-		/I				"."
+	/HTMLTemplateConfig {
+		/TemplateDir		"config/HTMLTemplates"
+		/LanguageDirMap {	# maps language key to localized templates dir
+			/D				"."
+			#/E				"."   No E Map -> English pages are not cached !!
+			/F				"."
+			/I				"."
+		}
+		/ParserConfig {
+			/Tags {
+				/fooPreserve {
+					/AttrNameCase	preserve
+				}
+				/fooUpper {
+					/AttrNameCase	upper
+				}
+			}
+		}
 	}
 
 ######## Test specific section ########
@@ -67,6 +79,8 @@
 	}
 
 	/RunOnly {
+		HTMLTemplateRendererCheckGlobalLowerUpperAndPreserve
+		HTMLTemplateRendererCheckGlobalLowerUpperAndPreserveOverride
 	}
 
 	/TestCases
@@ -3116,135 +3130,170 @@
 			}
 			/Expected	"0"
 		}
+		/HTMLTemplateRendererCheckGlobalLowerUpperAndPreserve {
+			/TmpStore {
+			}
+			/Renderer {
+				/HTMLTemplateRenderer {
+					/Template {
+						"<bla toLowerAttr=\"guguseli\">someText</bla>"
+						"<fooUpper toUpperAttr=\"guguseli\">someText</fooUpper>"
+						"<fooPreserve toPreserveAttr=\"guguseli\">someText</fooPreserve>"
+					}
+				}
+			}
+			/Expected	"<bla tolowerattr=\"guguseli\">someText</bla><fooUpper TOUPPERATTR=\"guguseli\">someText</fooUpper><fooPreserve toPreserveAttr=\"guguseli\">someText</fooPreserve>"
+		}
+		/HTMLTemplateRendererCheckGlobalLowerUpperAndPreserveOverride {
+			/TmpStore {
+			}
+			/Renderer {
+				/HTMLTemplateRenderer {
+					/Template {
+						"<bla toLowerAttr=\"guguseli\">someText</bla>"
+						"<fooUpper toUpperAttr=\"guguseli\">someText</fooUpper>"
+						"<fooPreserve toPreserveAttr=\"guguseli\">someText</fooPreserve>"
+					}
+					/ParserConfig {
+						/Tags {
+							/bla {
+								/AttrNameCase	upper
+							}
+						}
+					}
+				}
+			}
+			/Expected	"<bla TOLOWERATTR=\"guguseli\">someText</bla><fooUpper toupperattr=\"guguseli\">someText</fooUpper><fooPreserve topreserveattr=\"guguseli\">someText</fooPreserve>"
+		}
 		/UnTaintRendererOneTest
 		{
-				/TmpStore
+			/TmpStore
+			{
+				/TheString	"<script>alert(\"bad one\")</script>&%"
+			}
+			/Renderer
+			{
+				/UnTaintRenderer
 				{
-					/TheString	"<script>alert(\"bad one\")</script>&%"
+						/ToClean { /Lookup TheString }
 				}
-				/Renderer
-				{
-						/UnTaintRenderer
-						{
-								/ToClean { /Lookup TheString }
-						}
-				}
-				/Expected       "scriptalert(\"bad one\")/script"
+			}
+			/Expected       "scriptalert(\"bad one\")/script"
 		}
 		/UnTaintRendererWitheBadCharsTest
 		{
-				/TmpStore
+			/TmpStore
+			{
+				/TheString	"<script>alert(\"bad one\")</script>"
+				/BadOnes	"\"()/"
+			}
+			/Renderer
+			{
+				/UnTaintRenderer
 				{
-					/TheString	"<script>alert(\"bad one\")</script>"
-					/BadOnes	"\"()/"
+					/ToClean { /Lookup TheString }
+					/BadChars { /Lookup BadOnes }
 				}
-				/Renderer
-				{
-						/UnTaintRenderer
-						{
-								/ToClean { /Lookup TheString }
-								/BadChars { /Lookup BadOnes }
-						}
-				}
-				/Expected       "scriptalertbad onescript"
+			}
+			/Expected       "scriptalertbad onescript"
 		}
 		/UnTaintRendererOneWithUnescaping
 		{
-				/TmpStore
+			/TmpStore
+			{
+				/TheString	"%25u002E////ok"
+				/BadOnes	"./"
+			}
+			/Renderer
+			{
+				/UnTaintRenderer
 				{
-					/TheString	"%25u002E////ok"
-					/BadOnes	"./"
+					/ToClean { /Lookup TheString }
+					/BadChars { /Lookup BadOnes }
 				}
-				/Renderer
-				{
-						/UnTaintRenderer
-						{
-								/ToClean { /Lookup TheString }
-								/BadChars { /Lookup BadOnes }
-						}
-				}
-				/Expected       "ok"
+			}
+			/Expected       "ok"
 		}
 		/UnTaintRendererTwoWithUnescaping
 		{
-				/TmpStore
+			/TmpStore
+			{
+				/TheString	"<>%%%25%25%32%35%25%25%37%35002%u0045+++////ok"
+				/BadOnes	"+"
+			}
+			/Renderer
+			{
+				/UnTaintRenderer
 				{
-					/TheString	"<>%%%25%25%32%35%25%25%37%35002%u0045+++////ok"
-					/BadOnes	"+"
+					/ToClean { /Lookup TheString }
+					/BadChars { /Lookup BadOnes }
 				}
-				/Renderer
-				{
-						/UnTaintRenderer
-						{
-								/ToClean { /Lookup TheString }
-								/BadChars { /Lookup BadOnes }
-						}
-				}
-				/Expected       ".////ok"
+			}
+			/Expected       ".////ok"
 		}
 		/UnTaintRendererThreeWithUnescaping
 		{
-				/TmpStore
+			/TmpStore
+			{
+				/TheString	"<>%%%25%25%32%35%25%25%37%35002%u0045+++////ok"
+				/BadOnes	"+."
+			}
+			/Renderer
+			{
+				/UnTaintRenderer
 				{
-					/TheString	"<>%%%25%25%32%35%25%25%37%35002%u0045+++////ok"
-					/BadOnes	"+."
+					/ToClean { /Lookup TheString }
+					/BadChars { /Lookup BadOnes }
 				}
-				/Renderer
-				{
-						/UnTaintRenderer
-						{
-								/ToClean { /Lookup TheString }
-								/BadChars { /Lookup BadOnes }
-						}
-				}
-				/Expected       "////ok"
+			}
+			/Expected       "////ok"
 		}
 		/UnTaintRendererFourWithUnescaping
 		{
-				/TmpStore
+			/TmpStore
+			{
+				/TheString	"<>&#x0026;&#x23;&#x078;&#x0032;&#054;&#x003B;#x26;&#X0023;&#120;002E;<>"
+				/BadOnes	""
+			}
+			/Renderer
+			{
+				/UnTaintRenderer
 				{
-					/TheString	"<>&#x0026;&#x23;&#x078;&#x0032;&#054;&#x003B;#x26;&#X0023;&#120;002E;<>"
-					/BadOnes	""
+					/ToClean { /Lookup TheString }
+					/BadChars { /Lookup BadOnes }
 				}
-				/Renderer
-				{
-						/UnTaintRenderer
-						{
-								/ToClean { /Lookup TheString }
-								/BadChars { /Lookup BadOnes }
-						}
-				}
-				/Expected       "."
+			}
+			/Expected       "."
 		}
 		/UnTaintRendererFiveWithUnescaping
 		{
-				/TmpStore
+			/TmpStore
+			{
+				/TheString	"%%&&<>%%%25%25%32%35%25%25%37%35002%u0045+++////ok<>&#x0026;&#x23;&#x078;&#x0032;&#054;&#x003B;#x26;&#X0023;&#120;002E;<>++//"
+				/BadOnes	"+"
+			}
+			/Renderer
+			{
+				/UnTaintRenderer
 				{
-					/TheString	"%%&&<>%%%25%25%32%35%25%25%37%35002%u0045+++////ok<>&#x0026;&#x23;&#x078;&#x0032;&#054;&#x003B;#x26;&#X0023;&#120;002E;<>++//"
-					/BadOnes	"+"
+					/ToClean { /Lookup TheString }
+					/BadChars { /Lookup BadOnes }
 				}
-				/Renderer
-				{
-						/UnTaintRenderer
-						{
-								/ToClean { /Lookup TheString }
-								/BadChars { /Lookup BadOnes }
-						}
-				}
-				/Expected       ".////ok.//"
+			}
+			/Expected       ".////ok.//"
 		}
 		/UnTaintRendererNoArgsGiven
 		{
-				/TmpStore
+			/TmpStore
+			{
+			}
+			/Renderer
+			{
+				/UnTaintRenderer
 				{
 				}
-				/Renderer
-				{
-						/UnTaintRenderer
-						{
-						}
-				}
-				/Expected       ""
+			}
+			/Expected       ""
 		}
 	}
 }

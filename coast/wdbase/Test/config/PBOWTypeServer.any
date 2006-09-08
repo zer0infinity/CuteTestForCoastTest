@@ -26,7 +26,6 @@
 
 #--- Paths used ---------------------------------------------------------------
 	/ImagePath		    "/images/"	# the images referenced by this server
-	/TemplateDir		"config/HTMLTemplates"
 
 #--- BaseURL support ---------------------------------------------------------------
 
@@ -42,10 +41,13 @@
 		/F				{ "fr" "fr-BE" "fr-CA" "fr-FR" "fr-CH" }
 		/I				{ "it" }
 	}
-	/LanguageDirMap {	# maps language key to localized templates dir
-		/D				"Localized_D"
-		/E				"Localized_E"
-		/F				"Localized_F"
-		/I				"Localized_I"
+	/HTMLTemplateConfig {
+		/TemplateDir	"config/HTMLTemplates"
+		/LanguageDirMap {	# maps language key to localized templates dir
+			/D			"Localized_D"
+			/E			"Localized_E"
+			/F			"Localized_F"
+			/I			"Localized_I"
+		}
 	}
 }

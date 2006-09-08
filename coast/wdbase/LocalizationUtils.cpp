@@ -134,9 +134,9 @@ istream *LocalizationUtils::OpenStream(Context &c, const char *filename, String 
 	// first the language specific
 
 	const char *dft = "config/HTMLTemplates";
-	StringTokenizer st(c.Lookup("TemplateDir").AsCharPtr(dft), ':');
+	StringTokenizer st(c.Lookup("HTMLTemplateConfig.TemplateDir").AsCharPtr(dft), ':');
 	String templateDir;
-	ROAnything languageDirMap(c.Lookup("LanguageDirMap"));
+	ROAnything languageDirMap(c.Lookup("HTMLTemplateConfig.LanguageDirMap"));
 	String localizedPath;
 
 	String rootpath(System::GetRootDir());

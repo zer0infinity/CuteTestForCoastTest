@@ -10,9 +10,7 @@
 #include "HTMLTemplateCacheLoader.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "Anything.h"
 #include "System.h"
-#include "SysLog.h"
 #include "TemplateParser.h"
 #include "HTMLTemplateRenderer.h"
 #include "Dbg.h"
@@ -32,7 +30,9 @@ TemplatesCacheModule::~TemplatesCacheModule()
 
 bool TemplatesCacheModule::Init(const ROAnything config)
 {
-	HTMLTemplateRenderer::BuildCache(config);
+	StartTrace(TemplatesCacheModule.Init);
+	TraceAny(config["HTMLTemplateConfig"], "my config");
+	HTMLTemplateRenderer::BuildCache(config["HTMLTemplateConfig"]);
 	return true;
 }
 
@@ -67,7 +67,8 @@ void HTMLTemplateCacheLoader::BuildCache(Anything &cache, istream &reader, const
 {
 	StartTrace(HTMLTemplateCacheLoader.BuildCache);
 	if (fParser) {
-		cache = fParser->Parse(reader, filename, 1L, cache.GetAllocator());
+		TraceAny(froaConfig["ParserConfig"], "parser config to use");
+		cache = fParser->Parse(reader, filename, 1L, cache.GetAllocator(), froaConfig["ParserConfig"]);
 	} else {
 		SysLog::Error("HTMLTemplateCacheLoader::BuildCache: OOPS Parser undefined");
 	}
@@ -89,7 +90,7 @@ void HTMLTemplateCacheBuilder::BuildCache(const ROAnything config)
 
 	CacheHandler *cache = CacheHandler::Get();
 	TemplateParser tp;
-	HTMLTemplateCacheLoader htcl(&tp);
+	HTMLTemplateCacheLoader htcl(&tp, config);
 
 	while ( st.NextToken(templateDir) ) {
 		// cache templates of template dir

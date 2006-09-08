@@ -35,26 +35,31 @@ public:
 /*!
 <B>Configuration:</B>
 <B>slots to define within Config.any</B><PRE>
-/TemplateDir		String		optional, default "config/HTMLTemplates", relative path to WD_ROOT in which to look for html-files
-								use ":" to delimit multiple path segments
-/LanguageDirMap {				mandatory, specify the supported languages, if not specified the caching will not be active
-	/D				String		optional, locale specific path to html-files, will be appended to TemplateDir
-	/E				String		...
-	/F				String		...
-	/I				String		...
-	...
-}
-</PRE>
+/HTMLTemplateConfig {
+	/TemplateDir		String		optional, default "config/HTMLTemplates", relative path to WD_ROOT in which to look for html-files
+									use ":" to delimit multiple path segments
+	/LanguageDirMap {				mandatory, specify the supported languages, if not specified the caching will not be active
+		/D				String		optional, locale specific path to html-files, will be appended to TemplateDir
+		/E				String		...
+		/F				String		...
+		/I				String		...
+		...
+	}
+	/ParserConfig {					optional, global TemplateParser options, see TemplateParser for available options
+		...
+	}
+}</PRE>
 example configuration of Config.any
 <PRE>
-/TemplateDir		"config/HTMLTemplates:config/SpecialTemplates"
-/LanguageDirMap {
-	/D				"Localized_D"
-	/E				"Localized_E"
-	/F				"Localized_F"
-	/I				"Localized_I"
-}
-</PRE>
+/HTMLTemplateConfig {
+	/TemplateDir		"config/HTMLTemplates:config/SpecialTemplates"
+	/LanguageDirMap {
+		/D				"Localized_D"
+		/E				"Localized_E"
+		/F				"Localized_F"
+		/I				"Localized_I"
+	}
+}</PRE>
 With the example above every html-file in the directories:
 <PRE>
 config/HTMLTemplates/Localized_D
@@ -71,7 +76,10 @@ will be loaded into the cache.
 class EXPORTDECL_RENDERER HTMLTemplateCacheLoader : public CacheLoadPolicy
 {
 public:
-	HTMLTemplateCacheLoader(TemplateParser *parser): fParser(parser) { }
+	HTMLTemplateCacheLoader(TemplateParser *parser, const ROAnything config = ROAnything())
+		: fParser(parser)
+		, froaConfig(config)
+	{ }
 	~HTMLTemplateCacheLoader() { }
 
 	//! parse filename with extension .html for insertion into cache
@@ -80,6 +88,7 @@ public:
 
 private:
 	TemplateParser *fParser;
+	const ROAnything froaConfig;
 	friend class HTMLCacheLoaderTest;
 };
 

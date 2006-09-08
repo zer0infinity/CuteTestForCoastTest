@@ -11,7 +11,6 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "System.h"
-#include "SysLog.h"
 #include "Timers.h"
 #include "LocalizationUtils.h"
 #include "HTMLTemplateCacheLoader.h"
@@ -51,10 +50,15 @@ TemplateParser *HTMLTemplateRenderer::GetParser()
 
 void HTMLTemplateRenderer::RenderAll(ostream &reply, Context &context, const ROAnything &args)
 {
-	StartTrace(HTMLTemplateRenderer.Render);
+	StartTrace(HTMLTemplateRenderer.RenderAll);
 	TraceAny(args, "args");
-	ROAnything theRendererConfig;
+	ROAnything theRendererConfig, roaParserConfig;
 	Anything rendererConfig;
+
+	// check if we have special parser configuration to use
+	if ( !args.LookupPath(roaParserConfig, "ParserConfig") ) {
+		context.Lookup("HTMLTemplateConfig.ParserConfig", roaParserConfig);
+	}
 
 	if (args.IsDefined("TemplateName")) {
 		String filename;
@@ -75,11 +79,11 @@ void HTMLTemplateRenderer::RenderAll(ostream &reply, Context &context, const ROA
 					{
 						MethodTimer(HTMLTemplateRenderer.RenderAll, filename, context);
 						TemplateParser *tp = GetParser();
-						rendererConfig = tp->Parse(reader, filename, 1L, rendererConfig.GetAllocator());
+						rendererConfig = tp->Parse(reader, filename, 1L, rendererConfig.GetAllocator(), roaParserConfig);
 						delete tp;
 						theRendererConfig = rendererConfig;
-						delete fp;
 					}
+					delete fp;
 				} else {
 					String logMsg("HTMLTemplateRenderer::RenderAll: cannot open file ");
 					logMsg << filename << ".html";
@@ -87,13 +91,12 @@ void HTMLTemplateRenderer::RenderAll(ostream &reply, Context &context, const ROA
 				}
 			}
 		}
-	} else { // either look for /Template or interpret args as list of template entries
+	} else {
+		// look for /Template
 		MethodTimer(HTMLTemplateRenderer.RenderAll, "Template", context);
 		ROAnything templ;
 		if (args.IsDefined("Template")) {
 			templ = args["Template"];
-		} else if (AnyArrayType == args.GetType() || AnyCharPtrType == args.GetType()) {
-			templ = args; // PS: allow shorthand notation
 		} else {
 			// bail out.
 			OStringStream str;
@@ -102,18 +105,18 @@ void HTMLTemplateRenderer::RenderAll(ostream &reply, Context &context, const ROA
 			SysLog::Error(str.str());
 			return;
 		}
-		String buf;
 
+		String buf;
 		for (long i = 0, size = templ.GetSize(); i < size; ++i) {
 			// PS: only append anonymous entries to allow for future parameters
 			// PS: this will take care of things like /Options /Method in subclass FormRenderer
-			if (0 == templ.SlotName(i)) {
+			if ( 0 == templ.SlotName(i) ) {
 				buf.Append(templ[i].AsCharPtr());
 			}
 		}
 		IStringStream reader(&buf);
 		TemplateParser *tp = GetParser();
-		rendererConfig = tp->Parse(reader, "from config", 1L, rendererConfig.GetAllocator());
+		rendererConfig = tp->Parse(reader, "from config", 1L, rendererConfig.GetAllocator(), roaParserConfig);
 		delete tp;
 		theRendererConfig = rendererConfig;
 

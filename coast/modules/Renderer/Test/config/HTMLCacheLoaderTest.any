@@ -49,12 +49,14 @@
 	}
 	/DefaultRole TestRole
 
-	/TemplateDir		"config/HTMLTemplates"
-	/LanguageDirMap {	# maps language key to localized templates dir
-		/D				"."
-		#/E				"."   No E Map -> English pages are not cached !!
-		/F				"."
-		/I				"."
+	/HTMLTemplateConfig {
+		/TemplateDir		"config/HTMLTemplates"
+		/LanguageDirMap {	# maps language key to localized templates dir
+			/D				"."
+			#/E				"."   No E Map -> English pages are not cached !!
+			/F				"."
+			/I				"."
+		}
 	}
 	/Actions {}
 }

@@ -18,26 +18,16 @@
 <B>Configuration:</B><PRE>
 {
 	/TemplateName	Rendererspec	mandatory, basename of html file; no .html extension; no path!
-}
-or:
-{
-	/Template {
+	/Template {		Anything		optional, but mandatory if TemplateName is omitted, TemplateName takes precedence
 		"list of strings containing HTML code"
 		"the list may yet contain macros: [[#wd ContextLookup foo ]]"
 		"all the lines of the list are simply concatenated without "
 		"adding any linefeeds etc!"
 	}
-}
-shorthand syntax:
-{
-	"every anonymousentry is taken as template"
-	/Options "this is just ignored can can be used in subclasses"
-	"this again would be interpreted [[#wd Render foo ]] is possible"
-}
-
-The 'config' data should usually only contain either a /TemplateName or
-a /Template slot. /TemplateName takes precedence!
-</PRE>
+	/ParserConfig {					optional, local TemplateParser options, these will override global settings defined in HTMLTemplateConfig slot, see TemplateParser for available options
+		...
+	}
+}</PRE>
 The HTML template renderer is a generic renderer that allows to
 render arbitrary strings or texts. It defines a specific
 macro substitution mechanism that is used to embed "calls" to
@@ -49,10 +39,6 @@ the macro.  'renderername' may be the name of any registered renderer
 (inluding alias names). The remainer of the macro - until the closing ]] -
 is interpreted as an Anything specifying the /Data content of the 'config'
 data that is passed as input to the respective renderer.
-
-Notice: For compatibility reasons instead of 'wd' the older keyword 'ifaps'
-is still supported. However that keyword is considered deprecated
-and should not be used since is will soon be removed.
 
 It is typical to use just a ContextLookupRenderer and the name of a renderer
 specification that is defined in some configuration file, e.g.

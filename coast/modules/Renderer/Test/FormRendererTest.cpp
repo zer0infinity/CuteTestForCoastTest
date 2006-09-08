@@ -58,10 +58,10 @@ void FormRendererTest::ConfigureField6()
 	if (wdm) {
 		wdm->Init(config);
 	}
-	config["TemplateDir"] = "wd_test";
+	config["HTMLTemplateConfig"]["TemplateDir"] = "wd_test";
 	Anything langMap;
 	langMap["D"] = "Localized_D";
-	config["LanguageDirMap"] = langMap;
+	config["HTMLTemplateConfig"]["LanguageDirMap"] = langMap;
 
 	wdm = WDModule::FindWDModule("TemplatesCacheModule");
 	if (wdm) {
