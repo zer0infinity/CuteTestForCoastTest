@@ -28,6 +28,10 @@
 		/MainSwitch 0
 		/EnableAll	10
 	}
+	/TemplatesCacheLoader {
+		/MainSwitch 0
+		/EnableAll	10
+	}
 	/SelectBoxRenderer {
 		/MainSwitch			10
 		/EnableAll			10
@@ -51,7 +55,7 @@
 	}
 	/TemplateParser {
 		/MainSwitch 		0
-		/EnableAll			0
+		/EnableAll			10
 		/ParseAttribute		10
 		/CompactHTMLBlocks	10
 		/ReadHTMLAsString	10
@@ -59,6 +63,10 @@
 		/ProcessSpecialTag	10
 		/ProcessFormTag		10
 		/IsSpecialTag		10
+		/IsValidNameChar	-10
+		/Peek				-10
+		/Get				-10
+		/DoParse			-10
 	}
 	/AnyUtils {
 		/MainSwitch 		0
