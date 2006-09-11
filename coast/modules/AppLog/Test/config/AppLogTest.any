@@ -39,15 +39,17 @@
 			ServersModule
 			AppLogModule
 		}
-		/Server				%Server
-		/Servers			%Servers
-		/Renderers			%Renderers
-		/Actions			%Actions
-#		/TimeLoggingModule	%TimeLoggingModule
-		/AppLogModule		%AppLogModule
-		/AccessLogFormat	%AccessLogFormat
-		/ErrorLogFormat		%ErrorLogFormat
-		/MethodTimeFormat	%MethodTimeFormat
+		/Server					%Server
+		/Servers				%Servers
+		/Renderers				%Renderers
+		/Actions				%Actions
+#		/TimeLoggingModule		%TimeLoggingModule
+		/AppLogModule			%AppLogModule
+		/AccessLogFormat		%AccessLogFormat
+		/ErrorLogFormat			%ErrorLogFormat
+		/MethodTimeFormat		%MethodTimeFormat
+		/NoHeaderLogFormat		%NoHeaderLogFormat
+		/EmptyHeaderLogFormat 	%EmptyHeaderLogFormat
 	}
 	/LogOkToVirtualServerTest {
 		/Modules {
@@ -193,6 +195,19 @@
 					/Format		%MethodTimeFormat
 					/Header		"TimeLogTestHeader"
 				}
+				/NoHeaderLog
+				{
+					/FileName	"NoHeader.log"
+					/Format		%NoHeaderLogFormat
+					/SuppressEmptyLines	0
+				}
+				/EmptyHeaderLog
+				{
+					/FileName	"EmptyHeader.log"
+					/Format		%EmptyHeaderLogFormat
+					/Header		""
+					/SuppressEmptyLines	1
+				}
 				/RelativeLogDir	{
 					/LogDir		"."
 					/RotateDir	"config"
@@ -229,7 +244,14 @@
 	  { /Lookup TimeLogEntry.Time }
 	  " ms"
 	}
-
+	/NoHeaderLogFormat
+	{
+		{ /Lookup	TestMsg }
+	}
+	/EmptyHeaderLogFormat
+	{
+		{ /Lookup	TestMsg }
+	}
 	/AccessTestAction {
 		/LoggingAction	{
 			/Channel	AccessLog2

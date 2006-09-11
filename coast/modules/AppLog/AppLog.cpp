@@ -332,12 +332,13 @@ bool AppLogChannel::Log(Context &ctx)
 bool AppLogChannel::LogAll(Context &ctx, const ROAnything &config)
 {
 	StartTrace(AppLogChannel.LogAll);
+	bool suppressEmptyLines = GetChannelInfo()["SuppressEmptyLines"].AsBool(false);
 	if ( fLogStream && fLogStream->good() ) {
 		TraceAny(config, "config: ");
 		String logMsg(128);
 		Renderer::RenderOnString(logMsg, ctx, config);
 
-		if (!GetChannelInfo()["SuppressEmptyLines"].AsBool(false) || logMsg.Length()) {
+		if (!suppressEmptyLines || logMsg.Length()) {
 			MutexEntry me(fChannelMutex);
 			me.Use();
 			Trace("fLogStream state before logging: " << (long)fLogStream->rdstate());
@@ -346,7 +347,7 @@ bool AppLogChannel::LogAll(Context &ctx, const ROAnything &config)
 			return (!!(*fLogStream));
 		}
 	}
-	return false;
+	return suppressEmptyLines ? true : false;
 }
 
 bool AppLogChannel::GetLogDirectories(ROAnything channel, String &logdir, String &rotatedir)
@@ -479,14 +480,17 @@ void AppLogChannel::WriteHeader(ostream &os)
 	ROAnything header = GetChannelInfo()["Header"];
 
 	Trace("os state before writing header: " << (long)os.rdstate());
-	for (long i = 0, szh = header.GetSize(); i < szh; ++i) {
+	long szh = header.GetSize();
+	for (long i = 0; i < szh; ++i) {
 		os << header[i].AsCharPtr("");
 		if (!os) {
 			SYSERROR("Write Header to logfile failed");
 			return;
 		}
 	}
-	os << endl;
+	if ( szh > 0 ) {
+		os << endl;
+	}
 	Trace("os state " << (long)os.rdstate());
 }
 

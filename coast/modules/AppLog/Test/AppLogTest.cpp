@@ -66,6 +66,16 @@ void AppLogTest::LogOkTest()
 			ctx.GetTmpStore()["TestMsg"] = "Access log Test 2";
 			t_assertm(AppLogModule::Log(ctx, "AccessLog"), "AccessLog 2");
 
+			ctx.GetTmpStore()["TestMsg"] = "NoHeader log Test 1";
+			t_assertm(AppLogModule::Log(ctx, "NoHeaderLog"), "NoHeaderLog");
+			ctx.GetTmpStore()["TestMsg"] = "";
+			t_assertm(AppLogModule::Log(ctx, "NoHeaderLog"), "NoHeaderLog");
+
+			ctx.GetTmpStore()["TestMsg"] = "EmptyHeader log Test 1";
+			t_assertm(AppLogModule::Log(ctx, "EmptyHeaderLog"), "EmptyHeaderLog");
+			ctx.GetTmpStore()["TestMsg"] = "";
+			t_assertm(AppLogModule::Log(ctx, "EmptyHeaderLog"), "EmptyHeaderLog");
+
 			ctx.GetTmpStore()["ErrorMsg"] = "Error 1";
 			t_assertm(AppLogModule::Log(ctx, "ErrorLog"), "ErrorLog1");
 
@@ -73,6 +83,8 @@ void AppLogTest::LogOkTest()
 			t_assertm(AppLogModule::Log(ctx, "ErrorLog"), "ErrorLog 2");
 
 			CheckFile(ctx, "AccessLog", "TestHeader\nAccess log Test 1 - Test\nAccess log Test 2 - Test\n");
+			CheckFile(ctx, "NoHeaderLog", "NoHeader log Test 1\n\n");
+			CheckFile(ctx, "EmptyHeaderLog", "\nEmptyHeader log Test 1\n");
 			CheckFile(ctx, "ErrorLog", "ErrorlogTestHeader\nError 1 - Test\nError 2 - Test\n");
 
 			CheckFile(ctx, "RelativeLogDir", "# Relative-File\n");
