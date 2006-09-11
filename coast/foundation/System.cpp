@@ -736,6 +736,7 @@ iostream *System::IntOpenStreamBySearch(String &resultPath, const char *name, co
 	while (st.NextToken(dirpath)) {
 		filepath.Append(fgRootDir).Append(Sep()).Append(dirpath).Append(Sep()).Append(name);
 		System::ResolvePath(filepath);
+		Trace("resultPath: [" << resultPath << "] filepath: [" << filepath << "] file: [" << name << "]");
 		if ( (fp = DoOpenStream(resultPath, filepath, mode, trace)) != NULL ) {
 			return fp;
 		}
