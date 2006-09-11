@@ -339,8 +339,9 @@ void MultifunctionListBoxRenderer::RenderBoxName(String &boxName, Context &c, co
 
 void MultifunctionListBoxRenderer::GetBoxName(String &boxName, Context &c)
 {
-	if (c.GetTmpStore().IsDefined("MultifunctionListBoxName")) {
-		boxName = c.GetTmpStore()["MultifunctionListBoxName"].AsString();
+	ROAnything roaValue;
+	if ( c.Lookup("MultifunctionListBoxName", roaValue) ) {
+		boxName = roaValue.AsString();
 	}
 }
 
@@ -363,8 +364,9 @@ void MultifunctionListBoxRenderer::RenderFormName(String &formName, Context &c, 
 
 void MultifunctionListBoxRenderer::GetFormName(String &formName, Context &c)
 {
-	if (c.GetTmpStore().IsDefined("MultifunctionFormName")) {
-		formName = c.GetTmpStore()["MultifunctionFormName"].AsString();
+	ROAnything roaValue;
+	if ( c.Lookup("MultifunctionFormName", roaValue) ) {
+		formName = roaValue.AsString();
 	} else {
 		formName = "0";
 	}
