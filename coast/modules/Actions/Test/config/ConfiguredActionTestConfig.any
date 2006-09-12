@@ -770,6 +770,130 @@
 			}
 			/ExpectedResult 0
 		}
+		/ListActionEmptyListTest {
+			/SessionStore {
+				/TheList	{}
+			}
+			/TheAction {
+				{ /ListAction {
+					/ListName	TheList
+					/EntryStore	LoopIndex
+					/EntryAction	{
+						{ /LoopTestAction * }
+					}
+				} }
+			}
+			/ExpectedResult	1
+			/Result {
+				/TmpStore {
+				}
+			}
+		}
+		/ListActionWrongStartIndexTest {
+			/SessionStore {
+				/TheList	{ 1 2 3 }
+			}
+			/TheAction {
+				{ /ListAction {
+					/ListName	TheList
+					/EntryStore	LoopIndex
+					/Start		3
+					/EntryAction	{
+						{ /LoopTestAction * }
+					}
+				} }
+			}
+			/ExpectedResult	0
+			/Result {
+				/TmpStore {
+				}
+			}
+		}
+		/ListActionStartIndexTest {
+			/SessionStore {
+				/TheList	{ 1 2 3 }
+			}
+			/TheAction {
+				{ /ListAction {
+					/ListName	TheList
+					/EntryStore	LoopIndex
+					/Start		1
+					/EntryAction	{
+						{ /LoopTestAction * }
+					}
+				} }
+			}
+			/ExpectedResult	1
+			/Result {
+				/TmpStore {
+					/LoopResult	{ 2 3 }
+				}
+			}
+		}
+		/ListActionWrongEndIndexTest {
+			/SessionStore {
+				/TheList	{ 1 2 3 }
+			}
+			/TheAction {
+				{ /ListAction {
+					/ListName	TheList
+					/EntryStore	LoopIndex
+					/End		5
+					/EntryAction	{
+						{ /LoopTestAction * }
+					}
+				} }
+			}
+			/ExpectedResult	1
+			/Result {
+				/TmpStore {
+					/LoopResult	{ 1 2 3 }
+				}
+			}
+		}
+		/ListActionEndIndexTest {
+			/SessionStore {
+				/TheList	{ 1 2 3 }
+			}
+			/TheAction {
+				{ /ListAction {
+					/ListName	TheList
+					/EntryStore	LoopIndex
+					/End		1
+					/EntryAction	{
+						{ /LoopTestAction * }
+					}
+				} }
+			}
+			/ExpectedResult	1
+			/Result {
+				/TmpStore {
+					/LoopResult	{ 1 2 }
+				}
+			}
+		}
+		/ListActionStartEndIndexTest {
+			/SessionStore {
+				/TheList	{ 1 2 3 }
+			}
+			/TheAction {
+				{ /ListAction {
+					/ListName	TheList
+					/EntryStore	LoopIndex
+					/Start		1
+					/End		1
+					/EntryAction	{
+						{ /LoopTestAction * }
+					}
+				} }
+			}
+			/ExpectedResult	1
+			/Result {
+				/TmpStore {
+					/LoopResult	{ 2 }
+				}
+			}
+		}
 		/ListActionTest {
 			/SessionStore {
 				/NameTheList	TheList
