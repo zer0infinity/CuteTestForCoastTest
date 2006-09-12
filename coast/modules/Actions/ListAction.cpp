@@ -39,7 +39,11 @@ bool ListAction::DoExecAction(String &transitionToken, Context &ctx, const ROAny
 	if ( config.IsDefined("EntryAction") && ( GetList(ctx, config, roaList) || config.LookupPath(roaList, "ListData") ) ) {
 		ROAnything entryAction = config["EntryAction"];
 		long lListSize = roaList.GetSize();
-
+		// shortcut in case the list is empty
+		if ( lListSize <= 0L ) {
+			SYSDEBUG("shortcut exit with true because the list is empty");
+			return true;
+		}
 		// retrieve the Slotname where the entryData have to be stored
 		String entryStoreName;
 		ROAnything es;
