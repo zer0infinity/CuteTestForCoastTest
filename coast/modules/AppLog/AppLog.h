@@ -15,7 +15,6 @@
 
 class Context;
 class AppLogChannel;
-class LogRotator;
 
 //---- AppLogModule -----------------------------------------------------------
 //! <b>Provide an API for application logging</b>
@@ -81,7 +80,18 @@ protected:
 	Anything fLogConnections;
 	ROAnything fROLogConnections;
 
-	LogRotator *fRotator;
+	class EXPORTDECL_APPLOG LogRotator : public Thread
+	{
+		friend class AppLogTest;
+	public:
+		LogRotator(const char *rotateTime, long lRotateSecond = 0L);
+
+	protected:
+		long GetSecondsToWait();
+		void Run();
+		//! when to rotate
+		long fRotateSecond;
+	} *fRotator;
 
 	static AppLogModule *fgAppLogModule;
 };

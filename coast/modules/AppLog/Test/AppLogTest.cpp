@@ -19,6 +19,7 @@
 #include "Timers.h"
 #include "Server.h"
 #include "Action.h"
+#include "AnyIterators.h"
 
 //--- c-library modules used ---------------------------------------------------
 
@@ -214,6 +215,33 @@ void AppLogTest::LogRotatorTest()
 	}
 }
 
+void AppLogTest::LogRotationTimeTest()
+{
+	StartTrace(AppLogTest.LogRotationTimeTest);
+
+	WDModule *pModule = WDModule::FindWDModule("AppLogModule");
+	if ( t_assertm(pModule != NULL, "expected AppLogModule to be registered") ) {
+		AppLogModule *pAppLogModule = SafeCast(pModule, AppLogModule);
+		if ( t_assertm(pAppLogModule != NULL, "expected type of AppLogModule to be configured") ) {
+			Anything anyModuleConfig;
+			anyModuleConfig["AppLogModule"] = GetTestCaseConfig()["AppLogModule"].DeepClone();
+
+			ROAnything roaCaseConfig;
+			AnyExtensions::Iterator<ROAnything> aIterator(GetTestCaseConfig()["TestCases"]);
+			while ( aIterator.Next(roaCaseConfig) ) {
+				anyModuleConfig["AppLogModule"]["RotateTime"] = roaCaseConfig["RotateTime"].AsString();
+
+				if ( t_assertm(pAppLogModule->Init(anyModuleConfig), "Module initialization should have succeeded!") ) {
+					if ( t_assertm(pAppLogModule->fRotator != NULL, "expected rotator instance") ) {
+						assertEqualm(roaCaseConfig["ExpectedSeconds"].AsLong(-1L), pAppLogModule->fRotator->fRotateSecond, "expected same rotation second");
+					}
+					t_assertm(pAppLogModule->Finis(), "Finis should have succeeded");
+				}
+			}
+		}
+	}
+}
+
 void AppLogTest::LoggingActionTest()
 {
 	StartTrace(AppLogTest.LoggingActionTest);
@@ -330,6 +358,7 @@ Test *AppLogTest::suite ()
 	ADD_CASE(testSuite, AppLogTest, LogOkTest);
 	ADD_CASE(testSuite, AppLogTest, LogOkToVirtualServerTest);
 	ADD_CASE(testSuite, AppLogTest, LogRotatorTest);
+	ADD_CASE(testSuite, AppLogTest, LogRotationTimeTest);
 	ADD_CASE(testSuite, AppLogTest, LoggingActionTest);
 	ADD_CASE(testSuite, AppLogTest, TimeLoggingActionTest);
 	return testSuite;

@@ -103,6 +103,50 @@
 		/ErrorLogFormat		%ErrorLogFormat
 		/MethodTimeFormat	%MethodTimeFormat
 	}
+	/LogRotationTimeTest {
+		/Modules {
+			RenderersModule
+			ActionsModule
+			ServersModule
+		}
+		/Server				%Server
+		/Servers			%Servers
+		/Renderers			%Renderers
+		/Actions			%Actions
+		/AppLogModule {
+			/LogDir		"config"
+			/RotateTime	"xx:xx"
+			/Servers {
+				/TestServer	{
+					/RotateLog	{
+						/FileName		"RotateTest.log"
+						/Format			%AccessLogFormat
+						/Header			"Rotate Header"
+					}
+					/DoNotRotateLog	{
+						/FileName		"DoNotRotateTest.log"
+						/DoNotRotate	1
+						/Format			%AccessLogFormat
+						/Header			"DoNotRotate Header"
+					}
+				}
+			}
+		}
+		/AccessLogFormat	%AccessLogFormat
+		/ErrorLogFormat		%ErrorLogFormat
+		/MethodTimeFormat	%MethodTimeFormat
+
+		/TestCases {
+			{
+				/RotateTime			"10:47"
+				/ExpectedSeconds	38820
+			}
+			{
+				/RotateTime			"22:57:53"
+				/ExpectedSeconds	82673
+			}
+		}
+	}
 	/LoggingActionTest {
 		/Modules {
 #			TimeLoggingModule

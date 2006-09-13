@@ -14,7 +14,6 @@
 #include "Renderer.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
 #include "System.h"
 #include "Dbg.h"
 
@@ -22,18 +21,6 @@
 #if defined(WIN32)
 #include <stdio.h>
 #endif
-
-class EXPORTDECL_APPLOG LogRotator : public Thread
-{
-public:
-	LogRotator(const char *rotateTime, long lRotateSecond = 0L);
-
-protected:
-	long GetSecondsToWait();
-	void Run();
-	//! when to rotate
-	long fRotateSecond;
-};
 
 //---- AppLogModule -----------------------------------------------------------
 RegisterModule(AppLogModule);
@@ -510,7 +497,7 @@ String AppLogChannel::GenTimeStamp(const String &format)
 }
 
 //--- LogRotator ----------------------
-LogRotator::LogRotator(const char *rotateTime, long lRotateSecond)
+AppLogModule::LogRotator::LogRotator(const char *rotateTime, long lRotateSecond)
 	: Thread("LogRotator")
 	, fRotateSecond(lRotateSecond)
 {
@@ -524,13 +511,13 @@ LogRotator::LogRotator(const char *rotateTime, long lRotateSecond)
 		} else {
 			// optional seconds spec
 			st.NextToken(second);
-			fRotateSecond = ( ( minute.AsLong(0) % 60 * 60 ) + hour.AsLong(0) % 24 ) * 60 + second.AsLong(0);
+			fRotateSecond = ( ( hour.AsLong(0) % 24 * 60 ) + minute.AsLong(0) % 60 ) * 60 + second.AsLong(0) % 60;
 		}
 	}
 	Trace("RotateTime [" << rotateTime << "] param lRotateSecond: " << lRotateSecond << " -> fRotateSecond: " << fRotateSecond);
 }
 
-long LogRotator::GetSecondsToWait()
+long AppLogModule::LogRotator::GetSecondsToWait()
 {
 	StartTrace(LogRotator.GetSecondsToWait);
 
@@ -550,7 +537,7 @@ long LogRotator::GetSecondsToWait()
 	return lSecondsToWait;
 }
 
-void LogRotator::Run()
+void AppLogModule::LogRotator::Run()
 {
 	StartTrace1(LogRotator.Run, "starting...");
 	while ( IsRunning() ) {
