@@ -46,7 +46,6 @@ conveniently. The method of this class are called by Coast
 class EXPORTDECL_APPLOG AppLogModule : public WDModule
 {
 	friend class AppLogChannel;
-	friend class LogRotator;
 	friend class AppLogTest;
 public:
 	AppLogModule(const char *name);
@@ -92,6 +91,8 @@ protected:
 		//! when to rotate
 		long fRotateSecond;
 	} *fRotator;
+	// gcc 2.95.x fix: friend declaration must be after nested class declaration
+	friend class LogRotator;
 
 	static AppLogModule *fgAppLogModule;
 };
