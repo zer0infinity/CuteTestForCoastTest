@@ -16,6 +16,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "System.h"
 #include "Dbg.h"
+#include "SysLog.h"
 
 //--- c-library modules used ---------------------------------------------------
 #if defined(WIN32)
@@ -176,6 +177,17 @@ bool AppLogModule::MakeChannels(const char *servername, const Anything &config)
 bool AppLogModule::RotateLogs()
 {
 	return (fgAppLogModule && fgAppLogModule->DoRotateLogs());
+}
+
+bool AppLogModule::RotateSpecificLog(Context &ctx, const char *logChannel)
+{
+	StartTrace(AppLogModule.RotateSpecificLog);
+	AppLogChannel *applog = FindLogger(ctx, logChannel);
+	bool ret = false;
+	if (applog ) {
+		ret = applog->Rotate();
+	}
+	return ret;
 }
 
 bool AppLogModule::DoRotateLogs()

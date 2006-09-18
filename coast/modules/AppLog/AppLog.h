@@ -60,6 +60,10 @@ public:
 	//!bottleneck routine for logging
 	static bool Log(Context &ctx, const char *logChannel, const ROAnything &config);
 
+	//!Trigger immediate log rotation. Does not interfere with LogRotator thread because
+	//!Rotate() uses Mutex.
+	static bool AppLogModule::RotateSpecificLog(Context &ctx, const char *logchannel);
+
 protected:
 	static AppLogChannel *FindLogger(Context &ctx, const char *logChannel);
 	AppLogChannel *GetLogChannel(const char *servername, const char *logChannel, bool &canRotate);

@@ -147,6 +147,32 @@
 			}
 		}
 	}
+	/RotateSpecificLogTest {
+		/Modules {
+			RenderersModule
+			ActionsModule
+			ServersModule
+		}
+		/Server				%Server
+		/Servers			%Servers
+		/Renderers			%Renderers
+		/Actions			%Actions
+		/AppLogModule {
+			/LogDir		"config"
+			/Servers {
+				/TestServer	{
+					/RotateSpecificLog	{
+						/FileName		"RotateSpecificLogTest.log"
+						/Format			%AccessLogFormat
+						/Header			"RotateSpecificLogTest Header"
+					}
+				}
+			}
+		}
+		/AccessLogFormat	%AccessLogFormat
+		/ErrorLogFormat		%ErrorLogFormat
+		/MethodTimeFormat	%MethodTimeFormat
+	}
 	/LoggingActionTest {
 		/Modules {
 #			TimeLoggingModule

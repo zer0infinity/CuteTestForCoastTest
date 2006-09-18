@@ -273,6 +273,59 @@ void AppLogTest::LoggingActionTest()
 	}
 }
 
+void AppLogTest::RotateSpecificLogTest()
+{
+	StartTrace(AppLogTest.RotateSpecificLogTest);
+
+	WDModule *pModule = WDModule::FindWDModule("AppLogModule");
+	if ( t_assertm(pModule != NULL, "expected AppLogModule to be registered") ) {
+		Server *server = NULL;
+		Anything anyModuleConfig;
+		anyModuleConfig["AppLogModule"] = GetTestCaseConfig()["AppLogModule"].DeepClone();
+		if ( t_assertm(pModule->Init(anyModuleConfig), "Module initialization should have succeeded!") ) {
+			if ( t_assert( ( server = Server::FindServer("TestServer") ) ) ) {
+				Context ctx;
+				ctx.SetServer(server);
+				ctx.GetTmpStore()["TestMsg"] = "Rotate log Test 1";
+				t_assertm(AppLogModule::Log(ctx, "RotateSpecificLog"), "RotateSpecificLog Test");
+				// Now request explict log rotation
+				t_assertm(AppLogModule::RotateSpecificLog(ctx, "RotateSpecificLog"), "RotateSpecificLog now!");
+				ctx.GetTmpStore()["TestMsg"] = "Rotate log Test 2";
+				t_assertm(AppLogModule::Log(ctx, "RotateSpecificLog"), "RotateSpecificLog Test");
+				// check for the files
+				ROAnything roaFileName;
+				if ( t_assert(GetTestCaseConfig().LookupPath(roaFileName, "AppLogModule.Servers.TestServer.RotateSpecificLog.FileName") ) ) {
+					String strFileName = System::GetFilePath(roaFileName.AsString(), "");
+					t_assertm( System::IsRegularFile(strFileName), TString("expected existing logfile [") << strFileName << "]");
+					// check for rotated file in rotate-subdirectory
+					AppLogChannel *pChannel = AppLogModule::FindLogger(ctx, "RotateSpecificLog");
+					if ( t_assertm( pChannel != NULL, "expected valid log channel") ) {
+						String logdir, rotatedir;
+						if ( t_assertm(pChannel->GetLogDirectories(pChannel->GetChannelInfo(), logdir, rotatedir), "expected GetLogDirectories to be successful") ) {
+							Anything anyRotateList = System::DirFileList(rotatedir, "");
+							TraceAny(anyRotateList, "Entries of [" << rotatedir << "] directory");
+							long lFound = 0;
+							String strEntry, strRotateFileName = roaFileName.AsString();
+							strRotateFileName << ".20";
+							for (long lEntry = anyRotateList.GetSize() - 1; lEntry >= 0; --lEntry) {
+								strEntry = anyRotateList[lEntry].AsString();
+								if ( strEntry.StartsWith(strRotateFileName) ) {
+									++lFound;
+									Trace("entry [" << strEntry << "] matched!");
+								}
+
+							}
+							assertEqualm( 1, lFound, TString("expected exactly one rotated file of [") << strFileName << "] to exist in rotate directory [" << rotatedir << "]");
+						}
+					}
+				}
+
+			}
+			t_assertm(pModule->Finis(), "Finis should have succeeded");
+		}
+	}
+}
+
 void AppLogTest::TimeLoggingActionTest()
 {
 	StartTrace(AppLogTest.TimeLoggingActionTest);
@@ -359,6 +412,7 @@ Test *AppLogTest::suite ()
 	ADD_CASE(testSuite, AppLogTest, LogOkToVirtualServerTest);
 	ADD_CASE(testSuite, AppLogTest, LogRotatorTest);
 	ADD_CASE(testSuite, AppLogTest, LogRotationTimeTest);
+	ADD_CASE(testSuite, AppLogTest, RotateSpecificLogTest);
 	ADD_CASE(testSuite, AppLogTest, LoggingActionTest);
 	ADD_CASE(testSuite, AppLogTest, TimeLoggingActionTest);
 	return testSuite;

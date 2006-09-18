@@ -40,6 +40,8 @@ public:
 	void LogRotatorTest();
 	//! test logfile rotation using RotateTime
 	void LogRotationTimeTest();
+	//! Request log rotation for a channel
+	void RotateSpecificLogTest();
 	//!pass null pointer a channel
 	void ApplogModuleNotInitializedTest();
 	//!test the logging action
