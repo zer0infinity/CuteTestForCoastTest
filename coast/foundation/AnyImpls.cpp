@@ -658,24 +658,23 @@ void AnyIndTable::Swap(long l, long r)
 	fIndexTable[l] = fIndexTable[r];
 	fIndexTable[r] = t;
 }
-void AnyIndTable::SetIndex(long slot, long index)
+void AnyIndTable::SetIndex(long slot, long idx)
 {
 	Assert( slot >= 0 && slot < fSize );
 	if (slot >= 0 && slot < fSize) {
-		fIndexTable[slot] = index;
+		fIndexTable[slot] = idx;
 	} else {
-		cerr << "OOPS, slot = " << slot << " index = " << index << " fSize = " << fSize << endl;
+		cerr << "OOPS, slot = " << slot << " index = " << idx << " fSize = " << fSize << endl;
 	}
 }
+
 void AnyIndTable::PrintTable()
 {
 	String m("IndexTable: \n");
-	SysLog::WriteToStderr(m);
 	for ( long i = 0; i < fSize; ++i) {
-		String m1;
-		m1 << "[" << i << "]<" << fIndexTable[i] << ">" << "\n";
-		SysLog::WriteToStderr(m);
+		m << "[" << i << "] <" << fIndexTable[i] << ">" << "\n";
 	}
+	SysLog::WriteToStderr(m);
 }
 
 void *AnyIndTable::operator new(size_t size, Allocator *a)
@@ -1283,3 +1282,4 @@ int	AnyArrayImpl::AnyIntComparerCompare::Compare(AnyArrayImpl &that, long leftIn
 
 AnyArrayImpl::AnyIntKeyCompare AnyArrayImpl::theKeyComparer;
 AnyArrayImpl::AnyIntReverseKeyCompare AnyArrayImpl::theReverseKeyComparer;
+
