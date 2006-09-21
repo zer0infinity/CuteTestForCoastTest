@@ -34,7 +34,7 @@ function cleanupTest
 			case "${CURSYSTEM}" in
 				SunOS)
 					SYSLOGFILE=/var/adm/messages;
-					SYSLOGMSG='((Coast)|(wdbasetest))'"\[$WDTESTPID\]:.*libfake: ld\.so\.1: `basename ${TEST_EXE}`: fatal: libfake\.so: open failed: No such file or directory";
+					SYSLOGMSG='((Coast)|(wdbasetest))'"\[$WDTESTPID\]:.*libfake: ld\.so\.1: ${TEST_EXE}: fatal: libfake\.so: open failed: No such file or directory";
 					egrep "$SYSLOGMSG" $SYSLOGFILE >/dev/null;
 					RESULT=$?
 					rm $WDTESTPIDFILE;
@@ -45,8 +45,6 @@ function cleanupTest
 					ret_code=1;
 				;;
 				Linux)
-					SYSLOGFILE=/var/log/messages;
-					SYSLOGMSG="libfake: libfake\.so: cannot open shared object file: No such file or directory"
 					# is not testable on Linux right now - needs root permissions
 				;;
 			esac
