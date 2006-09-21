@@ -1184,7 +1184,7 @@ protected:
 		}
 		fOs << ' ';
 	}
-	void ArrayBefore(const ROAnything value, const AnyImpl *id, long index, const char *slotname) {
+	void ArrayBefore(const ROAnything , const AnyImpl *, long , const char *) {
 		fOs << '{';
 	}
 	void ArrayBeforeElement(long lIdx, const String &key) {
@@ -1193,7 +1193,7 @@ protected:
 		}
 	}
 	//void ArrayAfterElement(long index, const String &key){}
-	void ArrayAfter(const ROAnything value, const AnyImpl *id, long index, const char *slotname) {
+	void ArrayAfter(const ROAnything, const AnyImpl *, long , const char *) {
 		fOs << '}';
 	}
 
@@ -1245,7 +1245,7 @@ protected:
 			fOs.put(' ').put(' ');
 		}
 	}
-	void ArrayBefore(const ROAnything value, const AnyImpl *id, long index, const char *slotname) {
+	void ArrayBefore(const ROAnything , const AnyImpl *, long , const char *) {
 		fOs << "{\n"; // } trick sniff
 		++fLevel;
 	}
@@ -1256,7 +1256,7 @@ protected:
 	void ArrayAfterElement(long lIdx, const String &key) {
 		fOs << '\n';
 	}
-	void ArrayAfter(const ROAnything value, const AnyImpl *id, long index, const char *slotname) {
+	void ArrayAfter(const ROAnything , const AnyImpl *, long , const char *) {
 		--fLevel;
 		Tab(); // { trick sniff
 		fOs << '}';
