@@ -173,7 +173,7 @@ int AppBooter::Run(int argc, char *argv[], bool doHalt)
 
 String AppBooter::PrepareBootFileLoading(const ROAnything &roconfig)
 {
-	StartTrace(AppBooter.MergeConfigWithArgs);
+	StartTrace(AppBooter.PrepareBootFileLoading);
 
 	System::InitPath(
 		roconfig["WD_ROOT"].AsCharPtr(0),
