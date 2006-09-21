@@ -327,18 +327,18 @@ Acceptor *HandleSet::WaitForEvents(long timeout)
 	}
 	if ( retCode > 0 ) {
 		for (i = 0, sz = fDemuxTable.GetSize(); i < sz; ++i) {
-			long index = (fLastAcceptorUsedIndex + 1 + i) % NOFDS;
-			Acceptor *a = (Acceptor *)fDemuxTable[index].AsIFAObject(0);
+			long idx = (fLastAcceptorUsedIndex + 1 + i) % NOFDS;
+			Acceptor *a = (Acceptor *)fDemuxTable[idx].AsIFAObject(0);
 			if (a) {
 #if defined(USE_SELECT)
 				int fd = a->GetFd();
 				if (fd >= 0 && FD_ISSET(fd, &rfds))
 #else
-				Assert(a->GetFd() == fds[index].fd);
-				if (fds[index].revents & POLLIN)
+				Assert(a->GetFd() == fds[idx].fd);
+				if (fds[idx].revents & POLLIN)
 #endif
 				{
-					fLastAcceptorUsedIndex = index;
+					fLastAcceptorUsedIndex = idx;
 					return a;
 				}
 			}
