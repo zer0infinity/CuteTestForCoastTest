@@ -12,7 +12,6 @@
 #include "SessionListManager.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
 #include "System.h"
 #include "URLFilter.h"
 #include "TraceLocks.h"
@@ -25,9 +24,6 @@
 #include "Context.h"
 
 //--- c-library modules used ---------------------------------------------------
-#if !defined (WIN32)
-#include <stdlib.h>
-#endif
 
 //---- CleanSessions ----------------------------------------------------------
 //: triggers cleanup of sessions
@@ -79,14 +75,14 @@ SessionListManager *SessionListManager::SLM()
 RegisterModule(SessionListManager);
 //---- SessionListManager ----------------------------------------------------------------
 SessionListManager::SessionListManager(const char *name)
-	: WDModule(name),
-	  fSessionCleaner(0),
-	  fSessionsMutex("Sessions"),
-	  fNextIdMutex("SessionId"),
-	  fNextId(-9999),
-	  fMaxSessionsAllowed(-8888),
-	  fSessionFactory(0),
-	  fLogToCerr(0)
+	: WDModule(name)
+	, fSessionCleaner(0)
+	, fSessionsMutex("Sessions")
+	, fNextIdMutex("SessionId")
+	, fNextId(-9999)
+	, fMaxSessionsAllowed(-8888)
+	, fSessionFactory(0)
+	, fLogToCerr(0)
 {
 	StartTrace1(SessionListManager.SessionListManager, "Name:<" << NotNull(name) << ">");
 	StringStream ss(fUniqueInstanceId);
@@ -103,7 +99,6 @@ SessionListManager::SessionListManager(const char *name)
 SessionListManager::~SessionListManager()
 {
 	StartTrace(SessionListManager.~SessionListManager);
-	Finis();
 }
 
 bool SessionListManager::Init(const ROAnything config)
@@ -822,7 +817,8 @@ bool CleanSessions::DoExecAction(String &transitionToken, Context &ctx, const RO
 //---- SessionFactoriesModule -----------------------------------------------------------
 RegisterModule(SessionFactoriesModule);
 
-SessionFactoriesModule::SessionFactoriesModule(const char *name) : WDModule(name)
+SessionFactoriesModule::SessionFactoriesModule(const char *name)
+	: WDModule(name)
 {
 }
 
