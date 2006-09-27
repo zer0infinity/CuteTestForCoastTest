@@ -13,7 +13,9 @@
 		PagesModule
 		RolesModule
 		RenderersModule
+		ServersModule
 	}
+	/Servers {}
 	/Pages {
 		/Page	{ TestPage }
 	}

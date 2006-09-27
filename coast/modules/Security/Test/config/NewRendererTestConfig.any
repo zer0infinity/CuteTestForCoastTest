@@ -15,6 +15,7 @@
 		RolesModule
 		RenderersModule
 		SecurityModule
+		ServersModule
 	}
 	/Pages {
 		/Page	{ TestPage }
@@ -44,6 +45,7 @@
 			}
 		}
 	}
+	/Servers {}
 
 ######## Test specific section ########
 
