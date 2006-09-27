@@ -9,6 +9,9 @@
 //--- interface include --------------------------------------------------------
 #include "MT_Storage.h"
 
+//--- project modules used -----------------------------------------------------
+#include "InitFinisManagerMTFoundation.h"
+
 //--- standard modules used ----------------------------------------------------
 #include "Threads.h"
 #include "PoolAllocator.h"
@@ -16,9 +19,6 @@
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
-#if !defined(WIN32)
-#include <stdlib.h>
-#endif
 
 #if 0
 #define TrackLockerInit(lockvar) , lockvar(0)
@@ -84,12 +84,13 @@ protected:
 #ifdef MEM_DEBUG
 //------------- Utilities for Memory Tracking (multi threaded) --------------
 
-MT_MemTracker::MT_MemTracker(const char *name)
+MT_MemTracker::MT_MemTracker(const char *name, long lId)
 	: MemTracker(name)
 {
 	if ( !CREATEMUTEX(fMutex) ) {
 		SysLog::Error("Mutex create failed");
 	}
+	SetId( lId );
 }
 
 MT_MemTracker::~MT_MemTracker()
@@ -163,48 +164,77 @@ public:
 	bool fgInitialized;
 };
 
-class EXPORTDECL_MTFOUNDATION MTStorageHookInitializer
-{
-public:
-	MTStorageHookInitializer(StorageHooks *pHook) {
-		Storage::SetHooks(pHook);
-	}
-	~MTStorageHookInitializer()	{
-		Storage::SetHooks(NULL);
-	}
-};
+#ifdef MEM_DEBUG
+MemTracker *MT_Storage::fOldTracker = NULL;
+#endif
 
-THREADKEY MT_Storage::fgAllocatorKey = 0;
-Mutex *MT_Storage::fgAllocatorInit = NULL;
-bool MT_Storage::fgInitialized = false;
+static MTStorageHooks *sgpMTHooks = NULL;
 
-static MTStorageHooks sgMTHooks;
-static MTStorageHookInitializer sgMTSHI(&sgMTHooks);
 #define FindAllocator(wdallocator)									\
 		GETTLSDATA(MT_Storage::fgAllocatorKey, wdallocator, Allocator)
 
 //---- MT_Storage ------------------------------------------
+THREADKEY MT_Storage::fgAllocatorKey = 0;
+SimpleMutex *MT_Storage::fgpAllocatorInit = NULL;
+bool MT_Storage::fgInitialized = false;
+
 struct AllocList {
 	Allocator *wdallocator;
 	AllocList *next;
 };
 
 static AllocList *fgPoolAllocatorList = 0;
+
+class EXPORTDECL_MTFOUNDATION MTStorageInitializer : public InitFinisManagerMTFoundation
+{
+public:
+	MTStorageInitializer(unsigned int uiPriority)
+		: InitFinisManagerMTFoundation(uiPriority) {
+		IFMTrace("MTStorageInitializer created\n");
+	}
+
+	~MTStorageInitializer()
+	{}
+
+	virtual void DoInit() {
+		IFMTrace("MTStorageInitializer::DoInit\n");
+		if (THRKEYCREATE(MT_Storage::fgAllocatorKey, 0)) {
+			SysLog::Error("TlsAlloc of MT_Storage::fgAllocatorKey failed");
+		}
+		MT_Storage::fgpAllocatorInit = new SimpleMutex("AllocatorInit");
+		MT_Storage::Initialize();
+	}
+
+	virtual void DoFinis() {
+		IFMTrace("MTStorageInitializer::DoFinis\n");
+		MT_Storage::Finalize();
+		delete MT_Storage::fgpAllocatorInit;
+		MT_Storage::fgpAllocatorInit = NULL;
+		if (THRKEYDELETE(MT_Storage::fgAllocatorKey) != 0) {
+			SysLog::Error("TlsFree of MT_Storage::fgAllocatorKey failed" );
+		}
+	}
+};
+
+static MTStorageInitializer *psgMTStorageInitializer = new MTStorageInitializer(10);
+
 void MT_Storage::Initialize()
 {
-	StartTrace(MT_Storage.Initialize);
+	StatTrace(MT_Storage.Initialize, "entering", Storage::Global());
 	// must be called before threading is activated
 	if ( !fgInitialized ) {
-		MT_Storage::fgAllocatorInit	= new Mutex("AllocatorInit");
+		sgpMTHooks = new MTStorageHooks();
+		Storage::SetHooks(sgpMTHooks);
 #ifdef MEM_DEBUG
 		// switch to thread safe memory tracker
 		Allocator *a = Storage::Global();
-		if (a) {
-			a->ReplaceMemTracker(Storage::MakeMemTracker("MTGlobalAllocator"));
+		if ( a ) {
+			fOldTracker = a->ReplaceMemTracker(Storage::MakeMemTracker("MTGlobalAllocator"));
 		}
 #endif
 		fgInitialized = true;
 	}
+	StatTrace(MT_Storage.Initialize, "leaving", Storage::Global());
 }
 
 void MT_Storage::Finalize()
@@ -213,7 +243,7 @@ void MT_Storage::Finalize()
 	if ( fgInitialized ) {
 		// terminate pool allocators
 		{
-			MutexEntry me(*fgAllocatorInit);
+			SimpleMutexEntry me(*fgpAllocatorInit);
 			me.Use();
 			while (fgPoolAllocatorList) {
 				AllocList *elmt = fgPoolAllocatorList;
@@ -225,8 +255,17 @@ void MT_Storage::Finalize()
 				::free(elmt);
 			}
 		}
-		delete fgAllocatorInit;
-		fgAllocatorInit = NULL;
+		Allocator *a = Storage::Global();
+		if ( a && fOldTracker ) {
+			a->PrintStatistic();
+			delete a->ReplaceMemTracker(fOldTracker);
+			fOldTracker = NULL;
+		}
+		StorageHooks *pOldHook = Storage::SetHooks(NULL);
+		if ( pOldHook == sgpMTHooks ) {
+			delete sgpMTHooks;
+			sgpMTHooks = NULL;
+		}
 		fgInitialized = false;
 	}
 	StatTrace(MT_Storage.Finalize, "leaving", Storage::Global());
@@ -238,7 +277,7 @@ void MT_Storage::RefAllocator(Allocator *wdallocator)
 	if ( fgInitialized ) {
 		if ( wdallocator ) {
 			// in mt case we need to control ref counting with mutexes
-			MutexEntry me(*fgAllocatorInit);
+			SimpleMutexEntry me(*fgpAllocatorInit);
 			me.Use();
 
 			AllocList *elmt = (AllocList *)::calloc(1, sizeof(AllocList));
@@ -268,7 +307,7 @@ void MT_Storage::UnrefAllocator(Allocator *wdallocator)
 	StartTrace1(MT_Storage.UnrefAllocator, "Id:" << (wdallocator ? wdallocator->GetId() : -1L));
 	if ( fgInitialized ) {
 		if (wdallocator) {	// just to be robust wdallocator == 0 should not happen
-			MutexEntry me(*fgAllocatorInit);
+			SimpleMutexEntry me(*fgpAllocatorInit);
 			me.Use();
 			wdallocator->Unref();
 			Trace("refcount is now:" << wdallocator->RefCnt());
@@ -335,6 +374,7 @@ Allocator *MT_Storage::MakePoolAllocator(u_long poolStorageSize, u_long numOfPoo
 	}
 	return newPoolAllocator;
 }
+
 MTStorageHooks::MTStorageHooks()
 	: fgInitialized(false)
 {
@@ -352,7 +392,7 @@ Allocator *MTStorageHooks::Global()
 #ifdef MEM_DEBUG
 MemTracker *MTStorageHooks::MakeMemTracker(const char *name)
 {
-	return new MT_MemTracker(name);
+	return new MT_MemTracker(name, 55667788);
 }
 #endif
 
@@ -373,11 +413,6 @@ Allocator *MTStorageHooks::Current()
 void MTStorageHooks::Initialize()
 {
 	if ( !fgInitialized ) {
-		// setup key used to store allocator in thread local storage
-		if (THRKEYCREATE(MT_Storage::fgAllocatorKey, 0)) {
-			SysLog::Error("could not create TLS key");
-		}
-		MT_Storage::Initialize();
 		fgInitialized = true;
 	}
 }
@@ -386,9 +421,5 @@ void MTStorageHooks::Finalize()
 {
 	if ( fgInitialized ) {
 		fgInitialized = false;
-		MT_Storage::Finalize();
-		if (THRKEYDELETE(MT_Storage::fgAllocatorKey) != 0) {
-			SysLog::Error("TLSDestructor key delete failed" );
-		}
 	}
 }

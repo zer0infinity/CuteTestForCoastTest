@@ -14,7 +14,7 @@
 #include "MemHeader.h"
 #include "ITOStorage.h"
 
-class Mutex;
+class SimpleMutex;
 
 #ifdef MEM_DEBUG
 
@@ -23,7 +23,7 @@ class EXPORTDECL_MTFOUNDATION MT_MemTracker : public MemTracker
 {
 public:
 	//!creates system dependent mutex to provide locking without allocation of strings
-	MT_MemTracker(const char *name);
+	MT_MemTracker(const char *name, long lId);
 	//!destroys system dependent mutex
 	virtual ~MT_MemTracker();
 
@@ -69,7 +69,10 @@ public:
 
 	static THREADKEY fgAllocatorKey;
 	static bool fgInitialized;
-	static Mutex *fgAllocatorInit;
+	static SimpleMutex *fgpAllocatorInit;
+#ifdef MEM_DEBUG
+	static MemTracker *fOldTracker;
+#endif
 };
 
 #endif
