@@ -10,7 +10,7 @@
 #define _ResultMapperTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "TestCase.h"
+#include "WDBaseTestPolicies.h"
 #include "Mapper.h"
 
 class PathTestMapper : public ResultMapper
@@ -36,7 +36,7 @@ protected:
 To understand the results of those tests, you should additionally
 consult "OutputMapperMeta.any" and "MapperTestScripts.any".
 */
-class ResultMapperTest : public TestFramework::TestCase
+class ResultMapperTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors

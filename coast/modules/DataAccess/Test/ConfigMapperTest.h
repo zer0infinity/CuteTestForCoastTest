@@ -10,7 +10,7 @@
 #define _ConfigMapperTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
+#include "WDBaseTestPolicies.h"
 
 //---- ConfigMapperTest ----------------------------------------------------------
 //! <B>single line description of the class</B>
@@ -18,7 +18,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class ConfigMapperTest : public TestFramework::TestCaseWithConfig
+class ConfigMapperTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors

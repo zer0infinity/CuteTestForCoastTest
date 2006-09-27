@@ -10,11 +10,11 @@
 #define _CgiCallerTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "TestCase.h"
+#include "WDBaseTestPolicies.h"
 class Context;
 //---- CgiCallerTest ----------------------------------------------------------
 //!Tests the cgi caller
-class CgiCallerTest : public TestFramework::TestCase
+class CgiCallerTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors
@@ -38,7 +38,6 @@ public:
 protected:
 	//!call a CGI program created with the context
 	void DoExecTest(Context &ctx);
-
 };
 
 #endif

@@ -6,19 +6,17 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "Context.h"
-#include "Dbg.h"
-
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
+//--- interface include --------------------------------------------------------
+#include "CgiParamsTest.h"
 
 //--- module under test --------------------------------------------------------
 #include "CgiParams.h"
 
-//--- interface include --------------------------------------------------------
-#include "CgiParamsTest.h"
+//--- test modules used --------------------------------------------------------
+#include "TestSuite.h"
+
+//--- standard modules used ----------------------------------------------------
+#include "Dbg.h"
 
 //---- CgiParamsTest ----------------------------------------------------------------
 CgiParamsTest::CgiParamsTest(TString tstrName) : TestCaseType(tstrName)
@@ -36,6 +34,7 @@ void CgiParamsTest::EnvironTest()
 	StartTrace(CgiParamsTest.EnvironTest);
 
 	CgiParams cgip("testcgi");
+	t_assert(cgip.Initialize("ParameterMapper"));
 
 	MetaThing env;
 	Anything content;

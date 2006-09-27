@@ -10,11 +10,11 @@
 #define _SimpleDAServiceTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "TestCase.h"
+#include "WDBaseTestPolicies.h"
 
 //---- SimpleDAServiceTest ----------------------------------------------------------
 //!TestCases description
-class SimpleDAServiceTest : public TestFramework::TestCase
+class SimpleDAServiceTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors

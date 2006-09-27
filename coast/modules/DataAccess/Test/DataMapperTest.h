@@ -10,7 +10,7 @@
 #define _DataMapperTest_H
 
 //---- TestCase include -------------------------------------------------
-#include "TestCase.h"
+#include "WDBaseTestPolicies.h"
 #include "Anything.h"
 
 //---- forward declaration -----------------------------------------------
@@ -20,7 +20,7 @@
 //! further explanation of the purpose of the class
 //! this may contain <B>HTML-Tags</B>
 //! ...
-class DataMapperTest : public TestFramework::TestCase
+class DataMapperTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors
@@ -29,7 +29,9 @@ public:
 
 	static Test *suite ();
 
-	void setUp();
+	virtual TString getConfigFileName() {
+		return "StdContext";
+	}
 
 	//--- public api
 	void StdGetTest();
@@ -37,10 +39,6 @@ public:
 
 	void FixedSizeTest();
 	void UppercaseTest();
-
-protected:
-	//--- member variables declaration
-	Anything fStdContextAny;
 };
 
 #endif

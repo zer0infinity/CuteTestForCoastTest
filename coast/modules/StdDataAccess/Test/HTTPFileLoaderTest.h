@@ -10,11 +10,11 @@
 #define _HTTPFileLoaderTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "TestCase.h"
+#include "WDBaseTestPolicies.h"
 
 //---- HTTPFileLoaderTest ----------------------------------------------------------
 //!TestCases description
-class HTTPFileLoaderTest : public TestFramework::TestCase
+class HTTPFileLoaderTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors

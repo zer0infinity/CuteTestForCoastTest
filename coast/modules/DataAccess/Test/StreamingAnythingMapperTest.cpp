@@ -37,7 +37,7 @@ void StreamingAnythingMapperTest::GetTest()
 
 	Context ctx(clientData, Anything(), 0, 0, 0, 0);
 	AnythingToStreamMapper mapper("NoName");
-
+	mapper.Initialize("ParameterMapper");
 	String streamedAny;
 	OStringStream out(&streamedAny);
 	mapper.Get("Input", out, ctx);
@@ -56,6 +56,7 @@ void StreamingAnythingMapperTest::PutTest()
 	Anything dummy;
 	Context ctx(dummy, Anything(), 0, 0, 0, 0);
 	StreamToAnythingMapper sam("NoName");
+	sam.Initialize("ResultMapper");
 	String streamedAny("{ /Slot1 Something/Slot2 42}");
 	IStringStream in(&streamedAny);
 	sam.Put("Output", in, ctx);

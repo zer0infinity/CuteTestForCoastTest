@@ -6,16 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "Threads.h"
-#include "Context.h"
-#include "Mapper.h"
-#include "Server.h"
-#include "Session.h"
-#include "Role.h"
-#include "SSLModule.h"
-#include "Dbg.h"
+//--- module under test --------------------------------------------------------
+#include "HTTPDAImpl.h"
 
 //--- interface include --------------------------------------------------------
 #include "HTTPDAImplTest.h"
@@ -23,8 +15,13 @@
 //--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
 
-//--- module under test --------------------------------------------------------
-#include "HTTPDAImpl.h"
+//--- standard modules used ----------------------------------------------------
+#include "Server.h"
+#include "Session.h"
+#include "Role.h"
+#include "SSLModule.h"
+#include "AnyIterators.h"
+#include "Dbg.h"
 
 //---- HTTPDAImplTest ----------------------------------------------------------------
 //---- RequestReaderTest ----------------------------------------------------------------
@@ -39,27 +36,14 @@ TString HTTPDAImplTest::getConfigFileName()
 	return "HTTPDAImplTestConfig";
 }
 
-void HTTPDAImplTest::setUp ()
-{
-	WDModule *sslmodule = WDModule::FindWDModule("SSLModule");
-	sslmodule->ResetInit(Anything());
-}
-
-void HTTPDAImplTest::tearDown ()
-{
-	WDModule *sslmodule = WDModule::FindWDModule("SSLModule");
-	sslmodule->ResetFinis(Anything());
-}
-
 void HTTPDAImplTest::useSSLTest()
 {
 	ParameterMapper in("useSSL");
-	in.CheckConfig("ParameterMapper");
 	ResultMapper out("useSSL");
-	out.CheckConfig("ResultMapper");
-
 	HTTPDAImpl httpDAImpl("useSSLTest");
-	httpDAImpl.CheckConfig("DataAccessImpl");
+	t_assert(in.Initialize("ParameterMapper"));
+	t_assert(out.Initialize("ResultMapper"));
+	t_assert(httpDAImpl.Initialize("DataAccessImpl"));
 
 	Anything dummy;
 	Context ctx(dummy, dummy, 0, 0, 0, 0);
@@ -76,9 +60,11 @@ void HTTPDAImplTest::SSLTests()
 	while ( aEntryIterator.Next(cConfig) ) {
 		TraceAny(cConfig, "SSLTests config");
 		ParameterMapper in("SSLTests");
-		in.CheckConfig("ParameterMapper");
 		ResultMapper out("SSLTests");
 		HTTPDAImpl httpDAImpl("SSLTests");
+		t_assert(in.Initialize("ParameterMapper"));
+		t_assert(out.Initialize("ResultMapper"));
+		t_assert(httpDAImpl.Initialize("DataAccessImpl"));
 		Context ctx;
 		ctx.GetTmpStore() = cConfig["Config"].DeepClone();
 		// We must set our ssl context individually, otherwise SSLOBJMGR takes care of it
@@ -104,9 +90,11 @@ void HTTPDAImplTest::SSLNirvanaConnectTests()
 	while ( aEntryIterator.Next(cConfig) ) {
 		TraceAny(cConfig, "SSLTests config");
 		ParameterMapper in("SSLTests");
-		in.CheckConfig("ParameterMapper");
 		ResultMapper out("SSLTests");
 		HTTPDAImpl httpDAImpl("SSLTests");
+		t_assert(in.Initialize("ParameterMapper"));
+		t_assert(out.Initialize("ResultMapper"));
+		t_assert(httpDAImpl.Initialize("DataAccessImpl"));
 		Context ctx;
 		ctx.GetTmpStore() = cConfig["Config"].DeepClone();
 		for (long l = 0; l < cConfig["NumberOfRuns"].AsLong(0L); l++) {
@@ -132,12 +120,11 @@ void HTTPDAImplTest::ErrorHandlingTest()
 {
 	StartTrace(HTTPDAImplTest.ErrorHandlingTest);
 	ParameterMapper in("useSSL");
-	in.CheckConfig("ParameterMapper");
 	ResultMapper out("useSSL");
-	out.CheckConfig("ResultMapper");
-
 	HTTPDAImpl httpDAImpl("ErrorHandlingTest");
-	httpDAImpl.CheckConfig("DataAccessImpl");
+	t_assert(in.Initialize("ParameterMapper"));
+	t_assert(out.Initialize("ResultMapper"));
+	t_assert(httpDAImpl.Initialize("DataAccessImpl"));
 
 	Anything dummy;
 	Context ctx(dummy, dummy, 0, 0, 0, 0);

@@ -10,7 +10,7 @@
 #define _ParameterMapperTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "TestCase.h"
+#include "WDBaseTestPolicies.h"
 
 //---- ParameterMapperTest ----------------------------------------------------------
 //! <B>Tests Functionality of ParameterMapper and EagerParameterMapper.</B>
@@ -19,7 +19,7 @@ To understand the results of those tests, you should additionally
 consult "InputMapperMeta.any" and "MapperTestScripts.any".
 */
 
-class ParameterMapperTest : public TestFramework::TestCase
+class ParameterMapperTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors

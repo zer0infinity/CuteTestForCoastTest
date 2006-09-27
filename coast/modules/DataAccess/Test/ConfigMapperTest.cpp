@@ -16,6 +16,7 @@
 #include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
+#include "AnyIterators.h"
 
 //--- c-modules used -----------------------------------------------------------
 

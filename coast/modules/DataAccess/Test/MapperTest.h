@@ -10,7 +10,7 @@
 #define _MapperTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "TestCase.h"
+#include "WDBaseTestPolicies.h"
 
 //---- forward declaration -----------------------------------------------
 class Context;
@@ -20,7 +20,7 @@ class Context;
 //! further explanation of the purpose of the class
 //! this may contain <B>HTML-Tags</B>
 //! ...
-class MapperTest : public TestFramework::TestCase
+class MapperTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors
@@ -29,7 +29,9 @@ public:
 
 	static Test *suite ();
 
-	void setUp();
+	virtual TString getConfigFileName() {
+		return "StdContext";
+	}
 
 	//--- public api
 	void GetTests();
@@ -51,10 +53,6 @@ public:
 	void RenameSlotWithConfigPutTest();
 	void ScriptedPutTest();
 	void RenameSlotWithConfigGetTest();
-
-protected:
-	//--- member variables declaration
-	Anything fStdContextAny;
 };
 
 #endif

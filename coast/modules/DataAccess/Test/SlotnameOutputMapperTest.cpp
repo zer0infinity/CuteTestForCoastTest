@@ -40,7 +40,7 @@ void SlotnameOutputMapperTest::BasicFunctionTest()
 	StartTrace(SlotnameOutputMapperTest.BasicFunctionTest);
 
 	SlotnameOutputMapper som("SlotnameTestOutputMapper");
-	som.CheckConfig("ResultMapper");
+	som.Initialize("ResultMapper");
 
 	Context ctx;
 	som.Put("Data", GetTestCaseConfig()["AnyToPut"].DeepClone(), ctx);
@@ -52,7 +52,7 @@ void SlotnameOutputMapperTest::OverwriteOrAppendTest()
 	StartTrace(SlotnameOutputMapperTest.OverwriteOrAppendTest);
 
 	SlotnameOutputMapper som("SlotnameTestOutputMapper");
-	som.CheckConfig("ResultMapper");
+	som.Initialize("ResultMapper");
 
 	Context ctx;
 	som.Put("Data", GetTestCaseConfig()["AnyToPut"][0L].DeepClone(), ctx);

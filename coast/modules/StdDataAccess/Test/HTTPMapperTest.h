@@ -10,7 +10,7 @@
 #define _HTTPMapperTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "TestCase.h"
+#include "WDBaseTestPolicies.h"
 #include "Anything.h"
 
 //---- forward declaration -----------------------------------------------
@@ -21,7 +21,7 @@ class Anything;
 //! further explanation of the purpose of the class
 //! this may contain <B>HTML-Tags</B>
 //! ...
-class HTTPMapperTest : public TestFramework::TestCase
+class HTTPMapperTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 

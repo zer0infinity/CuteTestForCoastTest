@@ -13,8 +13,6 @@
 #include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "StringStream.h"
-#include "System.h"
 #include "DataMapper.h"
 
 //--- c-library modules used ---------------------------------------------------
@@ -32,7 +30,8 @@ Test *DataMapperTest::suite ()
 	return testSuite;
 }
 
-DataMapperTest::DataMapperTest(TString tname) : TestCaseType(tname)
+DataMapperTest::DataMapperTest(TString tname)
+	: TestCaseType(tname)
 {
 }
 
@@ -40,21 +39,13 @@ DataMapperTest::~DataMapperTest()
 {
 }
 
-void DataMapperTest::setUp ()
-{
-	iostream *Ios = System::OpenStream("StdContext", "any");
-	if ( Ios ) {
-		fStdContextAny.Import((*Ios));
-		delete Ios;
-	}
-}
-
 void DataMapperTest::StdGetTest()
 {
-	Anything dummy;
-	Context ctx(fStdContextAny, dummy, 0, 0, 0, 0);
+	Anything dummy, anyContext(GetConfig().DeepClone());
+	Context ctx(anyContext, dummy, 0, 0, 0, 0);
 
 	ParameterMapper mapper("stdtestgetmapper");
+	mapper.Initialize("ParameterMapper");
 
 	// test the overloaded get api
 	int iTestVal;
@@ -89,10 +80,11 @@ void DataMapperTest::StdGetTest()
 
 void DataMapperTest::NegativGetTest()
 {
-	Anything dummy;
-	Context ctx(fStdContextAny, dummy, 0, 0, 0, 0);
+	Anything dummy, anyContext(GetConfig().DeepClone());
+	Context ctx(anyContext, dummy, 0, 0, 0, 0);
 
 	ParameterMapper mapper("stdtestgetmapper");
+	mapper.Initialize("ParameterMapper");
 
 	// Test the overloaded get api
 	int iTestVal;

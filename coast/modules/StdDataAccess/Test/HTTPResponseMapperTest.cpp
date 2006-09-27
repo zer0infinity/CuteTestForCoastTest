@@ -36,7 +36,7 @@ void HTTPResponseMapperTest::TestParsedResponse()
 	StartTrace(HTTPResponseMapperTest.TestParsedResponse);
 	IStringStream is("HTTP/1.1 200 Ok\r\n");
 	HTTPResponseMapper m("HTTPResponseMapper");
-	m.CheckConfig("ResultMapper");
+	m.Initialize("ResultMapper");
 	Context ctx;
 	t_assert(m.Put("", is, ctx));
 	Anything result(ctx.GetTmpStore()["Mapper"]["HTTPResponse"]);
@@ -49,7 +49,7 @@ void HTTPResponseMapperTest::TestBadResponseLine()
 	StartTrace(HTTPResponseMapperTest.TestBadResponseLine);
 	IStringStream is("HTTP/1.1 ");
 	HTTPResponseMapper m("HTTPResponseMapper");
-	m.CheckConfig("ResultMapper");
+	m.Initialize("ResultMapper");
 	Context ctx;
 	t_assert(!m.Put("", is, ctx));
 	Anything result(ctx.GetTmpStore()["Mapper"]["HTTPResponse"]);

@@ -6,26 +6,20 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- c-library modules used ---------------------------------------------------
-#include <stdlib.h>
-
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "StringStream.h"
-#include "System.h"
-#include "Context.h"
-#include "WDModule.h"
-#include "DataAccessImpl.h"
-#include "Dbg.h"
-
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
+//--- interface include --------------------------------------------------------
+#include "MapperTest.h"
 
 //--- module under test --------------------------------------------------------
 #include "Mapper.h"
 
-//--- interface include --------------------------------------------------------
-#include "MapperTest.h"
+//--- test modules used --------------------------------------------------------
+#include "TestSuite.h"
+
+//--- standard modules used ----------------------------------------------------
+#include "DataAccessImpl.h"
+#include "Dbg.h"
+
+//--- c-library modules used ---------------------------------------------------
 
 //---- MapperTest ----------------------------------------------------------------
 Test *MapperTest::suite ()
@@ -49,7 +43,8 @@ Test *MapperTest::suite ()
 	return testSuite;
 }
 
-MapperTest::MapperTest(TString tname) : TestCaseType(tname)
+MapperTest::MapperTest(TString tname)
+	: TestCaseType(tname)
 {
 }
 
@@ -57,23 +52,14 @@ MapperTest::~MapperTest()
 {
 }
 
-void MapperTest::setUp ()
-{
-	iostream *Ios = System::OpenStream("StdContext", "any");
-	if ( Ios ) {
-		fStdContextAny.Import((*Ios));
-		delete Ios;
-	}
-}
-
 void MapperTest::HardConfiguredGet()
 {
-	StartTrace(MapperTest.GetTest);
+	StartTrace(MapperTest.HardConfiguredGet);
 
 	Anything dummy;
 	Context ctx(dummy, dummy, (Server *)0, (Session *)0, (Role *)0);
 	EagerParameterMapper httpmapper("HTTPHardCodedMapperTest");
-	httpmapper.CheckConfig("ParameterMapper");
+	httpmapper.Initialize("ParameterMapper");
 
 	String input("<");
 	OStringStream Ios(&input);
@@ -87,7 +73,7 @@ void MapperTest::HardConfiguredGet()
 
 void MapperTest::MixedConfiguredGet()
 {
-	StartTrace(MapperTest.GetTest);
+	StartTrace(MapperTest.MixedConfiguredGet);
 
 	Anything inputData;
 	inputData["trxinput"]["data"]["vorname"] = "Peter";
@@ -98,7 +84,7 @@ void MapperTest::MixedConfiguredGet()
 	Context ctx(inputData, inputData, (Server *)0, (Session *)0, (Role *)0);
 
 	EagerParameterMapper httpmapper("HostDAInputMapperTest");
-	httpmapper.CheckConfig("ParameterMapper");
+	httpmapper.Initialize("ParameterMapper");
 
 	String input("<");
 	String input1("<");
@@ -127,7 +113,7 @@ void MapperTest::GetTests()
 	StartTrace(MapperTest.GetTests);
 
 	ParameterMapper mapper("MapperTest");
-	mapper.CheckConfig("ParameterMapper");
+	mapper.Initialize("ParameterMapper");
 
 	Context ctx;
 	ctx.GetTmpStore()["AKeyFromContext"] = 9.1;
@@ -259,10 +245,11 @@ void MapperTest::GetTests()
 void MapperTest::StdGetTest()
 {
 	StartTrace(MapperTest.StdGetTest);
-	Anything dummy;
-	Context ctx(fStdContextAny, dummy, 0, 0, 0, 0);
+	Anything dummy, anyContext(GetConfig().DeepClone());
+	Context ctx(anyContext, dummy, 0, 0, 0, 0);
 
 	ParameterMapper mapper("stdtestgetmapper");
+	mapper.Initialize("ParameterMapper");
 
 	// test the overloaded get api
 	int iTestVal;
@@ -313,6 +300,7 @@ void MapperTest::StdGetNoDataTest()
 	Context ctx;
 
 	ParameterMapper mapper("stdtestgetmapper");
+	mapper.Initialize("ParameterMapper");
 
 	// test the overloaded get api
 	int iTestVal;
@@ -348,6 +336,7 @@ void MapperTest::StdPutTest()
 
 	const char *mappername = "Mapper";
 	ResultMapper mapper(mappername);
+	mapper.Initialize("ResultMapper");
 
 	// test the overloaded get api
 	int iTestVal = 10;
@@ -391,7 +380,7 @@ void MapperTest::StdPutTest()
 void MapperTest::ExtendedPutTest()
 {
 	StartTrace(MapperTest.ExtendedPutTest);
-	Anything testRecord(fStdContextAny["ArrayTestConfig"]);
+	Anything testRecord(GetConfig()["ArrayTestConfig"].DeepClone());
 	long tsrSz = testRecord.GetSize();
 
 	// setup context
@@ -403,6 +392,7 @@ void MapperTest::ExtendedPutTest()
 
 	const char *mappername = "Mapper";
 	ResultMapper mapper(mappername);
+	mapper.Initialize("ResultMapper");
 
 	for ( i = 0; i < arrSz; i++) {
 		for ( j = 0; j < tsrSz; j++) {
@@ -487,9 +477,9 @@ void MapperTest::DoLoadConfigTest()
 void MapperTest::LookupMapperGetTest()
 {
 	ParameterMapper m("lookupMapperTest");
-	m.CheckConfig("ParameterMapper");
+	m.Initialize("ParameterMapper");
 	ParameterMapper m1("anotherMapper");
-	m1.CheckConfig("ParameterMapper");
+	m1.Initialize("ParameterMapper");
 	m1.Register("anotherMapper", "ParameterMapper");
 	Context ctx;
 
@@ -509,7 +499,7 @@ void MapperTest::RenameSlotWithConfigPutTest()
 	   { /Kaspar { /Peter * }}
 	 */
 	ResultMapper m("RenameSlotWithConfigPutTest");
-	m.CheckConfig("ResultMapper");
+	m.Initialize("ResultMapper");
 	Context ctx;
 	t_assert(m.Put("Kaspar", 42L, ctx));
 	assertEqual(42L, ctx.GetTmpStore()["Mapper"]["Peter"].AsLong(0));
@@ -522,7 +512,7 @@ void MapperTest::ScriptedPutTest()
 	    { /Kaspar { /Mapper { /Peter * } { /Mapper { /Mike * }} } }
 	 */
 	EagerResultMapper m("ScriptedPutTest");
-	m.CheckConfig("ResultMapper");
+	m.Initialize("ResultMapper");
 	Context ctx;
 	t_assert(m.Put("Kaspar", 42L, ctx));
 	TraceAny(ctx.GetTmpStore(), "tmpstore");
@@ -536,7 +526,7 @@ void MapperTest::RenameSlotWithConfigGetTest()
 	   { /Kaspar { /Peter * } }
 	 */
 	ParameterMapper m("RenameSlotWithConfigGetTest");
-	m.CheckConfig("ParameterMapper");
+	m.Initialize("ParameterMapper");
 	Context ctx;
 	long value1, value2;
 	ctx.GetTmpStore()["Kaspar"] = 42L;		// will never be accessed

@@ -44,7 +44,7 @@ void HTTPMapperTest::FDTest1()
 
 	Context ctx(testInput, dummy, (Server *)0, (Session *)0, (Role *)0);
 	ParameterMapper httpmapper("finvalstatic1");
-	httpmapper.CheckConfig("ParameterMapper");
+	httpmapper.Initialize("ParameterMapper");
 	t_assert(httpmapper.Get("Input", os, ctx));
 
 	String result;
@@ -70,7 +70,7 @@ void HTTPMapperTest::FDTest2()
 
 	Context ctx(testInput, dummy, (Server *)0, (Session *)0, (Role *)0);
 	ParameterMapper httpmapper("finvalstatic2");
-	httpmapper.CheckConfig("ParameterMapper");
+	httpmapper.Initialize("ParameterMapper");
 	t_assert(httpmapper.Get("Input", os, ctx));
 
 	String result;
@@ -93,7 +93,7 @@ void HTTPMapperTest::FDTest3()
 
 	Context ctx(dummy["TestFDPost3"]["env"], dummy["TestFDPost3"]["query"], (Server *)0, (Session *)0, (Role *)0);
 	ParameterMapper httpmapper("finvalstatic3");
-	httpmapper.CheckConfig("ParameterMapper");
+	httpmapper.Initialize("ParameterMapper");
 
 	Anything tmpStore(ctx.GetTmpStore());
 
@@ -113,7 +113,7 @@ void HTTPMapperTest::FDTest4()
 
 	Context ctx(dummy["TestFDGet4"]["env"], dummy["TestFDGet4"]["query"], (Server *)0, (Session *)0, (Role *)0);
 	ParameterMapper httpmapper("fdtest4");
-	httpmapper.CheckConfig("ParameterMapper");
+	httpmapper.Initialize("ParameterMapper");
 
 	Anything tmpStore(ctx.GetTmpStore());
 
@@ -157,6 +157,7 @@ void HTTPMapperTest::HTTPBodyMapperBadStream()
 	is.setstate(ios::failbit | ios::badbit);
 #endif
 	HTTPBodyResultMapper bm("testhttpbodymapper");
+	bm.Initialize("ResultMapper");
 	Context dummyctx;
 	t_assert(bm.Put("body", is, dummyctx));
 	String b;

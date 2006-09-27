@@ -6,14 +6,14 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
+//--- interface include --------------------------------------------------------
+#include "SimpleDAServiceTest.h"
+
 //--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
 
 //--- module under test --------------------------------------------------------
 #include "SimpleDataAccessService.h"
-
-//--- interface include --------------------------------------------------------
-#include "SimpleDAServiceTest.h"
 
 //--- standard modules used ----------------------------------------------------
 #include "System.h"
@@ -25,10 +25,10 @@
 //--- c-library modules used ---------------------------------------------------
 
 //---- SimpleDAServiceTest ----------------------------------------------------------------
-SimpleDAServiceTest::SimpleDAServiceTest(TString tname) : TestCaseType(tname)
+SimpleDAServiceTest::SimpleDAServiceTest(TString tname)
+	: TestCaseType(tname)
 {
 	StartTrace(SimpleDAServiceTest.Ctor);
-
 }
 
 SimpleDAServiceTest::~SimpleDAServiceTest()
@@ -44,9 +44,9 @@ void SimpleDAServiceTest::SimpleDispatch()
 		// test with objects configuration
 		Context ctx;
 		ServiceDispatcher sd("TestSimpleDAService");
+		sd.Initialize("ServiceDispatcher");
 		ctx.Push("TestSimpleDAService", &sd);
 
-		sd.CheckConfig("ServiceDispatcher");
 		ServiceHandler *sh = sd.FindServiceHandler(ctx);
 		t_assertm(sh != 0, "expected to find SimpleDataAccessService handler");
 		assertEqualm("SimpleDataAccessService", sd.FindServiceName(ctx), "expected to find test TestSimpleDAService name");
@@ -78,12 +78,12 @@ void SimpleDAServiceTest::FailedServiceCall()
 	Context ctx(config);
 
 	ServiceDispatcher sd("TestSimpleDAService");
+	// do not initialize this one, this is the tests intent!! // sd.Initialize("ServiceDispatcher");
 	ctx.Push("TestSimpleDAService", &sd);
 
 	OStringStream reply;
 	sd.Dispatch2Service(reply, ctx);
-	assertEqual("HTTP/1.1 200 OK\r\nContent-type: text/html\r\n\r\n<html><head><title>Error</title></head><body><h1>Error</h1>Access denied. Lookuptoken: VFSF</body></html>", reply.str());
-
+	assertCharPtrEqual("HTTP/1.1 200 OK\r\nContent-type: text/html\r\n\r\n<html><head><title>Error</title></head><body><h1>Error</h1>Access denied. Lookuptoken: VFSF</body></html>", reply.str());
 }
 
 // builds up a suite of testcases, add a line for each testmethod
@@ -97,14 +97,15 @@ Test *SimpleDAServiceTest::suite ()
 	ADD_CASE(testSuite, SimpleDAServiceTest, FailedServiceCall);
 
 	return testSuite;
-
 }
 
 class TestHTTPProcessor : public RequestProcessor
 {
 public:
 	//!named object shared by all requests
-	TestHTTPProcessor(const char *processorName)	: RequestProcessor(processorName) { }
+	TestHTTPProcessor(const char *processorName)
+		: RequestProcessor(processorName)
+	{ }
 
 protected:
 

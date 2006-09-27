@@ -52,7 +52,9 @@ void ParameterMapperTest::DoLoadConfigTest()
 	ParameterMapper pm("ParameterMapperTest");
 
 	t_assertm(pm.DoLoadConfig("ParameterMapper"), "Couldn't load config");
-	t_assertm(!pm.DoLoadConfig("NonExistingMapper"), "Found a config, but shouldn't!");
+	if ( t_assertm(pm.DoLoadConfig("NonExistingMapper"), "initialization hould succeed") ) {
+		t_assertm(pm.fConfig.IsNull(), "Found a config, but shouldn't!");
+	}
 }
 
 void ParameterMapperTest::DoGetConfigNameTest()
@@ -215,7 +217,7 @@ void ParameterMapperTest::GetTest()
 	Context ctx;
 	Context::PushPopEntry<Anything> aEntry(ctx, "test", store);
 	ParameterMapper pm("ParameterMapperTest");
-	pm.CheckConfig("ParameterMapper");
+	pm.Initialize("ParameterMapper");
 	String s;
 	bool b;
 	long l;
@@ -266,7 +268,7 @@ void ParameterMapperTest::EagerGetTest()
 	StartTrace(ParameterMapperTest.EagerGetTest);
 
 	EagerParameterMapper epm("EagerParameterMapperTest");
-	epm.CheckConfig("ParameterMapper");
+	epm.Initialize("ParameterMapper");
 	Anything store;
 	store["someKey"] = "!";
 	store["anotherKey"] = "?";
@@ -299,7 +301,7 @@ void ParameterMapperTest::DoSetSourceSlotDynamicallyTest()
 	assertEqual("Mapper.a.b.c", pm.DoGetSourceSlot(ctx));
 
 	// with config (overrides dest in tmp store)
-	pm.CheckConfig("ParameterMapper");
+	pm.Initialize("ParameterMapper");
 	assertEqual("Mapper.foo.bar", pm.DoGetSourceSlot(ctx));
 }
 

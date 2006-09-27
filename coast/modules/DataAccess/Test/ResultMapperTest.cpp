@@ -52,7 +52,9 @@ void ResultMapperTest::DoLoadConfigTest()
 	ResultMapper rm("ResultMapperTest");
 
 	t_assertm(rm.DoLoadConfig("ResultMapper"), "Couldn't load config");
-	t_assertm(!rm.DoLoadConfig("NonExistingMapper"), "Found a config, but shouldn't!");
+	if ( t_assertm(rm.DoLoadConfig("NonExistingMapper"), "initialization hould succeed") ) {
+		t_assertm(rm.fConfig.IsNull(), "Found a config, but shouldn't!");
+	}
 }
 
 void ResultMapperTest::DoGetConfigNameTest()
@@ -191,7 +193,7 @@ void ResultMapperTest::PutTest()
 	StartTrace(ResultMapperTest.PutTest);
 
 	ResultMapper rm("ResultMapperTest");
-	rm.CheckConfig("ResultMapper");
+	rm.Initialize("ResultMapper");
 	Context ctx;
 	String s("hello"), msg("message");
 	long l = 1234L;
@@ -236,7 +238,7 @@ void ResultMapperTest::PutTest()
 
 	// test with special always appending mapper
 	ResultMapper arm("AppendingResultMapper");
-	arm.CheckConfig("ResultMapper");
+	arm.Initialize("ResultMapper");
 
 	// put any
 	anyExp = Anything();
@@ -276,7 +278,7 @@ void ResultMapperTest::EagerPutTest()
 	// eager mapper gets a script in any case, even if key is not found
 	// which leads to a distribution of the information
 	EagerResultMapper erm("ResultMapperTest");
-	erm.CheckConfig("ResultMapper");
+	erm.Initialize("ResultMapper");
 	Context ctx;
 	String msg("foo");
 
@@ -307,7 +309,7 @@ void ResultMapperTest::DoSetDestinationSlotDynamicallyTest()
 	assertCharPtrEqual("Mapper.a.b.c", rm.GetDestinationSlot(ctx));
 
 	// with config (overrides dest in tmp store)
-	rm.CheckConfig("ResultMapper");
+	rm.Initialize("ResultMapper");
 	assertCharPtrEqual("Mapper.foo.bar", rm.GetDestinationSlot(ctx));
 }
 

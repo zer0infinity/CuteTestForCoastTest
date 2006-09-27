@@ -8,16 +8,16 @@
 
 //--- interface include --------------------------------------------------------
 #include "NameUsingOutputMapperTest.h"
+
 //--- module under test --------------------------------------------------------
 #include "NameUsingOutputMapper.h"
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "StringStream.h"
-#include "Context.h"
-#include "Dbg.h"
 
 //--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
+
+//--- standard modules used ----------------------------------------------------
+#include "StringStream.h"
+#include "Dbg.h"
 
 //---- NameUsingOutputMapperTest ----------------------------------------------------------------
 NameUsingOutputMapperTest::NameUsingOutputMapperTest(TString tname) : TestCaseType(tname)
@@ -36,6 +36,7 @@ void NameUsingOutputMapperTest::NonConfiguredDestinationTest()
 	StartTrace(NameUsingOutputMapperTest.NonConfiguredDestinationTest);
 
 	NameUsingOutputMapper mapper("TestMapper");
+	mapper.Initialize("ResultMapper");
 	Context c;
 
 	DoPut(mapper, c);
@@ -50,13 +51,12 @@ void NameUsingOutputMapperTest::ConfiguredDestinationTest()
 	StartTrace(NameUsingOutputMapperTest.ConfiguredDestinationTest);
 
 	NameUsingOutputMapper mapper("ConfiguredTestMapper");
-	mapper.CheckConfig("ResultMapper");
+	mapper.Initialize("ResultMapper");
 
 	Context c;
 
 	DoPut(mapper, c);
 	DoCheck(c.GetSessionStore());
-
 }
 
 void NameUsingOutputMapperTest::DoPut(ResultMapper &mapper, Context &c)
@@ -94,7 +94,6 @@ void NameUsingOutputMapperTest::DoCheck(const ROAnything &result)
 	expected["TestMapper"]["AnAny"]["B"].Append(2);
 	expected["TestMapper"]["AStream"] = "Streamed";
 	assertAnyEqual(expected, result);
-
 }
 
 // builds up a suite of testcases, add a line for each testmethod
@@ -107,5 +106,4 @@ Test *NameUsingOutputMapperTest::suite ()
 	ADD_CASE(testSuite, NameUsingOutputMapperTest, ConfiguredDestinationTest);
 
 	return testSuite;
-
 }

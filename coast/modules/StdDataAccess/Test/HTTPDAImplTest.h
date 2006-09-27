@@ -10,12 +10,12 @@
 #define _HTTPDAImplTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
+#include "WDBaseTestPolicies.h"
 
 //---- HTTPDAImplTest ----------------------------------------------------------
 //!TestClass for for HTMLParser functionality
 
-class HTTPDAImplTest : public TestFramework::TestCaseWithConfig
+class HTTPDAImplTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 
@@ -28,12 +28,6 @@ public:
 	//! this method generates the tests for the HTMLParser classed
 	//! \return a new test is created by this method
 	static Test *suite ();
-
-	//!generate set up for connector test does nothing so far
-	void setUp ();
-
-	//!delete set up for connector test does nothing so far
-	void tearDown ();
 
 	TString getConfigFileName();
 

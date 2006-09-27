@@ -37,6 +37,7 @@ void ReadFileDAImplTest::GetFileNameTest()
 
 	ReadFileDAImpl hfl("test");
 	ParameterMapper mp("test");
+	mp.Initialize("ParameterMapper");
 
 	Context ctx;
 	String filename("defaultFileName");
@@ -71,7 +72,7 @@ void ReadFileDAImplTest::GetFileStreamTest()
 	StartTrace(ReadFileDAImplTest.GetFileStreamTest);
 	ReadFileDAImpl hfl("test");
 	ParameterMapper mp("test");
-
+	mp.Initialize("ParameterMapper");
 	Context ctx;
 	Anything tmpStore(ctx.GetTmpStore());
 	tmpStore["DocumentRoot"] = ".";

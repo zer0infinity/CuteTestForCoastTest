@@ -42,7 +42,7 @@ void HTTPMimeHeaderMapperTest::SimpleHeader()
 	StartTrace(HTTPMimeHeaderMapperTest.SimpleHeader);
 	IStringStream is(GetConfig()["simpleHeader"].AsCharPtr());
 	HTTPMimeHeaderMapper m("HTTPMimeHeaderMapper");
-	m.CheckConfig("ResultMapper");
+	m.Initialize("ResultMapper");
 	Context ctx;
 	t_assert(((ResultMapper &)m).Put("", is, ctx)); // key not necessary
 	assertAnyEqual(GetConfig()["simpleHeaderResult"], ctx.GetTmpStore()["Mapper"]["HTTPHeader"]);
@@ -53,7 +53,7 @@ void HTTPMimeHeaderMapperTest::FieldsOccursMoreThanOnceHeaderTest()
 	StartTrace(HTTPMimeHeaderMapperTest.FieldsOccursMoreThanOnceHeaderTest);
 	IStringStream is(GetConfig()["fieldsOccursMoreThanOnceHeader"].AsCharPtr());
 	HTTPMimeHeaderMapper m("HTTPMimeHeaderMapper");
-	m.CheckConfig("ResultMapper");
+	m.Initialize("ResultMapper");
 	Context ctx;
 	t_assert(((ResultMapper &)m).Put("", is, ctx)); // key not necessary
 	assertAnyEqual(GetConfig()["fieldsOccursMoreThanOnceHeaderResult"], ctx.GetTmpStore()["Mapper"]["HTTPHeader"]);
@@ -64,7 +64,7 @@ void HTTPMimeHeaderMapperTest::FieldsOccursMoreThanOnceHeaderTestDoSplit()
 	StartTrace(HTTPMimeHeaderMapperTest.FieldsOccursMoreThanOnceHeaderTest);
 	IStringStream is(GetConfig()["fieldsOccursMoreThanOnceHeaderDoSplit"].AsCharPtr());
 	HTTPMimeHeaderMapper m("HTTPMimeHeaderMapperDoSplitHeaderFields");
-	m.CheckConfig("ResultMapper");
+	m.Initialize("ResultMapper");
 	Context ctx;
 	t_assert(((ResultMapper &)m).Put("", is, ctx)); // key not necessary
 	assertAnyEqual(GetConfig()["fieldsOccursMoreThanOnceHeaderDoSplitResult"], ctx.GetTmpStore()["Mapper"]["HTTPHeader"]);
@@ -82,7 +82,7 @@ void HTTPMimeHeaderMapperTest::SuppressedHeadersTest()
 	StartTrace(HTTPMimeHeaderMapperTest.SuppressedHeadersTest);
 	IStringStream is(GetConfig()["simpleHeader"].AsCharPtr());
 	HTTPMimeHeaderMapper m("HTTPMimeHeaderWithSuppress");
-	t_assert(m.CheckConfig("ResultMapper"));
+	t_assert(m.Initialize("ResultMapper"));
 	Context ctx;
 	t_assert(((ResultMapper &)m).Put("", is, ctx)); // key not necessary
 	assertAnyEqual(GetConfig()["suppressedHeaderResult"], ctx.GetTmpStore()["Mapper"]["HTTPHeader"]);
@@ -92,6 +92,7 @@ void HTTPMimeHeaderMapperTest::LiteralSuppressedHeadersTest()
 	StartTrace(HTTPMimeHeaderMapperTest.LiteralSuppressedHeadersTest);
 	IStringStream is(GetConfig()["simpleHeader"].AsCharPtr());
 	HTTPMimeHeaderMapper m("HTTPMimeHeader");
+	t_assert(m.Initialize("ResultMapper"));
 	ROAnything config(GetConfig()["literalSuppressedHeader"]);
 	Context ctx;
 	t_assert(((ResultMapper &)m).DoPutStream("", is, ctx, config)); // key not necessary
@@ -102,7 +103,7 @@ void HTTPMimeHeaderMapperTest::AddHeadersTest()
 	StartTrace(HTTPMimeHeaderMapperTest.AddHeadersTest);
 	IStringStream is(GetConfig()["simpleHeader"].AsCharPtr());
 	HTTPMimeHeaderMapper m("HTTPMimeHeaderWithAdd");
-	t_assert(m.CheckConfig("ResultMapper"));
+	t_assert(m.Initialize("ResultMapper"));
 	Context ctx;
 	t_assert(((ResultMapper &)m).Put("", is, ctx)); // key not necessary
 	assertAnyEqual(GetConfig()["addResult"], ctx.GetTmpStore()["Mapper"]["HTTPHeader"]);
@@ -113,7 +114,7 @@ void HTTPMimeHeaderMapperTest::SuppressAndAddHeadersTest()
 	{
 		IStringStream is(GetConfig()["simpleHeader"].AsCharPtr());
 		HTTPMimeHeaderMapper m("HTTPMimeHeaderWithSuppressAndAdd");
-		t_assert(m.CheckConfig("ResultMapper"));
+		t_assert(m.Initialize("ResultMapper"));
 		Context ctx;
 		t_assert(((ResultMapper &)m).Put("", is, ctx)); // key not necessary
 		assertAnyEqual(GetConfig()["suppressAndAddResult"], ctx.GetTmpStore()["Mapper"]["HTTPHeader"]);
@@ -121,7 +122,7 @@ void HTTPMimeHeaderMapperTest::SuppressAndAddHeadersTest()
 	{
 		IStringStream is(GetConfig()["simpleHeader"].AsCharPtr());
 		HTTPMimeHeaderMapper m("HTTPMimeHeaderWithSuppressAndAddNoHeaderFieldSplit");
-		t_assert(m.CheckConfig("ResultMapper"));
+		t_assert(m.Initialize("ResultMapper"));
 		Context ctx;
 		t_assert(((ResultMapper &)m).Put("", is, ctx)); // key not necessary
 		assertAnyEqual(GetConfig()["suppressAndAddResult"], ctx.GetTmpStore()["Mapper"]["HTTPHeader"]);

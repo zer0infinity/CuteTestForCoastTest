@@ -25,21 +25,17 @@
 Test *LoopBackDAImplTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
-
 	ADD_CASE(testSuite, LoopBackDAImplTest, ExecTest);
-
 	return testSuite;
-
 }
 
-LoopBackDAImplTest::LoopBackDAImplTest(TString tname) : TestCaseType(tname)
+LoopBackDAImplTest::LoopBackDAImplTest(TString tname)
+	: TestCaseType(tname)
 {
-
 }
 
 LoopBackDAImplTest::~LoopBackDAImplTest()
 {
-
 }
 
 void LoopBackDAImplTest::setUp ()
@@ -49,7 +45,6 @@ void LoopBackDAImplTest::setUp ()
 		fStdContextAny.Import((*Ios));
 		delete Ios;
 	}
-
 }
 
 void LoopBackDAImplTest::ExecTest()
@@ -64,10 +59,11 @@ void LoopBackDAImplTest::ExecTest()
 	Anything tmpStore(ctx.GetTmpStore());
 
 	ParameterMapper imapper("stdmapper");
-
+	imapper.Initialize("ParameterMapper");
 	ResultMapper omapper("stdmapper");
+	omapper.Initialize("ResultMapper");
 	LoopBackDAImpl lbdai("LoopBackDATest");
-	lbdai.CheckConfig("DataAccessImpl");
+	lbdai.Initialize("DataAccessImpl");
 	t_assert(lbdai.Exec(ctx, &imapper, &omapper));
 
 	TraceAny(tmpStore, "TempStore:");

@@ -42,6 +42,9 @@ void HTTPFileLoaderTest::ReplyHeaderTest()
 	HTTPFileLoader hfl("test");
 	ParameterMapper mpi("test");
 	ResultMapper mpo("test");
+	t_assert(hfl.Initialize("DataAccessImpl"));
+	t_assert(mpi.Initialize("ParameterMapper"));
+	t_assert(mpo.Initialize("ResultMapper"));
 
 	Context ctx;
 	String filename("defaultFileName");
@@ -103,7 +106,9 @@ void HTTPFileLoaderTest::ExecTest()
 	HTTPFileLoader hfl("test");
 	URI2FileNameMapper mapin("test");
 	ResultMapper mout("ExecTestOut");
-	mout.CheckConfig("ResultMapper");
+	t_assert(hfl.Initialize("DataAccessImpl"));
+	t_assert(mapin.Initialize("ParameterMapper"));
+	t_assert(mout.Initialize("ResultMapper"));
 
 	Context ctx;
 	Anything tmpStore(ctx.GetTmpStore());

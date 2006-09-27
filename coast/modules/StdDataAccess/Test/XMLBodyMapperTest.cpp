@@ -20,7 +20,9 @@
 //--- interface include --------------------------------------------------------
 #include "XMLBodyMapperTest.h"
 
-XMLBodyMapperTest::XMLBodyMapperTest(TString tname) : TestCaseType(tname), fXMLBodyMapper("TestedMapper")
+XMLBodyMapperTest::XMLBodyMapperTest(TString tname)
+	: TestCaseType(tname)
+	, fXMLBodyMapper("TestedMapper")
 {};
 
 XMLBodyMapperTest::~XMLBodyMapperTest() {};
@@ -28,13 +30,13 @@ XMLBodyMapperTest::~XMLBodyMapperTest() {};
 void XMLBodyMapperTest::setUp ()
 {
 	String configFilename("XMLBodyMapperTestConfig");
-
 	istream *ifp = System::OpenStream(configFilename, "any");
 
 	if (ifp) {	// found
 		fConfig.Import(*ifp, configFilename);
 		delete ifp;
 	}
+	fXMLBodyMapper.Initialize("ResultMapper");
 }
 
 // Produce an Anything out of an XML

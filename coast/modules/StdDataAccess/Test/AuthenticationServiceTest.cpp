@@ -64,7 +64,7 @@ void AuthenticationServiceTest::ServiceNotFoundTest()
 	StartTrace(AuthenticationServiceTest.ServiceNotFoundTest);
 
 	AuthenticationService ash("AuthWrongServiceHandlerTest");
-	ash.CheckConfig("ServiceHandler");
+	ash.Initialize("ServiceHandler");
 
 	Context ctx;
 	MakeAuthenticationInfo(ctx, "KnownUser", "correct");
@@ -77,7 +77,7 @@ void AuthenticationServiceTest::OkTest()
 	StartTrace(AuthenticationServiceTest.OkTest);
 
 	AuthenticationService ash("AuthServiceHandlerTest");
-	ash.CheckConfig("ServiceHandler");
+	ash.Initialize("ServiceHandler");
 
 	{
 		Context ctx;
@@ -120,7 +120,7 @@ void AuthenticationServiceTest::NoConfigTest()
 	StartTrace(AuthenticationServiceTest.NoConfigTest);
 
 	AuthenticationService ash("NoConfigAuthServiceHandlerTest");
-	ash.CheckConfig("ServiceHandler");
+	ash.Initialize("ServiceHandler");
 
 	Context ctx;
 	MakeAuthenticationInfo(ctx, "", "");
@@ -145,7 +145,7 @@ void AuthenticationServiceTest::AuthenticationFailedTest()
 	StartTrace(AuthenticationServiceTest.AuthenticationFailedTest);
 
 	AuthenticationService ash("AuthServiceHandlerTest");
-	ash.CheckConfig("ServiceHandler");
+	ash.Initialize("ServiceHandler");
 
 	String expectedMsg;
 	ConnCloseMessage(expectedMsg, "AuthTest", "AuthTest");
