@@ -13,7 +13,7 @@
 	/DumpAnythings  1		# print full Anythings
 
 	/Context {
-		/MainSwitch 10
+		/MainSwitch 0
 		/EnableAll	10
 	}
 	/LookupInterface {
@@ -32,6 +32,10 @@
 	/MapperTestDAImpl {
 		/MainSwitch 1100
 		/EnableAll	1100
+	}
+	/MapperTest {
+		/MainSwitch 10
+		/EnableAll	10
 	}
 	/Action {
 		/MainSwitch 0
@@ -193,5 +197,9 @@
 	/CompareValuesMapper {
 		/MainSwitch		1100
 		/EnableAll		1100
+	}
+	/RequestProcessor {
+		/MainSwitch 11
+		/EnableAll 11
 	}
 }
