@@ -13,11 +13,15 @@
 		SecurityModule
 		RolesModule
 		PagesModule
+		ServersModule
 		LocalizationModule
 		TemplatesCacheModule
 	}
 
 	/StringFile "LocalizedStrings" ## SOP: this is an old feature might use any-include instead
+
+	/Servers {}
+	/SecurityModule {}
 
 	/Renderers {
 		/URLRenderer	{ URL }

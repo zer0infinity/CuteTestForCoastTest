@@ -12,11 +12,11 @@
 	}
 
 	/Modules {
+		CacheHandlerModule
 		RenderersModule
 		SecurityModule
 		RolesModule
 		PagesModule
-		CacheHandlerModule
 		TemplatesCacheModule
 		LocalizationModule
 	}
@@ -59,4 +59,5 @@
 		}
 	}
 	/Actions {}
+	/SecurityModule {}
 }
