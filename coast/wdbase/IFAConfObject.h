@@ -27,20 +27,32 @@ public:
 	//!name object constructor
 	RegisterableObject(const char *name);
 
-	//! register api; objects can be registered with a category and a name
-	virtual void Register(const char *name, const char *category);
+	virtual ~RegisterableObject() {};
 
-	//!remove object from the registry
-	virtual void Unregister(const char *name, const char *category);
+	//! register api; objects can be registered with a category and a name
+	void Register(const char *name, const char *category);
+
+	//! remove object from the registry
+	void Unregister(const char *name, const char *category);
 
 	//! object marked by static initializer object as statically allocated; this prevents this object from deletion by the terminators
-	virtual void MarkStatic() {
+	void MarkStatic() {
 		fStaticallyInitialized = true;
 	}
 
 	//! query static initialized flag
-	virtual bool IsStatic()	  {
+	bool IsStatic()	  {
 		return fStaticallyInitialized;
+	}
+
+	bool Initialize(const char *category = NULL);
+
+	bool Finalize();
+
+	/*! Check if object has loaded its config already.
+		\return true in case the config is loaded, false otherwise */
+	bool IsInitialized() const {
+		return fbInitialized;
 	}
 
 	//! implements API for naming support
@@ -74,11 +86,26 @@ public:
 	friend class WDModuleTest;
 
 protected:
+	/*! subclass initialize api; specific things can be done here, like configuration loading and so on
+		\return true in case of success, false otherwise */
+	virtual bool DoInitialize() {
+		return true;
+	};
+
+	/*! subclass finalize api; specific things can be done here, like configuration unloading and so on
+		\return true in case of success, false otherwise */
+	virtual bool DoFinalize() {
+		return true;
+	};
+
 	//! object name represented as string
-	String fName;
+	String fName, fCategory;
 
 	//! flag to know if object is allocated by static registerer
-	bool   fStaticallyInitialized;
+	bool fStaticallyInitialized;
+
+	//! flag to track if object was initialized
+	bool fbInitialized;
 
 	//!sets flag to reset cache
 	static void ResetCache(bool resetCache);
@@ -103,11 +130,11 @@ public:
 	RegisterableObjectInstaller(const char *name, const char *category, RegisterableObject *r);
 	//!deletes fObject
 	~RegisterableObjectInstaller();
+
 protected:
 	//!the object that was installed in the registry
 	RegisterableObject *fObject;
-	//!the name of the installed object for debugging purposes
-	String fName;
+
 	//!the category of the installed object for debugging purposes
 	String fCategory;
 };
@@ -128,17 +155,17 @@ protected:
 #define RegCacheImpl(category) 																	\
 	_NAME1_(category) *_NAME1_(category)::_NAME2_(Find, category)(const char *name) 			\
 	{ 																							\
-		/* StartTrace(_NAME1_(category)._NAME2_(Find, category))	*/							\
+		StartTrace(_NAME1_(category)._NAME2_(Find, category));									\
 		static Registry *fgRegistry= 0;															\
 																								\
 		if ( !fgRegistry || RegisterableObject::fgResetCache ) fgRegistry= Registry::GetRegistry(_NAME1_(_QUOTE_(category))); 				\
-		_NAME1_(category) *catMember = 0;															\
+		_NAME1_(category) *catMember = 0;														\
 		if (name)																				\
 		{																						\
-			/* Trace("Looking for <" << name << "> in category:<" << _QUOTE_(category) << ">"); */\
-			catMember= SafeCast(fgRegistry->Find(name),_NAME1_(category));/*(_NAME1_(category) *)fgRegistry->Find(name);	*/							\
+			Trace("Looking for <" << name << "> in category <" << _QUOTE_(category) << ">");	\
+			catMember= SafeCast(fgRegistry->Find(name),_NAME1_(category));						\
 		}																						\
-		return catMember;																				\
+		return catMember;																		\
 	}
 
 //---- NotCloned ----------------------------------------------------------
@@ -151,7 +178,10 @@ class EXPORTDECL_WDBASE NotCloned : public RegisterableObject
 {
 public:
 	//!named object constructor
-	NotCloned(const char *name) : RegisterableObject(name) { }
+	NotCloned(const char *name)
+		: RegisterableObject(name)
+	{}
+
 	//!returns pseudo clone this; provides singleton
 	IFAObject *Clone() const {
 		NotCloned *nonconst_this = (NotCloned *) this;
@@ -165,7 +195,6 @@ private:
 	NotCloned(const NotCloned &);
 	//!do not use
 	NotCloned &operator=(const NotCloned &);
-
 };
 
 //---- ConfNamedObject ----------------------------------------------------------
@@ -177,36 +206,41 @@ class EXPORTDECL_WDBASE ConfNamedObject : public RegisterableObject, public virt
 {
 public:
 	//!named object constructor
-	ConfNamedObject(const char *);
+	ConfNamedObject(const char *name)
+		: RegisterableObject(name)
+	{}
+
 	//!does nothing
-	~ConfNamedObject();
+	virtual ~ConfNamedObject() {};
 
 	/*! Public api to create a cloned object. The real work is delegated to the virtual Do.. method. After successful cloning, the objects configuration data gets loaded if possible.
 		\param category Name of the category in which the objects configuration will be stored in the Cache
 		\param name Name of the clone
-		\param forceReload If set to true, the objects configuration will always be loaded for new
-		\return New object clone with initialized configuration */
-	ConfNamedObject *ConfiguredClone(const char *category, const char *name, bool forceReload = false);
-
-	//! overriden to load config for statically registered objects
-	virtual void Register(const char *name, const char *category);
-
-	//!check if configuration is loaded; load it if not done or forceReload= true
-	//! check for configuration data, assumes that fName is valid and category is
-	//! provided with the correct value
-	//! if the configuration data is not already loaded it tries to do so
-	virtual bool CheckConfig(const char *category, bool forceReload = false);
+		\param bInitializeConfig If set to true, the objects configuration will be loaded based on the cloned objects settings
+		\return New object clone with initialized configuration if requested */
+	ConfNamedObject *ConfiguredClone(const char *category, const char *name, bool bInitializeConfig);
 
 protected:
-	//!the configuration of this object
-	ROAnything fConfig;
+	/*! subclass initialize api; specific things can be done here, like configuration loading and so on
+		\return true in case of success, false otherwise */
+	virtual bool DoInitialize();
+
+	/*! subclass finalize api; specific things can be done here, like configuration unloading and so on
+		\return true in case of success, false otherwise */
+	virtual bool DoFinalize();
+
+	/*! Check if configuration is loaded; load it if not done or bInitializeConfig = true
+		\param category Name of the category in which the objects configuration will be stored in the Cache
+		\param bInitializeConfig Reload configuration regardless of already being configured
+		\return true in case the object could be configured */
+	bool CheckConfig(const char *category, bool bInitializeConfig = false);
 
 	/*! Creates a new object through cloning. Generates a cloned object with a different name.
 		\param category Name of the category in which the objects configuration will be stored in the Cache
 		\param name Name of the clone
-		\param forceReload If set to true, the objects configuration will always be loaded for new
+		\param bInitializeConfig If set to true, the objects configuration will always be loaded for new
 		\return New object clone, name is set but configuration will be initialized in calling method */
-	virtual ConfNamedObject *DoConfiguredClone(const char *category, const char *name, bool forceReload);
+	virtual ConfNamedObject *DoConfiguredClone(const char *category, const char *name, bool bInitializeConfig);
 
 	//!generate the config file name
 	//! generate the config file name (without extension, which is assumed to be any)
@@ -226,6 +260,17 @@ protected:
 	//! implementation (i.e. allow more Anys to be searched, hierarchical, etc)
 	virtual bool DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const;
 
+	/*! Set the name of the underlying configuration file. This name will differ from the objects name when a ConfiguredClone is made.
+		\param cfgName Name of the underlying configuration file */
+	void SetConfigName(const char *cfgName) {
+		fConfigName = cfgName;
+	}
+
+	//! the configuration of this object
+	ROAnything fConfig;
+
+	String fConfigName;
+
 private:
 	//!do not use
 	ConfNamedObject();
@@ -243,22 +288,25 @@ class EXPORTDECL_WDBASE HierarchConfNamed : public ConfNamedObject
 {
 public:
 	//!named object constructor
-	HierarchConfNamed(const char *);
+	HierarchConfNamed(const char *name)
+		: ConfNamedObject(name)
+		, fSuper(0)
+	{}
 	virtual ~HierarchConfNamed() {}
 
 	//! hierarchical relationship API; set super object
-	virtual void SetSuper(HierarchConfNamed *super);
+	void SetSuper(HierarchConfNamed *super);
 
 	//! hierarchical relationship API; get super object
-	virtual HierarchConfNamed *GetSuper() const;
+	HierarchConfNamed *GetSuper() const;
 
 protected:
 	/*! Creates a new object through cloning. Generates a cloned object with a different name.
 		\param category Name of the category in which the objects configuration will be stored in the Cache
 		\param name Name of the clone
-		\param forceReload If set to true, the objects configuration will always be loaded for new
+		\param bInitializeConfig If set to true, the objects configuration will always be loaded for new
 		\return New object clone, name is set but configuration will be initialized in calling method */
-	virtual ConfNamedObject *DoConfiguredClone(const char *category, const char *name, bool forceReload);
+	virtual ConfNamedObject *DoConfiguredClone(const char *category, const char *name, bool bInitializeConfig);
 
 	//!implement lookup of immutable configuration
 	virtual bool DoLookup(const char *key, class ROAnything &resultconst, char delim, char indexdelim) const;

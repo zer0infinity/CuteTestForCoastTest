@@ -26,7 +26,10 @@ void RegisterableObject::ResetCache(bool resetCache)
 bool RegisterableObject::fgResetCache = false;
 
 RegisterableObject::RegisterableObject(const char *name)
-	: NamedObject(name), fName(name, -1, Storage::Global()), fStaticallyInitialized(false)
+	: NamedObject(name)
+	, fName(name, -1, Storage::Global())
+	, fStaticallyInitialized(false)
+	, fbInitialized(false)
 {
 }
 
@@ -37,10 +40,9 @@ bool RegisterableObject::Install(const ROAnything installerSpec, const char *cat
 	// this method installs a list of clones or aliases into the registry
 	// the basic assumption is that at least one object is already registered
 	// with the register macro
-	StartTrace(RegisterableObject.Install);
+	StartTrace1(RegisterableObject.Install, "cat <" << NotNull(category) << ">");
 	Registry *reg = Registry::GetRegistry(category);
 	TraceAny(installerSpec, "Installing Spec:");
-	Trace("for Category <" << category << "> in &" << (long)reg);
 	if ( reg ) {
 		return reg->Install(installerSpec, installer);
 	}
@@ -81,86 +83,104 @@ bool RegisterableObject::Terminate(const char *category, TerminationPolicy *term
 
 void RegisterableObject::Register(const char *name, const char *category)
 {
-#if !defined (_AIX) && !defined(__sun)   //static Initialisation problem
-	StartTrace(RegisterableObject.Register);
-#endif
+	StartTrace1(RegisterableObject.Register, "cat <" << NotNull(category) << "> name <" << NotNull(name) << ">");
+	fCategory = category;
 	Registry *reg = Registry::GetRegistry(category);
-#if !defined (_AIX) && !defined(__sun)   //static Initialisation problem
-	Trace("Registering: <" << name << "> of category <" << category << "> in &" << (long)reg);
-#endif
-	reg->RegisterRegisterableObject(name, this);
+	if (reg) {
+		Trace("Registering: <" << name << "> of category <" << category << ">");
+		reg->RegisterRegisterableObject(name, this);
+	}
 }
 
 void RegisterableObject::Unregister(const char *name, const char *category)
 {
-#if !defined (_AIX)   //static Initialisation problem
-	StartTrace(RegisterableObject.Unregister);
-#endif
+	StartTrace1(RegisterableObject.Unregister, "cat <" << NotNull(category) << "> name <" << NotNull(name) << ">");
 	Registry *reg = Registry::GetRegistry(category);
 	if (reg) {
-#if !defined (_AIX)   //static Initialisation problem
-		Trace("Unregistering: <" << name << "> of category <" << category << "> in &" << (long)reg);
-#endif
+		Trace("Unregistering: <" << name << "> of category <" << category << ">");
 		reg->UnregisterRegisterableObject(name);
 	}
 }
 
+bool RegisterableObject::Initialize(const char *category)
+{
+	StartTrace1(RegisterableObject.Initialize, "cat <" << NotNull(category) << "> fCat <" << fCategory << ">");
+	if ( category != NULL ) {
+		if ( !fCategory.Length() ) {
+			fCategory = category;
+		}
+	}
+	return ( fbInitialized = DoInitialize() );
+}
+
+bool RegisterableObject::Finalize()
+{
+	return !( fbInitialized = !DoFinalize() );
+}
+
 //---- ConfNamedObject ----------------------------------------------------------
-ConfNamedObject::ConfNamedObject(const char *name)
-	: RegisterableObject(name)
+bool ConfNamedObject::DoInitialize()
 {
+	StartTrace1(ConfNamedObject.DoInitialize, "cat <" << fCategory << "> name <" << fName << ">");
+	// force (re-)loading config
+	return CheckConfig(fCategory, true);
 }
 
-ConfNamedObject::~ConfNamedObject()
+bool ConfNamedObject::DoFinalize()
 {
+	StartTrace1(ConfNamedObject.DoFinalize, "cat <" << fCategory << "> name <" << fName << ">");
+	// ensure that we do not access data out of CacheHandler anymore
+	fConfig = ROAnything();
+	return true;
 }
 
-void ConfNamedObject::Register(const char *name, const char *category)
+ConfNamedObject *ConfNamedObject::ConfiguredClone(const char *category, const char *name, bool bInitializeConfig)
 {
-	StartTrace1(ConfNamedObject.Register, "cat <" << NotNull(category) << "> name <" << fName << ">");
-	RegisterableObject::Register(name, category);
-	CheckConfig(category);
-}
-
-ConfNamedObject *ConfNamedObject::ConfiguredClone(const char *category, const char *name, bool forceReload)
-{
-	StartTrace1(ConfNamedObject.ConfiguredClone, "cat <" << NotNull(category) << "> name <" << fName << ">");
+	StartTrace1(ConfNamedObject.ConfiguredClone, "cat <" << NotNull(category) << "> name <" << name << "> clone-base <" << fName << ">");
 	// allow subclasses to do specific cloning stuff
-	ConfNamedObject *cno = DoConfiguredClone(category, name, forceReload);
-	if ( cno ) {
-		// always do a CheckConfig for the newly created clone to initialize its configuration
-		cno->CheckConfig(category, forceReload);
+	ConfNamedObject *cno = DoConfiguredClone(category, name, bInitializeConfig);
+	if ( cno && bInitializeConfig ) {
+		// store cloned objects name for configuration loading in case we re-initialize it
+		cno->SetConfigName(fName);
+		// do a Initialize on demand for the newly created clone to initialize its configuration based on the config name of the cloned object
+		cno->Initialize(category);
 	}
 	return cno;
 }
 
-ConfNamedObject *ConfNamedObject::DoConfiguredClone(const char *category, const char *name, bool forceReload)
+ConfNamedObject *ConfNamedObject::DoConfiguredClone(const char *category, const char *name, bool bInitializeConfig)
 {
 	StartTrace1(ConfNamedObject.DoConfiguredClone, "cat <" << NotNull(category) << "> name <" << fName << ">");
 	ConfNamedObject *cno = (ConfNamedObject *)this->Clone();
 	if ( cno ) {
 		cno->SetName(name);
+		cno->fCategory = fCategory;
 	}
 	return cno;
 }
 
-bool ConfNamedObject::CheckConfig(const char *category, bool forceReload)
+bool ConfNamedObject::CheckConfig(const char *category, bool bInitializeConfig)
 {
-	StartTrace1(ConfNamedObject.CheckConfig, "cat <" << NotNull(category) << "> fName <" << fName << ">");
+	StartTrace1(ConfNamedObject.CheckConfig, "cat <" << NotNull(category) << "> fName <" << fName << "> &" << (long)(IFAObject *)this);
+	bool bRet = false;
 	if ( category ) {
-		if ( forceReload || fConfig.IsNull() ) {
-			Trace((forceReload ? "force-re" : "initial-") << "loading config");
-			return DoLoadConfig(category);
+		bRet = true;
+		if ( bInitializeConfig || fConfig.IsNull() ) {
+			Trace((bInitializeConfig ? "force-re" : "initial-") << "loading config");
+			bRet = DoLoadConfig(category);
 		}
-		return true;
 	}
-	return false;
+	return bRet;
 }
 
 bool ConfNamedObject::DoGetConfigName(const char *category, const char *objName, String &configFileName)
 {
 	StartTrace1(ConfNamedObject.DoGetConfigName, "cat <" << NotNull(category) << "> fName <" << fName << "> objName <" << NotNull(objName) << ">");
-	if ( objName ) {
+	// generate config file name from object name
+	if ( fConfigName.Length() ) {
+		configFileName = fConfigName;
+		return true;
+	} else if ( objName != NULL ) {
 		configFileName = objName;
 		return true;
 	}
@@ -169,44 +189,41 @@ bool ConfNamedObject::DoGetConfigName(const char *category, const char *objName,
 
 bool ConfNamedObject::DoLoadConfig(const char *category)
 {
-#if !defined (_AIX)   //static Initialisation problem
 	StartTrace( ConfNamedObject.DoLoadConfig);
-#endif
+	bool bRet = false;
 	String configFileName("None");
-	// generate config file name from object name
 
+	// try to load only if a config name exists
 	if ( DoGetConfigName(category, fName, configFileName) ) {
 		Trace("loading cat <" << category << "> name <" << configFileName << ">");
-		// try to load only if a config name exists
 		CacheHandler *cache = CacheHandler::Get();
 
 		SimpleAnyLoader sal;
 		fConfig = cache->Load(category, configFileName, &sal);
-#if !defined (_AIX)   //static Initialisation problem
-		SubTraceAny(TraceConfig, fConfig, "Config:");
-#endif
-		return (!fConfig.IsNull());
+
+		SubTraceAny(TraceConfig, fConfig, "Config &" << (long)&fConfig);
+		// always return true because even an empty config is a valid config
+		bRet = true;
 	}
-	return false;
+	return bRet;
 }
 
 bool ConfNamedObject::DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const
 {
 	StartTrace1(ConfNamedObject.DoLookup, "key: <" << NotNull(key) << ">" << " Name: <" << fName << ">" );
-	return fConfig.LookupPath(result, key, delim, indexdelim);
+	if ( !IsInitialized() ) {
+		SysLog::WriteToStderr(String("ConfNamedObject::DoLookup: failed, object <") << fName << "> of registry category <" << fCategory << "> not initialized!\n");
+	}
+	Trace("fConfig &" << (long)&fConfig);
+	return ( IsInitialized() && fConfig.LookupPath(result, key, delim, indexdelim) );
 }
 
 //---- HierarchConfNamed ----------------------------------------------------------
 
-HierarchConfNamed::HierarchConfNamed(const char *name) : ConfNamedObject(name)
-{
-	fSuper = 0;
-}
-
-ConfNamedObject *HierarchConfNamed::DoConfiguredClone(const char *category, const char *name, bool forceReload)
+ConfNamedObject *HierarchConfNamed::DoConfiguredClone(const char *category, const char *name, bool bInitializeConfig)
 {
 	StartTrace1(HierarchConfNamed.DoConfiguredClone, "using [" << fName << "] as clone-base for [" << name << "]" );
-	HierarchConfNamed *cno = (HierarchConfNamed *)ConfNamedObject::DoConfiguredClone(category, name, forceReload);
+	HierarchConfNamed *cno = (HierarchConfNamed *)ConfNamedObject::DoConfiguredClone(category, name, bInitializeConfig);
 	if ( cno ) {
 		// assign superclass, this is important to retrieve hierarchic configuration through Lookup()
 		Trace("my superclass is [" << (fSuper ? fSuper->GetName() : "<unknown>") << "]");
@@ -241,13 +258,15 @@ bool HierarchConfNamed::DoLookup(const char *key, class ROAnything &result, char
 }
 
 RegisterableObjectInstaller::RegisterableObjectInstaller(const char *name, const char *category, RegisterableObject *r)
-	: fObject(r), fName(name), fCategory(category)
+	: fObject(r)
+	, fCategory(category)
 {
 	if (fObject) {
-		if (System::EnvGet("TRACE_STATICALLOC") == "1") {
-			SysLog::WriteToStderr(String("installing:<") << fName << "> into <" << fCategory << ">" << "\n");
+		static bool bTrace = (System::EnvGet("TRACE_STATICALLOC") == "1");
+		if ( bTrace ) {
+			SysLog::WriteToStderr(String("installing <") << name << "> into <" << category << ">\n");
 		}
-		fObject->Register(fName, fCategory);
+		fObject->Register(name, category);
 		fObject->MarkStatic();
 	}
 }
@@ -256,10 +275,11 @@ RegisterableObjectInstaller::~RegisterableObjectInstaller()
 {
 	StartTrace(RegisterableObjectInstaller.~RegisterableObjectInstaller);
 	if (fObject) {
-		if (System::EnvGet("TRACE_STATICALLOC") == "1") {
-			SysLog::WriteToStderr(String("deleting:<") << fName << "> from <" << fCategory << ">" << "\n");
+		static bool bTrace = (System::EnvGet("TRACE_STATICALLOC") == "1");
+		if ( bTrace ) {
+			SysLog::WriteToStderr(String("deleting <") << fObject->GetName() << "> from <" << fCategory << ">\n");
 		}
-		fObject->Unregister(fName, fCategory);
+		fObject->Unregister(fObject->GetName(), fCategory);
 		delete fObject;
 		fObject = 0;
 	}
