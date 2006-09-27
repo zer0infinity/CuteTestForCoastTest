@@ -188,10 +188,6 @@
 		/EnableAll						10
 		/HasMore						-10
 	}
-	/RegistryCleaner {
-		/MainSwitch						0
-		/EnableAll						10
-	}
 	/RegisterableObject {
 		/MainSwitch						0
 		/EnableAll						10
