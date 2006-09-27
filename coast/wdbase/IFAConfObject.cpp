@@ -212,7 +212,7 @@ bool ConfNamedObject::DoLookup(const char *key, ROAnything &result, char delim, 
 {
 	StartTrace1(ConfNamedObject.DoLookup, "key: <" << NotNull(key) << ">" << " Name: <" << fName << ">" );
 	if ( !IsInitialized() ) {
-		SysLog::WriteToStderr(String("ConfNamedObject::DoLookup: failed, object <") << fName << "> of registry category <" << fCategory << "> not initialized!\n");
+		SysLog::Warning(String("ConfNamedObject::DoLookup: failed, object <") << fName << "> of registry category <" << fCategory << "> not initialized!\n");
 	}
 	Trace("fConfig &" << (long)&fConfig);
 	return ( IsInitialized() && fConfig.LookupPath(result, key, delim, indexdelim) );
