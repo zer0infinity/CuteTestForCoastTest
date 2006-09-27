@@ -17,6 +17,39 @@
 //--- c-library modules used ---------------------------------------------------
 
 //---- InstallerPolicy ------------------------------------------------------
+bool InstallerPolicy::Install(const ROAnything installerSpec, Registry *r)
+{
+	StartTrace1(InstallerPolicy.DoInstall, "Category: " << GetCategory());
+	SysLog::WriteToStderr(String("\t") << GetCategory());
+	// let specific handler install its configured objects first
+	bool bRet = DoInstall(installerSpec, r);
+	bRet = IntInitialize(r);
+	TellSuccess(bRet);
+	return bRet;
+}
+
+bool InstallerPolicy::IntInitialize(Registry *r)
+{
+	StartTrace(InstallerPolicy.IntInitialize);
+	// initialize remaining objects of this category
+	bool bRet = true;
+	RegistryIterator ri(r);
+	String name;
+	RegisterableObject *ro;
+	while ( ri.HasMore() ) {
+		ro = ri.Next(name);
+		if ( ro && !ro->IsInitialized() ) {
+			bool bSucc = ro->Initialize(GetCategory());
+			Trace("initializing <" << name << "> was " << (bSucc ? "" : "not ") << "successful");
+			if ( !bSucc ) {
+				SysLog::Warning(String("initializing <") << name << "> was not successful!");
+			}
+			bRet = bRet && bSucc;
+		}
+	}
+	return bRet;
+}
+
 void InstallerPolicy::TellSuccess(bool success)
 {
 	if ( success ) {
@@ -24,18 +57,45 @@ void InstallerPolicy::TellSuccess(bool success)
 	} else {
 		SysLog::WriteToStderr(" failed\n");
 	}
-
 }
-//---- AliasInstaller ------------------------------------------------------
-AliasInstaller::AliasInstaller(const char *category): InstallerPolicy(category) { }
-AliasInstaller::~AliasInstaller() { }
 
-bool AliasInstaller::Install(const ROAnything installerSpec, Registry *r)
+//---- TerminationPolicy ------------------------------------------------------
+bool TerminationPolicy::Terminate(Registry *r)
 {
-	StartTrace1(AliasInstaller.Install, "Category: " << fCategory);
+	StartTrace(TerminationPolicy.Terminate);
+	bool bRet = DoTerminate(r);
+	bRet = IntFinalize(r);
+	return bRet;
+}
+
+bool TerminationPolicy::IntFinalize(Registry *r)
+{
+	StartTrace(TerminationPolicy.IntFinalize);
+	// finalize remaining objects of this category
+	bool bRet = true;
+	RegistryIterator ri(r);
+	String name;
+	RegisterableObject *ro;
+	while ( ri.HasMore() ) {
+		ro = ri.Next(name);
+		if ( ro && ro->IsInitialized() ) {
+			bool bSucc = ro->Finalize();
+			Trace("finalizing <" << name << "> was " << (bSucc ? "" : "not ") << "successful");
+			if ( !bSucc ) {
+				SysLog::Warning(String("finalizing <") << name << "> was not successful!");
+			}
+			bRet = bRet && bSucc;
+		}
+	}
+	return bRet;
+}
+
+//---- AliasInstaller ------------------------------------------------------
+bool AliasInstaller::DoInstall(const ROAnything installerSpec, Registry *r)
+{
+	StartTrace1(AliasInstaller.DoInstall, "Category: " << GetCategory());
 	long isSz = installerSpec.GetSize();
 	bool installationSuccess = true;
-	SysLog::WriteToStderr(String("\t") << fCategory);
 	for (long l = 0; l < isSz; ++l) {
 		const char *s = installerSpec.SlotName(l);
 
@@ -58,7 +118,8 @@ bool AliasInstaller::Install(const ROAnything installerSpec, Registry *r)
 				// depending on subclass of Registerable
 				RegisterableObject *reg = (RegisterableObject *)t->Clone();
 				Trace("\talias <" << NotNull(alias) << ">");
-				reg->Register(alias, fCategory);
+				reg->Register(alias, GetCategory());
+				reg->Initialize(GetCategory());
 				t->SetName(origName);
 				SysLog::WriteToStderr(".", 1);
 			} else {
@@ -69,27 +130,41 @@ bool AliasInstaller::Install(const ROAnything installerSpec, Registry *r)
 			}
 		}
 	}
-	TellSuccess(installationSuccess);
 	return installationSuccess;
 }
 
-//---- HierarchyInstaller ------------------------------------------------------
-HierarchyInstaller::HierarchyInstaller(const char *cat) : InstallerPolicy(cat) { }
-HierarchyInstaller::~HierarchyInstaller() { }
-
-bool HierarchyInstaller::Install(const ROAnything installerSpec, Registry *r)
+//---- AliasTerminator ------------------------------------------------------
+bool AliasTerminator::DoTerminate(Registry *r)
 {
-	StartTrace(HierarchyInstaller.Install);
-	TraceAny(installerSpec, "");
+	StartTrace1(AliasTerminator.DoTerminate, "Category: " << GetCategory());
+	// iterate backwards over registry, since we're removing the objects
+	RegistryIterator ri(r, false);
 
+	String name;
+	while ( ri.HasMore() ) {
+		RegisterableObject *ro = ri.Next(name);
+		if ( ro && !ro->IsStatic() ) {
+			Trace("Terminating <" << name << ">");
+			ro->Finalize();
+			r->UnregisterRegisterableObject(name);
+			delete ro;
+		}
+	}
+	return true;
+}
+
+//---- HierarchyInstaller ------------------------------------------------------
+bool HierarchyInstaller::DoInstall(const ROAnything installerSpec, Registry *r)
+{
+	StartTrace(HierarchyInstaller.DoInstall);
+	TraceAny(installerSpec, "");
 	long isSz = installerSpec.GetSize();
 	bool installSuccess = true;
-	SysLog::WriteToStderr(String("\t") << fCategory);
 	for (long l = 0; l < isSz; ++l) {
 		const char *s = installerSpec.SlotName(l);
 		installSuccess = InstallTree(GetLeaf(s, 0, r), s, installerSpec[l], r);
 	}
-	TellSuccess(installSuccess);
+
 	return installSuccess;
 }
 
@@ -177,51 +252,19 @@ HierarchConfNamed *HierarchyInstaller::GetLeaf(const char *leafName, HierarchCon
 		if (root) {
 			root->GetName(rootName);
 			Trace("cloning [" << rootName << "]");
-			// configured cloning also forces loading of objects configuration (CheckConfig())
-			leaf = (HierarchConfNamed *) root->ConfiguredClone(fCategory, leafName, true);
+			// configured cloning but without config loading yet, done below
+			leaf = (HierarchConfNamed *) root->ConfiguredClone(GetCategory(), leafName, false);
 		}
 		if (leaf && (rootName != leafName)) {
 			Trace("registering [" << leafName << "] in registry");
 			r->RegisterRegisterableObject(leafName, leaf);
 		}
-	} else {
-		leaf->CheckConfig(fCategory, true);
+	}
+	if ( leaf ) {
+		// loading of objects configuration
+		leaf->Initialize(GetCategory());
 	}
 	SysLog::WriteToStderr(".", 1);
 
 	return leaf;
-}
-
-//---- AliasTerminator ------------------------------------------------------
-AliasTerminator::AliasTerminator(const char *category): TerminationPolicy(category) { }
-AliasTerminator::~AliasTerminator() { }
-
-bool AliasTerminator::Terminate(Registry *r)
-{
-	StartTrace(AliasTerminator.Terminate);
-	RegistryIterator ri(r, false); // iterate backwards over registry, since we're removing the objects
-
-	String name;
-	RegisterableObject *ro;
-
-	Anything removeSet; // the set of objects that has to be removed
-	while ( ri.HasMore() ) {
-		ro = ri.Next(name);
-		if (ro && !ro->IsStatic() ) {
-			SysLog::Info(String("AliasTerminator::Terminate [") << name << "]");
-			r->UnregisterRegisterableObject(name);
-			String key(12L); // provide reasonable default capacity
-			key << (long)ro;
-
-			removeSet[key] = ro; // overwrites the same place if it's the same object
-		}
-	}
-
-	long sz = removeSet.GetSize();
-
-	for (long i = sz - 1; i >= 0; --i) {
-		ro = (RegisterableObject *)removeSet[i].AsIFAObject(0);
-		delete ro;
-	}
-	return true;
 }

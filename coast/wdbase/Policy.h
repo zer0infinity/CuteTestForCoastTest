@@ -13,84 +13,103 @@
 #include "IFAConfObject.h"
 
 //---- InstallerPolicy ----------------------------------------------------------------
-// installer policies that install objects of a category according
-// to a specification and the algorithm implemented in install
+/*! installer policies that install objects of a category according to a specification and the algorithm implemented in install */
 class EXPORTDECL_WDBASE InstallerPolicy
 {
 public:
-	InstallerPolicy(const char *category) : fCategory(category) { }
-	virtual ~InstallerPolicy() { }
+	InstallerPolicy(const char *category)
+		: fCategory(category)
+	{}
+	virtual ~InstallerPolicy() {}
 
-	virtual bool Install(const ROAnything installerSpec, Registry *r) = 0;
+	bool Install(const ROAnything installerSpec, Registry *r);
+
+	const char *const GetCategory() const {
+		return fCategory;
+	}
 
 protected:
-	virtual void TellSuccess(bool success);
-	String fCategory;	// short lived object... String may be allocated using the default allocator
+	virtual bool DoInstall(const ROAnything installerSpec, Registry *r) = 0;
 
 private:
+	bool IntInitialize(Registry *r);
+	void TellSuccess(bool success);
+
+	String fCategory;
+
 	InstallerPolicy();
 	InstallerPolicy(const InstallerPolicy &);
-
 	InstallerPolicy &operator=(const InstallerPolicy &);
 };
 
 //---- TerminationPolicy ----------------------------------------------------------------
-// installer policies that install objects of a category according
-// to a specification and the algorithm implemented in install
+/*! installer policies that install objects of a category according to a specification and the algorithm implemented in install */
 class EXPORTDECL_WDBASE TerminationPolicy
 {
 public:
-	TerminationPolicy(const char *category) : fCategory(category) { }
-	virtual ~TerminationPolicy() { }
+	TerminationPolicy(const char *category)
+		: fCategory(category)
+	{}
+	virtual ~TerminationPolicy() {}
 
-	virtual bool Terminate(Registry *r) = 0;
+	bool Terminate(Registry *r);
+
+	const char *const GetCategory() const {
+		return fCategory;
+	}
 
 protected:
-	String fCategory;
+	virtual bool DoTerminate(Registry *r) = 0;
 
 private:
+	bool IntFinalize(Registry *r);
+
+	String fCategory;
+
 	TerminationPolicy();
 	TerminationPolicy(const TerminationPolicy &);
-
 	TerminationPolicy &operator=(const TerminationPolicy &);
 };
 
 //---- AliasInstaller ------------------------------------------------------
-// alias installer installs the same object with different
-// names in the registry
-class EXPORTDECL_WDBASE AliasInstaller: public InstallerPolicy
+/*! alias installer installs the same object with different names in the registry */
+class EXPORTDECL_WDBASE AliasInstaller : public InstallerPolicy
 {
 public:
-	AliasInstaller(const char *cat);
-	virtual ~AliasInstaller();
+	AliasInstaller(const char *category)
+		: InstallerPolicy(category)
+	{}
+	virtual ~AliasInstaller() {};
 
-	virtual bool Install(const ROAnything installerSpec, Registry *r);
+protected:
+	virtual bool DoInstall(const ROAnything installerSpec, Registry *r);
 };
 
 //---- AliasTerminator ------------------------------------------------------
-class EXPORTDECL_WDBASE AliasTerminator: public TerminationPolicy
+class EXPORTDECL_WDBASE AliasTerminator : public TerminationPolicy
 {
 public:
-	AliasTerminator(const char *cat);
-	virtual ~AliasTerminator();
+	AliasTerminator(const char *category)
+		: TerminationPolicy(category)
+	{}
+	virtual ~AliasTerminator() {};
 
-	virtual bool Terminate(Registry *r);
+protected:
+	virtual bool DoTerminate(Registry *r);
 };
 
 //---- HierarchyInstaller ------------------------------------------------------
-// hierarchyInstaller installs objects that are connected by a super relation
-// into the registry
-class EXPORTDECL_WDBASE HierarchyInstaller: public InstallerPolicy
+/*! hierarchyInstaller installs objects that are connected by a super relation into the registry */
+class EXPORTDECL_WDBASE HierarchyInstaller : public InstallerPolicy
 {
-
 public:
-	HierarchyInstaller(const char *cat);
-	virtual ~HierarchyInstaller();
-
-	virtual bool Install(const ROAnything installerSpec, Registry *r);
+	HierarchyInstaller(const char *cat)
+		: InstallerPolicy(cat)
+	{}
+	virtual ~HierarchyInstaller() {};
 
 protected:
-
+	virtual bool DoInstall(const ROAnything installerSpec, Registry *r);
 	HierarchConfNamed *Find(const char *name, Registry *r);
 	bool HasSuper(HierarchConfNamed *super, const char *name);
 
