@@ -12,6 +12,7 @@
 #include <sys/types.h>
 #include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include "config.h"				// for definition of own types
+#include <stdlib.h>
 
 #if !defined(__370__) && defined(DEBUG)
 #define MEM_DEBUG
@@ -190,7 +191,9 @@ public:
 	//!Memory debugging and tracking support; implementer should report currently allocated bytes
 	virtual l_long CurrentlyAllocated() = 0;
 	//!change of memtrackers to be e.g. MT-Safe
-	virtual void ReplaceMemTracker(MemTracker *t) {}
+	virtual MemTracker *ReplaceMemTracker(MemTracker *t) {
+		return NULL;
+	}
 #endif
 	//!Memory debugging and tracking support; implementer should report all statistic on cerr
 	virtual void PrintStatistic() = 0;
@@ -244,7 +247,7 @@ public:
 	//!returns the currently allocated bytes (only available if MEM_DEBUG is enabled)
 	l_long CurrentlyAllocated();
 	//!replaces the memory tracker with sthg. different e.g. thread safe  (only available if MEM_DEBUG is enabled)
-	virtual void ReplaceMemTracker(MemTracker *t);
+	virtual MemTracker *ReplaceMemTracker(MemTracker *t);
 #endif
 protected:
 	//!implements allocation bottleneck routine
@@ -261,7 +264,8 @@ protected:
 class EXPORTDECL_FOUNDATION StorageHooks
 {
 public:
-	StorageHooks() {};
+	StorageHooks()
+		: fpOldHook(NULL) {};
 	virtual ~StorageHooks() {};
 	//!initialize storage subsystem
 	virtual void Initialize() = 0;
@@ -275,6 +279,14 @@ public:
 	//!allocate a memory tracker object (only available if MEM_DEBUG is set)
 	virtual MemTracker *MakeMemTracker(const char *name) = 0;
 #endif
+	void SetOldHook(StorageHooks *pOld) {
+		fpOldHook = pOld;
+	}
+	StorageHooks *GetOldHook() {
+		return fpOldHook;
+	}
+private:
+	StorageHooks *fpOldHook;
 };
 
 //! a wrapper for memory allocations and deallocations that allows to dispatch memory management to allocator policies
@@ -305,7 +317,6 @@ protected:
 	friend class MT_Storage;
 	friend class MTStorageHooks;
 	friend class TestStorageHooks;
-	friend class MTStorageHookInitializer;
 	friend class Server;	// needs ForceGlobalStorage() for re-initialization
 
 	//! used by mt system to redefine the hooks for mt-local storage policy
@@ -335,8 +346,6 @@ protected:
 	//!flag to force global store temporarily
 	static bool fgForceGlobal;
 
-	//!MT_Storage__Global needs access to this class
-	friend class EXPORTDECL_FOUNDATION Allocator *MT_Storage__Global();
 	//! the global allocator
 	static Allocator *fgGlobalPool;
 };

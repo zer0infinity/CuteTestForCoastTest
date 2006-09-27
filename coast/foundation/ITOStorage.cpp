@@ -12,11 +12,13 @@
 //--- standard modules used ----------------------------------------------------
 #include "SysLog.h"
 #include "MemHeader.h"
-#include "IFAObject.h"
+#include "InitFinisManagerFoundation.h"
 
 //--- c-library modules used ---------------------------------------------------
-#include <stdlib.h>
 #include <string.h>
+#if !defined(WIN32)
+#include <unistd.h>
+#endif
 
 #ifdef __370__
 extern "C" void finalize();
@@ -106,9 +108,6 @@ void MemTracker::TrackFree(u_long allocSz)
 	fSizeFreed += allocSz;
 }
 
-#if !defined(__SUNPRO_CC) || __SUNPRO_CC < 0x500
-extern "C" int write(int, const void *, unsigned);
-#endif
 void MemTracker::PrintStatistic()
 {
 	// CAUTION: DO NOT PROGRAM AS FOLLOWS !!!
@@ -191,18 +190,27 @@ Allocator *Storage::fgGlobalPool = 0;
 StorageHooks *Storage::fgHooks = 0; // exchange this object when MT_Storage is used
 bool Storage::fgForceGlobal = false;
 
-class EXPORTDECL_FOUNDATION StorageInitializer : public FinalCleaner
+class EXPORTDECL_FOUNDATION StorageInitializer : public InitFinisManagerFoundation
 {
 public:
-	StorageInitializer()	{
+	StorageInitializer(unsigned int uiPriority)
+		: InitFinisManagerFoundation(uiPriority) {
+		IFMTrace("StorageInitializer created\n");
+	}
+	~StorageInitializer()
+	{}
+
+	virtual void DoInit() {
+		IFMTrace("Storage::Initialize\n");
 		Storage::Initialize();
 	}
-	~StorageInitializer()	{
+	virtual void DoFinis() {
+		IFMTrace("Storage::Finalize\n");
 		Storage::Finalize();
 	}
 };
 
-static StorageInitializer *psgStorageInitializer = new StorageInitializer();
+static StorageInitializer *psgStorageInitializer = new StorageInitializer(0);
 
 Allocator *Storage::Current()
 {
@@ -269,9 +277,15 @@ StorageHooks *Storage::SetHooks(StorageHooks *h)
 	if ( fgHooks ) {
 		fgHooks->Finalize();
 	}
-	fgHooks = h;
-	if ( fgHooks != NULL ) {
-		fgHooks->Initialize();
+	if ( h == NULL && fgHooks ) {
+		fgHooks = fgHooks->GetOldHook();
+		pOldHook = fgHooks;
+	} else {
+		fgHooks = h;
+		if ( fgHooks != NULL ) {
+			fgHooks->Initialize();
+			fgHooks->SetOldHook(pOldHook);
+		}
 	}
 	return pOldHook;
 }
@@ -341,20 +355,20 @@ GlobalAllocator::GlobalAllocator() : Allocator(11223344L)
 GlobalAllocator::~GlobalAllocator()
 {
 #ifdef MEM_DEBUG
-	if (fTracker) {
+	if ( fTracker ) {
 		delete fTracker;
 	}
 #endif
 }
 
 #ifdef MEM_DEBUG
-void GlobalAllocator::ReplaceMemTracker(MemTracker *t)
+MemTracker *GlobalAllocator::ReplaceMemTracker(MemTracker *t)
 {
-	if (fTracker) {
-		t->Init(fTracker);
-		delete fTracker;
+	MemTracker *pOld = fTracker;
+	if ( fTracker ) {
 		fTracker = t;
 	}
+	return pOld;
 }
 
 l_long GlobalAllocator::CurrentlyAllocated()
@@ -372,9 +386,7 @@ void *GlobalAllocator::Alloc(u_long allocSize)
 {
 	void *vp = ::malloc(allocSize);
 	if (vp) {
-		MemoryHeader *mh = new(vp) MemoryHeader(allocSize - MemoryHeader::AlignedSize(),
-												MemoryHeader::eUsedNotPooled);
-
+		MemoryHeader *mh = new(vp) MemoryHeader(allocSize - MemoryHeader::AlignedSize(), MemoryHeader::eUsedNotPooled);
 		MemTrackAlloc((*fTracker), mh->fSize);
 		return ExtMemStart(mh);
 	} else {
@@ -437,8 +449,8 @@ TestStorageHooks::TestStorageHooks(Allocator *wdallocator)
 
 TestStorageHooks::~TestStorageHooks()
 {
-	StorageHooks *pHook = Storage::SetHooks(fpOldHook);
-	Assert( pHook == this && "another Storage::SetHook() was called without restoring old Hook!");
+	StorageHooks *pHook = Storage::SetHooks(NULL);
+	Assert( pHook == fpOldHook && "another Storage::SetHook() was called without restoring old Hook!");
 }
 
 #ifdef MEM_DEBUG
