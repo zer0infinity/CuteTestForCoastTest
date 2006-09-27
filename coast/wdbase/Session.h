@@ -106,7 +106,7 @@ public:
 
 protected:
 	//!returns configured timeout
-	virtual long GetTimeout(Context &ctx) const;
+	virtual long GetTimeout(Context &ctx);
 	//! unlocked render nextpage
 	virtual void DoRenderNextPage(ostream &reply, Context &context);
 	//! prepare the context of the request and initialize transition and the pagename
@@ -116,7 +116,7 @@ protected:
 	//! define the new role
 	virtual void SetRole(Role *newRole, Context &ctx);
 	//! Get the current Role, returns default role, but does not change fStore like previous versions of this code did.
-	virtual Role *GetRole(Context &ctx) const;
+	virtual Role *GetRole(Context &ctx);
 	//! getting the name of the current role
 	virtual String GetRoleName(Context &ctx);
 	//! check if role change is triggered by action and performs it

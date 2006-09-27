@@ -166,7 +166,7 @@ bool Session::GetSessionInfo(Anything &sessionListInfo, Context &ctx, const char
 	return ret;
 }
 
-long Session::GetTimeout(Context &ctx) const
+long Session::GetTimeout(Context &ctx)
 {
 	Role *role = GetRole(ctx);
 	// assumption fMutex is already set by caller
@@ -201,7 +201,7 @@ void Session::SetRole(Role *newRole, Context &ctx)
 	}
 }
 
-Role *Session::GetRole(Context &ctx) const
+Role *Session::GetRole(Context &ctx)
 {
 	StartTrace(Session.GetRole);
 	// assumption fMutex is already set by caller
@@ -215,10 +215,10 @@ Role *Session::GetRole(Context &ctx) const
 		role = Role::FindRoleWithDefault(role_name, ctx);
 		Trace("Default RoleName: [" << role_name << "]");
 		if (role) {
-			((Session *)this)->PutInStore("RoleName", role_name);
+			PutInStore("RoleName", role_name);
 		}
 	}
-	Trace("RoleName: [" << role_name << "]");
+	Trace("RoleName: [" << role_name << "], addr &" << (long)role);
 	return role;
 }
 
