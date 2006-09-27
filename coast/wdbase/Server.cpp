@@ -12,7 +12,6 @@
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
 #include "System.h"
-#include "SysLog.h"
 #include "ServerPoolsManagerInterface.h"
 #include "Registry.h"
 #include "ServerUtils.h"
@@ -22,6 +21,7 @@
 #include "AppBooter.h"
 #include "RequestBlocker.h"
 #include "Dbg.h"
+#include "AnyIterators.h"
 
 //--- c-library modules used ---------------------------------------------------
 #if !defined(WIN32)
@@ -37,12 +37,48 @@
 
 //#define LOW_TRACING1
 
+//---- ServerReInitInstaller ------------------------------------------------------
+/*! alias installer installs the same object with different names in the registry */
+class EXPORTDECL_WDBASE ServerReInitInstaller : public InstallerPolicy
+{
+public:
+	ServerReInitInstaller(const char *category)
+		: InstallerPolicy(category)
+	{}
+	virtual ~ServerReInitInstaller() {};
+
+protected:
+	virtual bool DoInstall(const ROAnything installerSpec, Registry *r) {
+		StartTrace1(ServerReInitInstaller.DoInstall, "cat <" << GetCategory() << ">");
+		// nothing to do, base class does the right thing!
+		return true;
+	}
+};
+
+//---- ServerReInitTerminator ------------------------------------------------------
+class EXPORTDECL_WDBASE ServerReInitTerminator : public TerminationPolicy
+{
+public:
+	ServerReInitTerminator(const char *category)
+		: TerminationPolicy(category)
+	{}
+	virtual ~ServerReInitTerminator() {};
+
+protected:
+	virtual bool DoTerminate(Registry *r) {
+		StartTrace1(ServerReInitTerminator.DoTerminate, "cat <" << GetCategory() << ">");
+		// nothing to do, base class does the right thing!
+		return true;
+	}
+};
+
 //---- ServersModule -----------------------------------------------------------
 RegisterModule(ServersModule);
 
 Server *ServersModule::fgServerForReInit = 0;
 
-ServersModule::ServersModule(const char *name) : WDModule(name)
+ServersModule::ServersModule(const char *name)
+	: WDModule(name)
 {
 	SetServerForReInit(0);
 }
@@ -54,52 +90,65 @@ ServersModule::~ServersModule()
 bool ServersModule::Init(const ROAnything config)
 {
 	StartTrace(ServersModule.Init);
-	if (config.IsDefined("Servers")) {
-		HierarchyInstaller hi("Application");
-		return RegisterableObject::Install(config["Servers"], "Application", &hi);
-	}
-	// don't care if we do not need to configure aliases for server
-	return true;
+	// special case, servers and applications are treated the same but installed within Application registry
+	HierarchyInstaller hi("Application");
+	// install anyways, Null-config should not fail the Installer
+	return RegisterableObject::Install(config["Servers"], "Application", &hi);
 }
 
 bool ServersModule::Finis()
 {
-	return true;
-}
-
-void ServersModule::CheckServerConfigs()
-{
-	StartTrace(ServersModule.CheckServerConfigs);
-	// install all modules registered, nothing is mandatory
-	RegistryIterator ri(Registry::GetRegistry("Application"));
-	String serverName;
-
-	while ( ri.HasMore() ) {
-		Server *server = SafeCast(ri.Next(serverName), Server); //SOP: was wrong for testcases
-		if (server) {
-			server->CheckConfig("Application", true);
-		}
-	}
+	return StdFinis("Application", "Application");
 }
 
 bool ServersModule::ResetFinis(const ROAnything )
 {
-	return true; // do nothing here
+	StartTrace(ServersModule.ResetFinis);
+	ServerReInitTerminator at("Application");
+	bool bRet = RegisterableObject::ResetTerminate("Application", &at);
+	// we need to check if the GetServerForReInit() is registered in the registry
+	// if not, we need to re-initialize its config manually because only registered objects will have their config reloaded automatically
+	Server *serverToReInit = GetServerForReInit();
+	if ( serverToReInit ) {
+		String serverName;
+		serverToReInit->GetName(serverName);
+		Trace("Servername for re-init (master) [" << serverName << "]");
+		if ( !Server::FindServer(serverName) ) {
+			Trace("manually finalizing server config of [" << serverName << "]");
+			bRet = serverToReInit->Finalize() && bRet;
+		}
+	}
+	return bRet;
 }
 
 bool ServersModule::ResetInit(const ROAnything config)
 {
 	StartTrace(ServersModule.ResetInit);
-	CheckServerConfigs(); // force reload of configuration
 	String serverName;
 	Server *serverToReInit = 0;
 	serverToReInit = GetServerForReInit();
 	if (serverToReInit) {
 		serverToReInit->GetName(serverName);
+		Trace("Servername for re-init (master) [" << serverName << "]");
 	}
-	if (serverToReInit && (0 == serverToReInit->ReInit(config))) {
-		SetServerForReInit(0);
-		return true;
+
+	// re-initialize configuration of server(s)
+	ServerReInitInstaller hi("Application");
+	// install anyways, Null-config should not fail the Installer
+	bool bReInitOk = RegisterableObject::Install(config["Servers"], "Application", &hi);
+
+	if ( bReInitOk && serverToReInit ) {
+		// we need to check if the serverToReInit is registered in the registry
+		// if not, we need to re-initialize its config manually because only registered objects will have their config reloaded automatically
+		if ( !Server::FindServer(serverName) ) {
+			Trace("manually finalizing server config of [" << serverName << "]");
+			bReInitOk = serverToReInit->Initialize("Application") && bReInitOk;
+		}
+
+		if ( bReInitOk && ( 0 == serverToReInit->ReInit(config) ) ) {
+			SetServerForReInit(0);
+			return true;
+		}
 	}
 	String logMsg("ReInit failed for <");
 	logMsg << serverName << "> at " << long(serverToReInit);
@@ -225,19 +274,16 @@ int Server::DoGlobalReinit()
 	const char *bootfilename = ROAnything(fgConfig)["WD_BOOTFILE"].AsCharPtr("Config");
 	if (AppBooter().ReadFromFile(config, bootfilename)) {
 		// config file may redefine root directory
-		System::SetRootDir( ConfNamedObject::Lookup("Root", System::GetRootDir()), true);
+		System::SetRootDir( Lookup("Root", System::GetRootDir()), true);
 		// fgConfig file may redefine path list
-		System::SetPathList( ConfNamedObject::Lookup("PathList", System::GetPathList()), true);
-		const char m[] = "Environment set\nResetting Components\n";
-		SysLog::WriteToStderr(m, strlen(m));
-//		ResetTracer(); // SOP: cannot do that here, because Debugging isn't thread save
+		System::SetPathList( Lookup("PathList", System::GetPathList()), true);
+		SysLog::WriteToStderr("Environment set\nResetting Components\n");
 
 		TraceAny(fgConfig, "Old Config");
 		TraceAny(config, "New Config");
 
 		int retCode = WDModule::Reset(fgConfig, config);
 		fgConfig = config;
-		CheckConfig("Application", true);
 		return retCode;
 	}
 	return -1;
@@ -250,7 +296,6 @@ int Server::Init()
 	// Although already done on modules init, do it
 	// explicitly here for clarity: Unblock requests
 	RequestBlocker::RB()->UnBlock();
-	CheckConfig("Application", true);
 	TraceAny(fConfig, "Server config");
 
 	String poolManagerName(Lookup("PoolManager", "ServerThreadPoolsManager"));
@@ -259,11 +304,14 @@ int Server::Init()
 	fPoolManager = ServerPoolsManagerInterface::FindServerPoolsManagerInterface(poolManagerName);
 	Trace("PoolManager <" << poolManagerName << "> " << (long)fPoolManager << ((fPoolManager) ? " found" : " not found"));
 	if (fPoolManager) {
-		// ensure configuration is loaded
-		fPoolManager = (ServerPoolsManagerInterface *)fPoolManager->ConfiguredClone("ServerPoolsManagerInterface", poolManagerName);
-		if ( (fPoolManager->Init(this) == 0) && (SetupDispatcher() == 0) ) {
-			SysLog::Info(String("Server init of [") << strServerName << "] OK.");
-			return 0;
+		// make unique name different of clone-base name to avoid problems
+		poolManagerName << "_of_" << strServerName;
+		fPoolManager = (ServerPoolsManagerInterface *)fPoolManager->ConfiguredClone("ServerPoolsManagerInterface", poolManagerName, true);
+		if ( fPoolManager ) {
+			if ( (fPoolManager->Init(this) == 0) && (SetupDispatcher() == 0) ) {
+				SysLog::Info(String("Server init of [") << strServerName << "] OK.");
+				return 0;
+			}
 		}
 	}
 	SYSERROR("Server init of [" << strServerName << "] FAILED.");
@@ -291,15 +339,19 @@ long Server::GetThreadPoolSize()
 		return fPoolManager->GetThreadPoolSize();
 	}
 
-	return ConfNamedObject::Lookup("ThreadPoolSize", 25L);
+	return Lookup("ThreadPoolSize", 25L);
 }
 
 int Server::ReInit(const ROAnything )
 {
 	StartTrace(Server.ReInit);
-	long ret = SetupDispatcher(); // hidden dependency in module init/termination sequence!
+	// hidden dependency in module init/termination sequence!
+	long ret = SetupDispatcher();
 
 	if (ret == 0 && fPoolManager) {
+		// re-initialize configuration of pool
+		fPoolManager->Finalize();
+		fPoolManager->Initialize("ServerPoolsManagerInterface");
 		ret = fPoolManager->ReInit(this);
 	}
 	return ret;
@@ -315,6 +367,7 @@ int Server::Terminate(int val)
 
 	if (fPoolManager) {
 		fPoolManager->Terminate();
+		fPoolManager->Finalize();
 	}
 
 	String n;
@@ -584,12 +637,8 @@ int MasterServer::Init()
 	StartTrace(MasterServer.Init);
 	long retCode = 0;
 
-	if (!fgInReInit) {
+	if ( !fgInReInit ) {
 		retCode = Server::Init();
-	} else {
-		if (!CheckConfig("Application", true)) {
-			retCode = -1;
-		}
 	}
 
 	ROAnything serverModules;
@@ -612,8 +661,8 @@ int MasterServer::Init()
 int MasterServer::ReInit(const ROAnything config)
 {
 	StartTrace(MasterServer.ReInit);
+	// save current configuration for re-initializing
 	fgConfig = config.DeepClone();
-	CheckConfig("Application", true);
 	long retCode = 0;
 	for (long i = 0; (retCode == 0) && (i < fNumServers); ++i) {
 		// terminates each server thread

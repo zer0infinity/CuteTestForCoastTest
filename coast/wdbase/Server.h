@@ -36,7 +36,6 @@ public:
 	virtual bool Finis();
 	virtual bool ResetInit(const ROAnything );
 	virtual bool ResetFinis(const ROAnything );
-	virtual void CheckServerConfigs();
 	// access implicitely protected by Server::fgReInitMutex
 	static	Server *GetServerForReInit() {
 		return fgServerForReInit;
