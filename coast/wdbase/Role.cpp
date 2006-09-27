@@ -19,7 +19,8 @@
 //---- RolesModule -----------------------------------------------------------
 RegisterModule(RolesModule);
 
-RolesModule::RolesModule(const char *name) : WDModule(name)
+RolesModule::RolesModule(const char *name)
+	: WDModule(name)
 {
 }
 
@@ -226,8 +227,6 @@ bool Role::IsStayOnSamePageToken(String &transition)
 void Role::CollectLinkState(Anything &stateIn, Context &c)
 {
 	StartTrace(Role.CollectLinkState);
-
-	CheckConfig("Role");
 
 	// copy selected fields from TmpStore into Link
 	// the symmetric operation is in GetNewPageName
