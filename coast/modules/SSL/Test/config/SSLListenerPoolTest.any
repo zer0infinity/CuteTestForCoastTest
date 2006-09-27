@@ -10,8 +10,8 @@
 
 #--- Modules ------------------------------------
 	/Modules {
-		SSLModule
 		AcceptorFactoriesModule
+		SSLModule
 	}
 	/AcceptorFactories {
 		/SSLAcceptorFactory {
