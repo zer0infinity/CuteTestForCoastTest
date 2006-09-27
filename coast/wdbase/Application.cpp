@@ -42,10 +42,6 @@ Application::~Application()
 int Application::Init()
 {
 	StartTrace(Application.Init);
-
-	CheckConfig("Application", true);
-	TraceAny(fConfig, "Application config");
-
 	return 0;
 }
 
@@ -72,15 +68,6 @@ int Application::Terminate(int val)
 bool Application::DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const
 {
 	StartTrace(Application.Lookup);
-	// lookup the application store
-//	{
-//		MutexEntry me((Mutex&)fStoreMutex);
-//		ROAnything store(fStore);
-//		if ( store.LookupPath(result, key, delim, indexdelim) )
-//		{
-//			return true;
-//		}
-//	}
 
 	// have a lookup in the application config
 	if ( HierarchConfNamed::DoLookup(key, result, delim, indexdelim) ) {
@@ -153,7 +140,6 @@ Application *Application::GetGlobalApplication(String &applicationName)
 int Application::GlobalInit(int argc, char *argv[], const ROAnything config)
 {
 	StartTrace(Application.GlobalInit);
-
 	return Init();	// Call instance init
 }
 
@@ -170,18 +156,6 @@ int Application::GlobalTerminate(int val)
 
 	return Terminate(val);
 }
-//
-//void Application::PutInStore(const char *key, const Anything &a)
-//{
-//	MutexEntry me(fStoreMutex);me.Use();
-//	fStore[key]= a;
-//}
-//
-//void Application::RemoveFromStore(const char *key)
-//{
-//	MutexEntry me(fStoreMutex);me.Use();
-//	fStore.Remove(key);
-//}
-//
+
 //---- registry api
 RegCacheImpl(Application);	// FindApplication()
