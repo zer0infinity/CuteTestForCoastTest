@@ -16,6 +16,41 @@
 
 //--- c-library modules used ---------------------------------------------------
 
+//---- AcceptorFactoriesReInitInstaller ------------------------------------------------------
+/*! alias installer installs the same object with different names in the registry */
+class EXPORTDECL_WDBASE AcceptorFactoriesReInitInstaller : public InstallerPolicy
+{
+public:
+	AcceptorFactoriesReInitInstaller(const char *category)
+		: InstallerPolicy(category)
+	{}
+	virtual ~AcceptorFactoriesReInitInstaller() {};
+
+protected:
+	virtual bool DoInstall(const ROAnything installerSpec, Registry *r) {
+		StartTrace1(AcceptorFactoriesReInitInstaller.DoInstall, "cat <" << GetCategory() << ">");
+		// nothing to do, base class does the right thing!
+		return true;
+	}
+};
+
+//---- AcceptorFactoriesReInitTerminator ------------------------------------------------------
+class EXPORTDECL_WDBASE AcceptorFactoriesReInitTerminator : public TerminationPolicy
+{
+public:
+	AcceptorFactoriesReInitTerminator(const char *category)
+		: TerminationPolicy(category)
+	{}
+	virtual ~AcceptorFactoriesReInitTerminator() {};
+
+protected:
+	virtual bool DoTerminate(Registry *r) {
+		StartTrace1(AcceptorFactoriesReInitTerminator.DoTerminate, "cat <" << GetCategory() << ">");
+		// nothing to do, base class does the right thing!
+		return true;
+	}
+};
+
 //---- AcceptorFactoriesModule -----------------------------------------------------------
 RegisterModule(AcceptorFactoriesModule);
 
@@ -47,14 +82,14 @@ bool AcceptorFactoriesModule::Finis()
 
 bool AcceptorFactoriesModule::ResetInit(const ROAnything config)
 {
-	// do nothing
-	return true;
+	AcceptorFactoriesReInitInstaller hi("AcceptorFactory");
+	return RegisterableObject::Install(config["AcceptorFactories"], "AcceptorFactory", &hi);
 }
 
 bool AcceptorFactoriesModule::ResetFinis(const ROAnything )
 {
-	// do nothing
-	return true;
+	AcceptorFactoriesReInitTerminator at("AcceptorFactory");
+	return RegisterableObject::ResetTerminate("AcceptorFactory", &at);
 }
 
 //---- AcceptorFactory -----------------------------------------------------------
@@ -85,7 +120,7 @@ Acceptor *AcceptorFactory::MakeAcceptor(AcceptorCallBack *ac)
 
 bool AcceptorFactory::DoLoadConfig(const char *category)
 {
-	StartTrace1(AcceptorFactory.DoLoadConfig, "category: <" << NotNull(category) << ">");
+	StartTrace1(AcceptorFactory.DoLoadConfig, "category: <" << NotNull(category) << "> object: <" << fName << ">");
 
 	if ( HierarchConfNamed::DoLoadConfig(category) && fConfig.IsDefined(fName) ) {
 		// AcceptorFactories use only a subset of the whole configuration file
@@ -94,10 +129,13 @@ bool AcceptorFactory::DoLoadConfig(const char *category)
 		TraceAny(fConfig, "fConfig: ");
 		return (!fConfig.IsNull());
 	}
-
-	Trace("fConfig is null, returning false");
+	String cfgFilename;
+	DoGetConfigName(fCategory, fName, cfgFilename);
+	SysLog::Info(String("AcceptorFactory::DoLoadConfig: no specific config entry for <") << fName << "> found in " << cfgFilename << ".any");
 	fConfig = Anything();
-	return false;
+	// because these object are hierarchical, it can be that some of them do not have their own config
+	// so we must not fail here
+	return true;
 }
 
 bool AcceptorFactory::DoGetConfigName(const char *category, const char *objName, String &configFileName)
