@@ -68,7 +68,6 @@ private:
 
 	// Instance variables
 	LdapDataAccessLoader fLdapDataAccessLoader;
-	static LdapCachePolicyModule *fgLdapCachePolicyModule;
 };
 
 //---- LdapCacheGetter -----------------------------------------------------------

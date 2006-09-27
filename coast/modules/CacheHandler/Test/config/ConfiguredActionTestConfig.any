@@ -12,8 +12,8 @@
 		ldapdataaccess
 	}
 	/Modules {
-		ActionsModule
 		CacheHandlerModule
+		ActionsModule
 		MappersModule
 		DataAccessImplsModule
 		/LdapCachePolicyModule {

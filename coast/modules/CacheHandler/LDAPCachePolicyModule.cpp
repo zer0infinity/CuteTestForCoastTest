@@ -21,8 +21,6 @@
 //---- LdapCachePolicyModule -----------------------------------------------------------
 RegisterModule(LdapCachePolicyModule);
 
-LdapCachePolicyModule *LdapCachePolicyModule::fgLdapCachePolicyModule = 0;
-
 LdapCachePolicyModule::LdapCachePolicyModule(const char *name) : WDModule(name)
 {
 	StartTrace(LdapCachePolicyModule.LdapCachePolicyModule);

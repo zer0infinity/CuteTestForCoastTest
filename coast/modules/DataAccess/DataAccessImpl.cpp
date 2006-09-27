@@ -122,8 +122,8 @@ bool DataAccessImpl::DoLoadConfig(const char *category)
 		return (!fConfig.IsNull());
 	}
 	fConfig = Anything();
-	Trace("No specific " << fName << " config found, returning false");
-	return false;
+	Trace("No specific " << fName << " config found, still returning true");
+	return true;
 }
 
 bool DataAccessImpl::DoGetConfigName(const char *category, const char *objName, String &configFileName)
