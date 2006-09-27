@@ -10,7 +10,7 @@
 #define _LDAPMapperTest_H
 
 //---- TestCase include -------------------------------------------------
-#include "TestCase.h"
+#include "WDBaseTestPolicies.h"
 
 #if defined(__sun) || defined(WIN32) || defined(__linux__)
 
@@ -21,7 +21,7 @@
 //! further explanation of the purpose of the class
 //! this may contain <B>HTML-Tags</B>
 //! ...
-class LDAPMapperTest : public TestFramework::TestCase
+class LDAPMapperTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors

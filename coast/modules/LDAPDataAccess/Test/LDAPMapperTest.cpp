@@ -57,7 +57,7 @@ void LDAPMapperTest::QueryFilterTest()
 
 	Context ctx(inputArgs, inputArgs, (Server *)0, (Session *)0, (Role *)0);
 	ParameterMapper querymapper("lqmTest0");
-	querymapper.CheckConfig("ParameterMapper");
+	querymapper.Initialize("ParameterMapper");
 
 	String input;
 	OStringStream Ios(&input);
@@ -78,7 +78,7 @@ void LDAPMapperTest::FieldMapperTest1()
 
 		Context ctx(inputArgs, inputArgs, (Server *)0, (Session *)0, (Role *)0);
 		ParameterMapper fieldmapper("FieldMapperTest1_fixed");
-		fieldmapper.CheckConfig("ParameterMapper");
+		fieldmapper.Initialize("ParameterMapper");
 
 		String input;
 		OStringStream Ios(&input);
@@ -100,7 +100,7 @@ void LDAPMapperTest::FieldMapperTest2()
 
 	Context ctx(inputArgs, inputArgs, (Server *)0, (Session *)0, (Role *)0);
 	ParameterMapper fieldmapper("FieldMapperTest2");
-	fieldmapper.CheckConfig("ParameterMapper");
+	fieldmapper.Initialize("ParameterMapper");
 
 	String input;
 	OStringStream Ios(&input);
@@ -121,7 +121,7 @@ void LDAPMapperTest::BasicParamTest()
 
 	Context ctx(inputArgs, inputArgs, (Server *)0, (Session *)0, (Role *)0);
 	EagerParameterMapper ldapparammapper("BasicParams");
-	ldapparammapper.CheckConfig("ParameterMapper");
+	ldapparammapper.Initialize("ParameterMapper");
 
 	Anything ldapparams;
 	t_assert(ldapparammapper.Get("Input", ldapparams, ctx));
@@ -142,7 +142,7 @@ void LDAPMapperTest::DNameTest()
 
 	Context ctx(inputArgs, inputArgs, (Server *)0, (Session *)0, (Role *)0);
 	ParameterMapper dnmapper("DName");
-	dnmapper.CheckConfig("ParameterMapper");
+	dnmapper.Initialize("ParameterMapper");
 
 	String input;
 	OStringStream Ios(&input);
@@ -165,7 +165,7 @@ void LDAPMapperTest::ModifyValsTest()
 
 		Context ctx(inputArgs, inputArgs, (Server *)0, (Session *)0, (Role *)0);
 		EagerParameterMapper modifymapper("ModifyValsFixed");
-		modifymapper.CheckConfig("ParameterMapper");
+		modifymapper.Initialize("ParameterMapper");
 
 		Anything vals;
 		t_assert(modifymapper.Get("Modify", vals, ctx));
@@ -195,8 +195,7 @@ void LDAPMapperTest::LDAPAddTest()
 
 		Context ctx(inputArgs, inputArgs, (Server *)0, (Session *)0, (Role *)0);
 		ParameterMapper addmapper("LDAPAddTest_fixed");
-
-		addmapper.CheckConfig("ParameterMapper");
+		addmapper.Initialize("ParameterMapper");
 
 		String dname;
 		{
@@ -206,7 +205,7 @@ void LDAPMapperTest::LDAPAddTest()
 		assertEqual("uid=tkgoa@10601.CH,", dname);
 
 		ParameterMapper addvalsmapper("AddVals_fixed");
-		addvalsmapper.CheckConfig("ParameterMapper");
+		addvalsmapper.Initialize("ParameterMapper");
 
 		Anything vals;
 		t_assert(addvalsmapper.Get("Modify", vals, ctx));
