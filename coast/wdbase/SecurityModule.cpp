@@ -205,10 +205,8 @@ bool SecurityModule::Init(const ROAnything config)
 	fgSigner = moduleConfig["Signer"].AsCharPtr("Signer");
 	fgCompressor = moduleConfig["Compressor"].AsCharPtr("Compressor");
 
-	if (moduleConfig.IsDefined("SecurityItems")) {
-		HierarchyInstaller hi("SecurityItem");
-		result =  RegisterableObject::Install(moduleConfig["SecurityItems"], "SecurityItem", &hi);
-	}
+	HierarchyInstaller hi("SecurityItem");
+	result =  RegisterableObject::Install(moduleConfig["SecurityItems"], "SecurityItem", &hi);
 
 	// TableCompressor is special, it needs the complete Config.any for /Expand Roles /Expand Pages /Expand Actions
 	// can be removed if this is never used. Frontdoor doesn't rely on this feature
