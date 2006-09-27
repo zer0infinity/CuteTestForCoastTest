@@ -131,6 +131,7 @@ it is possible to call lock from the same thread without deadlock.
 class EXPORTDECL_MTFOUNDATION Mutex
 {
 	friend class Condition;
+	friend class MutexInitializer;
 	friend class ThreadsTest;
 	friend class ContextTest;
 public:
@@ -182,7 +183,7 @@ protected:
 	//!global mutex id counter
 	static long fgMutexId;
 	//!guard for global mutex id counter
-	static MUTEX fgMutexIdMutex;
+	static SimpleMutex *fgpMutexIdMutex;
 
 	//!this mutex unique id
 	String fMutexId;
@@ -333,6 +334,11 @@ public:
 	CleanupHandler() {}
 	virtual ~CleanupHandler() {}
 
+	bool Cleanup() {
+		return DoCleanup();
+	}
+
+protected:
 	//!subclasses implement cleanup of thread specific storage
 	virtual bool DoCleanup() = 0;
 };
@@ -521,6 +527,7 @@ public:
 #else
 	friend void *ThreadWrapper(void *);
 #endif
+	friend class ThreadInitializer;
 
 protected:
 	//!sets internal states and calls Run
@@ -604,7 +611,7 @@ protected:
 	static long fgNumOfThreads;
 
 	//!guard of thread count
-	static SimpleMutex fgNumOfThreadsMutex;
+	static SimpleMutex *fgpNumOfThreadsMutex;
 
 private:
 	/*! internal method implementing the state transition matrix
