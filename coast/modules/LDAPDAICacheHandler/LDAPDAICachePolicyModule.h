@@ -73,7 +73,6 @@ private:
 
 	// Instance variables
 	LDAPDAIDataAcccessLoader fLDAPDAIDataAcccessLoader;
-	static LDAPDAICachePolicyModule *fgLDAPDAICachePolicyModule;
 };
 
 //---- LDAPDAICacheGetter -----------------------------------------------------------

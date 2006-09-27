@@ -21,8 +21,6 @@
 //---- LDAPDAICachePolicyModule -----------------------------------------------------------
 RegisterModule(LDAPDAICachePolicyModule);
 
-LDAPDAICachePolicyModule *LDAPDAICachePolicyModule::fgLDAPDAICachePolicyModule = 0;
-
 LDAPDAICachePolicyModule::LDAPDAICachePolicyModule(const char *name) : WDModule(name)
 {
 	StartTrace(LDAPDAICachePolicyModule.LDAPDAICachePolicyModule);
