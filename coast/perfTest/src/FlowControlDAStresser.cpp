@@ -60,8 +60,9 @@ Anything FlowControlDAStresser::Run( long id)
 			result["ErrorMsg"][errorMsg] = "";
 			return result;
 		} else {
-			flowCntrl = (FlowController *)flowCntrl->Clone();
-			flowCntrl->CheckConfig("FlowController");
+			// make unique instance name
+			flowCntrlName << "_of_DAStresser";
+			flowCntrl = (FlowController *)flowCntrl->ConfiguredClone("FlowController", flowCntrlName, true);
 		}
 		Anything env;
 		env["Id"] = id - 1;
@@ -125,6 +126,7 @@ Anything FlowControlDAStresser::Run( long id)
 					Trace("Errorcount1:" << nError );
 				}
 				if (flowCntrl) {
+					flowCntrl->Finalize();
 					delete flowCntrl;
 				}
 				if (nrSteps == 0) {
