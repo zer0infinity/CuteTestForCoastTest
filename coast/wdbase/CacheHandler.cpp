@@ -9,6 +9,9 @@
 //--- interface include --------------------------------------------------------
 #include "CacheHandler.h"
 
+//--- project modules used -----------------------------------------------------
+#include "InitFinisManagerWDBase.h"
+
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
 #include "Threads.h"
@@ -44,19 +47,15 @@ SimpleAnyLoader::~SimpleAnyLoader() { }
 
 Anything SimpleAnyLoader::Load(const char *key)
 {
-#if !defined (_AIX)   //static Initialisation problem
 	StartTrace1(SimpleAnyLoader.Load, "trying to load <" << NotNull(key) << ">");
-#endif
 	Anything toLoad(Storage::Global());
 	istream *ifp = System::OpenStream(key, "any");
 
 	if (ifp) {
 		// found
 		toLoad.Import(*ifp, key);
-#if !defined (_AIX)   //static Initialisation problem
 		Trace("loading of <" << NotNull(key) << "> suceeded" );
 		SubTraceAny(config, toLoad, "configuration for <" << key << ">");
-#endif
 		delete ifp;
 	}
 	return toLoad;
@@ -65,7 +64,36 @@ Anything SimpleAnyLoader::Load(const char *key)
 CacheHandler *CacheHandler::fgCacheHandler = 0;
 Mutex *CacheHandler::fgCacheHandlerMutex = 0;
 
-CacheHandler::CacheHandler() : NotCloned("CacheHandler"), fCache(Storage::Global())
+class EXPORTDECL_WDBASE CacheHandlerMutexAllocator : public InitFinisManagerWDBase
+{
+public:
+	CacheHandlerMutexAllocator(unsigned int uiPriority)
+		: InitFinisManagerWDBase(uiPriority) {
+		IFMTrace("CacheHandlerMutexAllocator created\n");
+	}
+
+	~CacheHandlerMutexAllocator()
+	{}
+
+	virtual void DoInit() {
+		IFMTrace("CacheHandlerMutexAllocator::DoInit\n");
+		if ( !CacheHandler::fgCacheHandlerMutex ) {
+			CacheHandler::fgCacheHandlerMutex = new Mutex("CacheHandlerMutex", Storage::Global());
+		}
+	}
+
+	virtual void DoFinis() {
+		IFMTrace("CacheHandlerMutexAllocator::DoFinis\n");
+		delete CacheHandler::fgCacheHandlerMutex;
+		CacheHandler::fgCacheHandlerMutex = 0;
+	}
+};
+
+static CacheHandlerMutexAllocator *psgCacheHandlerMutexAllocator = new CacheHandlerMutexAllocator(0);
+
+CacheHandler::CacheHandler()
+	: NotCloned("CacheHandler")
+	, fCache(Storage::Global())
 {
 }
 
@@ -76,16 +104,16 @@ CacheHandler::~CacheHandler()
 
 void CacheHandler::Finis()
 {
+	StartTrace(CacheHandler.Finis);
 	if  (fgCacheHandler) {
 		delete fgCacheHandler;
 		fgCacheHandler = 0;
-		delete fgCacheHandlerMutex;
-		fgCacheHandlerMutex = 0;
 	}
 }
 
 ROAnything CacheHandler::Load(const char *group, const char *key,  CacheLoadPolicy *clp)
 {
+	StartTrace1(CacheHandler.Load, "group [" << NotNull(group) << "] key [" << NotNull(key) << "]");
 	MutexEntry me(*fgCacheHandlerMutex);
 	me.Use();
 	if ( IsLoaded(group, key) ) {
@@ -101,6 +129,7 @@ ROAnything CacheHandler::Load(const char *group, const char *key,  CacheLoadPoli
 
 bool CacheHandler::IsLoaded(const char *group, const char *key)
 {
+	StartTrace1(CacheHandler.IsLoaded, "group [" << NotNull(group) << "] key [" << NotNull(key) << "]");
 	if (fCache.IsDefined(group)) {
 		return fCache[group].IsDefined(key);
 	}
@@ -109,26 +138,26 @@ bool CacheHandler::IsLoaded(const char *group, const char *key)
 
 ROAnything CacheHandler::Get(const char *group, const char *key)
 {
+	StartTrace1(CacheHandler.Get, "group [" << NotNull(group) << "] key [" << NotNull(key) << "]");
 	ROAnything cache(fCache);
 	return cache[group][key];
 }
 
 ROAnything CacheHandler::GetGroup(const char *group)
 {
+	StartTrace1(CacheHandler.GetGroup, "group [" << NotNull(group) << "]");
 	ROAnything cache(fCache);
 	return cache[group];
 }
 
 CacheHandler *CacheHandler::Get()
 {
-	if ( !fgCacheHandler) {
-		if ( ! fgCacheHandlerMutex ) {
-			fgCacheHandlerMutex = new Mutex("CacheHandler");
-		}
+	StartTrace(CacheHandler.Get);
+	if ( !fgCacheHandler ) {
 		MutexEntry me(*fgCacheHandlerMutex);
 		me.Use();
-
-		if ( ! fgCacheHandler ) {	// test again if changed while waiting for mutex
+		// test again if changed while waiting for mutex
+		if ( !fgCacheHandler ) {
 			fgCacheHandler = new CacheHandler();
 		}
 	}
@@ -138,7 +167,8 @@ CacheHandler *CacheHandler::Get()
 //---- CacheHandlerModule -----------------------------------------------------------
 RegisterModule(CacheHandlerModule);
 
-CacheHandlerModule::CacheHandlerModule(const char *name) : WDModule(name)
+CacheHandlerModule::CacheHandlerModule(const char *name)
+	: WDModule(name)
 {
 }
 
@@ -148,6 +178,7 @@ CacheHandlerModule::~CacheHandlerModule()
 
 bool CacheHandlerModule::Init(const ROAnything )
 {
+	StartTrace(CacheHandlerModule.Init);
 	SysLog::WriteToStderr("\tCacheHandler");
 	if (CacheHandler::Get()) {
 		SysLog::WriteToStderr(". done\n");
@@ -159,6 +190,7 @@ bool CacheHandlerModule::Init(const ROAnything )
 
 bool CacheHandlerModule::Finis()
 {
+	StartTrace(CacheHandlerModule.Finis);
 	SysLog::WriteToStderr("\tTerminating CacheHandler");
 	CacheHandler::Finis();
 	SysLog::WriteToStderr(" done\n");

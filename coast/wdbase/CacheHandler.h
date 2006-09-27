@@ -119,6 +119,8 @@ private:
 ****/
 class EXPORTDECL_WDBASE CacheHandler : public NotCloned
 {
+	friend class CacheHandlerMutexAllocator;
+
 public:
 	CacheHandler();
 	~CacheHandler();
