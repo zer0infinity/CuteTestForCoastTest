@@ -10,38 +10,7 @@
 #include "IFAObject.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "Dbg.h"
 #include "SysLog.h"
-
-//---- FinalCleaner ----------------------------------------------------------
-static FinalCleaner fgCleanerManager;
-
-FinalCleaner::FinalCleaner()
-	: fNext(0)
-{
-	if ( this != &fgCleanerManager ) {
-		Add(this);
-	}
-}
-
-FinalCleaner::~FinalCleaner()
-{
-	if ( this == &fgCleanerManager ) {
-		TerminateTracer();
-		while (fNext) {
-			FinalCleaner *ch = fNext;
-			fNext = fNext->fNext;
-			delete ch;
-		}
-	}
-}
-
-void FinalCleaner::Add(FinalCleaner *obj)
-{
-	FinalCleaner *t = fgCleanerManager.fNext;
-	fgCleanerManager.fNext = obj;
-	obj->fNext = t;
-}
 
 //---- NamedObject ----------------------------------------------------------
 NamedObject::NamedObject(const char *name)

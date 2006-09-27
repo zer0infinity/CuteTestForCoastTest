@@ -53,21 +53,4 @@ private:
 	NamedObject &operator=(const NamedObject &);
 };
 
-//!support class for cleaning things up in a deterministic sequence
-//!subclasses can define clean up code in their destructors. Objects are automatically added to the cleanup list
-//!and are destructed in the opposite order as they are added.
-class EXPORTDECL_FOUNDATION FinalCleaner
-{
-public:
-	//!constructor adds objects of subclass type to the list of cleanup objects
-	FinalCleaner();
-	//!destructor deletes all cleaner objects of the list in reverse order
-	virtual ~FinalCleaner();
-
-private:
-	//!used in the constructor to build the internal list
-	void Add(FinalCleaner *);
-	FinalCleaner *fNext;
-};
-
 #endif
