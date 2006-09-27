@@ -16,9 +16,10 @@
 		ActionsModule
 		MappersModule
 		RenderersModule
+		ServiceHandlersModule
 		AccessManagerModule
 	}
-
+	/ServiceHandlers {}
 	/Actions {
 		/CallDataAccessAction		{ CallDA }
 	}
