@@ -72,6 +72,9 @@ void AppLogTest::LogOkTest()
 			ctx.GetTmpStore()["TestMsg"] = "";
 			t_assertm(AppLogModule::Log(ctx, "NoHeaderLog"), "NoHeaderLog");
 
+			ctx.GetTmpStore()["NoRenderingLog"] = "NoRenderingLog log Test 1";
+			t_assertm(AppLogModule::Log(ctx, "NoRenderingLog"), "NoRenderingLog");
+
 			ctx.GetTmpStore()["TestMsg"] = "EmptyHeader log Test 1";
 			t_assertm(AppLogModule::Log(ctx, "EmptyHeaderLog"), "EmptyHeaderLog");
 			ctx.GetTmpStore()["TestMsg"] = "";
@@ -85,6 +88,7 @@ void AppLogTest::LogOkTest()
 
 			CheckFile(ctx, "AccessLog", "TestHeader\nAccess log Test 1 - Test\nAccess log Test 2 - Test\n");
 			CheckFile(ctx, "NoHeaderLog", "NoHeader log Test 1\n\n");
+			CheckFile(ctx, "NoRenderingLog", "NoRenderingTestHeader\nNoRenderingLog log Test 1\n");
 			CheckFile(ctx, "EmptyHeaderLog", "\nEmptyHeader log Test 1\n");
 			CheckFile(ctx, "ErrorLog", "ErrorlogTestHeader\nError 1 - Test\nError 2 - Test\n");
 

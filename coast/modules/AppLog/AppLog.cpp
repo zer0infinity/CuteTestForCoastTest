@@ -332,11 +332,18 @@ bool AppLogChannel::LogAll(Context &ctx, const ROAnything &config)
 {
 	StartTrace(AppLogChannel.LogAll);
 	bool suppressEmptyLines = GetChannelInfo()["SuppressEmptyLines"].AsBool(false);
+	bool rendering			= GetChannelInfo()["Rendering"].AsBool(true);
+	long logMsgSizeHint		= GetChannelInfo()["LogMsgSizeHint"].AsLong(128L);
 	if ( fLogStream && fLogStream->good() ) {
 		TraceAny(config, "config: ");
-		String logMsg(128);
-		Renderer::RenderOnString(logMsg, ctx, config);
-
+		String logMsg;
+		if ( rendering ) {
+			logMsg.Reserve(logMsgSizeHint);
+			Renderer::RenderOnString(logMsg, ctx, config);
+		} else {
+			logMsg.Reserve(logMsgSizeHint);
+			logMsg = ctx.GetTmpStore()[fName].AsString();
+		}
 		if (!suppressEmptyLines || logMsg.Length()) {
 			MutexEntry me(fChannelMutex);
 			me.Use();

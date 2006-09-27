@@ -36,6 +36,9 @@ conveniently. The method of this class are called by Coast
 				/Header		Anything or String	optional, single string or list of strings which get printed first in the newly created logfile
 				/SuppressEmptyLines	long		optional, default 0, set to 1 if you want to suppress logging of empty rendered log messages
 				/DoNotRotate	long			optional, default 0 (false), if set to 1, this log-channel will not rotate its logfile at the specified time
+				/Rendering	long				optional, default 1. If not set, a slot having the ChannelName in tmpStore is evaluated as String to extract
+												the log message. eg. ctx.GetTmpStore()["ChannelName"] = "my log message". A "\n" will be added after each messge line.
+				/LogMsgSizeHint	 long			optional, reserve LogMsgSizeHint bytes for the internal string holding the message to be logged.
 			}
 			...
 		}
