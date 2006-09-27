@@ -93,8 +93,8 @@ bool ParameterMapper::DoLoadConfig(const char *category)
 		return true;
 	}
 	fConfig = Anything();
-	Trace("No specific " << fName << " config found, returning false");
-	return false;
+	Trace("No specific " << fName << " config found, still returning true");
+	return true;
 }
 
 bool ParameterMapper::DoGetConfigName(const char *category, const char *, String &configFileName)
@@ -102,7 +102,7 @@ bool ParameterMapper::DoGetConfigName(const char *category, const char *, String
 	StartTrace(ParameterMapper.DoGetConfigName);
 
 	if (String("ParameterMapper").IsEqual(category)) {
-		configFileName = "InputMapperMeta";    // keep legacy name to avoid config problems
+		configFileName = "InputMapperMeta"; // keep legacy name to avoid config problems
 	} else {
 		configFileName = category;
 		configFileName << "Meta";
@@ -456,8 +456,8 @@ bool ResultMapper::DoLoadConfig(const char *category)
 		return true;
 	}
 	fConfig = Anything();
-	Trace("No specific " << fName << " config found, returning false");
-	return false;
+	Trace("No specific " << fName << " config found, still returning true");
+	return true;
 }
 
 bool ResultMapper::DoGetConfigName(const char *category, const char *objName, String &configFileName)
