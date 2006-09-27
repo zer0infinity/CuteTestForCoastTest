@@ -9,11 +9,49 @@
 //--- interface include ---------------------------------------------------------
 #include "config_foundation.h"
 
+//--- standard modules used ----------------------------------------------------
+#if defined(WIN32)
+#include "Socket.h"
+#endif
+#include "Dbg.h"
+#include "SysLog.h"
+#include "InitFinisManagerFoundation.h"
+
+static void Init()
+{
+	InitFinisManager::IFMTrace(">> foundation::Init\n");
+	// initialize syslog channel
+	SysLog::Init("Coast");
+	// initialize tracing - if available
+	ResetTracer();
+	// initialize InitFinisManagerFoundation relative components
+	if ( InitFinisManagerFoundation::Instance() != NULL ) {
+		InitFinisManagerFoundation::Instance()->Init();
+	}
+#if defined(WIN32)
+	Socket::InitWSock();
+#endif
+	InitFinisManager::IFMTrace("<< foundation::Init\n");
+}
+
+static void Finis()
+{
+	InitFinisManager::IFMTrace(">> foundation::Finis\n");
+#if defined(WIN32)
+	Socket::CleanupWSock();
+#endif
+	TerminateTracer();
+	// finalize InitFinisManagerFoundation relative components
+	if ( InitFinisManagerFoundation::Instance() != NULL ) {
+		InitFinisManagerFoundation::Instance()->Finis();
+		delete InitFinisManagerFoundation::Instance();
+	}
+	SysLog::Terminate();
+	InitFinisManager::IFMTrace("<< foundation::Finis\n");
+}
+
 #if defined(WIN32)
 #ifdef _DLL
-#include "Socket.h"
-#include "SysLog.h"
-
 // DllMain() is the entry-point function for this DLL.
 BOOL WINAPI DllMain(HANDLE hinstDLL,  // DLL module handle
 					DWORD fdwReason,                    // reason called
@@ -24,11 +62,7 @@ BOOL WINAPI DllMain(HANDLE hinstDLL,  // DLL module handle
 			// The DLL is loading due to process
 			// initialization or a call to LoadLibrary.
 		case DLL_PROCESS_ATTACH:
-			// initialize syslog channel
-			SysLog::Init("Coast");
-			SysLog::Info("foundation: DLL_PROCESS_ATTACH called");
-
-			Socket::InitWSock();
+			Init();
 			break;
 
 			// The attached process creates a new thread.
@@ -41,9 +75,7 @@ BOOL WINAPI DllMain(HANDLE hinstDLL,  // DLL module handle
 
 			// The DLL unloading due to process termination or call to FreeLibrary.
 		case DLL_PROCESS_DETACH:
-			SysLog::Info("foundation: DLL_PROCESS_DETACH called");
-			Socket::CleanupWSock();
-			SysLog::Terminate();
+			Finis();
 			break;
 
 		default:
@@ -54,6 +86,14 @@ BOOL WINAPI DllMain(HANDLE hinstDLL,  // DLL module handle
 	UNREFERENCED_PARAMETER(hinstDLL);
 	UNREFERENCED_PARAMETER(lpvReserved);
 }
-
 #endif	// _DLL
+#else
+extern "C" void __attribute__ ((constructor)) foundation_init()
+{
+	Init();
+}
+extern "C" void __attribute__ ((destructor)) foundation_fini()
+{
+	Finis();
+}
 #endif	// WIN32

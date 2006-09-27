@@ -9,11 +9,24 @@
 //--- interface include --------------------------------------------------------
 #include "config_compress.h"
 
+//--- standard modules used ----------------------------------------------------
+#include "InitFinisManager.h"
+
+static void Init()
+{
+	InitFinisManager::IFMTrace(">> compress::Init\n");
+	InitFinisManager::IFMTrace("<< compress::Init\n");
+}
+
+static void Finis()
+{
+	InitFinisManager::IFMTrace(">> compress::Finis\n");
+	InitFinisManager::IFMTrace("<< compress::Finis\n");
+}
+
 //--- used modules
 #if defined(WIN32)
-#include "SysLog.h"
 #ifdef _DLL
-
 // DllMain() is the entry-point function for this DLL.
 BOOL WINAPI	DllMain(HANDLE hinstDLL,	// DLL module handle
 					DWORD fdwReason,					// reason called
@@ -24,7 +37,7 @@ BOOL WINAPI	DllMain(HANDLE hinstDLL,	// DLL module handle
 			// The DLL is loading due to process
 			// initialization or a call to LoadLibrary.
 		case DLL_PROCESS_ATTACH:
-			SysLog::Info("compress: DLL_PROCESS_ATTACH called");
+			Init();
 			break;
 
 			// The attached process creates a new thread.
@@ -37,7 +50,7 @@ BOOL WINAPI	DllMain(HANDLE hinstDLL,	// DLL module handle
 
 			// The DLL unloading due to process termination or call to FreeLibrary
 		case DLL_PROCESS_DETACH:
-			SysLog::Info("compress: DLL_PROCESS_DETACH called");
+			Finis();
 			break;
 
 		default:
@@ -48,6 +61,14 @@ BOOL WINAPI	DllMain(HANDLE hinstDLL,	// DLL module handle
 	UNREFERENCED_PARAMETER(hinstDLL);
 	UNREFERENCED_PARAMETER(lpvReserved);
 }
-
 #endif	// _DLL
+#else
+extern "C" void __attribute__ ((constructor)) compress_init()
+{
+	Init();
+}
+extern "C" void __attribute__ ((destructor)) compress_fini()
+{
+	Finis();
+}
 #endif	// WIN32

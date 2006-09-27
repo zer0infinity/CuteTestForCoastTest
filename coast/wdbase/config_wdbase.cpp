@@ -6,16 +6,39 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
+//--- interface include ---------------------------------------------------------
+#include "config_wdbase.h"
+
+//--- project modules used -----------------------------------------------------
+#include "InitFinisManagerWDBase.h"
+
 //--- standard modules used ----------------------------------------------------
 #include "SysLog.h"
 
-//--- interface include ---------------------------------------------------------
-#include "config_wdbase.h"
+static void Init()
+{
+	InitFinisManager::IFMTrace(">> wdbase::Init\n");
+	// initialize InitFinisManagerWDBase relative components
+	if ( InitFinisManagerWDBase::Instance() != NULL ) {
+		InitFinisManagerWDBase::Instance()->Init();
+	}
+	InitFinisManager::IFMTrace("<< wdbase::Init\n");
+}
+
+static void Finis()
+{
+	InitFinisManager::IFMTrace(">> wdbase::Finis\n");
+	// finalize InitFinisManagerWDBase relative components
+	if ( InitFinisManagerWDBase::Instance() != NULL ) {
+		InitFinisManagerWDBase::Instance()->Finis();
+		delete InitFinisManagerWDBase::Instance();
+	}
+	InitFinisManager::IFMTrace("<< wdbase::Finis\n");
+}
 
 #if defined(WIN32)
 #ifdef _DLL
 #include "Threads.h"
-
 // DllMain() is the entry-point function for this DLL.
 BOOL WINAPI DllMain(HANDLE hinstDLL,  // DLL module handle
 					DWORD fdwReason,                    // reason called
@@ -26,7 +49,7 @@ BOOL WINAPI DllMain(HANDLE hinstDLL,  // DLL module handle
 			// The DLL is loading due to process
 			// initialization or a call to LoadLibrary.
 		case DLL_PROCESS_ATTACH:
-			SysLog::Info("wdbase: DLL_PROCESS_ATTACH called");
+			Init();
 			break;
 
 			// The attached process creates a new thread.
@@ -41,8 +64,8 @@ BOOL WINAPI DllMain(HANDLE hinstDLL,  // DLL module handle
 
 			// The DLL unloading due to process termination or call to FreeLibrary.
 		case DLL_PROCESS_DETACH:
-			SysLog::Info("wdbase: DLL_PROCESS_DETACH called");
 			TerminateKilledThreads();
+			Finis();
 			break;
 
 		default:
@@ -53,6 +76,14 @@ BOOL WINAPI DllMain(HANDLE hinstDLL,  // DLL module handle
 	UNREFERENCED_PARAMETER(hinstDLL);
 	UNREFERENCED_PARAMETER(lpvReserved);
 }
-
 #endif	// _DLL
+#else
+extern "C" void __attribute__ ((constructor)) wdbase_init()
+{
+	Init();
+}
+extern "C" void __attribute__ ((destructor)) wdbase_fini()
+{
+	Finis();
+}
 #endif	// WIN32

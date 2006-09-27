@@ -9,10 +9,23 @@
 //--- interface include ---------------------------------------------------------
 #include "config_security.h"
 
-#if defined(WIN32)
-#include "SysLog.h"
-#ifdef _DLL
+//--- standard modules used ----------------------------------------------------
+#include "InitFinisManager.h"
 
+static void Init()
+{
+	InitFinisManager::IFMTrace(">> security::Init\n");
+	InitFinisManager::IFMTrace("<< security::Init\n");
+}
+
+static void Finis()
+{
+	InitFinisManager::IFMTrace(">> security::Finis\n");
+	InitFinisManager::IFMTrace("<< security::Finis\n");
+}
+
+#if defined(WIN32)
+#ifdef _DLL
 // DllMain() is the entry-point function for this DLL.
 BOOL WINAPI DllMain(HANDLE hinstDLL,  // DLL module handle
 					DWORD fdwReason,                    // reason called
@@ -23,7 +36,7 @@ BOOL WINAPI DllMain(HANDLE hinstDLL,  // DLL module handle
 			// The DLL is loading due to process
 			// initialization or a call to LoadLibrary.
 		case DLL_PROCESS_ATTACH:
-			SysLog::Info("security: DLL_PROCESS_ATTACH called");
+			Init();
 			break;
 
 			// The attached process creates a new thread.
@@ -36,7 +49,7 @@ BOOL WINAPI DllMain(HANDLE hinstDLL,  // DLL module handle
 
 			// The DLL unloading due to process termination or call to FreeLibrary.
 		case DLL_PROCESS_DETACH:
-			SysLog::Info("security: DLL_PROCESS_DETACH called");
+			Finis();
 			break;
 
 		default:
@@ -47,6 +60,14 @@ BOOL WINAPI DllMain(HANDLE hinstDLL,  // DLL module handle
 	UNREFERENCED_PARAMETER(hinstDLL);
 	UNREFERENCED_PARAMETER(lpvReserved);
 }
-
 #endif	// _DLL
+#else
+extern "C" void __attribute__ ((constructor)) security_init()
+{
+	Init();
+}
+extern "C" void __attribute__ ((destructor)) security_fini()
+{
+	Finis();
+}
 #endif	// WIN32

@@ -9,11 +9,24 @@
 //--- interface include --------------------------------------------------------
 #include "config_AccessControl.h"
 
+//--- standard modules used ----------------------------------------------------
+#include "InitFinisManager.h"
+
+static void Init()
+{
+	InitFinisManager::IFMTrace(">> AccessControl::Init\n");
+	InitFinisManager::IFMTrace("<< AccessControl::Init\n");
+}
+
+static void Finis()
+{
+	InitFinisManager::IFMTrace(">> AccessControl::Finis\n");
+	InitFinisManager::IFMTrace("<< AccessControl::Finis\n");
+}
+
 //--- used modules
 #if defined(WIN32)
 #ifdef _DLL
-#include "SysLog.h"
-
 // DllMain() is the entry-point function for this DLL.
 BOOL WINAPI	DllMain(HANDLE hinstDLL,	// DLL module handle
 					DWORD fdwReason,					// reason called
@@ -24,7 +37,7 @@ BOOL WINAPI	DllMain(HANDLE hinstDLL,	// DLL module handle
 			// The DLL is loading due to process
 			// initialization or a call to LoadLibrary.
 		case DLL_PROCESS_ATTACH:
-			SysLog::Info("AccessControl: DLL_PROCESS_ATTACH called");
+			Init();
 			break;
 
 			// The attached process creates a new thread.
@@ -37,7 +50,7 @@ BOOL WINAPI	DllMain(HANDLE hinstDLL,	// DLL module handle
 
 			// The DLL unloading due to process termination or call to FreeLibrary
 		case DLL_PROCESS_DETACH:
-			SysLog::Info("AccessControl: DLL_PROCESS_DETACH called");
+			Finis();
 			break;
 
 		default:
@@ -48,6 +61,14 @@ BOOL WINAPI	DllMain(HANDLE hinstDLL,	// DLL module handle
 	UNREFERENCED_PARAMETER(hinstDLL);
 	UNREFERENCED_PARAMETER(lpvReserved);
 }
-
 #endif	// _DLL
+#else
+extern "C" void __attribute__ ((constructor)) AccessControl_init()
+{
+	Init();
+}
+extern "C" void __attribute__ ((destructor)) AccessControl_fini()
+{
+	Finis();
+}
 #endif	// WIN32

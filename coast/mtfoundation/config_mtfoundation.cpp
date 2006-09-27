@@ -9,13 +9,39 @@
 //--- interface include ---------------------------------------------------------
 #include "config_mtfoundation.h"
 
+//--- standard modules used ----------------------------------------------------
+#include "InitFinisManagerMTFoundation.h"
+
+#include "SysLog.h"
+#include "Threads.h"
+
+static void Init()
+{
+	InitFinisManager::IFMTrace(">> mtfoundation::Init\n");
+	// initialize InitFinisManagerMTFoundation relative components
+	if ( InitFinisManagerMTFoundation::Instance() != NULL ) {
+		InitFinisManagerMTFoundation::Instance()->Init();
+	}
+	InitFinisManager::IFMTrace("<< mtfoundation::Init\n");
+}
+
+static void Finis()
+{
+	InitFinisManager::IFMTrace(">> mtfoundation::Finis\n");
+	// finalize InitFinisManagerMTFoundation relative components
+	if ( InitFinisManagerMTFoundation::Instance() != NULL ) {
+		InitFinisManagerMTFoundation::Instance()->Finis();
+		delete InitFinisManagerMTFoundation::Instance();
+	}
+	InitFinisManager::IFMTrace("<< mtfoundation::Finis\n");
+}
+
 #if defined(WIN32)
 #ifdef _DLL
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
-#include "Threads.h"
 #include "StringStream.h"
 #include "AnyIterators.h"
+
 DWORD fgThreadPtrKey;
 Anything fgThreads;
 SimpleMutex fgThreadsMutex("fgThreadsMutex");
@@ -65,27 +91,14 @@ BOOL WINAPI DllMain(HANDLE hinstDLL,  // DLL module handle
 
 			// The DLL is loading due to process
 			// initialization or a call to LoadLibrary.
-		case DLL_PROCESS_ATTACH: {
-			SysLog::Info("mtfoundation: DLL_PROCESS_ATTACH called");
-			SysLog::Info("mtfoundation: allocating TLS indexes");
-			// Allocate a TLS index.
-			if (THRKEYCREATE(MT_Storage::fgAllocatorKey, 0)) {
-				SysLog::Error("TlsAlloc of fgAllocatorKey failed");
-				return false;
-			}
-			if (THRKEYCREATE(Thread::fgCleanerKey, 0)) {
-				SysLog::Error("TlsAlloc of Thread::fgCleanerKey failed");
-			}
+		case DLL_PROCESS_ATTACH:
+			Init();
 			if (THRKEYCREATE(fgThreadPtrKey, 0)) {
 				SysLog::Error("TlsAlloc of fgThreadPtrKey failed");
 			}
-			if (THRKEYCREATE(Mutex::fgCountTableKey, 0)) {
-				SysLog::Error("TlsAlloc of Mutex::fgCountTableKey failed");
-			}
 			break;
-		}
 
-		// The attached process creates a new thread.
+			// The attached process creates a new thread.
 		case DLL_THREAD_ATTACH:
 			SysLog::Info(String("mtfoundation: DLL_THREAD_ATTACH for [") << Thread::MyId() << "]");
 			break;
@@ -109,16 +122,11 @@ BOOL WINAPI DllMain(HANDLE hinstDLL,  // DLL module handle
 		}
 
 		// The DLL unloading due to process termination or call to FreeLibrary.
-		case DLL_PROCESS_DETACH: {
+		case DLL_PROCESS_DETACH:
 			TerminateKilledThreads();
-			// Release the allocated memory for this thread.
-			THRKEYDELETE(MT_Storage::fgAllocatorKey);
 			THRKEYDELETE(fgThreadPtrKey);
-			THRKEYDELETE(Thread::fgCleanerKey);
-			THRKEYDELETE(Mutex::fgCountTableKey);
-			SysLog::Info("mtfoundation: DLL_PROCESS_DETACH called");
+			Finis();
 			break;
-		}
 
 		default:
 			break;
@@ -128,6 +136,14 @@ BOOL WINAPI DllMain(HANDLE hinstDLL,  // DLL module handle
 	UNREFERENCED_PARAMETER(hinstDLL);
 	UNREFERENCED_PARAMETER(lpvReserved);
 }
-
 #endif	// _DLL
+#else
+extern "C" void __attribute__ ((constructor)) mtfoundation_init()
+{
+	Init();
+}
+extern "C" void __attribute__ ((destructor)) mtfoundation_fini()
+{
+	Finis();
+}
 #endif	// WIN32

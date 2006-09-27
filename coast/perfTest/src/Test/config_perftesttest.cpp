@@ -9,21 +9,34 @@
 //--- interface	----
 #include "config_perftesttest.h"
 
-#if	defined(WIN32)
-#ifdef _DLL
-#include "SysLog.h"
+//--- standard modules used ----------------------------------------------------
+#include "InitFinisManager.h"
 
+static void Init()
+{
+	InitFinisManager::IFMTrace(">> perftesttest::Init\n");
+	InitFinisManager::IFMTrace("<< perftesttest::Init\n");
+}
+
+static void Finis()
+{
+	InitFinisManager::IFMTrace(">> perftesttest::Finis\n");
+	InitFinisManager::IFMTrace("<< perftesttest::Finis\n");
+}
+
+#if defined(WIN32)
+#ifdef _DLL
 // DllMain() is the entry-point function for this DLL.
-BOOL WINAPI	DllMain(HANDLE hinstDLL,	// DLL module handle
-					DWORD fdwReason,					// reason called
-					LPVOID lpvReserved)					// reserved
+BOOL WINAPI DllMain(HANDLE hinstDLL,  // DLL module handle
+					DWORD fdwReason,                    // reason called
+					LPVOID lpvReserved)                 // reserved
 {
 	switch (fdwReason) {
 
 			// The DLL is loading due to process
 			// initialization or a call to LoadLibrary.
 		case DLL_PROCESS_ATTACH:
-			SysLog::Info("perftesttest: DLL_PROCESS_ATTACH called");
+			Init();
 			break;
 
 			// The attached process creates a new thread.
@@ -34,9 +47,9 @@ BOOL WINAPI	DllMain(HANDLE hinstDLL,	// DLL module handle
 		case DLL_THREAD_DETACH:
 			break;
 
-			// The DLL unloading due to process termination or call to FreeLibrary
+			// The DLL unloading due to process termination or call to FreeLibrary.
 		case DLL_PROCESS_DETACH:
-			SysLog::Info("perftesttest: DLL_PROCESS_DETACH called");
+			Finis();
 			break;
 
 		default:
@@ -47,6 +60,14 @@ BOOL WINAPI	DllMain(HANDLE hinstDLL,	// DLL module handle
 	UNREFERENCED_PARAMETER(hinstDLL);
 	UNREFERENCED_PARAMETER(lpvReserved);
 }
-
 #endif	// _DLL
+#else
+extern "C" void __attribute__ ((constructor)) perftesttest_init()
+{
+	Init();
+}
+extern "C" void __attribute__ ((destructor)) perftesttest_fini()
+{
+	Finis();
+}
 #endif	// WIN32
