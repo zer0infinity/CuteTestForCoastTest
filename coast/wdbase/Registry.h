@@ -29,9 +29,11 @@ public:
 	//!deletes internal table
 	~Registry();
 
-	//!installs objects into registry driven by installerSpec using InstallerPolicy ip
-	//! \param installerSpec an Anything defining the Objects aliasing or hierarchy structure which should be installed
-	//! \param ip the InstallerPolicy that interprets the installerSpec; it creates and installs objects in the registry as necessary
+	/*! Installs objects into registry driven by installerSpec using InstallerPolicy ip. It creates registry entries according to the installer policy passed in.
+		\param installerSpec an Anything defining the Objects aliasing or hierarchy structure which should be installed
+		\param ip the InstallerPolicy that interprets the installerSpec; it creates and installs objects in the registry as necessary
+		\return true in case installation was successful
+		\note No mutex is set to protect concurrent access. Exclusive access has to be guaranteed by caller! */
 	bool Install(const ROAnything installerSpec, InstallerPolicy *ip);
 
 	//!cleans up registry according to the TerminationPolicy supplied; the registry is no longer usable after that
@@ -57,9 +59,10 @@ public:
 
 	friend class RegistryIterator;
 
-	//!returns the registry for category; creates it if it is not already there; Caution create registries before starting threads
-	//! \param category the name for the registry; usually a class name
-	//! \return a Registry object already defined or newly created
+	/*! Returns the registry for category; creates it if it is not already there.
+		\param category Name for the registry; usually a name of the 'managing' object used to initialile/finalize belonging objects
+		\return Registry object for the category/group given. If the object does not yet exist, a new one will be created
+		\note Create registries before starting threads which could possibly use it. For performance reasons, this was intentionally left out! */
 	static Registry *GetRegistry(const char *category);
 
 	//!creates a registry and inserts it into the global registry table

@@ -15,23 +15,6 @@
 
 //--- c-library modules used ---------------------------------------------------
 
-//---- RegistryCleaner -----------------------------------------------------------------------
-
-class RegistryCleaner: FinalCleaner
-{
-public:
-	RegistryCleaner() {
-		StartTrace(RegistryCleaner.RegistryCleaner);
-	}
-	~RegistryCleaner() {
-		StartTrace(RegistryCleaner.~RegistryCleaner);
-	}
-
-private:
-	RegistryCleaner(const RegistryCleaner &);
-	RegistryCleaner &operator=(const RegistryCleaner &);
-};
-
 //---- Registry -----------------------------------------------------------------------
 bool Registry::fgFinalize = false;
 void Registry::SetFinalize(bool finalize)
@@ -39,7 +22,9 @@ void Registry::SetFinalize(bool finalize)
 	fgFinalize = finalize;
 }
 
-Registry::Registry(const char *registryname) : NotCloned(registryname), fTable(0)
+Registry::Registry(const char *registryname)
+	: NotCloned(registryname)
+	, fTable(0)
 {
 	// don't set fTable to 0 because sometimes Register got called earlier
 }
@@ -59,20 +44,13 @@ Registry::~Registry()
 
 bool Registry::Terminate(TerminationPolicy *terminator)
 {
-//	remove contents of registry and free objects due to
-// 	termination policy
+	bool bRet = true;
 	if ( terminator ) {
-		terminator->Terminate(this);
+		bRet = terminator->Terminate(this);
 	}
-
-	return true;
-
+	return bRet;
 }
 
-// Install: creates registry entries
-// according to installer policy
-// no mutex is set exclusive access
-// has to be guaranteed by caller
 bool Registry::Install(const ROAnything installerSpec, InstallerPolicy *ip)
 {
 	StartTrace1(Registry.Install, " in &" << (long)this);
@@ -90,16 +68,20 @@ RegisterableObject *Registry::Find(const char *name)
 {
 	// try to find object with name
 	Assert(name);
-	if ( name && GetTable().IsDefined(name) ) { // make it robust
-		return (RegisterableObject *)GetTable()[name].AsIFAObject(0);
+	RegisterableObject *r = 0;
+	// make it robust
+	if ( name && GetTable().IsDefined(name) ) {
+		r = (RegisterableObject *)GetTable()[name].AsIFAObject(0);
 	}
-	return (RegisterableObject *)0;
+	return r;
 }
 
 void Registry::RegisterRegisterableObject(const char *name, RegisterableObject *o)
 {
+	StartTrace1(Registry.RegisterRegisterableObject, "name [" << NotNull(name) << "]");
 	Assert(name && o);
-	if ( name && o ) { // make it robust
+	// make it robust
+	if ( name && o ) {
 		GetTable()[name] = Anything(o);
 	}
 }
@@ -107,9 +89,8 @@ void Registry::RegisterRegisterableObject(const char *name, RegisterableObject *
 void Registry::UnregisterRegisterableObject(const char *name)
 {
 	StartTrace1(Registry.UnregisterRegisterableObject, "name [" << NotNull(name) << "]");
-	Assert(name);
-	if ( name && GetTable().IsDefined(name) ) { // make it robust
-		RegisterableObject *o = Find(name);
+	RegisterableObject *o = Find(name);
+	if ( o ) {
 		GetTable().Remove(name);
 		// removing aliases
 		RemoveAliases(o);
@@ -147,7 +128,7 @@ Registry *Registry::GetRegistry(const char *category)
 {
 	Registry *r = (Registry *)GetRegROTable()[category].AsIFAObject(0);
 	if ( !r && !fgFinalize ) {
-		return MakeRegistry(category);
+		r = MakeRegistry(category);
 	}
 	return r;
 }
@@ -156,11 +137,10 @@ Registry *Registry::MakeRegistry(const char *category)
 {
 	String msg("Creating Registry for: <");
 	msg << NotNull(category) << ">";
-//#if !defined (__linux__) && !defined (_AIX) && !defined(WIN32)   //static Initialisation problem
-//	StartTrace(Registry.MakeRegistry);
-//	Trace(msg);
-//#endif
+	StartTrace1(Registry.MakeRegistry, "category <" << NotNull(category) << ">");
+
 	SysLog::Info(msg);
+
 	Registry *r = new Registry(category);
 	GetRegTable()[category] = Anything(r, Storage::Global()); // r stored as pointer to IFAObject (AB)
 	return r;
@@ -168,12 +148,11 @@ Registry *Registry::MakeRegistry(const char *category)
 
 Registry *Registry::RemoveRegistry(const char *category)
 {
-	StartTrace(Registry.RemoveRegistry);
-
 	String msg("Removing Registry for: <");
 	msg << NotNull(category) << ">";
+	StartTrace1(Registry.RemoveRegistry, "category <" << NotNull(category) << ">");
+
 	SysLog::Info(msg);
-	Trace(msg);
 
 	Registry *r = 0;
 	Anything a;
@@ -211,9 +190,6 @@ Anything &Registry::GetRegTable()
 	static Anything fake; // just to let the compiler be happy
 	if (!fgRegistryArray && !fgFinalize) {
 		fgRegistryArray = new MetaThing(Storage::Global()); // this is the registry of Registry s
-		// will be removed from FinalCleaner at program termination
-		// DO NOT DELETE THIS OBJECT MANUALLY
-		new RegistryCleaner();
 	}
 	if ( fgFinalize && fgRegistryArray ) {
 		FinalizeRegArray(*fgRegistryArray);
@@ -241,11 +217,11 @@ ROAnything &Registry::GetRegROTable()
 }
 
 //---- Registry -----------------------------------------------------------------------
-RegistryIterator::RegistryIterator(Registry *rg, bool forward) :
-	fRegistry(rg),
-	fForward(forward),
-	fStart((forward) ? -1 : -2),
-	fEnd((forward) ? -2 : -1)
+RegistryIterator::RegistryIterator(Registry *rg, bool forward)
+	: fRegistry(rg)
+	, fForward(forward)
+	, fStart((forward) ? -1 : -2)
+	, fEnd((forward) ? -2 : -1)
 {
 	StartTrace(RegistryIterator.Ctor);
 	if (fRegistry) {
@@ -265,7 +241,6 @@ RegistryIterator::RegistryIterator(Registry *rg, bool forward) :
 RegistryIterator::~RegistryIterator()
 {
 	StartTrace(RegistryIterator.Dtor);
-
 }
 
 bool RegistryIterator::HasMore()
