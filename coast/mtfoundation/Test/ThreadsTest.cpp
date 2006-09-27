@@ -500,7 +500,7 @@ void ThreadsTest::MultiSemaphoreTest()
 	// 4 acqd
 	CheckSemaphoreCount(sema, 1);
 
-	SemaTestThread tt1(sema, false), tt2(sema, false), tt3(sema, false), tt4(sema, false), tt5(sema, false);
+	SemaTestThread tt1(sema, false), tt2(sema, false), tt3(sema, false), tt4(sema, false), tt5(sema, false), tt6(sema, false);
 	// this thread should be able to acquire sema and then terminate
 
 	tt1.Start();
@@ -510,12 +510,12 @@ void ThreadsTest::MultiSemaphoreTest()
 	t_assertm(sema.TryAcquire() == false, "should have no more resources");
 	// 5 acqd
 	// now start 5 threads and check if all block first and then all terminate after releasing the semas
-	tt1.Start();
+	tt6.Start();
 	tt2.Start();
 	tt3.Start();
 	tt4.Start();
 	tt5.Start();
-	t_assertm(tt1.CheckState(Thread::eRunning, 1), "State should be eRunning");
+	t_assertm(tt6.CheckState(Thread::eRunning, 1), "State should be eRunning");
 	t_assertm(tt2.CheckState(Thread::eRunning, 1), "State should be eRunning");
 	t_assertm(tt3.CheckState(Thread::eRunning, 1), "State should be eRunning");
 	t_assertm(tt4.CheckState(Thread::eRunning, 1), "State should be eRunning");
@@ -529,7 +529,7 @@ void ThreadsTest::MultiSemaphoreTest()
 	CheckSemaphoreCount(sema, 0);
 
 	// now all threads should have terminated
-	t_assertm(tt1.CheckState(Thread::eTerminated, 1), "State should be eTerminated");
+	t_assertm(tt6.CheckState(Thread::eTerminated, 1), "State should be eTerminated");
 	t_assertm(tt2.CheckState(Thread::eTerminated, 1), "State should be eTerminated");
 	t_assertm(tt3.CheckState(Thread::eTerminated, 1), "State should be eTerminated");
 	t_assertm(tt4.CheckState(Thread::eTerminated, 1), "State should be eTerminated");
@@ -716,7 +716,7 @@ void ThreadsTest::RecursiveMutexTest()
 
 void ThreadsTest::CheckSemaphoreCount(Semaphore &sema, int expected)
 {
-	StartTrace(ThreadsTest.SimpleRecursiveTryLockTest);
+	StartTrace(ThreadsTest.CheckSemaphoreCount);
 #if !defined(WIN32) && ( !defined(__sun) || defined(USE_POSIX) )
 	int count;
 	int ret = sema.GetCount(count);
