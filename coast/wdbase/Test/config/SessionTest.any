@@ -27,8 +27,8 @@
 		/BannerPage Login
 	}
 	/Modules { # just install one module
-		RolesModule
 		CacheHandlerModule
+		RolesModule
 		PagesModule
 		RenderersModule
 	}

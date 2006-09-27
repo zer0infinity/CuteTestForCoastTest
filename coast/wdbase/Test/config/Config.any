@@ -14,14 +14,15 @@
 	/DLL {
 	}
 	/Modules {
+		CacheHandlerModule
 		TimeLoggingModule
 		RolesModule
 		PagesModule
 		RenderersModule
 		AcceptorFactoriesModule
 		ServerPoolsManagerInterfacesModule
-		ServersModule
 		ServiceDispatchersModule
+		ServersModule
 		LocalizationModule
 	}
 

@@ -8,6 +8,13 @@
 
 {
 
+	/Modules {
+		CacheHandlerModule
+		MappersModule
+	}
+
+	/Mappers {}
+
 	/ConfigTest {
 		/LiteralConfig {
 			/TmpStore {
@@ -92,6 +99,5 @@
 				/ButThisIsLookedUp "looked up in tmp store"
 			}
 		}
-
 	}
 }

@@ -9,7 +9,8 @@
 {
 
 	/Modules {
-		SecurityModule
+		CacheHandlerModule
+		MappersModule
 	}
-	/SecurityModule {}
+	/Mappers {}
 }

@@ -16,10 +16,12 @@
 	/AppId	wdbasetest
 
 	/Modules {
+		CacheHandlerModule
+		RenderersModule
 		AcceptorFactoriesModule
 		ServerPoolsManagerInterfacesModule
-		ServersModule
 		ServiceDispatchersModule
+		ServersModule
 	}
 
 	/ServerPoolsManagerInterfaces {
@@ -44,7 +46,6 @@
 			/TestDispatcher { SecondTestDipatcher }
 		}
 	}
-
 	/AcceptorFactories {
 		/AcceptorFactory {
 			TCP5010  TCP5011
@@ -57,4 +58,7 @@
 	/TCP5011 {
 	  /Port	55011
 	}
+
+	/Actions { }
+	/Renderers { }
 }

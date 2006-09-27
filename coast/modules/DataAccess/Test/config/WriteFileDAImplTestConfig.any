@@ -11,8 +11,9 @@
 	/DLL {
 	}
 	/Modules {
-		DataAccessImplsModule
+		CacheHandlerModule
 		MappersModule
+		DataAccessImplsModule
 		ActionsModule
 	}
 

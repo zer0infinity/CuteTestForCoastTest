@@ -17,7 +17,7 @@
 		/EnableAll	33
 	}
 	/Role {
-		/MainSwitch	0
+		/MainSwitch	33
 		/EnableAll	33
 	}
 	/RoleTest {
@@ -25,12 +25,12 @@
 		/EnableAll	33
 	}
 	/Registry {
-		/MainSwitch	0
+		/MainSwitch	33
 		/EnableAll	33
 	}
 	/RegisterableObject {
-		/MainSwitch	10
-		/EnableAll	20
+		/MainSwitch	33
+		/EnableAll	33
 	}
 	/Mutex {
 		/MainSwitch	1
@@ -51,8 +51,8 @@
 		/CheckRunningState	33
 	}
 	/Action {
-		/MainSwitch	1220
-		/EnableAll	1221
+		/MainSwitch	33
+		/EnableAll	33
 	}
 	/TestAction {
 		/MainSwitch	100
@@ -83,8 +83,8 @@
 		/EnableAll	33
 	}
 	/AcceptorFactoriesModule {
-		/MainSwitch	200
-		/EnableAll	200
+		/MainSwitch	33
+		/EnableAll	33
 	}
 	/InterruptHandlerTest {
 		/MainSwitch			0
@@ -147,33 +147,61 @@
 	/Context {
 		/MainSwitch		33
 		/EnableAll		33
-		/Find 			10000
-		/FindIndex 		10000
+		/Find			-33
+		/FindIndex 		-33
 		/SetPage  		10000
 		/GetPage 		10000
 		/Replace 		10000
 		/Remove 		10000
 		/Push		33
 		/PopStore		33
-		/DoLookup		0
-		/LookupStores	33
+		/DoLookup		-33
+		/LookupStores	-33
+		/LookupStack	-33
+		/LookupLocalized -33
+		/LookupObjects	-33
+		/LookupRequest	-33
 		/GetStore		33
-		/IntGetStore	33
+		/IntGetStore	-33
 	}
 	/ContextTest {
-		/MainSwitch	33
+		/MainSwitch	0
 		/EnableAll	33
 	}
 	/ConfNamedObject {
-		/MainSwitch			0
+		/MainSwitch			33
 		/EnableAll			33
 	}
 	/HierarchConfNamed {
-		/MainSwitch			0
+		/MainSwitch			33
 		/EnableAll			33
 	}
 	/HierarchyInstaller {
-		/MainSwitch			0
+		/MainSwitch			33
+		/EnableAll			33
+	}
+	/AliasInstaller {
+		/MainSwitch			33
+		/EnableAll			33
+	}
+	/InstallerPolicy {
+		/MainSwitch			33
+		/EnableAll			33
+	}
+	/TerminationPolicy {
+		/MainSwitch			33
+		/EnableAll			33
+	}
+	/AliasTerminator {
+		/MainSwitch			33
+		/EnableAll			33
+	}
+	/ServerReInitTerminator {
+		/MainSwitch			33
+		/EnableAll			33
+	}
+	/ServerReInitInstaller {
+		/MainSwitch			33
 		/EnableAll			33
 	}
 	/LookupInterface {
@@ -181,7 +209,7 @@
 		/EnableAll			33
 	}
 	/LoopbackProcessor {
-		/MainSwitch	33
+		/MainSwitch	0
 		/EnableAll	33
 	}
 	/PeriodicAction {
@@ -211,11 +239,11 @@
 		/EnableAll	1260
 	}
 	/Page {
-		/MainSwitch	10000
-		/EnableAll	10000
+		/MainSwitch	33
+		/EnableAll	33
 	}
 	/Session {
-		/MainSwitch	0
+		/MainSwitch	33
 		/EnableAll	33
 	}
 	/PageNameRenderer {
@@ -223,7 +251,7 @@
 		/EnableAll	10000
 	}
 	/SessionTest {
-		/MainSwitch	0
+		/MainSwitch	33
 		/EnableAll	33
 	}
 	/SessionListManagerTest {
@@ -269,15 +297,16 @@
 		/EnableAll	5100
 	}
 	/Application {
-		/MainSwitch	0
+		/MainSwitch	33
 		/EnableAll	33
 	}
 	/AppBooter {
-		/MainSwitch	0
+		/MainSwitch	33
 		/EnableAll	33
+		/MergeConfigWithArgs	-33
 	}
 	/AppBooterTest {
-		/MainSwitch	0
+		/MainSwitch	33
 		/EnableAll	33
 	}
 	/RequestThreadsManager {
@@ -317,41 +346,41 @@
 		/EnableAll	7100
 	}
 	/LeaderFollowerPool {
-		/MainSwitch	33
+		/MainSwitch	0
 		/EnableAll	33
 	}
 	/MasterServerTest {
-		/MainSwitch	0
+		/MainSwitch	33
 		/EnableAll	33
 	}
 	/MasterServer {
-		/MainSwitch	0
+		/MainSwitch	33
 		/EnableAll	33
 	}
 	/ServerThread {
-		/MainSwitch	0
+		/MainSwitch	33
 		/EnableAll	33
 	}
 	/Server {
-		/MainSwitch	10
+		/MainSwitch	33
 		/EnableAll	33
 		/DoLookup	33
 	}
 	/ServerTest {
-		/MainSwitch	0
+		/MainSwitch	33
 		/EnableAll	33
 	}
 	/ServerThreadPoolsManager {
-		/MainSwitch	0
+		/MainSwitch	33
 		/EnableAll	33
 	}
 	/ServerLFThreadPoolsManager {
-		/MainSwitch	0
+		/MainSwitch	33
 		/EnableAll	33
 	}
 	/WDModule {
-		/MainSwitch	8200
-		/EnableAll	8300
+		/MainSwitch	33
+		/EnableAll	33
 	}
 	/URLUtils {
 		/MainSwitch	0
@@ -446,5 +475,9 @@
 		/MainSwitch				10
 		/EnableAll				10
 		/ProcessRequestTest		10
+	}
+	/CacheHandler {
+		/MainSwitch				33
+		/EnableAll				33
 	}
 }

@@ -9,7 +9,13 @@
 {
 
 	/Modules {
-		SecurityModule
+		CacheHandlerModule
+		MappersModule
+		ServiceHandlersModule
+		ServiceDispatchersModule
 	}
-	/SecurityModule {}
+	/Mappers {}
+	/ServiceHandlers {}
+	/ServiceDispatchers { }
+	/DataAccessImpls {}
 }

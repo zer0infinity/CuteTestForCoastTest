@@ -8,6 +8,11 @@
 
 {
 
+	/Modules {
+		CacheHandlerModule
+		MappersModule
+	}
+
 	/testInt	10
 	/testBool	0
 	/testLong	123

@@ -15,10 +15,12 @@
 	/AppId	wdbasetest
 
 	/Modules {
+		CacheHandlerModule
+		RenderersModule
 		AcceptorFactoriesModule
 		ServerPoolsManagerInterfacesModule
-		ServersModule
 		ServiceDispatchersModule
+		ServersModule
 	}
 
 	/ServerPoolsManagerInterfaces {
@@ -126,4 +128,5 @@
 		}
 	}
 	/InitRunResetRunTerminateTest %InitRunTerminateTest
+	/Renderers { }
 }

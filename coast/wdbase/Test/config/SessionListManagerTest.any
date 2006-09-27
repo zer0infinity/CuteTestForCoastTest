@@ -9,7 +9,13 @@
 {
 
 	/Modules {
+		CacheHandlerModule
+		RolesModule
 		SecurityModule
+		ServersModule
+		SessionListManager
 	}
+	/SessionListManager {}
+	/Roles {}
 	/SecurityModule {}
 }
