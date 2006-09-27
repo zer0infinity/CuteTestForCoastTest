@@ -11,9 +11,12 @@
 #define _POSIX_SOURCE 1
 #endif
 
+// Uncomment if you want no memory mapped streams.
+//#define NO_MMAP_STREAM
+
 //--- interface include --------------------------------------------------------
 #include "System.h"
-#if !defined (__370__) && !defined(WIN32)
+#if !defined (__370__) && !defined(WIN32) &&!defined(NO_MMAP_STREAM)
 #include "MmapStream.h"
 #else
 #if defined(ONLY_STD_IOSTREAM)
@@ -513,10 +516,10 @@ iostream *System::DoOpenStream(String &resultPath, const char *name, int mode, b
 		mode |= ios::out;
 	}
 	if ( IsRegularFile(name) || (mode & ios::out) ) {
-#if !defined (__370__) && !defined(WIN32) && !defined(_ARCH_COM)
+#if !defined (__370__) && !defined(WIN32) && !defined(_ARCH_COM) && !defined(NO_MMAP_STREAM)
 		MmapStream *fp = new MmapStream(name, mode);
 #else
-		fstream *fp = new fstream(name, mode);
+		fstream *fp = new fstream(name, (std::_Ios_Openmode) mode);
 #endif
 		if ( fp->good() && fp->rdbuf()->is_open() )	{
 			resultPath = name;
