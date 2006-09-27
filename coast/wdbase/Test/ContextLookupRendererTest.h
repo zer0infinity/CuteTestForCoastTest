@@ -10,8 +10,8 @@
 #define _ContextLookupRendererTest_h_
 
 #include "TestCase.h"
-#include "Context.h"
 #include "StringStream.h"
+#include "Anything.h"
 
 //---- ContextLookupRendererTest -----------------------------------------------------------
 
@@ -19,10 +19,10 @@ class ContextLookupRendererTest : public TestFramework::TestCase
 {
 public:
 	ContextLookupRendererTest(TString tstrName);
-	virtual ~ContextLookupRendererTest();
+	virtual ~ContextLookupRendererTest() {};
 
 	static Test *suite ();
-	void setUp ();
+
 protected:
 	void ContextCharPtr();
 	void ContextLong();
@@ -36,7 +36,6 @@ protected:
 	void NestedLookup();
 	void NestedLookupWithoutSlotnames();
 
-	Context fContext;
 	OStringStream fReply;
 	Anything fConfig;
 };

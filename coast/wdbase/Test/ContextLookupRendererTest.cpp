@@ -20,21 +20,14 @@
 
 ContextLookupRendererTest::ContextLookupRendererTest (TString tname)
 	: TestCaseType(tname)
-	, fContext(Anything(), Anything(), 0, 0, 0, 0)
-	, fReply()
-	, fConfig()
-{};
-ContextLookupRendererTest::~ContextLookupRendererTest() {};
-
-void ContextLookupRendererTest::setUp ()
 {
-
 }
 
 void ContextLookupRendererTest::ContextCharPtr()
 // test the date renderer with simple formatting strings
 {
 	ContextLookupRenderer contextLookupRenderer("");
+	Context fContext;
 	Anything tmpStore(fContext.GetTmpStore());
 	String testString = "EinString";
 	String testKey = "EinSchlüssel";
@@ -53,6 +46,7 @@ void ContextLookupRendererTest::ContextLong()
 // test the date renderer with simple formatting strings
 {
 	ContextLookupRenderer contextLookupRenderer("");
+	Context fContext;
 	Anything tmpStore(fContext.GetTmpStore());
 	long 	testLong = 123456;
 	String 	testKey = "EinSchlüssel";
@@ -71,6 +65,7 @@ void ContextLookupRendererTest::ContextDouble()
 // test the date renderer with simple formatting strings
 {
 	ContextLookupRenderer contextLookupRenderer("");
+	Context fContext;
 	Anything tmpStore(fContext.GetTmpStore());
 	double 	testDouble 	= 123.456;
 	String 	testKey 	= "EinSchlüssel";
@@ -89,6 +84,7 @@ void ContextLookupRendererTest::ContextNull()
 // test the date renderer with simple formatting strings
 {
 	ContextLookupRenderer contextLookupRenderer("");
+	Context fContext;
 	Anything tmpStore(fContext.GetTmpStore());
 	Anything NullAny;
 	String 	testKey 	= "EinSchlüssel";
@@ -107,6 +103,7 @@ void ContextLookupRendererTest::ContextCharPtrConfigArray()
 // test the date renderer with simple formatting strings
 {
 	ContextLookupRenderer contextLookupRenderer("");
+	Context fContext;
 	Anything tmpStore(fContext.GetTmpStore());
 	String testString = "EinString";
 	String testKey = "EinSchlüssel";
@@ -124,6 +121,8 @@ void ContextLookupRendererTest::ContextCharPtrConfigArray()
 void ContextLookupRendererTest::ContextCharPtrDef()
 // test the date renderer with simple formatting strings
 {
+	Context fContext;
+
 	ContextLookupRenderer contextLookupRenderer("");
 	String testString = "EinString";
 
@@ -139,6 +138,8 @@ void ContextLookupRendererTest::ContextCharPtrDef()
 void ContextLookupRendererTest::ContextLongDef()
 // test the date renderer with simple formatting strings
 {
+	Context fContext;
+
 	ContextLookupRenderer contextLookupRenderer("");
 	long 	testLong = 123456;
 
@@ -154,6 +155,8 @@ void ContextLookupRendererTest::ContextLongDef()
 void ContextLookupRendererTest::ContextDoubleDef()
 // test the date renderer with simple formatting strings
 {
+	Context fContext;
+
 	ContextLookupRenderer contextLookupRenderer("");
 	double 	testDouble 	= 123.456;
 
@@ -169,6 +172,8 @@ void ContextLookupRendererTest::ContextDoubleDef()
 void ContextLookupRendererTest::ContextNullDef()
 // test the date renderer with simple formatting strings
 {
+	Context fContext;
+
 	ContextLookupRenderer contextLookupRenderer("");
 	Anything NullAny;
 
@@ -185,6 +190,7 @@ void ContextLookupRendererTest::NestedLookup()
 // test the lookup in nested things
 {
 	ContextLookupRenderer contextLookupRenderer("");
+	Context fContext;
 	Anything tmpStore(fContext.GetTmpStore());
 	String testString1 = "AString";
 	String testString2 = "Two Strings";
@@ -245,6 +251,7 @@ void ContextLookupRendererTest::NestedLookupWithoutSlotnames()
 // test the lookup in nested things without using slotnames (positional params)
 {
 	ContextLookupRenderer contextLookupRenderer("");
+	Context fContext;
 	Anything tmpStore(fContext.GetTmpStore());
 	String testString1 = "AnotherString";
 	String testString2 = "Two other Strings";
@@ -319,5 +326,4 @@ Test *ContextLookupRendererTest::suite ()
 	ADD_CASE(testSuite, ContextLookupRendererTest, NestedLookupWithoutSlotnames);
 
 	return testSuite;
-
 }

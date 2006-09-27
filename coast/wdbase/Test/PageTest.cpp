@@ -57,6 +57,7 @@ void PageTest::FinishTest()
 	StartTrace(PageTest.FinishTest);
 
 	Page p("test");
+	p.Initialize("Page");
 	String transitionToken;
 
 	transitionToken = "NoAction";
@@ -96,6 +97,7 @@ void PageTest::PrepareTest()
 	StartTrace(PageTest.PrepareTest);
 
 	Page p("test");
+	p.Initialize("Page");
 	String transitionToken("");
 
 	t_assert(p.Prepare(transitionToken, fCtx));

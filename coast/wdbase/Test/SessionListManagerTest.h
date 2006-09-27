@@ -10,12 +10,12 @@
 #define _SessionListManagerTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "TestCase.h"
+#include "WDBaseTestPolicies.h"
 #include "Session.h"
 
 //---- SessionListManagerTest ----------------------------------------------------------
 //!TestCases description
-class SessionListManagerTest : public TestFramework::TestCase
+class SessionListManagerTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors
@@ -33,7 +33,7 @@ public:
 	static Test *suite ();
 
 	//!sets the environment for this test
-	void setUp ();
+	void setUp();
 
 	//!deletes the environment for this test
 	void tearDown ();
@@ -71,9 +71,6 @@ public:
 
 	//!callbacks from TestObjects
 	void DoPrepareSessionCalled(Context &ctx, Session *session);
-
-protected:
-
 };
 
 #endif

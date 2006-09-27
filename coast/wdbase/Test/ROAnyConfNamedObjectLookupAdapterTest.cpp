@@ -46,7 +46,7 @@ void ROAnyConfNamedObjectLookupAdapterTest::LookupTest()
 	TestConfNamedObj *tcfno = TestConfNamedObj::FindTestConfNamedObj("TestConfNamedObj");
 	t_assertm(tcfno != NULL, "Ooops, Expected TestConfNamedObj pointer not to be null!");
 
-	tcfno->CheckConfig("TestConfNamedObj", true);
+	tcfno->Initialize("TestConfNamedObj");
 
 	base["hank"] = "bar";
 	base["long"] = 31416L;

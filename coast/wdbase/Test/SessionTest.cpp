@@ -88,8 +88,7 @@ void SessionTest::SetGetRole ()
 		assertEqual("none", ROAnything(s.fStore)["RoleName"].AsString("X"));
 		t_assert(!s.GetRole(ctx));
 	}
-
-} // SetGetRole
+}
 
 void MakeDummyArg(Anything &arg)
 {
@@ -118,7 +117,7 @@ void SessionTest::TestInit ()
 		assertEqual("127.0.0.2", s.fAddress);
 		assertEqual(2412, s.fPort);
 	}
-} // TestInit
+}
 
 void SessionTest::DoFindNextPageLogin ()
 {
@@ -235,7 +234,7 @@ void SessionTest::CheckInstalled ()
 			String sname("null");
 			t_assert(r->GetName(sname));
 			Trace("r says: <" << sname << ">");
-			t_assert(r->CheckConfig(sname)); // ensure config is available
+			t_assert(r->IsInitialized()); // ensure config is available
 			if (r->GetSuper()) {
 				String supername("null");
 				r->GetSuper()->GetName(supername);

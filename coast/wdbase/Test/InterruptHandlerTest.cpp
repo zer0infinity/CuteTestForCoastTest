@@ -6,20 +6,19 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
+//--- interface include --------------------------------------------------------
+#include "InterruptHandlerTest.h"
+
 //--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
 
 //--- module under test --------------------------------------------------------
 #include "ServerUtils.h"
 
-//--- interface include --------------------------------------------------------
-#include "InterruptHandlerTest.h"
-
 //--- standard modules used ----------------------------------------------------
 #include "Server.h"
 
 //--- c-library modules used ---------------------------------------------------
-#include <stdlib.h>
 #if defined(WIN32)
 #include <signal.h>
 #endif
@@ -62,8 +61,6 @@ void InterruptHandlerTest::PidFileHandlingTest()
 		pthread_sigmask(SIG_BLOCK, &set, NULL);
 #endif
 #endif
-		// force load of config
-		server->CheckConfig("Server");
 		{
 			// kill without using file
 			InterruptHandler ih(server); // starts thread

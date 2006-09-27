@@ -20,9 +20,11 @@
 
 //--- c-library modules used ---------------------------------------------------
 
-LocalizationUtilsTest::LocalizationUtilsTest (TString tname) : TestCaseType(tname),
-	fContext( MetaThing(), Anything(), 0, 0, 0, 0 ) {};
-LocalizationUtilsTest::~LocalizationUtilsTest() {};
+LocalizationUtilsTest::LocalizationUtilsTest (TString tname)
+	: TestCaseType(tname)
+	, fContext( MetaThing(), Anything(), 0, 0, 0, 0 )
+{
+}
 
 void LocalizationUtilsTest::setUp ()
 {

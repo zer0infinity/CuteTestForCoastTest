@@ -37,10 +37,16 @@ public:
 	void setUp ();
 
 	//! test initialization - run - termination sequences
-	void InitRunTerminateTest();
+	void InitRunTerminateAcceptorTest();
+
+	//! test initialization - run - termination sequences
+	void InitRunTerminateLeaderFollowerTest();
 
 	//! test initialization - run - reset - run - termination sequences
-	void InitRunResetRunTerminateTest();
+	void InitRunResetRunTerminateAcceptorTest();
+
+	//! test initialization - run - reset - run - termination sequences
+	void InitRunResetRunTerminateLeaderFollowerTest();
 
 	//! run a test sequence
 	void RunTestSequence();

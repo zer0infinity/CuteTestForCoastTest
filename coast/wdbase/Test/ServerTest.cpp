@@ -47,14 +47,16 @@ void ServerTest::setUp ()
 	}
 }
 
-void ServerTest::InitRunTerminateTest()
+void ServerTest::InitRunTerminateAcceptorTest()
 {
-	StartTrace(ServerTest.InitRunTerminateTest);
-	for (long i = 0; i < 10; i++) {
-		{
-			Server *server = Server::FindServer("AcceptorWorkerServer");
-			if ( t_assertm(server != NULL, "expected AcceptorsWorkersServer to be there") ) {
-				server = (Server *)server->ConfiguredClone("Server", "AcceptorWorkerServer");
+	StartTrace(ServerTest.InitRunTerminateAcceptorTest);
+	TestCaseType::DoUnloadConfig();
+	for (long i = 0; i < 3; i++) {
+		TestCaseType::DoLoadConfig("ServerTest", "InitRunTerminateAcceptorTest");
+		Server *server = Server::FindServer("AcceptorWorkerServer");
+		if ( t_assertm(server != NULL, "expected AcceptorsWorkersServer to be there") ) {
+			server = (Server *)server->ConfiguredClone("Server", "AcceptorWorkerServerMaster", true);
+			if ( t_assertm(server != NULL, "expected server-clone to succeed") ) {
 				if ( t_assertm(server->Init() == 0, "expected initialization to succeed") ) {
 					ServerThread mt(server);
 					if (t_assert(mt.Start()) &&
@@ -71,46 +73,60 @@ void ServerTest::InitRunTerminateTest()
 						mt.Terminate(0);
 					}
 				}
+				server->Finalize();
 				delete server;
 			}
 		}
-		{
-			Server *server = Server::FindServer("LeaderFollowerServer");
-			if ( t_assertm(server != NULL, "expected LeaderFollowerServer to be there") ) {
-				server = (Server *)server->ConfiguredClone("Server", "LeaderFollowerServer");
-				if ( t_assertm(server->Init() == 0, "expected initialization to succeed") ) {
-					ServerThread mt(server);
-					if (t_assert(mt.Start()) &&
-						t_assert(mt.CheckState(Thread::eRunning, 5))) {
-						if (t_assertm(server->IsReady(true, 5), "expected server to become ready within 5 seconds")) {
-							// --- run various request
-							//     sequences
-							RunTestSequence();
-							server->PrepareShutdown(0);
-						}
-					}
-					if (t_assertm(server->IsReady(false, 5), "expected server to become terminated within 5 seconds")) {
-						mt.Terminate(0);
-					}
-				}
-				delete server;
-			}
-		}
+		TestCaseType::DoUnloadConfig();
 	}
 }
 
-void ServerTest::InitRunResetRunTerminateTest ()
+void ServerTest::InitRunTerminateLeaderFollowerTest()
 {
-	StartTrace(ServerTest.InitRunResetRunTerminateTest);
-	for (long i = 0; i < 10; i++) {
-		{
-			Server *server = Server::FindServer("AcceptorWorkerServer");
-			if ( t_assertm(server != NULL, "expected AcceptorsWorkersServer to be there") ) {
-				server = (Server *)server->ConfiguredClone("Server", "AcceptorWorkerServer");
+	StartTrace(ServerTest.InitRunTerminateLeaderFollowerTest);
+	TestCaseType::DoUnloadConfig();
+	for (long i = 0; i < 3; i++) {
+		TestCaseType::DoLoadConfig("ServerTest", "InitRunTerminateLeaderFollowerTest");
+		Server *server = Server::FindServer("LeaderFollowerServer");
+		if ( t_assertm(server != NULL, "expected LeaderFollowerServer to be there") ) {
+			server = (Server *)server->ConfiguredClone("Server", "LeaderFollowerServerMaster", true);
+			if ( t_assertm(server != NULL, "expected server-clone to succeed") ) {
 				if ( t_assertm(server->Init() == 0, "expected initialization to succeed") ) {
 					ServerThread mt(server);
 					if (t_assert(mt.Start()) &&
 						t_assert(mt.CheckState(Thread::eRunning, 5))) {
+						if (t_assertm(server->IsReady(true, 5), "expected server to become ready within 5 seconds")) {
+							// --- run various request
+							//     sequences
+							RunTestSequence();
+							server->PrepareShutdown(0);
+						}
+					}
+					if (t_assertm(server->IsReady(false, 5), "expected server to become terminated within 5 seconds")) {
+						mt.Terminate(0);
+					}
+				}
+				server->Finalize();
+				delete server;
+			}
+		}
+		TestCaseType::DoUnloadConfig();
+	}
+}
+
+void ServerTest::InitRunResetRunTerminateAcceptorTest()
+{
+	StartTrace(ServerTest.InitRunResetRunTerminateAcceptorTest);
+	TestCaseType::DoUnloadConfig();
+	for (long i = 0; i < 3; i++) {
+		TestCaseType::DoLoadConfig("ServerTest", "InitRunResetRunTerminateAcceptorTest");
+		Server *server = Server::FindServer("AcceptorWorkerServer");
+		if ( t_assertm(server != NULL, "expected AcceptorsWorkersServer to be there") ) {
+			server = (Server *)server->ConfiguredClone("Server", "AcceptorWorkerServerMaster", true);
+			if ( t_assertm(server != NULL, "expected server-clone to succeed") ) {
+				if ( t_assertm(server->Init() == 0, "expected initialization to succeed") ) {
+					ServerThread mt(server);
+					if (t_assert(mt.Start()) && t_assert(mt.CheckState(Thread::eRunning, 5))) {
 						if (t_assertm(server->IsReady(true, 5), "expected server to become ready within 5 seconds")) {
 							// --- run various request
 							//     sequences
@@ -125,17 +141,27 @@ void ServerTest::InitRunResetRunTerminateTest ()
 						mt.Terminate(0);
 					}
 				}
+				server->Finalize();
 				delete server;
 			}
 		}
-		{
-			Server *server = Server::FindServer("LeaderFollowerServer");
-			if ( t_assertm(server != NULL, "expected LeaderFollowerServer to be there") ) {
-				server = (Server *)server->ConfiguredClone("Server", "LeaderFollowerServer");
+		TestCaseType::DoUnloadConfig();
+	}
+}
+
+void ServerTest::InitRunResetRunTerminateLeaderFollowerTest()
+{
+	StartTrace(ServerTest.InitRunResetRunTerminateLeaderFollowerTest);
+	TestCaseType::DoUnloadConfig();
+	for (long i = 0; i < 3; i++) {
+		TestCaseType::DoLoadConfig("ServerTest", "InitRunResetRunTerminateLeaderFollowerTest");
+		Server *server = Server::FindServer("LeaderFollowerServer");
+		if ( t_assertm(server != NULL, "expected LeaderFollowerServer to be there") ) {
+			server = (Server *)server->ConfiguredClone("Server", "LeaderFollowerServerMaster", true);
+			if ( t_assertm(server != NULL, "expected server-clone to succeed") ) {
 				if ( t_assertm(server->Init() == 0, "expected initialization to succeed") ) {
 					ServerThread mt(server);
-					if (t_assert(mt.Start()) &&
-						t_assert(mt.CheckState(Thread::eRunning, 5))) {
+					if (t_assert(mt.Start()) && t_assert(mt.CheckState(Thread::eRunning, 5))) {
 						if (t_assertm(server->IsReady(true, 5), "expected server to become ready within 5 seconds")) {
 							// --- run various request
 							//     sequences
@@ -150,9 +176,11 @@ void ServerTest::InitRunResetRunTerminateTest ()
 						mt.Terminate(0);
 					}
 				}
+				server->Finalize();
 				delete server;
 			}
 		}
+		TestCaseType::DoUnloadConfig();
 	}
 }
 
@@ -187,7 +215,9 @@ void ServerTest::RunTestSequence()
 Test *ServerTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
-	ADD_CASE(testSuite, ServerTest, InitRunTerminateTest);
-	ADD_CASE(testSuite, ServerTest, InitRunResetRunTerminateTest);
+	ADD_CASE(testSuite, ServerTest, InitRunTerminateAcceptorTest);
+	ADD_CASE(testSuite, ServerTest, InitRunTerminateLeaderFollowerTest);
+	ADD_CASE(testSuite, ServerTest, InitRunResetRunTerminateAcceptorTest);
+	ADD_CASE(testSuite, ServerTest, InitRunResetRunTerminateLeaderFollowerTest);
 	return testSuite;
 }

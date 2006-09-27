@@ -24,10 +24,12 @@
 #include "Dbg.h"
 
 //---- SessionListManagerTest ----------------------------------------------------------------
-SessionListManagerTest::SessionListManagerTest(TString tname) : TestCaseType(tname)
+SessionListManagerTest::SessionListManagerTest(TString tname)
+	: TestCaseType(tname)
 {
 	StartTrace(SessionListManagerTest.Ctor);
 }
+
 SessionListManagerTest::~SessionListManagerTest()
 {
 	StartTrace(SessionListManagerTest.Dtor);
@@ -36,8 +38,6 @@ SessionListManagerTest::~SessionListManagerTest()
 void SessionListManagerTest::setUp ()
 {
 	StartTrace(SessionListManagerTest.setUp);
-	WDModule *secm = WDModule::FindWDModule("SecurityModule");
-	secm->Init(Anything());
 }
 
 void SessionListManagerTest::tearDown ()
@@ -47,7 +47,6 @@ void SessionListManagerTest::tearDown ()
 	ctx.GetTmpStore()["Notify"]["expected"] = (long) Session::eRemoved;
 	SessionListManager *sessionListManager = SafeCast(WDModule::FindWDModule("SessionListManager"), SessionListManager);
 	sessionListManager->ForcedSessionCleanUp(ctx);
-
 }
 
 void SessionListManagerTest::InitFinisTest()

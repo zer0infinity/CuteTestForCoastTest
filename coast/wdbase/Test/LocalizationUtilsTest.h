@@ -18,10 +18,11 @@ class LocalizationUtilsTest : public TestFramework::TestCase
 {
 public:
 	LocalizationUtilsTest(TString tstrName);
-	virtual ~LocalizationUtilsTest();
+	virtual ~LocalizationUtilsTest() {};
 
 	static Test *suite ();
 	void setUp ();
+
 protected:
 	void PrepareRootDir();
 	void EvalNullLangEmptyConfigWODefault();
