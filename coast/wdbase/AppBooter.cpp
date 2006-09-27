@@ -23,7 +23,6 @@
 #if !defined(WIN32)
 // used for dynamic load of libraries
 #include <dlfcn.h>
-#include <unistd.h>
 #endif
 
 class DynLibLoader
@@ -276,8 +275,6 @@ void AppBooter::Halt(const Anything &config)
 	WDModule::Terminate(config);
 
 	CloseLibs();
-
-	SysLog::Terminate();
 }
 
 bool AppBooter::ReadFromFile(Anything &config, const char *filename)
