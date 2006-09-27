@@ -86,12 +86,14 @@ public:
 
 	//!wrapper to ::write(2,...) on Unix systems to get things written to stderr
 	//!needed, because some iostream implementations aren't thread safe
-	static void WriteToStderr(const char *msg, long length);
+	static void WriteToStderr(char *msg, long length = -1);
+	static void WriteToStderr(const char *msg, long length = -1);
 	static void WriteToStderr(const String &msg);
 
 	//!wrapper to ::write(1,...) on Unix systems to get things written to stdout
 	//!needed, because some iostream implementations aren't thread safe
-	static void WriteToStdout(const char *msg, long length);
+	static void WriteToStdout(char *msg, long length = -1);
+	static void WriteToStdout(const char *msg, long length = -1);
 	static void WriteToStdout(const String &msg);
 
 	friend class SysLogTest;

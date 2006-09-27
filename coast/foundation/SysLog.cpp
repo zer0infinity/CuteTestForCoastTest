@@ -212,13 +212,24 @@ void SysLog::WriteToStderr(const String &msg)
 	SysLog::WriteToStderr((const char *)msg, msg.Length());
 }
 
+void SysLog::WriteToStderr(char *msg, long length)
+{
+	SysLog::WriteToStderr((const char *)msg, length);
+}
+
 void SysLog::WriteToStderr(const char *msg, long length)
 {
+	if ( msg ) {
+		long sLen = length;
+		if ( sLen < 0 ) {
+			sLen = strlen(msg);
+		}
 #ifdef IOSTREAM_IS_THREADSAFE
-	cerr.write(msg, length).flush();
+		cerr.write(msg, sLen).flush();
 #else
-	::write(2, msg, length);
+		::write(2, msg, sLen);
 #endif
+	}
 }
 
 void SysLog::WriteToStdout(const String &msg)
@@ -226,13 +237,24 @@ void SysLog::WriteToStdout(const String &msg)
 	SysLog::WriteToStdout((const char *)msg, msg.Length());
 }
 
+void SysLog::WriteToStdout(char *msg, long length)
+{
+	SysLog::WriteToStdout((const char *)msg, length);
+}
+
 void SysLog::WriteToStdout(const char *msg, long length)
 {
+	if ( msg ) {
+		long sLen = length;
+		if ( sLen < 0 ) {
+			sLen = strlen(msg);
+		}
 #ifdef IOSTREAM_IS_THREADSAFE
-	cout.write(msg, length).flush();
+		cout.write(msg, sLen).flush();
 #else
-	::write(1, msg, length);
+		::write(1, msg, sLen);
 #endif
+	}
 }
 
 SysLog::SysLog()
