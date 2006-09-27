@@ -202,8 +202,7 @@ int WDModule::ResetTerminate(const ROAnything roaConfig)
 int WDModule::Reset(const ROAnything roaOldconfig, const ROAnything roaConfig)
 {
 	StartTrace(WDModule.Reset);
-	SysLog::WriteToStderr("\tReset modules:\n");
-	if (ResetTerminate(roaOldconfig) == 0) {
+	if ( ResetTerminate(roaOldconfig) == 0 ) {
 		return ResetInstall(roaConfig);
 	}
 	return -1;
