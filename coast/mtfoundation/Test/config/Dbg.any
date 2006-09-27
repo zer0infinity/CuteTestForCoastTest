@@ -43,11 +43,7 @@
 		/Destructor		53
 		/MyId			-50
 	}
-	/CleanupInitializer {
-		/MainSwitch		51
-		/EnableAll		52
-	}
-	/FinalCleaner {
+	/MutexCountTableCleaner {
 		/MainSwitch		51
 		/EnableAll		52
 	}
