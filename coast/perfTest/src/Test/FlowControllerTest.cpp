@@ -104,7 +104,7 @@ void FlowControllerTest::DoTest()
 
 	String controllerName = fConfig[fName]["FlowController"].AsString("Invalid");
 	FlowController fc(controllerName);
-	fc.CheckConfig("FlowController");
+	fc.Initialize("FlowController");
 
 	Anything dummy;
 	Context ctx(dummy, dummy, 0, 0, 0);

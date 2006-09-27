@@ -45,7 +45,7 @@ void RemoteStresserTest::setUp ()
 
 		fStressServer = new Server("StressServer");
 		fStressServer->GetConfig();
-		fStressServer->CheckConfig("Server");
+		fStressServer->Initialize("Server");
 
 		fServerRunner = new ServerThread(fStressServer);
 		if (fStressServer && fServerRunner) {

@@ -56,11 +56,11 @@ void SybCTDAImplTest::SimpleDATest()
 	TraceAny(expected, "expected tmpstore: ");
 	// force load of configuration
 	SybCTDAImpl da("SybSearchTestCoded");
-	da.CheckConfig("SybCTDAImpl");
+	da.Initialize("SybCTDAImpl");
 	ParameterMapper	inpMapper("SybSearchTestCoded");
-	inpMapper.CheckConfig("ParameterMapper");
+	inpMapper.Initialize("ParameterMapper");
 	ResultMapper	outMapper("SybSearchTestCoded");
-	outMapper.CheckConfig("ResultMapper");
+	outMapper.Initialize("ResultMapper");
 
 	ctx.Push("DataAccess", &da);
 	t_assert(da.Exec(ctx, &inpMapper, &outMapper));

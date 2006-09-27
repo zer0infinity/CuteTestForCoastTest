@@ -22,12 +22,12 @@
 	}
 
 	/Modules {
+		CacheHandlerModule
 		SecurityModule
 		ActionsModule
 		DataAccessImplsModule
 		RolesModule
 		PagesModule
-		CacheHandlerModule
 		MappersModule
 		AcceptorFactoriesModule
 		StressersModule

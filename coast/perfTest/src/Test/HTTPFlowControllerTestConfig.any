@@ -15,9 +15,9 @@
 		perftesttest
 	}
 	/Modules {
+		CacheHandlerModule
 		ActionsModule
 		DataAccessImplsModule
-		CacheHandlerModule
 		MappersModule
 		FlowControllersModule
 	}

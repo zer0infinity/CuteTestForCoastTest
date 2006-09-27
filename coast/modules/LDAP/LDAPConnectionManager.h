@@ -113,9 +113,6 @@ protected:
 	// Only used by LDAPConnectionManagerTest
 	void EmptyLdapConnectionStore();
 
-	//!singleton cache
-	static LDAPConnectionManager *fgLDAPConnectionManager;
-
 	//!The mutex that protects the ldap connection pools structure
 	Mutex fLdapConnectionStoreMutex;
 

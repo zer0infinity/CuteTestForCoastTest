@@ -8,6 +8,15 @@
 
 {
 
+	/Modules {
+		CacheHandlerModule
+		MappersModule
+		DataAccessImplsModule
+	}
+
+	/Mappers {}
+	/DataAccessImpls {}
+
 	/LDAPServer		"marvin.hsr.loc"
 	/LDAPPort		"49999"
 	/LDAPBind		"cn=Directory Manager"

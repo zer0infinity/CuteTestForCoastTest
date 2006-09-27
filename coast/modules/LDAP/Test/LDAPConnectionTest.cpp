@@ -11,14 +11,12 @@
 
 //--- module under test --------------------------------------------------------
 #include "LDAPConnection.h"
-#include "LDAPErrorHandler.h"
-#include "Context.h"
-#include "Mapper.h"
 
 //--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
+#include "AnyIterators.h"
 #include "Dbg.h"
 
 //--- c-modules used -----------------------------------------------------------
@@ -62,7 +60,8 @@ void LDAPConnectionTest::ConnectionTest()
 			Context ctx;
 			ParameterMapper pm("ConnectionTestParameterMapper");
 			ResultMapper rm("ConnectionTestResultMapper");
-			rm.CheckConfig("ResultMapper");
+			pm.Initialize("ParameterMapper");
+			rm.Initialize("ResultMapper");
 			String da("DataAccess_");
 			da << aEntryIterator.Index();
 

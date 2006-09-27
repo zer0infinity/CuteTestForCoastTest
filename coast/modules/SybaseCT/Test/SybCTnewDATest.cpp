@@ -102,9 +102,9 @@ void SybCTnewDATest::SimpleQueryTest()
 			// create context
 			Context ctx;
 			ParameterMapper aParamMapper("NewDAInpuMapper");
-			aParamMapper.CheckConfig("ParameterMapper");
+			aParamMapper.Initialize("ParameterMapper");
 			ResultMapper aResultMapper("SybCTnewDAImpl");
-			aResultMapper.CheckConfig("ResultMapper");
+			aResultMapper.Initialize("ResultMapper");
 			String strDAName(name());
 			// create context
 			if (t_assertm(SybCTnewDA::Init(&context, &anyCtxMessages, strInterfacesFileName, 5) == CS_SUCCEED, "Context should have been created")) {
@@ -150,9 +150,9 @@ void SybCTnewDATest::LimitedMemoryTest()
 			// create context
 			Context ctx;
 			ParameterMapper aParamMapper("NewDAInpuMapper");
-			aParamMapper.CheckConfig("ParameterMapper");
+			aParamMapper.Initialize("ParameterMapper");
 			ResultMapper aResultMapper("SybCTnewDAImpl");
-			aResultMapper.CheckConfig("ResultMapper");
+			aResultMapper.Initialize("ResultMapper");
 			String strDAName(name());
 			// create context
 			if (t_assertm(SybCTnewDA::Init(&context, &anyCtxMessages, strInterfacesFileName, 5) == CS_SUCCEED, "Context should have been created")) {
@@ -216,9 +216,9 @@ void SybCTnewDATest::IntLoginTimeoutTest(CS_CONTEXT *context, long lMaxNumber, l
 {
 	StartTrace1(SybCTnewDATest.IntLoginTimeoutTest, String() << lCurrent);
 	ParameterMapper aParamMapper("LoginTimeoutMapper");
-	aParamMapper.CheckConfig("ParameterMapper");
+	aParamMapper.Initialize("ParameterMapper");
 	ResultMapper aResultMapper("SybCTnewDAImpl");
-	aResultMapper.CheckConfig("ResultMapper");
+	aResultMapper.Initialize("ResultMapper");
 	SybCTnewDA sybct(context);
 	Context ctx;
 	String strDAName(name());
@@ -254,9 +254,9 @@ void SybCTnewDATest::ResultTimeoutTest()
 		// create context
 		Context ctx;
 		ParameterMapper aParamMapper("ResultTimeoutMapper");
-		aParamMapper.CheckConfig("ParameterMapper");
+		aParamMapper.Initialize("ParameterMapper");
 		ResultMapper aResultMapper("SybCTnewDAImpl");
-		aResultMapper.CheckConfig("ResultMapper");
+		aResultMapper.Initialize("ResultMapper");
 		String strDAName(name());
 		// create context
 		if (t_assertm(SybCTnewDA::Init(&context, &anyCtxMessages, strInterfacesFileName, 5) == CS_SUCCEED, "Context should have been created")) {

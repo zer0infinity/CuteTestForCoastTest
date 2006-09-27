@@ -10,11 +10,11 @@
 #define _LDAPConnectionTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
+#include "WDBaseTestPolicies.h"
 
 //---- LDAPConnectionTest ----------------------------------------------------------
 //! <B>Tests LDAPConnecton and LDAPErrorHandler</B>
-class LDAPConnectionTest : public TestFramework::TestCaseWithConfig
+class LDAPConnectionTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors

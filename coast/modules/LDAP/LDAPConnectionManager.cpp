@@ -6,31 +6,24 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- c-library modules used ---------------------------------------------------
-#include <stdlib.h>
+//--- interface include --------------------------------------------------------
+#include "LDAPConnectionManager.h"
 
-//#define TRACE_LOCKS
+//--- project include ----------------------------------------------------------
+#include "PersistentLDAPConnection.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "Anything.h"
 #include "TraceLocks.h"
-#include "Threads.h"
-#include "SysLog.h"
-#include "Registry.h"
 #include "TimeStamp.h"
 #include "Dbg.h"
 
-//--- interface include --------------------------------------------------------
-#include "LDAPConnectionManager.h"
-#include "PersistentLDAPConnection.h"
+//--- c-library modules used ---------------------------------------------------
 
-LDAPConnectionManager *LDAPConnectionManager::fgLDAPConnectionManager = 0;
 THREADKEY LDAPConnectionManager::fgErrnoKey = 0;
 
 LDAPConnectionManager *LDAPConnectionManager::LDAPCONNMGR()
 {
-	fgLDAPConnectionManager = SafeCast(WDModule::FindWDModule("LDAPConnectionManager"), LDAPConnectionManager);
-	return fgLDAPConnectionManager;
+	return SafeCast(WDModule::FindWDModule("LDAPConnectionManager"), LDAPConnectionManager);
 }
 
 RegisterModule(LDAPConnectionManager);
@@ -49,7 +42,6 @@ LDAPConnectionManager::LDAPConnectionManager(const char *name)
 LDAPConnectionManager::~LDAPConnectionManager()
 {
 	StartTrace(LDAPConnectionManager.~LDAPConnectionManager);
-	Finis();
 }
 
 Anything LDAPConnectionManager::GetLdapConnection(bool isLocked, long maxConnections, const String &poolId, long rebindTimeout)

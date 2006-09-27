@@ -70,11 +70,11 @@ void SybCTnewDAImplTest::UninitializedExecTest()
 	Context::PushPopEntry<Anything> aEntry(ctx, "Params", params);
 
 	SybCTnewDAImpl da("SybSearchTestCoded");
-	da.CheckConfig("SybCTnewDAImpl");
+	da.Initialize("SybCTnewDAImpl");
 	ParameterMapper	inpMapper("SybSearchTestCoded");
-	inpMapper.CheckConfig("ParameterMapper");
+	inpMapper.Initialize("ParameterMapper");
 	ResultMapper outMapper("SybSearchTestCoded");
-	outMapper.CheckConfig("ResultMapper");
+	outMapper.Initialize("ResultMapper");
 
 	ctx.Push("DataAccess", &da);
 	t_assertm( da.Exec(ctx, &inpMapper, &outMapper) == false, "DataAccess should have failed due to uninitialized SybCTnewDAImpl!");
@@ -214,11 +214,11 @@ void SybCTnewDAImplTest::SimpleDATest()
 	TraceAny(expected, "expected tmpstore: ");
 	// force load of configuration
 	SybCTnewDAImpl da("SybSearchTestCoded");
-	da.CheckConfig("SybCTnewDAImpl");
+	da.Initialize("SybCTnewDAImpl");
 	ParameterMapper	inpMapper("SybSearchTestCoded");
-	inpMapper.CheckConfig("ParameterMapper");
+	inpMapper.Initialize("ParameterMapper");
 	ResultMapper	outMapper("SybSearchTestCoded");
-	outMapper.CheckConfig("ResultMapper");
+	outMapper.Initialize("ResultMapper");
 
 	ctx.Push("DataAccess", &da);
 	t_assert(da.Exec(ctx, &inpMapper, &outMapper));

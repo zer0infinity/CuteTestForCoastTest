@@ -32,7 +32,7 @@ void StressAppTest::AppRunTest()
 {
 
 	StressApp stressApp("TestedStressApp");
-	stressApp.CheckConfig("Application");
+	stressApp.Initialize("Application");
 	long ret = stressApp.Run();
 	assertEqual(0, ret);
 	Anything result = stressApp.fResult;

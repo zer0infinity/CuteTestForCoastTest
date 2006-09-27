@@ -107,7 +107,8 @@ LDAP *LDAPConnectionManagerTest::CreateBadConnectionHandle(const String &name, S
 	Context ctx;
 	ParameterMapper pm("ConnectionTestParameterMapper");
 	ResultMapper rm("ConnectionTestResultMapper");
-	rm.CheckConfig("ResultMapper");
+	t_assert(pm.Initialize("ParameterMapper"));
+	t_assert(rm.Initialize("ResultMapper"));
 	String da("DataAccess_TestAutoRebindBadConnection");
 	LDAPErrorHandler eh(ctx, &pm, &rm, da);
 	eh.PutConnectionParams(params);

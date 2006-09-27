@@ -41,7 +41,7 @@ HTTPFlowControllerPrepareTest::~HTTPFlowControllerPrepareTest()
 void HTTPFlowControllerPrepareTest::DoCommandTest()
 {
 	HttpFlowController fc("DoCommandTestFlowController");
-	fc.CheckConfig("FlowController");
+	fc.Initialize("FlowController");
 
 	bool retVal = true;
 	Anything dummy;
