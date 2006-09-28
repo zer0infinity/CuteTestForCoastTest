@@ -130,11 +130,7 @@ protected:
 	//! statistic variable
 	long fReadCount;
 	long fWriteCount;
-
-private:
-	void initGetPut();       // set internal put und get buffer and position		OBSOLETE ???
-	// constructor has created a string
-}; // SocketStreamBuf
+};
 
 //---- iosITOSocket -------------------------------------------------------------------
 //! adapts ios to a Socket Stream buffer

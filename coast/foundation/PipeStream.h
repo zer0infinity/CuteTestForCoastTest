@@ -128,9 +128,6 @@ protected:
 
 	//! statistic variable
 	long fWriteCount;
-
-private:
-	void initGetPut();       // set internal put und get buffer and position		OBSOLETE ???
 };
 
 //---- iosItopiaPipe -------------------------------------------------------------------
