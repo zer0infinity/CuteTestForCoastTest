@@ -11,7 +11,10 @@
 
 #include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 
-#if !defined(WIN32)
+#if defined(__370__) || defined(WIN32)
+typedef fstream MmapStream;
+#else
+
 #include "StringStream.h"
 #include <sys/mman.h>
 
@@ -106,10 +109,10 @@ protected: // seekxxx are protected in the std..
 	typedef std::ios::seekdir	seekdir;
 	typedef std::ios::openmode	openmode;
 #else
-	typedef streampos pos_type;
-	typedef	streamoff off_type;
-	typedef int 	openmode;
-	typedef ios::seek_dir seekdir;
+typedef streampos pos_type;
+typedef	streamoff off_type;
+typedef int 	openmode;
+typedef ios::seek_dir seekdir;
 #endif
 
 	//! standard iostream behavior, adjust put or get position absolutely

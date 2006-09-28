@@ -40,7 +40,10 @@ static long roundtopagesize(long pos, bool up = true)
 }
 
 MmapMagicFlags::MmapMagicFlags(int omode, int syncflag )
-	: fProtection(eRead), fSyncFlag(syncflag) , fOpenMode(0), fSyscallOpenMode(0)
+	: fProtection(eRead)
+	, fSyncFlag(syncflag)
+	, fOpenMode(0)
+	, fSyscallOpenMode(0)
 {
 	// adjust mode to output if append or at-end implies it
 	if (omode & (ios::ate | ios::app)) {
@@ -66,7 +69,6 @@ MmapMagicFlags::MmapMagicFlags(int omode, int syncflag )
 			fSyscallOpenMode |= O_CREAT | O_EXCL;
 		}
 #endif
-
 	}
 #if !defined(__GNUC__) || __GNUC__ < 3
 	// do not create the file if told so
@@ -84,7 +86,12 @@ MmapMagicFlags::MmapMagicFlags(int omode, int syncflag )
 }
 
 MmapStreamBuf::MmapStreamBuf(int syncflag)
-	: fMapFd(-1), fLength(0), fMapOffset(0), fFileLength(0), fAddr(0), fFl(0, syncflag)
+	: fMapFd(-1)
+	, fLength(0)
+	, fMapOffset(0)
+	, fFileLength(0)
+	, fAddr(0)
+	, fFl(0, syncflag)
 {
 }
 
@@ -346,7 +353,6 @@ bool MmapStreamBuf::reserve(long newlength)
 // otherwise it returns EOF;
 //
 MmapStreamBuf::pos_type MmapStreamBuf::seekpos(MmapStreamBuf::pos_type p, MmapStreamBuf::openmode mode)
-//streampos MmapStreamBuf::seekpos(streampos p, int mode)
 {
 	AdjustFileLength();
 	if (long(p) > long(fLength)) {
@@ -358,11 +364,11 @@ MmapStreamBuf::pos_type MmapStreamBuf::seekpos(MmapStreamBuf::pos_type p, MmapSt
 		}
 	}
 	if (mode & ios::in) {
-		setg(fFl.IsReadable() ? (char *)fAddr : (char *)fAddr + fFileLength - fMapOffset,
-			 fAddr + p, (char *)fAddr + fFileLength - fMapOffset);
+		setg(fFl.IsReadable() ? (char *)fAddr : (char *)fAddr + fFileLength - fMapOffset, fAddr + p, (char *)fAddr + fFileLength - fMapOffset);
 	}
 	if (mode & ios::out) {
-		if (fFl.IsIosApp()) { // do this on a best try basis
+		if (fFl.IsIosApp()) {
+			// do this on a best try basis
 			if (p < fFileLength && fFileLength > 0) {
 				p = fFileLength;    // always go to the end
 			}
@@ -376,7 +382,6 @@ MmapStreamBuf::pos_type MmapStreamBuf::seekpos(MmapStreamBuf::pos_type p, MmapSt
 		}
 	}
 	return p;
-
 } // seekpos
 
 // implement putback behavior for streams
@@ -385,8 +390,10 @@ int MmapStreamBuf::pbackfail(int c)
 {
 	// move get pointer
 	// only happens for read-only streams
-	if (c != EOF) { // sanity check
-		if ( fFl.IsIosOut()) { // we also can write
+	if (c != EOF) {
+		// sanity check
+		if ( fFl.IsIosOut()) {
+			// we also can write
 			if ( eback() && eback() < gptr() ) {
 				// adjust get pointer
 				gbump(-1);
@@ -394,8 +401,10 @@ int MmapStreamBuf::pbackfail(int c)
 				return c;
 				// this goes into endless recursion    return sputbackc(c);
 			}
-		} else { // we got a readonly streambuf
-			if (gptr() && gptr() > eback() && c == *(gptr() - 1)) { // sanity check
+		} else {
+			// we got a readonly streambuf
+			if (gptr() && gptr() > eback() && c == *(gptr() - 1)) {
+				// sanity check
 				//setg(eback(),gptr()-1,egptr()); // just adjust gptr()
 				gbump(-1);
 				return ZAPEOF(c);
@@ -410,7 +419,6 @@ int MmapStreamBuf::pbackfail(int c)
 // returns EOF if out of range or input isn't allowed;
 //
 MmapStreamBuf::pos_type MmapStreamBuf::seekoff(MmapStreamBuf::off_type of, MmapStreamBuf::seekdir dir, MmapStreamBuf::openmode mode)
-//streampos MmapStreamBuf::seekoff(streamoff of, ios::seek_dir dir, int mode)
 {
 	//sync(); // will adjust fFileLength if needed
 	long pos = long(of);
