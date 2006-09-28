@@ -6,25 +6,15 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#ifdef __370__
-#pragma nomargins
-#define _POSIX_SOURCE 1
-#endif
-
-// Uncomment if you want no memory mapped streams.
-//#define NO_MMAP_STREAM
-
 //--- interface include --------------------------------------------------------
 #include "System.h"
-#if !defined (__370__) && !defined(WIN32) &&!defined(NO_MMAP_STREAM)
 #include "MmapStream.h"
-#else
+
 #if defined(ONLY_STD_IOSTREAM)
 #include <fstream>
 using namespace std;
 #else
 #include <fstream.h>
-#endif
 #endif
 
 //--- standard modules used ----------------------------------------------------
@@ -32,7 +22,6 @@ using namespace std;
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
-#include <stdlib.h>
 #include <stdio.h>
 #include <limits.h>
 #include <errno.h>
@@ -42,7 +31,6 @@ using namespace std;
 #include <direct.h>
 #else
 #include <fcntl.h>
-#include <unistd.h>
 #include <dirent.h>  // directory access
 #include <sys/time.h>
 #include <string.h>
@@ -59,7 +47,7 @@ const char System::cSep = '/';
 #if defined(WIN32) && !defined(_POSIX_)
 #define PATH_MAX	512
 #endif
-#if defined(USE_POSIX) || defined(_POSIX_)
+#if defined(_POSIX_)
 const long System::cPATH_MAX = _POSIX_PATH_MAX;
 #else
 const long System::cPATH_MAX = PATH_MAX;
@@ -476,19 +464,19 @@ void System::SetPathList(const char *pathlist, bool print)
 	}
 }
 
-iostream *System::OpenIStream(const char *name, const char *extension, int mode, bool trace)
+iostream *System::OpenIStream(const char *name, const char *extension, openmode mode, bool trace)
 {
 	String dummy;
 	return IntOpenStream(dummy, name, extension, false, mode | ios::in, trace);
 }
 
-iostream *System::OpenOStream(const char *name, const char *extension, int mode, bool trace)
+iostream *System::OpenOStream(const char *name, const char *extension, openmode mode, bool trace)
 {
 	String dummy;
 	return IntOpenStream(dummy, name, extension, false, mode | ios::out, trace);
 }
 
-iostream *System::OpenStream(const char *name, const char *extension, int mode, bool trace)
+iostream *System::OpenStream(const char *name, const char *extension, openmode mode, bool trace)
 {
 	String dummy;
 	return IntOpenStream(dummy, name, extension, true, mode, trace);
@@ -496,7 +484,7 @@ iostream *System::OpenStream(const char *name, const char *extension, int mode, 
 
 String System::GetFilePath(const char *name, const char *extension)
 {
-	String path = "";
+	String path;
 	iostream *Ios = IntOpenStream(path, name, extension, true, ios::in);
 	if (Ios) {
 		delete Ios;
@@ -508,34 +496,42 @@ String System::GetFilePath(const char *name, const char *extension)
 // name is already resolved or is absolute
 // this method returns only a iostream *
 // if the stream exists otherwise null
-iostream *System::DoOpenStream(String &resultPath, const char *name, int mode, bool trace)
+iostream *System::DoOpenStream(String &resultPath, const char *name, openmode mode, bool trace)
 {
 	StartTrace(System.DoOpenStream);
-	// adjust mode to output, append or at-end implies it
-	if (mode & (ios::ate | ios::app)) {
+	// adjust mode to output, append implies it
+	if ( mode & (ios::app | ios::ate) ) {
 		mode |= ios::out;
 	}
+	// clear out flag if ate mode given
+	// -> needed because some fstream implementations create the files even they should not!
+	if ( mode & ios::ate ) {
+		mode &= ~ios::out;
+	}
+
 	if ( IsRegularFile(name) || (mode & ios::out) ) {
-#if !defined (__370__) && !defined(WIN32) && !defined(_ARCH_COM) && !defined(NO_MMAP_STREAM)
-		MmapStream *fp = new MmapStream(name, mode);
-#else
-		fstream *fp = new fstream(name, (std::_Ios_Openmode) mode);
-#endif
-		if ( fp->good() && fp->rdbuf()->is_open() )	{
-			resultPath = name;
-			return fp;
-		} else {
-			// try fstream instead
-			delete fp;
-#if defined(__SUNPRO_CC) && __SUNPRO_CC<0x500
-			fstream *fpf = new fstream(name, mode);
-			if ( fpf->good() && fpf->rdbuf()->is_open() )	{
+		// ios::ate is special, it should only work on existing files according to standard
+		// so must set the out flag here and not earlier
+		if ( mode & ios::ate ) {
+			mode |= ios::out;
+		}
+		static bool bUseMmapStreams = ( System::EnvGet("WD_USE_MMAP_STREAMS").AsLong(1L) == 1L );
+		if ( bUseMmapStreams ) {
+			MmapStream *fp = new MmapStream(name, mode);
+			if ( fp->good() && fp->rdbuf()->is_open() ) {
 				resultPath = name;
-				return fpf;
-			} else {
-				delete fpf;
+				return fp;
 			}
-#endif
+			Trace("failed to open MmapStream, file [" << name << "]");
+			delete fp;
+		} else {
+			fstream *fp = new fstream(name, (openmode)mode);
+			if ( fp->good() && fp->rdbuf()->is_open() ) {
+				resultPath = name;
+				return fp;
+			}
+			Trace("failed to open fstream. file [" << name << "]");
+			delete fp;
 		}
 	} else {
 		if (trace) {
@@ -545,7 +541,7 @@ iostream *System::DoOpenStream(String &resultPath, const char *name, int mode, b
 	return 0;
 }
 
-iostream *System::IntOpenStream(String &resultPath, const char *name, const char *extension, bool searchPath, int mode, bool trace)
+iostream *System::IntOpenStream(String &resultPath, const char *name, const char *extension, bool searchPath, openmode mode, bool trace)
 {
 	StartTrace(System.IntOpenStream);
 	// fast exit
@@ -559,7 +555,7 @@ iostream *System::IntOpenStream(String &resultPath, const char *name, const char
 		InitPath();
 	}
 
-// we should use stat to look for the file prior to use
+	// we should use stat to look for the file prior to use
 
 	String filename(name);
 	if (extension && strlen(extension) > 0) {
@@ -728,7 +724,7 @@ bool System::GetFileSize(const char *path, ul_long &ulFileSize)
 	return false;
 }
 
-iostream *System::IntOpenStreamBySearch(String &resultPath, const char *name, const char *path, int mode, bool trace)
+iostream *System::IntOpenStreamBySearch(String &resultPath, const char *name, const char *path, openmode mode, bool trace)
 {
 	StartTrace(System.IntOpenStreamBySearch);
 	// this methods open a stream searching over a search path
@@ -739,7 +735,7 @@ iostream *System::IntOpenStreamBySearch(String &resultPath, const char *name, co
 	while (st.NextToken(dirpath)) {
 		filepath.Append(fgRootDir).Append(Sep()).Append(dirpath).Append(Sep()).Append(name);
 		System::ResolvePath(filepath);
-		Trace("resultPath: [" << resultPath << "] filepath: [" << filepath << "] file: [" << name << "]");
+
 		if ( (fp = DoOpenStream(resultPath, filepath, mode, trace)) != NULL ) {
 			return fp;
 		}

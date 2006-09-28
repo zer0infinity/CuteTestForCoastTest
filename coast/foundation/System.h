@@ -74,6 +74,14 @@ public:
 	//! \return false if some error occured, true if slept well
 	static bool MicroSleep(long sleepTime);
 
+#if defined(ONLY_STD_IOSTREAM)
+	typedef std::ios::openmode	openmode;
+#elif defined(WIN32) && !defined(ONLY_STD_IOSTREAM)
+	typedef ios::open_mode openmode;
+#else
+	typedef ios::openmode openmode;
+#endif
+
 	//! opens an iostream, uses search path
 	//! it takes a filename and an extension. It tries to open an iostream in the given mode. It uses the
 	//! fgRootDir and fgPathList variables to search for the file unless it is an absolute filename
@@ -82,7 +90,7 @@ public:
 	//! \param mode ios mode flags
 	//! \param trace flag if true traces the operation with SysLog::Debug messages
 	//! \return the pointer to the open iostream or NULL, the client is responsible for destruction
-	static iostream *OpenStream(const char *name, const char *extension, int mode = (ios::in), bool trace = false);
+	static iostream *OpenStream(const char *name, const char *extension, openmode mode = (ios::in), bool trace = false);
 
 	//! opens an istream for reading, no search path is used
 	//! \param name the filename, it can be relative or absolute
@@ -90,7 +98,7 @@ public:
 	//! \param mode ios mode flags
 	//! \param trace flag if true traces the operation with SysLog::Debug messages
 	//! \return the pointer to the open iostream or NULL, the client is responsible for destruction
-	static iostream *OpenIStream(const char *name, const char *extension, int mode = (ios::in), bool trace = false);
+	static iostream *OpenIStream(const char *name, const char *extension, openmode mode = (ios::in), bool trace = false);
 
 	//! opens an ostream for writing, no search path is used
 	//! \param name the filename, it can be relative or absolute
@@ -98,7 +106,7 @@ public:
 	//! \param mode ios mode flags
 	//! \param trace flag if true traces the operation with SysLog::Debug messages
 	//! \return the pointer to the open iostream or NULL, the client is responsible for destruction
-	static iostream *OpenOStream(const char *name, const char *extension, int mode = ios::out | ios::trunc, bool trace = false);
+	static iostream *OpenOStream(const char *name, const char *extension, openmode mode = ios::out | ios::trunc, bool trace = false);
 
 	//! returns the path and filename.extension of a file found on the search path
 	static String GetFilePath(const char *name, const char *extension);
@@ -336,7 +344,7 @@ private:
 	//! \param mode the mode of the stream to be opened e.g. ios::in, mode flags can be combined by the | operation
 	//! \param trace if true writes messages to SysLog
 	//! \return an open iostream or NULL if the open fails
-	static iostream *IntOpenStream(String &resultPath, const char *name, const char *extension, bool search, int mode, bool trace = false);
+	static iostream *IntOpenStream(String &resultPath, const char *name, const char *extension, bool search, openmode mode, bool trace = false);
 
 	//!internal method that opens a stream if possible, it searches the pathlist for the correct location
 	//! \param resultPath the location of the iostream opened
@@ -345,7 +353,7 @@ private:
 	//! \param mode the mode of the stream to be opened e.g. ios::in, mode flags can be combined by the | operation
 	//! \param trace if true writes messages to SysLog
 	//! \return an open iostream or NULL if the open fails
-	static iostream *IntOpenStreamBySearch(String &resultPath, const char *name, const char *pathlist, int mode, bool trace = false);
+	static iostream *IntOpenStreamBySearch(String &resultPath, const char *name, const char *pathlist, openmode mode, bool trace = false);
 
 	//!bottleneck routine that opens the stream if possible it returns null if not successful
 	//! \param resultPath the location of the iostream opened
@@ -353,7 +361,7 @@ private:
 	//! \param mode the mode of the stream to be opened e.g. ios::in, mode flags can be combined by the | operation
 	//! \param trace if true writes messages to SysLog
 	//! \return an open iostream or NULL if the open fails
-	static iostream *DoOpenStream(String &resultPath, const char *name, int mode, bool trace = false);
+	static iostream *DoOpenStream(String &resultPath, const char *name, openmode mode, bool trace = false);
 
 	//!internal method to create new directory with given permissions, works for relative or absolute path names and also
 	//! recursive if specified.
