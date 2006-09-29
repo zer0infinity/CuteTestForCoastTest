@@ -155,7 +155,8 @@ void ConnectorDAImplTest::SendReceiveOnceTest()
 	DataAccess aDA("SendReceiveOnce");
 	t_assert(aDA.StdExec(ctx));
 	Anything anyExpected;
-	StringStream stream(GetTestCaseConfig()["Input"].AsString());
+	String strIn = GetTestCaseConfig()["Input"].AsString();
+	IStringStream stream(strIn);
 	anyExpected.Import(stream);
 	assertAnyEqual(anyExpected, fCallBack->GetLastRequest());
 	TraceAny(ctx.GetTmpStore(), "TmpStore");
@@ -172,7 +173,8 @@ void ConnectorDAImplTest::RecreateSocketTest()
 		ctx.GetTmpStore()["Input"] = "{ \"Kurt hat recht\" }";
 		t_assert(aDA.StdExec(ctx));
 		Anything anyExpected;
-		StringStream stream(ctx.GetTmpStore()["Input"].AsString());
+		String strIn = ctx.GetTmpStore()["Input"].AsString();
+		IStringStream stream(strIn);
 		anyExpected.Import(stream);
 		assertAnyEqual(anyExpected, fCallBack->GetLastRequest());
 	}
@@ -185,7 +187,8 @@ void ConnectorDAImplTest::RecreateSocketTest()
 			ctx.GetTmpStore()["Input"] = "{ \"Marcel auch\" }";
 			t_assert(aDA.StdExec(ctx));
 			Anything anyExpected;
-			StringStream stream(ctx.GetTmpStore()["Input"].AsString());
+			String strIn(ctx.GetTmpStore()["Input"].AsString());
+			IStringStream stream(strIn);
 			anyExpected.Import(stream);
 			assertAnyEqual(anyExpected, fCallBack->GetLastRequest());
 		}
