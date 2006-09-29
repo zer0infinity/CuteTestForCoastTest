@@ -13,12 +13,6 @@
 #include "Role.h"
 #include "FormRenderer.h"
 
-class Anything;
-class MetaThing;
-class Context;
-class OStringStream;
-class String;
-
 class TestRole : public Role
 {
 public:
