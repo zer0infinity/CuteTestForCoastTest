@@ -22,6 +22,7 @@
 		AcceptorFactoriesModule
 		ServerPoolsManagerInterfacesModule
 		ServiceDispatchersModule
+		ServiceHandlersModule
 		ServersModule
 		LocalizationModule
 	}
@@ -55,6 +56,7 @@
 			/TestDispatcher { SecondTestDipatcher }
 		}
 	}
+	/ServiceHandlers {}
 	/Roles {
 		/Role {
 			/RTGuest {

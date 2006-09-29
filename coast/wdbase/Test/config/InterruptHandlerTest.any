@@ -17,6 +17,7 @@
 		AcceptorFactoriesModule
 		ServerPoolsManagerInterfacesModule
 		ServiceDispatchersModule
+		ServiceHandlersModule
 		ServersModule
 	}
 
@@ -29,8 +30,8 @@
 		/Server {
 		}
 	}
-	/ServiceDispatchers {
-	}
+	/ServiceDispatchers {}
+	/ServiceHandlers {}
 	/Renderers { }
 
 	# -- Config for Acceptor Factories  in  ListenerPoolTest

@@ -21,6 +21,7 @@
 		AcceptorFactoriesModule
 		ServerPoolsManagerInterfacesModule
 		ServiceDispatchersModule
+		ServiceHandlersModule
 		ServersModule
 	}
 
@@ -46,6 +47,7 @@
 			/TestDispatcher { SecondTestDipatcher }
 		}
 	}
+	/ServiceHandlers {}
 	/AcceptorFactories {
 		/AcceptorFactory {
 			TCP5010  TCP5011

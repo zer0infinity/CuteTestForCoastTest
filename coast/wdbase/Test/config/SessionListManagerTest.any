@@ -15,6 +15,7 @@
 		ServersModule
 		SessionListManager
 	}
+	/Servers {}
 	/SessionListManager {}
 	/Roles {}
 	/SecurityModule {}

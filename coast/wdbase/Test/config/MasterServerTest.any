@@ -20,6 +20,7 @@
 		AcceptorFactoriesModule
 		ServerPoolsManagerInterfacesModule
 		ServiceDispatchersModule
+		ServiceHandlersModule
 		ServersModule
 	}
 
@@ -53,6 +54,7 @@
 			/TestDispatcher { SecondTestDipatcher }
 		}
 	}
+	/ServiceHandlers {}
 
 	# -- Config for Acceptor Factories  in  ListenerPoolTest
 	/AcceptorFactories {

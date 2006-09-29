@@ -20,8 +20,10 @@
 		DataAccessImplsModule
 		MappersModule
 		AppLogModule
+		ServersModule
 	}
 
+	/Servers {}
 	# uncomment the server slot for enabling TimeLogging
 	/Server	Server
 

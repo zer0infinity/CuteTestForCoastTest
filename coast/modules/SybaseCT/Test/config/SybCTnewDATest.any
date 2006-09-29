@@ -8,6 +8,11 @@
 
 {
 
+	/Modules {
+		CacheHandlerModule
+		MappersModule
+	}
+	/Mappers {}
 	/InterfacesFile	"config/interfaces.any"
 
 	/LoginTimeoutTest {
