@@ -495,8 +495,9 @@ void ThreadsTest::MultiSemaphoreTest()
 	CheckSemaphoreCount(sema, 1);
 
 	// acquiring it again must succeed now
-	t_assertm(sema.TryAcquire() == true, "Thread had problems with semaphore!");
-	sema.Release();
+	if ( t_assertm(sema.TryAcquire() == true, "Thread had problems with semaphore!") ) {
+		sema.Release();
+	}
 	// 4 acqd
 	CheckSemaphoreCount(sema, 1);
 
