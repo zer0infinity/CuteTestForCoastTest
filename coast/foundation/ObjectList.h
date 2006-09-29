@@ -13,37 +13,7 @@
 #include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include "ITOString.h"
 #include "Dbg.h"
-#if defined(WIN32)
-#include "TypeTraits.h"
-#else
-class NullType {};
-
-namespace Loki
-{
-	template <int v>
-	struct Int2Type {
-		enum { value = v };
-	};
-
-	template <typename T>
-	class TypeTraits
-	{
-	private:
-		template <class U> struct PointerTraits {
-			enum { result = false };
-			typedef NullType PointeeType;
-		};
-
-		template <class U> struct PointerTraits<U *> {
-			enum { result = true };
-			typedef U PointeeType;
-		};
-
-	public:
-		enum { isPointer = PointerTraits<T>::result };
-	};
-};
-#endif
+#include "ITOTypeTraits.h"
 
 //---- c-module include -----------------------------------------------------
 #include <list>
