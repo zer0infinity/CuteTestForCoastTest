@@ -29,15 +29,15 @@ RequestLineRenderer::~RequestLineRenderer()
 
 void RequestLineRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
 {
-	StartTrace(RequestLineRenderer.Render);
-	TraceAny(config, "config");
-	String buffer;
+	StartTrace(RequestLineRenderer.RenderAll);
+	SubTraceAny(TraceConfig, config, "config");
+	String buffer(1024L);
 	{
-		StringStream replyDebugBuffer(&buffer);
+		StringStream replyDebugBuffer(buffer);
 		// logic is, if CurrentServer.Path is available, render that but if link nr is available try to render that first
 
 		// config not so interesting - does this renderer even have one??
-		TraceAny( c.GetTmpStore(), "tmp store" );
+		SubTraceAny(TraceTmp, c.GetTmpStore(), "tmp store" );
 		ROAnything roaResult;
 		bool postIsMethod = false;
 
@@ -81,9 +81,9 @@ void RequestLineRenderer::RenderAll(ostream &reply, Context &c, const ROAnything
 			} else {
 				long posn = 0L;
 				while ( (posn = formContentString.StrChr(' ', 0)) > 0 ) {
-					Trace("b4 - formContentString" << formContentString);
+					Trace("b4 - formContentString [" << formContentString << "]");
 					formContentString.ReplaceAt(posn, "+", 1 );
-					Trace("after -formContentString" << formContentString);
+					Trace("after -formContentString [" << formContentString << "]");
 				}
 			}
 
@@ -98,7 +98,7 @@ void RequestLineRenderer::RenderAll(ostream &reply, Context &c, const ROAnything
 			}
 		}
 
-		Trace("END formContentString" << formContentString);
+		Trace("END formContentString [" << formContentString << "]");
 
 		if ( c.Lookup("CurrentServer.OverallProtocol", roaResult) ) {
 			Trace( "RequestProtocol is->" << roaResult.AsString("") );
@@ -172,7 +172,6 @@ void RequestLineRenderer::RenderAll(ostream &reply, Context &c, const ROAnything
 		} else {
 			replyDebugBuffer << "\r\n\r\n";
 		}
-
 		// this information is passed up to and used by the Watchdog as a kind of pseudo trace
 		Anything myEnv = c.GetQuery();
 		String ThreadNumber = "default";
@@ -201,5 +200,6 @@ void RequestLineRenderer::RenderAll(ostream &reply, Context &c, const ROAnything
 		myTmpStore["result"]["InfoMessageCtr"][noOfCurrentEmsg][anyMessagesSoFar.AsString("")] = infoMsg;
 #endif
 	}
-	reply << buffer;
+	Trace("request [" << buffer << "]");
+	reply << buffer << flush;
 }
