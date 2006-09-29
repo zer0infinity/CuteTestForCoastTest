@@ -1,4 +1,5 @@
 {
+
 	/LowerBound		0
 	/UpperBound		10
 	/DumpAnythings	1
@@ -54,23 +55,20 @@
 		/MainSwitch	9
 		/EnableAll	9
 	}
-
 	/HTTPFlowControllerTest {
 		/MainSwitch	1505
 		/EnableAll	1505
 	}
-
 	/FlowControllerTest {
 		/MainSwitch	0
 		/EnableAll	10
 	}
-
 	/StressProcessor {
 		/MainSwitch	0
 		/EnableAll	10
 	}
 	/StressServer {
-		/MainSwitch	0
+		/MainSwitch	1
 		/EnableAll	10
 	}
 	/StreamToAnythingMapper {
@@ -85,12 +83,10 @@
 		/MainSwitch	105
 		/EnableAll	105
 	}
-
 	/HTTPFileLoader {
 		/MainSwitch	0
 		/EnableAll	10
 	}
-
 	/Mapper {
 		/MainSwitch	0
 		/EnableAll	10
@@ -100,7 +96,7 @@
 		/EnableAll	10
 	}
 	/Application {
-		/MainSwitch	0
+		/MainSwitch	1
 		/EnableAll	10
 	}
 	/TestRunnerApplication {
@@ -112,7 +108,7 @@
 		/EnableAll	10
 	}
 	/AppBooter {
-		/MainSwitch	0
+		/MainSwitch	1
 		/EnableAll	10
 	}
 	/RegisterableObject {
