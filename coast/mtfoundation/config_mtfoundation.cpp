@@ -109,11 +109,6 @@ BOOL WINAPI DllMain(HANDLE hinstDLL,  // DLL module handle
 			SysLog::Info(String("DLL_THREAD_DETACH for [") << Thread::MyId() << "] &Thread:"  << (long)pThr );
 			if ( pThr ) {
 				// there seems to be a valid ThreadPtr, eg. it is a mtfoundation Thread
-				// here we set the thread-state to the correct value
-				SimpleMutexEntry me(pThr->fStateMutex);
-				me.Use();
-				pThr->fThreadId = 0;
-				pThr->IntSetState(Thread::eTerminated);
 				RemoveThreadDetach(pThr);
 			} else {
 				SYSINFO("Thread* was NULL for [" << Thread::MyId() << "] ErrorMessage: [" << SysLog::LastSysError() << "]");
