@@ -14,7 +14,6 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "IFAObject.h"
-#include "StringStream.h"
 
 //--- test modules used --------------------------------------------------------
 #include "TestSuite.h"

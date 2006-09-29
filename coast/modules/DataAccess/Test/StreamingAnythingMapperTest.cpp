@@ -58,7 +58,7 @@ void StreamingAnythingMapperTest::PutTest()
 	StreamToAnythingMapper sam("NoName");
 	sam.Initialize("ResultMapper");
 	String streamedAny("{ /Slot1 Something/Slot2 42}");
-	IStringStream in(&streamedAny);
+	IStringStream in(streamedAny);
 	sam.Put("Output", in, ctx);
 
 	Anything tmpStore = ctx.GetTmpStore();

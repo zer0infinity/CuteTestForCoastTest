@@ -178,8 +178,8 @@ bool RequestBodyParser::ParseMultiPart(istream *is, const String &bound)
 		String body;
 		endReached = ReadToBoundary(is, bound, body);
 		Trace("Body: <" << body << ">");
-		if (body != "") {
-			IStringStream innerpart(&body);
+		if ( body.Length() ) {
+			IStringStream innerpart(body);
 			MIMEHeader hinner;
 			if (hinner.DoReadHeader(innerpart)) {
 				Anything partInfo;

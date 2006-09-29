@@ -53,7 +53,7 @@ void StringTokenizeRenderer::BuildTokenList(Context &ctx, const ROAnything &conf
 	StringTokenizer tokens(strRenderToken, ';');
 	String strTok;
 	while ( tokens.NextToken(strTok) ) {
-		IStringStream stream(&strTok);
+		IStringStream stream(strTok);
 		long lStart = 0L, lEnd = 0L, lDiff = 0L;
 		char c = '\0';
 		stream >> lStart;

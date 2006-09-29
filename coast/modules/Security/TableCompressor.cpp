@@ -91,7 +91,7 @@ void TableCompressor::DoCompress(String &scrambledText, const Anything &dataIn)
 bool TableCompressor::DoExpand(Anything &dataOut, const String &scrambledText)
 {
 	StartTrace(TableCompressor.DoExpand);
-	IStringStream is((String *)&scrambledText);
+	IStringStream is(scrambledText);
 	ROAnything keyTable(GetUri2KeyMap());
 	ROAnything valTable(GetUri2ValMap());
 	ROAnything valMapTags(GetValMapTags());

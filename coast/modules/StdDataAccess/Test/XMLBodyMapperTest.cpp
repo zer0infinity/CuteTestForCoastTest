@@ -45,7 +45,7 @@ void XMLBodyMapperTest::PutTest()
 	Anything dummy;
 	Context c(dummy, fConfig, 0, 0, 0, 0);
 	String input = fConfig["TeamXML"].AsString("X");
-	IStringStream in(&input);
+	IStringStream in(input);
 	fXMLBodyMapper.DoPutStream("Output", in, c, fConfig["MapperConfig"]);
 	Anything tmpStore = c.GetTmpStore();
 	assertAnyEqual(fConfig["TeamAny"], tmpStore["Mapper"]["Output"]);

@@ -166,7 +166,8 @@ void ParameterMapperTest::DoGetAnyTest()
 	res = Anything();
 	script = pm.DoSelectScript("CollectorScript", scripts, ctx);
 	pm.DoGetAny("-", res, ctx, script);
-	IStringStream is("{ a ValueToGet x y z }");
+	String strIn("{ a ValueToGet x y z }");
+	IStringStream is(strIn);
 	is >> exp;
 	assertAnyEqual(exp, res);
 

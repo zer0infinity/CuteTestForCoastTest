@@ -308,12 +308,12 @@ void PipeExecutorTest::ShellInvocationTest()
 				t_assertm(Execute.ShutDownWriting(), "shutdown writing side failed");
 				OStringStream aShellOutput, aErrOutput;
 				long lRecv = 0, lToRecv = 2048;
-				while ( StringStream::PlainCopyStream2Stream(is, aShellOutput, lRecv, lToRecv) && lRecv == lToRecv ) ;
+				while ( NSStringStream::PlainCopyStream2Stream(is, aShellOutput, lRecv, lToRecv) && lRecv == lToRecv ) ;
 				t_assert(lRecv > 0);
 				Trace("Path [" << aShellOutput.str() << "]");
 				assertCharPtrEqual(roaExpected["Output"].AsString(""), aShellOutput.str());
 				if ( bUseStderr && isErr ) {
-					while ( StringStream::PlainCopyStream2Stream(isErr, aErrOutput, lRecv, lToRecv) && lRecv == lToRecv ) ;
+					while ( NSStringStream::PlainCopyStream2Stream(isErr, aErrOutput, lRecv, lToRecv) && lRecv == lToRecv ) ;
 					assertEqual(0, lRecv);
 					Trace("Stderr [" << aErrOutput.str() << "]");
 					assertCharPtrEqual(roaExpected["Error"].AsString(""), aErrOutput.str());

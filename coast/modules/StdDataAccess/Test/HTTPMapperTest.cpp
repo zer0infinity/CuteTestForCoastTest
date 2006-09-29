@@ -150,7 +150,8 @@ String HTTPMapperTest::PrepareResults(ROAnything resultsAsAny)
 
 void HTTPMapperTest::HTTPBodyMapperBadStream()
 {
-	StringStream is("Bad\nBody\n");
+	String strBuf("Bad\nBody\n");
+	StringStream is(strBuf);
 #if defined(WIN32) && !defined(ONLY_STD_IOSTREAM)
 	is.clear(ios::failbit | ios::badbit | is.rdstate());
 #else

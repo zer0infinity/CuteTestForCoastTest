@@ -18,7 +18,6 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "System.h"
-#include "StringStream.h"
 #include "Resolver.h"
 
 //--- c-library modules used ---------------------------------------------------

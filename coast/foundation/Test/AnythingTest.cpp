@@ -89,6 +89,7 @@ Test *AnythingTest::suite ()
 	ADD_CASE(testSuite, AnythingTest, SlotCleanerTest);
 	ADD_CASE(testSuite, AnythingTest, ImportTest);
 
+	ADD_CASE(testSuite, AnythingTest, WriteReadTest);
 	ADD_CASE(testSuite, AnythingTest, DeepCloneWithRef);
 	ADD_CASE(testSuite, AnythingTest, CharStarConstrTest);
 
@@ -1567,7 +1568,7 @@ void AnythingTest::WriteRead0Test()
 		OStringStream os(&buffer);
 		os << any0;
 	}
-	StringStream is(&buffer);
+	IStringStream is(buffer);
 	Anything any1;
 	is >> any1;
 
@@ -1639,7 +1640,7 @@ void AnythingTest::WriteRead7Test()
 		any0.PrintOn( os, false );
 	}
 
-	IStringStream is(&buf);
+	IStringStream is(buf);
 	Anything any1;
 
 	any1.Import( is );
@@ -1953,7 +1954,7 @@ void AnythingTest::RefSlotTest()
 
 		a.Export(os);
 
-		IStringStream is(&tempString);
+		IStringStream is(tempString);
 
 		c.Import(is);
 
@@ -1966,7 +1967,7 @@ void AnythingTest::RefSlotTest()
 		Anything anyResult, anyExpected;
 		anyExpected["200"]["a"] = "gugus";
 		anyExpected["200"]["b"] = "gaga";
-		IStringStream is(&str);
+		IStringStream is(str);
 		anyResult.Import(is);
 		// test if the link was made
 		anyExpected["100"] = anyExpected["200"];
@@ -1979,7 +1980,7 @@ void AnythingTest::RefSlotTest()
 	{
 		// test the inverse order of the reference definition
 		String str(_QUOTE_( { /1 %200 /200 { /a gugus /b gaga }}));
-		IStringStream is(&str);
+		IStringStream is(str);
 		Anything anyResult, anyExpected;
 		anyExpected["1"]["a"] = "gugus";
 		anyExpected["1"]["b"] = "gaga";
@@ -1994,7 +1995,7 @@ void AnythingTest::RefSlotTest()
 		anyExpected["200"]["a"] = "gugus";
 		anyExpected["200"]["b"] = "gaga";
 		anyExpected["100"] = "c";
-		IStringStream is(&str);
+		IStringStream is(str);
 		anyResult.Import(is);
 		anyExpected["100"] = anyExpected["200"]["a"];
 		assertAnyEqual(anyExpected, anyResult);
@@ -2006,7 +2007,7 @@ void AnythingTest::RefSlotTest()
 		anyExpected["200"]["a"] = "gugus";
 		anyExpected["200"]["b"] = "gaga";
 		anyExpected["100"] = "c";
-		IStringStream is(&str);
+		IStringStream is(str);
 		anyResult.Import(is);
 		anyExpected.Append(anyExpected["200"]["a"]);
 		anyExpected["100"].Append(anyExpected["200"]["b"]);
@@ -2020,7 +2021,7 @@ void AnythingTest::RefSlotTest()
 		anyExpected["200"]["a"] = "gugus";
 		anyExpected["200"]["b"] = "gaga";
 		anyExpected["100"] = "c";
-		IStringStream is(&str);
+		IStringStream is(str);
 		anyResult.Import(is);
 		anyExpected["100"].Append(anyExpected["200"]["b"]);
 		anyExpected["200"]["c"].Append(anyExpected["200"]["a"]);
@@ -2034,7 +2035,7 @@ void AnythingTest::RefSlotTest()
 		anyExpected["200"]["a"] = "gugus";
 		anyExpected["200"]["b"] = "gaga";
 		anyExpected["100"] = "c";
-		IStringStream is(&str);
+		IStringStream is(str);
 		anyResult.Import(is);
 		anyExpected.Append(anyExpected["200"]["a"]);
 		anyExpected["100"].Append(anyExpected["200"]["b"]);
@@ -2049,7 +2050,7 @@ void AnythingTest::RefSlotTest()
 		anyExpected["200"]["a"] = "gugus";
 		anyExpected["200"]["b"] = "gaga";
 		anyExpected["100"] = "c";
-		IStringStream is(&str);
+		IStringStream is(str);
 		anyResult.Import(is);
 		anyExpected["100"].Append(anyExpected["200"]["b"]);
 		anyExpected["200"]["c"].Append(34L);
@@ -2064,7 +2065,7 @@ void AnythingTest::RefSlotTest()
 		anyExpected["200"]["a"] = "gugus";
 		anyExpected["200"]["b"] = "gaga";
 		anyExpected["100"] = "c";
-		IStringStream is(&str);
+		IStringStream is(str);
 		anyResult.Import(is);
 		anyExpected.Append(anyExpected["200"]["a"]);
 		anyExpected["100"].Append(anyExpected["200"]["b"]);
@@ -2083,7 +2084,7 @@ void AnythingTest::RefSlotTest()
 		temp2.Append(temp1);
 		anyExpected["100"] = temp2;
 
-		IStringStream is(&str);
+		IStringStream is(str);
 		anyResult.Import(is);
 		assertAnyEqual(anyExpected, anyResult);
 	}
@@ -2142,7 +2143,7 @@ void AnythingTest::AnyIncludeTest()
 		String strIncl(_QUOTE_( { /100 { /d foo /e frim } }));
 		String strRef (_QUOTE_( { /200 { /a gugus /b gaga } { /100 { /d foo /e frim } } }));
 		{
-			IStringStream is(&strIncl);
+			IStringStream is(strIncl);
 			anyIncl.Import(is);
 			iostream *pStream = System::OpenOStream("include", "any");
 			if (pStream) {
@@ -2151,11 +2152,11 @@ void AnythingTest::AnyIncludeTest()
 			}
 		}
 		{
-			IStringStream is(&strMain);
+			IStringStream is(strMain);
 			anyMain.Import(is);
 		}
 		{
-			IStringStream is(&strRef);
+			IStringStream is(strRef);
 			anyRef.Import(is);
 		}
 		assertAnyEqual(anyRef, anyMain);
@@ -2169,7 +2170,7 @@ void AnythingTest::AnyIncludeTest()
 		String strIncl(_QUOTE_( { /100 { /d foo /e frim } }));
 		String strRef (_QUOTE_( { /200 { /a gugus /b gaga } { /100 { /d foo /e frim } } }));
 		{
-			IStringStream is(&strIncl);
+			IStringStream is(strIncl);
 			anyIncl.Import(is);
 			iostream *pStream = System::OpenOStream("include", "any");
 			if (pStream) {
@@ -2178,11 +2179,11 @@ void AnythingTest::AnyIncludeTest()
 			}
 		}
 		{
-			IStringStream is(&strMain);
+			IStringStream is(strMain);
 			anyMain.Import(is);
 		}
 		{
-			IStringStream is(&strRef);
+			IStringStream is(strRef);
 			anyRef.Import(is);
 		}
 		assertAnyEqual(anyRef, anyMain);
@@ -2197,7 +2198,7 @@ void AnythingTest::AnyIncludeTest()
 //		String strIncl(_QUOTE_({ /100 { /d foo /e frim } }));
 //		String strRef (_QUOTE_({ /200 { /a gugus /b gaga } /300 { /100 { /d foo /e frim } } }));
 //		{
-//			IStringStream is(&strIncl);
+//			IStringStream is(strIncl);
 //			anyIncl.Import(is);
 //			iostream *pStream = System::OpenOStream("include", "any");
 //			if (pStream)
@@ -2207,11 +2208,11 @@ void AnythingTest::AnyIncludeTest()
 //			}
 //		}
 //		{
-//			IStringStream is(&strMain);
+//			IStringStream is(strMain);
 //			anyMain.Import(is);
 //		}
 //		{
-//			IStringStream is(&strRef);
+//			IStringStream is(strRef);
 //			anyRef.Import(is);
 //		}
 //		assertAnyEqual(anyRef, anyMain);
@@ -2224,7 +2225,7 @@ void AnythingTest::AnyIncludeTest()
 //		String strIncl(_QUOTE_({ /100 { /d foo /e frim } }));
 //		String strRef (_QUOTE_({ /200 { /a gugus /b gaga } /300  * }));
 //		{
-//			IStringStream is(&strIncl);
+//			IStringStream is(strIncl);
 //			anyIncl.Import(is);
 //			iostream *pStream = System::OpenOStream("include", "any");
 //			if (pStream)
@@ -2234,11 +2235,11 @@ void AnythingTest::AnyIncludeTest()
 //			}
 //		}
 //		{
-//			IStringStream is(&strMain);
+//			IStringStream is(strMain);
 //			anyMain.Import(is);
 //		}
 //		{
-//			IStringStream is(&strRef);
+//			IStringStream is(strRef);
 //			anyRef.Import(is);
 //		}
 //		assertAnyEqual(anyRef, anyMain);
@@ -2251,7 +2252,7 @@ void AnythingTest::AnyIncludeTest()
 		String strIncl(_QUOTE_( { /100 { /d { foo } /e frim } }));
 		String strRef (_QUOTE_( { /200 { /a gugus /b gaga } "foo" }));
 		{
-			IStringStream is(&strIncl);
+			IStringStream is(strIncl);
 			anyIncl.Import(is);
 			iostream *pStream = System::OpenOStream("include", "any");
 			if (pStream) {
@@ -2260,11 +2261,11 @@ void AnythingTest::AnyIncludeTest()
 			}
 		}
 		{
-			IStringStream is(&strMain);
+			IStringStream is(strMain);
 			anyMain.Import(is);
 		}
 		{
-			IStringStream is(&strRef);
+			IStringStream is(strRef);
 			anyRef.Import(is);
 		}
 		assertAnyEqual(anyRef, anyMain);
@@ -2277,7 +2278,7 @@ void AnythingTest::AnyIncludeTest()
 		String strIncl(_QUOTE_( { /100 { /d { foo } /e frim } }));
 		String strRef (_QUOTE_( { /200 { /a gugus /b gaga } * }));
 		{
-			IStringStream is(&strIncl);
+			IStringStream is(strIncl);
 			anyIncl.Import(is);
 			iostream *pStream = System::OpenOStream("include", "any");
 			if (pStream) {
@@ -2286,11 +2287,11 @@ void AnythingTest::AnyIncludeTest()
 			}
 		}
 		{
-			IStringStream is(&strMain);
+			IStringStream is(strMain);
 			anyMain.Import(is);
 		}
 		{
-			IStringStream is(&strRef);
+			IStringStream is(strRef);
 			anyRef.Import(is);
 		}
 		assertAnyEqual(anyRef, anyMain);
@@ -2715,7 +2716,7 @@ void AnythingTest::DeepClone5Test()
 void AnythingTest::ReadFailsTest()
 {
 	String incompleteAny("{ /Slot { /No \"Ending curly bracket\"");
-	StringStream is(&incompleteAny);
+	IStringStream is(incompleteAny);
 	Anything any;
 	t_assert(!any.Import(is));
 	assertEqual("Ending curly bracket", any["Slot"]["No"].AsString("x"));

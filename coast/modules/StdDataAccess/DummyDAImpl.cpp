@@ -51,7 +51,7 @@ bool DummyDAImpl::Exec( Context &context, ParameterMapper *in, ResultMapper *out
 
 bool DummyDAImpl::RenderReply( String &theReply, Context &context, ResultMapper *out  )
 {
-	IStringStream is(&theReply);
+	IStringStream is(theReply);
 
 	// read from input stream via renderers....
 	if (! out->Put("Output", is, context) ) {

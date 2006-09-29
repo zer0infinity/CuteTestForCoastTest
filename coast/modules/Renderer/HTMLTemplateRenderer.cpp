@@ -114,7 +114,7 @@ void HTMLTemplateRenderer::RenderAll(ostream &reply, Context &context, const ROA
 				buf.Append(templ[i].AsCharPtr());
 			}
 		}
-		IStringStream reader(&buf);
+		IStringStream reader(buf);
 		TemplateParser *tp = GetParser();
 		rendererConfig = tp->Parse(reader, "from config", 1L, rendererConfig.GetAllocator(), roaParserConfig);
 		delete tp;

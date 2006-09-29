@@ -161,8 +161,8 @@ void RequestBodyParserTest::ReadToBoundaryTest()
 	while ( aEntryIterator.Next(cConfig) ) {
 		TString cName;
 		aEntryIterator.SlotName(cName);
-		String result;
-		IStringStream tiss(Renderer::RenderToString(ctx, cConfig["Input"]));
+		String result, strIn(Renderer::RenderToString(ctx, cConfig["Input"]));
+		IStringStream tiss(strIn);
 		MIMEHeader mh;
 		RequestBodyParser sm(mh, tiss);
 
@@ -194,7 +194,7 @@ void RequestBodyParserTest::ReadToBoundaryTest()
 		testinput << testboundary << "\r\nsome content1\r\n--" << testboundary;
 		testinput << "\r\nsome content2\r\n--" << testboundary;
 		{
-			IStringStream is(&testinput);
+			IStringStream is(testinput);
 			MIMEHeader mh;
 			RequestBodyParser sm(mh, is);
 
@@ -206,7 +206,7 @@ void RequestBodyParserTest::ReadToBoundaryTest()
 			assertEqual("some content2", result);
 		}
 		{
-			IStringStream is(&testinput);
+			IStringStream is(testinput);
 			MIMEHeader mh;
 			RequestBodyParser sm(mh, is);
 			sm.ReadToBoundary(&is, testboundary, result);
@@ -225,7 +225,7 @@ void RequestBodyParserTest::ReadToBoundaryTest()
 		testinput << testboundary << "\r\nsome content1\r\n--" << testboundary;
 		testinput << "\r\nsome content2\r\n--" << testboundary << "--";
 		{
-			IStringStream is(&testinput);
+			IStringStream is(testinput);
 			MIMEHeader mh;
 			RequestBodyParser sm(mh, is);
 
@@ -237,7 +237,7 @@ void RequestBodyParserTest::ReadToBoundaryTest()
 			assertEqual("some content2", result);
 		}
 		{
-			IStringStream is(&testinput);
+			IStringStream is(testinput);
 			MIMEHeader mh;
 			RequestBodyParser sm(mh, is);
 			sm.ReadToBoundary(&is, testboundary, result);

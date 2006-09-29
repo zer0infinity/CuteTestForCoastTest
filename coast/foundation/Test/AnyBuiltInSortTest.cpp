@@ -14,10 +14,11 @@
 
 //--- module under test --------------------------------------------------------
 #include "Anything.h"
+
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "DiffTimer.h"
-#include "StringStream.h"
+
 //--- c-modules used -----------------------------------------------------------
 #include <stdlib.h>
 

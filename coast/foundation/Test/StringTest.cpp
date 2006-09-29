@@ -9,20 +9,22 @@
 //--- interface include --------------------------------------------------------
 #include "StringTest.h"
 
+//--- test modules used --------------------------------------------------------
+#include "TestSuite.h"
+
+//--- standard modules used ----------------------------------------------------
+#include "System.h"
+#include "StringStream.h"
+#include "Dbg.h"
+
 //--- c-library modules used ---------------------------------------------------
 #include <ctype.h>
 #include <string.h>
 #include <limits.h>
 #include <float.h>
 
-//--- standard modules used ----------------------------------------------------
-#include "System.h"
-#include "StringStream.h"
-
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
-
-StringTest::StringTest (TString tname) : TestCaseType(tname)
+StringTest::StringTest (TString tname)
+	: TestCaseType(tname)
 {
 }
 
@@ -30,14 +32,16 @@ StringTest::~StringTest()
 {
 }
 
-void StringTest::setUp ()
+void StringTest::setUp()
 {
+	StartTrace(StringTest.setUp);
 	fShort = "short";
 	fLong = "a somewhat longer string";
 }
 
-Test *StringTest::suite ()
+Test *StringTest::suite()
 {
+	StartTrace(StringTest.suite);
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, StringTest, constructors);
 	ADD_CASE(testSuite, StringTest, appendsChar);
@@ -64,8 +68,9 @@ Test *StringTest::suite ()
 	return testSuite;
 }
 
-void StringTest::constructors ()
+void StringTest::constructors()
 {
+	StartTrace(StringTest.constructors);
 	// Init a string without parameters
 	String empty;
 	assertEqual("", empty);
@@ -168,8 +173,9 @@ void StringTest::constructors ()
 	t_assert (fShort != "Short");  // == fails
 }
 
-void StringTest::appendsChar ()
+void StringTest::appendsChar()
 {
+	StartTrace(StringTest.appendsChar);
 	//Mechanismen zur Festlegung der Capacity sind mir unklar ????
 
 	// Append von Buchstaben
@@ -345,8 +351,9 @@ void StringTest::appendsNullPtr ()
 	// not really consistent ...
 }
 
-void StringTest::appendsCharChain ()
+void StringTest::appendsCharChain()
 {
+	StartTrace(StringTest.appendsCharChain);
 	char   charChain[6] = { 'a', 'b', 'c', 'd', 'e', '\000' };
 	// PT: if Append(char * is used, the buffer *must* be 0 terminated!
 
@@ -475,8 +482,9 @@ void StringTest::appendsCharChain ()
 	t_assert ( str13.Length() >= (long)strlen( (const char *)str13 ) );
 }
 
-void StringTest::appendsString ()
+void StringTest::appendsString()
 {
+	StartTrace(StringTest.appendsString);
 	// Append von 2 leeren Stringen
 	String str0, str1;
 	str0.Append( str1 );
@@ -574,8 +582,9 @@ void StringTest::appendsString ()
 	t_assert ( memcmp( (const char *)str12, bufHelp, str12.Length() ) == 0 );
 }
 
-void StringTest::appendsLong ()
+void StringTest::appendsLong()
 {
+	StartTrace(StringTest.appendsLong);
 	// Append with several long numbers
 	String str0;
 	str0.Append( 0L );
@@ -634,8 +643,9 @@ void StringTest::appendsLong ()
 	//PS? t_assert ( memcmp( (const char *)str0, "0123-1-2-32147483647-2147483647", str0.Length() )==0 );
 }
 
-void StringTest::appendsDouble ()
+void StringTest::appendsDouble()
 {
+	StartTrace(StringTest.appendsDouble);
 	// Rundungen sind sehr ungenau ???? //
 	//----------------------------------//
 
@@ -781,8 +791,9 @@ void StringTest::appendsDouble ()
 	t_assert ( str17.Capacity() >= str17.Length() );
 }
 
-void StringTest::appendsAsHex ()
+void StringTest::appendsAsHex()
 {
+	StartTrace(StringTest.appendsAsHex);
 	// Test Methode AppendAsHex(char)
 	{
 		int i;
@@ -845,8 +856,9 @@ void StringTest::appendsAsHex ()
 	}
 }
 
-void StringTest::appendsTwoHexAsChar ()
+void StringTest::appendsTwoHexAsChar()
 {
+	StartTrace(StringTest.appendsTwoHexAsChar);
 	// Test Methode AppendTwoHexAsChar(const char *)
 	{
 		char	a[2];
@@ -1074,8 +1086,9 @@ void StringTest::appendsTwoHexAsChar ()
 	}
 }
 
-void StringTest::appendsFile ()
+void StringTest::appendsFile()
 {
+	StartTrace(StringTest.appendsFile);
 	// Init a string with a stream and a length
 	String input = "01234";
 
@@ -1140,8 +1153,9 @@ void StringTest::appendsFile ()
 //==============================================================================================
 //        M E T H O D E N
 //==============================================================================================
-void StringTest::methods ()
+void StringTest::methods()
 {
+	StartTrace(StringTest.methods);
 	// IsEqual
 	isEquals();
 
@@ -1209,6 +1223,7 @@ void StringTest::methods ()
 
 void StringTest::startsWith()
 {
+	StartTrace(StringTest.startsWith);
 	t_assert(String("").StartsWith(""));
 	t_assert(!String("").StartsWith(0));
 	t_assert(!String("").StartsWith("a"));
@@ -1352,8 +1367,9 @@ void StringTest::isEqual0 ()
 	t_assert ( str0.Length() == str2.Length() );
 }
 
-void StringTest::isEqual1 ()
+void StringTest::isEqual1()
 {
+	StartTrace(StringTest.isEqual1);
 	char buf[5] = { 'a', 'b', (char)0, 'c', 'd' };
 	String str;
 	str.Append( (void *) buf, 5 );
@@ -1372,8 +1388,9 @@ void StringTest::isEqual1 ()
 	assertEqual ( 1, str.IsEqual( buf ) );
 }
 
-void StringTest::isEqual2 ()
+void StringTest::isEqual2()
 {
+	StartTrace(StringTest.isEqual2);
 	char buf[5] = { 'a', 'b', (char)0, 'c', 'd' };
 	String str0, str1 = "qqq";
 	str0.Append( buf, 5 );
@@ -1383,8 +1400,9 @@ void StringTest::isEqual2 ()
 	t_assert( str0.IsEqual( (const char *)str1  ) == 0);
 }
 
-void StringTest::isEquals ()
+void StringTest::isEquals()
 {
+	StartTrace(StringTest.isEquals);
 	isEqual0();
 	isEqual1();
 	isEqual2();
@@ -1428,8 +1446,9 @@ void StringTest::compareWithNullBytes ()
 	t_assert( str2.Compare( str1 ) <  0 );
 }
 
-void StringTest::compares ()
+void StringTest::compares()
 {
+	StartTrace(StringTest.compares);
 	compare0();
 	compareWithNullBytes();
 }
@@ -1456,8 +1475,9 @@ void StringTest::compareN0 ()
 	t_assert( str1.CompareN( (const char *)str2, str2.Length(), 0 ) ==  0 );
 }
 
-void StringTest::compareN1 ()
+void StringTest::compareN1()
 {
+	StartTrace(StringTest.compareN1);
 	// Der Test geht bis zum \0
 	String	str0, str1, str2, str3 = "XXXX456789", str4 = "456789";
 	long	length;
@@ -1503,8 +1523,9 @@ void StringTest::compareN1 ()
 	t_assert ( str1.CompareN( (const char *)str1 + 1, 0, 0 ) == 0 );
 }
 
-void StringTest::compareNs ()
+void StringTest::compareNs()
 {
+	StartTrace(StringTest.compareNs);
 	compareN0();
 	compareN1();
 }
@@ -1536,8 +1557,9 @@ void StringTest::copyTo0 ()
 	}
 }
 
-void StringTest::copyTo1 ()
+void StringTest::copyTo1()
 {
+	StartTrace(StringTest.copyTo1);
 	// Test strlen( (const char *)str ) < str.Length():  There is a \0 within the content of the string
 	char buf0[5] = { 'a', 'b', (char)0, 'c', 'd' }, buf1[50] = {0};
 	String str;
@@ -1549,8 +1571,9 @@ void StringTest::copyTo1 ()
 	t_assert( str.Capacity() >= str.Length() );
 }
 
-void StringTest::copyTo2 ()
+void StringTest::copyTo2()
 {
+	StartTrace(StringTest.copyTo2);
 	// Test:  nr of char to copy is negative:  CopyTo bewirkt nichts!  OK
 	char 	buf[50] = {0}, bufHlp[50] = {0};
 	String	str = "0123456789";
@@ -1559,8 +1582,9 @@ void StringTest::copyTo2 ()
 	t_assert ( memcmp( buf, bufHlp, sizeof(buf) ) == 0 );
 }
 
-void StringTest::copyTo3 ()
+void StringTest::copyTo3()
 {
+	StartTrace(StringTest.copyTo3);
 	// Test:  copy into the buffer but not from position 0
 	char buf[50] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'l', 'm', 'n', 'o', 0};
 	int len = strlen( buf );
@@ -1569,16 +1593,18 @@ void StringTest::copyTo3 ()
 	t_assert( memcmp( buf, "34567fghilmno", len ) == 0 );
 }
 
-void StringTest::copyTo4 ()
+void StringTest::copyTo4()
 {
+	StartTrace(StringTest.copyTo4);
 	// Test:  copy into the buffer from a negative position
 	String str = "0123456789";
 	char buf[50] = {0};
 	str.CopyTo( buf, 5, -2 );
 }
 
-void StringTest::copyTos ()
+void StringTest::copyTos()
 {
+	StartTrace(StringTest.copyTos);
 	copyTo0();
 	copyTo1();
 	copyTo2();
@@ -1627,6 +1653,7 @@ void StringTest::toLower0()
 
 void StringTest::toLowers()
 {
+	StartTrace(StringTest.toLowers);
 	toLower0();
 }
 //==============================================================================================
@@ -1670,6 +1697,7 @@ void StringTest::toUpper0()
 
 void StringTest::toUppers()
 {
+	StartTrace(StringTest.toUppers);
 	toUpper0();
 }
 //==============================================================================================
@@ -1687,17 +1715,20 @@ void StringTest::dump0()
 
 void StringTest::dumps()
 {
+	StartTrace(StringTest.dumps);
 	dump0();
 }
 
 void StringTest::IntReplaceTest(String orig, const String &pattern, const String &nStr, bool exp, const String expStr)
 {
+	StartTrace(StringTest.IntReplaceTest);
 	t_assert(exp == orig.Replace(pattern, nStr));
 	assertEqual(expStr, orig);
 }
 
 void StringTest::ReplaceTest()
 {
+	StartTrace(StringTest.ReplaceTest);
 	IntReplaceTest("/a/b/c", "a", "d", true, "/d/b/c");
 	IntReplaceTest("/a/b/c", "/a/b/c", "d", true, "d");
 	IntReplaceTest("/a/b/c", "/a/b/d", "d", false, "/a/b/c");
@@ -1802,6 +1833,7 @@ void StringTest::DumpAsHexTest()
 //==============================================================================================
 void StringTest::caselessCompare0()
 {
+	StartTrace(StringTest.caselessCompare0);
 	// Fall OHNE case
 	String str = "012345";
 	t_assert( str.CaselessCompare( "012345", "012345") == 0 );
@@ -1820,6 +1852,7 @@ void StringTest::caselessCompare0()
 
 void StringTest::caselessCompare1()
 {
+	StartTrace(StringTest.caselessCompare1);
 	// Fall OHNE case
 	String str = "abcdef";
 	t_assert( str.CaselessCompare( "abcdef", "abcdef") == 0 );
@@ -1838,6 +1871,7 @@ void StringTest::caselessCompare1()
 
 void StringTest::caselessCompare2()
 {
+	StartTrace(StringTest.caselessCompare2);
 	// Fall MIT case
 	String str = "aBcdEf", strReverse = "AbCDeF";
 	t_assert( str.CaselessCompare( "AbcdeF", "abCDef") == 0 );
@@ -1861,6 +1895,7 @@ void StringTest::caselessCompare2()
 
 void StringTest::caselessCompare3()
 {
+	StartTrace(StringTest.caselessCompare3);
 	// Fall MIT case
 	String	str, strHlp, str1;
 	long	i;
@@ -1892,6 +1927,7 @@ void StringTest::caselessCompareWithNullPtr()
 
 void StringTest::caselessCompares()
 {
+	StartTrace(StringTest.caselessCompares);
 	caselessCompare0();
 	caselessCompare1();
 	caselessCompare2();
@@ -1908,6 +1944,7 @@ void StringTest::caselessCompares()
 
 void StringTest::intPrintOn0()
 {
+	StartTrace(StringTest.intPrintOn0);
 	int		i;
 	String	str, strHlp;
 
@@ -1981,6 +2018,7 @@ void StringTest::intPrintOn0()
 
 void StringTest::intPrintOn1()
 {
+	StartTrace(StringTest.intPrintOn1);
 	int		i;
 	String	str, strHlp;
 
@@ -2011,6 +2049,7 @@ void StringTest::intPrintOn1()
 
 void StringTest::intPrintOns()
 {
+	StartTrace(StringTest.intPrintOns);
 	intPrintOn0();
 	intPrintOn1();
 }
@@ -2041,8 +2080,9 @@ void StringTest::at0 ()
 	t_assert( str.At( str.Capacity() + 1 ) == 0 );
 }
 
-void StringTest::ats ()
+void StringTest::ats()
 {
+	StartTrace(StringTest.ats);
 	at0 ();
 }
 //==============================================================================================
@@ -2072,8 +2112,9 @@ void StringTest::putAt0 ()
 	}
 }
 
-void StringTest::putAts ()
+void StringTest::putAts()
 {
+	StartTrace(StringTest.putAts);
 	putAt0();
 }
 
@@ -2264,8 +2305,9 @@ void StringTest::replaceAt7 ()
 	}
 }
 
-void StringTest::replaceAt8 ()
+void StringTest::replaceAt8()
 {
+	StartTrace(StringTest.replaceAt8);
 	// code eliminated since it read past the valid contents of a const char *
 	// and did not really assert the actual result
 	// (which is basically impossible anyway)
@@ -2304,8 +2346,9 @@ void StringTest::replaceAt9 ()
 	memcpy( &bufHlp[1], (const char *)strHlp, strHlp.Length() );					// bufHlp = the expected result
 }
 
-void StringTest::replaceAts ()
+void StringTest::replaceAts()
 {
+	StartTrace(StringTest.replaceAts);
 	replaceAt0 ();
 	replaceAt1 ();
 	replaceAt2 ();
@@ -2366,8 +2409,9 @@ void StringTest::strChr1 ()
 	}
 }
 
-void StringTest::strChrs ()
+void StringTest::strChrs()
 {
+	StartTrace(StringTest.strChrs);
 	strChr0();
 	strChr1();
 }
@@ -2396,8 +2440,9 @@ void StringTest::strRChr0 ()
 	}
 }
 
-void StringTest::strRChrs ()
+void StringTest::strRChrs()
 {
+	StartTrace(StringTest.strRChrs);
 	strRChr0();
 }
 //==============================================================================================
@@ -2407,8 +2452,9 @@ void StringTest::strRChrs ()
 //==============================================================================================
 //         C O N T A I N           Beginn
 //==============================================================================================
-void StringTest::contain0 ()
+void StringTest::contain0()
 {
+	StartTrace(StringTest.contain0);
 	//	bool   Contains(const char *pattern) const;
 	//----------------------------------------------
 	String	str = "qwertzuiopasdfghjklyxcvbnm";
@@ -2434,8 +2480,9 @@ void StringTest::contain0 ()
 	t_assert( str.Contains( "01234567" ) == -1 );
 }
 
-void StringTest::contains ()
+void StringTest::contains()
 {
+	StartTrace(StringTest.contains);
 	contain0 ();
 }
 //==============================================================================================
@@ -2505,8 +2552,9 @@ void StringTest::subString2 ()
 	t_assert( str.Length() ==  (long)strlen("rtzuiopasdfghjklyxcvbnmqwertzuiopasdfghjklyxcvbnm") );
 }
 
-void StringTest::subString3 ()
+void StringTest::subString3()
 {
+	StartTrace(StringTest.subString3);
 	//	String SubString(long start, long length= -1) const;
 	//----------------------------------------------------------
 	String	str = "01234567890123456789", strHlp;
@@ -2526,8 +2574,9 @@ void StringTest::subString3 ()
 	}
 }
 
-void StringTest::subString4 ()
+void StringTest::subString4()
 {
+	StartTrace(StringTest.subString4);
 	//	String SubString(long start, long length= -1) const;
 	//----------------------------------------------------------
 	String str = "01234567890123456789";
@@ -2581,8 +2630,9 @@ void StringTest::subStringWithNull ()
 	t_assert(memcmp("defg\000h", str2, 6) == 0);
 } // subStringWithNull
 
-void StringTest::subStrings ()
+void StringTest::subStrings()
 {
+	StartTrace(StringTest.subStrings);
 	subString0();
 	subString1();
 	subString2();
@@ -2664,8 +2714,9 @@ void StringTest::trimFrontOneByte ()
 	assertEqual("ongstringmorethanone", tst);
 }
 
-void StringTest::trimFronts ()
+void StringTest::trimFronts()
 {
+	StartTrace(StringTest.trimFronts);
 	trimFront0();
 	trimFront1();
 	trimFront2();
@@ -2752,8 +2803,9 @@ void StringTest::trim4 ()
 	t_assert ( memcmp( (const char *)str, (const char *)strHlp, str.Length() ) == 0 );
 }
 
-void StringTest::trims ()
+void StringTest::trims()
 {
+	StartTrace(StringTest.trims);
 	trim0();
 	trim1();
 	trim2();
@@ -2795,8 +2847,9 @@ void StringTest::reserve ()
 //==============================================================================================
 //         R E S E R V E      Ende
 //==============================================================================================
-void StringTest::TestCapacity ()
+void StringTest::TestCapacity()
 {
+	StartTrace(StringTest.TestCapacity);
 	long i;
 	String test;
 	for ( i = 1; i < (3 * 4048); i++ ) {
@@ -2812,7 +2865,7 @@ void StringTest::GetLine()
 	String test;
 	{
 		String base("First line\nSecond line\n");
-		IStringStream is(&base);
+		IStringStream is(base);
 
 		getline(is, test);
 		assertEqual("First line", test);
@@ -2821,7 +2874,7 @@ void StringTest::GetLine()
 	}
 	{
 		String base("First line\r\nSecond line\r\n");
-		IStringStream is(&base);
+		IStringStream is(base);
 
 		getline(is, test);
 		assertEqual("First line\r", test);
@@ -2832,6 +2885,7 @@ void StringTest::GetLine()
 
 void StringTest::OptimizedConstructorOrAssignment()
 {
+	StartTrace(StringTest.OptimizedConstructorOrAssignment);
 	const char *s = "Hello world";
 
 	String ss(s);
@@ -2862,6 +2916,7 @@ void StringTest::EmptyAllocatorTest()
 
 void StringTest::appendsWithDelimiter()
 {
+	StartTrace(StringTest.appendsWithDelimiter);
 	{
 		String testinput =
 			"-----------------------------210003122518197\n"

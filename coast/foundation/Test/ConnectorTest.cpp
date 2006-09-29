@@ -16,7 +16,6 @@
 #include "ConnectorTest.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "StringStream.h"
 #include "System.h"
 #include "Resolver.h"
 #include "PoolAllocator.h"

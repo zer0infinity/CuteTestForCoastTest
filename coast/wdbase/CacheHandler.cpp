@@ -13,7 +13,6 @@
 #include "InitFinisManagerWDBase.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "StringStream.h"
 #include "Threads.h"
 #include "System.h"
 #include "SysLog.h"

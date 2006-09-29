@@ -286,7 +286,8 @@ void ResultMapperTest::EagerPutTest()
 
 	OStringStream os;
 	os << ctx.GetTmpStore()["Mapper"];
-	IStringStream is("{ /sKey foo /dKey foo /lKey foo /bKey foo /aKey foo /strmKey foo }");
+	String strIn("{ /sKey foo /dKey foo /lKey foo /bKey foo /aKey foo /strmKey foo }");
+	IStringStream is(strIn);
 	Anything a;
 	is >> a;
 	OStringStream os2;

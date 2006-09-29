@@ -452,7 +452,7 @@ bool Compressor::DoExpand(Anything &dataOut, const String &scrambledText)
 	// no expansion at all
 	// just stream in anything
 
-	IStringStream is((String *)&scrambledText);
+	IStringStream is(scrambledText);
 	dataOut.Import(is);
 
 	return true;

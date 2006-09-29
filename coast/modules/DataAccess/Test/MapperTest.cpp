@@ -371,7 +371,7 @@ void MapperTest::StdPutTest()
 
 	String test;
 	test << "#--\x0A# Copyright (c) 2005 ifs\x0A# All Rights Reserved\x0A#--";
-	IStringStream is(&test);
+	IStringStream is(test);
 	t_assert(mapper.Put("StdStreams", is, ctx));
 	t_assert(tmpStore[mappername].IsDefined("StdStreams"));
 	assertEqual("#--\x0A# Copyright (c) 2005 ifs\x0A# All Rights Reserved\x0A#--", tmpStore[mappername]["StdStreams"].AsCharPtr());

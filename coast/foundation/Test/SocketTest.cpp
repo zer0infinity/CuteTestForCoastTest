@@ -17,7 +17,6 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "System.h"
-#include "StringStream.h"
 #include "PoolAllocator.h"
 
 //--- c-library modules used ---------------------------------------------------

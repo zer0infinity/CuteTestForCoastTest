@@ -441,7 +441,7 @@ void ParserTest::assertParsedAsDouble(const char *in, double val, int id)
 {
 	Anything any;
 	String str(in);
-	IStringStream is(&str);
+	IStringStream is(str);
 
 	is >> any;
 	assertEqual(AnyDoubleType, any.GetType());
@@ -464,7 +464,7 @@ void ParserTest::assertParsedAsLong(const char *in, long val, int id)
 {
 	Anything any;
 	String str(in);
-	IStringStream is(&str);
+	IStringStream is(str);
 
 	is >> any;
 	assertEqual(AnyLongType, any.GetType());
@@ -487,7 +487,7 @@ void ParserTest::assertParsedAsString(const char *in, int id)
 {
 	Anything any;
 	String str(in);
-	IStringStream is(&str);
+	IStringStream is(str);
 
 	is >> any;
 	assertEqual(AnyCharPtrType, any.GetType());
@@ -3130,7 +3130,7 @@ void ParserTest::slashSlotnames()
 {
 	{
 		String buf("{ /\"Test/Slot\" 12 }");
-		IStringStream is(&buf);
+		IStringStream is(buf);
 		Anything any;
 
 		is >> any;
@@ -3141,7 +3141,7 @@ void ParserTest::slashSlotnames()
 		String buf("{ /Test/Slot 12 }");
 		// a slash in a slotname terminates the slot with a null any as value
 		// (an error message is written)
-		IStringStream is(&buf);
+		IStringStream is(buf);
 		Anything any;
 
 		is >> any;
@@ -3151,7 +3151,7 @@ void ParserTest::slashSlotnames()
 	{
 		String buf("{ //Test 12 }");
 		// a slash at the beginning is ignored (but generates an error message)
-		IStringStream is(&buf);
+		IStringStream is(buf);
 		Anything any;
 
 		is >> any;

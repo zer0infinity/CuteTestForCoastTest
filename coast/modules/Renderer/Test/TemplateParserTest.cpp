@@ -38,7 +38,8 @@ void TemplateParserTest::BuildEmptyCache()
 {
 	StartTrace(TemplateParserTest.BuildEmptyCache);
 	TemplateParser p;
-	IStringStream is("");
+	String strIn;
+	IStringStream is(strIn);
 	Anything cache;
 	cache = p.Parse(is);
 	t_assert(cache.IsNull());
@@ -48,8 +49,8 @@ void TemplateParserTest::BuildLiteralCache()
 {
 	StartTrace(TemplateParserTest.BuildLiteralCache);
 	TemplateParser p;
-
-	IStringStream is("hello world");
+	String strIn("hello world");
+	IStringStream is(strIn);
 	Anything cache;
 	cache = p.Parse(is);
 	t_assert(!cache.IsNull());

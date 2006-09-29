@@ -144,7 +144,7 @@ bool HTTPDAImpl::ReadReply( String &theReply, Context &context, iostream *Ios )
 
 bool HTTPDAImpl::RenderReply( String &theReply, Context &context, ResultMapper *out  )
 {
-	IStringStream is(&theReply);
+	IStringStream is(theReply);
 
 	// read from input stream via renderers....
 	if (! out->Put("Output", is, context) ) {
