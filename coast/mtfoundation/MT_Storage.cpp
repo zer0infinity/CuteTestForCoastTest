@@ -256,10 +256,17 @@ void MT_Storage::Finalize()
 			}
 		}
 		Allocator *a = Storage::Global();
-		if ( a && fOldTracker ) {
+#ifdef MEM_DEBUG
+		if ( a && fOldTracker )
+#else
+		if ( a )
+#endif
+		{
 			a->PrintStatistic();
+#ifdef MEM_DEBUG
 			delete a->ReplaceMemTracker(fOldTracker);
 			fOldTracker = NULL;
+#endif
 		}
 		StorageHooks *pOldHook = Storage::SetHooks(NULL);
 		if ( pOldHook == sgpMTHooks ) {
