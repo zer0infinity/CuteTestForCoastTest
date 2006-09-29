@@ -1008,7 +1008,7 @@ String &String::AppendTwoHexAsChar(const char *cc, long len, bool delimiter)
 	return *this;
 }
 
-long String::AsLong(long dflt)
+long String::AsLong(long dflt) const
 {
 	if (this->Length()) {
 		IStringStream is(this);
@@ -1018,7 +1018,7 @@ long String::AsLong(long dflt)
 	return dflt;
 }
 
-l_long String::AsLongLong(l_long dflt)
+l_long String::AsLongLong(l_long dflt) const
 {
 	if (this->Length()) {
 		IStringStream is(this);
@@ -1028,7 +1028,7 @@ l_long String::AsLongLong(l_long dflt)
 	return dflt;
 }
 
-double String::AsDouble(double dflt)
+double String::AsDouble(double dflt) const
 {
 	if (this->Length()) {
 		IStringStream is(this);

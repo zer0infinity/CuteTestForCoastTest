@@ -123,13 +123,13 @@ public:
 	String &AppendTwoHexAsChar(const char *cc, long len, bool delimiter = false);
 
 	//! returns a long representation of the implementation if possible else the default
-	long AsLong(long dflt);
+	long AsLong(long dflt) const;
 
 	//! returns a long long representation of the implementation if possible else the default
-	l_long AsLongLong(l_long dflt);
+	l_long AsLongLong(l_long dflt) const;
 
 	//! returns a double representation of the implementation if possible else the default
-	double AsDouble(double dflt);
+	double AsDouble(double dflt) const;
 
 	// streaming like operators
 	String &operator << (char c)				{
@@ -409,7 +409,7 @@ protected:
 		fStringImpl->fLength += incr;
 	}
 
-	friend class StringStreamBuf; // we directly operate on fCont, fCapacity, fLength
+	template< typename BufType, typename IoDirType > friend class StringStreamBuf; // we directly operate on fCont, fCapacity, fLength
 	friend class StringTest;
 };
 
