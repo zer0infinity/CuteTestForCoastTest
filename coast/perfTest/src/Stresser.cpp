@@ -12,6 +12,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "Registry.h"
 #include "DiffTimer.h"
+#include "SysLog.h"
 #include "Dbg.h"
 
 //---- Stresser -----------------------------------------------------------
@@ -59,15 +60,17 @@ bool Stresser::DoLoadConfig(const char *category)
 		TraceAny(fConfig, "Config:");
 		return (!fConfig.IsNull());
 	}
-	return false;
+	fConfig = ROAnything();
+	SysLog::Info(String("Stresser::DoLoadConfig: no configuration entry for <") << fName << "> defined, still returning true");
+	return true;
 }
 
 // Provide a dummy Stresser that only stresses itself to do some testing with it
 class EXPORTDECL_PERFTEST DummyStresser: public Stresser
 {
 public:
-	DummyStresser(const char *StresserName) :
-		Stresser(StresserName) {
+	DummyStresser(const char *StresserName)
+		: Stresser(StresserName) {
 		StartTrace(DummyStresser.Ctor);
 	};
 	~DummyStresser() {
@@ -107,7 +110,8 @@ Anything DummyStresser::Run(long id)
 //---- StressersModule -----------------------------------------------------------
 RegisterModule(StressersModule);
 
-StressersModule::StressersModule(const char *name) : WDModule(name)
+StressersModule::StressersModule(const char *name)
+	: WDModule(name)
 {
 }
 
