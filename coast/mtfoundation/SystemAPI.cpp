@@ -43,9 +43,6 @@ THREADWRAPPERFUNCDECL(ThreadWrapper, thread)
 #endif
 		t->IntRun();
 #if !defined(_DLL)
-		if (!t->SetState(Thread::eTerminated)) {
-			SysLog::Warning( String("SetState(eTerminated) failed MyId(") << (long)t->fThreadId << ")");
-		}
 		t->CleanupThreadStorage();
 #endif
 	}
@@ -118,9 +115,6 @@ THREADWRAPPERFUNCDECL(ThreadWrapper, thread)
 	Thread *t = (Thread *) thread;	// we should better check this....
 	if (t) {
 		t->IntRun();
-		if (!t->SetState(Thread::eTerminated)) {
-			SysLog::Warning( String("SetState(eTerminated) failed MyId(") << (long)t->fThreadId << ")");
-		}
 		t->CleanupThreadStorage();
 	}
 	return 0;
@@ -228,9 +222,6 @@ THREADWRAPPERFUNCDECL(ThreadWrapper, thread)
 	Thread *t = (Thread *) thread;	// we should better check this....
 	if (t) {
 		t->IntRun();
-		if (!t->SetState(Thread::eTerminated)) {
-			SysLog::Warning( String("SetState(eTerminated) failed MyId(") << (long)t->fThreadId << ")");
-		}
 		t->CleanupThreadStorage();
 	}
 	return 0;

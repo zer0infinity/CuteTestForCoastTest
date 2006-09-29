@@ -192,7 +192,9 @@ bool Thread::Start(Allocator *pAllocator, ROAnything args)
 				if ( ret ) {
 					SetState(eStarted, args);
 					if ( fAllocator->GetId() == 0 ) {
-						fAllocator->SetId(fThreadId);
+						// use the address of this thread object as 'unique' id for the allocator
+						// fThreadId is not good in the case the Thread gets reused!
+						fAllocator->SetId((long)this);
 					}
 				}
 				delete [] b;
@@ -379,7 +381,7 @@ bool Thread::SetState(EThreadState state, ROAnything args)
 		return IntSetState((fState == eCreated || fState == eStartRequested) ? eTerminated : state, args);
 	}
 	if (fState == eTerminated && state == eCreated) {
-		StatTrace(Thread.SetState, "fState(eTerminated) && state(eCreated)" << (long)state << " IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Current());
+		StatTrace(Thread.SetState, "fState(eTerminated) && state(eCreated) => re-use Thread " << " IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Current());
 		return IntSetState(state, args);
 	}
 	if (state == eTerminatedRunMethod && MyId() == (long)GetId()) {
@@ -388,16 +390,21 @@ bool Thread::SetState(EThreadState state, ROAnything args)
 	}
 	if (state == eTerminated && MyId() == (long)GetId()) {
 		StatTrace(Thread.SetState, "state==eTerminated && MyId==GetId IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Current());
-		return IntSetState(state, args);
+		bool bRet = IntSetState(state, args);
+		// now we should be able to safely reset the fThreadId, needed only in case the Thread gets reused
+		// not to trace a fThreadId which just finished to live
+		fThreadId = 0;
+		return bRet;
 	}
 	if (state == eTerminated) {
-		StatTrace(Thread.SetState, "state==eTerminated IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Current());
+		StatTrace(Thread.SetState, "state==eTerminated => no-op! IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Current());
 	}
 	return false;
 }
 
 bool Thread::IntSetState(EThreadState state, ROAnything args)
 {
+	bool bRet = false;
 	if (CallStateHooks(state, args)) {
 		Anything anyEvt;
 		anyEvt["ThreadState"]["Old"] = (long)fState;
@@ -407,9 +414,9 @@ bool Thread::IntSetState(EThreadState state, ROAnything args)
 		}
 		fState = state;
 		BroadCastEvent(anyEvt);
-		return true;
+		bRet = true;
 	}
-	return false;
+	return bRet;
 }
 
 bool Thread::CallStateHooks(EThreadState state, ROAnything args)
@@ -655,6 +662,7 @@ bool Thread::CleanupThreadStorage()
 {
 	StatTrace(Thread.CleanupThreadStorage, "CallId: " << MyId() << " entering", Storage::Global());
 
+	bool bRet = true;
 	Anything *handlerList = 0;
 	if (GETTLSDATA(fgCleanerKey, handlerList, Anything) && handlerList) {
 		for (long i = (handlerList->GetSize() - 1); i >= 0; --i) {
@@ -666,12 +674,15 @@ bool Thread::CleanupThreadStorage()
 		delete handlerList;
 		if (!SETTLSDATA(fgCleanerKey, 0)) {
 			SysLog::Error( "Thread::CleanupThreadStorage(CleanupHandler *) could not cleanup handler" );
-			StatTrace(Thread.CleanupThreadStorage, "CallId: " << MyId() << " leaving", Storage::Global());
-			return false;	// giving up..
+			bRet = false;
 		}
 	}
-	StatTrace(Thread.CleanupThreadStorage, "CallId: " << MyId() << " leaving", Storage::Global());
-	return true;
+
+	if ( !( bRet = SetState(Thread::eTerminated) ) ) {
+		SysLog::Warning( String("SetState(eTerminated) failed MyId(", -1, Storage::Global()) << (long)fThreadId << ")");
+	}
+
+	return bRet;
 }
 
 //---- Semaphore ------------------------------------------------------------
@@ -737,7 +748,7 @@ SemaphoreEntry::~SemaphoreEntry()
 SimpleMutex::SimpleMutex(const char *name, Allocator *a)
 	: fName(name, -1, a)
 {
-	StartTrace1(SimpleMutex.SimpleMutex, fName);
+//	StartTrace1(SimpleMutex.SimpleMutex, fName);
 	if ( !CREATEMUTEX(fMutex) ) {
 		SysLog::Error("CREATEMUTEX failed");
 	}
@@ -897,7 +908,7 @@ bool Mutex::SetCount(long newCount)
 	return true;
 }
 
-String &Mutex::GetId()
+const String &Mutex::GetId()
 {
 #if defined(WIN32) && defined(TRACE_LOCK_UNLOCK)
 	fMutexIdTL = (long)fMutex;

@@ -178,7 +178,7 @@ protected:
 	bool SetCount(long);
 
 	//!get mutex 'Id' (name) mainly for Tracing
-	String &GetId();
+	const String &GetId();
 
 	//!global mutex id counter
 	static long fgMutexId;
@@ -547,8 +547,9 @@ protected:
 	//!dispatch to subclass hooks for thread state changes
 	bool CallStateHooks(EThreadState state, ROAnything args);
 
-	//! use current list of cleanup handlers to cleanup the thread specific storage and then reset to an empty list
-	static bool CleanupThreadStorage();
+	/*! Use current list of cleanup handlers to cleanup the thread specific storage and then reset to an empty list. This method is the last point where we can modify state values of the thread terminating. After TLS cleanup is done, the state is set to eTerminated and fThreadId will be reset to 0.
+		\return true in case of success, false otherwise */
+	bool CleanupThreadStorage();
 
 	/*! This hook gets called before an operating system thread will be started. One can decide - returning true or false - if an operating system thread should really be started or not.
 		This method is useful when we want to initialize memory dependant things because the fAllocator member is now initialized. The GetId() function will not return a valid id because no real thread was started yet.
