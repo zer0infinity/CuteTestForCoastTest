@@ -36,8 +36,10 @@ void ErrorHandlerTest::setUp ()
 {
 	StartTrace(ErrorHandlerTest.setUp);
 	fCtx = new Context();
-	fPut = new RootMapper("");
-	fGet = new ParameterMapper("");
+	fPut = new RootMapper(name());
+	t_assert( fPut && fPut->Initialize("ParameterMapper") );
+	fGet = new ParameterMapper(name());
+	t_assert( fGet && fGet->Initialize("ResultMapper") );
 	t_assert(GetConfig().IsDefined("Modules"));
 }
 

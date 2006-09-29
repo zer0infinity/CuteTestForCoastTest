@@ -47,6 +47,8 @@ void SybCTnewDATest::InitOpenSetConPropTest()
 			Context ctx;
 			ParameterMapper aParamMapper("aParamMapper");
 			ResultMapper aResultMapper("aResultMapper");
+			t_assert(aParamMapper.Initialize("ParameterMapper"));
+			t_assert(aResultMapper.Initialize("ResultMapper"));
 			String strDAName(name());
 			// create context
 			if (t_assertm(SybCTnewDA::Init(&context, &anyCtxMessages, strInterfacesFileName, 5) == CS_SUCCEED, "Context should have been created")) {
@@ -102,9 +104,9 @@ void SybCTnewDATest::SimpleQueryTest()
 			// create context
 			Context ctx;
 			ParameterMapper aParamMapper("NewDAInpuMapper");
-			aParamMapper.Initialize("ParameterMapper");
 			ResultMapper aResultMapper("SybCTnewDAImpl");
-			aResultMapper.Initialize("ResultMapper");
+			t_assert(aParamMapper.Initialize("ParameterMapper"));
+			t_assert(aResultMapper.Initialize("ResultMapper"));
 			String strDAName(name());
 			// create context
 			if (t_assertm(SybCTnewDA::Init(&context, &anyCtxMessages, strInterfacesFileName, 5) == CS_SUCCEED, "Context should have been created")) {
@@ -150,9 +152,9 @@ void SybCTnewDATest::LimitedMemoryTest()
 			// create context
 			Context ctx;
 			ParameterMapper aParamMapper("NewDAInpuMapper");
-			aParamMapper.Initialize("ParameterMapper");
 			ResultMapper aResultMapper("SybCTnewDAImpl");
-			aResultMapper.Initialize("ResultMapper");
+			t_assert(aParamMapper.Initialize("ParameterMapper"));
+			t_assert(aResultMapper.Initialize("ResultMapper"));
 			String strDAName(name());
 			// create context
 			if (t_assertm(SybCTnewDA::Init(&context, &anyCtxMessages, strInterfacesFileName, 5) == CS_SUCCEED, "Context should have been created")) {
@@ -216,9 +218,9 @@ void SybCTnewDATest::IntLoginTimeoutTest(CS_CONTEXT *context, long lMaxNumber, l
 {
 	StartTrace1(SybCTnewDATest.IntLoginTimeoutTest, String() << lCurrent);
 	ParameterMapper aParamMapper("LoginTimeoutMapper");
-	aParamMapper.Initialize("ParameterMapper");
 	ResultMapper aResultMapper("SybCTnewDAImpl");
-	aResultMapper.Initialize("ResultMapper");
+	t_assert(aParamMapper.Initialize("ParameterMapper"));
+	t_assert(aResultMapper.Initialize("ResultMapper"));
 	SybCTnewDA sybct(context);
 	Context ctx;
 	String strDAName(name());
@@ -254,9 +256,9 @@ void SybCTnewDATest::ResultTimeoutTest()
 		// create context
 		Context ctx;
 		ParameterMapper aParamMapper("ResultTimeoutMapper");
-		aParamMapper.Initialize("ParameterMapper");
 		ResultMapper aResultMapper("SybCTnewDAImpl");
-		aResultMapper.Initialize("ResultMapper");
+		t_assert(aParamMapper.Initialize("ParameterMapper"));
+		t_assert(aResultMapper.Initialize("ResultMapper"));
 		String strDAName(name());
 		// create context
 		if (t_assertm(SybCTnewDA::Init(&context, &anyCtxMessages, strInterfacesFileName, 5) == CS_SUCCEED, "Context should have been created")) {

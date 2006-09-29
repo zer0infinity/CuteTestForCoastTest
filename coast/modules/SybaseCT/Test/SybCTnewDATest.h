@@ -10,12 +10,12 @@
 #define _SybCTnewDATest_H
 
 //---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
+#include "WDBaseTestPolicies.h"
 #include "cstypes.h"
 
 //---- SybCTnewDATest ----------------------------------------------------------
 //:TestCases description
-class SybCTnewDATest : public TestFramework::TestCaseWithConfig
+class SybCTnewDATest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors
