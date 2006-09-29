@@ -20,12 +20,7 @@
 #include "SysLog.h"
 
 //--- c-library modules used ---------------------------------------------------
-#include <stdlib.h>
 #include <fcntl.h>
-
-#if !defined(_POSIX_SOURCE)
-#define _POSIX_SOURCE
-#endif
 
 //---- SystemTest --------------------------------------------------------
 SystemTest::SystemTest(TString tname)
@@ -1048,6 +1043,7 @@ void SystemTest::IOStreamTest ()
 
 	// Test automatic creation of files for ios::app and ios::ate
 	{
+		StartTrace(SystemTest.IOStreamTest);
 		// precondition: files should not exist already!!
 		String strAppFile("tmp/ios_app.tst"), strAteFile("tmp/ios_ate.tst");
 		if ( System::IsRegularFile(strAppFile) ) {
@@ -1075,22 +1071,71 @@ void SystemTest::IOStreamTest ()
 			strExpected << strOutApp;
 			assertCharPtrEqual(strExpected, strReadIn);
 		}
+		pStream = System::OpenStream(strAppFile, NULL, ios::app);
+		if ( t_assertm(pStream != NULL, "expected file to be opened") ) {
+			// can position in file but content gets still appended at the end
+			pStream->seekp(strOut.Length());
+//??			assertEqual(strOut.Length(), (long)pStream->tellp()); // foo: should this one work on append-only streams?
+			*pStream << strOut;
+			delete pStream;
+		}
+		pStream = System::OpenIStream(strAppFile, NULL);
+		if ( t_assertm(pStream != NULL, "expected file to be opened") ) {
+			*pStream >> strReadIn;
+			delete pStream;
+			String strExpected(strOut);
+			strExpected << strOutApp;
+			strExpected << strOut;
+			assertCharPtrEqual(strExpected, strReadIn);
+		}
 		pStream = System::OpenStream(strAteFile, NULL, ios::ate);
+		if ( !t_assertm( pStream == NULL, "expected file not to be opened") ) {
+			delete pStream;
+		}
+		Trace("before first app");
+		pStream = System::OpenStream(strAteFile, NULL, ios::app);
 		if ( t_assertm(pStream != NULL, "expected file to be opened") ) {
 			*pStream << strOut;
 			delete pStream;
 		}
+		Trace("testing appended content");
+		pStream = System::OpenIStream(strAteFile, NULL);
+		if ( t_assertm(pStream != NULL, "expected file to be opened") ) {
+			*pStream >> strReadIn;
+			delete pStream;
+			assertCharPtrEqual(strOut, strReadIn);
+		}
+		Trace("before second ate");
 		pStream = System::OpenStream(strAteFile, NULL, ios::ate);
 		if ( t_assertm(pStream != NULL, "expected file to be opened") ) {
 			*pStream << strOutApp;
 			delete pStream;
 		}
+		Trace("testing ate");
 		pStream = System::OpenIStream(strAteFile, NULL);
 		if ( t_assertm(pStream != NULL, "expected file to be opened") ) {
 			*pStream >> strReadIn;
 			delete pStream;
 			String strExpected(strOut);
 			strExpected << strOutApp;
+			assertCharPtrEqual(strExpected, strReadIn);
+		}
+		Trace("before third ate");
+		pStream = System::OpenStream(strAteFile, NULL, ios::ate);
+		if ( t_assertm(pStream != NULL, "expected file to be opened") ) {
+			// can position in file, contents get appended beginning from this location then
+			pStream->seekp(strOut.Length());
+			assertEqual(strOut.Length(), (long)pStream->tellp());
+			*pStream << strOut;
+			delete pStream;
+		}
+		Trace("testing ate");
+		pStream = System::OpenIStream(strAteFile, NULL);
+		if ( t_assertm(pStream != NULL, "expected file to be opened") ) {
+			*pStream >> strReadIn;
+			delete pStream;
+			String strExpected(strOut);
+			strExpected << strOut;
 			assertCharPtrEqual(strExpected, strReadIn);
 		}
 	}
