@@ -61,10 +61,10 @@ bool FileDAImpl::GetFileName(String &filename, String &ext, Context &context, Pa
 	return ret;
 }
 
-int FileDAImpl::GetMode(Context &context, ParameterMapper *in)
+System::openmode FileDAImpl::GetMode(Context &context, ParameterMapper *in)
 {
 	StartTrace(FileDAImpl.GetMode);
-	int mode = 0;
+	System::openmode mode = (System::openmode)0;
 	Anything anyModes;
 	// do not fail when Get did not find a Mode...
 	in->Get("Mode", anyModes, context);
@@ -74,10 +74,10 @@ int FileDAImpl::GetMode(Context &context, ParameterMapper *in)
 	return mode;
 }
 
-int FileDAImpl::DoGetMode(ROAnything roaModes)
+System::openmode FileDAImpl::DoGetMode(ROAnything roaModes)
 {
 	StartTrace(FileDAImpl.DoGetMode);
-	int mode = 0;
+	System::openmode mode = (System::openmode)0;
 	if ( roaModes.Contains("text") ) {
 		Trace("text mode");
 	} else if ( roaModes.Contains("binary") ) {
@@ -93,7 +93,7 @@ iostream *FileDAImpl::GetFileStream(Context &context, ParameterMapper *in)
 	iostream *pStream = NULL;
 	String filename, ext;
 	if (GetFileName(filename, ext, context, in)) {
-		int mode = GetMode(context, in);
+		System::openmode mode = GetMode(context, in);
 		pStream = System::OpenStream(filename, ext, mode);
 		if (pStream) {
 			Trace("Stream opened ok");

@@ -69,10 +69,10 @@ bool WriteFileDAImpl::Exec( Context &context, ParameterMapper *in, ResultMapper 
 	return true;
 }
 
-int WriteFileDAImpl::DoGetMode(ROAnything roaModes)
+System::openmode WriteFileDAImpl::DoGetMode(ROAnything roaModes)
 {
 	StartTrace(WriteFileDAImpl.DoGetMode);
-	int mode = FileDAImpl::DoGetMode(roaModes) | ios::out;
+	System::openmode mode = FileDAImpl::DoGetMode(roaModes) | ios::out;
 	Trace("mode so far:" << (long)mode);
 	if ( roaModes.Contains("truncate") ) {
 		mode |= ios::trunc;

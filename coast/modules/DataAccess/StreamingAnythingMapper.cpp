@@ -55,7 +55,7 @@ bool StreamToAnythingMapper::DoPutStream(const char *key, istream &is, Context &
 	{
 		OStringStream ostr(strBuf);
 		DAAccessTimer(StreamToAnythingMapper.DoPutStream, "copying from stream", ctx);
-		while ( ( bSuccess = StringStream::PlainCopyStream2Stream(&is, ostr, lCopied, lToCopy) ) && ( lCopied >= lToCopy ) ) {
+		while ( ( bSuccess = NSStringStream::PlainCopyStream2Stream(&is, ostr, lCopied, lToCopy) ) && ( lCopied >= lToCopy ) ) {
 			lTotal += lCopied;
 		}
 		lTotal += lCopied;
