@@ -30,6 +30,7 @@
 		PagesModule
 		MappersModule
 		AcceptorFactoriesModule
+		ServersModule
 		StressersModule
 		FlowControllersModule
 	}
@@ -39,7 +40,7 @@
 			StressServer6666
 		}
 	}
-
+	/Servers {}
 	/Stressers {
 		/DummyStresser	{
 			Dummy1 Dummy2 Dummy3 Dummy4
