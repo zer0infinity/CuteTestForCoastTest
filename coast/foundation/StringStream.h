@@ -11,9 +11,13 @@
 
 #include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 
+#include "ITOTypeTraits.h"
+#include "ITOString.h"
+
+//#define SS_TRACE(msg)	cerr << _QUOTE_(msg) << endl
+#define SS_TRACE(msg)
+
 #if defined(ONLY_STD_IOSTREAM)
-#include <iostream>
-#include <iomanip>
 using namespace std;
 #define seek_dir seekdir
 #else
@@ -22,11 +26,7 @@ using namespace std;
 #else
 typedef int streamsize;
 #endif
-#include <iostream.h>
-#include <iomanip.h>
 #endif
-
-#include "ITOString.h"
 
 #if defined(WIN32)
 #if !defined(ONLY_STD_IOSTREAM)
@@ -98,176 +98,48 @@ inline std::istream &operator>> (std::istream &is, unsigned __int64 &value)
 #endif
 #endif
 
-//! StringStreamBuf adapts String objects to the iostream framework
-/*! the underlying string is used directly as the buffer to save copying overhead */
-class EXPORTDECL_FOUNDATION StringStreamBuf : public streambuf
-{
-public:
-	/*! default ctor, allocates new internal String object for output
-		\param mode ios modes, bitwise or of [in|out|app|ate]: if mode is ios::app or ios::ate output is appended */
-	StringStreamBuf(int mode = ios::out);
-	/*! ctor usually used for input
-		\param s contains characters to be read
-		\param mode ios modes, bitwise or of [in|out|app|ate]: if mode is ios::app or ios::ate output is appended */
-	StringStreamBuf(const String &s, int mode = ios::in);
-	/*! ctor usually used for output
-		\param s target string to be filled,
-		\param mode ios modes, bitwise or of [in|out|app|ate]: if mode is ios::app or ios::ate output is appended */
-	StringStreamBuf(String *s, int mode = ios::out);
-	/*! dtor, deletes string object if it has been allocated by this */
-	virtual ~StringStreamBuf();
-	/*! not much to do when synchronizing, just insert string termination character */
-	virtual int sync();
-
-	/*! reveal underlying string.
-		\return underlying string buffer
-		\note do not change it when continuing using the stream */
-	String &str();
-
-#if defined(ONLY_STD_IOSTREAM)
-protected: // seekxxx are protected in the std..
-	typedef std::streambuf::pos_type	pos_type;
-	typedef std::streambuf::off_type	off_type;
-	typedef std::ios::seekdir	seekdir;
-	typedef std::ios::openmode	openmode;
-#elif defined(WIN32) && !defined(ONLY_STD_IOSTREAM)
-	typedef streampos pos_type;
-	typedef	streamoff off_type;
-	typedef ios::seek_dir seekdir;
-	typedef ios::open_mode openmode;
-#else
-	typedef streampos pos_type;
-	typedef	streamoff off_type;
-	typedef ios::seek_dir seekdir;
-	typedef ios::openmode openmode;
-#endif
-
-	/*! standard iostream behavior, adjust put or get position absolutely */
-	virtual pos_type seekpos(pos_type pos, openmode mode = (openmode)(ios::in | ios::out) );
-	/*! standard iostream behavior, adjust put or get position relatively */
-	virtual pos_type seekoff(off_type off, seekdir dir, openmode mode = (openmode)(ios::in | ios::out) );
-
-protected:
-	/*! standard iostream behavior, extends the String
-		\return EOF if extension is not possible (this might be a big problem) */
-	virtual int overflow(int c = EOF);
-	/*! standard iostream behavior, look for new characters available (no op for Strings)
-		can't produce new chars because we always use the whole String
-		\return EOF if no more characters for input available = EOF reached */
-	virtual int underflow();
-
-private:
-	/*! auxiliary StringStreamBuf initialization */
-	void xinit( String *s = 0, const String *contents = 0);
-	/*! auxiliary operation to keep track of really output bytes, terminate string */
-	void AdjustStringLength() ;
-	/*! auxiliary operation to set iostream get buffer pointers according to parameters */
-	void setgetpointer(long getoffset);
-	/*! auxiliary operation to set iostream buffer pointers according to parameters */
-	void setbufpointers(long getoffset, long putoffset);
-	/*! enlarge the underlying String, adjust buffer pointers if needed (expand file size and mapped region) */
-	bool reserve ( long newlength );
-	/*! initialize get and put pointers of streambuf (set internal put und get buffer and position) */
-	void initGetPut();
-	/*! auxiliary functions for interfacing to setp and setg, getting rid of
-		old streambuf style setb() and base() */
-	char *start() {
-		return (fStore && fStore->GetImpl() ? fStore->GetContent() : 0);
-	}
-	char *endbuf() {
-		if (fStore && fStore->GetImpl()) {
-			return fStore->GetContent() + fStore->Capacity() - 1;
-		}
-		return 0;
-	}
-	char *endget() {
-		if (fStore && fStore->GetImpl()) {
-			return fStore->GetContent() + fStore->Length();
-		}
-		return 0;
-	}
-
-	//! internal buffer of stream
-	String *fStore;
-	//! flag for remembering who allocated fStore
-	//! is true when the default constructor has created a string
-	bool fDeleteStore;
-	//! saves open mode from ctor params
-	int    fOpenMode;
-};
-
-//! adapts ios to a StringStream buffer --> THIS CLASS IS NOT TO BE INSTANTIATED
-//! may be unsafe_ios
-class EXPORTDECL_FOUNDATION StringStreambase : virtual public ios
-{
-public:
-	/*! default ctor, allocates new internal String object for output
-		\param mode ios modes, bitwise or of [in|out|app|ate]: if mode is ios::app or ios::ate output is appended */
-	StringStreambase(int mode = ios::out)
-		: fSSBuf(mode) {
-		// init from ios is needed, because ios() won't do the job; (see comment in iostream.h)
-		init(&fSSBuf);
-	}
-	/*! ctor usually used for input
-		\param s contains characters to be read
-		\param mode ios modes, bitwise or of [in|out|app|ate]: if mode is ios::app or ios::ate output is appended */
-	StringStreambase(const String &s, int mode = ios::in)
-		: fSSBuf(s, mode) {
-		init(&fSSBuf);
-	}
-
-	/*! ctor usually used for output
-		\param s target string to be filled,
-		\param mode ios modes, bitwise or of [in|out|app|ate]: if mode is ios::app or ios::ate output is appended */
-	StringStreambase(String *s, int mode = ios::out)
-		: fSSBuf(s, mode) {
-		init(&fSSBuf);
-	}
-
-	//! dtor not much to do
-	virtual ~StringStreambase() {}
-
-	/*! reveal underlying streambuf implementation
-		\return underlying streambuf */
-	StringStreamBuf *rdbuf()  {
-		return &fSSBuf;
-	}
-
-	/*! reveal underlying string.
-		\return underlying string buffer
-		\note do not change it when continuing using the stream */
-	String &str()         {
-		return fSSBuf.str();
-	}
-
-protected:
-	//! the buffer with its underlying String
-	StringStreamBuf fSSBuf;
-};
+#include "StringStreamBuf.h"
 
 //! istream for Strings, read input from a string
-class  EXPORTDECL_FOUNDATION IStringStream : public StringStreambase, public istream
+template
+<
+typename BufferType
+>
+class  EXPORTDECL_FOUNDATION IStringStreamTmpl : public StringStreambase< typename Loki::TypeTraits<BufferType>::ConstPlainTypePtr, Loki::Int2Type<NSStringStream::eIn> >, public istream
 {
+public:
+	typedef IStringStreamTmpl<BufferType> ThisClassType;
+	typedef typename Loki::TypeTraits<BufferType>::ConstPlainTypePtr IntBufType;
+	typedef typename Loki::Int2Type< NSStringStream::eIn > IoDirType;
+	typedef StringStreambase< IntBufType, IoDirType > StreamBaseType;
+	typedef typename Loki::TypeTraits<IntBufType>::ConstPlainTypeRef ConstPlainTypeRef;
+	typedef typename Loki::TypeTraits<IntBufType>::ConstPlainTypePtr ConstPlainTypePtr;
+	typedef typename Loki::TypeTraits<IntBufType>::PlainType PlainType;
+	typedef typename Loki::TypeTraits<IntBufType>::ConstPlainType ConstPlainType;
+
 public:
 	/*! ctor, take String pointed to by s to read the input direct input taken from string
 		\param s use *s as the underlying input buffer, no copying, most efficient */
-	IStringStream(String *s)
-		: StringStreambase(s, ios::in)
-		, istream(&fSSBuf)
-	{ }
+	explicit IStringStreamTmpl(ConstPlainTypePtr s)
+		: StreamBaseType(*s, ios::in)
+		, istream(StreamBaseType::rdbuf()) {
+		SS_TRACE((IStringStreamTmpl.IStringStreamTmpl, "ConstPlainTypePtr"));
+	}
+
 	/*! ctor, take String value as input, read input from copy of s
 		\param s use s contents as initial buffer content for input */
-	IStringStream(const String &s)
-		: StringStreambase(s, ios::in)
-		, istream(&fSSBuf)
-	{ }
+	explicit IStringStreamTmpl(ConstPlainTypeRef s)
+		: StreamBaseType(s, ios::in)
+		, istream(StreamBaseType::rdbuf()) {
+		SS_TRACE((IStringStreamTmpl.IStringStreamTmpl, "ConstPlainTypeRef"));
+	}
 	//! dtor, not much to do
-	~IStringStream() { }
+	~IStringStreamTmpl() { }
 
 #if defined(WIN32) && !defined(ONLY_STD_IOSTREAM)
 	// fixing bug in istream runtime lib, the default value in long conversion
 	// is overwritten in case the conversion fails. Other cases should be tested too !
-	IStringStream &operator >>( long &l ) {
+	ThisClassType &operator >>( long &l ) {
 		long save = l;
 		istream::operator>>(l);
 		if (fail()) {
@@ -276,138 +148,190 @@ public:
 		return *this;
 	}
 
-	IStringStream &operator >>( unsigned long &ul ) {
+	ThisClassType &operator >>( unsigned long &ul ) {
 		istream::operator>>(ul);
 		return *this;
 	}
-	IStringStream &operator >>( char *psz ) {
+	ThisClassType &operator >>( char *psz ) {
 		istream::operator>>(psz);
 		return *this;
 	}
-	IStringStream &operator >>( unsigned char *pusz ) {
+	ThisClassType &operator >>( unsigned char *pusz ) {
 		istream::operator>>(pusz);
 		return *this;
 	}
-	IStringStream &operator >>( signed char *pssz ) {
+	ThisClassType &operator >>( signed char *pssz ) {
 		istream::operator>>(pssz);
 		return *this;
 	}
-	IStringStream &operator >>( char &rch ) {
+	ThisClassType &operator >>( char &rch ) {
 		istream::operator>>(rch);
 		return *this;
 	}
-	IStringStream &operator >>( unsigned char &ruch ) {
+	ThisClassType &operator >>( unsigned char &ruch ) {
 		istream::operator>>(ruch);
 		return *this;
 	}
-	IStringStream &operator >>( signed char &rsch ) {
+	ThisClassType &operator >>( signed char &rsch ) {
 		istream::operator>>(rsch);
 		return *this;
 	}
-	IStringStream &operator >>( short &s ) {
+	ThisClassType &operator >>( short &s ) {
 		istream::operator>>(s);
 		return *this;
 	}
-	IStringStream &operator >>( unsigned short &us ) {
+	ThisClassType &operator >>( unsigned short &us ) {
 		istream::operator>>(us);
 		return *this;
 	}
-	IStringStream &operator >>( int &n ) {
+	ThisClassType &operator >>( int &n ) {
 		istream::operator>>(n);
 		return *this;
 	}
-	IStringStream &operator >>( unsigned int &un ) {
+	ThisClassType &operator >>( unsigned int &un ) {
 		istream::operator>>(un);
 		return *this;
 	}
-	IStringStream &operator >>( float &f ) {
+	ThisClassType &operator >>( float &f ) {
 		istream::operator>>(f);
 		return *this;
 	}
-	IStringStream &operator >>( double &d ) {
+	ThisClassType &operator >>( double &d ) {
 		istream::operator>>(d);
 		return *this;
 	}
-	IStringStream &operator >>( streambuf *psb ) {
+	ThisClassType &operator >>( streambuf *psb ) {
 		istream::operator>>(psb);
 		return *this;
 	}
-	IStringStream &operator >>( istream & (*fcn)(istream &) ) {
+	ThisClassType &operator >>( istream & (*fcn)(istream &) ) {
 		istream::operator>>(fcn);
 		return *this;
 	}
-	IStringStream &operator >>( ios & (*fcn)(ios &) ) {
+	ThisClassType &operator >>( ios & (*fcn)(ios &) ) {
 		istream::operator>>(fcn);
 		return *this;
 	}
 #endif // WIN32
+
+private:
+	IStringStreamTmpl();
+	// do not allow on the fly copies put onto the stack
+	IStringStreamTmpl(const char *);
+	ThisClassType &operator=(const ThisClassType &);
 };
 
+typedef IStringStreamTmpl<String> IStringStream;
+
 //! ostream for Strings, output to a String object
-class  EXPORTDECL_FOUNDATION OStringStream : public StringStreambase, public ostream
+template
+<
+typename BufferType
+>
+class  EXPORTDECL_FOUNDATION OStringStreamTmpl : public StringStreambase< typename Loki::TypeTraits<BufferType>::PlainTypePtr, Loki::Int2Type<NSStringStream::eOut> >, public ostream
 {
 public:
+	typedef OStringStreamTmpl<BufferType> ThisClassType;
+	typedef typename Loki::TypeTraits<BufferType>::PlainTypePtr IntBufType;
+	typedef typename Loki::Int2Type<NSStringStream::eOut> IoDirType;
+	typedef StringStreambase< IntBufType, IoDirType > StreamBaseType;
+	typedef typename Loki::TypeTraits<BufferType>::PlainTypeRef PlainTypeRef;
+	typedef typename Loki::TypeTraits<BufferType>::PlainTypePtr PlainTypePtr;
+
+public:
 	//! ctor, allocate new string object internally for output
-	OStringStream(int mode = ios::out)
-		: StringStreambase(mode | ios::out)
-		, ostream(&fSSBuf)
-	{  }
+	explicit OStringStreamTmpl(int mode = ios::out)
+		: StreamBaseType(mode | ios::out)
+		, ostream(StreamBaseType::rdbuf()) {
+		SS_TRACE(OStringStreamTmpl.OStringStreamTmpl);
+	}
+
 	/*! ctor, take s as output target
 		\param s use *s as the underlying output buffer directly, no copying */
-	OStringStream(String *s, int mode = ios::app)
-		: StringStreambase(s, mode | ios::out)
-		, ostream(&fSSBuf)
-	{  }
-	/*! ctor, take s as initial content, makes sense with mode containting ios::app|ios::ate
-		\param s use s contents as initial content */
-	OStringStream(const String &s, int mode = ios::out)
-		: StringStreambase(s, mode | ios::out)
-		, ostream(&fSSBuf)
-	{  }
+	explicit OStringStreamTmpl(PlainTypePtr s, int mode = ios::app)
+		: StreamBaseType(s, mode | ios::out)
+		, ostream(StreamBaseType::rdbuf()) {
+		SS_TRACE((OStringStreamTmpl.OStringStreamTmpl, "PlainTypePtr"));
+	}
+
 	/*! ctor, take s as output target
 		i am not sure if compiler will take this correctly with the const String& constructor, needs to be tested
 		\param s use s contents as initial content */
-	OStringStream(String &s, int mode = ios::app)
-		: StringStreambase(&s, mode | ios::out)
-		, ostream(&fSSBuf)
-	{  }
+	explicit OStringStreamTmpl(PlainTypeRef s, int mode = ios::app)
+		: StreamBaseType(&s, mode | ios::out)
+		, ostream(StreamBaseType::rdbuf()) {
+		SS_TRACE((OStringStreamTmpl.OStringStreamTmpl, "PlainTypeRef"));
+	}
 	//! dtor, not much to do
-	~OStringStream() { }
+	~OStringStreamTmpl() { }
+
+private:
+	OStringStreamTmpl(const ThisClassType &);
+	ThisClassType &operator=(const ThisClassType &);
 };
 
+typedef OStringStreamTmpl<String> OStringStream;
+
 //! iostream for Strings, input and output to a String object
-class  EXPORTDECL_FOUNDATION StringStream : public StringStreambase, public iostream
+template
+<
+typename BufferType
+>
+class EXPORTDECL_FOUNDATION StringStreamTmpl
+	: public StringStreambase< typename Loki::TypeTraits<BufferType>::PlainTypePtr, typename Loki::Int2Type<NSStringStream::eOut> >
+	, public iostream
 {
 public:
+	typedef StringStreamTmpl<BufferType> ThisClassType;
+	typedef typename Loki::TypeTraits<BufferType>::PlainTypePtr IntBufType;
+	typedef typename Loki::Int2Type<NSStringStream::eOut> IoDirType;
+	typedef StringStreambase< IntBufType, IoDirType > StreamBaseType;
+	typedef typename Loki::TypeTraits<BufferType>::PlainTypeRef PlainTypeRef;
+	typedef typename Loki::TypeTraits<BufferType>::ConstPlainTypeRef ConstPlainTypeRef;
+	typedef typename Loki::TypeTraits<BufferType>::PlainTypePtr PlainTypePtr;
+public:
 	//! ctor, allocate new string object internally for in/output
-	StringStream(int mode = ios::out | ios::in)
-		: StringStreambase(mode)
-		, iostream(&fSSBuf)
-	{  }
+	explicit StringStreamTmpl(int mode = ios::out | ios::in)
+		: StreamBaseType(mode)
+		, iostream(StreamBaseType::rdbuf()) {
+		SS_TRACE(StringStreamTmpl.StringStreamTmpl);
+	}
 	/*! ctor, take s as output target, resp. input source
 		\param s use *s as the underlying output buffer directly, no copying */
-	StringStream(String *s, int mode = ios::out | ios::in)
-		: StringStreambase(s, mode)
-		, iostream(&fSSBuf)
-	{  }
+	explicit StringStreamTmpl(PlainTypePtr s, int mode = ios::out | ios::in)
+		: StreamBaseType(s, mode)
+		, iostream(StreamBaseType::rdbuf()) {
+		SS_TRACE((StringStreamTmpl.StringStreamTmpl, "PlainTypePtr"));
+	}
 	/*! ctor, take s as initial content,
 		makes sense with mode containting ios::app|ios::ate|ios::in
 		\param s use s contents as initial content */
-	StringStream(const String &s, int mode = ios::out | ios::in)
-		: StringStreambase(s, mode)
-		, iostream(&fSSBuf)
-	{  }
+	explicit StringStreamTmpl(ConstPlainTypeRef s, int mode = ios::in)
+		: StreamBaseType(s, mode)
+		, iostream(StreamBaseType::rdbuf()) {
+		SS_TRACE((StringStreamTmpl.StringStreamTmpl, "ConstPlainTypeRef"));
+	}
 	/*! ctor, take s as output target and input source
 		i am not sure if compiler will take this correctly with the const String&
 		constructor, needs to be tested
 		\param s use s contents as initial content */
-	StringStream(String &s, int mode = ios::out | ios::in)
-		: StringStreambase(&s, mode | ios::out)
-		, iostream(&fSSBuf)
-	{  }
+	explicit StringStreamTmpl(PlainTypeRef s, int mode = ios::out | ios::in)
+		: StreamBaseType(&s, mode | ios::out)
+		, iostream(StreamBaseType::rdbuf()) {
+		SS_TRACE((StringStreamTmpl.StringStreamTmpl, "PlainTypeRef"));
+	}
 	//! dtor, not much to do
-	~StringStream() { }
+	~StringStreamTmpl() { }
 
+private:
+	StringStreamTmpl(const ThisClassType &);
+	ThisClassType &operator=(const ThisClassType &);
+};
+
+typedef StringStreamTmpl<String> StringStream;
+
+namespace NSStringStream
+{
 	/*! Utility function to copy uninterpreted (plain) bytes from stream to stream.
 		\note This is a blocking call if used with SocketStreams!
 		\param streamSrc stream to read from
@@ -415,7 +339,7 @@ public:
 		\param copiedBytes number of bytes copied during this call, depending on lBytes2Copy subsequent calls might be needed to copy everything from source to destination
 		\param lBytes2Copy number of bytes to copy per call
 		\return true if copying was successful. If copiedBytes is lower than lBytes2Copy and the call returned true everything was read from streamSrc (eof) and copied into streamDest. If copiedBytes is equal to lBytes2Copy and the call returned true the function should be called again to consume remaining bytes from streamSrc. False indicates either an error condition on streamSrc or streamDest. */
-	static bool PlainCopyStream2Stream(istream *streamSrc, ostream &streamDest, long &copiedBytes, long lBytes2Copy = 2048L);
+	bool EXPORTDECL_FOUNDATION PlainCopyStream2Stream(istream *streamSrc, ostream &streamDest, long &copiedBytes, long lBytes2Copy = 2048L);
 };
 
 #endif
