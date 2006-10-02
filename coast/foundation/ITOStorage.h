@@ -318,6 +318,7 @@ protected:
 	friend class MTStorageHooks;
 	friend class TestStorageHooks;
 	friend class Server;	// needs ForceGlobalStorage() for re-initialization
+	friend class BatchServer;
 
 	//! used by mt system to redefine the hooks for mt-local storage policy
 	static StorageHooks *SetHooks(StorageHooks *h);
