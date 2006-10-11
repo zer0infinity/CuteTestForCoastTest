@@ -185,7 +185,7 @@ bool AppLogModule::RotateSpecificLog(Context &ctx, const char *logChannel)
 	AppLogChannel *applog = FindLogger(ctx, logChannel);
 	bool ret = false;
 	if (applog ) {
-		ret = applog->Rotate();
+		ret = applog->Rotate(true);
 	}
 	return ret;
 }
@@ -448,7 +448,7 @@ bool AppLogChannel::RotateLog(const String &logdirName, const String &rotatedirN
 	return (retCode == 0);
 }
 
-bool AppLogChannel::Rotate()
+bool AppLogChannel::Rotate(bool overrideDoNotRotateLogs)
 {
 	StartTrace(AppLogChannel.Rotate);
 	bool bSuccess = true;
@@ -461,7 +461,7 @@ bool AppLogChannel::Rotate()
 		pStream = fLogStream;
 	}
 	// must enter here in case the logfile does not exist yet
-	if ( !pStream || GetChannelInfo()["DoNotRotate"].AsBool(false) == false ) {
+	if ( !pStream || (overrideDoNotRotateLogs || (GetChannelInfo()["DoNotRotate"].AsBool(false) == false)) ) {
 		MutexEntry me(fChannelMutex);
 		me.Use();
 		if ( fLogStream ) {

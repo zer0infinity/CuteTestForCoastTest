@@ -323,6 +323,40 @@ void AppLogTest::RotateSpecificLogTest()
 						}
 					}
 				}
+				// basically the same as above, but DoNotRotate flag is set in log channel config which will be
+				// overriden by explicitly requesting a log rotation
+				ctx.GetTmpStore()["TestMsg"] = "RotateOverride log Test 1";
+				t_assertm(AppLogModule::Log(ctx, "RotateSpecificLogOverride"), "RotateSpecificLogOverride Test");
+				// Now request explict log rotation
+				t_assertm(AppLogModule::RotateSpecificLog(ctx, "RotateSpecificLogOverride"), "RotateSpecificLogOverride now!");
+				ctx.GetTmpStore()["TestMsg"] = "RotateOverride log Test 2";
+				t_assertm(AppLogModule::Log(ctx, "RotateSpecificLogOverride"), "RotateSpecificLogOverride Test");
+				// check for the files
+				if ( t_assert(GetTestCaseConfig().LookupPath(roaFileName, "AppLogModule.Servers.TestServer.RotateSpecificLogOverride.FileName") ) ) {
+					String strFileName = System::GetFilePath(roaFileName.AsString(), "");
+					t_assertm( System::IsRegularFile(strFileName), TString("expected existing logfile [") << strFileName << "]");
+					// check for rotated file in rotate-subdirectory
+					AppLogChannel *pChannel = AppLogModule::FindLogger(ctx, "RotateSpecificLogOverride");
+					if ( t_assertm( pChannel != NULL, "expected valid log channel") ) {
+						String logdir, rotatedir;
+						if ( t_assertm(pChannel->GetLogDirectories(pChannel->GetChannelInfo(), logdir, rotatedir), "expected GetLogDirectories to be successful") ) {
+							Anything anyRotateList = System::DirFileList(rotatedir, "");
+							TraceAny(anyRotateList, "Entries of [" << rotatedir << "] directory");
+							long lFound = 0;
+							String strEntry, strRotateFileName = roaFileName.AsString();
+							strRotateFileName << ".20";
+							for (long lEntry = anyRotateList.GetSize() - 1; lEntry >= 0; --lEntry) {
+								strEntry = anyRotateList[lEntry].AsString();
+								if ( strEntry.StartsWith(strRotateFileName) ) {
+									++lFound;
+									Trace("entry [" << strEntry << "] matched!");
+								}
+
+							}
+							assertEqualm( 1, lFound, TString("expected exactly one rotated file of [") << strFileName << "] to exist in rotate directory [" << rotatedir << "]");
+						}
+					}
+				}
 
 			}
 			t_assertm(pModule->Finis(), "Finis should have succeeded");

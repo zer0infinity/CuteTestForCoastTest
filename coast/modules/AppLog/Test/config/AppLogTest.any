@@ -167,6 +167,12 @@
 						/Format			%AccessLogFormat
 						/Header			"RotateSpecificLogTest Header"
 					}
+					/RotateSpecificLogOverride	{
+						/FileName		"RotateSpecificLogOverrideTest.log"
+						/Format			%AccessLogFormat
+						/Header			"RotateSpecificLogOverrideTest Header"
+						/DoNotRotate	1
+					}
 				}
 			}
 		}

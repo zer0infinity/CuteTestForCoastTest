@@ -116,7 +116,7 @@ public:
 	bool Log(Context &ctx);
 	bool LogAll(Context &ctx, const ROAnything &config);
 
-	bool Rotate();
+	bool Rotate(bool overrideDoNotRotateLogs = false);
 	ROAnything GetChannelInfo() {
 		return fChannelInfo;
 	}
