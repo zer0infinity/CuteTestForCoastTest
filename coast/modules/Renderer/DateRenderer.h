@@ -49,6 +49,7 @@ public:
 	DateRenderer(const char *name);
 
 	void RenderAll(ostream &reply, Context &c, const ROAnything &data);
+	const size_t gcMaxDateArraySize;
 };
 
 #endif		//not defined _DateRenderer_H

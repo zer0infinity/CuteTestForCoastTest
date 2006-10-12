@@ -19,9 +19,7 @@
 //---- DateRenderer ----------------------------------------------------------------
 RegisterRenderer(DateRenderer);
 
-const size_t gcMaxDateArraySize = 200;
-
-DateRenderer::DateRenderer(const char *name) : Renderer(name)
+DateRenderer::DateRenderer(const char *name) : Renderer(name), gcMaxDateArraySize(200)
 {
 }
 
