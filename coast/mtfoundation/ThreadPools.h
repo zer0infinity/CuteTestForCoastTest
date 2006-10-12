@@ -315,6 +315,9 @@ public:
 	//! unblocking requests on request of the admin server
 	void UnblockRequests();
 
+	//! Get my name
+	String GetName();
+
 protected:
 	//! create an array of the required workers
 	virtual void DoAllocPool(ROAnything roaWorkerArgs) = 0;

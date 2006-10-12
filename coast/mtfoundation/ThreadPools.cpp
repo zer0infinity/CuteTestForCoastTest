@@ -322,6 +322,11 @@ bool WorkerPoolManager::CanReInitPool()
 	return true;
 }
 
+String WorkerPoolManager::GetName()
+{
+	return fName;
+}
+
 int WorkerPoolManager::Init(int maxParallelRequests, int usePoolStorage, int poolStorageSize, int numOfPoolBucketSizes, ROAnything roaWorkerArgs)
 {
 	StartTrace(WorkerPoolManager.Init);
