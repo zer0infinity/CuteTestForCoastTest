@@ -66,8 +66,8 @@ Mutex *CacheHandler::fgCacheHandlerMutex = 0;
 class EXPORTDECL_WDBASE CacheHandlerMutexAllocator : public InitFinisManagerWDBase
 {
 public:
-	CacheHandlerMutexAllocator(unsigned int uiPriority)
-		: InitFinisManagerWDBase(uiPriority) {
+	CacheHandlerMutexAllocator(unsigned int uiPriority, const String name)
+		: InitFinisManagerWDBase(uiPriority, name) {
 		IFMTrace("CacheHandlerMutexAllocator created\n");
 	}
 
@@ -88,7 +88,7 @@ public:
 	}
 };
 
-static CacheHandlerMutexAllocator *psgCacheHandlerMutexAllocator = new CacheHandlerMutexAllocator(0);
+static CacheHandlerMutexAllocator *psgCacheHandlerMutexAllocator = new CacheHandlerMutexAllocator(0, "CacheHandlerMutexAllocator");
 
 CacheHandler::CacheHandler()
 	: NotCloned("CacheHandler")

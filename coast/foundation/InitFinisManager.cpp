@@ -13,23 +13,31 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "SysLog.h"
+#include "ITOString.h"
 
 //--- c-modules used -----------------------------------------------------------
 
 //---- InitFinisManager ----------------------------------------------------------
-InitFinisManager::InitFinisManager(unsigned int uiPriority)
+InitFinisManager::InitFinisManager(unsigned int uiPriority, const String name)
 	: fNext(0)
 	, fPriority(uiPriority)
+	, fName(name)
 {
 }
 
 InitFinisManager::~InitFinisManager()
 {
+	String msg;
+	msg << "InitFinisManager::Finis: calling Delete: [ " << GetName() << "]\n";
+	IFMTrace(msg);
 	delete fNext;
 }
 
 void InitFinisManager::Init()
 {
+	String msg;
+	msg << "InitFinisManager::Finis: calling DoInit:  [ " << GetName() << "]\n";
+	IFMTrace(msg);
 	DoInit();
 	if ( fNext ) {
 		fNext->Init();
@@ -41,6 +49,9 @@ void InitFinisManager::Finis()
 	if ( fNext ) {
 		fNext->Finis();
 	}
+	String msg;
+	msg << "InitFinisManager::Finis: calling DoFinis: [ " << GetName() << "]\n";
+	IFMTrace(msg);
 	DoFinis();
 }
 
@@ -48,7 +59,9 @@ void InitFinisManager::Add(InitFinisManager *pManager, InitFinisManager *pCleane
 {
 	// do not add manager itself to the list of destructible elements
 	if ( pManager != 0 && pCleaner != 0 && pManager != pCleaner ) {
-		IFMTrace("InitFinisManager::Add: adding object\n");
+		String msg;
+		msg << "InitFinisManager::Add:    adding object: [" << pManager->GetName() << "]\n";
+		IFMTrace(msg);
 		InitFinisManager *t = pManager, *n = pManager->fNext;
 		// find position where to insert the object based on its priority
 		while ( n != 0 && pCleaner->fPriority >= n->fPriority ) {
@@ -67,4 +80,9 @@ void InitFinisManager::IFMTrace(const char *pMsg)
 	if ( bTrace ) {
 		SysLog::WriteToStderr(pMsg);
 	}
+}
+
+const String InitFinisManager::GetName()
+{
+	return fName;
 }

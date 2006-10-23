@@ -11,6 +11,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "SysLog.h"
+#include "ITOString.h"
 #include "MemHeader.h"
 #include "InitFinisManagerFoundation.h"
 
@@ -193,8 +194,8 @@ bool Storage::fgForceGlobal = false;
 class EXPORTDECL_FOUNDATION StorageInitializer : public InitFinisManagerFoundation
 {
 public:
-	StorageInitializer(unsigned int uiPriority)
-		: InitFinisManagerFoundation(uiPriority) {
+	StorageInitializer(unsigned int uiPriority, const String name)
+		: InitFinisManagerFoundation(uiPriority, name) {
 		IFMTrace("StorageInitializer created\n");
 	}
 	~StorageInitializer()
@@ -210,7 +211,7 @@ public:
 	}
 };
 
-static StorageInitializer *psgStorageInitializer = new StorageInitializer(0);
+static StorageInitializer *psgStorageInitializer = new StorageInitializer(0, "StorageInitializer");
 
 Allocator *Storage::Current()
 {

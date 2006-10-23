@@ -18,11 +18,12 @@
 //---- InitFinisManagerWDBase ----------------------------------------------------------------
 InitFinisManagerWDBase *InitFinisManagerWDBase::fgpInitFinisManagerWDBase = 0;
 
-InitFinisManagerWDBase::InitFinisManagerWDBase(unsigned int uiPriority)
-	: InitFinisManager(uiPriority)
+InitFinisManagerWDBase::InitFinisManagerWDBase(unsigned int uiPriority, const String name)
+	: InitFinisManager(uiPriority, name)
 {
 	// ensure library specific instance - do not enter if we are in construction of the singleton object
 	if ( Instance() && fgpInitFinisManagerWDBase != (InitFinisManagerWDBase *)0x123 ) {
+		IFMTrace("Adding this to fgpInitFinisManagerWDBase\n");
 		Add(fgpInitFinisManagerWDBase, this);
 	}
 }
@@ -33,7 +34,7 @@ InitFinisManagerWDBase *InitFinisManagerWDBase::Instance()
 		// ensure we do not loop while creating the singleton
 		IFMTrace("creating InitFinisManagerWDBase instance\n");
 		fgpInitFinisManagerWDBase = (InitFinisManagerWDBase *)0x123;
-		fgpInitFinisManagerWDBase = new InitFinisManagerWDBase(0);
+		fgpInitFinisManagerWDBase = new InitFinisManagerWDBase(0, "InitFinisManagerWDBase");
 	}
 	return fgpInitFinisManagerWDBase;
 }

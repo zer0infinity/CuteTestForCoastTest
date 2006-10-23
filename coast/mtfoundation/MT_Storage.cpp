@@ -15,6 +15,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "Threads.h"
 #include "PoolAllocator.h"
+#include "ITOString.h"
 #include "SysLog.h"
 #include "Dbg.h"
 
@@ -188,8 +189,8 @@ static AllocList *fgPoolAllocatorList = 0;
 class EXPORTDECL_MTFOUNDATION MTStorageInitializer : public InitFinisManagerMTFoundation
 {
 public:
-	MTStorageInitializer(unsigned int uiPriority)
-		: InitFinisManagerMTFoundation(uiPriority) {
+	MTStorageInitializer(unsigned int uiPriority, const String name)
+		: InitFinisManagerMTFoundation(uiPriority, name) {
 		IFMTrace("MTStorageInitializer created\n");
 	}
 
@@ -216,7 +217,7 @@ public:
 	}
 };
 
-static MTStorageInitializer *psgMTStorageInitializer = new MTStorageInitializer(10);
+static MTStorageInitializer *psgMTStorageInitializer = new MTStorageInitializer(10, "MTStorageInitializer");
 
 void MT_Storage::Initialize()
 {

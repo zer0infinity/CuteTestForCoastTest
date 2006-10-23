@@ -54,7 +54,7 @@ class EXPORTDECL_FOUNDATION InitFinisManagerFoundation : public InitFinisManager
 public:
 	/*! Base constructor, pass a priority number greater than 0 to control Init/Finis sequence
 		\param uiPriority The library specific 'singleton' always sets its priority 0 because it is not used and does nothing in its DoInit()/DoFinis() methods. The lower the number, the higher the priority. */
-	InitFinisManagerFoundation(unsigned int uiPriority);
+	InitFinisManagerFoundation(unsigned int uiPriority, const String name);
 	//! Do-nothing dtor
 	~InitFinisManagerFoundation() {};
 
@@ -75,7 +75,7 @@ private:
 	static InitFinisManagerFoundation *fgpInitFinisManagerFoundation;
 
 	//! inhibit compiler supplied bitwise default copy ctor
-	InitFinisManagerFoundation(const InitFinisManagerFoundation &);
+	InitFinisManagerFoundation(const InitFinisManagerFoundation &, const String);
 	//! inhibit compiler supplied bitwise default assignment operator
 	InitFinisManagerFoundation &operator=(const InitFinisManagerFoundation &);
 };
