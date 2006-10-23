@@ -28,7 +28,7 @@ InitFinisManager::InitFinisManager(unsigned int uiPriority, const String name)
 InitFinisManager::~InitFinisManager()
 {
 	String msg;
-	msg << "InitFinisManager::Finis: calling Delete: [ " << GetName() << "]\n";
+	msg << "InitFinisManager::Finis: calling Delete:  [" << GetName() << "]\n";
 	IFMTrace(msg);
 	delete fNext;
 }
@@ -36,7 +36,7 @@ InitFinisManager::~InitFinisManager()
 void InitFinisManager::Init()
 {
 	String msg;
-	msg << "InitFinisManager::Finis: calling DoInit:  [ " << GetName() << "]\n";
+	msg << "InitFinisManager::Finis: calling DoInit:  [" << GetName() << "]\n";
 	IFMTrace(msg);
 	DoInit();
 	if ( fNext ) {
@@ -50,7 +50,7 @@ void InitFinisManager::Finis()
 		fNext->Finis();
 	}
 	String msg;
-	msg << "InitFinisManager::Finis: calling DoFinis: [ " << GetName() << "]\n";
+	msg << "InitFinisManager::Finis: calling DoFinis: [" << GetName() << "]\n";
 	IFMTrace(msg);
 	DoFinis();
 }
