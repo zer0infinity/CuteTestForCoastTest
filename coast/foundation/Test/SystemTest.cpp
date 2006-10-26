@@ -1269,6 +1269,16 @@ void SystemTest::GetFileSizeTest()
 	}
 }
 
+void SystemTest::LockFileTest()
+{
+	StartTrace(SystemTest.GetFileSizeTest);
+	String lockFile("/tmp/LockFileTest.lck");
+	bool ret = System::GetLockFileState(lockFile);
+	t_assertm(false == ret, "expected Lockfile to be unlocked");
+	t_assertm(true == System::GetLockFileState(lockFile), "expected LockFile to be locked");
+	t_assertm(false == System::IO::unlink(lockFile), "expected unlinking LockFile to succeed.");
+}
+
 void SystemTest::BlocksLeftOnFSTest()
 {
 	StartTrace(SystemTest.BlocksLeftOnFSTest);
@@ -1308,6 +1318,7 @@ Test *SystemTest::suite ()
 	ADD_CASE(testSuite, SystemTest, MakeRemoveDirectoryTest);
 	ADD_CASE(testSuite, SystemTest, GetFileSizeTest);
 	ADD_CASE(testSuite, SystemTest, BlocksLeftOnFSTest);
+	ADD_CASE(testSuite, SystemTest, LockFileTest);
 	ADD_CASE(testSuite, SystemTest, statTests);	// needs to be last
 	return testSuite;
 }

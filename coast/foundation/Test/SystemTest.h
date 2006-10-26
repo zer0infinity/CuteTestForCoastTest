@@ -43,6 +43,7 @@ public:
 	void MakeRemoveDirectoryTest();
 	void GetFileSizeTest();
 	void BlocksLeftOnFSTest();
+	void LockFileTest();
 
 	void DoSingleSelectTest();
 	void MicroSleepTest();

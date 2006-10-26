@@ -1210,6 +1210,24 @@ long System::Fork() {
 #endif
 }
 
+bool System::GetLockFileState(const char * lockFileName) {
+	StartTrace(System.CreateLockFile);
+	// O_EXCL must be set to guarantee atomic lock file creation.
+	int fd = open(lockFileName, O_WRONLY | O_CREAT | O_EXCL);
+	if (fd < 0 && errno == EEXIST) {
+		// the file already exist; another process is
+		// holding the lock
+		return true;
+	}
+	if (fd < 0) {
+		SYSERROR("Getting lock state failed. Reason: [" << SysLog::LastSysError() << "]");
+		// What to do in case of an error? Let's be conservative and consider the lockfile as locked.
+		return true;
+	}
+	// if we got here, we own the lock or had an error
+	return false;
+}
+
 //int System::GetNumberOfHardLinks(const char *path)
 //{
 //	StartTrace(System.GetNumberOfHardLinks);

@@ -273,6 +273,15 @@ public:
 	//!get current user id - only for unix/linux implemented!
 	//! \return user id of current process
 	static uid_t getuid();
+
+	//! Get the state of the lock file.
+	//! \Param lock file name
+	//! \Returns  false=not locked, true=locked.
+	//! \If there was an error, the file is considered to be locked!
+	//! \You must remove the lockfile with System::unlink(lockFileName)
+	//! \after you're done.
+	static bool System::GetLockFileState(const char *lockFileName);
+
 	// io specific inner class
 	// first some definitions
 #if !defined (R_OK)
