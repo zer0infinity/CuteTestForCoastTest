@@ -290,11 +290,11 @@ bool Thread::IntCheckState(EThreadState state, long timeout, long nanotimeout)
 
 bool Thread::CheckRunningState(ERunningState state, long timeout, long nanotimeout)
 {
-	StatTrace(Thread.CheckRunningState, "waiting on fState(" << (long)fState << ")>=state(" << (long)state << ") IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Current());
+	StatTrace(Thread.CheckRunningState, "waiting on fRunningState(" << (long)fRunningState << ")>=state(" << (long)state << ") IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Current());
 	SimpleMutexEntry me(fStateMutex);
 	me.Use();
 
-	if (fState < eRunning ) {
+	if ( fState < eRunning ) {
 		StatTrace(Thread.CheckRunningState, "not running yet, waiting until it is running. IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Current());
 		bool ret = IntCheckState(eRunning, timeout, nanotimeout);
 		if (!ret) {
@@ -303,13 +303,13 @@ bool Thread::CheckRunningState(ERunningState state, long timeout, long nanotimeo
 		}
 	}
 
-	if (fState > eRunning ) {
+	if ( fState > eRunning ) {
 		StatTrace(Thread.CheckRunningState, "not running anymore. IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Current());
 		return false;
 	}
 	Assert(fState == eRunning);
 
-	if (fRunningState == state) {
+	if ( fRunningState == state ) {
 		StatTrace(Thread.CheckRunningState, "State already reached! IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Current());
 		return true;
 	}
