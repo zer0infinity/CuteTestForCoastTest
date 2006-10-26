@@ -33,17 +33,17 @@ void PeriodicAction::Run()
 	StartTrace(PeriodicAction.Run);
 	while ( IsRunning() ) {
 		Trace("Waiting " << fWaitTime << "s for next period");
-		// wait for the next cycle due
-		// or the termination signal
-		if ( !CheckState(Thread::eTerminationRequested, fWaitTime) && IsRunning() ) {
+		// we will never reach eWorking, but the function will return when entering termination
+		CheckRunningState(eWorking, fWaitTime);
+
+		// execute only if we are still running and not already in termination sequence
+		// never try to call CheckState() without at least a nanosecond to wait
+		// -> otherwise we will block until program termination...
+		if ( IsRunning() && !CheckState(eTerminationRequested, 0, 1) ) {
 			Trace("Starting work and calling Action [" << fAction << "]");
 			Context ctx;
 			ctx.GetTmpStore()["PeriodicActionTimeout"] = fWaitTime;
 			ctx.Process(fAction);
-			if ( IsRunning() ) {
-				Trace("signalling Ready state");
-				SetReady();
-			}
 		}
 	}
 }
