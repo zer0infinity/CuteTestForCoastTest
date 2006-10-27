@@ -189,8 +189,8 @@ static AllocList *fgPoolAllocatorList = 0;
 class EXPORTDECL_MTFOUNDATION MTStorageInitializer : public InitFinisManagerMTFoundation
 {
 public:
-	MTStorageInitializer(unsigned int uiPriority, const String name)
-		: InitFinisManagerMTFoundation(uiPriority, name) {
+	MTStorageInitializer(unsigned int uiPriority)
+		: InitFinisManagerMTFoundation(uiPriority) {
 		IFMTrace("MTStorageInitializer created\n");
 	}
 
@@ -217,7 +217,7 @@ public:
 	}
 };
 
-static MTStorageInitializer *psgMTStorageInitializer = new MTStorageInitializer(10, "MTStorageInitializer");
+static MTStorageInitializer *psgMTStorageInitializer = new MTStorageInitializer(10);
 
 void MT_Storage::Initialize()
 {

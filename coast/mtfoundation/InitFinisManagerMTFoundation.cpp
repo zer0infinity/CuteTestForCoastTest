@@ -18,8 +18,8 @@
 //---- InitFinisManagerMTFoundation ----------------------------------------------------------------
 InitFinisManagerMTFoundation *InitFinisManagerMTFoundation::fgpInitFinisManagerMTFoundation = 0;
 
-InitFinisManagerMTFoundation::InitFinisManagerMTFoundation(unsigned int uiPriority, const String name)
-	: InitFinisManager(uiPriority, name)
+InitFinisManagerMTFoundation::InitFinisManagerMTFoundation(unsigned int uiPriority)
+	: InitFinisManager(uiPriority)
 {
 	// ensure library specific instance - do not enter if we are in construction of the singleton object
 	if ( Instance() && fgpInitFinisManagerMTFoundation != (InitFinisManagerMTFoundation *)0x123 ) {
@@ -33,7 +33,7 @@ InitFinisManagerMTFoundation *InitFinisManagerMTFoundation::Instance()
 		// ensure we do not loop while creating the singleton
 		IFMTrace("creating InitFinisManagerMTFoundation instance\n");
 		fgpInitFinisManagerMTFoundation = (InitFinisManagerMTFoundation *)0x123;
-		fgpInitFinisManagerMTFoundation = new InitFinisManagerMTFoundation(0, "InitFinisManagerMTFoundation");
+		fgpInitFinisManagerMTFoundation = new InitFinisManagerMTFoundation(0);
 	}
 	return fgpInitFinisManagerMTFoundation;
 }

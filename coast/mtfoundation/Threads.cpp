@@ -77,8 +77,8 @@ SimpleMutex *Thread::fgpNumOfThreadsMutex = NULL;
 class EXPORTDECL_MTFOUNDATION ThreadInitializer : public InitFinisManagerMTFoundation
 {
 public:
-	ThreadInitializer(unsigned int uiPriority, const String name)
-		: InitFinisManagerMTFoundation(uiPriority, name) {
+	ThreadInitializer(unsigned int uiPriority)
+		: InitFinisManagerMTFoundation(uiPriority) {
 		IFMTrace("ThreadInitializer created\n");
 	}
 
@@ -103,7 +103,7 @@ public:
 	}
 };
 
-static ThreadInitializer *psgThreadInitializer = new ThreadInitializer(1, "ThreadInitializer");
+static ThreadInitializer *psgThreadInitializer = new ThreadInitializer(1);
 
 Thread::Thread(const char *name, bool daemon, bool detached, bool suspended, bool bound, Allocator *a)
 	: NamedObject(name)
@@ -792,8 +792,8 @@ THREADKEY Mutex::fgCountTableKey = 0;	// WIN32 defined it 0xFFFFFFFF !!
 class EXPORTDECL_MTFOUNDATION MutexInitializer : public InitFinisManagerMTFoundation
 {
 public:
-	MutexInitializer(unsigned int uiPriority, const String name)
-		: InitFinisManagerMTFoundation(uiPriority, name) {
+	MutexInitializer(unsigned int uiPriority)
+		: InitFinisManagerMTFoundation(uiPriority) {
 		IFMTrace("MutexInitializer created\n");
 	}
 
@@ -817,7 +817,7 @@ public:
 		Mutex::fgpMutexIdMutex = NULL;
 	}
 };
-static MutexInitializer *psgMutexInitializer = new MutexInitializer(0, "MutexInitializer");
+static MutexInitializer *psgMutexInitializer = new MutexInitializer(0);
 //---- MutexCountTableCleaner ------------------------------------------------------------
 MutexCountTableCleaner MutexCountTableCleaner::fgCleaner;
 

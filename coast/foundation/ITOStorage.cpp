@@ -194,8 +194,8 @@ bool Storage::fgForceGlobal = false;
 class EXPORTDECL_FOUNDATION StorageInitializer : public InitFinisManagerFoundation
 {
 public:
-	StorageInitializer(unsigned int uiPriority, const String name)
-		: InitFinisManagerFoundation(uiPriority, name) {
+	StorageInitializer(unsigned int uiPriority)
+		: InitFinisManagerFoundation(uiPriority) {
 		IFMTrace("StorageInitializer created\n");
 	}
 	~StorageInitializer()
@@ -211,7 +211,7 @@ public:
 	}
 };
 
-static StorageInitializer *psgStorageInitializer = new StorageInitializer(0, "StorageInitializer");
+static StorageInitializer *psgStorageInitializer = new StorageInitializer(0);
 
 Allocator *Storage::Current()
 {

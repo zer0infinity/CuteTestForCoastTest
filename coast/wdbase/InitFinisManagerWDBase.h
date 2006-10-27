@@ -52,7 +52,7 @@ class EXPORTDECL_WDBASE InitFinisManagerWDBase : public InitFinisManager
 public:
 	/*! Base constructor, pass a priority number greater or equal 0 to control Init/Finis sequence
 		\param uiPriority The library specific 'singleton' always sets its priority 0 because it is not used and does nothing in its DoInit()/DoFinis() methods. The lower the number, the higher the priority. */
-	InitFinisManagerWDBase(unsigned int uiPriority, const String name);
+	InitFinisManagerWDBase(unsigned int uiPriority);
 	//! Do-nothing dtor
 	~InitFinisManagerWDBase() {};
 

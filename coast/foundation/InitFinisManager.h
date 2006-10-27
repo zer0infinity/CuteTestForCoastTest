@@ -9,8 +9,6 @@
 #ifndef _InitFinisManager_H
 #define _InitFinisManager_H
 
-#include "ITOString.h"
-
 //---- baseclass include -------------------------------------------------
 #include "config_foundation.h"
 
@@ -24,7 +22,7 @@ class EXPORTDECL_FOUNDATION InitFinisManager
 public:
 	/*! Base constructor, pass a priority number greater than 0 to control Init/Finis sequence
 		\param uiPriority The library specific 'singleton' always sets its priority 0 because it is not used and does nothing in its DoInit()/DoFinis() methods. The lower the number, the higher the priority. */
-	InitFinisManager(unsigned int uiPriority, const String name);
+	InitFinisManager(unsigned int uiPriority);
 
 	//! destructor deletes all cleaner objects of the list in reverse order
 	virtual ~InitFinisManager();
@@ -34,9 +32,6 @@ public:
 
 	//! Method used to finalize the added objects in the reversed order given by the priority number
 	void Finis();
-
-	//! Return my name
-	const String GetName();
 
 	/*! method which can be used to trace something based on the setting of environment variable TRACE_INITFINIS
 		\param pMsg message to print, including newline character if needed */
@@ -61,11 +56,8 @@ private:
 	//! priority of object
 	unsigned int fPriority;
 
-	//! My name
-	const String fName;
-
 	//! inhibit compiler supplied bitwise default copy ctor
-	InitFinisManager(const InitFinisManager &, const String name);
+	InitFinisManager(const InitFinisManager &);
 	//! inhibit compiler supplied bitwise default assignment operator
 	InitFinisManager &operator=(const InitFinisManager &);
 };
