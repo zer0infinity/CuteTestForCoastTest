@@ -41,6 +41,11 @@ void ListRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &con
 		// fill in information which can be used within the following rendering methods
 		anyRenderState["ListSize"] = lListSize;
 
+		if ( lListSize <= 0 ) {
+			SYSWARNING("list is empty, not rendering anything!");
+			return;
+		}
+
 		ROAnything roaEntryHeaderList, roaEntryHeader;
 		if ( config.LookupPath(roaEntryHeaderList, "EntryHeaders") ) {
 			lHeaders = roaEntryHeaderList.GetSize();
@@ -71,15 +76,16 @@ void ListRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &con
 		long start = Renderer::RenderToString(ctx, config["Start"]).AsLong(0L);
 		if ( start < 0 ) {
 			start = 0L;
-		} else if ( start >= lListSize ) {
-			SYSWARNING("start index given:" << start << "is beyond list size, not rendering anything!");
+		}
+		if ( start >= lListSize ) {
+			SYSWARNING("start index given: " << start << " is beyond list size, not rendering anything!");
 			return;
 		}
 		long end = Renderer::RenderToString(ctx, config["End"]).AsLong(lListSize);
 		if ( end > lListSize ) {
 			end = lListSize;
 		} else if ( end < 0 ) {
-			SYSWARNING("end index given:" << end << "is negative, not rendering anything!");
+			SYSWARNING("end index given: " << end << " is negative, not rendering anything!");
 			return;
 		}
 		// fill in information which can be used within the following rendering methods
@@ -91,7 +97,7 @@ void ListRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &con
 		AnyExtensions::Iterator<ROAnything, ROAnything, String> aIterator(roaList);
 		while ( aIterator.Next(roaEntry) ) {
 			long i = aIterator.Index();
-			SubTraceAny(TraceEntry, roaEntry, "data at index:" << i);
+			SubTraceAny(TraceEntry, roaEntry, "data at index: " << i);
 			if ( i < start ) {
 				continue;
 			} else if ( i > end ) {
