@@ -42,7 +42,7 @@ void ListRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &con
 		anyRenderState["ListSize"] = lListSize;
 
 		if ( lListSize <= 0 ) {
-			SYSWARNING("list is empty, not rendering anything!");
+			SYSINFO("list is empty, not rendering anything!");
 			return;
 		}
 
