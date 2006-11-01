@@ -506,6 +506,20 @@ int Server::UnblockRequests()
 	return 0;
 }
 
+bool Server::MustTerminate()
+{
+	StartTrace(Server.MustTerminate);
+	if ( IsInReInit() ) {
+		Trace("IsInReInit: [" << IsInReInit() << "]");
+	} else {
+		if (RequestBlocker::RB()->IsBlocked() ) {
+			Trace("Server: [" << GetName() << "] IsBlocked: [" << RequestBlocker::RB()->IsBlocked() << "]");
+			return true;
+		}
+	}
+	return false;
+}
+
 // pidfile handling
 int Server::WritePIDFile()
 {
