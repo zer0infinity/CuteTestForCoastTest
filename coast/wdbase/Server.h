@@ -115,8 +115,17 @@ public:
 	//!check if server is ready and running
 	bool IsReady(bool ready, long timeout);
 
+	//! Check if server termination is requested by signal (SIGINT)
+	// \Needed to distinguish between server reset and server termination.
+	// \Returns true if termination was requested
+	// \Returns false in all other cases, including server reset (SIGHUP)
+	virtual bool MustTerminate();
+
 	//! Helper method to set uid, only done when no MasterServer configured
 	virtual int  SetUid();
+
+	//!returns the pid for this server
+	virtual int GetPid();
 
 	static bool IsInReInit();
 
@@ -135,8 +144,6 @@ protected:
 	virtual int WritePIDFile();
 	//!removes pid file when server is shutdown
 	virtual int RemovePIDFile();
-	//!returns the pid for this server
-	virtual int GetPid();
 
 	//!writes pid information to file; contains platform dependent code
 	virtual int DoWritePIDFile(const String &pidFilePath);
