@@ -12,14 +12,12 @@
 //--- standard modules used ----------------------------------------------------
 #include "System.h"
 #include "SysLog.h"
-#include "PipeStream.h"
 #include "Dbg.h"
 #include "Socket.h"
 
 //--- c-library modules used ---------------------------------------------------
 #if !defined (WIN32)
 #include <errno.h> /* PS wg. SUNCC5 */
-#include <unistd.h>
 #endif
 
 //--- Pipe ----------------------
@@ -74,7 +72,7 @@ bool Pipe::ShutDown(long fd)
 	return true;
 }
 
-iostream *Pipe::GetStream()
+PipeStream *Pipe::GetStream()
 {
 	StartTrace(Pipe.GetStream);
 	if ( !fStream ) {
@@ -84,7 +82,7 @@ iostream *Pipe::GetStream()
 	return fStream;
 }
 
-iostream *Pipe::DoMakeStream()
+PipeStream *Pipe::DoMakeStream()
 {
 	StartTrace(Pipe.DoMakeStream);
 	if ( GetReadFd() >= 0 || GetWriteFd() >= 0) {

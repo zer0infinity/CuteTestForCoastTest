@@ -11,6 +11,7 @@
 
 #include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include "ITOString.h"
+#include "PipeStream.h"
 
 //--- Pipe --------------------------------------------------------------------------
 /*! represents a read/write pipe end point that is connected
@@ -47,7 +48,7 @@ public:
 		\pre pipe contains at least one valid connected pipe file descriptor and potentially a stream object
 		\post the stream is creaded if necessary, cached and returned
 		\return pointer to the PipeStream object */
-	iostream *GetStream();
+	PipeStream *GetStream();
 
 	/*! accessor to the pipes reading fd, negative means closed
 		\return filedescriptor of the read side */
@@ -114,7 +115,7 @@ protected:
 	/*! DoMakeStream allocates a pipe iostream, overwrite these method if you need something specific
 		\return PipeStream object for reading and writing
 		\note The PipeStream object will be deleted in the destructor */
-	iostream *DoMakeStream();
+	PipeStream *DoMakeStream();
 
 	/*! IsReady bottleneck routine
 		if tiemout is 0 it returns immediately, if -1 it blocks infinitely, if -2 it uses GetTimeout
@@ -132,7 +133,7 @@ protected:
 	long fReadFd, fWriteFd;
 
 	//! the iostream used to read and write to the pipe ( default is PipeStream )
-	iostream *fStream;
+	PipeStream *fStream;
 
 	//! flag that determines whether the pipe will be closed in the destructor
 	bool fDoClose;
