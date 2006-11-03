@@ -11,15 +11,12 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "SysLog.h"
-#include "ITOString.h"
+#include "System.h"
 #include "MemHeader.h"
 #include "InitFinisManagerFoundation.h"
 
 //--- c-library modules used ---------------------------------------------------
 #include <string.h>
-#if !defined(WIN32)
-#include <unistd.h>
-#endif
 
 #ifdef __370__
 extern "C" void finalize();

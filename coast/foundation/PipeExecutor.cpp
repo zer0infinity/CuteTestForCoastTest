@@ -17,7 +17,6 @@
 
 //--- c-library modules used ---------------------------------------------------
 #if !defined(WIN32)
-#include <unistd.h>
 #include <sys/wait.h>
 #include <stdio.h>
 #else

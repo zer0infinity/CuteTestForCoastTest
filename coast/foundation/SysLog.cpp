@@ -19,7 +19,6 @@
 #include <errno.h>
 #include <stdio.h>
 #if !defined(WIN32)
-#include <unistd.h> /* for ::write() */
 #include <string.h>
 #endif
 #if defined(__sun) || defined(__linux__) || defined(__aix__)

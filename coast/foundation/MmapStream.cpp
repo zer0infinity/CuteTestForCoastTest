@@ -11,13 +11,11 @@
 
 #if !defined(WIN32)
 //--- standard modules used ----------------------------------------------------
+#include "System.h"
 #include "SysLog.h"
 
 //--- c-library modules used ---------------------------------------------------
 #include <fcntl.h>
-#if !defined(WIN32)
-#include <unistd.h>
-#endif
 
 #if defined(linux) && ! defined(MAP_FAILED)
 // missing #define in mmap.h

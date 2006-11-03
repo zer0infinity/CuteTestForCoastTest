@@ -27,7 +27,6 @@
 #if !defined(__370__)
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <unistd.h>
 #include <netinet/tcp.h>		/* TCP_NODELAY */
 #include <sys/poll.h>
 #endif

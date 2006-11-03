@@ -23,9 +23,7 @@
 //--- c-library modules used ---------------------------------------------------
 #include <fcntl.h>
 
-#if !defined(WIN32)
-#include <unistd.h>
-#else
+#if defined(WIN32)
 #include <io.h>
 #endif
 

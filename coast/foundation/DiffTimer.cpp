@@ -10,12 +10,10 @@
 #include "DiffTimer.h"
 
 //--- standard modules used ----------------------------------------------------
+#include "System.h"
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
-#if !defined (WIN32)
-#include <unistd.h>
-#endif
 
 #if defined(__linux__)
 HRTIME  gettimes()
