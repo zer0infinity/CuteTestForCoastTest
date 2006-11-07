@@ -23,6 +23,7 @@ public:
 
 	static Test *suite ();
 	void setUp ();
+
 protected:
 	void simpleFormat();
 	void DifferentFormats1();

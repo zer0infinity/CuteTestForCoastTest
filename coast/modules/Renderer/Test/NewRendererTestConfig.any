@@ -3297,5 +3297,82 @@
 			}
 			/Expected       ""
 		}
+		/DateRendererZeroOffsetTest {
+			/TmpStore {}
+			/Renderer {
+				/DateRenderer {
+					/Format	"%d.%m.%Y %H:%M:%S"
+					/Date	870912000
+					/Offset	0
+				}
+			}
+			/Expected "07.08.1997 02:00:00"
+		}
+		/DateRendererSecondsOffsetTest {
+			/TmpStore {}
+			/Renderer {
+				/DateRenderer {
+					/Format	"%d.%m.%Y %H:%M:%S"
+					/Date	870912000
+					/Offset	10
+				}
+			}
+			/Expected "07.08.1997 02:00:10"
+		}
+		/DateRendererNegativeSecondsOffsetTest {
+			/TmpStore {}
+			/Renderer {
+				/DateRenderer {
+					/Format	"%d.%m.%Y %H:%M:%S"
+					/Date	870912000
+					/Offset	-10
+				}
+			}
+			/Expected "07.08.1997 01:59:50"
+		}
+		/DateRendererDayOffsetTest {
+			/TmpStore {}
+			/Renderer {
+				/DateRenderer {
+					/Format	"%d.%m.%Y %H:%M:%S"
+					/Date	870912000
+					/Offset	"2d"
+				}
+			}
+			/Expected "09.08.1997 02:00:00"
+		}
+		/DateRendererNegativeDayOffsetTest {
+			/TmpStore {}
+			/Renderer {
+				/DateRenderer {
+					/Format	"%d.%m.%Y %H:%M:%S"
+					/Date	870912000
+					/Offset	"-2d"
+				}
+			}
+			/Expected "05.08.1997 02:00:00"
+		}
+		/DateRendererNegativeDayOffsetPositionalTest {
+			/TmpStore {}
+			/Renderer {
+				/DateRenderer {
+					"%d.%m.%Y %H:%M:%S"
+					870912000
+					"-2d"
+				}
+			}
+			/Expected "05.08.1997 02:00:00"
+		}
+		/DateRendererNegativeSecondsOffsetPositionalTest {
+			/TmpStore {}
+			/Renderer {
+				/DateRenderer {
+					"%d.%m.%Y %H:%M:%S"
+					870912000
+					-10
+				}
+			}
+			/Expected "07.08.1997 01:59:50"
+		}
 	}
 }

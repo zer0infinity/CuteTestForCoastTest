@@ -19,14 +19,14 @@
 {
 	/Format 	Rendererspec		optional, default "\%c", format string a la strftime
 	/Date		[Rendererspec|long]	optional, default 0, date/time in seconds
-	/Offset  	Rendererspec		optional, default 0, offset in days added to the otherwise used time
+	/Offset  	Rendererspec		optional, default 0, offset in seconds or days (if a trailing 'd' was given) added to the time
 	/DeltaGMT	long				optional, default 0 [0|1], if set to 1, the GMT difference [+|-][0-9] is added to the output
 }
 or just
 {
 	"\%c"		Rendererspec	optional, default "\%c", format string a la strftime
-	0			long			optional, default 0, date/time in seconds
-	0			long			optional, default 0, offset in days added to the otherwise used time
+	0			long			optional, /Date attribute described above
+	0			long			optional, /Offset attribute described above
 }
 </PRE>
 - Using the tag /Date a time/date may be explicitely specified:
@@ -49,6 +49,8 @@ public:
 	DateRenderer(const char *name);
 
 	void RenderAll(ostream &reply, Context &c, const ROAnything &data);
+
+private:
 	const size_t gcMaxDateArraySize;
 };
 

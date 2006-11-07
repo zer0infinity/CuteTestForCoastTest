@@ -6,24 +6,26 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "StringStream.h"
-#include "System.h"
-#include "Context.h"
-#include "Renderer.h"
-
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
+//--- interface include --------------------------------------------------------
+#include "DateRendererTest.h"
 
 //--- module under test --------------------------------------------------------
 #include "DateRenderer.h"
 
-//--- interface include --------------------------------------------------------
-#include "DateRendererTest.h"
+//--- test modules used --------------------------------------------------------
+#include "TestSuite.h"
 
-DateRendererTest::DateRendererTest (TString tname) : RendererTest(tname) {};
-DateRendererTest::~DateRendererTest() {};
+//--- standard modules used ----------------------------------------------------
+#include "System.h"
+
+DateRendererTest::DateRendererTest (TString tname)
+	: RendererTest(tname)
+{
+}
+
+DateRendererTest::~DateRendererTest()
+{
+}
 
 void DateRendererTest::setUp ()
 {
@@ -35,7 +37,7 @@ void DateRendererTest::CompareHelper(const char *format, long offset)
 {
 	time_t now;
 	struct tm *tt, res;
-	time(&now);						// use current time
+	time(&now);
 	now += offset * 86400;
 	tt = System::LocalTime(&now, &res);
 	const int maxsize(100);
@@ -107,23 +109,20 @@ void DateRendererTest::DifferentFormats3()
 }
 
 void DateRendererTest::RelativeTimeFormat()
-// test the date renderer with simple formatting strings
 {
 	DateRenderer dateRenderer("");
-	const int offset = 1;		// days
 	const char *format = "%d.%m.%y";
 
 	// set up the configuration
 	fConfig["Format"] = format;
-	fConfig["Offset"] = offset;
+	fConfig["Offset"] = "1d";
 
 	// render the configuration
 	ROAnything roConfig = fConfig;
 	dateRenderer.RenderAll(fReply, fContext, roConfig);
 
-	CompareHelper(format, offset);
-	// FIXME: offset handling has to be cleaned up
-} // RelativeTimeFormat
+	CompareHelper(format, 1);
+}
 
 void DateRendererTest::AbsolutTimeFormat()
 // test the date renderer with simple formatting strings
@@ -249,7 +248,6 @@ void DateRendererTest::emptyConfig2()
 Test *DateRendererTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
-
 	ADD_CASE(testSuite, DateRendererTest, simpleFormat);
 	ADD_CASE(testSuite, DateRendererTest, DifferentFormats1);
 	ADD_CASE(testSuite, DateRendererTest, DifferentFormats2);
@@ -259,7 +257,5 @@ Test *DateRendererTest::suite ()
 	ADD_CASE(testSuite, DateRendererTest, GMTTime);
 	ADD_CASE(testSuite, DateRendererTest, emptyConfig1);
 	ADD_CASE(testSuite, DateRendererTest, emptyConfig2);
-
 	return testSuite;
-
 }

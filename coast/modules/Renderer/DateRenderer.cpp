@@ -19,7 +19,9 @@
 //---- DateRenderer ----------------------------------------------------------------
 RegisterRenderer(DateRenderer);
 
-DateRenderer::DateRenderer(const char *name) : Renderer(name), gcMaxDateArraySize(200)
+DateRenderer::DateRenderer(const char *name)
+	: Renderer(name)
+	, gcMaxDateArraySize(200)
 {
 }
 
@@ -29,65 +31,48 @@ void DateRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &con
 	TraceAny(config, "config");
 
 	long configSize = 0;
-	if (config.GetType() == AnyArrayType) {
+	if ( config.GetType() == AnyArrayType ) {
 		configSize = config.GetSize();
 	}
 
 	//--- set the output format of the date (used by strftime)
-	const char *format = 0;
-
 	String formatStr;
 	ROAnything roaFormat;
-	if (config.LookupPath(roaFormat, "Format")) {
-		Renderer::RenderOnString( formatStr, ctx, roaFormat );
-		format = formatStr;
-	} else if (( configSize > 0 ) && (config.SlotName(0 == 0)) ) {
-		// use anonymous format, but only if anonymous!
-		format = config[0L].AsCharPtr(0);	// use first entry as format (if present)
-	}
-	if (format == 0)
+	if ( config.LookupPath(roaFormat, "Format") || ( ( configSize > 0 ) && (config.SlotName(0) == 0) && config.LookupPath(roaFormat, ":0") ) ) {
+		formatStr = Renderer::RenderToString( ctx, roaFormat );
+	} else {
+		// set default format as a fallback
 #if defined(WIN32)
-		format = "%c";						// set default format as a fallback
+		formatStr = "%c";
 #else
-		format = "%C";						// set default format as a fallback
+		formatStr = "%C";
 #endif
+	}
 
 	//--- set the date to be output
 	time_t now;
 	struct tm *tt;
 
-	ROAnything d;
-	if (config.LookupPath(d, "Date")) {
-		if (d.GetType() == AnyLongType ) {
-			now = d.AsLong(0);				// check for 'Date' slot
-		} else if (d.GetType() == AnyArrayType) { // it is a renderer
-			String aDate;
-			Renderer::RenderOnString(aDate, ctx, d);
-			Anything anyDate = aDate;
-			now = anyDate.AsLong(0);
-		}
-
-	} else if (( configSize > 1 ) && (config.SlotName(1) == 0)) {
-		// use anonymous format, but only if anonymous!
-		now = config[1L].AsLong(0);		// use 2nd entry as time (if present)
+	ROAnything roaCfg;
+	if ( config.LookupPath(roaCfg, "Date") || ( ( configSize > 1 ) && (config.SlotName(1) == 0) && config.LookupPath(roaCfg, ":1") ) ) {
+		now = Renderer::RenderToString(ctx, roaCfg).AsLong(0);
 	} else {
-		time(&now);						// use current time
+		// use current time
+		time(&now);
 	}
 
-	// set the offset to be used (in days)
-	int offset = 0;
-
-	String offsetStr;
+	// set the offset to be used
+	long offset = 0;
 	ROAnything roaOffset;
-	if (config.LookupPath(roaOffset, "Offset")) {
-		Renderer::RenderOnString( offsetStr, ctx, roaOffset );
-		offset = offsetStr.AsLong(0);
-	} else if (( configSize > 2 ) && (config.SlotName(1) == 0)) {
-		// use anonymous format, but only if anonymous!
-		offset = config[2L].AsLong(0);	// use 3rd entry as offset
+	if ( config.LookupPath(roaOffset, "Offset") || ( ( configSize > 2 ) && (config.SlotName(1) == 0) && config.LookupPath(roaOffset, ":2") ) ) {
+		String strOffset = Renderer::RenderToString( ctx, roaOffset );
+		offset = strOffset.AsLong(0);
+		// optional trailing 'd' stands for day offsets instead of seconds
+		if ( strOffset.Length() && strOffset[strOffset.Length()-1] == 'd' ) {
+			offset *= 86400;
+		}
+		now += offset;
 	}
-
-	now = now + offset * 86400;			// (offset in days!)
 
 	struct tm res;
 	bool gmt(config["RFC2616Date"].AsBool(0));
@@ -100,7 +85,7 @@ void DateRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &con
 	} else {
 		// perform localization of time values
 		tt = System::LocalTime(&now, &res);
-		strftime(date, gcMaxDateArraySize, format, tt);
+		strftime(date, gcMaxDateArraySize, (const char *)formatStr, tt);
 	}
 	// PS: maybe date renderer should be made more independend of strftime?
 
