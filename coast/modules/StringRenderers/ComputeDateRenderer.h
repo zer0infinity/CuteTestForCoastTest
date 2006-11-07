@@ -19,8 +19,8 @@ class TimeStamp;
 /*!
 <b>Configuration:</b><pre>
 {
-	/FromDate					Formatted Date/Timestring (valid from  Jan 1 1970 00:00 till Jan 19 2038 03:14
-	/InputFormat				Rendererspec, default: dd.mm.YYYY (00:00:00)
+	/FromDate		Rendererspec		mandatory, Formatted Date/Timestring (valid from  Jan 1 1970 00:00 till Jan 19 2038 03:14
+	/InputFormat	Rendererspec		optional, default: dd.mm.YYYY (00:00:00)
 								* dd 	for day of month as decimal number
 								* mm 	for month as decimal number
 								*    or
@@ -33,6 +33,7 @@ class TimeStamp;
 								* SS for second as decimal number
 								* -------------yy still to be implemented
 								returns this time in seconds (can be used as input for DateRenderer)
+	/Offset  		Rendererspec		optional, default 0, offset in seconds or days (if a trailing 'd' was given) added to the time
 }</pre>
 Example 1:
 <pre>

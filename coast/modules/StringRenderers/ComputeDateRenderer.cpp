@@ -56,10 +56,22 @@ void ComputeDateRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnythi
 		} else {
 			strInputFormat = "dd.mm.YYYY"; // time is 00:00:00
 		}
-		Trace("Fromdate:" << strFromDate << ", InputFormat:" <<  strInputFormat );
+
+		long offset = 0;
+		ROAnything roaOffset;
+		if ( config.LookupPath(roaOffset, "Offset") ) {
+			String strOffset = Renderer::RenderToString( ctx, roaOffset );
+			offset = strOffset.AsLong(0);
+			// optional trailing 'd' stands for day offsets instead of seconds
+			if ( strOffset.Length() && strOffset[strOffset.Length()-1] == 'd' ) {
+				offset *= 86400;
+			}
+		}
+
+		Trace("Fromdate:" << strFromDate << ", InputFormat:" << strInputFormat << ", Offset[s]:" << offset);
 
 		// output is seconds since 00:00:00 UTC, January 1, 1970
-		reply << ConvertToTimeStamp(strFromDate, strInputFormat).AsLong();
+		reply << ( ConvertToTimeStamp(strFromDate, strInputFormat).AsLong() + offset );
 	} else {
 		SysLog::Warning("ComputeDateRenderer::RenderAll: mandatory 'FromDate' slot is missing in configuration!");
 	}

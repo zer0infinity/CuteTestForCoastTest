@@ -991,5 +991,29 @@
 			}
 			/Expected	"43200"
 		}
+		/ComputeDateRendererOffsetTest {
+			/Env {
+			}
+			/Renderer {
+				/ComputeDateRenderer {
+					/FromDate		"01 Jan 1970 00:00:10"
+					/InputFormat	"dd bbb YYYY HH:MM:SS"
+					/Offset			-5
+				}
+			}
+			/Expected	"5"
+		}
+		/ComputeDateRendererOffsetDayTest {
+			/Env {
+			}
+			/Renderer {
+				/ComputeDateRenderer {
+					/FromDate		"01 Jan 1970 00:00:10"
+					/InputFormat	"dd bbb YYYY HH:MM:SS"
+					/Offset			"1d"
+				}
+			}
+			/Expected	"86410"
+		}
 	}
 }
