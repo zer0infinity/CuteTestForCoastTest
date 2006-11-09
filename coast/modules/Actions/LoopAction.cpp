@@ -38,7 +38,7 @@ bool LoopAction::DoExecAction(String &transitionToken, Context &ctx, const ROAny
 	long end = Renderer::RenderToString(ctx, config["End"]).AsLong(0L);
 	long increment = (start < end) ? 1L : -1L;
 
-	String strIndexSlot = Renderer::RenderToString(ctx, config["IndexSlot"]);
+	String strIndexSlot = Renderer::RenderToStringWithDefault(ctx, config["IndexSlot"], "Index");
 
 	long stop = end + increment;
 	bool ret;
