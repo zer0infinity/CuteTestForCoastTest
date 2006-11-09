@@ -17,10 +17,12 @@
 /*!
 <B>Configuration:</B><PRE>
 {
-	/Format 	Rendererspec		optional, default "\%c", format string a la strftime
-	/Date		[Rendererspec|long]	optional, default 0, date/time in seconds
-	/Offset  	Rendererspec		optional, default 0, offset in seconds or days (if a trailing 'd' was given) added to the time
-	/DeltaGMT	long				optional, default 0 [0|1], if set to 1, the GMT difference [+|-][0-9] is added to the output
+	/Format 			Rendererspec		optional, default "\%c", format string a la strftime
+	/Date				[Rendererspec|long]	optional, default 0, date/time in seconds
+	/Offset  			Rendererspec		optional, default 0, offset in seconds or days (if a trailing 'd' was given) added to the time
+	/DeltaGMT			long				optional, default 0 [0|1], if set to 1, the GMT difference [+|-][0-9] is added to the output
+	/DeltaGMTSeconds	long				optional, default 0 [0|1], if set to true it will output the gmt to localtime offset in seconds
+	/UseLocalTime		long				optional, default 1 [0|1], use localized time/date if set to true, gmt time/date otherwise
 }
 or just
 {

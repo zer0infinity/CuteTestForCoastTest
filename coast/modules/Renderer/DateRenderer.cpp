@@ -84,7 +84,11 @@ void DateRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &con
 		strftime(date, gcMaxDateArraySize, "%a, %d %b %Y %T GMT", tt);
 	} else {
 		// perform localization of time values
-		tt = System::LocalTime(&now, &res);
+		if ( config["UseLocalTime"].AsBool(true) ) {
+			tt = System::LocalTime(&now, &res);
+		} else {
+			tt = System::GmTime(&now, &res);
+		}
 		strftime(date, gcMaxDateArraySize, (const char *)formatStr, tt);
 	}
 	// PS: maybe date renderer should be made more independend of strftime?
@@ -92,16 +96,21 @@ void DateRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &con
 	Trace("Result: <" << date << ">");
 	reply << (date);
 	ROAnything delta;
-	if ( !gmt && config["DeltaGMT"].AsBool(0) ) {
+	if ( !gmt && config["DeltaGMT"].AsBool(false) ) {
 		// timezone defines difference of local time to utc in seconds
 		long lTimeDiffHours = timezone / (60 * 60);
-		reply << " ";
+		String strOut(" ");
 		if ( lTimeDiffHours < 0L ) {
-			reply << "-";
+			strOut << "-";
 		}
 		if ( lTimeDiffHours < 10L ) {
-			reply << "0";
+			strOut << "0";
 		}
-		reply << abs(lTimeDiffHours) << "00";
+		strOut << abs(lTimeDiffHours) << "00";
+		Trace("timezone offset:" << strOut);
+		reply << strOut;
+	} else if ( config["DeltaGMTSeconds"].AsBool(false) ) {
+		Trace("timezone offset[s]:" << timezone);
+		reply << timezone;
 	}
 }
