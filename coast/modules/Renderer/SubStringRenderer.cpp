@@ -17,16 +17,21 @@
 //---- SubStringRenderer ---------------------------------------------------------------
 RegisterRenderer(SubStringRenderer);
 
-SubStringRenderer::SubStringRenderer(const char *name) : Renderer(name) { }
+SubStringRenderer::SubStringRenderer(const char *name)
+	: Renderer(name)
+{
+}
 
-SubStringRenderer::~SubStringRenderer() { }
+SubStringRenderer::~SubStringRenderer()
+{
+}
 
 void SubStringRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(SubStringRenderer.RenderAll);
 
-	long start = config["Start"].AsLong(0L);
-	long len   = config["Length"].AsLong(-1L);
+	long start = RenderToString(ctx, config["Start"]).AsLong(0L);
+	long len   = RenderToString(ctx, config["Length"]).AsLong(-1L);
 	String str;
 
 	Renderer::RenderOnString(str, ctx, config["String"]);
