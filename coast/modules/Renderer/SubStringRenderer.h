@@ -19,8 +19,8 @@
 <B>Configuration:</B><PRE>
 {
 	/String		Rendererspec	mandatory, String from which to get the substring
-	/Start		Long			optional, default 0, index of first character of substring
-	/Length		Long			optional, default -1, length of substring, -1 means all remaining chars
+	/Start		Rendererspec	optional, default 0, index of first character of substring
+	/Length		Rendererspec	optional, default -1, length of substring, -1 means all remaining chars
 }
 </PRE>
 */
