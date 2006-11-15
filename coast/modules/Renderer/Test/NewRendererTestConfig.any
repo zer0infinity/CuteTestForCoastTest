@@ -2320,20 +2320,37 @@
 			}
 			/Expected	"bar"
 		}
-
+		/SubStringRendererLookupTest
+		{
+			/Env
+			{
+				/Start	2
+				/Length	3
+			}
+			/Renderer
+			{
+				/SubStringRenderer
+				{
+					/String "foobar"
+					/Start	{ /Lookup Start }
+					/Length { /Lookup Length }
+				}
+			}
+			/Expected	"oba"
+		}
 		/FileLoadRendererTest
 		{
-				/Env
-				{
-				}
-				/Renderer
-				{
-						/FileLoadRenderer
-						{
-								/File2Load "foobar"
-						}
-				}
-				/Expected       "FileLoadRenderer: File foobar not found."
+			/Env
+			{
+			}
+			/Renderer
+			{
+					/FileLoadRenderer
+					{
+							/File2Load "foobar"
+					}
+			}
+			/Expected       "FileLoadRenderer: File foobar not found."
 		}
 		{
 				/TmpStore
