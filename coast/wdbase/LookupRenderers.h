@@ -17,7 +17,7 @@
 /*!
 <B>Configuration:</B><PRE>
 {
-	/LookupName			Rendererspec	optional, name to lookup
+	/LookupName			Rendererspec	mandatory, name to lookup
 	/Default			Rendererspec	optional, default if LookupName name slot was not found
 	/Delim   			String			optional, default ".", first char is taken as delimiter for lookup path
 	/IndexDelim			String			optional, default ":", first char is taken as index-delimiter for lookup path
@@ -45,22 +45,22 @@ Subclasses of LookupRenderer are supposed to override the method DoLookup() to d
 class EXPORTDECL_WDBASE LookupRenderer : public Renderer
 {
 public:
-	//! standard named object constructor
-	//! \param name name of concrete class
+	/*! standard named object constructor
+		\param name name of concrete class */
 	LookupRenderer(const char *name);
 
-	//! common rendering hook
-	//! \param reply out - the stream where the rendered output is written on.
-	//! \param c the context the renderer runs within.
-	//! \param config the configuration of the renderer.
+	/*! common rendering hook
+		\param reply out - the stream where the rendered output is written on.
+		\param c the context the renderer runs within.
+		\param config the configuration of the renderer. */
 	void RenderAll(ostream &reply, Context &c, const ROAnything &config);
 
 protected:
-	//! DoLookup to be implemented by subclasses
-	//! \param context the context the renderer runs within.
-	//! \param name the path to lookup
-	//! \param delim a character specifying the named slot delimiter
-	//! \param indexdelim a character specifying the unnamed slot delimiter (array indices)
+	/*! DoLookup to be implemented by subclasses
+		\param context the context the renderer runs within.
+		\param name the path to lookup
+		\param delim a character specifying the named slot delimiter
+		\param indexdelim a character specifying the unnamed slot delimiter (array indices) */
 	virtual ROAnything DoLookup(Context &context, const char *name, char delim, char indexdelim) = 0;
 };
 
@@ -69,7 +69,7 @@ protected:
 /*!
 <B>Configuration:</B><PRE>
 {
-	/LookupName			Rendererspec	optional, name to lookup
+	/LookupName			Rendererspec	mandatory, name to lookup
 	/Default			Rendererspec	optional, default if LookupName name slot was not found
 	/Delim   			String			optional, default ".", first char is taken as delimiter for lookup path
 	/IndexDelim			String			optional, default ":", first char is taken as index-delimiter for lookup path
@@ -82,16 +82,16 @@ protected:
 class EXPORTDECL_WDBASE ContextLookupRenderer : public LookupRenderer
 {
 public:
-	//! standard named object constructor
-	//! \param name name of concrete class
+	/*! standard named object constructor
+		\param name name of concrete class */
 	ContextLookupRenderer(const char *name);
 
 protected:
-	//! overriden DoLookup implementation
-	//! \param context the context the renderer runs within.
-	//! \param name the path to lookup
-	//! \param delim a character specifying the named slot delimiter
-	//! \param indexdelim a character specifying the unnamed slot delimiter (array indices)
+	/*! overriden DoLookup implementation
+		\param context the context the renderer runs within.
+		\param name the path to lookup
+		\param delim a character specifying the named slot delimiter
+		\param indexdelim a character specifying the unnamed slot delimiter (array indices) */
 	ROAnything DoLookup(Context &context, const char *name, char delim, char indexdelim);
 };
 
@@ -100,7 +100,7 @@ protected:
 /*!
 <B>Configuration:</B><PRE>
 {
-	/LookupName			Rendererspec	optional, name to lookup
+	/LookupName			Rendererspec	mandatory, name to lookup
 	/Default			Rendererspec	optional, default if LookupName name slot was not found
 	/Delim   			String			optional, default ".", first char is taken as delimiter for lookup path
 	/IndexDelim			String			optional, default ":", first char is taken as index-delimiter for lookup path
@@ -113,16 +113,16 @@ protected:
 class EXPORTDECL_WDBASE StoreLookupRenderer : public LookupRenderer
 {
 public:
-	//! standard named object constructor
-	//! \param name name of concrete class
+	/*! standard named object constructor
+		\param name name of concrete class */
 	StoreLookupRenderer(const char *name);
 
 protected:
-	//! overriden DoLookup implementation
-	//! \param context the context the renderer runs within.
-	//! \param name the path to lookup
-	//! \param delim a character specifying the named slot delimiter
-	//! \param indexdelim a character specifying the unnamed slot delimiter (array indices)
+	/*! overriden DoLookup implementation
+		\param context the context the renderer runs within.
+		\param name the path to lookup
+		\param delim a character specifying the named slot delimiter
+		\param indexdelim a character specifying the unnamed slot delimiter (array indices) */
 	ROAnything DoLookup(Context &context, const char *name, char delim, char indexdelim);
 };
 
@@ -131,7 +131,7 @@ protected:
 /*!
 <B>Configuration:</B><PRE>
 {
-	/LookupName			Rendererspec	optional, name to lookup
+	/LookupName			Rendererspec	mandatory, name to lookup
 	/Default			Rendererspec	optional, default if LookupName name slot was not found
 	/Delim   			String			optional, default ".", first char is taken as delimiter for lookup path
 	/IndexDelim			String			optional, default ":", first char is taken as index-delimiter for lookup path
@@ -145,16 +145,16 @@ protected:
 class EXPORTDECL_WDBASE QueryLookupRenderer : public LookupRenderer
 {
 public:
-	//! standard named object constructor
-	//! \param name name of concrete class
+	/*! standard named object constructor
+		\param name name of concrete class */
 	QueryLookupRenderer(const char *name);
 
 protected:
-	//! overriden DoLookup implementation
-	//! \param context the context the renderer runs within.
-	//! \param name the path to lookup
-	//! \param delim a character specifying the named slot delimiter
-	//! \param indexdelim a character specifying the unnamed slot delimiter (array indices)
+	/*! overriden DoLookup implementation
+		\param context the context the renderer runs within.
+		\param name the path to lookup
+		\param delim a character specifying the named slot delimiter
+		\param indexdelim a character specifying the unnamed slot delimiter (array indices) */
 	ROAnything DoLookup(Context &context, const char *name, char delim, char indexdelim);
 };
 
