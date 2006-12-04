@@ -154,7 +154,7 @@ void WorkerPoolManagerModulePoolManager::DoDeletePool(ROAnything args)
 	}
 }
 
-void WorkerPoolManagerModulePoolManager::Work(Anything &args)
+void WorkerPoolManagerModulePoolManager::Enter(Anything &args)
 {
 	// make this function block the caller until the worker has finished working
 	// to achieve this we create a Mutex and Condition to wait on
@@ -165,7 +165,7 @@ void WorkerPoolManagerModulePoolManager::Work(Anything &args)
 	{
 		MutexEntry me(mx);
 		me.Use();
-		Enter(args);
+		WorkerPoolManager::Enter(args);
 		// wait on the worker to finish its work and start it with waiting on the condition
 		cond.Wait(mx);
 	}

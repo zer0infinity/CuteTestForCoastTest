@@ -52,7 +52,7 @@ public:
 	virtual ~WorkerPoolManagerModulePoolManager();
 
 	bool Init(const ROAnything config);
-	void Work(Anything &args);
+	void Enter(Anything &args);
 
 protected:
 //	friend WorkerPoolManagerTest;

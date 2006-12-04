@@ -72,7 +72,7 @@ void WorkerPoolManagerModuleTest::Check(ROAnything cConfig, WorkerPoolManagerMod
 			workerConfig["results"] = (IFAObject *)&results;
 			// this call blocks until the worker has finished working
 			{
-				pPool->Work(workerConfig);
+				pPool->Enter(workerConfig);
 			}
 
 			// check the result
