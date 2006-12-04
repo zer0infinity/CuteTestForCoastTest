@@ -186,7 +186,7 @@ ROAnything QueueWorkingModule::GetNamedConfig(const char *name)
 	return ((ROAnything)fConfig)[name];
 }
 
-bool QueueWorkingModule::GetElement(Anything &anyValues)
+bool QueueWorkingModule::GetElement(Anything &anyValues, bool bTryLock)
 {
 	StartTrace(QueueWorkingModule.GetElement);
 	bool bRet = false;
@@ -199,8 +199,8 @@ bool QueueWorkingModule::GetElement(Anything &anyValues)
 			fFailedPutbackMessages.Remove(0L);
 			bRet = true;
 		} else {
-			// blocking get to save cpu time
-			if ( fpQueue->Get(anyValues) ) {
+			// Default is blocking get to save cpu time
+			if ( fpQueue->Get(anyValues, bTryLock) ) {
 				Trace("got values from Queue");
 				bRet = true;
 			} else {

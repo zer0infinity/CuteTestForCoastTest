@@ -51,7 +51,7 @@ public:
 
 	/*! main accessor functions to work with the queue */
 	bool PutElement(Anything &anyELement, bool bTryLock = false);
-	bool GetElement(Anything &anyValues);
+	bool GetElement(Anything &anyValues, bool bTryLock = false);
 	void PutBackElement(Anything &anyValues);
 
 	/* exclusively consume all Elements from queue, threads which are blocked on the queue to get an element will be woken up because of the released semaphore. But instead of getting an Element it will get nothing back and should be able to handle this correctly.

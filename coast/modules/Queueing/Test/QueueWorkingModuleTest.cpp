@@ -104,16 +104,22 @@ void QueueWorkingModuleTest::GetAndPutbackTest()
 		// must fail
 		t_assert( !aModule.PutElement(anyMsg, false) );
 		// fails because of uninitialized queue
-		t_assert( !aModule.GetElement(anyMsg) );
+		t_assert( !aModule.GetElement(anyMsg, false) );
 	}
 	aModule.IntInitQueue(GetTestCaseConfig()["ModuleConfig"]["QueueWorkingModule"]);
 	{
 		Anything anyMsg;
 		// must still fail because of dead-state
-		t_assert( !aModule.GetElement(anyMsg) );
+		t_assert( !aModule.GetElement(anyMsg, false) );
 	}
 	aModule.fAlive = 0xf007f007;
 	if ( t_assertm( aModule.fpQueue != NULL , "queue should be created" ) ) {
+		// queue is empty, so retrieving an element with tryLock=true should
+		// return immediately and fail.
+		{
+			Anything anyElement;
+			t_assert( !(aModule.GetElement(anyElement, true)) );
+		}
 		// queue size is 1, so we load it with 1 element
 		{
 			Anything anyMsg;
