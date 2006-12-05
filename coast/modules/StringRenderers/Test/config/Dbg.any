@@ -20,4 +20,8 @@
 		/MainSwitch	10
 		/EnableAll	10
 	}
+	/ComputeDateRenderer {
+		/MainSwitch	10
+		/EnableAll	10
+	}
 }
