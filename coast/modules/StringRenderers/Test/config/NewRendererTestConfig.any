@@ -925,6 +925,26 @@
 			}
 			/Expected	"barBar, yupGugus baryup"
 		}
+		/ComputeDateRendererTest0 {
+			/Env {
+			}
+			/Renderer {
+				/ComputeDateRenderer {
+					/FromDate		"02.01.1970"
+				}
+			}
+			/Expected	"86400"
+		}
+		/ComputeDateRendererTest01 {
+			/Env {
+			}
+			/Renderer {
+				/ComputeDateRenderer {
+					/FromDate		"2.1.1970"
+				}
+			}
+			/Expected	"86400"
+		}
 		/ComputeDateRendererTest1 {
 			/Env {
 			}
@@ -990,6 +1010,39 @@
 				}
 			}
 			/Expected	"43200"
+		}
+		/ComputeDateRendererLazyFormattingTest {
+			/Env {
+			}
+			/Renderer {
+				/ComputeDateRenderer {
+					/FromDate		"1 Jan  1970 1:00PM"
+					/InputFormat	"dd bbb YYYY HH:MMpp"
+				}
+			}
+			/Expected	"46800"
+		}
+		/ComputeDateRendererLazyFormattingTest1 {
+			/Env {
+			}
+			/Renderer {
+				/ComputeDateRenderer {
+					/FromDate		"1:00AM 02  Jan  1970"
+					/InputFormat	"HH:MMpp dd bbb YYYY"
+				}
+			}
+			/Expected	"90000"
+		}
+		/ComputeDateRendererLazyFormattingTest2 {
+			/Env {
+			}
+			/Renderer {
+				/ComputeDateRenderer {
+					/FromDate		"1:00AM2Jan1970"
+					/InputFormat	"HH:MMppddbbbYYYY"
+				}
+			}
+			/Expected	"90000"
 		}
 		/ComputeDateRendererOffsetTest {
 			/Env {
