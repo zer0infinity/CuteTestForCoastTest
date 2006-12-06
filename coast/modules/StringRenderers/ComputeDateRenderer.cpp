@@ -124,6 +124,15 @@ TimeStamp ComputeDateRenderer::ConvertToTimeStamp(const String &strFromDate, con
 			Trace("year: " << (long)iYear);
 			Trace("cent: " << (long)iCent);
 			strInFmt.TrimFront(4);
+		} else if ( strInFmt.StartsWith("YY") ) {
+			iYear = (char)IntGetValue(strFromDate, lDtIdx, lDtIdx + 2);
+			iCent = 20;
+			Trace("year: " << (long)iYear);
+			if ( iYear >= 70 ) {
+				iCent = 19;
+			}
+			Trace("cent: " << (long)iCent);
+			strInFmt.TrimFront(2);
 		} else if ( strInFmt.StartsWith("HH") ) {
 			iHour = (char)IntGetValue(strFromDate, lDtIdx, lDtIdx + 2);
 			Trace("hour: " << (long)iHour);

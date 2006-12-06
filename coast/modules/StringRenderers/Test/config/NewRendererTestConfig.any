@@ -1011,6 +1011,28 @@
 			}
 			/Expected	"43200"
 		}
+		/ComputeDateRendererTwoDigitYearTest {
+			/Env {
+			}
+			/Renderer {
+				/ComputeDateRenderer {
+					/FromDate		"01 Jan 70 12:00PM"
+					/InputFormat	"dd bbb YY HH:MMpp"
+				}
+			}
+			/Expected	"43200"
+		}
+		/ComputeDateRendererTwoDigitYearTest2 {
+			/Env {
+			}
+			/Renderer {
+				/ComputeDateRenderer {
+					/FromDate		"5 Dec 06 12:00AM"
+					/InputFormat	"dd bbb YY HH:MMpp"
+				}
+			}
+			/Expected	"1165276800"
+		}
 		/ComputeDateRendererLazyFormattingTest {
 			/Env {
 			}

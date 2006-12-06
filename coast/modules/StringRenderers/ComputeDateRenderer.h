@@ -25,6 +25,7 @@ class TimeStamp;
 											* mm 	for month as decimal number
 											*    or
 											* bbb 	for month as English abbreviated month name
+											* YY 	for year without century as decimal number, assume values above or equal 70 to be in century 19, others in century 20
 											* YYYY 	for year with century as decimal number
 											* HH for hour (24-hour clock) as decimal number
 											*    or
