@@ -84,17 +84,33 @@ bool Role::Synchronize(Context &)
 
 bool Role::CheckLevel(const String &queryRoleName) const
 {
-	StartTrace(Role.CheckLevel);
+	StartTrace1(Role.CheckLevel, "my role name [" << fName << "], query-role to check for [" << queryRoleName << "]");
 	String strRoleName(fName);
-	Trace("my role name [" << strRoleName << "]");
 
 	bool bLevelOk = false;
 	if ( !( bLevelOk = queryRoleName.IsEqual(strRoleName) ) ) {
 #if defined(DEBUG)
-		// the role level is not really relevant because the role name decides if we are in the correct role
-		// this code is just fo informational purposes
-		GetRoleLevel( this );
-		GetRoleLevel( Role::FindRole(queryRoleName) );
+// the following code would be nice to see role relations
+// -> but we need to re-authenticate as soon as the role names are different
+		// names are not equal, check for their relation
+		long lThisLevel = GetRoleLevel( this );
+		Role *pQRole = Role::FindRole(queryRoleName);
+		long lQRoleLevel = GetRoleLevel( pQRole );
+		Trace("my role level:" << lThisLevel << " query-role level:" << lQRoleLevel);
+		// if the roles are on the same level, they cannot be related
+		if ( lThisLevel != lQRoleLevel ) {
+			if ( lQRoleLevel > lThisLevel ) {
+				// check if current role is a parent of the query-role
+				Role *pRole = pQRole;
+				while ( !bLevelOk && pRole && ( pRole = (Role *)pRole->GetSuper() ) && pRole ) {
+					String strRoleName;
+					pRole->GetName(strRoleName);
+					bLevelOk = strRoleName.IsEqual(fName);
+					Trace("role [" << strRoleName << "]" << (bLevelOk ? " is parent" : ""));
+				}
+			}
+		}
+		bLevelOk = false;
 #endif
 	}
 	return bLevelOk;
@@ -198,9 +214,8 @@ bool Role::GetNewPageName( Context &c, String &transition, String &pagename)
 bool Role::GetNextActionConfig(ROAnything &entry, String &transition, String &pagename)
 {
 	StartTrace(Role.GetNextActionConfig);
-	// get the action page map from the role's
-	// configuration file
-	// PS: should inherit map!
+	// get the action page map from the role's configuration file
+	// map inheritance is not needed explicitly but realized using hierarchic configured objects
 	String index("Map.");
 	index << pagename << "." << transition;
 	Trace("trying [" << index << "]");
@@ -283,8 +298,7 @@ bool Role::Verify(Context &c, String &transition, String &pagename)
 	}
 
 	// we check the role level by role name
-	// if no role is defined in the query we
-	// assume guest
+	// if no role is defined in the query we use the default defined in slot DefaultRole or as last resort, use the Role base class
 	String name = GetRequestRoleName(c);
 
 	// check the level of the role it is defined in the config
