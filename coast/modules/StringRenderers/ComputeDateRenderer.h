@@ -28,9 +28,9 @@ class TimeStamp;
 											* YYYY 	for year with century as decimal number
 											* HH for hour (24-hour clock) as decimal number
 											*    or
-											* II for hour (12-hour clock) and pp for 'am' or 'pm'
 											* MM for minute as decimal number
 											* SS for second as decimal number
+											* pp for hour (12-hour clock) 'am' or 'pm'
 											* -------------yy still to be implemented
 											returns this time in seconds (can be used as input for DateRenderer)
 	/Offset  		Rendererspec		optional, default 0, offset in seconds or days (if a trailing 'd' was given) added to the time
@@ -56,7 +56,7 @@ Example 4:
 <pre>
 {
 	/FromDate					"Feb 01 2002 12:05:02AM"
-	/InputFormat				"bbb dd YYYY II:MM:SSpp"
+	/InputFormat				"bbb dd YYYY HH:MM:SSpp"
 }</pre>
 The follow features are missing :
 Just the operators "+", "-" and Offset

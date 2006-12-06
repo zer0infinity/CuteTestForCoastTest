@@ -136,10 +136,6 @@ TimeStamp ComputeDateRenderer::ConvertToTimeStamp(const String &strFromDate, con
 			iSec = (char)IntGetValue(strFromDate, lDtIdx, lDtIdx + 2);
 			Trace("sec: " << (long)iSec);
 			strInFmt.TrimFront(2);
-		} else if ( strInFmt.StartsWith("II") ) {
-			iHour = (char)IntGetValue(strFromDate, lDtIdx, lDtIdx + 2);
-			Trace("hour: " << (long)iHour);
-			strInFmt.TrimFront(2);
 		} else if ( strInFmt.StartsWith("pp") ) {
 			String amPm = strFromDate.SubString(lDtIdx, 2);
 			Trace( "AmPmsubstring: <" << amPm << ">" );
