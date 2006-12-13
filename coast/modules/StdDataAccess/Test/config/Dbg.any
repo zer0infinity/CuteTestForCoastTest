@@ -32,11 +32,11 @@
 		/MainSwitch						10
 		/EnableAll						10
 	}
-	/HTTPMimeHeaerMapper {
+	/HTTPMimeHeaderMapper {
 		/MainSwitch						10
 		/EnableAll						10
 	}
-	/HTTPMimeHeaerMapperTest {
+	/HTTPMimeHeaderMapperTest {
 		/MainSwitch						10
 		/EnableAll						10
 	}
