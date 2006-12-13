@@ -31,7 +31,8 @@ class EXPORTDECL_STDDATAACCESS MIMEHeader : public LookupInterface
 public:
 	enum ProcessMode {
 		eDoNotSplitHeaderFields,
-		eDoSplitHeaderFields
+		eDoSplitHeaderFields,
+		eDoSplitHeaderFieldsCookie
 	};
 
 	//! represent a mime header

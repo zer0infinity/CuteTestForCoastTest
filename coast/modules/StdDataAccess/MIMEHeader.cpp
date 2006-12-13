@@ -59,6 +59,8 @@ MIMEHeader::ProcessMode MIMEHeader::GetDoSplitHeaderFieldsState(const String &fi
 	MIMEHeader::ProcessMode splitHeaderFields;
 	if ( fieldNameUpperCase == "SET-COOKIE" ) {
 		splitHeaderFields = eDoNotSplitHeaderFields;
+	} else if ( fieldNameUpperCase == "COOKIE" ) {
+		splitHeaderFields = eDoSplitHeaderFieldsCookie;
 	} else {
 		splitHeaderFields = fSplitHeaderFields;
 	}
@@ -75,13 +77,26 @@ bool MIMEHeader::DoParseHeaderLine(String &line)
 	String fieldNameUpperCase(fieldname);
 	fieldNameUpperCase.ToUpper();
 	ParseField(line, GetDoSplitHeaderFieldsState(fieldNameUpperCase));
+	Trace("My marker...");
 	if (fieldNameUpperCase == "CONTENT-DISPOSITION" ) {
 		if ( fSplitHeaderFields == eDoSplitHeaderFields ) {
 			fHeader[fieldname] = SplitLine(fHeader[fieldname].AsCharPtr());
 		}
 	} else if (fieldNameUpperCase == "COOKIE" ) {
-		fHeader[fieldname] = SplitLine(fHeader[fieldname].AsCharPtr(), URLUtils::eUntouched);
+		Anything tmpCookie(fHeader[fieldname]);
+		TraceAny(fHeader, "fHeader on entry");
+		TraceAny(tmpCookie, "tmpCookie");
+		Anything work;
+		for ( int i = 0; i < tmpCookie.GetSize(); i++ ) {
+			work[i] = SplitLine(tmpCookie[i].AsCharPtr(), URLUtils::eUntouched);
+		}
+		TraceAny(work, "work");
+		fHeader.Remove(fieldname);
+		for ( int i = 0; i < work.GetSize(); i++ ) {
+			fHeader[fieldname][work[i].SlotName(0L)] = work[i][0].AsCharPtr();
+		}
 	}
+	TraceAny(fHeader, "fHeader on exit");
 	return true;
 }
 
@@ -118,8 +133,8 @@ bool MIMEHeader::ParseField(String &line, MIMEHeader::ProcessMode splitHeaderFie
 	long pos = GetNormalizedFieldName(line, fieldname);
 	if ( pos > 0 ) {
 		String fieldvalue;
-		if ( splitHeaderFields == eDoSplitHeaderFields ) {
-			StringTokenizer st1(((const char *)line) + pos + 1, ',');
+		if ( (splitHeaderFields == eDoSplitHeaderFields) || (splitHeaderFields == eDoSplitHeaderFieldsCookie) ) {
+			StringTokenizer st1(((const char *)line) + pos + 1, (splitHeaderFields == eDoSplitHeaderFields ? ',' : ';'));
 			while (st1.NextToken(fieldvalue)) {
 				if ( fieldvalue.Length() ) {
 					URLUtils::TrimBlanks(fieldvalue);
