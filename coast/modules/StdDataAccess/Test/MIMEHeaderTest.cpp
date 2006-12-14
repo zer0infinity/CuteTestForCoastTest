@@ -209,7 +209,10 @@ void MIMEHeaderTest::MultiPartHeaderTest()
 		"Accept-Encoding: gzip\r\n"
 		"Accept-Language: de-CH,en\r\n"
 		"Accept-Charset: iso-8859-1,*,utf-8\r\n"
+		"Cookie: Cookie1=Value1\r\n"
+		"Cookie: Cookie2=Value2\r\n"
 		"Cookie: FDState=b64-U2VzY==; HyperwaveSession=LASTCOLLECTION=0x0a17a10a_0x0002fc9f,LANGUAGE=de,PREFMIMETYPES=text%2Cimage%2Caudio%2Capplication/postscript%2Cx-world%2Cmovie,USERVARS=TREEVIEW%3Ayes:UISTYLE%3Ahwblue; sk=209243665E644DFB\r\n"
+		"Cookie: Cookie3=Value3\r\n"
 		"Content-type: multipart/form-data; boundary=---------------------------61400283883149348477195787\r\n"
 		"Content-Length: 542\r\n"
 		"\r\n";
@@ -225,7 +228,10 @@ void MIMEHeaderTest::MultiPartHeaderTest()
 		"Accept-Encoding: super-gzip,super-gzip-param=1,2.3\r\n"
 		"Accept-Language: de-CH,en\r\n"
 		"Accept-Charset: iso-8859-1,*,utf-8\r\n"
+		"Cookie: Cookie1=Value1\r\n"
+		"Cookie: Cookie2=Value2\r\n"
 		"Cookie: FDState=b64-U2VzY==; HyperwaveSession=LASTCOLLECTION=0x0a17a10a_0x0002fc9f,LANGUAGE=de,PREFMIMETYPES=text%2Cimage%2Caudio%2Capplication/postscript%2Cx-world%2Cmovie,USERVARS=TREEVIEW%3Ayes:UISTYLE%3Ahwblue; sk=209243665E644DFB\r\n"
+		"Cookie: Cookie3=Value3\r\n"
 		"Content-type: multipart/form-data; boundary=---------------------------61400283883149348477195787\r\n"
 		"Content-Length: 542\r\n"
 		"\r\n";
@@ -249,9 +255,12 @@ void MIMEHeaderTest::MultiPartHeaderTest()
 	result["ACCEPT-CHARSET"].Append("iso-8859-1");
 	result["ACCEPT-CHARSET"].Append("*");
 	result["ACCEPT-CHARSET"].Append("utf-8");
+	result["COOKIE"]["Cookie1"] = "Value1";
+	result["COOKIE"]["Cookie2"] = "Value2";
 	result["COOKIE"]["FDState"] = "b64-U2VzY==";
 	result["COOKIE"]["HyperwaveSession"] = "LASTCOLLECTION=0x0a17a10a_0x0002fc9f,LANGUAGE=de,PREFMIMETYPES=text%2Cimage%2Caudio%2Capplication/postscript%2Cx-world%2Cmovie,USERVARS=TREEVIEW%3Ayes:UISTYLE%3Ahwblue";
 	result["COOKIE"]["sk"] = "209243665E644DFB";
+	result["COOKIE"]["Cookie3"] = "Value3";
 	result["CONTENT-TYPE"] = "multipart/form-data; boundary=---------------------------61400283883149348477195787";
 	result["CONTENT-LENGTH"] = "542";
 	result["BOUNDARY"] = "---------------------------61400283883149348477195787";
@@ -275,9 +284,12 @@ void MIMEHeaderTest::MultiPartHeaderTest()
 	result1["ACCEPT-CHARSET"].Append("iso-8859-1");
 	result1["ACCEPT-CHARSET"].Append("*");
 	result1["ACCEPT-CHARSET"].Append("utf-8");
+	result1["COOKIE"]["Cookie1"] = "Value1";
+	result1["COOKIE"]["Cookie2"] = "Value2";
 	result1["COOKIE"]["FDState"] = "b64-U2VzY==";
 	result1["COOKIE"]["HyperwaveSession"] = "LASTCOLLECTION=0x0a17a10a_0x0002fc9f,LANGUAGE=de,PREFMIMETYPES=text%2Cimage%2Caudio%2Capplication/postscript%2Cx-world%2Cmovie,USERVARS=TREEVIEW%3Ayes:UISTYLE%3Ahwblue";
 	result1["COOKIE"]["sk"] = "209243665E644DFB";
+	result1["COOKIE"]["Cookie3"] = "Value3";
 	result1["CONTENT-TYPE"] = "multipart/form-data; boundary=---------------------------61400283883149348477195787";
 	result1["CONTENT-LENGTH"] = "542";
 	result1["BOUNDARY"] = "---------------------------61400283883149348477195787";
@@ -290,9 +302,12 @@ void MIMEHeaderTest::MultiPartHeaderTest()
 	result2["ACCEPT-ENCODING"] =  "gzip";
 	result2["ACCEPT-LANGUAGE"] =  "de-CH,en";
 	result2["ACCEPT-CHARSET"] =  "iso-8859-1,*,utf-8";
+	result2["COOKIE"]["Cookie1"] = "Value1";
+	result2["COOKIE"]["Cookie2"] = "Value2";
 	result2["COOKIE"]["FDState"] = "b64-U2VzY==";
 	result2["COOKIE"]["HyperwaveSession"] = "LASTCOLLECTION=0x0a17a10a_0x0002fc9f,LANGUAGE=de,PREFMIMETYPES=text%2Cimage%2Caudio%2Capplication/postscript%2Cx-world%2Cmovie,USERVARS=TREEVIEW%3Ayes:UISTYLE%3Ahwblue";
 	result2["COOKIE"]["sk"] = "209243665E644DFB";
+	result2["COOKIE"]["Cookie3"] = "Value3";
 	result2["CONTENT-TYPE"] = "multipart/form-data; boundary=---------------------------61400283883149348477195787";
 	result2["CONTENT-LENGTH"] = "542";
 	result2["BOUNDARY"] = "---------------------------61400283883149348477195787";
@@ -306,9 +321,12 @@ void MIMEHeaderTest::MultiPartHeaderTest()
 	result3["ACCEPT-ENCODING"].Append("super-gzip,super-gzip-param=1,2.3");
 	result3["ACCEPT-LANGUAGE"] =  "de-CH,en";
 	result3["ACCEPT-CHARSET"] =  "iso-8859-1,*,utf-8";
+	result3["COOKIE"]["Cookie1"] = "Value1";
+	result3["COOKIE"]["Cookie2"] = "Value2";
 	result3["COOKIE"]["FDState"] = "b64-U2VzY==";
 	result3["COOKIE"]["HyperwaveSession"] = "LASTCOLLECTION=0x0a17a10a_0x0002fc9f,LANGUAGE=de,PREFMIMETYPES=text%2Cimage%2Caudio%2Capplication/postscript%2Cx-world%2Cmovie,USERVARS=TREEVIEW%3Ayes:UISTYLE%3Ahwblue";
 	result3["COOKIE"]["sk"] = "209243665E644DFB";
+	result3["COOKIE"]["Cookie3"] = "Value3";
 	result3["CONTENT-TYPE"] = "multipart/form-data; boundary=---------------------------61400283883149348477195787";
 	result3["CONTENT-LENGTH"] = "542";
 	result3["BOUNDARY"] = "---------------------------61400283883149348477195787";

@@ -85,13 +85,20 @@ bool MIMEHeader::DoParseHeaderLine(String &line)
 	} else if (fieldNameUpperCase == "COOKIE" ) {
 		Anything tmpCookie(fHeader[fieldname]);
 		TraceAny(fHeader, "fHeader on entry");
-		TraceAny(tmpCookie, "tmpCookie");
 		Anything work;
-		for ( int i = 0; i < tmpCookie.GetSize(); i++ ) {
-			work[i] = SplitLine(tmpCookie[i].AsCharPtr(), URLUtils::eUntouched);
+		int stopValue = fHeader[fieldname].GetSize();
+		int workIndex = 0;
+		// The raw COOKIE lines must be removed after handling!
+		for ( int i = 0; i < stopValue; ++i ) {
+			if ( fHeader[fieldname].SlotName(i) == (char *) NULL ) {
+				work[workIndex++] = SplitLine(fHeader[fieldname][i].AsCharPtr(), URLUtils::eUntouched);
+				Trace("Removing: " << fHeader[fieldname][i].AsString());
+				fHeader[fieldname].Remove(i);
+				--stopValue;
+				--i;
+			}
 		}
 		TraceAny(work, "work");
-		fHeader.Remove(fieldname);
 		for ( int i = 0; i < work.GetSize(); i++ ) {
 			fHeader[fieldname][work[i].SlotName(0L)] = work[i][0].AsCharPtr();
 		}
