@@ -614,7 +614,7 @@ void MultifunctionListBoxRenderer::RenderBoxRow(ostream &reply, Context &c, cons
 
 					// add the options slot
 					// we need the OnChange script as soon as we have the box editable
-					if (config["EditableList"].AsLong(0L) == 1L || config.IsDefined("OnChangeScript")) {
+					if ( ( RenderToString(c, config["EditableList"]).AsLong(0L) == 1L ) || config.IsDefined("OnChangeScript") ) {
 						rendererConfig["Options"]["OnChange"][0L] = String("OnChange") << strBoxName << "(this)";
 					}
 					if (bHasOptions) {
@@ -677,12 +677,12 @@ void MultifunctionListBoxRenderer::RenderColumnInputFields(ostream &reply, Conte
 				}
 				ROAnything roBgColor;
 				String strBgColor;
+
 				if (config.LookupPath(roBgColor, "EditLine.BgColor")) {
 					strBgColor << " bgcolor='";
 					RenderOnString(strBgColor, c, roBgColor);
 					strBgColor << "'";
 				}
-				reply << strBgColor;
 				rendererConfig["ListHeader"] = String("<tr") << strBgColor << ">\n";
 				// to simulate scroller column
 				rendererConfig["ListFooter"] = "<td>&nbsp;&nbsp;</td>\n</tr>\n";
@@ -958,7 +958,7 @@ bool MultifunctionListBoxRenderer::RenderSaveButton(ostream &reply, Context &c, 
 	MultifunctionListBoxRenderer::GetFormName(strFormName, c);
 	strButtonName << strBoxName << "_Save";
 
-	bool bBoxEditable = (config["EditableList"].AsLong(0L) == 1L);
+	bool bBoxEditable = (RenderToString(c, config["EditableList"]).AsLong(0L) == 1L);
 	bool bLineMode = (config["EditableMode"].AsString("Field") == "Line");
 	bool bHasNavigation = !navConfig.IsNull();
 
@@ -1049,7 +1049,7 @@ bool MultifunctionListBoxRenderer::RenderResetButton(ostream &reply, Context &c,
 	MultifunctionListBoxRenderer::GetFormName(strFormName, c);
 	strButtonName << strBoxName << "_Reset";
 
-	bool bBoxEditable = (config["EditableList"].AsLong(0L) == 1L);
+	bool bBoxEditable = (RenderToString(c, config["EditableList"]).AsLong(0L) == 1L);
 	bool bHasNavigation = !navConfig.IsNull();
 
 	String strProps = strBoxName;
@@ -1093,7 +1093,7 @@ bool MultifunctionListBoxRenderer::RenderAddButton(ostream &reply, Context &c, c
 	MultifunctionListBoxRenderer::GetFormName(strFormName, c);
 	strButtonName << strBoxName << "_Add";
 
-	bool bBoxEditable = (config["EditableList"].AsLong(0L) == 1L);
+	bool bBoxEditable = (RenderToString(c, config["EditableList"]).AsLong(0L) == 1L);
 	bool bLineMode = (config["EditableMode"].AsString("Field") == "Line");
 	bool bHasNavigation = !navConfig.IsNull();
 
@@ -1195,7 +1195,7 @@ bool MultifunctionListBoxRenderer::RenderDeleteButton(ostream &reply, Context &c
 	MultifunctionListBoxRenderer::GetBoxName(strBoxName, c);
 	strButtonName << strBoxName << "_Delete";
 
-	bool bBoxEditable = (config["EditableList"].AsLong(0L) == 1L);
+	bool bBoxEditable = (RenderToString(c, config["EditableList"]).AsLong(0L) == 1L);
 	bool bHasNavigation = !navConfig.IsNull();
 
 	String strProps = strBoxName;
@@ -1298,7 +1298,7 @@ void MultifunctionListBoxRenderer::RenderNavigation(ostream &reply, Context &c, 
 {
 	StartTrace(MultifunctionListBoxRenderer.RenderNavigation);
 
-	bool bBoxEditable = (config["EditableList"].AsLong(0L) == 1L);
+	bool bBoxEditable = (RenderToString(c, config["EditableList"]).AsLong(0L) == 1L);
 
 	ROAnything navigationConfig;
 	bool bHasNavigation = (config.LookupPath(navigationConfig, "Navigation"));
@@ -1400,7 +1400,7 @@ void MultifunctionListBoxRenderer::RenderScripts(ostream &reply, Context &c, con
 		String strClearFields, strProcessFields, strOnChangeFields, strBoxName, strFormName;
 		MultifunctionListBoxRenderer::GetBoxName(strBoxName, c);
 		MultifunctionListBoxRenderer::GetFormName(strFormName, c);
-		bBoxEditable = (config["EditableList"].AsLong(0L) == 1L);
+		bBoxEditable = (RenderToString(c, config["EditableList"]).AsLong(0L) == 1L);
 		// we need the OnChange script as soon as we have the box editable
 		bool bHasOnChangeScript = (bBoxEditable ? bBoxEditable : config.IsDefined("OnChangeScript"));
 		//
@@ -1794,7 +1794,7 @@ void MultifunctionListBoxRenderer::RenderHiddenFieldsForEdit(ostream &reply, Con
 {
 	StartTrace(MultifunctionListBoxRenderer.RenderHiddenFieldsForEdit);
 
-	if (config["EditableList"].AsLong(0L) == 1L) {
+	if (RenderToString(c, config["EditableList"]).AsLong(0L) == 1L) {
 		// add fields to submit added, deleted or changed fields
 		static Renderer *pRenderer = FindRenderer("HiddenFieldRenderer");
 		if (pRenderer) {
