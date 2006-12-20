@@ -65,6 +65,7 @@ Test *StringTest::suite()
 	ADD_CASE(testSuite, StringTest, TestFirstCharOf);
 	ADD_CASE(testSuite, StringTest, TestLastCharOf);
 	ADD_CASE(testSuite, StringTest, TestContainsCharAbove);
+	ADD_CASE(testSuite, StringTest, prependWith);
 	return testSuite;
 }
 
@@ -1702,6 +1703,47 @@ void StringTest::toUppers()
 }
 //==============================================================================================
 //         T O P P E R         Ende
+//==============================================================================================
+
+//==============================================================================================
+//         P R E P E N D W I T H           Beginn
+//==============================================================================================
+void StringTest::prependWith()
+{
+	// String is smaller then newLen
+	for ( int i = 0; i < 256; i++ ) {
+		String str, result;
+		for ( int ii = 256; ii > i; ii-- ) {
+			str.Append("z");
+		}
+		int oldLen = str.Length();
+		str.PrependWith(str.Length() + i, 'x');
+		t_assert((oldLen + i) == str.Length());
+		for ( int ii = 0; ii < i; ii++ ) {
+			result.Append("x");
+		}
+		for ( int ii = 0; ii < (256 - i); ii++ ) {
+			result.Append("z");
+		}
+		assertEquals(result, str);
+	}
+	// String is equal/smaller then newLen, a no-op
+	for ( int i = 0; i < 256; i++ ) {
+		String str, result;
+		for ( int ii = 0; ii < i; ii++ ) {
+			str.Append("z");
+		}
+		result = str;
+		int oldLen = str.Length();
+		for ( int ii = 0; ii < i; ii++ ) {
+			str.PrependWith(str.Length() - i, 'x');
+			t_assert((oldLen) == str.Length());
+			assertEquals(result, str);
+		}
+	}
+}
+//==============================================================================================
+//         P R E P E N D W I T H           Ende
 //==============================================================================================
 
 //==============================================================================================

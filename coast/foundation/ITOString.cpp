@@ -746,6 +746,16 @@ String &String::ToUpper()
 	return *this;
 }
 
+String &String::PrependWith(long newLength, const char fill)
+{
+	long fillTo = newLength - Length();
+	if ( fillTo > 0 ) {
+		ReplaceAt(fillTo, GetContent(), Length());
+		memset(GetContent(), fill, fillTo);
+	}
+	return *this;
+}
+
 #ifdef __370__
 void String::ToEBCDIC()
 {

@@ -49,6 +49,8 @@ public:
 	void			toUppers();
 	void toUpper0();
 
+	void prependWith();
+
 	void			dumps();
 	void dump0();
 	void 			DumpAsHexTest();
