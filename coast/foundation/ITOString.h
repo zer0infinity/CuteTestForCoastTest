@@ -245,7 +245,7 @@ public:
 	long   StrRChr(char c, long start = -1) const;
 	//! Prepend String with char c, String will be expanded to newLength
 	//! Method is a no-op if String is already equal/larger then newLength
-	String &PrependWith(long newLength, const char fill);
+	bool PrependWith(long newLength, const char fill);
 	//! return character at position ix, if ix is out of range return 0
 	char At(long ix) const;
 	//! return character at position ix, if ix is out of range return 0

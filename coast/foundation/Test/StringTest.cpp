@@ -1717,7 +1717,7 @@ void StringTest::prependWith()
 			str.Append("z");
 		}
 		int oldLen = str.Length();
-		str.PrependWith(str.Length() + i, 'x');
+		t_assert(str.PrependWith(str.Length() + i, 'x') == 1);
 		t_assert((oldLen + i) == str.Length());
 		for ( int ii = 0; ii < i; ii++ ) {
 			result.Append("x");
@@ -1736,7 +1736,7 @@ void StringTest::prependWith()
 		result = str;
 		int oldLen = str.Length();
 		for ( int ii = 0; ii < i; ii++ ) {
-			str.PrependWith(str.Length() - i, 'x');
+			t_assert(str.PrependWith(str.Length() - i, 'x') == 0);
 			t_assert((oldLen) == str.Length());
 			assertEquals(result, str);
 		}

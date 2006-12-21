@@ -746,14 +746,14 @@ String &String::ToUpper()
 	return *this;
 }
 
-String &String::PrependWith(long newLength, const char fill)
+bool String::PrependWith(long newLength, const char fill)
 {
 	long fillTo = newLength - Length();
 	if ( fillTo > 0 ) {
 		ReplaceAt(fillTo, GetContent(), Length());
 		memset(GetContent(), fill, fillTo);
 	}
-	return *this;
+	return (fillTo >= 0);
 }
 
 #ifdef __370__
