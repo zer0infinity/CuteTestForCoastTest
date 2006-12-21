@@ -750,6 +750,7 @@ bool String::PrependWith(long newLength, const char fill)
 {
 	long fillTo = newLength - Length();
 	if ( fillTo > 0 ) {
+		Reserve(newLength);
 		ReplaceAt(fillTo, GetContent(), Length());
 		memset(GetContent(), fill, fillTo);
 	}

@@ -1741,6 +1741,10 @@ void StringTest::prependWith()
 			assertEquals(result, str);
 		}
 	}
+	// Zero length string test; string must be expanded
+	String str;
+	str.PrependWith(2, 'x');
+	assertEquals("xx", str);
 }
 //==============================================================================================
 //         P R E P E N D W I T H           Ende
