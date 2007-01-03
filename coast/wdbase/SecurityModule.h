@@ -60,10 +60,11 @@ protected:
 	// the loaded anything otherwise fConfig points to invalid data
 	virtual bool DoLoadConfig(const char *category);
 	// read a key from the file named name
-	virtual bool SecurityItem::DoLoadKeyFile(const char *name, String &key);
+	virtual bool DoLoadKeyFile(const char *name, String &key);
 	virtual bool Init(ROAnything config);
 
 	static const char *fgcLegacyMasterKey;
+
 private:
 	SecurityItem();
 	SecurityItem(const SecurityItem &);

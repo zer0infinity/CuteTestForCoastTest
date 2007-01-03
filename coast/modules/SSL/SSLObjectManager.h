@@ -63,7 +63,7 @@ public:
 	SSL_SESSION *GetSessionId(const String &ip, const String &port);
 	void SetSessionId(const String &ip, const String &port, SSL_SESSION *sslSession);
 	static String SessionIdAsHex(SSL_SESSION *sslSession);
-	static Anything SSLObjectManager::TraceSSLSession(SSL_SESSION *sslSession);
+	static Anything TraceSSLSession(SSL_SESSION *sslSession);
 
 	friend class SSLObjectManagerTest;
 
@@ -85,8 +85,8 @@ protected:
 
 	//!The Anything containing the SSL sessionId strigs
 	Anything fSSLSessionIdStore;
-private:
 
+private:
 	SSLObjectManager(const SSLObjectManager &);
 	SSLObjectManager &operator=(const SSLObjectManager &);
 	// use careful, you inhibit subclass use

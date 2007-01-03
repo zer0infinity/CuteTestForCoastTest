@@ -33,7 +33,7 @@ public:
 	//!link to next chunk
 	MemoryHeader *fNext;
 	//!align memory suitably
-	static inline size_t MemoryHeader::AlignedSize() {
+	static inline size_t AlignedSize() {
 		const size_t rest =  sizeof(MemoryHeader) % sizeof(long double);
 		const size_t alignedsize = sizeof(MemoryHeader) + ( rest ? sizeof(long double) - rest : 0);
 		return alignedsize;

@@ -19,10 +19,7 @@
 class EXPORTDECL_SSL SSLSocketArgs
 {
 public:
-	SSLSocketArgs::SSLSocketArgs(bool verifyCertifiedEntity,
-								 const String &certVerifyString,
-								 bool certVerifyStringIsFilter,
-								 bool sessionResumption);
+	SSLSocketArgs(bool verifyCertifiedEntity, const String &certVerifyString, bool certVerifyStringIsFilter, bool sessionResumption);
 
 	SSLSocketArgs();
 	~SSLSocketArgs();
@@ -105,7 +102,7 @@ public:
 protected:
 	virtual iostream *DoMakeStream();
 	virtual int PrepareSocket(SSL *) = 0;
-	virtual void SSLSocket::DoCheckPeerCertificate(Anything &sslinfo, SSL *ssl);
+	virtual void DoCheckPeerCertificate(Anything &sslinfo, SSL *ssl);
 	virtual SSL_SESSION *SessionResumptionHookResumeSession(SSL *ssl);
 	virtual void SessionResumptionHookSetSession(SSL *ssl, SSL_SESSION *sslSessionStored, bool wasResumed);
 
@@ -154,7 +151,6 @@ public:
 	~SSLServerSocket();
 
 protected:
-
 	virtual int PrepareSocket(SSL *ssl);
 
 private:
@@ -170,7 +166,6 @@ class EXPORTDECL_SSL SSLConnector : public Connector
 	// of a socket and connects to a server on the other
 	// side, creating a socket connection that's read/writeable
 public:
-
 	//! If no SSL_CTX  is provided by the caller, a default client SSL_CTX will be created.
 	SSLConnector(const char *ipAdr, long port, long connectTimeout = 0, SSL_CTX *ctx = 0, const char *srcIpAdr = 0, long srcPort = 0, bool threadLocal = false);
 	//! If no SSL_CTX  is provided by the caller, a default client SSL_CTX will be created.
@@ -208,7 +203,6 @@ private:
 	SSLConnector();
 	SSLConnector(const SSLConnector &);
 	SSLConnector &operator=(const SSLConnector &);
-
 };
 
 //--- SSLAcceptor ---

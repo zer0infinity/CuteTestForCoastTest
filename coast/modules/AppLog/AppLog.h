@@ -65,7 +65,7 @@ public:
 
 	//!Trigger immediate log rotation. Does not interfere with LogRotator thread because
 	//!Rotate() uses Mutex.
-	static bool AppLogModule::RotateSpecificLog(Context &ctx, const char *logchannel);
+	static bool RotateSpecificLog(Context &ctx, const char *logchannel);
 
 protected:
 	static AppLogChannel *FindLogger(Context &ctx, const char *logChannel);

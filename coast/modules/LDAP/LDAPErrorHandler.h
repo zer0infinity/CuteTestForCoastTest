@@ -50,7 +50,7 @@ public:
 	virtual void SetShouldRetry();
 
 	//! Clean up LDAPError and LDAPResultSlot in Context's tmp store
-	virtual void LDAPErrorHandler::CleanUp();
+	virtual void CleanUp();
 
 	//! Translate eRetryState into string
 	String RetryStateAsString(eRetryState retryState);

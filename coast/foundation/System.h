@@ -280,7 +280,7 @@ public:
 	//! \If there was an error, the file is considered to be locked!
 	//! \You must remove the lockfile with System::unlink(lockFileName)
 	//! \after you're done.
-	static bool System::GetLockFileState(const char *lockFileName);
+	static bool GetLockFileState(const char *lockFileName);
 
 	// io specific inner class
 	// first some definitions

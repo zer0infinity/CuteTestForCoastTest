@@ -356,7 +356,7 @@ protected:
 class EXPORTDECL_FOUNDATION ConnectorArgs
 {
 public:
-	ConnectorArgs::ConnectorArgs(const String &ipAddr, long port, long connectTimeout = 0L);
+	ConnectorArgs(const String &ipAddr, long port, long connectTimeout = 0L);
 
 	ConnectorArgs();
 	~ConnectorArgs();

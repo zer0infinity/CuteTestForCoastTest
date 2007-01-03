@@ -72,7 +72,7 @@ public:
 	TString &Append(const TString &s);
 
 	// Abfrage-Methode
-	inline long TString::Length() const				{
+	inline long Length() const				{
 		return fLength;
 	}
 
