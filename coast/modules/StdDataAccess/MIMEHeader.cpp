@@ -82,26 +82,6 @@ bool MIMEHeader::DoParseHeaderLine(String &line)
 		if ( fSplitHeaderFields == eDoSplitHeaderFields ) {
 			fHeader[fieldname] = SplitLine(fHeader[fieldname].AsCharPtr());
 		}
-	} else if (fieldNameUpperCase == "COOKIE" ) {
-		Anything tmpCookie(fHeader[fieldname]);
-		TraceAny(fHeader, "fHeader on entry");
-		Anything work;
-		int stopValue = fHeader[fieldname].GetSize();
-		int workIndex = 0;
-		// The raw COOKIE lines must be removed after handling!
-		for ( int i = 0; i < stopValue; ++i ) {
-			if ( fHeader[fieldname].SlotName(i) == (char *) NULL ) {
-				work[workIndex++] = SplitLine(fHeader[fieldname][i].AsCharPtr(), URLUtils::eUntouched);
-				Trace("Removing: " << fHeader[fieldname][i].AsString());
-				fHeader[fieldname].Remove(i);
-				--stopValue;
-				--i;
-			}
-		}
-		TraceAny(work, "work");
-		for ( int i = 0; i < work.GetSize(); i++ ) {
-			fHeader[fieldname][work[i].SlotName(0L)] = work[i][0].AsCharPtr();
-		}
 	}
 	TraceAny(fHeader, "fHeader on exit");
 	return true;
@@ -146,7 +126,15 @@ bool MIMEHeader::ParseField(String &line, MIMEHeader::ProcessMode splitHeaderFie
 				if ( fieldvalue.Length() ) {
 					URLUtils::TrimBlanks(fieldvalue);
 					URLUtils::RemoveQuotes(fieldvalue);
-					URLUtils::AppendValueTo(fHeader, fieldname, fieldvalue);
+					if ( splitHeaderFields == eDoSplitHeaderFields ) {
+						URLUtils::AppendValueTo(fHeader, fieldname, fieldvalue);
+					} else if ( splitHeaderFields == eDoSplitHeaderFieldsCookie ) {
+						Anything tmp;
+						tmp = SplitLine(fieldvalue, URLUtils::eUntouched);
+						for (int i = 0; i < tmp.GetSize(); i++ ) {
+							fHeader[fieldname][tmp.SlotName(i)] = tmp[i];
+						}
+					}
 				}
 			}
 		}
