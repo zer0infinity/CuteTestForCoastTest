@@ -14,6 +14,7 @@
 #include "Socket.h"
 #include "SysLog.h"
 #include "Dbg.h"
+#include "System.h"
 
 //--- c-library modules used ---------------------------------------------------
 #if !defined(WIN32)
@@ -325,6 +326,15 @@ Acceptor *HandleSet::WaitForEvents(long timeout)
 	if (0 == retCode ) {
 		return 0;    // timeout, no error
 	}
+	while ( retCode < 0 && System::SyscallWasInterrupted()) {
+#if defined(USE_SELECT)
+		retCode = select(maxfd + 1, &rfds, 0, 0, &tv);
+#else
+		retCode = poll(fds, NOFDS, timeout);
+#endif
+		SYSERROR("select/poll call interrupted. I do a restart. Socket error number: " <<
+				 (long) SOCKET_ERROR << " return code " << retCode << " LastSyError: " <<  SysLog::LastSysError());
+	}
 	if ( retCode > 0 ) {
 		for (i = 0, sz = fDemuxTable.GetSize(); i < sz; ++i) {
 			long idx = (fLastAcceptorUsedIndex + 1 + i) % NOFDS;
@@ -345,7 +355,8 @@ Acceptor *HandleSet::WaitForEvents(long timeout)
 		}
 	}
 	SYSERROR("select/poll call with acceptors failed");
-	SYSERROR("Socket error number: " << (long) SOCKET_ERROR << " return code " << retCode);
+	SYSERROR("Socket error number: " << (long) SOCKET_ERROR << " return code " << retCode <<
+			 " LastSyError: " <<  SysLog::LastSysError());
 	return 0;
 }
 
