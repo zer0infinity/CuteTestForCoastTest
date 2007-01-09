@@ -748,10 +748,15 @@ String &String::ToUpper()
 
 bool String::PrependWith(long newLength, const char fill)
 {
-	long fillTo = newLength - Length();
+	long oldLength = Length();
+	long fillTo = newLength - oldLength;
 	if ( fillTo > 0 ) {
 		Reserve(newLength);
-		ReplaceAt(fillTo, GetContent(), Length());
+		if (  oldLength ) {
+			ReplaceAt(fillTo, GetContent(), Length());
+		} else {
+			IncrementLength(fillTo);
+		}
 		memset(GetContent(), fill, fillTo);
 	}
 	return (fillTo >= 0);

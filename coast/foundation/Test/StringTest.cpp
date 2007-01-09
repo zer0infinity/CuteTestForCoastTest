@@ -1745,6 +1745,7 @@ void StringTest::prependWith()
 	String str;
 	str.PrependWith(2, 'x');
 	assertEquals("xx", str);
+	t_assert(2L == str.Length());
 }
 //==============================================================================================
 //         P R E P E N D W I T H           Ende
