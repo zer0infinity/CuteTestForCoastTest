@@ -1741,11 +1741,26 @@ void StringTest::prependWith()
 			assertEquals(result, str);
 		}
 	}
+
 	// Zero length string test; string must be expanded
 	String str;
 	str.PrependWith(2, 'x');
 	assertEquals("xx", str);
 	t_assert(2L == str.Length());
+
+	// memcopy would overlap
+	String str1 = "123";
+	str1.PrependWith(4, '0');
+	assertEquals("0123", str1);
+	String str2 = "123";
+	str2.PrependWith(5, '0');
+	assertEquals("00123", str2);
+
+	// memcpy is ok
+	String str3 = "123";
+	str3.PrependWith(6, '0');
+	assertEquals("000123", str3);
+
 }
 //==============================================================================================
 //         P R E P E N D W I T H           Ende

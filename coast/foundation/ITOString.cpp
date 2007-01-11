@@ -750,10 +750,18 @@ bool String::PrependWith(long newLength, const char fill)
 {
 	long oldLength = Length();
 	long fillTo = newLength - oldLength;
+	long targetLength = newLength > oldLength ? newLength : oldLength;
 	if ( fillTo > 0 ) {
-		Reserve(newLength);
+		Reserve(targetLength);
 		if (  oldLength ) {
-			ReplaceAt(fillTo, GetContent(), Length());
+			// ReplaceAt uses memcpy, source/dest may not overlap!
+			// Therefore, use a tmp var if copy overlaps
+			if ( (oldLength * 2) <= newLength ) {
+				ReplaceAt(fillTo, GetContent(), oldLength);
+			} else {
+				String tmp(GetContent());
+				ReplaceAt(fillTo, tmp, oldLength);
+			}
 		} else {
 			IncrementLength(fillTo);
 		}
