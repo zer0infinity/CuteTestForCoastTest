@@ -425,7 +425,7 @@ void RegexTest::TimeaTestWithPoolAllocator(CaseMemberPtr testtotime)
 	(this->*testtotime)();
 	long secondrun = tt.Diff();
 	Trace("elapsed time pool allocator:" << secondrun);
-	t_assert(secondrun < firstrun); // assume pool allocator is faster
+	t_assertm(secondrun <= firstrun, TString("first: ") << firstrun << " second: " << secondrun); // assume pool allocator is faster
 }
 
 // builds up a suite of testcases, add a line for each testmethod
