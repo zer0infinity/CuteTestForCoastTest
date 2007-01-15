@@ -125,7 +125,7 @@
 					/CurrentServer {
 						/ServerName "Server"
 						/Path "/Path/doSomething"
-						/Server "127.0.0.1"
+						/Server		ignore
 						/formContents "fld_Name=Hans Muster&fld_Number=123&fld_Checkbox=on&b_Ok=Go"
 						/Method "post"
 						/Enctype "application/x-www-form-urlencoded"
@@ -144,7 +144,7 @@
 				/Result.TmpStore.CurrentServer {
 					/ServerName "Server"
 					/Path "/Path/doSomething"
-					/Server "127.0.0.1"
+					/Server		ignore
 					/Method "post"
 					/Enctype "application/x-www-form-urlencoded"
 					/formContents "fld_Name=Hans Muster&fld_Number=123&fld_Checkbox=&b_Ok=Go"
@@ -176,7 +176,7 @@
 						/Path "/Path/xy"
 						/Method "POST"
 						/MsgBody "Test"
-						/Server "127.0.0.1"
+						/Server		ignore
 					}
 				}
 			}
@@ -243,7 +243,7 @@
 						/ServerName "Server"
 						/Path "/Path/xy"
 						/Method "post"
-						/Server "127.0.0.1"
+						/Server		ignore
 						/formContents "fld_File=hello.txt&b_Ok=Go"
 						/Enctype "application/x-www-form-urlencoded"
 					}
@@ -285,7 +285,7 @@
 						/Path "/Path/xy"
 						/Method "post"
 						/Enctype "multipart/form-data; boundary=xxx"
-						/Server "127.0.0.1"
+						/Server		ignore
 						#/formContents "fld_Name=Hans Muster&fld_Note=&b_Ok=Go"
 						/formContents "--xxx\r\nContent-Disposition: form-data; name=\"fld_Name\"\r\nContent-Type: text/plain\r\n\r\nHans Muster\r\n\r\n--xxx\r\nContent-Disposition: form-data; name=\"fld_Note\"\r\nContent-Type: text/plain\r\n\r\n\r\n\r\n--xxx--\r\n"
 					}
@@ -327,7 +327,7 @@
 						/Path "/Path/xy"
 						/Method "post"
 						/Enctype "multipart/form-data; boundary=xxx"
-						/Server "127.0.0.1"
+						/Server		ignore
 						/formContents "--xxx\r\nContent-Disposition: form-data; name=\"fld_File\"; filename=hello.txt\r\nContent-Type: text/plain\r\n\r\nHello Coast\r\n\r\n--xxx\r\nContent-Disposition: form-data; name=\"fld_Note\"\r\nContent-Type: text/plain\r\n\r\n\r\n\r\n--xxx--\r\n"
 					}
 				}
@@ -369,7 +369,7 @@
 						/Path "/Path/xy"
 						/Method "post"
 						/Enctype "multipart/form-data; boundary=xxx"
-						/Server "127.0.0.1"
+						/Server		ignore
 						/formContents "--xxx\r\nContent-Disposition: form-data; name=\"fld_File1\"; filename=hello.txt\r\nContent-Type: text/plain\r\n\r\nHello Coast\r\n\r\n--xxx\r\nContent-Disposition: form-data; name=\"fld_File2\"; filename=hello.txt\r\nContent-Type: text/plain\r\n\r\nHello Coast\r\n\r\n--xxx\r\nContent-Disposition: form-data; name=\"fld_Note\"\r\nContent-Type: text/plain\r\n\r\n\r\n\r\n--xxx--\r\n"
 					}
 				}
