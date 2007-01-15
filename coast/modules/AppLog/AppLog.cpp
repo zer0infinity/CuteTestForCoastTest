@@ -16,7 +16,6 @@
 //--- standard modules used ----------------------------------------------------
 #include "System.h"
 #include "Dbg.h"
-#include "SysLog.h"
 
 //--- c-library modules used ---------------------------------------------------
 #if defined(WIN32)
@@ -226,7 +225,7 @@ bool AppLogModule::StartLogRotator(const char *rotateTime, long lRotateSecond)
 bool AppLogModule::TerminateLogRotator()
 {
 	if (fRotator) {
-		fRotator->Terminate();
+		fRotator->Terminate(10);
 		delete fRotator;
 		fRotator = 0;
 		return true;
