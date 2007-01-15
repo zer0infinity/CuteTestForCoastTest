@@ -175,11 +175,6 @@ void InterruptHandler::Run()
 	sigaddset(&set, SIGINT);
 	sigaddset(&set, SIGTERM);
 	sigaddset(&set, SIGHUP);
-#ifdef __sun
-	thr_sigsetmask(SIG_UNBLOCK, &set, NULL);
-#else
-pthread_sigmask(SIG_UNBLOCK, &set, NULL);
-#endif
 
 handlesignal:
 	SetWorking();

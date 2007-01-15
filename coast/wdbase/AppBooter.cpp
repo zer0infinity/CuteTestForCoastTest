@@ -96,14 +96,11 @@ void AppBooter::SetSignalMask()
 {
 	StartTrace(AppBooter.SetSignalMask);
 #if !defined(WIN32)
-	// Block SIGINT for this and all subsequently created threads
+	// Block all signals for this and all subsequently created threads
 	// (signal set is inherited to child threads)
+	// -> InterruptHandler-Thread will then use sigwait to trap the ones needed
 	sigset_t set;
-	sigemptyset(&set);
-	sigaddset(&set, SIGHUP);
-	sigaddset(&set, SIGINT);
-	sigaddset(&set, SIGPIPE);
-	sigaddset(&set, SIGTERM);
+	sigfillset(&set);
 
 #ifdef __sun
 	thr_sigsetmask(SIG_BLOCK, &set, NULL);
