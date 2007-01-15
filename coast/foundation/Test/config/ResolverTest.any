@@ -15,7 +15,7 @@
 		}
 		/noHostToBeFound {
 			/name	"NotExisting.Nowhere.NoDomain"
-			/ip		"172.16.2.5"
+			/ip		"127.0.0.1"
 		}
 	}
 	/simpleIP2DNSTest {
