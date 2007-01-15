@@ -115,9 +115,9 @@ long PipeExecutor::TerminateChild(int termSignal, bool tryhard)
 {
 	StartTrace(PipeExecutor.TerminateChild);
 	Trace("terminating child pid =" << (long)fChildPid << " with signal = " << (long)termSignal << " trying " << (tryhard ? "hard" : "soft"));
-	if (fChildPid > 0) {
+	while ( fChildPid > 0 ) {
 		int wstat = 1;
-		int wres = waitpid(fChildPid, &wstat, tryhard ? WNOHANG : 0);
+		int wres = waitpid(fChildPid, &wstat, (tryhard ? WNOHANG : 0) | WUNTRACED);
 		Trace("waitpid delivers : " << long(wres) << " and stat " << long(wstat));
 		if (wres < 0) {
 			Trace("errno after wait:" << (long)errno << " " << SysLog::SysErrorMsg(errno));
@@ -126,9 +126,7 @@ long PipeExecutor::TerminateChild(int termSignal, bool tryhard)
 			Trace("found child");
 			return WEXITSTATUS(wstat); // already dead!
 		} else if (wres <= 0 && tryhard) {
-			// the bastard isn't dead or not there
-			// shoot at him
-			if (kill(fChildPid, termSignal) < 0) {
+			if ( kill(fChildPid, termSignal) < 0 ) {
 				Trace("kill failed, errno =" << (long)errno << " " << SysLog::SysErrorMsg(errno));
 				if (errno == ESRCH) {
 					// already gone and removed?
@@ -138,9 +136,13 @@ long PipeExecutor::TerminateChild(int termSignal, bool tryhard)
 				return -1;
 			} else {
 				// wait again, only try hard if we didn't already send SIGKILL
-				return TerminateChild(SIGKILL, tryhard);
+				// the bastard isn't dead or not there
+				// shoot at him
+				termSignal = SIGKILL;
 			}
 		}
+		// give some time to react, 50ms
+		System::MicroSleep(50000);
 	}
 	return -1; // something went wrong
 }
@@ -278,7 +280,7 @@ bool PipeExecutor::ForkAndRun(Anything parm, Anything env)
 					char **p = cgiParams.GetParams();
 					char **e = cgiEnv.GetEnv();
 					// execve will not return on success, it will return -1 in case of a failure
-					return ( execve(p[0], p, e) != -1 );
+					execve(p[0], p, e);
 				}
 				// oops we failed. terminate the process
 				// don't use strings - allocators not fork-safe
@@ -289,9 +291,9 @@ bool PipeExecutor::ForkAndRun(Anything parm, Anything env)
 				write(1, buff, len);
 				write(2, buff, len);
 				SysLog::Error(buff);
-				_exit(1); // point of no return for child process.....
+				_exit(EXIT_FAILURE); // point of no return for child process.....
 			} else if (fChildPid > 0) {
-				// I am parent
+				Trace("forked pipe-exec-child with pid:" << fChildPid);
 				inp.ShutDownReading(); // we write to it
 				outp.ShutDownWriting();// we read from it
 				if (fStderr) {
