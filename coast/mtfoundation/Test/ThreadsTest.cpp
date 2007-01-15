@@ -721,7 +721,7 @@ void ThreadsTest::CheckSemaphoreCount(Semaphore &sema, int expected)
 #if !defined(WIN32) && ( !defined(__sun) || defined(USE_POSIX) )
 	int count;
 	int ret = sema.GetCount(count);
-	assertEqual(ret, 0);
-	assertEqual(count, expected);
+	assertEqual(0, ret);
+	assertEqual(expected, count);
 #endif
 }
