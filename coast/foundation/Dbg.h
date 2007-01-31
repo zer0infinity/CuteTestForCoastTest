@@ -168,9 +168,8 @@ private:
 
 #define StatTraceAny(trigger, any, msg, allocator)						\
 {															\
-	String gsMecart(allocator);						\
-	Tracer::AnythingWDDebug(_QUOTE_(trigger), any, gsMecart << msg, allocator);	\
-	Tracer::StatWDDebug(_QUOTE_(trigger), gsMecart << msg, allocator);	\
+	String gsMecart(allocator); gsMecart << msg;						\
+	Tracer::AnythingWDDebug(_QUOTE_(trigger), any, gsMecart, allocator);	\
 }
 
 // helper to check if we are triggered
