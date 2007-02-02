@@ -1725,7 +1725,7 @@ void StringTest::prependWith()
 		for ( int ii = 0; ii < (256 - i); ii++ ) {
 			result.Append("z");
 		}
-		assertEquals(result, str);
+		assertEqual(result, str);
 	}
 	// String is equal/smaller then newLen, a no-op
 	for ( int i = 0; i < 256; i++ ) {
@@ -1738,28 +1738,28 @@ void StringTest::prependWith()
 		for ( int ii = 0; ii < i; ii++ ) {
 			t_assert(str.PrependWith(str.Length() - i, 'x') == 0);
 			t_assert((oldLen) == str.Length());
-			assertEquals(result, str);
+			assertEqual(result, str);
 		}
 	}
 
 	// Zero length string test; string must be expanded
 	String str;
 	str.PrependWith(2, 'x');
-	assertEquals("xx", str);
+	assertEqual("xx", str);
 	t_assert(2L == str.Length());
 
 	// memcopy would overlap
 	String str1 = "123";
 	str1.PrependWith(4, '0');
-	assertEquals("0123", str1);
+	assertEqual("0123", str1);
 	String str2 = "123";
 	str2.PrependWith(5, '0');
-	assertEquals("00123", str2);
+	assertEqual("00123", str2);
 
 	// memcpy is ok
 	String str3 = "123";
 	str3.PrependWith(6, '0');
-	assertEquals("000123", str3);
+	assertEqual("000123", str3);
 
 }
 //==============================================================================================
