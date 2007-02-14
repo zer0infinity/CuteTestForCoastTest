@@ -8,8 +8,8 @@
 
 {
 
-	/LowerBound		0
-	/UpperBound		320
+	/LowerBound		0#310
+	/UpperBound		0#320
 	/DumpAnythings	1
 
 	/Base64 {
@@ -78,6 +78,14 @@
 		/EnableAll		310
 	}
 	/BlowfishRenderer {
+		/MainSwitch		300
+		/EnableAll		310
+	}
+	/UniqueIdGen {
+		/MainSwitch		300
+		/EnableAll		310
+	}
+	/UniqueIdGenTest {
 		/MainSwitch		300
 		/EnableAll		310
 	}

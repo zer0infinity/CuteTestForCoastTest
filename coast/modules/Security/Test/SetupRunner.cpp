@@ -19,6 +19,7 @@
 #include "ScrambleStateTest.h"
 #include "TableCompressorTest.h"
 #include "NewRendererTest.h"
+#include "UniqueIdGenTest.h"
 
 void setupRunner(TestRunner &runner)
 {
@@ -29,4 +30,5 @@ void setupRunner(TestRunner &runner)
 	ADD_SUITE(runner, ScrambleStateTest);
 	ADD_SUITE(runner, TableCompressorTest);
 	ADD_SUITE(runner, NewRendererTest);
+	ADD_SUITE(runner, UniqueIdGenTest);
 } // setupRunner
