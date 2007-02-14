@@ -70,7 +70,7 @@ String UniqueIdGen::GetUniqueId(const String &additionalToken)
 
 String UniqueIdGen::HexHash(MD5Signer &md5, const char *s)
 {
-	StartTrace(Utils.HexHash);
+	StartTrace(UniqueIdGen.HexHash);
 	String hash;
 	md5.DoHash(s, hash);
 	OStringStream os;
