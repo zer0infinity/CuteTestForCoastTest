@@ -13,9 +13,7 @@
 #include "config_Queueing.h"
 #include "WDModule.h"
 #include "Context.h"
-#include "Threads.h"
-
-class Queue;
+#include "Queue.h"
 
 //---- QueueWorkingModule ----------------------------------------------------------
 //! <B>Queue based module for message passing systems</B>
@@ -50,8 +48,8 @@ public:
 	}
 
 	/*! main accessor functions to work with the queue */
-	bool PutElement(Anything &anyELement, bool bTryLock = false);
-	bool GetElement(Anything &anyValues, bool bTryLock = false);
+	Queue::StatusCode PutElement(Anything &anyELement, bool bTryLock = false);
+	Queue::StatusCode GetElement(Anything &anyValues, bool bTryLock = false);
 	void PutBackElement(Anything &anyValues);
 
 	/* exclusively consume all Elements from queue, threads which are blocked on the queue to get an element will be woken up because of the released semaphore. But instead of getting an Element it will get nothing back and should be able to handle this correctly.

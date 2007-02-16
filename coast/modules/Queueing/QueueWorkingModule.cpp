@@ -10,11 +10,9 @@
 #include "QueueWorkingModule.h"
 
 //--- project modules used -----------------------------------------------------
-#include "Queue.h"
 
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-#include "SysLog.h"
 #include "Server.h"
 #include "AppLog.h"
 #include "StringStream.h"
@@ -165,13 +163,17 @@ void QueueWorkingModule::IntCleanupQueue()
 	fFailedPutbackMessages = Anything();
 }
 
-bool QueueWorkingModule::PutElement(Anything &anyELement, bool bTryLock)
+Queue::StatusCode QueueWorkingModule::PutElement(Anything &anyELement, bool bTryLock)
 {
 	StartTrace(QueueWorkingModule.PutElement);
+	Queue::StatusCode eRet = Queue::eDead;
 	if ( fpQueue && fpQueue->IsAlive() && IsAlive() ) {
-		return fpQueue->Put(anyELement, bTryLock);
+		eRet = fpQueue->Put(anyELement, bTryLock);
+		if ( eRet != Queue::eSuccess ) {
+			SYSWARNING("Queue->Put failed, Queue::StatusCode:" << eRet << " !");
+		}
 	}
-	return false;
+	return eRet;
 }
 
 ROAnything QueueWorkingModule::GetConfig()
@@ -186,10 +188,10 @@ ROAnything QueueWorkingModule::GetNamedConfig(const char *name)
 	return ((ROAnything)fConfig)[name];
 }
 
-bool QueueWorkingModule::GetElement(Anything &anyValues, bool bTryLock)
+Queue::StatusCode QueueWorkingModule::GetElement(Anything &anyValues, bool bTryLock)
 {
 	StartTrace(QueueWorkingModule.GetElement);
-	bool bRet = false;
+	Queue::StatusCode eRet = Queue::eDead;
 	if ( fpQueue && fpQueue->IsAlive() && IsAlive() ) {
 		Trace("Queue still alive");
 		// try to get a failed message first
@@ -197,18 +199,16 @@ bool QueueWorkingModule::GetElement(Anything &anyValues, bool bTryLock)
 			Trace("getting failed message 1 of " << fFailedPutbackMessages.GetSize() );
 			anyValues = fFailedPutbackMessages[0L];
 			fFailedPutbackMessages.Remove(0L);
-			bRet = true;
+			eRet = Queue::eSuccess;
 		} else {
 			// Default is blocking get to save cpu time
-			if ( fpQueue->Get(anyValues, bTryLock) ) {
-				Trace("got values from Queue");
-				bRet = true;
-			} else {
-				SYSWARNING("Queue->Get failed!");
+			eRet = fpQueue->Get(anyValues, bTryLock);
+			if ( ( eRet != Queue::eSuccess ) && ( eRet != Queue::eEmpty ) ) {
+				SYSWARNING("Queue->Get failed, Queue::StatusCode:" << eRet << " !");
 			}
 		}
 	}
-	return bRet;
+	return eRet;
 }
 
 void QueueWorkingModule::PutBackElement(Anything &anyValues)
@@ -216,7 +216,8 @@ void QueueWorkingModule::PutBackElement(Anything &anyValues)
 	StartTrace(QueueWorkingModule.PutBackElement);
 	// put message back to the queue (Appends!) if possible
 	// take care not to lock ourselves up here, thus we MUST use a trylock here!
-	if ( !PutElement(anyValues, true) ) {
+	Queue::StatusCode eRet = PutElement(anyValues, true);
+	if ( eRet != Queue::eSuccess && ( eRet & Queue::eFull ) ) {
 		// no more room in Queue, need to store this message internally for later put back
 		fFailedPutbackMessages.Append(anyValues);
 	}
