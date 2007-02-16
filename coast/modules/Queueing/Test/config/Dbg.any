@@ -8,7 +8,7 @@
 
 {
 
-	/LowerBound				11
+	/LowerBound				0
 	/UpperBound				11
 	/DumpAnythings			1
 
@@ -22,11 +22,11 @@
 		/Process			10
 	}
 	/Queue {
-		/MainSwitch			0
+		/MainSwitch			10
 		/EnableAll			10
 	}
 	/QueueTest {
-		/MainSwitch			0
+		/MainSwitch			10
 		/EnableAll			10
 	}
 	/Thread {
@@ -74,7 +74,11 @@
 		/EnableAll			10
 	}
 	/QueueWorkingModule {
-		/MainSwitch			0
+		/MainSwitch			10
+		/EnableAll			10
+	}
+	/QueueWorkingModuleTest {
+		/MainSwitch			10
 		/EnableAll			10
 	}
 	/ModuleTestConsumer {
