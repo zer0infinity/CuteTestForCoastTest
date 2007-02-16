@@ -60,7 +60,7 @@ Queue::Queue(const char *name, long lQueueSize, Allocator *pAlloc)
 	, fBlockingPutCount(0L)
 	, fBlockingGetCount(0L)
 	, fAlive(0xf007f007)
-	, fBlocked(true)
+	, feBlocked(eBothSides)
 	, fQueueLock("QueueMutex", fAllocator)
 	, fBlockedLock("BlockedLock", fAllocator)
 	, fBlockingPutLock("BlockingPutLock", fAllocator)
@@ -95,75 +95,90 @@ Queue::~Queue()
 		IntEmptyQueue(anyElements);
 		TraceAny(anyElements, "still in queue");
 	}
-	// release potentially waiting putters
-	{
-		SimpleMutexEntry sme(fBlockingPutLock);
-		sme.Use();
-		if ( fBlockingPutCount ) {
-			SYSWARNING("waking up " << fBlockingPutCount << " blocked Put() callers");
-		}
-		while ( fBlockingPutCount ) {
-			Trace("releasing one of " << fBlockingPutCount << " blocked Putters");
-			fSemaEmptySlots.Release();
-			// allow signalled thread to decrement the fBlockingPutCount after failed return from Put
-			fBlockingPutCond.Wait(fBlockingPutLock);
-		}
+}
+
+void Queue::IntReleaseBlockedPutters()
+{
+	StartTrace(Queue.IntReleaseBlockedPutters);
+	SimpleMutexEntry sme(fBlockingPutLock);
+	sme.Use();
+	if ( fBlockingPutCount ) {
+		SYSWARNING("waking up " << fBlockingPutCount << " blocked Put() callers");
 	}
-	// release potentially waiting getters
-	{
-		SimpleMutexEntry sme(fBlockingGetLock);
-		sme.Use();
-		if ( fBlockingGetCount ) {
-			SYSWARNING("waking up " << fBlockingGetCount << " blocked Get() callers");
-		}
-		while ( fBlockingGetCount ) {
-			Trace("releasing one of " << fBlockingGetCount << " blocked Getters");
-			fSemaFullSlots.Release();
-			// allow signalled thread to decrement the fBlockingGetCount after failed return from Get
-			fBlockingGetCond.Wait(fBlockingGetLock);
-		}
+	while ( fBlockingPutCount ) {
+		Trace("releasing one of " << fBlockingPutCount << " blocked Putters");
+		fSemaEmptySlots.Release();
+		// allow signalled thread to decrement the fBlockingPutCount after failed return from Put
+		fBlockingPutCond.Wait(fBlockingPutLock);
 	}
 }
 
-bool Queue::IsBlocked()
+void Queue::IntReleaseBlockedGetters()
+{
+	StartTrace(Queue.IntReleaseBlockedGetters);
+	SimpleMutexEntry sme(fBlockingGetLock);
+	sme.Use();
+	if ( fBlockingGetCount ) {
+		SYSINFO("waking up " << fBlockingGetCount << " blocked Get() callers");
+	}
+	while ( fBlockingGetCount ) {
+		Trace("releasing one of " << fBlockingGetCount << " blocked Getters");
+		fSemaFullSlots.Release();
+		// allow signalled thread to decrement the fBlockingGetCount after failed return from Get
+		fBlockingGetCond.Wait(fBlockingGetLock);
+	}
+}
+
+bool Queue::IsBlocked(BlockingSide aSide)
 {
 	StartTrace(Queue.IsBlocked);
 	if ( IsAlive() ) {
 		// need only a read lock here
 		RWLockEntry rwe(fBlockedLock, true);
 		rwe.Use();
-		return fBlocked;
+		return ( ( feBlocked & aSide ) == aSide );
 	}
 	return true;
 }
 
-void Queue::UnBlock()
+void Queue::UnBlock(BlockingSide aSide)
 {
-	StartTrace(Queue.UnBlock);
+	StartTrace1(Queue.UnBlock, "side:" << aSide);
 	if ( IsAlive() ) {
 		// need a write lock here
 		RWLockEntry rwe(fBlockedLock, false);
 		rwe.Use();
-		fBlocked = false;
+		feBlocked = ( BlockingSide )( feBlocked & ( ~aSide & eBothSides ) );
 	}
 }
 
-void Queue::Block()
+void Queue::Block(BlockingSide aSide)
 {
-	StartTrace(Queue.Block);
+	StartTrace1(Queue.Block, "side:" << aSide);
 	if ( IsAlive() ) {
-		// need a write lock here
-		RWLockEntry rwe(fBlockedLock, false);
-		rwe.Use();
-		fBlocked = true;
+		{
+			// need a write lock here
+			RWLockEntry rwe(fBlockedLock, false);
+			rwe.Use();
+			feBlocked = ( BlockingSide )( feBlocked | ( aSide & eBothSides ) );
+		}
+		// release potentially waiting putters/getters
+		MutexEntry me(fQueueLock);
+		me.Use();
+		if ( aSide & ePutSide ) {
+			IntReleaseBlockedPutters();
+		}
+		if ( aSide & eGetSide ) {
+			IntReleaseBlockedGetters();
+		}
 	}
 }
 
-bool Queue::DoPut(Anything &anyElement)
+Queue::StatusCode Queue::DoPut(Anything &anyElement)
 {
 	StartTrace(Queue.DoPut);
-	bool bRet = false;
-	if ( !IsBlocked() ) {
+	StatusCode eRet = eBlocked;
+	if ( !IsBlocked(ePutSide) ) {
 		MutexEntry me(fQueueLock);
 		me.Use();
 		long lSize = fAnyQueue.Append(anyElement);
@@ -171,72 +186,92 @@ bool Queue::DoPut(Anything &anyElement)
 		// need to increment lSize because Append returns index of appended Anything
 		++lSize;
 		fMaxLoad = itoMAX( fMaxLoad, lSize );
-		bRet = true;
 		fSemaFullSlots.Release();
+		eRet = eSuccess;
 	}
-	return bRet;
+	return eRet;
 }
 
-bool Queue::Put(Anything &anyElement, bool bTryLock)
+Queue::StatusCode Queue::Put(Anything &anyElement, bool bTryLock)
 {
 	StartTrace(Queue.Put);
-	bool bRet = false;
-	if ( !IsBlocked() ) {
+	StatusCode eRet = eBlocked;
+	if ( !IsBlocked(ePutSide) ) {
 		if ( bTryLock ) {
+			eRet = /* eTryAcquireFailed |*/ eFull;
 			if ( fSemaEmptySlots.TryAcquire() ) {
-				bRet = DoPut(anyElement);
+				eRet = DoPut(anyElement);
 			}
 		} else {
 			CountEntry ce(fBlockingPutLock, fBlockingPutCond, fBlockingPutCount);
 			ce.Use();
 			// need double checking here because of possible race condition during destruction on fBlockingPutLock
-			if ( IsAlive() && fSemaEmptySlots.Acquire() && IsAlive() ) {
-				bRet = DoPut(anyElement);
+			if ( IsAlive() && fSemaEmptySlots.Acquire() ) {
+				eRet = eDead;
+				if ( IsAlive() ) {
+					eRet = DoPut(anyElement);
+				} else {
+					// must release semaphore again because we did not put an element
+					fSemaEmptySlots.Release();
+				}
 			}
 		}
 	}
-	return bRet;
+	return eRet;
 }
 
-bool Queue::DoGet(Anything &anyElement)
+Queue::StatusCode Queue::DoGet(Anything &anyElement)
 {
 	StartTrace(Queue.DoGet);
-	bool bRet = false;
-	if ( !IsBlocked() ) {
+	StatusCode eRet = eBlocked;
+	if ( !IsBlocked(eGetSide) ) {
 		MutexEntry me(fQueueLock);
 		me.Use();
 		if ( fAnyQueue.GetSize() ) {
 			anyElement = fAnyQueue.At(0L);
 			fAnyQueue.Remove(0L);
 			++fGetCount;
-			bRet = true;
+			fSemaEmptySlots.Release();
+			eRet = eSuccess;
 		} else {
+			// we can only get here if something curious happens with semaphore handling
+			// because we were able to acquire a full-slot just before, something must have happened at this point
+			// which should not be possible by its design
+			// -> someone is destructing the queue without blocking first?
 			SYSERROR("accessed empty Queue!?");
+			eRet = ( StatusCode )( eEmpty | eError );
 		}
-		fSemaEmptySlots.Release();
 	}
-	return bRet;
+	return eRet;
 }
 
-bool Queue::Get(Anything &anyElement, bool bTryLock)
+Queue::StatusCode Queue::Get(Anything &anyElement, bool bTryLock)
 {
 	StartTrace(Queue.Get);
-	bool bRet = false;
-	if ( !IsBlocked() ) {
+	StatusCode eRet = eBlocked;
+	if ( !IsBlocked(eGetSide) ) {
 		if ( bTryLock ) {
+			eRet = /*eTryAcquireFailed |*/ eEmpty;
 			if ( fSemaFullSlots.TryAcquire() ) {
-				bRet = DoGet(anyElement);
+				eRet = DoGet(anyElement);
 			}
 		} else {
 			CountEntry ce(fBlockingGetLock, fBlockingGetCond, fBlockingGetCount);
 			ce.Use();
 			// need double checking here because of possible race condition during destruction on fBlockingGetLock
-			if ( IsAlive() && fSemaFullSlots.Acquire() && IsAlive() ) {
-				bRet = DoGet(anyElement);
+			eRet = eAcquireFailed;
+			if ( IsAlive() && fSemaFullSlots.Acquire() ) {
+				eRet = eDead;
+				if ( IsAlive() ) {
+					eRet = DoGet(anyElement);
+				} else {
+					// must release semaphore again because we did not get an element
+					fSemaFullSlots.Release();
+				}
 			}
 		}
 	}
-	return bRet;
+	return eRet;
 }
 
 long Queue::GetSize()
@@ -293,7 +328,7 @@ void Queue::GetStatistics(Anything &anyStatistics)
 			MutexEntry me(fQueueLock);
 			me.Use();
 			// must pass a DeepClone because of reference counting
-			anyStatistics = fAnyStatistics.DeepClone();
+			anyStatistics = fAnyStatistics.DeepClone(anyStatistics.GetAllocator());
 			// this Anything uses Storage::Current as default allocator so we must take care
 			// when we use a Thread specific PoolAllocator because the Pool access is not locked
 			Anything anyTime;

@@ -48,11 +48,23 @@ Statistics can be made by evaluating the returned Anything from GetStatistics().
 */
 class EXPORTDECL_QUEUEING Queue : public IFAObject
 {
+	friend class QueueTest;
 public:
 	//--- constructors
 	Queue(const char *name, long lQueueSize = LONG_MAX, Allocator *pAlloc = Storage::Global());
 	~Queue();
 
+	/*! Status code of queue Put and Get operations. As we support blocking of either read and/or write side of the queue, we must return appropriate codes telling the caller what happened. A simple boolean value is far not enough to find out why an operation failed. */
+	enum StatusCode {
+		eSuccess = 0,								//! put or get was successful
+		eEmpty = 1,									//! the queue did not contain any elements when accessing it
+		eFull = eEmpty << 1,						//! the queue was already full when trying to put an element
+		eBlocked = eFull << 1,
+		eError = eBlocked << 1,
+		eAcquireFailed = eError << 1,
+		eTryAcquireFailed = eAcquireFailed << 1,
+		eDead = eTryAcquireFailed << 1,
+	};
 	/*! further explanation of the purpose of the method
 		this may contain <B>HTML-Tags</B>
 		...
@@ -61,8 +73,8 @@ public:
 		\pre explanation of precondition for the method call
 		\post explanation of postcondition for the method call
 	*/
-	bool Put(Anything &anyElement, bool bTryLock = false);
-	bool Get(Anything &anyElement, bool bTryLock = false);
+	StatusCode Put(Anything &anyElement, bool bTryLock = false);
+	StatusCode Get(Anything &anyElement, bool bTryLock = false);
 
 	void EmptyQueue(Anything &anyElements);
 
@@ -72,19 +84,29 @@ public:
 	inline bool IsAlive() {
 		return fAlive == 0xf007f007;
 	}
-	bool IsBlocked();
-	void Block();
-	void UnBlock();
+
+	enum BlockingSide {
+		eNone = 0,
+		ePutSide = 1,
+		eGetSide = ePutSide << 1,
+		eBothSides = ePutSide | eGetSide,
+	};
+
+	bool IsBlocked(BlockingSide aSide = eBothSides);
+	void Block(BlockingSide aSide = eBothSides);
+	void UnBlock(BlockingSide aSide = eBothSides);
 
 	virtual IFAObject *Clone() const {
 		return NULL;
 	}
 
 private:
-	bool DoPut(Anything &anyElement);
-	bool DoGet(Anything &anyElement);
+	StatusCode DoPut(Anything &anyElement);
+	StatusCode DoGet(Anything &anyElement);
 	long IntGetSize();
 	void IntEmptyQueue(Anything &anyElements);
+	void IntReleaseBlockedPutters();
+	void IntReleaseBlockedGetters();
 
 	String		fName;
 	Allocator	*fAllocator;
@@ -92,7 +114,7 @@ private:
 	ul_long		fPutCount, fGetCount;
 	long		fMaxLoad, fBlockingPutCount, fBlockingGetCount;
 	u_long		fAlive;
-	bool		fBlocked;
+	BlockingSide feBlocked;
 	Mutex		fQueueLock;
 	RWLock		fBlockedLock;
 	SimpleMutex fBlockingPutLock, fBlockingGetLock;
