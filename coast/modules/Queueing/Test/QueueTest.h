@@ -35,6 +35,8 @@ public:
 	static Test *suite ();
 
 	//! describe this testcase
+	void BlockingSideTest();
+	void PutGetStatusTest();
 	void SimplePutGetTest();
 	void MultiProducerSingleConsumerTest();
 	void SingleProducerMultiConsumerTest();

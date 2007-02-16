@@ -40,7 +40,7 @@ public:
 		bool bTryLock = fWork["TryLock"].AsBool(false);
 		while ( lProductCount < fToConsume ) {
 			Anything anyProduct;
-			if ( fQueue.Get(anyProduct, bTryLock) ) {
+			if ( fQueue.Get(anyProduct, bTryLock) == Queue::eSuccess ) {
 				TraceAny(anyProduct, "consumed product");
 				fProducts[lProductCount] = anyProduct;
 				if (fWaitTimeMicroSec > 0L) {
@@ -77,7 +77,7 @@ public:
 			Anything anyProduct = fWork["Product"].DeepClone();
 			anyProduct["ThreadId"] = GetId();
 			anyProduct["ProductNumber"] = lProductCount;
-			if ( fQueue.Put(anyProduct, bTryLock) ) {
+			if ( fQueue.Put(anyProduct, bTryLock) == Queue::eSuccess ) {
 				TraceAny(anyProduct, "produced product");
 				if (fWaitTimeMicroSec) {
 					System::MicroSleep(fWaitTimeMicroSec);
@@ -110,7 +110,7 @@ public:
 			CheckRunningState(eWorking);
 			Trace("now working");
 			Anything anyProduct;
-			if ( fQueue.Get(anyProduct, false) ) {
+			if ( fQueue.Get(anyProduct, false) == Queue::eSuccess ) {
 				TraceAny(anyProduct, "consumed product");
 				fConsumed++;
 			}
@@ -132,6 +132,52 @@ QueueTest::~QueueTest()
 	StartTrace(QueueTest.Dtor);
 }
 
+void QueueTest::BlockingSideTest()
+{
+	StartTrace(QueueTest.BlockingSideTest);
+	Queue Q1("Q1", 1);
+	assertEqualm(Queue::eNone, Q1.feBlocked, "expected unblocked put and get side");
+	t_assertm(!Q1.IsBlocked(), "expected queue not to be blocked");
+	t_assertm(!Q1.IsBlocked(Queue::eBothSides), "expected queue not to be blocked");
+	t_assertm(!Q1.IsBlocked(Queue::ePutSide), "expected put side not to be blocked");
+	t_assertm(!Q1.IsBlocked(Queue::eGetSide), "expected get side not to be blocked");
+	Q1.Block(Queue::ePutSide);
+	assertEqual(Queue::ePutSide, Q1.feBlocked);
+	t_assertm(Q1.IsBlocked(Queue::ePutSide), "expected put side to be blocked");
+	t_assertm(!Q1.IsBlocked(Queue::eGetSide), "expected get side not to be blocked");
+	t_assertm(!Q1.IsBlocked(Queue::eBothSides), "expected not both sides to be blocked");
+	Q1.UnBlock(Queue::eBothSides);
+	t_assertm(!Q1.IsBlocked(), "expected queue not to be blocked");
+	Q1.Block(Queue::eGetSide);
+	assertEqual(Queue::eGetSide, Q1.feBlocked);
+	t_assertm(Q1.IsBlocked(Queue::eGetSide), "expected get side to be blocked");
+	t_assertm(!Q1.IsBlocked(Queue::ePutSide), "expected put side not to be blocked");
+	t_assertm(!Q1.IsBlocked(Queue::eBothSides), "expected not both sides to be blocked");
+	Q1.Block();
+	assertEqual(Queue::eBothSides, Q1.feBlocked);
+	t_assertm(Q1.IsBlocked(), "expected queue to be blocked");
+	t_assertm(Q1.IsBlocked(Queue::eBothSides), "expected both sides to be blocked");
+	t_assertm(Q1.IsBlocked(Queue::ePutSide), "expected put side to be blocked");
+	t_assertm(Q1.IsBlocked(Queue::eGetSide), "expected get side to be blocked");
+}
+
+void QueueTest::PutGetStatusTest()
+{
+	StartTrace(QueueTest.PutGetStatusTest);
+	Queue Q1("Q1", 1);
+	t_assert(Q1.GetSize() == 0L);
+	Anything anyTest1, anyTest2;
+	anyTest1["Guguseli"] = 1;
+	assertEqualm(Queue::eSuccess, Q1.DoPut(anyTest1), "first put should succeed");
+	t_assert(Q1.GetSize() == 1L);
+	Anything anyOut;
+	assertEqualm(Queue::eSuccess, Q1.DoGet(anyOut), "first get should succeed");
+	assertAnyEqual(anyTest1, anyOut);
+	t_assert(Q1.GetSize() == 0L);
+	anyOut = Anything();
+	assertEqualm((Queue::eEmpty | Queue::eError), Q1.DoGet(anyOut), "second get should fail because of empty queue");
+}
+
 void QueueTest::SimplePutGetTest()
 {
 	StartTrace(QueueTest.SimplePutGetTest);
@@ -140,18 +186,19 @@ void QueueTest::SimplePutGetTest()
 	Anything anyTest1, anyTest2;
 	anyTest1["Guguseli"] = 1;
 	// first call should not block
-	t_assert(Q1.Put(anyTest1));
+	assertEqual(Queue::eSuccess, Q1.Put(anyTest1));
 	anyTest2["Guguseli"] = 2;
-	t_assert(Q1.Put(anyTest2, true) == false);
+	// second call should block so use a trylock and check return code
+	assertEqual(Queue::eFull, Q1.Put(anyTest2, true));
 	t_assert(Q1.GetSize() == 1L);
 	Anything anyOut;
 	// first get should work without blocking
-	t_assert(Q1.Get(anyOut));
+	assertEqual(Queue::eSuccess, Q1.Get(anyOut));
 	assertAnyEqual(anyTest1, anyOut);
 	t_assert(Q1.GetSize() == 0L);
-	// second get should fail because of empty queue
+	// second get should block because of empty queue, so use trylock and check return code
 	anyOut = Anything();
-	t_assert(Q1.Get(anyOut, true) == false);
+	assertEqual(Queue::eEmpty, Q1.Get(anyOut, true));
 	Q1.GetStatistics(anyOut);
 	assertEqual(1L, anyOut["QueueSize"].AsLong(0L));
 	assertEqual(1L, anyOut["MaxLoad"].AsLong(0L));
@@ -283,27 +330,57 @@ void QueueTest::SingleProducerMultiConsumerTest()
 void QueueTest::ConsumerTerminationTest()
 {
 	StartTrace(QueueTest.ConsumerTerminationTest);
-	Queue *pProductQueue = new Queue("pProductQueue", 2);
-	ConsumerTerminationThread aConsumer(*pProductQueue);
 	{
-		Anything anyProduct;
-		anyProduct["What"] = "Yippieh";
-		t_assert(pProductQueue->Put(anyProduct));
+		Queue *pProductQueue = new Queue("pProductQueue", 2);
+		ConsumerTerminationThread aConsumer(*pProductQueue);
+		{
+			Anything anyProduct;
+			anyProduct["What"] = "Yippieh";
+			assertEqual(Queue::eSuccess, pProductQueue->Put(anyProduct));
+		}
+		// start activity of thread
+		aConsumer.Start();
+		assertEqualm(1L, pProductQueue->GetSize(), "expected queue to still contain 1 element");
+		t_assert(aConsumer.CheckState(Thread::eRunning, 10));
+		// allow thread to consume element
+		aConsumer.SetWorking();
+		aConsumer.CheckRunningState(Thread::eWorking);
+		System::MicroSleep(5000);
+		assertEqualm(0L, pProductQueue->GetSize(), "expected element to be consumed");
+		t_assert(aConsumer.CheckState(Thread::eRunning, 10));
+		aConsumer.Terminate(1);
+		t_assert(aConsumer.CheckState(Thread::eTerminationRequested, 10));
+		delete pProductQueue;
+		t_assert(aConsumer.CheckState(Thread::eTerminated, 10));
 	}
-	// start activity of thread
-	aConsumer.Start();
-	assertEqualm(1L, pProductQueue->GetSize(), "expected queue to still contain 1 element");
-	t_assert(aConsumer.CheckState(Thread::eRunning, 10));
-	// allow thread to consume element
-	aConsumer.SetWorking();
-	aConsumer.CheckRunningState(Thread::eWorking);
-	System::MicroSleep(5000);
-	assertEqualm(0L, pProductQueue->GetSize(), "expected element to be consumed");
-	t_assert(aConsumer.CheckState(Thread::eRunning, 10));
-	aConsumer.Terminate(1);
-	t_assert(aConsumer.CheckState(Thread::eTerminationRequested, 10));
-	delete pProductQueue;
-	t_assert(aConsumer.CheckState(Thread::eTerminated, 10));
+	{
+		Queue *pProductQueue = new Queue("pProductQueue", 2);
+		ConsumerTerminationThread aConsumer(*pProductQueue);
+		{
+			Anything anyProduct;
+			anyProduct["What"] = "Yippieh";
+			assertEqual(Queue::eSuccess, pProductQueue->Put(anyProduct));
+		}
+		// start activity of thread
+		aConsumer.Start();
+		assertEqualm(1L, pProductQueue->GetSize(), "expected queue to still contain 1 element");
+		t_assert(aConsumer.CheckState(Thread::eRunning, 10));
+		// allow thread to consume element
+		aConsumer.SetWorking();
+		aConsumer.CheckRunningState(Thread::eWorking);
+		System::MicroSleep(5000);
+		assertEqualm(0L, pProductQueue->GetSize(), "expected element to be consumed");
+		t_assert(aConsumer.CheckState(Thread::eRunning, 10));
+		aConsumer.Terminate(1);
+		t_assert(aConsumer.CheckState(Thread::eTerminationRequested, 10));
+		assertEqualm(1L, pProductQueue->fBlockingGetCount, "expected 1 blocking getter");
+		// force termination of thread through queue blocking
+		pProductQueue->Block(Queue::eGetSide);
+		t_assertm(pProductQueue->IsBlocked(Queue::eGetSide), "expected get side to be blocked");
+		t_assert(aConsumer.CheckState(Thread::eTerminated, 10));
+		assertEqualm(0L, pProductQueue->fBlockingGetCount, "expected 0 blocking getter");
+		delete pProductQueue;
+	}
 }
 
 // builds up a suite of testcases, add a line for each testmethod
@@ -312,6 +389,8 @@ Test *QueueTest::suite ()
 	StartTrace(QueueTest.suite);
 	TestSuite *testSuite = new TestSuite;
 
+	ADD_CASE(testSuite, QueueTest, BlockingSideTest);
+	ADD_CASE(testSuite, QueueTest, PutGetStatusTest);
 	ADD_CASE(testSuite, QueueTest, SimplePutGetTest);
 	ADD_CASE(testSuite, QueueTest, MultiProducerSingleConsumerTest);
 	ADD_CASE(testSuite, QueueTest, SingleProducerMultiConsumerTest);
