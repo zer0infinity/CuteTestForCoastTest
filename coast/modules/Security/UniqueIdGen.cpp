@@ -46,10 +46,10 @@ String UniqueIdGen::GetUniqueId(const String &additionalToken)
 	long seconds		= 0L;
 	long nanoSeconds	= 0L;
 	if ( 0 == gettimeofday(&tv, 0) ) {
-		nanoSeconds += tv.tv_usec * 1000; // make it nanoseconds
-		seconds		+= tv.tv_sec;
+		nanoSeconds = tv.tv_usec * 1000; // make it nanoseconds
+		seconds		= tv.tv_sec;
 	} else {
-		seconds += time(0);	// fall back towards using time
+		seconds = time(0);	// fall back towards using time
 	}
 	unsigned long ms = 	(seconds * 1000000L) + nanoSeconds;
 	srand48(GetHRTIME());
@@ -58,6 +58,7 @@ String UniqueIdGen::GetUniqueId(const String &additionalToken)
 	long hostid = ::gethostid();
 	long pid = System::getpid();
 	char buf[1024];
+	memset(buf, '\0', 1024L);
 	sprintf(buf, "%u_%u_%u_%u_%u", ms, hrt, hostid, pid, random);
 	String uniqueId(buf);
 	uniqueId << "_" << additionalToken;
