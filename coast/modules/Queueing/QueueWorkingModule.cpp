@@ -115,7 +115,7 @@ bool QueueWorkingModule::Finis()
 	if ( GetQueueStatistics(anyStat) ) {
 		StringStream aStream;
 		aStream << "Statistics for [" << GetName() << "]\n";
-		anyStat.PrintOn(aStream, true) << flush;
+		anyStat.PrintOn(aStream, true) << "\n" << flush;
 		SysLog::WriteToStderr(aStream.str());
 	}
 
