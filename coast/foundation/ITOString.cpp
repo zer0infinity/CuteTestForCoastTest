@@ -37,14 +37,15 @@ void String::alloc(long capacity)
 	// strings, only if we have fixed size initializers string buffers
 	// smaller than cStrAllocMinimum are created
 	if ( capacity <= 0 ) {
-		capacity = cStrAllocMinimum ;
+		capacity = cStrAllocMinimum;
 	}
 	capacity += sizeof(*fStringImpl); // add tara
 
 	capacity = GetAllocator()->SizeHint(capacity);
 	fStringImpl = (StringImpl *)	fAllocator->Calloc(capacity, sizeof( char ));
 
-	if (!fStringImpl) { //--- allocation failed
+	if (!fStringImpl) {
+		//--- allocation failed
 		SysLog::Error("String::alloc: Memory allocation failed!");
 	} else {
 		// substract to get netto capacity again.
@@ -55,37 +56,41 @@ void String::alloc(long capacity)
 
 long String::allocCapacity(long newLength)
 {
-// calculate capacity for optimal allocation
+	// calculate capacity for optimal allocation
 	// safe old params just in case allocation fails
 
 	long newCapacity = 0;
 	if (GetImpl()) {
-		if ( newLength < cStrAllocLimit )	{
-			newCapacity = newLength < cStrAllocMinimum ?
-						  cStrAllocMinimum // initial size for very small buffers
-						  : newLength * 2; // double capacity for small buffers
-		} else {	// increment in fixed sizes with large buffers
+		if ( newLength < cStrAllocLimit ) {
+			// cStrAllocMinimum		initial size for very small buffers
+			// newLength*2			double capacity for small buffers
+			newCapacity = ( ( newLength < cStrAllocMinimum ) ? cStrAllocMinimum : ( newLength << 1 ) );
+		} else {
+			// increment in fixed sizes with large buffers
 			newCapacity = newLength + cStrAllocIncrement;
-		} // if
+		}
 	} else {
 		newCapacity = newLength + 1; // exact size
 	}
 	return newCapacity;
 }
-String::String(Allocator *a)
-	: fStringImpl(0),  fAllocator((a) ? a : Storage::Current())
-{
 
+String::String(Allocator *a)
+	: fStringImpl(0)
+	, fAllocator((a) ? a : Storage::Current())
+{
 }
 
 String::String(long capacity, Allocator *a)
-	: fStringImpl(0), fAllocator((a) ? a : Storage::Current())
+	: fStringImpl(0)
+	, fAllocator((a) ? a : Storage::Current())
 {
 	this->alloc(capacity);
 }
 
 String::String(const char *s, long l, Allocator *a)
-	: fStringImpl(0), fAllocator((a) ? a : Storage::Current())
+	: fStringImpl(0)
+	, fAllocator((a) ? a : Storage::Current())
 {
 	if (s) {
 		long sLen = strlen(s);
@@ -94,7 +99,8 @@ String::String(const char *s, long l, Allocator *a)
 }
 
 String::String(void *s, long l, Allocator *a)
-	: fStringImpl(0), fAllocator((a) ? a : Storage::Current())
+	: fStringImpl(0)
+	, fAllocator((a) ? a : Storage::Current())
 {
 	if (l > 0) { // should check l for sanity
 		if (s) {
@@ -107,7 +113,8 @@ String::String(void *s, long l, Allocator *a)
 }
 
 String::String(const String &s, Allocator *a)
-	: fStringImpl(0), fAllocator((a) ? a : s.fAllocator)
+	: fStringImpl(0)
+	, fAllocator((a) ? a : s.fAllocator)
 {
 	// copies are always made within the same memory manager
 	// transfers to different allocators occur only in operator=
@@ -129,7 +136,6 @@ String &String::Append(istream &is, long length, char delim)
 		IncrementLength(l); // PT: always adjust length now
 		GetContent()[Length()] = '\0';
 	} // else nothing to read at all, must consume delim char elsewhere
-//	fgTotal++;
 	return *this;
 }
 
@@ -154,7 +160,8 @@ String &String::operator= (const String &s)
 		Set(0, s.GetContent(), s.Length());
 	} else if (GetImpl()) {
 		Set(0, 0, 0); // make it empty
-	}// if we are already empty do a nop
+	}
+	// if we are already empty do a nop
 	return *this;
 }
 
@@ -187,7 +194,7 @@ note: if start > fLength then the new buffer will contain undefined
 	// check for length integrity: calculate length to add from s
 	// if length is not provided
 	if (len < 0) {
-		len = s ? strlen(s) : 0;
+		len = ( s ? strlen(s) : 0 );
 	}
 	// maybe <= is appropriate here? nothing happens for len=0
 
@@ -236,14 +243,16 @@ note: if start > fLength then the new buffer will contain undefined
 String &String::Append(char c)
 {
 	if (Length() + 2 > Capacity()) {
-		Set(Length(), &c, 1);    // PT: use the generic copying here
-	} else { // optimize for inline expansion, Set allocates additional stuff
+		Set(Length(), &c, 1);	// PT: use the generic copying here
+	} else {
+		// optimize for inline expansion, Set allocates additional stuff
 		GetContent()[Length()] = c;
 		IncrementLength(1);
 		GetContent()[Length()] = 0;
 	}
 	return *this;
 }
+
 String &String::Append(const char *s, long len)
 {
 	if (s) {
@@ -252,6 +261,7 @@ String &String::Append(const char *s, long len)
 	}
 	return *this;
 }
+
 String &String::Append(const void *s, long len)
 {
 	if (s && len > 0) {
@@ -259,6 +269,7 @@ String &String::Append(const void *s, long len)
 	}
 	return *this;
 }
+
 // PS: implement similar of IStream!
 String &String::Append(istream &is, long length)
 {
@@ -533,7 +544,6 @@ void String::TrimFront(long newstart)
 			*GetContent() = 0;
 		}
 	}
-
 }
 
 void String::Trim(long newlen)
@@ -566,7 +576,8 @@ int String::Compare(const char *other) const
 
 int String::Compare(const String &other) const
 {
-	if (GetImpl()) {		// (const char *)other never returns 0!
+	if (GetImpl()) {
+		// (const char *)other never returns 0!
 		long otherLength = other.Length();
 		long len = (Length() < otherLength) ? Length() : otherLength;
 
@@ -581,7 +592,7 @@ int String::Compare(const String &other) const
 			} else {
 				return 1;
 			}
-		} // if
+		}
 	} else {
 		return (Length() < other.Length()) ? -1 : 0;
 	}
@@ -589,14 +600,14 @@ int String::Compare(const String &other) const
 
 int  String::CompareN(const char *other, long length, long start) const
 {
-
 	if ( start >=  Length() ) {
 		start =  Length() - 1;    // length should be 0 if !GetContent()
 	}
 	if (start < 0) {
 		start = 0;    // PS this is required for robustness.
 	}
-	if (!GetImpl() || length <= 0) {	// nothing to compare means equal!
+	if (!GetImpl() || length <= 0) {
+		// nothing to compare means equal!
 		// empty string always smaller, except for empty
 		if (length > 0 && other && *other) {
 			return -1;
@@ -617,7 +628,6 @@ int  String::CompareN(const char *other, long length, long start) const
 
 long String::CopyTo(char *buf, long n, long pos) const
 {
-
 	if (pos < 0) {
 		pos = 0;    // must not copy from outside
 	}
@@ -668,7 +678,6 @@ void String::ReplaceAt( long pos, const char *s, long len)
 	   applications involving the String class)
 */
 long String::CaselessCompare(const char *s1, const char *s2)
-
 {
 	if ((0 != s1) && ( 0 != s2)) {
 #if !defined(__370__) && !defined(WIN32)
@@ -682,9 +691,7 @@ long String::CaselessCompare(const char *s1, const char *s2)
 			string2.ToUpper();               // atraxis - edwin
 			return(strcmp(string1, string2)); // atraxis - edwin
 		}                                  // atraxis - edwin
-
 # endif
-
 	} else if (s1 != 0) {
 		return 1;    // only s1 is there
 	} else if (s2 != 0) {
@@ -692,7 +699,7 @@ long String::CaselessCompare(const char *s1, const char *s2)
 	} else {
 		return 0;    // both are 0
 	}
-} // CaselessCompare
+}
 
 long String::ContainsCharAbove(unsigned highMark, const String excludeSet)
 {
@@ -1017,7 +1024,6 @@ String &String::AppendTwoHexAsChar(const char *p)
 		} else  {//if ('A' <= low && low <= 'F')
 			low -= ('A' - 10);
 		}
-
 	}
 	return Append(char(16 * high + low));
 }
@@ -1064,7 +1070,8 @@ double String::AsDouble(double dflt) const
 
 // PS: try OOPSLA 98 canonical form operations with optimal buffer stealing
 String::String (String &subject, Pilfer)
-	: fStringImpl(subject.GetImpl()), fAllocator(subject.GetAllocator())
+	: fStringImpl(subject.GetImpl())
+	, fAllocator(subject.GetAllocator())
 {
 	// stealing CTOR
 	fStringImpl = subject.GetImpl();
@@ -1134,12 +1141,16 @@ String StringTokenizer::GetRemainder(bool boIncludeDelim)
 
 //---- StringTokenizer2 ---------------------------------------------------------
 StringTokenizer2::StringTokenizer2(const char *s)
-	: fString(s), fDelimiters(" \t\n"), fPos(0)
+	: fString(s)
+	, fDelimiters(" \t\n")
+	, fPos(0)
 {
 }
 
 StringTokenizer2::StringTokenizer2(const char *s, const char *delimiters)
-	: fString(s), fDelimiters(delimiters), fPos(0)
+	: fString(s)
+	, fDelimiters(delimiters)
+	, fPos(0)
 {
 }
 
@@ -1230,7 +1241,6 @@ istream &getline(istream &is, String &s, char c)
 
 	s.Trim(0);
 	for (;;) {
-
 		// make sure, that we have at least 120 free bytes
 		long freespace = s.Capacity() - s.Length() - 1;
 

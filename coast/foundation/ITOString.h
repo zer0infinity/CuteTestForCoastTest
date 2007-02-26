@@ -366,7 +366,6 @@ protected:
 	void Set(long start, const char *s, long l);
 
 protected:
-
 	//! struct that uses a space efficient trick to implement string
 	struct StringImpl {
 		//! the size of the allocated buffer
