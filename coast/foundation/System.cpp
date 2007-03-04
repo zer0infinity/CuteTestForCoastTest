@@ -587,7 +587,7 @@ iostream *System::IntOpenStream(String &resultPath, const char *name, const char
 		SYSDEBUG(logMsg);
 	}
 	if ( Ios == NULL ) {
-		SYSWARNING(String("couldn't open file [") << filename << "] searched in [" << fgRootDir << "] with pathlist: [" << fgPathList << "]");
+		SYSINFO(String("couldn't open file [") << filename << "] searched in [" << fgRootDir << "] with pathlist: [" << fgPathList << "]");
 	}
 	System::ResolvePath(resultPath);
 	return Ios;
