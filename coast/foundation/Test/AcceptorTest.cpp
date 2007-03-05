@@ -41,8 +41,8 @@ void AcceptorTest::getPort()
 
 	assertEqual( 0, acceptor.GetPort() );
 	assertEqual(0, acceptor.PrepareAcceptLoop());
-	t_assert( 0 != acceptor.GetPort() );
-	t_assert( 0 != acceptor.GetBoundPort());
+	assertCompare( 0L, not_equal_to, acceptor.GetPort() );
+	assertCompare( 0L, not_equal_to, acceptor.GetBoundPort() );
 	assertEqual(acceptor.GetPort(), acceptor.GetBoundPort());
 }
 
@@ -75,8 +75,8 @@ void AcceptorTest::acceptOnceTest()
 	TestCallBack *cb = new TestCallBack(this);
 	Acceptor acceptor(GetConfig()["acceptOnceTest"]["ip"].AsString(), 0, 1, cb);
 
-	t_assert(0 == acceptor.PrepareAcceptLoop());
-	t_assert( 0 != acceptor.GetPort() );
+	assertCompare( 0, equal_to, acceptor.PrepareAcceptLoop() );
+	assertCompare( 0L, not_equal_to, acceptor.GetPort() );
 
 	Connector connector(GetConfig()["acceptOnceTest"]["ip"].AsString(), acceptor.GetPort());
 	if (t_assert(connector.Use() != NULL)) { // should try a connect to acceptor; not yet accepting

@@ -46,7 +46,7 @@ void StringTokenizer2Test::constrMethods0 ()
 	StringTokenizer2 st("0123450678901230456078901230456709012", "0" );
 	assertEqual("0123450678901230456078901230456709012", st.fString);
 	assertEqual("0", st.fDelimiters);
-	t_assert( st.fPos == 0L );
+	assertCompare( st.fPos, equal_to, 0L );
 
 	ret = st.NextToken(token);
 	assertEqual("", token);	// ????  Empty token if String begins with a delimiter
@@ -105,7 +105,7 @@ void StringTokenizer2Test::constrMethods1 ()
 	StringTokenizer2 st("0123450678901230456078901230456709012", "1" );
 	assertEqual("0123450678901230456078901230456709012", st.fString);
 	assertEqual("1", st.fDelimiters);
-	t_assert( st.fPos == 0L );
+	assertCompare( st.fPos, equal_to, 0L );
 
 	ret = st.NextToken(token);
 	assertEqual("0", token);
@@ -144,7 +144,7 @@ void StringTokenizer2Test::constrMethods2 ()
 	StringTokenizer2 st("0123450678901230456078901230456709012", "2" );
 	assertEqual("0123450678901230456078901230456709012", st.fString);
 	assertEqual("2", st.fDelimiters);
-	t_assert( st.fPos == 0L );
+	assertCompare( st.fPos, equal_to, 0L );
 
 	ret = st.NextToken(token);
 	assertEqual("01", token);
@@ -179,7 +179,7 @@ void StringTokenizer2Test::constrMethods3 ()
 	StringTokenizer2 st("0123450678901230456078901230456709012", "3" );
 	assertEqual("0123450678901230456078901230456709012", st.fString);
 	assertEqual("3", st.fDelimiters);
-	t_assert( st.fPos == 0L );
+	assertCompare( st.fPos, equal_to, 0L );
 
 	ret = st.NextToken(token);
 	assertEqual("012", token);
@@ -214,7 +214,7 @@ void StringTokenizer2Test::constrMethods4 ()
 	StringTokenizer2 st("0123450678901230456078901230456709012", "4" );
 	assertEqual("0123450678901230456078901230456709012", st.fString);
 	assertEqual("4", st.fDelimiters);
-	t_assert( st.fPos == 0L );
+	assertCompare( st.fPos, equal_to, 0L );
 
 	ret = st.NextToken(token);
 	assertEqual("0123", token);
@@ -249,7 +249,7 @@ void StringTokenizer2Test::constrMethods5 ()
 	StringTokenizer2 st("0123450678901230456078901230456709012", "5" );
 	assertEqual("0123450678901230456078901230456709012", st.fString);
 	assertEqual("5", st.fDelimiters);
-	t_assert( st.fPos == 0L );
+	assertCompare( st.fPos, equal_to, 0L );
 
 	ret = st.NextToken(token);
 	assertEqual("01234", token);
@@ -284,7 +284,7 @@ void StringTokenizer2Test::constrMethods6 ()
 	StringTokenizer2 st("0123450678901230456078901230456709012", "6" );
 	assertEqual("0123450678901230456078901230456709012", st.fString);
 	assertEqual("6", st.fDelimiters);
-	t_assert( st.fPos == 0L );
+	assertCompare( st.fPos, equal_to, 0L );
 
 	ret = st.NextToken(token);
 	assertEqual("0123450", token);
@@ -319,7 +319,7 @@ void StringTokenizer2Test::constrMethods7 ()
 	StringTokenizer2 st("0123450678901230456078901230456709012", "7" );
 	assertEqual("0123450678901230456078901230456709012", st.fString);
 	assertEqual("7", st.fDelimiters);
-	t_assert( st.fPos == 0L );
+	assertCompare( st.fPos, equal_to, 0L );
 
 	ret = st.NextToken(token);
 	assertEqual("01234506", token);
@@ -354,7 +354,7 @@ void StringTokenizer2Test::constrMethods8 ()
 	StringTokenizer2 st("0123450678901230456078901230456709012", "8" );
 	assertEqual("0123450678901230456078901230456709012", st.fString);
 	assertEqual("8", st.fDelimiters);
-	t_assert( st.fPos == 0L );
+	assertCompare( st.fPos, equal_to, 0L );
 
 	ret = st.NextToken(token);
 	assertEqual("012345067", token);
@@ -385,7 +385,7 @@ void StringTokenizer2Test::constrMethods9 ()
 	StringTokenizer2 st("0123450678901230456078901230456709012", "9" );
 	assertEqual("0123450678901230456078901230456709012", st.fString);
 	assertEqual("9", st.fDelimiters);
-	t_assert( st.fPos == 0L );
+	assertCompare( st.fPos, equal_to, 0L );
 
 	ret = st.NextToken(token);
 	assertEqual("0123450678", token);
@@ -421,7 +421,7 @@ void StringTokenizer2Test::constrMethods10 ()
 	//t_assert( st.fString ==  "leer 0 leer 1 2345 0 6789 0 leer 1 23 0 456 0 789 0 leer 1 23 0 4567 0 9 0 leer 1 2" );
 	assertEqual("0123450678901230456078901230456709012", st.fString);
 	assertEqual("01", st.fDelimiters);
-	t_assert( st.fPos == 0L );
+	assertCompare( st.fPos, equal_to, 0L );
 
 	ret = st.NextToken(token);
 	assertEqual("", token);
@@ -493,7 +493,7 @@ void StringTokenizer2Test::constrMethods11 ()
 	assertEqual("01234506789012304560789010230456709012", st.fString);
 
 	assertEqual("12", st.fDelimiters);
-	t_assert( st.fPos == 0L );
+	assertCompare( st.fPos, equal_to, 0L );
 
 	ret = st.NextToken(token);
 	assertEqual("0", token);
@@ -544,7 +544,7 @@ void StringTokenizer2Test::constrMethods12 ()
 	StringTokenizer2 st(     "0123450678901230456078901230456709012", "23" );
 	assertEqual("0123450678901230456078901230456709012", st.fString);
 	assertEqual("23", st.fDelimiters);
-	t_assert( st.fPos == 0L );
+	assertCompare( st.fPos, equal_to, 0L );
 
 	ret = st.NextToken(token);
 	assertEqual("01", token);
@@ -591,7 +591,7 @@ void StringTokenizer2Test::constrMethods13 ()
 	StringTokenizer2 st("0123450678901230456078901230456709012", "012" );
 	assertEqual("0123450678901230456078901230456709012", st.fString);
 	assertEqual("012", st.fDelimiters);
-	t_assert( st.fPos == 0L );
+	assertCompare( st.fPos, equal_to, 0L );
 
 	ret = st.NextToken(token);
 	assertEqual("", token);	// 0
@@ -678,7 +678,7 @@ void StringTokenizer2Test::constrMethods14 ()
 	StringTokenizer2 st("0123450678901230456078901230456709012", "123" );
 	assertEqual("0123450678901230456078901230456709012", st.fString);
 	assertEqual("123", st.fDelimiters);
-	t_assert( st.fPos == 0L );
+	assertCompare( st.fPos, equal_to, 0L );
 
 	ret = st.NextToken(token);
 	assertEqual("0", token);
@@ -741,7 +741,7 @@ void StringTokenizer2Test::constrMethods15 ()
 	StringTokenizer2 st("0123450678901230456078901230456709012", "111" );
 	assertEqual("0123450678901230456078901230456709012", st.fString);
 	assertEqual("111", st.fDelimiters);
-	t_assert( st.fPos == 0L );
+	assertCompare( st.fPos, equal_to, 0L );
 
 	ret = st.NextToken(token);
 	assertEqual("0", token);
@@ -781,7 +781,7 @@ void StringTokenizer2Test::constrMethods16 ()
 	StringTokenizer2 st("0123450678901230456078901230456709012", "0123456789" );
 	assertEqual("0123450678901230456078901230456709012", st.fString);
 	assertEqual("0123456789", st.fDelimiters);
-	t_assert( st.fPos == 0L );
+	assertCompare( st.fPos, equal_to, 0L );
 
 	for ( i = 0; i < strlen("0123450678901230456078901230456709012"); i++ ) {
 		ret = st.NextToken(token);
@@ -806,7 +806,7 @@ void StringTokenizer2Test::constrMethods17 ()
 	StringTokenizer2 st("0123450678901230456078901230456709012", "12345" );
 	assertEqual("0123450678901230456078901230456709012", st.fString);
 	assertEqual("12345", st.fDelimiters);
-	t_assert( st.fPos == 0L );
+	assertCompare( st.fPos, equal_to, 0L );
 
 	ret = st.NextToken(token);
 	assertEqual("0", token);
@@ -893,7 +893,7 @@ void StringTokenizer2Test::constrMethods18 ()
 	StringTokenizer2 st("0123450678901230456078901230456709012", "abc" );
 	assertEqual("0123450678901230456078901230456709012", st.fString);
 	assertEqual("abc", st.fDelimiters);
-	t_assert( st.fPos == 0L );
+	assertCompare( st.fPos, equal_to, 0L );
 
 	ret = st.NextToken(token);
 	// assertEqual("", token);
@@ -915,7 +915,7 @@ void StringTokenizer2Test::constrMethods19 ()
 
 	assertEqual("", st.fString);
 	assertEqual("abc", st.fDelimiters);
-	t_assert( st.fPos == 0L );
+	assertCompare( st.fPos, equal_to, 0L );
 
 	ret = st.NextToken(token);
 	assertEqual("", token);
@@ -935,7 +935,7 @@ void StringTokenizer2Test::constrMethods20 ()
 
 	assertEqual("abc", st.fString);
 	assertEqual("", st.fDelimiters);
-	t_assert( st.fPos == 0L );
+	assertCompare( st.fPos, equal_to, 0L );
 
 	ret = st.NextToken(token);
 	assertEqual("abc", token);
@@ -959,7 +959,7 @@ void StringTokenizer2Test::constrMethods21 ()
 
 	assertEqual("abc", st.fString);
 	assertEqual("abcd", st.fDelimiters);
-	t_assert( st.fPos == 0L );
+	assertCompare( st.fPos, equal_to, 0L );
 
 	ret = st.NextToken(token);
 	assertEqual("", token);

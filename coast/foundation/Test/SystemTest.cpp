@@ -724,7 +724,7 @@ void SystemTest::OStreamTest ()
 		*is0 >> str00;
 		delete is0;
 		t_assert( str0 == str00 );
-		t_assert( str0.Length() == str00.Length() );
+		assertCompare( str0.Length(), equal_to, str00.Length() );
 		// t_assert( str0.Capacity() == str00.Capacity() );
 		t_assert( str0.Capacity() >= str0.Length() );
 		t_assert( str00.Capacity() >= str00.Length() );
@@ -749,7 +749,7 @@ void SystemTest::OStreamTest ()
 		*is1 >> str11;
 		delete is1;
 		t_assert( str1 == str11 );
-		t_assert( str1.Length() == str11.Length() );
+		assertCompare( str1.Length(), equal_to, str11.Length() );
 		// t_assert( str1.Capacity() == str11.Capacity() );
 		t_assert( str1.Capacity() >= str1.Length() );
 		t_assert( str11.Capacity() >= str11.Length() );
@@ -774,7 +774,7 @@ void SystemTest::OStreamTest ()
 		*is2 >> str22;
 		delete is2;
 		t_assert( str2 == str22 );
-		t_assert( str2.Length() == str22.Length() );
+		assertCompare( str2.Length(), equal_to, str22.Length() );
 		// t_assert( str2.Capacity() == str22.Capacity() );
 		t_assert( str2.Capacity() >= str2.Length() );
 		t_assert( str22.Capacity() >= str22.Length() );
@@ -801,7 +801,7 @@ void SystemTest::OStreamTest ()
 		*is0u >> str00u;
 		delete is0u;
 		t_assert( str0u == str00u );
-		t_assert( str0u.Length() == str00u.Length() );
+		assertCompare( str0u.Length(), equal_to, str00u.Length() );
 		// t_assert( str0u.Capacity() == str00u.Capacity() );
 		t_assert( str0u.Capacity() >= str0u.Length() );
 		t_assert( str00u.Capacity() >= str00u.Length() );
@@ -827,7 +827,7 @@ void SystemTest::OStreamTest ()
 		*is1u >> str11u;
 		delete is1u;
 		t_assert( str1u == str11u );
-		t_assert( str1u.Length() == str11u.Length() );
+		assertCompare( str1u.Length(), equal_to, str11u.Length() );
 		// t_assert( str1u.Capacity() == str11u.Capacity() );
 		t_assert( str1u.Capacity() >= str1u.Length() );
 		t_assert( str11u.Capacity() >= str11u.Length() );
@@ -854,7 +854,7 @@ void SystemTest::OStreamTest ()
 		*is2u >> str22u;
 		delete is2u;
 		t_assert( str2u == str22u );
-		t_assert( str2u.Length() == str22u.Length() );
+		assertCompare( str2u.Length(), equal_to, str22u.Length() );
 		// t_assert( str2u.Capacity() == str22u.Capacity() );
 		t_assert( str2u.Capacity() >= str2u.Length() );
 		t_assert( str22u.Capacity() >= str22u.Length() );

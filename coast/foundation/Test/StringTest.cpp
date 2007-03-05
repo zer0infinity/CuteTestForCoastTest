@@ -90,7 +90,7 @@ void StringTest::constructors()
 	String emptyCap0(-1);
 	assertEqual("", emptyCap0);
 	t_assert (emptyCap0.Length() == 0);
-	t_assert(0 <= emptyCap0.Capacity());
+	assertCompare( 0L, less_equal, emptyCap0.Capacity() );
 
 	// Init a string only with a 'charChain' and the length
 	String stringStrLen1( "string test 1 ", strlen("string test 1 ") );
@@ -325,14 +325,14 @@ void StringTest::appendsNullPtr ()
 	test.Append((const char *)0, 10);
 	assertEqual(oldLength, test.Length());
 	// seems pretty crazy to copy from zero or leave it unititialized
-	t_assert(test.Length() < test.Capacity());
+	assertCompare( test.Length(), less, test.Capacity() );
 	assertEqual(oldCapacity, test.Capacity());
 	// not a necessary assertion, just to make sure we know what we are doing
 
 	test.Append((const char *)0, 5);
 	assertEqual(oldLength, test.Length());
 	// seems pretty crazy to copy from zero or leave it unititialized
-	t_assert(test.Length() < test.Capacity());
+	assertCompare( test.Length(), less, test.Capacity() );
 	assertEqual(oldCapacity, test.Capacity());
 	// capacity does not increase
 
@@ -2576,7 +2576,7 @@ void StringTest::subString0 ()
 
 			strHlp = str.SubString( buf );
 			t_assert( memcmp( (const char *)strHlp, (const char *)str + i, str.Length() - i) == 0 );
-			t_assert( strHlp.Length() <= strHlp.Capacity() );
+			assertCompare( strHlp.Length(), less_equal, strHlp.Capacity() );
 			t_assert( strHlp.Length() == str.Length() - i );
 		}
 	}
@@ -2610,7 +2610,7 @@ void StringTest::subString2 ()
 	// SubString with itsself
 	str = str.SubString( "rtzu" );
 	t_assert( memcmp( (const char *)str, "rtzuiopasdfghjklyxcvbnmqwertzuiopasdfghjklyxcvbnm", str.Length() ) == 0 );
-	t_assert( str.Length() <= str.Capacity() );
+	assertCompare( str.Length(), less_equal, str.Capacity() );
 	t_assert( str.Length() ==  (long)strlen("rtzuiopasdfghjklyxcvbnmqwertzuiopasdfghjklyxcvbnm") );
 }
 
@@ -2630,7 +2630,7 @@ void StringTest::subString3()
 
 			strHlp = str.SubString( i, j );
 			t_assert( memcmp( (const char *)strHlp, (const char *)str + i, j ) == 0 );
-			t_assert( strHlp.Length() <= strHlp.Capacity() );
+			assertCompare( strHlp.Length(), less_equal, strHlp.Capacity() );
 			t_assert( strHlp.Length() == j );
 		}
 	}
@@ -2674,7 +2674,7 @@ void StringTest::subString5 ()
 	// SubString with itsself
 	str = str.SubString( 2, 5 );
 	t_assert( memcmp( (const char *)str, "23456", str.Length() ) == 0 );
-	t_assert( str.Length() <= str.Capacity() );
+	assertCompare( str.Length(), less_equal, str.Capacity() );
 	t_assert( str.Length() == 5 );
 }
 

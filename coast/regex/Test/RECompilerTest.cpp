@@ -422,7 +422,7 @@ void RECompilerTest::TestCharClass()
 		t_assert(!qs->IsMember('-'));
 	}
 	p = rc.compile("[a-]");
-	t_assert(0 < p.GetSize());
+	assertCompare( 0L, less, p.GetSize() );
 	t_assert(p["program"][1L][RE::offsetOpdata].GetType() == AnyVoidBufType);
 	s = (REBitSet *)(p["program"][1L][RE::offsetOpdata].AsCharPtr(0));
 	t_assert(s != NULL);
@@ -435,7 +435,7 @@ void RECompilerTest::TestCharClass()
 	}
 
 	p = rc.compile("[\\s\\w]");
-	t_assert(0 < p.GetSize());
+	assertCompare( 0L, less, p.GetSize() );
 	t_assert(p["program"][1L][RE::offsetOpdata].GetType() == AnyVoidBufType);
 	s = (REBitSet *)(p["program"][1L][RE::offsetOpdata].AsCharPtr(0));
 	t_assert(s != NULL);
