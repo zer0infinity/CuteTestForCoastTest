@@ -80,7 +80,7 @@ void LFListenerPoolTest::NoReactorTest()
 	lfpConfig[String("Accept") << GetConfig()["Testhost"]["port"].AsString()] = (IFAObject *)&ac1;
 	if ( t_assertm( !lfp.Init(2, lfpConfig, true), "no reactor is configured; init should fail")) {
 		t_assertm(lfp.GetPoolSize() == 0, "expected no threads in pool");
-		t_assertm(lfp.Start(true, 1000, 10) == -1, "expected Start to fail");
+		t_assertm(lfp.Start(true, 1000, 11) == -1, "expected Start to fail");
 	}
 }
 
@@ -94,7 +94,7 @@ void LFListenerPoolTest::NoFactoryTest()
 	lfpConfig.Append("TCP4343");
 	if (t_assertm(!lfp.Init(cNumOfThreads, lfpConfig, true), "expected initialization to fail; no valid factory")) {
 		t_assertm(lfp.GetPoolSize() == 0, "expected no threads in pool");
-		t_assertm(lfp.Start(true, 1000, 10) == -1, "expected Start to fail");
+		t_assertm(lfp.Start(true, 1000, 11) == -1, "expected Start to fail");
 	}
 }
 
@@ -108,7 +108,7 @@ void LFListenerPoolTest::InvalidAcceptorTest()
 	lfpConfig.Append("Fake");
 	if (t_assertm(!lfp.Init(cNumOfThreads, lfpConfig, true), "expected initialization to fail; acceptor is not valid")) {
 		t_assertm(lfp.GetPoolSize() == 0, "expected no threads in pool");
-		t_assertm(lfp.Start(true, 1000, 10) == -1, "expected Start to fail");
+		t_assertm(lfp.Start(true, 1000, 11) == -1, "expected Start to fail");
 	}
 }
 
@@ -122,7 +122,7 @@ void LFListenerPoolTest::InvalidReactorTest()
 	lfpConfig.Append("TCP5010");
 	if (t_assertm(!lfp.Init(cNumOfThreads, lfpConfig, true), "expected initialization to fail; reactor is not valid")) {
 		t_assertm(lfp.GetPoolSize() == 0, "expected no threads in pool");
-		t_assertm(lfp.Start(true, 1000, 10) == -1, "expected Start to fail");
+		t_assertm(lfp.Start(true, 1000, 11) == -1, "expected Start to fail");
 	}
 }
 
@@ -135,7 +135,7 @@ void LFListenerPoolTest::OneAcceptorTest()
 	Anything lfpConfig;
 	lfpConfig.Append("TCP5010");
 	if (t_assertm(lfp.Init(cNumOfThreads, lfpConfig, true), "expected initialization to succeed; are factories present?")) {
-		if (t_assert(lfp.Start(true, 1000, 10) == 0 )) {
+		if (t_assert(lfp.Start(true, 1000, 11) == 0 )) {
 			ProcessOneEvent();
 			lfp.RequestTermination();
 			t_assertm(lfp.Join() == 0, "expected Join to succeed");
@@ -153,7 +153,7 @@ void LFListenerPoolTest::TwoAcceptorsTest()
 	lfpConfig.Append("TCP5010");
 	lfpConfig.Append("TCP5011");
 	if (t_assertm(lfp.Init(cNumOfThreads, lfpConfig, true), "expected initialization to succeed; are factories present?")) {
-		if (t_assert(lfp.Start(true, 1000, 10) == 0 )) {
+		if (t_assert(lfp.Start(true, 1000, 11) == 0 )) {
 			ProcessTwoEvents();
 			lfp.RequestTermination();
 			t_assertm(lfp.Join() == 0, "expected Join to succeed");
@@ -175,7 +175,7 @@ void LFListenerPoolTest::ManyAcceptorsTest()
 
 		if (t_assertm(!lfp.Init(cNumOfThreads, lfpConfig, true), "should not allow LFPool to run without threads")) {
 			t_assertm(lfp.GetPoolSize() == 0, "expected no threads in pool");
-			t_assertm(lfp.Start(true, 1000, 10) == -1, "expected Start to fail");
+			t_assertm(lfp.Start(true, 1000, 11) == -1, "expected Start to fail");
 
 		}
 	}
@@ -240,7 +240,7 @@ void LFListenerPoolTest::ManyAcceptorsTest()
 		lfpConfig.Append("TCP5012");
 
 		if (t_assertm(lfp.Init(cNumOfThreads, lfpConfig, true), "some port maybe already bound")) {
-			if (t_assert(lfp.Start(true, 1000, 10) == 0 )) {
+			if (t_assert(lfp.Start(true, 1000, 11) == 0 )) {
 				ProcessManyEvents();
 				lfp.RequestTermination();
 				t_assertm(lfp.Join() == 0, "expected Join to succeed");
