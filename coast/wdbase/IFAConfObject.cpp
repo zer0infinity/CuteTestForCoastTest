@@ -110,27 +110,49 @@ bool RegisterableObject::Initialize(const char *category)
 			fCategory = category;
 		}
 	}
-	return ( fbInitialized = DoInitialize() );
+	return ( fbInitialized = IntInitialize(category) );
 }
 
 bool RegisterableObject::Finalize()
 {
-	return !( fbInitialized = !DoFinalize() );
+	return !( fbInitialized = !IntFinalize() );
+}
+
+bool RegisterableObject::IntInitialize(const char *category)
+{
+	StartTrace1(RegisterableObject.IntInitialize, "cat <" << NotNull(category) << "> fCat <" << fCategory << ">");
+	return DoInitialize();
+}
+
+bool RegisterableObject::IntFinalize()
+{
+	StartTrace1(RegisterableObject.IntFinalize, "cat <" << fCategory << "> name <" << fName << ">");
+	return DoFinalize();
 }
 
 //---- ConfNamedObject ----------------------------------------------------------
+bool ConfNamedObject::IntInitialize(const char *category)
+{
+	StartTrace1(ConfNamedObject.IntInitialize, "cat <" << NotNull(category) << "> fCat <" << fCategory << ">");
+	// initialize only once
+	return ( fbConfigLoaded || ( ( fbConfigLoaded = DoCheckConfig(category, !fbConfigLoaded) ) && DoInitialize() ) );
+}
+
+bool ConfNamedObject::IntFinalize()
+{
+	StartTrace1(ConfNamedObject.IntFinalize, "cat <" << fCategory << "> name <" << fName << ">");
+	return ( !( fbConfigLoaded = !DoUnloadConfig() ) && DoFinalize() );
+}
+
 bool ConfNamedObject::DoInitialize()
 {
 	StartTrace1(ConfNamedObject.DoInitialize, "cat <" << fCategory << "> name <" << fName << ">");
-	// force (re-)loading config
-	return CheckConfig(fCategory, true);
+	return true;
 }
 
 bool ConfNamedObject::DoFinalize()
 {
 	StartTrace1(ConfNamedObject.DoFinalize, "cat <" << fCategory << "> name <" << fName << ">");
-	// ensure that we do not access data out of CacheHandler anymore
-	fConfig = ROAnything();
 	return true;
 }
 
@@ -159,9 +181,9 @@ ConfNamedObject *ConfNamedObject::DoConfiguredClone(const char *category, const 
 	return cno;
 }
 
-bool ConfNamedObject::CheckConfig(const char *category, bool bInitializeConfig)
+bool ConfNamedObject::DoCheckConfig(const char *category, bool bInitializeConfig)
 {
-	StartTrace1(ConfNamedObject.CheckConfig, "cat <" << NotNull(category) << "> fName <" << fName << "> &" << (long)(IFAObject *)this);
+	StartTrace1(ConfNamedObject.DoCheckConfig, "cat <" << NotNull(category) << "> fName <" << fName << "> &" << (long)(IFAObject *)this);
 	bool bRet = false;
 	if ( category ) {
 		bRet = true;
@@ -171,6 +193,14 @@ bool ConfNamedObject::CheckConfig(const char *category, bool bInitializeConfig)
 		}
 	}
 	return bRet;
+}
+
+bool ConfNamedObject::DoUnloadConfig()
+{
+	StartTrace1(ConfNamedObject.DoUnloadConfig, "cat <" << fCategory << "> fName <" << fName << "> &" << (long)(IFAObject *)this);
+	// ensure that we do not access data out of CacheHandler anymore
+	fConfig = ROAnything();
+	return true;
 }
 
 bool ConfNamedObject::DoGetConfigName(const char *category, const char *objName, String &configFileName)
@@ -211,11 +241,11 @@ bool ConfNamedObject::DoLoadConfig(const char *category)
 bool ConfNamedObject::DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const
 {
 	StartTrace1(ConfNamedObject.DoLookup, "key: <" << NotNull(key) << ">" << " Name: <" << fName << ">" );
-	if ( !IsInitialized() ) {
+	if ( !IsConfigLoaded() ) {
 		SysLog::Warning(String("ConfNamedObject::DoLookup: failed, object <") << fName << "> of registry category <" << fCategory << "> not initialized!\n");
 	}
 	Trace("fConfig &" << (long)&fConfig);
-	return ( IsInitialized() && fConfig.LookupPath(result, key, delim, indexdelim) );
+	return ( IsConfigLoaded() && fConfig.LookupPath(result, key, delim, indexdelim) );
 }
 
 //---- HierarchConfNamed ----------------------------------------------------------

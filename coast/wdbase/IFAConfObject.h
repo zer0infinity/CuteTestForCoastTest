@@ -49,10 +49,10 @@ public:
 
 	bool Finalize();
 
-	/*! Check if object has loaded its config already.
-		\return true in case the config is loaded, false otherwise */
+	/*! Check if object has successfully called DoInitialize()
+		\return true in case both steps were executed successfully, false otherwise */
 	bool IsInitialized() const {
-		return fbInitialized;
+		return DoIsInitialized();
 	}
 
 	//! implements API for naming support
@@ -98,6 +98,12 @@ protected:
 		return true;
 	};
 
+	/*! Check if object has successfully called DoInitialize()
+		\return true in case both steps were executed successfully, false otherwise */
+	virtual bool DoIsInitialized() const {
+		return fbInitialized;
+	}
+
 	//! object name represented as string
 	String fName, fCategory;
 
@@ -114,6 +120,14 @@ protected:
 	static bool fgResetCache;
 
 private:
+	/*! subclass initialize api; specific things can be done here, like configuration loading and so on
+		\return true in case of success, false otherwise */
+	virtual bool IntInitialize(const char *category);
+
+	/*! subclass finalize api; specific things can be done here, like configuration unloading and so on
+		\return true in case of success, false otherwise */
+	virtual bool IntFinalize();
+
 	//!do not use
 	RegisterableObject();
 	//!do not use
@@ -208,6 +222,7 @@ public:
 	//!named object constructor
 	ConfNamedObject(const char *name)
 		: RegisterableObject(name)
+		, fbConfigLoaded(false)
 	{}
 
 	//!does nothing
@@ -220,6 +235,12 @@ public:
 		\return New object clone with initialized configuration if requested */
 	ConfNamedObject *ConfiguredClone(const char *category, const char *name, bool bInitializeConfig);
 
+	/*! Check if object has loaded its config already.
+		\return true in case the config is loaded, false otherwise */
+	bool IsConfigLoaded() const {
+		return fbConfigLoaded;
+	}
+
 protected:
 	/*! subclass initialize api; specific things can be done here, like configuration loading and so on
 		\return true in case of success, false otherwise */
@@ -229,11 +250,21 @@ protected:
 		\return true in case of success, false otherwise */
 	virtual bool DoFinalize();
 
+	/*! Check if object has successfully called DoCheckConfig() and DoInitialize()
+		\return true in case both steps were executed successfully, false otherwise */
+	virtual bool DoIsInitialized() const {
+		return ( fbConfigLoaded && RegisterableObject::DoIsInitialized() );
+	}
+
 	/*! Check if configuration is loaded; load it if not done or bInitializeConfig = true
 		\param category Name of the category in which the objects configuration will be stored in the Cache
 		\param bInitializeConfig Reload configuration regardless of already being configured
 		\return true in case the object could be configured */
-	bool CheckConfig(const char *category, bool bInitializeConfig = false);
+	bool DoCheckConfig(const char *category, bool bInitializeConfig = false);
+
+	/*! Unload configuration of given category
+		\return true in case the config could be unloaded successfully */
+	bool DoUnloadConfig();
 
 	/*! Creates a new object through cloning. Generates a cloned object with a different name.
 		\param category Name of the category in which the objects configuration will be stored in the Cache
@@ -271,7 +302,18 @@ protected:
 
 	String fConfigName;
 
+	//! flag to track if config of object was loaded
+	bool fbConfigLoaded;
+
 private:
+	/*! subclass initialize api; specific things can be done here, like configuration loading and so on
+		\return true in case of success, false otherwise */
+	virtual bool IntInitialize(const char *category);
+
+	/*! subclass finalize api; specific things can be done here, like configuration unloading and so on
+		\return true in case of success, false otherwise */
+	virtual bool IntFinalize();
+
 	//!do not use
 	ConfNamedObject();
 	//!do not use
