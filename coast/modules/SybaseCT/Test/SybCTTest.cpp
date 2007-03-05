@@ -34,9 +34,7 @@ SybCTTest::~SybCTTest()
 
 void SybCTTest::SybCTTestTest()
 {
-#if defined(MEM_DEBUG)
 	Storage::PrintStatistic();
-#endif
 	{
 		StartTrace(SybCTTest.SybCTTestTest);
 		StartTraceMem(SybCTTest.SybCTTestTest);
@@ -76,16 +74,12 @@ void SybCTTest::SybCTTestTest()
 			}
 		}
 	}
-#if defined(MEM_DEBUG)
 	Storage::PrintStatistic();
-#endif
 }
 
 void SybCTTest::LimitedMemoryTest()
 {
-#if defined(MEM_DEBUG)
 	Storage::PrintStatistic();
-#endif
 	{
 		StartTrace(SybCTTest.LimitedMemoryTest);
 		StartTraceMem(SybCTTest.LimitedMemoryTest);
@@ -127,9 +121,7 @@ void SybCTTest::LimitedMemoryTest()
 			}
 		}
 	}
-#if defined(MEM_DEBUG)
 	Storage::PrintStatistic();
-#endif
 }
 
 // builds up a suite of testcases, add a line for each testmethod

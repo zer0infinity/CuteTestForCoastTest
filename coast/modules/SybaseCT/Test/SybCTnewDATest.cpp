@@ -34,9 +34,7 @@ SybCTnewDATest::~SybCTnewDATest()
 
 void SybCTnewDATest::InitOpenSetConPropTest()
 {
-#if defined(MEM_DEBUG)
 	Storage::PrintStatistic();
-#endif
 	{
 		StartTrace(SybCTnewDATest.InitOpenSetConPropTest);
 		StartTraceMem(SybCTnewDATest.InitOpenSetConPropTest);
@@ -84,16 +82,12 @@ void SybCTnewDATest::InitOpenSetConPropTest()
 			}
 		}
 	}
-#if defined(MEM_DEBUG)
 	Storage::PrintStatistic();
-#endif
 }
 
 void SybCTnewDATest::SimpleQueryTest()
 {
-#if defined(MEM_DEBUG)
 	Storage::PrintStatistic();
-#endif
 	{
 		StartTrace(SybCTnewDATest.SimpleQueryTest);
 		StartTraceMem(SybCTnewDATest.SimpleQueryTest);
@@ -132,16 +126,12 @@ void SybCTnewDATest::SimpleQueryTest()
 			}
 		}
 	}
-#if defined(MEM_DEBUG)
 	Storage::PrintStatistic();
-#endif
 }
 
 void SybCTnewDATest::LimitedMemoryTest()
 {
-#if defined(MEM_DEBUG)
 	Storage::PrintStatistic();
-#endif
 	{
 		StartTrace(SybCTnewDATest.LimitedMemoryTest);
 		StartTraceMem(SybCTnewDATest.LimitedMemoryTest);
@@ -187,9 +177,7 @@ void SybCTnewDATest::LimitedMemoryTest()
 			}
 		}
 	}
-#if defined(MEM_DEBUG)
 	Storage::PrintStatistic();
-#endif
 }
 
 void SybCTnewDATest::LoginTimeoutTest()

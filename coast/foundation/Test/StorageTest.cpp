@@ -54,12 +54,10 @@ void StorageTest::SimpleCallocSetsToZeroTest()
 	for ( i = 0 ; i < sz ; i++ ) {
 		ga.Free(ptr[i]);
 	}
-
 }
 
 void StorageTest::LeakTest()
 {
-#ifdef MEM_DEBUG
 	// watch the sequence of declaration
 	MemChecker mc("Test Global", Storage::Global());
 	String str;
@@ -70,12 +68,10 @@ void StorageTest::LeakTest()
 	//PS: we now have a different measurement
 	//assertEqual(12, mc.CheckDelta());
 	t_assertm(mc.CheckDelta() >= 12, "memory leaked as expected");
-#endif
 }
 
 void StorageTest::SimpleAllocTest(TString allocatorName, Allocator *pAllocator)
 {
-#ifdef MEM_DEBUG
 	MemChecker mc(allocatorName, pAllocator);
 	const long sz = 3000;
 	char *ptr[sz];
@@ -89,7 +85,6 @@ void StorageTest::SimpleAllocTest(TString allocatorName, Allocator *pAllocator)
 	}
 	pAllocator->PrintStatistic();
 	assertEqual(0, mc.CheckDelta());
-#endif
 }
 void StorageTest::SimpleSizeHintTest(TString allocatorName, Allocator *pAllocator)
 {
@@ -159,7 +154,6 @@ void StorageTest::AllocatorTiming()
 
 void StorageTest::DoTimingWith(TString allocatorName, Allocator *pAllocator)
 {
-#ifdef MEM_DEBUG
 	{
 		StartTraceMem1(StorageTest.DoTimingWith, pAllocator);
 		MemChecker mc("StorageTest.DoTimingWith", pAllocator);
@@ -191,7 +185,6 @@ void StorageTest::DoTimingWith(TString allocatorName, Allocator *pAllocator)
 		pAllocator->PrintStatistic();
 		assertEqual(0, mc.CheckDelta());
 	}
-#endif
 }
 
 void StorageTest::AnyStorageGlobalAssignment()
