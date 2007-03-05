@@ -13,8 +13,33 @@
 #define IT_TESTFW_UNKNOWNLINENUMBER              (-1)
 
 #include "TString.h"
+#include <functional>
+
 class TestResult;
 class Anything;
+
+using namespace std;
+
+//template
+//<
+//	typename T,
+//	template <typename> class CompFunc = equal_to
+//>
+//struct myCompareEqual
+//: public binary_function< T, T, bool >
+//{
+//	bool operator()(const T& left, const T& right) const
+//	{
+//		return CompFunc<T>()(left,right);
+//	}
+//};
+//
+//	template < typename T, template <typename> class CompFunc >
+//	bool myassertCompare(T left, T right, CompFunc<T> &cFunc)
+//	{
+////		return myCompareEqual < T, less > ()(left, right);
+//		return cFunc()(left, right);
+//	}
 
 /*
  * A Test can be run and collect its results.
@@ -123,6 +148,25 @@ protected:
 								  long lineNumber,
 								  TString fileName,
 								  TString message);
+
+	template < typename T > bool assert_equal_to(T left, T right) {
+		return equal_to<T>()(left, right);
+	}
+	template < typename T > bool assert_not_equal_to(T left, T right) {
+		return not_equal_to<T>()(left, right);
+	}
+	template < typename T > bool assert_less(T left, T right) {
+		return less<T>()(left, right);
+	}
+	template < typename T > bool assert_less_equal(T left, T right) {
+		return less_equal<T>()(left, right);
+	}
+	template < typename T > bool assert_greater(T left, T right) {
+		return greater<T>()(left, right);
+	}
+	template < typename T > bool assert_greater_equal(T left, T right) {
+		return greater_equal<T>()(left, right);
+	}
 };
 
 inline Test::~Test ()
@@ -155,6 +199,12 @@ inline TString Test::toString ()
 #define t_assert(condition)\
 (this->assertImplementation ((bool)(condition),(#condition),\
 	__LINE__, __FILE__))
+
+#define assertCompare(left, what, right)\
+(this->assertImplementation( assert_##what<>( left, right ), TString().Append((unsigned long long)left).Append(" " #what " ").Append((unsigned long long)right).Append(" ( " #left " " #what " " #right " )"), __LINE__, __FILE__ ) )
+
+#define assertComparem(left, what, right, mesaage)\
+(this->assertImplementation( assert_##what<>( left, right ), TString().Append((unsigned long long)left).Append(" " #what " ").Append((unsigned long long)right).Append(" ( " #left " " #what " " #right " )"), __LINE__, __FILE__, mesaage ) )
 
 #define assertDoublesEqual(expected,actual,delta)\
 (this->assertEquals ((expected),\
