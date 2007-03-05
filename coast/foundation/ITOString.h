@@ -97,9 +97,8 @@ public:
 	String &Append(l_long number);
 #endif
 	//! append extra long unsigned number as decimal
-#if defined(WIN32)
 	String &Append(u_long number);
-#endif
+
 	//! append a single byte in hexadecimal encoding, results in two characters added
 	String &AppendAsHex(unsigned char cc);
 
