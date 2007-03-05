@@ -171,4 +171,16 @@
 		/MainSwitch						20
 		/EnableAll						20
 	}
+	/StorageTest {
+		/MainSwitch						20
+		/EnableAll						20
+	}
+	/PoolAllocator {
+		/MainSwitch						20
+		/EnableAll						20
+	}
+	/PoolAllocatorTest {
+		/MainSwitch						20
+		/EnableAll						20
+	}
 }
