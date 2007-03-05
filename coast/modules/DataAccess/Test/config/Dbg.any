@@ -202,4 +202,15 @@
 		/MainSwitch 11
 		/EnableAll 11
 	}
+	/SlotnameOutputMapper {
+		/MainSwitch			10
+		/EnableAll			10
+		/DoPutAny {
+			/MainSwitch		10
+			/EnableAll		0
+			/PerSlotname	-10
+			/PerRow			-10
+			/Final			10
+		}
+	}
 }
