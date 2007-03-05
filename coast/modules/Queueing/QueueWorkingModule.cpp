@@ -23,6 +23,7 @@
 QueueWorkingModule::QueueWorkingModule(const char *name)
 	: WDModule(name)
 	, fpQueue(NULL)
+	, fpQAllocator(NULL)
 	, fpContext(NULL)
 	, fContextLock("QueueWorkingModuleContextLock")
 	, fFailedPutbackMessages(Storage::Global())
@@ -150,7 +151,21 @@ void QueueWorkingModule::IntInitQueue(const ROAnything roaConfig)
 {
 	StartTrace(QueueWorkingModule.IntInitQueue);
 	long lQueueSize = roaConfig["QueueSize"].AsLong(100L);
-	fpQueue = new Queue(GetName(), lQueueSize);
+	Allocator *pAlloc = Storage::Global();
+
+	if ( roaConfig["UsePoolStorage"].AsLong(0) == 1 ) {
+		// create unique allocator id based on a pointer value
+		long lAllocatorId = (((long)this) & 0x00007FFF);
+		pAlloc = MT_Storage::MakePoolAllocator(roaConfig["PoolStorageSize"].AsLong(10240), roaConfig["NumOfPoolBucketSizes"].AsLong(10), lAllocatorId);
+		if ( pAlloc == NULL ) {
+			SYSERROR("was not able to create PoolAllocator with Id:" << lAllocatorId << " for [" << GetName() << "], check config!");
+		} else {
+			// store allocator pointer for later deletion
+			MT_Storage::RefAllocator(pAlloc);
+			fpQAllocator = pAlloc;
+		}
+	}
+	fpQueue = new Queue(GetName(), lQueueSize, pAlloc);
 	fFailedPutbackMessages = Anything();
 }
 
@@ -160,6 +175,10 @@ void QueueWorkingModule::IntCleanupQueue()
 	// we could do something here to persist the content of the queue and the putback message buffer
 	delete fpQueue;
 	fpQueue = NULL;
+	if ( fpQAllocator ) {
+		MT_Storage::UnrefAllocator(fpQAllocator);
+		fpQAllocator = NULL;
+	}
 	fFailedPutbackMessages = Anything();
 }
 
