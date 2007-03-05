@@ -8,15 +8,18 @@
 
 //--- interface include --------------------------------------------------------
 #include "SetupRunner.h"
+
 //--- standard modules used ----------------------------------------------------
 #include "TestRunner.h"
 
 //--- test cases ---------------------------------------------------------------
 #include "DummyTest.h"
+#include "AssertionTest.h"
 
 void setupRunner(TestRunner &runner)
 {
 	// add a whole suite with the ADD_SUITE(runner,"Suites's Classname") macro
 	ADD_SUITE(runner, DummyTest);
+	ADD_SUITE(runner, AssertionTest);
 }
 
