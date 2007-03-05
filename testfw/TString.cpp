@@ -173,10 +173,42 @@ TString &TString::Append(const TString &s)
 	return *this;
 }
 
+TString &TString::Append(int number)
+{
+	char str[100] = {0};
+	snprintf(str, sizeof(str), "%d", number );
+	Append( str, (long)strlen(str) );  // Append(const char *s, long len)
+	return *this;
+}
+
 TString &TString::Append(long number)
 {
 	char str[100] = {0};
-	sprintf(str, "%ld", number );
+	snprintf(str, sizeof(str), "%ld", number );
+	Append( str, (long)strlen(str) );  // Append(const char *s, long len)
+	return *this;
+}
+
+TString &TString::Append(unsigned long number)
+{
+	char str[100] = {0};
+	snprintf(str, sizeof(str), "%lu", number );
+	Append( str, (long)strlen(str) );  // Append(const char *s, long len)
+	return *this;
+}
+
+TString &TString::Append(long long number)
+{
+	char str[100] = {0};
+	snprintf(str, sizeof(str), "%lld", number );
+	Append( str, (long)strlen(str) );  // Append(const char *s, long len)
+	return *this;
+}
+
+TString &TString::Append(unsigned long long number)
+{
+	char str[100] = {0};
+	snprintf(str, sizeof(str), "%llu", number );
 	Append( str, (long)strlen(str) );  // Append(const char *s, long len)
 	return *this;
 }
@@ -184,7 +216,7 @@ TString &TString::Append(long number)
 TString &TString::Append(double number)
 {
 	char str[100] = {0};
-	sprintf( str, "%.8f", number );
+	snprintf( str, sizeof(str), "%.8f", number );
 	Append( str, (long)strlen(str) );  // Append(const char *s, long len)
 	return *this;
 }

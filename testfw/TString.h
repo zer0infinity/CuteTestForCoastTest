@@ -78,7 +78,11 @@ public:
 
 	// the following three may allow us to get rid of
 	// sprintfs completely
+	TString &Append(int number);
 	TString &Append(long number);
+	TString &Append(unsigned long number);
+	TString &Append(long long number);
+	TString &Append(unsigned long long number);
 	TString &Append(double number);
 	TString &AppendAsHex(unsigned char cc);
 	TString &AppendTwoHexAsChar(const char *cc);
