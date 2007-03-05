@@ -226,7 +226,7 @@ note: if start > fLength then the new buffer will contain undefined
 	Assert((newLength == 0) || GetImpl());
 	// add s to fCont after position start
 	if (GetImpl()) {
-		if (s ) {
+		if (s) {
 			memcpy(GetContent() + start, s, len);
 			SetLength(newLength);
 		} else {
@@ -292,7 +292,9 @@ String &String::Append(istream &is, long length)
 
 String &String::Append(const String &s)
 {
-	Set(Length(), s.GetContent(), s.Length());// FIXME provide special Set..
+	if ( s.GetImpl() ) {
+		Set(Length(), s.GetContent(), s.Length());// FIXME provide special Set..
+	}
 	return *this;
 }
 
@@ -369,14 +371,12 @@ String &String::Append(l_long number)
 }
 #endif
 
-#if defined(WIN32)
 String &String::Append(u_long number)
 {
 	OStringStream obuf(this, ios::app);
 	obuf << number;
 	return *this;
 }
-#endif
 
 String &String::Append(double number)
 {
@@ -400,7 +400,6 @@ String String::SubString(long from, long len) const
 	if (from >= l) {
 		return String();
 	}
-
 	if (from < 0) {
 		from = 0;
 		SysLog::Error("String::GetSub: from < 0");
@@ -408,8 +407,7 @@ String String::SubString(long from, long len) const
 	if ( (len < 0) || (from + len > l) ) {
 		len = l - from;
 	}
-
-	if (GetContent()) {
+	if (GetImpl() && GetContent()) {
 		return String((void *)(GetContent() + from), len, const_cast<String *>(this)->GetAllocator());
 	}
 	return String(const_cast<String *>(this)->GetAllocator());
@@ -637,10 +635,9 @@ long String::CopyTo(char *buf, long n, long pos) const
 	if (n > rest) {
 		n = rest;
 	}
-	if (n > 0 ) {
+	if ( n > 0 && GetImpl() ) {
 		memcpy(buf, GetContent() + pos, n);
 	}
-
 	return n;
 }
 
@@ -763,7 +760,7 @@ bool String::PrependWith(long newLength, const char fill)
 		if (  oldLength ) {
 			// ReplaceAt uses memcpy, source/dest may not overlap!
 			// Therefore, use a tmp var if copy overlaps
-			if ( (oldLength * 2) <= newLength ) {
+			if ( (oldLength << 1) <= newLength ) {
 				ReplaceAt(fillTo, GetContent(), oldLength);
 			} else {
 				String tmp(GetContent());
@@ -1201,10 +1198,9 @@ istream &operator>>(istream &is, String &s)
 //	is.ipfx(1);         //  see ANSI draft rev. 5
 #endif
 	s.Set(0, 0, cStrAllocMinimum);		// empty string reserve cStrAllocMinimum chars, tunable param
-	if (is.good() && s.GetImpl()) { // sanity checks
+	if (is.good() && s.GetImpl()) {
+		// sanity checks
 		is >> ws;	// skips whitespace
-		//if(is) {
-
 		while ((aChar = is.get()) != EOF) {
 			if (isspace( (unsigned char) aChar)) {
 				is.putback(char(aChar));
@@ -1213,13 +1209,13 @@ istream &operator>>(istream &is, String &s)
 			if (s.Length() + 2 > s.Capacity()) {
 				char c = (char)aChar;
 				s.Set(s.Length(), &c, 1);	// auto-expand
-			} else { // optimize for inline expansion, Set allocates additional stuff
+			} else {
+				// optimize for inline expansion, Set allocates additional stuff
 				s.GetContent()[s.Length()] = (char)aChar;
 				s.IncrementLength(1);
 			}
 		}
 		s.GetContent()[s.Length()] = '\0';		// add 0 byte for termination
-		//}
 	}
 	if (is.eof() && s.Length() != 0) {
 		is.clear();
