@@ -44,6 +44,7 @@
 #include "ConversionUtilsTest.h"
 #include "AnyImplsTest.h"
 #include "TypeTraitsTest.h"
+#include "PoolAllocatorTest.h"
 
 #ifndef __370__
 #if !defined(WIN32)
@@ -84,6 +85,7 @@ void setupRunner(TestRunner &runner)
 #endif
 	ADD_SUITE(runner, DbgTest);
 	ADD_SUITE(runner, StorageTest);
+	ADD_SUITE(runner, PoolAllocatorTest);
 	ADD_SUITE(runner, ROSimpleAnythingTest);
 	ADD_SUITE(runner, SysLogTest);
 	ADD_SUITE(runner, GenericXMLParserTest);
