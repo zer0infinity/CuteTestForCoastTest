@@ -41,7 +41,7 @@ public:
 		if ( frLockerId != 0 ) {
 			long lOther = frLockerId;
 			char buf[256] = { 0 };
-			snprintf(buf, sizeof(buf), "\n%s:%d Another Locker entered already! otherThreadId:%d currentThreadId:%d\n", pFile, lLine, lOther, Thread::MyId());
+			snprintf(buf, sizeof(buf), "\n%s:%ld Another Locker entered already! otherThreadId:%ld currentThreadId:%ld\n", pFile, lLine, lOther, Thread::MyId());
 			SysLog::WriteToStderr(buf, strlen(buf));
 		}
 	}
