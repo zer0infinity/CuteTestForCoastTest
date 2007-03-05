@@ -264,7 +264,7 @@ private:
 			Assert(pptr() && pptr() >= start());
 			long newlen = pptr() - pbase();
 			Assert(newlen < fStore->Capacity());
-			if (newlen > fStore->Length()) {
+			if ( fStore->GetImpl() && ( newlen > fStore->Length() ) ) {
 				fStore->SetLength(newlen);
 				fStore->GetContent()[newlen] = '\0'; // terminate the string
 				setgetpointer(gptr() - eback()); // might be able to read more
@@ -295,7 +295,7 @@ private:
 		}
 		// save 1 byte for '\0' termination
 		char *endptr = sc + (fStore->Capacity() > 0 ? fStore->Capacity() - 1 : 0);
-		// now init get an put area
+		// now init get and put area
 		setgetpointer(getoffset);
 		// if not reading the get area is defined empty.
 		setp(sc, endptr);
