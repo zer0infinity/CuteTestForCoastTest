@@ -16,9 +16,7 @@
 
 class SimpleMutex;
 
-#ifdef MEM_DEBUG
-
-//! multithreading safe memory allocation tracker (only available if MEM_DEBUG enabled)
+//! multithreading safe memory allocation tracker
 class EXPORTDECL_MTFOUNDATION MT_MemTracker : public MemTracker
 {
 public:
@@ -32,14 +30,17 @@ public:
 	//!tracks frees: locks mutex
 	virtual void TrackFree(u_long allocSz);
 	//!print allocation/deallocation statistics
-	virtual void PrintStatistic();
+	virtual void PrintStatistic(long lLevel = -1);
 	//!returns currently allocated bytes
 	l_long  CurrentlyAllocated();
+
+	static void *operator new(size_t size);
+	static void *operator new(size_t size, class Allocator *);
+	static void operator delete(void *d);
 protected:
 	//!system dependent mutex handle to avoid allocation of string memory
 	MUTEX fMutex;
 };
-#endif
 
 //!Multi Threading aware storage management using thread local store pools
 class EXPORTDECL_MTFOUNDATION MT_Storage
@@ -70,9 +71,7 @@ public:
 	static THREADKEY fgAllocatorKey;
 	static bool fgInitialized;
 	static SimpleMutex *fgpAllocatorInit;
-#ifdef MEM_DEBUG
 	static MemTracker *fOldTracker;
-#endif
 };
 
 #endif

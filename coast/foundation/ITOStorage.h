@@ -14,12 +14,6 @@
 #include "config.h"				// for definition of own types
 #include <stdlib.h>
 
-#if !defined(__370__) && defined(DEBUG)
-#define MEM_DEBUG
-#endif
-
-#ifdef MEM_DEBUG
-
 //! Base class for memory allocation tracking
 /*! helper class for debugging memory management problems */
 class EXPORTDECL_FOUNDATION MemTracker
@@ -35,7 +29,7 @@ public:
 	virtual void TrackFree(u_long allocSz);
 
 	//!prints statistic of allocated and freed bytes
-	virtual void PrintStatistic();
+	virtual void PrintStatistic(long lLevel);
 
 	//!returns currently allocated bytes
 	l_long CurrentlyAllocated() {
@@ -52,6 +46,10 @@ public:
 
 	//!initializes statistics to the values of MemTracker t
 	virtual void Init(MemTracker *t);
+
+	static void *operator new(size_t size);
+	static void *operator new(size_t size, class Allocator *);
+	static void operator delete(void *d);
 
 protected:
 	//!tracks the currently allocated size in bytes, and the peek allocated size
@@ -101,40 +99,7 @@ protected:
 #define StartTraceMem1(scope, allocator) MemChecker rekcehc1(_QUOTE_(scope), allocator)
 #define TraceMemDelta1(message) rekcehc1.TraceDelta(message)
 
-#define MemTrackDef(tracker) MemTracker tracker;
-#define MemTrackInit(tracker) , tracker(#tracker)
-#define MemTrackAlloc(tracker, allocSz) tracker.TrackAlloc(allocSz)
-#define MemTrackFree(tracker, allocSz) tracker.TrackFree(allocSz)
-#define MemTrackStat(tracker) tracker.PrintStatistic()
-#define MemTrackStatIfAllocated(tracker) if ( tracker.PeakAllocated() > 0 ) tracker.PrintStatistic()
-#define MemTrackStatIfAllocatedTriggered(trigger, tracker) if ( TraceTriggered(trigger, Storage::Global()) ) { if ( tracker.PeakAllocated() > 0 ) tracker.PrintStatistic(); }
-#define MemTrackStillAllocated(tracker)	( tracker.CurrentlyAllocated() > 0 )
-#define MemTrackStillAllocatedException(tracker, where)	if( tracker.CurrentlyAllocated() > 0 )	\
-	{	\
-		SysLog::Error(String("PoolAllocator was still in use! (id: ", Storage::Global()) << tracker.fId << " name [" << NotNull(tracker.fpName) << "]) in " << where); \
-	}
-#define PoolTrackStat(pAlloc) pAlloc->PrintStatistic()
-#define PoolTrackStatTriggered(trigger, pAlloc) if ( TraceTriggered(trigger, Storage::Global()) ) { pAlloc->PrintStatistic(); }
-
-#else
-#define StartTraceMem(scope)
-#define StartTraceMem1(scope, allocator)
-#define TraceMemDelta(message)
-#define TraceMemDelta1(message)
-
-#define MemTrackDef(tracker)
-#define MemTrackInit(tracker)
-#define MemTrackAlloc(tracker, allocSz)
-#define MemTrackFree(tracker, allocSz)
-#define MemTrackStat(tracker)
-#define MemTrackStatIfAllocated(tracker)
-#define MemTrackStatIfAllocatedTriggered(trigger, tracker)
-#define MemTrackStillAllocated(tracker)	false
-#define MemTrackStillAllocatedException(tracker, where)
-
-#define PoolTrackStat(tracker)
-#define PoolTrackStatTriggered(trigger, pAlloc)
-#endif
+#define PoolTrackStatTriggered(trigger, pAlloc, level) if ( TraceTriggered(trigger, Storage::Global()) ) { pAlloc->PrintStatistic(level); }
 
 class EXPORTDECL_FOUNDATION MemoryHeader;
 
@@ -187,16 +152,14 @@ public:
 		return fAllocatorId;
 	}
 
-#ifdef MEM_DEBUG
 	//!Memory debugging and tracking support; implementer should report currently allocated bytes
 	virtual l_long CurrentlyAllocated() = 0;
 	//!change of memtrackers to be e.g. MT-Safe
 	virtual MemTracker *ReplaceMemTracker(MemTracker *t) {
 		return NULL;
 	}
-#endif
 	//!Memory debugging and tracking support; implementer should report all statistic on cerr
-	virtual void PrintStatistic() = 0;
+	virtual void PrintStatistic(long lLevel = -1) = 0;
 
 	//!hook method to reorganize the managed memory
 	virtual void Refresh();
@@ -241,23 +204,20 @@ public:
 		return 1;
 	}
 
-	//!print out the allocators statistics (only available if MEM_DEBUG is enabled)
-	virtual void PrintStatistic();
-#ifdef MEM_DEBUG
-	//!returns the currently allocated bytes (only available if MEM_DEBUG is enabled)
+	//!print out the allocators statistics
+	virtual void PrintStatistic(long lLevel = -1);
+
+	//!returns the currently allocated bytes
 	l_long CurrentlyAllocated();
-	//!replaces the memory tracker with sthg. different e.g. thread safe  (only available if MEM_DEBUG is enabled)
+	//!replaces the memory tracker with sthg. different e.g. thread safe
 	virtual MemTracker *ReplaceMemTracker(MemTracker *t);
-#endif
 protected:
 	//!implements allocation bottleneck routine
 	virtual void *Alloc(u_long allocSize);
-#ifdef MEM_DEBUG
 	friend class MemChecker;
 
 	//!tracks allocation and deallocation of memory
 	MemTracker *fTracker;
-#endif
 };
 
 //!wrapper class to provide protocol for dispatching if non standard (GlobalAllocator) is used
@@ -275,10 +235,8 @@ public:
 	virtual Allocator *Global() = 0;
 	//!access allocator set for current context (e.g. thread)
 	virtual Allocator *Current() = 0;
-#ifdef MEM_DEBUG
-	//!allocate a memory tracker object (only available if MEM_DEBUG is set)
+	//!allocate a memory tracker object
 	virtual MemTracker *MakeMemTracker(const char *name) = 0;
-#endif
 	void SetOldHook(StorageHooks *pOld) {
 		fpOldHook = pOld;
 	}
@@ -301,11 +259,10 @@ public:
 	static void Finalize();
 
 	//!prints memory management statistics
-	static void PrintStatistic();
-#ifdef MEM_DEBUG
+	static void PrintStatistic(long lLevel = -1);
+
 	//!factory method to allocate memory management specific MemTracker
 	static MemTracker *MakeMemTracker(const char *name);
-#endif
 	//! get the global allocator
 	static Allocator *Global();
 
@@ -314,6 +271,7 @@ public:
 
 protected:
 	// somewhat silly the need to declare all storage hook derivations as friend
+	friend class PoolAllocator;
 	friend class MT_Storage;
 	friend class MTStorageHooks;
 	friend class TestStorageHooks;
@@ -336,16 +294,20 @@ protected:
 
 	//!do nothing; print statistics
 	static void DoFinalize();
-#ifdef MEM_DEBUG
 	//!factory method to allocate MemTracker
 	static MemTracker *DoMakeMemTracker(const char *name);
-#endif
 
 	//!exchange this object when MT_Storage is used
 	static StorageHooks *fgHooks;
 
 	//!flag to force global store temporarily
 	static bool fgForceGlobal;
+
+	/*! define the logging level of memory statistics
+		0: No pool statistic tracing, except when excess memory was used
+		1: Trace overall statistics
+		2: Trace detailed statistics */
+	static long fglStatisticLevel;
 
 	//! the global allocator
 	static Allocator *fgGlobalPool;
@@ -360,9 +322,7 @@ public:
 	virtual void Finalize();
 	virtual Allocator *Global();
 	virtual Allocator *Current();
-#ifdef MEM_DEBUG
 	virtual MemTracker *MakeMemTracker(const char *name);
-#endif
 
 	Allocator *fAllocator;
 	StorageHooks *fpOldHook;

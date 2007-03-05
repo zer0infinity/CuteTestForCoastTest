@@ -21,7 +21,7 @@
 
 //--- c-library modules used ---------------------------------------------------
 
-#if 0
+#if 1
 #define TrackLockerInit(lockvar) , lockvar(0)
 #define TrackLockerDef(lockvar)	volatile long lockvar
 
@@ -82,7 +82,6 @@ protected:
 	}
 };
 
-#ifdef MEM_DEBUG
 //------------- Utilities for Memory Tracking (multi threaded) --------------
 
 MT_MemTracker::MT_MemTracker(const char *name, long lId)
@@ -98,6 +97,27 @@ MT_MemTracker::~MT_MemTracker()
 {
 	if ( !DELETEMUTEX(fMutex) ) {
 		SysLog::Error("Mutex delete failed");
+	}
+}
+
+void *MT_MemTracker::operator new(size_t size)
+{
+	// never allocate on allocator, because we are tracking exactly the one...
+	void *vp = ::calloc(1, sizeof(MT_MemTracker));
+	return vp;
+}
+
+void *MT_MemTracker::operator new(size_t size, Allocator *)
+{
+	// never allocate on allocator, because we are tracking exactly the one...
+	void *vp = ::calloc(1, sizeof(MT_MemTracker));
+	return vp;
+}
+
+void MT_MemTracker::operator delete(void *vp)
+{
+	if (vp) {
+		::operator delete(vp);
 	}
 }
 
@@ -136,17 +156,16 @@ l_long MT_MemTracker::CurrentlyAllocated()
 	return  l;
 }
 
-void MT_MemTracker::PrintStatistic()
+void MT_MemTracker::PrintStatistic(long lLevel)
 {
 	if ( !LOCKMUTEX(fMutex) ) {
 		SysLog::Error("Mutex lock failed");
 	}
-	MemTracker::PrintStatistic();
+	MemTracker::PrintStatistic(lLevel);
 	if ( !UNLOCKMUTEX(fMutex) ) {
 		SysLog::Error("Mutex lock failed");
 	}
 }
-#endif
 
 class EXPORTDECL_MTFOUNDATION MTStorageHooks : public StorageHooks
 {
@@ -159,15 +178,11 @@ public:
 	virtual Allocator *Global();
 
 	virtual Allocator *Current();
-#ifdef MEM_DEBUG
 	virtual MemTracker *MakeMemTracker(const char *name);
-#endif
 	bool fgInitialized;
 };
 
-#ifdef MEM_DEBUG
 MemTracker *MT_Storage::fOldTracker = NULL;
-#endif
 
 static MTStorageHooks *sgpMTHooks = NULL;
 
@@ -226,13 +241,11 @@ void MT_Storage::Initialize()
 	if ( !fgInitialized ) {
 		sgpMTHooks = new MTStorageHooks();
 		Storage::SetHooks(sgpMTHooks);
-#ifdef MEM_DEBUG
 		// switch to thread safe memory tracker
 		Allocator *a = Storage::Global();
 		if ( a ) {
 			fOldTracker = a->ReplaceMemTracker(Storage::MakeMemTracker("MTGlobalAllocator"));
 		}
-#endif
 		fgInitialized = true;
 	}
 	StatTrace(MT_Storage.Initialize, "leaving", Storage::Global());
@@ -257,17 +270,13 @@ void MT_Storage::Finalize()
 			}
 		}
 		Allocator *a = Storage::Global();
-#ifdef MEM_DEBUG
-		if ( a && fOldTracker )
-#else
-		if ( a )
-#endif
-		{
+		if ( a ) {
 			a->PrintStatistic();
-#ifdef MEM_DEBUG
-			delete a->ReplaceMemTracker(fOldTracker);
-			fOldTracker = NULL;
-#endif
+			if ( fOldTracker ) {
+				delete a->ReplaceMemTracker(fOldTracker);
+				fOldTracker = NULL;
+			}
+
 		}
 		StorageHooks *pOldHook = Storage::SetHooks(NULL);
 		if ( pOldHook == sgpMTHooks ) {
@@ -312,13 +321,13 @@ void MT_Storage::RefAllocator(Allocator *wdallocator)
 
 void MT_Storage::UnrefAllocator(Allocator *wdallocator)
 {
-	StartTrace1(MT_Storage.UnrefAllocator, "Id:" << (wdallocator ? wdallocator->GetId() : -1L));
+	StatTrace(MT_Storage.UnrefAllocator, "Id:" << (wdallocator ? wdallocator->GetId() : -1L) << " --- entering ---", Storage::Global());
 	if ( fgInitialized ) {
 		if (wdallocator) {	// just to be robust wdallocator == 0 should not happen
 			SimpleMutexEntry me(*fgpAllocatorInit);
 			me.Use();
 			wdallocator->Unref();
-			Trace("refcount is now:" << wdallocator->RefCnt());
+			StatTrace(MT_Storage.UnrefAllocator, "refcount is now:" << wdallocator->RefCnt(), Storage::Global());
 
 			if ( wdallocator->RefCnt() <= 0 ) {
 				// remove pool allocator
@@ -344,6 +353,7 @@ void MT_Storage::UnrefAllocator(Allocator *wdallocator)
 	} else {
 		SYSERROR("MT_Storage not initialized!");
 	}
+	StatTrace(MT_Storage.UnrefAllocator, "Id:" << (wdallocator ? wdallocator->GetId() : -1L) << " --- leaving ---", Storage::Global());
 }
 
 bool MT_Storage::RegisterThread(Allocator *wdallocator)
@@ -397,12 +407,10 @@ Allocator *MTStorageHooks::Global()
 	return Storage::DoGlobal();
 }
 
-#ifdef MEM_DEBUG
 MemTracker *MTStorageHooks::MakeMemTracker(const char *name)
 {
 	return new MT_MemTracker(name, 55667788);
 }
-#endif
 
 Allocator *MTStorageHooks::Current()
 {
