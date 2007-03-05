@@ -59,7 +59,7 @@ void LeaderFollowerPoolTest::NoReactorTest()
 	lfpConfig[String("Accept") << GetConfig()["Testhost"]["port1"].AsString()] = (IFAObject *)&ac1;
 	if ( t_assertm( !lfp.Init(2, lfpConfig), "no reactor is configured; init should fail") ) {
 		t_assertm(lfp.GetPoolSize() == 0, "expected no threads in pool");
-		t_assertm(lfp.Start(true, 1000, 10) == -1, "expected Start to fail");
+		t_assertm(lfp.Start(true, 1000, 11) == -1, "expected Start to fail");
 	}
 }
 
@@ -71,7 +71,7 @@ void LeaderFollowerPoolTest::NoAcceptorsTest()
 	Anything lfpConfig;
 	if ( t_assertm( !lfp.Init(2, lfpConfig), "no acceptors are configured; init should fail") ) {
 		t_assertm(lfp.GetPoolSize() == 0, "expected no threads in pool");
-		t_assertm(lfp.Start(true, 1000, 10) == -1, "expected Start to fail");
+		t_assertm(lfp.Start(true, 1000, 11) == -1, "expected Start to fail");
 	}
 }
 
@@ -85,7 +85,7 @@ void LeaderFollowerPoolTest::OneAcceptorTest()
 	Anything lfpConfig;
 	lfpConfig[String("Accept") << GetConfig()["Testhost"]["port1"].AsString()] = (IFAObject *)&ac1;
 	if ( t_assertm( lfp.Init(3, lfpConfig), "some port maybe already bound")) {
-		if (t_assert(lfp.Start(true, 1000, 10) == 0 )) {
+		if (t_assert(lfp.Start(true, 1000, 11) == 0 )) {
 			ProcessOneEvent();
 			lfp.RequestTermination();
 			t_assertm(lfp.Join() == 0, "expected Join to succeed");
@@ -128,7 +128,7 @@ void LeaderFollowerPoolTest::ManyAcceptorsTest()
 		lfpConfig[String("Accept") << GetConfig()["Testhost"]["port3"].AsString()] = (IFAObject *)&ac3;
 		if ( t_assertm( !lfp.Init(0, lfpConfig), "should not allow LFPool to run without threads") ) {
 			t_assertm(lfp.GetPoolSize() == 0, "expected no threads in pool");
-			t_assertm(lfp.Start(true, 1000, 10) == -1, "expected Start to fail");
+			t_assertm(lfp.Start(true, 1000, 11) == -1, "expected Start to fail");
 		}
 	}
 	{
@@ -178,7 +178,7 @@ void LeaderFollowerPoolTest::ManyAcceptorsTest()
 		lfpConfig[String("Accept") << GetConfig()["Testhost"]["port2"].AsString()] = (IFAObject *)&ac2;
 		lfpConfig[String("Accept") << GetConfig()["Testhost"]["port3"].AsString()] = (IFAObject *)&ac3;
 		if ( t_assertm( lfp.Init(3, lfpConfig), "some port maybe already bound")) {
-			if (t_assert(lfp.Start(true, 1000, 10) == 0 )) {
+			if (t_assert(lfp.Start(true, 1000, 11) == 0 )) {
 				ProcessManyEvents();
 				lfp.RequestTermination();
 				t_assertm(lfp.Join() == 0, "expected Join to succeed");
@@ -196,7 +196,7 @@ void LeaderFollowerPoolTest::ManyAcceptorsTest()
 		lfpConfig[String("Accept") << GetConfig()["Testhost"]["port2"].AsString()] = (IFAObject *)&ac2;
 		lfpConfig[String("Accept") << GetConfig()["Testhost"]["port3"].AsString()] = (IFAObject *)&ac3;
 		if ( t_assertm( lfp.Init(4, lfpConfig), "some port maybe already bound")) {
-			if (t_assert(lfp.Start(true, 1000, 10) == 0 )) {
+			if (t_assert(lfp.Start(true, 1000, 11) == 0 )) {
 				ProcessManyEvents();
 				lfp.RequestTermination();
 				t_assertm(lfp.Join() == 0, "expected Join to succeed");
@@ -216,7 +216,7 @@ void LeaderFollowerPoolTest::InvalidAcceptorTest()
 	lfpConfig[String("Accept") << GetConfig()["Testhost"]["port"].AsString()] = (IFAObject *)&ac1;
 	if ( t_assertm( !lfp.Init(3, lfpConfig), "should not bind to already bound port and needs root privilege anyway") ) {
 		t_assertm(lfp.GetPoolSize() == 0, "expected no threads in pool");
-		t_assertm(lfp.Start(true, 1000, 10) == -1, "expected Start to fail");
+		t_assertm(lfp.Start(true, 1000, 11) == -1, "expected Start to fail");
 	}
 }
 
@@ -233,7 +233,7 @@ void LeaderFollowerPoolTest::InvalidAcceptorsTest()
 	lfpConfig[String("Accept") << GetConfig()["Testhost"]["port"].AsString()] = (IFAObject *)&ac2;
 	if ( t_assertm( !lfp.Init(2, lfpConfig), "should not bind to already bound port and needs root privilege anyway") ) {
 		t_assertm(lfp.GetPoolSize() == 0, "expected no threads in pool");
-		t_assertm(lfp.Start(true, 1000, 10) == -1, "expected Start to fail");
+		t_assertm(lfp.Start(true, 1000, 11) == -1, "expected Start to fail");
 	}
 }
 
