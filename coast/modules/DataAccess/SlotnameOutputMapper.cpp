@@ -10,6 +10,7 @@
 #include "SlotnameOutputMapper.h"
 
 //--- standard modules used ----------------------------------------------------
+#include "AnyIterators.h"
 #include "Dbg.h"
 #include "Timers.h"
 
@@ -20,30 +21,29 @@ bool SlotnameOutputMapper::DoPutAny(const char *key, Anything value, Context &ct
 {
 	StartTrace1(SlotnameOutputMapper.DoPutAny, "Key: " << NotNull(key));
 
+	DAAccessTimer(SlotnameOutputMapper.DoPutAny, value.GetSize() << " entries processed", ctx);
 	Anything dest = GetDestination(ctx, config);
-	Anything rows = value;
-	ROAnything slotnameSlots = config["SlotnameSlots"];
-	long depth = slotnameSlots.GetSize();
-	long sz = rows.GetSize();
-	DAAccessTimer(SlotnameOutputMapper.DoPutAny, sz << " entries procesed", ctx);
-	for (long i = 0; i < sz; i++) {
-		Anything temp = dest;
-		String slotname;
-		for (long j = 0; j < depth; j++) {
-			String slotnameSlot = slotnameSlots[j].AsString();
-			slotname = rows[i][slotnameSlot].AsString();
-			if (j < depth - 1) {
-				if (!temp.IsDefined(slotname)) {
-					temp[slotname] = MetaThing();
+	AnyExtensions::Iterator<Anything> aRowIter(value);
+	Anything anyRow;
+	String strDestPath(128L);
+	while ( aRowIter(anyRow) ) {
+		SubTraceAny(PerRow, anyRow, "entry");
+		strDestPath.Trim(0);
+		AnyExtensions::Iterator<ROAnything> aSlotnameIter(config["SlotnameSlots"]);
+		ROAnything roaSNEntry;
+		while ( aSlotnameIter(roaSNEntry) ) {
+			String strKey = ((ROAnything)anyRow)[roaSNEntry.AsCharPtr()].AsString();
+			if ( strKey.Length() ) {
+				if ( strDestPath.Length() ) {
+					strDestPath << '.';
 				}
-			} else {
-				temp[slotname] = rows[i];
+				strDestPath << strKey;
 			}
-			temp = temp[slotname];
-			TraceAny(dest, "Dest so far");
 		}
-		TraceAny(dest, "Dest after row");
+		SubTrace(PerRow, "destination path [" << strDestPath << "]");
+		SlotPutter::Operate(anyRow, dest, strDestPath, false);
+		SubTraceAny(PerRow, dest, "Dest after row");
 	}
-	TraceAny(dest, "Dest finally");
+	SubTraceAny(Final, dest, "Dest finally");
 	return true;
 }
