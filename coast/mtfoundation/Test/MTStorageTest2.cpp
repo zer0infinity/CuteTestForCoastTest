@@ -120,9 +120,7 @@ void MTStorageTest2::trivialTest()
 void MTStorageTest2::twoThreadTest()
 {
 	StartTrace1(MTStorageTest2.twoThreadTest, "ThrdId: " << Thread::MyId());
-#ifdef MEM_DEBUG
 	assertEqualm(0, fPool->CurrentlyAllocated(), "expected fPool to be empty");
-#endif
 	DataProviderThread *t1 = new DataProviderThread(fPool);
 	t1->Start(fPool);
 
@@ -130,21 +128,15 @@ void MTStorageTest2::twoThreadTest()
 	t1->CheckState(Thread::eTerminated);
 
 	// everything should have been allocated within pool!
-#ifdef MEM_DEBUG
 	t_assert( fPool->CurrentlyAllocated() > 0);
-#endif
 	delete t1;
-#ifdef MEM_DEBUG
 	assertEqualm(0, fPool->CurrentlyAllocated(), "expected fPool to be empty");
-#endif
 }
 
 void MTStorageTest2::twoThreadAssignmentTest()
 {
 	StartTrace1(MTStorageTest2.twoThreadAssignmentTest, "ThrdId: " << Thread::MyId());
-#ifdef MEM_DEBUG
 	l_long l = fGlobal->CurrentlyAllocated();
-#endif
 	DataProviderThread *t1 = new DataProviderThread(fPool);
 	t1->Start(fPool);
 
@@ -156,18 +148,14 @@ void MTStorageTest2::twoThreadAssignmentTest()
 
 	// data should have been copied to global store now
 
-#ifdef MEM_DEBUG
 	assertEqualm(0, fPool->CurrentlyAllocated(), "expected fPool to be empty");
 	t_assert( fGlobal->CurrentlyAllocated() > l);
-#endif
 }
 
 void MTStorageTest2::twoThreadCopyConstructorTest()
 {
 	StartTrace1(MTStorageTest2.twoThreadCopyConstructorTest, "ThrdId: " << Thread::MyId());
-#ifdef MEM_DEBUG
 	l_long l = fGlobal->CurrentlyAllocated();
-#endif
 	DataProviderThread *t1 = new DataProviderThread(fPool);
 	t1->Start(fPool);
 
@@ -179,18 +167,14 @@ void MTStorageTest2::twoThreadCopyConstructorTest()
 
 	// data should have been copied to global store now
 
-#ifdef MEM_DEBUG
 	assertEqualm(0, fPool->CurrentlyAllocated(), "expected fPool to be empty");
 	t_assert( fGlobal->CurrentlyAllocated() > l);
-#endif
 }
 
 void MTStorageTest2::twoThreadArrayAccessTest()
 {
 	StartTrace1(MTStorageTest2.twoThreadArrayAccessTest, "ThrdId: " << Thread::MyId());
-#ifdef MEM_DEBUG
 	l_long l = fGlobal->CurrentlyAllocated();
-#endif
 	{
 		DataProviderThread *t1 = new DataProviderThread(fPool);
 		t1->Start(fPool);
@@ -204,23 +188,17 @@ void MTStorageTest2::twoThreadArrayAccessTest()
 		//          often return a temporary Anything which is *NOT* suitable to initialize
 		//          a ROAnything...
 
-#ifdef MEM_DEBUG
 		t_assert( fGlobal->CurrentlyAllocated() == l); //no longer true
-#endif
 		assertEqual( "ok", sub.AsCharPtr("") );
 
 		Anything copy(t1->GetData()["Sub"]["2"]);	// must be copied since allocators dont match
-#ifdef MEM_DEBUG
 		t_assert( fGlobal->CurrentlyAllocated() > l);
-#endif
 		// data should have been copied to global store now
 		delete t1;
 	}
-#ifdef MEM_DEBUG
 	// new we should be back where we started
 	assertEqualm(0, fPool->CurrentlyAllocated(), "expected fPool to be empty");
 	t_assert( fGlobal->CurrentlyAllocated() == l); //no longer true
-#endif
 }
 
 void MTStorageTest2::reusePoolTest()
@@ -242,7 +220,6 @@ void MTStorageTest2::reusePoolTest()
 
 	// wait for thread to finish
 	t1->CheckState(Thread::eTerminated);
-
 	assertEqualm(2L, pa->RefCnt(), "expected refcnt to be 2");
 	delete t1;
 	assertEqualm(1L, pa->RefCnt(), "expected refcnt to be 1");
@@ -253,7 +230,6 @@ void MTStorageTest2::reusePoolTest()
 
 	// do some work
 	t1->Start(pa);
-
 	// wait for other thread to finish
 	t1->CheckState(Thread::eTerminated);
 

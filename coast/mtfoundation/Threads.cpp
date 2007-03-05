@@ -33,7 +33,6 @@ AllocatorUnref::~AllocatorUnref()
 	if (fThread) {
 		Allocator *a = fThread->fAllocator;
 		if (a) {
-#ifdef MEM_DEBUG
 			long lMaxCount = 3L;
 			while ( ( a->CurrentlyAllocated() > 0L ) && ( --lMaxCount >= 0L ) ) {
 				// give some 20ms slices to finish everything
@@ -41,7 +40,6 @@ AllocatorUnref::~AllocatorUnref()
 				// normally only used in opt-wdbg or dbg mode
 				Thread::Wait(0L, 20000000);
 			}
-#endif
 			// now the allocator is no longer needed...
 			MT_Storage::UnrefAllocator(a);
 			fThread->fAllocator = 0;
@@ -211,9 +209,9 @@ bool Thread::Start(Allocator *pAllocator, ROAnything args)
 	return false;
 }
 
-void Thread::Exit(int )
+void Thread::Exit(int)
 {
-	StartTrace(Thread.Exit);
+	StatTrace(Thread.Exit, "destroying system thread object", Storage::Global());
 	DELETETHREAD();
 }
 
