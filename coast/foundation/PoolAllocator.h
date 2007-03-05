@@ -14,6 +14,48 @@
 
 struct PoolBucket;
 
+class ExcessTrackerElt
+{
+	friend class PoolAllocatorTest;
+
+	MemTracker *fpTracker;
+	ExcessTrackerElt *fpNext;
+	u_long fulBucketSize;
+
+	ExcessTrackerElt &operator=(const ExcessTrackerElt &);
+
+	void SetValues(MemTracker *pTracker, ExcessTrackerElt *pNext, u_long ulBucketSize);
+
+public:
+	ExcessTrackerElt();
+
+	ExcessTrackerElt(MemTracker *pTracker, ExcessTrackerElt *pNext, u_long ulBucketSize);
+
+	~ExcessTrackerElt();
+
+	void PrintStatistic(long lLevel = -1);
+
+	ul_long GetSizeToPowerOf2(u_long ulWishSize);
+
+	long GetMaxSizeBitNumber();
+
+	MemTracker *FindTrackerForSize(u_long lMemSize);
+
+	ExcessTrackerElt *InsertTrackerForSize(MemTracker *pTracker, u_long lMemSize);
+
+	void SetId(long lId);
+
+	MemTracker *operator[](u_long lMemSize);
+
+	l_long CurrentlyAllocated();
+
+	void Refresh();
+
+	static void *operator new(size_t size);
+	static void *operator new(size_t size, Allocator *);
+	static void operator delete(void *d);
+};
+
 //---- PoolAllocator ----------------------------------------------------------
 //!an allocator that uses a bucketing strategy with pre-allocated memory
 //! within Coast to be used as thread-specific allocator
@@ -38,10 +80,9 @@ public:
 		\return old identifier */
 	virtual long SetId(long lId);
 
-	virtual void PrintStatistic();
-#ifdef MEM_DEBUG
+	virtual void PrintStatistic(long lLevel = -1);
+
 	l_long  CurrentlyAllocated();
-#endif
 	//! apply this to an empty pool only, rebuilds bucket structure from
 	//! ground up, used for request threads after a request is handled
 	virtual void Refresh();
@@ -63,8 +104,8 @@ protected:
 	void Initialize();
 
 	// only used for debugging
-	MemTrackDef(fPoolTracker) // semicolons are set by macro already ;
-	MemTrackDef(fExcessTracker) // otherwise some compilers complain about empty decls
+	MemTracker *fpPoolTotalTracker, *fpPoolTotalExcessTracker;
+	ExcessTrackerElt *fpExcessTrackerList;
 };
 
 #endif

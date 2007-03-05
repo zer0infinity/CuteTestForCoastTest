@@ -16,6 +16,7 @@
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
+#include <stdio.h>
 #include <stdlib.h>
 
 #if !defined(__SUNPRO_CC) ||  __SUNPRO_CC < 0x500
@@ -26,19 +27,223 @@ extern void operator delete(void *ptr, void *vp);
 extern void operator delete(void *ptr);
 #endif
 
+//! smallest size of allocation unit
+static const u_long fgStartSize = 16L;
+
 //---- PoolAllocator ------------------------------------------
 struct PoolBucket {
 	u_long fSize;
 	u_long fUsableSize;
 	void *fFirstFree;
+	MemTracker *fpBucketTracker;
 };
+
+ExcessTrackerElt::ExcessTrackerElt()
+	: fpTracker(NULL)
+	, fpNext(NULL)
+	, fulBucketSize(0)
+{
+}
+
+ExcessTrackerElt::ExcessTrackerElt(MemTracker *pTracker, ExcessTrackerElt *pNext, u_long ulBucketSize)
+	: fpTracker(pTracker)
+	, fpNext(pNext)
+	, fulBucketSize(ulBucketSize)
+{
+}
+
+void ExcessTrackerElt::SetValues(MemTracker *pTracker, ExcessTrackerElt *pNext, u_long ulBucketSize)
+{
+	fpTracker = pTracker;
+	fpNext = pNext;
+	fulBucketSize = ulBucketSize;
+}
+
+void *ExcessTrackerElt::operator new(size_t size)
+{
+	// never allocate on allocator, because we are tracking exactly the one...
+	void *vp = ::calloc(1, sizeof(ExcessTrackerElt));
+	return vp;
+}
+
+void *ExcessTrackerElt::operator new(size_t size, Allocator *)
+{
+	// never allocate on allocator, because we are tracking exactly the one...
+	void *vp = ::calloc(1, sizeof(ExcessTrackerElt));
+	return vp;
+}
+
+void ExcessTrackerElt::operator delete(void *vp)
+{
+	if (vp) {
+		::operator delete(vp);
+	}
+}
+
+ExcessTrackerElt::~ExcessTrackerElt()
+{
+	// recursively print statistics on excess trackers
+	PrintStatistic(2);
+	delete fpTracker;
+	fpTracker = NULL;
+	delete fpNext;
+	fpNext = NULL;
+}
+
+void ExcessTrackerElt::PrintStatistic(long lLevel)
+{
+	if ( fpTracker && fpTracker->PeakAllocated() > 0 ) {
+		fpTracker->PrintStatistic(lLevel);
+	}
+}
+
+ul_long ExcessTrackerElt::GetSizeToPowerOf2(u_long ulWishSize)
+{
+	long lBitCnt = 0L, lMaxBit = 0L;
+	while ( ulWishSize > 0 ) {
+		++lMaxBit;
+		// count bits to see if the wish size is already an exact power of 2
+		lBitCnt += ( ( ( ulWishSize & 0x01 ) > 0 ) ? 1 : 0 );
+		ulWishSize >>= 1;
+	}
+	// adjust bitcount if wish size is already an exact power of 2
+	if ( lBitCnt == 1 ) {
+		--lMaxBit;
+	}
+	return (1 << lMaxBit);
+}
+
+long ExcessTrackerElt::GetMaxSizeBitNumber()
+{
+	long lBitCnt = 0L;
+	ExcessTrackerElt *pElt = this;
+	while ( pElt->fpNext != NULL ) {
+		pElt = pElt->fpNext;
+	}
+	if ( pElt ) {
+		ul_long ulSize = pElt->fulBucketSize;
+		// count bit number
+		while ( ulSize > 0 ) {
+			ulSize >>= 1;
+			++lBitCnt;
+		}
+	}
+	return lBitCnt;
+}
+
+MemTracker *ExcessTrackerElt::FindTrackerForSize(u_long lMemSize)
+{
+	MemTracker *pTracker = NULL;
+	ExcessTrackerElt *pElt = this;
+	while ( pElt != NULL ) {
+		// try if the this tracker is already of correct size
+		// if the tracker is for a size which is too big, we should not take it
+		// ( trackersize >> 1 ) > lMemSize <= trackersize
+		if ( ( pElt->fulBucketSize >= lMemSize ) && ( lMemSize > ( pElt->fulBucketSize >> 1 ) ) ) {
+			pTracker = pElt->fpTracker;
+			// found, return the tracker
+			break;
+		}
+		// not found yet
+		pElt = pElt->fpNext;
+	}
+	return pTracker;
+}
+
+ExcessTrackerElt *ExcessTrackerElt::InsertTrackerForSize(MemTracker *pTracker, u_long lMemSize)
+{
+	ExcessTrackerElt *pElt = this, *pSmaller = NULL;
+	while ( pElt && pElt->fulBucketSize > 0 ) {
+		if ( pElt->fulBucketSize > lMemSize ) {
+			// current element is already larger, must insert between pSmaller and pElt
+			break;
+		}
+		// not found yet
+		pSmaller = pElt;
+		pElt = pElt->fpNext;
+	}
+	// check the case where we get the root element
+	if ( pSmaller == NULL && pElt != NULL ) {
+		ExcessTrackerElt *pNewElt = NULL;
+		// check if the root element must be shifted
+		if ( pElt->fulBucketSize > 0 ) {
+			// use copy-ctor to assign values of root element to the shifted one
+			pNewElt = new ExcessTrackerElt((*pElt));
+		}
+		// assign current values to root element using assignment operator and temporary object
+		pElt->SetValues(pTracker, pNewElt, lMemSize);
+	} else {
+		if ( pSmaller != NULL ) {
+			pElt = pSmaller->fpNext = new ExcessTrackerElt(pTracker, pElt, lMemSize);
+		} else {
+			// should not happen
+		}
+	}
+	return pElt;
+}
+
+void ExcessTrackerElt::SetId(long lId)
+{
+	ExcessTrackerElt *pElt = this;
+	while ( pElt ) {
+		MemTracker *pTracker = pElt->fpTracker;
+		if ( pTracker ) {
+			pTracker->SetId(lId);
+		}
+		pElt = pElt->fpNext;
+	}
+}
+
+MemTracker *ExcessTrackerElt::operator[](u_long lMemSize)
+{
+	u_long ulWishSize = GetSizeToPowerOf2(lMemSize);
+	MemTracker *pTracker = FindTrackerForSize(ulWishSize);
+	if ( pTracker == NULL ) {
+		char buf[80] = { 0 };
+		snprintf(buf, sizeof(buf), "PoolExcessTracker[%d]", (long)ulWishSize);
+		// need to add new ExcessTrackerElt and MemTracker for given size
+		pTracker = Storage::MakeMemTracker(buf);
+		InsertTrackerForSize(pTracker, ulWishSize);
+	}
+	return pTracker;
+}
+
+l_long ExcessTrackerElt::CurrentlyAllocated()
+{
+	l_long llTotal = 0LL;
+	ExcessTrackerElt *pElt = this;
+	while ( pElt ) {
+		MemTracker *pTracker = pElt->fpTracker;
+		if ( pTracker ) {
+			llTotal += pTracker->CurrentlyAllocated();
+		}
+		pElt = pElt->fpNext;
+	}
+	return llTotal;
+}
+
+void ExcessTrackerElt::Refresh()
+{
+	ExcessTrackerElt *pElt = this;
+	while ( pElt ) {
+		MemTracker *pTracker = pElt->fpTracker;
+		if ( pTracker && ( pTracker->CurrentlyAllocated() > 0 ) ) {
+			char buf[256] = { 0 };
+			snprintf(buf, sizeof(buf), "ExcessAllocator was still in use! (id: %d, name: %s) in Refresh()", pTracker->fId, NotNull(pTracker->fpName));
+			SysLog::Error(buf);
+		}
+		pElt = pElt->fpNext;
+	}
+}
 
 PoolAllocator::PoolAllocator(long poolid, u_long poolSize, u_long maxPoolBuckets)
 	: Allocator(poolid)
 	, fNumOfPoolBucketSizes(maxPoolBuckets)
-	MemTrackInit(fPoolTracker)
-	MemTrackInit(fExcessTracker)
+	, fpPoolTotalTracker( Storage::MakeMemTracker("PoolTotal") )
+	, fpPoolTotalExcessTracker( Storage::MakeMemTracker("ExcessTotal") )
+	, fpExcessTrackerList(NULL)
 {
+	fpExcessTrackerList = new ExcessTrackerElt();
 	fAllocSz = poolSize * 1024;
 	fPoolMemory = ::calloc(fAllocSz, 1);
 	fPoolBuckets = (PoolBucket *)::calloc(fNumOfPoolBucketSizes + 1, sizeof(PoolBucket));
@@ -55,31 +260,40 @@ PoolAllocator::PoolAllocator(long poolid, u_long poolSize, u_long maxPoolBuckets
 		return;
 	}
 	Initialize();
-
-#ifdef MEM_DEBUG
-	fPoolTracker.SetId(poolid);
-	fExcessTracker.SetId(poolid);
-#endif
+	fpPoolTotalTracker->SetId(poolid);
+	fpPoolTotalExcessTracker->SetId(poolid);
 }
 
 long PoolAllocator::SetId(long lId)
 {
-#ifdef MEM_DEBUG
-	fPoolTracker.SetId(lId);
-	fExcessTracker.SetId(lId);
-#endif
+	for (long i = 0; i < (long)fNumOfPoolBucketSizes; ++i) {
+		MemTracker *pTracker = fPoolBuckets[i].fpBucketTracker;
+		if ( pTracker ) {
+			pTracker->SetId(lId);
+		}
+	}
+	fpExcessTrackerList->SetId(lId);
+	fpPoolTotalTracker->SetId(lId);
+	fpPoolTotalExcessTracker->SetId(lId);
 	return Allocator::SetId(lId);
 }
 
 void PoolAllocator::Initialize()
 {
 	// initialize data structures used by the allocator
-	long sz = 16;
+	long sz = fgStartSize;
 
 	for (long i = 0; i < (long)fNumOfPoolBucketSizes; ++i) {
 		fPoolBuckets[i].fSize = sz;
 		fPoolBuckets[i].fUsableSize = sz - MemoryHeader::AlignedSize();	// optimization
 		fPoolBuckets[i].fFirstFree = NULL;
+		// only create new trackers once
+		if ( fPoolBuckets[i].fpBucketTracker == NULL ) {
+			char buf[80] = { 0 };
+			snprintf(buf, sizeof(buf), "PoolBucketTracker[%d]", sz);
+			fPoolBuckets[i].fpBucketTracker = Storage::MakeMemTracker(buf);
+			fPoolBuckets[i].fpBucketTracker->SetId(fAllocatorId);
+		}
 		sz <<= 1;
 	}
 	fPoolBuckets[fNumOfPoolBucketSizes].fSize = 0;
@@ -88,9 +302,69 @@ void PoolAllocator::Initialize()
 
 PoolAllocator::~PoolAllocator()
 {
-	MemTrackStatIfAllocated(fPoolTracker);
-	MemTrackStatIfAllocated(fExcessTracker);
-	MemTrackStillAllocatedException(fPoolTracker, "PoolAllocator::~PoolAllocator");
+	String strUnusedBucketSizes("Unused bucket sizes: [", Storage::Global()), strUsedBucketSizes("Used bucket sizes:   [", Storage::Global());
+	long lNumUsed = 0, lNumUnused = 0, lMaxUsedBucket = 0;
+	long lIntLevel = Storage::fglStatisticLevel;
+
+	// override user setting if excess memory was used
+	if ( fpPoolTotalExcessTracker->PeakAllocated() > 0 ) {
+		lIntLevel = 2;
+	}
+
+	for (long i = 0; i < (long)fNumOfPoolBucketSizes; ++i) {
+		MemTracker *pTracker = fPoolBuckets[i].fpBucketTracker;
+		if ( pTracker->PeakAllocated() > 0 ) {
+			pTracker->PrintStatistic(lIntLevel);
+			if ( pTracker->CurrentlyAllocated() > 0 ) {
+				char buf[256] = { 0 };
+				snprintf(buf, sizeof(buf), "PoolAllocator was still in use! (id: %d, name: %s) in PoolAllocator::~PoolAllocator()", pTracker->fId, NotNull(pTracker->fpName));
+				SysLog::Error(buf);
+			}
+			if ( ++lNumUsed > 1 ) {
+				strUsedBucketSizes.Append(", ");
+			}
+			strUsedBucketSizes.Append(fPoolBuckets[i].fSize);
+			lMaxUsedBucket = i + 1;
+		} else {
+			if ( ++lNumUnused > 1 ) {
+				strUnusedBucketSizes.Append(", ");
+			}
+			strUnusedBucketSizes.Append(fPoolBuckets[i].fSize);
+		}
+	}
+	// will print statistics if list contains entries
+	long lMaxExcessBit = fpExcessTrackerList->GetMaxSizeBitNumber();
+	fpExcessTrackerList->SetId(fAllocatorId);
+	delete fpExcessTrackerList;
+
+	if ( lIntLevel >= 1 ) {
+		// totals
+		if ( fpPoolTotalTracker->PeakAllocated() > 0 ) {
+			fpPoolTotalTracker->PrintStatistic(2);
+		}
+		if ( fpPoolTotalExcessTracker->PeakAllocated() > 0 ) {
+			fpPoolTotalExcessTracker->PrintStatistic(2);
+		}
+	}
+	delete fpPoolTotalTracker;
+	delete fpPoolTotalExcessTracker;
+
+	if ( lIntLevel >= 1 && lNumUsed > 0 ) {
+		if ( lMaxExcessBit > 0 ) {
+			ul_long ulSize = fgStartSize;
+			while ( ulSize > 1 ) {
+				ulSize >>= 1;
+				--lMaxExcessBit;
+			}
+			lMaxUsedBucket = itoMAX(lMaxUsedBucket, lMaxExcessBit);
+		}
+		SysLog::WriteToStderr(String("\nAllocator [", Storage::Global()).Append(fAllocatorId).Append("]\n"));
+		SysLog::WriteToStderr(strUsedBucketSizes.Append("] -> optimal BucketSizesParam: ").Append(lMaxUsedBucket).Append(" now: ").Append(fNumOfPoolBucketSizes).Append("\n"));
+		SysLog::WriteToStderr(strUnusedBucketSizes.Append("]\n"));
+	}
+	for (long i = 0; i < (long)fNumOfPoolBucketSizes; ++i) {
+		delete (fPoolBuckets[i].fpBucketTracker);
+	}
 	::free(fPoolBuckets);
 	::free(fPoolMemory);
 }
@@ -107,14 +381,17 @@ void PoolAllocator::Free(void *vp)
 			if ( bucket ) {
 				Assert(header->fSize + MemoryHeader::AlignedSize() == bucket->fSize);
 
-				MemTrackFree(fPoolTracker, header->fSize);
+				bucket->fpBucketTracker->TrackFree(header->fSize);
+				fpPoolTotalTracker->TrackFree(header->fSize);
 				InsertFreeHeaderIntoBucket(header, bucket);
 			} else {
 				SysLog::Error("bucket not found!");
 				Assert(0);
 			}
 		} else if ( header->fState == MemoryHeader::eUsedNotPooled ) {
-			MemTrackFree(fExcessTracker, header->fSize);
+			u_long ulSize = header->fSize + MemoryHeader::AlignedSize();
+			(*fpExcessTrackerList)[ulSize]->TrackFree(ulSize);
+			fpPoolTotalExcessTracker->TrackFree(ulSize);
 			::free(header);
 		} else  {
 			// something wrong happened, double free
@@ -165,8 +442,9 @@ void *PoolAllocator::Alloc(u_long allocSize)
 	if ( bucket ) {
 		if ( bucket->fFirstFree ) {
 			// we have a bucket to reuse
-			MemoryHeader *mh =  RemoveHeaderFromBucket(bucket) ;
-			MemTrackAlloc(fPoolTracker, mh->fSize);
+			MemoryHeader *mh = RemoveHeaderFromBucket(bucket);
+			bucket->fpBucketTracker->TrackAlloc(mh->fSize);
+			fpPoolTotalTracker->TrackAlloc(mh->fSize);
 			return ExtMemStart(mh);
 		} else {
 			void *lastFree = fPoolBuckets[fNumOfPoolBucketSizes].fFirstFree;
@@ -175,8 +453,8 @@ void *PoolAllocator::Alloc(u_long allocSize)
 				// we have enough free pool memory to satisfy the request
 				MemoryHeader *mh = MakeHeaderFromBucket(bucket, lastFree);
 				fPoolBuckets[fNumOfPoolBucketSizes].fFirstFree = mh;
-
-				MemTrackAlloc(fPoolTracker, mh->fSize);
+				bucket->fpBucketTracker->TrackAlloc(mh->fSize);
+				fpPoolTotalTracker->TrackAlloc(mh->fSize);
 				return ExtMemStart( mh );
 			} else {
 				// try to split a larger bucket
@@ -201,8 +479,8 @@ void *PoolAllocator::Alloc(u_long allocSize)
 					}
 					// we have a bucket to reuse
 					mh =  RemoveHeaderFromBucket(requestedBucket) ;
-
-					MemTrackAlloc(fPoolTracker, mh->fSize);
+					requestedBucket->fpBucketTracker->TrackAlloc(mh->fSize);
+					fpPoolTotalTracker->TrackAlloc(mh->fSize);
 					return ExtMemStart(mh);
 				}
 			}
@@ -214,10 +492,10 @@ void *PoolAllocator::Alloc(u_long allocSize)
 	void *vp = ::calloc(allocSize, 1);
 	if (vp) {
 		// keep some statistic
-		MemoryHeader *mh = new(vp) MemoryHeader(allocSize - MemoryHeader::AlignedSize(),
-												MemoryHeader::eUsedNotPooled);
-		MemTrackAlloc(fExcessTracker, mh->fSize);
-		SysLog::WriteToStderr("|", 1); // visually mark pool overflow
+		MemoryHeader *mh = new(vp) MemoryHeader(allocSize - MemoryHeader::AlignedSize(), MemoryHeader::eUsedNotPooled);
+		(*fpExcessTrackerList)[allocSize]->TrackAlloc(allocSize);
+		fpPoolTotalExcessTracker->TrackAlloc(allocSize);
+
 		return ExtMemStart(mh);
 	}
 	static const char crashmsg[] = "FATAL: PoolAllocator::Alloc [global memory] calloc failed. I will crash :-(\n";
@@ -264,27 +542,60 @@ PoolBucket *PoolAllocator::FindBucketBySize( u_long allocSize)
 	return 0;
 }
 
-void PoolAllocator::PrintStatistic()
+void PoolAllocator::PrintStatistic(long lLevel)
 {
-	MemTrackStatIfAllocated(fPoolTracker);
-	MemTrackStatIfAllocated(fExcessTracker);
+	long lIntLevel = ( ( lLevel >= 0 ) ? lLevel : Storage::fglStatisticLevel );
+	// override user setting if excess memory was used
+	if ( fpPoolTotalExcessTracker->PeakAllocated() > 0 ) {
+		lIntLevel = 2;
+	}
+
+	for (long i = 0; i < (long)fNumOfPoolBucketSizes; ++i) {
+		MemTracker *pTracker = fPoolBuckets[i].fpBucketTracker;
+		if ( pTracker->PeakAllocated() > 0 ) {
+			pTracker->PrintStatistic(lIntLevel);
+		}
+	}
+	fpExcessTrackerList->SetId(fAllocatorId);
+	fpExcessTrackerList->PrintStatistic(lIntLevel);
+
+	if ( lIntLevel >= 1 ) {
+		// totals
+		if ( fpPoolTotalTracker->PeakAllocated() > 0 ) {
+			fpPoolTotalTracker->PrintStatistic(2);
+		}
+		if ( fpPoolTotalExcessTracker->PeakAllocated() > 0 ) {
+			fpPoolTotalExcessTracker->PrintStatistic(2);
+		}
+	}
 }
 
-#ifdef MEM_DEBUG
 l_long PoolAllocator::CurrentlyAllocated()
 {
-	return fPoolTracker.CurrentlyAllocated() + fExcessTracker.CurrentlyAllocated();
+	l_long llTotal = 0LL;
+	for (long i = 0; i < (long)fNumOfPoolBucketSizes; ++i) {
+		MemTracker *pTracker = fPoolBuckets[i].fpBucketTracker;
+		llTotal += pTracker->CurrentlyAllocated();
+	}
+	llTotal += fpExcessTrackerList->CurrentlyAllocated();
+	return llTotal;
 }
-#endif
 
 void PoolAllocator::Refresh()
 {
-	MemTrackStatIfAllocatedTriggered(PoolAllocator.Refresh, fPoolTracker);
-	MemTrackStillAllocatedException(fPoolTracker, "PoolAllocator::Refresh()");
-	MemTrackStatIfAllocatedTriggered(PoolAllocator.Refresh, fExcessTracker);
-	MemTrackStillAllocatedException(fExcessTracker, "PoolAllocator::Refresh()");
-
-	if ( !MemTrackStillAllocated(fPoolTracker) ) {
+	if ( TraceTriggered(PoolAllocator.Refresh, Storage::Global()) ) {
+		PrintStatistic();
+	}
+	for (long i = 0; i < (long)fNumOfPoolBucketSizes; ++i) {
+		MemTracker *pTracker = fPoolBuckets[i].fpBucketTracker;
+		if ( pTracker->CurrentlyAllocated() > 0 ) {
+			char buf[256] = { 0 };
+			snprintf(buf, sizeof(buf), "PoolAllocator was still in use! (id: %d, name: %s) in PoolAllocator::~PoolAllocator()", pTracker->fId, NotNull(pTracker->fpName));
+			SysLog::Error(buf);
+		}
+	}
+	fpExcessTrackerList->Refresh();
+	if ( CurrentlyAllocated() == 0 ) {
 		// reinitialize pool if everything was freed
 		Initialize();
 	}
