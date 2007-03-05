@@ -45,6 +45,9 @@ THREADWRAPPERFUNCDECL(ThreadWrapper, thread)
 #if !defined(_DLL)
 		t->CleanupThreadStorage();
 #endif
+		t->Exit(0);
+	} else {
+		DELETETHREAD();
 	}
 }
 
@@ -116,6 +119,9 @@ THREADWRAPPERFUNCDECL(ThreadWrapper, thread)
 	if (t) {
 		t->IntRun();
 		t->CleanupThreadStorage();
+		t->Exit(0);
+	} else {
+		DELETETHREAD();
 	}
 	return 0;
 }
@@ -223,6 +229,9 @@ THREADWRAPPERFUNCDECL(ThreadWrapper, thread)
 	if (t) {
 		t->IntRun();
 		t->CleanupThreadStorage();
+		t->Exit(0);
+	} else {
+		DELETETHREAD();
 	}
 	return 0;
 }
