@@ -57,6 +57,7 @@ bool StreamToAnythingMapper::DoPutStream(const char *key, istream &is, Context &
 		DAAccessTimer(StreamToAnythingMapper.DoPutStream, "copying from stream", ctx);
 		while ( ( bSuccess = NSStringStream::PlainCopyStream2Stream(&is, ostr, lCopied, lToCopy) ) && ( lCopied >= lToCopy ) ) {
 			lTotal += lCopied;
+			Trace("bytes read so far: " << lTotal);
 		}
 		lTotal += lCopied;
 	}
@@ -73,7 +74,7 @@ bool StreamToAnythingMapper::DoPutStream(const char *key, istream &is, Context &
 			importok = anyResult.Import(istr, "ImportingFromStream");
 		}
 		if ( importok ) {
-			TraceAny(anyResult, "anything imported from stream:");
+			SubTraceAny(TraceResult, anyResult, "anything imported from stream:");
 			importok = DoPutAny(key, anyResult, ctx, script);
 		} else {
 			SYSWARNING("importing Anything from stream failed: total input-length:" << lTotal);
