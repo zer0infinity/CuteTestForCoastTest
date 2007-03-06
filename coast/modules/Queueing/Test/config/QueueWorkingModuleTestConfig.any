@@ -24,7 +24,7 @@
 				/QueueSize	25
 				/UsePoolStorage			1			# optional, [0|1], default 0, use preallocated memory pool for storage of Queue elements
 				/PoolStorageSize		1024		# optional, [kB], default 10240, pool storage size in kbytes
-				/NumOfPoolBucketSizes	10			# optional, default 10, number of different allocation units within PoolStorage, starts at 16 bytes and always doubles the size so 16 << 10 will give a max block size of 16384 bytes
+				/NumOfPoolBucketSizes	10			# optional, default 10, number of different allocation units within PoolStorage, starts at 16 bytes and always doubles the size so 16 << 10 will give a max block size of 8192 bytes
 				/Logging {
 					/Servername	NonExistingServer
 				}
@@ -37,7 +37,7 @@
 				/QueueSize	1
 				/UsePoolStorage			1			# optional, [0|1], default 0, use preallocated memory pool for storage of Queue elements
 				/PoolStorageSize		1024		# optional, [kB], default 10240, pool storage size in kbytes
-				/NumOfPoolBucketSizes	10			# optional, default 10, number of different allocation units within PoolStorage, starts at 16 bytes and always doubles the size so 16 << 10 will give a max block size of 16384 bytes
+				/NumOfPoolBucketSizes	10			# optional, default 10, number of different allocation units within PoolStorage, starts at 16 bytes and always doubles the size so 16 << 10 will give a max block size of 8192 bytes
 				/Logging {
 					/Servername	Server
 				}
