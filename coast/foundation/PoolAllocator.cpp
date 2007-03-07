@@ -202,7 +202,7 @@ MemTracker *ExcessTrackerElt::operator[](u_long lMemSize)
 		char buf[80] = { 0 };
 		snprintf(buf, sizeof(buf), "PoolExcessTracker[%d]", (long)ulWishSize);
 		// need to add new ExcessTrackerElt and MemTracker for given size
-		pTracker = Storage::MakeMemTracker(buf);
+		pTracker = Storage::MakeMemTracker(buf, false);
 		InsertTrackerForSize(pTracker, ulWishSize);
 	}
 	return pTracker;
@@ -239,8 +239,8 @@ void ExcessTrackerElt::Refresh()
 PoolAllocator::PoolAllocator(long poolid, u_long poolSize, u_long maxPoolBuckets)
 	: Allocator(poolid)
 	, fNumOfPoolBucketSizes(maxPoolBuckets)
-	, fpPoolTotalTracker( Storage::MakeMemTracker("PoolTotal") )
-	, fpPoolTotalExcessTracker( Storage::MakeMemTracker("ExcessTotal") )
+	, fpPoolTotalTracker( Storage::MakeMemTracker("PoolTotal", false) )
+	, fpPoolTotalExcessTracker( Storage::MakeMemTracker("ExcessTotal", false) )
 	, fpExcessTrackerList(NULL)
 {
 	fpExcessTrackerList = new ExcessTrackerElt();
@@ -291,7 +291,7 @@ void PoolAllocator::Initialize()
 		if ( fPoolBuckets[i].fpBucketTracker == NULL ) {
 			char buf[80] = { 0 };
 			snprintf(buf, sizeof(buf), "PoolBucketTracker[%d]", sz);
-			fPoolBuckets[i].fpBucketTracker = Storage::MakeMemTracker(buf);
+			fPoolBuckets[i].fpBucketTracker = Storage::MakeMemTracker(buf, false);
 			fPoolBuckets[i].fpBucketTracker->SetId(fAllocatorId);
 		}
 		sz <<= 1;

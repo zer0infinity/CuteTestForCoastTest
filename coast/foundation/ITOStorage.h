@@ -226,23 +226,35 @@ class EXPORTDECL_FOUNDATION StorageHooks
 public:
 	StorageHooks()
 		: fpOldHook(NULL) {};
+
 	virtual ~StorageHooks() {};
+
 	//!initialize storage subsystem
 	virtual void Initialize() = 0;
+
 	//!finalize storage subsystem
 	virtual void Finalize() = 0;
+
 	//!access global allocator
 	virtual Allocator *Global() = 0;
+
 	//!access allocator set for current context (e.g. thread)
 	virtual Allocator *Current() = 0;
-	//!allocate a memory tracker object
-	virtual MemTracker *MakeMemTracker(const char *name) = 0;
+
+	/*! allocate a memory tracker object
+		\param name name of the tracker
+		\param bThreadSafe specify if tracker must be thread safe or not - not used from within foundation
+		\return poniter to a newly created MemTracker object */
+	virtual MemTracker *MakeMemTracker(const char *name, bool bThreadSafe) = 0;
+
 	void SetOldHook(StorageHooks *pOld) {
 		fpOldHook = pOld;
 	}
+
 	StorageHooks *GetOldHook() {
 		return fpOldHook;
 	}
+
 private:
 	StorageHooks *fpOldHook;
 };
@@ -261,8 +273,12 @@ public:
 	//!prints memory management statistics
 	static void PrintStatistic(long lLevel = -1);
 
-	//!factory method to allocate memory management specific MemTracker
-	static MemTracker *MakeMemTracker(const char *name);
+	/*! allocate a memory tracker object
+		\param name name of the tracker
+		\param bThreadSafe specify if tracker must be thread safe or not - not used from within foundation
+		\return poniter to a newly created MemTracker object */
+	static MemTracker *MakeMemTracker(const char *name, bool bThreadSafe);
+
 	//! get the global allocator
 	static Allocator *Global();
 
@@ -322,7 +338,7 @@ public:
 	virtual void Finalize();
 	virtual Allocator *Global();
 	virtual Allocator *Current();
-	virtual MemTracker *MakeMemTracker(const char *name);
+	virtual MemTracker *MakeMemTracker(const char *name, bool);
 
 	Allocator *fAllocator;
 	StorageHooks *fpOldHook;

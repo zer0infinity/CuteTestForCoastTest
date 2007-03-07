@@ -178,7 +178,14 @@ public:
 	virtual Allocator *Global();
 
 	virtual Allocator *Current();
-	virtual MemTracker *MakeMemTracker(const char *name);
+
+	/*! allocate a memory tracker object
+		\param name name of the tracker
+		\param bThreadSafe specify if tracker must be thread safe or not - not used from within foundation
+		\return poniter to a newly created MemTracker object */
+	virtual MemTracker *MakeMemTracker(const char *name, bool bThreadSafe);
+
+private:
 	bool fgInitialized;
 };
 
@@ -244,7 +251,7 @@ void MT_Storage::Initialize()
 		// switch to thread safe memory tracker
 		Allocator *a = Storage::Global();
 		if ( a ) {
-			fOldTracker = a->ReplaceMemTracker(Storage::MakeMemTracker("MTGlobalAllocator"));
+			fOldTracker = a->ReplaceMemTracker(Storage::MakeMemTracker("MTGlobalAllocator", true));
 		}
 		fgInitialized = true;
 	}
@@ -407,9 +414,15 @@ Allocator *MTStorageHooks::Global()
 	return Storage::DoGlobal();
 }
 
-MemTracker *MTStorageHooks::MakeMemTracker(const char *name)
+MemTracker *MTStorageHooks::MakeMemTracker(const char *name, bool bThreadSafe)
 {
-	return new MT_MemTracker(name, 55667788);
+	MemTracker *pTracker = NULL;
+	if ( bThreadSafe ) {
+		pTracker  = new MT_MemTracker(name, 55667788);
+	} else {
+		pTracker = Storage::DoMakeMemTracker(name);
+	}
+	return pTracker;
 }
 
 Allocator *MTStorageHooks::Current()

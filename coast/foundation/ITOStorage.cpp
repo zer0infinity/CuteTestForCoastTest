@@ -157,10 +157,10 @@ MemTracker *Storage::DoMakeMemTracker(const char *name)
 	return new MemTracker(name);
 }
 
-MemTracker *Storage::MakeMemTracker(const char *name)
+MemTracker *Storage::MakeMemTracker(const char *name, bool bThreadSafe)
 {
 	if  (fgHooks && !fgForceGlobal) {
-		return fgHooks->MakeMemTracker(name);
+		return fgHooks->MakeMemTracker(name, bThreadSafe);
 	}
 	return Storage::DoMakeMemTracker(name);
 }
@@ -370,7 +370,7 @@ MemoryHeader *Allocator::RealMemStart(void *vp)
 //---- GlobalAllocator ------------------------------------------
 GlobalAllocator::GlobalAllocator() : Allocator(11223344L)
 {
-	fTracker = Storage::MakeMemTracker("GlobalAllocator");
+	fTracker = Storage::MakeMemTracker("GlobalAllocator", false);
 	fTracker->SetId(fAllocatorId);
 }
 
@@ -470,7 +470,7 @@ TestStorageHooks::~TestStorageHooks()
 	Assert( pHook == fpOldHook && "another Storage::SetHook() was called without restoring old Hook!");
 }
 
-MemTracker *TestStorageHooks::MakeMemTracker(const char *name)
+MemTracker *TestStorageHooks::MakeMemTracker(const char *name, bool)
 {
 	return new MemTracker(name);
 }
