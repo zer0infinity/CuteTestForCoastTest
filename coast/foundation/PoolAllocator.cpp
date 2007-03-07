@@ -302,7 +302,7 @@ void PoolAllocator::Initialize()
 
 PoolAllocator::~PoolAllocator()
 {
-	String strUnusedBucketSizes("Unused bucket sizes: [", Storage::Global()), strUsedBucketSizes("Used bucket sizes:   [", Storage::Global());
+	String strUsedPoolSize("Pool usage: ", Storage::Global()), strUnusedBucketSizes("Unused bucket sizes: [", Storage::Global()), strUsedBucketSizes("Used bucket sizes:   [", Storage::Global());
 	long lNumUsed = 0, lNumUnused = 0, lMaxUsedBucket = 0;
 	long lIntLevel = Storage::fglStatisticLevel;
 
@@ -346,6 +346,10 @@ PoolAllocator::~PoolAllocator()
 			fpPoolTotalExcessTracker->PrintStatistic(2);
 		}
 	}
+	strUsedPoolSize << "configured " << (l_long)( fAllocSz / 1024UL ) << "kB, used " << (l_long)( fpPoolTotalTracker->PeakAllocated() / 1024UL ) << "kB";
+	if ( fpPoolTotalExcessTracker->PeakAllocated() > 0 ) {
+		strUsedPoolSize << " excess " << ( fpPoolTotalExcessTracker->PeakAllocated() / 1024UL ) << "kB";
+	}
 	delete fpPoolTotalTracker;
 	delete fpPoolTotalExcessTracker;
 
@@ -359,6 +363,7 @@ PoolAllocator::~PoolAllocator()
 			lMaxUsedBucket = itoMAX(lMaxUsedBucket, lMaxExcessBit);
 		}
 		SysLog::WriteToStderr(String("\nAllocator [", Storage::Global()).Append(fAllocatorId).Append("]\n"));
+		SysLog::WriteToStderr(strUsedPoolSize.Append("\n"));
 		SysLog::WriteToStderr(strUsedBucketSizes.Append("] -> optimal BucketSizesParam: ").Append(lMaxUsedBucket).Append(" now: ").Append(fNumOfPoolBucketSizes).Append("\n"));
 		SysLog::WriteToStderr(strUnusedBucketSizes.Append("]\n"));
 	}
