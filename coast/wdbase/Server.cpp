@@ -625,13 +625,13 @@ int Server::SetUid()
 
 	ent = getpwuid(geteuid());
 	m = "";
-	m << (Server::Lookup("ServerModules", serverModules) == 0 ? "Server" : "MasterServer") << " handling requests as:  " << ent->pw_name << "(";
+	m << (Server::Lookup("ServerModules", serverModules) == 0 ? "Server" : "MasterServer") << " handling requests as: " << ent->pw_name << "(";
 #if defined(__linux__)
 	m << long(geteuid());
 #else
 	m << geteuid();
 #endif
-	m << ")" << "\n" << "Have fun :-)" << "\n";
+	m << "), server-pid: " << GetPid() << "\n" << "Have fun :-)" << "\n";
 	SysLog::WriteToStderr(m);
 #endif
 	return ret;
