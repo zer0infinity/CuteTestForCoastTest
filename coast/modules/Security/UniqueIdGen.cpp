@@ -60,7 +60,7 @@ String UniqueIdGen::GetUniqueId(const String &additionalToken)
 	long pid = System::getpid();
 	char buf[1024];
 	memset(buf, '\0', 1024L);
-	sprintf(buf, "%u_%u_%u_%u_%u", ms, hrt, hostid, pid, random);
+	snprintf(buf, sizeof(buf), "%lu_%lu_%ld_%ld_%lu", ms, hrt, hostid, pid, random);
 	String uniqueId(buf);
 	uniqueId << "_" << additionalToken;
 	Trace("uniqueId: [" << uniqueId << "]");
