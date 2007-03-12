@@ -200,7 +200,7 @@ MemTracker *ExcessTrackerElt::operator[](u_long lMemSize)
 	MemTracker *pTracker = FindTrackerForSize(ulWishSize);
 	if ( pTracker == NULL ) {
 		char buf[80] = { 0 };
-		snprintf(buf, sizeof(buf), "PoolExcessTracker[%d]", (long)ulWishSize);
+		snprintf(buf, sizeof(buf), "PoolExcessTracker[%lu]", ulWishSize);
 		// need to add new ExcessTrackerElt and MemTracker for given size
 		pTracker = Storage::MakeMemTracker(buf, false);
 		InsertTrackerForSize(pTracker, ulWishSize);
@@ -229,7 +229,7 @@ void ExcessTrackerElt::Refresh()
 		MemTracker *pTracker = pElt->fpTracker;
 		if ( pTracker && ( pTracker->CurrentlyAllocated() > 0 ) ) {
 			char buf[256] = { 0 };
-			snprintf(buf, sizeof(buf), "ExcessAllocator was still in use! (id: %d, name: %s) in Refresh()", pTracker->fId, NotNull(pTracker->fpName));
+			snprintf(buf, sizeof(buf), "ExcessAllocator was still in use! (id: %ld, name: %s) in Refresh()", pTracker->fId, NotNull(pTracker->fpName));
 			SysLog::Error(buf);
 		}
 		pElt = pElt->fpNext;
@@ -290,7 +290,7 @@ void PoolAllocator::Initialize()
 		// only create new trackers once
 		if ( fPoolBuckets[i].fpBucketTracker == NULL ) {
 			char buf[80] = { 0 };
-			snprintf(buf, sizeof(buf), "PoolBucketTracker[%d]", sz);
+			snprintf(buf, sizeof(buf), "PoolBucketTracker[%ld]", sz);
 			fPoolBuckets[i].fpBucketTracker = Storage::MakeMemTracker(buf, false);
 			fPoolBuckets[i].fpBucketTracker->SetId(fAllocatorId);
 		}
@@ -317,7 +317,7 @@ PoolAllocator::~PoolAllocator()
 			pTracker->PrintStatistic(lIntLevel);
 			if ( pTracker->CurrentlyAllocated() > 0 ) {
 				char buf[256] = { 0 };
-				snprintf(buf, sizeof(buf), "PoolAllocator was still in use! (id: %d, name: %s) in PoolAllocator::~PoolAllocator()", pTracker->fId, NotNull(pTracker->fpName));
+				snprintf(buf, sizeof(buf), "PoolAllocator was still in use! (id: %ld, name: %s) in PoolAllocator::~PoolAllocator()", pTracker->fId, NotNull(pTracker->fpName));
 				SysLog::Error(buf);
 			}
 			if ( ++lNumUsed > 1 ) {
@@ -595,7 +595,7 @@ void PoolAllocator::Refresh()
 		MemTracker *pTracker = fPoolBuckets[i].fpBucketTracker;
 		if ( pTracker->CurrentlyAllocated() > 0 ) {
 			char buf[256] = { 0 };
-			snprintf(buf, sizeof(buf), "PoolAllocator was still in use! (id: %d, name: %s) in PoolAllocator::~PoolAllocator()", pTracker->fId, NotNull(pTracker->fpName));
+			snprintf(buf, sizeof(buf), "PoolAllocator was still in use! (id: %ld, name: %s) in PoolAllocator::~PoolAllocator()", pTracker->fId, NotNull(pTracker->fpName));
 			SysLog::Error(buf);
 		}
 	}
