@@ -73,7 +73,7 @@ SimpleTestThread::SimpleTestThread(bool bDaemon, bool detached, bool suspended, 
 
 SimpleTestThread::~SimpleTestThread()
 {
-	THRDETACH();
+	THRDETACH(fThreadId);
 }
 
 bool SimpleTestThread::Start(THREADWRAPPERFUNCPROTO(wrapper), void *ThreadParam)
