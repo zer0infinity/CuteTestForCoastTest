@@ -55,11 +55,7 @@ void InterruptHandlerTest::PidFileHandlingTest()
 		sigaddset(&set, SIGPIPE);
 		sigaddset(&set, SIGTERM);
 
-#ifdef __sun
-		thr_sigsetmask(SIG_BLOCK, &set, NULL);
-#else
-		pthread_sigmask(SIG_BLOCK, &set, NULL);
-#endif
+		THRSETSIGMASK(SIG_BLOCK, &set, NULL);
 #endif
 		{
 			// kill without using file

@@ -101,12 +101,7 @@ void AppBooter::SetSignalMask()
 	// -> InterruptHandler-Thread will then use sigwait to trap the ones needed
 	sigset_t set;
 	sigfillset(&set);
-
-#ifdef __sun
-	thr_sigsetmask(SIG_BLOCK, &set, NULL);
-#else
-	pthread_sigmask(SIG_BLOCK, &set, NULL);
-#endif
+	THRSETSIGMASK(SIG_BLOCK, &set, NULL);
 #endif
 }
 
@@ -219,7 +214,7 @@ bool AppBooter::Boot(Anything &args) // access the intial config file
 	if ((numberOfCpus = sysconf(_SC_NPROCESSORS_ONLN)) != -1)
 #endif
 	{
-		SetConcurrency(numberOfCpus);			// macro for sun os
+		THRSETCONCURRENCY(numberOfCpus);			// macro for sun os
 	}
 	//--- setting default environment
 	MetaThing config;

@@ -43,9 +43,7 @@ protected:
 //---- MTStorageTest ----------------------------------------------------------------
 MTStorageTest::MTStorageTest(TString tname) : TestCaseType(tname), fFinishedMutex("Finish"), fFinished(0), fStarted(false)
 {
-#if !defined(__linux__) && !defined(_AIX) && !defined(WIN32)
-	thr_setconcurrency(3);
-#endif
+	THRSETCONCURRENCY(3);
 }
 
 MTStorageTest::~MTStorageTest()
