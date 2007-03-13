@@ -63,6 +63,7 @@ int EXPORTDECL_MTFOUNDATION doWaitObject(HANDLE h, HANDLE m, long time);
 #define UNLOCKSEMA(sema)			(::ReleaseSemaphore(sema, 1, NULL) != 0)
 #endif
 #define TRYSEMALOCK(sema)			(doWaitObject(sema, 0, TRYLOCKTIMEOUT) == WAIT_OBJECT_0)
+#define GETSEMACOUNT(sema, count)	(sem_getvalue((sem_t*) &sema, &count))
 
 //--- rwlock macros
 #define RWLOCK						HANDLE
@@ -84,7 +85,9 @@ int EXPORTDECL_MTFOUNDATION doWaitObject(HANDLE h, HANDLE m, long time);
 #define DELETETHREAD()				_endthread()
 #define THRID()						GetCurrentThreadId()
 #define THRKILL(tid, sig)			0
-#define THRDETACH()
+#define THRDETACH(id)
+#define THRSETSIGMASK(A,B,C)
+#define THRSETCONCURRENCY(a)
 
 //--- condition macros
 #define COND						HANDLE
@@ -113,7 +116,7 @@ extern "C" {
 #define GETTLSDATA(key, data, dataType)		((data = (dataType*)TlsGetValue(key)), (GetLastError()!=NO_ERROR?(data=0):data))
 
 #else
-#if defined(__sun) && !defined(USE_POSIX)
+#if defined(__sun) && !defined(_POSIX_THREADS)
 
 #include <thread.h>
 
@@ -137,7 +140,9 @@ extern "C" {
 #define DELETETHREAD()				thr_exit((void*)0)
 #define THRID()						thr_self()
 #define THRKILL(tid, sig)			thr_kill(tid, sig)
-#define THRDETACH()
+#define THRDETACH(id)				pthread_detach(id)
+#define THRSETSIGMASK(A,B,C)		thr_sigsetmask((A),(B),(C))
+#define THRSETCONCURRENCY(a)		thr_setconcurrency(a)
 
 //--- mutex macros
 #define MUTEX						mutex_t
@@ -158,6 +163,7 @@ extern "C" {
 #define LOCKSEMA(sema)				(sema_wait((sema_t*) &sema) == 0)
 #define UNLOCKSEMA(sema)			(sema_post((sema_t*) &sema) == 0)
 #define TRYSEMALOCK(sema)			(sema_trywait((sema_t*)&sema) == 0)
+#define GETSEMACOUNT(sema, count)	(sema_getvalue((sem_t*) &sema, &count))
 
 //--- read write locks
 #define RWLOCK						rwlock_t
@@ -236,7 +242,24 @@ extern "C" {
 #define DELETETHREAD()				pthread_exit((void*)0)
 #define THRID()						(long)pthread_self()
 #define THRKILL(tid, sig)			pthread_kill(tid, sig)
-#define THRDETACH()					pthread_detach(pthread_self())
+#define THRDETACH(id)				pthread_detach(id)
+#define THRSETSIGMASK(A,B,C)		pthread_sigmask(A,B,C)
+
+// workaround on SunOS 5.6: pthread library dos not define pthread_setconcurrency
+// to use thr_setconcurrency we need to forward declare it
+// > we can not include thread.h for its definition because it would double define things
+#if defined(__sun) && (OS_RELMINOR == 6)
+#ifdef __cplusplus
+extern "C" {
+#endif
+	int thr_setconcurrency(int);
+#ifdef __cplusplus
+};
+#endif
+#define THRSETCONCURRENCY(a)	thr_setconcurrency(a)
+#else
+#define THRSETCONCURRENCY(a)	pthread_setconcurrency(a)
+#endif
 
 //--- mutex macros
 #define MUTEX						pthread_mutex_t
