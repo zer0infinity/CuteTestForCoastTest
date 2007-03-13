@@ -131,7 +131,6 @@ Thread::Thread(const char *name, bool daemon, bool detached, bool suspended, boo
 Thread::~Thread()
 {
 	StartTrace1(Thread.Destructor, "IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId() << " Name [" << GetName() << "]");
-	THRDETACH();
 
 	// doesn't really solve the problem if a subclass would do sthg in the hook method
 	// but at least it will go to the state eTerminated
@@ -212,7 +211,13 @@ bool Thread::Start(Allocator *pAllocator, ROAnything args)
 void Thread::Exit(int)
 {
 	StatTrace(Thread.Exit, "destroying system thread object", Storage::Global());
+	// wakeup joiners etc
 	DELETETHREAD();
+	// cleanup of thread resources
+	THRDETACH(fThreadId);
+	// now we should be able to safely reset the fThreadId, needed only in case the Thread gets reused
+	// not to trace a fThreadId which just finished to live
+	fThreadId = 0;
 }
 
 void Thread::AddObserver(ThreadObserver *to)
@@ -389,9 +394,6 @@ bool Thread::SetState(EThreadState state, ROAnything args)
 	if (state == eTerminated && MyId() == (long)GetId()) {
 		StatTrace(Thread.SetState, "state==eTerminated && MyId==GetId IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Current());
 		bool bRet = IntSetState(state, args);
-		// now we should be able to safely reset the fThreadId, needed only in case the Thread gets reused
-		// not to trace a fThreadId which just finished to live
-		fThreadId = 0;
 		return bRet;
 	}
 	if (state == eTerminated) {
@@ -713,14 +715,11 @@ bool Semaphore::TryAcquire()
 	return TRYSEMALOCK(fSemaphore);
 }
 
-#if !defined(WIN32) && ( !defined(__sun) || defined(USE_POSIX) )
 int Semaphore::GetCount(int &count)
 {
 	StatTrace(Semaphore.GetCount, "Sema&:" << (long)&fSemaphore << " ThrdId: " << Thread::MyId(), Storage::Current());
-
 	return GETSEMACOUNT(fSemaphore, count);
 }
-#endif
 
 void Semaphore::Release()
 {
