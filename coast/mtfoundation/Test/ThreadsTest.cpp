@@ -718,10 +718,8 @@ void ThreadsTest::RecursiveMutexTest()
 void ThreadsTest::CheckSemaphoreCount(Semaphore &sema, int expected)
 {
 	StartTrace(ThreadsTest.CheckSemaphoreCount);
-#if !defined(WIN32) && ( !defined(__sun) || defined(USE_POSIX) )
 	int count;
 	int ret = sema.GetCount(count);
 	assertEqual(0, ret);
 	assertEqual(expected, count);
-#endif
 }
