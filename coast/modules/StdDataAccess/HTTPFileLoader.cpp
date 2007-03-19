@@ -12,7 +12,6 @@
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
 #include "System.h"
-#include "MmapStream.h"
 #include "Renderer.h"
 #include "Dbg.h"
 
@@ -158,11 +157,11 @@ bool HTTPFileLoader::ProcessFile(const String &filename, Context &context, Param
 		ctquery << '.' << ext;
 		retVal = out->Put("content-type", String(context.Lookup(ctquery, "text/plain")), context) && retVal;
 
-#if !defined(WIN32)
-		MmapStream *fs = (MmapStream *)Ios;
-		long sz = fs->rdbuf()->Length();
-		retVal = out->Put("content-length", sz, context) && retVal;
-#endif
+		ul_long ulFileSize = 0ULL;
+		if ( System::GetFileSize(filename, ulFileSize) ) {
+			Trace("file [" << filename << "] has size (stat): " << (l_long)ulFileSize);
+			retVal = out->Put("content-length", (long)ulFileSize, context) && retVal;
+		}
 		retVal = out->Put("HTTPBody", (*(istream *)Ios), context) && retVal;
 		delete Ios;
 	} else {
