@@ -59,6 +59,7 @@
 	/HTTPFileLoader {
 		/MainSwitch						10
 		/EnableAll						20
+		/ProcessFile					211
 	}
 	/MailDAImpl {
 		/MainSwitch						150
