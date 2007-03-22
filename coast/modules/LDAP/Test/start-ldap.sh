@@ -1,7 +1,7 @@
 #!/bin/ksh
 
 mypath=`pwd`
-NETSITE_ROOT=/usr/local/netscape/server4
+NETSITE_ROOT=/db/wdtest
 export NETSITE_ROOT
 dbreldir=slapd-DailyBuildTests
 importbinpath=bin/slapd/server
