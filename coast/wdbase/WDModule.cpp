@@ -344,11 +344,14 @@ bool WDInit::DoCall(WDModule *wdm)
 
 bool WDTerminate::DoCall(WDModule *wdm)
 {
+	SysLog::WriteToStderr("\tTerminating ");
+	SysLog::WriteToStderr(wdm->GetName());
 	bool ret = DoCallInner(wdm);
 	if ( !wdm->IsStatic() ) {
 		Registry::GetRegistry("WDModule")->UnregisterRegisterableObject(fModuleName);
 		delete wdm;
 	}
+	SysLog::WriteToStderr( ( ret ? " done\n" : " failed\n" ) );
 	return ret;
 }
 
