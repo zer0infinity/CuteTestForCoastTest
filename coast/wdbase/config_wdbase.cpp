@@ -15,6 +15,10 @@
 //--- standard modules used ----------------------------------------------------
 #include "SysLog.h"
 
+// special include to inline static objects needed for registry
+// -> this one needs to be here - or say needs to be the first object linked/created by the linker/runtime
+#include "RegistryInitFinis.h"
+
 static void Init()
 {
 	InitFinisManager::IFMTrace(">> wdbase::Init\n");

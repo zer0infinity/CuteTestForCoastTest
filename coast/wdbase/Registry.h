@@ -22,6 +22,9 @@
 //!the objects are removed from the registry by a termination policy.
 class EXPORTDECL_WDBASE Registry : public NotCloned
 {
+	friend class RegistryIterator;
+	friend class RegistryInitFinis;
+
 public:
 	//!standard named object constructor
 	Registry(const char *registryname);
@@ -57,8 +60,6 @@ public:
 
 	RegisterableObject *Find(const char *name);
 
-	friend class RegistryIterator;
-
 	/*! Returns the registry for category; creates it if it is not already there.
 		\param category Name for the registry; usually a name of the 'managing' object used to initialile/finalize belonging objects
 		\return Registry object for the category/group given. If the object does not yet exist, a new one will be created
@@ -85,13 +86,17 @@ public:
 	static void SetFinalize(bool);
 
 protected:
+	//! Global container holding any registry entries
+	static Anything *fgRegistryArray;
+	//! read-only copy of the global registry
+	static ROAnything *fgRORegistryArray;
 	//!flag to prevent reallocation of the global registry when shutting down
 	static bool fgFinalize;
 	//!delete global registry
 	static void FinalizeRegArray(Anything &registries);
 	//!accessor to the registry's representation
 	Anything &GetTable();
-	//!Anything holding the registered objects
+	//!Anything holding the registered objects for this registry s category
 	MetaThing *fTable;
 
 private:

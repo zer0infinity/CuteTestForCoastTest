@@ -16,7 +16,6 @@
 //--- c-library modules used ---------------------------------------------------
 
 //---- Registry -----------------------------------------------------------------------
-bool Registry::fgFinalize = false;
 void Registry::SetFinalize(bool finalize)
 {
 	fgFinalize = finalize;
@@ -44,6 +43,7 @@ Registry::~Registry()
 
 bool Registry::Terminate(TerminationPolicy *terminator)
 {
+	StartTrace(Registry.Terminate);
 	bool bRet = true;
 	if ( terminator ) {
 		bRet = terminator->Terminate(this);
@@ -78,7 +78,7 @@ RegisterableObject *Registry::Find(const char *name)
 
 void Registry::RegisterRegisterableObject(const char *name, RegisterableObject *o)
 {
-	StartTrace1(Registry.RegisterRegisterableObject, "name [" << NotNull(name) << "]");
+	StatTrace(Registry.RegisterRegisterableObject, "name [" << NotNull(name) << "]", Storage::Current());
 	Assert(name && o);
 	// make it robust
 	if ( name && o ) {
@@ -91,6 +91,7 @@ void Registry::UnregisterRegisterableObject(const char *name)
 	StartTrace1(Registry.UnregisterRegisterableObject, "name [" << NotNull(name) << "]");
 	RegisterableObject *o = Find(name);
 	if ( o ) {
+		Trace("object with name [" << NotNull(name) << "] found, trying to remove aliases");
 		GetTable().Remove(name);
 		// removing aliases
 		RemoveAliases(o);
@@ -126,6 +127,7 @@ Anything &Registry::GetTable()
 
 Registry *Registry::GetRegistry(const char *category)
 {
+	StatTrace(Registry.GetRegistry, "category <" << NotNull(category) << ">", Storage::Current());
 	Registry *r = (Registry *)GetRegROTable()[category].AsIFAObject(0);
 	if ( !r && !fgFinalize ) {
 		r = MakeRegistry(category);
@@ -135,10 +137,9 @@ Registry *Registry::GetRegistry(const char *category)
 
 Registry *Registry::MakeRegistry(const char *category)
 {
+	StatTrace(Registry.MakeRegistry, "category <" << NotNull(category) << ">", Storage::Current());
 	String msg("Creating Registry for: <");
-	msg << NotNull(category) << ">";
-	StartTrace1(Registry.MakeRegistry, "category <" << NotNull(category) << ">");
-
+	msg.Append(NotNull(category)).Append('>');
 	SysLog::Info(msg);
 
 	Registry *r = new Registry(category);
@@ -165,6 +166,7 @@ Registry *Registry::RemoveRegistry(const char *category)
 
 void Registry::FinalizeRegArray(Anything &registries)
 {
+	StartTrace(Registry.FinalizeRegArray);
 	long sz = registries.GetSize();
 	for (long i = sz - 1; i >= 0; --i) {
 		Registry *r = (Registry *)registries[i].AsIFAObject(0);
@@ -186,15 +188,11 @@ Anything &Registry::GetRegTable()
 	// library (Coast, sbc and application)
 	// because of that no root objects already registered are visible
 	// during installation phase, which causes it to fail
-	static Anything *fgRegistryArray = 0;
 	static Anything fake; // just to let the compiler be happy
-	if (!fgRegistryArray && !fgFinalize) {
+	if ( !fgRegistryArray && !fgFinalize ) {
 		fgRegistryArray = new MetaThing(Storage::Global()); // this is the registry of Registry s
 	}
-	if ( fgFinalize && fgRegistryArray ) {
-		FinalizeRegArray(*fgRegistryArray);
-		delete fgRegistryArray;
-		fgRegistryArray = 0;
+	if ( fgFinalize || !fgRegistryArray ) {
 		return fake;
 	}
 
@@ -203,14 +201,11 @@ Anything &Registry::GetRegTable()
 
 ROAnything &Registry::GetRegROTable()
 {
-	static ROAnything *fgRORegistryArray = 0;
 	static ROAnything fake; //just let the compiler be happy
-	if (!fgRORegistryArray && !fgFinalize) {
+	if ( !fgRORegistryArray && !fgFinalize ) {
 		fgRORegistryArray = new ROAnything(GetRegTable());
 	}
-	if ( fgFinalize ) {
-		delete fgRORegistryArray;
-		fgRORegistryArray = 0;
+	if ( fgFinalize || !fgRORegistryArray ) {
 		return fake;
 	}
 	return (*fgRORegistryArray);
@@ -285,7 +280,6 @@ RegisterableObject *RegistryIterator::RemoveNext(String &key)
 	StartTrace(RegistryIterator.RemoveNext);
 	RegisterableObject *obj = Next(key);
 	if (fRegistry) {
-
 		if (HasMore()) {
 			Anything table(fRegistry->GetTable());
 
