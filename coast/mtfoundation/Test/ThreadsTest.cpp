@@ -45,6 +45,13 @@ void ExecCountThread::Run()
 	fCount++;
 }
 
+#define CheckSemaphoreCount(sema, expected) \
+{\
+	int count = -1;\
+	assertCompare(0, equal_to, sema.GetCount(count));\
+	assertCompare(expected, equal_to, count);\
+}
+
 //---- ThreadsTest ----------------------------------------------------------------
 ThreadsTest::ThreadsTest(TString tname) : TestCaseType(tname), fMutex(tname)
 {
@@ -527,7 +534,11 @@ void ThreadsTest::MultiSemaphoreTest()
 	sema.Release();
 	sema.Release();
 	sema.Release();
-	CheckSemaphoreCount(sema, 0);
+	{
+		int count = -1;
+		assertCompare(0, equal_to, sema.GetCount(count));
+		assertComparem(count, greater_equal, 0, "it can not be guaranteed that the semaphore count currently reflects the correct value - eg. all threads were able to be woken up in time before this call - therefor we can just assume a value greater than 0");
+	}
 
 	// now all threads should have terminated
 	t_assertm(tt6.CheckState(Thread::eTerminated, 1), "State should be eTerminated");
@@ -713,13 +724,4 @@ void ThreadsTest::RecursiveMutexTest()
 	SimpleRecursiveTryLockTest();
 	TwoThreadRecursiveTest();
 	TwoThreadRecursiveTryLockTest();
-}
-
-void ThreadsTest::CheckSemaphoreCount(Semaphore &sema, int expected)
-{
-	StartTrace(ThreadsTest.CheckSemaphoreCount);
-	int count;
-	int ret = sema.GetCount(count);
-	assertEqual(0, ret);
-	assertEqual(expected, count);
 }

@@ -68,7 +68,6 @@ public:
 protected:
 	//--- subclass api
 	void LockedIteration(long iterations);
-	void CheckSemaphoreCount(Semaphore &sema, int expected);
 
 	Anything fLockedAny;
 	Mutex fMutex;
