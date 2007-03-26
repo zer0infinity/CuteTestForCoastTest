@@ -108,8 +108,6 @@ bool LdapCachePolicyModule::CheckContractIsFulfilled(String &failedDataAccesses,
 bool LdapCachePolicyModule::Finis()
 {
 	StartTrace(LdapCachePolicyModule.Finis);
-
-	SysLog::WriteToStderr("\tTerminating LdapCachePolicyModule done\n");
 	return true;
 }
 

@@ -109,8 +109,6 @@ bool LDAPDAICachePolicyModule::CheckContractIsFulfilled(String &failedDataAccess
 bool LDAPDAICachePolicyModule::Finis()
 {
 	StartTrace(LDAPDAICachePolicyModule.Finis);
-
-	SysLog::WriteToStderr("\tTerminating LDAPDAICachePolicyModule done\n");
 	return true;
 }
 
