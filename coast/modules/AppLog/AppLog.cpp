@@ -90,7 +90,6 @@ bool AppLogModule::Init(const ROAnything config)
 bool AppLogModule::Finis()
 {
 	StartTrace(AppLogModule.Finis);
-	SysLog::WriteToStderr("\tTerminating Application Logging");
 	TerminateLogRotator();
 	String strDoNotRotate("DoNotRotate");
 	for (long i = 0, sz = fLogConnections.GetSize(); i < sz; ++i) {
@@ -109,7 +108,6 @@ bool AppLogModule::Finis()
 	}
 	fLogConnections = MetaThing();
 	fgAppLogModule = 0L;
-	SysLog::WriteToStderr(" done\n");
 	return true;
 }
 
