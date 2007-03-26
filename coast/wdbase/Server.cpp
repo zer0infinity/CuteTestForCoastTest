@@ -16,7 +16,6 @@
 #include "Registry.h"
 #include "ServerUtils.h"
 #include "RequestProcessor.h"
-#include "SessionListManager.h"
 #include "ServiceDispatcher.h"
 #include "AppBooter.h"
 #include "RequestBlocker.h"
@@ -171,16 +170,16 @@ Server *Server::FindServer(const char *name)
 	return SafeCast(Application::FindApplication(name), Server);
 }
 
-Server::Server(const char *name) :
-	Application(name),
-	fRetVal(0),
-	fPoolManager(0),
-	fPidFileNameMutex("PIDFile"),
-	fPidFileName("pid"),
-	fPid(System::getpid()),	 // on linux this pid can't be used to stop the server
-	fStoreMutex("Store"),
-	fStore(Storage::Global()),
-	fStatisticObserver(0)
+Server::Server(const char *name)
+	: Application(name)
+	, fRetVal(0)
+	, fPoolManager(0)
+	, fPidFileNameMutex("PIDFile")
+	, fPidFileName("pid")
+	, fPid(System::getpid())	// on linux this pid can't be used to stop the server
+	, fStoreMutex("Store")
+	, fStore(Storage::Global())
+	, fStatisticObserver(0)
 {
 }
 
@@ -196,10 +195,6 @@ Server::~Server()
 int Server::GlobalInit(int argc, char *argv[], const ROAnything config)
 {
 	StartTrace(Server.GlobalInit);
-
-	// make sure we have a session list manager initialized
-	SessionListManager::SLM()->Init(config);
-
 	int ret = Application::GlobalInit(argc, argv, config);
 	String msg;
 	msg << "Global init: " << (ret == 0 ? "suceeded" : "failed");
@@ -249,9 +244,7 @@ int Server::GlobalReinit()
 	{
 		// block cleaner thread since CheckTimeout of Session
 		// makes Lookup calls to shared configs
-		SessionListManager::SLM()->EnterReInit();
 		retCode = DoGlobalReinit();
-		SessionListManager::SLM()->LeaveReInit();
 	}
 	Storage::ForceGlobalStorage(false);
 	ServersModule::SetServerForReInit(0);
@@ -360,7 +353,7 @@ int Server::ReInit(const ROAnything )
 // termination of the Server modules
 int Server::Terminate(int val)
 {
-	String m;
+	String m(50);
 	m << "Terminating: <" << fName << ">" << "\n";
 	SysLog::WriteToStderr(m);
 	SysLog::Info("killed");
@@ -370,23 +363,14 @@ int Server::Terminate(int val)
 		fPoolManager->Finalize();
 	}
 
-	String n;
-	this->GetName(n);
-	m = "";
-	m    << "Cleaning up Server: " << n << "\n\tTerminating running requests";
+	m.Trim(0);
+	m << "Cleaning up Server: " << GetName() << "\n\tTerminating running requests";
 	SysLog::WriteToStderr(m);
 	if (fPoolManager) {
 		delete fPoolManager;
 		fPoolManager = 0;
 	}
-	m = " done\n\tTerminating sessions\n";
-	SysLog::WriteToStderr(m);
-	SessionListManager *pSLM = SessionListManager::SLM();
-	if (pSLM) {
-		pSLM->Finis();
-	}
-	m = " done\nServer Cleanup completed\nLeaving shutdown\n";
-	SysLog::WriteToStderr(m);
+	SysLog::WriteToStderr(" done\nServer Cleanup completed\nLeaving shutdown\n");
 	return fRetVal;
 }
 
@@ -420,6 +404,7 @@ int Server::Run()
 	StartTrace(Server.Run);
 	int iRet = -1;
 	if (fPoolManager) {
+		Trace("running PoolManager...");
 		iRet = fPoolManager->Run(this);
 		Trace("PoolManager::Run returned with code " << (long)iRet);
 	}
@@ -537,9 +522,12 @@ int Server::WritePIDFile()
 
 int Server::RemovePIDFile()
 {
-	MutexEntry me(fPidFileNameMutex);
-	me.Use();
-	return DoDeletePIDFile(fPidFileName); // ignore retCode
+	if ( Lookup("UsePIDFile", 0L) ) {
+		MutexEntry me(fPidFileNameMutex);
+		me.Use();
+		return DoDeletePIDFile(fPidFileName); // ignore retCode
+	}
+	return 0;
 }
 
 void Server::PIDFileName(String &pidFilePath)
@@ -637,9 +625,26 @@ int Server::SetUid()
 	return ret;
 }
 
+void Server::RegisterServerStatObserver(StatObserver *observer)
+{
+	fStatisticObserver = observer;
+}
+
+void Server::AddStatGatherer2Observe(StatGatherer *sg)
+{
+	if (fStatisticObserver) {
+		String myServerName;
+		GetName(myServerName);
+		fStatisticObserver->Register(myServerName, sg);
+	}
+}
+
 //---- MasterServer -------------------------------------------------------------------
 RegisterServer(MasterServer);
-MasterServer::MasterServer(const char *name) : Server(name), fNumServers(0), fServerThreads(0)
+MasterServer::MasterServer(const char *name)
+	: Server(name)
+	, fNumServers(0)
+	, fServerThreads(0)
 {
 }
 MasterServer::~MasterServer()
@@ -661,10 +666,26 @@ int MasterServer::Init()
 		fNumServers = serverModules.GetSize();
 		if ( fNumServers > 0 ) {
 			fServerThreads = new ServerThread[fNumServers];
-			for (long i = 0; (retCode == 0) && (i < fNumServers); ++i) {
-				TraceAny(serverModules[i], "initializing server");
-				retCode = fServerThreads[i].Init(serverModules[i]);
+			AnyExtensions::Iterator<ROAnything> aServersIterator(serverModules);
+			ROAnything roaServerConfig;
+			long lIdx = 0L;
+			bool bStartSuccess = true;
+			while ( aServersIterator.Next(roaServerConfig) && bStartSuccess ) {
+				TraceAny(roaServerConfig, "initializing server");
+				// Start serverthread which internally waits on setting to work
+				Allocator *pAlloc = Storage::Global();
+				if ( !roaServerConfig.IsNull() && ( roaServerConfig["UsePoolStorage"].AsLong(0) == 1 ) ) {
+					TraceAny(roaServerConfig, "creating PoolAllocator for server");
+					pAlloc = MT_Storage::MakePoolAllocator(roaServerConfig["PoolStorageSize"].AsLong(10240), roaServerConfig["NumOfPoolBucketSizes"].AsLong(10), 0);
+					if ( pAlloc == NULL ) {
+						SYSERROR("was not able to create PoolAllocator for [" << roaServerConfig["ServerName"].AsString() << "], check config!");
+						pAlloc = Storage::Global();
+					}
+				}
+				bStartSuccess = fServerThreads[lIdx].Start(pAlloc, roaServerConfig) && fServerThreads[lIdx].IsInitialized();
+				++lIdx;
 			}
+			retCode = ( bStartSuccess ? 0 : -1 );
 		} else {
 			retCode = -1;
 		}
@@ -736,8 +757,15 @@ bool MasterServer::StartServers()
 {
 	StartTrace(MasterServer.StartServers);
 	bool success = true;
-	for (long i = 0; i < fNumServers; ++i) {
-		success = fServerThreads[i].Start() && success;
+	ROAnything serverModules;
+	if ( Lookup("ServerModules", serverModules) ) {
+		AnyExtensions::Iterator<ROAnything> aServersIterator(serverModules);
+		ROAnything roaServerConfig;
+		long lIdx = 0L;
+		while ( aServersIterator.Next(roaServerConfig) && success ) {
+			success = fServerThreads[lIdx].SetWorking(roaServerConfig);
+			++lIdx;
+		}
 	}
 	return success;
 }
@@ -747,6 +775,7 @@ int MasterServer::Run()
 	StartTrace(MasterServer.Run);
 	int iRet = -1;
 	if ( StartServers() ) {
+		Trace("calling masterservers Run method");
 		iRet = Server::Run();
 		Trace("Server::Run returned with code " << (long)iRet);
 	}
@@ -765,16 +794,28 @@ void MasterServer::PrepareShutdown(long retCode)
 // termination of the Server modules
 int MasterServer::Terminate(int val)
 {
-	String m;
+	StartTrace(MasterServer.Terminate);
+	String m(50);
 	m << "\tTerminating Master: <" << fName << ">\n";
 	SysLog::WriteToStderr(m);
 	Anything retval(val);
 	for (long i = 0; i < fNumServers; ++i) {
-		fServerThreads[i].Terminate(2, retval);
+		m.Trim(0);
+		m << "\t\tTerminating <" << fServerThreads[i].GetName() << ">\n";
+		SysLog::WriteToStderr(m);
+		Thread::EThreadState aState = fServerThreads[i].GetState(false, Thread::eRunning);
+		if ( aState < Thread::eTerminationRequested ) {
+			fServerThreads[i].Terminate(60, retval);
+		}
+		fServerThreads[i].CheckState(Thread::eTerminated, 10);
+		m.Trim(0);
+		m << "\t\tTerminating <" << fServerThreads[i].GetName() << "> done\n";
+		SysLog::WriteToStderr(m);
 	}
+	Trace("deleting server threads");
 	delete [] fServerThreads;
 	long ret = Server::Terminate(val);
-	m = "";
+	m.Trim(0);
 	m << "\tTerminating Master: <" << fName << "> done\n";
 	SysLog::WriteToStderr(m);
 	return ret;
@@ -784,42 +825,44 @@ int MasterServer::Terminate(int val)
 ServerThread::ServerThread()
 	: Thread("ServerThread")
 	, fServer(0)
+	, fbInitialized(false)
 {
 }
 
 ServerThread::ServerThread(Server *aServer)
 	: Thread("ServerThread")
 	, fServer(aServer)
+	, fbInitialized(false)
 {
 }
 
 ServerThread::~ServerThread()
 {
-	if (fServer) {
-		fServer->Terminate(0L);
-		fServer = 0;
-	}
 }
 
-int ServerThread::Init(ROAnything config)
+void ServerThread::DoStartedHook(ROAnything config)
 {
+	StartTrace(ServerThread.DoStartedHook);
 	const char *serverName = "Server";
-	if ( config.IsDefined("ServerName") ) {
-		serverName = config["ServerName"].AsCharPtr(serverName);
+	if ( fServer == NULL ) {
+		if ( config.IsDefined("ServerName") ) {
+			serverName = config["ServerName"].AsCharPtr(serverName);
+		}
+		fServer = Server::FindServer(serverName);
+	} else {
+		serverName = fServer->GetName();
 	}
-	fServer = Server::FindServer(serverName);
 	String strName("ServerThread: ");
 	strName << serverName;
 	SetName(strName);
-	if (fServer) {
-		return fServer->Init();
+	if ( fServer ) {
+		fbInitialized = ( fServer->Init() == 0 );
 	}
-	return -1;
 }
 
 int ServerThread::ReInit(const ROAnything config)
 {
-	if (fServer) {
+	if ( fServer && fbInitialized ) {
 		return fServer->ReInit(config);
 	}
 	return -1;
@@ -827,21 +870,36 @@ int ServerThread::ReInit(const ROAnything config)
 
 void ServerThread::Run()
 {
-	if (fServer) {
-		fServer->Run();
+	if ( fbInitialized && CheckRunningState(eWorking) && IsRunning() ) {
+		if (fServer) {
+			fServer->Run();
+		}
+		if ( IsRunning() ) {
+			SetReady();
+		}
+	}
+}
+
+void ServerThread::DoTerminatedRunMethodHook()
+{
+	StartTrace(ServerThread.DoTerminatedRunMethodHook);
+	if ( fServer && fbInitialized ) {
+		fServer->Terminate(0L);
+		fbInitialized = false;
 	}
 }
 
 void ServerThread::PrepareShutdown(long retCode)
 {
-	if (fServer) {
+	StartTrace(ServerThread.PrepareShutdown);
+	if ( fServer && fbInitialized ) {
 		fServer->PrepareShutdown(retCode);
 	}
 }
 
 int ServerThread::BlockRequests()
 {
-	if (fServer) {
+	if ( fServer && fbInitialized ) {
 		return fServer->BlockRequests();
 	}
 	return 0;
@@ -849,7 +907,7 @@ int ServerThread::BlockRequests()
 
 int ServerThread::UnblockRequests()
 {
-	if (fServer) {
+	if ( fServer && fbInitialized ) {
 		return fServer->UnblockRequests();
 	}
 	return 0;
@@ -858,22 +916,8 @@ int ServerThread::UnblockRequests()
 bool ServerThread::IsReady(bool ready, long timeout)
 {
 	StartTrace1(ServerThread.IsReady, "ready: [" << ready << "] timeout: [" << timeout << "]");
-	if (fServer) {
+	if ( fServer && fbInitialized ) {
 		return fServer->IsReady(ready, timeout);
 	}
 	return false;
-}
-
-void Server::RegisterServerStatObserver(StatObserver *observer)
-{
-	fStatisticObserver = observer;
-}
-
-void Server::AddStatGatherer2Observe(StatGatherer *sg)
-{
-	if (fStatisticObserver) {
-		String myServerName;
-		GetName(myServerName);
-		fStatisticObserver->Register(myServerName, sg);
-	}
 }

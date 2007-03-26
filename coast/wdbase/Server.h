@@ -194,8 +194,23 @@ protected:
 //---- MasterServer -------------------------------------------------------------------
 class ServerThread;
 
-//!manages several servers as a composite server
-//!manages several servers; each server has its own thread of control
+//! <B>Manages several servers as a composite server</B>
+/*!
+<B>Configuration:</B><PRE>
+{
+	/ServerModules {
+		{
+			/ServerName				MyRegisteredServer	# mandatory, name of server instance to run
+			/UsePoolStorage			1					# optional, [0|1], default 0, use preallocated memory pool for storage of Queue elements
+			/PoolStorageSize		22001				# optional, [kB], default 10240, pool storage size in kbytes
+			/NumOfPoolBucketSizes	16					# optional, default 10, number of different allocation units within PoolStorage, starts at 16 bytes and always doubles the size so 16 << 10 will give a max block size of 8192 bytes
+		}
+		...
+	}
+}</PRE>
+The MasterServer manages several servers as configured within ServerModules. Each server has its own thread of control. This allows having an own memory pool for the server instance to optimize for performance.
+The Server methods Init() and Terminate() will be called in DoStartedHook and DoTerminatedRunMethodHook respectively which allows usage of pool memory from within Init().
+*/
 class EXPORTDECL_WDBASE MasterServer : public Server
 {
 public:
@@ -225,6 +240,7 @@ public:
 
 	//!check if server is ready and running
 	bool IsReady(bool ready, long timeout);
+
 protected:
 	long fNumServers;
 	ServerThread *fServerThreads;
@@ -239,20 +255,26 @@ public:
 	ServerThread(Server *aServer);
 	virtual ~ServerThread();
 
-	virtual int Init(ROAnything config);
+	void Run();
 
-	virtual void Run();
+	void PrepareShutdown(long retCode);
+	int BlockRequests();
+	int UnblockRequests();
+	int ReInit(const ROAnything config);
 
-	virtual void PrepareShutdown(long retCode);
-	virtual int BlockRequests();
-	virtual int  UnblockRequests();
-	virtual int ReInit(const ROAnything config);
+	bool IsInitialized() {
+		return fbInitialized;
+	}
 
 	//!check if server is ready and running
 	bool IsReady(bool ready, long timeout);
 
-protected:
+private:
+	void DoStartedHook(ROAnything config);
+	void DoTerminatedRunMethodHook();
+
 	Server *fServer;
+	bool fbInitialized;
 };
 
 #endif
