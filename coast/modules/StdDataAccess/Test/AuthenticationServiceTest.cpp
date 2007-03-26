@@ -26,7 +26,8 @@ class AuthTestService : public ServiceHandler
 {
 public:
 	//:standard named object constructor
-	AuthTestService(const char *serviceHandlerName): ServiceHandler("AuthTest") { }
+	AuthTestService(const char *serviceHandlerName)
+		: ServiceHandler(serviceHandlerName) { }
 	~AuthTestService() {}
 
 	//:cloning interface
