@@ -76,9 +76,9 @@ bool TerminationPolicy::IntFinalize(Registry *r)
 	RegistryIterator ri(r);
 	String name;
 	RegisterableObject *ro;
-	while ( ri.HasMore() ) {
-		ro = ri.Next(name);
-		if ( ro && ro->IsInitialized() ) {
+	while ( ri.HasMore() && ( ( ro = ri.Next(name) ) != NULL ) ) {
+		Trace("checking initialized state of <" << name << ">");
+		if ( ro->IsInitialized() ) {
 			bool bSucc = ro->Finalize();
 			Trace("finalizing <" << name << "> was " << (bSucc ? "" : "not ") << "successful");
 			if ( !bSucc ) {
