@@ -178,7 +178,7 @@ void AppBooter::MergeConfigWithArgs(Anything &config, const Anything &args)
 {
 	StartTrace(AppBooter.MergeConfigWithArgs);
 	TraceAny(args, "args:");
-	TraceAny(config, "config:");
+	SubTraceAny(TraceConfig, config, "config:");
 
 	// fill in command line arguments into the applications configuration
 	for (long i = 0; i < args.GetSize(); ++i) {
@@ -201,7 +201,7 @@ void AppBooter::MergeConfigWithArgs(Anything &config, const Anything &args)
 			config["Arguments"].Append(args[i]);
 		}
 	}
-	TraceAny(config, "resulting config:");
+	SubTraceAny(TraceConfig, config, "resulting config:");
 }
 
 bool AppBooter::Boot(Anything &args) // access the intial config file
@@ -252,16 +252,13 @@ bool AppBooter::Boot(Anything &args) // access the intial config file
 		}
 		args = config;
 	}
-	TraceAny(args, "Config");
+	SubTraceAny(TraceConfig, args, "Config");
 	return ret;
 }
 
 void AppBooter::Halt(const Anything &config)
 {
 	StartTrace(AppBooter.Halt);
-
-	// do not create new registries anymore
-	Registry::SetFinalize(true);
 
 	// terminate according to modules list
 	WDModule::Terminate(config);
@@ -320,6 +317,7 @@ bool AppBooter::CloseLibs()
 	TraceAny(fLibArray, "libraries");
 	bool ret = true;
 	for (long i = sz - 1; i >= 0; --i) {
+		Trace("closing down [" << fLibArray.SlotName(i) << "]");
 		Sys(DynLibLoader) dllLoader(fLibArray.SlotName(i), fLibArray[i].AsLong(0));
 		if ( !dllLoader.DLClose() ) {
 			// PS: we've got an error
@@ -342,7 +340,7 @@ Application *AppBooter::FindApplication(ROAnything config, String &applicationNa
 {
 	StartTrace(AppBooter.FindApplication);
 	Trace("application:" << applicationName);
-	TraceAny(config, "config");
+	SubTraceAny(TraceConfig, config, "config");
 	ROAnything applicationConf;
 	Application *application = 0;
 
