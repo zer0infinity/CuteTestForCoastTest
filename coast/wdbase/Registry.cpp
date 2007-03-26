@@ -35,7 +35,7 @@ Registry::~Registry()
 //			in the table, since nothing is known about them
 //			therefore we introduced the termination policy,
 //			that can be supplied by clients
-	if (fTable)	{
+	if (fTable) {
 		delete fTable;
 		fTable = 0;
 	}
@@ -116,8 +116,12 @@ void Registry::RemoveAliases(RegisterableObject *obj)
 
 Anything &Registry::GetTable()
 {
-	if (!fTable) {
+	if ( !fTable && !fgFinalize ) {
 		fTable = new MetaThing(Storage::Global());
+	}
+	static Anything fake; // just to let the compiler be happy
+	if ( fgFinalize || !fTable ) {
+		return fake;
 	}
 
 	return (*fTable);
@@ -166,15 +170,20 @@ Registry *Registry::RemoveRegistry(const char *category)
 
 void Registry::FinalizeRegArray(Anything &registries)
 {
-	StartTrace(Registry.FinalizeRegArray);
 	long sz = registries.GetSize();
+	StartTrace(Registry.FinalizeRegArray);
+	TraceAny(registries, "#" << sz << " registries to delete");
 	for (long i = sz - 1; i >= 0; --i) {
-		Registry *r = (Registry *)registries[i].AsIFAObject(0);
+		Registry *r = SafeCast(registries[i].AsIFAObject(0), Registry);
 		if ( r ) {
+			const char *pName = r->GetName();
+			Trace("Registry[" << pName << "]->AliasTerminate()");
 			const char *category = registries.SlotName(i);
 			AliasTerminator at(NotNull(category));
 			r->Terminate(&at);
+			Trace("delete Registry[" << pName << "]");
 			delete r;
+			Trace("Registry deleted");
 		}
 		registries.Remove(i);
 	}
