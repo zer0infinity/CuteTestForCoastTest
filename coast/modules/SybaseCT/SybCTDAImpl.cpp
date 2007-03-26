@@ -65,7 +65,7 @@ bool SybCTDAImpl::Init(const ROAnything config)
 		if ( SybCT::Init(&fg_cs_context, &fgContextMessages, strInterfacesPathName) == CS_SUCCEED ) {
 			for ( long i = 0; i < nrOfSybCTs; i++ ) {
 				SybCT *aCT = new SybCT(fg_cs_context);
-				SimpleMutex *aMutex = new SimpleMutex( String() << "SimpleMutex-" << i, Storage::Global() );
+				SimpleMutex *aMutex = new SimpleMutex( String("SimpleMutex-", Storage::Global()).Append(i), Storage::Global() );
 				fgListOfSybCT[i]["InUse"] = (IFAObject *)aMutex;
 				fgListOfSybCT[i]["SybCT"] = (IFAObject *)aCT;
 			}
