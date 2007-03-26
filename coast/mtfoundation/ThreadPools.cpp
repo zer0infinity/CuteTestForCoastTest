@@ -278,7 +278,7 @@ void WorkerThread::DoReadyHook(ROAnything)
 {
 	if ( fRefreshAllocator ) {
 		// StatTrace memory can still be on current storage because its code will be inserted in a subscope
-		StatTrace(WorkerThread.DoReadyHook, "fAllocator->Refresh", Storage::Current());
+		StatTrace(WorkerThread.DoReadyHook, "WorkerThread [" << GetName() << "] fAllocator->Refresh", Storage::Current());
 		// reorganize allocator memory and hope that no more memory is allocated anymore
 		if ( fAllocator ) {
 			fAllocator->Refresh();
@@ -330,9 +330,7 @@ String WorkerPoolManager::GetName()
 int WorkerPoolManager::Init(int maxParallelRequests, int usePoolStorage, int poolStorageSize, int numOfPoolBucketSizes, ROAnything roaWorkerArgs)
 {
 	StartTrace(WorkerPoolManager.Init);
-	bool reallyterminated = Terminate(1);	// nothing to do if yet uninitialized
-	Assert(reallyterminated);
-	DoDeletePool(roaWorkerArgs);
+	bool reallyterminated = Finis(5);	// nothing to do if yet uninitialized
 
 	fTerminated = false;
 
@@ -342,6 +340,16 @@ int WorkerPoolManager::Init(int maxParallelRequests, int usePoolStorage, int poo
 	}
 	Trace("returning -1");
 	return -1;
+}
+
+bool WorkerPoolManager::Finis(long lWaitTime)
+{
+	StartTrace(WorkerPoolManager.Finis);
+	bool reallyterminated = Terminate(lWaitTime);
+	Assert(reallyterminated);
+	ROAnything roaWorkerArgs;
+	DoDeletePool(roaWorkerArgs);
+	return reallyterminated;
 }
 
 bool WorkerPoolManager::Terminate(long secs)
@@ -413,6 +421,9 @@ int WorkerPoolManager::InitPool(bool usePoolStorage, long poolStorageSize, int n
 		Trace("Start done");
 		wt->CheckState(Thread::eRunning);
 		Trace("CheckState done");
+	}
+	if ( fStatEvtHandler ) {
+		delete fStatEvtHandler;
 	}
 	//allocate hard for now; maybe later we can do it with a factory
 	fStatEvtHandler = new WPMStatHandler(fPoolSize);

@@ -289,6 +289,11 @@ public:
 	//!initialisation of  thread pool (may be safely used also for reinit)
 	int Init(int maxParallelRequests, int usePoolStorage, int poolStorageSize, int numOfPoolBucketSizes, ROAnything roaWorkerArgs);
 
+	/*! Use this method to signal final termination by deleting the internal threads. A later (Re)Init can safely be done
+		\param lWaitTime time in seconds to wait on internal threads termination
+		\return true in case of success, eg. internal threads were terminated, false otherwise */
+	bool Finis(long lWaitTime);
+
 	/*! critical region entry to process the next work package.
 		This method blocks the caller (e.g. the server accept-loop) if the pool has no worker ready,  i.e. ResourcesUsed() == GetPoolSize()
 		\pre needs "request" slot in workload, containing a long which gives a hint which worker to take
