@@ -8,8 +8,8 @@
 
 {
 
-	/LowerBound		0
-	/UpperBound		33
+	/LowerBound		33
+	/UpperBound		0
 	/DumpAnythings	1
 
 	/ConfiguredTestCase {
@@ -26,11 +26,11 @@
 	}
 	/Registry {
 		/MainSwitch	33
-		/EnableAll	33
+		/EnableAll	0
 	}
 	/RegisterableObject {
 		/MainSwitch	33
-		/EnableAll	33
+		/EnableAll	0
 	}
 	/Mutex {
 		/MainSwitch	1
@@ -146,22 +146,22 @@
 	}
 	/Context {
 		/MainSwitch		33
-		/EnableAll		33
+		/EnableAll		0
 		/Find			-33
 		/FindIndex 		-33
 		/SetPage  		10000
 		/GetPage 		10000
 		/Replace 		10000
 		/Remove 		10000
-		/Push		33
-		/PopStore		33
+		/Push			0
+		/PopStore		0
 		/DoLookup		-33
 		/LookupStores	-33
 		/LookupStack	-33
 		/LookupLocalized -33
 		/LookupObjects	-33
 		/LookupRequest	-33
-		/GetStore		33
+		/GetStore		0
 		/IntGetStore	-33
 	}
 	/ContextTest {
@@ -170,31 +170,31 @@
 	}
 	/ConfNamedObject {
 		/MainSwitch			33
-		/EnableAll			33
+		/EnableAll			0
 	}
 	/HierarchConfNamed {
 		/MainSwitch			33
-		/EnableAll			33
+		/EnableAll			0
 	}
 	/HierarchyInstaller {
 		/MainSwitch			33
-		/EnableAll			33
+		/EnableAll			0
 	}
 	/AliasInstaller {
 		/MainSwitch			33
-		/EnableAll			33
+		/EnableAll			0
 	}
 	/InstallerPolicy {
 		/MainSwitch			33
-		/EnableAll			33
+		/EnableAll			0
 	}
 	/TerminationPolicy {
 		/MainSwitch			33
-		/EnableAll			33
+		/EnableAll			0
 	}
 	/AliasTerminator {
 		/MainSwitch			33
-		/EnableAll			33
+		/EnableAll			0
 	}
 	/ServerReInitTerminator {
 		/MainSwitch			33
@@ -478,6 +478,6 @@
 	}
 	/CacheHandler {
 		/MainSwitch				33
-		/EnableAll				33
+		/EnableAll				0
 	}
 }
