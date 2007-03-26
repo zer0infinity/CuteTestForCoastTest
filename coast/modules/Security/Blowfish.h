@@ -27,8 +27,9 @@ public:
 	virtual bool DoDecode(String &cleartext, const String &scrambledText) const;
 #define BF_ROUNDS       16
 #define BF_BLOCK        8
+#if !defined(BF_LONG)
 #define BF_LONG unsigned long
-
+#endif
 	struct BlowfishKey {
 		BF_LONG P[BF_ROUNDS+2];
 		BF_LONG S[4*256];
