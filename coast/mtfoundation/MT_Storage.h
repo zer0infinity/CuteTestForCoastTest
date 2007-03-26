@@ -56,6 +56,9 @@ public:
 	//! register allocator in the current threads local store (true means success)
 	static bool RegisterThread(Allocator *wdallocator);
 
+	//! unregister allocator in the current threads local store (true means success)
+	static bool UnregisterThread();
+
 	//! must be called before threading is activated
 	static void Initialize(); // register MT_Storage capability with Storage
 

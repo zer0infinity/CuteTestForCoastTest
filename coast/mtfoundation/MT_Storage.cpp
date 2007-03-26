@@ -193,9 +193,6 @@ MemTracker *MT_Storage::fOldTracker = NULL;
 
 static MTStorageHooks *sgpMTHooks = NULL;
 
-#define FindAllocator(wdallocator)									\
-		GETTLSDATA(MT_Storage::fgAllocatorKey, wdallocator, Allocator)
-
 //---- MT_Storage ------------------------------------------
 THREADKEY MT_Storage::fgAllocatorKey = 0;
 SimpleMutex *MT_Storage::fgpAllocatorInit = NULL;
@@ -370,10 +367,26 @@ bool MT_Storage::RegisterThread(Allocator *wdallocator)
 		// can only be used once for the same thread
 		Allocator *oldAllocator = 0;
 
-		// determine which allocator to use
-		FindAllocator(oldAllocator);
-		if (!oldAllocator) {
+		// check for old allocator, and if any, dont override it
+		if ( GETTLSDATA(MT_Storage::fgAllocatorKey, oldAllocator, Allocator) && ( oldAllocator == NULL ) ) {
 			return !SETTLSDATA(MT_Storage::fgAllocatorKey, wdallocator);
+		}
+	} else {
+		SYSERROR("MT_Storage not initialized!");
+	}
+	return false;
+}
+
+bool MT_Storage::UnregisterThread()
+{
+	StartTrace(MT_Storage.UnregisterThread);
+	if ( fgInitialized ) {
+		// check for current allocator
+		Allocator *oldAllocator = 0;
+
+		// check for old allocator, and if any delete it
+		if ( GETTLSDATA(MT_Storage::fgAllocatorKey, oldAllocator, Allocator) && oldAllocator ) {
+			return !SETTLSDATA(MT_Storage::fgAllocatorKey, 0);
 		}
 	} else {
 		SYSERROR("MT_Storage not initialized!");
@@ -418,7 +431,7 @@ MemTracker *MTStorageHooks::MakeMemTracker(const char *name, bool bThreadSafe)
 {
 	MemTracker *pTracker = NULL;
 	if ( bThreadSafe ) {
-		pTracker  = new MT_MemTracker(name, 55667788);
+		pTracker = new MT_MemTracker(name, 55667788);
 	} else {
 		pTracker = Storage::DoMakeMemTracker(name);
 	}
@@ -430,9 +443,7 @@ Allocator *MTStorageHooks::Current()
 	if ( fgInitialized ) {
 		Allocator *wdallocator = 0;
 		// determine which allocator to use
-		FindAllocator(wdallocator);
-
-		if (wdallocator) {
+		if ( GETTLSDATA(MT_Storage::fgAllocatorKey, wdallocator, Allocator) && wdallocator ) {
 			return wdallocator;
 		}
 	}
