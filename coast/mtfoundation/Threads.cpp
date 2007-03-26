@@ -115,7 +115,7 @@ Thread::Thread(const char *name, bool daemon, bool detached, bool suspended, boo
 	, fDetached(detached)
 	, fSuspended(suspended)
 	, fBound(bound)
-	, fStateMutex("ThreadState", (fAllocator) ? fAllocator : Storage::Global())
+	, fStateMutex("ThreadStateMutex", (fAllocator) ? fAllocator : Storage::Global())
 	, fRunningState(eReady)
 	, fState(eCreated)
 	, fSignature(0x0f0055AA)
@@ -189,9 +189,7 @@ bool Thread::Start(Allocator *pAllocator, ROAnything args)
 				if ( ret ) {
 					SetState(eStarted, args);
 					if ( fAllocator->GetId() == 0 ) {
-						// use the address of this thread object as 'unique' id for the allocator
-						// fThreadId is not good in the case the Thread gets reused!
-						fAllocator->SetId((long)this);
+						fAllocator->SetId((long)fThreadId);
 					}
 				}
 				delete [] b;
@@ -613,12 +611,9 @@ void Thread::Wait(long secs, long nanodelay)
 {
 	StatTrace(Thread.Wait, "secs:" << secs << " nano:" << nanodelay, Storage::Current());
 
-	SimpleMutex m((const char *)0);	// FIXME: server shutdown may
-	// interrupt the wait (avoid random
-	// leak by not using a name)
+	SimpleMutex m("ThreadWaitMutex", Storage::Global());
 	SimpleMutexEntry me(m);
 	me.Use();
-
 	SimpleCondition c;
 	int ret = 0;
 	do {
@@ -678,11 +673,10 @@ bool Thread::CleanupThreadStorage()
 		}
 	}
 
-	if ( !( bRet = SetState(Thread::eTerminated) ) ) {
-		SysLog::Warning( String("SetState(eTerminated) failed MyId(", -1, Storage::Global()) << (long)fThreadId << ")");
-	}
+	// unregister PoolAllocator of thread -> influences Storage::Current() retrieval
+	MT_Storage::UnregisterThread();
 
-	return bRet;
+	return SetState(Thread::eTerminated);
 }
 
 //---- Semaphore ------------------------------------------------------------
@@ -755,7 +749,7 @@ SimpleMutex::~SimpleMutex()
 {
 	StatTrace(SimpleMutex.~SimpleMutex, fName, Storage::Current());
 	if ( !DELETEMUTEX(fMutex) ) {
-		SysLog::Error(String("SimpleMutex<") << fName << ">: DELETEMUTEX failed");
+		SysLog::Error(String("SimpleMutex<", Storage::Global()).Append(fName).Append(">: DELETEMUTEX failed"));
 	}
 }
 
