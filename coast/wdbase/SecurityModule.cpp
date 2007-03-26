@@ -251,12 +251,8 @@ bool SecurityModule::Finis()
 */
 {
 	StartTrace(SecurityModule.Finis);
-	SysLog::WriteToStderr("\tTerminating SecurityModule");
-	bool result = StdFinis("SecurityItem", "SecurityItems");
-
-	SysLog::WriteToStderr(" done\n");
-	return result;
-} // Terminate
+	return StdFinis("SecurityItem", "SecurityItems");
+}
 
 //#define URLSTAT_TRACING
 // URL encryption an decryption
