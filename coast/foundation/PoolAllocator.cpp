@@ -243,6 +243,7 @@ PoolAllocator::PoolAllocator(long poolid, u_long poolSize, u_long maxPoolBuckets
 	, fpPoolTotalExcessTracker( Storage::MakeMemTracker("ExcessTotal", false) )
 	, fpExcessTrackerList(NULL)
 {
+	StatTrace(PoolAllocator.PoolAllocator, "initializing PoolAllocator with id:" << poolid, Storage::Current());
 	fpExcessTrackerList = new ExcessTrackerElt();
 	fAllocSz = poolSize * 1024;
 	fPoolMemory = ::calloc(fAllocSz, 1);
@@ -266,6 +267,7 @@ PoolAllocator::PoolAllocator(long poolid, u_long poolSize, u_long maxPoolBuckets
 
 long PoolAllocator::SetId(long lId)
 {
+	StatTrace(PoolAllocator.SetId, "setting id from fAllocatorId:" << fAllocatorId << " to:" << lId, Storage::Current());
 	for (long i = 0; i < (long)fNumOfPoolBucketSizes; ++i) {
 		MemTracker *pTracker = fPoolBuckets[i].fpBucketTracker;
 		if ( pTracker ) {
@@ -319,6 +321,17 @@ PoolAllocator::~PoolAllocator()
 				char buf[256] = { 0 };
 				snprintf(buf, sizeof(buf), "PoolAllocator was still in use! (id: %ld, name: %s) in PoolAllocator::~PoolAllocator()", pTracker->fId, NotNull(pTracker->fpName));
 				SysLog::Error(buf);
+				// finding unfreed items
+				MemoryHeader aTestHeader(fPoolBuckets[i].fUsableSize, MemoryHeader::eUsed);
+				char *pMemStart(((char *)fPoolMemory) + fAllocSz - fPoolBuckets[i].fSize);
+				while ( pMemStart > (char *)fPoolMemory ) {
+					if ( ((MemoryHeader *)pMemStart)->fMagic == MemoryHeader::gcMagic && ((MemoryHeader *)pMemStart)->fSize == fPoolBuckets[i].fUsableSize ) {
+						// found match, print it out
+						String strBuf((void *)pMemStart, sizeof(MemoryHeader) + ((MemoryHeader *)pMemStart)->fSize, Storage::Global());
+						SysLog::Error(strBuf.DumpAsHex());
+					}
+					--pMemStart;
+				}
 			}
 			if ( ++lNumUsed > 1 ) {
 				strUsedBucketSizes.Append(", ");
@@ -336,7 +349,7 @@ PoolAllocator::~PoolAllocator()
 	long lMaxExcessBit = fpExcessTrackerList->GetMaxSizeBitNumber();
 	fpExcessTrackerList->SetId(fAllocatorId);
 	delete fpExcessTrackerList;
-
+	StatTrace(PoolAllocator.~PoolAllocator, "id:" << fAllocatorId << " ExcessTrackerList deleted", Storage::Global());
 	if ( lIntLevel >= 1 ) {
 		// totals
 		if ( fpPoolTotalTracker->PeakAllocated() > 0 ) {
@@ -353,6 +366,8 @@ PoolAllocator::~PoolAllocator()
 	delete fpPoolTotalTracker;
 	delete fpPoolTotalExcessTracker;
 
+	StatTrace(PoolAllocator.~PoolAllocator, "id:" << fAllocatorId << " PoolTotalTrackers deleted", Storage::Global());
+
 	if ( lIntLevel >= 1 && lNumUsed > 0 ) {
 		if ( lMaxExcessBit > 0 ) {
 			ul_long ulSize = fgStartSize;
@@ -367,9 +382,11 @@ PoolAllocator::~PoolAllocator()
 		SysLog::WriteToStderr(strUsedBucketSizes.Append("] -> optimal BucketSizesParam: ").Append(lMaxUsedBucket).Append(" now: ").Append(fNumOfPoolBucketSizes).Append("\n"));
 		SysLog::WriteToStderr(strUnusedBucketSizes.Append("]\n"));
 	}
+	StatTrace(PoolAllocator.~PoolAllocator, "id:" << fAllocatorId << " deleting BucketTrackers", Storage::Global());
 	for (long i = 0; i < (long)fNumOfPoolBucketSizes; ++i) {
 		delete (fPoolBuckets[i].fpBucketTracker);
 	}
+	StatTrace(PoolAllocator.~PoolAllocator, "id:" << fAllocatorId << " deleting PoolBuckets and PoolMemory", Storage::Global());
 	::free(fPoolBuckets);
 	::free(fPoolMemory);
 }
@@ -595,7 +612,7 @@ void PoolAllocator::Refresh()
 		MemTracker *pTracker = fPoolBuckets[i].fpBucketTracker;
 		if ( pTracker->CurrentlyAllocated() > 0 ) {
 			char buf[256] = { 0 };
-			snprintf(buf, sizeof(buf), "PoolAllocator was still in use! (id: %ld, name: %s) in PoolAllocator::~PoolAllocator()", pTracker->fId, NotNull(pTracker->fpName));
+			snprintf(buf, sizeof(buf), "PoolAllocator was still in use! (id: %ld, name: %s) in PoolAllocator::Refresh()", pTracker->fId, NotNull(pTracker->fpName));
 			SysLog::Error(buf);
 		}
 	}
