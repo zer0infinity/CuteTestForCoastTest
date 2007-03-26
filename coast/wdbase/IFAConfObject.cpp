@@ -59,9 +59,11 @@ bool RegisterableObject::Reset(const ROAnything installerSpec, const char *categ
 
 bool RegisterableObject::ResetTerminate(const char *category, TerminationPolicy *terminator)
 {
+	StartTrace1(RegisterableObject.ResetTerminate, "category <" << category << ">");
 	Registry *r;
 	r = Registry::GetRegistry(category);
 	if ( r ) {
+		Trace("found registry, terminating it");
 		// FIXME: how to delete registered alias without
 		// crashing the shutdown
 		r->Terminate(terminator);
@@ -72,6 +74,7 @@ bool RegisterableObject::ResetTerminate(const char *category, TerminationPolicy 
 
 bool RegisterableObject::Terminate(const char *category, TerminationPolicy *terminator)
 {
+	StartTrace1(RegisterableObject.Terminate, "category <" << category << ">");
 	if ( ResetTerminate(category, terminator) ) {
 		//SOP: do not delete registries, they might contain "static" objects for further use
 		//		Registry *r= Registry::RemoveRegistry(category);
@@ -104,7 +107,7 @@ void RegisterableObject::Unregister(const char *name, const char *category)
 
 bool RegisterableObject::Initialize(const char *category)
 {
-	StartTrace1(RegisterableObject.Initialize, "cat <" << NotNull(category) << "> fCat <" << fCategory << ">");
+	StatTrace(RegisterableObject.Initialize, "cat <" << NotNull(category) << "> fCat <" << fCategory << ">", Storage::Current());
 	if ( category != NULL ) {
 		if ( !fCategory.Length() ) {
 			fCategory = category;
@@ -141,7 +144,7 @@ bool ConfNamedObject::IntInitialize(const char *category)
 bool ConfNamedObject::IntFinalize()
 {
 	StartTrace1(ConfNamedObject.IntFinalize, "cat <" << fCategory << "> name <" << fName << ">");
-	return ( !( fbConfigLoaded = !DoUnloadConfig() ) && DoFinalize() );
+	return ( DoFinalize() && !( fbConfigLoaded = !DoUnloadConfig() ) );
 }
 
 bool ConfNamedObject::DoInitialize()
