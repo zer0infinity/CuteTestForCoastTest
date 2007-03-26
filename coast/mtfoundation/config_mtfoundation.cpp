@@ -110,6 +110,7 @@ BOOL WINAPI DllMain(HANDLE hinstDLL,  // DLL module handle
 			if ( pThr ) {
 				// there seems to be a valid ThreadPtr, eg. it is a mtfoundation Thread
 				RemoveThreadDetach(pThr);
+				pThr->SetState(Thread::eTerminated);
 			} else {
 				SYSINFO("Thread* was NULL for [" << Thread::MyId() << "] ErrorMessage: [" << SysLog::LastSysError() << "]");
 			}
