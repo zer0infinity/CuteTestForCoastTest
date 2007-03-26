@@ -12,6 +12,21 @@
 	/UpperBound		211
 	/DumpAnythings  1
 
+	/Registry {
+		/MainSwitch						10
+		/EnableAll						0
+		/FinalizeRegArray				10
+		/RemoveRegistry					10
+		/GetRegistry					10
+	}
+	/AliasTerminator {
+		/MainSwitch						10
+		/EnableAll						10
+	}
+	/TerminationPolicy {
+		/MainSwitch						10
+		/EnableAll						10
+	}
 	/DataAccessImpl {
 		/MainSwitch						11
 		/EnableAll						11
@@ -26,19 +41,19 @@
 	}
 	/ParameterMapper {
 		/MainSwitch						10
-		/EnableAll						10
+		/EnableAll						0
 	}
 	/HTTPHeaderParameterMapper {
 		/MainSwitch						10
-		/EnableAll						10
+		/EnableAll						0
 	}
 	/HTTPMimeHeaderMapper {
 		/MainSwitch						10
-		/EnableAll						10
+		/EnableAll						0
 	}
 	/HTTPMimeHeaderMapperTest {
 		/MainSwitch						10
-		/EnableAll						10
+		/EnableAll						0
 	}
 	/HTTPBodyMapper {
 		/MainSwitch						0
@@ -50,7 +65,7 @@
 	}
 	/HTTPMapperTest {
 		/MainSwitch						10
-		/EnableAll						10
+		/EnableAll						0
 	}
 	/URI2FileNameMapper {
 		/MainSwitch						10
@@ -159,11 +174,11 @@
 	}
 	/AuthenticationService {
 		/MainSwitch						10
-		/EnableAll						10
+		/EnableAll						0
 	}
 	/AuthenticationServiceTest {
 		/MainSwitch						10
-		/EnableAll						10
+		/EnableAll						0
 	}
 	/ConfiguredTestCase {
 		/MainSwitch						0
@@ -179,15 +194,15 @@
 	}
 	/AccessManagerModule {
 		/MainSwitch						10
-		/EnableAll						10
+		/EnableAll						0
 	}
 	/AccessManager {
 		/MainSwitch						10
-		/EnableAll						10
+		/EnableAll						0
 	}
 	/ResultMapper {
 		/MainSwitch						10
-		/EnableAll						10
+		/EnableAll						0
 	}
 	/TestStringStreamBuf {
 		/MainSwitch						200
