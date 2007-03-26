@@ -106,7 +106,8 @@ bool SessionListManager::Init(const ROAnything config)
 	StartTrace(SessionListManager.Init);
 	TraceAny(config, "Config: ");
 	fNextId = 0L;
-
+	// acquire lock because it gets unlocked from within ResetInit()
+	EnterReInit();
 	return ResetInit(config);
 }
 
@@ -117,20 +118,17 @@ bool SessionListManager::Finis()
 	ResetFinis(config);
 	Context ctx;
 	ForcedSessionCleanUp(ctx);
+	// release lock because it got locked from within ResetFinis()
+	LeaveReInit();
 	return true;
 }
 
 bool SessionListManager::ResetFinis(const ROAnything )
 {
 	StartTrace(SessionListManager.ResetFinis);
+	EnterReInit();
 	if (fSessionCleaner) {
-		String m;
-		m << "\tTermination request for session cleaner ";
-		SysLog::WriteToStderr(m);
 		fSessionCleaner->Terminate();
-		m = "";
-		m << " done" << "\n";
-		SysLog::WriteToStderr(m);
 		delete fSessionCleaner;
 		fSessionCleaner = 0;
 	}
@@ -167,6 +165,7 @@ bool SessionListManager::ResetInit(const ROAnything config)
 	}
 
 	Trace("Init " << ((ret) ? "suceeded" : "failed"));
+	LeaveReInit();
 	return ret;
 }
 
