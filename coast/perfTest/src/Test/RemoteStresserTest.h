@@ -38,6 +38,8 @@ public:
 	//!sets the environment for this test
 	void setUp ();
 
+	void tearDown();
+
 	// the testcases
 	void TestRemoteStresser();
 	void TestMultiRemoteStresser();

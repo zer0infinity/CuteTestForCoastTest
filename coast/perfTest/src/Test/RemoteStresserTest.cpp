@@ -23,7 +23,10 @@
 //--- c-library modules used ---------------------------------------------------
 
 //---- RemoteStresserTest ----------------------------------------------------------------
-RemoteStresserTest::RemoteStresserTest(TString tstrName) : StressAppTest(tstrName), fServerRunner(0), fStressServer(0)
+RemoteStresserTest::RemoteStresserTest(TString tstrName)
+	: StressAppTest(tstrName)
+	, fServerRunner(0)
+	, fStressServer(0)
 {
 }
 
@@ -31,7 +34,7 @@ RemoteStresserTest::~RemoteStresserTest()
 {
 	if (fServerRunner) {
 		fServerRunner->PrepareShutdown(0);
-		System::MicroSleep(1000);// give the server some time to start up
+		fServerRunner->CheckState(Thread::eTerminated, 10);
 		fServerRunner->Terminate(0);
 		delete fServerRunner;
 		delete fStressServer;
@@ -42,21 +45,16 @@ void RemoteStresserTest::setUp ()
 {
 	StressAppTest::setUp();
 	if (!fStressServer) {
-
 		fStressServer = new Server("StressServer");
 		fStressServer->GetConfig();
 		fStressServer->Initialize("Server");
 
 		fServerRunner = new ServerThread(fStressServer);
 		if (fStressServer && fServerRunner) {
-			if ( !fStressServer->GlobalInit(0, 0, Anything())) {
-				fServerRunner->Start();
-
-				System::MicroSleep(1000L);		// give the server some time to start up
-			} else {
-				t_assertm(0, "StressServer init failed");
+			if ( t_assertm(fServerRunner->Start() && fServerRunner->IsInitialized(), "StressServer init failed") ) {
+				fServerRunner->CheckState(Thread::eRunning, 10);
+				fServerRunner->SetWorking();
 			}
-
 		} else {
 			t_assertm(0, "Server start failed");
 			delete fServerRunner;
@@ -65,6 +63,11 @@ void RemoteStresserTest::setUp ()
 			fStressServer = 0;
 		}
 	}
+}
+
+void RemoteStresserTest::tearDown()
+{
+	StressAppTest::tearDown();
 }
 
 void RemoteStresserTest::TestRemoteStresser()
