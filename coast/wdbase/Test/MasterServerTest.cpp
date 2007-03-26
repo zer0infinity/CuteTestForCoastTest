@@ -71,9 +71,10 @@ void MasterServerTest::InitRunTerminateTest()
 			serverName << "_of_InitRunTerminateTest";
 			server = (Server *)server->ConfiguredClone("Server", serverName, true);
 			if ( t_assertm(server != NULL, "expected server-clone to succeed") ) {
-				if ( t_assertm(server->Init() == 0, "expected initialization to succeed") ) {
-					ServerThread mt(server);
-					if ( t_assert( mt.Start() ) && t_assert( mt.CheckState(Thread::eRunning, 5) ) ) {
+				ServerThread mt(server);
+				if ( t_assert(mt.Start()) && t_assert(mt.CheckState(Thread::eRunning, 5)) ) {
+					if ( t_assertm(mt.IsInitialized(), "expected initialization to succeed") ) {
+						mt.SetWorking();
 						if (t_assertm(server->IsReady(true, 5), "expected server to become ready within 5 seconds")) {
 							// --- run various request
 							//     sequences
@@ -115,9 +116,10 @@ void MasterServerTest::InitRunResetRunTerminateTest ()
 			serverName << "_of_InitRunResetTerminateTest";
 			server = (Server *)server->ConfiguredClone("Server", serverName, true);
 			if ( t_assertm(server != NULL, "expected server-clone to succeed") ) {
-				if ( t_assertm(server->Init() == 0, "expected initialization to succeed") ) {
-					ServerThread mt(server);
-					if ( t_assert( mt.Start() ) && t_assert( mt.CheckState(Thread::eRunning, 5) ) ) {
+				ServerThread mt(server);
+				if ( t_assert(mt.Start()) && t_assert(mt.CheckState(Thread::eRunning, 5)) ) {
+					if ( t_assertm(mt.IsInitialized(), "expected initialization to succeed") ) {
+						mt.SetWorking();
 						if (t_assertm(server->IsReady(true, 5), "expected server to become ready within 5 seconds")) {
 							// --- run various request
 							//     sequences

@@ -301,22 +301,21 @@ void TransitionTests::RunRequestSequence()
 	// startup a simple server
 	Server *server = Server::FindServer("PBOWTypeServer");
 	if ( t_assert(server != 0) ) {
-		if ( ! t_assertm(server->Init() == 0, "PBOWTypeServer initialization failed") ) {
-			return;
-		}
-
 		ServerThread mt(server);
-		mt.Start();
-		mt.CheckState(Thread::eRunning);
-		// --- run various request
-		//     sequences
-		PBOWLoginSequence1();
-		PBOWLoginSequence2();
-		PBOWFailedBookmarkSequence();
-		PBOWBookmarkSequence();
+		if ( t_assert(mt.Start()) && t_assert(mt.CheckState(Thread::eRunning, 5)) ) {
+			if ( t_assertm(mt.IsInitialized(), "expected initialization to succeed") ) {
+				mt.SetWorking();
+				// --- run various request
+				//     sequences
+				PBOWLoginSequence1();
+				PBOWLoginSequence2();
+				PBOWFailedBookmarkSequence();
+				PBOWBookmarkSequence();
 
-		server->PrepareShutdown(0);
-		mt.Terminate(0);
+				server->PrepareShutdown(0);
+				mt.Terminate(0);
+			}
+		}
 	}
 }
 
