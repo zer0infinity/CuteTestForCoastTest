@@ -88,7 +88,7 @@ public:
 	}
 };
 
-static CacheHandlerMutexAllocator *psgCacheHandlerMutexAllocator = new CacheHandlerMutexAllocator(0);
+static CacheHandlerMutexAllocator *psgCacheHandlerMutexAllocator = new CacheHandlerMutexAllocator(1);
 
 CacheHandler::CacheHandler()
 	: NotCloned("CacheHandler")
@@ -190,8 +190,6 @@ bool CacheHandlerModule::Init(const ROAnything )
 bool CacheHandlerModule::Finis()
 {
 	StartTrace(CacheHandlerModule.Finis);
-	SysLog::WriteToStderr("\tTerminating CacheHandler");
 	CacheHandler::Finis();
-	SysLog::WriteToStderr(" done\n");
 	return true;
 }
