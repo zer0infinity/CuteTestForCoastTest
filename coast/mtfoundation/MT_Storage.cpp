@@ -368,7 +368,8 @@ bool MT_Storage::RegisterThread(Allocator *wdallocator)
 		Allocator *oldAllocator = 0;
 
 		// check for old allocator, and if any, dont override it
-		if ( GETTLSDATA(MT_Storage::fgAllocatorKey, oldAllocator, Allocator) && ( oldAllocator == NULL ) ) {
+		GETTLSDATA(MT_Storage::fgAllocatorKey, oldAllocator, Allocator);
+		if ( oldAllocator == NULL ) {
 			return !SETTLSDATA(MT_Storage::fgAllocatorKey, wdallocator);
 		}
 	} else {
@@ -385,7 +386,8 @@ bool MT_Storage::UnregisterThread()
 		Allocator *oldAllocator = 0;
 
 		// check for old allocator, and if any delete it
-		if ( GETTLSDATA(MT_Storage::fgAllocatorKey, oldAllocator, Allocator) && oldAllocator ) {
+		GETTLSDATA(MT_Storage::fgAllocatorKey, oldAllocator, Allocator);
+		if ( oldAllocator ) {
 			return !SETTLSDATA(MT_Storage::fgAllocatorKey, 0);
 		}
 	} else {
