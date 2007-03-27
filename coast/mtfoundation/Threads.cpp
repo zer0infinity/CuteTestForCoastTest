@@ -30,15 +30,18 @@ AllocatorUnref::AllocatorUnref(Thread *t) : fThread(t)
 
 AllocatorUnref::~AllocatorUnref()
 {
-	if (fThread) {
+	if ( fThread ) {
 		Allocator *a = fThread->fAllocator;
-		if (a) {
-			long lMaxCount = 3L;
-			while ( ( a->CurrentlyAllocated() > 0L ) && ( --lMaxCount >= 0L ) ) {
-				// give some 20ms slices to finish everything
-				// it is in almost every case Trace-logging when enabled
-				// normally only used in opt-wdbg or dbg mode
-				Thread::Wait(0L, 20000000);
+		if ( a ) {
+			if ( a != Storage::Global() && ( a->CurrentlyAllocated() > 0L ) ) {
+				long lMaxCount = 3L;
+				while ( ( a->CurrentlyAllocated() > 0L ) && ( --lMaxCount >= 0L ) ) {
+					// give some 20ms slices to finish everything
+					// it is in almost every case Trace-logging when enabled
+					// normally only used in opt-wdbg or dbg mode
+					SysLog::WriteToStderr("#", 1);
+					Thread::Wait(0L, 20000000);
+				}
 			}
 			// now the allocator is no longer needed...
 			MT_Storage::UnrefAllocator(a);
@@ -574,18 +577,18 @@ bool Thread::Terminate(long timeout, ROAnything args)
 void Thread::IntRun()
 {
 	// IntId might be wrong since thread starts in parallel with the forking thread
-	StartTrace1(Thread.IntRun, "IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId());
+	StatTrace(Thread.IntRun, "IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Global());
 	if (!CheckState(eStarted)) {
 		// needs syslog messages
-		if (!SetState(eTerminatedRunMethod)) {
-			Trace("SetState(eTerminatedRunMethod) failed MyId(" << MyId() << ") GetId( " << (long)GetId() << ")" );
+		if ( !SetState(eTerminatedRunMethod) ) {
+			StatTrace(Thread.IntRun, "SetState(eTerminatedRunMethod) failed MyId(" << MyId() << ") GetId( " << (long)GetId() << ")", Storage::Global());
 		}
 		return;
 	}
 #ifdef TRACE_LOCKS_IMPL
 	SysLog::WriteToStderr(String("Thr[") << fName << "]<" << Thread::MyId() << ">" << "\n");
 #endif
-	Trace("IntRun MyId(" << MyId() << ") GetId( " << (long)GetId() << ")" );
+	StatTrace(Thread.IntRun, "Registering thread(fAllocator) MyId(" << MyId() << ") GetId( " << (long)GetId() << ")", Storage::Global());
 	// adds allocator reference to thread local store
 	MT_Storage::RegisterThread(fAllocator);
 	if (SetState(eRunning)) {
@@ -600,10 +603,11 @@ void Thread::IntRun()
 			--fgNumOfThreads;
 		}
 	} else {
-		Trace("SetState(eRunning) failed MyId(" << MyId() << ") GetId( " << (long)GetId() << ")" );
+		StatTrace(Thread.IntRun, "SetState(eRunning) failed MyId(" << MyId() << ") GetId( " << (long)GetId() << ")", Storage::Global());
+
 	}
 	if (!SetState(eTerminatedRunMethod)) {
-		Trace("SetState(eTerminatedRunMethod) failed MyId(" << MyId() << ") GetId( " << (long)GetId() << ")");
+		StatTrace(Thread.IntRun, "SetState(eTerminatedRunMethod) failed MyId(" << MyId() << ") GetId( " << (long)GetId() << ")", Storage::Global());
 	}
 }
 
@@ -673,10 +677,14 @@ bool Thread::CleanupThreadStorage()
 		}
 	}
 
+	StatTrace(Thread.CleanupThreadStorage, "CallId: " << MyId() << " Storage::Current() not working on PoolAllocator anymore, settings state to Thread::eTerminated", Storage::Global());
+
 	// unregister PoolAllocator of thread -> influences Storage::Current() retrieval
 	MT_Storage::UnregisterThread();
 
-	return SetState(Thread::eTerminated);
+	bRet = ( SetState(Thread::eTerminated) && CheckState(Thread::eTerminated) );
+
+	return bRet;
 }
 
 //---- Semaphore ------------------------------------------------------------
