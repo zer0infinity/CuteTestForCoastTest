@@ -682,7 +682,7 @@ int MasterServer::Init()
 						pAlloc = Storage::Global();
 					}
 				}
-				bStartSuccess = fServerThreads[lIdx].Start(pAlloc, roaServerConfig) && fServerThreads[lIdx].IsInitialized();
+				bStartSuccess = fServerThreads[lIdx].Start(pAlloc, roaServerConfig) && fServerThreads[lIdx].CheckState(Thread::eStarted) && fServerThreads[lIdx].IsInitialized();
 				++lIdx;
 			}
 			retCode = ( bStartSuccess ? 0 : -1 );
