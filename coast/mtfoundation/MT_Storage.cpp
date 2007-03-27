@@ -275,12 +275,15 @@ void MT_Storage::Finalize()
 		}
 		Allocator *a = Storage::Global();
 		if ( a ) {
-			a->PrintStatistic();
 			if ( fOldTracker ) {
-				delete a->ReplaceMemTracker(fOldTracker);
+				MemTracker *pCurrTracker = a->ReplaceMemTracker(fOldTracker);
+				StatTrace(MT_Storage.Finalize, "setting MemTracker back from [" << ( pCurrTracker ? pCurrTracker->fpName : "NULL" ) << "] to [" << fOldTracker->fpName << "]", Storage::Global());
+				if ( pCurrTracker && Storage::fglStatisticLevel >= 1 ) {
+					pCurrTracker->PrintStatistic(2);
+				}
+				delete pCurrTracker;
 				fOldTracker = NULL;
 			}
-
 		}
 		StorageHooks *pOldHook = Storage::SetHooks(NULL);
 		if ( pOldHook == sgpMTHooks ) {
@@ -362,7 +365,6 @@ void MT_Storage::UnrefAllocator(Allocator *wdallocator)
 
 bool MT_Storage::RegisterThread(Allocator *wdallocator)
 {
-	StartTrace(MT_Storage.RegisterThread);
 	if ( fgInitialized ) {
 		// can only be used once for the same thread
 		Allocator *oldAllocator = 0;
@@ -370,6 +372,7 @@ bool MT_Storage::RegisterThread(Allocator *wdallocator)
 		// check for old allocator, and if any, dont override it
 		GETTLSDATA(MT_Storage::fgAllocatorKey, oldAllocator, Allocator);
 		if ( oldAllocator == NULL ) {
+			StatTrace(MT_Storage.RegisterThread, "setting Allocator:" << (long)wdallocator << " to ThreadLocalStorage", Storage::Global());
 			return !SETTLSDATA(MT_Storage::fgAllocatorKey, wdallocator);
 		}
 	} else {
@@ -380,7 +383,6 @@ bool MT_Storage::RegisterThread(Allocator *wdallocator)
 
 bool MT_Storage::UnregisterThread()
 {
-	StartTrace(MT_Storage.UnregisterThread);
 	if ( fgInitialized ) {
 		// check for current allocator
 		Allocator *oldAllocator = 0;
@@ -388,6 +390,7 @@ bool MT_Storage::UnregisterThread()
 		// check for old allocator, and if any delete it
 		GETTLSDATA(MT_Storage::fgAllocatorKey, oldAllocator, Allocator);
 		if ( oldAllocator ) {
+			StatTrace(MT_Storage.UnregisterThread, "removing Allocator:" << (long)oldAllocator << " of ThreadLocalStorage", Storage::Global());
 			return !SETTLSDATA(MT_Storage::fgAllocatorKey, 0);
 		}
 	} else {
