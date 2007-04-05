@@ -306,10 +306,10 @@ void String::Dump() const
 
 String String::DumpAsHex(long dumpwidth, const char *pcENDL) const
 {
-	String strResult;
+	String strResult(fAllocator);
 	if (Length() > 0) {
 		static String hexcode("0123456789ABCDEF", -1, Storage::Global());
-		String outbuf;
+		String outbuf(fAllocator);
 		long lTotalLen = (4L * dumpwidth + 1L);
 		long x = 0L;
 		for (long l = 0, sz = Length(); l < sz; ++l, ++x) {
