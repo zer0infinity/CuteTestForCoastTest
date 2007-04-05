@@ -30,9 +30,9 @@ static const int WeekDayMonthCorrectNoLeap[] = { 0, 3, 3, 6, 1, 4, 6, 2, 5, 0, 3
 static const int WeekDayMonthCorrectLeap[] = { 6, 2, 3, 6, 1, 4, 6, 2, 5, 0, 3, 5 };
 
 //---- TimeStamp ----------------------------------------------------------------
-TimeStamp::TimeStamp()
+TimeStamp::TimeStamp(Allocator *pAlloc)
 	: fTime(0)
-	, fRep(15)
+	, fRep(15, pAlloc)
 	, fTimeSet(false)
 {
 	StartTrace1(TimeStamp.TimeStamp, "empty");
@@ -46,27 +46,27 @@ TimeStamp::TimeStamp(const TimeStamp &aTimeStamp)
 }
 
 //! With given UTC
-TimeStamp::TimeStamp(time_t utc)
+TimeStamp::TimeStamp(time_t utc, Allocator *pAlloc)
 	: fTime(0)
-	, fRep(15)
+	, fRep(15, pAlloc)
 	, fTimeSet(false)
 {
 	StartTrace1(TimeStamp.TimeStamp, "time_t:" << utc);
 	SetTimeT(utc);
 }
 
-TimeStamp::TimeStamp(const String &externalTimeRep)
+TimeStamp::TimeStamp(const String &externalTimeRep, Allocator *pAlloc)
 	: fTime(0)
-	, fRep(15)
+	, fRep(15, pAlloc)
 	, fTimeSet(false)
 {
 	StartTrace1(TimeStamp.TimeStamp, "String [" << externalTimeRep << "]");
 	IntDoInit(externalTimeRep);
 }
 
-TimeStamp::TimeStamp(char iCent, char iYear, char iMonth, char iDay, char iHour, char iMin, char iSec)
+TimeStamp::TimeStamp(char iCent, char iYear, char iMonth, char iDay, char iHour, char iMin, char iSec, Allocator *pAlloc)
 	: fTime(0)
-	, fRep(15)
+	, fRep(15, pAlloc)
 	, fTimeSet(false)
 {
 	StartTrace1(TimeStamp.TimeStamp, "components [" << iCent << ':' << iYear << ':' << iMonth << ':' << iDay << ':' << iHour << ':' << iMin << ':' << iSec << "]");
@@ -234,13 +234,13 @@ String TimeStamp::IntTimeTAsString() const
 TimeStamp TimeStamp::operator+(long deltasecs) const
 {
 	StartTrace(TimeStamp.operator + );
-	return (AsLong() + deltasecs);
+	return TimeStamp((time_t)(AsLong() + deltasecs));
 }
 
 TimeStamp TimeStamp::operator-(long deltasecs) const
 {
 	StartTrace(TimeStamp.operator - );
-	return (AsLong() - deltasecs);
+	return TimeStamp((time_t)(AsLong() - deltasecs));
 }
 
 TimeStamp &TimeStamp::operator=(const TimeStamp &aStamp)

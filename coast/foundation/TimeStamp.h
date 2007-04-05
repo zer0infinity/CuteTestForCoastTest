@@ -24,29 +24,29 @@ class EXPORTDECL_FOUNDATION TimeStamp
 public:
 	//--- constructors
 	//! With time now
-	TimeStamp();
+	explicit TimeStamp(Allocator *pAlloc = Storage::Current());
 
 	//! With given UTC
-	TimeStamp(time_t utc);
+	explicit TimeStamp(time_t utc, Allocator *pAlloc = Storage::Current());
 
 	//! With given string timestamp
-	TimeStamp(const String &externalTimeRep);
+	TimeStamp(const String &externalTimeRep, Allocator *pAlloc = Storage::Current());
 
 	//! With given components
-	TimeStamp(char iCent, char iYear, char iMonth, char iDay, char iHour = 0, char iMin = 0, char iSec = 0);
+	TimeStamp(char iCent, char iYear, char iMonth, char iDay, char iHour = 0, char iMin = 0, char iSec = 0, Allocator *pAlloc = Storage::Current());
 
 	//! implement copy constructor
 	TimeStamp(const TimeStamp &aTimeStamp);
 
-	static TimeStamp Now() {
-		return TimeStamp();
+	static TimeStamp Now(Allocator *pAlloc = Storage::Current()) {
+		return TimeStamp(pAlloc);
 	}
-	static TimeStamp Min() {
-		return TimeStamp("19700101000000");
-	} ;
-	static TimeStamp Max() {
-		return TimeStamp("20371231235959");
-	} ;
+	static TimeStamp Min(Allocator *pAlloc = Storage::Current()) {
+		return TimeStamp("19700101000000", pAlloc);
+	}
+	static TimeStamp Max(Allocator *pAlloc = Storage::Current()) {
+		return TimeStamp("20371231235959", pAlloc);
+	}
 
 	enum eWeekday {
 		eSunday = 0,
