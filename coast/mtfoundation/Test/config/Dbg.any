@@ -119,8 +119,11 @@
 		/EnableAll		50
 	}
 	/MT_Storage {
-		/MainSwitch		51
-		/EnableAll		60
+		/MainSwitch		60
+		/EnableAll		0
+		/RegisterThread	60
+		/UnregisterThread	60
+		/Finalize		60
 	}
 	/SystemAPITest {
 		/MainSwitch		60
