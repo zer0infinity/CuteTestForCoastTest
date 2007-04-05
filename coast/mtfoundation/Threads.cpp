@@ -17,14 +17,17 @@
 #include "DiffTimer.h"
 #include "StringStream.h"
 #include "TraceLocks.h"
+#include "PoolAllocator.h"
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
 
-//#define  TRACE_LOCKS_IMPL 1
+//#define TRACE_LOCKS_IMPL 1
+//#define POOL_STARTEDHOOK 1
 
 //---- AllocatorUnref ------------------------------------------------------------
-AllocatorUnref::AllocatorUnref(Thread *t) : fThread(t)
+AllocatorUnref::AllocatorUnref(Thread *t)
+	: fThread(t)
 {
 }
 
@@ -91,7 +94,7 @@ public:
 		if (THRKEYCREATE(Thread::fgCleanerKey, 0)) {
 			SysLog::Error("TlsAlloc of Thread::fgCleanerKey failed");
 		}
-		Thread::fgpNumOfThreadsMutex = new SimpleMutex("NumOfThreads");
+		Thread::fgpNumOfThreadsMutex = new SimpleMutex("NumOfThreads", Storage::Global());
 	}
 
 	virtual void DoFinis() {
@@ -104,7 +107,7 @@ public:
 	}
 };
 
-static ThreadInitializer *psgThreadInitializer = new ThreadInitializer(1);
+static ThreadInitializer *psgThreadInitializer = new ThreadInitializer(15);
 
 Thread::Thread(const char *name, bool daemon, bool detached, bool suspended, bool bound, Allocator *a)
 	: NamedObject(name)
@@ -190,10 +193,13 @@ bool Thread::Start(Allocator *pAllocator, ROAnything args)
 				b[3] = fSuspended;
 				bool ret = STARTTHREAD(this, b, &fThreadId, ThreadWrapper);
 				if ( ret ) {
-					SetState(eStarted, args);
 					if ( fAllocator->GetId() == 0 ) {
 						fAllocator->SetId((long)fThreadId);
 					}
+					SetState(eStartInProgress, args);
+#if !defined(POOL_STARTEDHOOK)
+					SetState(eStarted, args); //XXX moved to IntRun
+#endif
 				}
 				delete [] b;
 				Trace("Start MyId(" << MyId() << ") started GetId( " << (long)fThreadId << ")" );
@@ -406,7 +412,7 @@ bool Thread::SetState(EThreadState state, ROAnything args)
 bool Thread::IntSetState(EThreadState state, ROAnything args)
 {
 	bool bRet = false;
-	if (CallStateHooks(state, args)) {
+	if ( CallStateHooks(state, args) ) {
 		Anything anyEvt;
 		anyEvt["ThreadState"]["Old"] = (long)fState;
 		anyEvt["ThreadState"]["New"] = (long)state;
@@ -426,6 +432,10 @@ bool Thread::CallStateHooks(EThreadState state, ROAnything args)
 		case eStartRequested:
 			StatTrace(Thread.CallStateHooks, "eStartRequested", Storage::Current());
 			return DoStartRequestedHook(args);
+		case eStartInProgress:
+			StatTrace(Thread.CallStateHooks, "eStartInProgress", Storage::Current());
+			fanyArgTmp = args.DeepClone(Storage::Global());
+			break;
 		case eStarted:
 			StatTrace(Thread.CallStateHooks, "eStarted", Storage::Current());
 			DoStartedHook(args);
@@ -577,8 +587,13 @@ bool Thread::Terminate(long timeout, ROAnything args)
 void Thread::IntRun()
 {
 	// IntId might be wrong since thread starts in parallel with the forking thread
-	StatTrace(Thread.IntRun, "IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Global());
-	if (!CheckState(eStarted)) {
+	StatTrace(Thread.IntRun, "IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId() << " --- entering", Storage::Global());
+#if defined(POOL_STARTEDHOOK)
+	if ( !CheckState(eStartInProgress) )
+#else
+	if ( !CheckState(eStarted) ) //XXX remove
+#endif
+	{
 		// needs syslog messages
 		if ( !SetState(eTerminatedRunMethod) ) {
 			StatTrace(Thread.IntRun, "SetState(eTerminatedRunMethod) failed MyId(" << MyId() << ") GetId( " << (long)GetId() << ")", Storage::Global());
@@ -591,24 +606,34 @@ void Thread::IntRun()
 	StatTrace(Thread.IntRun, "Registering thread(fAllocator) MyId(" << MyId() << ") GetId( " << (long)GetId() << ")", Storage::Global());
 	// adds allocator reference to thread local store
 	MT_Storage::RegisterThread(fAllocator);
-	if (SetState(eRunning)) {
-		{
-			SimpleMutexEntry me(*fgpNumOfThreadsMutex);
-			++fgNumOfThreads;
-		}
-		// do the real work
-		Run();
-		{
-			SimpleMutexEntry me(*fgpNumOfThreadsMutex);
-			--fgNumOfThreads;
-		}
-	} else {
-		StatTrace(Thread.IntRun, "SetState(eRunning) failed MyId(" << MyId() << ") GetId( " << (long)GetId() << ")", Storage::Global());
 
+	// now call DoStartedHook which has access to threads allocator using Storage::Current()
+#if defined(POOL_STARTEDHOOK)
+	if ( SetState(eStarted, fanyArgTmp) && CheckState(eStarted) )
+#endif
+	{
+		if ( SetState(eRunning) ) {
+			{
+				SimpleMutexEntry me(*fgpNumOfThreadsMutex);
+				++fgNumOfThreads;
+			}
+			{
+				StartTraceMem(Thread.IntRun);
+				// do the real work
+				Run();
+			}
+			{
+				SimpleMutexEntry me(*fgpNumOfThreadsMutex);
+				--fgNumOfThreads;
+			}
+		} else {
+			StatTrace(Thread.IntRun, "SetState(eRunning) failed MyId(" << MyId() << ") GetId( " << (long)GetId() << ")", Storage::Global());
+		}
 	}
-	if (!SetState(eTerminatedRunMethod)) {
+	if ( !SetState(eTerminatedRunMethod) ) {
 		StatTrace(Thread.IntRun, "SetState(eTerminatedRunMethod) failed MyId(" << MyId() << ") GetId( " << (long)GetId() << ")", Storage::Global());
 	}
+	StatTrace(Thread.IntRun, "IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId() << " --- leaving", Storage::Global());
 }
 
 void Thread::Wait(long secs, long nanodelay)
@@ -677,14 +702,9 @@ bool Thread::CleanupThreadStorage()
 		}
 	}
 
-	StatTrace(Thread.CleanupThreadStorage, "CallId: " << MyId() << " Storage::Current() not working on PoolAllocator anymore, settings state to Thread::eTerminated", Storage::Global());
-
 	// unregister PoolAllocator of thread -> influences Storage::Current() retrieval
 	MT_Storage::UnregisterThread();
-
-	bRet = ( SetState(Thread::eTerminated) && CheckState(Thread::eTerminated) );
-
-	return bRet;
+	return ( SetState(Thread::eTerminated) && CheckState(Thread::eTerminated) );
 }
 
 //---- Semaphore ------------------------------------------------------------
@@ -801,7 +821,7 @@ public:
 
 	virtual void DoInit() {
 		IFMTrace("MutexInitializer::DoInit\n");
-		Mutex::fgpMutexIdMutex = new SimpleMutex("MutexIdMutex");
+		Mutex::fgpMutexIdMutex = new SimpleMutex("MutexIdMutex", Storage::Global());
 		if (THRKEYCREATE(Mutex::fgCountTableKey, 0)) {
 			SysLog::Error("TlsAlloc of Mutex::fgCountTableKey failed");
 		}
@@ -816,7 +836,7 @@ public:
 		Mutex::fgpMutexIdMutex = NULL;
 	}
 };
-static MutexInitializer *psgMutexInitializer = new MutexInitializer(0);
+static MutexInitializer *psgMutexInitializer = new MutexInitializer(10);
 //---- MutexCountTableCleaner ------------------------------------------------------------
 MutexCountTableCleaner MutexCountTableCleaner::fgCleaner;
 

@@ -396,6 +396,7 @@ public:
 	enum EThreadState {
 		eCreated,
 		eStartRequested,
+		eStartInProgress,
 		eStarted,
 		eRunning,
 		eTerminationRequested,
@@ -643,6 +644,9 @@ private:
 
 	//! the name of the thread
 	String fThreadName;
+
+	// a temporary placeholder for passing arguments to DoStartedHook
+	Anything fanyArgTmp;
 
 	friend class AllocatorUnref;
 #if defined(WIN32)
