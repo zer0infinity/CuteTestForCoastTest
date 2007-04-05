@@ -27,6 +27,8 @@ extern "C" void finalize();
 #define snprintf	_snprintf
 #endif
 
+//#define TRACK_USED_MEMORYBLOCKS 1
+
 MemChecker::MemChecker(const char *scope, Allocator *a)
 	: fAllocator(a)
 	, fSizeAllocated(fAllocator->CurrentlyAllocated())
@@ -36,7 +38,9 @@ MemChecker::MemChecker(const char *scope, Allocator *a)
 
 MemChecker::~MemChecker()
 {
-	TraceDelta("MemChecker.~MemChecker: ");
+	if ( CheckDelta() > 0 ) {
+		TraceDelta("MemChecker.~MemChecker: ");
+	}
 }
 
 void MemChecker::TraceDelta(const char *message)
@@ -110,19 +114,47 @@ void MemTracker::SetId(long id)
 	fId = id;
 }
 
-void MemTracker::TrackAlloc(u_long allocSz)
+void MemTracker::TrackAlloc(MemoryHeader *mh)
 {
-	fAllocated += allocSz;
+	fAllocated += mh->fSize;
 	++fNumAllocs;
-	fSizeAllocated += allocSz;
+	fSizeAllocated += mh->fSize;
 	fMaxAllocated = itoMAX(fMaxAllocated, fAllocated);
+#if defined(TRACK_USED_MEMORYBLOCKS)
+	fUsedList.push_front(mh);
+#endif
 }
 
-void MemTracker::TrackFree(u_long allocSz)
+void MemTracker::TrackFree(MemoryHeader *mh)
 {
-	fAllocated -= allocSz;
+	fAllocated -= mh->fSize;
 	++fNumFrees;
-	fSizeFreed += allocSz;
+	fSizeFreed += mh->fSize;
+#if defined(TRACK_USED_MEMORYBLOCKS)
+	UsedListType::iterator aUsedIterator;
+	for ( aUsedIterator = fUsedList.begin(); aUsedIterator != fUsedList.end(); ++aUsedIterator ) {
+		if ( *aUsedIterator == mh ) {
+			fUsedList.erase(aUsedIterator);
+			break;
+		}
+	}
+#endif
+}
+
+void MemTracker::DumpUsedBlocks()
+{
+	if ( fUsedList.size() ) {
+		SysLog::Error("Following memory blocks are still in use:");
+		UsedListType::const_iterator aUsedIterator;
+		long lIdx = 0;
+		for ( aUsedIterator = fUsedList.begin(); aUsedIterator != fUsedList.end(); ++lIdx, ++aUsedIterator) {
+			MemoryHeader *pMH = *aUsedIterator;
+			String strBuf((void *)pMH, ( pMH->fSize + MemoryHeader::AlignedSize() ), Storage::Global());
+			SysLog::WriteToStderr(String(Storage::Global()).Append("Block ").Append(lIdx).Append('\n'));
+			SysLog::WriteToStderr(strBuf.DumpAsHex());
+			SysLog::WriteToStderr("\n");
+		}
+	}
 }
 
 void MemTracker::PrintStatistic(long lLevel)
@@ -404,7 +436,7 @@ void *GlobalAllocator::Alloc(u_long allocSize)
 	void *vp = ::malloc(allocSize);
 	if (vp) {
 		MemoryHeader *mh = new(vp) MemoryHeader(allocSize - MemoryHeader::AlignedSize(), MemoryHeader::eUsedNotPooled);
-		fTracker->TrackAlloc(mh->fSize);
+		fTracker->TrackAlloc(mh);
 		return ExtMemStart(mh);
 	} else {
 		static const char crashmsg[] = "FATAL: GlobalAllocator::Alloc malloc failed. I will crash :-(\n";
@@ -420,7 +452,7 @@ void  GlobalAllocator::Free(void *vp)
 		if (header && header->fMagic == MemoryHeader::gcMagic) {
 			Assert(header->fMagic == MemoryHeader::gcMagic); // should combine magic with state
 			Assert(header->fState & MemoryHeader::eUsed);
-			fTracker->TrackFree(header->fSize);
+			fTracker->TrackFree(header);
 			vp = header;
 		}
 		::free(vp);

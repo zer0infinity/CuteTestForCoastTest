@@ -13,20 +13,30 @@
 #include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include "config.h"				// for definition of own types
 #include <stdlib.h>
+#include <list>
+
+class MemoryHeader;
 
 //! Base class for memory allocation tracking
 /*! helper class for debugging memory management problems */
 class EXPORTDECL_FOUNDATION MemTracker
 {
+	friend class MemoryHeader;
+	friend class MemTrackerTest;
 public:
+	typedef std::list<MemoryHeader *> UsedListType;
+
 	MemTracker(const char *name);
 	virtual ~MemTracker();
 
 	//!tracks allocation; chunk allocated has allocSz
-	virtual void TrackAlloc(u_long allocSz);
+	virtual void TrackAlloc(MemoryHeader *mh);
 
 	//!tracks free; chunk freed has allocSz
-	virtual void TrackFree(u_long allocSz);
+	virtual void TrackFree(MemoryHeader *mh);
+
+	//! print out still allocated memory blocks
+	void DumpUsedBlocks();
 
 	//!prints statistic of allocated and freed bytes
 	virtual void PrintStatistic(long lLevel);
@@ -44,6 +54,16 @@ public:
 	//!sets the id of the allocator to be tracked
 	void SetId(long);
 
+	//! gets the Trackers/Allocators id
+	long GetId() {
+		return fId;
+	}
+
+	//! returns the name of the Tracker
+	const char *GetName() {
+		return fpName;
+	}
+
 	//!initializes statistics to the values of MemTracker t
 	virtual void Init(MemTracker *t);
 
@@ -59,11 +79,17 @@ protected:
 	//!tracks the number and maximum of freed bytes
 	l_long  fNumFrees, fSizeFreed;
 
-public:
+private:
+	MemTracker();
+	MemTracker(const MemTracker &);
+	MemTracker &operator=(const MemTracker &);
+
 	//! the id of the pool we track
 	long fId;
 	//! the name of the pool we track
 	const char *fpName;
+	//! list to store used MemoryHeaders
+	UsedListType fUsedList;
 };
 
 //!helper class to check for memory leaks
