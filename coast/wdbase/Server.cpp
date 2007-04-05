@@ -852,8 +852,8 @@ void ServerThread::DoStartedHook(ROAnything config)
 	} else {
 		serverName = fServer->GetName();
 	}
-	String strName("ServerThread: ");
-	strName << serverName;
+	String strName("ServerThread: ", Storage::Global());
+	strName.Append(serverName);
 	SetName(strName);
 	if ( fServer ) {
 		fbInitialized = ( fServer->Init() == 0 );
