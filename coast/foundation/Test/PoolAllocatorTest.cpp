@@ -177,19 +177,19 @@ void PoolAllocatorTest::ExcessTrackerEltTest()
 	StartTrace(PoolAllocatorTest.ExcessTrackerEltTest);
 	ExcessTrackerElt aRoot, *pElt32 = NULL, *pElt16 = NULL;
 	MemTracker *pTrack16 = aRoot[16];
-	Trace("trackername16 [" << pTrack16->fpName << "]");
+	Trace("trackername16 [" << pTrack16->GetName() << "]");
 	t_assertm(aRoot.fpTracker == pTrack16, "expected pointer to be equal");
 	t_assertm(aRoot.fpNext == NULL, "expected pointer to next element to be equal");
 	assertEqualm(16, aRoot.fulBucketSize, "expected default bucket size to be the same");
 	MemTracker *pTrack32 = aRoot[32];
-	Trace("trackername32 [" << pTrack32->fpName << "]");
+	Trace("trackername32 [" << pTrack32->GetName() << "]");
 	t_assertm(aRoot.fpTracker == pTrack16, "expected pointer to be equal");
 	assertEqualm(16, aRoot.fulBucketSize, "expected default bucket size to be the same");
 	pElt32 = aRoot.fpNext;
 	t_assertm(pElt32->fpTracker == pTrack32, "expected pointer to be equal");
 	assertEqualm(32, pElt32->fulBucketSize, "expected default bucket size to be the same");
 	MemTracker *pTrack8 = aRoot[8];
-	Trace("trackername8 [" << pTrack8->fpName << "]");
+	Trace("trackername8 [" << pTrack8->GetName() << "]");
 	t_assertm(aRoot.fpTracker == pTrack8, "expected pointer to be equal");
 	assertEqualm(8, aRoot.fulBucketSize, "expected default bucket size to be the same");
 	pElt16 = aRoot.fpNext;
@@ -199,6 +199,21 @@ void PoolAllocatorTest::ExcessTrackerEltTest()
 	t_assertm(aRoot.fpTracker == pTrack8, "expected pointer to be equal");
 	t_assertm(aRoot.fpNext == pElt16, "expected pointer to next element to be equal");
 	assertEqualm(8, aRoot.fulBucketSize, "expected default bucket size to be the same");
+}
+
+void PoolAllocatorTest::StillUsedBlocksTest()
+{
+	StartTrace(PoolAllocatorTest.StillUsedBlocksTest);
+	PoolAllocator pa(1, 1024, 9);
+	void *p16 = pa.Calloc(1, 16);
+	// counts only usable size, usable in a 32-block are 16bytes
+	assertCompare(pa.CurrentlyAllocated(), equal_to, 16LL);
+	void *p32 = pa.Calloc(1, 32);
+	// counts only usable size, usable in a 64-block are 48bytes
+	assertCompare(pa.CurrentlyAllocated(), equal_to, 64LL);
+	pa.DumpStillAllocated();
+	pa.Free(p32);
+	pa.Free(p16);
 }
 
 void PoolAllocatorTest::XxxTest()
@@ -230,6 +245,7 @@ Test *PoolAllocatorTest::suite()
 	ADD_CASE(testSuite, PoolAllocatorTest, ExcessTrackerEltFindTrackerForSizeTest);
 	ADD_CASE(testSuite, PoolAllocatorTest, ExcessTrackerEltInsertTrackerForSizeTest);
 	ADD_CASE(testSuite, PoolAllocatorTest, ExcessTrackerEltTest);
+	ADD_CASE(testSuite, PoolAllocatorTest, StillUsedBlocksTest);
 //	ADD_CASE(testSuite, PoolAllocatorTest, XxxTest);
 // enable the following line if you want the statistics cought to be exported as comma separated values file for analysis in a spreadsheet application
 //	ADD_CASE(testSuite, PoolAllocatorTest, ExportCsvStatistics);

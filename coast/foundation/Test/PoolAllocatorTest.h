@@ -54,6 +54,8 @@ public:
 	void ExcessTrackerEltInsertTrackerForSizeTest();
 	//! describe this testcase
 	void ExcessTrackerEltTest();
+	//! test if the allocator prints out still allocated blocks of memory
+	void StillUsedBlocksTest();
 	//! describe this testcase
 	void XxxTest();
 };
