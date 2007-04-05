@@ -97,36 +97,36 @@ void StorageTest::SimpleSizeHintTest(TString allocatorName, Allocator *pAllocato
 
 void StorageTest::PoolSizeHintTest()
 {
-	PoolAllocator pa(1);
-	SimpleSizeHintTest("Poolallocator", &pa);
+	PoolAllocator pa(1, 1024, 9);
+	SimpleSizeHintTest("PoolAllocator", &pa);
 	const size_t maxbucketsize = 0x2000;
 	// test some significant values
 	// must be adjusted if implementation of pool allocator is changed
-	assertEqual(16, pa.SizeHint(1));
-	assertEqual(16, pa.SizeHint(16));
-	assertEqual(32, pa.SizeHint(17));
-	assertEqual(32, pa.SizeHint(17));
+
+	const u_long lMinimumSize = 16 + MemoryHeader::AlignedSize();
+	assertEqual(lMinimumSize, pa.SizeHint(0));
+	assertEqual(lMinimumSize, pa.SizeHint(1));
+	assertEqual(lMinimumSize, pa.SizeHint(32));
+	assertEqual(lMinimumSize << 1, pa.SizeHint(33));
+	assertEqual(lMinimumSize << 1, pa.SizeHint(64));
 	assertEqual(0x2000, pa.SizeHint(0x1fff));
 	assertEqual(0x2fff, pa.SizeHint(0x2fff));
-	assertEqual(32, pa.SizeHint(32));
-	assertEqual(16, pa.SizeHint(0));
 	{
-		for (size_t s = 0, expected = 16; s < 0x7fff; s += 8 ) {
+		for (size_t s = 0, expected = lMinimumSize; s < 0x7fff; s += 8 ) {
 			if (expected < s) {
-				expected *= 2;    // buckets double in size
+				expected <<= 1;
 			}
 			if (expected <= maxbucketsize) {
 				assertEqual(expected, pa.SizeHint(s));
 			} else {
 				assertEqual(s, pa.SizeHint(s));
 			}
-
 		}
 	}
 	{
-		for (size_t s = 1, expected = 16; s < 0x7fff; s += 8 ) {
+		for (size_t s = 1, expected = lMinimumSize; s < 0x7fff; s += 8 ) {
 			if (expected < s) {
-				expected *= 2;    // buckets double in size
+				expected <<= 1;
 			}
 			if (expected <= maxbucketsize) {
 				assertEqual(expected, pa.SizeHint(s));

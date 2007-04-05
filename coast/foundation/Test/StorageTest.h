@@ -11,14 +11,17 @@
 
 //---- baseclass include -------------------------------------------------
 #include "TestCase.h"
+#include "MemHeader.h"
 
 //---- forward declaration -----------------------------------------------
 class Allocator;
+class MemoryHeader;
 
 //---- StorageTest ----------------------------------------------------------
 //!testcases for Storage class
 class StorageTest : public TestFramework::TestCase
 {
+	friend class MemoryHeader;
 public:
 	//!constructors
 	StorageTest(TString tstrName);
