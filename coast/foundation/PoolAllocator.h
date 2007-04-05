@@ -62,11 +62,12 @@ public:
 //! is definitely <B>not</B> thread-safe
 class EXPORTDECL_FOUNDATION PoolAllocator: public Allocator
 {
+	friend class PoolAllocatorTest;
 public:
 	/*! create and initialize a pool allocator
 		\param poolid use poolid to distinguish more than one pool
 		\param poolSize size of pre-allocated pool in kBytes, default 1MByte
-		\param maxKindOfBucket number of different allocation units within PoolAllocator, starts at 16 bytes and doubles the size for maxKindOfBucket times. So maxKindOfBucket=10 will give a max block size of 8192 bytes. */
+		\param maxKindOfBucket number of different allocation units within PoolAllocator, starts at 16 (32-16) bytes and doubles the size for maxKindOfBucket times. So maxKindOfBucket=10 will give a max usable size of 16368 (16384-16) bytes. */
 	PoolAllocator(long poolid, u_long poolSize = 1024, u_long maxKindOfBucket = 10);
 	//! destroy a pool only if its empty, i.e. all allocated bytes are freed
 	virtual ~PoolAllocator();
@@ -87,6 +88,8 @@ public:
 	//! ground up, used for request threads after a request is handled
 	virtual void Refresh();
 
+	void DumpStillAllocated();
+
 protected:
 	void *fPoolMemory;
 	u_long fAllocSz;
@@ -102,6 +105,8 @@ protected:
 	void InsertFreeHeaderIntoBucket(MemoryHeader *mh, PoolBucket *bucket);
 	PoolBucket *FindBucketBySize(u_long allocSize);
 	void Initialize();
+
+	void IntDumpStillAllocated(MemTracker *pTracker, u_long lSize, u_long lUsableSize);
 
 	// only used for debugging
 	MemTracker *fpPoolTotalTracker, *fpPoolTotalExcessTracker;
