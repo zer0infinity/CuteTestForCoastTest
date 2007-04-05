@@ -17,21 +17,32 @@ class EXPORTDECL_FOUNDATION MemoryHeader
 {
 public:
 	//!the states a chunk of memory can be in
-	enum EMemState { eFree = 1L, eUsed = 2L, eNotPooled = 4L, eFreeNotPooled = 5L, eUsedNotPooled = 6L };
+	enum EMemState {
+		eFree = 1L,
+		eUsed = 2L,
+		eNotPooled = 4L,
+		eFreeNotPooled = ( eFree | eNotPooled ),
+		eUsedNotPooled = ( eUsed | eNotPooled ),
+	};
 
 	//!magic cookie to determine memory boundaries
 	static const u_long gcMagic;
 
 	//!constructor simplifying settings of values
-	MemoryHeader(u_long size, EMemState ems) : fMagic(MemoryHeader::gcMagic), fSize(size), fState(ems), fNext(0) { }
+	MemoryHeader(u_long size, EMemState ems)
+		: fMagic(MemoryHeader::gcMagic)
+		, fSize(size)
+		, fState(ems)
+		, fNextFree(0) {
+	}
 	//!the cookie defining the boundary of the memory
 	u_long fMagic;
 	//!size of the memory chunk
 	u_long fSize;
 	//!state a chunk of memory is in
 	EMemState fState;
-	//!link to next chunk
-	MemoryHeader *fNext;
+	//!link to next free chunk in pool
+	MemoryHeader *fNextFree;
 	//!align memory suitably
 	static inline size_t AlignedSize() {
 		const size_t rest =  sizeof(MemoryHeader) % sizeof(long double);
