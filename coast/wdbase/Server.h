@@ -203,7 +203,7 @@ class ServerThread;
 			/ServerName				MyRegisteredServer	# mandatory, name of server instance to run
 			/UsePoolStorage			1					# optional, [0|1], default 0, use preallocated memory pool for storage of Queue elements
 			/PoolStorageSize		22001				# optional, [kB], default 10240, pool storage size in kbytes
-			/NumOfPoolBucketSizes	16					# optional, default 10, number of different allocation units within PoolStorage, starts at 16 bytes and always doubles the size so 16 << 10 will give a max block size of 8192 bytes
+			/NumOfPoolBucketSizes	16					# optional, default 10, number of different allocation units within PoolStorage, starts at 16 (32-16) bytes and always doubles the size so 16 << 10 will give a max usable size of 16368 (16384-16) bytes
 		}
 		...
 	}
