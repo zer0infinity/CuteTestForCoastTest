@@ -198,7 +198,7 @@ void TimeStampTest::EmptyConstructorTest()
 		t_assertm(tsNow <= tsDefConstructor, TString("Expected empty constructor to generate timestamp with Now date. at ") << strCase);
 		Trace("tsNow: " << tsNow.AsString() << " tsDefConstructor: " << tsDefConstructor.AsString());
 		// Generates 19700101000000
-		TimeStamp ts2(0);
+		TimeStamp ts2((time_t)0);
 		t_assertm(roaConfig["ExpectedResult"].AsString() == ts2.AsString(), TString("Expected set with empty string test to pass at ") << strCase);
 		Trace(ts2.AsString());
 	}
@@ -312,7 +312,7 @@ void TimeStampTest::StaticMethodsTest()
 void TimeStampTest::ModifiersTest()
 {
 	StartTrace(TimeStampTest.ModifiersTest);
-	TimeStamp aInitial(0), aSecond(0);
+	TimeStamp aInitial((time_t)0), aSecond((time_t)0);
 	t_assert(aInitial.IsValid());
 	t_assert(aSecond.IsValid());
 	assertEqual(0, aInitial.AsLong());
