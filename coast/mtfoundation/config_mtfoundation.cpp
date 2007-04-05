@@ -44,7 +44,7 @@ static void Finis()
 
 DWORD fgThreadPtrKey;
 Anything fgThreads;
-SimpleMutex fgThreadsMutex("fgThreadsMutex");
+SimpleMutex fgThreadsMutex("fgThreadsMutex", Storage::Global());
 
 void EXPORTDECL_MTFOUNDATION TerminateKilledThreads()
 {
