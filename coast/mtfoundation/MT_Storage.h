@@ -26,9 +26,9 @@ public:
 	virtual ~MT_MemTracker();
 
 	//!tracks allocation; locks mutex
-	virtual void TrackAlloc(u_long allocSz);
+	virtual void TrackAlloc(MemoryHeader *mh);
 	//!tracks frees: locks mutex
-	virtual void TrackFree(u_long allocSz);
+	virtual void TrackFree(MemoryHeader *mh);
 	//!print allocation/deallocation statistics
 	virtual void PrintStatistic(long lLevel = -1);
 	//!returns currently allocated bytes

@@ -121,23 +121,23 @@ void MT_MemTracker::operator delete(void *vp)
 	}
 }
 
-void MT_MemTracker::TrackAlloc(u_long allocSz)
+void MT_MemTracker::TrackAlloc(MemoryHeader *mh)
 {
 	if ( !LOCKMUTEX(fMutex) ) {
 		SysLog::Error("Mutex lock failed");
 	}
-	MemTracker::TrackAlloc(allocSz);
+	MemTracker::TrackAlloc(mh);
 	if ( !UNLOCKMUTEX(fMutex) ) {
 		SysLog::Error("Mutex unlock failed");
 	}
 }
 
-void MT_MemTracker::TrackFree(u_long allocSz)
+void MT_MemTracker::TrackFree(MemoryHeader *mh)
 {
 	if ( !LOCKMUTEX(fMutex) ) {
 		SysLog::Error("Mutex lock failed");
 	}
-	MemTracker::TrackFree(allocSz);
+	MemTracker::TrackFree(mh);
 	if ( !UNLOCKMUTEX(fMutex) ) {
 		SysLog::Error("Mutex unlock failed");
 	}
@@ -221,7 +221,7 @@ public:
 		if (THRKEYCREATE(MT_Storage::fgAllocatorKey, 0)) {
 			SysLog::Error("TlsAlloc of MT_Storage::fgAllocatorKey failed");
 		}
-		MT_Storage::fgpAllocatorInit = new SimpleMutex("AllocatorInit");
+		MT_Storage::fgpAllocatorInit = new SimpleMutex("AllocatorInit", Storage::Global());
 		MT_Storage::Initialize();
 	}
 
@@ -236,7 +236,7 @@ public:
 	}
 };
 
-static MTStorageInitializer *psgMTStorageInitializer = new MTStorageInitializer(10);
+static MTStorageInitializer *psgMTStorageInitializer = new MTStorageInitializer(5);
 
 void MT_Storage::Initialize()
 {
@@ -277,7 +277,7 @@ void MT_Storage::Finalize()
 		if ( a ) {
 			if ( fOldTracker ) {
 				MemTracker *pCurrTracker = a->ReplaceMemTracker(fOldTracker);
-				StatTrace(MT_Storage.Finalize, "setting MemTracker back from [" << ( pCurrTracker ? pCurrTracker->fpName : "NULL" ) << "] to [" << fOldTracker->fpName << "]", Storage::Global());
+				StatTrace(MT_Storage.Finalize, "setting MemTracker back from [" << ( pCurrTracker ? pCurrTracker->GetName() : "NULL" ) << "] to [" << fOldTracker->GetName() << "]", Storage::Global());
 				if ( pCurrTracker && Storage::fglStatisticLevel >= 1 ) {
 					pCurrTracker->PrintStatistic(2);
 				}
