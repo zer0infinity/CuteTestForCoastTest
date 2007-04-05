@@ -246,7 +246,7 @@ ROAnything ThreadPoolManager::DoGetConfig(long i, ROAnything roaThreadArgs)
 //--- WorkerThread implementation -------------------------------
 WorkerThread::WorkerThread(const char *name)
 	: Thread(name)
-	, fRefreshAllocator(true)
+	, fRefreshAllocator(false)
 {
 }
 
