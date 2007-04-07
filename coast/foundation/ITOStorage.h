@@ -311,9 +311,14 @@ public:
 	//! get currently used allocator (thread specific)
 	static Allocator *Current();
 
+	/*! get statistic level which was initialized by getting value of TRACE_STORAGE environment variable
+		\return logging level, see description of fglStatisticLevel */
+	static long GetStatisticLevel() {
+		return fglStatisticLevel;
+	}
+
 protected:
 	// somewhat silly the need to declare all storage hook derivations as friend
-	friend class PoolAllocator;
 	friend class MT_Storage;
 	friend class MTStorageHooks;
 	friend class TestStorageHooks;
@@ -345,7 +350,7 @@ protected:
 	//!flag to force global store temporarily
 	static bool fgForceGlobal;
 
-	/*! define the logging level of memory statistics
+	/*! define the logging level of memory statistics by defining TRACE_STORAGE appropriately
 		0: No pool statistic tracing, except when excess memory was used
 		1: Trace overall statistics
 		2: Trace detailed statistics */
