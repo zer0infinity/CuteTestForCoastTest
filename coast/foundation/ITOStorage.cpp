@@ -67,7 +67,11 @@ MemTracker::MemTracker(const char *name)
 	, fSizeFreed(0)
 	, fId(-1)
 	, fpName(strdup(name))	// copy string to be more flexible when using temporary param objects like Strings
+	, fpUsedList(NULL)
 {
+	if ( Storage::GetStatisticLevel() >= 3 ) {
+		fpUsedList = new UsedListType();
+	}
 }
 
 void *MemTracker::operator new(size_t size)
@@ -91,19 +95,11 @@ void MemTracker::operator delete(void *vp)
 	}
 }
 
-void MemTracker::Init(MemTracker *t)
-{
-	fAllocated = t->fAllocated;
-	fNumAllocs = t->fNumAllocs;
-	fSizeAllocated = t->fSizeAllocated;
-	fNumFrees = t->fNumFrees;
-	fSizeFreed = t->fSizeFreed;
-	fId = t->fId;
-	fMaxAllocated = t->fMaxAllocated;
-}
-
 MemTracker::~MemTracker()
 {
+	if ( fpUsedList ) {
+		delete fpUsedList;
+	}
 	delete fpName;
 }
 
@@ -118,8 +114,9 @@ void MemTracker::TrackAlloc(MemoryHeader *mh)
 	++fNumAllocs;
 	fSizeAllocated += mh->fUsableSize;
 	fMaxAllocated = itoMAX(fMaxAllocated, fAllocated);
-	if ( Storage::GetStatisticLevel() >= 3 ) {
-		fUsedList.push_front(mh);
+	// only track used pool memory buckets
+	if ( fpUsedList && !( mh->fState & MemoryHeader::eNotPooled ) ) {
+		fpUsedList->push_front(mh);
 	}
 }
 
@@ -128,11 +125,12 @@ void MemTracker::TrackFree(MemoryHeader *mh)
 	fAllocated -= mh->fUsableSize;
 	++fNumFrees;
 	fSizeFreed += mh->fUsableSize;
-	if ( Storage::GetStatisticLevel() >= 3 ) {
+	// only track used pool memory buckets
+	if ( fpUsedList && !( mh->fState & MemoryHeader::eNotPooled ) ) {
 		UsedListType::iterator aUsedIterator;
-		for ( aUsedIterator = fUsedList.begin(); aUsedIterator != fUsedList.end(); ++aUsedIterator ) {
+		for ( aUsedIterator = fpUsedList->begin(); aUsedIterator != fpUsedList->end(); ++aUsedIterator ) {
 			if ( *aUsedIterator == mh ) {
-				fUsedList.erase(aUsedIterator);
+				fpUsedList->erase(aUsedIterator);
 				break;
 			}
 		}
@@ -141,11 +139,11 @@ void MemTracker::TrackFree(MemoryHeader *mh)
 
 void MemTracker::DumpUsedBlocks()
 {
-	if ( fUsedList.size() ) {
+	if ( fpUsedList && fpUsedList->size() ) {
 		SysLog::Error(String(Storage::Global()).Append("memory blocks still in use for ").Append(fpName).Append(':'));
 		UsedListType::const_iterator aUsedIterator;
 		long lIdx = 0;
-		for ( aUsedIterator = fUsedList.begin(); aUsedIterator != fUsedList.end(); ++lIdx, ++aUsedIterator) {
+		for ( aUsedIterator = fpUsedList->begin(); aUsedIterator != fpUsedList->end(); ++lIdx, ++aUsedIterator) {
 			MemoryHeader *pMH = *aUsedIterator;
 			// reserve memory for the following text plus four times the buffer size for dumping as text
 			String strOut(( 40L + ( ( pMH->fUsableSize + MemoryHeader::AlignedSize() ) * 4L ) ), Storage::Global());

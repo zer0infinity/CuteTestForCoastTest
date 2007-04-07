@@ -25,6 +25,7 @@ class EXPORTDECL_FOUNDATION MemTracker
 	friend class MemTrackerTest;
 public:
 	typedef std::list<MemoryHeader *> UsedListType;
+	typedef std::list<MemoryHeader *>* UsedListTypePtr;
 
 	MemTracker(const char *name);
 	virtual ~MemTracker();
@@ -64,9 +65,6 @@ public:
 		return fpName;
 	}
 
-	//!initializes statistics to the values of MemTracker t
-	virtual void Init(MemTracker *t);
-
 	static void *operator new(size_t size);
 	static void *operator new(size_t size, class Allocator *);
 	static void operator delete(void *d);
@@ -89,7 +87,7 @@ private:
 	//! the name of the pool we track
 	const char *fpName;
 	//! list to store used MemoryHeaders
-	UsedListType fUsedList;
+	UsedListTypePtr fpUsedList;
 };
 
 //!helper class to check for memory leaks
