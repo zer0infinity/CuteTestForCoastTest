@@ -38,20 +38,20 @@ MemChecker::MemChecker(const char *scope, Allocator *a)
 
 MemChecker::~MemChecker()
 {
-	if ( CheckDelta() > 0 ) {
-		TraceDelta("MemChecker.~MemChecker: ");
-	}
+	TraceDelta("MemChecker.~MemChecker: ");
 }
 
 void MemChecker::TraceDelta(const char *message)
 {
-	char msgbuf[1024] = {'\0'};
-	if (message) {
-		SysLog::WriteToStderr( message, strlen(message));
-	}
 	l_long delta = CheckDelta();
-	int bufsz = snprintf(msgbuf, sizeof(msgbuf), "\nMem Usage change by %.0f bytes in %s\n", (double)delta, fScope);
-	SysLog::WriteToStderr( msgbuf, bufsz );
+	if ( delta > 0 ) {
+		char msgbuf[1024] = {'\0'};
+		if (message) {
+			SysLog::WriteToStderr( message, strlen(message));
+		}
+		int bufsz = snprintf(msgbuf, sizeof(msgbuf), "\nMem Usage change by %.0f bytes in %s\n", (double)delta, fScope);
+		SysLog::WriteToStderr( msgbuf, bufsz );
+	}
 }
 
 l_long MemChecker::CheckDelta()
@@ -277,7 +277,7 @@ Allocator *Storage::Global()
 void Storage::Initialize()
 {
 	Storage::DoInitialize();
-	if (fgHooks && !fgForceGlobal) {
+	if ( fgHooks && !fgForceGlobal ) {
 		fgHooks->Initialize();
 	}
 }
@@ -304,7 +304,7 @@ void Storage::DoInitialize()
 void Storage::DoFinalize()
 {
 	// terminate global allocator and force printing statistics above level 1
-	if ( fglStatisticLevel >= 1 ) {
+	if ( GetStatisticLevel() >= 1 ) {
 		Storage::DoGlobal()->PrintStatistic(2);
 	}
 }
@@ -316,7 +316,8 @@ void Storage::PrintStatistic(long lLevel)
 
 Allocator *Storage::DoGlobal()
 {
-	if (!Storage::fgGlobalPool) {
+	if ( !Storage::fgGlobalPool ) {
+		Storage::Initialize();
 		Storage::fgGlobalPool = new GlobalAllocator();
 	}
 	return Storage::fgGlobalPool;
@@ -400,16 +401,21 @@ MemoryHeader *Allocator::RealMemStart(void *vp)
 }
 
 //---- GlobalAllocator ------------------------------------------
-GlobalAllocator::GlobalAllocator() : Allocator(11223344L)
+GlobalAllocator::GlobalAllocator()
+	: Allocator(11223344L)
+	, fTracker(NULL)
 {
-	fTracker = Storage::MakeMemTracker("GlobalAllocator", false);
-	fTracker->SetId(fAllocatorId);
+	if ( Storage::GetStatisticLevel() >= 1 ) {
+		fTracker = Storage::MakeMemTracker("GlobalAllocator", false);
+		fTracker->SetId(fAllocatorId);
+	}
 }
 
 GlobalAllocator::~GlobalAllocator()
 {
 	if ( fTracker ) {
 		delete fTracker;
+		fTracker = NULL;
 	}
 }
 
@@ -424,11 +430,17 @@ MemTracker *GlobalAllocator::ReplaceMemTracker(MemTracker *t)
 
 l_long GlobalAllocator::CurrentlyAllocated()
 {
-	return fTracker->CurrentlyAllocated();
+	if ( fTracker ) {
+		return fTracker->CurrentlyAllocated();
+	}
+	return 0LL;
 }
+
 void GlobalAllocator::PrintStatistic(long lLevel)
 {
-	fTracker->PrintStatistic(lLevel);
+	if ( fTracker ) {
+		fTracker->PrintStatistic(lLevel);
+	}
 }
 
 void *GlobalAllocator::Alloc(u_long allocSize)
@@ -436,7 +448,9 @@ void *GlobalAllocator::Alloc(u_long allocSize)
 	void *vp = ::malloc(allocSize);
 	if (vp) {
 		MemoryHeader *mh = new(vp) MemoryHeader(allocSize - MemoryHeader::AlignedSize(), MemoryHeader::eUsedNotPooled);
-		fTracker->TrackAlloc(mh);
+		if ( fTracker ) {
+			fTracker->TrackAlloc(mh);
+		}
 		return ExtMemStart(mh);
 	} else {
 		static const char crashmsg[] = "FATAL: GlobalAllocator::Alloc malloc failed. I will crash :-(\n";
@@ -452,7 +466,9 @@ void  GlobalAllocator::Free(void *vp)
 		if (header && header->fMagic == MemoryHeader::gcMagic) {
 			Assert(header->fMagic == MemoryHeader::gcMagic); // should combine magic with state
 			Assert(header->fState & MemoryHeader::eUsed);
-			fTracker->TrackFree(header);
+			if ( fTracker ) {
+				fTracker->TrackFree(header);
+			}
 			vp = header;
 		}
 		::free(vp);
