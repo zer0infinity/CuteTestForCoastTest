@@ -180,10 +180,12 @@ public:
 
 	//!Memory debugging and tracking support; implementer should report currently allocated bytes
 	virtual l_long CurrentlyAllocated() = 0;
+
 	//!change of memtrackers to be e.g. MT-Safe
 	virtual MemTracker *ReplaceMemTracker(MemTracker *t) {
 		return NULL;
 	}
+
 	//!Memory debugging and tracking support; implementer should report all statistic on cerr
 	virtual void PrintStatistic(long lLevel = -1) = 0;
 
@@ -235,8 +237,10 @@ public:
 
 	//!returns the currently allocated bytes
 	l_long CurrentlyAllocated();
+
 	//!replaces the memory tracker with sthg. different e.g. thread safe
 	virtual MemTracker *ReplaceMemTracker(MemTracker *t);
+
 protected:
 	//!implements allocation bottleneck routine
 	virtual void *Alloc(u_long allocSize);
@@ -351,9 +355,10 @@ protected:
 	static bool fgForceGlobal;
 
 	/*! define the logging level of memory statistics by defining TRACE_STORAGE appropriately
-		0: No pool statistic tracing, except when excess memory was used
+		0: No pool statistic tracing, even not for excess memory nor GlobalAllocator usage
 		1: Trace overall statistics
-		2: Trace detailed statistics */
+		2: + trace detailed statistics
+		3: + keep track of allocated blocks to trace them in case they were not freed */
 	static long fglStatisticLevel;
 
 	//! the global allocator
