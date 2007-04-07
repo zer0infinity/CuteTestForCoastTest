@@ -31,14 +31,14 @@ public:
 	//!constructor simplifying settings of values
 	MemoryHeader(u_long size, EMemState ems)
 		: fMagic(MemoryHeader::gcMagic)
-		, fSize(size)
+		, fUsableSize(size)
 		, fState(ems)
 		, fNextFree(0) {
 	}
 	//!the cookie defining the boundary of the memory
 	u_long fMagic;
 	//!size of the memory chunk
-	u_long fSize;
+	u_long fUsableSize;
 	//!state a chunk of memory is in
 	EMemState fState;
 	//!link to next free chunk in pool
