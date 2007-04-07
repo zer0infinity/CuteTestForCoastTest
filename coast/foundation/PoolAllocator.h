@@ -20,16 +20,16 @@ class ExcessTrackerElt
 
 	MemTracker *fpTracker;
 	ExcessTrackerElt *fpNext;
-	u_long fulBucketSize;
+	u_long fulPayloadSize;
 
 	ExcessTrackerElt &operator=(const ExcessTrackerElt &);
 
-	void SetValues(MemTracker *pTracker, ExcessTrackerElt *pNext, u_long ulBucketSize);
+	void SetValues(MemTracker *pTracker, ExcessTrackerElt *pNext, u_long ulPayloadSize);
 
 public:
 	ExcessTrackerElt();
 
-	ExcessTrackerElt(MemTracker *pTracker, ExcessTrackerElt *pNext, u_long ulBucketSize);
+	ExcessTrackerElt(MemTracker *pTracker, ExcessTrackerElt *pNext, u_long ulPayloadSize);
 
 	~ExcessTrackerElt();
 
@@ -37,15 +37,15 @@ public:
 
 	ul_long GetSizeToPowerOf2(u_long ulWishSize);
 
-	long GetMaxSizeBitNumber();
+	long GetLargestExcessEltBitNum();
 
-	MemTracker *FindTrackerForSize(u_long lMemSize);
+	MemTracker *FindTrackerForSize(u_long ulPayloadSize);
 
-	ExcessTrackerElt *InsertTrackerForSize(MemTracker *pTracker, u_long lMemSize);
+	ExcessTrackerElt *InsertTrackerForSize(MemTracker *pTracker, u_long ulPayloadSize);
 
 	void SetId(long lId);
 
-	MemTracker *operator[](u_long lMemSize);
+	MemTracker *operator[](u_long ulPayloadSize);
 
 	l_long CurrentlyAllocated();
 
@@ -67,13 +67,15 @@ public:
 	/*! create and initialize a pool allocator
 		\param poolid use poolid to distinguish more than one pool
 		\param poolSize size of pre-allocated pool in kBytes, default 1MByte
-		\param maxKindOfBucket number of different allocation units within PoolAllocator, starts at 16 (32-16) bytes and doubles the size for maxKindOfBucket times. So maxKindOfBucket=10 will give a max usable size of 16368 (16384-16) bytes. */
+		\param maxKindOfBucket number of different allocation units within PoolAllocator, starts at 16 bytes and doubles the size for maxKindOfBucket times. So maxKindOfBucket=10 will give a max usable size of 8192 bytes. */
 	PoolAllocator(long poolid, u_long poolSize = 1024, u_long maxKindOfBucket = 10);
 	//! destroy a pool only if its empty, i.e. all allocated bytes are freed
 	virtual ~PoolAllocator();
 	//! implement hook for freeing memory
 	virtual void  Free(void *vp);
-	//! hook to allow allocators to optimize allocation of string buffers
+	/*! Hook to allow allocators to optimize allocation of string buffers for example.
+		\param size requested memory size
+		\return optimal (maximum) number of bytes which fit into the internal bucket */
 	virtual size_t SizeHint(size_t size);
 
 	/*! set an identification for this pool
