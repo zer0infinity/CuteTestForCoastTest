@@ -27,8 +27,6 @@ extern "C" void finalize();
 #define snprintf	_snprintf
 #endif
 
-//#define TRACK_USED_MEMORYBLOCKS 1
-
 MemChecker::MemChecker(const char *scope, Allocator *a)
 	: fAllocator(a)
 	, fSizeAllocated(fAllocator->CurrentlyAllocated())
@@ -116,43 +114,45 @@ void MemTracker::SetId(long id)
 
 void MemTracker::TrackAlloc(MemoryHeader *mh)
 {
-	fAllocated += mh->fSize;
+	fAllocated += mh->fUsableSize;
 	++fNumAllocs;
-	fSizeAllocated += mh->fSize;
+	fSizeAllocated += mh->fUsableSize;
 	fMaxAllocated = itoMAX(fMaxAllocated, fAllocated);
-#if defined(TRACK_USED_MEMORYBLOCKS)
-	fUsedList.push_front(mh);
-#endif
+	if ( Storage::GetStatisticLevel() >= 3 ) {
+		fUsedList.push_front(mh);
+	}
 }
 
 void MemTracker::TrackFree(MemoryHeader *mh)
 {
-	fAllocated -= mh->fSize;
+	fAllocated -= mh->fUsableSize;
 	++fNumFrees;
-	fSizeFreed += mh->fSize;
-#if defined(TRACK_USED_MEMORYBLOCKS)
-	UsedListType::iterator aUsedIterator;
-	for ( aUsedIterator = fUsedList.begin(); aUsedIterator != fUsedList.end(); ++aUsedIterator ) {
-		if ( *aUsedIterator == mh ) {
-			fUsedList.erase(aUsedIterator);
-			break;
+	fSizeFreed += mh->fUsableSize;
+	if ( Storage::GetStatisticLevel() >= 3 ) {
+		UsedListType::iterator aUsedIterator;
+		for ( aUsedIterator = fUsedList.begin(); aUsedIterator != fUsedList.end(); ++aUsedIterator ) {
+			if ( *aUsedIterator == mh ) {
+				fUsedList.erase(aUsedIterator);
+				break;
+			}
 		}
 	}
-#endif
 }
 
 void MemTracker::DumpUsedBlocks()
 {
 	if ( fUsedList.size() ) {
-		SysLog::Error("Following memory blocks are still in use:");
+		SysLog::Error(String(Storage::Global()).Append("memory blocks still in use for ").Append(fpName).Append(':'));
 		UsedListType::const_iterator aUsedIterator;
 		long lIdx = 0;
 		for ( aUsedIterator = fUsedList.begin(); aUsedIterator != fUsedList.end(); ++lIdx, ++aUsedIterator) {
 			MemoryHeader *pMH = *aUsedIterator;
-			String strBuf((void *)pMH, ( pMH->fSize + MemoryHeader::AlignedSize() ), Storage::Global());
-			SysLog::WriteToStderr(String(Storage::Global()).Append("Block ").Append(lIdx).Append('\n'));
-			SysLog::WriteToStderr(strBuf.DumpAsHex());
-			SysLog::WriteToStderr("\n");
+			// reserve memory for the following text plus four times the buffer size for dumping as text
+			String strOut(( 40L + ( ( pMH->fUsableSize + MemoryHeader::AlignedSize() ) * 4L ) ), Storage::Global());
+			strOut.Append("Block ").Append(lIdx).Append('\n');
+			strOut.Append("MemoryHeader:\n").Append(String((void *)pMH, MemoryHeader::AlignedSize(), Storage::Global()).DumpAsHex()).Append('\n');
+			strOut.Append("Content:\n").Append(String((void *)((char *)pMH + MemoryHeader::AlignedSize()), pMH->fUsableSize, Storage::Global()).DumpAsHex()).Append('\n');
+			SysLog::WriteToStderr(strOut);
 		}
 	}
 }
@@ -175,7 +175,8 @@ void MemTracker::PrintStatistic(long lLevel)
 				 "------------------------------------------\n"
 				 "Difference      %20lld bytes\n",
 #endif
-				 fId, fpName, fMaxAllocated,
+				 fId, fpName,
+				 fMaxAllocated,
 				 fSizeAllocated , fNumAllocs, (long)(fSizeAllocated / ((fNumAllocs) ? fNumAllocs : 1)),
 				 fSizeFreed, fNumFrees, (long)(fSizeFreed / ((fNumFrees) ? fNumFrees : 1)),
 				 fAllocated
@@ -382,8 +383,8 @@ void *Allocator::ExtMemStart(void *vp)
 {
 	if (vp) {
 		Assert(((MemoryHeader *)vp)->fMagic == MemoryHeader::gcMagic);
-		void *s = (((char *)(vp)) + MemoryHeader::AlignedSize()); // fSize does *not* include header
-		// superfluous, Calloc takes care: memset(s, '\0', mh->fSize);
+		void *s = (((char *)(vp)) + MemoryHeader::AlignedSize()); // fUsableSize does *not* include header
+		// superfluous, Calloc takes care: memset(s, '\0', mh->fUsableSize);
 		return s;
 	}
 	return 0;
