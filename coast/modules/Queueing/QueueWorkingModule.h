@@ -23,7 +23,7 @@
 	/QueueSize				long		mandatory, number of elements to buffer in the Queue
 	/UsePoolStorage			long		optional, [0|1], default 0, use preallocated memory pool for storage of Queue elements
 	/PoolStorageSize		long		optional, [kB], default 10240, pool storage size in kbytes
-	/NumOfPoolBucketSizes	long		optional, default 10, number of different allocation units within PoolStorage, starts at 16 (32-16) bytes and always doubles the size so 16 << 10 will give a max usable size of 16368 (16384-16) bytes
+	/NumOfPoolBucketSizes	long		optional, default 10, number of different allocation units within PoolStorage, starts at 16 bytes and always doubles the size so 16 << 10 will give a max usable size of 8192 bytes
 	...
 }</PRE>
 */
