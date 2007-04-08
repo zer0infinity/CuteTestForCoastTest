@@ -216,8 +216,7 @@ void ThreadsTest::ThreadStateTransitionTest()
 	assertEqual(Thread::eRunning, t.GetState()); //Semantically equal to IsRunning()
 
 	t_assert(t.Terminate(100));
-	t_assertm(!t.IsRunning(), "Thread is not running anymore");
-	t_assertm(t.CheckState(Thread::eTerminated, 10), "State should be eTerminated");
+	assertComparem(Thread::eTerminated, equal_to, t.GetState(false, Thread::eRunning), "Thread is not running anymore");
 
 	//-- Can not be restarted ----------------------------------
 	t_assertm(t.Start(), "should be restartable, since thread cannot be restarted");
