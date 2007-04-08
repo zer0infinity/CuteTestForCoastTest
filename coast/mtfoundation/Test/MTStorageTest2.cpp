@@ -128,9 +128,12 @@ void MTStorageTest2::twoThreadTest()
 	t1->CheckState(Thread::eTerminated);
 
 	// everything should have been allocated within pool!
-	t_assert( fPool->CurrentlyAllocated() > 0);
+	// the current implementation allows size testing, eg. tracking of allocated and freed memory only in Storage::GetStatisticLevel() >= 1
+	if ( Storage::GetStatisticLevel() >= 1 ) {
+		assertComparem( fPool->CurrentlyAllocated(), greater, 0LL, "everything should have been allocated within pool XXX: changes when semantic of Thread::eStarted changes!");
+	}
 	delete t1;
-	assertEqualm(0, fPool->CurrentlyAllocated(), "expected fPool to be empty");
+	assertComparem(0LL, equal_to, fPool->CurrentlyAllocated(), "expected fPool to be empty");
 }
 
 void MTStorageTest2::twoThreadAssignmentTest()
@@ -148,8 +151,11 @@ void MTStorageTest2::twoThreadAssignmentTest()
 
 	// data should have been copied to global store now
 
-	assertEqualm(0, fPool->CurrentlyAllocated(), "expected fPool to be empty");
-	t_assert( fGlobal->CurrentlyAllocated() > l);
+	assertComparem(0LL, equal_to, fPool->CurrentlyAllocated(), "expected fPool to be empty");
+	// the current implementation allows size testing, eg. tracking of allocated and freed memory only in Storage::GetStatisticLevel() >= 1
+	if ( Storage::GetStatisticLevel() >= 1 ) {
+		assertCompare( fGlobal->CurrentlyAllocated(), greater, l);
+	}
 }
 
 void MTStorageTest2::twoThreadCopyConstructorTest()
@@ -167,8 +173,11 @@ void MTStorageTest2::twoThreadCopyConstructorTest()
 
 	// data should have been copied to global store now
 
-	assertEqualm(0, fPool->CurrentlyAllocated(), "expected fPool to be empty");
-	t_assert( fGlobal->CurrentlyAllocated() > l);
+	assertComparem(0LL, equal_to, fPool->CurrentlyAllocated(), "expected fPool to be empty");
+	// the current implementation allows size testing, eg. tracking of allocated and freed memory only in Storage::GetStatisticLevel() >= 1
+	if ( Storage::GetStatisticLevel() >= 1 ) {
+		assertCompare( fGlobal->CurrentlyAllocated(), greater, l);
+	}
 }
 
 void MTStorageTest2::twoThreadArrayAccessTest()
@@ -192,13 +201,19 @@ void MTStorageTest2::twoThreadArrayAccessTest()
 		assertEqual( "ok", sub.AsCharPtr("") );
 
 		Anything copy(t1->GetData()["Sub"]["2"]);	// must be copied since allocators dont match
-		t_assert( fGlobal->CurrentlyAllocated() > l);
+		// the current implementation allows size testing, eg. tracking of allocated and freed memory only in Storage::GetStatisticLevel() >= 1
+		if ( Storage::GetStatisticLevel() >= 1 ) {
+			assertCompare( fGlobal->CurrentlyAllocated(), greater, l);
+		}
 		// data should have been copied to global store now
 		delete t1;
 	}
 	// new we should be back where we started
-	assertEqualm(0, fPool->CurrentlyAllocated(), "expected fPool to be empty");
-	t_assert( fGlobal->CurrentlyAllocated() == l); //no longer true
+	assertComparem(0LL, equal_to, fPool->CurrentlyAllocated(), "expected fPool to be empty");
+	// the current implementation allows size testing, eg. tracking of allocated and freed memory only in Storage::GetStatisticLevel() >= 1
+	if ( Storage::GetStatisticLevel() >= 1 ) {
+		assertCompare( fGlobal->CurrentlyAllocated(), equal_to, l);
+	}
 }
 
 void MTStorageTest2::reusePoolTest()
