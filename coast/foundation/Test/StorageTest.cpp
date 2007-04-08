@@ -58,34 +58,42 @@ void StorageTest::SimpleCallocSetsToZeroTest()
 
 void StorageTest::LeakTest()
 {
-	// watch the sequence of declaration
-	MemChecker mc("Test Global", Storage::Global());
-	String str;
-	{
-		StartTraceMem(StorageTest.LeakTest);
-		str = "Test a leak";
+	// the current implementation allows size testing, eg. tracking of allocated and freed memory only in Storage::GetStatisticLevel() >= 1
+	if ( Storage::GetStatisticLevel() >= 1 ) {
+		// watch the sequence of declaration
+		MemChecker mc("Test Global", Storage::Global());
+		String str(Storage::Global());
+		{
+			StartTraceMem(StorageTest.LeakTest);
+			str = "Test a leak by allocating some more memory than was reserved initially";
+		}
+		assertCompare(str.Length(), equal_to, 70L);
+		//PS: we now have a different measurement
+		//assertEqual(12, mc.CheckDelta());
+		assertComparem(mc.CheckDelta(), greater_equal, 12LL, "memory leaked as expected");
 	}
-	//PS: we now have a different measurement
-	//assertEqual(12, mc.CheckDelta());
-	t_assertm(mc.CheckDelta() >= 12, "memory leaked as expected");
 }
 
 void StorageTest::SimpleAllocTest(TString allocatorName, Allocator *pAllocator)
 {
-	MemChecker mc(allocatorName, pAllocator);
-	const long sz = 3000;
-	char *ptr[sz];
-	long i = 0;
-	for ( i = 0 ; i < sz ; i++ ) {
-		ptr[i] = (char *)pAllocator->Malloc(i);
+	// the current implementation allows size testing, eg. tracking of allocated and freed memory only in Storage::GetStatisticLevel() >= 1
+	if ( Storage::GetStatisticLevel() >= 1 ) {
+		MemChecker mc(allocatorName, pAllocator);
+		const long sz = 3000;
+		char *ptr[sz];
+		long i = 0;
+		for ( i = 0 ; i < sz ; i++ ) {
+			ptr[i] = (char *)pAllocator->Malloc(i);
+		}
+		assertEqual(4498500, mc.CheckDelta());
+		for ( i = 0 ; i < sz ; i++ ) {
+			pAllocator->Free(ptr[i]);
+		}
+		pAllocator->PrintStatistic();
+		assertEqual(0, mc.CheckDelta());
 	}
-	assertEqual(4498500, mc.CheckDelta());
-	for ( i = 0 ; i < sz ; i++ ) {
-		pAllocator->Free(ptr[i]);
-	}
-	pAllocator->PrintStatistic();
-	assertEqual(0, mc.CheckDelta());
 }
+
 void StorageTest::SimpleSizeHintTest(TString allocatorName, Allocator *pAllocator)
 {
 	const size_t sz = 3000;
@@ -97,18 +105,19 @@ void StorageTest::SimpleSizeHintTest(TString allocatorName, Allocator *pAllocato
 
 void StorageTest::PoolSizeHintTest()
 {
-	PoolAllocator pa(1, 1024, 9);
+	PoolAllocator pa(1, 1022, 10);
 	SimpleSizeHintTest("PoolAllocator", &pa);
 	const size_t maxbucketsize = 0x2000;
 	// test some significant values
 	// must be adjusted if implementation of pool allocator is changed
 
-	const u_long lMinimumSize = 16 + MemoryHeader::AlignedSize();
+	const u_long lMinimumSize = 16;
 	assertEqual(lMinimumSize, pa.SizeHint(0));
 	assertEqual(lMinimumSize, pa.SizeHint(1));
-	assertEqual(lMinimumSize, pa.SizeHint(32));
-	assertEqual(lMinimumSize << 1, pa.SizeHint(33));
-	assertEqual(lMinimumSize << 1, pa.SizeHint(64));
+	assertEqual(lMinimumSize, pa.SizeHint(lMinimumSize));
+	assertEqual(lMinimumSize << 1, pa.SizeHint(lMinimumSize + 1));
+	assertEqual(lMinimumSize << 1, pa.SizeHint(lMinimumSize << 1));
+	assertEqual(lMinimumSize << 2, pa.SizeHint((lMinimumSize << 1) + 1));
 	assertEqual(0x2000, pa.SizeHint(0x1fff));
 	assertEqual(0x2fff, pa.SizeHint(0x2fff));
 	{
