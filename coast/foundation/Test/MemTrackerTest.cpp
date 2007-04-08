@@ -64,7 +64,9 @@ void MemTrackerTest::TrackAllocFreeTest()
 	assertCompare(aTracker.fNumFrees, equal_to, 0LL);
 	assertCompare(aTracker.fSizeAllocated, equal_to, 0LL);
 	assertCompare(aTracker.fSizeFreed, equal_to, 0LL);
-//	assertCompare(aTracker.fUsedList.size(), equal_to, (size_t)0); //TRACK_USED_MEMORYBLOCKS
+	if ( aTracker.fpUsedList ) {
+		assertCompare(aTracker.fpUsedList->size(), equal_to, (size_t)0);
+	}
 	aTracker.TrackAlloc(pMH16);
 	assertCompare(aTracker.fAllocated, equal_to, 16LL);
 	assertCompare(aTracker.fMaxAllocated, equal_to, 16LL);
@@ -72,7 +74,9 @@ void MemTrackerTest::TrackAllocFreeTest()
 	assertCompare(aTracker.fNumFrees, equal_to, 0LL);
 	assertCompare(aTracker.fSizeAllocated, equal_to, 16LL);
 	assertCompare(aTracker.fSizeFreed, equal_to, 0LL);
-//	assertCompare(aTracker.fUsedList.size(), equal_to, (size_t)1);	//TRACK_USED_MEMORYBLOCKS
+	if ( aTracker.fpUsedList ) {
+		assertCompare(aTracker.fpUsedList->size(), equal_to, (size_t)1);
+	}
 	aTracker.TrackAlloc(pMH32);
 	assertCompare(aTracker.fAllocated, equal_to, 48LL);
 	assertCompare(aTracker.fMaxAllocated, equal_to, 48LL);
@@ -80,7 +84,9 @@ void MemTrackerTest::TrackAllocFreeTest()
 	assertCompare(aTracker.fNumFrees, equal_to, 0LL);
 	assertCompare(aTracker.fSizeAllocated, equal_to, 48LL);
 	assertCompare(aTracker.fSizeFreed, equal_to, 0LL);
-//	assertCompare(aTracker.fUsedList.size(), equal_to, (size_t)2);	//TRACK_USED_MEMORYBLOCKS
+	if ( aTracker.fpUsedList ) {
+		assertCompare(aTracker.fpUsedList->size(), equal_to, (size_t)2);
+	}
 	aTracker.TrackFree(pMH16);
 	assertCompare(aTracker.fAllocated, equal_to, 32LL);
 	assertCompare(aTracker.fMaxAllocated, equal_to, 48LL);
@@ -88,7 +94,9 @@ void MemTrackerTest::TrackAllocFreeTest()
 	assertCompare(aTracker.fNumFrees, equal_to, 1LL);
 	assertCompare(aTracker.fSizeAllocated, equal_to, 48LL);
 	assertCompare(aTracker.fSizeFreed, equal_to, 16LL);
-//	assertCompare(aTracker.fUsedList.size(), equal_to, (size_t)1);	//TRACK_USED_MEMORYBLOCKS
+	if ( aTracker.fpUsedList ) {
+		assertCompare(aTracker.fpUsedList->size(), equal_to, (size_t)1);
+	}
 
 	aTracker.TrackFree(pMH32);
 	assertCompare(aTracker.fAllocated, equal_to, 0LL);
@@ -97,7 +105,9 @@ void MemTrackerTest::TrackAllocFreeTest()
 	assertCompare(aTracker.fNumFrees, equal_to, 2LL);
 	assertCompare(aTracker.fSizeAllocated, equal_to, 48LL);
 	assertCompare(aTracker.fSizeFreed, equal_to, 48LL);
-//	assertCompare(aTracker.fUsedList.size(), equal_to, (size_t)0);	//TRACK_USED_MEMORYBLOCKS
+	if ( aTracker.fpUsedList ) {
+		assertCompare(aTracker.fpUsedList->size(), equal_to, (size_t)0);
+	}
 }
 
 void MemTrackerTest::XxxTest()
@@ -114,4 +124,3 @@ Test *MemTrackerTest::suite ()
 //	ADD_CASE(testSuite, MemTrackerTest, XxxTest);
 	return testSuite;
 }
-
