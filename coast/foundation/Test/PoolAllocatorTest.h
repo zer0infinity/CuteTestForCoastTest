@@ -56,6 +56,10 @@ public:
 	void ExcessTrackerEltTest();
 	//! test if the allocator prints out still allocated blocks of memory
 	void StillUsedBlocksTest();
+	//! test if the we can alloc excess memory
+	void UseExcessMemTest();
+	//! test if larger buckets get split into smaller ones
+	void SplitBucketTest();
 	//! describe this testcase
 	void XxxTest();
 };
