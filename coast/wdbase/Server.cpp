@@ -197,7 +197,7 @@ int Server::GlobalInit(int argc, char *argv[], const ROAnything config)
 	StartTrace(Server.GlobalInit);
 	int ret = Application::GlobalInit(argc, argv, config);
 	String msg;
-	msg << "Global init: " << (ret == 0 ? "suceeded" : "failed");
+	msg << "Global init: " << (ret == 0 ? "succeeded" : "failed");
 	SYSINFO(msg);
 	SetUid();
 	return (ret);
@@ -252,7 +252,7 @@ int Server::GlobalReinit()
 	retCode = UnblockRequests();
 	fgInReInit = false;
 	String msg;
-	msg << "Global reinit: " << (retCode == 0 ? "suceeded" : "failed");
+	msg << "Global reinit: " << (retCode == 0 ? "succeeded" : "failed");
 	Trace(msg);
 	SYSINFO(msg);
 	return retCode;

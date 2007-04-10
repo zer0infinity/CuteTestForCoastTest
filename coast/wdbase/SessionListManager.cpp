@@ -164,7 +164,7 @@ bool SessionListManager::ResetInit(const ROAnything config)
 		SysLog::WriteToStderr(m);
 	}
 
-	Trace("Init " << ((ret) ? "suceeded" : "failed"));
+	Trace("Init " << ((ret) ? "succeeded" : "failed"));
 	LeaveReInit();
 	return ret;
 }

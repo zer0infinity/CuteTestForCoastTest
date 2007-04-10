@@ -53,7 +53,7 @@ Anything SimpleAnyLoader::Load(const char *key)
 	if (ifp) {
 		// found
 		toLoad.Import(*ifp, key);
-		Trace("loading of <" << NotNull(key) << "> suceeded" );
+		Trace("loading of <" << NotNull(key) << "> succeeded" );
 		SubTraceAny(config, toLoad, "configuration for <" << key << ">");
 		delete ifp;
 	}

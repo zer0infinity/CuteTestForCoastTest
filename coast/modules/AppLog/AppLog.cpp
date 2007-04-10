@@ -399,7 +399,7 @@ ostream *AppLogChannel::OpenLogStream(ROAnything channel, String &logfileName)
 	if ( bGoAhead && RotateLog(logdir, rotatedir, logfileName) ) {
 		os = System::OpenOStream(logfileName, NULL, ios::app, true);
 	}
-	Trace(((os) ? " suceeded" : " failed"));
+	Trace(((os) ? " succeeded" : " failed"));
 	return os;
 }
 
