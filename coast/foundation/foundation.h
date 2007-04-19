@@ -137,7 +137,7 @@ typedef unsigned long long ul_long;
 #define UINT64_LITERAL(n) n ## ull
 #define INT64_LITERAL(n) n ## ll
 #endif
-#if defined(WIN32) || defined(__linux__)
+#if defined(WIN32) || ( defined(__linux__) && defined(__GNUG__) && __GNUG__ < 4 )
 #define LLONG_MAX	INT64_LITERAL(9223372036854775807)
 #define LLONG_MIN	(-LLONG_MAX-1)
 #define ULLONG_MAX	UINT64_LITERAL(18446744073709551615)
