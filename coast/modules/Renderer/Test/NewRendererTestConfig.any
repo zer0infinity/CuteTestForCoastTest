@@ -335,6 +335,21 @@
 			}
 			/Expected	"jkl:ghi:def"
 		}
+		/StringTokenizeRendererValidTokenRangeNegativeUpToTheEndTest {
+			/Env {
+				/InString	"abc;def;ghi;jkl;mno"
+				/InToken	";"
+			}
+			/Renderer {
+				/StringTokenizeRenderer {
+					/String			{ /Lookup InString }
+					/Token			{ /Lookup InToken }
+					/RenderToken	"-4--1"
+					/OutputFiller	":"
+				}
+			}
+			/Expected	"def:ghi:jkl:mno"
+		}
 		/StringTokenizeRendererTokenRangeExceededNegativeTest {
 			/Env {
 				/InString	"abc;def;ghi;jkl;mno"
