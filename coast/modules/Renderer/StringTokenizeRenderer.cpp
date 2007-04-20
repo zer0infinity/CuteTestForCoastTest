@@ -70,7 +70,7 @@ void StringTokenizeRenderer::BuildTokenList(Context &ctx, const ROAnything &conf
 		}
 		Trace("start: " << lStart << " end: " << lEnd << " diff: " << lDiff);
 
-		long lIncr = ((lStart >= 0L) ? 1L : -1L);
+		long lIncr = ( ( lStart <= lEnd ) ? 1L : -1L );
 		Trace("incr: " << lIncr);
 		while ( lDiff >= 0L ) {
 			anyOutputTokenList.Append(lStart);
