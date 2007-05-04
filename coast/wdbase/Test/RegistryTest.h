@@ -36,11 +36,13 @@ public:
 
 	//!sets the environment for this test
 	void setUp ();
+	void tearDown();
 
 protected:
 	void	Constructor ();
 	void	GetRegistry ();
 	void	InstallAliases ();
+	void	InstallErroneousAliases ();
 	void	InstallHierarchy ();
 	void	InstallHierarchyConfig ();
 	void	TerminateTest ();

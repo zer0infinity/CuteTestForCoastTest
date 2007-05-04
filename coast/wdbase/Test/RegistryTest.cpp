@@ -6,24 +6,22 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- c-library modules used ---------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "Policy.h"
-#include "Page.h"
+//--- interface include --------------------------------------------------------
+#include "RegistryTest.h"
+//--- module under test --------------------------------------------------------
+#include "Registry.h"
 
 //--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
 
-//--- module under test --------------------------------------------------------
-#include "Registry.h"
-
-//--- interface include --------------------------------------------------------
-#include "RegistryTest.h"
+//--- standard modules used ----------------------------------------------------
+#include "Page.h"
+//--- c-library modules used ---------------------------------------------------
 
 //---- RegistryTest ----------------------------------------------------------------
-RegistryTest::RegistryTest(TString tname) : TestCaseType(tname), fRegistry(0)
+RegistryTest::RegistryTest(TString tname)
+	: TestCaseType(tname)
+	, fRegistry(0)
 {
 }
 
@@ -36,8 +34,78 @@ void RegistryTest::setUp ()
 	fRegistry = Registry::GetRegistry(fName);
 }
 
+void RegistryTest::tearDown ()
+{
+	fRegistry = Registry::RemoveRegistry(fName);
+}
 void RegistryTest::InstallAliases ( )
 {
+	StartTrace(RegistryTest.InstallAliases);
+	{
+		// Insert regular objects into the registry
+		NotCloned *a = new NotCloned(""), *b = new NotCloned("");
+		// these must be on the heap, implicit assumption of Registry
+		fRegistry->RegisterRegisterableObject( "A", a );
+		fRegistry->RegisterRegisterableObject( "B", b );
+
+		// registry with two elements
+		assertEqual( (long)a, (long)fRegistry->Find("A"));
+		assertEqual( (long)b, (long)fRegistry->Find("B"));
+
+		// Install
+		AliasInstaller policy("InstallAliases"); // policy name must match category name otherwise obects are installed in the wrong registry
+
+		Anything args;
+		args["A"] = "NewA";				// regular case
+		args["B"] = MetaThing();		// create empty installer spec { }
+		TraceAny(args, "spec to alias-install");
+		t_assertm( fRegistry->Install( args, &policy ), "installation of aliases should succeed");
+		t_assert( fRegistry->Find( "NewA" ) == a );
+
+		// Terminate registry
+		AliasTerminator terminator("Test");
+		// Terminator will terminate a and b, must not do it manually
+
+		t_assertm(fRegistry->Terminate(&terminator), "expected successful termination");
+		// after termination the registry is empty
+		t_assert( fRegistry->Find( "A" ) == 0 );
+	}
+	{
+		// Insert regular objects into the registry
+		NotCloned *a = new NotCloned(""), *b = new NotCloned("");
+		// these must be on the heap, implicit assumption of Registry
+		fRegistry->RegisterRegisterableObject( "A", a );
+		fRegistry->RegisterRegisterableObject( "B", b );
+
+		// registry with two elements
+		assertEqual( (long)a, (long)fRegistry->Find("A"));
+		assertEqual( (long)b, (long)fRegistry->Find("B"));
+
+		// Install
+		AliasInstaller policy("InstallAliases"); // policy name must match category name otherwise obects are installed in the wrong registry
+
+		Anything args;
+		args["A"].Append("NewA");		// multiple aliases to same RegisterableObject
+		args["A"].Append("SecondA");
+		args["B"] = MetaThing();		// create empty installer spec { }
+		TraceAny(args, "spec to alias-install");
+		t_assertm( fRegistry->Install( args, &policy ), "installation of aliases should succeed");
+		t_assert( fRegistry->Find( "NewA" ) == a );
+		t_assert( fRegistry->Find( "SecondA" ) == a );
+
+		// Terminate registry
+		AliasTerminator terminator("Test");
+		// Terminator will terminate a and b, must not do it manually
+
+		t_assertm(fRegistry->Terminate(&terminator), "expected successful termination");
+		// after termination the registry is empty
+		t_assert( fRegistry->Find( "A" ) == 0 );
+	}
+}
+
+void RegistryTest::InstallErroneousAliases ( )
+{
+	StartTrace(RegistryTest.InstallErroneousAliases);
 	// Insert regular objects into the registry
 	NotCloned *a = new NotCloned(""), *b = new NotCloned("");
 	// these must be on the heap, implicit assumption of Registry
@@ -45,42 +113,37 @@ void RegistryTest::InstallAliases ( )
 	fRegistry->RegisterRegisterableObject( "B", b );
 
 	// registry with two elements
-	// Find
 	assertEqual( (long)a, (long)fRegistry->Find("A"));
 	assertEqual( (long)b, (long)fRegistry->Find("B"));
 
 	// Install
 	AliasInstaller policy("InstallAliases"); // policy name must match category name otherwise obects are installed in the wrong registry
 	Anything args;
+	args["A"] = "";				// create unnamed alias which should not get installed...
+	TraceAny(args, "spec to unname alias");
+	t_assertm( !fRegistry->Install( args, &policy ), "installation of aliases should fail");
 
-	args["A"] = "NewA";				// regular case
-	args["A"].Append("SecondA");
-	args["B"]["NewB"] = "SubB";		// Aliases with structures are not defined
+	args = Anything();
+	args["A"][0L] = MetaThing();	// create empty installer spec at index 0
+	TraceAny(args, "spec to empty sub-any");
+	t_assertm( !fRegistry->Install( args, &policy ), "installation of non-string aliases should fail");
+
+	// for hierarchies the current implementation of AliasInstaller does not handle intermediary slotnames;
+	// -> use HierarchyInstaller instead
+	args = Anything();
+	args["A"]["bad"] = "NewA";	// Aliases with structures are not defined
+	TraceAny(args, "spec to hierarchic alias spec");
+	t_assertm( !fRegistry->Install( args, &policy ), "installation of hierarchic aliases should fail");
+
+	args = Anything();
 	args["C"] = "NewC";				// base not present
-	fRegistry->Install( args, &policy );
-	t_assert( fRegistry->Find( "NewA" ) == a );
-	t_assert( fRegistry->Find( "SecondA" ) == a );
-	t_assert( fRegistry->Find( "NewB" ) == 0 );
-	// for hierarchies the current implementation does not handle
-	// intermediary slotnames;
-	//         *** remember: this is undocumented behavior ***
-	t_assert( fRegistry->Find( "SubB" ) == b );		// but the lowest level is present as expected
-	t_assert( fRegistry->Find( "C" ) == 0 );			// must not be created when not present
-	t_assert( fRegistry->Find( "NewC" ) == 0 );		// neither
-
-	// Terminate registry
-	AliasTerminator terminator("Test");
-	// Terminator will terminate a and b, must not do it manually
-
-	fRegistry->Terminate(&terminator);
-
-	// t_assert( fRegistry->Find( "A" ) == 0 );
-	// after termination the registry is empty
-
-} // InstallAliases
+	TraceAny(args, "spec of alias to non-existing RegisterableObject");
+	t_assertm( !fRegistry->Install( args, &policy ), "installation of non existing base object should fail");
+}
 
 void RegistryTest::InstallHierarchy ( )
 {
+	StartTrace(RegistryTest.InstallHierarchy);
 	// Insert regular objects into the registry
 	Page *a = new Page("A"), *b = new Page("B"), *c = new Page("C");
 	Page *d = new Page("D");
@@ -131,10 +194,11 @@ void RegistryTest::InstallHierarchy ( )
 
 	// objects are no longer there
 	t_assert( fRegistry->Find( "A" ) == 0 );
-} // InstallHierarchy
+}
 
 void RegistryTest::GetRegistry ()
 {
+	StartTrace(RegistryTest.GetRegistry);
 	Registry *myRegistry = Registry::GetRegistry("NewRegistry");
 	NotCloned test("Test");
 
@@ -153,12 +217,14 @@ void RegistryTest::GetRegistry ()
 
 void RegistryTest::Constructor ()
 {
+	StartTrace(RegistryTest.Constructor);
 	t_assert(fRegistry->Find("Something") == 0);
 	// there must not be anything in the registry
 }
 
 void RegistryTest::TerminateTest()
 {
+	StartTrace(RegistryTest.TerminateTest);
 	NotCloned a("terminate1");
 	a.MarkStatic();
 	NotCloned *b = new NotCloned("terminate2");
@@ -180,7 +246,6 @@ void RegistryTest::TerminateTest()
 		t_assert(r->Find("terminate2") == 0);
 		r->UnregisterRegisterableObject("terminate1");
 	}
-
 }
 
 class TestPage: public Page
@@ -195,6 +260,7 @@ public:
 
 void RegistryTest::InstallHierarchyConfig()
 {
+	StartTrace(RegistryTest.InstallHierarchyConfig);
 	// generate test registry in the central registry
 	Registry *registry = Registry::GetRegistry( "InstallerResetTest" );
 
@@ -231,7 +297,6 @@ void RegistryTest::InstallHierarchyConfig()
 	AliasTerminator terminator("Test");
 	// Terminator will terminate a, b, c and d, must not do it manually
 	fRegistry->Terminate(&terminator);
-
 }
 
 Test *RegistryTest::suite ()
@@ -241,6 +306,7 @@ Test *RegistryTest::suite ()
 	ADD_CASE(testSuite, RegistryTest, Constructor);
 	ADD_CASE(testSuite, RegistryTest, GetRegistry);
 	ADD_CASE(testSuite, RegistryTest, InstallAliases);
+	ADD_CASE(testSuite, RegistryTest, InstallErroneousAliases);
 	ADD_CASE(testSuite, RegistryTest, InstallHierarchy);
 	ADD_CASE(testSuite, RegistryTest, InstallHierarchyConfig);
 	ADD_CASE(testSuite, RegistryTest, TerminateTest);
