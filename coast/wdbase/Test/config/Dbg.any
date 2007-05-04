@@ -8,8 +8,8 @@
 
 {
 
-	/LowerBound		33
-	/UpperBound		0
+	/LowerBound		0
+	/UpperBound		33
 	/DumpAnythings	1
 
 	/ConfiguredTestCase {
@@ -25,6 +25,10 @@
 		/EnableAll	33
 	}
 	/Registry {
+		/MainSwitch	33
+		/EnableAll	0
+	}
+	/RegistryTest {
 		/MainSwitch	33
 		/EnableAll	0
 	}
@@ -182,7 +186,7 @@
 	}
 	/AliasInstaller {
 		/MainSwitch			33
-		/EnableAll			0
+		/EnableAll			33
 	}
 	/InstallerPolicy {
 		/MainSwitch			33
@@ -194,7 +198,7 @@
 	}
 	/AliasTerminator {
 		/MainSwitch			33
-		/EnableAll			0
+		/EnableAll			33
 	}
 	/ServerReInitTerminator {
 		/MainSwitch			33
