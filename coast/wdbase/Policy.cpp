@@ -94,41 +94,64 @@ bool TerminationPolicy::IntFinalize(Registry *r)
 bool AliasInstaller::DoInstall(const ROAnything installerSpec, Registry *r)
 {
 	StartTrace1(AliasInstaller.DoInstall, "Category: " << GetCategory());
-	long isSz = installerSpec.GetSize();
 	bool installationSuccess = true;
-	for (long l = 0; l < isSz; ++l) {
-		const char *s = installerSpec.SlotName(l);
+	long isSz = 0L;
+	TraceAny(installerSpec, "alias config");
+	// allow empty category definitions
+	if ( ( installerSpec.GetType() == AnyArrayType ) && ( ( isSz = installerSpec.GetSize() ) >= 0L ) ) {
+		// loop over RegisterableObjects to install aliases
+		for (long l = 0; l < isSz; ++l) {
+			const char *pcRegObjectName = installerSpec.SlotName(l);
+			Trace("Installing aliases for RegisterableObject <" << NotNull(pcRegObjectName) << ">");
 
-		Trace("Installing <" << NotNull(s) << ">");
+			ROAnything a = installerSpec[l];
+			long sz = 0L;
+			// we allow pre-definitions of /RegisterableObject slots without having aliases defined already
+			if ( ( sz = a.GetSize() ) >= 0L ) {
+				ROAnything k;
+				for (long j = 0; j < sz && installationSuccess; ++j) {
+					k = a[j];
+					// only process pure value entries, no sub-anythings
+					// if there is a slotname given, or the type is an anything, we dont process it
+					if ( ( a.SlotName(j) == NULL ) && ( k.GetType() != AnyArrayType ) ) {
+						RegisterableObject *t = (RegisterableObject *) r->Find(pcRegObjectName);
+						if ( t ) {
+							String alias = k.AsString();
+							if ( alias.Length() ) {
+								// clone the object with the correct name
+								String origName;
+								t->GetName(origName);
+								t->SetName(alias);
 
-		ROAnything a = installerSpec[l];
-		for (long j = 0, sz = a.GetSize(); j < sz; ++j) {
-			ROAnything k = a[j];
-			RegisterableObject *t = (RegisterableObject *) r->Find(s);
-
-			if (t) {
-				const char *alias = k.AsCharPtr("");
-
-				// clone the object with the correct name
-				String origName;
-				t->GetName(origName);
-				t->SetName(alias);
-
-				// installs a clone or a simple alias
-				// depending on subclass of Registerable
-				RegisterableObject *reg = (RegisterableObject *)t->Clone();
-				Trace("\talias <" << NotNull(alias) << ">");
-				reg->Register(alias, GetCategory());
-				reg->Initialize(GetCategory());
-				t->SetName(origName);
-				SysLog::WriteToStderr(".", 1);
+								// installs a clone or a simple alias
+								// depending on subclass of Registerable
+								RegisterableObject *reg = (RegisterableObject *)t->Clone();
+								Trace("\talias <" << alias << ">");
+								reg->Register(alias, GetCategory());
+								reg->Initialize(GetCategory());
+								t->SetName(origName);
+								SysLog::WriteToStderr(".", 1);
+							} else {
+								SYSERROR("Alias configuration error in category: " << GetCategory() << " for RegisterableObject <" << NotNull(pcRegObjectName) << ">, empty alias name!");
+								installationSuccess = false;
+							}
+						} else {
+							SYSERROR("Alias configuration error in category: " << GetCategory() << ", can't find base RegisterableObject " << pcRegObjectName);
+							installationSuccess = false;
+						}
+					} else {
+						SYSERROR("Alias configuration error in category: " << GetCategory() << " for RegisterableObject <" << NotNull(pcRegObjectName) << ">, alias name must be a string!");
+						installationSuccess = false;
+					}
+				}
 			} else {
-				String logMsg("can't find base ");
-				logMsg << s;
-				SYSERROR(logMsg);
+				SYSERROR("Alias configuration error in category: " << GetCategory() << " for RegisterableObject <" << NotNull(pcRegObjectName) << ">, expected Anything!");
 				installationSuccess = false;
 			}
 		}
+	} else {
+		SYSERROR("Alias configuration error for category: " << GetCategory());
+		installationSuccess = false;
 	}
 	return installationSuccess;
 }
@@ -161,8 +184,8 @@ bool HierarchyInstaller::DoInstall(const ROAnything installerSpec, Registry *r)
 	long isSz = installerSpec.GetSize();
 	bool installSuccess = true;
 	for (long l = 0; l < isSz; ++l) {
-		const char *s = installerSpec.SlotName(l);
-		installSuccess = InstallTree(GetLeaf(s, 0, r), s, installerSpec[l], r);
+		const char *pcRegObjectName = installerSpec.SlotName(l);
+		installSuccess = InstallTree(GetLeaf(pcRegObjectName, 0, r), pcRegObjectName, installerSpec[l], r);
 	}
 
 	return installSuccess;
