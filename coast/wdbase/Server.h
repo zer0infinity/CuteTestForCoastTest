@@ -275,6 +275,7 @@ private:
 
 	Server *fServer;
 	bool fbInitialized;
+	SimpleMutex fTerminationMutex;
 };
 
 #endif

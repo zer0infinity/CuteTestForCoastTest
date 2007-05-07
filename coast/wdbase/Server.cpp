@@ -414,7 +414,7 @@ int Server::Run()
 bool Server::IsReady(bool ready, long timeout)
 {
 	StartTrace1(Server.IsReady, "ready: [" << ready << "] timeout: [" << timeout << "]");
-	if (fPoolManager) {
+	if ( fPoolManager ) {
 		return fPoolManager->IsReady(ready, timeout);
 	}
 	return false;
@@ -826,6 +826,7 @@ ServerThread::ServerThread()
 	: Thread("ServerThread")
 	, fServer(0)
 	, fbInitialized(false)
+	, fTerminationMutex("ServerThreadTerminationMutex")
 {
 }
 
@@ -833,6 +834,7 @@ ServerThread::ServerThread(Server *aServer)
 	: Thread("ServerThread")
 	, fServer(aServer)
 	, fbInitialized(false)
+	, fTerminationMutex("ServerThreadTerminationMutex")
 {
 }
 
@@ -874,6 +876,10 @@ void ServerThread::Run()
 		if (fServer) {
 			fServer->Run();
 		}
+		// synchronize with PrepareShutdown call
+		// the caller must have left the method before continuing here
+		SimpleMutexEntry me(fTerminationMutex);
+		me.Use();
 		if ( IsRunning() ) {
 			SetReady();
 		}
@@ -893,6 +899,8 @@ void ServerThread::PrepareShutdown(long retCode)
 {
 	StartTrace(ServerThread.PrepareShutdown);
 	if ( fServer && fbInitialized ) {
+		SimpleMutexEntry me(fTerminationMutex);
+		me.Use();
 		fServer->PrepareShutdown(retCode);
 	}
 }
@@ -919,5 +927,5 @@ bool ServerThread::IsReady(bool ready, long timeout)
 	if ( fServer && fbInitialized ) {
 		return fServer->IsReady(ready, timeout);
 	}
-	return false;
+	return (ready == false);
 }
