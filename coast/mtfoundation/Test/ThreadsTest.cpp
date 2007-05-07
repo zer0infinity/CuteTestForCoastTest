@@ -357,7 +357,7 @@ void TimedRunner::Run()
 void ThreadsTest::CheckTime(long lTime)
 {
 	StartTrace(ThreadsTest.RegisterTime);
-	assertEqualm(fDiffTimer.Diff() / MILISECGRANULARITY , lTime, "TimeMeasured in Thread should be in same .1 second");
+	assertComparem((long)(fDiffTimer.Diff() / MILISECGRANULARITY), equal_to, lTime, "TimeMeasured in Thread should be in same .1 second");
 }
 
 void ThreadsTest::SimpleLockedAccess(long i)
@@ -425,8 +425,8 @@ void ThreadsTest::TimedRunTest()
 		// same tenth of second. (Timer is stopped after CheckRunningState
 		// returns)
 
-		t_assertm(waited >= miliTestTime, 	 "Exact Time passed should be equal or greater time given to wait");
-		assertEqualm(centiSecWaited , testTime,   "Time passed rounded to .1 seconds should equal time given to wait");
+		assertComparem(waited, greater_equal, miliTestTime, "Exact Time passed should be equal or greater time given to wait");
+		assertComparem(centiSecWaited, equal_to, testTime, "Time passed rounded to .1 seconds should equal time given to wait");
 		// Start them up
 		t_assert(t1.StartRunning());				// we will get out of this test, won't we?
 		t1.CheckState(Thread::eTerminated);
