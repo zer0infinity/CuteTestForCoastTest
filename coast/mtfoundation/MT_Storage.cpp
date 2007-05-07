@@ -15,7 +15,6 @@
 //--- standard modules used ----------------------------------------------------
 #include "Threads.h"
 #include "PoolAllocator.h"
-#include "ITOString.h"
 #include "SysLog.h"
 #include "Dbg.h"
 
@@ -87,16 +86,18 @@ protected:
 MT_MemTracker::MT_MemTracker(const char *name, long lId)
 	: MemTracker(name)
 {
-	if ( !CREATEMUTEX(fMutex) ) {
-		SysLog::Error("Mutex create failed");
+	int iRet = 0;
+	if ( !CREATEMUTEX(fMutex, iRet) ) {
+		SYSERROR("Mutex create failed: " << SysLog::SysErrorMsg(iRet));
 	}
 	SetId( lId );
 }
 
 MT_MemTracker::~MT_MemTracker()
 {
-	if ( !DELETEMUTEX(fMutex) ) {
-		SysLog::Error("Mutex delete failed");
+	int iRet = 0;
+	if ( !DELETEMUTEX(fMutex, iRet) ) {
+		SYSERROR("Mutex delete failed: " << SysLog::SysErrorMsg(iRet));
 	}
 }
 
@@ -123,47 +124,51 @@ void MT_MemTracker::operator delete(void *vp)
 
 void MT_MemTracker::TrackAlloc(MemoryHeader *mh)
 {
-	if ( !LOCKMUTEX(fMutex) ) {
-		SysLog::Error("Mutex lock failed");
+	int iRet = 0;
+	if ( !LOCKMUTEX(fMutex, iRet) ) {
+		SYSERROR("Mutex lock failed: " << SysLog::SysErrorMsg(iRet));
 	}
 	MemTracker::TrackAlloc(mh);
-	if ( !UNLOCKMUTEX(fMutex) ) {
-		SysLog::Error("Mutex unlock failed");
+	if ( !UNLOCKMUTEX(fMutex, iRet) ) {
+		SYSERROR("Mutex unlock failed" << SysLog::SysErrorMsg(iRet));
 	}
 }
 
 void MT_MemTracker::TrackFree(MemoryHeader *mh)
 {
-	if ( !LOCKMUTEX(fMutex) ) {
-		SysLog::Error("Mutex lock failed");
+	int iRet = 0;
+	if ( !LOCKMUTEX(fMutex, iRet) ) {
+		SYSERROR("Mutex lock failed: " << SysLog::SysErrorMsg(iRet));
 	}
 	MemTracker::TrackFree(mh);
-	if ( !UNLOCKMUTEX(fMutex) ) {
-		SysLog::Error("Mutex unlock failed");
+	if ( !UNLOCKMUTEX(fMutex, iRet) ) {
+		SYSERROR("Mutex unlock failed: " << SysLog::SysErrorMsg(iRet));
 	}
 }
 
 l_long MT_MemTracker::CurrentlyAllocated()
 {
 	l_long l;
-	if ( !LOCKMUTEX(fMutex) ) {
-		SysLog::Error("Mutex lock failed");
+	int iRet = 0;
+	if ( !LOCKMUTEX(fMutex, iRet) ) {
+		SYSERROR("Mutex lock failed: " << SysLog::SysErrorMsg(iRet));
 	}
 	l = fAllocated;
-	if ( !UNLOCKMUTEX(fMutex) ) {
-		SysLog::Error("Mutex lock failed");
+	if ( !UNLOCKMUTEX(fMutex, iRet) ) {
+		SYSERROR("Mutex lock failed: " << SysLog::SysErrorMsg(iRet));
 	}
 	return  l;
 }
 
 void MT_MemTracker::PrintStatistic(long lLevel)
 {
-	if ( !LOCKMUTEX(fMutex) ) {
-		SysLog::Error("Mutex lock failed");
+	int iRet = 0;
+	if ( !LOCKMUTEX(fMutex, iRet) ) {
+		SYSERROR("Mutex lock failed: " << SysLog::SysErrorMsg(iRet));
 	}
 	MemTracker::PrintStatistic(lLevel);
-	if ( !UNLOCKMUTEX(fMutex) ) {
-		SysLog::Error("Mutex lock failed");
+	if ( !UNLOCKMUTEX(fMutex, iRet) ) {
+		SYSERROR("Mutex lock failed: " << SysLog::SysErrorMsg(iRet));
 	}
 }
 
