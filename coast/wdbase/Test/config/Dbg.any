@@ -9,7 +9,7 @@
 {
 
 	/LowerBound		0
-	/UpperBound		33
+	/UpperBound		34
 	/DumpAnythings	1
 
 	/ConfiguredTestCase {
@@ -37,17 +37,20 @@
 		/EnableAll	0
 	}
 	/Mutex {
-		/MainSwitch	1
+		/MainSwitch	33
 		/EnableAll	10
 		/Mutex		1200
+		/Lock		33
+		/Unlock		33
+		/TryLock	33
 	}
 	/Condition {
 		/MainSwitch	1
 		/EnableAll	10
 	}
 	/Thread {
-		/MainSwitch			0
-		/EnableAll			10
+		/MainSwitch			33
+		/EnableAll			34
 		/Terminate			33
 		/SetState			33
 		/CheckState			33
@@ -79,8 +82,8 @@
 		/EnableAll	1200
 	}
 	/ThreadPoolManager {
-		/MainSwitch	0
-		/EnableAll	33
+		/MainSwitch	33
+		/EnableAll	34
 	}
 	/ListenerPool {
 		/MainSwitch	0
@@ -259,12 +262,12 @@
 		/EnableAll	33
 	}
 	/SessionListManagerTest {
-		/MainSwitch	2250
-		/EnableAll	2260
+		/MainSwitch	33
+		/EnableAll	33
 	}
 	/SessionListManager {
-		/MainSwitch	2250
-		/EnableAll	2260
+		/MainSwitch	33
+		/EnableAll	33
 	}
 	/TimeLoggingModule {
 		/MainSwitch	0
@@ -334,8 +337,8 @@
 		/EnableAll	7100
 	}
 	/HandleSet {
-		/MainSwitch	7000
-		/EnableAll	7100
+		/MainSwitch	33
+		/EnableAll	33
 	}
 	/Acceptor {
 		/MainSwitch	33
@@ -344,14 +347,6 @@
 	/Socket {
 		/MainSwitch	7000
 		/EnableAll	7100
-	}
-	/Reactor {
-		/MainSwitch	7000
-		/EnableAll	7100
-	}
-	/LeaderFollowerPool {
-		/MainSwitch	0
-		/EnableAll	33
 	}
 	/MasterServerTest {
 		/MainSwitch	33
@@ -374,11 +369,27 @@
 		/MainSwitch	33
 		/EnableAll	33
 	}
+	/ServerPoolsManagerInterface {
+		/MainSwitch	33
+		/EnableAll	33
+	}
 	/ServerThreadPoolsManager {
 		/MainSwitch	33
 		/EnableAll	33
 	}
 	/ServerLFThreadPoolsManager {
+		/MainSwitch	33
+		/EnableAll	33
+	}
+	/LeaderFollowerPool {
+		/MainSwitch	0
+		/EnableAll	33
+	}
+	/LeaderFollowerThread {
+		/MainSwitch	33
+		/EnableAll	33
+	}
+	/Reactor {
 		/MainSwitch	33
 		/EnableAll	33
 	}
