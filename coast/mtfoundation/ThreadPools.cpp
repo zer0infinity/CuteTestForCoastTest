@@ -84,12 +84,12 @@ int ThreadPoolManager::Start(bool usePoolStorage, int poolStorageSize, int numOf
 
 int ThreadPoolManager::Join(long lMaxSecsToWait)
 {
-	StartTrace(ThreadPoolManager.Join);
+	StartTrace1(ThreadPoolManager.Join, "this:" << (long)this);
 	long lStillRunning = 0L;
 	{
 		MutexEntry me(fMutex);
 		me.Use();
-		DiffTimer dt(1);
+		DiffTimer dt;
 		long lWaited = ( (lMaxSecsToWait > 0) ? 0L : -1L ), lIncr = ( (lMaxSecsToWait > 0) ? 1L : 0L );
 		if ( lIncr ) {
 			Trace("waiting on Thread Join for at most " << lMaxSecsToWait << "s");
@@ -101,19 +101,20 @@ int ThreadPoolManager::Join(long lMaxSecsToWait)
 			fCond.TimedWait(fMutex, 1);
 			lWaited += lIncr;
 		}
-		Trace("Time waited for join: " << dt.Diff() << "s");
+		Trace("Time waited for join: " << dt.Diff() << "ms");
 		lStillRunning = fRunningThreads;
+		Trace("still running: " << lStillRunning);
 	}
 	return lStillRunning;
 }
 
 int ThreadPoolManager::Terminate(long lWaitToTerminate, long lWaitOnJoin)
 {
-	StartTrace(ThreadPoolManager.Terminate);
+	StartTrace1(ThreadPoolManager.Terminate, "this:" << (long)this);
 	int result = DoTerminate(lWaitToTerminate);
 	fTerminated = true;
-	// just process a Join when all threads left the Run method
-	if ( ( result == 0 ) && ( Join(lWaitOnJoin) == 0L ) ) {
+	// just do a Join when not all threads have terminated
+	if ( ( result == 0 ) || ( Join(lWaitOnJoin) == 0L ) ) {
 		// only delete the pool if all threads have terminated
 		DoDeletePool();
 	}
@@ -122,7 +123,7 @@ int ThreadPoolManager::Terminate(long lWaitToTerminate, long lWaitOnJoin)
 
 int ThreadPoolManager::DoTerminate(long lWaitToTerminate)
 {
-	StartTrace(ThreadPoolManager.DoTerminate);
+	StartTrace1(ThreadPoolManager.DoTerminate, "this:" << (long)this);
 	int result = 0, iSign = 1;
 	for (long i = 0, sz = GetPoolSize(); i < sz; ++i) {
 		Thread *lt = (Thread *)DoGetThread(i);
