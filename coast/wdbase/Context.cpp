@@ -171,17 +171,17 @@ void Context::InitSession(Session *s)
 		}
 		if (saveSession) {
 			if (sessionIsDifferent) {
+				// in case the session was used in UnlockSession 'mode', we need to protect the call to UnRef
 				if (fUnlockSession) {
 					Trace("old s: About to lock <" << saveSession->GetId() << ">");
 					saveSession->fMutex.Lock();
 				}
 				saveSession->UnRef();
-				Trace("After saveSession->UnRef() id: [" << saveSession->GetId() <<
-					  "] refCount: [" << saveSession->GetRefCount() << "]");
-				if (fUnlockSession) {
-					Trace("old s: About to unlock <" << saveSession->GetId() << ">");
-					saveSession->fMutex.Unlock();
-				}
+				Trace("After saveSession->UnRef() id: [" << saveSession->GetId() << "] refCount: [" << saveSession->GetRefCount() << "]");
+
+				// we need to unlock independently of fUnlockSession value
+				Trace("old s: About to unlock <" << saveSession->GetId() << ">");
+				saveSession->fMutex.Unlock();
 			}
 		}
 		// for test cases with no session given, the session store does not survive
