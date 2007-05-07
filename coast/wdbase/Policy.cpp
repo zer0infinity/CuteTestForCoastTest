@@ -23,7 +23,7 @@ bool InstallerPolicy::Install(const ROAnything installerSpec, Registry *r)
 	SysLog::WriteToStderr(String("\t") << GetCategory());
 	// let specific handler install its configured objects first
 	bool bRet = DoInstall(installerSpec, r);
-	bRet = IntInitialize(r);
+	bRet = IntInitialize(r) && bRet;
 	TellSuccess(bRet);
 	return bRet;
 }
@@ -64,7 +64,7 @@ bool TerminationPolicy::Terminate(Registry *r)
 {
 	StartTrace(TerminationPolicy.Terminate);
 	bool bRet = DoTerminate(r);
-	bRet = IntFinalize(r);
+	bRet = IntFinalize(r) && bRet;
 	return bRet;
 }
 
