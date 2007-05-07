@@ -122,6 +122,7 @@ Thread::Thread(const char *name, bool daemon, bool detached, bool suspended, boo
 	, fSuspended(suspended)
 	, fBound(bound)
 	, fStateMutex("ThreadStateMutex", (fAllocator) ? fAllocator : Storage::Global())
+	, fStateCond()
 	, fRunningState(eReady)
 	, fState(eCreated)
 	, fSignature(0x0f0055AA)
@@ -141,6 +142,23 @@ Thread::~Thread()
 	// doesn't really solve the problem if a subclass would do sthg in the hook method
 	// but at least it will go to the state eTerminated
 	Terminate();
+
+	// check if and who is still waiting on the state mutex if possible
+	bool bDidLock = fStateMutex.TryLock();
+	long lMaxCount = 3L;
+	while ( !bDidLock && ( --lMaxCount >= 0L ) ) {
+		// aha, someone is still locking it!
+		// try to give some time and then terminate finally even the mutex was not locked
+		// give some 20ms slices to finish everything
+		Thread::Wait(0L, 20000000);
+		SysLog::WriteToStderr("~", 1);
+		bDidLock = fStateMutex.TryLock();
+	}
+	if ( bDidLock ) {
+		fStateMutex.Unlock();
+	} else {
+		SysLog::Error(String("Thread::~Thread<").Append(fThreadName).Append(">: fStateMutex was still in use!"));
+	}
 
 	// info: destruction of fAllocCleaner will unregister
 	//       the allocator (and eventually lead to its destruction)
@@ -337,7 +355,7 @@ bool Thread::CheckRunningState(ERunningState state, long timeout, long nanotimeo
 		DiffTimer dt;
 		long realDiff =  timeout * 1000L + nanotimeout / 1000000;	// the time we like to wait, passed as argument to us
 		long compDiff = 0;					// the adjusted time we really have to wait
-		while (fRunningState != state && fState == eRunning) {
+		while ( ( fRunningState != state ) && ( fState == eRunning ) ) {
 			compDiff = dt.Diff();	// get time passed since DiffTimer was instantiated
 			compDiff =  realDiff - compDiff;	// new value to wait
 			long nanoSeconds = 0;
@@ -353,7 +371,7 @@ bool Thread::CheckRunningState(ERunningState state, long timeout, long nanotimeo
 			fStateCond.TimedWait(fStateMutex, seconds, nanoSeconds);
 		}
 	} else {
-		while (fRunningState != state && fState == eRunning) {
+		while ( ( fRunningState != state ) && ( fState == eRunning ) ) {
 			fStateCond.Wait(fStateMutex);
 		}
 	}
@@ -578,10 +596,12 @@ bool Thread::SetWorking(ROAnything args)
 bool Thread::Terminate(long timeout, ROAnything args)
 {
 	StartTrace1(Thread.Terminate, "Timeout: " << timeout << " ThrdId: " << (long)GetId() << " CallId: " << MyId());
-
-	SetState(eTerminationRequested, args);
-
-	return CheckState(eTerminated, timeout);
+	bool bRet = true;
+	if ( IsAlive() ) {
+		SetState(eTerminationRequested, args);
+		bRet = CheckState(eTerminated, timeout);
+	}
+	return bRet;
 }
 
 void Thread::IntRun()
@@ -704,7 +724,7 @@ bool Thread::CleanupThreadStorage()
 
 	// unregister PoolAllocator of thread -> influences Storage::Current() retrieval
 	MT_Storage::UnregisterThread();
-	return ( SetState(Thread::eTerminated) && CheckState(Thread::eTerminated) );
+	return ( SetState(Thread::eTerminated) );
 }
 
 //---- Semaphore ------------------------------------------------------------
@@ -767,40 +787,49 @@ SemaphoreEntry::~SemaphoreEntry()
 SimpleMutex::SimpleMutex(const char *name, Allocator *a)
 	: fName(name, -1, a)
 {
-//	StartTrace1(SimpleMutex.SimpleMutex, fName);
-	if ( !CREATEMUTEX(fMutex) ) {
-		SysLog::Error("CREATEMUTEX failed");
+	StatTrace(SimpleMutex.SimpleMutex, fName, Storage::Current());
+	int iRet = 0;
+	if ( !CREATEMUTEX(fMutex, iRet) ) {
+		SysLog::Error(String("SimpleMutex<", Storage::Global()).Append(fName).Append(">: CREATEMUTEX failed: ").Append(SysLog::SysErrorMsg(iRet)));
 	}
 }
 
 SimpleMutex::~SimpleMutex()
 {
 	StatTrace(SimpleMutex.~SimpleMutex, fName, Storage::Current());
-	if ( !DELETEMUTEX(fMutex) ) {
-		SysLog::Error(String("SimpleMutex<", Storage::Global()).Append(fName).Append(">: DELETEMUTEX failed"));
+	int iRet = 0;
+	if ( !DELETEMUTEX(fMutex, iRet) ) {
+		SysLog::Error(String("SimpleMutex<", Storage::Global()).Append(fName).Append(">: DELETEMUTEX failed: ").Append(SysLog::SysErrorMsg(iRet)));
 	}
 }
 
 void SimpleMutex::Lock()
 {
 	StatTrace(SimpleMutex.Lock, fName, Storage::Current());
-	if ( !LOCKMUTEX(fMutex) ) {
-		SysLog::Error("LOCKMUTEX failed");
+	int iRet = 0;
+	if ( !LOCKMUTEX(fMutex, iRet) ) {
+		SysLog::Error(String("SimpleMutex<", Storage::Global()).Append(fName).Append(">: LOCKMUTEX failed: ").Append(SysLog::SysErrorMsg(iRet)));
 	}
 }
 
 void SimpleMutex::Unlock()
 {
 	StatTrace(SimpleMutex.Unlock, fName, Storage::Current());
-	if ( !UNLOCKMUTEX(fMutex) ) {
-		SysLog::Error("UNLOCKMUTEX failed");
+	int iRet = 0;
+	if ( !UNLOCKMUTEX(fMutex, iRet) ) {
+		SysLog::Error(String("SimpleMutex<", Storage::Global()).Append(fName).Append(">: UNLOCKMUTEX failed: ").Append(SysLog::SysErrorMsg(iRet)));
 	}
 }
 
 bool SimpleMutex::TryLock()
 {
 	StatTrace(SimpleMutex.TryLock, fName, Storage::Current());
-	return TRYLOCK(fMutex);
+	int iRet = 0;
+	bool bRet = TRYLOCK(fMutex, iRet);
+	if ( !bRet && (iRet != EBUSY) ) {
+		SysLog::Error(String("SimpleMutex<", Storage::Global()).Append(fName).Append(">: TRYLOCKMUTEX failed: ").Append(SysLog::SysErrorMsg(iRet)));
+	}
+	return bRet;
 }
 
 //---- Mutex ------------------------------------------------------------
@@ -871,8 +900,9 @@ Mutex::Mutex(const char *name, Allocator *a)
 		SimpleMutexEntry aMtx(*fgpMutexIdMutex);
 		fMutexId.Append(++fgMutexId);
 	}
-	if ( !CREATEMUTEX(fMutex) ) {
-		SysLog::Error("CREATEMUTEX failed");
+	int iRet = 0;
+	if ( !CREATEMUTEX(fMutex, iRet) ) {
+		SysLog::Error(String("Mutex<").Append(fName).Append(">: CREATEMUTEX failed: ").Append(SysLog::SysErrorMsg(iRet)));
 	}
 #ifdef TRACE_LOCKS_IMPL
 	SysLog::WriteToStderr(String("[") << fName << " Id " << GetId() << "]<" << GetId() << "> A" << "\n");
@@ -884,8 +914,9 @@ Mutex::~Mutex()
 #ifdef TRACE_LOCKS_IMPL
 	SysLog::WriteToStderr(String("[") << fName << " Id " << GetId() << "]<" << GetId() << "> D" << "\n");
 #endif
-	if ( !DELETEMUTEX(fMutex) ) {
-		SysLog::Error(String("Mutex<") << fName << ">: DELETEMUTEX failed");
+	int iRet = 0;
+	if ( !DELETEMUTEX(fMutex, iRet) ) {
+		SysLog::Error(String("Mutex<").Append(fName).Append(">: DELETEMUTEX failed: ").Append(SysLog::SysErrorMsg(iRet)));
 	}
 }
 
@@ -941,8 +972,9 @@ void Mutex::Lock()
 {
 	if (!TryLock()) {
 		StatTrace(Mutex.Lock, "First try to lock failed, eg. not recursive lock -> 'hard'-locking now. Id: " <<  GetId() << " ThrdId: " << Thread::MyId(), Storage::Current());
-		if ( !LOCKMUTEX(fMutex) ) {
-			SysLog::Error("LOCKMUTEX failed");
+		int iRet = 0;
+		if ( !LOCKMUTEX(fMutex, iRet) ) {
+			SysLog::Error(String("Mutex<").Append(fName).Append(">: LOCKMUTEX failed: ").Append(SysLog::SysErrorMsg(iRet)));
 		}
 #ifdef TRACE_LOCKS_IMPL
 		if (fLocker != -1) {
@@ -975,8 +1007,9 @@ void Mutex::Unlock()
 #endif
 			fLocker = -1;
 			SetCount(0);
-			if ( !UNLOCKMUTEX(fMutex) ) {
-				SysLog::Error("UNLOCKMUTEX failed");
+			int iRet = 0;
+			if ( !UNLOCKMUTEX(fMutex, iRet) ) {
+				SysLog::Error(String("Mutex<").Append(fName).Append(">: UNLOCKMUTEX failed: ").Append(SysLog::SysErrorMsg(iRet)));
 			}
 		}
 	} else {
@@ -993,7 +1026,8 @@ void Mutex::Unlock()
 
 bool Mutex::TryLock()
 {
-	bool hasLocked = TRYLOCK(fMutex);
+	int iRet = 0;
+	bool hasLocked = TRYLOCK(fMutex, iRet);
 	StatTrace(Mutex.TryLock, "Mutex " << (hasLocked ? "" : "not") << " locked Id: " <<  GetId() << " ThrdId: " << Thread::MyId() << " Locker: " << fLocker << " Count: " << GetCount(), Storage::Current());
 	long lCount = 1;
 #if defined(WIN32)
@@ -1012,7 +1046,7 @@ bool Mutex::TryLock()
 			// consecutive acquire
 			++lCount;
 			SetCount(lCount);
-			UNLOCKMUTEX(fMutex);
+			UNLOCKMUTEX(fMutex, iRet);
 #ifdef TRACE_LOCKS_IMPL
 			SysLog::WriteToStderr(String("[") << fName << " Id " << GetId() << "]<" << GetCount() << "," << fLocker << "> TLA" << "\n");
 #endif
@@ -1026,21 +1060,27 @@ bool Mutex::TryLock()
 		hasLocked = true;
 	}
 #else
-	if (hasLocked) {
+	if ( hasLocked ) {
 		fLocker = Thread::MyId();
 		SetCount(lCount);
 #ifdef TRACE_LOCKS_IMPL
 		SysLog::WriteToStderr(String("[") << fName << " Id " << GetId() << "]<" << GetCount() << "," << fLocker << "> TL" << "\n");
 #endif
 		StatTrace(Mutex.TryLock, "first lock, count:" << lCount << " Id: " <<  GetId() << " ThrdId: " << Thread::MyId(), Storage::Current());
-	} else if ( fLocker == Thread::MyId() ) {
-		lCount += GetCount();
-		SetCount(lCount);
-		hasLocked = true;
-		StatTrace(Mutex.TryLock, "recursive lock, count:" << lCount << " Id: " <<  GetId() << " ThrdId: " << Thread::MyId(), Storage::Current());
+	} else {
+		if ( fLocker == Thread::MyId() ) {
+			lCount += GetCount();
+			SetCount(lCount);
+			hasLocked = true;
+			StatTrace(Mutex.TryLock, "recursive lock, count:" << lCount << " Id: " <<  GetId() << " ThrdId: " << Thread::MyId(), Storage::Current());
 #ifdef TRACE_LOCKS_IMPL
-		SysLog::WriteToStderr(String("[") << fName << " Id " << GetId() << "]<" << GetCount() << "," << fLocker << "> TLA" << "\n");
+			SysLog::WriteToStderr(String("[") << fName << " Id " << GetId() << "]<" << GetCount() << "," << fLocker << "> TLA" << "\n");
 #endif
+		} else {
+			if ( iRet != EBUSY ) {
+				SysLog::Error(String("Mutex<").Append(fName).Append(">: TRYLOCKMUTEX failed: ").Append(SysLog::SysErrorMsg(iRet)));
+			}
+		}
 	}
 #endif
 #ifdef TRACE_LOCKS
