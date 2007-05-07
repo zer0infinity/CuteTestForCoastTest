@@ -60,6 +60,8 @@ int LeaderFollowerPool::Terminate(long lWaitToTerminate, long lWaitOnJoin)
 			fReactor = 0;
 		}
 		Trace("LFPool termination done");
+	} else {
+		SYSERROR("still " << result << " LeaderFollowerThreads in termination!");
 	}
 	return result;
 }
