@@ -73,7 +73,6 @@ SimpleTestThread::SimpleTestThread(bool bDaemon, bool detached, bool suspended, 
 
 SimpleTestThread::~SimpleTestThread()
 {
-	THRDETACH(fThreadId);
 }
 
 bool SimpleTestThread::Start(THREADWRAPPERFUNCPROTO(wrapper), void *ThreadParam)
@@ -134,18 +133,22 @@ THREADWRAPPERFUNCDECL(MUTEXTestThread, thrdparam)
 {
 	StartTrace(SimpleTestThread.Wrapperfunc);
 	mutexthreadparam &param = *(mutexthreadparam *)thrdparam;
+	int iRet = 0;
 	// should fail the first time because we are in another thread right here
-	if (t_assertm_intoany(!TRYLOCK(param.mtx), "trylock should have failed", param.result)) {
+	if (t_assertm_intoany(!TRYLOCK(param.mtx, iRet), "trylock should have failed", param.result)) {
 		// only take the lock, if we didn't get it already by TRYLOCK
 		// should block here until main thread releases mutex
 		Trace("waiting in mutex...");
-		t_assertm_intoany(LOCKMUTEX(param.mtx), "mutex lock failed", param.result);
+		t_assertm_intoany(LOCKMUTEX(param.mtx, iRet), "mutex lock failed", param.result);
 	}
 	// slow down to check TRYLOCK from within mainthread
 	TestSleep(30);
 	Trace("unlocking mutex");
-	t_assertm_intoany(UNLOCKMUTEX(param.mtx), "mutex unlock failed", param.result);
-
+	t_assertm_intoany(UNLOCKMUTEX(param.mtx, iRet), "mutex unlock failed", param.result);
+	// wakeup joiners etc
+	DELETETHREAD();
+	// cleanup of thread resources
+	THRDETACH( THRID() );
 #if !defined(WIN32)
 	// suppress compiler warning
 	return 0;
@@ -160,10 +163,11 @@ void SystemAPITest::MUTEXTest()
 	// recursively lockable by the same thread, so we do not test recursive behavior here
 	MUTEX mtx;
 	// assert some simple API things
+	int iRet = 0;
 	t_assertm(&mtx == (MUTEXPTR)&mtx, "check implementation of MUTEXPTR-macro");
 	t_assertm(&mtx == GETMUTEXPTR(mtx), "check implementation of GETMUTEXPTR-macro");
-	t_assertm(CREATEMUTEX(mtx), "mutex creation failed");
-	t_assertm(LOCKMUTEX(mtx), "mutex lock failed");
+	t_assertm(CREATEMUTEX(mtx, iRet), "mutex creation failed");
+	t_assertm(LOCKMUTEX(mtx, iRet), "mutex lock failed");
 
 	SimpleTestThread thread;
 	Anything result;
@@ -171,16 +175,16 @@ void SystemAPITest::MUTEXTest()
 	if (t_assert(thread.Start(MUTEXTestThread, (void *)&params))) {
 		TestSleep(10);
 		Trace("releasing mutex");
-		t_assertm(UNLOCKMUTEX(mtx), "mutex release should succeed");
+		t_assertm(UNLOCKMUTEX(mtx, iRet), "mutex release should succeed");
 		// thread should now have locked the mutex
 		TestSleep(10);
-		if (t_assertm(!TRYLOCK(mtx), "trylock should have failed")) {
+		if (t_assertm(!TRYLOCK(mtx, iRet), "trylock should have failed")) {
 			// if we've got it already otherwise we deadlock just below
 			// synchronize for thread termination
-			t_assertm(LOCKMUTEX(mtx), "mutex lock failed");
+			t_assertm(LOCKMUTEX(mtx, iRet), "mutex lock failed");
 		}
-		t_assertm(UNLOCKMUTEX(mtx), "mutex release should succeed");
-		t_assertm(DELETEMUTEX(mtx), "mutex deletion failed");
+		t_assertm(UNLOCKMUTEX(mtx, iRet), "mutex release should succeed");
+		t_assertm(DELETEMUTEX(mtx, iRet), "mutex deletion failed");
 		TestSleep(100); // try to really wait for thread to be done...
 	}
 	PrintResult( result );
@@ -206,6 +210,10 @@ THREADWRAPPERFUNCDECL(SEMATestThread, thrdparam)
 	TestSleep(20);
 	// produce an item for the main thread
 	t_assertm_intoany(UNLOCKSEMA(param.sema), "sema unlock failed", param.result);
+	// wakeup joiners etc
+	DELETETHREAD();
+	// cleanup of thread resources
+	THRDETACH( THRID() );
 #if !defined(WIN32)
 	// suppress compiler warning
 	return 0;
@@ -217,6 +225,10 @@ THREADWRAPPERFUNCDECL(SEMATestThreadFunc2, thrdparam)
 	semathreadparam &param = *(semathreadparam *)thrdparam;
 	// should fail the first time because we are in another thread right here
 	t_assertm_intoany(UNLOCKSEMA(param.sema), "sema unlock failed", param.result);
+	// wakeup joiners etc
+	DELETETHREAD();
+	// cleanup of thread resources
+	THRDETACH( THRID() );
 #if !defined(WIN32)
 	// suppress compiler warning
 	return 0;
@@ -295,10 +307,11 @@ THREADWRAPPERFUNCDECL(CONDITIONTestWaitOnSignalFunc, thrdparam)
 {
 	StartTrace(SystemAPITest.CONDITIONTestWaitOnSignalFunc);
 	condthreadparam &param = *(condthreadparam *)thrdparam;
+	int iRet = 0;
 	// should fail the first time because we are in another thread right here
 	// wait 10ms for condition to be signalled, should fail because we sleep for some seconds in mainthread
 	// need to lock mutex before we can wait on it
-	t_assertm_intoany(LOCKMUTEX(param.mtx), "mutex lock failed", param.result);
+	t_assertm_intoany(LOCKMUTEX(param.mtx, iRet), "mutex lock failed", param.result);
 	Trace("*** Waiting 1 ms");
 	t_assertm_intoany((CONDTIMEDWAIT(param.cond, GETMUTEXPTR(param.mtx), 0, 1000000) == TIMEOUTCODE), "wait on condition should timeout", param.result);
 	// wait on condition until mainthread signals it
@@ -308,10 +321,15 @@ THREADWRAPPERFUNCDECL(CONDITIONTestWaitOnSignalFunc, thrdparam)
 	param.count = param.count + 1;
 	Trace("val of count is:" << (long)param.count);
 	Trace("*** Unlock mutex after cond-signaled");
-	t_assertm_intoany(UNLOCKMUTEX(param.mtx), "mutex unlock failed", param.result);
+	t_assertm_intoany(UNLOCKMUTEX(param.mtx, iRet), "mutex unlock failed", param.result);
 	if (!SIGNALCOND(param.cond)) {
 		SysLog::Error("SIGNALCOND failed");
 	}
+
+	// wakeup joiners etc
+	DELETETHREAD();
+	// cleanup of thread resources
+	THRDETACH( THRID() );
 #if !defined(WIN32)
 	// suppress compiler warning
 	return 0;
@@ -322,9 +340,9 @@ void SystemAPITest::CONDITIONSTestMain(int nofthreads, bool broadcast)
 	StartTrace(SystemAPITest.CONDITIONSTestMain);
 	COND cond;
 	MUTEX mtx;
-	int count = 0;
+	int count = 0, iRet = 0;
 	t_assertm(CREATECOND(cond), "cond creation failed");
-	t_assertm(CREATEMUTEX(mtx), "mutex creation failed");
+	t_assertm(CREATEMUTEX(mtx, iRet), "mutex creation failed");
 	if (!t_assert(nofthreads >= 1)) {
 		return;
 	}
@@ -339,7 +357,7 @@ void SystemAPITest::CONDITIONSTestMain(int nofthreads, bool broadcast)
 	}
 	SleepAndSignal(*params[0], nofthreads, broadcast);
 	t_assertm(DELETECOND(cond), "cond deletion failed");
-	t_assertm(DELETEMUTEX(mtx), "mutex deletion failed");
+	t_assertm(DELETEMUTEX(mtx, iRet), "mutex deletion failed");
 	// put the messages collected within thread
 	for (int i = 0; i < nofthreads; i++) {
 		PrintResult( params[i]->result );
@@ -359,18 +377,19 @@ void SystemAPITest::SleepAndSignal(condthreadparam &p, int expectedcount, bool b
 #ifdef WIN32
 	numberofsignals = 1; // signaling always broadcasts and awakes all threads
 #endif
+	int iRet = 0;
 	for (long i = numberofsignals; i > 0; i--) {
 		Trace("signal number " << (long)numberofsignals - i + 1L);
 		t_assertm(broadcast ? BROADCASTCOND(p.cond) : SIGNALCOND(p.cond), "cond signal should have worked");
 		// synchronize on thread
-		t_assertm(LOCKMUTEX(p.mtx), "mutex lock should succeed");
+		t_assertm(LOCKMUTEX(p.mtx, iRet), "mutex lock should succeed");
 		while (p.count < (expectedcount + 1 - i)) {
 			if (CONDTIMEDWAIT(p.cond, GETMUTEXPTR(p.mtx), 5, 0) == TIMEOUTCODE) {
 				t_assertm(false, "unexpected timeout on condition");
 				break;
 			}
 		}
-		t_assertm(UNLOCKMUTEX(p.mtx), "mutex unlock failed");
+		t_assertm(UNLOCKMUTEX(p.mtx, iRet), "mutex unlock failed");
 	}
 	assertEqual(expectedcount, p.count);
 	Trace("   MutexUnlock ");
@@ -409,9 +428,10 @@ void SystemAPITest::CONDITIONTimedWaitTimeoutTest()
 	t_assertm(CREATECOND(cond), "cond creation failed");
 	t_assertm(DELETECOND(cond), "cond deletion failed");
 
-	t_assertm(CREATEMUTEX(mtx), "mutex creation failed");
+	int iRet = 0;
+	t_assertm(CREATEMUTEX(mtx, iRet), "mutex creation failed");
 	t_assertm(CREATECOND(cond), "cond creation failed");
-	t_assertm(LOCKMUTEX(mtx), "mutex lock should succeed");
+	t_assertm(LOCKMUTEX(mtx, iRet), "mutex lock should succeed");
 	const long WAITUSEC = 100 * 1000; // = 100 ms
 #if defined(WIN32)
 	clock_t t_start = clock();
@@ -436,7 +456,7 @@ void SystemAPITest::CONDITIONTimedWaitTimeoutTest()
 		SysLog::WriteToStderr(strTimes);
 	}
 
-	t_assertm(UNLOCKMUTEX(mtx), "mutex unlock failed");
+	t_assertm(UNLOCKMUTEX(mtx, iRet), "mutex unlock failed");
 	t_assertm(DELETECOND(cond), "cond deletion failed");
-	t_assertm(DELETEMUTEX(mtx), "mutex deletion failed");
+	t_assertm(DELETEMUTEX(mtx, iRet), "mutex deletion failed");
 }
