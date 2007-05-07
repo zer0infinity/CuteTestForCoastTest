@@ -43,13 +43,7 @@ ServerThreadPoolsManager::ServerThreadPoolsManager(const char *ServerThreadPools
 ServerThreadPoolsManager::~ServerThreadPoolsManager()
 {
 	StartTrace1(ServerThreadPoolsManager.Dtor, "[" << fName << "]");
-
-	if ( fActiveRequests ) {
-		delete fActiveRequests;
-	}
-	if ( fAcceptors ) {
-		delete fAcceptors;
-	}
+	Terminate();
 }
 
 int ServerThreadPoolsManager::Init(Server *server)
@@ -152,7 +146,6 @@ int ServerThreadPoolsManager::Run(Server *server)
 	long ret = fAcceptors->Join(0);
 	SetReady(false);
 	return ret;
-
 }
 
 bool ServerThreadPoolsManager::BlockRequests(Server *server)
@@ -182,7 +175,7 @@ void ServerThreadPoolsManager::UnblockRequests()
 int ServerThreadPoolsManager::RequestTermination()
 {
 	StartTrace(ServerThreadPoolsManager.RequestTermination);
-	if (fAcceptors && (fAcceptors->Terminate(1, 20) != 0) ) {
+	if ( fAcceptors && (fAcceptors->Terminate(1, 20) != 0) ) {
 		return -1;
 	}
 	return 0;
@@ -204,7 +197,7 @@ void ServerThreadPoolsManager::Terminate()
 		fActiveRequests = 0;
 	}
 	SetReady(false);
-	if (fAcceptors) {
+	if ( fAcceptors ) {
 		delete fAcceptors;
 		fAcceptors = 0;
 	}
@@ -240,6 +233,7 @@ public:
 		me.Use();
 		fCond.Signal();
 	}
+
 private:
 	// block the following default elements of this class
 	// because they're not allowed to be used
@@ -267,7 +261,8 @@ void ServerCallBack::CallBack(Socket *s)
 
 WorkerPoolCallBackFactory::WorkerPoolCallBackFactory(RequestThreadsManager *workerPool)
 	: fWorkerPool(workerPool)
-{ }
+{
+}
 
 AcceptorCallBack *WorkerPoolCallBackFactory::MakeCallBack()
 {

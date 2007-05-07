@@ -25,9 +25,9 @@ RegisterServerPoolsManagerInterface(ServerLFThreadPoolsManager);
 
 //---- ServerLFThreadPoolsManager -----------------------------------------------------------
 ServerLFThreadPoolsManager::ServerLFThreadPoolsManager(const char *ServerThreadPoolsManagerName)
-	: 	ServerPoolsManagerInterface(ServerThreadPoolsManagerName),
-		fLFPool(0),
-		fThreadPoolSz(25)
+	: ServerPoolsManagerInterface(ServerThreadPoolsManagerName)
+	, fLFPool(0)
+	, fThreadPoolSz(25)
 {
 	StartTrace(ServerLFThreadPoolsManager.Ctor);
 }
@@ -35,9 +35,10 @@ ServerLFThreadPoolsManager::ServerLFThreadPoolsManager(const char *ServerThreadP
 ServerLFThreadPoolsManager::~ServerLFThreadPoolsManager()
 {
 	StartTrace(ServerLFThreadPoolsManager.Dtor);
-	if ( fLFPool ) {
-		delete fLFPool;
-	}
+	RequestTermination();
+	Terminate();
+	delete fLFPool;
+	fLFPool = 0;
 }
 
 int ServerLFThreadPoolsManager::Init(Server *server)

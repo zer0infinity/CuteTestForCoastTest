@@ -48,9 +48,9 @@ bool ServerPoolsManagerInterfacesModule::Finis()
 
 //---- ServerPoolsManagerInterface ------------------------------------------------------------------
 ServerPoolsManagerInterface::ServerPoolsManagerInterface(const char *ServerThreadPoolsManagerName)
-	: 	ConfNamedObject(ServerThreadPoolsManagerName),
-		fReady(false),
-		fMutex("ServerPoolsManagerInterface")
+	: ConfNamedObject(ServerThreadPoolsManagerName)
+	, fReady(false)
+	, fMutex("ServerPoolsManagerInterface")
 {
 	StartTrace(ServerPoolsManagerInterface.Ctor);
 }
