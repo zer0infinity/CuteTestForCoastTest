@@ -61,17 +61,18 @@ void ServerTest::InitRunTerminateAcceptorTest()
 				if ( t_assert(mt.Start()) && t_assert(mt.CheckState(Thread::eRunning, 5)) ) {
 					if ( t_assertm(mt.IsInitialized(), "expected initialization to succeed") ) {
 						mt.SetWorking();
-						if (t_assertm(server->IsReady(true, 5), "expected server to become ready within 5 seconds")) {
+						if (t_assertm(mt.IsReady(true, 5), "expected server to become ready within 5 seconds")) {
 							// --- run various request
 							//     sequences
 							RunTestSequence();
-							server->PrepareShutdown(0);
+							mt.PrepareShutdown(0);
 						}
 					}
-					if (t_assertm(server->IsReady(false, 5), "expected server to become terminated within 5 seconds")) {
-						mt.Terminate(0);
+					if (t_assertm(mt.IsReady(false, 5), "expected server to become terminated within 5 seconds")) {
+						mt.Terminate(1);
 					}
 				}
+				mt.CheckState(Thread::eTerminated, 5);
 				server->Finalize();
 				delete server;
 			}
@@ -94,17 +95,18 @@ void ServerTest::InitRunTerminateLeaderFollowerTest()
 				if ( t_assert(mt.Start()) && t_assert(mt.CheckState(Thread::eRunning, 5)) ) {
 					if ( t_assertm(mt.IsInitialized(), "expected initialization to succeed") ) {
 						mt.SetWorking();
-						if (t_assertm(server->IsReady(true, 5), "expected server to become ready within 5 seconds")) {
+						if (t_assertm(mt.IsReady(true, 5), "expected server to become ready within 5 seconds")) {
 							// --- run various request
 							//     sequences
 							RunTestSequence();
-							server->PrepareShutdown(0);
+							mt.PrepareShutdown(0);
 						}
 					}
-					if (t_assertm(server->IsReady(false, 5), "expected server to become terminated within 5 seconds")) {
-						mt.Terminate(0);
+					if (t_assertm(mt.IsReady(false, 5), "expected server to become terminated within 5 seconds")) {
+						mt.Terminate(1);
 					}
 				}
+				mt.CheckState(Thread::eTerminated, 5);
 				server->Finalize();
 				delete server;
 			}
@@ -127,20 +129,21 @@ void ServerTest::InitRunResetRunTerminateAcceptorTest()
 				if ( t_assert(mt.Start()) && t_assert(mt.CheckState(Thread::eRunning, 5)) ) {
 					if ( t_assertm(mt.IsInitialized(), "expected initialization to succeed") ) {
 						mt.SetWorking();
-						if (t_assertm(server->IsReady(true, 5), "expected server to become ready within 5 seconds")) {
+						if (t_assertm(mt.IsReady(true, 5), "expected server to become ready within 5 seconds")) {
 							// --- run various request
 							//     sequences
 							RunTestSequence();
 							if ( t_assertm(server->GlobalReinit() == 0, "expected server to reinit ok") ) {
 								RunTestSequence();
 							}
-							server->PrepareShutdown(0);
+							mt.PrepareShutdown(0);
 						}
 					}
-					if (t_assertm(server->IsReady(false, 5), "expected server to become terminated within 5 seconds")) {
-						mt.Terminate(0);
+					if (t_assertm(mt.IsReady(false, 5), "expected server to become terminated within 5 seconds")) {
+						mt.Terminate(1);
 					}
 				}
+				mt.CheckState(Thread::eTerminated, 5);
 				server->Finalize();
 				delete server;
 			}
@@ -163,20 +166,21 @@ void ServerTest::InitRunResetRunTerminateLeaderFollowerTest()
 				if ( t_assert(mt.Start()) && t_assert(mt.CheckState(Thread::eRunning, 5)) ) {
 					if ( t_assertm(mt.IsInitialized(), "expected initialization to succeed") ) {
 						mt.SetWorking();
-						if (t_assertm(server->IsReady(true, 5), "expected server to become ready within 5 seconds")) {
+						if (t_assertm(mt.IsReady(true, 5), "expected server to become ready within 5 seconds")) {
 							// --- run various request
 							//     sequences
 							RunTestSequence();
 							if ( t_assertm(server->GlobalReinit() == 0, "expected server to reinit ok") ) {
 								RunTestSequence();
 							}
-							server->PrepareShutdown(0);
+							mt.PrepareShutdown(0);
 						}
 					}
-					if (t_assertm(server->IsReady(false, 5), "expected server to become terminated within 5 seconds")) {
-						mt.Terminate(0);
+					if (t_assertm(mt.IsReady(false, 5), "expected server to become terminated within 5 seconds")) {
+						mt.Terminate(1);
 					}
 				}
+				mt.CheckState(Thread::eTerminated, 5);
 				server->Finalize();
 				delete server;
 			}

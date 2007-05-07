@@ -65,31 +65,32 @@ void MasterServerTest::InitRunTerminateTest()
 		String msg;
 		msg << "expected " << serverName << "  to be there";
 		if ( t_assertm(server != NULL, (const char *)msg) ) {
+			long numOfThreads = 0;
 			TraceAny(roaConfig, "Ports to check");
-
-			long numOfThreads = Thread::NumOfThreads();
 			serverName << "_of_InitRunTerminateTest";
 			server = (Server *)server->ConfiguredClone("Server", serverName, true);
 			if ( t_assertm(server != NULL, "expected server-clone to succeed") ) {
 				ServerThread mt(server);
+				numOfThreads = Thread::NumOfThreads();
 				if ( t_assert(mt.Start()) && t_assert(mt.CheckState(Thread::eRunning, 5)) ) {
 					if ( t_assertm(mt.IsInitialized(), "expected initialization to succeed") ) {
 						mt.SetWorking();
-						if (t_assertm(server->IsReady(true, 5), "expected server to become ready within 5 seconds")) {
+						if (t_assertm(mt.IsReady(true, 5), "expected server to become ready within 5 seconds")) {
 							// --- run various request
 							//     sequences
 							RunTestSequence(roaConfig);
-							server->PrepareShutdown(0);
+							mt.PrepareShutdown(0);
 						}
 					}
-					if (t_assertm(server->IsReady(false, 5), "expected server to become terminated within 5 seconds")) {
-						mt.Terminate(0);
+					if (t_assertm(mt.IsReady(false, 5), "expected server to become terminated within 5 seconds")) {
+						mt.Terminate(1);
 					}
 				}
-				assertEqualm(numOfThreads, Thread::NumOfThreads(), "expected number of threads to match");
+				mt.CheckState(Thread::eTerminated, 5);
 				server->Finalize();
 				delete server;
 			}
+			assertComparem(numOfThreads, equal_to, Thread::NumOfThreads(), "expected number of threads to match");
 		}
 		TestCaseType::DoUnloadConfig();
 	}
@@ -111,32 +112,34 @@ void MasterServerTest::InitRunResetRunTerminateTest ()
 		msg << "expected " << serverName << "  to be there";
 
 		if ( t_assertm(server != NULL, (const char *)msg) ) {
+			long numOfThreads = 0;
 			TraceAny(roaConfig, "Ports to check");
-			long numOfThreads = Thread::NumOfThreads();
 			serverName << "_of_InitRunResetTerminateTest";
 			server = (Server *)server->ConfiguredClone("Server", serverName, true);
 			if ( t_assertm(server != NULL, "expected server-clone to succeed") ) {
 				ServerThread mt(server);
+				numOfThreads = Thread::NumOfThreads();
 				if ( t_assert(mt.Start()) && t_assert(mt.CheckState(Thread::eRunning, 5)) ) {
 					if ( t_assertm(mt.IsInitialized(), "expected initialization to succeed") ) {
 						mt.SetWorking();
-						if (t_assertm(server->IsReady(true, 5), "expected server to become ready within 5 seconds")) {
+						if (t_assertm(mt.IsReady(true, 5), "expected server to become ready within 5 seconds")) {
 							// --- run various request
 							//     sequences
 							RunTestSequence(roaConfig);
 							t_assertm(server->GlobalReinit() == 0, "expected server to reinit ok");
 							RunTestSequence(roaConfig);
-							server->PrepareShutdown(0);
+							mt.PrepareShutdown(0);
 						}
 					}
-					if (t_assertm(server->IsReady(false, 5), "expected server to become terminated within 5 seconds")) {
-						mt.Terminate(0);
+					if (t_assertm(mt.IsReady(false, 5), "expected server to become terminated within 5 seconds")) {
+						mt.Terminate(1);
 					}
 				}
-				assertEqualm(numOfThreads, Thread::NumOfThreads(), "expected number of threads to match");
+				mt.CheckState(Thread::eTerminated, 5);
 				server->Finalize();
 				delete server;
 			}
+			assertComparem(numOfThreads, equal_to, Thread::NumOfThreads(), TString("expected number of threads to match in loop ").Append(aEntryIterator.Index()));
 		}
 	}
 }
