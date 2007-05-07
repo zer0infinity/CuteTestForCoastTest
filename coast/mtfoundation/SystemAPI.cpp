@@ -154,9 +154,9 @@ bool doStartThread(void *obj, bool *b, thread_t *thrId, void * (*wrapper)(void *
 	return true;
 }
 
-bool doTryLock(mutex_t *m)
+bool doTryLock(mutex_t *m, int &ret)
 {
-	int ret = mutex_trylock(m);
+	ret = mutex_trylock(m);
 	String logMsg;
 	if ( ret == EFAULT ) {
 		SysLog::Error(logMsg << "doTryLock" << SysLog::SysErrorMsg(ret));
@@ -278,9 +278,9 @@ bool doStartThread(void *obj, bool *b, pthread_t *thrId, void * (*wrapper)(void 
 	return true;
 }
 
-bool doTryLock(pthread_mutex_t *m)
+bool doTryLock(pthread_mutex_t *m, int &ret)
 {
-	int ret = pthread_mutex_trylock(m);
+	ret = pthread_mutex_trylock(m);
 	String logMsg;
 	if ( ret == EFAULT ) {
 		SysLog::Error(logMsg << "doTryLock" << SysLog::SysErrorMsg(ret));

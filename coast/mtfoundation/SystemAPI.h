@@ -40,15 +40,15 @@ int EXPORTDECL_MTFOUNDATION doWaitObject(HANDLE h, HANDLE m, long time);
 #define MUTEX						HANDLE
 #define MUTEXPTR					HANDLE*
 #define GETMUTEXPTR(mutex)			(MUTEXPTR)&mutex
-#define CREATEMUTEX(mutex)			((mutex= ::CreateMutex(NULL, false, NULL)) != NULL)
-#define DELETEMUTEX(mutex)			(::CloseHandle(mutex) != 0)
-#define LOCKMUTEX(mutex)			(doWaitObject(mutex, 0, INFINITE) == WAIT_OBJECT_0)
+#define CREATEMUTEX(mutex, retcode)	((mutex= ::CreateMutex(NULL, false, NULL)) != NULL)
+#define DELETEMUTEX(mutex, retcode)	(::CloseHandle(mutex) != 0)
+#define LOCKMUTEX(mutex, retcode)	(doWaitObject(mutex, 0, INFINITE) == WAIT_OBJECT_0)
 #ifdef TRACE_LOCK_UNLOCK
-#define UNLOCKMUTEX(mutex)			if (!::ReleaseMutex(mutex)) cerr << "error in releasing mutex" << endl;	fooRELOBJECT(mutex);
+#define UNLOCKMUTEX(mutex, retcode)	if (!::ReleaseMutex(mutex)) cerr << "error in releasing mutex" << endl;	fooRELOBJECT(mutex);
 #else
-#define UNLOCKMUTEX(mutex)			(::ReleaseMutex(mutex) != 0)
+#define UNLOCKMUTEX(mutex, retcode)	(::ReleaseMutex(mutex) != 0)
 #endif
-#define TRYLOCK(mutex)				(doWaitObject(mutex, 0, TRYLOCKTIMEOUT) == WAIT_OBJECT_0)
+#define TRYLOCK(mutex, retcode)		(doWaitObject(mutex, 0, TRYLOCKTIMEOUT) == WAIT_OBJECT_0)
 
 //--- sema macros
 #define SEMA						HANDLE
@@ -123,7 +123,7 @@ extern "C" {
 #define TIMEOUTCODE ETIME
 extern "C" {
 	void *ThreadWrapper(void *thread);
-	bool doTryLock(mutex_t *);
+	bool doTryLock(mutex_t *, int &);
 	bool doTryRWLock(rwlock_t *, bool);
 	int  doTimedWait(cond_t *, mutex_t *, long s, long n);
 	bool doStartThread(void *obj, bool *b, unsigned int *thrId, void * (*wrapper)(void *));
@@ -148,11 +148,11 @@ extern "C" {
 #define MUTEX						mutex_t
 #define MUTEXPTR					mutex_t*
 #define GETMUTEXPTR(mutex)			(mutex_t*)&mutex
-#define CREATEMUTEX(mutex)			(mutex_init(&mutex, USYNC_THREAD, 0) == 0)
-#define DELETEMUTEX(mutex)			(mutex_destroy(&mutex) == 0)
-#define LOCKMUTEX(mutex)			(mutex_lock((mutex_t*) &mutex) == 0)
-#define UNLOCKMUTEX(mutex)			(mutex_unlock((mutex_t*) &mutex) == 0)
-#define TRYLOCK(mutex)				doTryLock((mutex_t*) &mutex)
+#define CREATEMUTEX(mutex, retcode)	( ( retcode = mutex_init(&mutex, USYNC_THREAD, 0) ) == 0 )
+#define DELETEMUTEX(mutex, retcode)	( ( retcode = mutex_destroy(&mutex) ) == 0 )
+#define LOCKMUTEX(mutex, retcode)	( ( retcode = mutex_lock((mutex_t*) &mutex) ) == 0 )
+#define UNLOCKMUTEX(mutex, retcode)	( ( retcode = mutex_unlock((mutex_t*) &mutex) ) == 0 )
+#define TRYLOCK(mutex, retcode)		doTryLock((mutex_t*) &mutex, retcode)
 
 //--- sema macros
 #define SEMA						sema_t
@@ -213,7 +213,7 @@ typedef struct rwlock_tag {
 
 extern "C" {
 	void *ThreadWrapper(void *thread);
-	bool doTryLock(pthread_mutex_t *);
+	bool doTryLock(pthread_mutex_t *, int &);
 	int  doTimedWait(pthread_cond_t *, pthread_mutex_t *, long s, long n);
 	bool doStartThread(void *obj, bool *b, pthread_t *thrId, void * (*wrapper)(void *));
 	void doRWLock(rwlock_t *rw, bool reading);
@@ -265,11 +265,11 @@ extern "C" {
 #define MUTEX						pthread_mutex_t
 #define MUTEXPTR					pthread_mutex_t*
 #define GETMUTEXPTR(mutex)			(pthread_mutex_t*)&mutex
-#define CREATEMUTEX(mutex)			(pthread_mutex_init(&mutex, 0) == 0)
-#define DELETEMUTEX(mutex)			(pthread_mutex_destroy(&mutex) == 0)
-#define LOCKMUTEX(mutex)			(pthread_mutex_lock((pthread_mutex_t*) &mutex) == 0)
-#define UNLOCKMUTEX(mutex)			(pthread_mutex_unlock((pthread_mutex_t*) &mutex) == 0)
-#define TRYLOCK(mutex)				doTryLock((pthread_mutex_t*)&mutex)
+#define CREATEMUTEX(mutex, retcode)	( ( retcode = pthread_mutex_init(&mutex, 0) ) == 0 )
+#define DELETEMUTEX(mutex, retcode)	( ( retcode = pthread_mutex_destroy(&mutex) ) == 0 )
+#define LOCKMUTEX(mutex, retcode)	( ( retcode = pthread_mutex_lock((pthread_mutex_t*) &mutex) ) == 0 )
+#define UNLOCKMUTEX(mutex, retcode)	( ( retcode = pthread_mutex_unlock((pthread_mutex_t*) &mutex) ) == 0 )
+#define TRYLOCK(mutex, retcode)		doTryLock((pthread_mutex_t*)&mutex, retcode)
 
 //--- sema macros
 #define SEMA						sem_t
