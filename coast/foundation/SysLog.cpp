@@ -174,8 +174,7 @@ String SysLog::SysErrorMsg(long errnum)
 	if (errnum == ENFILE) {
 		theError = "[No more filehandles in System.] ";
 	}
-	theError << (long) errnum << " ";
-	theError << strerror(errnum);
+	theError.Append((long)errnum).Append(' ').Append(strerror(errnum));
 	return theError;
 #endif
 }
