@@ -264,9 +264,7 @@ Anything &Context::GetSessionStore()
 Anything &Context::GetTmpStore()
 {
 	StartTrace(Context.GetTmpStore);
-	const char *key = "tmp";
-	long index = -1L;
-	return IntGetStore(key, index);
+	return fStore["Stack"][0L];
 }
 
 void Context::CollectLinkState(Anything &a)
@@ -365,8 +363,6 @@ Anything &Context::IntGetStore(const char *key, long &index)
 				return fStore["Stack"][index];
 			} else {
 				SYSWARNING("IntGetStore entry at [" << key << "] is not of expected Anything-type!")
-				index = -1;
-				return fEmpty;
 			}
 		}
 		--index;
@@ -503,11 +499,12 @@ long Context::FindIndex(const Anything &anyStack, const char *key, long lStartId
 	long result = -1;
 
 	if ( key ) {
-		if ( lStartIdx < 0 || lStartIdx > ((ROAnything)anyStack)["Keys"].GetSize() ) {
-			lStartIdx = anyStack["Keys"].GetSize();
+		long sz = anyStack["Keys"].GetSize();
+		if ( lStartIdx < 0 || lStartIdx > sz ) {
+			lStartIdx = sz;
 		}
 		for (long i = lStartIdx; --i >= 0; ) {
-			if ( anyStack["Keys"][i].AsString().IsEqual(key) ) {
+			if ( strcmp(anyStack["Keys"][i].AsCharPtr(), key) == 0 ) {
 				result = i;
 				break;
 			}
