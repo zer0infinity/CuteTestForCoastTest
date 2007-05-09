@@ -620,9 +620,9 @@ bool Context::LookupObjects(const char *key, ROAnything &result, char delim, cha
 	TraceAny(fLookupStack, "fLookupStack and size:" << fStackSz);
 
 	for ( long i = ((ROAnything)fLookupStack)["Stack"].GetSize(); --i >= 0; ) {
-		String strStackKey = fLookupStack["Keys"][i].AsString();
 		if ( fLookupStack["Stack"][i].GetType() == AnyObjectType ) {
-			Trace("checking LookupInterface (&" << (long)fLookupStack["Stack"][i].AsIFAObject(0) << ") at " << strStackKey << ':' << i);
+			Trace("checking LookupInterface (&" << (long)fLookupStack["Stack"][i].AsIFAObject(0) << ") at " <<
+				  fLookupStack["Keys"][i].AsString() << ':' << i);
 			LookupInterface *li = (LookupInterface *)fLookupStack["Stack"][i].AsIFAObject(0);
 			if ( li->Lookup(key, result, delim, indexdelim) ) {
 				Trace("value found");
