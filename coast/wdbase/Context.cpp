@@ -571,16 +571,16 @@ bool Context::LookupStack(const char *key, ROAnything &result, char delim, char 
 
 	TraceAny(fStore, "fStore and size:" << fStoreSz);
 	for ( long i = ((ROAnything)fStore)["Stack"].GetSize(); --i >= 0; ) {
-		String strStackKey = fStore["Keys"][i].AsString();
+
 		if ( fStore["Stack"][i].GetType() == AnyObjectType ) {
 			LookupInterface *li = (LookupInterface *)fStore["Stack"][i].AsIFAObject(0);
 			if ( li && li->Lookup(key, result, delim, indexdelim) ) {
-				TraceAny(result, "found through LookupInterface at " << strStackKey << ':' << i << '.' << key );
+				TraceAny(result, "found through LookupInterface at " << fStore["Keys"][i].AsString(); << ':' << i << '.' << key );
 				return true;
 			}
 		} else {
 			if ( ((ROAnything)fStore)["Stack"][i].LookupPath(result, key, delim, indexdelim) ) {
-				TraceAny(result, "found at " << strStackKey << ':' << i << '.' << key );
+				TraceAny(result, "found at " << fStore["Keys"][i].AsString(); << ':' << i << '.' << key );
 				return true;
 			}
 		}
