@@ -344,9 +344,6 @@ protected:
 	//! cache of the stack size
 	long fStackSz;
 
-	//! information about the store stack
-	Anything fStoreHistory;
-
 	//! the contexts store
 	MetaThing fStore;
 
