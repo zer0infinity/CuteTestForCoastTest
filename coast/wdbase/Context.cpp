@@ -593,8 +593,6 @@ bool Context::LookupStores(const char *key, ROAnything &result, char delim, char
 					// pushing the same name several times means pushing it on top of the existing stack
 					// lookups are eager, if a key is not found at top of stack we go through the whole stack
 					Trace("found value at " << pcStore << ':' << lStackIdx << '.' << key );
-					cerr << "found value at " << pcStore << ':' << lStackIdx << '.' << key << "\n";
-
 					return true;
 				}
 			}
