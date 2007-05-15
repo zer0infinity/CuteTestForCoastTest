@@ -22,7 +22,7 @@
 #include "Socket.h"
 #include "StringStream.h"
 #include "Dbg.h"
-#include <typeinfo>
+#include "SysLog.h"
 
 //--- c-library modules used ---------------------------------------------------
 
@@ -105,6 +105,7 @@ Context::Context(const Anything &env, const Anything &query, Server *server, Ses
 		fUnlockSession(false),
 		fCopySessionStore(false)
 {
+
 	InitSession(s);
 	InitTmpStore();
 	fRequest["env"] = env;
@@ -191,7 +192,7 @@ void Context::InitSession(Session *s)
 void Context::InitTmpStore()
 {
 	MetaThing tmp;
-	Push("tmp", tmp);
+	PushStore("tmp", tmp);
 }
 
 Session *Context::GetSession() const
@@ -263,12 +264,13 @@ Anything &Context::GetSessionStore()
 
 Anything &Context::GetTmpStore()
 {
-	StartTrace(Context.GetTmpStore);
-//	const char *key = "tmp";
-//	long index=-1L;
-//	return IntGetStore(key, index);
-// the following is just a hack to try a TmpStore speedup, it relies on the fact, that the TmpStore gets 'usually' pushed first and no one else pushes a second tmp store!
-	return fStore["Stack"][0L];
+	return GetBuiltinStore("tmp");
+}
+
+Anything &Context::GetBuiltinStore(const char *key)
+{
+	long top = fStore[key].GetSize() - 1;
+	return fStore[key][top];
 }
 
 void Context::CollectLinkState(Anything &a)
@@ -353,164 +355,172 @@ void Context::HTMLDebugStores(ostream &reply)
 #endif
 }
 
-Anything &Context::IntGetStore(const char *key, long &index)
+void Context::Push(LookupInterface *li)
 {
-	StartTrace1(Context.IntGetStore, "key:<" << NotNull(key) << ">");
-	TraceAny(fStore, "fStore and size:" << fStoreSz);
-	index = fStoreSz;
-	while ( index >= 0 ) {
-		index = FindIndex(fStore, key, index);
-		if ( index >= 0 ) {
-			// matching entry found, check if it is of correct type
-			if ( fStore["Stack"][index].GetType() != AnyObjectType ) {
-				TraceAny(fStore["Stack"][index], "found top element of key [" << key << "] at index:" << index);
-				return fStore["Stack"][index];
-			} else {
-				SYSWARNING("IntGetStore entry at [" << key << "] is not of expected Anything-type!")
-			}
-		}
-		--index;
-	}
-	return fEmpty;
-}
-
-bool Context::GetStore(const char *key, Anything &result)
-{
-	StartTrace1(Context.GetStore, "key:<" << NotNull(key) << ">");
-
-	if ( key ) {
-		long index = -1;
-		result = IntGetStore(key, index);
-		if ( index >= 0 ) {
-			return true;
-		}
-		if (strcmp(key, "Session") == 0) {
-			result = GetSessionStore();
-			return true;
-		}
-		if (strcmp(key, "Role") == 0) {
-			result = GetRoleStoreGlobal();
-			return true;
-		}
-	}
-	Trace("failed");
-	return false;
-}
-
-bool Context::Push(const char *key, LookupInterface *li)
-{
-	StartTrace1(Context.Push, "key:<" << NotNull(key) << "> li:&" << (long)li);
-	if ( key && li ) {
-		Trace( "TypeId of given LookupInterface:" << typeid(*li).name());
-		bool bIsLookupAdapter = ( ( typeid(*li) == typeid(AnyLookupInterfaceAdapter<Anything>) ) || ( typeid(*li) == typeid(AnyLookupInterfaceAdapter<ROAnything>) ) );
-		if ( bIsLookupAdapter ) {
-			fStore["Keys"].Append(key);
-			fStore["Stack"].Append((IFAObject *)li);
-			++fStoreSz;
-			TraceAny(fStore, "fStore and size:" << fStoreSz);
-		} else {
-			fLookupStack["Keys"].Append(key);
-			fLookupStack["Stack"].Append((IFAObject *)li);
-			++fStackSz;
-			TraceAny(fLookupStack, "fLookupStack and size:" << fStackSz);
-		}
-		return true;
-	}
-	return false;
+	StartTrace(Context.Push);
+	DoPush("??anonymous??", li);
 }
 
 bool Context::Pop(String &key)
 {
 	StartTrace(Context.Pop);
+
 	if ( fStackSz > 0 ) {
+		fLookupStack.Remove(fStackSz);
 		--fStackSz;
-		key = fLookupStack["Keys"][fStackSz].AsString();
-		fLookupStack["Stack"].Remove(fStackSz);
-		fLookupStack["Keys"].Remove(fStackSz);
-		TraceAny(fLookupStack, "fLookupStack and size:" << fStackSz);
+		key = fLookupStack[0L].SlotName(fStackSz);
+		fLookupStack[0L].Remove(fStackSz);
+		Trace("Stack[" << fStackSz << "]");
 		return true;
 	}
+
+	Trace("Stack[" << fStackSz << "]");
 	return false;
 }
 
-bool Context::Push(const char *key, Anything &store)
+void Context::DoPush(const char *key, LookupInterface *li)
 {
-	StartTrace1(Context.Push, "key:<" << NotNull(key) << ">");
-	TraceAny(store, "Store to put:");
-
-	if ( key && ( store.GetType() != AnyNullType ) ) {
-		// EnsureArrayImpl is needed to be able to extend existing stack entries by reference
-		// without this conversion, a problem would arise when a simple value was pushed which got extended by other values
-		//  -> only the simple value would persist
-		Anything::EnsureArrayImpl(store);
-		fStore["Keys"].Append(key);
-		fStore["Stack"].Append(store);
-		++fStoreSz;
-		TraceAny(fStore, "fStore and size:" << fStoreSz);
-		return true;
+	StartTrace1(Context.DoPush, "key:<" << NotNull(key) << ">");
+	if ( key && li ) {
+		fLookupStack[0L].Append(key);
+		fLookupStack.Append((IFAObject *)li);
+		Trace("Stack[" << fStackSz << "]");
+		++fStackSz;
 	}
-	return false;
 }
 
-bool Context::PopStore(String &key)
+void Context::Push(const char *key, LookupInterface *ro)
 {
-	StartTrace(Context.PopStore);
-	if ( fStoreSz > 1 ) { // never pop the tmp store at "fStore.tmp:0"
-		--fStoreSz;
-		key = fStore["Keys"][fStoreSz].AsString();
-		fStore["Stack"].Remove(fStoreSz);
-		fStore["Keys"].Remove(fStoreSz);
-		TraceAny(fStore, "fStore and size:" << fStoreSz);
-		return true;
-	}
-	return false;
+	StartTrace1(Context.Push, "key<" << NotNull("key") << ">");
+	DoPush(key, ro);
 }
 
 void Context::Push(Session *s)
 {
 	StartTrace1(Context.Push, "session");
 	InitSession(s);
+	Trace("Stack[" << fStackSz << "]");
 }
 
 void Context::PushRequest(const Anything &request)
 {
 	StartTrace1(Context.PushRequest, "request");
+
 	fRequest = request;
 	TraceAny(fRequest, "Request: ");
+}
+
+// set these values to '.' or ':' respectively to enable full LookupPath semantics for fStore
+// BUT keep in mind that this will break stack semantics because of the underlying Anything behavior!
+static const char sgcStoreDelim = '\0';
+static const char sgcStoreDelimIdx = '\0';
+
+bool Context::IntGetStore(const char *key, Anything &result, bool bFullStore) const
+{
+	StartTrace1(Context.IntGetStore, "key:<" << NotNull(key) << ">");
+	Anything storeStack;
+	if ( key && fStore.LookupPath(storeStack, key, sgcStoreDelim, sgcStoreDelimIdx) ) {
+		if ( !bFullStore ) {
+			long stackindex = storeStack.GetSize() - 1;
+			if ( stackindex >= 0 ) {
+				result = storeStack[stackindex];
+				return true;
+			}
+		} else {
+			result = storeStack;
+			return true;
+		}
+	}
+	return false;
+}
+
+bool Context::GetStore(const char *key, Anything &result)
+{
+	StartTrace1(Context.GetStore, "key:<" << NotNull(key) << ">");
+
+	if ( key && IntGetStore(key, result, false) ) {
+		return true;
+	}
+
+	if (key && strcmp(key, "Session") == 0) {
+		result = GetSessionStore();
+		return true;
+	}
+	if (key && strcmp(key, "Role") == 0) {
+		result = GetRoleStoreGlobal();
+		return true;
+	}
+
+	Trace("failed");
+	return false;
+}
+
+void Context::Push(const char *key, Anything &store)
+{
+	StartTrace1(Context.Push, "key:<" << NotNull(key) << ">");
+	PushStore(key, store);
+}
+
+void Context::PushStore(const char *key, Anything &store)
+{
+	StartTrace1(Context.PushStore, "key:<" << NotNull(key) << ">");
+	TraceAny(store, "Store to put:");
+
+	if ( key ) {
+		Anything::EnsureArrayImpl(store);
+		SlotPutter::Operate(store, fStore, key, true, sgcStoreDelim, sgcStoreDelimIdx);
+		fStoreHistory.Append(key);
+		++fStoreSz;
+		TraceAny(fStoreHistory, "StoreHistory");
+	}
+	TraceAny(fStore, "fStore and size:" << fStoreSz);
+}
+
+bool Context::PopStore(String &key)
+{
+	StartTrace(Context.PopStore);
+
+	if ( fStoreSz > 1 ) { // never pop the tmp store
+		long at = fStoreHistory.GetSize() - 1;
+		key = fStoreHistory[at].AsString();
+		fStoreHistory.Remove(at);
+		Anything anyStoreEntry;
+		bool bRemoveStackElementOnly = ( IntGetStore(key, anyStoreEntry, true) && ( anyStoreEntry.GetSize() > 1L) );
+		if ( bRemoveStackElementOnly ) {
+			--fStoreSz;
+		}
+		SlotCleaner::Operate(fStore, key, true /*bRemoveStackElementOnly*/, sgcStoreDelim, sgcStoreDelimIdx );
+		return true;
+	}
+	TraceAny(fStore, "fStore:");
+	return false;
 }
 
 LookupInterface *Context::Find(const char *key) const
 {
 	StartTrace1(Context.Find, "key:<" << NotNull(key) << ">");
 
-	TraceAny(fLookupStack, "fLookupStack and size:" << fStackSz);
-
-	long index = FindIndex(fLookupStack, key);
-	if ( index >= 0 ) {
-		Trace("found at fLookupStack[Stack][" << index << "]<" << NotNull(key) << ">");
-		// no Safecast here, because a LookupInterface is not an IFAObject
-		LookupInterface *li = (LookupInterface *)fLookupStack["Stack"][index].AsIFAObject(0);
+	TraceAny(fLookupStack, "Lookup Stack before");
+	long index = FindIndex(key);
+	if (index >= 0) {
+		Trace("found at fLookupStack[" << index << "]<" << NotNull(key) << ">");
+		// no Safecast here, because we do a LookupInterface is not an IFAObject
+		LookupInterface *li = (LookupInterface *)fLookupStack[index+1].AsIFAObject(0);
 		return li;
 	}
 	Trace("<" << NotNull(key) << "> not found");
 	return 0;
 }
 
-long Context::FindIndex(const Anything &anyStack, const char *key, long lStartIdx) const
+long Context::FindIndex(const char *key) const
 {
 	StartTrace1(Context.FindIndex, "key:<" << NotNull(key) << ">");
 
 	long result = -1;
 
 	if ( key ) {
-		long sz = anyStack["Keys"].GetSize();
-		if ( lStartIdx < 0 || lStartIdx > sz ) {
-			lStartIdx = sz;
-		}
-		for (long i = lStartIdx; --i >= 0; ) {
-			// if ( anyStack["Keys"][i].AsString().IsEqual(key) )
-			// another unnice workaround to find some microseconds...
-			if ( strcmp(anyStack["Keys"][i].AsCharPtr(), key) == 0 ) {
+		for (long i = fStackSz - 1; i >= 0; --i) {
+			if ( fLookupStack[0L][i] == key ) {
 				result = i;
 				break;
 			}
@@ -525,42 +535,39 @@ long Context::Remove(const char *key)
 	if ( !key ) {
 		return -1;
 	}
-	TraceAny(fLookupStack, "fLookupStack and size before:" << fStackSz);
-
-	long index = FindIndex(fLookupStack, key);
+	TraceAny(fLookupStack, "Lookup Stack before");
+	long index = FindIndex(key);
 	if ( index >= 0 ) {
-		fLookupStack["Stack"].Remove(index);
-		fLookupStack["Keys"].Remove(index);
+		fLookupStack.Remove(index + 1);
+		fLookupStack[0L].Remove(index);
 		--fStackSz;
 	}
-	TraceAny(fLookupStack, "fLookupStack and size after:" << fStackSz);
+	TraceAny(fLookupStack, "Lookup Stack after");
 	return index;
 }
 
-void Context::Replace(const char *key, LookupInterface *li)
+void Context::Replace(const char *key, LookupInterface *ro)
 {
 	StartTrace(Context.Replace);
-	if ( !key || !li ) {
+	if ( !key || !ro ) {
 		return;
 	}
 
-	TraceAny(fLookupStack, "fLookupStack and size before:" << fStackSz);
-
-	long index = FindIndex(fLookupStack, key);
+	TraceAny(fLookupStack, "Lookup Stack before");
+	long index = FindIndex(key);
 	if ( index >= 0 ) {
-		fLookupStack["Stack"][index] = (IFAObject *)li;
+		fLookupStack[index+1] = (IFAObject *)ro;
 	} else {
-		Push(key, li);
+		Push(key, ro);
 	}
-	TraceAny(fLookupStack, "fLookupStack and size after:" << fStackSz);
+	TraceAny(fLookupStack, "Lookup Stack after");
 }
 
 bool Context::DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const
 {
 	StartTrace1(Context.DoLookup, "key:<" << NotNull(key) << ">");
 
-	if (LookupStack(key, result, delim, indexdelim)		||
-		LookupStores(key, result, delim, indexdelim)	||
+	if (LookupStores(key, result, delim, indexdelim) 	||
 		LookupLocalized(key, result, delim, indexdelim)	||
 		LookupObjects(key, result, delim, indexdelim)	||
 		LookupRequest(key, result, delim, indexdelim) ) {
@@ -571,31 +578,29 @@ bool Context::DoLookup(const char *key, ROAnything &result, char delim, char ind
 	return false;
 }
 
-bool Context::LookupStack(const char *key, ROAnything &result, char delim, char indexdelim) const
-{
-	StartTrace1(Context.LookupStack, "key:<" << NotNull(key) << ">");
-
-	TraceAny(fStore, "fStore and size:" << fStoreSz);
-	for ( long i = ((ROAnything)fStore)["Stack"].GetSize(); --i >= 0; ) {
-		if ( fStore["Stack"][i].GetType() == AnyObjectType ) {
-			LookupInterface *li = (LookupInterface *)fStore["Stack"][i].AsIFAObject(0);
-			if ( li && li->Lookup(key, result, delim, indexdelim) ) {
-				TraceAny(result, "found through LookupInterface at " << fStore["Keys"][i].AsString() << ':' << i << '.' << key );
-				return true;
-			}
-		} else {
-			if ( ((ROAnything)fStore)["Stack"][i].LookupPath(result, key, delim, indexdelim) ) {
-				TraceAny(result, "found at " << fStore["Keys"][i].AsString() << ':' << i << '.' << key );
-				return true;
-			}
-		}
-	}
-	return false;
-}
-
 bool Context::LookupStores(const char *key, ROAnything &result, char delim, char indexdelim) const
 {
 	StartTrace1(Context.LookupStores, "key:<" << NotNull(key) << ">");
+	for ( long i = fStoreHistory.GetSize(); --i >= 0; ) {
+		const char *pcStore = fStoreHistory[i].AsCharPtr();
+		Anything anyStore;
+		if ( IntGetStore(pcStore, anyStore, true) ) {
+			Trace("outer index:" << i << " store [" << pcStore << "]");
+			for ( long lStackIdx = anyStore.GetSize(); --lStackIdx >= 0; ) {
+				Trace("inner index:" << lStackIdx);
+				if ( ROAnything(anyStore)[lStackIdx].LookupPath(result, key, delim, indexdelim) ) {
+					// stores are arranged as stacks
+					// pushing the same name several times means pushing it on top of the existing stack
+					// lookups are eager, if a key is not found at top of stack we go through the whole stack
+					Trace("found value at " << pcStore << ':' << lStackIdx << '.' << key );
+					cerr << "found value at " << pcStore << ':' << lStackIdx << '.' << key << "\n";
+
+					return true;
+				}
+			}
+		}
+	}
+
 	if ( fCopySessionStore ) {
 		if (ROAnything(fSessionStoreCurrent)["RoleStore"].LookupPath(result, key, delim, indexdelim)) {
 			Trace("found in RoleStore [Current]");
@@ -615,6 +620,7 @@ bool Context::LookupStores(const char *key, ROAnything &result, char delim, char
 			return true;
 		}
 	}
+
 	Trace("failed");
 	return false;
 }
@@ -622,26 +628,25 @@ bool Context::LookupStores(const char *key, ROAnything &result, char delim, char
 bool Context::LookupObjects(const char *key, ROAnything &result, char delim, char indexdelim) const
 {
 	StartTrace1(Context.LookupObjects, "key:<" << NotNull(key) << ">");
-	TraceAny(fLookupStack, "fLookupStack and size:" << fStackSz);
-
-	for ( long i = ((ROAnything)fLookupStack)["Stack"].GetSize(); --i >= 0; ) {
-		if ( fLookupStack["Stack"][i].GetType() == AnyObjectType ) {
-			Trace("checking LookupInterface (&" << (long)fLookupStack["Stack"][i].AsIFAObject(0) << ") at " <<
-				  fLookupStack["Keys"][i].AsString() << ':' << i);
-			LookupInterface *li = (LookupInterface *)fLookupStack["Stack"][i].AsIFAObject(0);
-			if ( li->Lookup(key, result, delim, indexdelim) ) {
-				Trace("value found");
+	// iterate over objects backwards; sequence of push defines lookup sequence in reverse -> first pushed last searched
+	for (long i = fStackSz; i >= 1; --i) {
+		String searchObject(fLookupStack[0L][i-1].AsCharPtr("anon"));
+		Trace("searching[" << i - 1L << "]<" << searchObject << ">");
+		LookupInterface *li = (LookupInterface *)fLookupStack[i].AsIFAObject(0);
+		if (li) {
+			if (li->Lookup(key, result, delim, indexdelim)) {
+				Trace("found");
 				return true;
 			}
-			Trace("value not found");
+			Trace("not found");
 		}
 	}
+	Trace("failed");
 	return false;
 }
 
 bool Context::LookupRequest(const char *key, ROAnything &result, char delim, char indexdelim) const
 {
-	StartTrace1(Context.LookupRequest, "key:<" << NotNull(key) << ">");
 	ROAnything env = ROAnything(fRequest)["env"];
 	ROAnything query = ROAnything(fRequest)["query"];
 
@@ -656,7 +661,7 @@ bool Context::LookupRequest(const char *key, ROAnything &result, char delim, cha
 
 bool Context::LookupLocalized(const char *key, ROAnything &result, char delim, char indexdelim) const
 {
-	StartTrace1(Context.LookupLocalized, "key:<" << NotNull(key) << ">");
+	StartTrace1(Context.LookupLocalized, "key:<" << key << ">");
 	LocalizedStrings *ls = LocalizedStrings::LocStr();
 	if (ls && ls->Lookup(key, result, delim, indexdelim)) {
 		Trace(key << " found in LocalizedStrings");
@@ -704,7 +709,6 @@ bool Context::UnlockSession()
 	}
 	return false;
 }
-
 void Context::LockSession()
 {
 	if (fSession && fUnlockSession) {
