@@ -310,11 +310,15 @@ AppLogChannel::AppLogChannel(const char *name, const Anything &channel)
 	, fSuppressEmptyLines(false)
 	, fRendering(true)
 	, fLogMsgSizeHint(128L)
+	, fDoNotRotate(false)
+	, fFormat()
 	, fChannelMutex(name)
 {
-	fSuppressEmptyLines	= GetChannelInfo()["SuppressEmptyLines"].AsBool(false);
-	fRendering			= GetChannelInfo()["Rendering"].AsBool(true);
-	fLogMsgSizeHint		= GetChannelInfo()["LogMsgSizeHint"].AsLong(128L);
+	fSuppressEmptyLines	= fChannelInfo["SuppressEmptyLines"].AsBool(false);
+	fRendering			= fChannelInfo["Rendering"].AsBool(true);
+	fLogMsgSizeHint		= fChannelInfo["LogMsgSizeHint"].AsLong(128L);
+	fDoNotRotate		= fChannelInfo["DoNotRotate"].AsBool(false);
+	fFormat				= fChannelInfo["Format"];
 }
 
 AppLogChannel::~AppLogChannel()
@@ -328,7 +332,7 @@ AppLogChannel::~AppLogChannel()
 bool AppLogChannel::Log(Context &ctx)
 {
 	StartTrace(AppLogChannel.Log);
-	return LogAll(ctx, GetChannelInfo()["Format"]);
+	return LogAll(ctx, fFormat);
 }
 
 bool AppLogChannel::LogAll(Context &ctx, const ROAnything &config)
@@ -461,7 +465,7 @@ bool AppLogChannel::Rotate(bool overrideDoNotRotateLogs)
 		pStream = fLogStream;
 	}
 	// must enter here in case the logfile does not exist yet
-	if ( !pStream || (overrideDoNotRotateLogs || (GetChannelInfo()["DoNotRotate"].AsBool(false) == false)) ) {
+	if ( !pStream || (overrideDoNotRotateLogs || (fDoNotRotate == false)) ) {
 		MutexEntry me(fChannelMutex);
 		me.Use();
 		if ( fLogStream ) {

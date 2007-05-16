@@ -142,6 +142,9 @@ private:
 	bool fRendering;
 	//! Size of buffer the log messge is rendered into
 	long fLogMsgSizeHint;
+	//! Don't rotate this channel
+	bool fDoNotRotate;
+	Anything fFormat;
 	//! guard of stream
 	Mutex fChannelMutex;
 };
