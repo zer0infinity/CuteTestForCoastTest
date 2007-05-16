@@ -307,8 +307,14 @@ AppLogChannel::AppLogChannel(const char *name, const Anything &channel)
 	: NotCloned(name)
 	, fLogStream(NULL)
 	, fChannelInfo(channel)
+	, fSuppressEmptyLines(false)
+	, fRendering(true)
+	, fLogMsgSizeHint(128L)
 	, fChannelMutex(name)
 {
+	fSuppressEmptyLines	= GetChannelInfo()["SuppressEmptyLines"].AsBool(false);
+	fRendering			= GetChannelInfo()["Rendering"].AsBool(true);
+	fLogMsgSizeHint		= GetChannelInfo()["LogMsgSizeHint"].AsLong(128L);
 }
 
 AppLogChannel::~AppLogChannel()
@@ -328,20 +334,17 @@ bool AppLogChannel::Log(Context &ctx)
 bool AppLogChannel::LogAll(Context &ctx, const ROAnything &config)
 {
 	StartTrace(AppLogChannel.LogAll);
-	bool suppressEmptyLines = GetChannelInfo()["SuppressEmptyLines"].AsBool(false);
-	bool rendering			= GetChannelInfo()["Rendering"].AsBool(true);
-	long logMsgSizeHint		= GetChannelInfo()["LogMsgSizeHint"].AsLong(128L);
 	if ( fLogStream && fLogStream->good() ) {
 		TraceAny(config, "config: ");
 		String logMsg;
-		if ( rendering ) {
-			logMsg.Reserve(logMsgSizeHint);
+		if ( fRendering ) {
+			logMsg.Reserve(fLogMsgSizeHint);
 			Renderer::RenderOnString(logMsg, ctx, config);
 		} else {
-			logMsg.Reserve(logMsgSizeHint);
+			logMsg.Reserve(fLogMsgSizeHint);
 			logMsg = ctx.GetTmpStore()[fName].AsString();
 		}
-		if (!suppressEmptyLines || logMsg.Length()) {
+		if (!fSuppressEmptyLines || logMsg.Length()) {
 			MutexEntry me(fChannelMutex);
 			me.Use();
 			Trace("fLogStream state before logging: " << (long)fLogStream->rdstate());
@@ -350,7 +353,7 @@ bool AppLogChannel::LogAll(Context &ctx, const ROAnything &config)
 			return (!!(*fLogStream));
 		}
 	}
-	return suppressEmptyLines ? true : false;
+	return fSuppressEmptyLines ? true : false;
 }
 
 bool AppLogChannel::GetLogDirectories(ROAnything channel, String &logdir, String &rotatedir)

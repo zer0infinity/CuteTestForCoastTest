@@ -136,6 +136,12 @@ private:
 	ostream *fLogStream;
 	//! information about the log stream
 	Anything fChannelInfo;
+	//! Don't write empty lines
+	bool fSuppressEmptyLines;
+	//! Don't render log message, spool it directly
+	bool fRendering;
+	//! Size of buffer the log messge is rendered into
+	long fLogMsgSizeHint;
 	//! guard of stream
 	Mutex fChannelMutex;
 };
