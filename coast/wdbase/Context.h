@@ -83,7 +83,7 @@ public:
 		typedef AnyLookupInterfaceAdapter<ContainerType> LookupAdapterType;
 		typedef const ContainerType &ConstContainerTypeRef;
 		typedef ContainerType &ContainerTypeRef;
-
+		void DoInit(ContainerTypeRef);
 		/* Constructor of PushPopEntry. An object of this class can be used where some content must be temporarily pushed onto the Contexts lookup stack. The current implementation uses AnyLookupInterfaceAdapter to wrap the given [RO]Anything.
 			\param ctx Context to operate on
 			\param pcStoreName Name used to identify the pushed store for informational purposes. The name is not used as a unique key so duplicates are allowed.
