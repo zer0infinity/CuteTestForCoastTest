@@ -713,3 +713,19 @@ void Context::LockSession()
 		fSession->fMutex.Lock();
 	}
 }
+
+template <>
+void Context::PushPopEntry<Anything>::DoInit(Anything &store)
+{
+	StartTrace1(PushPopEntry.DoInit, "Anything");
+	fCtx.PushStore(fStoreName, store);
+}
+
+template <>
+void Context::PushPopEntry<ROAnything>::DoInit(ROAnything &store)
+{
+	StartTrace1(PushPopEntry.DoInit, "ROAnything");
+	Anything target = store.DeepClone();
+	fCtx.PushStore(fStoreName, target);
+}
+
