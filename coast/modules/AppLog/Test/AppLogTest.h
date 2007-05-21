@@ -34,6 +34,8 @@ public:
 
 	//!log into two channels and checks the files afterwards
 	void LogOkTest();
+	//!log into one channel and check the file after AppLog module is terminated
+	void BufferItemsTest();
 	//!log into channels of 'virtual' server without own config but using TestServer config
 	void LogOkToVirtualServerTest();
 	//! test logfile rotation using absolute seconds
@@ -52,6 +54,7 @@ public:
 protected:
 	//! utility method to check the log files
 	void CheckFile(Context &ctx, const char *channelname, String expected, bool bExpectSuccess = true);
+	void CheckFileAfterChannelTermination(Context &ctx, const char *strLogFilename, String expected, bool bExpectSuccess = true);
 };
 
 #endif

@@ -39,6 +39,7 @@ conveniently. The method of this class are called by Coast
 				/Rendering	long				optional, default 1. If not set, a slot having the ChannelName in tmpStore is evaluated as String to extract
 												the log message. eg. ctx.GetTmpStore()["ChannelName"] = "my log message". A "\n" will be added after each messge line.
 				/LogMsgSizeHint	 long			optional, reserve LogMsgSizeHint bytes for the internal string holding the message to be logged.
+				/BufferItems	long			optional, default 0, (no buffering) buffer <n> items before writing them to the log stream
 			}
 			...
 		}
@@ -147,6 +148,9 @@ private:
 	Anything fFormat;
 	//! guard of stream
 	Mutex fChannelMutex;
+	long fBufferItems;
+	String fBuffer;
+	long fItemsWritten;
 };
 
 #endif

@@ -98,6 +98,56 @@ void AppLogTest::LogOkTest()
 	}
 }
 
+void AppLogTest::BufferItemsTest()
+{
+	StartTrace(AppLogTest.BufferItemsTest);
+
+	WDModule *pModule = WDModule::FindWDModule("AppLogModule");
+	Context ctx;
+	if ( t_assertm(pModule != NULL, "expected AppLogModule to be registered") ) {
+		String strLogFilename;
+		Server *server = NULL;
+		Anything anyModuleConfig;
+		anyModuleConfig["AppLogModule"] = GetTestCaseConfig()[fName].DeepClone();
+		if ( t_assertm(pModule->Init(anyModuleConfig), "Module initialization should have succeeded!") ) {
+			if ( t_assert( ( server = Server::FindServer("TestServer") ) ) ) {
+				ctx.SetServer(server);
+				ctx.GetTmpStore()["TestMsg"] = "BufferItemsLogTest log Test 1";
+				t_assertm(AppLogModule::Log(ctx, "BufferItemsLog"), "BufferItems 1");
+				ctx.GetTmpStore()["TestMsg"] = "BufferItemsLogTest log Test 2";
+				t_assertm(AppLogModule::Log(ctx, "BufferItemsLog"), "BufferItems 2");
+				ctx.GetTmpStore()["TestMsg"] = "BufferItemsLogTest log Test 3";
+				t_assertm(AppLogModule::Log(ctx, "BufferItemsLog"), "BufferItems 3");
+				ctx.GetTmpStore()["TestMsg"] = "BufferItemsLogTest log Test 4";
+				t_assertm(AppLogModule::Log(ctx, "BufferItemsLog"), "BufferItems 4");
+				ctx.GetTmpStore()["TestMsg"] = "BufferItemsLogTest log Test 5";
+				t_assertm(AppLogModule::Log(ctx, "BufferItemsLog"), "BufferItems 5");
+
+				// Only 3 messages are written to log file 'cause BufferItems is set to 3!
+				CheckFile(ctx, "BufferItemsLog", "BufferItemsLogTestHeader\nBufferItemsLogTest log Test 1\n"
+						  "BufferItemsLogTest log Test 2\n"
+						  "BufferItemsLogTest log Test 3\n");
+			}
+			// Need to extract logdir from channel before it is terminated because
+			// it will be passed as argument to CheckFileAfterChannelTermination
+			AppLogChannel *pChannel = AppLogModule::FindLogger(ctx, "BufferItemsLog");
+			ROAnything roaChannelConfig = pChannel->GetChannelInfo();
+			String logdir, rotatedir;
+			t_assert(pChannel->GetLogDirectories(roaChannelConfig, logdir, rotatedir));
+
+			strLogFilename = logdir;
+			strLogFilename << System::Sep() << roaChannelConfig["FileName"].AsCharPtr();
+		}
+		t_assertm(pModule->Finis(), "Finis should have succeeded");
+		// Now the pending 2 messages are written to log file 'cause Buffers are flushed on module termination!
+		CheckFileAfterChannelTermination(ctx, strLogFilename, "BufferItemsLogTestHeader\nBufferItemsLogTest log Test 1\n"
+										 "BufferItemsLogTest log Test 2\n"
+										 "BufferItemsLogTest log Test 3\n"
+										 "BufferItemsLogTest log Test 4\n"
+										 "BufferItemsLogTest log Test 5\n");
+	}
+}
+
 void AppLogTest::LogOkToVirtualServerTest()
 {
 	StartTrace(AppLogTest.LogOkToVirtualServerTest);
@@ -440,6 +490,24 @@ void AppLogTest::CheckFile(Context &ctx, const char *channelname, String expecte
 	}
 }
 
+void AppLogTest::CheckFileAfterChannelTermination(Context &ctx, const char *strLogFilename, String expected, bool bExpectSuccess)
+{
+	StartTrace(AppLogTest.CheckFile);
+	t_assertm( System::IsRegularFile(strLogFilename), "expected log file to be there");
+
+	iostream *fp = System::OpenIStream(strLogFilename, NULL);
+	if ( t_assertm(fp != NULL, name()) ) {
+		String fileContent;
+		char c;
+		while ( !fp->get(c).eof() ) {
+			fileContent.Append(c);
+		}
+		Trace("Content of [" << strLogFilename << "] : [" << fileContent << "]");
+		assertEqualm(expected, fileContent, name());
+	}
+	delete fp;
+}
+
 // builds up a suite of testcases, add a line for each testmethod
 Test *AppLogTest::suite ()
 {
@@ -447,6 +515,7 @@ Test *AppLogTest::suite ()
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, AppLogTest, ApplogModuleNotInitializedTest);
 	ADD_CASE(testSuite, AppLogTest, LogOkTest);
+	ADD_CASE(testSuite, AppLogTest, BufferItemsTest);
 	ADD_CASE(testSuite, AppLogTest, LogOkToVirtualServerTest);
 	ADD_CASE(testSuite, AppLogTest, LogRotatorTest);
 	ADD_CASE(testSuite, AppLogTest, LogRotationTimeTest);

@@ -313,17 +313,39 @@ AppLogChannel::AppLogChannel(const char *name, const Anything &channel)
 	, fDoNotRotate(false)
 	, fFormat()
 	, fChannelMutex(name)
+	, fBufferItems(0L)
+	, fBuffer()
+	, fItemsWritten(0L)
 {
 	fSuppressEmptyLines	= fChannelInfo["SuppressEmptyLines"].AsBool(false);
 	fRendering			= fChannelInfo["Rendering"].AsBool(true);
 	fLogMsgSizeHint		= fChannelInfo["LogMsgSizeHint"].AsLong(128L);
 	fDoNotRotate		= fChannelInfo["DoNotRotate"].AsBool(false);
 	fFormat				= fChannelInfo["Format"];
+	fBufferItems		= fChannelInfo["BufferItems"].AsLong(0L);
+	if ( fBufferItems == 0L ) {
+		// Avoid zero division in mod operation
+		++fBufferItems;
+	}
+	fBuffer.Reserve(fBufferItems * fLogMsgSizeHint);
 }
 
 AppLogChannel::~AppLogChannel()
 {
+	StartTrace(AppLogChannel.~AppLogChannel);
 	if (fLogStream) {
+		MutexEntry me(fChannelMutex);
+		me.Use();
+		if ( (fBufferItems > 1L) && (fItemsWritten > 0L) ) {
+			Trace("fLogStream state before logging: " << (long)fLogStream->rdstate());
+			(*fLogStream) << fBuffer;
+			Trace("fLogStream state after logging: " << (long)fLogStream->rdstate());
+			String msg;
+			msg << " AppLogChannel: [" << fName << "] flushing [" << fItemsWritten << "] " <<
+				"buffered messages to log [" << fChannelInfo["FileName"].AsString() << "]\n";
+			SysLog::WriteToStderr(msg);
+
+		}
 		delete fLogStream;
 	}
 	fLogStream = 0;
@@ -340,21 +362,38 @@ bool AppLogChannel::LogAll(Context &ctx, const ROAnything &config)
 	StartTrace(AppLogChannel.LogAll);
 	if ( fLogStream && fLogStream->good() ) {
 		TraceAny(config, "config: ");
-		String logMsg;
+		String logMsg(fLogMsgSizeHint);
 		if ( fRendering ) {
-			logMsg.Reserve(fLogMsgSizeHint);
 			Renderer::RenderOnString(logMsg, ctx, config);
 		} else {
-			logMsg.Reserve(fLogMsgSizeHint);
 			logMsg = ctx.GetTmpStore()[fName].AsString();
 		}
 		if (!fSuppressEmptyLines || logMsg.Length()) {
-			MutexEntry me(fChannelMutex);
-			me.Use();
-			Trace("fLogStream state before logging: " << (long)fLogStream->rdstate());
-			(*fLogStream) << logMsg << endl;
-			Trace("fLogStream state after logging: " << (long)fLogStream->rdstate());
-			return (!!(*fLogStream));
+			logMsg << "\n";
+			if ( fBufferItems == 1L ) {
+				MutexEntry me(fChannelMutex);
+				me.Use();
+				Trace("fLogStream state before logging: " << (long)fLogStream->rdstate());
+				(*fLogStream) << logMsg;
+				Trace("fLogStream state after logging: " << (long)fLogStream->rdstate());
+				return (!!(*fLogStream));
+			} else {
+				MutexEntry me(fChannelMutex);
+				me.Use();
+				{
+					fBuffer.Append(logMsg);
+					++fItemsWritten;
+					if ( ( fItemsWritten % fBufferItems ) == 0L ) {
+						Trace("fLogStream state before logging: " << (long)fLogStream->rdstate());
+						(*fLogStream) << fBuffer;
+						Trace("fLogStream state after logging: " << (long)fLogStream->rdstate());
+						fBuffer.Trim(0L);
+						fItemsWritten = 0L;
+						return (!!(*fLogStream));
+					}
+				}
+				return true;
+			}
 		}
 	}
 	return fSuppressEmptyLines ? true : false;

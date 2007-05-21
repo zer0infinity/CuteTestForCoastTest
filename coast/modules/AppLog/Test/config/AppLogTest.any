@@ -52,6 +52,22 @@
 		/EmptyHeaderLogFormat 	%EmptyHeaderLogFormat
 		/NoRenderingLogFormat	%NoRenderingLogFormat
 	}
+	/BufferItemsTest {
+		/Modules {
+#			TimeLoggingModule
+			RenderersModule
+			ActionsModule
+			ServersModule
+			AppLogModule
+		}
+		/Server					%Server
+		/Servers				%Servers
+		/Renderers				%Renderers
+		/Actions				%Actions
+#		/TimeLoggingModule		%TimeLoggingModule
+		/AppLogModule			%AppLogModule
+		/BufferItemsLogFormat	%BufferItemsLogFormat
+	}
 	/LogOkToVirtualServerTest {
 		/Modules {
 #			TimeLoggingModule
@@ -292,6 +308,14 @@
 					/Rendering	0
 					/LogMsgSizeHint	256
 				}
+				/BufferItemsLog	{
+					/FileName	"BufferItems.log"
+					/Format		%BufferItemsLogFormat
+					/Header		"BufferItemsLogTestHeader"
+					/Rendering	1
+					/LogMsgSizeHint	256
+					/BufferItems	3
+				}
 				/RelativeLogDir	{
 					/LogDir		"."
 					/RotateDir	"config"
@@ -334,6 +358,10 @@
 	}
 
 	/EmptyHeaderLogFormat
+	{
+		{ /Lookup	TestMsg }
+	}
+	/BufferItemsLogFormat
 	{
 		{ /Lookup	TestMsg }
 	}
