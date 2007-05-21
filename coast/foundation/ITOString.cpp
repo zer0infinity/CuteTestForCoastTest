@@ -1038,9 +1038,9 @@ String &String::AppendTwoHexAsChar(const char *cc, long len, bool delimiter)
 long String::AsLong(long dflt) const
 {
 	if (this->Length()) {
-		char *firstErrPos;
-		long l = strtol(GetContent(), &firstErrPos, 10);
-		if ( *firstErrPos == '\0' ) {
+		char *firstErrPos = (char *)GetContent();
+		long l = strtol(firstErrPos, &firstErrPos, 10);
+		if ( firstErrPos != GetContent() ) {
 			return l;
 		}
 	}
@@ -1050,9 +1050,9 @@ long String::AsLong(long dflt) const
 l_long String::AsLongLong(l_long dflt) const
 {
 	if (this->Length()) {
-		char *firstErrPos;
+		char *firstErrPos = (char *)GetContent();
 		l_long ll = strtoll(GetContent(), &firstErrPos, 10);
-		if ( *firstErrPos == '\0' ) {
+		if ( firstErrPos != GetContent() ) {
 			return ll;
 		}
 	}
@@ -1062,9 +1062,11 @@ l_long String::AsLongLong(l_long dflt) const
 double String::AsDouble(double dflt) const
 {
 	if (this->Length()) {
-		IStringStream is(this);
-		is >> dec; // sets decimal
-		is >> dflt; // if it fails because of format error dflt remains unchanged
+		char *firstErrPos = (char *)GetContent();
+		double d = strtod(GetContent(), &firstErrPos);
+		if ( firstErrPos != GetContent() ) {
+			return d;
+		}
 	}
 	return dflt;
 }
