@@ -75,8 +75,8 @@ void StringTest::constructors()
 	// Init a string without parameters
 	String empty;
 	assertEqual("", empty);
-	t_assert (empty.Length() == 0);
-	t_assert (empty.Capacity() >= 0);
+	assertCompare(empty.Length(), equal_to, 0L);
+	assertCompare(empty.Capacity(), greater_equal, 0L);
 
 	// Init a string only with the Capacity
 	String emptyCap(50);
@@ -84,12 +84,12 @@ void StringTest::constructors()
 	t_assert ( strcmp((const char *)emptyCap, "") == 0 );
 	t_assert ( memcmp((const char *)emptyCap, "",
 					  strlen((const char *)emptyCap) ) == 0 );
-	t_assert (emptyCap.Length() == 0);
-	t_assert (emptyCap.Capacity() >= 50);
+	assertCompare(emptyCap.Length(), equal_to, 0L);
+	assertCompare(emptyCap.Capacity(), greater_equal, 50L);
 
 	String emptyCap0(-1);
 	assertEqual("", emptyCap0);
-	t_assert (emptyCap0.Length() == 0);
+	assertCompare(emptyCap0.Length(), equal_to, 0L);
 	assertCompare( 0L, less_equal, emptyCap0.Capacity() );
 
 	// Init a string only with a 'charChain' and the length
@@ -125,15 +125,15 @@ void StringTest::constructors()
 	String stringCharChain( "CharChain" );
 	assertEqual("CharChain", stringCharChain);
 	t_assert ( memcmp( (const char *)stringCharChain, "CharChain", stringCharChain.Length() ) == 0 );
-	t_assert (stringCharChain.Length() == (long)strlen("CharChain"));
+	assertCompare(stringCharChain.Length(), equal_to, (long)strlen("CharChain"));
 	t_assert (stringCharChain.Capacity() >= stringCharChain.Length());
 
 	// Init a string with another string
 	String s("string test 4");
 	String stringStr0(s);
 	t_assert (stringStr0 == s);
-	t_assert (stringStr0.Length() == s.Length() );
-	//t_assert (stringStr0.Capacity() == s.Capacity() );
+	assertCompare(stringStr0.Length(), equal_to, s.Length());
+	//assertCompare(stringStr0.Capacity(), equal_to, s.Capacity());
 	t_assert (stringStr0.Capacity() >= stringStr0.Length() );
 	t_assert (s.Capacity() >= s.Length() );
 
@@ -142,34 +142,34 @@ void StringTest::constructors()
 	s = "string test 4+";		// this is an operator!!
 	String stringStr01(s);
 	t_assert (stringStr01 == s);
-	t_assert (stringStr01.Length() == s.Length() );
-	// t_assert (stringStr01.Capacity() == s.Capacity() );			// Op = does not copy the capacity
+	assertCompare(stringStr01.Length(), equal_to, s.Length());
+	// assertCompare(stringStr01.Capacity(), equal_to, s.Capacity());			// Op = does not copy the capacity
 	t_assert (stringStr01.Capacity() >= stringStr01.Length() );
 	t_assert (s.Capacity() >= s.Length() );
 
 	String stringStr1(empty);
 	t_assert (stringStr1 == empty);
 	assertEqual("", stringStr1);
-	t_assert (stringStr1.Length() == empty.Length() );
-	//PS? t_assert (stringStr1.Capacity() == empty.Capacity() );
+	assertCompare(stringStr1.Length(), equal_to, empty.Length());
+	//PS? assertCompare(stringStr1.Capacity(), equal_to, empty.Capacity());
 	t_assert (stringStr1.Capacity() >= stringStr1.Length() );
 	t_assert (empty.Capacity() >= empty.Length() );
 
 	String stringStr2(emptyCap);
 	t_assert (stringStr2 == emptyCap);
 	assertEqual("", stringStr2);
-	t_assert (stringStr2.Length() == emptyCap.Length() );
-	// t_assert (stringStr2.Capacity() == emptyCap.Capacity() );		// ???? capacity not copied
-	t_assert (stringStr2.Length() == 0 );
+	assertCompare(stringStr2.Length(), equal_to, emptyCap.Length());
+	// assertCompare(stringStr2.Capacity(), equal_to, emptyCap.Capacity());		// ???? capacity not copied
+	assertCompare(stringStr2.Length(), equal_to, 0L);
 	t_assert (stringStr2.Capacity() >= stringStr2.Length());
-	//PS? t_assert (stringStr2.Capacity() == 0);  // Why is capacity 0 ????
+	//PS? assertCompare(stringStr2.Capacity(), equal_to, 0L);  // Why is capacity 0 ????
 
 	String one(1);
 	t_assert (empty == one);
 
 	String oneString("1");
 	assertEqual("1", oneString);
-	t_assert (oneString.Length() == 1);
+	assertCompare(oneString.Length(), equal_to, 1L);
 	assertEqual("short", fShort);
 	t_assert (fShort != "Short");  // == fails
 }
@@ -183,85 +183,85 @@ void StringTest::appendsChar()
 	//----------------------
 	String str0;
 	str0.Append('a');
-	//PS? t_assert ( str0.Capacity() == 4 );
-	t_assert ( str0.Length() == 1 );
+	//PS? assertCompare(str0.Capacity(), equal_to, 4L);
+	assertCompare(str0.Length(), equal_to, 1L);
 	t_assert ( str0.Capacity() >= str0.Length() );
 	t_assert ( strlen( (const char *)str0 ) == 1 );
 	t_assert ( memcmp((const char *)str0, "a", strlen( (const char *)str0)) == 0 );
 
 	str0.Append('b');
-	//PS? t_assert ( str0.Capacity() == 4 );
-	t_assert ( str0.Length() == 2 );
+	//PS? assertCompare(str0.Capacity(), equal_to, 4L);
+	assertCompare(str0.Length(), equal_to, 2L);
 	t_assert ( str0.Capacity() >= str0.Length() );
 	t_assert ( strlen( (const char *)str0 ) == 2 );
 	t_assert ( memcmp((const char *)str0, "ab", strlen( (const char *)str0)) == 0 );
 
 	str0.Append('c');
-	//PS? t_assert ( str0.Capacity() == 4 );
-	t_assert ( str0.Length() == 3 );
+	//PS? assertCompare(str0.Capacity(), equal_to, 4L);
+	assertCompare(str0.Length(), equal_to, 3L);
 	t_assert ( str0.Capacity() >= str0.Length() );
 	t_assert ( strlen( (const char *)str0 ) == 3 );
 	t_assert ( memcmp((const char *)str0, "abc", strlen( (const char *)str0)) == 0 );
 
 	str0.Append('d');
-	//PS? t_assert ( str0.Capacity() == 10 );
-	t_assert ( str0.Length() == 4 );
+	//PS? assertCompare(str0.Capacity(), equal_to, 10L);
+	assertCompare(str0.Length(), equal_to, 4L);
 	t_assert ( str0.Capacity() >= str0.Length() );
 	t_assert ( strlen( (const char *)str0 ) == 4 );
 	t_assert ( memcmp((const char *)str0, "abcd", strlen( (const char *)str0)) == 0 );
 
 	str0.Append('e');
-	//PS? t_assert ( str0.Capacity() == 10 );
-	t_assert ( str0.Length() == 5 );
+	//PS? assertCompare(str0.Capacity(), equal_to, 10L);
+	assertCompare(str0.Length(), equal_to, 5L);
 	t_assert ( str0.Capacity() >= str0.Length() );
 	t_assert ( strlen( (const char *)str0 ) == 5 );
 	t_assert ( memcmp((const char *)str0, "abcde", strlen( (const char *)str0)) == 0 );
 
 	str0.Append('f');
-	//PS? t_assert ( str0.Capacity() == 10 );
-	t_assert ( str0.Length() == 6 );
+	//PS? assertCompare(str0.Capacity(), equal_to, 10L);
+	assertCompare(str0.Length(), equal_to, 6L);
 	t_assert ( str0.Capacity() >= str0.Length() );
 	t_assert ( strlen( (const char *)str0 ) == 6 );
 	t_assert ( memcmp((const char *)str0, "abcdef", strlen( (const char *)str0)) == 0 );
 
 	str0.Append('g');
-	//PS? t_assert ( str0.Capacity() == 10 );
-	t_assert ( str0.Length() == 7 );
+	//PS? assertCompare(str0.Capacity(), equal_to, 10L);
+	assertCompare(str0.Length(), equal_to, 7L);
 	t_assert ( str0.Capacity() >= str0.Length() );
 	t_assert ( strlen( (const char *)str0 ) == 7 );
 	t_assert ( memcmp((const char *)str0, "abcdefg", strlen( (const char *)str0)) == 0 );
 
 	str0.Append('h');
-	//PS? t_assert ( str0.Capacity() == 10 );
-	t_assert ( str0.Length() == 8 );
+	//PS? assertCompare(str0.Capacity(), equal_to, 10L);
+	assertCompare(str0.Length(), equal_to, 8L);
 	t_assert ( str0.Capacity() >= str0.Length() );
 	t_assert ( strlen( (const char *)str0 ) == 8 );
 	t_assert ( memcmp((const char *)str0, "abcdefgh", strlen( (const char *)str0)) == 0 );
 
 	str0.Append('i');
-	//PS? t_assert ( str0.Capacity() == 10 );
-	t_assert ( str0.Length() == 9 );
+	//PS? assertCompare(str0.Capacity(), equal_to, 10L);
+	assertCompare(str0.Length(), equal_to, 9L);
 	t_assert ( str0.Capacity() >= str0.Length() );
 	t_assert ( strlen( (const char *)str0 ) == 9 );
 	t_assert ( memcmp((const char *)str0, "abcdefghi", strlen( (const char *)str0)) == 0 );
 
 	str0.Append('l');
-	//PS? t_assert ( str0.Capacity() == 22 );
-	t_assert ( str0.Length() == 10 );
+	//PS? assertCompare(str0.Capacity(), equal_to, 22L);
+	assertCompare(str0.Length(), equal_to, 10L);
 	t_assert ( str0.Capacity() >= str0.Length() );
 	t_assert ( strlen( (const char *)str0 ) == 10 );
 	t_assert ( memcmp((const char *)str0, "abcdefghil", strlen( (const char *)str0)) == 0 );
 
 	str0.Append('m');
-	//PS? t_assert ( str0.Capacity() == 22 );
-	t_assert ( str0.Length() == 11 );
+	//PS? assertCompare(str0.Capacity(), equal_to, 22L);
+	assertCompare(str0.Length(), equal_to, 11L);
 	t_assert ( str0.Capacity() >= str0.Length() );
 	t_assert ( strlen( (const char *)str0 ) == 11 );
 	t_assert ( memcmp((const char *)str0, "abcdefghilm", strlen( (const char *)str0)) == 0 );
 
 	str0.Append('n');
-	//PS? t_assert ( str0.Capacity() == 22 );
-	t_assert ( str0.Length() == 12 );
+	//PS? assertCompare(str0.Capacity(), equal_to, 22L);
+	assertCompare(str0.Length(), equal_to, 12L);
 	t_assert ( str0.Capacity() >= str0.Length() );
 	t_assert ( strlen( (const char *)str0 ) == 12 );
 	t_assert ( memcmp((const char *)str0, "abcdefghilmn", strlen( (const char *)str0)) == 0 );
@@ -270,36 +270,36 @@ void StringTest::appendsChar()
 	// 'String.Length' und 'strlen(Content)' stimmen nicht ueberein.  ????
 	String str1;
 	str1.Append( (char) 0);
-	//PS? t_assert ( str1.Capacity() == 4 );
-	t_assert ( str1.Length() == 1 );
+	//PS? assertCompare(str1.Capacity(), equal_to, 4L);
+	assertCompare(str1.Length(), equal_to, 1L);
 	t_assert ( str1.Capacity() >= str1.Length() );
 	t_assert ( (long)strlen( (const char *)str1 ) != str1.Length() );
 
 	str1.Append('A');
-	//PS? t_assert ( str1.Capacity() == 4 );
-	t_assert ( str1.Length() == 2 );
+	//PS? assertCompare(str1.Capacity(), equal_to, 4L);
+	assertCompare(str1.Length(), equal_to, 2L);
 	t_assert ( str1.Capacity() >= str1.Length() );
 	t_assert ( (long)strlen( (const char *)str1 ) != str1.Length() );
 
 	// Append mit Zahlen
 	String str2;
 	str2.Append((char)97); // 97 = 'a'
-	//PS? t_assert ( str2.Capacity() == 4 );
-	t_assert ( str2.Length() == 1 );
+	//PS? assertCompare(str2.Capacity(), equal_to, 4L);
+	assertCompare(str2.Length(), equal_to, 1L);
 	t_assert ( str2.Capacity() >= str2.Length() );
 	t_assert ( strlen( (const char *)str2 ) == 1 );
 	t_assert ( memcmp((const char *)str2, "a", strlen( (const char *)str2)) == 0 );
 
 	str2.Append((char)98); // 98 = 'b'
-	//PS? t_assert ( str2.Capacity() == 4 );
-	t_assert ( str2.Length() == 2 );
+	//PS? assertCompare(str2.Capacity(), equal_to, 4L);
+	assertCompare(str2.Length(), equal_to, 2L);
 	t_assert ( str2.Capacity() >= str2.Length() );
 	t_assert ( strlen( (const char *)str2 ) == 2 );
 	t_assert ( memcmp((const char *)str2, "ab", strlen( (const char *)str2)) == 0 );
 
 	str2.Append((char)99); // 99 = 'c'
-	//PS? t_assert ( str2.Capacity() == 4 );
-	t_assert ( str2.Length() == 3 );
+	//PS? assertCompare(str2.Capacity(), equal_to, 4L);
+	assertCompare(str2.Length(), equal_to, 3L);
 	t_assert ( str2.Capacity() >= str2.Length() );
 	t_assert ( strlen( (const char *)str2 ) == 3 );
 	t_assert ( memcmp((const char *)str2, "abc", strlen( (const char *)str2)) == 0 );
@@ -309,8 +309,8 @@ void StringTest::appendsChar()
 	str3.Append( (char)(-5) );
 	str3.Append( (char)(-10) );
 	str3.Append( (char)(9999999L) );
-	//PS? t_assert ( str3.Capacity() == 4 );
-	t_assert ( str3.Length() == 3 );
+	//PS? assertCompare(str3.Capacity(), equal_to, 4L);
+	assertCompare(str3.Length(), equal_to, 3L);
 	t_assert ( str2.Capacity() >= str2.Length() );
 	t_assert ( strlen( (const char *)str3 ) == 3 );
 }
@@ -362,8 +362,8 @@ void StringTest::appendsCharChain()
 	// charChain 100% gelesen
 	String str0;
 	str0.Append( charChain, 5 );
-	//PS? t_assert ( str0.Capacity() == 12 );
-	t_assert ( str0.Length() == 5 );
+	//PS? assertCompare(str0.Capacity(), equal_to, 12L);
+	assertCompare(str0.Length(), equal_to, 5L);
 	t_assert ( str0.Capacity() >= str0.Length() );
 	t_assert ( strlen( (const char *)str0 ) == 5 );
 	t_assert ( memcmp((const char *)str0, charChain, str0.Length() ) == 0 );
@@ -373,8 +373,8 @@ void StringTest::appendsCharChain()
 	// (purify might generate a UMR, ABR or something the like
 	String str1;
 	str1.Append( (void *) charChain, 10 );
-	//PS? t_assert ( str1.Capacity() == 22 );
-	t_assert ( str1.Length() == 10 );
+	//PS? assertCompare(str1.Capacity(), equal_to, 22L);
+	assertCompare(str1.Length(), equal_to, 10L);
 	t_assert ( str1.Capacity() >= str1.Length() );
 	t_assert ( memcmp((const char *)str1, charChain, strlen(charChain) ) == 0 );
 //	t_assert ( memcmp((const char *)str1, charChain, max(str1.Length(), strlen(charChain)) ) == 0 );
@@ -384,31 +384,31 @@ void StringTest::appendsCharChain()
 	// 0 char von charChain gelesen
 	String str2;
 	str2.Append( charChain, 0 );
-	//PS? t_assert ( str2.Capacity() == 0 );
-	t_assert ( str2.Length() == 0 );
+	//PS? assertCompare(str2.Capacity(), equal_to, 0L);
+	assertCompare(str2.Length(), equal_to, 0L);
 	t_assert ( str2.Capacity() >= str2.Length() );
 
 	// Lesen innerhalb von charChain
 	String str3;
 	str3.Append( charChain, 3 );
-	//PS? t_assert ( str3.Capacity() == 8 );
-	t_assert ( str3.Length() == 3 );
+	//PS? assertCompare(str3.Capacity(), equal_to, 8L);
+	assertCompare(str3.Length(), equal_to, 3L);
 	t_assert ( str3.Capacity() >= str3.Length() );
 	t_assert ( memcmp((const char *)str3, "abcde", str3.Length() ) == 0 );
 
 	// Lesen innerhalb von charChain
 	String str4;
 	str4.Append( &charChain[3], 2 );
-	//PS? t_assert ( str4.Capacity() == 6 );
-	t_assert ( str4.Length() == 2 );
+	//PS? assertCompare(str4.Capacity(), equal_to, 6L);
+	assertCompare(str4.Length(), equal_to, 2L);
 	t_assert ( str4.Capacity() >= str4.Length() );
 	t_assert ( memcmp((const char *)str4, "de", str4.Length() ) == 0 );
 
 	//Lesen innerhalb von charChain
 	String str5;
 	str5.Append( &charChain[4], 1 );
-	//PS? t_assert ( str5.Capacity() == 4 );
-	t_assert ( str5.Length() == 1 );
+	//PS? assertCompare(str5.Capacity(), equal_to, 4L);
+	assertCompare(str5.Length(), equal_to, 1L);
 	t_assert ( str5.Capacity() >= str5.Length() );
 	t_assert ( memcmp((const char *)str5, "e", str5.Length() ) == 0 );
 
@@ -427,8 +427,8 @@ void StringTest::appendsCharChain()
 	String str8;
 	str8.Append( charChain, 5 );
 	str8.Append( charChain, 5 );
-	//PS? t_assert ( str8.Capacity() == 12 );  // 2*(5+1)
-	t_assert ( str8.Length() == 10 );
+	//PS? assertCompare(str8.Capacity(), equal_to, 12L);  // 2*(5+1)
+	assertCompare(str8.Length(), equal_to, 10L);
 	t_assert ( str8.Capacity() >= str8.Length() );
 	t_assert ( memcmp((const char *)str8, "abcdeabcde", str8.Length() ) == 0 );
 
@@ -437,20 +437,20 @@ void StringTest::appendsCharChain()
 	str9.Append( "123", 3 );
 	str10.Append( "456", 3 );
 	str9.Append( (const char *)str10, strlen((const char *)str10) );
-	//PS? t_assert ( str9.Capacity() == 8 );
-	t_assert ( str9.Length() == 6 );
+	//PS? assertCompare(str9.Capacity(), equal_to, 8L);
+	assertCompare(str9.Length(), equal_to, 6L);
 	t_assert ( str9.Capacity() >= str9.Length() );
 	str9.Append( (const char *)str10, strlen((const char *)str10) );
-	//PS? t_assert ( str9.Capacity() == 20 );
-	t_assert ( str9.Length() == 9 );
+	//PS? assertCompare(str9.Capacity(), equal_to, 20L);
+	assertCompare(str9.Length(), equal_to, 9L);
 	t_assert ( str9.Capacity() >= str9.Length() );
 
 	// Append mit sich selbst
 	String str11;
 	str11.Append( "123", 3 );
 	str11.Append( (const char *)str11, strlen((const char *)str11) );
-	//PS? t_assert ( str11.Capacity() == 8 );
-	t_assert ( str11.Length() == 6 );
+	//PS? assertCompare(str11.Capacity(), equal_to, 8L);
+	assertCompare(str11.Length(), equal_to, 6L);
 	t_assert ( str11.Capacity() >= str11.Length() );
 	t_assert ( memcmp( (const char *)str11, "123123", str11.Length() ) == 0 );
 
@@ -458,8 +458,8 @@ void StringTest::appendsCharChain()
 	String str12;
 	str12.Append( "123", 3 );
 	str12.Append( ((const char *)(str12) + 1), 2 );
-	//PS? t_assert ( str12.Capacity() == 8 );
-	t_assert ( str12.Length() == 5 );
+	//PS? assertCompare(str12.Capacity(), equal_to, 8L);
+	assertCompare(str12.Length(), equal_to, 5L);
 	t_assert ( str12.Capacity() >= str12.Length() );
 	t_assert ( memcmp( (const char *)str12, "12323", str12.Length() ) == 0 );
 
@@ -489,30 +489,30 @@ void StringTest::appendsString()
 	// Append von 2 leeren Stringen
 	String str0, str1;
 	str0.Append( str1 );
-	t_assert ( str0.Capacity() >= 0 );
-	t_assert ( str0.Length() == 0 );
+	assertCompare(str0.Capacity(), greater_equal, 0L);
+	assertCompare(str0.Length(), equal_to, 0L);
 
 	// Append von sich selbst
 	String str2;
 	str2.Append("123", 3);  // length = 3 --> capacity = 2*(3+1)
 	str2.Append( str2 );
-	//PS? t_assert ( str2.Capacity() == 8 );
-	t_assert ( str2.Length() == 6 );
+	//PS? assertCompare(str2.Capacity(), equal_to, 8L);
+	assertCompare(str2.Length(), equal_to, 6L);
 	t_assert ( str2.Capacity() >= str2.Length() );
 	t_assert ( memcmp( (const char *)str2, "123123", str2.Length() ) == 0 );
 	str2.Append( str2 );
-	//PS? t_assert ( str2.Capacity() == 26 );
-	t_assert ( str2.Length() == 12 );
+	//PS? assertCompare(str2.Capacity(), equal_to, 26L);
+	assertCompare(str2.Length(), equal_to, 12L);
 	t_assert ( str2.Capacity() >= str2.Length() );
 	t_assert ( memcmp( (const char *)str2, "123123123123", str2.Length() ) == 0 );
 	str2.Append( str2 );
-	//PS? t_assert ( str2.Capacity() == 26 );
-	t_assert ( str2.Length() == 24 );
+	//PS? assertCompare(str2.Capacity(), equal_to, 26L);
+	assertCompare(str2.Length(), equal_to, 24L);
 	t_assert ( str2.Capacity() >= str2.Length() );
 	t_assert ( memcmp( (const char *)str2, "123123123123123123123123", str2.Length() ) == 0 );
 	str2.Append( str2 );
-	//PS? t_assert ( str2.Capacity() == 98 );
-	t_assert ( str2.Length() == 48 );
+	//PS? assertCompare(str2.Capacity(), equal_to, 98L);
+	assertCompare(str2.Length(), equal_to, 48L);
 	t_assert ( str2.Capacity() >= str2.Length() );
 	t_assert ( memcmp( (const char *)str2, "123123123123123123123123123123123123123123123123", str2.Length() ) == 0 );
 
@@ -521,13 +521,13 @@ void StringTest::appendsString()
 	str3.Append( "123", 3 );
 	str4.Append( "456", 3 );
 	str3.Append( str4 );
-	//PS? t_assert ( str3.Capacity() == 8 );
-	t_assert ( str3.Length() == 6 );
+	//PS? assertCompare(str3.Capacity(), equal_to, 8L);
+	assertCompare(str3.Length(), equal_to, 6L);
 	t_assert ( str3.Capacity() >= str3.Length() );
 	t_assert ( memcmp( (const char *)str3, "123456", str3.Length() ) == 0 );
 	str4.Append( str3 );
-	//PS? t_assert ( str4.Capacity() == 20 );
-	t_assert ( str4.Length() == 9 );
+	//PS? assertCompare(str4.Capacity(), equal_to, 20L);
+	assertCompare(str4.Length(), equal_to, 9L);
 	t_assert ( str4.Capacity() >= str4.Length() );
 	t_assert ( memcmp( (const char *)str4, "456123456", str4.Length() ) == 0 );
 
@@ -535,8 +535,8 @@ void StringTest::appendsString()
 	String str5, str6;
 	str5.Append( "123", 3);
 	str5.Append( str6 );
-	//PS? t_assert ( str5.Capacity() == 8 );
-	t_assert ( str5.Length() == 3 );
+	//PS? assertCompare(str5.Capacity(), equal_to, 8L);
+	assertCompare(str5.Length(), equal_to, 3L);
 	t_assert ( str5.Capacity() >= str5.Length() );
 	t_assert ( memcmp( (const char *)str5, "123", str5.Length() ) == 0 );
 
@@ -544,8 +544,8 @@ void StringTest::appendsString()
 	String str7, str8;
 	str8.Append( "123", 3 );
 	str7.Append( str8 );
-	//PS? t_assert ( str7.Capacity() == 8 );
-	t_assert ( str7.Length() == 3 );
+	//PS? assertCompare(str7.Capacity(), equal_to, 8L);
+	assertCompare(str7.Length(), equal_to, 3L);
 	t_assert ( str7.Capacity() >= str7.Length() );
 	t_assert ( memcmp( (const char *)str7, "123", str7.Length() ) == 0 );
 
@@ -557,8 +557,8 @@ void StringTest::appendsString()
 	// (void *) cast because otherwise Append stops at 0
 	str10.Append( "123", 3 );
 	str9.Append( str10 );
-	//PS? t_assert ( str9.Capacity() ==  12 );
-	t_assert ( str9.Length() ==  8 );
+	//PS? assertCompare(str9.Capacity(), equal_to, 12L);
+	assertCompare(str9.Length(), equal_to, 8L);
 	t_assert ( str9.Capacity() >= str9.Length() );
 	t_assert ( str9.Length() >= (long)strlen( (const char *)str9 ) );
 	t_assert ( strlen( (const char *)str9 ) == strlen(buf) );
@@ -574,7 +574,7 @@ void StringTest::appendsString()
 	// (void *) cast because otherwise Append does not read past 0
 	str12.Append( "123", 3 );
 	str12.Append( str11 );
-	//PS? t_assert ( str12.Capacity() ==  18 );
+	//PS? assertCompare(str12.Capacity(), equal_to, 18L);
 	t_assert ( str12.Capacity() >= str12.Length() );
 	t_assert ( strlen( (const char *)str12 ) == strlen("123") + strlen(buf) );
 	memset( bufHelp, 0, sizeof(bufHelp) );
@@ -589,57 +589,57 @@ void StringTest::appendsLong()
 	// Append with several long numbers
 	String str0;
 	str0.Append( 0L );
-	//PS? t_assert ( str0.Capacity() == 4);
-	t_assert ( str0.Length() == 1 );
+	//PS? assertCompare(str0.Capacity(), equal_to, 4L);
+	assertCompare(str0.Length(), equal_to, 1L);
 	t_assert ( str0.Capacity() >= str0.Length() );
 	t_assert ( memcmp( (const char *)str0, "0", str0.Length() ) == 0 );
 
 	str0.Append( 1L );
-	//PS? t_assert ( str0.Capacity() == 4);
-	t_assert ( str0.Length() == 2 );
+	//PS? assertCompare(str0.Capacity(), equal_to, 4L);
+	assertCompare(str0.Length(), equal_to, 2L);
 	t_assert ( str0.Capacity() >= str0.Length() );
 	assertEqual("01", str0);
 	//PS? t_assert ( memcmp( (const char *)str0, "01", str0.Length() )==0 );
 
 	str0.Append( 2L );
-	//PS? t_assert ( str0.Capacity() == 4);
-	t_assert ( str0.Length() == 3 );
+	//PS? assertCompare(str0.Capacity(), equal_to, 4L);
+	assertCompare(str0.Length(), equal_to, 3L);
 	t_assert ( str0.Capacity() >= str0.Length() );
 	//PS? t_assert ( memcmp( (const char *)str0, "012", str0.Length() )==0 );
 
 	str0.Append( 3L );
-	//PS? t_assert ( str0.Capacity() == 10);
-	t_assert ( str0.Length() == 4 );
+	//PS? assertCompare(str0.Capacity(), equal_to, 10L);
+	assertCompare(str0.Length(), equal_to, 4L);
 	t_assert ( str0.Capacity() >= str0.Length() );
 	//PS? t_assert ( memcmp( (const char *)str0, "0123", str0.Length() )==0 );
 
 	str0.Append( -1L );
-	//PS? t_assert ( str0.Capacity() == 10);
-	t_assert ( str0.Length() == 6 );
+	//PS? assertCompare(str0.Capacity(), equal_to, 10L);
+	assertCompare(str0.Length(), equal_to, 6L);
 	t_assert ( str0.Capacity() >= str0.Length() );
 	//PS? t_assert ( memcmp( (const char *)str0, "0123-1", str0.Length() )==0 );
 
 	str0.Append( -2L );
-	//PS? t_assert ( str0.Capacity() == 10);
-	t_assert ( str0.Length() == 8 );
+	//PS? assertCompare(str0.Capacity(), equal_to, 10L);
+	assertCompare(str0.Length(), equal_to, 8L);
 	t_assert ( str0.Capacity() >= str0.Length() );
 	//PS? t_assert ( memcmp( (const char *)str0, "0123-1-2", str0.Length() )==0 );
 
 	str0.Append( -3L );
-	//PS? t_assert ( str0.Capacity() == 22);
-	//PS? t_assert ( str0.Length() == 10 );
+	//PS? assertCompare(str0.Capacity(), equal_to, 22L);
+	//PS? assertCompare(str0.Length(), equal_to, 10L);
 	t_assert ( str0.Capacity() >= str0.Length() );
 	//PS? t_assert ( memcmp( (const char *)str0, "0123-1-2-3", str0.Length() )==0 );
 
 	str0.Append( 2147483647L );
-	//PS? t_assert ( str0.Capacity() == 22);
-	t_assert ( str0.Length() == 20 );
+	//PS? assertCompare(str0.Capacity(), equal_to, 22L);
+	assertCompare(str0.Length(), equal_to, 20L);
 	t_assert ( str0.Capacity() >= str0.Length() );
 	//PS? t_assert ( memcmp( (const char *)str0, "0123-1-2-32147483647", str0.Length() )==0 );
 
 	str0.Append( -2147483647L );
-	//PS? t_assert ( str0.Capacity() == 64);
-	//PS? t_assert ( str0.Length() == 31 );
+	//PS? assertCompare(str0.Capacity(), equal_to, 64L);
+	//PS? assertCompare(str0.Length(), equal_to, 31L);
 	t_assert ( str0.Capacity() >= str0.Length() );
 	//PS? t_assert ( memcmp( (const char *)str0, "0123-1-2-32147483647-2147483647", str0.Length() )==0 );
 }
@@ -819,19 +819,19 @@ void StringTest::appendsAsHex()
 
 			str0.AppendAsHex(buf, 0);
 			t_assert ( str0 == String("") );
-			t_assert ( str0.Length()  == 0 );
+			assertCompare(str0.Length(), equal_to, 0L);
 
 			str1.AppendAsHex(buf, 1);
 			t_assert ( str1 == String("00") );
-			t_assert ( str1.Length()  == 2 );
+			assertCompare(str1.Length(), equal_to, 2L);
 
 			str2.AppendAsHex(buf, 3);
 			t_assert ( str2 == String("00A1FF") );
-			t_assert ( str2.Length()  == 6 );
+			assertCompare(str2.Length(), equal_to, 6L);
 
 			str3.AppendAsHex(buf, -1);
 			t_assert ( str3 == String("") );
-			t_assert ( str3.Length()  == 0 );
+			assertCompare(str3.Length(), equal_to, 0L);
 		}
 		{
 			String str0, str1, str2, str3;
@@ -840,19 +840,19 @@ void StringTest::appendsAsHex()
 
 			str0.AppendAsHex(buf, 0, ' ');
 			t_assert ( str0 == String("") );
-			t_assert ( str0.Length()  == 0 );
+			assertCompare(str0.Length(), equal_to, 0L);
 
 			str1.AppendAsHex(buf, 1, ' ');
 			t_assert ( str1 == String("00") );
-			t_assert ( str1.Length()  == 2 );
+			assertCompare(str1.Length(), equal_to, 2L);
 
 			str2.AppendAsHex(buf, 3, ' ');
 			t_assert ( str2 == String("00 A1 FF") );
-			t_assert ( str2.Length()  == 8 );
+			assertCompare(str2.Length(), equal_to, 8L);
 
 			str3.AppendAsHex(buf, -1, ' ');
 			t_assert ( str3 == String("") );
-			t_assert ( str3.Length()  == 0 );
+			assertCompare(str3.Length(), equal_to, 0L);
 		}
 	}
 }
@@ -930,8 +930,8 @@ void StringTest::appendsTwoHexAsChar()
 			str1.Append(' ');
 		}
 
-		//PS? t_assert( str0.Capacity() == str1.Capacity() );
-		t_assert( str0.Length() == str1.Length() );
+		//PS? assertCompare(str0.Capacity(), equal_to, str1.Capacity());
+		assertCompare(str0.Length(), equal_to, str1.Length());
 		t_assert ( str0.Capacity() >= str0.Length() );
 		t_assert ( str1.Capacity() >= str1.Length() );
 		t_assert( memcmp( (const char *)str0, (const char *)str1, str0.Length() ) == 0 );
@@ -1000,14 +1000,14 @@ void StringTest::appendsTwoHexAsChar()
 			str3.Append(' ');
 		}
 
-		//PS? t_assert( str2.Capacity() == str3.Capacity() );
-		t_assert( str2.Length() == str3.Length() );
+		//PS? assertCompare(str2.Capacity(), equal_to, str3.Capacity());
+		assertCompare(str2.Length(), equal_to, str3.Length());
 		t_assert ( str2.Capacity() >= str2.Length() );
 		t_assert ( str3.Capacity() >= str3.Length() );
 		t_assert( memcmp( (const char *)str2, (const char *)str3, str2.Length() ) == 0 );
 
-		//PS? t_assert( str2.Capacity() == str0.Capacity() );
-		t_assert( str2.Length() == str0.Length() );
+		//PS? assertCompare(str2.Capacity(), equal_to, str0.Capacity());
+		assertCompare(str2.Length(), equal_to, str0.Length());
 		t_assert( memcmp( (const char *)str2, (const char *)str0, str2.Length() ) == 0 );
 
 		// unerlaubte Eingabeparameter
@@ -1029,8 +1029,8 @@ void StringTest::appendsTwoHexAsChar()
 		}
 
 		String str5;
-		//PS? t_assert( str4.Capacity() == str5.Capacity() );
-		t_assert( str4.Length() == str5.Length() );
+		//PS? assertCompare(str4.Capacity(), equal_to, str5.Capacity());
+		assertCompare(str4.Length(), equal_to, str5.Length());
 		t_assert ( str4.Capacity() >= str4.Length() );
 		t_assert ( str5.Capacity() >= str5.Length() );
 		t_assert( memcmp( (const char *)str4, (const char *)str5, str4.Length() ) == 0 );
@@ -1045,21 +1045,21 @@ void StringTest::appendsTwoHexAsChar()
 
 			str0.AppendTwoHexAsChar(buf, 0);
 			t_assert ( str0 == String("") );
-			t_assert ( str0.Length() == 0 );
+			assertCompare(str0.Length(), equal_to, 0L);
 
 			const char exp1[1] = { 0x00 };
 			str1.AppendTwoHexAsChar(buf, 1);
 			t_assert ( memcmp(exp1, (const char *)str1, 1) == 0 );
-			t_assert ( str1.Length() == 1 );
+			assertCompare(str1.Length(), equal_to, 1L);
 
 			const char exp2[3] = { 0x00, 0x5A, 0xff};
 			str2.AppendTwoHexAsChar(buf, 3);
 			t_assert ( memcmp(exp2, (const char *)str2, 3) == 0 );
-			t_assert ( str2.Length() == 3 );
+			assertCompare(str2.Length(), equal_to, 3L);
 
 			str3.AppendTwoHexAsChar(buf, -1);
 			t_assert ( str3 == String("") );
-			t_assert ( str3.Length() == 0 );
+			assertCompare(str3.Length(), equal_to, 0L);
 		}
 		{
 			String str0, str1, str2, str3;
@@ -1068,21 +1068,21 @@ void StringTest::appendsTwoHexAsChar()
 
 			str0.AppendTwoHexAsChar(buf, 0, true);
 			t_assert ( str0 == String("") );
-			t_assert ( str0.Length() == 0 );
+			assertCompare(str0.Length(), equal_to, 0L);
 
 			const char exp1[1] = { 0x00 };
 			str1.AppendTwoHexAsChar(buf, 1, true);
 			t_assert ( memcmp(exp1, (const char *)str1, 1) == 0 );
-			t_assert ( str1.Length() == 1 );
+			assertCompare(str1.Length(), equal_to, 1L);
 
 			const char exp2[3] = { 0x00, 0x5A, 0xff};
 			str2.AppendTwoHexAsChar(buf, 3, true);
 			t_assert ( memcmp(exp2, (const char *)str2, 3) == 0 );
-			t_assert ( str2.Length() == 3 );
+			assertCompare(str2.Length(), equal_to, 3L);
 
 			str3.AppendTwoHexAsChar(buf, -1, true);
 			t_assert ( str3 == String("") );
-			t_assert ( str3.Length() == 0 );
+			assertCompare(str3.Length(), equal_to, 0L);
 		}
 	}
 }
@@ -1128,8 +1128,8 @@ void StringTest::appendsFile()
 		String  str3;
 		str3.Append( *is3, 0 );
 		assertEqual("", str3);
-		t_assert (str3.Length() == 0);
-		//t_assert (str3.Capacity() == 1);
+		assertCompare(str3.Length(), equal_to, 0L);
+		//assertCompare(str3.Capacity(), equal_to, 1L);
 		t_assert ( str3.Capacity() >= str3.Length() );
 		delete is3;
 	} else {
@@ -1142,7 +1142,7 @@ void StringTest::appendsFile()
 		String  str4;
 		str4.Append( *is4, 'a' );  // 'a' = 97
 		assertEqual("01234", str4);
-		t_assert (str4.Length() == 5);
+		assertCompare(str4.Length(), equal_to, 5L);
 		t_assert (str4.Capacity() >= 'a' + 1);
 		t_assert ( str4.Capacity() >= str4.Length() );
 		delete is4;
@@ -1247,15 +1247,15 @@ void StringTest::asLong()
 	String str;
 
 	// Test a null string -> default value
-	t_assert ( str.AsLong(-1) == -1 );
+	assertCompare(str.AsLong(-1), equal_to, -1L);
 
 	// Test a positive number
 	str = "123456789";
-	t_assert ( str.AsLong(-1) == 123456789 );
+	assertCompare(str.AsLong(-1), equal_to, 123456789L);
 
 	// Test a negative number
 	str = "-123456789";
-	t_assert ( str.AsLong(-1) == -123456789 );
+	assertCompare(str.AsLong(-1), equal_to, -123456789L);
 
 	// Test a positive number with ending text
 	str = "123456789Hello";
@@ -1287,15 +1287,15 @@ void StringTest::asLongLong()
 	String str;
 
 	// Test a null string -> default value
-	t_assert ( str.AsLongLong(INT64_LITERAL(-1)) == INT64_LITERAL(-1) );
+	assertCompare(str.AsLongLong(INT64_LITERAL(-1)), equal_to, INT64_LITERAL(-1));
 
 	// Test a positive number smaller than 9223372036854775807 but higher than a long
 	str = "12345678912345678";
-	t_assert ( str.AsLongLong(INT64_LITERAL(-1)) == INT64_LITERAL(12345678912345678) );
+	assertCompare(str.AsLongLong(INT64_LITERAL(-1)), equal_to, INT64_LITERAL(12345678912345678));
 
 	// Test a negative number higher than -9223372036854775808
 	str = "-12345678912345678";
-	t_assert ( str.AsLongLong(INT64_LITERAL(-1)) == INT64_LITERAL(-12345678912345678) );
+	assertCompare(str.AsLongLong(INT64_LITERAL(-1)), equal_to, INT64_LITERAL(-12345678912345678));
 
 	// Test a positive number with ending text
 	str = "12345678912345678Hello";
@@ -1311,7 +1311,7 @@ void StringTest::asLongLong()
 
 	// Test a positive number with leading text
 	str = "Hello12345678912345678";
-	t_assert ( str.AsLongLong(INT64_LITERAL(-1)) == INT64_LITERAL(-1) );
+	assertCompare(str.AsLongLong(INT64_LITERAL(-1)), equal_to, INT64_LITERAL(-1));
 
 	// Test a positive number with leading text
 	str = "     Hello12345678912345678";
@@ -1319,7 +1319,7 @@ void StringTest::asLongLong()
 
 	// Test a negative number with leading text -> default value
 	str = "Hello-12345678912345678";
-	t_assert ( str.AsLongLong(INT64_LITERAL(-1)) == INT64_LITERAL(-1) );
+	assertCompare(str.AsLongLong(INT64_LITERAL(-1)), equal_to, INT64_LITERAL(-1));
 }
 
 void StringTest::asDouble()
@@ -1327,31 +1327,31 @@ void StringTest::asDouble()
 	String str;
 
 	// Test a null string -> default value
-	t_assert ( str.AsDouble(-1.5) == -1.5 );
+	assertCompare ( str.AsDouble(-1.5), equal_to, -1.5 );
 
 	// Test a positive number
 	str = "123456789.123";
-	t_assert ( str.AsDouble(-1.5) == 123456789.123 );
+	assertCompare ( str.AsDouble(-1.5), equal_to, 123456789.123 );
 
 	// Test a negative number
 	str = "-123456789.123";
-	t_assert ( str.AsDouble(-1.5) == -123456789.123 );
+	assertCompare ( str.AsDouble(-1.5), equal_to, -123456789.123 );
 
 	// Test a positive number with ending text
 	str = "123456789.123Hello";
-	t_assert ( str.AsDouble(-1.5) == 123456789.123 );
+	assertCompare ( str.AsDouble(-1.5), equal_to, 123456789.123 );
 
 	// Test a negative number with ending text
 	str = "-123456789.123Hello";
-	t_assert ( str.AsDouble(-1.5) == -123456789.123 );
+	assertCompare ( str.AsDouble(1.5), equal_to, -123456789.123 );
 
 	// Test a positive number with leading text
 	str = "Hello123456789.123";
-	t_assert ( str.AsDouble(-1.5) == -1.5 );
+	assertCompare ( str.AsDouble(-1.5), equal_to, -1.5 );
 
 	// Test a negative number with leading text -> default value
 	str = "Hello-123456789.123";
-	t_assert ( str.AsDouble(-1.5) == -1.5 );
+	assertCompare ( str.AsDouble(-1.5), equal_to, -1.5 );
 }
 
 //==============================================================================================
@@ -1371,8 +1371,8 @@ void StringTest::isEqual0 ()
 	str1.Append(1.123456789E+23);
 	t_assert ( str0.IsEqual( (const char *)str1 ) == 1 );
 	t_assert ( str1.IsEqual( (const char *)str0 ) == 1 );
-	//PS? t_assert ( str0.Capacity() == str1.Capacity() );
-	t_assert ( str0.Length() == str1.Length() );
+	//PS? assertCompare(str0.Capacity(), equal_to, str1.Capacity());
+	assertCompare(str0.Length(), equal_to, str1.Length());
 	t_assert ( str0.Capacity() >= str0.Length() );
 	t_assert ( str1.Capacity() >= str1.Length() );
 	t_assert ( memcmp( (const char *)str0, (const char *)str1, str0.Length() ) == 0 );
@@ -1380,8 +1380,8 @@ void StringTest::isEqual0 ()
 	String str2 = str0;
 	t_assert ( str0.IsEqual( (const char *)str2 ) == 1 );
 	t_assert ( str2.IsEqual( (const char *)str0 ) == 1 );
-	// t_assert ( str0.Capacity() == str2.Capacity() );
-	t_assert ( str0.Length() == str2.Length() );
+	// assertCompare(str0.Capacity(), equal_to, str2.Capacity());
+	assertCompare(str0.Length(), equal_to, str2.Length());
 }
 
 void StringTest::isEqual1()
@@ -1392,7 +1392,7 @@ void StringTest::isEqual1()
 	str.Append( (void *) buf, 5 );
 	// void * cast because otherwise Append stops at 0
 	t_assert ( str.IsEqual( buf ) == 1 );
-	t_assert ( str.Length() == 5 );
+	assertCompare(str.Length(), equal_to, 5L);
 	t_assert ( str.Capacity() >= str.Length() );
 	t_assert ( memcmp( (const char *)str, buf, 5 ) == 0 );
 	// IsEqual geht bis zum \0 oder bis str.Length() ? Bis \0 (ist das gewuenscht ????)
@@ -1566,10 +1566,10 @@ void StringTest::copyTo0 ()
 		result = str.CopyTo( buf, i, 0 );
 		if ( i < str.Length() ) {
 			t_assert ( memcmp( buf, (const char *)str, i ) == 0 );
-			t_assert ( (long)strlen(buf) == i );
+			assertCompare((long)strlen(buf), equal_to, i);
 		} else {
 			t_assert ( memcmp( buf, (const char *)str, str.Length() ) == 0 );
-			t_assert ( (long)strlen(buf) == str.Length() );
+			assertCompare((long)strlen(buf), equal_to, str.Length());
 		}
 	}
 }
@@ -1584,7 +1584,7 @@ void StringTest::copyTo1()
 	// the void* cast is necessary as otherwise Append does not read past 0
 	str.CopyTo( buf1, 5, 0 );
 	t_assert( memcmp( buf0, buf1, 5) == 0 );
-	t_assert( str.Length() == 5 );
+	assertCompare(str.Length(), equal_to, 5L);
 	t_assert( str.Capacity() >= str.Length() );
 }
 
@@ -1652,16 +1652,16 @@ void StringTest::toLower0()
 
 	str.ToLower();
 	t_assert ( str == strHlp );
-	t_assert ( str.Length() == strHlp.Length() );
-	t_assert ( str.Capacity() == strHlp.Capacity() );
+	assertCompare(str.Length(), equal_to, strHlp.Length());
+	assertCompare(str.Capacity(), equal_to, strHlp.Capacity());
 	t_assert ( str.Capacity() >= str.Length() );
 	t_assert ( strHlp.Capacity() >= strHlp.Length() );
 	t_assert ( memcmp( (const char *)str, (const char *)strHlp, str.Length() ) == 0 );
 
 	str.ToLower();
 	t_assert ( str == strHlp );
-	t_assert ( str.Length() == strHlp.Length() );
-	t_assert ( str.Capacity() == strHlp.Capacity() );
+	assertCompare(str.Length(), equal_to, strHlp.Length());
+	assertCompare(str.Capacity(), equal_to, strHlp.Capacity());
 	t_assert ( str.Capacity() >= str.Length() );
 	t_assert ( strHlp.Capacity() >= strHlp.Length() );
 	t_assert ( memcmp( (const char *)str, (const char *)strHlp, str.Length() ) == 0 );
@@ -1697,16 +1697,16 @@ void StringTest::toUpper0()
 
 	str.ToUpper();
 	t_assert ( str == strHlp );
-	t_assert ( str.Length() == strHlp.Length() );
-	t_assert ( str.Capacity() == strHlp.Capacity() );
+	assertCompare(str.Length(), equal_to, strHlp.Length());
+	assertCompare(str.Capacity(), equal_to, strHlp.Capacity());
 	t_assert ( str.Capacity() >= str.Length() );
 	t_assert ( strHlp.Capacity() >= strHlp.Length() );
 	t_assert ( memcmp( (const char *)str, (const char *)strHlp, str.Length() ) == 0 );
 
 	str.ToUpper();
 	t_assert ( str == strHlp );
-	t_assert ( str.Length() == strHlp.Length() );
-	t_assert ( str.Capacity() == strHlp.Capacity() );
+	assertCompare(str.Length(), equal_to, strHlp.Length());
+	assertCompare(str.Capacity(), equal_to, strHlp.Capacity());
 	t_assert ( str.Capacity() >= str.Length() );
 	t_assert ( strHlp.Capacity() >= strHlp.Length() );
 	t_assert ( memcmp( (const char *)str, (const char *)strHlp, str.Length() ) == 0 );
@@ -1732,9 +1732,9 @@ void StringTest::prependWith()
 		for ( int ii = 256; ii > i; ii-- ) {
 			str.Append("z");
 		}
-		int oldLen = str.Length();
+		long oldLen = str.Length();
 		t_assert(str.PrependWith(str.Length() + i, 'x') == 1);
-		t_assert((oldLen + i) == str.Length());
+		assertCompare((oldLen + i), equal_to, str.Length());
 		for ( int ii = 0; ii < i; ii++ ) {
 			result.Append("x");
 		}
@@ -1750,10 +1750,10 @@ void StringTest::prependWith()
 			str.Append("z");
 		}
 		result = str;
-		int oldLen = str.Length();
+		long oldLen = str.Length();
 		for ( int ii = 0; ii < i; ii++ ) {
 			t_assert(str.PrependWith(str.Length() - i, 'x') == 0);
-			t_assert((oldLen) == str.Length());
+			assertCompare((oldLen), equal_to, str.Length());
 			assertEqual(result, str);
 		}
 	}
@@ -1762,7 +1762,7 @@ void StringTest::prependWith()
 	String str;
 	str.PrependWith(2, 'x');
 	assertEqual("xx", str);
-	t_assert(2L == str.Length());
+	assertCompare(2L, equal_to, str.Length());
 
 	// memcopy would overlap
 	String str1 = "123";
@@ -2041,7 +2041,7 @@ void StringTest::intPrintOn0()
 		if ( is ) {
 			String	str1;
 			str1.IntReadFrom( *is, '\"');
-			t_assert( str.Length() == str1.Length() );
+			assertCompare(str.Length(), equal_to, str1.Length());
 			t_assert( memcmp( (const char *)str, (const char *)str1, str.Length() ) == 0 );
 			delete is;
 
@@ -2054,7 +2054,7 @@ void StringTest::intPrintOn0()
 				if ( is1 ) {
 					*is1 >> str1;
 					delete is1;
-					t_assert( str.Length() == str1.Length() + 1 );
+					assertCompare(str.Length(), equal_to, str1.Length() + 1L);
 					// the leading space is skiped
 					t_assert( memcmp( (const char *)str, (const char *)str1, str.Length() ) < 0 );  // str1 does not have the leading SPACE ????
 					// << and >> are not symmetric if spaces are involved!!
@@ -2115,7 +2115,7 @@ void StringTest::intPrintOn1()
 			String str1;
 			str1.IntReadFrom( *is, '\"');
 			delete is;
-			t_assert( str.Length() == str1.Length() );
+			assertCompare(str.Length(), equal_to, str1.Length());
 			t_assert( memcmp( (const char *)str, (const char *)str1, str.Length() ) == 0 );
 		} else {
 			assertEqual("'read file tmp/filenoprnt.tst'", "'could not read tmp/filenoprnt.tst'");
@@ -2151,8 +2151,8 @@ void StringTest::at0 ()
 	}
 
 	// At out of boundaries:  result is 0  (OK!)
-	t_assert( str.At(-2) == 0 );
-	t_assert( str.At(300) == 0 );
+	assertCompare(str.At(-2), equal_to, '\0');
+	assertCompare(str.At(300), equal_to, '\0');
 	t_assert( str.At( str.Length() ) == (char)str.Length() );
 	t_assert( str.At( str.Capacity() ) == 0 );
 	t_assert( str.At( str.Capacity() + 1 ) == 0 );
@@ -2184,7 +2184,7 @@ void StringTest::putAt0 ()
 	}
 
 	for ( i = 0; i < 256; i++ ) {
-		t_assert ( str.Length() == 256 );
+		assertCompare(str.Length(), equal_to, 256L);
 
 		str.PutAt(i, (char)i);
 	}
@@ -2223,8 +2223,8 @@ void StringTest::replaceAt0 ()
 		strCapTmp = str.Capacity();
 		strLenTmp = str.Length();
 		str.ReplaceAt( 0, buf, i );
-		t_assert ( strCapTmp == str.Capacity() );
-		t_assert ( strLenTmp == str.Length() );
+		assertCompare(strCapTmp, equal_to, str.Capacity());
+		assertCompare(strLenTmp, equal_to, str.Length());
 		memcpy( bufHlp, (const char *)strHlp, strHlp.Length() );					// bufHlp = str before replacing
 		memcpy( &bufHlp[0], buf, i );												// replacing
 		t_assert ( memcmp( bufHlp, (const char *)str, str.Length() ) == 0 );		// comparison
@@ -2250,8 +2250,8 @@ void StringTest::replaceAt1 ()
 		strCapTmp = str.Capacity();
 		strLenTmp = str.Length();
 		str.ReplaceAt( 10, buf, i );
-		t_assert ( strCapTmp == str.Capacity() );
-		t_assert ( strLenTmp == str.Length() );
+		assertCompare(strCapTmp, equal_to, str.Capacity());
+		assertCompare(strLenTmp, equal_to, str.Length());
 		memcpy( bufHlp, (const char *)strHlp, strHlp.Length() );					// bufHlp = str19 before replacing
 		memcpy( &bufHlp[10], buf, i );												// replacing
 		t_assert ( memcmp( bufHlp, (const char *)str, str.Length() ) == 0 );		// comparison
@@ -2277,8 +2277,8 @@ void StringTest::replaceAt2 ()
 		strCapTmp = str.Capacity();
 		strLenTmp = str.Length();
 		str.ReplaceAt( -5, buf, i );
-		t_assert ( strCapTmp == str.Capacity() );
-		t_assert ( strLenTmp == str.Length() );
+		assertCompare(strCapTmp, equal_to, str.Capacity());
+		assertCompare(strLenTmp, equal_to, str.Length());
 		memcpy( bufHlp, (const char *)strHlp, strHlp.Length() );					// bufHlp = str19 (no replacement)
 		t_assert ( memcmp( bufHlp, (const char *)str, str.Length() ) == 0 );		// comparison
 	}
@@ -2350,8 +2350,8 @@ void StringTest::replaceAt6 ()
 		strCapTmp = str.Capacity();
 		strLenTmp = str.Length();
 		str.ReplaceAt( i, buf, 0 );
-		t_assert ( strCapTmp == str.Capacity() );
-		t_assert ( strLenTmp == str.Length() );
+		assertCompare(strCapTmp, equal_to, str.Capacity());
+		assertCompare(strLenTmp, equal_to, str.Length());
 		memcpy( bufHlp, (const char *)strHlp, strHlp.Length() );					// bufHlp = str19 (no replacement)
 		t_assert ( memcmp( bufHlp, (const char *)str, str.Length() ) == 0 );		// comparison
 	}
@@ -2376,8 +2376,8 @@ void StringTest::replaceAt7 ()
 		strCapTmp = str.Capacity();
 		strLenTmp = str.Length();
 		str.ReplaceAt( i, buf, -3 );
-		t_assert ( strCapTmp == str.Capacity() );
-		t_assert ( strLenTmp == str.Length() );
+		assertCompare(strCapTmp, equal_to, str.Capacity());
+		assertCompare(strLenTmp, equal_to, str.Length());
 		memcpy( bufHlp, (const char *)strHlp, strHlp.Length() );					// bufHlp = str19 (no replacement)
 		t_assert ( memcmp( bufHlp, (const char *)str, str.Length() ) == 0 );		// comparison
 	}
@@ -2409,8 +2409,8 @@ void StringTest::replaceAt9 ()
 	strCapTmp = str.Capacity();
 	strLenTmp = str.Length();
 	str.ReplaceAt( 0, (const char *)str, str.Length() );
-	t_assert ( strCapTmp == str.Capacity() );
-	t_assert ( strLenTmp == str.Length() );
+	assertCompare(strCapTmp, equal_to, str.Capacity());
+	assertCompare(strLenTmp, equal_to, str.Length());
 	memcpy( bufHlp, (const char *)strHlp, strHlp.Length() );					// bufHlp = str19 (no replacement)
 	t_assert ( memcmp( bufHlp, (const char *)str, str.Length() ) == 0 );		// comparison
 
@@ -2593,14 +2593,14 @@ void StringTest::subString0 ()
 			strHlp = str.SubString( buf );
 			t_assert( memcmp( (const char *)strHlp, (const char *)str + i, str.Length() - i) == 0 );
 			assertCompare( strHlp.Length(), less_equal, strHlp.Capacity() );
-			t_assert( strHlp.Length() == str.Length() - i );
+			assertCompare(strHlp.Length(), equal_to, str.Length() - i );
 		}
 	}
 
 	// After many str.SubString() is str unchanged? Yes!!!
 	String	strBak = "qwertzuiopasdfghjklyxcvbnmqwertzuiopasdfghjklyxcvbnm";
-	t_assert( str.Length() == strBak.Length() );
-	t_assert( str.Capacity() == strBak.Capacity() );
+	assertCompare(str.Length(), equal_to, strBak.Length());
+	assertCompare(str.Capacity(), equal_to, strBak.Capacity());
 	t_assert( memcmp( (const char *)str, (const char *)strBak, str.Length() ) == 0 );
 }
 
@@ -2627,7 +2627,7 @@ void StringTest::subString2 ()
 	str = str.SubString( "rtzu" );
 	t_assert( memcmp( (const char *)str, "rtzuiopasdfghjklyxcvbnmqwertzuiopasdfghjklyxcvbnm", str.Length() ) == 0 );
 	assertCompare( str.Length(), less_equal, str.Capacity() );
-	t_assert( str.Length() ==  (long)strlen("rtzuiopasdfghjklyxcvbnmqwertzuiopasdfghjklyxcvbnm") );
+	assertCompare(str.Length(), equal_to, (long)strlen("rtzuiopasdfghjklyxcvbnmqwertzuiopasdfghjklyxcvbnm"));
 }
 
 void StringTest::subString3()
@@ -2647,7 +2647,7 @@ void StringTest::subString3()
 			strHlp = str.SubString( i, j );
 			t_assert( memcmp( (const char *)strHlp, (const char *)str + i, j ) == 0 );
 			assertCompare( strHlp.Length(), less_equal, strHlp.Capacity() );
-			t_assert( strHlp.Length() == j );
+			assertCompare(strHlp.Length(), equal_to, j);
 		}
 	}
 }
@@ -2667,7 +2667,7 @@ void StringTest::subString4()
 	// Es ist OK (KEIN FEHLER)
 	String subStr1 = str.SubString( 5, -3 );
 	// von Stelle Nummer 5 bis zum Ende (d.h. ab der 6. Position!)
-	t_assert ( subStr1.Length() == (long)strlen("567890123456789") );
+	assertCompare(subStr1.Length(), equal_to, (long)strlen("567890123456789"));
 	t_assert ( memcmp( (const char *)subStr1, "567890123456789", subStr1.Length()) == 0 );
 	t_assert ( subStr1.Capacity() >= subStr1.Length() );
 
@@ -2679,8 +2679,8 @@ void StringTest::subString4()
 
 	// After many str.SubString() is str unchanged?
 	String	strHlp = "01234567890123456789";
-	t_assert ( str.Length() == strHlp.Length() );
-	t_assert ( str.Capacity() == strHlp.Capacity() );
+	assertCompare(str.Length(), equal_to, strHlp.Length());
+	assertCompare(str.Capacity(), equal_to, strHlp.Capacity());
 	t_assert ( memcmp( (const char *)str, (const char *)strHlp, str.Length() ) == 0 );
 }
 
@@ -2691,7 +2691,7 @@ void StringTest::subString5 ()
 	str = str.SubString( 2, 5 );
 	t_assert( memcmp( (const char *)str, "23456", str.Length() ) == 0 );
 	assertCompare( str.Length(), less_equal, str.Capacity() );
-	t_assert( str.Length() == 5 );
+	assertCompare(str.Length(), equal_to, 5L);
 }
 
 void StringTest::subStringWithNull ()
@@ -2736,7 +2736,7 @@ void StringTest::trimFront0 ()
 	for ( i = 0; i < str.Length() ; i++ ) {
 		str = strHlp;
 		str.TrimFront(i);
-		t_assert ( str.Length() == (long)strlen("0123456789") - i );
+		assertCompare(str.Length(), equal_to, (long)strlen("0123456789") - i );
 		t_assert ( str.Length() <= str.Capacity() );
 	}
 }
@@ -2747,7 +2747,7 @@ void StringTest::trimFront1 ()
 	str.Append( "0123456789", strlen("0123456789") );
 	// newStart < 0: nothing changes
 	str.TrimFront( -5 );
-	t_assert ( str.Length() == (long)strlen("0123456789") );
+	assertCompare(str.Length(), equal_to, (long)strlen("0123456789"));
 	t_assert ( str.Length() <= str.Capacity() );
 	t_assert ( memcmp( (const char *)str, "0123456789", str.Length() ) == 0 );
 }
@@ -2758,7 +2758,7 @@ void StringTest::trimFront2 ()
 	str.Append( "0123456789", strlen("0123456789") );
 	// newStart > Length()
 	str.TrimFront( str.Length() + 1 );
-	t_assert ( str.Length() == 0);
+	assertCompare(str.Length(), equal_to, 0L);
 	t_assert ( str.Capacity() >=  str.Length() );
 }
 
@@ -2786,7 +2786,7 @@ void StringTest::trimFrontOneByte ()
 {
 	String tst("longstringmorethanone");
 	long length = tst.Length();
-	t_assert(tst.Length() > 1);
+	assertCompare(tst.Length(), greater_equal, 1L);
 	tst.TrimFront(1);
 	assertEqual(length - 1, tst.Length());
 	assertEqual("ongstringmorethanone", tst);
@@ -2815,7 +2815,7 @@ void StringTest::trim0 ()
 	str = strHlp;
 	// newlen < 0:  leeres String
 	str.Trim( -1 );
-	t_assert ( str.Length() == 0 );
+	assertCompare(str.Length(), equal_to, 0L);
 	t_assert ( str.Capacity() >=  str.Length() );
 }
 
@@ -2827,8 +2827,8 @@ void StringTest::trim1 ()
 	// newlen > Length()
 	str = strHlp;
 	str.Trim( str.Length() + 1 );		// Trim does *not* increase the length (anymore)
-	t_assert ( str.Length()   == strHlp.Length() );
-	t_assert ( str.Capacity() == strHlp.Capacity() );
+	assertCompare(str.Length(), equal_to, strHlp.Length());
+	assertCompare(str.Capacity(), equal_to, strHlp.Capacity());
 	t_assert ( str == strHlp );
 	t_assert ( memcmp( (const char *)str, (const char *)strHlp, strHlp.Length() ) == 0 );
 }
@@ -2859,7 +2859,7 @@ void StringTest::trim3 ()
 	// newLen == 0
 	str = strHlp;
 	str.Trim( 0 );
-	t_assert ( str.Length()   == 0 );
+	assertCompare(str.Length(), equal_to, 0L);
 	t_assert ( str.Capacity() >= str.Length() );
 	t_assert ( str != strHlp );
 	t_assert ( memcmp( (const char *)str, (const char *)strHlp, str.Length() ) == 0 );
@@ -2904,7 +2904,7 @@ void StringTest::reserve ()
 
 	assertEqual( test.Capacity(), 0);
 	test.Reserve(9);					// you will get twice that much!
-	t_assert( test.Capacity() > 9);
+	assertCompare(test.Capacity(), greater_equal, 9L);
 
 	long oldCapacity = test.Capacity();
 	test.Append("Something");
@@ -2932,7 +2932,7 @@ void StringTest::TestCapacity()
 	String test;
 	for ( i = 1; i < (3 * 4048); i++ ) {
 		test.Append( 'a' );
-		t_assert( test.Length() == i );
+		assertCompare(test.Length(), equal_to, i);
 		t_assert( test.Capacity() > test.Length() );
 		t_assert( ( (test.Capacity() < 8192) || ( test.Capacity() <= test.Length() + 1024 )) );
 	}
