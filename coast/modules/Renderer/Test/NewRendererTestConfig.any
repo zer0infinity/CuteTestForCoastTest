@@ -3406,5 +3406,26 @@
 			}
 			/Expected "07.08.1997 01:59:50"
 		}
+		/DateRendererRFC2616DdateTest {
+			/TmpStore {}
+			/Renderer {
+				/DateRenderer {
+					/RFC2616Date 1
+					/Date 870912000
+				}
+			}
+			/Expected "Thu, 07 Aug 1997 00:00:00 GMT"
+		}
+		/DateRendererRFC2616DdateTest {
+			/TmpStore {}
+			/Renderer {
+				/DateRenderer {
+					/RFC2616Date 1
+					/Date 870912000
+					/Offset 3600
+				}
+			}
+			/Expected "Thu, 07 Aug 1997 01:00:00 GMT"
+		}
 	}
 }
