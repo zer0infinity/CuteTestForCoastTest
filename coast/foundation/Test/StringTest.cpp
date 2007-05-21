@@ -1259,11 +1259,11 @@ void StringTest::asLong()
 
 	// Test a positive number with ending text
 	str = "123456789Hello";
-	t_assert ( str.AsLong(-1) == 123456789 );
+	assertCompare( str.AsLong(1), equal_to, 1L );
 
 	// Test a negative number with ending text
 	str = "-123456789Hello";
-	t_assert ( str.AsLong(-1) == -123456789 );
+	assertCompare ( str.AsLong(-1), equal_to, -1L );
 
 	// Test a positive number with leading text
 	str = "Hello123456789";
@@ -1291,11 +1291,11 @@ void StringTest::asLongLong()
 
 	// Test a positive number with ending text
 	str = "12345678912345678Hello";
-	t_assert ( str.AsLongLong(INT64_LITERAL(-1)) == INT64_LITERAL(12345678912345678) );
+	assertCompare ( str.AsLongLong(INT64_LITERAL(-1)), equal_to, INT64_LITERAL(-1) );
 
 	// Test a negative number with ending text
 	str = "-12345678912345678Hello";
-	t_assert ( str.AsLongLong(INT64_LITERAL(-1)) == INT64_LITERAL(-12345678912345678) );
+	assertCompare ( str.AsLongLong(INT64_LITERAL(1)), equal_to, INT64_LITERAL(1) );
 
 	// Test a positive number with leading text
 	str = "Hello12345678912345678";

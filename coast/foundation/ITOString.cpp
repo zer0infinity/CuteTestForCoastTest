@@ -1038,9 +1038,11 @@ String &String::AppendTwoHexAsChar(const char *cc, long len, bool delimiter)
 long String::AsLong(long dflt) const
 {
 	if (this->Length()) {
-		IStringStream is(this);
-		is >> dec; // sets decimal
-		is >> dflt; // if it fails because of format error dflt remains unchanged
+		char *firstErrPos;
+		long l = strtol(GetContent(), &firstErrPos, 10);
+		if ( *firstErrPos == '\0' ) {
+			return l;
+		}
 	}
 	return dflt;
 }
@@ -1048,9 +1050,11 @@ long String::AsLong(long dflt) const
 l_long String::AsLongLong(l_long dflt) const
 {
 	if (this->Length()) {
-		IStringStream is(this);
-		is >> dec; // sets decimal
-		is >> dflt; // if it fails because of format error dflt remains unchanged
+		char *firstErrPos;
+		l_long ll = strtoll(GetContent(), &firstErrPos, 10);
+		if ( *firstErrPos == '\0' ) {
+			return ll;
+		}
 	}
 	return dflt;
 }
