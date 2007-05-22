@@ -10,6 +10,7 @@
 #define _AnyLookupInterfaceAdapter_H
 
 #include "IFAConfObject.h"
+#include "ITOTypeTraits.h"
 
 //---- AnyLookupInterfaceAdapter ----------------------------------------------------------
 /*! <B>Wraps [RO]Anything in a LookupInterface (as needed eg. by Context::Push())</B> */
@@ -17,17 +18,19 @@ template < class ContainerType >
 class AnyLookupInterfaceAdapter : public LookupInterface
 {
 public:
+	typedef typename Loki::TypeTraits<ContainerType>::PlainTypeRef ContainerTypeRef;
+	typedef typename Loki::TypeTraits<ContainerType>::ConstPlainTypeRef ConstContainerTypeRef;
 	/*! Constructor for LookupAdapter
 		\param container [RO]Anything to use as underlying data container
 		\param pcBaseKey optional param which specifies the segment name used to emulate nested content in a Lookup. If the lookup-key starts with this name we cut it away before doing a concrete lookup.*/
-	AnyLookupInterfaceAdapter(ContainerType container, const char *pcBaseKey = NULL)
+	AnyLookupInterfaceAdapter(ConstContainerTypeRef container, const char *pcBaseKey = NULL)
 		: fContainer(container)
 		, fstrBaseKey(pcBaseKey)
 	{}
 	~AnyLookupInterfaceAdapter() {}
 
 protected:
-	ContainerType fContainer;
+	ROAnything fContainer;
 	String	fstrBaseKey;
 
 	virtual bool DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const {
@@ -46,7 +49,7 @@ protected:
 				Trace("key after trimming [" << strKey << "]");
 				if ( !strKey.Length() ) {
 					// here we return the whole internal store when fstrBaseKey was the only key
-					result = (ROAnything)fContainer;
+					result = fContainer;
 					return true;
 				}
 			} else {
@@ -54,7 +57,7 @@ protected:
 				return false;
 			}
 		}
-		bool bRet = ((ROAnything)fContainer).LookupPath(result, strKey, delim, indexdelim);
+		bool bRet = fContainer.LookupPath(result, strKey, delim, indexdelim);
 		TraceAny(result, "Looking up [" << strKey << "] resulted in");
 		return bRet;
 	}
