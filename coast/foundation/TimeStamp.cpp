@@ -28,6 +28,8 @@ static const long MDAYS [] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 static const int WeekDayCenturyCorrect[] = { 4, 2, 0, 6 };
 static const int WeekDayMonthCorrectNoLeap[] = { 0, 3, 3, 6, 1, 4, 6, 2, 5, 0, 3, 5 };
 static const int WeekDayMonthCorrectLeap[] = { 6, 2, 3, 6, 1, 4, 6, 2, 5, 0, 3, 5 };
+static const char *Monthes[] = { "---", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+static const char *Days[] = { "Sun", "Mon", "Tue", "Wed", "Tue", "Fri", "Sat" };
 
 //---- TimeStamp ----------------------------------------------------------------
 TimeStamp::TimeStamp(Allocator *pAlloc)
@@ -463,4 +465,16 @@ int TimeStamp::intTimeRep::WeekOfYear() const
 	}
 	Trace("adjusted week number:" << lWeek);
 	return lWeek;
+}
+
+const char *TimeStamp::MonthName() const
+{
+	StartTrace(TimeStamp.MonthName);
+	return Monthes[(int)fTimeStruct.cMonth];
+}
+
+const char *TimeStamp::DayName() const
+{
+	StartTrace(TimeStamp.DayName);
+	return Days[fTimeStruct.Weekday()];
 }

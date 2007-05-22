@@ -70,9 +70,11 @@ public:
 	char Month() const {
 		return fTimeStruct.cMonth;
 	}
+	const char *MonthName() const;
 	char Day() const {
 		return fTimeStruct.cDay;
 	}
+	const char *DayName() const;
 	char Hour() const {
 		return fTimeStruct.cHour;
 	}
