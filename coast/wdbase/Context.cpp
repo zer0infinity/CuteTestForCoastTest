@@ -264,11 +264,9 @@ Anything &Context::GetSessionStore()
 Anything &Context::GetTmpStore()
 {
 	StartTrace(Context.GetTmpStore);
-//	const char *key = "tmp";
-//	long index=-1L;
-//	return IntGetStore(key, index);
-// the following is just a hack to try a TmpStore speedup, it relies on the fact, that the TmpStore gets 'usually' pushed first and no one else pushes a second tmp store!
-	return fStore["Stack"][0L];
+	const char *key = "tmp";
+	long index = -1L;
+	return IntGetStore(key, index);
 }
 
 void Context::CollectLinkState(Anything &a)
