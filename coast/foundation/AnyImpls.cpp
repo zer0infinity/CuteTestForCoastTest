@@ -17,11 +17,6 @@
 
 //--- c-modules used -----------------------------------------------------------
 #include <string.h>
-#if defined(ONLY_STD_IOSTREAM)
-#include <limits>	// for numeric_limits
-#else
-#include <float.h>	// for DBL_DIG
-#endif
 
 static const String fgStrEmpty(Storage::Global()); //avoid temporary
 static const Anything fgAnyEmpty(Storage::Global()); // avoid temporary
@@ -76,8 +71,7 @@ AnyLongImpl::AnyLongImpl(long l, Allocator *a)
 	, fLong(l)
 	, fBuf(a)
 {
-	OStringStream out(fBuf);
-	out << fLong;
+	fBuf.Append(fLong);
 }
 
 String AnyLongImpl::AsString(const char *) const
@@ -141,36 +135,9 @@ void AnyObjectImpl::Accept(AnyVisitor &v, long lIdx, const char *slotname) const
 AnyDoubleImpl::AnyDoubleImpl(double d, Allocator *a)
 	: AnyImpl(a)
 	, fDouble(d)
-	, fBuf(32, a)
+	, fBuf(64, a)
 {
-	DoubleToString(fDouble, fBuf);
-}
-
-void AnyDoubleImpl::DoubleToString(const double &dValue, String &strBuf)
-{
-	{
-		OStringStream out(strBuf);
-		out << setiosflags(ios::left);
-		// current number of decimal digits for double is 15
-#if defined(ONLY_STD_IOSTREAM)
-		const int iDblDigits = std::numeric_limits<double>::digits10;
-#else
-		const int iDblDigits = DBL_DIG;
-#endif
-		if ( dValue < 1e+16 ) {
-			out << setiosflags(ios::fixed);
-		}
-		out << setprecision(iDblDigits) << dValue;
-	}
-	// eat trailing zeroes
-	long lMinZeroWidth = strBuf.StrChr('.');
-	if ( lMinZeroWidth >= 0L ) {
-		long lIdxMax = strBuf.Length() - 1;
-		while ( ( lIdxMax >= lMinZeroWidth ) && ( ( strBuf.At(lIdxMax) == '0' ) || ( lIdxMax == lMinZeroWidth ) ) ) {
-			--lIdxMax;
-		}
-		strBuf.Trim(++lIdxMax);
-	}
+	fBuf.Append(d);
 }
 
 String AnyDoubleImpl::AsString(const char *) const

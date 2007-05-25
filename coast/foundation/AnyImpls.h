@@ -227,8 +227,6 @@ public:
 
 	void Accept(AnyVisitor &v, long lIdx, const char *slotname) const;
 
-	static void DoubleToString(const double &dValue, String &strBuf);
-
 private:
 	AnyImpl *DoDeepClone(Allocator *a, Anything &xreftable);
 };
