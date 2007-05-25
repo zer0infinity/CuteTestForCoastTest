@@ -1221,7 +1221,7 @@ public:
 			// keep track of precision, so we can read in our
 			// numbers anyway
 			String strBuf;
-			AnyDoubleImpl::DoubleToString(value, strBuf);
+			String::DoubleToString(value, strBuf);
 			fOs << strBuf;
 		}
 	}
