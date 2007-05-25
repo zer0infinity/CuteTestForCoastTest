@@ -12,6 +12,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "SysLog.h"
 #include "StringStream.h"
+#include "InitFinisManagerFoundation.h"
 
 //--- c-library modules used ---------------------------------------------------
 #ifdef __370__
@@ -19,8 +20,14 @@
 #endif
 #include <ctype.h>
 #include <string.h>
+#include <stdio.h>
 #ifdef _AIX
 #include <strings.h>
+#endif
+#if defined(ONLY_STD_IOSTREAM)
+#include <limits>	// for numeric_limits
+#else
+#include <float.h>	// for DBL_DIG
 #endif
 
 //---- String ----------------------------------------------------------------
@@ -28,6 +35,43 @@
 const long cStrAllocMinimum = 32; // minimum size of buffer, tuning param for optimizing
 const long cStrAllocLimit = 4096; // cStrAllocMinimum < StrAllocLimit
 const long cStrAllocIncrement =  1024;
+#if defined(ONLY_STD_IOSTREAM)
+static const int giDblDigits = std::numeric_limits<double>::digits10;
+#else
+static const int giDblDigits = DBL_DIG;
+#endif
+#if !defined(IOSTREAM_NUM_CONVERSION)
+static const int giFmtSize = 10;
+static char gpcFmtLow[giFmtSize] = { 0 };
+static char gpcFmtHi[] = "%.e";
+#endif
+
+class EXPORTDECL_FOUNDATION StringInitializer : public InitFinisManagerFoundation
+{
+public:
+	StringInitializer(unsigned int uiPriority)
+		: InitFinisManagerFoundation(uiPriority) {
+		IFMTrace("StringInitializer created\n");
+	}
+	~StringInitializer()
+	{}
+
+	virtual void DoInit() {
+#if !defined(IOSTREAM_NUM_CONVERSION)
+		if ( gpcFmtLow[0] == '\0' ) {
+			IFMTrace("String::Initialize\n");
+			snprintf(gpcFmtLow, giFmtSize, "%%.%df", giDblDigits);
+		}
+#else
+		IFMTrace("String::Initialize\n");
+#endif
+	}
+	virtual void DoFinis() {
+		IFMTrace("String::Finalize\n");
+	}
+};
+
+static StringInitializer *psgStringInitializer = new StringInitializer(20);
 
 void String::alloc(long capacity)
 {
@@ -351,38 +395,105 @@ ostream &String::DumpAsHex(ostream &os, long dumpwidth) const
 	return os;
 }
 
-String &String::Append(long number)
+String &String::Append(const long &number)
 {
+#if !defined(IOSTREAM_NUM_CONVERSION)
+	const int iBufSize = 100;
+	char pcBuf[iBufSize] = { 0 };
+	int iSize = snprintf(pcBuf, iBufSize, "%ld", number);
+	Set(Length(), pcBuf, iSize);
+#else
 	OStringStream obuf(this, ios::app);
 	obuf << number;
+#endif
 	return *this;
 }
 
 #ifndef __370__
-String &String::Append(l_long number)
+String &String::Append(const l_long &number)
 {
+#if !defined(IOSTREAM_NUM_CONVERSION)
+	const int iBufSize = 100;
+	char pcBuf[iBufSize] = { 0 };
+	int iSize = snprintf(pcBuf, iBufSize, "%lld", number);
+	Set(Length(), pcBuf, iSize);
+#else
 	OStringStream obuf(this, ios::app);
 #if defined(WIN32)
 	obuf << (long)number;
 #else
 	obuf << number;
 #endif
+#endif
 	return *this;
 }
 #endif
 
-String &String::Append(u_long number)
+String &String::Append(const u_long &number)
 {
+#if !defined(IOSTREAM_NUM_CONVERSION)
+	const int iBufSize = 100;
+	char pcBuf[iBufSize] = { 0 };
+	int iSize = snprintf(pcBuf, iBufSize, "%lu", number);
+	Set(Length(), pcBuf, iSize);
+#else
 	OStringStream obuf(this, ios::app);
 	obuf << number;
+#endif
 	return *this;
 }
 
-String &String::Append(double number)
+String &String::Append(const double &number)
 {
-	OStringStream obuf(this, ios::app);
-	obuf << number;
+	DoubleToString(number, *this);
 	return *this;
+}
+
+void String::DoubleToString(const double &number, String &strBuf)
+{
+#if !defined(IOSTREAM_NUM_CONVERSION)
+	const int iBufSize = 500;
+	char pcBuf[iBufSize] = { 0 };
+	if ( gpcFmtLow[0] == '\0' ) {
+		// safeguqard if used before StringInitializer was executed
+		psgStringInitializer->DoInit();
+	}
+	int iSize(0);
+	if ( number < 1e+16 ) {
+		iSize = snprintf(pcBuf, iBufSize, gpcFmtLow, number);
+		int iTmp(iSize);
+		--iTmp;
+		while ( pcBuf[iTmp] == '0' && pcBuf[--iTmp] != '.' ) {
+			--iSize;
+		}
+	} else {
+		iSize = snprintf(pcBuf, iBufSize, gpcFmtHi, number);
+	}
+	strBuf.Set(strBuf.Length(), pcBuf, iSize);
+#else
+	{
+		OStringStream out(strBuf);
+		out << setiosflags(ios::left);
+		// current number of decimal digits for double is 15
+#if defined(ONLY_STD_IOSTREAM)
+		const int iDblDigits = std::numeric_limits<double>::digits10;
+#else
+	const int iDblDigits = DBL_DIG;
+#endif
+		if ( dValue < 1e+16 ) {
+			out << setiosflags(ios::fixed);
+		}
+		out << setprecision(iDblDigits) << dValue;
+	}
+	// eat trailing zeroes
+	int iSize(strBuf.Length()), iTmp;
+	iTmp = iSize;
+	const char *pcBuf = strBuf.GetContent();
+	while ( pcBuf[iTmp] == '0' && pcBuf[--iTmp] != '.' ) {
+		--iSize;
+	}
+	strBuf.Trim(iSize);
+#endif
 }
 
 char String::At(long ix) const

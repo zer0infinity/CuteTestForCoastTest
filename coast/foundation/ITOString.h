@@ -74,30 +74,38 @@ public:
 	//! \param s appended value, may be 0, then nothing is appended
 	//! \param length take at most length characters from s, if negative use strlen(s)
 	String &Append(const char *s, long length = -1);
+
 	//! append length bytes from binary buffer s
 	//! return value for convenient multi-appends
 	String &Append(const void *s, long length);
+
 	//! append String s
 	//! return value for convenient multi-appends
 	String &Append(const String &s);
+
 	//! append length bytes from stream is
 	//! read length bytes as is.
 	//! return value for convenient multi-appends
 	String &Append(istream &is, long length); //
+
 	//! append string from is,  works like istream::get(char *, len, delim)
 	//! return value for convenient multi-appends
 	String &Append(istream &is, long length, char delim);
 
 	//! append integral number as decimal
-	String &Append(long number);
+	String &Append(const long &number);
+
 	//! append floating point number as decimal
-	String &Append(double number);
+	String &Append(const double &number);
+
+	static void DoubleToString(const double &number, String &strBuf);
+
 	//! append extra long number as decimal
 #ifndef __370__
-	String &Append(l_long number);
+	String &Append(const l_long &number);
 #endif
 	//! append extra long unsigned number as decimal
-	String &Append(u_long number);
+	String &Append(const u_long &number);
 
 	//! append a single byte in hexadecimal encoding, results in two characters added
 	String &AppendAsHex(unsigned char cc);
