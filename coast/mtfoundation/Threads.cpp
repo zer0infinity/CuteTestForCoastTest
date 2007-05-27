@@ -874,7 +874,17 @@ bool MutexCountTableCleaner::DoCleanup()
 	StatTrace(MutexCountTableCleaner.DoCleanup, "ThrdId: " << Thread::MyId(), Storage::Global());
 	MetaThing *countarray = 0;
 	if (GETTLSDATA(Mutex::fgCountTableKey, countarray, MetaThing)) {
-		if ((*countarray).GetSize()) {
+		// as the countarray behavior changed, mutex entries which were used by the thread
+		//  are still listed but should all have values of 0
+		long lSize((*countarray).GetSize());
+		bool bHadLockEntries = false;
+		while ( --lSize >= 0L ) {
+			if ( (*countarray)[lSize].AsLong(-1L) > 0L ) {
+				bHadLockEntries = true;
+			}
+		}
+		// trace errors only
+		if ( bHadLockEntries ) {
 			String strbuf(Storage::Global());
 			OStringStream stream(strbuf);
 			stream << "MutexCountTableCleaner::DoCleanup: ThrdId: " << Thread::MyId() << "\n  countarray still contained Mutex locking information!\n";
