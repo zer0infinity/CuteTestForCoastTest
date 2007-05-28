@@ -338,7 +338,7 @@ AppLogChannel::~AppLogChannel()
 		me.Use();
 		if ( (fBufferItems > 1L) && (fItemsWritten > 0L) ) {
 			Trace("fLogStream state before logging: " << (long)fLogStream->rdstate());
-			(*fLogStream) << fBuffer;
+			(*fLogStream) << fBuffer << flush;
 			Trace("fLogStream state after logging: " << (long)fLogStream->rdstate());
 			String msg;
 			msg << " AppLogChannel: [" << fName << "] flushing [" << fItemsWritten << "] " <<
@@ -374,7 +374,7 @@ bool AppLogChannel::LogAll(Context &ctx, const ROAnything &config)
 				MutexEntry me(fChannelMutex);
 				me.Use();
 				Trace("fLogStream state before logging: " << (long)fLogStream->rdstate());
-				(*fLogStream) << logMsg;
+				(*fLogStream) << logMsg << flush;
 				Trace("fLogStream state after logging: " << (long)fLogStream->rdstate());
 				return (!!(*fLogStream));
 			} else {
@@ -385,7 +385,7 @@ bool AppLogChannel::LogAll(Context &ctx, const ROAnything &config)
 					++fItemsWritten;
 					if ( ( fItemsWritten % fBufferItems ) == 0L ) {
 						Trace("fLogStream state before logging: " << (long)fLogStream->rdstate());
-						(*fLogStream) << fBuffer;
+						(*fLogStream) << fBuffer << flush;
 						Trace("fLogStream state after logging: " << (long)fLogStream->rdstate());
 						fBuffer.Trim(0L);
 						fItemsWritten = 0L;
