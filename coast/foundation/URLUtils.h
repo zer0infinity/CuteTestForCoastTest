@@ -38,7 +38,7 @@ public:
 	static void Split(const char *buf, char delim, Anything &out, char delim2 = '=', NormalizeTag norm = URLUtils::eUntouched);
 
 	//! RFC1808 compliant url encoder, allows chars to be excluded from escaping
-	static String urlEncode(const String &str, String exclusionSet = String());
+	static String urlEncode(const String &str, const String exclusionSet = String());
 
 	//! URL decodes the given string, (%xx, %uxxxx) Only values <= xFF are valid
 	static String urlDecode(const String &str, URLUtils::URLCheckStatus &eUrlCheckStatus, bool replacePlusByBlank = true);
