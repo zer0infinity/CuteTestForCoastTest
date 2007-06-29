@@ -335,7 +335,7 @@ public:
 // a compiler weakness we have to undef ostream, so we can define operator<<
 // for both types of streams.
 // Otherwise operator<< wouldn't compile when using cerr, cerr or clog
-#if defined(__SUNPRO_CC)&& !defined(__STD_OSTREAM__)
+#if defined(__SUNPRO_CC) && !defined(__STD_OSTREAM__) && ( __SUNPRO_CC < 0x500 )
 #undef ostream
 	friend unsafe_ostream  &operator<<(unsafe_ostream &os, const String &s);
 #endif
@@ -343,7 +343,7 @@ public:
 	//! canonical output operator for strings
 	friend EXPORTDECL_FOUNDATION ostream  &operator<<(ostream &os, const String &s);
 
-#if defined(__SUNPRO_CC) && !defined(__STD_OSTREAM__)
+#if defined(__SUNPRO_CC) && !defined(__STD_OSTREAM__) && ( __SUNPRO_CC < 0x500 )
 #define ostream unsafe_ostream
 #endif
 
@@ -391,12 +391,6 @@ protected:
 
 	Allocator *fAllocator;
 
-	const String::StringImpl *GetImpl() const {
-		return fStringImpl;
-	}
-	String::StringImpl *GetImpl() {
-		return fStringImpl;
-	}
 	Allocator *GetAllocator() {
 		return fAllocator;
 	}
@@ -404,21 +398,30 @@ protected:
 		return fAllocator;
 	}
 
-	char *GetContent() {
-		return GetImpl()->Content();   //  optimize, sanity already checked
-	}
-	const char *GetContent()const {
-		return GetImpl()->Content();
-	}
-
-	void SetLength(long len) {
-		fStringImpl->fLength = len;   // no sanity check!
-	}
 	void IncrementLength(long incr) {
 		fStringImpl->fLength += incr;
 	}
 
+#if defined(__SUNPRO_CC) && ( __SUNPRO_CC <= 0x580 )
+public:
+#else
 	template< typename BufType, typename IoDirType > friend class StringStreamBuf; // we directly operate on fCont, fCapacity, fLength
+#endif
+	const String::StringImpl *GetImpl() const {
+		return fStringImpl;
+	}
+	const char *GetContent()const {
+		return GetImpl()->Content();
+	}
+	String::StringImpl *GetImpl() {
+		return fStringImpl;
+	}
+	char *GetContent() {
+		return GetImpl()->Content();   //  optimize, sanity already checked
+	}
+	void SetLength(long len) {
+		fStringImpl->fLength = len;   // no sanity check!
+	}
 	friend class StringTest;
 };
 

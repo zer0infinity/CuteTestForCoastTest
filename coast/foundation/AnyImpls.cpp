@@ -1142,8 +1142,8 @@ void AnyArrayImpl::MergeByComparer(long lo, long hi, long m, const AnyIntCompare
 		return;    // nothing to merge
 	}
 	long i, j, k;
-	const long sz = m - lo + 1;
-#if defined(WIN32) && (_MSC_VER <= 1200) // VC6 or lower
+	long const sz = m - lo + 1;
+#if ( defined(WIN32) && (_MSC_VER <= 1200) ) || ( defined(__SUNPRO_CC) && ( __SUNPRO_CC <= 0x580 ) )
 	long *a = new long[sz];		// temporary array of lower half
 #else
 	long a[sz];					// temporary array of lower half
@@ -1176,7 +1176,7 @@ void AnyArrayImpl::MergeByComparer(long lo, long hi, long m, const AnyIntCompare
 	}
 	Assert(i == j);
 	Assert(k == sz);
-#if defined(WIN32) && (_MSC_VER <= 1200) // VC6 or lower
+#if ( defined(WIN32) && (_MSC_VER <= 1200) ) || ( defined(__SUNPRO_CC) && ( __SUNPRO_CC <= 0x580 ) )
 	delete[] a;
 #endif
 }

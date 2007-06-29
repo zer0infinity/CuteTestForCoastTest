@@ -9,7 +9,7 @@
 #ifndef _UNSAFEFSTREAM_H
 #define _UNSAFEFSTREAM_H
 
-#if defined(__SUNPRO_CC) && !defined(__STD_ISTREAM__)
+#if defined(__SUNPRO_CC) && !defined(__STD_ISTREAM__) && ( __SUNPRO_CC < 0x500 )
 #include <fstream.h>
 //! a non locking fstream implementation for SunCC
 //! since every stream implementation of Sun's iostream implementation

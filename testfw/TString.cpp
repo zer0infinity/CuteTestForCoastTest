@@ -389,7 +389,7 @@ long TString::DiffDumpAsHex(TString &outbuf, const TString &strRight) const
 // a compiler weakness we have to undef ostream, so we can define operator<<
 // for both types of streams.
 // Otherwise operator<< wouldn't compile when using cout, cerr or clog
-#if defined(__SUNPRO_CC) && !defined(__STD_OSTREAM__)
+#if defined(__SUNPRO_CC) && !defined(__STD_OSTREAM__) && ( __SUNPRO_CC < 0x500 )
 
 #undef ostream
 unsafe_ostream &operator<<(unsafe_ostream &os, const TString &s)
