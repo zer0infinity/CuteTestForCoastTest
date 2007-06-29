@@ -390,7 +390,7 @@ public:
 	typedef typename Loki::TypeTraits<BufferType>::PlainTypePtr PlainTypePtr;
 	typedef StringStreamBuf<BufferType, IoDirType> StreamBufType;
 	typedef StringStreamBuf<BufferType, IoDirType>* StreamBufTypePtr;
-	typedef typename StringStreamBuf<BufferType, IoDirType>::BufferTypeRef BufferTypeRef;
+	typedef typename StreamBufType::BufferTypeRef BufferTypeRef;
 
 public:
 	/*! default ctor, allocates new internal String object for output
