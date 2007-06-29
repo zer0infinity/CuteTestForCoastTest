@@ -9,20 +9,12 @@
 #ifndef _CONFIG_H
 #define _CONFIG_H
 
-#if defined(__GNUG__)
-#if defined(__OPTIMIZE__) && defined(DEBUG)
+#if defined(WD_OPT) && defined(DEBUG)
 #define WD_OPTFLAG	"OPT_DBG"
-#elif defined(__OPTIMIZE__) && !defined(DEBUG)
+#elif defined(WD_OPT) && !defined(DEBUG)
 #define WD_OPTFLAG	"OPT"
 #else
 #define WD_OPTFLAG	"DBG"
-#endif
-#else
-#if !defined(DEBUG)
-#define WD_OPTFLAG	"OPT"
-#else
-#define WD_OPTFLAG	"DBG"
-#endif
 #endif
 
 #if defined(ONLY_STD_IOSTREAM)
@@ -35,6 +27,16 @@
 #define WD_COMPILER		"GCC_"  __VERSION__
 #elif defined(WIN32) && defined(_MSC_VER)
 #define WD_COMPILER		"MSC_" _MSC_VER
+#elif defined(__SUNPRO_CC)
+#if ( __SUNPRO_CC >= 0x500 ) && ( __SUNPRO_CC < 0x580 )
+#define WD_COMPILER	"SunCC_5.7"
+#elif ( __SUNPRO_CC >= 0x580 ) && ( __SUNPRO_CC < 0x590 )
+#define WD_COMPILER	"SunCC_5.8"
+#elif ( __SUNPRO_CC >= 0x590 ) && ( __SUNPRO_CC < 0x600 )
+#define WD_COMPILER	"SunCC_5.9"
+#else
+#define WD_COMPILER		"SunCC_4.x"
+#endif
 #else
 #define WD_COMPILER		"CompilerUnknown"
 #endif
@@ -71,12 +73,12 @@ typedef int bool;
 #endif
 
 // another legacy compiler problem
-#if defined(__SUNPRO_CC) && __SUNPRO_CC <0x500
+#if defined(__SUNPRO_CC) && ( __SUNPRO_CC < 0x500 )
 #define OPERATOR_NEW_ARRAY_NOT_SUPPORTED
 #endif
 
 // use unsafe_...streams, because they don't use locking
-#if defined(__SUNPRO_CC)
+#if defined(__SUNPRO_CC) && ( __SUNPRO_CC < 0x500 )
 #if !defined(__STD_ISTREAM__)
 class unsafe_fstream;
 #define ios unsafe_ios
