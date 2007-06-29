@@ -88,6 +88,7 @@ BOOL WINAPI DllMain(HANDLE hinstDLL,  // DLL module handle
 }
 #endif	// _DLL
 #else
+#if defined(__GNUG__) || ( defined(__SUNPRO_CC) && ( __SUNPRO_CC >= 0x590 ) )
 extern "C" void __attribute__ ((constructor)) foundation_init()
 {
 	Init();
@@ -96,4 +97,8 @@ extern "C" void __attribute__ ((destructor)) foundation_fini()
 {
 	Finis();
 }
+#elif defined(__SUNPRO_CC) && ( __SUNPRO_CC < 0x590 )
+#pragma init (Init)
+#pragma fini (Finis)
+#endif
 #endif	// WIN32
