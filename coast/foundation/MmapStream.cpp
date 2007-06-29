@@ -62,18 +62,7 @@ MmapMagicFlags::MmapMagicFlags(int omode, int syncflag )
 		if (omode & ios::trunc) {
 			fSyscallOpenMode |= O_TRUNC;
 		}
-#if !defined(__GNUC__) || __GNUC__ < 3
-		if (omode & ios::noreplace) {
-			fSyscallOpenMode |= O_CREAT | O_EXCL;
-		}
-#endif
 	}
-#if !defined(__GNUC__) || __GNUC__ < 3
-	// do not create the file if told so
-	if (omode & ios::nocreate) {
-		fSyscallOpenMode &= ~O_CREAT;
-	}
-#endif
 #if defined(__SUNPRO_CC) && __SUNPRO_CC<0x500
 	// brain dead iostream library from sun requires this hack, alway have files
 	// writable. bad luck if a file is accessible read only.... :-(
