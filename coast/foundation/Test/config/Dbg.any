@@ -164,8 +164,9 @@
 		/MergeTest						11
 	}
 	/SystemTest {
-		/MainSwitch						11
+		/MainSwitch						20
 		/EnableAll						11
+		/MakeDirectoryTest				0
 	}
 	/ResolverTest {
 		/MainSwitch						20
