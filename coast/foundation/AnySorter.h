@@ -132,7 +132,7 @@ namespace AnyExtensions
 //			if ( a.GetType() == AnyArrayType )
 			{
 //				SortPolicy<ComparerPolicy>::Sort(*a.GetImpl());
-//				RecreateKeyTabe();
+//				RecreateKeyTable();
 			}
 		}
 	};

@@ -1197,22 +1197,22 @@ void AnyArrayImpl::SortByKey()
 	//HeapSort();
 	//Qsort(0,GetSize()-1);
 	MergeSortByComparer(0, GetSize() - 1, theKeyComparer);
-	RecreateKeyTabe();
+	RecreateKeyTable();
 }
 
 void AnyArrayImpl::SortReverseByKey()
 {
 	MergeSortByComparer(0, GetSize() - 1, theReverseKeyComparer);
-	RecreateKeyTabe();
+	RecreateKeyTable();
 }
 
 void AnyArrayImpl::SortByAnyComparer(const AnyComparer &comparer)
 {
 	MergeSortByComparer(0, GetSize() - 1, AnyIntComparerCompare(comparer));
-	RecreateKeyTabe();
+	RecreateKeyTable();
 }
 
-void AnyArrayImpl::RecreateKeyTabe()
+void AnyArrayImpl::RecreateKeyTable()
 {
 	if (fKeys) {
 		fKeys->Clear();

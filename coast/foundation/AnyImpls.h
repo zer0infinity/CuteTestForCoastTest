@@ -493,7 +493,7 @@ public:
 	void SortByAnyComparer(const AnyComparer &comparer);
 
 	//!rebuild hash map after sorting O(fSize)
-	void RecreateKeyTabe();
+	void RecreateKeyTable();
 
 	//!similar to SlotName(at)
 	const String &Key(long slot) ;
