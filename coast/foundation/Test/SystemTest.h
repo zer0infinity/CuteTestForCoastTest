@@ -41,6 +41,7 @@ public:
 	void CWDTests();
 	void MkRmDirTest();
 	void MakeRemoveDirectoryTest();
+	void MakeDirectoryTest();
 	void GetFileSizeTest();
 	void BlocksLeftOnFSTest();
 	void LockFileTest();

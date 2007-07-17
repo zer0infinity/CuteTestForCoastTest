@@ -13,4 +13,8 @@
 	/BlocksLeftOnFSTest {
 		/FS			"/"
 	}
+	/MakeDirectoryTest {
+		/BasePath	"/tmp/MKDIRTEST"
+		/MaxNumDirs	30
+	}
 }

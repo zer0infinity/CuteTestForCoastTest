@@ -1250,6 +1250,38 @@ void SystemTest::MakeRemoveDirectoryTest()
 	}
 }
 
+void SystemTest::MakeDirectoryTest()
+{
+	StartTrace(SystemTest.MakeDirectoryTest);
+	String strStartDir = GetTestCaseConfig()["BasePath"].AsString("/tmp");
+	long lNumDirsMax = GetTestCaseConfig()["MaxNumDirs"].AsLong(20L), lIdx = 0L;
+	Trace("BasePath [" << strStartDir << "], MaxDirs: " << lNumDirsMax);
+	String strDirToCreate;
+
+	// assume that we have a tmp-directory to access and to play with
+	if ( !System::IsDirectory(strStartDir) ) {
+		t_assertm( System::MakeDirectory(strStartDir, 0755, true) , "expected creation of directory to succeed");
+	}
+	if ( t_assertm( System::IsDirectory(strStartDir), "expected start directory to be valid") ) {
+		for ( ; lIdx < lNumDirsMax; ++lIdx) {
+			strDirToCreate.Trim(0L);
+			strDirToCreate.Append(strStartDir).Append(System::cSep).Append(lIdx);
+			if ( !System::MakeDirectory(strDirToCreate, 0755, false) ) {
+				SYSERROR("failed at index: " << lIdx);
+				break;
+			}
+		}
+		assertComparem(lIdx, equal_to, lNumDirsMax, "expected given number of directories to be created");
+		SYSINFO("last directory created [" << strDirToCreate << "] Idx: " << lIdx);
+		while ( --lIdx >= 0L ) {
+			strDirToCreate.Trim(0L);
+			strDirToCreate.Append(strStartDir).Append(System::cSep).Append(lIdx);
+			System::RemoveDirectory(strDirToCreate, false);
+		}
+	}
+	t_assertm( System::RemoveDirectory(strStartDir, false), "expected deletion of directory to succeed");
+}
+
 void SystemTest::GetFileSizeTest()
 {
 	StartTrace(SystemTest.GetFileSizeTest);
@@ -1316,6 +1348,7 @@ Test *SystemTest::suite ()
 	ADD_CASE(testSuite, SystemTest, TimeTest);
 	ADD_CASE(testSuite, SystemTest, MkRmDirTest);
 	ADD_CASE(testSuite, SystemTest, MakeRemoveDirectoryTest);
+	ADD_CASE(testSuite, SystemTest, MakeDirectoryTest);
 	ADD_CASE(testSuite, SystemTest, GetFileSizeTest);
 	ADD_CASE(testSuite, SystemTest, BlocksLeftOnFSTest);
 	ADD_CASE(testSuite, SystemTest, LockFileTest);
