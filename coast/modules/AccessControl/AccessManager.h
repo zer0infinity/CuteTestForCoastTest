@@ -47,7 +47,7 @@ class EXPORTDECL_ACCESSCONTROL AccessManager : public HierarchConfNamed
 public:
 	//--- constructors
 	AccessManager(const char *name) : HierarchConfNamed(name) {}
-	~AccessManager() {}
+	virtual ~AccessManager() {}
 	IFAObject *Clone() const {
 		Assert(false);    // do not instantiate
 		return 0;
