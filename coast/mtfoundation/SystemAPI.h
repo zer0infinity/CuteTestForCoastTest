@@ -10,7 +10,7 @@
 #define _SYSTEMAPI_H
 
 #include "config_mtfoundation.h"
-#include "config.h"
+#include "foundation.h"
 
 #if defined(WIN32)
 #include <limits.h>

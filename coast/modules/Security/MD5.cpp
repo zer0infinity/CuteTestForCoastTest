@@ -66,7 +66,7 @@ private:
 };
 
 // FIXME: there is no way to determine processor byte order
-// by the preprocessor. we use our stuff from config.h
+// by the preprocessor.
 #ifdef __sparc__
 #define HIGHFIRST
 #endif

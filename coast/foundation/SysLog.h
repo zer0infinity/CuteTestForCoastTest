@@ -68,7 +68,7 @@ public:
 	//! severity eALERT for fatal errors this call triggers also an alert on  the operator console
 	static void Alert(const char *msg);
 
-	//! for use by the Assert() macro defined in config.h
+	//! for use by the Assert() macro defined in foundation.h
 	static int LogAssert(const char *file, long line, const char *assertion);
 	/*--- utilities ------------------------------------*/
 
