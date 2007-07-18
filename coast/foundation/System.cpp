@@ -712,6 +712,21 @@ bool System::IsDirectory(const char *path)
 	return false;
 }
 
+bool System::IsSymbolicLink(const char *path)
+{
+	struct stat stbuf;
+	if ( CheckPath(path, &stbuf) ) {
+#if defined(WIN32)
+		// our version of MSDEV compiler (V 5) at least not fully
+		// posix compatible.
+		return ((stbuf.st_mode & _S_IFMT) == _S_IFDIR );
+#else
+		return S_ISLNK(stbuf.st_mode);
+#endif
+	}
+	return false;
+}
+
 bool System::GetFileSize(const char *path, ul_long &ulFileSize)
 {
 	StartTrace1(System.GetFileSize, "path to file [" << NotNull(path) << "]");
@@ -1081,126 +1096,169 @@ bool System::BlocksLeftOnFS(const char *pFsPath, ul_long &ulBlocks, unsigned lon
 	if (0 == statvfs(pFsPath, &buf)) {
 		lBlkSize = (unsigned long)buf.f_frsize;
 		ulBlocks = (ul_long)buf.f_bavail;
+		Trace("blocksize: " << (long)lBlkSize << " bytes free blocks: " << (long)ulBlocks);
+		return true;
+	} else
 #elif defined(__linux__)
 	struct statfs buf;
 	if (0 == statfs(pFsPath, &buf)) {
 		lBlkSize = (unsigned long)buf.f_bsize;
 		ulBlocks = (ul_long)buf.f_bavail;
+		Trace("blocksize: " << (long)lBlkSize << " bytes free blocks: " << (long)ulBlocks);
+		return true;
+	} else
 #elif defined(WIN32)
 	_ULARGE_INTEGER ulBytesAvailable;
 	if ( GetDiskFreeSpaceEx(pFsPath, &ulBytesAvailable, NULL, NULL) != 0 ) {
 		lBlkSize = 1;
 		ulBlocks = ulBytesAvailable.QuadPart;
-#endif
 		Trace("blocksize: " << (long)lBlkSize << " bytes free blocks: " << (long)ulBlocks);
 		return true;
-	} else {
+	} else
+#endif
+	{
 		SYSWARNING("Failed to get blocks left on FS [" << SysLog::LastSysError() << "]");
 	}
 	return false;
 }
 
-bool System::MakeDirectory(const char * path, int pmode, bool bRecurse) {
-	StartTrace1(System.MakeDirectory, "dir to create [" << NotNull(path) << "], recurse " << (bRecurse ? "true" : "false"));
-	String dir(path);
+System::DirStatusCode System::MakeDirectory(String &path, int pmode, bool bRecurse)
+{
+	StartTrace1(System.MakeDirectory, "dir to create [" << path << "], recurse " << (bRecurse ? "true" : "false"));
+
 	// check for empty input parameter
-	if ( !dir.Length() ) {
+	if ( !path.Length() ) {
 		SYSWARNING("empty path given, bailing out!");
-		return false;
+		return System::ePathEmpty;
 	}
 	// check if directory already exists
-	if ( IsDirectory(dir) ) {
-		SYSERROR("directory already exists [" << dir << "]");
-		return false;
+	if ( IsDirectory(path) ) {
+		SYSERROR("directory already exists [" << path << "]");
+		return System::eExists;
 	}
 	// check whether path-length is ok
-	if ( dir.Length() > System::cPATH_MAX ) {
-		SYSERROR("Path size exceeded [" << dir << "]");
-		return false;
+	if ( path.Length() > System::cPATH_MAX ) {
+		SYSERROR("Path size exceeded [" << path << "]");
+		return System::ePathTooLong;
 	}
 	// strip trailing slash if any
-	long slPos = dir.StrRChr( System::Sep() );
-	if ( slPos >= 0L && ( slPos == (dir.Length() - 1L) ) ) {
-		dir.Trim(dir.Length() - 1L);
+	long slPos = path.StrRChr( System::Sep() );
+	if ( slPos >= 0L && ( slPos == (path.Length() - 1L) ) ) {
+		path.Trim(path.Length() - 1L);
 	}
-	return IntMakeDirectory(dir, pmode, bRecurse);
+	return IntMakeDirectory(path, pmode, bRecurse);
 }
 
-bool System::IntMakeDirectory(String dir, int pmode, bool bRecurse) {
-	StartTrace1(System.IntMakeDirectory, "dir to create [" << dir << "], recurse " << (bRecurse ? "true" : "false"));
+System::DirStatusCode System::IntMakeDirectory(String &path, int pmode, bool bRecurse)
+{
+	StartTrace1(System.IntMakeDirectory, "dir to create [" << path << "], recurse " << (bRecurse ? "true" : "false"));
 	String strParentDir;
-	long slPos = dir.StrRChr( System::Sep() );
+	long slPos = path.StrRChr( System::Sep() );
 	if ( slPos > 0L ) {
 		// remove last segment and slash
-		strParentDir = dir.SubString(0L, slPos);
+		strParentDir = path.SubString(0L, slPos);
 	}
 	Trace("parent path [" << strParentDir << "]");
 
-	bool bGoAhead = true;
+	System::DirStatusCode aDirStatus = System::eSuccess;
 	if ( strParentDir.Length() && !IsDirectory(strParentDir) ) {
 		if ( bRecurse ) {
 			// recurse to make parent directories
-			bGoAhead = IntMakeDirectory(strParentDir, pmode, bRecurse);
+			aDirStatus = IntMakeDirectory(strParentDir, pmode, bRecurse);
 		} else {
 			SYSERROR("parent directory does not exist [" << strParentDir << "]");
-			bGoAhead = false;
+			aDirStatus = System::eNotExists;
 		}
 	}
-	if ( bGoAhead ) {
+	if ( aDirStatus == System::eSuccess ) {
 		// make new directory
-		bGoAhead = ( System::IO::mkdir(dir, pmode) == 0L );
-		if ( !bGoAhead ) {
-			// if errno is set to EEXIST, someone else might already have created the dir, so do not complain
-			if ( System::GetSystemError() == EEXIST ) {
-				bGoAhead = true;
-				SYSINFO("mkdir of [" << dir << "] was unsuccessful [" << SysLog::LastSysError() << "] because the directory was created by someone else in the meantime?!");
-			} else {
-				SYSERROR("mkdir of [" << dir << "] failed with [" << SysLog::LastSysError() << "]");
+		if ( System::IO::mkdir(path, pmode) != 0L ) {
+			switch ( System::GetSystemError() ) {
+					// if errno is set to EEXIST, someone else might already have created the dir, so do not complain
+				case EEXIST: {
+					SYSINFO("mkdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "] because the directory was created by someone else in the meantime?!");
+					aDirStatus = System::eSuccess;
+					break;
+				}
+				case EMLINK: {
+					SYSWARNING("mkdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "] because the directory is exhausted of hardlinks!");
+					aDirStatus = System::eNoMoreHardlinks;
+					break;
+				}
+				default: {
+					SYSERROR("mkdir of [" << path << "] failed with [" << SysLog::LastSysError() << "]");
+					aDirStatus = System::eFailed;
+				}
 			}
 		}
+	} else {
+		// assign parent directory to parameter to be able to localize the problem
+		path = strParentDir;
 	}
-	return bGoAhead;
+	return aDirStatus;
 }
 
-bool System::RemoveDirectory(const char * path, bool bRecurse) {
-	StartTrace1(System.RemoveDirectory, "dir to remove [" << NotNull(path) << "]");
-	String dir(path);
+System::DirStatusCode System::RemoveDirectory(String &path, bool bRecurse)
+{
+	StartTrace1(System.RemoveDirectory, "dir to remove [" << path << "]");
+
 	// check for empty input parameter
-	if ( !dir.Length() ) {
+	if ( !path.Length() ) {
 		SYSWARNING("empty path given, bailing out!");
-		return false;
+		return System::ePathEmpty;
 	}
 	// check if directory already exists
-	if ( !IsDirectory(dir) ) {
-		SYSERROR("directory does not exist [" << dir << "]");
-		return false;
+	if ( !IsDirectory(path) ) {
+		SYSERROR("directory does not exist [" << path << "]");
+		return System::eNotExists;
 	}
 	// do not allow recursive deletion of absolute paths
-	bool bAbsDir = IsAbsolutePath(dir);
+	bool bAbsDir = IsAbsolutePath(path);
 	if ( bRecurse && bAbsDir ) {
-		SYSERROR("recursive deletion of absolute path not allowed [" << dir << "]");
-		return false;
+		SYSERROR("recursive deletion of absolute path not allowed [" << path << "]");
+		return System::eRecurseDeleteNotAllowed;
 	}
-	return IntRemoveDirectory(dir, bRecurse, bAbsDir);
+	return IntRemoveDirectory(path, bRecurse, bAbsDir);
 }
 
-bool System::IntRemoveDirectory(String dir, bool bRecurse, bool bAbsDir) {
-	StartTrace1(System.IntRemoveDirectory, "dir to remove [" << dir << "], recurse " << (bRecurse ? "true" : "false"));
+System::DirStatusCode System::IntRemoveDirectory(String &path, bool bRecurse, bool bAbsDir)
+{
+	StartTrace1(System.IntRemoveDirectory, "dir to remove [" << path << "], recurse " << (bRecurse ? "true" : "false"));
 
-	bool bGoAhead = ( System::IO::rmdir(dir) == 0L );
-	if ( bGoAhead ) {
+	System::DirStatusCode aDirStatus = System::eNoSuchFileOrDir;
+	if ( System::IO::rmdir(path) == 0L ) {
+		aDirStatus = System::eSuccess;
 		if ( bRecurse && !bAbsDir ) {
-			long slPos = dir.StrRChr( System::Sep() );
+			long slPos = path.StrRChr( System::Sep() );
 			if ( slPos > 0L ) {
 				// remove parent dir
-				bGoAhead = IntRemoveDirectory(dir.SubString(0L, slPos), bRecurse, bAbsDir);
+				String strParent(path.SubString(0L, slPos));
+				aDirStatus = IntRemoveDirectory(strParent, bRecurse, bAbsDir);
+				if ( aDirStatus != System::eSuccess ) {
+					path = strParent;
+				}
+			}
+		}
+	} else {
+		SYSERROR("rmdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "]");
+		switch ( System::GetSystemError() ) {
+			case EEXIST: {
+				aDirStatus = System::eExists;
+				break;
+			}
+			case ENOENT: {
+				aDirStatus = System::eNotExists;
+				break;
+			}
+			default: {
 			}
 		}
 	}
-	return bGoAhead;
+	return aDirStatus;
 }
 
-long System::Fork() {
+long System::Fork()
+{
 #if defined(WIN32)
 	return -1;
 #elif defined(__sun)
@@ -1210,7 +1268,8 @@ long System::Fork() {
 #endif
 }
 
-bool System::GetLockFileState(const char * lockFileName) {
+bool System::GetLockFileState(const char *lockFileName)
+{
 	StartTrace(System.CreateLockFile);
 	// O_EXCL must be set to guarantee atomic lock file creation.
 	int fd = open(lockFileName, O_WRONLY | O_CREAT | O_EXCL);
@@ -1228,29 +1287,27 @@ bool System::GetLockFileState(const char * lockFileName) {
 	return false;
 }
 
-//int System::GetNumberOfHardLinks(const char *path)
-//{
-//	StartTrace(System.GetNumberOfHardLinks);
-//	struct stat		mystat;
-//
-//	// acquire inode information
-//	if (stat(path, &mystat) == -1)
-//	{
-//		SYSERROR("Could not acquire inode information for " << path << "; stat reports [" << SysLog::LastSysError() << "]");
-//		return -1;
-//	}
-//	// return number of hard links to <path>
-//	return mystat.st_nlink;
-//}
-//
-//bool System::CreateSymbolicLink(const char *filename, const char* symlinkname)
-//{
-//	StartTrace(System.CreateSymbolicLink);
-//	if (symlink(filename, symlinkname) == -1)
-//	{
-//		SYSERROR("Could not create symbolic link " << symlinkname << " to file " << filename << "; symlink reports [" << SysLog::LastSysError() << "]");
-//		return false;
-//	}
-//	// success
-//	return true;
-//}
+int System::GetNumberOfHardLinks(const char *path)
+{
+	StartTrace(System.GetNumberOfHardLinks);
+	struct stat	mystat;
+
+	// acquire inode information
+	if (stat(path, &mystat) == -1) {
+		SYSERROR("Could not acquire inode information for " << path << "; stat reports [" << SysLog::LastSysError() << "]");
+		return -1;
+	}
+	// return number of hard links to <path>
+	return mystat.st_nlink;
+}
+
+System::DirStatusCode System::CreateSymbolicLink(const char *filename, const char *symlinkname)
+{
+	StartTrace(System.CreateSymbolicLink);
+	if ( symlink(filename, symlinkname) == -1 ) {
+		SYSERROR("Could not create symbolic link " << symlinkname << " to file " << filename << "; symlink reports [" << SysLog::LastSysError() << "]");
+		return System::eFailed;
+	}
+	// success
+	return System::eSuccess;
+}

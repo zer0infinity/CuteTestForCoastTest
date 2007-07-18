@@ -1214,21 +1214,31 @@ void SystemTest::MakeRemoveDirectoryTest()
 	Trace("str2Level [" << str2Level << "]");
 	// assume that we have a tmp-directory to access and to play with
 	if ( t_assertm( System::IsDirectory(strTmpDir), "expected an accessible directory" ) ) {
+		String strSaveParam(strTmpDir);
 		// one level tests
-		t_assertm( !System::MakeDirectory(strTmpDir, 0755, false) , "expected creation of directory to fail");
-		if ( t_assertm( System::MakeDirectory(str1Level, 0755, false) , "expected creation of directory to succeed") ) {
+		assertComparem( System::eExists, equal_to, System::MakeDirectory(strTmpDir, 0755, false) , "expected creation of directory to fail");
+		assertCharPtrEqual(strSaveParam, strTmpDir);
+		strSaveParam = str1Level;
+		if ( assertComparem( System::eSuccess, equal_to, System::MakeDirectory(str1Level, 0755, false) , "expected creation of directory to succeed") ) {
+			assertCharPtrEqual(strSaveParam, str1Level);
 			t_assertm( System::IsDirectory(str1Level), "expected an accessible directory" );
-			t_assertm( !System::MakeDirectory(str1Level, 0755, false) , "expected creation of existing directory to fail");
-			t_assertm( System::RemoveDirectory(str1Level, false) , "expected deletion of directory to succeed");
+			assertComparem( System::eExists, equal_to, System::MakeDirectory(str1Level, 0755, false) , "expected creation of existing directory to fail");
+			assertCharPtrEqual(strSaveParam, str1Level);
+			assertComparem( System::eSuccess, equal_to, System::RemoveDirectory(str1Level, false), "expected deletion of directory to succeed");
 			t_assertm( !System::IsDirectory(str1Level), "expected directory to be deleted" );
 		}
 		// multiple level tests
-		t_assertm( !System::MakeDirectory(str2Level, 0755, false) , "expected creation of multiple directory levels at once to fail");
-		if ( t_assertm( System::MakeDirectory(str2Level, 0755, true) , "expected creation of multiple directory levels at once to succeed") ) {
+		strSaveParam = str2Level;
+		assertComparem( System::eNotExists, equal_to, System::MakeDirectory(str2Level, 0755, false) , "expected creation of multiple directory levels at once to fail");
+		assertCharPtrEqual(str1Level, str2Level);
+		str2Level = strSaveParam;
+		if ( assertComparem( System::eSuccess, equal_to, System::MakeDirectory(str2Level, 0755, true) , "expected creation of multiple directory levels at once to succeed") ) {
+			assertCharPtrEqual(strSaveParam, str2Level);
 			t_assertm( System::IsDirectory(str2Level), "expected an accessible directory tree" );
-			t_assertm( !System::RemoveDirectory(str2Level, true), "expected deletion of multiple absolute dir levels to fail" );
-			t_assertm( System::RemoveDirectory(str2Level, false), "expected deletion of one absolute dir level to succeed" );
-			t_assertm( System::RemoveDirectory(str1Level, false), "expected deletion of one absolute dir level to succeed" );
+			assertComparem( System::eRecurseDeleteNotAllowed, equal_to, System::RemoveDirectory(str2Level, true), "expected deletion of multiple absolute dir levels to fail" );
+			assertComparem( System::eExists, equal_to, System::RemoveDirectory(str1Level, false), "expected deletion of parent dir level to fail" );
+			assertComparem( System::eSuccess, equal_to, System::RemoveDirectory(str2Level, false), "expected deletion of one absolute dir level to succeed" );
+			assertComparem( System::eSuccess, equal_to, System::RemoveDirectory(str1Level, false), "expected deletion of one absolute dir level to succeed" );
 			t_assertm( !System::IsDirectory(str2Level), "expected directory to be deleted" );
 			t_assertm( !System::IsDirectory(str1Level), "expected directory to be deleted" );
 		}
@@ -1237,14 +1247,15 @@ void SystemTest::MakeRemoveDirectoryTest()
 		System::GetCWD(wd);
 		if ( t_assert( System::ChangeDir(strTmpDir) ) ) {
 			// one level tests
-			t_assertm( System::MakeDirectory(str1LevelRel, 0755, false) , "expected creation of relative directory to succeed" );
-			t_assertm( System::MakeDirectory(str2LevelRel, 0755, false) , "expected creation of second level relative directory to succeed" );
-			t_assertm( !System::RemoveDirectory(str1LevelRel, false) , "expected deletion of non-empty relative directory to fail" );
-			t_assertm( System::RemoveDirectory(str2LevelRel, false) , "expected deletion of relative directory to succeed" );
-			t_assertm( System::RemoveDirectory(str1LevelRel, false) , "expected deletion of relative directory to succeed" );
+			assertComparem( System::eSuccess, equal_to, System::MakeDirectory(str1LevelRel, 0755, false) , "expected creation of relative directory to succeed" );
+			assertComparem( System::eSuccess, equal_to, System::MakeDirectory(str2LevelRel, 0755, false) , "expected creation of second level relative directory to succeed" );
+			assertComparem( System::eNoSuchFileOrDir, equal_to, System::RemoveDirectory(str1LevelRel, false) , "expected deletion of non-empty relative directory to fail" );
+			assertComparem( System::eExists, equal_to, System::RemoveDirectory(str1LevelRel, false) , "expected deletion of parent relative directory to fail" );
+			assertComparem( System::eSuccess, equal_to, System::RemoveDirectory(str2LevelRel, false) , "expected deletion of relative directory to succeed" );
+			assertComparem( System::eSuccess, equal_to, System::RemoveDirectory(str1LevelRel, false) , "expected deletion of relative directory to succeed" );
 			// multiple level tests
-			t_assertm( System::MakeDirectory(str2LevelRel, 0755, true) , "expected creation of multiple level relative directories to succeed" );
-			t_assertm( System::RemoveDirectory(str2LevelRel, true) , "expected deletion of multiple relative directories to succeed" );
+			assertComparem( System::eSuccess, equal_to, System::MakeDirectory(str2LevelRel, 0755, true) , "expected creation of multiple level relative directories to succeed" );
+			assertComparem( System::eSuccess, equal_to, System::RemoveDirectory(str2LevelRel, true) , "expected deletion of multiple relative directories to succeed" );
 		}
 		System::ChangeDir(wd);
 	}
@@ -1260,13 +1271,14 @@ void SystemTest::MakeDirectoryTest()
 
 	// assume that we have a tmp-directory to access and to play with
 	if ( !System::IsDirectory(strStartDir) ) {
-		t_assertm( System::MakeDirectory(strStartDir, 0755, true) , "expected creation of directory to succeed");
+		assertComparem( System::eSuccess, equal_to, System::MakeDirectory(strStartDir, 0755, true) , "expected creation of directory to succeed");
 	}
 	if ( t_assertm( System::IsDirectory(strStartDir), "expected start directory to be valid") ) {
+		System::DirStatusCode aDirStatus = System::eSuccess;
 		for ( ; lIdx < lNumDirsMax; ++lIdx) {
 			strDirToCreate.Trim(0L);
 			strDirToCreate.Append(strStartDir).Append(System::cSep).Append(lIdx);
-			if ( !System::MakeDirectory(strDirToCreate, 0755, false) ) {
+			if ( ( aDirStatus = System::MakeDirectory(strDirToCreate, 0755, false) ) != System::eSuccess ) {
 				SYSERROR("failed at index: " << lIdx);
 				break;
 			}
@@ -1279,7 +1291,7 @@ void SystemTest::MakeDirectoryTest()
 			System::RemoveDirectory(strDirToCreate, false);
 		}
 	}
-	t_assertm( System::RemoveDirectory(strStartDir, false), "expected deletion of directory to succeed");
+	assertComparem( System::eSuccess, equal_to, System::RemoveDirectory(strStartDir, false), "expected deletion of directory to succeed");
 }
 
 void SystemTest::GetFileSizeTest()

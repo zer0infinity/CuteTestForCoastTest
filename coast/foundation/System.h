@@ -48,6 +48,7 @@ class EXPORTDECL_FOUNDATION System
 public:
 	//! access errno in a portable way, wraps WSAxxerror on windows instead
 	static int GetSystemError() ;
+
 	//! determine if system call returned because of a signal interrupt and should be tried again
 	static bool SyscallWasInterrupted();
 
@@ -55,11 +56,11 @@ public:
 	static void SetCloseOnExec(int fd);
 
 	//!wrapper facade for select(or poll) useful only for single file descriptor
-	//! \param fd the file descriptor to be checked (>=0)
-	//! \param timeout wait at most timeout miliseconds, 0 return immediatly, <0 block
-	//! \param bRead set to true to check for readability
-	//! \param bWrite set to true to check for writability
-	//! \return 1 if able to read/write, 0 - if timeout, <0 if error
+	/*! \param fd the file descriptor to be checked (>=0)
+		\param timeout wait at most timeout miliseconds, 0 return immediatly, <0 block
+		\param bRead set to true to check for readability
+		\param bWrite set to true to check for writability
+		\return 1 if able to read/write, 0 - if timeout, <0 if error */
 	static int  DoSingleSelect(int fd, long timeout, bool bRead, bool bWrite);
 
 	static bool IsReadyForReading(int fd, long timeout) {
@@ -69,9 +70,9 @@ public:
 		return 0 < DoSingleSelect(fd, timeout, false, true);
 	}
 
-	//!wrapper facade for using select/Sleep to sleep with microsecond precision
-	//! \param sleepTime the number of microseconds
-	//! \return false if some error occured, true if slept well
+	//! wrapper facade for using select/Sleep to sleep with microsecond precision
+	/*! \param sleepTime the number of microseconds
+		\return false if some error occured, true if slept well */
 	static bool MicroSleep(long sleepTime);
 
 #if defined(ONLY_STD_IOSTREAM)
@@ -83,29 +84,29 @@ public:
 #endif
 
 	//! opens an iostream, uses search path
-	//! it takes a filename and an extension. It tries to open an iostream in the given mode. It uses the
-	//! fgRootDir and fgPathList variables to search for the file unless it is an absolute filename
-	//! \param name the filename, it can be relative or absolute
-	//! \param extension the extension of the file
-	//! \param mode ios mode flags
-	//! \param trace flag if true traces the operation with SysLog::Debug messages
-	//! \return the pointer to the open iostream or NULL, the client is responsible for destruction
+	/*! it takes a filename and an extension. It tries to open an iostream in the given mode. It uses the
+		fgRootDir and fgPathList variables to search for the file unless it is an absolute filename
+		\param name the filename, it can be relative or absolute
+		\param extension the extension of the file
+		\param mode ios mode flags
+		\param trace flag if true traces the operation with SysLog::Debug messages
+		\return the pointer to the open iostream or NULL, the client is responsible for destruction */
 	static iostream *OpenStream(const char *name, const char *extension, openmode mode = (ios::in), bool trace = false);
 
 	//! opens an istream for reading, no search path is used
-	//! \param name the filename, it can be relative or absolute
-	//! \param extension the extension of the file
-	//! \param mode ios mode flags
-	//! \param trace flag if true traces the operation with SysLog::Debug messages
-	//! \return the pointer to the open iostream or NULL, the client is responsible for destruction
+	/*! \param name the filename, it can be relative or absolute
+		\param extension the extension of the file
+		\param mode ios mode flags
+		\param trace flag if true traces the operation with SysLog::Debug messages
+		\return the pointer to the open iostream or NULL, the client is responsible for destruction */
 	static iostream *OpenIStream(const char *name, const char *extension, openmode mode = (ios::in), bool trace = false);
 
 	//! opens an ostream for writing, no search path is used
-	//! \param name the filename, it can be relative or absolute
-	//! \param extension the extension of the file
-	//! \param mode ios mode flags
-	//! \param trace flag if true traces the operation with SysLog::Debug messages
-	//! \return the pointer to the open iostream or NULL, the client is responsible for destruction
+	/*! \param name the filename, it can be relative or absolute
+		\param extension the extension of the file
+		\param mode ios mode flags
+		\param trace flag if true traces the operation with SysLog::Debug messages
+		\return the pointer to the open iostream or NULL, the client is responsible for destruction */
 	static iostream *OpenOStream(const char *name, const char *extension, openmode mode = ios::out | ios::trunc, bool trace = false);
 
 	//! returns the path and filename.extension of a file found on the search path
@@ -116,17 +117,18 @@ public:
 
 	//! loads a config file as anything, returns resolved path
 	static bool LoadConfigFile(Anything &config, const char *name, const char *ext, String &realfilename);
+
 	//! load a config file as anything and do not care where from
 	static bool LoadConfigFile(Anything &config, const char *name, const char *ext = "any");
 
 	//! this sets the GLOBAL root directory where the search starts
-	//! \param rootdir the root directory
-	//! \param print if true prints the new settings to cerr
+	/*! \param rootdir the root directory
+		\param print if true prints the new settings to cerr */
 	static void SetRootDir(const char *rootdir, bool print = false);
 
 	//! this sets the GLOBAL pathlist, a ':' delimited list of relative paths ( relative to rootdir )
-	//! \param pathlist the pathlist e.g. config:src:test
-	//! \param print if true prints the new settings to cerr
+	/*! \param pathlist the pathlist e.g. config:src:test
+		\param print if true prints the new settings to cerr */
 	static void SetPathList(const char *pathlist, bool print = false);
 
 	//! returns the current rootdir for this process
@@ -140,15 +142,20 @@ public:
 		return System::cSep;
 	}
 
-	//!determines if path is a regular file
-	//! \param path fully qualified path to file which should be checked
-	//! \return true if file is a regular file
+	//! determines if path is a regular file
+	/*! \param path fully qualified path to file which should be checked
+		\return true if file is a regular file */
 	static bool IsRegularFile(const char *path);
 
-	//!determines if path points to a directory
-	//! \param path fully qualified path to check
-	//! \return true if path is a directory
+	//! determines if path points to a directory
+	/*! \param path fully qualified path to check
+		\return true if path is a directory */
 	static bool IsDirectory(const char *path);
+
+	//!determines if path points to a directory
+	/*! \param path fully qualified path to check
+		\return true if path is a directory */
+	static bool IsSymbolicLink(const char *path);
 
 	//!determines the size of a file if it exists, works only for files less than 2^31 bytes for now!
 	/*! \param path fully qualified path to file
@@ -164,122 +171,140 @@ public:
 	static bool BlocksLeftOnFS(const char *pFsPath, ul_long &ulFreeBlocks, unsigned long &lBlkSize);
 
 	//! resolve full pathname to the given filename
-	//! \param fullPathName - contains the full pathname including filename to the given file if successful
-	//! \param file - filename including extension of the file to be found
-	//! \param path - searchpath to be used for finding the file
-	//! \return success of finding the file
+	/*! \param fullPathName - contains the full pathname including filename to the given file if successful
+		\param file - filename including extension of the file to be found
+		\param path - searchpath to be used for finding the file
+		\return success of finding the file */
 	static bool FindFile(String &fullPathName, const char *file, const char *path = 0);
 
-	//!cleans the given path by resolving relative movements
-	//! WIN32 special: also corrects drive notation
-	//! \param path resolves given path, strips ./ sections, resolves relative movements and unifies slashes
-	//! \return path returned through path parameter
+	//! cleans the given path by resolving relative movements
+	/*! \note WIN32 special: also corrects drive notation
+		\param path resolves given path, strips ./ sections, resolves relative movements and unifies slashes
+		\return path returned through path parameter */
 	static void ResolvePath(String &path);
 
-	//!returns the drive letter for WIN32
-	//! \param name path to get drive letter from
-	//! \param drive returned drive letter if any
-	//! \return true if the path contained a drive letter
+	//! returns the drive letter for WIN32
+	/*! \param name path to get drive letter from
+		\param drive returned drive letter if any
+		\return true if the path contained a drive letter */
 	static bool GetDriveLetter(const char *name, char &drive);
 
-	//!remove drive letter from path
-	//! \param path path from which the drive letter including the colon should be removed
+	//! remove drive letter from path
+	/*! \param path path from which the drive letter including the colon should be removed */
 	static void StripDriveLetter(String &path);
 
-	//!checks path whether it is absolute or not
-	//! \param path fully qualified path to check if absolute
-	//! \return true if given path is absolute
+	//! checks path whether it is absolute or not
+	/*! \param path fully qualified path to check if absolute
+		\return true if given path is absolute */
 	static bool IsAbsolutePath(const char *path);
 
-	//!obtain current working directory
-	//! \param cwd variable which takes the current working directory
+	//! obtain current working directory
+	/*! \param cwd variable which takes the current working directory */
 	static void GetCWD(String &cwd);
-	//!set current working directory
-	//! \param dir value with the new current working directory
-	//! \return true if success
+
+	//! set current working directory
+	/*! \param dir value with the new current working directory
+		\return true if success */
 	static bool ChangeDir(const String &dir);
 
-	//!change file or directory permission
-	//! \param filename fully qualified path to file whose mode should be adjusted
-	//! \param pmode BIT-combination of new mode (see <sys/stat.h> for bitvalues)
-	//! \return 0 upon success, -1 otherwise
+	//! change file or directory permission
+	/*! \param filename fully qualified path to file whose mode should be adjusted
+		\param pmode BIT-combination of new mode (see <sys/stat.h> for bitvalues)
+		\return 0 upon success, -1 otherwise */
 	static int Chmod(const char *filename, int pmode);
 
-	//!convert given time to local time, *thread safe method (*WIN32 is not 100% safe)
-	//! \param timer time value to be converted
-	//! \param res pointer to tm variable used for multithreading safety
-	//! \return pointer to converted time value, actual it is a pointer to the given res variable
+	//! convert given time to local time, *thread safe method (*WIN32 is not 100% safe)
+	/*! \param timer time value to be converted
+		\param res pointer to tm variable used for multithreading safety
+		\return pointer to converted time value, actual it is a pointer to the given res variable */
 	static struct tm *LocalTime( const time_t *timer, struct tm *res );
 
-	//!convert given time to GMT time, *thread safe method (*WIN32 is not 100% safe)
-	//! \param timer time value to be converted
-	//! \param res pointer to tm variable used for multithreading safety
-	//! \return pointer to converted time value, actual it is a pointer to the given res variable
+	//! convert given time to GMT time, *thread safe method (*WIN32 is not 100% safe)
+	/*! \param timer time value to be converted
+		\param res pointer to tm variable used for multithreading safety
+		\return pointer to converted time value, actual it is a pointer to the given res variable */
 	static struct tm *GmTime( const time_t *timer, struct tm *res );
 
-	//!convert given time to time string
-	//! \param time time value to be converted
-	//! \param strTime converted time string
+	//! convert given time to time string
+	/*! \param time time value to be converted
+		\param strTime converted time string */
 	static void AscTime( const struct tm *time, String &strTime );
 
 	//! get variable of process environment
-	//! \param variable environment variable whose value has to be get
-	//! \return value of given variable, NULL if variable not found in environment
+	/*! \param variable environment variable whose value has to be get
+		\return value of given variable, NULL if variable not found in environment */
 	static String EnvGet(const char *variable);
 
-	//!auxiliary method to copy the environment from the current process
-	//! <B>note:</B> it is considered very unsafe for CGI to use the
-	//! environment of the running server, better a sandbox environment
-	//! is used
-	//! \param anyEnv - the result Anything (we do not use return value, because of possible allocators used)
+	//! auxiliary method to copy the environment from the current process
+	/*! \note: it is considered very unsafe for CGI to use the environment of the running server, better a sandbox environment is used
+		\param anyEnv - the result Anything (we do not use return value, because of possible allocators used) */
 	static void GetProcessEnvironment(Anything &anyEnv);
 
-	//!initialization routine that sets fgRootDir and fgPathList, does not take parameters ;-) Michael
-	//! since OpenStream uses fgRootDir and fgPathList we have to make sure
-	//! that they contain reasonable defaults whenever they are used.<P>
-	//! fgRootDir is initialized to the environment variable WD_ROOT if set, to '.' otherwise<p>
-	//! fgPathList is initialized to the environment variable WD_PATH if set, to ".:config:src" if root is set and to ".:../config:../src:" if root is not set
-	//! \param resultPath the location of the iostream opened
-	//! \param name the filename, it can be relative or absolute, it contains the extension
-	//! \param mode the mode of the stream to be opened e.g. ios::in, mode flags can be combined by the | operation
-	//! \return an open iostream or NULL if the open fails
+	//! initialization routine that sets fgRootDir and fgPathList, does not take parameters ;-)
+	/*! Since OpenStream uses fgRootDir and fgPathList we have to make sure that they contain reasonable defaults whenever they are used.
+		fgRootDir is initialized to the environment variable WD_ROOT if set, to '.' otherwise
+		fgPathList is initialized to the environment variable WD_PATH if set, to ".:config:src" if root is set and to ".:../config:../src:" if root is not set
+		\param resultPath the location of the iostream opened
+		\param name the filename, it can be relative or absolute, it contains the extension
+		\param mode the mode of the stream to be opened e.g. ios::in, mode flags can be combined by the | operation
+		\return an open iostream or NULL if the open fails */
 	static void InitPath(const char *root = 0, const char *path = 0);
 
-	//!create new directory with given permissions, works for relative or absolute path names and also
-	//! recursive if specified.
-	//! \note Unless bRecurse is true, the parent directory must already exist and only one directory level will be created
-	//! \param path relative or absolute path to create new directory
-	//! \param pmode permission of new directory, octal number
-	//! \param bRecurse set to true if nonexisting parent directories should be created
-	//! \return true if new directory was created - all other cases will return false
-	static bool MakeDirectory(const char *path, int pmode = 0755, bool bRecurse = false);
+	/*! Status code of directory creation operations. */
+	enum DirStatusCode {
+		eSuccess = 1,									//! directory creation was successful
+		eFailed = eSuccess << 1,						//! something went wrong, check other bits to find reason
+		ePathEmpty = (eFailed | (eSuccess << 2) ),		//! given path parameter was empty
+		eExists = (eFailed | (eSuccess << 3) ),			//! given directory already exists
+		ePathTooLong = (eFailed | (eSuccess << 4) ),	//! path exceeds system limit
+		eNotExists = (eFailed | (eSuccess << 5) ),		//! directory does not exist
+		eNoMoreHardlinks = (eFailed | (eSuccess << 6) ),//! directory creation failed because no more hardlinks available (symlinks are still possible?!)
+		eRecurseDeleteNotAllowed = (eFailed | (eSuccess << 7) ),//! not allowed to delete directory recursively
+		eNoSuchFileOrDir = (eFailed | (eSuccess << 8) ),//! no such file or directory
+	};
 
-	//!remove given directory - relative directories can be deleted recursively
-	//! \param path relative or absolute path of directory to be deleted
-	//! \param bRecurse true if relative directory should be deleted recusrively
-	//! \return true if directory could be removed
-	static bool RemoveDirectory(const char *path, bool bRecurse = false);
+	//! create new directory with given permissions, works for relative or absolute path names and also recursive if specified.
+	/*!	\note Unless bRecurse is true, the parent directory must already exist and only one directory level will be created
+		\param path relative or absolute path to create new directory
+		\param pmode permission of new directory, octal number
+		\param bRecurse set to true if nonexisting parent directories should be created
+		\return true if new directory was created - all other cases will return false */
+	static DirStatusCode MakeDirectory(String &path, int pmode = 0755, bool bRecurse = false);
+
+	//! remove given directory - relative directories can be deleted recursively
+	/*! \param path relative or absolute path of directory to be deleted
+		\param bRecurse true if relative directory should be deleted recusrively
+		\return true if directory could be removed */
+	static DirStatusCode RemoveDirectory(String &path, bool bRecurse = false);
+
+	//! create new directory with given permissions, works for relative or absolute path names and also
+	/*! \param filename absolute directory or filename to link to
+		\param symlinkname absolute name of link
+		\return true if link could be created */
+	static DirStatusCode CreateSymbolicLink(const char *filename, const char *symlinkname);
+
+	//! return number of possible hardlinks (directories) within a directory
+	/*! \param path relative or absolute path of directory
+		\return number of possible hardlinks */
+	static int GetNumberOfHardLinks(const char *path);
 
 	static bool Uname(Anything &anyInfo);
 	static bool HostName(String &name);
 
-	// fork() on Linux and fork1() on Solaris, on Windows return -1 and do nothing
+	//! fork() on Linux and fork1() on Solaris, on Windows return -1 and do nothing
 	static long Fork();
 
-	//!get current process id
-	//! \return process id of current process
+	//! get current process id
+	/*! \return process id of current process */
 	static pid_t getpid();
 
-	//!get current user id - only for unix/linux implemented!
-	//! \return user id of current process
+	//! get current user id - only for unix/linux implemented!
+	/*! \return user id of current process */
 	static uid_t getuid();
 
 	//! Get the state of the lock file.
-	//! \Param lock file name
-	//! \Returns  false=not locked, true=locked.
-	//! \If there was an error, the file is considered to be locked!
-	//! \You must remove the lockfile with System::unlink(lockFileName)
-	//! \after you're done.
+	/*! \param lockFileName file name to get lock state of
+		\return false=not locked, true=locked. If there was an error, the file is considered to be locked! You must remove the lockfile with System::unlink(lockFileName) after you're done. */
 	static bool GetLockFileState(const char *lockFileName);
 
 	// io specific inner class
@@ -342,51 +367,50 @@ public:
 private:
 	friend class SystemTest;
 
-	//!checks existence of a path using stat
+	//! checks existence of a path using stat
 	static bool CheckPath(const char *path, struct stat *stbuf);
 
-	//!internal method that opens a stream if possible
-	//! \param resultPath the location of the iostream opened
-	//! \param search flag if true searches pathlist until a stream can be opened
-	//! \param name the filename, it can be relative or absolute
-	//! \param extension the extension of the file
-	//! \param mode the mode of the stream to be opened e.g. ios::in, mode flags can be combined by the | operation
-	//! \param trace if true writes messages to SysLog
-	//! \return an open iostream or NULL if the open fails
+	//! internal method that opens a stream if possible
+	/*! \param resultPath the location of the iostream opened
+		\param search flag if true searches pathlist until a stream can be opened
+		\param name the filename, it can be relative or absolute
+		\param extension the extension of the file
+		\param mode the mode of the stream to be opened e.g. ios::in, mode flags can be combined by the | operation
+		\param trace if true writes messages to SysLog
+		\return an open iostream or NULL if the open fails */
 	static iostream *IntOpenStream(String &resultPath, const char *name, const char *extension, bool search, openmode mode, bool trace = false);
 
-	//!internal method that opens a stream if possible, it searches the pathlist for the correct location
-	//! \param resultPath the location of the iostream opened
-	//! \param pathlist the pathlist to be searched,relative to the root directory
-	//! \param name the filename, it can be relative or absolute, it contains the extension
-	//! \param mode the mode of the stream to be opened e.g. ios::in, mode flags can be combined by the | operation
-	//! \param trace if true writes messages to SysLog
-	//! \return an open iostream or NULL if the open fails
+	//! internal method that opens a stream if possible, it searches the pathlist for the correct location
+	/*! \param resultPath the location of the iostream opened
+		\param pathlist the pathlist to be searched,relative to the root directory
+		\param name the filename, it can be relative or absolute, it contains the extension
+		\param mode the mode of the stream to be opened e.g. ios::in, mode flags can be combined by the | operation
+		\param trace if true writes messages to SysLog
+		\return an open iostream or NULL if the open fails */
 	static iostream *IntOpenStreamBySearch(String &resultPath, const char *name, const char *pathlist, openmode mode, bool trace = false);
 
-	//!bottleneck routine that opens the stream if possible it returns null if not successful
-	//! \param resultPath the location of the iostream opened
-	//! \param name the filename, it can be relative or absolute, it contains the extension
-	//! \param mode the mode of the stream to be opened e.g. ios::in, mode flags can be combined by the | operation
-	//! \param trace if true writes messages to SysLog
-	//! \return an open iostream or NULL if the open fails
+	//! bottleneck routine that opens the stream if possible it returns null if not successful
+	/*! \param resultPath the location of the iostream opened
+		\param name the filename, it can be relative or absolute, it contains the extension
+		\param mode the mode of the stream to be opened e.g. ios::in, mode flags can be combined by the | operation
+		\param trace if true writes messages to SysLog
+		\return an open iostream or NULL if the open fails */
 	static iostream *DoOpenStream(String &resultPath, const char *name, openmode mode, bool trace = false);
 
-	//!internal method to create new directory with given permissions, works for relative or absolute path names and also
-	//! recursive if specified.
-	//! \note Unless bRecurse is true, the parent directory must already exist and only one directory level will be created
-	//! \param path relative or absolute path to create new directory
-	//! \param pmode permission of new directory, octal number
-	//! \param bRecurse set to true if nonexisting parent directories should be created
-	//! \return true if new directory was created - all other cases will return false
-	static bool IntMakeDirectory(String dir, int pmode, bool bRecurse);
+	//! internal method to create new directory with given permissions, works for relative or absolute path names and also recursive if specified.
+	/*! \note Unless bRecurse is true, the parent directory must already exist and only one directory level will be created
+		\param path relative or absolute path to create new directory
+		\param pmode permission of new directory, octal number
+		\param bRecurse set to true if nonexisting parent directories should be created
+		\return true if new directory was created - all other cases will return false */
+	static DirStatusCode IntMakeDirectory(String &path, int pmode, bool bRecurse);
 
-	//!internal method to remove given directory - relative directories can be deleted recursively
-	//! \param dir relative or absolute path of directory to be deleted
-	//! \param bRecurse true if relative directory should be deleted recusrively
-	//! \param bAbsDir if true we can not recurse to delete directories
-	//! \return true if directory could be removed
-	static bool IntRemoveDirectory(String dir, bool bRecurse, bool bAbsDir);
+	//! internal method to remove given directory - relative directories can be deleted recursively
+	/*! \param path relative or absolute path of directory to be deleted
+		\param bRecurse true if relative directory should be deleted recusrively
+		\param bAbsDir if true we can not recurse to delete directories
+		\return true if directory could be removed */
+	static DirStatusCode IntRemoveDirectory(String &path, bool bRecurse, bool bAbsDir);
 
 	//!contains the root directory path that is used to locate files, it can be relative or absolute
 	static String fgRootDir;
