@@ -11,7 +11,7 @@
 
 #include <sys/types.h>
 #include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
-#include "config.h"				// for definition of own types
+#include "foundation.h"			// for definition of own types
 #include <stdlib.h>
 #include <list>
 

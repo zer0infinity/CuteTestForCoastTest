@@ -9,7 +9,7 @@
 #ifndef _ConversionUtils_H
 #define _ConversionUtils_H
 
-#include "config.h"
+#include "foundation.h"
 
 #include "ITOString.h"
 #if defined(DEBUG)

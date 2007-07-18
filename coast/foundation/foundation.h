@@ -6,8 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#ifndef _CONFIG_H
-#define _CONFIG_H
+#ifndef _FOUNDATION_H
+#define _FOUNDATION_H
 
 #if defined(WD_OPT) && defined(DEBUG)
 #define WD_OPTFLAG	"OPT_DBG"
