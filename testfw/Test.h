@@ -149,23 +149,35 @@ protected:
 								  TString fileName,
 								  TString message);
 
-	template < typename T > bool assert_equal_to(T left, T right) {
-		return equal_to<T>()(left, right);
+	template < typename T > bool assert_equal_to(T left, T right, TString addexpr, long lineNumber, TString fileName, TString message) {
+		TString strExpression;
+		strExpression.Append((unsigned long long)left).Append(" equal_to ").Append((unsigned long long)right).Append(addexpr);
+		return assertImplementation(equal_to<T>()(left, right), strExpression, lineNumber, fileName, message);
 	}
-	template < typename T > bool assert_not_equal_to(T left, T right) {
-		return not_equal_to<T>()(left, right);
+	template < typename T > bool assert_not_equal_to(T left, T right, TString addexpr, long lineNumber, TString fileName, TString message) {
+		TString strExpression;
+		strExpression.Append((unsigned long long)left).Append(" not_equal_to ").Append((unsigned long long)right).Append(addexpr);
+		return assertImplementation(not_equal_to<T>()(left, right), strExpression, lineNumber, fileName, message);
 	}
-	template < typename T > bool assert_less(T left, T right) {
-		return less<T>()(left, right);
+	template < typename T > bool assert_less(T left, T right, TString addexpr, long lineNumber, TString fileName, TString message) {
+		TString strExpression;
+		strExpression.Append((unsigned long long)left).Append(" less ").Append((unsigned long long)right).Append(addexpr);
+		return assertImplementation(less<T>()(left, right), strExpression, lineNumber, fileName, message);
 	}
-	template < typename T > bool assert_less_equal(T left, T right) {
-		return less_equal<T>()(left, right);
+	template < typename T > bool assert_less_equal(T left, T right, TString addexpr, long lineNumber, TString fileName, TString message) {
+		TString strExpression;
+		strExpression.Append((unsigned long long)left).Append(" less_equal ").Append((unsigned long long)right).Append(addexpr);
+		return assertImplementation(less_equal<T>()(left, right), strExpression, lineNumber, fileName, message);
 	}
-	template < typename T > bool assert_greater(T left, T right) {
-		return greater<T>()(left, right);
+	template < typename T > bool assert_greater(T left, T right, TString addexpr, long lineNumber, TString fileName, TString message) {
+		TString strExpression;
+		strExpression.Append((unsigned long long)left).Append(" greater ").Append((unsigned long long)right).Append(addexpr);
+		return assertImplementation(greater<T>()(left, right), strExpression, lineNumber, fileName, message);
 	}
-	template < typename T > bool assert_greater_equal(T left, T right) {
-		return greater_equal<T>()(left, right);
+	template < typename T > bool assert_greater_equal(T left, T right, TString addexpr, long lineNumber, TString fileName, TString message) {
+		TString strExpression;
+		strExpression.Append((unsigned long long)left).Append(" greater_equal ").Append((unsigned long long)right).Append(addexpr);
+		return assertImplementation(greater_equal<T>()(left, right), strExpression, lineNumber, fileName, message);
 	}
 };
 
@@ -201,10 +213,10 @@ inline TString Test::toString ()
 	__LINE__, __FILE__))
 
 #define assertCompare(left, what, right)\
-(this->assertImplementation( assert_##what<>( left, right ), TString().Append((unsigned long long)left).Append(" " #what " ").Append((unsigned long long)right).Append(" ( " #left " " #what " " #right " )"), __LINE__, __FILE__ ) )
+(this->assert_##what<>( left, right, " ( " #left " " #what " " #right " )", __LINE__, __FILE__, "" ) )
 
-#define assertComparem(left, what, right, mesaage)\
-(this->assertImplementation( assert_##what<>( left, right ), TString().Append((unsigned long long)left).Append(" " #what " ").Append((unsigned long long)right).Append(" ( " #left " " #what " " #right " )"), __LINE__, __FILE__, mesaage ) )
+#define assertComparem(left, what, right, message)\
+(this->assert_##what<>( left, right, " ( " #left " " #what " " #right " )", __LINE__, __FILE__, message ) )
 
 #define assertDoublesEqual(expected,actual,delta)\
 (this->assertEquals ((expected),\
