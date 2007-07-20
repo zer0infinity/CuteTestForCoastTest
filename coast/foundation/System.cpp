@@ -597,7 +597,7 @@ bool System::CheckPath(const char *path, struct stat *stbuf)
 {
 	StartTrace(System.CheckPath);
 	bool result = false;
-	while ( !(result = (stat(path, stbuf) == 0)) && SyscallWasInterrupted() ) {
+	while ( !(result = (lstat(path, stbuf) == 0)) && SyscallWasInterrupted() ) {
 		String msg("OOPS, stat failed with ");
 		msg << SysLog::LastSysError() << " on " << path;
 		Trace(msg);
@@ -1122,9 +1122,11 @@ bool System::BlocksLeftOnFS(const char *pFsPath, ul_long &ulBlocks, unsigned lon
 	return false;
 }
 
-System::DirStatusCode System::MakeDirectory(String &path, int pmode, bool bRecurse)
+System::DirStatusCode System::MakeDirectory(String &path, int pmode, bool bRecurse, bool bExtendByLinks)
 {
-	StartTrace1(System.MakeDirectory, "dir to create [" << path << "], recurse " << (bRecurse ? "true" : "false"));
+	StartTrace1(System.MakeDirectory, "dir to create [" << path << "], recurse " << (bRecurse ? "true" : "false") << ", extendbylinks " << (bExtendByLinks ? "true" : "false"));
+	// cleanup relative movements and slashes
+	System::ResolvePath(path);
 
 	// check for empty input parameter
 	if ( !path.Length() ) {
@@ -1141,15 +1143,10 @@ System::DirStatusCode System::MakeDirectory(String &path, int pmode, bool bRecur
 		SYSERROR("Path size exceeded [" << path << "]");
 		return System::ePathTooLong;
 	}
-	// strip trailing slash if any
-	long slPos = path.StrRChr( System::Sep() );
-	if ( slPos >= 0L && ( slPos == (path.Length() - 1L) ) ) {
-		path.Trim(path.Length() - 1L);
-	}
-	return IntMakeDirectory(path, pmode, bRecurse);
+	return IntMakeDirectory(path, pmode, bRecurse, bExtendByLinks);
 }
 
-System::DirStatusCode System::IntMakeDirectory(String &path, int pmode, bool bRecurse)
+System::DirStatusCode System::IntMakeDirectory(String &path, int pmode, bool bRecurse, bool bExtendByLinks)
 {
 	StartTrace1(System.IntMakeDirectory, "dir to create [" << path << "], recurse " << (bRecurse ? "true" : "false"));
 	String strParentDir;
@@ -1164,7 +1161,7 @@ System::DirStatusCode System::IntMakeDirectory(String &path, int pmode, bool bRe
 	if ( strParentDir.Length() && !IsDirectory(strParentDir) ) {
 		if ( bRecurse ) {
 			// recurse to make parent directories
-			aDirStatus = IntMakeDirectory(strParentDir, pmode, bRecurse);
+			aDirStatus = IntMakeDirectory(strParentDir, pmode, bRecurse, bExtendByLinks);
 		} else {
 			SYSERROR("parent directory does not exist [" << strParentDir << "]");
 			aDirStatus = System::eNotExists;
@@ -1180,9 +1177,18 @@ System::DirStatusCode System::IntMakeDirectory(String &path, int pmode, bool bRe
 					aDirStatus = System::eSuccess;
 					break;
 				}
+				case EACCES: {
+					SYSINFO("mkdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "]");
+					aDirStatus = System::eNoPermission;
+					break;
+				}
 				case EMLINK: {
-					SYSWARNING("mkdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "] because the directory is exhausted of hardlinks!");
+					SYSWARNING("mkdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "] because the parent directory is exhausted of hardlinks!");
 					aDirStatus = System::eNoMoreHardlinks;
+					if ( bExtendByLinks ) {
+						// if no more directories can be created, we use 'extension' links instead
+						aDirStatus = System::IntExtendDir(path, pmode);
+					}
 					break;
 				}
 				default: {
@@ -1198,6 +1204,50 @@ System::DirStatusCode System::IntMakeDirectory(String &path, int pmode, bool bRe
 	return aDirStatus;
 }
 
+System::DirStatusCode System::IntExtendDir(String &strOriginalDir, int pmode)
+{
+	StartTrace1(System.IntExtendDir, "dir to create [" << strOriginalDir << "]");
+	System::DirStatusCode aDirStatus(System::eFailed);
+	String strBasePath(strOriginalDir), strDirToExtend, strFinalDir, strExtensionDir;
+	long slPos = strBasePath.StrRChr( System::Sep() );
+	if ( slPos > 0L ) {
+		// find final segment
+		strFinalDir = strBasePath.SubString(slPos + 1);
+		strBasePath.Trim(slPos);
+		// find path to extend by other dir and link
+		slPos = strBasePath.StrRChr( System::Sep() );
+		if ( slPos > 0L ) {
+			// find final segment
+			strDirToExtend = strBasePath.SubString(slPos + 1);
+			strBasePath.Trim(slPos);
+		}
+	}
+	bool bContinue = ( strFinalDir.Length() > 0L && strDirToExtend.Length() > 0L );
+	long lExt = 0L;
+	while ( bContinue ) {
+		strExtensionDir = strBasePath;
+		if ( strExtensionDir.Length() > 0L ) {
+			strExtensionDir.Append(System::Sep());
+		}
+		strExtensionDir.Append(strDirToExtend).Append("_ex").Append(lExt).Append(System::Sep()).Append(strFinalDir);
+		Trace("trying extension directory [" << strExtensionDir << "]");
+		switch ( aDirStatus = System::MakeDirectory(strExtensionDir, pmode, true, true) ) {
+			case System::eNoMoreHardlinks: {
+				break;
+			}
+			case System::eSuccess: {
+				// create link into original directory (strOriginalDir)
+				aDirStatus = System::CreateSymbolicLink(strExtensionDir, strOriginalDir);
+			}
+			default: {
+				bContinue = false;
+			}
+		}
+		++lExt;
+	}
+	return aDirStatus;
+}
+
 System::DirStatusCode System::RemoveDirectory(String &path, bool bRecurse)
 {
 	StartTrace1(System.RemoveDirectory, "dir to remove [" << path << "]");
@@ -1208,7 +1258,7 @@ System::DirStatusCode System::RemoveDirectory(String &path, bool bRecurse)
 		return System::ePathEmpty;
 	}
 	// check if directory already exists
-	if ( !IsDirectory(path) ) {
+	if ( !IsDirectory(path) && !IsSymbolicLink(path) ) {
 		SYSERROR("directory does not exist [" << path << "]");
 		return System::eNotExists;
 	}
@@ -1226,7 +1276,7 @@ System::DirStatusCode System::IntRemoveDirectory(String &path, bool bRecurse, bo
 	StartTrace1(System.IntRemoveDirectory, "dir to remove [" << path << "], recurse " << (bRecurse ? "true" : "false"));
 
 	System::DirStatusCode aDirStatus = System::eNoSuchFileOrDir;
-	if ( System::IO::rmdir(path) == 0L ) {
+	if ( ( IsDirectory(path) && System::IO::rmdir(path) == 0L ) || ( IsSymbolicLink(path) && System::IO::unlink(path) == 0L ) ) {
 		aDirStatus = System::eSuccess;
 		if ( bRecurse && !bAbsDir ) {
 			long slPos = path.StrRChr( System::Sep() );

@@ -261,6 +261,7 @@ public:
 		eNoMoreHardlinks = (eFailed | (eSuccess << 6) ),//! directory creation failed because no more hardlinks available (symlinks are still possible?!)
 		eRecurseDeleteNotAllowed = (eFailed | (eSuccess << 7) ),//! not allowed to delete directory recursively
 		eNoSuchFileOrDir = (eFailed | (eSuccess << 8) ),//! no such file or directory
+		eNoPermission = (eFailed | (eSuccess << 9) ),	//! no permission to operate
 	};
 
 	//! create new directory with given permissions, works for relative or absolute path names and also recursive if specified.
@@ -268,19 +269,20 @@ public:
 		\param path relative or absolute path to create new directory
 		\param pmode permission of new directory, octal number
 		\param bRecurse set to true if nonexisting parent directories should be created
-		\return true if new directory was created - all other cases will return false */
-	static DirStatusCode MakeDirectory(String &path, int pmode = 0755, bool bRecurse = false);
+		\param bExtendByLinks if a directory can not be created because its parent dir is exhausted of hard links (subdirectories), a true means to create an 'extension' parent directory of name <dir>_ex[0-9]+ and link the newly created directory into the original location
+		\return System::eSuccess if new directory was created */
+	static DirStatusCode MakeDirectory(String &path, int pmode = 0755, bool bRecurse = false, bool bExtendByLinks = false);
 
 	//! remove given directory - relative directories can be deleted recursively
 	/*! \param path relative or absolute path of directory to be deleted
 		\param bRecurse true if relative directory should be deleted recusrively
-		\return true if directory could be removed */
+		\return System::eSuccess if directory was removed */
 	static DirStatusCode RemoveDirectory(String &path, bool bRecurse = false);
 
 	//! create new directory with given permissions, works for relative or absolute path names and also
 	/*! \param filename absolute directory or filename to link to
 		\param symlinkname absolute name of link
-		\return true if link could be created */
+		\return System::eSuccess if new symbolic link was created */
 	static DirStatusCode CreateSymbolicLink(const char *filename, const char *symlinkname);
 
 	//! return number of possible hardlinks (directories) within a directory
@@ -402,14 +404,21 @@ private:
 		\param path relative or absolute path to create new directory
 		\param pmode permission of new directory, octal number
 		\param bRecurse set to true if nonexisting parent directories should be created
-		\return true if new directory was created - all other cases will return false */
-	static DirStatusCode IntMakeDirectory(String &path, int pmode, bool bRecurse);
+		\param bExtendByLinks if a directory can not be created because its parent dir is exhausted of hard links (subdirectories), a true means to create an 'extension' parent directory of name <dir>_ex[0-9]+ and link the newly created directory into the original location
+		\return System::eSuccess if new directory was created */
+	static DirStatusCode IntMakeDirectory(String &path, int pmode, bool bRecurse, bool bExtendByLinks);
+
+	//! internal method to extend a directory with given permissions by creating 'extension' directories and softlinks
+	/*!	\param path relative or absolute path to create new directory
+		\param pmode permission of new directory, octal number
+		\return System::eSuccess if new directory was created */
+	static DirStatusCode IntExtendDir(String &strOriginalDir, int pmode);
 
 	//! internal method to remove given directory - relative directories can be deleted recursively
 	/*! \param path relative or absolute path of directory to be deleted
 		\param bRecurse true if relative directory should be deleted recusrively
 		\param bAbsDir if true we can not recurse to delete directories
-		\return true if directory could be removed */
+		\return System::eSuccess if directory was removed */
 	static DirStatusCode IntRemoveDirectory(String &path, bool bRecurse, bool bAbsDir);
 
 	//!contains the root directory path that is used to locate files, it can be relative or absolute
