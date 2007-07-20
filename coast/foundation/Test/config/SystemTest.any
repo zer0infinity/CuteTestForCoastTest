@@ -17,4 +17,21 @@
 		/BasePath	"/tmp/MKDIRTEST"
 		/MaxNumDirs	30
 	}
+	/SymbolicLinkTest {
+		/OnelevelExtendedTest {
+			/BaseDir			%TmpDir
+			/PathToCreate		"MyTestDir"
+			/Link				"TestLink1"
+		}
+	}
+	/MakeDirectoryExtendTest {
+		/OnelevelExtendedTest {
+			/PathToCreate		"/hiku_ds_root/chunk_space/2007/13/814/TestCaseDir1"
+			/ExpectedRealPath	"/hiku_ds_root/chunk_space/2007/13/814_ex7/TestCaseDir1"
+		}
+		/MutlilevelExtendedTest {
+			/PathToCreate		"/hiku_ds_root/chunk_space/2007/13/814/TestCaseSubDir1/TestCaseSubDir2"
+			/ExpectedRealPath	"/hiku_ds_root/chunk_space/2007/13/814_ex7/TestCaseSubDir1/TestCaseSubDir2"
+		}
+	}
 }

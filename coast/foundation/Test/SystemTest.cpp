@@ -18,6 +18,7 @@
 //--- standard modules used -------------------------------------------------
 #include "DiffTimer.h"
 #include "SysLog.h"
+#include "AnyIterators.h"
 
 //--- c-library modules used ---------------------------------------------------
 #include <fcntl.h>
@@ -1247,9 +1248,10 @@ void SystemTest::MakeRemoveDirectoryTest()
 		System::GetCWD(wd);
 		if ( t_assert( System::ChangeDir(strTmpDir) ) ) {
 			// one level tests
+			Trace("str1LevelRel [" << str1LevelRel << "] str2LevelRel [" << str2LevelRel << "]");
 			assertComparem( System::eSuccess, equal_to, System::MakeDirectory(str1LevelRel, 0755, false) , "expected creation of relative directory to succeed" );
 			assertComparem( System::eSuccess, equal_to, System::MakeDirectory(str2LevelRel, 0755, false) , "expected creation of second level relative directory to succeed" );
-			assertComparem( System::eNoSuchFileOrDir, equal_to, System::RemoveDirectory(str1LevelRel, false) , "expected deletion of non-empty relative directory to fail" );
+			Trace("str1LevelRel [" << str1LevelRel << "] str2LevelRel [" << str2LevelRel << "]");
 			assertComparem( System::eExists, equal_to, System::RemoveDirectory(str1LevelRel, false) , "expected deletion of parent relative directory to fail" );
 			assertComparem( System::eSuccess, equal_to, System::RemoveDirectory(str2LevelRel, false) , "expected deletion of relative directory to succeed" );
 			assertComparem( System::eSuccess, equal_to, System::RemoveDirectory(str1LevelRel, false) , "expected deletion of relative directory to succeed" );
@@ -1292,6 +1294,74 @@ void SystemTest::MakeDirectoryTest()
 		}
 	}
 	assertComparem( System::eSuccess, equal_to, System::RemoveDirectory(strStartDir, false), "expected deletion of directory to succeed");
+}
+
+void SystemTest::MakeDirectoryExtendTest()
+{
+	StartTrace(SystemTest.MakeDirectoryExtendTest);
+
+	AnyExtensions::Iterator<ROAnything> aIterator(GetTestCaseConfig());
+	ROAnything roaConfig;
+	while ( aIterator(roaConfig) ) {
+		String strCreateDir = roaConfig["PathToCreate"].AsString();
+		String strExpectDir = roaConfig["ExpectedRealPath"].AsString();
+		Trace("Dir to create [" << strCreateDir << "] ExpectedDir [" << strExpectDir << "]");
+
+		if ( strCreateDir.Length() > 0L && strExpectDir.Length() > 0L ) {
+			if ( !System::IsDirectory(strCreateDir) ) {
+				assertComparem( System::eNoMoreHardlinks, equal_to, System::MakeDirectory(strCreateDir, 0755, true, false) , "expected creation of directory to fail" );
+			}
+		}
+	}
+}
+
+void SystemTest::SymbolicLinkTest()
+{
+	StartTrace(SystemTest.SymbolicLinkTest);
+
+	AnyExtensions::Iterator<ROAnything> aIterator(GetTestCaseConfig());
+	ROAnything roaConfig;
+	while ( aIterator(roaConfig) ) {
+		String strTmpDir = roaConfig["TmpDir"].AsString("/tmp");
+		String strRelDir = roaConfig["PathToCreate"].AsString();
+		String strCreateDir(strTmpDir);
+		strCreateDir.Append(System::Sep()).Append(strRelDir);
+		String strLinkRel = roaConfig["Link"].AsString(), strLinkAbs(strTmpDir);
+		strLinkAbs.Append(System::Sep()).Append(roaConfig["Link"].AsString());
+		Trace("Dir to create [" << strCreateDir << "] Link [" << strLinkRel << "]");
+
+		if ( strCreateDir.Length() > 0L ) {
+			// assume that we have a tmp-directory to access and to play with
+			if ( !System::IsDirectory(strCreateDir) ) {
+				assertComparem( System::eSuccess, equal_to, System::MakeDirectory(strCreateDir, 0755, false) , "expected creation of relative directory to succeed" );
+			}
+			if ( t_assert(System::IsDirectory(strCreateDir)) ) {
+				String wd;
+				System::GetCWD(wd);
+				if ( t_assert( System::ChangeDir(strTmpDir) ) ) {
+					Trace("creating relative link [" << strLinkRel << "] to relative dir [" << strRelDir << "]");
+					assertComparem( System::eSuccess, equal_to, System::CreateSymbolicLink(strRelDir, strLinkRel) , "expected creation of relative symbolic link to succeed" );
+					t_assertm(System::IsSymbolicLink(strLinkRel), "expected link to be valid");
+					assertComparem( System::eSuccess, equal_to, System::RemoveDirectory(strLinkRel) , "expected removal of relative symbolic link to succeed" );
+					t_assert(System::IsDirectory(strRelDir));
+					if ( t_assert(!System::IsDirectory(strLinkRel) ) ) {
+						Trace("creating relative link [" << strLinkRel << "] to absolute dir [" << strCreateDir << "]");
+						assertComparem( System::eSuccess, equal_to, System::CreateSymbolicLink(strCreateDir, strLinkRel) , "expected creation of relative symbolic link to succeed" );
+						t_assertm(System::IsSymbolicLink(strLinkRel), "expected link to be valid");
+						assertComparem( System::eSuccess, equal_to, System::RemoveDirectory(strLinkRel) , "expected removal of relative symbolic link to succeed" );
+						t_assert(System::IsDirectory(strCreateDir));
+					}
+				}
+				System::ChangeDir(wd);
+				Trace("creating absolute link [" << strLinkAbs << "] to dir [" << strCreateDir << "]");
+				assertComparem( System::eSuccess, equal_to, System::CreateSymbolicLink(strCreateDir, strLinkAbs) , "expected creation of absolute symbolic link to succeed" );
+				t_assertm(System::IsSymbolicLink(strLinkAbs), "expected link to be valid");
+				assertComparem( System::eSuccess, equal_to, System::RemoveDirectory(strLinkAbs) , "expected removal of absolute symbolic link to succeed" );
+				t_assert(System::IsDirectory(strCreateDir));
+			}
+			assertComparem( System::eSuccess, equal_to, System::RemoveDirectory(strCreateDir) , "expected removal of directory to succeed" );
+		}
+	}
 }
 
 void SystemTest::GetFileSizeTest()
@@ -1361,6 +1431,8 @@ Test *SystemTest::suite ()
 	ADD_CASE(testSuite, SystemTest, MkRmDirTest);
 	ADD_CASE(testSuite, SystemTest, MakeRemoveDirectoryTest);
 	ADD_CASE(testSuite, SystemTest, MakeDirectoryTest);
+	ADD_CASE(testSuite, SystemTest, SymbolicLinkTest);
+	ADD_CASE(testSuite, SystemTest, MakeDirectoryExtendTest);
 	ADD_CASE(testSuite, SystemTest, GetFileSizeTest);
 	ADD_CASE(testSuite, SystemTest, BlocksLeftOnFSTest);
 	ADD_CASE(testSuite, SystemTest, LockFileTest);
