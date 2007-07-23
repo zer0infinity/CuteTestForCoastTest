@@ -1174,7 +1174,8 @@ System::DirStatusCode System::IntMakeDirectory(String &path, int pmode, bool bRe
 		// assume root level or relative
 		aDirStatus = System::eSuccess;
 	}
-	if ( aDirStatus == System::eSuccess ) {
+	// eExists might occur if someone created the parent directory in parallel
+	if ( aDirStatus == System::eSuccess || aDirStatus == System::eExists ) {
 		// make new directory
 		if ( System::IO::mkdir(path, pmode) != 0L ) {
 			switch ( System::GetSystemError() ) {
