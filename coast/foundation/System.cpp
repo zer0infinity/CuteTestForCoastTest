@@ -1157,15 +1157,22 @@ System::DirStatusCode System::IntMakeDirectory(String &path, int pmode, bool bRe
 	}
 	Trace("parent path [" << strParentDir << "]");
 
-	System::DirStatusCode aDirStatus = System::eSuccess;
-	if ( strParentDir.Length() && !IsDirectory(strParentDir) ) {
-		if ( bRecurse ) {
-			// recurse to make parent directories
-			aDirStatus = IntMakeDirectory(strParentDir, pmode, bRecurse, bExtendByLinks);
+	System::DirStatusCode aDirStatus = System::eFailed;
+	if ( strParentDir.Length() ) {
+		if ( IsDirectory(strParentDir) ) {
+			aDirStatus = System::eSuccess;
 		} else {
-			SYSERROR("parent directory does not exist [" << strParentDir << "]");
-			aDirStatus = System::eNotExists;
+			if ( bRecurse ) {
+				// recurse to make parent directories
+				aDirStatus = IntMakeDirectory(strParentDir, pmode, bRecurse, bExtendByLinks);
+			} else {
+				SYSERROR("parent directory does not exist [" << strParentDir << "]");
+				aDirStatus = System::eNotExists;
+			}
 		}
+	} else {
+		// assume root level or relative
+		aDirStatus = System::eSuccess;
 	}
 	if ( aDirStatus == System::eSuccess ) {
 		// make new directory
@@ -1231,7 +1238,7 @@ System::DirStatusCode System::IntExtendDir(String &strOriginalDir, int pmode)
 		}
 		strExtensionDir.Append(strDirToExtend).Append("_ex").Append(lExt).Append(System::Sep()).Append(strFinalDir);
 		Trace("trying extension directory [" << strExtensionDir << "]");
-		switch ( aDirStatus = System::MakeDirectory(strExtensionDir, pmode, true, true) ) {
+		switch ( aDirStatus = System::MakeDirectory(strExtensionDir, pmode, true, false) ) {
 			case System::eNoMoreHardlinks: {
 				break;
 			}
@@ -1339,7 +1346,7 @@ bool System::GetLockFileState(const char *lockFileName)
 
 int System::GetNumberOfHardLinks(const char *path)
 {
-	StartTrace(System.GetNumberOfHardLinks);
+	StartTrace1(System.GetNumberOfHardLinks, "directory [" << NotNull(path) << "]");
 	struct stat	mystat;
 
 	// acquire inode information
@@ -1353,7 +1360,7 @@ int System::GetNumberOfHardLinks(const char *path)
 
 System::DirStatusCode System::CreateSymbolicLink(const char *filename, const char *symlinkname)
 {
-	StartTrace(System.CreateSymbolicLink);
+	StartTrace1(System.CreateSymbolicLink, "directory [" << NotNull(filename) << "] link [" << NotNull(symlinkname) << "]");
 	if ( symlink(filename, symlinkname) == -1 ) {
 		SYSERROR("Could not create symbolic link " << symlinkname << " to file " << filename << "; symlink reports [" << SysLog::LastSysError() << "]");
 		return System::eFailed;
