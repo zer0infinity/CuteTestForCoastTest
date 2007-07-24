@@ -127,13 +127,27 @@ void SystemTest::initPathTest()
 void SystemTest::statTests()
 {
 	t_assertm(System::IsDirectory("."), "expected '.' to be a directory");
-	t_assertm(!System::IsDirectory("SystemTest.cpp"), "expected 'SystemTest.cpp' to be a file");
 	t_assertm(System::IsDirectory(".."), "expected '.' to be a directory");
+	t_assertm(!System::IsDirectory("prjRunTest.sh"), "expected 'prjRunTest.sh' to be a file");
 	t_assertm(!System::IsDirectory("config/Dbg.any"), "expected 'Dbg.any' to be a file");
 	t_assertm(!System::IsRegularFile("."), "expected '.' to be a directory");
-	t_assertm(System::IsRegularFile("SystemTest.cpp"), "expected 'SystemTest.cpp' to be a file");
 	t_assertm(!System::IsRegularFile(".."), "expected '.' to be a directory");
+	t_assertm(System::IsRegularFile("prjRunTest.sh"), "expected 'prjRunTest.sh' to be a file");
 	t_assertm(System::IsRegularFile("config/Dbg.any"), "expected 'Dbg.any' to be a file");
+	String strLinkToPrjRunTest("aLinkToPrjRunTest");
+	if ( assertComparem( System::eSuccess, equal_to, System::CreateSymbolicLink("prjRunTest.sh", strLinkToPrjRunTest) , "expected creation of symbolic link to file to succeed" ) ) {
+		t_assertm(System::IsSymbolicLink(strLinkToPrjRunTest), "expected link to be valid");
+		t_assertm(!System::IsDirectory(strLinkToPrjRunTest), "expected link not to be a directory");
+		t_assertm(System::IsRegularFile(strLinkToPrjRunTest), "expected link to point to a regular file");
+		assertComparem( System::eSuccess, equal_to, System::RemoveDirectory(strLinkToPrjRunTest) , "expected removal of symbolic link to succeed" );
+	}
+	String strLinkToDirectory("aLinkToDirectory");
+	if ( assertComparem( System::eSuccess, equal_to, System::CreateSymbolicLink("config", strLinkToDirectory) , "expected creation of symbolic link to file to succeed" ) ) {
+		t_assertm(System::IsSymbolicLink(strLinkToDirectory), "expected link to be valid");
+		t_assertm(System::IsDirectory(strLinkToDirectory), "expected link to point to a directory");
+		t_assertm(!System::IsRegularFile(strLinkToDirectory), "expected link not to be a regular file");
+		assertComparem( System::eSuccess, equal_to, System::RemoveDirectory(strLinkToDirectory) , "expected removal of symbolic link to succeed" );
+	}
 }
 
 void SystemTest::pathListTest()
