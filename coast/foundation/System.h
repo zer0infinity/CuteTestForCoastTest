@@ -370,7 +370,11 @@ private:
 	friend class SystemTest;
 
 	//! checks existence of a path using stat
-	static bool CheckPath(const char *path, struct stat *stbuf);
+	/*! \param path file or directory path
+		\param stbuf stat buffer to fill
+		\param bIsSymbolicLink set to true if the given path is a link pointing either to a file or directory. The st_mode member of the stat param will be set to the real type the link points to.
+		\return true in case the call to stat was successful */
+	static bool CheckPath(const char *path, struct stat *stbuf, bool &bIsSymbolicLink);
 
 	//! internal method that opens a stream if possible
 	/*! \param resultPath the location of the iostream opened

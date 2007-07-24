@@ -593,15 +593,28 @@ iostream *System::IntOpenStream(String &resultPath, const char *name, const char
 	return Ios;
 }
 
-bool System::CheckPath(const char *path, struct stat *stbuf)
+bool System::CheckPath(const char *path, struct stat *stbuf, bool &bIsSymbolicLink)
 {
 	StartTrace(System.CheckPath);
 	bool result = false;
 	while ( !(result = (lstat(path, stbuf) == 0)) && SyscallWasInterrupted() ) {
+		String msg("OOPS, lstat failed with ");
+		msg << SysLog::LastSysError() << " on " << path;
+		Trace(msg);
+		SYSWARNING(msg);
+	}
+	bIsSymbolicLink = ( result ? S_ISLNK(stbuf->st_mode) : false );
+	if ( result ) {
+		Trace("mode field value of lstat: " << (long)stbuf->st_mode);
+	}
+	while ( !(result = (stat(path, stbuf) == 0)) && SyscallWasInterrupted() ) {
 		String msg("OOPS, stat failed with ");
 		msg << SysLog::LastSysError() << " on " << path;
 		Trace(msg);
 		SYSWARNING(msg);
+	}
+	if ( result ) {
+		Trace("mode field value of stat: " << (long)stbuf->st_mode);
 	}
 	return result;
 }
@@ -685,7 +698,8 @@ bool System::FindFile(String &fullPathName, const char *file, const char *path)
 bool System::IsRegularFile(const char *path)
 {
 	struct stat stbuf;
-	if ( CheckPath(path, &stbuf) ) {
+	bool bIsSymbolicLink;
+	if ( CheckPath(path, &stbuf, bIsSymbolicLink) ) {
 #if defined(WIN32)
 		// our version of MSDEV compiler (V 5) at least not fully
 		// posix compatible.
@@ -700,7 +714,8 @@ bool System::IsRegularFile(const char *path)
 bool System::IsDirectory(const char *path)
 {
 	struct stat stbuf;
-	if ( CheckPath(path, &stbuf) ) {
+	bool bIsSymbolicLink;
+	if ( CheckPath(path, &stbuf, bIsSymbolicLink) ) {
 #if defined(WIN32)
 		// our version of MSDEV compiler (V 5) at least not fully
 		// posix compatible.
@@ -715,14 +730,9 @@ bool System::IsDirectory(const char *path)
 bool System::IsSymbolicLink(const char *path)
 {
 	struct stat stbuf;
-	if ( CheckPath(path, &stbuf) ) {
-#if defined(WIN32)
-		// our version of MSDEV compiler (V 5) at least not fully
-		// posix compatible.
-		return ((stbuf.st_mode & _S_IFMT) == _S_IFDIR );
-#else
-		return S_ISLNK(stbuf.st_mode);
-#endif
+	bool bIsSymbolicLink = false;
+	if ( CheckPath(path, &stbuf, bIsSymbolicLink) ) {
+		return bIsSymbolicLink;
 	}
 	return false;
 }
@@ -731,7 +741,8 @@ bool System::GetFileSize(const char *path, ul_long &ulFileSize)
 {
 	StartTrace1(System.GetFileSize, "path to file [" << NotNull(path) << "]");
 	struct stat stbuf;
-	if ( CheckPath(path, &stbuf) ) {
+	bool bIsSymbolicLink;
+	if ( CheckPath(path, &stbuf, bIsSymbolicLink) ) {
 		ulFileSize = stbuf.st_size;
 		Trace("file size: " << (long)ulFileSize << " bytes");
 		return true;
