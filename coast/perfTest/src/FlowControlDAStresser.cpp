@@ -81,9 +81,10 @@ Anything FlowControlDAStresser::Run( long id)
 
 		long Start = 0;
 		long End = 0;
+		long Range = 0;
 
 		if ( fConfig.IsDefined( "Range" ) ) {
-			long Range = fConfig["Range"].AsLong();
+			Range = fConfig["Range"].AsLong();
 			Start = (id - 1) * Range;
 			End = Start + Range - 1;
 		} else {
@@ -113,6 +114,7 @@ Anything FlowControlDAStresser::Run( long id)
 			Diff = 1;
 		}
 
+		Trace("id: [" << id << "] Range: [" << Range << "] Start: [" << Start << "] End: [" << End << "] Diff: [" << Diff  << "]");
 		while ( true ) {
 			Trace("PrepareRequest" );
 			bool bPrepareRequestSucceeded;
