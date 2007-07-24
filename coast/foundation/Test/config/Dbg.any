@@ -117,9 +117,10 @@
 		/EnableAll						1000
 	}
 	/System {
-		/MainSwitch						11
+		/MainSwitch						20
 		/EnableAll						11
 		/FindFile						1000
+		/CheckPath						-20
 		/DoSingleSelect					1000
 	}
 	/EndPoint {
