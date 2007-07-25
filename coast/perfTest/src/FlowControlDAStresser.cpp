@@ -97,8 +97,11 @@ Anything FlowControlDAStresser::Run( long id)
 		long currentOffset = 0;
 		String appName;
 		Application *application = Application::GetGlobalApplication(appName);
+		long idAndCurrentOffset = 0;
 		if ( application ) {
 			currentOffset = application->Lookup("OFFSET", 0L);
+			idAndCurrentOffset = currentOffset + id - 1;
+			env["IdAndCurrentOffset"] = idAndCurrentOffset;
 			Trace(appName << " application found" );
 		}
 
@@ -114,7 +117,8 @@ Anything FlowControlDAStresser::Run( long id)
 			Diff = 1;
 		}
 
-		Trace("id: [" << id << "] Range: [" << Range << "] Start: [" << Start << "] End: [" << End << "] Diff: [" << Diff  << "]");
+		Trace("id: [" << id << "] IdAndCurrentOffset: [" << idAndCurrentOffset << "] Range: [" <<
+			  Range << "] Start: [" << Start << "] End: [" << End << "] Diff: [" << Diff  << "]");
 		while ( true ) {
 			Trace("PrepareRequest" );
 			bool bPrepareRequestSucceeded;
