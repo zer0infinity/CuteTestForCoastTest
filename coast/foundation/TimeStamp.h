@@ -22,12 +22,14 @@ class EXPORTDECL_FOUNDATION TimeStamp
 {
 	friend class TimeStampTest;
 public:
+	typedef time_t TSIntNumberType;
+
 	//--- constructors
 	//! With time now
 	explicit TimeStamp(Allocator *pAlloc = Storage::Current());
 
 	//! With given UTC
-	explicit TimeStamp(time_t utc, Allocator *pAlloc = Storage::Current());
+	explicit TimeStamp(TSIntNumberType utc, Allocator *pAlloc = Storage::Current());
 
 	//! With given string timestamp
 	TimeStamp(const String &externalTimeRep, Allocator *pAlloc = Storage::Current());
@@ -139,7 +141,7 @@ public:
 	TimeStamp &operator-=(long deltasecs);
 
 	TimeStamp &operator=(const TimeStamp &aStamp);
-	TimeStamp &operator=(time_t lTimeUtc);
+	TimeStamp &operator=(TSIntNumberType lTimeUtc);
 	TimeStamp &operator=(String strStamp);
 	TimeStamp &Set(const String &externalTimeRep);
 
@@ -197,9 +199,9 @@ protected:
 		}
 		String TraceIntValues() const;
 		bool IsValidDate() const;
-		time_t AsTimeT() const;
+		TSIntNumberType AsTimeT() const;
 		String AsString() const;
-		bool InitFromTimeT(time_t lTime);
+		bool InitFromTimeT(TSIntNumberType lTime);
 		/*! calculate the day of week where Sunday is day 0, Monday day 1 and so on.
 			An algorithm description can be found at: http://en.wikipedia.org/wiki/Calculating_the_day_of_the_week
 			\return day of week as described by TimeStamp::eWeekday */
@@ -218,10 +220,10 @@ protected:
 private:
 	String RemoveNonNumericalChars(const String &externalTimeRep);
 	bool IntDoInit(const String &externalTimeRep);
-	bool SetTimeT(time_t lTime);
+	bool SetTimeT(TSIntNumberType lTime);
 	String IntTimeTAsString() const;
 
-	time_t fTime;
+	TSIntNumberType fTime;
 	String fRep;
 	bool fTimeSet;
 };

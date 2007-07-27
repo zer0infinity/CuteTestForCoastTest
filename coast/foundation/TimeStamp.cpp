@@ -48,7 +48,7 @@ TimeStamp::TimeStamp(const TimeStamp &aTimeStamp)
 }
 
 //! With given UTC
-TimeStamp::TimeStamp(time_t utc, Allocator *pAlloc)
+TimeStamp::TimeStamp(TSIntNumberType utc, Allocator *pAlloc)
 	: fTime(0)
 	, fRep(15, pAlloc)
 	, fTimeSet(false)
@@ -141,7 +141,7 @@ bool TimeStamp::IntDoInit(const String &externalTimeRep)
 	return true;
 }
 
-bool TimeStamp::SetTimeT(time_t lTime)
+bool TimeStamp::SetTimeT(TSIntNumberType lTime)
 {
 	StartTrace(TimeStamp.SetTimeT);
 	bool bRet = false;
@@ -236,13 +236,13 @@ String TimeStamp::IntTimeTAsString() const
 TimeStamp TimeStamp::operator+(long deltasecs) const
 {
 	StartTrace(TimeStamp.operator + );
-	return TimeStamp((time_t)(AsLong() + deltasecs));
+	return TimeStamp((TSIntNumberType)(AsLong() + deltasecs));
 }
 
 TimeStamp TimeStamp::operator-(long deltasecs) const
 {
 	StartTrace(TimeStamp.operator - );
-	return TimeStamp((time_t)(AsLong() - deltasecs));
+	return TimeStamp((TSIntNumberType)(AsLong() - deltasecs));
 }
 
 TimeStamp &TimeStamp::operator=(const TimeStamp &aStamp)
@@ -255,7 +255,7 @@ TimeStamp &TimeStamp::operator=(const TimeStamp &aStamp)
 	return *this;
 }
 
-TimeStamp &TimeStamp::operator=(time_t lTimeUtc)
+TimeStamp &TimeStamp::operator=(TSIntNumberType lTimeUtc)
 {
 	StartTrace1(TimeStamp.operator = , "time_t");
 	SetTimeT(lTimeUtc);
@@ -330,10 +330,10 @@ String TimeStamp::intTimeRep::AsString() const
 	return result;
 }
 
-time_t TimeStamp::intTimeRep::AsTimeT() const
+TimeStamp::TSIntNumberType TimeStamp::intTimeRep::AsTimeT() const
 {
 	StartTrace(TimeStamp.AsTimeT);
-	time_t lTime = 0;
+	TSIntNumberType lTime = 0;
 	long year = (cCent * 100) + cYear;
 	// now calc the seconds
 	lTime = (year - 1970) * TimeStamp::YEAR;
@@ -355,7 +355,7 @@ time_t TimeStamp::intTimeRep::AsTimeT() const
 	return lTime;
 }
 
-bool TimeStamp::intTimeRep::InitFromTimeT(time_t lTime)
+bool TimeStamp::intTimeRep::InitFromTimeT(TSIntNumberType lTime)
 {
 	StartTrace(TimeStamp.InitFromTimeT);
 	// normal case, do a brain dead standalone conversion, which should be fast!
