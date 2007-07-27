@@ -16,6 +16,7 @@
 #include "ITOTypeTraits.h"
 
 //---- c-module include -----------------------------------------------------
+#include <algorithm>
 #include <list>
 
 //---- class ObjectList ----------------------------------------------------------------
@@ -23,13 +24,23 @@
 template<typename Tp>
 class EXPORTDECL_FOUNDATION ObjectList : public std::list<Tp>
 {
-	// tricky section to determine if given type is a pointer and deletable
-	// ideas from Alexandrescu, loki-lib
-	enum DeleteFuncSelector { Reftype, Pointertype };
+	typedef std::list<Tp> BaseClassType;
+	typedef typename ObjectList::const_iterator ListIterator;
 
-	void DoDeleteObject(const typename std::list<Tp>::value_type &newObjPtr, Loki::Int2Type<Reftype> ) {};
-	void DoDeleteObject(const typename std::list<Tp>::value_type &newObjPtr, Loki::Int2Type<Pointertype> ) {
-		delete newObjPtr;
+	//! we have to delete elements if they were pointers, let an appropriate function do this work
+	struct DeleteWrapper {
+		// tricky section to determine if given type is a pointer and deletable
+		// ideas from Alexandrescu, loki-lib
+		enum DeleteFuncSelector { Reftype, Pointertype };
+		enum { delAlgo = (Loki::TypeTraits<Tp>::isPointer) ? Pointertype : Reftype };
+
+		void DoDeleteObject(const typename BaseClassType::value_type &newObjPtr, Loki::Int2Type<Reftype> ) {};
+		void DoDeleteObject(const typename BaseClassType::value_type &newObjPtr, Loki::Int2Type<Pointertype> ) {
+			delete newObjPtr;
+		}
+		void operator() (Tp pElement) {
+			DoDeleteObject(pElement, Loki::Int2Type<delAlgo>() );
+		}
 	};
 
 public:
@@ -41,7 +52,7 @@ public:
 	{}
 
 	ObjectList(const ObjectList<Tp> &aList)
-		: std::list<Tp>(aList)
+		: BaseClassType(aList)
 		, fShutdown(aList.fShutdown)
 		, fDestructiveShutdown(false)	// set to false not to accidentally delete an element twice
 		, fpAlloc(aList.fpAlloc ? aList.fpAlloc : Storage::Global())
@@ -52,17 +63,12 @@ public:
 		StartTrace1(ObjectList.~ObjectList, (fDestructiveShutdown ? "destructive" : ""));
 		if ( fDestructiveShutdown ) {
 			// no more workers waiting and capable of emptying the list
-			// we have to delete elements if they were pointers, let an appropriate function do this work
-			enum { delAlgo = (Loki::TypeTraits<Tp>::isPointer) ? Pointertype : Reftype };
-			while ( IntGetSize() > 0 ) {
-				Tp pElement;
-				IntRemoveHead(pElement);
-				DoDeleteObject(pElement, Loki::Int2Type<delAlgo>() );
-			}
+			std::for_each(this->begin(), this->end(), DeleteWrapper());
+			this->clear();
 		}
 	}
 
-	bool InsertTail(const typename std::list<Tp>::value_type &newObjPtr) {
+	bool InsertTail(const typename BaseClassType::value_type &newObjPtr) {
 		return DoInsertTail(newObjPtr);
 	}
 
@@ -71,7 +77,7 @@ public:
 		\param lSecs unused
 		\param lNanosecs unused
 		\return true only when an element could be get, false in case the list was empty or we are in shutdown mode */
-	bool RemoveHead(typename std::list<Tp>::reference aElement, long lSecs = 0L, long lNanosecs = 0L) {
+	bool RemoveHead(typename BaseClassType::reference aElement, long lSecs = 0L, long lNanosecs = 0L) {
 		return DoRemoveHead(aElement, lSecs, lNanosecs);
 	}
 
@@ -104,7 +110,7 @@ protected:
 		\param lSecs unused
 		\param lNanosecs unused
 		\return true only when an element could be get, false in case the list was empty or we are in shutdown mode */
-	virtual bool DoRemoveHead(typename std::list<Tp>::reference aElement, long lSecs = 0L, long lNanosecs = 0L) {
+	virtual bool DoRemoveHead(typename BaseClassType::reference aElement, long lSecs = 0L, long lNanosecs = 0L) {
 		StartTrace(ObjectList.DoRemoveHead);
 		if ( !IsShuttingDown() && !IntIsEmpty() ) {
 			IntRemoveHead(aElement);
@@ -115,7 +121,7 @@ protected:
 		return false;
 	}
 
-	virtual bool DoInsertTail(const typename std::list<Tp>::value_type &newObjPtr) {
+	virtual bool DoInsertTail(const typename BaseClassType::value_type &newObjPtr) {
 		StartTrace(ObjectList.DoInsertTail);
 		if ( !IsShuttingDown() ) {
 			push_back(newObjPtr);
@@ -152,7 +158,7 @@ private:
 		return this->empty();
 	}
 
-	void IntRemoveHead(typename std::list<Tp>::reference aElement) {
+	void IntRemoveHead(typename BaseClassType::reference aElement) {
 		aElement = this->front();
 		this->pop_front();
 	}
