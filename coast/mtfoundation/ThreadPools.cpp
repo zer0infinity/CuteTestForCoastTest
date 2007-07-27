@@ -52,7 +52,7 @@ bool ThreadPoolManager::Init(int maxParallelRequests, ROAnything roaThreadArgs)
 	return false;
 }
 
-int ThreadPoolManager::Start(bool usePoolStorage, int poolStorageSize, int numOfPoolBucketSizes)
+int ThreadPoolManager::Start(bool usePoolStorage, int poolStorageSize, int numOfPoolBucketSizes, ROAnything roaThreadArgs)
 {
 	StartTrace(ThreadPoolManager.Start);
 	if ( GetPoolSize() > 0 ) {
@@ -64,7 +64,7 @@ int ThreadPoolManager::Start(bool usePoolStorage, int poolStorageSize, int numOf
 					// use different memory manager for each thread
 					pAlloc = MT_Storage::MakePoolAllocator(poolStorageSize, numOfPoolBucketSizes, 0);
 				}
-				t->Start( pAlloc );
+				t->Start( pAlloc, DoGetStartConfig(i, roaThreadArgs) );
 			}
 		}
 		MutexEntry me(fMutex);
@@ -186,7 +186,7 @@ bool ThreadPoolManager::DoAllocPool(long poolSize, ROAnything roaThreadArgs)
 	StartTrace(ThreadPoolManager.DoAllocPool);
 
 	for (long i = 0; i < poolSize; ++i) {
-		Thread *t = DoAllocThread(DoGetConfig(i, roaThreadArgs));
+		Thread *t = DoAllocThread(DoGetInitConfig(i, roaThreadArgs));
 		if (!t) {
 			Trace("Alloc of thread[" << i << "] failed");
 			return false;
@@ -206,7 +206,7 @@ bool ThreadPoolManager::InitPool(ROAnything roaThreadArgs)
 			SYSWARNING("could not allocate thread[" << i << "]");
 			return false;
 		}
-		if ( t->Init( DoGetConfig(i, roaThreadArgs) ) != 0 ) {
+		if ( t->Init( DoGetInitConfig(i, roaThreadArgs) ) != 0 ) {
 			Trace("init of thread[" << i << "] failed");
 			return false;
 		}
@@ -239,7 +239,12 @@ long ThreadPoolManager::GetPoolSize()
 	return fThreadPool.GetSize();
 }
 
-ROAnything ThreadPoolManager::DoGetConfig(long i, ROAnything roaThreadArgs)
+ROAnything ThreadPoolManager::DoGetInitConfig(long i, ROAnything roaThreadArgs)
+{
+	return roaThreadArgs[i];
+}
+
+ROAnything ThreadPoolManager::DoGetStartConfig(long i, ROAnything roaThreadArgs)
 {
 	return roaThreadArgs[i];
 }

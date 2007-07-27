@@ -38,8 +38,9 @@ public:
 		\param usePoolStorage set to true if you want to use special pool memory
 		\param poolStorageSize size in kB of the total allocated pool memory
 		\param numOfPoolBucketSizes how many different pool buckets to reserve
+		\param roaThreadArgs ROAnything carrying thread specific information
 		\return 0 when all threads could be started, negative number either when there is no thread in the pool or not all of the threads could be started */
-	virtual int Start(bool usePoolStorage, int poolStorageSize, int numOfPoolBucketSizes);
+	virtual int Start(bool usePoolStorage, int poolStorageSize, int numOfPoolBucketSizes, ROAnything roaThreadArgs = ROAnything());
 
 	/*! blocks until termination of all pool threads, waits at least 1 second if threads are running
 		\param lMaxSecsToWait how many seconds to wait until all threads are not running anymore, specify 0 to wait until all Threads have terminated
@@ -94,11 +95,17 @@ protected:
 		\return pointer to the Thread object if it is valid */
 	virtual Thread *DoGetThread(long i);
 
-	/*! access configuration for the ith thread, overwrite this method if you do not want to use roaThreadArgs[i] as the threads specific arguments
+	/*! access configuration for the ith thread, overwrite this method if you do not want to use roaThreadArgs[i] as the threads specific arguments when initializing it
 		\param i index of the thread to get the configuration for, poolSize > i >=0
 		\param roaThreadArgs ROAnything carrying thread specific information
 		\return roaThreadArgs[i] or an empty ROAnything */
-	virtual ROAnything DoGetConfig(long i, ROAnything roaThreadArgs);
+	virtual ROAnything DoGetInitConfig(long i, ROAnything roaThreadArgs);
+
+	/*! access configuration for the ith thread, overwrite this method if you do not want to use roaThreadArgs[i] as the threads specific arguments when starting it
+		\param i index of the thread to get the configuration for, poolSize > i >=0
+		\param roaThreadArgs ROAnything carrying thread specific information
+		\return roaThreadArgs[i] or an empty ROAnything */
+	virtual ROAnything DoGetStartConfig(long i, ROAnything roaThreadArgs);
 
 	/*! Terminate all pool threads
 		\param lWaitToTerminate how many seconds should we wait until a thread is in terminated state
@@ -240,11 +247,17 @@ protected:
 //		\return pointer to the resource object if it is valid */
 //	virtual Thread *DoGetThread(long i);
 //
-//	/*! access configuration for the ith resource, overwrite this method if you do not want to use roaResourceArgs[i] as the resources specific arguments
+//	/*! access configuration for the ith resource, overwrite this method if you do not want to use roaResourceArgs[i] as the resources specific arguments when initializing it
 //		\param i index of the resource to get the configuration for, poolSize > i >=0
 //		\param roaResourceArgs ROAnything carrying resource specific information
 //		\return roaResourceArgs[i] or an empty ROAnything */
-//	virtual ROAnything DoGetConfig(long i, ROAnything roaResourceArgs);
+//	virtual ROAnything DoGetInitConfig(long i, ROAnything roaResourceArgs);
+//
+//	/*! access configuration for the ith resource, overwrite this method if you do not want to use roaResourceArgs[i] as the resources specific arguments when starting it
+//		\param i index of the resource to get the configuration for, poolSize > i >=0
+//		\param roaResourceArgs ROAnything carrying resource specific information
+//		\return roaResourceArgs[i] or an empty ROAnything */
+//	virtual ROAnything DoGetStartConfig(long i, ROAnything roaResourceArgs);
 //
 //	/*! Terminate all pool resources
 //		\param lWaitToTerminate how many seconds should we wait until a resource is in terminated state
