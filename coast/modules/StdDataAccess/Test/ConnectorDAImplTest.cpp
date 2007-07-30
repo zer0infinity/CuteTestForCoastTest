@@ -22,6 +22,10 @@
 #include "System.h"
 #include "DataAccess.h"
 
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
+
 //--- c-modules used -----------------------------------------------------------
 #if defined(WIN32)
 #include <io.h>				// for SO_ERROR
