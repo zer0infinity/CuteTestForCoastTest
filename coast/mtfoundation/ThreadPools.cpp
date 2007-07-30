@@ -16,6 +16,10 @@
 #include "WPMStatHandler.h"
 #include "Dbg.h"
 
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
+
 //--- c-library modules used ---------------------------------------------------
 
 //---- ThreadPoolManager ---------------------------------------------------------
