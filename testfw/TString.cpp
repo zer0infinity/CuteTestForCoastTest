@@ -20,14 +20,16 @@ using namespace std;
 #else
 #include <iostream.h>
 #endif
-#endif
-#include <ctype.h>
 #include <stdio.h>
+#include <ctype.h>
+#endif
 
 #if defined(__370__) || defined(_ARCH_COM)
 #include <stdlib.h>
 #else
+#if !defined(ONLY_STD_IOSTREAM)
 #include <malloc.h>
+#endif
 #endif
 
 //---- TString ----------------------------------------------------------------

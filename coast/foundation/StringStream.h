@@ -18,7 +18,7 @@
 #define SS_TRACE(msg)
 
 #if defined(ONLY_STD_IOSTREAM)
-using namespace std;
+using std::iostream;
 #define seek_dir seekdir
 #else
 #if !defined(WIN32)

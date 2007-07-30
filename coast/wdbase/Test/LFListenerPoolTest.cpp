@@ -20,6 +20,10 @@
 #include "WPMStatHandler.h"
 #include "RequestProcessor.h"
 
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
+
 //--- TestRequestReactor ----
 //:test driver for lf pool testing
 class TestProcessor: public RequestProcessor

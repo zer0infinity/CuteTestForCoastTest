@@ -16,7 +16,11 @@
 #include "SysLog.h"
 
 //--- c-modules used -----------------------------------------------------------
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#else
 #include <string.h>
+#endif
 
 static const String fgStrEmpty(Storage::Global()); //avoid temporary
 static const Anything fgAnyEmpty(Storage::Global()); // avoid temporary

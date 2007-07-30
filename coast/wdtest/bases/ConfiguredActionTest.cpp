@@ -20,6 +20,10 @@
 #include "AnyUtils.h"
 #include "Timers.h"
 
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
+
 //--- c-library modules used ---------------------------------------------------
 
 //---- ConfiguredActionTest ----------------------------------------------------------------

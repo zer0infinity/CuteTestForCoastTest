@@ -13,6 +13,10 @@
 #include "StringStream.h"
 #include "Dbg.h"
 
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
+
 RegisterDataAccessImpl(MapperTestDAImpl);
 
 MapperTestDAImpl::MapperTestDAImpl(const char *name) : DataAccessImpl(name)

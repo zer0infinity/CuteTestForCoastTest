@@ -16,6 +16,10 @@
 #include "RequestProcessor.h"
 #include "Dbg.h"
 
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
+
 //---- SimpleDataAccessService -----------------------------------------------------------
 RegisterServiceHandler(SimpleDataAccessService);
 

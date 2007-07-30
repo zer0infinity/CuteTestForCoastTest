@@ -19,6 +19,10 @@
 #include "StringStream.h"
 #include "Dbg.h"
 
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
+
 //--- c-library modules used ---------------------------------------------------
 
 #define MILISEC 1000000 /* 1 million nanoseconds */

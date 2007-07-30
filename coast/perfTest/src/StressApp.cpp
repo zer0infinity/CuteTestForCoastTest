@@ -16,6 +16,10 @@
 #include "Stresser.h"
 #include "Dbg.h"
 
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
+
 RegisterApplication(StressApp);
 
 StressApp::StressApp()

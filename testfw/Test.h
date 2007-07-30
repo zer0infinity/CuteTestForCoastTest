@@ -14,11 +14,15 @@
 
 #include "TString.h"
 #include <functional>
+using std::equal_to;
+using std::not_equal_to;
+using std::less;
+using std::less_equal;
+using std::greater;
+using std::greater_equal;
 
 class TestResult;
 class Anything;
-
-using namespace std;
 
 //template
 //<

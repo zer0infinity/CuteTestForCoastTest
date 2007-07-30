@@ -6,23 +6,23 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- c-modules used -----------------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "Dbg.h"
-#include "IFAConfObject.h"
-
-//--- project modules used -----------------------------------------------------
-
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
+//--- interface include --------------------------------------------------------
+#include "ROAnyConfNamedObjectLookupAdapterTest.h"
 
 //--- module under test --------------------------------------------------------
 #include "AnyLookupInterfaceAdapter.h"
 
-//--- interface include --------------------------------------------------------
-#include "ROAnyConfNamedObjectLookupAdapterTest.h"
+//--- test modules used --------------------------------------------------------
+#include "TestSuite.h"
+
+//--- standard modules used ----------------------------------------------------
+#include "Dbg.h"
+
+//--- c-modules used -----------------------------------------------------------
+
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
 
 RegCacheImpl(TestConfNamedObj);				// FindTestConfNamedObj()
 RegisterTestConfNamedObj(TestConfNamedObj);

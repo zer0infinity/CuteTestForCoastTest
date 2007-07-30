@@ -21,10 +21,11 @@
 #include "Context.h"
 #include "Dbg.h"
 
-//--- c-library modules used ---------------------------------------------------
-#if !defined(WIN32)
-#include <unistd.h>
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
 #endif
+
+//--- c-library modules used ---------------------------------------------------
 
 //---- AppBooterTest ----------------------------------------------------------------
 AppBooterTest::AppBooterTest(TString tname) : TestCaseType(tname)

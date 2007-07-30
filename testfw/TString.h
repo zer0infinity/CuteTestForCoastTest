@@ -119,8 +119,8 @@ public:
 	operator const char *() const;
 
 protected:
-	friend  istream &operator>>(istream &is, TString &s);
-	friend  ostream  &operator<<(ostream &os, const TString &s);
+	friend istream &operator>>(istream &is, TString &s);
+	friend ostream  &operator<<(ostream &os, const TString &s);
 
 	friend istream  &getline(istream &is, TString &s, char c);
 

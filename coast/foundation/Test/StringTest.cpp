@@ -17,10 +17,15 @@
 #include "StringStream.h"
 #include "Dbg.h"
 
-//--- c-library modules used ---------------------------------------------------
-#include <ctype.h>
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#else
 #include <string.h>
 #include <limits.h>
+#endif
+
+//--- c-library modules used ---------------------------------------------------
+#include <ctype.h>
 #include <float.h>
 
 StringTest::StringTest (TString tname)

@@ -14,6 +14,10 @@
 #include "SysLog.h"
 #include "Dbg.h"
 
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
+
 //---- Any utilities
 void AnyUtils::ShowDifferences( String &masterString, String &inputString, ostream *verbose )
 {

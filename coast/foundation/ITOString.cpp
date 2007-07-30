@@ -19,15 +19,16 @@
 //	#include "a2ee2a.h"
 #endif
 #include <ctype.h>
-#include <string.h>
-#include <stdio.h>
 #ifdef _AIX
 #include <strings.h>
 #endif
 #if defined(ONLY_STD_IOSTREAM)
 #include <limits>	// for numeric_limits
+using namespace std;
 #else
 #include <float.h>	// for DBL_DIG
+#include <string.h>
+#include <stdio.h>
 #endif
 
 //---- String ----------------------------------------------------------------

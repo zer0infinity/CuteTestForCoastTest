@@ -15,7 +15,9 @@
 #if defined(ONLY_STD_IOSTREAM)
 #include <iostream>
 #include <iomanip>
-using namespace std;
+using std::istream;
+using std::ostream;
+using std::ios;
 #else
 #if !defined(WIN32)
 #include <streambuf.h>
@@ -86,7 +88,7 @@ public:
 	//! append length bytes from stream is
 	//! read length bytes as is.
 	//! return value for convenient multi-appends
-	String &Append(istream &is, long length); //
+	String &Append(istream &is, long length);
 
 	//! append string from is,  works like istream::get(char *, len, delim)
 	//! return value for convenient multi-appends

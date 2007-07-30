@@ -14,7 +14,7 @@
 
 #if defined(ONLY_STD_IOSTREAM)
 #include <iostream>
-using namespace std;
+using std::iostream;
 #else
 #include <iostream.h>
 #endif

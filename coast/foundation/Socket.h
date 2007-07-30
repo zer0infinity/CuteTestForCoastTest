@@ -20,6 +20,10 @@
 #include "config_foundation.h"
 #include "Anything.h"
 
+#if defined(ONLY_STD_IOSTREAM)
+using std::iostream;
+#endif
+
 //--- forward declarations ------------------------------------------------------------
 class EXPORTDECL_FOUNDATION AcceptorCallBack;
 

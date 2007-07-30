@@ -25,6 +25,7 @@
 #include <fcntl.h>
 #if defined(ONLY_STD_IOSTREAM)
 #include <fstream>
+using namespace std;
 #else
 #include <fstream.h>
 #endif

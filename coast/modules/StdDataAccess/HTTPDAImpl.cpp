@@ -21,6 +21,10 @@
 #include "SysLog.h"
 #endif
 
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
+
 //--- HTTPDAImpl -----------------------------------------------------
 RegisterDataAccessImpl(HTTPDAImpl);
 

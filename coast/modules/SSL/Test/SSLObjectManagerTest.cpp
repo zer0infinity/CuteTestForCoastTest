@@ -19,6 +19,10 @@
 #include "Dbg.h"
 #include "SSLSocket.h"
 
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
+
 //--- c-modules used -----------------------------------------------------------
 
 //---- SSLObjectManagerTest ----------------------------------------------------------------

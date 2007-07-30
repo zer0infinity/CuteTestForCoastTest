@@ -11,6 +11,7 @@
 
 #include "IFAConfObject.h"
 #include "ITOTypeTraits.h"
+#include "Dbg.h"
 
 //---- AnyLookupInterfaceAdapter ----------------------------------------------------------
 /*! <B>Wraps [RO]Anything in a LookupInterface (as needed eg. by Context::Push())</B> */

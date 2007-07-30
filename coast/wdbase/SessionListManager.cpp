@@ -23,6 +23,10 @@
 #include "Dbg.h"
 #include "Context.h"
 
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
+
 //--- c-library modules used ---------------------------------------------------
 
 //---- CleanSessions ----------------------------------------------------------

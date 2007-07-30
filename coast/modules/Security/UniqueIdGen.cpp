@@ -24,8 +24,13 @@
 #include <sys/time.h>
 #endif
 
-//--- c-modules used -----------------------------------------------------------
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#else
 #include <string.h>
+#endif
+
+//--- c-modules used -----------------------------------------------------------
 
 //---- UniqueIdGen ----------------------------------------------------------------
 UniqueIdGen::UniqueIdGen()

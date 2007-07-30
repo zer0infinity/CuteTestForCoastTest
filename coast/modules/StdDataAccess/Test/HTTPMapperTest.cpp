@@ -20,6 +20,10 @@
 #include "System.h"
 #include "Dbg.h"
 
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
+
 //---- HTTPMapperTest ----------------------------------------------------------------
 HTTPMapperTest::HTTPMapperTest(TString tname) : TestCaseType(tname)
 {

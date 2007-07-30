@@ -19,8 +19,13 @@
 #include "System.h"
 #include "SysLog.h"
 
-//--- c-library modules used ---------------------------------------------------
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#else
 #include <limits.h>
+#endif
+
+//--- c-library modules used ---------------------------------------------------
 
 const char *const StringStreamTest::fgcContent =
 	"This is the content of a Test String\n"

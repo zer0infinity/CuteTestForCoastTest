@@ -18,6 +18,10 @@
 //--- standard modules used ----------------------------------------------------
 #include "Socket.h"
 
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
+
 //--- c-library modules used ---------------------------------------------------
 #if !defined(WIN32)
 #include <sys/poll.h>

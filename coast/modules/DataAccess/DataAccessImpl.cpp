@@ -48,6 +48,10 @@
 #include "SysLog.h"
 #include "Dbg.h"
 
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
+
 //---- DataAccessImplsModule -----------------------------------------------------------
 RegisterModule(DataAccessImplsModule);
 

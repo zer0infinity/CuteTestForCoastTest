@@ -6,21 +6,24 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- c-modules used -----------------------------------------------------------
+//--- interface include --------------------------------------------------------
+#include "HTTPChunkedOStreamTest.h"
+
+//--- module under test --------------------------------------------------------
+#include "HTTPChunkedOStream.h"
+
+//--- test modules used --------------------------------------------------------
+#include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "Dbg.h"
 
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
+//--- c-modules used -----------------------------------------------------------
 
-//--- module under test --------------------------------------------------------
-
-//--- interface include --------------------------------------------------------
-#include "HTTPChunkedOStreamTest.h"
-#include "StringStream.h"
-#include "HTTPChunkedOStream.h"
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
 
 //---- HTTPChunkedOStreamTest ----------------------------------------------------------------
 HTTPChunkedOStreamTest::HTTPChunkedOStreamTest(TString tstrName) : TestCaseType(tstrName)

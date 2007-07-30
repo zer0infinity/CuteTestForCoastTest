@@ -22,6 +22,10 @@
 #include "Renderer.h"
 #include "SecurityModule.h"
 
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
+
 //---- SessionInfoRenderer ----------------------------------------------------------------
 class SessionInfoRenderer : public Renderer
 {

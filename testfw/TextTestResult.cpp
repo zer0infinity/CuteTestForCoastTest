@@ -8,6 +8,7 @@
 
 //--- interface include --------------------------------------------------------
 #include "TextTestResult.h"
+
 //--- standard modules used ----------------------------------------------------
 
 #if defined(ONLY_STD_IOSTREAM)
@@ -19,21 +20,18 @@ void TextTestResult::addError (TestLocation *e)
 {
 	TestResult::addError (e);
 	cerr << "E\n";
-
 }
 
 void TextTestResult::addFailure (TestLocation *e)
 {
 	TestResult::addFailure (e);
 	cerr << "F\n";
-
 }
 
 void TextTestResult::startTest (Test *test)
 {
 	TestResult::startTest (test);
 	cerr << ".";
-
 }
 
 void TextTestResult::printCauses(ostream &stream, TestLocList &causes)

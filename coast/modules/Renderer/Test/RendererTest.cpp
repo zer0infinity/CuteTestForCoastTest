@@ -6,16 +6,17 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "StringStream.h"
-#include "Context.h"
+//--- interface include --------------------------------------------------------
+#include "RendererTest.h"
 
 //--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
 
-//--- interface include --------------------------------------------------------
-#include "RendererTest.h"
+//--- standard modules used ----------------------------------------------------
+
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
 
 RendererTest::RendererTest(TString tname) : TestCaseType(tname),
 	fContext(Anything(), Anything(), 0, 0, 0, 0), fReply(), fConfig()

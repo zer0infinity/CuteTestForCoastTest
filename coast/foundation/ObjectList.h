@@ -20,7 +20,6 @@
 #include <list>
 
 //---- class ObjectList ----------------------------------------------------------------
-
 template<typename Tp>
 class EXPORTDECL_FOUNDATION ObjectList : public std::list<Tp>
 {

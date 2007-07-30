@@ -20,6 +20,10 @@
 #include "SysLog.h"
 #include "AnyIterators.h"
 
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
+
 //--- c-library modules used ---------------------------------------------------
 #include <fcntl.h>
 

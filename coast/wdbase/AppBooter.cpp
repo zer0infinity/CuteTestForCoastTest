@@ -19,6 +19,10 @@
 #include "URLUtils.h"
 #include "Dbg.h"
 
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
+
 //--- c-library modules used ---------------------------------------------------
 #if !defined(WIN32)
 // used for dynamic load of libraries

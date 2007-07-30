@@ -6,19 +6,19 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "StringStream.h"
-#include "Context.h"
-#include "WDModule.h"
+//--- interface include --------------------------------------------------------
+#include "FormRendererTest.h"
 
 //--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
 
+//--- standard modules used ----------------------------------------------------
+
 //--- module under test --------------------------------------------------------
 
-//--- interface include --------------------------------------------------------
-#include "FormRendererTest.h"
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
 
 FormRendererTest::FormRendererTest (TString tname) : TestCaseType(tname),
 	fEnvironment(), fRole("FRTestRole"),

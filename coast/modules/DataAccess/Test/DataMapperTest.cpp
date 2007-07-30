@@ -15,6 +15,10 @@
 //--- standard modules used ----------------------------------------------------
 #include "DataMapper.h"
 
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
+
 //--- c-library modules used ---------------------------------------------------
 
 //---- DataMapperTest ----------------------------------------------------------------

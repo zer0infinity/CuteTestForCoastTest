@@ -18,9 +18,7 @@
 #if defined(ONLY_STD_IOSTREAM)
 #include <iostream>
 #include <fstream>
-using std::cin;
-using std::fstream;
-using std::ios;
+using namespace std;
 #else
 #include <fstream.h>
 #endif

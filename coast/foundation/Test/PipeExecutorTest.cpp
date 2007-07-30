@@ -19,6 +19,10 @@
 
 //--- c-library modules used ---------------------------------------------------
 
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
+
 //---- PipeExecutorTest ----------------------------------------------------------------
 PipeExecutorTest::PipeExecutorTest(TString className)
 	: TestCaseType(className)

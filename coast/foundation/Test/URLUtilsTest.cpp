@@ -20,6 +20,8 @@
 #include "System.h"
 #include "Resolver.h"
 
+using namespace std;
+
 //--- c-library modules used ---------------------------------------------------
 
 // utility

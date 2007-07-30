@@ -19,6 +19,10 @@
 #include "System.h"
 #include "PoolAllocator.h"
 
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
+
 //--- c-library modules used ---------------------------------------------------
 #if !defined(WIN32)
 #if !defined(__370__)

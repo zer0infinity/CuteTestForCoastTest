@@ -16,8 +16,11 @@
 #include "MD5Test.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "Anything.h"
 #include "StringStream.h"
+
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
 
 //--- c-library modules used ---------------------------------------------------
 

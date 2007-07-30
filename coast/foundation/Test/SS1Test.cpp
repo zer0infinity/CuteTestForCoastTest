@@ -15,6 +15,10 @@
 //--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
 
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
+
 //--- c-library modules used ---------------------------------------------------
 
 SS1Test::SS1Test(TString tname)

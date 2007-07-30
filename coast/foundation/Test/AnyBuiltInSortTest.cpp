@@ -20,7 +20,11 @@
 #include "DiffTimer.h"
 
 //--- c-modules used -----------------------------------------------------------
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#else
 #include <stdlib.h>
+#endif
 
 //---- AnyBuiltInSortTest ----------------------------------------------------------------
 AnyBuiltInSortTest::AnyBuiltInSortTest(TString tstrName) : TestCaseType(tstrName)

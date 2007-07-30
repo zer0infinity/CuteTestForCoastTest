@@ -17,8 +17,13 @@
 
 //--- standard modules used ----------------------------------------------------
 
-//--- c-modules used -----------------------------------------------------------
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#else
 #include <stdlib.h>
+#endif
+
+//--- c-modules used -----------------------------------------------------------
 #include "gzio.h"
 
 //---- ZipStreamTest ----------------------------------------------------------------

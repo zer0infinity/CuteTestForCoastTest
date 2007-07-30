@@ -22,6 +22,8 @@
 //--- c-modules used -----------------------------------------------------------
 #include <typeinfo>
 
+using namespace std;
+
 //---- TypeTraitsTest ----------------------------------------------------------------
 TypeTraitsTest::TypeTraitsTest(TString tstrName)
 	: TestCaseType(tstrName)

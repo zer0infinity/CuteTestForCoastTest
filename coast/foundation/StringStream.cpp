@@ -14,6 +14,10 @@
 
 //--- c-library modules used ---------------------------------------------------
 
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
+
 bool NSStringStream::PlainCopyStream2Stream(istream *streamSrc, ostream &streamDest, long &copiedBytes, long lBytes2Copy)
 {
 	StartTrace(StringStream.PlainCopyStream2Stream);

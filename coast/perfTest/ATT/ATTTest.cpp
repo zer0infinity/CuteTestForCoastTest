@@ -9,20 +9,22 @@
 //--- interface include --------------------------------------------------------
 #include "ATTTest.h"
 
-//--- standard modules used ----------------------------------------------------
-#include "System.h"
-#include "SysLog.h"
-#include "StringStream.h"
-#include "Dbg.h"
-
-//--- project modules used -----------------------------------------------------
-#include "Scheduler.h"
+//--- module under test --------------------------------------------------------
+#include "Stresser.h"
 
 //--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
 
-//--- module under test --------------------------------------------------------
-#include "Stresser.h"
+//--- project modules used -----------------------------------------------------
+#include "Scheduler.h"
+
+//--- standard modules used ----------------------------------------------------
+#include "SysLog.h"
+#include "Dbg.h"
+
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
 
 //--- c-library modules used ---------------------------------------------------
 

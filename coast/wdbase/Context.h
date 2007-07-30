@@ -20,6 +20,10 @@ class Page;
 class Server;
 class Socket;
 
+#if defined(ONLY_STD_IOSTREAM)
+using std::iostream;
+#endif
+
 //---- Context -------------------------------------------------------------------
 //!Request Context object that contains read only configuration information and read writeable stores
 class EXPORTDECL_WDBASE Context : public virtual LookupInterface

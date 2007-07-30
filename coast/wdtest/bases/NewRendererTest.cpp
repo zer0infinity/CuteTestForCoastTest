@@ -20,6 +20,10 @@
 #include "Page.h"
 #include "Role.h"
 
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
+
 //---- NewRendererTest ----------------------------------------------------------------
 NewRendererTest::NewRendererTest(TString tname)
 	: TestCaseType(tname)
