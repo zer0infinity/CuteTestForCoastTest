@@ -7,20 +7,24 @@
  */
 
 #if defined(__sun) || defined(WIN32) || defined(__linux__)
-//--- c-library modules used ---------------------------------------------------
-#include <stdlib.h>
+
+//--- interface include --------------------------------------------------------
+#include "LDAPParams.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "Anything.h"
 #include "SysLog.h"
-#include "Context.h"
 #include "StringStream.h"
 #include "Mapper.h"
 #include "LDAPAPI.h"
 #include "Dbg.h"
 
-//--- interface include --------------------------------------------------------
-#include "LDAPParams.h"
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#else
+#include <stdlib.h>
+#endif
+
+//--- c-library modules used ---------------------------------------------------
 
 //--- standard modules used ----------------------------------------------------
 #include "LDAPAPI.h"

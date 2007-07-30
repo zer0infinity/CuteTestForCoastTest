@@ -7,6 +7,7 @@
  */
 
 #if defined(__sun) || defined(WIN32) || defined(__linux__)
+
 //--- interface include --------------------------------------------------------
 #include "LDAPDAImpl.h"
 
@@ -19,6 +20,10 @@
 #include "Renderer.h"
 #include "Dbg.h"
 #include "Timers.h"
+
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
 
 //---- LDAPDAImpl ---------------------------------------------------------
 RegisterDataAccessImpl(LDAPDAImpl);

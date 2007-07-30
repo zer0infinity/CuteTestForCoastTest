@@ -9,14 +9,17 @@
 #ifndef _LDAPParams_H
 #define _LDAPParams_H
 
-#include "config_ldap.h"
-
 #if defined(__sun) || defined(WIN32) || defined(__linux__)
 
+#include "config_ldap.h"
+
+#include "Anything.h"
+
 //---- forward declaration -----------------------------------------------
-class Anything;
 class Mapper;
 class Context;
+class ParameterMapper;
+
 typedef struct ldapmod LDAPMod;
 
 //---- LDAPParams ----------------------------------------------------------
