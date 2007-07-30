@@ -15,9 +15,14 @@
 #include "StringStream.h"
 #include "Dbg.h"
 
-//--- c-library modules used ---------------------------------------------------
+#if defined(ONLY_STD_IOSTREAM)
+#include <algorithm>
+#else
 #include <stdio.h>
 #include <stdlib.h>
+#endif
+
+//--- c-library modules used ---------------------------------------------------
 
 #if !defined(__SUNPRO_CC) ||  __SUNPRO_CC < 0x500
 extern void *operator new(size_t size, void *vp);
@@ -135,12 +140,12 @@ MemTracker *ExcessTrackerElt::FindTrackerForSize(u_long ulPayloadSize)
 {
 	MemTracker *pTracker = NULL;
 	ExcessTrackerElt *pElt = this;
-	ulPayloadSize = itoMAX( ulPayloadSize, fgMinPayloadSize );
+	ulPayloadSize = std::max( ulPayloadSize, fgMinPayloadSize );
 	// the list of trackers is ordered ascending by size
 	while ( pElt != NULL ) {
 		// try if the this tracker is already of correct size
 		if ( ulPayloadSize <= pElt->fulPayloadSize ) {
-			u_long ulNextSmallerBucketPayloadSz = itoMAX( ( pElt->fulPayloadSize >> 1 ), fgMinPayloadSize );
+			u_long ulNextSmallerBucketPayloadSz = std::max( ( pElt->fulPayloadSize >> 1 ), fgMinPayloadSize );
 			if ( ulPayloadSize > ulNextSmallerBucketPayloadSz ) {
 				// payload fits into this trackers range, return the tracker
 				pTracker = pElt->fpTracker;
@@ -156,7 +161,7 @@ MemTracker *ExcessTrackerElt::FindTrackerForSize(u_long ulPayloadSize)
 ExcessTrackerElt *ExcessTrackerElt::InsertTrackerForSize(MemTracker *pTracker, u_long ulPayloadSize)
 {
 	ExcessTrackerElt *pElt = this, *pSmaller = NULL;
-	ulPayloadSize = itoMAX( ulPayloadSize, fgMinPayloadSize );
+	ulPayloadSize = std::max( ulPayloadSize, fgMinPayloadSize );
 	while ( pElt && pElt->fulPayloadSize > 0 ) {
 		if ( pElt->fulPayloadSize > ulPayloadSize ) {
 			// current element is already larger, must insert between pSmaller and pElt
@@ -200,7 +205,7 @@ void ExcessTrackerElt::SetId(long lId)
 
 MemTracker *ExcessTrackerElt::operator[](u_long ulPayloadSize)
 {
-	u_long ulWishSize = itoMAX( GetSizeToPowerOf2(ulPayloadSize), fgMinPayloadSize);
+	u_long ulWishSize = std::max<u_long>( GetSizeToPowerOf2(ulPayloadSize), fgMinPayloadSize);
 	MemTracker *pTracker = FindTrackerForSize(ulWishSize);
 	if ( pTracker == NULL ) {
 		char buf[80] = { 0 };
@@ -406,7 +411,7 @@ PoolAllocator::~PoolAllocator()
 				ulSize >>= 1;
 				--lMaxExcessBit;
 			}
-			lMaxUsedBucket = itoMAX(lMaxUsedBucket, lMaxExcessBit);
+			lMaxUsedBucket = std::max(lMaxUsedBucket, lMaxExcessBit);
 			strUnusedBucketSizes.Append("]\n -> optimal BucketSizesParam: ").Append(lMaxUsedBucket).Append(" now: ").Append(fNumOfPoolBucketSizes).Append("\n");
 			SysLog::WriteToStderr(strUsedBucketSizes.Append('\n'));
 			SysLog::WriteToStderr(strUnusedBucketSizes);

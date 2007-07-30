@@ -19,6 +19,10 @@
 #include "Timers.h"
 #include "System.h"
 
+#if defined(ONLY_STD_IOSTREAM)
+#include <algorithm>
+#endif
+
 //--- c-library modules used ---------------------------------------------------
 #include <limits.h>
 
@@ -658,9 +662,9 @@ CS_RETCODE SybCTnewDA::DoFetchData(DaParams &params, CS_COMMAND *cmd, const CS_I
 		lMaxRows = (lMaxResultSize * 1024) / rowsize;
 	}
 	if ( lParMaxRows != -1L ) {
-		lMaxRows = itoMIN(lMaxRows, lParMaxRows);
+		lMaxRows = std::min(lMaxRows, lParMaxRows);
 	}
-	num_rows = itoMIN(lMaxRows, num_rows);
+	num_rows = std::min(lMaxRows, num_rows);
 	Trace("max number of rows to fetch at once: " << (long)num_rows);
 	Trace("max number of rows to totally fetch: " << lMaxRows);
 
@@ -806,12 +810,12 @@ CS_INT SybCTnewDA::DisplayDlen(CS_DATAFMT *column)
 		case CS_VARCHAR_TYPE:
 		case CS_TEXT_TYPE:
 		case CS_IMAGE_TYPE:
-			len = itoMIN(column->maxlength, MAX_CHAR_BUF);
+			len = std::min<CS_INT>(column->maxlength, MAX_CHAR_BUF);
 			break;
 
 		case CS_BINARY_TYPE:
 		case CS_VARBINARY_TYPE:
-			len = itoMIN((2 * column->maxlength) + 2, MAX_CHAR_BUF);
+			len = std::min<CS_INT>((2 * column->maxlength) + 2, MAX_CHAR_BUF);
 			break;
 
 		case CS_BIT_TYPE:
@@ -852,7 +856,7 @@ CS_INT SybCTnewDA::DisplayDlen(CS_DATAFMT *column)
 			break;
 	}
 
-	return itoMAX(strlen(column->name) + 1, (unsigned)len);
+	return std::max(strlen(column->name) + 1, (unsigned)len);
 }
 
 bool SybCTnewDA::DoFillResults(DaParams &params, CS_INT totalrows, CS_INT numrows, CS_INT numcols, CS_DATAFMT *colfmt, EX_COLUMN_DATA *coldata, bool bTitlesOnce )

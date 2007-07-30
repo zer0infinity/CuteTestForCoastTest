@@ -17,6 +17,7 @@
 #include "Dbg.h"
 
 #if defined(ONLY_STD_IOSTREAM)
+#include <algorithm>
 using namespace std;
 #endif
 
@@ -138,8 +139,8 @@ void StressApp::ShowResult(long lTime)
 			totTr += anzTr;
 			totSteps += anzSteps;
 			totSum += sum;
-			totMax = itoMAX(itopia_max, totMax);
-			totMin = itoMIN(itopia_min, totMin);
+			totMax = std::max(itopia_max, totMax);
+			totMin = std::min(itopia_min, totMin);
 			totErr += err;
 		}
 

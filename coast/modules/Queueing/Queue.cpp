@@ -16,6 +16,10 @@
 #include "SysLog.h"
 #include "DateTime.h"
 
+#if defined(ONLY_STD_IOSTREAM)
+#include <algorithm>
+#endif
+
 //--- c-modules used -----------------------------------------------------------
 
 class CountEntry
@@ -185,7 +189,7 @@ Queue::StatusCode Queue::DoPut(Anything &anyElement)
 		++fPutCount;
 		// need to increment lSize because Append returns index of appended Anything
 		++lSize;
-		fMaxLoad = itoMAX( fMaxLoad, lSize );
+		fMaxLoad = std::max( fMaxLoad, lSize );
 		fSemaFullSlots.Release();
 		eRet = eSuccess;
 	}

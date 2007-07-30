@@ -15,8 +15,13 @@
 #include "MemHeader.h"
 #include "InitFinisManagerFoundation.h"
 
-//--- c-library modules used ---------------------------------------------------
+#if defined(ONLY_STD_IOSTREAM)
+#include <algorithm>
+#else
 #include <string.h>
+#endif
+
+//--- c-library modules used ---------------------------------------------------
 
 #ifdef __370__
 extern "C" void finalize();
@@ -113,7 +118,7 @@ void MemTracker::TrackAlloc(MemoryHeader *mh)
 	fAllocated += mh->fUsableSize;
 	++fNumAllocs;
 	fSizeAllocated += mh->fUsableSize;
-	fMaxAllocated = itoMAX(fMaxAllocated, fAllocated);
+	fMaxAllocated = std::max(fMaxAllocated, fAllocated);
 	// only track used pool memory buckets
 	if ( fpUsedList && !( mh->fState & MemoryHeader::eNotPooled ) ) {
 		fpUsedList->push_front(mh);
