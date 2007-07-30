@@ -23,8 +23,13 @@
 #include "LDAPDAImpl.h"
 #include "Dbg.h"
 
-//--- c-library modules used ---------------------------------------------------
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#else
 #include <stdlib.h>
+#endif
+
+//--- c-library modules used ---------------------------------------------------
 
 //---- LDAPMapperTest ----------------------------------------------------------------
 Test *LDAPMapperTest::suite ()
