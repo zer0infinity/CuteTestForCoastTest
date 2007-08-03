@@ -23,9 +23,13 @@
 template<typename Tp>
 class EXPORTDECL_FOUNDATION ObjectList : public std::list<Tp>
 {
-	typedef std::list<Tp> BaseClassType;
-	typedef typename ObjectList::const_iterator ListIterator;
+public:
+	typedef std::list<Tp> ListType;
+	typedef typename ListType::reference ListTypeReference;
+	typedef typename ListType::value_type ListTypeValueType;
+	typedef typename ListType::const_iterator ListIterator;
 
+private:
 	//! we have to delete elements if they were pointers, let an appropriate function do this work
 	struct DeleteWrapper {
 		// tricky section to determine if given type is a pointer and deletable
@@ -33,8 +37,8 @@ class EXPORTDECL_FOUNDATION ObjectList : public std::list<Tp>
 		enum DeleteFuncSelector { Reftype, Pointertype };
 		enum { delAlgo = (Loki::TypeTraits<Tp>::isPointer) ? Pointertype : Reftype };
 
-		void DoDeleteObject(const typename BaseClassType::value_type &newObjPtr, Loki::Int2Type<Reftype> ) {};
-		void DoDeleteObject(const typename BaseClassType::value_type &newObjPtr, Loki::Int2Type<Pointertype> ) {
+		void DoDeleteObject(const ListTypeValueType &newObjPtr, Loki::Int2Type<Reftype> ) {};
+		void DoDeleteObject(const ListTypeValueType &newObjPtr, Loki::Int2Type<Pointertype> ) {
 			delete newObjPtr;
 		}
 		void operator() (Tp pElement) {
@@ -51,7 +55,7 @@ public:
 	{}
 
 	ObjectList(const ObjectList<Tp> &aList)
-		: BaseClassType(aList)
+		: ListType(aList)
 		, fShutdown(aList.fShutdown)
 		, fDestructiveShutdown(false)	// set to false not to accidentally delete an element twice
 		, fpAlloc(aList.fpAlloc ? aList.fpAlloc : Storage::Global())
@@ -67,7 +71,7 @@ public:
 		}
 	}
 
-	bool InsertTail(const typename BaseClassType::value_type &newObjPtr) {
+	bool InsertTail(const ListTypeValueType &newObjPtr) {
 		return DoInsertTail(newObjPtr);
 	}
 
@@ -76,7 +80,7 @@ public:
 		\param lSecs unused
 		\param lNanosecs unused
 		\return true only when an element could be get, false in case the list was empty or we are in shutdown mode */
-	bool RemoveHead(typename BaseClassType::reference aElement, long lSecs = 0L, long lNanosecs = 0L) {
+	bool RemoveHead(ListTypeReference aElement, long lSecs = 0L, long lNanosecs = 0L) {
 		return DoRemoveHead(aElement, lSecs, lNanosecs);
 	}
 
@@ -109,7 +113,7 @@ protected:
 		\param lSecs unused
 		\param lNanosecs unused
 		\return true only when an element could be get, false in case the list was empty or we are in shutdown mode */
-	virtual bool DoRemoveHead(typename BaseClassType::reference aElement, long lSecs = 0L, long lNanosecs = 0L) {
+	virtual bool DoRemoveHead(ListTypeReference aElement, long lSecs = 0L, long lNanosecs = 0L) {
 		StartTrace(ObjectList.DoRemoveHead);
 		if ( !IsShuttingDown() && !IntIsEmpty() ) {
 			IntRemoveHead(aElement);
@@ -120,7 +124,7 @@ protected:
 		return false;
 	}
 
-	virtual bool DoInsertTail(const typename BaseClassType::value_type &newObjPtr) {
+	virtual bool DoInsertTail(const ListTypeValueType &newObjPtr) {
 		StartTrace(ObjectList.DoInsertTail);
 		if ( !IsShuttingDown() ) {
 			push_back(newObjPtr);
@@ -146,8 +150,8 @@ protected:
 		return IntIsEmpty();
 	}
 
-	bool			fShutdown;
-	bool			fDestructiveShutdown;
+	bool fShutdown;
+	bool fDestructiveShutdown;
 
 private:
 	size_t IntGetSize() const {
@@ -157,7 +161,7 @@ private:
 		return this->empty();
 	}
 
-	void IntRemoveHead(typename BaseClassType::reference aElement) {
+	void IntRemoveHead(ListTypeReference aElement) {
 		aElement = this->front();
 		this->pop_front();
 	}
@@ -165,8 +169,8 @@ private:
 	//!standard assignement operator prohibited
 	void operator=(const ObjectList<Tp> &);
 
-	Allocator		*fpAlloc;
-	String			fName;
+	Allocator *fpAlloc;
+	String fName;
 };
 
 #endif
