@@ -91,9 +91,11 @@ AppBooter::~AppBooter()	{ }
 
 void AppBooter::HandleArgs(int argc, char *argv[], Anything &args )
 {
+	StartTrace(AppBooter.HandleArgs);
 	for (long i = 0; i < argc; ++i) {
 		URLUtils::Pair(argv[i], '=', args);
 	}
+	TraceAny(args, "passed arguments");
 }
 
 void AppBooter::SetSignalMask()
