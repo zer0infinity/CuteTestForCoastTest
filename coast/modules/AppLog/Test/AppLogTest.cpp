@@ -43,8 +43,8 @@ void AppLogTest::ApplogModuleNotInitializedTest()
 		Context ctx;
 		ctx.SetServer(server);
 		ctx.GetTmpStore()["TestMsg"] = "Access log Test 1";
-		t_assertm(!AppLogModule::Log(ctx, "AccessLog"), "expected configured logger not to be found");
-		t_assertm(!AppLogModule::Log(ctx, "ErrorLog"), "expected configured logger not to be found");
+		t_assertm(!AppLogModule::Log(ctx, "AccessLog", AppLogModule::eINFO), "expected configured logger not to be found");
+		t_assertm(!AppLogModule::Log(ctx, "ErrorLog", AppLogModule::eINFO), "expected configured logger not to be found");
 	}
 }
 
@@ -60,31 +60,31 @@ void AppLogTest::LogOkTest()
 			ctx.SetServer(server);
 			ctx.GetTmpStore()["TestMsg"] = "Access log Test 1";
 
-			t_assertm(!AppLogModule::Log(ctx, 0), "logging with Null Pointer");
+			t_assertm(!AppLogModule::Log(ctx, 0, AppLogModule::eINFO), "logging with Null Pointer");
 
-			t_assertm(AppLogModule::Log(ctx, "AccessLog"), "AccessLog 1");
+			t_assertm(AppLogModule::Log(ctx, "AccessLog", AppLogModule::eINFO), "AccessLog 1");
 
 			ctx.GetTmpStore()["TestMsg"] = "Access log Test 2";
-			t_assertm(AppLogModule::Log(ctx, "AccessLog"), "AccessLog 2");
+			t_assertm(AppLogModule::Log(ctx, "AccessLog", AppLogModule::eINFO), "AccessLog 2");
 
 			ctx.GetTmpStore()["TestMsg"] = "NoHeader log Test 1";
-			t_assertm(AppLogModule::Log(ctx, "NoHeaderLog"), "NoHeaderLog");
+			t_assertm(AppLogModule::Log(ctx, "NoHeaderLog", AppLogModule::eINFO), "NoHeaderLog");
 			ctx.GetTmpStore()["TestMsg"] = "";
-			t_assertm(AppLogModule::Log(ctx, "NoHeaderLog"), "NoHeaderLog");
+			t_assertm(AppLogModule::Log(ctx, "NoHeaderLog", AppLogModule::eINFO), "NoHeaderLog");
 
 			ctx.GetTmpStore()["NoRenderingLog"] = "NoRenderingLog log Test 1";
-			t_assertm(AppLogModule::Log(ctx, "NoRenderingLog"), "NoRenderingLog");
+			t_assertm(AppLogModule::Log(ctx, "NoRenderingLog", AppLogModule::eINFO), "NoRenderingLog");
 
 			ctx.GetTmpStore()["TestMsg"] = "EmptyHeader log Test 1";
-			t_assertm(AppLogModule::Log(ctx, "EmptyHeaderLog"), "EmptyHeaderLog");
+			t_assertm(AppLogModule::Log(ctx, "EmptyHeaderLog", AppLogModule::eINFO), "EmptyHeaderLog");
 			ctx.GetTmpStore()["TestMsg"] = "";
-			t_assertm(AppLogModule::Log(ctx, "EmptyHeaderLog"), "EmptyHeaderLog");
+			t_assertm(AppLogModule::Log(ctx, "EmptyHeaderLog", AppLogModule::eINFO), "EmptyHeaderLog");
 
 			ctx.GetTmpStore()["ErrorMsg"] = "Error 1";
-			t_assertm(AppLogModule::Log(ctx, "ErrorLog"), "ErrorLog1");
+			t_assertm(AppLogModule::Log(ctx, "ErrorLog", AppLogModule::eINFO), "ErrorLog1");
 
 			ctx.GetTmpStore()["ErrorMsg"] = "Error 2";
-			t_assertm(AppLogModule::Log(ctx, "ErrorLog"), "ErrorLog 2");
+			t_assertm(AppLogModule::Log(ctx, "ErrorLog", AppLogModule::eINFO), "ErrorLog 2");
 
 			CheckFile(ctx, "AccessLog", "TestHeader\nAccess log Test 1 - Test\nAccess log Test 2 - Test\n");
 			CheckFile(ctx, "NoHeaderLog", "NoHeader log Test 1\n\n");
@@ -113,15 +113,15 @@ void AppLogTest::BufferItemsTest()
 			if ( t_assert( ( server = Server::FindServer("TestServer") ) ) ) {
 				ctx.SetServer(server);
 				ctx.GetTmpStore()["TestMsg"] = "BufferItemsLogTest log Test 1";
-				t_assertm(AppLogModule::Log(ctx, "BufferItemsLog"), "BufferItems 1");
+				t_assertm(AppLogModule::Log(ctx, "BufferItemsLog", AppLogModule::eINFO), "BufferItems 1");
 				ctx.GetTmpStore()["TestMsg"] = "BufferItemsLogTest log Test 2";
-				t_assertm(AppLogModule::Log(ctx, "BufferItemsLog"), "BufferItems 2");
+				t_assertm(AppLogModule::Log(ctx, "BufferItemsLog", AppLogModule::eINFO), "BufferItems 2");
 				ctx.GetTmpStore()["TestMsg"] = "BufferItemsLogTest log Test 3";
-				t_assertm(AppLogModule::Log(ctx, "BufferItemsLog"), "BufferItems 3");
+				t_assertm(AppLogModule::Log(ctx, "BufferItemsLog", AppLogModule::eINFO), "BufferItems 3");
 				ctx.GetTmpStore()["TestMsg"] = "BufferItemsLogTest log Test 4";
-				t_assertm(AppLogModule::Log(ctx, "BufferItemsLog"), "BufferItems 4");
+				t_assertm(AppLogModule::Log(ctx, "BufferItemsLog", AppLogModule::eINFO), "BufferItems 4");
 				ctx.GetTmpStore()["TestMsg"] = "BufferItemsLogTest log Test 5";
-				t_assertm(AppLogModule::Log(ctx, "BufferItemsLog"), "BufferItems 5");
+				t_assertm(AppLogModule::Log(ctx, "BufferItemsLog", AppLogModule::eINFO), "BufferItems 5");
 
 				// Only 3 messages are written to log file 'cause BufferItems is set to 3!
 				CheckFile(ctx, "BufferItemsLog", "BufferItemsLogTestHeader\nBufferItemsLogTest log Test 1\n"
@@ -160,18 +160,18 @@ void AppLogTest::LogOkToVirtualServerTest()
 			ctx.SetServer(server);
 			ctx.GetTmpStore()["TestMsg"] = "Access log Test 1";
 
-			t_assertm(!AppLogModule::Log(ctx, 0), "logging with Null Pointer");
+			t_assertm(!AppLogModule::Log(ctx, 0, AppLogModule::eINFO), "logging with Null Pointer");
 
-			t_assertm(AppLogModule::Log(ctx, "AccessLog"), "AccessLog 1");
+			t_assertm(AppLogModule::Log(ctx, "AccessLog", AppLogModule::eINFO), "AccessLog 1");
 
 			ctx.GetTmpStore()["TestMsg"] = "Access log Test 2";
-			t_assertm(AppLogModule::Log(ctx, "AccessLog"), "AccessLog 2");
+			t_assertm(AppLogModule::Log(ctx, "AccessLog", AppLogModule::eINFO), "AccessLog 2");
 
 			ctx.GetTmpStore()["ErrorMsg"] = "Error 1";
-			t_assertm(AppLogModule::Log(ctx, "ErrorLog"), "ErrorLog1");
+			t_assertm(AppLogModule::Log(ctx, "ErrorLog", AppLogModule::eINFO), "ErrorLog1");
 
 			ctx.GetTmpStore()["ErrorMsg"] = "Error 2";
-			t_assertm(AppLogModule::Log(ctx, "ErrorLog"), "ErrorLog 2");
+			t_assertm(AppLogModule::Log(ctx, "ErrorLog", AppLogModule::eINFO), "ErrorLog 2");
 
 			CheckFile(ctx, "AccessLog", "TestHeader\nAccess log Test 1 - Test\nAccess log Test 2 - Test\n");
 			CheckFile(ctx, "ErrorLog", "ErrorlogTestHeader\nError 1 - Test\nError 2 - Test\n");
@@ -202,14 +202,14 @@ void AppLogTest::LogRotatorTest()
 				Context ctx;
 				ctx.SetServer(server);
 				ctx.GetTmpStore()["TestMsg"] = "Rotate log Test 1";
-				t_assertm(AppLogModule::Log(ctx, "RotateLog"), "RotateLog Test");
-				t_assertm(AppLogModule::Log(ctx, "DoNotRotateLog"), "DoNotRotateLog Test");
+				t_assertm(AppLogModule::Log(ctx, "RotateLog", AppLogModule::eINFO), "RotateLog Test");
+				t_assertm(AppLogModule::Log(ctx, "DoNotRotateLog", AppLogModule::eINFO), "DoNotRotateLog Test");
 				// just be sure we gave some time to rotate the log
 				Trace("### waiting " << (lDeltaSec * 2) << "s on rotation to happen... ###");
 				Thread::Wait(lDeltaSec * 2);
 				Trace("### ...waiting done ###");
 				ctx.GetTmpStore()["TestMsg"] = "Rotate log Test 2";
-				t_assertm(AppLogModule::Log(ctx, "RotateLog"), "RotateLog Test");
+				t_assertm(AppLogModule::Log(ctx, "RotateLog", AppLogModule::eINFO), "RotateLog Test");
 
 				// check for the files
 				ROAnything roaFileName;
@@ -341,11 +341,11 @@ void AppLogTest::RotateSpecificLogTest()
 				Context ctx;
 				ctx.SetServer(server);
 				ctx.GetTmpStore()["TestMsg"] = "Rotate log Test 1";
-				t_assertm(AppLogModule::Log(ctx, "RotateSpecificLog"), "RotateSpecificLog Test");
+				t_assertm(AppLogModule::Log(ctx, "RotateSpecificLog", AppLogModule::eINFO), "RotateSpecificLog Test");
 				// Now request explict log rotation
 				t_assertm(AppLogModule::RotateSpecificLog(ctx, "RotateSpecificLog"), "RotateSpecificLog now!");
 				ctx.GetTmpStore()["TestMsg"] = "Rotate log Test 2";
-				t_assertm(AppLogModule::Log(ctx, "RotateSpecificLog"), "RotateSpecificLog Test");
+				t_assertm(AppLogModule::Log(ctx, "RotateSpecificLog", AppLogModule::eINFO), "RotateSpecificLog Test");
 				// check for the files
 				ROAnything roaFileName;
 				if ( t_assert(GetTestCaseConfig().LookupPath(roaFileName, "AppLogModule.Servers.TestServer.RotateSpecificLog.FileName") ) ) {
@@ -376,11 +376,11 @@ void AppLogTest::RotateSpecificLogTest()
 				// basically the same as above, but DoNotRotate flag is set in log channel config which will be
 				// overriden by explicitly requesting a log rotation
 				ctx.GetTmpStore()["TestMsg"] = "RotateOverride log Test 1";
-				t_assertm(AppLogModule::Log(ctx, "RotateSpecificLogOverride"), "RotateSpecificLogOverride Test");
+				t_assertm(AppLogModule::Log(ctx, "RotateSpecificLogOverride", AppLogModule::eINFO), "RotateSpecificLogOverride Test");
 				// Now request explict log rotation
 				t_assertm(AppLogModule::RotateSpecificLog(ctx, "RotateSpecificLogOverride"), "RotateSpecificLogOverride now!");
 				ctx.GetTmpStore()["TestMsg"] = "RotateOverride log Test 2";
-				t_assertm(AppLogModule::Log(ctx, "RotateSpecificLogOverride"), "RotateSpecificLogOverride Test");
+				t_assertm(AppLogModule::Log(ctx, "RotateSpecificLogOverride", AppLogModule::eINFO), "RotateSpecificLogOverride Test");
 				// check for the files
 				if ( t_assert(GetTestCaseConfig().LookupPath(roaFileName, "AppLogModule.Servers.TestServer.RotateSpecificLogOverride.FileName") ) ) {
 					String strFileName = System::GetFilePath(roaFileName.AsString(), "");

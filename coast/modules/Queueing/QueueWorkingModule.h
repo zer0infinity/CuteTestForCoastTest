@@ -14,6 +14,7 @@
 #include "WDModule.h"
 #include "Context.h"
 #include "Queue.h"
+#include "AppLog.h"
 
 //---- QueueWorkingModule ----------------------------------------------------------
 //! <B>Queue based module for message passing systems</B>
@@ -76,8 +77,8 @@ protected:
 	void SetDead() {
 		fAlive = 0x00dead00;
 	};
-	void Log(String strMessage, const char *channel);
-	void Log(Anything &anyStatus, const char *channel);
+	void Log(String strMessage, const char *channel, AppLogModule::eLogLevel iLevel);
+	void Log(Anything &anyStatus, const char *channel, AppLogModule::eLogLevel iLevel);
 
 private:
 	void IntInitQueue(const ROAnything roaConfig);

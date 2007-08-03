@@ -14,7 +14,6 @@
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "Server.h"
-#include "AppLog.h"
 #include "StringStream.h"
 
 #if defined(ONLY_STD_IOSTREAM)
@@ -44,23 +43,23 @@ void QueueWorkingModule::LogError(String strMessage)
 {
 	StartTrace(QueueWorkingModule.LogError);
 	SYSERROR(strMessage);
-	Log(strMessage, fErrorLogName);
+	Log(strMessage, fErrorLogName, AppLogModule::eERROR);
 }
 
 void QueueWorkingModule::LogWarning(String strMessage)
 {
 	StartTrace(QueueWorkingModule.LogWarning);
 	SYSWARNING(strMessage);
-	Log(strMessage, fWarningLogName);
+	Log(strMessage, fWarningLogName, AppLogModule::eWARNING);
 }
 
 void QueueWorkingModule::LogInfo(String strMessage)
 {
 	StartTrace(QueueWorkingModule.LogInfo);
-	Log(strMessage, fInfoLogName);
+	Log(strMessage, fInfoLogName, AppLogModule::eINFO);
 }
 
-void QueueWorkingModule::Log(String strMessage, const char *channel)
+void QueueWorkingModule::Log(String strMessage, const char *channel, AppLogModule::eLogLevel iLevel)
 {
 	StartTrace(QueueWorkingModule.Log);
 	Trace(strMessage);
@@ -69,12 +68,12 @@ void QueueWorkingModule::Log(String strMessage, const char *channel)
 		me.Use();
 		if ( IsAlive() && fpContext ) {
 			fpContext->GetTmpStore()["LogMessage"] = strMessage;
-			AppLogModule::Log(*fpContext, channel);
+			AppLogModule::Log(*fpContext, channel, iLevel);
 		}
 	}
 }
 
-void QueueWorkingModule::Log(Anything &anyStatus, const char *channel)
+void QueueWorkingModule::Log(Anything &anyStatus, const char *channel, AppLogModule::eLogLevel iLevel)
 {
 	StartTrace(QueueWorkingModule.Log);
 	TraceAny(anyStatus, "content to log");
@@ -83,7 +82,7 @@ void QueueWorkingModule::Log(Anything &anyStatus, const char *channel)
 		me.Use();
 		if ( IsAlive() && fpContext ) {
 			fpContext->GetTmpStore()["QueueWorkingStatus"] = anyStatus;
-			AppLogModule::Log(*fpContext, channel);
+			AppLogModule::Log(*fpContext, channel, iLevel);
 		}
 	}
 }
