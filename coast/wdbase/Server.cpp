@@ -364,13 +364,15 @@ int Server::Terminate(int val)
 	}
 
 	m.Trim(0);
-	m << "Cleaning up Server: " << GetName() << "\n\tTerminating running requests";
+	m << "Cleaning up Server: " << GetName() << "\n";
 	SysLog::WriteToStderr(m);
 	if (fPoolManager) {
+		SysLog::WriteToStderr("\tTerminating running requests");
 		delete fPoolManager;
 		fPoolManager = 0;
+		SysLog::WriteToStderr(" done\n");
 	}
-	SysLog::WriteToStderr(" done\nServer Cleanup completed\nLeaving shutdown\n");
+	SysLog::WriteToStderr("Server Cleanup completed\nLeaving shutdown\n");
 	return fRetVal;
 }
 
