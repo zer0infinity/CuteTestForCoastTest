@@ -12,13 +12,17 @@
 //---- Action include -------------------------------------------------
 #include "config_applog.h"
 #include "Action.h"
+#include "AppLog.h"
 
 //---- LoggingAction ----------------------------------------------------------
-//! triggers logging on a channel
-//!	Structure of config:
-//!<PRE>	{
-//!		/Channel	String		# Channel to log to
-//!	}</PRE>
+//! <b>Action which triggers logging on a channel</b>
+/*!
+<b>Configuration:</b><pre>
+{
+	/Channel		String		mandatory, channel name to log to
+	/Severity		long		optional, default AppLogModule::eINFO, Severity [CRITICAL=1, FATAL=2, ERROR=4, WARN=8, INFO=16, OK=32, MAINT=64, DEBUG=128], all levels lower_equal (<=) the specified value will get logged
+}</pre>
+*/
 class EXPORTDECL_APPLOG LoggingAction : public Action
 {
 public:
@@ -26,22 +30,25 @@ public:
 	LoggingAction(const char *name);
 	~LoggingAction();
 
-	//!Logs on the Channel defined by <I>config /Channel</I>
-	//! \param transitionToken (in/out) the event passed by the caller, can be modified.
-	//! \param ctx the context the action runs within.
-	//! \param config the configuration of the action.
-	//! \return true if the action run successfully, false if an error occurred.
+	//! Logs on the Channel defined by <I>config /Channel</I>
+	/*!	\param transitionToken (in/out) the event passed by the caller, can be modified.
+		\param ctx the context the action runs within.
+		\param config the configuration of the action.
+		\return true if the action run successfully, false if an error occurred. */
 	virtual bool DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config);
 
 };
 
 //---- TimeLoggingAction ----------------------------------------------------------
-//! triggers logging on a channel
-//!	Structure of config:
-//!<PRE>	{
-//!		/Channel	String		# Channel to log to
-//!		/TimeEntries	<path>  # Path expression for time entries e.g. Log.Times.Method
-//!	}</PRE>
+//! <b>Triggers logging of timing entries onto a channel</b>
+/*!
+<b>Configuration:</b><pre>
+{
+	/Channel		String		mandatory, channel name to log to
+	/TimeEntries	String		optional, default "Log.Times.Request", path expression for time entries e.g. Log.Times.Method
+	/Severity		long		optional, default AppLogModule::eINFO, Severity [CRITICAL=1, FATAL=2, ERROR=4, WARN=8, INFO=16, OK=32, MAINT=64, DEBUG=128], all levels lower_equal (<=) the specified value will get logged
+}</pre>
+*/
 class EXPORTDECL_APPLOG TimeLoggingAction : public Action
 {
 public:
@@ -49,28 +56,27 @@ public:
 	TimeLoggingAction(const char *name);
 	~TimeLoggingAction();
 
-	//!Logs timing entries defiend by <I>config /TimeEntries</I> on the Channel defined by <I>config /Channel</I>
-	//! \param transitionToken (in/out) the event passed by the caller, can be modified.
-	//! \param ctx the context the action runs within.
-	//! \param config the configuration of the action.
-	//! \return true if the action run successfully, false if an error occurred.
+	//! Logs timing entries defined by <I>config /TimeEntries</I> on the Channel defined by <I>config /Channel</I>
+	/*!	\param transitionToken (in/out) the event passed by the caller, can be modified.
+		\param ctx the context the action runs within.
+		\param config the configuration of the action.
+		\return true if the action run successfully, false if an error occurred. */
 	virtual bool DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config);
 
 protected:
-	//!generate logentries by traversing substructures of different paths
-	//! \param entryPath the path traversed so far
-	//! \param entry the entry to be logged; it can contain substructures or be an array
-	//! \param ctx the context
-	//! \param channel the channel to log to
-	virtual bool GenLogEntries(const String &entryPath, const ROAnything &entry, Context &ctx, const String &channel);
+	//! generate logentries by traversing substructures of different paths
+	/*!	\param entryPath the path traversed so far
+		\param entry the entry to be logged; it can contain substructures or be an array
+		\param ctx the context
+		\param channel the channel to log to */
+	virtual bool GenLogEntries(const String &entryPath, const ROAnything &entry, Context &ctx, const String &channel, AppLogModule::eLogLevel iLevel);
 
-	//!generate logentries for all records with the same path
-	//! \param entryPath the path traversed so far
-	//! \param entry the entry to be logged; it can contain substructures or be an array
-	//! \param ctx the context
-	//! \param channel the channel to log to
-	virtual bool GenLogEntry(const String &entryPath, const ROAnything &entry, Context &ctx, const String &channel);
-
+	//! generate logentries for all records with the same path
+	/*!	\param entryPath the path traversed so far
+		\param entry the entry to be logged; it can contain substructures or be an array
+		\param ctx the context
+		\param channel the channel to log to */
+	virtual bool GenLogEntry(const String &entryPath, const ROAnything &entry, Context &ctx, const String &channel, AppLogModule::eLogLevel iLevel);
 };
 
 #endif

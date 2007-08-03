@@ -330,5 +330,5 @@ void RequestReader::DoLogError(long errcode, const String &reason, const String 
 	if ( pServer ) {
 		ctx.SetServer(pServer);
 	}
-	AppLogModule::Log(ctx, "SecurityLog");
+	AppLogModule::Log(ctx, "SecurityLog", AppLogModule::eERROR);
 }
