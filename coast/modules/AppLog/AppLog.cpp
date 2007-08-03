@@ -12,6 +12,7 @@
 //--- project modules used -----------------------------------------------------
 #include "Server.h"
 #include "Renderer.h"
+#include "Registry.h"
 
 //--- standard modules used ----------------------------------------------------
 #include "System.h"
@@ -140,12 +141,18 @@ bool AppLogModule::MakeChannels(const char *servername, const Anything &config)
 				if ( !channel.IsDefined("RotateDir") ) {
 					channel["RotateDir"] = config["RotateDir"];
 				}
-				AppLogChannel *pChannel = new AppLogChannel(strChannelName, channel);
-				fLogConnections[servername][strChannelName] = pChannel;
+				AppLogChannel *pChannel = NULL, *pCloneChannel = AppLogChannel::FindAppLogChannel(channel["ChannelClass"].AsString("AppLogChannel"));
+				if ( pCloneChannel ) {
+					pChannel = SafeCast(pCloneChannel->Clone(), AppLogChannel);
+					if ( pChannel ) {
+						pChannel->InitClone(strChannelName, channel);
+					}
+				}
 				if ( !pChannel || !pChannel->Rotate() ) {
 					SYSERROR("LogChannel [" << strChannelName << "] failed to open logfile");
 					return false;
 				}
+				fLogConnections[servername][strChannelName] = pChannel;
 			}
 		}
 	} else {
@@ -272,7 +279,7 @@ AppLogChannel *AppLogModule::FindLogger(Context &ctx, const char *logChannel)
 	return logger;
 }
 
-bool AppLogModule::Log(Context &ctx, const char *logChannel)
+bool AppLogModule::Log(Context &ctx, const char *logChannel, eLogLevel iLevel)
 {
 	StartTrace1(AppLogModule.Log, "LogChannel [" << NotNull(logChannel) << "]" );
 	Server *s = ctx.GetServer();
@@ -283,13 +290,13 @@ bool AppLogModule::Log(Context &ctx, const char *logChannel)
 	AppLogChannel *logger = AppLogModule::FindLogger(ctx, logChannel);
 	if ( logger ) {
 		Trace("logger found");
-		return logger->Log(ctx);
+		return logger->Log(ctx, iLevel);
 	}
 	Trace("logger not found");
 	return false;
 }
 
-bool AppLogModule::Log(Context &ctx, const char *logChannel, const ROAnything &config)
+bool AppLogModule::Log(Context &ctx, const char *logChannel, const ROAnything &config, eLogLevel iLevel)
 {
 	StartTrace1(AppLogModule.Log, "LogChannel [" << NotNull(logChannel) << "]" );
 	TraceAny(config, "Config: ");
@@ -300,17 +307,37 @@ bool AppLogModule::Log(Context &ctx, const char *logChannel, const ROAnything &c
 	}
 	AppLogChannel *logger = FindLogger(ctx, logChannel);
 	if ( logger ) {
-		return logger->LogAll(ctx, config);
+		Trace("logger found");
+		return logger->LogAll(ctx, iLevel, config);
 	}
+	return false;
+}
 
+bool AppLogModule::Log(Context &ctx, const char *logChannel, const String &strMessage, eLogLevel iLevel)
+{
+	StartTrace1(AppLogModule.Log, "LogChannel [" << NotNull(logChannel) << "], Severity:" << (long)iLevel );
+	Server *s = ctx.GetServer();
+	if (!s) {
+		s = Server::FindServer("Server");
+		ctx.SetServer(s);
+	}
+	AppLogChannel *logger = FindLogger(ctx, logChannel);
+	if ( logger ) {
+		Trace("logger found");
+		Anything anyMessage(strMessage);
+		return logger->LogAll(ctx, iLevel, anyMessage);
+	}
 	return false;
 }
 
 //---- AppLogChannel ---------------------------------------------------------------------------------------
-AppLogChannel::AppLogChannel(const char *name, const Anything &channel)
-	: NotCloned(name)
+RegisterObject(AppLogChannel, AppLogChannel);
+RegCacheImpl(AppLogChannel);
+
+AppLogChannel::AppLogChannel(const char *name)
+	: RegisterableObject(name)
 	, fLogStream(NULL)
-	, fChannelInfo(channel)
+	, fChannelInfo()
 	, fSuppressEmptyLines(false)
 	, fRendering(true)
 	, fLogMsgSizeHint(128L)
@@ -320,18 +347,9 @@ AppLogChannel::AppLogChannel(const char *name, const Anything &channel)
 	, fBufferItems(0L)
 	, fBuffer()
 	, fItemsWritten(0L)
+	, fSeverity()
 {
-	fSuppressEmptyLines	= fChannelInfo["SuppressEmptyLines"].AsBool(false);
-	fRendering			= fChannelInfo["Rendering"].AsBool(true);
-	fLogMsgSizeHint		= fChannelInfo["LogMsgSizeHint"].AsLong(128L);
-	fDoNotRotate		= fChannelInfo["DoNotRotate"].AsBool(false);
-	fFormat				= fChannelInfo["Format"];
-	fBufferItems		= fChannelInfo["BufferItems"].AsLong(0L);
-	if ( fBufferItems == 0L ) {
-		// Avoid zero division in mod operation
-		++fBufferItems;
-	}
-	fBuffer.Reserve(fBufferItems * fLogMsgSizeHint);
+	StartTrace(AppLogChannel.AppLogChannel);
 }
 
 AppLogChannel::~AppLogChannel()
@@ -355,52 +373,86 @@ AppLogChannel::~AppLogChannel()
 	fLogStream = 0;
 }
 
-bool AppLogChannel::Log(Context &ctx)
+bool AppLogChannel::InitClone(const char *name, const Anything &channel)
 {
-	StartTrace(AppLogChannel.Log);
-	return LogAll(ctx, fFormat);
+	StartTrace(AppLogChannel.InitClone);
+	return DoInitClone(name, channel);
 }
 
-bool AppLogChannel::LogAll(Context &ctx, const ROAnything &config)
+bool AppLogChannel::DoInitClone(const char *name, const Anything &channel)
+{
+	StartTrace(AppLogChannel.DoInitClone);
+	SetName(name);
+	fChannelInfo = channel;
+	fSuppressEmptyLines	= fChannelInfo["SuppressEmptyLines"].AsBool(false);
+	fRendering			= fChannelInfo["Rendering"].AsBool(true);
+	fLogMsgSizeHint		= fChannelInfo["LogMsgSizeHint"].AsLong(128L);
+	fDoNotRotate		= fChannelInfo["DoNotRotate"].AsBool(false);
+	fFormat				= fChannelInfo["Format"];
+	fBufferItems		= fChannelInfo["BufferItems"].AsLong(0L);
+	fSeverity			= (AppLogModule::eLogLevel)fChannelInfo["Severity"].AsLong((long)AppLogModule::eALL);
+	if ( fBufferItems == 0L ) {
+		// Avoid zero division in mod operation
+		++fBufferItems;
+	}
+	fBuffer.Reserve(fBufferItems * fLogMsgSizeHint);
+	return true;
+}
+
+bool AppLogChannel::Log(Context &ctx, AppLogModule::eLogLevel iLevel)
+{
+	StartTrace(AppLogChannel.Log);
+	return LogAll(ctx, iLevel, fFormat);
+}
+
+bool AppLogChannel::LogAll(Context &ctx, AppLogModule::eLogLevel iLevel, const ROAnything &config)
 {
 	StartTrace(AppLogChannel.LogAll);
 	if ( fLogStream && fLogStream->good() ) {
-		TraceAny(config, "config: ");
-		String logMsg(fLogMsgSizeHint);
-		if ( fRendering ) {
-			Renderer::RenderOnString(logMsg, ctx, config);
-		} else {
-			logMsg = ctx.GetTmpStore()[fName].AsString();
-		}
-		if (!fSuppressEmptyLines || logMsg.Length()) {
-			logMsg << "\n";
-			if ( fBufferItems == 1L ) {
-				MutexEntry me(fChannelMutex);
-				me.Use();
-				Trace("fLogStream state before logging: " << (long)fLogStream->rdstate());
-				(*fLogStream) << logMsg << flush;
-				Trace("fLogStream state after logging: " << (long)fLogStream->rdstate());
-				return (!!(*fLogStream));
-			} else {
-				MutexEntry me(fChannelMutex);
-				me.Use();
-				{
-					fBuffer.Append(logMsg);
-					++fItemsWritten;
-					if ( ( fItemsWritten % fBufferItems ) == 0L ) {
-						Trace("fLogStream state before logging: " << (long)fLogStream->rdstate());
-						(*fLogStream) << fBuffer << flush;
-						Trace("fLogStream state after logging: " << (long)fLogStream->rdstate());
-						fBuffer.Trim(0L);
-						fItemsWritten = 0L;
-						return (!!(*fLogStream));
+		if ( ( iLevel & fSeverity ) > 0 ) {
+			TraceAny(config, "config: ");
+			String logMsg(fLogMsgSizeHint);
+			DoCreateLogMsg(ctx, iLevel, logMsg, config);
+			if (!fSuppressEmptyLines || logMsg.Length()) {
+				logMsg << "\n";
+				if ( fBufferItems == 1L ) {
+					MutexEntry me(fChannelMutex);
+					me.Use();
+					Trace("fLogStream state before logging: " << (long)fLogStream->rdstate());
+					(*fLogStream) << logMsg << flush;
+					Trace("fLogStream state after logging: " << (long)fLogStream->rdstate());
+					return (!!(*fLogStream));
+				} else {
+					MutexEntry me(fChannelMutex);
+					me.Use();
+					{
+						fBuffer.Append(logMsg);
+						++fItemsWritten;
+						if ( ( fItemsWritten % fBufferItems ) == 0L ) {
+							Trace("fLogStream state before logging: " << (long)fLogStream->rdstate());
+							(*fLogStream) << fBuffer << flush;
+							Trace("fLogStream state after logging: " << (long)fLogStream->rdstate());
+							fBuffer.Trim(0L);
+							fItemsWritten = 0L;
+							return (!!(*fLogStream));
+						}
 					}
+					return true;
 				}
-				return true;
 			}
 		}
 	}
 	return fSuppressEmptyLines ? true : false;
+}
+
+void AppLogChannel::DoCreateLogMsg(Context &ctx, AppLogModule::eLogLevel iLevel, String &logMsg, const ROAnything &config)
+{
+	StartTrace(AppLogChannel.DoCreateLogMsg);
+	if ( fRendering ) {
+		Renderer::RenderOnString(logMsg, ctx, config);
+	} else {
+		logMsg = ctx.Lookup(fName).AsString();
+	}
 }
 
 bool AppLogChannel::GetLogDirectories(ROAnything channel, String &logdir, String &rotatedir)

@@ -36,10 +36,11 @@ conveniently. The method of this class are called by Coast
 				/Header		Anything or String	optional, single string or list of strings which get printed first in the newly created logfile
 				/SuppressEmptyLines	long		optional, default 0, set to 1 if you want to suppress logging of empty rendered log messages
 				/DoNotRotate	long			optional, default 0 (false), if set to 1, this log-channel will not rotate its logfile at the specified time
-				/Rendering	long				optional, default 1. If not set, a slot having the ChannelName in tmpStore is evaluated as String to extract
+				/Rendering		long			optional, default 1. If not set, a slot having the ChannelName in tmpStore is evaluated as String to extract
 												the log message. eg. ctx.GetTmpStore()["ChannelName"] = "my log message". A "\n" will be added after each messge line.
-				/LogMsgSizeHint	 long			optional, reserve LogMsgSizeHint bytes for the internal string holding the message to be logged.
+				/LogMsgSizeHint	long			optional, reserve LogMsgSizeHint bytes for the internal string holding the message to be logged.
 				/BufferItems	long			optional, default 0, (no buffering) buffer <n> items before writing them to the log stream
+				/Severity		long			optional, default AppLogModule::eALL, Severity [CRITICAL=1, FATAL=2, ERROR=4, WARN=8, INFO=16, OK=32, MAINT=64, DEBUG=128], all levels lower_equal (<=) the specified value will get logged
 			}
 			...
 		}
@@ -53,16 +54,34 @@ class EXPORTDECL_APPLOG AppLogModule : public WDModule
 	friend class AppLogTest;
 public:
 	AppLogModule(const char *name);
-	~AppLogModule();
+	virtual ~AppLogModule();
 
 	virtual bool Init(const ROAnything config);
 	virtual bool Finis();
 
-	//!bottleneck routine for logging
-	static bool Log(Context &ctx, const char *logChannel);
+	/*! define importancy levels in increasing order for easier */
+	enum eLogLevel {
+		eNone,
+		eCRITICAL = 1,
+		eFATAL = 2,
+		eERROR = 4,
+		eWARNING = 8,
+		eINFO = 16,
+		eOK = 32,
+		eMAINT = 64,
+		eDEBUG = 128,
+		eALL = (eCRITICAL | eFATAL | eERROR | eWARNING | eINFO | eOK | eMAINT | eDEBUG),
+		eLast
+	};
 
 	//!bottleneck routine for logging
-	static bool Log(Context &ctx, const char *logChannel, const ROAnything &config);
+	static bool Log(Context &ctx, const char *logChannel, eLogLevel iLevel);
+
+	//!bottleneck routine for logging
+	static bool Log(Context &ctx, const char *logChannel, const ROAnything &config, eLogLevel iLevel);
+
+	//!bottleneck routine for logging
+	static bool Log(Context &ctx, const char *logChannel, const String &strMessage, eLogLevel iLevel);
 
 	//!Trigger immediate log rotation. Does not interfere with LogRotator thread because
 	//!Rotate() uses Mutex.
@@ -107,15 +126,24 @@ protected:
 
 //---- AppLogChannel -----------------------------------------------------------
 //! this class holds parameters identifying a single logstream belonging to a server
-class EXPORTDECL_APPLOG AppLogChannel : public NotCloned
+class EXPORTDECL_APPLOG AppLogChannel : public RegisterableObject
 {
 	friend class AppLogTest;
+	// use careful, you inhibit subclass use
+	//--- private class api
+	// block the following default elements of this class
+	// because they're not allowed to be used
+	AppLogChannel();
+	AppLogChannel(const AppLogChannel &);
+	AppLogChannel &operator=(const AppLogChannel &);
 public:
-	AppLogChannel(const char *name, const Anything &channel);
+	AppLogChannel(const char *name);
 	virtual ~AppLogChannel();
 
-	bool Log(Context &ctx);
-	bool LogAll(Context &ctx, const ROAnything &config);
+	bool InitClone(const char *name, const Anything &channel);
+
+	bool Log(Context &ctx, AppLogModule::eLogLevel iLevel);
+	bool LogAll(Context &ctx, AppLogModule::eLogLevel iLevel, const ROAnything &config);
 
 	bool Rotate(bool overrideDoNotRotateLogs = false);
 	ROAnything GetChannelInfo() {
@@ -124,13 +152,26 @@ public:
 
 	static String GenTimeStamp(const String &format);
 
+	IFAObject *Clone() const {
+		return new AppLogChannel("ClonedAppLogChannel");
+	}
+
+	RegCacheDef(AppLogChannel);
+
 protected:
+	virtual bool DoInitClone(const char *name, const Anything &channel);
 	bool GetLogDirectories(ROAnything channel, String &logdir, String &rotatedir);
 	bool RotateLog(const String &logdirName, const String &rotatedirName, String &logfileName);
 
 	ostream *OpenLogStream(ROAnything channel, String &logfileName);
 
 	void WriteHeader(ostream &os);
+
+	virtual void DoCreateLogMsg(Context &ctx, AppLogModule::eLogLevel iLevel, String &logMsg, const ROAnything &config);
+
+	AppLogModule::eLogLevel GetSeverity() const {
+		return fSeverity;
+	}
 
 private:
 	//! stream where logs are written to
@@ -151,6 +192,7 @@ private:
 	long fBufferItems;
 	String fBuffer;
 	long fItemsWritten;
+	AppLogModule::eLogLevel fSeverity;
 };
 
 #endif
