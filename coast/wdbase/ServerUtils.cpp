@@ -153,6 +153,7 @@ InterruptHandler::~InterruptHandler()
 	if (fServer) {
 		fServer->RemovePIDFile();
 	}
+	THRKILL(GetId(), SIGTERM);
 }
 
 void InterruptHandler::Run()
