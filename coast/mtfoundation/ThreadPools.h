@@ -116,14 +116,16 @@ protected:
 	bool fTerminated;
 
 	//! guard for synchronisation
-	Mutex fMutex;
+	SimpleMutex fMutex;
 	//! condition for synchronisation
-	Condition fCond;
+	SimpleCondition fCond;
 
 	//! counts the still running threads
 	long fRunningThreads;
 	//! counts the started threads, this value gets reset when the pool is initialized again
 	long fStartedThreads;
+	//! counts the terminated threads, this value gets reset when the pool is initialized again
+	long fTerminatedThreads;
 
 	//! holds the allocated threads
 	Anything fThreadPool;

@@ -26,8 +26,9 @@ using namespace std;
 ThreadPoolManager::ThreadPoolManager()
 	: fTerminated(true)
 	, fMutex("ThreadPoolManager")
-	, fRunningThreads(0)
-	, fStartedThreads(0)
+	, fRunningThreads(0L)
+	, fStartedThreads(0L)
+	, fTerminatedThreads(0L)
 {
 }
 
@@ -50,6 +51,7 @@ bool ThreadPoolManager::Init(int maxParallelRequests, ROAnything roaThreadArgs)
 	fTerminated = false;
 	// reset count of started threads
 	fStartedThreads = 0L;
+	fTerminatedThreads = 0L;
 	if ( AllocPool(maxParallelRequests, roaThreadArgs) ) {
 		return InitPool(roaThreadArgs);
 	}
@@ -60,6 +62,7 @@ int ThreadPoolManager::Start(bool usePoolStorage, int poolStorageSize, int numOf
 {
 	StartTrace(ThreadPoolManager.Start);
 	if ( GetPoolSize() > 0 ) {
+		long lStartSuccess = 0L;
 		for (long i = 0, sz = GetPoolSize(); i < sz; ++i) {
 			Thread *t = DoGetThread(i);
 			if ( t ) {
@@ -68,19 +71,58 @@ int ThreadPoolManager::Start(bool usePoolStorage, int poolStorageSize, int numOf
 					// use different memory manager for each thread
 					pAlloc = MT_Storage::MakePoolAllocator(poolStorageSize, numOfPoolBucketSizes, 0);
 				}
-				t->Start( pAlloc, DoGetStartConfig(i, roaThreadArgs) );
+				if ( pAlloc == NULL ) {
+					SYSERROR("was not able to create PoolAllocator for Thread# " << i << ", check config!");
+				} else {
+					if ( t->Start( pAlloc, DoGetStartConfig(i, roaThreadArgs) ) ) {
+						++lStartSuccess;
+						SYSDEBUG("Thread# " << i << " started");
+					} else {
+						SYSERROR("Failed to start Thread# " << i << ", check config!");
+					}
+				}
 			}
 		}
-		MutexEntry me(fMutex);
-		me.Use();
-		DiffTimer dt(1);
+		SYSDEBUG("started " << fStartedThreads << " of " << lStartSuccess << "(" << GetPoolSize() << ") started successfully.");
+		{
+			SimpleMutexEntry me(fMutex);
+			me.Use();
+			DiffTimer dt(1);
 
-		while ( (fStartedThreads < GetPoolSize()) && (dt.Diff() < 30) ) {
-			fCond.TimedWait(fMutex, 1);
+			while ( (fStartedThreads < lStartSuccess) && (dt.Diff() < 30) ) {
+				fCond.TimedWait(fMutex, 1);
+				SYSDEBUG("started " << fStartedThreads << " of " << lStartSuccess << " successful @" << (long)dt.Diff() << "s");
+			}
+			Trace("Time waited for start: " << dt.Diff() << " fStartedThreads:" << fStartedThreads << " PoolSize:" << GetPoolSize());
+			SYSDEBUG("Time waited for start: " << dt.Diff() << " fStartedThreads:" << fStartedThreads << " PoolSize:" << GetPoolSize());
+
+			dt.Reset();
+			while ( ( ( fRunningThreads + fTerminatedThreads ) < lStartSuccess) && (dt.Diff() < 30) ) {
+				SYSINFO("before waiting on condition @" << (long)dt.Diff() << "s");
+				fCond.TimedWait(fMutex, 1);
+				SYSDEBUG("running " << fRunningThreads << " of " << lStartSuccess << " (" << fTerminatedThreads << " terminated) @" << (long)dt.Diff() << "s");
+			}
+			Trace("Time waited for running: " << dt.Diff() << " fRunningThreads:" << fRunningThreads << " PoolSize:" << GetPoolSize());
+			SYSDEBUG("Time waited for running: " << dt.Diff() << " fRunningThreads:" << fRunningThreads << " PoolSize:" << GetPoolSize());
+			if ( lStartSuccess < GetPoolSize() ) {
+				SYSERROR("Not all Thread.Start() calls were successful (out of memory?)! Only " << fStartedThreads << " of " << lStartSuccess << "(" << GetPoolSize() << ") could be started successfully.");
+			}
+			if ( fStartedThreads < lStartSuccess ) {
+				SYSWARNING("Only " << fStartedThreads << " of " << lStartSuccess << "(" << GetPoolSize() << ") passed Thread::eStarted successfully.");
+			}
+			if ( fRunningThreads < lStartSuccess ) {
+				SYSWARNING("Only " << fRunningThreads << " of " << lStartSuccess << "(" << GetPoolSize() << ") are (still) running. (" << fTerminatedThreads << " terminated)");
+			}
 		}
-		Trace("Time waited for start: " << dt.Diff() << " fStartedThreads:" << fStartedThreads << " PoolSize:" << GetPoolSize());
-
-		Assert( fStartedThreads <= GetPoolSize() );
+		// this section is intended to let all threads go into their run method before starting their work
+		// here we signal that they should begin working;
+		for (long j = 0; j < lStartSuccess; ++j) {
+			Thread *t = DoGetThread(j);
+			if ( t ) {
+				t->SetWorking();
+				SYSDEBUG("Thread# " << j << " set to working");
+			}
+		}
 		return fStartedThreads - GetPoolSize();
 	}
 	return -1;
@@ -91,7 +133,7 @@ int ThreadPoolManager::Join(long lMaxSecsToWait)
 	StartTrace1(ThreadPoolManager.Join, "this:" << (long)this);
 	long lStillRunning = 0L;
 	{
-		MutexEntry me(fMutex);
+		SimpleMutexEntry me(fMutex);
 		me.Use();
 		DiffTimer dt;
 		long lWaited = ( (lMaxSecsToWait > 0) ? 0L : -1L ), lIncr = ( (lMaxSecsToWait > 0) ? 1L : 0L );
@@ -108,6 +150,7 @@ int ThreadPoolManager::Join(long lMaxSecsToWait)
 		Trace("Time waited for join: " << dt.Diff() << "ms");
 		lStillRunning = fRunningThreads;
 		Trace("still running: " << lStillRunning);
+		SYSDEBUG("still running: " << lStillRunning);
 	}
 	return lStillRunning;
 }
@@ -151,28 +194,43 @@ int ThreadPoolManager::DoTerminate(long lWaitToTerminate)
 
 void ThreadPoolManager::Update(Thread *t, ROAnything roaStateArgs)
 {
-	MutexEntry me(fMutex);
+	SimpleMutexEntry me(fMutex);
 	me.Use();
 	{
 		StartTrace(ThreadPoolManager.Update);
 		TraceAny(roaStateArgs, "state event received");
 		switch ( roaStateArgs["ThreadState"]["New"].AsLong(-1)) {
-			case Thread::eTerminated:
-				--fRunningThreads;
+			case Thread::eCreated:
+			case Thread::eStartRequested:
+				break;
+
+			case Thread::eStarted:
+				++fStartedThreads;
 				break;
 
 			case Thread::eRunning:
-				++fStartedThreads;
 				++fRunningThreads;
 				break;
-			case Thread::eCreated:
-			case Thread::eStartRequested:
-			case Thread::eStarted:
+
 			case Thread::eTerminationRequested:
+				break;
+
+			case Thread::eTerminated:
+				--fRunningThreads;
+				++fTerminatedThreads;
+				break;
+
+			default:
+				break;
+		}
+		switch ( roaStateArgs["RunningState"]["New"].AsLong(-1) ) {
+			case Thread::eReady:
+				break;
+
+			case Thread::eWorking:
 				break;
 			default:
 				break;
-
 		}
 	}
 	fCond.BroadCast();
