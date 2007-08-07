@@ -235,7 +235,6 @@ int Server::GlobalReinit()
 	}
 
 	fgInReInit = true;
-	fDispatcher = 0; // SOP test it
 	ServersModule::SetServerForReInit(this);
 	// assume there are no threads running with pending requests
 	// reinitialization should take place in global storage
@@ -248,8 +247,9 @@ int Server::GlobalReinit()
 	}
 	Storage::ForceGlobalStorage(false);
 	ServersModule::SetServerForReInit(0);
-	Assert(fDispatcher); // should be re-established
-	retCode = UnblockRequests();
+	if ( retCode == 0 ) {
+		retCode = UnblockRequests();
+	}
 	fgInReInit = false;
 	String msg;
 	msg << "Global reinit: " << (retCode == 0 ? "succeeded" : "failed");
@@ -290,22 +290,26 @@ int Server::Init()
 	// explicitly here for clarity: Unblock requests
 	RequestBlocker::RB()->UnBlock();
 	TraceAny(fConfig, "Server config");
-
-	String poolManagerName(Lookup("PoolManager", "ServerThreadPoolsManager"));
 	String strServerName;
 	GetName(strServerName);
-	fPoolManager = ServerPoolsManagerInterface::FindServerPoolsManagerInterface(poolManagerName);
-	Trace("PoolManager <" << poolManagerName << "> " << (long)fPoolManager << ((fPoolManager) ? " found" : " not found"));
-	if (fPoolManager) {
-		// make unique name different of clone-base name to avoid problems
-		poolManagerName << "_of_" << strServerName;
-		fPoolManager = (ServerPoolsManagerInterface *)fPoolManager->ConfiguredClone("ServerPoolsManagerInterface", poolManagerName, true);
-		if ( fPoolManager ) {
-			if ( (fPoolManager->Init(this) == 0) && (SetupDispatcher() == 0) ) {
-				SysLog::Info(String("Server init of [") << strServerName << "] OK.");
-				return 0;
+
+	if ( Lookup("NoPoolManager", 0L) == 0L ) {
+		String poolManagerName(Lookup("PoolManager", "ServerThreadPoolsManager"));
+		fPoolManager = ServerPoolsManagerInterface::FindServerPoolsManagerInterface(poolManagerName);
+		Trace("PoolManager <" << poolManagerName << "> " << (long)fPoolManager << ((fPoolManager) ? " found" : " not found"));
+		if (fPoolManager) {
+			// make unique name different of clone-base name to avoid problems
+			poolManagerName << "_of_" << strServerName;
+			fPoolManager = (ServerPoolsManagerInterface *)fPoolManager->ConfiguredClone("ServerPoolsManagerInterface", poolManagerName, true);
+			if ( fPoolManager ) {
+				if ( (fPoolManager->Init(this) == 0) && (SetupDispatcher() == 0) ) {
+					SysLog::Info(String("Server init of [") << strServerName << "] OK.");
+					return 0;
+				}
 			}
 		}
+	} else {
+		return 0;
 	}
 	SYSERROR("Server init of [" << strServerName << "] FAILED.");
 	return -1;
@@ -331,7 +335,6 @@ long Server::GetThreadPoolSize()
 	if (fPoolManager) {
 		return fPoolManager->GetThreadPoolSize();
 	}
-
 	return Lookup("ThreadPoolSize", 25L);
 }
 
@@ -339,9 +342,11 @@ int Server::ReInit(const ROAnything )
 {
 	StartTrace(Server.ReInit);
 	// hidden dependency in module init/termination sequence!
-	long ret = SetupDispatcher();
-
-	if (ret == 0 && fPoolManager) {
+	long ret = 0L;
+	if ( fDispatcher ) {
+		ret = SetupDispatcher();
+	}
+	if ( ret == 0 && fPoolManager ) {
 		// re-initialize configuration of pool
 		fPoolManager->Finalize();
 		fPoolManager->Initialize("ServerPoolsManagerInterface");
