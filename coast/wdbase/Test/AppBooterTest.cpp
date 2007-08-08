@@ -293,18 +293,18 @@ void AppBooterTest::RunTest()
 		if (t_assert(sta != NULL)) {
 			sta->SetTest(this);
 		}
-		fSequence[0L] = "GlobalInit entered";
-		fSequence[1L] = "Init entered";
-		fSequence[2L] = "Init left";
-		fSequence[3L] = "GlobalInit left";
-		fSequence[4L] = "GlobalRun entered";
-		fSequence[5L] = "Run entered";
-		fSequence[6L] = "Run left";
-		fSequence[7L] = "GlobalRun left";
-		fSequence[8L] = "GlobalTerminate entered";
-		fSequence[9L] = "Terminate entered";
-		fSequence[10L] = "Terminate left";
-		fSequence[11L] = "GlobalTerminate left";
+		fSequence[0L] = "DoGlobalInit entered";
+		fSequence[1L] = "DoInit entered";
+		fSequence[2L] = "DoInit left";
+		fSequence[3L] = "DoGlobalInit left";
+		fSequence[4L] = "DoGlobalRun entered";
+		fSequence[5L] = "DoRun entered";
+		fSequence[6L] = "DoRun left";
+		fSequence[7L] = "DoGlobalRun left";
+		fSequence[8L] = "DoGlobalTerminate entered";
+		fSequence[9L] = "DoTerminate entered";
+		fSequence[10L] = "DoTerminate left";
+		fSequence[11L] = "DoGlobalTerminate left";
 		fStep = 0;
 		assertEqual(0L, booter.Run(0, 0, false));
 	}
@@ -314,18 +314,18 @@ void AppBooterTest::RunTest()
 		if (t_assert(sta != NULL)) {
 			sta->SetTest(this);
 		}
-		fSequence[0L] = "GlobalInit entered";
-		fSequence[1L] = "Init entered";
-		fSequence[2L] = "Init left";
-		fSequence[3L] = "GlobalInit left";
-		fSequence[4L] = "GlobalRun entered";
-		fSequence[5L] = "Run entered";
-		fSequence[6L] = "Run left";
-		fSequence[7L] = "GlobalRun left";
-		fSequence[8L] = "GlobalTerminate entered";
-		fSequence[9L] = "Terminate entered";
-		fSequence[10L] = "Terminate left";
-		fSequence[11L] = "GlobalTerminate left";
+		fSequence[0L] = "DoGlobalInit entered";
+		fSequence[1L] = "DoInit entered";
+		fSequence[2L] = "DoInit left";
+		fSequence[3L] = "DoGlobalInit left";
+		fSequence[4L] = "DoGlobalRun entered";
+		fSequence[5L] = "DoRun entered";
+		fSequence[6L] = "DoRun left";
+		fSequence[7L] = "DoGlobalRun left";
+		fSequence[8L] = "DoGlobalTerminate entered";
+		fSequence[9L] = "DoTerminate entered";
+		fSequence[10L] = "DoTerminate left";
+		fSequence[11L] = "DoGlobalTerminate left";
 		fStep = 0;
 		char *argv[] = { "RunTest", "Application=SimpleTestServer" };
 		assertEqual(0L, booter.Run(2, argv, false));

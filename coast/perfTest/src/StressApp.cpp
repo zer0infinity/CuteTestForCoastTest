@@ -39,9 +39,9 @@ StressApp::~StressApp()
 }
 
 // doing the work
-int StressApp::Run()
+int StressApp::DoRun()
 {
-	StartTrace(StressApp.Run);
+	StartTrace(StressApp.DoRun);
 	String stresserName = Lookup("StresserName", "Default");
 
 	Trace("Running " << stresserName);

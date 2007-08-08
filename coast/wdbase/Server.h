@@ -66,26 +66,12 @@ public:
 	IFAObject *Clone() const {
 		return new Server(fName);
 	}
-	//!initialization of the Server and its modules
-	virtual int GlobalInit(int argc, char *argv[], const ROAnything config);
-	//!starts up the server; an InterruptHandler is set up to catch signals for shutdown, reset etc.
-	virtual int GlobalRun();
 
 	//!setup blocking and calls DoGlobalReinit
-	virtual int GlobalReinit();
-	//!inner method doing the reinit
-	virtual int DoGlobalReinit();
-
-	//!intialization of the servers Thread Pool for request processing (RequestThreadsManager) and Acceptors (ListenerPool)
-	virtual int Init();
+	int GlobalReinit();
 
 	//!reintialization of the servers Thread Pool for request processing (RequestThreadsManager) and Acceptors (ListenerPool)
 	virtual int ReInit(const ROAnything config);
-	//!starts the session cleaner thread and the ListenerPool, waits for termination
-	virtual int Run();
-	//!stops the ListenerPool and waits for requests to terminate; server is shutdown
-	virtual int Terminate(int val);
-
 	//!service handling in its own thread
 	//! \param reply stream to generate the requests output on
 	//! \param ctx the context of this request, containing the request and all necessary configurable objects
@@ -106,11 +92,8 @@ public:
 	//! Register a StatObserver on the WorkerPoolManager of this server
 	void AddStatGatherer2Observe(StatGatherer *sg);
 
-	//!access to configuration data
-	virtual long GetThreadPoolSize();
-
 	//! factory method to create a custom request processor that processes events
-	virtual RequestProcessor *DoMakeProcessor();
+	RequestProcessor *MakeProcessor();
 
 	//!check if server is ready and running
 	bool IsReady(bool ready, long timeout);
@@ -122,14 +105,32 @@ public:
 	virtual bool MustTerminate();
 
 	//! Helper method to set uid, only done when no MasterServer configured
-	virtual int  SetUid();
+	int SetUid();
 
 	//!returns the pid for this server
-	virtual int GetPid();
+	int GetPid();
 
 	static bool IsInReInit();
 
 protected:
+	//!intialization of the servers Thread Pool for request processing (RequestThreadsManager) and Acceptors (ListenerPool)
+	virtual int DoInit();
+
+	//!starts the session cleaner thread and the ListenerPool, waits for termination
+	virtual int DoRun();
+
+	//!initialization of the Server and its modules
+	virtual int DoGlobalInit(int argc, char *argv[], const ROAnything config);
+
+	//!inner method doing the reinit
+	virtual int DoGlobalReinit();
+
+	//!starts up the server; an InterruptHandler is set up to catch signals for shutdown, reset etc.
+	virtual int DoGlobalRun();
+
+	//!stops the ListenerPool and waits for requests to terminate; server is shutdown
+	virtual int DoTerminate(int val);
+
 	friend class InterruptHandler;
 	friend class InterruptHandlerTest;
 	friend class ServerTest;
@@ -141,16 +142,16 @@ protected:
 	virtual int SetupDispatcher();
 
 	//!writes pid file if configured to use pid information to configured location
-	virtual int WritePIDFile();
+	int WritePIDFile();
 	//!removes pid file when server is shutdown
-	virtual int RemovePIDFile();
+	int RemovePIDFile();
 
 	//!writes pid information to file; contains platform dependent code
 	virtual int DoWritePIDFile(const String &pidFilePath);
 	//!removes pid information from file; contains platform dependent code
 	virtual int DoDeletePIDFile(const String &pidFilePath);
 	//!generates configured filename for pid information file
-	virtual void PIDFileName(String &pidFileName);
+	void PIDFileName(String &pidFileName);
 
 private:
 	// block the following default constructor; it should not be used
@@ -224,14 +225,7 @@ public:
 
 	//! life-cycle of the server init run terminate
 	//!: intialization of the Server and its modules
-	virtual int Init();
-	//! life-cycle of the server init run terminate
-	//!: intialization of the Server and its modules
 	virtual int ReInit(const ROAnything config);
-	//! accepting requests
-	virtual int Run();
-	//! termination of the Server modules
-	virtual int Terminate(int val);
 	virtual void PrepareShutdown(long retCode = 0);
 	virtual bool StartServers();
 
@@ -242,6 +236,15 @@ public:
 	bool IsReady(bool ready, long timeout);
 
 protected:
+	//! life-cycle of the server init run terminate
+	//!: intialization of the Server and its modules
+	virtual int DoInit();
+	//! accepting requests
+	virtual int DoRun();
+
+	//! termination of the Server modules
+	virtual int DoTerminate(int val);
+
 	long fNumServers;
 	ServerThread *fServerThreads;
 };

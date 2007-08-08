@@ -24,13 +24,13 @@ public:
 	StressApp(const char *AppName);
 	~StressApp();
 
+protected:
 	//! does the work
 	//! Runs the configured Stresser and collects the results.
 	//! \return return code to pass up to calling process
 	//! \pre application is ready to be runned
-	virtual int Run();
+	virtual int DoRun();
 
-protected:
 	//! produces a nice output from the results
 	//!:!param: time - the elapsed time to run all the stressers
 	//!:!prec: all started StresserThreads have finished

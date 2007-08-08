@@ -26,35 +26,32 @@ public:
 		return new SimpleTestApp(fName);
 	}
 
-	//! GlobalInit: installs ressources shared among all instances
-	virtual int GlobalInit(int argc, char *argv[], const ROAnything config);
-	//!starts up the application; an InterruptHandler is set up to catch signals for shutdown, reset etc.
-	virtual int GlobalRun();
-	//! frees ressources shared among all instances
-	virtual int GlobalTerminate(int val);
+	//!set the test that drives the booter
+	void SetTest(AppBooterTest *test);
 
+protected:
 	//! loads configuration based on instance's name
 	//! \return 0 if everything worked fine and application is ready to run
 	//! \pre None
 	//! \post application is ready to be runned
 	//! subclasses overwriting Init should call parent's Init !  -- refine this
-	virtual int Init();
+	virtual int DoInit();
 
 	//! hook method to be overriden by subclasses; this implementation does nothing but writes a greeting on cerr
 	//! \return return code to pass up to calling process
 	//! \pre application is ready for running
-	virtual int Run();
+	virtual int DoRun();
+
+	//! GlobalInit: installs ressources shared among all instances
+	virtual int DoGlobalInit(int argc, char *argv[], const ROAnything config);
+	//!starts up the application; an InterruptHandler is set up to catch signals for shutdown, reset etc.
+	virtual int DoGlobalRun();
+	//! frees ressources shared among all instances
+	virtual int DoGlobalTerminate(int val);
 
 	//! termination
-	virtual int Terminate(int val);
+	virtual int DoTerminate(int val);
 
-	//!implementation of LookupInterface
-	//! Looks up key in the instance's store then config and finally in the global config
-
-	//!set the test that drives the booter
-	void SetTest(AppBooterTest *test);
-
-protected:
 	AppBooterTest *fTest;
 };
 
@@ -69,35 +66,33 @@ public:
 		return new SimpleTestServer(fName);
 	}
 
-	//! GlobalInit: installs ressources shared among all instances
-	virtual int GlobalInit(int argc, char *argv[], const ROAnything config);
-	//!starts up the application; an InterruptHandler is set up to catch signals for shutdown, reset etc.
-	virtual int GlobalRun();
-	//! frees ressources shared among all instances
-	virtual int GlobalTerminate(int val);
+	//!set the test that drives the booter
+	void SetTest(AppBooterTest *test);
 
+protected:
 	//! loads configuration based on instance's name
 	//! \return 0 if everything worked fine and application is ready to run
 	//! \pre None
 	//! \post application is ready to be runned
 	//! subclasses overwriting Init should call parent's Init !  -- refine this
-	virtual int Init();
+	virtual int DoInit();
 
 	//! hook method to be overriden by subclasses; this implementation does nothing but writes a greeting on cerr
 	//! \return return code to pass up to calling process
 	//! \pre application is ready for running
-	virtual int Run();
+	virtual int DoRun();
+
+	//! GlobalInit: installs ressources shared among all instances
+	virtual int DoGlobalInit(int argc, char *argv[], const ROAnything config);
+	//!starts up the application; an InterruptHandler is set up to catch signals for shutdown, reset etc.
+	virtual int DoGlobalRun();
+
+	//! frees ressources shared among all instances
+	virtual int DoGlobalTerminate(int val);
 
 	//! termination
-	virtual int Terminate(int val);
+	virtual int DoTerminate(int val);
 
-	//!implementation of LookupInterface
-	//! Looks up key in the instance's store then config and finally in the global config
-
-	//!set the test that drives the booter
-	void SetTest(AppBooterTest *test);
-
-protected:
 	AppBooterTest *fTest;
 };
 

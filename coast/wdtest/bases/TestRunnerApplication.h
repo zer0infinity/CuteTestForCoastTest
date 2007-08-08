@@ -20,15 +20,16 @@ public:
 	TestRunnerApplication(const char *AppName);
 	~TestRunnerApplication();
 
+protected:
 	//! does the work
 	//! Runs the application
 	//! \return return code to pass up to calling process
 	//! \pre application is ready to be runned
-	virtual int Run();
-	// GlobalInit: keeps argc and argv for later use
-	virtual int GlobalInit(int argc, char *argv[], const ROAnything config);
+	virtual int DoRun();
 
-protected:
+	// GlobalInit: keeps argc and argv for later use
+	virtual int DoGlobalInit(int argc, char *argv[], const ROAnything config);
+
 	int fgArgc;
 	char **fgArgv;
 };

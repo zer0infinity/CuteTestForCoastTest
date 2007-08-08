@@ -63,7 +63,7 @@ bool ServerLFThreadPoolsManager::SetupLFPool(Server *server)
 		return false;
 	}
 	TraceAny(listenerPoolConfig, "ListenerPool config:");
-	RequestReactor *rr = new RequestReactor(server->DoMakeProcessor(), new WPMStatHandler(fThreadPoolSz));
+	RequestReactor *rr = new RequestReactor(server->MakeProcessor(), new WPMStatHandler(fThreadPoolSz));
 	server->AddStatGatherer2Observe(rr);
 	fLFPool = new LFListenerPool(rr);
 	bool usePoolStorage = (ctx.Lookup("UsePoolStorage", 0L) != 0L);

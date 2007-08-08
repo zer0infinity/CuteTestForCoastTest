@@ -38,10 +38,16 @@ Application::~Application()
 	StartTrace(Application.Dtor);
 }
 
-// intialization - loads configuration based on instance's name
 int Application::Init()
 {
 	StartTrace(Application.Init);
+	return DoInit();
+}
+
+// intialization - loads configuration based on instance's name
+int Application::DoInit()
+{
+	StartTrace(Application.DoInit);
 	return 0;
 }
 
@@ -49,6 +55,13 @@ int Application::Init()
 int Application::Run()
 {
 	StartTrace(Application.Run);
+	return DoRun();
+}
+
+// doing the work
+int Application::DoRun()
+{
+	StartTrace(Application.DoRun);
 	SysLog::WriteToStderr("That all I'm doing ;-)\n");
 	return 0;
 }
@@ -58,9 +71,22 @@ int Application::Terminate(int val)
 {
 	StartTrace(Application.Terminate);
 
-	SysLog::WriteToStderr(String("Terminating: <") << fName << ">\n");
-	// Check if last instance has be terminated
+	String m(50);
+	m << "\tTerminating <" << fName << ">" << "\n";
+	SysLog::WriteToStderr(m);
 
+	int iRetVal = DoTerminate(val);
+
+	m.Trim(0);
+	m << "\tTerminating <" << fName << "> done\n";
+	SysLog::WriteToStderr(m);
+
+	return iRetVal;
+}
+
+int Application::DoTerminate(int val)
+{
+	StartTrace(Application.DoTerminate);
 	return val;
 }
 
@@ -140,12 +166,28 @@ Application *Application::GetGlobalApplication(String &applicationName)
 int Application::GlobalInit(int argc, char *argv[], const ROAnything config)
 {
 	StartTrace(Application.GlobalInit);
+	int ret = DoGlobalInit(argc, argv, config);
+	String msg;
+	msg << "Global init: " << (ret == 0 ? "succeeded" : "failed");
+	SYSINFO(msg);
+	return (ret);
+}
+
+int Application::DoGlobalInit(int argc, char *argv[], const ROAnything config)
+{
+	StartTrace(Application.DoGlobalInit);
 	return Init();	// Call instance init
 }
 
 int Application::GlobalRun()
 {
 	StartTrace(Application.GlobalRun);
+	return DoGlobalRun();
+}
+
+int Application::DoGlobalRun()
+{
+	StartTrace(Application.DoGlobalRun);
 	return Run();
 }
 
@@ -153,7 +195,12 @@ int Application::GlobalRun()
 int Application::GlobalTerminate(int val)
 {
 	StartTrace(Application.GlobalTerminate);
+	return DoGlobalTerminate(val);
+}
 
+int Application::DoGlobalTerminate(int val)
+{
+	StartTrace(Application.GlobalTerminate);
 	return Terminate(val);
 }
 

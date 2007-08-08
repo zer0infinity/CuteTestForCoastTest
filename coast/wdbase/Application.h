@@ -23,30 +23,28 @@ public:
 	~Application();
 
 	//! GlobalInit: installs ressources shared among all instances
-	virtual int GlobalInit(int argc, char *argv[], const ROAnything config);
+	int GlobalInit(int argc, char *argv[], const ROAnything config);
+
 	//!starts up the application; an InterruptHandler is set up to catch signals for shutdown, reset etc.
-	virtual int GlobalRun();
+	int GlobalRun();
+
 	//! frees ressources shared among all instances
-	virtual int GlobalTerminate(int val);
+	int GlobalTerminate(int val);
 
 	//! loads configuration based on instance's name
 	//! \return 0 if everything worked fine and application is ready to run
 	//! \pre None
 	//! \post application is ready to be runned
 	//! subclasses overwriting Init should call parent's Init !  -- refine this
-	virtual int Init();
+	int Init();
 
-	//! hook method to be overriden by subclasses; this implementation does nothing but writes a greeting on cerr
-	//! \return return code to pass up to calling process
-	//! \pre application is ready for running
-	virtual int Run();
+	//! main entry to run an application or server, will call DoRun() method hook internally
+	/*! \return code to pass up to calling process
+		\pre application is ready for running */
+	int Run();
 
 	//! termination
-	virtual int Terminate(int val);
-
-	//!implementation of LookupInterface
-	//! Looks up key in the instance's store then config and finally in the global config
-	virtual bool DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const;
+	int Terminate(int val);
 
 	//!access to the global configuration
 	static ROAnything GetConfig();
@@ -61,6 +59,35 @@ public:
 	IFAObject *Clone() const {
 		return new Application(fName);
 	}
+
+protected:
+	//! loads configuration based on instance's name
+	//! \return 0 if everything worked fine and application is ready to run
+	//! \pre None
+	//! \post application is ready to be runned
+	//! subclasses overwriting Init should call parent's Init !  -- refine this
+	virtual int DoInit();
+
+	//! hook method to be overriden by subclasses; this implementation does nothing but writes a greeting on cerr
+	//! \return return code to pass up to calling process
+	//! \pre application is ready for running
+	virtual int DoRun();
+
+	//! GlobalInit: installs ressources shared among all instances
+	virtual int DoGlobalInit(int argc, char *argv[], const ROAnything config);
+
+	//!starts up the application; an InterruptHandler is set up to catch signals for shutdown, reset etc.
+	virtual int DoGlobalRun();
+
+	//! frees ressources shared among all instances
+	virtual int DoGlobalTerminate(int val);
+
+	//! termination
+	virtual int DoTerminate(int val);
+
+	//!implementation of LookupInterface
+	//! Looks up key in the instance's store then config and finally in the global config
+	virtual bool DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const;
 
 private:
 	// block the following default elements of this class

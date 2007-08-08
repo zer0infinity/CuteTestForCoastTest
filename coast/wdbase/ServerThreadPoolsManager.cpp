@@ -103,7 +103,7 @@ int ServerThreadPoolsManager::SetupThreadPool(bool reinit, Server *server)
 	u_long numOfPoolBucketSizes = (u_long)ctx.Lookup("NumOfPoolBucketSizes", 20L);
 
 	Anything args;
-	args["processor"] = (IFAObject *)server->DoMakeProcessor();
+	args["processor"] = (IFAObject *)server->MakeProcessor();
 
 	if ( fActiveRequests && reinit ) {
 		Trace("re-initializing existing pool");

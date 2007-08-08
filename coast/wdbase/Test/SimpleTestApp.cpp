@@ -59,47 +59,46 @@ SimpleTestApp::~SimpleTestApp()
 	StartTrace(SimpleTestApp.Dtor);
 }
 
-int SimpleTestApp::GlobalInit(int argc, char *argv[], const ROAnything config)
+int SimpleTestApp::DoGlobalInit(int argc, char *argv[], const ROAnything config)
 {
-	StartTrace(SimpleTestApp.GlobalInit);
-	MethodTracker track("GlobalInit", fTest);
-	return Application::GlobalInit(argc, argv, config);
+	StartTrace(SimpleTestApp.DoGlobalInit);
+	MethodTracker track("DoGlobalInit", fTest);
+	return Application::DoGlobalInit(argc, argv, config);
 }
 
-int SimpleTestApp::GlobalRun()
+int SimpleTestApp::DoGlobalRun()
 {
-	StartTrace(SimpleTestApp.GlobalRun);
-	MethodTracker track("GlobalRun", fTest);
-	return Application::GlobalRun();
+	StartTrace(SimpleTestApp.DoGlobalRun);
+	MethodTracker track("DoGlobalRun", fTest);
+	return Application::DoGlobalRun();
 }
 
-int SimpleTestApp::GlobalTerminate(int val)
+int SimpleTestApp::DoGlobalTerminate(int val)
 {
-	StartTrace(SimpleTestApp.GlobalTerminate);
-	MethodTracker track("GlobalTerminate", fTest);
-	return Application::GlobalTerminate(val);
+	StartTrace(SimpleTestApp.DoGlobalTerminate);
+	MethodTracker track("DoGlobalTerminate", fTest);
+	return Application::DoGlobalTerminate(val);
 }
 
-int SimpleTestApp::Init()
+int SimpleTestApp::DoInit()
 {
-	StartTrace(SimpleTestApp.Init);
-	MethodTracker track("Init", fTest);
-	return Application::Init();
+	StartTrace(SimpleTestApp.DoInit);
+	MethodTracker track("DoInit", fTest);
+	return Application::DoInit();
 }
 
-int SimpleTestApp::Run()
+int SimpleTestApp::DoRun()
 {
-	StartTrace(SimpleTestApp.Run);
-	MethodTracker track("Run", fTest);
-
-	return Application::Run();
+	StartTrace(SimpleTestApp.DoRun);
+	MethodTracker track("DoRun", fTest);
+	return Application::DoRun();
 }
 
-int SimpleTestApp::Terminate(int val)
+int SimpleTestApp::DoTerminate(int val)
 {
-	StartTrace(Application.Terminate);
-	MethodTracker track("Terminate", fTest);
-	return Application::Terminate(val);
+	StartTrace(SimpleTestApp.DoTerminate);
+	MethodTracker track("DoTerminate", fTest);
+	return Application::DoTerminate(val);
 }
 
 void SimpleTestApp::SetTest(AppBooterTest *test)
@@ -129,46 +128,46 @@ SimpleTestServer::~SimpleTestServer()
 	StartTrace(SimpleTestServer.Dtor);
 }
 
-int SimpleTestServer::GlobalInit(int argc, char *argv[], const ROAnything config)
+int SimpleTestServer::DoGlobalInit(int argc, char *argv[], const ROAnything config)
 {
-	StartTrace(SimpleTestServer.GlobalInit);
-	MethodTracker track("GlobalInit", fTest);
-	return Server::GlobalInit(argc, argv, config);
+	StartTrace(SimpleTestServer.DoGlobalInit);
+	MethodTracker track("DoGlobalInit", fTest);
+	return Server::DoGlobalInit(argc, argv, config);
 }
 
-int SimpleTestServer::GlobalRun()
+int SimpleTestServer::DoGlobalRun()
 {
-	StartTrace(SimpleTestServer.GlobalRun);
-	MethodTracker track("GlobalRun", fTest);
-	return Application::GlobalRun();
+	StartTrace(SimpleTestServer.DoGlobalRun);
+	MethodTracker track("DoGlobalRun", fTest);
+	return Application::DoGlobalRun();
 }
 
-int SimpleTestServer::GlobalTerminate(int val)
+int SimpleTestServer::DoGlobalTerminate(int val)
 {
-	StartTrace(SimpleTestServer.GlobalTerminate);
-	MethodTracker track("GlobalTerminate", fTest);
-	return Server::GlobalTerminate(val);
+	StartTrace(SimpleTestServer.DoGlobalTerminate);
+	MethodTracker track("DoGlobalTerminate", fTest);
+	return Server::DoGlobalTerminate(val);
 }
 
-int SimpleTestServer::Init()
+int SimpleTestServer::DoInit()
 {
-	StartTrace(SimpleTestServer.Init);
-	MethodTracker track("Init", fTest);
-	return Server::Init();
+	StartTrace(SimpleTestServer.DoInit);
+	MethodTracker track("DoInit", fTest);
+	return Server::DoInit();
 }
 
-int SimpleTestServer::Run()
+int SimpleTestServer::DoRun()
 {
-	StartTrace(SimpleTestServer.Run);
-	MethodTracker track("Run", fTest);
-	return Application::Run();
+	StartTrace(SimpleTestServer.DoRun);
+	MethodTracker track("DoRun", fTest);
+	return Application::DoRun();
 }
 
-int SimpleTestServer::Terminate(int val)
+int SimpleTestServer::DoTerminate(int val)
 {
-	StartTrace(Application.Terminate);
-	MethodTracker track("Terminate", fTest);
-	return Server::Terminate(val);
+	StartTrace(SimpleTestServer.DoTerminate);
+	MethodTracker track("DoTerminate", fTest);
+	return Server::DoTerminate(val);
 }
 
 void SimpleTestServer::SetTest(AppBooterTest *test)

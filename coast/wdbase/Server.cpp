@@ -192,27 +192,19 @@ Server::~Server()
 }
 
 // intialization of the Server and its modules
-int Server::GlobalInit(int argc, char *argv[], const ROAnything config)
+int Server::DoGlobalInit(int argc, char *argv[], const ROAnything config)
 {
-	StartTrace(Server.GlobalInit);
-	int ret = Application::GlobalInit(argc, argv, config);
-	String msg;
-	msg << "Global init: " << (ret == 0 ? "succeeded" : "failed");
-	SYSINFO(msg);
+	StartTrace(Server.DoGlobalInit);
+	int ret = Application::DoGlobalInit(argc, argv, config);
 	SetUid();
 	return (ret);
 }
 
-int Server::GlobalRun()
+int Server::DoGlobalRun()
 {
-	StartTrace(Server.GlobalRun);
-
+	StartTrace(Server.DoGlobalRun);
 	InterruptHandler ir(this);
-
-	// let the server do the main loop
-	int retVal = Run();
-
-	return retVal;
+	return Application::DoGlobalRun();
 }
 
 bool Server::IsInReInit()
@@ -283,9 +275,9 @@ int Server::DoGlobalReinit()
 }
 
 // intialization of the Server and its modules
-int Server::Init()
+int Server::DoInit()
 {
-	StartTrace(Server.Init);
+	StartTrace(Server.DoInit);
 	// Although already done on modules init, do it
 	// explicitly here for clarity: Unblock requests
 	RequestBlocker::RB()->UnBlock();
@@ -330,14 +322,6 @@ int Server::SetupDispatcher()
 	return 0;
 }
 
-long Server::GetThreadPoolSize()
-{
-	if (fPoolManager) {
-		return fPoolManager->GetThreadPoolSize();
-	}
-	return Lookup("ThreadPoolSize", 25L);
-}
-
 int Server::ReInit(const ROAnything )
 {
 	StartTrace(Server.ReInit);
@@ -356,28 +340,16 @@ int Server::ReInit(const ROAnything )
 }
 
 // termination of the Server modules
-int Server::Terminate(int val)
+int Server::DoTerminate(int val)
 {
-	String m(50);
-	m << "Terminating: <" << fName << ">" << "\n";
-	SysLog::WriteToStderr(m);
-	SysLog::Info("killed");
-
-	if (fPoolManager) {
+	if ( fPoolManager ) {
+		SysLog::WriteToStderr("\t\tTerminating running requests");
 		fPoolManager->Terminate();
 		fPoolManager->Finalize();
-	}
-
-	m.Trim(0);
-	m << "Cleaning up Server: " << GetName() << "\n";
-	SysLog::WriteToStderr(m);
-	if (fPoolManager) {
-		SysLog::WriteToStderr("\tTerminating running requests");
 		delete fPoolManager;
 		fPoolManager = 0;
 		SysLog::WriteToStderr(" done\n");
 	}
-	SysLog::WriteToStderr("Server Cleanup completed\nLeaving shutdown\n");
 	return fRetVal;
 }
 
@@ -406,9 +378,9 @@ bool Server::DoLookup(const char *key, ROAnything &result, char delim, char inde
 	return false;
 }
 
-int Server::Run()
+int Server::DoRun()
 {
-	StartTrace(Server.Run);
+	StartTrace(Server.DoRun);
 	int iRet = -1;
 	if (fPoolManager) {
 		Trace("running PoolManager...");
@@ -439,9 +411,9 @@ void Server::ProcessRequest(ostream &reply, Context &ctx)
 	}
 }
 
-RequestProcessor *Server::DoMakeProcessor()
+RequestProcessor *Server::MakeProcessor()
 {
-	StartTrace(Server.DoMakeProcessor);
+	StartTrace(Server.MakeProcessor);
 	RequestProcessor *rp;
 	const char *rpn =  Lookup("RequestProcessor", "RequestProcessor") ;
 
@@ -658,13 +630,13 @@ MasterServer::~MasterServer()
 {
 }
 
-int MasterServer::Init()
+int MasterServer::DoInit()
 {
-	StartTrace(MasterServer.Init);
+	StartTrace(MasterServer.DoInit);
 	long retCode = 0;
 
 	if ( !fgInReInit ) {
-		retCode = Server::Init();
+		retCode = Server::DoInit();
 	}
 
 	ROAnything serverModules;
@@ -777,14 +749,14 @@ bool MasterServer::StartServers()
 	return success;
 }
 
-int MasterServer::Run()
+int MasterServer::DoRun()
 {
-	StartTrace(MasterServer.Run);
+	StartTrace(MasterServer.DoRun);
 	int iRet = -1;
 	if ( StartServers() ) {
 		Trace("calling masterservers Run method");
-		iRet = Server::Run();
-		Trace("Server::Run returned with code " << (long)iRet);
+		iRet = Server::DoRun();
+		Trace("Server::DoRun returned with code " << (long)iRet);
 	}
 	return iRet;
 }
@@ -799,15 +771,13 @@ void MasterServer::PrepareShutdown(long retCode)
 }
 
 // termination of the Server modules
-int MasterServer::Terminate(int val)
+int MasterServer::DoTerminate(int val)
 {
-	StartTrace(MasterServer.Terminate);
-	String m(50);
-	m << "\tTerminating Master: <" << fName << ">\n";
-	SysLog::WriteToStderr(m);
+	StartTrace(MasterServer.DoTerminate);
+
 	Anything retval(val);
 	for (long i = 0; i < fNumServers; ++i) {
-		m.Trim(0);
+		String m(50L);
 		m << "\t\tTerminating <" << fServerThreads[i].GetName() << ">\n";
 		SysLog::WriteToStderr(m);
 		Thread::EThreadState aState = fServerThreads[i].GetState(false, Thread::eRunning);
@@ -821,11 +791,7 @@ int MasterServer::Terminate(int val)
 	}
 	Trace("deleting server threads");
 	delete [] fServerThreads;
-	long ret = Server::Terminate(val);
-	m.Trim(0);
-	m << "\tTerminating Master: <" << fName << "> done\n";
-	SysLog::WriteToStderr(m);
-	return ret;
+	return Server::DoTerminate(val);
 }
 
 //---- ServerThread ------------------------------------------------------------
