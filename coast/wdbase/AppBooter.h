@@ -28,27 +28,27 @@ class EXPORTDECL_WDBASE AppBooter
 	// or with a minimal relative path
 public:
 	AppBooter();
-	virtual ~AppBooter();
-	virtual int Run(int argc, char *argv[], bool doHalt = true);
+	~AppBooter();
+	int Run(int argc, char *argv[], bool doHalt = true);
 
-	virtual bool Boot(Anything &config); // access the intial config file
-	virtual Application *FindApplication(ROAnything config, String &applicationName);
+	bool Boot(Anything &config); // access the intial config file
+	Application *FindApplication(ROAnything config, String &applicationName);
 
-	virtual bool OpenLibs(const Anything &config);
-	virtual bool CloseLibs();
-	virtual bool ReadFromFile(Anything &config, const char *filename); // reading of configuration files
-	virtual void HandleArgs(int argc, char *argv[], Anything &config);
-	virtual void SetSignalMask();
+	bool OpenLibs(const Anything &config);
+	bool CloseLibs();
+	bool ReadFromFile(Anything &config, const char *filename); // reading of configuration files
+	void HandleArgs(int argc, char *argv[], Anything &config);
+	void SetSignalMask();
 
 	//!sets WD_ROOT and WD_PATH if set in args; returns bootfilename
-	virtual String PrepareBootFileLoading(const ROAnything &roconfig);
+	String PrepareBootFileLoading(const ROAnything &roconfig);
 
 	//!merges command line arguments into global configuration anything
-	virtual void MergeConfigWithArgs(Anything &config, const Anything &args);
+	void MergeConfigWithArgs(Anything &config, const Anything &args);
 
-	virtual void Halt(const Anything &config);
+	void Halt(const Anything &config);
 
-protected:
+private:
 	Anything fLibArray;
 	friend class AppBooterTest;
 };
