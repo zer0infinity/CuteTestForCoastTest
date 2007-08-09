@@ -14,7 +14,6 @@
 #include "Server.h"
 #include "RequestListener.h"
 #include "ServerUtils.h"
-#include "SysLog.h"
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
