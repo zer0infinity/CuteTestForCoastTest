@@ -256,7 +256,7 @@ int Server::DoGlobalReinit()
 	StartTrace(Server.DoGlobalReinit);
 
 	Anything config;
-	const char *bootfilename = ROAnything(fgConfig)["WD_BOOTFILE"].AsCharPtr("Config");
+	const char *bootfilename = GetConfig()["WD_BOOTFILE"].AsCharPtr("Config");
 	if (AppBooter().ReadFromFile(config, bootfilename)) {
 		// config file may redefine root directory
 		System::SetRootDir( Lookup("Root", System::GetRootDir()), true);
@@ -264,11 +264,11 @@ int Server::DoGlobalReinit()
 		System::SetPathList( Lookup("PathList", System::GetPathList()), true);
 		SysLog::WriteToStderr("Environment set\nResetting Components\n");
 
-		TraceAny(fgConfig, "Old Config");
+		TraceAny(GetConfig(), "Old Config");
 		TraceAny(config, "New Config");
 
-		int retCode = WDModule::Reset(fgConfig, config);
-		fgConfig = config;
+		int retCode = WDModule::Reset(GetConfig(), config);
+		InitializeGlobalConfig(config);
 		return retCode;
 	}
 	return -1;
@@ -369,7 +369,7 @@ bool Server::DoLookup(const char *key, ROAnything &result, char delim, char inde
 	}
 
 	// lookup the main process config
-	if (ROAnything(Application::fgConfig).LookupPath(result, key, delim, indexdelim)) {
+	if (GetConfig().LookupPath(result, key, delim, indexdelim)) {
 		Trace("found in Master Config");
 		return true;
 	}
@@ -421,28 +421,37 @@ RequestProcessor *Server::MakeProcessor()
 	rp = RequestProcessor::FindRequestProcessor(rpn);
 	if (rp == 0) {
 		SysLog::WriteToStderr(String("RequestProcessor ") << rpn << " not found\n");
+		// shut down the server
 		PrepareShutdown(-1);
-		// will shut down the server
-	} // if
-	rp = (RequestProcessor *)rp->Clone(); // create processor that is connected to this server
-	rp->Init(this);
+	} else {
+		rp = (RequestProcessor *)rp->Clone(); // create processor that is connected to this server
+		rp->Init(this);
+	}
 	return rp;
 }
 
-void Server::PrepareShutdown(long retCode)
+void Server::PrepareShutdown(int retCode)
 {
 	StartTrace(Server.PrepareShutdown);
-	fRetVal = retCode;
-	RequestBlocker::RB()->Block();
-	QuitRunLoop();
+	fRetVal = DoPrepareShutdown(retCode);
 }
 
-void Server::QuitRunLoop()
+int Server::DoPrepareShutdown(int retCode)
 {
+	StartTrace(Server.DoPrepareShutdown);
+	RequestBlocker::RB()->Block();
+	retCode = QuitRunLoop();
+	return retCode;
+}
+
+int Server::QuitRunLoop()
+{
+	int iRetCode = 0L;
 	// shutdown the listening socket and terminate the server threads
-	if (fPoolManager) {
-		fRetVal = fPoolManager->RequestTermination();
+	if ( fPoolManager ) {
+		iRetCode = fPoolManager->RequestTermination();
 	}
+	return iRetCode;
 }
 
 int Server::BlockRequests()
@@ -676,7 +685,7 @@ int MasterServer::ReInit(const ROAnything config)
 {
 	StartTrace(MasterServer.ReInit);
 	// save current configuration for re-initializing
-	fgConfig = config.DeepClone();
+	InitializeGlobalConfig(config.DeepClone());
 	long retCode = 0;
 	for (long i = 0; (retCode == 0) && (i < fNumServers); ++i) {
 		// terminates each server thread

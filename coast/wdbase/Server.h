@@ -78,10 +78,11 @@ public:
 	virtual void ProcessRequest(ostream &reply, Context &ctx);
 
 	//---- admin API -------------------
-	virtual void PrepareShutdown(long retCode = 0);
-	virtual int  BlockRequests();
-	virtual int  UnblockRequests();
-	virtual void QuitRunLoop();
+	void PrepareShutdown(int retCode = 0);
+
+	virtual int BlockRequests();
+	virtual int UnblockRequests();
+	virtual int QuitRunLoop();
 
 	//---- registry api
 	RegCacheDef(Server);	// FindServer()
@@ -130,6 +131,9 @@ protected:
 
 	//!stops the ListenerPool and waits for requests to terminate; server is shutdown
 	virtual int DoTerminate(int val);
+
+	//! overridable hook which gets called by the signal handler to initiate shutdown
+	virtual int DoPrepareShutdown(int retCode);
 
 	friend class InterruptHandler;
 	friend class InterruptHandlerTest;
