@@ -12,14 +12,15 @@
 //--- standard modules used ----------------------------------------------------
 #include "Registry.h"
 #include "StringStream.h"
-#include "Server.h"
 #include "Dbg.h"
 
 // ------------------- TableCompressor ---------------------------------------------
 RegisterCompressor(TableCompressor);
 RegisterAliasSecurityItem(tc, TableCompressor);
 
-TableCompressor::TableCompressor(const char *name) : Compressor(name), fMap(Storage::Global())
+TableCompressor::TableCompressor(const char *name)
+	: Compressor(name)
+	, fMap(Storage::Global())
 {
 	StartTrace1(TableCompressor.Ctor, "Name: <" << NotNull(name) << ">");
 }
