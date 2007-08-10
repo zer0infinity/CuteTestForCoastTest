@@ -230,11 +230,10 @@ public:
 	//! life-cycle of the server init run terminate
 	//!: intialization of the Server and its modules
 	virtual int ReInit(const ROAnything config);
-	virtual void PrepareShutdown(long retCode = 0);
-	virtual bool StartServers();
-
 	virtual int BlockRequests();
 	virtual int UnblockRequests();
+
+	bool StartServers();
 
 	//!check if server is ready and running
 	bool IsReady(bool ready, long timeout);
@@ -248,6 +247,8 @@ protected:
 
 	//! termination of the Server modules
 	virtual int DoTerminate(int val);
+
+	virtual int DoPrepareShutdown(int retCode = 0);
 
 	long fNumServers;
 	ServerThread *fServerThreads;

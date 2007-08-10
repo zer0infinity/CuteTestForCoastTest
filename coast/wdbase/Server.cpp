@@ -770,13 +770,13 @@ int MasterServer::DoRun()
 	return iRet;
 }
 
-void MasterServer::PrepareShutdown(long retCode)
+int MasterServer::DoPrepareShutdown(int retCode)
 {
-	StartTrace(MasterServer.PrepareShutdown);
+	StartTrace(MasterServer.DoPrepareShutdown);
 	for (long i = 0; i < fNumServers; ++i) {
 		fServerThreads[i].PrepareShutdown(retCode);
 	}
-	Server::PrepareShutdown(retCode);
+	return Server::DoPrepareShutdown(retCode);
 }
 
 // termination of the Server modules
