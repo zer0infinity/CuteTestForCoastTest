@@ -7,6 +7,6 @@ feadntsrv1
 	query tcp ether feadntsrv1 4100
 
 HIKU_INT2
-        master tcp ether bondo 9100
-        query  tcp ether bondo 9100
+        master tcp ether bondo 3337
+        query  tcp ether bondo 3337
 
