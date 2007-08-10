@@ -432,6 +432,7 @@ bool Thread::IntSetState(EThreadState state, ROAnything args)
 	bool bRet = false;
 	if ( CallStateHooks(state, args) ) {
 		Anything anyEvt;
+		anyEvt["ThreadId"] = (long)GetId();
 		anyEvt["ThreadState"]["Old"] = (long)fState;
 		anyEvt["ThreadState"]["New"] = (long)state;
 		if ( !args.IsNull() ) {
@@ -505,6 +506,7 @@ bool Thread::SetRunningState(ERunningState state, ROAnything args)
 	{
 		// scoping to force compiler not to move around automatic variables which could make strange things happen
 		Anything anyEvt;
+		anyEvt["ThreadId"] = (long)GetId();
 		anyEvt["RunningState"]["Old"] = (long)oldState;
 		anyEvt["RunningState"]["New"] = (long)state;
 		if ( !args.IsNull() ) {
