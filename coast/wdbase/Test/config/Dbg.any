@@ -37,7 +37,7 @@
 		/EnableAll	0
 	}
 	/Mutex {
-		/MainSwitch	33
+		/MainSwitch	3
 		/EnableAll	10
 		/Mutex		1200
 		/Lock		33
@@ -49,8 +49,8 @@
 		/EnableAll	10
 	}
 	/Thread {
-		/MainSwitch			33
-		/EnableAll			34
+		/MainSwitch			3
+		/EnableAll			30
 		/Terminate			33
 		/SetState			33
 		/CheckState			33
@@ -78,8 +78,8 @@
 		/EnableAll	33
 	}
 	/ListenerThread {
-		/MainSwitch	1200
-		/EnableAll	1200
+		/MainSwitch	0
+		/EnableAll	33
 	}
 	/ThreadPoolManager {
 		/MainSwitch	33
