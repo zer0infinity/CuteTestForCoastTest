@@ -46,6 +46,8 @@
 #include "AnyImplsTest.h"
 #include "TypeTraitsTest.h"
 #include "PoolAllocatorTest.h"
+#include "AnythingIteratorTest.h"
+#include "AnythingSTLTest.h"
 
 #ifndef __370__
 #if !defined(WIN32)
@@ -97,6 +99,8 @@ void setupRunner(TestRunner &runner)
 	ADD_SUITE(runner, TimeStampTest);
 	ADD_SUITE(runner, ConversionUtilsTest);
 	ADD_SUITE(runner, TypeTraitsTest);
+	ADD_SUITE(runner, AnythingIteratorTest);
+	ADD_SUITE(runner, AnythingSTLTest);
 
 	// put last since cirtical system paths are manipulated that may
 	// affect proper operation of other tests
