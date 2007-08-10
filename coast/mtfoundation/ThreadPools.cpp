@@ -40,7 +40,7 @@ ThreadPoolManager::~ThreadPoolManager()
 
 bool ThreadPoolManager::Init(int maxParallelRequests, ROAnything roaThreadArgs)
 {
-	StartTrace(ThreadPoolManager.Init);
+	StartTrace1(ThreadPoolManager.Init, "this:" << (long)this);
 	if ( !fTerminated ) {
 		// make sure existing workers are terminated properly
 		if ( Terminate(1, GetPoolSize() * 1 + 5) != 0 ) {
@@ -60,7 +60,7 @@ bool ThreadPoolManager::Init(int maxParallelRequests, ROAnything roaThreadArgs)
 
 int ThreadPoolManager::Start(bool usePoolStorage, int poolStorageSize, int numOfPoolBucketSizes, ROAnything roaThreadArgs)
 {
-	StartTrace(ThreadPoolManager.Start);
+	StartTrace1(ThreadPoolManager.Start, "this:" << (long)this);
 	if ( GetPoolSize() > 0 ) {
 		long lStartSuccess = 0L;
 		for (long i = 0, sz = GetPoolSize(); i < sz; ++i) {
@@ -143,7 +143,7 @@ int ThreadPoolManager::Join(long lMaxSecsToWait)
 			Trace("waiting on Thread Join forever!");
 		}
 		while ( ( fRunningThreads > 0 ) && ( lWaited < lMaxSecsToWait ) ) {
-			Trace("still " << fRunningThreads << " running Threads, doing a TimedWait");
+			Trace("this:" << (long)this << " still " << fRunningThreads << " running Threads, doing a TimedWait");
 			fCond.TimedWait(fMutex, 1);
 			lWaited += lIncr;
 		}
@@ -197,7 +197,7 @@ void ThreadPoolManager::Update(Thread *t, ROAnything roaStateArgs)
 	SimpleMutexEntry me(fMutex);
 	me.Use();
 	{
-		StartTrace(ThreadPoolManager.Update);
+		StartTrace1(ThreadPoolManager.Update, "this:" << (long)this);
 		TraceAny(roaStateArgs, "state event received");
 		switch ( roaStateArgs["ThreadState"]["New"].AsLong(-1)) {
 			case Thread::eCreated:
