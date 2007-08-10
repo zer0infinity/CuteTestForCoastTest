@@ -49,7 +49,7 @@ bool LFListenerPool::Init(int maxParallelRequests, ROAnything args, bool useThre
 {
 	StartTrace(LFListenerPool.Init);
 	Anything leaderFollowerConfig;
-
+	TraceAny(args, "LFListenerPool config");
 	for (long i = 0; i < args.GetSize(); ++i) {
 		const char *acceptorName = args[i].AsCharPtr("AcceptorFactory");
 
