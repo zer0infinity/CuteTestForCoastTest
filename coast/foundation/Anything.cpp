@@ -19,9 +19,10 @@
 #include "AnyComparers.h"
 
 //--- c-library modules used ---------------------------------------------------
-#include <ctype.h>		// isspace() isdigit() isalnum() toupper() isxdigit()
-#include <stdlib.h>		// atol() atof() strtoul
-#include <string.h>		// strchr()
+#include <cctype>
+#include <cstdlib>
+#include <cstring>
+#include <algorithm>
 
 static const String fgStrEmpty(Storage::Global()); //avoid temporary
 static const Anything fgAnyEmpty(Storage::Global()); // avoid temporary
@@ -32,7 +33,6 @@ long IFAHash(const char *key, long &len, char stop1, char stop2)
 	register long h = 0;
 	register u_long g;
 	register const unsigned char *p = (const unsigned char *)key;
-
 	if (key) {
 		while (*p && *p != stop1 && *p != stop2) {
 			h = (h << 4) + *p++;
@@ -879,9 +879,8 @@ Anything &Anything::DoAt(long i) const
 Anything &Anything::DoGetAt(long i) const
 {
 	if ( GetType() != AnyArrayType ) {
-		// we have an index == 0
-		// and the type is not null
-		// so just return this
+		// if the type is not an AnyArrayType
+		// just return this
 		return *(Anything *)this;
 	}
 	// double check for the index range since in a productive version
@@ -912,20 +911,34 @@ const char *Anything::SlotName(long slot) const
 	return 0;
 }
 
-void Anything::Remove(long slot)
+bool Anything::Remove(long slot)
 {
 	if (IsArrayImpl(GetImpl())) {
 		ArrayImpl(GetImpl())->Remove(slot);
+		return true;
+	} else if ( slot == 0 && !IsNull() ) {
+		clear();
+		return true;
 	}
+	return false;
 }
 
-void Anything::Remove(const char *k)
+bool Anything::Remove(const char *k)
 {
 	if (IsArrayImpl(GetImpl())) {
 		long slot = FindIndex(k);
 		if (slot >= 0) {
 			ArrayImpl(GetImpl())->Remove(slot);
+			return true;
 		}
+	}
+	return false;
+}
+
+void Anything::InsertReserve(long slot, long size)
+{
+	if (IsArrayImpl(GetImpl())) {
+		ArrayImpl(GetImpl())->InsertReserve(slot, size);
 	}
 }
 
@@ -1406,7 +1419,6 @@ bool Anything::LookupPath(Anything &result, const char *path, char delimSlot, ch
 		if (!tokPtr || *tokPtr == delimSlot) {
 			return false;
 		}
-
 		const Anything *c = this; // pointers are faster!
 		do {
 			register long lIdx = -1;
@@ -1489,6 +1501,7 @@ AnyImpl *Anything::GetImpl() const
 		return fAnyImp;
 	}
 }
+
 void Anything::Accept(AnyVisitor &v, long lIdx, const char *slotname) const
 {
 	if (GetImpl()) {
@@ -1496,6 +1509,112 @@ void Anything::Accept(AnyVisitor &v, long lIdx, const char *slotname) const
 	} else {
 		v.VisitNull(lIdx, slotname);
 	}
+}
+
+//-- implement STL support functionality of class Anyting
+
+Anything::iterator Anything::begin()
+{
+	return Anything_iterator(*this, 0);
+}
+Anything::iterator Anything::end()
+{
+	return Anything_iterator(*this, GetSize());
+}
+Anything::const_iterator Anything::begin()const
+{
+	return Anything_const_iterator(*this, 0);
+}
+Anything::const_iterator Anything::end() const
+{
+	return Anything_const_iterator(*this, GetSize());
+}
+
+Anything::reverse_iterator Anything::rbegin()
+{
+	return reverse_iterator(end());
+}
+Anything::reverse_iterator Anything::rend()
+{
+	return reverse_iterator(begin());
+}
+Anything::const_reverse_iterator Anything::rbegin()const
+{
+	return const_reverse_iterator(end());
+}
+Anything::const_reverse_iterator Anything::rend() const
+{
+	return const_reverse_iterator(end());
+}
+void Anything::clear()
+{
+	// may be not most efficient, but working
+	*this = Anything(GetAllocator());
+}
+Anything::iterator Anything::erase(Anything::iterator pos)
+{
+	if (&pos.a == this) {
+		if (pos.position >= 0 && pos.position < this->GetSize()) {
+			Remove(pos.position);
+			return pos;
+		}
+	}
+	return this->end(); // should throw, but stay robust
+}
+Anything::iterator Anything::erase(Anything::iterator from, Anything::iterator to)
+{
+	if (&from.a == this && &to.a == this) {
+		if (from.position >= 0 && from.position <= to.position && to.position <= this->GetSize()) {
+			while (--to >= from) {
+				Remove(to.position);
+			}
+			return from;
+		}
+	}
+	return this->end(); // should throw, but stay robust
+}
+void Anything::swap(Anything &that)
+{
+	// we use an anonymous union of pointers and bits. this could be dangerous....
+	Assert(sizeof(bits) == sizeof(fAnyImp));
+	Assert(sizeof(fAnyImp) == sizeof(fAlloc));
+	AnyImpl *tmp = this->fAnyImp;
+	this->fAnyImp = that.fAnyImp;
+	that.fAnyImp = tmp;
+}
+
+Anything::iterator Anything::do_insert(iterator pos, size_type n, const value_type &v)
+{
+	if (&(pos.a) != this || pos > end()) {
+		return end();    // no op
+	}
+	// handles empty Anything as well as appending, where no adjustment is needed
+	// need to deal with a special case of inserting 1 element into a null anything
+	if (pos >= end() || n < 1) {
+		long res = GetSize();
+		if (n == 1 && IsNull()) {
+			*this = v;
+		} else {
+			while (n-- > 0) {
+				Append(v);
+			}
+		}
+		return Anything::iterator(*this, res);
+	}
+	// handles simple Anythings with insertion in the front
+	if ( GetType() != AnyArrayType ) {
+		Expand();
+		*(pos + n) = *pos;
+	} else {
+		// deal with insertion into arrays
+		InsertReserve(pos.position, n);
+	}
+	while (n-- > 0) {
+		*(pos + n) = v;
+	}
+	// now we need to forward it to the array-impl and keep track of the hash
+	// otherwise we need to make space available.... not yet done
+	return pos;
 }
 
 // metathing is always an array
@@ -1653,9 +1772,8 @@ const ROAnything ROAnything::At(long i) const
 {
 	if ( AssertRange(i) != -1 ) {
 		if ( GetType() != AnyArrayType ) {
-			// we have an index == 0
-			// and the type is not null
-			// so just return this
+			// if the type is not an AnyArrayType
+			// just return this
 			return *this;
 		}
 		return ROAnything(ArrayImpl(fAnyImp)->At(i));
@@ -1856,7 +1974,6 @@ void InputContext::SkipToEOL()
 	char c = ' ';
 
 	while (Get(c) && c != '\n' && c != '\r') { }
-
 	if (c == '\n' || c == '\r') {
 		++fLine; // count contexts lines
 		// we should treat DOS-convention of CRLF nicely by reading it
@@ -2151,7 +2268,6 @@ void *AnyKeyAssoc::operator new[](size_t size, Allocator *a)
 		return ((char *)::operator new(size + sizeof(Allocator *)));
 	}
 }
-
 #if defined(WIN32) && (_MSC_VER >= 1200) // VC6 or greater
 void AnyKeyAssoc::operator delete[](void *ptr, Allocator *a)
 {
@@ -2166,7 +2282,6 @@ void AnyKeyAssoc::operator delete[](void *ptr, Allocator *a)
 	return;
 }
 #endif
-
 void AnyKeyAssoc::operator delete[](void *ptr)
 {
 	if (ptr) {
@@ -2187,14 +2302,12 @@ AnyKeyAssoc::AnyKeyAssoc(const Anything &value, const char *key)
 	, fAllocator(value.GetAllocator())
 {
 }
-
 AnyKeyAssoc::AnyKeyAssoc(const AnyKeyAssoc &aka)
 	: fValue(aka.fValue)
 	, fKey(aka.fKey)
 	, fAllocator(aka.fValue.GetAllocator())
 {
 }
-
 // used when allocating arrays... CAUTION: elements then must be initialized manually with Init()!
 AnyKeyAssoc::AnyKeyAssoc()
 	: fValue((Allocator *)0)
@@ -2202,23 +2315,19 @@ AnyKeyAssoc::AnyKeyAssoc()
 	, fAllocator(0)
 {
 }
-
 AnyKeyAssoc::~AnyKeyAssoc()
 {
 }
-
 void AnyKeyAssoc::Init(Allocator *a)
 {
 	fAllocator = a;
 	fValue.SetAllocator(a);
 	fKey.SetAllocator(a);
 }
-
 void AnyKeyAssoc::SetKey(const char *key)
 {
 	fKey = key;
 }
-
 void AnyKeyAssoc::SetValue(const Anything &val)
 {
 	fValue = val;
@@ -2271,7 +2380,6 @@ void SlotFinder::Operate(Anything &source, Anything &dest, String destSlotname, 
 	}
 	SubTraceAny(TraceAny, dest, "Destination is finally:");
 }
-
 bool SlotFinder::IntOperate(Anything &dest, String &destSlotname, long &destIdx, char delim, char indexdelim)
 {
 	StartTrace(SlotFinder.IntOperate);

@@ -12,6 +12,8 @@
 #include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include "ITOString.h"
 #include "AnyImplTypes.h"
+#include "AnythingIterator.h" // new version of STL compliant iterators
+#include <iterator>
 
 class EXPORTDECL_FOUNDATION AnyImpl;
 class EXPORTDECL_FOUNDATION MetaThing;
@@ -178,13 +180,15 @@ public:
 		\return the index of the slot that contains <I>k</I> if this Anything contains <I>k</I>, -1 if not. */
 	long FindValue(const char *k) const;
 
-	/*! Remove a slot by index from this Anything.
-		\param slot the index of the slot that is going to be removed. */
-	void Remove(long slot);
+	/*! Remove a slot by index from this Anything. If it is not an array anything, Remove(0L) will remove the current content and initialize with an empty Anything().
+		\param slot the index of the slot that is going to be removed.
+		\return true in case a slot was removed, false otherwise */
+	bool Remove(long slot);
 
 	/*! Remove slot with a key from this Anything.
-		\param k the key of the slot that is going to be removed. */
-	void Remove(const char *k);
+		\param k the key of the slot that is going to be removed.
+		\return true in case a slot was removed, false otherwise */
+	bool Remove(const char *k);
 
 // FindIndex shouldn't be public!
 	/*! returns slot index of key k if defined
@@ -321,9 +325,177 @@ public:
 	//!in-core sort of Anything by String values, temporary, will provide comparer interface
 	void SortByAnyComparer(const AnyComparer &comparer);
 
+//------ support STL compliant container behavior
+	typedef Anything_iterator iterator;
+	typedef Anything_const_iterator const_iterator;
+	typedef std::reverse_iterator<Anything_iterator> reverse_iterator;
+	typedef std::reverse_iterator<Anything_const_iterator> const_reverse_iterator;
+	typedef long difference_type;
+	typedef long size_type;
+	typedef Anything &reference;
+	typedef const Anything &const_reference;
+	typedef Anything value_type;
+	iterator begin();
+	iterator end();
+	const_iterator begin()const;
+	const_iterator end() const;
+	reverse_iterator rbegin();
+	reverse_iterator rend();
+	const_reverse_iterator rbegin()const;
+	const_reverse_iterator rend() const;
+	void clear();
+	bool empty() const {
+		return 0 == size();   // an empty array is not IsNull()
+	}
+	iterator erase(iterator pos);
+	iterator erase(iterator from, iterator to);
+	size_type max_size() const {
+		return 0;   //SOP: determine max size...
+	}
+	size_type size() const {
+		return GetSize();
+	}
+	void swap(Anything &that);
+	reference at(size_type n) {
+		return At(n);
+	}
+	const_reference at(size_type n) const {
+		return At(n);
+	}
+	reference back() {
+		return at(size() - 1);
+	}
+	const_reference back() const {
+		return at(size() - 1);
+	}
+	reference front() {
+		return at(0);
+	}
+	const_reference front() const {
+		return at(0);
+	}
+	// operator [] already defined
+	void pop_back() {
+		erase(end() - 1);
+	}
+	void pop_front() {
+		erase(begin());
+	}
+	void push_back(const value_type &a) {
+		Append(a);
+	}
+	void push_front(const value_type &a) {
+		insert(begin(), a);
+	}
+	template <typename InputIterator>
+	void assign(InputIterator first, InputIterator last) {
+		clear();
+		for (; first != last; ++first) {
+			Append(*first);
+		}
+	}
+	void assign(size_type n, const value_type &val) {
+		clear();
+		for (; n > 0; --n) {
+			Append(val);
+		}
+	}
+	// deal with case where an integral value is assigned n times
+	void assign(size_type n, size_type val) {
+		assign(n, value_type(val));
+	}
+	// sequence ctors:
+	Anything(size_type n, const value_type &v, Allocator *a = Storage::Current()): fAnyImp(0) {
+		SetAllocator(a);
+		for (; n > 0; --n) {
+			Append(v);
+		}
+	}
+
+	template <typename InputIterator>
+	Anything(InputIterator first, InputIterator last): fAnyImp(0) {
+		SetAllocator(Storage::Current());
+		for (; first != last; ++first) {
+			Append(*first);
+		}
+	}
+
+	template <typename InputIterator>
+	Anything(InputIterator first, InputIterator last, Allocator *a): fAnyImp(0) {
+		SetAllocator(a);
+		for (; first != last; ++first) {
+			Append(*first);
+		}
+	}
+	// special case for size_type integral assignment, sorry not DRY,
+	// because of unavailable constructor chaining in C++
+	// and because of inability to use default arguments in specialized templates
+	Anything(size_type n, size_type v): fAnyImp(0) {
+		SetAllocator(Storage::Current());
+		for (; n > 0; --n) {
+			Append(v);
+		}
+	}
+
+	Anything(size_type n, size_type v, Allocator *a): fAnyImp(0) {
+		SetAllocator(a);
+		for (; n > 0; --n) {
+			Append(v);
+		}
+	}
+
+	iterator insert(iterator pos, const value_type &v) {
+		return do_insert(pos, 1, v);
+	}
+	void insert(iterator pos, size_type n, const value_type &v) {
+		do_insert(pos, n, v);
+	}
+	template <typename InputIterator>
+	void insert(iterator pos, InputIterator first, InputIterator last) {
+		// first a naive impl, could be more efficient for Random-access iterators, but... see stl impl of vector::insert():
+		for (; first != last; ++first, ++pos) {
+			do_insert(pos, 1, value_type(*first));
+		}
+	}
+	// specialize for integral types to mean non-template insert of above
+	void insert(iterator pos, size_type first, long last) {
+		do_insert(pos, first, last);
+	}
+	// additional methods close to STL's associative (hashed) containers
+	typedef const char *key_type;
+	size_type erase(key_type k) {
+		return Remove(k);
+	}
+	iterator find(key_type k) {
+		long found = FindIndex(k);
+		return (found < 0 ? end() : iterator(*this, found));
+	}
+	const_iterator find(key_type k)const {
+		long found = FindIndex(k);
+		return (found < 0 ? end() : const_iterator(*this, found));
+	}
+	size_type count(key_type k)const {
+		return IsDefined(k) ? 1 : 0;
+	}
+	typedef std::pair<iterator, iterator> range;
+	range equal_range(key_type k) {
+		long found = FindIndex(k);
+		return (found < 0 ? range(end(), end())
+				: range(iterator(*this, found), iterator(*this, found + 1)));
+	}
+	typedef std::pair<const_iterator, const_iterator> const_range;
+	const_range equal_range(key_type k)const {
+		long found = FindIndex(k);
+		return (found < 0 ? const_range(end(), end())
+				: const_range(const_iterator(*this, found), const_iterator(*this, found + 1)));
+	}
 protected:
+	// same impl for both value inserts
+	iterator do_insert(iterator pos, size_type n, const value_type &v);
 	//!changes fAnyImp from simple type to array
 	void Expand() const;
+	//!makes room for insert() implementation, moves elements eventually from slot to slot+size
+	void InsertReserve(long slot, long size);
 
 	//!get Anything at i; create necessary entries if i is out of range
 	Anything &DoAt(long i) const;
@@ -443,7 +615,6 @@ public:
 		\param destIdx last segment of config[Slot] as index or -1 if not an index */
 	static bool IntOperate(Anything &dest, String &destSlotname, long &destIdx, char delim = '.', char indexdelim = ':');
 };
-
 //---- SlotPutter -----------------------------------------------------------
 /*! Use this class to put a Anything into another Anything using lookup-syntax
 To use this class call Operate on it.
@@ -486,7 +657,6 @@ public:
 		\post dest.LookupPath(destSlotname, delim, delimIdx)[.Append] = source */
 	static void Operate(Anything &source, Anything &dest, String destSlotname, bool append = false, char delim = '.', char indexdelim = ':');
 };
-
 //---- SlotCleaner -----------------------------------------------------------
 /*! Use this class to remove a slot from a Anything using lookup-syntax
 To use this class call Operate on it.
@@ -526,7 +696,6 @@ public:
 		\post dest.LookupPath(slotName, delim, indexdelim) is removed */
 	static void Operate(Anything &dest, String slotName, bool removeLast = false, char delim = '.', char indexdelim = ':');
 };
-
 //---- SlotCopier -----------------------------------------------------------
 /*! Use this class to copy slots from an Anything to another
 To use this class call Operate on it.

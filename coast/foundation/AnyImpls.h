@@ -248,8 +248,8 @@ public:
 		return AnyVoidBufType;
 	}
 
-	const char *AsCharPtr(const char *) const		{
-		return fBuf.Capacity() > 0 ? (const char *)fBuf : 0;
+	const char *AsCharPtr(const char *dflt) const		{
+		return fBuf.Capacity() > 0 ? (const char *)fBuf : dflt;
 	}
 
 	const char *AsCharPtr(const char *, long &buflen) const;
@@ -303,7 +303,7 @@ public:
 
 	bool IsEqual(AnyImpl *anyImpl) const			{
 		return fString.IsEqual(anyImpl->AsCharPtr(0)) ;
-	} //String("")); }
+	}
 
 	const char *AsCharPtr(const char *) const;
 
@@ -334,6 +334,7 @@ public:
 
 	long Append(const char *key, long lIdx);
 	void Update(long fromIndex);
+	void Update(long fromIndex, long size);
 
 	long At(const char *key, long hashhint = -1, u_long hashhint1 = 0	) const;
 
@@ -376,6 +377,7 @@ public:
 	static void operator delete(void *d);
 	void Swap(long l, long r);
 	void SetIndex(long slot, long index);
+	void InsertReserve(long slot, long size);
 
 protected:
 	void InitTable(long cap);
@@ -418,6 +420,8 @@ public:
 	}
 
 	void Expand(long c);
+
+	void InsertReserve(long pos, long size);
 
 	void Remove(long slot);
 

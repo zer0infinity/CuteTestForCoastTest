@@ -172,14 +172,14 @@ void AnyDoubleImpl::Accept(AnyVisitor &v, long lIdx, const char *slotname) const
 }
 
 //---- AnyBinaryBufImpl -----------------------------------------------------------------
-const char *AnyBinaryBufImpl::AsCharPtr(const char *, long &buflen) const
+const char *AnyBinaryBufImpl::AsCharPtr(const char *dflt, long &buflen) const
 {
 	if (fBuf.Capacity() > 0) {
 		buflen = fBuf.Length();
 		return (const char *)fBuf;
 	} else {
 		buflen = 0;
-		return 0;
+		return dflt;
 	}
 }
 
@@ -374,6 +374,18 @@ void AnyKeyTable::Update(long fromIndex)
 	}
 }
 
+void AnyKeyTable::Update(long fromIndex, long size)
+{
+	for (long i = 0; i < fCapacity; i++) {
+		long lIdx = fHashTable[i];
+		if ( size < 0 && lIdx == fromIndex ) {
+			fHashTable[i] = -2;    // mark as deleted
+		} else if ( lIdx >= fromIndex ) {
+			fHashTable[i] = lIdx + size;    // update position in keytable
+		}
+	}
+}
+
 long AnyKeyTable::At(const char *key, long sizehint, u_long hashhint) const
 {
 	// returns valid external index into key table
@@ -525,6 +537,13 @@ void AnyIndTable::Expand(long slot)
 
 	fAllocator->Free(old);
 //	delete [] old;
+}
+
+void AnyIndTable::InsertReserve(long pos, long size)
+{
+	Assert(fSize + pos <= fCapacity);
+	Assert(fSize + size <= fCapacity);
+	rotate(fIndexTable + pos, fIndexTable + fSize - size, fIndexTable + fSize);
 }
 
 void AnyIndTable::InitEmpty(long oldCap, long newCap)
@@ -990,6 +1009,15 @@ void AnyArrayImpl::Expand(long newsize)
 				}
 			}
 		}
+	}
+}
+
+void AnyArrayImpl::InsertReserve(long pos, long size)
+{
+	At(fSize + size - 1); // make room for size new elements
+	fInd->InsertReserve(pos, size);
+	if (fKeys) {
+		fKeys->Update(pos, size);
 	}
 }
 
