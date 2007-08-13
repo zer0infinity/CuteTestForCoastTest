@@ -149,7 +149,7 @@ int ThreadPoolManager::Join(long lMaxSecsToWait)
 		}
 		Trace("Time waited for join: " << dt.Diff() << "ms");
 		lStillRunning = fRunningThreads;
-		Trace("still running: " << lStillRunning);
+		Trace("this:" << (long)this << " still running: " << lStillRunning);
 		SYSDEBUG("still running: " << lStillRunning);
 	}
 	return lStillRunning;
@@ -192,14 +192,14 @@ int ThreadPoolManager::DoTerminate(long lWaitToTerminate)
 	return result;
 }
 
-void ThreadPoolManager::Update(Thread *t, ROAnything roaStateArgs)
+void ThreadPoolManager::Update(tObservedPtr pObserved, tArgsRef roaUpdateArgs)
 {
 	SimpleMutexEntry me(fMutex);
 	me.Use();
 	{
 		StartTrace1(ThreadPoolManager.Update, "this:" << (long)this);
-		TraceAny(roaStateArgs, "state event received");
-		switch ( roaStateArgs["ThreadState"]["New"].AsLong(-1)) {
+		TraceAny(roaUpdateArgs, "state event received");
+		switch ( roaUpdateArgs["ThreadState"]["New"].AsLong(-1)) {
 			case Thread::eCreated:
 			case Thread::eStartRequested:
 				break;
@@ -223,7 +223,7 @@ void ThreadPoolManager::Update(Thread *t, ROAnything roaStateArgs)
 			default:
 				break;
 		}
-		switch ( roaStateArgs["RunningState"]["New"].AsLong(-1) ) {
+		switch ( roaUpdateArgs["RunningState"]["New"].AsLong(-1) ) {
 			case Thread::eReady:
 				break;
 
@@ -525,14 +525,14 @@ void WorkerPoolManager::Enter(ROAnything workload)
 	hr->SetWorking(workload);
 }
 
-void WorkerPoolManager::Update(Thread *pObserved, ROAnything aUpdateArgs)
+void WorkerPoolManager::Update(tObservedPtr pObserved, tArgsRef roaUpdateArgs)
 {
 	MutexEntry me(fMutex);
 	me.Use();
 	{
 		StartTrace(WorkerPoolManager.Update);
-		TraceAny(aUpdateArgs, "state event received");
-		switch ( aUpdateArgs["RunningState"]["New"].AsLong(-1) ) {
+		TraceAny(roaUpdateArgs, "state event received");
+		switch ( roaUpdateArgs["RunningState"]["New"].AsLong(-1) ) {
 			case Thread::eReady:
 				--fCurrentParallelRequests;
 				Trace("Requests still running: " << fCurrentParallelRequests);

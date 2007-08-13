@@ -81,17 +81,19 @@ template
 <
 typename TArgs
 >
-class GugusThread : public Observable<TArgs>
+class GugusThread : public Observable<GugusThread<TArgs>, TArgs>
 {
 	//!prohibit the use of the copy constructor
 	GugusThread(const GugusThread &);
 	//!prohibit the use of the assignement operator
 	GugusThread &operator=(const GugusThread &);
 public:
+	typedef Observable<GugusThread, TArgs> tBaseClass;
+
 	/*! does nothing, real work is done in init, object is still unusable without call of Init() method!
 		\param name Give the pool Manager a name, gets printed in statistics */
 	GugusThread(const char *name, Allocator *a)
-		: Observable<TArgs>(name, a)
+		: tBaseClass(name, a)
 	{}
 
 	/*! prints some statistics and terminates
@@ -101,18 +103,20 @@ public:
 
 template
 <
-typename TArgs
->
-class TestPoolManager : public PoolManager<TArgs>
+typename TObservedType,
+		 typename TArgs
+		 >
+class TestPoolManager : public PoolManager<TObservedType, TArgs>
 {
 public:
-	typedef typename PoolManager<TArgs>::tObservedPtr tObservedPtr;
-	typedef typename PoolManager<TArgs>::tArgsRef tArgsRef;
+	typedef PoolManager<TObservedType, TArgs> tBaseClass;
+	typedef typename tBaseClass::tObservedPtr tObservedPtr;
+	typedef typename tBaseClass::tArgsRef tArgsRef;
 
 	/*! does nothing, real work is done in init, object is still unusable without call of Init() method!
 		\param name Give the pool Manager a name, gets printed in statistics */
 	TestPoolManager(const char *name)
-		: PoolManager<TArgs>(name) {};
+		: tBaseClass(name) {};
 
 	/*! prints some statistics and terminates
 		\note can't delete pool here because representation of subobject has already gone */
@@ -131,7 +135,7 @@ public:
 void ThreadPoolTest::PoolManagerTest()
 {
 	StartTrace(ThreadPoolTest.PoolManagerTest);
-	TestPoolManager<ROAnything> myPool("MyTestPool");
+	TestPoolManager<GugusThread<ROAnything>, ROAnything> myPool("MyTestPool");
 	GugusThread<ROAnything> myThread("MyGugus", Storage::Global());
 	myThread.AddObserver(&myPool);
 	Anything anyData, anyExpected;

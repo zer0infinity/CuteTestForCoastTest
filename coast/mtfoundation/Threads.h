@@ -350,21 +350,7 @@ protected:
 	Thread *fThread;
 };
 
-//---- ThreadObserver ------------------------------------------------------------
-//!<b>observer interface for observing Thread objects</b>
-class EXPORTDECL_MTFOUNDATION ThreadObserver
-{
-public:
-	//!does nothing
-	ThreadObserver() { }
-	//!does nothing
-	virtual ~ThreadObserver() { }
-
-	/*! interface which must be implemented if you want to be notified when thread t's state changes
-		\param t the thread that changes its state
-		\param roaStateArgs arguments that describe the change; EThreadState in subslot "ThreadState" or ERunningState in subslot "RunningState". "Old" and "New" slots tell you about corresponding states. */
-	virtual void Update(Thread *t, ROAnything roaStateArgs) = 0;
-};
+#include "ObserverIf.h"
 
 //---- Thread ------------------------------------------------------------
 //!<b>thread abstraction implementing its own thread state model using EThreadState and the available nativ thread api</b>
@@ -372,8 +358,9 @@ public:
 this class implements the thread abstraction ( its own thread of control ) using the system dependent thread api available.<br>
 To ease its use we have defined a state machine which let clients query a thread object about the state.<br>
 With this means it is possible to reliably control starting and stopping of a thread */
-class EXPORTDECL_MTFOUNDATION Thread : public NamedObject
+class EXPORTDECL_MTFOUNDATION Thread : public NamedObject, public Observable<Thread, ROAnything>
 {
+	typedef Observable<Thread, ROAnything> tObservableBase;
 public:
 	/*! possible thread states; there is an implicit ordering in these states<br> eThreadCreated < eStartRequested < eStarted < eRunning < eTerminationRequested < eTerminated. Only well defined transitions are possible
 		These states exist:<br>
@@ -493,9 +480,6 @@ public:
 		\return true if eTerminated was reached; false if timeout period has elapsed without reaching the state */
 	bool Terminate(long timeout = 0, ROAnything args = ROAnything());
 
-	//!adds ThreadObserver that is notifyied in DoSignalThreadEnd
-	virtual void AddObserver(ThreadObserver *to);
-
 	//!returns the id of this thread
 	int  GetId()	{
 		return (int)fThreadId;
@@ -529,9 +513,6 @@ protected:
 
 	//!this method gets called from the threads callback function
 	virtual void Run() = 0;
-
-	//! hook to let the observers of the thread know that a state has changed
-	void NotifyAll(Anything evt);
 
 	//! broadcast an state change to the Observers and broadcast the fStateCond for clients initiating the state change
 	void BroadCastEvent(Anything evt);
@@ -579,10 +560,6 @@ protected:
 	//!allocator for thread local storage
 	Allocator *fAllocator;
 
-	//!guard that locks observer list
-	SimpleMutex fObserversMutex;
-	//!this threads observers
-	Anything fObservers;
 	//!system dependent thread id
 	THREAD fThreadId;
 	//! thread id of parent which constructed us

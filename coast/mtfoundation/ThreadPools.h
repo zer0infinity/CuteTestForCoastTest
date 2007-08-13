@@ -19,8 +19,11 @@
 A thread pool can be used in cases where we do not need to know what each thread does or when it does anything. Important is, that we can have an amount of parallel workers running and waiting on something to do.
 <p>The thing is that we do not need an element of control which gets work from somewhere, selects a free Thread and lets it process the work. The Thread can do this on its own. Just implement a special kind of Thread which does exactly this. An excellent usage could be processing elements from a queue.
 */
-class EXPORTDECL_MTFOUNDATION ThreadPoolManager : public ThreadObserver
+class EXPORTDECL_MTFOUNDATION ThreadPoolManager : public Observable<Thread, ROAnything>::Observer
 {
+	typedef Observable<Thread, ROAnything> tBaseClass;
+	typedef tBaseClass::tObservedPtr tObservedPtr;
+	typedef tBaseClass::tArgsRef tArgsRef;
 public:
 	//! does nothing; real work is done in init, object is unusable without call of Init() method!
 	ThreadPoolManager();
@@ -55,9 +58,9 @@ public:
 	virtual int Terminate(long lWaitToTerminate, long lWaitOnJoin);
 
 	/*! react to state changes of pool threads
-		\param t thread which wants to signal a state change
-		\param roaStateArgs arguments the thread can pass us */
-	virtual void Update(Thread *t, ROAnything roaStateArgs);
+		\param pObserved thread which wants to signal a state change
+		\param roaUpdateArgs arguments the thread can pass us */
+	virtual void Update(tObservedPtr pObserved, tArgsRef roaUpdateArgs);
 
 	/*! access the pool size which reflects the number of threads really allocated and accessible to use
 		\return number of allocated and usable threads in the pool */
@@ -182,15 +185,17 @@ private:
 //---- PoolManager ------------------------------------------------
 template
 <
-typename TArgs
->
+typename TObservedType,
+		 typename TArgs
+		 >
 class EXPORTDECL_MTFOUNDATION PoolManager
 	: public StatGatherer
-	, public Observable<TArgs>::Observer
+	, public Observable<TObservedType, TArgs>::Observer
 {
 public:
-	typedef typename Observable<TArgs>::tObservedPtr tObservedPtr;
-	typedef typename Observable<TArgs>::tArgsRef tArgsRef;
+	typedef Observable<TObservedType, TArgs> tBaseClass;
+	typedef typename tBaseClass::tObservedPtr tObservedPtr;
+	typedef typename tBaseClass::tArgsRef tArgsRef;
 
 	/*! does nothing, real work is done in init, object is still unusable without call of Init() method!
 		\param name Give the pool Manager a name, gets printed in statistics */
@@ -283,8 +288,11 @@ private:
 /*! this abstract class handles the critical region of parallel active requests
 it uses a semaphore which is set by the parameter numMaxParallelRequests
 see SamplePoolManager for an example on how to use this class */
-class EXPORTDECL_MTFOUNDATION WorkerPoolManager : public StatGatherer, public ThreadObserver
+class EXPORTDECL_MTFOUNDATION WorkerPoolManager : public StatGatherer, public Observable<Thread, ROAnything>::Observer
 {
+	typedef Observable<Thread, ROAnything> tBaseClass;
+	typedef tBaseClass::tObservedPtr tObservedPtr;
+	typedef tBaseClass::tArgsRef tArgsRef;
 public:
 	/*! does nothing, real work is done in init, object is still unusable without call of Init() method!
 		\param name Give the pool Manager a name, gets printed in statistics */
@@ -297,9 +305,9 @@ public:
 	void Statistic(Anything &item);
 
 	/*! react to state changes of pool threads
-		\param t thread which wants to signal a state change
-		\param roaStateArgs arguments the thread can pass us */
-	virtual void Update(Thread *t, ROAnything roaStateArgs);
+		\param pObserved thread which wants to signal a state change
+		\param roaUpdateArgs arguments the thread can pass us */
+	virtual void Update(tObservedPtr pObserved, tArgsRef roaUpdateArgs);
 
 	//!initialisation of  thread pool (may be safely used also for reinit)
 	int Init(int maxParallelRequests, int usePoolStorage, int poolStorageSize, int numOfPoolBucketSizes, ROAnything roaWorkerArgs);

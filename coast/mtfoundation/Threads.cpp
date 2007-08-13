@@ -111,10 +111,9 @@ static ThreadInitializer *psgThreadInitializer = new ThreadInitializer(15);
 
 Thread::Thread(const char *name, bool daemon, bool detached, bool suspended, bool bound, Allocator *a)
 	: NamedObject(name)
+	, tObservableBase(name, a)
 	, fAllocCleaner(this)
 	, fAllocator(a)
-	, fObserversMutex("ThreadObservers", (fAllocator) ? fAllocator : Storage::Global())
-	, fObservers((fAllocator) ? fAllocator : Storage::Global())
 	, fThreadId(0)
 	, fParentThreadId(0)
 	, fDaemon(daemon)
@@ -243,31 +242,6 @@ void Thread::Exit(int)
 	// now we should be able to safely reset the fThreadId, needed only in case the Thread gets reused
 	// not to trace a fThreadId which just finished to live
 	fThreadId = 0;
-}
-
-void Thread::AddObserver(ThreadObserver *to)
-{
-	StartTrace(Thread.AddObserver);
-	SimpleMutexEntry me(fObserversMutex);
-	me.Use();
-	fObservers.Append(Anything((IFAObject *)to));
-}
-
-void Thread::NotifyAll(Anything evt)
-{
-	StartTrace(Thread.NotifyAll);
-	TraceAny(evt, "event to notify");
-	SimpleMutexEntry me(fObserversMutex);
-	me.Use();
-
-	for (long i = 0, sz = fObservers.GetSize(); i < sz; ++i) {
-		ThreadObserver *to = (ThreadObserver *)fObservers[i].AsIFAObject(0);
-		if (to) {
-			to->Update(this, evt);
-		} else {
-			TraceAny(fObservers, "Somethings wrong");
-		}
-	}
 }
 
 void Thread::BroadCastEvent(Anything evt)
