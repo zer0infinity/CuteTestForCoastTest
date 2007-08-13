@@ -18,7 +18,8 @@
 //---- ServerPoolsManagerInterfacesModule -----------------------------------------------------------
 RegisterModule(ServerPoolsManagerInterfacesModule);
 
-ServerPoolsManagerInterfacesModule::ServerPoolsManagerInterfacesModule(const char *name) : WDModule(name)
+ServerPoolsManagerInterfacesModule::ServerPoolsManagerInterfacesModule(const char *name)
+	: WDModule(name)
 {
 }
 
@@ -46,11 +47,43 @@ bool ServerPoolsManagerInterfacesModule::Finis()
 	return StdFinis("ServerPoolsManagerInterface", "ServerPoolsManagerInterfaces");
 }
 
+class CountEntry
+{
+public:
+	CountEntry(Mutex &aMutex, Condition &aCondition, long &lCount)
+		: fMutex(aMutex), fCondition(aCondition), fCount(lCount) {
+		StartTrace(CountEntry.CountEntry);
+		MutexEntry sme(fMutex);
+		sme.Use();
+		++fCount;
+		Trace("count:" << fCount);
+	}
+	~CountEntry() {
+		StartTrace(CountEntry.~CountEntry);
+		MutexEntry sme(fMutex);
+		sme.Use();
+		if (fCount > 0L) {
+			--fCount;
+		}
+		Trace("count:" << fCount);
+		Trace("signalling condition");
+		fCondition.Signal();
+	}
+	void Use() const {};
+
+private:
+	Mutex	&fMutex;
+	Condition &fCondition;
+	long		&fCount;
+};
+
 //---- ServerPoolsManagerInterface ------------------------------------------------------------------
 ServerPoolsManagerInterface::ServerPoolsManagerInterface(const char *ServerThreadPoolsManagerName)
 	: ConfNamedObject(ServerThreadPoolsManagerName)
 	, fReady(false)
+	, fbInTermination(false)
 	, fMutex("ServerPoolsManagerInterface")
+	, fCount(0L)
 {
 	StartTrace(ServerPoolsManagerInterface.Ctor);
 }
@@ -58,6 +91,18 @@ ServerPoolsManagerInterface::ServerPoolsManagerInterface(const char *ServerThrea
 ServerPoolsManagerInterface::~ServerPoolsManagerInterface()
 {
 	StartTrace(ServerPoolsManagerInterface.Dtor);
+	fbInTermination = true;
+	// wake up potential blockers in IsReady and let them go out
+	// wait until we get the fMutex back
+	{
+		MutexEntry me(fMutex);
+		Trace("count:" << fCount);
+		while ( fCount > 0 ) {
+			fCond.Signal();
+			fCond.Wait(fMutex);
+			Trace("count:" << fCount);
+		}
+	}
 }
 
 void ServerPoolsManagerInterface::SetReady(bool ready)
@@ -69,14 +114,23 @@ void ServerPoolsManagerInterface::SetReady(bool ready)
 
 bool ServerPoolsManagerInterface::IsReady(bool ready, long timeout)
 {
-	MutexEntry me(fMutex);
-	while ( fReady != ready ) {
-		long ret = fCond.TimedWait(fMutex, timeout);
-		if ( ret == TIMEOUTCODE ) {
-			break;
+	StartTrace(ServerPoolsManagerInterface.IsReady);
+	bool bRet = false;
+	if ( !fbInTermination ) {
+		CountEntry ce(fMutex, fCond, fCount);
+		ce.Use();
+		MutexEntry me(fMutex);
+		Trace("waiting on ready=" << (ready ? "true" : "false" ) << " fReady=" << (fReady ? "true" : "false" ));
+		while ( !fbInTermination && ( fReady != ready ) ) {
+			long ret = fCond.TimedWait(fMutex, timeout);
+			if ( ret == TIMEOUTCODE ) {
+				break;
+			}
+			Trace("ready=" << (ready ? "true" : "false" ) << " fReady=" << (fReady ? "true" : "false" ));
 		}
+		bRet = (fReady == ready);
 	}
-	return (fReady == ready );
+	return bRet;
 }
 
 //---- registry interface

@@ -69,13 +69,15 @@ protected:
 	void SetReady(bool ready);
 
 	//!keep ready state
-	bool fReady;
+	bool fReady, fbInTermination;
+
+private:
 	//!guard ready flag
 	Mutex fMutex;
 	//!synchronize ready changes
 	Condition fCond;
+	long fCount;
 
-private:
 	// block the following default elements of this class
 	// because they're not allowed to be used
 	ServerPoolsManagerInterface();
