@@ -86,7 +86,7 @@
 		/EnableAll	34
 	}
 	/ListenerPool {
-		/MainSwitch	0
+		/MainSwitch	33
 		/EnableAll	33
 	}
 	/AcceptorFactoriesModule {
@@ -306,6 +306,7 @@
 	/Application {
 		/MainSwitch	33
 		/EnableAll	33
+		/GetConfig	-33
 	}
 	/AppBooter {
 		/MainSwitch	33
@@ -329,7 +330,7 @@
 		/EnableAll	33
 	}
 	/LFListenerPool {
-		/MainSwitch	0
+		/MainSwitch	33
 		/EnableAll	33
 	}
 	/TestProcessor {
@@ -363,15 +364,15 @@
 	/Server {
 		/MainSwitch	33
 		/EnableAll	33
-		/DoLookup	33
+		/DoLookup	-33
 	}
 	/ServerTest {
 		/MainSwitch	33
 		/EnableAll	33
 	}
 	/ServerPoolsManagerInterface {
-		/MainSwitch	33
-		/EnableAll	33
+		/MainSwitch	34
+		/EnableAll	34
 	}
 	/ServerThreadPoolsManager {
 		/MainSwitch	33
@@ -382,7 +383,7 @@
 		/EnableAll	33
 	}
 	/LeaderFollowerPool {
-		/MainSwitch	0
+		/MainSwitch	33
 		/EnableAll	33
 	}
 	/LeaderFollowerThread {
@@ -494,5 +495,9 @@
 	/CacheHandler {
 		/MainSwitch				33
 		/EnableAll				0
+	}
+	/CountEntry {
+		/MainSwitch				34
+		/EnableAll				34
 	}
 }
