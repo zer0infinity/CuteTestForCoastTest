@@ -34,8 +34,6 @@
 #include <purify.h>
 #endif
 
-//#define LOW_TRACING1
-
 //---- ServerReInitInstaller ------------------------------------------------------
 /*! alias installer installs the same object with different names in the registry */
 class EXPORTDECL_WDBASE ServerReInitInstaller : public InstallerPolicy
@@ -181,12 +179,14 @@ Server::Server(const char *name)
 	, fStore(Storage::Global())
 	, fStatisticObserver(0)
 {
+	StartTrace1(Server.Server, "<" << GetName() << ">");
 }
 
 Server::~Server()
 {
+	StartTrace1(Server.~Server, "<" << GetName() << ">");
 	Assert(this != ServersModule::GetServerForReInit());
-	if (fPoolManager) {
+	if ( fPoolManager ) {
 		delete fPoolManager;
 	}
 }
@@ -204,6 +204,8 @@ int Server::DoGlobalRun()
 {
 	StartTrace(Server.DoGlobalRun);
 	InterruptHandler ir(this);
+	// before continuing, wait for the InterruptHandler to be working, eg. ready to wait on signals
+	ir.CheckRunningState(Thread::eWorking);
 	return Application::DoGlobalRun();
 }
 
@@ -289,7 +291,7 @@ int Server::DoInit()
 		String poolManagerName(Lookup("PoolManager", "ServerThreadPoolsManager"));
 		fPoolManager = ServerPoolsManagerInterface::FindServerPoolsManagerInterface(poolManagerName);
 		Trace("PoolManager <" << poolManagerName << "> " << (long)fPoolManager << ((fPoolManager) ? " found" : " not found"));
-		if (fPoolManager) {
+		if ( fPoolManager ) {
 			// make unique name different of clone-base name to avoid problems
 			poolManagerName << "_of_" << strServerName;
 			fPoolManager = (ServerPoolsManagerInterface *)fPoolManager->ConfiguredClone("ServerPoolsManagerInterface", poolManagerName, true);
@@ -312,7 +314,7 @@ int Server::SetupDispatcher()
 	StartTrace(Server.SetupDispatcher);
 
 	fDispatcher = ServiceDispatcher::FindServiceDispatcher(Lookup("Dispatcher", "ServiceDispatcher"));
-	if (!fDispatcher) {
+	if ( !fDispatcher ) {
 		String msg;
 		msg << "ServiceDispatcher not found";
 		SYSERROR(msg);
@@ -342,13 +344,18 @@ int Server::ReInit(const ROAnything )
 // termination of the Server modules
 int Server::DoTerminate(int val)
 {
+	StartTrace(Server.DoTerminate);
 	if ( fPoolManager ) {
 		SysLog::WriteToStderr("\t\tTerminating running requests");
-		fPoolManager->Terminate();
-		fPoolManager->Finalize();
-		delete fPoolManager;
-		fPoolManager = 0;
-		SysLog::WriteToStderr(" done\n");
+		if ( fPoolManager->IsReady(false, 10) ) {
+			fPoolManager->Terminate();
+			fPoolManager->Finalize();
+			delete fPoolManager;
+			fPoolManager = 0;
+			SysLog::WriteToStderr(" done\n");
+		} else {
+			SysLog::WriteToStderr(" failed\n");
+		}
 	}
 	return fRetVal;
 }
@@ -383,9 +390,9 @@ int Server::DoRun()
 	StartTrace(Server.DoRun);
 	int iRet = -1;
 	if (fPoolManager) {
-		Trace("running PoolManager...");
+		Trace("<" << GetName() << "> running PoolManager...");
 		iRet = fPoolManager->Run(this);
-		Trace("PoolManager::Run returned with code " << (long)iRet);
+		Trace("PoolManager::Run of <" << GetName() << "> returned with code " << (long)iRet);
 	}
 	return iRet;
 }
@@ -446,6 +453,7 @@ int Server::DoPrepareShutdown(int retCode)
 
 int Server::QuitRunLoop()
 {
+	StartTrace(Server.QuitRunLoop);
 	int iRetCode = 0L;
 	// shutdown the listening socket and terminate the server threads
 	if ( fPoolManager ) {
@@ -671,6 +679,10 @@ int MasterServer::DoInit()
 					}
 				}
 				bStartSuccess = fServerThreads[lIdx].Start(pAlloc, roaServerConfig) && fServerThreads[lIdx].CheckState(Thread::eStarted) && fServerThreads[lIdx].IsInitialized();
+				Trace("Start of ServerThread:" << lIdx << "<" << roaServerConfig["ServerName"].AsString() << "> " << ( bStartSuccess ? "successful" : "unsuccessful" ) );
+				if ( !bStartSuccess ) {
+					SYSERROR("Start of ServerThread:" << lIdx << "<" << roaServerConfig["ServerName"].AsString() << "> unsuccessful");
+				}
 				++lIdx;
 			}
 			retCode = ( bStartSuccess ? 0 : -1 );
@@ -747,11 +759,16 @@ bool MasterServer::StartServers()
 	bool success = true;
 	ROAnything serverModules;
 	if ( Lookup("ServerModules", serverModules) ) {
+		TraceAny(serverModules, "servers to control");
 		AnyExtensions::Iterator<ROAnything> aServersIterator(serverModules);
 		ROAnything roaServerConfig;
 		long lIdx = 0L;
 		while ( aServersIterator.Next(roaServerConfig) && success ) {
 			success = fServerThreads[lIdx].SetWorking(roaServerConfig);
+			Trace("SetWorking of ServerThread:" << lIdx << "<" << roaServerConfig["ServerName"].AsString() << "> " << ( success ? "successful" : "unsuccessful" ) );
+			if ( !success ) {
+				SYSERROR("SetWorking of ServerThread:" << lIdx << "<" << roaServerConfig["ServerName"].AsString() << "> unsuccessful");
+			}
 			++lIdx;
 		}
 	}
@@ -760,7 +777,7 @@ bool MasterServer::StartServers()
 
 int MasterServer::DoRun()
 {
-	StartTrace(MasterServer.DoRun);
+	StartTrace1(MasterServer.DoRun, "<" << GetName() << ">");
 	int iRet = -1;
 	if ( StartServers() ) {
 		Trace("calling masterservers Run method");
@@ -842,18 +859,22 @@ void ServerThread::DoStartedHook(ROAnything config)
 	if ( fServer ) {
 		fbInitialized = ( fServer->Init() == 0 );
 	}
+	Trace("Server <" << GetName() << "> started");
 }
 
 int ServerThread::ReInit(const ROAnything config)
 {
+	StartTrace1(ServerThread.ReInit, "<" << GetName() << ">");
+	int iRet = -1;
 	if ( fServer && fbInitialized ) {
-		return fServer->ReInit(config);
+		fbInitialized = ( ( iRet = fServer->ReInit(config) ) == 0 );
 	}
-	return -1;
+	return iRet;
 }
 
 void ServerThread::Run()
 {
+	StartTrace1(ServerThread.Run, "<" << GetName() << ">");
 	if ( fbInitialized && CheckRunningState(eWorking) && IsRunning() ) {
 		if (fServer) {
 			fServer->Run();
@@ -870,7 +891,7 @@ void ServerThread::Run()
 
 void ServerThread::DoTerminatedRunMethodHook()
 {
-	StartTrace(ServerThread.DoTerminatedRunMethodHook);
+	StartTrace1(ServerThread.DoTerminatedRunMethodHook, "<" << GetName() << ">");
 	if ( fServer && fbInitialized ) {
 		fServer->Terminate(0L);
 		fbInitialized = false;
@@ -879,7 +900,7 @@ void ServerThread::DoTerminatedRunMethodHook()
 
 void ServerThread::PrepareShutdown(long retCode)
 {
-	StartTrace(ServerThread.PrepareShutdown);
+	StartTrace1(ServerThread.PrepareShutdown, "<" << GetName() << ">");
 	if ( fServer && fbInitialized ) {
 		SimpleMutexEntry me(fTerminationMutex);
 		me.Use();
