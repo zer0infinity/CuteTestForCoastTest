@@ -219,7 +219,8 @@ void AnythingIteratorTest::testAnythingSingleErase()
 	assertEqual(4, a.end() - a.begin());
 	t_assert(a.end() == a.erase(a.end()));// cannot delete past the end
 	assertEqual(4, a.end() - a.begin());
-	t_assert( --a.end() == a.erase( --a.end() ) );
+	Anything_iterator aItEnd(a.end());
+	t_assert( aItEnd - 1 == a.erase( aItEnd - 1 ) );
 	assertEqual(3, a.end() - a.begin());
 	t_assert(a.begin() + 1 == a.erase(a.begin() + 1));
 	assertEqual(2, a.end() - a.begin());
