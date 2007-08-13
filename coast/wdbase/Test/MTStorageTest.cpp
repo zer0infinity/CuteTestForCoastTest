@@ -88,15 +88,15 @@ void MTStorageTest::GlobalAllocatorTiming()
 	Trace("GlobalAllocators t: " << dt.Reset());
 }
 
-void MTStorageTest::Update(Thread *t, ROAnything roaStateArgs)
+void MTStorageTest::Update(tObservedPtr pObserved, tArgsRef roaUpdateArgs)
 {
 	MutexEntry me(fFinishedMutex);
 	me.Use();
 	{
 		StartTrace(MTStorageTest.Update);
-		TraceAny(roaStateArgs, "event received");
+		TraceAny(roaUpdateArgs, "event received");
 
-		long evt = roaStateArgs["ThreadState"]["New"].AsLong(-1);
+		long evt = roaUpdateArgs["ThreadState"]["New"].AsLong(-1);
 		if (evt == Thread::eTerminated) {
 			fFinished++;
 		}

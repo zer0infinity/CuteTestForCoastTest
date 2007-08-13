@@ -83,10 +83,10 @@ void MasterServerTest::InitRunTerminateTest()
 						}
 					}
 					if (t_assertm(mt.IsReady(false, 5), "expected server to become terminated within 5 seconds")) {
-						mt.Terminate(1);
+						mt.Terminate(10);
 					}
 				}
-				mt.CheckState(Thread::eTerminated, 5);
+				mt.CheckState(Thread::eTerminated, 10);
 				server->Finalize();
 				delete server;
 			}
@@ -132,10 +132,10 @@ void MasterServerTest::InitRunResetRunTerminateTest ()
 						}
 					}
 					if (t_assertm(mt.IsReady(false, 5), "expected server to become terminated within 5 seconds")) {
-						mt.Terminate(1);
+						mt.Terminate(10);
 					}
 				}
-				mt.CheckState(Thread::eTerminated, 5);
+				mt.CheckState(Thread::eTerminated, 10);
 				server->Finalize();
 				delete server;
 			}

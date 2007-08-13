@@ -20,8 +20,11 @@ class GlobalAllocator;
 
 //---- MTStorageTest ----------------------------------------------------------
 //!Test driver for tracing facility
-class MTStorageTest : public TestFramework::TestCase, ThreadObserver
+class MTStorageTest : public TestFramework::TestCase, public Observable<Thread, ROAnything>::Observer
 {
+	typedef Observable<Thread, ROAnything> tBaseClass;
+	typedef tBaseClass::tObservedPtr tObservedPtr;
+	typedef tBaseClass::tArgsRef tArgsRef;
 public:
 	//!constructors
 	MTStorageTest(TString tstrName);
@@ -31,7 +34,7 @@ public:
 	static Test *suite ();
 
 	void WaitForStart();
-	virtual void Update(Thread *t, ROAnything roaStateArgs);
+	virtual void Update(tObservedPtr pObserved, tArgsRef roaUpdateArgs);
 protected:
 	//--- subclass api
 

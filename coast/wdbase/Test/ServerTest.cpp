@@ -69,7 +69,7 @@ void ServerTest::InitRunTerminateAcceptorTest()
 						}
 					}
 					if (t_assertm(mt.IsReady(false, 5), "expected server to become terminated within 5 seconds")) {
-						mt.Terminate(1);
+						mt.Terminate(10);
 					}
 				}
 				mt.CheckState(Thread::eTerminated, 5);
@@ -103,7 +103,7 @@ void ServerTest::InitRunTerminateLeaderFollowerTest()
 						}
 					}
 					if (t_assertm(mt.IsReady(false, 5), "expected server to become terminated within 5 seconds")) {
-						mt.Terminate(1);
+						mt.Terminate(10);
 					}
 				}
 				mt.CheckState(Thread::eTerminated, 5);
@@ -140,7 +140,7 @@ void ServerTest::InitRunResetRunTerminateAcceptorTest()
 						}
 					}
 					if (t_assertm(mt.IsReady(false, 5), "expected server to become terminated within 5 seconds")) {
-						mt.Terminate(1);
+						mt.Terminate(10);
 					}
 				}
 				mt.CheckState(Thread::eTerminated, 5);
@@ -177,7 +177,7 @@ void ServerTest::InitRunResetRunTerminateLeaderFollowerTest()
 						}
 					}
 					if (t_assertm(mt.IsReady(false, 5), "expected server to become terminated within 5 seconds")) {
-						mt.Terminate(1);
+						mt.Terminate(10);
 					}
 				}
 				mt.CheckState(Thread::eTerminated, 5);
