@@ -128,8 +128,7 @@ void ServerLFThreadPoolsManager::UnblockRequests()
 int ServerLFThreadPoolsManager::RequestTermination()
 {
 	StartTrace(ServerLFThreadPoolsManager.RequestTermination);
-
-	if (fLFPool) {
+	if ( fLFPool ) {
 		fLFPool->RequestTermination();
 	}
 	return 0;
@@ -138,14 +137,12 @@ int ServerLFThreadPoolsManager::RequestTermination()
 void ServerLFThreadPoolsManager::Terminate()
 {
 	StartTrace(ServerLFThreadPoolsManager.Terminate);
-	Trace("ServerLFThreadPoolsManager->Terminate");
-	if (fLFPool) {
+	if ( fLFPool ) {
+		fLFPool->RequestTermination();
 		fLFPool->Join(20);
 	}
-	Trace("ServerLFThreadPoolsManager->Terminate ready false");
-
+	Trace("setting ready to false");
 	SetReady(false);
-	Trace("ServerLFThreadPoolsManager->Terminate done");
 }
 
 long ServerLFThreadPoolsManager::GetThreadPoolSize()
