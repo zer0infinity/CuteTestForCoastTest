@@ -6,7 +6,7 @@
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
 
-_SYBASE_DIR=/sybasehome/sybase12
+_SYBASE_DIR=/sybasehome/sybase
 DB_NAME=pub2
 DB_USER=-Usa
 DB_PASSWD=-P"sagamma01h"
