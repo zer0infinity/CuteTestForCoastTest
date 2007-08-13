@@ -10,8 +10,6 @@
 #define _ObserverIf_H
 
 #include "config_mtfoundation.h"
-//#include "lokiThreads.h"
-#include "Threads.h"
 #include <list>
 
 //---- ObserverIf ----------------------------------------------------------
@@ -22,14 +20,15 @@ this may contain <B>HTML-Tags</B>
 */
 template
 <
-typename TArgs
->
+typename TObservedType,
+		 typename TArgs
+		 >
 class EXPORTDECL_MTFOUNDATION Observable
 {
 	friend class ThreadPoolTest;
 	SimpleMutex fObserversMutex;
 public:
-	typedef Observable *tObservedPtr;
+	typedef TObservedType *tObservedPtr;
 	typedef TArgs tArgsRef;
 
 	class EXPORTDECL_MTFOUNDATION Observer
@@ -68,11 +67,7 @@ protected:
 	void NotifyAll(tArgsRef aUpdateArgs) {
 		SimpleMutexEntry aEntry(fObserversMutex);
 		aEntry.Use();
-		tObserverListIterator myIter;
-		for ( myIter = fObserversList.begin(); myIter != fObserversList.end(); ++myIter ) {
-			tObserverPtr pObserver = *myIter;
-			pObserver->Update(this, aUpdateArgs);
-		}
+		std::for_each(fObserversList.begin(), fObserversList.end(), UpdateWrapper(static_cast<tObservedPtr>(this), aUpdateArgs));
 	}
 
 	virtual bool DoAddObserver(tObserverPtr pObserver) {
@@ -81,6 +76,17 @@ protected:
 	}
 
 private:
+	struct UpdateWrapper {
+		UpdateWrapper(tObservedPtr pObserved, tArgsRef aUpdateArgs)
+			: fpObserved(pObserved)
+			, fUpdateArgs(aUpdateArgs)
+		{}
+		void operator() (tObserverPtr pElement) {
+			pElement->Update(fpObserved, fUpdateArgs);
+		}
+		tObservedPtr fpObserved;
+		tArgsRef fUpdateArgs;
+	};
 	tObserverList fObserversList;
 };
 
