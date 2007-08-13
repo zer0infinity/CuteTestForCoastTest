@@ -150,10 +150,11 @@ InterruptHandler::InterruptHandler(Server *server)
 InterruptHandler::~InterruptHandler()
 {
 	StartTrace(InterruptHandler.Dtor);
+	THRKILL(GetId(), SIGTERM);
+	CheckState(Thread::eTerminated);
 	if (fServer) {
 		fServer->RemovePIDFile();
 	}
-	THRKILL(GetId(), SIGTERM);
 }
 
 void InterruptHandler::Run()
