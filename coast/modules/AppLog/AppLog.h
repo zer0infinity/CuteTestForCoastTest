@@ -87,6 +87,8 @@ public:
 	//!Rotate() uses Mutex.
 	static bool RotateSpecificLog(Context &ctx, const char *logchannel);
 
+	static String GetSeverityText(eLogLevel iLevel);
+
 protected:
 	static AppLogChannel *FindLogger(Context &ctx, const char *logChannel);
 	AppLogChannel *GetLogChannel(const char *servername, const char *logChannel, bool &canRotate);
@@ -125,7 +127,30 @@ protected:
 };
 
 //---- AppLogChannel -----------------------------------------------------------
-//! this class holds parameters identifying a single logstream belonging to a server
+//! <b>Handles logging into a specific channel</b>
+/*!
+<b>Configuration:</b><pre>
+{
+	/ChannelName {	Anything			optional (see above), name of the named AppLogChannel to create
+		/FileName	String				mandatory, filename of the logfile including extension
+		/Format		Rendererspec		mandatory, Renderer specification for logging output, rendering will be done for each line of logging, can be a time consuming operation if a complex script is given
+		/Header		Anything or String	optional, single string or list of strings which get printed first in the newly created logfile
+		/SuppressEmptyLines	long		optional, default 0, set to 1 if you want to suppress logging of empty rendered log messages
+		/DoNotRotate	long			optional, default 0 (false), if set to 1, this log-channel will not rotate its logfile at the specified time
+		/Rendering		long			optional, default 1. If not set, a slot having the ChannelName in tmpStore is evaluated as String to extract
+										the log message. eg. ctx.GetTmpStore()["ChannelName"] = "my log message". A "\n" will be added after each messge line.
+		/LogMsgSizeHint	long			optional, reserve LogMsgSizeHint bytes for the internal string holding the message to be logged.
+		/BufferItems	long			optional, default 0, (no buffering) buffer <n> items before writing them to the log stream
+		/Severity		long			optional, default AppLogModule::eALL, Severity [CRITICAL=1, FATAL=2, ERROR=4, WARN=8, INFO=16, OK=32, MAINT=64, DEBUG=128], all levels lower_equal (<=) the specified value will get logged
+	}
+}</pre>
+During the rendering process of Format, the following fields exist in the Context for lookup:
+<b>Temporary slots in Context:</b><pre>
+{
+	/LogSeverity		long			value of severity level when Log() was called
+	/LogSeverityText	String			text of severity level, eg. [CRITICAL|FATAL...] see above
+}</pre>
+*/
 class EXPORTDECL_APPLOG AppLogChannel : public RegisterableObject
 {
 	friend class AppLogTest;

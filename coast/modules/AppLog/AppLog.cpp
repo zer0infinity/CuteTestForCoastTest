@@ -330,6 +330,48 @@ bool AppLogModule::Log(Context &ctx, const char *logChannel, const String &strMe
 	return false;
 }
 
+String AppLogModule::GetSeverityText(eLogLevel iLevel)
+{
+	StartTrace(AppLogModule.GetSeverityText);
+	switch (iLevel) {
+		case AppLogModule::eCRITICAL:
+			return "CRITICAL";
+			break;
+
+		case AppLogModule::eFATAL:
+			return "FATAL";
+			break;
+
+		case AppLogModule::eERROR:
+			return "ERROR";
+			break;
+
+		case AppLogModule::eWARNING:
+			return "WARNING";
+			break;
+
+		case AppLogModule::eINFO:
+			return "INFO";
+			break;
+
+		case AppLogModule::eOK:
+			return "OK";
+			break;
+
+		case AppLogModule::eMAINT:
+			return "MAINT";
+			break;
+
+		case AppLogModule::eDEBUG:
+			return "DEBUG";
+			break;
+
+		default:
+			break;
+	}
+	return "unknown";
+}
+
 //---- AppLogChannel ---------------------------------------------------------------------------------------
 RegisterObject(AppLogChannel, AppLogChannel);
 RegCacheImpl(AppLogChannel);
@@ -411,6 +453,10 @@ bool AppLogChannel::LogAll(Context &ctx, AppLogModule::eLogLevel iLevel, const R
 	if ( fLogStream && fLogStream->good() ) {
 		if ( ( iLevel & fSeverity ) > 0 ) {
 			TraceAny(config, "config: ");
+			Anything anyLogSev;
+			anyLogSev["LogSeverity"] = (long)iLevel;
+			anyLogSev["LogSeverityText"] = AppLogModule::GetSeverityText(iLevel);
+			Context::PushPopEntry<Anything> aEntry(ctx, "LogSeverity", anyLogSev);
 			String logMsg(fLogMsgSizeHint);
 			DoCreateLogMsg(ctx, iLevel, logMsg, config);
 			if (!fSuppressEmptyLines || logMsg.Length()) {
