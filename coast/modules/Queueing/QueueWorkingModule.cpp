@@ -185,6 +185,32 @@ void QueueWorkingModule::IntCleanupQueue()
 	fFailedPutbackMessages = Anything();
 }
 
+bool QueueWorkingModule::IsBlocked(Queue::BlockingSide aSide)
+{
+	StartTrace(QueueWorkingModule.IsBlocked);
+	bool bRet = false;
+	if ( fpQueue && fpQueue->IsAlive() && IsAlive() ) {
+		bRet = fpQueue->IsBlocked(aSide);
+	}
+	return bRet;
+}
+
+void QueueWorkingModule::Block(Queue::BlockingSide aSide)
+{
+	StartTrace(QueueWorkingModule.Block);
+	if ( fpQueue && fpQueue->IsAlive() && IsAlive() ) {
+		fpQueue->Block(aSide);
+	}
+}
+
+void QueueWorkingModule::UnBlock(Queue::BlockingSide aSide)
+{
+	StartTrace(QueueWorkingModule.UnBlock);
+	if ( fpQueue && fpQueue->IsAlive() && IsAlive() ) {
+		fpQueue->UnBlock(aSide);
+	}
+}
+
 Queue::StatusCode QueueWorkingModule::PutElement(Anything &anyELement, bool bTryLock)
 {
 	StartTrace(QueueWorkingModule.PutElement);
@@ -265,4 +291,14 @@ bool QueueWorkingModule::GetQueueStatistics(Anything &anyStat)
 		return true;
 	}
 	return false;
+}
+
+long QueueWorkingModule::GetCurrentSize()
+{
+	StartTrace(QueueWorkingModule.GetCurrentSize);
+	long lSize = 0L;
+	if ( fpQueue ) {
+		lSize = fpQueue->GetSize();
+	}
+	return lSize;
 }

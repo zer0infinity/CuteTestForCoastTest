@@ -51,6 +51,12 @@ public:
 		return fAlive == 0xf007f007;
 	}
 
+	bool IsBlocked(Queue::BlockingSide aSide = Queue::eBothSides);
+
+	void Block(Queue::BlockingSide aSide);
+
+	void UnBlock(Queue::BlockingSide aSide);
+
 	/*! main accessor functions to work with the queue */
 	Queue::StatusCode PutElement(Anything &anyELement, bool bTryLock = false);
 	Queue::StatusCode GetElement(Anything &anyValues, bool bTryLock = false);
@@ -62,6 +68,8 @@ public:
 	long FlushQueue(Anything &anyElements);
 
 	bool GetQueueStatistics(Anything &anyStat);
+
+	long GetCurrentSize();
 
 	void LogError(String strMessage);
 	void LogWarning(String strMessage);
