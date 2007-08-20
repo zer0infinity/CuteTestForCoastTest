@@ -496,7 +496,7 @@
 		/MainSwitch				33
 		/EnableAll				0
 	}
-	/CountEntry {
+	/LockedValueIncrementDecrementEntry {
 		/MainSwitch				34
 		/EnableAll				34
 	}
