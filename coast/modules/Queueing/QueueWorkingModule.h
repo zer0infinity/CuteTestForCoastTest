@@ -28,12 +28,25 @@
 	...
 }</PRE>
 */
+//template
+//<
+//	class ElementType,
+//	class ListStorageType
+//>
 class EXPORTDECL_QUEUEING QueueWorkingModule : public WDModule
 {
 	friend class QueueWorkingModuleTest;
 	friend class ValueOutputtingModuleTest;
 	friend class CalculationsModuleTest;
 public:
+	typedef Anything ElementType;
+	typedef Anything ListStorageType;
+	typedef ElementType &ElementTypeRef;
+	typedef Queue<ElementType, ListStorageType> QueueType;
+	typedef QueueType::ListStorageTypeRef ListStorageTypeRef;
+	typedef QueueType &AnyQueueTypeRef;
+	typedef QueueType *AnyQueueTypePtr;
+
 	//--- constructors
 	QueueWorkingModule(const char *name);
 	~QueueWorkingModule();
@@ -51,21 +64,21 @@ public:
 		return fAlive == 0xf007f007;
 	}
 
-	bool IsBlocked(Queue::BlockingSide aSide = Queue::eBothSides);
+	bool IsBlocked(QueueType::BlockingSide aSide = QueueType::eBothSides);
 
-	void Block(Queue::BlockingSide aSide);
+	void Block(QueueType::BlockingSide aSide);
 
-	void UnBlock(Queue::BlockingSide aSide);
+	void UnBlock(QueueType::BlockingSide aSide);
 
 	/*! main accessor functions to work with the queue */
-	Queue::StatusCode PutElement(Anything &anyELement, bool bTryLock = false);
-	Queue::StatusCode GetElement(Anything &anyValues, bool bTryLock = false);
-	void PutBackElement(Anything &anyValues);
+	QueueType::StatusCode PutElement(ElementTypeRef anyELement, bool bTryLock = false);
+	QueueType::StatusCode GetElement(ElementTypeRef anyValues, bool bTryLock = false);
+	void PutBackElement(ElementTypeRef anyValues);
 
 	/* exclusively consume all Elements from queue, threads which are blocked on the queue to get an element will be woken up because of the released semaphore. But instead of getting an Element it will get nothing back and should be able to handle this correctly.
 		\param anyELements Anything to hold the elements removed from the queue
 		\return number of elements removed from the queue */
-	long FlushQueue(Anything &anyElements);
+	long FlushQueue(ListStorageTypeRef anyElements);
 
 	bool GetQueueStatistics(Anything &anyStat);
 
@@ -92,13 +105,16 @@ private:
 	void IntInitQueue(const ROAnything roaConfig);
 
 	Anything	fConfig;
-	Queue		*fpQueue;
+	AnyQueueTypePtr	fpQueue;
 	Allocator	*fpQAllocator;
 	Context		*fpContext;
 	Mutex		fContextLock;
-	Anything	fFailedPutbackMessages;
+	ListStorageType	fFailedPutbackMessages;
 	String		fErrorLogName, fWarningLogName, fInfoLogName;
 	u_long		fAlive;
 };
+
+typedef QueueWorkingModule AnyQueueWorkingModule;
+//typedef QueueWorkingModule<Anything, Anything> AnyQueueWorkingModule;
 
 #endif

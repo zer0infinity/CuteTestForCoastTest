@@ -165,7 +165,7 @@ void QueueWorkingModule::IntInitQueue(const ROAnything roaConfig)
 			fpQAllocator = pAlloc;
 		}
 	}
-	fpQueue = new Queue(GetName(), lQueueSize, pAlloc);
+	fpQueue = new QueueType(GetName(), lQueueSize, pAlloc);
 	fFailedPutbackMessages = Anything();
 }
 
@@ -182,7 +182,7 @@ void QueueWorkingModule::IntCleanupQueue()
 	fFailedPutbackMessages = Anything();
 }
 
-bool QueueWorkingModule::IsBlocked(Queue::BlockingSide aSide)
+bool QueueWorkingModule::IsBlocked(QueueType::BlockingSide aSide)
 {
 	StartTrace(QueueWorkingModule.IsBlocked);
 	bool bRet = false;
@@ -192,7 +192,7 @@ bool QueueWorkingModule::IsBlocked(Queue::BlockingSide aSide)
 	return bRet;
 }
 
-void QueueWorkingModule::Block(Queue::BlockingSide aSide)
+void QueueWorkingModule::Block(QueueType::BlockingSide aSide)
 {
 	StartTrace(QueueWorkingModule.Block);
 	if ( fpQueue && fpQueue->IsAlive() && IsAlive() ) {
@@ -200,7 +200,7 @@ void QueueWorkingModule::Block(Queue::BlockingSide aSide)
 	}
 }
 
-void QueueWorkingModule::UnBlock(Queue::BlockingSide aSide)
+void QueueWorkingModule::UnBlock(QueueType::BlockingSide aSide)
 {
 	StartTrace(QueueWorkingModule.UnBlock);
 	if ( fpQueue && fpQueue->IsAlive() && IsAlive() ) {
@@ -208,14 +208,14 @@ void QueueWorkingModule::UnBlock(Queue::BlockingSide aSide)
 	}
 }
 
-Queue::StatusCode QueueWorkingModule::PutElement(Anything &anyELement, bool bTryLock)
+QueueWorkingModule::QueueType::StatusCode QueueWorkingModule::PutElement(Anything &anyELement, bool bTryLock)
 {
 	StartTrace(QueueWorkingModule.PutElement);
-	Queue::StatusCode eRet = Queue::eDead;
+	QueueType::StatusCode eRet = QueueType::eDead;
 	if ( fpQueue && fpQueue->IsAlive() && IsAlive() ) {
 		eRet = fpQueue->Put(anyELement, bTryLock);
-		if ( eRet != Queue::eSuccess ) {
-			SYSWARNING("Queue->Put failed, Queue::StatusCode:" << eRet << " !");
+		if ( eRet != QueueType::eSuccess ) {
+			SYSWARNING("Queue->Put failed, QueueType::StatusCode:" << eRet << " !");
 		}
 	}
 	return eRet;
@@ -233,10 +233,10 @@ ROAnything QueueWorkingModule::GetNamedConfig(const char *name)
 	return ((ROAnything)fConfig)[name];
 }
 
-Queue::StatusCode QueueWorkingModule::GetElement(Anything &anyValues, bool bTryLock)
+QueueWorkingModule::QueueType::StatusCode QueueWorkingModule::GetElement(Anything &anyValues, bool bTryLock)
 {
 	StartTrace(QueueWorkingModule.GetElement);
-	Queue::StatusCode eRet = Queue::eDead;
+	QueueType::StatusCode eRet = QueueType::eDead;
 	if ( fpQueue && fpQueue->IsAlive() && IsAlive() ) {
 		Trace("Queue still alive");
 		// try to get a failed message first
@@ -244,12 +244,12 @@ Queue::StatusCode QueueWorkingModule::GetElement(Anything &anyValues, bool bTryL
 			Trace("getting failed message 1 of " << fFailedPutbackMessages.GetSize() );
 			anyValues = fFailedPutbackMessages[0L];
 			fFailedPutbackMessages.Remove(0L);
-			eRet = Queue::eSuccess;
+			eRet = QueueType::eSuccess;
 		} else {
 			// Default is blocking get to save cpu time
 			eRet = fpQueue->Get(anyValues, bTryLock);
-			if ( ( eRet != Queue::eSuccess ) && ( eRet != Queue::eEmpty ) ) {
-				SYSWARNING("Queue->Get failed, Queue::StatusCode:" << eRet << " !");
+			if ( ( eRet != QueueType::eSuccess ) && ( eRet != QueueType::eEmpty ) ) {
+				SYSWARNING("Queue->Get failed, QueueType::StatusCode:" << eRet << " !");
 			}
 		}
 	}
@@ -261,8 +261,8 @@ void QueueWorkingModule::PutBackElement(Anything &anyValues)
 	StartTrace(QueueWorkingModule.PutBackElement);
 	// put message back to the queue (Appends!) if possible
 	// take care not to lock ourselves up here, thus we MUST use a trylock here!
-	Queue::StatusCode eRet = PutElement(anyValues, true);
-	if ( eRet != Queue::eSuccess && ( eRet & Queue::eFull ) ) {
+	QueueType::StatusCode eRet = PutElement(anyValues, true);
+	if ( eRet != QueueType::eSuccess && ( eRet & QueueType::eFull ) ) {
 		// no more room in Queue, need to store this message internally for later put back
 		fFailedPutbackMessages.Append(anyValues);
 	}
