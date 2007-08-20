@@ -41,6 +41,8 @@ public:
 	void MultiProducerSingleConsumerTest();
 	void SingleProducerMultiConsumerTest();
 	void ConsumerTerminationTest();
+	void SimpleTypeAnyStorageQueueTest();
+	void SimpleTypeListStorageQueueTest();
 
 private:
 	void DoMultiProducerSingleConsumerTest(long lQueueSize);

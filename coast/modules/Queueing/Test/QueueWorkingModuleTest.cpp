@@ -44,14 +44,14 @@ QueueWorkingModuleTest::~QueueWorkingModuleTest()
 void QueueWorkingModuleTest::InitFinisNoModuleConfigTest()
 {
 	StartTrace(QueueWorkingModuleTest.InitFinisNoModuleConfigTest);
-	QueueWorkingModule aModule("QueueWorkingModule");
+	AnyQueueWorkingModule aModule("QueueWorkingModule");
 	t_assertm( !aModule.Init(GetTestCaseConfig()["ModuleConfig"]), "module init should have failed due to missing configuration" );
 }
 
 void QueueWorkingModuleTest::InitFinisDefaultsTest()
 {
 	StartTrace(QueueWorkingModuleTest.InitFinisDefaultsTest);
-	QueueWorkingModule aModule("QueueWorkingModule");
+	AnyQueueWorkingModule aModule("QueueWorkingModule");
 	if ( t_assertm( aModule.Init(GetTestCaseConfig()["ModuleConfig"]), "module init should have succeeded" ) ) {
 		if ( t_assert( aModule.fpContext != NULL ) ) {
 			assertAnyEqual(GetTestCaseConfig()["ModuleConfig"]["QueueWorkingModule"], aModule.fpContext->GetEnvStore());
@@ -72,7 +72,7 @@ void QueueWorkingModuleTest::InitFinisDefaultsTest()
 void QueueWorkingModuleTest::InitFinisTest()
 {
 	StartTrace(QueueWorkingModuleTest.InitFinisTest);
-	QueueWorkingModule aModule("QueueWorkingModule");
+	AnyQueueWorkingModule aModule("QueueWorkingModule");
 	if ( t_assertm( aModule.Init(GetTestCaseConfig()["ModuleConfig"]), "module init should have succeeded" ) ) {
 		if ( t_assert( aModule.fpContext != NULL ) ) {
 			// check for invalid Server
@@ -96,21 +96,21 @@ void QueueWorkingModuleTest::InitFinisTest()
 void QueueWorkingModuleTest::GetAndPutbackTest()
 {
 	StartTrace(QueueWorkingModuleTest.GetAndPutbackTest);
-	QueueWorkingModule aModule("QueueWorkingModule");
+	AnyQueueWorkingModule aModule("QueueWorkingModule");
 	// set modules fAlive-field to enable working of the functions
 	// first check if they don't work
 	{
 		Anything anyMsg;
 		// must fail
-		assertEqual( Queue::eDead, aModule.PutElement(anyMsg, false) );
+		assertEqual( AnyQueueType::eDead, aModule.PutElement(anyMsg, false) );
 		// fails because of uninitialized queue
-		assertEqual( Queue::eDead, aModule.GetElement(anyMsg, false) );
+		assertEqual( AnyQueueType::eDead, aModule.GetElement(anyMsg, false) );
 	}
 	aModule.IntInitQueue(GetTestCaseConfig()["ModuleConfig"]["QueueWorkingModule"]);
 	{
 		Anything anyMsg;
 		// must still fail because of dead-state
-		assertEqual( Queue::eDead, aModule.GetElement(anyMsg, false) );
+		assertEqual( AnyQueueType::eDead, aModule.GetElement(anyMsg, false) );
 	}
 	aModule.fAlive = 0xf007f007;
 	if ( t_assertm( aModule.fpQueue != NULL , "queue should be created" ) ) {
@@ -118,31 +118,31 @@ void QueueWorkingModuleTest::GetAndPutbackTest()
 		// return immediately and fail.
 		{
 			Anything anyElement;
-			assertEqual( Queue::eEmpty, aModule.GetElement(anyElement, true) );
+			assertEqual( AnyQueueType::eEmpty, aModule.GetElement(anyElement, true) );
 		}
 		// queue size is 1, so we load it with 1 element
 		{
 			Anything anyMsg;
 			anyMsg["Number"] = 1;
 			// this one must succeed
-			assertEqual( Queue::eSuccess, aModule.PutElement(anyMsg, false) );
+			assertEqual( AnyQueueType::eSuccess, aModule.PutElement(anyMsg, false) );
 		}
 		// now putback one message
 		{
 			Anything anyMsg;
 			anyMsg["Number"] = 2;
 			// this one must fail
-			if ( assertEqual( Queue::eFull, aModule.PutElement(anyMsg, true) ) ) {
+			if ( assertEqual( AnyQueueType::eFull, aModule.PutElement(anyMsg, true) ) ) {
 				aModule.PutBackElement(anyMsg);
 				assertEqualm(1, aModule.fFailedPutbackMessages.GetSize(), "expected overflow buffer to contain an element");
 			}
 		}
 		Anything anyElement;
-		if ( assertEqual( Queue::eSuccess, aModule.GetElement(anyElement) ) ) {
+		if ( assertEqual( AnyQueueType::eSuccess, aModule.GetElement(anyElement) ) ) {
 			assertEqualm( 2, anyElement["Number"].AsLong(-1L), "expected to get putback element first");
 		}
 		assertEqualm( 0, aModule.fFailedPutbackMessages.GetSize(), "expected overflow buffer to be empty now");
-		if ( assertEqual( Queue::eSuccess, aModule.GetElement(anyElement) ) ) {
+		if ( assertEqual( AnyQueueType::eSuccess, aModule.GetElement(anyElement) ) ) {
 			assertEqualm( 1, anyElement["Number"].AsLong(-1L), "expected to get regular queue element last");
 		}
 		assertEqualm( 0, aModule.fpQueue->GetSize(), "expected queue to be empty now");
