@@ -36,8 +36,7 @@ THREADWRAPPERFUNCDECL(ThreadWrapper, thread)
 		aAny["Name"] = t->fThreadName;
 		aAny["Addr"] = (IFAObject *)t;
 		{
-			SimpleMutexEntry sm(fgThreadsMutex);
-			sm.Use();
+			LockUnlockEntry sm(fgThreadsMutex);
 			fgThreads[Anything((long)t).AsString()] = aAny.DeepClone();
 		}
 #endif

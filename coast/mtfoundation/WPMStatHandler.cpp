@@ -37,7 +37,7 @@ WPMStatHandler::~WPMStatHandler()
 void WPMStatHandler::HandleStatEvt(long evt)
 {
 	StartTrace1(WPMStatHandler.HandleStatEvt, "Event[" << evt << "]");
-	MutexEntry me(fMutex);
+	LockUnlockEntry me(fMutex);
 
 	switch (evt) {
 		case eEnter: {
@@ -69,7 +69,7 @@ void WPMStatHandler::HandleStatEvt(long evt)
 void WPMStatHandler::Statistic(Anything &statElements)
 {
 	StartTrace(WPMStatHandler.Statistic);
-	MutexEntry me(fMutex);
+	LockUnlockEntry me(fMutex);
 	statElements["PoolSize"] = fPoolSize;
 	statElements["CurrentParallelRequests"] = fCurrentParallelRequests;
 	statElements["MaxParallelRequests"] = fMaxParallelRequests;
@@ -83,13 +83,13 @@ void WPMStatHandler::Statistic(Anything &statElements)
 long WPMStatHandler::GetTotalRequests()
 {
 	StartTrace(WPMStatHandler.GetTotalRequests);
-	MutexEntry me(fMutex);
+	LockUnlockEntry me(fMutex);
 	return fTotalRequests;
 }
 
 long WPMStatHandler::GetCurrentParallelRequests()
 {
 	StartTrace(WPMStatHandler.GetCurrentParallelRequests);
-	MutexEntry me(fMutex);
+	LockUnlockEntry me(fMutex);
 	return fCurrentParallelRequests;
 }

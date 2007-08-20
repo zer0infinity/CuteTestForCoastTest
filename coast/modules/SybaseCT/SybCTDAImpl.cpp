@@ -41,8 +41,7 @@ bool SybCTDAImpl::Init(const ROAnything config)
 {
 	StartTrace(SybCTDAImpl.Init);
 	if (!fgInitialized) {
-		MutexEntry me(fgStructureMutex);
-		me.Use();
+		LockUnlockEntry me(fgStructureMutex);
 		ROAnything myCfg;
 		String strInterfacesPathName;
 		long nrOfSybCTs = 5L;
@@ -78,8 +77,7 @@ bool SybCTDAImpl::Init(const ROAnything config)
 bool SybCTDAImpl::Finis()
 {
 	StartTrace(SybCTDAImpl.Finis);
-	MutexEntry me(fgStructureMutex);
-	me.Use();
+	LockUnlockEntry me(fgStructureMutex);
 	if (fgInitialized) {
 		long l = 0L;
 		for (l = 0L; l < fgListOfSybCT.GetSize(); l++) {
@@ -123,8 +121,7 @@ bool SybCTDAImpl::Exec( Context &context, ParameterMapper *in, ResultMapper *out
 	bool retCode = false;
 	bool bInitialized = false;
 	if ( fgInitialized ) {
-		MutexEntry me(fgStructureMutex);
-		me.Use();
+		LockUnlockEntry me(fgStructureMutex);
 		bInitialized = fgInitialized;
 	}
 	if ( bInitialized ) {
@@ -133,8 +130,7 @@ bool SybCTDAImpl::Exec( Context &context, ParameterMapper *in, ResultMapper *out
 		SimpleMutex *pMutex = NULL;
 		SemaphoreEntry se(*fgCountingSema);
 		{
-			MutexEntry me(fgStructureMutex);
-			me.Use();
+			LockUnlockEntry me(fgStructureMutex);
 			// If the structure for DBqueries is available, find a free SybCT
 			long nrOfSybCTs = fgListOfSybCT.GetSize();
 
@@ -171,8 +167,7 @@ bool SybCTDAImpl::Exec( Context &context, ParameterMapper *in, ResultMapper *out
 			}
 			PutMessages(context, out, aMsgAny);
 			{
-				MutexEntry me(fgStructureMutex);
-				me.Use();
+				LockUnlockEntry me(fgStructureMutex);
 				pMutex->Unlock();
 			}
 		} else {

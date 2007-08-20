@@ -54,8 +54,7 @@ void TestReceiver::Receive(iostream *Ios, Socket *socket)
 {
 	StartTrace(TestReceiver.Receive);
 
-	MutexEntry me(fMutex);
-	me.Use();
+	LockUnlockEntry me(fMutex);
 	Anything toImport;
 	toImport.Import(*Ios);
 	TraceAny(toImport, "Recieved data");
@@ -94,15 +93,13 @@ void TestReceiver::DoChecks(Anything &toImport, Socket *socket)
 
 Anything TestReceiver::GetResult()
 {
-	MutexEntry me(fMutex);
-	me.Use();
+	LockUnlockEntry me(fMutex);
 	return fResult;
 }
 
 Anything TestReceiver::GetFailures()
 {
-	MutexEntry me(fMutex);
-	me.Use();
+	LockUnlockEntry me(fMutex);
 	return fFailures;
 }
 

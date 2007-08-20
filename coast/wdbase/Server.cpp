@@ -212,16 +212,14 @@ int Server::DoGlobalRun()
 bool Server::IsInReInit()
 {
 	StartTrace(Server.IsInReInit);
-	MutexEntry me(fgReInitMutex);
-	me.Use();
+	LockUnlockEntry me(fgReInitMutex);
 	return fgInReInit;
 }
 
 int Server::GlobalReinit()
 {
 	StartTrace(Server.GlobalReinit);
-	MutexEntry me(fgReInitMutex);
-	me.Use();
+	LockUnlockEntry me(fgReInitMutex);
 	int retCode = 0;
 	if ( BlockRequests() != 0 ) {
 		UnblockRequests();
@@ -505,8 +503,7 @@ bool Server::MustTerminate()
 int Server::WritePIDFile()
 {
 	if ( Lookup("UsePIDFile", 0L) ) {
-		MutexEntry me(fPidFileNameMutex);
-		me.Use();
+		LockUnlockEntry me(fPidFileNameMutex);
 
 		PIDFileName(fPidFileName);
 		if ( DoWritePIDFile(fPidFileName) != 0 ) {
@@ -519,8 +516,7 @@ int Server::WritePIDFile()
 int Server::RemovePIDFile()
 {
 	if ( Lookup("UsePIDFile", 0L) ) {
-		MutexEntry me(fPidFileNameMutex);
-		me.Use();
+		LockUnlockEntry me(fPidFileNameMutex);
 		return DoDeletePIDFile(fPidFileName); // ignore retCode
 	}
 	return 0;
@@ -573,8 +569,7 @@ int Server::DoDeletePIDFile(const String &pidFilePath)
 
 int Server::GetPid()
 {
-	MutexEntry me(fPidFileNameMutex);
-	me.Use();
+	LockUnlockEntry me(fPidFileNameMutex);
 	return fPid;
 }
 
@@ -881,8 +876,7 @@ void ServerThread::Run()
 		}
 		// synchronize with PrepareShutdown call
 		// the caller must have left the method before continuing here
-		SimpleMutexEntry me(fTerminationMutex);
-		me.Use();
+		LockUnlockEntry me(fTerminationMutex);
 		if ( IsRunning() ) {
 			SetReady();
 		}
@@ -902,8 +896,7 @@ void ServerThread::PrepareShutdown(long retCode)
 {
 	StartTrace1(ServerThread.PrepareShutdown, "<" << GetName() << ">");
 	if ( fServer && fbInitialized ) {
-		SimpleMutexEntry me(fTerminationMutex);
-		me.Use();
+		LockUnlockEntry me(fTerminationMutex);
 		fServer->PrepareShutdown(retCode);
 	}
 }

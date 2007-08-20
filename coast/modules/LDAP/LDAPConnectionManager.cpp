@@ -148,8 +148,7 @@ Semaphore *LDAPConnectionManager::LookupSema(long maxConnections, const String &
 {
 	StartTrace(LDAPConnectionManager.LookupSema);
 	Semaphore *sema;
-	MutexEntry me(fLdapConnectionStoreMutex);
-	me.Use();
+	LockUnlockEntry me(fLdapConnectionStoreMutex);
 	{
 		if ( !(fLdapConnectionStore.IsDefined(poolId)) ) {
 			// We are the first ones
@@ -169,8 +168,7 @@ bool LDAPConnectionManager::GetHandleInfo(long maxConnections, const String &poo
 	long slotIndex = GetAndLockSlot(maxConnections, poolId);
 	bool ret = (slotIndex != -1L);
 	if ( ret ) {
-		MutexEntry me(fLdapConnectionStoreMutex);
-		me.Use();
+		LockUnlockEntry me(fLdapConnectionStoreMutex);
 		{
 			handleInfo = fLdapConnectionStore[poolId]["HandleInfo"][slotIndex];
 		}
@@ -183,8 +181,7 @@ long LDAPConnectionManager::GetUnusedFreeListEntry(long maxConnections, const St
 {
 	StartTrace(LDAPConnectionManager.GetAndLockSlot);
 	// Because we use a counting semaphore, we know that we should get one unlocked entry
-	MutexEntry me(fFreeListMutex);
-	me.Use();
+	LockUnlockEntry me(fFreeListMutex);
 	{
 		for (long l = 0 ; l < maxConnections; l++ ) {
 			if ( fFreeList[poolId][l].AsLong(-1L) == -1L ) {
@@ -204,8 +201,7 @@ long LDAPConnectionManager::GetThisThreadsFreeListEntry(long maxConnections, con
 	StartTrace(LDAPConnectionManager.GetAndLockSlot);
 	// Because we use a counting semaphore, we know that we should get one unlocked entry
 	long myId = Thread::MyId();
-	MutexEntry me(fFreeListMutex);
-	me.Use();
+	LockUnlockEntry me(fFreeListMutex);
 	{
 		for (long l = 0 ; l < maxConnections; l++ ) {
 			if ( fFreeList[poolId][l].AsLong(-1L) == myId ) {
@@ -226,8 +222,7 @@ long LDAPConnectionManager::GetAndLockSlot(long maxConnections, const String &po
 	Mutex *mutex = (Mutex *) NULL;
 	long l = GetUnusedFreeListEntry(maxConnections, poolId);
 	if ( l != -1L ) {
-		MutexEntry me(fLdapConnectionStoreMutex);
-		me.Use();
+		LockUnlockEntry me(fLdapConnectionStoreMutex);
 		{
 			mutex = (Mutex * ) fLdapConnectionStore[poolId]["Mutexes"][l].AsIFAObject(0);
 			if ( mutex != (Mutex * ) NULL ) {
@@ -265,8 +260,7 @@ bool LDAPConnectionManager::ReleaseHandleInfo(long maxConnections, const String 
 	bool ret = ( slotIndex != -1L );
 	if ( ret ) {
 		Semaphore *sema = (Semaphore *) NULL;
-		MutexEntry me1(fLdapConnectionStoreMutex);
-		me1.Use();
+		LockUnlockEntry me1(fLdapConnectionStoreMutex);
 		{
 			Mutex *mutex = (Mutex * ) fLdapConnectionStore[poolId]["Mutexes"][slotIndex].AsIFAObject(0);
 			if ( mutex != (Mutex *) NULL ) {
@@ -275,8 +269,7 @@ bool LDAPConnectionManager::ReleaseHandleInfo(long maxConnections, const String 
 			}
 			sema = (Semaphore * ) fLdapConnectionStore[poolId]["Sema"].AsIFAObject(0);
 		}
-		MutexEntry me2(fFreeListMutex);
-		me2.Use();
+		LockUnlockEntry me2(fFreeListMutex);
 		{
 			fFreeList[poolId][slotIndex] = -1L;
 			Trace("Releasing freelist entry: [" << poolId << "] at index: [" << slotIndex << "]");
@@ -299,8 +292,7 @@ bool LDAPConnectionManager::ReGetHandleInfo(long maxConnections, const String &p
 	long slotIndex = ReGetLockedSlot(maxConnections, poolId);
 	bool ret = ( slotIndex != -1L);
 	if ( ret ) {
-		MutexEntry me(fLdapConnectionStoreMutex);
-		me.Use();
+		LockUnlockEntry me(fLdapConnectionStoreMutex);
 		{
 			// We already hold the lock for this handle, safe access now
 			handleInfo = fLdapConnectionStore[poolId]["HandleInfo"][slotIndex];
@@ -316,8 +308,7 @@ bool LDAPConnectionManager::SetHandleInfo(long maxConnections, const String &poo
 	long slotIndex = ReGetLockedSlot(maxConnections, poolId);
 	bool ret = ( slotIndex != -1L);
 	if ( ret ) {
-		MutexEntry me(fLdapConnectionStoreMutex);
-		me.Use();
+		LockUnlockEntry me(fLdapConnectionStoreMutex);
 		{
 			// We already hold the lock for this handle, safe access now
 			fLdapConnectionStore[poolId]["HandleInfo"][slotIndex] = handleInfo;
@@ -335,7 +326,10 @@ long LDAPConnectionManager::ReGetLockedSlot(long maxConnections, const String &p
 	if ( l != -1L ) {
 		// Was mutex locked by the same thread (us)?
 		Mutex *mutex = (Mutex *) NULL;
-		mutex = (Mutex * ) fLdapConnectionStore[poolId]["Mutexes"][l].AsIFAObject(0);
+		LockUnlockEntry me(fLdapConnectionStoreMutex);
+		{
+			mutex = (Mutex * ) fLdapConnectionStore[poolId]["Mutexes"][l].AsIFAObject(0);
+		}
 		Assert(mutex != (Mutex *) NULL);
 		Assert(mutex->IsLockedByMe());
 		Trace("Found handle for: [" << poolId << "] at index: [" << l << "]");
@@ -372,10 +366,9 @@ bool LDAPConnectionManager::Finis()
 	StartTrace(LDAPConnectionManager.Finis);
 	bool ret = true;
 	{
-		TraceAny(fLdapConnectionStore, "fLdapConnectionStore");
-		MutexEntry me(fLdapConnectionStoreMutex);
-		me.Use();
+		LockUnlockEntry me(fLdapConnectionStoreMutex);
 		{
+			TraceAny(fLdapConnectionStore, "fLdapConnectionStore");
 			for ( long pools = 0; pools < fLdapConnectionStore.GetSize(); pools++ ) {
 				for ( long items = 0; items < fLdapConnectionStore[pools]["Mutexes"].GetSize(); items++ ) {
 					SysLog::Info(String("LDAPConnectionManager: At index: [") << items   << "]");
@@ -416,7 +409,10 @@ bool LDAPConnectionManager::Finis()
 void LDAPConnectionManager::EmptyLdapConnectionStore()
 {
 	StartTrace(LDAPConnectionManager.EmptyLdapConnectionStore);
-	fLdapConnectionStore = Anything(Storage::Global());
+	LockUnlockEntry me(fLdapConnectionStoreMutex);
+	{
+		fLdapConnectionStore = Anything(Storage::Global());
+	}
 }
 
 bool LDAPConnectionManager::ResetFinis(const ROAnything )
@@ -449,10 +445,9 @@ bool LDAPConnectionManager::ReplaceHandlesForConnectionPool(const String &poolId
 	bool ret = true;
 	Trace("Working on pool: [" << poolId << "]");
 	{
-		TraceAny(fLdapConnectionStore, "fLdapConnectionStore");
-		MutexEntry me(fLdapConnectionStoreMutex);
-		me.Use();
+		LockUnlockEntry me(fLdapConnectionStoreMutex);
 		{
+			TraceAny(fLdapConnectionStore, "fLdapConnectionStore");
 			for ( long items = 0; items < fLdapConnectionStore[poolId]["Mutexes"].GetSize(); items++ ) {
 				Mutex *mutex = (Mutex * ) fLdapConnectionStore[poolId]["Mutexes"][items].AsIFAObject(0);
 				Trace("Trying to get lock for: " << poolId << " at index: " <<  items);

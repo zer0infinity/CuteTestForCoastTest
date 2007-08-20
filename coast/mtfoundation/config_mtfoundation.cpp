@@ -75,8 +75,7 @@ void RemoveThreadDetach(Thread *pThr)
 {
 	String key;
 	key = Anything((long)pThr).AsString();
-	SimpleMutexEntry sm(fgThreadsMutex);
-	sm.Use();
+	LockUnlockEntry sm(fgThreadsMutex);
 	if (pThr && fgThreads.IsDefined(key)) {
 		fgThreads.Remove(key);
 	}

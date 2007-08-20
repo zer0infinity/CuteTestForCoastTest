@@ -64,8 +64,7 @@ bool SybCTnewDAImpl::Init(ROAnything config)
 			strInterfacesPathName = myCfg["InterfacesPathName"].AsString();
 		}
 
-		MutexEntry me(fgStructureMutex);
-		me.Use();
+		LockUnlockEntry me(fgStructureMutex);
 		fgContextMessages.SetAllocator(Storage::Global());
 		fgContextMessages = Anything();
 		fgListOfSybCT.SetAllocator(Storage::Global());
@@ -100,8 +99,7 @@ bool SybCTnewDAImpl::Finis()
 	}
 	bool bInitialized;
 	{
-		MutexEntry me(fgStructureMutex);
-		me.Use();
+		LockUnlockEntry me(fgStructureMutex);
 		bInitialized = fgInitialized;
 		// force pending/upcoming Exec calls to fail
 		fgInitialized = false;
@@ -173,8 +171,7 @@ bool SybCTnewDAImpl::DoGetConnection(SybCTnewDA *&pSyb, bool &bIsOpen, const Str
 	StartTrace(SybCTnewDAImpl.DoGetConnection);
 	pSyb = NULL;
 	bIsOpen = false;
-	MutexEntry me(fgStructureMutex);
-	me.Use();
+	LockUnlockEntry me(fgStructureMutex);
 	if ( !server.Length() || !user.Length() || !IntGetOpen(pSyb, bIsOpen, server, user) ) {
 		// favour unused connection against open connection of different server/user
 		if ( fgListOfSybCT["Unused"].GetSize() ) {
@@ -202,8 +199,7 @@ bool SybCTnewDAImpl::DoGetConnection(SybCTnewDA *&pSyb, bool &bIsOpen, const Str
 void SybCTnewDAImpl::DoPutbackConnection(SybCTnewDA *&pSyb, bool bIsOpen, const String &server, const String &user)
 {
 	StartTrace1(SybCTnewDAImpl.DoPutbackConnection, "putting &" << (long)(IFAObject *)pSyb);
-	MutexEntry me(fgStructureMutex);
-	me.Use();
+	LockUnlockEntry me(fgStructureMutex);
 	if ( bIsOpen ) {
 		String strToStore(server);
 		strToStore << '.' << user;
@@ -231,8 +227,7 @@ bool SybCTnewDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out)
 	// check if we are initialized
 	bool bInitialized = false;
 	if ( fgInitialized ) {
-		MutexEntry me(fgStructureMutex);
-		me.Use();
+		LockUnlockEntry me(fgStructureMutex);
 		bInitialized = fgInitialized;
 	}
 	if ( bInitialized ) {
@@ -314,8 +309,7 @@ bool SybCTnewDAImpl::CheckCloseOpenedConnections(long lTimeout)
 	TimeStamp aStamp;
 	aStamp -= lTimeout;
 	Trace("current timeout " << lTimeout << "s, resulting time [" << aStamp.AsString() << "]");
-	MutexEntry me(fgStructureMutex);
-	me.Use();
+	LockUnlockEntry me(fgStructureMutex);
 	if ( fgInitialized ) {
 		TraceAny(fgListOfSybCT, "current list of connections");
 		if ( fgListOfSybCT.LookupPath(anyTimeStamp, "Open") && anyTimeStamp.GetSize() ) {

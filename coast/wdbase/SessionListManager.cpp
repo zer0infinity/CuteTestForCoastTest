@@ -62,8 +62,7 @@ void stopcleaner()
 SessionListManager *SessionListManager::SLM()
 {
 	if (!fgSessionListManager && !fgFinalize) {
-		MutexEntry me(fgSessionListManagerMutex);
-		me.Use();
+		LockUnlockEntry me(fgSessionListManagerMutex);
 		if (!fgSessionListManager && !fgFinalize) {
 			fgSessionListManager = SafeCast(WDModule::FindWDModule("SessionListManager"), SessionListManager);
 #if !defined(WIN32)
@@ -223,8 +222,7 @@ void SessionListManager::DisableSession(const String &sessionId, Context &ctx)
 	Anything session;
 	{
 		// remove session from sessions list so it is no longer accessible
-		MutexEntry mutex(fSessionsMutex);
-		mutex.Use();
+		LockUnlockEntry mutex(fSessionsMutex);
 		Trace("Size:[" << fSessions.GetSize() << "]");
 		TraceAny(fSessions, "Sessions active");
 		if ( fSessions.LookupPath(session, sessionId) ) {
@@ -291,8 +289,7 @@ void SessionListManager::AddSession(const String &id, Session *session, Context 
 	StartTrace(SessionListManager.AddSession);
 	TRACE_LOCK_START("AddSession");
 	{
-		MutexEntry mutex(fSessionsMutex);
-		mutex.Use();
+		LockUnlockEntry mutex(fSessionsMutex);
 
 		if (fSessions.IsDefined(id)) {
 			fDisabledSessions.Append(fSessions[id]);
@@ -311,8 +308,7 @@ Session *SessionListManager::IntLookupSession(const String &id, Context &ctx)
 	TRACE_LOCK_START("IntLookupSession");
 	Session *s = 0;
 	{
-		MutexEntry mutex(fSessionsMutex);
-		mutex.Use();
+		LockUnlockEntry mutex(fSessionsMutex);
 		Anything session;
 		// make sure no new entries are created in fSessions
 		// if id is not really there
@@ -339,8 +335,7 @@ Session *SessionListManager::IntLookupSession(const String &id, Context &ctx)
 void SessionListManager::GetNextId(String &s, Context &ctx)
 {
 	TRACE_LOCK_START("GetNextId");
-	MutexEntry mutex(fNextIdMutex);
-	mutex.Use();
+	LockUnlockEntry mutex(fNextIdMutex);
 	// take timestamp as session key
 	HRTIME lastId = fNextId;
 	fNextId = GetHRTIME();
@@ -535,8 +530,7 @@ void SessionListManager::ForcedSessionCleanUp(Context &ctx)
 	TRACE_LOCK_START("ForcedSessionCleanUp");
 	long szNumberOfSessions = 0;
 	{
-		MutexEntry me(fSessionsMutex);
-		me.Use();
+		LockUnlockEntry me(fSessionsMutex);
 		szNumberOfSessions = fSessions.GetSize();
 		String logMsg("Force deleting ");
 		logMsg << szNumberOfSessions << " Sessions";
@@ -558,8 +552,7 @@ long SessionListManager::GetNumberOfSessions()
 {
 	StartTrace(SessionListManager.GetNumberOfSessions);
 	TRACE_LOCK_START("GetNumberOfSessions");
-	MutexEntry me(fSessionsMutex);
-	me.Use();
+	LockUnlockEntry me(fSessionsMutex);
 	return fSessions.GetSize();
 }
 
@@ -716,8 +709,7 @@ bool SessionListManager::GetASessionsInfo(Anything &sessionInfo, const String &s
 	TRACE_LOCK_START("GetASessionsInfo");
 	Session *originalSession = ctx.GetSession();
 	Session *s = (Session *) NULL;
-	MutexEntry mutex(fSessionsMutex);
-	mutex.Use();
+	LockUnlockEntry mutex(fSessionsMutex);
 	{
 		Anything session;
 		if ( fSessions.LookupPath(session, sessionId) ) {

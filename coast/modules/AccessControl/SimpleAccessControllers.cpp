@@ -25,8 +25,7 @@ bool FileUDAC::Exists(String userid)
 {
 	StartTrace(FileUDAC.Exists);
 
-	MutexEntry me(fUserDataMutex);
-	me.Use();
+	LockUnlockEntry me(fUserDataMutex);
 	LoadUserData();
 
 	Trace("uid = " << userid);
@@ -39,8 +38,7 @@ String FileUDAC::GetTokenId(String userid)
 {
 	StartTrace(FileUDAC.GetTokenId);
 
-	MutexEntry me(fUserDataMutex);
-	me.Use();
+	LockUnlockEntry me(fUserDataMutex);
 	LoadUserData();
 
 	Trace("uid = " << userid);
@@ -53,8 +51,7 @@ String FileUDAC::GetPassword(String userid)
 {
 	StartTrace(FileUDAC.GetPassword);
 
-	MutexEntry me(fUserDataMutex);
-	me.Use();
+	LockUnlockEntry me(fUserDataMutex);
 	LoadUserData();
 
 	Trace("uid = " << userid);
@@ -69,8 +66,7 @@ bool FileUDAC::SetPassword(String userid, String newpasswd)
 
 	Trace("uid = " << userid);
 	if ( Exists(userid) ) {
-		MutexEntry me(fUserDataMutex);
-		me.Use();
+		LockUnlockEntry me(fUserDataMutex);
 		LoadUserData();
 
 		String oldpasswd = fUserData[userid]["Password"].AsString();
@@ -108,8 +104,7 @@ bool FileUDAC::GetGroups(String userid, Anything &groups)
 		return false;
 	}
 
-	MutexEntry me(fUserDataMutex);
-	me.Use();
+	LockUnlockEntry me(fUserDataMutex);
 	LoadUserData();
 
 	groups = ((ROAnything)fUserData)[userid]["Groups"].DeepClone();
@@ -178,8 +173,7 @@ String FileTDAC::GetSeed(String tokenid)
 {
 	StartTrace(FileTDAC.GetSeed);
 
-	MutexEntry me(fTokenDataMutex);
-	me.Use();
+	LockUnlockEntry me(fTokenDataMutex);
 	LoadTokenData();
 
 	Trace("token id = " << tokenid);
@@ -192,8 +186,7 @@ unsigned long FileTDAC::GetCount(String tokenid)
 {
 	StartTrace(FileTDAC.GetCount);
 
-	MutexEntry me(fTokenDataMutex);
-	me.Use();
+	LockUnlockEntry me(fTokenDataMutex);
 	LoadTokenData();
 
 	Trace("token id = " << tokenid);
@@ -211,8 +204,7 @@ bool FileTDAC::IncCount(String tokenid, long by)
 {
 	StartTrace(FileTDAC.IncCount);
 
-	MutexEntry me(fTokenDataMutex);
-	me.Use();
+	LockUnlockEntry me(fTokenDataMutex);
 	LoadTokenData();
 
 	Trace("token id = " << tokenid);
@@ -272,8 +264,7 @@ bool FileEDAC::GetAllowedEntitiesForGroup(String group, Anything &allowed)
 {
 	StartTrace(FileEDAC.GetAllowedEntitiesForGroup);
 
-	MutexEntry me(fEntityDataMutex);
-	me.Use();
+	LockUnlockEntry me(fEntityDataMutex);
 	LoadEntityData();
 
 	Trace("group = " << group);
@@ -292,8 +283,7 @@ bool FileEDAC::GetAllowedEntitiesForGroups(Anything groups, Anything &allowed)
 {
 	StartTrace(FileEDAC.GetAllowedEntitiesForGroups);
 
-	MutexEntry me(fEntityDataMutex);
-	me.Use();
+	LockUnlockEntry me(fEntityDataMutex);
 	LoadEntityData();
 
 	TraceAny(groups, "groups =");
@@ -324,8 +314,7 @@ bool FileEDAC::IsAllowed(String group, String entity)
 {
 	StartTrace(FileEDAC.IsAllowed);
 
-	MutexEntry me(fEntityDataMutex);
-	me.Use();
+	LockUnlockEntry me(fEntityDataMutex);
 	LoadEntityData();
 
 	Trace("group = " << group);

@@ -22,36 +22,6 @@
 
 //--- c-modules used -----------------------------------------------------------
 
-class CountEntry
-{
-public:
-	CountEntry(SimpleMutex &aMutex, SimpleCondition &aCondition, long &lCount)
-		: fMutex(aMutex), fCondition(aCondition), fCount(lCount) {
-		StartTrace(CountEntry.CountEntry);
-		SimpleMutexEntry sme(fMutex);
-		sme.Use();
-		++fCount;
-		Trace("count:" << fCount);
-	}
-	~CountEntry() {
-		StartTrace(CountEntry.~CountEntry);
-		SimpleMutexEntry sme(fMutex);
-		sme.Use();
-		if (fCount > 0L) {
-			--fCount;
-		}
-		Trace("count:" << fCount);
-		Trace("signalling condition");
-		fCondition.Signal();
-	}
-	void Use() const {};
-
-private:
-	SimpleMutex	&fMutex;
-	SimpleCondition &fCondition;
-	long		&fCount;
-};
-
 //---- Queue ----------------------------------------------------------------
 Queue::Queue(const char *name, long lQueueSize, Allocator *pAlloc)
 	: fName(name, -1, pAlloc)
@@ -87,8 +57,7 @@ Queue::~Queue()
 	// block any pending interface accesses
 	Block();
 
-	MutexEntry me(fQueueLock);
-	me.Use();
+	LockUnlockEntry me(fQueueLock);
 	// mark that we are no longer alive
 	fAlive = 0x00dead00;
 
@@ -104,8 +73,7 @@ Queue::~Queue()
 void Queue::IntReleaseBlockedPutters()
 {
 	StartTrace(Queue.IntReleaseBlockedPutters);
-	SimpleMutexEntry sme(fBlockingPutLock);
-	sme.Use();
+	LockUnlockEntry sme(fBlockingPutLock);
 	if ( fBlockingPutCount ) {
 		SYSWARNING("waking up " << fBlockingPutCount << " blocked Put() callers");
 	}
@@ -120,8 +88,7 @@ void Queue::IntReleaseBlockedPutters()
 void Queue::IntReleaseBlockedGetters()
 {
 	StartTrace(Queue.IntReleaseBlockedGetters);
-	SimpleMutexEntry sme(fBlockingGetLock);
-	sme.Use();
+	LockUnlockEntry sme(fBlockingGetLock);
 	if ( fBlockingGetCount ) {
 		SYSINFO("waking up " << fBlockingGetCount << " blocked Get() callers");
 	}
@@ -138,8 +105,7 @@ bool Queue::IsBlocked(BlockingSide aSide)
 	StartTrace(Queue.IsBlocked);
 	if ( IsAlive() ) {
 		// need only a read lock here
-		RWLockEntry rwe(fBlockedLock, true);
-		rwe.Use();
+		LockUnlockEntry rwe(fBlockedLock, RWLock::eReading);
 		return ( ( feBlocked & aSide ) == aSide );
 	}
 	return true;
@@ -150,8 +116,7 @@ void Queue::UnBlock(BlockingSide aSide)
 	StartTrace1(Queue.UnBlock, "side:" << aSide);
 	if ( IsAlive() ) {
 		// need a write lock here
-		RWLockEntry rwe(fBlockedLock, false);
-		rwe.Use();
+		LockUnlockEntry rwe(fBlockedLock, RWLock::eWriting);
 		feBlocked = ( BlockingSide )( feBlocked & ( ~aSide & eBothSides ) );
 	}
 }
@@ -162,13 +127,11 @@ void Queue::Block(BlockingSide aSide)
 	if ( IsAlive() ) {
 		{
 			// need a write lock here
-			RWLockEntry rwe(fBlockedLock, false);
-			rwe.Use();
+			LockUnlockEntry rwe(fBlockedLock, RWLock::eWriting);
 			feBlocked = ( BlockingSide )( feBlocked | ( aSide & eBothSides ) );
 		}
 		// release potentially waiting putters/getters
-		MutexEntry me(fQueueLock);
-		me.Use();
+		LockUnlockEntry me(fQueueLock);
 		if ( aSide & ePutSide ) {
 			IntReleaseBlockedPutters();
 		}
@@ -183,8 +146,7 @@ Queue::StatusCode Queue::DoPut(Anything &anyElement)
 	StartTrace(Queue.DoPut);
 	StatusCode eRet = eBlocked;
 	if ( !IsBlocked(ePutSide) ) {
-		MutexEntry me(fQueueLock);
-		me.Use();
+		LockUnlockEntry me(fQueueLock);
 		long lSize = fAnyQueue.Append(anyElement);
 		++fPutCount;
 		// need to increment lSize because Append returns index of appended Anything
@@ -207,8 +169,7 @@ Queue::StatusCode Queue::Put(Anything &anyElement, bool bTryLock)
 				eRet = DoPut(anyElement);
 			}
 		} else {
-			CountEntry ce(fBlockingPutLock, fBlockingPutCond, fBlockingPutCount);
-			ce.Use();
+			LockedValueIncrementDecrementEntry ce(fBlockingPutLock, fBlockingPutCond, fBlockingPutCount);
 			// need double checking here because of possible race condition during destruction on fBlockingPutLock
 			if ( IsAlive() && fSemaEmptySlots.Acquire() ) {
 				eRet = eDead;
@@ -229,8 +190,7 @@ Queue::StatusCode Queue::DoGet(Anything &anyElement)
 	StartTrace(Queue.DoGet);
 	StatusCode eRet = eBlocked;
 	if ( !IsBlocked(eGetSide) ) {
-		MutexEntry me(fQueueLock);
-		me.Use();
+		LockUnlockEntry me(fQueueLock);
 		if ( fAnyQueue.GetSize() ) {
 			anyElement = fAnyQueue.At(0L);
 			fAnyQueue.Remove(0L);
@@ -260,8 +220,7 @@ Queue::StatusCode Queue::Get(Anything &anyElement, bool bTryLock)
 				eRet = DoGet(anyElement);
 			}
 		} else {
-			CountEntry ce(fBlockingGetLock, fBlockingGetCond, fBlockingGetCount);
-			ce.Use();
+			LockedValueIncrementDecrementEntry ce(fBlockingGetLock, fBlockingGetCond, fBlockingGetCount);
 			// need double checking here because of possible race condition during destruction on fBlockingGetLock
 			eRet = eAcquireFailed;
 			if ( IsAlive() && fSemaFullSlots.Acquire() ) {
@@ -283,8 +242,7 @@ long Queue::GetSize()
 	StartTrace(Queue.GetSize);
 	long lSize = -1;
 	if ( !IsBlocked() ) {
-		MutexEntry me(fQueueLock);
-		me.Use();
+		LockUnlockEntry me(fQueueLock);
 		lSize = IntGetSize();
 	}
 	return lSize;
@@ -294,8 +252,7 @@ void Queue::EmptyQueue(Anything &anyElements)
 {
 	StartTrace(Queue.EmptyQueue);
 	if ( !IsBlocked() ) {
-		MutexEntry me(fQueueLock);
-		me.Use();
+		LockUnlockEntry me(fQueueLock);
 		IntEmptyQueue(anyElements);
 	}
 }
@@ -326,11 +283,10 @@ void Queue::IntEmptyQueue(Anything &anyElements)
 void Queue::GetStatistics(Anything &anyStatistics)
 {
 	StartTrace(Queue.GetStatistics);
-	if ( !IsBlocked() ) {
+	if ( IsAlive() ) {
 		long lCurSec(0L), lCurUSec(0L);
 		{
-			MutexEntry me(fQueueLock);
-			me.Use();
+			LockUnlockEntry me(fQueueLock);
 			// must pass a DeepClone because of reference counting
 			anyStatistics = fAnyStatistics.DeepClone(anyStatistics.GetAllocator());
 			// this Anything uses Storage::Current as default allocator so we must take care

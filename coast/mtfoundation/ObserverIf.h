@@ -10,6 +10,7 @@
 #define _ObserverIf_H
 
 #include "config_mtfoundation.h"
+#include <algorithm>
 #include <list>
 
 //---- ObserverIf ----------------------------------------------------------
@@ -57,16 +58,14 @@ public:
 
 	//! adds Observer that gets notified
 	bool AddObserver(tObserverPtr pObserver) {
-		SimpleMutexEntry aEntry(fObserversMutex);
-		aEntry.Use();
+		LockUnlockEntry aEntry(fObserversMutex);
 		return DoAddObserver(pObserver);
 	}
 
 protected:
 	//! hook to let the observers know that something has changed
 	void NotifyAll(tArgsRef aUpdateArgs) {
-		SimpleMutexEntry aEntry(fObserversMutex);
-		aEntry.Use();
+		LockUnlockEntry aEntry(fObserversMutex);
 		std::for_each(fObserversList.begin(), fObserversList.end(), UpdateWrapper(static_cast<tObservedPtr>(this), aUpdateArgs));
 	}
 

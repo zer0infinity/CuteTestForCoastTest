@@ -308,12 +308,10 @@ void RecursiveSynchTestThread::Run()
 	CheckRunningState(eWorking);
 	{
 		Trace("I am working");
-		MutexEntry me(fMutex);
-		me.Use();
+		LockUnlockEntry me(fMutex);
 		{
 			Trace("mutex locked once");
-			MutexEntry me2(fMutex);
-			me2.Use();
+			LockUnlockEntry me2(fMutex);
 			Trace("mutex locked twice");
 			fCond.Signal();
 			Trace("condition signalled once");
@@ -366,8 +364,7 @@ void ThreadsTest::CheckTime(long lTime)
 
 void ThreadsTest::SimpleLockedAccess(long i)
 {
-	MutexEntry me(fMutex);
-	me.Use();
+	LockUnlockEntry me(fMutex);
 
 	if ( i > 2 ) {
 		fLockedAny["index"] = i * 2 - i;
@@ -599,20 +596,16 @@ void ThreadsTest::SimpleRecursiveTest()
 {
 	StartTrace(ThreadsTest.SimpleRecursiveTest);
 	Mutex m("RecursiveMutexTest");
-	MutexEntry me(m);
-	me.Use();
+	LockUnlockEntry me(m);
 	t_assert(m.GetCount() == 1);
 	{
-		MutexEntry me2(m);
-		me2.Use();
+		LockUnlockEntry me2(m);
 		t_assert(m.GetCount() == 2);
 		{
-			MutexEntry me3(m);
-			me3.Use();
+			LockUnlockEntry me3(m);
 			t_assert(m.GetCount() == 3);
 			{
-				MutexEntry me4(m);
-				me4.Use();
+				LockUnlockEntry me4(m);
 				t_assert(m.GetCount() == 4);
 			}
 			t_assert(m.GetCount() == 3);
@@ -656,23 +649,19 @@ void ThreadsTest::TwoThreadRecursiveTest()
 		Mutex m("RecursiveMutexTest");
 		Condition c;
 		RecursiveSynchTestThread rstt(m, c);
-		MutexEntry me(m);
-		me.Use();
+		LockUnlockEntry me(m);
 		t_assert(m.GetCount() == 1);
 		rstt.Start();
 		{
-			MutexEntry me2(m);
-			me2.Use();
+			LockUnlockEntry me2(m);
 			t_assert(m.GetCount() == 2);
 			rstt.CheckState(Thread::eRunning);
 			rstt.SetWorking();
 			{
-				MutexEntry me3(m);
-				me3.Use();
+				LockUnlockEntry me3(m);
 				t_assert(m.GetCount() == 3);
 				{
-					MutexEntry me4(m);
-					me4.Use();
+					LockUnlockEntry me4(m);
 					c.Wait(m);
 					c.Signal();
 					t_assert(m.GetCount() == 4);

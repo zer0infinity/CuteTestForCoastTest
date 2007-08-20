@@ -37,7 +37,7 @@ public:
 
 	virtual ~ObjectList_r() {
 		StartTrace1(ObjectList_r.~ObjectList_r, (BaseClass::fDestructiveShutdown ? "destructive" : ""));
-		SimpleMutexEntry me(fMutex);
+		LockUnlockEntry me(fMutex);
 		BaseClass::fShutdown = true;
 		if ( BaseClass::fDestructiveShutdown == false ) {
 			// let the workers empty the list and destruct its elements
@@ -56,7 +56,7 @@ private:
 		\return true only when an element could be get, false in case the list was empty, we are in shutdown mode or a timeout occured */
 	virtual bool DoRemoveHead(ListTypeReference aElement, long lSecs = 0L, long lNanosecs = 0L) {
 		StartTrace(ObjectList_r.DoRemoveHead);
-		SimpleMutexEntry me(fMutex);
+		LockUnlockEntry me(fMutex);
 		// wait on new element
 		while ( !BaseClass::IsShuttingDown() && BaseClass::DoIsEmpty() ) {
 			if ( fCondFull.TimedWait(fMutex, lSecs, lNanosecs) == TIMEOUTCODE ) {
@@ -78,7 +78,7 @@ private:
 	virtual void DoSignalShutdown(bool bDestructive = false) {
 		StartTrace1(ObjectList_r.DoSignalShutdown, (bDestructive ? "destructive" : ""));
 		{
-			SimpleMutexEntry me(fMutex);
+			LockUnlockEntry me(fMutex);
 			if ( bDestructive == false ) {
 				Trace("waiting on workerThreads to drain the list");
 				while ( !BaseClass::DoIsEmpty() ) {
@@ -97,7 +97,7 @@ private:
 		StartTrace(ObjectList_r.DoGetSize);
 		size_t tmpSz = 0;
 		{
-			SimpleMutexEntry me(const_cast<SimpleMutex &>(fMutex));
+			LockUnlockEntry me(const_cast<SimpleMutex &>(fMutex));
 			tmpSz = BaseClass::DoGetSize();
 		}
 		Trace("current size:" << (long)tmpSz);
@@ -106,7 +106,7 @@ private:
 
 	virtual bool DoInsertTail(const ListTypeValueType &newObjPtr) {
 		StartTrace(ObjectList_r.DoInsertTail);
-		SimpleMutexEntry me(fMutex);
+		LockUnlockEntry me(fMutex);
 		if ( BaseClass::DoInsertTail(newObjPtr) ) {
 			fCondFull.BroadCast();
 			Trace("success");
@@ -121,9 +121,9 @@ private:
 	//!standard assignement operator prohibited
 	void operator=(const ObjectList_r<Tp> &);
 
-	SimpleMutex		fMutex;
-	SimpleCondition	fCondEmpty;
-	SimpleCondition	fCondFull;
+	SimpleMutex fMutex;
+	SimpleMutex::ConditionType fCondEmpty;
+	SimpleMutex::ConditionType fCondFull;
 };
 
 #endif

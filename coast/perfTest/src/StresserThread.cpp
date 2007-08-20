@@ -54,8 +54,7 @@ void StresserThread::DoTerminatedHook()
 	StartTrace(StresserThread.DoTerminatedHook);
 
 	// synchronize with main thread (StressApp)
-	MutexEntry me(*fMutex);
-	me.Use();
+	LockUnlockEntry me(*fMutex);
 	(*fPending)--;
 	// give StressApp the opportunity to check if this is
 	// the last thread it is waiting for..

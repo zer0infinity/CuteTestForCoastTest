@@ -33,7 +33,7 @@ LocalizedStrings *LocalizedStrings::LocStr()
 {
 	StartTrace(LocalizedStrings.LocStr);
 	if (! fgLocStrings ) {
-		MutexEntry me(fgLocMutex);
+		LockUnlockEntry me(fgLocMutex);
 		if (! fgLocStrings ) {
 			Trace("creating new instance");
 			fgLocStrings = new LocalizedStrings();
@@ -83,7 +83,7 @@ bool LocalizationModule::Finis()
 {
 	StartTrace(LocalizationModule.Finis);
 	{
-		MutexEntry me(LocalizedStrings::fgLocMutex);
+		LockUnlockEntry me(LocalizedStrings::fgLocMutex);
 		if ( LocalizedStrings::fgLocStrings ) {
 			Trace("deleting global instance");
 			delete LocalizedStrings::fgLocStrings;

@@ -61,7 +61,7 @@ Anything ThreadedStresserRunner::Run(long /* id */)
 	long numStressers(0);
 	long stressersPending(0);
 	long sz(0);
-	Condition 	stresserCond;
+	Mutex::ConditionType 	stresserCond;
 	Mutex		stresserMutex(fName);
 	bool hasScriptConfig = false;
 
@@ -122,8 +122,7 @@ Anything ThreadedStresserRunner::Run(long /* id */)
 
 	// wait for all threads to finish
 	{
-		MutexEntry 	me(stresserMutex);
-		me.Use();
+		LockUnlockEntry 	me(stresserMutex);
 		Trace("all threads have been started ... " << stressersPending << " pending");
 
 		while ( stressersPending > 0 ) {		   	// modified by terminating threads

@@ -80,7 +80,7 @@ bool LFListenerPool::Init(int maxParallelRequests, ROAnything args, bool useThre
 void LFListenerPool::BlockRequests()
 {
 	StartTrace(LFListenerPool.BlockRequests);
-	MutexEntry me(fLFMutex);
+	LockUnlockEntry me(fLFMutex);
 	fOldLeader = fCurrentLeader;
 	fCurrentLeader = cBlockPromotion;
 }
@@ -89,7 +89,7 @@ void LFListenerPool::BlockRequests()
 void LFListenerPool::UnblockRequests()
 {
 	StartTrace(LFListenerPool.UnblockRequests);
-	MutexEntry me(fLFMutex);
+	LockUnlockEntry me(fLFMutex);
 	fCurrentLeader = fOldLeader;
 	fFollowersCondition.Signal();
 }

@@ -85,8 +85,7 @@ int ThreadPoolManager::Start(bool usePoolStorage, int poolStorageSize, int numOf
 		}
 		SYSDEBUG("started " << fStartedThreads << " of " << lStartSuccess << "(" << GetPoolSize() << ") started successfully.");
 		{
-			SimpleMutexEntry me(fMutex);
-			me.Use();
+			LockUnlockEntry me(fMutex);
 			DiffTimer dt(1);
 
 			while ( (fStartedThreads < lStartSuccess) && (dt.Diff() < 30) ) {
@@ -133,8 +132,7 @@ int ThreadPoolManager::Join(long lMaxSecsToWait)
 	StartTrace1(ThreadPoolManager.Join, "this:" << (long)this);
 	long lStillRunning = 0L;
 	{
-		SimpleMutexEntry me(fMutex);
-		me.Use();
+		LockUnlockEntry me(fMutex);
 		DiffTimer dt;
 		long lWaited = ( (lMaxSecsToWait > 0) ? 0L : -1L ), lIncr = ( (lMaxSecsToWait > 0) ? 1L : 0L );
 		if ( lIncr ) {
@@ -194,8 +192,7 @@ int ThreadPoolManager::DoTerminate(long lWaitToTerminate)
 
 void ThreadPoolManager::Update(tObservedPtr pObserved, tArgsRef roaUpdateArgs)
 {
-	SimpleMutexEntry me(fMutex);
-	me.Use();
+	LockUnlockEntry me(fMutex);
 	{
 		StartTrace1(ThreadPoolManager.Update, "this:" << (long)this);
 		TraceAny(roaUpdateArgs, "state event received");
@@ -505,8 +502,7 @@ void WorkerPoolManager::Enter(ROAnything workload)
 	// causing it to wait for a request thread to
 	// be available
 
-	MutexEntry me(fMutex);
-	me.Use();
+	LockUnlockEntry me(fMutex);
 	StartTrace(WorkerPoolManager.Enter);
 
 	while ((fPoolSize <= fCurrentParallelRequests) || fBlockRequestHandling) {
@@ -527,8 +523,7 @@ void WorkerPoolManager::Enter(ROAnything workload)
 
 void WorkerPoolManager::Update(tObservedPtr pObserved, tArgsRef roaUpdateArgs)
 {
-	MutexEntry me(fMutex);
-	me.Use();
+	LockUnlockEntry me(fMutex);
 	{
 		StartTrace(WorkerPoolManager.Update);
 		TraceAny(roaUpdateArgs, "state event received");
@@ -559,8 +554,7 @@ void WorkerPoolManager::Update(tObservedPtr pObserved, tArgsRef roaUpdateArgs)
 long WorkerPoolManager::ResourcesUsed()
 {
 	// accessor to current active requests
-	MutexEntry me(fMutex);
-	me.Use();
+	LockUnlockEntry me(fMutex);
 	return fCurrentParallelRequests;
 }
 
@@ -568,8 +562,7 @@ void WorkerPoolManager::BlockRequests()
 {
 	// accessor to current active requests
 	StatTrace(WorkerPoolManager.BlockRequests, "Blocking requests", Storage::Current());
-	MutexEntry me(fMutex);
-	me.Use();
+	LockUnlockEntry me(fMutex);
 	fBlockRequestHandling = true;
 	fCond.Signal();
 }
@@ -578,8 +571,7 @@ void WorkerPoolManager::UnblockRequests()
 {
 	// accessor to current active requests
 	StatTrace(WorkerPoolManager.UnblockRequests, "Unblocking requests", Storage::Current());
-	MutexEntry me(fMutex);
-	me.Use();
+	LockUnlockEntry me(fMutex);
 	fBlockRequestHandling = false;
 	fCond.Signal();
 }
@@ -596,8 +588,7 @@ bool WorkerPoolManager::AwaitEmpty(long sec)
 	StartTrace(WorkerPoolManager.AwaitEmpty);
 	// check for active requests running
 	// but wait at most sec seconds
-	MutexEntry me(fMutex);
-	me.Use();	// to check for fCurrentParallelRequests we have to acquire the mutex
+	LockUnlockEntry me(fMutex);	// to check for fCurrentParallelRequests we have to acquire the mutex
 	DiffTimer aTimer(1);
 	int msgCount = 0;
 	// check for active requests

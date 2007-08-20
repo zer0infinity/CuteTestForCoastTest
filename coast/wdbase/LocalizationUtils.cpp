@@ -88,7 +88,7 @@ const char *LocalizationUtils::FindLanguageKey(Context &c, const char *dftLang)
 	if ( useBrowserPrefs && header.IsDefined("ACCEPT-LANGUAGE") ) {
 		// Do not check fgLanguageMap.GetSize() == 0 since there might be no data to intialize it!
 		if ( fgLanguageMapIsInit == false ) {
-			MutexEntry me(fgLanguageMapMutex);
+			LockUnlockEntry me(fgLanguageMapMutex);
 			// Double checked locking pattern, see Doug Schmidt
 			if ( fgLanguageMapIsInit == false ) {
 				BuildLanguageMap(c);

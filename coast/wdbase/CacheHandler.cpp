@@ -113,8 +113,7 @@ void CacheHandler::Finis()
 ROAnything CacheHandler::Load(const char *group, const char *key,  CacheLoadPolicy *clp)
 {
 	StartTrace1(CacheHandler.Load, "group [" << NotNull(group) << "] key [" << NotNull(key) << "]");
-	MutexEntry me(*fgCacheHandlerMutex);
-	me.Use();
+	LockUnlockEntry me(*fgCacheHandlerMutex);
 	if ( IsLoaded(group, key) ) {
 		return Get(group, key);
 	} else {
@@ -153,8 +152,7 @@ CacheHandler *CacheHandler::Get()
 {
 	StartTrace(CacheHandler.Get);
 	if ( !fgCacheHandler ) {
-		MutexEntry me(*fgCacheHandlerMutex);
-		me.Use();
+		LockUnlockEntry me(*fgCacheHandlerMutex);
 		// test again if changed while waiting for mutex
 		if ( !fgCacheHandler ) {
 			fgCacheHandler = new CacheHandler();

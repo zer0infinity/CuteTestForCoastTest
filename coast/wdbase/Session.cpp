@@ -67,8 +67,7 @@ Session::~Session()
 	logMsg << " " << fId;
 	SysLog::Info(logMsg);
 	{
-		MutexEntry me(fMutex);
-		me.Use();
+		LockUnlockEntry me(fMutex);
 		if (fRefCount != 0) {
 			logMsg = "";
 			logMsg << "deleted Session id: <" << fId << "> and Refcount WAS NOT ZERO but: <" << fRefCount << ">\n";
@@ -247,8 +246,7 @@ void Session::Notify(ESessionEvt evt, Context &ctx)
 {
 	StartTrace1(Session.Notify, "trying to get session lock");
 	TRACE_LOCK_START("Notify");
-	MutexEntry me(fMutex);
-	me.Use();
+	LockUnlockEntry me(fMutex);
 	Trace("got session lock");
 	IntNotify(evt, ctx);
 }
@@ -402,8 +400,7 @@ bool CheckHeader(Context &ctx, const String &hdrSlot, const String &expValue, co
 bool Session::Verify(Context &ctx)
 {
 	TRACE_LOCK_START("Verify");
-	MutexEntry mutex(fMutex);
-	mutex.Use();
+	LockUnlockEntry mutex(fMutex);
 	Anything env(ctx.GetEnvStore());
 	String logMsg(fId);
 

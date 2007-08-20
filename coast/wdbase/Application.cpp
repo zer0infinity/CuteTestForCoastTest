@@ -108,8 +108,7 @@ bool Application::DoLookup(const char *key, ROAnything &result, char delim, char
 void Application::InitializeGlobalConfig(Anything theConfiguration)
 {
 	StartTrace(Application.InitializeGlobalConfig);
-	MutexEntry me(fgConfigMutex);
-	me.Use();
+	LockUnlockEntry me(fgConfigMutex);
 	fgConfig = theConfiguration; // SOP: will deepclone if needed
 }
 
@@ -118,8 +117,7 @@ ROAnything Application::GetConfig()
 	StartTrace(Application.GetConfig);
 
 	if ( fgConfig.IsNull() ) {
-		MutexEntry me(fgConfigMutex);
-		me.Use();
+		LockUnlockEntry me(fgConfigMutex);
 		static bool bootonce = false;
 		if ( !bootonce && fgConfig.IsNull() ) {
 			SysLog::Info("implicit Application booting");

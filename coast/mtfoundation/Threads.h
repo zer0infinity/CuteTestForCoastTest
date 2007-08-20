@@ -12,6 +12,7 @@
 #include "IFAObject.h"
 #include "MT_Storage.h"
 #include "Anything.h"
+#include "Dbg.h"
 
 class Thread;
 
@@ -72,6 +73,7 @@ private:
 	Semaphore &fSemaphore;
 };
 
+class SimpleCondition;
 //---- Mutex ------------------------------------------------------------
 /*! <b>mutual exclusion lock, wrapper for nativ system service</b>
 recursive call from the same thread means deadlock! */
@@ -79,6 +81,7 @@ class EXPORTDECL_MTFOUNDATION SimpleMutex
 {
 	friend class SimpleCondition;
 public:
+	typedef SimpleCondition ConditionType;
 	/*! create mutex with names to ease debugging of locking problems
 		\param name a name to identify the mutex when tracing locking problems
 		\param a allocator used to allocate the storage for the name */
@@ -116,6 +119,7 @@ private:
 	void operator=(const SimpleMutex &);
 };
 
+class Condition;
 /*! <b>mutual exclusion lock, wrapper for nativ system service adding recursive lock feature</b>
 it is possible to call lock from the same thread without deadlock.
 \note you have to call unlock as many times as you have called lock */
@@ -126,6 +130,7 @@ class EXPORTDECL_MTFOUNDATION Mutex
 	friend class ThreadsTest;
 	friend class ContextTest;
 public:
+	typedef Condition ConditionType;
 	/*! create mutex with names to ease debugging of locking problems
 		\param name a name to identify the mutex when tracing locking problems
 		\param a allocator used to allocate the storage for the name */
@@ -204,6 +209,7 @@ private:
 class EXPORTDECL_MTFOUNDATION SimpleCondition
 {
 public:
+	typedef SimpleMutex MutexType;
 	//!creates a system dependent condition variable
 	SimpleCondition();
 	//!destroys the system dependent condition variable
@@ -212,14 +218,14 @@ public:
 	/*! waits for the condition to be signaled atomicly releasing the mutex while waiting and reaquiring it when returning from the wait
 		\param m the mutex which is used with the condition; it must be locked, since it will be unlocked
 		\return system dependent return value; zero if call was ok */
-	int Wait(SimpleMutex &m);
+	int Wait(MutexType &m);
 
 	/*! waits for the condition to be signaled at most secs seconds and nanosecs nanoseconds if available on the plattform. After this time we block on the SimpleMutex until we can lock it before leaving the function
 		\param m the mutex which is used with the condition; it must be locked, since it will be unlocked
 		\param secs timeout to wait in seconds
 		\param nanosecs timeout to wait in nanoseconds (10e-9)
 		\return system dependent return value; zero if call was ok */
-	int TimedWait(SimpleMutex &m, long secs, long nanosecs = 0);
+	int TimedWait(MutexType &m, long secs, long nanosecs = 0);
 	//!access the system dependent handle to the condition variable
 	CONDPTR GetInternal() {
 		return GETCONDPTR(fSimpleCondition);
@@ -242,6 +248,7 @@ private:
 class EXPORTDECL_MTFOUNDATION Condition
 {
 public:
+	typedef Mutex MutexType;
 	//!creates a system dependent condition variable
 	Condition();
 	//!destroys the system dependent condition variable
@@ -250,13 +257,13 @@ public:
 	/*! waits for the condition to be signaled atomicly releasing the mutex while waiting and reaquiring it when returning from the wait
 		\param m the mutex which is used with the condition; it must be locked, since it will be unlocked
 		\return system dependent return value; zero if call was ok */
-	int Wait(Mutex &m);
+	int Wait(MutexType &m);
 	/*! waits for the condition to be signaled at most secs seconds and nanosecs nanoseconds if available on the plattform
 		\param m the mutex which is used with the condition; it must be locked, since it will be unlocked
 		\param secs timeout to wait in seconds
 		\param nanosecs timeout to wait in nanoseconds (10e-9)
 		\return system dependent return value; zero if call was ok */
-	int TimedWait(Mutex &m, long secs, long nanosecs = 0);
+	int TimedWait(MutexType &m, long secs, long nanosecs = 0);
 	//!access the system dependent handle to the condition variable
 	CONDPTR GetInternal() {
 		return GETCONDPTR(fCondition);
@@ -274,46 +281,139 @@ private:
 	COND fCondition;
 };
 
-//---- SimpleMutexEntry -------------------------------------------------------------
-//!syntactic sugar to ease acquiring and releasing a mutex in one scope
-class EXPORTDECL_MTFOUNDATION SimpleMutexEntry
+//---- RWLock ------------------------------------------------------------
+//! read/write lock, wrapper for nativ system service
+class EXPORTDECL_MTFOUNDATION RWLock
 {
 public:
-	//!acquires the mutex in the constructor
-	SimpleMutexEntry(SimpleMutex &m, bool = true) : fMutex(m) {
-		fMutex.Lock();
+	enum eLockMode {
+		eReading = 1,
+		eWriting = 2
+	};
+	/*! creates system dependent read/write lock
+		\param name a name to identify the mutex when tracing locking problems
+		\param a allocator used to allocate the storage for the name */
+	RWLock(const char *name, Allocator *a = Storage::Global());
+	//!deletes system dependent read/write lock
+	~RWLock();
+	//!locks system dependent lock for reading or writing according to the reading flag
+	void Lock(eLockMode mode = eReading) const;
+	//!releases system dependent lock for reading or writing according to the reading flag
+	void Unlock(eLockMode mode = eReading) const;
+	//!tries to lock system dependent lock for reading or writing according to the reading flag; bails out returning false without blocking if not possible
+	bool TryLock(eLockMode mode = eReading) const;
+	//!access the internal system dependent representation of the read/write lock
+	RWLOCKPTR GetInternal() const {
+		return GETRWLOCKPTR(fLock);
 	}
-	//!realeases the mutex in destructor
-	~SimpleMutexEntry() {
-		fMutex.Unlock();
-	}
-	//!dummy method to prevent optimizing compilers from optimizing away unused variables
-	void Use() const
-	{ }
 private:
-	//!reference to Mutex Object used by this object
-	SimpleMutex	&fMutex;
+	//!handle to system dependent read/write lock
+	RWLOCK	fLock;
+	//!the name of the read/write lock to ease debugging locking problems
+	String fName;
+
+	//!standard constructor prohibited
+	RWLock();
+	//!standard copy constructor prohibited
+	RWLock(const RWLock &);
+	//!standard assignment operator prohibited
+	void operator=(const RWLock &);
 };
 
-//---- MutexEntry -------------------------------------------------------------
+#include <memory>	// for auto_ptr
+
 //!syntactic sugar to ease acquiring and releasing a mutex in one scope
-class EXPORTDECL_MTFOUNDATION MutexEntry
+class LockUnlockEntry
 {
+	struct WrapperBase {
+		virtual ~WrapperBase() {}
+	};
+
+	template < typename TMutex, typename dummy >
+	struct LockUnlockEntryWrapper : public WrapperBase {
+		typedef TMutex LockType;
+		explicit LockUnlockEntryWrapper(LockType &m)
+			: fLock(m) {
+			this->fLock.Lock();
+		}
+		~LockUnlockEntryWrapper() {
+			this->fLock.Unlock();
+		}
+		LockType &fLock;
+	};
+
+	template < typename dummy >
+	struct LockUnlockEntryWrapper<RWLock, dummy> : public WrapperBase {
+		typedef RWLock LockType;
+		explicit LockUnlockEntryWrapper(LockType &m, LockType::eLockMode mode)
+			: fLock(m)
+			, fMode(mode) {
+			this->fLock.Lock(fMode);
+		}
+		~LockUnlockEntryWrapper() {
+			this->fLock.Unlock(fMode);
+		}
+		LockType &fLock;
+		LockType::eLockMode fMode;
+	};
+
+	std::auto_ptr<WrapperBase> fWrapper;
+	LockUnlockEntry();
+	LockUnlockEntry(LockUnlockEntry &);
+	LockUnlockEntry &operator=(const LockUnlockEntry &);
 public:
 	//!acquires the mutex in the constructor
-	MutexEntry(Mutex &m) : fMutex(m) {
-		fMutex.Lock();
-	}
-	//!realeases the mutex in destructor
-	~MutexEntry() {
-		fMutex.Unlock();
-	}
-	//!dummy method to prevent optimizing compilers from optimizing away unused variables
-	void Use() const
-	{ }
-private:
-	//!reference to Mutex Object used by this object
-	Mutex	&fMutex;
+	template < typename TMutex >
+	explicit LockUnlockEntry(TMutex &m)
+		: fWrapper(new LockUnlockEntryWrapper<TMutex, bool>(m))
+	{}
+
+	template < typename LockType >
+	explicit LockUnlockEntry(LockType &m, typename LockType::eLockMode mode )
+		: fWrapper(new LockUnlockEntryWrapper<LockType, bool>(m, mode))
+	{}
+};
+
+class LockedValueIncrementDecrementEntry
+{
+	struct WrapperBase {
+		virtual ~WrapperBase() {}
+	};
+
+	template < typename MutexType >
+	struct LockedValueIncrementDecrementEntryWrapper : public WrapperBase {
+		typedef typename MutexType::ConditionType ConditionType;
+		explicit LockedValueIncrementDecrementEntryWrapper(MutexType &aMutex, ConditionType &aCondition, long &lValue)
+			: fMutex(aMutex), fCondition(aCondition), fValue(lValue) {
+			StartTrace(LockedValueIncrementDecrementEntry.LockedValueIncrementDecrementEntry);
+			LockUnlockEntry sme(fMutex);
+			++fValue;
+			Trace("count:" << fValue);
+		}
+		~LockedValueIncrementDecrementEntryWrapper() {
+			StartTrace(LockedValueIncrementDecrementEntry.~LockedValueIncrementDecrementEntry);
+			LockUnlockEntry sme(fMutex);
+			if (fValue > 0L) {
+				--fValue;
+			}
+			Trace("count:" << fValue);
+			Trace("signalling condition");
+			fCondition.Signal();
+		}
+		MutexType	&fMutex;
+		ConditionType &fCondition;
+		long		&fValue;
+	};
+
+	std::auto_ptr<WrapperBase> fWrapper;
+	LockedValueIncrementDecrementEntry();
+	LockedValueIncrementDecrementEntry(LockedValueIncrementDecrementEntry &);
+	LockedValueIncrementDecrementEntry &operator=(const LockedValueIncrementDecrementEntry &);
+public:
+	template < typename MutexType >
+	explicit LockedValueIncrementDecrementEntry(MutexType &aMutex, typename MutexType::ConditionType &aCondition, long &lValue)
+		: fWrapper(new LockedValueIncrementDecrementEntryWrapper<MutexType>(aMutex, aCondition, lValue))
+	{}
 };
 
 //---- CleanupHandler ------------------------------------------------------------
@@ -630,64 +730,6 @@ private:
 	friend BOOL WINAPI DllMain(HANDLE, DWORD, LPVOID);
 	friend void EXPORTDECL_MTFOUNDATION TerminateKilledThreads();
 #endif
-};
-
-//---- RWLock ------------------------------------------------------------
-//! read/write lock, wrapper for nativ system service
-class EXPORTDECL_MTFOUNDATION RWLock
-{
-public:
-	/*! creates system dependent read/write lock
-		\param name a name to identify the mutex when tracing locking problems
-		\param a allocator used to allocate the storage for the name */
-	RWLock(const char *name, Allocator *a = Storage::Global());
-	//!deletes system dependent read/write lock
-	~RWLock();
-	//!locks system dependent lock for reading or writing according to the reading flag
-	void Lock(bool reading = true) const;
-	//!releases system dependent lock for reading or writing according to the reading flag
-	void Unlock(bool reading = true) const;
-	//!tries to lock system dependent lock for reading or writing according to the reading flag; bails out returning false without blocking if not possible
-	bool TryLock(bool reading = true) const;
-	//!access the internal system dependent representation of the read/write lock
-	RWLOCKPTR GetInternal() const {
-		return GETRWLOCKPTR(fLock);
-	}
-private:
-	//!handle to system dependent read/write lock
-	RWLOCK	fLock;
-	//!the name of the read/write lock to ease debugging locking problems
-	String fName;
-
-	//!standard constructor prohibited
-	RWLock();
-	//!standard copy constructor prohibited
-	RWLock(const RWLock &);
-	//!standard assignment operator prohibited
-	void operator=(const RWLock &);
-};
-
-//---- RWLockEntry -------------------------------------------------------------
-//!syntactic sugar to ease acquiring and releasing a read/write lock in one scope
-class EXPORTDECL_MTFOUNDATION RWLockEntry
-{
-public:
-	//!acquires the read/write lock in the constructor for reading or writing
-	RWLockEntry(const RWLock &m, bool reading = true) : fLock(m), fReading(reading) {
-		fLock.Lock(fReading);
-	}
-	//!realeases the read/write lock in destructor
-	~RWLockEntry() {
-		fLock.Unlock(fReading);
-	}
-	//!dummy method to prevent optimizing compilers from optimizing away unused variables
-	void Use() const
-	{ }
-private:
-	//!reference to Read/Write Lock Object used by this object
-	const RWLock	&fLock;
-	//!remembers if this lock was for reading or writing
-	bool	fReading;
 };
 
 #endif

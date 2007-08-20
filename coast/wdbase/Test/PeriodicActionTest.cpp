@@ -61,7 +61,7 @@ void PeriodicActionTest::PeriodicTest()
 	pa.Start();
 	t_assertm(pa.CheckState(Thread::eRunning, 5L), "expected thread to be running");
 	{
-		MutexEntry me(fgCalledMutex);
+		LockUnlockEntry me(fgCalledMutex);
 		DiffTimer differ;
 		long waitTime = 0;
 		while ((fgCalled < 2) && (waitTime < (7 * 1000L))) {
@@ -72,14 +72,14 @@ void PeriodicActionTest::PeriodicTest()
 	}
 	t_assertm(pa.Terminate(7L), "expected thread to be terminated");
 
-	MutexEntry me(fgCalledMutex);
+	LockUnlockEntry me(fgCalledMutex);
 	t_assertm(fgCalled > 1, "expected periodic action to be called several times");
 }
 
 void PeriodicActionTest::ActionCalled(Context &ctx)
 {
 	StartTrace(PeriodicActionTest.ActionCalled);
-	MutexEntry me(fgCalledMutex);
+	LockUnlockEntry me(fgCalledMutex);
 	fgCalled++;
 	fgCalledCond.Signal();
 	Trace("ActionCalled > fgCalled: " << (long)fgCalled << "@" << (long)time(0));

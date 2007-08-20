@@ -67,8 +67,7 @@ void MTStorageTest::GlobalAllocatorTiming()
 	alloc2.CheckState(Thread::eRunning);
 
 	{
-		MutexEntry me(fFinishedMutex);
-		me.Use();
+		LockUnlockEntry me(fFinishedMutex);
 		fStarted = true;
 		fFinishedCond.BroadCast();
 
@@ -77,8 +76,7 @@ void MTStorageTest::GlobalAllocatorTiming()
 	DiffTimer dt;
 	dt.Start();
 	{
-		MutexEntry me(fFinishedMutex);
-		me.Use();
+		LockUnlockEntry me(fFinishedMutex);
 
 		while ( fFinished < 2 ) {
 			fFinishedCond.TimedWait(fFinishedMutex, 10);
@@ -90,8 +88,7 @@ void MTStorageTest::GlobalAllocatorTiming()
 
 void MTStorageTest::Update(tObservedPtr pObserved, tArgsRef roaUpdateArgs)
 {
-	MutexEntry me(fFinishedMutex);
-	me.Use();
+	LockUnlockEntry me(fFinishedMutex);
 	{
 		StartTrace(MTStorageTest.Update);
 		TraceAny(roaUpdateArgs, "event received");
@@ -106,8 +103,7 @@ void MTStorageTest::Update(tObservedPtr pObserved, tArgsRef roaUpdateArgs)
 
 void MTStorageTest::WaitForStart()
 {
-	MutexEntry me(fFinishedMutex);
-	me.Use();
+	LockUnlockEntry me(fFinishedMutex);
 
 	while ( !fStarted) {
 		fFinishedCond.Wait(fFinishedMutex);
@@ -132,8 +128,7 @@ void MTStorageTest::PoolAllocatorTiming()
 	alloc2.CheckState(Thread::eRunning);
 
 	{
-		MutexEntry me(fFinishedMutex);
-		me.Use();
+		LockUnlockEntry me(fFinishedMutex);
 		fStarted = true;
 		fFinishedCond.BroadCast();
 	}
@@ -142,8 +137,7 @@ void MTStorageTest::PoolAllocatorTiming()
 	dt.Start();
 
 	{
-		MutexEntry me(fFinishedMutex);
-		me.Use();
+		LockUnlockEntry me(fFinishedMutex);
 
 		while ( fFinished < 2 ) {
 			fFinishedCond.TimedWait(fFinishedMutex, 10);

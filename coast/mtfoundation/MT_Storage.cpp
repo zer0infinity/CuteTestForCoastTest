@@ -265,8 +265,7 @@ void MT_Storage::Finalize()
 	if ( fgInitialized ) {
 		// terminate pool allocators
 		{
-			SimpleMutexEntry me(*fgpAllocatorInit);
-			me.Use();
+			LockUnlockEntry me(*fgpAllocatorInit);
 			while (fgPoolAllocatorList) {
 				AllocList *elmt = fgPoolAllocatorList;
 				if ( elmt->wdallocator->GetId() != Storage::DoGlobal()->GetId() ) {
@@ -305,8 +304,7 @@ void MT_Storage::RefAllocator(Allocator *wdallocator)
 	if ( fgInitialized ) {
 		if ( wdallocator ) {
 			// in mt case we need to control ref counting with mutexes
-			SimpleMutexEntry me(*fgpAllocatorInit);
-			me.Use();
+			LockUnlockEntry me(*fgpAllocatorInit);
 
 			AllocList *elmt = (AllocList *)::calloc(1, sizeof(AllocList));
 			// catch memory allocation problem
@@ -335,8 +333,7 @@ void MT_Storage::UnrefAllocator(Allocator *wdallocator)
 	StatTrace(MT_Storage.UnrefAllocator, "Id:" << (wdallocator ? wdallocator->GetId() : -1L) << " --- entering ---", Storage::Global());
 	if ( fgInitialized ) {
 		if (wdallocator) {	// just to be robust wdallocator == 0 should not happen
-			SimpleMutexEntry me(*fgpAllocatorInit);
-			me.Use();
+			LockUnlockEntry me(*fgpAllocatorInit);
 			wdallocator->Unref();
 			StatTrace(MT_Storage.UnrefAllocator, "refcount is now:" << wdallocator->RefCnt(), Storage::Global());
 

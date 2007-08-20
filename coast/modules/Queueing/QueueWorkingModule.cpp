@@ -64,8 +64,7 @@ void QueueWorkingModule::Log(String strMessage, const char *channel, AppLogModul
 	StartTrace(QueueWorkingModule.Log);
 	Trace(strMessage);
 	if ( IsAlive() && fpContext ) {
-		MutexEntry me(fContextLock);
-		me.Use();
+		LockUnlockEntry me(fContextLock);
 		if ( IsAlive() && fpContext ) {
 			fpContext->GetTmpStore()["LogMessage"] = strMessage;
 			AppLogModule::Log(*fpContext, channel, iLevel);
@@ -78,8 +77,7 @@ void QueueWorkingModule::Log(Anything &anyStatus, const char *channel, AppLogMod
 	StartTrace(QueueWorkingModule.Log);
 	TraceAny(anyStatus, "content to log");
 	if ( IsAlive() && fpContext ) {
-		MutexEntry me(fContextLock);
-		me.Use();
+		LockUnlockEntry me(fContextLock);
 		if ( IsAlive() && fpContext ) {
 			fpContext->GetTmpStore()["QueueWorkingStatus"] = anyStatus;
 			AppLogModule::Log(*fpContext, channel, iLevel);
@@ -127,8 +125,7 @@ bool QueueWorkingModule::Finis()
 	IntCleanupQueue();
 
 	{
-		MutexEntry me(fContextLock);
-		me.Use();
+		LockUnlockEntry me(fContextLock);
 		delete fpContext;
 		fpContext = NULL;
 	}

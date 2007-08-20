@@ -75,7 +75,7 @@ private:
 	//!guard ready flag
 	Mutex fMutex;
 	//!synchronize ready changes
-	Condition fCond;
+	Mutex::ConditionType fCond;
 	long fCount;
 
 	// block the following default elements of this class

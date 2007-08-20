@@ -56,17 +56,16 @@ void SybaseWorker::DoProcessWorkload()
 	if (IsWorking() && GetState() == Thread::eRunning) {
 		Anything *pMessages;
 		Mutex *pMx;
-		Condition *pCond;
+		Mutex::ConditionType *pCond;
 		pMx = (Mutex *)fWork["mutex"].AsIFAObject();
-		pCond = (Condition *)fWork["condition"].AsIFAObject();
+		pCond = (Mutex::ConditionType *)fWork["condition"].AsIFAObject();
 		pMessages = (Anything *)fWork["messages"].AsIFAObject(0L);
 		Assert(pMessages != NULL);
 		Assert(pMx != NULL);
 		Assert(pCond != NULL);
 		Assert(fpCT != NULL);
 		{
-			MutexEntry me(*pMx);
-			me.Use();
+			LockUnlockEntry me(*pMx);
 			(*pMessages)["RetCode"] = false;
 			// do the work
 			if ( !fpCT->Open( pMessages, fWork["user"].AsString(), fWork["password"].AsString(), fWork["server"].AsString(), fWork["app"].AsString() ) ) {
@@ -212,12 +211,11 @@ void SybCTPoolManager::Work(Anything &args)
 	// make this function block the caller until the worker has finished working
 	// to achieve this we create a Mutex and Condition to wait on
 	Mutex mx(args["server"].AsString());
-	Condition cond;
+	Mutex::ConditionType cond;
 	args["mutex"] = (IFAObject *)&mx;
 	args["condition"] = (IFAObject *)&cond;
 	{
-		MutexEntry me(mx);
-		me.Use();
+		LockUnlockEntry me(mx);
 		Enter(args);
 		// wait on the worker to finish its work and start it with waiting on the condition
 		cond.Wait(mx);

@@ -105,16 +105,14 @@ void WorkerPoolManagerTest::EnterLeaveTests()
 
 void WorkerPoolManagerTest::CheckPrepare2Run(bool isReady, bool wasPrepared)
 {
-	MutexEntry me(fCheckMutex);
-	me.Use();
+	LockUnlockEntry me(fCheckMutex);
 	t_assertm(isReady, "Worker must be in ready state");
 	t_assertm(!wasPrepared, "Worker must not be prepared");
 }
 
 void WorkerPoolManagerTest::CheckProcessWorkload(bool isWorking, bool wasPrepared)
 {
-	MutexEntry me(fCheckMutex);
-	me.Use();
+	LockUnlockEntry me(fCheckMutex);
 	t_assertm(isWorking, "Worker must be in working state");
 	t_assertm(wasPrepared, "Worker must have been prepared");
 }

@@ -346,8 +346,7 @@ bool SybCTnewDA::Open(DaParams &params, String user, String password, String ser
 					// Open a Server fConnection.
 					if ( retcode == CS_SUCCEED ) {
 						if ( server.Length() ) {
-							MutexEntry me(fgSybaseLocker);
-							me.Use();
+							LockUnlockEntry me(fgSybaseLocker);
 							if ( ct_connect(fConnection, (char *)(const char *)server, CS_NULLTERM) == CS_SUCCEED ) {
 								return true;
 							}
@@ -949,7 +948,7 @@ bool SybCTnewDA::GetDaParams(DaParams &params, CS_CONNECTION *connection)
 CS_RETCODE SybCTnewDA::SetConProps(CS_INT property, CS_VOID *buffer, CS_INT buflen)
 {
 	StartTrace(SybCTnewDA.SetConProps);
-//	MutexEntry me(fgSybaseLocker); me.Use();
+//	LockUnlockEntry me(fgSybaseLocker);
 	return ct_con_props(fConnection, CS_SET, property, buffer, buflen, NULL);
 }
 
@@ -1007,7 +1006,7 @@ CS_RETCODE SybCTnewDA_servermsg_handler(CS_CONTEXT *context, CS_CONNECTION *conn
 		SybCTnewDA::DaParams daParams;
 		bool bFuncCode = false;
 		{
-//			MutexEntry me(SybCTnewDA::fgSybaseLocker); me.Use();
+//			LockUnlockEntry me(SybCTnewDA::fgSybaseLocker);
 			bFuncCode = SybCTnewDA::GetDaParams(daParams, connection);
 		}
 		if ( bFuncCode ) {
@@ -1049,7 +1048,7 @@ CS_RETCODE SybCTnewDA_servermsg_handler(CS_CONTEXT *context, CS_CONNECTION *conn
 			}
 			TraceAny(anyData, "anyData");
 			{
-//				MutexEntry me(SybCTnewDA::fgSybaseLocker); me.Use();
+//				LockUnlockEntry me(SybCTnewDA::fgSybaseLocker);
 				bFuncCode = SybCTnewDA::PutMessages(daParams, anyData);
 			}
 			if ( !bFuncCode ) {
@@ -1071,7 +1070,7 @@ CS_RETCODE SybCTnewDA_clientmsg_handler(CS_CONTEXT *context, CS_CONNECTION *conn
 		SybCTnewDA::DaParams daParams;
 		bool bFuncCode = false;
 		{
-//			MutexEntry me(SybCTnewDA::fgSybaseLocker); me.Use();
+//			LockUnlockEntry me(SybCTnewDA::fgSybaseLocker);
 			bFuncCode = SybCTnewDA::GetDaParams(daParams, connection);
 		}
 		if ( bFuncCode ) {
@@ -1109,7 +1108,7 @@ CS_RETCODE SybCTnewDA_clientmsg_handler(CS_CONTEXT *context, CS_CONNECTION *conn
 			}
 			TraceAny(anyData, "anyData");
 			{
-//				MutexEntry me(SybCTnewDA::fgSybaseLocker); me.Use();
+//				LockUnlockEntry me(SybCTnewDA::fgSybaseLocker);
 				bFuncCode = SybCTnewDA::PutMessages(daParams, anyData);
 			}
 			if ( !bFuncCode ) {
@@ -1167,8 +1166,7 @@ CS_RETCODE SybCTnewDA_csmsg_handler(CS_CONTEXT *context, CS_CLIENTMSG *errmsg)
 		Anything *pAny = NULL;
 		bool bFuncCode = false;
 		{
-			MutexEntry me(SybCTnewDA::fgSybaseLocker);
-			me.Use();
+			LockUnlockEntry me(SybCTnewDA::fgSybaseLocker);
 			bFuncCode = SybCTnewDA::GetMessageAny(context, &pAny);
 		}
 		if ( bFuncCode ) {
@@ -1198,8 +1196,7 @@ CS_RETCODE SybCTnewDA_csmsg_handler(CS_CONTEXT *context, CS_CLIENTMSG *errmsg)
 			TraceAny(anyData, "anyData");
 			{
 				// needs lock because other connections could also log errors
-				MutexEntry me(SybCTnewDA::fgSybaseLocker);
-				me.Use();
+				LockUnlockEntry me(SybCTnewDA::fgSybaseLocker);
 				(*pAny)["Messages"].Append(anyData);
 				// The msgtext of the first severity unequal 0 must saved
 				if ( !(*pAny).IsDefined("MainMsgErr")

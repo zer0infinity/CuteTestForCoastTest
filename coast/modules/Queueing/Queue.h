@@ -118,7 +118,7 @@ private:
 	Mutex		fQueueLock;
 	RWLock		fBlockedLock;
 	SimpleMutex fBlockingPutLock, fBlockingGetLock;
-	SimpleCondition fBlockingPutCond, fBlockingGetCond;
+	SimpleMutex::ConditionType fBlockingPutCond, fBlockingGetCond;
 	Anything 	fAnyQueue, fAnyStatistics;
 };
 

@@ -56,8 +56,7 @@ bool RequestBlocker::Block()
 		return true;
 	}
 	{
-		RWLockEntry me(fRequestBlockerRWLock, false);
-		me.Use();
+		LockUnlockEntry me(fRequestBlockerRWLock, RWLock::eWriting);
 		fBlocked = true;
 	}
 	SysLog::Info("RequestBlocker: <  blocked>");
@@ -74,8 +73,7 @@ bool RequestBlocker::UnBlock()
 		return true;
 	}
 	{
-		RWLockEntry me(fRequestBlockerRWLock, false);
-		me.Use();
+		LockUnlockEntry me(fRequestBlockerRWLock, RWLock::eWriting);
 		fBlocked = false;
 	}
 	SysLog::Info("RequestBlocker: <unblocked>");
@@ -89,8 +87,7 @@ bool RequestBlocker::IsBlocked()
 
 	bool theState = false;
 	{
-		RWLockEntry me(fRequestBlockerRWLock, true);
-		me.Use();
+		LockUnlockEntry me(fRequestBlockerRWLock, RWLock::eReading);
 		theState = fBlocked;
 	}
 	return theState;

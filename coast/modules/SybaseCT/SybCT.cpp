@@ -220,8 +220,7 @@ bool SybCT::Open(Anything *pMessages, String user, String password, String serve
 
 	// Put this thread number in fConnection user data for later use.
 	{
-		MutexEntry me(fgSybaseLocker);
-		me.Use();
+		LockUnlockEntry me(fgSybaseLocker);
 		retcode = ct_con_props(fConnection, CS_SET, CS_USERDATA, &fpMessages, CS_SIZEOF(Anything *), NULL);
 	}
 	String hexnum;
@@ -235,8 +234,7 @@ bool SybCT::Open(Anything *pMessages, String user, String password, String serve
 
 	// If a username is defined, set the CS_USERNAME property.
 	if (retcode == CS_SUCCEED && user.Length()) {
-		MutexEntry me(fgSybaseLocker);
-		me.Use();
+		LockUnlockEntry me(fgSybaseLocker);
 		if ((retcode = ct_con_props(fConnection, CS_SET, CS_USERNAME, (char *)(const char *)user, CS_NULLTERM, NULL)) != CS_SUCCEED) {
 			Error("Open: ct_con_props(username) failed");
 		}
@@ -246,8 +244,7 @@ bool SybCT::Open(Anything *pMessages, String user, String password, String serve
 
 	// If a password is defined, set the CS_PASSWORD property.
 	if (retcode == CS_SUCCEED && password.Length()) {
-		MutexEntry me(fgSybaseLocker);
-		me.Use();
+		LockUnlockEntry me(fgSybaseLocker);
 		if ((retcode = ct_con_props(fConnection, CS_SET, CS_PASSWORD, (char *)(const char *)password, CS_NULLTERM, NULL)) != CS_SUCCEED) {
 			Error("Open: ct_con_props(password) failed");
 		}
@@ -257,8 +254,7 @@ bool SybCT::Open(Anything *pMessages, String user, String password, String serve
 
 	// Set the CS_APPNAME property.
 	if (retcode == CS_SUCCEED && appl.Length()) {
-		MutexEntry me(fgSybaseLocker);
-		me.Use();
+		LockUnlockEntry me(fgSybaseLocker);
 		if ((retcode = ct_con_props(fConnection, CS_SET, CS_APPNAME, (char *)(const char *)appl, CS_NULLTERM, NULL)) != CS_SUCCEED) {
 			Error("Open: ct_con_props(appname) failed");
 		}
@@ -268,8 +264,7 @@ bool SybCT::Open(Anything *pMessages, String user, String password, String serve
 
 	// Open a Server fConnection.
 	if (retcode == CS_SUCCEED && server.Length()) {
-		MutexEntry me(fgSybaseLocker);
-		me.Use();
+		LockUnlockEntry me(fgSybaseLocker);
 		retcode = ct_connect(fConnection, (char *)(const char *)server, CS_NULLTERM);
 		if (retcode != CS_SUCCEED) {
 			Error("Open: ct_connect failed");

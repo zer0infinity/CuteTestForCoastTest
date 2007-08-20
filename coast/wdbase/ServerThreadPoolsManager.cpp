@@ -228,8 +228,7 @@ public:
 		fCond.Wait(fMutex);
 	}
 	void Signal() {
-		MutexEntry me(fMutex);
-		me.Use();
+		LockUnlockEntry me(fMutex);
 		fCond.Signal();
 	}
 
@@ -242,7 +241,7 @@ private:
 
 	RequestThreadsManager *fPoolManager;		// the thread pool manager i'm working with
 	Mutex fMutex;
-	Condition fCond;
+	Mutex::ConditionType fCond;
 	long fRequests;
 };
 

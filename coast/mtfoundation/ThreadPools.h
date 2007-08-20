@@ -121,7 +121,7 @@ protected:
 	//! guard for synchronisation
 	SimpleMutex fMutex;
 	//! condition for synchronisation
-	SimpleCondition fCond;
+	SimpleMutex::ConditionType fCond;
 
 	//! counts the still running threads
 	long fRunningThreads;
@@ -382,7 +382,7 @@ protected:
 	//!termination flag
 	bool fTerminated;
 	//!condition synchronizing the use of the worker pool
-	Condition fCond;
+	Mutex::ConditionType fCond;
 	//!mutex guarding access to this objects variables
 	Mutex fMutex;
 	//!string containing the PoolManagers name

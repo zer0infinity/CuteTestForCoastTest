@@ -55,7 +55,7 @@ int LeaderFollowerPool::Terminate(long lWaitToTerminate, long lWaitOnJoin)
 	int result = DoTerminate(lWaitToTerminate);
 	fTerminated = true;
 	if ( result == 0 ) {
-		MutexEntry me(fLFMutex);
+		LockUnlockEntry me(fLFMutex);
 		fPoolState = Thread::eTerminated;
 		// need to delete objects before unloading dlls
 		if (fReactor) {
@@ -75,7 +75,7 @@ void LeaderFollowerPool::RequestTermination()
 	SYSINFO("requesting Termination");
 	StartTrace(LeaderFollowerPool.RequestTermination);
 	{
-		MutexEntry me(fLFMutex);
+		LockUnlockEntry me(fLFMutex);
 		fPoolState = Thread::eTerminationRequested;
 		fCurrentLeader = cBlockPromotion;
 		fFollowersCondition.BroadCast();
@@ -87,7 +87,7 @@ void LeaderFollowerPool::WaitForRequest(Thread *t, long timeout)
 {
 	StartTrace1(LeaderFollowerPool.WaitForRequest, "Timeout(" << timeout << ")");
 
-	MutexEntry me(fLFMutex);
+	LockUnlockEntry me(fLFMutex);
 	if ( fPoolState < Thread::eRunning ) {
 		fPoolState = Thread::eRunning;
 	}
@@ -118,7 +118,7 @@ void LeaderFollowerPool::PromoteNewLeader()
 {
 	StartTrace(LeaderFollowerPool.PromoteNewLeader);
 
-	MutexEntry me(fLFMutex);
+	LockUnlockEntry me(fLFMutex);
 	if (fCurrentLeader != (long)Thread::MyId() && fCurrentLeader != cBlockPromotion ) {
 		String msg("inconsistent pool: ");
 		msg << (long)Thread::MyId() << " is not leader(" << fCurrentLeader << ")";
@@ -369,7 +369,7 @@ Acceptor *HandleSet::WaitForEvents(long timeout)
 void HandleSet::RegisterHandle(Acceptor *acceptor)
 {
 	StartTrace(HandleSet.RegisterHandle);
-	MutexEntry me(fMutex);
+	LockUnlockEntry me(fMutex);
 	if ( acceptor && acceptor->GetFd() > 0 ) {
 		fDemuxTable.Append((IFAObject *)acceptor);
 	}

@@ -19,6 +19,7 @@
 #include "TraceLocks.h"
 #include "PoolAllocator.h"
 #include "Dbg.h"
+#include <exception>
 
 //--- c-library modules used ---------------------------------------------------
 
@@ -254,8 +255,7 @@ void Thread::BroadCastEvent(Anything evt)
 
 bool Thread::CheckState(EThreadState state, long timeout, long nanotimeout)
 {
-	SimpleMutexEntry me(fStateMutex);
-	me.Use();
+	LockUnlockEntry me(fStateMutex);
 	return IntCheckState(state, timeout, nanotimeout);
 }
 
@@ -293,8 +293,7 @@ bool Thread::IntCheckState(EThreadState state, long timeout, long nanotimeout)
 bool Thread::CheckRunningState(ERunningState state, long timeout, long nanotimeout)
 {
 	StatTrace(Thread.CheckRunningState, "waiting on fRunningState(" << (long)fRunningState << ")>=state(" << (long)state << ") IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Current());
-	SimpleMutexEntry me(fStateMutex);
-	me.Use();
+	LockUnlockEntry me(fStateMutex);
 
 	if ( fState < eRunning ) {
 		StatTrace(Thread.CheckRunningState, "not running yet, waiting until it is running. IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Current());
@@ -355,8 +354,7 @@ bool Thread::CheckRunningState(ERunningState state, long timeout, long nanotimeo
 Thread::EThreadState Thread::GetState(bool trylock, EThreadState dfltState)
 {
 	if (!trylock) {
-		SimpleMutexEntry me(fStateMutex);
-		me.Use();
+		LockUnlockEntry me(fStateMutex);
 		StatTrace(Thread.GetState, "Locked access, fState:" << (long)fState << " IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Current());
 		return fState;
 	}
@@ -372,8 +370,7 @@ Thread::EThreadState Thread::GetState(bool trylock, EThreadState dfltState)
 
 bool Thread::SetState(EThreadState state, ROAnything args)
 {
-	SimpleMutexEntry me(fStateMutex);
-	me.Use();
+	LockUnlockEntry me(fStateMutex);
 	if (state == fState + 1) {
 		StatTrace(Thread.SetState, "state(" << (long)state << ")==fState(" << (long)fState << ")+1 " << (long)state << " IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId(), Storage::Current());
 		return IntSetState(state, args);
@@ -462,8 +459,7 @@ void Thread::DoTerminatedHook() {};
 
 bool Thread::SetRunningState(ERunningState state, ROAnything args)
 {
-	SimpleMutexEntry me(fStateMutex);
-	me.Use();
+	LockUnlockEntry me(fStateMutex);
 
 	// allocate things used before and after call to CallRunningStateHooks() on Storage::Global() because Allocator could be refreshed during call
 
@@ -610,7 +606,7 @@ void Thread::IntRun()
 	{
 		if ( SetState(eRunning) ) {
 			{
-				SimpleMutexEntry me(*fgpNumOfThreadsMutex);
+				LockUnlockEntry me(*fgpNumOfThreadsMutex);
 				++fgNumOfThreads;
 			}
 			{
@@ -619,7 +615,7 @@ void Thread::IntRun()
 				Run();
 			}
 			{
-				SimpleMutexEntry me(*fgpNumOfThreadsMutex);
+				LockUnlockEntry me(*fgpNumOfThreadsMutex);
 				--fgNumOfThreads;
 			}
 		} else {
@@ -637,9 +633,8 @@ void Thread::Wait(long secs, long nanodelay)
 	StatTrace(Thread.Wait, "secs:" << secs << " nano:" << nanodelay, Storage::Current());
 
 	SimpleMutex m("ThreadWaitMutex", Storage::Global());
-	SimpleMutexEntry me(m);
-	me.Use();
-	SimpleCondition c;
+	SimpleMutex::ConditionType c;
+	LockUnlockEntry me(m);
 	int ret = 0;
 	do {
 		ret = c.TimedWait(m, secs, nanodelay);
@@ -654,7 +649,7 @@ long Thread::MyId()
 long Thread::NumOfThreads()
 {
 	StartTrace(Thread.NumOfThreads);
-	SimpleMutexEntry me(*fgpNumOfThreadsMutex);
+	LockUnlockEntry me(*fgpNumOfThreadsMutex);
 	return fgNumOfThreads;
 }
 
@@ -877,13 +872,25 @@ bool MutexCountTableCleaner::DoCleanup()
 	return false;
 }
 
+class GlobalIdMutexNotInitialized : public std::exception
+{
+public:
+	virtual const char *what() const throw() {
+		static const char pMsg[] = "FATAL: fgpMutexIdMutex not created yet!!";
+		SYSERROR(pMsg);
+		return pMsg;
+	}
+};
+
 Mutex::Mutex(const char *name, Allocator *a)
 	: fMutexId(a)
 	, fLocker(-1)
 	, fName(name, -1, a)
 {
-	{
-		SimpleMutexEntry aMtx(*fgpMutexIdMutex);
+	if ( !fgpMutexIdMutex ) {
+		throw GlobalIdMutexNotInitialized();
+	} else {
+		LockUnlockEntry aMtx(*fgpMutexIdMutex);
 		fMutexId.Append(++fgMutexId);
 	}
 	int iRet = 0;
@@ -1127,21 +1134,21 @@ RWLock::~RWLock()
 	DELETERWLOCK(fLock);
 }
 
-void RWLock::Lock(bool reading) const
+void RWLock::Lock(eLockMode mode) const
 {
-	LOCKRWLOCK(fLock, reading);
+	LOCKRWLOCK(fLock, (mode == eReading));
 	TRACE_LOCK_ACQUIRE(fName);
 }
 
-void RWLock::Unlock(bool reading) const
+void RWLock::Unlock(eLockMode mode) const
 {
-	UNLOCKRWLOCK(fLock, reading);
+	UNLOCKRWLOCK(fLock, (mode == eReading));
 	TRACE_LOCK_RELEASE(fName);
 }
 
-bool RWLock::TryLock(bool reading) const
+bool RWLock::TryLock(eLockMode mode) const
 {
-	bool hasLocked = TRYRWLOCK(fLock, reading);
+	bool hasLocked = TRYRWLOCK(fLock, (mode == eReading));
 #ifdef TRACE_LOCKS
 	if (hasLocked) {
 		TRACE_LOCK_ACQUIRE(fName);

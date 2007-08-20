@@ -389,7 +389,7 @@ AppLogChannel::AppLogChannel(const char *name)
 	, fBufferItems(0L)
 	, fBuffer()
 	, fItemsWritten(0L)
-	, fSeverity()
+	, fSeverity(AppLogModule::eINFO)
 {
 	StartTrace(AppLogChannel.AppLogChannel);
 }
@@ -398,8 +398,7 @@ AppLogChannel::~AppLogChannel()
 {
 	StartTrace(AppLogChannel.~AppLogChannel);
 	if (fLogStream) {
-		MutexEntry me(fChannelMutex);
-		me.Use();
+		LockUnlockEntry me(fChannelMutex);
 		if ( (fBufferItems > 1L) && (fItemsWritten > 0L) ) {
 			Trace("fLogStream state before logging: " << (long)fLogStream->rdstate());
 			(*fLogStream) << fBuffer << flush;
@@ -462,15 +461,13 @@ bool AppLogChannel::LogAll(Context &ctx, AppLogModule::eLogLevel iLevel, const R
 			if (!fSuppressEmptyLines || logMsg.Length()) {
 				logMsg << "\n";
 				if ( fBufferItems == 1L ) {
-					MutexEntry me(fChannelMutex);
-					me.Use();
+					LockUnlockEntry me(fChannelMutex);
 					Trace("fLogStream state before logging: " << (long)fLogStream->rdstate());
 					(*fLogStream) << logMsg << flush;
 					Trace("fLogStream state after logging: " << (long)fLogStream->rdstate());
 					return (!!(*fLogStream));
 				} else {
-					MutexEntry me(fChannelMutex);
-					me.Use();
+					LockUnlockEntry me(fChannelMutex);
 					{
 						fBuffer.Append(logMsg);
 						++fItemsWritten;
@@ -601,14 +598,12 @@ bool AppLogChannel::Rotate(bool overrideDoNotRotateLogs)
 	TraceAny(GetChannelInfo(), "channel info");
 	ostream *pStream = NULL;
 	{
-		MutexEntry me(fChannelMutex);
-		me.Use();
+		LockUnlockEntry me(fChannelMutex);
 		pStream = fLogStream;
 	}
 	// must enter here in case the logfile does not exist yet
 	if ( !pStream || (overrideDoNotRotateLogs || (fDoNotRotate == false)) ) {
-		MutexEntry me(fChannelMutex);
-		me.Use();
+		LockUnlockEntry me(fChannelMutex);
 		if ( fLogStream ) {
 			delete fLogStream;
 			fLogStream = NULL;

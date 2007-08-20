@@ -81,11 +81,11 @@ void sslLockingCallback(int mode, int n, const char *file, int line)
 	Assert(n < fgNofCryptoMutexes);
 	Assert(fgCryptoMutexes);
 	if (fgCryptoMutexes && n < fgNofCryptoMutexes) {
-		bool readlock = (mode & CRYPTO_READ) && ! (mode & CRYPTO_WRITE);
+		RWLock::eLockMode lockMode = ( ( (mode & CRYPTO_READ) && !(mode & CRYPTO_WRITE) ) ? RWLock::eReading : RWLock::eWriting );
 		if (mode & CRYPTO_LOCK) {
-			fgCryptoMutexes[n]->Lock(readlock);
+			fgCryptoMutexes[n]->Lock(lockMode);
 		} else {
-			fgCryptoMutexes[n]->Unlock(readlock);
+			fgCryptoMutexes[n]->Unlock(lockMode);
 		}
 
 	} else {

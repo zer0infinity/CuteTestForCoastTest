@@ -41,9 +41,9 @@ void WorkerPoolManagerModuleWorker::DoProcessWorkload()
 	if (IsWorking() && GetState() == Thread::eRunning) {
 		Anything *pMessages;
 		Mutex *pMx;
-		Condition *pCond;
+		Mutex::ConditionType *pCond;
 		pMx = (Mutex *)fWork["mutex"].AsIFAObject();
-		pCond = (Condition *)fWork["condition"].AsIFAObject();
+		pCond = (Mutex::ConditionType *)fWork["condition"].AsIFAObject();
 		pMessages = (Anything *)fWork["messages"].AsIFAObject(0L);
 		Assert(pMessages != NULL);
 		Assert(pMx != NULL);
@@ -52,8 +52,7 @@ void WorkerPoolManagerModuleWorker::DoProcessWorkload()
 		TraceAny(fWorkerInitCfg, "My initial config:");
 		{
 			// here we should do something fancier then copying input to output :-)
-			MutexEntry me(*pMx);
-			me.Use();
+			LockUnlockEntry me(*pMx);
 			Anything *pResult = (Anything *)fWork["results"].AsIFAObject(0L);
 			(*pResult)["Got"] = (*pMessages).AsString();
 			(*pResult)["WorkerInitialConfig"] = fWorkerInitCfg;
@@ -159,12 +158,11 @@ void WorkerPoolManagerModulePoolManager::Enter(Anything &args)
 	// make this function block the caller until the worker has finished working
 	// to achieve this we create a Mutex and Condition to wait on
 	Mutex mx(args["server"].AsString());
-	Condition cond;
+	Mutex::ConditionType cond;
 	args["mutex"] = (IFAObject *)&mx;
 	args["condition"] = (IFAObject *)&cond;
 	{
-		MutexEntry me(mx);
-		me.Use();
+		LockUnlockEntry me(mx);
 		WorkerPoolManager::Enter(args);
 		// wait on the worker to finish its work and start it with waiting on the condition
 		cond.Wait(mx);

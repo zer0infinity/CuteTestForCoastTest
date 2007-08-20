@@ -681,9 +681,9 @@ bool HttpFlowController::PrepareRequest(Context &ctx, bool &bPrepareRequestSucce
 			SysLog::WriteToStderr(strbuf);
 		}
 		SimpleMutex mtx("delay");
-		SimpleCondition cond;
+		SimpleMutex::ConditionType cond;
 		{
-			SimpleMutexEntry me(mtx);
+			LockUnlockEntry me(mtx);
 			cond.TimedWait(mtx, lDelay / 1000L);
 		}
 		{
