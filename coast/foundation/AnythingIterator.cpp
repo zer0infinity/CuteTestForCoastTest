@@ -8,7 +8,11 @@
 
 #include "AnythingIterator.h"
 #include "Anything.h"
+#if (__GNUC__ == 2 &&  __GNUC_MINOR__ <= 95)
+#include <limits.h>
+#else
 #include <limits>
+#endif
 
 bool Anything_iterator::operator==(const Anything_iterator &r) const
 {
@@ -39,8 +43,13 @@ Anything_iterator::operator-(const Anything_iterator &r) const
 {
 	if (a == r.a) {
 		return position - r.position;
-	} else { // this is an error... TODO: determine a useful default e.g. numeric_limits<difference_type>::max()
+	} else {
+		// this is an error... TODO: determine a useful default e.g. numeric_limits<difference_type>::max()
+#if (__GNUC__ == 2 &&  __GNUC_MINOR__ <= 95)
+		return LONG_MAX;
+#else
 		return std::numeric_limits<Anything_iterator::difference_type>::max();
+#endif
 	}
 }
 
@@ -73,7 +82,12 @@ Anything_const_iterator::operator-(const Anything_const_iterator &r) const
 {
 	if (a == r.a) {
 		return position - r.position;
-	} else { // this is an error... TODO: determine a useful default e.g. numeric_limits<difference_type>::max()
+	} else {
+		// this is an error... TODO: determine a useful default e.g. numeric_limits<difference_type>::max()
+#if (__GNUC__ == 2 &&  __GNUC_MINOR__ <= 95)
+		return LONG_MAX;
+#else
 		return std::numeric_limits<Anything_const_iterator::difference_type>::max();
+#endif
 	}
 }
