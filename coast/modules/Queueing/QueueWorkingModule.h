@@ -168,10 +168,10 @@ public:
 		if ( fpQueue && fpQueue->IsAlive() && IsAlive() ) {
 			Trace("Queue still alive");
 			// try to get a failed message first
-			if ( fFailedPutbackMessages.GetSize() > 0 ) {
-				Trace("getting failed message 1 of " << fFailedPutbackMessages.GetSize() );
-				anyValues = fFailedPutbackMessages[0L];
-				fFailedPutbackMessages.Remove(0L);
+			if ( fFailedPutbackMessages.size() > 0 ) {
+				Trace("getting failed message 1 of " << (long)fFailedPutbackMessages.size() );
+				anyValues = fFailedPutbackMessages.front();
+				fFailedPutbackMessages.pop_front();
 				eRet = QueueType::eSuccess;
 			} else {
 				// Default is blocking get to save cpu time
@@ -191,7 +191,7 @@ public:
 		StatusCode eRet = PutElement(anyValues, true);
 		if ( eRet != QueueType::eSuccess && ( eRet & QueueType::eFull ) ) {
 			// no more room in Queue, need to store this message internally for later put back
-			fFailedPutbackMessages.Append(anyValues);
+			fFailedPutbackMessages.push_back(anyValues);
 		}
 	}
 
@@ -203,7 +203,7 @@ public:
 		long lElements = 0L;
 		if ( fpQueue && fpQueue->IsAlive() && IsAlive() ) {
 			fpQueue->EmptyQueue(anyElements);
-			lElements = anyElements.GetSize();
+			lElements = anyElements.size();
 			LogInfo(String(GetName()) << ": flushed " << lElements << " elements");
 		}
 		return lElements;
