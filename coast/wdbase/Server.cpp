@@ -465,10 +465,10 @@ int Server::BlockRequests()
 	StartTrace1(Server.BlockRequests, "Server [" << fName << "]");
 	Trace("Blocking requests");
 	RequestBlocker::RB()->Block();
-	if ( fPoolManager && fPoolManager->BlockRequests(this) ) {
-		return 0;
+	if ( fPoolManager ) {
+		return ( fPoolManager->BlockRequests(this) ? 0 : -1 );
 	}
-	return  -1;
+	return  0;
 }
 
 int Server::UnblockRequests()
