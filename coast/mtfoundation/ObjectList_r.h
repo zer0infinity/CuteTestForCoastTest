@@ -55,7 +55,7 @@ private:
 		\param lNanosecs time in nanoseconds (10e-9) after which the wait will be aborted, specify 0 for endless wait
 		\return true only when an element could be get, false in case the list was empty, we are in shutdown mode or a timeout occured */
 	virtual bool DoRemoveHead(ListTypeReference aElement, long lSecs = 0L, long lNanosecs = 0L) {
-		StartTrace(ObjectList_r.DoRemoveHead);
+		StartTrace1(ObjectList_r.DoRemoveHead, "sec:" << lSecs << " nano:" << lNanosecs);
 		LockUnlockEntry me(fMutex);
 		// wait on new element
 		while ( !BaseClass::IsShuttingDown() && BaseClass::DoIsEmpty() ) {
