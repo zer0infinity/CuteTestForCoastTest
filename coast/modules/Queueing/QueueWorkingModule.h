@@ -55,7 +55,6 @@ public:
 		, fpQAllocator(NULL)
 		, fpContext(NULL)
 		, fContextLock("QueueWorkingModuleContextLock")
-		, fFailedPutbackMessages(Storage::Global())
 		, fAlive(0UL) {
 		StartTrace(QueueWorkingModule.QueueWorkingModule);
 	}
@@ -264,11 +263,11 @@ protected:
 		// we could do something here to persist the content of the queue and the putback message buffer
 		delete fpQueue;
 		fpQueue = NULL;
+		fFailedPutbackMessages.clear();
 		if ( fpQAllocator ) {
 			MT_Storage::UnrefAllocator(fpQAllocator);
 			fpQAllocator = NULL;
 		}
-		fFailedPutbackMessages = Anything();
 	}
 
 	void SetDead() {
@@ -318,7 +317,7 @@ private:
 			}
 		}
 		fpQueue = new QueueType(GetName(), lQueueSize, pAlloc);
-		fFailedPutbackMessages = Anything();
+		fFailedPutbackMessages.clear();
 	}
 
 	Anything	fConfig;
