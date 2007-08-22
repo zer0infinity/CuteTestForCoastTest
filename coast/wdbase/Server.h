@@ -146,12 +146,12 @@ protected:
 	virtual int SetupDispatcher();
 
 	//!writes pid file if configured to use pid information to configured location
-	int WritePIDFile();
+	int WritePIDFile(pid_t lPid = (pid_t) - 1);
 	//!removes pid file when server is shutdown
 	int RemovePIDFile();
 
 	//!writes pid information to file; contains platform dependent code
-	virtual int DoWritePIDFile(const String &pidFilePath);
+	virtual int DoWritePIDFile(const String &pidFilePath, pid_t lPid);
 	//!removes pid information from file; contains platform dependent code
 	virtual int DoDeletePIDFile(const String &pidFilePath);
 	//!generates configured filename for pid information file

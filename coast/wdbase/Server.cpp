@@ -500,13 +500,13 @@ bool Server::MustTerminate()
 }
 
 // pidfile handling
-int Server::WritePIDFile()
+int Server::WritePIDFile(pid_t lPid)
 {
 	if ( Lookup("UsePIDFile", 0L) ) {
 		LockUnlockEntry me(fPidFileNameMutex);
 
 		PIDFileName(fPidFileName);
-		if ( DoWritePIDFile(fPidFileName) != 0 ) {
+		if ( DoWritePIDFile(fPidFileName, lPid) != 0 ) {
 			return -1;
 		}
 	}
@@ -536,7 +536,7 @@ void Server::PIDFileName(String &pidFilePath)
 	Trace("PID File<" << pidFilePath << ">");
 }
 
-int Server::DoWritePIDFile(const String &pidFilePath)
+int Server::DoWritePIDFile(const String &pidFilePath, pid_t lPid)
 {
 	StartTrace(Server.WritePIDFile);
 
@@ -544,7 +544,11 @@ int Server::DoWritePIDFile(const String &pidFilePath)
 
 	if ( os ) {
 		Trace("PID File<" << pidFilePath << "> opened");
-		fPid = System::getpid();
+		if ( lPid != (pid_t) - 1 ) {
+			fPid = lPid;
+		} else {
+			fPid = System::getpid();
+		}
 		(*os) << fPid;
 		os->flush();
 		delete os;

@@ -167,7 +167,7 @@ void InterruptHandler::Run()
 	Trace("Server [" << (fServer ? (const char *)(fServer->fName) : "no-name") << "]");
 
 	if ( fServer ) {
-		fServer->WritePIDFile();
+		fServer->WritePIDFile(System::getpid());
 	}
 
 	sigset_t set;
