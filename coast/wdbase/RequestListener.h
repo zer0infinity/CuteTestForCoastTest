@@ -115,7 +115,7 @@ public:
 
 protected:
 	//!bottleneck routine; allocates ListenerThreads and configures them with the correct callback
-	virtual Thread *DoAllocThread(ROAnything args);
+	virtual Thread *DoAllocThread(long i, ROAnything args);
 
 	//!the factory object to create callback objects that are used to handle incoming connection requests
 	CallBackFactory *fCallBackFactory;

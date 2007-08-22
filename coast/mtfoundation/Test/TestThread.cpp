@@ -55,7 +55,7 @@ TestThreadPool::~TestThreadPool()
 	StartTrace(TestThreadPool.~TestThreadPool);
 }
 
-Thread *TestThreadPool::DoAllocThread(ROAnything args)
+Thread *TestThreadPool::DoAllocThread(long i, ROAnything args)
 {
 	StartTrace(TestThreadPool.DoAllocThread);
 	return new TestThread;
@@ -85,7 +85,7 @@ TerminateTestThreadPool::TerminateTestThreadPool()
 {
 }
 
-Thread *TerminateTestThreadPool::DoAllocThread(ROAnything args)
+Thread *TerminateTestThreadPool::DoAllocThread(long i, ROAnything args)
 {
 	return new TerminateMeTestThread;
 }

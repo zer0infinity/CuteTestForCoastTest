@@ -80,9 +80,10 @@ protected:
 	virtual bool DoAllocPool(long poolSize, ROAnything roaThreadArgs);
 
 	/*! abstract method to allocate one single thread given its specific params
+		\param i index of the thread to allocate
 		\param roaThreadArgs ROAnything carrying thread specific information
 		\return pointer to the newly created Thread object */
-	virtual Thread *DoAllocThread(ROAnything roaThreadArgs) = 0;
+	virtual Thread *DoAllocThread(long i, ROAnything roaThreadArgs) = 0;
 
 	/*! cleanup hook for pool, removes threads from pool and deletes them
 		\note The threads must already be terminated or a runtime error will occur! */
@@ -236,9 +237,10 @@ protected:
 //	virtual bool DoAllocPool(long poolSize, ROAnything roaResourceArgs);
 //
 //	/*! abstract method to allocate one single resource given its specific params
+//		\param i index of the thread to allocate
 //		\param roaResourceArgs ROAnything carrying resource specific information
 //		\return pointer to the newly created Thread object */
-//	virtual Thread *DoAllocThread(ROAnything roaResourceArgs) = 0;
+//	virtual Thread *DoAllocThread(long i, ROAnything roaResourceArgs) = 0;
 //
 //	/*! cleanup hook for pool, removes resources from pool and deletes them
 //		\note The resources must already be terminated or a runtime error will occur! */

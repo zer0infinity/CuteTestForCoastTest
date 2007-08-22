@@ -46,7 +46,7 @@ protected:
 	virtual bool InitReactor(ROAnything args);
 
 	//! create an array of the required workers
-	virtual Thread *DoAllocThread(ROAnything args);
+	virtual Thread *DoAllocThread(long i, ROAnything args);
 
 	Reactor *fReactor;
 	static const long cNoCurrentLeader;

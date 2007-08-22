@@ -55,7 +55,7 @@ public:
 
 protected:
 	//!bottleneck routine to allocate specific thread
-	virtual Thread *DoAllocThread(ROAnything args);
+	virtual Thread *DoAllocThread(long i, ROAnything args);
 };
 
 //! Thread pool that plays around with TerminateMeTestThread
@@ -65,7 +65,7 @@ public:
 	TerminateTestThreadPool();
 
 protected:
-	virtual Thread *DoAllocThread(ROAnything args);
+	virtual Thread *DoAllocThread(long i, ROAnything args);
 };
 
 //---- TestWorker -----------------------------------------------

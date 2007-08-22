@@ -245,7 +245,7 @@ bool ThreadPoolManager::DoAllocPool(long poolSize, ROAnything roaThreadArgs)
 	StartTrace(ThreadPoolManager.DoAllocPool);
 
 	for (long i = 0; i < poolSize; ++i) {
-		Thread *t = DoAllocThread(DoGetInitConfig(i, roaThreadArgs));
+		Thread *t = DoAllocThread(i, DoGetInitConfig(i, roaThreadArgs));
 		if (!t) {
 			Trace("Alloc of thread[" << i << "] failed");
 			return false;

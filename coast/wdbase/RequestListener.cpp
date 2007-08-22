@@ -245,7 +245,7 @@ ListenerPool::~ListenerPool()
 	delete fCallBackFactory;
 }
 
-Thread *ListenerPool::DoAllocThread(ROAnything args)
+Thread *ListenerPool::DoAllocThread(long i, ROAnything args)
 {
 	StartTrace(ListenerPool.DoAllocThread);
 	TraceAny(args, "threads arguments");

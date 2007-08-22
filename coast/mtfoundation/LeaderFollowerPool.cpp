@@ -185,7 +185,7 @@ bool LeaderFollowerPool::InitReactor(ROAnything args)
 	return true;
 }
 
-Thread *LeaderFollowerPool::DoAllocThread(ROAnything args)
+Thread *LeaderFollowerPool::DoAllocThread(long i, ROAnything args)
 {
 	StartTrace(LeaderFollowerThread.DoAllocThread);
 	return new LeaderFollowerThread(this);
