@@ -241,48 +241,62 @@ bool SybCTnewDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out)
 		out->Put("QuerySource", server, ctx);
 
 		SybCTnewDA *pSyb = NULL;
-		bool bIsOpen = false;
+		bool bIsOpen = false, bDoRetry = true;
+		long lTryCount(1L);
+		in->Get( "SybDBTries", lTryCount, ctx);
+		if ( lTryCount < 1 ) {
+			lTryCount = 1L;
+		}
 		// we slipped through and are ready to get a SybCT and execute a query
 		// find a free SybCTnewDA, we should always get a valid SybCTnewDA here!
-		if ( DoGetConnection(pSyb, bIsOpen, server, user) ) {
-			SybCTnewDA::DaParams daParams(&ctx, in, out, &fName);
-			// test if the connection is still valid, eg. we are able to get/set connection params
-			if ( bIsOpen ) {
-				SybCTnewDA::DaParams outParams;
-				if ( pSyb->GetConProps(CS_USERDATA, (CS_VOID **)&outParams, CS_SIZEOF(SybCTnewDA::DaParams)) != CS_SUCCEED ) {
-					// try to close and reopen connection
-					pSyb->Close();
-					bIsOpen = false;
-				}
-			}
-			if ( !bIsOpen ) {
-				String passwd, app;
-				in->Get( "SybDBPW", passwd, ctx);
-				in->Get( "SybDBApp", app, ctx);
-				// open new connection
-				if ( !( bIsOpen = pSyb->Open( daParams, user, passwd, server, app) ) ) {
-					SYSWARNING("Could not open connection to server [" << server << "] with user [" << user << "]");
-				}
-			}
-			if ( bIsOpen ) {
-				String command;
-				if ( DoPrepareSQL(command, ctx, in) ) {
-					String resultformat, resultsize, resultmaxrows;
-					in->Get( "SybDBResultFormat", resultformat, ctx);
-					in->Get( "SybDBMaxResultSize", resultsize, ctx);
-					in->Get( "SybDBMaxRows", resultmaxrows, ctx);
-					if ( !(bRet = pSyb->SqlExec( daParams, command, resultformat, resultsize.AsLong(0L), resultmaxrows.AsLong(-1L) ) ) ) {
-						SYSWARNING("could not execute the sql command or it was aborted");
-						//					// maybe a close is better here to reduce the risk of further failures
-						//					pSyb->Close();
+		while ( bDoRetry && --lTryCount >= 0 ) {
+			String command;
+			if ( DoGetConnection(pSyb, bIsOpen, server, user) ) {
+				SybCTnewDA::DaParams daParams(&ctx, in, out, &fName);
+				// test if the connection is still valid, eg. we are able to get/set connection params
+				if ( bIsOpen ) {
+					SybCTnewDA::DaParams outParams;
+					if ( pSyb->GetConProps(CS_USERDATA, (CS_VOID **)&outParams, CS_SIZEOF(SybCTnewDA::DaParams)) != CS_SUCCEED ) {
+						// try to close and reopen connection
+						pSyb->Close();
+						bIsOpen = false;
 					}
-				} else {
-					out->Put("Messages", "Rendered slot SQL resulted in an empty string", ctx);
 				}
+				if ( !bIsOpen ) {
+					String passwd, app;
+					in->Get( "SybDBPW", passwd, ctx);
+					in->Get( "SybDBApp", app, ctx);
+					// open new connection
+					if ( !( bIsOpen = pSyb->Open( daParams, user, passwd, server, app) ) ) {
+						SYSWARNING("Could not open connection to server [" << server << "] with user [" << user << "]");
+					}
+				}
+				if ( bIsOpen ) {
+					if ( DoPrepareSQL(command, ctx, in) ) {
+						String resultformat, resultsize, resultmaxrows;
+						in->Get( "SybDBResultFormat", resultformat, ctx);
+						in->Get( "SybDBMaxResultSize", resultsize, ctx);
+						in->Get( "SybDBMaxRows", resultmaxrows, ctx);
+						if ( !(bRet = pSyb->SqlExec( daParams, command, resultformat, resultsize.AsLong(0L), resultmaxrows.AsLong(-1L) ) ) ) {
+							SYSWARNING("could not execute the sql command or it was aborted");
+							// maybe a close is better here to reduce the risk of further failures
+							pSyb->Close();
+							bIsOpen = false;
+						} else {
+							bDoRetry = false;
+						}
+					} else {
+						out->Put("Messages", "Rendered slot SQL resulted in an empty string", ctx);
+						bDoRetry = false;
+					}
+				}
+				DoPutbackConnection(pSyb, bIsOpen, server, user);
+			} else {
+				SYSERROR("unable to get SybCTnewDA");
 			}
-			DoPutbackConnection(pSyb, bIsOpen, server, user);
-		} else {
-			SYSERROR("unable to get SybCTnewDA");
+			if ( bDoRetry && lTryCount > 0 ) {
+				SYSWARNING("Internally retrying to execute command [" << command << "]");
+			}
 		}
 	} else {
 		SysLog::Error("Tried to access SybCTnewDAImpl when SybaseModule was not initialized!\n Try to add a slot SybaseModule to Modules slot and /SybaseModule { /SybCTnewDAImpl { <config> } } into Config.any");
