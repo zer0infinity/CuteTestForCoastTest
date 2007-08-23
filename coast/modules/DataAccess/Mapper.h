@@ -265,6 +265,11 @@ public:
 	bool Put(const char *key, istream &is, Context &ctx);
 
 protected:
+	/*! Calls DoGetDestinationSlot to get the name - or empty string - which will be used as base path in tmpstore. The 'base' path - the one returned here - will be stored in ResultMapper.DestinationSlot for later usage.
+		\param ctx the context in which to look for the destination slot
+		\return the name of the slot for later lookup or the empty string */
+	String GetDestinationSlot(Context &ctx);
+
 	//! Major hook for subclasses that want to do something with their config passed as script. The default is to interpret the script and put a value for every script item used. Recursion will be stopped by DoFinalPutAny which places its value under slot key below given DoGetDestinationSlot()
 	/*! \param key the key usually defines the associated kind of output-value
 		\param value the value to be mapped
@@ -326,11 +331,6 @@ protected:
 	virtual ROAnything DoSelectScript(const char *key, ROAnything script, Context &ctx);
 
 private:
-	/*! Calls DoGetDestinationSlot to get the name - or empty string - which will be used as base path in tmpstore. The 'base' path - the one returned here - will be stored in ResultMapper.DestinationSlot for later usage.
-		\param ctx the context in which to look for the destination slot
-		\return the name of the slot for later lookup or the empty string */
-	String GetDestinationSlot(Context &ctx);
-
 	ResultMapper();
 	ResultMapper(const ResultMapper &);
 	ResultMapper &operator=(const ResultMapper &);
