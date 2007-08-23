@@ -103,6 +103,8 @@ public:
 	CS_RETCODE SetConProps(CS_INT property, CS_VOID *buffer, CS_INT buflen);
 	bool GetConProps(CS_INT property, CS_VOID **propvalue, CS_INT propsize);
 
+	static String GetStringFromRetCode(CS_RETCODE retcode);
+
 protected:
 	//--- subclass api
 	void	Warning(DaParams &params, String str);
