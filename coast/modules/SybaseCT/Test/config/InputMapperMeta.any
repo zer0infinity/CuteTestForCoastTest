@@ -177,7 +177,7 @@
 		{
 			/RendererMapper
 			{
-				" SELECT dla.dla_nr, dla.dla_kbez, vpo.vtr_nr, vpo.vpo_nr, usr.usr_name,  "
+				" SELECT dla.dla_nr, vpo.vtr_nr, vpo.vpo_nr, usr.usr_name,  "
 				" convert(varchar(11), anz.anz_dateroe, 106) anz_dateroe, "
 				" convert(varchar(11), anz.anz_datgesch, 106) anz_datgesch, usr.prt_kun, "
 				" usr.prt_stao, anz.anz_nr, anz.trn_nrzu, anz.trn_nrab  "
@@ -194,7 +194,7 @@
 				" AND vpo.vtr_nr = anz.vtr_nr  "
 				" AND vpo.vpo_nr = anz.vpo_nr  "
 				" AND dla.dla_nr = vpo.dla_nr  "
-				" ORDER BY usr.usr_name, dla.dla_kbez"
+				" ORDER BY usr.usr_name"
 			}
 		}
 	}
@@ -205,7 +205,7 @@
 		{
 			/RendererMapper
 			{
-				" SELECT dla.dla_nr, dla.dla_kbez, vpo.vtr_nr, vpo.vpo_nr, usr.usr_name,  "
+				" SELECT dla.dla_nr, vpo.vtr_nr, vpo.vpo_nr, usr.usr_name,  "
 				" convert(varchar(11), anz.anz_dateroe, 106) anz_dateroe, "
 				" convert(varchar(11), anz.anz_datgesch, 106) anz_datgesch, usr.prt_kun, "
 				" usr.prt_stao, anz.anz_nr, anz.trn_nrzu, anz.trn_nrab  "
@@ -222,7 +222,7 @@
 				" AND vpo.vtr_nr = anz.vtr_nr  "
 				" AND vpo.vpo_nr = anz.vpo_nr  "
 				" AND dla.dla_nr = vpo.dla_nr  "
-				" ORDER BY usr.usr_name, dla.dla_kbez"
+				" ORDER BY usr.usr_name"
 			}
 		}
 	}
