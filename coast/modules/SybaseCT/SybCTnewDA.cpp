@@ -529,12 +529,14 @@ bool SybCTnewDA::SqlExec(DaParams &params, String query, String resultformat, co
 				// abortion due to reached memory limit or given row count will be signalled using CS_MEM_ERROR
 				// catch this but do not result in failure because it was a programmers wish
 				if ( ( retcode == CS_MEM_ERROR ) && ( ( lMaxResultSize != 0L ) || ( lMaxRows != -1L ) ) ) {
+					String strMsg("SqlExec[");
+					strMsg << *(params.fpDAName) << "]:";
 					if ( lMaxResultSize != 0L && lMaxRows != -1L ) {
-						Warning(params, "SqlExec: rows limited due to SybDBMaxResultSize or SybDBMaxRows!");
+						Warning(params, strMsg.Append(" rows limited due to SybDBMaxResultSize(").Append(lMaxResultSize).Append("kB) or SybDBMaxRows(").Append(lMaxRows).Append(")!"));
 					} else if ( lMaxResultSize != 0L ) {
-						Warning(params, "SqlExec: rows limited due to SybDBMaxResultSize!");
+						Warning(params, strMsg.Append(" rows limited due to SybDBMaxResultSize(").Append(lMaxResultSize).Append("kB)!"));
 					} else if ( lMaxRows != -1L ) {
-						Warning(params, "SqlExec: rows limited due to SybDBMaxRows!");
+						Warning(params, strMsg.Append(" rows limited due to SybDBMaxRows(").Append(lMaxRows).Append(")!"));
 					}
 					// need to pass CS_MEM_ERROR as query_code to force abortion of still running query
 					query_code = retcode;
