@@ -1193,7 +1193,17 @@ System::DirStatusCode System::IntMakeDirectory(String &path, int pmode, bool bRe
 					// if errno is set to EEXIST, someone else might already have created the dir, so do not complain
 				case EEXIST: {
 					SYSINFO("mkdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "] because the directory was created by someone else in the meantime?!");
-					aDirStatus = System::eSuccess;
+					aDirStatus = System::eExists;
+					break;
+				}
+				case EDQUOT: {
+					SYSERROR("mkdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "]");
+					aDirStatus = System::eQuotaExceeded;
+					break;
+				}
+				case ENOSPC: {
+					SYSERROR("mkdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "] -> check for free inodes using $>df -F ufs -o i <FS>");
+					aDirStatus = System::eNoSpaceLeft;
 					break;
 				}
 				case EACCES: {

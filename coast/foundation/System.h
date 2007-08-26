@@ -262,6 +262,8 @@ public:
 		eRecurseDeleteNotAllowed = (eFailed | (eSuccess << 7) ),//! not allowed to delete directory recursively
 		eNoSuchFileOrDir = (eFailed | (eSuccess << 8) ),//! no such file or directory
 		eNoPermission = (eFailed | (eSuccess << 9) ),	//! no permission to operate
+		eQuotaExceeded = (eFailed | (eSuccess << 10) ),	//! disk quota of user exceeded
+		eNoSpaceLeft = (eFailed | (eSuccess << 11) ),	//! no more room - free inodes - to create directory, fails also, when fragmentation of FS is bad! -> use fsck to examine
 	};
 
 	//! create new directory with given permissions, works for relative or absolute path names and also recursive if specified.
