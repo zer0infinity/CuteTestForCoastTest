@@ -1,4 +1,4 @@
-char *gShortLiteralData[] = {
+const char *gShortLiteralData[] = {
 	"\\input texinfo   @c -*-texinfo-*-",
 	"@c %**start of header",
 	"@setfilename rx.info",
