@@ -12,7 +12,7 @@
 //--- c-library modules used ---------------------------------------------------
 
 //---- main ----
-int main(int argc, char *argv[])
+int main(int argc, const char *argv[])
 {
 	int result = AppBooter().Run(argc, argv);
 	return result;

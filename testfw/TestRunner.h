@@ -60,7 +60,7 @@ public:
 	TestRunner ();
 	~TestRunner ();
 
-	void		run (int ac, char **av);
+	void		run (int ac, const char **av);
 	void		addTest (const char *name, Test *suite);
 	long		getNumberOfFailures();
 	long		getNumberOfSuccesses();

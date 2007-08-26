@@ -89,7 +89,7 @@ protected:
 AppBooter::AppBooter()	{ }
 AppBooter::~AppBooter()	{ }
 
-void AppBooter::HandleArgs(int argc, char *argv[], Anything &args )
+void AppBooter::HandleArgs(int argc, const char *argv[], Anything &args )
 {
 	StartTrace(AppBooter.HandleArgs);
 	for (long i = 0; i < argc; ++i) {
@@ -111,7 +111,7 @@ void AppBooter::SetSignalMask()
 #endif
 }
 
-int AppBooter::Run(int argc, char *argv[], bool doHalt)
+int AppBooter::Run(int argc, const char *argv[], bool doHalt)
 {
 	StartTrace(AppBooter.Run);
 	// this is the main routine for the Application

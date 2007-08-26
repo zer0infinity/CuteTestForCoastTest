@@ -24,7 +24,7 @@ public:
 	~Application();
 
 	//! GlobalInit: installs ressources shared among all instances
-	int GlobalInit(int argc, char *argv[], const ROAnything config);
+	int GlobalInit(int argc, const char *argv[], const ROAnything config);
 
 	//!starts up the application; an InterruptHandler is set up to catch signals for shutdown, reset etc.
 	int GlobalRun();
@@ -48,7 +48,7 @@ public:
 
 protected:
 	//! GlobalInit: installs ressources shared among all instances
-	virtual int DoGlobalInit(int argc, char *argv[], const ROAnything config);
+	virtual int DoGlobalInit(int argc, const char *argv[], const ROAnything config);
 
 	//!starts up the application; an InterruptHandler is set up to catch signals for shutdown, reset etc.
 	virtual int DoGlobalRun();

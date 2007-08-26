@@ -89,7 +89,7 @@ TestRunner::TestRunner () : fWait(false), fLogStream(0),
 }
 
 // all comparisons done with upper case (mostly because of Open MVS
-void TestRunner::run (int ac, char **av)
+void TestRunner::run (int ac, const char **av)
 {
 	TString testCase;
 

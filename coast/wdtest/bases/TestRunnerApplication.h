@@ -28,10 +28,10 @@ protected:
 	virtual int DoRun();
 
 	// GlobalInit: keeps argc and argv for later use
-	virtual int DoGlobalInit(int argc, char *argv[], const ROAnything config);
+	virtual int DoGlobalInit(int argc, const char *argv[], const ROAnything config);
 
 	int fgArgc;
-	char **fgArgv;
+	const char **fgArgv;
 };
 
 #endif

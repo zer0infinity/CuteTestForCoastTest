@@ -29,7 +29,7 @@ class EXPORTDECL_WDBASE AppBooter
 public:
 	AppBooter();
 	~AppBooter();
-	int Run(int argc, char *argv[], bool doHalt = true);
+	int Run(int argc, const char *argv[], bool doHalt = true);
 
 	bool Boot(Anything &config); // access the intial config file
 	Application *FindApplication(ROAnything config, String &applicationName);
@@ -37,7 +37,7 @@ public:
 	bool OpenLibs(const Anything &config);
 	bool CloseLibs();
 	bool ReadFromFile(Anything &config, const char *filename); // reading of configuration files
-	void HandleArgs(int argc, char *argv[], Anything &config);
+	void HandleArgs(int argc, const char *argv[], Anything &config);
 	void SetSignalMask();
 
 	//!sets WD_ROOT and WD_PATH if set in args; returns bootfilename

@@ -192,7 +192,7 @@ Server::~Server()
 }
 
 // intialization of the Server and its modules
-int Server::DoGlobalInit(int argc, char *argv[], const ROAnything config)
+int Server::DoGlobalInit(int argc, const char *argv[], const ROAnything config)
 {
 	StartTrace(Server.DoGlobalInit);
 	int ret = Application::DoGlobalInit(argc, argv, config);

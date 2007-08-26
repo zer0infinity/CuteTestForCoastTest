@@ -121,7 +121,7 @@ protected:
 	virtual int DoRun();
 
 	//!initialization of the Server and its modules
-	virtual int DoGlobalInit(int argc, char *argv[], const ROAnything config);
+	virtual int DoGlobalInit(int argc, const char *argv[], const ROAnything config);
 
 	//!inner method doing the reinit
 	virtual int DoGlobalReinit();

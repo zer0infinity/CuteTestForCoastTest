@@ -60,7 +60,7 @@ void AppBooterTest::HandleUnstructuredArgsTest()
 		// unstructured argument
 		Anything result;
 		Anything expected;
-		char *argv[] = { "foo", "bah"};
+		const char *argv[] = { "foo", "bah"};
 		const int argc = 2;
 		expected.Append("foo");
 		expected.Append("bah");
@@ -79,7 +79,7 @@ void AppBooterTest::HandleStructuredArgsTest()
 		// structured argument
 		Anything result;
 		Anything expected;
-		char *argv[] = { "test1=foo", "test2=bah"};
+		const char *argv[] = { "test1=foo", "test2=bah"};
 		const int argc = 2;
 		expected["test1"] = "foo";
 		expected["test2"] = "bah";
@@ -93,7 +93,7 @@ void AppBooterTest::HandleStructuredArgsTest()
 		// structured argument
 		Anything result;
 		Anything expected;
-		char *argv[] = { "test1=foo", "test2=bah", "test1=yum", "test2=grmbl"};
+		const char *argv[] = { "test1=foo", "test2=bah", "test1=yum", "test2=grmbl"};
 		const int argc = 4;
 		expected["test1"] = "foo";
 		expected["test2"] = "bah";
@@ -109,7 +109,7 @@ void AppBooterTest::HandleStructuredArgsTest()
 		// structured argument
 		Anything result;
 		Anything expected;
-		char *argv[] = { "test1={ /foo bah /yum grmbl }", "test2=bah"};
+		const char *argv[] = { "test1={ /foo bah /yum grmbl }", "test2=bah"};
 		const int argc = 2;
 		expected["test1"] = "{ /foo bah /yum grmbl }";
 		expected["test2"] = "bah";
@@ -327,7 +327,7 @@ void AppBooterTest::RunTest()
 		fSequence[10L] = "DoTerminate left";
 		fSequence[11L] = "DoGlobalTerminate left";
 		fStep = 0;
-		char *argv[] = { "RunTest", "Application=SimpleTestServer" };
+		const char *argv[] = { "RunTest", "Application=SimpleTestServer" };
 		assertEqual(0L, booter.Run(2, argv, false));
 	}
 }

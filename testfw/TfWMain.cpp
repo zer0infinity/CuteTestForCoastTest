@@ -20,7 +20,7 @@ HRTESTTIME  gettimes()
 }
 #endif
 
-int main (int ac, char **av)
+int main (int ac, const char **av)
 {
 	TestRunner runner;
 

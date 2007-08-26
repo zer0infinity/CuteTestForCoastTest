@@ -161,7 +161,7 @@ Application *Application::GetGlobalApplication(String &applicationName)
 }
 
 // GlobalInit: installs ressources shared among all instances
-int Application::GlobalInit(int argc, char *argv[], const ROAnything config)
+int Application::GlobalInit(int argc, const char *argv[], const ROAnything config)
 {
 	StartTrace(Application.GlobalInit);
 	int ret = DoGlobalInit(argc, argv, config);
@@ -171,7 +171,7 @@ int Application::GlobalInit(int argc, char *argv[], const ROAnything config)
 	return (ret);
 }
 
-int Application::DoGlobalInit(int argc, char *argv[], const ROAnything config)
+int Application::DoGlobalInit(int argc, const char *argv[], const ROAnything config)
 {
 	StartTrace(Application.DoGlobalInit);
 	return Init();	// Call instance init
