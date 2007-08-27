@@ -258,12 +258,18 @@ public:
 		eExists = (eFailed | (eSuccess << 3) ),			//! given directory already exists
 		ePathTooLong = (eFailed | (eSuccess << 4) ),	//! path exceeds system limit
 		eNotExists = (eFailed | (eSuccess << 5) ),		//! directory does not exist
-		eNoMoreHardlinks = (eFailed | (eSuccess << 6) ),//! directory creation failed because no more hardlinks available (symlinks are still possible?!)
-		eRecurseDeleteNotAllowed = (eFailed | (eSuccess << 7) ),//! not allowed to delete directory recursively
-		eNoSuchFileOrDir = (eFailed | (eSuccess << 8) ),//! no such file or directory
-		eNoPermission = (eFailed | (eSuccess << 9) ),	//! no permission to operate
-		eQuotaExceeded = (eFailed | (eSuccess << 10) ),	//! disk quota of user exceeded
-		eNoSpaceLeft = (eFailed | (eSuccess << 11) ),	//! no more room - free inodes - to create directory, fails also, when fragmentation of FS is bad! -> use fsck to examine
+		eNotDirectory = (eFailed | (eSuccess << 6) ),	//! a part of the path given is not a directory
+		eNoMoreHardlinks = (eFailed | (eSuccess << 7) ),//! directory creation failed because no more hardlinks available (symlinks are still possible?!)
+		eRecurseDeleteNotAllowed = (eFailed | (eSuccess << 8) ),//! not allowed to delete directory recursively
+		eNoSuchFileOrDir = (eFailed | (eSuccess << 9) ),//! no such file or directory
+		eNoPermission = (eFailed | (eSuccess << 10) ),	//! no permission to operate
+		eQuotaExceeded = (eFailed | (eSuccess << 11) ),	//! disk quota of user exceeded
+		eNoSpaceLeft = (eFailed | (eSuccess << 12) ),	//! no more room - free inodes - to create directory, fails also, when fragmentation of FS is bad! -> use fsck to examine
+		eCreateSymlinkFailed = (eFailed | (eSuccess << 13) ),	//! was not able to create symbolic link
+		eCreateDirFailed = (eFailed | (eSuccess << 14) ),	//! was not able to create directory for a reason not specified yet
+		ePathIncomplete = (eFailed | (eSuccess << 15) ),//! given path was not complete or an operation on it lead to failures
+		eIOOperationFailed = (eFailed | (eSuccess << 16) ),//! io operation on file was not successful
+		ePathIllegal = (eFailed | (eSuccess << 17) ),	//! path argument points to an illegal address
 	};
 
 	//! create new directory with given permissions, works for relative or absolute path names and also recursive if specified.

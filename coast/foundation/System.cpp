@@ -1168,7 +1168,7 @@ System::DirStatusCode System::IntMakeDirectory(String &path, int pmode, bool bRe
 	}
 	Trace("parent path [" << strParentDir << "]");
 
-	System::DirStatusCode aDirStatus = System::eFailed;
+	System::DirStatusCode aDirStatus = System::ePathIncomplete;
 	if ( strParentDir.Length() ) {
 		if ( IsDirectory(strParentDir) ) {
 			aDirStatus = System::eSuccess;
@@ -1211,6 +1211,26 @@ System::DirStatusCode System::IntMakeDirectory(String &path, int pmode, bool bRe
 					aDirStatus = System::eNoPermission;
 					break;
 				}
+				case ENOENT: {
+					SYSINFO("mkdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "]");
+					aDirStatus = System::eNotExists;
+					break;
+				}
+				case ENOTDIR: {
+					SYSINFO("mkdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "]");
+					aDirStatus = System::eNotDirectory;
+					break;
+				}
+				case EIO: {
+					SYSINFO("mkdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "]");
+					aDirStatus = System::eIOOperationFailed;
+					break;
+				}
+				case EFAULT: {
+					SYSINFO("mkdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "]");
+					aDirStatus = System::ePathIllegal;
+					break;
+				}
 				case EMLINK: {
 					SYSWARNING("mkdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "] because the parent directory is exhausted of hardlinks!");
 					aDirStatus = System::eNoMoreHardlinks;
@@ -1222,7 +1242,7 @@ System::DirStatusCode System::IntMakeDirectory(String &path, int pmode, bool bRe
 				}
 				default: {
 					SYSERROR("mkdir of [" << path << "] failed with [" << SysLog::LastSysError() << "]");
-					aDirStatus = System::eFailed;
+					aDirStatus = System::eCreateDirFailed;
 				}
 			}
 		}
@@ -1236,7 +1256,7 @@ System::DirStatusCode System::IntMakeDirectory(String &path, int pmode, bool bRe
 System::DirStatusCode System::IntExtendDir(String &strOriginalDir, int pmode)
 {
 	StartTrace1(System.IntExtendDir, "dir to create [" << strOriginalDir << "]");
-	System::DirStatusCode aDirStatus(System::eFailed);
+	System::DirStatusCode aDirStatus(System::ePathIncomplete);
 	String strBasePath(strOriginalDir), strDirToExtend, strFinalDir, strExtensionDir;
 	long slPos = strBasePath.StrRChr( System::Sep() );
 	if ( slPos > 0L ) {
@@ -1262,6 +1282,8 @@ System::DirStatusCode System::IntExtendDir(String &strOriginalDir, int pmode)
 		Trace("trying extension directory [" << strExtensionDir << "]");
 		switch ( aDirStatus = System::MakeDirectory(strExtensionDir, pmode, true, false) ) {
 			case System::eNoMoreHardlinks: {
+				// no more room for creating a 'real' directory
+				// lets try the next extension number
 				break;
 			}
 			case System::eSuccess: {
@@ -1385,7 +1407,7 @@ System::DirStatusCode System::CreateSymbolicLink(const char *filename, const cha
 	StartTrace1(System.CreateSymbolicLink, "directory [" << NotNull(filename) << "] link [" << NotNull(symlinkname) << "]");
 	if ( symlink(filename, symlinkname) == -1 ) {
 		SYSERROR("Could not create symbolic link " << symlinkname << " to file " << filename << "; symlink reports [" << SysLog::LastSysError() << "]");
-		return System::eFailed;
+		return System::eCreateSymlinkFailed;
 	}
 	// success
 	return System::eSuccess;
