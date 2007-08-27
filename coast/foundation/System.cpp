@@ -1146,7 +1146,7 @@ System::DirStatusCode System::MakeDirectory(String &path, int pmode, bool bRecur
 	}
 	// check if directory already exists
 	if ( IsDirectory(path) ) {
-		SYSERROR("directory already exists [" << path << "]");
+		SYSWARNING("directory already exists [" << path << "]");
 		return System::eExists;
 	}
 	// check whether path-length is ok
@@ -1207,27 +1207,27 @@ System::DirStatusCode System::IntMakeDirectory(String &path, int pmode, bool bRe
 					break;
 				}
 				case EACCES: {
-					SYSINFO("mkdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "]");
+					SYSWARNING("mkdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "]");
 					aDirStatus = System::eNoPermission;
 					break;
 				}
 				case ENOENT: {
-					SYSINFO("mkdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "]");
+					SYSWARNING("mkdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "]");
 					aDirStatus = System::eNotExists;
 					break;
 				}
 				case ENOTDIR: {
-					SYSINFO("mkdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "]");
+					SYSWARNING("mkdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "]");
 					aDirStatus = System::eNotDirectory;
 					break;
 				}
 				case EIO: {
-					SYSINFO("mkdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "]");
+					SYSERROR("mkdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "]");
 					aDirStatus = System::eIOOperationFailed;
 					break;
 				}
 				case EFAULT: {
-					SYSINFO("mkdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "]");
+					SYSERROR("mkdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "]");
 					aDirStatus = System::ePathIllegal;
 					break;
 				}
