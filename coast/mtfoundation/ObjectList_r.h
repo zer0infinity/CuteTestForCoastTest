@@ -65,7 +65,7 @@ private:
 			}
 		}
 		if ( BaseClass::DoRemoveHead(aElement) ) {
-			fCondEmpty.Signal();
+			fCondEmpty.BroadCast();
 			Trace("got an element");
 			return true;
 		}
