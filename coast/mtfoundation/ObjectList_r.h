@@ -18,14 +18,18 @@
 #include "Threads.h"
 
 //---- c-module include -----------------------------------------------------
-
 //---- class ObjectList_r ----------------------------------------------------------------
 
-template<typename Tp>
-class EXPORTDECL_MTFOUNDATION ObjectList_r : public ObjectList<Tp>
+template <
+typename Tp,
+		 template < typename, typename > class tListType = std::deque,
+		 template < typename > class STLAlloc = STLStorage::STLAllocator
+		 >
+class EXPORTDECL_MTFOUNDATION ObjectList_r : public ObjectList< Tp, tListType, STLAlloc >
 {
 public:
-	typedef ObjectList<Tp> BaseClass;
+	typedef ObjectList<Tp, tListType, STLAlloc > BaseClass;
+	typedef ObjectList_r<Tp, tListType, STLAlloc > ThisType;
 	typedef typename BaseClass::ListType ListType;
 	typedef typename BaseClass::ListTypeReference ListTypeReference;
 	typedef typename BaseClass::ListTypeValueType ListTypeValueType;
@@ -34,7 +38,6 @@ public:
 		: BaseClass(name, a)
 		, fMutex(name, a)
 	{}
-
 	virtual ~ObjectList_r() {
 		StartTrace1(ObjectList_r.~ObjectList_r, (BaseClass::fDestructiveShutdown ? "destructive" : ""));
 		LockUnlockEntry me(fMutex);
@@ -47,7 +50,6 @@ public:
 		}
 		// if the list was in destructive shutdown, let the baseclass remove and destruct the elements
 	}
-
 private:
 	/*! removes the head element of the list
 		\param aElement reference to a receiving element, depending on the type (pointer, element) an assignment operator of the element is required!
@@ -117,9 +119,9 @@ private:
 	}
 
 	//!standard copy constructor prohibited
-	ObjectList_r(const ObjectList_r<Tp> &);
+	ObjectList_r(const ThisType &);
 	//!standard assignement operator prohibited
-	void operator=(const ObjectList_r<Tp> &);
+	void operator=(const ThisType &);
 
 	SimpleMutex fMutex;
 	SimpleMutex::ConditionType fCondEmpty;
