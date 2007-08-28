@@ -32,7 +32,8 @@
 template
 <
 class ElementType,
-	  class ListStorageType
+	  class ListStorageType,
+	  class ContainerAllocatorType
 	  >
 class QueueWorkingModule : public WDModule
 {
@@ -41,7 +42,7 @@ class QueueWorkingModule : public WDModule
 	friend class CalculationsModuleTest;
 public:
 	typedef ElementType &ElementTypeRef;
-	typedef Queue<ElementType, ListStorageType> QueueType;
+	typedef Queue<ElementType, ListStorageType, ContainerAllocatorType> QueueType;
 	typedef typename QueueType::ListStorageTypeRef ListStorageTypeRef;
 	typedef QueueType &AnyQueueTypeRef;
 	typedef QueueType *AnyQueueTypePtr;
@@ -330,6 +331,6 @@ private:
 	u_long		fAlive;
 };
 
-typedef QueueWorkingModule<Anything, Anything> AnyQueueWorkingModule;
+typedef QueueWorkingModule<Anything, Anything, Allocator *> AnyQueueWorkingModule;
 
 #endif

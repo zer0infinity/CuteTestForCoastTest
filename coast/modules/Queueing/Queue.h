@@ -11,19 +11,16 @@
 
 //---- baseclass include -------------------------------------------------
 #include "config_Queueing.h"
-#include "IFAObject.h"
+#include "STLStorage.h"
 #include "Threads.h"
-#include "Dbg.h"
-#include "SysLog.h"
 #include "DateTime.h"
 
-#include <algorithm>
 #include <limits.h>
-//---- forward declaration -----------------------------------------------
+
 //---- Queue ----------------------------------------------------------
-//! <B>Simple, thread-safe, Anything based queue</B>
+//! <B>Simple, thread-safe, container based queue</B>
 /*!
-Queue elements are represented using Anythings. The internal queue itself is also an Anything which allows
+Queue elements are represented using either by objects of their type or Anythings. The internal queue itself is either a std::container or an Anything which allows
 simple handling.
 Statistics can be made by evaluating the returned Anything from GetStatistics(). The following slots are defined:
 <pre>
@@ -51,9 +48,10 @@ Statistics can be made by evaluating the returned Anything from GetStatistics().
 */
 template <
 class TElementType,
-	  class TListStorageType
+	  class TListStorageType,
+	  class ContainerAllocatorType
 	  >
-class QueueBase : public IFAObject
+class Queue : public IFAObject
 {
 	friend class QueueTest;
 public:
@@ -61,10 +59,10 @@ public:
 	typedef ElementType &ElementTypeRef;
 	typedef TListStorageType ListStorageType;
 	typedef ListStorageType &ListStorageTypeRef;
-	typedef QueueBase<ElementType, ListStorageType> ThisType;
+	typedef Queue<ElementType, ListStorageType, ContainerAllocatorType> ThisType;
 
 	//--- constructors
-	QueueBase(const char *name, long lQueueSize = LONG_MAX, Allocator *pAlloc = Storage::Global())
+	Queue(const char *name, long lQueueSize = LONG_MAX, Allocator *pAlloc = Storage::Global())
 		: fName(name, -1, pAlloc)
 		, fAllocator(pAlloc)
 		, fSemaFullSlots(0L)
@@ -80,7 +78,7 @@ public:
 		, fBlockedLock("BlockedLock", fAllocator)
 		, fBlockingPutLock("BlockingPutLock", fAllocator)
 		, fBlockingGetLock("BlockingGetLock", fAllocator)
-		, fAnyQueue()
+		, fContainer( ContainerAllocatorType(pAlloc) )
 		, fAnyStatistics(fAllocator) {
 		StartTrace1(Queue.Queue, "queue size:" << lQueueSize);
 		fAnyStatistics["QueueSize"] = lQueueSize;
@@ -91,7 +89,7 @@ public:
 		UnBlock();
 	}
 
-	~QueueBase() {
+	~Queue() {
 		StartTrace(Queue.~Queue);
 		// block any pending interface accesses
 		Block();
@@ -283,9 +281,9 @@ protected:
 		StatusCode eRet(eBlocked);
 		if ( !IsBlocked(ePutSide) ) {
 			LockUnlockEntry me(fQueueLock);
-			fAnyQueue.push_back(anyElement);
+			fContainer.push_back(anyElement);
 			++fPutCount;
-			fMaxLoad = std::max( fMaxLoad, (long)fAnyQueue.size() );
+			fMaxLoad = std::max( fMaxLoad, (long)fContainer.size() );
 			fSemaFullSlots.Release();
 			eRet = eSuccess;
 		}
@@ -297,9 +295,9 @@ protected:
 		StatusCode eRet(eBlocked);
 		if ( !IsBlocked(eGetSide) ) {
 			LockUnlockEntry me(fQueueLock);
-			if ( fAnyQueue.size() ) {
-				anyElement = fAnyQueue.front();	//TODO - future: change here so that it's not restricted only for Anything's - use any_cast
-				fAnyQueue.pop_front();
+			if ( fContainer.size() ) {
+				anyElement = fContainer.front();	//TODO - future: change here so that it's not restricted only for Anything's - use any_cast
+				fContainer.pop_front();
 				++fGetCount;
 				fSemaEmptySlots.Release();
 				eRet = eSuccess;
@@ -317,7 +315,7 @@ protected:
 
 	long IntGetSize() {
 		StartTrace(Queue.IntGetSize);
-		long lRet(fAnyQueue.size());
+		long lRet(fContainer.size());
 		Trace("Anything  size:" << lRet);
 		Trace("(Put-Get) size:" << (long)(fPutCount - fGetCount));
 		return lRet;
@@ -328,11 +326,11 @@ protected:
 		Trace("current queue size:" << IntGetSize());
 		while ( IntGetSize() ) {
 			fSemaFullSlots.TryAcquire();
-			moveElement(fAnyQueue, anyElements);
+			moveElement(fContainer, anyElements);
 			fSemaEmptySlots.Release();
 		}
 
-		Trace("elements removed:" << (long)fAnyQueue.size());
+		Trace("elements removed:" << (long)fContainer.size());
 	}
 
 	void moveElement(ListStorageTypeRef aFrom, ListStorageTypeRef aTo) {
@@ -379,52 +377,10 @@ protected:
 	RWLock		fBlockedLock;
 	SimpleMutex fBlockingPutLock, fBlockingGetLock;
 	SimpleMutex::ConditionType fBlockingPutCond, fBlockingGetCond;
-	ListStorageType fAnyQueue;
+	ListStorageType fContainer;
 	Anything	fAnyStatistics;
 };
 
-template <
-class TElementType,
-	  class TListStorageType
-	  >
-class Queue : public QueueBase<TElementType, TListStorageType>
-{
-	friend class QueueTest;
-public:
-	typedef TElementType ElementType;
-	typedef ElementType &ElementTypeRef;
-	typedef TListStorageType ListStorageType;
-	typedef ListStorageType &ListStorageTypeRef;
-	typedef QueueBase<ElementType, ListStorageType> BaseType;
-	typedef Queue<ElementType, ListStorageType> ThisType;
-
-	Queue(const char *name, long lQueueSize = LONG_MAX, Allocator *pAlloc = Storage::Global())
-		: BaseType(name, lQueueSize, pAlloc) {
-		StartTrace1(Queue.Queue, "generic");
-	}
-};
-
-template <
-class TElementType
->
-class Queue<TElementType, Anything> : public QueueBase<TElementType, Anything>
-{
-	friend class QueueTest;
-public:
-	typedef TElementType ElementType;
-	typedef ElementType &ElementTypeRef;
-	typedef Anything ListStorageType;
-	typedef ListStorageType &ListStorageTypeRef;
-	typedef QueueBase<ElementType, ListStorageType> BaseType;
-	typedef Queue<ElementType, ListStorageType> ThisType;
-
-	Queue(const char *name, long lQueueSize = LONG_MAX, Allocator *pAlloc = Storage::Global())
-		: BaseType(name, lQueueSize, pAlloc) {
-		StartTrace1(Queue.Queue, "Anything");
-		this->fAnyQueue.SetAllocator(pAlloc);
-	}
-};
-
-typedef Queue<Anything, Anything> AnyQueueType;
+typedef Queue<Anything, Anything, Allocator *> AnyQueueType;
 
 #endif
