@@ -48,6 +48,7 @@
 #include "PoolAllocatorTest.h"
 #include "AnythingIteratorTest.h"
 #include "AnythingSTLTest.h"
+#include "STLStorageTest.h"
 
 #ifndef __370__
 #if !defined(WIN32)
@@ -90,6 +91,7 @@ void setupRunner(TestRunner &runner)
 	ADD_SUITE(runner, MemTrackerTest);
 	ADD_SUITE(runner, StorageTest);
 	ADD_SUITE(runner, PoolAllocatorTest);
+	ADD_SUITE(runner, STLStorageTest);
 	ADD_SUITE(runner, ROSimpleAnythingTest);
 	ADD_SUITE(runner, SysLogTest);
 	ADD_SUITE(runner, GenericXMLParserTest);
