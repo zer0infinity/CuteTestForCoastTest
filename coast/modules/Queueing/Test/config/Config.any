@@ -31,6 +31,7 @@
 	}
 	/AppLogModule {
 		/LogDir	"."
+		/RotateDir	"."
 		/Servers {
 			/Server {
 				/AccessLog	{
