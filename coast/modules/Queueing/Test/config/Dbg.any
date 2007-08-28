@@ -128,4 +128,8 @@
 		/MainSwitch			0
 		/EnableAll			10
 	}
+	/LockUnlockEntry {
+		/MainSwitch			0
+		/EnableAll			10
+	}
 }
