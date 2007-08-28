@@ -14,17 +14,24 @@
 #include "ITOString.h"
 #include "Dbg.h"
 #include "ITOTypeTraits.h"
+#include "STLStorage.h"
 
 //---- c-module include -----------------------------------------------------
 #include <algorithm>
-#include <list>
+#include <deque>
 
 //---- class ObjectList ----------------------------------------------------------------
-template<typename Tp>
-class EXPORTDECL_FOUNDATION ObjectList : public std::list<Tp>
+template <
+typename Tp,
+		 template < typename, typename > class tListType = std::deque,
+		 template < typename > class STLAlloc = STLStorage::STLAllocator
+		 >
+class EXPORTDECL_FOUNDATION ObjectList : public tListType< Tp, STLAlloc< Tp > >
 {
 public:
-	typedef std::list<Tp> ListType;
+	typedef STLAlloc< Tp > STLAllocatorType;
+	typedef tListType< Tp, STLAllocatorType > ListType;
+	typedef ObjectList<Tp, tListType, STLAlloc > ThisType;
 	typedef typename ListType::reference ListTypeReference;
 	typedef typename ListType::value_type ListTypeValueType;
 	typedef typename ListType::const_iterator ListIterator;
@@ -48,13 +55,14 @@ private:
 
 public:
 	ObjectList(const char *name, Allocator *a = Storage::Global())
-		: fShutdown(false)
+		: ListType( STLAllocatorType(a) )
+		, fShutdown(false)
 		, fDestructiveShutdown(false)
 		, fpAlloc(a)
 		, fName(name, -1, fpAlloc)
 	{}
 
-	ObjectList(const ObjectList<Tp> &aList)
+	ObjectList(const ThisType &aList)
 		: ListType(aList)
 		, fShutdown(aList.fShutdown)
 		, fDestructiveShutdown(false)	// set to false not to accidentally delete an element twice
@@ -167,7 +175,7 @@ private:
 	}
 
 	//!standard assignement operator prohibited
-	void operator=(const ObjectList<Tp> &);
+	void operator=(const ThisType &);
 
 	Allocator *fpAlloc;
 	String fName;
