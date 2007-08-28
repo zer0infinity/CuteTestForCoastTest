@@ -16,6 +16,7 @@
 #include "Queue.h"
 
 //--- standard modules used ----------------------------------------------------
+#include "PoolAllocator.h"
 #include "Dbg.h"
 #include "System.h"
 
@@ -63,11 +64,6 @@ public: // structors
 	~dcd_event() {
 		delete content;
 	}
-
-//		bool process(theDCDStateMachine &rStateMachine)
-//		{
-//			return content->process(rStateMachine);
-//		}
 
 public: // queries
 
@@ -509,7 +505,7 @@ void QueueTest::ConsumerTerminationTest()
 /*
 //TODO - future: change DoGet() method, so that it's not restricted only for Anything's (see Queue.h)
 */
-typedef Queue<long, Anything> LongAnyQueueType;
+typedef Queue<long, Anything, Allocator *> LongAnyQueueType;
 void QueueTest::SimpleTypeAnyStorageQueueTest()
 {
 	StartTrace(QueueTest.SimpleTypeAnyStorageQueueTest);
@@ -530,7 +526,8 @@ void QueueTest::SimpleTypeAnyStorageQueueTest()
 
 typedef	dcd_event< DCDStateMachine > EventType;
 typedef	EventType *EventTypePtr;
-typedef Queue< EventTypePtr, std::list<EventTypePtr> > EventQueueType;
+typedef STLStorage::STLAllocator< EventTypePtr > EvtAllocType;
+typedef Queue< EventTypePtr, std::list<EventTypePtr, EvtAllocType >, EvtAllocType > EventQueueType;
 void QueueTest::SimpleTypeListStorageQueueTest()
 {
 	StartTrace(QueueTest.SimpleTypeListStorageQueueTest);
@@ -541,7 +538,7 @@ void QueueTest::SimpleTypeListStorageQueueTest()
 
 	EventTypePtr pEventWrapper = new EventType( DCDStateMachine::ev_ReloadMarketCodeFilter(anyMsg) );
 	EventTypePtr pEventWrapper2 = new EventType( DCDStateMachine::ev_ReloadMarketCodeFilter(anyMsg2) );
-	EventTypePtr pEventWrapperOut2 = new EventType();
+	EventTypePtr pEventWrapperOut2 = NULL;
 
 	EventQueueType Q1("Q1");
 
@@ -561,6 +558,84 @@ void QueueTest::SimpleTypeListStorageQueueTest()
 	pEventWrapperOut2 = NULL;
 }
 
+void QueueTest::QueueWithAllocatorTest()
+{
+	StartTrace(QueueTest.QueueWithAllocatorTest);
+	{
+		PoolAllocator aPoolAlloc(1234, 1234, 18);
+
+		l_long lAllocMark = aPoolAlloc.CurrentlyAllocated();
+		{
+			AnyQueueType Q1("Q1", 1, &aPoolAlloc);
+			t_assert(Q1.GetSize() == 0L);
+			Anything anyTest1, anyTest2;
+			anyTest1["Guguseli"] = 1;
+			// first call should not block
+			assertEqual(AnyQueueType::eSuccess, Q1.Put(anyTest1));
+			anyTest2["Guguseli"] = 2;
+			// second call should block so use a trylock and check return code
+			assertEqual(AnyQueueType::eFull, Q1.Put(anyTest2, true));
+			t_assert(Q1.GetSize() == 1L);
+
+			if ( Storage::GetStatisticLevel() >= 1 ) {
+				assertComparem(lAllocMark, less, aPoolAlloc.CurrentlyAllocated(), "expected PoolAllocator having had some allocations");
+			}
+
+			Anything anyOut;
+			// first get should work without blocking
+			assertEqual(AnyQueueType::eSuccess, Q1.Get(anyOut));
+			assertAnyEqual(anyTest1, anyOut);
+			t_assert(Q1.GetSize() == 0L);
+			// second get should block because of empty queue, so use trylock and check return code
+			anyOut = Anything();
+			assertEqual(AnyQueueType::eEmpty, Q1.Get(anyOut, true));
+			Q1.GetStatistics(anyOut);
+			assertEqual(1L, anyOut["QueueSize"].AsLong(0L));
+			assertEqual(1L, anyOut["MaxLoad"].AsLong(0L));
+			TraceAny(anyOut, "statistics");
+		}
+		if ( Storage::GetStatisticLevel() >= 1 ) {
+			assertComparem(lAllocMark, equal_to, aPoolAlloc.CurrentlyAllocated(), "expected PoolAllocator to have allocated its memory on Storage::Global()");
+		}
+	}
+	{
+		PoolAllocator aPoolAlloc(2345, 2345, 18);
+		Anything anyMsg, anyMsg2;
+		anyMsg["Content"] = "DummyContent1";
+		anyMsg2["Content"] = "DummyContent2";
+
+		EventTypePtr pEventWrapper = new EventType( DCDStateMachine::ev_ReloadMarketCodeFilter(anyMsg) );
+		EventTypePtr pEventWrapper2 = new EventType( DCDStateMachine::ev_ReloadMarketCodeFilter(anyMsg2) );
+		EventTypePtr pEventWrapperOut2 = NULL;
+
+		l_long lAllocMark = aPoolAlloc.CurrentlyAllocated();
+
+		{
+			EventQueueType Q1("Q1", 20, &aPoolAlloc);
+			assertEqualm(0L, Q1.GetSize(), "expected queue to be empty");
+			Q1.Put(pEventWrapper);
+			assertEqualm(1L, Q1.GetSize(), "expected queue to contain 1 element");
+			Q1.Put(pEventWrapper2);
+			assertEqualm(2L, Q1.GetSize(), "expected queue to contain 2 elements");
+
+			if ( Storage::GetStatisticLevel() >= 1 ) {
+				assertComparem(lAllocMark, less, aPoolAlloc.CurrentlyAllocated(), "expected PoolAllocator having had some allocations");
+			}
+
+			Q1.Get(pEventWrapperOut2);
+			assertEqualm(1L, Q1.GetSize(), "expected queue to contain 1 element");
+			delete pEventWrapperOut2;
+
+			Q1.Get(pEventWrapperOut2);
+			assertEqualm(0L, Q1.GetSize(), "expected queue to be empty");
+			delete pEventWrapperOut2;
+		}
+		if ( Storage::GetStatisticLevel() >= 1 ) {
+			assertComparem(lAllocMark, equal_to, aPoolAlloc.CurrentlyAllocated(), "expected PoolAllocator to have allocated its memory on Storage::Global()");
+		}
+	}
+}
+
 // builds up a suite of testcases, add a line for each testmethod
 Test *QueueTest::suite ()
 {
@@ -575,6 +650,7 @@ Test *QueueTest::suite ()
 	ADD_CASE(testSuite, QueueTest, ConsumerTerminationTest);
 	ADD_CASE(testSuite, QueueTest, SimpleTypeAnyStorageQueueTest);
 	ADD_CASE(testSuite, QueueTest, SimpleTypeListStorageQueueTest);
+	ADD_CASE(testSuite, QueueTest, QueueWithAllocatorTest);
 
 	return testSuite;
 }
