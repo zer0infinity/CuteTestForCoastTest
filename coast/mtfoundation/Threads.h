@@ -326,17 +326,49 @@ private:
 class LockUnlockEntry
 {
 	struct WrapperBase {
-		virtual ~WrapperBase() {}
+		WrapperBase(Allocator *pAlloc)
+			: fAllocator(pAlloc) {
+			StatTrace(LockUnlockEntry.WrapperBase, "", Storage::Current());
+		}
+		virtual ~WrapperBase() {
+			StatTrace(LockUnlockEntry.~WrapperBase, "", Storage::Current());
+		}
+
+		static void *operator new(size_t size, Allocator *a) {
+			StatTrace(LockUnlockEntry.new, "allocator:" << (long)size, Storage::Current());
+			if (a) {
+				return a->Calloc(1, size);
+			} else {
+				return ::operator new(size);
+			}
+		}
+
+		static void operator delete(void *d) {
+			StatTrace(LockUnlockEntry.delete, "", Storage::Current());
+			if (d) {
+				Allocator *a = ((WrapperBase *)d)->fAllocator;
+				if (a) {
+					a->Free(d);
+				} else {
+					::operator delete(d);
+				}
+			}
+		}
+
+		Allocator *fAllocator;
 	};
 
 	template < typename TMutex, typename dummy >
 	struct LockUnlockEntryWrapper : public WrapperBase {
 		typedef TMutex LockType;
-		explicit LockUnlockEntryWrapper(LockType &m)
-			: fLock(m) {
+		explicit LockUnlockEntryWrapper(LockType &m, Allocator *pAlloc)
+			: WrapperBase(pAlloc)
+			, fLock(m) {
+			StatTrace(LockUnlockEntry.LockUnlockEntryWrapper, "Mutex", Storage::Current());
 			this->fLock.Lock();
 		}
 		~LockUnlockEntryWrapper() {
+			StatTrace(LockUnlockEntry.~LockUnlockEntryWrapper, "Mutex", Storage::Current());
 			this->fLock.Unlock();
 		}
 		LockType &fLock;
@@ -345,12 +377,15 @@ class LockUnlockEntry
 	template < typename dummy >
 	struct LockUnlockEntryWrapper<RWLock, dummy> : public WrapperBase {
 		typedef RWLock LockType;
-		explicit LockUnlockEntryWrapper(LockType &m, LockType::eLockMode mode)
-			: fLock(m)
+		explicit LockUnlockEntryWrapper(LockType &m, LockType::eLockMode mode, Allocator *pAlloc)
+			: WrapperBase(pAlloc)
+			, fLock(m)
 			, fMode(mode) {
+			StatTrace(LockUnlockEntry.LockUnlockEntryWrapper, "RWLock", Storage::Current());
 			this->fLock.Lock(fMode);
 		}
 		~LockUnlockEntryWrapper() {
+			StatTrace(LockUnlockEntry.~LockUnlockEntryWrapper, "RWLock", Storage::Current());
 			this->fLock.Unlock(fMode);
 		}
 		LockType &fLock;
@@ -364,35 +399,65 @@ class LockUnlockEntry
 public:
 	//!acquires the mutex in the constructor
 	template < typename TMutex >
-	explicit LockUnlockEntry(TMutex &m)
-		: fWrapper(new LockUnlockEntryWrapper<TMutex, bool>(m))
+	explicit LockUnlockEntry(TMutex &m, Allocator *pAlloc = Storage::Current() )
+		: fWrapper(new (pAlloc) LockUnlockEntryWrapper<TMutex, bool>(m, pAlloc))
 	{}
 
 	template < typename LockType >
-	explicit LockUnlockEntry(LockType &m, typename LockType::eLockMode mode )
-		: fWrapper(new LockUnlockEntryWrapper<LockType, bool>(m, mode))
+	explicit LockUnlockEntry(LockType &m, typename LockType::eLockMode mode, Allocator *pAlloc = Storage::Current() )
+		: fWrapper(new (pAlloc) LockUnlockEntryWrapper<LockType, bool>(m, mode, pAlloc))
 	{}
 };
 
 class LockedValueIncrementDecrementEntry
 {
 	struct WrapperBase {
-		virtual ~WrapperBase() {}
+		WrapperBase(Allocator *pAlloc)
+			: fAllocator(pAlloc) {
+			StatTrace(LockedValueIncrementDecrementEntry.WrapperBase, "", Storage::Current());
+		}
+		virtual ~WrapperBase() {
+			StatTrace(LockedValueIncrementDecrementEntry.~WrapperBase, "", Storage::Current());
+		}
+
+		static void *operator new(size_t size, Allocator *a) {
+			StatTrace(LockedValueIncrementDecrementEntry.new, "allocator:" << (long)size, Storage::Current());
+			if (a) {
+				return a->Calloc(1, size);
+			} else {
+				return ::operator new(size);
+			}
+		}
+
+		static void operator delete(void *d) {
+			StatTrace(LockedValueIncrementDecrementEntry.delete, "", Storage::Current());
+			if (d) {
+				Allocator *a = ((WrapperBase *)d)->fAllocator;
+				if (a) {
+					a->Free(d);
+				} else {
+					::operator delete(d);
+				}
+			}
+		}
+
+		Allocator *fAllocator;
 	};
 
 	template < typename MutexType >
 	struct LockedValueIncrementDecrementEntryWrapper : public WrapperBase {
 		typedef typename MutexType::ConditionType ConditionType;
-		explicit LockedValueIncrementDecrementEntryWrapper(MutexType &aMutex, ConditionType &aCondition, long &lValue)
-			: fMutex(aMutex), fCondition(aCondition), fValue(lValue) {
+		explicit LockedValueIncrementDecrementEntryWrapper(MutexType &aMutex, ConditionType &aCondition, long &lValue, Allocator *pAlloc)
+			: WrapperBase(pAlloc)
+			, fMutex(aMutex), fCondition(aCondition), fValue(lValue) {
 			StartTrace(LockedValueIncrementDecrementEntry.LockedValueIncrementDecrementEntry);
-			LockUnlockEntry sme(fMutex);
+			LockUnlockEntry sme(fMutex, fAllocator);
 			++fValue;
 			Trace("count:" << fValue);
 		}
 		~LockedValueIncrementDecrementEntryWrapper() {
 			StartTrace(LockedValueIncrementDecrementEntry.~LockedValueIncrementDecrementEntry);
-			LockUnlockEntry sme(fMutex);
+			LockUnlockEntry sme(fMutex, fAllocator);
 			if (fValue > 0L) {
 				--fValue;
 			}
@@ -411,8 +476,8 @@ class LockedValueIncrementDecrementEntry
 	LockedValueIncrementDecrementEntry &operator=(const LockedValueIncrementDecrementEntry &);
 public:
 	template < typename MutexType >
-	explicit LockedValueIncrementDecrementEntry(MutexType &aMutex, typename MutexType::ConditionType &aCondition, long &lValue)
-		: fWrapper(new LockedValueIncrementDecrementEntryWrapper<MutexType>(aMutex, aCondition, lValue))
+	explicit LockedValueIncrementDecrementEntry(MutexType &aMutex, typename MutexType::ConditionType &aCondition, long &lValue, Allocator *pAlloc = Storage::Current())
+		: fWrapper(new (pAlloc) LockedValueIncrementDecrementEntryWrapper<MutexType>(aMutex, aCondition, lValue, pAlloc))
 	{}
 };
 
