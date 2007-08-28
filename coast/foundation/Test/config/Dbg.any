@@ -185,4 +185,8 @@
 		/MainSwitch						20
 		/EnableAll						20
 	}
+	/STLAllocator {
+		/MainSwitch						20
+		/EnableAll						20
+	}
 }
