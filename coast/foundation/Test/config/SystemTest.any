@@ -35,5 +35,11 @@
 			/ExpectedBaseDir	"/hiku_ds_root/chunk_space/2007/13/814_ex7"
 			/PathToCreate		"TestCaseSubDir1/TestCaseSubDir2"
 		}
+		/OnelevelExtendedExistTest {
+			/EnsureDirExists	"/hiku_ds_root/chunk_space/2007/13/814_ex7/ExistingDir"
+			/BaseDir			"/hiku_ds_root/chunk_space/2007/13/814"
+			/ExpectedBaseDir	"/hiku_ds_root/chunk_space/2007/13/814_ex7"
+			/PathToCreate		"ExistingDir/SubDir"
+		}
 	}
 }

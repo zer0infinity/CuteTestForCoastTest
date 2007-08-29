@@ -1321,6 +1321,7 @@ void SystemTest::MakeDirectoryExtendTest()
 	AnyExtensions::Iterator<ROAnything> aIterator(GetTestCaseConfig());
 	ROAnything roaConfig;
 	while ( aIterator(roaConfig) ) {
+		String strEnsureDir(roaConfig["EnsureDirExists"].AsString());
 		String strBaseDir(roaConfig["BaseDir"].AsString());
 		String strExpectBaseDir(roaConfig["ExpectedBaseDir"].AsString());
 		String strCreateDirRel(roaConfig["PathToCreate"].AsString());
@@ -1336,6 +1337,11 @@ void SystemTest::MakeDirectoryExtendTest()
 		Trace("Dir to create [" << strCreateDir << "] ExpectedDir [" << strExpectDir << "] first seg [" << strLinkName << "]");
 		Trace("first seg [" << strLinkName << "] of rel path [" << strCreateDirRel << "]");
 		if ( strCreateDirRel.Length() > 0L && strCreateDir.Length() > 0L && strExpectDir.Length() > 0L ) {
+			bool bDidCreateDir(false);
+			if ( strEnsureDir.Length() ) {
+				System::DirStatusCode aCode(System::MakeDirectory(strEnsureDir, 0755, true, false));
+				bDidCreateDir = (aCode == System::eSuccess);
+			}
 			if ( !System::IsDirectory(strCreateDir) ) {
 				String strTmpDir(strCreateDir);
 				// test should fail without extend link option
@@ -1358,6 +1364,9 @@ void SystemTest::MakeDirectoryExtendTest()
 						System::ChangeDir(wd);
 					}
 				}
+			}
+			if ( bDidCreateDir && System::IsDirectory(strEnsureDir) ) {
+				assertComparem( System::eSuccess, equal_to, System::RemoveDirectory(strEnsureDir), "failed to remove directory we created for testing");
 			}
 		}
 	}
