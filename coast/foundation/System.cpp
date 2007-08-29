@@ -1286,6 +1286,8 @@ System::DirStatusCode System::IntExtendDir(String &strOriginalDir, int pmode)
 				// lets try the next extension number
 				break;
 			}
+			case System::eExists:
+				// need to catch this, directory might exist already or someone else created it recently
 			case System::eSuccess: {
 				// create link into original directory (strOriginalDir)
 				aDirStatus = System::CreateSymbolicLink(strExtensionDir, strOriginalDir);
