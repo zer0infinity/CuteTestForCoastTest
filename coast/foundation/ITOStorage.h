@@ -9,23 +9,24 @@
 #ifndef _ITOStorage_H
 #define _ITOStorage_H
 
-#include <sys/types.h>
 #include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include "foundation.h"			// for definition of own types
-#include <stdlib.h>
-#include <list>
+#include <sys/types.h>
+#include <iostream>
+#include <cstdlib>
+#include <deque>
 
-class MemoryHeader;
+class EXPORTDECL_FOUNDATION MemoryHeader;
 
 //! Base class for memory allocation tracking
 /*! helper class for debugging memory management problems */
 class EXPORTDECL_FOUNDATION MemTracker
 {
-	friend class MemoryHeader;
+	friend class EXPORTDECL_FOUNDATION MemoryHeader;
 	friend class MemTrackerTest;
 public:
-	typedef std::list<MemoryHeader *> UsedListType;
-	typedef std::list<MemoryHeader *>* UsedListTypePtr;
+	typedef std::deque<MemoryHeader *> UsedListType;
+	typedef UsedListType *UsedListTypePtr;
 
 	MemTracker(const char *name);
 	virtual ~MemTracker();
@@ -124,8 +125,6 @@ protected:
 #define TraceMemDelta1(message) rekcehc1.TraceDelta(message)
 
 #define PoolTrackStatTriggered(trigger, pAlloc, level) if ( TraceTriggered(trigger, Storage::Global()) ) { pAlloc->PrintStatistic(level); }
-
-class EXPORTDECL_FOUNDATION MemoryHeader;
 
 //! Base class for memory allocation policies
 class EXPORTDECL_FOUNDATION Allocator
