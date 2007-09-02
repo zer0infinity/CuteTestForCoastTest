@@ -833,7 +833,7 @@
 						/QueryResult	ignore
 						/QuerySource	"HIKU_INT2"
 						/Messages {
-							"SybCTnewDA::SqlExec: rows limited due to SybDBMaxResultSize or SybDBMaxRows!"
+							"SybCTnewDA::SqlExec[SybNewDASearchTest]: rows limited due to SybDBMaxResultSize(6kB) or SybDBMaxRows(13)!"
 						}
 					}
 				}
