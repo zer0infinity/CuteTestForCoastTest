@@ -12,13 +12,14 @@
 //---- standard-module include ----------------------------------------------
 #include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 
-#if defined(WIN32)
-#include "TypeTraits.h"
+#if 1 //(__GNUC__ > 2)
+#include <loki/TypeTraits.h>
 #else
-class NullType {};
 
 namespace Loki
 {
+	struct NullType {};
+
 	template <int v>
 	struct Int2Type {
 		enum { value = v };
@@ -74,6 +75,22 @@ namespace Loki
 			typedef U Result;
 		};
 
+	public:
+		enum { isPointer = PointerTraits<T>::result };
+		typedef typename PointerTraits<T>::PointeeType PointeeType;
+
+		enum { isReference = ReferenceTraits<T>::result };
+		typedef typename ReferenceTraits<T>::ReferredType ReferredType;
+	};
+};
+#endif
+
+namespace Loki
+{
+	template <typename T>
+	class fooTypeTraits
+	{
+	private:
 		template <class U> struct PlainTypeGetter {
 			enum { isConst = false };
 			typedef U Result;
@@ -129,14 +146,7 @@ namespace Loki
 		};
 
 	public:
-		enum { isPointer = PointerTraits<T>::result };
-		typedef typename PointerTraits<T>::PointeeType PointeeType;
-
-		enum { isReference = ReferenceTraits<T>::result };
-		typedef typename ReferenceTraits<T>::ReferredType ReferredType;
-
 		enum { isConst = PlainTypeGetter<T>::isConst };
-		typedef typename UnConst<T>::Result NonConstType;
 
 		typedef typename PlainTypeGetter<T>::Result PlainType;
 		typedef const typename PlainTypeGetter<T>::Result ConstPlainType;
@@ -148,6 +158,5 @@ namespace Loki
 		typedef typename ConstCorrectRef2PtrGetter<T>::Result ConstCorrectRef2PtrType;
 	};
 };
-#endif
 
 #endif

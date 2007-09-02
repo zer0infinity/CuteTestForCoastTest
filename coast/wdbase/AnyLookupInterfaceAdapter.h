@@ -19,8 +19,8 @@ template < class ContainerType >
 class AnyLookupInterfaceAdapter : public LookupInterface
 {
 public:
-	typedef typename Loki::TypeTraits<ContainerType>::PlainTypeRef ContainerTypeRef;
-	typedef typename Loki::TypeTraits<ContainerType>::ConstPlainTypeRef ConstContainerTypeRef;
+	typedef typename Loki::fooTypeTraits<ContainerType>::PlainTypeRef ContainerTypeRef;
+	typedef typename Loki::fooTypeTraits<ContainerType>::ConstPlainTypeRef ConstContainerTypeRef;
 	/*! Constructor for LookupAdapter
 		\param container [RO]Anything to use as underlying data container
 		\param pcBaseKey optional param which specifies the segment name used to emulate nested content in a Lookup. If the lookup-key starts with this name we cut it away before doing a concrete lookup.*/

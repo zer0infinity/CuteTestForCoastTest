@@ -28,10 +28,10 @@ typename BufferType,
 class EXPORTDECL_FOUNDATION StringStreamBuf : public streambuf
 {
 public:
-	typedef typename Loki::TypeTraits<BufferType>::ConstPlainTypeRef ConstPlainTypeRef;
-	typedef typename Loki::TypeTraits<BufferType>::ConstPlainTypePtr ConstPlainTypePtr;
-	typedef typename Loki::TypeTraits<BufferType>::PlainTypePtr PlainTypePtr;
-	typedef typename Loki::TypeTraits<BufferType>::ConstCorrectPtr2RefType BufferTypeRef;
+	typedef typename Loki::fooTypeTraits<BufferType>::ConstPlainTypeRef ConstPlainTypeRef;
+	typedef typename Loki::fooTypeTraits<BufferType>::ConstPlainTypePtr ConstPlainTypePtr;
+	typedef typename Loki::fooTypeTraits<BufferType>::PlainTypePtr PlainTypePtr;
+	typedef typename Loki::fooTypeTraits<BufferType>::ConstCorrectPtr2RefType BufferTypeRef;
 
 	/*! default ctor, allocates new internal String object for output
 		\param mode ios modes, bitwise or of [in|out|app|ate]: if mode is ios::app or ios::ate output is appended */
@@ -278,7 +278,7 @@ private:
 	void setgetpointer(long getoffset) {
 		char *eg = 0;
 		if (fStore && fStore->GetImpl()) {
-			eg = ((typename Loki::TypeTraits<BufferType>::NonConstType)fStore)->GetContent() + fStore->Length();    // points after get area
+			eg = const_cast<char *>(fStore->GetContent()) + fStore->Length();    // points after get area
 		}
 		setg((fOpenMode & ios::in) ? start() : eg, start() + getoffset , eg);
 	}
@@ -287,7 +287,7 @@ private:
 	void setbufpointers(long getoffset, long putoffset) {
 		char *sc = 0;
 		if (fStore->GetImpl()) {
-			sc = ((typename Loki::TypeTraits<BufferType>::NonConstType)fStore)->GetContent();
+			sc = const_cast<char *>(fStore->GetContent());
 		}
 		if ((fOpenMode & (ios::app | ios::ate)) && putoffset < fStore->Length()  ) {
 			putoffset = fStore->Length(); // adjust it to the end
@@ -352,7 +352,7 @@ private:
 	/*! auxiliary functions for interfacing to setp and setg, getting rid of
 		old streambuf style setb() and base() */
 	char *start() {
-		return (fStore && fStore->GetImpl() ? ((typename Loki::TypeTraits<BufferType>::NonConstType)fStore)->GetContent() : 0);
+		return (fStore && fStore->GetImpl() ? const_cast<char *>(fStore->GetContent()) : 0);
 	}
 
 	char *endbuf() {
@@ -388,8 +388,8 @@ typename BufferType,
 class EXPORTDECL_FOUNDATION StringStreambase : virtual public ios
 {
 public:
-	typedef typename Loki::TypeTraits<BufferType>::ConstPlainTypeRef ConstPlainTypeRef;
-	typedef typename Loki::TypeTraits<BufferType>::PlainTypePtr PlainTypePtr;
+	typedef typename Loki::fooTypeTraits<BufferType>::ConstPlainTypeRef ConstPlainTypeRef;
+	typedef typename Loki::fooTypeTraits<BufferType>::PlainTypePtr PlainTypePtr;
 	typedef StringStreamBuf<BufferType, IoDirType> StreamBufType;
 	typedef StringStreamBuf<BufferType, IoDirType>* StreamBufTypePtr;
 	typedef typename StreamBufType::BufferTypeRef BufferTypeRef;

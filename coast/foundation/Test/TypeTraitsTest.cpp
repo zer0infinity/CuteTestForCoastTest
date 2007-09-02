@@ -44,24 +44,24 @@ void TypeTraitsTest::TraitsTest()
 		t_assertm(Loki::TypeTraits<TestType>::isPointer == false, "expected non-pointer type");
 		t_assertm(Loki::TypeTraits<TestType>::isReference == false, "expected non-reference type");
 		t_assertm(Loki::TypeTraits<TestType>::isConst == false, "expected non-const type");
-		t_assertm(typeid(Loki::TypeTraits<TestType>::PointeeType) == typeid(NullType), "expected NullType");
-		t_assertm(typeid(Loki::TypeTraits<TestType>::ReferredType) == typeid(NullType), "expected NullType");
+		t_assertm(typeid(Loki::TypeTraits<TestType>::PointeeType) == typeid(Loki::NullType), "expected Loki::NullType");
+		t_assertm(typeid(Loki::TypeTraits<TestType>::ReferredType) == typeid(Loki::NullType), "expected Loki::NullType");
 		t_assertm(typeid(Loki::TypeTraits<TestType>::NonConstType) == typeid(String), "expected String-type");
 		t_assertm( Loki::TypeTraits< Loki::TypeTraits<TestType>::NonConstType >::isPointer == false, "expected non String-ptr-type");
-		t_assertm(typeid(Loki::TypeTraits<TestType>::PlainType) == typeid(String), "expected String-type");
-		t_assertm( Loki::TypeTraits< Loki::TypeTraits<TestType>::PlainType >::isReference == false, "expected plain String-type");
+		t_assertm(typeid(Loki::fooTypeTraits<TestType>::PlainType) == typeid(String), "expected String-type");
+		t_assertm( Loki::TypeTraits< Loki::fooTypeTraits<TestType>::PlainType >::isReference == false, "expected plain String-type");
 	}
 	{
 		typedef const String TestType;
 		t_assertm(Loki::TypeTraits<TestType>::isPointer == false, "expected non-pointer type");
 		t_assertm(Loki::TypeTraits<TestType>::isReference == false, "expected non-reference type");
 		t_assertm(Loki::TypeTraits<TestType>::isConst == true, "expected const type");
-		t_assertm(typeid(Loki::TypeTraits<TestType>::PointeeType) == typeid(NullType), "expected NullType");
-		t_assertm(typeid(Loki::TypeTraits<TestType>::ReferredType) == typeid(NullType), "expected NullType");
+		t_assertm(typeid(Loki::TypeTraits<TestType>::PointeeType) == typeid(Loki::NullType), "expected Loki::NullType");
+		t_assertm(typeid(Loki::TypeTraits<TestType>::ReferredType) == typeid(Loki::NullType), "expected Loki::NullType");
 		t_assertm(typeid(Loki::TypeTraits<TestType>::NonConstType) == typeid(String), "expected String-type");
 		t_assertm( Loki::TypeTraits< Loki::TypeTraits<TestType>::NonConstType >::isPointer == false, "expected non String-ptr-type");
-		t_assertm(typeid(Loki::TypeTraits<TestType>::PlainType) == typeid(String), "expected String-type");
-		t_assertm( Loki::TypeTraits< Loki::TypeTraits<TestType>::PlainType >::isReference == false, "expected plain String-type");
+		t_assertm(typeid(Loki::fooTypeTraits<TestType>::PlainType) == typeid(String), "expected String-type");
+		t_assertm( Loki::TypeTraits< Loki::fooTypeTraits<TestType>::PlainType >::isReference == false, "expected plain String-type");
 	}
 	{
 		typedef String *TestType;
@@ -69,11 +69,11 @@ void TypeTraitsTest::TraitsTest()
 		t_assertm(Loki::TypeTraits<TestType>::isReference == false, "expected non-reference type");
 		t_assertm(Loki::TypeTraits<TestType>::isConst == false, "expected non-const type");
 		t_assertm(typeid(Loki::TypeTraits<TestType>::PointeeType) == typeid(String), "expected String-type");
-		t_assertm(typeid(Loki::TypeTraits<TestType>::ReferredType) == typeid(NullType), "expected NullType");
+		t_assertm(typeid(Loki::TypeTraits<TestType>::ReferredType) == typeid(Loki::NullType), "expected Loki::NullType");
 		t_assertm(typeid(Loki::TypeTraits<TestType>::NonConstType) == typeid(String *), "expected String-ptr-type");
 		t_assertm( Loki::TypeTraits< Loki::TypeTraits<TestType>::NonConstType >::isPointer == true, "expected String-ptr-type");
-		t_assertm(typeid(Loki::TypeTraits<TestType>::PlainType) == typeid(String), "expected String-type");
-		t_assertm( Loki::TypeTraits< Loki::TypeTraits<TestType>::PlainType >::isReference == false, "expected plain String-type");
+		t_assertm(typeid(Loki::fooTypeTraits<TestType>::PlainType) == typeid(String), "expected String-type");
+		t_assertm( Loki::TypeTraits< Loki::fooTypeTraits<TestType>::PlainType >::isReference == false, "expected plain String-type");
 	}
 	{
 		typedef const String *TestType;
@@ -81,35 +81,35 @@ void TypeTraitsTest::TraitsTest()
 		t_assertm(Loki::TypeTraits<TestType>::isReference == false, "expected non-reference type");
 		t_assertm(Loki::TypeTraits<TestType>::isConst == true, "expected const type");
 		t_assertm(typeid(Loki::TypeTraits<TestType>::PointeeType) == typeid(String), "expected String-type");
-		t_assertm(typeid(Loki::TypeTraits<TestType>::ReferredType) == typeid(NullType), "expected NullType");
+		t_assertm(typeid(Loki::TypeTraits<TestType>::ReferredType) == typeid(Loki::NullType), "expected Loki::NullType");
 		t_assertm(typeid(Loki::TypeTraits<TestType>::NonConstType) == typeid(String *), "expected String-ptr-type");
 		t_assertm( Loki::TypeTraits< Loki::TypeTraits<TestType>::NonConstType >::isPointer == true, "expected String-ptr-type");
-		t_assertm(typeid(Loki::TypeTraits<TestType>::PlainType) == typeid(String), "expected String-type");
-		t_assertm( Loki::TypeTraits< Loki::TypeTraits<TestType>::PlainType >::isReference == false, "expected plain String-type");
+		t_assertm(typeid(Loki::fooTypeTraits<TestType>::PlainType) == typeid(String), "expected String-type");
+		t_assertm( Loki::TypeTraits< Loki::fooTypeTraits<TestType>::PlainType >::isReference == false, "expected plain String-type");
 	}
 	{
 		typedef String &TestType;
 		t_assertm(Loki::TypeTraits<TestType>::isPointer == false, "expected non-pointer type");
 		t_assertm(Loki::TypeTraits<TestType>::isReference == true, "expected reference type");
 		t_assertm(Loki::TypeTraits<TestType>::isConst == false, "expected non-const type");
-		t_assertm(typeid(Loki::TypeTraits<TestType>::PointeeType) == typeid(NullType), "expected NullType");
+		t_assertm(typeid(Loki::TypeTraits<TestType>::PointeeType) == typeid(Loki::NullType), "expected Loki::NullType");
 		t_assertm(typeid(Loki::TypeTraits<TestType>::ReferredType) == typeid(String), "expected String-type");
 		t_assertm(typeid(Loki::TypeTraits<TestType>::NonConstType) == typeid(String &), "expected String-ref-type");
 		t_assertm( Loki::TypeTraits< Loki::TypeTraits<TestType>::NonConstType >::isPointer == false, "expected non String-ptr-type");
-		t_assertm(typeid(Loki::TypeTraits<TestType>::PlainType) == typeid(String), "expected String-type");
-		t_assertm( Loki::TypeTraits< Loki::TypeTraits<TestType>::PlainType >::isReference == false, "expected plain String-type");
+		t_assertm(typeid(Loki::fooTypeTraits<TestType>::PlainType) == typeid(String), "expected String-type");
+		t_assertm( Loki::TypeTraits< Loki::fooTypeTraits<TestType>::PlainType >::isReference == false, "expected plain String-type");
 	}
 	{
 		typedef const String &TestType;
 		t_assertm(Loki::TypeTraits<TestType>::isPointer == false, "expected non-pointer type");
 		t_assertm(Loki::TypeTraits<TestType>::isReference == true, "expected reference type");
 		t_assertm(Loki::TypeTraits<TestType>::isConst == true, "expected const type");
-		t_assertm(typeid(Loki::TypeTraits<TestType>::PointeeType) == typeid(NullType), "expected NullType");
+		t_assertm(typeid(Loki::TypeTraits<TestType>::PointeeType) == typeid(Loki::NullType), "expected Loki::NullType");
 		t_assertm(typeid(Loki::TypeTraits<TestType>::ReferredType) == typeid(String), "expected String-type");
 		t_assertm(typeid(Loki::TypeTraits<TestType>::NonConstType) == typeid(String &), "expected String-ref-type");
 		t_assertm( Loki::TypeTraits< Loki::TypeTraits<TestType>::NonConstType >::isPointer == false, "expected non String-ptr-type");
-		t_assertm(typeid(Loki::TypeTraits<TestType>::PlainType) == typeid(String), "expected String-type");
-		t_assertm( Loki::TypeTraits< Loki::TypeTraits<TestType>::PlainType >::isReference == false, "expected plain String-type");
+		t_assertm(typeid(Loki::fooTypeTraits<TestType>::PlainType) == typeid(String), "expected String-type");
+		t_assertm( Loki::TypeTraits< Loki::fooTypeTraits<TestType>::PlainType >::isReference == false, "expected plain String-type");
 	}
 }
 
@@ -120,8 +120,8 @@ typename InnerType
 class ClassTraits
 {
 public:
-	typedef typename Loki::TypeTraits<InnerType>::ConstPlainTypeRef ConstPlainTypeRef;
-	typedef typename Loki::TypeTraits<InnerType>::PlainTypePtr PlainTypePtr;
+	typedef typename Loki::fooTypeTraits<InnerType>::ConstPlainTypeRef ConstPlainTypeRef;
+	typedef typename Loki::fooTypeTraits<InnerType>::PlainTypePtr PlainTypePtr;
 
 	ClassTraits(ConstPlainTypeRef aParam)
 		: fField(aParam) {
