@@ -34,12 +34,12 @@ namespace Loki
 			typedef NullType PointeeType;
 		};
 
-		template <class U> struct PointerTraits<const U *> {
+		template <class U> struct PointerTraits<U *> {
 			enum { result = true };
 			typedef U PointeeType;
 		};
 
-		template <class U> struct PointerTraits<U *> {
+		template <class U> struct PointerTraits<U* &> {
 			enum { result = true };
 			typedef U PointeeType;
 		};
@@ -47,11 +47,6 @@ namespace Loki
 		template <class U> struct ReferenceTraits {
 			enum { result = false };
 			typedef NullType ReferredType;
-		};
-
-		template <class U> struct ReferenceTraits<const U &> {
-			enum { result = true };
-			typedef U ReferredType;
 		};
 
 		template <class U> struct ReferenceTraits<U &> {
@@ -65,10 +60,6 @@ namespace Loki
 
 		template <class U> struct UnConst<const U &> {
 			typedef U &Result;
-		};
-
-		template <class U> struct UnConst<const U *> {
-			typedef U *Result;
 		};
 
 		template <class U> struct UnConst<const U> {
@@ -92,32 +83,26 @@ namespace Loki
 	{
 	private:
 		template <class U> struct PlainTypeGetter {
-			enum { isConst = false };
 			typedef U Result;
 		};
 
 		template <class U> struct PlainTypeGetter<U *> {
-			enum { isConst = false };
 			typedef U Result;
 		};
 
 		template <class U> struct PlainTypeGetter<U &> {
-			enum { isConst = false };
 			typedef U Result;
 		};
 
 		template <class U> struct PlainTypeGetter<const U> {
-			enum { isConst = true };
 			typedef U Result;
 		};
 
 		template <class U> struct PlainTypeGetter<const U *> {
-			enum { isConst = true };
 			typedef U Result;
 		};
 
 		template <class U> struct PlainTypeGetter<const U &> {
-			enum { isConst = true };
 			typedef U Result;
 		};
 
@@ -146,16 +131,14 @@ namespace Loki
 		};
 
 	public:
-		enum { isConst = PlainTypeGetter<T>::isConst };
-
-		typedef typename PlainTypeGetter<T>::Result PlainType;
-		typedef const typename PlainTypeGetter<T>::Result ConstPlainType;
-		typedef typename PlainTypeGetter<T>::Result &PlainTypeRef;
-		typedef const typename PlainTypeGetter<T>::Result &ConstPlainTypeRef;
-		typedef typename PlainTypeGetter<T>::Result *PlainTypePtr;
-		typedef const typename PlainTypeGetter<T>::Result *ConstPlainTypePtr;
-		typedef typename ConstCorrectPtr2RefGetter<T>::Result ConstCorrectPtr2RefType;
-		typedef typename ConstCorrectRef2PtrGetter<T>::Result ConstCorrectRef2PtrType;
+		typedef typename PlainTypeGetter< typename Loki::TypeTraits<T>::NonConstType >::Result PlainType;
+		typedef const typename PlainTypeGetter< typename Loki::TypeTraits<T>::NonConstType >::Result ConstPlainType;
+		typedef typename PlainTypeGetter< typename Loki::TypeTraits<T>::NonConstType >::Result &PlainTypeRef;
+		typedef const typename PlainTypeGetter< typename Loki::TypeTraits<T>::NonConstType >::Result &ConstPlainTypeRef;
+		typedef typename PlainTypeGetter< typename Loki::TypeTraits<T>::NonConstType >::Result *PlainTypePtr;
+		typedef const typename PlainTypeGetter< typename Loki::TypeTraits<T>::NonConstType >::Result *ConstPlainTypePtr;
+		typedef typename ConstCorrectPtr2RefGetter< typename Loki::TypeTraits<T>::NonConstType >::Result ConstCorrectPtr2RefType;
+		typedef typename ConstCorrectRef2PtrGetter< typename Loki::TypeTraits<T>::NonConstType >::Result ConstCorrectRef2PtrType;
 	};
 };
 
