@@ -195,8 +195,10 @@ Server::~Server()
 int Server::DoGlobalInit(int argc, const char *argv[], const ROAnything config)
 {
 	StartTrace(Server.DoGlobalInit);
-	int ret = Application::DoGlobalInit(argc, argv, config);
-	SetUid();
+	int ret(-1);
+	if ( ( ret = Application::DoGlobalInit(argc, argv, config) ) >= 0 ) {
+		SetUid();
+	}
 	return (ret);
 }
 
@@ -614,7 +616,7 @@ int Server::SetUid()
 #else
 	m << geteuid();
 #endif
-	m << "), server-pid: " << GetPid() << "\n" << "Have fun :-)" << "\n";
+	m << "), server-pid: " << GetPid() << "\n";
 	SysLog::WriteToStderr(m);
 #endif
 	return ret;

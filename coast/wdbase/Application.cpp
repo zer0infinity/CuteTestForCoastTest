@@ -165,9 +165,11 @@ int Application::GlobalInit(int argc, const char *argv[], const ROAnything confi
 {
 	StartTrace(Application.GlobalInit);
 	int ret = DoGlobalInit(argc, argv, config);
-	String msg;
-	msg << "Global init: " << (ret == 0 ? "succeeded" : "failed");
-	SYSINFO(msg);
+	if ( ret == 0 ) {
+		SYSINFO("Global init: succeeded");
+	} else {
+		SYSERROR("Global init: failed");
+	}
 	return (ret);
 }
 
@@ -186,6 +188,7 @@ int Application::GlobalRun()
 int Application::DoGlobalRun()
 {
 	StartTrace(Application.DoGlobalRun);
+	SysLog::WriteToStderr("=> Have fun :-)\n");
 	return Run();
 }
 

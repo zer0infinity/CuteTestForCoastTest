@@ -147,8 +147,8 @@ int AppBooter::Run(int argc, const char *argv[], bool doHalt)
 				// with the initialization
 				// and give the app the chance to terminate decently.
 				application->GlobalTerminate(retVal);
-				String logMsg("Initialization failed: ");
-				logMsg << retVal;
+				String logMsg("Initialization of ");
+				logMsg << applicationName << " failed with code " << retVal;
 				SysLog::Error(logMsg);
 			}
 			application = 0;
