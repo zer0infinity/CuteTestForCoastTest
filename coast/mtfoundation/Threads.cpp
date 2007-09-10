@@ -1161,7 +1161,7 @@ bool RWLock::TryLock(eLockMode mode) const
 
 SimpleCondition::SimpleCondition()
 {
-	StartTrace(SimpleCondition.SimpleCondition);
+	StatTrace(SimpleCondition.SimpleCondition, "", Storage::Current());
 	if ( !CREATECOND(fSimpleCondition) ) {
 		SysLog::Error("CREATECOND failed");
 	}
@@ -1169,7 +1169,7 @@ SimpleCondition::SimpleCondition()
 
 SimpleCondition::~SimpleCondition()
 {
-	StartTrace(SimpleCondition.~SimpleCondition);
+	StatTrace(SimpleCondition.~SimpleCondition, "", Storage::Current());
 	if ( !DELETECOND(fSimpleCondition) ) {
 		SysLog::Error("DELETECOND failed");
 	}
