@@ -9,23 +9,22 @@
 #ifndef _TestTimer_H
 #define _TestTimer_H
 
+#include <cmath>
+
 #if defined(WIN32)
 #include <windows.h>
-#define HRTESTTIME __int64
+typedef __int64 HRTESTTIME;
 #define GetHRTESTTIME()	GetTickCount()
-#define GetHRVTESTTIME() GetTickCount()
 #elif defined(__sun)
 #include <sys/times.h>
 typedef hrtime_t HRTESTTIME;
 #define GetHRTESTTIME()	gethrtime()
-#define GetHRVTIME()	gethrvtime()
 #elif defined(__linux__)
 #include <time.h>
 #include <sys/times.h>
 typedef clock_t			HRTESTTIME;
 extern "C" HRTESTTIME gettimes();
 #define GetHRTESTTIME()	gettimes()
-#define GetHRVTIME()	gettimes()
 #elif defined(_AIX)
 #include <time.h>
 #include <sys/time.h>
@@ -51,18 +50,22 @@ inline HRTESTTIME nanoSecondTime()
 #endif
 
 //---- TestTimer ----------------------------------------------------------
-//! <B>timer infrastructure to measure elapsed time in program scopes. </B>
-/*!Timer infrastructure to measure elapsed time in program scopes.
- * The time is measured by system dependent ticks.
- * The ticks can be scaled to different resolutions, but the accuraccy depends on the used system timer
+/*! Timer infrastructure to measure elapsed time in program scopes.
+The time is measured by system dependent ticks.
+Linux:        100 ticks per second, eg. 10ms steps
+Sun  : 1000000000 ticks per second, eg. 1ns steps
+WIN32:       1000 ticks per second, eg. 1ms steps
+The ticks can be scaled to different resolutions, but the accuraccy depends on the used system timer
 */
 class TestTimer
 {
 public:
-	//! Timings are system dependent, resolution try to scale it to ticks per second
-	//! \param resolution the number of ticks you want measure per second; 0 means system dependent clock ticks
-	//! small infrastructure class to ease timings of scopes with whatever resolution you like;<br> it uses highest resolution timing apis defined on the platform
-	TestTimer(long resolution = 1000);
+	typedef HRTESTTIME tTimeType;
+
+	/*! Timings are system dependent, resolution is used to scale it to user needs
+		small infrastructure class to ease timings of scopes with whatever resolution you like.it uses highest resolution timing apis defined on the platform
+		\param resolution the number of ticks you want measure per second; 0 means system dependent clock ticks, 1 means second resolution, 1000 means millisecond resolution etc */
+	TestTimer(tTimeType resolution = 1000);
 
 	//!copy constructor for difftimers
 	TestTimer(const TestTimer &dt);
@@ -73,30 +76,46 @@ public:
 	//!destructor
 	~TestTimer() { }
 
-	//!difference in ticks per seconds since last start; timer is not reset
-	//! \param simulatedValue defines return value for predictable testcases
-	long Diff(long simulatedValue = -1);
+	/*! difference in ticks per seconds since last start; timer is not reset
+		\param simulatedValue defines return value for predictable testcases
+		\return time difference in requested resolution */
+	tTimeType Diff(tTimeType simulatedValue = -1);
 
 	//!resets timer to a new start value
 	void Start();
 
 	//!resets timer to a new start value and returns the elapsed ticks since last start
-	long Reset();
+	tTimeType Reset();
+
+	/*! Get back the tTimeType value since Start() or Reset() was called. Does not touch fStart.
+		\return difference from now to start */
+	tTimeType RawDiff() const {
+		return ( GetHRTESTTIME() - fStart );
+	}
+
+	/*! Get platform dependent ticks per second
+		\return ticks per second */
+	static tTimeType TicksPerSecond();
+
+	/*! Calculate relative difference of two values, eg. a percentage value
+		\param hrReference reference value, which is the 100% reference mark
+		\param hrCurrent value to compare reference with
+		\return relative difference */
+	static double RelativeChange(tTimeType hrReference, tTimeType hrCurrent, double precision = 100.0) {
+		return std::floor(precision * double(hrReference) / double(hrCurrent)) / precision;
+	}
+
+	//!scales the system dependent raw clock tick difference to the resolution defined in the constructor
+	static tTimeType Scale(tTimeType rawDiff, tTimeType resolution);
 
 protected:
 	friend class TestTimerTest;
 
-	//!scales the system dependent raw clock tick difference to the resolution defined in the constructor
-	long Scale(HRTESTTIME rawDiff);
-
-	//!returns the platform dependent ticks per second
-	static HRTESTTIME TicksPerSecond();
-
 	//!keeps last startvalue in system dependent ticks
-	HRTESTTIME fStart;
+	tTimeType fStart;
 
 	//!stores resolution in ticks per second
-	long fResolution;
+	tTimeType fResolution;
 };
 
 #endif

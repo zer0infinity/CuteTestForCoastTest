@@ -17,19 +17,21 @@
 #endif
 
 //---- TestTimer ----------------------------------------------------------------
-TestTimer::TestTimer(long resolution) : fResolution(resolution)
+TestTimer::TestTimer(tTimeType resolution)
+	: fResolution(resolution)
 {
 	if ( fResolution <= 0 ) {
-		fResolution = 1;    // measure in clock ticks
+		fResolution = 0;    // measure in clock ticks
 	}
 
 	Start();
 }
 
-TestTimer::TestTimer(const TestTimer &dt) : fResolution(dt.fResolution)
+TestTimer::TestTimer(const TestTimer &dt)
+	: fResolution(dt.fResolution)
 {
 	if ( fResolution <= 0 ) {
-		fResolution = 1;    // measure in clock ticks
+		fResolution = 0;    // measure in clock ticks
 	}
 
 	Start();
@@ -41,33 +43,25 @@ TestTimer &TestTimer::operator=(const TestTimer &dt)
 	return *this;
 }
 
-HRTESTTIME TestTimer::TicksPerSecond()
+TestTimer::tTimeType TestTimer::Scale(tTimeType rawDiff, tTimeType resolution)
 {
-#if defined(__linux__)
-	return sysconf(_SC_CLK_TCK);
-#elif defined(__sun)
-	return 1000000000;
-#elif defined(WIN32)
-	return 1000;
-#endif
-}
-
-long TestTimer::Scale(HRTESTTIME rawDiff)
-{
-	if ( TicksPerSecond() < fResolution ) {
+	if ( resolution <= 0 ) {
+		return rawDiff;
+	}
+	if ( TicksPerSecond() < resolution ) {
 		// beware of wrong scale
-		return (long)(rawDiff * fResolution / TicksPerSecond());
+		return ( rawDiff * ( resolution / TicksPerSecond() ) );
 	}
 	// beware of overflow
-	return (long)((rawDiff * fResolution) / TicksPerSecond());
+	return ( (rawDiff * resolution) / TicksPerSecond() );
 }
 
-long TestTimer::Diff(long simulatedValue)
+TestTimer::tTimeType TestTimer::Diff(tTimeType simulatedValue)
 {
 	if (simulatedValue > -1) {
 		return simulatedValue;
 	} else {
-		long lDiff = Scale(GetHRTESTTIME() - fStart);
+		tTimeType lDiff = Scale(RawDiff(), fResolution);
 		return lDiff;
 	}
 }
@@ -77,9 +71,20 @@ void TestTimer::Start()
 	fStart = GetHRTESTTIME();
 }
 
-long TestTimer::Reset()
+TestTimer::tTimeType TestTimer::Reset()
 {
-	long delta = Diff();
+	tTimeType delta = Diff();
 	Start();
 	return delta;
+}
+
+TestTimer::tTimeType TestTimer::TicksPerSecond()
+{
+#if defined(__linux__)
+	return sysconf(_SC_CLK_TCK);
+#elif defined(__sun)
+	return 1000000000;
+#elif defined(WIN32)
+	return 1000;
+#endif
 }
