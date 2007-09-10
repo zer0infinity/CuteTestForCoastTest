@@ -505,7 +505,7 @@ void QueueTest::ConsumerTerminationTest()
 /*
 //TODO - future: change DoGet() method, so that it's not restricted only for Anything's (see Queue.h)
 */
-typedef Queue<long, Anything, Allocator *> LongAnyQueueType;
+typedef Queue<long, Anything> LongAnyQueueType;
 void QueueTest::SimpleTypeAnyStorageQueueTest()
 {
 	StartTrace(QueueTest.SimpleTypeAnyStorageQueueTest);
@@ -526,8 +526,12 @@ void QueueTest::SimpleTypeAnyStorageQueueTest()
 
 typedef	dcd_event< DCDStateMachine > EventType;
 typedef	EventType *EventTypePtr;
-typedef STLStorage::STLAllocator< EventTypePtr > EvtAllocType;
-typedef Queue< EventTypePtr, std::list<EventTypePtr, EvtAllocType >, EvtAllocType > EventQueueType;
+#if defined(__GNUG__)  && ( __GNUC__ >= 4 )
+typedef STLStorage::fast_pool_allocator_global< EventTypePtr > EvtAllocType;
+typedef Queue< EventTypePtr, std::list<EventTypePtr, EvtAllocType > > EventQueueType;
+#else
+typedef Queue< EventTypePtr, std::list<EventTypePtr > > EventQueueType;
+#endif
 void QueueTest::SimpleTypeListStorageQueueTest()
 {
 	StartTrace(QueueTest.SimpleTypeListStorageQueueTest);
