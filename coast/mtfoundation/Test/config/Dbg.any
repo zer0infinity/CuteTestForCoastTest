@@ -172,4 +172,24 @@
 		/MainSwitch						59
 		/EnableAll						59
 	}
+	/ObjectList_rTest {
+		/MainSwitch						59
+		/EnableAll						59
+	}
+	/fast_pool_allocator {
+		/MainSwitch						59
+		/EnableAll						59
+	}
+	/pool_allocator {
+		/MainSwitch						59
+		/EnableAll						59
+	}
+	/BoostPoolUserAllocatorGlobal {
+		/MainSwitch						59
+		/EnableAll						59
+	}
+	/BoostPoolUserAllocatorCurrent {
+		/MainSwitch						59
+		/EnableAll						59
+	}
 }
