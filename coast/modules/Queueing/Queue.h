@@ -48,10 +48,9 @@ Statistics can be made by evaluating the returned Anything from GetStatistics().
 */
 template <
 class TElementType,
-	  class TListStorageType,
-	  class ContainerAllocatorType
+	  class TListStorageType
 	  >
-class Queue : public IFAObject
+class QueueBase : public IFAObject
 {
 	friend class QueueTest;
 public:
@@ -59,10 +58,10 @@ public:
 	typedef ElementType &ElementTypeRef;
 	typedef TListStorageType ListStorageType;
 	typedef ListStorageType &ListStorageTypeRef;
-	typedef Queue<ElementType, ListStorageType, ContainerAllocatorType> ThisType;
+	typedef QueueBase<ElementType, ListStorageType> ThisType;
 
 	//--- constructors
-	Queue(const char *name, long lQueueSize = LONG_MAX, Allocator *pAlloc = Storage::Global())
+	QueueBase(const char *name, long lQueueSize = LONG_MAX, Allocator *pAlloc = Storage::Global())
 		: fName(name, -1, pAlloc)
 		, fAllocator(pAlloc)
 		, fSemaFullSlots(0L)
@@ -78,7 +77,7 @@ public:
 		, fBlockedLock("BlockedLock", fAllocator)
 		, fBlockingPutLock("BlockingPutLock", fAllocator)
 		, fBlockingGetLock("BlockingGetLock", fAllocator)
-		, fContainer( ContainerAllocatorType(pAlloc) )
+		, fContainer()
 		, fAnyStatistics(fAllocator) {
 		StartTrace1(Queue.Queue, "queue size:" << lQueueSize);
 		fAnyStatistics["QueueSize"] = lQueueSize;
@@ -89,7 +88,7 @@ public:
 		UnBlock();
 	}
 
-	~Queue() {
+	~QueueBase() {
 		StartTrace(Queue.~Queue);
 		// block any pending interface accesses
 		Block();
@@ -170,7 +169,8 @@ public:
 		return eRet;
 	}
 
-	void EmptyQueue(ListStorageTypeRef anyElements) {
+	template < class DestListType >
+	void EmptyQueue(DestListType &anyElements) {
 		StartTrace(Queue.EmptyQueue);
 		if ( !IsBlocked() ) {
 			LockUnlockEntry me(fQueueLock);
@@ -321,19 +321,23 @@ protected:
 		return lRet;
 	}
 
-	void IntEmptyQueue(ListStorageTypeRef anyElements) {
+	template < class DestListType >
+	void IntEmptyQueue(DestListType &anyElements) {
 		StartTrace(Queue.IntEmptyQueue);
-		Trace("current queue size:" << IntGetSize());
-		while ( IntGetSize() ) {
+		long lSize(IntGetSize());
+		Trace("current queue size:" << lSize);
+		// try to optimize by using swap to exchange internal with external list
+		// => NO, it would copy the allocator too, which is dangerous in case we use PoolAllocators belonging to threads
+		while ( --lSize >= 0 ) {
 			fSemaFullSlots.TryAcquire();
 			moveElement(fContainer, anyElements);
 			fSemaEmptySlots.Release();
 		}
-
-		Trace("elements removed:" << (long)fContainer.size());
+		Trace("elements removed:" << (long)anyElements.size());
 	}
 
-	void moveElement(ListStorageTypeRef aFrom, ListStorageTypeRef aTo) {
+	template < class DestListType >
+	void moveElement(ListStorageTypeRef aFrom, DestListType &aTo) {
 		aTo.push_back(aFrom.front());
 		aFrom.pop_front();
 	}
@@ -381,6 +385,48 @@ protected:
 	Anything	fAnyStatistics;
 };
 
-typedef Queue<Anything, Anything, Allocator *> AnyQueueType;
+template <
+class TElementType,
+	  class TListStorageType
+	  >
+class Queue : public QueueBase<TElementType, TListStorageType>
+{
+	friend class QueueTest;
+public:
+	typedef TElementType ElementType;
+	typedef ElementType &ElementTypeRef;
+	typedef TListStorageType ListStorageType;
+	typedef ListStorageType &ListStorageTypeRef;
+	typedef QueueBase<ElementType, ListStorageType> BaseType;
+	typedef Queue<ElementType, ListStorageType> ThisType;
+
+	Queue(const char *name, long lQueueSize = LONG_MAX, Allocator *pAlloc = Storage::Global())
+		: BaseType(name, lQueueSize, pAlloc) {
+		StatTrace(Queue.Queue, "generic", Storage::Current());
+	}
+};
+
+template <
+class TElementType
+>
+class Queue<TElementType, Anything> : public QueueBase<TElementType, Anything>
+{
+	friend class QueueTest;
+public:
+	typedef TElementType ElementType;
+	typedef ElementType &ElementTypeRef;
+	typedef Anything ListStorageType;
+	typedef ListStorageType &ListStorageTypeRef;
+	typedef QueueBase<ElementType, ListStorageType> BaseType;
+	typedef Queue<ElementType, ListStorageType> ThisType;
+
+	Queue(const char *name, long lQueueSize = LONG_MAX, Allocator *pAlloc = Storage::Global())
+		: BaseType(name, lQueueSize, pAlloc) {
+		StatTrace(Queue.Queue, "Anything", Storage::Current());
+		this->fContainer.SetAllocator(pAlloc);
+	}
+};
+
+typedef Queue<Anything, Anything> AnyQueueType;
 
 #endif

@@ -32,8 +32,7 @@
 template
 <
 class ElementType,
-	  class ListStorageType,
-	  class ContainerAllocatorType
+	  class ListStorageType
 	  >
 class QueueWorkingModule : public WDModule
 {
@@ -42,7 +41,7 @@ class QueueWorkingModule : public WDModule
 	friend class CalculationsModuleTest;
 public:
 	typedef ElementType &ElementTypeRef;
-	typedef Queue<ElementType, ListStorageType, ContainerAllocatorType> QueueType;
+	typedef Queue<ElementType, ListStorageType> QueueType;
 	typedef typename QueueType::ListStorageTypeRef ListStorageTypeRef;
 	typedef QueueType &AnyQueueTypeRef;
 	typedef QueueType *AnyQueueTypePtr;
@@ -198,7 +197,8 @@ public:
 	/* exclusively consume all Elements from queue, threads which are blocked on the queue to get an element will be woken up because of the released semaphore. But instead of getting an Element it will get nothing back and should be able to handle this correctly.
 		\param anyELements Anything to hold the elements removed from the queue
 		\return number of elements removed from the queue */
-	long FlushQueue(ListStorageTypeRef anyElements) {
+	template < class DestListType >
+	long FlushQueue(DestListType &anyElements) {
 		StartTrace(QueueWorkingModule.FlushQueue);
 		long lElements = 0L;
 		if ( fpQueue && fpQueue->IsAlive() && IsAlive() ) {
@@ -331,6 +331,6 @@ private:
 	u_long		fAlive;
 };
 
-typedef QueueWorkingModule<Anything, Anything, Allocator *> AnyQueueWorkingModule;
+typedef QueueWorkingModule<Anything, Anything> AnyQueueWorkingModule;
 
 #endif
