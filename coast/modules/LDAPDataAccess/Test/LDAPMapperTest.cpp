@@ -6,7 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#if defined(sun) || defined(WIN32) || defined(__linux__)
+#if defined(__sun) || defined(WIN32) || defined(__linux__)
 
 //--- interface include --------------------------------------------------------
 #include "LDAPMapperTest.h"
