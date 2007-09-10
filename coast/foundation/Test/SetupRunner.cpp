@@ -31,8 +31,6 @@
 #include "DiffTimerTest.h"
 #include "DbgTest.h"
 #include "SystemTest.h"
-#include "MemTrackerTest.h"
-#include "StorageTest.h"
 #include "ROSimpleAnythingTest.h"
 #include "GenericXMLParserTest.h"
 #include "AnyBuiltInSortTest.h"
@@ -45,10 +43,8 @@
 #include "ConversionUtilsTest.h"
 #include "AnyImplsTest.h"
 #include "TypeTraitsTest.h"
-#include "PoolAllocatorTest.h"
 #include "AnythingIteratorTest.h"
 #include "AnythingSTLTest.h"
-#include "STLStorageTest.h"
 
 #ifndef __370__
 #if !defined(WIN32)
@@ -88,10 +84,6 @@ void setupRunner(TestRunner &runner)
 	ADD_SUITE(runner, StringStreamTest);
 #endif
 	ADD_SUITE(runner, DbgTest);
-	ADD_SUITE(runner, MemTrackerTest);
-	ADD_SUITE(runner, StorageTest);
-	ADD_SUITE(runner, PoolAllocatorTest);
-	ADD_SUITE(runner, STLStorageTest);
 	ADD_SUITE(runner, ROSimpleAnythingTest);
 	ADD_SUITE(runner, SysLogTest);
 	ADD_SUITE(runner, GenericXMLParserTest);
