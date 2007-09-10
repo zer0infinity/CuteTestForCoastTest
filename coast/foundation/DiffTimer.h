@@ -10,27 +10,23 @@
 #define _DiffTimer_H
 
 #include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
+#include <ctime>
+#include <cmath>
 
 #if defined(WIN32)
-#define HRTIME			__int64
+typedef __int64 HRTIME;
 #define GetHRTIME()		GetTickCount()
-#define GetHRVTIME()	GetTickCount()
-#endif
-#ifdef __sun
+#elif defined(__sun)
 #include <sys/times.h>
 typedef hrtime_t 		HRTIME;
 #define GetHRTIME()		gethrtime()
-#define GetHRVTIME()	gethrvtime()
-#endif
-#if defined(__linux__)
+#elif defined(__linux__)
 #include <time.h>
 #include <sys/times.h>
 typedef clock_t			HRTIME;
 extern "C" HRTIME 		gettimes();
 #define GetHRTIME()		gettimes()
-#define GetHRVTIME()	gettimes()
-#endif
-#if defined(_AIX)
+#elif defined(_AIX)
 #include <time.h>
 #include <sys/time.h>
 #include <sys/systemcfg.h>
@@ -51,7 +47,6 @@ inline HRTIME nanoSecondTime()
 } // nanoSecondTime
 
 #define GetHRTIME()		nanoSecondTime()
-#define GetHRVTIME()	nanoSecondTime()
 #endif
 
 //---- DiffTimer ----------------------------------------------------------
@@ -65,11 +60,12 @@ The ticks can be scaled to different resolutions, but the accuraccy depends on t
 class EXPORTDECL_FOUNDATION DiffTimer
 {
 public:
+	typedef HRTIME tTimeType;
+
 	/*! Timings are system dependent, resolution is used to scale it to user needs
 		small infrastructure class to ease timings of scopes with whatever resolution you like.it uses highest resolution timing apis defined on the platform
-		\param resolution the number of ticks you want measure per second; 0 means system dependent clock ticks, 1 means second resolution, 1000 means millisecond resolution etc
-	*/
-	DiffTimer(long resolution = 1000);
+		\param resolution the number of ticks you want measure per second; 0 means system dependent clock ticks, 1 means second resolution, 1000 means millisecond resolution etc */
+	DiffTimer(tTimeType resolution = 1000);
 
 	//!copy constructor for difftimers
 	DiffTimer(const DiffTimer &dt);
@@ -79,31 +75,46 @@ public:
 
 	//!destructor
 	~DiffTimer() { }
-
-	/*!difference in ticks per seconds since last start; timer is not reset
-		\param simulatedValue defines return value for predictable testcases */
-	HRTIME Diff(HRTIME simulatedValue = -1);
+	/*! difference in ticks per seconds since last start; timer is not reset
+		\param simulatedValue defines return value for predictable testcases
+		\return time difference in requested resolution */
+	tTimeType Diff(tTimeType simulatedValue = -1);
 
 	//!resets timer to a new start value
 	void Start();
 
 	//!resets timer to a new start value and returns the elapsed ticks since last start
-	HRTIME Reset();
+	tTimeType Reset();
 
-	//!returns the platform dependent ticks per second
-	static HRTIME TicksPerSecond();
+	/*! Get back the tTimeType value since Start() or Reset() was called. Does not touch fStart.
+		\return difference from now to start */
+	tTimeType RawDiff() const {
+		return ( GetHRTIME() - fStart );
+	}
+
+	/*! Get platform dependent ticks per second
+		\return ticks per second */
+	static tTimeType TicksPerSecond();
+
+	/*! Calculate relative difference of two values, eg. a percentage value
+		\param hrReference reference value, which is the 100% reference mark
+		\param hrCurrent value to compare reference with
+		\return relative difference */
+	static double RelativeChange(tTimeType hrReference, tTimeType hrCurrent, double precision = 100.0) {
+		return std::floor(precision * double(hrReference) / double(hrCurrent)) / precision;
+	}
+
+	//!scales the system dependent raw clock tick difference to the resolution defined in the constructor
+	static tTimeType Scale(tTimeType rawDiff, tTimeType resolution);
 
 protected:
 	friend class DiffTimerTest;
 
-	//!scales the system dependent raw clock tick difference to the resolution defined in the constructor
-	HRTIME Scale(HRTIME rawDiff);
-
 	//!keeps last startvalue in system dependent ticks
-	HRTIME fStart;
+	tTimeType fStart;
 
 	//!stores resolution in ticks per second
-	long fResolution;
+	tTimeType fResolution;
 };
 
 #endif

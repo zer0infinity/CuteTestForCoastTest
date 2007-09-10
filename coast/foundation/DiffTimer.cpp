@@ -24,7 +24,7 @@ HRTIME  gettimes()
 #endif
 
 //---- DiffTimer ---------------------------------------------------------------
-DiffTimer::DiffTimer(long resolution)
+DiffTimer::DiffTimer(tTimeType resolution)
 	: fResolution(resolution)
 {
 	StartTrace(DiffTimer.DiffTimer);
@@ -55,29 +55,29 @@ DiffTimer &DiffTimer::operator=(const DiffTimer &dt)
 	return *this;
 }
 
-HRTIME DiffTimer::Scale(HRTIME rawDiff)
+DiffTimer::tTimeType DiffTimer::Scale(tTimeType rawDiff, tTimeType resolution)
 {
 	StartTrace(DiffTimer.Scale);
-	Trace("TicksPerSecond(): " << TicksPerSecond() << " fResolution: " << fResolution << " rawDiff " << (long)rawDiff);
-	if ( fResolution <= 0 ) {
+	Trace("TicksPerSecond(): " << TicksPerSecond() << " resolution: " << resolution << " rawDiff " << (long)rawDiff);
+	if ( resolution <= 0 ) {
 		return rawDiff;
 	}
-	if ( TicksPerSecond() < fResolution ) {
+	if ( TicksPerSecond() < resolution ) {
 		// beware of wrong scale
-		return ( rawDiff * ( fResolution / TicksPerSecond() ) );
+		return ( rawDiff * ( resolution / TicksPerSecond() ) );
 	}
 	// beware of overflow
-	return ( (rawDiff * fResolution) / TicksPerSecond() );
+	return ( (rawDiff * resolution) / TicksPerSecond() );
 }
 
-HRTIME DiffTimer::Diff(HRTIME simulatedValue)
+DiffTimer::tTimeType DiffTimer::Diff(tTimeType simulatedValue)
 {
 	StartTrace(DiffTimer.Diff);
 	if (simulatedValue > -1) {
 		Trace("Using simulated Value: " << simulatedValue);
 		return simulatedValue;
 	} else {
-		HRTIME lDiff = Scale(GetHRTIME() - fStart);
+		tTimeType lDiff = Scale(RawDiff(), fResolution);
 		Trace("Diff is: " << (long)lDiff);
 		return lDiff;
 	}
@@ -89,15 +89,15 @@ void DiffTimer::Start()
 	fStart = GetHRTIME();
 }
 
-HRTIME DiffTimer::Reset()
+DiffTimer::tTimeType DiffTimer::Reset()
 {
 	StartTrace(DiffTimer.Reset);
-	HRTIME delta = Diff();
+	tTimeType delta = Diff();
 	Start();
 	return delta;
 }
 
-HRTIME DiffTimer::TicksPerSecond()
+DiffTimer::tTimeType DiffTimer::TicksPerSecond()
 {
 	StartTrace(DiffTimer.TicksPerSecond);
 #if defined(__linux__)
