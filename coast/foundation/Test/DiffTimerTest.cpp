@@ -60,16 +60,16 @@ void DiffTimerTest::ScaleTest()
 
 	DiffTimer dt;
 #if defined(__linux__)
-	assertEqual(100L, dt.Scale(10));
+	assertEqual(100L, dt.Scale(10, 1000));
 #endif
 
 #if defined(__sun)
-	assertEqual(10000L, dt.Scale(10 * dt.TicksPerSecond()));
-	assertEqual(10L, dt.Scale(10 * 1000000));
+	assertEqual(10000L, dt.Scale(10 * dt.TicksPerSecond(), 1000));
+	assertEqual(10L, dt.Scale(10 * 1000000, 1000));
 #endif
 
 #if defined(WIN32)
-	assertEqual(10, dt.Scale(10));
+	assertEqual(10, dt.Scale(10, 1000));
 #endif
 }
 
