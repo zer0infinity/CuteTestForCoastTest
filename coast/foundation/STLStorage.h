@@ -13,8 +13,24 @@
 #include "SysLog.h"
 #include "Dbg.h"
 
-#include <limits>
 #include <exception>
+
+// std::numeric_limits
+#include <boost/limits.hpp>
+// new, std::bad_alloc
+#include <new>
+
+// boost::singleton_pool
+#include <boost/pool/pool.hpp>
+#include <boost/detail/workaround.hpp>
+
+#include <boost/shared_ptr.hpp>
+
+// The following code will be put into Boost.Config in a later revision
+#if defined(_RWSTD_VER) || defined(__SGI_STL_PORT) || \
+    BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x582))
+#define BOOST_NO_PROPER_STL_DEALLOCATE
+#endif
 
 //---- STLStorage ----------------------------------------------------------
 //! <B>single line description of the class</B>
@@ -28,7 +44,6 @@ namespace STLStorage
 	template <class T>
 	class STLAllocator
 	{
-		STLAllocator &operator=(const STLAllocator &);
 	public:
 		// type definitions
 		typedef T        value_type;
@@ -73,9 +88,9 @@ namespace STLStorage
 		}
 
 		/* constructors and destructor
-		* - nothing to do because the allocator has no state
+		* - initialize fAllocator to requested storage
 		*/
-		STLAllocator(Allocator *pAlloc = Storage::Current()) throw()
+		STLAllocator(Allocator *pAlloc = Storage::Current()) throw(fAllocatorNotInitialized)
 			: fAllocator(pAlloc) {
 			StartTrace(STLAllocator.STLAllocator);
 			if ( !fAllocator ) {
@@ -83,7 +98,7 @@ namespace STLStorage
 			}
 		}
 
-		STLAllocator(const STLAllocator &aAllocator) throw()
+		STLAllocator(const STLAllocator &aAllocator) throw(fAllocatorNotInitialized)
 			: fAllocator(aAllocator.fAllocator) {
 			StartTrace1(STLAllocator.STLAllocator, "copy");
 			if ( !fAllocator ) {
@@ -92,7 +107,7 @@ namespace STLStorage
 		}
 
 		template <class U>
-		STLAllocator (const STLAllocator<U>& aAllocator) throw()
+		STLAllocator (const STLAllocator<U>& aAllocator) throw(fAllocatorNotInitialized)
 			: fAllocator(aAllocator.fAllocator) {
 			StartTrace1(STLAllocator.STLAllocator, "copy other type");
 			if ( !fAllocator ) {
@@ -100,8 +115,13 @@ namespace STLStorage
 			}
 		}
 
-		~STLAllocator() throw() {
+		~STLAllocator() {
 			StartTrace(STLAllocator.~STLAllocator);
+		}
+
+		STLAllocator &operator=(const STLAllocator &aAllocator) {
+			fAllocator = aAllocator.fAllocator;
+			return (*this);
 		}
 
 		// return maximum number of elements that can be allocated
@@ -158,6 +178,26 @@ namespace STLStorage
 		// compare internal fAllocator member
 		return left.fAllocator != right.fAllocator;
 	}
+
+	// adaption of Storage::Global / Storage::Current for boost::poolXXX usage
+	struct BoostPoolUserAllocatorGlobal {
+		typedef std::size_t size_type;
+		typedef std::ptrdiff_t difference_type;
+
+		static char *malloc(const size_type bytes);
+		static void free(char *const block);
+	};
+
+	struct BoostPoolUserAllocatorCurrent {
+		typedef std::size_t size_type;
+		typedef std::ptrdiff_t difference_type;
+
+		static char *malloc(const size_type bytes);
+		static void free(char *const block);
+	};
 }
+
+#include "STL_pool_allocator.h"
+#include "STL_fast_pool_allocator.h"
 
 #endif
