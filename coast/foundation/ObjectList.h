@@ -18,15 +18,19 @@
 
 //---- c-module include -----------------------------------------------------
 #include <algorithm>
-#include <deque>
+#include <list>
 
 //---- class ObjectList ----------------------------------------------------------------
 template <
 typename Tp,
 		 template < typename, typename > class tListType = std::deque,
-		 template < typename > class STLAlloc = STLStorage::STLAllocator
+#if defined(__GNUG__)  && ( __GNUC__ >= 4 )
+		 template < class > class STLAlloc = STLStorage::fast_pool_allocator_global
+#else
+		 template < class > class STLAlloc = std::allocator
+#endif
 		 >
-class EXPORTDECL_FOUNDATION ObjectList : public tListType< Tp, STLAlloc< Tp > >
+class ObjectList : public tListType< Tp, STLAlloc< Tp > >
 {
 public:
 	typedef STLAlloc< Tp > STLAllocatorType;
@@ -46,6 +50,7 @@ private:
 
 		void DoDeleteObject(const ListTypeValueType &newObjPtr, Loki::Int2Type<Reftype> ) {};
 		void DoDeleteObject(const ListTypeValueType &newObjPtr, Loki::Int2Type<Pointertype> ) {
+			StatTrace(ObjectList.DoDeleteObject, "deleting element:" << (long)newObjPtr, Storage::Current());
 			delete newObjPtr;
 		}
 		void operator() (Tp pElement) {
@@ -53,29 +58,28 @@ private:
 		}
 	};
 
+	ObjectList();
+
+	//!standard assignement operator prohibited
+	ThisType &operator=(const ThisType &);
+	ObjectList(const ThisType &);
+
 public:
 	ObjectList(const char *name, Allocator *a = Storage::Global())
-		: ListType( STLAllocatorType(a) )
-		, fShutdown(false)
-		, fDestructiveShutdown(false)
+		: ListType()
 		, fpAlloc(a)
 		, fName(name, -1, fpAlloc)
-	{}
-
-	ObjectList(const ThisType &aList)
-		: ListType(aList)
-		, fShutdown(aList.fShutdown)
-		, fDestructiveShutdown(false)	// set to false not to accidentally delete an element twice
-		, fpAlloc(aList.fpAlloc ? aList.fpAlloc : Storage::Global())
-		, fName(aList.fName, -1, fpAlloc) {
+		, fShutdown(false)
+		, fDestructiveShutdown(false) {
+		StatTrace(ObjectList.ObjectList, "param ctor this:" << (long)this, Storage::Current());
 	}
 
 	virtual ~ObjectList() {
 		StartTrace1(ObjectList.~ObjectList, (fDestructiveShutdown ? "destructive" : ""));
 		if ( fDestructiveShutdown ) {
 			// no more workers waiting and capable of emptying the list
-			std::for_each(this->begin(), this->end(), DeleteWrapper());
-			this->clear();
+			std::for_each(this->listptr()->begin(), this->listptr()->end(), DeleteWrapper());
+			this->listptr()->clear();
 		}
 	}
 
@@ -95,7 +99,6 @@ public:
 	size_t GetSize() const {
 		return DoGetSize();
 	}
-
 	bool IsEmpty() const {
 		return DoIsEmpty();
 	}
@@ -107,12 +110,12 @@ public:
 	}
 
 	bool IsShuttingDown() const {
-		return fShutdown;
+		return this->fShutdown;
 	}
 
 	void ResetAfterShutdown() {
-		fShutdown = false;
-		fDestructiveShutdown = false;
+		this->fShutdown = false;
+		this->fDestructiveShutdown = false;
 	}
 
 protected:
@@ -135,8 +138,8 @@ protected:
 	virtual bool DoInsertTail(const ListTypeValueType &newObjPtr) {
 		StartTrace(ObjectList.DoInsertTail);
 		if ( !IsShuttingDown() ) {
-			push_back(newObjPtr);
-			Trace("pushing object");
+			this->listptr()->push_back(newObjPtr);
+			Trace("pushing object, new size:" << (long)this->constlistptr()->size());
 			return true;
 		}
 		Trace("in shutdown");
@@ -147,38 +150,45 @@ protected:
 		\param bDestructive set to true if the list should not be emptied by the workers and not accessed further */
 	virtual void DoSignalShutdown(bool bDestructive = false) {
 		StartTrace1(ObjectList.DoSignalShutdown, (bDestructive ? "destructive" : ""));
-		fDestructiveShutdown = bDestructive;
-		fShutdown = true;
+		this->fDestructiveShutdown = bDestructive;
+		this->fShutdown = true;
 	}
 
 	virtual size_t DoGetSize() const {
+		StatTrace(ObjectList.DoGetSize, "this:" << (long)this, Storage::Current());
 		return IntGetSize();
 	}
 	virtual bool DoIsEmpty() const {
 		return IntIsEmpty();
 	}
 
-	bool fShutdown;
-	bool fDestructiveShutdown;
-
 private:
 	size_t IntGetSize() const {
-		return this->size();
+		StatTrace(ObjectList.IntGetSize, "size:" << (long)this->constlistptr()->size(), Storage::Current());
+		return this->constlistptr()->size();
 	}
 	bool IntIsEmpty() const {
-		return this->empty();
+		return this->constlistptr()->empty();
 	}
 
 	void IntRemoveHead(ListTypeReference aElement) {
-		aElement = this->front();
-		this->pop_front();
+		aElement = this->listptr()->front();
+		this->listptr()->pop_front();
 	}
 
-	//!standard assignement operator prohibited
-	void operator=(const ThisType &);
+	ListType *listptr() {
+		return this;
+	}
+	const ListType *constlistptr() const {
+		return this;
+	}
 
 	Allocator *fpAlloc;
 	String fName;
+
+protected:
+	bool fShutdown;
+	bool fDestructiveShutdown;
 };
 
 #endif

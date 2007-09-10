@@ -10,22 +10,26 @@
 #define _ObjectList_r_H
 
 //---- baseclass include -----------------------------------------------------
-#include "config_mtfoundation.h"
 #include "ObjectList.h"
 
 //---- standard-module include ----------------------------------------------
+#include "config_mtfoundation.h"
 #include "SysLog.h"
 #include "Threads.h"
 
 //---- c-module include -----------------------------------------------------
-//---- class ObjectList_r ----------------------------------------------------------------
 
+//---- class ObjectList_r ----------------------------------------------------------------
 template <
 typename Tp,
 		 template < typename, typename > class tListType = std::deque,
-		 template < typename > class STLAlloc = STLStorage::STLAllocator
+#if defined(__GNUG__)  && ( __GNUC__ >= 4 )
+		 template < class > class STLAlloc = STLStorage::fast_pool_allocator_global
+#else
+		 template < class > class STLAlloc = std::allocator
+#endif
 		 >
-class EXPORTDECL_MTFOUNDATION ObjectList_r : public ObjectList< Tp, tListType, STLAlloc >
+class ObjectList_r : public ObjectList< Tp, tListType, STLAlloc >
 {
 public:
 	typedef ObjectList<Tp, tListType, STLAlloc > BaseClass;
@@ -38,14 +42,15 @@ public:
 		: BaseClass(name, a)
 		, fMutex(name, a)
 	{}
+
 	virtual ~ObjectList_r() {
 		StartTrace1(ObjectList_r.~ObjectList_r, (BaseClass::fDestructiveShutdown ? "destructive" : ""));
-		LockUnlockEntry me(fMutex);
+		LockUnlockEntry me(this->fMutex);
 		BaseClass::fShutdown = true;
 		if ( BaseClass::fDestructiveShutdown == false ) {
 			// let the workers empty the list and destruct its elements
 			while ( !BaseClass::DoIsEmpty() ) {
-				fCondEmpty.Wait(fMutex);
+				fCondEmpty.Wait(this->fMutex);
 			}
 		}
 		// if the list was in destructive shutdown, let the baseclass remove and destruct the elements
@@ -58,10 +63,10 @@ private:
 		\return true only when an element could be get, false in case the list was empty, we are in shutdown mode or a timeout occured */
 	virtual bool DoRemoveHead(ListTypeReference aElement, long lSecs = 0L, long lNanosecs = 0L) {
 		StartTrace1(ObjectList_r.DoRemoveHead, "sec:" << lSecs << " nano:" << lNanosecs);
-		LockUnlockEntry me(fMutex);
+		LockUnlockEntry me(this->fMutex);
 		// wait on new element
 		while ( !BaseClass::IsShuttingDown() && BaseClass::DoIsEmpty() ) {
-			if ( fCondFull.TimedWait(fMutex, lSecs, lNanosecs) == TIMEOUTCODE ) {
+			if ( fCondFull.TimedWait(this->fMutex, lSecs, lNanosecs) == TIMEOUTCODE ) {
 				Trace("premature exit because of a timeout and empty list");
 				return false;
 			}
@@ -80,11 +85,11 @@ private:
 	virtual void DoSignalShutdown(bool bDestructive = false) {
 		StartTrace1(ObjectList_r.DoSignalShutdown, (bDestructive ? "destructive" : ""));
 		{
-			LockUnlockEntry me(fMutex);
+			LockUnlockEntry me(this->fMutex);
 			if ( bDestructive == false ) {
 				Trace("waiting on workerThreads to drain the list");
 				while ( !BaseClass::DoIsEmpty() ) {
-					fCondEmpty.Wait(fMutex);
+					fCondEmpty.Wait(this->fMutex);
 				}
 			}
 			BaseClass::DoSignalShutdown(bDestructive);
@@ -96,10 +101,10 @@ private:
 	/*! returns the current number of elements in the list
 		/return number of elements */
 	virtual size_t DoGetSize() const {
-		StartTrace(ObjectList_r.DoGetSize);
+		StartTrace1(ObjectList_r.DoGetSize, "this:" << (long)this);
 		size_t tmpSz = 0;
 		{
-			LockUnlockEntry me(const_cast<SimpleMutex &>(fMutex));
+			LockUnlockEntry me(const_cast<SimpleMutex &>(this->fMutex));
 			tmpSz = BaseClass::DoGetSize();
 		}
 		Trace("current size:" << (long)tmpSz);
@@ -108,7 +113,7 @@ private:
 
 	virtual bool DoInsertTail(const ListTypeValueType &newObjPtr) {
 		StartTrace(ObjectList_r.DoInsertTail);
-		LockUnlockEntry me(fMutex);
+		LockUnlockEntry me(this->fMutex);
 		if ( BaseClass::DoInsertTail(newObjPtr) ) {
 			fCondFull.BroadCast();
 			Trace("success");
@@ -118,6 +123,8 @@ private:
 		return false;
 	}
 
+	//!default constructor prohibited
+	ObjectList_r();
 	//!standard copy constructor prohibited
 	ObjectList_r(const ThisType &);
 	//!standard assignement operator prohibited
