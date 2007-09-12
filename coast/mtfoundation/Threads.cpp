@@ -610,7 +610,9 @@ void Thread::IntRun()
 				++fgNumOfThreads;
 			}
 			{
-				StartTraceMem(Thread.IntRun);
+				String strWho(GetName());
+				strWho.Append("::Run [").Append(MyId()).Append(']');
+				MemChecker rekcehc(strWho, Storage::Current());
 				// do the real work
 				Run();
 			}
