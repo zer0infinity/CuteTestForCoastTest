@@ -64,7 +64,6 @@ namespace TestFramework
 		//! export timing values in csv style
 		void LoadData(TString strClassName, TString strTestName) {
 			StartTrace(AnythingStatisticTestPolicy.LoadData);
-			fStatClassName = strClassName;
 			fTestName = strTestName;
 			System::LoadConfigFile(fStatistics, strClassName, "stat.any", fFilename);
 			if ( !fFilename.Length() ) {
@@ -73,6 +72,15 @@ namespace TestFramework
 			}
 			fDatetime = GenTimeStamp();
 			System::HostName(fHostName);
+			// use path to anything as input for statistics output
+			long lLastIdx = fFilename.StrRChr(System::Sep());
+			if ( lLastIdx >= 0 ) {
+				fStatClassName = fFilename.SubString(0, lLastIdx);
+				fStatClassName.Append(System::Sep());
+				Trace("path to csv file [" << fStatClassName << "]");
+			}
+			fStatClassName.Append(strClassName);
+			Trace("full path to csv file [" << fStatClassName << "]");
 			TraceAny(fStatistics, "filename of statistics file is [" << fFilename << "], timestamp [" << fDatetime << "]");
 		}
 
@@ -80,6 +88,7 @@ namespace TestFramework
 			StartTrace(AnythingStatisticTestPolicy.StoreData);
 			iostream *pStream = System::OpenOStream(fFilename, "");
 			if ( pStream != NULL ) {
+				fStatistics.SortByKey();
 				fStatistics.PrintOn(*pStream, true);
 			}
 			delete pStream;
