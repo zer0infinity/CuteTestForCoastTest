@@ -21,14 +21,20 @@
 #include <list>
 
 //---- class ObjectList ----------------------------------------------------------------
+#define DefaultListType std::deque
+
+#if defined(__GNUG__)  && ( __GNUC__ >= 4 )
+#define DefaultAllocatorGlobalType STLStorage::fast_pool_allocator_global
+#define DefaultAllocatorCurrentType STLStorage::fast_pool_allocator_current
+#else
+#define DefaultAllocatorGlobalType std::allocator
+#define DefaultAllocatorCurrentType std::allocator
+#endif
+
 template <
 typename Tp,
-		 template < typename, typename > class tListType = std::deque,
-#if defined(__GNUG__)  && ( __GNUC__ >= 4 )
-		 template < class > class STLAlloc = STLStorage::fast_pool_allocator_global
-#else
-		 template < class > class STLAlloc = std::allocator
-#endif
+		 template < typename, typename > class tListType = DefaultListType,
+		 template < class > class STLAlloc = DefaultAllocatorGlobalType
 		 >
 class ObjectList : public tListType< Tp, STLAlloc< Tp > >
 {

@@ -22,12 +22,8 @@
 //---- class ObjectList_r ----------------------------------------------------------------
 template <
 typename Tp,
-		 template < typename, typename > class tListType = std::deque,
-#if defined(__GNUG__)  && ( __GNUC__ >= 4 )
-		 template < class > class STLAlloc = STLStorage::fast_pool_allocator_global
-#else
-		 template < class > class STLAlloc = std::allocator
-#endif
+		 template < typename, typename > class tListType = DefaultListType,
+		 template < class > class STLAlloc = DefaultAllocatorGlobalType
 		 >
 class ObjectList_r : public ObjectList< Tp, tListType, STLAlloc >
 {
