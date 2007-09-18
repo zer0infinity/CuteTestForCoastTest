@@ -17,7 +17,7 @@
 ## add test specific things before the call to callTest
 prepareTest()
 {
-	echo
+	chmod u+w $CONFIGDIR/BoostPoolTest.stat.any
 }
 
 ## call to wdtest or whatever you want to call
