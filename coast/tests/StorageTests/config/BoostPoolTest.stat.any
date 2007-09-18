@@ -118,6 +118,938 @@
         }
       }
     }
+    /"1t" {
+      /"2b" {
+        /new_delete {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141053" 74
+              }
+            }
+          }
+        }
+        /malloc_free {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141053" 39
+              }
+            }
+          }
+        }
+        /std_allocator {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141053" 41
+              }
+            }
+          }
+        }
+        /pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141053" 49
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141053" 49
+                }
+              }
+            }
+          }
+        }
+        /fast_pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141053" 14
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141053" 14
+                }
+              }
+            }
+          }
+        }
+        /SmallObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141053" 94
+              }
+            }
+          }
+        }
+        /SmallValueObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141053" 91
+              }
+            }
+          }
+        }
+        /BoostSingletonPool {
+          /def_new_delete {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141053" 37
+                }
+              }
+            }
+          }
+          /def_malloc_free {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141053" 38
+                }
+              }
+            }
+          }
+          /StorageGlobal {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141053" 37
+                }
+              }
+            }
+          }
+        }
+      }
+      /"3b" {
+        /new_delete {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141054" 40
+              }
+            }
+          }
+        }
+        /malloc_free {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141054" 38
+              }
+            }
+          }
+        }
+        /std_allocator {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141054" 40
+              }
+            }
+          }
+        }
+        /pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141054" 56
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141054" 56
+                }
+              }
+            }
+          }
+        }
+        /fast_pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141054" 14
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141054" 14
+                }
+              }
+            }
+          }
+        }
+        /SmallObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141054" 94
+              }
+            }
+          }
+        }
+        /SmallValueObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141054" 91
+              }
+            }
+          }
+        }
+        /BoostSingletonPool {
+          /def_new_delete {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141054" 36
+                }
+              }
+            }
+          }
+          /def_malloc_free {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141054" 37
+                }
+              }
+            }
+          }
+          /StorageGlobal {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141054" 37
+                }
+              }
+            }
+          }
+        }
+      }
+      /"16b" {
+        /new_delete {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141055" 40
+              }
+            }
+          }
+        }
+        /malloc_free {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141055" 38
+              }
+            }
+          }
+        }
+        /std_allocator {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141055" 40
+              }
+            }
+          }
+        }
+        /pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141055" 41
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141055" 41
+                }
+              }
+            }
+          }
+        }
+        /fast_pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141055" 14
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141055" 14
+                }
+              }
+            }
+          }
+        }
+        /SmallObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141055" 95
+              }
+            }
+          }
+        }
+        /SmallValueObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141055" 92
+              }
+            }
+          }
+        }
+        /BoostSingletonPool {
+          /def_new_delete {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141055" 36
+                }
+              }
+            }
+          }
+          /def_malloc_free {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141055" 37
+                }
+              }
+            }
+          }
+          /StorageGlobal {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141055" 38
+                }
+              }
+            }
+          }
+        }
+      }
+      /"17b" {
+        /new_delete {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141055" 41
+              }
+            }
+          }
+        }
+        /malloc_free {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141055" 38
+              }
+            }
+          }
+        }
+        /std_allocator {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141055" 40
+              }
+            }
+          }
+        }
+        /pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141055" 49
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141055" 49
+                }
+              }
+            }
+          }
+        }
+        /fast_pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141055" 14
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141055" 14
+                }
+              }
+            }
+          }
+        }
+        /SmallObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141055" 95
+              }
+            }
+          }
+        }
+        /SmallValueObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141055" 93
+              }
+            }
+          }
+        }
+        /BoostSingletonPool {
+          /def_new_delete {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141055" 37
+                }
+              }
+            }
+          }
+          /def_malloc_free {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141055" 36
+                }
+              }
+            }
+          }
+          /StorageGlobal {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141055" 37
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    /"4t" {
+      /"2b" {
+        /new_delete {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141056" 259
+              }
+            }
+          }
+        }
+        /malloc_free {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141056" 242
+              }
+            }
+          }
+        }
+        /std_allocator {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141056" 253
+              }
+            }
+          }
+        }
+        /pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141056" 87
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141056" 86
+                }
+              }
+            }
+          }
+        }
+        /fast_pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141056" 52
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141056" 52
+                }
+              }
+            }
+          }
+        }
+        /SmallObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141056" 671
+              }
+            }
+          }
+        }
+        /SmallValueObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141056" 630
+              }
+            }
+          }
+        }
+        /BoostSingletonPool {
+          /def_new_delete {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141056" 229
+                }
+              }
+            }
+          }
+          /def_malloc_free {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141056" 231
+                }
+              }
+            }
+          }
+          /StorageGlobal {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141056" 230
+                }
+              }
+            }
+          }
+        }
+      }
+      /"3b" {
+        /new_delete {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141059" 256
+              }
+            }
+          }
+        }
+        /malloc_free {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141059" 236
+              }
+            }
+          }
+        }
+        /std_allocator {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141059" 257
+              }
+            }
+          }
+        }
+        /pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141059" 95
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141059" 94
+                }
+              }
+            }
+          }
+        }
+        /fast_pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141059" 51
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141059" 51
+                }
+              }
+            }
+          }
+        }
+        /SmallObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141059" 696
+              }
+            }
+          }
+        }
+        /SmallValueObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141059" 631
+              }
+            }
+          }
+        }
+        /BoostSingletonPool {
+          /def_new_delete {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141059" 227
+                }
+              }
+            }
+          }
+          /def_malloc_free {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141059" 247
+                }
+              }
+            }
+          }
+          /StorageGlobal {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141059" 222
+                }
+              }
+            }
+          }
+        }
+      }
+      /"16b" {
+        /new_delete {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141102" 250
+              }
+            }
+          }
+        }
+        /malloc_free {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141102" 232
+              }
+            }
+          }
+        }
+        /std_allocator {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141102" 248
+              }
+            }
+          }
+        }
+        /pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141102" 78
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141102" 78
+                }
+              }
+            }
+          }
+        }
+        /fast_pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141102" 51
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141102" 51
+                }
+              }
+            }
+          }
+        }
+        /SmallObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141102" 678
+              }
+            }
+          }
+        }
+        /SmallValueObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141102" 653
+              }
+            }
+          }
+        }
+        /BoostSingletonPool {
+          /def_new_delete {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141102" 230
+                }
+              }
+            }
+          }
+          /def_malloc_free {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141102" 224
+                }
+              }
+            }
+          }
+          /StorageGlobal {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141102" 242
+                }
+              }
+            }
+          }
+        }
+      }
+      /"17b" {
+        /new_delete {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141105" 250
+              }
+            }
+          }
+        }
+        /malloc_free {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141105" 226
+              }
+            }
+          }
+        }
+        /std_allocator {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141105" 245
+              }
+            }
+          }
+        }
+        /pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141105" 97
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141105" 86
+                }
+              }
+            }
+          }
+        }
+        /fast_pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141105" 52
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141105" 52
+                }
+              }
+            }
+          }
+        }
+        /SmallObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141105" 680
+              }
+            }
+          }
+        }
+        /SmallValueObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141105" 651
+              }
+            }
+          }
+        }
+        /BoostSingletonPool {
+          /def_new_delete {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141105" 221
+                }
+              }
+            }
+          }
+          /def_malloc_free {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141105" 222
+                }
+              }
+            }
+          }
+          /StorageGlobal {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141105" 225
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
   /delete_new_array {
     /"2t" {
@@ -231,6 +1163,938 @@
               /OPT_DBG_STDIO {
                 /GCC_4.2.0 {
                   /"20070918120642" 158
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    /"1t" {
+      /"2b" {
+        /new_delete {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141109" 41
+              }
+            }
+          }
+        }
+        /malloc_free {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141109" 38
+              }
+            }
+          }
+        }
+        /std_allocator {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141109" 40
+              }
+            }
+          }
+        }
+        /pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141109" 49
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141109" 49
+                }
+              }
+            }
+          }
+        }
+        /fast_pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141109" 14
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141109" 14
+                }
+              }
+            }
+          }
+        }
+        /SmallObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141109" 49
+              }
+            }
+          }
+        }
+        /SmallValueObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141109" 41
+              }
+            }
+          }
+        }
+        /BoostSingletonPool {
+          /def_new_delete {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141109" 42
+                }
+              }
+            }
+          }
+          /def_malloc_free {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141109" 41
+                }
+              }
+            }
+          }
+          /StorageGlobal {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141109" 42
+                }
+              }
+            }
+          }
+        }
+      }
+      /"3b" {
+        /new_delete {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141109" 41
+              }
+            }
+          }
+        }
+        /malloc_free {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141109" 38
+              }
+            }
+          }
+        }
+        /std_allocator {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141109" 40
+              }
+            }
+          }
+        }
+        /pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141109" 49
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141109" 48
+                }
+              }
+            }
+          }
+        }
+        /fast_pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141109" 14
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141109" 14
+                }
+              }
+            }
+          }
+        }
+        /SmallObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141109" 48
+              }
+            }
+          }
+        }
+        /SmallValueObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141109" 42
+              }
+            }
+          }
+        }
+        /BoostSingletonPool {
+          /def_new_delete {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141109" 41
+                }
+              }
+            }
+          }
+          /def_malloc_free {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141109" 42
+                }
+              }
+            }
+          }
+          /StorageGlobal {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141109" 42
+                }
+              }
+            }
+          }
+        }
+      }
+      /"16b" {
+        /new_delete {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141110" 43
+              }
+            }
+          }
+        }
+        /malloc_free {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141110" 38
+              }
+            }
+          }
+        }
+        /std_allocator {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141110" 41
+              }
+            }
+          }
+        }
+        /pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141110" 42
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141110" 41
+                }
+              }
+            }
+          }
+        }
+        /fast_pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141110" 14
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141110" 14
+                }
+              }
+            }
+          }
+        }
+        /SmallObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141110" 50
+              }
+            }
+          }
+        }
+        /SmallValueObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141110" 43
+              }
+            }
+          }
+        }
+        /BoostSingletonPool {
+          /def_new_delete {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141110" 42
+                }
+              }
+            }
+          }
+          /def_malloc_free {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141110" 43
+                }
+              }
+            }
+          }
+          /StorageGlobal {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141110" 42
+                }
+              }
+            }
+          }
+        }
+      }
+      /"17b" {
+        /new_delete {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141110" 41
+              }
+            }
+          }
+        }
+        /malloc_free {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141110" 38
+              }
+            }
+          }
+        }
+        /std_allocator {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141110" 41
+              }
+            }
+          }
+        }
+        /pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141110" 57
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141110" 56
+                }
+              }
+            }
+          }
+        }
+        /fast_pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141110" 14
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141110" 14
+                }
+              }
+            }
+          }
+        }
+        /SmallObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141110" 50
+              }
+            }
+          }
+        }
+        /SmallValueObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141110" 42
+              }
+            }
+          }
+        }
+        /BoostSingletonPool {
+          /def_new_delete {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141110" 43
+                }
+              }
+            }
+          }
+          /def_malloc_free {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141110" 43
+                }
+              }
+            }
+          }
+          /StorageGlobal {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141110" 42
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    /"4t" {
+      /"2b" {
+        /new_delete {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141111" 271
+              }
+            }
+          }
+        }
+        /malloc_free {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141111" 238
+              }
+            }
+          }
+        }
+        /std_allocator {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141111" 256
+              }
+            }
+          }
+        }
+        /pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141111" 87
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141111" 89
+                }
+              }
+            }
+          }
+        }
+        /fast_pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141111" 52
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141111" 52
+                }
+              }
+            }
+          }
+        }
+        /SmallObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141111" 333
+              }
+            }
+          }
+        }
+        /SmallValueObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141111" 281
+              }
+            }
+          }
+        }
+        /BoostSingletonPool {
+          /def_new_delete {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141111" 266
+                }
+              }
+            }
+          }
+          /def_malloc_free {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141111" 268
+                }
+              }
+            }
+          }
+          /StorageGlobal {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141111" 281
+                }
+              }
+            }
+          }
+        }
+      }
+      /"3b" {
+        /new_delete {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141114" 261
+              }
+            }
+          }
+        }
+        /malloc_free {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141114" 238
+              }
+            }
+          }
+        }
+        /std_allocator {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141114" 252
+              }
+            }
+          }
+        }
+        /pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141114" 86
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141114" 87
+                }
+              }
+            }
+          }
+        }
+        /fast_pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141114" 52
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141114" 52
+                }
+              }
+            }
+          }
+        }
+        /SmallObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141114" 354
+              }
+            }
+          }
+        }
+        /SmallValueObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141114" 277
+              }
+            }
+          }
+        }
+        /BoostSingletonPool {
+          /def_new_delete {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141114" 274
+                }
+              }
+            }
+          }
+          /def_malloc_free {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141114" 269
+                }
+              }
+            }
+          }
+          /StorageGlobal {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141114" 272
+                }
+              }
+            }
+          }
+        }
+      }
+      /"16b" {
+        /new_delete {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141117" 272
+              }
+            }
+          }
+        }
+        /malloc_free {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141117" 237
+              }
+            }
+          }
+        }
+        /std_allocator {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141117" 254
+              }
+            }
+          }
+        }
+        /pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141117" 79
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141117" 79
+                }
+              }
+            }
+          }
+        }
+        /fast_pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141117" 52
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141117" 52
+                }
+              }
+            }
+          }
+        }
+        /SmallObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141117" 367
+              }
+            }
+          }
+        }
+        /SmallValueObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141117" 279
+              }
+            }
+          }
+        }
+        /BoostSingletonPool {
+          /def_new_delete {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141117" 273
+                }
+              }
+            }
+          }
+          /def_malloc_free {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141117" 283
+                }
+              }
+            }
+          }
+          /StorageGlobal {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141117" 298
+                }
+              }
+            }
+          }
+        }
+      }
+      /"17b" {
+        /new_delete {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141119" 273
+              }
+            }
+          }
+        }
+        /malloc_free {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141119" 241
+              }
+            }
+          }
+        }
+        /std_allocator {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141119" 267
+              }
+            }
+          }
+        }
+        /pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141119" 94
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141119" 94
+                }
+              }
+            }
+          }
+        }
+        /fast_pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141119" 52
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141119" 51
+                }
+              }
+            }
+          }
+        }
+        /SmallObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141119" 366
+              }
+            }
+          }
+        }
+        /SmallValueObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141119" 275
+              }
+            }
+          }
+        }
+        /BoostSingletonPool {
+          /def_new_delete {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141119" 274
+                }
+              }
+            }
+          }
+          /def_malloc_free {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141119" 279
+                }
+              }
+            }
+          }
+          /StorageGlobal {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141119" 279
                 }
               }
             }
@@ -358,6 +2222,938 @@
         }
       }
     }
+    /"1t" {
+      /"2b" {
+        /new_delete {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141832" 65
+              }
+            }
+          }
+        }
+        /malloc_free {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141832" 54
+              }
+            }
+          }
+        }
+        /std_allocator {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141832" 66
+              }
+            }
+          }
+        }
+        /pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141832" 22504
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141832" 13528
+                }
+              }
+            }
+          }
+        }
+        /fast_pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141832" 21
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141832" 19
+                }
+              }
+            }
+          }
+        }
+        /SmallObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141832" 71
+              }
+            }
+          }
+        }
+        /SmallValueObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141832" 61
+              }
+            }
+          }
+        }
+        /BoostSingletonPool {
+          /def_new_delete {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141832" 62
+                }
+              }
+            }
+          }
+          /def_malloc_free {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141832" 58
+                }
+              }
+            }
+          }
+          /StorageGlobal {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141832" 59
+                }
+              }
+            }
+          }
+        }
+      }
+      /"3b" {
+        /new_delete {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141908" 63
+              }
+            }
+          }
+        }
+        /malloc_free {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141908" 70
+              }
+            }
+          }
+        }
+        /std_allocator {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141908" 56
+              }
+            }
+          }
+        }
+        /pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141908" 44299
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141908" 30523
+                }
+              }
+            }
+          }
+        }
+        /fast_pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141908" 28
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141908" 28
+                }
+              }
+            }
+          }
+        }
+        /SmallObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141908" 71
+              }
+            }
+          }
+        }
+        /SmallValueObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141908" 72
+              }
+            }
+          }
+        }
+        /BoostSingletonPool {
+          /def_new_delete {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141908" 60
+                }
+              }
+            }
+          }
+          /def_malloc_free {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141908" 65
+                }
+              }
+            }
+          }
+          /StorageGlobal {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141908" 65
+                }
+              }
+            }
+          }
+        }
+      }
+      /"16b" {
+        /new_delete {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918142024" 96
+              }
+            }
+          }
+        }
+        /malloc_free {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918142024" 96
+              }
+            }
+          }
+        }
+        /std_allocator {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918142024" 104
+              }
+            }
+          }
+        }
+        /pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142024" 33705
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142024" 30462
+                }
+              }
+            }
+          }
+        }
+        /fast_pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142024" 32
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142024" 32
+                }
+              }
+            }
+          }
+        }
+        /SmallObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918142024" 106
+              }
+            }
+          }
+        }
+        /SmallValueObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918142024" 90
+              }
+            }
+          }
+        }
+        /BoostSingletonPool {
+          /def_new_delete {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142024" 91
+                }
+              }
+            }
+          }
+          /def_malloc_free {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142024" 89
+                }
+              }
+            }
+          }
+          /StorageGlobal {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142024" 102
+                }
+              }
+            }
+          }
+        }
+      }
+      /"17b" {
+        /new_delete {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918142129" 97
+              }
+            }
+          }
+        }
+        /malloc_free {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918142129" 95
+              }
+            }
+          }
+        }
+        /std_allocator {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918142129" 88
+              }
+            }
+          }
+        }
+        /pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142129" 39112
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142129" 47896
+                }
+              }
+            }
+          }
+        }
+        /fast_pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142129" 53
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142129" 64
+                }
+              }
+            }
+          }
+        }
+        /SmallObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918142129" 124
+              }
+            }
+          }
+        }
+        /SmallValueObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918142129" 109
+              }
+            }
+          }
+        }
+        /BoostSingletonPool {
+          /def_new_delete {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142129" 98
+                }
+              }
+            }
+          }
+          /def_malloc_free {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142129" 101
+                }
+              }
+            }
+          }
+          /StorageGlobal {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142129" 104
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    /"4t" {
+      /"2b" {
+        /new_delete {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918142258" 565
+              }
+            }
+          }
+        }
+        /malloc_free {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918142258" 558
+              }
+            }
+          }
+        }
+        /std_allocator {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918142258" 584
+              }
+            }
+          }
+        }
+        /pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142258" 22729
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142258" 13640
+                }
+              }
+            }
+          }
+        }
+        /fast_pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142258" 55
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142258" 58
+                }
+              }
+            }
+          }
+        }
+        /SmallObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918142258" 653
+              }
+            }
+          }
+        }
+        /SmallValueObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918142258" 549
+              }
+            }
+          }
+        }
+        /BoostSingletonPool {
+          /def_new_delete {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142258" 617
+                }
+              }
+            }
+          }
+          /def_malloc_free {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142258" 641
+                }
+              }
+            }
+          }
+          /StorageGlobal {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142258" 642
+                }
+              }
+            }
+          }
+        }
+      }
+      /"3b" {
+        /new_delete {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918142339" 573
+              }
+            }
+          }
+        }
+        /malloc_free {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918142339" 544
+              }
+            }
+          }
+        }
+        /std_allocator {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918142339" 598
+              }
+            }
+          }
+        }
+        /pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142339" 59812
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142339" 30707
+                }
+              }
+            }
+          }
+        }
+        /fast_pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142339" 68
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142339" 67
+                }
+              }
+            }
+          }
+        }
+        /SmallObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918142339" 641
+              }
+            }
+          }
+        }
+        /SmallValueObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918142339" 605
+              }
+            }
+          }
+        }
+        /BoostSingletonPool {
+          /def_new_delete {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142339" 627
+                }
+              }
+            }
+          }
+          /def_malloc_free {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142339" 621
+                }
+              }
+            }
+          }
+          /StorageGlobal {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142339" 641
+                }
+              }
+            }
+          }
+        }
+      }
+      /"16b" {
+        /new_delete {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918142515" 1029
+              }
+            }
+          }
+        }
+        /malloc_free {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918142515" 966
+              }
+            }
+          }
+        }
+        /std_allocator {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918142515" 948
+              }
+            }
+          }
+        }
+        /pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142515" 45517
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142515" 30746
+                }
+              }
+            }
+          }
+        }
+        /fast_pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142515" 73
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142515" 78
+                }
+              }
+            }
+          }
+        }
+        /SmallObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918142515" 1258
+              }
+            }
+          }
+        }
+        /SmallValueObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918142515" 1015
+              }
+            }
+          }
+        }
+        /BoostSingletonPool {
+          /def_new_delete {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142515" 965
+                }
+              }
+            }
+          }
+          /def_malloc_free {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142515" 968
+                }
+              }
+            }
+          }
+          /StorageGlobal {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142515" 1018
+                }
+              }
+            }
+          }
+        }
+      }
+      /"17b" {
+        /new_delete {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918142640" 1026
+              }
+            }
+          }
+        }
+        /malloc_free {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918142640" 962
+              }
+            }
+          }
+        }
+        /std_allocator {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918142640" 983
+              }
+            }
+          }
+        }
+        /pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142640" 224138
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142640" 49427
+                }
+              }
+            }
+          }
+        }
+        /fast_pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142640" 99
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142640" 107
+                }
+              }
+            }
+          }
+        }
+        /SmallObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918142640" 1288
+              }
+            }
+          }
+        }
+        /SmallValueObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918142640" 999
+              }
+            }
+          }
+        }
+        /BoostSingletonPool {
+          /def_new_delete {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142640" 1036
+                }
+              }
+            }
+          }
+          /def_malloc_free {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142640" 1042
+                }
+              }
+            }
+          }
+          /StorageGlobal {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918142640" 1025
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
   /new_del_on_arr {
     /"2t" {
@@ -471,6 +3267,938 @@
               /OPT_DBG_STDIO {
                 /GCC_4.2.0 {
                   /"20070918120644" 330
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    /"1t" {
+      /"2b" {
+        /new_delete {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141122" 63
+              }
+            }
+          }
+        }
+        /malloc_free {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141122" 58
+              }
+            }
+          }
+        }
+        /std_allocator {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141122" 59
+              }
+            }
+          }
+        }
+        /pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141122" 16956
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141122" 5168
+                }
+              }
+            }
+          }
+        }
+        /fast_pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141122" 17
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141122" 18
+                }
+              }
+            }
+          }
+        }
+        /SmallObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141122" 100
+              }
+            }
+          }
+        }
+        /SmallValueObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141122" 94
+              }
+            }
+          }
+        }
+        /BoostSingletonPool {
+          /def_new_delete {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141122" 40
+                }
+              }
+            }
+          }
+          /def_malloc_free {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141122" 39
+                }
+              }
+            }
+          }
+          /StorageGlobal {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141122" 41
+                }
+              }
+            }
+          }
+        }
+      }
+      /"3b" {
+        /new_delete {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141145" 60
+              }
+            }
+          }
+        }
+        /malloc_free {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141145" 54
+              }
+            }
+          }
+        }
+        /std_allocator {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141145" 53
+              }
+            }
+          }
+        }
+        /pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141145" 22554
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141145" 13516
+                }
+              }
+            }
+          }
+        }
+        /fast_pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141145" 20
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141145" 20
+                }
+              }
+            }
+          }
+        }
+        /SmallObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141145" 97
+              }
+            }
+          }
+        }
+        /SmallValueObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141145" 94
+              }
+            }
+          }
+        }
+        /BoostSingletonPool {
+          /def_new_delete {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141145" 43
+                }
+              }
+            }
+          }
+          /def_malloc_free {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141145" 47
+                }
+              }
+            }
+          }
+          /StorageGlobal {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141145" 48
+                }
+              }
+            }
+          }
+        }
+      }
+      /"16b" {
+        /new_delete {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141222" 62
+              }
+            }
+          }
+        }
+        /malloc_free {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141222" 62
+              }
+            }
+          }
+        }
+        /std_allocator {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141222" 63
+              }
+            }
+          }
+        }
+        /pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141222" 24685
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141222" 16750
+                }
+              }
+            }
+          }
+        }
+        /fast_pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141222" 22
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141222" 23
+                }
+              }
+            }
+          }
+        }
+        /SmallObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141222" 102
+              }
+            }
+          }
+        }
+        /SmallValueObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141222" 98
+              }
+            }
+          }
+        }
+        /BoostSingletonPool {
+          /def_new_delete {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141222" 52
+                }
+              }
+            }
+          }
+          /def_malloc_free {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141222" 44
+                }
+              }
+            }
+          }
+          /StorageGlobal {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141222" 49
+                }
+              }
+            }
+          }
+        }
+      }
+      /"17b" {
+        /new_delete {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141304" 62
+              }
+            }
+          }
+        }
+        /malloc_free {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141304" 66
+              }
+            }
+          }
+        }
+        /std_allocator {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141304" 69
+              }
+            }
+          }
+        }
+        /pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141304" 46757
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141304" 30885
+                }
+              }
+            }
+          }
+        }
+        /fast_pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141304" 41
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141304" 38
+                }
+              }
+            }
+          }
+        }
+        /SmallObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141304" 108
+              }
+            }
+          }
+        }
+        /SmallValueObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141304" 100
+              }
+            }
+          }
+        }
+        /BoostSingletonPool {
+          /def_new_delete {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141304" 86
+                }
+              }
+            }
+          }
+          /def_malloc_free {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141304" 91
+                }
+              }
+            }
+          }
+          /StorageGlobal {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141304" 68
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    /"4t" {
+      /"2b" {
+        /new_delete {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141423" 466
+              }
+            }
+          }
+        }
+        /malloc_free {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141423" 452
+              }
+            }
+          }
+        }
+        /std_allocator {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141423" 491
+              }
+            }
+          }
+        }
+        /pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141423" 17081
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141423" 5224
+                }
+              }
+            }
+          }
+        }
+        /fast_pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141423" 56
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141423" 54
+                }
+              }
+            }
+          }
+        }
+        /SmallObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141423" 759
+              }
+            }
+          }
+        }
+        /SmallValueObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141423" 668
+              }
+            }
+          }
+        }
+        /BoostSingletonPool {
+          /def_new_delete {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141423" 280
+                }
+              }
+            }
+          }
+          /def_malloc_free {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141423" 270
+                }
+              }
+            }
+          }
+          /StorageGlobal {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141423" 287
+                }
+              }
+            }
+          }
+        }
+      }
+      /"3b" {
+        /new_delete {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141449" 498
+              }
+            }
+          }
+        }
+        /malloc_free {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141449" 507
+              }
+            }
+          }
+        }
+        /std_allocator {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141449" 543
+              }
+            }
+          }
+        }
+        /pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141449" 28556
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141449" 13563
+                }
+              }
+            }
+          }
+        }
+        /fast_pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141449" 57
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141449" 58
+                }
+              }
+            }
+          }
+        }
+        /SmallObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141449" 758
+              }
+            }
+          }
+        }
+        /SmallValueObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141449" 692
+              }
+            }
+          }
+        }
+        /BoostSingletonPool {
+          /def_new_delete {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141449" 303
+                }
+              }
+            }
+          }
+          /def_malloc_free {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141449" 326
+                }
+              }
+            }
+          }
+          /StorageGlobal {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141449" 308
+                }
+              }
+            }
+          }
+        }
+      }
+      /"16b" {
+        /new_delete {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141535" 512
+              }
+            }
+          }
+        }
+        /malloc_free {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141535" 494
+              }
+            }
+          }
+        }
+        /std_allocator {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141535" 509
+              }
+            }
+          }
+        }
+        /pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141535" 33112
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141535" 16805
+                }
+              }
+            }
+          }
+        }
+        /fast_pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141535" 65
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141535" 59
+                }
+              }
+            }
+          }
+        }
+        /SmallObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141535" 835
+              }
+            }
+          }
+        }
+        /SmallValueObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141535" 693
+              }
+            }
+          }
+        }
+        /BoostSingletonPool {
+          /def_new_delete {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141535" 328
+                }
+              }
+            }
+          }
+          /def_malloc_free {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141535" 332
+                }
+              }
+            }
+          }
+          /StorageGlobal {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141535" 325
+                }
+              }
+            }
+          }
+        }
+      }
+      /"17b" {
+        /new_delete {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141630" 570
+              }
+            }
+          }
+        }
+        /malloc_free {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141630" 491
+              }
+            }
+          }
+        }
+        /std_allocator {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141630" 530
+              }
+            }
+          }
+        }
+        /pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141630" 85208
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141630" 31170
+                }
+              }
+            }
+          }
+        }
+        /fast_pool_allocator {
+          /global {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141630" 116
+                }
+              }
+            }
+          }
+          /current {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141630" 77
+                }
+              }
+            }
+          }
+        }
+        /SmallObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141630" 865
+              }
+            }
+          }
+        }
+        /SmallValueObject {
+          /bondo {
+            /OPT_STDIO {
+              /GCC_4.2.0 {
+                /"20070918141630" 728
+              }
+            }
+          }
+        }
+        /BoostSingletonPool {
+          /def_new_delete {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141630" 603
+                }
+              }
+            }
+          }
+          /def_malloc_free {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141630" 554
+                }
+              }
+            }
+          }
+          /StorageGlobal {
+            /bondo {
+              /OPT_STDIO {
+                /GCC_4.2.0 {
+                  /"20070918141630" 609
                 }
               }
             }
