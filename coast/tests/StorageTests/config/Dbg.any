@@ -168,8 +168,24 @@
 		/MainSwitch						20
 		/EnableAll						20
 	}
+	/WDAllocatorStorage {
+		/MainSwitch						0
+		/EnableAll						20
+	}
 	/TrackAlloc {
 		/MainSwitch						20
+		/EnableAll						20
+	}
+	/STLStorageTest {
+		/MainSwitch						20
+		/EnableAll						20
+	}
+	/pool_refcounted {
+		/MainSwitch						20
+		/EnableAll						20
+	}
+	/RefCountedWithFinalDestroy {
+		/MainSwitch						0
 		/EnableAll						20
 	}
 }

@@ -185,8 +185,40 @@
 		/MainSwitch						20
 		/EnableAll						20
 	}
+	/ObjectListTest {
+		/MainSwitch						20
+		/EnableAll						20
+	}
 	/STLAllocator {
 		/MainSwitch						20
+		/EnableAll						20
+	}
+	/BoostPoolUserAllocatorCurrent {
+		/MainSwitch						20
+		/EnableAll						20
+	}
+	/BoostPoolUserAllocatorGlobal {
+		/MainSwitch						20
+		/EnableAll						20
+	}
+	/WDAllocatorStorage {
+		/MainSwitch						0
+		/EnableAll						20
+	}
+	/pool_refcounted {
+		/MainSwitch						20
+		/EnableAll						20
+	}
+	/pool_allocator {
+		/MainSwitch						20
+		/EnableAll						20
+	}
+	/fast_pool_allocator {
+		/MainSwitch						20
+		/EnableAll						20
+	}
+	/RefCountedWithFinalDestroy {
+		/MainSwitch						0
 		/EnableAll						20
 	}
 }
