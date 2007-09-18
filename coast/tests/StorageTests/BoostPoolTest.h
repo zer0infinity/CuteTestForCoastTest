@@ -31,12 +31,13 @@ class Allocator;
 #define FUNCDECLARERMACRO(r,product)\
 	FUNCDECLARERTUPLE(BOOST_PP_SEQ_TO_TUPLE(product))
 
-#define NTHREADS_SEQ1	(1)(4)
+#define NTHREADS_SEQ1	(1)(4)(8)
 #define NTHREADS_SEQ2	(1)(2)(4)(8)(16)
 #define NSIZE_SEQ1		(2)(3)(16)(17)
 #define NSIZE_SEQ2		(2)(3)(8)(9)(16)(17)(32)(33)
 #define TESTFUNC_SEQ	(delete_new)(delete_new_array)(new_del_on_arr)(new_del_a_on_a)
 
+//#define EXPAND_SEQUENCE	(TESTFUNC_SEQ)((2))((17))
 #define EXPAND_SEQUENCE	(TESTFUNC_SEQ)(NTHREADS_SEQ1)(NSIZE_SEQ1)
 //#define EXPAND_SEQUENCE	(TESTFUNC_SEQ)(NTHREADS_SEQ2)(NSIZE_SEQ2)	// more extensive tests
 
