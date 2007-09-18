@@ -44,6 +44,7 @@ public:
 	//! describe this testcase
 	void GlobalStorageTest();
 	void PoolStorageTest();
+	void AllocatorUsingSMartPtrTest();
 };
 
 #endif

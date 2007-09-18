@@ -129,6 +129,143 @@ void STLStorageTest::PoolStorageTest()
 	assertComparem(0LL, equal_to, aChecker.CheckDelta(), "expected no unfreed memory");
 	pa.PrintStatistic(3L);
 }
+
+struct something {
+	int fInt;
+	long fLong;
+};
+
+void STLStorageTest::AllocatorUsingSMartPtrTest()
+{
+	StartTrace(STLStorageTest.AllocatorUsingSMartPtrTest);
+	typedef something listType;
+//	typedef TestStorage::pool_allocator<listType, STLStorage::BoostPoolUserAllocatorCurrent> blaType;
+//	typedef STLStorage::pool_allocator<listType, STLStorage::BoostPoolUserAllocatorGlobal> blaType;
+	typedef STLStorage::fast_pool_allocator<listType, STLStorage::BoostPoolUserAllocatorGlobal> blaType;
+	MemChecker aChecker("STLStorageTest.AllocatorUsingSMartPtrTest", Storage::Current());
+	{
+		blaType pool1;
+	}
+	assertComparem(0LL, equal_to, aChecker.CheckDelta(), "expected no unfreed memory");
+	Trace("========================== deque tests 1 ==========================");
+	{
+		std::deque<listType, blaType > v;
+		// insert elements
+		listType elt1 = { 1, 1 };
+		Trace("adding element");
+		v.push_back(elt1);
+	}
+	assertComparem(0LL, equal_to, aChecker.CheckDelta(), "expected no unfreed memory");
+	Trace("========================== list test 1 ==========================");
+	{
+		std::list<listType, blaType > v;
+		// insert elements
+		listType elt1 = { 1, 1 };
+		Trace("adding element");
+		v.push_back(elt1);
+	}
+	assertComparem(0LL, equal_to, aChecker.CheckDelta(), "expected no unfreed memory");
+	Trace("========================== list test 3 ==========================");
+	{
+		std::list<listType, blaType > v;
+		// insert elements
+		listType elt1 = { 1, 1 };
+		listType elt2 = { 1, 2 };
+		listType elt3 = { 3, 1 };
+		Trace("adding element");
+		v.push_back(elt1);
+		Trace("adding element");
+		v.push_back(elt2);
+		Trace("adding element");
+		v.push_back(elt3);
+	}
+	assertComparem(0LL, equal_to, aChecker.CheckDelta(), "expected no unfreed memory");
+	Trace("========================== vector tests ==========================");
+	{
+		std::vector<listType, blaType > v;
+		// insert elements
+		listType elt1 = { 1, 1 };
+		listType elt2 = { 1, 2 };
+		listType elt3 = { 3, 1 };
+		Trace("adding element");
+		v.push_back(elt1);
+		Trace("adding element");
+		v.push_back(elt2);
+		Trace("adding element");
+		v.push_back(elt3);
+	}
+	assertComparem(0LL, equal_to, aChecker.CheckDelta(), "expected no unfreed memory");
+	Trace("========================== deque tests 2 ==========================");
+	{
+		std::deque<listType, blaType > v;
+		// insert elements
+		listType elt1 = { 1, 1 };
+		listType elt2 = { 1, 2 };
+		Trace("adding element");
+		v.push_back(elt1);
+		Trace("adding element");
+		v.push_back(elt2);
+	}
+	assertComparem(0LL, equal_to, aChecker.CheckDelta(), "expected no unfreed memory");
+	Trace("========================== deque tests 3 ==========================");
+	{
+		std::deque<listType, blaType > v;
+		// insert elements
+		listType elt1 = { 1, 1 };
+		listType elt2 = { 1, 2 };
+		listType elt3 = { 3, 1 };
+		Trace("adding element");
+		v.push_back(elt1);
+		Trace("adding element");
+		v.push_back(elt2);
+		Trace("adding element");
+		v.push_back(elt3);
+	}
+	assertComparem(0LL, equal_to, aChecker.CheckDelta(), "expected no unfreed memory");
+	Trace("========================== two deque tests 3 ==========================");
+	{
+		std::deque<listType, blaType > v, w;
+		// insert elements
+		listType elt1 = { 1, 1 };
+		listType elt2 = { 1, 2 };
+		listType elt3 = { 3, 1 };
+		Trace("adding element");
+		v.push_back(elt1);
+		w.push_back(elt1);
+		Trace("adding element");
+		v.push_back(elt2);
+		w.push_back(elt2);
+		Trace("deleting element");
+		v.pop_front();
+		w.pop_front();
+		Trace("adding element");
+		v.push_back(elt3);
+		w.push_back(elt3);
+	}
+	assertComparem(0LL, equal_to, aChecker.CheckDelta(), "expected no unfreed memory");
+	Trace("========================== two list tests 3 ==========================");
+	{
+		std::list<listType, blaType > v, w;
+		// insert elements
+		listType elt1 = { 1, 1 };
+		listType elt2 = { 1, 2 };
+		listType elt3 = { 3, 1 };
+		Trace("adding element");
+		v.push_back(elt1);
+		w.push_back(elt1);
+		Trace("adding element");
+		v.push_back(elt2);
+		w.push_back(elt2);
+		Trace("deleting element");
+		v.pop_front();
+		w.pop_front();
+		Trace("adding element");
+		v.push_back(elt3);
+		w.push_back(elt3);
+	}
+	assertComparem(0LL, equal_to, aChecker.CheckDelta(), "expected no unfreed memory");
+}
+
 // builds up a suite of testcases, add a line for each testmethod
 Test *STLStorageTest::suite ()
 {
@@ -136,5 +273,6 @@ Test *STLStorageTest::suite ()
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, STLStorageTest, GlobalStorageTest);
 	ADD_CASE(testSuite, STLStorageTest, PoolStorageTest);
+	ADD_CASE(testSuite, STLStorageTest, AllocatorUsingSMartPtrTest);
 	return testSuite;
 }
