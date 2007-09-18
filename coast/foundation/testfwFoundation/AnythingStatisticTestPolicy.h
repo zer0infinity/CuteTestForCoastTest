@@ -44,19 +44,22 @@ namespace TestFramework
 		class CatchTime
 		{
 		public:
-			CatchTime(TString strTestName, StatisticPolicyType *theTest)
+			CatchTime(TString strTestName, StatisticPolicyType *theTest, char delim = '/', char indexdelim = ':')
 				: fTestName(strTestName)
-				, fTest(theTest) {
+				, fTest(theTest)
+				, fDdelim(delim)
+				, fIndexdelim(indexdelim) {
 			}
 			~CatchTime() {
 				if ( fTest ) {
-					fTest->AddStatisticOutput(fTestName, fTimer.Diff());
+					fTest->AddStatisticOutput(fTestName, fTimer.Diff(), fDdelim, fIndexdelim);
 				}
 			}
 		private:
 			TString fTestName;
 			StatisticPolicyType *fTest;
 			TestTimer fTimer;
+			char fDdelim, fIndexdelim;
 		};
 		typedef typename StatisticPolicyType::CatchTime CatchTimeType;
 
@@ -117,9 +120,12 @@ namespace TestFramework
 			delete pStream;
 		}
 
-		void AddStatisticOutput(TString strSummaryName, long lMilliTime) {
+		void AddStatisticOutput(TString strSummaryName, long lMilliTime, char delim = '/', char indexdelim = ':') {
 			StartTrace(AnythingStatisticTestPolicy.AddStatisticOutput);
-			fStatistics[strSummaryName][fHostName][WD_BUILDFLAGS][WD_COMPILER][fDatetime] = lMilliTime;
+			Anything anyToStore(lMilliTime, fStatistics.GetAllocator());
+			String strSlot(strSummaryName);
+			strSlot.Append(delim).Append(fHostName).Append(delim).Append(WD_BUILDFLAGS).Append(delim).Append(WD_COMPILER).Append(delim).Append(fDatetime);
+			SlotPutter::Operate(anyToStore, fStatistics, strSlot, false, delim, indexdelim);
 		}
 
 	private:
