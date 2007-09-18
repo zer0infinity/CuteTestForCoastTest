@@ -79,7 +79,7 @@ void ThreadedTimeStampTest::DoTimeStampConcurrencyTest(long numberOfRuns, long n
 	Trace(TimeStamp().AsString() << " Start    " << strRemainder);
 	SysLog::WriteToStderr(strRemainder);
 	{
-		CatchTimeType aTimer(TString("DoTimeStampConcurrencyTest_") << (roaConfig["UTCCtorTest"].AsBool(false) ? "UTC" : "Local") << (roaConfig["CompareStamps"].AsBool(false) ? "_Compare" : "") << "_" << numberOfThreads << "_" << numberOfRuns, this);
+		CatchTimeType aTimer(TString("TimeStampConcurrencyTest/") << numberOfThreads << "t/" << (roaConfig["CompareStamps"].AsBool(false) ? "Compare" : "NoCompare") << "/" << (roaConfig["UTCCtorTest"].AsBool(false) ? "UTC/" : "Local/") << numberOfRuns, this);
 		for (long i = 0; i < numberOfThreads * concurrencyFactor; i++) {
 			wpm.Enter(config);
 		}

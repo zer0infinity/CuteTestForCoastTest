@@ -34,7 +34,7 @@ AnythingPerfTest::~AnythingPerfTest()
 
 void AnythingPerfTest::RunIndexLoopAsCharPtr(long index, const Anything &a, const long iterations)
 {
-	CatchTimeType aTimer(TString("IndexLoopAsCharPtr") << iterations, this);
+	CatchTimeType aTimer(TString("IndexLoop/AsCharPtr/") << iterations, this, '/');
 	String out;
 	for (long i = 0; i < iterations; ++i) {
 		out = a[index].AsCharPtr("lookup hallo");
@@ -43,7 +43,7 @@ void AnythingPerfTest::RunIndexLoopAsCharPtr(long index, const Anything &a, cons
 
 void AnythingPerfTest::RunIndexLoopAsString(long index, const Anything &a, const long iterations)
 {
-	CatchTimeType aTimer(TString("IndexLoopAsString") << iterations, this);
+	CatchTimeType aTimer(TString("IndexLoop/AsString/") << iterations, this, '/');
 	String out;
 	for (long i = 0; i < iterations; ++i) {
 		out = a[index].AsString("lookup hallo");
@@ -52,7 +52,7 @@ void AnythingPerfTest::RunIndexLoopAsString(long index, const Anything &a, const
 
 void AnythingPerfTest::RunKeyLoop(const char *key, const Anything &a, const long iterations)
 {
-	CatchTimeType aTimer(TString("KeyLoopAsCharPtr[") << key << "]" << iterations, this);
+	CatchTimeType aTimer(TString("KeyLoop/AsCharPtr/[") << key << "]/" << iterations, this, '/');
 	String out;
 	for (long i = 0; i < iterations; ++i) {
 		out = a[key].AsCharPtr("lookup hallo");
@@ -62,7 +62,7 @@ void AnythingPerfTest::RunKeyLoop(const char *key, const Anything &a, const long
 void AnythingPerfTest::RunLookupPathLoop(const char *key, const Anything &a, const long iterations)
 {
 	RunROLookupPathLoop(key, a, iterations);
-	CatchTimeType aTimer(TString("LookupPathLoop[") << key << "]" << iterations, this);
+	CatchTimeType aTimer(TString("LookupPathLoop/") << key << '/' << iterations << "/any", this, '/');
 	const char *out;
 	Anything result;
 	for (long i = 0; i < iterations; ++i) {
@@ -73,7 +73,7 @@ void AnythingPerfTest::RunLookupPathLoop(const char *key, const Anything &a, con
 
 void AnythingPerfTest::RunROLookupPathLoop(const char *key, const ROAnything &a, const long iterations)
 {
-	CatchTimeType aTimer(TString("ROLookupPathLoop[") << key << "]" << iterations, this);
+	CatchTimeType aTimer(TString("LookupPathLoop/") << key << '/' << iterations << "/roa", this, '/');
 	const char *out;
 	ROAnything result;
 	for (long i = 0; i < iterations; ++i) {
@@ -99,8 +99,8 @@ void AnythingPerfTest::LookupTest()
 	RunKeyLoop("keywhichissomewhatlonger", a, iterations);
 	RunLookupPathLoop("key", a, iterations);
 	RunLookupPathLoop("keywhichissomewhatlonger", a, iterations);
-	RunLookupPathLoop("key.which.is.not.there", a, iterations);
-	RunLookupPathLoop("key.which.is.more.complex", a, iterations);
+	RunLookupPathLoop("key/which/is/not/there", a, iterations);
+	RunLookupPathLoop("key/which/is/more/complex", a, iterations);
 	// now with a more populated Anything!
 	Anything b(&p);
 	b["name"] = "Peter";
@@ -115,12 +115,12 @@ void AnythingPerfTest::LookupTest()
 	RunKeyLoop("noth", b, iterations);
 	RunKeyLoop("adrs", b, iterations);
 	RunLookupPathLoop("adrs", b, iterations);
-	RunLookupPathLoop("adrs.postleitzahl", b, iterations);
-	RunLookupPathLoop("adrs.Ortsnamentag", b, iterations);
-	RunLookupPathLoop("adrs.nottheretag ", b, iterations);
-	RunLookupPathLoop("adrs:0", b, iterations);
-	RunLookupPathLoop("adrs:10", b, iterations);
-	RunLookupPathLoop("1:10", b, iterations);
+	RunLookupPathLoop("adrs/postleitzahl", b, iterations);
+	RunLookupPathLoop("adrs/Ortsnamentag", b, iterations);
+	RunLookupPathLoop("adrs/nottheretag", b, iterations);
+	RunLookupPathLoop("adrs[0]", b, iterations);
+	RunLookupPathLoop("adrs[10]", b, iterations);
+	RunLookupPathLoop("1[10]", b, iterations);
 
 	t_assertm(true, "dummy assertion to generate summary output");
 }
@@ -203,7 +203,7 @@ void AnythingPerfTest::DoFunctorTest(T value, const char *pName, LoopFunctor pFu
 
 void AnythingPerfTest::RunDeepCloneLoop(const char *pName, const Anything &a, const long iterations)
 {
-	CatchTimeType aTimer(TString("DeepCloneLoop[") << pName << "]" << iterations, this);
+	CatchTimeType aTimer(TString("DeepCloneLoop/[") << pName << "]/" << iterations, this, '/');
 	Anything result;
 	for (long i = 0; i < iterations; ++i) {
 		result = a.DeepClone();
@@ -212,7 +212,7 @@ void AnythingPerfTest::RunDeepCloneLoop(const char *pName, const Anything &a, co
 
 void AnythingPerfTest::RunPrintOnPrettyLoop(const char *pName, const Anything &a, const long iterations)
 {
-	CatchTimeType aTimer(TString("PrintOnPrettyLoop[") << pName << "]" << iterations, this);
+	CatchTimeType aTimer(TString("PrintOnPrettyLoop/[") << pName << "]/" << iterations, this, '/');
 	String strBuf;
 	OStringStream stream(&strBuf);
 	for (long i = 0; i < iterations; ++i) {

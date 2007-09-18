@@ -33,7 +33,7 @@ StringPerfTest::~StringPerfTest()
 
 void StringPerfTest::RunLoop(const char *str, const long iterations)
 {
-	CatchTimeType aTimer(TString("RunLoop[") << str << ']' << iterations, this);
+	CatchTimeType aTimer(TString("RunLoop/") << str << '/' << iterations << "/default", this);
 	String out;
 	for (long i = 0; i < iterations; ++i) {
 		out << str;
@@ -42,7 +42,7 @@ void StringPerfTest::RunLoop(const char *str, const long iterations)
 
 void StringPerfTest::RunPreallocLoop(const char *str, const long iterations)
 {
-	CatchTimeType aTimer(TString("RunPreallocLoop[") << str << ']' << iterations, this);
+	CatchTimeType aTimer(TString("RunLoop/") << str << '/' << iterations << "/Prealloc", this);
 	String out(strlen(str)*iterations + 1);
 	for (long i = 0; i < iterations; ++i) {
 		out << str;
@@ -51,7 +51,7 @@ void StringPerfTest::RunPreallocLoop(const char *str, const long iterations)
 
 void StringPerfTest::RunPoolAllocLoop(const char *str, const long iterations)
 {
-	CatchTimeType aTimer(TString("RunPoolAllocLoop[") << str << ']' << iterations, this);
+	CatchTimeType aTimer(TString("RunLoop/") << str << '/' << iterations << "/PoolAlloc", this);
 	PoolAllocator p(1, ((strlen(str) + 16)*iterations * 3 / 1024), 21);
 	String out( &p );
 	for (long i = 0; i < iterations; ++i) {
