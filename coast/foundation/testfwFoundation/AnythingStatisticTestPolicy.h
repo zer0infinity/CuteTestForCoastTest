@@ -91,7 +91,9 @@ namespace TestFramework
 			StartTrace(AnythingStatisticTestPolicy.StoreData);
 			iostream *pStream = System::OpenOStream(fFilename, "");
 			if ( pStream != NULL ) {
-				fStatistics.SortByKey();
+				long lLevel(0L);
+				RecurseSort(fStatistics, lLevel);
+//			fStatistics.SortByKey();
 				fStatistics.PrintOn(*pStream, true);
 			}
 			delete pStream;
@@ -120,6 +122,12 @@ namespace TestFramework
 			delete pStream;
 		}
 
+		// this level is dependant on the number of subinformation as collected below
+		// -> we assume here that strSummaryName is only one levelled
+		enum eMaxSortLevel {
+			eMaxSortLevel = 5
+		};
+
 		void AddStatisticOutput(TString strSummaryName, long lMilliTime, char delim = '/', char indexdelim = ':') {
 			StartTrace(AnythingStatisticTestPolicy.AddStatisticOutput);
 			Anything anyToStore(lMilliTime, fStatistics.GetAllocator());
@@ -129,6 +137,21 @@ namespace TestFramework
 		}
 
 	private:
+		void RecurseSort(Anything &anyToSort, long lLevel) {
+			StartTrace1(AnythingStatisticTestPolicy.RecurseSort, "entry level:" << lLevel);
+			if ( ++lLevel < eMaxSortLevel ) {
+				AnyExtensions::Iterator<Anything, Anything, String> aEntryIterator(anyToSort);
+				Anything anyEntry;
+				String strSlotName;
+				while ( aEntryIterator.Next(anyEntry) ) {
+					aEntryIterator.SlotName(strSlotName);
+					Trace("recursing for slot [" << strSlotName << "]");
+					RecurseSort(anyEntry, lLevel);
+				}
+			}
+			anyToSort.SortByKey();
+		}
+
 		double RecurseExportCsvStatistics(Anything &anyCsv, ROAnything roaLoopOn, long &lLevel) {
 			StartTrace(AnythingStatisticTestPolicy.RecurseExportCsvStatistics);
 			long lEntryLevel = lLevel;
