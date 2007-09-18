@@ -17,8 +17,21 @@
 		/EnableAll				9
 		/ExportCsvStatistics	10
 	}
-	/StatisticTestCase{
+	/StatisticTestCase {
 		/MainSwitch				10
 		/EnableAll				10
+	}
+	/AnythingStatisticTestPolicy {
+		/MainSwitch				0
+		/EnableAll				10
+	}
+	/SlotPutter {
+		/MainSwitch				10
+		/EnableAll				10
+		/Operate {
+			/MainSwitch			10
+			/EnableAll			0
+			/TraceAny			-10
+		}
 	}
 }
