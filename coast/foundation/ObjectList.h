@@ -21,15 +21,7 @@
 #include <list>
 
 //---- class ObjectList ----------------------------------------------------------------
-#define DefaultListType std::deque
-
-#if defined(__GNUG__)  && ( __GNUC__ >= 4 )
-#define DefaultAllocatorGlobalType STLStorage::fast_pool_allocator_global
-#define DefaultAllocatorCurrentType STLStorage::fast_pool_allocator_current
-#else
-#define DefaultAllocatorGlobalType std::allocator
-#define DefaultAllocatorCurrentType std::allocator
-#endif
+#define DefaultListType std::list
 
 template <
 typename Tp,
