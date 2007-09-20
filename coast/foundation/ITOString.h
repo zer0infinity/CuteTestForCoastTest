@@ -233,14 +233,14 @@ public:
 	//! computes the length of the maximum initial segment of the string that consists
 	//! entirely of characters that are not in the charSet
 	//! -1 indicates "failure" (no char matched), values >= 0 indicate the position of found char in String.
-	long FirstCharOf(const String &charSet);
+	long FirstCharOf(const String &charSet) const;
 	//! Return position of first char in string beeing > highMark or -1 if no char matching to criterion found.
 	//! Chars contained in the exclusion set are excluded from the check.
-	long ContainsCharAbove(unsigned highMark = (unsigned) 127, const String excludeSet = "");
+	long ContainsCharAbove(unsigned highMark = (unsigned) 127, const String excludeSet = "") const;
 	//! computes the length of the maximum initial segment of the string that consists entirely
 	//! of characters from the string pointed to by charSet
 	//! -1 indicates the string contains no chars from charSet
-	long LastCharOf(const String &charSet);
+	long LastCharOf(const String &charSet) const;
 	//! tests if this starts with pattern
 	bool StartsWith(const char *pattern) const;
 	//! Replace first occurence of pattern with replacement

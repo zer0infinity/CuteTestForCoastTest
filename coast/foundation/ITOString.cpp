@@ -554,7 +554,7 @@ long String::Contains(const char *pattern) const
 	return result;
 }
 
-long String::FirstCharOf(const String &charSet)
+long String::FirstCharOf(const String &charSet) const
 {
 	size_t firstchar = strcspn((const char *)(*this), (const char *)charSet);
 	if ((long)firstchar >= Length()) {
@@ -564,7 +564,7 @@ long String::FirstCharOf(const String &charSet)
 	return firstchar;
 }
 
-long String::LastCharOf(const String &charSet)
+long String::LastCharOf(const String &charSet) const
 {
 	size_t firstchar = strspn((const char *)(*this), (const char *)charSet);
 	if ( firstchar == 0 ) {
@@ -810,7 +810,7 @@ long String::CaselessCompare(const char *s1, const char *s2)
 	}
 }
 
-long String::ContainsCharAbove(unsigned highMark, const String excludeSet)
+long String::ContainsCharAbove(unsigned highMark, const String excludeSet) const
 {
 	long ret = -1L;
 	if (highMark > 255) {
