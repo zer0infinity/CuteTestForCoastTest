@@ -26,10 +26,47 @@
 
 #include <boost/shared_ptr.hpp>
 
+#include <loki/SmartPtr.h>
+#include <loki/TypeTraits.h>
+
 // The following code will be put into Boost.Config in a later revision
 #if defined(_RWSTD_VER) || defined(__SGI_STL_PORT) || \
     BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x582))
 #define BOOST_NO_PROPER_STL_DEALLOCATE
+#endif
+
+// disable tracing if requested, even if in DEBUG mode, eg. performance tests
+#define WD_DISABLE_TRACE
+#if defined(DEBUG) && defined(WD_DISABLE_TRACE)
+#undef StartTrace
+#undef StartTrace1
+// debug statements
+#undef TraceBuf
+#undef Trace
+#undef TraceAny
+// subdebugs
+#undef SubTrace
+#undef SubTraceAny
+#undef SubTraceBuf
+// static trace facility
+#undef StatTrace
+#undef StatTraceBuf
+#undef StatTraceAny
+
+#define StartTrace(trigger)
+#define StartTrace1(trigger, msg)
+// debug statements
+#define TraceBuf(buf, sz)	;
+#define Trace(msg)	;
+#define TraceAny(any, msg)	;
+// subdebugs
+#define SubTrace(subtrigger, msg)
+#define SubTraceAny(subtrigger, any, msg)
+#define SubTraceBuf(subtrigger, buf, sz)
+// static trace facility
+#define StatTrace(trigger, msg, allocator)
+#define StatTraceBuf(trigger, buf, sz, allocator)
+#define StatTraceAny(trigger, any, msg, allocator)
 #endif
 
 //---- STLStorage ----------------------------------------------------------
@@ -195,9 +232,325 @@ namespace STLStorage
 		static char *malloc(const size_type bytes);
 		static void free(char *const block);
 	};
+
+////////////////////////////////////////////////////////////////////////////////
+///  \class RefCountedWithFinalDestroy
+///
+///  \ingroup  SmartPointerOwnershipGroup
+///  Implementation of the OwnershipPolicy used by SmartPtr
+///  Adapts intrusive reference counting to OwnershipPolicy-specific syntax
+///  finally destroying owned object - Release returning true
+////////////////////////////////////////////////////////////////////////////////
+
+	template <class P>
+	class RefCountedWithFinalDestroy
+	{
+	public:
+		RefCountedWithFinalDestroy() {
+			StatTrace(RefCountedWithFinalDestroy.RefCountedWithFinalDestroy, "default sizeof(P):" << (long)sizeof(P), Storage::Current());
+		}
+
+		template <class U>
+		RefCountedWithFinalDestroy(const RefCountedWithFinalDestroy<U>&) {
+			StatTrace(RefCountedWithFinalDestroy.RefCountedWithFinalDestroy, "copy other sizeof(P):" << (long)sizeof(P) << " sizeof(U):" << (long)sizeof(U), Storage::Current());
+		}
+
+		template <class U>
+		static P Clone(U &val) {
+			StartTrace1(RefCountedWithFinalDestroy.Clone, "other sizeof(P):" << (long)sizeof(P) << " sizeof(U):" << (long)sizeof(U) << " @" << (long)val);
+			P pRet(NULL);
+			if (val != 0) {
+				pRet = val->Clone<P>();
+			}
+			return pRet;
+		}
+
+		static P Clone(const P &val) {
+			StatTrace(RefCountedWithFinalDestroy.Clone, "@" << (long)val, Storage::Current());
+			if (val != 0) {
+				val->AddRef();
+			}
+			return val;
+		}
+
+		static bool Release(const P &val) {
+			StatTrace(RefCountedWithFinalDestroy.Release, "@" << (long)val, Storage::Current());
+			if (val != 0) {
+				return val->Release();
+			}
+			return false;
+		}
+
+		enum { destructiveCopy = false };
+
+		//! nothing to swap because fRefcount is intrusively managed by pointee
+		void Swap(RefCountedWithFinalDestroy &rhs) {
+			StatTrace(RefCountedWithFinalDestroy.Swap, "@" << (long)this << " <> " << (long)&rhs, Storage::Current());
+		}
+	};
+
+////////////////////////////////////////////////////////////////////////////////
+///  \class WDAllocatorStorage
+///
+///  \ingroup  SmartPointerStorageGroup
+///  Implementation of the StoragePolicy used by SmartPtr.  Uses explicit call
+///   to SPT's destructor followed by call to UserAllocator::free()
+////////////////////////////////////////////////////////////////////////////////
+
+	template <
+	class SPT,
+		  typename UserAllocator = STLStorage::BoostPoolUserAllocatorGlobal
+		  >
+	class WDAllocatorStorage
+	{
+	public:
+		typedef SPT *StoredType;      /// the type of the pointee_ object
+		typedef SPT *InitPointerType; /// type used to declare OwnershipPolicy type.
+		typedef SPT *PointerType;     /// type returned by operator->
+		typedef SPT &ReferenceType;   /// type returned by operator*
+
+		WDAllocatorStorage() : pointee_(Default()) {
+			StatTrace(WDAllocatorStorage.WDAllocatorStorage, "default ctor", Storage::Current());
+		}
+
+		// The storage policy doesn't initialize the stored pointer
+		//     which will be initialized by the OwnershipPolicy's Clone fn
+		WDAllocatorStorage(const WDAllocatorStorage &) : pointee_(0) {
+			StatTrace(WDAllocatorStorage.WDAllocatorStorage, "copy ctor", Storage::Current());
+		}
+
+		template <class U>
+		WDAllocatorStorage(const WDAllocatorStorage<U>&) : pointee_(0) {
+			StatTrace(WDAllocatorStorage.WDAllocatorStorage, "other type copy ctor", Storage::Current());
+		}
+
+		WDAllocatorStorage(const StoredType &p) : pointee_(p) {
+			StatTrace(WDAllocatorStorage.WDAllocatorStorage, "pointer ctor pointee:" << (long)p, Storage::Current());
+		}
+
+		PointerType operator->() const {
+			return pointee_;
+		}
+
+		ReferenceType operator*() const {
+			return *pointee_;
+		}
+
+		void Swap(WDAllocatorStorage &rhs) {
+			std::swap(pointee_, rhs.pointee_);
+		}
+
+		// Accessors
+		template <class F, class A>
+		friend typename WDAllocatorStorage<F, A>::PointerType GetImpl(const WDAllocatorStorage<F, A>& sp);
+
+		template <class F, class A>
+		friend const typename WDAllocatorStorage<F, A>::StoredType &GetImplRef(const WDAllocatorStorage<F, A>& sp);
+
+		template <class F, class A>
+		friend typename WDAllocatorStorage<F, A>::StoredType &GetImplRef(WDAllocatorStorage<F, A>& sp);
+
+	protected:
+		// Destroys the data stored
+		// (Destruction might be taken over by the OwnershipPolicy)
+		void Destroy() {
+			StartTrace1(WDAllocatorStorage.Destroy, "pointee:" << (long)pointee_);
+			if ( 0 != pointee_ ) {
+				Trace("destructing member");
+				pointee_->~SPT();
+				UserAllocator::free( (char *)pointee_ );
+			}
+		}
+
+		// Default value to initialize the pointer
+		static StoredType Default() {
+			return 0;
+		}
+
+	private:
+		// Data
+		StoredType pointee_;
+	};
+
+	template <class F, class A>
+	inline typename WDAllocatorStorage<F, A>::PointerType GetImpl(const WDAllocatorStorage<F, A>& sp)
+	{
+		return sp.pointee_;
+	}
+
+	template <class F, class A>
+	inline const typename WDAllocatorStorage<F, A>::StoredType &GetImplRef(const WDAllocatorStorage<F, A>& sp)
+	{
+		return sp.pointee_;
+	}
+
+	template <class F, class A>
+	inline typename WDAllocatorStorage<F, A>::StoredType &GetImplRef(WDAllocatorStorage<F, A>& sp)
+	{
+		return sp.pointee_;
+	}
+
+	template < typename T > struct WDAllocatorGlobalStorage : public WDAllocatorStorage<T, STLStorage::BoostPoolUserAllocatorGlobal > {
+		typedef WDAllocatorStorage<T, STLStorage::BoostPoolUserAllocatorGlobal > BaseClassType;
+		WDAllocatorGlobalStorage() : BaseClassType() {}
+		WDAllocatorGlobalStorage(const WDAllocatorGlobalStorage &) : BaseClassType() {}
+		template <class U>
+		WDAllocatorGlobalStorage(const WDAllocatorGlobalStorage<U>&) : BaseClassType() {}
+		WDAllocatorGlobalStorage(const typename BaseClassType::StoredType &p) : BaseClassType(p) {}
+	};
+
+	template < typename T > struct WDAllocatorCurrentStorage : public WDAllocatorStorage<T, STLStorage::BoostPoolUserAllocatorCurrent > {
+		typedef WDAllocatorStorage<T, STLStorage::BoostPoolUserAllocatorCurrent > BaseClassType;
+		WDAllocatorCurrentStorage() : BaseClassType() {}
+		WDAllocatorCurrentStorage(const WDAllocatorCurrentStorage &) : BaseClassType() {}
+		template <class U>
+		WDAllocatorCurrentStorage(const WDAllocatorCurrentStorage<U>&) : BaseClassType() {}
+		WDAllocatorCurrentStorage(const typename BaseClassType::StoredType &p) : BaseClassType(p) {}
+	};
+
+	template < typename UserAllocator >
+	class pool_refcounted
+	{
+		friend class STLStorageTest;
+		typedef typename UserAllocator::size_type sz_type;
+		typedef pool_refcounted<UserAllocator> ThisType;
+
+		pool_refcounted();
+		ThisType &operator=(const ThisType &);
+
+		enum {
+			nOthers = 4
+		};
+	public:
+		typedef Loki::SmartPtr<ThisType, RefCountedWithFinalDestroy, Loki::DisallowConversion, Loki::AssertCheck, WDAllocatorCurrentStorage> pool_refcount_storer;
+		typedef typename boost::pool<UserAllocator> int_pool_type;
+		typedef int_pool_type *PointerType;
+		typedef int_pool_type &ReferenceType;
+
+		explicit pool_refcounted(const sz_type nrequested_size, const sz_type nnext_size)
+			: fRefcount(1)
+			, fReqSz(nrequested_size)
+			, fNextSz(nnext_size)
+			, fpPool(0)
+			, fOtherPools() {
+			StatTrace(pool_refcounted.pool_refcounted, "sizeof:" << (long)sizeof(int_pool_type) << " @" << (long)this, Storage::Current());
+			void *pMem = (void *)UserAllocator::malloc(sizeof(int_pool_type));
+			fpPool = new (pMem) int_pool_type(nrequested_size, nnext_size);
+		}
+
+		~pool_refcounted() {
+			StartTrace1(pool_refcounted.~pool_refcounted, "refcnt:" << fRefcount << " fpPool:" << (long)fpPool << " @" << (long)this);
+			if ( fpPool != NULL && fRefcount <= 0) {
+				Trace("calling release_memory");
+				fpPool->release_memory();
+				fpPool->~int_pool_type();
+				UserAllocator::free((char *)fpPool);
+			}
+		}
+
+		template < class P >
+		P Clone() {
+			StartTrace1(pool_refcounted.Clone, "Clone<P> for size:" << (long)fReqSz << " @" << (long)this);
+			AddRef();
+			return this;
+		}
+
+		pool_refcount_storer Clone(sz_type nrequested_size, sz_type nnext_size) {
+			StartTrace1(pool_refcounted.Clone, "Clone for size:" << (long)nrequested_size << " @" << (long)this);
+			if ( nrequested_size == fReqSz ) {
+				Trace("equal size, returning this");
+				AddRef();
+				return pool_refcount_storer(this);
+			} else {
+				Trace("find stored instance");
+				bool bFound(false);
+				int i(0), iFree(-1);
+				for (; i < nOthers; ++i) {
+					if ( ( GetImplRef(fOtherPools[i]) != NULL ) && ( fOtherPools[i]->PoolSize() == nrequested_size ) ) {
+						bFound = true;
+						break;
+					}
+					if ( iFree == -1 && ( GetImplRef(fOtherPools[i]) == 0 ) ) {
+						iFree = i;
+					}
+				}
+				if ( bFound ) {
+					Trace("found pool for size:"  << (long)nrequested_size << " @" << (long)GetImplRef(fOtherPools[i]));
+					return fOtherPools[i];
+				} else {
+					Trace("creating new pool for size:"  << (long)nrequested_size << " this->size:" << (long)fReqSz);
+					void *pMem = (void *)UserAllocator::malloc(sizeof(ThisType));
+					ThisType *pRet = new (pMem) ThisType(nrequested_size, nnext_size);
+					if ( iFree >= 0 && iFree < nOthers ) {
+						Trace("storing new pool at idx:" << iFree << " @" << (long)pRet);
+						fOtherPools[iFree] = pool_refcount_storer(pRet);
+						return fOtherPools[iFree];
+					}
+				}
+			}
+			return pool_refcount_storer();
+		}
+
+		sz_type PoolSize() const {
+			return fReqSz;
+		}
+		sz_type NextSize() const {
+			return fNextSz;
+		}
+
+		void AddRef() {
+			++fRefcount;
+			StatTrace(pool_refcounted.AddRef, "new refcnt:" << fRefcount << " @" << (long)this, Storage::Current());
+		}
+
+		bool Release() {
+			--fRefcount;
+			StatTrace(pool_refcounted.Release, "new refcnt:" << fRefcount << " @" << (long)this, Storage::Current());
+			return ( fRefcount <= 0 );
+		}
+
+		void *malloc() {
+			// AddRef(); not needed, pool_refcounted are able to manage themselfes without destroying pools in use
+			return fpPool->malloc();
+		}
+		void *ordered_malloc(const sz_type n) {
+			// AddRef(); not needed, pool_refcounted are able to manage themselfes without destroying pools in use
+			return fpPool->ordered_malloc(n);
+		}
+		void free(void *const chunk) {
+			// Release(); not needed, pool_refcounted are able to manage themselfes without destroying pools in use
+			fpPool->free(chunk);
+		}
+		void free(void *const chunks, const sz_type n) {
+			// Release(); not needed, pool_refcounted are able to manage themselfes without destroying pools in use
+			fpPool->free(chunks, n);
+		}
+		void ordered_free(void *const chunk) {
+			// Release(); not needed, pool_refcounted are able to manage themselfes without destroying pools in use
+			fpPool->ordered_free(chunk);
+		}
+		void ordered_free(void *const chunks, const sz_type n) {
+			// Release(); not needed, pool_refcounted are able to manage themselfes without destroying pools in use
+			fpPool->ordered_free(chunks, n);
+		}
+
+	private:
+		int fRefcount;
+		sz_type fReqSz, fNextSz;
+		PointerType fpPool;
+		pool_refcount_storer fOtherPools[nOthers];
+	};
 }
 
 #include "STL_pool_allocator.h"
 #include "STL_fast_pool_allocator.h"
+
+#if defined(__GNUG__)  && ( __GNUC__ >= 4 )
+#define DefaultAllocatorGlobalType STLStorage::fast_pool_allocator_global
+#define DefaultAllocatorCurrentType STLStorage::fast_pool_allocator_current
+#else
+#define DefaultAllocatorGlobalType std::allocator
+#define DefaultAllocatorCurrentType std::allocator
+#endif
 
 #endif
