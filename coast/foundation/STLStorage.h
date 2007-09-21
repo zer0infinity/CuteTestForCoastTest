@@ -37,36 +37,18 @@
 
 // disable tracing if requested, even if in DEBUG mode, eg. performance tests
 #define WD_DISABLE_TRACE
-#if defined(DEBUG) && defined(WD_DISABLE_TRACE)
-#undef StartTrace
-#undef StartTrace1
-// debug statements
-#undef TraceBuf
-#undef Trace
-#undef TraceAny
-// subdebugs
-#undef SubTrace
-#undef SubTraceAny
-#undef SubTraceBuf
-// static trace facility
-#undef StatTrace
-#undef StatTraceBuf
-#undef StatTraceAny
-
-#define StartTrace(trigger)
-#define StartTrace1(trigger, msg)
-// debug statements
-#define TraceBuf(buf, sz)	;
-#define Trace(msg)	;
-#define TraceAny(any, msg)	;
-// subdebugs
-#define SubTrace(subtrigger, msg)
-#define SubTraceAny(subtrigger, any, msg)
-#define SubTraceBuf(subtrigger, buf, sz)
-// static trace facility
-#define StatTrace(trigger, msg, allocator)
-#define StatTraceBuf(trigger, buf, sz, allocator)
-#define StatTraceAny(trigger, any, msg, allocator)
+#if defined(DEBUG)
+#if defined(WD_DISABLE_TRACE)
+#define _StatTrace(trigger, msg, allocator)
+#define _StartTrace(trigger)
+#define _StartTrace1(trigger, msg)
+#define _Trace(msg);
+#else
+#define _StatTrace(trigger, msg, allocator) 	StatTrace(trigger, msg, allocator)
+#define _StartTrace(trigger)					StartTrace(trigger)
+#define _StartTrace1(trigger, msg)				StartTrace1(trigger, msg)
+#define _Trace(msg)								Trace(msg);
+#endif
 #endif
 
 //---- STLStorage ----------------------------------------------------------
@@ -96,10 +78,10 @@ namespace STLStorage
 		struct rebind {
 			typedef STLAllocator<U> other;
 			rebind() {
-				StartTrace(STLAllocator.rebind);
+				_StartTrace(STLAllocator.rebind);
 			}
 			~rebind() {
-				StartTrace(STLAllocator.~rebind);
+				_StartTrace(STLAllocator.~rebind);
 			}
 		};
 
@@ -115,12 +97,12 @@ namespace STLStorage
 
 		// return address of values
 		pointer address (reference value) const {
-			StartTrace1(STLAllocator.address, "reference value");
+			_StartTrace1(STLAllocator.address, "reference value");
 			return &value;
 		}
 
 		const_pointer address (const_reference value) const {
-			StartTrace1(STLAllocator.address, "const_reference value");
+			_StartTrace1(STLAllocator.address, "const_reference value");
 			return &value;
 		}
 
@@ -129,7 +111,7 @@ namespace STLStorage
 		*/
 		STLAllocator(Allocator *pAlloc = Storage::Current()) throw(fAllocatorNotInitialized)
 			: fAllocator(pAlloc) {
-			StartTrace(STLAllocator.STLAllocator);
+			_StartTrace(STLAllocator.STLAllocator);
 			if ( !fAllocator ) {
 				throw fAllocatorNotInitialized();
 			}
@@ -137,7 +119,7 @@ namespace STLStorage
 
 		STLAllocator(const STLAllocator &aAllocator) throw(fAllocatorNotInitialized)
 			: fAllocator(aAllocator.fAllocator) {
-			StartTrace1(STLAllocator.STLAllocator, "copy");
+			_StartTrace1(STLAllocator.STLAllocator, "copy");
 			if ( !fAllocator ) {
 				throw fAllocatorNotInitialized();
 			}
@@ -146,14 +128,14 @@ namespace STLStorage
 		template <class U>
 		STLAllocator (const STLAllocator<U>& aAllocator) throw(fAllocatorNotInitialized)
 			: fAllocator(aAllocator.fAllocator) {
-			StartTrace1(STLAllocator.STLAllocator, "copy other type");
+			_StartTrace1(STLAllocator.STLAllocator, "copy other type");
 			if ( !fAllocator ) {
 				throw fAllocatorNotInitialized();
 			}
 		}
 
 		~STLAllocator() {
-			StartTrace(STLAllocator.~STLAllocator);
+			_StartTrace(STLAllocator.~STLAllocator);
 		}
 
 		STLAllocator &operator=(const STLAllocator &aAllocator) {
@@ -165,21 +147,21 @@ namespace STLStorage
 		size_type max_size () const throw() {
 			//XXX in case of PoolAllocators, we could determine the max number somewhow
 			size_type tSz = std::numeric_limits<std::size_t>::max() / sizeof(T);
-			StatTrace(STLAllocator.max_size, "maximal size:" << (long)tSz, Storage::Current());
+			_StatTrace(STLAllocator.max_size, "maximal size:" << (long)tSz, Storage::Current());
 			return tSz;
 		}
 
 		// allocate but don't initialize num elements of type T
 		pointer allocate (size_type num, const void* = 0) {
 			// print message and allocate memory with global new
-			StartTrace1(STLAllocator.allocate, "num:" << (long)num << " of size:" << (long)sizeof(T) << " but no initialization");
+			_StartTrace1(STLAllocator.allocate, "num:" << (long)num << " of size:" << (long)sizeof(T) << " but no initialization");
 			pointer ret = (pointer)fAllocator->Calloc(num, sizeof(T));
 			return ret;
 		}
 
 		// initialize elements of allocated storage p with value value
 		void construct (pointer p, const T &value) {
-			StartTrace1(STLAllocator.construct, "placement new");
+			_StartTrace1(STLAllocator.construct, "placement new");
 			// initialize memory with placement new
 			new((void *)p)T(value);
 		}
@@ -193,7 +175,7 @@ namespace STLStorage
 		// deallocate storage p of deleted elements
 		void deallocate (pointer p, size_type num) {
 			// print message and deallocate memory with global delete
-			StartTrace1(STLAllocator.deallocate, "num:" << (long)num << " of size:" << (long)sizeof(T));
+			_StartTrace1(STLAllocator.deallocate, "num:" << (long)num << " of size:" << (long)sizeof(T));
 			fAllocator->Free((void *)p);
 		}
 
@@ -204,14 +186,14 @@ namespace STLStorage
 	template <class T1, class T2>
 	bool operator== (const STLAllocator<T1>& left, const STLAllocator<T2>& right) throw()
 	{
-		StartTrace1(STLAllocator.operator == , "equal comparing two types");
+		_StartTrace1(STLAllocator.operator == , "equal comparing two types");
 		// compare internal fAllocator member
 		return left.fAllocator == right.fAllocator;
 	}
 	template <class T1, class T2>
 	bool operator!= (const STLAllocator<T1>& left, const STLAllocator<T2>& right) throw()
 	{
-		StartTrace1(STLAllocator.operator != , "unequal comparing two types");
+		_StartTrace1(STLAllocator.operator != , "unequal comparing two types");
 		// compare internal fAllocator member
 		return left.fAllocator != right.fAllocator;
 	}
@@ -247,17 +229,17 @@ namespace STLStorage
 	{
 	public:
 		RefCountedWithFinalDestroy() {
-			StatTrace(RefCountedWithFinalDestroy.RefCountedWithFinalDestroy, "default sizeof(P):" << (long)sizeof(P), Storage::Current());
+			_StatTrace(RefCountedWithFinalDestroy.RefCountedWithFinalDestroy, "default sizeof(P):" << (long)sizeof(P), Storage::Current());
 		}
 
 		template <class U>
 		RefCountedWithFinalDestroy(const RefCountedWithFinalDestroy<U>&) {
-			StatTrace(RefCountedWithFinalDestroy.RefCountedWithFinalDestroy, "copy other sizeof(P):" << (long)sizeof(P) << " sizeof(U):" << (long)sizeof(U), Storage::Current());
+			_StatTrace(RefCountedWithFinalDestroy.RefCountedWithFinalDestroy, "copy other sizeof(P):" << (long)sizeof(P) << " sizeof(U):" << (long)sizeof(U), Storage::Current());
 		}
 
 		template <class U>
 		static P Clone(U &val) {
-			StartTrace1(RefCountedWithFinalDestroy.Clone, "other sizeof(P):" << (long)sizeof(P) << " sizeof(U):" << (long)sizeof(U) << " @" << (long)val);
+			_StartTrace1(RefCountedWithFinalDestroy.Clone, "other sizeof(P):" << (long)sizeof(P) << " sizeof(U):" << (long)sizeof(U) << " @" << (long)val);
 			P pRet(NULL);
 			if (val != 0) {
 				pRet = val->Clone<P>();
@@ -266,7 +248,7 @@ namespace STLStorage
 		}
 
 		static P Clone(const P &val) {
-			StatTrace(RefCountedWithFinalDestroy.Clone, "@" << (long)val, Storage::Current());
+			_StatTrace(RefCountedWithFinalDestroy.Clone, "@" << (long)val, Storage::Current());
 			if (val != 0) {
 				val->AddRef();
 			}
@@ -274,7 +256,7 @@ namespace STLStorage
 		}
 
 		static bool Release(const P &val) {
-			StatTrace(RefCountedWithFinalDestroy.Release, "@" << (long)val, Storage::Current());
+			_StatTrace(RefCountedWithFinalDestroy.Release, "@" << (long)val, Storage::Current());
 			if (val != 0) {
 				return val->Release();
 			}
@@ -285,7 +267,7 @@ namespace STLStorage
 
 		//! nothing to swap because fRefcount is intrusively managed by pointee
 		void Swap(RefCountedWithFinalDestroy &rhs) {
-			StatTrace(RefCountedWithFinalDestroy.Swap, "@" << (long)this << " <> " << (long)&rhs, Storage::Current());
+			_StatTrace(RefCountedWithFinalDestroy.Swap, "@" << (long)this << " <> " << (long)&rhs, Storage::Current());
 		}
 	};
 
@@ -310,22 +292,22 @@ namespace STLStorage
 		typedef SPT &ReferenceType;   /// type returned by operator*
 
 		WDAllocatorStorage() : pointee_(Default()) {
-			StatTrace(WDAllocatorStorage.WDAllocatorStorage, "default ctor", Storage::Current());
+			_StatTrace(WDAllocatorStorage.WDAllocatorStorage, "default ctor", Storage::Current());
 		}
 
 		// The storage policy doesn't initialize the stored pointer
 		//     which will be initialized by the OwnershipPolicy's Clone fn
 		WDAllocatorStorage(const WDAllocatorStorage &) : pointee_(0) {
-			StatTrace(WDAllocatorStorage.WDAllocatorStorage, "copy ctor", Storage::Current());
+			_StatTrace(WDAllocatorStorage.WDAllocatorStorage, "copy ctor", Storage::Current());
 		}
 
 		template <class U>
 		WDAllocatorStorage(const WDAllocatorStorage<U>&) : pointee_(0) {
-			StatTrace(WDAllocatorStorage.WDAllocatorStorage, "other type copy ctor", Storage::Current());
+			_StatTrace(WDAllocatorStorage.WDAllocatorStorage, "other type copy ctor", Storage::Current());
 		}
 
 		WDAllocatorStorage(const StoredType &p) : pointee_(p) {
-			StatTrace(WDAllocatorStorage.WDAllocatorStorage, "pointer ctor pointee:" << (long)p, Storage::Current());
+			_StatTrace(WDAllocatorStorage.WDAllocatorStorage, "pointer ctor pointee:" << (long)p, Storage::Current());
 		}
 
 		PointerType operator->() const {
@@ -354,9 +336,9 @@ namespace STLStorage
 		// Destroys the data stored
 		// (Destruction might be taken over by the OwnershipPolicy)
 		void Destroy() {
-			StartTrace1(WDAllocatorStorage.Destroy, "pointee:" << (long)pointee_);
+			_StartTrace1(WDAllocatorStorage.Destroy, "pointee:" << (long)pointee_);
 			if ( 0 != pointee_ ) {
-				Trace("destructing member");
+				_Trace("destructing member");
 				pointee_->~SPT();
 				UserAllocator::free( (char *)pointee_ );
 			}
@@ -433,15 +415,15 @@ namespace STLStorage
 			, fNextSz(nnext_size)
 			, fpPool(0)
 			, fOtherPools() {
-			StatTrace(pool_refcounted.pool_refcounted, "sizeof:" << (long)sizeof(int_pool_type) << " @" << (long)this, Storage::Current());
+			_StatTrace(pool_refcounted.pool_refcounted, "sizeof:" << (long)sizeof(int_pool_type) << " @" << (long)this, Storage::Current());
 			void *pMem = (void *)UserAllocator::malloc(sizeof(int_pool_type));
 			fpPool = new (pMem) int_pool_type(nrequested_size, nnext_size);
 		}
 
 		~pool_refcounted() {
-			StartTrace1(pool_refcounted.~pool_refcounted, "refcnt:" << fRefcount << " fpPool:" << (long)fpPool << " @" << (long)this);
+			_StartTrace1(pool_refcounted.~pool_refcounted, "refcnt:" << fRefcount << " fpPool:" << (long)fpPool << " @" << (long)this);
 			if ( fpPool != NULL && fRefcount <= 0) {
-				Trace("calling release_memory");
+				_Trace("calling release_memory");
 				fpPool->release_memory();
 				fpPool->~int_pool_type();
 				UserAllocator::free((char *)fpPool);
@@ -450,19 +432,19 @@ namespace STLStorage
 
 		template < class P >
 		P Clone() {
-			StartTrace1(pool_refcounted.Clone, "Clone<P> for size:" << (long)fReqSz << " @" << (long)this);
+			_StartTrace1(pool_refcounted.Clone, "Clone<P> for size:" << (long)fReqSz << " @" << (long)this);
 			AddRef();
 			return this;
 		}
 
 		pool_refcount_storer Clone(sz_type nrequested_size, sz_type nnext_size) {
-			StartTrace1(pool_refcounted.Clone, "Clone for size:" << (long)nrequested_size << " @" << (long)this);
+			_StartTrace1(pool_refcounted.Clone, "Clone for size:" << (long)nrequested_size << " @" << (long)this);
 			if ( nrequested_size == fReqSz ) {
-				Trace("equal size, returning this");
+				_Trace("equal size, returning this");
 				AddRef();
 				return pool_refcount_storer(this);
 			} else {
-				Trace("find stored instance");
+				_Trace("find stored instance");
 				bool bFound(false);
 				int i(0), iFree(-1);
 				for (; i < nOthers; ++i) {
@@ -475,14 +457,14 @@ namespace STLStorage
 					}
 				}
 				if ( bFound ) {
-					Trace("found pool for size:"  << (long)nrequested_size << " @" << (long)GetImplRef(fOtherPools[i]));
+					_Trace("found pool for size:"  << (long)nrequested_size << " @" << (long)GetImplRef(fOtherPools[i]));
 					return fOtherPools[i];
 				} else {
-					Trace("creating new pool for size:"  << (long)nrequested_size << " this->size:" << (long)fReqSz);
+					_Trace("creating new pool for size:"  << (long)nrequested_size << " this->size:" << (long)fReqSz);
 					void *pMem = (void *)UserAllocator::malloc(sizeof(ThisType));
 					ThisType *pRet = new (pMem) ThisType(nrequested_size, nnext_size);
 					if ( iFree >= 0 && iFree < nOthers ) {
-						Trace("storing new pool at idx:" << iFree << " @" << (long)pRet);
+						_Trace("storing new pool at idx:" << iFree << " @" << (long)pRet);
 						fOtherPools[iFree] = pool_refcount_storer(pRet);
 						return fOtherPools[iFree];
 					}
@@ -500,12 +482,12 @@ namespace STLStorage
 
 		void AddRef() {
 			++fRefcount;
-			StatTrace(pool_refcounted.AddRef, "new refcnt:" << fRefcount << " @" << (long)this, Storage::Current());
+			_StatTrace(pool_refcounted.AddRef, "new refcnt:" << fRefcount << " @" << (long)this, Storage::Current());
 		}
 
 		bool Release() {
 			--fRefcount;
-			StatTrace(pool_refcounted.Release, "new refcnt:" << fRefcount << " @" << (long)this, Storage::Current());
+			_StatTrace(pool_refcounted.Release, "new refcnt:" << fRefcount << " @" << (long)this, Storage::Current());
 			return ( fRefcount <= 0 );
 		}
 

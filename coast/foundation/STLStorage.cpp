@@ -21,26 +21,26 @@ namespace STLStorage
 	char *BoostPoolUserAllocatorGlobal::malloc(const size_type bytes)
 	{
 		char *pRet = reinterpret_cast<char *>(Storage::Global()->Malloc(bytes));
-		StatTrace(BoostPoolUserAllocatorGlobal.malloc, "size:" << (long)bytes << " @" << (long)pRet, Storage::Global());
+		_StatTrace(BoostPoolUserAllocatorGlobal.malloc, "size:" << (long)bytes << " @" << (long)pRet, Storage::Global());
 		return pRet;
 	}
 
 	void BoostPoolUserAllocatorGlobal::free(char *const block)
 	{
-		StatTrace(BoostPoolUserAllocatorGlobal.free, "@" << (long)block, Storage::Global());
+		_StatTrace(BoostPoolUserAllocatorGlobal.free, "@" << (long)block, Storage::Global());
 		Storage::Global()->Free(block);
 	}
 
 	char *BoostPoolUserAllocatorCurrent::malloc(const size_type bytes)
 	{
 		char *pRet = reinterpret_cast<char *>(Storage::Current()->Malloc(bytes));
-		StatTrace(BoostPoolUserAllocatorCurrent.malloc, "size:" << (long)bytes << " @" << (long)pRet, Storage::Current());
+		_StatTrace(BoostPoolUserAllocatorCurrent.malloc, "size:" << (long)bytes << " @" << (long)pRet, Storage::Current());
 		return pRet;
 	}
 
 	void BoostPoolUserAllocatorCurrent::free(char *const block)
 	{
-		StatTrace(BoostPoolUserAllocatorCurrent.free, "@" << (long)block, Storage::Current());
+		_StatTrace(BoostPoolUserAllocatorCurrent.free, "@" << (long)block, Storage::Current());
 		Storage::Current()->Free(block);
 	}
 };
