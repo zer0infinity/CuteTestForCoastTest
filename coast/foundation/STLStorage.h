@@ -37,8 +37,7 @@
 
 // disable tracing if requested, even if in DEBUG mode, eg. performance tests
 #define WD_DISABLE_TRACE
-#if defined(DEBUG)
-#if defined(WD_DISABLE_TRACE)
+#if !defined(DEBUG) || defined(WD_DISABLE_TRACE)
 #define _StatTrace(trigger, msg, allocator)
 #define _StartTrace(trigger)
 #define _StartTrace1(trigger, msg)
@@ -48,7 +47,6 @@
 #define _StartTrace(trigger)					StartTrace(trigger)
 #define _StartTrace1(trigger, msg)				StartTrace1(trigger, msg)
 #define _Trace(msg)								Trace(msg);
-#endif
 #endif
 
 //---- STLStorage ----------------------------------------------------------
