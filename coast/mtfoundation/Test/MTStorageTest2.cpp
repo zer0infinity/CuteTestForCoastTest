@@ -197,7 +197,7 @@ void MTStorageTest2::twoThreadArrayAccessTest()
 		//          often return a temporary Anything which is *NOT* suitable to initialize
 		//          a ROAnything...
 
-		t_assert( fGlobal->CurrentlyAllocated() == l); //no longer true
+		assertCompare( l, equal_to, fGlobal->CurrentlyAllocated()); //no longer true
 		assertEqual( "ok", sub.AsCharPtr("") );
 
 		Anything copy(t1->GetData()["Sub"]["2"]);	// must be copied since allocators dont match
