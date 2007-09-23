@@ -124,7 +124,7 @@ namespace TestFramework
 
 		// this level is dependant on the number of subinformation as collected below
 		// -> we assume here that strSummaryName is only one levelled
-		enum eMaxSortLevel {
+		enum eSortLevel {
 			eMaxSortLevel = 5
 		};
 
