@@ -6,8 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#ifndef _SysLog_H
-#define _SysLog_H
+#ifndef _SystemLog_H
+#define _SystemLog_H
 
 #include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include "ITOString.h"
@@ -187,4 +187,4 @@ protected:
 };
 #endif
 
-#endif		//not defined _SysLog_H
+#endif		//not defined _SystemLog_H
