@@ -150,32 +150,6 @@ private:
 	strFileLineMsg << "( " << __FILE__ << ":" << (long)__LINE__ << " ) " << msg;\
 	SysLog::Alert(strFileLineMsg); }
 
-#if defined(__aix__) || defined(__linux__) || defined(__sun)
-//! implementation for Unix syslog api
-class UnixSysLog : public SysLog
-{
-public:
-	UnixSysLog(const char *appId);
-	~UnixSysLog();
-
-protected:
-	virtual void DoSystemLevelLog(eLogLevel level, const char *msg);
-};
-#endif
-
-#if defined(__370__)
-//! implementation of SysLog api for System/370; just uses cerr
-class S370SysLog: public SysLog
-{
-public:
-	S370SysLog() { }
-	~S370SysLog() { }
-
-protected:
-	virtual void DoSystemLevelLog(eLogLevel level, const char *msg);
-};
-#endif
-
 #if defined(WIN32)
 //! implementation of SysLog api for WIN32
 class EXPORTDECL_FOUNDATION Win32SysLog : public SysLog
@@ -188,6 +162,28 @@ protected:
 	virtual void DoSystemLevelLog(eLogLevel level, const char *msg);
 
 	HANDLE fLogHandle;
+};
+#elif defined(__370__)
+//! implementation of SysLog api for System/370; just uses cerr
+class S370SysLog: public SysLog
+{
+public:
+	S370SysLog() { }
+	~S370SysLog() { }
+
+protected:
+	virtual void DoSystemLevelLog(eLogLevel level, const char *msg);
+};
+#else
+//! implementation for Unix syslog api
+class UnixSysLog : public SysLog
+{
+public:
+	UnixSysLog(const char *appId);
+	~UnixSysLog();
+
+protected:
+	virtual void DoSystemLevelLog(eLogLevel level, const char *msg);
 };
 #endif
 
