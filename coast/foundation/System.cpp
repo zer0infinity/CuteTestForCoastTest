@@ -35,11 +35,7 @@ using namespace std;
 #include <dirent.h>  // directory access
 #include <sys/time.h>
 #include <sys/utsname.h>
-#if defined(__linux__)
-#include <sys/vfs.h>
-#elif defined(__sun)
 #include <sys/statvfs.h>
-#endif
 #endif
 #if defined(__SUNPRO_CC)
 #include <time.h>
@@ -1106,15 +1102,8 @@ int System::IO::rename(const char *oldfilename, const char *newfilename)
 bool System::BlocksLeftOnFS(const char *pFsPath, ul_long &ulBlocks, unsigned long &lBlkSize)
 {
 	StartTrace1(System.BlocksLeftOnFS, "fs path [" << NotNull(pFsPath) << "]");
-#if defined(__sun)
-	struct statvfs buf;
-	if (0 == statvfs(pFsPath, &buf)) {
-		lBlkSize = (unsigned long)buf.f_frsize;
-		ulBlocks = (ul_long)buf.f_bavail;
-		Trace("blocksize: " << (long)lBlkSize << " bytes free blocks: " << (long)ulBlocks);
-		return true;
-	} else
-#elif defined(WIN32)
+
+#if defined(WIN32)
 	_ULARGE_INTEGER ulBytesAvailable;
 	if ( GetDiskFreeSpaceEx(pFsPath, &ulBytesAvailable, NULL, NULL) != 0 ) {
 		lBlkSize = 1;
@@ -1123,9 +1112,9 @@ bool System::BlocksLeftOnFS(const char *pFsPath, ul_long &ulBlocks, unsigned lon
 		return true;
 	} else
 #else
-	struct statfs buf;
-	if (0 == statfs(pFsPath, &buf)) {
-		lBlkSize = (unsigned long)buf.f_bsize;
+	struct statvfs buf;
+	if (0 == statvfs(pFsPath, &buf)) {
+		lBlkSize = (unsigned long)buf.f_frsize;
 		ulBlocks = (ul_long)buf.f_bavail;
 		Trace("blocksize: " << (long)lBlkSize << " bytes free blocks: " << (long)ulBlocks);
 		return true;
