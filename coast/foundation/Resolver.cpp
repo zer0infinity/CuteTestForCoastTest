@@ -45,6 +45,8 @@
 #define SystemSpecific(className)		_NAME2_(Linux, className)
 #elif defined(WIN32)
 #define SystemSpecific(className)		_NAME2_(Win32, className)
+#else //we suggest Linux (for posix)
+#define SystemSpecific(className)		_NAME2_(Linux, className)
 #endif
 
 class EXPORTDECL_FOUNDATION SystemSpecific(Resolver): public Resolver
