@@ -37,16 +37,7 @@
 #include <strings.h>
 #endif
 
-// brain dead socklen_t definitions, see `man 2 accept` on Linux
-#if defined(__linux__) || defined(_AIX)
 #define socklen_type socklen_t
-#else
-#if defined(ONLY_STD_IOSTREAM) && !defined(WIN32)
-#define socklen_type socklen_t
-#else
-#define socklen_type int
-#endif
-#endif
 
 #if !defined(INADDR_NONE)
 #define INADDR_NONE ((unsigned long)-1)
