@@ -19,7 +19,7 @@
 #include <errno.h>
 #include <cstdio>
 #include <cstring>
-#if defined(__sun) || defined(__linux__) || defined(__aix__)
+#if !defined(WIN32)
 #include <syslog.h>
 #endif
 #if defined(__SUNPRO_CC)
@@ -62,14 +62,12 @@ void SysLog::Init(const char *appId)
 	if ( !fgSysLog ) {
 		// open the syslog channel for this application
 		// there is always only one syslog channel per application
-#if defined(__sun) || defined(__linux__) || defined(__aix__)
-		fgSysLog = new UnixSysLog(appId);
-#endif
 #if defined(WIN32)
 		fgSysLog = new Win32SysLog(appId);
-#endif
-#if defined(__370__)
+#elif defined(__370__)
 		fgSysLog = new S370SysLog();
+#else
+		fgSysLog = new UnixSysLog(appId);
 #endif
 	}
 }
@@ -311,8 +309,47 @@ void SysLog::DoLogTrace(eLogLevel level, const char *logMsg)
 }
 
 //---- UnixSysLog ----------------------------------------------------------------
-#if defined(__sun) || defined(__linux__) || defined(__aix__)
+#if defined(WIN32)
+Win32SysLog::Win32SysLog(const char *appId)
+{
+	fLogHandle =	::RegisterEventSource(0, appId);
+}
 
+Win32SysLog::~Win32SysLog()
+{
+	::DeregisterEventSource( fLogHandle );
+}
+
+void Win32SysLog::DoSystemLevelLog(eLogLevel level, const char *logMsg)
+{
+	WORD evtType = EVENTLOG_INFORMATION_TYPE;
+	LPCTSTR str[1];
+	str[0] = logMsg;
+
+	switch (level) {
+		case eWARNING:
+			evtType = EVENTLOG_WARNING_TYPE;
+			break;
+		case eERR:
+		case eALERT:
+			evtType = EVENTLOG_ERROR_TYPE;
+			break;
+		default:
+			break;
+	}
+	::ReportEvent(fLogHandle, evtType, 0, 0, 0, 2, 0, str, 0);
+}
+#elif defined(__370__)
+void S370SysLog::DoSystemLevelLog(eLogLevel level, const char *msg)
+{
+	cerr << "level " << level << ": " << logMsg << endl;
+}
+
+void SysLog::DoLogTrace(long level, const char *msg)
+{
+	// do nothing we already logged it on cerr
+}
+#else
 UnixSysLog::UnixSysLog(const char *appId)
 {
 	// initialize the syslog channel
@@ -347,51 +384,5 @@ void UnixSysLog::DoSystemLevelLog(eLogLevel level, const char *logMsg)
 	};
 	::syslog(lLevel, "%s", (const char *)logMsg);
 }
-
 #endif
 
-#if defined(__370__)
-
-void S370SysLog::DoSystemLevelLog(eLogLevel level, const char *msg)
-{
-	cerr << "level " << level << ": " << logMsg << endl;
-}
-
-void SysLog::DoLogTrace(long level, const char *msg)
-{
-	// do nothing we already logged it on cerr
-}
-
-#endif
-
-#if defined(WIN32)
-Win32SysLog::Win32SysLog(const char *appId)
-{
-	fLogHandle =	::RegisterEventSource(0, appId);
-}
-
-Win32SysLog::~Win32SysLog()
-{
-	::DeregisterEventSource( fLogHandle );
-}
-
-void Win32SysLog::DoSystemLevelLog(eLogLevel level, const char *logMsg)
-{
-	WORD evtType = EVENTLOG_INFORMATION_TYPE;
-	LPCTSTR str[1];
-	str[0] = logMsg;
-
-	switch (level) {
-		case eWARNING:
-			evtType = EVENTLOG_WARNING_TYPE;
-			break;
-		case eERR:
-		case eALERT:
-			evtType = EVENTLOG_ERROR_TYPE;
-			break;
-		default:
-			break;
-	}
-	::ReportEvent(fLogHandle, evtType, 0, 0, 0, 2, 0, str, 0);
-}
-#endif
