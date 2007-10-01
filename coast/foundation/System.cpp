@@ -1114,19 +1114,19 @@ bool System::BlocksLeftOnFS(const char *pFsPath, ul_long &ulBlocks, unsigned lon
 		Trace("blocksize: " << (long)lBlkSize << " bytes free blocks: " << (long)ulBlocks);
 		return true;
 	} else
-#elif defined(__linux__)
-	struct statfs buf;
-	if (0 == statfs(pFsPath, &buf)) {
-		lBlkSize = (unsigned long)buf.f_bsize;
-		ulBlocks = (ul_long)buf.f_bavail;
-		Trace("blocksize: " << (long)lBlkSize << " bytes free blocks: " << (long)ulBlocks);
-		return true;
-	} else
 #elif defined(WIN32)
 	_ULARGE_INTEGER ulBytesAvailable;
 	if ( GetDiskFreeSpaceEx(pFsPath, &ulBytesAvailable, NULL, NULL) != 0 ) {
 		lBlkSize = 1;
 		ulBlocks = ulBytesAvailable.QuadPart;
+		Trace("blocksize: " << (long)lBlkSize << " bytes free blocks: " << (long)ulBlocks);
+		return true;
+	} else
+#else
+	struct statfs buf;
+	if (0 == statfs(pFsPath, &buf)) {
+		lBlkSize = (unsigned long)buf.f_bsize;
+		ulBlocks = (ul_long)buf.f_bavail;
 		Trace("blocksize: " << (long)lBlkSize << " bytes free blocks: " << (long)ulBlocks);
 		return true;
 	} else
