@@ -12,7 +12,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
 #include "Socket.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 #include "System.h"
 

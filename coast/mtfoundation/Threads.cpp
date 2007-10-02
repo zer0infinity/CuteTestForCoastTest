@@ -13,7 +13,7 @@
 #include "InitFinisManagerMTFoundation.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "DiffTimer.h"
 #include "StringStream.h"
 #include "TraceLocks.h"

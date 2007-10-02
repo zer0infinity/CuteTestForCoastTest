@@ -11,7 +11,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "Threads.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------

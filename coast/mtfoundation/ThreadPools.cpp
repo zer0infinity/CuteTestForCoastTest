@@ -11,7 +11,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "DiffTimer.h"
 #include "WPMStatHandler.h"
 #include "Dbg.h"
