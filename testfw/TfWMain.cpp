@@ -12,7 +12,7 @@
 // this is just included to test the definition of the setupRunner function
 #include "SetupRunner.h"
 
-#if defined(__linux__) && !defined(gettimes)
+#if !defined(WIN32) && !defined(gettimes)
 HRTESTTIME  gettimes()
 {
 	struct tms tt;
