@@ -13,7 +13,7 @@
 #include "foundation.h"
 
 #if defined(WIN32)
-#include <limits.h>
+#include <climits>
 #include <process.h>
 #include <winbase.h>
 #include <time.h>
