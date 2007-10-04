@@ -22,8 +22,9 @@
 		/EnableAll				10
 	}
 	/AnythingStatisticTestPolicy {
-		/MainSwitch				0
-		/EnableAll				10
+		/MainSwitch				10
+		/EnableAll				0
+		/RecurseSort			10
 	}
 	/SlotPutter {
 		/MainSwitch				10
