@@ -119,6 +119,12 @@ bool TimeStamp::IntDoInit(const String &externalTimeRep)
 	fTime = 0;
 	fTimeStruct.Reset();
 	fRep = RemoveNonNumericalChars(externalTimeRep);
+	// mark invalid if not at least some numerical characters for the year
+	if ( fRep.Length() < 4L ) {
+		SYSWARNING("invalid input format [" << externalTimeRep << "], at least a year must be specified");
+		fRep.Trim(0L);
+		return false;
+	}
 	fRep.Trim(14L);
 	String pattern("19700101000000");
 	// fill missing chars from pattern
