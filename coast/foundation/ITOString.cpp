@@ -22,8 +22,14 @@
 #ifdef _AIX
 #include <strings.h>
 #endif
+//#define IOSTREAM_NUM_CONVERSION
+//#define IOSTREAM_NUM_CONVERSION_STRSTREAM
+
 #if defined(ONLY_STD_IOSTREAM)
 #include <limits>	// for numeric_limits
+#if defined(IOSTREAM_NUM_CONVERSION_STRSTREAM)
+#include <strstream>
+#endif
 using namespace std;
 #else
 #include <float.h>	// for DBL_DIG
@@ -404,8 +410,17 @@ String &String::Append(const long &number)
 	int iSize = snprintf(pcBuf, iBufSize, "%ld", number);
 	Set(Length(), pcBuf, iSize);
 #else
+#if defined(IOSTREAM_NUM_CONVERSION_STRSTREAM)
+	const int iBufSize = 100;
+	char pcBuf[iBufSize] = { 0 };
+	std::ostrstream out(pcBuf, iBufSize);
+	out << number;
+	out << std::ends;
+	(*this).Append(pcBuf);
+#else
 	OStringStream obuf(this, ios::app);
 	obuf << number;
+#endif
 #endif
 	return *this;
 }
@@ -419,11 +434,24 @@ String &String::Append(const l_long &number)
 	int iSize = snprintf(pcBuf, iBufSize, "%lld", number);
 	Set(Length(), pcBuf, iSize);
 #else
+#if defined(IOSTREAM_NUM_CONVERSION_STRSTREAM)
+	const int iBufSize = 100;
+	char pcBuf[iBufSize] = { 0 };
+	std::ostrstream out(pcBuf, iBufSize);
+#if defined(WIN32)
+	out << (long)number;
+#else
+	out << number;
+#endif
+	out << std::ends;
+	(*this).Append(pcBuf);
+#else
 	OStringStream obuf(this, ios::app);
 #if defined(WIN32)
 	obuf << (long)number;
 #else
 	obuf << number;
+#endif
 #endif
 #endif
 	return *this;
@@ -438,8 +466,16 @@ String &String::Append(const u_long &number)
 	int iSize = snprintf(pcBuf, iBufSize, "%lu", number);
 	Set(Length(), pcBuf, iSize);
 #else
+#if defined(IOSTREAM_NUM_CONVERSION_STRSTREAM)
+	const int iBufSize = 100;
+	char pcBuf[iBufSize] = { 0 };
+	std::ostrstream out(pcBuf, iBufSize);
+	out << number << std::ends;
+	(*this).Append(pcBuf);
+#else
 	OStringStream obuf(this, ios::app);
 	obuf << number;
+#endif
 #endif
 	return *this;
 }
@@ -464,6 +500,7 @@ void String::DoubleToString(const double &number, String &strBuf)
 		iSize = snprintf(pcBuf, iBufSize, gpcFmtLow, number);
 		int iTmp(iSize);
 		--iTmp;
+		// eat trailing zeroes
 		while ( pcBuf[iTmp] == '0' && pcBuf[--iTmp] != '.' ) {
 			--iSize;
 		}
@@ -473,7 +510,13 @@ void String::DoubleToString(const double &number, String &strBuf)
 	strBuf.Set(strBuf.Length(), pcBuf, iSize);
 #else
 	{
-		OStringStream out(strBuf);
+#if defined(IOSTREAM_NUM_CONVERSION_STRSTREAM)
+		const int iBufSize = 500;
+		char pcBuf[iBufSize] = { 0 };
+		std::ostrstream out(pcBuf, iBufSize);
+#else
+	OStringStream out(strBuf);
+#endif
 		out << setiosflags(ios::left);
 		// current number of decimal digits for double is 15
 #if defined(ONLY_STD_IOSTREAM)
@@ -481,10 +524,14 @@ void String::DoubleToString(const double &number, String &strBuf)
 #else
 	const int iDblDigits = DBL_DIG;
 #endif
-		if ( dValue < 1e+16 ) {
+		if ( number < 1e+16 ) {
 			out << setiosflags(ios::fixed);
 		}
-		out << setprecision(iDblDigits) << dValue;
+		out << setprecision(iDblDigits) << number;
+#if defined(IOSTREAM_NUM_CONVERSION_STRSTREAM)
+		out << std::ends;
+		strBuf.Append(pcBuf);
+#endif
 	}
 	// eat trailing zeroes
 	int iSize(strBuf.Length()), iTmp;
