@@ -187,20 +187,21 @@ istream &operator>>(istream &is, GzipHdr &header)
 }
 
 //---- ZipStreamBuf ----------------------------------------------------------------
-ZipStreamBuf::ZipStreamBuf(Allocator *alloc)
+ZipStreamBuf::ZipStreamBuf(ZipStream::eStreamMode aMode, Allocator *alloc)
 	: isInitialized(false)
+	, fStreamMode(aMode)
 	, fAllocator(alloc)
 	, fCrcData(0UL)
 	, fStore(Z_BUFSIZE, fAllocator)
 	, fCompressed(Z_BUFSIZE, fAllocator)
 {
-	z_stream_s aInit = { 0 };
+	z_stream aInit = { 0 };
 	fZip = aInit;
 }
 
 //---- ZipOStreamBuf ----------------------------------------------------------------
-ZipOStreamBuf::ZipOStreamBuf(ostream &os, Allocator *alloc)
-	: ZipStreamBuf(alloc ? alloc : Storage::Current())
+ZipOStreamBuf::ZipOStreamBuf(ostream &os, ZipStream::eStreamMode aMode, Allocator *alloc)
+	: ZipStreamBuf(aMode, ( alloc ? alloc : Storage::Current() ) )
 	, fOs(&os)
 	, fCompLevel(Z_BEST_COMPRESSION)
 	, fCompStrategy(Z_DEFAULT_STRATEGY)
@@ -240,12 +241,14 @@ void ZipOStreamBuf::close()
 	} while (err == Z_OK);
 
 	Trace("bytes compressed:" << (long)fZip.total_in << " into : " << (long)fZip.total_out);
-	Trace("crc is:" << (long)fCrcData);
 	Trace("total_out: " << (long) fZip.total_out);
 
-	// now write crc and length
-	putLong(fCrcData);
-	putLong(fZip.total_in);
+	if ( HasTrailer() ) {
+		Trace("crc is:" << (long)fCrcData);
+		// now write crc and length
+		putLong(fCrcData);
+		putLong(fZip.total_in);
+	}
 	err = deflateEnd(&fZip);
 	if (err != Z_OK) {
 		Trace("deflateEnd error:" << err);
@@ -301,7 +304,9 @@ int ZipOStreamBuf::sync()
 	Trace("sync avail_in=" << (long)fZip.avail_in);
 	Trace("sync avail_out=" << (long)fZip.avail_out);
 	long err = Z_OK;
-	fCrcData = crc32(fCrcData, (const Bytef *)pbase(), pptr() - pbase());
+	if ( HasTrailer() ) {
+		fCrcData = crc32(fCrcData, (const Bytef *)pbase(), pptr() - pbase());
+	}
 	while (fZip.avail_in > 0 && err == Z_OK) {
 		flushCompressedIfNecessary();
 
@@ -457,8 +462,9 @@ void ZipOStreamBuf::zipinit()
 	if ( !isInitialized ) {
 		isInitialized = true;
 
-		(*fOs) << fHeader;
-
+		if ( HasHeader() ) {
+			(*fOs) << fHeader;
+		}
 		fZip.next_in = 0;
 		fZip.avail_in = 0;
 		fZip.next_out = 0;
@@ -467,7 +473,14 @@ void ZipOStreamBuf::zipinit()
 		fZip.zfree = ZipFree;
 		fZip.opaque = fAllocator;
 
-		long err = deflateInit2(&fZip, fCompLevel, Z_DEFLATED, -MAX_WBITS, DEF_MEM_LEVEL, fCompStrategy);
+		//! using negative MAX_WBITS disables zlib-internal gzip-header writing
+		//! using default positive MAX_WBITS, writes default z-compression header
+		int wbits = -MAX_WBITS;
+		if ( !HasHeader() ) {
+			// use default z-compression header
+			wbits = MAX_WBITS;
+		}
+		long err = deflateInit2(&fZip, fCompLevel, Z_DEFLATED, wbits, DEF_MEM_LEVEL, fCompStrategy);
 		fZip.next_in = (unsigned char *)(const char *)fStore;
 		fZip.next_out = (unsigned char *)(const char *)fCompressed;
 		fZip.avail_out = fCompressed.Capacity();
@@ -475,12 +488,14 @@ void ZipOStreamBuf::zipinit()
 		if (Z_OK != err) {
 			Trace("zlib error " << err);
 		}
-		fCrcData = crc32(0L, Z_NULL, 0);
+		if ( HasTrailer() ) {
+			fCrcData = crc32(0L, Z_NULL, 0);
+		}
 	}
 }
 
-ZipIStreamBuf::ZipIStreamBuf(istream &zis, istream &is, Allocator *alloc)
-	: ZipStreamBuf(alloc ? alloc : Storage::Current())
+ZipIStreamBuf::ZipIStreamBuf(istream &zis, istream &is, ZipStream::eStreamMode aMode, Allocator *alloc)
+	: ZipStreamBuf(aMode, ( alloc ? alloc : Storage::Current() ) )
 	, fZis(zis)
 	, fIs(&is)
 	, fZipErr(Z_OK)
@@ -572,18 +587,20 @@ void ZipIStreamBuf::close()
 		return;
 	}
 
-	unsigned long crc = getLong();
-	unsigned long len = getLong();
+	if ( HasTrailer() ) {
+		unsigned long crc = getLong();
+		unsigned long len = getLong();
 
-	Trace("CRC check " << (long) crc << " vs. " << (long) fCrcData);
-	Trace("Length check: " << (long) len << " vs. " << (long) fZip.total_out);
+		Trace("CRC check " << (long) crc << " vs. " << (long) fCrcData);
+		Trace("Length check: " << (long) len << " vs. " << (long) fZip.total_out);
 
-	if (crc != fCrcData || fZip.total_out != len) {
+		if (crc != fCrcData || fZip.total_out != len) {
 #if defined(WIN32) && !defined(ONLY_STD_IOSTREAM)
-		fZis.clear(ios::badbit | fZis.rdstate());
+			fZis.clear(ios::badbit | fZis.rdstate());
 #else
-		fZis.setstate(ios::badbit);
+			fZis.setstate(ios::badbit);
 #endif
+		}
 	}
 
 	if (Z_STREAM_END == fZipErr || Z_OK == fZipErr) {
@@ -622,28 +639,38 @@ void ZipIStreamBuf::zipinit()
 		fZip.zfree = ZipFree;
 		fZip.opaque = fAllocator;
 
-		fZipErr = inflateInit2(&fZip, -MAX_WBITS);
+		//! using negative MAX_WBITS disables zlib-internal gzip-header writing
+		//! using default positive MAX_WBITS, writes default z-compression header
+		int wbits = -MAX_WBITS;
+		if ( !HasHeader() ) {
+			// use default z-compression header
+			wbits = MAX_WBITS;
+		}
+		fZipErr = inflateInit2(&fZip, wbits);
 
 		fZip.avail_in = 0;
 
 		Assert(Z_OK == fZipErr);
 
 		if (Z_OK == fZipErr) {
-			(*fIs) >> fHeader;
-			if ( !fHeader.IsValid() ) {
-				Trace("Incomplete or wrong header");
+			if ( HasHeader() ) {
+				(*fIs) >> fHeader;
+				if ( !fHeader.IsValid() ) {
+					Trace("Incomplete or wrong header");
 #if defined(WIN32) && !defined(ONLY_STD_IOSTREAM)
-				fZis.clear(ios::badbit | fZis.rdstate());
+					fZis.clear(ios::badbit | fZis.rdstate());
 #else
-				fZis.setstate(ios::badbit);
+					fZis.setstate(ios::badbit);
 #endif
-				fZipErr = Z_DATA_ERROR;
+					fZipErr = Z_DATA_ERROR;
+				}
 			}
 		} else {
 			Trace("zlib error " << fZipErr);
 		}
-
-		fCrcData = crc32(0L, Z_NULL, 0);
+		if ( HasTrailer() ) {
+			fCrcData = crc32(0L, Z_NULL, 0);
+		}
 	}
 }
 
@@ -698,8 +725,9 @@ void ZipIStreamBuf::runInflate()
 
 	unsigned long postStoreLen = preStoreLen - fZip.avail_out;
 	pinit(postStoreLen);
-	fCrcData = crc32(fCrcData, (unsigned char *) gptr(), postStoreLen );
-
+	if ( HasTrailer() ) {
+		fCrcData = crc32(fCrcData, (unsigned char *) gptr(), postStoreLen );
+	}
 	Trace("fCompressed: " << (long)fZip.avail_in << "/" << fCompressed.Capacity());
 	Trace("fStore: " << (long) (egptr() - gptr()));
 	Trace("total in: " << (long) fZip.total_in << " total out: " << (long) fZip.total_out << " fZipErr: " << (long) fZipErr);

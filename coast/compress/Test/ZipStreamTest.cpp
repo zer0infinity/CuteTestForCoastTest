@@ -201,6 +201,34 @@ void ZipStreamTest::WriteHeaderInfoTest()
 	}
 }
 
+void ZipStreamTest::CompressionModeTest()
+{
+	StartTrace(ZipStreamTest.CompressionModeTest);
+	ROAnything roaConfig;
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(roaConfig) ) {
+		TString strCase;
+		if ( !aEntryIterator.SlotName(strCase) ) {
+			strCase << "idx:" << aEntryIterator.Index();
+		}
+		ZipStream::eStreamMode aMode = ( roaConfig["Mode"].AsString().IsEqual("Z") ? ZipStream::ePlainMode : ZipStream::eGZipMode );
+		String strCprs(roaConfig["In"].AsString());
+		Trace("Mode:" << (long)aMode);
+
+		IStringStream stream(strCprs);
+		ZipIStream zis(stream, aMode);
+
+		String strLine;
+		long lCount = 0;
+		while ( !!zis && !getline(zis, strLine).bad() && !zis.eof() ) {
+			assertEqualRaw(roaConfig["Expected"][lCount].AsString(), strLine);
+			++lCount;
+			Trace("count: " << lCount);
+			Trace("read [" << strLine.DumpAsHex() << "]");
+		}
+	}
+}
+
 void ZipStreamTest::SetCompressionTest()
 {
 	StartTrace(ZipStreamTest.SetCompressionTest);
@@ -545,6 +573,7 @@ Test *ZipStreamTest::suite ()
 	ADD_CASE(testSuite, ZipStreamTest, ReadGzipHdrFileTest);
 	ADD_CASE(testSuite, ZipStreamTest, ReadHeaderInfoTest);
 	ADD_CASE(testSuite, ZipStreamTest, WriteHeaderInfoTest);
+	ADD_CASE(testSuite, ZipStreamTest, CompressionModeTest);
 	ADD_CASE(testSuite, ZipStreamTest, SetCompressionTest);
 	ADD_CASE(testSuite, ZipStreamTest, GzipSimpleFileCheck);
 	ADD_CASE(testSuite, ZipStreamTest, GzipBigFileCheck);

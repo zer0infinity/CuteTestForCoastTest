@@ -85,6 +85,17 @@ struct EXPORTDECL_COMPRESS GzipHdr {
 	bool fbValid;
 };
 
+namespace ZipStream
+{
+	enum eStreamMode {
+		ePlainMode = 0,
+		eWriteHeader = 1 << 0,
+		eWriteTrailer = 1 << 1,
+		eGZipMode = ( eWriteHeader | eWriteTrailer ),
+		eMaxMode = 1 << 2
+	};
+};
+
 //---- ZipStreamBuf ----------------------------------------------------------
 //! Does not do anything in particular except hold a few static constants.
 //! Once could merge ZipOStreamBuf and ZipIStreamBuf into this class, but
@@ -92,14 +103,21 @@ struct EXPORTDECL_COMPRESS GzipHdr {
 class EXPORTDECL_COMPRESS ZipStreamBuf : public streambuf
 {
 public:
-	ZipStreamBuf(Allocator *alloc);
+	ZipStreamBuf(ZipStream::eStreamMode aMode, Allocator *alloc);
 	virtual const GzipHdr &Header() = 0;
 
 protected:
+	bool HasHeader() const {
+		return ( ( fStreamMode & ZipStream::eWriteHeader ) == ZipStream::eWriteHeader );
+	}
+	bool HasTrailer() const {
+		return ( ( fStreamMode & ZipStream::eWriteTrailer ) == ZipStream::eWriteTrailer );
+	}
 	bool isInitialized;
+	unsigned char fStreamMode;
 	Allocator *fAllocator;
 	unsigned long fCrcData;
-	z_stream_s fZip;
+	z_stream fZip;
 	//! the storage of the holding area buffer
 	String fStore;
 	//! the storage of the compressed buffer
@@ -116,7 +134,7 @@ class EXPORTDECL_COMPRESS ZipIStreamBuf : public ZipStreamBuf
 {
 public:
 	//--- constructors
-	ZipIStreamBuf(istream &zis, istream &, Allocator *alloc = Storage::Current());
+	ZipIStreamBuf(istream &zis, istream &, ZipStream::eStreamMode aMode = ZipStream::eGZipMode, Allocator *alloc = Storage::Current());
 	~ZipIStreamBuf();
 
 	void close();
@@ -162,7 +180,7 @@ class EXPORTDECL_COMPRESS ZipOStreamBuf : public ZipStreamBuf
 {
 public:
 	//--- constructors
-	ZipOStreamBuf(ostream &, Allocator *a = Storage::Current());
+	ZipOStreamBuf(ostream &, ZipStream::eStreamMode aMode = ZipStream::eGZipMode, Allocator *a = Storage::Current());
 	~ZipOStreamBuf();
 
 	//! not much to do when synchronizing, just insert string termination character
@@ -265,11 +283,11 @@ class EXPORTDECL_COMPRESS ZipOStream : public ostream
 {
 public:
 	//--- constructors
-	ZipOStream(ostream &os):
+	ZipOStream(ostream &os, ZipStream::eStreamMode aMode = ZipStream::eGZipMode):
 #if defined(ONLY_STD_IOSTREAM)
 		ostream(&fBuf),
 #endif
-		fBuf(os) {
+		fBuf(os, aMode) {
 		init(&fBuf);
 	}
 	~ZipOStream() {
@@ -316,11 +334,11 @@ class EXPORTDECL_COMPRESS ZipIStream : public istream
 {
 public:
 	//--- constructors
-	ZipIStream(istream &is):
+	ZipIStream(istream &is, ZipStream::eStreamMode aMode = ZipStream::eGZipMode):
 #if defined(ONLY_STD_IOSTREAM)
 		istream(&fBuf),
 #endif
-		fBuf(*this, is) {
+		fBuf(*this, is, aMode) {
 		init(&fBuf);
 	}
 	~ZipIStream() {

@@ -102,4 +102,35 @@
 			/Content	"Yippieh"
 		}
 	}
+	/CompressionModeTest {
+		{
+			/Mode GZ
+			/In "\x1f\x8b\x08\x18\x00\x00\x00\x00\x00\x03MyFile\x00Hello!\x00\x8B\xCC\x2C\x28\xC8\x4C\xCD\x00\x00\xFC\xEB\xD2\x8A\x07\x00\x00\x00"
+			/Expected {
+				"Yippieh"
+			}
+		}
+		{
+			/Mode Z
+			/In "\x78\x9C\x63\x00\x00\x00\x01\x00\x01"
+			/Expected {
+				"\x00"
+			}
+		}
+		{
+			/Mode Z
+			/In "x\x9Cu\xCD\xB9\x11\xC0 \x0C\x04@\xC7\x14\xC3p\xFA\x8CF\x9D\xB8\xFFB\x10\x0Em\x11\xEF=p\xF7a4\x89\xD5\xD5\x9F\x80\xA2\x8F@P\xC3WD^\xE1\xBFd\x874I\x8A\x12\xFA\xBDI\x8F{8]Qu\x95\x92W\\\x10\xD94s\xDE\x9B\x96\xB9v-~\xB2-\x08"
+			/Expected {
+				"19990628235959Z;151.0;1;2"
+				"19990628235959Z;144.0;1;3"
+				"19990628235959Z;151.25;1;4"
+				"19990628235959Z;141.75;1;5"
+				"19990628235959Z;144.0;1;12"
+				"19990628235959Z;144.0;2;3"
+				"19990628235959Z;144.25;3;3"
+				"19990628235959Z;2686693.0;16;14"
+				"\x00"
+			}
+		}
+	}
 }
