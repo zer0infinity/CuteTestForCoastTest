@@ -70,12 +70,19 @@ public:
 	//  param c The context of the transaction */
 	virtual bool Exec(Context &c, ParameterMapper *getter, ResultMapper *putter);
 
+	/*! Check attributes for Add/Modify/Delete to only contain valid values and attribute names.
+		\param attrs attributes to check and adjust if needed
+		\param bRemoveNullValues must be set to false for checking of attributes to delete, otherwise the name of the attribute to delete gets lost
+		\param eh error message handler
+		\return true in case we did not detect any errors */
+	bool CheckAttributes(Anything &attrs, bool bRemoveNullValues, LDAPErrorHandler &eh);
+
 protected:
 	//! hook, retrieves query from context + checks it.
 	//! by default checks, if base DN is defined (must not be "").
 	//! may be overridden by subclasses that should retrieve, add and
 	//! check additionally required parameters.
-	virtual bool DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &query, LDAPErrorHandler eh);
+	virtual bool DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &query, LDAPErrorHandler &eh);
 
 	//! abstract hook, called by Exec after connection
 	//! returns message id of started request
@@ -83,6 +90,13 @@ protected:
 		Assert(false);
 		return -1;
 	}
+
+	/*! Check attributes for Add/Modify/Delete to only contain valid values and attribute names. Subclasses can overwrite for their specific needs.
+		\param attrs attributes to check and adjust if needed
+		\param bRemoveNullValues must be set to false for checking of attributes to delete, otherwise the name of the attribute to delete gets lost
+		\param eh error message handler
+		\return true in case we did not detect any errors */
+	bool DoCheckAttributes(Anything &attrs, bool bRemoveNullValues, LDAPErrorHandler &eh);
 
 	//! executes the transaction
 	// param c The context of the transaction
@@ -142,7 +156,7 @@ public:
 
 protected:
 	//! add + check attributes slot (no defaults are given)
-	bool DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &query, LDAPErrorHandler eh);
+	bool DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &query, LDAPErrorHandler &eh);
 
 	//! hook, called by Exec after connection.
 	//! returns message id of started add request
@@ -186,7 +200,7 @@ public:
 
 protected:
 	//! add + check for base, attrname and attrvalue to compare
-	bool DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &query, LDAPErrorHandler eh);
+	bool DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &query, LDAPErrorHandler &eh);
 
 	//! hook, called by Exec after connection.
 	//! returns message id of started compare request
@@ -301,7 +315,7 @@ public:
 protected:
 	//! add + check mods slot (no defaults are given)
 	//! checks, if mods parameter is not empty
-	bool DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &query, LDAPErrorHandler eh);
+	bool DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &query, LDAPErrorHandler &eh);
 
 	//! hook, called by Exec after connection.
 	//! returns message id of started replace request
@@ -348,7 +362,7 @@ protected:
 	//! call superclass DoGetQuery, then add + check
 	//! scope, filter, attrs values and attrsOnly switch
 	//! (define defaults if not found in context)
-	bool DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &query, LDAPErrorHandler eh);
+	bool DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &query, LDAPErrorHandler &eh);
 
 	//! hook, called by Exec after connection.
 	//! returns message id of started search request

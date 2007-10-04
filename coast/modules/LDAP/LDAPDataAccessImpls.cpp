@@ -144,7 +144,7 @@ bool LDAPAbstractDAI::DoExec( Context &ctx, ParameterMapper *getter, ResultMappe
 	return true;
 }
 
-bool LDAPAbstractDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &query, LDAPErrorHandler eh)
+bool LDAPAbstractDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &query, LDAPErrorHandler &eh)
 {
 	StartTrace(LDAPAbstractDAI.DoGetQuery);
 
@@ -161,12 +161,44 @@ bool LDAPAbstractDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything
 	return true;
 }
 
+bool LDAPAbstractDAI::CheckAttributes(Anything &attrs, bool bRemoveNullValues, LDAPErrorHandler &eh)
+{
+	StartTrace(LDAPAbstractDAI.CheckAttributes);
+	return DoCheckAttributes(attrs, bRemoveNullValues, eh);
+}
+
+bool LDAPAbstractDAI::DoCheckAttributes(Anything &attrs, bool bRemoveNullValues, LDAPErrorHandler &eh)
+{
+	StartTrace(LDAPAbstractDAI.DoCheckAttributes);
+	// attrs must contain attr/value
+	TraceAny(attrs, "attributes to clean");
+	long nofAttrs = attrs.GetSize();
+	for (long i = 0; i < nofAttrs; ++i) {
+		if ( String(attrs.SlotName(i)).Length() <= 0 ) {
+			Trace("failed at index:" << i);
+			String msg;
+			msg << "All values listed under 'Attrs' must have an associated attribute name.";
+			eh.HandleError(msg);
+			return false;
+		}
+		// remove attributes without any value assigned -> NullAny
+		if ( bRemoveNullValues && attrs[i].IsNull() ) {
+			Trace("removing [" << attrs.SlotName(i) << "] which is null");
+			attrs.Remove(i);
+			// readjust index
+			--i;
+			--nofAttrs;
+		}
+	}
+	return true;
+}
+
 // =========================================================================
 
 //--- LDAPAddDAI -----------------------------------------------------
 RegisterDataAccessImpl(LDAPAddDAI);
 
-bool LDAPAddDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &query, LDAPErrorHandler eh)
+bool LDAPAddDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &query, LDAPErrorHandler &eh)
 {
 	StartTrace(LDAPAddDAI.DoGetQuery);
 
@@ -186,18 +218,10 @@ bool LDAPAddDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &que
 		return false;
 	}
 
-	// attrs must contain attr/value
-	long nofAttrs = attrs.GetSize();
-	for (long i = 0; i < nofAttrs; ++i) {
-		if ( String(attrs.SlotName(i)).Length() <= 0 ) {
-			String msg;
-			msg << "All values listed under 'Attrs' must have an associated attribute name.";
-			eh.HandleError(msg);
-			return false;
-		}
+	if ( !CheckAttributes(attrs, true, eh) ) {
+		return false;
 	}
 	query["Attrs"] = attrs;
-
 	return true;
 }
 
@@ -255,7 +279,7 @@ int LDAPAddDAI::DoLDAPRequest(LDAPConnection *lc, ROAnything query)
 //--- LDAPCompareDAI -----------------------------------------------------
 RegisterDataAccessImpl(LDAPCompareDAI);
 
-bool LDAPCompareDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &query, LDAPErrorHandler eh)
+bool LDAPCompareDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &query, LDAPErrorHandler &eh)
 {
 	StartTrace(LDAPCompareDAI.DoGetQuery);
 
@@ -318,7 +342,7 @@ int LDAPDeleteDAI::DoLDAPRequest(LDAPConnection *lc, ROAnything query)
 //--- LDAPModifyDAI -----------------------------------------------------
 RegisterDataAccessImpl(LDAPModifyDAI);
 
-bool LDAPModifyDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &query, LDAPErrorHandler eh)
+bool LDAPModifyDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &query, LDAPErrorHandler &eh)
 {
 	StartTrace(LDAPModifyDAI.DoGetQuery);
 
@@ -342,14 +366,23 @@ bool LDAPModifyDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &
 	Anything checkedMods;
 	int size = mods.GetSize();
 	String slotname;
-	for (int i = 0; i < size; ++i) {
+	bool bCont(true);
+	for (int i = 0; bCont && i < size; ++i) {
 		slotname = mods.SlotName(i);
-		slotname.ToLower();				// normalize
-		if (   slotname.IsEqual("add")
-			   || slotname.IsEqual("delete")
-			   || slotname.IsEqual("replace") ) {
-			// ok, accept
-			checkedMods[slotname] = mods[i];
+		// normalize
+		slotname.ToLower();
+		if ( slotname.IsEqual("add") || slotname.IsEqual("replace") ) {
+			// check given attributes not to contain unnamed slots and to remove NullValue entries
+			if ( ( bCont = CheckAttributes(mods[i], true, eh) ) ) {
+				// ok, accept
+				checkedMods[slotname] = mods[i];
+			}
+		} else if ( slotname.IsEqual("delete") ) {
+			// check given attributes not to contain unnamed slots and to leave NullValue entries if any
+			if ( ( bCont = CheckAttributes(mods[i], false, eh) ) ) {
+				// ok, accept
+				checkedMods[slotname] = mods[i];
+			}
 		} else {
 			// unknown mod, remove (i.e. skip) + drop debug message
 			Trace("Unknown modification operation '" << slotname << "', skipped.")
@@ -357,7 +390,7 @@ bool LDAPModifyDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &
 	}
 
 	// checked mods must not be empty (i.e. at least one legal op)
-	if ( checkedMods.IsNull() || checkedMods.GetSize() <= 0 ) {
+	if ( !bCont || checkedMods.IsNull() || checkedMods.GetSize() <= 0 ) {
 		eh.HandleError("No legal modification operations in modify query");
 		return false;
 	}
@@ -459,7 +492,7 @@ int LDAPModifyDAI::DoLDAPRequest(LDAPConnection *lc, ROAnything query)
 //--- LDAPSearchDAI -----------------------------------------------------
 RegisterDataAccessImpl(LDAPSearchDAI);
 
-bool LDAPSearchDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &query, LDAPErrorHandler eh)
+bool LDAPSearchDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &query, LDAPErrorHandler &eh)
 {
 	StartTrace(LDAPSearchDAI.DoGetQuery);
 
