@@ -41,10 +41,10 @@
 
 #if defined(__sun)
 #define SystemSpecific(className)		_NAME2_(Sun, className)
-#elif defined(__linux__)
-#define SystemSpecific(className)		_NAME2_(Linux, className)
 #elif defined(WIN32)
 #define SystemSpecific(className)		_NAME2_(Win32, className)
+#elif defined(__APPLE__)
+#define SystemSpecific(className)		_NAME2_(Apple, className)
 #else //we suggest Linux (for posix)
 #define SystemSpecific(className)		_NAME2_(Linux, className)
 #endif
@@ -137,9 +137,63 @@ bool SunResolver::IP2DNS(String &dnsName, const String &ipAddress, unsigned long
 	return false;
 }
 
-#endif
+#elif defined(WIN32)
 
-#if defined(__linux__)
+bool Win32Resolver::DNS2IP(String &ipAddress, const String &dnsName)
+{
+	struct hostent   *ptrHe;
+
+	if ( ptrHe = gethostbyname(dnsName)) { // in windows thread scope
+		struct in_addr *iaddr = (struct in_addr *) * ptrHe->h_addr_list;
+		ipAddress = inet_ntoa(*iaddr);
+		return true;
+	}
+	// for tracing possible errors
+	// long error= WSAGetLastError ();
+
+	return false;
+}
+
+bool Win32Resolver::IP2DNS(String &dnsName, const String &ipAddress, unsigned long addr)
+{
+	struct hostent *hePtr;
+	if (hePtr = gethostbyaddr((char *)&addr, sizeof(addr), AF_INET)) {
+		dnsName = (hePtr->h_name);
+		return true;
+	}
+	return false;
+}
+
+#elif defined(__APPLE__)
+
+bool AppleResolver::DNS2IP(String &ipAddress, const String &dnsName)
+{
+	struct hostent   *ptrHe;
+	int error_num = 0;
+
+	if (ptrHe = getipnodebyname(dnsName, AF_INET, AI_DEFAULT, &error_num)) {
+		struct in_addr *iaddr = (struct in_addr *) * ptrHe->h_addr_list;
+		ipAddress = inet_ntoa(*iaddr);
+		freehostent(ptrHe);
+		return true;
+	}
+
+	return false;
+}
+
+bool AppleResolver::IP2DNS(String &dnsName, const String &ipAddress, unsigned long addr)
+{
+	struct hostent *ptrHe;
+	int error_num = 0;
+	if (ptrHe = getipnodebyaddr((char *)&addr, sizeof(addr), AF_INET, &error_num)) {
+		dnsName = (ptrHe->h_name);
+		freehostent(ptrHe);
+		return true;
+	}
+	return false;
+}
+
+#else
 
 bool LinuxResolver::DNS2IP(String &ipAddress, const String &dnsName)
 {
@@ -178,31 +232,3 @@ bool LinuxResolver::IP2DNS(String &dnsName, const String &ipAddress, unsigned lo
 
 #endif
 
-#if defined(WIN32)
-
-bool Win32Resolver::DNS2IP(String &ipAddress, const String &dnsName)
-{
-	struct hostent   *ptrHe;
-
-	if ( ptrHe = gethostbyname(dnsName)) { // in windows thread scope
-		struct in_addr *iaddr = (struct in_addr *) * ptrHe->h_addr_list;
-		ipAddress = inet_ntoa(*iaddr);
-		return true;
-	}
-	// for tracing possible errors
-	// long error= WSAGetLastError ();
-
-	return false;
-}
-
-bool Win32Resolver::IP2DNS(String &dnsName, const String &ipAddress, unsigned long addr)
-{
-	struct hostent *hePtr;
-	if (hePtr = gethostbyaddr((char *)&addr, sizeof(addr), AF_INET)) {
-		dnsName = (hePtr->h_name);
-		return true;
-	}
-	return false;
-}
-
-#endif
