@@ -610,7 +610,7 @@ int Server::SetUid()
 	ent = getpwuid(geteuid());
 	m = "";
 	m << (Server::Lookup("ServerModules", serverModules) == 0 ? "Server" : "MasterServer") << " handling requests as: " << ent->pw_name << "(";
-#if defined(__linux__)
+#if defined(__linux__) || defined(__APPLE__)
 	m << long(geteuid());
 #else
 	m << geteuid();

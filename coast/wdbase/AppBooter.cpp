@@ -215,7 +215,7 @@ bool AppBooter::Boot(Anything &args) // access the intial config file
 	StartTrace(AppBooter.Boot);
 
 	int numberOfCpus = 1;							// a reasonable assumption
-#if !defined(WIN32)
+#if defined(_SC_NPROCESSORS_ONLN)
 	// POSIX call
 	if ((numberOfCpus = sysconf(_SC_NPROCESSORS_ONLN)) != -1)
 #endif
