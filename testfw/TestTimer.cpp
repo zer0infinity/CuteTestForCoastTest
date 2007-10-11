@@ -80,11 +80,11 @@ TestTimer::tTimeType TestTimer::Reset()
 
 TestTimer::tTimeType TestTimer::TicksPerSecond()
 {
-#if defined(__linux__)
-	return sysconf(_SC_CLK_TCK);
-#elif defined(__sun)
+#if defined(__sun)
 	return 1000000000;
 #elif defined(WIN32)
 	return 1000;
+#else
+	return sysconf(_SC_CLK_TCK);
 #endif
 }
