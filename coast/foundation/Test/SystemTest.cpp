@@ -1345,7 +1345,7 @@ void SystemTest::MakeDirectoryExtendTest()
 			if ( !System::IsDirectory(strCreateDir) ) {
 				String strTmpDir(strCreateDir);
 				// test should fail without extend link option
-				if ( assertComparem( System::eNoMoreHardlinks, equal_to, System::MakeDirectory(strTmpDir, 0755, true, false) , "expected creation of directory to fail due to no more available hardlinks, is the test-directory full of subdirs?" ) ) {
+				if ( assertComparem( System::eNoMoreHardlinks, equal_to, System::MakeDirectory(strTmpDir, 0755, true, false) , TString("expected creation of directory to fail due to no more available hardlinks, is the test-directory [") << strTmpDir << "] full of subdirs?" ) ) {
 					strTmpDir.Trim(strTmpDir.StrRChr(System::Sep()));
 					Trace("exhausted directory [" << strTmpDir << "]");
 					assertCompare( iNumLinks, equal_to, System::GetNumberOfHardLinks(strTmpDir));
