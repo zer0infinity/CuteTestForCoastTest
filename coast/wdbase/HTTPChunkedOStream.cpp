@@ -83,11 +83,13 @@ int HTTPChunkedStreamBuf::overflow(int c)
 {
 	sync();
 	if (c != EOF && (pptr() < epptr())) // guard against recursion
-#if defined(__linux__) && !defined(ONLY_STD_IOSTREAM) /* only gnu defined xput_char() std uses sputc() */
-		xput_char(c);	// without check
-#else
+//#if defined(__linux__) && !defined(ONLY_STD_IOSTREAM) /* only gnu defined xput_char() std uses sputc() */
+//		xput_char(c);	// without check
+//#else
+	{
 		sputc(c);
-#endif
+	}
+//#endif
 	return 0L;  // return 0 if successful
 }
 
