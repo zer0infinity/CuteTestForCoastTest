@@ -32,10 +32,7 @@ static const char *Monthes[] = { "---", "Jan", "Feb", "Mar", "Apr", "May", "Jun"
 static const char *Days[] = { "Sun", "Mon", "Tue", "Wed", "Tue", "Fri", "Sat" };
 
 //---- TimeStamp ----------------------------------------------------------------
-TimeStamp::TimeStamp(Allocator *pAlloc)
-	: fTime(0)
-	, fRep(15, pAlloc)
-	, fTimeSet(false)
+TimeStamp::TimeStamp()
 {
 	StartTrace1(TimeStamp.TimeStamp, "empty");
 	SetTimeT(time(0));
@@ -43,35 +40,26 @@ TimeStamp::TimeStamp(Allocator *pAlloc)
 
 TimeStamp::TimeStamp(const TimeStamp &aTimeStamp)
 {
-	StartTrace1(TimeStamp.TimeStamp, "copy [" << aTimeStamp.fRep << "]");
+	StartTrace1(TimeStamp.TimeStamp, "copy [" << aTimeStamp.AsString() << "]");
 	operator=(aTimeStamp);
 }
 
 //! With given UTC
-TimeStamp::TimeStamp(TSIntNumberType utc, Allocator *pAlloc)
-	: fTime(0)
-	, fRep(15, pAlloc)
-	, fTimeSet(false)
+TimeStamp::TimeStamp(TSIntNumberType utc)
 {
 	StartTrace1(TimeStamp.TimeStamp, "time_t:" << utc);
 	SetTimeT(utc);
 }
 
-TimeStamp::TimeStamp(const String &externalTimeRep, Allocator *pAlloc)
-	: fTime(0)
-	, fRep(15, pAlloc)
-	, fTimeSet(false)
+TimeStamp::TimeStamp(const String &externalTimeRep)
 {
 	StartTrace1(TimeStamp.TimeStamp, "String [" << externalTimeRep << "]");
 	IntDoInit(externalTimeRep);
 }
 
-TimeStamp::TimeStamp(char iCent, char iYear, char iMonth, char iDay, char iHour, char iMin, char iSec, Allocator *pAlloc)
-	: fTime(0)
-	, fRep(15, pAlloc)
-	, fTimeSet(false)
+TimeStamp::TimeStamp(char iCent, char iYear, char iMonth, char iDay, char iHour, char iMin, char iSec)
 {
-	StartTrace1(TimeStamp.TimeStamp, "components [" << iCent << ':' << iYear << ':' << iMonth << ':' << iDay << ':' << iHour << ':' << iMin << ':' << iSec << "]");
+	StartTrace1(TimeStamp.TimeStamp, "components [" << (long)iCent << ':' << (long)iYear << ':' << (long)iMonth << ':' << (long)iDay << ':' << (long)iHour << ':' << (long)iMin << ':' << (long)iSec << "]");
 	IntSet(TimeStamp::intTimeRep(iCent, iYear, iMonth, iDay, iHour, iMin, iSec));
 }
 
@@ -82,11 +70,8 @@ bool TimeStamp::IntSet(TimeStamp::intTimeRep aRep)
 		SYSWARNING("invalid input format [" << aRep.AsString() << "]");
 		return false;
 	} else {
-		fRep.Trim(0);
 		fTimeStruct = aRep;
-		fTime = fTimeStruct.AsTimeT();
-		Trace("new time:" << fTime);
-		fTimeSet = true;
+		Trace("new time:" << fTimeStruct.AsTimeT());
 	}
 	return true;
 }
@@ -98,52 +83,36 @@ TimeStamp &TimeStamp::Set(const String &externalTimeRep)
 	return *this;
 }
 
-String TimeStamp::RemoveNonNumericalChars(const String &externalTimeRep)
-{
-	String ret;
-	long lExt = externalTimeRep.Length();
-	for (long i = 0; i < lExt; ++i) {
-		const char c = externalTimeRep.At(i);
-		if ( c && isdigit(c) ) {
-			ret.Append(c);
-			fTimeStruct.AddCharacter(c);
-		}
-	}
-	return ret;
-}
-
 bool TimeStamp::IntDoInit(const String &externalTimeRep)
 {
-	StartTrace(TimeStamp.IntDoInit);
-	fTimeSet = false;
-	fTime = 0;
+	StartTrace1(TimeStamp.IntDoInit, "string to convert [" << externalTimeRep << "]");
 	fTimeStruct.Reset();
-	fRep = RemoveNonNumericalChars(externalTimeRep);
-	// mark invalid if not at least some numerical characters for the year
-	if ( fRep.Length() < 4L ) {
-		SYSWARNING("invalid input format [" << externalTimeRep << "], at least a year must be specified");
-		fRep.Trim(0L);
+	const long lMaxDateLen( 14L );
+	long lExtLen( externalTimeRep.Length() ), lExtCount(0L), lAddCount(0L);
+	const char pattern[] = "19700101000000";
+	Trace("extlen:" << lExtLen);
+	for (long i = 0; i < lMaxDateLen && lAddCount < lMaxDateLen; ++i) {
+		if ( i < lExtLen ) {
+			if ( isdigit( externalTimeRep.At(i) ) ) {
+				fTimeStruct.AddCharacter( externalTimeRep.At(i) );
+				++lExtCount;
+				++lAddCount;
+			}
+		} else {
+			// need to fill up internal data with reasonable default of pattern
+			fTimeStruct.AddCharacter( pattern[lAddCount] );
+			++lAddCount;
+		}
+	}
+	if ( lExtCount < 4L ) {
+		SYSWARNING("invalid input format [" << externalTimeRep << "], at least a year (YYYY) must be specified");
 		return false;
-	}
-	fRep.Trim(14L);
-	String pattern("19700101000000");
-	// fill missing chars from pattern
-	long lRepLen = fRep.Length(), lMax = pattern.Length();
-	while ( lRepLen < lMax ) {
-		fRep.Append((char)pattern[lRepLen]);
-		fTimeStruct.AddCharacter((char)pattern[lRepLen]);
-		++lRepLen;
-	}
-	Trace("fRep: " << fRep);
-	if ( !fTimeStruct.IsValidDate() ) {
+	} else if ( !fTimeStruct.IsValidDate() ) {
 		SYSWARNING("invalid input format [" << externalTimeRep << "]");
 		return false;
-	} else {
-		Trace("valid parsed date " << fTimeStruct.AsString());
-		fTime = fTimeStruct.AsTimeT();
-		Trace("new time:" << fTime);
-		fTimeSet = true;
 	}
+	Trace("valid parsed date " << fTimeStruct.AsString());
+	Trace("new time:" << fTimeStruct.AsTimeT());
 	return true;
 }
 
@@ -151,14 +120,9 @@ bool TimeStamp::SetTimeT(TSIntNumberType lTime)
 {
 	StartTrace(TimeStamp.SetTimeT);
 	bool bRet = false;
-	fTimeSet = false;
-	fRep.Trim(0);
-	fTime = 0;
+	fTimeStruct.Reset();
 	if ( lTime >= 0 ) {
-		if ( ( bRet = fTimeStruct.InitFromTimeT(lTime) ) ) {
-			fTimeSet = true;
-			fTime = lTime;
-		}
+		bRet = fTimeStruct.InitFromTimeT(lTime);
 	}
 	return bRet;
 }
@@ -166,13 +130,13 @@ bool TimeStamp::SetTimeT(TSIntNumberType lTime)
 long TimeStamp::AsLong() const
 {
 	StartTrace(TimeStamp.AsLong);
-	return fTime;
+	return fTimeStruct.AsTimeT();
 }
 
 bool TimeStamp::IsValid() const
 {
 	StartTrace(TimeStamp.IsValid);
-	return fTimeSet;
+	return fTimeStruct.IsValidDate();
 }
 
 bool TimeStamp::IsBefore(const TimeStamp &isBefore) const
@@ -214,12 +178,7 @@ bool TimeStamp::IsNotEqual(const TimeStamp &isNotEqual) const
 String TimeStamp::AsString() const
 {
 	StartTrace(TimeStamp.AsString);
-	String strDate;
-	strDate = fRep;
-	if ( !strDate.Length() ) {
-		strDate = IntTimeTAsString();
-	}
-	return strDate;
+	return IntTimeTAsString();
 }
 
 String TimeStamp::AsStringWithZ() const
@@ -233,7 +192,7 @@ String TimeStamp::IntTimeTAsString() const
 	StartTrace(TimeStamp.IntTimeTAsString);
 	// result has length 14, optimize buffer to hold 14 characters plus 0
 	String result("19691231235959");
-	if ( fTime >= 0 && fTimeSet ) {
+	if ( IsValid() ) {
 		result = fTimeStruct.AsString();
 	}
 	return result;
@@ -254,9 +213,6 @@ TimeStamp TimeStamp::operator-(long deltasecs) const
 TimeStamp &TimeStamp::operator=(const TimeStamp &aStamp)
 {
 	StartTrace1(TimeStamp.operator = , "TimeStamp");
-	fTime = aStamp.fTime;
-	fRep = aStamp.fRep;
-	fTimeSet = aStamp.fTimeSet;
 	fTimeStruct = aStamp.fTimeStruct;
 	return *this;
 }
@@ -287,30 +243,75 @@ TimeStamp &TimeStamp::operator-=(long deltasecs)
 	return operator+=(-deltasecs);
 }
 
+TimeStamp::intTimeRep::intTimeRep()
+{
+	Reset();
+}
+
+TimeStamp::intTimeRep::intTimeRep(char iCent, char iYear, char iMonth, char iDay, char iHour, char iMin, char iSec)
+{
+	cData[eCent] = iCent;
+	cData[eYear] = iYear;
+	cData[eMonth] = iMonth;
+	cData[eDay] = iDay;
+	cData[eHour] = iHour;
+	cData[eMin] = iMin;
+	cData[eSec] = iSec;
+	fStructPos = eMax;
+}
+
+void TimeStamp::intTimeRep::Reset()
+{
+	cData[eCent] = 0;
+	cData[eYear] = 0;
+	cData[eMonth] = 0;
+	cData[eDay] = 0;
+	cData[eHour] = 0;
+	cData[eMin] = 0;
+	cData[eSec] = 0;
+	fStructPos = eCent;
+}
+
+void TimeStamp::intTimeRep::AddCharacter(char c)
+{
+	// the code calculates correct representation number using two characters of input text
+	// example input: 2007
+	//  '2' -> cData[eCent]=2
+	//  '0' -> cData[eCent]=2*10 + 0
+	//  '0' -> cData[eYear]=0
+	//  '7' -> cData[eYear]=0*10 + 7
+	//  ...
+	// use the same field twice by dividing index by 2
+	eItemPositions aPos( (eItemPositions)( fStructPos >> 1 ) );
+	const char cNull = '0';
+	cData[aPos] *= 10;
+	cData[aPos] += c - cNull;
+	++fStructPos;
+}
+
 bool TimeStamp::intTimeRep::IsValidDate() const
 {
-	StartTrace(TimeStamp.IsValidDate);
-	long year = (cCent * 100) + cYear;
+	long year = (cData[eCent] * 100) + cData[eYear];
 	bool bRet = true;
-	// sanity check, set fTime to -1 if errornous
+	// sanity check, return false if errornous
 	if (year < 1970L || year > 2037L ||
-		cMonth < 1 || cMonth > 12 ||
-		cDay < 1 || cDay > 31 ||
-		cHour < 0 || cHour > 23 ||
-		cMin < 0 || cMin > 59 ||
-		cSec < 0 || cSec > 59 ||
-		( 2 == cMonth && cDay > ( TimeStamp::IsLeap(year) ? 29 : 28)) ||
-		( (4 == cMonth || 6 == cMonth || 9 == cMonth || 11 == cMonth) && cDay > 30) ) {
+		cData[eMonth] < 1 || cData[eMonth] > 12 ||
+		cData[eDay] < 1 || cData[eDay] > 31 ||
+		cData[eHour] < 0 || cData[eHour] > 23 ||
+		cData[eMin] < 0 || cData[eMin] > 59 ||
+		cData[eSec] < 0 || cData[eSec] > 59 ||
+		( 2 == cData[eMonth] && cData[eDay] > ( TimeStamp::IsLeap(year) ? 29 : 28)) ||
+		( (4 == cData[eMonth] || 6 == cData[eMonth] || 9 == cData[eMonth] || 11 == cData[eMonth]) && cData[eDay] > 30) ) {
 		bRet = false;
 	}
-	Trace("Date is " << (bRet ? "" : "not ") << "OK " << (bRet ? "" : (const char *)TraceIntValues()));
+	StatTrace(TimeStamp.IsValidDate, "Date is " << (bRet ? "" : "not ") << "OK " << (bRet ? "" : (const char *)TraceIntValues()), Storage::Current());
 	return bRet;
 }
 
 String TimeStamp::intTimeRep::TraceIntValues() const
 {
 	String result;
-	result.Append("Century:").Append((long)cCent).Append(" Year:").Append((long)cYear).Append(" Month:").Append((long)cMonth).Append(" Day:").Append((long)cDay).Append(" Hour:").Append((long)cHour).Append(" Min:").Append((long)cMin).Append(" Sec:").Append((long)cSec).Append(" Pos:").Append(fStructPos);
+	result.Append("Century:").Append((long)cData[eCent]).Append(" Year:").Append((long)cData[eYear]).Append(" Month:").Append((long)cData[eMonth]).Append(" Day:").Append((long)cData[eDay]).Append(" Hour:").Append((long)cData[eHour]).Append(" Min:").Append((long)cData[eMin]).Append(" Sec:").Append((long)cData[eSec]).Append(" Pos:").Append((long)fStructPos);
 	return result;
 }
 
@@ -320,44 +321,44 @@ static char ChrNumbers[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 
 String TimeStamp::intTimeRep::AsString() const
 {
-	StartTrace1(TimeStamp.AsString, "intTimeRep");
-	Trace("internal values [" << TraceIntValues() << "]");
 	// result has length 14, optimize buffer to hold 14 characters plus 0
 	String result(15);
 	// assemble string
-	long year = (cCent * 100) + cYear;
+	long year = (cData[eCent] * 100) + cData[eYear];
 	result.Append(year);
-	ZFNUM(result, cMonth);
-	ZFNUM(result, cDay);
-	ZFNUM(result, cHour);
-	ZFNUM(result, cMin);
-	ZFNUM(result, cSec);
-	Trace("result:" << result);
+	ZFNUM(result, cData[eMonth]);
+	ZFNUM(result, cData[eDay]);
+	ZFNUM(result, cData[eHour]);
+	ZFNUM(result, cData[eMin]);
+	ZFNUM(result, cData[eSec]);
+	StatTrace(TimeStamp.AsString, "intTimeRep [" << TraceIntValues() << "] result [" << result << "]", Storage::Current());
 	return result;
 }
 
 TimeStamp::TSIntNumberType TimeStamp::intTimeRep::AsTimeT() const
 {
-	StartTrace(TimeStamp.AsTimeT);
 	TSIntNumberType lTime = 0;
-	long year = (cCent * 100) + cYear;
-	// now calc the seconds
-	lTime = (year - 1970) * TimeStamp::YEAR;
-	Trace("number of leap years to account for:" << ((year - 1) / 4 - 1969 / 4));
-	lTime += (((year - 1) / 4 - 1969 / 4)) * TimeStamp::DAY;
-	// count leap years before current year, since 1970
-	for (int i = 0; i < cMonth - 1; ++i) {
-		lTime += MDAYS[i] * TimeStamp::DAY;
+	if ( IsValidDate() ) {
+		StartTrace(TimeStamp.AsTimeT);
+		long year = (cData[eCent] * 100) + cData[eYear];
+		// now calc the seconds
+		lTime = (year - 1970) * TimeStamp::YEAR;
+		Trace("number of leap years to account for:" << ((year - 1) / 4 - 1969 / 4));
+		lTime += (((year - 1) / 4 - 1969 / 4)) * TimeStamp::DAY;
+		// count leap years before current year, since 1970
+		for (int i = 0; i < cData[eMonth] - 1; ++i) {
+			lTime += MDAYS[i] * TimeStamp::DAY;
+		}
+		// leap-year adjustment
+		if ( cData[eMonth] > 2 && TimeStamp::IsLeap(year) ) {
+			Trace("adjusting current leap year");
+			lTime += TimeStamp::DAY;
+		}
+		Trace("adding days:" << cData[eDay] - 1);
+		lTime += (cData[eDay] - 1) * TimeStamp::DAY;
+		lTime += cData[eHour] * TimeStamp::HOUR + cData[eMin] * TimeStamp::MIN + cData[eSec];
+		Trace("new time:" << lTime);
 	}
-	// leap-year adjustment
-	if ( cMonth > 2 && TimeStamp::IsLeap(year) ) {
-		Trace("adjusting current leap year");
-		lTime += TimeStamp::DAY;
-	}
-	Trace("adding days:" << cDay - 1);
-	lTime += (cDay - 1) * TimeStamp::DAY;
-	lTime += cHour * TimeStamp::HOUR + cMin * TimeStamp::MIN + cSec;
-	Trace("new time:" << lTime);
 	return lTime;
 }
 
@@ -367,10 +368,10 @@ bool TimeStamp::intTimeRep::InitFromTimeT(TSIntNumberType lTime)
 	// normal case, do a brain dead standalone conversion, which should be fast!
 	long days = lTime / TimeStamp::DAY;
 	long rem = lTime % TimeStamp::DAY;
-	cHour = (char)(rem / TimeStamp::HOUR);
+	cData[eHour] = (char)(rem / TimeStamp::HOUR);
 	rem %= TimeStamp::HOUR;
-	cMin = (char)(rem / 60);
-	cSec = rem % 60;
+	cData[eMin] = (char)(rem / 60);
+	cData[eSec] = rem % 60;
 	long y = 1970;
 	long lYearDays = 0L;
 	// count correct year, very simply
@@ -379,8 +380,8 @@ bool TimeStamp::intTimeRep::InitFromTimeT(TSIntNumberType lTime)
 		days -= lYearDays;
 		++y;
 	}
-	cCent = y / 100;
-	cYear = y % 100;
+	cData[eCent] = y / 100;
+	cData[eYear] = y % 100;
 	// calculate month
 	int i = 0;
 	// Leap Year February Adjust
@@ -392,22 +393,22 @@ bool TimeStamp::intTimeRep::InitFromTimeT(TSIntNumberType lTime)
 			break;
 		}
 	}
-	cMonth = i + 1;
+	cData[eMonth] = i + 1;
 	days += 1;
-	cDay = (char)days;
+	cData[eDay] = (char)days;
 	return IsValidDate();
 }
 
 TimeStamp::eWeekday TimeStamp::intTimeRep::Weekday() const
 {
 	StartTrace(TimeStamp.Weekday);
-	int y = (cCent * 100) + cYear;
+	int y = (cData[eCent] * 100) + cData[eYear];
 	Trace("isleap:" << (TimeStamp::IsLeap(y) ? "true" : "false"));
-	int DoW = WeekDayCenturyCorrect[cCent-17];
-	DoW += cYear;
-	DoW += (cYear / 4);
-	DoW += (TimeStamp::IsLeap(y) ? WeekDayMonthCorrectLeap[cMonth-1] : WeekDayMonthCorrectNoLeap[cMonth-1]);
-	DoW += cDay;
+	int DoW = WeekDayCenturyCorrect[cData[eCent] - 17];
+	DoW += cData[eYear];
+	DoW += (cData[eYear] / 4);
+	DoW += (TimeStamp::IsLeap(y) ? WeekDayMonthCorrectLeap[cData[eMonth] - 1] : WeekDayMonthCorrectNoLeap[cData[eMonth] - 1]);
+	DoW += cData[eDay];
 	DoW = (DoW % 7);
 	Trace("DoW:" << DoW);
 	return (TimeStamp::eWeekday)DoW;
@@ -417,10 +418,10 @@ int TimeStamp::intTimeRep::DayOfYear() const
 {
 	StartTrace(TimeStamp.DayOfYear);
 	int lDay = 0;
-	for (int i = 0; i < cMonth - 1; ++i) {
-		lDay += MDAYS[i] + LYFA(cYear, i);
+	for (int i = 0; i < cData[eMonth] - 1; ++i) {
+		lDay += MDAYS[i] + LYFA(cData[eYear], i);
 	}
-	lDay += cDay;
+	lDay += cData[eDay];
 	return lDay;
 }
 
@@ -456,7 +457,7 @@ int TimeStamp::intTimeRep::WeekOfYear() const
 	lWeek += (lDaysToCalcWeek / 7);
 	Trace("unadjusted week number:" << lWeek);
 	if ( lWeek > 52 ) {
-		eWeekday aEndOfYearDOW = (IsLeap(cYear) ? (eWeekday)(((long)aFirstOfYearDOW + 1L) % 7) : aFirstOfYearDOW);
+		eWeekday aEndOfYearDOW = (IsLeap(cData[eYear]) ? (eWeekday)(((long)aFirstOfYearDOW + 1L) % 7) : aFirstOfYearDOW);
 		Trace("endofyearweekday:" << (long)aEndOfYearDOW);
 		switch (aEndOfYearDOW) {
 			case TimeStamp::eMonday:
@@ -476,7 +477,7 @@ int TimeStamp::intTimeRep::WeekOfYear() const
 const char *TimeStamp::MonthName() const
 {
 	StartTrace(TimeStamp.MonthName);
-	return Monthes[(int)fTimeStruct.cMonth];
+	return Monthes[(int)fTimeStruct.Month()];
 }
 
 const char *TimeStamp::DayName() const

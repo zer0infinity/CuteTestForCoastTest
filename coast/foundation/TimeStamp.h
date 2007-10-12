@@ -26,28 +26,28 @@ public:
 
 	//--- constructors
 	//! With time now
-	explicit TimeStamp(Allocator *pAlloc = Storage::Current());
+	TimeStamp();
 
 	//! With given UTC
-	explicit TimeStamp(TSIntNumberType utc, Allocator *pAlloc = Storage::Current());
+	explicit TimeStamp(TSIntNumberType utc);
 
 	//! With given string timestamp
-	TimeStamp(const String &externalTimeRep, Allocator *pAlloc = Storage::Current());
+	explicit TimeStamp(const String &externalTimeRep);
 
 	//! With given components
-	TimeStamp(char iCent, char iYear, char iMonth, char iDay, char iHour = 0, char iMin = 0, char iSec = 0, Allocator *pAlloc = Storage::Current());
+	explicit TimeStamp(char iCent, char iYear, char iMonth, char iDay, char iHour = 0, char iMin = 0, char iSec = 0);
 
 	//! implement copy constructor
 	TimeStamp(const TimeStamp &aTimeStamp);
 
-	static TimeStamp Now(Allocator *pAlloc = Storage::Current()) {
-		return TimeStamp(pAlloc);
+	static TimeStamp Now() {
+		return TimeStamp();
 	}
-	static TimeStamp Min(Allocator *pAlloc = Storage::Current()) {
-		return TimeStamp("19700101000000", pAlloc);
+	static TimeStamp Min() {
+		return TimeStamp(19, 70, 1, 1, 0, 0, 0);
 	}
-	static TimeStamp Max(Allocator *pAlloc = Storage::Current()) {
-		return TimeStamp("20371231235959", pAlloc);
+	static TimeStamp Max() {
+		return TimeStamp(20, 37, 12, 31, 23, 59, 59);
 	}
 
 	enum eWeekday {
@@ -61,30 +61,30 @@ public:
 	};
 
 	char Century() const {
-		return fTimeStruct.cCent;
+		return fTimeStruct.Century();
 	}
 	long Year() const {
-		return (fTimeStruct.cCent * 100) + fTimeStruct.cYear;
+		return fTimeStruct.Year();
 	}
 	char YearShort() const {
-		return fTimeStruct.cYear;
+		return fTimeStruct.YearShort();
 	}
 	char Month() const {
-		return fTimeStruct.cMonth;
+		return fTimeStruct.Month();
 	}
 	const char *MonthName() const;
 	char Day() const {
-		return fTimeStruct.cDay;
+		return fTimeStruct.Day();
 	}
 	const char *DayName() const;
 	char Hour() const {
-		return fTimeStruct.cHour;
+		return fTimeStruct.Hour();
 	}
 	char Minute() const {
-		return fTimeStruct.cMin;
+		return fTimeStruct.Minute();
 	}
 	char Second() const {
-		return fTimeStruct.cSec;
+		return fTimeStruct.Second();
 	}
 	/*! calculate the day of week where Sunday is day 0, Monday day 1 and so on.
 		An algorithm description can be found at: http://en.wikipedia.org/wiki/Calculating_the_day_of_the_week
@@ -167,36 +167,23 @@ public:
 
 protected:
 	struct EXPORTDECL_FOUNDATION intTimeRep {
-		char	cCent;
-		char	cYear;
-		char	cMonth;
-		char	cDay;
-		char	cHour;
-		char	cMin;
-		char	cSec;
-		char	cTerminator;
-		long	fStructPos;
+		enum eItemPositions {
+			eCent = 0,
+			eYear = 1,
+			eMonth = 2,
+			eDay = 3,
+			eHour = 4,
+			eMin = 5,
+			eSec = 6,
+			eMax = 7
+		};
+		char cData[eMax];
+		unsigned char fStructPos;
 
-		intTimeRep() {
-			Reset();
-		}
-		intTimeRep(char iCent, char iYear, char iMonth, char iDay, char iHour, char iMin, char iSec)
-			: cCent(iCent), cYear(iYear), cMonth(iMonth), cDay(iDay), cHour(iHour), cMin(iMin), cSec(iSec)
-			, cTerminator(0), fStructPos(7)
-		{ }
-		void AddCharacter(char c) {
-			long lIdx = (fStructPos >> 1);
-			((char *)this)[lIdx] *= 10;
-			((char *)this)[lIdx] += c - '0';
-			++fStructPos;
-		}
-		void Reset() {
-			fStructPos = 0;
-			cTerminator = 0;
-			for (long lIdx = 0; lIdx < ((&cTerminator) - (char *)this); ++lIdx) {
-				((char *)this)[lIdx] = 0;
-			}
-		}
+		intTimeRep();
+		intTimeRep(char iCent, char iYear, char iMonth, char iDay, char iHour, char iMin, char iSec);
+		void AddCharacter(char c);
+		void Reset();
 		String TraceIntValues() const;
 		bool IsValidDate() const;
 		TSIntNumberType AsTimeT() const;
@@ -212,20 +199,41 @@ protected:
 		/*! week number calculation according to ISO8601
 			\return number of week in the range 0-53 where 0 means that the week number is the last week number of the last year. If the week number is 53 the last day of the year seems to be either a Thursday or a Friday. */
 		int WeekOfYear() const;
-	} fTimeStruct;
+		char Century() const {
+			return cData[eCent];
+		}
+		long Year() const {
+			return (cData[eCent] * 100) + cData[eYear];
+		}
+		char YearShort() const {
+			return cData[eYear];
+		}
+		char Month() const {
+			return cData[eMonth];
+		}
+		char Day() const {
+			return cData[eDay];
+		}
+		char Hour() const {
+			return cData[eHour];
+		}
+		char Minute() const {
+			return cData[eMin];
+		}
+		char Second() const {
+			return cData[eSec];
+		}
+	};
 
 	// internal initializer
 	bool IntSet(intTimeRep aRep);
 
 private:
-	String RemoveNonNumericalChars(const String &externalTimeRep);
 	bool IntDoInit(const String &externalTimeRep);
 	bool SetTimeT(TSIntNumberType lTime);
 	String IntTimeTAsString() const;
 
-	TSIntNumberType fTime;
-	String fRep;
-	bool fTimeSet;
+	intTimeRep fTimeStruct;
 };
 
 #endif
