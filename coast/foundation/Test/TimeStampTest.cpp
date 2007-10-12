@@ -316,17 +316,13 @@ void TimeStampTest::ModifiersTest()
 	t_assert(aInitial.IsValid());
 	t_assert(aSecond.IsValid());
 	assertEqual(0, aInitial.AsLong());
-	assertEqual(0, aInitial.fTime);
 	assertEqual("19700101000000", aInitial.AsString());
-	assertEqual("", aInitial.fRep);
 	t_assert(aSecond == aInitial);
 	aSecond += 1200;
-	assertEqual(1200, aSecond.fTime);
 	assertEqual(1200, aSecond.AsLong());
 	t_assert(aSecond.IsValid());
 	aInitial = aSecond;
 	assertEqual(1200, aInitial.AsLong());
-	assertEqual(1200, aInitial.fTime);
 	t_assert(aInitial.IsValid());
 	assertEqual("19700101002000", aInitial.AsString());
 	aSecond -= 1200;
@@ -342,43 +338,24 @@ void TimeStampTest::ModifiersTest()
 
 	aSecond = 1200;
 	t_assert(aSecond.IsValid());
-	assertEqual(1200, aSecond.fTime);
 	assertEqual(1200, aSecond.AsLong());
 	assertEqual("19700101002000", aSecond.AsString());
 	aSecond = -1200;
 	t_assert(!aSecond.IsValid());
-	assertEqual(0, aSecond.fTime);
 	assertEqual(0, aSecond.AsLong());
 	assertEqual("19691231235959", aSecond.AsString());
 
 	aSecond = "20000102030405";
 	t_assert(aSecond.IsValid());
-	assertEqual(946782245, aSecond.fTime);
 	assertEqual(946782245, aSecond.AsLong());
 
 	TimeStamp aThird(aSecond);
 	t_assert( aSecond == aThird );
 
-	// synthetic test
-	aSecond.fTime = 1234;
-	aSecond.fRep = "5678";
-	aSecond.fTimeSet = true;
-	assertEqual(1234, aSecond.AsLong());
-	assertEqual("5678", aSecond.AsString());
-
 	// copy ctor does not correct wrong things, just copies
 	TimeStamp aFourth(aSecond);
-	assertEqual(aSecond.fTime, aFourth.fTime);
-	assertEqual(aSecond.fTimeSet, aFourth.fTimeSet);
-	assertEqual(aSecond.fRep, aFourth.fRep);
 	assertEqual(aSecond.AsLong(), aFourth.AsLong());
 	assertEqual(aSecond.AsString(), aFourth.AsString());
-
-	aSecond.fTimeSet = false;
-	// this one still works
-	assertEqual("5678", aSecond.AsString());
-	aSecond.fRep.Trim(0);
-	assertEqual("19691231235959", aSecond.AsString());
 }
 
 void TimeStampTest::CtorTest()
@@ -399,6 +376,8 @@ void TimeStampTest::CtorTest()
 		assertCharPtrEqual("20040229000001", aStamp.AsString());
 		t_assert(aStamp == aStamp2);
 	}
+	Trace("sizeof TimeStamp:" << (long)sizeof(TimeStamp));
+	Trace("sizeof TimeStamp::intTimeRep:" << (long)sizeof(TimeStamp::intTimeRep));
 }
 
 void TimeStampTest::WeekdayTest()
