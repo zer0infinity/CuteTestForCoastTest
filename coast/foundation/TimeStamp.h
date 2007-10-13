@@ -155,15 +155,47 @@ public:
 		return os;
 	}
 
+	static inline bool IsLeap(int iYear) {
+		return ((iYear) % 4 == 0 && ((iYear) % 100 != 0 || (iYear) % 400 == 0));
+	}
+
+	class AMonth
+	{
+		AMonth();
+	public:
+		enum eMonthNumber {
+			eJanuary = 1,
+			eFebruary = 2,
+			eMarch = 3,
+			eApril = 4,
+			eMay = 5,
+			eJune = 6,
+			eJuly = 7,
+			eAugust = 8,
+			eSeptember = 9,
+			eOctober = 10,
+			eNovember = 11,
+			eDecember = 12
+		};
+		explicit AMonth( eMonthNumber aMonth )
+			: fMonth( aMonth ) {}
+		TSIntNumberType AsSeconds( unsigned short lInYear = 1970 ) const;
+		unsigned char fMonth;
+	};
+	class AYear
+	{
+		AYear();
+	public:
+		explicit AYear( long lYear )
+			: fYear( lYear ) {}
+		TSIntNumberType AsSeconds() const;
+		unsigned short fYear;
+	};
+
 	/*! number of seconds per item */
 	static const long MIN;
 	static const long HOUR;
 	static const long DAY;
-	static const long YEAR;
-
-	static inline bool IsLeap(int iYear) {
-		return ((iYear) % 4 == 0 && ((iYear) % 100 != 0 || (iYear) % 400 == 0));
-	}
 
 protected:
 	struct EXPORTDECL_FOUNDATION intTimeRep {

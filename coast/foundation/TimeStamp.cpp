@@ -22,7 +22,7 @@
 const long TimeStamp::MIN = 60L;
 const long TimeStamp::HOUR = TimeStamp::MIN * 60L;
 const long TimeStamp::DAY = 24 * TimeStamp::HOUR;
-const long TimeStamp::YEAR = 365 * TimeStamp::DAY;
+const long YEAR = 365 * TimeStamp::DAY;
 
 static const long MDAYS [] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 static const int WeekDayCenturyCorrect[] = { 4, 2, 0, 6 };
@@ -335,6 +335,18 @@ String TimeStamp::intTimeRep::AsString() const
 	return result;
 }
 
+#define LYFA(theyear,mindex) ((1==mindex&&TimeStamp::IsLeap(theyear))?1:0)
+
+TimeStamp::TSIntNumberType TimeStamp::AMonth::AsSeconds( unsigned short lInYear ) const
+{
+	return ( ( MDAYS[fMonth - 1] + LYFA( lInYear, ( fMonth - 1 ) ) ) * TimeStamp::DAY );
+}
+
+TimeStamp::TSIntNumberType TimeStamp::AYear::AsSeconds() const
+{
+	return ( YEAR + ( TimeStamp::IsLeap( fYear ) ? TimeStamp::DAY : 0L ) );
+}
+
 TimeStamp::TSIntNumberType TimeStamp::intTimeRep::AsTimeT() const
 {
 	TSIntNumberType lTime = 0;
@@ -342,7 +354,7 @@ TimeStamp::TSIntNumberType TimeStamp::intTimeRep::AsTimeT() const
 		StartTrace(TimeStamp.AsTimeT);
 		long year = (cData[eCent] * 100) + cData[eYear];
 		// now calc the seconds
-		lTime = (year - 1970) * TimeStamp::YEAR;
+		lTime = (year - 1970) * YEAR;
 		Trace("number of leap years to account for:" << ((year - 1) / 4 - 1969 / 4));
 		lTime += (((year - 1) / 4 - 1969 / 4)) * TimeStamp::DAY;
 		// count leap years before current year, since 1970
@@ -385,7 +397,6 @@ bool TimeStamp::intTimeRep::InitFromTimeT(TSIntNumberType lTime)
 	// calculate month
 	int i = 0;
 	// Leap Year February Adjust
-#define LYFA(theyear,mindex) ((1==mindex&&TimeStamp::IsLeap(theyear))?1:0)
 	for (i = 0; i < 12; ++i) {
 		if (days >= MDAYS[i] + LYFA(y, i)) {
 			days -= MDAYS[i] + LYFA(y, i);
