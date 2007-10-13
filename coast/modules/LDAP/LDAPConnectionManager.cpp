@@ -88,7 +88,7 @@ Anything LDAPConnectionManager::GetLdapConnection(bool isLocked, long maxConnect
 Anything LDAPConnectionManager::HandleRebindTimeout(Anything &returned, long rebindTimeout, LDAP *handle)
 {
 	StartTrace(LDAPConnectionManager.HandleRebindTimeout);
-	TimeStamp now = TimeStamp().Now();
+	TimeStamp now;
 	TimeStamp lastRebind(returned["LastRebind"].AsString());
 	bool mustRebind;
 	String msg;
