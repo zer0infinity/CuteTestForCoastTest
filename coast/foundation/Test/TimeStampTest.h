@@ -42,6 +42,8 @@ public:
 	void WeekdayTest();
 	void DayOfYearTest();
 	void WeekOfYearTest();
+	void MonthTest();
+	void YearTest();
 };
 
 #endif

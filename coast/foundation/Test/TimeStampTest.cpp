@@ -433,6 +433,41 @@ void TimeStampTest::WeekOfYearTest()
 	}
 }
 
+void TimeStampTest::MonthTest()
+{
+	StartTrace(TimeStampTest.MonthTest);
+	ROAnything roaConfig;
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(roaConfig) ) {
+		TString strCase;
+		if ( !aEntryIterator.SlotName(strCase) ) {
+			strCase << "idx:" << aEntryIterator.Index();
+		}
+
+		TraceAny(roaConfig, "current config");
+		TimeStamp::AMonth::eMonthNumber aMonthNum( (TimeStamp::AMonth::eMonthNumber)roaConfig["Month"].AsLong() );
+		TimeStamp::AMonth aM( ( aMonthNum ) );
+		assertComparem( (TimeStamp::TSIntNumberType)roaConfig["ExpectedSeconds"].AsLong(-1L), equal_to, aM.AsSeconds( roaConfig["InYear"].AsLong(1970) ), TString("Expected same seconds for mnum:") << roaConfig["Month"].AsLong() << " inyear:" << roaConfig["InYear"].AsLong(1970) << " at " << strCase);
+	}
+}
+
+void TimeStampTest::YearTest()
+{
+	StartTrace(TimeStampTest.YearTest);
+	ROAnything roaConfig;
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
+	while ( aEntryIterator.Next(roaConfig) ) {
+		TString strCase;
+		if ( !aEntryIterator.SlotName(strCase) ) {
+			strCase << "idx:" << aEntryIterator.Index();
+		}
+
+		TraceAny(roaConfig, "current config");
+		TimeStamp::AYear aY( roaConfig["Year"].AsLong() );
+		assertComparem( (TimeStamp::TSIntNumberType)roaConfig["ExpectedSeconds"].AsLong(-1L), equal_to, aY.AsSeconds(), TString("Expected same seconds at ") << strCase);
+	}
+}
+
 // builds up a suite of testcases, add a line for each testmethod
 Test *TimeStampTest::suite ()
 {
@@ -453,5 +488,7 @@ Test *TimeStampTest::suite ()
 	ADD_CASE(testSuite, TimeStampTest, WeekdayTest);
 	ADD_CASE(testSuite, TimeStampTest, DayOfYearTest);
 	ADD_CASE(testSuite, TimeStampTest, WeekOfYearTest);
+	ADD_CASE(testSuite, TimeStampTest, MonthTest);
+	ADD_CASE(testSuite, TimeStampTest, YearTest);
 	return testSuite;
 }

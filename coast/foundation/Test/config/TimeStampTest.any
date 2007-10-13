@@ -272,4 +272,107 @@
 			/WeekOfYear		52
 		}
 	}
+	/MonthTest {
+		/Jan {
+			/Month 1
+			/InYear 1970
+			/ExpectedSeconds 2678400
+		}
+		/Feb70 {
+			/Month 2
+			/InYear 1970
+			/ExpectedSeconds 2419200
+		}
+		/Feb71 {
+			/Month 2
+			/InYear 1971
+			/ExpectedSeconds 2419200
+		}
+		/Feb00 {
+			/Month 2
+			/InYear 2000
+			/ExpectedSeconds 2505600
+		}
+		/Feb08 {
+			/Month 2
+			/InYear 2008
+			/ExpectedSeconds 2505600
+		}
+		/Mar {
+			/Month 3
+			/InYear 1970
+			/ExpectedSeconds 2678400
+		}
+		/Apr {
+			/Month 4
+			/InYear 1970
+			/ExpectedSeconds 2592000
+		}
+		/May {
+			/Month 5
+			/InYear 1970
+			/ExpectedSeconds 2678400
+		}
+		/Jun {
+			/Month 6
+			/InYear 1970
+			/ExpectedSeconds 2592000
+		}
+		/Jul {
+			/Month 7
+			/InYear 1970
+			/ExpectedSeconds 2678400
+		}
+		/Aug {
+			/Month 8
+			/InYear 1970
+			/ExpectedSeconds 2678400
+		}
+		/Sep {
+			/Month 9
+			/InYear 1970
+			/ExpectedSeconds 2592000
+		}
+		/Oct {
+			/Month 10
+			/InYear 1970
+			/ExpectedSeconds 2678400
+		}
+		/Nov {
+			/Month 11
+			/InYear 1970
+			/ExpectedSeconds 2592000
+		}
+		/Dec {
+			/Month 12
+			/InYear 1970
+			/ExpectedSeconds 2678400
+		}
+	}
+	/YearTest {
+		{
+			/Year 1970
+			/ExpectedSeconds 31536000
+		}
+		{
+			/Year 1996
+			/ExpectedSeconds 31622400
+		}
+		{
+			/Year 2000
+			/ExpectedSeconds 31622400
+		}
+		{
+			/Year 2001
+			/ExpectedSeconds 31536000
+		}
+		{
+			/Year 2008
+			/ExpectedSeconds 31622400
+		}
+		{
+			/Year 2100
+			/ExpectedSeconds 31536000
+		}
+	}
 }
