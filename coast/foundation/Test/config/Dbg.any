@@ -221,4 +221,12 @@
 		/MainSwitch						0
 		/EnableAll						20
 	}
+	/TimeStamp {
+		/MainSwitch						20
+		/EnableAll						20
+	}
+	/TimeStampTest {
+		/MainSwitch						20
+		/EnableAll						20
+	}
 }
