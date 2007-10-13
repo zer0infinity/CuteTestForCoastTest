@@ -280,7 +280,7 @@ void TimeStampTest::InvalidTest()
 	StartTrace(TimeStampTest.InvalidTest);
 	TimeStamp result(-1);
 	t_assertm(!result.IsValid(), "Expected invalid value");
-	assertEqualm("19691231235959", result.AsString(), "Expected result not valid");
+	assertEqualm("", result.AsString(), "Expected result not valid");
 	result.Set("20000102030405");
 	t_assertm(result.IsValid(), "Expected valid value");
 	assertEqual(946782245, result.AsLong());
@@ -292,8 +292,8 @@ void TimeStampTest::InvalidTest()
 	tsMax += 1;
 	t_assertm(!tsMax.IsValid(), "Expected invalid value");
 	t_assertm(!tsMin.IsValid(), "Expected invalid value");
-	assertEqualm("19691231235959", tsMax.AsString(), "Date must be invalid now");
-	assertEqualm("19691231235959", tsMin.AsString(), "Date must be invalid now");
+	assertEqualm("", tsMax.AsString(), "Date must be invalid now");
+	assertEqualm("", tsMin.AsString(), "Date must be invalid now");
 }
 
 void TimeStampTest::StaticMethodsTest()
@@ -343,7 +343,7 @@ void TimeStampTest::ModifiersTest()
 	aSecond = -1200;
 	t_assert(!aSecond.IsValid());
 	assertEqual(0, aSecond.AsLong());
-	assertEqual("19691231235959", aSecond.AsString());
+	assertEqual("", aSecond.AsString());
 
 	aSecond = "20000102030405";
 	t_assert(aSecond.IsValid());
@@ -368,13 +368,18 @@ void TimeStampTest::CtorTest()
 	}
 	{
 		TimeStamp aStamp(19, 69, 1, 1, 0, 0, 1);
-		assertCharPtrEqual("19691231235959", aStamp.AsString());
+		assertCharPtrEqual("", aStamp.AsString());
 		assertEqual(0L, aStamp.AsLong());
 	}
 	{
 		TimeStamp aStamp(20, 4, 2, 29, 0, 0, 1), aStamp2("20040229000001");
 		assertCharPtrEqual("20040229000001", aStamp.AsString());
 		t_assert(aStamp == aStamp2);
+	}
+	{
+		TimeStamp aStamp("XXX");
+		t_assert(!aStamp.IsValid());
+		assertCharPtrEqual("", aStamp.AsString());
 	}
 	Trace("sizeof TimeStamp:" << (long)sizeof(TimeStamp));
 	Trace("sizeof TimeStamp::intTimeRep:" << (long)sizeof(TimeStamp::intTimeRep));

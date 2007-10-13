@@ -106,6 +106,7 @@ bool TimeStamp::IntDoInit(const String &externalTimeRep)
 	}
 	if ( lExtCount < 4L ) {
 		SYSWARNING("invalid input format [" << externalTimeRep << "], at least a year (YYYY) must be specified");
+		fTimeStruct.Reset();
 		return false;
 	} else if ( !fTimeStruct.IsValidDate() ) {
 		SYSWARNING("invalid input format [" << externalTimeRep << "]");
@@ -191,7 +192,7 @@ String TimeStamp::IntTimeTAsString() const
 {
 	StartTrace(TimeStamp.IntTimeTAsString);
 	// result has length 14, optimize buffer to hold 14 characters plus 0
-	String result("19691231235959");
+	String result(16L);
 	if ( IsValid() ) {
 		result = fTimeStruct.AsString();
 	}

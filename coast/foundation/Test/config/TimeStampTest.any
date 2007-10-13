@@ -92,7 +92,7 @@
 	/testInvalid
 	{
 		{
-			/ExpectedResult	"19691231235959"
+			/ExpectedResult	""
 #							 JJJJMMDDHHMMSS
 		}
 	}
