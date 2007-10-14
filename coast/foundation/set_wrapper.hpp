@@ -50,7 +50,7 @@ public:
 	{}
 
 	bool AddItem(const ItemType &aItem) {
-		InsertResultType aRetCode( IntGetListPtr()->insert(aItem) );
+		InsertResultType aRetCode( GetCreateListPtr()->insert(aItem) );
 		StatTrace(set_wrapper.AddItem, "Item [" << aItem.AsString() << "] was " << (aRetCode.second ? "" : "not " ) << "successful", Storage::Current());
 		// success means it was a new entry, otherwise there is already an item present
 		return aRetCode.second;
@@ -60,7 +60,7 @@ public:
 		StartTrace(set_wrapper.DeleteItem);
 		bool bRet(false);
 		if ( HasList() ) {
-			size_type aRetCode( IntGetListPtr()->erase(aItem) );
+			size_type aRetCode( GetCreateListPtr()->erase(aItem) );
 			// number of elements == 1 means success
 			bRet = ( aRetCode == 1 );
 		}
@@ -76,12 +76,12 @@ public:
 	/*! this is the exact match version of find
 		\param
 		\return true in case we found the item, rItemPos will then be the iterator pointing to the item */
-	bool FindItem(const ItemType &aItem, IteratorType &rItemPos) {
+	bool FindItem(const ItemType &aItem, ConstIteratorType &rItemPos) const {
 		StartTrace(set_wrapper.FindItem);
 		bool bFound(false);
 		if ( HasList() ) {
-			rItemPos = IntGetListPtr()->find( aItem );
-			bFound = ( rItemPos != IntGetListPtr()->end() );
+			rItemPos = GetListPtr()->find( aItem );
+			bFound = ( rItemPos != GetListPtr()->end() );
 		}
 		return bFound;
 	}
@@ -89,13 +89,13 @@ public:
 	/*! No compare version of find, do not compare VAT/STT/Value attributes of Item
 		\param
 		\return */
-	bool FindItemRange(const ItemType &aItemMin, const ItemType &aItemMax, IteratorType &rItemsBegin, IteratorType &rItemsEnd) {
+	bool FindItemRange(const ItemType &aItemMin, const ItemType &aItemMax, ConstIteratorType &rItemsBegin, ConstIteratorType &rItemsEnd) const {
 		StartTrace1(set_wrapper.FindItemRange, "find items for range [" << aItemMin.AsString() << "," << aItemMax.AsString() << "]");
 		bool bFound(false);
 		if ( HasList() ) {
-			IteratorType aEnd( IntGetListPtr()->end() );
-			rItemsBegin = IntGetListPtr()->lower_bound( aItemMin );
-			rItemsEnd = IntGetListPtr()->upper_bound( aItemMax );
+			ConstIteratorType aEnd( GetListPtr()->end() );
+			rItemsBegin = GetListPtr()->lower_bound( aItemMin );
+			rItemsEnd = GetListPtr()->upper_bound( aItemMax );
 			Trace("[" << ( ( rItemsBegin != aEnd ) ? (*rItemsBegin).AsString() : "<end>" ) << "," << ( ( rItemsEnd != aEnd ) ? (*rItemsEnd).AsString() : "<end>" ) << ")");
 			if ( ( rItemsBegin != aEnd || rItemsEnd != aEnd ) ) {
 				// check if values are within range
@@ -113,8 +113,8 @@ public:
 		StartTrace(set_wrapper.FullRange);
 		bool bFound(false);
 		if ( HasList() ) {
-			rItemsBegin = IntGetListPtr()->begin();
-			rItemsEnd = IntGetListPtr()->end();
+			rItemsBegin = GetCreateListPtr()->begin();
+			rItemsEnd = GetCreateListPtr()->end();
 			bFound = ( rItemsBegin != rItemsEnd );
 		}
 		return bFound;
@@ -124,7 +124,7 @@ public:
 		StartTrace1(set_wrapper.DeleteItemRange, "[" << ( ( rItemsBegin != fpList->end() ) ? (*rItemsBegin).AsString() : "<end>" ) << "," << ( ( rItemsEnd != fpList->end() ) ? (*rItemsEnd).AsString() : "<end>" ) << ")");
 		bool bRet(false);
 		if ( HasList() ) {
-			IntGetListPtr()->erase(rItemsBegin, rItemsEnd);
+			GetCreateListPtr()->erase(rItemsBegin, rItemsEnd);
 			bRet = true;
 		}
 		return bRet;
@@ -136,7 +136,7 @@ public:
 		if ( HasList() ) {
 			IteratorType rItemsBegin, rItemsEnd;
 			if ( FindItemRange(aItemMin, aItemMax, rItemsBegin, rItemsEnd) ) {
-				IntGetListPtr()->erase(rItemsBegin, rItemsEnd);
+				GetCreateListPtr()->erase(rItemsBegin, rItemsEnd);
 				bRet = true;
 			}
 		}
@@ -144,7 +144,10 @@ public:
 	}
 
 	size_type Size() const {
-		return HasList() ? fpList->size() : size_type(0) ;
+		if ( this->HasList() ) {
+			return this->GetListPtr()->size();
+		}
+		return size_type(0);
 	}
 
 	bool HasList() const {
@@ -162,18 +165,18 @@ public:
 	template < template < class > class A >
 	set_wrapper &operator=(const set_wrapper<T, A>& other) {
 		if ( other.HasList() ) {
-			CopyItems(IntGetListPtr(), other.GetListPtr());
+			CopyItems(GetCreateListPtr(), other.GetListPtr());
 		}
 		return (*this);
 	}
 
-protected:
-	Type *IntGetListPtr() {
+	Type *GetCreateListPtr() {
 		if ( !HasList() ) {
 			fpList = std::auto_ptr< Type >( new Type() );
 		}
 		return fpList.get();
 	}
+
 private:
 	std::auto_ptr< Type > fpList;
 };
