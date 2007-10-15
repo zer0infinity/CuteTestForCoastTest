@@ -24,14 +24,16 @@ namespace STLStorage
 		typedef UserAllocator user_allocator;
 		BOOST_STATIC_CONSTANT(unsigned, next_size = NextSize);
 
+		typedef pool_refcounted<UserAllocator> pool_refcounted_type;
+		typedef typename pool_refcounted_type::pool_refcount_storer int_pool_instance_type;
+
 		typedef value_type *pointer;
 		typedef const value_type *const_pointer;
 		typedef value_type &reference;
 		typedef const value_type &const_reference;
-		typedef boost::pool<UserAllocator> int_pool_type;
-		typedef boost::shared_ptr<int_pool_type> int_pool_instance_type;
-		typedef typename int_pool_type::size_type size_type;
-		typedef typename int_pool_type::difference_type difference_type;
+		typedef typename pool_refcounted_type::int_pool_type pool_type;
+		typedef typename pool_type::size_type size_type;
+		typedef typename pool_type::difference_type difference_type;
 		typedef fast_pool_allocator<T, UserAllocator, NextSize> ThisType;
 
 		template <typename U>
@@ -46,54 +48,36 @@ namespace STLStorage
 		/* constructors and destructor
 		*/
 		fast_pool_allocator()
-			: fpIntPool(int_pool_instance_type(new int_pool_type(sizeof(T)))) {
-#if !defined(WD_DISABLE_TRACE)
-			StatTrace(fast_pool_allocator.fast_pool_allocator, "this:" << (long)this << " sizeof(T):" << (long)sizeof(T) << " fpIntPool:" << (long)fpIntPool.operator->() << " count:" << fpIntPool.use_count(), Storage::Current());
-#endif
+			: fpIntPool() {
+			_StartTrace1(fast_pool_allocator.fast_pool_allocator, "this:" << (long)this << " sizeof(T):" << (long)sizeof(T));
+			void *pMem = (void *)UserAllocator::malloc(sizeof(pool_refcounted_type));
+			fpIntPool = int_pool_instance_type( new (pMem) pool_refcounted_type(sizeof(T), NextSize) );
+			_Trace("IntPool @" << (long)GetImplRef(fpIntPool));
 		}
 
 		fast_pool_allocator(const ThisType &aAllocator)
-			: fpIntPool(int_pool_instance_type(new int_pool_type(sizeof(T)))) {
-#if !defined(WD_DISABLE_TRACE)
-			StatTrace(fast_pool_allocator.fast_pool_allocator, "copy this:" << (long)this << " other:" << (long)&aAllocator << " sizeof(T):" << (long)sizeof(T) << " fpIntPool:" << (long)fpIntPool.operator->() << " count:" << fpIntPool.use_count(), Storage::Current());
-#endif
+			: fpIntPool(aAllocator.fpIntPool) {
+			_StartTrace1(fast_pool_allocator.fast_pool_allocator, "copy this:" << (long)this << " sizeof(T):" << (long)sizeof(T) << " other:" << (long)&aAllocator << " sizeof(other):" << (long)sizeof(typename ThisType::value_type));
+			_Trace("IntPool @" << (long)GetImplRef(fpIntPool));
 		}
 
 		template <typename U>
 		fast_pool_allocator(const fast_pool_allocator<U, UserAllocator, NextSize>& aAllocator)
-			: fpIntPool(aAllocator.fpIntPool) {
-#if !defined(WD_DISABLE_TRACE)
-			StatTrace(fast_pool_allocator.fast_pool_allocator, "copy other type this:" << (long)this << " sizeof(U):" << (long)sizeof(U) << " other:" << (long)&aAllocator << " sizeof(T):" << (long)sizeof(T) << " fpIntPool:" << (long)fpIntPool.operator->() << " count:" << fpIntPool.use_count(), Storage::Current());
-#endif
+			: fpIntPool() {
+			_StartTrace1(fast_pool_allocator.fast_pool_allocator, "copy other type this:" << (long)this << " sizeof(T):" << (long)sizeof(T) << " other:" << (long)&aAllocator << " sizeof(U):" << (long)sizeof(typename pool_allocator<U, UserAllocator, NextSize>::value_type));
+			if ( GetImplRef(aAllocator.fpIntPool) ) {
+				fpIntPool = aAllocator.fpIntPool->Clone(sizeof(T), NextSize);
+			} else {
+				_Trace("no pool created for other type ??");
+				void *pMem = (void *)UserAllocator::malloc(sizeof(pool_refcounted_type));
+				fpIntPool = int_pool_instance_type( new (pMem) pool_refcounted_type(sizeof(T), NextSize) );
+			}
+			_Trace("IntPool @" << (long)GetImplRef(fpIntPool));
 		}
 
 		~fast_pool_allocator() {
-#if !defined(WD_DISABLE_TRACE)
-			StatTrace(fast_pool_allocator.~fast_pool_allocator, "this:" << (long)this << " fpIntPool:" << (long)fpIntPool.operator->() << " count:" << fpIntPool.use_count(), Storage::Current());
-#endif
-			if ( fpIntPool.unique() ) {
-				fpIntPool->release_memory();
-			}
+			_StatTrace(fast_pool_allocator.~fast_pool_allocator, "this:" << (long)this << " IntPool:" << (long)GetImplRef(fpIntPool), Storage::Current());
 		}
-
-//		ThisType& operator=(const ThisType& aAllocator)
-//		{
-//			fpIntPool = aAllocator.fpIntPool;
-//#if !defined(WD_DISABLE_TRACE)
-//			StatTrace(fast_pool_allocator.operator=, "assign this:" << (long)this << " other:" << (long)&aAllocator << " sizeof(T):" << (long)sizeof(T) << " fpIntPool:" << (long)fpIntPool.operator->(), Storage::Current());
-//#endif
-//			return (*this);
-//		}
-//
-//		template <typename U>
-//		typename rebind<U>::other& operator=(const typename rebind<U>::other& aAllocator)
-//		{
-//			fpIntPool = aAllocator.fpIntPool;
-//#if !defined(WD_DISABLE_TRACE)
-//			StatTrace(fast_pool_allocator.operator=, "assign other type this:" << (long)this << " sizeof(U):" << (long)sizeof(U) << " other:" << (long)&aAllocator << " sizeof(T):" << (long)sizeof(T) << " fpIntPool:" << (long)fpIntPool.operator->(), Storage::Current());
-//#endif
-//			return (*this);
-//		}
 
 		static pointer address(reference r) {
 			return &r;
@@ -124,34 +108,26 @@ namespace STLStorage
 				(n == 1) ?
 				static_cast<pointer>( fpIntPool->malloc() ) :
 				static_cast<pointer>( fpIntPool->ordered_malloc(n) );
-#if !defined(WD_DISABLE_TRACE)
-			StatTrace(fast_pool_allocator.allocate_n, "this:" << (long)this << " ptr:" << (long)ptr << " size:" << (long)n << '*' << (long)sizeof(T) << " calling " << ( (n == 1) ? "" : "ordered_" ) << "malloc" << " fpIntPool:" << (long)fpIntPool.operator->(), Storage::Current());
-#endif
+			_StatTrace(fast_pool_allocator.allocate_n, "this:" << (long)this << " ptr:" << (long)ptr << " size:" << (long)n << '*' << (long)sizeof(T) << " calling " << ( (n == 1) ? "" : "ordered_" ) << "malloc" << " fpIntPool:" << (long)GetImplRef(fpIntPool), Storage::Current());
 			if (ptr == 0) {
 				throw std::bad_alloc();
 			}
 			return ptr;
 		}
 		pointer allocate(const size_type n, const void *const) throw( std::bad_alloc ) {
-#if !defined(WD_DISABLE_TRACE)
-			StatTrace(fast_pool_allocator.allocate_n_void, "this:" << (long)this << " size:" << (long)n << '*' << (long)sizeof(T) << " void*", Storage::Current());
-#endif
+			_StatTrace(fast_pool_allocator.allocate_n_void, "this:" << (long)this << " size:" << (long)n << '*' << (long)sizeof(T) << " void*", Storage::Current());
 			return allocate(n);
 		}
 		pointer allocate() throw( std::bad_alloc ) {
 			const pointer ptr = static_cast<pointer>( fpIntPool->malloc() );
-#if !defined(WD_DISABLE_TRACE)
-			StatTrace(fast_pool_allocator.allocate, "this:" << (long)this << " ptr:" << (long)ptr << " default size:1*" << (long)sizeof(T) << " fpIntPool:" << (long)fpIntPool.operator->(), Storage::Current());
-#endif
+			_StatTrace(fast_pool_allocator.allocate, "this:" << (long)this << " ptr:" << (long)ptr << " default size:1*" << (long)sizeof(T) << " fpIntPool:" << (long)fpIntPool.operator->(), Storage::Current());
 			if (ptr == 0) {
 				throw std::bad_alloc();
 			}
 			return ptr;
 		}
 		void deallocate(const pointer ptr, const size_type n) {
-#if !defined(WD_DISABLE_TRACE)
-			StatTrace(fast_pool_allocator.deallocate_ptr_n, "this:" << (long)this << " ptr:" << (long)ptr << " size:" << (long)n << '*' << (long)sizeof(T) << " calling free " << ( (n == 1) ? "" : "_n" ) << " fpIntPool:" << (long)fpIntPool.operator->(), Storage::Current());
-#endif
+			_StatTrace(fast_pool_allocator.deallocate_ptr_n, "this:" << (long)this << " ptr:" << (long)ptr << " size:" << (long)n << '*' << (long)sizeof(T) << " calling free " << ( (n == 1) ? "" : "_n" ) << " fpIntPool:" << (long)GetImplRef(fpIntPool), Storage::Current());
 #ifdef BOOST_NO_PROPER_STL_DEALLOCATE
 			if (ptr == 0 || n == 0) {
 				return;
@@ -164,9 +140,7 @@ namespace STLStorage
 			}
 		}
 		void deallocate(const pointer ptr) {
-#if !defined(WD_DISABLE_TRACE)
-			StatTrace(fast_pool_allocator.deallocate_ptr, "this:" << (long)this << " ptr:" << (long)ptr << " size:1*" << (long)sizeof(T) << " calling free" << " fpIntPool:" << (long)fpIntPool.operator->(), Storage::Current());
-#endif
+			_StatTrace(fast_pool_allocator.deallocate_ptr, "this:" << (long)this << " ptr:" << (long)ptr << " size:1*" << (long)sizeof(T) << " calling free" << " fpIntPool:" << (long)GetImplRef(fpIntPool), Storage::Current());
 			fpIntPool->free(ptr);
 		}
 		int_pool_instance_type fpIntPool;
