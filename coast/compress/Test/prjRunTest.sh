@@ -19,5 +19,5 @@ function callTest
 function cleanupTest
 {
 	echo "removing generated files..."
-	rm -f MultCprsTest.gz big.gz testzip.gz tt.gz
+	rm -f MultCprsTest.gz big.gz testzip.gz tt.gz empty.gz empty2.gz
 }

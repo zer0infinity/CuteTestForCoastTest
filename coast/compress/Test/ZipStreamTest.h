@@ -31,6 +31,8 @@ public:
 	void GzipHdrWriteTest();
 	//!test the gzip file creation and reading
 	void GzipSimpleFileCheck();
+	//!test empty file
+	void GzipEmptyFile();
 	//!test the gzip file creation and reading for a bigger file
 	void GzipBigFileCheck();
 	//!read a long file, zip and unzip it
@@ -43,6 +45,8 @@ public:
 	void GzipZlibTest();
 	//!describe this testcase
 	void StringGetlineTest();
+	//!read empty file using getline()
+	void StringEmptyFileGetlineTest();
 
 	void GzipHdrTest();
 	void ReadGzipHdrFileTest();

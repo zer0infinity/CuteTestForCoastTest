@@ -371,6 +371,41 @@ void ZipStreamTest::GzipSimpleFileCheck()
 	delete is;
 }
 
+void ZipStreamTest::GzipEmptyFile()
+{
+	StartTrace(ZipStreamTest.GzipEmptyFile);
+	ostream *os = System::OpenOStream ("empty", "gz", ios::binary);
+	if (!t_assert(os != NULL)) {
+		return;
+	}
+	ZipOStream zos(*os);
+	t_assert(!!zos);
+	zos << "" << flush;
+	t_assert(!!zos);
+	zos.close();
+	delete os;
+
+	istream *is = System::OpenIStream("empty", "gz", ios::binary);
+	if (!t_assert(is != NULL)) {
+		return;
+	}
+	ZipIStream zis(*is);
+	t_assert(!!zis);
+	String strRead;
+	while (!!zis && !zis.eof()) {
+		String buff(1024);
+		long nread = zis.read((char *)(const char *)buff, buff.Capacity()).gcount();
+		assertEqual(0L, nread);
+		assertEqual(true, zis.eof());
+		assertEqual(true, zis.fail());
+		assertEqual(true, is->eof());
+		assertEqual(true, is->fail());
+	}
+	t_assert(!zis != 0);
+	zis.close();
+	delete is;
+}
+
 void ZipStreamTest::GzipConstantBufferCheck()
 {
 	StartTrace(ZipStreamTest.GzipConstantBufferCheck);
@@ -548,6 +583,45 @@ void ZipStreamTest::StringGetlineTest()
 	zis.close();
 }
 
+void ZipStreamTest::StringEmptyFileGetlineTest()
+{
+	StartTrace(ZipStreamTest.StringEmptyFileGetlineTest);
+	ostream *os = System::OpenOStream ("empty2", "gz", ios::binary);
+	if (!t_assert(os != NULL)) {
+		return;
+	}
+	ZipOStream zos(*os);
+	t_assert(!!zos);
+	zos << "" << flush;
+	t_assert(!!zos);
+	zos.close();
+	delete os;
+
+	istream *is = System::OpenIStream("empty2", "gz", ios::binary);
+	if (!t_assert(is != NULL)) {
+		return ;
+	}
+	ZipIStream zis(*is);
+
+	String strLine;
+	long lCount = 0;
+	while ( !!zis && !getline(zis, strLine).bad() && !zis.eof() ) {
+		++lCount;
+		Trace("count: " << lCount);
+		Trace("read [" << strLine << "]");
+	}
+	assertEqualm(0, lCount, "expected ' lines to be read");
+	assertEqual(true, zis.eof());
+	assertEqual(true, zis.fail());
+	assertEqual(true, is->eof());
+	assertEqual(true, is->fail());
+
+	t_assert(zis.get() == EOF);
+	t_assert(zis.eof() != 0);
+	t_assert(!zis.bad());
+	zis.close();
+}
+
 void ZipStreamTest::VerifyFile(const char *fileName)
 {
 	const long length = content.Length();
@@ -576,11 +650,13 @@ Test *ZipStreamTest::suite ()
 	ADD_CASE(testSuite, ZipStreamTest, CompressionModeTest);
 	ADD_CASE(testSuite, ZipStreamTest, SetCompressionTest);
 	ADD_CASE(testSuite, ZipStreamTest, GzipSimpleFileCheck);
+	ADD_CASE(testSuite, ZipStreamTest, GzipEmptyFile);
 	ADD_CASE(testSuite, ZipStreamTest, GzipBigFileCheck);
 	ADD_CASE(testSuite, ZipStreamTest, GzipLongFileCheck);
 	ADD_CASE(testSuite, ZipStreamTest, GzipZlibTest);
 	ADD_CASE(testSuite, ZipStreamTest, GzipCorruptInputCheck);
 	ADD_CASE(testSuite, ZipStreamTest, GzipConstantBufferCheck);
 	ADD_CASE(testSuite, ZipStreamTest, StringGetlineTest);
+	ADD_CASE(testSuite, ZipStreamTest, StringEmptyFileGetlineTest);
 	return testSuite;
 }

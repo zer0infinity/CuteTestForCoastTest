@@ -571,7 +571,8 @@ int ZipIStreamBuf::underflow()
 	StartTrace(ZipIStreamBuf.underflow);
 
 	if ( (gptr() >= egptr()) && (fZipErr == Z_STREAM_END || (sync() != 0)) ) {
-		Trace("EOF, fZipErr: ");
+		Trace("EOF, fZipErr: [" << fZipErr << "]");
+		fZis.setstate(ios::failbit | ios::eofbit);
 		return EOF;
 	}
 	Trace("still data");
