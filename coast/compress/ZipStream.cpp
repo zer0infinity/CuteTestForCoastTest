@@ -569,11 +569,24 @@ int ZipIStreamBuf::overflow(int c)
 int ZipIStreamBuf::underflow()
 {
 	StartTrace(ZipIStreamBuf.underflow);
-
-	if ( (gptr() >= egptr()) && (fZipErr == Z_STREAM_END || (sync() != 0)) ) {
-		Trace("EOF, fZipErr: [" << fZipErr << "]");
-		fZis.setstate(ios::failbit | ios::eofbit);
-		return EOF;
+	Trace( "gptr:" << (long)gptr() << " egptr:" << (long)egptr() << " fZipErr:" << (long)fZipErr);
+	if ( gptr() >= egptr() ) {
+		Trace("no more data in get area");
+		if ( fZipErr != Z_STREAM_END ) {
+			Trace("not at zstream end yet, syncing");
+			if ( sync() != 0 ) {
+				Trace("EOF, fZipErr: [" << fZipErr << "]");
+				fZis.setstate(ios::failbit | ios::eofbit);
+				return EOF;
+			}
+		} else {
+			Trace("zstream end set, gptr:" << (long)gptr() << " egptr:" << (long)egptr() );
+		}
+		if ( gptr() >= egptr() ) {
+			Trace("no more data to read, signalling eof, fZipErr: [" << fZipErr << "]");
+			fZis.setstate(ios::failbit | ios::eofbit);
+			return EOF;
+		}
 	}
 	Trace("still data");
 
@@ -741,12 +754,12 @@ int ZipIStreamBuf::sync()
 	// ensure buffer is initialized
 	zipinit();
 
-	if (fZipErr == Z_OK && (gptr() >= egptr())) {
+	if ( fZipErr == Z_OK && (gptr() >= egptr()) ) {
 		fillCompressed();
 		runInflate();
 	}
 
-	if (!(fIs->good()) && fZip.avail_in == 0 && fZipErr == Z_OK) {
+	if ( !(fIs->good()) && fZip.avail_in == 0 && fZipErr == Z_OK ) {
 		Trace("premature end of stream");
 #if defined(WIN32)
 		fZis.clear(ios::failbit | fZis.rdstate());
