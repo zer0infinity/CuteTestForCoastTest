@@ -278,7 +278,7 @@ note: if start > fLength then the new buffer will contain undefined
 	// add s to fCont after position start
 	if (GetImpl()) {
 		if (s) {
-			memcpy(GetContent() + start, s, len);
+			memmove(GetContent() + start, s, len);
 			SetLength(newLength);
 		} else {
 			SetLength(start);	// PT: if nothing is copied the string is terminated at start
