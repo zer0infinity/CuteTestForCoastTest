@@ -929,7 +929,7 @@ long Mutex::GetCount()
 	GETTLSDATA(fgCountTableKey, countarray, MetaThing);
 	if (countarray) {
 		StatTraceAny(Mutex.GetCount, (*countarray), "countarray", Storage::Current());
-		lCount = ((ROAnything)(*countarray))[fMutexId].AsString().AsLong(0L);
+		lCount = ((ROAnything)(*countarray))[fMutexId].AsLong(0L);
 	}
 	StatTrace(Mutex.GetCount, "Count:" << lCount << " ThrdId: " << Thread::MyId(), Storage::Current());
 	return lCount;
@@ -950,10 +950,8 @@ bool Mutex::SetCount(long newCount)
 		}
 	}
 	if ( countarray ) {
-		String strMutexCount;
-		strMutexCount.Append(newCount);
-		(*countarray)[fMutexId] = strMutexCount;
-		StatTraceAny(Mutex.SetCount, (*countarray), "Mutex::SetCount: Id[" << fMutexId << "] count: " << strMutexCount, Storage::Current());
+		(*countarray)[fMutexId] = newCount;
+		StatTraceAny(Mutex.SetCount, (*countarray), "Mutex::SetCount: Id[" << fMutexId << "] count: " << newCount, Storage::Current());
 	}
 	return true;
 }
