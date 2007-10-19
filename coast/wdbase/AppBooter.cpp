@@ -381,6 +381,11 @@ DynLibLoader::DynLibLoader(const char *name)
 		fName = fName.SubString(0, lStart);
 	}
 
+	lStart = fName.Contains(".dylib");
+	if (lStart > 0) {
+		fName = fName.SubString(0, lStart);
+	}
+
 	// prepend lib if not already there
 	lStart = fName.Contains("lib");
 	if (lStart !=  0) {
@@ -457,14 +462,22 @@ UnixDynLibLoader::UnixDynLibLoader(const char *name)
 	: DynLibLoader(name), fHandle(0)
 {
 	// append platform specific extension
-	fName.Append(".so");
+#if defined(__APPLE__)
+	fName.Append(".dylib");
+#else
+fName.Append(".so");
+#endif
 }
 
 UnixDynLibLoader::UnixDynLibLoader(const char *name, long handle)
 	: DynLibLoader(name), fHandle((void *)handle)
 {
 	// append platform specific extension
-	fName.Append(".so");
+#if defined(__APPLE__)
+	fName.Append(".dylib");
+#else
+fName.Append(".so");
+#endif
 }
 
 UnixDynLibLoader::~UnixDynLibLoader()
