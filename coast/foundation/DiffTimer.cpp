@@ -15,7 +15,7 @@
 
 //--- c-library modules used ---------------------------------------------------
 
-#if defined(__linux__)
+#if !defined(WIN32)
 HRTIME  gettimes()
 {
 	struct tms tt;
@@ -101,12 +101,12 @@ DiffTimer::tTimeType DiffTimer::Reset()
 DiffTimer::tTimeType DiffTimer::TicksPerSecond()
 {
 	tTimeType tps( 1 );
-#if defined(__linux__)
-	tps = sysconf(_SC_CLK_TCK);
-#elif defined(__sun)
+#if defined(__sun)
 	tps = 1000000000;
 #elif defined(WIN32)
 	tps = 1000;
+#else
+	tps = sysconf(_SC_CLK_TCK);
 #endif
 	StatTrace(DiffTimer.TicksPerSecond, "tps: " << tps, Storage::Current());
 	return tps;
