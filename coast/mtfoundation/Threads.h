@@ -175,11 +175,11 @@ protected:
 
 	//!get mutex 'Id' (name) mainly for Tracing
 	const String &GetId();
+
 	//!global mutex id counter
 	static long fgMutexId;
 	//!guard for global mutex id counter
 	static SimpleMutex *fgpMutexIdMutex;
-	static long fgMutexId;
 	//!this mutex unique id
 	String fMutexId;
 #if defined(WIN32) && defined(TRACE_LOCK_UNLOCK)
