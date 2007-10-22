@@ -166,9 +166,12 @@ public:
 		return bFound;
 	}
 
-	/*! No compare version of find, do not compare VAT/STT/Value attributes of Item
-		\param
-		\return */
+	/*! Find range of items within given boundaries
+		\param aItemMin minimum item to find
+		\param aItemMax maximum item to find
+		\param rItemsBegin iterator position pointing to first element in range
+		\param rItemsEnd iterator position pointing to element after last element in range
+		\return true in case the range is not empty */
 	bool FindItemRange(const ItemType &aItemMin, const ItemType &aItemMax, ConstIteratorType &rItemsBegin, ConstIteratorType &rItemsEnd) const {
 		StartTrace1(set_wrapper.FindItemRange, "find items for range [" << aItemMin.AsString() << "," << aItemMax.AsString() << "]");
 		bool bFound(false);
@@ -177,6 +180,20 @@ public:
 			bFound = IntFindItemRange( aItemMin, aItemMax, rItemsBegin, rItemsEnd );
 		}
 		return bFound;
+	}
+
+	/*! Reduce list of items to given boundaries
+		\param aItemMin minimum item to find
+		\param aItemMax maximum item to find
+		\return true in case we reduced the list */
+	bool ReduceToRange(const ItemType &aItemMin, const ItemType &aItemMax) {
+		StartTrace1(set_wrapper.ReduceToRange, "reduce items to range [" << aItemMin.AsString() << "," << aItemMax.AsString() << "]");
+		bool bModified(false);
+		if ( HasList() ) {
+			LockUnlockEntry aGuard( fLock );
+			bModified = IntReduceToRange( aItemMin, aItemMax );
+		}
+		return bModified;
 	}
 
 	/*! Return iterators spanning all elements
@@ -292,9 +309,12 @@ protected:
 		return fpList.get();
 	}
 
-	/*! No compare version of find, do not compare VAT/STT/Value attributes of Item
-		\param
-		\return */
+	/*! Find range of items within given boundaries
+		\param aItemMin minimum item to find
+		\param aItemMax maximum item to find
+		\param rItemsBegin iterator position pointing to first element in range
+		\param rItemsEnd iterator position pointing to element after last element in range
+		\return true in case the range is not empty */
 	bool IntFindItemRange(const ItemType &aItemMin, const ItemType &aItemMax, ConstIteratorType &rItemsBegin, ConstIteratorType &rItemsEnd) const {
 		StartTrace1(set_wrapper.IntFindItemRange, "find items for range [" << aItemMin.AsString() << "," << aItemMax.AsString() << "]");
 		bool bFound(false);
@@ -310,6 +330,31 @@ protected:
 			}
 		}
 		return bFound;
+	}
+
+	/*! Reduce list of items to given boundaries
+		\param aItemMin minimum item to keep
+		\param aItemMax maximum item to keep
+		\return true in case we reduced the list */
+	bool IntReduceToRange(const ItemType &aItemMin, const ItemType &aItemMax) {
+		StartTrace1(set_wrapper.IntReduceToRange, "reduce items to range [" << aItemMin.AsString() << "," << aItemMax.AsString() << "]");
+		bool bModified( false );
+		if ( IntHasList() ) {
+			IteratorType aEnd( IntGetListPtr()->end() ), aBoundPos;
+			aBoundPos = IntGetListPtr()->upper_bound( aItemMin );
+			if ( ( aBoundPos != aEnd ) && ( aBoundPos != IntGetListPtr()->begin() ) ) {
+				Trace("removing [" << IntGetListPtr()->begin().AsString() << "," << ( ( aBoundPos != aEnd ) ? (*aBoundPos).AsString() : "<end>" ) << ")");
+				IntGetListPtr().erase( IntGetListPtr()->begin(), aBoundPos );
+				bModified = true;
+			}
+			aBoundPos = IntGetListPtr()->upper_bound( aItemMax );
+			if ( aBoundPos != aEnd ) {
+				Trace("removing [" << aBoundPos.AsString() << ",<end>)");
+				IntGetListPtr().erase( aBoundPos, IntGetListPtr()->end() );
+				bModified = true;
+			}
+		}
+		return bModified;
 	}
 
 	bool IntAddItem(const ItemType &aItem) {
