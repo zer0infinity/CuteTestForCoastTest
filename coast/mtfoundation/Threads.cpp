@@ -910,12 +910,6 @@ Mutex::~Mutex()
 	SysLog::WriteToStderr(String("[") << fName << " Id " << GetId() << "]<" << GetId() << "> D" << "\n");
 #endif
 	// cleanup countarray
-	MetaThing *countarray = 0;
-	GETTLSDATA(fgCountTableKey, countarray, MetaThing);
-	if ( countarray ) {
-		StatTraceAny(Mutex.~Mutex, (*countarray), "countarray", Storage::Current());
-		(*countarray).Remove(fMutexId);
-	}
 	int iRet = 0;
 	if ( !DELETEMUTEX(fMutex, iRet) ) {
 		SysLog::Error(String("Mutex<").Append(fName).Append(">: DELETEMUTEX failed: ").Append(SysLog::SysErrorMsg(iRet)));
@@ -949,9 +943,14 @@ bool Mutex::SetCount(long newCount)
 			return false;
 		}
 	}
-	if ( countarray ) {
-		(*countarray)[fMutexId] = newCount;
-		StatTraceAny(Mutex.SetCount, (*countarray), "Mutex::SetCount: Id[" << fMutexId << "] count: " << newCount, Storage::Current());
+	if (countarray) {
+		StatTraceAny(Mutex.SetCount, (*countarray), "countarray", Storage::Current());
+		if (newCount <= 0) {
+			(*countarray).Remove(fMutexId);
+		} else {
+			(*countarray)[fMutexId] = newCount;
+			StatTraceAny(Mutex.SetCount, (*countarray), "Mutex::SetCount: Id[" << fMutexId << "] count: " << newCount, Storage::Current());
+		}
 	}
 	return true;
 }
@@ -1004,6 +1003,7 @@ void Mutex::Unlock()
 			SysLog::WriteToStderr(String("[") << fName << " Id " << GetId() << "]<" << GetCount() << "," << fLocker << "> R" << "\n");
 #endif
 			fLocker = -1;
+			SetCount(0);
 			int iRet = 0;
 			if ( !UNLOCKMUTEX(fMutex, iRet) ) {
 				SysLog::Error(String("Mutex<").Append(fName).Append(">: UNLOCKMUTEX failed: ").Append(SysLog::SysErrorMsg(iRet)));
