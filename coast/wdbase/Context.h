@@ -366,9 +366,6 @@ protected:
 	//! mock of fSocket stream
 	iostream *fMockStream;
 
-	/*! leave session locked or unlock it - in that case, U are responsible what U do with the Sessionstore! */
-	bool fUnlockSession;
-
 	/*! if set, make a copy of the session store. This allows concurrent requests using the same session because lookups targeting the session store don't need a lock. */
 	bool fCopySessionStore;
 

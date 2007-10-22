@@ -38,7 +38,6 @@ Context::Context() :
 	fRequest(),
 	fSocket(0),
 	fMockStream(0),
-	fUnlockSession(false),
 	fCopySessionStore(false)
 {
 	InitTmpStore();
@@ -52,7 +51,6 @@ Context::Context(Anything &request) :
 	fRequest(request),
 	fSocket(0),
 	fMockStream(0),
-	fUnlockSession(false),
 	fCopySessionStore(false)
 
 {
@@ -67,7 +65,6 @@ Context::Context(Socket *socket)  :
 	fStoreSz(0),
 	fSocket(socket),
 	fMockStream(0),
-	fUnlockSession(false),
 	fCopySessionStore(false)
 {
 	// the arguments we get for this request
@@ -85,7 +82,6 @@ Context::Context(iostream *stream)  :
 	fStoreSz(0),
 	fSocket(0),
 	fMockStream(stream),
-	fUnlockSession(false),
 	fCopySessionStore(false)
 {
 	// the arguments we get for this request
@@ -102,7 +98,6 @@ Context::Context(const Anything &env, const Anything &query, Server *server, Ses
 		fStoreSz(0),
 		fSocket(0),
 		fMockStream(0),
-		fUnlockSession(false),
 		fCopySessionStore(false)
 {
 	InitSession(s);
@@ -134,12 +129,10 @@ void Context::InitSession(Session *s)
 	bool sessionIsDifferent =  (s != fSession);
 	ROAnything contextAny;
 	if (Lookup("Context", contextAny)) {
-		fUnlockSession = contextAny["UnlockSession"].AsBool(false);
 		fCopySessionStore = contextAny["CopySessionStore"].AsBool(false);
 	}
 
 	Trace("CopySessionStore: " << (fCopySessionStore ? "true" : "false"));
-	Trace("UnlockSession: " << (fUnlockSession ? "true" : "false"));
 	Trace("s = " << (long)(void *)s << " fSession = " << (long)(void *)fSession );
 	Trace("session is " << (sessionIsDifferent ? "" : "not ") << "different");
 
@@ -172,7 +165,7 @@ void Context::InitSession(Session *s)
 		if (saveSession) {
 			if (sessionIsDifferent) {
 				// in case the session was used in UnlockSession 'mode', we need to protect the call to UnRef
-				if (fUnlockSession) {
+				if (fCopySessionStore) {
 					Trace("old s: About to lock <" << saveSession->GetId() << ">");
 					saveSession->fMutex.Lock();
 				}
@@ -696,7 +689,7 @@ bool Context::Process(String &token)
 
 bool Context::UnlockSession()
 {
-	if (fSession && fUnlockSession && fSession->IsLockedByMe()) {
+	if (fSession && fCopySessionStore && fSession->IsLockedByMe()) {
 		fSession->fMutex.Unlock();
 		return true;
 	}
@@ -705,7 +698,7 @@ bool Context::UnlockSession()
 
 void Context::LockSession()
 {
-	if (fSession && fUnlockSession) {
+	if (fSession && fCopySessionStore) {
 		fSession->fMutex.Lock();
 	}
 }

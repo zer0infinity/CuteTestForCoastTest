@@ -789,7 +789,7 @@ void ContextTest::SessionPushTest()
 			MetaThing emptyStore;
 			Context ctx;
 			Anything env;
-			env["Context"]["UnlockSession"] = true;
+			env["Context"]["CopySessionStore"] = true;
 			ctx.Push("test", env);
 
 			t_assert((s.GetRefCount()) == 0);
@@ -1139,7 +1139,6 @@ void ContextTest::SessionUnlockingTest()
 	t_assert(!s.IsLockedByMe());
 	{
 		Context c;
-		c.GetTmpStore()["Context"]["UnlockSession"] = true;
 		c.GetTmpStore()["Context"]["CopySessionStore"] = true;
 		t_assert(!s.IsLockedByMe());
 		s.fMutex.Lock();
@@ -1158,7 +1157,6 @@ void ContextTest::SessionUnlockingTest()
 		t_assert(!s.IsLockedByMe());
 		{
 			Context c2;
-			c2.GetTmpStore()["Context"]["UnlockSession"] = false;
 			c2.GetTmpStore()["Context"]["CopySessionStore"] = false;
 			c2.GetTmpStore()["PageLayout"]["TestSessionLockRenderer"] = Anything();
 			c2.Push(&s);
