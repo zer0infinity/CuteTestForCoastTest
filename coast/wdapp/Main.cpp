@@ -9,11 +9,15 @@
 //--- standard modules used ----------------------------------------------------
 #include "AppBooter.h"
 
+#include <locale>
+
 //--- c-library modules used ---------------------------------------------------
 
 //---- main ----
 int main(int argc, const char *argv[])
 {
+	// initialize locale aspects to default locale -> 'C'
+	std::locale::global(std::locale::classic());
 	int result = AppBooter().Run(argc, argv);
 	return result;
 }
