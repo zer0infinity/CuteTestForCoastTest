@@ -80,9 +80,10 @@ String UniqueIdGen::HexHash(MD5Signer &md5, const char *s)
 	StartTrace(UniqueIdGen.HexHash);
 	String hash;
 	md5.DoHash(s, hash);
-	OStringStream os;
+	String buffer;
+	OStringStream os(buffer);
 	for (long i = 0 ; i < hash.Length(); i++) {
 		os << hex <<  setw(2) << setfill('0') << (int)(unsigned char)hash[i];
 	}
-	return os.str();
+	return buffer;
 }
