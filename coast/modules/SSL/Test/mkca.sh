@@ -51,6 +51,7 @@ orgunit="CertIssueing"
 emailsuffix="wildplanet.com"
 commonnameclient=""
 commonnameserver=""
+pathtoexistingcacert=""
 typeset -l clientemail="${commonnameclient}@${emailsuffix}"
 ret=0
 
@@ -107,15 +108,18 @@ fi
 function showhelp
 {
     echo "mkca.sh -d <Directory to place CA-Structure>"
-	echo "        creates ca-hierarchy within this dir"
-	echo "        creates directories if not present."
-    echo "        -D<default is 365>"
+    echo "        creates ca-hierarchy within this dir"
+    echo "        creates directories if not present."
+    echo "        -D<default is 3650>"
     echo "        -c<copy the created certs to given location>"
+    echo "        -E<location where previously built rootCA1 and subCA1 certs are kept>"
+    echo "           This allows you to add additional client/server certs without re-generating previously"
+    echo "           generated certificates."
     echo "        -C common name (subject) of client, entity which is checked in cert verify (-C may be given repeatedly)"
     echo "        -S common name (subject) of server, entity which is checked in cert verify (-S may be given repeatedly)"
-	echo ""
-	echo "The files you want to use are in the directory"
-	echo "given with -d in ca-hierarchy/ucerts"
+    echo ""
+    echo "The files you want to use are in the directory"
+    echo "given with -d in ca-hierarchy/ucerts"
     exit 0
 }
 
@@ -125,9 +129,9 @@ function errorexit
 	exit 999
 }
 
-days=365
+days=3650
 copyto=""
-while getopts "d:D:c:C::e:S:" opt
+while getopts "d:D:c:C::e:E:S:" opt
 do
         case $opt in
                 d)      target_dir="${OPTARG}";
@@ -141,6 +145,8 @@ do
                 S)      commonnameserver="${commonnameserver} ${OPTARG}";
                 ;;
                 e)      emailclient="${OPTARG}";
+                ;;
+                E)      pathtoexistingcacert="${OPTARG}";
                 ;;
                 \?)
                         showhelp;
@@ -206,6 +212,8 @@ mkdir ${CATOP}/private
 echo "01" > ${CATOP}/serial
 touch ${CATOP}/index.txt
 
+if [ -z ${pathtoexistingcacert} ]
+then
 ${openssl_bin} req -config $conf -new -x509 -passout pass:hank -keyout ${CATOP}/private/$CAKEY \
                            -out ${CATOP}/$CACERT $DAYS <<EOF
 ${country}
@@ -217,12 +225,14 @@ RootCA1
 rootca1@${emailsuffix}
 
 EOF
-
+if [ -z ${pathtoexistingcacert} ]
+then
 echo "Creating a PKCS#12 encoded copy of rootCA1.pem for \
 Netcape use. Password is rootca1"
 ${openssl_bin} pkcs12 -passin pass:hank  -passout pass:rootca1 -export \
 	 -in ${CATOP}/$CACERT   \
          -inkey ${CATOP}/private/$CAKEY -out ${CATOP}/cacert.p12
+fi
 echo "Stripping passphrase from rootCA1key.pem"
 ${openssl_bin} rsa -passin pass:hank -in ${CATOP}/private/$CAKEY -out ${target_dir}/ucerts/rootCA1key.pem
 
@@ -246,7 +256,23 @@ ${openssl_bin} ca -config $conf -policy policy_anything -passin pass:hank -out n
 y
 y
 EOF2
+else
+	cp ${pathtoexistingcacert}/rootCA1key.pem ${CATOP}/private/$CAKEY
+	cp ${pathtoexistingcacert}/rootCA1crt.pem ${CATOP}/$CACERT
+	if [ ! -f ${CATOP}/private/$CAKEY ]
+	then
+		echo "Unable to retrieve rootCA1key.pem"
+		exit 1
+	fi
+	if [ ! -f ${CATOP}/$CACERT ]
+	then
+		echo "Unable to retrieve rootCA1crt.pem"
+		exit 1
+	fi
+	chmod 744 ${CATOP}/private/$CAKEY
+	chmod 744 ${CATOP}/$CACERT
 
+fi
 echo "Creating SubCA1"
 
 mkdir ./subCA1
@@ -260,22 +286,39 @@ mkdir ${CATOP}/private
 echo "01" > ${CATOP}/serial
 touch ${CATOP}/index.txt
 
-echo "Stripping Certificate and private Key from Certificate for SubCA1"
-csplit -f work -s -n 2  ../newreq.pem '/-----BEGIN CERTIFICATE REQUEST-----/'
-mv work00 ${CATOP}/private/cakey.pem
-rm work01
-echo "Stripping passphrase from subCA1key.pem"
-${openssl_bin} rsa -passin pass:gugus -in ${CATOP}/private/$CAKEY -out ${target_dir}/ucerts/subCA1key.pem
+if [ -z ${pathtoexistingcacert} ]
+then
+	echo "Stripping Certificate and private Key from Certificate for SubCA1"
+	csplit -f work -s -n 2  ../newreq.pem '/-----BEGIN CERTIFICATE REQUEST-----/'
+	mv work00 ${CATOP}/private/cakey.pem
+	rm work01
+	echo "Stripping passphrase from subCA1key.pem"
+	${openssl_bin} rsa -passin pass:gugus -in ${CATOP}/private/$CAKEY -out ${target_dir}/ucerts/subCA1key.pem
+	cp ${CATOP}/private/cakey.pem ${target_dir}/ucerts/subCA1key.pem
+	echo "Stripping plaintext from SubCA1 Certificate"
+	${openssl_bin} x509  -in ../newcert.pem -out ${CATOP}/cacert.pem
+else
+	cp ${pathtoexistingcacert}/subCA1key.pem ${CATOP}/private/$CAKEY
+	cp ${pathtoexistingcacert}/subCA1crt.pem ${CATOP}/cacert.pem
+	if [ ! -f ${CATOP}/private/$CAKEY ]
+	then
+		echo "Unable to retrieve subCA1key.pem"
+		exit 1
+	fi
+	if [ ! -f ${CATOP}/$CACERT ]
+	then
+		echo "Unable to retrieve subCA1crt.pem"
+		exit 1
+	fi
+	chmod 744 ${CATOP}/private/$CAKEY
+	chmod 744 ${CATOP}/cacert.pem
+fi
 
-cp ${CATOP}/private/cakey.pem ${target_dir}/ucerts/subCA1key.pem
-
-echo "Stripping plaintext from SubCA1 Certificate"
-${openssl_bin} x509  -in ../newcert.pem -out ${CATOP}/cacert.pem
 for commonnameserver_var in ${commonnameserver}
 do
-echo "Creating certificate request for Server ${commonnameserver_var}"
-${openssl_bin} req -config $conf -new  -passout pass:gaga -keyout newreq_${commonnameserver_var}.pem \
-                           -out newreq_${commonnameserver_var}.pem <<EOF1
+	echo "Creating certificate request for Server ${commonnameserver_var}"
+	${openssl_bin} req -config $conf -new  -passout pass:gaga -keyout newreq_${commonnameserver_var}.pem \
+                          -out newreq_${commonnameserver_var}.pem <<EOF1
 ${country}
 ${state}
 ${locality}
@@ -287,18 +330,18 @@ ${commonnameserver_var}@${emailsuffix}
 .
 EOF1
 
-echo "Signing CA request for Server ${commonnameserver_var}"
-${openssl_bin} ca -config $conf -policy policy_anything \
+	echo "Signing CA request for Server ${commonnameserver_var}"
+	${openssl_bin} ca -config $conf -policy policy_anything \
 	-passin pass:gugus $DAYS -out newcert_${commonnameserver_var}.pem \
 	-infiles newreq_${commonnameserver_var}.pem <<EOF2
 y
 y
 EOF2
 
-echo "Stripping signed Certificate for Server ${commonnameserver_var}"
-${openssl_bin} x509  -in newcert_${commonnameserver_var}.pem -out xx_${commonnameserver_var}.pem
-mv xx_${commonnameserver_var}.pem newcert_${commonnameserver_var}.pem
-${openssl_bin} rsa  -passin pass:gaga -in newreq_${commonnameserver_var}.pem -out newreq_${commonnameserver_var}.plain.pem
+	echo "Stripping signed Certificate for Server ${commonnameserver_var}"
+	${openssl_bin} x509  -in newcert_${commonnameserver_var}.pem -out xx_${commonnameserver_var}.pem
+	mv xx_${commonnameserver_var}.pem newcert_${commonnameserver_var}.pem
+	${openssl_bin} rsa  -passin pass:gaga -in newreq_${commonnameserver_var}.pem -out newreq_${commonnameserver_var}.plain.pem
 done
 
 cd ${target_dir}
@@ -306,13 +349,13 @@ mkdir client
 
 for commonnameclient_var in ${commonnameclient}
 do
-echo "Creating client certificate for ${commonnameclient_var}"
-cd ${target_dir}
-cd client
-${openssl_bin} genrsa -out client_${commonnameclient_var}.key 1024
+	echo "Creating client certificate for ${commonnameclient_var}"
+	cd ${target_dir}
+	cd client
+	${openssl_bin} genrsa -out client_${commonnameclient_var}.key 1024
 
-echo "Creating certificate request for Client ${commonnameclient_var}"
-${openssl_bin} req -config $conf -new  -passout pass:gaga -key client_${commonnameclient_var}.key \
+	echo "Creating certificate request for Client ${commonnameclient_var}"
+	${openssl_bin} req -config $conf -new  -passout pass:gaga -key client_${commonnameclient_var}.key \
                            -out client_${commonnameclient_var}.csr <<EOF1
 ${country}
 ${state}
@@ -325,17 +368,16 @@ ${commonnameclient_var}@${emailsuffix}
 .
 EOF1
 
-echo "Signing Client certificte for ${commonnameclient_var} by subCA1"
-cd ${target_dir}/subCA1
-${openssl_bin} x509 -req $DAYS -passin pass:gugus  -CA ${CATOP}/cacert.pem \
+	echo "Signing Client certificte for ${commonnameclient_var} by subCA1"
+	cd ${target_dir}/subCA1
+	${openssl_bin} x509 -req $DAYS -passin pass:gugus  -CA ${CATOP}/cacert.pem \
 			  -CAkey ${CATOP}/private/cakey.pem \
 			  -CAcreateserial -in ${target_dir}/client/client_${commonnameclient_var}.csr -out ${target_dir}/client/clientcrt_${commonnameclient_var}.pem
 
-echo "Creating a PKCS#12 encoded copy of client.crt for \
-Netcape use. Password is client"
-${openssl_bin} pkcs12 -export -passin pass:gugus -passout pass:client -clcerts \
-	 -in ${target_dir}/client/clientcrt_${commonnameclient_var}.pem  \
-     -inkey ${target_dir}/client/client_${commonnameclient_var}.key      -out ${target_dir}/client/clientcrt_${commonnameclient_var}.p12
+	echo "Creating a PKCS#12 encoded copy of client.crt for Netcape use. Password is client"
+	${openssl_bin} pkcs12 -export -passin pass:gugus -passout pass:client -clcerts \
+	-in ${target_dir}/client/clientcrt_${commonnameclient_var}.pem  \
+     	-inkey ${target_dir}/client/client_${commonnameclient_var}.key      -out ${target_dir}/client/clientcrt_${commonnameclient_var}.p12
 done
 
 echo "Building result directory  ${target_dir}/ucerts"
@@ -347,7 +389,10 @@ do
 done
 cd ..
 cp ${CATOP}/cacert.pem ${target_dir}/ucerts/rootCA1crt.pem
+if [ -z ${pathtoexistingcacert} ]
+then
 cp ${CATOP}/cacert.p12 ${target_dir}/ucerts/rootCA1.p12
+fi
 cd client
 
 for commonnameclient_var in ${commonnameclient}
@@ -468,7 +513,7 @@ echo "                         serverkey_XXX.pem as SSLCertificateKeyFile (priva
 echo "                         fullchain_XXX.pem as SSLCertificateChainFile"
 echo "HINT for SSL module tests: the CN used in the certificate (XXX) must"
 echo "correspond with the tests done in SSLCertificateTest.any! (peer verification)"
-echo "Possible setting would be mkca.sh -S zuoz.hsr.ch -S dylan.hsr.ch"
+echo "Possible setting would be mkca.sh -S bernina.hsr.ch -S dylan.hsr.ch"
 echo ""
 echo "NOTE: Apache retrieves the server certificate through a hashed link."
 echo "This is done with make rehash. Because only .crt files are recognized"
@@ -489,7 +534,10 @@ echo "                         cp serverchain_XXX.pem serverchain.pem"
 echo "                         cp fullchain_XXX.pem fullchain.pem"
 echo ""
 echo "clientcrt_XXX.p12 may be used by your browser after you import it."
-echo "Remember the PKCS#12 encrypted rootCA1.p12    cert password is rootca1"
+if [ -z ${pathtoexistingcacert} ]
+then
+	echo "Remember the PKCS#12 encrypted rootCA1.p12    cert password is rootca1"
+fi
 echo "Remember the PKCS#12 encrypted clientcrt.p12 cert password is client"
 echo "Remember the password for the root CA is hank"
 echo "Remember the password for the sub CA is gugus"
