@@ -132,7 +132,7 @@ void SSLObjectManagerTest::SessionResumptionWithMinimumConfigTest()
 		TraceAny(cConfig, "cConfig");
 		// empty  context built up by other test
 		SSLObjectManager::SSLOBJMGR()->RemoveCtx(cConfig["Config"]["Address"].AsString(), cConfig["Config"]["Port"].AsString());
-		for (int ii = 0; ii < 258; ii++) {
+		for (long ii = 0; ii < 258; ii++) {
 			Trace("At run index: " << ii);
 			SSLConnector sc(cConfig["Config"]);
 			iostream *s1 = sc.GetStream();
@@ -142,10 +142,12 @@ void SSLObjectManagerTest::SessionResumptionWithMinimumConfigTest()
 			assertEqual(cConfig["Results"]["SSLCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["SSLCertVerifyStatus"]["SSL"]["Ok"].AsBool(0));
 			assertEqual(cConfig["Results"]["AppLevelCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["AppLevelCertVerifyStatus"].AsBool(0));
 			assertEqual(cConfig["Results"]["IsCertCheckPassed"].AsBool(1), s->IsCertCheckPassed(cConfig["Config"]));
-			if ( ii == 0  ) {
-				assertEqual(0, clientInfo["SSL"]["SessionIsResumed"].AsLong(1));
+			TString msg;
+			msg << "At index: [" <<  ii << "]";
+			if ( ii == 0 ) {
+				assertEqualm(0, clientInfo["SSL"]["SessionIsResumed"].AsLong(1), msg);
 			} else {
-				assertEqual(1, clientInfo["SSL"]["SessionIsResumed"].AsLong(0));
+				assertEqualm(1, clientInfo["SSL"]["SessionIsResumed"].AsLong(0), msg);
 			}
 			if (t_assert(s1 != NULL) && t_assert(s != NULL)) {
 				(*s1) << "GET / HTTP/1.0" << ENDL << ENDL << flush;
@@ -168,7 +170,7 @@ void SSLObjectManagerTest::SessionResumptionTest()
 		TraceAny(cConfig, "cConfig");
 		// empty  context built up by other test
 		SSLObjectManager::SSLOBJMGR()->RemoveCtx(cConfig["Config"]["Address"].AsString(), cConfig["Config"]["Port"].AsString());
-		for (int ii = 0; ii < 258; ii++) {
+		for (long ii = 0; ii < 258; ii++) {
 			Trace("At run index: " << ii);
 			SSL_CTX *sslctx;
 			sslctx = SSLObjectManager::SSLOBJMGR()->GetCtx(cConfig["Config"]["Address"].AsString(), cConfig["Config"]["Port"].AsString(), cConfig["Config"]);
@@ -187,10 +189,12 @@ void SSLObjectManagerTest::SessionResumptionTest()
 			assertEqual(cConfig["Results"]["SSLCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["SSLCertVerifyStatus"]["SSL"]["Ok"].AsBool(0));
 			assertEqual(cConfig["Results"]["AppLevelCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["AppLevelCertVerifyStatus"].AsBool(0));
 			assertEqual(cConfig["Results"]["IsCertCheckPassed"].AsBool(1), s->IsCertCheckPassed(cConfig["Config"]));
+			TString msg;
+			msg << "At index: [" <<  ii << "]";
 			if ( ii == 0 ) {
-				assertEqual(0, clientInfo["SSL"]["SessionIsResumed"].AsLong(1));
+				assertEqualm(0, clientInfo["SSL"]["SessionIsResumed"].AsLong(1), msg);
 			} else {
-				assertEqual(1, clientInfo["SSL"]["SessionIsResumed"].AsLong(0));
+				assertEqualm(1, clientInfo["SSL"]["SessionIsResumed"].AsLong(0), msg);
 			}
 			if (t_assert(s1 != NULL) && t_assert(s != NULL)) {
 				(*s1) << "GET / HTTP/1.0" << ENDL << ENDL << flush;
