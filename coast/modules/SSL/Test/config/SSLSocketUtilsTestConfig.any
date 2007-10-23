@@ -11,11 +11,11 @@
 	/ParseDNTest
 	{
 		{
-			/DN "emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+			/DN "emailAddress=bernina.hsr.ch@wildplanet.com,CN=bernina.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			/Result
 			{
-				/emailAddress "zuoz.hsr.ch@wildplanet.com"
-				/CN "zuoz.hsr.ch"
+				/emailAddress "bernina.hsr.ch@wildplanet.com"
+				/CN "bernina.hsr.ch"
 				/OU "CertIssueing"
 				/O "ServerSite"
 				/L "ZH"
@@ -27,11 +27,11 @@
 	/VerifyDNTest
 	{
 		{
-			/DNFilter "emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+			/DNFilter "emailAddress=bernina.hsr.ch@wildplanet.com,CN=bernina.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			/DNParts
 			{
-				/emailAddress "zuoz.hsr.ch@wildplanet.com"
-				/CN "zuoz.hsr.ch"
+				/emailAddress "bernina.hsr.ch@wildplanet.com"
+				/CN "bernina.hsr.ch"
 				/OU "CertIssueing"
 				/O "ServerSite"
 				/L "ZH"
@@ -41,11 +41,11 @@
 			/Result	1
         }
 		{
-			/DNFilter "emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=xCH"
+			/DNFilter "emailAddress=bernina.hsr.ch@wildplanet.com,CN=bernina.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=xCH"
 			/DNParts
 			{
-				/emailAddress "zuoz.hsr.ch@wildplanet.com"
-				/CN "zuoz.hsr.ch"
+				/emailAddress "bernina.hsr.ch@wildplanet.com"
+				/CN "bernina.hsr.ch"
 				/OU "CertIssueing"
 				/O "ServerSite"
 				/L "ZH"
@@ -55,11 +55,11 @@
 			/Result	0
         }
 		{
-			/DNFilter "emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.chxxxxxxxxxxxx,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=xCH"
+			/DNFilter "emailAddress=bernina.hsr.ch@wildplanet.com,CN=bernina.hsr.chxxxxxxxxxxxx,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=xCH"
 			/DNParts
 			{
-				/emailAddress "zuoz.hsr.ch@wildplanet.com"
-				/CN "zuoz.hsr.ch"
+				/emailAddress "bernina.hsr.ch@wildplanet.com"
+				/CN "bernina.hsr.ch"
 				/OU "CertIssueing"
 				/O "ServerSite"
 				/L "ZH"
@@ -69,11 +69,11 @@
 			/Result	0
         }
 		{
-			/DNFilter "emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,O=ServerSite,L=ZH,ST=ZH,C=xCH"
+			/DNFilter "emailAddress=bernina.hsr.ch@wildplanet.com,CN=bernina.hsr.ch,O=ServerSite,L=ZH,ST=ZH,C=xCH"
 			/DNParts
 			{
-				/emailAddress "zuoz.hsr.ch@wildplanet.com"
-				/CN "zuoz.hsr.ch"
+				/emailAddress "bernina.hsr.ch@wildplanet.com"
+				/CN "bernina.hsr.ch"
 				/OU "CertIssueing"
 				/O "ServerSite"
 				/L "ZH"
@@ -86,8 +86,8 @@
 			/DNFilter ""
 			/DNParts
 			{
-				/emailAddress "zuoz.hsr.ch@wildplanet.com"
-				/CN "zuoz.hsr.ch"
+				/emailAddress "bernina.hsr.ch@wildplanet.com"
+				/CN "bernina.hsr.ch"
 				/OU "CertIssueing"
 				/O "ServerSite"
 				/L "ZH"
@@ -104,7 +104,7 @@
 			/Result	1
         }
 		{
-			/DNFilter "emailAddress=zuoz.hsr.ch@wildplanet.com,CN=zuoz.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+			/DNFilter "emailAddress=bernina.hsr.ch@wildplanet.com,CN=bernina.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			/DNParts
 			{
 			}
