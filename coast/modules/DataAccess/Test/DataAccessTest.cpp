@@ -27,7 +27,7 @@ Test *DataAccessTest::suite ()
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, DataAccessTest, GetImplTest);
 	ADD_CASE(testSuite, DataAccessTest, ExecTest);
-	ADD_CASE(testSuite, DataAccessTest, SessionUnlockTest);
+	ADD_CASE(testSuite, DataAccessTest, CopySessionStoreTest);
 	return testSuite;
 }
 
@@ -95,7 +95,7 @@ public:
 };
 RegisterDataAccessImpl(SessionUnlockTestDAImpl);
 
-void DataAccessTest::SessionUnlockTest()
+void DataAccessTest::CopySessionStoreTest()
 {
 	StartTrace(DataAccessTest.SessionUnlockTest);
 	Context sessionctx;
@@ -113,7 +113,7 @@ void DataAccessTest::SessionUnlockTest()
 	}
 	{
 		Context c;
-		c.GetTmpStore()["Context"]["UnlockSession"] = true;
+		c.GetTmpStore()["Context"]["CopySessionStore"] = true;
 		c.Push(&s);
 		t_assert(!s.IsLockedByMe());
 		s.fMutex.Lock();

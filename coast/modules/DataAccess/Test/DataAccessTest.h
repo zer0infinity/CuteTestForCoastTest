@@ -28,7 +28,7 @@ public:
 
 	void GetImplTest();
 	void ExecTest();
-	void SessionUnlockTest();
+	void CopySessionStoreTest();
 };
 
 #endif
