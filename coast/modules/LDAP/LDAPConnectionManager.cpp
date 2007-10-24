@@ -104,7 +104,7 @@ Anything LDAPConnectionManager::HandleRebindTimeout(Anything &returned, long reb
 		if ( rebindTimeout != 0L ) {
 			mustRebind =  ( ((lastRebind + rebindTimeout) <=  now) );
 			if ( mustRebind ) {
-				msg << "Now: " << now << " LastRebind: " << lastRebind  << " RebindTimeout: " <<
+				msg << "Now: " << now.AsStringWithZ() << " LastRebind: " << lastRebind.AsStringWithZ() << " RebindTimeout: " <<
 					rebindTimeout << " Must rebind: " << mustRebind;
 				SysLog::Info(msg);
 				Trace(msg);
