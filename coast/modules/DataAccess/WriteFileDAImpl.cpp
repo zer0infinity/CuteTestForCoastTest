@@ -12,7 +12,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
 #include "System.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 
 //--- WriteFileDAImpl -----------------------------------------------------

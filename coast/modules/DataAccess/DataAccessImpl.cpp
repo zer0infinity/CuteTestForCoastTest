@@ -45,7 +45,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "Registry.h"
 #include "StringStream.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 
 #if defined(ONLY_STD_IOSTREAM)
