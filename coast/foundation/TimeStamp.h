@@ -144,11 +144,8 @@ public:
 	TimeStamp &operator=(TSIntNumberType lTimeUtc);
 	TimeStamp &operator=(String strStamp);
 	TimeStamp &Set(const String &externalTimeRep);
+	bool SetTime( unsigned char iHour, unsigned char iMin, unsigned char iSec );
 
-	// Conversion operator, allows String << TimeStamp invocations
-	inline operator String () const {
-		return AsStringWithZ();
-	}
 	// Output operator
 	inline friend ostream &operator<< (ostream &os, const TimeStamp &ts) {
 		os << ts.AsStringWithZ();
@@ -255,6 +252,7 @@ protected:
 		char Second() const {
 			return cData[eSec];
 		}
+		bool SetTime( unsigned char iHour, unsigned char iMin, unsigned char iSec );
 	};
 
 	// internal initializer

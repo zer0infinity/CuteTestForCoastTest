@@ -83,6 +83,12 @@ TimeStamp &TimeStamp::Set(const String &externalTimeRep)
 	return *this;
 }
 
+bool TimeStamp::SetTime( unsigned char iHour, unsigned char iMin, unsigned char iSec )
+{
+	StartTrace(TimeStamp.SetTime);
+	return fTimeStruct.SetTime( iHour, iMin, iSec );
+}
+
 bool TimeStamp::IntDoInit(const String &externalTimeRep)
 {
 	StartTrace1(TimeStamp.IntDoInit, "string to convert [" << externalTimeRep << "]");
@@ -271,6 +277,19 @@ void TimeStamp::intTimeRep::Reset()
 	cData[eMin] = 0;
 	cData[eSec] = 0;
 	fStructPos = eCent;
+}
+
+bool TimeStamp::intTimeRep::SetTime( unsigned char iHour, unsigned char iMin, unsigned char iSec )
+{
+	StartTrace(TimeStamp.intSetTime);
+	bool bSuccess( false );
+	if ( ( iHour > 0 ) && ( iHour <= 23 ) && ( iMin >= 0 ) && ( iMin <= 59 ) && ( iSec >= 0 && iSec <= 59 ) ) {
+		cData[eHour] = iHour;
+		cData[eMin] = iMin;
+		cData[eSec] = iSec;
+		bSuccess = true;
+	}
+	return bSuccess;
 }
 
 void TimeStamp::intTimeRep::AddCharacter(char c)
