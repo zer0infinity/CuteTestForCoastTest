@@ -343,14 +343,14 @@ protected:
 			IteratorType aEnd( IntGetListPtr()->end() ), aBoundPos;
 			aBoundPos = IntGetListPtr()->upper_bound( aItemMin );
 			if ( ( aBoundPos != aEnd ) && ( aBoundPos != IntGetListPtr()->begin() ) ) {
-				Trace("removing [" << IntGetListPtr()->begin().AsString() << "," << ( ( aBoundPos != aEnd ) ? (*aBoundPos).AsString() : "<end>" ) << ")");
-				IntGetListPtr().erase( IntGetListPtr()->begin(), aBoundPos );
+				Trace("removing [" << IntGetListPtr()->begin()->AsString() << "," << ( ( aBoundPos != aEnd ) ? aBoundPos->AsString() : "<end>" ) << ")");
+				IntGetListPtr()->erase( IntGetListPtr()->begin(), aBoundPos );
 				bModified = true;
 			}
 			aBoundPos = IntGetListPtr()->upper_bound( aItemMax );
 			if ( aBoundPos != aEnd ) {
-				Trace("removing [" << aBoundPos.AsString() << ",<end>)");
-				IntGetListPtr().erase( aBoundPos, IntGetListPtr()->end() );
+				Trace("removing [" << aBoundPos->AsString() << ",<end>)");
+				IntGetListPtr()->erase( aBoundPos, IntGetListPtr()->end() );
 				bModified = true;
 			}
 		}
