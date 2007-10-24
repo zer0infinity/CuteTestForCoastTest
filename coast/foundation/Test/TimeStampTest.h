@@ -31,6 +31,7 @@ public:
 	void ArithmeticOperatorsTest();
 	void AssignmentOperatorTest();
 	void ConstructorsTest();
+	void SetTimeTest();
 	void InvalidTest();
 	void RemoveNonNumericalCharsTest();
 	void EmptyStringConstructorTest();

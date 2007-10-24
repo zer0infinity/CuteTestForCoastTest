@@ -271,7 +271,6 @@ void TimeStampTest::AsStringTest()
 		TimeStamp ts(roaConfig["Date"].AsString());
 		t_assertm(roaConfig["Date"].AsString() == ts.AsString(), TString("Expected AsString test to pass at ") << strCase);
 		t_assertm(roaConfig["DateWithZ"].AsString() == ts.AsStringWithZ(), TString("Expected AsStringWithZ test to pass at ") << strCase);
-		Trace("The String with Z: " << ts);
 	}
 }
 
@@ -385,6 +384,24 @@ void TimeStampTest::CtorTest()
 	Trace("sizeof TimeStamp::intTimeRep:" << (long)sizeof(TimeStamp::intTimeRep));
 }
 
+void TimeStampTest::SetTimeTest()
+{
+	StartTrace(TimeStampTest.SetTimeTest);
+	{
+		TimeStamp aStamp(19, 70, 1, 1, 0, 0, 1);
+		assertCharPtrEqual("19700101000001", aStamp.AsString());
+		assertEqual(1L, aStamp.AsLong());
+		t_assert( aStamp.SetTime(12, 12, 12) );
+		assertCharPtrEqual("19700101121212", aStamp.AsString());
+		t_assert( aStamp.SetTime(23, 59, 59) );
+		assertCharPtrEqual("19700101235959", aStamp.AsString());
+		t_assert( !aStamp.SetTime(24, 59, 59) );
+		assertCharPtrEqual("19700101235959", aStamp.AsString());
+		t_assert( !aStamp.SetTime(23, 60, 59) );
+		t_assert( !aStamp.SetTime(23, 59, 60) );
+	}
+}
+
 void TimeStampTest::WeekdayTest()
 {
 	StartTrace(TimeStampTest.WeekDayTest);
@@ -482,6 +499,7 @@ Test *TimeStampTest::suite ()
 	ADD_CASE(testSuite, TimeStampTest, AssignmentOperatorTest);
 	ADD_CASE(testSuite, TimeStampTest, ArithmeticOperatorsTest);
 	ADD_CASE(testSuite, TimeStampTest, ConstructorsTest);
+	ADD_CASE(testSuite, TimeStampTest, SetTimeTest);
 	ADD_CASE(testSuite, TimeStampTest, InvalidTest);
 	ADD_CASE(testSuite, TimeStampTest, RemoveNonNumericalCharsTest);
 	ADD_CASE(testSuite, TimeStampTest, EmptyStringConstructorTest);
