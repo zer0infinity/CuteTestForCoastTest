@@ -129,9 +129,14 @@ public:
 	LOKI_DEFINE_VISITABLE()
 
 	set_wrapper( const char *pName = "set_wrapper_lock" )
-		: fpList()
+		: fpList( NULL )
 		, fLock( pName, Storage::Global() )
 	{}
+	~set_wrapper() {
+		LockUnlockEntry aGuard( fLock );
+		delete fpList;
+		fpList = NULL;
+	}
 
 	bool AddItem(const ItemType &aItem) {
 		// success means it was a new entry, otherwise there is already an item present
@@ -212,7 +217,7 @@ public:
 	}
 
 	bool DeleteItemRange(const IteratorType &rItemsBegin, const IteratorType &rItemsEnd) {
-		StartTrace1(set_wrapper.DeleteItemRange, "[" << ( ( rItemsBegin != fpList->end() ) ? (*rItemsBegin).AsString() : "<end>" ) << "," << ( ( rItemsEnd != fpList->end() ) ? (*rItemsEnd).AsString() : "<end>" ) << ")");
+		StartTrace1(set_wrapper.DeleteItemRange, "[" << ( ( rItemsBegin != IntGetConstListPtr()->end() ) ? (*rItemsBegin).AsString() : "<end>" ) << "," << ( ( rItemsEnd != IntGetConstListPtr()->end() ) ? (*rItemsEnd).AsString() : "<end>" ) << ")");
 		bool bRet(false);
 		if ( HasList() ) {
 			LockUnlockEntry aGuard( fLock );
@@ -238,16 +243,16 @@ public:
 
 	void Clear() {
 		LockUnlockEntry aGuard( *const_cast<MutexPolicy *>(&fLock) );
-		if ( this->IntHasList() ) {
-			this->IntGetListPtr()->clear();
+		if ( IntHasList() ) {
+			IntGetListPtr()->clear();
 		}
 	}
 
 	size_type Size() const {
 		LockUnlockEntry aGuard( *const_cast<MutexPolicy *>(&fLock) );
 		size_type sz(0);
-		if ( this->IntHasList() ) {
-			sz = this->IntGetConstListPtr()->size();
+		if ( IntHasList() ) {
+			sz = IntGetConstListPtr()->size();
 		}
 		return sz;
 	}
@@ -259,7 +264,7 @@ public:
 
 	bool IsEnd(const IteratorType &aIter) const {
 		LockUnlockEntry aGuard( *const_cast<MutexPolicy *>(&fLock) );
-		return ( IntHasList() ? ( aIter == fpList->end() ) : true );
+		return ( IntHasList() ? ( aIter == IntGetConstListPtr()->end() ) : true );
 	}
 
 	const Type *GetConstListPtr() const {
@@ -291,22 +296,31 @@ public:
 
 protected:
 	bool IntHasList() const {
-		return ( fpList.get() != NULL );
+		const Type *pList( fpList );
+		StatTrace(set_wrapper.IntHasList, "ptr is:" << (long)pList, Storage::Current());
+		return ( pList != NULL );
 	}
 
 	Type *IntGetListPtr() {
-		return fpList.get();
+		Type *pList( fpList );
+		StatTrace(set_wrapper.IntGetListPtr, "ptr is:" << (long)pList, Storage::Current());
+		return pList;
 	}
 
 	const Type *IntGetConstListPtr() const {
-		return fpList.get();
+		const Type *pList( fpList );
+		StatTrace(set_wrapper.IntGetConstListPtr, "ptr is:" << (long)pList, Storage::Current());
+		return pList;
 	}
 
 	Type *IntGetCreateListPtr() {
+		StartTrace(set_wrapper.IntGetCreateListPtr);
 		if ( !IntHasList() ) {
-			fpList = std::auto_ptr< Type >( new Type() );
+			fpList = new Type();
 		}
-		return fpList.get();
+		Type *pList( fpList );
+		Trace("ptr is:" << (long)pList);
+		return pList;
 	}
 
 	/*! Find range of items within given boundaries
@@ -376,7 +390,7 @@ protected:
 	}
 
 private:
-	std::auto_ptr< Type > fpList;
+	Type *fpList;
 	MutexPolicy fLock;
 };
 
@@ -384,7 +398,7 @@ template < class AL, class AR >
 inline void CopyItems(AL *pThisList, const AR *pOtherList)
 {
 //	pThisList->reserve(pOtherList->size());
-	std::copy(pOtherList->begin(), pOtherList->end(), inserter(*pThisList, pThisList->begin()));
+	std::copy(pOtherList->begin(), pOtherList->end(), std::inserter(*pThisList, pThisList->begin()));
 }
 
 #endif
