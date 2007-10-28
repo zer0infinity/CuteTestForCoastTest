@@ -12,7 +12,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "System.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "DataAccess.h"
 #include "Action.h"
 
