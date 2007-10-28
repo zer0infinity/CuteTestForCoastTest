@@ -11,7 +11,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "Dbg.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 
 #define CHAR64(c)  (index_64[(unsigned char)(c)])
 
