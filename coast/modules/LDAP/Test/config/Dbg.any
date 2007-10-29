@@ -47,57 +47,65 @@
 	}
 #-----
 	/LDAPAbstractDAI {
-		/MainSwitch						400
+		/MainSwitch						401
 		/EnableAll						400
 	}
 	/LDAPModifyDAI {
-		/MainSwitch						400
+		/MainSwitch						401
 		/EnableAll						400
+		/DoLDAPRequest					401
 	}
 	/LDAPAddDAI {
-		/MainSwitch						400
+		/MainSwitch						401
 		/EnableAll						400
+		/DoLDAPRequest					401
 	}
 	/LDAPDeleteDAI {
 		/MainSwitch						400
 		/EnableAll						401
 	}
 	/LDAPCompareDAI {
-		/MainSwitch						400
+		/MainSwitch						401
 		/EnableAll						400
+		/DoLDAPRequest					401
 	}
 	/LDAPSearchDAI {
-		/MainSwitch						400
+		/MainSwitch						401
 		/EnableAll						400
+		/DoLDAPRequest					401
 	}
 	/LDAPConnectionTest {
-		/MainSwitch						400
+		/MainSwitch						401
 		/EnableAll						401
 	}
 	/LDAPConnectionManagerTest {
-		/MainSwitch						400
+		/MainSwitch						401
 		/EnableAll						401
 	}
 	/LDAPConnection {
-		/MainSwitch						400
+		/MainSwitch						401
 		/EnableAll						401
 		/WaitForResult					400
 		/Bind							400
 		/TransformResult				400
+		/MapUTF8Chars					-400
 	}
 	/PersistentLDAPConnection {
-		/MainSwitch						400
+		/MainSwitch						401
 		/EnableAll						401
 		/WaitForResult					400
 		/Bind							400
 		/TransformResult				400
+		/set_errno						-400
+		/set_ld_error					-400
+		/get_ld_error					-400
 	}
 	/LDAPConnectionManager {
-		/MainSwitch						400
+		/MainSwitch						401
 		/EnableAll						401
 	}
 	/LDAPErrorHandler {
-		/MainSwitch						400
+		/MainSwitch						401
 		/EnableAll						401
 	}
 	/ConditionalAction {
