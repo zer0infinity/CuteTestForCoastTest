@@ -385,6 +385,7 @@ int LDAPModifyDAI::IntPrepareLDAPMods(LDAPMod **ldapmods, int modcode, int &lMod
 		mod->mod_op = modcode;
 		mod->mod_type = (char *)attrmods.SlotName(lCurrentAttribute);	// name of attribute
 
+		SubTrace(TraceMallocFree, "preparing attribute [" << attrmods.SlotName(lCurrentAttribute) << "] (" << (long)lCurrentAttribute << ")");
 		// attrmods[lCurrentAttribute] is affected attribute
 		if ( attrmods[lCurrentAttribute].IsNull() ) {
 			// remove attribute completely, let's hope this is
@@ -481,16 +482,21 @@ int LDAPModifyDAI::DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConn
 		for ( i = 0; i < totalmods; ++i ) {
 			if ( bBinaryOperation ) {
 				int mod_bvaluesIndex( 0 );
-				while ( ldapmods[i]->mod_bvalues[mod_bvaluesIndex] != NULL ) {
+				while ( ldapmods[i]->mod_bvalues != NULL && ldapmods[i]->mod_bvalues[mod_bvaluesIndex] != NULL ) {
+					SubTrace(TraceMallocFree, "freeing ldapmods[" << (long)i << "]->mod_bvalues[" << (long)mod_bvaluesIndex << "]");
 					Storage::Current()->Free( ldapmods[i]->mod_bvalues[mod_bvaluesIndex] );
 					++mod_bvaluesIndex;
 				}
+				SubTrace(TraceMallocFree, "freeing ldapmods[" << (long)i << "]->mod_bvalues");
 				Storage::Current()->Free( ldapmods[i]->mod_bvalues );
 			} else {
+				SubTrace(TraceMallocFree, "freeing ldapmods[" << (long)i << "]->mod_values");
 				Storage::Current()->Free( ldapmods[i]->mod_values );
 			}
+			SubTrace(TraceMallocFree, "freeing ldapmods[" << (long)i << "]");
 			Storage::Current()->Free( ldapmods[i] );
 		}
+		SubTrace(TraceMallocFree, "freeing ldapmods");
 		Storage::Current()->Free( ldapmods );
 	}
 	return msgId;
