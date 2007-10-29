@@ -207,7 +207,7 @@ bool ParameterMapper::Get(const char *key, String &value, Context &ctx)
 	Anything anyValue;
 	if ( Get(key, anyValue, ctx) ) {
 		if ( !anyValue.IsNull() ) {
-			value = anyValue[0L].AsCharPtr();
+			value = anyValue[0L].AsString();
 			return true;
 		}
 	}
@@ -307,7 +307,7 @@ bool ParameterMapper::DoGetStream(const char *key, ostream &os, Context &ctx, RO
 	if (script.GetType() != AnyArrayType) {
 		// we found a simple value, append it, Append because of scripting
 		Trace("Script is a simple value, write it on stream...");
-		os << script.AsCharPtr();
+		os << script.AsString();
 		return true;
 	}
 
@@ -362,7 +362,7 @@ static void PlaceAnyOnStream(ostream &os, ROAnything value)
 	if (value.GetType() == AnyArrayType) {
 		os << value;
 	} else {
-		os << value.AsCharPtr("");
+		os << value.AsString();
 	}
 }
 
