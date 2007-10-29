@@ -143,6 +143,31 @@ tids: 153.046.016.009
 tids: HOST
 tids: 230.001.240.000
 
+dn: uid=tkrefactor2,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch
+objectclass: person
+objectclass: client
+objectclass: tkfModify
+uid: tkrefactor2
+sn: tkrefactor2
+cn: tkrefactor2
+language::TWFyY2VsACBIdWJlcg==
+ifs-id: tkrefactor2
+pd-dn: cn=CH10601-tkrefactor2,dc=tkfpd.hsr.ch
+userpassword: {SHA}8HMddz0wJeXIdx5j+4I3y3W+ne0=
+passwordexp: 20010624_11:55:37
+tkfmodtime: 20010424_11:55:37
+childmodtime: 20010426_09:27:20
+tids: 153.046.248.014
+tids: 172.016.001.041
+tids: 172.016.200.013
+tids: 195.112.074.110
+tids: 172.016.003.077
+tids: 153.046.030.066
+tids: 153.046.016.001
+tids: 153.046.016.009
+tids: HOST
+tids: 230.001.240.000
+
 dn: uid=connectionmanagertest,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch
 objectclass: person
 objectclass: client
