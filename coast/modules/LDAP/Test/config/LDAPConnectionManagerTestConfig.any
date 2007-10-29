@@ -949,19 +949,21 @@
  							  /Type "LDAP_RES_ADD"
  							  /Query {
  								/Base "uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
- 								/Attrs {
- 								  /objectclass {
- 									"client"
- 									"tkfModify"
- 									"person"
- 								  }
- 								  /uid "connectionmanagertest_added"
- 								  /cn "added cn"
- 								  /sn "added sn"
- 								  /tids {
- 									"555.666.777.888"
- 									"111.222.333.444"
- 								  }
+ 								/Mods {
+								  /add {
+									  /objectclass {
+										"client"
+										"tkfModify"
+										"person"
+									  }
+									  /uid "connectionmanagertest_added"
+									  /cn "added cn"
+									  /sn "added sn"
+									  /tids {
+										"555.666.777.888"
+										"111.222.333.444"
+									  }
+								  }
  								}
  							  }
  							  /NumberOfResultMessages 1

@@ -40,10 +40,12 @@
 				"LDAPSearchTest_ScopeSubTree"
 				"LDAPSearchTest_SizeLimit"
 				"LDAPSearchTest_AttrSelection"
+				LDAPSearchTest_LanguageAttr
 				"LDAPSearchTest_AttrsOnly"
 				"LDAPSearchTest_Filter"
 				"LDAPSearchTest_WrongDN"
 				"LDAPSearchTest_EmptyResult"
+				"LDAPSearchTest_BinaryValue"
 
 				"LDAPSearchQuery_LookupTkrefactor_NotPooled"
 				"LDAPSearchQuery_LookupTkrefactor_Pooled"
@@ -66,6 +68,9 @@
 				"LDAPCompareTest_NonExistingAttribute"
 				"LDAPCompareTest_EqualValue"
 				"LDAPCompareTest_UnequalValue"
+				"LDAPCompareTest_EqualValueBinary"
+				LDAPCompareTest_EqualValueBinaryModified
+				LDAPCompareTest_EqualValueNonBinaryModified
 				"LDAPCompareTest_MissingAttrNameParam"
 				"LDAPCompareTest_MissingAttrValueParam"
 				"LDAPConnectionManagerTest_Compare"
@@ -88,6 +93,7 @@
 				"LDAPModifyTest_DeleteRequiredAttribute"
 				"LDAPModifyTest_MultipleModify_NotPooled"
 				"LDAPModifyTest_MultipleModify_Pooled"
+				LDAPModifyTest_ModifyBinaryValue
 				"LDAPModifyTest_WrongMods"
 				"LDAPModifyTest_EmptyModsGiven"
 				"LDAPModifyTest_DeleteNonExistingValue"
@@ -109,6 +115,7 @@
 				"LDAPSearchTest_ScopeSubTree"
 				"LDAPSearchTest_SizeLimit"
 				"LDAPSearchTest_AttrSelection"
+				LDAPSearchTest_LanguageAttr
 				"LDAPSearchTest_AttrsOnly"
 				"LDAPSearchTest_Filter"
 				"LDAPSearchTest_WrongDN"
@@ -134,6 +141,9 @@
 				"LDAPCompareTest_NonExistingAttribute"
 				"LDAPCompareTest_EqualValue"
 				"LDAPCompareTest_UnequalValue"
+				"LDAPCompareTest_EqualValueBinary"
+				LDAPCompareTest_EqualValueBinaryModified
+				LDAPCompareTest_EqualValueNonBinaryModified
 				"LDAPCompareTest_MissingAttrNameParam"
 				"LDAPCompareTest_MissingAttrValueParam"
 
@@ -150,6 +160,7 @@
 				"LDAPModifyTest_DeleteRequiredAttribute"
 				"LDAPModifyTest_MultipleModify_NotPooled"
 				"LDAPModifyTest_MultipleModify_Pooled"
+				LDAPModifyTest_ModifyBinaryValue
 				"LDAPModifyTest_WrongMods"
 				"LDAPModifyTest_EmptyModsGiven"
 				"LDAPModifyTest_DeleteNonExistingValue"
@@ -167,6 +178,7 @@
 				"LDAPSearchTest_ScopeSubTree"
 				"LDAPSearchTest_SizeLimit"
 				"LDAPSearchTest_AttrSelection"
+				LDAPSearchTest_LanguageAttr
 				"LDAPSearchTest_AttrsOnly"
 				"LDAPSearchTest_Filter"
 				"LDAPSearchTest_WrongDN"
@@ -192,6 +204,9 @@
 				"LDAPCompareTest_NonExistingAttribute"
 				"LDAPCompareTest_EqualValue"
 				"LDAPCompareTest_UnequalValue"
+				"LDAPCompareTest_EqualValueBinary"
+				LDAPCompareTest_EqualValueBinaryModified
+				LDAPCompareTest_EqualValueNonBinaryModified
 				"LDAPCompareTest_MissingAttrNameParam"
 				"LDAPCompareTest_MissingAttrValueParam"
 
@@ -208,6 +223,7 @@
 				"LDAPModifyTest_DeleteRequiredAttribute"
 				"LDAPModifyTest_MultipleModify_NotPooled"
 				"LDAPModifyTest_MultipleModify_Pooled"
+				LDAPModifyTest_ModifyBinaryValue
 				"LDAPModifyTest_WrongMods"
 				"LDAPModifyTest_EmptyModsGiven"
 				"LDAPModifyTest_DeleteNonExistingValue"
@@ -239,6 +255,19 @@
 		/LDAPTryAutoRebind		0
 	}
 
+	/LDAPConfig_NotPooledBinary
+	{
+		/LDAPServer		"surlej.hsr.ch"
+		/LDAPPort		"49999"
+		/LDAPBindName	"cn=Directory Manager"
+		/LDAPBindPW		"all2test"
+		/LDAPConnectionTimeout	5
+		/LDAPTimeout			10
+		/LDAPPooledConnections 	0
+		/LDAPTryAutoRebind		0
+		/PlainBinaryValues		1
+	}
+
 	/LDAPConfig_Pooled
 	{
 		/LDAPServer		"marvin.hsr.loc"
@@ -250,6 +279,20 @@
 		/LDAPPooledConnections 1
 		/LDAPTryAutoRebind			1
 		/LDAPRebindTimeout 60
+	}
+
+	/LDAPConfig_PooledBinary
+	{
+		/LDAPServer		"surlej.hsr.ch"
+		/LDAPPort		"49999"
+		/LDAPBindName	"cn=Directory Manager"
+		/LDAPBindPW		"all2test"
+		/LDAPConnectionTimeout	5
+		/LDAPTimeout			10
+		/LDAPPooledConnections 	1
+		/LDAPTryAutoRebind		1
+		/LDAPRebindTimeout 		60
+		/PlainBinaryValues		1
 	}
 
 	/RunOnly
@@ -615,8 +658,8 @@
 				{
 					/LDAPResult {
 						/LDAPSearchTest_ScopeSubTree {
-							/NumberOfResultMessages 62
-							/NumberOfEntries 61
+							/NumberOfResultMessages 63
+							/NumberOfEntries 62
 						}
 					}
 				}
@@ -638,8 +681,8 @@
 				{
 					/LDAPResult {
 						/LDAPSearchTest_ScopeSubTree {
-							/NumberOfResultMessages 62
-							/NumberOfEntries 61
+							/NumberOfResultMessages 63
+							/NumberOfEntries 62
 						}
 					}
 				}
@@ -1264,7 +1307,6 @@
 				}
 			}
 		}
-
 		/LDAPCompareTest_EqualValue_Pooled
 		{
 			/TmpStore	%LDAPConfig_Pooled
@@ -1331,6 +1373,54 @@
 							/Equal 0
 							/LdapCode 5
 							/LdapMsg "Compare false"
+						}
+					}
+				}
+			}
+		}
+
+# -------------------------------------------------------------------------
+		/LDAPCompareTest_EqualValueBinary_NotPooled
+		{
+			/TmpStore	%LDAPConfig_NotPooled
+			/TheAction
+			{
+				/CallDA 	LDAPCompareTest_EqualValueBinary
+			}
+			/ExpectedResult	1
+			/Result
+			{
+				/TmpStore
+				{
+					/LDAPResult {
+						/LDAPCompareTest_EqualValueBinary {
+							/Type "LDAP_RES_COMPARE"
+							/Equal 1
+							/LdapCode 6
+							/LdapMsg "Compare true"
+						}
+					}
+				}
+			}
+		}
+		/LDAPCompareTest_EqualValueBinary_Pooled
+		{
+			/TmpStore	%LDAPConfig_Pooled
+			/TheAction
+			{
+				/CallDA 	LDAPCompareTest_EqualValueBinary
+			}
+			/ExpectedResult	1
+			/Result
+			{
+				/TmpStore
+				{
+					/LDAPResult {
+						/LDAPCompareTest_EqualValueBinary {
+							/Type "LDAP_RES_COMPARE"
+							/Equal 1
+							/LdapCode 6
+							/LdapMsg "Compare true"
 						}
 					}
 				}
@@ -2149,6 +2239,140 @@
 							}
 						  }
 				        }
+					}
+				}
+			}
+		}
+		/LDAPModifyTest_ModifyBinaryValue_NonBinaryMode
+		{
+			/TmpStore	%LDAPConfig_Pooled
+			/TheAction
+			{
+				{ /CallDA 	LDAPModifyTest_ModifyBinaryValue }
+				{ /CallDA 	LDAPCompareTest_EqualValueNonBinaryModified }
+				{ /CallDA 	LDAPSearchTest_LanguageAttr }
+			}
+			/ExpectedResult	1
+			/Result
+			{
+				/Delim	"^"
+				/TmpStore
+				{
+					/LDAPResult {
+						/LDAPModifyTest_ModifyBinaryValue {
+							/Type "LDAP_RES_MODIFY"
+							/NumberOfResultMessages 1
+							/NumberOfEntries 0
+							/Entries *
+						}
+						/LDAPCompareTest_EqualValueNonBinaryModified {
+							/Type "LDAP_RES_COMPARE"
+							/Equal 1
+							/LdapCode 6
+							/LdapMsg "Compare true"
+						}
+						/LDAPSearchTest_LanguageAttr {
+							/NumberOfResultMessages 2
+							/NumberOfEntries 1
+							# check a few expected things within the returned entries
+							/Entries {
+								/"uid=tkrefactor2,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+								{
+									/language "This"	## the rest will be cut away when storing...
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		/LDAPModifyTest_CompareBinaryValue_NonBinaryMode
+		{
+			/TmpStore	%LDAPConfig_Pooled
+			/TheAction
+			{
+				{ /CallDA 	LDAPCompareTest_EqualValueBinaryModified }
+			}
+			/ExpectedResult	1
+			/Result
+			{
+				/TmpStore
+				{
+					/LDAPResult {
+						/LDAPCompareTest_EqualValueBinaryModified {
+							/Type "LDAP_RES_COMPARE"
+							/Equal 1
+							/LdapCode 6
+							/LdapMsg "Compare true"
+						}
+					}
+				}
+			}
+		}
+## Unfortunately this test fails due to a potential ldap-library-error
+## -> enable as soon as binary comparison is to be supported by lib
+#		/LDAPModifyTest_CompareBinaryValue_BinaryMode
+#		{
+#			/TmpStore	%LDAPConfig_PooledBinary
+#			/TheAction
+#			{
+#				{ /CallDA 	LDAPCompareTest_EqualValueBinaryModified }
+#			}
+#			/ExpectedResult	1
+#			/Result
+#			{
+#				/TmpStore
+#				{
+#					/LDAPResult {
+#						/LDAPCompareTest_EqualValueBinaryModified {
+#							/Type "LDAP_RES_COMPARE"
+#							/Equal 0
+#							/LdapCode 5
+#							/LdapMsg "Compare false"
+#						}
+#					}
+#				}
+#			}
+#		}
+		/LDAPModifyTest_ModifyBinaryValue_BinaryMode
+		{
+			/TmpStore	%LDAPConfig_PooledBinary
+			/TheAction
+			{
+				{ /CallDA 	LDAPModifyTest_ModifyBinaryValue }
+				{ /CallDA 	LDAPCompareTest_EqualValueBinaryModified }
+				{ /CallDA 	LDAPSearchTest_LanguageAttr }
+			}
+			/ExpectedResult	1
+			/Result
+			{
+				/Delim	"^"
+				/TmpStore
+				{
+					/LDAPResult {
+						/LDAPModifyTest_ModifyBinaryValue {
+							/Type "LDAP_RES_MODIFY"
+							/NumberOfResultMessages 1
+							/NumberOfEntries 0
+							/Entries *
+						}
+						/LDAPCompareTest_EqualValueBinaryModified {
+							/Type "LDAP_RES_COMPARE"
+							/Equal 1
+							/LdapCode 6
+							/LdapMsg "Compare true"
+						}
+						/LDAPSearchTest_LanguageAttr {
+							/NumberOfResultMessages 2
+							/NumberOfEntries 1
+							# check a few expected things within the returned entries
+							/Entries {
+								/"uid=tkrefactor2,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+								{
+									/language "This\x00 should have been stored!\x01"
+								}
+							}
+						}
 					}
 				}
 			}

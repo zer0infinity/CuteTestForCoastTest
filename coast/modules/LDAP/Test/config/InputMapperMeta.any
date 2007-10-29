@@ -93,6 +93,13 @@
 		}
 	}
 
+	/LDAPSearchTest_LanguageAttr {
+		/LDAPBase		"uid=tkrefactor2,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPAttrs {
+			"language"
+		}
+	}
+
 	/LDAPSearchTest_AttrsOnly {
 		/LDAPBase		"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
 		/LDAPAttrsOnly	1
@@ -148,15 +155,44 @@
 	}
 
 	/LDAPCompareTest_EqualValue {
-		/LDAPBase		"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase		"uid=tkrefactor2,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
 		/LDAPAttrName	"language"
-		/LDAPAttrValue	"D"
+		/LDAPAttrValue	"Marcel"
 	}
 
 	/LDAPCompareTest_UnequalValue {
 		/LDAPBase		"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
 		/LDAPAttrName	"uid"
 		/LDAPAttrValue	"tkfoo"
+	}
+
+	/LDAPCompareTest_EqualValueBinary {
+		/LDAPBase		"uid=tkrefactor2,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPAttrName	"language"
+		/LDAPAttrValue	"Marcel\x00 Huber"
+	}
+
+	/LDAPModifyTest_ModifyBinaryValue {
+		/LDAPBase	"uid=tkrefactor2,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPMods {
+			/ConfigMapper {
+				/Replace {
+					/language "This\x00 should have been stored!\x01"
+				}
+			}
+		}
+	}
+
+	/LDAPCompareTest_EqualValueNonBinaryModified {
+		/LDAPBase		"uid=tkrefactor2,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPAttrName	"language"
+		/LDAPAttrValue	"This"
+	}
+
+	/LDAPCompareTest_EqualValueBinaryModified {
+		/LDAPBase		"uid=tkrefactor2,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPAttrName	"language"
+		/LDAPAttrValue	"This\x00 should have been stored!\x01"
 	}
 
 	/LDAPCompareTest_MissingAttrNameParam {
