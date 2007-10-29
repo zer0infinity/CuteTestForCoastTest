@@ -359,12 +359,13 @@ void LDAPConnection::TransformResult(LDAPMessage *ldapResult, Anything &result, 
 			//
 			// entries[dn]["dn"] = dn;
 
+			Trace("processing entries of dn [" << dn << "]");
 			// step through all attributes
 			while ( attr != (char *) NULL ) {
 				attrString = attr;
 				// normalize all attributes to lowercase
 				attrString.ToLower();
-
+				Trace("getting length of attribute [" << attrString << "]");
 				vals = ldap_get_values_len(fHandle, entry, attr);
 				nofVals = ldap_count_values_len(vals);
 
