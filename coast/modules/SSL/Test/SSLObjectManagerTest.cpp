@@ -132,7 +132,7 @@ void SSLObjectManagerTest::SessionResumptionWithMinimumConfigTest()
 		TraceAny(cConfig, "cConfig");
 		// empty  context built up by other test
 		SSLObjectManager::SSLOBJMGR()->RemoveCtx(cConfig["Config"]["Address"].AsString(), cConfig["Config"]["Port"].AsString());
-		for (long ii = 0; ii < 258; ii++) {
+		for (long ii = 0; ii < 255; ii++) {
 			Trace("At run index: " << ii);
 			SSLConnector sc(cConfig["Config"]);
 			iostream *s1 = sc.GetStream();
@@ -170,7 +170,7 @@ void SSLObjectManagerTest::SessionResumptionTest()
 		TraceAny(cConfig, "cConfig");
 		// empty  context built up by other test
 		SSLObjectManager::SSLOBJMGR()->RemoveCtx(cConfig["Config"]["Address"].AsString(), cConfig["Config"]["Port"].AsString());
-		for (long ii = 0; ii < 258; ii++) {
+		for (long ii = 0; ii < 255; ii++) {
 			Trace("At run index: " << ii);
 			SSL_CTX *sslctx;
 			sslctx = SSLObjectManager::SSLOBJMGR()->GetCtx(cConfig["Config"]["Address"].AsString(), cConfig["Config"]["Port"].AsString(), cConfig["Config"]);
