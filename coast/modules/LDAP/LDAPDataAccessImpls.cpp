@@ -126,7 +126,7 @@ bool LDAPAbstractDAI::DoExec( Context &ctx, ParameterMapper *getter, ResultMappe
 	}
 	Trace("Connection to server established: " << bindName << "@" << server << ":" << port);
 	// 4. request ldap operation, then wait for result (loop)
-	int msgId = DoLDAPRequest(lc, query);
+	int msgId = DoLDAPRequest(ctx, getter, lc, query);
 	Trace("LDAP request sent");
 
 	Anything result;
@@ -221,57 +221,15 @@ bool LDAPAddDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &que
 	if ( !CheckAttributes(attrs, true, eh) ) {
 		return false;
 	}
-	query["Attrs"] = attrs;
+	query["Mods"]["add"] = attrs;
 	return true;
 }
 
-int LDAPAddDAI::DoLDAPRequest(LDAPConnection *lc, ROAnything query)
+int LDAPAddDAI::DoSpecificOperation(LDAPConnection *lc, String base, LDAPMod **ldapmods)
 {
-	StartTrace(LDAPAddDAI.DoLDAPRequest);
-	TraceAny(query, "Query for add request:");
-
-	String base = query["Base"].AsString();
-	ROAnything attrs = query["Attrs"];
-
-	// init ldapmod structure for add request
-	long size = attrs.GetSize();
-	long vsize;
-	LDAPMod **ldapmods = new LDAPMod*[ size + 1 ];
-	LDAPMod *mod;
-	char **vals = NULL;
-
-	for ( long i = 0; i < size; ++i ) {
-		mod = new LDAPMod;
-		mod->mod_op = LDAP_MOD_ADD;
-		mod->mod_type = (char *)attrs.SlotName(i);
-
-		vsize = attrs[i].GetSize();
-		vals = new char*[ vsize + 1 ];
-		for ( long j = 0; j < vsize; ++j ) {
-			vals[j] = (char *)attrs[i][j].AsCharPtr();
-		}
-		vals[vsize] = NULL;	// terminate
-		mod->mod_values = vals;
-
-		ldapmods[i] = mod;
-	}
-	ldapmods[size] = NULL; // terminate
-
-	// send request
-	Trace("Sending request...");
-	int msgId = ldap_add(lc->GetConnection(), base, ldapmods);
-
-	// free used memory
-	Trace("Freeing memory...");
-	if (ldapmods) {
-		for ( long k = 0; k < size; ++k ) {
-			delete [] ldapmods[k]->mod_values;
-			delete ldapmods[k];
-		}
-		delete[] ldapmods;
-	}
-
-	return msgId;
+	StartTrace(LDAPAddDAI.DoSpecificOperation);
+	Trace("sending add request");
+	return ldap_add(lc->GetConnection(), base, ldapmods);
 }
 
 // =========================================================================
@@ -306,7 +264,7 @@ bool LDAPCompareDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything 
 	return true;
 }
 
-int LDAPCompareDAI::DoLDAPRequest(LDAPConnection *lc, ROAnything query)
+int LDAPCompareDAI::DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConnection *lc, ROAnything query)
 {
 	StartTrace(LDAPCompareDAI.DoLDAPRequest);
 	TraceAny(query, "Query for compare request:");
@@ -315,9 +273,28 @@ int LDAPCompareDAI::DoLDAPRequest(LDAPConnection *lc, ROAnything query)
 	String base = query["Base"].AsString();
 	String attrName = query["AttrName"].AsString();
 	String attrVal = query["AttrValue"].AsString();
-
-	// send request
-	return ldap_compare(lc->GetConnection(), base, attrName, attrVal);
+	Trace("comparison of value with length: " << attrVal.Length() << " value [" << attrVal.DumpAsHex() << "]");
+	bool bBinaryOperation( false );
+	int iOpCode(0);
+	if ( getter->Get("PlainBinaryValues", bBinaryOperation, ctx) && bBinaryOperation ) {
+		int iMsgId(0);
+		berval CompareValue;
+		CompareValue.bv_val = (char *)(const char *)attrVal;
+		CompareValue.bv_len = attrVal.Length();
+		Trace("binary comparison");
+		if ( ( iOpCode = ldap_compare_ext( lc->GetConnection(), base, attrName, &CompareValue, NULL, NULL, &iMsgId ) ) == LDAP_SUCCESS ) {
+			iOpCode = iMsgId;
+			Trace("compare successful, iOpCode:" << (long)iOpCode << " iMsgId:" << (long)iMsgId);
+		} else {
+			Trace("failed to compare, iOpCode:" << (long)iOpCode << " iMsgId:" << (long)iMsgId);
+			iOpCode = -1;
+		}
+	} else {
+		// send request
+		Trace("plain text comparison");
+		iOpCode = ldap_compare(lc->GetConnection(), base, attrName, attrVal);
+	}
+	return iOpCode;
 }
 
 // =========================================================================
@@ -325,7 +302,7 @@ int LDAPCompareDAI::DoLDAPRequest(LDAPConnection *lc, ROAnything query)
 //--- LDAPDeleteDAI -----------------------------------------------------
 RegisterDataAccessImpl(LDAPDeleteDAI);
 
-int LDAPDeleteDAI::DoLDAPRequest(LDAPConnection *lc, ROAnything query)
+int LDAPDeleteDAI::DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConnection *lc, ROAnything query)
 {
 	StartTrace(LDAPDeleteDAI.DoLDAPRequest);
 	TraceAny(query, "Query for delete request:");
@@ -371,15 +348,11 @@ bool LDAPModifyDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &
 		slotname = mods.SlotName(i);
 		// normalize
 		slotname.ToLower();
-		if ( slotname.IsEqual("add") || slotname.IsEqual("replace") ) {
-			// check given attributes not to contain unnamed slots and to remove NullValue entries
-			if ( ( bCont = CheckAttributes(mods[i], true, eh) ) ) {
-				// ok, accept
-				checkedMods[slotname] = mods[i];
-			}
-		} else if ( slotname.IsEqual("delete") ) {
-			// check given attributes not to contain unnamed slots and to leave NullValue entries if any
-			if ( ( bCont = CheckAttributes(mods[i], false, eh) ) ) {
+		bool bRemoveNullValues( slotname.IsEqual("add") );
+		if ( slotname.IsEqual("add") || slotname.IsEqual("replace") || slotname.IsEqual("delete") ) {
+			// check given attributes not to contain unnamed slots
+			// remove NullValue entries only when adding, otherwise they mark slots to remove
+			if ( ( bCont = CheckAttributes(mods[i], bRemoveNullValues, eh) ) ) {
 				// ok, accept
 				checkedMods[slotname] = mods[i];
 			}
@@ -401,7 +374,55 @@ bool LDAPModifyDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &
 	return true;
 }
 
-int LDAPModifyDAI::DoLDAPRequest(LDAPConnection *lc, ROAnything query)
+int LDAPModifyDAI::IntPrepareLDAPMods(LDAPMod **ldapmods, int modcode, int &lModsCounter, ROAnything attrmods, bool bBinaryOperation)
+{
+	StartTrace(LDAPModifyDAI.IntPrepareLDAPMods);
+	long lCurrentAttribute( 0L );
+	for ( long sza = attrmods.GetSize(); lCurrentAttribute < sza; ++lCurrentAttribute, ++lModsCounter ) {
+		char **vals( NULL );
+		struct berval **bvals( NULL );
+		LDAPMod *mod = (LDAPMod *)Storage::Current()->Calloc( 1, sizeof( LDAPMod ) );
+		mod->mod_op = modcode;
+		mod->mod_type = (char *)attrmods.SlotName(lCurrentAttribute);	// name of attribute
+
+		// attrmods[lCurrentAttribute] is affected attribute
+		if ( attrmods[lCurrentAttribute].IsNull() ) {
+			// remove attribute completely, let's hope this is
+			// not an add request (would probably provoke an error)
+			bvals = NULL;	// terminate list of values
+			vals = NULL;	// terminate list of values
+		} else {
+			long vsize = attrmods[lCurrentAttribute].GetSize();	// # values for attribute
+			if ( bBinaryOperation ) {
+				bvals = (berval **)Storage::Current()->Calloc( ( vsize + 1 ), sizeof( berval * ) );
+				for ( long k = 0; k < vsize; ++k ) {
+					// do not use AsString() in the next assignment because we need a non-temporary reference
+					//  until the ldap-call is done
+					bvals[k] = (berval *)Storage::Current()->Calloc( 1, sizeof( berval ) );
+					bvals[k]->bv_val = (char *)attrmods[lCurrentAttribute][k].AsCharPtr();
+					bvals[k]->bv_len = attrmods[lCurrentAttribute][k].AsString().Length();
+				}
+				bvals[vsize] = NULL;	// terminate list of values
+			} else {
+				vals = (char **)Storage::Current()->Calloc( ( vsize + 1 ), sizeof( char * ) );
+				for ( long k = 0; k < vsize; ++k ) {
+					vals[k] = (char *)attrmods[lCurrentAttribute][k].AsCharPtr();
+				}
+				vals[vsize] = NULL;	// terminate list of values
+			}
+		}
+		if ( bBinaryOperation ) {
+			mod->mod_bvalues = bvals;
+		} else {
+			mod->mod_values = vals;
+		}
+		// add modification to list
+		ldapmods[lModsCounter] = mod;
+	}
+	return lCurrentAttribute;
+}
+
+int LDAPModifyDAI::DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConnection *lc, ROAnything query)
 {
 	// ------------------------------------------------------------
 	// hint: look at syntax of modify request in .h file, this will
@@ -422,15 +443,14 @@ int LDAPModifyDAI::DoLDAPRequest(LDAPConnection *lc, ROAnything query)
 	}
 
 	// init ldapmod structures for modify request
-	LDAPMod **ldapmods = new LDAPMod*[ totalmods + 1 ];
-	long vsize;
-	char **vals;
+	LDAPMod **ldapmods = (LDAPMod **)Storage::Current()->Calloc( ( totalmods + 1 ), sizeof( LDAPMod * ) );
 	ROAnything attrmods;
-	LDAPMod *mod;
 	String modname;
-	int modcode;
-	int counter = 0;
+	int modcode, counter( 0 ), iTotalMods( 0 );
+	bool bBinaryOperation( false );
+	getter->Get("PlainBinaryValues", bBinaryOperation, ctx);
 
+	// loop over specific modifications entries [add|replace|delete]
 	for ( i = 0; i < size; ++i ) {
 		modname = mods.SlotName(i);
 
@@ -442,49 +462,45 @@ int LDAPModifyDAI::DoLDAPRequest(LDAPConnection *lc, ROAnything query)
 			modcode = LDAP_MOD_REPLACE;
 		}
 
+		if ( bBinaryOperation ) {
+			modcode |= LDAP_MOD_BVALUES;
+		}
+
 		// every operation can affect a series of attributes, of which
 		// each is an individual modification again
 		// this means, we have a total of i*j modifications
-		attrmods = mods[i];
-		for ( long j = 0, sza = attrmods.GetSize(); j < sza; ++j ) {
-			mod = new LDAPMod;
-			mod->mod_op = modcode;
-			mod->mod_type = (char *)attrmods.SlotName(j);	// name of attribute
-
-			// attrmods[j] is affected attribute
-			if ( attrmods[j].IsNull() ) {
-				// remove attribute completely, let's hope this is
-				// not an add request (would probably provoke an error)
-				vals = NULL;
-			} else {
-				vsize = attrmods[j].GetSize();	// # values for attribute
-				vals = new char*[ vsize + 1 ];
-				for ( long k = 0; k < vsize; ++k ) {
-					vals[k] = (char *)attrmods[j][k].AsCharPtr();
-				}
-				vals[vsize] = NULL;	// terminate list of values
-			}
-			mod->mod_values = vals;
-
-			// add modification to list
-			ldapmods[counter++] = mod;
-		}
+		iTotalMods += IntPrepareLDAPMods(ldapmods, modcode, counter, mods[i], bBinaryOperation);
 	}
+	Assert( counter <= totalmods );
 	ldapmods[totalmods] = NULL; // terminate list of mods
 
-	// send request
-	int msgId = ldap_modify(lc->GetConnection(), base, ldapmods);
+	int msgId = DoSpecificOperation(lc, base, ldapmods);
 
-	// free used memory
-	if (ldapmods) {
+	Trace("Freeing memory...");
+	if ( ldapmods ) {
 		for ( i = 0; i < totalmods; ++i ) {
-			delete [] ldapmods[i]->mod_values;
-			delete ldapmods[i];
+			if ( bBinaryOperation ) {
+				int mod_bvaluesIndex( 0 );
+				while ( ldapmods[i]->mod_bvalues[mod_bvaluesIndex] != NULL ) {
+					Storage::Current()->Free( ldapmods[i]->mod_bvalues[mod_bvaluesIndex] );
+					++mod_bvaluesIndex;
+				}
+				Storage::Current()->Free( ldapmods[i]->mod_bvalues );
+			} else {
+				Storage::Current()->Free( ldapmods[i]->mod_values );
+			}
+			Storage::Current()->Free( ldapmods[i] );
 		}
-		delete[] ldapmods;
+		Storage::Current()->Free( ldapmods );
 	}
-
 	return msgId;
+}
+
+int LDAPModifyDAI::DoSpecificOperation(LDAPConnection *lc, String base, LDAPMod **ldapmods)
+{
+	StartTrace(LDAPModifyDAI.DoSpecificOperation);
+	Trace("sending modify request");
+	return ldap_modify(lc->GetConnection(), base, ldapmods);
 }
 
 // =========================================================================
@@ -544,7 +560,7 @@ bool LDAPSearchDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &
 	return true;
 }
 
-int LDAPSearchDAI::DoLDAPRequest(LDAPConnection *lc, ROAnything query)
+int LDAPSearchDAI::DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConnection *lc, ROAnything query)
 {
 	StartTrace(LDAPSearchDAI.DoLDAPRequest);
 	TraceAny(query, "Query for search request:");

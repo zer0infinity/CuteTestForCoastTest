@@ -86,7 +86,7 @@ protected:
 
 	//! abstract hook, called by Exec after connection
 	//! returns message id of started request
-	virtual int DoLDAPRequest(LDAPConnection *lc, ROAnything query) {
+	virtual int DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConnection *lc, ROAnything query) {
 		Assert(false);
 		return -1;
 	}
@@ -114,143 +114,6 @@ private:
 
 	// Factory method, creates LDAPConnections
 	LDAPConnection *LDAPConnectionFactory(ROAnything cp);
-};
-
-// =========================================================================
-
-//---- LDAPAddDAI ----------------------------------------------------------
-//! <B>Implements an LDAP add DA.</B>
-/*!
-<B>Configuration:</B> See LDAPAbstractDAI<br>
-<B>LDAP Query spec:</B><pre>
-{
-	/LDAPBase	required	base DN where addition is to be made
-	/LDAPAttrs		required	list of attributes and values to add
-}
-<b>Attrs spec:</b>
-/LDAPAttrs {
-	/ConfigMapper {
-		/uid		"kgu"
-		/coworker	{ "mke", "jva" "pso" }
-	}
-}
-</pre>
-Adds a leaf entry to the ldap directory. Parent of element to add must
-exist or be empty (i.e. root)! Attrs is an Anything, where slotname
-is attribute's type and slotvalue is attribute's single or
-multiple value (see example). You should use a config mapper to get
-a literal config, i.e. exactly the attribute/value pairings that you wish
-to get. (This mapper stops scripting and returns its config as anything)
-*/
-class EXPORTDECL_LDAPDA LDAPAddDAI: public LDAPAbstractDAI
-{
-public:
-	/*! \param name defines the name of the data access */
-	LDAPAddDAI(const char *name) : LDAPAbstractDAI(name) {};
-	~LDAPAddDAI() {};
-
-	//! returns a new TRX object
-	IFAObject *Clone() const {
-		return new LDAPAddDAI(fName);
-	};
-
-protected:
-	//! add + check attributes slot (no defaults are given)
-	bool DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &query, LDAPErrorHandler &eh);
-
-	//! hook, called by Exec after connection.
-	//! returns message id of started add request
-	int DoLDAPRequest(LDAPConnection *lc, ROAnything query);
-
-private:
-	// constructor
-	LDAPAddDAI();
-	LDAPAddDAI(const LDAPAddDAI &);
-
-	// assignement
-	LDAPAddDAI &operator=(const LDAPAddDAI &);
-};
-
-// =========================================================================
-
-//---- LDAPCompareDAI ----------------------------------------------------------
-//! <B>Implements an LDAP compare DA.</B>
-/*!
-<B>Configuration:</B> See LDAPAbstractDAI<br>
-<B>LDAP Query spec:</B><pre>
-{
-	/LDAPBase		required	base DN where comparison is to be made
-	/LDAPAttrName	required	attribute of entry to be compared
-	/LDAPAttrValue	required	value of attribute to be compared against directory
-}
-</pre>
-Compares value of an attribute with value in LDAP directory.
-*/
-class EXPORTDECL_LDAPDA LDAPCompareDAI: public LDAPAbstractDAI
-{
-public:
-	/*! \param name defines the name of the data access */
-	LDAPCompareDAI(const char *name) : LDAPAbstractDAI(name) {};
-	~LDAPCompareDAI() {};
-
-	//! returns a new TRX object
-	IFAObject *Clone() const {
-		return new LDAPCompareDAI(fName);
-	};
-
-protected:
-	//! add + check for base, attrname and attrvalue to compare
-	bool DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &query, LDAPErrorHandler &eh);
-
-	//! hook, called by Exec after connection.
-	//! returns message id of started compare request
-	int DoLDAPRequest(LDAPConnection *lc, ROAnything query);
-
-private:
-	// constructor
-	LDAPCompareDAI();
-	LDAPCompareDAI(const LDAPCompareDAI &);
-	// assignement
-	LDAPCompareDAI &operator=(const LDAPCompareDAI &);
-};
-
-// =========================================================================
-
-//---- LDAPDeleteDAI ----------------------------------------------------------
-//! <B>Implements an LDAP delete DA.</B>
-/*!
-<B>Configuration:</B> See LDAPAbstractDAI<br>
-<B>LDAP Query spec:</B><pre>
-{
-	/LDAPBase		required	base DN pointing to leaf entry to delete
-}
-</pre>
-Deletes a whole entry. Base must be a leaf entry or delete will fail.
-*/
-class EXPORTDECL_LDAPDA LDAPDeleteDAI: public LDAPAbstractDAI
-{
-public:
-	/*! \param name defines the name of the data access */
-	LDAPDeleteDAI(const char *name) : LDAPAbstractDAI(name) {};
-	~LDAPDeleteDAI() {};
-
-	//! returns a new TRX object
-	IFAObject *Clone() const {
-		return new LDAPDeleteDAI(fName);
-	};
-
-protected:
-	//! hook, called by Exec after connection.
-	//! returns message id of started delete request
-	int DoLDAPRequest(LDAPConnection *lc, ROAnything query);
-
-private:
-	// constructor
-	LDAPDeleteDAI();
-	LDAPDeleteDAI(const LDAPDeleteDAI &);
-	// assignement
-	LDAPDeleteDAI &operator=(const LDAPDeleteDAI &);
-
 };
 
 // =========================================================================
@@ -319,7 +182,23 @@ protected:
 
 	//! hook, called by Exec after connection.
 	//! returns message id of started replace request
-	int DoLDAPRequest(LDAPConnection *lc, ROAnything query);
+	int DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConnection *lc, ROAnything query);
+
+	/*! collect attributes/values to modify
+		\param ldapmods container to carry attributes/values to modify
+		\param modcode operation for modification entry [LDAP_MOD_ADD|LDAP_MOD_DELETE|LDAP_MOD_REPLACE] and optionally LDAP_MOD_BVALUES
+		\param lModsCounter reference to count number of entries added  to ldapmods
+		\param attrmods ROAnything holding attributes/values to modify
+		\param bBinaryOperation set to true if we need to handle binary values
+		\return number of attributes added to ldapmods */
+	int IntPrepareLDAPMods(LDAPMod **ldapmods, int modcode, int &lModsCounter, ROAnything attrmods, bool bBinaryOperation);
+
+	/*! specific ldap_ method to call
+		\param lc LDAPConnection class to get ldap handle from
+		\param base dn of entry to modify
+		\param ldapmods attributes/values to modify
+		\return return code of ldap method */
+	virtual int DoSpecificOperation(LDAPConnection *lc, String base, LDAPMod **ldapmods);
 
 private:
 	// constructor
@@ -327,6 +206,146 @@ private:
 	LDAPModifyDAI(const LDAPModifyDAI &);
 	// assignement
 	LDAPModifyDAI &operator=(const LDAPModifyDAI &);
+};
+
+// =========================================================================
+
+//---- LDAPAddDAI ----------------------------------------------------------
+//! <B>Implements an LDAP add DA.</B>
+/*!
+<B>Configuration:</B> See LDAPAbstractDAI<br>
+<B>LDAP Query spec:</B><pre>
+{
+	/LDAPBase	required	base DN where addition is to be made
+	/LDAPAttrs		required	list of attributes and values to add
+}
+<b>Attrs spec:</b>
+/LDAPAttrs {
+	/ConfigMapper {
+		/uid		"kgu"
+		/coworker	{ "mke", "jva" "pso" }
+	}
+}
+</pre>
+Adds a leaf entry to the ldap directory. Parent of element to add must
+exist or be empty (i.e. root)! Attrs is an Anything, where slotname
+is attribute's type and slotvalue is attribute's single or
+multiple value (see example). You should use a config mapper to get
+a literal config, i.e. exactly the attribute/value pairings that you wish
+to get. (This mapper stops scripting and returns its config as anything)
+*/
+class EXPORTDECL_LDAPDA LDAPAddDAI: public LDAPModifyDAI
+{
+public:
+	/*! \param name defines the name of the data access */
+	LDAPAddDAI(const char *name) : LDAPModifyDAI(name) {};
+	~LDAPAddDAI() {};
+
+	//! returns a new TRX object
+	IFAObject *Clone() const {
+		return new LDAPAddDAI(fName);
+	};
+
+protected:
+	//! add + check attributes slot (no defaults are given)
+	bool DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &query, LDAPErrorHandler &eh);
+
+	/*! specific ldap_ method to call
+		\param lc LDAPConnection class to get ldap handle from
+		\param base dn of entry to modify
+		\param ldapmods attributes/values to modify
+		\return return code of ldap method */
+	int DoSpecificOperation(LDAPConnection *lc, String base, LDAPMod **ldapmods);
+
+private:
+	// constructor
+	LDAPAddDAI();
+	LDAPAddDAI(const LDAPAddDAI &);
+
+	// assignement
+	LDAPAddDAI &operator=(const LDAPAddDAI &);
+};
+
+// =========================================================================
+
+//---- LDAPCompareDAI ----------------------------------------------------------
+//! <B>Implements an LDAP compare DA.</B>
+/*!
+<B>Configuration:</B> See LDAPAbstractDAI<br>
+<B>LDAP Query spec:</B><pre>
+{
+	/LDAPBase		required	base DN where comparison is to be made
+	/LDAPAttrName	required	attribute of entry to be compared
+	/LDAPAttrValue	required	value of attribute to be compared against directory
+}
+</pre>
+Compares value of an attribute with value in LDAP directory.
+*/
+class EXPORTDECL_LDAPDA LDAPCompareDAI: public LDAPAbstractDAI
+{
+public:
+	/*! \param name defines the name of the data access */
+	LDAPCompareDAI(const char *name) : LDAPAbstractDAI(name) {};
+	~LDAPCompareDAI() {};
+
+	//! returns a new TRX object
+	IFAObject *Clone() const {
+		return new LDAPCompareDAI(fName);
+	};
+
+protected:
+	//! add + check for base, attrname and attrvalue to compare
+	bool DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &query, LDAPErrorHandler &eh);
+
+	//! hook, called by Exec after connection.
+	//! returns message id of started compare request
+	int DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConnection *lc, ROAnything query);
+
+private:
+	// constructor
+	LDAPCompareDAI();
+	LDAPCompareDAI(const LDAPCompareDAI &);
+	// assignement
+	LDAPCompareDAI &operator=(const LDAPCompareDAI &);
+};
+
+// =========================================================================
+
+//---- LDAPDeleteDAI ----------------------------------------------------------
+//! <B>Implements an LDAP delete DA.</B>
+/*!
+<B>Configuration:</B> See LDAPAbstractDAI<br>
+<B>LDAP Query spec:</B><pre>
+{
+	/LDAPBase		required	base DN pointing to leaf entry to delete
+}
+</pre>
+Deletes a whole entry. Base must be a leaf entry or delete will fail.
+*/
+class EXPORTDECL_LDAPDA LDAPDeleteDAI: public LDAPAbstractDAI
+{
+public:
+	/*! \param name defines the name of the data access */
+	LDAPDeleteDAI(const char *name) : LDAPAbstractDAI(name) {};
+	~LDAPDeleteDAI() {};
+
+	//! returns a new TRX object
+	IFAObject *Clone() const {
+		return new LDAPDeleteDAI(fName);
+	};
+
+protected:
+	//! hook, called by Exec after connection.
+	//! returns message id of started delete request
+	int DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConnection *lc, ROAnything query);
+
+private:
+	// constructor
+	LDAPDeleteDAI();
+	LDAPDeleteDAI(const LDAPDeleteDAI &);
+	// assignement
+	LDAPDeleteDAI &operator=(const LDAPDeleteDAI &);
+
 };
 
 // =========================================================================
@@ -366,7 +385,7 @@ protected:
 
 	//! hook, called by Exec after connection.
 	//! returns message id of started search request
-	int DoLDAPRequest(LDAPConnection *lc, ROAnything query);
+	int DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConnection *lc, ROAnything query);
 
 private:
 	// constructor
