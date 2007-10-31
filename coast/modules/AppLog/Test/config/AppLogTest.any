@@ -86,39 +86,75 @@
 		/ErrorLogFormat		%ErrorLogFormat
 		/MethodTimeFormat	%MethodTimeFormat
 	}
-	/LogRotatorTest {
-		/Modules {
-			RenderersModule
-			ActionsModule
-			ServersModule
-		}
-		/Server				%Server
-		/Servers			%Servers
-		/Renderers			%Renderers
-		/Actions			%Actions
-		/SecondsToWaitOnRotate	3
-		/AppLogModule {
-			/LogDir		"config"
-			/RotateTime	"00:00"
-			/Servers {
-				/TestServer	{
-					/RotateLog	{
-						/FileName		"RotateTest.log"
-						/Format			%AccessLogFormat
-						/Header			"Rotate Header"
-					}
-					/DoNotRotateLog	{
-						/FileName		"DoNotRotateTest.log"
-						/DoNotRotate	1
-						/Format			%AccessLogFormat
-						/Header			"DoNotRotate Header"
+	/LogRotatorLocalTimeTest {
+			/Modules {
+				RenderersModule
+				ActionsModule
+				ServersModule
+			}
+			/Server				%Server
+			/Servers			%Servers
+			/Renderers			%Renderers
+			/Actions			%Actions
+			/SecondsToWaitOnRotate	3
+			/AppLogModule {
+				/LogDir		"config"
+				/RotateTime	"00:00"
+				/RotateTimeIsGmTime 0
+				/Servers {
+					/TestServer	{
+						/RotateLog	{
+							/FileName		"RotateTestLocalTime.log"
+							/Format			%AccessLogFormat
+							/Header			"Rotate Header"
+						}
+						/DoNotRotateLog	{
+							/FileName		"DoNotRotateTestLocalTime.log"
+							/DoNotRotate	1
+							/Format			%AccessLogFormat
+							/Header			"DoNotRotate Header"
+						}
 					}
 				}
 			}
-		}
-		/AccessLogFormat	%AccessLogFormat
-		/ErrorLogFormat		%ErrorLogFormat
-		/MethodTimeFormat	%MethodTimeFormat
+			/AccessLogFormat	%AccessLogFormat
+			/ErrorLogFormat		%ErrorLogFormat
+			/MethodTimeFormat	%MethodTimeFormat
+	}
+	/LogRotatorGmtTest {
+			/Modules {
+				RenderersModule
+				ActionsModule
+				ServersModule
+			}
+			/Server				%Server
+			/Servers			%Servers
+			/Renderers			%Renderers
+			/Actions			%Actions
+			/SecondsToWaitOnRotate	3
+			/AppLogModule {
+				/LogDir		"config"
+				/RotateTime	"00:00"
+				/RotateTimeIsGmTime 1
+				/Servers {
+					/TestServer	{
+						/RotateLog	{
+							/FileName		"RotateTestGmTime.log"
+							/Format			%AccessLogFormat
+							/Header			"Rotate Header"
+						}
+						/DoNotRotateLog	{
+							/FileName		"DoNotRotateTestGmTime.log"
+							/DoNotRotate	1
+							/Format			%AccessLogFormat
+							/Header			"DoNotRotate Header"
+						}
+					}
+				}
+			}
+			/AccessLogFormat	%AccessLogFormat
+			/ErrorLogFormat		%ErrorLogFormat
+			/MethodTimeFormat	%MethodTimeFormat
 	}
 	/LogRotationTimeTest {
 		/Modules {

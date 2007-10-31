@@ -39,7 +39,9 @@ public:
 	//!log into channels of 'virtual' server without own config but using TestServer config
 	void LogOkToVirtualServerTest();
 	//! test logfile rotation using absolute seconds
-	void LogRotatorTest();
+	void LogRotatorLocalTimeTest();
+	//! test logfile rotation using absolute seconds, using GMT
+	void LogRotatorGmtTest();
 	//! test logfile rotation using RotateTime
 	void LogRotationTimeTest();
 	//! Request log rotation for a channel
@@ -55,6 +57,7 @@ protected:
 	//! utility method to check the log files
 	void CheckFile(Context &ctx, const char *channelname, String expected, bool bExpectSuccess = true);
 	void CheckFileAfterChannelTermination(Context &ctx, const char *strLogFilename, String expected, bool bExpectSuccess = true);
+	void LogRotatorTestsCommon();
 };
 
 #endif

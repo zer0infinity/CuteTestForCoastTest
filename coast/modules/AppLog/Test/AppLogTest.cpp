@@ -181,9 +181,20 @@ void AppLogTest::LogOkToVirtualServerTest()
 	}
 }
 
-void AppLogTest::LogRotatorTest()
+void AppLogTest::LogRotatorGmtTest()
 {
-	StartTrace(AppLogTest.LogRotatorTest);
+	StartTrace(AppLogTest.LogRotatorGmtTest);
+	LogRotatorTestsCommon();
+}
+void AppLogTest::LogRotatorLocalTimeTest()
+{
+	StartTrace(AppLogTest.LogRotatorLocalTimeTest);
+	LogRotatorTestsCommon();
+}
+
+void AppLogTest::LogRotatorTestsCommon()
+{
+	StartTrace(AppLogTest.LogRotatorTestsCommon);
 
 	WDModule *pModule = WDModule::FindWDModule("AppLogModule");
 	if ( t_assertm(pModule != NULL, "expected AppLogModule to be registered") ) {
@@ -193,7 +204,11 @@ void AppLogTest::LogRotatorTest()
 		// set rotation time to simulate behavior
 		time_t now = time(0);
 		struct tm res, *tt;
-		tt = System::LocalTime(&now, &res);
+		if ( !(anyModuleConfig["AppLogModule"]["RotateTimeIsGmTime"].AsBool(0L)) ) {
+			tt = System::LocalTime(&now, &res);
+		} else {
+			tt = System::GmTime(&now, &res);
+		}
 		long lDeltaSec = GetTestCaseConfig()["SecondsToWaitOnRotate"].AsLong(5);
 		long lRotationTime = ( ( ( ( tt->tm_hour * 60 ) + tt->tm_min ) * 60 ) + tt->tm_sec + lDeltaSec) % 86400;
 		anyModuleConfig["AppLogModule"]["RotateSecond"] = lRotationTime;
@@ -517,7 +532,8 @@ Test *AppLogTest::suite ()
 	ADD_CASE(testSuite, AppLogTest, LogOkTest);
 	ADD_CASE(testSuite, AppLogTest, BufferItemsTest);
 	ADD_CASE(testSuite, AppLogTest, LogOkToVirtualServerTest);
-	ADD_CASE(testSuite, AppLogTest, LogRotatorTest);
+	ADD_CASE(testSuite, AppLogTest, LogRotatorLocalTimeTest);
+	ADD_CASE(testSuite, AppLogTest, LogRotatorGmtTest);
 	ADD_CASE(testSuite, AppLogTest, LogRotationTimeTest);
 	ADD_CASE(testSuite, AppLogTest, RotateSpecificLogTest);
 	ADD_CASE(testSuite, AppLogTest, LoggingActionTest);

@@ -28,6 +28,7 @@ conveniently. The method of this class are called by Coast
 	/RotateDir				String				optional, default <LogDir>/rotate, relative - to WD_ROOT - or absolute path to store away logfiles during rotate or module startup
 	/RotateTime				String				optional, default "24:00", time of rotation hh:mm[:ss], rotation will be done daily at the given time, seconds can be optionally specified
 	/RotateSecond			Long				optional, default 0, second in day when rotation takes place, takes precedence in case RotateTime is also given
+	/RotateTimeIsGmTime		bool				optional, default 0, use GMT time to determine log rotation time. Default is local time.
 	/Servers {				Anything			mandatory, list of registered servernames to have logging for, the ServersModule <b>must</b> be initialized before AppLogModule
 		/ServerName	{		Anything			mandatory, name of the registered server to create AppLogChannels for \note If the channel list is empty and the ServerName has a superclass Server with logging config, both servers will log into the same logfiles
 			/ChannelName {	Anything			optional (see above), name of the named AppLogChannel to create
@@ -100,7 +101,7 @@ protected:
 		\param rotateTime hour:minute to rotate logfiles at
 		\param lRotateSecond second in day when to rotate the log files
 		\return true in case the rotator thread could be initialized and started */
-	bool StartLogRotator(const char *rotateTime, long lRotateSecond);
+	bool StartLogRotator(const char *rotateTime, long lRotateSecond, bool isGmTime);
 	bool TerminateLogRotator();
 	bool DoRotateLogs();
 	static bool RotateLogs();
@@ -112,13 +113,14 @@ protected:
 	{
 		friend class AppLogTest;
 	public:
-		LogRotator(const char *rotateTime, long lRotateSecond = 0L);
+		LogRotator(const char *rotateTime, long lRotateSecond = 0L, bool isGmTime = false);
 
 	protected:
 		long GetSecondsToWait();
 		void Run();
 		//! when to rotate
 		long fRotateSecond;
+		bool fIsGmTime;
 	} *fRotator;
 	// gcc 2.95.x fix: friend declaration must be after nested class declaration
 	friend class LogRotator;
