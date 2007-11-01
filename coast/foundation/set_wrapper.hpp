@@ -202,15 +202,16 @@ public:
 	}
 
 	/*! Return iterators spanning all elements
-		\param
-		\return */
-	bool FullRange(IteratorType &rItemsBegin, IteratorType &rItemsEnd) {
+		\param rItemsBegin beginning position of range
+		\param rItemsEnd end position of range
+		\return true in case the range is not empty */
+	bool FullRange(ConstIteratorType &rItemsBegin, ConstIteratorType &rItemsEnd) const {
 		StartTrace(set_wrapper.FullRange);
 		bool bFound(false);
 		if ( HasList() ) {
-			LockUnlockEntry aGuard( fLock );
-			rItemsBegin = IntGetCreateListPtr()->begin();
-			rItemsEnd = IntGetCreateListPtr()->end();
+			LockUnlockEntry aGuard( *const_cast<MutexPolicy *>(&fLock) );
+			rItemsBegin = IntGetConstListPtr()->begin();
+			rItemsEnd = IntGetConstListPtr()->end();
 			bFound = ( rItemsBegin != rItemsEnd );
 		}
 		return bFound;
