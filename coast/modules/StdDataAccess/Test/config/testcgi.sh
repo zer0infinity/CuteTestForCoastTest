@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/sh
 cat <<!
 Content-type: text/plain
 
