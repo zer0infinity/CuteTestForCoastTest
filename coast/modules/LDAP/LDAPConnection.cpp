@@ -412,15 +412,7 @@ bool LDAPConnection::Disconnect()
 	StartTrace(LDAPConnection.Disconnect);
 
 	Trace("Disconnecting LDAP...");
-	if (fHandle) {
-		int errCode = ldap_unbind(fHandle);
-		if (errCode != LDAP_SUCCESS) {
-			Trace("Disconnect (unbind) failed!");
-			return false;
-		}
-	}
-	Trace("Disconnecting successful.");
-	return true;
+	return Disconnect(fHandle);
 }
 
 bool LDAPConnection::Disconnect(LDAP *handle)
@@ -431,6 +423,7 @@ bool LDAPConnection::Disconnect(LDAP *handle)
 	if (handle) {
 		int errCode = ldap_unbind(handle);
 		if (errCode != LDAP_SUCCESS) {
+			LDAPErrorHandler::HandleUnbindError(handle);
 			Trace("Disconnect (unbind) failed!");
 			return false;
 		}
