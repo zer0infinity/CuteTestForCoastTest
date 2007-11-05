@@ -27,6 +27,9 @@ public:
 	// handle session error with message
 	virtual void HandleSessionError(LDAP *ldap, String msg);
 
+	// handle session error without disposing of LDAPErrorHandler  object
+	static void HandleUnbindError(LDAP *ldap);
+
 	// handle other error (general implementation)
 	virtual void HandleError(String msg, Anything args = Anything(), String argDescr = "AdditionalInfo");
 
