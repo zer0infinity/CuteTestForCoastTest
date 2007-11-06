@@ -111,6 +111,34 @@ public:
 
 static ThreadInitializer *psgThreadInitializer = new ThreadInitializer(15);
 
+#if defined(__APPLE__)	//FIXME: check if this is still needed with most current version of framework
+// notice: never delete this class or its internal structure!
+// check with the base class FinalCleaner for understanding the sequence of deletion
+// the CleanupInitializer instance will be deleted from within FinalCleaner::~FinalCleaner
+class CleanupAllocator
+{
+private:
+	static ThreadInitializer *globalCleanupInitializer;
+public:
+	CleanupAllocator() {
+		SysLog::Info("----CREATED CleanupAllocator----");
+	}
+
+	~CleanupAllocator() {
+		SysLog::Info("----DESTROYED CleanupAllocator----");
+	}
+
+	static void initializeCleanupAllocator() {
+		if (!globalCleanupInitializer) {
+			globalCleanupInitializer = new ThreadInitializer();
+		}
+	}
+};
+
+CleanupInitializer *CleanupAllocator::globalCleanupInitializer = 0;
+static CleanupAllocator fgInitKey;
+#endif
+
 Thread::Thread(const char *name, bool daemon, bool detached, bool suspended, bool bound, Allocator *a)
 	: NamedObject(name)
 	, tObservableBase(name, a)
@@ -699,6 +727,9 @@ long Thread::NumOfThreads()
 
 bool Thread::RegisterCleaner(CleanupHandler *handler)
 {
+#if defined(__APPLE__)
+	CleanupAllocator::initializeCleanupAllocator();
+#endif
 	StartTrace1(Thread.RegisterCleaner, "CallId: " << MyId());
 	Anything *handlerList = 0;
 	if (!GETTLSDATA(fgCleanerKey, handlerList, Anything)) {
