@@ -150,6 +150,12 @@ public:
 		return IntDeleteItem( aItem );
 	}
 
+	bool DeleteItem( const ConstIteratorType &aItemPos ) {
+		StartTrace(set_wrapper.DeleteItem);
+		LockUnlockEntry aGuard( fLock );
+		return IntDeleteItem( aItemPos );
+	}
+
 	bool ReplaceItem(const ItemType &aItem) {
 		StartTrace(set_wrapper.ReplaceItem);
 		LockUnlockEntry aGuard( fLock );
@@ -383,9 +389,19 @@ protected:
 		StartTrace(set_wrapper.IntDeleteItem);
 		bool bRet(false);
 		if ( IntHasList() ) {
-			size_type aRetCode( IntGetCreateListPtr()->erase(aItem) );
+			size_type aRetCode( IntGetCreateListPtr()->erase( aItem ) );
 			// number of elements == 1 means success
 			bRet = ( aRetCode == 1 );
+		}
+		return bRet;
+	}
+
+	bool IntDeleteItem(const ConstIteratorType &aItemPos) {
+		StartTrace(set_wrapper.IntDeleteItem);
+		bool bRet(false);
+		if ( IntHasList() ) {
+			IntGetCreateListPtr()->erase( aItemPos );
+			bRet = true;
 		}
 		return bRet;
 	}
