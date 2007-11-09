@@ -134,6 +134,9 @@ public:
 	{}
 	~set_wrapper() {
 		LockUnlockEntry aGuard( fLock );
+		if ( IntHasList() ) {
+			IntGetListPtr()->clear();
+		}
 		delete fpList;
 		fpList = NULL;
 	}
