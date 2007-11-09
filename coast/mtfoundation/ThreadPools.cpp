@@ -395,7 +395,7 @@ String WorkerPoolManager::GetName()
 int WorkerPoolManager::Init(int maxParallelRequests, int usePoolStorage, int poolStorageSize, int numOfPoolBucketSizes, ROAnything roaWorkerArgs)
 {
 	StartTrace(WorkerPoolManager.Init);
-	bool reallyterminated = Finis(5);	// nothing to do if yet uninitialized
+	Finis(5);	// nothing to do if yet uninitialized
 
 	fTerminated = false;
 
@@ -495,32 +495,6 @@ int WorkerPoolManager::InitPool(bool usePoolStorage, long poolStorageSize, int n
 	return 0;
 }
 
-void WorkerPoolManager::Enter(ROAnything workload)
-{
-	// guard the entry to request handling
-	// we're doing flow control on the main thread
-	// causing it to wait for a request thread to
-	// be available
-
-	LockUnlockEntry me(fMutex);
-	StartTrace(WorkerPoolManager.Enter);
-
-	while ((fPoolSize <= fCurrentParallelRequests) || fBlockRequestHandling) {
-		fCond.Wait( fMutex );		// release mutex and wait for condition
-	}
-
-	Assert(fPoolSize > fCurrentParallelRequests);
-	Trace("I slipped past the Critical Region and there are " << fCurrentParallelRequests << " requests in work");
-
-	// use the request param as hint to get the next free WorkerThread
-	long request = workload["request"].AsLong(fCurrentParallelRequests + 1L);
-
-	// find a worker object that can run this request
-	WorkerThread *hr = FindNextRunnable(request);
-
-	hr->SetWorking(workload);
-}
-
 void WorkerPoolManager::Update(tObservedPtr pObserved, tArgsRef roaUpdateArgs)
 {
 	LockUnlockEntry me(fMutex);
@@ -608,13 +582,13 @@ bool WorkerPoolManager::AwaitEmpty(long sec)
 	return (fCurrentParallelRequests <= 0);
 }
 
-WorkerThread *WorkerPoolManager::FindNextRunnable(long requestNr)
+WorkerThread *WorkerPoolManager::FindNextRunnable(long lFindWorkerHint)
 {
-	if (requestNr < 0) {	// safeguard against negative numbers
-		requestNr = 0;
+	if (lFindWorkerHint < 0) {	// safeguard against negative numbers
+		lFindWorkerHint = 0;
 	}
 
-	unsigned long at = requestNr % fPoolSize;
+	unsigned long at = lFindWorkerHint % fPoolSize;
 	WorkerThread *hs = 0;
 
 	// at least one should be runnable, since the semaphore prevents the main thread from entering
@@ -622,7 +596,7 @@ WorkerThread *WorkerPoolManager::FindNextRunnable(long requestNr)
 	for ( hs = DoGetWorker(at); !hs->IsReady(); hs = DoGetWorker(++at % fPoolSize) ) ;
 
 #ifdef LOW_TRACING
-	SysLog::WriteToStderr("s{" << requestNr << "," << fCurrentParallelRequests << "}" << "\n");
+	SysLog::WriteToStderr("s{" << lFindWorkerHint << "," << fCurrentParallelRequests << "}" << "\n");
 #endif
 
 	return hs;

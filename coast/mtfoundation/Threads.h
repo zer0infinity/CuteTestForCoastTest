@@ -638,6 +638,10 @@ public:
 	//!Try to set Working state
 	bool SetWorking(ROAnything args = ROAnything());
 
+	//!Try to set Working state
+	template< class WorkerParamType >
+	bool SetWorking(WorkerParamType workerArgs);
+
 	/*! terminates the thread of control; blocks its caller
 		\param timeout the caller is blocked until the state eTerminated is reached or the timeout period has elapsed. If timeout==0 the timeout period is ignored
 		\param args the arguments to the termination
@@ -769,6 +773,14 @@ private:
 		\note internal method setting the running state; if successful it broadcasts the state change to observers and waiters of the state condition */
 	bool SetRunningState(ERunningState state, ROAnything args);
 
+	/*! internal method setting the running state
+		\param state the running state wished
+		\param args the arguments to the state change
+		\return returns true if the state change was possible; returns false if not in EThreadState::eRunning or the running state is already the state wished
+		\note internal method setting the running state; if successful it broadcasts the state change to observers and waiters of the state condition */
+	template< class WorkerParamType >
+	bool SetRunningState(ERunningState state, WorkerParamType args);
+
 	/*! cloning interface of object, disallow clones for now
 		\return NULL in any case */
 	virtual IFAObject *Clone() const {
@@ -795,5 +807,7 @@ private:
 	friend void EXPORTDECL_MTFOUNDATION TerminateKilledThreads();
 #endif
 };
+
+#include "Threads.ipp"
 
 #endif

@@ -216,7 +216,7 @@ void SybCTPoolManager::Work(Anything &args)
 	args["condition"] = (IFAObject *)&cond;
 	{
 		LockUnlockEntry me(mx);
-		Enter(args);
+		Enter(args, -1L);
 		// wait on the worker to finish its work and start it with waiting on the condition
 		cond.Wait(mx);
 	}

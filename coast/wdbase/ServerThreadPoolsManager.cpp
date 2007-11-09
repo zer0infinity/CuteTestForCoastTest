@@ -251,9 +251,9 @@ void ServerCallBack::CallBack(Socket *s)
 	if (fPoolManager) {
 		Anything work;
 		work["socket"] = (IFAObject *)s;
-		work["request"] = fRequests++;
+		work["request"] = ++fRequests;
 		TraceAny(work, "work:");
-		fPoolManager->Enter(work);
+		fPoolManager->Enter(work, fRequests);
 	}
 }
 

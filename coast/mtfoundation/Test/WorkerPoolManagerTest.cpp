@@ -84,7 +84,7 @@ void WorkerPoolManagerTest::EnterLeaveTests()
 
 	Anything work;
 	for (long i = 0; i < 2 * cPoolSz; i++) {
-		wpm.Enter(ROAnything(work));
+		wpm.Enter( ROAnything(work), -1L);
 	}
 	t_assert(wpm.AwaitEmpty(5));
 	t_assert(wpm.Terminate());

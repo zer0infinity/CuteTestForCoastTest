@@ -322,8 +322,10 @@ public:
 	/*! critical region entry to process the next work package.
 		This method blocks the caller (e.g. the server accept-loop) if the pool has no worker ready,  i.e. ResourcesUsed() == GetPoolSize()
 		\pre needs "request" slot in workload, containing a long which gives a hint which worker to take
-		\param workload arguments passed to WorkerThread */
-	void Enter(ROAnything workload);
+		\param workload arguments passed to WorkerThread
+		\param lFindWorkerHint hint to select correct WorkerThread for processing */
+	template< class WorkerParamType >
+	void Enter( WorkerParamType workload, long lFindWorkerHint );
 
 	//!blocks the caller waiting for the running requests to terminate. It waits at most 'secs' seconds
 	bool AwaitEmpty(long secs);
@@ -371,9 +373,9 @@ protected:
 	int PreparePool(int usePoolStorage, int poolStorageSize, int numOfPoolBucketSizes, ROAnything roaWorkerArgs);
 
 	/*! finds a runnable WorkerThread object. Since there are fPoolSize WorkerThread objects and also fPoolSize allowed in the critical region there should always at least one be runnable
-		\param requestNr a number
+		\param lFindWorkerHint a number giving a hint which worker to select
 		\return the next available WorkerThread */
-	WorkerThread *FindNextRunnable(long requestNr);
+	virtual WorkerThread *FindNextRunnable(long lFindWorkerHint);
 
 	//! number of allowed request threads that can run in parallel
 	long fPoolSize;
@@ -398,5 +400,7 @@ private:
 	//!prohibit the use of the assignement operator
 	WorkerPoolManager &operator=(const WorkerPoolManager &);
 };
+
+#include "ThreadPools.ipp"
 
 #endif
