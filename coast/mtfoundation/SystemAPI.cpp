@@ -647,6 +647,24 @@ int rwl_writeunlock (rwlock_t *rwl)
 	status = pthread_mutex_unlock (&rwl->mutex);
 	return status;
 }
+
+#if defined(__APPLE__)
+#include <sstream>
+bool sem_initialize(sem_t **sema, unsigned int count)
+{
+	static int sema_num = 0;
+	std::stringstream ss;
+	std::stringstream ss_init_sema;
+	ss_init_sema << "/init_sema_" << getpid();
+	sem_t *init_sema = sem_open(ss_init_sema.str().c_str(), O_CREAT | O_EXCL, 700, 1);
+	sem_wait(init_sema);
+	ss << "/" << getpid() << ":" << ++sema_num;
+	*sema = (sem_open(ss.str().c_str(), O_CREAT | O_EXCL, 700, count));
+	sem_post(init_sema);
+	return ((long) sema != (long) SEM_FAILED);
+}
+#endif
+
 #endif
 
 #endif

@@ -272,6 +272,7 @@ extern "C" {
 #define TRYLOCK(mutex, retcode)		doTryLock((pthread_mutex_t*)&mutex, retcode)
 
 //--- sema macros
+#if !defined(__APPLE__)
 #define SEMA						sem_t
 #define SEMAPTR						sem_t*
 #define GETSEMAPTR(sema)			(sem_t*)&sema
@@ -281,6 +282,20 @@ extern "C" {
 #define UNLOCKSEMA(sema)			(sem_post((sem_t*) &sema) == 0)
 #define TRYSEMALOCK(sema)			(sem_trywait((sem_t*)&sema) == 0)
 #define GETSEMACOUNT(sema, count)	(sem_getvalue((sem_t*) &sema, &count))
+#else
+#define SEMA						sem_t*
+#define SEMAPTR						sem_t**
+#define GETSEMAPTR(sema)			(sem_t**)&sema
+extern "C" {
+	bool sem_initialize(sem_t **sema, unsigned int count);
+}
+#define CREATESEMA(sema, count)		(sem_initialize(&sema,count))
+#define DELETESEMA(sema)			(sem_close(&*sema) == 0)
+#define LOCKSEMA(sema)				(sem_wait((sem_t*) &*sema) == 0)
+#define UNLOCKSEMA(sema)			(sem_post((sem_t*) &*sema) == 0)
+#define TRYSEMALOCK(sema)			(sem_trywait((sem_t*)&*sema) == 0)
+#define GETSEMACOUNT(sema, count)	(sem_getvalue((sem_t*) &sema, &count))
+#endif //__APPLE__
 
 //--- read write locks
 #define RWLOCK						rwlock_t
@@ -314,6 +329,6 @@ extern "C" {
 #include <errno.h>
 #include <signal.h>
 #include <stdio.h>
-#endif
 
+#endif
 #endif
