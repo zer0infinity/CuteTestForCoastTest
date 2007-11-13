@@ -165,7 +165,9 @@ iostream *SSLSocket::DoMakeStream()
 	if ( verifyCallbackWasSet ) {
 		appData["SSLSocketArgs"] = (IFAObject *) &fSSLSocketArgs;
 		appData.Append(sslinfo);
-		if ( SSL_set_ex_data(ssl, Thread::MyId(), &appData) == false ) {
+
+		int thread_id = (unsigned)Thread::MyId() % 1000000;
+		if ( SSL_set_ex_data(ssl, thread_id, &appData) == false ) {
 			String logMsg("SSL error: Setting application specific data failed.");
 			SysLog::Error(logMsg);
 			return NULL;
@@ -294,7 +296,6 @@ int SSLSocket::SSLVerifyCallback(int preverify_ok, X509_STORE_CTX *ctx)
 	int allowedDepth = 0;
 
 	err  = X509_STORE_CTX_get_error(ctx);
-
 	depth = X509_STORE_CTX_get_error_depth(ctx);
 //   /*
 //	* Retrieve the pointer to the SSL of the connection currently treated
@@ -302,14 +303,13 @@ int SSLSocket::SSLVerifyCallback(int preverify_ok, X509_STORE_CTX *ctx)
 //	*/
 	ssl = (SSL *)  X509_STORE_CTX_get_ex_data(ctx, SSL_get_ex_data_X509_STORE_CTX_idx());
 	allowedDepth = SSL_get_verify_depth(ssl);
-
-	pAppData =  (Anything *)  SSL_get_ex_data(ssl, Thread::MyId());
+	int thread_id = (unsigned)Thread::MyId() % 1000000;
+	pAppData =  (Anything *)  SSL_get_ex_data(ssl, thread_id);
 	if (depth > allowedDepth + 1) {
 		preverify_ok = 0;
 		err = X509_V_ERR_CERT_CHAIN_TOO_LONG;
 		X509_STORE_CTX_set_error(ctx, err);
 	}
-
 	pSSLSocketArgs = (SSLSocketArgs *) (*pAppData)["SSLSocketArgs"].AsIFAObject(0);
 	cert = X509_STORE_CTX_get_current_cert(ctx);
 	(*pAppData)["Chain"]["Subjects"].Append(SSLSocketUtils::GetPeerAsString(cert));
