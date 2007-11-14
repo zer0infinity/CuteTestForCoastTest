@@ -183,10 +183,11 @@ String SysLog::SysErrorMsg(long errnum)
 // from SysErrorMsg(errno)
 String SysLog::LastSysError()
 {
-	if (System::GetSystemError()) {
-		return SysErrorMsg(System::GetSystemError());
+	int iError( System::GetSystemError() );
+	if ( iError != 0 ) {
+		return SysErrorMsg( iError );
 	}
-	return "no error";
+	return String().Append((long)iError).Append(": no system-error");
 }
 
 //magic function to be used by Assert macro to avoid dependency to class SysLog and SysLog.h
