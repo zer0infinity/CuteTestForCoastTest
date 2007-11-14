@@ -33,8 +33,8 @@ extern "C" void finalize();
 #endif
 
 MemChecker::MemChecker(const char *scope, Allocator *a)
-	: fAllocator(a)
-	, fSizeAllocated(fAllocator->CurrentlyAllocated())
+	: fAllocator( a )
+	, fSizeAllocated( ( a ? fAllocator->CurrentlyAllocated() : 0LL ) )
 	, fScope(scope)
 {
 }
@@ -52,14 +52,14 @@ void MemChecker::TraceDelta(const char *message)
 		if (message) {
 			SysLog::WriteToStderr( message, strlen(message));
 		}
-		int bufsz = snprintf(msgbuf, sizeof(msgbuf), "\nMem Usage change by %.0f bytes in %s\n", (double)delta, fScope);
+		int bufsz = snprintf(msgbuf, sizeof(msgbuf), "\nMem Usage change by %.0f bytes in %s\nAllocator [%02ld]\n", (double)delta, fScope, ( fAllocator ? fAllocator->GetId() : 0L ) );
 		SysLog::WriteToStderr( msgbuf, bufsz );
 	}
 }
 
 l_long MemChecker::CheckDelta()
 {
-	return fAllocator->CurrentlyAllocated() - fSizeAllocated;
+	return ( fAllocator ? ( fAllocator->CurrentlyAllocated() - fSizeAllocated ) : 0LL );
 }
 
 //------------- Utilities for Memory Tracking --------------
