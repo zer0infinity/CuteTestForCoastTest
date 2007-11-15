@@ -826,7 +826,7 @@ ServerThread::ServerThread()
 	: Thread("ServerThread")
 	, fServer(0)
 	, fbInitialized(false)
-	, fTerminationMutex("ServerThreadTerminationMutex")
+	, fTerminationMutex( "ServerThreadTerminationMutex", Storage::Global() )
 {
 }
 
@@ -834,7 +834,7 @@ ServerThread::ServerThread(Server *aServer)
 	: Thread("ServerThread")
 	, fServer(aServer)
 	, fbInitialized(false)
-	, fTerminationMutex("ServerThreadTerminationMutex")
+	, fTerminationMutex( "ServerThreadTerminationMutex", Storage::Global() )
 {
 }
 
@@ -876,17 +876,15 @@ int ServerThread::ReInit(const ROAnything config)
 void ServerThread::Run()
 {
 	StartTrace1(ServerThread.Run, "<" << GetName() << ">");
-	if ( fbInitialized && CheckRunningState(eWorking) && IsRunning() ) {
+	if ( fbInitialized && CheckRunningState( eWorking ) ) {
 		if (fServer) {
 			fServer->Run();
 		}
 		// synchronize with PrepareShutdown call
 		// the caller must have left the method before continuing here
 		LockUnlockEntry me(fTerminationMutex);
-		if ( IsRunning() ) {
-			SetReady();
-		}
 	}
+	SetReady();
 }
 
 void ServerThread::DoTerminatedRunMethodHook()
