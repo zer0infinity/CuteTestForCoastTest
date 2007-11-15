@@ -150,7 +150,7 @@ InterruptHandler::InterruptHandler(Server *server)
 InterruptHandler::~InterruptHandler()
 {
 	StartTrace(InterruptHandler.Dtor);
-	THRKILL(GetId(), SIGTERM);
+	Terminate();
 	CheckState(Thread::eTerminated);
 	if (fServer) {
 		fServer->RemovePIDFile();
@@ -317,7 +317,7 @@ void RequestThreadsManager::DoAllocPool(ROAnything args)
 		Trace(msg);
 		SYSERROR(msg);
 	}
-	fRequests = new HandleRequest[fPoolSize];
+	fRequests = new HandleRequest[GetPoolSize()];
 }
 
 WorkerThread *RequestThreadsManager::DoGetWorker(long i)
@@ -335,7 +335,7 @@ void RequestThreadsManager::DoDeletePool(ROAnything args)
 	StartTrace(RequestThreadsManager.DoDeletePool);
 	if (fRequests) {
 		// SOP, should check if threads are really done.
-		//for (int i = 0; i < fPoolSize; i ++){
+		//for (int i = 0; i < GetPoolSize(); i ++){
 		//	Assert(fRequests[i].Terminate(1));
 		//}
 		delete [] fRequests;	// cast to correct type
