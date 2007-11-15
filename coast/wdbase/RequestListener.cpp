@@ -231,7 +231,7 @@ void ListenerThread::DoTerminationRequestHook(ROAnything args)
 
 //--- ListenerPool -------------------------------------------
 ListenerPool::ListenerPool(CallBackFactory *callBackFactory)
-	: ThreadPoolManager()
+	: ThreadPoolManager("ListenerPool")
 	, fCallBackFactory(callBackFactory)
 {
 	StartTrace(ListenerPool.Ctor);
