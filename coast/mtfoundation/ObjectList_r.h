@@ -59,21 +59,25 @@ private:
 		\return true only when an element could be get, false in case the list was empty, we are in shutdown mode or a timeout occured */
 	virtual bool DoRemoveHead(ListTypeReference aElement, long lSecs = 0L, long lNanosecs = 0L) {
 		StartTrace1(ObjectList_r.DoRemoveHead, "sec:" << lSecs << " nano:" << lNanosecs);
-		LockUnlockEntry me(this->fMutex);
-		// wait on new element
-		while ( !BaseClass::IsShuttingDown() && BaseClass::DoIsEmpty() ) {
-			if ( fCondFull.TimedWait(this->fMutex, lSecs, lNanosecs) == TIMEOUTCODE ) {
-				Trace("premature exit because of a timeout and empty list");
-				return false;
+		bool bRemovedElt( false );
+		{
+			LockUnlockEntry me(this->fMutex);
+			// wait on new element
+			while ( !BaseClass::IsShuttingDown() && BaseClass::DoIsEmpty() ) {
+				if ( fCondFull.TimedWait(this->fMutex, lSecs, lNanosecs) == TIMEOUTCODE ) {
+					Trace("premature exit because of a timeout and empty list");
+					return false;
+				}
+			}
+			bRemovedElt = BaseClass::DoRemoveHead(aElement);
+			if ( bRemovedElt ) {
+				Trace("got an element");
+				fCondEmpty.BroadCast();
+			} else {
+				Trace("in shutdown");
 			}
 		}
-		if ( BaseClass::DoRemoveHead(aElement) ) {
-			fCondEmpty.BroadCast();
-			Trace("got an element");
-			return true;
-		}
-		Trace("in shutdown");
-		return false;
+		return bRemovedElt;
 	}
 
 	/*! Method to be called to signal that we want to destroy the list. If the elements should still be consumed by the workers reading from the list false should be passed as argument. If a 'destructive' shutdown is wanted true should be passed.
@@ -89,9 +93,9 @@ private:
 				}
 			}
 			BaseClass::DoSignalShutdown(bDestructive);
+			// wake up the workerThreads such that they recheck the shutdown flag
+			fCondFull.BroadCast();
 		}
-		// wake up the workerThreads such that they recheck the shutdown flag
-		fCondFull.BroadCast();
 	}
 
 	/*! returns the current number of elements in the list
@@ -109,14 +113,18 @@ private:
 
 	virtual bool DoInsertTail(const ListTypeValueType &newObjPtr) {
 		StartTrace(ObjectList_r.DoInsertTail);
-		LockUnlockEntry me(this->fMutex);
-		if ( BaseClass::DoInsertTail(newObjPtr) ) {
-			fCondFull.BroadCast();
-			Trace("success");
-			return true;
+		bool bInsertSuccess( false );
+		{
+			LockUnlockEntry me(this->fMutex);
+			bInsertSuccess = BaseClass::DoInsertTail(newObjPtr);
+			if ( bInsertSuccess ) {
+				Trace("success");
+				fCondFull.BroadCast();
+			} else {
+				Trace("failure");
+			}
 		}
-		Trace("failure");
-		return false;
+		return bInsertSuccess;
 	}
 
 	//!default constructor prohibited
