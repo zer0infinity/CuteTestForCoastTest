@@ -33,7 +33,7 @@ const long LeaderFollowerPool::cNoCurrentLeader = -1;
 const long LeaderFollowerPool::cBlockPromotion = -2;
 
 LeaderFollowerPool::LeaderFollowerPool(Reactor *reactor)
-	: ThreadPoolManager()
+	: ThreadPoolManager("LeaderFollowerPool")
 	, fReactor(reactor)
 	, fCurrentLeader(cNoCurrentLeader)
 	, fOldLeader(cNoCurrentLeader)
@@ -99,8 +99,8 @@ void LeaderFollowerPool::WaitForRequest(Thread *t, long timeout)
 			} else {
 				fFollowersCondition.Wait(fLFMutex);
 			}
-			if ( (fPoolState >= Thread::eTerminationRequested) || (t && !t->IsRunning()) ) {
-				Trace("No longer running terminating");
+			if ( ( fPoolState >= Thread::eTerminationRequested ) || !( t && ( t->CheckState( Thread::eRunning ) ) ) ) {
+				Trace("No longer running, terminating");
 				PromoteNewLeader();
 				return;
 			}
@@ -108,7 +108,9 @@ void LeaderFollowerPool::WaitForRequest(Thread *t, long timeout)
 		fCurrentLeader = (long)Thread::MyId();
 		Trace("New Leader: " << fCurrentLeader << " processing events");
 		fLFMutex.Unlock();
+		t->SetWorking();
 		fReactor->ProcessEvents(this, timeout * 1000);
+		t->SetReady();
 		fLFMutex.Lock();
 	}
 	PromoteNewLeader();
@@ -117,21 +119,21 @@ void LeaderFollowerPool::WaitForRequest(Thread *t, long timeout)
 void LeaderFollowerPool::PromoteNewLeader()
 {
 	StartTrace(LeaderFollowerPool.PromoteNewLeader);
-
-	LockUnlockEntry me(fLFMutex);
-	if (fCurrentLeader != (long)Thread::MyId() && fCurrentLeader != cBlockPromotion ) {
-		String msg("inconsistent pool: ");
-		msg << (long)Thread::MyId() << " is not leader(" << fCurrentLeader << ")";
-		SYSERROR(msg);
-		Trace(msg);
+	{
+		LockUnlockEntry me(fLFMutex);
+		if (fCurrentLeader != (long)Thread::MyId() && fCurrentLeader != cBlockPromotion ) {
+			String msg("inconsistent pool: ");
+			msg << (long)Thread::MyId() << " is not leader(" << fCurrentLeader << ")";
+			SYSERROR(msg);
+			Trace(msg);
+		}
+		if ( fCurrentLeader != cBlockPromotion ) {
+			fCurrentLeader = cNoCurrentLeader;
+		} else {
+			fOldLeader = cNoCurrentLeader;
+		}
+		fFollowersCondition.Signal();
 	}
-
-	if ( fCurrentLeader != cBlockPromotion ) {
-		fCurrentLeader = cNoCurrentLeader;
-	} else {
-		fOldLeader = cNoCurrentLeader;
-	}
-	fFollowersCondition.Signal();
 }
 
 bool LeaderFollowerPool::Init(int maxParallelRequests, ROAnything args)
