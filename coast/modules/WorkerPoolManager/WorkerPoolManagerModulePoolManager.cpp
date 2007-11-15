@@ -38,7 +38,7 @@ void WorkerPoolManagerModuleWorker::DoInit(ROAnything workerInit)
 void WorkerPoolManagerModuleWorker::DoProcessWorkload()
 {
 	StartTrace(WorkerPoolManagerModuleWorker.DoProcessWorkload);
-	if (IsWorking() && GetState() == Thread::eRunning) {
+	if ( CheckRunningState( eWorking ) ) {
 		Anything *pMessages;
 		Mutex *pMx;
 		Mutex::ConditionType *pCond;
@@ -128,7 +128,7 @@ void WorkerPoolManagerModulePoolManager::DoAllocPool(ROAnything args)
 {
 	StartTrace(WorkerPoolManagerModulePoolManager.DoAllocPool);
 	// create the pool of worker threads
-	fRequests = new WorkerPoolManagerModuleWorker[fPoolSize];
+	fRequests = new WorkerPoolManagerModuleWorker[GetPoolSize()];
 }
 
 WorkerThread *WorkerPoolManagerModulePoolManager::DoGetWorker(long i)

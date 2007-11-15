@@ -222,7 +222,7 @@ public:
 		StartTrace(ConsumerTerminationThread.Run);
 		// signal start using working state
 		Trace("before CheckRunningState(eWorking)");
-		while ( IsRunning() ) {
+		while ( CheckState( eRunning, 0, 1 ) ) {
 			CheckRunningState(eWorking);
 			Trace("now working");
 			Anything anyProduct;

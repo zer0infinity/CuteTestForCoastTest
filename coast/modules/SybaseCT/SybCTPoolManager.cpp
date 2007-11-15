@@ -53,7 +53,7 @@ void SybaseWorker::DoInit(ROAnything workerInit)
 void SybaseWorker::DoProcessWorkload()
 {
 	StartTrace(SybaseWorker.DoProcessWorkload);
-	if (IsWorking() && GetState() == Thread::eRunning) {
+	if ( CheckRunningState( eWorking ) ) {
 		Anything *pMessages;
 		Mutex *pMx;
 		Mutex::ConditionType *pCond;
@@ -181,7 +181,7 @@ void SybCTPoolManager::DoAllocPool(ROAnything args)
 {
 	StartTrace(SybCTPoolManager.DoAllocPool);
 	// create the pool of worker threads
-	fRequests = new SybaseWorker[fPoolSize];
+	fRequests = new SybaseWorker[GetPoolSize()];
 }
 
 WorkerThread *SybCTPoolManager::DoGetWorker(long i)
