@@ -85,7 +85,7 @@ public:
 	/*! create mutex with names to ease debugging of locking problems
 		\param name a name to identify the mutex when tracing locking problems
 		\param a allocator used to allocate the storage for the name */
-	SimpleMutex(const char *name, Allocator *a = Storage::Global());
+	SimpleMutex(const char *name, Allocator *a);
 	~SimpleMutex();
 
 	/*! tries to acquire the mutex for this thread, blocks the caller if already locked (by another thread)
@@ -598,18 +598,18 @@ public:
 		\return true if the thread is about to start and fState == eStarted; false if DoStartRequestedHook returns false and fState == eTerminated */
 	bool Start(Allocator *wdallocator = Storage::Global(), ROAnything args = ROAnything());
 
-	/*! blocks the caller until thread has reached the requested or a higher state
-		\param state EThreadState to check if the thread has reached or passed it
+	/*! blocks the caller until thread has reached the requested state
+		\param state EThreadState to check if the thread has reached it
 		\param timeout timeout for wait in seconds
 		\param nanotimeout timeout to wait in nanoseconds (10e-9)
-		\return true if state was reached otherwise false; caution if you check for e.g. eThreadStarted and the state is already eThreadRunning returns also true */
+		\return true if state was reached otherwise false */
 	bool CheckState(EThreadState state, long timeout = 0, long nanotimeout = 0);
 
 	/*! blocks the caller until thread has reached the requested state
-		\param state ERunningState to check if the thread has reached or passed it
+		\param state ERunningState to check if the thread has reached it
 		\param timeout timeout for wait in seconds
 		\param nanotimeout timeout to wait in nanoseconds (10e-9)
-		\return true if state was reached otherwise false; */
+		\return true if state was reached otherwise false */
 	bool CheckRunningState(ERunningState state, long timeout = 0, long nanotimeout = 0);
 
 	/*! returns the threads current state; if using trylock and lock is already set returns dfltState
@@ -623,20 +623,26 @@ public:
 		return (fSignature == 0x0f0055AA);
 	}
 
-	//!tests if in state eReady; returns false if mutex locked
-	bool IsReady();
+	/*! Test if in we are in state eReady
+		\param bIsReady will get the correct value only when the methods return code is true!
+		\return true in case we could retrieve the value, false otherwise */
+	bool IsReady( bool &bIsReady );
 
-	//!tests if in state eWorking; returns true if mutex locked - assuming something is going on
-	bool IsWorking();
+	/*! Test if in we are in state eWorking
+		\param bIsWorking will get the correct value only when the methods return code is true!
+		\return true in case we could retrieve the value, false otherwise */
+	bool IsWorking( bool &bIsWorking );
 
-	//!tests if in state eRunning == fState
-	bool IsRunning();
+	/*! Test if in we are in state eRunning
+		\param bIsRunning will get the correct value only when the methods return code is true!
+		\return true in case we could retrieve the value, false otherwise */
+	bool IsRunning( bool &bIsRunning );
 
 	//!Try to set Ready state
-	bool SetReady(ROAnything args = ROAnything());
+	bool SetReady( ROAnything args = ROAnything() );
 
 	//!Try to set Working state
-	bool SetWorking(ROAnything args = ROAnything());
+	bool SetWorking( ROAnything args = ROAnything() );
 
 	//!Try to set Working state
 	template< class WorkerParamType >
@@ -677,7 +683,19 @@ protected:
 	//!sets internal states and calls Run
 	void IntRun();
 
+	/*! blocks the caller until thread has reached the requested state
+		\param state EThreadState to check if the thread has reached it
+		\param timeout timeout for wait in seconds
+		\param nanotimeout timeout to wait in nanoseconds (10e-9)
+		\return true if state was reached otherwise false */
 	bool IntCheckState(EThreadState state, long timeout = 0, long nanotimeout = 0);
+
+	/*! blocks the caller until thread has reached the requested state
+		\param state ERunningState to check if the thread has reached it
+		\param timeout timeout for wait in seconds
+		\param nanotimeout timeout to wait in nanoseconds (10e-9)
+		\return true if state was reached otherwise false */
+	bool IntCheckRunningState(ERunningState state, long timeout = 0, long nanotimeout = 0);
 
 	//!this method gets called from the threads callback function
 	virtual void Run() = 0;
