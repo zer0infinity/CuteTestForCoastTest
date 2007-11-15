@@ -629,8 +629,10 @@ public:
 		, fCleanupFunc(cf) {
 	}
 	void Run() {
+		SetWorking();
 		fFunc(fInnerFunc);
 		fCleanupFunc();
+		SetReady();
 	}
 };
 
@@ -646,7 +648,7 @@ class TestMethodWorkerThreadPool : public ThreadPoolManager
 	cleanupFunc fCleanupFunc;
 public:
 	TestMethodWorkerThreadPool(funcType f, innerFunc fi, cleanupFunc cf)
-		: ThreadPoolManager()
+		: ThreadPoolManager("TestMethodWorkerThreadPool")
 		, fFunc(f)
 		, fInnerFunc(fi)
 		, fCleanupFunc(cf)
