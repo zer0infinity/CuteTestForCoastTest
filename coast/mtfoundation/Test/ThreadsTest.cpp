@@ -87,9 +87,10 @@ void ThreadsTest::ThreadRunningStateTransitionTest()
 	StartTrace(ThreadsTest.ThreadRunningStateTransitionTest);
 	// "Normal case" goes from Created to Started,Running, toggles between Ready and Working and gets Terminated
 	TerminateMeTestThread t;
-	t_assertm(!t.IsReady(), "Is not Ready yet");
-	t_assertm(!t.IsWorking(), "It is not working");
-	t_assertm(!t.SetReady(), "Can not set Ready until running");
+	bool bIsReady( false ), bIsWorking( false ), bIsRunning( false );
+	t_assertm( !t.IsReady( bIsReady ) && !bIsReady , "Is not Ready yet");
+	t_assertm( !t.IsWorking( bIsWorking ) && !bIsWorking, "It is not working");
+	t_assertm( !t.SetReady(), "Can not set Ready until running");
 	t_assertm(!t.CheckRunningState(Thread::eReady, 0, 20 * MILISEC), "State can not be eReady until running");
 	t_assertm(!t.CheckRunningState(Thread::eReady, 0, 20 * MILISEC), "State can not be eReady until running");
 	t_assertm(!t.CheckRunningState(Thread::eWorking, 0, 20 * MILISEC), "State can not be eWorking until running");
@@ -97,27 +98,28 @@ void ThreadsTest::ThreadRunningStateTransitionTest()
 
 	t.Start();
 	t_assertm(t.CheckState(Thread::eRunning), "State should be eRunning");
-	t_assertm(t.IsRunning(), "Thread is running");
+	t_assert( t.IsRunning( bIsRunning ) );
+	t_assertm( bIsRunning , "Thread is running");
 	t_assertm(t.CheckRunningState(Thread::eReady), "State should be eReady");
-	t_assertm(t.IsReady(), "is ready by default");
-	t_assertm(!t.IsWorking(), "It is not working (might fail sometimes because we are too fast)");
+	t_assertm( ( t.IsReady( bIsReady ) && bIsReady ), "is ready by default");
+	t_assertm( ( t.IsWorking( bIsWorking ) && !bIsWorking ), "It is not working (might fail sometimes because we are too fast)");
 	t_assertm(!t.CheckRunningState(Thread::eWorking, 0, 20 * MILISEC), "State can not be eWorking");
 	t_assertm(!t.CheckRunningState(Thread::eWorking, 0, 20 * MILISEC), "State can not be eWorking");
 	t_assertm(t.SetWorking(), "Can be set to working");
 	t_assertm(t.CheckRunningState(Thread::eWorking, 10), "State should be eWorking");
 	t_assertm(!t.CheckRunningState(Thread::eReady, 0, 20 * MILISEC), "State can not be eReady");
 	t_assertm(!t.CheckRunningState(Thread::eReady, 0, 20 * MILISEC), "State can not be eReady");
-	t_assertm(t.IsWorking(), "It is working");
-	t_assertm(t.IsRunning(), "Thread is still running");
-	t_assertm(!t.IsReady(), "It is not ready when working");
+	t_assertm( ( t.IsWorking( bIsWorking ) && bIsWorking ), "It is working");
+	t_assertm( ( t.IsRunning( bIsRunning ) && bIsRunning ), "Thread is still running");
+	t_assertm( ( t.IsReady( bIsReady ) && !bIsReady ), "It is not ready when working");
 	t_assertm(!t.SetWorking(), "Cannot be set to working again before set to ready");
 
 	t_assertm(t.SetReady(), "Can be set back to ready");
 	t_assertm(t.CheckRunningState(Thread::eReady, 10), "State should be eReady");
 
-	t_assert(t.Terminate(10));
-	t_assertm(!t.IsReady(), "Is not Ready anymore");
-	t_assertm(!t.IsWorking(), "It is not working");
+	t_assert( t.Terminate(10) );
+	t_assertm( !t.IsReady( bIsReady ), "Is not Ready anymore");
+	t_assertm( !t.IsWorking( bIsWorking ), "It is not working");
 	t_assertm(!t.SetReady(), "Can not revert state");
 	t_assertm(!t.SetWorking(), "Can not revert state");
 }
@@ -211,12 +213,12 @@ void ThreadsTest::ThreadStateTransitionTest()
 	// "Normal case" goes from Created to Started,Running, toggles between Ready and Working and gets Terminated
 	TerminateMeTestThread t;
 
+	bool bIsRunning( false );
 	t_assertm(t.CheckState(Thread::eCreated), "State should be eCreated");
 	assertEqual(Thread::eCreated, t.GetState());
 	t_assert(t.Start());
-	t_assertm(t.CheckState(Thread::eStarted, 10), "State should be eStarted");
 	t_assertm(t.CheckState(Thread::eRunning, 10), "State should be eRunning");
-	t_assertm(t.IsRunning(), "Thread should be Running");
+	t_assertm(t.IsRunning( bIsRunning ) && bIsRunning, "Thread should be Running");
 	assertEqual(Thread::eRunning, t.GetState()); //Semantically equal to IsRunning()
 
 	t_assert(t.Terminate(100));
@@ -227,9 +229,9 @@ void ThreadsTest::ThreadStateTransitionTest()
 	t_assertm(t.CheckState(Thread::eStarted, 10), "State should be eStarted");
 	t_assertm(t.CheckState(Thread::eRunning, 10), "State should be eRunning");
 	t_assert(t.Terminate(10));
-	assertEqual(Thread::eTerminated, t.GetState()); // Can not start again
-	t_assertm(!t.IsRunning(), "Thread can not be started again");
-	t_assertm(t.CheckState(Thread::eTerminated, 10), "State should be eTerminated");
+	assertCompare( Thread::eTerminated, equal_to, t.GetState() ); // Can not start again
+	t_assertm( !t.IsRunning( bIsRunning ), "Thread is not running anymore");
+	t_assertm( t.CheckState(Thread::eTerminated, 10), "State should be eTerminated");
 
 	//-- Terminate before Start ---------------------------------
 	TerminateMeTestThread t2;
@@ -240,17 +242,17 @@ void ThreadsTest::ThreadStateTransitionTest()
 	t_assertm(t2.CheckState(Thread::eStarted, 10), "State should be eStarted");
 	t_assertm(t2.CheckState(Thread::eRunning, 10), "State should be eRunning");
 	t_assert(t2.Terminate(10));
-	assertEqual(Thread::eTerminated, t2.GetState()); // Can not start again
-	t_assertm(!t2.IsRunning(), "Thread can not be started again");
+	assertCompare(Thread::eTerminated, equal_to, t2.GetState()); // Can not start again
+	t_assertm( !t2.IsRunning( bIsRunning ), "Thread is not running anymore");
 	t_assertm(t2.CheckState(Thread::eTerminated, 10), "State should be eTerminated");
 
 	//-- Terminate because precondition of Start fails ---
 	TerminateMeTestThread t3(false);
 	t_assertm(!t3.Start(), "start should fail");
 	assertEqual(Thread::eTerminated, t3.GetState()); // Can not start again
-	t_assertm(t3.CheckState(Thread::eStarted, 10), "State should be eStarted");
-	t_assertm(t3.CheckState(Thread::eRunning, 10), "State should be eRunning");
-	t_assertm(!t3.IsRunning(), "Thread can not be started again");
+	assertComparem( Thread::eStarted, less_equal, t3.GetState(10), "State should be higher than eStarted");
+	assertComparem( Thread::eRunning, less_equal, t3.GetState(10), "State should be higher than eRunning");
+	t_assertm( ( t3.IsRunning( bIsRunning ) && !bIsRunning ), "Thread is not running anymore");
 	t_assertm(t3.CheckState(Thread::eTerminated, 10), "State should be eTerminated");
 }
 
