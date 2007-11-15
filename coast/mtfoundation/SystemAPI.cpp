@@ -33,7 +33,7 @@ THREADWRAPPERFUNCDECL(ThreadWrapper, thread)
 		}
 		Anything aAny;
 		aAny["id"] = (long)t->fThreadId;
-		aAny["Name"] = t->fThreadName;
+		aAny["Name"] = t->GetName();
 		aAny["Addr"] = (IFAObject *)t;
 		{
 			LockUnlockEntry sm(fgThreadsMutex);
