@@ -19,14 +19,14 @@
 A thread pool can be used in cases where we do not need to know what each thread does or when it does anything. Important is, that we can have an amount of parallel workers running and waiting on something to do.
 <p>The thing is that we do not need an element of control which gets work from somewhere, selects a free Thread and lets it process the work. The Thread can do this on its own. Just implement a special kind of Thread which does exactly this. An excellent usage could be processing elements from a queue.
 */
-class EXPORTDECL_MTFOUNDATION ThreadPoolManager : public Observable<Thread, ROAnything>::Observer
+class EXPORTDECL_MTFOUNDATION ThreadPoolManager : public StatGatherer, public Observable<Thread, ROAnything>::Observer
 {
 	typedef Observable<Thread, ROAnything> tBaseClass;
 	typedef tBaseClass::tObservedPtr tObservedPtr;
 	typedef tBaseClass::tArgsRef tArgsRef;
 public:
 	//! does nothing; real work is done in init, object is unusable without call of Init() method!
-	ThreadPoolManager();
+	ThreadPoolManager(const char *name);
 
 	//! deletes thread pool; be careful if you overwrite DoDeletePool
 	virtual ~ThreadPoolManager();
@@ -62,11 +62,28 @@ public:
 		\param roaUpdateArgs arguments the thread can pass us */
 	virtual void Update(tObservedPtr pObserved, tArgsRef roaUpdateArgs);
 
+	/*! blocks the caller, waiting for threads to go in Ready-state. It waits at most 'secs' seconds
+		\secs how long to wait in seconds
+		\return true in case all threads entered Ready-state, false otherwise */
+	bool AwaitReady(long secs);
+
 	/*! access the pool size which reflects the number of threads really allocated and accessible to use
 		\return number of allocated and usable threads in the pool */
 	virtual long GetPoolSize();
 
+	//! Get my name
+	String GetName();
+
+	//! Set my name
+	void SetName(const char *str)	{
+		fName = str;
+	}
+
 protected:
+	/*! implements the StatGatherer interface used by StatObserver
+		\param statistics Anything to get statistics data */
+	void DoGetStatistic(Anything &statistics);
+
 	/*! allocate the thread pool
 		\param poolSize number of threads to allocate and use
 		\param roaThreadArgs ROAnything carrying thread specific information
@@ -119,6 +136,10 @@ protected:
 	/*! terminated flag is true after the pool was initialized using the Init-function until the Terminate function was called */
 	bool fTerminated;
 
+private:
+	//!string containing the PoolManagers name
+	String fName;
+
 	//! guard for synchronisation
 	SimpleMutex fMutex;
 	//! condition for synchronisation
@@ -131,8 +152,15 @@ protected:
 	//! counts the terminated threads, this value gets reset when the pool is initialized again
 	long fTerminatedThreads;
 
+	typedef std::auto_ptr<StatEvtHandler> StatEvtHandlerPtrType;
+
+	//! statistic event handler
+	StatEvtHandlerPtrType fpStatEvtHandler;
+
 	//! holds the allocated threads
 	Anything fThreadPool;
+
+	friend class TestThreadPool;
 };
 
 //---- WorkerThread -----------------------------------------------
@@ -205,9 +233,6 @@ public:
 	/*! prints some statistics and terminates
 		\note can't delete pool here because representation of subobject has already gone */
 	virtual ~PoolManager() {};
-
-	//! implements the StatGatherer interface used by StatObserver
-	virtual void Statistic(Anything &item) = 0;
 
 	virtual void Update(tObservedPtr pObserved, tArgsRef aUpdateArgs) = 0;
 
@@ -303,9 +328,6 @@ public:
 	//!prints some statistics; can't delete pool here because representation of subobject is already gone
 	virtual ~WorkerPoolManager();
 
-	//! implements the StatGatherer interface used by StatObserver
-	void Statistic(Anything &item);
-
 	/*! react to state changes of pool threads
 		\param pObserved thread which wants to signal a state change
 		\param roaUpdateArgs arguments the thread can pass us */
@@ -323,9 +345,10 @@ public:
 		This method blocks the caller (e.g. the server accept-loop) if the pool has no worker ready,  i.e. ResourcesUsed() == GetPoolSize()
 		\pre needs "request" slot in workload, containing a long which gives a hint which worker to take
 		\param workload arguments passed to WorkerThread
-		\param lFindWorkerHint hint to select correct WorkerThread for processing */
+		\param lFindWorkerHint hint to select correct WorkerThread for processing
+		\return true in case a worker could be found and is processing the work, false otherwise, which means we should try again */
 	template< class WorkerParamType >
-	void Enter( WorkerParamType workload, long lFindWorkerHint );
+	bool Enter( WorkerParamType workload, long lFindWorkerHint );
 
 	//!blocks the caller waiting for the running requests to terminate. It waits at most 'secs' seconds
 	bool AwaitEmpty(long secs);
@@ -350,7 +373,16 @@ public:
 	//! Get my name
 	String GetName();
 
+	//! Set my name
+	void SetName(const char *str)	{
+		fName = str;
+	}
+
 protected:
+	/*! implements the StatGatherer interface used by StatObserver
+		\param statistics Anything to get statistics data */
+	void DoGetStatistic(Anything &statistics);
+
 	//! create an array of the required workers
 	virtual void DoAllocPool(ROAnything roaWorkerArgs) = 0;
 
@@ -377,10 +409,9 @@ protected:
 		\return the next available WorkerThread */
 	virtual WorkerThread *FindNextRunnable(long lFindWorkerHint);
 
+private:
 	//! number of allowed request threads that can run in parallel
 	long fPoolSize;
-	//! number of currently running requests
-	long fCurrentParallelRequests;
 	//! flag to control request handling on demand by admin server
 	bool fBlockRequestHandling;
 	//!termination flag
@@ -391,8 +422,11 @@ protected:
 	Mutex fMutex;
 	//!string containing the PoolManagers name
 	String fName;
+
+	typedef std::auto_ptr<StatEvtHandler> StatEvtHandlerPtrType;
+
 	//! statistic event handler
-	StatEvtHandler *fStatEvtHandler;
+	StatEvtHandlerPtrType fpStatEvtHandler;
 
 private:
 	//!prohibit the use of the copy constructor
