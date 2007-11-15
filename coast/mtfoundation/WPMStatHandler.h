@@ -27,14 +27,15 @@ public:
 
 	enum EWPMStatEvt { eEnter, eLeave };
 
+protected:
 	//!gathering statistics for event evt
-	virtual void HandleStatEvt(long evt);
+	void DoHandleStatEvt(long evt);
 	//!collect the gathered statistics
-	virtual void Statistic(Anything &statElements);
+	void DoStatistic(Anything &statElements);
 	//!get the number of requests processed so far
-	virtual long GetTotalRequests();
+	long DoGetTotalRequests();
 	//!get the number of currently active requests
-	virtual long GetCurrentParallelRequests();
+	long DoGetCurrentParallelRequests();
 
 private:
 	//! number of allowed request threads that can run in parallel
@@ -50,7 +51,7 @@ private:
 	//!timer to measure elapsed time during processing of requests
 	DiffTimer fTimer;
 	//!guard for setting values
-	Mutex fMutex;
+	SimpleMutex fMutex;
 
 	friend class WPMStatHandlerTest;
 };

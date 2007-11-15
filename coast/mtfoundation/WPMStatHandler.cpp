@@ -24,7 +24,7 @@ WPMStatHandler::WPMStatHandler(long poolSize)
 	, fTotalRequests(0)
 	, fTotalTime(0)
 	, fTimer()
-	, fMutex("WPMStatHandler")
+	, fMutex( "WPMStatHandler", Storage::Global() )
 {
 	StartTrace(WPMStatHandler.Ctor);
 }
@@ -34,9 +34,9 @@ WPMStatHandler::~WPMStatHandler()
 	StartTrace(WPMStatHandler.Dtor);
 }
 
-void WPMStatHandler::HandleStatEvt(long evt)
+void WPMStatHandler::DoHandleStatEvt(long evt)
 {
-	StartTrace1(WPMStatHandler.HandleStatEvt, "Event[" << evt << "]");
+	StartTrace1(WPMStatHandler.DoHandleStatEvt, "Event[" << evt << "]");
 	LockUnlockEntry me(fMutex);
 
 	switch (evt) {
@@ -48,7 +48,7 @@ void WPMStatHandler::HandleStatEvt(long evt)
 			if (fMaxParallelRequests < fCurrentParallelRequests) {
 				fMaxParallelRequests = fCurrentParallelRequests;
 			}
-			Trace("eEnter: para:[" << fCurrentParallelRequests << "] maxpara[" << fMaxParallelRequests << "]");
+			Trace("eEnter: curr: " << fCurrentParallelRequests << " max: " << fMaxParallelRequests);
 		}
 		break;
 
@@ -58,6 +58,7 @@ void WPMStatHandler::HandleStatEvt(long evt)
 				fTotalTime += fTimer.Reset();
 			}
 			++fTotalRequests;
+			Trace("eLeave: curr: " << fCurrentParallelRequests << " max: " << fMaxParallelRequests);
 		}
 		break;
 
@@ -66,9 +67,9 @@ void WPMStatHandler::HandleStatEvt(long evt)
 	}
 }
 
-void WPMStatHandler::Statistic(Anything &statElements)
+void WPMStatHandler::DoStatistic(Anything &statElements)
 {
-	StartTrace(WPMStatHandler.Statistic);
+	StartTrace(WPMStatHandler.DoStatistic);
 	LockUnlockEntry me(fMutex);
 	statElements["PoolSize"] = fPoolSize;
 	statElements["CurrentParallelRequests"] = fCurrentParallelRequests;
@@ -80,16 +81,16 @@ void WPMStatHandler::Statistic(Anything &statElements)
 	TraceAny(statElements, "statElements");
 }
 
-long WPMStatHandler::GetTotalRequests()
+long WPMStatHandler::DoGetTotalRequests()
 {
-	StartTrace(WPMStatHandler.GetTotalRequests);
 	LockUnlockEntry me(fMutex);
+	StatTrace(WPMStatHandler.DoGetTotalRequests, "total: " << fTotalRequests, Storage::Current());
 	return fTotalRequests;
 }
 
-long WPMStatHandler::GetCurrentParallelRequests()
+long WPMStatHandler::DoGetCurrentParallelRequests()
 {
-	StartTrace(WPMStatHandler.GetCurrentParallelRequests);
 	LockUnlockEntry me(fMutex);
+	StatTrace(WPMStatHandler.DoGetCurrentParallelRequests, "curr: " << fCurrentParallelRequests, Storage::Current());
 	return fCurrentParallelRequests;
 }
