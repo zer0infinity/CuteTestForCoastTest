@@ -83,7 +83,7 @@ void ThreadedTimeStampTest::DoTimeStampConcurrencyTest(long numberOfRuns, long n
 		for (long i = 0; i < numberOfThreads * concurrencyFactor; i++) {
 			wpm.Enter(config, -1L);
 		}
-		t_assert(wpm.AwaitEmpty(1000));
+		t_assert(wpm.AwaitEmpty(100));
 	}
 	Trace(TimeStamp().AsString() << " End      " << strRemainder);
 	t_assert(wpm.Terminate());
@@ -99,10 +99,6 @@ void ThreadedTimeStampTest::DoTimeStampConcurrencyTest(long numberOfRuns, long n
 void ThreadedTimeStampTest::CheckNumberOfRuns(long numberOfRuns, long doneRuns, String threadName)
 {
 	t_assert(numberOfRuns == doneRuns);
-}
-
-void ThreadedTimeStampTest::CheckPrepare2Run(bool isReady, bool wasPrepared)
-{
 }
 
 void ThreadedTimeStampTest::CheckProcessWorkload(bool isWorking, bool wasPrepared)

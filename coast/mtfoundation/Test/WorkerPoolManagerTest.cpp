@@ -103,13 +103,6 @@ void WorkerPoolManagerTest::EnterLeaveTests()
 	assertAnyEqualm(expected, statistic, "statistic differs");
 }
 
-void WorkerPoolManagerTest::CheckPrepare2Run(bool isReady, bool wasPrepared)
-{
-	LockUnlockEntry me(fCheckMutex);
-	t_assertm(isReady, "Worker must be in ready state");
-	t_assertm(!wasPrepared, "Worker must not be prepared");
-}
-
 void WorkerPoolManagerTest::CheckProcessWorkload(bool isWorking, bool wasPrepared)
 {
 	LockUnlockEntry me(fCheckMutex);

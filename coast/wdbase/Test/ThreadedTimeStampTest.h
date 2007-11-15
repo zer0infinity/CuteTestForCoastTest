@@ -35,7 +35,6 @@ public:
 	void TimestampConcurrencyTest();
 
 	void CheckProcessWorkload(bool isReady, bool wasPrepared);
-	void CheckPrepare2Run(bool isWorking, bool wasPrepared);
 	void CheckNumberOfRuns(long numberOfRuns, long doneRuns, String threadName);
 
 protected:

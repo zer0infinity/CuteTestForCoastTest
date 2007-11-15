@@ -40,11 +40,10 @@ public:
 	void EnterLeaveTests();
 
 	void CheckProcessWorkload(bool isReady, bool wasPrepared);
-	void CheckPrepare2Run(bool isWorking, bool wasPrepared);
+
 protected:
 	// guards asserts
 	Mutex fCheckMutex;
-
 };
 
 #endif
