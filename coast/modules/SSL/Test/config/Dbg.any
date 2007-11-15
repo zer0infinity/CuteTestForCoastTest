@@ -8,8 +8,8 @@
 
 {
 
-        /LowerBound 000
-        /UpperBound	5002
+        /LowerBound 1
+        /UpperBound	50002
         /DumpAnythings 1
 
         /ConfiguredTestCase {
@@ -51,10 +51,6 @@
 			/MainSwitch	2000
 			/EnableAll	2000
         }
-       /TestReceiver {
-			/MainSwitch	5000
-			/EnableAll	5002
-        }
         /SSLModule {
 			/MainSwitch	5000
 			/EnableAll	5002
@@ -74,34 +70,29 @@
 			/EnableAll	3000
 		}
 		/SSLSocketUtils {
-			/MainSwitch	5000
-			/EnableAll	5002
+			/MainSwitch	3000
+			/EnableAll	3000
 		}
 		/SSLClientSocket {
-			/MainSwitch	5000
-			/EnableAll	5002
+			/MainSwitch	3000
+			/EnableAll	3000
 		}
 		/SSLServerSocket {
-			/MainSwitch	5000
-			/EnableAll	5002
+			/MainSwitch	3000
+			/EnableAll	3000
 		}
 		/SSLSocket {
 			/MainSwitch	5000
 			/EnableAll	5002
-			/ReportSSLError 5002
+			/ReportSSLError 4003
 			/DoMakeStream 5002
 			/CheckPeerCertificate 5002
 			/DoCheckPeeerCertificate	5002
 		}
 		/SSLListenerPoolTest {
 			/MainSwitch	5000
-			/EnableAll	5000
-			/DoTestConnect 5002
-		}
-		/ListenerPoolTest {
-			/MainSwitch	5000
-			/EnableAll	5000
-			/DoTestConnect 5002
+			/EnableAll	2000
+			/DoTestConnect 5001
 		}
 		/SSLConnectorTest {
 			/MainSwitch	2000
@@ -110,10 +101,6 @@
 		/SSLSocketArgsTest {
 			/MainSwitch	2000
 			/EnableAll	2000
-		}
-		/SSLModuleTest {
-			/MainSwitch	5000
-			/EnableAll	5002
 		}
 		/SSLObjectManagerTest {
 			/MainSwitch	5000
@@ -125,7 +112,7 @@
 		}
 		/SSLConnector {
 			/MainSwitch	5000
-			/EnableAll	5002
+			/EnableAll	5000
 		}
 		/Connector {
 			/MainSwitch	3000
