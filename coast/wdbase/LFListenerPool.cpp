@@ -89,9 +89,11 @@ void LFListenerPool::BlockRequests()
 void LFListenerPool::UnblockRequests()
 {
 	StartTrace(LFListenerPool.UnblockRequests);
-	LockUnlockEntry me(fLFMutex);
-	fCurrentLeader = fOldLeader;
-	fFollowersCondition.Signal();
+	{
+		LockUnlockEntry me(fLFMutex);
+		fCurrentLeader = fOldLeader;
+		fFollowersCondition.Signal();
+	}
 }
 
 bool LFListenerPool::AwaitEmpty(long sec)
@@ -132,7 +134,7 @@ RequestReactor::~RequestReactor()
 	}
 }
 
-void RequestReactor::Statistic(Anything &item)
+void RequestReactor::DoGetStatistic(Anything &item)
 {
 	StartTrace(RequestReactor.Statistic);
 	if (fStatHandler) {

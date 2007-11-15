@@ -60,9 +60,6 @@ public:
 	//!deletes processor and stat handler
 	virtual ~RequestReactor();
 
-	//!get the statistics gathered so far in item
-	void Statistic(Anything &item);
-
 	//! process one accepted socket connections
 	virtual void DoProcessEvent(Socket *);
 
@@ -75,6 +72,9 @@ public:
 	virtual void RegisterHandle(Acceptor *acceptor);
 
 protected:
+	//!get the statistics gathered so far in item
+	void DoGetStatistic(Anything &item);
+
 	//! strategy for processing requests with regard to protocol (e.g. http)
 	RequestProcessor *fProcessor;
 
