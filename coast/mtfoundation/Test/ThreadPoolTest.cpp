@@ -123,7 +123,7 @@ public:
 	virtual ~TestPoolManager() {};
 
 	//! implements the StatGatherer interface used by StatObserver
-	void Statistic(Anything &item) { }
+	void DoGetStatistic(Anything &item) { }
 
 	void Update(tObservedPtr pObserved, tArgsRef aUpdateArgs) {
 		fanyUpdates.Append(aUpdateArgs.DeepClone());
