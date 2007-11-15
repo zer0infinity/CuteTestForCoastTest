@@ -68,7 +68,6 @@ ServerPoolsManagerInterface::~ServerPoolsManagerInterface()
 		LockUnlockEntry me(fMutex);
 		Trace("count:" << fCount);
 		while ( fCount > 0 ) {
-			fCond.BroadCast();
 			fCond.Wait(fMutex);
 			Trace("count:" << fCount);
 		}
