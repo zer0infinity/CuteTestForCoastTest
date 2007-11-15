@@ -51,7 +51,6 @@ void TestWorker::DoInit(ROAnything workerInit)
 void TestWorker::DoWorkingHook(ROAnything workloadArgs)
 {
 	StartTrace(TestWorker.DoWorkingHook);
-	fTest->CheckPrepare2Run(IsWorking(), fWasPrepared);
 	fWasPrepared = true;
 }
 
@@ -83,7 +82,7 @@ void TestWorker::DoProcessWorkload()
 	}
 	fTest->CheckNumberOfRuns(fNumberOfRuns, l, GetName());
 
-	if (IsWorking()) {
+	if ( CheckRunningState( eWorking ) ) {
 		fTest->CheckProcessWorkload(true, fWasPrepared);
 	}
 	fWasPrepared = false;
@@ -102,7 +101,7 @@ SamplePoolManager::~SamplePoolManager()
 void SamplePoolManager::DoAllocPool(ROAnything args)
 {
 	// create the pool of worker threads
-	fRequests = new TestWorker[fPoolSize];
+	fRequests = new TestWorker[GetPoolSize()];
 }
 
 WorkerThread *SamplePoolManager::DoGetWorker(long i)
