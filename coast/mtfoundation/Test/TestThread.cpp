@@ -27,7 +27,9 @@ TestThread::TestThread(const char *name)
 
 void TestThread::Run()
 {
+	SetWorking();
 	StartTrace(TestThread.Run);
+	SetReady();
 }
 
 //--- TerminateMeTestThread -------------------------------------------
@@ -45,7 +47,7 @@ void TerminateMeTestThread::Run()
 
 //--- TestThreadPool -------------------------------------------
 TestThreadPool::TestThreadPool()
-	: ThreadPoolManager()
+	: ThreadPoolManager("TestThreadPool")
 {
 	StartTrace(TestThreadPool.TestThreadPool);
 }
@@ -112,7 +114,6 @@ void TestWorker::DoInit(ROAnything workerInit)
 void TestWorker::DoWorkingHook(ROAnything workloadArgs)
 {
 	StartTrace(TestWorker.DoWorkingHook);
-	fTest->CheckPrepare2Run(IsWorking(), fWasPrepared);
 	fWasPrepared = true;
 }
 
@@ -120,7 +121,7 @@ void TestWorker::DoProcessWorkload()
 {
 	StartTrace(TestWorker.DoProcessWorkload);
 	Thread::Wait(fWaitTimeInProcess);
-	if (IsWorking()) {
+	if ( CheckRunningState( eWorking ) ) {
 		fTest->CheckProcessWorkload(true, fWasPrepared);
 	}
 	fWasPrepared = false;
@@ -143,7 +144,7 @@ SamplePoolManager::~SamplePoolManager()
 void SamplePoolManager::DoAllocPool(ROAnything args)
 {
 	// create the pool of worker threads
-	fRequests = new TestWorker[fPoolSize];
+	fRequests = new TestWorker[GetPoolSize()];
 }
 
 WorkerThread *SamplePoolManager::DoGetWorker(long i)
