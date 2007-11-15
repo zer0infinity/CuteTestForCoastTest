@@ -705,13 +705,13 @@ long AppLogModule::LogRotator::GetSecondsToWait()
 void AppLogModule::LogRotator::Run()
 {
 	StartTrace1(LogRotator.Run, "starting...");
-	while ( IsRunning() ) {
+	while ( CheckState( eRunning, 0, 1 ) ) {
 		CheckRunningState(eWorking, GetSecondsToWait());
 
 		// rotate only if we are still running and not already in termination sequence
 		// never try to call CheckState() without at least a nanosecond to wait
 		// -> otherwise we will block until program termination...
-		if ( IsRunning() && !CheckState(eTerminationRequested, 0, 1) ) {
+		if ( CheckState( eRunning, 0, 1 ) ) {
 			// rotate the log files
 			AppLogModule::RotateLogs();
 		}
