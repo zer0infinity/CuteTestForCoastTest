@@ -21,10 +21,25 @@ public:
 	StatEvtHandler();
 	virtual ~StatEvtHandler();
 
-	//!gathering statistics for event evt
-	virtual void HandleStatEvt(long evt) = 0;
-	//!collect the gathered statistics
-	virtual void Statistic(Anything &statElements) = 0;
+	//! gathering statistics for event evt
+	void HandleStatEvt(long evt);
+	//! collect the gathered statistics
+	void Statistic(Anything &statElements);
+	//! get number of requests made since start
+	long GetTotalRequests();
+	//! get the number of currently active requests
+	long GetCurrentParallelRequests();
+
+protected:
+	//! methods to override in concrete implementation
+	//! gathering statistics for event evt
+	virtual void DoHandleStatEvt(long evt) = 0;
+	//! collect the gathered statistics
+	virtual void DoStatistic(Anything &statElements) = 0;
+	//! get number of requests made since start
+	virtual long DoGetTotalRequests() = 0;
+	//! get the number of currently active requests
+	virtual long DoGetCurrentParallelRequests() = 0;
 
 private:
 	StatEvtHandler(const StatEvtHandler &);
@@ -40,8 +55,16 @@ public:
 	StatGatherer();
 	virtual ~StatGatherer();
 
-	//!collect the statistics
-	virtual void Statistic(Anything &statElements) = 0;
+	/*! get collected statistics
+		\param statistics Anything to get statistics data */
+	void Statistic(Anything &statElements);
+
+	/*! prints collected pool statistics on stderr */
+	void PrintStatisticsOnStderr( const String &strName );
+
+protected:
+	//! collect the statistics in using class
+	virtual void DoGetStatistic(Anything &statElements) = 0;
 
 private:
 	StatGatherer(const StatGatherer &);
@@ -57,8 +80,12 @@ public:
 	StatObserver();
 	virtual ~StatObserver();
 
-	//!collect the statistics
-	virtual void Register(const String &name, StatGatherer *) = 0;
+	//! register
+	void Register(const String &name, StatGatherer *pGatherer);
+
+protected:
+	//! register
+	virtual void DoRegisterGatherer(const String &name, StatGatherer *) = 0;
 
 private:
 	StatObserver(const StatObserver &);
