@@ -15,5 +15,5 @@ rm -f $CONFIGPATH/cert_hashes/*
 cp $CERTDIR/*.pem $CONFIGPATH/cert_hashes
 c_rehash $CONFIGPATH/cert_hashes
 # Linking hashed certificate directory to one common place
-rm /tmp/SSLSocketTestHashedCerts > /dev/null 2>&1
-ln -s $CONFIGPATH/cert_hashes /tmp/SSLSocketTestHashedCerts
+rm -rf /tmp/SSLSocketTestHashedCerts > /dev/null 2>&1
+cp -r $CONFIGPATH/cert_hashes /tmp/SSLSocketTestHashedCerts
