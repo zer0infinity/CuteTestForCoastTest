@@ -8,8 +8,8 @@
 
 {
 
-        /LowerBound 	5000
-        /UpperBound	5002
+        /LowerBound 	1
+        /UpperBound	50002
         /DumpAnythings 1
 
         /ConfiguredTestCase {
