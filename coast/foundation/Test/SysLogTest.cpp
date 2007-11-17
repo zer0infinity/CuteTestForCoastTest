@@ -55,8 +55,6 @@ Test *SysLogTest::suite ()
 {
 	StartTrace(SysLogTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
 	ADD_CASE(testSuite, SysLogTest, TestFlags);
-
 	return testSuite;
 }

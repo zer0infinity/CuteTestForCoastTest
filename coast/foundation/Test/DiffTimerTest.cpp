@@ -57,19 +57,14 @@ void DiffTimerTest::ConstructorTest()
 void DiffTimerTest::ScaleTest()
 {
 	StartTrace(DiffTimerTest.ScaleTest);
-
 	DiffTimer dt;
-#if defined(__linux__)
-	assertEqual(100L, dt.Scale(10, DiffTimer::eMilliseconds));
-#endif
-
-#if defined(__sun)
-	assertEqual(10000L, dt.Scale(10 * dt.TicksPerSecond(), DiffTimer::eMilliseconds));
-	assertEqual(10L, dt.Scale(10 * 1000000, DiffTimer::eMilliseconds));
-#endif
-
 #if defined(WIN32)
 	assertEqual(10, dt.Scale(10, DiffTimer::eMilliseconds));
+#elif defined(__sun)
+	assertEqual(10000L, dt.Scale(10 * dt.TicksPerSecond(), DiffTimer::eMilliseconds));
+	assertEqual(10L, dt.Scale(10 * 1000000, DiffTimer::eMilliseconds));
+#else
+	assertEqual(100L, dt.Scale(10, DiffTimer::eMilliseconds));
 #endif
 }
 

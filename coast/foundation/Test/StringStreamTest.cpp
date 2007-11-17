@@ -278,10 +278,11 @@ void StringStreamTest::FormatTests()
 
 void StringStreamTest::OperatorShiftLeftWithLongLong()
 {
+	std::numeric_limits<long long> limit;
 	OStringStream ostr, ostr2;
-	ostr << LLONG_MAX;
+	ostr << limit.max();
 	assertCharPtrEqual("9223372036854775807", ostr.str());
-	ostr2 << LLONG_MIN;
+	ostr2 << limit.min();
 	assertCharPtrEqual("-9223372036854775808", ostr2.str());
 }
 
@@ -295,29 +296,32 @@ void StringStreamTest::OperatorShiftLeftWithUnsignedLongLong()
 void StringStreamTest::OperatorShiftRightWithLongLong()
 {
 	{
+		std::numeric_limits<long long> limit;
 		StringStream stream;
-		stream << LLONG_MAX << flush;
+		stream << limit.max() << flush;
 		l_long llVal = INT64_LITERAL(-3);
 		stream >> llVal;
-		t_assert(LLONG_MAX == llVal);
+		t_assert(limit.max() == llVal);
 	}
 	{
+		std::numeric_limits<long long> limit;
 		StringStream stream;
-		stream << LLONG_MIN << flush;
+		stream << limit.min() << flush;
 		l_long llVal = INT64_LITERAL(+5);
 		stream >> llVal;
-		t_assert(LLONG_MIN == llVal);
+		t_assert(limit.min() == llVal);
 	}
 }
 
 void StringStreamTest::OperatorShiftRightWithUnsignedLongLong()
 {
 	{
+		std::numeric_limits<unsigned long long> limit;
 		StringStream stream;
-		stream << ULLONG_MAX << flush;
+		stream << limit.max() << flush;
 		ul_long ullVal = UINT64_LITERAL(1111);
 		stream >> ullVal;
-		t_assert(ULLONG_MAX == ullVal);
+		t_assert(limit.max() == ullVal);
 	}
 }
 
@@ -341,3 +345,4 @@ Test *StringStreamTest::suite()
 	ADD_CASE(testSuite, StringStreamTest, OperatorShiftRightWithUnsignedLongLong);
 	return testSuite;
 }
+

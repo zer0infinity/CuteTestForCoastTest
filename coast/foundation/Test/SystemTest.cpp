@@ -138,6 +138,7 @@ void SystemTest::statTests()
 	t_assertm(!System::IsDirectory("Test.any"), "expected 'Test.any' to be a file");
 	t_assertm(!System::IsDirectory("config/Dbg.any"), "expected 'Dbg.any' to be a file");
 	t_assertm(!System::IsRegularFile("."), "expected '.' to be a directory");
+	t_assertm(System::IsRegularFile("config/SystemTest.any"), "expected 'SystemTest.any' to be a file");
 	t_assertm(!System::IsRegularFile(".."), "expected '.' to be a directory");
 	t_assertm(System::IsRegularFile("Test.any"), "expected 'Test.any' to be a file");
 	t_assertm(System::IsRegularFile("config/Dbg.any"), "expected 'Dbg.any' to be a file");
@@ -574,7 +575,6 @@ void SystemTest::getFilePathTest()
 	System::Chmod(subPath, 0640); //clean up to make it usable again
 
 	path = System::GetFilePath("Dbg", "any");
-
 	subPath = "./Dbg.any";
 	System::ResolvePath(subPath);
 	assertEqual(subPath, path.SubString(path.Length() - subPath.Length()));
