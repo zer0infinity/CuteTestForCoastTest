@@ -1,0 +1,48 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2007, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+
+	/LowerBound 	100
+	/UpperBound 	110
+	/DumpAnythings	1
+
+	/RegexTest {
+		/MainSwitch	100
+		/EnableAll	10
+		/DumpAnythings 1
+
+		/MatchAnything 	0
+		/MatchConfig	0
+
+		/TimingWithPoolAllocator 100
+
+		/SplitTest 0
+		/GrepTest	0
+		/GrepSlotNamesTest 0
+
+		/DummyForGrepTest	0 # leave that 0!
+		/ForGrepTest "000"
+
+	}
+	/REBitSetTest {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/RECompilerTest {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/RE {
+		/MainSwitch 200
+		/EnableAll  300
+
+		/MatchNodes 210
+	}
+
+}

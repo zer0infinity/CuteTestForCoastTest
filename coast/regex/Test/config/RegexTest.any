@@ -1,0 +1,68 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2007, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{ # line offset in RegexTest::MatchAnything = 10 for easy navigation, adjust if adding comments
+# structure: expected result (long) "RE" "StringtoMatch" startofmatch(long,optional) lenofmatch(long,optional)
+	{ 0 "[:alnum:]" "foo" }
+	{ 1 "[:alnum:]" "!%/" }
+	{ 0 "[:alpha:]" "foo" }
+	{ 1 "[:alpha:]" "123" }
+	{ 0 "[:blank:]{3}" " \x09 " }
+	{ 1 "[:blank:]" "abc" }
+	{ 0 "[:cntrl:]" "\x03" }
+	{ 1 "[:cntrl:]" "abc" }
+	{ 0 "[:digit:]" "123" }
+	{ 1 "[:digit:]" "abc" }
+	{ 0 "[:graph:]" "123" }
+	{ 1 "[:graph:]" "   " }
+	{ 0 "[:lower:]" "abc" }
+	{ 1 "[:lower:]" "AB1" }
+	{ 0 "[:print:]" "abc" }
+	{ 1 "[:print:]" "\001\002\003" }
+	{ 0 "[:punct:]{3}" ".,!" }
+	{ 1 "[:punct:]" "AB1" }
+	{ 0 "[:space:]{3}" " \x09 " }
+	{ 1 "[:space:]" "AB1" }
+	{ 0 "[:upper:]{3}" "ABC" }
+	{ 1 "[:upper:]" "ab1" }
+	{ 0 "[:xdigit:]" "abc" }
+	{ 1 "[:xdigit:]" "goo" }
+	{ 2 "[:foo:]" "abc" }
+	{ 2 "[:bar:]" "AB1" }
+	{ 0 "[\\s]{3}" " \x09 " }
+	{ 1 "[\\s]" "AB1" }
+	{ 0 "[\\w]{3}" "aB2" }
+	{ 1 "[\\w]" " \x09!" }
+	{ 0 "[\\d]{3}" "123" }
+	{ 1 "[\\d]" "AB!" }
+	{ 1 "[^\\s]" " \x09 " }
+	{ 0 "[^\\s]{3}" "AB1" }
+	{ 1 "[^\\w]" "aB2" }
+	{ 0 "[^\\w]{3}" " \x09!" }
+	{ 1 "[^\\d]" "123" }
+	{ 0 "[^\\d]{3}" "AB!" }
+	{ 0 "\\s{3}" " \x09 " }
+	{ 1 "\\s" "AB1" }
+	{ 0 "\\w{3}" "aB2" }
+	{ 1 "\\w" " \x09!" }
+	{ 0 "\\d{3}" "123" }
+	{ 1 "\\d" "AB!" }
+	{ 1 "\\S" " \x09 " }
+	{ 0 "\\S{3}" "AB1" }
+	{ 1 "\\W" "aB2" }
+	{ 0 "\\W{3}" " \x09!" }
+	{ 1 "\\D" "123" }
+	{ 0 "\\D{3}" "AB!" }
+	{ 0 "\\babc\\Bdef\\b" "abc def babcdef abcdef" 16 6 }
+	{ 0 "^((a|b)+)c\\1$" "abacaba" }
+	{ 1 "^((a|b)+)c\\1$" "acb" }
+	{ 0 "^((a|b)+)c\\1$" "abcab" }
+	{ 0 "^(a|b)+c\\1" "abaca" }
+	{ 1 "^(a|b)+c\\1" "abcb" } # take the leftmost match! which is a not b
+	{ 0 "^((a|b)+)c\\1$" "abcab" }
+}
