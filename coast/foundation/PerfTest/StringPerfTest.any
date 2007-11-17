@@ -1,0 +1,90 @@
+{
+  /"20041208141548" {
+    /"RunLoop[this is a ]100000" 1168
+    /"RunPreallocLoop[this is a ]100000" 31
+    /"RunPoolAllocLoop[this is a ]100000" 50
+    /"RunLoop[this is a short samp]100000" 4349
+    /"RunPreallocLoop[this is a short samp]100000" 42
+    /"RunPoolAllocLoop[this is a short samp]100000" 73
+  }
+  /"20071012143656" {
+    /"RunLoop[this is a ]100000" 1540
+    /"RunPreallocLoop[this is a ]100000" 10
+    /"RunPoolAllocLoop[this is a ]100000" 10
+    /"RunLoop[this is a short samp]100000" 6680
+    /"RunPreallocLoop[this is a short samp]100000" 20
+    /"RunPoolAllocLoop[this is a short samp]100000" 20
+  }
+  /"20071019170819" {
+    /"RunLoop[this is a ]100000" 0
+    /"RunPreallocLoop[this is a ]100000" 0
+    /"RunPoolAllocLoop[this is a ]100000" 0
+    /"RunLoop[this is a short samp]100000" 0
+    /"RunPreallocLoop[this is a short samp]100000" 0
+    /"RunPoolAllocLoop[this is a short samp]100000" 0
+  }
+  /"20071019171956" {
+    /"RunLoop[this is a ]100000" 0
+    /"RunPreallocLoop[this is a ]100000" 0
+    /"RunPoolAllocLoop[this is a ]100000" 0
+    /"RunLoop[this is a short samp]100000" 0
+    /"RunPreallocLoop[this is a short samp]100000" 0
+    /"RunPoolAllocLoop[this is a short samp]100000" 0
+  }
+  /"20071019172748" {
+    /"RunLoop[this is a ]100000" 880
+    /"RunPreallocLoop[this is a ]100000" 10
+    /"RunPoolAllocLoop[this is a ]100000" 20
+    /"RunLoop[this is a short samp]100000" 4020
+    /"RunPreallocLoop[this is a short samp]100000" 20
+    /"RunPoolAllocLoop[this is a short samp]100000" 30
+  }
+  /"20071019173612" {
+    /"RunLoop[this is a ]100000" 870
+    /"RunPreallocLoop[this is a ]100000" 10
+    /"RunPoolAllocLoop[this is a ]100000" 20
+    /"RunLoop[this is a short samp]100000" 3960
+    /"RunPreallocLoop[this is a short samp]100000" 10
+    /"RunPoolAllocLoop[this is a short samp]100000" 30
+  }
+  /"20071019173810" {
+    /"RunLoop[this is a ]100000" 880
+    /"RunPreallocLoop[this is a ]100000" 10
+    /"RunPoolAllocLoop[this is a ]100000" 20
+    /"RunLoop[this is a short samp]100000" 4010
+    /"RunPreallocLoop[this is a short samp]100000" 10
+    /"RunPoolAllocLoop[this is a short samp]100000" 30
+  }
+  /"20071024113809" {
+    /"RunLoop[this is a ]100000" 860
+    /"RunPreallocLoop[this is a ]100000" 10
+    /"RunPoolAllocLoop[this is a ]100000" 20
+    /"RunLoop[this is a short samp]100000" 3900
+    /"RunPreallocLoop[this is a short samp]100000" 20
+    /"RunPoolAllocLoop[this is a short samp]100000" 30
+  }
+  /"20071024194917" {
+    /"RunLoop[this is a ]100000" 950
+    /"RunPreallocLoop[this is a ]100000" 10
+    /"RunPoolAllocLoop[this is a ]100000" 20
+    /"RunLoop[this is a short samp]100000" 4460
+    /"RunPreallocLoop[this is a short samp]100000" 20
+    /"RunPoolAllocLoop[this is a short samp]100000" 30
+  }
+  /"20071028143643" {
+    /"RunLoop[this is a ]100000" 870
+    /"RunPreallocLoop[this is a ]100000" 0
+    /"RunPoolAllocLoop[this is a ]100000" 0
+    /"RunLoop[this is a short samp]100000" 3730
+    /"RunPreallocLoop[this is a short samp]100000" 10
+    /"RunPoolAllocLoop[this is a short samp]100000" 20
+  }
+  /"20071028191245" {
+    /"RunLoop[this is a ]100000" 810
+    /"RunPreallocLoop[this is a ]100000" 10
+    /"RunPoolAllocLoop[this is a ]100000" 10
+    /"RunLoop[this is a short samp]100000" 3780
+    /"RunPreallocLoop[this is a short samp]100000" 10
+    /"RunPoolAllocLoop[this is a short samp]100000" 20
+  }
+}
