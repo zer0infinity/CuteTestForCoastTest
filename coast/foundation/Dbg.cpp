@@ -188,8 +188,8 @@ bool Tracer::CheckWDDebug(const char *trigger, Allocator *pAlloc)
 		}
 		trying = true;
 		Reset();
-		// try to read Dbg.any only once
-// 		trying= false;
+		// try to read Dbg.any only once <<- doesn't work as expected
+		trying = false;
 	}
 
 	if (fgLowerBound > 0) {
