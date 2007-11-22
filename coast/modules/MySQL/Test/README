@@ -1,0 +1,14 @@
+How to make this test work:
+---------------------------
+
+- Install and start mysql server
+eg. #> aptitude install mysql-server
+
+- create db user:
+eg. #> sudo mysql
+    #mysql> CREATE USER TestUser;
+    #mysql> GRANT ALL PRIVILEGES ON *.* to TestUser WITH GRANT OPTION;
+    #mysql> GRANT USAGE ON *.* TO TestUser IDENTIFIED BY 'test';
+
+- import test database:
+#> mysql -u TestUser -p  < config/TestDBDefinition.sql
