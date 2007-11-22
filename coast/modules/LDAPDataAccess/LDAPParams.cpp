@@ -6,8 +6,6 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#if defined(__sun) || defined(WIN32) || defined(__linux__)
-
 //--- interface include --------------------------------------------------------
 #include "LDAPParams.h"
 
@@ -25,9 +23,6 @@ using namespace std;
 #endif
 
 //--- c-library modules used ---------------------------------------------------
-
-//--- standard modules used ----------------------------------------------------
-#include "LDAPAPI.h"
 
 //--- implementation of LDAPParams -----------------------------------------------------------
 LDAPParams::LDAPParams(Context &ctx, ParameterMapper *in) : fContext(ctx), fMapper(in), fLDAPAttr(0)
@@ -255,4 +250,3 @@ LDAPMod **LDAPModifyCompareParams::Entries2Modify()
 	}
 	return fModifies;
 }
-#endif

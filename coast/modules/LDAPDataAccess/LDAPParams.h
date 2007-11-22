@@ -9,8 +9,6 @@
 #ifndef _LDAPParams_H
 #define _LDAPParams_H
 
-#if defined(__sun) || defined(WIN32) || defined(__linux__)
-
 #include "config_ldap.h"
 
 #include "Anything.h"
@@ -91,5 +89,4 @@ private:
 	LDAPModifyCompareParams &operator=(const LDAPModifyCompareParams &);
 };
 
-#endif // specific systems
 #endif // _LDAPParams_H

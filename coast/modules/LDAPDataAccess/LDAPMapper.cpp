@@ -6,8 +6,6 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#if defined(__sun) || defined(WIN32) || defined(__linux__)
-
 //--- interface include --------------------------------------------------------
 #include "LDAPMapper.h"
 
@@ -363,5 +361,3 @@ bool LDAPListWithPrimaryKeyMapper::DoPutAny(const char *key, Anything result, Co
 	}
 	return false;
 }
-
-#endif

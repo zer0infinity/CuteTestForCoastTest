@@ -12,8 +12,6 @@
 #include "config_ldap.h"
 #include "Mapper.h"
 
-#if defined(__sun) || defined(WIN32) || defined(__linux__)
-
 class Registry;
 class Context;
 class ROAnything;
@@ -213,4 +211,3 @@ private:
 };
 
 #endif		//not defined _LDAPMapper_H
-#endif

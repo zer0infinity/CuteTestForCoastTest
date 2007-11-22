@@ -8,7 +8,6 @@
 
 #ifndef _LDAPDAImpl_H
 #define _LDAPDAImpl_H
-#if defined(__sun) || defined(WIN32) || defined(__linux__)
 
 #include "config_ldap.h"
 #include "DataAccessImpl.h"
@@ -176,7 +175,5 @@ public:
 	//! \return returns true if the 'DataAccess' was successful otherwise false
 	virtual bool Exec(Context &c, ParameterMapper *in, ResultMapper *out);
 };
-
-#endif
 
 #endif
