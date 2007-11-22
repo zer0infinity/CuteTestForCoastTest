@@ -11,7 +11,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 
 //--- MySQLDAImpl -----------------------------------------------------
