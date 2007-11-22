@@ -12,8 +12,6 @@
 //---- TestCase include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 
-#if defined(__sun) || defined(WIN32) || defined(__linux__)
-
 //---- forward declaration -----------------------------------------------
 
 //---- LDAPMapperTest ----------------------------------------------------------
@@ -58,7 +56,5 @@ protected:
 	//!tests the mapper which special dname settings
 	void LDAPAddTest();
 };
-
-#endif
 
 #endif

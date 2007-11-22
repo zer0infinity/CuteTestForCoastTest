@@ -6,8 +6,6 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#if defined(__sun) || defined(WIN32) || defined(__linux__)
-
 //--- interface include --------------------------------------------------------
 #include "LDAPMapperTest.h"
 
@@ -233,5 +231,3 @@ void LDAPMapperTest::LDAPAddTest()
 		assertEqual("19990520_16:54:18", vals[2L]["Values"][0L].AsCharPtr());
 	}
 }
-
-#endif
