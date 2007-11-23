@@ -83,10 +83,15 @@ void LDAPDAImpl::HandleError(LDAP *ldapHdl, Context &ctx, ResultMapper *out, con
 	StartTrace(LDAPDAImpl.HandleError);
 	long errCode = 0;
 
-	if (ldapHdl) {
-		errCode = ldap_get_lderrno( ldapHdl, NULL, NULL );
+	/* NOT POSSIBLE IN CURRENT OPENSSL - NOTHING DOCUMENTED
+
+	if (ldapHdl)
+	{
+		errCode = ldapHdl->ld_errno;
 		ldap_unbind( ldapHdl );
 	}
+	*/
+
 	if (errCode == 0) {
 		out->Put("ErrorConnect", msg, ctx);
 	} else {
@@ -120,20 +125,20 @@ LDAP *LDAPDAImpl::Connect(Context &ctx, ParameterMapper *in, ResultMapper *out)
 		String msg("Could not connect to ");
 		msg << server << " at " << port;
 
-		HandleError(ldapHdl, ctx, out, msg);
+		HandleError(NULL, ctx, out, msg);
 		return 0;
 	}
 
 	if ( ::ldap_set_option( ldapHdl, LDAP_OPT_PROTOCOL_VERSION, &ldapVersion ) != LDAP_SUCCESS ) {
 		Trace("==================================== ::ldap_set_option: LDAP_OPT_PROTOCOL_VERSION   FAILED");
-		HandleError(ldapHdl, ctx, out, "ldap_set_option [LDAP_OPT_PROTOCOL_VERSION]");
+		HandleError(NULL, ctx, out, "ldap_set_option [LDAP_OPT_PROTOCOL_VERSION]");
 		return 0;
 	}
 
 	int adjustConnTimeout = connTimeout *= 1000;
-	if ( ::ldap_set_option( ldapHdl, LDAP_X_OPT_CONNECT_TIMEOUT, &adjustConnTimeout ) != LDAP_SUCCESS ) {
-		Trace("==================================== ::ldap_set_option: LDAP_X_OPT_CONNECT_TIMEOUT   FAILED");
-		HandleError(ldapHdl, ctx, out, "ldap_set_option  [LDAP_X_OPT_CONNECT_TIMEOUT]");
+	if ( ::ldap_set_option( ldapHdl, LDAP_OPT_NETWORK_TIMEOUT, &adjustConnTimeout ) != LDAP_SUCCESS ) {
+		Trace("==================================== ::ldap_set_option: LDAP_OPT_NETWORK_TIMEOUT   FAILED");
+		HandleError(NULL, ctx, out, "ldap_set_option  [LDAP_OPT_NETWORK_TIMEOUT]");
 		return 0;
 	}
 
@@ -160,13 +165,14 @@ LDAP *LDAPDAImpl::Connect(Context &ctx, ParameterMapper *in, ResultMapper *out)
 		} else {
 			Trace("==================================== Bind NOT Anonymous  Bindpassword not OK = ["  << bindPW << "]");
 			errorMsg  << "Bindpassword " << bindPW;
-			HandleError(ldapHdl, ctx, out, errorMsg);
+			HandleError(NULL, ctx, out, errorMsg);
 			return 0;
 		}
 	}
 	if ( msgId == -1 ) {
 		Trace("==================================== Bind not OK !!!");
-		HandleError(ldapHdl, ctx, out, errorMsg);
+		errorMsg << "  Bind not OK";
+		HandleError(NULL, ctx, out, errorMsg);
 		return 0;
 	}
 
@@ -177,7 +183,7 @@ LDAP *LDAPDAImpl::Connect(Context &ctx, ParameterMapper *in, ResultMapper *out)
 		return ldapHdl;
 	} else {
 		Trace("==================================== LDAPConnect NOT OK !!!");
-		HandleError(ldapHdl, ctx, out, "LDAPConnect");
+		HandleError(NULL, ctx, out, "LDAPConnect");
 		return 0;  //Connect failure
 	}
 }
@@ -200,8 +206,7 @@ int LDAPDAImpl::WaitForResult( LDAPMessage **result, LDAP *ldapHdl, String messa
 	}
 	if (rc == -1) {
 		// in case we don't have a LDAPMessage structure
-		int rc_errno = ldap_get_lderrno( ldapHdl, NULL, NULL );
-		String msg(messageIn <<  "  " << ldap_err2string( rc_errno ));
+		String msg(messageIn <<  "  " << "ldap_result() failed with -1");
 
 		SysLog::Error(msg);
 		out->Put("Error", msg, c);
@@ -330,37 +335,38 @@ bool LDAPDAImpl::CheckSearchResult(int opRet, bool &outcome, LDAPMessage *result
 	}
 	switch (opRet) {
 		case LDAP_RES_SEARCH_ENTRY: {
-			Trace("opRet:LDAP_RES_SEARCH_ENTRY");
 			GetData( result, ldapHdl, c, out);
 			return 0;
 		}
 		case LDAP_RES_SEARCH_RESULT: {
-			Trace("opRet:LDAP_RES_SEARCH_RESULT");
-			char *matched_msg = NULL;   // don't need this
+			char *matched_msg = NULL;  // don't need this
 			char *error_msg = NULL;     // don't need this
 			LDAPControl **serverctrls;
 			// don't free the memory
 			int parse_rc = ldap_parse_result( ldapHdl, result, &opRet, &matched_msg, &error_msg, NULL, &serverctrls, 0 );
 			if ( parse_rc != LDAP_SUCCESS ) {
-				Trace("!LDAP_SUCCESS");
-				LDAPParams params(c, in);
-				String msg("LDAPSearch  Base[");
-				msg << params.Base() << "] Filter[" << params.Filter() << "] " << ldap_err2string( opRet );
-				SysLog::Error(msg);
-				Anything aError;
-				aError["Error"]["Msg"] = msg;
-				aError["Error"]["Code"] = opRet;
-				out->Put("LDAPResult", aError, c);
-				out->Put("Error", msg, c);
-				outcome = false;
-			} else {
-				if (opRet != LDAP_SUCCESS) {
-					Trace("opRet:!LDAP_SUCCESS");
+				Trace("opRet:LDAP_RES_SEARCH_ENTRY");
+				GetData( result, ldapHdl, c, out);
+				return 0;
+			}
+			case LDAP_RES_SEARCH_RESULT: {
+				Trace("opRet:LDAP_RES_SEARCH_RESULT");
+				char *matched_msg = NULL;   // don't need this
+				char *error_msg = NULL;     // don't need this
+				LDAPControl **serverctrls;
+				// don't free the memory
+				int parse_rc = ldap_parse_result( ldapHdl, result, &opRet, &matched_msg, &error_msg, NULL, &serverctrls, 0 );
+				if ( parse_rc != LDAP_SUCCESS ) {
+					Trace("!LDAP_SUCCESS");
+					LDAPParams params(c, in);
+					String msg("LDAPSearch  Base[");
+					msg << params.Base() << "] Filter[" << params.Filter() << "] " << ldap_err2string( opRet );
 					LDAPParams params(c, in);
 					String msg("LDAPSearch  Base[");
 					msg << params.Base() << "] Filter[" << params.Filter() << "] " << ldap_err2string( opRet );
 					String partialMatch;
-					ldap_get_lderrno( ldapHdl, &matched_msg, &error_msg );
+					/*ldap_get_lderrno( ldapHdl, &matched_msg, &error_msg );*/
+
 					if ( error_msg != NULL && *error_msg != '\0' ) {
 						msg << " " << error_msg;
 					}
@@ -376,291 +382,89 @@ bool LDAPDAImpl::CheckSearchResult(int opRet, bool &outcome, LDAPMessage *result
 					out->Put("Error", msg, c);
 					outcome = false;
 				} else {
-					Trace("search was success");
-					// A search is ok even when nothing is found. Check and
-					// create empty result slot.
-					Anything tmpStore;
-					tmpStore = c.GetTmpStore();
-					if (!(tmpStore["Mapper"].IsDefined("LDAPResult"))) {
-						// Don't use Mapper to output since different Mappers will
-						// store the hint differently and make lookups impossible.
-						tmpStore["Mapper"]["Info"]["LdapSearchFoundEntryButNoData"] = 1L;
-						String tmpString("");
-						out->Put("LDAPResult", tmpString, c);
+					if (opRet != LDAP_SUCCESS) {
+						Trace("opRet:!LDAP_SUCCESS");
+						LDAPParams params(c, in);
+						String msg("LDAPSearch  Base[");
+						msg << params.Base() << "] Filter[" << params.Filter() << "] " << ldap_err2string( opRet );
+						String partialMatch;
+						ldap_get_lderrno( ldapHdl, &matched_msg, &error_msg );
+						if ( error_msg != NULL && *error_msg != '\0' ) {
+							msg << " " << error_msg;
+						}
+						if ( matched_msg != NULL && *matched_msg != '\0' ) {
+							partialMatch <<  matched_msg;
+						}
+						SysLog::Error(msg);
+						Anything aError;
+						aError["Error"]["Msg"] = msg;
+						aError["Error"]["Code"] = opRet;
+						aError["Error"]["PartialMatch"] = partialMatch;
+						out->Put("LDAPResult", aError, c);
+						out->Put("Error", msg, c);
+						outcome = false;
+					} else {
+						Trace("search was success");
+						// A search is ok even when nothing is found. Check and
+						// create empty result slot.
+						Anything tmpStore;
+						tmpStore = c.GetTmpStore();
+						if (!(tmpStore["Mapper"].IsDefined("LDAPResult"))) {
+							// Don't use Mapper to output since different Mappers will
+							// store the hint differently and make lookups impossible.
+							tmpStore["Mapper"]["Info"]["LdapSearchFoundEntryButNoData"] = 1L;
+							String tmpString("");
+							out->Put("LDAPResult", tmpString, c);
+						}
+						outcome = true;
 					}
-					outcome = true;
 				}
+				return 1;
 			}
-			return 1;
-		}
-		case LDAP_RES_SEARCH_REFERENCE:
-			Trace("opRet:LDAP_RES_SEARCH_REFERENCE");
-			return 0;
-		default:
-			Trace("default-case");
-			return 1;
+			case LDAP_RES_SEARCH_REFERENCE:
+				Trace("opRet:LDAP_RES_SEARCH_REFERENCE");
+				return 0;
+			default:
+				Trace("default-case");
+				return 1;
+			}
 	}
-}
 
-bool LDAPDAImpl::CheckAddDelModifyResult(int opRet, bool &outcome, LDAPMessage *result, LDAP *ldapHdl, String messageIn,
-		timeval *timeLimitIn, int msgId,   Context &c, ParameterMapper *in, ResultMapper *out)
-{
-	StartTrace(LDAPModifyDaImpl.CheckResult);
-	outcome = false;
-	if (opRet == 0) {
-		return (HandleTimeout(opRet, outcome, result, ldapHdl, messageIn, timeLimitIn, msgId, c, in, out));
-	} else {
-		LDAPModifyCompareParams params(c, in);
-		char *matched_msg = NULL;   // don't need this
-		char *error_msg = NULL;     // don't need this
-		LDAPControl **serverctrls;
-		// don't free the memory
-		int parse_rc = ldap_parse_result( ldapHdl, result, &opRet, &matched_msg, &error_msg, NULL, &serverctrls, 0 );
-		if ( parse_rc != LDAP_SUCCESS ) {
-			String msg;
-			msg << messageIn << "  dn<" << params.DName() << ">: " << ldap_err2string( opRet );
-			SysLog::Error(msg);
-			Anything aError;
-			aError["Error"]["Msg"] = msg;
-			aError["Error"]["Code"] = opRet;
-			out->Put("LDAPResult", aError, c);
-			out->Put("Error", msg, c);
-			outcome = false;
+	bool LDAPDAImpl::CheckAddDelModifyResult(int opRet, bool & outcome, LDAPMessage * result, LDAP * ldapHdl, String messageIn,
+			timeval * timeLimitIn, int msgId,   Context & c, ParameterMapper * in, ResultMapper * out) {
+		StartTrace(LDAPModifyDaImpl.CheckResult);
+		outcome = false;
+		if (opRet == 0) {
+			return (HandleTimeout(opRet, outcome, result, ldapHdl, messageIn, timeLimitIn, msgId, c, in, out));
 		} else {
-			if (opRet == LDAP_SUCCESS) {
-				String msg;
-				msg << messageIn << " dn<" << params.DName() << ">  was successfull";
-				out->Put("LDAPResult", msg, c);
-				outcome = true;
-			} else {
-				String partialMatch;
-				ldap_get_lderrno( ldapHdl, &matched_msg, &error_msg );
+			LDAPModifyCompareParams params(c, in);
+			char *matched_msg = NULL;   // don't need this
+			char *error_msg = NULL;     // don't need this
+			LDAPControl **serverctrls;
+			// don't free the memory
+			int parse_rc = ldap_parse_result( ldapHdl, result, &opRet, &matched_msg, &error_msg, NULL, &serverctrls, 0 );
+			if ( parse_rc != LDAP_SUCCESS ) {
 				String msg;
 				msg << messageIn << "  dn<" << params.DName() << ">: " << ldap_err2string( opRet );
-				if ( error_msg != NULL && *error_msg != '\0' ) {
-					msg << " " << error_msg;
-				}
-				if ( matched_msg != NULL && *matched_msg != '\0' ) {
-					partialMatch <<  matched_msg;
-				}
 				SysLog::Error(msg);
 				Anything aError;
 				aError["Error"]["Msg"] = msg;
 				aError["Error"]["Code"] = opRet;
-				aError["Error"]["PartialMatch"] = partialMatch;
+				out->Put("LDAPResult", aError, c);
 				out->Put("Error", msg, c);
 				outcome = false;
-			}
-		}
-		return 1;
-	}
-}
-
-bool LDAPDAImpl::GetDNComponents(const char *dn, Anything &dnParts)
-{
-	StartTrace(LDAPDAImpl.GetDNComponents);
-	char **results;
-	results = ldap_explode_dn(dn, 0);
-	if (results == NULL) {
-		return false;
-	}
-	for (long i = 0; results[i] != NULL; i++) {
-		StringTokenizer strtk(results[i], '=');
-		String attrName;
-		strtk.NextToken(attrName);
-		String attrValue;
-		strtk.NextToken(attrValue);
-		dnParts[attrName] = attrValue;
-	}
-	ldap_value_free(results);
-	return true;
-}
-
-void LDAPDAImpl::GetData( LDAPMessage * /* result */  e, LDAP *ldapHdl, Context &c, ResultMapper *out )
-{
-	StartTrace(LDAPDAImpl.GetData);
-	Anything nextResult;
-
-	BerElement      *ber = 0; // PS: init it
-	char *dn = ldap_get_dn( ldapHdl, e );
-	if (dn) {
-		nextResult["dn"] = dn;
-		if (Lookup("GetDNComponents", 0L)) {
-			GetDNComponents(dn, nextResult["dnComponents"]);
-		}
-		ldap_memfree( dn );
-	} else {
-		nextResult["dn"] = "None";
-	}
-
-	for (char *a = ldap_first_attribute( ldapHdl, e, &ber );
-		 a != NULL;
-		 a = ldap_next_attribute( ldapHdl, e, ber ) ) {
-		String a_lower_case = a;
-		a_lower_case.ToLower();
-		//char** vals = ldap_get_values( ldapHdl, e, a );
-		struct berval **vals = ldap_get_values_len( ldapHdl, e, a );
-		if ( vals ) {
-			for ( unsigned int i = 0; vals[i]; i++ ) {
-				String str((void *)vals[i]->bv_val, (long)vals[i]->bv_len);
-				MapUTF8Chars(str);
-				//CopyUTF8(str, vals[i]);
-				if (i == 0 ) {
-					nextResult[a_lower_case] = str;
-				} else {
-					nextResult[a_lower_case].Append(str);
-				}
-
-			}
-			ldap_value_free_len( vals );
-		}
-		if ( a ) {
-			ldap_memfree( a );
-		}
-	}
-	if ( ber ) {
-		ber_free( ber, 0 );
-	}
-	out->Put("LDAPResult", nextResult, c);
-	TraceAny(nextResult, "LDAPResult:");
-}
-
-bool LDAPDAImpl::HandleTimeout(int opRet, bool &outcome, LDAPMessage *result, LDAP *ldapHdl, String messageIn,
-							   timeval *timeLimitIn, int msgId,   Context &c, ParameterMapper *in, ResultMapper *out)
-{
-	StartTrace(LDAPDAImpl.HandleTimeout);
-	String msg;
-
-	if (timeLimitIn->tv_sec != 0 || timeLimitIn->tv_usec != 0) {		// no polling, timeout)
-		msg << "The request <" << messageIn << "> took more then <" << (long) timeLimitIn->tv_sec << "> seconds. ";
-		ldap_abandon_ext(ldapHdl, msgId, NULL, NULL);
-		SysLog::Error(msg);
-		out->Put("Error", msg, c);
-		out->Put("ErrorTimeout", msg, c);
-		outcome = false;
-		return 1;
-	} else {			// Polling case - wait forever
-		return 0;
-	}
-}
-
-//---- LDAPCompareDAImpl ---------------------------------------------------------
-RegisterDataAccessImpl(LDAPCompareDAImpl);
-LDAPCompareDAImpl::LDAPCompareDAImpl(const char *name) : LDAPDAImpl(name) { }
-LDAPCompareDAImpl::~LDAPCompareDAImpl() { }
-IFAObject *LDAPCompareDAImpl::Clone() const
-{
-	return new LDAPCompareDAImpl(fName);
-}
-
-bool LDAPCompareDAImpl::Exec(Context &ctx, ParameterMapper *in, ResultMapper *out)
-{
-	StartTrace(LDAPCompareDAImpl.DoExec);
-	bool retVal = true;
-	LDAPModifyCompareParams params(ctx, in);
-
-	LDAP *ldapHdl = Connect(ctx, in, out);
-	if (ldapHdl != NULL) {
-		if ( params.DNameDefined() ) {
-			int msgId;
-			berval CompareValue;
-
-			CompareValue.bv_val = params.Value2Compare();
-			CompareValue.bv_len = params.V2CLength();
-
-			SubTrace(Params, "dn:<" << params.DName() << ">" );
-			SubTrace(Params, "Value:<" << params.Value2Compare() << ">" );
-
-			LDAPMessage     *result = 0;
-			int  rc = ldap_compare_ext(  ldapHdl, params.DName(), params.Attribute(),
-										 &CompareValue, NULL, NULL, &msgId );
-			if ( rc != LDAP_SUCCESS ) {
-				String msg("LDAPCompare  ");
-				msg << "dn<" << params.DName() << ">: " << ldap_err2string( rc );
-				SysLog::Error(msg);
-				Anything aError;
-				aError["Error"]["Msg"] = msg;
-				aError["Error"]["Code"] = rc;
-				out->Put("Error", msg, ctx);
-				retVal = false;
 			} else {
-
-				bool finished = false;
-				while (finished == false) {
-					int rc2 = WaitForResult(&result, ldapHdl, "LDAP Compare",  params.Timeout(), msgId, 0,  ctx, in, out);
-					if (rc2 != -1) {
-						finished = CheckCompareResult(rc2, retVal , result, ldapHdl, "LDAP Compare",  params.Timeout() , msgId, ctx, in, out);
-						if (finished == true) {
-							break;
-						}
-					} else {
-						retVal = false;
-						break;
-					}
-				}
-			}
-		} else {
-			SysLog::Error("No DN defined");
-			out->Put("Error", String("No DN defined"), ctx);
-			retVal = false;
-		}
-		ldap_unbind( ldapHdl );
-	} else {
-		retVal = false;
-	}
-	return retVal;
-}
-
-bool LDAPCompareDAImpl::CheckCompareResult(int opRet, bool &outcome, LDAPMessage *result, LDAP *ldapHdl, String messageIn,
-		timeval *timeLimitIn, int msgId,   Context &c, ParameterMapper *in, ResultMapper *out)
-{
-	StartTrace(LDAPCompareDAImpl.CheckCompareResult);
-	outcome = false;
-	if (opRet == 0) {
-		return (HandleTimeout(opRet, outcome, result, ldapHdl, messageIn, timeLimitIn, msgId, c, in, out));
-	} else {
-		LDAPModifyCompareParams params(c, in);
-		char *matched_msg = NULL;  // don't need this
-		char *error_msg = NULL;    // don't need this
-		LDAPControl **serverctrls;
-		// don't free the memory
-		int parse_rc = ldap_parse_result( ldapHdl, result, &opRet, &matched_msg, &error_msg, NULL, &serverctrls, 0 );
-		if ( parse_rc != LDAP_SUCCESS ) {
-			String msg("LDAPCompare  ");
-			msg << "dn<" << params.DName() << ">: " << ldap_err2string( opRet );
-			SysLog::Error(msg);
-			Anything aError;
-			aError["Error"]["Msg"] = msg;
-			aError["Error"]["Code"] = opRet;
-			out->Put("Error", msg, c);
-			outcome = false;
-		} else {
-			switch (opRet) {
-
-				case LDAP_COMPARE_TRUE: {
-					String msg("LDAPCompare of Attribute ");
-					msg << *params.Attributes() << " of DN " << params.DName() << " was successfull" ;
+				if (opRet == LDAP_SUCCESS) {
+					String msg;
+					msg << messageIn << " dn<" << params.DName() << ">  was successfull";
 					out->Put("LDAPResult", msg, c);
-					TraceAny(c.GetTmpStore(), "TempStore: ");
 					outcome = true;
-					break;
-				}
-				case LDAP_COMPARE_FALSE: {
-					String msg("LDAPCompare  ");
-					msg << "dn<" << params.DName() << ">: " << ldap_err2string( opRet );
-					SysLog::Error(msg);
-					Anything aError;
-					aError["Error"]["Msg"] = msg;
-					aError["Error"]["Code"] = opRet;
-					out->Put("Error", msg, c);
-					outcome = false;
-					break;
-				}
-				default: {
+				} else {
 					String partialMatch;
-					ldap_get_lderrno( ldapHdl, &matched_msg, &error_msg );
-					String msg("LDAPCompare  ");
-					msg << "dn<" << params.DName() << ">: " << ldap_err2string( opRet );
+					/*ldap_get_lderrno( ldapHdl, &matched_msg, &error_msg );*/
+
+					String msg;
+					msg << messageIn << "  dn<" << params.DName() << ">: " << ldap_err2string( opRet );
 					if ( error_msg != NULL && *error_msg != '\0' ) {
 						msg << " " << error_msg;
 					}
@@ -674,248 +478,523 @@ bool LDAPCompareDAImpl::CheckCompareResult(int opRet, bool &outcome, LDAPMessage
 					aError["Error"]["PartialMatch"] = partialMatch;
 					out->Put("Error", msg, c);
 					outcome = false;
-					break;
 				}
 			}
+			return 1;
 		}
-		return 1;
 	}
-}
+
+	bool LDAPDAImpl::GetDNComponents(const char * dn, Anything & dnParts) {
+		StartTrace(LDAPDAImpl.GetDNComponents);
+		char **results;
+		results = ldap_explode_dn(dn, 0);
+		if (results == NULL) {
+			return false;
+		}
+		for (long i = 0; results[i] != NULL; i++) {
+			StringTokenizer strtk(results[i], '=');
+			String attrName;
+			strtk.NextToken(attrName);
+			String attrValue;
+			strtk.NextToken(attrValue);
+			dnParts[attrName] = attrValue;
+		}
+		ldap_value_free(results);
+		return true;
+	}
+
+	void LDAPDAImpl::GetData( LDAPMessage * /* result */  e, LDAP * ldapHdl, Context & c, ResultMapper * out ) {
+		StartTrace(LDAPDAImpl.GetData);
+		Anything nextResult;
+
+		BerElement      *ber = 0; // PS: init it
+		char *dn = ldap_get_dn( ldapHdl, e );
+		if (dn) {
+			nextResult["dn"] = dn;
+			if (Lookup("GetDNComponents", 0L)) {
+				GetDNComponents(dn, nextResult["dnComponents"]);
+			}
+			ldap_memfree( dn );
+		} else {
+			nextResult["dn"] = "None";
+		}
+
+		for (char *a = ldap_first_attribute( ldapHdl, e, &ber );
+			 a != NULL;
+			 a = ldap_next_attribute( ldapHdl, e, ber ) ) {
+			String a_lower_case = a;
+			a_lower_case.ToLower();
+			//char** vals = ldap_get_values( ldapHdl, e, a );
+			struct berval **vals = ldap_get_values_len( ldapHdl, e, a );
+			if ( vals ) {
+				for ( unsigned int i = 0; vals[i]; i++ ) {
+					String str((void *)vals[i]->bv_val, (long)vals[i]->bv_len);
+					MapUTF8Chars(str);
+					//CopyUTF8(str, vals[i]);
+					if (i == 0 ) {
+						nextResult[a_lower_case] = str;
+					} else {
+						nextResult[a_lower_case].Append(str);
+					}
+
+				}
+				ldap_value_free_len( vals );
+			}
+			if ( a ) {
+				ldap_memfree( a );
+			}
+		}
+		if ( ber ) {
+			ber_free( ber, 0 );
+		}
+		out->Put("LDAPResult", nextResult, c);
+		TraceAny(nextResult, "LDAPResult:");
+	}
+
+	bool LDAPDAImpl::HandleTimeout(int opRet, bool & outcome, LDAPMessage * result, LDAP * ldapHdl, String messageIn,
+								   timeval * timeLimitIn, int msgId,   Context & c, ParameterMapper * in, ResultMapper * out) {
+		StartTrace(LDAPDAImpl.HandleTimeout);
+		String msg;
+
+		if (timeLimitIn->tv_sec != 0 || timeLimitIn->tv_usec != 0) {		// no polling, timeout)
+			msg << "The request <" << messageIn << "> took more then <" << (long) timeLimitIn->tv_sec << "> seconds. ";
+			ldap_abandon_ext(ldapHdl, msgId, NULL, NULL);
+			SysLog::Error(msg);
+			out->Put("Error", msg, c);
+			out->Put("ErrorTimeout", msg, c);
+			outcome = false;
+			return 1;
+		} else {			// Polling case - wait forever
+			return 0;
+		}
+	}
+
+//---- LDAPCompareDAImpl ---------------------------------------------------------
+	RegisterDataAccessImpl(LDAPCompareDAImpl);
+	LDAPCompareDAImpl::LDAPCompareDAImpl(const char * name) : LDAPDAImpl(name) { }
+	LDAPCompareDAImpl::~LDAPCompareDAImpl() { }
+	IFAObject *LDAPCompareDAImpl::Clone() const {
+		return new LDAPCompareDAImpl(fName);
+	}
+
+	bool LDAPCompareDAImpl::Exec(Context & ctx, ParameterMapper * in, ResultMapper * out) {
+		StartTrace(LDAPCompareDAImpl.DoExec);
+		bool retVal = true;
+		LDAPModifyCompareParams params(ctx, in);
+
+		LDAP *ldapHdl = Connect(ctx, in, out);
+		if (ldapHdl != NULL) {
+			if ( params.DNameDefined() ) {
+				int msgId;
+				berval CompareValue;
+
+				CompareValue.bv_val = params.Value2Compare();
+				CompareValue.bv_len = params.V2CLength();
+
+				SubTrace(Params, "dn:<" << params.DName() << ">" );
+				SubTrace(Params, "Value:<" << params.Value2Compare() << ">" );
+
+				LDAPMessage     *result = 0;
+				int  rc = ldap_compare_ext(  ldapHdl, params.DName(), params.Attribute(),
+											 &CompareValue, NULL, NULL, &msgId );
+				if ( rc != LDAP_SUCCESS ) {
+					String msg("LDAPCompare  ");
+					msg << "dn<" << params.DName() << ">: " << ldap_err2string( rc );
+					SysLog::Error(msg);
+					Anything aError;
+					aError["Error"]["Msg"] = msg;
+					aError["Error"]["Code"] = rc;
+					out->Put("Error", msg, ctx);
+					retVal = false;
+				} else {
+
+					bool finished = false;
+					while (finished == false) {
+						int rc2 = WaitForResult(&result, ldapHdl, "LDAP Compare",  params.Timeout(), msgId, 0,  ctx, in, out);
+						if (rc2 != -1) {
+							finished = CheckCompareResult(rc2, retVal , result, ldapHdl, "LDAP Compare",  params.Timeout() , msgId, ctx, in, out);
+							if (finished == true) {
+								break;
+							}
+						} else {
+							retVal = false;
+							break;
+						}
+					}
+				}
+			} else {
+				SysLog::Error("No DN defined");
+				out->Put("Error", String("No DN defined"), ctx);
+				retVal = false;
+			}
+			ldap_unbind( ldapHdl );
+		} else {
+			retVal = false;
+		}
+		return retVal;
+	}
+
+	bool LDAPCompareDAImpl::CheckCompareResult(int opRet, bool & outcome, LDAPMessage * result, LDAP * ldapHdl, String messageIn,
+			timeval * timeLimitIn, int msgId,   Context & c, ParameterMapper * in, ResultMapper * out) {
+		StartTrace(LDAPCompareDAImpl.CheckCompareResult);
+		outcome = false;
+		if (opRet == 0) {
+			return (HandleTimeout(opRet, outcome, result, ldapHdl, messageIn, timeLimitIn, msgId, c, in, out));
+		} else {
+			LDAPModifyCompareParams params(c, in);
+			char *matched_msg = NULL;  // don't need this
+			char *error_msg = NULL;    // don't need this
+			LDAPControl **serverctrls;
+			// don't free the memory
+			int parse_rc = ldap_parse_result( ldapHdl, result, &opRet, &matched_msg, &error_msg, NULL, &serverctrls, 0 );
+			if ( parse_rc != LDAP_SUCCESS ) {
+				String msg("LDAPCompare  ");
+				msg << "dn<" << params.DName() << ">: " << ldap_err2string( opRet );
+				SysLog::Error(msg);
+				Anything aError;
+				aError["Error"]["Msg"] = msg;
+				aError["Error"]["Code"] = opRet;
+				out->Put("Error", msg, c);
+				outcome = false;
+			} else {
+				switch (opRet) {
+
+					case LDAP_COMPARE_TRUE: {
+						String msg("LDAPCompare of Attribute ");
+						msg << *params.Attributes() << " of DN " << params.DName() << " was successfull" ;
+						out->Put("LDAPResult", msg, c);
+						TraceAny(c.GetTmpStore(), "TempStore: ");
+						outcome = true;
+						break;
+					}
+					case LDAP_COMPARE_FALSE: {
+						String msg("LDAPCompare  ");
+						msg << "dn<" << params.DName() << ">: " << ldap_err2string( opRet );
+						SysLog::Error(msg);
+						Anything aError;
+						aError["Error"]["Msg"] = msg;
+						aError["Error"]["Code"] = opRet;
+						out->Put("Error", msg, c);
+						outcome = false;
+						break;
+					}
+					default: {
+						String partialMatch;
+						/*ldap_get_lderrno( ldapHdl, &matched_msg, &error_msg );*/
+
+						String msg("LDAPCompare  ");
+						msg << "dn<" << params.DName() << ">: " << ldap_err2string( opRet );
+						if ( error_msg != NULL && *error_msg != '\0' ) {
+							msg << " " << error_msg;
+						}
+						if ( matched_msg != NULL && *matched_msg != '\0' ) {
+							partialMatch <<  matched_msg;
+						}
+						SysLog::Error(msg);
+						Anything aError;
+						aError["Error"]["Msg"] = msg;
+						aError["Error"]["Code"] = opRet;
+						aError["Error"]["PartialMatch"] = partialMatch;
+						out->Put("Error", msg, c);
+						outcome = false;
+						break;
+					}
+				}
+			}
+			return 1;
+		}
+	}
 
 //---- LDAPModifyDAImpl ---------------------------------------------------------
-RegisterDataAccessImpl(LDAPModifyDAImpl);
-LDAPModifyDAImpl::LDAPModifyDAImpl(const char *name) : LDAPDAImpl(name) { }
-LDAPModifyDAImpl::~LDAPModifyDAImpl() { }
-IFAObject *LDAPModifyDAImpl::Clone() const
-{
-	return new LDAPModifyDAImpl(fName);
-}
-
-bool LDAPModifyDAImpl::Exec(Context &ctx, ParameterMapper *in, ResultMapper *out)
-{
-	StartTrace(LDAPModifyDAImpl.DoExec);
-	bool retVal = true;
-	LDAPModifyCompareParams params(ctx, in);
-
-	LDAP *ldapHdl = Connect(ctx, in, out);
-	if (ldapHdl != NULL) {
-		if ( params.DNameDefined() ) {
-			int msgId;
-
-			SubTrace(Params, "dn:<" << params.DName() << ">" );
-			params.DebugEntries2Modify(cerr);
-			int rc = ldap_modify_ext(ldapHdl, params.DName(), params.Entries2Modify(), NULL, NULL, &msgId);
-			if ( rc != LDAP_SUCCESS ) {
-				String msg("LDAPModify  ");
-				msg << "dn<" << params.DName() << ">: " << ldap_err2string( rc );
-				SysLog::Error(msg);
-				Anything aError;
-				aError["Error"]["Msg"] = msg;
-				aError["Error"]["Code"] = rc;
-				out->Put("Error", msg, ctx);
-				retVal = false;
-			} else {
-				retVal = DoAddModifyDel(ldapHdl, "LDAPModify", msgId, 0,  ctx, in, out);
-			}
-		} else {
-			SysLog::Error("No DN defined");
-			out->Put("Error", String("No DN defined"), ctx);
-			retVal = false;
-		}
-		ldap_unbind( ldapHdl );
-	} else {
-		retVal = false;
+	RegisterDataAccessImpl(LDAPModifyDAImpl);
+	LDAPModifyDAImpl::LDAPModifyDAImpl(const char * name) : LDAPDAImpl(name) { }
+	LDAPModifyDAImpl::~LDAPModifyDAImpl() { }
+	IFAObject *LDAPModifyDAImpl::Clone() const {
+		return new LDAPModifyDAImpl(fName);
 	}
-	return retVal;
-}
 
-//---- LDAPAddDAImpl ---------------------------------------------------------
-RegisterDataAccessImpl(LDAPAddDAImpl);
-LDAPAddDAImpl::LDAPAddDAImpl(const char *name) : LDAPDAImpl(name) { }
-LDAPAddDAImpl::~LDAPAddDAImpl() { }
-IFAObject *LDAPAddDAImpl::Clone() const
-{
-	return new LDAPAddDAImpl(fName);
-}
+	bool LDAPModifyDAImpl::Exec(Context & ctx, ParameterMapper * in, ResultMapper * out) {
+		StartTrace(LDAPModifyDAImpl.DoExec);
+		bool retVal = true;
+		LDAPModifyCompareParams params(ctx, in);
 
-bool LDAPAddDAImpl::Exec(Context &ctx, ParameterMapper *in, ResultMapper *out)
-{
-	StartTrace(LDAPAddDAImpl.DoExec);
-	bool retVal = true;
-	LDAPModifyCompareParams params(ctx, in);
+		LDAP *ldapHdl = Connect(ctx, in, out);
+		if (ldapHdl != NULL) {
+			if ( params.DNameDefined() ) {
+				int msgId;
 
-	LDAP *ldapHdl = Connect(ctx, in, out);
-	if (ldapHdl != NULL) {
-		Trace( "======================== ldapHdl != NULL !!!");
-		if ( params.DNameDefined() ) {
-			Trace( "======================== DNameDefined !!!");
-			int msgId;
-			SubTrace(Params, "DName:<" << params.DName() << ">");
-			params.DebugEntries2Modify(cerr);
-
-			int rc = ldap_add_ext(ldapHdl, params.DName(), params.Entries2Modify(), NULL, NULL, &msgId );
-
-			if ( rc != LDAP_SUCCESS ) {
-				Trace( "======================== rc != LDAP_SUCCESS !!!");
-				String msg("LDAPAdd  ");
-				msg << "dn<" << params.DName() << ">: " << ldap_err2string( rc );
-				SysLog::Error(msg);
-				Anything aError;
-				aError["Error"]["Msg"] = msg;
-				aError["Error"]["Code"] = rc;
-				out->Put("Error", msg, ctx);
-				retVal = false;
-			} else {
-				Trace( "======================== rc != LDAP_SUCCESS !!!");
-				retVal = DoAddModifyDel(ldapHdl, "LDAPAdd",  msgId, 0,  ctx, in, out);
-			}
-		} else {
-			Trace( "======================== DName is NOT Defined !!!");
-			SysLog::Error("No DN defined");
-			out->Put("Error", String("No DN defined"), ctx);
-			retVal = false;
-		}
-		ldap_unbind( ldapHdl );
-	} else {
-		Trace( "======================== ldapHdl == NULL !!!");
-		retVal = false;
-	}
-	return retVal;
-}
-
-//---- LDAPDelDAImpl ---------------------------------------------------------
-RegisterDataAccessImpl(LDAPDelDAImpl);
-LDAPDelDAImpl::LDAPDelDAImpl(const char *name) : LDAPDAImpl(name) { }
-LDAPDelDAImpl::~LDAPDelDAImpl() { }
-IFAObject *LDAPDelDAImpl::Clone() const
-{
-	return new LDAPDelDAImpl(fName);
-}
-
-bool LDAPDelDAImpl::Exec(Context &ctx, ParameterMapper *in, ResultMapper *out)
-{
-	StartTrace(LDAPDelDAImpl.DoExec);
-	bool retVal = true;
-	LDAPModifyCompareParams params(ctx, in);
-
-	LDAP *ldapHdl = Connect(ctx, in, out);
-	if (ldapHdl != NULL) {
-		Trace( "======================== ldapHdl != NULL !!!");
-		if ( params.DNameDefined() ) {
-			Trace( "======================== DNameDefined !!!");
-			int msgId;
-			SubTrace(Params, "dn:<" << params.DName() << ">" );
-
-			int rc = ldap_delete_ext(ldapHdl, params.DName(), NULL, NULL, &msgId );
-
-			if ( rc != LDAP_SUCCESS ) {
-				Trace( "======================== rc != LDAP_SUCCESS !!!");
-				String msg("LDAPDel  ");
-				msg << "dn<" << params.DName() << ">: " << ldap_err2string( rc );
-				SysLog::Error(msg);
-				Anything aError;
-				aError["Error"]["Msg"] = msg;
-				aError["Error"]["Code"] = rc;
-				out->Put("Error", msg, ctx);
-				retVal = false;
-			} else {
-				Trace( "======================== rc == LDAP_SUCCESS !!!");
-				retVal = DoAddModifyDel(ldapHdl, "LDAPDel",  msgId, 0,  ctx, in, out);
-			}
-		} else {
-			Trace( "======================== DName is NOT Defined !!!");
-			SysLog::Error("No DN defined");
-			out->Put("Error", String("No DN defined"), ctx);
-			retVal = false;
-		}
-		ldap_unbind( ldapHdl );
-	} else {
-		Trace( "======================== ldapHdl == NULL !!!");
-		retVal = false;
-	}
-	return retVal;
-}
-
-void LDAPDAImpl::MapUTF8Chars(String &str)
-{
-	// FIXME: brain dead config switch...
-	bool mapToHtml = !Lookup("NoHTMLCharMapping", 0L);
-	if (!Lookup("PlainBinaryValues", 0L)) {
-
-		String result;
-		for (long i = 0L; i < str.Length();) {
-			const char *theChar = ((const char *)str) + i;
-			const char *theStartChar = theChar;
-			unsigned long utfChar = ldap_utf8getcc(&theChar);
-			i += (theChar - theStartChar); // one utf8 symbol might be several characters
-			//u_char c= LDAP_UTF8GETCC(src);
-			if (mapToHtml) {
-				switch (utfChar) {
-					case 'Æ':
-					case 252:
-						result.Append("&uuml;");
-						break;
-					case 'ä':
-					case 228:
-						result.Append("&auml;");
-						break;
-					case '•':
-					case 246:
-						result.Append("&ouml;");
-						break;
-					case '¢':
-					case 179:
-						result.Append("&Uuml;");
-						break;
-					case '²':
-					case 196:
-						result.Append("&Auml;");
-						break;
-					case 'ã':
-					case 214:
-						result.Append("&Ouml;");
-						break;
-					case 'è':
-						result.Append("&ecirc;");
-						break;
-					case 'é':
-						result.Append("&acirc;");
-						break;
-					case 'Ç':
-						result.Append("&agrave;");
-						break;
-					case 'ê':
-						result.Append("&egrave;");
-						break;
-					case '«':
-					case 242 :
-						result.Append("&Egrave;");
-						break;
-					case 'œ':
-					case 250 :
-						result.Append("&Euml;");
-						break;
-					case 'ë':
-						result.Append("&eacute;");
-						break;
-					case 'Ï':
-					case 167 :
-						result.Append("&Eacute;");
-						break;
-					case 'ç':
-					case 231 :
-						result.Append("&ccedil;");
-						break;
-					case 174 :
-						result.Append("&Ccedil;");
-						break;
-					default :
-						result.Append((char)utfChar); // this is a shortcut
+				SubTrace(Params, "dn:<" << params.DName() << ">" );
+				params.DebugEntries2Modify(cerr);
+				int rc = ldap_modify_ext(ldapHdl, params.DName(), params.Entries2Modify(), NULL, NULL, &msgId);
+				if ( rc != LDAP_SUCCESS ) {
+					String msg("LDAPModify  ");
+					msg << "dn<" << params.DName() << ">: " << ldap_err2string( rc );
+					SysLog::Error(msg);
+					Anything aError;
+					aError["Error"]["Msg"] = msg;
+					aError["Error"]["Code"] = rc;
+					out->Put("Error", msg, ctx);
+					retVal = false;
+				} else {
+					retVal = DoAddModifyDel(ldapHdl, "LDAPModify", msgId, 0,  ctx, in, out);
 				}
 			} else {
-				result.Append((char)utfChar);    // undo UTF8 encoding
+				SysLog::Error("No DN defined");
+				out->Put("Error", String("No DN defined"), ctx);
+				retVal = false;
 			}
+			ldap_unbind( ldapHdl );
+		} else {
+			retVal = false;
 		}
-		str = result;
+		return retVal;
 	}
-}
+
+//---- LDAPAddDAImpl ---------------------------------------------------------
+	RegisterDataAccessImpl(LDAPAddDAImpl);
+	LDAPAddDAImpl::LDAPAddDAImpl(const char * name) : LDAPDAImpl(name) { }
+	LDAPAddDAImpl::~LDAPAddDAImpl() { }
+	IFAObject *LDAPAddDAImpl::Clone() const {
+		return new LDAPAddDAImpl(fName);
+	}
+
+	bool LDAPAddDAImpl::Exec(Context & ctx, ParameterMapper * in, ResultMapper * out) {
+		StartTrace(LDAPAddDAImpl.DoExec);
+		bool retVal = true;
+		LDAPModifyCompareParams params(ctx, in);
+
+		LDAP *ldapHdl = Connect(ctx, in, out);
+		if (ldapHdl != NULL) {
+			Trace( "======================== ldapHdl != NULL !!!");
+			if ( params.DNameDefined() ) {
+				Trace( "======================== DNameDefined !!!");
+				int msgId;
+				SubTrace(Params, "DName:<" << params.DName() << ">");
+				params.DebugEntries2Modify(cerr);
+
+				int rc = ldap_add_ext(ldapHdl, params.DName(), params.Entries2Modify(), NULL, NULL, &msgId );
+
+				if ( rc != LDAP_SUCCESS ) {
+					Trace( "======================== rc != LDAP_SUCCESS !!!");
+					String msg("LDAPAdd  ");
+					msg << "dn<" << params.DName() << ">: " << ldap_err2string( rc );
+					SysLog::Error(msg);
+					Anything aError;
+					aError["Error"]["Msg"] = msg;
+					aError["Error"]["Code"] = rc;
+					out->Put("Error", msg, ctx);
+					retVal = false;
+				} else {
+					Trace( "======================== rc != LDAP_SUCCESS !!!");
+					retVal = DoAddModifyDel(ldapHdl, "LDAPAdd",  msgId, 0,  ctx, in, out);
+				}
+			} else {
+				Trace( "======================== DName is NOT Defined !!!");
+				SysLog::Error("No DN defined");
+				out->Put("Error", String("No DN defined"), ctx);
+				retVal = false;
+			}
+			ldap_unbind( ldapHdl );
+		} else {
+			Trace( "======================== ldapHdl == NULL !!!");
+			retVal = false;
+		}
+		return retVal;
+	}
+
+//---- LDAPDelDAImpl ---------------------------------------------------------
+	RegisterDataAccessImpl(LDAPDelDAImpl);
+	LDAPDelDAImpl::LDAPDelDAImpl(const char * name) : LDAPDAImpl(name) { }
+	LDAPDelDAImpl::~LDAPDelDAImpl() { }
+	IFAObject *LDAPDelDAImpl::Clone() const {
+		return new LDAPDelDAImpl(fName);
+	}
+
+	bool LDAPDelDAImpl::Exec(Context & ctx, ParameterMapper * in, ResultMapper * out) {
+		StartTrace(LDAPDelDAImpl.DoExec);
+		bool retVal = true;
+		LDAPModifyCompareParams params(ctx, in);
+
+		LDAP *ldapHdl = Connect(ctx, in, out);
+		if (ldapHdl != NULL) {
+			Trace( "======================== ldapHdl != NULL !!!");
+			if ( params.DNameDefined() ) {
+				Trace( "======================== DNameDefined !!!");
+				int msgId;
+				SubTrace(Params, "dn:<" << params.DName() << ">" );
+
+				int rc = ldap_delete_ext(ldapHdl, params.DName(), NULL, NULL, &msgId );
+
+				if ( rc != LDAP_SUCCESS ) {
+					Trace( "======================== rc != LDAP_SUCCESS !!!");
+					String msg("LDAPDel  ");
+					msg << "dn<" << params.DName() << ">: " << ldap_err2string( rc );
+					SysLog::Error(msg);
+					Anything aError;
+					aError["Error"]["Msg"] = msg;
+					aError["Error"]["Code"] = rc;
+					out->Put("Error", msg, ctx);
+					retVal = false;
+				} else {
+					Trace( "======================== rc == LDAP_SUCCESS !!!");
+					retVal = DoAddModifyDel(ldapHdl, "LDAPDel",  msgId, 0,  ctx, in, out);
+				}
+			} else {
+				Trace( "======================== DName is NOT Defined !!!");
+				SysLog::Error("No DN defined");
+				out->Put("Error", String("No DN defined"), ctx);
+				retVal = false;
+			}
+			ldap_unbind( ldapHdl );
+		} else {
+			Trace( "======================== ldapHdl == NULL !!!");
+			retVal = false;
+		}
+		return retVal;
+	}
+
+	unsigned long LDAPDAImpl::ldap_utf8getcc( const char **src ) {
+		char UTF8len[64]
+		= {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		   2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 5, 6
+		  };
+
+		register unsigned long c;
+		register const unsigned char *s = (const unsigned char *) * src;
+		switch (UTF8len [(*s >> 2) & 0x3F]) {
+			case 0: /* erroneous: s points to the middle of a character. */
+				c = (*s++) & 0x3F;
+				goto more5;
+			case 1:
+				c = (*s++);
+				break;
+			case 2:
+				c = (*s++) & 0x1F;
+				goto more1;
+			case 3:
+				c = (*s++) & 0x0F;
+				goto more2;
+			case 4:
+				c = (*s++) & 0x07;
+				goto more3;
+			case 5:
+				c = (*s++) & 0x03;
+				goto more4;
+			case 6:
+				c = (*s++) & 0x01;
+				goto more5;
+			more5:
+				if ((*s & 0xC0) != 0x80) {
+					break;
+				}
+				c = (c << 6) | ((*s++) & 0x3F);
+			more4:
+				if ((*s & 0xC0) != 0x80) {
+					break;
+				}
+				c = (c << 6) | ((*s++) & 0x3F);
+			more3:
+				if ((*s & 0xC0) != 0x80) {
+					break;
+				}
+				c = (c << 6) | ((*s++) & 0x3F);
+			more2:
+				if ((*s & 0xC0) != 0x80) {
+					break;
+				}
+				c = (c << 6) | ((*s++) & 0x3F);
+			more1:
+				if ((*s & 0xC0) != 0x80) {
+					break;
+				}
+				c = (c << 6) | ((*s++) & 0x3F);
+				break;
+		}
+		*src = (const char *)s;
+		return c;
+	}
+
+	void LDAPDAImpl::MapUTF8Chars(String & str) {
+		// FIXME: brain dead config switch...
+		bool mapToHtml = !Lookup("NoHTMLCharMapping", 0L);
+		if (!Lookup("PlainBinaryValues", 0L)) {
+
+			String result;
+			for (long i = 0L; i < str.Length();) {
+				const char *theChar = ((const char *)str) + i;
+				const char *theStartChar = theChar;
+				unsigned long utfChar = ldap_utf8getcc(&theChar);
+				i += (theChar - theStartChar); // one utf8 symbol might be several characters
+				//u_char c= LDAP_UTF8GETCC(src);
+				if (mapToHtml) {
+					switch (utfChar) {
+						case 'Æ':
+						case 252:
+							result.Append("&uuml;");
+							break;
+						case 'ä':
+						case 228:
+							result.Append("&auml;");
+							break;
+						case '•':
+						case 246:
+							result.Append("&ouml;");
+							break;
+						case '¢':
+						case 179:
+							result.Append("&Uuml;");
+							break;
+						case '²':
+						case 196:
+							result.Append("&Auml;");
+							break;
+						case 'ã':
+						case 214:
+							result.Append("&Ouml;");
+							break;
+						case 'è':
+							result.Append("&ecirc;");
+							break;
+						case 'é':
+							result.Append("&acirc;");
+							break;
+						case 'Ç':
+							result.Append("&agrave;");
+							break;
+						case 'ê':
+							result.Append("&egrave;");
+							break;
+						case '«':
+						case 242 :
+							result.Append("&Egrave;");
+							break;
+						case 'œ':
+						case 250 :
+							result.Append("&Euml;");
+							break;
+						case 'ë':
+							result.Append("&eacute;");
+							break;
+						case 'Ï':
+						case 167 :
+							result.Append("&Eacute;");
+							break;
+						case 'ç':
+						case 231 :
+							result.Append("&ccedil;");
+							break;
+						case 174 :
+							result.Append("&Ccedil;");
+							break;
+						default :
+							result.Append((char)utfChar); // this is a shortcut
+					}
+				} else {
+					result.Append((char)utfChar);    // undo UTF8 encoding
+				}
+			}
+			str = result;
+		}
+	}

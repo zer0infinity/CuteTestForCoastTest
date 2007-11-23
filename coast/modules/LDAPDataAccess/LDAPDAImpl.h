@@ -46,7 +46,9 @@ protected:
 	//! \param ctx the thread context of the invocation
 	//! \param out ouput mapper which puts outputparameters to context
 	//! \return void
-	void GetData( LDAPMessage *result, LDAP *ldapHdl, Context &c, ResultMapper *out );
+	void GetData( LDAPMessage *result, LDAP *ldapHdl, Context &c, OutputMapper *out );
+
+	unsigned long ldap_utf8getcc( const char **src);
 
 	//!converts textual attribute values and distinguished names (UTF-8) in HTML-specific format
 	//!LDAPv3 usese the UTF-8 (Unicode Transformation Format-8) characterset
