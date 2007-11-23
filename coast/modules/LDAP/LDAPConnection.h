@@ -122,6 +122,8 @@ protected:
 	//! init connection
 	LDAP *Init(LDAPErrorHandler &eh);
 
+	unsigned long ldap_utf8getcc( const char **src );
+
 	//! set ldap protocol
 	bool SetProtocol(LDAPErrorHandler &eh);
 

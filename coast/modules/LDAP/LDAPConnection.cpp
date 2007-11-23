@@ -177,9 +177,9 @@ bool LDAPConnection::SetConnectionTimeout(LDAPErrorHandler &eh)
 {
 	StartTrace(LDAPConnection.SetConnectionTimeout);
 
-	if ( ::ldap_set_option( fHandle, LDAP_X_OPT_CONNECT_TIMEOUT, &fConnectionTimeout ) != LDAP_SUCCESS ) {
-		Trace("==================================== ::ldap_set_option: LDAP_X_OPT_CONNECT_TIMEOUT   FAILED");
-		eh.HandleSessionError(fHandle, "ldap_set_option  [LDAP_X_OPT_CONNECT_TIMEOUT]");
+	if ( ::ldap_set_option( fHandle, LDAP_OPT_NETWORK_TIMEOUT, &fConnectionTimeout ) != LDAP_SUCCESS ) {
+		Trace("==================================== ::ldap_set_option: LDAP_OPT_NETWORK_TIMEOUT   FAILED");
+		eh.HandleSessionError(fHandle, "ldap_set_option  [LDAP_OPT_NETWORK_TIMEOUT]");
 		return false;
 	}
 	return true;
@@ -430,6 +430,70 @@ bool LDAPConnection::Disconnect(LDAP *handle)
 	}
 	Trace("Disconnecting successful.");
 	return true;
+}
+
+unsigned long LDAPConnection::ldap_utf8getcc( const char **src )
+{
+	char UTF8len[64]
+	= {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+	   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	   2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 5, 6
+	  };
+
+	register unsigned long c;
+	register const unsigned char *s = (const unsigned char *) * src;
+	switch (UTF8len [(*s >> 2) & 0x3F]) {
+		case 0: /* erroneous: s points to the middle of a character. */
+			c = (*s++) & 0x3F;
+			goto more5;
+		case 1:
+			c = (*s++);
+			break;
+		case 2:
+			c = (*s++) & 0x1F;
+			goto more1;
+		case 3:
+			c = (*s++) & 0x0F;
+			goto more2;
+		case 4:
+			c = (*s++) & 0x07;
+			goto more3;
+		case 5:
+			c = (*s++) & 0x03;
+			goto more4;
+		case 6:
+			c = (*s++) & 0x01;
+			goto more5;
+		more5:
+			if ((*s & 0xC0) != 0x80) {
+				break;
+			}
+			c = (c << 6) | ((*s++) & 0x3F);
+		more4:
+			if ((*s & 0xC0) != 0x80) {
+				break;
+			}
+			c = (c << 6) | ((*s++) & 0x3F);
+		more3:
+			if ((*s & 0xC0) != 0x80) {
+				break;
+			}
+			c = (c << 6) | ((*s++) & 0x3F);
+		more2:
+			if ((*s & 0xC0) != 0x80) {
+				break;
+			}
+			c = (c << 6) | ((*s++) & 0x3F);
+		more1:
+			if ((*s & 0xC0) != 0x80) {
+				break;
+			}
+			c = (c << 6) | ((*s++) & 0x3F);
+			break;
+	}
+	*src = (const char *)s;
+	return c;
 }
 
 void LDAPConnection::MapUTF8Chars(String &str, bool bMapUTF8)
