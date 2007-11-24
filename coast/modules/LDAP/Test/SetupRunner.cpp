@@ -21,12 +21,8 @@
 
 void setupRunner(TestRunner &runner)
 {
-#if defined(__sun) || defined(WIN32) || defined(__linux__)
 	ADD_SUITE(runner, ConfiguredActionTest);
 	ADD_SUITE(runner, LDAPConnectionTest);
 	ADD_SUITE(runner, ErrorHandlerTest);
 	ADD_SUITE(runner, LDAPConnectionManagerTest);
-#else
-	cout << "No ldap environment defined" << endl;
-#endif
 } // setupRunner
