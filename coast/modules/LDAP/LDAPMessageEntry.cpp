@@ -15,6 +15,7 @@
 #include "Dbg.h"
 
 //--- c-modules used -----------------------------------------------------------
+#include <string.h>
 
 //---- LDAPMessageEntry ----------------------------------------------------------------
 LDAPMessageEntry::LDAPMessageEntry(LDAPMessage **LDAPMessagePtrIn)
