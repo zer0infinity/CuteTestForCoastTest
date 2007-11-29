@@ -33,6 +33,8 @@ public:
 	void DoLoadConfigTest();
 	void GetInputMapperTest();
 	void GetOutputMapperTest();
+protected:
+	Anything fConfig;
 };
 
 #endif
