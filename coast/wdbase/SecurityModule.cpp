@@ -47,7 +47,7 @@ long SecurityItem::GetNamePrefixFromEncodedText(String &scramblername, const Str
 
 void SecurityItem::Encode(const char *itemtouse, String &encodedText, const String &cleartext)
 {
-	if (itemtouse == "") {
+	if (String() == itemtouse) {
 		itemtouse = "Encoder";
 	}
 	StartTrace1(SecurityItem.Encode, "using SecurityItem <" << itemtouse << ">");
@@ -365,7 +365,7 @@ Scrambler::~Scrambler()
 
 void Scrambler::Scramble(const char *encodername, String &encodedText, const String &cleartext)
 {
-	if (encodername == "") {
+	if (String() == encodername) {
 		encodername = "Scrambler";
 	}
 	StartTrace(Scrambler.Scramble);
@@ -405,7 +405,7 @@ Compressor::~Compressor()
 
 void Compressor::Compress(const char *theName, String &encodedText, const Anything &cleartext)
 {
-	if (theName == "") {
+	if (String() == theName) {
 		theName = "Compressor";
 	}
 	Compressor *compressor = Compressor::FindCompressor(theName);
@@ -481,7 +481,7 @@ Signer::~Signer()
 
 void Signer::Sign(const char *signername, String &encodedText, const String &cleartext)
 {
-	if (signername == "") {
+	if (String() == signername) {
 		signername = "Signer";
 	}
 	StartTrace(Signer.Sign);
