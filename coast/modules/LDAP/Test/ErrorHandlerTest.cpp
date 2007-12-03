@@ -74,7 +74,7 @@ void ErrorHandlerTest::HandleConnectionErrorTest()
 
 	if ( !error.IsNull() ) {
 		assertAnyEqual(error["LdapConnectionParams"], cp);
-		assertEqual(error["LdapCode"].AsLong(), 91L);
+		assertEqual(error["LdapCode"].AsLong(), 81L);
 	}
 }
 

@@ -270,10 +270,8 @@
 
 	/LDAPConfig_Pooled
 	{
-		/LDAPServer		"marvin.hsr.loc"
-		/LDAPPort		"49999"
-		/LDAPBindName	"cn=Directory Manager"
-		/LDAPBindPW		"ifaifaifa"
+		/LDAPPort		"389"
+		/LDAPBindName	"cn=admin,dc=sifsstud1,dc=hsr,dc=ch"
 		/LDAPConnectionTimeout	5
 		/LDAPTimeout	10
 		/LDAPPooledConnections 1
@@ -418,10 +416,8 @@
 		{
 			/TmpStore	{
 				# connection config
-				/LDAPServer		"marvin.hsr.loc"
-				/LDAPPort		"49999"
-				/LDAPBindName	"cn=Directory Manager"
-				/LDAPBindPW		"ifaifaifa"
+				/LDAPPort		"389"
+				/LDAPBindName	"cn=admin,dc=sifsstud1,dc=hsr,dc=ch"
 				/LDAPConnectionTimeout	5
 				/LDAPTimeout	10
 				/LDAPPooledConnections 1

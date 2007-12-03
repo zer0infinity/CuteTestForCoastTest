@@ -17,10 +17,8 @@
 	/Mappers {}
 	/DataAccessImpls {}
 
-	/LDAPServer		"marvin.hsr.loc"
-	/LDAPPort		"49999"
-	/LDAPBind		"cn=Directory Manager"
-	/LDAPBindPW		"ifaifaifa"
+	/LDAPPort		"389"
+	/LDAPBind		"cn=admin,dc=sifsstud1,dc=hsr,dc=ch"
 	/LDAPTimeout	10
 	/LDAPConnectionTimeout 5
 
@@ -30,28 +28,21 @@
 		{
 			/LDAPServer		"nonexisting.server.loc"
 			/LDAPPort		%LDAPPort
-			/LDAPTimeout	%LDAPTimeout
+			/LDAPTimeout		%LDAPTimeout
 			/LDAPConnectionTimeout	%LDAPConnectionTimeout
-			/LDAPBindName	%LDAPBind
+			/LDAPBindName		%LDAPBind
 			/LDAPBindPW		%LDAPBindPW
-			/LDAPPooledConnections 0
-			/LDAPRebindTimeout 0
-			/LDAPTryAutoRebind		0
-
-			/ConnectIsOk	0
-			/ConnectRet 	"eBindNok"
-			/Error
-			{
-				/Msg 		"Binding request failed. [Server: 'nonexisting.server.loc', Port: '49999']  (Authorized bind.)"
-				/LdapCode	91
-				/LdapMsg	"Can't connect to the LDAP server"
-				/LdapConnectionParams
-				{
+			/Expected 		0
+			/Error {
+				/Msg 		"Binding request failed. [Server: 'nonexisting.server.loc', Port: '389']  (Authorized bind.)"
+				/LdapCode	81
+				/LdapMsg	"Can't contact LDAP server"
+				/LdapConnectionParams {
 					/Server "nonexisting.server.loc"
-					/Port 49999
+					/Port 389
 					/Timeout 10
 					/ConnectionTimeout 5
-					/BindName "cn=Directory Manager"
+					/BindName "cn=admin,dc=sifsstud1,dc=hsr,dc=ch"
 					/BindPW "ifaifaifa"
 					/PooledConnections 0
 					/RebindTimeout 0
@@ -96,41 +87,31 @@
 		{
 			/LDAPServer		%LDAPServer
 			/LDAPPort		%LDAPPort
-			/LDAPTimeout	%LDAPTimeout
+			/LDAPTimeout		%LDAPTimeout
 			/LDAPConnectionTimeout	%LDAPConnectionTimeout
-			/LDAPBindName	""
+			/LDAPBindName		""
 			/LDAPBindPW		""
-			/ConnectIsOk	1
-			/ConnectRet 	"eOk"
+			/Expected 		1		# success, no error
 		}
 
 		# Wrong bind name
 		{
 			/LDAPServer		%LDAPServer
 			/LDAPPort		%LDAPPort
-			/LDAPTimeout	%LDAPTimeout
+			/LDAPTimeout		%LDAPTimeout
 			/LDAPConnectionTimeout	%LDAPConnectionTimeout
-			/LDAPBindName	"cn=WrongBindName"
+			/LDAPBindName		"cn=WrongBindName,dc=sifsstud1,dc=hsr,dc=ch"
 			/LDAPBindPW		%LDAPBindPW
-			/LDAPPooledConnections 0
-			/LDAPRebindTimeout 0
-			/LDAPTryAutoRebind		0
-
-			/ConnectIsOk	0
-			/ConnectRet 	"eBindNok"
-			/Error
-			{
+			/Expected 		0
+			/Error {
 				/Msg "LDAP request failed."
-				/LdapCode 32
-				/LdapMsg "No such object"
-				/LdapConnectionParams
-				{
-					/Server "marvin.hsr.loc"
-					/Port 49999
+				/LdapCode 49
+				/LdapMsg "Invalid credentials"
+				/LdapConnectionParams {
+					/Port 389
 					/Timeout 10
 					/ConnectionTimeout 5
-					/BindName "cn=WrongBindName"
-					/BindPW "ifaifaifa"
+					/BindName "cn=WrongBindName,dc=sifsstud1,dc=hsr,dc=ch"
 					/PooledConnections 0
 					/RebindTimeout 0
 					/TryAutoRebind		0
@@ -143,27 +124,21 @@
 		{
 			/LDAPServer		%LDAPServer
 			/LDAPPort		%LDAPPort
-			/LDAPTimeout	%LDAPTimeout
+			/LDAPTimeout		%LDAPTimeout
 			/LDAPConnectionTimeout	%LDAPConnectionTimeout
-			/LDAPBindName	%LDAPBind
+			/LDAPBindName		%LDAPBind
 			/LDAPBindPW		"SillyNonexistingBindPW"
-			/LDAPPooledConnections 0
-			/LDAPRebindTimeout 	   0
-			/LDAPTryAutoRebind		0
-			/ConnectIsOk	0
-			/ConnectRet 	"eBindNok"
-			/Error
-			{
+			/Expected 		0
+			/Error {
 				/Msg "LDAP request failed."
 				/LdapCode 49
 				/LdapMsg "Invalid credentials"
 				/LdapConnectionParams
 				{
-					/Server "marvin.hsr.loc"
-					/Port 49999
+					/Port 389
 					/Timeout 10
 					/ConnectionTimeout 5
-					/BindName "cn=Directory Manager"
+					/BindName "cn=admin,dc=sifsstud1,dc=hsr,dc=ch"
 					/BindPW "SillyNonexistingBindPW"
 					/PooledConnections 0
 					/RebindTimeout 0
@@ -209,12 +184,11 @@
 		{
 			/LDAPServer		%LDAPServer
 			/LDAPPort		%LDAPPort
-			/LDAPTimeout	%LDAPTimeout
+			/LDAPTimeout		%LDAPTimeout
 			/LDAPConnectionTimeout	%LDAPConnectionTimeout
-			/LDAPBindName	%LDAPBind
+			/LDAPBindName		%LDAPBind
 			/LDAPBindPW		%LDAPBindPW
-			/ConnectIsOk	1
-			/ConnectRet 	"eOk"
+			/Expected 		1		# success, no error
 		}
 	}
 }
