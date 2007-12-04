@@ -7,28 +7,27 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-
 	/MySQLDAImpl {
-		/Host		zaphod
+		/Host		sifsstud1.hsr.ch
 		/MySQLUser	TestUser
 		/MySQLPW	allTests
 	}
 
 	/SelectTest {
-		/Host   "zaphod.zueri.hsr.ch"
+		/Host   "sifsstud1.hsr.ch"
 		/Port   "3306"               		# this is default
 	}
 	/InsertTest {
-		/Host   localhost          			# this is default
+		/Host   sifsstud1.hsr.ch          			# this is default
 	}
 	/DeleteTest {
 	}
 	/WrongHostTest {
-		/Host   "zaphodx.hsr.loc"
+		/Host   "nonexistenthost"
 		/Port   "3306"               		# this is default
 	}
 	/WrongPortTest {
-		/Host   "zaphod.zueri.hsr.ch"
+		/Host   "sifsstud1.hsr.ch"
 		/Port   "3307"               		# failure port
 	}
 	/SelectTestWithoutQueryCount {

@@ -15,6 +15,3 @@ INSERT INTO TestTable VALUES ("Now",33);
 
 GRANT SELECT,INSERT,UPDATE,DELETE
 ON mySQLTest.TestTable
-TO TestUser@zaphod.zueri.hsr.ch IDENTIFIED BY 'allTests'
-, TestUser2@zaphod.zueri.hsr.ch IDENTIFIED BY 'allTests'
-FLUSH PRIVILEGES;

@@ -51,9 +51,9 @@
 	/TestCases {
 		/InsertTest {
 			/TmpStore {
-				/Host		zaphod
+				/Host		sifsstud1.hsr.ch
 				/Database	mySQLTest
-				/MySQLUser	TestUser2
+				/MySQLUser	TestUser
 				/MySQLPW	allTests
 			}
 			/TheAction {
@@ -179,7 +179,7 @@
 			/Result {
 				/TmpStore {
 					/WrongHostTest	{
-						/Error "Couldn't connect to mySQL engine! Unknown MySQL Server Host 'zaphodx.hsr.loc' (1)"
+						/Error "Couldn't connect to mySQL engine! Unknown MySQL server host 'nonexistenthost' (1)"
 					}
 				}
 			}
