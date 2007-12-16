@@ -84,13 +84,23 @@ void ScrambleStateTest::DoReferenceUncsramble(const Anything &config)
 	expectedClearText["sessionId"] = "979555608_6648308115913975";
 	expectedClearText["page"] = "AdminMainPage";
 	expectedClearText["action"] = "GoReloadConfig";
+
+	// if SecurityItem::fgcLegacyMasterKey in SecurityModule.cpp is changed, the scrambled string can be found out like this:
+	/*
+	SecurityModule secm2("Config2");
+	secm2.Init(fStdContextAny);
+	String scr;
+	SecurityModule::ScrambleState(scr, expectedClearText);
+	std::cout << "+++++++++++++" << scr << "+++++++++++++" << std::endl;
+	*/
+
 	t_assert(secm != NULL);
 	if (secm) {
 		{
 			String scrambled;
-			scrambled = "Base64:Qmxvd2Zpc2hTY3JhbWJsZXIwOnX96LrMgzOhTH-XCHibkAO5a11imS2vmrf9tpA0cj5UDtwg2-MxkkN5Y3Zl1y"
-						"-izgLfLeaUZsKQQv9sX2N0KvDsfIhUg2jrS9MM9E$gGR1SS4hzofNBUaZlYDe$9NMYY$n3vOVm5QfkR2Oxq5ldvBKFMLxMU1mLU"
-						"ri7T5IVi5ctwUuQc746rQv3x1AE5IZ5Zma-hywm6QVq";
+			scrambled = "Base64:Qmxvd2Zpc2hTY3JhbWJsZXItD2tpkCGRNDHj8cOapE29gBvuvdeXIO-6ZezbTzjfw3niedqXjJKK31MJSA1oCM"
+						"TwMbSWfmK5mjIX0juyVXmqLpS1qi$H335EkLmzeWVkTsN-JNwM8E4q3Ha71EdGMLnfwFDPXB88PVJksah67Y1ksHavgZoVjuJ7C"
+						"Mwm9GiC9RGXtZ5O-nQcRj14Mih2w0gw";
 			Anything unscrambledState;
 			secm->Init(config);
 			SecurityModule::UnscrambleState(unscrambledState, scrambled);
@@ -98,9 +108,9 @@ void ScrambleStateTest::DoReferenceUncsramble(const Anything &config)
 		}
 		{
 			String scrambled;
-			scrambled = "Base64-Qmxvd2Zpc2hTY3JhbWJsZXIwOnX96LrMgzOhTH-XCHibkAO5a11imS2vmrf9tpA0cj5UDtwg2-MxkkN5Y3Zl1y"
-						"-izgLfLeaUZsKQQv9sX2N0KvDsfIhUg2jrS9MM9E$gGR1SS4hzofNBUaZlYDe$9NMYY$n3vOVm5QfkR2Oxq5ldvBKFMLxMU1mLU"
-						"ri7T5IVi5ctwUuQc746rQv3x1AE5IZ5Zma-hywm6QVq";
+			scrambled = "Base64-Qmxvd2Zpc2hTY3JhbWJsZXItD2tpkCGRNDHj8cOapE29gBvuvdeXIO-6ZezbTzjfw3niedqXjJKK31MJSA1oCM"
+						"TwMbSWfmK5mjIX0juyVXmqLpS1qi$H335EkLmzeWVkTsN-JNwM8E4q3Ha71EdGMLnfwFDPXB88PVJksah67Y1ksHavgZoVjuJ7C"
+						"Mwm9GiC9RGXtZ5O-nQcRj14Mih2w0gw";
 			Anything unscrambledState;
 			secm->Init(config);
 			SecurityModule::UnscrambleState(unscrambledState, scrambled);

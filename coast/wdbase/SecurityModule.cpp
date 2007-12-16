@@ -22,7 +22,6 @@
 // ------------------- SecurityModule ---------------------------------------------
 RegisterModule(SecurityModule);
 
-//const char *SecurityItem::fgcLegacyMasterKey = ".wsoäö3$n4.ert?";
 const char *SecurityItem::fgcLegacyMasterKey = ".u8&ey%2lv$skb?";
 
 #define FindSecurityItemWithDefault(var,name,Type)\
