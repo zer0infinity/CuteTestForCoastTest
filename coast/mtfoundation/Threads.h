@@ -9,6 +9,8 @@
 #ifndef _THREADS_H
 #define _THREADS_H
 
+#include <stdlib.h>
+
 #include "IFAObject.h"
 #include "MT_Storage.h"
 #include "Anything.h"
