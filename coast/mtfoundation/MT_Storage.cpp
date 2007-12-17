@@ -15,7 +15,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "Threads.h"
 #include "PoolAllocator.h"
-#include "SystemLog.h"
+#include "SysLog.h"
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
