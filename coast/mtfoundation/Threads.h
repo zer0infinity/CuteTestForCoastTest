@@ -9,7 +9,7 @@
 #ifndef _THREADS_H
 #define _THREADS_H
 
-#include <stdlib.h>
+#include <cstdlib>
 
 #include "IFAObject.h"
 #include "MT_Storage.h"

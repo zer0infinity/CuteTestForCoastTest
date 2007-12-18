@@ -6,7 +6,7 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#include <stdlib.h>
+#include <cstdlib>
 
 //--- interface include --------------------------------------------------------
 #include "SystemAPI.h"
