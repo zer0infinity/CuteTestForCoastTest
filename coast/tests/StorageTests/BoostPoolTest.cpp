@@ -647,8 +647,8 @@ class TestMethodWorkerThreadPool : public ThreadPoolManager
 	innerFunc fInnerFunc;
 	cleanupFunc fCleanupFunc;
 public:
-	TestMethodWorkerThreadPool(funcType f, innerFunc fi, cleanupFunc cf)
-		: ThreadPoolManager("TestMethodWorkerThreadPool")
+	TestMethodWorkerThreadPool(const char *pTPName, funcType f, innerFunc fi, cleanupFunc cf)
+		: ThreadPoolManager( pTPName )
 		, fFunc(f)
 		, fInnerFunc(fi)
 		, fCleanupFunc(cf)
@@ -704,9 +704,9 @@ void BOOST_PP_SEQ_CAT((BoostPoolTest::PoolPerfTest)(TSTFUNC)(NTHREADS)(NSIZE))()
 		TestTimer aTestTimer(0);\
 		TestTimer::tTimeType aRefTime(0), aRefTime2(0);\
 		{\
-			TestMethodWorkerThreadPool<WorkerFunc, theTestFunc, MemCleanupFunc> aRefThreadPool(&BasicTestMethod<loop>, &BOOST_PP_CAT(TSTFUNC,)<tRefType, N, dummyAlloc>, &cleanupDummy);\
-			aRefThreadPool.Init(NTHREADS, ROAnything());\
 			const char pWhat[] =  BOOST_PP_STRINGIZE(TSTFUNC) "/" BOOST_PP_STRINGIZE(NTHREADS) "t" "/" BOOST_PP_STRINGIZE(NSIZE) "b" "/" "new_delete";\
+			TestMethodWorkerThreadPool<WorkerFunc, theTestFunc, MemCleanupFunc> aRefThreadPool(pWhat, &BasicTestMethod<loop>, &BOOST_PP_CAT(TSTFUNC,)<tRefType, N, dummyAlloc>, &cleanupDummy);\
+			aRefThreadPool.Init(NTHREADS, ROAnything());\
 			CatchTimeType aTimer(pWhat, this);\
 			aTestTimer.Reset();\
 			aRefThreadPool.Start(true, 16380, 20, ROAnything());\
@@ -715,9 +715,9 @@ void BOOST_PP_SEQ_CAT((BoostPoolTest::PoolPerfTest)(TSTFUNC)(NTHREADS)(NSIZE))()
 			SYSINFO("reference_" << pWhat << ":" << TestTimer::Scale(aRefTime, 1000) << "ms");\
 		}\
 		{\
-			TestMethodWorkerThreadPool<WorkerFunc, theTestFunc, MemCleanupFunc> aTestThreadPool(&BasicTestMethod<loop>, &BOOST_PP_CAT(TSTFUNC,_mal)<tRefType, N, dummyAlloc>, &cleanupDummy);\
-			aTestThreadPool.Init(NTHREADS, ROAnything());\
 			const char pWhat[] =  BOOST_PP_STRINGIZE(TSTFUNC) "/" BOOST_PP_STRINGIZE(NTHREADS) "t" "/" BOOST_PP_STRINGIZE(NSIZE) "b" "/" "malloc_free";\
+			TestMethodWorkerThreadPool<WorkerFunc, theTestFunc, MemCleanupFunc> aTestThreadPool(pWhat, &BasicTestMethod<loop>, &BOOST_PP_CAT(TSTFUNC,_mal)<tRefType, N, dummyAlloc>, &cleanupDummy);\
+			aTestThreadPool.Init(NTHREADS, ROAnything());\
 			CatchTimeType aTimer(pWhat, this);\
 			aTestTimer.Reset();\
 			aTestThreadPool.Start(true, 16380, 20, ROAnything());\
@@ -726,9 +726,9 @@ void BOOST_PP_SEQ_CAT((BoostPoolTest::PoolPerfTest)(TSTFUNC)(NTHREADS)(NSIZE))()
 			SYSINFO(pWhat << ":" << TestTimer::Scale(aTestTime, 1000) << "ms speedup: " << TestTimer::RelativeChange(aRefTime, aTestTime));\
 		}\
 		{\
-			TestMethodWorkerThreadPool<WorkerFunc, theTestFunc, MemCleanupFunc> aTestThreadPool(&BasicTestMethod<loop>, &BOOST_PP_CAT(TSTFUNC,_all)<tRefType, N, std::allocator>, &cleanupDummy);\
-			aTestThreadPool.Init(NTHREADS, ROAnything());\
 			const char pWhat[] =  BOOST_PP_STRINGIZE(TSTFUNC) "/" BOOST_PP_STRINGIZE(NTHREADS) "t" "/" BOOST_PP_STRINGIZE(NSIZE) "b" "/" "std_allocator";\
+			TestMethodWorkerThreadPool<WorkerFunc, theTestFunc, MemCleanupFunc> aTestThreadPool(pWhat, &BasicTestMethod<loop>, &BOOST_PP_CAT(TSTFUNC,_all)<tRefType, N, std::allocator>, &cleanupDummy);\
+			aTestThreadPool.Init(NTHREADS, ROAnything());\
 			CatchTimeType aTimer(pWhat, this);\
 			aTestTimer.Reset();\
 			aTestThreadPool.Start(true, 16380, 20, ROAnything());\
@@ -738,9 +738,9 @@ void BOOST_PP_SEQ_CAT((BoostPoolTest::PoolPerfTest)(TSTFUNC)(NTHREADS)(NSIZE))()
 			aRefTime2 = aTestTime;\
 		}\
 		{\
-			TestMethodWorkerThreadPool<WorkerFunc, theTestFunc, MemCleanupFunc> aTestThreadPool(&BasicTestMethod<loop>, &BOOST_PP_CAT(TSTFUNC,_all)<tRefType, N, tst_pool_allocator_global>, &cleanupDummy);\
-			aTestThreadPool.Init(NTHREADS, ROAnything());\
 			const char pWhat[] =  BOOST_PP_STRINGIZE(TSTFUNC) "/" BOOST_PP_STRINGIZE(NTHREADS) "t" "/" BOOST_PP_STRINGIZE(NSIZE) "b" "/" "pool_allocator/global";\
+			TestMethodWorkerThreadPool<WorkerFunc, theTestFunc, MemCleanupFunc> aTestThreadPool(pWhat, &BasicTestMethod<loop>, &BOOST_PP_CAT(TSTFUNC,_all)<tRefType, N, tst_pool_allocator_global>, &cleanupDummy);\
+			aTestThreadPool.Init(NTHREADS, ROAnything());\
 			CatchTimeType aTimer(pWhat, this);\
 			aTestTimer.Reset();\
 			aTestThreadPool.Start(true, 16380, 20, ROAnything());\
@@ -750,9 +750,9 @@ void BOOST_PP_SEQ_CAT((BoostPoolTest::PoolPerfTest)(TSTFUNC)(NTHREADS)(NSIZE))()
 			SYSINFO(pWhat << ":" << TestTimer::Scale(aTestTime, 1000) << "ms speedup: " << TestTimer::RelativeChange(aRefTime2, aTestTime) << " (std::allocator)");\
 		}\
 		{\
-			TestMethodWorkerThreadPool<WorkerFunc, theTestFunc, MemCleanupFunc> aTestThreadPool(&BasicTestMethod<loop>, &BOOST_PP_CAT(TSTFUNC,_all)<tRefType, N, tst_pool_allocator_current>, &cleanupDummy);\
-			aTestThreadPool.Init(NTHREADS, ROAnything());\
 			const char pWhat[] =  BOOST_PP_STRINGIZE(TSTFUNC) "/" BOOST_PP_STRINGIZE(NTHREADS) "t" "/" BOOST_PP_STRINGIZE(NSIZE) "b" "/" "pool_allocator/current";\
+			TestMethodWorkerThreadPool<WorkerFunc, theTestFunc, MemCleanupFunc> aTestThreadPool(pWhat, &BasicTestMethod<loop>, &BOOST_PP_CAT(TSTFUNC,_all)<tRefType, N, tst_pool_allocator_current>, &cleanupDummy);\
+			aTestThreadPool.Init(NTHREADS, ROAnything());\
 			CatchTimeType aTimer(pWhat, this);\
 			aTestTimer.Reset();\
 			aTestThreadPool.Start(true, 16380, 20, ROAnything());\
@@ -762,9 +762,9 @@ void BOOST_PP_SEQ_CAT((BoostPoolTest::PoolPerfTest)(TSTFUNC)(NTHREADS)(NSIZE))()
 			SYSINFO(pWhat << ":" << TestTimer::Scale(aTestTime, 1000) << "ms speedup: " << TestTimer::RelativeChange(aRefTime2, aTestTime) << " (std::allocator)");\
 		}\
 		{\
-			TestMethodWorkerThreadPool<WorkerFunc, theTestFunc, MemCleanupFunc> aTestThreadPool(&BasicTestMethod<loop>, &BOOST_PP_CAT(TSTFUNC,_all)<tRefType, N, tst_fast_pool_allocator_global>, &cleanupDummy);\
-			aTestThreadPool.Init(NTHREADS, ROAnything());\
 			const char pWhat[] =  BOOST_PP_STRINGIZE(TSTFUNC) "/" BOOST_PP_STRINGIZE(NTHREADS) "t" "/" BOOST_PP_STRINGIZE(NSIZE) "b" "/"  "fast_pool_allocator/global";\
+			TestMethodWorkerThreadPool<WorkerFunc, theTestFunc, MemCleanupFunc> aTestThreadPool(pWhat, &BasicTestMethod<loop>, &BOOST_PP_CAT(TSTFUNC,_all)<tRefType, N, tst_fast_pool_allocator_global>, &cleanupDummy);\
+			aTestThreadPool.Init(NTHREADS, ROAnything());\
 			CatchTimeType aTimer(pWhat, this);\
 			aTestTimer.Reset();\
 			aTestThreadPool.Start(true, 16380, 20, ROAnything());\
@@ -774,9 +774,9 @@ void BOOST_PP_SEQ_CAT((BoostPoolTest::PoolPerfTest)(TSTFUNC)(NTHREADS)(NSIZE))()
 			SYSINFO(pWhat << ":" << TestTimer::Scale(aTestTime, 1000) << "ms speedup: " << TestTimer::RelativeChange(aRefTime2, aTestTime) << " (std::allocator)");\
 		}\
 		{\
-			TestMethodWorkerThreadPool<WorkerFunc, theTestFunc, MemCleanupFunc> aTestThreadPool(&BasicTestMethod<loop>, &BOOST_PP_CAT(TSTFUNC,_all)<tRefType, N, tst_fast_pool_allocator_current>, &cleanupDummy);\
-			aTestThreadPool.Init(NTHREADS, ROAnything());\
 			const char pWhat[] =  BOOST_PP_STRINGIZE(TSTFUNC) "/" BOOST_PP_STRINGIZE(NTHREADS) "t" "/" BOOST_PP_STRINGIZE(NSIZE) "b" "/"  "fast_pool_allocator/current";\
+			TestMethodWorkerThreadPool<WorkerFunc, theTestFunc, MemCleanupFunc> aTestThreadPool(pWhat, &BasicTestMethod<loop>, &BOOST_PP_CAT(TSTFUNC,_all)<tRefType, N, tst_fast_pool_allocator_current>, &cleanupDummy);\
+			aTestThreadPool.Init(NTHREADS, ROAnything());\
 			CatchTimeType aTimer(pWhat, this);\
 			aTestTimer.Reset();\
 			aTestThreadPool.Start(true, 16380, 20, ROAnything());\
@@ -786,9 +786,9 @@ void BOOST_PP_SEQ_CAT((BoostPoolTest::PoolPerfTest)(TSTFUNC)(NTHREADS)(NSIZE))()
 			SYSINFO(pWhat << ":" << TestTimer::Scale(aTestTime, 1000) << "ms speedup: " << TestTimer::RelativeChange(aRefTime2, aTestTime) << " (std::allocator)");\
 		}\
 		{\
-			TestMethodWorkerThreadPool<WorkerFunc, theTestFunc, MemCleanupFunc> aTestThreadPool(&BasicTestMethod<loop>, &BOOST_PP_CAT(TSTFUNC,)<tSmallObjectType, N, dummyAlloc>, &cleanupDummy);\
-			aTestThreadPool.Init(NTHREADS, ROAnything());\
 			const char pWhat[] =  BOOST_PP_STRINGIZE(TSTFUNC) "/" BOOST_PP_STRINGIZE(NTHREADS) "t" "/" BOOST_PP_STRINGIZE(NSIZE) "b" "/"  "SmallObject";\
+			TestMethodWorkerThreadPool<WorkerFunc, theTestFunc, MemCleanupFunc> aTestThreadPool(pWhat, &BasicTestMethod<loop>, &BOOST_PP_CAT(TSTFUNC,)<tSmallObjectType, N, dummyAlloc>, &cleanupDummy);\
+			aTestThreadPool.Init(NTHREADS, ROAnything());\
 			CatchTimeType aTimer(pWhat, this);\
 			aTestTimer.Reset();\
 			aTestThreadPool.Start(true, 16380, 20, ROAnything());\
@@ -798,9 +798,9 @@ void BOOST_PP_SEQ_CAT((BoostPoolTest::PoolPerfTest)(TSTFUNC)(NTHREADS)(NSIZE))()
 			AllocatorSingleton::ClearExtraMemory();\
 		}\
 		{\
-			TestMethodWorkerThreadPool<WorkerFunc, theTestFunc, MemCleanupFunc> aTestThreadPool(&BasicTestMethod<loop>, &BOOST_PP_CAT(TSTFUNC,)<tSmallValueObject, N, dummyAlloc>, &cleanupDummy);\
-			aTestThreadPool.Init(NTHREADS, ROAnything());\
 			const char pWhat[] =  BOOST_PP_STRINGIZE(TSTFUNC) "/" BOOST_PP_STRINGIZE(NTHREADS) "t" "/" BOOST_PP_STRINGIZE(NSIZE) "b" "/"  "SmallValueObject";\
+			TestMethodWorkerThreadPool<WorkerFunc, theTestFunc, MemCleanupFunc> aTestThreadPool(pWhat, &BasicTestMethod<loop>, &BOOST_PP_CAT(TSTFUNC,)<tSmallValueObject, N, dummyAlloc>, &cleanupDummy);\
+			aTestThreadPool.Init(NTHREADS, ROAnything());\
 			CatchTimeType aTimer(pWhat, this);\
 			aTestTimer.Reset();\
 			aTestThreadPool.Start(true, 16380, 20, ROAnything());\
@@ -810,9 +810,9 @@ void BOOST_PP_SEQ_CAT((BoostPoolTest::PoolPerfTest)(TSTFUNC)(NTHREADS)(NSIZE))()
 			AllocatorSingleton::ClearExtraMemory();\
 		}\
 		{\
-			TestMethodWorkerThreadPool<WorkerFunc, theTestFunc, MemCleanupFunc> aTestThreadPool(&BasicTestMethod<loop>, &BOOST_PP_CAT(TSTFUNC,)<tBoostSingletonPool_def_new_delete, N, dummyAlloc>, &cleanupBoostPool<tBoostSingletonPool_def_new_delete>);\
-			aTestThreadPool.Init(NTHREADS, ROAnything());\
 			const char pWhat[] =  BOOST_PP_STRINGIZE(TSTFUNC) "/" BOOST_PP_STRINGIZE(NTHREADS) "t" "/" BOOST_PP_STRINGIZE(NSIZE) "b" "/"  "BoostSingletonPool/def_new_delete";\
+			TestMethodWorkerThreadPool<WorkerFunc, theTestFunc, MemCleanupFunc> aTestThreadPool(pWhat, &BasicTestMethod<loop>, &BOOST_PP_CAT(TSTFUNC,)<tBoostSingletonPool_def_new_delete, N, dummyAlloc>, &cleanupBoostPool<tBoostSingletonPool_def_new_delete>);\
+			aTestThreadPool.Init(NTHREADS, ROAnything());\
 			CatchTimeType aTimer(pWhat, this);\
 			aTestTimer.Reset();\
 			aTestThreadPool.Start(true, 16380, 20, ROAnything());\
@@ -821,9 +821,9 @@ void BOOST_PP_SEQ_CAT((BoostPoolTest::PoolPerfTest)(TSTFUNC)(NTHREADS)(NSIZE))()
 			SYSINFO(pWhat << ":" << TestTimer::Scale(aTestTime, 1000) << "ms speedup: " << TestTimer::RelativeChange(aRefTime, aTestTime));\
 		}\
 		{\
-			TestMethodWorkerThreadPool<WorkerFunc, theTestFunc, MemCleanupFunc> aTestThreadPool(&BasicTestMethod<loop>, &BOOST_PP_CAT(TSTFUNC,)<tBoostSingletonPool_def_malloc_free, N, dummyAlloc>, &cleanupBoostPool<tBoostSingletonPool_def_malloc_free>);\
-			aTestThreadPool.Init(NTHREADS, ROAnything());\
 			const char pWhat[] =  BOOST_PP_STRINGIZE(TSTFUNC) "/" BOOST_PP_STRINGIZE(NTHREADS) "t" "/" BOOST_PP_STRINGIZE(NSIZE) "b" "/"  "BoostSingletonPool/def_malloc_free";\
+			TestMethodWorkerThreadPool<WorkerFunc, theTestFunc, MemCleanupFunc> aTestThreadPool(pWhat, &BasicTestMethod<loop>, &BOOST_PP_CAT(TSTFUNC,)<tBoostSingletonPool_def_malloc_free, N, dummyAlloc>, &cleanupBoostPool<tBoostSingletonPool_def_malloc_free>);\
+			aTestThreadPool.Init(NTHREADS, ROAnything());\
 			CatchTimeType aTimer(pWhat, this);\
 			aTestTimer.Reset();\
 			aTestThreadPool.Start(true, 16380, 20, ROAnything());\
@@ -832,9 +832,9 @@ void BOOST_PP_SEQ_CAT((BoostPoolTest::PoolPerfTest)(TSTFUNC)(NTHREADS)(NSIZE))()
 			SYSINFO(pWhat << ":" << TestTimer::Scale(aTestTime, 1000) << "ms speedup: " << TestTimer::RelativeChange(aRefTime, aTestTime));\
 		}\
 		{\
-			TestMethodWorkerThreadPool<WorkerFunc, theTestFunc, MemCleanupFunc> aTestThreadPool(&BasicTestMethod<loop>, &BOOST_PP_CAT(TSTFUNC,)<tBoostSingletonPoolStorageGlobal, N, dummyAlloc>, &cleanupBoostPool<tBoostSingletonPoolStorageGlobal>);\
-			aTestThreadPool.Init(NTHREADS, ROAnything());\
 			const char pWhat[] =  BOOST_PP_STRINGIZE(TSTFUNC) "/" BOOST_PP_STRINGIZE(NTHREADS) "t" "/" BOOST_PP_STRINGIZE(NSIZE) "b" "/"  "BoostSingletonPool/StorageGlobal";\
+			TestMethodWorkerThreadPool<WorkerFunc, theTestFunc, MemCleanupFunc> aTestThreadPool(pWhat, &BasicTestMethod<loop>, &BOOST_PP_CAT(TSTFUNC,)<tBoostSingletonPoolStorageGlobal, N, dummyAlloc>, &cleanupBoostPool<tBoostSingletonPoolStorageGlobal>);\
+			aTestThreadPool.Init(NTHREADS, ROAnything());\
 			CatchTimeType aTimer(pWhat, this);\
 			aTestTimer.Reset();\
 			aTestThreadPool.Start(true, 16380, 20, ROAnything());\
