@@ -164,7 +164,7 @@ void MemTracker::PrintStatistic(long lLevel)
 {
 	if ( lLevel >= 2 ) {
 		char buf[2048] = { 0 }; // safety margin for bytes
-		snprintf(buf, sizeof(buf), "\nAllocator [%02ld] [%s]\n"
+		snprintf(buf, sizeof(buf), "\nAllocator [%ld] [%s]\n"
 #if defined(WIN32)
 				 "Peek Allocated  %20I64d bytes\n"
 				 "Total Allocated %20I64d bytes in %15I64d runs (%ld/run)\n"
