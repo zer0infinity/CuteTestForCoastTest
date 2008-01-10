@@ -70,7 +70,8 @@ public:
 
 	//! append a character (single byte)
 	//! return value for convenient multi-appends
-	String &Append(char);
+	String &Append(const char);
+
 	//! append a char * string with at most length bytes
 	//! return value for convenient multi-appends
 	//! \param s appended value, may be 0, then nothing is appended

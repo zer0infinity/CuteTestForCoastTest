@@ -291,7 +291,7 @@ note: if start > fLength then the new buffer will contain undefined
 	}
 }
 
-String &String::Append(char c)
+String &String::Append(const char c)
 {
 	if (Length() + 2 > Capacity()) {
 		Set(Length(), &c, 1);	// PT: use the generic copying here
