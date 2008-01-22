@@ -110,11 +110,11 @@ void ObjectList_rTest::CtorTest()
 			l.pop_front();
 			assertCompare(148L, equal_to, (long)l.size());
 			for (int j = 0; j < (150 - 2); ++j) {
-				String *pS = l.front();
-				if ( pS ) {
-					Trace(*pS);
+				String *pS2 = l.front();
+				if ( pS2 ) {
+					Trace(*pS2);
 				}
-				delete pS;
+				delete pS2;
 				l.pop_front();
 			}
 			Trace("clearing list");
@@ -146,11 +146,11 @@ void ObjectList_rTest::CtorTest()
 			l.pop_front();
 			assertCompare(148L, equal_to, (long)l.size());
 			for (int j = 0; j < (150 - 2); ++j) {
-				String *pS = l.front();
-				if ( pS ) {
-					Trace(*pS);
+				String *pS2 = l.front();
+				if ( pS2 ) {
+					Trace(*pS2);
 				}
-				delete pS;
+				delete pS2;
 				l.pop_front();
 			}
 			Trace("clearing list");
