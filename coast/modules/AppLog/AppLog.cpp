@@ -495,10 +495,13 @@ void AppLogChannel::DoCreateLogMsg(Context &ctx, AppLogModule::eLogLevel iLevel,
 {
 	StartTrace(AppLogChannel.DoCreateLogMsg);
 	if ( fRendering ) {
+		Trace("rendered log part");
 		Renderer::RenderOnString(logMsg, ctx, config);
 	} else {
+		Trace("looking up name [" << fName << "] in context");
 		logMsg = ctx.Lookup(fName).AsString();
 	}
+	Trace("message to log [" << logMsg << "]");
 }
 
 bool AppLogChannel::GetLogDirectories(ROAnything channel, String &logdir, String &rotatedir)
