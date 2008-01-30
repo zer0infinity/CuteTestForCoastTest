@@ -77,4 +77,8 @@
 		/CheckState		30
 		/IntCheckState	30
 	}
+	/LoggingMapper {
+		/MainSwitch		30
+		/EnableAll		40
+	}
 }
