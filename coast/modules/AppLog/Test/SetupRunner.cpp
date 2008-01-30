@@ -13,9 +13,11 @@
 
 //--- test cases ---------------------------------------------------------------
 #include "AppLogTest.h"
+#include "ConfiguredActionTest.h"
 
 void setupRunner(TestRunner &runner)
 {
 	// add a whole suite with the ADD_SUITE(runner,"Suites's Classname") macro
 	ADD_SUITE(runner, AppLogTest);
+	ADD_SUITE(runner, ConfiguredActionTest);
 }

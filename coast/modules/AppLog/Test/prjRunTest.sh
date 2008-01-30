@@ -18,6 +18,7 @@ function callTest
 # remove generated files ...
 function cleanupTest
 {
+	echo
 	cleanlogs.sh
 	rm -f config/MethodTime.log
 	rm -f /tmp/Absolute.log
