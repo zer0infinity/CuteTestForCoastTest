@@ -154,6 +154,11 @@ namespace STLStorage
 			// print message and allocate memory with global new
 			_StartTrace1(STLAllocator.allocate, "num:" << (long)num << " of size:" << (long)sizeof(T) << " but no initialization");
 			pointer ret = (pointer)fAllocator->Calloc(num, sizeof(T));
+			if ( ret == NULL ) {
+				static char pMsg[255] = { 0 };
+				snprintf(pMsg, 254, "STLAllocator::allocate failed to allocate memory of size %lub!\n", (unsigned long)num);
+				SysLog::WriteToStderr(pMsg, strlen(pMsg));
+			}
 			return ret;
 		}
 
