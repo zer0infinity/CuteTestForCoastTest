@@ -215,7 +215,7 @@ private:
 	bool fDoNotRotate;
 	Anything fFormat;
 	//! guard of stream
-	Mutex fChannelMutex;
+	SimpleMutex fChannelMutex;
 	long fBufferItems;
 	String fBuffer;
 	long fItemsWritten;
