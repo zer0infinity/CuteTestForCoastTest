@@ -635,8 +635,9 @@ void *PoolAllocator::Alloc(u_long allocSize)
 		}
 		return ExtMemStart(mh);
 	}
-	static const char crashmsg[] = "FATAL: PoolAllocator::Alloc [global memory] calloc failed. I will crash :-(\n";
-	SysLog::WriteToStderr(crashmsg, sizeof(crashmsg));
+	static char crashmsg[255] = { 0 };
+	snprintf(crashmsg, 254, "FATAL: PoolAllocator::Alloc [global memory] calloc of sz:%lub failed. I will crash :-(\n", allocSize);
+	SysLog::WriteToStderr(crashmsg, strlen(crashmsg));
 
 	return 0;
 }

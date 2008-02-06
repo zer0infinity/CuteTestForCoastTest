@@ -457,8 +457,9 @@ void *GlobalAllocator::Alloc(u_long allocSize)
 		}
 		return ExtMemStart(mh);
 	} else {
-		static const char crashmsg[] = "FATAL: GlobalAllocator::Alloc malloc failed. I will crash :-(\n";
-		SysLog::WriteToStderr(crashmsg, sizeof(crashmsg));
+		static char crashmsg[255] = { 0 };
+		snprintf(crashmsg, 254, "FATAL: GlobalAllocator::Alloc malloc of sz:%lub failed. I will crash :-(\n", allocSize);
+		SysLog::WriteToStderr(crashmsg, strlen(crashmsg));
 	}
 	return NULL;
 }
