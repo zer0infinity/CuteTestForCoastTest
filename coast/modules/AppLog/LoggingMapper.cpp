@@ -39,7 +39,13 @@ bool LoggingMapper::DoPutAny(const char *key, Anything value, Context &ctx, ROAn
 	if ( channel.Length() ) {
 		TraceAny(value, "value for key <" << key << ">");
 		Context::PushPopEntry<ROAnything> aEntry(ctx, "LoggingMapperData", value, key);
-		return AppLogModule::Log(ctx, channel, (AppLogModule::eLogLevel)Lookup("Severity").AsLong((long)AppLogModule::eINFO));
+		ROAnything roaKey;
+		if ( Lookup("Format", roaKey) ) {
+			TraceAny(roaKey, "format spec for logging key [" << key << "]");
+			return AppLogModule::Log(ctx, channel, roaKey, (AppLogModule::eLogLevel)Lookup("Severity").AsLong((long)AppLogModule::eINFO));
+		} else {
+			return AppLogModule::Log(ctx, channel, (AppLogModule::eLogLevel)Lookup("Severity").AsLong((long)AppLogModule::eINFO));
+		}
 	}
 	return false;
 }

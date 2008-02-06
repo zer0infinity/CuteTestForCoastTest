@@ -19,6 +19,9 @@
 {
 	/Channel		String		mandatory, channel name to log to
 	/Severity		long		optional, default AppLogModule::eINFO, Severity [CRITICAL=1, FATAL=2, ERROR=4, WARN=8, INFO=16, OK=32, MAINT=64, DEBUG=128], all levels lower_equal (<=) the specified value will get logged
+	/Format {					optional, specify log format for mapped key, value will be temporarily available in context using <key> as base name for lookup
+		...			Rendererspec
+	}
 }</pre>
 */
 class LoggingMapper : public ResultMapper
