@@ -120,6 +120,9 @@ bool LDAPAbstractDAI::DoExec( Context &ctx, ParameterMapper *getter, ResultMappe
 		return false;
 	}
 
+	// put away Query for logging purposes etc
+	putter->Put("Query", query, ctx);
+
 	if ( !(lc->Connect(cp, eh)) ) {
 		ReleaseHandleInfo(ctx, lc);
 		return false;
