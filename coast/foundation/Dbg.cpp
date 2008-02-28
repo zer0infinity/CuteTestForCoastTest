@@ -33,7 +33,7 @@ class TracerHelper
 {
 public:
 	TracerHelper(int nLevel, Allocator *pAlloc)
-		: fStrBuf(pAlloc)
+		: fStrBuf(128L, pAlloc)
 		, fStream(fStrBuf) {
 		Tab(nLevel);
 	}
@@ -249,21 +249,22 @@ bool Tracer::DoCheckLevel(const char *trigger, const ROAnything &level, long lev
 
 bool Tracer::DoCheckTrigger(const char *trigger, const ROAnything &level, long levelSwitch, long levelAll, long enableAll, Allocator *pAlloc)
 {
-	String s(trigger, -1, pAlloc);
-	long pos;
-	if ( (pos = s.StrChr('.')) != -1 ) {
-		String part(s.SubString(0, pos), -1, pAlloc);
-		if ( level.IsDefined(part) ) {
-			return DoCheckLevel(s.SubString(pos + 1), level[part], levelSwitch, levelAll, enableAll, pAlloc);
+	char *cPos( strchr(trigger, '.') );
+	if ( cPos != NULL ) {
+		long lpos(cPos - trigger);
+		char pcPart[512] = { 0 };
+		memcpy(pcPart, trigger, std::min( lpos, 511L ) );
+		if ( level.IsDefined(pcPart) && ( *++cPos != '\0' ) ) {
+			return DoCheckLevel(cPos, level[pcPart], levelSwitch, levelAll, enableAll, pAlloc);
 		}
 	}
 
-	if ( level.IsDefined(s) ) {
+	if ( level.IsDefined(trigger) ) {
 		long switchValue;
-		if ( level[s].IsDefined("MainSwitch") ) {
-			switchValue = level[s]["MainSwitch"].AsLong(levelSwitch);
+		if ( level[trigger].IsDefined("MainSwitch") ) {
+			switchValue = level[trigger]["MainSwitch"].AsLong(levelSwitch);
 		} else {
-			switchValue = level[s].AsLong(levelSwitch);
+			switchValue = level[trigger].AsLong(levelSwitch);
 		}
 		if ( switchValue < 0 ) {
 			return false;
