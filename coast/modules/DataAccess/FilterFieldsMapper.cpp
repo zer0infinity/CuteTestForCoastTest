@@ -35,19 +35,25 @@ bool FilterFieldsMapper::DoPutAny(const char *key, Anything value, Context &ctx,
 	StartTrace1(FilterFieldsMapper.DoPutAny, NotNull(key));
 	TraceAny(value, "value to put");
 	ROAnything roaFieldList;
-	Anything anyNew;
+	Anything anyNew, anyFilterValue;
 	if ( Lookup("FieldList", roaFieldList) ) {
-		const char *pSlotname = NULL;
+		char cIndexDelim( Lookup("IndexDelim", ":")[0L] );
+		const char *pSlotname( NULL );
 		for ( long lIdx = 0, lSize = roaFieldList.GetSize(); lIdx < lSize; ++lIdx) {
 			pSlotname = roaFieldList[lIdx].AsCharPtr();
-			if ( pSlotname != NULL && value.IsDefined(pSlotname) ) {
-				anyNew[pSlotname] = value[pSlotname];
+			if ( pSlotname != NULL && value.LookupPath( anyFilterValue, pSlotname ) ) {
+				if ( pSlotname[0L] == cIndexDelim ) {
+					Trace("appending value in output because it was an indexed lookup [" << pSlotname << "]");
+					anyNew.Append( anyFilterValue );
+				} else {
+					anyNew[pSlotname] = anyFilterValue;
+				}
 			}
 		}
 	} else {
 		// using everything
 		anyNew = value;
 	}
-	TraceAny(anyNew, "final values to put");
+	TraceAny(anyNew, "final value to put");
 	return ResultMapper::DoPutAny(key, anyNew, ctx, script);
 }
