@@ -257,10 +257,10 @@
 
 	/LDAPConfig_NotPooledBinary
 	{
-		/LDAPServer		"surlej.hsr.ch"
+		/LDAPServer		"marvin.hsr.loc"
 		/LDAPPort		"49999"
 		/LDAPBindName	"cn=Directory Manager"
-		/LDAPBindPW		"all2test"
+		/LDAPBindPW		"ifaifaifa"
 		/LDAPConnectionTimeout	5
 		/LDAPTimeout			10
 		/LDAPPooledConnections 	0
@@ -283,10 +283,10 @@
 
 	/LDAPConfig_PooledBinary
 	{
-		/LDAPServer		"surlej.hsr.ch"
+		/LDAPServer		"marvin.hsr.loc"
 		/LDAPPort		"49999"
 		/LDAPBindName	"cn=Directory Manager"
-		/LDAPBindPW		"all2test"
+		/LDAPBindPW		"ifaifaifa"
 		/LDAPConnectionTimeout	5
 		/LDAPTimeout			10
 		/LDAPPooledConnections 	1
