@@ -99,6 +99,7 @@
 			/query							681
 		}
 	}
+	## do not delete, used for DbgTest
 	/Server {
 		/MainSwitch						550
 		/EnableAll						120
@@ -124,25 +125,25 @@
 		/DoSingleSelect					1000
 	}
 	/EndPoint {
-		/MainSwitch						1000
-		/EnableAll						1000
+		/MainSwitch						10
+		/EnableAll						10
 	}
 	/Socket{
-		/MainSwitch						1000
-		/EnableAll						000
+		/MainSwitch						10
+		/EnableAll						10
 		/IsReady						1000
 	}
 	/Acceptor {
-		/MainSwitch						1000
-		/EnableAll						1000
+		/MainSwitch						10
+		/EnableAll						10
 	}
 	/AcceptorTest {
-		/MainSwitch						1000
-		/EnableAll						1000
+		/MainSwitch						10
+		/EnableAll						10
 	}
 	/Connector {
-		/MainSwitch						60
-		/EnableAll						60
+		/MainSwitch						10
+		/EnableAll						10
 	}
 	/AnyUtils {
 		/MainSwitch						0
