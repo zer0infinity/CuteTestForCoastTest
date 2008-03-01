@@ -46,7 +46,7 @@ void SocketTest::simpleConstructorTest()
 	Connector connector(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port"].AsLong());
 	Socket *socket = connector.MakeSocket();
 
-	if ( t_assert( socket != NULL ) ) { // fails without HTTP Server
+	if ( t_assertm( socket != NULL, (const char *)connector.GetAddress() ) ) { // fails without HTTP Server
 		long socketfd = socket->GetFd();
 		t_assert( socketfd > 0 );
 
@@ -65,7 +65,7 @@ void SocketTest::allocatorConstructorTest()
 	connector.SetThreadLocal();
 	Socket *socket = connector.MakeSocket();
 
-	if ( t_assert( socket != NULL ) ) { // fails without HTTP Server
+	if ( t_assertm( socket != NULL, (const char *)connector.GetAddress() ) ) { // fails without HTTP Server
 		long socketfd = socket->GetFd();
 		t_assert( socketfd > 0 );
 
@@ -104,7 +104,7 @@ void SocketTest::httpClientTest()
 	assertEqual( GetConfig()["Testhost"]["port"].AsLong(), connector.fPort );
 	assertEqual( (long)NULL, (long)connector.fSocket );
 
-	if ( t_assert( socket != NULL ) ) { // fails without HTTP Server
+	if ( t_assertm( socket != NULL, (const char *)connector.GetAddress() ) ) { // fails without HTTP Server
 		long socketfd = socket->GetFd();
 		t_assert( socketfd > 0L );
 
