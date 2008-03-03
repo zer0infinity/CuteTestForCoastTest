@@ -21,6 +21,7 @@ RegisterModule(TimeLoggingModule);
 
 bool TimeLoggingModule::fgDoTiming = false;
 bool TimeLoggingModule::fgDoLogging = false;
+const char *TimeLoggingModule::fgpLogEntryBasePath = "Log.Times";
 
 TimeLoggingModule::TimeLoggingModule(const char *name)
 	: WDModule(name)
@@ -37,9 +38,9 @@ bool TimeLoggingModule::Init(const ROAnything config)
 	StartTrace(TimeLoggingModule.Init);
 	SubTraceAny(FullConfig, config, "Config: ");
 	ROAnything roaModuleConfig;
+	// set defaults
+	fgDoTiming = fgDoLogging = false;
 	if ( ((ROAnything)config).LookupPath(roaModuleConfig, fName) ) {
-		// set defaults
-		fgDoTiming = fgDoLogging = false;
 		TraceAny(roaModuleConfig, "Module config");
 		fgDoTiming = roaModuleConfig["DoTiming"].AsBool(false);
 		// logging only makes sense if Timing enabled
@@ -68,53 +69,45 @@ bool TimeLoggingModule::ResetFinis(const ROAnything config)
 }
 
 //---- TimeLoggerEntry --------------------------------------------------------------------------
-TimeLoggerEntry::TimeLoggerEntry(const char *pSection, const char *key, String &msg, Context &ctx)
-	: fpLogger(0)
-	, fpKey(0)
+TimeLoggerEntry::TimeLoggerEntry(const char *pSection, const char *pKey, String &msg, Context &ctx, TimeLogger::eResolution aResolution)
+	: fLogger( pSection, pKey, msg, ctx, aResolution)
 {
-	StartTrace(TimeLoggerEntry.TimeLoggerEntry);
-	if ( TimeLoggingModule::fgDoTiming ) {
-		fpKey = new String("Log.Times.");
-		(*fpKey) << pSection << key;
-		Trace("Key [" << (*fpKey) << "], Msg [" << msg << "]");
-		fpLogger = new TimeLogger((*fpKey), msg, ctx);
-	}
 }
 
 TimeLoggerEntry::~TimeLoggerEntry()
 {
-	StartTrace(TimeLoggerEntry.~TimeLoggerEntry);
-	delete fpLogger;
-	delete fpKey;
 }
 
 //---- TimeLogger --------------------------------------------------------------------------
-TimeLogger::TimeLogger(const String &key, const String &msg, Context &ctx)
+TimeLogger::TimeLogger(const char *pSection, const char *pKey, const String &msg, Context &ctx, TimeLogger::eResolution aResolution)
 	: fMsgStr(msg)
-	, fKey(key)
+	, fpSection( pSection )
+	, fpKey( pKey )
 	, fContext(ctx)
+	, fDiffTimer( aResolution )
+	, fpcUnit( aResolution == TimeLogger::eMilliseconds ? "ms" : ( aResolution == TimeLogger::eMicroseconds ? "us" : ( aResolution == TimeLogger::eNanoseconds ? "ns" : "s" ) ) )
 {
-	StartTrace(TimeLogger.Ctor);
-	Trace("Key:<" << fKey << "> Message:<" << fMsgStr << ">");
 }
 
 TimeLogger::~TimeLogger()
 {
-	StartTrace1(TimeLogger.Dtor, "Key: <" << fKey << ">");
-	String enablerKey("EnabledValues.");
-	enablerKey << fKey;
-	if (fContext.Lookup(enablerKey).AsBool(0L)) {
-		Anything config;
-		Anything data;
-		Anything dataDest;
-		String simulatedValue("SimulatedValues.");
-		simulatedValue << fKey;
-
-		config["Slot"] = fKey;
-		data["Time"] = (long)fDiffTimer.Diff(fContext.Lookup(simulatedValue).AsLong(-1L));
-		data["Msg"] = fMsgStr;
-		StoreFinder::Operate(fContext, dataDest, config);
-		dataDest.Append(data);
-		TraceAny(data, "LogEntry");
+	if ( TimeLoggingModule::fgDoTiming ) {
+		DiffTimer::tTimeType lDiffTime( fDiffTimer.Diff() );
+		ROAnything roaBase, roaSection, roaValue;
+		if ( fContext.Lookup("EnabledValues", roaBase ) && roaBase.LookupPath( roaSection, fpSection ) && roaSection.LookupPath( roaValue, fpKey ) && roaValue.AsBool(false) ) {
+			Anything data;
+			if ( fContext.Lookup("SimulatedValues", roaBase) && roaBase.LookupPath( roaSection, fpSection ) && roaSection.LookupPath( roaValue, fpKey ) ) {
+				lDiffTime = roaValue.AsLong(-1L);
+			}
+			String strLogTimeKey( TimeLoggingModule::fgpLogEntryBasePath );
+			strLogTimeKey.Append('.').Append(fpSection).Append('.').Append(fpKey);
+			data["Time"] = (long)lDiffTime;
+			data["Msg"] = fMsgStr;
+			data["Unit"] = fpcUnit;
+			StatTraceAny(TimeLogger.~TimeLogger, data, "ENABLED  Section <" << fpSection << "> Key <" << fpKey << "> Message <" << fMsgStr << ">", Storage::Current());
+			StorePutter::Operate(data, fContext, "", strLogTimeKey, true);
+		} else {
+			StatTrace(TimeLogger.~TimeLogger, "DISABLED Section <" << fpSection << "> Key <" << fpKey << ">", Storage::Current());
+		}
 	}
 }

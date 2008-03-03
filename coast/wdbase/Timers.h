@@ -47,9 +47,47 @@ public:
 
 	static bool fgDoTiming;
 	static bool fgDoLogging;
+	static const char *fgpLogEntryBasePath;
 };
 
-class TimeLogger;
+//---- TimeLogger --------------------------------------------------------------------------
+//!helper class to log timing information
+class EXPORTDECL_WDBASE TimeLogger
+{
+	friend class TimeLoggerEntry;
+public:
+	enum eResolution {
+		eSeconds = 1,
+		eMilliseconds = 1000,
+		eMicroseconds = 1000000,
+		eNanoseconds = 1000000000
+	};
+
+protected:
+	//!starts the timer for request nr
+	TimeLogger(const char *pSection, const char *pKey, const String &msg, Context &ctx, TimeLogger::eResolution aResolution);
+	//!stops the timer and prints the results for this request and thread
+	~TimeLogger();
+
+	//!message string printed in the destructor
+	const String &fMsgStr;
+	//!key that defines the place where the info is stored
+	const char	*fpSection, *fpKey;
+	//!log into the context
+	Context &fContext;
+	//!timer to measure elapsed time
+	DiffTimer fDiffTimer;
+	//! store unit
+	const char *fpcUnit;
+
+private:
+	//!do not use
+	TimeLogger();
+	//!do not use
+	TimeLogger(const TimeLogger &);
+	//!do not use
+	TimeLogger &operator=(TimeLogger &);
+};
 
 //---- TimeLoggerEntry --------------------------------------------------------------------------
 //! <B>Abstracting object to instantiate a TimeLogger object only if global TimeLoggingModule::fgDoTiming is enabled</B>
@@ -60,28 +98,28 @@ It is also important to have because there is no flexible other way to have time
 class EXPORTDECL_WDBASE TimeLoggerEntry
 {
 public:
-	TimeLoggerEntry(const char *pSection, const char *key, String &msg, Context &ctx);
+	TimeLoggerEntry(const char *pSection, const char *pKey, String &msg, Context &ctx, TimeLogger::eResolution aResolution);
 	~TimeLoggerEntry();
 
-	//!dummy method to prevent optimization of unused variables
-	void Use() const { }
-
 private:
-	TimeLogger	*fpLogger;
-	String		*fpKey;
+	TimeLogger	fLogger;
 };
 
-#define MethodTimer(key,msg,ctx)	\
+#define MethodTimer(key, msg, ctx)	\
 	String gsMreggoLemiT;			\
-	TimeLoggerEntry yrtnEreggoLemiT("Method.", _QUOTE_(key), gsMreggoLemiT << msg, ctx); yrtnEreggoLemiT.Use()
+	TimeLoggerEntry yrtnEreggoLemiT("Method", _QUOTE_(key), gsMreggoLemiT << msg, ctx, TimeLogger::eMilliseconds)
+
+#define MethodTimerUnit(key, msg, ctx, res)	\
+	String gsMreggoLemiT;			\
+	TimeLoggerEntry yrtnEreggoLemiT("Method", _QUOTE_(key), gsMreggoLemiT << msg, ctx, res)
 
 #define DAAccessTimer(key,msg,ctx)	\
 	String gsMreggoLemiT;			\
-	TimeLoggerEntry yrtnEreggoLemiT("DataAccess.", _QUOTE_(key), gsMreggoLemiT << msg, ctx); yrtnEreggoLemiT.Use()
+	TimeLoggerEntry yrtnEreggoLemiT("DataAccess", _QUOTE_(key), gsMreggoLemiT << msg, ctx, TimeLogger::eMilliseconds)
 
 #define RequestTimer(key,msg,ctx)	\
 	String gsMreggoLemiT;			\
-	TimeLoggerEntry yrtnEreggoLemiT("Request.", _QUOTE_(key), gsMreggoLemiT << msg, ctx); yrtnEreggoLemiT.Use()
+	TimeLoggerEntry yrtnEreggoLemiT("Request", _QUOTE_(key), gsMreggoLemiT << msg, ctx, TimeLogger::eMilliseconds)
 
 #define RequestTimeLogger(ctx)						\
 	if ( TimeLoggingModule::fgDoLogging )			\
@@ -89,34 +127,5 @@ private:
 		String snarTreggoLemiT("TimeLoggingAction");\
 		ctx.Process(snarTreggoLemiT);				\
 	}
-
-//---- TimeLogger --------------------------------------------------------------------------
-//!helper class to log timing information
-class EXPORTDECL_WDBASE TimeLogger
-{
-	friend class TimeLoggerEntry;
-protected:
-	//!starts the timer for request nr
-	TimeLogger(const String &key, const String &msg, Context &ctx);
-	//!stops the timer and prints the results for this request and thread
-	~TimeLogger();
-
-	//!message string printed in the destructor
-	const String &fMsgStr;
-	//!key that defines the place where the info is stored
-	const String &fKey;
-	//!log into the context
-	Context &fContext;
-	//!timer to measure elapsed time
-	DiffTimer fDiffTimer;
-
-private:
-	//!do not use
-	TimeLogger();
-	//!do not use
-	TimeLogger(const TimeLogger &);
-	//!do not use
-	TimeLogger &operator=(TimeLogger &);
-};
 
 #endif

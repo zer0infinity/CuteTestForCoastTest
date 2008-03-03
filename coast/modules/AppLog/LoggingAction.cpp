@@ -10,6 +10,7 @@
 #include "LoggingAction.h"
 
 //--- standard modules used ----------------------------------------------------
+#include "Timers.h"
 #include "Renderer.h"
 #include "Dbg.h"
 
@@ -44,20 +45,25 @@ TimeLoggingAction::~TimeLoggingAction() { }
 bool TimeLoggingAction::DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config)
 {
 	StartTrace(TimeLoggingAction.DoExecAction);
-	bool bRet = false;
-	String channel = config["Channel"].AsString("");
+	bool bRet( false );
+	String channel( config["Channel"].AsString() );
 	if ( channel.Length() ) {
 		Trace("Channel: <" << channel << ">");
-		String entriesPath;
-		Renderer::RenderOnString(entriesPath, ctx, config["TimeEntries"]);
-		Trace("TimeEntriesPath: <" << entriesPath << ">");
-		if (entriesPath.Length() == 0) {
-			entriesPath = "Log.Times.Request";
+		ROAnything roaEntryBase, roaSelectedEntries;
+		if ( ctx.Lookup( TimeLoggingModule::fgpLogEntryBasePath, roaEntryBase ) ) {
+			String strKey( config["TimeEntries"].AsString() );
+			if ( strKey.Length() ) {
+				bRet = roaEntryBase.LookupPath( roaSelectedEntries, strKey );
+			} else {
+				roaSelectedEntries = roaEntryBase;
+				bRet = true;
+			}
+			if ( bRet ) {
+				TraceAny(roaSelectedEntries, "Entries");
+				String key;
+				bRet = GenLogEntries(key, roaSelectedEntries, ctx, channel, (AppLogModule::eLogLevel)config["Severity"].AsLong((long)AppLogModule::eINFO));
+			}
 		}
-		ROAnything timingEntries(ctx.Lookup(entriesPath));
-		TraceAny(timingEntries, "Entries: ");
-		String key;
-		bRet = GenLogEntries(key, timingEntries, ctx, channel, (AppLogModule::eLogLevel)config["Severity"].AsLong((long)AppLogModule::eINFO));
 	}
 	return bRet;
 }
@@ -65,7 +71,7 @@ bool TimeLoggingAction::DoExecAction(String &transitionToken, Context &ctx, cons
 bool TimeLoggingAction::GenLogEntries(const String &entryPath, const ROAnything &entry, Context &ctx, const String &channel, AppLogModule::eLogLevel iLevel)
 {
 	StartTrace(TimeLoggingAction.GenLogEntries);
-	long entriesSz = entry.GetSize();
+	long entriesSz( entry.GetSize() );
 
 	if ( entry.SlotName(0L) ) { // it is an anonymous array
 		// assume a substructure we traverse recursively
@@ -73,11 +79,11 @@ bool TimeLoggingAction::GenLogEntries(const String &entryPath, const ROAnything 
 		for (long i = 0; i < entriesSz; ++i) {
 			if ( entryPath.Length() > 0 ) {
 				path = entryPath;
-				path << ".";
+				path.Append('.');
 			} else {
-				path = "";
+				path.Trim(0L);
 			}
-			path << entry.SlotName(i);
+			path.Append( entry.SlotName(i) );
 			Trace("Path: <" << path << ">");
 			if (!GenLogEntries(path, entry[i], ctx, channel, iLevel)) {
 				return false;
@@ -96,18 +102,10 @@ bool TimeLoggingAction::GenLogEntries(const String &entryPath, const ROAnything 
 
 bool TimeLoggingAction::GenLogEntry(const String &key, const ROAnything &entry, Context &ctx, const String &channel, AppLogModule::eLogLevel iLevel)
 {
-	StartTrace(TimeLoggingAction.GenLogEntry);
-	Trace("Entry Size: " << (long)entry.GetSize());
-	TraceAny(entry, "Entries: ");
-
-	Anything logEntry;
-	logEntry = entry.DeepClone();
-	logEntry["Key"] = key;
-
-	TraceAny(logEntry, "LogEntry added: ");
-	ctx.GetTmpStore()["TimeLogEntry"] = logEntry;
-	if (!AppLogModule::Log(ctx, channel, iLevel)) {
-		return false;
-	}
-	return true;
+	StatTraceAny(TimeLoggingAction.GenLogEntry, entry, "Entries: " << (long)entry.GetSize(), Storage::Current() );
+	Anything anyKey;
+	anyKey["Key"] = key;
+	Context::PushPopEntry<ROAnything> aValuesEntry( ctx, "LoggingEntries", entry, "TimeLogEntry" );
+	Context::PushPopEntry<Anything> aKeyEntry( ctx, "LoggingEntryKey", anyKey, "TimeLogEntry" );
+	return AppLogModule::Log(ctx, channel, iLevel);
 }
