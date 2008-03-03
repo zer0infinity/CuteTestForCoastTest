@@ -97,3 +97,9 @@ void StorePutter::Operate(Anything &source, Context &c, const ROAnything &config
 	String strStoreName = config["Store"].AsString("");
 	SlotPutter::Operate(source, StoreFinder::FindStore(c, strStoreName), Renderer::RenderToString(c, config["Slot"]), config["Append"].AsBool(false), config["Delim"].AsCharPtr(".")[0L], config["IndexDelim"].AsCharPtr(":")[0L]);
 }
+
+void StorePutter::Operate(Anything &source, Context &c, String strStoreName, String destSlotname, bool append, char delim, char indexdelim)
+{
+	StatTrace(StorePutter.Operate, "putting in store [" << (strStoreName.Length() ? (const char *)strStoreName : "TmpStore" ) << "] slot [" << destSlotname << "]", Storage::Current());
+	SlotPutter::Operate(source, StoreFinder::FindStore(c, strStoreName), destSlotname, append, delim, indexdelim);
+}
