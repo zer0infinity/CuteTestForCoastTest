@@ -446,6 +446,7 @@ void AppLogTest::TimeLoggingActionTest()
 				Anything data;
 				data["Time"] = 10L;
 				data["Msg"] = "AppLogTimeTest";
+				data["Unit"] = "ms";
 				expected["Log"]["Times"]["Method"]["Test"]["SubA"].Append(data.DeepClone());
 				expected["Log"]["Times"]["Method"]["Test"]["SubB"].Append(data.DeepClone());
 				expected["Log"]["Times"]["Request"]["Cycle"].Append(data.DeepClone());

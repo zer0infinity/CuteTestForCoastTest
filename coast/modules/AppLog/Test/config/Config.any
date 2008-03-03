@@ -126,38 +126,30 @@
 	/TimeLogTestAction {
 		/TimeLog	{
 		  /Channel TimeLog1
-		  /TimeEntries "Log.Times"
+#		  /TimeEntries Method
 		}
 	}
 	#--- time logging tables ---
 	/EnabledValues {
-	  /Log {
-		/Times {
-		  /Method {
-			/Test	{
-			  /SubA	1
-			  /SubB 1
-			}
-		  }
-		  /Request {
-			/Cycle 1
-		  }
+	  /Method {
+		/Test	{
+		  /SubA	1
+		  /SubB 1
 		}
+	  }
+	  /Request {
+		/Cycle 1
 	  }
 	}
 	/SimulatedValues {
-	  /Log	{
-		/Times {
-		  /Method {
-			/Test {
-			  /SubA	10
-			  /SubB	10
-			}
-		  }
-		  /Request {
-			/Cycle	10
-		  }
+	  /Method {
+		/Test {
+		  /SubA	10
+		  /SubB	10
 		}
+	  }
+	  /Request {
+		/Cycle	10
 	  }
 	}
 }

@@ -61,7 +61,7 @@
 		}
 	}
 	/LogTimeStamp {
-		{ /Date { /Format "%Y%m%d%H%M%S" } }
+		{ /DateRenderer { /Format "%Y%m%d%H%M%S" } }
 	}
 	/AccessLog {
 		/Header			"# TimeStamp [ThreadId] [Rem.Addr:Rem.Port] - [StatusMsg | ...]"
@@ -158,7 +158,7 @@
 			} }
 			"-> "
 			{ /Lookup TimeLogEntry.Time }
-			"ms"
+			{ /Lookup TimeLogEntry.Unit }
 		}
 	}
 
@@ -167,35 +167,31 @@
 	/TimeLoggingAction {
 		{ /TimeLoggingAction	{
 			/Channel		TimerLog
-			/TimeEntries	Log.Times.Method
+			/TimeEntries	Method
 		} }
 		{ /TimeLoggingAction	{
 			/Channel		TimerLog
-			/TimeEntries	Log.Times.DataAccess
+			/TimeEntries	DataAccess
 		} }
 	}
 	# specify which entries to log
 	/EnabledValues {
-		/Log {
-			/Times {
-				/Request					0		# measured with RequestTimer() macro
-				/Method {							# measured with MethodTimer() macro
-					/Page {
-						/Render				0
-					}
-				}
-				/DataAccess {						# measured with DAAccessTimer() macro
-					/DataAccess {
-						/StdExec			1
-						/Exec				0
-					}
-					/SlotnameOutputMapper {
-						/DoPutAny			1
-					}
-					/StreamToAnythingMapper {
-						/DoPutStream		1
-					}
-				}
+		/Request					0		# measured with RequestTimer() macro
+		/Method {							# measured with MethodTimer() macro
+			/Page {
+				/Render				0
+			}
+		}
+		/DataAccess {						# measured with DAAccessTimer() macro
+			/DataAccess {
+				/StdExec			1
+				/Exec				0
+			}
+			/SlotnameOutputMapper {
+				/DoPutAny			1
+			}
+			/StreamToAnythingMapper {
+				/DoPutStream		1
 			}
 		}
 	}

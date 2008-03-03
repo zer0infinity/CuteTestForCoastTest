@@ -44,13 +44,14 @@ void LogTimerTest::MethodTimerTest()
 	}
 	{
 		Anything setup;
-		setup["EnabledValues"]["Log"]["Times"]["Method"]["Test"] = true;
-		setup["SimulatedValues"]["Log"]["Times"]["Method"]["Test"] = 10;
+		setup["EnabledValues"]["Method"]["Test"] = true;
+		setup["SimulatedValues"]["Method"]["Test"] = 10;
 		Context::PushPopEntry<Anything> aEntry(ctx, "setup", setup);
 		Anything expected;
 		Anything data;
 		data["Time"] = 10L;
 		data["Msg"] = "Test MethodTimer";
+		data["Unit"] = "ms";
 		expected["Log"]["Times"]["Method"]["Test"].Append(data);
 
 		{
@@ -63,13 +64,14 @@ void LogTimerTest::MethodTimerTest()
 	{
 		ctx.GetTmpStore() = MetaThing();
 		Anything setup;
-		setup["EnabledValues"]["Log"]["Times"]["Method"]["Test"] = true;
-		setup["SimulatedValues"]["Log"]["Times"]["Method"]["Test"] = 10;
+		setup["EnabledValues"]["Method"]["Test"] = true;
+		setup["SimulatedValues"]["Method"]["Test"] = 10;
 		Context::PushPopEntry<Anything> aEntry(ctx, "setup", setup);
 		Anything expected;
 		Anything data;
 		data["Time"] = 10L;
 		data["Msg"] = "Test MethodTimer";
+		data["Unit"] = "ms";
 		expected["Log"]["Times"]["Method"]["Test"].Append(data.DeepClone());
 		expected["Log"]["Times"]["Method"]["Test"].Append(data.DeepClone());
 
@@ -88,15 +90,16 @@ void LogTimerTest::MethodTimerTest()
 	{
 		ctx.GetTmpStore() = MetaThing();
 		Anything setup;
-		setup["EnabledValues"]["Log"]["Times"]["Method"]["Test"]["SubA"] = true;
-		setup["EnabledValues"]["Log"]["Times"]["Method"]["Test"]["SubB"] = true;
-		setup["SimulatedValues"]["Log"]["Times"]["Method"]["Test"]["SubA"] = 10;
-		setup["SimulatedValues"]["Log"]["Times"]["Method"]["Test"]["SubB"] = 10;
+		setup["EnabledValues"]["Method"]["Test"]["SubA"] = true;
+		setup["EnabledValues"]["Method"]["Test"]["SubB"] = true;
+		setup["SimulatedValues"]["Method"]["Test"]["SubA"] = 10;
+		setup["SimulatedValues"]["Method"]["Test"]["SubB"] = 10;
 		Context::PushPopEntry<Anything> aEntry(ctx, "setup", setup);
 		Anything expected;
 		Anything data;
 		data["Time"] = 10L;
 		data["Msg"] = "Test MethodTimer";
+		data["Unit"] = "ms";
 		expected["Log"]["Times"]["Method"]["Test"]["SubA"].Append(data.DeepClone());
 		expected["Log"]["Times"]["Method"]["Test"]["SubB"].Append(data.DeepClone());
 
