@@ -1004,6 +1004,11 @@ bool Acceptor::StopAcceptLoop(bool useConnect)
 	return true;
 }
 
+long Acceptor::GetBacklog()
+{
+	return fBackLog;
+}
+
 // BIA/RUM
 String Acceptor::GetAddress()
 {
