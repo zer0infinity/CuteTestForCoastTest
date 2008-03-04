@@ -516,6 +516,8 @@ public:
 	//!return the ip address the acceptor is listening to
 	String GetAddress();
 
+	//!return Backlog size
+	long GetBacklog();
 protected:
 
 	//!calls the creator of the acceptor back via fCallBack object
