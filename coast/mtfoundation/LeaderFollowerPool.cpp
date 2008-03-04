@@ -177,7 +177,9 @@ bool LeaderFollowerPool::InitReactor(ROAnything args)
 			}
 			// start the accept loop
 			OStringStream os;
-			os << setw(20) <<  args.SlotName(i) << " Accepting requests from: " << acceptor->GetAddress() << " port: " << acceptor->GetPort() << endl;
+			os << setw(20) <<  args.SlotName(i) << " Accepting requests from: " <<
+			   acceptor->GetAddress() << " port: " << acceptor->GetPort() << " backlog: " <<
+			   acceptor->GetBacklog() << endl;
 			SysLog::WriteToStderr(os.str());
 			fReactor->RegisterHandle(acceptor);
 		} else {
