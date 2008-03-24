@@ -205,6 +205,9 @@ handlesignal:
 			sigName = "SIGINT";
 		} else if ( isignal == SIGTERM ) {
 			sigName = "SIGTERM";
+		} else {
+			SYSINFO("caught unknown signal " << sigName << " ...ignoring!");
+			goto handlesignal;
 		}
 		SYSINFO("caught " << sigName << " shutting down server");
 		// prepare the server for shutdown
