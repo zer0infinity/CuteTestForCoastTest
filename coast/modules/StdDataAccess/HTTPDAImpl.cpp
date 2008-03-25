@@ -258,6 +258,18 @@ bool HTTPDAImpl::DoExecRecord(Connector *csc, ConnectorParams *cps, Context &con
 bool HTTPDAImpl::SendInput(iostream *Ios, Socket *s, long timeout, Context &context, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(HTTPDAImpl.SendInput);
+
+	//***************
+	Anything myany;
+	in->Get("Input", myany, context);
+	String body = myany.AsString();
+
+	String contentLength = "";
+	contentLength.Append(body.Length());
+
+	context.GetTmpStore()["Request"]["BodyLength"] = contentLength;
+	//***************
+
 #ifdef COAST_TRACE
 	Trace("Debug Version");
 
@@ -274,7 +286,7 @@ bool HTTPDAImpl::SendInput(iostream *Ios, Socket *s, long timeout, Context &cont
 
 		Anything tmpStore(context.GetTmpStore());
 		tmpStore["Mapper"]["RequestMade"] = request;
-		TraceAny( tmpStore["Mapper"], "tmpStore.Mapper" );
+//		TraceAny( tmpStore["Mapper"], "tmpStore.Mapper" );
 
 		if (Ios) {
 			if ( s->IsReadyForWriting() ) {
