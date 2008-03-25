@@ -27,6 +27,8 @@ typename BufferType,
 		 >
 class EXPORTDECL_FOUNDATION StringStreamBuf : public streambuf
 {
+	StringStreamBuf(const StringStreamBuf &);
+	StringStreamBuf &operator=(const StringStreamBuf &);
 public:
 	typedef typename Loki::fooTypeTraits<BufferType>::ConstPlainTypeRef ConstPlainTypeRef;
 	typedef typename Loki::fooTypeTraits<BufferType>::ConstPlainTypePtr ConstPlainTypePtr;

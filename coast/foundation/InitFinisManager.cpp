@@ -15,6 +15,7 @@
 #include "SysLog.h"
 
 //--- c-modules used -----------------------------------------------------------
+#include <cstring>
 
 //---- InitFinisManager ----------------------------------------------------------
 InitFinisManager::InitFinisManager(unsigned int uiPriority)

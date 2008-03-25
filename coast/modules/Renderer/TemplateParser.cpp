@@ -18,6 +18,7 @@
 #include "Dbg.h"
 
 //--- c-modules used -----------------------------------------------------------
+#include <cstring>
 #if !defined(WIN32)
 #include <ctype.h>
 #endif

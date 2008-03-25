@@ -15,6 +15,7 @@
 #include "Dbg.h"
 
 //--- c-modules used -----------------------------------------------------------
+#include <cstring>
 
 static const char *entitity_map[] = {
 	"<",	"&lt;",

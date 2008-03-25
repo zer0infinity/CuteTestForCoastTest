@@ -24,7 +24,8 @@
 #endif
 
 //--- c-library modules used ---------------------------------------------------
-#include <limits.h>
+#include <climits>
+#include <cstring>
 
 //---- SybCTnewDA ----------------------------------------------------------------
 Mutex SybCTnewDA::fgSybaseLocker("SybaseLocker", Storage::Global());

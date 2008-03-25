@@ -17,7 +17,7 @@
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
-#include <string.h>
+#include <cstring>
 
 #if defined (WIN32)
 #include <io.h>

@@ -15,9 +15,9 @@
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
+#include <cstring>
 #if !defined(WIN32)
 #include <ctype.h>
-#include <string.h>
 #endif
 
 //---- URL utilities

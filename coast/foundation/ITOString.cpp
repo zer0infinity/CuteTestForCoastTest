@@ -15,6 +15,7 @@
 #include "InitFinisManagerFoundation.h"
 
 //--- c-library modules used ---------------------------------------------------
+#include <cstring>
 #ifdef __370__
 //	#include "a2ee2a.h"
 #endif
@@ -33,7 +34,6 @@
 using namespace std;
 #else
 #include <float.h>	// for DBL_DIG
-#include <string.h>
 #include <stdio.h>
 #endif
 

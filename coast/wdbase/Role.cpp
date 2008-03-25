@@ -15,6 +15,7 @@
 #include "Renderer.h"
 #include "SysLog.h"
 #include "Dbg.h"
+#include <cstring>
 
 //---- RolesModule -----------------------------------------------------------
 RegisterModule(RolesModule);

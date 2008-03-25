@@ -17,11 +17,10 @@
 
 #if defined(ONLY_STD_IOSTREAM)
 #include <algorithm>
-#else
-#include <string.h>
 #endif
 
 //--- c-library modules used ---------------------------------------------------
+#include <cstring>
 
 #ifdef __370__
 extern "C" void finalize();

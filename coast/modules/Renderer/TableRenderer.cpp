@@ -13,6 +13,8 @@
 #include "FormRenderer.h"
 #include "Dbg.h"
 
+#include <cstring>
+
 //---- TableRenderer -------------------------------------------------------------------
 RegisterRenderer(TableRenderer);
 

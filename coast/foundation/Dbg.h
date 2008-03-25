@@ -57,6 +57,8 @@ class EXPORTDECL_FOUNDATION TracerHelper;
 
 class EXPORTDECL_FOUNDATION Tracer
 {
+	Tracer(const Tracer &);
+	Tracer &operator=(const Tracer &);
 public:
 	Tracer(const char *trigger);
 	Tracer(const char *trigger, const char *msg);

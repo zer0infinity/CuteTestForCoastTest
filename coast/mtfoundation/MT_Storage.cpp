@@ -19,6 +19,7 @@
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
+#include <cstring>
 
 #if 1
 #define TrackLockerInit(lockvar) , lockvar(0)

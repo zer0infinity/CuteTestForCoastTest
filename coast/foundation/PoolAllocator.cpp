@@ -23,6 +23,7 @@
 #endif
 
 //--- c-library modules used ---------------------------------------------------
+#include <cstring>
 
 #if !defined(__SUNPRO_CC) ||  __SUNPRO_CC < 0x500
 extern void *operator new(size_t size, void *vp);

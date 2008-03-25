@@ -20,14 +20,13 @@
 #include "StringStream.h"
 
 //--- c-library modules used ---------------------------------------------------
+#include <cstring>
 #if !defined(WIN32)
 #include <sys/time.h>
 #endif
 
 #if defined(ONLY_STD_IOSTREAM)
 using namespace std;
-#else
-#include <string.h>
 #endif
 
 //--- c-modules used -----------------------------------------------------------

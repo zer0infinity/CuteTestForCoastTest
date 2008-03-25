@@ -16,7 +16,8 @@
 #include "DiffTimer.h"
 
 //--- c-library modules used ---------------------------------------------------
-#include <limits.h>
+#include <climits>
+#include <cstring>
 
 //---- SybCT ----------------------------------------------------------------
 Mutex SybCT::fgSybaseLocker("SybaseLocker");

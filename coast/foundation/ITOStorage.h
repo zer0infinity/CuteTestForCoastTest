@@ -94,6 +94,8 @@ private:
 //!helper class to check for memory leaks
 class EXPORTDECL_FOUNDATION MemChecker
 {
+	MemChecker(const MemChecker &);
+	MemChecker &operator=(const MemChecker &);
 public:
 	//! check allocation in in a certain scope for one allocator
 	//! we do not use String on purpose here
@@ -214,6 +216,8 @@ protected:
 //!manages storage using the builtin c api and does some statistic
 class EXPORTDECL_FOUNDATION GlobalAllocator: public Allocator
 {
+	GlobalAllocator(const GlobalAllocator &);
+	GlobalAllocator &operator=(const GlobalAllocator &);
 public:
 	//!does nothing
 	GlobalAllocator();
@@ -250,6 +254,8 @@ protected:
 //!wrapper class to provide protocol for dispatching if non standard (GlobalAllocator) is used
 class EXPORTDECL_FOUNDATION StorageHooks
 {
+	StorageHooks(const StorageHooks &);
+	StorageHooks &operator=(const StorageHooks &);
 public:
 	StorageHooks()
 		: fpOldHook(NULL) {};
@@ -364,6 +370,8 @@ protected:
 
 class EXPORTDECL_FOUNDATION TestStorageHooks : public StorageHooks
 {
+	TestStorageHooks(const TestStorageHooks &);
+	TestStorageHooks &operator=(const TestStorageHooks &);
 public:
 	TestStorageHooks(Allocator *allocator);
 	virtual ~TestStorageHooks();

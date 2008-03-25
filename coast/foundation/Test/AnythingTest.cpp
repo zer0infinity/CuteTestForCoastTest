@@ -21,10 +21,9 @@
 #include "SysLog.h"
 
 //--- c-library modules used ---------------------------------------------------
+#include <cstring>
 #if defined(ONLY_STD_IOSTREAM)
 using namespace std;
-#else
-#include <string.h>
 #endif
 
 //---- AnythingTest ---------------------------------------------------------

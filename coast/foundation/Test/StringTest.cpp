@@ -20,13 +20,13 @@
 #if defined(ONLY_STD_IOSTREAM)
 using namespace std;
 #else
-#include <string.h>
 #include <limits.h>
 #endif
 
 //--- c-library modules used ---------------------------------------------------
 #include <ctype.h>
 #include <float.h>
+#include <cstring>
 
 StringTest::StringTest (TString tname)
 	: TestCaseType(tname)

@@ -14,15 +14,13 @@
 #include "IFAObject.h"
 #include "AnyVisitor.h"
 #include "SysLog.h"
-#if (__GNUC__ == 2 &&  __GNUC_MINOR__ <= 95)
 #include <algorithm>
-#endif
 
 //--- c-modules used -----------------------------------------------------------
+#include <cstring>
+#include <cstdlib>
 #if defined(ONLY_STD_IOSTREAM)
 using namespace std;
-#else
-#include <string.h>
 #endif
 
 static const String fgStrEmpty(Storage::Global()); //avoid temporary

@@ -25,6 +25,7 @@
 #include <typeinfo>
 
 //--- c-library modules used ---------------------------------------------------
+#include <cstring>
 
 const String Context::DebugStoreSeparator("<!-- separator 54353021345321784456 -->");
 

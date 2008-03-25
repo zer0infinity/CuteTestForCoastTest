@@ -36,7 +36,7 @@
  */
 
 //--- c-library modules used ---------------------------------------------------
-#include <string.h>		/* for memcpy() */
+#include <cstring>		/* for memcpy() */
 
 #ifdef __alpha
 typedef unsigned int uint32;

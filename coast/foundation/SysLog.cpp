@@ -17,10 +17,8 @@
 
 //--- c-library modules used ---------------------------------------------------
 #include <errno.h>
-#include <stdio.h>
-#if !defined(WIN32)
-#include <string.h>
-#endif
+#include <cstdio>
+#include <cstring>
 #if defined(__sun) || defined(__linux__) || defined(__aix__)
 #include <syslog.h>
 #endif

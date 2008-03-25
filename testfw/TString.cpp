@@ -10,6 +10,8 @@
 #include "TString.h"
 
 //--- c-library modules used ---------------------------------------------------
+#include <cstdlib>
+
 #if defined(ONLY_STD_IOSTREAM)
 #include <sstream>
 #include <iostream>

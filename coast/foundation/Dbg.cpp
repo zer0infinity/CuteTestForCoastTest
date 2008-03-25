@@ -15,6 +15,7 @@
 #include "StringStream.h"
 
 //--- c-library modules used ---------------------------------------------------
+#include <cstring>
 
 #ifdef DEBUG
 
@@ -57,6 +58,7 @@ private:
 
 Tracer::Tracer(const char *trigger)
 	: fTrigger(trigger)
+	, fTriggered(false)
 	, fpMsg(NULL)
 	, fpAlloc(Storage::Current())
 {
@@ -70,6 +72,7 @@ Tracer::Tracer(const char *trigger)
 
 Tracer::Tracer(const char *trigger, const char *msg)
 	: fTrigger(trigger)
+	, fTriggered(false)
 	, fpMsg(msg)
 	, fpAlloc(Storage::Current())
 {
@@ -177,7 +180,7 @@ bool Tracer::CheckWDDebug(const char *trigger, Allocator *pAlloc)
 	if ( fgTerminated ) {
 		return false;
 	}
-	static bool trying = false;	// FIXME: hack until recursive mutex are implemented
+	static bool trying( false );	// FIXME: hack until recursive mutex are implemented
 
 	if (fgWDDebugContext.GetType() == AnyNullType) {
 		if ( trying ) {

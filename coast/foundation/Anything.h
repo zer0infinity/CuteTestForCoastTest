@@ -405,7 +405,8 @@ public:
 		assign(n, value_type(val));
 	}
 	// sequence ctors:
-	Anything(size_type n, const value_type &v, Allocator *a = Storage::Current()): fAnyImp(0) {
+	Anything(size_type n, const value_type &v, Allocator *a = Storage::Current())
+		: fAnyImp(0) {
 		SetAllocator(a);
 		for (; n > 0; --n) {
 			Append(v);
@@ -949,9 +950,9 @@ protected:
 	AnyImpl *fAnyImp;
 	//hack for visitor...
 	friend class AnyArrayImpl;
-	ROAnything(AnyImpl *imp) {
-		fAnyImp = imp;
-	}
+	ROAnything(AnyImpl *imp)
+		: fAnyImp( imp )
+	{}
 };
 
 //---- inlines -------------------------------------------------------------------------

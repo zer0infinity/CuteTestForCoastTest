@@ -22,7 +22,7 @@
 
 //--- c-library modules used ---------------------------------------------------
 #include <ctype.h>
-#include <string.h>
+#include <cstring>
 
 struct posixtable {
 	posixtable(const char *pName, const REBitSet &aSet) : name(pName), set(aSet) {}

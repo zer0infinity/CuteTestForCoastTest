@@ -22,9 +22,10 @@ using namespace std;
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
-#include <stdio.h>
-#include <limits.h>
+#include <cstdio>
+#include <climits>
 #include <errno.h>
+#include <cstring>
 
 #if defined(WIN32)
 #include <io.h>
@@ -33,7 +34,6 @@ using namespace std;
 #include <fcntl.h>
 #include <dirent.h>  // directory access
 #include <sys/time.h>
-#include <string.h>
 #include <sys/utsname.h>
 #if defined(__linux__)
 #include <sys/vfs.h>

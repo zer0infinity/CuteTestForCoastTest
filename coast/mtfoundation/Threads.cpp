@@ -22,6 +22,7 @@
 #include <exception>
 
 //--- c-library modules used ---------------------------------------------------
+#include <cstring>
 
 //#define TRACE_LOCKS_IMPL 1
 //#define POOL_STARTEDHOOK 1
