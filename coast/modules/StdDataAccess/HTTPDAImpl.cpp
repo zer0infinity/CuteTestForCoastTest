@@ -262,12 +262,14 @@ bool HTTPDAImpl::SendInput(iostream *Ios, Socket *s, long timeout, Context &cont
 	//***************
 	Anything myany;
 	in->Get("Input", myany, context);
-	String body = myany.AsString();
+	String body = myany.AsString().SubString("\r\n\r\n");
+	std::cout << "body:" << body << std::endl;
 
 	String contentLength = "";
-	contentLength.Append(body.Length());
+	contentLength.Append(body.Length() - 4); //subtract "\r\n\r\n"
 
 	context.GetTmpStore()["Request"]["BodyLength"] = contentLength;
+	std::cout << "contentLength:" << contentLength << std::endl;
 	//***************
 
 #ifdef COAST_TRACE
