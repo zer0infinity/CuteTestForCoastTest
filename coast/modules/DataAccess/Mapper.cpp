@@ -393,6 +393,16 @@ String ParameterMapper::DoGetSourceSlot(Context &ctx)
 	return (Lookup("SourceSlot", slotname) || ctx.Lookup(slotnamename, slotname)) ? slotname.AsCharPtr() : "";
 }
 
+ROAnything ParameterMapper::GetConfig()
+{
+	return fConfig;
+}
+
+void ParameterMapper::SetConfig(ROAnything config)
+{
+	fConfig = config;
+}
+
 //---- EagerParameterMapper ------------------------------------------------
 RegisterParameterMapper(EagerParameterMapper);
 

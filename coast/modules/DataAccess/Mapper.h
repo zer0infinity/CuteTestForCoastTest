@@ -110,6 +110,17 @@ public:
 		\return returns true if the mapping was successful otherwise false */
 	bool Get(const char *key, ostream &os, Context &ctx);
 
+	//! method for getting the internal configuration
+	//! \return returns the configuration as Anything
+	virtual ROAnything GetConfig();
+
+	//! method for setting the internal configuration
+	//! \param configuration to be set
+	virtual void SetConfig(ROAnything config);
+
+	//!FIXME: remove Finds InputMappers, too
+	static ParameterMapper *FindInputMapper(const char *name);
+
 	//! convenience function:
 	static void PlaceIntoAnyOrAppendIfNotEmpty(Anything &var, ROAnything theValue);
 
