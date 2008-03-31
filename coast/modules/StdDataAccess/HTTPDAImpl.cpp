@@ -15,6 +15,7 @@
 #include "ConnectorParams.h"
 #include "SSLSocket.h"
 #include "Dbg.h"
+#include "Session.h"
 
 #ifdef RECORD
 #include "AnyUtils.h"
@@ -266,13 +267,20 @@ bool HTTPDAImpl::SendInput(iostream *Ios, Socket *s, long timeout, Context &cont
 	std::cout << "body:" << body << std::endl;
 
 	String contentLength = "";
-	contentLength.Append(body.Length() - 4); //subtract "\r\n\r\n"
+	if (body.Length() >= 4) {
+		contentLength.Append(body.Length() - 4); //subtract "\r\n\r\n"
+	} else {
+		contentLength.Append((long int)0);
+	}
 
 	context.GetTmpStore()["Request"]["BodyLength"] = contentLength;
 	std::cout << "contentLength:" << contentLength << std::endl;
 	//***************
 
 #ifdef COAST_TRACE
+	TraceAny(context.GetSessionStore(), "context session store:");
+	std::cout << "2. the session id:" << context.GetSession()->GetId() << std::endl;
+
 	Trace("Debug Version");
 
 	if ( Tracer::CheckWDDebug("HTTPDAImpl.SendInput", Storage::Current()) ) {
