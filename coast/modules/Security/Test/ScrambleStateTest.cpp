@@ -85,15 +85,6 @@ void ScrambleStateTest::DoReferenceUncsramble(const Anything &config)
 	expectedClearText["page"] = "AdminMainPage";
 	expectedClearText["action"] = "GoReloadConfig";
 
-	// if SecurityItem::fgcLegacyMasterKey in SecurityModule.cpp is changed, the scrambled string can be found out like this:
-	/*
-	SecurityModule secm2("Config2");
-	secm2.Init(fStdContextAny);
-	String scr;
-	SecurityModule::ScrambleState(scr, expectedClearText);
-	std::cout << "+++++++++++++" << scr << "+++++++++++++" << std::endl;
-	*/
-
 	t_assert(secm != NULL);
 	if (secm) {
 		{

@@ -260,11 +260,9 @@ bool HTTPDAImpl::SendInput(iostream *Ios, Socket *s, long timeout, Context &cont
 {
 	StartTrace(HTTPDAImpl.SendInput);
 
-	//***************
 	Anything myany;
 	in->Get("Input", myany, context);
 	String body = myany.AsString().SubString("\r\n\r\n");
-	std::cout << "body:" << body << std::endl;
 
 	String contentLength = "";
 	if (body.Length() >= 4) {
@@ -274,13 +272,8 @@ bool HTTPDAImpl::SendInput(iostream *Ios, Socket *s, long timeout, Context &cont
 	}
 
 	context.GetTmpStore()["Request"]["BodyLength"] = contentLength;
-	std::cout << "contentLength:" << contentLength << std::endl;
-	//***************
 
 #ifdef COAST_TRACE
-	TraceAny(context.GetSessionStore(), "context session store:");
-	std::cout << "2. the session id:" << context.GetSession()->GetId() << std::endl;
-
 	Trace("Debug Version");
 
 	if ( Tracer::CheckWDDebug("HTTPDAImpl.SendInput", Storage::Current()) ) {
@@ -292,11 +285,10 @@ bool HTTPDAImpl::SendInput(iostream *Ios, Socket *s, long timeout, Context &cont
 				return false;
 			}
 		}
-		Trace("Request: <" << request << ">");
+		Trace("¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨Request:" << request << "¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨");
 
 		Anything tmpStore(context.GetTmpStore());
 		tmpStore["Mapper"]["RequestMade"] = request;
-//		TraceAny( tmpStore["Mapper"], "tmpStore.Mapper" );
 
 		if (Ios) {
 			if ( s->IsReadyForWriting() ) {
