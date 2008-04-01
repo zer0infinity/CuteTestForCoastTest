@@ -265,7 +265,6 @@ bool HTTPDAImpl::SendInput(iostream *Ios, Socket *s, long timeout, Context &cont
 	in->Get("Input", oss, context);
 	oss.flush();
 	String body = content.SubString("\r\n\r\n");
-	Trace("### Body:" << body );
 
 	String contentLength = "";
 	if (body.Length() >= 4) {
@@ -288,7 +287,7 @@ bool HTTPDAImpl::SendInput(iostream *Ios, Socket *s, long timeout, Context &cont
 				return false;
 			}
 		}
-		Trace("¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨Request:" << request << "¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨");
+		Trace("Request:" << request);
 
 		Anything tmpStore(context.GetTmpStore());
 		tmpStore["Mapper"]["RequestMade"] = request;
@@ -326,7 +325,6 @@ bool HTTPDAImpl::DoSendInput(iostream *Ios, Socket *s, long timeout, Context &co
 			if (retCode) {
 				return true;
 			}
-
 		}
 	}
 	out->Put("Error", GenerateErrorMessage("Sending request ", context), context);
