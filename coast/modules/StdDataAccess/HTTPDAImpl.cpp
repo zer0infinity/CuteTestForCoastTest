@@ -260,9 +260,12 @@ bool HTTPDAImpl::SendInput(iostream *Ios, Socket *s, long timeout, Context &cont
 {
 	StartTrace(HTTPDAImpl.SendInput);
 
-	Anything myany;
-	in->Get("Input", myany, context);
-	String body = myany.AsString().SubString("\r\n\r\n");
+	String content;
+	OStringStream oss(&content);
+	in->Get("Input", oss, context);
+	oss.flush();
+	String body = content.SubString("\r\n\r\n");
+	Trace("### Body:" << body );
 
 	String contentLength = "";
 	if (body.Length() >= 4) {

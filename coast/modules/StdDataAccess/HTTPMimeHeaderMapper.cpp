@@ -42,10 +42,9 @@ bool HTTPMimeHeaderMapper::DoPutStream(const char *, istream &is, Context &ctx, 
 	}
 	MIMEHeader mh(URLUtils::eDownshift, eProcMode);
 	bool result = mh.DoReadHeader(is);
-	Trace("Result is: " << result);
+
 	if (result && is.good()) {
 		Anything header(mh.GetInfo());
-		TraceAny(header, "MIMEHeader.GetInfo() output");
 		TraceAny(header, "header");
 		if (eProcMode == MIMEHeader::eDoSplitHeaderFields) {
 			CorrectDateFormats(header);
