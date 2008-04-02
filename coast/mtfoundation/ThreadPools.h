@@ -21,6 +21,7 @@ A thread pool can be used in cases where we do not need to know what each thread
 */
 class EXPORTDECL_MTFOUNDATION ThreadPoolManager : public StatGatherer, public Observable<Thread, ROAnything>::Observer
 {
+protected:
 	typedef Observable<Thread, ROAnything> tBaseClass;
 	typedef tBaseClass::tObservedPtr tObservedPtr;
 	typedef tBaseClass::tArgsRef tArgsRef;
@@ -77,6 +78,10 @@ public:
 	//! Set my name
 	void SetName(const char *str)	{
 		fName = str;
+	}
+
+	bool InTermination() const {
+		return fTerminated;
 	}
 
 protected:
