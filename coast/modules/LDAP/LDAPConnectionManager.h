@@ -114,10 +114,10 @@ protected:
 	void EmptyLdapConnectionStore();
 
 	//!The mutex that protects the ldap connection pools structure
-	Mutex fLdapConnectionStoreMutex;
+	SimpleMutex fLdapConnectionStoreMutex;
 
 	//!The mutex that protects the free list structure
-	Mutex fFreeListMutex;
+	SimpleMutex fFreeListMutex;
 
 	//!The connection pools structure
 	Anything fLdapConnectionStore;
@@ -128,7 +128,7 @@ protected:
 	//! The maximum number of connections per connection "type"
 	long fDefMaxConnections;
 
-	//! Get the semaphore, creat it if it does not exist
+	//! Get the semaphore, create it if it does not exist
 	Semaphore *LookupSema(long maxConnections, const String &poolId);
 
 	//! Factored out common parts
