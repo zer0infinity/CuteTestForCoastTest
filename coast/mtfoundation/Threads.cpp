@@ -114,8 +114,8 @@ static ThreadInitializer *psgThreadInitializer = new ThreadInitializer(15);
 Thread::Thread(const char *name, bool daemon, bool detached, bool suspended, bool bound, Allocator *a)
 	: NamedObject(name)
 	, tObservableBase(name, a)
-	, fAllocCleaner(this)
 	, fAllocator(a)
+	, fAllocCleaner(this)
 	, fThreadId(0)
 	, fParentThreadId(0)
 	, fDaemon(daemon)
@@ -128,7 +128,9 @@ Thread::Thread(const char *name, bool daemon, bool detached, bool suspended, boo
 	, fState(eCreated)
 	, fSignature(0xaaddeeff)
 	, fThreadName(name, strlen(name), (fAllocator) ? fAllocator : Storage::Global())
+	, fanyArgTmp( Storage::Global() )
 {
+
 	StartTrace1(Thread.Constructor, "IntId: " << (long)GetId() << " ParId: " << fParentThreadId << " CallId: " << MyId() << " Name [" << GetName() << "]");
 	if (fAllocator) {
 		fAllocator->Ref();
@@ -142,7 +144,7 @@ Thread::~Thread()
 
 	// doesn't really solve the problem if a subclass would do sthg in the hook method
 	// but at least it will go to the state eTerminated
-	if ( !Terminate() ) {
+	if ( ( fState < eTerminated ) && !Terminate() ) {
 		SYSERROR("Terminate() failed");
 	}
 

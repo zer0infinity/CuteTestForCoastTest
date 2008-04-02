@@ -740,11 +740,11 @@ protected:
 	//!subclass hook
 	virtual void DoWorkingHook(ROAnything);
 
-	//! 1st instance var (i.e. is destroyed last) used to unregister allocator *after* its no longer required
-	AllocatorUnref fAllocCleaner;
-
 	//!allocator for thread local storage
 	Allocator *fAllocator;
+
+	//! 1st instance var (i.e. is destroyed last) used to unregister allocator *after* its no longer required
+	AllocatorUnref fAllocCleaner;
 
 	//!system dependent thread id
 	THREAD fThreadId;
