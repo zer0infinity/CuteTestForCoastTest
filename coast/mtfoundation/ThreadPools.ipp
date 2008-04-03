@@ -36,8 +36,10 @@ bool WorkerPoolManager::Enter( WorkerParamType workload, long lFindWorkerHint )
 
 	// use the lFindWorkerHint param as hint to get the next free WorkerThread
 	if ( lFindWorkerHint < 0 ) {
+		Trace("no hint given, selecting next available worker");
 		lFindWorkerHint = ( lCurrRequests + 1L ) % fPoolSize;
 	} else {
+		Trace("worker hint given: " << lFindWorkerHint << " which results in worker at index: " << ( lFindWorkerHint % fPoolSize ) );
 		lFindWorkerHint = lFindWorkerHint % fPoolSize;
 	}
 	bool bEnterSuccess( false );
