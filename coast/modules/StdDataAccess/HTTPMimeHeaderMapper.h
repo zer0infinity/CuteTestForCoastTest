@@ -40,6 +40,7 @@ public:
 	static void CorrectDateFormats(Anything &header);
 	static void SuppressHeaders(Anything &header, ROAnything &suppresslist);
 	static void AddHeaders(Anything &header, ROAnything &addlist);
+	static void Substitute(Anything &header, ROAnything &addlist);
 
 private:
 	HTTPMimeHeaderMapper();

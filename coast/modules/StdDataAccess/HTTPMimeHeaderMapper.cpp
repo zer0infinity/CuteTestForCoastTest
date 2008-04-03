@@ -14,6 +14,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "MIMEHeader.h"
+#include "RE.h"
 
 //--- c-modules used -----------------------------------------------------------
 
@@ -56,6 +57,10 @@ bool HTTPMimeHeaderMapper::DoPutStream(const char *, istream &is, Context &ctx, 
 		if (config.IsDefined("Add")) {
 			ROAnything addlist(config["Add"]);
 			AddHeaders(header, addlist);
+		}
+		if (config.IsDefined("Substitute")) {
+			ROAnything addlist(config["Substitute"]);
+			Substitute(header, addlist);
 		}
 		result = DoFinalPutAny("HTTPHeader", header, ctx);
 	}
@@ -110,5 +115,19 @@ void HTTPMimeHeaderMapper::AddHeaders(Anything &header, ROAnything &addlist)
 		key.ToLower();
 		// overwrite, if existing
 		header[key] = hdr;
+	}
+}
+
+void HTTPMimeHeaderMapper::Substitute(Anything &header, ROAnything &addlist)
+{
+	StartTrace(HTTPMimeHeaderMapper.Substitute);
+	String key = addlist["Key"].AsString();
+	String pattern = addlist["Pattern"].AsString();
+	String replacement = addlist["Replacement"].AsString();
+	RE substRegex(pattern, RE::MATCH_ICASE);
+	for (int i = 0; i < header.GetSize(); i++) {
+		if (header.SlotName(i) == key) {
+			header[i] = substRegex.Subst(header[i].AsString(), replacement);
+		}
 	}
 }
