@@ -15,12 +15,9 @@
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
-#include <cstring>
 #if !defined(WIN32)
 #include <ctype.h>
-#endif
-#if defined(__SUNPRO_CC)
-#include <strings.h>
+#include <string.h>
 #endif
 
 //---- URL utilities
@@ -28,7 +25,7 @@
 static void Convert(String &str)
 {
 	if (str.Length() > 0) {
-		for (long l = 0; l < str.Length(); ++l) {
+		for (long l = 0; l < str.Length(); l++) {
 			if (str[l] == '+') {
 				str.PutAt(l, ' ');
 			}
@@ -48,7 +45,7 @@ void URLUtils::Pair(const char *buf, char delim, Anything &any, NormalizeTag nor
 			char *pclean = (char *)p;
 			if ( *pclean == '"' || *pclean == '\'') {
 				pclean[strlen(p)-1] = '\0';
-				++p;
+				p++;
 			}
 			Normalize(key, normKey);
 
@@ -110,12 +107,12 @@ void URLUtils::DecodeAll(Anything &a)
 	String str;
 	Anything at;
 
-	for (long i = 0, sz = a.GetSize(); i < sz; ++i) {
+	for (long i = 0; i < a.GetSize(); i++) {
 		at = a[i];
-		if ( at.GetType() == AnyCharPtrType ) {
+		if ( at.GetType() == Anything::eCharPtr ) {
 			str = at.AsCharPtr("");
 			a[i] = URLUtils::urlDecode(str);
-		} else if ( at.GetType() == AnyArrayType ) {
+		} else if ( at.GetType() == Anything::eArray ) {
 			DecodeAll(at);
 		}
 	}
@@ -171,7 +168,7 @@ String URLUtils::HTMLDecode(const String &instr)
 	String res, str(instr);
 	long length(str.Length());
 	if (length > 0) {
-		for (long lPos = 0; lPos < length; ++lPos) {
+		for (long lPos = 0; lPos < length; lPos++) {
 			DecodeSpecialHTMLChars(str, res, lPos);
 		}
 	}
@@ -287,6 +284,7 @@ String URLUtils::urlDecode(const String &instr, bool replacePlusByBlank)
 	StartTrace(URLUtils.urlDecode);
 	URLUtils::URLCheckStatus eUrlCheckStatus;
 	return urlDecode(instr, eUrlCheckStatus, replacePlusByBlank);
+
 }
 
 // decodes the given string into res by expanding %XX and %uXXXXX escapes
@@ -305,7 +303,7 @@ String URLUtils::urlDecode(const String &instr, URLUtils::URLCheckStatus &eUrlCh
 	char c ;		// current character
 	long length(str.Length());
 	if (length > 0) {
-		for (long lPos = 0; lPos < length; ++lPos) {
+		for (long lPos = 0; lPos < length; lPos++) {
 			if ((c = str[lPos]) == '%') {
 				// Escape: next 5 chars are %uxxxx representation of the actual character
 				if ( (c = str[lPos]) == '%' && ((lPos + 1L < length) && (str[lPos+1L] == 'u' ||  str[lPos+1L] == 'U')) ) {
@@ -358,161 +356,102 @@ char URLUtils::DecodeSpecialChars(const String &str, char c, long &lPos, long of
 	return c;
 }
 
-String URLUtils::urlEncode(const String &str, const String exclusionSet)
+// encode the given char *p into res by expanding problematic characters into %XX escapes
+String URLUtils::urlEncode(const String &str)
 {
 	StartTrace(URLUtils.urlEncode);
-	String encoded;
-	DoUrlEncode(str, exclusionSet, encoded, false);
-	return encoded;
-}
+	String result;
+	char c;
 
-bool URLUtils::CheckUrlEncoding(const String &str, const String exclusionSet)
-{
-	StartTrace(URLUtils.CheckUrlEncoding);
-	String encoded;
-	String exclusionSetModified(exclusionSet);
-	exclusionSetModified.Append("%;?/");
-	return DoUrlEncode(str, exclusionSetModified, encoded, true);
+	if (str.Length() > 0) {
+		for (long l = 0; l < str.Length(); l++) {
+			switch (c = str[l]) {
+				case '\n':
+					break;
+				case ' ':
+				case '"':
+				case '%':
+				case '&':
+				case '?':
+				case '/':
+				case '\\':
+				case '#':
+				case '{':
+				case '}':
+				case '+':
+				case '=':
+					result.Append('%');
+					result.AppendAsHex(c);
+					break;
+				default:
+					result.Append(c);
+					break;
+			}
+		}
+	}
+	return result;
 }
 
 // encode the given char *p into res by expanding problematic characters into %XX escapes
-bool URLUtils::DoUrlEncode(const String &str, const String exclusionSet, String &encoded, bool doCheck)
+// encode all chars except a-Z, 0-9,  the RFC1808 safe "$-_.+" ones and the chars passed in
+// the exclusion set
+String URLUtils::urlEncode(const String &str, String &exclusionSet)
 {
-	StartTrace(URLUtils.DoUrlEncode);
+	StartTrace(URLUtils.urlEncode);
+	String result;
 	char c;
 
-	// encoding scheme for HTTP (RFC1738):
-	//	httpurl        = "http://" hostport [ "/" hpath [ "?" search ]]
-	//	hpath          = hsegment *[ "/" hsegment ]
-	//	hsegment       = *[ uchar | ";" | ":" | "@" | "&" | "=" ]
-	//	>> hsegment    = *[ "a-zA-Z0-9$-_.+!*'(),;:@&=" ]	// satisfy sniffparser '
-	// superseeding as of RFC1808:
-	//		URL         = ( absoluteURL | relativeURL ) [ "#" fragment ]
-	//
-	//		absoluteURL = generic-RL | ( scheme ":" *( uchar | reserved ) )
-	//
-	//		generic-RL  = scheme ":" relativeURL
-	//
-	//		relativeURL = net_path | abs_path | rel_path
-	//
-	//		net_path    = "//" net_loc [ abs_path ]
-	//		abs_path    = "/"  rel_path
-	//		rel_path    = [ path ] [ ";" params ] [ "?" query ]
-	//		path        = fsegment *( "/" segment )
-	//		fsegment    = 1*pchar					// 1* means: '1 or more characters of'
-	//		segment     =  *pchar
-	//
-	//		params      = param *( ";" param )
-	//		param       = *( pchar | "/" )
-	//
-	//		scheme      = 1*( alpha | digit | "+" | "-" | "." )
-	//		net_loc     =  *( pchar | ";" | "?" )
-	//		query       =  *( uchar | reserved )
-	//		fragment    =  *( uchar | reserved )
-	//
-	//	this leads to a (f)segment: ';' is omitted compared to hsegment
-	//	>> (f)segment   = *[ "a-zA-Z0-9$-_.+!*'(),:@&=" ]	// satisfy sniffparser '
-
-	//	search         = *[ uchar | ";" | ":" | "@" | "&" | "=" ]
-	//	lowalpha       = "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" |
-	//					 "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" |
-	//					 "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" |
-	//					 "y" | "z"
-	//	hialpha        = "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" |
-	//					 "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" |
-	//					 "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z"
-	//
-	//	alpha          = lowalpha | hialpha
-	//	digit          = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" |
-	//					 "8" | "9"
-	//	safe           = "$" | "-" | "_" | "." | "+"
-	//	extra          = "!" | "*" | "'" | "(" | ")" | ","
-	//	national       = "{" | "}" | "|" | "\" | "^" | "~" | "[" | "]" | "`"
-	//	punctuation    = "<" | ">" | "#" | "%" | <">
-	//
-	//	reserved       = ";" | "/" | "?" | ":" | "@" | "&" | "="
-	//	hex            = digit | "A" | "B" | "C" | "D" | "E" | "F" |
-	//					 "a" | "b" | "c" | "d" | "e" | "f"
-	//	escape         = "%" hex hex
-	//
-	//	unreserved     = alpha | digit | safe | extra
-	//	uchar          = unreserved | escape
-	//	>> uchar       = "a-zA-Z0-9$-_.+!*'(),"		// satisfy sniffparser '
-	//	pchar          = uchar | ":" | "@" | "&" | "="
-	//	>> pchar       = "a-zA-Z0-9$-_.+!*'(),:@&="		// satisfy sniffparser '
-
-	// characters which always need escaping: 0x00-0x1F, 0x7F-0xFF
-	// to be escaped too: "<>\"#%{}|\\^~[]`"
-	// for path encoding we need to escape "?;" too
+	// check for a-Z
 	if (str.Length() > 0) {
-		for (long l = 0, sz = str.Length(); l < sz; ++l) {
-			c = str[l];
-			unsigned int ui = c;
-			if ( ui <= 0x20 ||
-				 ui >= 0x7F ||
-				 ui == '"'  ||
-				 ui == '#'  ||
-				 ui == '%'  ||
-				 ui == ';'  ||
-				 ui == '<'  ||
-				 ui == '>'  ||
-				 ui == '?'  ||
-				 ui == '['  ||
-				 ui == '\\' ||
-				 ui == ']'  ||
-				 ui == '^'  ||
-				 ui == '`'  ||
-				 ui == '{'  ||
-				 ui == '/'  ||
-				 ui == '}'  ||
-				 ui == '~'
-			   ) {
-				if ( (exclusionSet.StrChr(c) == -1L) ) {
-					if ( doCheck ) {
-						Trace("failed at character [" << c << "]");
-						return false;
-					}
-					encoded.Append('%');
-					encoded.AppendAsHex(c);
-					continue;
-				}
+		for (long l = 0; l < str.Length(); l++) {
+			unsigned int ui  = c = str[l];
+			if ( (ui >= 65 && ui <= 90)   || // A-Z
+				 (ui >= 97 && ui <= 122)  || // a-z
+				 (ui >= 48 && ui <= 57)   || // 0-9
+				 c == '$' ||				// RFC1808 safe chars
+				 c == '-' ||
+				 c == '_' ||
+				 c == '.' ||
+				 c == '+'  ) {
+				result.Append(c);
+				continue;
 			}
-			encoded.Append(c);
+			if (exclusionSet.StrChr(c) != -1L ) {
+				result.Append(c);
+				continue;
+			}
+			if (c != '\n') {		// possible vulnerability: fake header fields
+				result.Append('%');
+				result.AppendAsHex(c);
+			}
 		}
 	}
-	Trace("Result: " << encoded << " ExclusionSet: " << exclusionSet);
-	return true;
+	Trace("Result: " << result << " ExclusionSet: " << exclusionSet);
+	return result;
 }
 
-// Check URL for chars which should be encoded according to RFC1808
-bool URLUtils::CheckUrlArgEncoding(String &str, const String override)
+// Check URL for chars which should be encoded according to RF1808
+bool URLUtils::CheckUrlEncoding(String &str)
 {
-	StartTrace(URLUtils.CheckUrlArgEncoding);
-	String base("ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-				"abcdefghijklmnopqrstuvwxyz"
-				"0123456789");
-	String overrideDefault("%;/?:@&=$-_.+!*'(),");
-	if (override.Length() == 0L) {
-		base.Append(overrideDefault);
-	} else {
-		base.Append(override);
-	}
-	return (str.LastCharOf(base) == str.Length() ||
+	StartTrace(URLUtils.CheckUrlEncoding);
+	return (str.LastCharOf("ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+						   "abcdefghijklmnopqrstuvwxyz"
+						   "0123456789"
+						   "$-_.+"
+						   "/?%") == str.Length() ||
 			str.Length() == 0);
 }
 
-// Check URL contains only valid chars according to RFC1738
-bool URLUtils::CheckUrlPathContainsUnsafeChars(String &str, const String overrideUnsafe, const String overrideAscii, bool asciiExtended)
+// Check URL for chars which should be encoded according to RF1808
+bool URLUtils::CheckUrlArgEncoding(String &str)
 {
-	StartTrace(URLUtils.CheckUrlPathContainsUnsafeChars);
-	String base("<>\"#%{}|\\^~[]`");
-	if ( overrideUnsafe.Length() > 0L ) {
-		base = overrideUnsafe;
-	}
-	bool containsExtendedAscii = ( asciiExtended && (str.ContainsCharAbove(127, overrideAscii) != -1L));
-	bool containsUnsaveChar = (str.FirstCharOf(base) != -1L);
-	Trace ("containsExtendedAscii: " << containsExtendedAscii << " containsUnsaveChar: " << containsUnsaveChar);
-	return ( containsUnsaveChar || containsExtendedAscii);
+	StartTrace(URLUtils.CheckUrlArgEncoding);
+	return (str.LastCharOf("ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+						   "abcdefghijklmnopqrstuvwxyz"
+						   "0123456789"
+						   "$-_.+"
+						   "/%=&") == str.Length() ||
+			str.Length() == 0);
 }
 
 void URLUtils::HandleURI(Anything &query, const String &uri)
@@ -546,7 +485,7 @@ void URLUtils::HandleURI(Anything &query, const String &uri)
 		Anything queryInfo;
 		URLUtils::Split( queryString, '&', queryInfo);
 		URLUtils::DecodeAll(queryInfo);
-		for (long i = 0, sz = queryInfo.GetSize(); i < sz; ++i) {
+		for (long i = 0; i < queryInfo.GetSize(); i++) {
 			const char *slot = queryInfo.SlotName(i);
 			if ( slot ) {
 				query[slot] = queryInfo[i];
@@ -598,7 +537,7 @@ void URLUtils::HandleURI2(Anything &query, const String &currentUri, const char 
 	// In the absence of a BASE element the document URL should be used. Note that this is not necessarily the same as the URL used to request the document, as the base URL may be overridden by an HTTP header accompanying the document.
 	//
 	// Mike: baseHREF must always be a full URI, if not what do browsers do? ignore it??
-	// That´s what we do here
+	// Thatï¿½s what we do here
 	//--------------------------------------------------------------------------------------
 	if ( baseHREF.Length() > 0 ) {
 
@@ -715,14 +654,16 @@ void URLUtils::HandleURI2(Anything &query, const String &currentUri, const char 
 
 String URLUtils::EncodeFormContent(Anything &kVPairs )
 {
+
 	StartTrace(URLUtils.EncodeFormContent);
 	TraceAny( kVPairs, "input key value pairs" );
 
 	String localString = "";
-	int i, sz;
-	for (i = 0, sz = kVPairs.GetSize() - 1; i < sz; ++i ) {
+	int i;
+
+	for (i = 0; i < kVPairs.GetSize() - 1; i++ ) {
 		Trace( "localString->" << localString );
-		localString << kVPairs.SlotName(i) << "=" << kVPairs[i].AsString("") << "&";
+		localString << kVPairs.SlotName(i) << "=" <<  kVPairs[i].AsString("") << "&";
 	}
 	localString << kVPairs.SlotName(i) << "=" <<  kVPairs[i].AsString("");
 	Trace( "localStringEND->" << localString );
@@ -745,7 +686,7 @@ void URLUtils::TrimChars(String &str, bool front, char c)
 	if ( front ) {
 		at = 0;
 		while ( c == str[at] ) {
-			++at;
+			at++;
 		}
 		if (at) {
 			str.TrimFront(at);
@@ -753,7 +694,7 @@ void URLUtils::TrimChars(String &str, bool front, char c)
 	} else {
 		at = str.Length() - 1;
 		while ( c == str[at] ) {
-			--at;
+			at--;
 		}
 		if (at != (str.Length() - 1)) {
 			str.Trim(at + 1);
@@ -768,7 +709,7 @@ String URLUtils::HTMLEscape(const String &toEscape)
 	String escPostfix(";");
 	String escapedString;
 	long length(toEscape.Length());
-	for (long i = 0; i < length; ++i ) {
+	for (long i = 0; i < length; i ++ ) {
 		unsigned int work = (unsigned char) toEscape[i];
 		if ( isalnum(work) ) {
 			escapedString.Append((char) work);
