@@ -430,7 +430,6 @@ String RE::Subst(const String &substituteIn, const String &substitution, bool re
 	while (pos < len && ContainedIn(substituteIn, pos)) {
 		ret.Append(substituteIn.SubString(pos, GetStartRegister(0) - pos));
 		ret.Append(substitution);
-		std::cout << "****************************ret:" << std::endl << ret << std::endl << "********************************" << std::endl;
 		long newpos = GetEndRegister(0);
 		if (newpos == pos) {
 			++newpos;
@@ -441,7 +440,6 @@ String RE::Subst(const String &substituteIn, const String &substitution, bool re
 		}
 	}
 	if (pos < len) {
-		std::cout << "####" << substituteIn.SubString(pos) << "###" << std::endl;
 		ret.Append(substituteIn.SubString(pos));
 	}
 	Trace("result:" << ret);
