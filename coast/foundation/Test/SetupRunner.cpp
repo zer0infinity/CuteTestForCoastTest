@@ -18,6 +18,7 @@
 #include "AcceptorTest.h"
 #include "ConnectorTest.h"
 #include "StringTest.h"
+#include "StringTestExtreme.h"
 #include "StringTokenizerTest.h"
 #include "StringTokenizer2Test.h"
 #include "ParserTest.h"
@@ -99,4 +100,5 @@ void setupRunner(TestRunner &runner)
 	// put last since cirtical system paths are manipulated that may
 	// affect proper operation of other tests
 	ADD_SUITE(runner, SystemTest);
+	ADD_SUITE(runner, StringTestExtreme);
 } // setupRunner
