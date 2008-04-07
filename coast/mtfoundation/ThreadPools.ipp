@@ -22,30 +22,12 @@ bool WorkerPoolManager::Enter( WorkerParamType workload, long lFindWorkerHint )
 	// we're doing flow control on the main thread
 	// causing it to wait for a request thread to
 	// be available
-
 	LockUnlockEntry me(fMutex);
 	StartTrace1(WorkerPoolManager.Enter, "hint: " << lFindWorkerHint);
-	long lCurrRequests( fpStatEvtHandler->GetCurrentParallelRequests() );
-	while ( ( fPoolSize <= lCurrRequests ) || fBlockRequestHandling ) {
-		fCond.TimedWait( fMutex, 0, 1000 );		// release mutex and wait for condition
-		lCurrRequests = fpStatEvtHandler->GetCurrentParallelRequests();
-	}
-
-	Assert( fPoolSize > lCurrRequests );
-	Trace("I slipped past the Critical Region and there are " << lCurrRequests << " requests in work");
-
-	// use the lFindWorkerHint param as hint to get the next free WorkerThread
-	if ( lFindWorkerHint < 0 ) {
-		Trace("no hint given, selecting next available worker");
-		lFindWorkerHint = ( lCurrRequests + 1L ) % fPoolSize;
-	} else {
-		Trace("worker hint given: " << lFindWorkerHint << " which results in worker at index: " << ( lFindWorkerHint % fPoolSize ) );
-		lFindWorkerHint = lFindWorkerHint % fPoolSize;
-	}
 	bool bEnterSuccess( false );
 	// find a worker object that can run this request
-	WorkerThread *hr = FindNextRunnable( lFindWorkerHint );
-	if ( hr ) {
+	WorkerThread *hr( FindNextRunnable( lFindWorkerHint ) );
+	if ( hr != NULL ) {
 		bEnterSuccess = hr->SetWorking(workload);
 	}
 	return bEnterSuccess;

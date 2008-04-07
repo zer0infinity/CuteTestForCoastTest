@@ -25,8 +25,8 @@ using namespace std;
 //---- ThreadPoolManager ---------------------------------------------------------
 ThreadPoolManager::ThreadPoolManager(const char *name)
 	: fTerminated(true)
-	, fName( name )
 	, fMutex( name, Storage::Global() )
+	, fName( name, Storage::Global() )
 	, fRunningThreads(0L)
 	, fStartedThreads(0L)
 	, fTerminatedThreads(0L)
@@ -411,10 +411,10 @@ void WorkerThread::DoReadyHook(ROAnything)
 
 //---- WorkerPoolManager ------------------------------------------------
 WorkerPoolManager::WorkerPoolManager(const char *name)
-	: fPoolSize(0)
+	: fMutex( name, Storage::Global() )
+	, fName( name, Storage::Global() )
+	, fPoolSize(0)
 	, fBlockRequestHandling(false)
-	, fMutex(name)
-	, fName(name)
 	, fpStatEvtHandler()
 {
 	StartTrace(WorkerPoolManager.Ctor);
@@ -627,10 +627,27 @@ bool WorkerPoolManager::AwaitEmpty(long sec)
 
 WorkerThread *WorkerPoolManager::FindNextRunnable(long lFindWorkerHint)
 {
+	StartTrace(WorkerPoolManager.FindNextRunnable);
 	// at least one should be runnable, since the semaphore prevents the main thread from entering
 	// this code when no slot is empty;
 	WorkerThread *hs( NULL );
 	bool bIsReady( false );
+	long lCurrRequests( fpStatEvtHandler->GetCurrentParallelRequests() );
+	while ( ( GetPoolSize() <= lCurrRequests ) || fBlockRequestHandling ) {
+		// release mutex and wait for condition
+		fCond.TimedWait( fMutex, 0, 100000 );
+		lCurrRequests = fpStatEvtHandler->GetCurrentParallelRequests();
+	}
+	Assert( GetPoolSize() > lCurrRequests );
+	Trace("I slipped past the Critical Region and there are " << lCurrRequests << " requests in work and " << ( GetPoolSize() - lCurrRequests ) << " free workers");
+	// use the lFindWorkerHint param as hint to get the next free WorkerThread
+	if ( lFindWorkerHint < 0 ) {
+		Trace("no hint given, selecting next available worker");
+		lFindWorkerHint = ( lCurrRequests + 1L ) % GetPoolSize();
+	} else {
+		Trace("worker hint given: " << lFindWorkerHint << " which results in worker at index: " << ( lFindWorkerHint % fPoolSize ) );
+		lFindWorkerHint = lFindWorkerHint % GetPoolSize();
+	}
 	while ( ( hs = DoGetWorker( lFindWorkerHint ) ) ) {
 		if ( hs->IsReady( bIsReady ) && bIsReady ) {
 			StatTrace( WorkerPoolManager.FindNextRunnable, "ready worker[" << lFindWorkerHint << "] found", Storage::Current() );
