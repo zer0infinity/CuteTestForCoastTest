@@ -141,14 +141,15 @@ protected:
 	/*! terminated flag is true after the pool was initialized using the Init-function until the Terminate function was called */
 	bool fTerminated;
 
-private:
-	//!string containing the PoolManagers name
-	String fName;
-
+protected:
 	//! guard for synchronisation
 	SimpleMutex fMutex;
 	//! condition for synchronisation
 	SimpleMutex::ConditionType fCond;
+
+private:
+	//!string containing the PoolManagers name
+	String fName;
 
 	//! counts the still running threads
 	long fRunningThreads;
@@ -322,6 +323,7 @@ it uses a semaphore which is set by the parameter numMaxParallelRequests
 see SamplePoolManager for an example on how to use this class */
 class EXPORTDECL_MTFOUNDATION WorkerPoolManager : public StatGatherer, public Observable<Thread, ROAnything>::Observer
 {
+protected:
 	typedef Observable<Thread, ROAnything> tBaseClass;
 	typedef tBaseClass::tObservedPtr tObservedPtr;
 	typedef tBaseClass::tArgsRef tArgsRef;
@@ -414,19 +416,21 @@ protected:
 		\return the next available WorkerThread */
 	virtual WorkerThread *FindNextRunnable(long lFindWorkerHint);
 
+protected:
+	//!mutex guarding access to this objects variables
+	SimpleMutex fMutex;
+	//!condition synchronizing the use of the worker pool
+	SimpleMutex::ConditionType fCond;
+
 private:
+	//!string containing the PoolManagers name
+	String fName;
 	//! number of allowed request threads that can run in parallel
 	long fPoolSize;
 	//! flag to control request handling on demand by admin server
 	bool fBlockRequestHandling;
 	//!termination flag
 	bool fTerminated;
-	//!condition synchronizing the use of the worker pool
-	Mutex::ConditionType fCond;
-	//!mutex guarding access to this objects variables
-	Mutex fMutex;
-	//!string containing the PoolManagers name
-	String fName;
 
 	typedef std::auto_ptr<StatEvtHandler> StatEvtHandlerPtrType;
 
