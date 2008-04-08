@@ -159,6 +159,9 @@ TimeStamp ComputeDateRenderer::ConvertToTimeStamp(const String &strFromDate, con
 			}
 			lDtIdx += 2;
 			strInFmt.TrimFront(2);
+		} else if ( strInFmt[0L] == 'X' ) {
+			++lDtIdx;
+			strInFmt.TrimFront(1);
 		} else {
 			// unrecognized (specifier) character, check if we have to skip it in the date string too
 			while ( strFromDate[lDtIdx] == strInFmt[0L] ) {

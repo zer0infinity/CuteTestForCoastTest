@@ -27,10 +27,10 @@ class TimeStamp;
 											* bbb 	for month as English abbreviated month name
 											* YY 	for year without century as decimal number, assume values above or equal 70 to be in century 19, others in century 20
 											* YYYY 	for year with century as decimal number
-											* HH for hour (24-hour clock) as decimal number
-											*    or
-											* MM for minute as decimal number
-											* SS for second as decimal number
+											* HH 	for hour (24-hour clock) as decimal number
+											* MM 	for minute as decimal number
+											* SS 	for second as decimal number
+											* X		skip any character at given position
 											* pp for hour (12-hour clock) 'am' or 'pm'
 											* -------------yy still to be implemented
 											returns this time in seconds (can be used as input for DateRenderer)
@@ -58,6 +58,12 @@ Example 4:
 {
 	/FromDate					"Feb 01 2002 12:05:02AM"
 	/InputFormat				"bbb dd YYYY HH:MM:SSpp"
+}</pre>
+Example 5:
+<pre>
+{
+	/FromDate					"Feb 01 2002 12:05:02:213AM"
+	/InputFormat				"bbb dd YYYY HH:MM:SS:XXXpp"
 }</pre>
 The follow features are missing :
 Just the operators "+", "-" and Offset
