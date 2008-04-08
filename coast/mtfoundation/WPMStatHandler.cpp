@@ -15,6 +15,8 @@
 #include "SysLog.h"
 #include "Dbg.h"
 
+static const ul_long ullResolution = 1000000ULL;
+
 //---- WPMStatHandler ----------------------------------------------------------------
 WPMStatHandler::WPMStatHandler(long poolSize)
 	: StatEvtHandler()
@@ -23,7 +25,7 @@ WPMStatHandler::WPMStatHandler(long poolSize)
 	, fCurrentParallelRequests(0)
 	, fTotalRequests(0)
 	, fTotalTime(0)
-	, fTimer()
+	, fTimer( ullResolution )
 	, fMutex( "WPMStatHandler", Storage::Global() )
 {
 	StartTrace(WPMStatHandler.Ctor);
@@ -74,10 +76,20 @@ void WPMStatHandler::DoStatistic(Anything &statElements)
 	statElements["PoolSize"] = fPoolSize;
 	statElements["CurrentParallelRequests"] = fCurrentParallelRequests;
 	statElements["MaxParallelRequests"] = fMaxParallelRequests;
-	statElements["TotalRequests"] = fTotalRequests;
-	statElements["TotalTime"] = fTotalTime;
-	statElements["AverageTime"] = fTotalTime / ((fTotalRequests) ? fTotalRequests : 1);
-	statElements["TRX/sec"] = 1000 * fTotalRequests / ((fTotalTime) ? fTotalTime : 1);
+	statElements["TotalRequests"] = (long)fTotalRequests;
+	// scale to milliseconds
+	statElements["TotalTime"] = (long)( fTotalTime / 1000ULL );
+	// beware of wrong scaling
+	long lScaled( 0L );
+	ul_long ulTotTime( fTotalTime ? fTotalTime : 1ULL ), ulTotReq( fTotalRequests ? fTotalRequests : 1ULL );
+	// scale to milliseconds
+	statElements["AverageTime"] = (long)( fTotalTime / ulTotReq / 1000ULL );
+	if ( fTotalRequests < ulTotTime ) {
+		lScaled = (long)( ( ullResolution * fTotalRequests ) / ulTotTime );
+	} else {
+		lScaled = (long)( ullResolution * ( fTotalRequests / ulTotTime ) );
+	}
+	statElements["TRX/sec"] = lScaled;
 	TraceAny(statElements, "statElements");
 }
 

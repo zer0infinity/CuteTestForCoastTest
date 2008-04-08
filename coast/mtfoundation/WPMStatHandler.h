@@ -45,9 +45,9 @@ private:
 	//! number of currently running requests
 	long fCurrentParallelRequests;
 	//! number of total requests serviced
-	long fTotalRequests;
+	ul_long fTotalRequests;
 	//! number of ms used to service the fTotalRequests
-	long fTotalTime;
+	ul_long fTotalTime;
 	//!timer to measure elapsed time during processing of requests
 	DiffTimer fTimer;
 	//!guard for setting values
