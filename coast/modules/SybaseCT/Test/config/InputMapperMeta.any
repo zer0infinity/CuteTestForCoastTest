@@ -170,31 +170,16 @@
 		/SybDBResultFormat	TitlesOnce
 	}
 	/SybTestThreadDA {
-		/SybDBUser  webgui
-		/SybDBPW	webgui
-		/SybDBHost	FKIS_QA
+		/SybDBUser  "wdtester"
+		/SybDBPW	"all2test"
+		/SybDBHost	HIKU_INT2
 		/SQL
 		{
 			/RendererMapper
 			{
-				" SELECT dla.dla_nr, vpo.vtr_nr, vpo.vpo_nr, usr.usr_name,  "
-				" convert(varchar(11), anz.anz_dateroe, 106) anz_dateroe, "
-				" convert(varchar(11), anz.anz_datgesch, 106) anz_datgesch, usr.prt_kun, "
-				" usr.prt_stao, anz.anz_nr, anz.trn_nrzu, anz.trn_nrab  "
-				" ,vpo.vpo_eroeart, vpo.vpo_kdgart"
-				" FROM USERS usr, ANSCHLUSSZU anz, VERTRAGSPOSITION vpo, DIENSTLEISTUNG dla  "
-				" WHERE (1=1)  "
-				" AND usr.usr_name = 'tksik' "
-				" AND usr.mnd_land = 'CH' "
-				" AND usr.prt_kun = 10601 "
-				" AND anz.mnd_land = usr.mnd_land "
-				" AND anz.ans_code = usr.usr_name  "
-				" AND anz.prt_kun = usr.prt_kun  "
-				" AND vpo.mnd_land = anz.mnd_land  "
-				" AND vpo.vtr_nr = anz.vtr_nr  "
-				" AND vpo.vpo_nr = anz.vpo_nr  "
-				" AND dla.dla_nr = vpo.dla_nr  "
-				" ORDER BY usr.usr_name"
+				"select * from salesdetail "
+				" where title_id like \"BU%\""
+				" order by ord_num asc"
 			}
 		}
 	}
@@ -205,24 +190,9 @@
 		{
 			/RendererMapper
 			{
-				" SELECT dla.dla_nr, vpo.vtr_nr, vpo.vpo_nr, usr.usr_name,  "
-				" convert(varchar(11), anz.anz_dateroe, 106) anz_dateroe, "
-				" convert(varchar(11), anz.anz_datgesch, 106) anz_datgesch, usr.prt_kun, "
-				" usr.prt_stao, anz.anz_nr, anz.trn_nrzu, anz.trn_nrab  "
-				" ,vpo.vpo_eroeart, vpo.vpo_kdgart"
-				" FROM USERS usr, ANSCHLUSSZU anz, VERTRAGSPOSITION vpo, DIENSTLEISTUNG dla  "
-				" WHERE (1=1)  "
-				" AND usr.usr_name = 'tksik' "
-				" AND usr.mnd_land = 'CH' "
-				" AND usr.prt_kun = "
-				" AND anz.mnd_land = usr.mnd_land "
-				" AND anz.ans_code = usr.usr_name  "
-				" AND anz.prt_kun = usr.prt_kun  "
-				" AND vpo.mnd_land = anz.mnd_land  "
-				" AND vpo.vtr_nr = anz.vtr_nr  "
-				" AND vpo.vpo_nr = anz.vpo_nr  "
-				" AND dla.dla_nr = vpo.dla_nr  "
-				" ORDER BY usr.usr_name"
+				"select * from salesdetail "
+				" where title_id = "
+				" order by ord_num asc"
 			}
 		}
 	}

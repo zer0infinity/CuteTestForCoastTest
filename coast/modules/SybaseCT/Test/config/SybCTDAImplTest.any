@@ -47,10 +47,6 @@
 				/ParallelQueries	5
 				/InterfacesPathName	"config/interfaces.any"
 			}
-			/FKIS_QA {
-				/ParallelQueries	20
-				/InterfacesPathName	"config/interfaces.any"
-			}
 		}
 	}
 

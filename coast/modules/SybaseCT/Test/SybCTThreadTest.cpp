@@ -80,7 +80,7 @@ void SybCTThreadTest::Run(long id, const char *goodDAName, const char *failDANam
 		RequestTimeLogger(ctx);
 
 		Anything tmpStore = ctx.GetTmpStore();
-		t_assertm(tmpStore[goodDAName]["QueryResult"].GetSize() > 40, goodDAName);
+		assertComparem(30L, less_equal, tmpStore[goodDAName]["QueryResult"].GetSize(), goodDAName);
 
 		DataAccess da2(failDAName);
 		t_assertm( !da2.StdExec(ctx), TString(failDAName) << " expected test to fail because of SQL syntax error");

@@ -1,7 +1,3 @@
-FKIS_QA
-    query tcp ether svzqfkis01 4500
-    master tcp ether svzqfkis01 4500
-
 HIKU_INT2
         master tcp ether bondo 3337
         query  tcp ether bondo 3337
