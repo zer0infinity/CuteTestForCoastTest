@@ -109,7 +109,7 @@ protected:
 	//--- subclass api
 	void	Warning(DaParams &params, String str);
 	void	Error(DaParams &params, String str);
-	CS_RETCODE	DoFetchData(DaParams &params, CS_COMMAND *cmd, const CS_INT res_type, const String &resultformat, const long lMaxResultSize, const long lParMaxRows);
+	CS_RETCODE	DoFetchData(DaParams &params, CS_COMMAND *cmd, const CS_INT res_type, const String &resultformat, const long lMaxResultSize, const long lParMaxRows, long &lRowsReceived);
 	CS_INT 		DisplayDlen(CS_DATAFMT *column);
 	bool	DoFillResults(DaParams &params, CS_INT totalrows, CS_INT numrows, CS_INT numcols, CS_DATAFMT *colfmt, EX_COLUMN_DATA *coldata, bool bTitlesOnce );
 	static bool IntGetConProps(CS_CONNECTION *connection, CS_INT property, CS_VOID **propvalue, CS_INT propsize);
@@ -123,7 +123,7 @@ private:
 	//--- private class api
 
 	//--- private member variables
-	static Mutex	fgSybaseLocker;
+	static SimpleMutex fgSybaseLocker;
 
 	friend class SybCTnewDATest;
 	friend CS_RETCODE SybCTnewDA_csmsg_handler(CS_CONTEXT *context, CS_CLIENTMSG *errmsg);

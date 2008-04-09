@@ -28,7 +28,7 @@
 #include <cstring>
 
 //---- SybCTnewDA ----------------------------------------------------------------
-Mutex SybCTnewDA::fgSybaseLocker("SybaseLocker", Storage::Global());
+SimpleMutex SybCTnewDA::fgSybaseLocker("SybaseLocker", Storage::Global());
 
 CS_RETCODE SybCTnewDA_csmsg_handler(CS_CONTEXT *context, CS_CLIENTMSG *errmsg);
 CS_RETCODE SybCTnewDA_clientmsg_handler(CS_CONTEXT *context, CS_CONNECTION *connection, CS_CLIENTMSG *errmsg);
@@ -480,6 +480,7 @@ bool SybCTnewDA::SqlExec(DaParams &params, String query, String resultformat, co
 	// Process the results. Loop while ct_results() returns CS_SUCCEED.
 	CS_INT res_type;
 	CS_RETCODE	query_code = CS_SUCCEED;
+	long lRowsReceived( 0L );
 
 	retcode = ct_results(cmd, &res_type);
 	while ( retcode == CS_SUCCEED ) {
@@ -526,7 +527,7 @@ bool SybCTnewDA::SqlExec(DaParams &params, String query, String resultformat, co
 						Trace("CS_STATUS_RESULT");
 						break;
 				}
-				retcode = DoFetchData(params, cmd, res_type, resultformat, lMaxResultSize, lMaxRows);
+				retcode = DoFetchData(params, cmd, res_type, resultformat, lMaxResultSize, lMaxRows, lRowsReceived);
 				// abortion due to reached memory limit or given row count will be signalled using CS_MEM_ERROR
 				// catch this but do not result in failure because it was a programmers wish
 				if ( ( retcode == CS_MEM_ERROR ) && ( ( lMaxResultSize != 0L ) || ( lMaxRows != -1L ) ) ) {
@@ -601,7 +602,7 @@ bool SybCTnewDA::SqlExec(DaParams &params, String query, String resultformat, co
 	return (query_code == CS_SUCCEED);
 }
 
-CS_RETCODE SybCTnewDA::DoFetchData(DaParams &params, CS_COMMAND *cmd, const CS_INT res_type, const String &resultformat, const long lMaxResultSize, const long lParMaxRows)
+CS_RETCODE SybCTnewDA::DoFetchData(DaParams &params, CS_COMMAND *cmd, const CS_INT res_type, const String &resultformat, const long lMaxResultSize, const long lParMaxRows, long &lRowsReceived)
 {
 	StartTrace(SybCTnewDA.DoFetchData);
 	DAAccessTimer(SybCTnewDAImpl.DoFetchData, *(params.fpDAName), *(params.fpContext));
@@ -615,8 +616,7 @@ CS_RETCODE SybCTnewDA::DoFetchData(DaParams &params, CS_COMMAND *cmd, const CS_I
 	CS_CONNECTION	*connection;
 	CS_INT			rowsize;
 	CS_INT			num_rows;	// number of rows to get in a single fetch
-	CS_INT			lRowCount = 0;
-	long lMaxRows = 0;
+	long lMaxRows( 0L );
 
 	connection = (CS_CONNECTION *)NULL;
 	rowsize = 0;
@@ -799,7 +799,7 @@ CS_RETCODE SybCTnewDA::DoFetchData(DaParams &params, CS_COMMAND *cmd, const CS_I
 		while ( bGoOn && ( retcode == CS_SUCCEED || retcode == CS_ROW_FAIL ) ) {
 			// Check if we hit a recoverable error.
 			if (retcode == CS_ROW_FAIL) {
-				Error(params, String("DoFetchData: Error on row ") << (long)lRowCount << " (" << GetStringFromRetCode(retcode) << ")");
+				Error(params, String("DoFetchData: Error on row ") << (long)lRowsReceived << " (" << GetStringFromRetCode(retcode) << ")");
 			}
 
 			if ( res_type == CS_STATUS_RESULT ) {
@@ -809,27 +809,27 @@ CS_RETCODE SybCTnewDA::DoFetchData(DaParams &params, CS_COMMAND *cmd, const CS_I
 				params.fpOut->Put("SP_Retcode", strRetcode, *(params.fpContext));
 			} else {
 				// process all rows retrieved so far
-				bGoOn = DoFillResults(params, lRowCount, rows_read, num_cols, datafmt, coldata, bTitlesOnce );
+				bGoOn = DoFillResults(params, lRowsReceived, rows_read, num_cols, datafmt, coldata, bTitlesOnce );
+
+				// Increment our row count by the number of rows fetched and processed
+				lRowsReceived += rows_read;
 			}
 
-			// Increment our row count by the number of rows fetched and processed
-			lRowCount += rows_read;
-
 			// do we need to fetch more rows yet?
-			if ( ( (lRowCount + num_rows) > lMaxRows ) || !bGoOn ) {
+			if ( ( (lRowsReceived + num_rows) > lMaxRows ) || !bGoOn ) {
 				retcode = CS_MEM_ERROR;
 				break;
 			} else {
 				retcode = ct_fetch(cmd, CS_UNUSED, CS_UNUSED, CS_UNUSED, &rows_read);
 				Trace("number of rows fetched again: " << rows_read);
 			}
-			Trace(String() << (long)lRowCount << " rows read so far");
+			Trace(String() << (long)lRowsReceived << " rows read so far");
 		}
 		if ( res_type != CS_STATUS_RESULT ) {
-			bool bShowRowCount = true;
+			bool bShowRowCount( true );
 			params.fpIn->Get("ShowQueryCount", bShowRowCount, *(params.fpContext));
 			if ( bShowRowCount ) {
-				params.fpOut->Put("QueryCount", lRowCount, *(params.fpContext));
+				params.fpOut->Put("QueryCount", lRowsReceived, *(params.fpContext));
 			}
 		}
 	}
@@ -842,18 +842,18 @@ CS_RETCODE SybCTnewDA::DoFetchData(DaParams &params, CS_COMMAND *cmd, const CS_I
 	switch ((int)retcode) {
 		case CS_END_DATA:
 			// Everything went fine.
-			Trace("All done processing rows - total " << (long)lRowCount);
+			Trace("All done processing rows - total " << (long)lRowsReceived);
 			retcode = CS_SUCCEED;
 			break;
 
 		case CS_MEM_ERROR:
 			// early stop due to memory limitations
-			Trace("processed only " << (long)lRowCount << " rows");
+			Trace("processed only " << (long)lRowsReceived << " rows");
 			break;
 
 		case CS_FAIL:
 			// Something terrible happened.
-			if ((lRowCount + num_rows) > lMaxRows) {
+			if ((lRowsReceived + num_rows) > lMaxRows) {
 				Warning(params, String("DoFetchData: rows limited due to memory limit (") << lMaxResultSize << " kB)");
 				break;
 			}
@@ -1045,7 +1045,6 @@ bool SybCTnewDA::GetMessageAny(CS_CONTEXT *context, Anything **anyMessage)
 	if (retcode != CS_SUCCEED) {
 		SYSERROR("cs_config(CS_GET CS_USERDATA) failed (" << GetStringFromRetCode(retcode) << ")");
 	}
-
 	return (retcode == CS_SUCCEED);
 }
 
