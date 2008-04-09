@@ -206,6 +206,7 @@ public:
 	//! cut (remove) characters from the end of the String, make it shorter
 	//! no-op if newlen >= Length()
 	void Trim(long newlen) ;
+	void TrimWhitespace();
 	//! ensure internal buffer contains at least minreserve characters
 	//! \post Capacity() >= minreserve
 	void Reserve(long minreserve) ;

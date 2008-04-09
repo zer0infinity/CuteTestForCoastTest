@@ -714,6 +714,17 @@ void String::Trim(long newlen)
 	}
 }
 
+void String::TrimWhitespace()
+{
+	while (At(0) == ' ' || At(0) == '\t') {
+		TrimFront(1);
+	}
+
+	while (At(Length() - 1) == ' ' || At(Length() - 1) == '\t') {
+		Trim(Length() - 1);
+	}
+}
+
 void String::Reserve(long minreserve)
 /* in: minreserve: minimal reserve (GetCapacity()-fLength) after this operation
  what: adjusts capacity such that at least minreserve bytes are available
