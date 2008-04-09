@@ -20,6 +20,7 @@ ConnectorParams::ConnectorParams(DataAccessImpl *master, Context &ctx) : fMaster
 {
 	// store away the servers ip address or dns name for later use
 	Anything tmpStore(fContext.GetTmpStore());
+	tmpStore["Backend"]["Name"] = Name();
 	tmpStore["Backend"]["Server"] = IPAddress();
 	tmpStore["Backend"]["Port"] = Port();
 	tmpStore["Backend"]["UseSSL"] = UseSSL();
@@ -27,6 +28,11 @@ ConnectorParams::ConnectorParams(DataAccessImpl *master, Context &ctx) : fMaster
 
 ConnectorParams::~ConnectorParams()
 {
+}
+
+String ConnectorParams::Name()
+{
+	return fContext.Lookup("CurrentServer.Name", fMaster->Lookup("Name", ""));
 }
 
 bool ConnectorParams::UseSSL()

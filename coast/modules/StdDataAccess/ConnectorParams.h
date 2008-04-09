@@ -22,6 +22,7 @@ public:
 	ConnectorParams(DataAccessImpl *master, Context &ctx);
 	virtual ~ConnectorParams();
 
+	virtual String Name();
 	virtual bool UseSSL();
 	virtual String IPAddress();
 	virtual long Port();
