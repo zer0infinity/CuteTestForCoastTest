@@ -62,6 +62,9 @@ bool HTTPMimeHeaderMapper::DoPutStream(const char *, istream &is, Context &ctx, 
 			ROAnything addlist(config["Substitute"]);
 			Substitute(header, addlist);
 		}
+		if (config["StoreCookies"].AsLong(0)) {
+			StoreCookies(header, ctx);
+		}
 		result = DoFinalPutAny("HTTPHeader", header, ctx);
 	}
 	return result && is.good();
@@ -130,4 +133,44 @@ void HTTPMimeHeaderMapper::Substitute(Anything &header, ROAnything &addlist)
 			header[i] = substRegex.Subst(header[i].AsString(), replacement);
 		}
 	}
+}
+
+void HTTPMimeHeaderMapper::StoreCookies(Anything &header, Context &ctx)
+{
+	StartTrace(HTTPMimeHeaderMapper.StoreCookies);
+
+	String backendName = ctx.GetTmpStore()["Backend"]["Name"].AsString();
+	String cookieEnd = ";";
+
+	for (int i = 0; i < header.GetSize(); i++) {
+		Trace("SlotName: " << header.SlotName(i));
+		if (String(header.SlotName(i)).IsEqual("set-cookie")) {
+			String cookie = header[i].AsString();
+			int pos = cookie.Contains(cookieEnd);
+			if (pos == -1) {
+				continue;
+			}
+			cookie = cookie.SubString(0, pos + 1);
+			int equalityPos = cookie.Contains("=");
+			String cookieName = cookie.SubString(0, equalityPos);
+			cookieName.TrimWhitespace();
+			Trace("cookieName: " << cookieName);
+			String cookieValue = cookie.SubString(equalityPos + 1, cookie.Length() - (equalityPos + 1) - 1);
+			cookieValue.TrimWhitespace();
+			Trace("cookieValue: " << cookieValue);
+
+			ctx.GetSessionStore()["StoredCookies"][backendName]["Structured"][cookieName] = cookieValue;
+		}
+	}
+
+	String cookies = "Cookie:";
+	for (int i = 0; i < ctx.GetSessionStore()["StoredCookies"][backendName]["Structured"].GetSize(); i++) {
+		cookies = cookies 	<< " "
+				  << ctx.GetSessionStore()["StoredCookies"][backendName]["Structured"].SlotName(i)
+				  << "=" << ctx.GetSessionStore()["StoredCookies"][backendName]["Structured"][i].AsString()
+				  << ";";
+	}
+
+	ctx.GetSessionStore()["StoredCookies"][backendName]["Plain"] = cookies;
+	TraceAny(ctx.GetSessionStore(), "SessionStore:")
 }
