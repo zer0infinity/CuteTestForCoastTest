@@ -9,7 +9,7 @@
 #ifndef _SybCTnewDAImpl_H
 #define _SybCTnewDAImpl_H
 
-//---- SybCTGenericDAImpl include -------------------------------------------------
+//---- SybCTnewDAImpl include -------------------------------------------------
 #include "config_sybasect.h"
 #include "DataAccessImpl.h"
 #include "Threads.h"
@@ -52,7 +52,7 @@ protected:
 	bool DoPrepareSQL(String &command, Context &ctx, ParameterMapper *in);
 
 	//: Helper method to report errors
-	static Mutex    fgStructureMutex;
+	static SimpleMutex fgStructureMutex;
 	static Anything fgListOfSybCT;
 	static Anything fgContextMessages;
 	static CS_CONTEXT *fg_cs_context;
@@ -61,6 +61,9 @@ protected:
 	static Semaphore *fgpResourcesSema;
 
 private:
+	static bool IntDoGetConnection(SybCTnewDA *&pSyb, bool &bIsOpen, const String &server, const String &user);
+	static void IntDoPutbackConnection(SybCTnewDA *&pSyb, bool bIsOpen, const String &server, const String &user);
+
 	//constructor
 	SybCTnewDAImpl();
 	SybCTnewDAImpl(const SybCTnewDAImpl &);

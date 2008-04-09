@@ -21,7 +21,7 @@
 
 //--- c-library modules used ---------------------------------------------------
 
-Mutex SybCTnewDAImpl::fgStructureMutex("StructureMutex", Storage::Global());
+SimpleMutex SybCTnewDAImpl::fgStructureMutex("StructureMutex", Storage::Global());
 Anything SybCTnewDAImpl::fgListOfSybCT;
 Anything SybCTnewDAImpl::fgContextMessages;
 CS_CONTEXT *SybCTnewDAImpl::fg_cs_context;
@@ -77,7 +77,7 @@ bool SybCTnewDAImpl::Init(ROAnything config)
 			String server, user;
 			for ( long i = 0; i < nrOfSybCTs; ++i ) {
 				SybCTnewDA *pCT = new SybCTnewDA(fg_cs_context);
-				DoPutbackConnection(pCT, false, server, user);
+				IntDoPutbackConnection(pCT, false, server, user);
 			}
 			if ( !fgpPeriodicAction ) {
 				fgpPeriodicAction = new PeriodicAction("SybCheckCloseOpenedConnectionsAction", lCloseConnectionTimeout);
@@ -169,9 +169,15 @@ bool SybCTnewDAImpl::IntGetOpen(SybCTnewDA *&pSyb, bool &bIsOpen, const String &
 bool SybCTnewDAImpl::DoGetConnection(SybCTnewDA *&pSyb, bool &bIsOpen, const String &server, const String &user)
 {
 	StartTrace(SybCTnewDAImpl.DoGetConnection);
+	LockUnlockEntry me(fgStructureMutex);
+	return IntDoGetConnection(pSyb, bIsOpen, server, user);
+}
+
+bool SybCTnewDAImpl::IntDoGetConnection(SybCTnewDA *&pSyb, bool &bIsOpen, const String &server, const String &user)
+{
+	StartTrace(SybCTnewDAImpl.IntDoGetConnection);
 	pSyb = NULL;
 	bIsOpen = false;
-	LockUnlockEntry me(fgStructureMutex);
 	if ( !server.Length() || !user.Length() || !IntGetOpen(pSyb, bIsOpen, server, user) ) {
 		// favour unused connection against open connection of different server/user
 		if ( fgListOfSybCT["Unused"].GetSize() ) {
@@ -198,8 +204,14 @@ bool SybCTnewDAImpl::DoGetConnection(SybCTnewDA *&pSyb, bool &bIsOpen, const Str
 
 void SybCTnewDAImpl::DoPutbackConnection(SybCTnewDA *&pSyb, bool bIsOpen, const String &server, const String &user)
 {
-	StartTrace1(SybCTnewDAImpl.DoPutbackConnection, "putting &" << (long)(IFAObject *)pSyb);
+	StartTrace(SybCTnewDAImpl.DoPutbackConnection);
 	LockUnlockEntry me(fgStructureMutex);
+	IntDoPutbackConnection(pSyb, bIsOpen, server, user);
+}
+
+void SybCTnewDAImpl::IntDoPutbackConnection(SybCTnewDA *&pSyb, bool bIsOpen, const String &server, const String &user)
+{
+	StartTrace1(SybCTnewDAImpl.IntDoPutbackConnection, "putting &" << (long)(IFAObject *)pSyb);
 	if ( bIsOpen ) {
 		String strToStore(server);
 		strToStore << '.' << user;
