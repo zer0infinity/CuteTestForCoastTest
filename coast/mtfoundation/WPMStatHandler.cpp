@@ -96,7 +96,7 @@ void WPMStatHandler::DoStatistic(Anything &statElements)
 long WPMStatHandler::DoGetTotalRequests()
 {
 	LockUnlockEntry me(fMutex);
-	StatTrace(WPMStatHandler.DoGetTotalRequests, "total: " << fTotalRequests, Storage::Current());
+	StatTrace(WPMStatHandler.DoGetTotalRequests, "total: " << (l_long)fTotalRequests, Storage::Current());
 	return fTotalRequests;
 }
 
