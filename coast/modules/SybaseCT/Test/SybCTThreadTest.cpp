@@ -88,22 +88,6 @@ void SybCTThreadTest::Run(long id, const char *goodDAName, const char *failDANam
 	}
 }
 
-void SybCTThreadTest::SybCTDAImplTest()
-{
-	StartTrace(SybCTThreadTest.SybCTDAImplTest);
-	DiffTimer aTimer;
-	DoTest("SybTestThreadDA", "SybTestThreadDAWithError");
-	SysLog::WriteToStderr(String("elapsed time for SybCTDAImplTest:") << (long)aTimer.Diff() << "ms\n");
-}
-
-void SybCTThreadTest::SybCTPoolDAImplTest()
-{
-	StartTrace(SybCTThreadTest.SybCTPoolDAImplTest);
-	DiffTimer aTimer;
-	DoTest("SybTestThreadPoolDA", "SybTestThreadPoolDAWithError");
-	SysLog::WriteToStderr(String("elapsed time for SybCTPoolDAImplTest:") << (long)aTimer.Diff() << "ms\n");
-}
-
 void SybCTThreadTest::SybCTnewDAImplTest()
 {
 	StartTrace(SybCTThreadTest.SybCTnewDAImplTest);
@@ -143,8 +127,6 @@ Test *SybCTThreadTest::suite ()
 {
 	StartTrace(SybCTThreadTest.suite);
 	TestSuite *testSuite = new TestSuite;
-	ADD_CASE(testSuite, SybCTThreadTest, SybCTDAImplTest);
-	ADD_CASE(testSuite, SybCTThreadTest, SybCTPoolDAImplTest);
 	ADD_CASE(testSuite, SybCTThreadTest, SybCTnewDAImplTest);
 	return testSuite;
 }

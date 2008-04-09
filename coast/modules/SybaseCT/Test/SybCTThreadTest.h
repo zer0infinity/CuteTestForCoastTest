@@ -42,8 +42,6 @@ public:
 	void tearDown ();
 
 	//! describe this Test
-	void SybCTDAImplTest();
-	void SybCTPoolDAImplTest();
 	void SybCTnewDAImplTest();
 
 	void DoTest(const char *goodDAName, const char *failDAName);
