@@ -8,7 +8,7 @@
 
 {
 
-	/SybLocalTest {
+	/SybNewLocal {
 		/SybDBUser	{
 			/RendererMapper {
 				/ContextLookupRenderer {
@@ -163,13 +163,7 @@
 			}
 		}
 	}
-	/SybPoolSeparatedTitlesFromRows {
-		/SQL {
-			"select min(au_id) Rmin from authors select count(*) Rcount from authors select max(au_id) Rmax from authors"
-		}
-		/SybDBResultFormat	TitlesOnce
-	}
-	/SybTestThreadDA {
+	/SybTestThreadnewDA {
 		/SybDBUser  "wdtester"
 		/SybDBPW	"all2test"
 		/SybDBHost	HIKU_INT2
@@ -184,7 +178,7 @@
 		}
 	}
 
-	/SybTestThreadDAWithError
+	/SybTestThreadnewDAWithError
 	{
 		/SQL
 		{

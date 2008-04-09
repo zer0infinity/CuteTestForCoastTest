@@ -8,12 +8,17 @@
 
 {
 
+	/PutResultMapper {
+		/PutPolicy			Put
+	}
+
 	/SybCTnewDAImpl {
 		/DestinationSlot	TestOutput
 		/PutPolicy			Append
-		/QueryCount			{ /ResultMapper * }
-		/QuerySource		{ /ResultMapper * }
+		/QueryCount			{ /PutResultMapper * }
+		/QuerySource		{ /PutResultMapper * }
 		/QueryTitles		{ /ResultMapper * }
+		/SP_Retcode			{ /PutResultMapper * }
 		/MainMsgErrNumber	{ /ResultMapper * }
 		/MainMsgErr			{ /ResultMapper * }
 	}
@@ -22,5 +27,45 @@
 	}
 	/SybTestThreadnewDAWithError {
 		/DestinationSlot	SybTestThreadnewDAWithError
+	}
+	/SybShowDatabases {
+		/DestinationSlot	SybShowDatabases
+	}
+	/SybDeleteFromDatabase {
+		/DestinationSlot	SybDeleteFromDatabase
+	}
+	/SybSearchTest {
+		/DestinationSlot	SybSearchTest
+		/Query				{ /PutResultMapper * }
+	}
+	/SybLimitedSearchTest {
+		/DestinationSlot	SybLimitedSearchTest
+	}
+	/SybLimitedSearchByParam {
+		/DestinationSlot	SybLimitedSearchByParam
+	}
+	/SybLimitedSearchByParamOverride {
+		/DestinationSlot	SybLimitedSearchByParamOverride
+	}
+	/SybInsertDatabases {
+		/DestinationSlot	SybInsertDatabases
+	}
+	/SybErrorTest {
+		/DestinationSlot	SybErrorTest
+	}
+	/SybDeleteStoredProcedureTest {
+		/DestinationSlot	SybDeleteStoredProcedureTest
+	}
+	/SybCreateStoredProcedureTest {
+		/DestinationSlot	SybCreateStoredProcedureTest
+	}
+	/SybExecuteStoredProcedureTest {
+		/DestinationSlot	SybExecuteStoredProcedureTest
+	}
+	/SybSingleRowForSingleSelects {
+		/DestinationSlot	SybSingleRowForSingleSelects
+	}
+	/SybMultipleRowsForMultipleSelects {
+		/DestinationSlot	SybMultipleRowsForMultipleSelects
 	}
 }

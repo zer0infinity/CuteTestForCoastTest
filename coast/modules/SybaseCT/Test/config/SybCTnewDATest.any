@@ -12,7 +12,13 @@
 		CacheHandlerModule
 		MappersModule
 	}
-	/Mappers {}
+	/Mappers {
+		/Output {
+			/ResultMapper {
+				PutResultMapper
+			}
+		}
+	}
 	/InterfacesFile	"config/interfaces.any"
 
 	/LoginTimeoutTest {

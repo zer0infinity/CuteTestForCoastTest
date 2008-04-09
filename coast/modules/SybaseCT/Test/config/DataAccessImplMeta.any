@@ -8,21 +8,8 @@
 
 {
 
-	/SybLocalTest {
-		/TheTestUser	wdtester
-		/TheTestUserPW	all2test
-		/SybDBApp	SybCTDAImplTest
-	}
 	/SybLocalSa {
 		/SybDBApp	SybShowDatabases
-	}
-	/SybPoolLocalTest {
-		/TheTestUser	wdtester
-		/TheTestUserPW	all2test
-		/SybDBApp	SybCTPoolDAImplTest
-	}
-	/SybPoolLocalSa {
-		/SybDBApp	SybCTPoolDAImplSaTest
 	}
 	/SybNewLocal {
 		/TheTestUser	wdtester
@@ -36,7 +23,7 @@
 	/SybLimitedSearchByParamOverride {
 		/SybDBMaxResultSize	4
 	}
-	/SybTestThreadDA {
+	/SybTestThreadnewDA {
 		/SybDBApp	ThreadTests
 	}
 }

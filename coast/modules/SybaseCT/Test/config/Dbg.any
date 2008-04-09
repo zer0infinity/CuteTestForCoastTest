@@ -12,18 +12,6 @@
 	/UpperBound		11		# override switch: turns everything on
 	/DumpAnythings  1		# print full Anythings
 
-	/SybCT {
-		/MainSwitch						0
-		/EnableAll						10
-		/SybCT_clientmsg_handler		10
-		/SybCT_csmsg_handler			10
-		/SybCT_servermsg_handler		10
-		/SqlExec						10
-	}
-	/SybCTTest {
-		/MainSwitch						0
-		/EnableAll						10
-	}
 	/TestCase {
 		/MainSwitch						0
 		/EnableAll						10
@@ -36,15 +24,15 @@
 ### SybCTnewDA section
 	/SybCTnewDA {
 		/MainSwitch						10
-		/EnableAll						0
+		/EnableAll						10
 		/SybCTnewDA_clientmsg_handler	10
 		/SybCTnewDA_csmsg_handler		10
 		/SybCTnewDA_servermsg_handler	10
 		/Init							10
 		/Open							10
 		/SqlExec						10
-		/DoFillResults					-10
-		/DoFetchData					0
+		/DoFillResults					10
+		/DoFetchData					10
 		/AllocateValue					-10
 		/AllocateIndicator				-10
 		/AllocateValuelen				-10
@@ -55,7 +43,7 @@
 	}
 	/SybCTnewDATest {
 		/MainSwitch						10
-		/EnableAll						0
+		/EnableAll						10
 	}
 	/SybCTnewDAImpl {
 		/MainSwitch						11
@@ -75,43 +63,9 @@
 		/MainSwitch						0
 		/EnableAll						10
 	}
-	/SybCTDAImpl {
-		/MainSwitch						0
-		/EnableAll						10
-		/Exec							10
-	}
-	/SybCTDAImplTest {
-		/MainSwitch						0
-		/EnableAll						10
-	}
-	/SybCTPoolDAImpl {
-		/MainSwitch						0
-		/EnableAll						10
-		/Exec							10
-	}
-	/SybCTPoolDAImplTest {
-		/MainSwitch						0
-		/EnableAll						10
-	}
-	/SybCTGenericDAImpl {
-		/MainSwitch						0
-		/EnableAll						0
-		/PutResults						10
-		/PutMessages					10
-	}
 	/WorkerPoolManager {
 		/MainSwitch						0
 		/EnableAll						10
-	}
-	/SybaseWorker {
-		/MainSwitch						0
-		/EnableAll						10
-		/DoProcessWorkload				10
-	}
-	/SybCTPoolManager {
-		/MainSwitch						0
-		/EnableAll						10
-		/~SybCTPoolManager				11
 	}
 	/Mapper {
 		/MainSwitch						0

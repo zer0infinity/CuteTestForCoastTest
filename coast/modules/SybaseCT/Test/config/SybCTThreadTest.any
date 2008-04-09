@@ -33,76 +33,18 @@
 		/ContextLookupRenderer 	{ Lookup }
 	}
 	/SybaseModule {
-		/SybCTDAImpl {
-			/ParallelQueries		20
-			/InterfacesPathName		"config/interfaces.any"
-		}
 		/SybCTnewDAImpl {
 			/ParallelQueries		1
 			/CloseConnectionTimeout	60
 			/InterfacesPathName		"config/interfaces.any"
 		}
-		/SybCTPoolDAImpl {
-			/HIKU_INT2 {
-				/ParallelQueries	5
-				/InterfacesPathName	"config/interfaces.any"
-			}
-		}
 	}
 
 	/DataAccessImpls {
-		/SybCTDAImpl {
-			/SybLocalSa {
-				SybShowDatabases
-				SybDeleteFromDatabase
-			}
-			/SybLocalTest {
-				SybSearchTest
-				SybLimitedSearchTest
-				SybLimitedSearchByParam
-				SybLimitedSearchByParamOverride
-				SybInsertDatabases
-#				SybTestTypeConversions
-				SybErrorTest
-				SybDeleteStoredProcedureTest
-				SybCreateStoredProcedureTest
-				SybExecuteStoredProcedureTest
-				SybSingleRowForSingleSelects
-				SybMultipleRowsForMultipleSelects
-
-				/SybTestThreadDA {
-					SybTestThreadDAWithError
-				}
-			}
-		}
-		/SybCTPoolDAImpl {
-			/SybPoolLocalSa {
-				SybPoolShowDatabases
-				SybPoolDeleteFromDatabase
-			}
-			/SybPoolLocalTest {
-				SybPoolSearchTest
-				SybPoolInsertDatabases
-#				SybPoolTestTypeConversions
-				SybPoolErrorTest
-				SybPoolDeleteStoredProcedureTest
-				SybPoolCreateStoredProcedureTest
-				SybPoolExecuteStoredProcedureTest
-				SybPoolSingleRowForSingleSelects
-				SybPoolMultipleRowsForMultipleSelects
-				SybPoolSeparatedTitlesFromRows
-
-				/SybTestThreadPoolDA {
-					SybTestThreadPoolDAWithError
-				}
-			}
-		}
 		/SybCTnewDAImpl {
 			/SybNewLocal {
-				SybNewDASearchTest
-				/SybTestThreadnewDA {
-					SybTestThreadnewDAWithError
-				}
+				SybTestThreadnewDA
+				SybTestThreadnewDAWithError
 			}
 		}
 	}
@@ -110,98 +52,17 @@
 	/Mappers {
 		/Input {
 			/ParameterMapper {
-				/SybLocalSa {
-					/SybShowDatabases {
-						SybPoolShowDatabases
-					}
-					/SybDeleteFromDatabase {
-						SybPoolDeleteFromDatabase
-					}
-				}
-				/SybLocalTest {
-					/SybSearchTest {
-						SybPoolSearchTest
-						SybNewDASearchTest
-					}
-					SybLimitedSearchTest
-					/SybLimitedSearchByParam {
-						SybLimitedSearchByParamOverride
-					}
-					/SybInsertDatabases {
-						SybPoolInsertDatabases
-					}
-#					SybTestTypeConversions
-#					SybPoolTestTypeConversions
-					/SybErrorTest {
-						SybPoolErrorTest
-					}
-					/SybDeleteStoredProcedureTest {
-						SybPoolDeleteStoredProcedureTest
-					}
-					/SybCreateStoredProcedureTest {
-						SybPoolCreateStoredProcedureTest
-					}
-					/SybExecuteStoredProcedureTest {
-						SybPoolExecuteStoredProcedureTest
-					}
-					/SybSingleRowForSingleSelects {
-						SybPoolSingleRowForSingleSelects
-					}
-					/SybMultipleRowsForMultipleSelects {
-						SybPoolMultipleRowsForMultipleSelects
-					}
-					SybPoolSeparatedTitlesFromRows
-				}
-				/SybTestThreadDA {
-					SybTestThreadPoolDA
-					SybTestThreadnewDA
-					/SybTestThreadDAWithError {
-						SybTestThreadPoolDAWithError
-						SybTestThreadnewDAWithError
-					}
+				/SybTestThreadnewDA {
+					SybTestThreadnewDAWithError
 				}
 			}
 		}
 		/Output {
 			/ResultMapper {
 				/SybCTnewDAImpl {
-					SybNewDASearchTest
 					SybTestThreadnewDA
 					SybTestThreadnewDAWithError
 				}
-			}
-			/NameUsingOutputMapper {
-				SybSearchTest
-				SybLimitedSearchTest
-				SybLimitedSearchByParam
-				SybLimitedSearchByParamOverride
-				SybShowDatabases
-				SybInsertDatabases
-				SybDeleteFromDatabase
-#				SybTestTypeConversions
-				SybErrorTest
-				SybDeleteStoredProcedureTest
-				SybCreateStoredProcedureTest
-				SybExecuteStoredProcedureTest
-				SybSingleRowForSingleSelects
-				SybMultipleRowsForMultipleSelects
-				SybTestThreadDA
-				SybTestThreadDAWithError
-
-				SybPoolSearchTest
-				SybPoolShowDatabases
-				SybPoolInsertDatabases
-				SybPoolDeleteFromDatabase
-#				SybPoolTestTypeConversions
-				SybPoolErrorTest
-				SybPoolDeleteStoredProcedureTest
-				SybPoolCreateStoredProcedureTest
-				SybPoolExecuteStoredProcedureTest
-				SybPoolSingleRowForSingleSelects
-				SybPoolMultipleRowsForMultipleSelects
-				SybPoolSeparatedTitlesFromRows
-				SybTestThreadPoolDA
-				SybTestThreadPoolDAWithError
 			}
 		}
 	}
@@ -221,11 +82,4 @@
 			}
 		}
 	}
-	/SybCTPoolDAImplTest {
-		#---- Worker pool configurations
-		/ThreadPoolSize					10
-		/PoolStorageSize				2000
-		/NumOfPoolBucketSizes			20
-	}
-	/SybCTDAImplTest	%SybCTPoolDAImplTest
 }
