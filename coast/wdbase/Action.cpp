@@ -53,19 +53,19 @@ Action::Action(const char *name) : NotCloned(name)
 
 bool Action::ExecAction(String &transitionToken, Context &c)
 {
-	StartTrace1(Action.ExecAction, "<" << transitionToken << ">");
+	StatTrace(Action.ExecAction, "<" << transitionToken << ">", Storage::Current());
 	return ExecAction(transitionToken, c, ROAnything());
 }
 
 bool Action::ExecAction(String &transitionToken, Context &c, const ROAnything &config)
 {
-	StartTrace1(Action.ExecAction, "<" << transitionToken << ">");
+	StatTrace(Action.ExecAction, "<" << transitionToken << ">", Storage::Current());
 	bool result(false);
 	switch (config.GetType()) {
 		case AnyArrayType: {
-			long sz = config.GetSize();
-			for (long i = 0; i < sz; ++i) {
-				String slotname = config.SlotName(i);
+			String slotname( 32L );
+			for (long i = 0, sz = config.GetSize(); i < sz; ++i) {
+				slotname = config.SlotName(i);
 				if (slotname.Length() > 0) {
 					result = CallAction(slotname, transitionToken, c, config[i]);
 				} else {
@@ -92,10 +92,9 @@ bool Action::ExecAction(String &transitionToken, Context &c, const ROAnything &c
 
 bool Action::CallAction(String &actionName, String &transitionToken, Context &c, const ROAnything &config)
 {
-	StartTrace1(Action.CallAction, "<" << actionName << "/" << transitionToken << ">");
-
+	StatTrace(Action.CallAction, "<" << actionName << "/" << transitionToken << ">", Storage::Current());
 	if (actionName.Length() > 0) {
-		Action *a = FindAction(actionName);
+		Action *a( FindAction(actionName) );
 		if (a) {
 			return a->DoExecAction(transitionToken, c, config);
 		} else if (!config.IsNull()) {
@@ -118,15 +117,15 @@ public:
 };
 
 RegisterAction(PreprocessAction);
-PreprocessAction::PreprocessAction(const char *name) : Action(name)
+PreprocessAction::PreprocessAction(const char *name)
+	: Action(name)
 {
 }
 
 bool PreprocessAction::DoAction(String &action, Context &c)
 {
-	StartTrace1(PreprocessAction.DoAction, "<" << action << ">");
-	Page *s = c.GetPage();
-
+	StatTrace(PreprocessAction.DoAction, "<" << action << ">", Storage::Current());
+	Page *s( c.GetPage() );
 	if ( s ) {
 		s->Preprocess(c);
 	}
