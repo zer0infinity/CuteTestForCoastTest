@@ -128,23 +128,28 @@ void HTTPMimeHeaderMapper::Substitute(Anything &header, ROAnything &addlist)
 	String key;
 	String pattern;
 	String replacement;
-	for (int i = 0; i < addlist.GetSize(); i++) {
-		String slotName = addlist.SlotName(i);
-		if (slotName.Length() > 0) {
-			key = addlist["Key"].AsString();
-			pattern = addlist["Pattern"].AsString();
-			replacement = addlist["Replacement"].AsString();
-			break;
-		} else {
-			key = addlist[i]["Key"].AsString();
-			pattern = addlist[i]["Pattern"].AsString();
-			replacement = addlist[i]["Replacement"].AsString();
-		}
-
+	String slotName = addlist.SlotName(0);
+	if (slotName.Length() > 0) {
+		key = addlist["Key"].AsString();
+		pattern = addlist["Pattern"].AsString();
+		replacement = addlist["Replacement"].AsString();
 		RE substRegex(pattern, RE::MATCH_ICASE);
 		for (int i = 0; i < header.GetSize(); i++) {
 			if (header.SlotName(i) == key) {
 				header[i] = substRegex.Subst(header[i].AsString(), replacement);
+			}
+		}
+	} else {
+		for (int i = 0; i < addlist.GetSize(); i++) {
+			key = addlist[i]["Key"].AsString();
+			pattern = addlist[i]["Pattern"].AsString();
+			replacement = addlist[i]["Replacement"].AsString();
+
+			RE substRegex(pattern, RE::MATCH_ICASE);
+			for (int i = 0; i < header.GetSize(); i++) {
+				if (header.SlotName(i) == key) {
+					header[i] = substRegex.Subst(header[i].AsString(), replacement);
+				}
 			}
 		}
 	}
