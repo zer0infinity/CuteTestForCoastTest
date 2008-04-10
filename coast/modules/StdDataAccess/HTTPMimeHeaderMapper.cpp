@@ -179,7 +179,11 @@ void HTTPMimeHeaderMapper::StoreCookies(Anything &header, Context &ctx)
 			cookieValue.TrimWhitespace();
 			Trace("cookieValue: " << cookieValue);
 
-			ctx.GetSessionStore()["StoredCookies"][backendName]["Structured"][cookieName] = cookieValue;
+			if (!cookieValue.IsEqual("")) {
+				ctx.GetSessionStore()["StoredCookies"][backendName]["Structured"][cookieName] = cookieValue;
+			} else {
+				ctx.GetSessionStore()["StoredCookies"][backendName]["Structured"].Remove("cookieName");
+			}
 		}
 	}
 
