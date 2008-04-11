@@ -126,12 +126,15 @@ String RendererDispatcher::FindServiceName(Context &ctx)
 	StartTrace(RendererDispatcher.FindServiceName);
 
 	ROAnything uriPrefixList(ctx.Lookup("URIPrefix2ServiceMap"));
+	ROAnything vhostList(ctx.Lookup("VHost2ServiceMap"));
 	String requestURI(ctx.Lookup("REQUEST_URI", ""));
 	Trace("request URI [" << requestURI << "]");
+	String host(ctx.Lookup("header.HOST", ""));
 	Anything query(ctx.GetQuery());
 	SubTraceAny(uriPrefixList, uriPrefixList, "Service Prefixes: ");
 
 	long matchedPrefix = FindURIPrefixInList(requestURI, uriPrefixList);
+	long matchedVhost = FindURIPrefixInList(host, vhostList);
 	if (matchedPrefix >= 0) {
 		String service;
 		Renderer::RenderOnString(service, ctx, uriPrefixList[matchedPrefix]);
@@ -141,7 +144,16 @@ String RendererDispatcher::FindServiceName(Context &ctx)
 		SubTraceAny(query, query, "Query: ");
 		Trace("Service:<" << service << ">");
 		return service;
-	} else if (uriPrefixList.GetSize() > 0) {
+	} else if (matchedVhost >= 0) {
+		String service;
+		Renderer::RenderOnString(service, ctx, vhostList[matchedVhost]);
+		query["Service"] = service;
+		query["VHost"] = vhostList.SlotName(matchedVhost);
+
+		SubTraceAny(query, query, "Query: ");
+		Trace("Service:<" << service << ">");
+		return service;
+	} else if (uriPrefixList.GetSize() > 0 && vhostList.GetSize() > 0) {
 		query["Error"] = "ServiceNotFound";
 	}
 
