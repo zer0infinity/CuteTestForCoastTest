@@ -378,6 +378,40 @@ String URLUtils::urlEncode(const String &str)
 				case '#':
 				case '{':
 				case '}':
+					result.Append('%');
+					result.AppendAsHex(c);
+					break;
+				default:
+					result.Append(c);
+					break;
+			}
+		}
+	}
+	return result;
+}
+
+// encode the given char *p into res by expanding problematic characters into %XX escapes suitable for msajax
+String URLUtils::MSUrlEncode(const String &str)
+{
+	StartTrace(URLUtils.urlEncode);
+	String result;
+	char c;
+
+	if (str.Length() > 0) {
+		for (long l = 0; l < str.Length(); l++) {
+			switch (c = str[l]) {
+				case '\n':
+					break;
+				case ' ':
+				case '"':
+				case '%':
+				case '&':
+				case '?':
+				case '/':
+				case '\\':
+				case '#':
+				case '{':
+				case '}':
 				case '+':
 				case '=':
 					result.Append('%');

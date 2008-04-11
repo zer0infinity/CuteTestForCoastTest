@@ -37,8 +37,11 @@ public:
 	//! PS: use char for delim2
 	static void Split(const char *buf, char delim, Anything &out, char delim2 = '=', NormalizeTag norm = URLUtils::eUntouched);
 
+	//! encodes the given string by expanding problematic characters into %XX escapes
+	static String urlEncode(const String &str);
+	static String MSUrlEncode(const String &str);
 	//! RFC1808 compliant url encoder, allows chars to be excluded from escaping
-	static String urlEncode(const String &str, const String exclusionSet = String());
+	static String urlEncode(const String &str, String &exclusionSet);
 
 	//! URL decodes the given string, (%xx, %uxxxx) Only values <= xFF are valid
 	static String urlDecode(const String &str, URLUtils::URLCheckStatus &eUrlCheckStatus, bool replacePlusByBlank = true);
@@ -58,18 +61,10 @@ public:
 	static void DecodeAll(Anything &a);
 
 	//! check URL Path Encoding according to RFC1738
-	static bool CheckUrlEncoding(const String &str, const String override = String());
+	static bool CheckUrlEncoding(String &str);
 
 	//! check URL Args Encoding according to RFC1738
-	static bool CheckUrlArgEncoding(String &str, const String override = String());
-
-	//! check URL Path char to be safe according to RFC1738
-	//! You may pass in your own set of unsafe chars (overrideUnsafe
-	//! If asciiExtended is enabled, you may define chars which are in the extended set which are ignored
-	//! by this check.
-	//! The default applies to RFC1738
-	static bool CheckUrlPathContainsUnsafeChars(String &str, const String overrideUnsafe = String(),
-			const String overrideAscii = String(), bool asciiExtended = true);
+	static bool CheckUrlArgEncoding(String &str);
 
 	//! takes a full uri and decomposes it into a query anything
 	//! \param query resulting anything structure
@@ -116,7 +111,7 @@ private:
 	static void DecodeSpecialHTMLChars(const String &str, String &res, long &lPos);
 	static void ExtractDecimal(const String &str, String &res, long &lPos, long delta);
 	static void ExtractHex(const String &str, String &res, long &lPos, long delta);
-	static bool DoUrlEncode(const String &str, String exclusionSet, String &encoded, bool doCheck);
+
 };
 
 #endif
