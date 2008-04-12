@@ -86,6 +86,7 @@ public:
 protected:
 	//!Workhorse of FindServiceName
 	long FindURIPrefixInList(const String &requestURI, const ROAnything &uriPrefixList);
+	long *FindVlanInList(const String &requestVhost, const String &requestURI, const ROAnything &vhostList, long *retval);
 private:
 	// block the following default elements of this class
 	// because they're not allowed to be used
