@@ -121,7 +121,7 @@ long RendererDispatcher::FindURIPrefixInList(const String &requestURI, const ROA
 	return -1;
 }
 
-long *RendererDispatcher::FindVlanInList(const String &requestVhost, const String &requestURI, const ROAnything &vhostList, long *retval)
+void RendererDispatcher::FindVlanInList(const String &requestVhost, const String &requestURI, const ROAnything &vhostList, long *matchedVhost, long *matchedVhostPrefix)
 {
 	StartTrace(RendererDispatcher.FindVlanInList);
 
@@ -131,13 +131,12 @@ long *RendererDispatcher::FindVlanInList(const String &requestVhost, const Strin
 		if ( vhost && requestVhost.StartsWith(vhost) ) {
 			long matchedPrefix = FindURIPrefixInList(requestURI, vhostList[i]);
 			if (matchedPrefix >= 0) {
-				retval[0] = i;
-				retval[1] = matchedPrefix;
+				*matchedVhost = i;
+				*matchedVhostPrefix = matchedPrefix;
 				break;
 			}
 		}
 	}
-	return retval;
 }
 
 String RendererDispatcher::FindServiceName(Context &ctx)
@@ -154,8 +153,9 @@ String RendererDispatcher::FindServiceName(Context &ctx)
 	SubTraceAny(uriPrefixList, uriPrefixList, "Service Prefixes: ");
 
 	long matchedPrefix = FindURIPrefixInList(requestURI, uriPrefixList);
-	long buf[] = { -1, -1};
-	long *matchedVhost = FindVlanInList(requestVhost, requestURI, vhostList, buf);
+	long matchedVhost = -1;
+	long matchedVhostPrefix = -1;
+	FindVlanInList(requestVhost, requestURI, vhostList, &matchedVhost, &matchedVhostPrefix);
 
 	if (matchedPrefix >= 0) {
 		String service;
@@ -166,12 +166,12 @@ String RendererDispatcher::FindServiceName(Context &ctx)
 		SubTraceAny(query, query, "Query: ");
 		Trace("Service:<" << service << ">");
 		return service;
-	} else if (matchedVhost[0] >= 0) {
+	} else if (matchedVhost >= 0) {
 		String service;
-		Renderer::RenderOnString(service, ctx, vhostList[matchedVhost[0]][matchedVhost[1]]);
+		Renderer::RenderOnString(service, ctx, vhostList[matchedVhost][matchedVhostPrefix]);
 		query["Service"] = service;
-		query["VHost"] = vhostList.SlotName(matchedVhost[0]);
-		query["URIPrefix"] = vhostList[matchedVhost[0]].SlotName(matchedVhost[1]);
+		query["VHost"] = vhostList.SlotName(matchedVhost);
+		query["URIPrefix"] = vhostList[matchedVhost].SlotName(matchedVhostPrefix);
 
 		SubTraceAny(query, query, "Query: ");
 		Trace("Service:<" << service << ">");
