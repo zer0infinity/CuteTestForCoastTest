@@ -182,7 +182,7 @@ void HTTPMimeHeaderMapper::StoreCookies(Anything &header, Context &ctx)
 			if (!cookieValue.IsEqual("")) {
 				ctx.GetSessionStore()["StoredCookies"][backendName]["Structured"][cookieName] = cookieValue;
 			} else {
-				ctx.GetSessionStore()["StoredCookies"][backendName]["Structured"].Remove("cookieName");
+				ctx.GetSessionStore()["StoredCookies"][backendName]["Structured"].Remove(cookieName);
 			}
 		}
 	}
