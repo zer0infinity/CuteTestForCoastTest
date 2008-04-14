@@ -121,9 +121,9 @@ long RendererDispatcher::FindURIPrefixInList(const String &requestURI, const ROA
 	return -1;
 }
 
-void RendererDispatcher::FindVlanInList(const String &requestVhost, const String &requestURI, const ROAnything &vhostList, long *matchedVhost, long *matchedVhostPrefix)
+void RendererDispatcher::FindVHostInList(const String &requestVhost, const String &requestURI, const ROAnything &vhostList, long *matchedVhost, long *matchedVhostPrefix)
 {
-	StartTrace(RendererDispatcher.FindVlanInList);
+	StartTrace(RendererDispatcher.FindVHostInList);
 
 	long apSz = vhostList.GetSize();
 	for (long i = 0; i < apSz; i++) {
@@ -155,7 +155,7 @@ String RendererDispatcher::FindServiceName(Context &ctx)
 	long matchedPrefix = FindURIPrefixInList(requestURI, uriPrefixList);
 	long matchedVhost = -1;
 	long matchedVhostPrefix = -1;
-	FindVlanInList(requestVhost, requestURI, vhostList, &matchedVhost, &matchedVhostPrefix);
+	FindVHostInList(requestVhost, requestURI, vhostList, &matchedVhost, &matchedVhostPrefix);
 
 	if (matchedPrefix >= 0) {
 		String service;
