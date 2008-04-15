@@ -50,6 +50,9 @@ bool HTTPMimeHeaderMapper::DoPutStream(const char *, istream &is, Context &ctx, 
 		if (eProcMode == MIMEHeader::eDoSplitHeaderFields) {
 			CorrectDateFormats(header);
 		}
+		if (config["StoreCookies"].AsLong(0)) {
+			StoreCookies(header, ctx);
+		}
 		if (config.IsDefined("Suppress")) {
 			ROAnything suppresslist(config["Suppress"]);
 			SuppressHeaders(header, suppresslist);
@@ -61,9 +64,6 @@ bool HTTPMimeHeaderMapper::DoPutStream(const char *, istream &is, Context &ctx, 
 		if (config.IsDefined("Substitute")) {
 			ROAnything addlist(config["Substitute"]);
 			Substitute(header, addlist);
-		}
-		if (config["StoreCookies"].AsLong(0)) {
-			StoreCookies(header, ctx);
 		}
 		result = DoFinalPutAny("HTTPHeader", header, ctx);
 	}
