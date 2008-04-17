@@ -157,11 +157,15 @@ String RendererDispatcher::FindServiceName(Context &ctx)
 	long matchedVhostPrefix = -1;
 	FindVHostInList(requestVhost, requestURI, vhostList, &matchedVhost, &matchedVhostPrefix);
 
+	TraceAny(ctx.GetTmpStore(), "tmpStore:");
+	TraceAny(ctx.GetSessionStore(), "sessionStore:");
+
 	if (matchedPrefix >= 0) {
 		String service;
 		Renderer::RenderOnString(service, ctx, uriPrefixList[matchedPrefix]);
 		query["Service"] = service;
 		query["URIPrefix"] = uriPrefixList.SlotName(matchedPrefix);
+		query["EntryPage"] = requestURI;
 
 		SubTraceAny(query, query, "Query: ");
 		Trace("Service:<" << service << ">");
@@ -172,6 +176,7 @@ String RendererDispatcher::FindServiceName(Context &ctx)
 		query["Service"] = service;
 		query["VHost"] = vhostList.SlotName(matchedVhost);
 		query["URIPrefix"] = vhostList[matchedVhost].SlotName(matchedVhostPrefix);
+		query["EntryPage"] = requestURI;
 
 		SubTraceAny(query, query, "Query: ");
 		Trace("Service:<" << service << ">");
@@ -182,6 +187,7 @@ String RendererDispatcher::FindServiceName(Context &ctx)
 
 	String defaultHandler(ServiceDispatcher::FindServiceName(ctx));
 	Trace("Service:<" << defaultHandler << ">");
+
 	return defaultHandler;
 }
 

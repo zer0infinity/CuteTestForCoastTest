@@ -63,7 +63,7 @@ bool HTTPMimeHeaderMapper::DoPutStream(const char *, istream &is, Context &ctx, 
 		}
 		if (config.IsDefined("Substitute")) {
 			ROAnything addlist(config["Substitute"]);
-			Substitute(header, addlist);
+			Substitute(header, addlist, ctx);
 		}
 		result = DoFinalPutAny("HTTPHeader", header, ctx);
 	}
@@ -121,9 +121,11 @@ void HTTPMimeHeaderMapper::AddHeaders(Anything &header, ROAnything &addlist)
 	}
 }
 
-void HTTPMimeHeaderMapper::Substitute(Anything &header, ROAnything &addlist)
+void HTTPMimeHeaderMapper::Substitute(Anything &header, ROAnything &addlist, Context &ctx)
 {
 	StartTrace(HTTPMimeHeaderMapper.Substitute);
+
+	TraceAny(ctx.GetQuery(), "query:");
 
 	String key;
 	String pattern;
@@ -136,6 +138,10 @@ void HTTPMimeHeaderMapper::Substitute(Anything &header, ROAnything &addlist)
 		RE substRegex(pattern, RE::MATCH_ICASE);
 		for (int i = 0; i < header.GetSize(); i++) {
 			if (header.SlotName(i) == key) {
+				if (!ctx.GetSessionStore().IsDefined("EntryPage")) {
+					ctx.GetSessionStore()["EntryPage"] = ctx.GetQuery()["EntryPage"].DeepClone();
+				}
+
 				header[i] = substRegex.Subst(header[i].AsString(), replacement);
 			}
 		}
@@ -148,6 +154,10 @@ void HTTPMimeHeaderMapper::Substitute(Anything &header, ROAnything &addlist)
 			RE substRegex(pattern, RE::MATCH_ICASE);
 			for (int i = 0; i < header.GetSize(); i++) {
 				if (header.SlotName(i) == key) {
+					if (!ctx.GetSessionStore().IsDefined("EntryPage")) {
+						ctx.GetSessionStore()["EntryPage"] = ctx.GetQuery()["EntryPage"].DeepClone();
+					}
+
 					header[i] = substRegex.Subst(header[i].AsString(), replacement);
 				}
 			}
