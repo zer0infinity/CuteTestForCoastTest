@@ -18,6 +18,7 @@
 #include "StringStream.h"
 #include "Timers.h"
 #include "System.h"
+#include "TimeStamp.h"
 
 #if defined(ONLY_STD_IOSTREAM)
 #include <algorithm>
@@ -983,10 +984,10 @@ void SybCTnewDA::Warning(DaParams &params, String str)
 {
 	StartTrace(SybCTnewDA.Warning);
 	String strErr("SybCTnewDA::");
-	strErr << str;
-	SysLog::Warning(strErr);
+	strErr.Append(str);
+	SysLog::Warning( TimeStamp::Now().AsStringWithZ().Append(' ').Append(strErr) );
 	ResultMapper *pResultMapper = params.fpOut;
-	Context &aContext = *(params.fpContext);
+	Context &aContext( *(params.fpContext) );
 	if ( pResultMapper ) {
 		pResultMapper->Put("Messages", strErr, aContext);
 	}
@@ -996,10 +997,10 @@ void SybCTnewDA::Error(DaParams &params, String str)
 {
 	StartTrace(SybCTnewDA.Error);
 	String strErr("SybCTnewDA::");
-	strErr << str;
-	SysLog::Error(strErr);
-	ResultMapper *pResultMapper = params.fpOut;
-	Context &aContext = *(params.fpContext);
+	strErr.Append(str);
+	SysLog::Error( TimeStamp::Now().AsStringWithZ().Append(' ').Append(strErr) );
+	ResultMapper *pResultMapper( params.fpOut );
+	Context &aContext( *(params.fpContext) );
 	if ( pResultMapper ) {
 		pResultMapper->Put("Messages", strErr, aContext);
 	}
