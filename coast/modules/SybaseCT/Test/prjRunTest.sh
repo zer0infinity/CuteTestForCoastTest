@@ -6,10 +6,10 @@
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
 
-_SYBASE_DIR=/sybasehome/sybase
+_SYBASE_DIR=/sybhiku/sybase
 DB_NAME=pub2
 DB_USER=-Usa
-DB_PASSWD=-P"sagamma01h"
+DB_PASSWD=-P"sagammaint2"
 DB_SHELL=isql
 DB_IMPORTFILE='config/createPub2.sql'
 DB_DROPFILE='config/dropPub2.sql'
@@ -45,14 +45,14 @@ function doTestRemote
 			echo '   remote copying ['$myfile']';
 		done
 		echo '   remote executing import';
-		$RSH_CMD -n -l ${RSH_USER} $REMOTE_HOST "cd $REMOTE_TMPDIR; . ${SHELL_EXPORTS}; $IMPORT_CMD; echo \$?" >rexec.out 2>rexec.err
-		local mycode=`tail -1 rexec.out`;
+		$RSH_CMD -n -l ${RSH_USER} $REMOTE_HOST "cd $REMOTE_TMPDIR; . ${SHELL_EXPORTS}; $IMPORT_CMD; echo \$?" >rexec.out.setup 2>rexec.err.setup
+		local mycode=`tail -1 rexec.out.setup`;
 		if [ $mycode -ne 0 ]; then
 			echo '    result was '$mycode;
 			echo '=== stdout ===';
-			cat rexec.out
+			cat rexec.out.setup
 			echo '=== stderr ===';
-			cat rexec.err
+			cat rexec.err.setup
 			importcode=$mycode;
 			break;
 		fi
@@ -84,18 +84,18 @@ function doCleanupRemote
 	if [ "${DOMAIN}" = "hsr.ch" ]; then
 		# use rexec to set stop
 		echo '   remote dropping '${DB_NAME};
-		( $RSH_CMD -n -l ${RSH_USER} $REMOTE_HOST "cd $REMOTE_TMPDIR; . ${SHELL_EXPORTS}; $DROP_CMD; echo \$?" >rexec.out 2>rexec.err )
-		local mycode=`tail -1 rexec.out`;
+		( $RSH_CMD -n -l ${RSH_USER} $REMOTE_HOST "cd $REMOTE_TMPDIR; . ${SHELL_EXPORTS}; $DROP_CMD; echo \$?" >rexec.out.clean 2>rexec.err.clean )
+		local mycode=`tail -1 rexec.out.clean`;
 		if [ $mycode -ne 0 ]; then
 			echo '    result was '$mycode;
 			echo '=== stdout ===';
-			cat rexec.out
+			cat rexec.out.clean
 			echo '=== stderr ===';
-			cat rexec.err
+			cat rexec.err.clean
 			break;
 		fi
 		( $RSH_CMD -n -l ${RSH_USER} $REMOTE_HOST 'rm -rf $REMOTE_TMPDIR;'; )
-		rm -f rexec.out rexec.err
+		rm -f rexec.out.setup rexec.err.setup rexec.out.clean rexec.err.clean
 	else
 		echo
 	fi
@@ -129,7 +129,7 @@ function prepareTest
 	# insert testdata here
 	if [ "${DOMAIN}" = "hsr.ch" ]; then
 		echo '   setting up '${DB_NAME}' testdata';
-		if [ "$HOSTNAME" = "bondo" ]; then
+		if [ "$HOSTNAME" = "svzdhiku01" ]; then
 			doTestLocal
 		else
 			doTestRemote
@@ -165,7 +165,7 @@ function cleanupTest
 {
 	if [ "${DOMAIN}" = "hsr.ch" ]; then
 		echo '   dropping '${DB_NAME}' testdata';
-		if [ "$HOSTNAME" = "bondo" ]; then
+		if [ "$HOSTNAME" = "svzdhiku01" ]; then
 			doCleanupLocal
 		else
 			doCleanupRemote
