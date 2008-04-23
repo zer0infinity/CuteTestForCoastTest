@@ -62,7 +62,7 @@ void LDAPErrorHandler::HandleUnbindError(LDAP *handle)
 
 	int rc;
 	String msg;
-	msg << TimeStamp::Now().AsString();
+	msg << TimeStamp::Now().AsStringWithZ();
 	if ( handle ) {
 		ldap_get_option(handle, LDAP_OPT_ERROR_NUMBER, &rc);
 		String msg;
@@ -103,7 +103,7 @@ String LDAPErrorHandler::WriteSysLog(Anything error, String &msg)
 	error.PrintOn(ossSysLog, false);
 	ossSysLog.flush();
 	// log all ldap session errors in SysLog
-	SysLog::Error(TimeStamp::Now().AsString() << " " <<  msg << " " << fName << " " << sSysLog);
+	SysLog::Error(TimeStamp::Now().AsStringWithZ() << " " <<  msg << " " << fName << " " << sSysLog);
 	String msgAsString;
 	msgAsString << "LdapDataAccess: [" << fName << "]";
 	for ( long l = 0; l < error.GetSize(); ++l ) {
