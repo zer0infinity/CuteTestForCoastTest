@@ -152,13 +152,13 @@ void HTTPMimeHeaderMapper::Substitute(Anything &header, ROAnything &addlist, Con
 			replacement = addlist[i]["Replacement"].AsString();
 
 			RE substRegex(pattern, RE::MATCH_ICASE);
-			for (int i = 0; i < header.GetSize(); i++) {
-				if (header.SlotName(i) == key) {
+			for (int j = 0; j < header.GetSize(); j++) {
+				if (header.SlotName(j) == key) {
 					if (!ctx.GetSessionStore().IsDefined("EntryPage")) {
 						ctx.GetSessionStore()["EntryPage"] = ctx.GetQuery()["EntryPage"].DeepClone();
 					}
 
-					header[i] = substRegex.Subst(header[i].AsString(), replacement);
+					header[j] = substRegex.Subst(header[j].AsString(), replacement);
 				}
 			}
 		}
