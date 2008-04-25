@@ -47,6 +47,10 @@ bool BackendConfigLoaderModule::Init(const Anything &config)
 	if ( config.LookupPath(BackendConfigLoaderConfig, "BackendConfigLoaderModule") && BackendConfigLoaderConfig.IsDefined("BackendConfigDir") && BackendConfigLoaderConfig["BackendConfigDir"].GetSize() ) {
 		TraceAny(BackendConfigLoaderConfig, "BackendConfigLoaderConfig:");
 		SysLog::WriteToStderr("\tReading Backend Configuration Files");
+		Anything dirlist = System::DirFileList(BackendConfigLoaderConfig["BackendConfigDir"].AsCharPtr(), "any");
+		for (int i = 0 ; i < dirlist.GetSize(); i++) {
+			SysLog::WriteToStderr(dirlist[i].AsString());
+		}
 		for (long i = 0; i < 10; i++) {
 			SysLog::WriteToStderr(".", 1);
 		}
