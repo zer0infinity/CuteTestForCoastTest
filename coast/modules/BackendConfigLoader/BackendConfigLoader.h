@@ -26,11 +26,10 @@ public:
 
 	virtual bool Init(const Anything &config);
 	virtual bool Finis();
+	static Anything GetBackendConfig(String backendName);
 
 protected:
-
-	Anything fLogConnections;
-	ROAnything fROLogConnections;
+	static Anything backendConfigurations;
 
 	static BackendConfigLoaderModule *fgBackendConfigLoaderModule;
 };

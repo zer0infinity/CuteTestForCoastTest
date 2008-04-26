@@ -40,69 +40,40 @@ BackendConfigLoaderModule::~BackendConfigLoaderModule()
 
 bool BackendConfigLoaderModule::Init(const Anything &config)
 {
+	StartTrace(BackendConfigLoaderModule.Init);
 	bool retCode = true;
 	Anything BackendConfigLoaderConfig;
-	StartTrace(BackendConfigLoaderModule.Init);
 
 	if ( config.LookupPath(BackendConfigLoaderConfig, "BackendConfigLoaderModule") && BackendConfigLoaderConfig.IsDefined("BackendConfigDir") && BackendConfigLoaderConfig["BackendConfigDir"].GetSize() ) {
 		TraceAny(BackendConfigLoaderConfig, "BackendConfigLoaderConfig:");
 		SysLog::WriteToStderr("\tReading Backend Configuration Files");
-		Anything dirlist = System::DirFileList(BackendConfigLoaderConfig["BackendConfigDir"].AsCharPtr(), "any");
+		String path = BackendConfigLoaderConfig["BackendConfigDir"].AsCharPtr();
+		if (!System::IsAbsolutePath(path)) {
+			String cwd;
+			cwd = System::GetRootDir();
+			path = cwd << "/" << path;
+			System::ResolvePath(path);
+		}
+		Anything dirlist = System::DirFileList(path, "any");
 		for (int i = 0 ; i < dirlist.GetSize(); i++) {
-			SysLog::WriteToStderr(dirlist[i].AsString());
-		}
-		for (long i = 0; i < 10; i++) {
-			SysLog::WriteToStderr(".", 1);
-		}
-		if (true) {
-			SysLog::WriteToStderr(" done\n");
-		} else {
-			SysLog::WriteToStderr(" failed\n");
-		}
-		/*		Anything servers(BackendConfigLoaderConfig["Servers"]);
-				long numOfServers= servers.GetSize();
-				String strLogDir, strRotateDir;
-				strLogDir = BackendConfigLoaderConfig["LogDir"].AsCharPtr("log");
-				strRotateDir = strLogDir;
-				strRotateDir << System::Sep() << "rotate";
-				if ( BackendConfigLoaderConfig.IsDefined("RotateDir") )
-				{
-					strRotateDir = BackendConfigLoaderConfig["RotateDir"].AsCharPtr();
-				}
-				Trace("raw LogDir [" << strLogDir << "]");
-				Trace("raw RotateDir [" << strRotateDir << "]");
-				// generate for each server its respective logchannels
-				for(long i= 0; i < numOfServers; i++)
-				{
-					const char *servername= servers.SlotName(i);
-					Server *s;
-					if ( servername && (s= Server::FindServer(servername)) )
-					{
-						Anything config;
-						config["Channels"] = servers[i];
-						config["LogDir"] = strLogDir;
-						config["RotateDir"] = strRotateDir;
-						retCode= retCode && MakeChannels(servername, config);
-					}
-					SysLog::WriteToStderr(".", 1);
-				}
-				TraceAny(fLogConnections, "LogConnections: ");
-				if (retCode && StartLogRotator(BackendConfigLoaderConfig["RotateTime"].AsCharPtr("24:00")))
-				{
-					fgBackendConfigLoaderModule= this;
-					fROLogConnections= fLogConnections;
-					SysLog::WriteToStderr(" done\n");
-				}
-				else
-				{
-					fgBackendConfigLoaderModule= 0L;
-					SysLog::WriteToStderr(" failed\n");
-				}
+			String backendName = dirlist[i].AsString();
+			Anything backendConfig;
+			if (!System::LoadConfigFile(backendConfig, backendName)) {
+				retCode = false;
 			}
-			else
-			{
-				SysLog::WriteToStderr(" done\n");*/
+			backendConfigurations[backendName] = backendConfig.DeepClone();
+		}
+		TraceAny(backendConfigurations, "Backend Configurations:")
+	} else {
+		retCode = false;
 	}
+
+	if (retCode) {
+		SysLog::WriteToStderr(" done\n");
+	} else {
+		SysLog::WriteToStderr(" failed\n");
+	}
+
 	return retCode;
 }
 
@@ -111,5 +82,10 @@ bool BackendConfigLoaderModule::Finis()
 	StartTrace(BackendConfigLoaderModule.Finis);
 
 	return true;
+}
+
+Anything BackendConfigLoaderModule::GetBackendConfig(String backendName)
+{
+	return backendConfigurations[backendName];
 }
 
