@@ -27,7 +27,7 @@
 RegisterModule(BackendConfigLoaderModule);
 
 BackendConfigLoaderModule *BackendConfigLoaderModule::fgBackendConfigLoaderModule = 0;
-Anything BackendConfigLoaderModule::backendConfigurations;
+Anything BackendConfigLoaderModule::backendConfigurations = InitBackendConfigurations();
 
 BackendConfigLoaderModule::BackendConfigLoaderModule(const char *name)
 	: WDModule(name)
@@ -37,6 +37,12 @@ BackendConfigLoaderModule::BackendConfigLoaderModule(const char *name)
 
 BackendConfigLoaderModule::~BackendConfigLoaderModule()
 {
+}
+
+Anything BackendConfigLoaderModule::InitBackendConfigurations()
+{
+	Anything init;
+	return init;
 }
 
 bool BackendConfigLoaderModule::Init(const Anything &config)
@@ -71,8 +77,10 @@ bool BackendConfigLoaderModule::Init(const Anything &config)
 	}
 
 	if (retCode) {
+		fgBackendConfigLoaderModule = this;
 		SysLog::WriteToStderr(" done\n");
 	} else {
+		fgBackendConfigLoaderModule = 0L;
 		SysLog::WriteToStderr(" failed\n");
 	}
 
@@ -83,11 +91,24 @@ bool BackendConfigLoaderModule::Finis()
 {
 	StartTrace(BackendConfigLoaderModule.Finis);
 
+	SysLog::WriteToStderr("\tTerminating BackendConfigLoader Module");
+	fgBackendConfigLoaderModule = 0L;
+	SysLog::WriteToStderr(" done\n");
+
 	return true;
 }
 
 Anything BackendConfigLoaderModule::GetBackendConfig(String backendName)
 {
-	return backendConfigurations[backendName];
+	StartTrace(BackendConfigLoaderModule.GetBackendConfig);
+	TraceAny(backendConfigurations, "Backend Configurations:")
+	return backendConfigurations[backendName].DeepClone();
+}
+
+void BackendConfigLoaderModule::GetBackendConfig(Anything &any, String backendName)
+{
+	StartTrace(BackendConfigLoaderModule.GetBackendConfig);
+	TraceAny(backendConfigurations, "Backend Configurations:")
+	any = backendConfigurations[backendName].DeepClone();
 }
 

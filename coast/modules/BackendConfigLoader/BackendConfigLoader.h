@@ -27,6 +27,8 @@ public:
 	virtual bool Init(const Anything &config);
 	virtual bool Finis();
 	static Anything GetBackendConfig(String backendName);
+	static void GetBackendConfig(Anything &any, String backendName);
+	static Anything	InitBackendConfigurations();
 
 protected:
 	static Anything backendConfigurations;
