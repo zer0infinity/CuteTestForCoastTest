@@ -27,6 +27,7 @@
 RegisterModule(BackendConfigLoaderModule);
 
 BackendConfigLoaderModule *BackendConfigLoaderModule::fgBackendConfigLoaderModule = 0;
+Anything BackendConfigLoaderModule::backendConfigurations;
 
 BackendConfigLoaderModule::BackendConfigLoaderModule(const char *name)
 	: WDModule(name)
@@ -56,6 +57,7 @@ bool BackendConfigLoaderModule::Init(const Anything &config)
 		}
 		Anything dirlist = System::DirFileList(path, "any");
 		for (int i = 0 ; i < dirlist.GetSize(); i++) {
+			SysLog::WriteToStderr(".");
 			String backendName = dirlist[i].AsString();
 			Anything backendConfig;
 			if (!System::LoadConfigFile(backendConfig, backendName)) {
