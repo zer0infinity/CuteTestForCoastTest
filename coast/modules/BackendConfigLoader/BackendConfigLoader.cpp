@@ -105,6 +105,11 @@ Anything BackendConfigLoaderModule::GetBackendConfig(String backendName)
 	return backendConfigurations[backendName].DeepClone();
 }
 
+Anything BackendConfigLoaderModule::GetBackendConfig()
+{
+	return backendConfigurations.DeepClone();
+}
+
 void BackendConfigLoaderModule::GetBackendConfig(Anything &any, String backendName)
 {
 	StartTrace(BackendConfigLoaderModule.GetBackendConfig);

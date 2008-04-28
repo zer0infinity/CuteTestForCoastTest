@@ -14,6 +14,7 @@
 #include "Registry.h"
 #include "Dbg.h"
 #include "Timers.h"
+#include "BackendConfigLoader.h"
 
 //--- c-library modules used ---------------------------------------------------
 
@@ -85,7 +86,14 @@ bool ParameterMapper::DoLoadConfig(const char *category)
 	StartTrace(ParameterMapper.DoLoadConfig);
 	Trace("category: " << category << " fName: " << fName);
 
-	if ( HierarchConfNamed::DoLoadConfig(category) && fConfig.IsDefined(fName) ) {
+	if (BackendConfigLoaderModule::GetBackendConfig()[fName].IsDefined("InputMapper")) {
+		Anything backendConfig;
+		backendConfig = BackendConfigLoaderModule::GetBackendConfig(fName)["InputMapper"];
+		TraceAny(backendConfig, "backendConfig");
+		ConfNamedObject::SetConfig(backendConfig);
+		TraceAny(fConfig, "Extracted fConfig: (Returning true)");
+		return true;
+	} else if ( HierarchConfNamed::DoLoadConfig(category) && fConfig.IsDefined(fName) ) {
 		Trace("Meta-file for " << category << " found. Extracting config for " << fName);
 		// mappers use only a subset of the whole configuration file
 		fConfig = fConfig[fName];

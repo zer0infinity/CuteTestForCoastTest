@@ -11,7 +11,6 @@
 
 #include "config_BackendConfigLoader.h"
 #include "WDModule.h"
-#include "Threads.h"
 
 class Context;
 
@@ -27,6 +26,7 @@ public:
 	virtual bool Init(const Anything &config);
 	virtual bool Finis();
 	static Anything GetBackendConfig(String backendName);
+	static Anything GetBackendConfig();
 	static void GetBackendConfig(Anything &any, String backendName);
 	static Anything	InitBackendConfigurations();
 

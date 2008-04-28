@@ -257,6 +257,9 @@ public:
 		return fbConfigLoaded;
 	}
 
+	//FIXME: remove virtual public
+	virtual void SetConfig(Anything newConfig);
+
 protected:
 	/*! subclass initialize api; specific things can be done here, like configuration loading and so on
 		\return true in case of success, false otherwise */

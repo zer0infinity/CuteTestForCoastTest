@@ -206,6 +206,14 @@ bool ConfNamedObject::DoUnloadConfig()
 	return true;
 }
 
+void ConfNamedObject::SetConfig(Anything newConfig)
+{
+	CacheHandler *cache = CacheHandler::Get();
+
+	AnythingLoaderPolicy alp(newConfig);
+	fConfig = cache->Load("ManuallySetCategory", "ManuallySetConfig", &alp);
+}
+
 bool ConfNamedObject::DoGetConfigName(const char *category, const char *objName, String &configFileName)
 {
 	StartTrace1(ConfNamedObject.DoGetConfigName, "cat <" << NotNull(category) << "> fName <" << fName << "> objName <" << NotNull(objName) << ">");
