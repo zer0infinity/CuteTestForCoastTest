@@ -27,6 +27,7 @@ public:
 	virtual bool Finis();
 	static Anything GetBackendConfig(String backendName);
 	static Anything GetBackendConfig();
+	static Anything GetBackendList();
 	static void GetBackendConfig(Anything &any, String backendName);
 	static Anything	InitBackendConfigurations();
 

@@ -110,6 +110,17 @@ Anything BackendConfigLoaderModule::GetBackendConfig()
 	return backendConfigurations.DeepClone();
 }
 
+Anything BackendConfigLoaderModule::GetBackendList()
+{
+	StartTrace(BackendConfigLoaderModule.GetBackendList);
+	Anything backendList;
+	for (int i = 0; i < backendConfigurations.GetSize(); i++) {
+		backendList.Append(backendConfigurations.SlotName(i));
+	}
+	TraceAny(backendList, "List of all Backends:");
+	return backendList.DeepClone();
+}
+
 void BackendConfigLoaderModule::GetBackendConfig(Anything &any, String backendName)
 {
 	StartTrace(BackendConfigLoaderModule.GetBackendConfig);
