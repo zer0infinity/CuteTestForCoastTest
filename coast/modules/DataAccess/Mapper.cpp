@@ -90,7 +90,7 @@ bool ParameterMapper::DoLoadConfig(const char *category)
 		Anything backendConfig;
 		backendConfig = BackendConfigLoaderModule::GetBackendConfig(fName)["InputMapper"];
 		TraceAny(backendConfig, "backendConfig");
-		ConfNamedObject::SetConfig(backendConfig);
+		ConfNamedObject::SetConfig(category, fName, backendConfig);
 		TraceAny(fConfig, "Extracted fConfig: (Returning true)");
 		return true;
 	} else if ( HierarchConfNamed::DoLoadConfig(category) && fConfig.IsDefined(fName) ) {

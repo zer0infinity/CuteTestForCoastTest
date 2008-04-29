@@ -258,7 +258,7 @@ public:
 	}
 
 	//FIXME: remove virtual public
-	virtual void SetConfig(Anything newConfig);
+	virtual void SetConfig(const char *category, const char *key, Anything newConfig);
 
 protected:
 	/*! subclass initialize api; specific things can be done here, like configuration loading and so on
