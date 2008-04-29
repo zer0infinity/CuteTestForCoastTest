@@ -89,7 +89,6 @@ bool ParameterMapper::DoLoadConfig(const char *category)
 	if (BackendConfigLoaderModule::GetBackendConfig()[fName].IsDefined("InputMapper")) {
 		Anything backendConfig;
 		backendConfig = BackendConfigLoaderModule::GetBackendConfig(fName)["InputMapper"];
-		TraceAny(backendConfig, "backendConfig");
 		ConfNamedObject::SetConfig(category, fName, backendConfig);
 		TraceAny(fConfig, "Extracted fConfig: (Returning true)");
 		return true;
@@ -466,7 +465,13 @@ bool ResultMapper::DoLoadConfig(const char *category)
 	StartTrace(ResultMapper.DoLoadConfig);
 	Trace("category: " << category << " fName: " << fName);
 
-	if ( HierarchConfNamed::DoLoadConfig(category) && fConfig.IsDefined(fName) ) {
+	if (BackendConfigLoaderModule::GetBackendConfig()[fName].IsDefined("OutputMapper")) {
+		Anything backendConfig;
+		backendConfig = BackendConfigLoaderModule::GetBackendConfig(fName)["OutputMapper"];
+		ConfNamedObject::SetConfig(category, fName, backendConfig);
+		TraceAny(fConfig, "Extracted fConfig: (Returning true)");
+		return true;
+	} else if ( HierarchConfNamed::DoLoadConfig(category) && fConfig.IsDefined(fName) ) {
 		TraceAny(fConfig, "fConfig before: ");
 		// mappers use only a subset of the whole configuration file
 		fConfig = fConfig[fName];
