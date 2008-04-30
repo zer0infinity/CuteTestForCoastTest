@@ -17,6 +17,7 @@
 #include "SystemLog.h"
 #include "System.h"
 #include "Dbg.h"
+#include "Policy.h"
 
 //--- c-library modules used ---------------------------------------------------
 #if defined(WIN32)
@@ -76,6 +77,8 @@ bool BackendConfigLoaderModule::Init(const Anything &config)
 		retCode = false;
 	}
 
+	RegisterBackends();
+
 	if (retCode) {
 		fgBackendConfigLoaderModule = this;
 		SysLog::WriteToStderr(" done\n");
@@ -126,5 +129,28 @@ void BackendConfigLoaderModule::GetBackendConfig(Anything &any, String backendNa
 	StartTrace(BackendConfigLoaderModule.GetBackendConfig);
 	TraceAny(backendConfigurations, "Backend Configurations:")
 	any = backendConfigurations[backendName].DeepClone();
+}
+
+bool BackendConfigLoaderModule::RegisterBackend(String backendName)
+{
+	StartTrace(BackendConfigLoaderModule.RegisterBackend);
+	Trace("Registering backend:" << backendName);
+	Anything config;
+	config["DataAccessImpls"]["DataAccessImpl"]["HTTPDAImpl"] = backendName;
+	HierarchyInstaller hi("DataAccessImpl");
+	return RegisterableObject::Install(config["DataAccessImpls"], "DataAccessImpl", &hi);
+}
+
+bool BackendConfigLoaderModule::RegisterBackends()
+{
+	StartTrace(BackendConfigLoaderModule.RegisterBackends);
+	Anything backendList = GetBackendList();
+	TraceAny(backendList, "Backends to register:")
+	bool ret = true;
+	for (int i = 0; i < backendList.GetSize(); i++) {
+		String backendName = backendList[i].AsString();
+		ret = RegisterBackend(backendName) ? ret : false;
+	}
+	return ret;
 }
 

@@ -32,6 +32,10 @@ public:
 	static Anything	InitBackendConfigurations();
 
 protected:
+	static bool RegisterBackend(String backendName);
+	static bool RegisterBackends();
+
+protected:
 	static Anything backendConfigurations;
 
 	static BackendConfigLoaderModule *fgBackendConfigLoaderModule;
