@@ -137,8 +137,19 @@ bool BackendConfigLoaderModule::RegisterBackend(String backendName)
 	Trace("Registering backend:" << backendName);
 	Anything config;
 	config["DataAccessImpls"]["DataAccessImpl"]["HTTPDAImpl"] = backendName;
+	config["Input"]["Mapper"] = backendName;
+	config["Output"]["Mapper"] = backendName;
 	HierarchyInstaller hi("DataAccessImpl");
-	return RegisterableObject::Install(config["DataAccessImpls"], "DataAccessImpl", &hi);
+	bool ret = true;
+	ret = RegisterableObject::Install(config["DataAccessImpls"], "DataAccessImpl", &hi) && ret;
+
+	AliasInstaller ai1("ParameterMapper");
+	ret = RegisterableObject::Install(config["Input"], "ParameterMapper", &ai1) && ret;
+
+	AliasInstaller ai2("ResultMapper");
+	ret = RegisterableObject::Install(config["Output"], "ResultMapper", &ai2) && ret;
+
+	return ret;
 }
 
 bool BackendConfigLoaderModule::RegisterBackends()
@@ -149,7 +160,7 @@ bool BackendConfigLoaderModule::RegisterBackends()
 	bool ret = true;
 	for (int i = 0; i < backendList.GetSize(); i++) {
 		String backendName = backendList[i].AsString();
-		ret = RegisterBackend(backendName) ? ret : false;
+		ret = RegisterBackend(backendName) && ret;
 	}
 	return ret;
 }
