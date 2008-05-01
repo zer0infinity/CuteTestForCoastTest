@@ -11,6 +11,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
+#include "RequestProcessor.h"
 #include "Timers.h"
 #include "Dbg.h"
 
@@ -109,6 +110,31 @@ bool HTTPHeaderParameterMapper::DoGetStream(const char *key, ostream &os, Contex
 			os << strHeaderfields;
 		}
 	}
+	String requestURI(ctx.Lookup("REQUEST_URI", ""));
+	TraceAny(ctx.GetRequest(), "request:");
+	if (		info.IsDefined("DoRedirectToOnLocationContent") &&
+				info["DoRedirectToOnLocationContent"].IsDefined("OnLocationContent") &&
+				info["DoRedirectToOnLocationContent"].IsDefined("RedirectTo") &&
+				requestURI.Contains(info["DoRedirectToOnLocationContent"]["OnLocationContent"].AsString()) > -1) {
+		String requestMethod(ctx.Lookup("REQUEST_METHOD", ""));
+		if (		!info["DoRedirectToOnLocationContent"].IsDefined("OnMethod") ||
+					info["DoRedirectToOnLocationContent"]["OnMethod"].AsString().IsEqual(requestMethod)) {
+			String contentLength(ctx.Lookup("header.CONTENT-LENGTH", ""));
+			if (		!info["DoRedirectToOnLocationContent"].IsDefined("OnContentLength") ||
+						info["DoRedirectToOnLocationContent"]["OnContentLength"].AsString().IsEqual(contentLength) ) {
+
+				RequestProcessor::ForceConnectionClose(ctx);
+				ostream *ost = ctx.GetStream();
+				ctx.GetTmpStore()["DirectMap"] = 1;
+
+				String location = info["DoRedirectToOnLocationContent"]["RedirectTo"].AsString();
+
+				(*ost) << "HTTP/1.x 302 Found" << ENDL << "Location: " << location << ENDL << "Connection: close" << ENDL << "Content-type: text/html" << ENDL << ENDL;
+				(*ost) << "Redirect to: <a href=" << location << ">" << location << "</a>" << ENDL;
+			}
+		}
+	}
+
 	Trace("retval: " << mapSuccess);
 	return mapSuccess;
 }
