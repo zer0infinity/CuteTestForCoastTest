@@ -151,8 +151,8 @@ bool BackendConfigLoaderModule::RegisterBackend(String backendName)
 	ret = RegisterableObject::Install(config["Output"], "ResultMapper", &ai2) && ret;
 
 	Server *server = (Server *)Registry::GetRegistry("Application")->Find("Server");
-	Anything namedObjectConfig = server->GetNamedObjectConfig().DeepClone();
 	if (backendConfigurations[backendName].IsDefined("VHost2ServiceMap")) {
+		Anything namedObjectConfig = server->GetNamedObjectConfig().DeepClone();
 		Anything backendVHosts = backendConfigurations[backendName]["VHost2ServiceMap"];
 		for (int i = 0; i < backendVHosts.GetSize(); i++) {
 			String key = backendVHosts.SlotName(i);
@@ -162,6 +162,7 @@ bool BackendConfigLoaderModule::RegisterBackend(String backendName)
 		server->SetConfig("Application", "Server", namedObjectConfig);
 	}
 	if (backendConfigurations[backendName].IsDefined("URIPrefix2ServiceMap")) {
+		Anything namedObjectConfig = server->GetNamedObjectConfig().DeepClone();
 		Anything uriPrefixes = backendConfigurations[backendName]["URIPrefix2ServiceMap"];
 		for (int i = 0; i < uriPrefixes.GetSize(); i++) {
 			String key = uriPrefixes.SlotName(i);
@@ -169,6 +170,18 @@ bool BackendConfigLoaderModule::RegisterBackend(String backendName)
 		}
 		TraceAny(namedObjectConfig, "namedObjectConfig:");
 		server->SetConfig("Application", "Server", namedObjectConfig);
+	}
+
+	if (backendConfigurations[backendName].IsDefined("ServiceActionMapping")) {
+		ConfNamedObject *role = (ConfNamedObject *)Registry::GetRegistry("Role")->Find("FDRole");
+		Anything namedObjectConfig = role->GetNamedObjectConfig().DeepClone();
+		Anything serviceActionMapping = backendConfigurations[backendName]["ServiceActionMapping"];
+		for (int i = 0; i < serviceActionMapping.GetSize(); i++) {
+			String key = serviceActionMapping.SlotName(i);
+			namedObjectConfig["DefaultCustomerAction"]["SwitchRenderer"]["Case"][key] = serviceActionMapping[key];
+		}
+		TraceAny(namedObjectConfig, "namedObjectConfig:");
+		role->SetConfig("Role", "FDRole", namedObjectConfig);
 	}
 
 	return ret;
