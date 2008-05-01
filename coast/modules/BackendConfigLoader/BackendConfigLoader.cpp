@@ -12,6 +12,7 @@
 //--- project modules used -----------------------------------------------------
 #include "Server.h"
 #include "Renderer.h"
+#include "Registry.h"
 
 //--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
@@ -148,6 +149,27 @@ bool BackendConfigLoaderModule::RegisterBackend(String backendName)
 
 	AliasInstaller ai2("ResultMapper");
 	ret = RegisterableObject::Install(config["Output"], "ResultMapper", &ai2) && ret;
+
+	Server *server = (Server *)Registry::GetRegistry("Application")->Find("Server");
+	Anything namedObjectConfig = server->GetNamedObjectConfig().DeepClone();
+	if (backendConfigurations[backendName].IsDefined("VHost2ServiceMap")) {
+		Anything backendVHosts = backendConfigurations[backendName]["VHost2ServiceMap"];
+		for (int i = 0; i < backendVHosts.GetSize(); i++) {
+			String key = backendVHosts.SlotName(i);
+			namedObjectConfig["VHost2ServiceMap"][key] = backendVHosts[key];
+		}
+		TraceAny(namedObjectConfig, "namedObjectConfig:");
+		server->SetConfig("Application", "Server", namedObjectConfig);
+	}
+	if (backendConfigurations[backendName].IsDefined("URIPrefix2ServiceMap")) {
+		Anything uriPrefixes = backendConfigurations[backendName]["URIPrefix2ServiceMap"];
+		for (int i = 0; i < uriPrefixes.GetSize(); i++) {
+			String key = uriPrefixes.SlotName(i);
+			namedObjectConfig["URIPrefix2ServiceMap"][key] = uriPrefixes[key];
+		}
+		TraceAny(namedObjectConfig, "namedObjectConfig:");
+		server->SetConfig("Application", "Server", namedObjectConfig);
+	}
 
 	return ret;
 }

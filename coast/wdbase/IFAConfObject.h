@@ -259,6 +259,9 @@ public:
 
 	//FIXME: remove virtual public
 	virtual void SetConfig(const char *category, const char *key, Anything newConfig);
+	virtual ROAnything GetNamedObjectConfig() {
+		return fConfig;
+	};
 
 protected:
 	/*! subclass initialize api; specific things can be done here, like configuration loading and so on

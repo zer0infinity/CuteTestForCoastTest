@@ -110,6 +110,17 @@ void CacheHandler::Finis()
 	}
 }
 
+ROAnything CacheHandler::Reload(const char *group, const char *key,  CacheLoadPolicy *clp)
+{
+	MutexEntry me(*fgCacheHandlerMutex);
+	me.Use();
+	Anything toCache(clp->Load(key), Storage::Global());
+	if (! toCache.IsNull() ) {
+		fCache[group][key] = toCache;
+	}
+	return toCache;
+}
+
 ROAnything CacheHandler::Load(const char *group, const char *key,  CacheLoadPolicy *clp)
 {
 	StartTrace1(CacheHandler.Load, "group [" << NotNull(group) << "] key [" << NotNull(key) << "]");

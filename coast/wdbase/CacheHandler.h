@@ -130,6 +130,8 @@ public:
 	// Load checks internally whether this group/key is already loaded
 	ROAnything Load(const char *group, const char *key, CacheLoadPolicy *clp);
 
+	ROAnything Reload(const char *group, const char *key, CacheLoadPolicy *clp);
+
 	// check for already loaded group/key
 	bool IsLoaded(const char *group, const char *key);
 

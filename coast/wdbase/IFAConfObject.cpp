@@ -208,10 +208,14 @@ bool ConfNamedObject::DoUnloadConfig()
 
 void ConfNamedObject::SetConfig(const char *category, const char *key, Anything newConfig)
 {
+	StartTrace( ConfNamedObject.SetConfig);
+	TraceAny(fConfig, "currentConfig:");
+	TraceAny(newConfig, "newConfig:");
 	CacheHandler *cache = CacheHandler::Get();
 
 	AnythingLoaderPolicy alp(newConfig);
-	fConfig = cache->Load(category, key, &alp);
+	fConfig = cache->Reload(category, key, &alp);
+	TraceAny(fConfig, "adjustedConfig:");
 }
 
 bool ConfNamedObject::DoGetConfigName(const char *category, const char *objName, String &configFileName)
