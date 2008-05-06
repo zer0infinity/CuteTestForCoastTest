@@ -9,13 +9,11 @@
 #!Defines the available physical backends and any required loadbalancing.
 {
 
-#!	Configuration for appInst finxs
 	/LDAPDAImpl
 	{
-  		/Server		"marvin.hsr.loc"
-		/Port		"49999"
-		/Bind		"cn=Directory Manager"
-		/BindPW		"ifaifaifa"
+		/Server		"sifsstud1.hsr.ch"
+		/Port		"389"
+		/Bind		"cn=admin,dc=sifsstud1,dc=hsr,dc=ch"
 		/Timeout	10
 	}
 }

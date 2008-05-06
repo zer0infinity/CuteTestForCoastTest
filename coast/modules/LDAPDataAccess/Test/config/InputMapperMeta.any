@@ -503,12 +503,14 @@
 			/LDAPParamMapper {  #-- defines ldap basic input parameters ----
 				/Base		"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
 				/Attributes { uid TKFmodtime userPassword }
-				/Timeout	10												# query timeout in seconds
-				/SizeLimit	100												# result size limit
+				/Timeout	10
+				/SizeLimit	100
 			}
 		}
 		/ModifyVals {  #-- defines ldap modify values ----
 			/LDAPModifyValsMapper {   # here you have to define your modifylist
+#				 User is an object of type "client", "person" and "tkfModtime"
+#				 Object "client" requires "uid", "sn" and "cn" (manatory).
 				{
 					/Attribut 	"sn"	# name of attribute we would like to modify into LDAP
 					/Mode		0  		# LDAP_MOD_ADD

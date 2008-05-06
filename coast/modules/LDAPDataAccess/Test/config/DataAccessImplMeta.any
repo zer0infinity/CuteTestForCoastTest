@@ -67,7 +67,6 @@
 		/Server		"marvin.hsr.loc"
 		/Port		"49999"
 		/Bind		"cn=Directory Manager"
-		/BindPW		{ /StringCompareRenderer { /String1 "a" /String2 "b" /Equal "blah" /Unequal "ifaifaifa"} }
 	}
 	/ldapCompareTest1 {
 		/Server		"marvin.hsr.loc"
@@ -78,21 +77,18 @@
 		/Server		"marvin.hsr.loc"
 		/Port		"49999"
 		/Bind		"cn=Directory Manager"
-		/BindPW		"ifaifaifa"
 	}
 
 	/ldapAddTest {
 		/Server		"marvin.hsr.loc"
 		/Port		"49999"
 		/Bind		"cn=Directory Manager"
-		/BindPW		"ifaifaifa"
 	}
 
 	/ldapDelTest {
 		/Server		"marvin.hsr.loc"
 		/Port		"49999"
 		/Bind		"cn=Directory Manager"
-		/BindPW		"ifaifaifa"
 	}
 
 	/TimeLimitExceededTest {
@@ -201,6 +197,5 @@
 			/LdapIn3  LdapOut
 		}
 	}
-
 }
 

@@ -43,7 +43,6 @@
 					/Timeout 10
 					/ConnectionTimeout 5
 					/BindName "cn=admin,dc=sifsstud1,dc=hsr,dc=ch"
-					/BindPW "ifaifaifa"
 					/PooledConnections 0
 					/RebindTimeout 0
 					/TryAutoRebind		0
@@ -52,39 +51,7 @@
 			}
 		}
 
-# -----------------------------------------------------------------------------------
-# kgu: Removed, because it seemed to produce different results on different machines
-# (due to different ldaplib versions?)
-# if re-enabling, don't forget to re-insert the config switches (see other tests)
-# -----------------------------------------------------------------------------------
-#		/WrongPort {
-#			/LDAPServer		%LDAPServer
-#			/LDAPPort		1234
-#			/LDAPTimeout	%LDAPTimeout
-#			/LDAPConnectionTimeout	%LDAPConnectionTimeout
-#			/LDAPBindName	%LDAPBind
-#			/LDAPBindPW		%LDAPBindPW
-#			/Expected 	0
-#			/Error {
-#				/Msg		"Binding request failed. [Server: 'marvin.hsr.loc', Port: '1234']  (Authorized bind.)"
-#				/Msg		"Binding request failed. [Server: 'vivian.hank.com', Port: '1234']  (Authorized bind.)"
-#				/LdapCode	81
-#				/LdapMsg	"Can't contact LDAP server"
-#				/LdapConnectionParams {
-#					/Server "marvin.hsr.loc"
-#					/Server "vivian.hank.com"
-#					/Port 1234
-#					/Timeout 10
-#					/ConnectionTimeout 5
-#					/BindName "cn=Directory Manager"
-#					/BindPW "ifaifaifa"
-#					/BindPW "hankhank"
-#				}
-#			}
-#		}
-
-		# Anonymous bind
-		{
+		/AnonymousBind {
 			/LDAPServer		%LDAPServer
 			/LDAPPort		%LDAPPort
 			/LDAPTimeout		%LDAPTimeout

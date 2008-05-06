@@ -21,15 +21,12 @@
 
 	/useSSLTest
 	{
-		/Server				"dylan.hank.com"
-		/Port				"22222"
+		/Port				"443"
 		/UseSSL				1
 		/Timeout			30
-		/UseThreadLocalMemory 0
 	}
 
 	/ErrorHandlingTest {
-		/Server				"dylan.hank.com"
 		/Port				"8181"
 		/UseSSL				0
 		/Timeout			1
@@ -42,19 +39,5 @@
 	/webappputargs2 {
 		/Server		"192.168.85.5"
 		/Port		"443"
-	}
-	/SendReceiveOnce {
-		/UseSSL					0
-		/ConnectTimeout			5
-		/SocketStreamTimeout	5
-		/CheckReadyTimeout		5
-		/CloseSocket			1
-	}
-	/RecreateSocket {
-		/UseSSL					0
-		/ConnectTimeout			5
-		/SocketStreamTimeout	5
-		/CheckReadyTimeout		5
-		/CloseSocket			0
 	}
 }

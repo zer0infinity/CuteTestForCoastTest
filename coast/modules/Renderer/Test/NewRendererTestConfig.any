@@ -1646,7 +1646,7 @@
 			/Renderer	{
 				/ContextLookupRenderer	ItopiaDomain
 			}
-			/Expected	"hsr.loc"
+			/Expected	"hsr.ch"
 		}
 		{
 			/Env {
@@ -2526,7 +2526,7 @@
 		{
 			/Env
 			{
-				/foo "<bar>bld<bar/>"
+				/foo "<bar>bl�d<bar/>"
 			}
 			/Renderer
 			{
@@ -2543,7 +2543,6 @@
 					/Representation "Full"
 				}
 			}
-			/Expected       "zaphod.zueri.hsr.ch"
 		}
 		/GetThisHostNameRendererHostTest
 		{
@@ -2554,7 +2553,6 @@
 					/Representation "HostOnly"
 				}
 			}
-			/Expected       "zaphod"
 		}
 		/GetThisHostNameRendererDNSTest
 		{
@@ -2565,7 +2563,6 @@
 					/Representation "DomainOnly"
 				}
 			}
-			/Expected       "zueri.hsr.ch"
 		}
 		/AnythingContentRendererTest
 		{
