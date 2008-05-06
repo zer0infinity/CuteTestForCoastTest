@@ -9,32 +9,29 @@
 {
 
 	/RemoteCertificateHost {
-		/Address	"www.tkfweb.com"
+		/Address	"sifsstud1.hsr.ch"
 		/Port		443
-		/SSLPeerCAFile "cert_files/tklinkCARSA.pem"
+		/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
 		/SSLVerifyPeerCert 1
 		/SSLVerifyDepth 2
 	}
 
 	/ClientCertificateTest
 	{
-		# 0
 		{
 			/Config
 			{
-				/Address	"dylan"
-				/Port		22222
-				/NoCertAndPrivateKey		0
-				/UseThreadLocalMemory		1
+				/Address	"sifsstud1.hsr.ch"
+				/Port		443
 				/SSLVerifyDepth 3
-				/KeyFileClient	"cert_files/clientkey.pem"
-				/CertFileClient	"cert_files/clientcrt.pem"
+				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
+				/CertFileClient	"/tmp/SSLSocketTestHashedCerts/clientcrt.pem"
 				/SSLVerifyFailIfNoPeerCert 0
 				/SSLUseAppCallback		1
-				/SSLPeerCAFile "cert_files/rootCA1crt.pem"
+				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=sifsstud1.hsr.ch@wildplanet.com,CN=sifsstud1.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -46,26 +43,21 @@
 		}
 
 		# 1
-		#
 		#		CertChainDepth error
-		#
-
 		{
 			/Config
 			{
-				/Address	"dylan"
-				/Port		22222
-				/NoCertAndPrivateKey		0
-				/UseThreadLocalMemory		1
+				/Address	"sifsstud1.hsr.ch"
+				/Port		443
 				/SSLVerifyDepth 1
-				/KeyFileClient	"cert_files/clientkey.pem"
-				/CertFileClient	"cert_files/clientcrt.pem"
+				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
+				/CertFileClient	"/tmp/SSLSocketTestHashedCerts/clientcrt.pem"
 				/SSLVerifyFailIfNoPeerCert 0
 				/SSLUseAppCallback		1
-				/SSLPeerCAFile "cert_files/rootCA1crt.pem"
+				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=sifsstud1.hsr.ch@wildplanet.com,CN=sifsstud1.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -77,25 +69,21 @@
 		}
 
 		# 2
-		#
 		#		Check parsed DN, pass filter spec
-		#
 		{
 			/Config
 			{
-				/Address	"dylan"
-				/Port		22222
-				/NoCertAndPrivateKey		0
-				/UseThreadLocalMemory		1
+				/Address	"sifsstud1.hsr.ch"
+				/Port		443
 				/SSLVerifyDepth 3
-				/KeyFileClient	"cert_files/clientkey.pem"
-				/CertFileClient	"cert_files/clientcrt.pem"
+				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
+				/CertFileClient	"/tmp/SSLSocketTestHashedCerts/clientcrt.pem"
 				/SSLVerifyFailIfNoPeerCert 0
 				/SSLUseAppCallback		1
-				/SSLPeerCAFile "cert_files/rootCA1crt.pem"
+				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 1
-				/CertVerifyString		"CN=dylan.hank.com"
+				/CertVerifyString		"CN=sifsstud1.hsr.ch"
 			}
 			/Results
 			{
@@ -107,25 +95,21 @@
 		}
 
 		# 3
-		#
 		#		Check parsed DN, pass filter spec, wrong filter (value wrong)
-		#
 		{
 			/Config
 			{
-				/Address	"dylan"
-				/Port		22222
-				/NoCertAndPrivateKey		0
-				/UseThreadLocalMemory		1
+				/Address	"sifsstud1.hsr.ch"
+				/Port		443
 				/SSLVerifyDepth 3
-				/KeyFileClient	"cert_files/clientkey.pem"
-				/CertFileClient	"cert_files/clientcrt.pem"
+				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
+				/CertFileClient	"/tmp/SSLSocketTestHashedCerts/clientcrt.pem"
 				/SSLVerifyFailIfNoPeerCert 0
 				/SSLUseAppCallback		1
-				/SSLPeerCAFile "cert_files/rootCA1crt.pem"
+				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 1
-				/CertVerifyString		"CN=dylan.hank.comxxxxxx"
+				/CertVerifyString		"CN=sifsstud1.hsr.chxxxxxxxxxxxxxxx"
 
 			}
 			/Results
@@ -138,25 +122,21 @@
 		}
 
 		# 4
-		#
 		#		Check parsed DN, pass filter spec, wrong filter (dn name part wrong)
-		#
 		{
 			/Config
 			{
-				/Address	"dylan"
-				/Port		22222
-				/NoCertAndPrivateKey		0
-				/UseThreadLocalMemory		1
+				/Address	"sifsstud1.hsr.ch"
+				/Port		443
 				/SSLVerifyDepth 3
-				/KeyFileClient	"cert_files/clientkey.pem"
-				/CertFileClient	"cert_files/clientcrt.pem"
+				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
+				/CertFileClient	"/tmp/SSLSocketTestHashedCerts/clientcrt.pem"
 				/SSLVerifyFailIfNoPeerCert 0
 				/SSLUseAppCallback		1
-				/SSLPeerCAFile "cert_files/rootCA1crt.pem"
+				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 1
-				/CertVerifyString		"xCN=dylan.hank.com"
+				/CertVerifyString		"xCN=sifsstud1.hsr.ch"
 			}
 			/Results
 			{
@@ -168,26 +148,21 @@
 		}
 
 		# 5
-		#
 		#		Check parsed DN, wrong DN, no filter
-		#
 		{
 			/Config
 			{
-				/Address	"dylan"
-				/Port		22222
-				/NoCertAndPrivateKey		0
-				/UseThreadLocalMemory		1
+				/Address	"sifsstud1.hsr.ch"
+				/Port		443
 				/SSLVerifyDepth 3
-				/KeyFileClient	"cert_files/clientkey.pem"
-				/CertFileClient	"cert_files/clientcrt.pem"
+				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
+				/CertFileClient	"/tmp/SSLSocketTestHashedCerts/clientcrt.pem"
 				/SSLVerifyFailIfNoPeerCert 0
 				/SSLUseAppCallback		1
-				/SSLPeerCAFile "cert_files/rootCA1crt.pem"
+				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.Xom,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
-
+				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.Xom,CN=sifsstud1.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -199,27 +174,22 @@
 		}
 
 		# 6
-		#
 		#		Do not use application callback - SSLVerifyPeerCert is crucial now!!!!!!!
-		#
-
 		{
 			/Config
 			{
-				/Address	"dylan"
-				/Port		22222
-				/NoCertAndPrivateKey		0
-				/UseThreadLocalMemory		1
+				/Address	"sifsstud1.hsr.ch"
+				/Port		443
 				/SSLVerifyDepth 3
-				/KeyFileClient	"cert_files/clientkey.pem"
-				/CertFileClient	"cert_files/clientcrt.pem"
+				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
+				/CertFileClient	"/tmp/SSLSocketTestHashedCerts/clientcrt.pem"
 				/SSLVerifyFailIfNoPeerCert 0
 				/SSLUseAppCallback		0
 				/SSLVerifyPeerCert		1
-				/SSLPeerCAFile "cert_files/rootCA1crt.pem"
+				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=sifsstud1.hsr.ch@wildplanet.com,CN=sifsstud1.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -229,29 +199,24 @@
 				/IsCertCheckPassed			1
 			}
 		}
-
 		# 7
-		#
 		#		Do not use application callback - SSLVerifyPeerCert is crucial now!!!!!!!
 		#		Chain depth not valid.
-
 		{
 			/Config
 			{
-				/Address	"dylan"
-				/Port		22222
-				/NoCertAndPrivateKey		0
-				/UseThreadLocalMemory		1
+				/Address	"sifsstud1.hsr.ch"
+				/Port		443
 				/SSLVerifyDepth 1
-				/KeyFileClient	"cert_files/clientkey.pem"
-				/CertFileClient	"cert_files/clientcrt.pem"
+				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
+				/CertFileClient	"/tmp/SSLSocketTestHashedCerts/clientcrt.pem"
 				/SSLVerifyFailIfNoPeerCert 0
 				/SSLUseAppCallback		0
 				/SSLVerifyPeerCert		1
-				/SSLPeerCAFile "cert_files/rootCA1crt.pem"
+				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=sifsstud1.hsr.ch@wildplanet.com,CN=sifsstud1.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -261,29 +226,24 @@
 				/IsCertCheckPassed			0
 			}
 		}
-
 		# 8
-		#
 		#		Do not use application callback - SSLVerifyPeerCert is crucial now!!!!!!!
 		#		Do not verify peer cert
-
 		{
 			/Config
 			{
-				/Address	"dylan"
-				/Port		22222
-				/NoCertAndPrivateKey		0
-				/UseThreadLocalMemory		1
+				/Address	"sifsstud1.hsr.ch"
+				/Port		443
 				/SSLVerifyDepth 1
-				/KeyFileClient	"cert_files/clientkey.pem"
-				/CertFileClient	"cert_files/clientcrt.pem"
+				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
+				/CertFileClient	"/tmp/SSLSocketTestHashedCerts/clientcrt.pem"
 				/SSLVerifyFailIfNoPeerCert 0
 				/SSLUseAppCallback		0
 				/SSLVerifyPeerCert		0
-				/SSLPeerCAFile "cert_files/rootCA1crt.pem"
+				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=sifsstud1.hsr.ch@wildplanet.com,CN=sifsstud1.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -293,30 +253,25 @@
 				/IsCertCheckPassed			0
 			}
 		}
-
 		# 9
-		#
 		#		Do not use application callback - SSLVerifyPeerCert is crucial now!!!!!!!
 		#		This are the settings we would use in production.
 		#		Stream would be BAD.
-
 		{
 			/Config
 			{
-				/Address	"dylan"
-				/Port		22222
-				/NoCertAndPrivateKey		0
-				/UseThreadLocalMemory		1
+				/Address	"sifsstud1.hsr.ch"
+				/Port		443
 				/SSLVerifyDepth 1
-				/KeyFileClient	"cert_files/clientkey.pem"
-				/CertFileClient	"cert_files/clientcrt.pem"
+				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
+				/CertFileClient	"/tmp/SSLSocketTestHashedCerts/clientcrt.pem"
 				/SSLVerifyFailIfNoPeerCert 1
 				/SSLUseAppCallback		0
 				/SSLVerifyPeerCert		1
-				/SSLPeerCAFile "cert_files/rootCA1crt.pem"
+				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=sifsstud1.hsr.ch@wildplanet.com,CN=sifsstud1.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -326,30 +281,25 @@
 				/IsCertCheckPassed			0
 			}
 		}
-
 		# 10
-		#
 		#		CertChainDepth error
 		#		Use application callback. This are the settings we would use in production.
 		#		Stream would be BAD.
-
 		{
 			/Config
 			{
-				/Address	"dylan"
-				/Port		22222
-				/NoCertAndPrivateKey		0
-				/UseThreadLocalMemory		1
+				/Address	"sifsstud1.hsr.ch"
+				/Port		443
 				/SSLVerifyDepth 1
-				/KeyFileClient	"cert_files/clientkey.pem"
-				/CertFileClient	"cert_files/clientcrt.pem"
+				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
+				/CertFileClient	"/tmp/SSLSocketTestHashedCerts/clientcrt.pem"
 				/SSLVerifyFailIfNoPeerCert 0
 				/SSLUseAppCallback		1
 				/SSLVerifyPeerCert		1
-				/SSLPeerCAFile "cert_files/rootCA1crt.pem"
+				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=sifsstud1.hsr.ch@wildplanet.com,CN=sifsstud1.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -359,29 +309,24 @@
 				/IsCertCheckPassed			0
 			}
 		}
-
 		# 11
-		#
 		#		CertChainDepth error
 		#		SSLVerifyPeerCert 0 and SSLVerifyFailIfNoPeerCert 1
-		#
 		{
 			/Config
 			{
-				/Address	"dylan"
-				/Port		22222
-				/NoCertAndPrivateKey		0
-				/UseThreadLocalMemory		1
+				/Address	"sifsstud1.hsr.ch"
+				/Port		443
 				/SSLVerifyDepth 1
-				/KeyFileClient	"cert_files/clientkey.pem"
-				/CertFileClient	"cert_files/clientcrt.pem"
+				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
+				/CertFileClient	"/tmp/SSLSocketTestHashedCerts/clientcrt.pem"
 				/SSLVerifyFailIfNoPeerCert 1
 				/SSLUseAppCallback		0
 				/SSLVerifyPeerCert		0
-				/SSLPeerCAFile "cert_files/rootCA1crt.pem"
+				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
 				/VerifyCertifiedEntity 0
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=sifsstud1.hsr.ch@wildplanet.com,CN=sifsstud1.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -391,29 +336,24 @@
 				/IsCertCheckPassed			0
 			}
 		}
-
 		# 12
-		#
 		#		CertChainDepth error
 		#		SSLVerifyPeerCert 0 and SSLVerifyFailIfNoPeerCert 1
-		#
 		{
 			/Config
 			{
-				/Address	"dylan"
-				/Port		22222
-				/NoCertAndPrivateKey		0
-				/UseThreadLocalMemory		1
+				/Address	"sifsstud1.hsr.ch"
+				/Port		443
 				/SSLVerifyDepth 1
-				/KeyFileClient	"cert_files/clientkey.pem"
-				/CertFileClient	"cert_files/clientcrt.pem"
+				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
+				/CertFileClient	"/tmp/SSLSocketTestHashedCerts/clientcrt.pem"
 				/SSLVerifyFailIfNoPeerCert 	0
 				/SSLUseAppCallback		0
 				/SSLVerifyPeerCert		0
-				/SSLPeerCAFile "cert_files/rootCA1crt.pem"
+				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
 				/VerifyCertifiedEntity 0
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=sifsstud1.hsr.ch@wildplanet.com,CN=sifsstud1.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -423,29 +363,24 @@
 				/IsCertCheckPassed			1
 			}
 		}
-
 		# 13
-		#
 		#		Use c_rehashed directory containing the trusted certs, /tmp/SSLSocketTestHashedCerts
 		#		is created by prjRunTest.sh
-		#
 		{
 			/Config
 			{
-				/Address	"dylan"
-				/Port		22222
-				/NoCertAndPrivateKey		0
-				/UseThreadLocalMemory		0
+				/Address	"sifsstud1.hsr.ch"
+				/Port		443
 				/SSLVerifyDepth 3
-				/KeyFileClient	"cert_files/clientkey.pem"
-				/CertFileClient	"cert_files/clientcrt.pem"
+				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
+				/CertFileClient	"/tmp/SSLSocketTestHashedCerts/clientcrt.pem"
 				/SSLVerifyFailIfNoPeerCert 	1
 				/SSLUseAppCallback		1
 				/SSLVerifyPeerCert		1
 				/SSLVerifyPath 		"/tmp/SSLSocketTestHashedCerts"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 1
-				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"CN=sifsstud1.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -459,8 +394,8 @@
 		{
 			/Config
 			{
-				/Address	"dylan"
-				/Port		22222
+				/Address	"sifsstud1.hsr.ch"
+				/Port		443
 				/NoCertAndPrivateKey		1
 				/UseThreadLocalMemory		1
 			}

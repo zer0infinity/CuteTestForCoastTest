@@ -9,13 +9,13 @@
 {
 
 	/InternalSSLhost {
-		/ip		"dylan"
-		/port		22222
+		/ip		"sifsstud1.hsr.ch"
+		/port		443
 	}
 	/RemoteSSLhost {
-		/name	"www.tkfweb.com"
+		/name	"sifsstud1.hsr.ch"
 		/port		443
-		/faultyport	80811
+		/faultyport	8081
 	}
 }
 
