@@ -260,17 +260,23 @@ bool HTTPDAImpl::SendInput(iostream *Ios, Socket *s, long timeout, Context &cont
 {
 	StartTrace(HTTPDAImpl.SendInput);
 
-	String content;
-	OStringStream oss(&content);
-	in->Get("Input", oss, context);
-	oss.flush();
-	String body = content.SubString("\r\n\r\n");
+	long uploadSize = context.Lookup("PostContentLengthToStream", -1L);
 
 	String contentLength = "";
-	if (body.Length() >= 4) {
-		contentLength.Append(body.Length() - 4); //subtract "\r\n\r\n"
+	if (uploadSize == -1) {
+		String content;
+		OStringStream oss(&content);
+		in->Get("Input", oss, context);
+		oss.flush();
+		String body = content.SubString("\r\n\r\n");
+
+		if (body.Length() >= 4) {
+			contentLength.Append(body.Length() - 4); //subtract "\r\n\r\n"
+		} else {
+			contentLength.Append((long int)0);
+		}
 	} else {
-		contentLength.Append((long int)0);
+		contentLength.Append((long int)uploadSize);
 	}
 
 	context.GetTmpStore()["Request"]["BodyLength"] = contentLength;
