@@ -2390,7 +2390,7 @@ bool SlotFinder::IntOperate(Anything &dest, String &destSlotname, long &destIdx,
 		s = destSlotname.SubString(0, lIdxDelim);
 		if (s.Length()) {
 			Trace("part before index[" << s << "]");
-			if (IntOperate(dest, s, destIdx)) {
+			if ( IntOperate(dest, s, destIdx, delim, indexdelim) ) {
 				// ensure that we have a valid anything
 				if (dest[s].GetType() == AnyNullType) {
 					dest[s] = MetaThing(dest.GetAllocator());
