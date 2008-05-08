@@ -13,6 +13,7 @@
 #include "config_foundation.h"
 #include "Anything.h"
 #include "Dbg.h"
+#include "ITOTypeTraits.h"
 
 //---- forward declaration -----------------------------------------------
 
@@ -34,6 +35,8 @@ namespace AnyExtensions
 		typedef XThing PlainType;
 		typedef XThing &PlainTypeRef;
 		typedef XRetThing &PlainRetTypeRef;
+		typedef typename Loki::Select< Loki::IsSameType<PlainType, ROAnything>::value , ROAnything, PlainTypeRef>::Result StoredType;
+
 		typedef long PositionType;
 		typedef long &PositionTypeRef;
 		typedef const long &ConstPositionTypeRef;
@@ -44,7 +47,7 @@ namespace AnyExtensions
 
 		/*! Constructor
 			\param a the Anything to iterate on */
-		explicit Iterator(PlainType a)
+		explicit Iterator(StoredType a)
 			: fAny(a)
 			, fPosition(-1)
 			, fSize(a.GetSize()) {
@@ -129,7 +132,7 @@ namespace AnyExtensions
 		}
 
 	private:
-		PlainType		fAny;
+		StoredType		fAny;
 		PositionType	fPosition;
 		SizeType		fSize;
 
