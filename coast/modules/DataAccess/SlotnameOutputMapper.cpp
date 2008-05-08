@@ -24,7 +24,7 @@ bool SlotnameOutputMapper::DoPutAny(const char *key, Anything value, Context &ct
 	DAAccessTimer(SlotnameOutputMapper.DoPutAny, value.GetSize() << " entries processed", ctx);
 	Anything dest = GetDestination(ctx, config);
 	AnyExtensions::Iterator<Anything> aRowIter(value);
-	Anything anyRow;
+	Anything anyRow( value.GetAllocator() );
 	String strDestPath(128L);
 	while ( aRowIter(anyRow) ) {
 		SubTraceAny(PerRow, anyRow, "entry");
