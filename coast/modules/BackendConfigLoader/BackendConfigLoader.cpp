@@ -173,7 +173,7 @@ bool BackendConfigLoaderModule::RegisterBackend(String backendName)
 	}
 
 	if (backendConfigurations[backendName].IsDefined("ServiceActionMapping")) {
-		ConfNamedObject *role = (ConfNamedObject *)Registry::GetRegistry("Role")->Find("FDRole");
+		ConfNamedObject *role = (ConfNamedObject *)Registry::GetRegistry("Role")->Find("CGRole");
 		Anything namedObjectConfig = role->GetNamedObjectConfig().DeepClone();
 		Anything serviceActionMapping = backendConfigurations[backendName]["ServiceActionMapping"];
 		for (int i = 0; i < serviceActionMapping.GetSize(); i++) {
@@ -181,7 +181,7 @@ bool BackendConfigLoaderModule::RegisterBackend(String backendName)
 			namedObjectConfig["DefaultCustomerAction"]["SwitchRenderer"]["Case"][key] = serviceActionMapping[key];
 		}
 		TraceAny(namedObjectConfig, "namedObjectConfig:");
-		role->SetConfig("Role", "FDRole", namedObjectConfig);
+		role->SetConfig("Role", "CGRole", namedObjectConfig);
 	}
 
 	return ret;
