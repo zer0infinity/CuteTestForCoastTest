@@ -274,24 +274,20 @@ void Context::CollectLinkState(Anything &a)
 void Context::DebugStores(const char *msg, ostream &reply, bool printAny)
 {
 #ifdef DEBUG
-	SysLog::WriteToStderr(String("+++++++++++++++++++") << NotNull(msg) << "+++++++++++++++++++++++++\n");
-	SysLog::WriteToStderr(String("store(") << fStore.RefCount() << "): \n");
-	if (printAny) {
-		String strbuf;
-		StringStream stream(strbuf);
-		fStore.PrintOn(stream) << "\n";
-		stream.flush();
-		SysLog::WriteToStderr(strbuf);
+	reply << "+++++++++++++++++++" << NotNull(msg) << "+++++++++++++++++++++++++\n";
+	reply << "fLookupStack(" << fLookupStack.RefCount() << "): \n";
+	if ( printAny ) {
+		fLookupStack.PrintOn(reply) << "\n";
 	}
-	SysLog::WriteToStderr(String("Request(") << fRequest.RefCount() << "): \n");
-	if (printAny) {
-		String strbuf;
-		StringStream stream(strbuf);
-		fRequest.PrintOn(stream) << "\n";
-		stream.flush();
-		SysLog::WriteToStderr(strbuf);
+	reply << "fStore(" << fStore.RefCount() << "): \n";
+	if ( printAny ) {
+		fStore.PrintOn(reply) << "\n";
 	}
-	SysLog::WriteToStderr(String("-------------------") << NotNull(msg) << "-------------------------\n");
+	reply << "fRequest(" << fRequest.RefCount() << "): \n";
+	if ( printAny ) {
+		fRequest.PrintOn(reply) << "\n";
+	}
+	reply << "-------------------" << NotNull(msg) << "-------------------------\n";
 #endif
 }
 
