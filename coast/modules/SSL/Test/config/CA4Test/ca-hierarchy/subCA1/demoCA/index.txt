@@ -1,1 +1,1 @@
-V	040501133853Z		01	unknown	/C=CH/ST=ZH/L=ZH/O=Kim Dojo/OU=Test/CN=atlantis.hsr.loc/Email=subCA1@someaddr.com
+V	040501133853Z		01	unknown	/C=CH/ST=ZH/L=ZH/O=Kim Dojo/OU=Test/CN=atlantis.ifs.loc/Email=subCA1@someaddr.com

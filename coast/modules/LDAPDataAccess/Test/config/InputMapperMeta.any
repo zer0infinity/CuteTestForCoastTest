@@ -630,8 +630,8 @@
 			}
 		}
 		/InputParams {  #-- defines ldap basic input parameters ----
-			/Base		"dc=tkfpd.hsr.ch"
-			/Attributes { uid tkfmodtime userpassword }
+			/Base		"dc=tkfpd.hsr.ch"							# search base in ldap schema
+			/Attributes { uid tkfmodtime userpassword }  				# attributes we would like to get in searchresult
 			/Timeout	10	# query timeout in seconds
 			/SizeLimit	100	# result size limit
 		}
@@ -651,8 +651,8 @@
 			}
 		}
 		/InputParams {  #-- defines ldap basic input parameters ----
-			/Base	"dc=tkfpd.hsr.ch"
-			/Attributes { uid tkfmodtime userpassword }
+			/Base	"dc=tkfpd.hsr.ch"								# search base in ldap schema
+			/Attributes { uid tkfmodtime userpassword }  				# attributes we would like to get in searchresult
 			/Timeout	10	# query timeout in seconds
 			/SizeLimit	100	# result size limit
 		}

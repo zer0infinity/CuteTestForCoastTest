@@ -13,17 +13,17 @@
 #include "EBCDICSocketStreamBuf.h"
 
 //!provides the correct SocketStreamBuf for EBCDIC Sockets
-class EXPORTDECL_EBCDIC iosItopiaEBCDICSocket : virtual public ios
+class EXPORTDECL_EBCDIC iosCoastEBCDICSocket : virtual public ios
 {
 public:
-	iosItopiaEBCDICSocket(Socket *s, long timeout = 300 * 1000, long sockbufsz = cSocketStreamBufferSize )
+	iosCoastEBCDICSocket(Socket *s, long timeout = 300 * 1000, long sockbufsz = cSocketStreamBufferSize )
 		: ssbuf(s, timeout, sockbufsz) {
 		init(&ssbuf);
 	}
 	// init from ios is needed, because
 	// ios() won't do the job;
 	// (see comment in iostream.h)
-	virtual ~iosItopiaEBCDICSocket() { }
+	virtual ~iosCoastEBCDICSocket() { }
 
 	EBCDICSocketStreamBuf *rdbuf()  {
 		return &ssbuf;
@@ -33,14 +33,14 @@ protected:
 	EBCDICSocketStreamBuf ssbuf;   // the buffer with its underlying string
 
 private:
-	iosItopiaEBCDICSocket();
-}; // iosItopiaEBCDICSocket
+	iosCoastEBCDICSocket();
+}; // iosCoastEBCDICSocket
 
 //---- EBCDICSocketStream ------------------------------------------------
 //!text socket stream which translates data to/from EBCDIC
 //! outbound data is converted from ASCII to EBCDIC,
 //! inbound data is converted from EBCDIC to ASCII.
-class  EXPORTDECL_EBCDIC EBCDICSocketStream : public iosItopiaEBCDICSocket, public iostream
+class  EXPORTDECL_EBCDIC EBCDICSocketStream : public iosCoastEBCDICSocket, public iostream
 {
 public:
 	EBCDICSocketStream(Socket *s, long timeout = 300 * 1000, long sockbufsz = cSocketStreamBufferSize);

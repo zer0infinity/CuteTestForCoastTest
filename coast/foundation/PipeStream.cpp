@@ -24,7 +24,7 @@
 
 //---- PipeStream -------------------------------------------------------------------
 PipeStream::PipeStream(Pipe *s, long timeout, long sockbufsz)
-	: iosItopiaPipe(s, timeout, sockbufsz, ios::in | ios::out)
+	: iosCoastPipe(s, timeout, sockbufsz, ios::in | ios::out)
 #if defined(ONLY_STD_IOSTREAM)
 	, iostream(&fPipeBuf)
 #endif

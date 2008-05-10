@@ -130,24 +130,24 @@ protected:
 	long fWriteCount;
 };
 
-//---- iosItopiaPipe -------------------------------------------------------------------
+//---- iosCoastPipe -------------------------------------------------------------------
 //! adapts ios to a Pipe Stream buffer
-class EXPORTDECL_FOUNDATION iosItopiaPipe : virtual public ios
+class EXPORTDECL_FOUNDATION iosCoastPipe : virtual public ios
 {
 public:
-	iosItopiaPipe(Pipe *s, long timeout = 500, long sockbufsz = cPipeStreamBufferSize, int mode = ios::in | ios::out )
+	iosCoastPipe(Pipe *s, long timeout = 500, long sockbufsz = cPipeStreamBufferSize, int mode = ios::in | ios::out )
 		: fPipeBuf(s, timeout, sockbufsz, mode) {
 		init(&fPipeBuf);
 	}
 
-	virtual ~iosItopiaPipe() { }
+	virtual ~iosCoastPipe() { }
 
 	PipeStreamBuf *rdbuf()  {
 		return &fPipeBuf;
 	}
 
 protected:
-	iosItopiaPipe();
+	iosCoastPipe();
 	//! the buffer with its underlying string
 	PipeStreamBuf fPipeBuf;
 	// void autoflush()  { flags(flags() | ios::unitbuf); } don't ever use this sh... with sockets
@@ -155,14 +155,14 @@ protected:
 
 //---- IPipeStream -------------------------------------------------------------------
 //! istream for sockets
-class  EXPORTDECL_FOUNDATION IPipeStream : public iosItopiaPipe, public istream
+class  EXPORTDECL_FOUNDATION IPipeStream : public iosCoastPipe, public istream
 {
 public:
-	/*! constructor creates iosItopiaPipe
+	/*! constructor creates iosCoastPipe
 		\param s the socket for the istream
 		\param timeout the timeout for read operations */
 	IPipeStream(Pipe *p, long timeout = 500, long bufsz = cPipeStreamBufferSize)
-		: iosItopiaPipe(p, timeout, bufsz, ios::in)
+		: iosCoastPipe(p, timeout, bufsz, ios::in)
 #if defined(ONLY_STD_IOSTREAM)
 		, istream(&fPipeBuf)
 #endif
@@ -178,14 +178,14 @@ private:
 
 //---- OPipeStream -------------------------------------------------------------------
 //! ostream for sockets
-class  EXPORTDECL_FOUNDATION OPipeStream : public iosItopiaPipe, public ostream
+class  EXPORTDECL_FOUNDATION OPipeStream : public iosCoastPipe, public ostream
 {
 public:
-	/*! constructor creates iosItopiaPipe
+	/*! constructor creates iosCoastPipe
 		\param s the socket for the ostream
 		\param timeout the timeout for write operations */
 	OPipeStream(Pipe *s, long timeout = 500, long bufsz = cPipeStreamBufferSize)
-		: iosItopiaPipe(s, timeout, bufsz, ios::out)
+		: iosCoastPipe(s, timeout, bufsz, ios::out)
 #if defined(ONLY_STD_IOSTREAM)
 		, ostream(&fPipeBuf)
 #endif
@@ -202,10 +202,10 @@ private:
 
 //---- PipeStream -------------------------------------------------------------------
 //! iostream for sockets
-class  EXPORTDECL_FOUNDATION PipeStream : public iosItopiaPipe, public iostream
+class  EXPORTDECL_FOUNDATION PipeStream : public iosCoastPipe, public iostream
 {
 public:
-	/*! constructor creates iosItopiaPipe
+	/*! constructor creates iosCoastPipe
 		\param s the socket for the iostream
 		\param timeout the timeout for read/write operations
 		\param buffer size of the underlying PipeStreamBuf */

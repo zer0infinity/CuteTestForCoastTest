@@ -16,7 +16,7 @@
 
 //---- EBCDICSocketStream ------------------------------------------------------
 EBCDICSocketStream::EBCDICSocketStream(Socket *s, long timeout, long sockbufsz)
-	: iosItopiaEBCDICSocket(s, timeout, sockbufsz)
+	: iosCoastEBCDICSocket(s, timeout, sockbufsz)
 	, iostream(rdbuf())
 { }
 
