@@ -73,7 +73,7 @@
 ######## Test specific section ########
 
 	/EnvForAllCases {
-		/ItopiaDomain	"hsr.loc"
+		/TestDomain	"hsr.loc"
 		/RoundClosures	{
 			/"200002021400"		1
 			/"200002031400"		2
@@ -1644,9 +1644,9 @@
 		}
 		{
 			/Renderer	{
-				/ContextLookupRenderer	ItopiaDomain
+				/ContextLookupRenderer	TestDomain
 			}
-			/Expected	"hsr.ch"
+			/Expected	"hsr.loc"
 		}
 		{
 			/Env {
@@ -2526,13 +2526,13 @@
 		{
 			/Env
 			{
-				/foo "<bar>bl�d<bar/>"
+				/foo "<bar>blöd<bar/>"
 			}
 			/Renderer
 			{
 				/HTMLEscapeRenderer	{ /Lookup foo }
 			}
-			/Expected       "&#60;bar&#62;bl&#246;d&#60;bar&#47;&#62;"
+			/Expected       "&#60;bar&#62;bl&#195;&#182;d&#60;bar&#47;&#62;"
 		}
 		/GetThisHostNameRendererFullTest
 		{
