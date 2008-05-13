@@ -24,4 +24,33 @@
 		/MainSwitch	10
 		/EnableAll	10
 	}
+	/DirFileListAction {
+		/MainSwitch	10
+		/EnableAll	10
+		/DoExecAction {
+			/MainSwitch	10
+			/EnableAll	10
+			/TraceList	-10
+		}
+	}
+	/System {
+		/MainSwitch	0
+		/EnableAll	10
+	}
+	/ConfiguredActionTest {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/TimeLoggingAction {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/TimeLoggingModule {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/TimeLogger {
+		/MainSwitch	10
+		/EnableAll	10
+	}
 }
