@@ -13,12 +13,14 @@
 #include "System.h"
 #include "SysLog.h"
 #include "Pipe.h"
+#include "TimeStamp.h"
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
+#include <cstdio>
+#include <cstring>
 #if !defined(WIN32)
 #include <sys/wait.h>
-#include <stdio.h>
 #else
 #include <process.h>
 #include <io.h>
@@ -270,6 +272,7 @@ bool PipeExecutor::ForkAndRun(Anything parm, Anything env)
 
 #if !defined(WIN32)
 			// now fork, and clean up
+			String strTime( TimeStamp::Now().AsStringWithZ() );
 			if (0 == (fChildPid = System::Fork())) {
 				// I am the child
 				// careful - only fork-safe stuff allowed here
@@ -284,10 +287,15 @@ bool PipeExecutor::ForkAndRun(Anything parm, Anything env)
 				}
 				// oops we failed. terminate the process
 				// don't use strings - allocators not fork-safe
+				int iError( System::GetSystemError() );
 				char buff[1024];
 				int len = snprintf(buff, sizeof(buff),
-								   "exec of program %s in dir %s failed\n",
-								   parm[0L].AsCharPtr(), (const char *)fWorkingDir);
+								   "%s exec of program %s in dir %s failed with code %d: %s\n",
+								   (const char *)strTime,
+								   parm[0L].AsCharPtr(),
+								   (const char *)fWorkingDir,
+								   iError,
+								   strerror(iError));
 				write(1, buff, len);
 				write(2, buff, len);
 				SysLog::Error(buff);
@@ -303,8 +311,8 @@ bool PipeExecutor::ForkAndRun(Anything parm, Anything env)
 				fPipe = new Pipe(outp.GetReadFd(), inp.GetWriteFd(), true, fTimeout);
 			} else {
 				// we failed to fork
-				String msg("fork failed: child pid");
-				msg  << (long)fChildPid ;
+				String msg(strTime);
+				msg.Append(" fork failed for child pid ").Append( (long)fChildPid ).Append(" with sysmsg [").Append( SysLog::LastSysError() ).Append(']');
 				SysLog::Error(msg);
 			}
 #else
