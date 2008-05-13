@@ -9,11 +9,14 @@
 {
 
 	/DLL {
+		applog
 		renderers
 	}
 	/Modules {
 		ActionsModule
 		RenderersModule
+		TimeLoggingModule
+		AppLogModule
 	}
 
 	/Actions {
@@ -31,11 +34,196 @@
 		/ContextLookupRenderer 	{ Lookup }
 	}
 
+	/TimeLoggingModule {
+		/DoTiming	1
+		/DoLogging	1
+	}
+	/AppLogModule {
+		/LogDir		"."
+		/RotateDir	"."
+		/RotateTime	"23:59"
+		/Servers {
+			/Server {
+				/TimerLog {
+					/FileName	"MethodTimer.log"
+					/Format		%MethodTimerLog.Format
+					/Header		%MethodTimerLog.Header
+				}
+			}
+		}
+	}
+
+ 	/MethodTimerLog {
+		/Header "# TimeStamp [Class.Method] [Msg]-> <Time>[Unit]"
+		/Format {
+			" ["
+			{ /Lookup TimeLogEntry.Key }
+			"] "
+			{ /StringCompareRenderer {
+				/String1	{ /Lookup TimeLogEntry.Msg }
+				/String2	""
+				/Unequal {
+					"["
+					{ /Lookup TimeLogEntry.Msg }
+					"] "
+				}
+			} }
+			"-> "
+			{ /Lookup TimeLogEntry.Time }
+			{ /Lookup TimeLogEntry.Unit }
+		}
+	}
+#--- time logging configuration ---
+	# configure where to log, acts as config for TimeLoggingAction
+	/TimeLoggingAction {
+		{ /TimeLoggingAction	{
+			/Channel		TimerLog
+			/TimeEntries	Method
+		} }
+#		{ /TimeLoggingAction	{
+#			/Channel		TimerLog
+#			/TimeEntries	DataAccess
+#		} }
+	}
+	# specify which entries to log
+	/EnabledValues {
+		/Request				1		# measured with RequestTimer() macro
+		/Method {						# measured with MethodTimer() macro
+			/Page {
+				/Render			1
+			}
+			/DataCarer {
+				/GetTimeSeries	1
+				/IntGetTimeSeries	1
+			}
+			/DirFileListAction {
+				/DoExecAction	1
+			}
+		}
+		/DataAccess {					# measured with DAAccessTimer() macro
+			/DataAccess {
+				/StdExec		0
+				/Exec			0
+			}
+			/ResultMapper {
+				/Put			0
+			}
+			/ParameterMapper {
+				/Get			0
+			}
+			/SlotnameOutputMapper {
+				/DoPutAny		0
+			}
+			/StreamToAnythingMapper {
+				/DoPutStream	0
+			}
+		}
+	}
+
 ######## Test specific section ########
 
 	/RunOnly {
 	}
 	/TestCases {
+		/DirFileListActionTest01 {
+			/Env {
+				/TimeLoggingAction	%TimeLoggingAction
+				/EnabledValues		%EnabledValues
+			}
+			/TheAction {
+				/DirFileListAction {
+					/Path	{
+						"."
+					}
+					/Filter ""
+					/Sort	""
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore {
+					/RetrievedFileList	ignore
+				}
+			}
+		}
+		/DirFileListActionTest02 {
+			/Env {
+				/TimeLoggingAction	%TimeLoggingAction
+				/EnabledValues		%EnabledValues
+			}
+			/TheAction {
+				/DirFileListAction {
+					/Path	{
+						"/"
+						"home"
+					}
+					/Filter ""
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore {
+					/RetrievedFileList	ignore
+				}
+			}
+		}
+		/DirFileListActionTest03 {
+			/Env {
+				/TimeLoggingAction	%TimeLoggingAction
+				/EnabledValues		%EnabledValues
+			}
+			/TheAction {
+				/DirFileListAction {
+					/Path	{
+						"."
+					}
+					/Filter "cpp"
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore {
+					/RetrievedFileList	ignore
+				}
+			}
+		}
+		/DirFileListActionTest04 {
+			/Env {
+				/TimeLoggingAction	%TimeLoggingAction
+				/EnabledValues		%EnabledValues
+			}
+			/TheAction {
+				/DirFileListAction {
+					/Path	{
+						"."
+					}
+					/Filter "cpp"
+					/Target "MyTargetSlot"
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore {
+					/MyTargetSlot	ignore
+				}
+			}
+		}
+		/DirFileListActionTest05 {
+			/TheAction {
+				/DirFileListAction {
+					/Path	{
+						"/otto//"
+					}
+					/Target "MyTargetSlot"
+				}
+			}
+			/ExpectedResult 0
+			/Result {
+				/TmpStore {
+					/Error "Slot Path contains not a valid path !"
+				}
+			}
+		}
 		/FirstTestName {
 			/TmpStore {
 			}
