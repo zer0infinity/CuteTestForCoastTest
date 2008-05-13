@@ -3493,7 +3493,7 @@ void AnythingTest::SlotPutterAppendTest()
 void AnythingTest::AnythingLeafIteratorTest()
 {
 	StartTrace(AnythingTest.AnythingLeafIteratorTest);
-	Anything expectedStore(fConfig["Results"][name()]);
+	ROAnything expectedStore(fConfig["Results"][name()]);
 	{
 		// Set up
 		Anything iterateMe = fQuery["IterateThis"];
@@ -3504,6 +3504,17 @@ void AnythingTest::AnythingLeafIteratorTest()
 		Anything akt;
 		while (iter.Next(akt)) {
 			foundResult.Append(akt);
+		}
+		assertAnyEqual(expectedStore, foundResult);
+	}
+	{
+		// Set up
+		Anything foundResult;
+		AnyExtensions::LeafIterator<ROAnything> iter( fQuery["IterateThis"] );
+
+		ROAnything akt;
+		while (iter.Next(akt)) {
+			foundResult.Append(akt.DeepClone());
 		}
 		assertAnyEqual(expectedStore, foundResult);
 	}
