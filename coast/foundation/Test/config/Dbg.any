@@ -230,4 +230,12 @@
 		/MainSwitch						20
 		/EnableAll						20
 	}
+	/Iterator {
+		/MainSwitch						20
+		/EnableAll						20
+	}
+	/LeafIterator {
+		/MainSwitch						20
+		/EnableAll						20
+	}
 }
