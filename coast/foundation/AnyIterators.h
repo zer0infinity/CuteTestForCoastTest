@@ -144,18 +144,23 @@ namespace AnyExtensions
 //---- LeafIterator -----------------------------------------------------------
 	/*! Iterates through the whole Anything structure, and returns all Leafs (i.e. Type!=eArray)
 	 */
-	template < class XThing >
-	class LeafIterator: public Iterator<XThing>
+	template <
+	class XThing,
+		  class XRetThing = XThing,
+		  class SlotNameType = String
+		  >
+	class LeafIterator: public Iterator<XThing, XRetThing, SlotNameType>
 	{
 	public:
-		typedef Iterator<XThing> BaseIterator;
-		typedef LeafIterator<XThing> ThisIterator;
+		typedef Iterator<XThing, XRetThing, SlotNameType> BaseIterator;
+		typedef LeafIterator<XThing, XRetThing, SlotNameType> ThisIterator;
+		typedef typename BaseIterator::StoredType StoredType;
 		typedef typename BaseIterator::PlainType PlainType;
 		typedef typename BaseIterator::PlainTypeRef PlainTypeRef;
 
 		/*! Constructor
 			\param a the Anything to iterate on */
-		LeafIterator(PlainTypeRef a)
+		LeafIterator(StoredType a)
 			: BaseIterator(a)
 			, subIter(0) {
 			StartTrace(LeafIterator.Ctor);
@@ -184,18 +189,19 @@ namespace AnyExtensions
 				}
 			}
 			// Move to the Next slot that holds something different from an empty Array
-			bool found = false;
-			PlainType next;
-			while ( !found && BaseIterator::DoGetNext(next) ) {
-				if ( next.GetType() == AnyArrayType ) {
-					if ( next.GetSize() > 0 ) {
+			bool found(false);
+			TraceAny(this->GetAny(), "current content");
+			while ( !found && BaseIterator::DoGetNext(fanySubRef) ) {
+				TraceAny(fanySubRef, "descendant");
+				if ( fanySubRef.GetType() == AnyArrayType ) {
+					if ( fanySubRef.GetSize() > 0 ) {
 						// its an Array and not empty, we have to descend
-						subIter = new ThisIterator(next);
+						subIter = new ThisIterator(fanySubRef);
 						found = subIter->Next(a);
 					}
 				} else {
 					// a leaf
-					a = next;
+					a = fanySubRef;
 					found = true;
 				}
 			}
@@ -203,6 +209,7 @@ namespace AnyExtensions
 		}
 
 		BaseIterator *subIter;
+		PlainType	fanySubRef;
 	};
 
 }
