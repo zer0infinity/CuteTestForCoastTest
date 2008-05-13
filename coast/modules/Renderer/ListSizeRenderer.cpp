@@ -33,10 +33,11 @@ void ListSizeRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything 
 	if ( !data.IsNull() ) {
 		String str;
 		RenderOnString(str, ctx, data);
+		Trace("ListName is [" << str << "]");
 		ROAnything roaData = ctx.Lookup(str);
 		if ( !roaData.IsNull() ) {
 			long size = roaData.GetSize();
-			Trace("ListName size is: " << size);
+			Trace("size of [" << str << "] is: " << size);
 			reply << size;
 			return;
 		}
