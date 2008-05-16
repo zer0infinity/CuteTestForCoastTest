@@ -368,9 +368,9 @@ String SessionListManager::GetUniqueInstanceId()
 bool SessionListManager::SessionIsBusy(Session *session, bool &isBusy, Context &ctx)
 {
 	StartTrace(SessionListManager.SessionIsBusy);
-	long start = time(0);
-	long now = start;
-	while ( isBusy = session->IsBusy() && (now - start < 60) ) {
+	long start( time(0) );
+	long now( start );
+	while ( ( isBusy = session->IsBusy() ) && ( ( now - start ) < 60 ) ) {
 		Thread::Wait(1);
 		now = time(0);
 	}
