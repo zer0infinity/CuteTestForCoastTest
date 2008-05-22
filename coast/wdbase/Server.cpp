@@ -555,7 +555,7 @@ int Server::DoWritePIDFile(const String &pidFilePath, pid_t lPid)
 		os->flush();
 		delete os;
 	} else {
-		SYSERROR("couldn't write pid file to " << pidFilePath);
+		SYSWARNING("couldn't write pid file to " << pidFilePath);
 		return -1;
 	}
 
@@ -567,7 +567,7 @@ int Server::DoDeletePIDFile(const String &pidFilePath)
 	StartTrace(Server.DoDeletePIDFile);
 
 	if ( System::IO::unlink(pidFilePath) != 0 ) {
-		SYSERROR("couldn't delete pid file " << pidFilePath << ": " << SysLog::LastSysError());
+		SYSWARNING("couldn't delete pid file " << pidFilePath << ": " << SysLog::LastSysError());
 		return -1;
 	}
 	return 0;
@@ -584,8 +584,7 @@ int Server::SetUid()
 	ROAnything serverModules;
 	int ret = 1;
 #if !defined(WIN32)
-	String lookupedUser;
-	lookupedUser = Lookup("UserName", "");
+	String lookupedUser( Lookup("UserName", "") );
 
 	// from uname2id in util.c in apache/src
 	struct passwd *ent;
