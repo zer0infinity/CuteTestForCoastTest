@@ -57,10 +57,10 @@ class EXPORTDECL_WDBASE TimeLogger
 	friend class TimeLoggerEntry;
 public:
 	enum eResolution {
-		eSeconds = 1,
-		eMilliseconds = 1000,
-		eMicroseconds = 1000000,
-		eNanoseconds = 1000000000
+		eSeconds = DiffTimer::eSeconds,
+		eMilliseconds = DiffTimer::eMilliseconds,
+		eMicroseconds = DiffTimer::eMicroseconds,
+		eNanoseconds = DiffTimer::eNanoseconds
 	};
 
 protected:
@@ -106,20 +106,32 @@ private:
 };
 
 #define MethodTimer(key, msg, ctx)	\
-	String gsMreggoLemiT;			\
-	TimeLoggerEntry yrtnEreggoLemiT("Method", _QUOTE_(key), gsMreggoLemiT << msg, ctx, TimeLogger::eMilliseconds)
+	MethodTimerName(key, msg, ctx, __LINE__)
+
+#define MethodTimerName(key, msg, ctx, name)	\
+	String _NAME2_(gsMreggoLemiT,name);			\
+	TimeLoggerEntry _NAME2_(yrtnEreggoLemiT,name)("Method", _QUOTE_(key), _NAME2_(gsMreggoLemiT,name) << msg, ctx, TimeLogger::eMilliseconds)
 
 #define MethodTimerUnit(key, msg, ctx, res)	\
-	String gsMreggoLemiT;			\
-	TimeLoggerEntry yrtnEreggoLemiT("Method", _QUOTE_(key), gsMreggoLemiT << msg, ctx, res)
+	MethodTimerUnitName(key, msg, ctx, res, __LINE__)
+
+#define MethodTimerUnitName(key, msg, ctx, res, name)	\
+	String _NAME2_(gsMreggoLemiT,name);			\
+	TimeLoggerEntry _NAME2_(yrtnEreggoLemiT,name)("Method", _QUOTE_(key), _NAME2_(gsMreggoLemiT,name) << msg, ctx, res)
 
 #define DAAccessTimer(key,msg,ctx)	\
-	String gsMreggoLemiT;			\
-	TimeLoggerEntry yrtnEreggoLemiT("DataAccess", _QUOTE_(key), gsMreggoLemiT << msg, ctx, TimeLogger::eMilliseconds)
+	DAAccessTimerName(key, msg, ctx, __LINE__)
+
+#define DAAccessTimerName(key,msg,ctx,name)	\
+	String _NAME2_(gsMreggoLemiT,name);			\
+	TimeLoggerEntry _NAME2_(yrtnEreggoLemiT,name)("DataAccess", _QUOTE_(key), _NAME2_(gsMreggoLemiT,name) << msg, ctx, TimeLogger::eMilliseconds)
 
 #define RequestTimer(key,msg,ctx)	\
-	String gsMreggoLemiT;			\
-	TimeLoggerEntry yrtnEreggoLemiT("Request", _QUOTE_(key), gsMreggoLemiT << msg, ctx, TimeLogger::eMilliseconds)
+	RequestTimerName(key, msg, ctx, __LINE__)
+
+#define RequestTimerName(key,msg,ctx,name)	\
+	String _NAME2_(gsMreggoLemiT,name);			\
+	TimeLoggerEntry _NAME2_(yrtnEreggoLemiT,name)("Request", _QUOTE_(key), _NAME2_(gsMreggoLemiT,name) << msg, ctx, TimeLogger::eMilliseconds)
 
 #define RequestTimeLogger(ctx)						\
 	if ( TimeLoggingModule::fgDoLogging )			\

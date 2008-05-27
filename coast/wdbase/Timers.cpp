@@ -84,7 +84,7 @@ TimeLogger::TimeLogger(const char *pSection, const char *pKey, const String &msg
 	, fpSection( pSection )
 	, fpKey( pKey )
 	, fContext(ctx)
-	, fDiffTimer( aResolution )
+	, fDiffTimer( (DiffTimer::eResolution)aResolution )
 	, fpcUnit( aResolution == TimeLogger::eMilliseconds ? "ms" : ( aResolution == TimeLogger::eMicroseconds ? "us" : ( aResolution == TimeLogger::eNanoseconds ? "ns" : "s" ) ) )
 {
 }
