@@ -1425,7 +1425,7 @@ bool MyHTMLWriter::GetReqFailed( void )
 MethodMeter::MethodMeter(const char *name, Anything &result)
 	:	fResult(result),
 		fName(name),
-		fTimer(0)
+		fTimer(DiffTimer::eClockTicks)
 {
 	fTimer.Start();
 }

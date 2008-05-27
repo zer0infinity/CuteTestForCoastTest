@@ -15,7 +15,7 @@
 #include "SysLog.h"
 #include "Dbg.h"
 
-static const ul_long ullResolution = 1000000ULL;
+static DiffTimer::eResolution ullResolution = DiffTimer::eMicroseconds;
 
 //---- WPMStatHandler ----------------------------------------------------------------
 WPMStatHandler::WPMStatHandler(long poolSize)

@@ -44,7 +44,7 @@ void SystemTest::DoSingleSelectTest()
 	assertEqual(1L, System::DoSingleSelect(1, 100, false, true));
 	// just wait 100ms
 	const long waittime = 1000L;
-	DiffTimer dt(1000L);//1ms accuracy
+	DiffTimer dt(DiffTimer::eMilliseconds);//1ms accuracy
 	int iSSRet = System::DoSingleSelect(0, waittime, false, false);
 	long difft = dt.Diff();
 	Trace("time waited: " << difft << "ms, return code of function:" << iSSRet);
@@ -65,7 +65,7 @@ void SystemTest::DoSingleSelectTest()
 
 void SystemTest::MicroSleepTest()
 {
-	const long resolution = 1000000L;
+	DiffTimer::eResolution resolution( DiffTimer::eMicroseconds );
 	DiffTimer dt(resolution); // microsecond accuracy
 	const long SLEEP = resolution / 10; // = 100000L; // 100ms
 	t_assert(System::MicroSleep(SLEEP));

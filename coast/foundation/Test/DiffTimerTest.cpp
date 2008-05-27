@@ -50,7 +50,7 @@ void DiffTimerTest::ConstructorTest()
 	assertEqual(1000L, dt.fResolution);
 	t_assert(dt.TicksPerSecond() >= 100);
 
-	dt = DiffTimer(100);
+	dt = DiffTimer((DiffTimer::eResolution)100);
 	assertEqual(100L, dt.fResolution);
 }
 
@@ -64,8 +64,8 @@ void DiffTimerTest::ScaleTest()
 #endif
 
 #if defined(__sun)
-	assertEqual(10000L, dt.Scale(10 * dt.TicksPerSecond(), 1000));
-	assertEqual(10L, dt.Scale(10 * 1000000, 1000));
+	assertEqual(10000L, dt.Scale(10 * dt.TicksPerSecond(), DiffTimer::eMilliseconds));
+	assertEqual(10L, dt.Scale(10 * 1000000, DiffTimer::eMilliseconds));
 #endif
 
 #if defined(WIN32)
@@ -77,17 +77,17 @@ void DiffTimerTest::DiffTest()
 {
 	StartTrace(DiffTimerTest.DiffTest);
 
-	const long resolution = 1000L;
+	DiffTimer::eResolution resolution( DiffTimer::eMilliseconds );
 	DiffTimer dt(resolution); // milisecond resolution
 	const HRTIME wait = 200L; //one fifth of a second, not only one twentieth
 	t_assertm(System::MicroSleep(wait * resolution), "oops, interrupted"); // >= 50 miliseconds
 	HRTIME result = dt.Diff() - wait;
 	t_assertm( (result < 0 ? result * -1 : result) <= wait / 5 , (const char *)(String("assume (+-20%) accuracy but was ") << result));
-	dt = DiffTimer(1L);
+	dt = DiffTimer(DiffTimer::eSeconds);
 	t_assertm(System::MicroSleep(600 * resolution), "oops, interrupted"); // >= 50 miliseconds
 	result = dt.Diff();
 	t_assertm(result == 0L, "expected no round to take effect");
-	dt = DiffTimer(1L);
+	dt = DiffTimer(DiffTimer::eSeconds);
 	t_assertm(System::MicroSleep(1100 * resolution), "oops, interrupted"); // >= 50 miliseconds
 	result = dt.Diff();
 	t_assertm(result == 1L, "expected no round to take effect");

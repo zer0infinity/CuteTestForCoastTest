@@ -104,7 +104,7 @@ int ThreadPoolManager::Start(bool usePoolStorage, int poolStorageSize, int numOf
 		SYSDEBUG("started " << fStartedThreads << " of " << lStartSuccess << "(" << GetPoolSize() << ") started successfully.");
 		{
 			LockUnlockEntry me(fMutex);
-			DiffTimer dt(1);
+			DiffTimer dt(DiffTimer::eSeconds);
 
 			while ( (fStartedThreads < lStartSuccess) && (dt.Diff() < 30) ) {
 				fCond.TimedWait(fMutex, 1);
@@ -174,7 +174,7 @@ int ThreadPoolManager::Join(long lMaxSecsToWait)
 bool ThreadPoolManager::AwaitReady(long secs)
 {
 	StartTrace1(ThreadPoolManager.AwaitReady, "[" << GetName() << "]");
-	DiffTimer aTimer(1);
+	DiffTimer aTimer(DiffTimer::eSeconds);
 	int msgCount = 0;
 	long lCurrRequests( fpStatEvtHandler->GetCurrentParallelRequests() );
 	// check for active requests
@@ -602,7 +602,7 @@ bool WorkerPoolManager::AwaitEmpty(long sec)
 	StartTrace(WorkerPoolManager.AwaitEmpty);
 	// check for active requests running
 	// but wait at most sec seconds
-	DiffTimer aTimer(1);
+	DiffTimer aTimer(DiffTimer::eSeconds);
 	int msgCount = 0;
 	long lCurrRequests( fpStatEvtHandler->GetCurrentParallelRequests() );
 	// check for active requests
