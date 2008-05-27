@@ -71,6 +71,13 @@
               }
             }
           }
+          /svzdhiku01 {
+            /OPT_STDIO {
+              /"GCC_4.2.0 (gccfss)" {
+                /"20080523114454" 23
+              }
+            }
+          }
           /vals {
             /OPT_DBG_STDIO {
               /"GCC_3.2.2 (SuSE Linux)" {
@@ -148,6 +155,13 @@
               }
             }
           }
+          /svzdhiku01 {
+            /OPT_STDIO {
+              /"GCC_4.2.0 (gccfss)" {
+                /"20080523114454" 10
+              }
+            }
+          }
           /vals {
             /OPT_DBG_STDIO {
               /"GCC_3.2.2 (SuSE Linux)" {
@@ -222,6 +236,13 @@
             /OPT_DBG_STDIO {
               /"GCC_3.3.3 (SuSE Linux)" {
                 /"20070923101202" 980
+              }
+            }
+          }
+          /svzdhiku01 {
+            /OPT_STDIO {
+              /"GCC_4.2.0 (gccfss)" {
+                /"20080523114454" 309
               }
             }
           }
@@ -306,6 +327,13 @@
               }
             }
           }
+          /svzdhiku01 {
+            /OPT_STDIO {
+              /"GCC_4.2.0 (gccfss)" {
+                /"20080523114454" 18
+              }
+            }
+          }
           /vals {
             /OPT_DBG_STDIO {
               /"GCC_3.2.2 (SuSE Linux)" {
@@ -383,6 +411,13 @@
               }
             }
           }
+          /svzdhiku01 {
+            /OPT_STDIO {
+              /"GCC_4.2.0 (gccfss)" {
+                /"20080523114454" 11
+              }
+            }
+          }
           /vals {
             /OPT_DBG_STDIO {
               /"GCC_3.2.2 (SuSE Linux)" {
@@ -457,6 +492,13 @@
             /OPT_DBG_STDIO {
               /"GCC_3.3.3 (SuSE Linux)" {
                 /"20070923101202" 4370
+              }
+            }
+          }
+          /svzdhiku01 {
+            /OPT_STDIO {
+              /"GCC_4.2.0 (gccfss)" {
+                /"20080523114454" 1496
               }
             }
           }
