@@ -24,13 +24,13 @@ HRTIME  gettimes()
 #endif
 
 //---- DiffTimer ---------------------------------------------------------------
-DiffTimer::DiffTimer(tTimeType resolution)
+DiffTimer::DiffTimer(DiffTimer::eResolution resolution)
 	: fResolution(resolution)
 {
 	StartTrace(DiffTimer.DiffTimer);
 	Trace("TicksPerSecond(): " << TicksPerSecond() << " fResolution: " << fResolution);
 	if ( fResolution <= 0 ) {
-		fResolution = 0;    // measure in clock ticks
+		fResolution = eClockTicks;    // measure in clock ticks
 	}
 
 	Start();
@@ -42,7 +42,7 @@ DiffTimer::DiffTimer(const DiffTimer &dt)
 	StartTrace(DiffTimer.DiffTimer);
 	Trace("TicksPerSecond(): " << TicksPerSecond() << " fResolution: " << fResolution);
 	if ( fResolution <= 0 ) {
-		fResolution = 0;    // measure in clock ticks
+		fResolution = eClockTicks;    // measure in clock ticks
 	}
 
 	Start();
@@ -55,7 +55,7 @@ DiffTimer &DiffTimer::operator=(const DiffTimer &dt)
 	return *this;
 }
 
-DiffTimer::tTimeType DiffTimer::Scale(tTimeType rawDiff, tTimeType resolution)
+DiffTimer::tTimeType DiffTimer::Scale(tTimeType rawDiff, DiffTimer::eResolution resolution)
 {
 	tTimeType scaled( rawDiff );
 	if ( resolution > 0 ) {

@@ -61,11 +61,18 @@ class EXPORTDECL_FOUNDATION DiffTimer
 {
 public:
 	typedef HRTIME tTimeType;
+	enum eResolution {
+		eClockTicks = 0,
+		eSeconds = 1,
+		eMilliseconds = 1000,
+		eMicroseconds = 1000000,
+		eNanoseconds = 1000000000
+	};
 
 	/*! Timings are system dependent, resolution is used to scale it to user needs
 		small infrastructure class to ease timings of scopes with whatever resolution you like.it uses highest resolution timing apis defined on the platform
 		\param resolution the number of ticks you want measure per second; 0 means system dependent clock ticks, 1 means second resolution, 1000 means millisecond resolution etc */
-	DiffTimer(tTimeType resolution = 1000);
+	DiffTimer(eResolution resolution = eMilliseconds);
 
 	//!copy constructor for difftimers
 	DiffTimer(const DiffTimer &dt);
@@ -105,7 +112,7 @@ public:
 	}
 
 	//!scales the system dependent raw clock tick difference to the resolution defined in the constructor
-	static tTimeType Scale(tTimeType rawDiff, tTimeType resolution);
+	static tTimeType Scale(tTimeType rawDiff, eResolution resolution);
 
 protected:
 	friend class DiffTimerTest;
@@ -114,7 +121,7 @@ protected:
 	tTimeType fStart;
 
 	//!stores resolution in ticks per second
-	tTimeType fResolution;
+	eResolution fResolution;
 };
 
 #endif
