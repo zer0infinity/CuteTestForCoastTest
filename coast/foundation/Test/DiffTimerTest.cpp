@@ -60,7 +60,7 @@ void DiffTimerTest::ScaleTest()
 
 	DiffTimer dt;
 #if defined(__linux__)
-	assertEqual(100L, dt.Scale(10, 1000));
+	assertEqual(100L, dt.Scale(10, DiffTimer::eMilliseconds));
 #endif
 
 #if defined(__sun)
@@ -69,7 +69,7 @@ void DiffTimerTest::ScaleTest()
 #endif
 
 #if defined(WIN32)
-	assertEqual(10, dt.Scale(10, 1000));
+	assertEqual(10, dt.Scale(10, DiffTimer::eMilliseconds));
 #endif
 }
 
