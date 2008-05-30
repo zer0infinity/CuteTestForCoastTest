@@ -15,7 +15,6 @@
 	}
 	/Testhost {
 		/ip		"172.16.2.3"
-
 		/port	80
 	}
 	/Testhost2 {
