@@ -1571,7 +1571,7 @@
 				{
 					/LDAPError {
 						/LDAPAddTest_SingleValues {
-							/Msg "All values listed under 'Attrs' must have an associated attribute name."
+							/Msg "All values listed under 'Attrs' must have an associated attribute name. Failed at attr: 0"
 						}
 					}
 				}
@@ -1591,7 +1591,7 @@
 				{
 					/LDAPError {
 						/LDAPAddTest_SingleValues {
-							/Msg "All values listed under 'Attrs' must have an associated attribute name."
+							/Msg "All values listed under 'Attrs' must have an associated attribute name. Failed at attr: 0"
 						}
 					}
 				}
