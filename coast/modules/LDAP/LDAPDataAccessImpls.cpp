@@ -52,7 +52,7 @@ bool LDAPAbstractDAI::Exec( Context &ctx, ParameterMapper *getter, ResultMapper 
 	Trace("Executing LDAP data access: " << fName);
 	LDAPErrorHandler eh(ctx, getter, putter, fName);
 
-	bool ret = false;
+	bool ret( false );
 	if ( (ret = DoExec(ctx, getter, putter, eh)) == true ) {
 		// LDAP transaction completed successfully
 		return ret;
@@ -114,7 +114,7 @@ bool LDAPAbstractDAI::DoExec( Context &ctx, ParameterMapper *getter, ResultMappe
 	// store connection params in ctx (lookup for error-handling)
 	eh.PutConnectionParams(cp);
 
-	LDAPConnection *lc = LDAPConnectionFactory(cp);
+	LDAPConnection *lc( LDAPConnectionFactory(cp) );
 	if ( lc == (LDAPConnection *) NULL ) {
 		eh.HandleError("Fatal LDAP error. Could not create LDAP connection on heap.");
 		return false;
@@ -129,8 +129,9 @@ bool LDAPAbstractDAI::DoExec( Context &ctx, ParameterMapper *getter, ResultMappe
 	}
 	Trace("Connection to server established: " << bindName << "@" << server << ":" << port);
 	// 4. request ldap operation, then wait for result (loop)
-	int msgId = DoLDAPRequest(ctx, getter, lc, query);
-	Trace("LDAP request sent");
+	int msgId(-1);
+	int iRc( DoLDAPRequest(ctx, getter, lc, query, msgId) );
+	Trace("LDAP request sent, retCode: " << iRc);
 
 	Anything result;
 	if ( !(lc->WaitForResult(msgId, result, eh)) ) {
@@ -140,8 +141,8 @@ bool LDAPAbstractDAI::DoExec( Context &ctx, ParameterMapper *getter, ResultMappe
 	Trace("Received LDAP result(s)");
 	// 5. store result
 	String key("LDAPResult.");
-	key << fName;
-	bool storedOk = putter->Put(key, result, ctx);
+	key.Append( fName );
+	bool storedOk( putter->Put(key, result, ctx) );
 	Trace("Result stored successfully : " << storedOk);
 	ReleaseHandleInfo(ctx, lc);
 	return true;
@@ -152,14 +153,13 @@ bool LDAPAbstractDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything
 	StartTrace(LDAPAbstractDAI.DoGetQuery);
 
 	// search, check + add ldap base DN
-	String base;
+	String base(64L);
 	getter->Get("LDAPBase", base, ctx);
 
-	if (base.IsEqual("")) {
+	if ( !base.Length() ) {
 		eh.HandleError("Illegal Base DN in query (empty or not defined)");
 		return false;
 	}
-
 	query["Base"] = base;
 	return true;
 }
@@ -175,12 +175,14 @@ bool LDAPAbstractDAI::DoCheckAttributes(Anything &attrs, bool bRemoveNullValues,
 	StartTrace(LDAPAbstractDAI.DoCheckAttributes);
 	// attrs must contain attr/value
 	TraceAny(attrs, "attributes to clean");
-	long nofAttrs = attrs.GetSize();
+	long nofAttrs( attrs.GetSize() );
+	String strAttrName;
 	for (long i = 0; i < nofAttrs; ++i) {
-		if ( String(attrs.SlotName(i)).Length() <= 0 ) {
+		strAttrName = attrs.SlotName(i);
+		if ( !strAttrName.Length() ) {
 			Trace("failed at index:" << i);
-			String msg;
-			msg << "All values listed under 'Attrs' must have an associated attribute name.";
+			String msg( "All values listed under 'Attrs' must have an associated attribute name. Failed at attr: ");
+			msg.Append(i);
 			eh.HandleError(msg);
 			return false;
 		}
@@ -228,11 +230,10 @@ bool LDAPAddDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &que
 	return true;
 }
 
-int LDAPAddDAI::DoSpecificOperation(LDAPConnection *lc, String base, LDAPMod **ldapmods)
+int LDAPAddDAI::DoSpecificOperation(LDAPConnection *lc, String base, LDAPMod **ldapmods, int &iMsgId)
 {
-	StartTrace(LDAPAddDAI.DoSpecificOperation);
-	Trace("sending add request");
-	return ldap_add(lc->GetConnection(), base, ldapmods);
+	StatTrace(LDAPAddDAI.DoSpecificOperation, "sending add request", Storage::Current() );
+	return ldap_add_ext(lc->GetConnection(), base, ldapmods, NULL, NULL, &iMsgId );
 }
 
 // =========================================================================
@@ -267,35 +268,25 @@ bool LDAPCompareDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything 
 	return true;
 }
 
-int LDAPCompareDAI::DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConnection *lc, ROAnything query)
+int LDAPCompareDAI::DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConnection *lc, ROAnything query, int &iMsgId)
 {
 	StartTrace(LDAPCompareDAI.DoLDAPRequest);
 	TraceAny(query, "Query for compare request:");
 
 	// get arguments
-	String base = query["Base"].AsString();
-	String attrName = query["AttrName"].AsString();
-	String attrVal = query["AttrValue"].AsString();
+	String base( query["Base"].AsString() );
+	String attrName( query["AttrName"].AsString() );
+	String attrVal( query["AttrValue"].AsString() );
 	Trace("comparison of value with length: " << attrVal.Length() << " value [" << attrVal.DumpAsHex() << "]");
-	bool bBinaryOperation( false );
 	int iOpCode(0);
-	if ( getter->Get("PlainBinaryValues", bBinaryOperation, ctx) && bBinaryOperation ) {
-		int iMsgId(0);
-		berval CompareValue;
-		CompareValue.bv_val = (char *)(const char *)attrVal;
-		CompareValue.bv_len = attrVal.Length();
-		Trace("binary comparison");
-		if ( ( iOpCode = ldap_compare_ext( lc->GetConnection(), base, attrName, &CompareValue, NULL, NULL, &iMsgId ) ) == LDAP_SUCCESS ) {
-			iOpCode = iMsgId;
-			Trace("compare successful, iOpCode:" << (long)iOpCode << " iMsgId:" << (long)iMsgId);
-		} else {
-			Trace("failed to compare, iOpCode:" << (long)iOpCode << " iMsgId:" << (long)iMsgId);
-			iOpCode = -1;
-		}
+	berval CompareValue;
+	CompareValue.bv_val = (char *)(const char *)attrVal;
+	CompareValue.bv_len = attrVal.Length();
+	if ( ( iOpCode = ldap_compare_ext( lc->GetConnection(), base, attrName, &CompareValue, NULL, NULL, &iMsgId ) ) == LDAP_SUCCESS ) {
+		Trace("compare successful, iOpCode:" << (long)iOpCode << " iMsgId:" << (long)iMsgId);
 	} else {
-		// send request
-		Trace("plain text comparison");
-		iOpCode = ldap_compare(lc->GetConnection(), base, attrName, attrVal);
+		Trace("failed to compare, iOpCode:" << (long)iOpCode << " iMsgId:" << (long)iMsgId);
+		iOpCode = -1;
 	}
 	return iOpCode;
 }
@@ -305,16 +296,16 @@ int LDAPCompareDAI::DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPCon
 //--- LDAPDeleteDAI -----------------------------------------------------
 RegisterDataAccessImpl(LDAPDeleteDAI);
 
-int LDAPDeleteDAI::DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConnection *lc, ROAnything query)
+int LDAPDeleteDAI::DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConnection *lc, ROAnything query, int &iMsgId)
 {
 	StartTrace(LDAPDeleteDAI.DoLDAPRequest);
 	TraceAny(query, "Query for delete request:");
 
 	// get base
-	String base = query["Base"].AsString();
+	String base( query["Base"].AsString() );
 
 	// send request
-	return ldap_delete(lc->GetConnection(), base);
+	return ldap_delete_ext(lc->GetConnection(), base, NULL, NULL, &iMsgId );
 }
 
 // =========================================================================
@@ -344,7 +335,7 @@ bool LDAPModifyDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &
 
 	// check for legal mods and skip misspellings/unknown mods
 	Anything checkedMods;
-	int size = mods.GetSize();
+	int size( mods.GetSize() );
 	String slotname;
 	bool bCont(true);
 	for (int i = 0; bCont && i < size; ++i) {
@@ -426,7 +417,7 @@ int LDAPModifyDAI::IntPrepareLDAPMods(LDAPMod **ldapmods, int modcode, int &lMod
 	return lCurrentAttribute;
 }
 
-int LDAPModifyDAI::DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConnection *lc, ROAnything query)
+int LDAPModifyDAI::DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConnection *lc, ROAnything query, int &iMsgId)
 {
 	// ------------------------------------------------------------
 	// hint: look at syntax of modify request in .h file, this will
@@ -478,7 +469,7 @@ int LDAPModifyDAI::DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConn
 	Assert( counter <= totalmods );
 	ldapmods[totalmods] = NULL; // terminate list of mods
 
-	int msgId = DoSpecificOperation(lc, base, ldapmods);
+	int iRc( DoSpecificOperation(lc, base, ldapmods, iMsgId) );
 
 	Trace("Freeing memory...");
 	if ( ldapmods ) {
@@ -502,14 +493,14 @@ int LDAPModifyDAI::DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConn
 		SubTrace(TraceMallocFree, "freeing ldapmods");
 		Storage::Current()->Free( ldapmods );
 	}
-	return msgId;
+	return iRc;
 }
 
-int LDAPModifyDAI::DoSpecificOperation(LDAPConnection *lc, String base, LDAPMod **ldapmods)
+int LDAPModifyDAI::DoSpecificOperation(LDAPConnection *lc, String base, LDAPMod **ldapmods, int &iMsgId)
 {
 	StartTrace(LDAPModifyDAI.DoSpecificOperation);
 	Trace("sending modify request");
-	return ldap_modify(lc->GetConnection(), base, ldapmods);
+	return ldap_modify_ext(lc->GetConnection(), base, ldapmods, NULL, NULL, &iMsgId);
 }
 
 // =========================================================================
@@ -527,9 +518,9 @@ bool LDAPSearchDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &
 	}
 
 	// find rest of bits & pieces
-	String scopeStr = "base", filter;
+	String scopeStr( "base" ), filter;
 	Anything attrs;
-	long attrsOnly = -1, scope, sizeLimit = LDAP_NO_LIMIT, timeout = -1;
+	long attrsOnly( -1 ), scope( LDAP_SCOPE_BASE ), sizeLimit( LDAP_NO_LIMIT ), timeout( -1 );
 
 	getter->Get("LDAPScope", scopeStr, ctx);
 	getter->Get("LDAPFilter", filter, ctx);
@@ -541,7 +532,6 @@ bool LDAPSearchDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &
 	// glue rest of query together (and use defaults, where necessary)
 
 	// scope (optional, default = base)
-	scope = LDAP_SCOPE_BASE;	// default
 	scopeStr.ToLower();
 	if (scopeStr.IsEqual("subtree")) {
 		scope = LDAP_SCOPE_SUBTREE;
@@ -569,20 +559,20 @@ bool LDAPSearchDAI::DoGetQuery(ParameterMapper *getter, Context &ctx, Anything &
 	return true;
 }
 
-int LDAPSearchDAI::DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConnection *lc, ROAnything query)
+int LDAPSearchDAI::DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConnection *lc, ROAnything query, int &iMsgId)
 {
 	StartTrace(LDAPSearchDAI.DoLDAPRequest);
 	TraceAny(query, "Query for search request:");
 
 	// get arguments
-	String base = query["Base"].AsString();
-	int scope = (int) query["Scope"].AsLong();
-	String filter = query["Filter"].AsString();
-	int attrsonly = (int) query["AttrsOnly"].AsLong();
-	int sizeLimit = (int) query["SizeLimit"].AsLong();
+	String base( query["Base"].AsString() );
+	int scope( (int) query["Scope"].AsLong() );
+	String filter( query["Filter"].AsString() );
+	int attrsonly( (int) query["AttrsOnly"].AsLong() );
+	int sizeLimit( (int) query["SizeLimit"].AsLong() );
 
 	// timeout override
-	int timeout = (int) query["TimeLimit"].AsLong();
+	int timeout( (int) query["TimeLimit"].AsLong() );
 	timeval tv;
 	timeval *tvp;
 	if (timeout < 0) {
@@ -595,8 +585,8 @@ int LDAPSearchDAI::DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConn
 	tvp = (timeout == 0) ? NULL : &tv;
 
 	// build attrs-array
-	char **attrs = NULL;
-	long size = query["Attrs"].IsNull() ? 0 : query["Attrs"].GetSize();
+	char **attrs( NULL );
+	long size( query["Attrs"].IsNull() ? 0 : query["Attrs"].GetSize() );
 	if (size > 0) {
 		attrs = (char **) calloc(size + 1, sizeof(char *));
 		if (!attrs) {
@@ -610,9 +600,8 @@ int LDAPSearchDAI::DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConn
 	}
 
 	// send request + free allocated memory
-	int msgId;
-	int ret = ldap_search_ext(lc->GetConnection(), base, scope, filter, attrs, attrsonly, NULL, NULL, tvp, sizeLimit, &msgId);
+	int ret( ldap_search_ext(lc->GetConnection(), base, scope, filter, attrs, attrsonly, NULL, NULL, tvp, sizeLimit, &iMsgId) );
 	free(attrs);
 
-	return (ret == LDAP_SUCCESS ? msgId : -1);
+	return ret;
 }

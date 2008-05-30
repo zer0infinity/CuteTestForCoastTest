@@ -86,7 +86,7 @@ protected:
 
 	//! abstract hook, called by Exec after connection
 	//! returns message id of started request
-	virtual int DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConnection *lc, ROAnything query) {
+	virtual int DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConnection *lc, ROAnything query, int &iMsgId) {
 		Assert(false);
 		return -1;
 	}
@@ -182,7 +182,7 @@ protected:
 
 	//! hook, called by Exec after connection.
 	//! returns message id of started replace request
-	int DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConnection *lc, ROAnything query);
+	int DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConnection *lc, ROAnything query, int &iMsgId);
 
 	/*! collect attributes/values to modify
 		\param ldapmods container to carry attributes/values to modify
@@ -198,7 +198,7 @@ protected:
 		\param base dn of entry to modify
 		\param ldapmods attributes/values to modify
 		\return return code of ldap method */
-	virtual int DoSpecificOperation(LDAPConnection *lc, String base, LDAPMod **ldapmods);
+	virtual int DoSpecificOperation(LDAPConnection *lc, String base, LDAPMod **ldapmods, int &iMsgId);
 
 private:
 	// constructor
@@ -255,7 +255,7 @@ protected:
 		\param base dn of entry to modify
 		\param ldapmods attributes/values to modify
 		\return return code of ldap method */
-	int DoSpecificOperation(LDAPConnection *lc, String base, LDAPMod **ldapmods);
+	int DoSpecificOperation(LDAPConnection *lc, String base, LDAPMod **ldapmods, int &iMsgId);
 
 private:
 	// constructor
@@ -299,7 +299,7 @@ protected:
 
 	//! hook, called by Exec after connection.
 	//! returns message id of started compare request
-	int DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConnection *lc, ROAnything query);
+	int DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConnection *lc, ROAnything query, int &iMsgId);
 
 private:
 	// constructor
@@ -337,7 +337,7 @@ public:
 protected:
 	//! hook, called by Exec after connection.
 	//! returns message id of started delete request
-	int DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConnection *lc, ROAnything query);
+	int DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConnection *lc, ROAnything query, int &iMsgId);
 
 private:
 	// constructor
@@ -385,7 +385,7 @@ protected:
 
 	//! hook, called by Exec after connection.
 	//! returns message id of started search request
-	int DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConnection *lc, ROAnything query);
+	int DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConnection *lc, ROAnything query, int &iMsgId);
 
 private:
 	// constructor
