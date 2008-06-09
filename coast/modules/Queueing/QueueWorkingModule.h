@@ -26,7 +26,12 @@
 	/UsePoolStorage			long		optional, [0|1], default 0, use preallocated memory pool for storage of Queue elements
 	/PoolStorageSize		long		optional, [kB], default 10240, pool storage size in kbytes
 	/NumOfPoolBucketSizes	long		optional, default 10, number of different allocation units within PoolStorage, starts at 16 bytes and always doubles the size so 16 << 10 will give a max usable size of 8192 bytes
-	...
+	/Logging {
+		/Servername			String		optional, default [Server], name of the Server which is used to access the correct AppLog-Channel configuration
+		/QueueLogChannel	String		optional, default [QueueLog], name of the named AppLogChannel to create
+		/ErrorChannel		String		optional, default [QueueLog], name of the named AppLogChannel to create, where error messages are written
+		/WarningChannel		String		optional, default [QueueLog], name of the named AppLogChannel to create where warning messages are written
+		/InfoChannel		String		optional, default [QueueLog], name of the named AppLogChannel to create, where info messages are written
 }</PRE>
 */
 template
@@ -67,9 +72,10 @@ public:
 		if ( config.LookupPath(roaConfig, fName) ) {
 			fConfig = roaConfig.DeepClone();
 			TraceAny(fConfig, "Module config");
-			fErrorLogName = GetNamedConfig("Logging")["ErrorChannel"].AsCharPtr("ErrorLog");
-			fWarningLogName = GetNamedConfig("Logging")["WarningChannel"].AsCharPtr("WarningLog");
-			fInfoLogName = GetNamedConfig("Logging")["InfoChannel"].AsCharPtr("AccessLog");
+			fLogName = GetNamedConfig("Logging")["QueueLogChannel"].AsCharPtr("QueueLog");
+			fErrorLogName = GetNamedConfig("Logging")["ErrorChannel"].AsCharPtr(fLogName);
+			fWarningLogName = GetNamedConfig("Logging")["WarningChannel"].AsCharPtr(fLogName);
+			fInfoLogName = GetNamedConfig("Logging")["InfoChannel"].AsCharPtr(fLogName);
 			const char *pServerName = GetNamedConfig("Logging")["Servername"].AsCharPtr("Server");
 			Server *pServer = Server::FindServer(pServerName);
 			Anything dummy;
@@ -244,6 +250,11 @@ public:
 		Log(strMessage, fInfoLogName, AppLogModule::eINFO);
 	}
 
+	void LogWithSeverity(String strMessage, AppLogModule::eLogLevel iLevel) {
+		StartTrace(QueueWorkingModule.LogInfo);
+		Log(strMessage, fLogName, iLevel);
+	}
+
 protected:
 	ROAnything GetNamedConfig(const char *name) {
 		StartTrace(QueueWorkingModule.GetNamedConfig);
@@ -327,7 +338,7 @@ private:
 	Context		*fpContext;
 	Mutex		fContextLock;
 	ListStorageType	fFailedPutbackMessages;
-	String		fErrorLogName, fWarningLogName, fInfoLogName;
+	String		fErrorLogName, fWarningLogName, fInfoLogName, fLogName;
 	u_long		fAlive;
 };
 
