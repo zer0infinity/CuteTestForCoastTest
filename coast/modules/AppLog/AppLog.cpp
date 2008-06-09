@@ -329,6 +329,8 @@ bool AppLogModule::Log(Context &ctx, const char *logChannel, const String &strMe
 		Trace("logger found");
 		Anything anyMessage(strMessage);
 		return logger->LogAll(ctx, iLevel, anyMessage);
+	} else {
+		Trace("logger:" << logChannel << " not found, message:" << strMessage);
 	}
 	return false;
 }
