@@ -10,7 +10,6 @@
 
 	/DLL {
 		stddataaccess
-		HPSPerfTest
 	}
 	/Modules {
 		DataAccessImplsModule
