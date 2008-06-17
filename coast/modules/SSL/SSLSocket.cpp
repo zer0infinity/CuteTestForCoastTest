@@ -96,7 +96,7 @@ Anything SSLSocket::ReportSSLError(Anything &errAny, unsigned long err)
 
 bool SSLSocket::ShouldRetry(SSL *ssl, int res, bool handshake)
 {
-	StartTrace(SSLSocket.ReportSSLError);
+	StartTrace(SSLSocket.ShouldRetry);
 	Trace("res = " << long(res) << " ssl = " << (long) ssl);
 	if (res >= 1) {
 		return false;
