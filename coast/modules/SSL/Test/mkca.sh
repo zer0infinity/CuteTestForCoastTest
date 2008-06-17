@@ -61,13 +61,20 @@ then
         lastREL="";
         for name in $(ls $DEV_HOME/3rdparty/installed/openssl/bin); do
                 if [ -d "$DEV_HOME/3rdparty/installed/openssl/bin/$name" ]; then
-                        if [ "${name%_*}" == "${curOS}" ]; then
-                                if [[ "${OSREL}" < "${name}" ]]; then
-                                        break;
-                                else
-                                        lastREL=$name;
-                                fi;
-                        fi;
+			if [ "${name%_*}" == "${curOS}" ]
+			then
+				relinfo=${name##*_}
+				major=${relinfo%%.*}
+				minor=${relinfo#*.}
+				echo "This system: major: ${OSREL_MAJOR} minor: ${OSREL_MINOR}"
+				echo "Installed:   major: ${major} minor: ${minor}"
+				if [ "${OSREL_MAJOR}" -le "${major}" -a  "${OSREL_MINOR}" -le "${minor}" ]
+				then
+					break;
+				else
+					lastREL=$name;
+				fi
+			fi;
                 fi;
         done;
 	if [ "${lastREL}" != "" ]
