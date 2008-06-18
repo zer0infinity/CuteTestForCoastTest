@@ -52,7 +52,7 @@ void CookieToServerRenderer::OutputCookies(const String &explicitDomainName, ost
 
 	ROAnything roaAllCookieDomains;
 	if ( c.Lookup("Cookies", roaAllCookieDomains) ) {
-		Trace( "try to find" << explicitDomainName  );
+		Trace( "try to find [" << explicitDomainName << "]");
 		TraceAny( roaAllCookieDomains,  "try to find [" << explicitDomainName << "] in here" );
 		// could be .y.z match cookie to be sent out
 		ROAnything roaCookies;
