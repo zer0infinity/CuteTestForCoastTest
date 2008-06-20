@@ -212,4 +212,20 @@
 		/MainSwitch						200
 		/EnableAll						200
 	}
+	/ConnectorDAImplTest {
+		/MainSwitch			10
+		/EnableAll			10
+	}
+	/ConnectorDAImpl {
+		/MainSwitch			10
+		/EnableAll			10
+	}
+	/EchoMsgCallBack {
+		/MainSwitch			10
+		/EnableAll			10
+	}
+	/StreamToAnythingMapper {
+		/MainSwitch			10
+		/EnableAll			10
+	}
 }

@@ -66,4 +66,10 @@
 		}
 		/DoNotSplitHeaderFields 1
 	}
+	/SendReceiveOnce {
+		/DestinationSlot	""
+	}
+	/RecreateSocket {
+		/DestinationSlot	""
+	}
 }

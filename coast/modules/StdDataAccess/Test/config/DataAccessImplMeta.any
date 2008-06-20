@@ -43,4 +43,18 @@
 		/Server		"192.168.85.5"
 		/Port		"443"
 	}
+	/SendReceiveOnce {
+		/UseSSL					0
+		/ConnectTimeout			5
+		/SocketStreamTimeout	5
+		/CheckReadyTimeout		5
+		/CloseSocket			1
+	}
+	/RecreateSocket {
+		/UseSSL					0
+		/ConnectTimeout			5
+		/SocketStreamTimeout	5
+		/CheckReadyTimeout		5
+		/CloseSocket			0
+	}
 }
