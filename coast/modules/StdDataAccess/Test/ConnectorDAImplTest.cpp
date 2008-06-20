@@ -184,7 +184,7 @@ void ConnectorDAImplTest::RecreateSocketTest()
 	}
 	// test if socketFd is still valid
 	int socketFd = ctx.GetTmpStore()["SocketParams"]["SocketFd"].AsLong(0L);
-	if ( t_assert(socketFd != 0L) ) {
+	if ( assertCompare(0, not_equal_to, socketFd) ) {
 		t_assertm(IsSocketValid(socketFd), "expected socket to be valid");
 		{
 			DataAccess aDA("SendReceiveOnce");
