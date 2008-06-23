@@ -517,7 +517,7 @@ WARN_NO_PARAMDOC       = NO
 # $version, which will be replaced by the version of the file (if it could
 # be obtained via FILE_VERSION_FILTER)
 
-WARN_FORMAT            = "$file:$line: $text "
+WARN_FORMAT            = "$file:$line: $text"
 
 # The WARN_LOGFILE tag can be used to specify a file to which warning
 # and error messages should be written. If left blank the output is written
@@ -534,12 +534,34 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories
 # with spaces.
 
-INPUT                  = ../coast \
-                         ../wdapp \
-                         ../perfTest \
-                         ../../testfw \
-                         ../../zlib \
-                         ../modules
+INPUT                  =  ../coast
+INPUT                  += ../coast/foundation
+INPUT                  += ../../zlib
+INPUT                  += ../coast/compress
+INPUT                  += ../coast/regex
+INPUT                  += ../coast/mtfoundation
+INPUT                  += ../coast/wdbase
+INPUT                  += ../wdapp
+INPUT                  += ../coast/modules/AccessControl
+INPUT                  += ../coast/modules/Actions
+INPUT                  += ../coast/modules/AppLog
+INPUT                  += ../coast/modules/CacheHandler
+INPUT                  += ../coast/modules/DataAccess
+INPUT                  += ../coast/modules/EBCDIC
+INPUT                  += ../coast/modules/HTTP
+INPUT                  += ../coast/modules/LDAP
+INPUT                  += ../coast/modules/LDAPDAICacheHandler
+INPUT                  += ../coast/modules/LDAPDataAccess
+INPUT                  += ../coast/modules/MySQL
+INPUT                  += ../coast/modules/Renderer
+INPUT                  += ../coast/modules/Security
+INPUT                  += ../coast/modules/SSL
+INPUT                  += ../coast/modules/StdDataAccess
+INPUT                  += ../coast/modules/SybaseCT
+INPUT                  += ../coast/modules/WorkerPoolManager
+INPUT                  += ../perfTest/src
+#INPUT                  += ../../testfw
+#INPUT                  += ../modules
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is
@@ -562,7 +584,7 @@ FILE_PATTERNS          =
 # should be searched for input files as well. Possible values are YES and NO.
 # If left blank NO is used.
 
-RECURSIVE              = YES
+RECURSIVE              = NO
 
 # The EXCLUDE tag can be used to specify files and/or directories that should
 # excluded from the INPUT source files. This way you can easily exclude a
@@ -582,10 +604,7 @@ EXCLUDE_SYMLINKS       = NO
 # against the file with absolute path, so to exclude all test directories
 # for example use the pattern */test/*
 
-EXCLUDE_PATTERNS       = */Test/* \
-                         */PerfTest/* \
-                         */CVS/* \
-                         */tests/*
+EXCLUDE_PATTERNS       =
 
 # The EXCLUDE_SYMBOLS tag can be used to specify one or more symbol names
 # (namespaces, classes, functions, etc.) that should be excluded from the
@@ -946,13 +965,13 @@ LATEX_HEADER           =
 # contain links (just like the HTML output) instead of page references
 # This makes the output suitable for online browsing using a pdf viewer.
 
-PDF_HYPERLINKS         = NO
+PDF_HYPERLINKS         = YES
 
 # If the USE_PDFLATEX tag is set to YES, pdflatex will be used instead of
 # plain latex in the generated Makefile. Set this option to YES to get a
 # higher quality PDF documentation.
 
-USE_PDFLATEX           = NO
+USE_PDFLATEX           = YES
 
 # If the LATEX_BATCHMODE tag is set to YES, doxygen will add the \\batchmode.
 # command to the generated LaTeX files. This will instruct LaTeX to keep
@@ -1329,7 +1348,7 @@ INCLUDED_BY_GRAPH      = YES
 # the time of a run. So in most cases it will be better to enable call graphs
 # for selected functions only using the \callgraph command.
 
-CALL_GRAPH             = YES
+CALL_GRAPH             = NO
 
 # If the CALLER_GRAPH and HAVE_DOT tags are set to YES then
 # doxygen will generate a caller dependency graph for every global function
@@ -1386,7 +1405,7 @@ DOT_GRAPH_MAX_NODES    = 50
 # code bases. Also note that the size of a graph can be further restricted by
 # DOT_GRAPH_MAX_NODES. Using a depth of 0 means no depth restriction.
 
-MAX_DOT_GRAPH_DEPTH    = 3
+MAX_DOT_GRAPH_DEPTH    = 2
 
 # Set the DOT_TRANSPARENT tag to YES to generate images with a transparent
 # background. This is enabled by default, which results in a transparent
