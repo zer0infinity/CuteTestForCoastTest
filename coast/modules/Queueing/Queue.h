@@ -42,9 +42,7 @@ Statistics can be made by evaluating the returned Anything from GetStatistics().
 	}
 	/PutCount		long		how many elements were put since queue was instantiated
 	/GetCount		long		how many elements were get since queue was instantiated
-}
-</pre>
-<b>* marks slots not yet available</b>
+} </pre>
 */
 template <
 class TElementType,
@@ -107,14 +105,14 @@ public:
 
 	/*! Status code of queue Put and Get operations. As we support blocking of either read and/or write side of the queue, we must return appropriate codes telling the caller what happened. A simple boolean value is far not enough to find out why an operation failed. */
 	enum StatusCode {
-		eSuccess = 0,								//! put or get was successful
-		eEmpty = 1,									//! the queue did not contain any elements when accessing it
-		eFull = eEmpty << 1,						//! the queue was already full when trying to put an element
-		eBlocked = eFull << 1,						//! the requested queue side is not accessible
-		eError = eBlocked << 1,						//! internal error occured
-		eAcquireFailed = eError << 1,				//! internal error about acquiring a semaphore
-		eTryAcquireFailed = eAcquireFailed << 1,	//! internal error about trying to acquire a semaphore
-		eDead = eTryAcquireFailed << 1,				//! queue already destructed
+		eSuccess = 0,								//!< put or get was successful
+		eEmpty = 1,									//!< the queue did not contain any elements when accessing it
+		eFull = eEmpty << 1,						//!< the queue was already full when trying to put an element
+		eBlocked = eFull << 1,						//!< the requested queue side is not accessible
+		eError = eBlocked << 1,						//!< internal error occured
+		eAcquireFailed = eError << 1,				//!< internal error about acquiring a semaphore
+		eTryAcquireFailed = eAcquireFailed << 1,	//!< internal error about trying to acquire a semaphore
+		eDead = eTryAcquireFailed << 1,				//!< queue already destructed
 	};
 
 	//! Put element of type ElementTypeRef into queue
@@ -252,10 +250,10 @@ public:
 
 	/*! Code to specify queue side to modify */
 	enum BlockingSide {
-		eNone = 0,							//! neither Put nor Get side will get modified
-		ePutSide = 1,						//! input side of queue should get modified
-		eGetSide = ePutSide << 1,			//! output side of queue should get modified
-		eBothSides = ePutSide | eGetSide,	//! both sides of queue should get modified
+		eNone = 0,							//!< neither Put nor Get side will get modified
+		ePutSide = 1,						//!< input side of queue should get modified
+		eGetSide = ePutSide << 1,			//!< output side of queue should get modified
+		eBothSides = ePutSide | eGetSide,	//!< both sides of queue should get modified
 	};
 
 	//! Check if the given queue side (put/get) is blocked for access
