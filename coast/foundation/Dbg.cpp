@@ -25,11 +25,11 @@ Anything Tracer::fgWDDebugContext(Storage::Global());
 ROAnything Tracer::fgROWDDebugContext;
 long Tracer::fgLowerBound = 0;
 long Tracer::fgUpperBound = 0;
-long Tracer::fgAlwaysOn = 0;
 bool Tracer::fgDumpAnythings = false;
 bool Tracer::fgTerminated = true;
 static bool fgIsInitialised = false;
 
+//! <b>Utility class to keep track of trace indent</b>
 class TracerHelper
 {
 public:
@@ -304,7 +304,6 @@ void Tracer::Reset()
 	if (fgWDDebugContext.GetType() != AnyNullType) {
 		fgLowerBound = fgWDDebugContext["LowerBound"].AsLong(0);
 		fgUpperBound = fgWDDebugContext["UpperBound"].AsLong(0);
-		fgAlwaysOn = fgWDDebugContext["AlwaysOn"].AsLong(0);
 		fgDumpAnythings = fgWDDebugContext["DumpAnythings"].AsBool(true);
 	}
 }

@@ -19,167 +19,341 @@ class EXPORTDECL_FOUNDATION Anything;
 class EXPORTDECL_FOUNDATION ROAnything;
 class EXPORTDECL_FOUNDATION TracerHelper;
 
-//!class and macros, that provide tracing support
-//!This macros help keep the coding expense for inserting trace statements
-//!into the source-code at a minimum.<P>
-//!If the preprocessor flag DEBUG is not set they expand into nothing.
-//!To keep the trace output at acceptable levels we introduced a config
-//!file for debugging Dbg.any. Therein you can switch the trace on and off.
-//!<P><br>
-//!Trace statements are scoped. In every scope of a C++-Program you can
-//!use a StartTrace or StartTrace1 macro. They take as a first parameter
-//!a trigger e.g. <B>StartTrace(Server.Load)</B>. This results into output onto
-//!cerr like
-//!<P><I>"Server.Load ---- entered ---"</I><P><I>"Server.Load ---- left ---"</I><P>
-//!on entering resp. leaving the scope. Within the scope you can use as many
-//!Trace macros as you need. They are all set with the same switch.
-//!To set the switch you have to insert the following lines into <B>Dbg.any</B><P><P>
-//!<I>Server {<P>
-//!	/Load		10<P>
-//!}</I><P>
-//!<h3>List of Trace Macros</h3>
-//!<ul>
-//!<b>At start of scope:</b>
-//!<li>StartTrace(trigger)<br> e.g. StartTracer(Server.Load);
-//!<li>StartTrace1(trigger, messages)<br>
-//!e.g. StartTrace(Server.Load, "file:<" << filename << ">");<p>
-//!<b>Within scope: (as many as useful)</b>
-//!<li>Trace(message)<br>
-//!Trace("some text:" << aVariable << " some additional text");
-//!<li>TraceAny(anything, message)<br>
-//!TraceAny(anAnything, "an explaining Text like tmpStore:");<p>
-//!<b>To restrict lengthy output:</b>
-//!<li>SubTrace(subtrigger, messages);<br>
-//!Trace(filename, "filname:" << filename << " found");
-//!<li>SubTraceAny(subtrigger, anything, message);<br>
-//!Trace(tmpStore, tmp, "tmpStore at open:");
-//!</ul>
+/*!
+\file
+\brief Macros to simplify the task of printing out messages to the console together with full control of what to print.
+The trace facility of Coast is very powerful due to its flexibility based on configuration in a file. To enable/disable
+trace output, no recompilation of code is necessary. Simple changes in a file named \b Dbg.any are necessary. Due to some overhead
+to evaluate if trace messages are to be printed or not, the facility will only be enabled when flag \em DEBUG was enabled at compile time.
 
+\par Preprocessor Flags
+If the preprocessor flag \em DEBUG is not set, the macros described here expand into nothing. To keep the trace output at acceptable levels we introduced a config
+file for debugging, \b Dbg.any. Therein you can switch the trace on and off at a global level but also at method level if needed.
+
+\par Trace mechanics
+Trace statements are scoped unless the Static ones are used. In every scope of a C++-Program you can use a StartTrace() or StartTrace1() macro. They take as a first parameter
+a trigger e.g. <B>StartTrace(Server.Load)</B>. This results into output onto cerr like
+\code
+Server.Load --- entering ---
+	<more trace output of this method or enabled submethods>
+Server.Load --- leaving ---
+\endcode
+on entering resp. leaving the scope. Within the scope you can place as many Trace() macros as you need. They are all enabled with the same switch.
+To enable them, you have to insert the following lines into \b Dbg.any:
+\code
+{
+	/LowerBound		10
+	/UpperBound		20
+	/DumpAnythings	1
+
+	/Server {
+		/MainSwitch	10
+		/EnableAll	0
+		/Load		10
+	}
+}
+\endcode
+
+\par Structure of \b Dbg.any
+\code
+{
+	/LowerBound		10
+	/UpperBound		20
+	/DumpAnythings	1
+
+	/Server {
+		/MainSwitch	10
+		/EnableAll	0
+		/Load		10
+	}
+}
+\endcode
+
+\par List of Trace Macros
+The following macros help keep the coding expense for inserting trace statements into the source-code at a minimum.
+	- <b>At start of scope:</b>
+		- StartTrace(trigger) \code StartTrace(Server.Load); \endcode
+		- StartTrace1(trigger, messages) \code StartTrace(Server.Load, "file:<" << filename << ">"); \endcode
+	- <b>Within scope: (as many as useful)</b>
+		- Trace(message) \code Trace("some text:" << aVariable << " some additional text"); \endcode
+		- TraceAny(anything, message) \code TraceAny(anAnything, "an explaining Text like tmpStore:"); \endcode
+	- <b>To restrict lengthy output:</b>
+		- SubTrace(subtrigger, messages) \code SubTrace(filename, "filname:" << filename << " found"); \endcode
+		- SubTraceAny(subtrigger, anything, message) \code SubTraceAny(tmpStore, tmp, "tmpStore at open:"); \endcode
+*/
+
+//! <b>class and macros, that provide tracing support</b>
+/*! Detailed description of how tracing works can be found in \b Dbg.h */
 class EXPORTDECL_FOUNDATION Tracer
 {
 	Tracer(const Tracer &);
 	Tracer &operator=(const Tracer &);
 public:
+	//! Contructor getting trigger only argument
+	/*! \param trigger Will internally be used to do an Anything::LookupPath() search inside the \b Dbg.any file to check if trace output should be enabled or not */
 	Tracer(const char *trigger);
+
+	//! Contructor getting trigger and additional message as arguments
+	/*! \param trigger Will internally be used to do an Anything::LookupPath() search inside the \b Dbg.any file to check if trace output should be enabled or not
+		\param msg additional message to print out when constructing/destructing Tracer object */
 	Tracer(const char *trigger, const char *msg);
 
+	//! Destructor
+	/*! if a message was specified when constructing the object, it will be printed out during destruction */
 	~Tracer();
 
 	void Use() const { }
 
+	//! print out message \em msg
+	/*! \param msg message to print out */
 	void WDDebug(const char *msg);
+
+	//! print out content of an Anything
+	/*! \param any (RO)Anything to print out
+		\param msg message to print out */
 	void AnyWDDebug(const ROAnything &any, const char *msg);
+
+	//! print out \em msg when additional \em trigger is activated
+	/*! \param trigger additional sublevel within current trigger scope
+		\param msg message to print out */
 	void SubWDDebug(const char *trigger, const char *msg);
+
+	//! print out \em any when additional \em trigger is activated
+	/*! \param trigger additional sublevel within current trigger scope
+		\param any (RO)Anything to print out
+		\param msg message to print out */
 	void SubAnyWDDebug(const char *trigger, const ROAnything &any, const char *msg);
+
+	//! print out single \em msg when \em trigger is activated independent of other trigger scopes
+	/*! \param trigger scope of trigger to check for
+		\param msg message to print out
+		\param pAlloc Allocator to use for allocating memory */
 	static void StatWDDebug(const char *trigger, const char *msg, Allocator *pAlloc);
-	static void AnythingWDDebug(const char *trigger, const ROAnything &a, const char *msg, Allocator *pAlloc);
+
+	//! print out single \em any with \em msg when \em trigger is activated independent of other trigger scopes
+	/*! \param trigger scope of trigger to check for
+		\param any (RO)Anything to print out
+		\param msg message to print out
+		\param pAlloc Allocator to use for allocating memory */
+	static void AnythingWDDebug(const char *trigger, const ROAnything &any, const char *msg, Allocator *pAlloc);
+
+	//! Check if \em trigger is activated
+	/*! \param trigger scope of trigger to check for
+		\param pAlloc Allocator to use for allocating memory
+		\return true if trigger is active
+		\return false otherwise */
 	static bool CheckWDDebug(const char *trigger, Allocator *pAlloc);
 
+	//! (Re-)Load trace switch configuration from \b Dbg.any into global fgWDDebugContext
 	static void Reset();
+
+	//! Unload trace switch configuration and disable tracing
 	static void Terminate();
 
 protected:
 	friend class DbgTest;
+
+	//! forwarding method to DoCheckLevel()
+	/*! \param trigger scope of trigger to check for
+		\param pAlloc Allocator to use for allocating memory */
 	static bool CheckTrigger(const char *trigger, Allocator *pAlloc);
 
+	//! Checks if current scope is enabled or not and delegates to DoCheckTrigger() if a trigger entry needs to be checked
+	/*! \param trigger scope of trigger to check for
+		\param level ROAnything referencing specific trace switch config entry used by looking up \em trigger in fgWDDebugContext
+		\param levelSwitch lower bound at current scope to test for
+		\param levelAll log level of outer scope
+		\param enableAll enable all level of outer scope
+		\param pAlloc Allocator to use for allocating memory */
 	static bool DoCheckLevel(const char *trigger, const ROAnything &level, long levelSwitch, long levelAll, long enableAll, Allocator *pAlloc);
+
+	//! Checks if trigger entry is enabled for tracing or not
+	/*! \param trigger scope of trigger to check for
+		\param level ROAnything referencing specific trace switch config entry used by looking up \em trigger in fgWDDebugContext
+		\param levelSwitch lower bound at current scope to test for
+		\param levelAll log level of outer scope
+		\param enableAll enable all level of outer scope
+		\param pAlloc Allocator to use for allocating memory */
 	static bool DoCheckTrigger(const char *trigger, const ROAnything &level, long levelSwitch, long levelAll, long enableAll, Allocator *pAlloc);
+
+	//! Checks if level of trigger entry is to be enabled for tracing
+	/*! \param switchValue value to test for
+		\param levelSwitch lower bound value
+		\param levelAll upper bound value */
 	static bool DoCheckSwitch(long switchValue, long levelSwitch, long levelAll);
+
+	//! Checks if level of trigger entry is to be enabled for tracing based on coresponding MainSwitch value
+	/*! \param mainSwitch value to test for
+		\param levelSwitch lower bound value
+		\param levelAll upper bound value */
 	static bool CheckMainSwitch(long mainSwitch, long levelSwitch, long levelAll);
 
 private:
+	//! method to convert ROAnything into traceable stream
+	/*! \param any (RO)Anything to print out
+		\param hlp TracerHelper instance to use for output */
 	static void IntAnyWDDebug(const ROAnything &any, TracerHelper &hlp);
 
+	//! pointer to character buffer storing the trigger
 	const char *fTrigger;
+	//! flag to store if main trigger is enabled or not
 	bool fTriggered;
+	//! pointer to optional message to print out when entering/leaving a Trace scope
 	const char *fpMsg;
+	//! pointer to Allocator to use for allocating memory of internally used String buffers
 	Allocator *fpAlloc;
 
+	//! globally used indent level to structure output
 	static int fgLevel;
+	//! global Anything to store trace switch entries loaded from \b Dbg.any
 	static Anything fgWDDebugContext;
+	//! global ROAnything which is wrapped around fgWDDebugContext to support multi threading safety
 	static ROAnything fgROWDDebugContext;
+	//! global variable to store LowerBound value read from \b Dbg.any
 	static long fgLowerBound;
+	//! global variable to store UpperBound value read from \b Dbg.any
 	static long fgUpperBound;
-	static long fgAlwaysOn;
+	//! global variable to store if Anything content should be traced or not
 	static bool fgDumpAnythings;
-	static bool fgIsOk;
+	//! global variable to store if tracing is initialized/terminated
 	static bool fgTerminated;
 };
 
-// constructor
+/*! Macro to start a trace block using trigger string \em trigger
+	\param trigger Will internally be used to do an Anything::LookupPath() search inside the \b Dbg.any file to check if trace output should be enabled or not
+\code
+	StartTrace(Server.Load);
+\endcode
+Will print out following messages
+\code
+	Server.Load: --- entering ---
+		<more trace output of this method or enabled submethods>
+	Server.Load: --- leaving ---
+\endcode */
 #define StartTrace(trigger) \
 	Tracer recart(_QUOTE_(trigger)); recart.Use()
 
+/*! Macro to start a trace block using trigger string \em trigger and additional message msg
+	\param trigger Will internally be used to do an Anything::LookupPath() search inside the \b Dbg.any file to check if trace output should be enabled or not
+	\param msg additional message to print out when entering and leaving
+\code
+	StartTrace(Server.Load, "server in command [" << GetName() << "]");
+\endcode
+Will print out following messages
+\code
+	Server.Load: server in command [SomeServer] --- entering ---
+		<more trace output of this method or enabled submethods>
+	Server.Load: server in command [SomeServer] --- leaving ---
+\endcode */
 #define StartTrace1(trigger, msg) \
 	String gsMrotcurtsnoCrecart(Storage::Current()); \
 	Tracer recart(_QUOTE_(trigger), gsMrotcurtsnoCrecart << msg); recart.Use()
 
-// debug statements
-#define Trace(msg)									\
-{													\
-	String gsMecart(Storage::Current());				\
-	recart.WDDebug(gsMecart << msg);					\
+/*! Macro to print out a \em msg when surrounding StartTrace() trigger is enabled
+	\param msg message to print out  */
+#define Trace(msg) \
+{ \
+	String gsMecart(Storage::Current()); \
+	recart.WDDebug(gsMecart << msg); \
 }
 
-#define TraceBuf(buf, sz)				\
-{										\
-	String gsMecart("\n\n<",-1, Storage::Current());			\
-	gsMecart.Append((const void*)buf, sz).Append(">\n\n");	\
-	recart.WDDebug(gsMecart);			\
+/*! Macro to print out a message buffer \em buf with size \em sz when surrounding StartTrace() trigger is enabled
+	\param buf pointer to buffer to print out
+	\param sz size of buffer */
+#define TraceBuf(buf, sz) \
+{ \
+	String gsMecart("\n\n<",-1, Storage::Current()); \
+	gsMecart.Append((const void*)buf, sz).Append(">\n\n"); \
+	recart.WDDebug(gsMecart); \
 }
 
-#define TraceAny(any, msg)					\
-{											\
-	String gsMecart(Storage::Current());		\
-	recart.AnyWDDebug(any, gsMecart << msg);	\
+/*! Macro to print out a \em any when surrounding StartTrace() trigger is enabled
+	\param any Anything to print out
+	\param msg message to additionally print out */
+#define TraceAny(any, msg) \
+{ \
+	String gsMecart(Storage::Current()); \
+	recart.AnyWDDebug(any, gsMecart << msg); \
 }
 
-// subdebugs
-#define SubTrace(subtrigger, msg)							\
-{															\
-	String gsMecart(Storage::Current());						\
-	recart.SubWDDebug(_QUOTE_(subtrigger), gsMecart << msg);	\
+/*! Macro to print out a \em msg when surrounding StartTrace() trigger and the \em subtrigger is enabled
+	\param subtrigger additional sublevel within current trigger scope
+	\param msg message to print out */
+#define SubTrace(subtrigger, msg) \
+{ \
+	String gsMecart(Storage::Current()); \
+	recart.SubWDDebug(_QUOTE_(subtrigger), gsMecart << msg); \
 }
 
-#define SubTraceBuf(subtrigger, buf, sz)					\
-{															\
-	String gsMecart("\n\n<",-1, Storage::Current());			\
-	gsMecart.Append((const void*)buf, sz).Append(">\n\n");	\
-	recart.SubWDDebug(_QUOTE_(subtrigger), gsMecart);			\
+/*! Macro to print out a message buffer \em buf with size \em sz when surrounding StartTrace() trigger and the \em subtrigger is enabled
+	\param subtrigger additional sublevel within current trigger scope
+	\param buf pointer to buffer to print out
+	\param sz size of buffer */
+#define SubTraceBuf(subtrigger, buf, sz) \
+{ \
+	String gsMecart("\n\n<",-1, Storage::Current()); \
+	gsMecart.Append((const void*)buf, sz).Append(">\n\n"); \
+	recart.SubWDDebug(_QUOTE_(subtrigger), gsMecart); \
 }
 
-#define SubTraceAny(subtrigger, any, msg)							\
-{																	\
-	String gsMecart(Storage::Current());								\
-	recart.SubAnyWDDebug(_QUOTE_(subtrigger), any, gsMecart << msg);	\
+/*! Macro to print out a \em any when surrounding StartTrace() trigger and the \em subtrigger is enabled
+	\param subtrigger additional sublevel within current trigger scope
+	\param any Anything to print out
+	\param msg message to additionally print out */
+#define SubTraceAny(subtrigger, any, msg) \
+{ \
+	String gsMecart(Storage::Current()); \
+	recart.SubAnyWDDebug(_QUOTE_(subtrigger), any, gsMecart << msg); \
 }
 
-// static traces
-#define StatTrace(trigger, msg, allocator)						\
-{															\
-	String gsMecart(allocator);						\
-	Tracer::StatWDDebug(_QUOTE_(trigger), gsMecart << msg, allocator);	\
+/*! Macro to print out a \em msg when \em trigger is enabled, this method is independent from StartTrace()
+	\param trigger scope of trigger to check for
+	\param msg message to print out
+	\param allocator Allocator to use for allocating memory */
+#define StatTrace(trigger, msg, allocator) \
+{ \
+	String gsMecart(allocator); \
+	Tracer::StatWDDebug(_QUOTE_(trigger), gsMecart << msg, allocator); \
 }
 
-#define StatTraceBuf(trigger, buf, sz, allocator)					\
-{															\
-	String gsMecart("\n\n<",-1, allocator);			\
-	gsMecart.Append((const void*)buf, sz).Append(">\n\n");	\
-	Tracer::StatWDDebug(_QUOTE_(trigger), gsMecart, allocator);	\
+/*! Macro to print out a message buffer \em buf with size \em sz when \em trigger is enabled, this method is independent from StartTrace()
+	\param trigger scope of trigger to check for
+	\param buf pointer to buffer to print out
+	\param sz size of buffer
+	\param allocator Allocator to use for allocating memory */
+#define StatTraceBuf(trigger, buf, sz, allocator) \
+{ \
+	String gsMecart("\n\n<",-1, allocator); \
+	gsMecart.Append((const void*)buf, sz).Append(">\n\n"); \
+	Tracer::StatWDDebug(_QUOTE_(trigger), gsMecart, allocator); \
 }
 
-#define StatTraceAny(trigger, any, msg, allocator)						\
-{															\
-	String gsMecart(allocator); gsMecart << msg;						\
-	Tracer::AnythingWDDebug(_QUOTE_(trigger), any, gsMecart, allocator);	\
+/*! Macro to print out a \em any when \em trigger is enabled, this method is independent from StartTrace()
+	\param trigger scope of trigger to check for
+	\param any Anything to print out
+	\param msg message to additionally print out
+	\param allocator Allocator to use for allocating memory */
+#define StatTraceAny(trigger, any, msg, allocator) \
+{ \
+	String gsMecart(allocator); gsMecart << msg; \
+	Tracer::AnythingWDDebug(_QUOTE_(trigger), any, gsMecart, allocator); \
 }
 
-// helper to check if we are triggered
-#define TraceTriggered(trigger, allocator)							\
+/*! helper to check if trigger is enabled
+	\param trigger scope of trigger to check for
+	\param allocator Allocator to use for allocating memory */
+#define TraceTriggered(trigger, allocator) \
 	Tracer::CheckWDDebug(_QUOTE_(trigger), allocator)
 
+//! (Re-)Load trace switch configuration from \b Dbg.any into global fgWDDebugContext
 #define ResetTracer()	Tracer::Reset()
+
+//! Unload trace switch configuration and disable tracing
 #define TerminateTracer()	Tracer::Terminate()
+
+/*! Macro to trace internal stores of context
+	\param reply stream to print content on
+	\param context Context to trace */
 #define HTMLTraceStores(reply, context)	context.HTMLDebugStores(reply)
 
 #else
