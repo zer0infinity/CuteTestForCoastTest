@@ -106,40 +106,41 @@ public:
 	AnyImplType GetType() const;
 
 	/*! Checks if this Anything is empty i.e. of type eNull
-		\return <I>true</I> if this Anything is of type eNull; <i>false</i> otherwise */
+		\return true if this Anything is of type eNull
+		\return false otherwise */
 	bool IsNull() const;
 
 	/*! Retrieve the number of slots in this Anything
 		\return The number of slots in this Anything */
 	long GetSize() const;
 
-	//!assignement operator creates Anything of type eLong
+	//! assignment operator creates Anything of type eLong
 	Anything &operator= (int);
 
 #if !defined(BOOL_NOT_SUPPORTED)
-	//!assignement operator creates Anything of type eLong
+	//! assignment operator creates Anything of type eLong
 	Anything &operator= (bool);
 #endif
 
-	//!assignement operator creates Anything of type eLong
+	//! assignment operator creates Anything of type eLong
 	Anything &operator= (long);
 
-	//!assignement operator creates Anything of type eDouble
+	//! assignment operator creates Anything of type eDouble
 	Anything &operator= (float);
 
-	//!assignement operator creates Anything of type eDouble
+	//!assignment operator creates Anything of type eDouble
 	Anything &operator= (double);
 
-	//!assignement operator creates Anything of type eObject
+	//!assignment operator creates Anything of type eObject
 	Anything &operator= (IFAObject *);
 
-	//!assignement operator creates Anything of type eCharPtr
+	//!assignment operator creates Anything of type eCharPtr
 	Anything &operator= (const char *);
 
-	//!assignement operator creates Anything of type eCharPtr
+	//!assignment operator creates Anything of type eCharPtr
 	Anything &operator= (const String &);
 
-	//!assignement operator creates Anything of type a.GetType() returns
+	//!assignment operator creates Anything of type a.GetType() returns
 	Anything &operator= (const Anything &a);
 
 	/*! Appends a new slot and stores <I>a</I> in it.
@@ -190,23 +191,27 @@ public:
 		\return true in case a slot was removed, false otherwise */
 	bool Remove(const char *k);
 
-// FindIndex shouldn't be public!
 	/*! returns slot index of key k if defined
+		\todo should not be public
 		\param k the key of the slot we are looking for
 		\param sizehint the length of the key, optimization used in LookupPath
-		\param hashhint the hashvalue of the key, optimization used in LookupPath */
+		\param hashhint the hashvalue of the key, optimization used in LookupPath
+		\return slot index of key k if defined
+		\return -1 if key is not defined */
 	long FindIndex(const char *k, long sizehint = -1, u_long hashhint = 0) const;
 
-// not very useful
 	/*! returns slot index of key index if defined
-		\param index the index of the slot we are looking for */
+		\param index the index of the slot we are looking for
+		\return slot index of key k if defined
+		\return -1 if key is not defined */
 	long FindIndex(const long lIdx) const;
 
-	//!checks if k is defined on the top level of this Anything
+	//! checks if k is defined on the top level of this Anything
 	bool IsDefined(const char *k) const;
 
-// should be similar to (lIdx >=0 && lIdx < GetSize())
-	//!checks if index is defined on the top level of this Anything
+	//! checks if index is defined on the top level of this Anything
+	/*! \note should be similar to (lIdx >=0 && lIdx < GetSize())
+		\return true if index is defined */
 	bool IsDefined(const long lIdx) const;
 
 	//!returns name of slot (if any)
@@ -232,15 +237,17 @@ public:
 		\return reference to the Anything at slotname */
 	Anything &At(const char *slotname);
 
-	//!shorthand for At(long slot) const
+	//! shorthand for At(long slot) const
 	const Anything &operator[](long slot) const;
+	//! shorthand for At(long slot) const
 	const Anything &operator[](int slot) const;
 
-	//!shorthand for At(const char *slotname) const
+	//! shorthand for At(const char *slotname) const
 	const Anything &operator[](const char *slotname) const;
 
-	//!shorthand for At(long slot)
+	//! shorthand for At(long slot)
 	Anything &operator[](long slot);
+	//! shorthand for At(long slot)
 	Anything &operator[](int slot);
 
 	//!shorthand for At(const char *slotname)
