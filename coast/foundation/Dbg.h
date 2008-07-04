@@ -19,9 +19,8 @@ class EXPORTDECL_FOUNDATION Anything;
 class EXPORTDECL_FOUNDATION ROAnything;
 class EXPORTDECL_FOUNDATION TracerHelper;
 
-/*!
-\file
-\brief Macros to simplify the task of printing out messages to the console together with full control of what to print.
+//! Macros to simplify the task of printing out messages to the console together with full control of what to print.
+/*! \file
 The trace facility of Coast is very powerful due to its flexibility based on configuration in a file. To enable/disable
 trace output, no recompilation of code is necessary. Simple changes in a file named \b Dbg.any are necessary. Due to some overhead
 to evaluate if trace messages are to be printed or not, the facility will only be enabled when flag \em DEBUG was enabled at compile time.
@@ -237,7 +236,7 @@ Will print out following messages
 	\param trigger Will internally be used to do an Anything::LookupPath() search inside the \b Dbg.any file to check if trace output should be enabled or not
 	\param msg additional message to print out when entering and leaving
 \code
-	StartTrace(Server.Load, "server in command [" << GetName() << "]");
+	StartTrace1(Server.Load, "server in command [" << GetName() << "]");
 \endcode
 Will print out following messages
 \code
