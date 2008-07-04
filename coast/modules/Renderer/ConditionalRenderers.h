@@ -15,7 +15,8 @@
 // ---- ConditionalRenderer ---------------------------------------------------------
 //! <B>This renderer checks the value of a specified slot in the Context and - dependingon the outcome of the test - renders a predefined renderer specification.</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/ContextCondition	Rendererspec	mandatory, resulting a String used to Lookup the Context. (Lookuped value is usually an integer)
 	/True				Rendererspec	optional, if ContextCondition-value evaluates to true, the content of this slot will be rendered
@@ -24,7 +25,7 @@
 	/Undefined			Rendererspec	optional, if ContextCondition-value not defined in Context, the content of this slot will be rendered
 	/Error				Rendererspec	optional, if the renderer received invalid input, the content of this slot will be rendered
 }
-</PRE>
+\endcode
 */
 class EXPORTDECL_RENDERER ConditionalRenderer : public Renderer
 {
@@ -43,7 +44,8 @@ protected:
 // ---- SwitchRenderer ---------------------------------------------------------
 //! <B>The SwitchRenderer provides an indirection depending on some value in the Context</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/ContextLookupName	Rendererspec	mandatory, resulting a String used to Lookup the Context
 	/Case {								mandatory, list of different cases to compare ContextLookupName-value with
@@ -53,7 +55,8 @@ protected:
 	}
 	/Default			Rendererspec	optional, for all unspecified conditions (not listed in Case slot), the content of this slot will be rendered
 }
-</PRE>
+\endcode
+
 */
 class EXPORTDECL_RENDERER SwitchRenderer : public Renderer
 {

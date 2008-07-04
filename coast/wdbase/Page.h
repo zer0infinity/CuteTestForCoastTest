@@ -36,21 +36,28 @@ class EXPORTDECL_WDBASE Page : public HierarchConfNamed
 public:
 	//!standard named object constructor
 	Page(const char *name);
+
 	//!destructor does nothing
 	~Page();
+
 	//!cloning api for prototypes
 	IFAObject *Clone() const;
+
 	//! deprecated- use Prepare and Render
 	virtual void Start(ostream &reply, Context &context);
-	//! do preprocessing return true if everything is ok
-	//! otherwise return false and set a transition where to go
-	//! or set currentpage directly if something really goes wrong
-	//! \paramtransition - in/out action to call and transition to take if false
-	//! \return success of preparation if true, Render will work fine,
-	//! otherwise transition will show the way to go
+
+	//! do Preprocessing which will in fact execute all relevant Actions
+	/*! otherwise return false and set a transition where to go
+		or set currentpage directly if something really goes wrong
+		\param transition - in/out action to call and transition to take if false
+		\param c Context in which to process token
+		\return true if preparation was successful, Render will then work fine
+		\return false otherwise, transition will show the way to go */
 	virtual bool Prepare(String &transition, Context &c);
+
 	//!generates page content by using subclass page rendering hooks
 	virtual void Render(ostream &reply, Context &c);
+
 	//!postprocessing of a request coming from this page
 	virtual bool Finish(String &action, Context &context);
 
@@ -58,8 +65,9 @@ public:
 
 protected:
 	//! transition token processing
-	//! \paramtransition - in/out actionscript to call
-	//! \return success of actionscript
+	/*! \param transitionToken in/out actionscript to call
+		\param context Context in which to process token
+		\return success of actionscript */
 	bool ProcessToken(String &transitionToken, Context &context);
 
 	//!deprecated hook

@@ -14,43 +14,50 @@
 #include "LDAPConnection.h"
 
 //---- PersistentLDAPConnection ----------------------------------------------------------
-//! <B>Persistent 		LDAP connections used by LDAPConnectonManger.</B>
-//!
-//!						Below values apply to LDAPConnections and PersistentLDAPConnections
-//! /Server				IP or DNS name of the target server. Default is localhost.
-//!	/Port				Port of the target ldap server. Default is 389
-//!	/ConnnectionTimeout	How many seconds to wait until connection is established, abort when timeout is reached. Default is 10 sec.
-//!						<b>Important:</b> connection pools are distinguished by Server/Port/DN/Password/ConnectionTimeout
-//!						If you need different pools for the same Server/Port/DN/Password vary the ConnectionTimeout
-//!						in order to create different pools.
-//!	/Timeout			Timeout for the executed ldap op (search, compare), abort when timeout is reached. Default is 10 sec.
-//!	/BindName			The distinguished name (dn) we bind with. If /BindName is not given or "anonymous" a anonymous bind
-//!						takes place.
-//!	/BindPW				The bind password
-//!	/MapUTF8			Translate string results to html-escape sequences. Default is yes.
-//!
-//!						Below values apply to PersistentLDAPConnections only.
-//!
-//!	/PooledConnections  Use persistent ldap connections (creates PersistentLDAPConnection objects). Default is not to use pooled
-//!						connections.
-//!	/MaxConnections		Every tuple consisting of /Server /Port /ConnectionTimeout /BindName Md5Hash off /BindPW is considered as
-//!						a connection pool. /MaxConnections defines the maximum number of allowed connections. Default is 5
-//!						connections per pool.
-//!	/TryAutoRebind		In the case the stored (persistent) ldap connection is no more valid (ldap server reboot, firewall "cuts"
-//!						the open connection) the LDAPAbstractDAI attempts a "on the fly" rebind.
-//!						Default is not to attempt "on the fly" rebinds.
-//!	/RebindTimeout		If set to 0, this setting is ignored. Otherwise a connection is re-established after the /RebindTimeout
-//!						second. Evaluation of this value takes place every time a LDAP operation on this connection is executed.
-//!						Default is to ignore this setting.
+//! <B>Persistent LDAP connections used by LDAPConnectonManger.</B>
+/*!
+Below values apply to LDAPConnections and PersistentLDAPConnections
+\par Configuration
+\code
+{
+	/Server				IP or DNS name of the target server. Default is localhost.
+	/Port				Port of the target ldap server. Default is 389
+	/ConnnectionTimeout	How many seconds to wait until connection is established, abort when timeout is reached. Default is 10 sec.
+						<b>Important:</b> connection pools are distinguished by Server/Port/DN/Password/ConnectionTimeout
+						If you need different pools for the same Server/Port/DN/Password vary the ConnectionTimeout
+						in order to create different pools.
+	/Timeout			Timeout for the executed ldap op (search, compare), abort when timeout is reached. Default is 10 sec.
+	/BindName			The distinguished name (dn) we bind with. If /BindName is not given or "anonymous" a anonymous bind
+						takes place.
+	/BindPW				The bind password
+	/MapUTF8			Translate string results to html-escape sequences. Default is yes.
+}
+\endcode
+Below values apply to PersistentLDAPConnections only.
+\code
+{
+	/PooledConnections  Use persistent ldap connections (creates PersistentLDAPConnection objects). Default is not to use pooled
+						connections.
+	/MaxConnections		Every tuple consisting of /Server /Port /ConnectionTimeout /BindName Md5Hash off /BindPW is considered as
+						a connection pool. /MaxConnections defines the maximum number of allowed connections. Default is 5
+						connections per pool.
+	/TryAutoRebind		In the case the stored (persistent) ldap connection is no more valid (ldap server reboot, firewall "cuts"
+						the open connection) the LDAPAbstractDAI attempts a "on the fly" rebind.
+						Default is not to attempt "on the fly" rebinds.
+	/RebindTimeout		If set to 0, this setting is ignored. Otherwise a connection is re-established after the /RebindTimeout
+						second. Evaluation of this value takes place every time a LDAP operation on this connection is executed.
+						Default is to ignore this setting.
+}
+\endcode
+*/
 class EXPORTDECL_LDAPDA PersistentLDAPConnection: public LDAPConnection
 {
 public:
 
 	//! create a new persistent ldap connection
-	//! \params see above. connectionParams an Anything that contains Server, Port,
-	//!		   Timeout and MapUTF8 parameters
-	//! If some of those slots are not present, the following defaults
-	//! are taken: server=localhost, port=389, timeout=60, maputf8=true
+	/*! \param see above. connectionParams an Anything that contains Server, Port, Timeout and MapUTF8 parameters
+		If some of those slots are not present, the following defaults
+		are taken: server=localhost, port=389, timeout=60, maputf8=true */
 	PersistentLDAPConnection(ROAnything connectionParams);
 	~PersistentLDAPConnection();
 

@@ -16,7 +16,8 @@
 //---- MultiDimNavigationRenderer ----------------------------------------------------------
 //! <B>Preconfigured Table renderer, some things are hardcoded</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/TableWidth			Width in % of the navigation-table (optional, default 20).
 	/BorderWidth		Width of the border delimiting the navigation-table (optional, default 0).
@@ -34,7 +35,9 @@
 						If unspecified, true is assumed
 	/Elt_Default        When specified, used for Elements that are not specified.
 	/Elt_Lx_Default     Overrides default for specified line.
-}</PRE>
+}
+\endcode
+
 */
 class EXPORTDECL_HTMLRENDERERS MultiDimNavigationRenderer : public Renderer
 {

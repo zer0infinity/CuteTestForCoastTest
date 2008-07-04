@@ -15,10 +15,12 @@
 //---- NavBarRenderer -----------------------------------------------------------
 //! <B>Renders a multi-level navigation bar using tables</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 }
-</PRE>
+\endcode
+
 */
 class EXPORTDECL_RENDERER NavBarRenderer : public Renderer
 {

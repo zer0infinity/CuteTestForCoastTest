@@ -15,11 +15,12 @@
 //---- AnyToXMLRenderer -----------------------------------------------------------
 //! <B>Renders XML and a DTD out of an Anything</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/Input	Rendererspec	mandatory, produces a lookup string used to lookup the Anything that serves as Input
 }
-</PRE>
+\endcode
 */
 class EXPORTDECL_RENDERER AnyToXMLRenderer : public Renderer
 {

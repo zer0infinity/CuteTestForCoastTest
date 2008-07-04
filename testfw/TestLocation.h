@@ -13,8 +13,7 @@
 class Test;
 //! <B>A TestLocation collects information about a test result (success or failure)</B>
 /*!
- see @TestResult
- see @TestSuite
+ see TestResult and TestSuite
 */
 class TestLocation
 {

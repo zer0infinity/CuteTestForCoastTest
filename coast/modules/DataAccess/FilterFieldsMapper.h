@@ -17,12 +17,15 @@
 //---- FilterFieldsMapper ----------------------------------------------------------
 //! <B>Mapper to filter out unwanted named slots from within the value Anything to put</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/FieldList	{				optional, default all slots, define subset of slots to put with mapper
 		...			String
 	}
-}</PRE>
+}
+\endcode
+
 */
 class EXPORTDECL_DATAACCESS FilterFieldsMapper : public ResultMapper
 {

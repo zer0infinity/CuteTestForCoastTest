@@ -9,18 +9,19 @@
 #ifndef _TraceLocks_H
 #define _TraceLocks_H
 
-//! Helper macros to trace aquiring and release of locks
-//!  Since the normal trace options alter the behaviour of locking conditions
-//!  these macros allow you to write output to syslog while running the optimized
-//!  code. Before the usage of the macros in a method you have to invoke TRACE_LOCK_START(methodname)
-//!  set #define TRACE_LOCKS to enable the macros.
-//!  Sample may be found in SessionListManager.cpp
-//!  To examine the lock parity, enable syslogging with WD_DOLOG=2 and use the following script
-//!  (Done in K-shell, of course)
+//! Helper macros to trace aquiring and releasing of locks.
+/*! \file
+Since the normal trace options alter the behaviour of locking conditions
+these macros allow you to write output to syslog while running the optimized
+code. Before the usage of the macros in a method you have to invoke TRACE_LOCK_START(methodname)
+define \b TRACE_LOCKS to enable the macros.
+Sample may be found in SessionListManager.cpp
+To examine the lock parity, enable syslogging with \b WD_DOLOG=2 and use the following script
 
-//  ---- snipp
-/*
+\par Script to analyze output
+\code
 #!/bin/ksh
+
 cut -b 44- /var/adm/frontdoor > /tmp/$$tmp1
 grep "^  locked"   /tmp/$$tmp1   | sort -u  > /tmp/locked
 grep "^unlocked"   /tmp/$$tmp1   | sort -u  > /tmp/unlocked
@@ -31,23 +32,20 @@ cat /tmp/unlocked | awk '{print $2}'  > /tmp/unlocked1
 diff  /tmp/locked1 /tmp/unlocked1
 if [ $? -eq 0 ]
 then
-        echo "Aquiring/releasing lock parity"
+	echo "Aquiring/releasing lock parity"
 else
-  echo "Problem detected. Further analysis is:"
-  cat /tmp/locked   | awk '{print $2 " " $3 " " $4}'  > /tmp/locked1
-  cat /tmp/unlocked | awk '{print $2 " " $3 " " $4}'  > /tmp/unlocked1
-  diff /tmp/locked1 /tmp/unlocked1
-  rm /tmp/$$tmp1
-  #cat /tmp/locked1
-  #cat /tmp/unlocked1
+	echo "Problem detected. Further analysis is:"
+	cat /tmp/locked   | awk '{print $2 " " $3 " " $4}'  > /tmp/locked1
+	cat /tmp/unlocked | awk '{print $2 " " $3 " " $4}'  > /tmp/unlocked1
+	diff /tmp/locked1 /tmp/unlocked1
+	rm /tmp/$$tmp1
+	#cat /tmp/locked1
+	#cat /tmp/unlocked1
 fi
-*/
-//  ---- end snipp
+\endcode
 
-// Enable syslogging for WD:
-
-// --- snipp /etc/syslog.conf
-/*
+\par Enable syslogging for WD done in \em /etc/syslog.conf
+\code
 *.err;kern.notice;auth.notice			/dev/console
 *.err;kern.debug;daemon.notice;mail.crit	/var/adm/messages
 
@@ -80,8 +78,8 @@ user.err					/var/adm/messages
 user.alert					`root, operator'
 user.emerg					*
 )
+\endcode
 */
-// --- end snipp
 #if defined TRACE_LOCKS
 
 #define TRACE_LOCK_START(methodname) 	String lmsgf; lmsgf << time(0) << " " << Thread::MyId() << " " << (methodname); \

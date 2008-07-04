@@ -15,7 +15,8 @@
 //---- ListRenderer -----------------------------------------------------------
 //! <B>Renders output for all entries in a given list using a configurable renderer specification</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/ListName			Rendererspec	mandatory (can be omitted if ListData slot is used instead), resulting a String which is used to Lookup the List in the TempStore and the context
 	/ListData {			Anything		optional but mandatory if ListName is omitted, inline List to use for rendering, it is ignored if ListName is also specified and is not the empty list
@@ -41,7 +42,8 @@
 	/Start				Rendererspec	optional, default 0, list index (zero based) with which to start rendering, useful when only a portion of the list should be used
 	/End				Rendererspec	optional, default size of list, list index (zero based) with which to end rendering, useful when only a portion of the list should be used
 }
-</PRE>
+\endcode
+
 Loops over the slots of an Anything looked up in the context using the rendered ListName string. For every named or unnamed slot of this list
 its content will be temporarily stored in a specified slot in the temp store. The EntryRenderer specification can then use lookups to access this
 data. Additional Rendererspecs to add stylistic sugar like Headers and Footers can be added too.

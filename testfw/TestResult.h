@@ -24,7 +24,7 @@ class Test;
  * unanticipated problems signified by exceptions that are not generated
  * by the framework.
  *
- * see @Test
+ * see Test
  */
 class TestResult
 {

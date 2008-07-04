@@ -15,7 +15,8 @@
 //---- TagRenderer -----------------------------------------------------------
 //! <B>Renders a given HTML-Tag with the end Tag</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/Tag		String			mandatory, defining the HTML-tag without brackets(eg "PRE"), the end tag is constructed by prefixing the Tag with /
 	/Options {	Anything		optional, Key-Value pair list of options rendered within the tag (refer to OptionsPrinter)
@@ -26,7 +27,8 @@
 	/Content	Rendererspec	optional, render the content between start and end tag
 	/NoEndTag	Something		optional, If defined, suppresses the renderering of the end tag
 }
-</PRE>
+\endcode
+
 */
 class EXPORTDECL_RENDERER TagRenderer : public Renderer
 {

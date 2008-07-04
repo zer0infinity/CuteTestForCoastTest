@@ -16,14 +16,17 @@
 //---- DirFileListAction ----------------------------------------------------------
 //! <B>Retrieve directory entries at given Path and put results in context</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/Path		Rendererspec	mandatory, path to list files of
 	/Filter		String			optional, used to filter the files listed
 	/DirsOnly 	Long			optional, [*0|1], 0 (default): files and directories are listed, 1: only directories
 	/Target 	Rendererspec	optional, default "RetrievedFileList", puts the list into the renderered slotname in context
 
-}</PRE>
+}
+\endcode
+
 */
 class EXPORTDECL_FUNCTIONALACTIONS DirFileListAction : public Action
 {

@@ -20,7 +20,8 @@
 //---- QueueWorkingModule ----------------------------------------------------------
 //! <B>Queue based module for message passing systems</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/QueueSize				long		mandatory, number of elements to buffer in the Queue
 	/UsePoolStorage			long		optional, [0|1], default 0, use preallocated memory pool for storage of Queue elements
@@ -33,7 +34,9 @@
 		/WarningChannel		String		optional, default [QueueLog], name of the named AppLogChannel to create where warning messages are written
 		/InfoChannel		String		optional, default [QueueLog], name of the named AppLogChannel to create, where info messages are written
 	}
-}</PRE>
+}
+\endcode
+
 */
 template
 <

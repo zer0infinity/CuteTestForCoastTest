@@ -16,7 +16,8 @@
 //---- NameUsingOutputMapper ----------------------------------------------------------
 //! <B>Stores values to put below a configured slot or its aliased name in TempStore</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/Destination {							optional
 		/Store			String				mandatory, default TempStore [Role|Session|Request|TempStore], name of the destination store
@@ -24,7 +25,9 @@
 		/Delim   		String				optional, default ".", first char is taken as delimiter for named slots
 		/IndexDelim		String				optional, default ":", first char is taken as delimiter for indexed slots
 	}
-} </PRE>
+}
+\endcode
+
 Default configuration is the mappers alias name in TempStore
 */
 class EXPORTDECL_DATAACCESS NameUsingOutputMapper : public EagerResultMapper

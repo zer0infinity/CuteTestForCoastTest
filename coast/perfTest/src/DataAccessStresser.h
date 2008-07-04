@@ -13,9 +13,10 @@
 #include "Stresser.h"
 
 //---- DataAccessStresser -----------------------------------------------------------
-/*!<b>Simple Stresser which executes a DataAccess</b>
-<br><b>Configuration:</b>
-<pre>
+//!<b>Simple Stresser which executes a DataAccess</b>
+/*!
+\par Configuration
+\code
 {
 	/DataAccess							mandatory, Name of the DataAccess to use
 	/NumberOfCalls						optional, default 10, how many times the DataAccess is called
@@ -24,7 +25,8 @@
 		...
 	}
 }
-</pre>
+\endcode
+
 */
 class EXPORTDECL_PERFTEST DataAccessStresser : public Stresser
 {

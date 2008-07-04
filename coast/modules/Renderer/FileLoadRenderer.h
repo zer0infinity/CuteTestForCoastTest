@@ -16,12 +16,14 @@
 //---- FileLoadRenderer ----------------------------------------------------------
 //! <B>Load a file, render content</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/File2Load	Rendererspec	mandatory, name of the file 2 load
 	/Quiet		Rendererspec    defaults to "no" -> error message is rendered on stream
 }
-</PRE>
+\endcode
+
 */
 class EXPORTDECL_RENDERER FileLoadRenderer : public Renderer
 {

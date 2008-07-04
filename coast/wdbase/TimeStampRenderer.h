@@ -17,19 +17,22 @@
 //---- TimeStampRenderer ----------------------------------------------------------
 //! <B>Renders a TimeStamp to the stream</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/UnixTime 	Rendererspec		optional, default current time, unix time to use for timestamp
 }
+\endcode
 or just
+\code
 {
 	Rendererspec	optional, default current time, unix time to use for timestamp
 }
-{
-}</PRE>
+\endcode
+
 This renderer simply creates a TimeStamp object from current system time or given unix time value and puts the human readable String onto the reply stream.
 The output format is fixed to the format returned from the object.
-Currently it is (in strftime format): "%Y%m%d%H%M%S"
+Currently it is (in strftime format): "\%Y\%m\%d\%H\%M\%S"
 */
 class EXPORTDECL_WDBASE TimeStampRenderer : public Renderer
 {

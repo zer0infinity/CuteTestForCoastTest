@@ -15,7 +15,8 @@
 //---- DateRenderer ----------------------------------------------------------------
 //! <B>The DateRenderer is used to insert a date and time into the output stream</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/Format 			Rendererspec		optional, default "\%c", format string a la strftime
 	/Date				[Rendererspec|long]	optional, default 0, date/time in seconds
@@ -24,13 +25,16 @@
 	/DeltaGMTSeconds	long				optional, default 0 [0|1], if set to true it will output the gmt to localtime offset in seconds
 	/UseLocalTime		long				optional, default 1 [0|1], use localized time/date if set to true, gmt time/date otherwise
 }
+\endcode
 or just
+\code
 {
 	"\%c"		Rendererspec	optional, default "\%c", format string a la strftime
 	0			long			optional, /Date attribute described above
 	0			long			optional, /Offset attribute described above
 }
-</PRE>
+\endcode
+
 - Using the tag /Date a time/date may be explicitely specified:
 The current time/date is always used, if no /Date entry was explicitly defined.
 - Using the tag /Format a 'strftime'-type format string may be specified to

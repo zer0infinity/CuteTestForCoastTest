@@ -17,7 +17,8 @@ class TimeStamp;
 //---- ComputeDateRenderer ----------------------------------------------------------
 //! <b>Converts the given Date/Time according to the specified format into a bunch of seconds (unix-time, seconds since 1. Jan. 1970 00:00)</b>
 /*!
-<b>Configuration:</b><pre>
+\par Configuration
+\code
 {
 	/FromDate		Rendererspec		mandatory, Formatted Date/Timestring (valid from  Jan 1 1970 00:00 till Jan 19 2038 03:14
 	/InputFormat	Rendererspec		optional, default: dd.mm.YYYY (00:00:00)
@@ -35,36 +36,43 @@ class TimeStamp;
 											* -------------yy still to be implemented
 											returns this time in seconds (can be used as input for DateRenderer)
 	/Offset  		Rendererspec		optional, default 0, offset in seconds or days (if a trailing 'd' was given) added to the time
-}</pre>
-Example 1:
-<pre>
+}
+\endcode
+\par Example 1:
+\code
 {
 	/FromDate					"31.12.2002"
-}</pre>
-Example 2:
-<pre>
+}
+\endcode
+\par Example 2:
+\code
 {
 	/FromDate					"Feb 01 2002"
 	/InputFormat				"bbb dd YYYY"
-}</pre>
-Example 3:
-<pre>
+}
+\endcode
+\par Example 3:
+\code
 {
 	/FromDate					"Feb 01 2002 12:05:02"
 	/InputFormat				"bbb dd YYYY HH:MM:SS"
-}</pre>
-Example 4:
-<pre>
+}
+\endcode
+\par Example 4:
+\code
 {
 	/FromDate					"Feb 01 2002 12:05:02AM"
 	/InputFormat				"bbb dd YYYY HH:MM:SSpp"
-}</pre>
-Example 5:
-<pre>
+}
+\endcode
+\par Example 5:
+\code
 {
 	/FromDate					"Feb 01 2002 12:05:02:213AM"
 	/InputFormat				"bbb dd YYYY HH:MM:SS:XXXpp"
-}</pre>
+}
+\endcode
+
 The follow features are missing :
 Just the operators "+", "-" and Offset
 Localization of time values (GMT-offset) is not implemented.

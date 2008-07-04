@@ -17,11 +17,14 @@
 //---- RenderedKeyMapper ----------------------------------------------------------
 //! <B>dynamically create Put-key according to rendererspec</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/KeySpec		Rendererspec	mandatory, renderer specification to create new key
 	/StoreKeyAt		String			optional, default not stored in context, location in LookupPath semantics to store created key value in context
-}</PRE>
+}
+\endcode
+
 The value Anything to put will be temporarily pushed onto the context to allow lookups within.
 */
 class EXPORTDECL_DATAACCESS RenderedKeyMapper : public ResultMapper

@@ -16,11 +16,14 @@
 //---- HTTPHeaderRenderer ----------------------------------------------------------
 //! <B>Interpret an anything and render it as a MIME Header</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/HeaderSlot		Rendererspec	[optional], or use first value
 	...
-}</PRE>
+}
+\endcode
+
 */
 class EXPORTDECL_HTTP HTTPHeaderRenderer : public Renderer
 {

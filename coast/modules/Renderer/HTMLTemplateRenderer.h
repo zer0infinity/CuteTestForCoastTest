@@ -15,7 +15,8 @@
 //---- HTMLTemplateRenderer ----------------------------------------------------
 //! <B>Uses HTML, file or inline, as input to render a page</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/TemplateName	Rendererspec	mandatory, basename of html file; no .html extension; no path!
 	/Template {		Anything		optional, but mandatory if TemplateName is omitted, TemplateName takes precedence
@@ -27,14 +28,15 @@
 	/ParserConfig {					optional, local TemplateParser options, these will override global settings defined in HTMLTemplateConfig slot, see TemplateParser for available options
 		...
 	}
-}</PRE>
+}
+\endcode
 The HTML template renderer is a generic renderer that allows to
 render arbitrary strings or texts. It defines a specific
 macro substitution mechanism that is used to embed "calls" to
 other renderers within the template text to be rendered.
 
-The macro syntax is [[#wd renderername rendererconfig ]], where
-'[[#wd' is the predefined prefix that causes Coast to recognize
+The macro syntax is [[\#wd renderername rendererconfig ]], where
+'[[\#wd' is the predefined prefix that causes Coast to recognize
 the macro.  'renderername' may be the name of any registered renderer
 (inluding alias names). The remainer of the macro - until the closing ]] -
 is interpreted as an Anything specifying the /Data content of the 'config'
@@ -42,7 +44,7 @@ data that is passed as input to the respective renderer.
 
 It is typical to use just a ContextLookupRenderer and the name of a renderer
 specification that is defined in some configuration file, e.g.
-[[#wd ContextLookup aRendererspecificationname ]] with 'aRendererspecificationname'
+[[\#wd ContextLookup aRendererspecificationname ]] with 'aRendererspecificationname'
 being defined in the *.any file of the respective Page (or somewhere else in the
 Context).
 
@@ -57,10 +59,10 @@ Nevertheless, in that case "-->" is forbidden in 'rendererconfig'.)
 
 There are two ways to specify the template text:
 
-1) By denoting a file name. The file is then retrieved on demand from a language
+-# By denoting a file name. The file is then retrieved on demand from a language
  specific subdirectory - using the language setting of the current Context.
  (Actually it is retrieved from a special cache.. see below)
-2) Specifying the text inline in the *.any file as an array of strings.
+-# Specifying the text inline in the *.any file as an array of strings.
 
 Note that HTMLTemplateRenderer manages a cache for all files/templates that
 were not specified inline. The cache is built at server-startup time by

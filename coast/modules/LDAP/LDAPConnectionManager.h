@@ -17,59 +17,71 @@
 
 //---- LDAPConnectionManager ----------------------------------------------------------
 //! <B>Manages LDAP connections represented by binding handles.</B>
-//!	Because ldap connections remain open (there is no shutdown on the socket) an implementation
-//! should allow to limit the usage of open connections. This avoids "out of filehandle" conditions.
-//! If for some reason a stored filehandle becomes invalid there are two ways to handle this condition:
-//!	- report error to calling application. The application will or will not handle the error.
-//!	- do a "on the fly" retry. This implies doing a rebind and re-executing the given ldap operation.
-//!	  The application has not to bother about re-issuing the ldap operation.
-//!
-//!	Design considerations:
-//! Because ldap queries may be built dynamically (in the tmp store) the LDAPConnectionManager may not build up
-//! the connection pool at boot strap, because it will not know the needed pools at that time. The pools have to be
-//! built when they are needed for the first time. Every pool has a sempahore which limits the created connections to
-//! the values given in /MaxConnections. Every connection is protected by a mutex. In the case of a "on the fly" retry,
-//! the mutex remains locked until the retry has been done. The technical way to do this is to iterate over the mutexes
-//! of a connection pool until IsLockedByMe() returns true. Then we have the index into the handles array which contains
-//! the handle we need.
-//! The whole pool structure is protected by as mutex. Note that a RWLock will not do the job, because accesses to
-//! Anythings may trigger houskeeping such as allocating a new slot on indexed accessses, which is a writing access, even if
-//! the caller thinks it is read only access.
-//! On termination, all allocated structures are freed.
-//! Structure: fLdapConnectionStore
-//!					/poolid
-//!					{
-//!						/Sema	<ptr to sema>
-//!						/Mutexes
-//!						{
-//!							<ptr to mutex>
-//!							...
-//!						}
-//!						/HandleInfo
-//!						{
-//!							{
-//!								/Handle 		<ldap connection handle>
-//!								/MustRebind		<bool>
-//!								/LastRebind		<TimeStamp>
-//!							}
-//!							....
-//!						}
-//!
-//!
-//! Parameters meaningful to LDAPConnectionManager
-//!
-//!	/PooledConnections  Use persistent ldap connections (creates PersistentLDAPConnection objects). Default is not to use pooled
-//!						connections.
-//!	/MaxConnections		Every tuple consisting of /Server /Port /ConnectionTimeout /BindName /BindPW is considered as
-//!						a connection pool. /MaxConnections defines the maximum number of allowed connections. Default is 5
-//!						connections per pool.
-//!	/TryAutoRebind		In the case the stored (persistent) ldap connection is no more valid (ldap server reboot, firewall "cuts"
-//!						the open connection) the LDAPAbstractDAI attempts a "on the fly" rebind.
-//!						Default is not to attempt "on the fly" rebinds.
-//!	/RebindTimeout		If set to 0, this setting is ignored. Otherwise a connection is re-established after the /RebindTimeout
-//!						second. Evaluation of this value takes place every time a LDAP operation on this connection is executed.
-//!						Default is to ignore this setting.
+/*!
+Because ldap connections remain open (there is no shutdown on the socket) an implementation
+should allow to limit the usage of open connections. This avoids "out of filehandle" conditions.
+If for some reason a stored filehandle becomes invalid there are two ways to handle this condition:
+- report error to calling application. The application will or will not handle the error.
+- do a "on the fly" retry. This implies doing a rebind and re-executing the given ldap operation.
+  The application has not to bother about re-issuing the ldap operation.
 
+Design considerations:
+Because ldap queries may be built dynamically (in the tmp store) the LDAPConnectionManager may not build up
+the connection pool at boot strap, because it will not know the needed pools at that time. The pools have to be
+built when they are needed for the first time. Every pool has a sempahore which limits the created connections to
+the values given in /MaxConnections. Every connection is protected by a mutex. In the case of a "on the fly" retry,
+the mutex remains locked until the retry has been done. The technical way to do this is to iterate over the mutexes
+of a connection pool until IsLockedByMe() returns true. Then we have the index into the handles array which contains
+the handle we need.
+The whole pool structure is protected by as mutex. Note that a RWLock will not do the job, because accesses to
+Anythings may trigger houskeeping such as allocating a new slot on indexed accessses, which is a writing access, even if
+the caller thinks it is read only access.
+On termination, all allocated structures are freed.
+\par Internal structure
+\code
+/fLdapConnectionStore
+{
+	/poolid
+	{
+		/Sema	<ptr to sema>
+		/Mutexes
+		{
+			<ptr to mutex>
+			...
+		}
+		/HandleInfo
+		{
+			{
+				/Handle 		<ldap connection handle>
+				/MustRebind		<bool>
+				/LastRebind		<TimeStamp>
+			}
+			....
+		}
+	}
+}
+\endcode
+\par Parameters meaningful to LDAPConnectionManager
+\code
+{
+	/PooledConnections
+		Use persistent ldap connections (creates PersistentLDAPConnection objects). Default is not to use pooled
+		connections.
+	/MaxConnections
+		Every tuple consisting of /Server /Port /ConnectionTimeout /BindName /BindPW is considered as
+		a connection pool. /MaxConnections defines the maximum number of allowed connections. Default is 5
+		connections per pool.
+	/TryAutoRebind
+		In the case the stored (persistent) ldap connection is no more valid (ldap server reboot, firewall "cuts"
+		the open connection) the LDAPAbstractDAI attempts a "on the fly" rebind.
+		Default is not to attempt "on the fly" rebinds.
+	/RebindTimeout
+		If set to 0, this setting is ignored. Otherwise a connection is re-established after the /RebindTimeout
+		second. Evaluation of this value takes place every time a LDAP operation on this connection is executed.
+		Default is to ignore this setting.
+}
+\endcode
+*/
 class EXPORTDECL_LDAPDA LDAPConnectionManager: public WDModule
 {
 public:

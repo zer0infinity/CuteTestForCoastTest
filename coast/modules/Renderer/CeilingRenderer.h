@@ -16,14 +16,15 @@
 //---- CeilingRenderer ----------------------------------------------------------
 //! <B>Renderers the first slot in a Anything, that is greater or equal than a given String</B> Precondition: the lists slots are sorted ascending
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/ListName	Rendererspec		mandatory, Rendered result is looked up, the returned list defines the key-value list
 	/Key		Rendererspec		mandatory, Rendered result defines the Key.
 }
-</PRE>
-Example:
-<PRE>
+\endcode
+\par Example
+\code
 /TheList {
 	/A01	First
 	/B01	Second
@@ -33,7 +34,8 @@ Example:
 	/ListName	TheList
 	/Key		B99
 } }
-</PRE>
+\endcode
+
 Renders : "Last"
 */
 class EXPORTDECL_RENDERER CeilingRenderer : public ComparingRenderer

@@ -16,7 +16,8 @@
 //---- CallRenderer ----------------------------------------------------------
 //! <B>Call a renderer config with parameters (lazy evaluation)</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/Renderer		String		mandatory, rendererspec to call, lookuped in context
 	/Parameters {	Anything	optional, slots or parameters to pass to the called renderer
@@ -24,14 +25,17 @@
 		...
 	}
 }
+\endcode
 or
+\code
 {
 	<renderer name>		Name of Renderer to be rendered
 	<arg 1>				Argument made available as $1
 	<arg 2>				Argument made available as $2
 	....
 }
-</PRE>
+\endcode
+
 The CallRenderer allows to reuse renderer specifications with multiple calls
 of a specification on a single page with passing "local" parameters at each call.
 */
@@ -55,7 +59,8 @@ public:
 //---- EagerCallRenderer ----------------------------------------------------------
 //! <B>call a renderer config with rendered parameters (eager evaluation)</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/Render			String		mandatory, rendererspec to call, lookuped in context
 	/Parameters {	Anything	optional, slots or parameters to pass to the called renderer
@@ -63,7 +68,8 @@ public:
 		...
 	}
 }
-</PRE>
+\endcode
+
 The EagerCallRenderer allows to reuse renderer specifications with multiple calls
 of a specification on a single page with passing "local" parameters at each call.
 */

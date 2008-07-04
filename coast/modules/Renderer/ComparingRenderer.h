@@ -16,12 +16,14 @@
 //---- ComparingRenderer ----------------------------------------------------------
 //! <B>Abstract base renderer that finds a slot in a Anything according to a Key</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/ListName	Rendererspec		mandatory, Rendered result is looked up, the returned lists slots are compared
 	/Key		Rendererspec		mandatory, Rendered result defines the Key to compare with.
 }
-</PRE>
+\endcode
+
 The rules that define which slot matches are coded in the method FindSlot()
 */
 class EXPORTDECL_RENDERER ComparingRenderer : public Renderer

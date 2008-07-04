@@ -15,18 +15,22 @@
 //---- LookupRenderer -------------------------------------------------------
 //! <B>Abstract base class for LookupRenderers</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/LookupName			Rendererspec	mandatory, name to lookup
 	/Default			Rendererspec	optional, default if LookupName name slot was not found
 	/Delim   			String			optional, default ".", first char is taken as delimiter for lookup path
 	/IndexDelim			String			optional, default ":", first char is taken as index-delimiter for lookup path
 }
- or just
+\endcode
+or just
+\code
 {
 	"name" "default renderer specification" "delim" "indexdelim"
 }
-</PRE>
+\endcode
+
 LookupRenderer is the abstract super class for renderers that use a lookup name and the Context to retrieve an Anything that is then used as a renderer specification (see Renderer::Render() for valid renderer specifications):
 
 The LookupRenderer provides indirection of rendering via a renderer
@@ -129,19 +133,22 @@ protected:
 //---- QueryLookupRenderer -------------------------------------------------------
 //! <B>Concrete Renderer to lookup and renderer things from Query</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/LookupName			Rendererspec	mandatory, name to lookup
 	/Default			Rendererspec	optional, default if LookupName name slot was not found
 	/Delim   			String			optional, default ".", first char is taken as delimiter for lookup path
 	/IndexDelim			String			optional, default ":", first char is taken as index-delimiter for lookup path
 }
- or just
+\endcode
+or just
+\code
 {
 	"name" "default renderer specification" "delim" "indexdelim"
 }
-\note The query is not included using an ordinary ContextLookupRenderer
-*/
+\endcode
+\note The query is not included using an ordinary ContextLookupRenderer */
 class EXPORTDECL_WDBASE QueryLookupRenderer : public LookupRenderer
 {
 public:

@@ -17,11 +17,14 @@
 //---- TimeLoggingModule ----------------------------------------------------------
 //! <B>Module to enable/disable timing and logging of methods</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/DoTiming		long	optional, default 0 (false), timing of methods will be enabled if set to true (>0)
 	/DoLogging		long	optional, default 0 (false), logging of collected timing information will be anabled if set to true (>0)
-}</PRE>
+}
+\endcode
+
 To use this functionality, you have to add, for example, the MethodTimer macro into the scope you want to gather timing information.
 The timing information will be stored in the TmpStore of the given context for later logging.
 To enable logging, the RequestTimeLogger macro has to be put before destroying the context.

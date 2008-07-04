@@ -18,12 +18,15 @@ class AccessManager;
 //---- AuthenticateWeakAction -----------------------------------------
 //! <B>Authenticates an user weakly with uid and password</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/UserId			rendererspec	mandatory, uid of user to authenticate
 	/Password		rendererspec	mandatory, password of user to authenticate
 	/AccessManager	String			optional, name of AM to use (default AM if not given)
-}</PRE>
+}
+\endcode
+
 Returns the result of call to the given access manager's AuthenticateWeak
 method with the given arguments. The transition token is changed to the
 role specified for successful/failing authentication (see config
@@ -54,14 +57,17 @@ protected:
 //---- AuthenticateStrongAction -----------------------------------------
 //! <B>Authenticates an user weakly with uid and password</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/UserId			rendererspec	mandatory, uid of user to authenticate
 	/Password		rendererspec	mandatory, password of user to authenticate
 	/Code			rendererspec	mandatory, code/otp to use for strong auth.
 	/Window			rendererspec	optional, size of accept window (default = 1)
 	/AccessManager	String			optional, name of AM to use (default AM if not given)
-}</PRE>
+}
+\endcode
+
 Returns the result of call to the given access manager's AuthenticateStrong
 method with the given arguments. The transition token is changed to the
 role specified for successful/failing authentication (see config

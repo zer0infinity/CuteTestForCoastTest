@@ -16,22 +16,23 @@
 //---- UnTaintRenderer ----------------------------------------------------------
 //! <B>Load a file, render content</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/UnTaintRenderer
 	{
-		/ToClean				<rendererspec>
-		/BadChars	<optional>	<rendererspec> characters you want to remove from /ToClean (default is "<>")
+		/ToClean	Rendererspec	mandatory, content to untaint
+		/BadChars	Rendererspec	optional, characters you want to remove from /ToClean (default is "<>")
 	}
 }
-</PRE>
-//! This renderer unescapes the following escape sequences until there is nothing left to unescape:
-//!	URL-escaping: 	%ff and %uffff
-//!	HTML-escaping:	&#d - &#dddd and &#xf - &#xffff
-//!
-//!	Escaped values > xFF are considered invalid (they might be potentially harmful unicode chars) and discarded.
-//!	The characters given in /BadChars are removed from the unescaped string. Under any circumstances, %&<> are removed.
-//! This renderer may be used whenever input from a client (user) is rendered into a html page.
+\endcode
+This renderer unescapes the following escape sequences until there is nothing left to unescape:\n
+URL-escaping: 	\%ff and \%uffff \n
+HTML-escaping:	\&\#d - \&\#dddd and \&\#xf - \&\#xffff \n
+
+Escaped values > xFF are considered invalid (they might be potentially harmful unicode chars) and discarded.
+The characters given in /BadChars are removed from the unescaped string. Under any circumstances, \%\&\<\> are removed.
+This renderer may be used whenever input from a client (user) is rendered into a html page.
 */
 class EXPORTDECL_RENDERER UnTaintRenderer : public Renderer
 {

@@ -201,7 +201,8 @@ class ServerThread;
 
 //! <B>Manages several servers as a composite server</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/ServerModules {
 		{
@@ -212,7 +213,9 @@ class ServerThread;
 		}
 		...
 	}
-}</PRE>
+}
+\endcode
+
 The MasterServer manages several servers as configured within ServerModules. Each server has its own thread of control. This allows having an own memory pool for the server instance to optimize for performance.
 The Server methods Init() and Terminate() will be called in DoStartedHook and DoTerminatedRunMethodHook respectively which allows usage of pool memory from within Init().
 */

@@ -16,14 +16,15 @@
 //---- SlotNameRenderer ----------------------------------------------------------
 //! <b>Renderers the name of an Array-Anything slot to the given index, if any.</b>
 /*!
-<b>Configuration:</b><pre>
+\par Configuration
+\code
 {
 	/PathName	Rendererspec		mandatory, Rendered result is the path to the Anything of which the name of the slot to the given Index will be output
 	/Index		Rendererspec		mandatory, Rendered result defines the index of the array entry whose slotname will be output. Will not output anything in case of an out of bound index.
 }
-</pre>
-Example:
-<pre>
+\endcode
+\par Example:
+\code
 /MyAny {
 	/A01	First
 	/B01	Second
@@ -33,7 +34,8 @@ Example:
 	/PathName	MyAny
 	/Index		1
 } }
-</pre>
+\endcode
+
 Renders : "B01"
 */
 class EXPORTDECL_STRINGRENDERERS SlotNameRenderer : public Renderer

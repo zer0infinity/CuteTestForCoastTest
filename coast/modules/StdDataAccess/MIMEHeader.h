@@ -64,7 +64,7 @@ public:
 		return fHeader;
 	}
 
-	//!cut off \r\n or only \r at end of line
+	//!cut off \\r\\n or only \\r at end of line
 	void TrimEOL(String &line) const;
 
 	//!normalize str according to fNormalizeKey setting

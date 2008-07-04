@@ -86,9 +86,9 @@ protected:
 
 	//!parse {n,m} closure operator, return n and m-n in minimum and optional
 	bool bracket(long &minimum, long &optional);
-	//!parse an escape sequence starting with backslash '\'
+	//!parse an escape sequence starting with backslash '\\'
 	//!can do octals and hex escapes, as well as some specials derived from perl
-	//! \s \S \b \B \d \D \w \W see RE.h
+	//! \\s \\S \\b \\B \\d \\D \\w \\W see RE.h
 	long escape() ;
 	//!parse and generate code for POSIX style character classes,i.e. [:alnum:]
 	long PosixCharacterClass() ;

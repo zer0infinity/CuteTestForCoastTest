@@ -15,21 +15,21 @@
 //---- BuildAnyFromSeparatedListAction ----------------------------------------------------------
 //! <b>Stores a generated Anything into the defined Destination</b>
 /*!
-<b>Configuration:</b>
-<PRE>
+\par Configuration
+\code
 {
 	/Destination {
-		/Store		String			optional, default Role ["Role"|"TempStore"], the Store where the data are stored in
-		/Slot		Rendererspec	mandatory, producing the Slotname in Destination where the data is stored to
+		/Store			String			optional, default Role ["Role"|"TempStore"], the Store where the data are stored in
+		/Slot			Rendererspec	mandatory, producing the Slotname in Destination where the data is stored to
     }
 	/Text	 			Rendererspec	mandatory
 	/RecordSeparator	Rendererspec	optional, default "\r\n", if defined  a record separated anything will be generated
 	/FieldSeparator		Rendererspec	optional, no default, if defined  a field separated anything will be generated
 	/useSlotName		character		optional, no default, "1" = True, generate numbered slotnames
-}</PRE>
-
-Example:
-<PRE>
+}
+\endcode
+\par Example
+\code
 { /BuildAnyFromSeparatedListAction {
 	/Destination {
 		/Slot		Testslot
@@ -38,9 +38,10 @@ Example:
 	/RecordSeparator	"\r\n"
 	/FieldSeparator		";"
 	/useSlotName		1
-} } </PRE>
-
-Generates:
+} }
+\endcode
+Generates
+\code
 /Testslot {
 	/"0"  {
 		/0	"1234"
@@ -52,7 +53,8 @@ Generates:
 		/1	"lmnop"
 		/2	"qrstuv"
 	}
-}</PRE>
+}
+\endcode
 */
 class BuildAnyFromSeparatedListAction : public Action
 {

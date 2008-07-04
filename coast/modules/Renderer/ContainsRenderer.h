@@ -16,14 +16,16 @@
 //---- ContainsRenderer ----------------------------------------------------------
 //! <B>Conditional Renderering if a given value is contained in a List ( ListName.Contains(ValueToCheck) )</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/ListName		Rendererspec		mandatory, the name of the list in which the ValueToCheck is searched
 	/ValueToCheck	Rendererspec		mandatory, the value that is searched in the list.
 	/True			Rendererspec		optional, is Rendered if ValueToCheck is contained in the List
 	/False			Rendererspec		optional, is Rendered if ValueToCheck is not contained in the List
 }
-</PRE>
+\endcode
+
 */
 class EXPORTDECL_RENDERER ContainsRenderer : public Renderer
 {

@@ -16,11 +16,13 @@
 //---- AnythingNotNullAction ----------------------------------------------------------
 //! <B>Check if a given slot in a store is not null</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/Store	String			optional, default TempStore one of [Role|Session|Query|Fields], lookup Slot in this store
 	/Slot	Rendererscript	mandatory, slotname to check for
-}</PRE>
+}
+\endcode
 */
 class EXPORTDECL_FUNCTIONALACTIONS AnythingNotNullAction : public Action
 {

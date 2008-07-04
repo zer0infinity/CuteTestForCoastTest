@@ -15,7 +15,8 @@
 //---- TemplateParser ----------------------------------------------------------
 //! <B>Used to parse HTML-Templates during TemplatesCache initialization</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/Tags {				Anything	optional, tag specific settings
 		/AttrNameCase	String		optional, [lower|upper|preserve], default lower, specify if attribute name should be case adjusted
@@ -26,7 +27,9 @@
 		}
 		...
 	}
-}</PRE> */
+}
+\endcode
+*/
 class EXPORTDECL_RENDERER TemplateParser
 {
 public:

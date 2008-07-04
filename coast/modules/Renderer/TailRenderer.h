@@ -16,12 +16,14 @@
 //---- TailRenderer ----------------------------------------------------------
 //! <B>Renders the right hand side part of a string delimited by the given delimiter</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/String		Rendererspec	mandatory, rendered string whose most right part after Delim will be output
 	/Delim		char			optional, default =
 }
-</PRE>
+\endcode
+
 */
 class EXPORTDECL_RENDERER TailRenderer : public Renderer
 {

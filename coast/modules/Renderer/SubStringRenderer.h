@@ -16,13 +16,15 @@
 //---- SubStringRenderer ----------------------------------------------------------
 //! <B>String.SubString() as Renderer</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/String		Rendererspec	mandatory, String from which to get the substring
 	/Start		Rendererspec	optional, default 0, index of first character of substring
 	/Length		Rendererspec	optional, default -1, length of substring, -1 means all remaining chars
 }
-</PRE>
+\endcode
+
 */
 class EXPORTDECL_RENDERER SubStringRenderer : public Renderer
 {

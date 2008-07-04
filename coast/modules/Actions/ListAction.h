@@ -16,7 +16,8 @@
 //---- ListAction ----------------------------------------------------------
 //! <B>Action counterpart of the ListRenderer -> Loops over an Anything and calls /EntryAction for each slot.</B>
 /*!
-<B>Configuration:</B><PRE
+\par Configuration
+\code
 {
 	/ListName			Rendererspec		mandatory, Resulting a String which is used to Lookup the List in the context
 	/ListData {			Anything			optional but mandatory if ListName is omitted, inline List to use for executing the action, it is ignored if ListName is also specified and is not the empty list
@@ -30,7 +31,7 @@
 	/Start				Rendererspec		optional, default 0, list index (zero based) with which to start executing the action, useful when only a portion of the list should be used
 	/End				Rendererspec		optional, default size of list, list index (zero based) with which to end executing the action, useful when only a portion of the list should be used
 }
-</PRE>
+\endcode
 */
 class EXPORTDECL_ACTIONS ListAction : public Action
 {

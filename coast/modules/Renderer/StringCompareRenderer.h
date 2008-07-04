@@ -15,7 +15,8 @@
 //---- StringCompareRenderer -----------------------------------------------------------
 //! <B>Renderer compares two strings and choses renderer depending if they are equal or not</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/String1	Rendererspec	mandatory, First string
 	/String2	Rendererspec	mandatory, Second string
@@ -23,7 +24,8 @@
 	/Equal		Rendererspec	optional, Renderer used if String1 is equal to String2
 	/Unequal	Rendererspec	optional, Renderer used if String1 is not equal to String2
 }
-</PRE>
+\endcode
+
 */
 class EXPORTDECL_RENDERER StringCompareRenderer : public Renderer
 {

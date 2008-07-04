@@ -15,7 +15,8 @@
 //---- ComputeRenderer ----------------------------------------------------------------
 //! <B>Compute two values</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/Number1		Rendererspec	First (left) value to compute with, internally used as long
 	/Number2		Rendererspec	Second (right) value to compute with, internally used as long
@@ -23,7 +24,8 @@
 	/Minimum		RendererSpec	optional, minimum value of result (defines a range)
 	/Maximum		RendererSpec	optional, maximum value of result (defines a range)
 }
-</PRE>
+\endcode
+
 */
 class EXPORTDECL_STRINGRENDERERS ComputeRenderer : public Renderer
 {

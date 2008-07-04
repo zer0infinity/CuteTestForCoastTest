@@ -1213,6 +1213,7 @@ PREDEFINED             += _POSIX_THREADS
 PREDEFINED             += _POSIX_PTHREAD_SEMANTICS
 PREDEFINED             += _REENTRANT
 PREDEFINED             += _LARGEFILE64_SOURCE
+PREDEFINED             += TRACE_LOCKS
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then
 # this tag can be used to specify a list of macro names that should be expanded.

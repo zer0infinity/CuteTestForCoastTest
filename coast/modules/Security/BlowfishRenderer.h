@@ -15,15 +15,13 @@
 //---- BlowfishRenderer ----------------------------------------------------------
 //! <B>Renderer for Blowfish symmetric encryption</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
-	/Base64ArmouredKey			Rendererspec
+	/Base64ArmouredKey			Rendererspec	is the input recieved by a previous Blowfish-encryption with BlowfishSecurityItem. See testcases for further details.
 	/BlowfishSecurityItem		Rendererspec
-}</PRE>
- Purpose_Begin
-	/Base64ArmouredKey is the input recieved by a previous Blowfish-encryption with BlowfishSecurityItem.
-    See testcases for further details.
-  Purpose_End
+}
+\endcode
 */
 class BlowfishRenderer : public Renderer
 {

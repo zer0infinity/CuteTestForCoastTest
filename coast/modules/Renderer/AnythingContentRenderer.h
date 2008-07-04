@@ -13,17 +13,21 @@
 #include "Renderer.h"
 
 //---- AnythingContentRenderer -----------------------------------------------------------
-//! <B>Print a Anything</B>
+//! <B>Render the content of an Anything</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
-	/Input	Rendererspec		mandatory,	RendererSpec used to lookup the Anything
-	/Pretty					not mandatory,	default=1,	pretty Print mode
-	/XmpTags				not mandatory,	add XMP tags
+	/Input		Rendererspec	mandatory, RendererSpec used to lookup the Anything in Context
+	/Pretty		long			optional, default=1, pretty Print mode
+	/XmpTags					optional, add XMP tags
 	{
-		/PreTag								additional formatting, goes after   <xmp> tag
-		/PostTag							additional formatting, goes before </xmp> tag 														}
-</PRE>
+		/CSSTag					additional style class to be placed within pre tag
+		/PreTag					additional formatting, goes after   <xmp> tag
+		/PostTag				additional formatting, goes before </xmp> tag
+	}
+}
+\endcode
 */
 class EXPORTDECL_RENDERER AnythingContentRenderer : public Renderer
 {
@@ -32,8 +36,6 @@ public:
 	~AnythingContentRenderer();
 
 	virtual void RenderAll(ostream &reply, Context &ctx, const ROAnything &config);
-
-private:
 };
 
 #endif		//ifndef _AnythingContentRenderer_H

@@ -14,17 +14,17 @@
 #include "Renderer.h"
 
 //---- BasicAuthenticationRenderer ----------------------------------------------------------
+//! Generate a basic authorization request header field. (RFC 2617)
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/User								Rendererspec
 	/Password							Rendererspec
 	/Scheme								Rendererspec, default is "Basic"
 	/BasicAuthorizationHeaderFieldName	Rendererspec, default is "Authorization"
-}</PRE>
- Purpose_Begin
-	Generate a basic authorization request header field. (RFC 2617)
-  Purpose_End
+}
+\endcode
 */
 class EXPORTDECL_SECURITY BasicAuthenticationRenderer : public Renderer
 {

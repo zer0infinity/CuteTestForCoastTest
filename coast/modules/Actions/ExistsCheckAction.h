@@ -15,16 +15,21 @@
 //---- ExistsCheckAction ----------------------------------------------------------
 //! <B>Checks whether a given Slot exists.</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	A render spec
-}</PRE>
-<B>(Stupid) Example:</B><PRE>
+}
+\endcode
+\parExample:
+\code
 {
 	"LostAndFound.HandBags."
 	{ /ContextLookupRenderer "Company.Employees.Fred.WifeName" }
 	".Contents"
-}</PRE>
+}
+\endcode
+
 Renders its config onto a string and checks whether the rendered path/slot
 exists in context (e.g. the example checks, whether
 "LostAndFound.Handbags.Cindy.Contents" exists, provided that

@@ -16,14 +16,15 @@
 //---- FloorRenderer ----------------------------------------------------------
 //! <B>Renders the configuration of the slot in an Anything that is lower than a given Key</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/ListName	Rendererspec		mandatory, lookup key to an Anything with a list of key-value pairs which must be sorted lexically ascending
 	/Key		Rendererspec		mandatory, value to test Slotnames of List-Anything against
 }
-</PRE>
-<B>Example:</B>
-<PRE>
+\endcode
+\par Example:
+\code
 /TheList {
 	/A01	First
 	/B01	Second
@@ -33,7 +34,8 @@
 	/ListName	TheList
 	/Key		B99
 } }
-</PRE>
+\endcode
+
 Renders : "Second"
  */
 class EXPORTDECL_RENDERER FloorRenderer : public ComparingRenderer

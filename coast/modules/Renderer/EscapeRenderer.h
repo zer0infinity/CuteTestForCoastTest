@@ -16,21 +16,23 @@
 //---- EscapeRenderer ----------------------------------------------------------
 //! <B>Inserts a given escape character before the character(s) to escape</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/String			Rendererspec	mandatory, String to be escaped
 	/EscapeChar		String			optional, default '\', defines the escape character
 	/ToEscape		String			mandatory, characters to escape
 }
-</PRE>
-<B>Example:</B>
-<PRE>
+\endcode
+\parExample:
+\code
 { /EscapeRenderer {
 	/String			"You can't escape this String's content"
 	/EscapeChar		"\\"
 	/ToEscape		"'"
 } }
-</PRE>
+\endcode
+
 Renders : "You can\'t escape this String\'s content"
  */
 class EXPORTDECL_RENDERER EscapeRenderer : public Renderer

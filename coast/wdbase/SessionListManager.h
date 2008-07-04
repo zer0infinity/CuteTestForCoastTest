@@ -69,15 +69,12 @@ private:
 #define RegisterSessionFactory(name) RegisterObject(name, SessionFactory)
 
 //---- SessionListManager ----------------------------------------------------------
-//!manages list of sessions
-//! this is the one and only manager of the session list; it is a singleton<p>
-//!<b>creation:</b>
-//! sessions are created by factory objects; they have a unique session id<br>
-//!<b>retrieval:</b>
-//! sessions are retrieved through the session key<br>
-//!<b>deletion:</b>
-//! sessions can be actively disabled (but not deleted);
-//! they are deleted by a household thread running periodically
+//! manages list of sessions
+/*! this is the one and only manager of the session list; it is a singleton\n
+\b creation: sessions are created by factory objects; they have a unique session id\n
+\b retrieval: sessions are retrieved through the session key\n
+\b deletion: sessions can be actively disabled (but not deleted);\n
+Sessions will be deleted by a SessionCleanerThread running periodically. */
 class EXPORTDECL_WDBASE SessionListManager: public WDModule
 {
 public:
@@ -143,17 +140,18 @@ protected:
 	virtual void AddSession(const String &id, Session *session, Context &ctx);
 
 	//--- url filtering ---
-	//!filters and unscrambles query content by using an URLFilter object
-	//! \param ctx containing the request e.g. query and environment as well as all configurable objects
-	//! this method uses /URLFilter <URLFilterName> defined in the configuration or URLFilter
-	//! to manipulate the query Anything
-	//! the URLFilter is configured by a filter spec defined in the configuration by the tag
-	//! /URLFilterSpec {  } see URLFilter for definition of the builtin filters
-	//! if you define nothing at all the method should behave backward compatible
-	//! this means:
-	//! it filters the tags sessionId, role, page if they are appearing in the unscrambled part
-	//! action is also filtered if it is a rolechange action
-	//! it unscrambles the tags X (when not using baseurls) or X1 and X2 (when using baseurls)
+	//! filters and unscrambles query content by using an URLFilter object
+	/*! This method uses \code /URLFilter <URLFilterName> \endcode defined in the configuration or in slot \em URLFilterName
+		to manipulate the query Anything. The URLFilter is configured by a filter spec defined in the configuration by the tag
+		\code /URLFilterSpec {  } \endcode See URLFilter for definition of the builtin filters.
+		If you define nothing at all, the method should behave backward compatible.
+		Default filtering applies for the tags sessionId, role, page if they appear in the unscrambled part.
+		action is also filtered if it is a rolechange action.
+		It unscrambles the tags X (when not using baseurls) or X1 and X2 (when using baseurls)
+		\param ctx containing the request e.g. query and environment as well as all configurable objects
+		\return true if URLFilter could be found and processing was possible
+		\return false otherwise
+	*/
 	virtual bool FilterQuery(Context &ctx);
 
 	//! generate standard filter to be backward compatible if nothing specified

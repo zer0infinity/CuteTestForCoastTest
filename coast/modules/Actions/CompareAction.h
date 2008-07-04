@@ -15,7 +15,8 @@
 //---- CompareAction ----------------------------------------------------------
 //! <B>Compares two literal (rendered) values or two locations.</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/RenderVal1		mandatory	RendererSpec
 	/RenderVal2		mandatory	RendererSpec
@@ -24,7 +25,9 @@
 	/LookupPath2	mandatory	RendererSpec
 
 	/CompareAs		optional	one of "Long", "String", "Bool", "Double" or "Anything" (defaults to String)
-}</PRE>
+}
+\endcode
+
 CompareAction will first check if "RenderVal"-Slots are defined. If this is
 the case, the two values are rendered and compared as strings. If the
 "RenderVal"-Slots are not defined, the action checks for the "LookupPath"-Slots.

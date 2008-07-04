@@ -15,14 +15,15 @@
 //---- AppletRenderer ---------------------------------------------------------------
 //! <B>Renderer used to embed Java Applets into an HTML page</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/CodeBase	Rendererspec	mandatory, The location of the java code relative to your web servers document root.
 	/Applet						mandatory, Specifies the complete name of the Java Applet class to be used.
 	/Options	{...}			optional, key-value pairs that are rendered into the tag
 	/Params		{...}			optional, key-value pairs given to the applet
 }
-</PRE>
+\endcode
 
 The renderer allows to specify the applet to be used, its basic layout, and the parameters passed to the applet.
 Example:
@@ -31,7 +32,7 @@ The code base is looked up from the context at slot 'CodeBase' (e.g. 'CodeBase' 
 once in Config.any). The size of the applet is defined to be 350 by 200 pixels.
 Two parameters 'X1' and 'X2' are passed to the applet: 'X1' is defined to be the
 text literal '10' whereas 'X2' is obtained by looking up 'foo' in the context.
-<PRE>
+\code
 /AppletRenderer {
 	/CodeBase	{ /ContextLookupRenderer CodeBase }
 	/Applet		"CH.ifa.toolkit.PieApplet.class"
@@ -44,7 +45,7 @@ text literal '10' whereas 'X2' is obtained by looking up 'foo' in the context.
 		/X2 { /ContextLookupRenderer "foo" }
 	}
 }
-</PRE>
+\endcode
 */
 class EXPORTDECL_RENDERER AppletRenderer : public Renderer
 {

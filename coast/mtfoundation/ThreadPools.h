@@ -64,7 +64,7 @@ public:
 	virtual void Update(tObservedPtr pObserved, tArgsRef roaUpdateArgs);
 
 	/*! blocks the caller, waiting for threads to go in Ready-state. It waits at most 'secs' seconds
-		\secs how long to wait in seconds
+		\param secs how long to wait in seconds
 		\return true in case all threads entered Ready-state, false otherwise */
 	bool AwaitReady(long secs);
 

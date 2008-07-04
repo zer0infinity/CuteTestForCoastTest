@@ -19,7 +19,8 @@ class Connector;
 //! <B>Protocol less connector to send and receive from a remote host</B>
 /*!
 Use a specific Mapper to implement a protocol. For example you can use a AnythingToStreamMapper or a StreamToAnythingMapper to use an Anything as transport packet
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/Address				String		mandatory, address of the other side in IP notation
 	/Port					long		mandatory, port of the other side
@@ -30,7 +31,9 @@ Use a specific Mapper to implement a protocol. For example you can use a Anythin
 	/SocketStreamTimeout	long		optional, default 30, max time to wait on reading characters from stream
 	/CheckReadyTimeout		long		optional, default 30, time to wait until characters are available on stream
 	/TcpNoDelay				long		optional, default 1, if set to 1, the TCP-stack does not wait until it has a complete packet to send, it sends immediately
-}</PRE>
+}
+\endcode
+
 */
 class EXPORTDECL_STDDATAACCESS ConnectorDAImpl: public DataAccessImpl
 {

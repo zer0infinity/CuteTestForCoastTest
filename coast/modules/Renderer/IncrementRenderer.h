@@ -15,19 +15,21 @@
 //---- IncrementRenderer ---------------------------------------------------------------
 //! <B>This is a simple renderer used to increment a renderer Number</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/IncValue		Rendererspec	mandatory, rendered string is converted to a number and incremented by one
 }
-</PRE>
+\endcode
 One can use
-<PRE>
+\code
 /IncrementRenderer { /Lookup XYZ }
-</PRE>
+\endcode
 as a short cut for
-<PRE>
+\code
 /IncrementRenderer { /IncValue { /Lookup XYZ } }
-</PRE>
+\endcode
+
 Non numeric values are converted to 0 and incremented to 1
 */
 class EXPORTDECL_RENDERER IncrementRenderer : public Renderer

@@ -134,7 +134,7 @@ protected:
 	virtual void DoFindNextPage(Context &context, String &action, String &pagename);
 
 	//!adjust transition and pagename to force Login
-	//! \paramtransition - set to "Login"
+	//! \param transition - set to "Login"
 	void ForcedLogin(Context &context, String &transition, String &currentpage);
 	//! mark tmpstore so that InReAuthenticate will return true later on
 	void SetInReauthenticate(Context &context);

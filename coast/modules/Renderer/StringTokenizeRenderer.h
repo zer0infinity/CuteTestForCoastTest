@@ -16,7 +16,8 @@
 //---- StringTokenizeRenderer ----------------------------------------------------------
 //! <B>Tokenizes a given string by a given character and prints out whatever wanted</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/String			Rendererspec	mandatory, string to be tokenized according to given token
 	/Token			Rendererspec	mandatory, token to split the given string into pieces
@@ -29,7 +30,8 @@
 									when RenderToken is a list of tokens
 	/Default		Rendererspec	optional, default is empty string, specify what should be returned when the token was not found
 }
-</PRE>
+\endcode
+
 Examples in the TestCases
 */
 class EXPORTDECL_RENDERER StringTokenizeRenderer : public Renderer

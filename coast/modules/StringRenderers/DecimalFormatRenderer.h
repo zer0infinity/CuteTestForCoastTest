@@ -15,11 +15,14 @@
 //---- DecimalFormatRenderer ----------------------------------------------------------
 //! <B>really brief class description</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/Slot1		Rendererspec	[mandatory|optional], ...
 	...
-}</PRE>
+}
+\endcode
+
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */

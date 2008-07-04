@@ -14,13 +14,13 @@
 #include "Renderer.h"
 
 //---- GetThisHostNameRenderer ----------------------------------------------------------
-//! <B>Get DNS name of the host this program is running</B><BR>Configuration:
-//! <PRE>
-//! {
-//!		/Representation		[default <Full>|HostOnly|DomainOnly]
-//!		...
-//! }
-//! </PRE>
+//! <B>Get DNS name of the host this program is running</B>
+/*! \par Configuration
+\code
+{
+	/Representation		String	optional, [*Full*|HostOnly|DomainOnly]
+}
+\endcode */
 class EXPORTDECL_RENDERER GetThisHostNameRenderer : public Renderer
 {
 public:

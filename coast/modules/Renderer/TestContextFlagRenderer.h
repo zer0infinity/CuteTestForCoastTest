@@ -16,14 +16,18 @@
 //---- TestContextFlagRenderer ----------------------------------------------------------
 //! <B>Test for existence and truth of a boolean in context</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/FlagName		Rendererspec	mandatory, Path of the flag in Context
 	/WhenSet		Rendererspec	optional, gets evaluated when flag exists and is true
 	/WhenNotSet		Rendererspec	optional, gets evaluated when flag does not exist or is false
 }
-</PRE>
-Is equivalent  /SwitchRenderer { /ContextLookupName <FlagName> /Case { /1 <IsSet> } /Default <NotSet> }
+\endcode
+Is equivalent
+\code
+/SwitchRenderer { /ContextLookupName <FlagName> /Case { /1 <IsSet> } /Default <NotSet> }
+\endcode
 */
 class EXPORTDECL_RENDERER TestContextFlagRenderer : public Renderer
 {

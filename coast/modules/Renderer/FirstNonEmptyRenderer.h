@@ -15,22 +15,24 @@
 //---- FirstNonEmptyRenderer ----------------------------------------------------------
 //! <B>Renders the first non-empty slot of the configuration Anything</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/NamedSlot		Rendererspec	optional, gets output if the rendered content is not empty
 	"unnamed slot"	Rendererspec	optional, gets output if the rendered content is not empty
 	...
 }
-</PRE>
-<B>Example:</B>
-<PRE>
+\endcode
+\par Example:
+\code
 /FirstNonEmptyRenderer {
 	""
 	"this slot is not empty"
 	{ "what " "is" " going " "on " "here" }
 	/CheckThis	{ /Lookup Now }
 }
-</PRE>
+\endcode
+
 In this example the second slot ["this slot is not empty"] will be output because the first one is empty.
 */
 class EXPORTDECL_RENDERER FirstNonEmptyRenderer : public Renderer

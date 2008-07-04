@@ -15,13 +15,15 @@
 //---- OptionsPrinter -----------------------------------------------------------
 //! <B>Renders options within a tag</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/Key    Value	Rendererspec	optional, produces attributes like KEY=VALUE
 	Value			Rendererspec	optional, produces attribute like VALUE
 	...
 }
-</PRE>
+\endcode
+
 The OptionsPrinter is used by many Renderers that are producing HTML Tags
 to generate user-specified options within the start tag
 The OptionsPrinter is not a registered Renderer! It should be instantiated direcly by its clients

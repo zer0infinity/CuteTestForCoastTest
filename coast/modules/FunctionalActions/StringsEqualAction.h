@@ -18,11 +18,14 @@ class Context;
 //---- StringsEqualAction ----------------------------------------------------------
 //! <B>Compares if the two strings are equal</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/String1	Rendererspec	mandatory
 	/String2	Rendererspec	mandatory
-}</PRE>
+}
+\endcode
+
 Result is True (1) or False (0)
 */
 class EXPORTDECL_FUNCTIONALACTIONS StringsEqualAction : public Action
