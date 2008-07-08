@@ -14,9 +14,10 @@
 #include "Renderer.h"
 
 //---- StringReplaceRenderer ----------------------------------------------------------
-//! <b>Replaces strings within a specified string.</b>
+//! Replaces strings within a specified string.
 /*!
-<b>Configuration:</b><pre>
+\par Configuration
+\code
 {
 	/String				Rendererspec	mandatory, Rendered result is the string in which to search and replace
 	/ReplaceConfig {					mandatory, Rendered result defines the index of the array entry whose slotname will be output. Will not output anything in case of an out of bound index.
@@ -24,9 +25,9 @@
 		...
 	}
 }
-</pre>
-Example1:
-<pre>
+\endcode
+\par Example1:
+\code
 { /StringReplaceRenderer {
 	/String		"fooBar, gagaGugus"
 	/ReplaceConfig {
@@ -34,11 +35,12 @@ Example1:
 		/gaga	""
 	}
 } }
-</pre>
+\endcode
+
 Renders : "Bar, Gugus"
 
-Example2:
-<pre>
+\par Example2:
+\code
 { /StringReplaceRenderer {
 	/String		"fooBar, gagaGugus"
 	/ReplaceConfig {
@@ -46,7 +48,8 @@ Example2:
 		/gaga	"your"
 	}
 } }
-</pre>
+\endcode
+
 Renders : "myBar, yourGugus"
 */
 class EXPORTDECL_STRINGRENDERERS StringReplaceRenderer : public Renderer

@@ -15,13 +15,15 @@
 #include "AppLog.h"
 
 //---- LoggingAction ----------------------------------------------------------
-//! <b>Action which triggers logging on a channel</b>
+//! Action which triggers logging on a channel
 /*!
-<b>Configuration:</b><pre>
+\par Configuration
+\code
 {
 	/Channel		String		mandatory, channel name to log to
 	/Severity		long		optional, default AppLogModule::eINFO, Severity [CRITICAL=1, FATAL=2, ERROR=4, WARN=8, INFO=16, OK=32, MAINT=64, DEBUG=128], all levels lower_equal (<=) the specified value will get logged
-}</pre>
+}
+\endcode
 */
 class EXPORTDECL_APPLOG LoggingAction : public Action
 {
@@ -40,14 +42,16 @@ public:
 };
 
 //---- TimeLoggingAction ----------------------------------------------------------
-//! <b>Triggers logging of timing entries onto a channel</b>
+//! Triggers logging of timing entries onto a channel
 /*!
-<b>Configuration:</b><pre>
+\par Configuration
+\code
 {
 	/Channel		String		mandatory, channel name to log to
 	/TimeEntries	String		optional, [Request|Method|Request], default all collected entries, path expression to lookup time entries in context with base key <Log.Times>
 	/Severity		long		optional, default AppLogModule::eINFO, Severity [CRITICAL=1, FATAL=2, ERROR=4, WARN=8, INFO=16, OK=32, MAINT=64, DEBUG=128], all levels lower_equal (<=) the specified value will get logged
-}</pre>
+}
+\endcode
 */
 class EXPORTDECL_APPLOG TimeLoggingAction : public Action
 {

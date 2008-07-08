@@ -17,12 +17,13 @@ class Context;
 class AppLogChannel;
 
 //---- AppLogModule -----------------------------------------------------------
-//! <b>Provide an API for application logging</b>
+//! Provide an API for application logging
 /*!
 AppLog defines calling API (AppLogClient) for logging items directly
 and a subclass API (FDLogHandler) for logging important elements
 conveniently. The method of this class are called by Coast
-<b>Configuration:</b><pre>
+\par Configuration
+\code
 {
 	/LogDir					String				optional, default "log", relative - to WD_ROOT - or absolute path of logfile location
 	/RotateDir				String				optional, default <LogDir>/rotate, relative - to WD_ROOT - or absolute path to store away logfiles during rotate or module startup
@@ -47,7 +48,9 @@ conveniently. The method of this class are called by Coast
 		}
 		...
 	}
-}</pre>
+}
+\endcode
+
 */
 class EXPORTDECL_APPLOG AppLogModule : public WDModule
 {
@@ -129,9 +132,10 @@ protected:
 };
 
 //---- AppLogChannel -----------------------------------------------------------
-//! <b>Handles logging into a specific channel</b>
+//! Handles logging into a specific channel
 /*!
-<b>Configuration:</b><pre>
+\par Configuration
+\code
 {
 	/ChannelName {	Anything			optional (see above), name of the named AppLogChannel to create
 		/FileName	String				mandatory, filename of the logfile including extension
@@ -145,13 +149,18 @@ protected:
 		/BufferItems	long			optional, default 0, (no buffering) buffer <n> items before writing them to the log stream
 		/Severity		long			optional, default AppLogModule::eALL, Severity [CRITICAL=1, FATAL=2, ERROR=4, WARN=8, INFO=16, OK=32, MAINT=64, DEBUG=128], all levels lower_equal (<=) the specified value will get logged
 	}
-}</pre>
+}
+\endcode
+
 During the rendering process of Format, the following fields exist in the Context for lookup:
-<b>Temporary slots in Context:</b><pre>
+\par Temporary slots in Context:
+\code
 {
 	/LogSeverity		long			value of severity level when Log() was called
 	/LogSeverityText	String			text of severity level, eg. [CRITICAL|FATAL...] see above
-}</pre>
+}
+\endcode
+
 */
 class EXPORTDECL_APPLOG AppLogChannel : public RegisterableObject
 {

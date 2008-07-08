@@ -20,9 +20,10 @@
 #include "PersistentLDAPConnection.h"
 
 //---- LDAPAbstractDAI ----------------------------------------------------------
-//! <B>Mother of all LDAP DA Impl classes.</B>
+//! Mother of all LDAP DA Impl classes.
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/LDAPServer		optional, default = localhost
 	/LDAPPort		optional, default = 389
@@ -30,29 +31,30 @@
 	/LDAPBindName	optional, default = Anonymous
 	/LDAPBindPW		optional (mandatory, if BindName is defined)
 }
-}</PRE>
+\endcode
+
 This class handles LDAP Requests. It establishes a connection to the
 given server. If this works out, it fetches a query from the context
 (using the associated ParameterMapper) and sends it off to the LDAP
 directory (implementation: concrete subclasses). The result is
 stored (using the associated ResultMapper) in the context.
 Since we do asynchronous requests, an LDAP operation is always split
-into DoLdapRequest and WaitForResult.<br>
-Configuration of the LDAP connection/session is defined a) as Defaults
-b) Globally in Config.any or c) in DAImplMeta.any (to override globally
-set values)<br>
-In general, an ldap operation is performed as follows (without
-error checking, assuming everything is ok):
-<ol>
-<li>GetQuery using parameter mapper
-<li>DoCheckQuery (abstr)
-<li>Connect
-<li>DoLDAPRequest (abstr)
-<li>WaitForResult
-<li>(DoCheckResult) (default:no)
-<li>PutResult
-<li>(Disconnect) (as soon as connection is not used anymore)
-</ol>
+into DoLdapRequest and WaitForResult.\n
+Configuration of the LDAP connection/session is defined
+- as Defaults
+- Globally in Config.any
+- in DAImplMeta.any (to override globally set values)
+
+In general, an ldap operation is performed as follows (without error checking, assuming everything is ok):
+
+- GetQuery using parameter mapper
+- DoCheckQuery (abstr)
+- Connect
+- DoLDAPRequest (abstr)
+- WaitForResult
+- (DoCheckResult) (default:no)
+- PutResult
+- (Disconnect) (as soon as connection is not used anymore)
 */
 class EXPORTDECL_LDAPDA LDAPAbstractDAI: public DataAccessImpl
 {
@@ -119,7 +121,7 @@ private:
 // =========================================================================
 
 //---- LDAPModifyDAI ----------------------------------------------------------
-//! <B>Implements an LDAP modify DA.</B>
+//! Implements an LDAP modify DA.
 /*!
 <B>Configuration:</B> See LDAPAbstractDAI<br>
 <B>LDAP Query spec:</B><pre>
@@ -211,7 +213,7 @@ private:
 // =========================================================================
 
 //---- LDAPAddDAI ----------------------------------------------------------
-//! <B>Implements an LDAP add DA.</B>
+//! Implements an LDAP add DA.
 /*!
 <B>Configuration:</B> See LDAPAbstractDAI<br>
 <B>LDAP Query spec:</B><pre>
@@ -269,7 +271,7 @@ private:
 // =========================================================================
 
 //---- LDAPCompareDAI ----------------------------------------------------------
-//! <B>Implements an LDAP compare DA.</B>
+//! Implements an LDAP compare DA.
 /*!
 <B>Configuration:</B> See LDAPAbstractDAI<br>
 <B>LDAP Query spec:</B><pre>
@@ -312,7 +314,7 @@ private:
 // =========================================================================
 
 //---- LDAPDeleteDAI ----------------------------------------------------------
-//! <B>Implements an LDAP delete DA.</B>
+//! Implements an LDAP delete DA.
 /*!
 <B>Configuration:</B> See LDAPAbstractDAI<br>
 <B>LDAP Query spec:</B><pre>
@@ -351,7 +353,7 @@ private:
 // =========================================================================
 
 //---- LDAPSearchDAI ----------------------------------------------------------
-//! <B>Implements an LDAP search DA.</B>
+//! Implements an LDAP search DA.
 /*!
 <B>Configuration:</B> See LDAPAbstractDAI<br>
 <B>LDAP Query spec:</B><pre>

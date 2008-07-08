@@ -16,13 +16,13 @@
 //---- forward declaration -----------------------------------------------
 
 //---- StreamToAnythingMapper ----------------------------------------------------------
-//! <b>converts a stream into an Anythings and puts it into the context using an optional mapper script</b>
+//! converts a stream into an Anythings and puts it into the context using an optional mapper script
 /*!
 Reads in an Anything from the client provided stream and stores it in the context's TmpStore under [MapperName][key] by default.
-<p>
+
 To further process the converted Anything one can provide a MapperScript which extracts and stores either parts of the converted Anything or the whole Anything.
-<p><b>Configuration:</b>
-<pre>
+\par Configuration
+\code
 {
 	/key {
 		/Slot.To.Lookup			NewOutputKey		optional, the given slotname will be used as LookupPath on the converted Anything, if the LookupPath was successful this content gets stored in the NewOutputKey
@@ -34,10 +34,11 @@ To further process the converted Anything one can provide a MapperScript which e
 		}
 	}
 }
-</pre>
+\endcode
+
 Example output of pseudo-configuration from above assuming we got the following stream to convert <b>{ /Slot { /To { /Lookup { 123 /a bcd } } /Something 123 } }</b>
-<p>The output in TmpStore would be:
-<pre>
+\par The output in TmpStore would be:
+\code
 {
 	/Mapper {
 		/NewOutputKey {
@@ -50,8 +51,9 @@ Example output of pseudo-configuration from above assuming we got the following 
 		/a bcd
 	}
 }
-</pre>
-Note that the slot <b>ResultsInNoOutput</b> does not exist because the LookupPath of <b>NonExistingSlot</b> resulted in a Null-Anything and therefore no output slot will be created!
+\endcode
+
+Note that the slot \b ResultsInNoOutput does not exist because the LookupPath of \b NonExistingSlot resulted in a Null-Anything and therefore no output slot will be created!
  */
 class EXPORTDECL_DATAACCESS StreamToAnythingMapper : public ResultMapper
 {
@@ -85,7 +87,7 @@ private:
 };
 
 //---- AnythingToStreamMapper ----------------------------------------------------------
-//! <b>streams Anythings out from context to a Stream</b>
+//! streams Anythings out from context to a Stream
 /*!
 looks up 'key' in context and streams it on the client provided stream
  */

@@ -35,9 +35,10 @@ required in a given HTML context (see explanations below).
 */
 
 //---- URLPrinter -------------------------------------------------------
-//! <B>Base utility class to abstract from concrete URL Format</B>
+//! Base utility class to abstract from concrete URL Format
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/BaseAddr	Rendererspec	optional, protokoll and server part of the URL
 	/Action 	Rendererspec	optional, action token
@@ -47,7 +48,8 @@ required in a given HTML context (see explanations below).
 		...
 	}
 }
-</PRE>
+\endcode
+
 It contains hook-methods to be overwritten by derived classes.
 */
 class EXPORTDECL_RENDERER URLPrinter : public Renderer
@@ -98,7 +100,7 @@ private:
 };
 
 //---- FullURLPrinter -------------------------------------------------------
-//! <B>Generates complete absolute URLs using a single form variable</B>
+//! Generates complete absolute URLs using a single form variable
 /*!
 The FullURLPrinter is used to generate complete absolute URLs with just a
 single Form Variable named "X". Its command separator is '?' a la CGI,
@@ -165,9 +167,10 @@ protected:
 };
 
 //---- URLRenderer -------------------------------------------------------
-//! <B>Renders an full or simple URL depending on the page or server setting</B>
+//! Renders an full or simple URL depending on the page or server setting
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/Action 	Rendererspec	optional, action token
 	/Params {
@@ -176,7 +179,8 @@ protected:
 		...
 	}
 }
-</PRE>
+\endcode
+
 The URLRenderer renders just the URL (e.g. for placing it
 in an imagemap etc. Depending on the over-all configuration it
 uses either a FullURLPrinter (without BASE tag) or the
@@ -197,9 +201,10 @@ public:
 };
 
 //---- LinkRenderer -------------------------------------------------------
-//! <B>Renders a link</B>
+//! Renders a link
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/Action 	Rendererspec	optional, action token
 	/Label		Rendererspec	optional, displayed name of the link
@@ -214,7 +219,8 @@ public:
 		...
 	}
 }
-</PRE>
+\endcode
+
 The LinkRenderer forms a HTTP HREF statement with a Label and
 an URL (see URLRenderer, URLPrinter,
 SimpleURLPrinter, FullURLPrinter) The Indirection to the URLRenderer

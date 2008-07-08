@@ -13,14 +13,15 @@
 #include "Renderer.h"
 
 //---- ImageLocationRenderer -------------------------------------------------------
-//! <B>Renders the full filename of an image</B>
+//! Renders the full filename of an image
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/ImageName		Rendererspec	mandatory, filename of the image
 	/ImagePath		Rendererspec	optional, default is to lookup ImagePath in the context and if not defined "./" will be taken
 }
-</PRE>
+\endcode
 ImageLocationRenderer renders the full filename of an image. The filename is devided in two sections:
 -# a path - which designates a subdirectory of the HTTP servers document folder
 -# the actual filename of the image
@@ -38,9 +39,10 @@ protected:
 };
 
 //---- ImageRenderer -------------------------------------------------------
-//! <B>Renders an HTML image tag</B>
+//! Renders an HTML image tag
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/ImageName		Rendererspec	mandatory, filename of the image
 	/ImagePath		Rendererspec	optional, default is to lookup ImagePath in the context and if not defined "./" will be taken
@@ -49,11 +51,14 @@ protected:
 		...
 	}
 }
+\endcode
 or
+\code
 {
 	"image name" 			creates: \<IMG SRC="ImagePath/image name"\>
 }
-</PRE>
+\endcode
+
 The ImageRenderer renders an HTML \<IMG\> tag into the reply (including different HTML options). (The ImageLocationRenderer is used to render the filename of the image.)
 All HTML image options may be specified at slot /Options, e.g.:
 -# /DYNSRC "..."\n
@@ -105,9 +110,10 @@ public:
 };
 
 //---- FigureRenderer ---------------------------------------------------------------
-//! <B>Renders an HTML image with a caption below using a surrounding table</B>
+//! Renders an HTML image with a caption below using a surrounding table
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/ImageName		Rendererspec	mandatory, filename of the image
 	/ImagePath		Rendererspec	optional, default is to lookup ImagePath in the context and if not defined "./" will be taken
@@ -117,7 +123,8 @@ public:
 		...
 	}
 }
-</PRE>
+\endcode
+
 Renders an image with a caption (an HTML table is used instead of the regular HTML CAPTION feature which does not perform well on all browsers)
 The renderer takes the same parameters as an ImageRenderer - i.e. 'ImagePath', 'ImageName' and 'Options' (eventhough all 'Options' might not have the desired results, since the image is enclosed by a table).
 In addition the text to be displayed below the image is taken from the 'Caption' slot.

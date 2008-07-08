@@ -17,7 +17,8 @@ class RowAccessor;
 //---- BasicTableRenderer -------------------------------------------------------------------
 //! <B>BasicTableRenderer is a fairly generic renderer used to generate simple HTML-tables.</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/DataSource		String			mandatory, slot - in the context - that contains the data to be used for the table
 	/TableFormats	{...}			optional, an associative array of settings used for the main table settings
@@ -50,7 +51,8 @@ class RowAccessor;
 		}
 	}
 }
-</PRE>
+\endcode
+
 The renderer makes the following assumptions regarding the table tobe generated (which may not be suitable for all purposes..):
 - The table consists of a fixed number of columns and a variable number of
 rows containing data.
@@ -398,11 +400,13 @@ protected:
 //---- SequenceRenderer --------------------------------------------------------------
 //! <B>Just renders what is given in the config, similar to the renderers default behavior</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	...		Rendererspec	optional, will be rendered using Renderer::Render
 }
-</PRE>
+\endcode
+
 */
 class EXPORTDECL_RENDERER SequenceRenderer : public Renderer
 {

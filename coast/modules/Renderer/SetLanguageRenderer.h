@@ -14,22 +14,24 @@
 #include "Renderer.h"
 
 //---- SetLanguageRenderer ----------------------------------------------------------
-//! <B>Renders a localized value using a given temporary language setting</B>
+//! Renders a localized value using a given temporary language setting
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/TempLang	String			optional, temporary language setting
 	/Content {	Anything
 		...		Rendererspec
 	}
 }
-</PRE>
+\endcode
+
 Renderer sets given language in the context and translates a given input
 anything respresenting string (temporary!).
-<B>Example:</B>
+\par Example:
 # MasterLanguage is D
 /Lookup InfoText_L # -> text is in german
-<PRE>
+\code
 /Switch {
 	/SetLanguageRenderer {
 		/TempLang F
@@ -38,7 +40,7 @@ anything respresenting string (temporary!).
 		}
 	}
 }
-</PRE>
+\endcode
 */
 class EXPORTDECL_RENDERER SetLanguageRenderer : public Renderer
 {

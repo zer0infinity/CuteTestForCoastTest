@@ -14,13 +14,17 @@
 #include "Renderer.h"
 
 //---- PageNameRenderer ----------------------------------------------------------
-//! <B>Renders the Name of the Page in the Context</B>
+//! Renders the Name of the Page in the Context
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 }
-or *
-</PRE>
+\endcode
+or
+\code
+*
+\endcode
 */
 class EXPORTDECL_WDBASE PageNameRenderer : public Renderer
 {

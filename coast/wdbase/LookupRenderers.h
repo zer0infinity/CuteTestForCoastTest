@@ -13,7 +13,7 @@
 #include "Renderer.h"
 
 //---- LookupRenderer -------------------------------------------------------
-//! <B>Abstract base class for LookupRenderers</B>
+//! Abstract base class for LookupRenderers
 /*!
 \par Configuration
 \code
@@ -69,19 +69,23 @@ protected:
 };
 
 //---- ContextLookupRenderer -------------------------------------------------------
-//! <B>Concrete Renderer to lookup and renderer things from Context</B>
+//! Concrete Renderer to lookup and renderer things from Context
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/LookupName			Rendererspec	mandatory, name to lookup
 	/Default			Rendererspec	optional, default if LookupName name slot was not found
 	/Delim   			String			optional, default ".", first char is taken as delimiter for lookup path
 	/IndexDelim			String			optional, default ":", first char is taken as index-delimiter for lookup path
 }
- or just
+\endcode
+or just
+\code
 {
 	"name" "default renderer specification" "delim" "indexdelim"
 }
+\endcode
 */
 class EXPORTDECL_WDBASE ContextLookupRenderer : public LookupRenderer
 {
@@ -100,19 +104,23 @@ protected:
 };
 
 //---- StoreLookupRenderer -------------------------------------------------------
-//! <B>Concrete Renderer to lookup and renderer things from TempStore</B>
+//! Concrete Renderer to lookup and renderer things from TempStore
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/LookupName			Rendererspec	mandatory, name to lookup
 	/Default			Rendererspec	optional, default if LookupName name slot was not found
 	/Delim   			String			optional, default ".", first char is taken as delimiter for lookup path
 	/IndexDelim			String			optional, default ":", first char is taken as index-delimiter for lookup path
 }
- or just
+\endcode
+or just
+\code
 {
 	"name" "default renderer specification" "delim" "indexdelim"
 }
+\endcode
 */
 class EXPORTDECL_WDBASE StoreLookupRenderer : public LookupRenderer
 {
@@ -131,7 +139,7 @@ protected:
 };
 
 //---- QueryLookupRenderer -------------------------------------------------------
-//! <B>Concrete Renderer to lookup and renderer things from Query</B>
+//! Concrete Renderer to lookup and renderer things from Query
 /*!
 \par Configuration
 \code

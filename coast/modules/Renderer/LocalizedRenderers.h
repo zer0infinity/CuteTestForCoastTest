@@ -13,9 +13,10 @@
 #include "Renderer.h"
 
 //---- LanguageSwitchRenderer --------------------------------------------------------------
-//! <B>Renders a language specific renderer specification</B>
+//! Renders a language specific renderer specification
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/D			Rendererspec	optional, specification used for german output
 	/F			Rendererspec	optional, specification used for french output
@@ -23,7 +24,8 @@
 	/E			Rendererspec	optional, specification used for english output
 	/Default 	Rendererspec	optional, used if no regular match is found
 }
-</PRE>
+\endcode
+
 LanguageSwitchRenderer selects a language specific renderer specification
 to create the reply. The LocalisationUtils class is used for this. The language
 name defined by context.Language() is used to look up which renderer specification
@@ -40,9 +42,10 @@ public:
 };
 
 //---- StringRenderer --------------------------------------------------------------
-//! <B>Renders a language specific string</B>
+//! Renders a language specific string
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/D			String	optional, string used for german output
 	/F			String	optional, string used for french output
@@ -50,7 +53,8 @@ public:
 	/E			String	optional, string used for english output
 	/Default 	String	optional, used if no regular match is found
 }
-</PRE>
+\endcode
+
 StringRenderer is a special case of a LanguageSwitchRenderer. It only
 allows simple strings where LanguageRenderer accepts full renderer
 specifications. There may be a performance advantage by using a StringRenderer

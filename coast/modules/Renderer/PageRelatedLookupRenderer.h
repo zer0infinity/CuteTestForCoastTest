@@ -13,17 +13,21 @@
 #include "LookupRenderers.h"
 
 //---- PageRelatedLookupRenderer --------------------------------------------------------------
-//! <B>LookupRenderer that uses the current page name when performing a lookup</B>
+//! LookupRenderer that uses the current page name when performing a lookup
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/LookupName		Rendererspec	optional, specification to lookup in context in a page specific slot
 }
+\endcode
 or just
+\code
 {
 	"name of a renderer in context"
 }
-</PRE>
+\endcode
+
 PageRelatedLookupRenderer is a LookupRenderer that uses the current
 page name when performing a lookup: A slot which matches
 the current page name is first retrieved from the context.
@@ -31,20 +35,20 @@ The purpose of PageRelatedLookupRenderer is to allow for the better structuring
 of global configuration files, and thereby the reduction of global namespace
 pollution (e.g. in LocalizedString.any).
 
-Example:
---------
-<PRE>
+\par Example:
+\code
 /PageRelatedLookupRenderer {
 	/LookupName "Title_L"
 }
-</PRE>
+\endcode
+
 PageRelatedLookupRenderer basically creates a page local namespace:
 If the above renderer was invoked from page "Foo", the name actually retrieved
 from the Context would be: "Foo.Title_L". However use of the same renderer on
 page "Bar" performs a lookup of "Bar.Title_L".
 
 Entries in the LocalizedStrings.any file might look like this:
-<PRE>
+\code
 /Foo {		# localized strings for page "Foo"
 	/Title_L {
 		/Type String
@@ -57,7 +61,7 @@ Entries in the LocalizedStrings.any file might look like this:
 		/Default "Title of page Bar"
 	}
 }
-</PRE>
+\endcode
 */
 class EXPORTDECL_RENDERER PageRelatedLookupRenderer : public LookupRenderer
 {

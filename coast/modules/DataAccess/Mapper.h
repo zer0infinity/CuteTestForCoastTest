@@ -28,9 +28,10 @@ public:
 };
 
 //----------------------- ParameterMapper aka ParameterMapper --------------------
-//! <b>Base class for getting parameters or content out of the context</b>
+//! Base class for getting parameters or content out of the context
 /*! This Mapper supports behavior configuration. Put specific configuration into InputMapperMeta.any for the corresponding Mapper alias name.
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/<Get-Key>	{					Anything	optional, key specific Mapper-Script to execute when hit
 		/<ParameterMapperName>	*				The specified Mapper will be called using an empty script as its configuration, eg. no submapper will be called.
@@ -39,7 +40,8 @@ public:
 		}
 	}
 	...
-}</PRE>
+}
+\endcode
 */
 class EXPORTDECL_DATAACCESS ParameterMapper : public HierarchConfNamed
 {
@@ -185,16 +187,18 @@ private:
 };
 
 //---------------- ResultMapper ------------------------------
-//! <b>Base class for putting results into context</b>
+//! Base class for putting results into context
 /*! This Mapper supports behavior configuration. Put the following into OutputMapperMeta.any for the corresponding Mapper alias name.
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/PutPolicy		String		optional, default "Put" or "Append" if a value already exists
 								"Put": always a non-array-any slot, set value as 'slots' content
 								"Append": always an array-any slot, append value below slot
 	/Delim			char		optional, default '.', specify path delimiting character for Lookup operations within DoGetDestinationAny()
 	/IndexDelim		char		optional, default ':', specify index delimiting character for Lookup operations within DoGetDestinationAny()
-}</PRE>
+}
+\endcode
 */
 class EXPORTDECL_DATAACCESS ResultMapper : public HierarchConfNamed
 {
@@ -375,7 +379,7 @@ private:
 //  ========================== Other Mappers ===============================
 
 //  -------------------------- RootMapper ------------------------------
-//! <b>Result mapper which stores Results directly at root of TmpStore</b>
+//! Result mapper which stores Results directly at root of TmpStore
 /*! This could be configured in config, but it would be necessary to write a config every time a RootMapper is used.
 */
 class EXPORTDECL_DATAACCESS RootMapper : public ResultMapper

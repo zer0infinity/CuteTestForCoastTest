@@ -14,9 +14,10 @@
 #include "ListRenderer.h"
 
 //---- FormRenderer ---------------------------------------------------------------
-//! <B>FormRenderer is an extension of HTMLTemplateRenderer which generates HTML FORM tags</B>
+//! FormRenderer is an extension of HTMLTemplateRenderer which generates HTML FORM tags
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/Method		String			optional, default POST [GET|POST], take care when using GET because the URL will be appended with all fields
 	/Action		Rendererspec	optional, default "", action that is invoked when submitting the form with any button or method
@@ -25,7 +26,8 @@
 	/Options	{...}			optional, An array of Key-Value pairs that allows to render any HTML option within the FORM tag. Please refer to OptionsPrinter description for further explaining
 	/Layout		{...}			optional, layout in the form of a list of renderer specifications. If not defined the config is just passed to the super-class HTMLTemplateRenderer
 }
-</PRE>
+\endcode
+
 FormRenderer is an extension of HTMLTemplateRenderer - which means that
 all parameters that are valid for an HTMLTemplateRenderer may also be used
 with a FormRenderer.
@@ -33,14 +35,16 @@ with a FormRenderer.
 \note When using the "GET" method for passing form parameters, form settings show up in the location URL
 displayed by the Web browser! "GET" should therefore be avoided if confidential password information is to be entered on a page!
 
-Example:
+\par Example:
 <PRE>
+\code
 {
 	/Method			"GET"				# parameters are passed using the "GET" method
 	/Action			"ExampleAction"		# the action "ExampleAction" is used when any submit button is pressed
 	/TemplateName	"MyTemplate"		# the file MyTemplate.html is used inside the form, eg. HTMLTemplateRenderer is used to render the content of the form
 }
-</PRE>
+\endcode
+
 */
 class EXPORTDECL_RENDERER FormRenderer: public HTMLTemplateRenderer
 {
@@ -55,7 +59,7 @@ protected:
 };
 
 //---- FieldRenderer ---------------------------------------------------------------
-//! <B>FieldRenderer is the base to render any type of FORM widgets</B>
+//! FieldRenderer is the base to render any type of FORM widgets
 /*!
 If a form is submitted, the fields go into query["fields"] which has the following form
 <PRE>
@@ -87,9 +91,10 @@ protected:
 };
 
 //---- SelectBoxRenderer ---------------------------------------------------------------
-//! <B>This renderer renders a list from which the user may select one or multiple entries</B>
+//! This renderer renders a list from which the user may select one or multiple entries
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/Name					Rendererspec	mandatory, identifier used for the field, prefixed with fld_
 	/Size 					Rendererspec	optional, default 1, defines how many elements of the list are simultaneously displayed. If set to 1 and Multiple is undefined it degenerates to a PulldownMenuRenderer
@@ -118,21 +123,21 @@ protected:
 	}
 	/Options 			{...}			optional, An array of Key-Value pairs that allows to render any HTML option within the SELECT tag. Refer to OptionsPrinter for further description
 }
-</PRE>
-The renderer builds on the HTML SELECT tag.<BR>
+\endcode
+
+The renderer builds on the HTML SELECT tag.\n
 \note If /Size 1 and /Multiple is undefined the SelectBoxRenderer degenerates to a PulldownMenuRenderer
 
 The individual elements contained within /ListData or /ListName, consist of two parts
-<OL>
-<LI>\b /Text - Rendererspec that produces the text in the list visible on the screen</LI>
-<LI>\b /Options - Renders options with the OPTION tag
-<OL><LI>\b /Value - when committing a form, the selected items of a SELECT field are
-usually reported using the strings displayed in the field. A special return
-value may be specified by setting the /Value slot (/Value may contain an arbitrary renderer specification).</LI>
-<LI>\b /Selected - Marks an item as selected. (If /Multiple is undefined, only one element may be marked selected.</LI></OL>
-</LI></OL>
+- \b /Text - Rendererspec that produces the text in the list visible on the screen
+- \b /Options - Renders options with the OPTION tag
+ - \b /Value - when committing a form, the selected items of a SELECT field are
+	usually reported using the strings displayed in the field. A special return
+	value may be specified by setting the /Value slot (/Value may contain an arbitrary renderer specification).
+ - \b /Selected - Marks an item as selected. (If /Multiple is undefined, only one element may be marked selected.
 
-<PRE>Example:
+\par Example:
+\code
 /SelectBoxRenderer {
 	/Name		"exampleList"
 	/Size		25
@@ -172,7 +177,8 @@ value may be specified by setting the /Value slot (/Value may contain an arbitra
 		/ContextLookupRenderer SelectBoxOption.Selected
 	}
 }
-</PRE>
+\endcode
+
 The actual List item data can be accessed under SelectBoxOption, the Index SelectBoxOptionIndex and the slotname SelectBoxOptionSlotname
 Use this if you dont want to build up an extra list for the selectbox renderer
 */
@@ -191,9 +197,10 @@ protected:
 };
 
 //---- OptionListRenderer -----------------------------------------------------------
-//! <B>This renderer renders the OPTION tags of the SelectBoxRenderer</B>
+//! This renderer renders the OPTION tags of the SelectBoxRenderer
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/Name				Rendererspec	mandatory, identifier used for the field, prefixed with fld_
 	/TextRenderer		Rendererspec	mandatory, Used to renderer the OPTION Content
@@ -203,7 +210,8 @@ protected:
     /IndexSlot          String			optional, denotes the slotname where the index (row number) of the actual entry is stored while rendering
     /SlotnameSlot       String			optional, denotes the slotname where the slotname of the actual entry is stored while rendering
 }
-</PRE>
+\endcode
+
 */
 class EXPORTDECL_RENDERER OptionListRenderer : public ListRenderer
 {
@@ -289,28 +297,30 @@ protected:
 };
 
 //---- CheckboxRenderer ---------------------------------------------------------------
-//! <B>The CheckBoxRenderer is used to create a checkbox.</B>
+//! The CheckBoxRenderer is used to create a checkbox.
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/Name 		Rendererspec	mandatory, identifier used for the checkbox.
 	/Value		Rendererspec	optional, default off [on|off], initial setting of the checkbox, if set to on, CHECKED gets rendered
 	/Options 	{...}			optional, An array of Key-Value pairs that allows to render any HTML option within the INPUT tag. Refer to OptionsPrinter for further description
 }
-</PRE>
+\endcode
+
 \remarks Keep in mind that Web browsers only send back informations about the
 checkboxes that where turned "on"! Checkboxes that do not show up in the next
 query generated by the browser are therefore implicitly turned "off"!
 
-Example:
-<PRE>
+\par Example:
+\code
 /ExampleToggle {
 	/CheckboxRenderer {
 		/Name   "someToggle"
 		/Value	"on"			# toggle is initally turned on
 	}
 }
-</PRE>
+\endcode
 */
 class EXPORTDECL_RENDERER CheckBoxRenderer : public FieldRenderer
 {
@@ -324,9 +334,10 @@ protected:
 };
 
 //---- RadioButtonRenderer ---------------------------------------------------------------
-//! <B>The RadioButtonRenderer is used to create a radio button</B>
+//! The RadioButtonRenderer is used to create a radio button
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/Name				Rendererspec	mandatory, identifier used for the field
 	/Value				Rendererspec	mandatory, specifies the value stored in the field
@@ -334,14 +345,15 @@ protected:
 	/EvaluateChecked	Rendererspec 	optional, is evaluated and converted to boolean, if true the radio gets checked
 	/Options			{...}			optional, An array of Key-Value pairs that allows to render any HTML option within the INPUT tag. Refer to OptionsPrinter for further description
 }
-</PRE>
+\endcode
+
 Related radio buttons are identified by the \b /Name slot. If there are multiple radio buttons using
 the same \b /Name, only one may be selected at any time. The return value for the finally selected
 button is specified using the \b /Value slot. The initially selected button may be specified
 using a \b /Checked slot.
 
-Example: (three mutually exclusive radio buttons)
-<PRE>
+\par Example: (three mutually exclusive radio buttons)
+\code
 /Radio1 {
 	/RadioButtonRenderer {
 		/Name   "x1"
@@ -370,14 +382,15 @@ Example: (three mutually exclusive radio buttons)
 		}
 	}
 }
-</PRE>
+\endcode
+
 The value returned in the query if button Radio1 had been finally selected would be
 
-<PRE>
+\code
 /fields {
 	/x1	"pos1"
 }
-</PRE>
+\endcode
 */
 class EXPORTDECL_RENDERER RadioButtonRenderer : public FieldRenderer
 {
@@ -391,24 +404,25 @@ protected:
 };
 
 //---- HiddenFieldRenderer ---------------------------------------------------------------
-//! <B>HiddenFieldRenderer renders an arbitrary hidden field</B>
+//! HiddenFieldRenderer renders an arbitrary hidden field
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/Name		Rendererspec	mandatory, identifier used for the field
 	/Value		Rendererspec	mandatory, value stored in the hidden field
 	/Options	{...}			optional, An array of Key-Value pairs that allows to render any HTML option within the INPUT tag. Refer to OptionsPrinter for further description
 }
-</PRE>
-<B>Example:</B>
-<PRE>
+\endcode
+\par Example:
+\code
 /ExampleHidden {
 	/HiddenFieldRenderer {
 		/Name		"myKey"
 		/Value		"myValue"
 	}
 }
-</PRE>
+\endcode
 */
 class EXPORTDECL_RENDERER HiddenFieldRenderer : public FieldRenderer
 {
@@ -422,19 +436,21 @@ protected:
 };
 
 //---- ButtonRenderer ---------------------------------------------------------------
-//! <B>ButtonRenderer renders an HTML submit button</B>
+//! ButtonRenderer renders an HTML submit button
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/Name		Rendererspec	mandatory, identifier used for the button
 	/Label		Rendererspec	mandatory, label of the button
 	/Options	{...}			optional, An array of Key-Value pairs that allows to render any HTML option within the INPUT tag. Refer to OptionsPrinter for further description
 }
-</PRE>
+\endcode
+
 If a form is submitted by pressing the button, its name goes into query["Button"]
 
-Example:
-<PRE>
+\par Example:
+\code
 /ExampleSubmit {
 	/ButtonRenderer {
 		/Name		"mySubmitButton"
@@ -446,7 +462,7 @@ Example:
 		}
 	}
 }
-</PRE>
+\endcode
 */
 class EXPORTDECL_RENDERER ButtonRenderer : public FieldRenderer
 {
@@ -463,17 +479,20 @@ protected:
 //---- ImageButtonRenderer ---------------------------------------------------------------
 //! <B>ImageButtonRenderer renders an HTML INPUT with Type Image, that can be used to submit a form</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/Name		Rendererspec	mandatory, identifier used for the button
 	/Src		Rendererspec	mandatory, local filename/path to the image
 	/Options	{...}			optional, An array of Key-Value pairs that allows to render any HTML option within the INPUT tag. Refer to OptionsPrinter for further description
 }
-</PRE>
+\endcode
+
 If a form is submitted by clicking on the imagebutton, its name goes into query["Button"]
 additionally the query contains a slot named Click which contains the x and y position
 where the mouseclick has occured
-<PRE>
+
+\code
 query {
 	...
 	/Button    ImageButtonName
@@ -482,9 +501,9 @@ query {
 		/y     25
 	}
 }
-</PRE>
-Example:
-<PRE>
+\endcode
+\par Example:
+\code
 /ExampleSubmit {
 	/ImageButtonRenderer {
 		/Name		"myImageButton"
@@ -500,7 +519,7 @@ Example:
 		}
 	}
 }
-</PRE>
+\endcode
 */
 class EXPORTDECL_RENDERER ImageButtonRenderer : public FieldRenderer
 {
@@ -515,22 +534,24 @@ protected:
 };
 
 //---- ResetButtonRenderer ---------------------------------------------------------------
-//! <B>ResetButtonRenderer renders an HTML reset button</B>
+//! ResetButtonRenderer renders an HTML reset button
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/Label		Rendererspec	mandatory, label of the button
 	/Options	{...}			optional, An array of Key-Value pairs that allows to render any HTML option within the INPUT tag. Refer to OptionsPrinter for further description
 }
-</PRE>
-<B>Example:</B>
-<PRE>
+\endcode
+\par Example:
+\code
 /ExampleReset {
 	/ResetButtonRenderer {
 		/Label		"Reset"
 	}
 }
-</PRE>*/
+\endcode
+*/
 class EXPORTDECL_RENDERER ResetButtonRenderer : public ButtonRenderer
 {
 public:
@@ -545,7 +566,8 @@ protected:
 //---- TextFieldRenderer ---------------------------------------------------------------
 //! <B>TextFieldRenderer is supposed to be used for text- and password input fields</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/Name			Rendererspec	mandatory, identifier used for the field.
 	/Value			Rendererspec	optional, initial setting of the field.
@@ -554,9 +576,9 @@ protected:
 	/Maxlength		Rendererspec	optional, Maximum number of characters that may be entered.
 	/Options		{...}			optional, An array of Key-Value pairs that allows to render any HTML option within the INPUT tag. Refer to OptionsPrinter for further description
 }
-</PRE>
-<B>Example:</B>
-<PRE>
+\endcode
+\par Example:
+\code
 /ExampleField {
 	/TextFieldRenderer {
 		/Name		"myField"
@@ -568,7 +590,8 @@ protected:
 		}
 	}
 }
-</PRE>*/
+\endcode
+*/
 class EXPORTDECL_RENDERER TextFieldRenderer : public FieldRenderer
 {
 public:
@@ -582,7 +605,8 @@ protected:
 //---- TextAreaRenderer --------------------------------------------------------------
 //! <B>TextAreaRenderer serves to create a multi-line text input area</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/Name		Rendererspec	mandatory, identifer used for returning the result
 	/Value		Rendererspec	optional, initial content of the field
@@ -591,10 +615,11 @@ protected:
 	/Wrap		String			optional, wrapping behaviour .. either: "HARD", "SOFT" or "NONE"
 	/Options	{...}			optional, An array of Key-Value pairs that allows to render any HTML option within the INPUT tag. Refer to OptionsPrinter for further description
 }
-</PRE>
+\endcode
+
 It builds on the HTML TEXTAREA tag.
-<B>Example:</B>
-<PRE>
+\par Example:
+\code
 /ExampleArea {
 	/TextAreaRenderer {
 		/Name		"myTextArea"
@@ -604,7 +629,8 @@ It builds on the HTML TEXTAREA tag.
 		/Wrap		"HARD"
 	}
 }
-</PRE>*/
+\endcode
+*/
 class EXPORTDECL_RENDERER TextAreaRenderer : public FieldRenderer
 {
 public:
@@ -617,14 +643,16 @@ protected:
 };
 
 //---- FieldNameRenderer ---------------------------------------------------------------
-//! <B>Renders a fieldname including Coast prefix given a name</B>
+//! Renders a fieldname including Coast prefix given a name
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
 	/Default	String	optional, name of the field
 	/LookupName	String	optional, name will be looked up in the context with the given string
 }
-</PRE>*/
+\endcode
+*/
 class EXPORTDECL_RENDERER FieldNameRenderer : public Renderer
 {
 public:
@@ -634,7 +662,7 @@ public:
 };
 
 //---- FileBrowseRenderer --------------------------------------------------------------
-//! <B>Creates a filebrowse input area</B>
+//! Creates a filebrowse input area
 /*! The configuration is equal to the TextFieldRenderer but the type is fixed to \b FILE */
 class EXPORTDECL_RENDERER FileBrowseRenderer : public TextFieldRenderer
 {
