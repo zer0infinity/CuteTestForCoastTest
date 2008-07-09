@@ -20,8 +20,9 @@
 \par Configuration
 \code
 {
-	/Channel		String		mandatory, channel name to log to
-	/Severity		long		optional, default AppLogModule::eINFO, Severity [CRITICAL=1, FATAL=2, ERROR=4, WARN=8, INFO=16, OK=32, MAINT=64, DEBUG=128], all levels lower_equal (<=) the specified value will get logged
+	/Channel		String			mandatory, channel name to log to
+	/Severity		long			optional, default AppLogModule::eINFO, Severity [CRITICAL=1, FATAL=2, ERROR=4, WARN=8, INFO=16, OK=32, MAINT=64, DEBUG=128], all levels lower_equal (<=) the specified value will get logged
+	/Format			Rendererspec	optional, overrides /Format slot of Channel in AppLogModule config
 }
 \endcode
 */
@@ -38,7 +39,6 @@ public:
 		\param config the configuration of the action.
 		\return true if the action run successfully, false if an error occurred. */
 	virtual bool DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config);
-
 };
 
 //---- TimeLoggingAction ----------------------------------------------------------

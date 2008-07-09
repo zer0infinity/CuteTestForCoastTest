@@ -29,7 +29,12 @@ bool LoggingAction::DoExecAction(String &transitionToken, Context &ctx, const RO
 	String channel = config["Channel"].AsString("");
 	if ( channel.Length() ) {
 		Trace("Channel: <" << channel << ">");
-		bRet = AppLogModule::Log(ctx, channel, (AppLogModule::eLogLevel)config["Severity"].AsLong((long)AppLogModule::eINFO));
+		ROAnything roaFormat;
+		if ( config.LookupPath( roaFormat, "Format" ) ) {
+			bRet = AppLogModule::Log(ctx, channel, roaFormat, (AppLogModule::eLogLevel)config["Severity"].AsLong((long)AppLogModule::eINFO));
+		} else {
+			bRet = AppLogModule::Log(ctx, channel, (AppLogModule::eLogLevel)config["Severity"].AsLong((long)AppLogModule::eINFO));
+		}
 	}
 	return bRet;
 }
