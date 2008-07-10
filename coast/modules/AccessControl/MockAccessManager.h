@@ -96,12 +96,6 @@ public:
 	virtual bool IsAllowed(Context &ctx, String who, String entity);
 
 private:
-	Anything &GetData() {
-		if (fMockData.IsNull()) {
-			fMockData = fConfig.DeepClone();
-		}
-		return fMockData;
-	}
 	Anything fMockData;
 };
 
