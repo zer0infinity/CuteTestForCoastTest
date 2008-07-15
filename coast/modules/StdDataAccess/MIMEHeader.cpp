@@ -125,7 +125,6 @@ bool MIMEHeader::ParseField(String &line, MIMEHeader::ProcessMode splitHeaderFie
 			while (st1.NextToken(fieldvalue)) {
 				if ( fieldvalue.Length() ) {
 					URLUtils::TrimBlanks(fieldvalue);
-					URLUtils::RemoveQuotes(fieldvalue);
 					if ( splitHeaderFields == eDoSplitHeaderFields ) {
 						URLUtils::AppendValueTo(fHeader, fieldname, fieldvalue);
 					} else if ( splitHeaderFields == eDoSplitHeaderFieldsCookie ) {
