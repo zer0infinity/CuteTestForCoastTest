@@ -389,6 +389,7 @@ AppLogChannel::AppLogChannel(const char *name)
 	, fRendering(true)
 	, fLogMsgSizeHint(128L)
 	, fDoNotRotate(false)
+	, fNoLogItemsWrite(false)
 	, fFormat( Storage::Global() )
 	, fChannelMutex(name, Storage::Global())
 	, fBufferItems(0L)
@@ -434,6 +435,7 @@ bool AppLogChannel::DoInitClone(const char *name, const Anything &channel)
 	fRendering			= fChannelInfo["Rendering"].AsBool(true);
 	fLogMsgSizeHint		= fChannelInfo["LogMsgSizeHint"].AsLong(128L);
 	fDoNotRotate		= fChannelInfo["DoNotRotate"].AsBool(false);
+	fNoLogItemsWrite	= fChannelInfo["NoLogItemsWrite"].AsBool(false);
 	fFormat				= fChannelInfo["Format"];
 	fBufferItems		= fChannelInfo["BufferItems"].AsLong(0L);
 	fSeverity			= (AppLogModule::eLogLevel)fChannelInfo["Severity"].AsLong((long)AppLogModule::eALL);
@@ -455,6 +457,9 @@ bool AppLogChannel::LogAll(Context &ctx, AppLogModule::eLogLevel iLevel, const R
 {
 	StartTrace(AppLogChannel.LogAll);
 	if ( fLogStream && fLogStream->good() ) {
+		if ( fNoLogItemsWrite ) {
+			return true;
+		}
 		if ( ( iLevel & fSeverity ) > 0 ) {
 			TraceAny(config, "config: ");
 			Anything anyLogSev;

@@ -80,6 +80,9 @@ void AppLogTest::LogOkTest()
 			ctx.GetTmpStore()["TestMsg"] = "";
 			t_assertm(AppLogModule::Log(ctx, "EmptyHeaderLog", AppLogModule::eINFO), "EmptyHeaderLog");
 
+			ctx.GetTmpStore()["TestMsg"] = "NoLogItemsWrite log Test 1";
+			t_assertm(AppLogModule::Log(ctx, "NoLogItemsWriteLog", AppLogModule::eINFO), "NoLogItemsWriteLog");
+
 			ctx.GetTmpStore()["ErrorMsg"] = "Error 1";
 			t_assertm(AppLogModule::Log(ctx, "ErrorLog", AppLogModule::eINFO), "ErrorLog1");
 
@@ -91,6 +94,7 @@ void AppLogTest::LogOkTest()
 			CheckFile(ctx, "NoRenderingLog", "NoRenderingTestHeader\nNoRenderingLog log Test 1\n");
 			CheckFile(ctx, "EmptyHeaderLog", "\nEmptyHeader log Test 1\n");
 			CheckFile(ctx, "ErrorLog", "ErrorlogTestHeader\nError 1 - Test\nError 2 - Test\n");
+			CheckFile(ctx, "NoLogItemsWriteLog", "NoLogItemsWriteLogTestHeader\n");
 
 			CheckFile(ctx, "RelativeLogDir", "# Relative-File\n");
 			CheckFile(ctx, "AbsoluteLogDir", "# Absolute-File\n");

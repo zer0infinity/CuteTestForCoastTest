@@ -50,6 +50,7 @@
 		/MethodTimeFormat		%MethodTimeFormat
 		/NoHeaderLogFormat		%NoHeaderLogFormat
 		/EmptyHeaderLogFormat 	%EmptyHeaderLogFormat
+		/NoLogItemsWriteLogFormat		%NoLogItemsWriteLogFormat
 	}
 	/BufferItemsTest {
 		/Modules {
@@ -336,6 +337,13 @@
 					/Header		""
 					/SuppressEmptyLines	1
 				}
+				/NoLogItemsWriteLog
+				{
+					/FileName	"NoLogItemsWriteLog.log"
+					/Format		%NoLogItemsWriteLogFormat
+					/Header		"NoLogItemsWriteLogTestHeader"
+					/NoLogItemsWrite	1
+				}
 				/NoRenderingLog	{
 					/FileName	"NoRendering.log"
 					/Format		""
@@ -396,6 +404,12 @@
 	{
 		{ /Lookup	TestMsg }
 	}
+
+	/NoLogItemsWriteLogFormat
+	{
+		{ /Lookup	TestMsg }
+	}
+
 	/BufferItemsLogFormat
 	{
 		{ /Lookup	TestMsg }
