@@ -222,6 +222,8 @@ private:
 	long fLogMsgSizeHint;
 	//! Don't rotate this channel
 	bool fDoNotRotate;
+	//! Don't write log entries (header is written)
+	bool fNoLogItemsWrite;
 	Anything fFormat;
 	//! guard of stream
 	SimpleMutex fChannelMutex;
