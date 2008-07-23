@@ -139,7 +139,7 @@ void HTTPMimeHeaderMapper::Substitute(Anything &header, ROAnything &addlist, Con
 		for (int i = 0; i < header.GetSize(); i++) {
 			if (header.SlotName(i) == key) {
 				if (!ctx.GetSessionStore().IsDefined("EntryPage")) {
-					ctx.GetSessionStore()["EntryPage"] = ctx.GetQuery()["EntryPage"].DeepClone();
+					ctx.GetSessionStore()[ctx.GetQuery()["Service"].AsString()]["EntryPage"] = ctx.GetQuery()["EntryPage"].DeepClone();
 				}
 
 				header[i] = substRegex.Subst(header[i].AsString(), replacement);
