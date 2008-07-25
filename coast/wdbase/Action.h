@@ -21,7 +21,7 @@ class EXPORTDECL_WDBASE ActionsModule : public WDModule
 {
 public:
 	ActionsModule(const char *);
-	~ActionsModule();
+	virtual ~ActionsModule();
 
 	virtual bool Init(const ROAnything config);
 	bool ResetFinis(const ROAnything );

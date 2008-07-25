@@ -229,7 +229,7 @@ public:
 		, ostream(&fMmapBuf)
 #endif
 	{  }
-	~OMmapStream() { }
+	virtual ~OMmapStream() { }
 }; // OMmapStream
 
 //!implementation of iostream with mmap
@@ -244,7 +244,7 @@ public:
 		, iostream(&fMmapBuf)
 #endif
 	{  }
-	~MmapStream() { }
+	virtual ~MmapStream() { }
 }; // MmapStream
 
 #endif

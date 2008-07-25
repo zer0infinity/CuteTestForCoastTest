@@ -19,7 +19,7 @@ class EXPORTDECL_WDBASE ServerThreadPoolsManager: public ServerPoolsManagerInter
 {
 public:
 	ServerThreadPoolsManager(const char *ServerThreadPoolsManagerName);
-	~ServerThreadPoolsManager();
+	virtual ~ServerThreadPoolsManager();
 
 	//!cloning interface
 	IFAObject *Clone() const {

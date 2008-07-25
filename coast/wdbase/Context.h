@@ -154,7 +154,7 @@ public:
 #endif
 	//!legacy constructor with env and query anything and some, but not all important objects
 	Context(const Anything &env, const Anything &query, Server *srv, Session *s, Role *g, Page *p = 0);
-	~Context();
+	virtual ~Context();
 
 	//!setting server in context
 	void SetServer(Server *);
@@ -392,7 +392,7 @@ public:
 	SessionReleaser(Context &c): fContext(c) {
 		fWasLockedByMe = fContext.UnlockSession();
 	}
-	~SessionReleaser() {
+	virtual ~SessionReleaser() {
 		if (fWasLockedByMe) {
 			fContext.LockSession();
 		}

@@ -250,7 +250,7 @@ class EXPORTDECL_WDBASE SessionInfo : public Action
 public:
 	//--- constructors
 	SessionInfo(const char *name);
-	~SessionInfo();
+	virtual ~SessionInfo();
 
 	//! does the information collecting
 	virtual bool DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config);

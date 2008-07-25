@@ -26,7 +26,7 @@ class EXPORTDECL_MTFOUNDATION LeaderFollowerPool : public ThreadPoolManager
 public:
 	//--- constructors
 	LeaderFollowerPool(Reactor *reactor);
-	~LeaderFollowerPool();
+	virtual ~LeaderFollowerPool();
 
 	//!wait for a request and demultiplex the handling of it
 	virtual void WaitForRequest(Thread *t, long timeout = 0);
@@ -67,7 +67,7 @@ public:
 	//!thread configured by a AcceptorCallback that defines the connection to parts processing a request which is sent through the accepted connection
 	LeaderFollowerThread(LeaderFollowerPool *lfp, long timeout = 0);
 	//!deletes the acceptor
-	~LeaderFollowerThread();
+	virtual ~LeaderFollowerThread();
 
 	//! start leader follower cycles
 	virtual void Run();

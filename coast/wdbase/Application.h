@@ -21,7 +21,7 @@ class EXPORTDECL_WDBASE Application : public HierarchConfNamed
 public:
 	//!standard constructor with name
 	Application(const char *applicationName);
-	~Application();
+	virtual ~Application();
 
 	//! GlobalInit: installs ressources shared among all instances
 	int GlobalInit(int argc, const char *argv[], const ROAnything config);

@@ -27,7 +27,7 @@ public:
 	//!standard named object constructor
 	WDModule( const char *name );
 	//!does nothing
-	~WDModule();
+	virtual ~WDModule();
 
 	//!implementers should initialize module using config
 	virtual bool Init( const ROAnything roaConfig ) = 0;

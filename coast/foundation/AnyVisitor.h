@@ -23,7 +23,7 @@ class EXPORTDECL_FOUNDATION AnyVisitor
 {
 public:
 //!provide virtual destructor for subclasses with data
-	virtual  ~AnyVisitor() {};
+	virtual ~AnyVisitor() {};
 //!visit an empty Anything of type eNull
 	virtual void	VisitNull(long index, const char *slotname) {}
 //!visit an Anything representing a String, for historical reasons type called eCharPtr

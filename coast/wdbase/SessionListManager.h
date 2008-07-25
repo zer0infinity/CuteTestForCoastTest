@@ -26,7 +26,7 @@ class EXPORTDECL_WDBASE SessionFactoriesModule : public WDModule
 {
 public:
 	SessionFactoriesModule(const char *name);
-	~SessionFactoriesModule();
+	virtual ~SessionFactoriesModule();
 
 	virtual bool Init(const ROAnything config);
 	virtual bool ResetFinis(const ROAnything );
@@ -39,7 +39,7 @@ class EXPORTDECL_WDBASE SessionFactory : public HierarchConfNamed
 {
 public:
 	SessionFactory(const char *SessionFactoryName);
-	~SessionFactory();
+	virtual ~SessionFactory();
 
 	//! registry interface
 	RegCacheDef(SessionFactory);	// FindSessionFactory()
@@ -81,7 +81,7 @@ public:
 	//!it exists only one since it is a not cloned
 	SessionListManager(const char *name);
 	//!does nothing since everything should be done in Finis
-	~SessionListManager();
+	virtual ~SessionListManager();
 
 	static SessionListManager *SLM();
 	static void SetFinalize(bool finalize);

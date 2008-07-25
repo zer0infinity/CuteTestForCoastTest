@@ -37,7 +37,7 @@ public:
 		\param lExecTimeout execution timeout passed to underlying Pipe [ms], if no output can be read within the givin time, the pipe(s) will be closed.
 		\param bOpenStreamForStderr if set to true, stderr (fd=2) output will be captured. Call GetStderr() to get this stream. */
 	PipeExecutor(const String &cmd, Anything env, const char *wd = ".", long lExecTimeout = 1000L, bool bOpenStreamForStderr = false);
-	~PipeExecutor();
+	virtual ~PipeExecutor();
 
 	//--- public api
 	/*! Get iostream for reading/writing to called program, connected to programs stdin(0) and stdout(1)

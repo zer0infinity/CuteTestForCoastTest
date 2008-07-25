@@ -19,7 +19,7 @@ class EXPORTDECL_WDBASE RenderersModule : public WDModule
 {
 public:
 	RenderersModule(const char *name);
-	~RenderersModule();
+	virtual ~RenderersModule();
 
 	virtual bool Init(const ROAnything config);
 	virtual bool ResetFinis(const ROAnything );
@@ -36,7 +36,7 @@ public:
 	//! \param name object name for registry
 	Renderer(const char *name);
 	//!destructor does nothing
-	~Renderer();
+	virtual ~Renderer();
 
 	//!rendering hook; overwrite this method in subclasses
 	//!generates output on reply driven by config using the context given

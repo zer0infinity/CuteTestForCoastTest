@@ -19,7 +19,7 @@ class EXPORTDECL_WDBASE AcceptorFactoriesModule : public WDModule
 {
 public:
 	AcceptorFactoriesModule(const char *);
-	~AcceptorFactoriesModule();
+	virtual ~AcceptorFactoriesModule();
 
 	virtual bool Init(const ROAnything config);
 	virtual bool Finis();
@@ -35,7 +35,7 @@ public:
 	//!standard named object constructor
 	AcceptorFactory(const char *AcceptorFactoryName);
 	//!does nothing
-	~AcceptorFactory();
+	virtual ~AcceptorFactory();
 
 	//!registry interface
 	RegCacheDef(AcceptorFactory);	// FindAcceptorFactory()
@@ -70,7 +70,7 @@ public:
 	//!thread configured by a AcceptorCallback that defines the connection to parts processing a request which is sent through the accepted connection
 	ListenerThread(AcceptorCallBack *ac);
 	//!deletes the acceptor
-	~ListenerThread();
+	virtual ~ListenerThread();
 
 	//!allocates callback and acceptor; deprecated will be replaced by DoStartRequestedHook
 	//! \param args information about the server socket to create

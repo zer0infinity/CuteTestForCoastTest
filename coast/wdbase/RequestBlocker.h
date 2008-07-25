@@ -29,7 +29,7 @@ public:
 	//!it exists only one since it is a not cloned
 	RequestBlocker(const char *name);
 	//!does nothing since everything should be done in Finis
-	~RequestBlocker();
+	virtual ~RequestBlocker();
 
 	static RequestBlocker *RB();
 

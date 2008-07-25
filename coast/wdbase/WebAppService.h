@@ -25,7 +25,7 @@ class EXPORTDECL_WDBASE WebAppService : public ServiceHandler
 public:
 	//!standard named object constructor
 	WebAppService(const char *serviceHandlerName);
-	~WebAppService();
+	virtual ~WebAppService();
 
 	//!cloning interface
 	IFAObject *Clone() const {

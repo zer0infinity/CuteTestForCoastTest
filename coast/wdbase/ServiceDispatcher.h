@@ -20,7 +20,7 @@ class EXPORTDECL_WDBASE ServiceDispatchersModule : public WDModule
 {
 public:
 	ServiceDispatchersModule(const char *);
-	~ServiceDispatchersModule();
+	virtual ~ServiceDispatchersModule();
 
 	virtual bool Init(const ROAnything config);
 	virtual bool ResetFinis(const ROAnything );
@@ -36,7 +36,7 @@ class EXPORTDECL_WDBASE ServiceDispatcher : public HierarchConfNamed
 public:
 	//!standard named object constructor
 	ServiceDispatcher(const char *serviceDispatcherName);
-	~ServiceDispatcher();
+	virtual ~ServiceDispatcher();
 
 	//!registry interface
 	RegCacheDef(ServiceDispatcher);	// FindServiceDispatcher()
@@ -73,7 +73,7 @@ class EXPORTDECL_WDBASE RendererDispatcher : public ServiceDispatcher
 {
 public:
 	RendererDispatcher(const char *RendererDispatcherName);
-	~RendererDispatcher();
+	virtual ~RendererDispatcher();
 
 	//!cloning interface
 	IFAObject *Clone() const {

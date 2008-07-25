@@ -21,7 +21,7 @@ class EXPORTDECL_WDBASE RolesModule : public WDModule
 {
 public:
 	RolesModule(const char *name);
-	~RolesModule();
+	virtual ~RolesModule();
 
 	virtual bool Init(const ROAnything config);
 	virtual bool ResetFinis(const ROAnything );

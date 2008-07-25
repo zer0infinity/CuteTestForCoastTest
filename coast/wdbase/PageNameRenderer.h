@@ -31,7 +31,7 @@ class EXPORTDECL_WDBASE PageNameRenderer : public Renderer
 public:
 	//--- constructors
 	PageNameRenderer(const char *name);
-	~PageNameRenderer();
+	virtual ~PageNameRenderer();
 
 	//!Renders the Pagename
 	//! \param reply out - the stream where the rendered output is written on.

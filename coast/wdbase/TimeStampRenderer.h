@@ -40,7 +40,7 @@ public:
 	//--- constructors
 	/*! \param name defines the name of the renderer */
 	TimeStampRenderer(const char *name);
-	~TimeStampRenderer();
+	virtual ~TimeStampRenderer();
 
 	/*! Renders the timestamp to reply
 		\param reply the stream where the rendered output is written on.

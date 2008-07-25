@@ -18,7 +18,7 @@ class EXPORTDECL_WDBASE ServiceHandlersModule : public WDModule
 {
 public:
 	ServiceHandlersModule(const char *);
-	~ServiceHandlersModule();
+	virtual ~ServiceHandlersModule();
 
 	virtual bool Init(const ROAnything config);
 	virtual bool ResetFinis(const ROAnything );
@@ -34,7 +34,7 @@ public:
 	ServiceHandler(const char *serviceHandlerName);
 
 	//!destructor does nothing
-	~ServiceHandler();
+	virtual ~ServiceHandler();
 
 	//!registry interface
 	RegCacheDef(ServiceHandler);	// FindServiceHandler()

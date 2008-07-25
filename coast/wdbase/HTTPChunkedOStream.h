@@ -23,7 +23,7 @@ public:
 	//! \param a memory allocator
 	HTTPChunkedStreamBuf(ostream &os, long chunklength, Allocator *a = Storage::Current());
 
-	~HTTPChunkedStreamBuf();
+	virtual ~HTTPChunkedStreamBuf();
 
 	//! Writes the current content of the buffer chunk encoded to the wrapped ostream.
 	virtual int sync();
@@ -123,7 +123,7 @@ public:
 
 	//! The chunked encoding is finished and the stream is closed.
 	//! The wrapped ostream is not closed.
-	~HTTPChunkedOStream() {
+	virtual ~HTTPChunkedOStream() {
 		close();
 	}
 };

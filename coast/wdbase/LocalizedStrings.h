@@ -20,7 +20,7 @@ class EXPORTDECL_WDBASE LocalizationModule : public WDModule
 	bool ReadFromFile(Anything &config, const char *filename);
 public:
 	LocalizationModule(const char *name);
-	~LocalizationModule();
+	virtual ~LocalizationModule();
 
 	virtual bool Init(const ROAnything config);
 	virtual bool Finis();
@@ -31,7 +31,7 @@ class EXPORTDECL_WDBASE LocalizedStrings
 {
 public:
 	LocalizedStrings();
-	~LocalizedStrings();
+	virtual ~LocalizedStrings();
 
 	static LocalizedStrings *LocStr();
 

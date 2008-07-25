@@ -20,7 +20,7 @@ class EXPORTDECL_WDBASE ServerPoolsManagerInterfacesModule : public WDModule
 {
 public:
 	ServerPoolsManagerInterfacesModule(const char *);
-	~ServerPoolsManagerInterfacesModule();
+	virtual ~ServerPoolsManagerInterfacesModule();
 
 	virtual bool Init(const ROAnything config);
 	virtual bool Finis();

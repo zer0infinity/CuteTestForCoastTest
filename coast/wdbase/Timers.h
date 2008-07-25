@@ -38,7 +38,7 @@ class EXPORTDECL_WDBASE TimeLoggingModule : public WDModule
 public:
 	//--- constructors
 	TimeLoggingModule(const char *name);
-	~TimeLoggingModule();
+	virtual ~TimeLoggingModule();
 
 	//! implementers should initialize module using config
 	virtual bool Init(const ROAnything config);

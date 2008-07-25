@@ -20,7 +20,7 @@ class EXPORTDECL_WDBASE CacheHandlerModule : public WDModule
 {
 public:
 	CacheHandlerModule(const char *name);
-	~CacheHandlerModule();
+	virtual ~CacheHandlerModule();
 
 	virtual bool Init(const ROAnything config);
 	virtual bool Finis();

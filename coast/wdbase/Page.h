@@ -18,7 +18,7 @@ class EXPORTDECL_WDBASE PagesModule : public WDModule
 {
 public:
 	PagesModule(const char *name);
-	~PagesModule();
+	virtual ~PagesModule();
 
 	virtual bool Init(const ROAnything config);
 	virtual bool ResetFinis(const ROAnything );
