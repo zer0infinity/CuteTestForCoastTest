@@ -21,12 +21,14 @@
 
 	/useSSLTest
 	{
+		/Server				"sinv-56025.edu.hsr.ch"
 		/Port				"443"
 		/UseSSL				1
 		/Timeout			30
 	}
 
 	/ErrorHandlingTest {
+		/Server				"sinv-56025.edu.hsr.ch"
 		/Port				"8181"
 		/UseSSL				0
 		/Timeout			1

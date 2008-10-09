@@ -2543,6 +2543,7 @@
 					/Representation "Full"
 				}
 			}
+			/Expected       "sinv-56025.edu.hsr.ch"
 		}
 		/GetThisHostNameRendererHostTest
 		{
@@ -2553,6 +2554,7 @@
 					/Representation "HostOnly"
 				}
 			}
+			/Expected       "sinv-56025"
 		}
 		/GetThisHostNameRendererDNSTest
 		{
@@ -2563,6 +2565,7 @@
 					/Representation "DomainOnly"
 				}
 			}
+			/Expected       "edu.hsr.ch"
 		}
 		/AnythingContentRendererTest
 		{

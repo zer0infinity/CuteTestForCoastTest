@@ -51,7 +51,7 @@
 	/TestCases {
 		/InsertTest {
 			/TmpStore {
-				/Host		sifsstud1.hsr.ch
+				/Host		sinv-56025.edu.hsr.ch
 				/Database	mySQLTest
 				/MySQLUser	TestUser
 				/MySQLPW	allTests

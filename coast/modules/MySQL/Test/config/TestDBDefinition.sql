@@ -15,3 +15,9 @@ INSERT INTO TestTable VALUES ("Now",33);
 
 GRANT SELECT,INSERT,UPDATE,DELETE
 ON mySQLTest.TestTable
+TO 'TestUser'@'localhost' IDENTIFIED BY 'allTests';
+
+GRANT SELECT,INSERT,UPDATE,DELETE
+ON mySQLTest.TestTable
+TO 'TestUser'@'sinv-56025.edu.hsr.ch' IDENTIFIED BY 'allTests';
+

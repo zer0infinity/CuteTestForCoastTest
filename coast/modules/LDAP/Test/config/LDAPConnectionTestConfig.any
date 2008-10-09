@@ -7,7 +7,6 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-
 	/Modules {
 		CacheHandlerModule
 		MappersModule
@@ -18,7 +17,8 @@
 	/DataAccessImpls {}
 
 	/LDAPPort		"389"
-	/LDAPBind		"cn=admin,dc=sifsstud1,dc=hsr,dc=ch"
+	/LDAPBind		"cn=admin,dc=sinv-56025,dc=edu,dc=hsr,dc=ch"
+	/LDAPBindPW		"hankhank"
 	/LDAPTimeout	10
 	/LDAPConnectionTimeout 5
 
@@ -35,18 +35,21 @@
 			/Expected 		0
 			/Error {
 				/Msg 		"Binding request failed. [Server: 'nonexisting.server.loc', Port: '389']  (Authorized bind.)"
-				/LdapCode	81
+#				/LdapCode	81	# code on iPlanet-LDAP
+				/LdapCode	-1	# code on openldap server
 				/LdapMsg	"Can't contact LDAP server"
 				/LdapConnectionParams {
 					/Server "nonexisting.server.loc"
 					/Port 389
 					/Timeout 10
 					/ConnectionTimeout 5
-					/BindName "cn=admin,dc=sifsstud1,dc=hsr,dc=ch"
+					/BindName "cn=admin,dc=sinv-56025,dc=edu,dc=hsr,dc=ch"
+					/BindPW "hankhank"
 					/PooledConnections 0
 					/RebindTimeout 0
 					/TryAutoRebind		0
 					/MaxConnections 2				}
+				}
 				/MsgAsString "LdapDataAccess: [DataAccess_0] Msg [Binding request failed. [Server: 'nonexisting.server.loc', Port: '49999']  (Authorized bind.)] LdapCode [91] LdapMsg [Can't connect to the LDAP server] LdapConnectionParams [{/Server \"nonexisting.server.loc\"/Port 49999/Timeout 10/ConnectionTimeout 5/BindName \"cn=Directory Manager\"/BindPW \"WipedOut\"/PooledConnections 0/RebindTimeout 0/TryAutoRebind 0/MaxConnections 2}]"
 			}
 		}
@@ -67,7 +70,7 @@
 			/LDAPPort		%LDAPPort
 			/LDAPTimeout		%LDAPTimeout
 			/LDAPConnectionTimeout	%LDAPConnectionTimeout
-			/LDAPBindName		"cn=WrongBindName,dc=sifsstud1,dc=hsr,dc=ch"
+			/LDAPBindName		"cn=WrongBindName,dc=sinv-56025,dc=edu,dc=hsr,dc=ch"
 			/LDAPBindPW		%LDAPBindPW
 			/Expected 		0
 			/Error {
@@ -75,10 +78,12 @@
 				/LdapCode 49
 				/LdapMsg "Invalid credentials"
 				/LdapConnectionParams {
+					/Server "sinv-56025.edu.hsr.ch"
 					/Port 389
 					/Timeout 10
 					/ConnectionTimeout 5
-					/BindName "cn=WrongBindName,dc=sifsstud1,dc=hsr,dc=ch"
+					/BindName "cn=WrongBindName,dc=sinv-56025,dc=edu,dc=hsr,dc=ch"
+					/BindPW "hankhank"
 					/PooledConnections 0
 					/RebindTimeout 0
 					/TryAutoRebind		0
@@ -100,12 +105,12 @@
 				/Msg "LDAP request failed."
 				/LdapCode 49
 				/LdapMsg "Invalid credentials"
-				/LdapConnectionParams
-				{
+				/LdapConnectionParams {
+					/Server "sinv-56025.edu.hsr.ch"
 					/Port 389
 					/Timeout 10
 					/ConnectionTimeout 5
-					/BindName "cn=admin,dc=sifsstud1,dc=hsr,dc=ch"
+					/BindName "cn=admin,dc=sinv-56025,dc=edu,dc=hsr,dc=ch"
 					/BindPW "SillyNonexistingBindPW"
 					/PooledConnections 0
 					/RebindTimeout 0

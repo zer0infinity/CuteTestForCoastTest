@@ -7,7 +7,6 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-
 	/Modules {
 		MappersModule
 		DataAccessImplsModule
@@ -92,8 +91,7 @@
 			{
 				/CurrentServer
 				{
-					/Server	"dylan"
-					/Port		22222
+					/Port		443
 					/UseSSL		1
 					/Timeout	30
 					/UseThreadLocalMemory 1
@@ -110,7 +108,7 @@
 				}
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.com,CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -125,8 +123,7 @@
 			{
 				/CurrentServer
 				{
-					/Server	"dylan"
-					/Port		22222
+					/Port		443
 					/UseSSL		1
 					/Timeout	30
 					/UseThreadLocalMemory 1
@@ -143,7 +140,7 @@
 				}
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.com,CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -158,8 +155,7 @@
 			{
 				/CurrentServer
 				{
-					/Server	"dylan"
-					/Port		22222
+					/Port		443
 					/UseSSL		1
 					/Timeout	30
 					/UseThreadLocalMemory 1
@@ -176,7 +172,7 @@
 				}
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,xCN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.com,xCN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -191,8 +187,7 @@
 			{
 				/CurrentServer
 				{
-					/Server	"dylan"
-					/Port		22222
+					/Port		443
 					/UseSSL		1
 					/Timeout	30
 					/UseThreadLocalMemory 1
@@ -209,7 +204,7 @@
 				}
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 1
-				/CertVerifyString		"xCN=dylan.hank.com"
+				/CertVerifyString		"xCN=sinv-56025.edu.hsr.ch"
 			}
 			/Results
 			{
@@ -224,8 +219,7 @@
 			{
 				/CurrentServer
 				{
-					/Server	"dylan"
-					/Port		22222
+					/Port		443
 					/UseSSL		1
 					/Timeout	30
 					/UseThreadLocalMemory 0
@@ -242,7 +236,7 @@
 				}
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 1
-				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.com,CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{

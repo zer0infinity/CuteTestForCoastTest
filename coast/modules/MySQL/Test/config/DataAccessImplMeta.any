@@ -8,17 +8,17 @@
 
 {
 	/MySQLDAImpl {
-		/Host		sifsstud1.hsr.ch
+		/Host		sinv-56025.edu.hsr.ch
 		/MySQLUser	TestUser
 		/MySQLPW	allTests
 	}
 
 	/SelectTest {
-		/Host   "sifsstud1.hsr.ch"
+		/Host   "sinv-56025.edu.hsr.ch"
 		/Port   "3306"               		# this is default
 	}
 	/InsertTest {
-		/Host   sifsstud1.hsr.ch          			# this is default
+		/Host   sinv-56025.edu.hsr.ch          			# this is default
 	}
 	/DeleteTest {
 	}
@@ -27,7 +27,7 @@
 		/Port   "3306"               		# this is default
 	}
 	/WrongPortTest {
-		/Host   "sifsstud1.hsr.ch"
+		/Host   "sinv-56025.edu.hsr.ch"
 		/Port   "3307"               		# failure port
 	}
 	/SelectTestWithoutQueryCount {

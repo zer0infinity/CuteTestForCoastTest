@@ -269,7 +269,7 @@
 	/LDAPConfig_Pooled
 	{
 		/LDAPPort		"389"
-		/LDAPBindName	"cn=admin,dc=sifsstud1,dc=hsr,dc=ch"
+		/LDAPBindName	"cn=admin,dc=sinv-56025,dc=edu,dc=hsr,dc=ch"
 		/LDAPConnectionTimeout	5
 		/LDAPTimeout	10
 		/LDAPPooledConnections 1
@@ -413,7 +413,7 @@
 			/TmpStore	{
 				# connection config
 				/LDAPPort		"389"
-				/LDAPBindName	"cn=admin,dc=sifsstud1,dc=hsr,dc=ch"
+				/LDAPBindName	"cn=admin,dc=sinv-56025,dc=edu,dc=hsr,dc=ch"
 				/LDAPConnectionTimeout	5
 				/LDAPTimeout	10
 				/LDAPPooledConnections 1
@@ -421,7 +421,7 @@
 				/LDAPRebindTimeout 60
 
 				# test config
-				/LDAPBase		"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+				/LDAPBase		"ou=tkfu,o=10601,c=CH,dc=sinv-56025.edu.hsr.ch"
 				/LDAPScope		"subtree"
 			}
 			/Env {
@@ -549,7 +549,7 @@
 							# just check a few expected things (samples)
 							/Entries
 							{
-								/"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+								/"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=sinv-56025.edu.hsr.ch"
 								{
 									/objectclass {
 										"person"
@@ -619,7 +619,7 @@
 							# check a few expected things within the returned entries
 							/Entries
 							{
-								/"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+								/"ou=tkfu,o=10601,c=CH,dc=sinv-56025.edu.hsr.ch"
 								{
 									/objectclass {
 										"organizationalUnit"
@@ -781,9 +781,9 @@
 							/NumberOfEntries 1
 							# check a few expected things within the returned entries
 							/Entries {
-								/"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+								/"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=sinv-56025.edu.hsr.ch"
 								{
-									/pd-dn "cn=CH10601-tkrefactor,dc=tkfpd.hsr.ch"
+									/pd-dn "cn=CH10601-tkrefactor,dc=sinv-56025.edu.hsr.ch"
 									/language "D"
 								}
 							}
@@ -814,7 +814,7 @@
 							# check a few expected things within the returned entries
 							/Entries
 							{
-								/"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch" {
+								/"ou=tkfu,o=10601,c=CH,dc=sinv-56025.edu.hsr.ch" {
 									"objectclass"
 									"ou"
 									"name"
@@ -849,7 +849,7 @@
 							# check a few expected things within the returned entries
 							/Entries
 							{
-								/"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch" {
+								/"ou=tkfu,o=10601,c=CH,dc=sinv-56025.edu.hsr.ch" {
 									"objectclass"
 									"ou"
 									"name"
@@ -885,7 +885,7 @@
 							# check a few expected things within the returned entries
 							/Entries
 							{
-							  /"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+							  /"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=sinv-56025.edu.hsr.ch"
 							  {
 								/objectclass {
 								  "person"
@@ -923,7 +923,7 @@
 							# check a few expected things within the returned entries
 							/Entries
 							{
-							  /"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+							  /"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=sinv-56025.edu.hsr.ch"
 							  {
 								/objectclass {
 								  "person"
@@ -2002,7 +2002,7 @@
 
 							# only check the stuff we've changed
 							/Entries {
-							  /uid=tkrefactor1,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch {
+							  /uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=sinv-56025.edu.hsr.ch {
 								/tids {
 								  "172.016.001.041"
 								  "172.016.200.013"
@@ -2186,7 +2186,7 @@
 						  /NumberOfEntries 1
 						  # only check the relevant fields of the returned entries
 						  /Entries {
-							/uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch {
+							/uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=sinv-56025.edu.hsr.ch {
 							  /passwordexp "20010101_00:00:00"
 							}
 						  }
