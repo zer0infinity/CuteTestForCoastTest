@@ -9,11 +9,11 @@
 {
 
 	/InternalSSLhost {
-		/ip		"sifsstud1.hsr.ch"
+		/ip		"sinv-56025.edu.hsr.ch"
 		/port		443
 	}
 	/RemoteSSLhost {
-		/name	"sifsstud1.hsr.ch"
+		/name	"sinv-56025.edu.hsr.ch"
 		/port		443
 		/faultyport	8081
 	}

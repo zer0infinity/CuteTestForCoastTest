@@ -9,7 +9,7 @@
 {
 
 	/RemoteCertificateHost {
-		/Address	"sifsstud1.hsr.ch"
+		/Address	"sinv-56025.edu.hsr.ch"
 		/Port		443
 		/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
 		/SSLVerifyPeerCert 1
@@ -21,7 +21,7 @@
 		{
 			/Config
 			{
-				/Address	"sifsstud1.hsr.ch"
+				/Address	"sinv-56025.edu.hsr.ch"
 				/Port		443
 				/SSLVerifyDepth 3
 				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
@@ -31,7 +31,7 @@
 				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=sifsstud1.hsr.ch@wildplanet.com,CN=sifsstud1.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.com,CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -47,7 +47,7 @@
 		{
 			/Config
 			{
-				/Address	"sifsstud1.hsr.ch"
+				/Address	"sinv-56025.edu.hsr.ch"
 				/Port		443
 				/SSLVerifyDepth 1
 				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
@@ -57,7 +57,7 @@
 				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=sifsstud1.hsr.ch@wildplanet.com,CN=sifsstud1.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.com,CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -73,7 +73,7 @@
 		{
 			/Config
 			{
-				/Address	"sifsstud1.hsr.ch"
+				/Address	"sinv-56025.edu.hsr.ch"
 				/Port		443
 				/SSLVerifyDepth 3
 				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
@@ -83,7 +83,7 @@
 				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 1
-				/CertVerifyString		"CN=sifsstud1.hsr.ch"
+				/CertVerifyString		"CN=sinv-56025.edu.hsr.ch"
 			}
 			/Results
 			{
@@ -99,7 +99,7 @@
 		{
 			/Config
 			{
-				/Address	"sifsstud1.hsr.ch"
+				/Address	"sinv-56025.edu.hsr.ch"
 				/Port		443
 				/SSLVerifyDepth 3
 				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
@@ -109,7 +109,7 @@
 				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 1
-				/CertVerifyString		"CN=sifsstud1.hsr.chxxxxxxxxxxxxxxx"
+				/CertVerifyString		"CN=sinv-56025.edu.hsr.chxxxxxxxxxxxxxxx"
 
 			}
 			/Results
@@ -126,7 +126,7 @@
 		{
 			/Config
 			{
-				/Address	"sifsstud1.hsr.ch"
+				/Address	"sinv-56025.edu.hsr.ch"
 				/Port		443
 				/SSLVerifyDepth 3
 				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
@@ -136,7 +136,7 @@
 				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 1
-				/CertVerifyString		"xCN=sifsstud1.hsr.ch"
+				/CertVerifyString		"xCN=sinv-56025.edu.hsr.ch"
 			}
 			/Results
 			{
@@ -152,7 +152,7 @@
 		{
 			/Config
 			{
-				/Address	"sifsstud1.hsr.ch"
+				/Address	"sinv-56025.edu.hsr.ch"
 				/Port		443
 				/SSLVerifyDepth 3
 				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
@@ -162,7 +162,7 @@
 				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=zuoz.hsr.ch@wildplanet.Xom,CN=sifsstud1.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.Xom,CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -178,7 +178,7 @@
 		{
 			/Config
 			{
-				/Address	"sifsstud1.hsr.ch"
+				/Address	"sinv-56025.edu.hsr.ch"
 				/Port		443
 				/SSLVerifyDepth 3
 				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
@@ -189,7 +189,7 @@
 				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=sifsstud1.hsr.ch@wildplanet.com,CN=sifsstud1.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.com,CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -205,7 +205,7 @@
 		{
 			/Config
 			{
-				/Address	"sifsstud1.hsr.ch"
+				/Address	"sinv-56025.edu.hsr.ch"
 				/Port		443
 				/SSLVerifyDepth 1
 				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
@@ -216,7 +216,7 @@
 				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=sifsstud1.hsr.ch@wildplanet.com,CN=sifsstud1.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.com,CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -232,7 +232,7 @@
 		{
 			/Config
 			{
-				/Address	"sifsstud1.hsr.ch"
+				/Address	"sinv-56025.edu.hsr.ch"
 				/Port		443
 				/SSLVerifyDepth 1
 				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
@@ -243,7 +243,7 @@
 				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=sifsstud1.hsr.ch@wildplanet.com,CN=sifsstud1.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.com,CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -260,7 +260,7 @@
 		{
 			/Config
 			{
-				/Address	"sifsstud1.hsr.ch"
+				/Address	"sinv-56025.edu.hsr.ch"
 				/Port		443
 				/SSLVerifyDepth 1
 				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
@@ -271,7 +271,7 @@
 				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=sifsstud1.hsr.ch@wildplanet.com,CN=sifsstud1.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.com,CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -288,7 +288,7 @@
 		{
 			/Config
 			{
-				/Address	"sifsstud1.hsr.ch"
+				/Address	"sinv-56025.edu.hsr.ch"
 				/Port		443
 				/SSLVerifyDepth 1
 				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
@@ -299,7 +299,7 @@
 				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=sifsstud1.hsr.ch@wildplanet.com,CN=sifsstud1.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.com,CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -315,7 +315,7 @@
 		{
 			/Config
 			{
-				/Address	"sifsstud1.hsr.ch"
+				/Address	"sinv-56025.edu.hsr.ch"
 				/Port		443
 				/SSLVerifyDepth 1
 				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
@@ -326,7 +326,7 @@
 				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
 				/VerifyCertifiedEntity 0
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=sifsstud1.hsr.ch@wildplanet.com,CN=sifsstud1.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.com,CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -342,7 +342,7 @@
 		{
 			/Config
 			{
-				/Address	"sifsstud1.hsr.ch"
+				/Address	"sinv-56025.edu.hsr.ch"
 				/Port		443
 				/SSLVerifyDepth 1
 				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
@@ -353,7 +353,7 @@
 				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
 				/VerifyCertifiedEntity 0
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=sifsstud1.hsr.ch@wildplanet.com,CN=sifsstud1.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.com,CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -369,7 +369,7 @@
 		{
 			/Config
 			{
-				/Address	"sifsstud1.hsr.ch"
+				/Address	"sinv-56025.edu.hsr.ch"
 				/Port		443
 				/SSLVerifyDepth 3
 				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
@@ -380,7 +380,7 @@
 				/SSLVerifyPath 		"/tmp/SSLSocketTestHashedCerts"
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 1
-				/CertVerifyString		"CN=sifsstud1.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{

@@ -13,22 +13,19 @@
 		{
 			/Config
 			{
-				/Address	"dylan"
-####												  -cert servercert.pem -key serverkey.pem -Verify 4 -CAfile fullchain.pem -debug
-####												  and type "HTTP" as the server's response in GetCtxTest.
-				/Port		22222
+				/Address	"sinv-56025.edu.hsr.ch"
+				/Port		443
 				/UseThreadLocalMemoryMemory		1
-				/SSLVerifyDepth 3
 				/KeyFileClient	"cert_files/clientkey.pem"
 				/CertFileClient	"cert_files/clientcrt.pem"
+				/SSLVerifyDepth 3
 				/SSLVerifyFailIfNoPeerCert 0
 				/SSLUseAppCallback		1
 				/SSLPeerCAFile "cert_files/rootCA1crt.pem"
 				/VerifyCertifiedEntity 1
 				/SessionResumption 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
-			}
+				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.com,CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			/Results
 			{
 				/SSLCertVerifyStatus		1
@@ -42,9 +39,7 @@
 		{
 			/Config
 			{
-				/Address	"dylan"
-####												  -cert servercert.pem -key serverkey.pem -Verify 4 -CAfile fullchain.pem -debug
-####												  and type "HTTP" as the server's response in GetCtxTest.
+				/Address	"10.146.127.226"
 				/Port		22222
 				/SessionResumption 			1
 				/NoCertAndPrivateKey		1
@@ -62,10 +57,8 @@
 		{
 			/Config
 			{
-				/Address	"dylan"
-####												  -cert servercert.pem -key serverkey.pem -Verify 4 -CAfile fullchain.pem -debug
-####												  and type "HTTP" as the server's response in GetCtxTest.
-				/Port		22222
+				/Address	"sinv-56025.edu.hsr.ch"
+				/Port		443
 				/UseThreadLocalMemoryMemory		1
 				/SSLClientSessionTimeout	1
 				/SSLVerifyDepth 3
@@ -77,7 +70,7 @@
 				/VerifyCertifiedEntity 1
 				/SessionResumption 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.com,CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -87,15 +80,14 @@
 			}
 		}
 	}
+	/SessionResumptionWithMinimumConfigTest %SessionResumptionTest
 	/NoSessionResumptionTest
 	{
 		{
 			/Config
 			{
-				/Address	"dylan"
-####												  -cert servercert.pem -key serverkey.pem -Verify 4 -CAfile fullchain.pem -debug
-####												  and type "HTTP" as the server's response in GetCtxTest.
-				/Port		22222
+				/Address	"sinv-56025.edu.hsr.ch"
+				/Port		443
 				/UseThreadLocalMemoryMemory		1
 				/SSLClientSessionTimeout	1
 				/SSLVerifyDepth 3
@@ -107,7 +99,7 @@
 				/VerifyCertifiedEntity 1
 				/SessionResumption 0
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.com,CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
 			}
 			/Results
 			{
@@ -121,10 +113,8 @@
 	/SessionResumptionTest
 	{
 		{
-			/Address	"dylan"
-			/Port		443
-####											  -cert servercert.pem -key serverkey.pem -Verify 4 -CAfile fullchain.pem -debug
-####											  and type "HTTP" as the server's response in GetCtxTest.
+			/Address	"153.46.168.202"
+			/Port		22222
 			/SSLClientSessionTimeout	1
 			/SSLVerifyDepth 3
 			/KeyFileClient	"cert_files/clientkey.pem"
@@ -141,14 +131,14 @@
 	/GetDefaultCtxTest
 	{
 		{
-			/Address	"dylan"
-			/Port		22222
+			/Address	"sinv-56025.edu.hsr.ch"
+			/Port		443
 		}
 	}
 	/SessionIdTest
 	{
 		{
-			/Address "dylan"
+			/Address "sinv-56025.edu.hsr.ch"
 			/Port	 "443"
 			/Version 1111
 		}
