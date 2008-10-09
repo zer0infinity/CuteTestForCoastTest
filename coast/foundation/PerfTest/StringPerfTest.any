@@ -167,4 +167,12 @@
     /"RunPreallocLoop[this is a short samp]100000" 10
     /"RunPoolAllocLoop[this is a short samp]100000" 0
   }
+  /"20081009163439" {
+    /"RunLoop[this is a ]100000" 580
+    /"RunPreallocLoop[this is a ]100000" 10
+    /"RunPoolAllocLoop[this is a ]100000" 0
+    /"RunLoop[this is a short samp]100000" 2050
+    /"RunPreallocLoop[this is a short samp]100000" 0
+    /"RunPoolAllocLoop[this is a short samp]100000" 0
+  }
 }
