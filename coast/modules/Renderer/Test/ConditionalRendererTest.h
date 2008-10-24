@@ -24,16 +24,19 @@ public:
 	static Test *suite ();
 	void setUp ();
 protected:
-	void ConfigureTrue();
-	void ConfigureFalse();
-	void ConfigureDefined();
-	void ConfigureUndefined();
+	void ConfigureTrue(const String &key);
+	void ConfigureFalse(const String &key);
+	void ConfigureDefined(const String &key);
+	void ConfigureUndefined(const String &key);
 	void ConfigureError();
 	void CondTrue();
 	void CondFalse();
 	void CondDefined();
 	void CondUndefined();
 	void CondError();
+	void CondTrueSpecChars();
+	void CondTrueSpecCharsWithRendering();
+	void SpecCharsWithDefDelims();
 
 	void ConfigureOnlyTrue();
 	void ConfigureOnlyFalse();
@@ -73,7 +76,7 @@ protected:
 	void CondUndefinedConfUndefined();
 	void CondErrorConfUndefined();
 
-	void SetTrueFalseCase(long condition);
+	void SetTrueFalseCase(long condition, const String &key);
 	void TestTrueFalseCase();
 };
 

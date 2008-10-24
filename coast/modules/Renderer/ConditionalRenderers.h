@@ -48,6 +48,9 @@ protected:
 \code
 {
 	/ContextLookupName	Rendererspec	mandatory, resulting a String used to Lookup the Context
+	/PathDelim			Rendererspec	optional, an arbitrary char or "Ignore" which is a synonym for a char with hex value 0.
+												  The later results in a literal, uninterpreted lookup of the /ContextLookupName
+	/IndexDelim			Rendererspec	optional, see /PathDelim description.
 	/Case {								mandatory, list of different cases to compare ContextLookupName-value with
 		/xxx			Rendererspec	optional, if context.Lookup("ContextLookupName-value") == xxx, the content of this slot will be rendered
 		/yyy			Rendererspec	optional, if context.Lookup("ContextLookupName-value") == yyy, the content of this slot will be rendered

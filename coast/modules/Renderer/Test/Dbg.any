@@ -130,4 +130,20 @@
 		/MainSwitch 		10
 		/EnableAll			11
 	}
+	/SwitchRenderer {
+		/MainSwitch 		10
+		/EnableAll			11
+	}
+	/SwitchRendererTest {
+		/MainSwitch 		10
+		/EnableAll			11
+	}
+	/ConditionalRenderer {
+		/MainSwitch 		10
+		/EnableAll			11
+	}
+	/ConditionalRendererTest {
+		/MainSwitch 		10
+		/EnableAll			11
+	}
 }

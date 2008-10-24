@@ -25,7 +25,7 @@ public:
 	static Test *suite ();
 	void setUp ();
 protected:
-	void ConfigureCases( const char *cases );
+	void ConfigureCases( const String &caseKey, const char *cases );
 	void TestCaseA();
 	void TestCaseB();
 	void TestCaseC();
@@ -44,7 +44,10 @@ protected:
 	void TestCaseCWithoutContextLookupName();
 	void TestCaseNotFoundWithoutContextLookupName();
 	void TestCaseLookupEmpty();
-
+	void TestCaseCtxLookupNameSpecChars();
+	void TestCaseCtxLookupNameSpecCharsWithDefDelims();
+	void TestCaseCtxLookupNameSpecCharsWithRendering();
+	void TestTrueSpecChars();
 	SwitchRenderer fSwitchRenderer;
 };
 
