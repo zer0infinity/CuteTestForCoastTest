@@ -23,6 +23,7 @@
 #include "AnyIterators.h"
 
 //--- c-library modules used ---------------------------------------------------
+#include <cstring>
 #if !defined(WIN32)
 #include <pwd.h>
 #else
