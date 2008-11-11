@@ -21,6 +21,7 @@
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
+#include <cstdlib>
 #if !defined(WIN32)
 #include <sys/time.h>
 #endif

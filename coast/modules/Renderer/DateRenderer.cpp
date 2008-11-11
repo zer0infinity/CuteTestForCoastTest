@@ -14,6 +14,7 @@
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
+#include <cstdlib>
 #include <time.h>
 
 //---- DateRenderer ----------------------------------------------------------------

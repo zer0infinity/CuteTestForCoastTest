@@ -24,7 +24,7 @@ using namespace std;
 #endif
 
 //--- c-library modules used ---------------------------------------------------
-#include <climits>
+#include <limits>
 
 const char *const StringStreamTest::fgcContent =
 	"This is the content of a Test String\n"

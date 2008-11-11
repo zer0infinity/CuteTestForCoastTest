@@ -13,6 +13,9 @@
 #include "SysLog.h"
 #include "Dbg.h"
 
+//--- c modules used ----------------------------------------------------
+#include <cstdlib>
+
 //---- StringTokenizeRenderer ---------------------------------------------------------------
 RegisterRenderer(StringTokenizeRenderer);
 
