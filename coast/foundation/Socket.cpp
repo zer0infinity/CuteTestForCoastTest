@@ -988,6 +988,7 @@ bool Acceptor::StopAcceptLoop(bool useConnect)
 	CallBackLocker cbl( fCallBack );
 	cbl.Use();
 	if (fAlive && !fStopped && useConnect) {
+		Trace("fAlive: [" << fAlive << "] fStopped: [" << fStopped << "] useConnect: [" << useConnect << "]");
 		fAlive = false;
 		const char *ipaddress = (fIPAddress.Length() > 0) ? (const char *)fIPAddress : GetLocalHost();
 
@@ -1001,6 +1002,7 @@ bool Acceptor::StopAcceptLoop(bool useConnect)
 		fAlive = false;
 		fStopped = true;
 	}
+	Trace("On return (true) fAlive: [" << fAlive << "] fStopped: [" << fStopped << "] useConnect: [" << useConnect << "]");
 	return true;
 }
 
