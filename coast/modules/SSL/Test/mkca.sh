@@ -52,6 +52,7 @@ emailsuffix="wildplanet.com"
 commonnameclient=""
 commonnameserver=""
 pathtoexistingcacert=""
+digest="md5"
 typeset -l clientemail="${commonnameclient}@${emailsuffix}"
 ret=0
 
@@ -124,6 +125,7 @@ function showhelp
     echo "           generated certificates."
     echo "        -C common name (subject) of client, entity which is checked in cert verify (-C may be given repeatedly)"
     echo "        -S common name (subject) of server, entity which is checked in cert verify (-S may be given repeatedly)"
+    echo "        -s digest to use to sign server/client certificate. Default is md5, choose one of: md2/md5/sha1/mdc"
     echo ""
     echo "The files you want to use are in the directory"
     echo "given with -d in ca-hierarchy/ucerts"
@@ -138,7 +140,7 @@ function errorexit
 
 days=3650
 copyto=""
-while getopts "d:D:c:C::e:E:S:" opt
+while getopts "d:D:c:C::e:E:s:S:" opt
 do
         case $opt in
                 d)      target_dir="${OPTARG}";
@@ -148,6 +150,8 @@ do
                 c)      copyto="${OPTARG}";
                 ;;
                 C)      commonnameclient="${commonnameclient} ${OPTARG}";
+                ;;
+                s)      digest="${OPTARG}";
                 ;;
                 S)      commonnameserver="${commonnameserver} ${OPTARG}";
                 ;;
@@ -338,7 +342,7 @@ ${commonnameserver_var}@${emailsuffix}
 EOF1
 
 	echo "Signing CA request for Server ${commonnameserver_var}"
-	${openssl_bin} ca -config $conf -policy policy_anything \
+	${openssl_bin} ca -md $digest -config $conf -policy policy_anything \
 	-passin pass:gugus $DAYS -out newcert_${commonnameserver_var}.pem \
 	-infiles newreq_${commonnameserver_var}.pem <<EOF2
 y
@@ -346,7 +350,7 @@ y
 EOF2
 
 	echo "Stripping signed Certificate for Server ${commonnameserver_var}"
-	${openssl_bin} x509  -in newcert_${commonnameserver_var}.pem -out xx_${commonnameserver_var}.pem
+	${openssl_bin} x509 -in newcert_${commonnameserver_var}.pem -out xx_${commonnameserver_var}.pem
 	mv xx_${commonnameserver_var}.pem newcert_${commonnameserver_var}.pem
 	${openssl_bin} rsa  -passin pass:gaga -in newreq_${commonnameserver_var}.pem -out newreq_${commonnameserver_var}.plain.pem
 done
@@ -377,7 +381,7 @@ EOF1
 
 	echo "Signing Client certificte for ${commonnameclient_var} by subCA1"
 	cd ${target_dir}/subCA1
-	${openssl_bin} x509 -req $DAYS -passin pass:gugus  -CA ${CATOP}/cacert.pem \
+	${openssl_bin} x509 -$digest -req $DAYS -passin pass:gugus  -CA ${CATOP}/cacert.pem \
 			  -CAkey ${CATOP}/private/cakey.pem \
 			  -CAcreateserial -in ${target_dir}/client/client_${commonnameclient_var}.csr -out ${target_dir}/client/clientcrt_${commonnameclient_var}.pem
 
