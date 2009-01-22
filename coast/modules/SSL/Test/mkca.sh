@@ -125,7 +125,7 @@ function showhelp
     echo "           generated certificates."
     echo "        -C common name (subject) of client, entity which is checked in cert verify (-C may be given repeatedly)"
     echo "        -S common name (subject) of server, entity which is checked in cert verify (-S may be given repeatedly)"
-    echo "        -s digest to use to sign server/client certificate. Default is md5, choose one of: md2/md5/sha1/mdc"
+    echo "        -s digest to use to sign server/client certificate. Default is md5, choose one of: md2/md5/sha1/mdc/mdc2"
     echo ""
     echo "The files you want to use are in the directory"
     echo "given with -d in ca-hierarchy/ucerts"
