@@ -1,3 +1,9 @@
+[submodule "3rdparty/boost"]
+	path = 3rdparty/boost
+	url = ssh://m1huber@sifs-coast1/var/repositories/git/boost.git
+[submodule "3rdparty/loki"]
+	path = 3rdparty/loki
+	url = ssh://m1huber@sifs-coast1/var/repositories/git/loki.git
 [submodule "scripts"]
 	path = scripts
 	url = ssh://sifs-coast1.hsr.ch/var/repositories/git/wdscripts.git
