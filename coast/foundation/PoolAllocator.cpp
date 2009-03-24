@@ -395,7 +395,7 @@ PoolAllocator::~PoolAllocator()
 		fpPoolTotalTracker = NULL;
 	}
 	if ( fpPoolTotalExcessTracker && fpPoolTotalExcessTracker->PeakAllocated() > 0 ) {
-		strUsedPoolSize << " excess " << ( fpPoolTotalExcessTracker->PeakAllocated() / 1024UL ) << "kB";
+		strUsedPoolSize << " excess " << (l_long)( fpPoolTotalExcessTracker->PeakAllocated() / 1024UL ) << "kB";
 		delete fpPoolTotalExcessTracker;
 		fpPoolTotalExcessTracker = NULL;
 	}
