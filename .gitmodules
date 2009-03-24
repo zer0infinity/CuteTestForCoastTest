@@ -4,6 +4,9 @@
 [submodule "3rdparty/loki"]
 	path = 3rdparty/loki
 	url = ssh://m1huber@sifs-coast1/var/repositories/git/loki.git
+[submodule "site_scons"]
+	path = site_scons
+	url = ssh://sifs-coast1.hsr.ch/var/repositories/git/sconsider.git
 [submodule "scripts"]
 	path = scripts
 	url = ssh://sifs-coast1.hsr.ch/var/repositories/git/wdscripts.git
