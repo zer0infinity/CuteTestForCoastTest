@@ -731,7 +731,7 @@ bool MultifunctionListBoxRenderer::RenderPrintButton(ostream &reply, Context &c,
 			Anything buttonConfig;
 			reply << "<td align=center>";
 			buttonConfig["Name"] = strButtonName;
-			buttonConfig["Label"] = "Drucken";
+			buttonConfig["Label"] = "Print";
 			if (roButton.IsDefined("Label")) {
 				// override default
 				buttonConfig["Label"] = roButton["Label"].DeepClone();
