@@ -1,0 +1,20 @@
+import StanfordUtils
+
+Import('baseEnv')
+Import('listFiles')
+
+progEnv=baseEnv.Clone()
+libEnv=baseEnv.Clone()
+libEnv.AppendUnique(CPPDEFINES =['ONLY_STD_IOSTREAM'])
+libEnv.AppendUnique(CPPDEFINES =['_POSIX_THREADS'])
+libEnv.AppendUnique(CPPDEFINES =['_POSIX_PTHREAD_SEMANTICS'])
+libEnv.AppendUnique(CPPDEFINES =['_REENTRANT'])
+libEnv.AppendUnique(CPPDEFINES =['_LARGEFILE64_SOURCE'])
+libEnv.AppendUnique(CPPDEFINES =['WD_OPT'])
+
+libEnv.Tool('testfwLib', depsOnly = 1)
+testfwLib=libEnv.StaticLibrary('testfw', listFiles(['*.cpp']))
+progEnv.Tool('registerObjects', package='coast_testfw', libraries=[testfwLib], includes=listFiles(['*.h']))
+
+#print libEnv.Dump()
+#print progEnv.Dump()
