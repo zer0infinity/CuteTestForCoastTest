@@ -1,5 +1,3 @@
-import StanfordUtils
-
 Import('baseEnv')
 Import('listFiles')
 

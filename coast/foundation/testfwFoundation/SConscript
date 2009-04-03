@@ -1,0 +1,11 @@
+Import('baseEnv')
+Import('listFiles')
+
+progEnv=baseEnv.Clone()
+libEnv=baseEnv.Clone()
+
+libEnv.Tool('testfwFoundationLib', depsOnly = 1)
+progEnv.Tool('registerObjects', package='coast_testfw', libraries=[], includes=listFiles(['*.h']))
+
+#print libEnv.Dump()
+#print progEnv.Dump()

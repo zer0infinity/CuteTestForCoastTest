@@ -1,5 +1,3 @@
-import StanfordUtils
-
 Import('baseEnv')
 Import('listFiles')
 
@@ -12,9 +10,8 @@ progEnv.AppendUnique(CPPDEFINES =['_LARGEFILE64_SOURCE'])
 progEnv.AppendUnique(CPPDEFINES =['WD_OPT'])
 
 progEnv.Tool('foundationLib')
-progEnv.Tool('testfwLib')
-foundation_Test=progEnv.Program('wdtest',listFiles(['*.cpp']))
-progEnv.Tool('registerObjects', package='coast_foundation_Test', libraries=[], includes=[], binaries=[foundation_Test])
+progEnv.Tool('testfwFoundationLib')
+foundation_Test=progEnv.Program('foundation_Test',listFiles(['*.cpp']))
+progEnv.Tool('registerObjects', package='coast_base_Tests', libraries=[], includes=[], testApps=[foundation_Test])
 
-#print progEnv.Dump()
 #print progEnv.Dump()
