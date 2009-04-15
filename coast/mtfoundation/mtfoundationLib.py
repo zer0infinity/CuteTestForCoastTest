@@ -3,15 +3,17 @@ import SCons
 
 def generate(env, **kw):
     # this libraries dependencies
-    env.Tool('addLibrary', library = env['lokiLibs'])
-#    env.Tool('addLibrary', library = env['boostLibs'])
+    env.Tool('foundationLib')
     # flags / settings used by this library and users of it
-#    env.AppendUnique(CPPDEFINES =['ONLY_STD_IOSTREAM'])
+    env.AppendUnique(CPPDEFINES =['_POSIX_THREADS'])
+    env.AppendUnique(CPPDEFINES =['_POSIX_PTHREAD_SEMANTICS'])
+    env.AppendUnique(CPPDEFINES =['_REENTRANT'])
+    env.AppendUnique(LIBS=['pthread'])
     # export library dependency when we are not building ourselves
     if not kw.get('depsOnly', 0):
-        env.Tool('addLibrary', library = ['foundation'])
+        env.Tool('addLibrary', library = ['mtfoundation'])
     # where our public headers can be found => must match registered package
-    env.AppendUnique(CPPPATH = ['#include/coast_foundation'])
+    env.AppendUnique(CPPPATH = ['#include/coast_mtfoundation'])
 
 def exists(env):
     return true

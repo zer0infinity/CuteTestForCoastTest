@@ -2,12 +2,7 @@ Import('baseEnv')
 Import('listFiles')
 
 progEnv=baseEnv.Clone()
-progEnv.AppendUnique(CPPDEFINES =['ONLY_STD_IOSTREAM'])
-progEnv.AppendUnique(CPPDEFINES =['_POSIX_THREADS'])
-progEnv.AppendUnique(CPPDEFINES =['_POSIX_PTHREAD_SEMANTICS'])
-progEnv.AppendUnique(CPPDEFINES =['_REENTRANT'])
-progEnv.AppendUnique(CPPDEFINES =['_LARGEFILE64_SOURCE'])
-progEnv.AppendUnique(CPPDEFINES =['WD_OPT'])
+progEnv.Tool('coast_options')
 
 progEnv.Tool('foundationLib')
 progEnv.Tool('testfwFoundationLib')
