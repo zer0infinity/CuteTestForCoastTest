@@ -7,6 +7,7 @@ def generate(env, **kw):
     if not kw.get('depsOnly', 0):
         env.Tool('addLibrary', library = ['testfw'])
     # where our public headers can be found => must match registered package
+    env.AppendUnique(CPPPATH = ['#include/coast_testfw'])
 
 def exists(env):
     return true
