@@ -3,7 +3,6 @@ Import('listFiles')
 
 progEnv=baseEnv.Clone()
 libEnv=baseEnv.Clone()
-libEnv.Tool('coast_options')
 
 libEnv.Tool('foundationLib', depsOnly = 1)
 foundationLib=libEnv.SharedLibrary('foundation', listFiles(['*.cpp']))

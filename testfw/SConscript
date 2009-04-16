@@ -3,7 +3,6 @@ Import('listFiles')
 
 progEnv=baseEnv.Clone()
 libEnv=baseEnv.Clone()
-libEnv.Tool('coast_options')
 
 libEnv.Tool('testfwLib', depsOnly = 1)
 testfwLib=libEnv.StaticLibrary('testfw', listFiles(['*.cpp']))

@@ -3,7 +3,6 @@ Import('baseEnv')
 Import('listFiles')
 
 progEnv=baseEnv.Clone()
-progEnv.Tool('coast_options')
 
 progEnv.Tool('mtfoundationLib')
 progEnv.Tool('testfwFoundationLib')
