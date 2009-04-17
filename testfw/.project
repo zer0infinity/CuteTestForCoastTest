@@ -35,7 +35,7 @@
 				</dictionary>
 				<dictionary>
 					<key>commandlineargs</key>
-					<value>--site-dir=/home/m1huber/coast/site_scons</value>
+					<value>-u</value>
 				</dictionary>
 				<dictionary>
 					<key>docdir</key>
@@ -95,7 +95,7 @@
 				</dictionary>
 				<dictionary>
 					<key>usecache</key>
-					<value>true</value>
+					<value>false</value>
 				</dictionary>
 				<dictionary>
 					<key>verbosity</key>
