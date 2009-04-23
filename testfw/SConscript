@@ -1,12 +1,14 @@
 Import('baseEnv')
-Import('listFiles')
+import SomeUtils
+from SomeUtils import *
 
-progEnv=baseEnv.Clone()
-libEnv=baseEnv.Clone()
+progEnv = baseEnv.Clone()
+libEnv = baseEnv.Clone()
 
-libEnv.Tool('testfwLib', depsOnly = 1)
-testfwLib=libEnv.StaticLibrary('testfw', listFiles(['*.cpp']))
-progEnv.Tool('registerObjects', package='coast_testfw', libraries=[testfwLib], includes=listFiles(['*.h']))
+packagename = 'testfw'
+libEnv.Tool(packagename + 'Lib', depsOnly=1)
+testfwLib = libEnv.StaticLibrary('testfw', listFiles(['*.cpp']))
+progEnv.Tool('registerObjects', package=packagename, libraries=[testfwLib])
 
 #print libEnv.Dump()
 #print progEnv.Dump()

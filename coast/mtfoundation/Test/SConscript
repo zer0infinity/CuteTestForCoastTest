@@ -1,12 +1,13 @@
 import pdb
 Import('baseEnv')
-Import('listFiles')
+import SomeUtils
+from SomeUtils import *
 
-progEnv=baseEnv.Clone()
+progEnv = baseEnv.Clone()
 
 progEnv.Tool('mtfoundationLib')
 progEnv.Tool('testfwFoundationLib')
-mtfoundation_Test=progEnv.Program('mtfoundation_Test',listFiles(['*.cpp']))
-progEnv.Tool('registerObjects', package='coast_base_Tests', libraries=[], includes=[], testApps=[mtfoundation_Test])
+mtfoundation_Test = progEnv.Program('mtfoundation_Test', listFiles(['*.cpp']))
+progEnv.Tool('registerObjects', package='mtfoundation_Test', testApps=[mtfoundation_Test])
 
 #print progEnv.Dump()

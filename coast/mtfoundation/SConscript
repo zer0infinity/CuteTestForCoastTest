@@ -1,12 +1,14 @@
 Import('baseEnv')
-Import('listFiles')
+import SomeUtils
+from SomeUtils import *
 
-progEnv=baseEnv.Clone()
-libEnv=baseEnv.Clone()
+progEnv = baseEnv.Clone()
+libEnv = baseEnv.Clone()
 
-libEnv.Tool('mtfoundationLib', depsOnly = 1)
-mtfoundationLib=libEnv.SharedLibrary('mtfoundation', listFiles(['*.cpp']))
-progEnv.Tool('registerObjects', package='coast_mtfoundation', libraries=[mtfoundationLib], includes=listFiles(['*.h','*.ipp']))
+packagename = 'mtfoundation'
+libEnv.Tool(packagename + 'Lib', depsOnly=1)
+mtfoundationLib = libEnv.SharedLibrary('mtfoundation', listFiles(['*.cpp']))
+progEnv.Tool('registerObjects', package=packagename, libraries=[mtfoundationLib])
 
 #print libEnv.Dump()
 #print progEnv.Dump()

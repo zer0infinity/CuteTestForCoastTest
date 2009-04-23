@@ -1,11 +1,12 @@
 Import('baseEnv')
-Import('listFiles')
+import SomeUtils
+from SomeUtils import *
 
 progEnv=baseEnv.Clone()
 
 progEnv.Tool('foundationLib')
 progEnv.Tool('testfwFoundationLib')
 foundation_Test=progEnv.Program('foundation_Test',listFiles(['*.cpp']))
-progEnv.Tool('registerObjects', package='coast_base_Tests', libraries=[], includes=[], testApps=[foundation_Test])
+progEnv.Tool('registerObjects', package='foundation_Test', testApps=[foundation_Test])
 
 #print progEnv.Dump()
