@@ -56,7 +56,7 @@ Context::Context(Anything &request) :
 
 {
 	InitTmpStore();
-	fLanguage = LocalizationUtils::FindLanguageKey(*this, Lookup("Language", "D"));
+	fLanguage = LocalizationUtils::FindLanguageKey(*this, Lookup("Language", "E"));
 }
 Context::Context(Socket *socket)  :
 	fSession(0),
@@ -73,7 +73,7 @@ Context::Context(Socket *socket)  :
 		fRequest["ClientInfo"] = fSocket->ClientInfo();
 	}
 	InitTmpStore();
-	fLanguage = LocalizationUtils::FindLanguageKey(*this, Lookup("Language", "D"));
+	fLanguage = LocalizationUtils::FindLanguageKey(*this, Lookup("Language", "E"));
 }
 Context::Context(iostream *stream)  :
 	fSession(0),
@@ -87,7 +87,7 @@ Context::Context(iostream *stream)  :
 {
 	// the arguments we get for this request
 	InitTmpStore();
-	fLanguage = LocalizationUtils::FindLanguageKey(*this, Lookup("Language", "D"));
+	fLanguage = LocalizationUtils::FindLanguageKey(*this, Lookup("Language", "E"));
 }
 Context::Context(const Anything &env, const Anything &query, Server *server, Session *s, Role *role, Page *page)
 	:	fSession(0), // don't initialize because InitSession would interpret it as same session and not increment
@@ -108,7 +108,7 @@ Context::Context(const Anything &env, const Anything &query, Server *server, Ses
 	Push("Server", server);
 	Push("Role", role);
 	Push("Page", page);
-	fLanguage = LocalizationUtils::FindLanguageKey(*this, Lookup("Language", "D"));
+	fLanguage = LocalizationUtils::FindLanguageKey(*this, Lookup("Language", "E"));
 }
 
 Context::~Context()

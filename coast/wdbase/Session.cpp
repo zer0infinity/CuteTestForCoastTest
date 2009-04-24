@@ -547,7 +547,7 @@ void Session::SetupContext(Context &context, String &transition, String &pagenam
 
 	TraceAny(query, "query");
 
-	context.SetLanguage(LocalizationUtils::FindLanguageKey(context, context.Lookup("Language", "D")));
+	context.SetLanguage(LocalizationUtils::FindLanguageKey(context, context.Lookup("Language", "E")));
 
 	// the action to be executed
 	ROAnything roTransition;
