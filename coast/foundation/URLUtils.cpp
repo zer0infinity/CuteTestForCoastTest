@@ -19,6 +19,9 @@
 #if !defined(WIN32)
 #include <ctype.h>
 #endif
+#if defined(__SUNPRO_CC)
+#include <strings.h>
+#endif
 
 //---- URL utilities
 // replace '+' characters in-place into ' '

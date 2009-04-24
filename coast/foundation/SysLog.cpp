@@ -22,6 +22,10 @@
 #if defined(__sun) || defined(__linux__) || defined(__aix__)
 #include <syslog.h>
 #endif
+#if defined(__SUNPRO_CC)
+#include <strings.h>
+#include <stdio.h>
+#endif
 
 //--- SysLog ----------------------------------------------------------
 SysLog *SysLog::fgSysLog = 0;

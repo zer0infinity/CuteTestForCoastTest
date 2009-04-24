@@ -23,6 +23,11 @@
 #include <cstdlib>
 #include <cstring>
 #include <algorithm>
+#if defined(__SUNPRO_CC)
+#include <stdio.h>
+#include <strings.h>
+#include <stdlib.h>
+#endif
 
 static const String fgStrEmpty(Storage::Global()); //avoid temporary
 static const Anything fgAnyEmpty(Storage::Global()); // avoid temporary

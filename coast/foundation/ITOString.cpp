@@ -20,7 +20,7 @@
 //	#include "a2ee2a.h"
 #endif
 #include <ctype.h>
-#ifdef _AIX
+#if defined(_AIX) || defined(__SUNPRO_CC)
 #include <strings.h>
 #endif
 //#define IOSTREAM_NUM_CONVERSION
@@ -35,6 +35,11 @@ using namespace std;
 #else
 #include <float.h>	// for DBL_DIG
 #include <stdio.h>
+#endif
+
+#if defined(__SUNPRO_CC)
+#include <stdio.h>
+#include <stdlib.h>
 #endif
 
 //---- String ----------------------------------------------------------------

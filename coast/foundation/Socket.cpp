@@ -33,7 +33,7 @@
 #include <fcntl.h>
 #endif
 
-#if defined(_AIX)
+#if defined(_AIX) || defined(__SUNPRO_CC)
 #include <strings.h>
 #endif
 

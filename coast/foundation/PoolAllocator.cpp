@@ -17,9 +17,11 @@
 
 #if defined(ONLY_STD_IOSTREAM)
 #include <algorithm>
-#else
+#endif
+#if !defined(ONLY_STD_IOSTREAM) || defined(__SUNPRO_CC)
 #include <stdio.h>
 #include <stdlib.h>
+#include <strings.h>
 #endif
 
 //--- c-library modules used ---------------------------------------------------

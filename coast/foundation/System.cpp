@@ -41,6 +41,10 @@ using namespace std;
 #include <sys/statvfs.h>
 #endif
 #endif
+#if defined(__SUNPRO_CC)
+#include <time.h>
+#include <limits.h>
+#endif
 
 //---- System --------------------------------------------------------------------------
 const char System::cSep = '/';
