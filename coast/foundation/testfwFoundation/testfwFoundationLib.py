@@ -9,7 +9,7 @@ _packagename = None
 _includeSubdir= ''
 
 def generate(env, **kw):
-    global _added, _packagename, _publicIncludeSet
+    global _added, _packagename, _includeSubdir
     if not _added:
         _added = 1
         _packagename = string.replace(__name__, 'Lib', '')
@@ -20,7 +20,7 @@ def generate(env, **kw):
     # export library dependency when we are not building ourselves
     if not kw.get('depsOnly', 0):
         #FIXME: unfortunately this is copy wasted from registerObjects.py because I was not able to
-        installPath = env['INCDIR'].Dir(_packagename)
+        installPath = env['BASEOUTDIR'].Dir(os.path.join(env['INCDIR'], _packagename))
         if not _includeSubdir == '':
             installPath = installPath.Dir(_includeSubdir)
         env.AppendUnique(CPPPATH=[installPath])

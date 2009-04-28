@@ -8,6 +8,6 @@ progEnv = baseEnv.Clone()
 progEnv.Tool('mtfoundationLib')
 progEnv.Tool('testfwFoundationLib')
 mtfoundation_Test = progEnv.Program('mtfoundation_Test', listFiles(['*.cpp']))
-progEnv.Tool('registerObjects', package='mtfoundation_Test', testApps=[mtfoundation_Test])
+progEnv.Tool('registerObjects', package='mtfoundation_Test', testApps=[mtfoundation_Test], config=listFiles(['config/*.any', 'config/prjconfig.sh']))
 
 #print progEnv.Dump()
