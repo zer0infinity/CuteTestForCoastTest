@@ -16,7 +16,11 @@
 #include "SysLog.h"
 
 //--- c-modules used -----------------------------------------------------------
+#if defined(__SUNPRO_CC)
+#include <strings.h>	// memset
+#else
 #include <cstring>	// memset
+#endif
 #include "gzio.h"	// DEF_MEM_LEVEL
 
 // following section copied out of zutil.h
