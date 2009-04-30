@@ -1,9 +1,12 @@
 [submodule "3rdparty/boost"]
 	path = 3rdparty/boost
-	url = ssh://m1huber@sifs-coast1.hsr.ch/var/repositories/git/boost.git
+	url = ssh://sifs-coast1.hsr.ch/var/repositories/git/boost.git
 [submodule "3rdparty/loki"]
 	path = 3rdparty/loki
-	url = ssh://m1huber@sifs-coast1.hsr.ch/var/repositories/git/loki.git
+	url = ssh://sifs-coast1.hsr.ch/var/repositories/git/loki.git
+[submodule "3rdparty/zlib"]
+	path = 3rdparty/zlib
+	url = ssh://sifs-coast1.hsr.ch/var/repositories/git/zlib.git
 [submodule "site_scons"]
 	path = site_scons
 	url = ssh://sifs-coast1.hsr.ch/var/repositories/git/sconsider.git
