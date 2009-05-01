@@ -26,6 +26,9 @@ using namespace std;
 
 //--- c-library modules used ---------------------------------------------------
 #include <fcntl.h>
+#if defined(__SUNPRO_CC)
+#include <stdlib.h>
+#endif
 
 //---- SystemTest --------------------------------------------------------
 SystemTest::SystemTest(TString tname)
