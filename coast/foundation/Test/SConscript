@@ -7,8 +7,8 @@ progEnv = baseEnv.Clone()
 targetname='foundation_Test'
 progEnv.Tool('foundationLib')
 progEnv.Tool('testfwFoundationLib')
-foundation_Test = progEnv.Program(targetname, listFiles(['*.cpp']))
-progEnv.Tool('registerObjects', package=targetname, testApps=[foundation_Test], config=listFiles(['config/*.any', 'config/*.txt', 'config/*.tst', 'config/testscript.sh', 'config/prjconfig.sh', 'tmp/*.any']))
+createdProgram = progEnv.Program(targetname, listFiles(['*.cpp']))
+progEnv.Tool('registerObjects', package=targetname, testApps=[createdProgram], config=listFiles(['config/*.any', 'config/*.txt', 'config/*.tst', 'config/testscript.sh', 'config/prjconfig.sh', 'tmp/*.any']))
 
 #targettype='tests'
 #progEnv.AppendUnique(LIBPATH=[progEnv['BASEOUTDIR'].Dir(os.path.join(targettype, targetname, progEnv['LIBDIR']))])

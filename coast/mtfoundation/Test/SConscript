@@ -1,13 +1,13 @@
-import pdb
 Import('baseEnv')
 import SomeUtils
 from SomeUtils import *
 
 progEnv = baseEnv.Clone()
 
+targetname = 'mtfoundation_Test'
 progEnv.Tool('mtfoundationLib')
 progEnv.Tool('testfwFoundationLib')
-mtfoundation_Test = progEnv.Program('mtfoundation_Test', listFiles(['*.cpp']))
-progEnv.Tool('registerObjects', package='mtfoundation_Test', testApps=[mtfoundation_Test], config=listFiles(['config/*.any', 'config/prjconfig.sh']))
+createdProgram = progEnv.Program(targetname, listFiles(['*.cpp']))
+progEnv.Tool('registerObjects', package=targetname, testApps=[createdProgram], config=listFiles(['config/*.any', 'config/prjconfig.sh']))
 
 #print progEnv.Dump()
