@@ -18,19 +18,18 @@ def generate(env, **kw):
     env.Tool('addLibrary', library=env['lokiLibs'])
 #    env.Tool('addLibrary', library = env['boostLibs'])
     # flags / settings used by this library and users of it
-#    env.AppendUnique(CPPDEFINES =['ONLY_STD_IOSTREAM'])
-    #FIXME: is this lib also needed when using sun-CC or only when using gcc?
-    if env['PLATFORM'] == "sunos":
-        env.AppendUnique(LIBS=['socket'])
+#    env.AppendUnique(CPPDEFINES =['SOMEFLAG'])
     # export library dependency when we are not building ourselves
     if not kw.get('depsOnly', 0):
-        env.Tool('addLibrary', library=['foundation'])
+        env.Tool('addLibrary', library=[_packagename])
         #FIXME: unfortunately this is copy wasted from registerObjects.py because I was not able to
         installPath = env['BASEOUTDIR'].Dir(os.path.join(env['INCDIR'], _packagename))
         if not _includeSubdir == '':
             installPath = installPath.Dir(_includeSubdir)
         env.AppendUnique(CPPPATH=[installPath])
     else:
+        # win32 specific define to export all symbols when creating a DLL
+        env.AppendUnique(CPPDEFINES=[_packagename.upper()+'_IMPL'])
         # specify public headers here
         env.Tool('registerObjects', package=_packagename, includes=listFiles([os.path.join(_includeSubdir, '*.h')]))
         # maybe we need to add this libraries local include path when building it (if different from .)

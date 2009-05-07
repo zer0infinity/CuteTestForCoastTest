@@ -7,8 +7,8 @@ libEnv = baseEnv.Clone()
 
 packagename = 'foundation'
 libEnv.Tool(packagename + 'Lib', depsOnly=1)
-foundationLib = libEnv.SharedLibrary('foundation', listFiles(['*.cpp']))
-progEnv.Tool('registerObjects', package=packagename, libraries=[foundationLib])
+createdLib = libEnv.SharedLibrary('foundation', listFiles(['*.cpp']))
+progEnv.Tool('registerObjects', package=packagename, libraries=[createdLib])
 
 #print libEnv.Dump()
 #print progEnv.Dump()

@@ -18,7 +18,7 @@ def generate(env, **kw):
     # flags / settings used by this library and users of it
     # export library dependency when we are not building ourselves
     if not kw.get('depsOnly', 0):
-        env.Tool('addLibrary', library=['testfw'])
+        env.Tool('addLibrary', library=[_packagename])
         #FIXME: unfortunately this is copy wasted from registerObjects.py because I was not able to
         installPath = env['BASEOUTDIR'].Dir(os.path.join(env['INCDIR'], _packagename))
         if not _includeSubdir == '':

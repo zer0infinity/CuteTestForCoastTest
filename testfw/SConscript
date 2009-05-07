@@ -7,8 +7,8 @@ libEnv = baseEnv.Clone()
 
 packagename = 'testfw'
 libEnv.Tool(packagename + 'Lib', depsOnly=1)
-testfwLib = libEnv.StaticLibrary('testfw', listFiles(['*.cpp']))
-progEnv.Tool('registerObjects', package=packagename, libraries=[testfwLib])
+createdLib = libEnv.StaticLibrary('testfw', listFiles(['*.cpp']))
+progEnv.Tool('registerObjects', package=packagename, libraries=[createdLib])
 
 #print libEnv.Dump()
 #print progEnv.Dump()
