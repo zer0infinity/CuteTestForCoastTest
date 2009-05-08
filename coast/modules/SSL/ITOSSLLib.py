@@ -15,6 +15,7 @@ def generate(env, **kw):
         _packagename = string.replace(__name__, 'Lib', '')
 
     # this libraries dependencies
+    env.Tool('opensslLib')
     env.Tool('wdbaseLib')
     env.Tool('securityLib')
 #    env.Tool('addLibrary', library = env['boostLibs'])
