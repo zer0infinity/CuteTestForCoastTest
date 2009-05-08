@@ -7,6 +7,9 @@
 [submodule "3rdparty/zlib"]
 	path = 3rdparty/zlib
 	url = ssh://sifs-coast1.hsr.ch/var/repositories/git/zlib.git
+[submodule "3rdparty/openssl"]
+	path = 3rdparty/openssl
+	url = ssh://sifs-coast1.hsr.ch/var/repositories/git/openssl.git
 [submodule "site_scons"]
 	path = site_scons
 	url = ssh://sifs-coast1.hsr.ch/var/repositories/git/sconsider.git
