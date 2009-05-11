@@ -13,6 +13,12 @@
 [submodule "3rdparty/iplanet_ldap"]
 	path = 3rdparty/iplanet_ldap
 	url = ssh://sifs-coast1.hsr.ch/var/repositories/git/iplanet_ldap.git
+[submodule "3rdparty/mysql"]
+	path = 3rdparty/mysql
+	url = ssh://sifs-coast1.hsr.ch/var/repositories/git/mysql.git
+[submodule "3rdparty/sybase"]
+	path = 3rdparty/sybase
+	url = ssh://sifs-coast1.hsr.ch/var/repositories/git/sybase.git
 [submodule "site_scons"]
 	path = site_scons
 	url = ssh://sifs-coast1.hsr.ch/var/repositories/git/sconsider.git
