@@ -16,7 +16,7 @@ def generate(env, **kw):
 
     # this libraries dependencies
     env.Tool('lokiLib')
-#    env.Tool('boostLib')
+    env.Tool('boostLib')
     # flags / settings used by this library and users of it
 #    env.AppendUnique(CPPDEFINES =['SOMEFLAG'])
     # export library dependency when we are not building ourselves
