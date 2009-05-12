@@ -15,8 +15,8 @@ def generate(env, **kw):
         _packagename = string.replace(__name__, 'Lib', '')
 
     # this libraries dependencies
-    env.Tool('addLibrary', library=env['lokiLibs'])
-#    env.Tool('addLibrary', library = env['boostLibs'])
+    env.Tool('lokiLib')
+#    env.Tool('boostLib')
     # flags / settings used by this library and users of it
 #    env.AppendUnique(CPPDEFINES =['SOMEFLAG'])
     # export library dependency when we are not building ourselves
@@ -29,7 +29,7 @@ def generate(env, **kw):
         env.AppendUnique(CPPPATH=[installPath])
     else:
         # win32 specific define to export all symbols when creating a DLL
-        env.AppendUnique(CPPDEFINES=[_packagename.upper()+'_IMPL'])
+        env.AppendUnique(CPPDEFINES=[_packagename.upper() + '_IMPL'])
         # specify public headers here
         env.Tool('registerObjects', package=_packagename, includes=listFiles([os.path.join(_includeSubdir, '*.h')]))
         # maybe we need to add this libraries local include path when building it (if different from .)
