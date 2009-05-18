@@ -5,7 +5,7 @@ from SomeUtils import *
 progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 
-packagename = 'applog'
+packagename = 'CoastAppLog'
 libEnv.Tool(packagename + 'Lib', depsOnly=1)
 createdLib = libEnv.SharedLibrary(packagename, listFiles(['*.cpp']))
 progEnv.Tool('registerObjects', package=packagename, libraries=[createdLib])

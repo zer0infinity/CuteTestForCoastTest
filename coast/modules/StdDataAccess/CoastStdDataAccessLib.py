@@ -15,10 +15,10 @@ def generate(env, **kw):
         _packagename = string.replace(__name__, 'Lib', '')
 
     # this libraries dependencies
-    env.Tool('applogLib')
-    env.Tool('ITOSSLLib')
-    env.Tool('HTTPLib')
-    env.Tool('accesscontrolLib')
+    env.Tool('CoastAppLogLib')
+    env.Tool('CoastSSLLib')
+    env.Tool('CoastHTTPLib')
+    env.Tool('CoastAccessControlLib')
 #    env.Tool('addLibrary', library = env['boostLibs'])
     # flags / settings used by this library and users of it
 #    env.AppendUnique(CPPDEFINES =['ONLY_STD_IOSTREAM'])

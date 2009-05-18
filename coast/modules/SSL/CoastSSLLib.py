@@ -15,8 +15,9 @@ def generate(env, **kw):
         _packagename = string.replace(__name__, 'Lib', '')
 
     # this libraries dependencies
+    env.Tool('opensslLib')
     env.Tool('wdbaseLib')
-#    env.Tool('addLibrary', library = env['boostLibs'])
+    env.Tool('CoastSecurityLib')
     # flags / settings used by this library and users of it
 #    env.AppendUnique(CPPDEFINES =['ONLY_STD_IOSTREAM'])
     # export library dependency when we are not building ourselves
