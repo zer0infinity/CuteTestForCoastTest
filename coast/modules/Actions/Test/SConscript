@@ -1,0 +1,13 @@
+Import('baseEnv')
+import SomeUtils, pdb
+from SomeUtils import *
+
+progEnv = baseEnv.Clone()
+
+targetname='Actions_Test'
+progEnv.Tool('CoastActionsLib')
+progEnv.Tool('testfwWDBaseLib')
+createdProgram = progEnv.Program(targetname, listFiles(['*.cpp']))
+progEnv.Tool('registerObjects', package=targetname, testApps=[createdProgram], config=listFiles(['config/*.any', 'config/*.txt', 'config/*.tst', 'config/testscript.sh', 'config/prjconfig.sh', 'tmp/*.any']))
+
+#print progEnv.Dump()
