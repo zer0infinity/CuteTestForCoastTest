@@ -5,8 +5,9 @@ from SomeUtils import *
 progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 
-packagename = 'CoastRegex'
+packagename = 'testfwWDBase'
 libEnv.Tool(packagename + 'Lib', depsOnly=1)
+libEnv['_NONLAZYLINKFLAGS'] = ''
 createdLib = libEnv.SharedLibrary(packagename, listFiles(['*.cpp']))
 progEnv.Tool('registerObjects', package=packagename, libraries=[createdLib])
 

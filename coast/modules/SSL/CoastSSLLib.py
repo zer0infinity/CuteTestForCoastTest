@@ -16,7 +16,7 @@ def generate(env, **kw):
 
     # this libraries dependencies
     env.Tool('opensslLib')
-    env.Tool('wdbaseLib')
+    env.Tool('CoastWDBaseLib')
     env.Tool('CoastSecurityLib')
     # flags / settings used by this library and users of it
 #    env.AppendUnique(CPPDEFINES =['ONLY_STD_IOSTREAM'])

@@ -15,7 +15,7 @@ def generate(env, **kw):
         _packagename = string.replace(__name__, 'Lib', '')
 
     # this libraries dependencies
-    env.Tool('wdbaseLib')
+    env.Tool('CoastWDBaseLib')
     # flags / settings used by this library and users of it
 #    env.AppendUnique(CPPDEFINES =['ONLY_STD_IOSTREAM'])
     # export library dependency when we are not building ourselves

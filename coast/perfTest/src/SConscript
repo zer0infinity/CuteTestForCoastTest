@@ -5,10 +5,10 @@ from SomeUtils import *
 progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 
-packagename = 'CoastCompress'
+packagename = 'CoastPerfTest'
 libEnv.Tool(packagename + 'Lib', depsOnly=1)
-CoastCompressLib = libEnv.SharedLibrary(packagename, listFiles(['*.cpp']))
-progEnv.Tool('registerObjects', package=packagename, libraries=[CoastCompressLib])
+createdLib = libEnv.SharedLibrary(packagename, listFiles(['*.cpp']))
+progEnv.Tool('registerObjects', package=packagename, libraries=[createdLib])
 
 #print libEnv.Dump()
 #print progEnv.Dump()

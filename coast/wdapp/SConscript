@@ -5,7 +5,7 @@ from SomeUtils import *
 progEnv = baseEnv.Clone()
 
 targetname = 'wdapp'
-progEnv.Tool('wdbaseLib')
+progEnv.Tool('CoastWDBaseLib')
 createdProgram = progEnv.Program(targetname, listFiles(['Main.cpp']))
 progEnv.Tool('registerObjects', package=targetname, binaries=[createdProgram])
 
