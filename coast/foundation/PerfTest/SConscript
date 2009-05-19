@@ -1,0 +1,16 @@
+Import('baseEnv')
+import SomeUtils, pdb
+from SomeUtils import *
+
+progEnv = baseEnv.Clone()
+
+targetname='foundationPerformance_Test'
+progEnv.Tool('CoastFoundationLib')
+progEnv.Tool('testfwFoundationLib')
+createdProgram = progEnv.Program(targetname, listFiles(['*.cpp']))
+progEnv.Tool('registerObjects', package=targetname, testApps=[createdProgram], config=listFiles(['*.any']))
+
+#targettype='tests'
+#progEnv.AppendUnique(LIBPATH=[progEnv['BASEOUTDIR'].Dir(os.path.join(targettype, targetname, progEnv['LIBDIR']))])
+
+#print progEnv.Dump()
