@@ -15,7 +15,7 @@ def generate(env, **kw):
         _packagename = string.replace(__name__, 'Lib', '')
 
     # this libraries dependencies
-    env.Tool('mtfoundationLib')
+    env.Tool('CoastMTFoundationLib')
     env.Tool('CoastCompressLib')
 #    env.Tool('addLibrary', library = env['boostLibs'])
     # flags / settings used by this library and users of it

@@ -5,7 +5,7 @@ from SomeUtils import *
 progEnv = baseEnv.Clone()
 
 targetname = 'mtfoundation_Test'
-progEnv.Tool('mtfoundationLib')
+progEnv.Tool('CoastMTFoundationLib')
 progEnv.Tool('testfwFoundationLib')
 createdProgram = progEnv.Program(targetname, listFiles(['*.cpp']))
 progEnv.Tool('registerObjects', package=targetname, testApps=[createdProgram], config=listFiles(['config/*.any', 'config/prjconfig.sh']))

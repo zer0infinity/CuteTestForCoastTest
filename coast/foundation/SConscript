@@ -5,9 +5,9 @@ from SomeUtils import *
 progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 
-packagename = 'foundation'
+packagename = 'CoastFoundation'
 libEnv.Tool(packagename + 'Lib', depsOnly=1)
-createdLib = libEnv.SharedLibrary('foundation', listFiles(['*.cpp']))
+createdLib = libEnv.SharedLibrary(packagename, listFiles(['*.cpp']))
 progEnv.Tool('registerObjects', package=packagename, libraries=[createdLib])
 
 #print libEnv.Dump()
