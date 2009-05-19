@@ -511,7 +511,7 @@
 		/OverwriteSlots	0
 		/Expected {
 			/DLL {
-				renderer
+				CoastRenderers
 				CoastActions
 				CoastDataAccess
 				additionals
