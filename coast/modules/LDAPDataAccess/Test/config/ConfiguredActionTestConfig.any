@@ -9,9 +9,9 @@
 {
 
 	/DLL {
-		actions
-		renderers
-		ldapdataaccess
+		CoastActions
+		CoastRenderers
+		CoastLDAPDataAccess
 	}
 	/Modules {
 		ActionsModule

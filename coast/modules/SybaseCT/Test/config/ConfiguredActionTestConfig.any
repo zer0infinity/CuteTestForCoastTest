@@ -9,9 +9,9 @@
 {
 
 	/DLL {
-		applog
-		dataaccess
-		renderers
+		CoastAppLog
+		CoastDataAccess
+		CoastRenderers
 	}
 	/Modules {
 		ActionsModule

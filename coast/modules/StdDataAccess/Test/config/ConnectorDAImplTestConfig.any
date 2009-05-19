@@ -9,7 +9,7 @@
 {
 
 	/DLL {
-		stddataaccess
+		CoastStdDataAccess
 	}
 	/Modules {
 		DataAccessImplsModule

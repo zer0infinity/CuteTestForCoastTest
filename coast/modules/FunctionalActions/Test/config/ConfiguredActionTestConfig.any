@@ -9,8 +9,8 @@
 {
 
 	/DLL {
-		applog
-		renderers
+		CoastAppLog
+		CoastRenderers
 	}
 	/Modules {
 		ActionsModule

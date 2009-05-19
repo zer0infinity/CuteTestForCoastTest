@@ -9,10 +9,10 @@
 {
 
 	/DLL {
-		security
-		stddataaccess
-		actions
-		perftesttest
+		CoastSecurity
+		CoastStdDataAccess
+		CoastActions
+		PerfTestTest
 	}
 	/Modules {
 		CacheHandlerModule

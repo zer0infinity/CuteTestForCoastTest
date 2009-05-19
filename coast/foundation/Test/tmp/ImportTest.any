@@ -1,6 +1,6 @@
 {
 	/DLL {
-		"libsecurity.so"
+		CoastSecurity
 	}
 	 "grmbl"
 }

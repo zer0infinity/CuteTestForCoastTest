@@ -11,10 +11,10 @@
 	/Application TestRunnerApplication
 
 	/DLL {
-		security
-		stddataaccess
-		actions
-		perftesttest
+		CoastSecurity
+		CoastStdDataAccess
+		CoastActions
+		PerfTestTest
 	}
 
 	/StressServer6666 {

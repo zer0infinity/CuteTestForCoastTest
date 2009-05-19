@@ -14,8 +14,8 @@
 	/DebugPath          "."     # path used for debug config file
 
 	/DLL {
-		libstddataaccess.so
-		libperftest.so
+		CoastStdDataAccess
+		CoastPerfTest
 	}
 
 #--- Modules ------------------------------------

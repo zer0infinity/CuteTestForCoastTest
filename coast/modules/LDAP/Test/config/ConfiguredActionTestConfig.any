@@ -9,7 +9,7 @@
 {
 
 	/DLL {
-		libldapdataaccess2
+		CoastLDAP
 	}
 	/Modules {
 		DataAccessImplsModule

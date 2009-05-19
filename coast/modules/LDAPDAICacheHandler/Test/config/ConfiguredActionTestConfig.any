@@ -9,7 +9,7 @@
 {
 
 	/DLL {
-		ldapdataaccess2
+		CoastLDAP
 	}
 	/Modules {
 		CacheHandlerModule

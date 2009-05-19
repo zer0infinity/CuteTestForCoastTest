@@ -49,7 +49,7 @@
 	}
 	/ReInitTest {
 		/DLL {
-			ldapdataaccess
+			CoastLDAPDataAccess
 		}
 		/Modules {
 			MappersModule

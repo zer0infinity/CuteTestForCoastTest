@@ -512,8 +512,8 @@
 		/Expected {
 			/DLL {
 				renderer
-				actions
-				dataaccess
+				CoastActions
+				CoastDataAccess
 				additionals
 			}
 			/Modules {

@@ -9,7 +9,7 @@
 {
 
 	/DLL {
-		renderers
+		CoastRenderers
 	}
 	/Modules {
 		DataAccessImplsModule
