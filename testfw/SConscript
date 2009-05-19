@@ -7,7 +7,8 @@ libEnv = baseEnv.Clone()
 
 packagename = 'testfw'
 libEnv.Tool(packagename + 'Lib', depsOnly=1)
-createdLib = libEnv.StaticLibrary('testfw', listFiles(['*.cpp']))
+libEnv['_NONLAZYLINKFLAGS'] = ''
+createdLib = libEnv.SharedLibrary('testfw', listFiles(['*.cpp']))
 progEnv.Tool('registerObjects', package=packagename, libraries=[createdLib])
 
 #print libEnv.Dump()
