@@ -1,0 +1,35 @@
+{
+	/simpleDNS2IPTest {
+		/localhost {
+			/name	"localhost"
+			/ip		"127.0.0.1"
+		}
+		/ip-plus {
+			/name	"ns1.ip-plus.net"
+			/ip		"164.128.36.34"
+		}
+		/noHostToBeFound {
+			/name	"NotExisting.Nowhere.NoDomain"
+			/ip		"127.0.0.1"
+		}
+	}
+	/simpleIP2DNSTest {
+		/localhost {
+			/name	"localhost"
+			/ip		"127.0.0.1"
+		}
+	}
+	/HTTPTestHost {
+		/ip			"127.0.0.1"
+		/port		80
+		/faultyport	28
+	}
+	/Replyhost {
+		/name	"127.0.0.1"
+		/port	80
+	}
+	/Timeouthost {
+		/name 	"www.gov.au"
+		/port	80
+	}
+}

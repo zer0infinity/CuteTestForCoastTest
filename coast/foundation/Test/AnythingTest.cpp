@@ -28,26 +28,27 @@ using namespace std;
 
 //---- AnythingTest ---------------------------------------------------------
 
-AnythingTest::AnythingTest (TString tname) : TestCaseType(tname)
+AnythingTest::AnythingTest(TString tname) :
+	TestCaseType(tname)
 {
 }
 
-void AnythingTest::setUp ()
+void AnythingTest::setUp()
 {
 	StartTrace(AnythingTest.setUp);
 	fString = "A String";
 	fLong = 5L;
 	fBool = true;
-	fDouble = 7.125;		// there is an exact binary representation
-	fDouble2 = 8.1;			// there is no exact binary representation
+	fDouble = 7.125; // there is an exact binary representation
+	fDouble2 = 8.1; // there is no exact binary representation
 	fFloat = -24.490123456789;
 	fNull = Anything();
 	fArray["slot"] = "contents";
 	fArray["second"] = "more contents";
 	fSequence.Append("A String");
 	fSequence.Append("Another String");
-	fSecondLevel["array"] = fArray;		// this is reference semantics
-	fSecondLevel["sequence"] = fSequence.DeepClone();	// this is value semantics
+	fSecondLevel["array"] = fArray; // this is reference semantics
+	fSecondLevel["sequence"] = fSequence.DeepClone(); // this is value semantics
 	fThirdLevel["Level"] = fSecondLevel.DeepClone();
 	fNullSlot["test"] = "some Text";
 	fNullSlot[""] = "more Text";
@@ -56,13 +57,13 @@ void AnythingTest::setUp ()
 	fSecondLevelNull["second"][""]["more"] = "after nothing";
 	fSecondLevelNull["second"][""]["more"] = 2L;
 	fSecondLevelNull["second"][""]["at"] = "least";
-	if ( !System::LoadConfigFile(fConfig, "AnythingTest", "any") ) {
+	if (!System::LoadConfigFile(fConfig, "AnythingTest", "any")) {
 		assertEqual( "'read AnythingTest.any'", "'could not read AnythingTest.any'" );
 	}
 	fQuery = fConfig["Queries"][name()];
 }
 
-Test *AnythingTest::suite ()
+Test *AnythingTest::suite()
 {
 	TestSuite *testSuite = new TestSuite;
 
@@ -108,7 +109,7 @@ void AnythingTest::ImportTest()
 		config.Import(*ifp);
 		assertEqual(2, config.GetSize());
 		Anything expectedValue;
-		expectedValue["DLL"][0L] = "libsecurity.so";
+		expectedValue["DLL"][0L] = "CoastSecurity";
 		expectedValue.Append("grmbl");
 		assertAnyEqual(expectedValue, config);
 		delete ifp;
@@ -120,43 +121,45 @@ void AnythingTest::ImportTest()
 /*============================================================================================================*/
 Anything AnythingTest::init5DimArray(long anzElt)
 {
-	long		i0, i1;
-	char		idx0[3] = {0}, idx1[3] = {0};
-	Anything	anyInit;
+	long i0, i1;
+	char idx0[3] = { 0 }, idx1[3] = { 0 };
+	Anything anyInit;
 
-	for ( i0 = '0'; i0 < anzElt + '0'; i0++ ) {
-		long l0 = (long)(i0 - '0');
-		idx0[0L] = (char)i0;
+	for (i0 = '0'; i0 < anzElt + '0'; i0++) {
+		long l0 = (long) (i0 - '0');
+		idx0[0L] = (char) i0;
 
-		for ( i1 = '0'; i1 < anzElt + '0'; i1++ ) {
-			long l1 = (long)(i1 - '0');
-			idx1[0L] = (char)i1;
+		for (i1 = '0'; i1 < anzElt + '0'; i1++) {
+			long l1 = (long) (i1 - '0');
+			idx1[0L] = (char) i1;
 			anyInit[idx0][idx1] = (l0) + (l1);
 		}
 	}
-	return( anyInit );
+	return (anyInit);
 }
 
-bool AnythingTest::check5DimArray( Anything &any0, Anything &any1, long anzElt )
+bool AnythingTest::check5DimArray(Anything &any0, Anything &any1, long anzElt)
 {
-	long		i0, i1;
-	char		idx0[3] = {0}, idx1[3] = {0};
-	bool		retVal = true;
-	Anything	any;
+	long i0, i1;
+	char idx0[3] = { 0 }, idx1[3] = { 0 };
+	bool retVal = true;
+	Anything any;
 
-	for ( i0 = '0'; i0 < anzElt + '0'; i0++ ) {
-		idx0[0L] = (char)i0;
-		if ( any0[idx0].At("0").At("0").At("0").At("0") != any1[idx0].At("0").At("0").At("0").At("0") ) {
+	for (i0 = '0'; i0 < anzElt + '0'; i0++) {
+		idx0[0L] = (char) i0;
+		if (any0[idx0].At("0").At("0").At("0").At("0")
+			!= any1[idx0].At("0").At("0").At("0").At("0")) {
 			retVal = false;
 		}
-		for ( i1 = '0'; i1 < anzElt + '0'; i1++ ) {
-			idx1[0L] = (char)i1;
-			if ( any0[idx0][idx1].At("0").At("0").At("0") != any1[idx0][idx1].At("0").At("0").At("0") ) {
+		for (i1 = '0'; i1 < anzElt + '0'; i1++) {
+			idx1[0L] = (char) i1;
+			if (any0[idx0][idx1].At("0").At("0").At("0")
+				!= any1[idx0][idx1].At("0").At("0").At("0")) {
 				retVal = false;
 			}
 		}
 	}
-	return( retVal );
+	return (retVal);
 }
 
 /*======================================================================================================================*/
@@ -170,7 +173,8 @@ bool AnythingTest::check5DimArray( Anything &any0, Anything &any1, long anzElt )
 class DummyIFAObj: public IFAObject
 {
 public:
-	DummyIFAObj(const char *) { }
+	DummyIFAObj(const char *) {
+	}
 	IFAObject *Clone() const {
 		return new DummyIFAObj("dummy");
 	}
@@ -218,9 +222,9 @@ void AnythingTest::DefaultConstrTest()
 	assertCompare( fNull.FindValue("testSlot"), less, 0L );
 
 	// Does it survive?
-	fNull.Remove( -1L );
-	fNull.Remove( 0L );
-	fNull.Remove( 1L );
+	fNull.Remove(-1L);
+	fNull.Remove(0L);
+	fNull.Remove(1L);
 	assertCompare( fNull.FindIndex("testSlots"), less, 0L );
 	t_assert( fNull.IsDefined("testSlots") == false );
 	t_assert( fNull.SlotName(0) == NULL );
@@ -264,9 +268,9 @@ void AnythingTest::IntConstrTest()
 	assertCompare( fBool.FindValue("testSlot"), less, 0L );
 
 	// Does it survive?
-	fBool.Remove( -1L );
-	fBool.Remove( 0L );
-	fBool.Remove( 1L );
+	fBool.Remove(-1L);
+	fBool.Remove(0L);
+	fBool.Remove(1L);
 	assertCompare( fBool.FindIndex("testSlots"), less, 0L );
 	assertCompare( fBool.IsDefined("testSlots"), equal_to, false );
 	t_assert( fBool.SlotName(0) == NULL );
@@ -317,11 +321,11 @@ void AnythingTest::LongConstrTest()
 
 	// Does it survive?
 	assertCompare( fLong.GetType(), equal_to, AnyLongType );
-	fLong.Remove( -1L );
+	fLong.Remove(-1L);
 	assertCompare( fLong.GetType(), equal_to, AnyLongType );
-	fLong.Remove( 0L );
+	fLong.Remove(0L);
 	assertCompare( fLong.GetType(), equal_to, AnyNullType );
-	fLong.Remove( 1L );
+	fLong.Remove(1L);
 	assertCompare( fLong.FindIndex("testSlots"), less, 0L );
 	assertCompare( fLong.IsDefined("testSlots"), equal_to, false );
 	t_assert( fLong.SlotName(0) == NULL );
@@ -377,9 +381,9 @@ void AnythingTest::DoubleConstr0Test()
 	assertCompare( fDouble.FindValue("testSlot"), less, 0L );
 
 	// Does it survive?
-	fDouble.Remove( -1L );
-	fDouble.Remove( 0L );
-	fDouble.Remove( 1L );
+	fDouble.Remove(-1L);
+	fDouble.Remove(0L);
+	fDouble.Remove(1L);
 	assertCompare( fDouble.FindIndex("testSlots"), less, 0L );
 	assertCompare( fDouble.IsDefined("testSlots"), equal_to, false );
 	t_assert( fDouble.SlotName(0) == NULL );
@@ -426,9 +430,9 @@ void AnythingTest::DoubleConstr1Test()
 	assertCompare( fDouble2.FindValue("testSlot"), less, 0L );
 
 	// Does it survive?
-	fDouble2.Remove( -1L );
-	fDouble2.Remove( 0L );
-	fDouble2.Remove( 1L );
+	fDouble2.Remove(-1L);
+	fDouble2.Remove(0L);
+	fDouble2.Remove(1L);
 	assertCompare( fDouble2.FindIndex("testSlots"), less, 0L );
 	assertCompare( fDouble2.IsDefined("testSlots"), equal_to, false );
 	t_assert( fDouble2.SlotName(0) == NULL );
@@ -438,9 +442,8 @@ void AnythingTest::DoubleConstr1Test()
 	t_assert( fDouble2[1L] == NULL );
 }
 
-void AnythingTest::FloatConstrTest()
+void AnythingTest::FloatConstrTest()   // Test if the dafault constructor generates an anything-object with good reactions.
 {
-	// Test if the dafault constructor generates an anything-object with good reactions.
 	// The method called now are assumed to work correctly (they are being tested later on).
 
 	Anything anyHlp = fFloat;
@@ -482,9 +485,9 @@ void AnythingTest::FloatConstrTest()
 	assertCompare( fFloat.FindValue("testSlot"), less, 0L );
 
 	// Does it survive?
-	fFloat.Remove( -1L );
-	fFloat.Remove( 0L );
-	fFloat.Remove( 1L );
+	fFloat.Remove(-1L);
+	fFloat.Remove(0L);
+	fFloat.Remove(1L);
 	assertCompare( fFloat.FindIndex("testSlots"), less, 0L );
 	assertCompare( fFloat.IsDefined("testSlots"), equal_to, false );
 	t_assert( fFloat.SlotName(0) == NULL );
@@ -502,10 +505,10 @@ void AnythingTest::CharStarConstrTest()
 	// Test if the dafault constructor generates an anything-object with good reactions.
 	// The method called now are assumed to work correctly (they are being tested later on).
 
-	char charStarTest[50] = {0};
-	memcpy( charStarTest, "A String", strlen("A String") );
+	char charStarTest[50] = { 0 };
+	memcpy(charStarTest, "A String", strlen("A String"));
 
-	Anything	anyCharStar( charStarTest ), anyHlp = fString;
+	Anything anyCharStar(charStarTest), anyHlp = fString;
 
 	t_assert( anyCharStar.GetType() == AnyCharPtrType );
 	assertCompare( anyCharStar.IsNull(), equal_to, false );
@@ -534,7 +537,7 @@ void AnythingTest::CharStarConstrTest()
 	t_assert( anyCharStar.AsIFAObject(&testObj) != &testObjDummy );
 	t_assert( anyCharStar.AsIFAObject() == NULL );
 
-	t_assert( (anyCharStar.AsString()).Length() == (long)strlen("A String")  );
+	t_assert( (anyCharStar.AsString()).Length() == (long)strlen("A String") );
 	t_assert( (anyCharStar.AsString()).Capacity() >= (anyCharStar.AsString()).Length() );
 	t_assert( anyCharStar.AsString() == "A String" );
 	t_assert( anyCharStar.AsString("Default") == "A String" );
@@ -543,9 +546,9 @@ void AnythingTest::CharStarConstrTest()
 	assertCompare( anyCharStar.FindValue("testSlot"), less, 0L );
 
 	// Does it survive?
-	anyCharStar.Remove( -1L );
-	anyCharStar.Remove( 0L );
-	anyCharStar.Remove( 1L );
+	anyCharStar.Remove(-1L);
+	anyCharStar.Remove(0L);
+	anyCharStar.Remove(1L);
 	assertCompare( anyCharStar.FindIndex("testSlots"), less, 0L );
 	assertCompare( anyCharStar.IsDefined("testSlots"), equal_to, false );
 	t_assert( anyCharStar.SlotName(0) == NULL );
@@ -558,7 +561,7 @@ void AnythingTest::CharStarConstrTest()
 
 void AnythingTest::CharStarLongConstr0Test()
 {
-	Anything anyStringLen( "abcdefgh", 8L ), anyHlp;
+	Anything anyStringLen("abcdefgh", 8L), anyHlp;
 
 	anyHlp = anyStringLen;
 
@@ -589,7 +592,7 @@ void AnythingTest::CharStarLongConstr0Test()
 	t_assert( anyStringLen.AsIFAObject(&testObj) != &testObjDummy );
 	t_assert( anyStringLen.AsIFAObject() == NULL );
 
-	t_assert( (anyStringLen.AsString()).Length() == (long)strlen("abcdefgh")  );
+	t_assert( (anyStringLen.AsString()).Length() == (long)strlen("abcdefgh") );
 	t_assert( (anyStringLen.AsString()).Length() == (long)strlen(anyStringLen.AsCharPtr(0)) );
 	t_assert( (anyStringLen.AsString()).Capacity() >= (anyStringLen.AsString(0)).Length() );
 	t_assert( anyStringLen.AsString() == "abcdefgh" );
@@ -599,9 +602,9 @@ void AnythingTest::CharStarLongConstr0Test()
 	assertCompare( anyStringLen.FindValue("testSlot"), less, 0L );
 
 	// Does it survive?
-	anyStringLen.Remove( -1L );
-	anyStringLen.Remove( 0L );
-	anyStringLen.Remove( 1L );
+	anyStringLen.Remove(-1L);
+	anyStringLen.Remove(0L);
+	anyStringLen.Remove(1L);
 	assertCompare( anyStringLen.FindIndex("testSlots"), less, 0L );
 	assertCompare( anyStringLen.IsDefined("testSlots"), equal_to, false );
 	t_assert( anyStringLen.SlotName(0) == NULL );
@@ -614,7 +617,7 @@ void AnythingTest::CharStarLongConstr0Test()
 
 void AnythingTest::CharStarLongConstr1Test()
 {
-	Anything anyStringLen( "abcdefgh", 4L ), anyHlp;
+	Anything anyStringLen("abcdefgh", 4L), anyHlp;
 
 	anyHlp = anyStringLen;
 
@@ -647,7 +650,7 @@ void AnythingTest::CharStarLongConstr1Test()
 	t_assert( anyStringLen.AsIFAObject(&testObj) != &testObjDummy );
 	t_assert( anyStringLen.AsIFAObject() == NULL );
 
-	t_assert( (anyStringLen.AsString()).Length() == (long)strlen("abcd")  );
+	t_assert( (anyStringLen.AsString()).Length() == (long)strlen("abcd") );
 	t_assert( (anyStringLen.AsString()).Length() == (long)strlen(anyStringLen.AsCharPtr(0)) );
 	t_assert( (anyStringLen.AsString()).Capacity() >= (anyStringLen.AsString(0)).Length() );
 	t_assert( anyStringLen.AsString() == "abcd" );
@@ -657,9 +660,9 @@ void AnythingTest::CharStarLongConstr1Test()
 	assertCompare( anyStringLen.FindValue("testSlot"), less, 0L );
 
 	// Does it survive?
-	anyStringLen.Remove( -1L );
-	anyStringLen.Remove( 0L );
-	anyStringLen.Remove( 1L );
+	anyStringLen.Remove(-1L);
+	anyStringLen.Remove(0L);
+	anyStringLen.Remove(1L);
 	assertCompare( anyStringLen.FindIndex("testSlots"), less, 0L );
 	assertCompare( anyStringLen.IsDefined("testSlots"), equal_to, false );
 	t_assert( anyStringLen.SlotName(0) == NULL );
@@ -674,12 +677,12 @@ void AnythingTest::CharStarLongConstr2Test()
 {
 	// Frage:  Ist der Inhalt gleich wegen Zufall oder wird festgestellt, dass strlen("abcdefgh") < 10 ist?
 #define TSTSTR "abcdefgh"
-	Anything anyStringLen( TSTSTR, 10L );
+	Anything anyStringLen(TSTSTR, 10L);
 	// PT: this is not nice: constructor will read past the end of the string,
 	//     it might crash!
 	long l = anyStringLen.AsString().Length();
 
-	t_assert( l == (long)strlen(TSTSTR)  );		// this would also be a reasonable assertion
+	t_assert( l == (long)strlen(TSTSTR) ); // this would also be a reasonable assertion
 	// assertLongsEqual( 10, l );				// semantic change, above is correct!
 
 	// t_assert( (anyStringLen.AsString()).Length() == (long)strlen(anyStringLen.AsCharPtr(0)) );
@@ -692,7 +695,7 @@ void AnythingTest::CharStarLongConstr3Test()
 {
 	// negative Werte bedeuten "Ich kenne die Laenge nicht" --> Die Laenge wird die Laenge der Zeichenkette
 
-	Anything anyStringLen( "abcdefgh", -3L );
+	Anything anyStringLen("abcdefgh", -3L);
 
 	t_assert( (anyStringLen.AsString()).Length() == (long)strlen("abcdefgh") );
 	t_assert( (anyStringLen.AsString()).Length() == (long)strlen(anyStringLen.AsCharPtr(0)) );
@@ -706,8 +709,8 @@ void AnythingTest::StringConstrTest()
 	// Test if the dafault constructor generates an anything-object with good reactions.
 	// The method called now are assumed to work correctly (they are being tested later on).
 
-	String		stringTest = "A String";
-	Anything	anyString( stringTest ), anyHlp = fString;
+	String stringTest = "A String";
+	Anything anyString(stringTest), anyHlp = fString;
 
 	t_assert( anyString.GetType() == AnyCharPtrType );
 	assertCompare( anyString.IsNull(), equal_to, false );
@@ -735,7 +738,7 @@ void AnythingTest::StringConstrTest()
 	t_assert( anyString.AsIFAObject(&testObj) != &testObjDummy );
 	t_assert( anyString.AsIFAObject() == NULL );
 
-	t_assert( (anyString.AsString()).Length() == (long)strlen("A String")  );
+	t_assert( (anyString.AsString()).Length() == (long)strlen("A String") );
 	t_assert( (anyString.AsString()).Capacity() >= (anyString.AsString()).Length() );
 	t_assert( anyString.AsString() == "A String" );
 	t_assert( anyString.AsString("Default") == "A String" );
@@ -743,16 +746,16 @@ void AnythingTest::StringConstrTest()
 	String stringHlp;
 	stringHlp = anyString.AsString();
 	t_assert( stringHlp == "A String" );
-	stringHlp = String( anyString.AsString() );
+	stringHlp = String(anyString.AsString());
 	t_assert( stringHlp == "A String" );
 
 	assertCompare( anyString.Contains("testSlot"), equal_to, false );
 	assertCompare( anyString.FindValue("testSlot"), less, 0L );
 
 	// Does it survive?
-	anyString.Remove( -1L );
-	anyString.Remove( 0L );
-	anyString.Remove( 1L );
+	anyString.Remove(-1L);
+	anyString.Remove(0L);
+	anyString.Remove(1L);
 	assertCompare( anyString.FindIndex("testSlots"), less, 0L );
 	assertCompare( anyString.IsDefined("testSlots"), equal_to, false );
 	t_assert( anyString.SlotName(0) == NULL );
@@ -762,7 +765,7 @@ void AnythingTest::StringConstrTest()
 	assertCharPtrEqual( anyString[0L].AsCharPtr(""), "");
 	t_assert( anyString[1L] == NULL );
 
-	String voidstr((void *)"abc\0ef", 5); // string with 0 byte included
+	String voidstr((void *) "abc\0ef", 5); // string with 0 byte included
 	Anything avoidstr(voidstr);
 	t_assert(avoidstr.GetType() == AnyCharPtrType);
 	t_assert(avoidstr.AsString() == voidstr); // does it remain the same
@@ -773,7 +776,7 @@ void AnythingTest::EmptyVoidStarLenConstrTest()
 {
 	char test[10];
 	memset(test, '\0', 10);
-	Anything anyTest( (void *)0, 10);
+	Anything anyTest((void *) 0, 10);
 
 	t_assert( anyTest.GetType() == AnyVoidBufType );
 	assertCompare( anyTest.IsNull(), equal_to, false );
@@ -781,7 +784,7 @@ void AnythingTest::EmptyVoidStarLenConstrTest()
 	t_assert( anyTest.AsCharPtr(0) != 0 );
 	assertCharPtrEqual( (const char *) test, anyTest.AsCharPtr());
 
-	Anything anyTest1( (void *)test, 0 ); // we do not allocate something
+	Anything anyTest1((void *) test, 0); // we do not allocate something
 	t_assert( anyTest1.GetType() == AnyVoidBufType );
 	assertCompare( anyTest1.IsNull(), equal_to, false );
 	assertCompare( anyTest1.GetSize(), equal_to, 1L );
@@ -789,7 +792,7 @@ void AnythingTest::EmptyVoidStarLenConstrTest()
 
 	test[0] = '1';
 	test[5] = '6';
-	Anything anyTest2( (void *)test, 10 );
+	Anything anyTest2((void *) test, 10);
 	t_assert( anyTest2.GetType() == AnyVoidBufType );
 	assertCompare( anyTest2.IsNull(), equal_to, false );
 	assertCompare( anyTest2.GetSize(), equal_to, 1L );
@@ -799,9 +802,9 @@ void AnythingTest::EmptyVoidStarLenConstrTest()
 
 void AnythingTest::VoidStarLenConstrTest()
 {
-	long		arrTest[5]	= { 0, 1, 2, 3, 4 };
-	Anything	anyTest( (void *)&arrTest, (long)sizeof(arrTest) );
-	Anything	anyHlp = anyTest;
+	long arrTest[5] = { 0, 1, 2, 3, 4 };
+	Anything anyTest((void *) &arrTest, (long) sizeof(arrTest));
+	Anything anyHlp = anyTest;
 
 	t_assert( anyTest.GetType() == AnyVoidBufType );
 	assertCompare( anyTest.IsNull(), equal_to, false );
@@ -814,7 +817,7 @@ void AnythingTest::VoidStarLenConstrTest()
 
 	assertCharPtrEqual( (const char *) arrTest, anyTest.AsCharPtr());
 	// AsCharPtr returns the address of the buffer of the binary any
-	t_assert( anyTest.AsLong() != 0 );	// address of the buffer (also)
+	t_assert( anyTest.AsLong() != 0 ); // address of the buffer (also)
 	assertEqual((long) anyTest.AsCharPtr(0), anyTest.AsLong());
 	assertCompare( anyTest.AsBool(), equal_to, false );
 	assertCompare( anyTest.AsBool(false), equal_to, false );
@@ -826,13 +829,13 @@ void AnythingTest::VoidStarLenConstrTest()
 	t_assert( anyTest.AsIFAObject(&testObj) == &testObj );
 	t_assert( anyTest.AsIFAObject() == NULL );
 
-	assertEqual( (long)sizeof(arrTest), (anyTest.AsString()).Length()  );
+	assertEqual( (long)sizeof(arrTest), (anyTest.AsString()).Length() );
 	t_assert( (anyTest.AsString()).Capacity() >= (anyTest.AsString()).Length() );
 	t_assert( anyTest.AsString() == String( (void *)arrTest, (long)sizeof(arrTest) ) );
 	t_assert( anyTest.AsString("Default") == String( (void *)arrTest, (long)sizeof(arrTest) ) );
 
 	long i;
-	for ( i = 0; i < 5; i++ ) {
+	for (i = 0; i < 5; i++) {
 		t_assert ( ( (long *)((const char *)anyTest.AsString()) )[i] == i );
 		t_assert ( ( (long *)((const char *)anyTest.At(0L).AsString()) )[i] == i );
 		t_assert ( ( (long *)((const char *)anyTest[0L].AsString()) )[i] == i );
@@ -848,11 +851,11 @@ void AnythingTest::VoidStarLenConstrTest()
 	// Does it survive?
 	assertEqual(20, anyTest[0L].AsString().Length());
 	assertEqual("", anyTest[0L].AsString());
-	anyTest.Remove( -1L );
+	anyTest.Remove(-1L);
 	assertEqual(1, anyTest.GetSize());
-	anyTest.Remove( 0L );
+	anyTest.Remove(0L);
 	assertEqual(0, anyTest.GetSize());
-	anyTest.Remove( 1L );
+	anyTest.Remove(1L);
 	assertEqual(0, anyTest.GetSize());
 	assertCompare( anyTest.FindIndex("testSlots"), less, 0L );
 	assertCompare( anyTest.IsDefined("testSlots"), equal_to, false );
@@ -871,10 +874,10 @@ void AnythingTest::IFAObjectStarConstrTest()
 
 	DummyIFAObj testObj("Test"), testObjDummy("TestObjDummy");
 	String testAdr;
-	testAdr << (long)&testObj;		// the address of the object for comparison
+	testAdr << (long) &testObj; // the address of the object for comparison
 
 	// We use a DummyIFAObj, it is the simples IFAObject that can be instantiated
-	Anything anyIFAObj( &testObj ), anyHlp = anyIFAObj;
+	Anything anyIFAObj(&testObj), anyHlp = anyIFAObj;
 
 	t_assert( anyIFAObj.GetType() == AnyObjectType );
 	assertCompare( anyIFAObj.IsNull(), equal_to, false );
@@ -885,10 +888,10 @@ void AnythingTest::IFAObjectStarConstrTest()
 	t_assert( !(anyIFAObj != anyHlp) );
 	t_assert( anyIFAObj.IsEqual(anyHlp) );
 
-	t_assert( String("IFAObject") == anyIFAObj.AsCharPtr() );				// Ist es OK ????
+	t_assert( String("IFAObject") == anyIFAObj.AsCharPtr() ); // Ist es OK ????
 	t_assert( String("IFAObject") == anyIFAObj.AsCharPtr("Default") );
 	assertCharPtrEqual( anyIFAObj.AsCharPtr(0), "IFAObject");
-	t_assert( anyIFAObj.AsLong() != 0L );			// address of object
+	t_assert( anyIFAObj.AsLong() != 0L ); // address of object
 	t_assert( anyIFAObj.AsLong(1234) != 1234L );
 	assertCompare( anyIFAObj.AsBool(), equal_to, false );
 	assertCompare( anyIFAObj.AsBool(false), equal_to, false );
@@ -901,7 +904,7 @@ void AnythingTest::IFAObjectStarConstrTest()
 
 	// PT: somewhat inconsistent, AsString returns the address, AsCharPtr the type
 	// PS: now it is consistent so the testcases fail
-	t_assert( String("IFAObject") == anyIFAObj.AsString() );				// Ist es OK ????
+	t_assert( String("IFAObject") == anyIFAObj.AsString() ); // Ist es OK ????
 	t_assert( (anyIFAObj.AsString()).Capacity() >= (anyIFAObj.AsString()).Length() );
 
 	t_assert( (anyIFAObj.At(0L)).AsLong() == (long)&testObj );
@@ -913,7 +916,7 @@ void AnythingTest::IFAObjectStarConstrTest()
 	assertCompare( anyIFAObj.FindValue("testSlot"), less, 0L );
 
 	// Does it survive?
-	anyIFAObj.Remove( -1L );
+	anyIFAObj.Remove(-1L);
 
 	assertCompare( anyIFAObj.At(-1L).GetType(), equal_to, AnyObjectType );
 
@@ -926,13 +929,13 @@ void AnythingTest::IFAObjectStarConstrTest()
 	//t_assert( anyIFAObj[0L].AsString() == testAdr );
 	assertCharPtrEqual( "IFAObject", anyIFAObj[0L].AsCharPtr() );
 
-	anyIFAObj.Remove( 1L );
+	anyIFAObj.Remove(1L);
 	assertCompare( anyIFAObj.FindIndex("testSlots"), less, 0L );
 	assertCompare( anyIFAObj.IsDefined("testSlots"), equal_to, false );
 	t_assert( anyIFAObj.SlotName(0) == NULL );
 	t_assert( anyIFAObj[1L] == NULL );
 
-	anyIFAObj.Remove( 0L );
+	anyIFAObj.Remove(0L);
 	assertCompare( (anyIFAObj.At(0L)).AsLong(), equal_to, 0L );
 	assertCompare( anyIFAObj[0L].GetType(), equal_to, AnyNullType );
 }
@@ -940,65 +943,65 @@ void AnythingTest::IFAObjectStarConstrTest()
 void AnythingTest::AnythingConstrTest()
 {
 	Anything any0;
-	Anything anyTest0( any0 );
-	anyTest0.IsEqual( any0 );
-	any0.IsEqual( anyTest0 );
+	Anything anyTest0(any0);
+	anyTest0.IsEqual(any0);
+	any0.IsEqual(anyTest0);
 
-	Anything any1( 0L );
-	Anything anyTest1( any1 );
-	anyTest1.IsEqual( any1 );
-	any1.IsEqual( anyTest1 );
+	Anything any1(0L);
+	Anything anyTest1(any1);
+	anyTest1.IsEqual(any1);
+	any1.IsEqual(anyTest1);
 
-	Anything any2( true );
-	Anything anyTest2( any2 );
-	anyTest2.IsEqual( any2 );
-	any2.IsEqual( anyTest2 );
+	Anything any2(true);
+	Anything anyTest2(any2);
+	anyTest2.IsEqual(any2);
+	any2.IsEqual(anyTest2);
 
-	Anything any3( (long)2);
-	Anything anyTest3( any3 );
-	anyTest3.IsEqual( any3 );
-	any3.IsEqual( anyTest3 );
+	Anything any3((long) 2);
+	Anything anyTest3(any3);
+	anyTest3.IsEqual(any3);
+	any3.IsEqual(anyTest3);
 
-	Anything any4( (float)4.1 );
-	Anything anyTest4( any4 );
-	anyTest4.IsEqual( any4 );
-	any4.IsEqual( anyTest4 );
+	Anything any4((float) 4.1);
+	Anything anyTest4(any4);
+	anyTest4.IsEqual(any4);
+	any4.IsEqual(anyTest4);
 
-	Anything any5( (double)5.2 );
-	Anything anyTest5( any5 );
-	anyTest5.IsEqual( any5 );
-	any5.IsEqual( anyTest5 );
+	Anything any5((double) 5.2);
+	Anything anyTest5(any5);
+	anyTest5.IsEqual(any5);
+	any5.IsEqual(anyTest5);
 
-	Anything any6( "0123456789" );
-	Anything anyTest6( any6 );
-	anyTest6.IsEqual( any6 );
-	any6.IsEqual( anyTest6 );
+	Anything any6("0123456789");
+	Anything anyTest6(any6);
+	anyTest6.IsEqual(any6);
+	any6.IsEqual(anyTest6);
 
-	Anything any7( "abcdefgh", 8);
-	Anything anyTest7( any7 );
-	anyTest7.IsEqual( any7 );
-	any7.IsEqual( anyTest7 );
+	Anything any7("abcdefgh", 8);
+	Anything anyTest7(any7);
+	anyTest7.IsEqual(any7);
+	any7.IsEqual(anyTest7);
 
-	Anything any8( String("Anything Test") );
-	Anything anyTest8( any8 );
-	anyTest8.IsEqual( any8 );
-	any8.IsEqual( anyTest8 );
+	Anything any8(String("Anything Test"));
+	Anything anyTest8(any8);
+	anyTest8.IsEqual(any8);
+	any8.IsEqual(anyTest8);
 
-	long buf[5] = {0, 1, 2, 3, 4};
-	Anything any9( (void *)&buf[0], (long)sizeof(buf) );
-	Anything anyTest9( any9 );
-	anyTest9.IsEqual( any9 );
-	any9.IsEqual( anyTest9 );
+	long buf[5] = { 0, 1, 2, 3, 4 };
+	Anything any9((void *) &buf[0], (long) sizeof(buf));
+	Anything anyTest9(any9);
+	anyTest9.IsEqual(any9);
+	any9.IsEqual(anyTest9);
 
 	DummyIFAObj testObj("Test");
 	// We use a DummyIFAObj, it is the simplest IFAObject that can be instantiated
-	Anything any10( &testObj );
-	Anything anyTest10( any10 );
-	anyTest10.IsEqual( any10 );
-	any10.IsEqual( anyTest10 );
+	Anything any10(&testObj);
+	Anything anyTest10(any10);
+	anyTest10.IsEqual(any10);
+	any10.IsEqual(anyTest10);
 }
 
-void AnythingTest::Constructors ()
+void AnythingTest::Constructors()
 /* what: test Anything constructors */
 {
 	t_assert(fNull == Anything());
@@ -1030,25 +1033,25 @@ void AnythingTest::Constructors ()
 /*  D E L E T E - O P E R A T I O N S        Beginn                                                             */
 /*==============================================================================================================*/
 
-void AnythingTest::RemoveInvKeys ()
+void AnythingTest::RemoveInvKeys()
 {
-	long		i0, i1, i2;
-	Anything	any0;
+	long i0, i1, i2;
+	Anything any0;
 
 	// Prepare:  Fill an anything
 	any0 = AnythingTest::init5DimArray(2);
 
-	long	sizeBefore = any0.GetSize();
-	char	buf[4] = {0};
+	long sizeBefore = any0.GetSize();
+	char buf[4] = { 0 };
 
 	// Proper deletion test:  remove invalid SlotNames
-	for ( i0 = 'a'; i0 < 'z'; i0++ ) {
-		buf[0L] = (char)i0;
-		for ( i1 = 'A'; i1 < 'Z'; i1++ ) {
-			buf[1L] = (char)i1;
-			for ( i2 = '0'; i2 < '9'; i2++ ) {
-				buf[2L] = (char)i2;
-				any0.Remove( buf );
+	for (i0 = 'a'; i0 < 'z'; i0++) {
+		buf[0L] = (char) i0;
+		for (i1 = 'A'; i1 < 'Z'; i1++) {
+			buf[1L] = (char) i1;
+			for (i2 = '0'; i2 < '9'; i2++) {
+				buf[2L] = (char) i2;
+				any0.Remove(buf);
 				assertCompare( sizeBefore, equal_to, any0.GetSize() );
 				t_assert( any0.IsDefined( buf ) == false );
 			}
@@ -1056,24 +1059,24 @@ void AnythingTest::RemoveInvKeys ()
 	}
 
 	// Remove indexes which do not exist
-	for ( i0 = 1000000; i0 < 1002000; i0 += 137 ) {
-		any0.Remove( i0 );
+	for (i0 = 1000000; i0 < 1002000; i0 += 137) {
+		any0.Remove(i0);
 		assertCompare( sizeBefore, equal_to, any0.GetSize() );
-//		t_assert( any0.IsDefined( i0 ) == false );
+		//		t_assert( any0.IsDefined( i0 ) == false );
 	}
 
 	// Remove negative indexes
-	for ( i0 = -1000L; i0 < 0L; i0 += 13 ) {
-		any0.Remove( i0 );			// alert, but no crash
+	for (i0 = -1000L; i0 < 0L; i0 += 13) {
+		any0.Remove(i0); // alert, but no crash
 		assertCompare( sizeBefore, equal_to, any0.GetSize() );
-//		t_assert( any0.IsDefined( i0 ) == false );
+		//		t_assert( any0.IsDefined( i0 ) == false );
 	}
 
 	// Check if any0 till unchanged
 	t_assert( AnythingTest::check5DimArray(any0, any0, 2) == true );
 }
 
-void AnythingTest::SimpleRemove ()
+void AnythingTest::SimpleRemove()
 {
 	Anything simple;
 	bool res;
@@ -1098,7 +1101,7 @@ void AnythingTest::SimpleRemove ()
 	assertEqual("", resString);
 }
 
-void AnythingTest::KeyDeletion ()
+void AnythingTest::KeyDeletion()
 {
 	SimpleRemove();
 	RemoveInvKeys();
@@ -1111,7 +1114,7 @@ void AnythingTest::KeyDeletion ()
 /*==============================================================================================================*/
 /*  I N D E X - O P E R A T I O N S        Beginn                                                               */
 /*==============================================================================================================*/
-void AnythingTest::IndexAccess ()
+void AnythingTest::IndexAccess()
 /* what: test access to Anythings through legal and illegal numeric indices*/
 {
 	long lengthBefore = fSequence.GetSize();
@@ -1124,7 +1127,7 @@ void AnythingTest::IndexAccess ()
 	t_assert(fSequence.GetSize() == newMax + 1);
 }
 
-void AnythingTest::KeyAccess0 ()
+void AnythingTest::KeyAccess0()
 /* what: test access to Anythings through regular string keys*/
 {
 	long lengthBefore = fArray.GetSize();
@@ -1143,61 +1146,63 @@ void AnythingTest::KeyAccess0 ()
 
 } // KeyAccess0()
 
-void AnythingTest::KeyAccess1 ()
+void AnythingTest::KeyAccess1()
 {
-	long		i0, i1, i2, i3, i4;
-	char		idx0[3] = {0}, idx1[3] = {0}, idx2[3] = {0}, idx3[3] = {0}, idx4[3] = {0};
-	Anything	any0;
+	long i0, i1, i2, i3, i4;
+	char idx0[3] = { 0 }, idx1[3] = { 0 }, idx2[3] = { 0 }, idx3[3] = { 0 },
+									idx4[3] = { 0 };
+	Anything any0;
 
 	t_assert ( any0.GetSize() == 0 );
 
 	// It does work because idx0, idx1, idx2, idx3, idx4 cannot be empty strings
 	//----------------------------------------------------------------------------
-	for ( i0 = '0'; i0 < '5'; i0++ ) {
-		long l0 = (long)(i0 - '0');
-		idx0[0L] = (char)i0;
+	for (i0 = '0'; i0 < '5'; i0++) {
+		long l0 = (long) (i0 - '0');
+		idx0[0L] = (char) i0;
 		// The element being defined is nor yet defined:  verify
 		assertCompare( any0.IsDefined(idx0), equal_to, false );
 		t_assert( any0.FindIndex(idx0) == -1 );
 		assertCompare( any0.IsDefined(l0), equal_to, false );
 		t_assert( any0.FindIndex(l0) == -1 );
 		assertCompare( any0.Contains(idx0), equal_to, false );
-		for ( i1 = '0'; i1 < '5'; i1++ ) {
-			long l1 = (long)(i1 - '0');
-			idx1[0L] = (char)i1;
+		for (i1 = '0'; i1 < '5'; i1++) {
+			long l1 = (long) (i1 - '0');
+			idx1[0L] = (char) i1;
 			// The element being defined is nor yet defined:  verify
 			assertCompare( any0[idx0].IsDefined(idx1), equal_to, false );
 			t_assert( any0[idx0].FindIndex(idx1) == -1 );
 			assertCompare( any0[idx0].IsDefined(l1), equal_to, false );
 			t_assert( any0[idx0].FindIndex(l1) == -1 );
 			assertCompare( any0[idx0].Contains(idx1), equal_to, false );
-			for ( i2 = '0'; i2 < '5'; i2++ ) {
-				long l2 = (long)(i2 - '0');
-				idx2[0L] = (char)i2;
+			for (i2 = '0'; i2 < '5'; i2++) {
+				long l2 = (long) (i2 - '0');
+				idx2[0L] = (char) i2;
 				// The element being defined is nor yet defined:  verify
 				assertCompare( any0[idx0][idx1].IsDefined(idx2), equal_to, false );
 				t_assert( any0[idx0][idx1].FindIndex(idx2) == -1 );
 				assertCompare( any0[idx0][idx1].IsDefined(l2), equal_to, false );
 				t_assert( any0[idx0][idx1].FindIndex(l2) == -1 );
 				assertCompare( any0[idx0][idx1].Contains(idx2), equal_to, false );
-				for ( i3 = '0'; i3 < '5'; i3++ ) {
-					long l3 = (long)(i3 - '0');
-					idx3[0L] = (char)i3;
+				for (i3 = '0'; i3 < '5'; i3++) {
+					long l3 = (long) (i3 - '0');
+					idx3[0L] = (char) i3;
 					// The element being defined is nor yet defined:  verify
 					assertCompare( any0[idx0][idx1][idx2].IsDefined(idx3), equal_to, false );
 					t_assert( any0[idx0][idx1][idx2].FindIndex(idx3) == -1 );
 					assertCompare( any0[idx0][idx1][idx2].IsDefined(l3), equal_to, false );
 					t_assert( any0[idx0][idx1][idx2].FindIndex(l3) == -1 );
 					assertCompare( any0[idx0][idx1][idx2].Contains(idx3), equal_to, false );
-					for ( i4 = '0'; i4 < '5'; i4++ ) {
-						long l4 = (long)(i4 - '0');
-						idx4[0L] = (char)i4;
+					for (i4 = '0'; i4 < '5'; i4++) {
+						long l4 = (long) (i4 - '0');
+						idx4[0L] = (char) i4;
 						// The element being defined is nor yet defined:  verify
 						assertCompare( any0[idx0][idx1][idx2][idx3].IsDefined(idx4), equal_to, false );
 						t_assert( any0[idx0][idx1][idx2][idx3].FindIndex(idx4) == -1 );
 						assertCompare( any0[idx0][idx1][idx2][idx3].IsDefined(l4), equal_to, false );
 						t_assert( any0[idx0][idx1][idx2][idx3].FindIndex(l4) == -1 );
-						any0[idx0][idx1][idx2][idx3][idx4] = l0 + l1 + l2 + l3 + l4;
+						any0[idx0][idx1][idx2][idx3][idx4] = l0 + l1 + l2 + l3
+															 + l4;
 					}
 				}
 			}
@@ -1211,9 +1216,9 @@ void AnythingTest::KeyAccess1 ()
 	t_assert ( any0[0L][0L][0L].GetSize() == 5 );
 	t_assert ( any0[0L][0L][0L][0L].GetSize() == 5 );
 
-	for ( i0 = '0'; i0 < '5'; i0++ ) {
-		long l0 = (long)(i0 - '0');
-		idx0[0L] = (char)i0;
+	for (i0 = '0'; i0 < '5'; i0++) {
+		long l0 = (long) (i0 - '0');
+		idx0[0L] = (char) i0;
 		// The elements are now defined:  verify
 		assertCompare( any0.IsDefined(idx0), equal_to, true );
 		assertCompare( any0.FindIndex(idx0), equal_to, l0 );
@@ -1227,9 +1232,9 @@ void AnythingTest::KeyAccess1 ()
 
 		String testString = any0.At(l0).At("0").At(0L).At(0L).SlotName(0L);
 		assertEqual("0", testString);
-		for ( i1 = '0'; i1 < '5'; i1++ ) {
-			long l1 = (long)(i1 - '0');
-			idx1[0L] = (char)i1;
+		for (i1 = '0'; i1 < '5'; i1++) {
+			long l1 = (long) (i1 - '0');
+			idx1[0L] = (char) i1;
 			// The elements are now defined:  verify
 			assertCompare( any0[idx0].IsDefined(idx1), equal_to, true );
 			assertCompare( any0[idx0].FindIndex(idx1), equal_to, l1 );
@@ -1241,9 +1246,9 @@ void AnythingTest::KeyAccess1 ()
 			// Check 'AT'
 			t_assert( any0[idx0].At(idx1).At("0").At("0").At("0") == (l0) + (l1) );
 			t_assert( any0[idx0].At(l1).At("0").At(0L).At(0L) == (l0) + (l1) );
-			for ( i2 = '0'; i2 < '5'; i2++ ) {
-				long l2 = (long)(i2 - '0');
-				idx2[0L] = (char)i2;
+			for (i2 = '0'; i2 < '5'; i2++) {
+				long l2 = (long) (i2 - '0');
+				idx2[0L] = (char) i2;
 				// The elements are now defined:  verify
 				assertCompare( any0[idx0][idx1].IsDefined(idx2), equal_to, true );
 				assertCompare( any0[idx0][idx1].FindIndex(idx2), equal_to, l2 );
@@ -1251,11 +1256,11 @@ void AnythingTest::KeyAccess1 ()
 				// Check the slot-names
 				t_assert( strcmp( any0[idx0][idx1].SlotName(l2), idx2 ) == 0 );
 				// Check 'AT'
-				t_assert( any0[idx0][idx1].At(idx2).At("0").At("0") == (l0) + (l1) + (l2)  );
-				t_assert( any0[idx0][idx1].At(l2).At(0L).At(0L) == (l0) + (l1) + (l2)  );
-				for ( i3 = '0'; i3 < '5'; i3++ ) {
-					long l3 = (long)(i3 - '0');
-					idx3[0L] = (char)i3;
+				t_assert( any0[idx0][idx1].At(idx2).At("0").At("0") == (l0) + (l1) + (l2) );
+				t_assert( any0[idx0][idx1].At(l2).At(0L).At(0L) == (l0) + (l1) + (l2) );
+				for (i3 = '0'; i3 < '5'; i3++) {
+					long l3 = (long) (i3 - '0');
+					idx3[0L] = (char) i3;
 					// The elements are now defined:  verify
 					t_assert( any0[idx0][idx1][idx2].IsDefined(idx3) == true );
 					t_assert( any0[idx0][idx1][idx2].FindIndex(idx3) == l3 );
@@ -1265,9 +1270,9 @@ void AnythingTest::KeyAccess1 ()
 					// Check 'AT'
 					t_assert( any0[idx0][idx1][idx2].At(idx3).At("0") == (l0) + (l1) + (l2) + (l3) );
 					t_assert( any0[idx0][idx1][idx2].At(l3).At(0L) == (l0) + (l1) + (l2) + (l3) );
-					for ( i4 = '0'; i4 < '5'; i4++ ) {
-						long l4 = (long)(i4 - '0');
-						idx4[0L] = (char)i4;
+					for (i4 = '0'; i4 < '5'; i4++) {
+						long l4 = (long) (i4 - '0');
+						idx4[0L] = (char) i4;
 						// The elements are now defined:  verify
 						t_assert( any0[idx0][idx1][idx2][idx3].IsDefined(idx4) == true );
 						t_assert( any0[idx0][idx1][idx2][idx3].FindIndex(idx4) == l4 );
@@ -1286,7 +1291,7 @@ void AnythingTest::KeyAccess1 ()
 
 	Anything anyHlp = any0["this"]["path"]["does"]["not"]["exist"], anyEmpty;
 
-	t_assert ( any0.GetSize() == 6 );						// The first dimension has been incremented.  The other ones have not. WHY???
+	t_assert ( any0.GetSize() == 6 ); // The first dimension has been incremented.  The other ones have not. WHY???
 	t_assert ( any0[0L].GetSize() == 5 );
 	t_assert ( any0[0L][0L].GetSize() == 5 );
 	t_assert ( any0[0L][0L][0L].GetSize() == 5 );
@@ -1294,32 +1299,32 @@ void AnythingTest::KeyAccess1 ()
 }
 // KeyAccess1
 
-void AnythingTest::KeyAccess2 ()
+void AnythingTest::KeyAccess2()
 {
 	// Anything used as a list
-	Anything	array;
-	long		i;
+	Anything array;
+	long i;
 
-	for ( i = 0; i < 1000; i++ ) {
-		if ( i < 300 ) {
-			array.Append( i );
-		} else if ( i < 500 ) {
-			array.Append( (float)i + 0.12);
-		} else if ( i < 800 ) {
-			array.Append( -1.0 * (float)i - 0.12);
+	for (i = 0; i < 1000; i++) {
+		if (i < 300) {
+			array.Append(i);
+		} else if (i < 500) {
+			array.Append((float) i + 0.12);
+		} else if (i < 800) {
+			array.Append(-1.0 * (float) i - 0.12);
 		} else {
-			array.Append( "Test" );
+			array.Append("Test");
 		}
 	}
 
-	for ( i = 0; i < 1000; i++ ) {
-		if ( i < 300 ) {
+	for (i = 0; i < 1000; i++) {
+		if (i < 300) {
 			t_assert( array[i] == i );
 			t_assert( array[i].GetType() == AnyLongType );
-		} else if ( i < 500 ) {
+		} else if (i < 500) {
 			t_assert( array[i] == (float)i + 0.12 );
 			t_assert( array[i].GetType() == AnyDoubleType );
-		} else if ( i < 800 ) {
+		} else if (i < 800) {
 			t_assert( array[i] == -(float)i - 0.12 );
 			t_assert( array[i].GetType() == AnyDoubleType );
 		} else {
@@ -1330,7 +1335,7 @@ void AnythingTest::KeyAccess2 ()
 }
 // KeyAccess2
 
-void AnythingTest::MixKeysAndArray ()
+void AnythingTest::MixKeysAndArray()
 {
 
 	Anything any0, any_save, any_i0, any_i1;
@@ -1346,13 +1351,13 @@ void AnythingTest::MixKeysAndArray ()
 	any0.Append(233L);
 	t_assert( any0.GetSize() == 3 );
 	t_assert( any0[2].AsLong() == 233 );
-	any0.Remove( 0L );
+	any0.Remove(0L);
 	t_assert( any0.GetSize() == 2 );
 	t_assert( any0[1].AsLong() == 233 );
-	any0.Remove( 0L );
+	any0.Remove(0L);
 	t_assert( any0.GetSize() == 1 );
 	t_assert( any0[0L].AsLong() == 233 );
-	any0.Remove( 0L );
+	any0.Remove(0L);
 	t_assert( any0.GetSize() == 0 );
 
 	any0["0"] = 12345L;
@@ -1366,10 +1371,10 @@ void AnythingTest::Recursive()
 {
 	Anything any0;
 
-	any0.Append( (long)12 );
-	any0.Append( (long)23 );
-	any0.Append( (long)45 );
-	any0.Append( any0 );	// dangerous: may lead to a leak
+	any0.Append((long) 12);
+	any0.Append((long) 23);
+	any0.Append((long) 45);
+	any0.Append(any0); // dangerous: may lead to a leak
 
 	t_assert( any0.GetSize() == 4 );
 	t_assert( any0[3].GetSize() == 4 );
@@ -1391,17 +1396,17 @@ void AnythingTest::Recursive()
 	t_assert( any0[3][3][3][3][3][3][1].AsLong() == 23 );
 	t_assert( any0[3][3][3][3][3][3][2].AsLong() == 45 );
 
-	any0.Append( (long)67 );
+	any0.Append((long) 67);
 	t_assert( any0[3][3][3][3][3][3][4].AsLong() == 67 );
 
-	any0.Remove(3L);	// break circular dependency to avoid leak
+	any0.Remove(3L); // break circular dependency to avoid leak
 
 	Anything any1;
 
-	any1["0"] = (long)12;
-	any1["1"] = (long)23;
-	any1["2"] = (long)45;
-	any1["3"] = any1;	// dangerous: may lead to a leak
+	any1["0"] = (long) 12;
+	any1["1"] = (long) 23;
+	any1["2"] = (long) 45;
+	any1["3"] = any1; // dangerous: may lead to a leak
 
 	t_assert( any1.GetSize() == 4 );
 	t_assert( any1["3"].GetSize() == 4 );
@@ -1423,15 +1428,15 @@ void AnythingTest::Recursive()
 	t_assert( any1["3"]["3"]["3"]["3"]["3"]["3"]["1"].AsLong() == 23 );
 	t_assert( any1["3"]["3"]["3"]["3"]["3"]["3"]["2"].AsLong() == 45 );
 
-	any1["4"] = (long)67;
+	any1["4"] = (long) 67;
 	t_assert( any1["3"]["3"]["3"]["3"]["3"]["3"]["4"].AsLong() == 67 );
 
-	any1.Remove("3");	// break circular dependency to avoid leak
+	any1.Remove("3"); // break circular dependency to avoid leak
 }
 
-void AnythingTest::KeyAccess ()
+void AnythingTest::KeyAccess()
 /* what: test access to Anythings through regular string keys
-*/
+ */
 {
 	IndexAccess();
 	KeyAccess0();
@@ -1447,18 +1452,18 @@ void AnythingTest::KeyAccess ()
 /*==============================================================================================================*/
 /*  I N D E X - O P E R A T I O N S  (with empty slotnames)              Beginn                                 */
 /*==============================================================================================================*/
-void AnythingTest::EmptyAccess0 ()
+void AnythingTest::EmptyAccess0()
 /* what: test access to Anythings with empty slots
-		 As a matter of fact the result of access with empty slots is
-		 undefined. The following tests just describes the behavior of
-		 the current implementation.
-		 (The behavior may seem weird in some places)
-*/
+ As a matter of fact the result of access with empty slots is
+ undefined. The following tests just describes the behavior of
+ the current implementation.
+ (The behavior may seem weird in some places)
+ */
 {
 	Anything test;
 
 	int lengthBefore = test.GetSize();
-	test[""] = 1L;		// empty slotname, added anonymously
+	test[""] = 1L; // empty slotname, added anonymously
 	assertEqual(lengthBefore + 1, test.GetSize());
 	assertEqual(1, test[0L].AsLong(0));
 	assertEqual(0, (long)test.SlotName(0));
@@ -1492,17 +1497,17 @@ void AnythingTest::EmptyAccess0 ()
 
 } // EmptyAccess0
 
-void AnythingTest::EmptyAccess1 ()
+void AnythingTest::EmptyAccess1()
 /* what: test access to Anythings with empty slots
-		 As a matter of fact the result of access with empty slots is
-		 undefined. The following tests just describes the behavior of
-		 the current implementation.
-*/
+ As a matter of fact the result of access with empty slots is
+ undefined. The following tests just describes the behavior of
+ the current implementation.
+ */
 {
 	// the following tests only make sense if Coast is not compiled
 	// with DEBUG enabled, since most of them are caught by an assert.
 
-	Anything	test;
+	Anything test;
 	DummyIFAObj objTest("Test");
 	// We use a DummyIFAObj, it is the simples IFAObject that can be instantiated
 	long sizeBefore = test.GetSize();
@@ -1534,10 +1539,10 @@ void AnythingTest::EmptyAccess1 ()
 	t_assert( test.GetSize() == sizeBefore + 1 );
 } // EmptyAccess1
 
-void AnythingTest::EmptyAccess ()
+void AnythingTest::EmptyAccess()
 {
-	EmptyAccess0 ();
-	EmptyAccess1 ();
+	EmptyAccess0();
+	EmptyAccess1();
 }
 
 /*==============================================================================================================*/
@@ -1567,8 +1572,8 @@ void AnythingTest::WriteRead1Test()
 	Anything any0 = AnythingTest::init5DimArray(5);
 
 	ostream *os = System::OpenOStream("tmp/anything0", "tst", ios::out);
-	if ( os ) {
-		any0.PrintOn( *os, true );
+	if (os) {
+		any0.PrintOn(*os, true);
 		delete os;
 	} else {
 		assertEqual( "'write tmp/anything0.tst'", "'could not write tmp/anything0.tst'" );
@@ -1576,8 +1581,8 @@ void AnythingTest::WriteRead1Test()
 
 	Anything any1;
 	istream *is = System::OpenStream("tmp/anything0", "tst");
-	if ( is ) {
-		any1.Import( *is );
+	if (is) {
+		any1.Import(*is);
 		delete is;
 	} else {
 		assertEqual( "'read tmp/anything0.tst'", "'could not read tmp/anything0.tst'" );
@@ -1588,12 +1593,12 @@ void AnythingTest::WriteRead1Test()
 
 void AnythingTest::WriteRead5Test()
 {
-	Anything	any0("Anything: test");
+	Anything any0("Anything: test");
 
 	ostream *os = System::OpenOStream("tmp/anything6", "tst", ios::out);
-	if ( os ) {
+	if (os) {
 		int i;
-		for ( i = 0; i < 5; i++ ) {
+		for (i = 0; i < 5; i++) {
 			*os << any0;
 		}
 		delete os;
@@ -1602,11 +1607,11 @@ void AnythingTest::WriteRead5Test()
 	}
 
 	istream *is = System::OpenStream("tmp/anything6", "tst");
-	if ( is ) {
+	if (is) {
 		Anything any1;
 		*is >> any1;
 		delete is;
-		t_assert( any0 == any1 );		// PATRU ????
+		t_assert( any0 == any1 ); // PATRU ????
 		t_assert( any0.AsCharPtr() == any0.AsCharPtr() );
 		t_assert( any0.AsString() == any0.AsString() );
 		t_assert( any0.GetSize() == any1.GetSize() );
@@ -1619,44 +1624,44 @@ void AnythingTest::WriteRead5Test()
 
 void AnythingTest::WriteRead7Test()
 {
-	Anything	any0("Anything: test");
+	Anything any0("Anything: test");
 
 	String buf;
 	{
 		OStringStream os(&buf);
-		any0.PrintOn( os, false );
+		any0.PrintOn(os, false);
 	}
 
 	IStringStream is(buf);
 	Anything any1;
 
-	any1.Import( is );
+	any1.Import(is);
 
-	t_assert( any0 == any1 );		// equality works for simple StringImpls!
+	t_assert( any0 == any1 ); // equality works for simple StringImpls!
 	assertEqual( any0.AsCharPtr(), any1.AsCharPtr() );
 	t_assert( any0.AsString() == any1[0L].AsString() );
 	assertEqual( any0.GetSize(), any1.GetSize() );
 	t_assert( any0.GetType() == any1.GetType() );
-	t_assert( any0.IsEqual(any1) );		// equality works for simple Strings
+	t_assert( any0.IsEqual(any1) ); // equality works for simple Strings
 }
 
 void AnythingTest::WriteRead8Test()
 {
-	Anything	any0, any1;
+	Anything any0, any1;
 
 	any0 = AnythingTest::init5DimArray(5);
 
 	ostream *os0 = System::OpenOStream("tmp/anything9", "tst", ios::out);
-	if ( os0 ) {
-		any0.Export( *os0, 0 );
+	if (os0) {
+		any0.Export(*os0, 0);
 		delete os0;
 	} else {
 		assertEqual( "'write tmp/anything9.tst'", "'could not write tmp/anything9.tst'" );
 	}
 
 	istream *is0 = System::OpenStream("tmp/anything9", "tst");
-	if ( is0 ) {
-		any1.Import( *is0 );
+	if (is0) {
+		any1.Import(*is0);
 		delete is0;
 	} else {
 		assertEqual( "'read tmp/anything9.tst'", "'could not read tmp/anything9.tst'" );
@@ -1670,10 +1675,10 @@ void AnythingTest::TypeTest()
 	Anything TypeChange;
 	Anything ArrayTypeTest;
 	Anything KeyTypeTest;
-	Anything AnyLong( 5L );
-	Anything AnyVoidBuff( (void *)"Bytebuffer", 10 );
+	Anything AnyLong(5L);
+	Anything AnyVoidBuff((void *) "Bytebuffer", 10);
 	Anything SubAnything;
-	String   MyString( "Another String" );
+	String MyString("Another String");
 
 	// Simple Types
 	t_assert( TypeChange.GetType() == AnyNullType );
@@ -1681,51 +1686,51 @@ void AnythingTest::TypeTest()
 	TypeChange = 12L;
 	t_assert( TypeChange.GetType() == AnyLongType );
 
-	TypeChange = (char *)"Ein String";
+	TypeChange = (char *) "Ein String";
 	t_assert( TypeChange.GetType() == AnyCharPtrType );
 
-	TypeChange = (long)34;
+	TypeChange = (long) 34;
 	t_assert( TypeChange.GetType() == AnyLongType );
 
-	TypeChange = (double)300.44;
+	TypeChange = (double) 300.44;
 	t_assert( TypeChange.GetType() == AnyDoubleType );
 
-	TypeChange = (long)56;
+	TypeChange = (long) 56;
 	t_assert( TypeChange.GetType() == AnyLongType );
 
 	TypeChange = MyString;
 	t_assert( TypeChange.GetType() == AnyCharPtrType );
 
-	TypeChange = (float)1.37;
+	TypeChange = (float) 1.37;
 	t_assert( TypeChange.GetType() == AnyDoubleType );
 
 	TypeChange = AnyLong;
 	t_assert( TypeChange.GetType() == AnyLongType );
 
 	// Array
-	ArrayTypeTest[""] = ( "Noch ein String" );
+	ArrayTypeTest[""] = ("Noch ein String");
 	t_assert( ArrayTypeTest.GetType() == AnyArrayType );
 	t_assert( ArrayTypeTest[0L].GetType() == AnyCharPtrType );
 
-	ArrayTypeTest[""] = ( 12L );
+	ArrayTypeTest[""] = (12L);
 	t_assert( ArrayTypeTest.GetType() == AnyArrayType );
 	t_assert( ArrayTypeTest[0L].GetType() == AnyCharPtrType );
 	t_assert( ArrayTypeTest[ 1].GetType() == AnyLongType );
 
-	ArrayTypeTest[""] = ( (long)34 );
+	ArrayTypeTest[""] = ((long) 34);
 	t_assert( ArrayTypeTest.GetType() == AnyArrayType );
 	t_assert( ArrayTypeTest[0L].GetType() == AnyCharPtrType );
 	t_assert( ArrayTypeTest[ 1].GetType() == AnyLongType );
 	t_assert( ArrayTypeTest[ 2].GetType() == AnyLongType );
 
-	ArrayTypeTest[""] = ( (long)56 );
+	ArrayTypeTest[""] = ((long) 56);
 	t_assert( ArrayTypeTest.GetType() == AnyArrayType );
 	t_assert( ArrayTypeTest[0L].GetType() == AnyCharPtrType );
 	t_assert( ArrayTypeTest[ 1].GetType() == AnyLongType );
 	t_assert( ArrayTypeTest[ 2].GetType() == AnyLongType );
 	t_assert( ArrayTypeTest[ 3].GetType() == AnyLongType );
 
-	ArrayTypeTest[""] = ( (float)98.765 );
+	ArrayTypeTest[""] = ((float) 98.765);
 	t_assert( ArrayTypeTest.GetType() == AnyArrayType );
 	t_assert( ArrayTypeTest[0L].GetType() == AnyCharPtrType );
 	t_assert( ArrayTypeTest[ 1].GetType() == AnyLongType );
@@ -1733,7 +1738,7 @@ void AnythingTest::TypeTest()
 	t_assert( ArrayTypeTest[ 3].GetType() == AnyLongType );
 	t_assert( ArrayTypeTest[ 4].GetType() == AnyDoubleType );
 
-	ArrayTypeTest[""] = ( (double)12.345 );
+	ArrayTypeTest[""] = ((double) 12.345);
 	t_assert( ArrayTypeTest.GetType() == AnyArrayType );
 	t_assert( ArrayTypeTest[0L].GetType() == AnyCharPtrType );
 	t_assert( ArrayTypeTest[ 1].GetType() == AnyLongType );
@@ -1745,19 +1750,19 @@ void AnythingTest::TypeTest()
 	ArrayTypeTest[0L] = 12L;
 	t_assert( ArrayTypeTest[0L].GetType() == AnyLongType );
 
-	ArrayTypeTest[0L] = (char *)"Ein String";
+	ArrayTypeTest[0L] = (char *) "Ein String";
 	t_assert( ArrayTypeTest[0L].GetType() == AnyCharPtrType );
 
 	ArrayTypeTest[0L] = 34L;
 	t_assert( ArrayTypeTest[0L].GetType() == AnyLongType );
 
-	ArrayTypeTest[0L] = (double)300.44;
+	ArrayTypeTest[0L] = (double) 300.44;
 	t_assert( ArrayTypeTest[0L].GetType() == AnyDoubleType );
 
-	ArrayTypeTest[0L] = (long)56;
+	ArrayTypeTest[0L] = (long) 56;
 	t_assert( ArrayTypeTest[0L].GetType() == AnyLongType );
 
-	ArrayTypeTest[0L] = (float)1.37;
+	ArrayTypeTest[0L] = (float) 1.37;
 	t_assert( ArrayTypeTest[0L].GetType() == AnyDoubleType );
 
 	ArrayTypeTest[0L] = AnyLong;
@@ -1767,7 +1772,7 @@ void AnythingTest::TypeTest()
 	t_assert( ArrayTypeTest[0L].GetType() == AnyCharPtrType );
 
 	SubAnything = ArrayTypeTest;
-	ArrayTypeTest.Append( SubAnything );		// this will lead to a leak!
+	ArrayTypeTest.Append(SubAnything); // this will lead to a leak!
 	t_assert( ArrayTypeTest.GetType() == AnyArrayType );
 	t_assert( ArrayTypeTest[0L].GetType() == AnyCharPtrType );
 	t_assert( ArrayTypeTest[ 1].GetType() == AnyLongType );
@@ -1786,53 +1791,53 @@ void AnythingTest::TypeTest()
 	ArrayTypeTest[0L] = 12L;
 	t_assert( ArrayTypeTest[6][0L].GetType() == AnyLongType );
 
-	ArrayTypeTest[6][0L] = (char *)"Ein String";
+	ArrayTypeTest[6][0L] = (char *) "Ein String";
 	t_assert( ArrayTypeTest[6][0L].GetType() == AnyCharPtrType );
 
-	ArrayTypeTest[6][0L] = (long)34;
+	ArrayTypeTest[6][0L] = (long) 34;
 	t_assert( ArrayTypeTest[6][0L].GetType() == AnyLongType );
 
-	ArrayTypeTest[6][0L] = (double)300.44;
+	ArrayTypeTest[6][0L] = (double) 300.44;
 	t_assert( ArrayTypeTest[6][0L].GetType() == AnyDoubleType );
 
-	ArrayTypeTest[6][0L] = (long)56;
+	ArrayTypeTest[6][0L] = (long) 56;
 	t_assert( ArrayTypeTest[6][0L].GetType() == AnyLongType );
 
 	ArrayTypeTest[6][0L] = MyString;
 	t_assert( ArrayTypeTest[6][0L].GetType() == AnyCharPtrType );
 
-	ArrayTypeTest[6][0L] = (float)1.37;
+	ArrayTypeTest[6][0L] = (float) 1.37;
 	t_assert( ArrayTypeTest[6][0L].GetType() == AnyDoubleType );
 
 	ArrayTypeTest[6][0L] = AnyLong;
 	t_assert( ArrayTypeTest[6][0L].GetType() == AnyLongType );
 
-	ArrayTypeTest.Remove(6L);		// break circular dependency to avoid leak
+	ArrayTypeTest.Remove(6L); // break circular dependency to avoid leak
 
 	// Array
 	KeyTypeTest["0"] = "Noch ein String";
 	t_assert( KeyTypeTest.GetType() == AnyArrayType );
 	t_assert( KeyTypeTest["0"].GetType() == AnyCharPtrType );
 
-	KeyTypeTest["1"] = ( 12L );
+	KeyTypeTest["1"] = (12L);
 	t_assert( KeyTypeTest.GetType() == AnyArrayType );
 	t_assert( KeyTypeTest["0"].GetType() == AnyCharPtrType );
 	t_assert( KeyTypeTest["1"].GetType() == AnyLongType );
 
-	KeyTypeTest["2"] = ( (long)34 );
+	KeyTypeTest["2"] = ((long) 34);
 	t_assert( KeyTypeTest.GetType() == AnyArrayType );
 	t_assert( KeyTypeTest["0"].GetType() == AnyCharPtrType );
 	t_assert( KeyTypeTest["1"].GetType() == AnyLongType );
 	t_assert( KeyTypeTest["2"].GetType() == AnyLongType );
 
-	KeyTypeTest["3"] = ( (long)56 );
+	KeyTypeTest["3"] = ((long) 56);
 	t_assert( KeyTypeTest.GetType() == AnyArrayType );
 	t_assert( KeyTypeTest["0"].GetType() == AnyCharPtrType );
 	t_assert( KeyTypeTest["1"].GetType() == AnyLongType );
 	t_assert( KeyTypeTest["2"].GetType() == AnyLongType );
 	t_assert( KeyTypeTest["3"].GetType() == AnyLongType );
 
-	KeyTypeTest["4"] = ( (float)98.765 );
+	KeyTypeTest["4"] = ((float) 98.765);
 	t_assert( KeyTypeTest.GetType() == AnyArrayType );
 	t_assert( KeyTypeTest["0"].GetType() == AnyCharPtrType );
 	t_assert( KeyTypeTest["1"].GetType() == AnyLongType );
@@ -1840,7 +1845,7 @@ void AnythingTest::TypeTest()
 	t_assert( KeyTypeTest["3"].GetType() == AnyLongType );
 	t_assert( KeyTypeTest["4"].GetType() == AnyDoubleType );
 
-	KeyTypeTest["5"] = ( (double)12.345 );
+	KeyTypeTest["5"] = ((double) 12.345);
 	t_assert( KeyTypeTest.GetType() == AnyArrayType );
 	t_assert( KeyTypeTest["0"].GetType() == AnyCharPtrType );
 	t_assert( KeyTypeTest["1"].GetType() == AnyLongType );
@@ -1852,19 +1857,19 @@ void AnythingTest::TypeTest()
 	KeyTypeTest["0"] = 12L;
 	t_assert( KeyTypeTest["0"].GetType() == AnyLongType );
 
-	KeyTypeTest["0"] = (char *)"Ein String";
+	KeyTypeTest["0"] = (char *) "Ein String";
 	t_assert( KeyTypeTest["0"].GetType() == AnyCharPtrType );
 
-	KeyTypeTest["0"] = (long)34;
+	KeyTypeTest["0"] = (long) 34;
 	t_assert( KeyTypeTest["0"].GetType() == AnyLongType );
 
-	KeyTypeTest["0"] = (double)300.44;
+	KeyTypeTest["0"] = (double) 300.44;
 	t_assert( KeyTypeTest["0"].GetType() == AnyDoubleType );
 
-	KeyTypeTest["0"] = (long)56;
+	KeyTypeTest["0"] = (long) 56;
 	t_assert( KeyTypeTest["0"].GetType() == AnyLongType );
 
-	KeyTypeTest["0"] = (float)1.37;
+	KeyTypeTest["0"] = (float) 1.37;
 	t_assert( KeyTypeTest["0"].GetType() == AnyDoubleType );
 
 	KeyTypeTest["0"] = AnyLong;
@@ -1874,7 +1879,7 @@ void AnythingTest::TypeTest()
 	t_assert( KeyTypeTest["0"].GetType() == AnyCharPtrType );
 
 	SubAnything = KeyTypeTest;
-	KeyTypeTest["6"] = ( SubAnything );
+	KeyTypeTest["6"] = (SubAnything);
 	t_assert( KeyTypeTest.GetType() == AnyArrayType );
 	t_assert( KeyTypeTest["0"].GetType() == AnyCharPtrType );
 	t_assert( KeyTypeTest["1"].GetType() == AnyLongType );
@@ -1893,28 +1898,28 @@ void AnythingTest::TypeTest()
 	KeyTypeTest["6"]["0"] = 12L;
 	t_assert( KeyTypeTest["6"]["0"].GetType() == AnyLongType );
 
-	KeyTypeTest["6"]["0"] = (char *)"Ein String";
+	KeyTypeTest["6"]["0"] = (char *) "Ein String";
 	t_assert( KeyTypeTest["6"]["0"].GetType() == AnyCharPtrType );
 
-	KeyTypeTest["6"]["0"] = (long)34;
+	KeyTypeTest["6"]["0"] = (long) 34;
 	t_assert( KeyTypeTest["6"]["0"].GetType() == AnyLongType );
 
-	KeyTypeTest["6"]["0"] = (double)300.44;
+	KeyTypeTest["6"]["0"] = (double) 300.44;
 	t_assert( KeyTypeTest["6"]["0"].GetType() == AnyDoubleType );
 
-	KeyTypeTest["6"]["0"] = (long)56;
+	KeyTypeTest["6"]["0"] = (long) 56;
 	t_assert( KeyTypeTest["6"]["0"].GetType() == AnyLongType );
 
 	KeyTypeTest["6"]["0"] = MyString;
 	t_assert( KeyTypeTest["6"]["0"].GetType() == AnyCharPtrType );
 
-	KeyTypeTest["6"]["0"] = (float)1.37;
+	KeyTypeTest["6"]["0"] = (float) 1.37;
 	t_assert( KeyTypeTest["6"]["0"].GetType() == AnyDoubleType );
 
 	KeyTypeTest["6"]["0"] = AnyLong;
 	t_assert( KeyTypeTest["6"]["0"].GetType() == AnyLongType );
 
-	KeyTypeTest.Remove("6");	// break circular dependency to avoid leak
+	KeyTypeTest.Remove("6"); // break circular dependency to avoid leak
 }
 
 void AnythingTest::RefSlotTest()
@@ -1971,7 +1976,7 @@ void AnythingTest::RefSlotTest()
 		Anything anyResult, anyExpected;
 		anyExpected["1"]["a"] = "gugus";
 		anyExpected["1"]["b"] = "gaga";
-		anyExpected["200"]    = anyExpected["1"];
+		anyExpected["200"] = anyExpected["1"];
 		anyResult.Import(is);
 		assertAnyEqual(anyExpected, anyResult);
 	}
@@ -2175,62 +2180,62 @@ void AnythingTest::AnyIncludeTest()
 		}
 		assertAnyEqual(anyRef, anyMain);
 	}
-//FIXME: needs further analysis what to do when specifying a machine name
-// it seems that when a machine name other than localhost is used wh should use FTP to get the file
-//	{
-//		// Test an include in a named slot with a relativ uri with localhost
-//		Anything anyMain, anyIncl, anyRef;
-//
-//		String strMain(_QUOTE_({ /200 { /a gugus /b gaga } /300 !"file://localhost/include.any" }));
-//		String strIncl(_QUOTE_({ /100 { /d foo /e frim } }));
-//		String strRef (_QUOTE_({ /200 { /a gugus /b gaga } /300 { /100 { /d foo /e frim } } }));
-//		{
-//			IStringStream is(strIncl);
-//			anyIncl.Import(is);
-//			iostream *pStream = System::OpenOStream("include", "any");
-//			if (pStream)
-//			{
-//				anyIncl.Export(*pStream);
-//				delete pStream;
-//			}
-//		}
-//		{
-//			IStringStream is(strMain);
-//			anyMain.Import(is);
-//		}
-//		{
-//			IStringStream is(strRef);
-//			anyRef.Import(is);
-//		}
-//		assertAnyEqual(anyRef, anyMain);
-//	}
-//	{
-//		// Test an include with missing of the file
-//		Anything anyMain, anyIncl, anyRef;
-//
-//		String strMain(_QUOTE_({ /200 { /a gugus /b gaga } /300 !"file://localhost/gugus.any" }));
-//		String strIncl(_QUOTE_({ /100 { /d foo /e frim } }));
-//		String strRef (_QUOTE_({ /200 { /a gugus /b gaga } /300  * }));
-//		{
-//			IStringStream is(strIncl);
-//			anyIncl.Import(is);
-//			iostream *pStream = System::OpenOStream("include", "any");
-//			if (pStream)
-//			{
-//				anyIncl.Export(*pStream);
-//				delete pStream;
-//			}
-//		}
-//		{
-//			IStringStream is(strMain);
-//			anyMain.Import(is);
-//		}
-//		{
-//			IStringStream is(strRef);
-//			anyRef.Import(is);
-//		}
-//		assertAnyEqual(anyRef, anyMain);
-//	}
+	//FIXME: needs further analysis what to do when specifying a machine name
+	// it seems that when a machine name other than localhost is used wh should use FTP to get the file
+	//	{
+	//		// Test an include in a named slot with a relativ uri with localhost
+	//		Anything anyMain, anyIncl, anyRef;
+	//
+	//		String strMain(_QUOTE_({ /200 { /a gugus /b gaga } /300 !"file://localhost/include.any" }));
+	//		String strIncl(_QUOTE_({ /100 { /d foo /e frim } }));
+	//		String strRef (_QUOTE_({ /200 { /a gugus /b gaga } /300 { /100 { /d foo /e frim } } }));
+	//		{
+	//			IStringStream is(strIncl);
+	//			anyIncl.Import(is);
+	//			iostream *pStream = System::OpenOStream("include", "any");
+	//			if (pStream)
+	//			{
+	//				anyIncl.Export(*pStream);
+	//				delete pStream;
+	//			}
+	//		}
+	//		{
+	//			IStringStream is(strMain);
+	//			anyMain.Import(is);
+	//		}
+	//		{
+	//			IStringStream is(strRef);
+	//			anyRef.Import(is);
+	//		}
+	//		assertAnyEqual(anyRef, anyMain);
+	//	}
+	//	{
+	//		// Test an include with missing of the file
+	//		Anything anyMain, anyIncl, anyRef;
+	//
+	//		String strMain(_QUOTE_({ /200 { /a gugus /b gaga } /300 !"file://localhost/gugus.any" }));
+	//		String strIncl(_QUOTE_({ /100 { /d foo /e frim } }));
+	//		String strRef (_QUOTE_({ /200 { /a gugus /b gaga } /300  * }));
+	//		{
+	//			IStringStream is(strIncl);
+	//			anyIncl.Import(is);
+	//			iostream *pStream = System::OpenOStream("include", "any");
+	//			if (pStream)
+	//			{
+	//				anyIncl.Export(*pStream);
+	//				delete pStream;
+	//			}
+	//		}
+	//		{
+	//			IStringStream is(strMain);
+	//			anyMain.Import(is);
+	//		}
+	//		{
+	//			IStringStream is(strRef);
+	//			anyRef.Import(is);
+	//		}
+	//		assertAnyEqual(anyRef, anyMain);
+	//	}
 	{
 		// Test an include with a query for a subtree in the include file
 		Anything anyMain, anyIncl, anyRef;
@@ -2288,12 +2293,12 @@ void AnythingTest::AnyIncludeTest()
 void AnythingTest::DeepClone0Test()
 {
 	Anything anyOriginal, anyClone;
-	Anything AnyLong( 5L );
-	Anything AnyVoidBuff( (void *)"Bytebuffer", 10 );
-	String   MyString( "Another String" );
-	int      MyInt = 34;
-	long     MyLong = 56;
-	long	 typeBefore, sizeBefore;
+	Anything AnyLong(5L);
+	Anything AnyVoidBuff((void *) "Bytebuffer", 10);
+	String MyString("Another String");
+	int MyInt = 34;
+	long MyLong = 56;
+	long typeBefore, sizeBefore;
 
 	typeBefore = anyOriginal.GetType();
 	sizeBefore = anyOriginal.GetSize();
@@ -2309,7 +2314,7 @@ void AnythingTest::DeepClone0Test()
 	assertCompare( anyOriginal.GetSize(), equal_to, sizeBefore );
 	assertCompare( anyClone.GetSize(), equal_to, sizeBefore );
 
-	anyOriginal = (char *)"Ein String";
+	anyOriginal = (char *) "Ein String";
 	typeBefore = anyOriginal.GetType();
 	sizeBefore = anyOriginal.GetSize();
 	anyClone = anyOriginal.DeepClone();
@@ -2321,9 +2326,9 @@ void AnythingTest::DeepClone0Test()
 	assertCompare( anyClone.GetSize(), equal_to, sizeBefore );
 	// Check values
 	t_assert( strcmp( anyOriginal.AsCharPtr(), "Ein String" ) == 0 );
-	t_assert( strcmp( anyClone.AsCharPtr(), "Ein String" ) == 0  );
+	t_assert( strcmp( anyClone.AsCharPtr(), "Ein String" ) == 0 );
 
-	anyOriginal = (long)MyInt;
+	anyOriginal = (long) MyInt;
 	typeBefore = anyOriginal.GetType();
 	sizeBefore = anyOriginal.GetSize();
 	anyClone = anyOriginal.DeepClone();
@@ -2337,7 +2342,7 @@ void AnythingTest::DeepClone0Test()
 	assertCompare( anyOriginal.AsLong(), equal_to, (long)MyInt );
 	assertCompare( anyClone.AsLong(), equal_to, (long)MyInt );
 
-	anyOriginal.Append( 3L );
+	anyOriginal.Append(3L);
 	typeBefore = anyOriginal.GetType();
 	sizeBefore = anyOriginal.GetSize();
 	anyClone = anyOriginal.DeepClone();
@@ -2356,7 +2361,7 @@ void AnythingTest::DeepClone0Test()
 	//PS: try new assertAnyEqual
 	assertAnyEqual(anyOriginal, anyClone);
 
-	anyOriginal.Append( "Noch ein String" );
+	anyOriginal.Append("Noch ein String");
 	typeBefore = anyOriginal.GetType();
 	sizeBefore = anyOriginal.GetSize();
 	anyClone = anyOriginal.DeepClone();
@@ -2372,7 +2377,7 @@ void AnythingTest::DeepClone0Test()
 	t_assert( anyOriginal[1].AsLong() == 3 );
 	t_assert( anyClone[1].AsLong() == 3 );
 	t_assert( strcmp( anyOriginal[2].AsCharPtr(), "Noch ein String" ) == 0 );
-	t_assert( strcmp( anyClone[2].AsCharPtr(), "Noch ein String" ) == 0  );
+	t_assert( strcmp( anyClone[2].AsCharPtr(), "Noch ein String" ) == 0 );
 
 	anyOriginal = MyLong;
 	typeBefore = anyOriginal.GetType();
@@ -2388,7 +2393,7 @@ void AnythingTest::DeepClone0Test()
 	assertCompare( anyOriginal.AsLong(), equal_to, MyLong );
 	assertCompare( anyClone.AsLong(), equal_to, MyLong );
 
-	anyOriginal = (double)300.44;
+	anyOriginal = (double) 300.44;
 	typeBefore = anyOriginal.GetType();
 	sizeBefore = anyOriginal.GetSize();
 	anyClone = anyOriginal.DeepClone();
@@ -2414,7 +2419,7 @@ void AnythingTest::DeepClone0Test()
 	assertCompare( anyClone.GetSize(), equal_to, sizeBefore );
 	// Check values
 	t_assert( strcmp( anyOriginal.AsCharPtr(), (const char *)MyString ) == 0 );
-	t_assert( strcmp( anyClone.AsCharPtr(), (const char *)MyString ) == 0  );
+	t_assert( strcmp( anyClone.AsCharPtr(), (const char *)MyString ) == 0 );
 
 	anyOriginal = 1.37;
 	typeBefore = anyOriginal.GetType();
@@ -2461,12 +2466,12 @@ void AnythingTest::DeepClone0Test()
 void AnythingTest::DeepClone1Test()
 {
 	Anything anyOriginal;
-	Anything AnyLong( 5L );
-	Anything AnyVoidBuff( (void *)"Bytebuffer", 10 );
-	String   MyString( "Another String" );
-	int      MyInt = 34;
-	long     MyLong = 56;
-	long	 typeBefore, sizeBefore;
+	Anything AnyLong(5L);
+	Anything AnyVoidBuff((void *) "Bytebuffer", 10);
+	String MyString("Another String");
+	int MyInt = 34;
+	long MyLong = 56;
+	long typeBefore, sizeBefore;
 
 	typeBefore = anyOriginal.GetType();
 	sizeBefore = anyOriginal.GetSize();
@@ -2478,7 +2483,7 @@ void AnythingTest::DeepClone1Test()
 	// Check values
 	// ...
 
-	anyOriginal = (char *)"Ein String";
+	anyOriginal = (char *) "Ein String";
 	typeBefore = anyOriginal.GetType();
 	sizeBefore = anyOriginal.GetSize();
 	anyOriginal = anyOriginal.DeepClone();
@@ -2489,7 +2494,7 @@ void AnythingTest::DeepClone1Test()
 	// Check values
 	t_assert( strcmp( anyOriginal.AsCharPtr(), "Ein String" ) == 0 );
 
-	anyOriginal = (long)MyInt;
+	anyOriginal = (long) MyInt;
 	typeBefore = anyOriginal.GetType();
 	sizeBefore = anyOriginal.GetSize();
 	anyOriginal = anyOriginal.DeepClone();
@@ -2500,7 +2505,7 @@ void AnythingTest::DeepClone1Test()
 	// Check values
 	t_assert( anyOriginal.AsLong() == MyInt );
 
-	anyOriginal.Append( 3L );
+	anyOriginal.Append(3L);
 	typeBefore = anyOriginal.GetType();
 	sizeBefore = anyOriginal.GetSize();
 	anyOriginal = anyOriginal.DeepClone();
@@ -2512,7 +2517,7 @@ void AnythingTest::DeepClone1Test()
 	t_assert( anyOriginal[0L].AsLong() == MyInt );
 	t_assert( anyOriginal[1].AsLong() == 3 );
 
-	anyOriginal.Append( "Noch ein String" );
+	anyOriginal.Append("Noch ein String");
 	typeBefore = anyOriginal.GetType();
 	sizeBefore = anyOriginal.GetSize();
 	anyOriginal = anyOriginal.DeepClone();
@@ -2536,7 +2541,7 @@ void AnythingTest::DeepClone1Test()
 	// Check values
 	assertCompare( anyOriginal.AsLong(), equal_to, MyLong );
 
-	anyOriginal = (double)300.44;
+	anyOriginal = (double) 300.44;
 	typeBefore = anyOriginal.GetType();
 	sizeBefore = anyOriginal.GetSize();
 	anyOriginal = anyOriginal.DeepClone();
@@ -2596,10 +2601,10 @@ void AnythingTest::DeepClone1Test()
 
 void AnythingTest::DeepClone2Test()
 {
-	Anything	anyOriginal, any0;
-	long	 	i, typeBefore, sizeBefore;
+	Anything anyOriginal, any0;
+	long i, typeBefore, sizeBefore;
 
-	for ( i = 0; i < 100; i++ ) {
+	for (i = 0; i < 100; i++) {
 		anyOriginal.Append(i);
 	}
 	typeBefore = anyOriginal.GetType();
@@ -2617,20 +2622,20 @@ void AnythingTest::DeepClone2Test()
 	// Check size anyOriginal
 	t_assert( any0.GetSize() == sizeBefore + 1 );
 	// Check values of any0
-	for ( i = 0; i < 100; i++ ) {
+	for (i = 0; i < 100; i++) {
 		t_assert( any0[i] == i );
 	}
-	for ( i = 0; i < 100; i++ ) {
+	for (i = 0; i < 100; i++) {
 		t_assert( any0[100][i] == i );
 	}
 }
 
 void AnythingTest::DeepClone3Test()
 {
-	Anything	anyOriginal, any0;
-	long	 	i, typeBefore, sizeBefore;
+	Anything anyOriginal, any0;
+	long i, typeBefore, sizeBefore;
 
-	for ( i = 0; i < 100; i++ ) {
+	for (i = 0; i < 100; i++) {
 		anyOriginal.Append(i);
 	}
 	typeBefore = anyOriginal.GetType();
@@ -2648,10 +2653,10 @@ void AnythingTest::DeepClone3Test()
 	// Check size anyOriginal
 	assertCompare( any0.GetSize(), equal_to, sizeBefore );
 	// Check values of any0
-	for ( i = 0; i < 99; i++ ) {
+	for (i = 0; i < 99; i++) {
 		t_assert( any0[i] == i );
 	}
-	for ( i = 0; i < 100; i++ ) {
+	for (i = 0; i < 100; i++) {
 		t_assert( any0[99][i] == i );
 	}
 }
@@ -2665,8 +2670,8 @@ void AnythingTest::String2LongConversion()
 
 void AnythingTest::DeepClone4Test()
 {
-	Anything	any0, any1;
-	long	 	typeBefore, sizeBefore;
+	Anything any0, any1;
+	long typeBefore, sizeBefore;
 
 	any0.Append(12L);
 	any0.Append(13L);
@@ -2692,7 +2697,7 @@ void AnythingTest::DeepClone4Test()
 
 void AnythingTest::DeepClone5Test()
 {
-	Anything	any0, any1 = 1L;
+	Anything any0, any1 = 1L;
 	t_assert( any0.GetType() == AnyNullType );
 	t_assert( any1.GetType() == AnyLongType );
 
@@ -2751,21 +2756,21 @@ void AnythingTest::LookUp0Test()
 
 void AnythingTest::LookUp1Test()
 {
-	long		i0, i1;
-	char		idx0[3] = {0}, idx1[3] = {0};
-	String		path;
-	Anything	any0, any1, anyTest, derived;
+	long i0, i1;
+	char idx0[3] = { 0 }, idx1[3] = { 0 };
+	String path;
+	Anything any0, any1, anyTest, derived;
 
 	// Init 'any0'
 	any0 = AnythingTest::init5DimArray(5);
 
 	// Reinit 'any0' using LookupPath
-	for ( i0 = '0'; i0 < '5'; i0++ ) {
-		long l0 = (long)(i0 - '0');
-		idx0[0L] = (char)i0;
-		for ( i1 = '0'; i1 < '5'; i1++ ) {
-			long l1 = (long)(i1 - '0');
-			idx1[0L] = (char)i1;
+	for (i0 = '0'; i0 < '5'; i0++) {
+		long l0 = (long) (i0 - '0');
+		idx0[0L] = (char) i0;
+		for (i1 = '0'; i1 < '5'; i1++) {
+			long l1 = (long) (i1 - '0');
+			idx1[0L] = (char) i1;
 			path = idx0;
 			t_assert(any0.LookupPath( derived, path ));
 			derived[idx1] = 2 * ((l0) + (l1)) + 1;
@@ -2773,12 +2778,12 @@ void AnythingTest::LookUp1Test()
 	}
 
 	// Test if reinit was OK
-	for ( i0 = '0'; i0 < '5'; i0++ ) {
-		long l0 = (long)(i0 - '0');
-		idx0[0L] = (char)i0;
-		for ( i1 = '0'; i1 < '5'; i1++ ) {
-			long l1 = (long)(i1 - '0');
-			idx1[0L] = (char)i1;
+	for (i0 = '0'; i0 < '5'; i0++) {
+		long l0 = (long) (i0 - '0');
+		idx0[0L] = (char) i0;
+		for (i1 = '0'; i1 < '5'; i1++) {
+			long l1 = (long) (i1 - '0');
+			idx1[0L] = (char) i1;
 			assertEqual(2 * ((l0) + (l1)) + 1, any0[idx0][idx1].AsLong());
 		}
 	}
@@ -2788,10 +2793,10 @@ void AnythingTest::LookupPathByIndex()
 {
 	{
 		// Index at the end
-		Anything 	test;
-		Anything 	result;
-		ROAnything	roTest;
-		ROAnything	roResult;
+		Anything test;
+		Anything result;
+		ROAnything roTest;
+		ROAnything roResult;
 
 		// make some simple assertions, check if return value is correct for missing slots
 		t_assert(!test.LookupPath(result, ":0"));
@@ -2861,8 +2866,8 @@ void AnythingTest::LookupPathByIndex()
 		Anything test;
 		Anything result;
 		Anything leaf1, leaf2;
-		ROAnything	roTest;
-		ROAnything	roResult;
+		ROAnything roTest;
+		ROAnything roResult;
 
 		leaf1["a1"] = 1;
 		leaf1["b1"] = 2;
@@ -2947,9 +2952,9 @@ void AnythingTest::LookupPathByIndex()
 	}
 }
 
-void AnythingTest::EmptyLookup ()
+void AnythingTest::EmptyLookup()
 /* what: test lookupPath with empty path
-*/
+ */
 {
 	String path; // this path is intentionally left empty
 	Anything test;
@@ -3013,7 +3018,7 @@ void AnythingTest::EmptyLookup ()
 	t_assert(test["bar"] == 2L);
 } // EmptyLookup
 
-void AnythingTest::invPathLookup ()
+void AnythingTest::invPathLookup()
 {
 	String path("Invalid path");
 	Anything test;
@@ -3115,7 +3120,7 @@ void AnythingTest::SuccessiveAssignments()
 	t_assert(!a.IsDefined("Test"));
 	assertEqual("Test", a.AsCharPtr("nothing"));
 
-	if ( a.IsDefined("Test") ) {
+	if (a.IsDefined("Test")) {
 		a["Test"] = "Was ist hier los ?";
 	}
 
@@ -3150,7 +3155,7 @@ void AnythingTest::appendTest()
 	assertAnyEqual(expected, a);
 
 	Anything b = "Test"; // AnyStringImpl
-	b.Append(sub);		// -> AnyArrayImpl
+	b.Append(sub); // -> AnyArrayImpl
 	expected[0L] = "Test";
 	assertAnyEqual(expected, b);
 
@@ -3192,15 +3197,15 @@ void AnythingTest::intOperatorAssign()
 	int i = 10;
 
 	Anything intAny = i;
-	assertEqual(i,  intAny.AsLong(0));
+	assertEqual(i, intAny.AsLong(0));
 
 	Anything b = intAny;
 
 	i = -10;
 	intAny = i;
 
-	assertEqual(i,  intAny.AsLong(0));
-	assertEqual(b.AsLong(0),  10L);	// still 10
+	assertEqual(i, intAny.AsLong(0));
+	assertEqual(b.AsLong(0), 10L); // still 10
 }
 
 void AnythingTest::ifaObjectOperatorAssign()
@@ -3211,7 +3216,7 @@ void AnythingTest::ifaObjectOperatorAssign()
 	assertEqual((long)(&o), (long) objAny.AsIFAObject(0));
 	assertEqual((long)(&o), (long) objAny.AsLong(0));
 	assertEqual((long)0.0, (long) objAny.AsDouble(0.0));
-	assertEqual("IFAObject",  objAny.AsCharPtr(""));
+	assertEqual("IFAObject", objAny.AsCharPtr(""));
 	assertEqual((long)(false), (long) objAny.AsBool(false));
 }
 
@@ -3262,13 +3267,13 @@ void AnythingTest::intROConversion()
 
 	Anything intAny = i;
 	ROAnything roIntAny(intAny);
-	assertEqual(i,  roIntAny.AsLong(0));
+	assertEqual(i, roIntAny.AsLong(0));
 
 	i = -10;
 	intAny = i;
 	roIntAny = intAny;
 
-	assertEqual(i,  roIntAny.AsLong(0));
+	assertEqual(i, roIntAny.AsLong(0));
 }
 
 void AnythingTest::ifaObjectROConversion()
@@ -3280,14 +3285,14 @@ void AnythingTest::ifaObjectROConversion()
 	assertEqual((long)(&o), (long) roObjAny.AsIFAObject(0));
 	assertEqual((long)(&o), (long) roObjAny.AsLong(0));
 	assertEqual((long)0.0, (long) roObjAny.AsDouble(0.0));
-	assertEqual("IFAObject",  roObjAny.AsCharPtr(""));
+	assertEqual("IFAObject", roObjAny.AsCharPtr(""));
 	assertEqual((long)(false), (long) roObjAny.AsBool(false));
 }
 
 void AnythingTest::BinaryBufOutput()
 {
 	Anything testAny;
-	testAny["T1"] = Anything( (void *)"1234567890", 10 );
+	testAny["T1"] = Anything((void *) "1234567890", 10);
 	String testString;
 	OStringStream os(&testString);
 
@@ -3305,12 +3310,12 @@ void AnythingTest::AsCharPtrBufLen()
 	MetaThing anyArray;
 	long arraylen;
 	anyArray.AsCharPtr("", arraylen);
-	assertEqual(12, arraylen);	// strlen("AnyArrayImpl")
+	assertEqual(12, arraylen); // strlen("AnyArrayImpl")
 
 	//--- AnyBinaryBufImpl
 	char test[10];
 	memset(test, '\0', 10);
-	Anything anyTest( (void *)test, 10);
+	Anything anyTest((void *) test, 10);
 	long buflen;
 	anyTest.AsCharPtr("", buflen);
 	assertEqual(10, buflen);
@@ -3428,7 +3433,9 @@ void AnythingTest::SlotCopierTest()
 		Anything source = config["Source"].DeepClone();
 		Anything result;
 
-		SlotCopier::Operate(source, result, copyList, config["Delim"].AsCharPtr(".")[0L], config["IndexDelim"].AsCharPtr(":")[0L]);
+		SlotCopier::Operate(source, result, copyList,
+							config["Delim"].AsCharPtr(".")[0L],
+							config["IndexDelim"].AsCharPtr(":")[0L]);
 
 		ROAnything expectedStore(config["Result"]);
 		assertAnyEqualm(expectedStore, result, TString(name()) << "." << fQuery.SlotName(l));
@@ -3510,7 +3517,7 @@ void AnythingTest::AnythingLeafIteratorTest()
 	{
 		// Set up
 		Anything foundResult;
-		AnyExtensions::LeafIterator<ROAnything> iter( fQuery["IterateThis"] );
+		AnyExtensions::LeafIterator<ROAnything> iter(fQuery["IterateThis"]);
 
 		ROAnything akt;
 		while (iter.Next(akt)) {
@@ -3538,15 +3545,18 @@ void AnythingTest::SlotnameSorterTest()
 {
 	StartTrace(AnythingTest.SlotnameSorterTest);
 	ROAnything roaTestConfig;
-	if ( t_assert(((ROAnything)fConfig).LookupPath(roaTestConfig, "SlotnameSorterTest")) ) {
+	if (t_assert(((ROAnything)fConfig).LookupPath(roaTestConfig, "SlotnameSorterTest"))) {
 		ROAnything cConfig(roaTestConfig[0L]);
-		for (long lIdx = 0; lIdx < roaTestConfig.GetSize(); lIdx++, cConfig = roaTestConfig[lIdx]) {
+		for (long lIdx = 0; lIdx < roaTestConfig.GetSize(); lIdx++, cConfig
+			 = roaTestConfig[lIdx]) {
 			TraceAny(cConfig, "the config");
 			Anything sorted;
-			SlotnameSorter::EMode mode(cConfig["Mode"].AsString() == "asc" ? SlotnameSorter::asc : SlotnameSorter::desc);
+			SlotnameSorter::EMode mode(
+				cConfig["Mode"].AsString() == "asc" ? SlotnameSorter::asc
+				: SlotnameSorter::desc);
 			sorted = cConfig["TestArray"].DeepClone();
 			SlotnameSorter::Sort(sorted, mode);
-			assertAnyEqual(	cConfig["ExpectedResult"], sorted);
+			assertAnyEqual( cConfig["ExpectedResult"], sorted);
 		}
 	}
 }

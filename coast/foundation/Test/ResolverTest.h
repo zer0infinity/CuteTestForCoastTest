@@ -16,7 +16,7 @@
 
 //---- ResolverTest ----------------------------------------------------------
 //!TestCases for the Resolver class
-class ResolverTest : public TestFramework::TestCaseWithConfig
+class ResolverTest: public TestFramework::TestCaseWithConfig
 {
 public:
 	//!TestCases for the Resolver class
@@ -27,7 +27,7 @@ public:
 	~ResolverTest();
 
 	//!builds up a suite of testcases for this test
-	static Test *suite ();
+	static Test *suite();
 
 	//!tests the Socket class with a fd from Connector
 	void simpleDNS2IPTest();

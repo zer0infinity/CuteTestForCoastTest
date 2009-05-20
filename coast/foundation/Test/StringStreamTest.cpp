@@ -31,10 +31,15 @@ const char *const StringStreamTest::fgcContent =
 	"it consists of several lines of simple Text\n"
 	"and will be written to a string using the StringStream iostream\n";
 
-StringStreamTest::StringStreamTest(TString tname) : TestCaseType(tname)
-{};
+StringStreamTest::StringStreamTest(TString tname) :
+	TestCaseType(tname)
+{
+}
+;
 
-StringStreamTest::~StringStreamTest() {}
+StringStreamTest::~StringStreamTest()
+{
+}
 
 void StringStreamTest::OperatorShiftLeftWithReadBuf()
 {
@@ -161,14 +166,16 @@ void StringStreamTest::WriteAnyOnString()
 
 void StringStreamTest::ReadFromAndWriteToStringTest()
 {
-	String orig("{/Total-{/Time-103/Nr-1000000/Sum-90/Max-1/Min-1/Error-0}"
-				"/Results-{{/Nr-100000/Sum-9/Max-1/Min-1/Error-0}"
-				"{/Nr-100000/Sum-9/Max-1/Min-1/Error-0}{/Nr-100000"
-				"/Sum-9/Max-1/Min-1/Error-0}{/Nr-100000/Sum-9/Max-1"
-				"/Min-1/Error-0}{/Nr-100000/Sum-9/Max-1/Min-1/Error-0}"
-				"{/Nr-100000/Sum-9/Max-1/Min-1/Error-0}{/Nr-100000/Sum-9"
-				"/Max-1/Min-1/Error-0}{/Nr-100000/Sum-9/Max-1/Min-1/Error-0}"
-				"{/Nr-100000/Sum-9/Max-1/Min-1/Error-0}{/Nr-100000/Sum-9/Max-1/Min-1/Error-0}}}");
+	String
+	orig(
+		"{/Total-{/Time-103/Nr-1000000/Sum-90/Max-1/Min-1/Error-0}"
+		"/Results-{{/Nr-100000/Sum-9/Max-1/Min-1/Error-0}"
+		"{/Nr-100000/Sum-9/Max-1/Min-1/Error-0}{/Nr-100000"
+		"/Sum-9/Max-1/Min-1/Error-0}{/Nr-100000/Sum-9/Max-1"
+		"/Min-1/Error-0}{/Nr-100000/Sum-9/Max-1/Min-1/Error-0}"
+		"{/Nr-100000/Sum-9/Max-1/Min-1/Error-0}{/Nr-100000/Sum-9"
+		"/Max-1/Min-1/Error-0}{/Nr-100000/Sum-9/Max-1/Min-1/Error-0}"
+		"{/Nr-100000/Sum-9/Max-1/Min-1/Error-0}{/Nr-100000/Sum-9/Max-1/Min-1/Error-0}}}");
 	StringStream inOut;
 	inOut << orig;
 	inOut.flush();
@@ -185,7 +192,7 @@ void StringStreamTest::ReadFromAndWriteToAnythingTest()
 	if (ifp == 0) {
 		String logMsg;
 		SysLog::Error(logMsg << "can't open file Test.any");
-		t_assert(0);
+		t_assertm(0, (const char *)logMsg);
 		return;
 	}
 	a.Import(*ifp);
@@ -207,7 +214,7 @@ void StringStreamTest::ReadFromAndWriteToAnythingTest2()
 	if (ifp == 0) {
 		String logMsg;
 		SysLog::Error(logMsg << "can't open file Test.any");
-		t_assert(0);
+		t_assertm(0, (const char *)logMsg);
 		return;
 	}
 	a.Import(*ifp);
@@ -239,7 +246,8 @@ void StringStreamTest::ReadFromAndWriteToAnythingTest2()
 }
 
 // check formatting problems:
-void StringStreamTest::testformat(const String &source, long expect, bool mustfail, const TString &msg)
+void StringStreamTest::testformat(const String &source, long expect,
+								  bool mustfail, const TString &msg)
 {
 	IStringStream is(source);
 	long l = -1;
@@ -248,7 +256,8 @@ void StringStreamTest::testformat(const String &source, long expect, bool mustfa
 	t_assertm((mustfail != 0) == (is.fail() != 0), msg);
 }
 
-void StringStreamTest::testformat(const String &source, double expect, bool mustfail, const TString &msg)
+void StringStreamTest::testformat(const String &source, double expect,
+								  bool mustfail, const TString &msg)
 {
 	IStringStream is(source);
 
@@ -312,7 +321,7 @@ void StringStreamTest::OperatorShiftRightWithUnsignedLongLong()
 	}
 }
 
-Test *StringStreamTest::suite ()
+Test *StringStreamTest::suite()
 {
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, StringStreamTest, SimpleWrite);

@@ -446,9 +446,9 @@
 	/MoreRealisticConfigTest {
 		/Master {
 			/DLL {
-				renderer
-				actions
-				dataaccess
+				CoastRenderers
+				CoastActions
+				CoastDataAccess
 			}
 			/Modules {
 				RolesModule

@@ -20,8 +20,8 @@
 //--- c-library modules used ---------------------------------------------------
 
 //---- ResolverTest ------------------------------------------------------------
-ResolverTest::ResolverTest(TString tname)
-	: TestCaseType(tname)
+ResolverTest::ResolverTest(TString tname) :
+	TestCaseType(tname)
 {
 }
 
@@ -33,10 +33,11 @@ void ResolverTest::simpleDNS2IPTest()
 {
 	StartTrace(ResolverTest.simpleDNS2IPTest);
 	ROAnything roaConfig;
-	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
-	while ( aEntryIterator.Next(roaConfig) ) {
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(
+		GetTestCaseConfig());
+	while (aEntryIterator.Next(roaConfig)) {
 		TString strCase;
-		if ( !aEntryIterator.SlotName(strCase) ) {
+		if (!aEntryIterator.SlotName(strCase)) {
 			strCase << "idx:" << aEntryIterator.Index();
 		}
 		String expIP, resIP;
@@ -50,10 +51,11 @@ void ResolverTest::simpleIP2DNSTest()
 {
 	StartTrace(ResolverTest.simpleIP2DNSTest);
 	ROAnything roaConfig;
-	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
-	while ( aEntryIterator.Next(roaConfig) ) {
+	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(
+		GetTestCaseConfig());
+	while (aEntryIterator.Next(roaConfig)) {
 		TString strCase;
-		if ( !aEntryIterator.SlotName(strCase) ) {
+		if (!aEntryIterator.SlotName(strCase)) {
 			strCase << "idx:" << aEntryIterator.Index();
 		}
 		String expDN, resDN, ip;
@@ -64,7 +66,7 @@ void ResolverTest::simpleIP2DNSTest()
 	}
 }
 
-Test *ResolverTest::suite ()
+Test *ResolverTest::suite()
 {
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, ResolverTest, simpleDNS2IPTest);

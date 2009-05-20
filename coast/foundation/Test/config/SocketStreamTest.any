@@ -7,17 +7,7 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-
-	/Testhost {
-		/ip		"127.0.0.1"
-		/port	80
-	}
-	/Replyhost {
-		/name	"www.switch.ch"
-		/port	80
-	}
-	/Timeouthost { # go around the planet, to enforce timeout condition.
-		/name 	"www.gov.au"
-		/port	80
-	}
+	/Testhost !Defaults.any?HTTPTestHost
+	/Replyhost !Defaults.any?Replyhost
+	/Timeouthost !Defaults.any?Timeouthost
 }

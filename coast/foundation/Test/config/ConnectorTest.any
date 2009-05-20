@@ -7,22 +7,9 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-
 	# the host given here must have an accessible http-server listening on port 80
-	/Localhost {
-		/ip		"127.0.0.1"
-		/port	80
-	}
-	/Testhost {
-		/ip		"172.16.2.3"
-		/port	80
-	}
-	/Testhost2 {
-		/name	"www.hsr.ch"
-		/port	80
-	}
-	/Testhost3 {
-		/name	"www.microsoft.com"
-		/port	8081
-	}
+	/Localhost !Defaults.any?HTTPTestHost
+	/Testhost !Defaults.any?Replyhost
+	/Testhost2 !Defaults.any?Replyhost
+	/Testhost3 !Defaults.any?Timeouthost
 }

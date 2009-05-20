@@ -7,16 +7,13 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-
 	/GetStreamTimeout		5000
 	/ReadyForReadingTimeout	5000
 	/ReadyForWritingTimeout	5000
 	/ConnectorTimeout		5000
-	/Testhost {
-		/ip			"127.0.0.1"
-		/port		80
-		/faultyport	28
-	}
+
+	/Testhost !Defaults.any?HTTPTestHost
+
 	/MakeInetAddrTest
 	{
 		/IpAddr

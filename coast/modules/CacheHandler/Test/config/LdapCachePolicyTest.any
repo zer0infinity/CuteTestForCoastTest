@@ -10,7 +10,7 @@
 
 	/NoDataReadTest {
 		/DLL {
-			ldapdataaccess
+			CoastLDAPDataAccess
 		}
 		/Modules {
 			MappersModule

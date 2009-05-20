@@ -23,14 +23,21 @@
 
 //--- c-library modules used ---------------------------------------------------
 
-AnyUtilsTest::AnyUtilsTest (TString tname) : TestCaseType(tname) {};
-AnyUtilsTest::~AnyUtilsTest() {};
+AnyUtilsTest::AnyUtilsTest(TString tname) :
+	TestCaseType(tname)
+{
+}
+;
+AnyUtilsTest::~AnyUtilsTest()
+{
+}
+;
 
 void AnyUtilsTest::CompareTest()
 {
 	Anything testConfig2;
 	const char *myFilename = "config/anyutilstest1";
-	iostream *ifp = System::OpenStream( myFilename, "any");
+	iostream *ifp = System::OpenStream(myFilename, "any");
 
 	if (ifp == 0) {
 		String eMsg = "Can't open config file ";
@@ -89,7 +96,8 @@ void AnyUtilsTest::printMixedXmlTest()
 	t_assert(DoXMLTest("<any:seq><foo>bar</foo><any:elt>anonymous</any:elt><number>5</number><end>finish</end></any:seq>", mixed));
 }
 
-void AnyUtilsTest::DoCheck(Anything testCases, bool expectedResult, String description)
+void AnyUtilsTest::DoCheck(Anything testCases, bool expectedResult,
+						   String description)
 {
 	StartTrace(AnyUtilsTest.DoCheck);
 
@@ -101,7 +109,10 @@ void AnyUtilsTest::DoCheck(Anything testCases, bool expectedResult, String descr
 		String msg = description;
 		msg << "." << testCases.SlotName(i) << "\n";
 		OStringStream resultStream;
-		bool res = AnyUtils::AnyCompareEqual(testee["In"], testee["Master"], testCases.SlotName(i), &resultStream, testee["Delim"].AsCharPtr(".")[0L], testee["IndexDelim"].AsCharPtr(":")[0L] );
+		bool res = AnyUtils::AnyCompareEqual(testee["In"], testee["Master"],
+											 testCases.SlotName(i), &resultStream,
+											 testee["Delim"].AsCharPtr(".")[0L],
+											 testee["IndexDelim"].AsCharPtr(":")[0L]);
 		assertEqualm( expectedResult, res, (const char *)(msg << resultStream.str()) );
 	}
 }
@@ -111,7 +122,7 @@ void AnyUtilsTest::MergeTest()
 	StartTrace(AnyUtilsTest.MergeTest);
 	Anything testConfig;
 	const char *myFilename = "AnyMergeTest";
-	iostream *ifp = System::OpenStream( myFilename, "any");
+	iostream *ifp = System::OpenStream(myFilename, "any");
 	if (ifp == 0) {
 		String eMsg = "Can't open config file ";
 		eMsg << myFilename << ".any";
@@ -127,12 +138,14 @@ void AnyUtilsTest::MergeTest()
 		Trace("Executing " << testConfig.SlotName(i));
 		ROAnything testee = testConfig[i];
 		Anything anyMaster = testee["Master"].DeepClone();
-		AnyUtils::AnyMerge(anyMaster, testee["ToMerge"], testee["OverwriteSlots"].AsBool(0L), testee["Delim"].AsCharPtr(".")[0L], testee["IndexDelim"].AsCharPtr(":")[0L]);
+		AnyUtils::AnyMerge(anyMaster, testee["ToMerge"],
+						   testee["OverwriteSlots"].AsBool(0L), testee["Delim"].AsCharPtr(
+							   ".")[0L], testee["IndexDelim"].AsCharPtr(":")[0L]);
 		assertAnyCompareEqual(testee["Expected"], anyMaster, testConfig.SlotName(i), testee["Delim"].AsCharPtr(".")[0L], testee["IndexDelim"].AsCharPtr(":")[0L]);
 	}
 }
 
-Test *AnyUtilsTest::suite ()
+Test *AnyUtilsTest::suite()
 {
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, AnyUtilsTest, CompareTest);

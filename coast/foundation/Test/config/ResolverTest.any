@@ -7,34 +7,6 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-
-	/simpleDNS2IPTest {
-		/ip-plus {
-			/name	"ns1.ip-plus.net"
-			/ip		"164.128.36.34"
-		}
-		/noHostToBeFound {
-			/name	"NotExisting.Nowhere.NoDomain"
-			/ip		"127.0.0.1"
-		}
-	}
-	/simpleIP2DNSTest {
-		/hsr {
-			/name	"www.hsr.ch"
-			/ip		"152.96.37.60"
-		}
-# a bit unreliable
-#		/ubs {
-#			/name	"www.ubs.com"
-#			/ip		"194.69.181.46"
-#		}
-		/swisscom {
-			/name	"www.swisscom.com"
-			/ip		"138.190.1.60"
-		}
-		/localhost {
-			/name	"localhost"
-			/ip		"127.0.0.1"
-		}
-	}
+	/simpleDNS2IPTest !Defaults.any?simpleDNS2IPTest
+	/simpleIP2DNSTest !Defaults.any?simpleIP2DNSTest
 }
