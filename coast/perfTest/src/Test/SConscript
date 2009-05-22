@@ -1,5 +1,5 @@
 Import('baseEnv')
-import SomeUtils
+import SomeUtils, pdb
 from SomeUtils import *
 
 progEnv = baseEnv.Clone()
@@ -8,11 +8,11 @@ libEnv = baseEnv.Clone()
 packagename = 'PerfTestTest'
 libEnv.Tool(packagename + 'Lib', depsOnly=1)
 createdLib = libEnv.SharedLibrary(packagename, listFiles(['*.cpp']))
-progEnv.Tool('CoastStdDataAccessLib')
-progEnv.Tool('CoastActionsLib')
-progEnv.Tool('CoastRenderersLib')
-progEnv.Tool('CoastSecurityLib')
-progEnv.Tool('registerObjects', package=packagename, libraries=[createdLib])
 
-#print libEnv.Dump()
-#print progEnv.Dump()
+Import('wdapp')
+
+progEnv.Tool('registerObjects', package=packagename,
+             libraries=[createdLib],
+             requiresLibs=['CoastStdDataAccess', 'CoastActions', 'CoastRenderers', 'CoastSecurity'],
+             testApps=[wdapp],
+             config=listFiles(['*.txt', '*.html', '*.any']))

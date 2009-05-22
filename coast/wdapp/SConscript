@@ -6,7 +6,7 @@ progEnv = baseEnv.Clone()
 
 targetname = 'wdapp'
 progEnv.Tool('CoastWDBaseLib')
-createdProgram = progEnv.Program(targetname, listFiles(['Main.cpp']))
-progEnv.Tool('registerObjects', package=targetname, binaries=[createdProgram])
+wdapp = progEnv.Program(targetname, listFiles(['Main.cpp']))
+Export('wdapp')
 
 #print progEnv.Dump()
