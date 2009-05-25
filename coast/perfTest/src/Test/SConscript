@@ -13,6 +13,6 @@ Import('wdapp')
 
 progEnv.Tool('registerObjects', package=packagename,
              libraries=[createdLib],
-             requiresLibs=['CoastStdDataAccess', 'CoastActions', 'CoastRenderers', 'CoastSecurity'],
+             requiresLibs=['CoastStdDataAccess', 'CoastActions', 'CoastRenderers'],
              testApps=[wdapp],
              config=listFiles(['*.txt', '*.html', '*.any']))
