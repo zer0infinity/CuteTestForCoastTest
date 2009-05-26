@@ -7,11 +7,10 @@ StanfordUtils.DependsOn(libEnv, packagename, depsOnly=1)
 createdLib = libEnv.SharedLibrary(packagename, StanfordUtils.listFiles(['*.cpp']))
 
 progEnv = StanfordUtils.CloneBaseEnv()
-StanfordUtils.DependsOn(progEnv, 'wdapp')
-Import('wdapp')
+wdappProg = StanfordUtils.DependsOn(progEnv, 'wdapp')
 
 progEnv.Tool('registerObjects', package=packagename,
              libraries=[createdLib],
              requiresLibs=['CoastStdDataAccess', 'CoastActions', 'CoastRenderers'],
-             testApps=[wdapp],
+             testApps=[wdappProg],
              config=StanfordUtils.listFiles(['*.txt', '*.html', '*.any']))
