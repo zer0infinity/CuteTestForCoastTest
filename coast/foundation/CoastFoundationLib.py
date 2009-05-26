@@ -1,12 +1,12 @@
 import os, platform, pdb, traceback, string
 import SCons
-import SomeUtils
-from SomeUtils import *
 from SCons.Script import Dir
+import StanfordUtils
 
 _added = None
 _packagename = None
 _includeSubdir = ''
+createdLib = None
 
 def generate(env, **kw):
     global _added, _packagename, _includeSubdir
@@ -15,8 +15,8 @@ def generate(env, **kw):
         _packagename = string.replace(__name__, 'Lib', '')
 
     # this libraries dependencies
-    env.Tool('lokiLib')
-    env.Tool('boostLib')
+    StanfordUtils.DependsOn(env, 'loki')
+    StanfordUtils.DependsOn(env, 'boost')
     # flags / settings used by this library and users of it
 #    env.AppendUnique(CPPDEFINES =['SOMEFLAG'])
     # export library dependency when we are not building ourselves
@@ -31,7 +31,7 @@ def generate(env, **kw):
         # win32 specific define to export all symbols when creating a DLL
         env.AppendUnique(CPPDEFINES=[_packagename.upper() + '_IMPL'])
         # specify public headers here
-        env.Tool('registerObjects', package=_packagename, includes=listFiles([os.path.join(_includeSubdir, '*.h')]))
+        env.Tool('registerObjects', package=_packagename, includes=StanfordUtils.listFiles([os.path.join(_includeSubdir, '*.h')]))
         # maybe we need to add this libraries local include path when building it (if different from .)
         if not _includeSubdir == '':
             env.AppendUnique(CPPPATH=[Dir(_includeSubdir)])

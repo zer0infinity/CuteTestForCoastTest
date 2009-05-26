@@ -1,15 +1,11 @@
-Import('baseEnv')
-import SomeUtils
-from SomeUtils import *
+import StanfordUtils
 
-progEnv = baseEnv.Clone()
-libEnv = baseEnv.Clone()
+progEnv = StanfordUtils.CloneBaseEnv()
+libEnv = StanfordUtils.CloneBaseEnv()
 
 packagename = 'testfwWDBase'
-libEnv.Tool(packagename + 'Lib', depsOnly=1)
+StanfordUtils.DependsOn(libEnv, packagename, depsOnly=1)
 libEnv['_NONLAZYLINKFLAGS'] = ''
-createdLib = libEnv.SharedLibrary(packagename, listFiles(['*.cpp']))
+createdLib = libEnv.SharedLibrary(packagename, StanfordUtils.listFiles(['*.cpp']))
 progEnv.Tool('registerObjects', package=packagename, libraries=[createdLib])
 
-#print libEnv.Dump()
-#print progEnv.Dump()

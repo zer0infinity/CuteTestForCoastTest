@@ -1,13 +1,10 @@
-Import('baseEnv')
-import SomeUtils
-from SomeUtils import *
-
-progEnv = baseEnv.Clone()
+import StanfordUtils
 
 targetname = 'mtfoundation_Test'
-progEnv.Tool('CoastMTFoundationLib')
-progEnv.Tool('testfwFoundationLib')
-createdProgram = progEnv.Program(targetname, listFiles(['*.cpp']))
-progEnv.Tool('registerObjects', package=targetname, testApps=[createdProgram], config=listFiles(['config/*.any', 'config/prjconfig.sh']))
 
-#print progEnv.Dump()
+progEnv = StanfordUtils.CloneBaseEnv()
+StanfordUtils.DependsOn(progEnv, 'CoastMTFoundation')
+StanfordUtils.DependsOn(progEnv, 'testfwFoundation')
+createdProgram = progEnv.Program(targetname, StanfordUtils.listFilestils.listFiles(['*.cpp']))
+progEnv.Tool('registerObjects', package=targetname, testApps=[createdProgram], config=StanfordUtils.listFilesnfig=StanfordUtils.listFiles(['config/*.any', 'config/prjconfig.sh']))
+

@@ -1,7 +1,6 @@
 import os, platform, pdb, traceback, string
 import SCons
-import SomeUtils
-from SomeUtils import *
+import StanfordUtils
 from SCons.Script import Dir
 
 _added = None
@@ -15,8 +14,8 @@ def generate(env, **kw):
         _packagename = string.replace(__name__, 'Lib', '')
 
     # this libraries dependencies
-    env.Tool('CoastMTFoundationLib')
-    env.Tool('CoastCompressLib')
+    StanfordUtils.DependsOn(env, 'CoastMTFoundation')
+    StanfordUtils.DependsOn(env, 'CoastCompress')
 #    env.Tool('addLibrary', library = env['boostLibs'])
     # flags / settings used by this library and users of it
 #    env.AppendUnique(CPPDEFINES =['ONLY_STD_IOSTREAM'])
@@ -32,7 +31,7 @@ def generate(env, **kw):
         # win32 specific define to export all symbols when creating a DLL
         env.AppendUnique(CPPDEFINES=[_packagename.upper()+'_IMPL'])
         # specify public headers here
-        env.Tool('registerObjects', package=_packagename, includes=listFiles([os.path.join(_includeSubdir, '*.h')]))
+        env.Tool('registerObjects', package=_packagename, includes=StanfordUtils.listFiles([os.path.join(_includeSubdir, '*.h')]))
         # maybe we need to add this libraries local include path when building it (if different from .)
         if not _includeSubdir == '':
             env.AppendUnique(CPPPATH=[Dir(_includeSubdir)])

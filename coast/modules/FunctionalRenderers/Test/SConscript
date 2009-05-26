@@ -1,13 +1,10 @@
-Import('baseEnv')
-import SomeUtils, pdb
-from SomeUtils import *
+import StanfordUtils, pdb
 
-progEnv = baseEnv.Clone()
+progEnv = StanfordUtils.CloneBaseEnv()
 
 targetname='FunctionalRenderers_Test'
-progEnv.Tool('CoastFunctionalRenderersLib')
-progEnv.Tool('testfwWDBaseLib')
-createdProgram = progEnv.Program(targetname, listFiles(['*.cpp']))
-progEnv.Tool('registerObjects', package=targetname, testApps=[createdProgram], config=listFiles(['config/*.any', 'config/*.txt', 'config/*.tst', 'config/testscript.sh', 'config/prjconfig.sh', 'tmp/*.any']))
+StanfordUtils.DependsOn(progEnv, 'CoastFunctionalRenderers')
+StanfordUtils.DependsOn(progEnv, 'testfwWDBase')
+createdProgram = progEnv.Program(targetname, StanfordUtils.listFiles(['*.cpp']))
+progEnv.Tool('registerObjects', package=targetname, testApps=[createdProgram], config=StanfordUtils.listFiles(['config/*.any', 'config/*.txt', 'config/*.tst', 'config/testscript.sh', 'config/prjconfig.sh', 'tmp/*.any']))
 
-#print progEnv.Dump()

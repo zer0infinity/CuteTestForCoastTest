@@ -1,16 +1,13 @@
-Import('baseEnv')
-import SomeUtils, pdb
-from SomeUtils import *
+import StanfordUtils, pdb
 
-progEnv = baseEnv.Clone()
+progEnv = StanfordUtils.CloneBaseEnv()
 
 targetname='foundationPerformance_Test'
-progEnv.Tool('CoastFoundationLib')
-progEnv.Tool('testfwFoundationLib')
-createdProgram = progEnv.Program(targetname, listFiles(['*.cpp']))
-progEnv.Tool('registerObjects', package=targetname, testApps=[createdProgram], config=listFiles(['*.any']))
+StanfordUtils.DependsOn(progEnv, 'CoastFoundation')
+StanfordUtils.DependsOn(progEnv, 'testfwFoundation')
+createdProgram = progEnv.Program(targetname, StanfordUtils.listFiles(['*.cpp']))
+progEnv.Tool('registerObjects', package=targetname, testApps=[createdProgram], config=StanfordUtils.listFiles(['*.any']))
 
 #targettype='tests'
 #progEnv.AppendUnique(LIBPATH=[progEnv['BASEOUTDIR'].Dir(os.path.join(targettype, targetname, progEnv['LIBDIR']))])
 
-#print progEnv.Dump()

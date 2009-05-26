@@ -1,7 +1,6 @@
 import os, platform, pdb, traceback, string
 import SCons
-import SomeUtils
-from SomeUtils import *
+import StanfordUtils
 from SCons.Script import Dir
 
 _added = None
@@ -26,7 +25,7 @@ def generate(env, **kw):
         env.AppendUnique(CPPPATH=[installPath])
     else:
         # specify public headers here
-        env.Tool('registerObjects', package=_packagename, includes=listFiles([os.path.join(_includeSubdir, '*.h')]))
+        env.Tool('registerObjects', package=_packagename, includes=StanfordUtils.listFiles([os.path.join(_includeSubdir, '*.h')]))
         # maybe we need to add this libraries local include path when building it (if different from .)
         if not _includeSubdir == '':
             env.AppendUnique(CPPPATH=[Dir(_includeSubdir)])

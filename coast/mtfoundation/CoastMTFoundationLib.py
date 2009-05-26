@@ -1,8 +1,7 @@
 import os, platform, pdb, traceback, string
 import SCons
-import SomeUtils
-from SomeUtils import *
 from SCons.Script import Dir
+import StanfordUtils
 
 _added = None
 _packagename = None
@@ -15,7 +14,8 @@ def generate(env, **kw):
         _packagename = string.replace(__name__, 'Lib', '')
 
     # this libraries dependencies
-    env.Tool('CoastFoundationLib')
+    StanfordUtils.DependsOn(env, 'CoastFoundation')
+
     # flags / settings used by this library and users of it
     env.AppendUnique(CPPDEFINES=['_POSIX_THREADS'])
     env.AppendUnique(LIBS=['pthread'])
@@ -31,7 +31,7 @@ def generate(env, **kw):
         # win32 specific define to export all symbols when creating a DLL
         env.AppendUnique(CPPDEFINES=[_packagename.upper()+'_IMPL'])
         # specify public headers here
-        env.Tool('registerObjects', package=_packagename, includes=listFiles([os.path.join(_includeSubdir, '*.h'), os.path.join(_includeSubdir, '*.ipp')]))
+        env.Tool('registerObjects', package=_packagename, includes=StanfordUtils.listFiles([os.path.join(_includeSubdir, '*.h'), os.path.join(_includeSubdir, '*.ipp')]))
         # maybe we need to add this libraries local include path when building it (if different from .)
         if not _includeSubdir == '':
             env.AppendUnique(CPPPATH=[Dir(_includeSubdir)])

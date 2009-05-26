@@ -1,13 +1,8 @@
-Import('baseEnv')
-import SomeUtils
-from SomeUtils import *
-
-progEnv = baseEnv.Clone()
+import StanfordUtils
 
 targetname = 'wdapp'
-progEnv.Tool('CoastWDBaseLib')
-wdapp = progEnv.Program(targetname, listFiles(['Main.cpp']))
-Export('wdapp')
-progEnv.Alias('wdapp', wdapp)
 
-#print progEnv.Dump()
+progEnv = StanfordUtils.CloneBaseEnv()
+StanfordUtils.DependsOn(progEnv, targetname, depsOnly=1)
+
+progEnv.Program(targetname, StanfordUtils.listFiles(['Main.cpp']))
