@@ -8,6 +8,6 @@ targetname='Renderer_Test'
 progEnv.Tool('CoastRenderersLib')
 progEnv.Tool('testfwWDBaseLib')
 createdProgram = progEnv.Program(targetname, listFiles(['*.cpp']))
-progEnv.Tool('registerObjects', package=targetname, testApps=[createdProgram], config=listFiles(['config/*.any', 'config/*.txt', 'config/*.tst', 'config/testscript.sh', 'config/prjconfig.sh', 'tmp/*.any']))
+progEnv.Tool('registerObjects', package=targetname, testApps=[createdProgram], config=listFiles(['config/*.any', 'config/*.txt', 'config/*.tst', 'config/prjconfig.sh', '*.any']))
 
 #print progEnv.Dump()
