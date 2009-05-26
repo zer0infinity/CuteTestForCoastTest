@@ -5,4 +5,6 @@ targetname = 'wdapp'
 progEnv = StanfordUtils.CloneBaseEnv()
 StanfordUtils.DependsOn(progEnv, targetname, depsOnly=1)
 
-progEnv.Program(targetname, StanfordUtils.listFiles(['Main.cpp']))
+wdapp = progEnv.Program(targetname, StanfordUtils.listFiles(['Main.cpp']))
+Export(targetname)
+progEnv.Alias(targetname, wdapp)
