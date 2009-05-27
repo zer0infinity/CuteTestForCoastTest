@@ -1,14 +1,1 @@
-import StanfordUtils, pdb
-
-targetname='foundation_Test'
-
-progEnv = StanfordUtils.CloneBaseEnv()
-StanfordUtils.DependsOn(progEnv, 'CoastFoundation')
-StanfordUtils.DependsOn(progEnv, 'testfwFoundation')
-createdProgram = progEnv.Program(targetname, StanfordUtils.listFilestils.listFiles(['*.cpp']))
-
-progEnv.Tool('registerObjects',
-             package=targetname,
-             testApps=[createdProgram],
-             config=StanfordUtils.listFilesnfig=StanfordUtils.listFiles(['config/*.any', 'config/*.txt', 'config/*.tst', 'config/testscript.sh', 'config/prjconfig.sh', 'tmp/*.any', '*.any']))
-
+import foundationTestLib

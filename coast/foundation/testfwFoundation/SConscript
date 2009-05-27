@@ -1,9 +1,1 @@
-import StanfordUtils
-
-progEnv = StanfordUtils.CloneBaseEnv()
-
-packagename = 'testfwFoundation'
-
-StanfordUtils.DependsOn(progEnv, packagename, depsOnly=1)
-#progEnv.Tool('registerObjects', package=packagename)
-
+import testfwFoundationLib
