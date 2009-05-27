@@ -11,7 +11,7 @@ def generate(env, **kw):
     global _added, _packagename, _includeSubdir
     if not _added:
         _added = 1
-        _packagename = string.replace(__name__, 'Lib', '')
+        _packagename = StanfordUtils.getPackageName(__name__)
 
     # this libraries dependencies
     StanfordUtils.DependsOn(env, 'CoastFoundation')
