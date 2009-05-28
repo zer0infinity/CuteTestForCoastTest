@@ -1,0 +1,64 @@
+digraph PerfTestTest {
+	node [ shape=record];
+	PerfTestTest;
+	PerfTestTestLib;
+	CoastPerfTestLib;
+	CoastDataAccessLib;
+	CoastStdDataAccessLib;
+	CoastSSLLib;
+	CoastActions;
+	CoastRenderers;
+	CoastSecurity;
+	testfwWDBaseLib;
+	wdapp;
+	CoastWDBaseLib;
+	CoastMTFoundationLib;
+	CoastFoundationLib;
+	CoastCompressLib;
+	CoastRegexLib;
+	zlib;
+	loki;
+	boost;
+	openssl;
+	CoastHTTPLib;
+	CoastAppLogLib;
+	CoastAccessControlLib;
+	testfwFoundationLib;
+	testfw;
+	
+	PerfTestTestLib -> CoastPerfTestLib [ arrowhead="open" ]
+	PerfTestTestLib -> testfwWDBaseLib [ arrowhead="open" ]
+	PerfTestTest -> PerfTestTestLib [ arrowhead="open" ]
+	PerfTestTest -> CoastStdDataAccessLib [ arrowhead="open", style="dashed" ]
+	PerfTestTest -> CoastActions [ arrowhead="open", style="dashed" ]
+	PerfTestTest -> CoastRenderers [ arrowhead="open", style="dashed" ]
+	PerfTestTest -> wdapp [ arrowhead="open", style="dashed" ]
+	CoastPerfTestLib -> CoastSSLLib [ arrowhead="open" ]
+	CoastPerfTestLib -> CoastDataAccessLib [ arrowhead="open" ]
+	wdapp -> CoastWDBaseLib [ arrowhead="open" ]
+	CoastFoundationLib -> loki [ arrowhead="open" ]
+	CoastMTFoundationLib -> CoastFoundationLib [ arrowhead="open" ]
+	CoastWDBaseLib -> CoastMTFoundationLib [ arrowhead="open" ]
+	CoastWDBaseLib -> CoastCompressLib [ arrowhead="open" ]
+	CoastCompressLib -> CoastFoundationLib [ arrowhead="open" ]
+	CoastCompressLib -> zlib [ arrowhead="open" ]
+	CoastActions -> CoastWDBaseLib [ arrowhead="open" ]
+	CoastActions -> CoastRegexLib [ arrowhead="open" ]
+	CoastRegexLib -> CoastFoundationLib [ arrowhead="open" ]
+	CoastSecurity -> CoastWDBaseLib [ arrowhead="open" ]
+	CoastRenderers -> CoastWDBaseLib [ arrowhead="open" ]
+	CoastSSLLib -> CoastSecurity [ arrowhead="open" ]
+	CoastSSLLib -> openssl [ arrowhead="open" ]
+	CoastStdDataAccessLib -> CoastSSLLib [ arrowhead="open" ]
+	CoastStdDataAccessLib -> CoastHTTPLib [ arrowhead="open" ]
+	CoastStdDataAccessLib -> CoastAccessControlLib [ arrowhead="open" ]
+	CoastStdDataAccessLib -> CoastAppLogLib [ arrowhead="open" ]
+	CoastDataAccessLib -> CoastWDBaseLib [ arrowhead="open" ]
+	CoastAppLogLib -> CoastDataAccessLib [ arrowhead="open" ]
+	CoastHTTPLib -> CoastSecurity [ arrowhead="open" ]
+	CoastAccessControlLib -> CoastDataAccessLib [ arrowhead="open" ]
+	testfwWDBaseLib -> CoastDataAccessLib [ arrowhead="open" ]
+	testfwWDBaseLib -> CoastWDBaseLib [ arrowhead="open" ]
+	testfwWDBaseLib -> testfwFoundationLib  [ arrowhead="open" ]
+	testfwFoundationLib -> testfw [ arrowhead="open" ]
+}
