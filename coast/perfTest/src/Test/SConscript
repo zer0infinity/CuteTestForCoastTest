@@ -1,16 +1,1 @@
-import StanfordUtils, pdb
-
-packagename = 'PerfTestTest'
-
-libEnv = StanfordUtils.CloneBaseEnv()
-StanfordUtils.DependsOn(libEnv, packagename, depsOnly=1)
-createdLib = libEnv.SharedLibrary(packagename, StanfordUtils.listFiles(['*.cpp']))
-
-progEnv = StanfordUtils.CloneBaseEnv()
-wdappProg = StanfordUtils.DependsOn(progEnv, 'wdapp')
-
-progEnv.Tool('registerObjects', package=packagename,
-             libraries=[createdLib],
-             requiresLibs=['CoastStdDataAccess', 'CoastActions', 'CoastRenderers'],
-             testApps=[wdappProg],
-             config=StanfordUtils.listFiles(['*.txt', '*.html', '*.any']))
+import PerfTestTestLib

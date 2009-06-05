@@ -1,11 +1,1 @@
-import StanfordUtils, pdb
-
-progEnv = StanfordUtils.CloneBaseEnv()
-libEnv = StanfordUtils.CloneBaseEnv()
-
-packagename = 'CoastCompress'
-StanfordUtils.DependsOn(libEnv, packagename, depsOnly=1)
-
-CoastCompressLib = libEnv.SharedLibrary(packagename, StanfordUtils.listFiles(['*.cpp']))
-progEnv.Tool('registerObjects', package=packagename, libraries=[CoastCompressLib])
-
+import CoastCompressLib
