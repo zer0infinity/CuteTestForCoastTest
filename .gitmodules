@@ -19,6 +19,9 @@
 [submodule "3rdparty/sybase"]
 	path = 3rdparty/sybase
 	url = ssh://sifs-coast1.hsr.ch/var/repositories/git/sybase.git
+[submodule "3rdparty/cute"]
+	path = 3rdparty/cute
+	url = ssh://sifs-coast1.hsr.ch/var/repositories/git/cute.git
 [submodule "site_scons"]
 	path = site_scons
 	url = ssh://sifs-coast1.hsr.ch/var/repositories/git/sconsider.git
