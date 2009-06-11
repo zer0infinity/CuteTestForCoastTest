@@ -6,7 +6,7 @@ packagename = StanfordUtils.getPackageName(__name__)
 buildSettings = {
                  packagename : {
                      'includeSubdir'    : '',
-                     'libDepends'       : ['CoastFoundation', 'testfwFoundation'],
+                     'linkDependencies'       : ['CoastFoundation', 'testfwFoundation'],
                      'sourceFiles'      : StanfordUtils.listFiles(['*.cpp']),
                      'targetType'       : 'ProgramTest',
 #                     'appendUnique'     : { 'CPPDEFINES' : 'fooX' },

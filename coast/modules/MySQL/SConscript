@@ -1,10 +1,1 @@
-import StanfordUtils
-
-progEnv = StanfordUtils.CloneBaseEnv()
-libEnv = StanfordUtils.CloneBaseEnv()
-
-packagename = 'CoastMySQL'
-StanfordUtils.DependsOn(libEnv, packagename, depsOnly=1)
-createdLib = libEnv.SharedLibrary(packagename, StanfordUtils.listFiles(['*.cpp']))
-progEnv.Tool('registerObjects', package=packagename, libraries=[createdLib])
-
+import CoastMySQLLib

@@ -5,7 +5,7 @@ packagename = StanfordUtils.getPackageName(__name__)
 buildSettings = {
                  'CoastSybaseCT' : {
                      'includeSubdir'    : '',
-                     'libDepends'       : ['sybase', 'CoastDataAccess'],
+                     'linkDependencies'       : ['sybase', 'CoastDataAccess'],
                      'sourceFiles'      : StanfordUtils.listFiles(['*.cpp']),
                      'targetType'       : 'LibraryShared',
                      'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL'] },

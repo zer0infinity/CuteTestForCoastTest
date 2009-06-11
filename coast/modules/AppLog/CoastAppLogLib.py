@@ -6,7 +6,7 @@ packagename = StanfordUtils.getPackageName(__name__)
 buildSettings = {
                  'CoastAppLog' : {
                      'includeSubdir'    : '',
-                     'libDepends'       : ['CoastDataAccess'],
+                     'linkDependencies'       : ['CoastDataAccess'],
                      'sourceFiles'      : StanfordUtils.listFiles(['*.cpp']),
                      'targetType'       : 'LibraryShared',
                      'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL'] },

@@ -6,7 +6,7 @@ packagename = StanfordUtils.getPackageName(__name__)
 buildSettings = {
                  'CoastHTTP' : {
                      'includeSubdir'    : '',
-                     'libDepends'       : ['CoastSecurity'],
+                     'linkDependencies'       : ['CoastSecurity'],
                      'sourceFiles'      : StanfordUtils.listFiles(['*.cpp']),
                      'targetType'       : 'LibraryShared',
                      'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL'] },

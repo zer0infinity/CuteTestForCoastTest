@@ -6,7 +6,7 @@ packagename = StanfordUtils.getPackageName(__name__)
 buildSettings = {
                  'testfw' : {
                      'includeSubdir'    : '',
-                     'libDepends'       : [],
+                     'linkDependencies'       : [],
                      'sourceFiles'      : StanfordUtils.listFiles(['*.cpp']),
                      'targetType'       : 'LibraryShared',
                      'lazylinking'      : True,

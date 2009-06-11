@@ -6,7 +6,7 @@ packagename = StanfordUtils.getPackageName(__name__)
 buildSettings = {
                  'CoastCompress' : {
                      'includeSubdir'    : '',
-                     'libDepends'       : ['CoastFoundation', 'zlib'],
+                     'linkDependencies'       : ['CoastFoundation', 'zlib'],
                      'sourceFiles'      : StanfordUtils.listFiles(['*.cpp']),
                      'targetType'       : 'LibraryShared',
                      'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL'] },

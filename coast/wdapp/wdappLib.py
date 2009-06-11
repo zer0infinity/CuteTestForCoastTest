@@ -6,7 +6,7 @@ packagename = StanfordUtils.getPackageName(__name__)
 buildSettings = {
                  packagename : {
                      'includeSubdir'    : '',
-                     'libDepends'       : ['CoastWDBase'],
+                     'linkDependencies'       : ['CoastWDBase'],
                      'sourceFiles'      : ['Main.cpp'],
                      'targetType'       : 'Program',
                      }

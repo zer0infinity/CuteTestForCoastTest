@@ -5,13 +5,11 @@ packagename = StanfordUtils.getPackageName(__name__)
 buildSettings = {
                  packagename : {
                      'includeSubdir'    : '',
-                     'libDepends'       : ['testfw'],
-                     'sourceFiles'      : StanfordUtils.listFiles(['*.cpp']),
+                     'linkDependencies'       : ['testfw'],
+                     'sourceFiles'      : [],
                      'targetType'       : 'IncludeOnly',
-                     'appendUnique'     : {},
                      'public' : {
                                  'includes'     : StanfordUtils.listFiles(['*.h']),
-#                                'appendUnique' : { 'CPPDEFINES' : 'fooX' },
                     }
                  }
                 }
