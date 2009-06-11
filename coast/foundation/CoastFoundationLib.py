@@ -4,9 +4,8 @@ import StanfordUtils
 packagename = StanfordUtils.getPackageName(__name__)
 
 buildSettings = {
-                 'CoastFoundation' : {
-                     'includeSubdir'    : '',
-                     'linkDependencies'       : ['loki', 'boost'],
+                 packagename : {
+                     'linkDependencies' : ['loki', 'boost'],
                      'sourceFiles'      : StanfordUtils.listFiles(['*.cpp']),
                      'targetType'       : 'LibraryShared',
                      'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL'] },
