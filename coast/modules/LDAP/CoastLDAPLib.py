@@ -4,15 +4,14 @@ import StanfordUtils
 packagename = StanfordUtils.getPackageName(__name__)
 
 buildSettings = {
-                 'CoastLDAP' : {
+                 packagename : {
                      'includeSubdir'    : '',
-                     'linkDependencies'       : ['iplanetLDAP', 'CoastDataAccess', 'CoastSecurity'],
+                     'linkDependencies' : ['iplanetLDAP', 'CoastDataAccess', 'CoastSecurity'],
                      'sourceFiles'      : StanfordUtils.listFiles(['*.cpp']),
                      'targetType'       : 'LibraryShared',
                      'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL'] },
                      'public' : {
-                                 'includes'     : StanfordUtils.listFiles(['*.h']),
-#                                'appendUnique' : { 'CPPDEFINES' : 'fooX' },
+                         'includes'     : StanfordUtils.listFiles(['*.h']),
                     }
                  }
                 }

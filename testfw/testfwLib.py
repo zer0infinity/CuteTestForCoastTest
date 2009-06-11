@@ -4,16 +4,12 @@ import StanfordUtils
 packagename = StanfordUtils.getPackageName(__name__)
 
 buildSettings = {
-                 'testfw' : {
-                     'includeSubdir'    : '',
-                     'linkDependencies'       : [],
+                 packagename : {
                      'sourceFiles'      : StanfordUtils.listFiles(['*.cpp']),
                      'targetType'       : 'LibraryShared',
                      'lazylinking'      : True,
-                     'appendUnique'     : {},
                      'public' : {
-                                 'includes'     : StanfordUtils.listFiles(['*.h']),
-#                                'appendUnique' : { 'CPPDEFINES' : 'fooX' },
+                         'includes'     : StanfordUtils.listFiles(['*.h']),
                     }
                  }
                 }

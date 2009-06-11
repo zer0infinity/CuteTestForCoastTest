@@ -4,12 +4,11 @@ packagename = StanfordUtils.getPackageName(__name__)
 
 buildSettings = {
                  packagename : {
-                     'includeSubdir'    : '',
-                     'linkDependencies'       : ['testfw'],
+                     'linkDependencies' : ['testfw'],
                      'sourceFiles'      : [],
                      'targetType'       : 'IncludeOnly',
                      'public' : {
-                                 'includes'     : StanfordUtils.listFiles(['*.h']),
+                         'includes'     : StanfordUtils.listFiles(['*.h']),
                     }
                  }
                 }

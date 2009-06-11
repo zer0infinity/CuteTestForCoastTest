@@ -7,7 +7,7 @@ buildSettings = {
                      'targetType'       : 'LibraryShared',
                      'sourceFiles'      : StanfordUtils.listFiles(['*.cpp']),
                      'includeSubdir'    : '',
-                     'linkDependencies'       : ['testfwWDBase', 'CoastPerfTest'],
+                     'linkDependencies' : ['testfwWDBase', 'CoastPerfTest'],
 #                     'appendUnique'     : { 'CPPDEFINES' : 'fooX' },
                     },
                  'PerfTestRunner' : {
