@@ -22,6 +22,9 @@
 [submodule "3rdparty/cute"]
 	path = 3rdparty/cute
 	url = ssh://sifs-coast1.hsr.ch/var/repositories/git/cute.git
+[submodule "3rdparty/oracle"]
+	path = 3rdparty/oracle
+	url = ssh://sifs-coast1.hsr.ch/var/repositories/git/oracle.git
 [submodule "site_scons"]
 	path = site_scons
 	url = ssh://sifs-coast1.hsr.ch/var/repositories/git/sconsider.git
