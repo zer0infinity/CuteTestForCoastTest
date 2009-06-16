@@ -3,7 +3,7 @@ import StanfordUtils
 packagename = StanfordUtils.getPackageName(__name__)
 
 buildSettings = {
-                 'PerfTestTest' : {
+                 packagename : {
                      'targetType'       : 'LibraryShared',
                      'sourceFiles'      : StanfordUtils.listFiles(['*.cpp']),
                      'includeSubdir'    : '',
@@ -12,7 +12,7 @@ buildSettings = {
                     },
                  'PerfTestRunner' : {
                      'targetType'       : 'AppTest',
-                     'requires'         : ['CoastStdDataAccess', 'CoastActions', 'CoastRenderers', 'PerfTestTest.PerfTestTest'],
+                     'requires'         : ['CoastStdDataAccess', 'CoastActions', 'CoastRenderers', packagename + '.' + packagename],
                      'usedTarget'       : 'wdapp.wdapp',
                      'configFiles'      : StanfordUtils.listFiles(['*.txt',
                                                                    '*.html',
