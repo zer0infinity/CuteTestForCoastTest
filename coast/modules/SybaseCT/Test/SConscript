@@ -1,10 +1,1 @@
-import StanfordUtils, pdb
-
-progEnv = StanfordUtils.CloneBaseEnv()
-
-targetname='SybaseCT_Test'
-StanfordUtils.DependsOn(progEnv, 'CoastSybaseCT')
-StanfordUtils.DependsOn(progEnv, 'testfwWDBase')
-createdProgram = progEnv.Program(targetname, StanfordUtils.listFiles(['*.cpp']))
-progEnv.Tool('registerObjects', package=targetname, testApps=[createdProgram], config=StanfordUtils.listFiles(['config/*.any', 'config/*.txt', 'config/*.tst', 'config/testscript.sh', 'config/prjconfig.sh', 'tmp/*.any']))
-
+import CoastSybaseCTTestLib
