@@ -1,0 +1,227 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2009, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+	/DLL {
+		CoastAppLog
+		CoastDataAccess
+		CoastRenderers
+	}
+	/Modules {
+		ActionsModule
+		RenderersModule
+		OracleModule
+		DataAccessImplsModule
+		MappersModule
+		AppLogModule
+		ServersModule
+	}
+
+	/Servers {}
+	# uncomment the server slot for enabling TimeLogging
+	/Server	Server
+
+	/Actions {
+		/CallDataAccessAction	{ CallDA }
+	}
+	/Renderers {
+		/SwitchRenderer 		{ Switch }
+		/ContextLookupRenderer 	{ Lookup }
+	}
+	/OracleModule {
+		/OracleDAImpl {
+			/ParallelQueries		1
+		}
+	}
+
+	/DataAccessImpls {
+		/OracleDAImpl {
+			/SifsCoastOrcl {
+				SelectEmployees
+				SelectEmployeesTitlesOnce
+			}
+		}
+	}
+
+	/Mappers {
+		/Input {
+			/ParameterMapper {
+				/SifsCoastOrcl {
+					/SelectEmployees {
+						SelectEmployeesTitlesOnce
+					}
+				}
+			}
+		}
+		/Output {
+			/ResultMapper {
+				PutResultMapper
+				/OracleDAImpl {
+					SelectEmployees
+					SelectEmployeesTitlesOnce
+				}
+			}
+		}
+	}
+
+######## Test specific section ########
+
+	/RunOnly {
+
+	}
+	/TestCases {
+		/SelectEmployeesTest {
+			/TheAction {
+				/CallDA 	SelectEmployees
+			}
+			/Result {
+				/TmpStore {
+					/SelectEmployees {
+						/Query	"SELECT ename, job FROM emp"
+						/QueryCount 14
+						/QueryResult	{
+						  {
+						    /ENAME "SMITH"
+						    /JOB "CLERK"
+						  }
+						  {
+						    /ENAME "ALLEN"
+						    /JOB "SALESMAN"
+						  }
+						  {
+						    /ENAME "WARD"
+						    /JOB "SALESMAN"
+						  }
+						  {
+						    /ENAME "JONES"
+						    /JOB "MANAGER"
+						  }
+						  {
+						    /ENAME "MARTIN"
+						    /JOB "SALESMAN"
+						  }
+						  {
+						    /ENAME "BLAKE"
+						    /JOB "MANAGER"
+						  }
+						  {
+						    /ENAME "CLARK"
+						    /JOB "MANAGER"
+						  }
+						  {
+						    /ENAME "SCOTT"
+						    /JOB "ANALYST"
+						  }
+						  {
+						    /ENAME "KING"
+						    /JOB "PRESIDENT"
+						  }
+						  {
+						    /ENAME "TURNER"
+						    /JOB "SALESMAN"
+						  }
+						  {
+						    /ENAME "ADAMS"
+						    /JOB "CLERK"
+						  }
+						  {
+						    /ENAME "JAMES"
+						    /JOB "CLERK"
+						  }
+						  {
+						    /ENAME "FORD"
+						    /JOB "ANALYST"
+						  }
+						  {
+						    /ENAME "MILLER"
+						    /JOB "CLERK"
+						  }
+						}
+						/QuerySource	"//sifs-coast1.hsr.ch:1521/orcl"
+					}
+				}
+			}
+		}
+		/SelectEmployeesTitlesOnceTest {
+			/TheAction {
+				/CallDA 	SelectEmployeesTitlesOnce
+			}
+			/Result {
+				/TmpStore {
+					/SelectEmployeesTitlesOnce {
+						/Query	"SELECT ename, job FROM emp"
+						/QueryCount 14
+						/QueryTitles {
+							/ENAME	0
+							/JOB	1
+						}
+						/QueryResult	{
+						  {
+						    "SMITH"
+						    "CLERK"
+						  }
+						  {
+						    "ALLEN"
+						    "SALESMAN"
+						  }
+						  {
+						    "WARD"
+						    "SALESMAN"
+						  }
+						  {
+						    "JONES"
+						    "MANAGER"
+						  }
+						  {
+						    "MARTIN"
+						    "SALESMAN"
+						  }
+						  {
+						    "BLAKE"
+						    "MANAGER"
+						  }
+						  {
+						    "CLARK"
+						    "MANAGER"
+						  }
+						  {
+						    "SCOTT"
+						    "ANALYST"
+						  }
+						  {
+						    "KING"
+						    "PRESIDENT"
+						  }
+						  {
+						    "TURNER"
+						    "SALESMAN"
+						  }
+						  {
+						    "ADAMS"
+						    "CLERK"
+						  }
+						  {
+						    "JAMES"
+						    "CLERK"
+						  }
+						  {
+						    "FORD"
+						    "ANALYST"
+						  }
+						  {
+						    "MILLER"
+						    "CLERK"
+						  }
+						}
+						/QuerySource	"//sifs-coast1.hsr.ch:1521/orcl"
+					}
+				}
+			}
+		}
+	}
+}

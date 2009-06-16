@@ -1,0 +1,137 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2009, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+	/LowerBound		1		# debugging on or off
+	/UpperBound		11		# override switch: turns everything on
+	/DumpAnythings  1		# print full Anythings
+
+	/TestCase {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+### common Sybase section
+	/OracleModule {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/OracleDAImpl {
+		/MainSwitch						10
+		/EnableAll						11
+		/DoPrepareSQL					-10
+		/GetRecordData {
+			/MainSwitch					10
+			/EnableAll					10
+			/TraceDesc					-10
+			/TraceColType				-10
+			/TraceBuf					-10
+		}
+		/FetchRowData {
+			/MainSwitch					10
+			/EnableAll					10
+			/TraceRow					-10
+		}
+	}
+	/O8Connection {
+		/MainSwitch						1
+		/EnableAll						10
+		/checkerr						-10
+	}
+	/O8ConnectionManager {
+		/MainSwitch						1
+		/EnableAll						10
+	}
+	/OracleDAImplTest {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+###
+	/WorkerPoolManager {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/Mapper {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/LookupRenderer {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/ContextLookupRenderer {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/RendererMapper {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/ResultMapper {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/ParameterMapper {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/PeriodicAction {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/TimeLogger {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/TimeLoggerEntry {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/TimeLoggingModule {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/TimeLoggingAction {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/ConfiguredTestCase {
+		/MainSwitch						0
+		/EnableAll						0
+		/setUp							10
+	}
+	/ConfiguredActionTest {
+		/MainSwitch						0
+		/EnableAll						0
+		/DoTestWithContext				10
+	}
+	/Semaphore {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/ObjectList {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/ObjectList_r {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/Registry {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/RegistryIterator {
+		/MainSwitch						0
+		/EnableAll						10
+		/HasMore						-10
+	}
+	/RegisterableObject {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+}
