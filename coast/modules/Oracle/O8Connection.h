@@ -1,10 +1,3 @@
-/*
- * O8Connection.h
- *
- *  Created on: Jun 15, 2009
- *      Author: m1huber
- */
-
 #ifndef O8CONNECTION_H_
 #define O8CONNECTION_H_
 

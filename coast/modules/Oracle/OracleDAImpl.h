@@ -1,9 +1,9 @@
 /*
- * Oracle8TRX : DataAccessImpl using the OCI version Oracle8
+ * OracleDAImpl : DataAccessImpl using the OCI version Oracle8
  */
 
-#ifndef _ORACLE8TRX_H
-#define _ORACLE8TRX_H
+#ifndef _ORACLEDAIMPL_H
+#define _ORACLEDAIMPL_H
 
 //--- modules used in the interface
 #include "config_coastoracle.h"
@@ -14,20 +14,18 @@
 class O8Connection;
 class O8ConnectionManager;
 
-//---- Oracle8TRX -----------------------------------------------------------
+//---- OracleDAImpl -----------------------------------------------------------
 // arbitrary input fields may be used to dynamically generate an SQL statment
 // the following fields have a predefined semantic:
 // {
-//		/StartPos	0		# first row of fetched data to be returned
-//		/MaxOut		10		# total number of fetched rows that are returned
 // }
 
-class EXPORTDECL_COASTORACLE Oracle8TRX: public DataAccessImpl
+class EXPORTDECL_COASTORACLE OracleDAImpl: public DataAccessImpl
 {
 public:
 	//--- constructors
-	Oracle8TRX(const char *name);
-	~Oracle8TRX();
+	OracleDAImpl(const char *name);
+	~OracleDAImpl();
 
 	// returns a new TRX object
 	IFAObject *Clone() const;
@@ -66,11 +64,11 @@ private:
 	void Warning(Context &ctx, ResultMapper *pResultMapper, String str);
 	void Error(Context &ctx, ResultMapper *pResultMapper, String str);
 
-	Oracle8TRX();
-	Oracle8TRX(const Oracle8TRX &);
+	OracleDAImpl();
+	OracleDAImpl(const OracleDAImpl &);
 
 	//assignement
-	Oracle8TRX &operator=(const Oracle8TRX &);
+	OracleDAImpl &operator=(const OracleDAImpl &);
 };
 
 #endif

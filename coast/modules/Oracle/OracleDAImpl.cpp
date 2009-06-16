@@ -1,9 +1,9 @@
 /*
- * Oracle8TRX : DataAccessImpl using the OCI version Oracle8
+ * OracleDAImpl : DataAccessImpl using the OCI version Oracle8
  */
 
 //--- interface include --------------------------------------------------------
-#include "Oracle8TRX.h"
+#include "OracleDAImpl.h"
 
 //--- standard modules used ----------------------------------------------------
 #include "O8ConnectionManager.h"
@@ -12,47 +12,39 @@
 #include "Timers.h"
 #include "StringStream.h"
 #include "TimeStamp.h"
-#include "Action.h"
-#include "PeriodicAction.h"
 #include "Dbg.h"
 
 #include <limits>
 
 //--- c-library modules used ---------------------------------------------------
-#include <stdio.h>
-#include <ctype.h>
-#include <string.h>
-#include <strings.h>
 
-using namespace std;
+//---- OracleDAImpl ---------------------------------------------------------
+O8ConnectionManager OracleDAImpl::fgConnMgr;
 
-//---- Oracle8TRX ---------------------------------------------------------
-O8ConnectionManager Oracle8TRX::fgConnMgr;
+RegisterDataAccessImpl( OracleDAImpl);
 
-RegisterDataAccessImpl( Oracle8TRX);
-
-Oracle8TRX::Oracle8TRX(const char *name) :
+OracleDAImpl::OracleDAImpl(const char *name) :
 	DataAccessImpl(name)
 {
-	StartTrace(Oracle8TRX.Oracle8TRX);
+	StartTrace(OracleDAImpl.OracleDAImpl);
 }
 
-Oracle8TRX::~Oracle8TRX()
+OracleDAImpl::~OracleDAImpl()
 {
-	StartTrace(Oracle8TRX.~Oracle8TRX);
+	StartTrace(OracleDAImpl.~OracleDAImpl);
 }
 
-IFAObject *Oracle8TRX::Clone() const
+IFAObject *OracleDAImpl::Clone() const
 {
-	StartTrace(Oracle8TRX.Clone);
-	return new Oracle8TRX(fName);
+	StartTrace(OracleDAImpl.Clone);
+	return new OracleDAImpl(fName);
 }
 
-bool Oracle8TRX::Exec(Context &ctx, ParameterMapper *in, ResultMapper *out)
+bool OracleDAImpl::Exec(Context &ctx, ParameterMapper *in, ResultMapper *out)
 {
-	StartTrace(Oracle8TRX.Exec);
+	StartTrace(OracleDAImpl.Exec);
 	bool bRet = false;
-	DAAccessTimer(Oracle8TRX.Exec, fName, ctx);
+	DAAccessTimer(OracleDAImpl.Exec, fName, ctx);
 	// check if we are initialized
 	bool bInitialized = true;
 	if (bInitialized) {
@@ -130,6 +122,7 @@ bool Oracle8TRX::Exec(Context &ctx, ParameterMapper *in, ResultMapper *out)
 								// --- get data rows
 								FetchRowData(desc, in, out, pConnection, ctx);
 								bRet = true;
+								bDoRetry = false;
 //								FIXME: can we detect stored procedure return codes?
 //								out->Put("SP_Retcode", strRetcode, ctx);
 							}
@@ -157,14 +150,13 @@ bool Oracle8TRX::Exec(Context &ctx, ParameterMapper *in, ResultMapper *out)
 				// of all the dynamically allocated data only the define handles
 				// are not cleaned up automatically when destroying 'desc'
 
-				for (long i = 0; i < desc.GetSize(); ++i) {
-					// --- cleanup define handles
-					strErr = pConnection->checkerr(eh, OCIHandleFree((dvoid *) desc[i][eDefHandle].AsIFAObject(), (ub4) OCI_HTYPE_DEFINE), error);
-					if (error) {
-						Error(ctx, out, strErr);
-					}
-
-				}
+//				for (long i = 0; i < desc.GetSize(); ++i) {
+//					Trace("cleanup define handle for col " << i << " is: " << (long)(dvoid *) desc[i][eDefHandle].AsIFAObject());
+//					strErr = pConnection->checkerr(eh, OCIHandleFree((dvoid *) desc[i][eDefHandle].AsIFAObject(), (ub4) OCI_HTYPE_DEFINE), error);
+//					if (error)
+//						Error(ctx, out, strErr);
+//
+//				}
 				pConnection->StmtCleanup();
 			}
 			if (pConnection) {
@@ -178,10 +170,10 @@ bool Oracle8TRX::Exec(Context &ctx, ParameterMapper *in, ResultMapper *out)
 	return bRet;
 }
 
-bool Oracle8TRX::DoPrepareSQL(String &command, Context &ctx, ParameterMapper *in)
+bool OracleDAImpl::DoPrepareSQL(String &command, Context &ctx, ParameterMapper *in)
 {
-	StartTrace(Oracle8TRX.DoPrepareSQL);
-	DAAccessTimer(Oracle8TRX.DoPrepareSQL, fName, ctx);
+	StartTrace(OracleDAImpl.DoPrepareSQL);
+	DAAccessTimer(OracleDAImpl.DoPrepareSQL, fName, ctx);
 	OStringStream os(command);
 	in->Get("SQL", os, ctx);
 	os.flush();
@@ -189,10 +181,10 @@ bool Oracle8TRX::DoPrepareSQL(String &command, Context &ctx, ParameterMapper *in
 	return (command.Length() > 0L);
 }
 
-void Oracle8TRX::Warning(Context &ctx, ResultMapper *pResultMapper, String str)
+void OracleDAImpl::Warning(Context &ctx, ResultMapper *pResultMapper, String str)
 {
-	StartTrace(Oracle8TRX.Warning);
-	String strErr("Oracle8TRX::");
+	StartTrace(OracleDAImpl.Warning);
+	String strErr("OracleDAImpl::");
 	strErr.Append(str);
 	SysLog::Warning(TimeStamp::Now().AsStringWithZ().Append(' ').Append(strErr));
 	if (pResultMapper) {
@@ -200,10 +192,10 @@ void Oracle8TRX::Warning(Context &ctx, ResultMapper *pResultMapper, String str)
 	}
 }
 
-void Oracle8TRX::Error(Context &ctx, ResultMapper *pResultMapper, String str)
+void OracleDAImpl::Error(Context &ctx, ResultMapper *pResultMapper, String str)
 {
-	StartTrace(Oracle8TRX.Error);
-	String strErr("Oracle8TRX::");
+	StartTrace(OracleDAImpl.Error);
+	String strErr("OracleDAImpl::");
 	strErr.Append(str);
 	SysLog::Error(TimeStamp::Now().AsStringWithZ().Append(' ').Append(strErr));
 	if (pResultMapper) {
@@ -211,8 +203,9 @@ void Oracle8TRX::Error(Context &ctx, ResultMapper *pResultMapper, String str)
 	}
 }
 
-bool Oracle8TRX::GetOutputDescription(Anything &desc, ResultMapper *pmapOut, ub2 &fncode, O8Connection *pConnection, Context &ctx)
+bool OracleDAImpl::GetOutputDescription(Anything &desc, ResultMapper *pmapOut, ub2 &fncode, O8Connection *pConnection, Context &ctx)
 {
+	StartTrace(OracleDAImpl.GetOutputDescription);
 	// returns array of element descriptions: each description is
 	// an Anything array with 4 entries:
 	// name of the collumn, type of the data, length of the data in bytes, scale
@@ -224,7 +217,7 @@ bool Oracle8TRX::GetOutputDescription(Anything &desc, ResultMapper *pmapOut, ub2
 	text *col_name;
 	ub4 col_name_len;
 
-	bool error = FALSE;
+	bool error = false;
 	OCIError *eh = pConnection->ErrorHandle();
 
 	OCIStmt *pStmthp(pConnection->StmtHandle()); // OCI statement handle
@@ -294,17 +287,19 @@ bool Oracle8TRX::GetOutputDescription(Anything &desc, ResultMapper *pmapOut, ub2
 			parm_status = OCIParamGet(pStmthp, OCI_HTYPE_STMT, eh, (void **) &mypard, (ub4) counter);
 		}
 	}
+	TraceAny(desc, "descriptions");
 	return error;
 }
 
-bool Oracle8TRX::DefineOutputArea(Anything &desc, ResultMapper *pmapOut, O8Connection *pConnection, Context &ctx)
+bool OracleDAImpl::DefineOutputArea(Anything &desc, ResultMapper *pmapOut, O8Connection *pConnection, Context &ctx)
 {
+	StartTrace(OracleDAImpl.DefineOutputArea);
 	// use 'desc' to allocate output area used by oracle library
 	// to store fetched data (binary Anything buffers are allocated and
 	// stored within the 'desc' structure... for automatic storage
 	// management)
 
-	bool error = FALSE;
+	bool error = false;
 	OCIError *eh = pConnection->ErrorHandle();
 	OCIStmt *pStmthp(pConnection->StmtHandle()); // OCI statement handle
 	String strErr;
@@ -358,20 +353,25 @@ bool Oracle8TRX::DefineOutputArea(Anything &desc, ResultMapper *pmapOut, O8Conne
 		}
 		// CAUTION: unlike the other data the define handle is *NOT* automatically
 		//          garbage collected!
+		Trace("define handle for col " << (long)i << " is: " << (long)(defHandle));
 		col[eDefHandle] = Anything((IFAObject *) defHandle);
 	}
 	return error;
 }
 
-void Oracle8TRX::GetRecordData(Anything &descs, Anything &record, bool bTitlesOnce)
+void OracleDAImpl::GetRecordData(Anything &descs, Anything &record, bool bTitlesOnce)
 {
+	StartTrace(OracleDAImpl.GetRecordData);
 	// extract the values from a fetched row of data
 
 	for (sword col = 0; col < descs.GetSize(); col++) {
 		Anything &desc = descs[col], value;
-
+		SubTraceAny(TraceDesc, desc, "desc at col:" << (long)col);
+		SubTrace(TraceColType, "column type is: " << desc[eColumnType].AsLong() << " indicator: " << desc[eIndicator].AsLong());
+		SubTrace(TraceBuf, "buf ptr " << (long)(desc[eRawBuf].AsCharPtr()) << " length ptr " << (long)(desc[eEffectiveLength].AsCharPtr()));
 		switch (desc[eColumnType].AsLong()) {
 			case SQLT_INT:
+				Trace("SQLT_INT");
 				if (desc[eIndicator].AsLong() == OCI_IND_NULL) {
 					value = 0L;
 				} else {
@@ -379,6 +379,7 @@ void Oracle8TRX::GetRecordData(Anything &descs, Anything &record, bool bTitlesOn
 				}
 				break;
 			case SQLT_FLT:
+				Trace("SQLT_FLT");
 				if (desc[eIndicator].AsLong() == OCI_IND_NULL) {
 					value = 0.0f;
 				} else {
@@ -386,27 +387,33 @@ void Oracle8TRX::GetRecordData(Anything &descs, Anything &record, bool bTitlesOn
 				}
 				break;
 			default:
+				SubTraceBuf(TraceBuf, desc[eRawBuf].AsCharPtr(), *((ub2 *)desc[eEffectiveLength].AsCharPtr()));
 				if (desc[eIndicator].AsLong() == OCI_IND_NULL) {
 					value = "";
 				} else {
-					value = ((char *) desc[eRawBuf].AsCharPtr(), *((ub2 *) desc[eEffectiveLength].AsCharPtr()));
+					value = String( static_cast<void *>(const_cast<char *>(desc[eRawBuf].AsCharPtr())), (long) * (reinterpret_cast<ub2 *>(const_cast<char *>(desc[eEffectiveLength].AsCharPtr()))));
 				}
 				break;
 		}
 		if ( bTitlesOnce ) {
 			record.Append( value );
 		} else {
-			record[ desc[col][eColumnName].AsCharPtr() ] = value;
+			record[ desc[eColumnName].AsCharPtr() ] = value;
 		}
 	}
+	TraceAny(record, "row record");
 }
 
-void Oracle8TRX::FetchRowData(Anything &descs, ParameterMapper *pmapIn, ResultMapper *pmapOut, O8Connection *pConnection, Context &ctx)
+void OracleDAImpl::FetchRowData(Anything &descs, ParameterMapper *pmapIn, ResultMapper *pmapOut, O8Connection *pConnection, Context &ctx)
 {
+	StartTrace(OracleDAImpl.FetchRowData);
+
 	// return subset of the fetched data rows (if 'start' or 'count'
 	// is <0, then all the data rows are returned)
 
-	bool error = FALSE, bRet(true);
+	TraceAny(descs, "descriptions");
+
+	bool error = false, bRet(true);
 	OCIError *eh = pConnection->ErrorHandle();
 
 	// --- successful execute returns the 1st row
@@ -432,7 +439,7 @@ void Oracle8TRX::FetchRowData(Anything &descs, ParameterMapper *pmapIn, ResultMa
 		// --- return only selected rows (brute force implementation)
 		Anything record;
 		GetRecordData(descs, record, bTitlesOnce);
-		TraceAny(temp, "putting into QueryResult for row " << (long)(rowCount));
+		SubTraceAny(TraceRow, record, "putting into QueryResult for row " << (long)(rowCount));
 		bRet = pmapOut->Put("QueryResult", record, ctx);
 
 		rc = OCIStmtFetch(pStmthp, eh, (ub4) 1, (ub4) OCI_FETCH_NEXT, (ub4) OCI_DEFAULT);

@@ -1,39 +1,29 @@
-/*
- * O8Connection.cpp
- *
- *  Created on: Jun 15, 2009
- *      Author: m1huber
- */
-
 #include "O8Connection.h"
 
 #include "SysLog.h"
 #include "Dbg.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-//#include <ctype.h>
+#include <string.h>		// for strlen
 
 //----- O8Connection -----------------------------------------------------------------
 O8Connection::O8Connection(text *username, text *password) :
-	fEnvhp(0), fSrvhp(0), fErrhp(0), fSvchp(0), fUsrhp(0)
+	fEnvhp(0), fSrvhp(0), fErrhp(0), fSvchp(0), fUsrhp(0), fStmthp(0)
 {
+	StartTrace(O8Connection.O8Connection);
 	fUser = String((char *) username);
 	fConnected = ConnectOracleUser(username, password);
 }
 
 O8Connection::~O8Connection()
 {
+	StartTrace(O8Connection.~O8Connection);
 	// disconnect if O8Connection exists
-	using namespace std;
 	if (fConnected) {
 		if (OCISessionEnd(fSvchp, fErrhp, fUsrhp, (ub4) 0)) {
-			cerr << "FAILED: OCISessionEnd()" << endl;
+			SysLog::Error("FAILED: OCISessionEnd()");
 		}
 		if (OCIServerDetach(fSrvhp, fErrhp, (ub4) OCI_DEFAULT)) {
-			cerr << "FAILED: OCISessionEnd()" << endl;
+			SysLog::Error("FAILED: OCISessionEnd()");
 		}
 	}
 	if (fSrvhp) {
@@ -55,12 +45,14 @@ O8Connection::~O8Connection()
 
 sword O8Connection::AllocStmtHandle()
 {
+	StartTrace(O8Connection.AllocStmtHandle);
 	// allocates and returns new statement handle
-	return OCIHandleAlloc((dvoid *) fEnvhp, (dvoid **) fStmthp, (ub4) OCI_HTYPE_STMT, (size_t) 0, (dvoid **) 0);
+	return OCIHandleAlloc((dvoid *) fEnvhp, (dvoid **) &fStmthp, (ub4) OCI_HTYPE_STMT, (size_t) 0, (dvoid **) 0);
 }
 
 void O8Connection::StmtCleanup()
 {
+	StartTrace(O8Connection.StmtCleanup);
 	if (fStmthp) {
 		(void) OCIHandleFree((dvoid *) fStmthp, (ub4) OCI_HTYPE_STMT);
 		fStmthp = 0;
@@ -69,6 +61,7 @@ void O8Connection::StmtCleanup()
 
 sword O8Connection::GetReplyDescription()
 {
+	StartTrace(O8Connection.GetReplyDescription);
 	// retrieves descriptions of return values for a
 	// given SQL statement
 
@@ -77,6 +70,7 @@ sword O8Connection::GetReplyDescription()
 
 sword O8Connection::ExecuteStmt()
 {
+	StartTrace(O8Connection.ExecuteStmt);
 	// executes a SQL statement (first row is also fetched)
 
 	return OCIStmtExecute(fSvchp, fStmthp, fErrhp, (ub4) 1, (ub4) 0, (CONST OCISnapshot *) NULL, (OCISnapshot *) NULL, OCI_COMMIT_ON_SUCCESS);
@@ -84,6 +78,7 @@ sword O8Connection::ExecuteStmt()
 
 sword O8Connection::StmtPrepare(text *stmt)
 {
+	StartTrace(O8Connection.StmtPrepare);
 	// prepare SQL statement for execution (not much to do in
 	// our environment, since the complete statement is already
 	// constructed and binds of input variables are not necessary)
@@ -100,85 +95,86 @@ sword O8Connection::StmtPrepare(text *stmt)
 
 bool O8Connection::ConnectOracleUser(text *username, text *password)
 {
-	using namespace std;
+	StartTrace(O8Connection.ConnectOracleUser);
+
 	if (OCIInitialize((ub4) OCI_THREADED, (dvoid *) 0, (dvoid * ( *)(dvoid *, size_t)) 0, (dvoid * ( *)(dvoid *, dvoid *, size_t)) 0,
 					  (void( *)(dvoid *, dvoid *)) 0)) {
-		cerr << "FAILED: OCIInitialize()" << endl;
-		return FALSE;
+		SysLog::Error("FAILED: OCIInitialize()");
+		return false;
 	}
 
 	//	if (OCIHandleAlloc((dvoid *) NULL, (dvoid **) &fEnvhp, (ub4) OCI_HTYPE_ENV,
 	//			(size_t) 0, (dvoid **) 0)) {	// unnecessary
-	//		cerr << "FAILED: OCIHandleAlloc() on envhp" << endl;
-	//		return FALSE;
+	//		SysLog::Error("FAILED: OCIHandleAlloc() on envhp");
+	//		return false;
 	//	}
 	if (OCIEnvInit(&fEnvhp, (ub4) OCI_ENV_NO_MUTEX, (size_t) 0, (dvoid **) 0)) {
-		cerr << "FAILED: OCIEnvInit()" << endl;
-		return FALSE;
+		SysLog::Error("FAILED: OCIEnvInit()");
+		return false;
 	}
 	// --- alloc error handle
 	if (OCIHandleAlloc((dvoid *) fEnvhp, (dvoid **) &fErrhp, (ub4) OCI_HTYPE_ERROR, (size_t) 0, (dvoid **) 0)) {
-		cerr << "FAILED: OCIHandleAlloc() on errhp" << endl;
-		return FALSE;
+		SysLog::Error("FAILED: OCIHandleAlloc() on errhp");
+		return false;
 	}
 	// --- alloc service context handle
 	if (OCIHandleAlloc((dvoid *) fEnvhp, (dvoid **) &fSvchp, (ub4) OCI_HTYPE_SVCCTX, (size_t) 0, (dvoid **) 0)) {
-		cerr << "FAILED: OCIHandleAlloc() on svchp" << endl;
-		return FALSE;
+		SysLog::Error("FAILED: OCIHandleAlloc() on svchp");
+		return false;
 	}
 	// --- alloc server connection handle
 	if (OCIHandleAlloc((dvoid *) fEnvhp, (dvoid **) &fSrvhp, (ub4) OCI_HTYPE_SERVER, (size_t) 0, (dvoid **) 0)) {
-		cerr << "FAILED: OCIHandleAlloc() on srvhp" << endl;
-		return FALSE;
+		SysLog::Error("FAILED: OCIHandleAlloc() on srvhp");
+		return false;
 	}
 	// --- alloc user session handle
 	if (OCIHandleAlloc((dvoid *) fEnvhp, (dvoid **) &fUsrhp, (ub4) OCI_HTYPE_SESSION, (size_t) 0, (dvoid **) 0)) {
-		cerr << "FAILED: OCIHandleAlloc() on svchp" << endl;
-		return FALSE;
+		SysLog::Error("FAILED: OCIHandleAlloc() on svchp");
+		return false;
 	}
 	// --- attach server
 	static text *srvName = (text *) "//sifs-coast1.hsr.ch:1521/orcl";
 	if (OCIServerAttach(fSrvhp, fErrhp, srvName, strlen((const char *) srvName), (ub4) OCI_DEFAULT)) {
-		cerr << "FAILED: OCIHandleAlloc() on svchp" << endl;
-		return FALSE;
+		SysLog::Error("FAILED: OCIHandleAlloc() on svchp");
+		return false;
 	}
 	// --- set attribute server context in the service context
 	if (OCIAttrSet((dvoid *) fSvchp, (ub4) OCI_HTYPE_SVCCTX, (dvoid *) fSrvhp, (ub4) 0, (ub4) OCI_ATTR_SERVER, (OCIError *) fErrhp)) {
-		cerr << "FAILED: OCIAttrSet() server attribute" << endl;
-		return FALSE;
+		SysLog::Error("FAILED: OCIAttrSet() server attribute");
+		return false;
 	}
 	// --- logon
 
 	// --- set attributes in the authentication handle
 	if (OCIAttrSet((dvoid *) fUsrhp, (ub4) OCI_HTYPE_SESSION, (dvoid *) username, (ub4) strlen((const char *) username), (ub4) OCI_ATTR_USERNAME, fErrhp)) {
-		cerr << "FAILED: OCIAttrSet() userid" << endl; // --- user name
-		return FALSE;
+		SysLog::Error("FAILED: OCIAttrSet() userid"); // --- user name
+		return false;
 	}
 
 	if (OCIAttrSet((dvoid *) fUsrhp, (ub4) OCI_HTYPE_SESSION, (dvoid *) password, (ub4) strlen((const char *) password), (ub4) OCI_ATTR_PASSWORD, fErrhp)) {
-		cerr << "FAILED: OCIAttrSet() passwd" << endl; // --- user password
-		return FALSE;
+		SysLog::Error("FAILED: OCIAttrSet() passwd"); // --- user password
+		return false;
 	}
 
-	cerr << "connected to oracle as " << (const char *) username << endl;
+	Trace("connected to oracle as " << (const char *)username);
 
 	if (OCISessionBegin(fSvchp, fErrhp, fUsrhp, OCI_CRED_RDBMS, (ub4) OCI_DEFAULT)) {
-		cerr << "FAILED: OCIAttrSet() passwd" << endl;
-		return FALSE;
+		SysLog::Error("FAILED: OCIAttrSet() passwd");
+		return false;
 	}
 
 	// --- Set the authentication handle in the Service handle
 	if (OCIAttrSet((dvoid *) fSvchp, (ub4) OCI_HTYPE_SVCCTX, (dvoid *) fUsrhp, (ub4) 0, OCI_ATTR_SESSION, fErrhp)) {
-		cerr << "FAILED: OCIAttrSet() session" << endl;
-		return FALSE;
+		SysLog::Error("FAILED: OCIAttrSet() session");
+		return false;
 	}
 
-	return TRUE;
+	return true;
 }
 
 String O8Connection::checkerr(OCIError *errhp, sword status, bool &estatus)
 {
-	StartTrace(O8Connection.checkerr);
+	StartTrace1(O8Connection.checkerr, "status: " << (long)status);
 	// error handling: checks 'status' for errors
 	// in case of an error an error message is generated,
 	// written to 'cerr' and also to the output ResultMapper
@@ -220,7 +216,7 @@ String O8Connection::checkerr(OCIError *errhp, sword status, bool &estatus)
 			break;
 	}
 
-	estatus = TRUE;
+	estatus = true;
 	SysLog::Error(error);
 	return error;
 }
