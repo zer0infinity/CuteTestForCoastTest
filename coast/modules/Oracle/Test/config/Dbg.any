@@ -7,7 +7,7 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-	/LowerBound		1		# debugging on or off
+	/LowerBound		0		# debugging on or off
 	/UpperBound		11		# override switch: turns everything on
 	/DumpAnythings  1		# print full Anythings
 
@@ -17,7 +17,7 @@
 	}
 ### common Sybase section
 	/OracleModule {
-		/MainSwitch						0
+		/MainSwitch						1
 		/EnableAll						10
 	}
 	/OracleDAImpl {
@@ -37,6 +37,15 @@
 			/TraceRow					-10
 		}
 	}
+	/OracleConnection {
+		/MainSwitch						1
+		/EnableAll						10
+		/checkerr						10
+	}
+	/ConnectionPool {
+		/MainSwitch						1
+		/EnableAll						10
+	}
 	/O8Connection {
 		/MainSwitch						1
 		/EnableAll						10
@@ -48,6 +57,10 @@
 	}
 	/OracleDAImplTest {
 		/MainSwitch						0
+		/EnableAll						10
+	}
+	/OracleCheckCloseOpenedConnectionsAction {
+		/MainSwitch						1
 		/EnableAll						10
 	}
 ###

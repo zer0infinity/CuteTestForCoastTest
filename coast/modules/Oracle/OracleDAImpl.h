@@ -11,8 +11,7 @@
 
 #include "oci.h"
 
-class O8Connection;
-class O8ConnectionManager;
+class OracleConnection;
 
 //---- OracleDAImpl -----------------------------------------------------------
 // arbitrary input fields may be used to dynamically generate an SQL statment
@@ -37,16 +36,14 @@ public:
 protected:
 
 	bool ConnectOracleUser(const char *name, const char *pw);
-	void FetchRowData(Anything &descs, ParameterMapper *pmapIn, ResultMapper *pmapOut, O8Connection *pConnection, Context &ctx);
+	void FetchRowData(Anything &descs, ParameterMapper *pmapIn, ResultMapper *pmapOut, OracleConnection *pConnection, Context &ctx);
 	void GetRecordData(Anything &descs, Anything &record, bool bTitlesOnce);
 
 	// original sample methods
-	bool GetOutputDescription(Anything &desc, ResultMapper *pmapOut, ub2 &fncode, O8Connection *pConnection, Context &ctx);
-	bool DefineOutputArea(Anything &desc, ResultMapper *pmapOut, O8Connection *pConnection, Context &ctx);
+	bool GetOutputDescription(Anything &desc, ResultMapper *pmapOut, ub2 &fncode, OracleConnection *pConnection, Context &ctx);
+	bool DefineOutputArea(Anything &desc, ResultMapper *pmapOut, OracleConnection *pConnection, Context &ctx);
 
 private:
-	static O8ConnectionManager fgConnMgr;
-
 	enum EColumnDesc {
 		// dont use 0 since it may be considered to be a char*
 		eColumnName = 1,

@@ -8,20 +8,20 @@
 
 #include "oci.h"
 
-//---- O8Connection -----------------------------------------------------------
+//---- OracleConnection -----------------------------------------------------------
 // connection to oracle db ... not thread safe... may not be used concurrently
 
-class EXPORTDECL_COASTORACLE O8Connection: public IFAObject
+class EXPORTDECL_COASTORACLE OracleConnection: public IFAObject
 {
 public:
-	O8Connection(text *username, text *password);
-	~O8Connection();
+	OracleConnection();
+	~OracleConnection();
+
+	bool Open(String const &strServer, String const &strUsername, String const &strPassword);
+	bool Close(bool bForce = false);
 
 	bool SuccessfullyConnected() {
 		return fConnected;
-	}
-	String &GetUserName() {
-		return fUser;
 	}
 
 	// request execution
@@ -42,15 +42,11 @@ public:
 protected:
 	sword AllocStmtHandle();
 
-	bool ConnectOracleUser(text *username, text *password);
-	bool Disconnect();
-
 	// returns nothing, object not cloneable
 	IFAObject *Clone() const {
 		return NULL;
 	};
 
-	String fUser;
 	bool fConnected;
 
 	// --- oracle API

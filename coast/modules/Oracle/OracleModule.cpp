@@ -3,7 +3,6 @@
 #include "OracleModule.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "O8ConnectionManager.h"
 #include "SysLog.h"
 #include "Dbg.h"
 
@@ -28,15 +27,30 @@ bool OracleModule::Init(const ROAnything config)
 	ROAnything myCfg;
 	if (config.LookupPath(myCfg, "OracleModule")) {
 		TraceAny(myCfg, "OracleModuleConfig");
-		// initialize WorkerPools for the listed servers
-		Trace("initializing O8ConnectionManager");
+		// initialize ConnectionPool
+		if ( !fpConnectionPool.get() ) {
+			fpConnectionPool = ConnectionPoolPtr(new ConnectionPool("OracleConnectionPool"));
+		}
+		ROAnything roaPoolConfig( myCfg["ConnectionPool"] );
+		TraceAny(roaPoolConfig, "initializing ConnectionPool with config");
+		fpConnectionPool->Init(roaPoolConfig);
 	}
 	return true;
+}
+
+ConnectionPool *OracleModule::GetConnectionPool()
+{
+	StatTrace(OracleModule.GetConnectionPool, "poolptr: &" << (long)fpConnectionPool.get(), Storage::Current());
+	return fpConnectionPool.get();
 }
 
 bool OracleModule::Finis()
 {
 	StartTrace(OracleModule.Finis);
-	Trace("de-initialize O8ConnectionManager");
+	if ( fpConnectionPool.get() ) {
+		Trace("de-initialize ConnectionPool");
+		fpConnectionPool->Finis();
+		fpConnectionPool.reset();
+	}
 	return true;
 }

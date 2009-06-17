@@ -6,8 +6,9 @@
 #include "OracleDAImpl.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "O8ConnectionManager.h"
-#include "O8Connection.h"
+//#include "OracleConnectionManager.h"
+#include "OracleConnection.h"
+#include "OracleModule.h"
 #include "SysLog.h"
 #include "Timers.h"
 #include "StringStream.h"
@@ -19,8 +20,6 @@
 //--- c-library modules used ---------------------------------------------------
 
 //---- OracleDAImpl ---------------------------------------------------------
-O8ConnectionManager OracleDAImpl::fgConnMgr;
-
 RegisterDataAccessImpl( OracleDAImpl);
 
 OracleDAImpl::OracleDAImpl(const char *name) :
@@ -43,12 +42,12 @@ IFAObject *OracleDAImpl::Clone() const
 bool OracleDAImpl::Exec(Context &ctx, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(OracleDAImpl.Exec);
-	bool bRet = false;
+	bool bRet( false );
 	DAAccessTimer(OracleDAImpl.Exec, fName, ctx);
-	// check if we are initialized
-	bool bInitialized = true;
-	if (bInitialized) {
-		// we need the server and user to see if there is an existing and Open O8Connection
+	OracleModule *pModule = SafeCast(WDModule::FindWDModule("OracleModule"), OracleModule);
+	ConnectionPool *pConnectionPool(0);
+	if ( pModule && ( pConnectionPool = pModule->GetConnectionPool()) ) {
+		// we need the server and user to see if there is an existing and Open OracleConnection
 		String user, server, passwd;
 		in->Get("DBUser", user, ctx);
 		in->Get("DBPW", passwd, ctx);
@@ -64,36 +63,33 @@ bool OracleDAImpl::Exec(Context &ctx, ParameterMapper *in, ResultMapper *out)
 			lTryCount = 1L;
 		}
 		// we slipped through and are ready to get a connection and execute a query
-		// find a free O8Connection, we should always get a valid O8Connection here!
+		// find a free OracleConnection, we should always get a valid OracleConnection here!
 		while (bDoRetry && --lTryCount >= 0) {
-			O8Connection *pConnection = NULL;
+			OracleConnection *pConnection = NULL;
 			String command;
 
 			// --- establish db connection
 			//FIXME: add server to get connection
-			if (!(pConnection = fgConnMgr.BorrowConnection((text *) (const char *) user, (text *) (const char *) passwd))) {
-				Error(ctx, out, "unable to get O8Connection");
+			if ( !pConnectionPool->BorrowConnection(pConnection, bIsOpen, server, user) ) {
+				Error(ctx, out, "unable to get OracleConnection");
 				bDoRetry = false;
 			} else {
-				bool error(false);
-
-				// --- determine format of retrieved data
-				MetaThing desc;
-				String strErr;
-				OCIError *eh = pConnection->ErrorHandle();
-
-				if (!error) {
+				if ( bIsOpen || pConnection->Open(server, user, passwd) ) {
+					bIsOpen = true;
+					OCIError *eh = pConnection->ErrorHandle();
 					if (DoPrepareSQL(command, ctx, in)) {
-						strErr = pConnection->checkerr(eh, pConnection->StmtPrepare((text *) (const char *) command), error);
+						bool error(false);
+						String strErr( pConnection->checkerr(eh, pConnection->StmtPrepare((text *) (const char *) command), error) );
 						if (error) {
 							Error(ctx, out, strErr);
 						}
 						out->Put("Query", command, ctx);
 						ub2 fncode = 0;
+						MetaThing desc;
 						if (!error) {
-							error = GetOutputDescription(desc, out, fncode, pConnection, ctx);    // determine format of output
+							// --- determine format of retrieved data
+							error = GetOutputDescription(desc, out, fncode, pConnection, ctx); // determine format of output
 						}
-
 						if (fncode == OCI_STMT_SELECT) {
 							if (!error) {
 								error = DefineOutputArea(desc, out, pConnection, ctx);
@@ -123,8 +119,8 @@ bool OracleDAImpl::Exec(Context &ctx, ParameterMapper *in, ResultMapper *out)
 								FetchRowData(desc, in, out, pConnection, ctx);
 								bRet = true;
 								bDoRetry = false;
-//								FIXME: can we detect stored procedure return codes?
-//								out->Put("SP_Retcode", strRetcode, ctx);
+								// FIXME: can we detect stored procedure return codes?
+								// out->Put("SP_Retcode", strRetcode, ctx);
 							}
 						} else {
 							strErr = pConnection->checkerr(eh, pConnection->ExecuteStmt(), error);
@@ -141,21 +137,26 @@ bool OracleDAImpl::Exec(Context &ctx, ParameterMapper *in, ResultMapper *out)
 								}
 							}
 						}
-
+						// according to documentation, def handles will get cleaned too
+						pConnection->StmtCleanup();
 					} else {
 						out->Put("Messages", "Rendered slot SQL resulted in an empty string", ctx);
 						bDoRetry = false;
 					}
 				}
-				// according to documentation, def handles will get cleaned too
-				pConnection->StmtCleanup();
 			}
 			if (pConnection) {
-				fgConnMgr.ReleaseConnection(pConnection);
+				pConnectionPool->ReleaseConnection(pConnection, bIsOpen, server, user);
 			}
 			if (bDoRetry && lTryCount > 0) {
 				SYSWARNING("Internally retrying to execute command [" << command << "]");
 			}
+		}
+	} else {
+		if ( !pModule ) {
+			SYSERROR("unable to get OracleModule, aborting!");
+		} else {
+			SYSERROR("unable to get ConnectionPool, aborting!");
 		}
 	}
 	return bRet;
@@ -194,7 +195,7 @@ void OracleDAImpl::Error(Context &ctx, ResultMapper *pResultMapper, String str)
 	}
 }
 
-bool OracleDAImpl::GetOutputDescription(Anything &desc, ResultMapper *pmapOut, ub2 &fncode, O8Connection *pConnection, Context &ctx)
+bool OracleDAImpl::GetOutputDescription(Anything &desc, ResultMapper *pmapOut, ub2 &fncode, OracleConnection *pConnection, Context &ctx)
 {
 	StartTrace(OracleDAImpl.GetOutputDescription);
 	// returns array of element descriptions: each description is
@@ -282,7 +283,7 @@ bool OracleDAImpl::GetOutputDescription(Anything &desc, ResultMapper *pmapOut, u
 	return error;
 }
 
-bool OracleDAImpl::DefineOutputArea(Anything &desc, ResultMapper *pmapOut, O8Connection *pConnection, Context &ctx)
+bool OracleDAImpl::DefineOutputArea(Anything &desc, ResultMapper *pmapOut, OracleConnection *pConnection, Context &ctx)
 {
 	StartTrace(OracleDAImpl.DefineOutputArea);
 	// use 'desc' to allocate output area used by oracle library
@@ -296,7 +297,7 @@ bool OracleDAImpl::DefineOutputArea(Anything &desc, ResultMapper *pmapOut, O8Con
 	String strErr;
 
 	for (ub4 i = 0; i < desc.GetSize(); i++) {
-		Anything &col = desc[ static_cast<long>(i)];
+		Anything &col = desc[static_cast<long> (i)];
 
 		sb4 dummy;
 		OCIDefine *defHandle = 0;
@@ -353,9 +354,9 @@ void OracleDAImpl::GetRecordData(Anything &descs, Anything &record, bool bTitles
 
 	for (sword col = 0; col < descs.GetSize(); col++) {
 		Anything &desc = descs[col], value;
-		SubTraceAny(TraceDesc, desc, "desc at col:" << (long)col);
+		SubTraceAny(TraceDesc, desc, "desc at col:" << (long) col);
 		SubTrace(TraceColType, "column type is: " << desc[eColumnType].AsLong() << " indicator: " << desc[eIndicator].AsLong());
-		SubTrace(TraceBuf, "buf ptr " << (long)(desc[eRawBuf].AsCharPtr()) << " length ptr " << (long)(desc[eEffectiveLength].AsCharPtr()));
+		SubTrace(TraceBuf, "buf ptr " << (long) (desc[eRawBuf].AsCharPtr()) << " length ptr " << (long) (desc[eEffectiveLength].AsCharPtr()));
 		switch (desc[eColumnType].AsLong()) {
 			case SQLT_INT:
 				Trace("SQLT_INT");
@@ -374,24 +375,25 @@ void OracleDAImpl::GetRecordData(Anything &descs, Anything &record, bool bTitles
 				}
 				break;
 			default:
-				SubTraceBuf(TraceBuf, desc[eRawBuf].AsCharPtr(), *((ub2 *)desc[eEffectiveLength].AsCharPtr()));
+				SubTraceBuf(TraceBuf, desc[eRawBuf].AsCharPtr(), *((ub2 *) desc[eEffectiveLength].AsCharPtr()));
 				if (desc[eIndicator].AsLong() == OCI_IND_NULL) {
 					value = "";
 				} else {
-					value = String( static_cast<void *>(const_cast<char *>(desc[eRawBuf].AsCharPtr())), (long) * (reinterpret_cast<ub2 *>(const_cast<char *>(desc[eEffectiveLength].AsCharPtr()))));
+					value = String(static_cast<void *> (const_cast<char *> (desc[eRawBuf].AsCharPtr())),
+								   (long) * (reinterpret_cast<ub2 *> (const_cast<char *> (desc[eEffectiveLength].AsCharPtr()))));
 				}
 				break;
 		}
-		if ( bTitlesOnce ) {
-			record.Append( value );
+		if (bTitlesOnce) {
+			record.Append(value);
 		} else {
-			record[ desc[eColumnName].AsCharPtr() ] = value;
+			record[desc[eColumnName].AsCharPtr()] = value;
 		}
 	}
 	TraceAny(record, "row record");
 }
 
-void OracleDAImpl::FetchRowData(Anything &descs, ParameterMapper *pmapIn, ResultMapper *pmapOut, O8Connection *pConnection, Context &ctx)
+void OracleDAImpl::FetchRowData(Anything &descs, ParameterMapper *pmapIn, ResultMapper *pmapOut, OracleConnection *pConnection, Context &ctx)
 {
 	StartTrace(OracleDAImpl.FetchRowData);
 
@@ -414,11 +416,11 @@ void OracleDAImpl::FetchRowData(Anything &descs, ParameterMapper *pmapIn, Result
 	String resultformat;
 	pmapIn->Get("DBResultFormat", resultformat, ctx);
 
-	bool bTitlesOnce( resultformat.IsEqual("TitlesOnce") );
+	bool bTitlesOnce(resultformat.IsEqual("TitlesOnce"));
 
-	long rowCount(0L), lMaxRows( strMaxRows.AsLong(std::numeric_limits<long>::max()) );
+	long rowCount(0L), lMaxRows(strMaxRows.AsLong(std::numeric_limits<long>::max()));
 
-	while ( bRet && ( rc == OCI_SUCCESS || rc == OCI_SUCCESS_WITH_INFO ) && rowCount < lMaxRows ) {
+	while (bRet && (rc == OCI_SUCCESS || rc == OCI_SUCCESS_WITH_INFO) && rowCount < lMaxRows) {
 		// fetch data into preallocated areas within 'descs'
 		// (all the data is fetched - and possibly discarded - to
 		// determine the total number auf results)
@@ -426,21 +428,21 @@ void OracleDAImpl::FetchRowData(Anything &descs, ParameterMapper *pmapIn, Result
 		// --- return only selected rows (brute force implementation)
 		Anything record;
 		GetRecordData(descs, record, bTitlesOnce);
-		SubTraceAny(TraceRow, record, "putting into QueryResult for row " << (long)(rowCount));
+		SubTraceAny(TraceRow, record, "putting into QueryResult for row " << (long) (rowCount));
 		bRet = pmapOut->Put("QueryResult", record, ctx);
 
 		rc = OCIStmtFetch(pStmthp, eh, (ub4) 1, (ub4) OCI_FETCH_NEXT, (ub4) OCI_DEFAULT);
 		++rowCount;
 	};
 
-	String strErr( pConnection->checkerr(eh, rc, error) );
-	if ( error ) {
+	String strErr(pConnection->checkerr(eh, rc, error));
+	if (error) {
 		Error(ctx, pmapOut, strErr);
 	}
 
-	bool bShowRowCount( true );
+	bool bShowRowCount(true);
 	pmapIn->Get("ShowQueryCount", bShowRowCount, ctx);
-	if ( bShowRowCount ) {
+	if (bShowRowCount) {
 		// append summary if extract of available data is returned
 		pmapOut->Put("QueryCount", rowCount, ctx);
 	}

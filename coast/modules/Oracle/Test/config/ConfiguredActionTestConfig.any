@@ -34,8 +34,9 @@
 		/ContextLookupRenderer 	{ Lookup }
 	}
 	/OracleModule {
-		/OracleDAImpl {
-			/ParallelQueries		1
+		/ConnectionPool {
+			/ParallelQueries		4
+			/CloseConnectionTimeout	20
 		}
 	}
 

@@ -1,84 +1,59 @@
-#include "O8Connection.h"
+#include "OracleConnection.h"
 
 #include "SysLog.h"
 #include "Dbg.h"
 
 #include <string.h>		// for strlen
-
-//----- O8Connection -----------------------------------------------------------------
-O8Connection::O8Connection(text *username, text *password) :
-	fEnvhp(0), fSrvhp(0), fErrhp(0), fSvchp(0), fUsrhp(0), fStmthp(0)
+//----- OracleConnection -----------------------------------------------------------------
+OracleConnection::OracleConnection() :
+	fConnected(false), fEnvhp(0), fSrvhp(0), fErrhp(0), fSvchp(0), fUsrhp(0), fStmthp(0)
 {
-	StartTrace(O8Connection.O8Connection);
-	fUser = String((char *) username);
-	fConnected = ConnectOracleUser(username, password);
+	StartTrace(OracleConnection.OracleConnection);
 }
 
-O8Connection::~O8Connection()
+OracleConnection::~OracleConnection()
 {
-	StartTrace(O8Connection.~O8Connection);
-	// disconnect if O8Connection exists
-	if (fConnected) {
-		if (OCISessionEnd(fSvchp, fErrhp, fUsrhp, (ub4) 0)) {
-			SysLog::Error("FAILED: OCISessionEnd()");
-		}
-		if (OCIServerDetach(fSrvhp, fErrhp, (ub4) OCI_DEFAULT)) {
-			SysLog::Error("FAILED: OCISessionEnd()");
-		}
-	}
-	if (fSrvhp) {
-		(void) OCIHandleFree((dvoid *) fSrvhp, (ub4) OCI_HTYPE_SERVER);
-	}
-	if (fSvchp) {
-		(void) OCIHandleFree((dvoid *) fSvchp, (ub4) OCI_HTYPE_SVCCTX);
-	}
-	if (fErrhp) {
-		(void) OCIHandleFree((dvoid *) fErrhp, (ub4) OCI_HTYPE_ERROR);
-	}
-	if (fUsrhp) {
-		(void) OCIHandleFree((dvoid *) fUsrhp, (ub4) OCI_HTYPE_SESSION);
-	}
-	if (fEnvhp) {
-		(void) OCIHandleFree((dvoid *) fEnvhp, (ub4) OCI_HTYPE_ENV);
-	}
+	StartTrace(OracleConnection.~OracleConnection);
+	// disconnect if OracleConnection exists
+	Close();
 }
 
-sword O8Connection::AllocStmtHandle()
+sword OracleConnection::AllocStmtHandle()
 {
-	StartTrace(O8Connection.AllocStmtHandle);
+	StartTrace(OracleConnection.AllocStmtHandle);
 	// allocates and returns new statement handle
 	return OCIHandleAlloc((dvoid *) fEnvhp, (dvoid **) &fStmthp, (ub4) OCI_HTYPE_STMT, (size_t) 0, (dvoid **) 0);
 }
 
-void O8Connection::StmtCleanup()
+void OracleConnection::StmtCleanup()
 {
-	StartTrace(O8Connection.StmtCleanup);
+	StartTrace(OracleConnection.StmtCleanup);
 	if (fStmthp) {
 		(void) OCIHandleFree((dvoid *) fStmthp, (ub4) OCI_HTYPE_STMT);
 		fStmthp = 0;
 	}
 }
 
-sword O8Connection::GetReplyDescription()
+sword OracleConnection::GetReplyDescription()
 {
-	StartTrace(O8Connection.GetReplyDescription);
+	StartTrace(OracleConnection.GetReplyDescription);
 	// retrieves descriptions of return values for a
 	// given SQL statement
 
 	return OCIStmtExecute(fSvchp, fStmthp, fErrhp, (ub4) 1, (ub4) 0, (CONST OCISnapshot *) NULL, (OCISnapshot *) NULL, OCI_DESCRIBE_ONLY);
 }
 
-sword O8Connection::ExecuteStmt()
+sword OracleConnection::ExecuteStmt()
 {
-	StartTrace(O8Connection.ExecuteStmt);
+	StartTrace(OracleConnection.ExecuteStmt);
 	// executes a SQL statement (first row is also fetched)
 
 	return OCIStmtExecute(fSvchp, fStmthp, fErrhp, (ub4) 1, (ub4) 0, (CONST OCISnapshot *) NULL, (OCISnapshot *) NULL, OCI_COMMIT_ON_SUCCESS);
 }
 
-sword O8Connection::StmtPrepare(text *stmt)
+sword OracleConnection::StmtPrepare(text *stmt)
 {
-	StartTrace(O8Connection.StmtPrepare);
+	StartTrace(OracleConnection.StmtPrepare);
 	// prepare SQL statement for execution (not much to do in
 	// our environment, since the complete statement is already
 	// constructed and binds of input variables are not necessary)
@@ -93,9 +68,18 @@ sword O8Connection::StmtPrepare(text *stmt)
 	return OCIStmtPrepare(fStmthp, fErrhp, stmt, (ub4) strlen((const char *) stmt), (ub4) OCI_NTV_SYNTAX, (ub4) OCI_DEFAULT);
 }
 
-bool O8Connection::ConnectOracleUser(text *username, text *password)
+bool OracleConnection::Open(String const &strServer, String const &strUsername, String const &strPassword)
 {
-	StartTrace(O8Connection.ConnectOracleUser);
+	StartTrace(OracleConnection.Open);
+
+	text const *server(reinterpret_cast<const text *> ((const char *) strServer));
+	text const *username(reinterpret_cast<const text *> ((const char *) strUsername));
+	text const *password(reinterpret_cast<const text *> ((const char *) strPassword));
+
+	if (fConnected) {
+		SYSERROR("tried to open already opened connection to server [" << strServer << "] and user [" << strUsername << "]!");
+		return false;
+	}
 
 	if (OCIInitialize((ub4) OCI_THREADED, (dvoid *) 0, (dvoid * ( *)(dvoid *, size_t)) 0, (dvoid * ( *)(dvoid *, dvoid *, size_t)) 0,
 					  (void( *)(dvoid *, dvoid *)) 0)) {
@@ -103,11 +87,6 @@ bool O8Connection::ConnectOracleUser(text *username, text *password)
 		return false;
 	}
 
-	//	if (OCIHandleAlloc((dvoid *) NULL, (dvoid **) &fEnvhp, (ub4) OCI_HTYPE_ENV,
-	//			(size_t) 0, (dvoid **) 0)) {	// unnecessary
-	//		SysLog::Error("FAILED: OCIHandleAlloc() on envhp");
-	//		return false;
-	//	}
 	if (OCIEnvInit(&fEnvhp, (ub4) OCI_ENV_NO_MUTEX, (size_t) 0, (dvoid **) 0)) {
 		SysLog::Error("FAILED: OCIEnvInit()");
 		return false;
@@ -133,8 +112,7 @@ bool O8Connection::ConnectOracleUser(text *username, text *password)
 		return false;
 	}
 	// --- attach server
-	static text *srvName = (text *) "//sifs-coast1.hsr.ch:1521/orcl";
-	if (OCIServerAttach(fSrvhp, fErrhp, srvName, strlen((const char *) srvName), (ub4) OCI_DEFAULT)) {
+	if (OCIServerAttach(fSrvhp, fErrhp, server, strlen((const char *) server), (ub4) OCI_DEFAULT)) {
 		SysLog::Error("FAILED: OCIHandleAlloc() on svchp");
 		return false;
 	}
@@ -156,7 +134,7 @@ bool O8Connection::ConnectOracleUser(text *username, text *password)
 		return false;
 	}
 
-	Trace("connected to oracle as " << (const char *)username);
+	Trace("connected to oracle as " << (const char *) username);
 
 	if (OCISessionBegin(fSvchp, fErrhp, fUsrhp, OCI_CRED_RDBMS, (ub4) OCI_DEFAULT)) {
 		SysLog::Error("FAILED: OCIAttrSet() passwd");
@@ -168,13 +146,48 @@ bool O8Connection::ConnectOracleUser(text *username, text *password)
 		SysLog::Error("FAILED: OCIAttrSet() session");
 		return false;
 	}
+	fConnected = true;
+	return fConnected;
+}
 
+bool OracleConnection::Close(bool bForce)
+{
+	StartTrace1(OracleConnection.Close, (bForce ? "" : "not ") << "forcing connection closing");
+	if (fConnected) {
+		if (OCISessionEnd(fSvchp, fErrhp, fUsrhp, (ub4) 0)) {
+			SysLog::Error("FAILED: OCISessionEnd()");
+		}
+		if (OCIServerDetach(fSrvhp, fErrhp, (ub4) OCI_DEFAULT)) {
+			SysLog::Error("FAILED: OCISessionEnd()");
+		}
+	}
+	if (fSrvhp) {
+		(void) OCIHandleFree((dvoid *) fSrvhp, (ub4) OCI_HTYPE_SERVER);
+		fSrvhp = 0;
+	}
+	if (fSvchp) {
+		(void) OCIHandleFree((dvoid *) fSvchp, (ub4) OCI_HTYPE_SVCCTX);
+		fSvchp = 0;
+	}
+	if (fErrhp) {
+		(void) OCIHandleFree((dvoid *) fErrhp, (ub4) OCI_HTYPE_ERROR);
+		fErrhp = 0;
+	}
+	if (fUsrhp) {
+		(void) OCIHandleFree((dvoid *) fUsrhp, (ub4) OCI_HTYPE_SESSION);
+		fUsrhp = 0;
+	}
+	if (fEnvhp) {
+		(void) OCIHandleFree((dvoid *) fEnvhp, (ub4) OCI_HTYPE_ENV);
+		fEnvhp = 0;
+	}
+	fConnected = false;
 	return true;
 }
 
-String O8Connection::checkerr(OCIError *errhp, sword status, bool &estatus)
+String OracleConnection::checkerr(OCIError *errhp, sword status, bool &estatus)
 {
-	StartTrace1(O8Connection.checkerr, "status: " << (long)status);
+	StartTrace1(OracleConnection.checkerr, "status: " << (long) status);
 	// error handling: checks 'status' for errors
 	// in case of an error an error message is generated,
 	// written to 'cerr' and also to the output ResultMapper
