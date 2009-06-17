@@ -6,6 +6,7 @@ packagename = StanfordUtils.getPackageName(__name__)
 buildSettings = {
                  packagename : {
                      'linkDependencies' : ['oracle', 'CoastDataAccess'],
+                     'requires'         : ['oracle.ociicus'],
                      'sourceFiles'      : StanfordUtils.listFiles(['*.cpp']),
                      'targetType'       : 'LibraryShared',
                      'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL'] },
