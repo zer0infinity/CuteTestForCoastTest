@@ -147,16 +147,7 @@ bool OracleDAImpl::Exec(Context &ctx, ParameterMapper *in, ResultMapper *out)
 						bDoRetry = false;
 					}
 				}
-				// of all the dynamically allocated data only the define handles
-				// are not cleaned up automatically when destroying 'desc'
-
-//				for (long i = 0; i < desc.GetSize(); ++i) {
-//					Trace("cleanup define handle for col " << i << " is: " << (long)(dvoid *) desc[i][eDefHandle].AsIFAObject());
-//					strErr = pConnection->checkerr(eh, OCIHandleFree((dvoid *) desc[i][eDefHandle].AsIFAObject(), (ub4) OCI_HTYPE_DEFINE), error);
-//					if (error)
-//						Error(ctx, out, strErr);
-//
-//				}
+				// according to documentation, def handles will get cleaned too
 				pConnection->StmtCleanup();
 			}
 			if (pConnection) {
@@ -308,7 +299,7 @@ bool OracleDAImpl::DefineOutputArea(Anything &desc, ResultMapper *pmapOut, O8Con
 		Anything &col = desc[ static_cast<long>(i)];
 
 		sb4 dummy;
-		OCIDefine *defHandle = 0; // caution: handle needs to be cleaned up manually
+		OCIDefine *defHandle = 0;
 		long len;
 		if (col[eColumnType].AsLong() == SQLT_DAT) {
 			// --- date field
@@ -351,10 +342,6 @@ bool OracleDAImpl::DefineOutputArea(Anything &desc, ResultMapper *pmapOut, O8Con
 		if (error) {
 			Error(ctx, pmapOut, strErr);
 		}
-		// CAUTION: unlike the other data the define handle is *NOT* automatically
-		//          garbage collected!
-		Trace("define handle for col " << (long)i << " is: " << (long)(defHandle));
-		col[eDefHandle] = Anything((IFAObject *) defHandle);
 	}
 	return error;
 }
