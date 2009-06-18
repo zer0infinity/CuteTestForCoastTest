@@ -4,9 +4,47 @@
 #include "Dbg.h"
 
 #include <string.h>		// for strlen
+
+// set to 1 to track OCI's memory usage
+#if (1)
+dvoid *malloc_func(dvoid * /* ctxp */, size_t size)
+{
+	dvoid *ptr(malloc(size));
+	StatTrace(OracleConnection.malloc_func, "size: " << (long)size << " ptr: &" << (long)ptr, Storage::Current());
+	return ptr;
+}
+dvoid *realloc_func(dvoid * /* ctxp */, dvoid *ptr, size_t size)
+{
+	dvoid *nptr(realloc(ptr, size));
+	StatTrace(OracleConnection.realloc_func, "size: " << (long)size << " oldptr: &" << (long)ptr << " new ptr: &" << (long)nptr, Storage::Current());
+	return (nptr);
+}
+void free_func(dvoid * /* ctxp */, dvoid *ptr)
+{
+	StatTrace(OracleConnection.free_func, "ptr: &" << (long)ptr, Storage::Current());
+	free(ptr);
+}
+#else
+#	define	malloc_func		NULL
+#	define	realloc_func	NULL
+#	define	free_func		NULL
+#endif
+
+static struct OraTerminator {
+	~OraTerminator() {
+		OCITerminate(OCI_DEFAULT);
+	}
+} fgOraTerminator;
+
 //----- OracleConnection -----------------------------------------------------------------
 OracleConnection::OracleConnection() :
-	fConnected(false), fEnvhp(0), fSrvhp(0), fErrhp(0), fSvchp(0), fUsrhp(0), fStmthp(0)
+	fConnected(false),
+	fEnvhp(OCI_HTYPE_ENV),
+	fSrvhp(OCI_HTYPE_SERVER),
+	fErrhp(OCI_HTYPE_ERROR),
+	fSvchp(OCI_HTYPE_SVCCTX),
+	fUsrhp(OCI_HTYPE_SESSION),
+	fStmthp(OCI_HTYPE_STMT)
 {
 	StartTrace(OracleConnection.OracleConnection);
 }
@@ -22,16 +60,13 @@ sword OracleConnection::AllocStmtHandle()
 {
 	StartTrace(OracleConnection.AllocStmtHandle);
 	// allocates and returns new statement handle
-	return OCIHandleAlloc((dvoid *) fEnvhp, (dvoid **) &fStmthp, (ub4) OCI_HTYPE_STMT, (size_t) 0, (dvoid **) 0);
+	return OCIHandleAlloc(fEnvhp.getHandle(), fStmthp.getVoidAddr(), (ub4) OCI_HTYPE_STMT, (size_t) 0, (dvoid **) 0);
 }
 
 void OracleConnection::StmtCleanup()
 {
 	StartTrace(OracleConnection.StmtCleanup);
-	if (fStmthp) {
-		(void) OCIHandleFree((dvoid *) fStmthp, (ub4) OCI_HTYPE_STMT);
-		fStmthp = 0;
-	}
+	fStmthp.reset();
 }
 
 sword OracleConnection::GetReplyDescription()
@@ -40,7 +75,7 @@ sword OracleConnection::GetReplyDescription()
 	// retrieves descriptions of return values for a
 	// given SQL statement
 
-	return OCIStmtExecute(fSvchp, fStmthp, fErrhp, (ub4) 1, (ub4) 0, (CONST OCISnapshot *) NULL, (OCISnapshot *) NULL, OCI_DESCRIBE_ONLY);
+	return OCIStmtExecute(fSvchp.getHandle(), fStmthp.getHandle(), fErrhp.getHandle(), (ub4) 1, (ub4) 0, (CONST OCISnapshot *) NULL, (OCISnapshot *) NULL, OCI_DESCRIBE_ONLY);
 }
 
 sword OracleConnection::ExecuteStmt()
@@ -48,7 +83,7 @@ sword OracleConnection::ExecuteStmt()
 	StartTrace(OracleConnection.ExecuteStmt);
 	// executes a SQL statement (first row is also fetched)
 
-	return OCIStmtExecute(fSvchp, fStmthp, fErrhp, (ub4) 1, (ub4) 0, (CONST OCISnapshot *) NULL, (OCISnapshot *) NULL, OCI_COMMIT_ON_SUCCESS);
+	return OCIStmtExecute(fSvchp.getHandle(), fStmthp.getHandle(), fErrhp.getHandle(), (ub4) 1, (ub4) 0, (CONST OCISnapshot *) NULL, (OCISnapshot *) NULL, OCI_COMMIT_ON_SUCCESS);
 }
 
 sword OracleConnection::StmtPrepare(text *stmt)
@@ -61,11 +96,11 @@ sword OracleConnection::StmtPrepare(text *stmt)
 	// --- alloc statement handle
 	bool error(false);
 	sword sStatus;
-	checkerr(fErrhp, (sStatus = AllocStmtHandle()), error);
+	checkerr(fErrhp.getHandle(), (sStatus = AllocStmtHandle()), error);
 	if (error) {
 		return sStatus;
 	}
-	return OCIStmtPrepare(fStmthp, fErrhp, stmt, (ub4) strlen((const char *) stmt), (ub4) OCI_NTV_SYNTAX, (ub4) OCI_DEFAULT);
+	return OCIStmtPrepare(fStmthp.getHandle(), fErrhp.getHandle(), stmt, (ub4) strlen((const char *) stmt), (ub4) OCI_NTV_SYNTAX, (ub4) OCI_DEFAULT);
 }
 
 bool OracleConnection::Open(String const &strServer, String const &strUsername, String const &strPassword)
@@ -81,71 +116,76 @@ bool OracleConnection::Open(String const &strServer, String const &strUsername, 
 		return false;
 	}
 
-	if (OCIInitialize((ub4) OCI_THREADED, (dvoid *) 0, (dvoid * ( *)(dvoid *, size_t)) 0, (dvoid * ( *)(dvoid *, dvoid *, size_t)) 0,
-					  (void( *)(dvoid *, dvoid *)) 0)) {
-		SysLog::Error("FAILED: OCIInitialize()");
+	// caution: the following memory handles supplied must allocate on Storage::Global()
+	//  because memory gets allocated through them in Open and freed in Close. Throughout the
+	//  lifetime of the connection, mutliple threads could share the same connection and so we
+	//  must take care not to allocate on the first Thread opening the connection
+	if ( OCIEnvCreate(fEnvhp.getHandleAddr(), (ub4)(OCI_THREADED | OCI_ENV_NO_MUTEX), NULL, // context
+					  malloc_func, // malloc function to allocate handles and env specific memory
+					  realloc_func, // realloc function to allocate handles and env specific memory
+					  free_func, // free function to allocate handles and env specific memory
+					  0, // extra memory to allocate
+					  NULL // pointer to user-memory
+					 ) != OCI_SUCCESS) {
+		SysLog::Error("FAILED: OCIEnvCreate(): could not create OCI environment");
 		return false;
 	}
 
-	if (OCIEnvInit(&fEnvhp, (ub4) OCI_ENV_NO_MUTEX, (size_t) 0, (dvoid **) 0)) {
-		SysLog::Error("FAILED: OCIEnvInit()");
-		return false;
-	}
 	// --- alloc error handle
-	if (OCIHandleAlloc((dvoid *) fEnvhp, (dvoid **) &fErrhp, (ub4) OCI_HTYPE_ERROR, (size_t) 0, (dvoid **) 0)) {
-		SysLog::Error("FAILED: OCIHandleAlloc() on errhp");
+	if (OCIHandleAlloc(fEnvhp.getHandle(), fErrhp.getVoidAddr(), (ub4) OCI_HTYPE_ERROR, (size_t) 0, (dvoid **) 0) != OCI_SUCCESS ) {
+		SysLog::Error("FAILED: OCIHandleAlloc(): alloc error handle failed");
 		return false;
 	}
 	// --- alloc service context handle
-	if (OCIHandleAlloc((dvoid *) fEnvhp, (dvoid **) &fSvchp, (ub4) OCI_HTYPE_SVCCTX, (size_t) 0, (dvoid **) 0)) {
-		SysLog::Error("FAILED: OCIHandleAlloc() on svchp");
+	if (OCIHandleAlloc(fEnvhp.getHandle(), fSvchp.getVoidAddr(), (ub4) OCI_HTYPE_SVCCTX, (size_t) 0, (dvoid **) 0)) {
+		SysLog::Error("FAILED: OCIHandleAlloc(): alloc service context handle failed");
 		return false;
 	}
 	// --- alloc server connection handle
-	if (OCIHandleAlloc((dvoid *) fEnvhp, (dvoid **) &fSrvhp, (ub4) OCI_HTYPE_SERVER, (size_t) 0, (dvoid **) 0)) {
-		SysLog::Error("FAILED: OCIHandleAlloc() on srvhp");
+	if (OCIHandleAlloc(fEnvhp.getHandle(), fSrvhp.getVoidAddr(), (ub4) OCI_HTYPE_SERVER, (size_t) 0, (dvoid **) 0)) {
+		SysLog::Error("FAILED: OCIHandleAlloc(): alloc server connection handle failed");
 		return false;
 	}
 	// --- alloc user session handle
-	if (OCIHandleAlloc((dvoid *) fEnvhp, (dvoid **) &fUsrhp, (ub4) OCI_HTYPE_SESSION, (size_t) 0, (dvoid **) 0)) {
-		SysLog::Error("FAILED: OCIHandleAlloc() on svchp");
+	if (OCIHandleAlloc(fEnvhp.getHandle(), fUsrhp.getVoidAddr(), (ub4) OCI_HTYPE_SESSION, (size_t) 0, (dvoid **) 0)) {
+		SysLog::Error("FAILED: OCIHandleAlloc(): alloc user session handle failed");
 		return false;
 	}
 	// --- attach server
-	if (OCIServerAttach(fSrvhp, fErrhp, server, strlen((const char *) server), (ub4) OCI_DEFAULT)) {
-		SysLog::Error("FAILED: OCIHandleAlloc() on svchp");
+	if (OCIServerAttach(fSrvhp.getHandle(), fErrhp.getHandle(), server, strlen((const char *) server), (ub4) OCI_DEFAULT)) {
+		SysLog::Error(String("FAILED: OCIServerAttach() to server [") << strServer << "] failed");
 		return false;
 	}
 	// --- set attribute server context in the service context
-	if (OCIAttrSet((dvoid *) fSvchp, (ub4) OCI_HTYPE_SVCCTX, (dvoid *) fSrvhp, (ub4) 0, (ub4) OCI_ATTR_SERVER, (OCIError *) fErrhp)) {
-		SysLog::Error("FAILED: OCIAttrSet() server attribute");
+	if (OCIAttrSet(fSvchp.getHandle(), (ub4) OCI_HTYPE_SVCCTX, fSrvhp.getHandle(), (ub4) 0, (ub4) OCI_ATTR_SERVER, fErrhp.getHandle())) {
+		SysLog::Error("FAILED: OCIAttrSet(): setting attribute <server> into the service context failed");
 		return false;
 	}
-	// --- logon
 
 	// --- set attributes in the authentication handle
-	if (OCIAttrSet((dvoid *) fUsrhp, (ub4) OCI_HTYPE_SESSION, (dvoid *) username, (ub4) strlen((const char *) username), (ub4) OCI_ATTR_USERNAME, fErrhp)) {
-		SysLog::Error("FAILED: OCIAttrSet() userid"); // --- user name
+	if (OCIAttrSet(fUsrhp.getHandle(), (ub4) OCI_HTYPE_SESSION, (dvoid *) username, (ub4) strlen((const char *) username), (ub4) OCI_ATTR_USERNAME, fErrhp.getHandle())) {
+		SysLog::Error("FAILED: OCIAttrSet(): setting attribute <username> in the authentication handle failed");
 		return false;
 	}
 
-	if (OCIAttrSet((dvoid *) fUsrhp, (ub4) OCI_HTYPE_SESSION, (dvoid *) password, (ub4) strlen((const char *) password), (ub4) OCI_ATTR_PASSWORD, fErrhp)) {
-		SysLog::Error("FAILED: OCIAttrSet() passwd"); // --- user password
+	if (OCIAttrSet(fUsrhp.getHandle(), (ub4) OCI_HTYPE_SESSION, (dvoid *) password, (ub4) strlen((const char *) password), (ub4) OCI_ATTR_PASSWORD, fErrhp.getHandle())) {
+		SysLog::Error("FAILED: OCIAttrSet(): setting attribute <password> in the authentication handle failed");
 		return false;
 	}
 
-	Trace("connected to oracle as " << (const char *) username);
+	Trace("connected to oracle as " << strUsername);
 
-	if (OCISessionBegin(fSvchp, fErrhp, fUsrhp, OCI_CRED_RDBMS, (ub4) OCI_DEFAULT)) {
-		SysLog::Error("FAILED: OCIAttrSet() passwd");
+	if (OCISessionBegin(fSvchp.getHandle(), fErrhp.getHandle(), fUsrhp.getHandle(), OCI_CRED_RDBMS, (ub4) OCI_DEFAULT)) {
+		SysLog::Error("FAILED: OCISessionBegin()");
 		return false;
 	}
 
 	// --- Set the authentication handle in the Service handle
-	if (OCIAttrSet((dvoid *) fSvchp, (ub4) OCI_HTYPE_SVCCTX, (dvoid *) fUsrhp, (ub4) 0, OCI_ATTR_SESSION, fErrhp)) {
-		SysLog::Error("FAILED: OCIAttrSet() session");
+	if (OCIAttrSet(fSvchp.getHandle(), (ub4) OCI_HTYPE_SVCCTX, fUsrhp.getHandle(), (ub4) 0, OCI_ATTR_SESSION, fErrhp.getHandle())) {
+		SysLog::Error("FAILED: OCIAttrSet(): setting attribute <session> into the service context failed");
 		return false;
 	}
+
 	fConnected = true;
 	return fConnected;
 }
@@ -154,33 +194,19 @@ bool OracleConnection::Close(bool bForce)
 {
 	StartTrace1(OracleConnection.Close, (bForce ? "" : "not ") << "forcing connection closing");
 	if (fConnected) {
-		if (OCISessionEnd(fSvchp, fErrhp, fUsrhp, (ub4) 0)) {
-			SysLog::Error("FAILED: OCISessionEnd()");
+		if (OCISessionEnd(fSvchp.getHandle(), fErrhp.getHandle(), fUsrhp.getHandle(), (ub4) 0)) {
+			SysLog::Error("FAILED: OCISessionEnd() on svchp failed");
 		}
-		if (OCIServerDetach(fSrvhp, fErrhp, (ub4) OCI_DEFAULT)) {
-			SysLog::Error("FAILED: OCISessionEnd()");
+		if (OCIServerDetach(fSrvhp.getHandle(), fErrhp.getHandle(), (ub4) OCI_DEFAULT)) {
+			SysLog::Error("FAILED: OCISessionEnd() on srvhp failed");
 		}
 	}
-	if (fSrvhp) {
-		(void) OCIHandleFree((dvoid *) fSrvhp, (ub4) OCI_HTYPE_SERVER);
-		fSrvhp = 0;
-	}
-	if (fSvchp) {
-		(void) OCIHandleFree((dvoid *) fSvchp, (ub4) OCI_HTYPE_SVCCTX);
-		fSvchp = 0;
-	}
-	if (fErrhp) {
-		(void) OCIHandleFree((dvoid *) fErrhp, (ub4) OCI_HTYPE_ERROR);
-		fErrhp = 0;
-	}
-	if (fUsrhp) {
-		(void) OCIHandleFree((dvoid *) fUsrhp, (ub4) OCI_HTYPE_SESSION);
-		fUsrhp = 0;
-	}
-	if (fEnvhp) {
-		(void) OCIHandleFree((dvoid *) fEnvhp, (ub4) OCI_HTYPE_ENV);
-		fEnvhp = 0;
-	}
+	fStmthp.reset();
+	fSrvhp.reset();
+	fSvchp.reset();
+	fErrhp.reset();
+	fUsrhp.reset();
+	fEnvhp.reset();
 	fConnected = false;
 	return true;
 }
