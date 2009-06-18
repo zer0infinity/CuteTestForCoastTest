@@ -46,15 +46,6 @@
 		/MainSwitch						1
 		/EnableAll						10
 	}
-	/O8Connection {
-		/MainSwitch						1
-		/EnableAll						10
-		/checkerr						-10
-	}
-	/O8ConnectionManager {
-		/MainSwitch						1
-		/EnableAll						10
-	}
 	/OracleDAImplTest {
 		/MainSwitch						0
 		/EnableAll						10
