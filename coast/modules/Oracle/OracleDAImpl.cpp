@@ -89,6 +89,7 @@ bool OracleDAImpl::Exec(Context &ctx, ParameterMapper *in, ResultMapper *out)
 						if (!error) {
 							// --- determine format of retrieved data
 							error = GetOutputDescription(desc, out, fncode, pConnection, ctx); // determine format of output
+							TraceAny(desc, "prepared statement description");
 						}
 						if (fncode == OCI_STMT_SELECT) {
 							if (!error) {

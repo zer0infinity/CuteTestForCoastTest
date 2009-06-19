@@ -14,15 +14,14 @@
 class EXPORTDECL_COASTORACLE OracleConnection: public IFAObject
 {
 
-	template<typename handle>
+	template<typename handle, ub4 handleType>
 	struct oci_auto_handle {
 		typedef handle *handle_ptr_type;
 		typedef handle * &handle_ptr_type_ref;
 		typedef handle **handle_ptr_addr_type;
 
 		handle_ptr_type fHandle;
-		ub4 fType;
-		oci_auto_handle(ub4 ubType): fHandle(0), fType(ubType) {}
+		oci_auto_handle(): fHandle(0) {}
 		~oci_auto_handle() {
 			doDelete();
 		}
@@ -43,7 +42,7 @@ class EXPORTDECL_COASTORACLE OracleConnection: public IFAObject
 		}
 		void doDelete() throw() {
 			if ( fHandle ) {
-				OCIHandleFree(reinterpret_cast<dvoid *>(release()), fType);
+				OCIHandleFree(reinterpret_cast<dvoid *>(release()), handleType);
 			}
 		}
 		handle_ptr_type getHandle() const {
@@ -103,14 +102,14 @@ protected:
 	bool fConnected;
 
 	// --- oracle API
-	oci_auto_handle<OCIEnv> fEnvhp; // OCI environment handle
-	oci_auto_handle<OCIError> fErrhp; // OCI error handle
-	oci_auto_handle<OCIServer> fSrvhp; // OCI server connection handle	(at most one
+	oci_auto_handle<OCIEnv, OCI_HTYPE_ENV> fEnvhp; // OCI environment handle
+	oci_auto_handle<OCIError, OCI_HTYPE_ERROR> fErrhp; // OCI error handle
+	oci_auto_handle<OCIServer, OCI_HTYPE_SERVER> fSrvhp; // OCI server connection handle	(at most one
 	//     outstanding call at a time!)
-	oci_auto_handle<OCISvcCtx> fSvchp; // OCI service context handle
+	oci_auto_handle<OCISvcCtx, OCI_HTYPE_SVCCTX> fSvchp; // OCI service context handle
 	// OCI user session handle
-	oci_auto_handle<OCISession> fUsrhp;
-	oci_auto_handle<OCIStmt> fStmthp;
+	oci_auto_handle<OCISession, OCI_HTYPE_SESSION> fUsrhp;
+	oci_auto_handle<OCIStmt, OCI_HTYPE_STMT> fStmthp;
 };
 
 #endif /* O8CONNECTION_H_ */

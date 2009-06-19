@@ -38,13 +38,7 @@ static struct OraTerminator {
 
 //----- OracleConnection -----------------------------------------------------------------
 OracleConnection::OracleConnection() :
-	fConnected(false),
-	fEnvhp(OCI_HTYPE_ENV),
-	fSrvhp(OCI_HTYPE_SERVER),
-	fErrhp(OCI_HTYPE_ERROR),
-	fSvchp(OCI_HTYPE_SVCCTX),
-	fUsrhp(OCI_HTYPE_SESSION),
-	fStmthp(OCI_HTYPE_STMT)
+	fConnected(false), fEnvhp(), fErrhp(), fSrvhp(), fSvchp(), fUsrhp(), fStmthp()
 {
 	StartTrace(OracleConnection.OracleConnection);
 }
