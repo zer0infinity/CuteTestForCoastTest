@@ -69,7 +69,6 @@ bool OracleDAImpl::Exec(Context &ctx, ParameterMapper *in, ResultMapper *out)
 			String command;
 
 			// --- establish db connection
-			//FIXME: add server to get connection
 			if ( !pConnectionPool->BorrowConnection(pConnection, bIsOpen, server, user) ) {
 				Error(ctx, out, "unable to get OracleConnection");
 				bDoRetry = false;
@@ -79,7 +78,8 @@ bool OracleDAImpl::Exec(Context &ctx, ParameterMapper *in, ResultMapper *out)
 					OCIError *eh = pConnection->ErrorHandle();
 					if (DoPrepareSQL(command, ctx, in)) {
 						bool error(false);
-						String strErr( pConnection->checkerr(eh, pConnection->StmtPrepare((text *) (const char *) command), error) );
+						String strErr;
+						error = pConnection->checkError(pConnection->StmtPrepare((text *) (const char *) command), strErr);
 						if (error) {
 							Error(ctx, out, strErr);
 						}
@@ -124,15 +124,14 @@ bool OracleDAImpl::Exec(Context &ctx, ParameterMapper *in, ResultMapper *out)
 								// out->Put("SP_Retcode", strRetcode, ctx);
 							}
 						} else {
-							strErr = pConnection->checkerr(eh, pConnection->ExecuteStmt(), error);
+							error = pConnection->checkError(pConnection->ExecuteStmt(), strErr);
 							if (error) {
 								Error(ctx, out, strErr);
 							}
 
 							// cancel cursor
 							if (!error) {
-								OCIStmt *pStmthp(pConnection->StmtHandle()); // OCI statement handle
-								strErr = pConnection->checkerr(eh, OCIStmtFetch(pStmthp, eh, (ub4) 0, (ub4) OCI_FETCH_NEXT, (ub4) OCI_DEFAULT), error);
+								error = pConnection->checkError(OCIStmtFetch(pConnection->StmtHandle(), eh, (ub4) 0, (ub4) OCI_FETCH_NEXT, (ub4) OCI_DEFAULT), strErr);
 								if (error) {
 									Error(ctx, out, strErr);
 								}
@@ -212,59 +211,68 @@ bool OracleDAImpl::GetOutputDescription(Anything &desc, ResultMapper *pmapOut, u
 
 	bool error = false;
 	OCIError *eh = pConnection->ErrorHandle();
+	String strErr;
 
 	OCIStmt *pStmthp(pConnection->StmtHandle()); // OCI statement handle
-	String strErr;
-	strErr = pConnection->checkerr(eh, OCIAttrGet((dvoid *) pStmthp, OCI_HTYPE_STMT, (dvoid *) &fncode, (ub4 *) 0, OCI_ATTR_STMT_TYPE, eh), error);
+
+	error = pConnection->checkError(OCIAttrGet((dvoid *) pStmthp, OCI_HTYPE_STMT, (dvoid *) &fncode, (ub4 *) 0, OCI_ATTR_STMT_TYPE, eh), strErr);
 	if (error) {
 		Error(ctx, pmapOut, strErr);
+		return error;
 	}
 
 	if (fncode == OCI_STMT_SELECT) {
 
-		strErr = pConnection->checkerr(eh, pConnection->GetReplyDescription(), error);
+		error = pConnection->checkError(pConnection->GetReplyDescription(), strErr);
 		if (error) {
 			Error(ctx, pmapOut, strErr);
+			return error;
 		}
 
 		// Request a parameter descriptor for position 1 in the select-list
 		ub4 counter = 1;
 		sb4 parm_status = OCIParamGet(pStmthp, OCI_HTYPE_STMT, eh, (void **) &mypard, (ub4) counter);
 
-		strErr = pConnection->checkerr(eh, parm_status, error);
+		error = pConnection->checkError(parm_status, strErr);
 		if (error) {
 			Error(ctx, pmapOut, strErr);
+			return error;
 		}
 
 		// Loop only if a descriptor was successfully retrieved for
 		// current  position, starting at 1
 
 		while (parm_status == OCI_SUCCESS) {
-
 			data_len = 0;
 			col_name = 0;
 			col_name_len = 0;
 
 			// Retrieve the data type attribute
-			strErr = pConnection->checkerr(eh, OCIAttrGet((dvoid *) mypard, (ub4) OCI_DTYPE_PARAM, (dvoid *) &dtype, (ub4 *) 0, (ub4) OCI_ATTR_DATA_TYPE,
-										   (OCIError *) eh), error);
+			error = pConnection->checkError(OCIAttrGet((dvoid *) mypard, (ub4) OCI_DTYPE_PARAM, (dvoid *) &dtype, (ub4 *) 0, (ub4) OCI_ATTR_DATA_TYPE,
+											(OCIError *) eh), strErr);
 			if (error) {
 				Error(ctx, pmapOut, strErr);
+				return error;
 			}
 
-			strErr = pConnection->checkerr(eh, OCIAttrGet((dvoid *) mypard, (ub4) OCI_DTYPE_PARAM, (dvoid *) &data_len, (ub4 *) 0, (ub4) OCI_ATTR_DISP_SIZE,
-										   (OCIError *) eh), error);
+			error = pConnection->checkError(OCIAttrGet((dvoid *) mypard, (ub4) OCI_DTYPE_PARAM, (dvoid *) &data_len, (ub4 *) 0, (ub4) OCI_ATTR_DISP_SIZE,
+											(OCIError *) eh), strErr);
 			if (error) {
 				Error(ctx, pmapOut, strErr);
+				return error;
 			}
 
-			//			checkerr(eh, OCIAttrGet((dvoid*) mypard, (ub4) OCI_DTYPE_PARAM,
+			//			error = pConnection->checkError(OCIAttrGet((dvoid*) mypard, (ub4) OCI_DTYPE_PARAM,
 			//							 (dvoid*) &scale,(ub4 *) 0, (ub4) OCI_ATTR_SCALE,
-			//							(OCIError *) eh), error, pmapOut);
+			//							(OCIError *) eh), strErr);
 
 			// Retrieve the column name attribute
-			strErr = pConnection->checkerr(eh, OCIAttrGet((dvoid *) mypard, (ub4) OCI_DTYPE_PARAM, (dvoid **) &col_name, (ub4 *) &col_name_len,
-										   (ub4) OCI_ATTR_NAME, (OCIError *) eh), error);
+			error |= pConnection->checkError(OCIAttrGet((dvoid *) mypard, (ub4) OCI_DTYPE_PARAM, (dvoid **) &col_name, (ub4 *) &col_name_len,
+											 (ub4) OCI_ATTR_NAME, (OCIError *) eh), strErr);
+			if (error) {
+				Error(ctx, pmapOut, strErr);
+				return error;
+			}
 
 			Anything param;
 			param[0L] = Anything(); // dummy
@@ -339,10 +347,11 @@ bool OracleDAImpl::DefineOutputArea(Anything &desc, ResultMapper *pmapOut, Oracl
 		Anything effectiveSize = Anything((void *) 0, sizeof(ub2));
 		col[eEffectiveLength] = effectiveSize;
 
-		strErr = pConnection->checkerr(eh, OCIDefineByPos(pStmthp, &defHandle, eh, i + 1, (void *) buf.AsCharPtr(), len, col[eColumnType].AsLong(),
-									   (dvoid *) indicator.AsCharPtr(), (ub2 *) effectiveSize.AsCharPtr(), 0, OCI_DEFAULT), error);
+		sword status = OCIDefineByPos(pStmthp, &defHandle, eh, i + 1, (void *) buf.AsCharPtr(), len, col[eColumnType].AsLong(),
+									  (dvoid *) indicator.AsCharPtr(), (ub2 *) effectiveSize.AsCharPtr(), 0, OCI_DEFAULT);
+		error |= pConnection->checkError(status);
 		if (error) {
-			Error(ctx, pmapOut, strErr);
+			Error(ctx, pmapOut, pConnection->errorMessage(status));
 		}
 	}
 	return error;
@@ -403,7 +412,7 @@ void OracleDAImpl::FetchRowData(Anything &descs, ParameterMapper *pmapIn, Result
 
 	TraceAny(descs, "descriptions");
 
-	bool error = false, bRet(true);
+	bool bRet(true);
 	OCIError *eh = pConnection->ErrorHandle();
 
 	// --- successful execute returns the 1st row
@@ -436,9 +445,8 @@ void OracleDAImpl::FetchRowData(Anything &descs, ParameterMapper *pmapIn, Result
 		++rowCount;
 	};
 
-	String strErr(pConnection->checkerr(eh, rc, error));
-	if (error) {
-		Error(ctx, pmapOut, strErr);
+	if (pConnection->checkError(rc)) {
+		Error(ctx, pmapOut, pConnection->errorMessage(rc));
 	}
 
 	bool bShowRowCount(true);

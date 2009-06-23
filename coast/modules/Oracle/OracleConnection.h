@@ -89,7 +89,9 @@ public:
 		return fErrhp.getHandle();
 	}
 
-	String checkerr(OCIError *errhp, sword status, bool &estatus);
+	String errorMessage(sword status);
+	bool checkError(sword status, String &message);
+	bool checkError(sword status);
 
 protected:
 	sword AllocStmtHandle();

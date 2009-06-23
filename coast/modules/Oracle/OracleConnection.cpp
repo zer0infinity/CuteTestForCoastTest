@@ -88,10 +88,8 @@ sword OracleConnection::StmtPrepare(text *stmt)
 	// constructed and binds of input variables are not necessary)
 
 	// --- alloc statement handle
-	bool error(false);
-	sword sStatus;
-	checkerr(fErrhp.getHandle(), (sStatus = AllocStmtHandle()), error);
-	if (error) {
+	sword sStatus = AllocStmtHandle();
+	if (checkError(sStatus)) {
 		return sStatus;
 	}
 	return OCIStmtPrepare(fStmthp.getHandle(), fErrhp.getHandle(), stmt, (ub4) strlen((const char *) stmt), (ub4) OCI_NTV_SYNTAX, (ub4) OCI_DEFAULT);
@@ -130,53 +128,57 @@ bool OracleConnection::Open(String const &strServer, String const &strUsername, 
 		SysLog::Error("FAILED: OCIHandleAlloc(): alloc error handle failed");
 		return false;
 	}
+
+	String strErr;
+
 	// --- alloc service context handle
-	if (OCIHandleAlloc(fEnvhp.getHandle(), fSvchp.getVoidAddr(), (ub4) OCI_HTYPE_SVCCTX, (size_t) 0, (dvoid **) 0)) {
-		SysLog::Error("FAILED: OCIHandleAlloc(): alloc service context handle failed");
+	if (checkError(OCIHandleAlloc(fEnvhp.getHandle(), fSvchp.getVoidAddr(), (ub4) OCI_HTYPE_SVCCTX, (size_t) 0, (dvoid **) 0), strErr)) {
+		SysLog::Error(String("FAILED: OCIHandleAlloc(): alloc service context handle failed (") << strErr << ")");
 		return false;
 	}
 	// --- alloc server connection handle
-	if (OCIHandleAlloc(fEnvhp.getHandle(), fSrvhp.getVoidAddr(), (ub4) OCI_HTYPE_SERVER, (size_t) 0, (dvoid **) 0)) {
-		SysLog::Error("FAILED: OCIHandleAlloc(): alloc server connection handle failed");
+	if (checkError(OCIHandleAlloc(fEnvhp.getHandle(), fSrvhp.getVoidAddr(), (ub4) OCI_HTYPE_SERVER, (size_t) 0, (dvoid **) 0), strErr)) {
+		SysLog::Error(String("FAILED: OCIHandleAlloc(): alloc server connection handle failed (") << strErr << ")");
 		return false;
 	}
 	// --- alloc user session handle
-	if (OCIHandleAlloc(fEnvhp.getHandle(), fUsrhp.getVoidAddr(), (ub4) OCI_HTYPE_SESSION, (size_t) 0, (dvoid **) 0)) {
-		SysLog::Error("FAILED: OCIHandleAlloc(): alloc user session handle failed");
+	if (checkError(OCIHandleAlloc(fEnvhp.getHandle(), fUsrhp.getVoidAddr(), (ub4) OCI_HTYPE_SESSION, (size_t) 0, (dvoid **) 0), strErr)) {
+		SysLog::Error(String("FAILED: OCIHandleAlloc(): alloc user session handle failed (") << strErr << ")");
 		return false;
 	}
+
 	// --- attach server
-	if (OCIServerAttach(fSrvhp.getHandle(), fErrhp.getHandle(), server, strlen((const char *) server), (ub4) OCI_DEFAULT)) {
-		SysLog::Error(String("FAILED: OCIServerAttach() to server [") << strServer << "] failed");
+	if (checkError(OCIServerAttach(fSrvhp.getHandle(), fErrhp.getHandle(), server, strlen((const char *) server), (ub4) OCI_DEFAULT), strErr)) {
+		SysLog::Error(String("FAILED: OCIServerAttach() to server [") << strServer << "] failed (" << strErr << ")");
 		return false;
 	}
+
 	// --- set attribute server context in the service context
-	if (OCIAttrSet(fSvchp.getHandle(), (ub4) OCI_HTYPE_SVCCTX, fSrvhp.getHandle(), (ub4) 0, (ub4) OCI_ATTR_SERVER, fErrhp.getHandle())) {
-		SysLog::Error("FAILED: OCIAttrSet(): setting attribute <server> into the service context failed");
+	if (checkError(OCIAttrSet(fSvchp.getHandle(), (ub4) OCI_HTYPE_SVCCTX, fSrvhp.getHandle(), (ub4) 0, (ub4) OCI_ATTR_SERVER, fErrhp.getHandle()), strErr)) {
+		SysLog::Error(String("FAILED: OCIAttrSet(): setting attribute <server> into the service context failed (") << strErr << ")");
 		return false;
 	}
 
 	// --- set attributes in the authentication handle
-	if (OCIAttrSet(fUsrhp.getHandle(), (ub4) OCI_HTYPE_SESSION, (dvoid *) username, (ub4) strlen((const char *) username), (ub4) OCI_ATTR_USERNAME, fErrhp.getHandle())) {
-		SysLog::Error("FAILED: OCIAttrSet(): setting attribute <username> in the authentication handle failed");
+	if (checkError(OCIAttrSet(fUsrhp.getHandle(), (ub4) OCI_HTYPE_SESSION, (dvoid *) username, (ub4) strlen((const char *) username), (ub4) OCI_ATTR_USERNAME, fErrhp.getHandle()), strErr)) {
+		SysLog::Error(String("FAILED: OCIAttrSet(): setting attribute <username> in the authentication handle failed (") << strErr << ")");
 		return false;
 	}
 
-	if (OCIAttrSet(fUsrhp.getHandle(), (ub4) OCI_HTYPE_SESSION, (dvoid *) password, (ub4) strlen((const char *) password), (ub4) OCI_ATTR_PASSWORD, fErrhp.getHandle())) {
-		SysLog::Error("FAILED: OCIAttrSet(): setting attribute <password> in the authentication handle failed");
+	if (checkError(OCIAttrSet(fUsrhp.getHandle(), (ub4) OCI_HTYPE_SESSION, (dvoid *) password, (ub4) strlen((const char *) password), (ub4) OCI_ATTR_PASSWORD, fErrhp.getHandle()), strErr)) {
+		SysLog::Error(String("FAILED: OCIAttrSet(): setting attribute <password> in the authentication handle failed (") << strErr << ")");
 		return false;
 	}
 
+	if (checkError(OCISessionBegin(fSvchp.getHandle(), fErrhp.getHandle(), fUsrhp.getHandle(), OCI_CRED_RDBMS, (ub4) OCI_DEFAULT), strErr)) {
+		SysLog::Error(String("FAILED: OCISessionBegin() with user [") << strUsername << "] failed (" << strErr << ")");
+		return false;
+	}
 	Trace("connected to oracle as " << strUsername);
 
-	if (OCISessionBegin(fSvchp.getHandle(), fErrhp.getHandle(), fUsrhp.getHandle(), OCI_CRED_RDBMS, (ub4) OCI_DEFAULT)) {
-		SysLog::Error("FAILED: OCISessionBegin()");
-		return false;
-	}
-
 	// --- Set the authentication handle in the Service handle
-	if (OCIAttrSet(fSvchp.getHandle(), (ub4) OCI_HTYPE_SVCCTX, fUsrhp.getHandle(), (ub4) 0, OCI_ATTR_SESSION, fErrhp.getHandle())) {
-		SysLog::Error("FAILED: OCIAttrSet(): setting attribute <session> into the service context failed");
+	if (checkError(OCIAttrSet(fSvchp.getHandle(), (ub4) OCI_HTYPE_SVCCTX, fUsrhp.getHandle(), (ub4) 0, OCI_ATTR_SESSION, fErrhp.getHandle()), strErr)) {
+		SysLog::Error(String("FAILED: OCIAttrSet(): setting attribute <session> into the service context failed (") << strErr << ")");
 		return false;
 	}
 
@@ -205,16 +207,27 @@ bool OracleConnection::Close(bool bForce)
 	return true;
 }
 
-String OracleConnection::checkerr(OCIError *errhp, sword status, bool &estatus)
+bool OracleConnection::checkError(sword status)
 {
-	StartTrace1(OracleConnection.checkerr, "status: " << (long) status);
+	StartTrace1(OracleConnection.checkError, "status: " << (long) status);
+	if (status == OCI_SUCCESS || status == OCI_NO_DATA) {
+		return false;
+	}
+	return true;
+}
+
+bool OracleConnection::checkError(sword status, String &message)
+{
+	message = errorMessage(status);
+	return checkError(status);
+}
+
+String OracleConnection::errorMessage(sword status)
+{
 	// error handling: checks 'status' for errors
-	// in case of an error an error message is generated,
-	// written to 'cerr' and also to the output ResultMapper
-	// 'estatus' is used to signal if an error has occured
+	// in case of an error an error message is generated
 
 	text errbuf[512];
-	ub4 buflen;
 	sb4 errcode;
 	String error;
 
@@ -231,8 +244,8 @@ String OracleConnection::checkerr(OCIError *errhp, sword status, bool &estatus)
 			error << "Error - OCI_NEED_DATA";
 			break;
 		case OCI_ERROR:
-			if (errhp) {
-				OCIErrorGet((dvoid *) errhp, (ub4) 1, (text *) NULL, &errcode, errbuf, (ub4) sizeof(errbuf), (ub4) OCI_HTYPE_ERROR);
+			if (fErrhp.getHandle()) {
+				OCIErrorGet((dvoid *) fErrhp.getHandle(), (ub4) 1, (text *) NULL, &errcode, errbuf, (ub4) sizeof(errbuf), (ub4) OCI_HTYPE_ERROR);
 			}
 			error << "Error - " << (char *) errbuf;
 			break;
@@ -249,7 +262,5 @@ String OracleConnection::checkerr(OCIError *errhp, sword status, bool &estatus)
 			break;
 	}
 
-	estatus = true;
-	SysLog::Error(error);
 	return error;
 }
