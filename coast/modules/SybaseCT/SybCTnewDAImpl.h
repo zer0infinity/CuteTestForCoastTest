@@ -57,6 +57,7 @@ protected:
 	static Anything fgContextMessages;
 	static CS_CONTEXT *fg_cs_context;
 	static bool		fgInitialized;
+	static bool		fbUseDelayedCommit;
 	static PeriodicAction *fgpPeriodicAction;
 	static Semaphore *fgpResourcesSema;
 

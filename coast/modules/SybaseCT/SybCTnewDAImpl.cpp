@@ -26,6 +26,7 @@ Anything SybCTnewDAImpl::fgListOfSybCT;
 Anything SybCTnewDAImpl::fgContextMessages;
 CS_CONTEXT *SybCTnewDAImpl::fg_cs_context;
 bool SybCTnewDAImpl::fgInitialized = false;
+bool SybCTnewDAImpl::fbUseDelayedCommit = false;
 PeriodicAction *SybCTnewDAImpl::fgpPeriodicAction = NULL;
 Semaphore *SybCTnewDAImpl::fgpResourcesSema = NULL;
 
@@ -62,6 +63,7 @@ bool SybCTnewDAImpl::Init(ROAnything config)
 			nrOfSybCTs = myCfg["ParallelQueries"].AsLong(nrOfSybCTs);
 			lCloseConnectionTimeout = myCfg["CloseConnectionTimeout"].AsLong(lCloseConnectionTimeout);
 			strInterfacesPathName = myCfg["InterfacesPathName"].AsString();
+			fbUseDelayedCommit = ( myCfg["DelayedCommit"].AsLong(0L) != 0 );
 		}
 
 		LockUnlockEntry me(fgStructureMutex);
@@ -279,6 +281,28 @@ bool SybCTnewDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out)
 					// open new connection
 					if ( !( bIsOpen = pSyb->Open( daParams, user, passwd, server, app) ) ) {
 						SYSWARNING("Could not open connection to server [" << server << "] with user [" << user << "]");
+					}
+
+					// http://infocenter.sybase.com/help/index.jsp?topic=/com.sybase.infocenter.dc31644.1502/html/sag2/sag2349.htm
+					//You can enable delayed_commit for the session with the set command or the database with sp_dboption. The syntax for delayed_commit is:
+					//set delayed_commit on | off | default
+					//  where on enables the delayed_commit option, off disables it, and default means the database-level setting takes effect.
+					//The syntax for sp_dboption is: sp_dboption database_name, 'delayed commit', [true | false]
+					//  where true enables delayed_commit at the database level, and false disables the delayed_commit option. Only the DBO can set this parameter.
+
+					// set the option delayed commit just once, after the DB connection was establisched. Further SybCTnewDAImpl::Exec() calls woun't fall here
+					if (fbUseDelayedCommit) {
+						// activate delayed commit
+						String sParamDelayed = "set delayed_commit on";
+						String sTmpResultformat;
+						in->Get( "SybDBResultFormat", sTmpResultformat, ctx);
+						//if ( !(bRet = pSyb->SqlExec(daParams, sParamDelayed, sTmpResultformat) ) )
+						if ( !(bRet = pSyb->SqlExec(daParams, sParamDelayed, "", 0, 0) ) ) {
+							SYSWARNING("could not execute the sql command " << sParamDelayed << " or it was aborted");
+							// maybe a close is better here to reduce the risk of further failures
+							pSyb->Close();
+							bIsOpen = false;
+						}
 					}
 				}
 				if ( bIsOpen ) {
