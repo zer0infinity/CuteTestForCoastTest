@@ -146,6 +146,10 @@ bool OracleConnection::Open(String const &strServer, String const &strUsername, 
 		SysLog::Error(String("FAILED: OCIHandleAlloc(): alloc user session handle failed (") << strErr << ")");
 		return false;
 	}
+	if (checkError(OCIHandleAlloc(fEnvhp.getHandle(), fDschp.getVoidAddr(), (ub4)OCI_HTYPE_DESCRIBE, (size_t)0, (dvoid **)0), strErr)) {
+		SysLog::Error(String("FAILED: OCIHandleAlloc(): alloc describe handle failed (") << strErr << ")");
+		return false;
+	}
 
 	// --- attach server
 	if (checkError(OCIServerAttach(fSrvhp.getHandle(), fErrhp.getHandle(), server, strlen((const char *) server), (ub4) OCI_DEFAULT), strErr)) {

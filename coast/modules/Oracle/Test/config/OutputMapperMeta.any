@@ -28,4 +28,13 @@
 	/SelectEmployeesTitlesOnce {
 		/DestinationSlot	SelectEmployeesTitlesOnce
 	}
+	/SPMaxSalary {
+		/DestinationSlot	SPMaxSalary
+	}
+	/SPSlotTest {
+		/DestinationSlot	SPSlotTest
+	}
+	/SPExecute {
+		/DestinationSlot	SPExecute
+	}
 }

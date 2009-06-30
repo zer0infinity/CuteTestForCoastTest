@@ -7,7 +7,7 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-	/LowerBound		0		# debugging on or off
+	/LowerBound		1		# debugging on or off
 	/UpperBound		11		# override switch: turns everything on
 	/DumpAnythings  1		# print full Anythings
 
@@ -21,15 +21,15 @@
 		/EnableAll						10
 	}
 	/OracleDAImpl {
-		/MainSwitch						10
+		/MainSwitch						1
 		/EnableAll						11
 		/DoPrepareSQL					-10
 		/GetRecordData {
 			/MainSwitch					10
 			/EnableAll					10
-			/TraceDesc					-10
-			/TraceColType				-10
-			/TraceBuf					-10
+			/TraceDesc					10
+			/TraceColType				10
+			/TraceBuf					10
 		}
 		/FetchRowData {
 			/MainSwitch					10
@@ -38,19 +38,23 @@
 		}
 	}
 	/OracleConnection {
-		/MainSwitch						1
+		/MainSwitch						0
 		/EnableAll						10
 		/checkerr						10
 	}
 	/ConnectionPool {
-		/MainSwitch						1
-		/EnableAll						10
-	}
-	/OracleDAImplTest {
 		/MainSwitch						0
 		/EnableAll						10
 	}
+	/OracleDAImplTest {
+		/MainSwitch						1
+		/EnableAll						10
+	}
 	/OracleCheckCloseOpenedConnectionsAction {
+		/MainSwitch						1
+		/EnableAll						10
+	}
+	/OracleSPMapper {
 		/MainSwitch						1
 		/EnableAll						10
 	}
@@ -80,7 +84,7 @@
 		/EnableAll						10
 	}
 	/ParameterMapper {
-		/MainSwitch						0
+		/MainSwitch						1
 		/EnableAll						10
 	}
 	/PeriodicAction {
@@ -109,9 +113,10 @@
 		/setUp							10
 	}
 	/ConfiguredActionTest {
-		/MainSwitch						0
+		/MainSwitch						1
 		/EnableAll						0
 		/DoTestWithContext				10
+		/PrepareConfig					10
 	}
 	/Semaphore {
 		/MainSwitch						0

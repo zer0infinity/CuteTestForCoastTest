@@ -16,8 +16,12 @@
 #include "Dbg.h"
 
 #include <limits>
+#include <algorithm>
 
 //--- c-library modules used ---------------------------------------------------
+#include <cstring>
+
+static const long glStringBufferSize( 4096L );
 
 //---- OracleDAImpl ---------------------------------------------------------
 RegisterDataAccessImpl( OracleDAImpl);
@@ -89,7 +93,7 @@ bool OracleDAImpl::Exec(Context &ctx, ParameterMapper *in, ResultMapper *out)
 						if (!error) {
 							// --- determine format of retrieved data
 							error = GetOutputDescription(desc, out, fncode, pConnection, ctx); // determine format of output
-							TraceAny(desc, "prepared statement description");
+							TraceAny(desc, "row description");
 						}
 						if (fncode == OCI_STMT_SELECT) {
 							if (!error) {
@@ -120,8 +124,6 @@ bool OracleDAImpl::Exec(Context &ctx, ParameterMapper *in, ResultMapper *out)
 								FetchRowData(desc, in, out, pConnection, ctx);
 								bRet = true;
 								bDoRetry = false;
-								// FIXME: can we detect stored procedure return codes?
-								// out->Put("SP_Retcode", strRetcode, ctx);
 							}
 						} else {
 							error = pConnection->checkError(pConnection->ExecuteStmt(), strErr);
@@ -139,6 +141,50 @@ bool OracleDAImpl::Exec(Context &ctx, ParameterMapper *in, ResultMapper *out)
 						}
 						// according to documentation, def handles will get cleaned too
 						pConnection->StmtCleanup();
+					} else if (DoPrepareSP(command, ctx, in)) {
+						Trace("STORED PROCEDURE IS [" << command << "]");
+						bool error(false);
+						String strErr;
+
+						MetaThing desc;
+						error = GetSPDescription(desc, out, command, pConnection, ctx);
+
+						String strSP( ConstructSPStr(command, desc) );
+
+						Trace(String("prepare stored procedure: ") << strSP);
+						error = pConnection->checkError(pConnection->StmtPrepare((text *) (const char *) strSP), strErr);
+						if (error) {
+							Error(ctx, out, strErr);
+						}
+
+						if (!error) {
+							out->Put("Query", strSP, ctx);
+							error = BindSPVariables(desc, in, out, pConnection, ctx);
+						}
+						if (!error) {
+							error = pConnection->checkError(OCIStmtExecute(pConnection->SvcHandle(), pConnection->StmtHandle(), pConnection->ErrorHandle(), 1, 0, (const OCISnapshot *) 0, (OCISnapshot *) 0, OCI_DEFAULT), strErr);
+							if (error) {
+								Error(ctx, out, strErr);
+							}
+							if (!error) {
+								Anything record;
+								GetRecordData(desc, record, false); //TitlesOnce
+								TraceAny(record, "fetched result");
+								out->Put("QueryResult", record, ctx);
+
+								bool bShowRowCount(true);
+								in->Get("ShowQueryCount", bShowRowCount, ctx);
+								if (bShowRowCount) {
+									// append summary if extract of available data is returned
+									out->Put("QueryCount", 1L, ctx);
+								}
+								bRet = true;
+								bDoRetry = false;
+
+								// FIXME: can we detect stored procedure return codes?
+								// out->Put("SP_Retcode", strRetcode, ctx);
+							}
+						}
 					} else {
 						out->Put("Messages", "Rendered slot SQL resulted in an empty string", ctx);
 						bDoRetry = false;
@@ -171,6 +217,13 @@ bool OracleDAImpl::DoPrepareSQL(String &command, Context &ctx, ParameterMapper *
 	os.flush();
 	SubTrace(Query, "QUERY IS [" << command << "]");
 	return (command.Length() > 0L);
+}
+
+bool OracleDAImpl::DoPrepareSP(String &command, Context &ctx, ParameterMapper *in)
+{
+	StartTrace(OracleDAImpl.DoPrepareSP);
+	DAAccessTimer(OracleDAImpl.DoPrepareSP, fName, ctx);
+	return in->Get("SP", command, ctx);
 }
 
 void OracleDAImpl::Warning(Context &ctx, ResultMapper *pResultMapper, String str)
@@ -267,8 +320,8 @@ bool OracleDAImpl::GetOutputDescription(Anything &desc, ResultMapper *pmapOut, u
 			//							(OCIError *) eh), strErr);
 
 			// Retrieve the column name attribute
-			error |= pConnection->checkError(OCIAttrGet((dvoid *) mypard, (ub4) OCI_DTYPE_PARAM, (dvoid **) &col_name, (ub4 *) &col_name_len,
-											 (ub4) OCI_ATTR_NAME, (OCIError *) eh), strErr);
+			error = pConnection->checkError(OCIAttrGet((dvoid *) mypard, (ub4) OCI_DTYPE_PARAM, (dvoid **) &col_name, (ub4 *) &col_name_len,
+											(ub4) OCI_ATTR_NAME, (OCIError *) eh), strErr);
 			if (error) {
 				Error(ctx, pmapOut, strErr);
 				return error;
@@ -349,9 +402,10 @@ bool OracleDAImpl::DefineOutputArea(Anything &desc, ResultMapper *pmapOut, Oracl
 
 		sword status = OCIDefineByPos(pStmthp, &defHandle, eh, i + 1, (void *) buf.AsCharPtr(), len, col[eColumnType].AsLong(),
 									  (dvoid *) indicator.AsCharPtr(), (ub2 *) effectiveSize.AsCharPtr(), 0, OCI_DEFAULT);
-		error |= pConnection->checkError(status);
+		error = pConnection->checkError(status);
 		if (error) {
 			Error(ctx, pmapOut, pConnection->errorMessage(status));
+			return error;
 		}
 	}
 	return error;
@@ -366,7 +420,7 @@ void OracleDAImpl::GetRecordData(Anything &descs, Anything &record, bool bTitles
 		Anything &desc = descs[col], value;
 		SubTraceAny(TraceDesc, desc, "desc at col:" << (long) col);
 		SubTrace(TraceColType, "column type is: " << desc[eColumnType].AsLong() << " indicator: " << desc[eIndicator].AsLong());
-		SubTrace(TraceBuf, "buf ptr " << (long) (desc[eRawBuf].AsCharPtr()) << " length ptr " << (long) (desc[eEffectiveLength].AsCharPtr()));
+		SubTrace(TraceBuf, "buf ptr " << (long) (desc[eRawBuf].AsCharPtr()) << " length: " << (long) * ((ub2 *) desc[eEffectiveLength].AsCharPtr()));
 		switch (desc[eColumnType].AsLong()) {
 			case SQLT_INT:
 				Trace("SQLT_INT");
@@ -382,6 +436,14 @@ void OracleDAImpl::GetRecordData(Anything &descs, Anything &record, bool bTitles
 					value = 0.0f;
 				} else {
 					value = (*((float *) desc[eRawBuf].AsCharPtr()));
+				}
+				break;
+			case SQLT_STR:
+				Trace("SQLT_STR");
+				if (desc[eIndicator].AsLong() == OCI_IND_NULL) {
+					value = "";
+				} else {
+					value = String(desc[eRawBuf].AsCharPtr());
 				}
 				break;
 			default:
@@ -455,4 +517,248 @@ void OracleDAImpl::FetchRowData(Anything &descs, ParameterMapper *pmapIn, Result
 		// append summary if extract of available data is returned
 		pmapOut->Put("QueryCount", rowCount, ctx);
 	}
+}
+
+bool OracleDAImpl::GetSPDescription(Anything &desc, ResultMapper *pmapOut, String const &spname, OracleConnection *pConnection, Context &ctx)
+{
+	StartTrace(OracleDAImpl.GetSPDescription);
+	// returns array of element descriptions: each description is
+	// an Anything array with 4 entries:
+	// name of the collumn, type of the data, length of the data in bytes, scale
+
+	text const *objptr = reinterpret_cast<const text *> ((const char *)spname);
+	bool error(false);
+	String strErr;
+
+	bool bIsFunction(false);
+	Trace("get the describe handle for the procedure");
+	error = pConnection->checkError(OCIDescribeAny(pConnection->SvcHandle(), pConnection->ErrorHandle(), (dvoid *)objptr, (ub4)strlen((char *)objptr), OCI_OTYPE_NAME, 0, OCI_PTYPE_PROC, pConnection->DscHandle()), strErr);
+	if (error) {
+		bIsFunction = true;
+		error = pConnection->checkError(OCIDescribeAny(pConnection->SvcHandle(), pConnection->ErrorHandle(), (dvoid *)objptr, (ub4)strlen((char *)objptr), OCI_OTYPE_NAME, 0, OCI_PTYPE_FUNC, pConnection->DscHandle()), strErr);
+		if (error) {
+			Error(ctx, pmapOut, String("DB-Object is neither procedure nor function (") << strErr << ")");
+			return error;
+		}
+	}
+
+	Trace("get the parameter handle");
+	OCIParam *parmh( 0 );
+	error = pConnection->checkError(OCIAttrGet(pConnection->DscHandle(), OCI_HTYPE_DESCRIBE, (dvoid *)&parmh, (ub4 *)0, OCI_ATTR_PARAM, pConnection->ErrorHandle()), strErr);
+	if (error) {
+		Error(ctx, pmapOut, strErr);
+		return error;
+	}
+
+	Trace("get the number of arguments and the arg list");
+	OCIParam *arglst( 0 );
+	ub2 numargs = 0;
+	error = pConnection->checkError(OCIAttrGet((dvoid *)parmh, OCI_DTYPE_PARAM, (dvoid *)&arglst, (ub4 *)0, OCI_ATTR_LIST_ARGUMENTS, pConnection->ErrorHandle()), strErr);
+	if (error) {
+		Error(ctx, pmapOut, strErr);
+		return error;
+	}
+
+	error = pConnection->checkError(OCIAttrGet((dvoid *)arglst, OCI_DTYPE_PARAM, (dvoid *)&numargs, (ub4 *)0, OCI_ATTR_NUM_PARAMS, pConnection->ErrorHandle()), strErr);
+	if (error) {
+		Error(ctx, pmapOut, strErr);
+		return error;
+	}
+
+	Trace(String("number of arguments: ") << numargs);
+
+	OCIParam *arg( 0 );
+	text *name;
+	ub4 namelen;
+	ub2 dtype;
+	OCITypeParamMode iomode;
+	ub4 data_len;
+
+	// For a procedure, we begin with i = 1; for a function, we begin with i = 0.
+	int start = 0;
+	int end = numargs;
+	if (!bIsFunction) {
+		++start;
+		++end;
+	}
+
+	for (int i = start; i < end; ++i) {
+		error = pConnection->checkError(OCIParamGet((dvoid *) arglst, OCI_DTYPE_PARAM, pConnection->ErrorHandle(), (dvoid **) &arg, (ub4) i), strErr);
+		if (error) {
+			Error(ctx, pmapOut, strErr);
+			return error;
+		}
+		namelen = 0;
+		name = 0;
+		data_len = 0;
+
+		error = pConnection->checkError(OCIAttrGet((dvoid *) arg, OCI_DTYPE_PARAM, (dvoid *) &dtype, (ub4 *) 0, OCI_ATTR_DATA_TYPE, pConnection->ErrorHandle()), strErr);
+		if (error) {
+			Error(ctx, pmapOut, strErr);
+			return error;
+		}
+		Trace(String("data type: ") << dtype);
+
+		error = pConnection->checkError(OCIAttrGet((dvoid *) arg, OCI_DTYPE_PARAM, (dvoid *) &name, (ub4 *) &namelen, OCI_ATTR_NAME, pConnection->ErrorHandle()), strErr);
+		if (error) {
+			Error(ctx, pmapOut, strErr);
+			return error;
+		}
+		Trace(String("name: ") << String((char *)name, namelen));
+
+		// 0 = IN (OCI_TYPEPARAM_IN), 1 = OUT (OCI_TYPEPARAM_OUT), 2 = IN/OUT (OCI_TYPEPARAM_INOUT)
+		error = pConnection->checkError(OCIAttrGet((dvoid *) arg, OCI_DTYPE_PARAM, (dvoid *) &iomode, (ub4 *) 0, OCI_ATTR_IOMODE, pConnection->ErrorHandle()), strErr);
+		if (error) {
+			Error(ctx, pmapOut, strErr);
+			return error;
+		}
+		Trace(String("IO type: ") << iomode);
+
+		error = pConnection->checkError(OCIAttrGet((dvoid *) arg, OCI_DTYPE_PARAM, (dvoid *) &data_len, (ub4 *) 0, OCI_ATTR_DATA_SIZE, pConnection->ErrorHandle()), strErr);
+		if (error) {
+			Error(ctx, pmapOut, strErr);
+			return error;
+		}
+		Trace(String("size: ") << (int)data_len);
+
+		Anything &param = desc[String((char*) name, namelen)];
+		param[0L] = Anything(); // dummy
+		param[eColumnName] = String((char *) name, namelen);
+		param[eColumnType] = dtype;
+		param[eDataLength] = (int) data_len;
+		param[eInOutType] = iomode;
+	}
+
+	TraceAny(desc, "stored procedure description");
+	return error;
+}
+
+struct ConstructPlSql {
+	String &fStr;
+	ConstructPlSql(String &str): fStr(str) {}
+	void operator()(const Anything &anyParam) {
+		if ( fStr.Length() ) {
+			fStr.Append(',');
+		}
+		fStr.Append(':').Append(anyParam[OracleDAImpl::eColumnName].AsString());
+	}
+};
+
+String OracleDAImpl::ConstructSPStr( String &command, Anything &desc )
+{
+	String plsql, strParams;
+	std::for_each(desc.begin(), desc.end(), ConstructPlSql(strParams));
+	plsql << "BEGIN " << command << "(" << strParams << "); END;";
+	StatTrace(OracleDAImpl.ConstructSPStr, "SP string [" << plsql << "]", Storage::Current());
+	return plsql;
+}
+
+bool OracleDAImpl::BindSPVariables(Anything &desc, ParameterMapper *pmapIn, ResultMapper *pmapOut, OracleConnection *pConnection, Context &ctx)
+{
+	StartTrace(OracleDAImpl.BindSPVariables);
+	// use 'desc' to allocate output area used by oracle library
+	// to store fetched data (binary Anything buffers are allocated and
+	// stored within the 'desc' structure... for automatic storage
+	// management)
+	bool error(false);
+	String strErr;
+	sword status;
+
+//	sb4 found = 0;
+//	text *bvnp[1];
+//	ub1 bvnl[1];
+//	text *invp[1];
+//	ub1 inpl[1];
+//	ub1 dupl[1];
+//	OCIBind *hndl[1];
+//	status = OCIStmtGetBindInfo(pConnection->StmtHandle(), pConnection->ErrorHandle(), 0, 1, &found, bvnp, bvnl, invp, inpl, dupl, hndl);
+//	error = pConnection->checkError(status);
+//	if (error) {
+//		Error(ctx, pmapOut, pConnection->errorMessage(status));
+//	}
+
+//	Trace(String("found variables: ") << abs(found));
+	Anything_iterator it( desc.begin() );
+	for (; it != desc.end(); ++it) {
+//	for(int i = 1; i <= abs(found); ++i) { // oracle starts counting on 1
+//		status = OCIStmtGetBindInfo(pConnection->StmtHandle(), pConnection->ErrorHandle(), 1, i, &found, bvnp, bvnl, invp, inpl, dupl, hndl);
+//		if (error) {
+//			Error(ctx, pmapOut, pConnection->errorMessage(status));
+//			return error;
+//		}
+
+		Anything &col( *it );
+
+		long len;
+		Anything buf;
+		String strValue, strParamname( col[eColumnName].AsString() );
+
+		if (col[eInOutType] == OCI_TYPEPARAM_IN || col[eInOutType] == OCI_TYPEPARAM_INOUT) {
+			if ( !pmapIn->Get( String("Params.").Append(strParamname), strValue, ctx ) ) {
+				Error(ctx, pmapOut, String("In(out) parameter [") << strParamname << "] not found in config, is it defined in upper case letters?");
+				return true;
+			}
+			col[eDataLength] = strValue.Length();
+			col[eColumnType] = SQLT_STR;
+			len = col[eDataLength].AsLong() + 1;
+			buf = Anything((void *)(const char *)strValue, len);
+
+//			if (col[eColumnType].AsLong() == SQLT_INT) {
+//				pmapIn->Get( String("Params.").Append(strParamname), strValue, ctx );
+//				sword val = strValue.AsLong(0L);
+//				buf = Anything((void*)&val, len);
+//			}
+		} else {
+			switch ( col[eColumnType].AsLong() ) {
+				case SQLT_DAT:
+					// --- date field
+					col[eDataLength] = 9;
+					col[eColumnType] = SQLT_STR;
+					len = col[eDataLength].AsLong() + 1;
+					break;
+				case SQLT_CHR:
+				case SQLT_STR: {
+					long lBufSize( glStringBufferSize );
+					pmapIn->Get( "StringBufferSize", lBufSize, ctx );
+					col[eDataLength] = lBufSize;
+					col[eColumnType] = SQLT_STR;
+					len = col[eDataLength].AsLong() + 1;
+					break;
+				}
+				case SQLT_NUM:
+					col[eDataLength] = 38;
+					col[eColumnType] = SQLT_STR;
+					len = col[eDataLength].AsLong() + 1;
+					break;
+				default:
+					len = col[eDataLength].AsLong() + 1;
+					break;
+			}
+			buf = Anything((void *) 0, len);
+		}
+
+		col[eRawBuf] = buf;
+		Trace("binding variable: " << strParamname << ", length: " << len);
+
+		// allocate space for NULL indicator
+		Anything indicator = Anything((void *) 0, sizeof(OCIInd));
+		col[eIndicator] = indicator;
+
+		// allocate space to store effective result size
+		ub2 ub2Len( (ub2)col[eDataLength].AsLong(0L) );
+		Anything effectiveSize = Anything((void *)(ub2 *)&ub2Len, sizeof(ub2));
+		col[eEffectiveLength] = effectiveSize;
+
+		OCIBind *bndp = 0;
+		status = OCIBindByName(pConnection->StmtHandle(), &bndp, pConnection->ErrorHandle(),
+							   (text *)(const char *) strParamname, strParamname.Length(), (ub1 *) col[eRawBuf].AsCharPtr(), (sword) len, col[eColumnType].AsLong(),
+							   (dvoid *) indicator.AsCharPtr(), (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT);
+		if (pConnection->checkError(status, strErr)) {
+			Error(ctx, pmapOut, strErr);
+			return error;
+		}
+	}
+
+	TraceAny(desc, "bind description");
+	return error;
 }

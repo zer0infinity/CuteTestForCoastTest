@@ -45,6 +45,13 @@
 			/SifsCoastOrcl {
 				SelectEmployees
 				SelectEmployeesTitlesOnce
+				SPMaxSalary
+				SPExecute
+			}
+		}
+		/MapperTestDAImpl {
+			/SPSlotTest {
+				SPRenderedParamTest
 			}
 		}
 	}
@@ -58,13 +65,28 @@
 					}
 				}
 			}
+			/OracleSPMapper {
+				/SifsCoastOrclSP {
+					SPMaxSalary
+					SPExecute
+				}
+				/SPSlotTest {
+					SPRenderedParamTest
+				}
+			}
 		}
 		/Output {
 			/ResultMapper {
-				PutResultMapper
+				/PutResultMapper {
+					/SPSlotTest {
+						SPRenderedParamTest
+					}
+				}
 				/OracleDAImpl {
 					SelectEmployees
 					SelectEmployeesTitlesOnce
+					SPMaxSalary
+					SPExecute
 				}
 			}
 		}
@@ -73,7 +95,6 @@
 ######## Test specific section ########
 
 	/RunOnly {
-
 	}
 	/TestCases {
 		/SelectEmployeesTest {
@@ -222,6 +243,141 @@
 						/QuerySource	"//sifs-coast1.hsr.ch:1521/orcl"
 					}
 				}
+			}
+		}
+		/ParamTest {
+			/TheAction {
+				/CallDA 	SPSlotTest
+			}
+			/Result {
+				/TmpStore {
+					/SPSlotTest {
+						/SPName		ourSPName
+						/Param1		first
+						/SPNameNativ		ourSPName
+					}
+				}
+			}
+		}
+		/RenderedParamTest {
+			/TmpStore {
+				/P1	theContextParam
+			}
+			/TheAction {
+				/CallDA 	SPRenderedParamTest
+			}
+			/Result {
+				/TmpStore {
+					/SPSlotTest {
+						/SPName		ourSPName
+						/Param1		theContextParam
+						/SPNameNativ		ourSPName
+					}
+				}
+			}
+		}
+		/EmpSalaryTest {
+			/TheAction {
+				/CallDA 	SPMaxSalary
+			}
+			/Result {
+				/TmpStore {
+					/SPMaxSalary {
+						/Query	"BEGIN getempsalary(:ID,:SALARY); END;"
+						/QueryCount	1
+						/QueryResult {
+							{
+								/ID			7839
+								/SALARY		5000
+							}
+						}
+						/QuerySource	"//sifs-coast1.hsr.ch:1521/orcl"
+					}
+				}
+			}
+		}
+		/GetFloatTest {
+			/TmpStore {
+				/SPName	getfloat
+			}
+			/TheAction {
+				/CallDA 	SPExecute
+			}
+			/Result {
+				/TmpStore {
+					/SPExecute {
+						/Query	"BEGIN getfloat(:RESULT); END;"
+						/QueryCount	1
+						/QueryResult {
+							{
+								/RESULT		3.14
+							}
+						}
+						/QuerySource	"//sifs-coast1.hsr.ch:1521/orcl"
+					}
+				}
+			}
+		}
+		/GetStringTest {
+			/TmpStore {
+				/SPName	getstring
+			}
+			/TheAction {
+				/CallDA {
+					/DataAccess	SPExecute
+					/Parameters {
+						/LOOPCOUNT	5
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/SPExecute {
+						/Query	"BEGIN getstring(:LOOPCOUNT,:RESULT); END;"
+						/QueryCount	1
+						/QueryResult {
+							{
+								/RESULT		"aaaaa"
+							}
+						}
+						/QuerySource	"//sifs-coast1.hsr.ch:1521/orcl"
+					}
+				}
+			}
+		}
+		/GetStringTooShortTest {
+			/UseConfig	GetStringTest
+			/Replace {
+				/TmpStore.StringBufferSize	4
+				/Result.TmpStore.SPExecute {
+					/Query	"BEGIN getstring(:LOOPCOUNT,:RESULT); END;"
+					/QuerySource	"//sifs-coast1.hsr.ch:1521/orcl"
+					/Messages {
+						"OracleDAImpl::Error - ORA-06502: PL/SQL: numeric or value error: character string buffer too small\nORA-06512: at \"SCOTT.GETSTRING\", line 6\nORA-06512: at line 1\n"
+					}
+				}
+				/ExpectedResult	0
+			}
+		}
+		/GetStringDefaultMaxSizeTest {
+			/UseConfig	GetStringTest
+			/Replace {
+				/TheAction.CallDA.Parameters.LOOPCOUNT	4096
+				/Result.TmpStore.SPExecute.QueryResult:0.RESULT ignore
+			}
+		}
+		/GetStringAboveMaxSizeTest {
+			/UseConfig	GetStringTest
+			/Replace {
+				/TheAction.CallDA.Parameters.LOOPCOUNT	4097
+				/Result.TmpStore.SPExecute {
+					/Query	"BEGIN getstring(:LOOPCOUNT,:RESULT); END;"
+					/QuerySource	"//sifs-coast1.hsr.ch:1521/orcl"
+					/Messages {
+						"OracleDAImpl::Error - ORA-06502: PL/SQL: numeric or value error: character string buffer too small\nORA-06512: at \"SCOTT.GETSTRING\", line 6\nORA-06512: at line 1\n"
+					}
+				}
+				/ExpectedResult	0
 			}
 		}
 	}

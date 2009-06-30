@@ -88,6 +88,17 @@ public:
 	OCIError *ErrorHandle() {
 		return fErrhp.getHandle();
 	}
+	OCIEnv *EnvHandle() {
+		return fEnvhp.getHandle();
+	}
+
+	OCISvcCtx *SvcHandle() {
+		return fSvchp.getHandle();
+	}
+
+	OCIDescribe *DscHandle() {
+		return fDschp.getHandle();
+	}
 
 	String errorMessage(sword status);
 	bool checkError(sword status, String &message);
@@ -112,6 +123,7 @@ protected:
 	// OCI user session handle
 	oci_auto_handle<OCISession, OCI_HTYPE_SESSION> fUsrhp;
 	oci_auto_handle<OCIStmt, OCI_HTYPE_STMT> fStmthp;
+	oci_auto_handle<OCIDescribe, OCI_HTYPE_DESCRIBE> fDschp;
 };
 
 #endif /* O8CONNECTION_H_ */

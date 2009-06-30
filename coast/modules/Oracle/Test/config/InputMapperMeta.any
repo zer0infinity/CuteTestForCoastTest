@@ -12,6 +12,7 @@
 		/DBPW	"tiger"
 		/DBConnectString	"//sifs-coast1.hsr.ch:1521/orcl"
 	}
+	/SifsCoastOrclSP  %SifsCoastOrcl
 
 	/SelectEmployees {
 		/SQL	{
@@ -20,5 +21,28 @@
 	}
 	/SelectEmployeesTitlesOnce {
 		/DBResultFormat		TitlesOnce
+	}
+
+	/SPMaxSalary {
+		/Name		"getempsalary"
+		/Params {
+			/ID		7839
+		}
+	}
+	/SPSlotTest {
+		/Name	ourSPName
+		/Params {
+			/P1		first
+		}
+	}
+	/SPRenderedParamTest {
+		/Params {
+			/P1		{ /LookupMapper * }
+		}
+	}
+	/SPExecute {
+		/Name	{ /RendererMapper { /ContextLookupRenderer SPName } }
+		/Params {
+		}
 	}
 }
