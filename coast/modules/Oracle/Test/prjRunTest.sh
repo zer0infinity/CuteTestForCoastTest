@@ -9,6 +9,7 @@ DB_DROPFILE='config/drop_oratest_schema.sql'
 ## add test specific things before the call to callTest
 function prepareTest
 {
+	$DB_SHELL ${ConnectString} < ${DB_DROPFILE}
 	$DB_SHELL ${ConnectString} < ${DB_IMPORTFILE}
 	echo
 }

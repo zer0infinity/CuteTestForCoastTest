@@ -11,6 +11,7 @@ buildSettings = {
                      'configFiles'      : StanfordUtils.listFiles(['config/*.any',
                                                                    'config/*.txt',
                                                                    'config/*.tst',
+                                                                   'config/*.sql',
                                                                    'tmp/*.any']),
                      },
                  }
