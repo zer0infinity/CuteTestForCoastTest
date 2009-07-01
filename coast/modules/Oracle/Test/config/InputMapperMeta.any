@@ -8,8 +8,8 @@
 
 {
 	/SifsCoastOrcl {
-		/DBUser "SCOTT"
-		/DBPW	"tiger"
+		/DBUser "oratest"
+		/DBPW	"oratest"
 		/DBConnectString	"//sifs-coast1.hsr.ch:1521/orcl"
 	}
 	/SifsCoastOrclSP  %SifsCoastOrcl
@@ -18,6 +18,18 @@
 		/SQL	{
 			"SELECT ename, job FROM emp"
 		}
+	}
+	/LoadOratestSchema {
+		/SQL	{ /RendererMapper {
+			/SQL {
+				/StringTokenizeRenderer {
+					/String			!createOratest.any?SQL
+					/Token			"@"
+					/RenderToken	"1-"
+					/OutputFiller	"\""
+				}
+			}
+		} }
 	}
 	/SelectEmployeesTitlesOnce {
 		/DBResultFormat		TitlesOnce

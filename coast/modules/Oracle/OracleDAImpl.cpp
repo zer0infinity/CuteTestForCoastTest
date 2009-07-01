@@ -14,6 +14,7 @@
 #include "StringStream.h"
 #include "TimeStamp.h"
 #include "Dbg.h"
+#include "AnyIterators.h"
 
 #include <limits>
 #include <algorithm>
@@ -170,14 +171,20 @@ bool OracleDAImpl::Exec(Context &ctx, ParameterMapper *in, ResultMapper *out)
 								Anything record;
 								GetRecordData(desc, record, false); //TitlesOnce
 								TraceAny(record, "fetched result");
-								out->Put("QueryResult", record, ctx);
-
-								bool bShowRowCount(true);
-								in->Get("ShowQueryCount", bShowRowCount, ctx);
-								if (bShowRowCount) {
-									// append summary if extract of available data is returned
-									out->Put("QueryCount", 1L, ctx);
+								AnyExtensions::Iterator<Anything> recordIter(record);
+								Anything anyEntry;
+								String slotname;
+								while (recordIter.Next(anyEntry)) {
+									recordIter.SlotName(slotname);
+									out->Put(slotname, anyEntry, ctx);
 								}
+
+//								bool bShowRowCount(true);
+//								in->Get("ShowQueryCount", bShowRowCount, ctx);
+//								if (bShowRowCount) {
+//									// append summary if extract of available data is returned
+//									out->Put("QueryCount", 1L, ctx);
+//								}
 								bRet = true;
 								bDoRetry = false;
 

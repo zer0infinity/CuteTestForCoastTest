@@ -28,13 +28,18 @@
 	/SelectEmployeesTitlesOnce {
 		/DestinationSlot	SelectEmployeesTitlesOnce
 	}
-	/SPMaxSalary {
-		/DestinationSlot	SPMaxSalary
-	}
 	/SPSlotTest {
 		/DestinationSlot	SPSlotTest
 	}
+	/SPMaxSalary {
+		/PutPolicy			Put
+		/DestinationSlot	SPMaxSalary
+	}
 	/SPExecute {
+		/PutPolicy			Put
 		/DestinationSlot	SPExecute
+	}
+	/LoadOratestSchema {
+		/DestinationSlot	LoadOratestSchema
 	}
 }

@@ -23,7 +23,11 @@
 	/OracleDAImpl {
 		/MainSwitch						1
 		/EnableAll						11
-		/DoPrepareSQL					-10
+		/DoPrepareSQL {
+			/MainSwitch					10
+			/EnableAll					10
+			/Query						10
+		}
 		/GetRecordData {
 			/MainSwitch					10
 			/EnableAll					10
@@ -84,8 +88,9 @@
 		/EnableAll						10
 	}
 	/ParameterMapper {
-		/MainSwitch						1
+		/MainSwitch						0
 		/EnableAll						10
+		/DoSelectScript					-10
 	}
 	/PeriodicAction {
 		/MainSwitch						0

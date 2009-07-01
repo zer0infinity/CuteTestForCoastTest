@@ -47,6 +47,7 @@
 				SelectEmployeesTitlesOnce
 				SPMaxSalary
 				SPExecute
+				LoadOratestSchema
 			}
 		}
 		/MapperTestDAImpl {
@@ -63,6 +64,7 @@
 					/SelectEmployees {
 						SelectEmployeesTitlesOnce
 					}
+					LoadOratestSchema
 				}
 			}
 			/OracleSPMapper {
@@ -87,6 +89,7 @@
 					SelectEmployeesTitlesOnce
 					SPMaxSalary
 					SPExecute
+					LoadOratestSchema
 				}
 			}
 		}
@@ -284,13 +287,8 @@
 				/TmpStore {
 					/SPMaxSalary {
 						/Query	"BEGIN getempsalary(:ID,:SALARY); END;"
-						/QueryCount	1
-						/QueryResult {
-							{
-								/ID			7839
-								/SALARY		5000
-							}
-						}
+						/ID			7839
+						/SALARY		5000
 						/QuerySource	"//sifs-coast1.hsr.ch:1521/orcl"
 					}
 				}
@@ -307,12 +305,7 @@
 				/TmpStore {
 					/SPExecute {
 						/Query	"BEGIN getfloat(:RESULT); END;"
-						/QueryCount	1
-						/QueryResult {
-							{
-								/RESULT		3.14
-							}
-						}
+						/RESULT		3.14
 						/QuerySource	"//sifs-coast1.hsr.ch:1521/orcl"
 					}
 				}
@@ -334,12 +327,7 @@
 				/TmpStore {
 					/SPExecute {
 						/Query	"BEGIN getstring(:LOOPCOUNT,:RESULT); END;"
-						/QueryCount	1
-						/QueryResult {
-							{
-								/RESULT		"aaaaa"
-							}
-						}
+						/RESULT		"aaaaa"
 						/QuerySource	"//sifs-coast1.hsr.ch:1521/orcl"
 					}
 				}
@@ -353,7 +341,7 @@
 					/Query	"BEGIN getstring(:LOOPCOUNT,:RESULT); END;"
 					/QuerySource	"//sifs-coast1.hsr.ch:1521/orcl"
 					/Messages {
-						"OracleDAImpl::Error - ORA-06502: PL/SQL: numeric or value error: character string buffer too small\nORA-06512: at \"SCOTT.GETSTRING\", line 6\nORA-06512: at line 1\n"
+						"OracleDAImpl::Error - ORA-06502: PL/SQL: numeric or value error: character string buffer too small\nORA-06512: at \"ORATEST.GETSTRING\", line 6\nORA-06512: at line 1\n"
 					}
 				}
 				/ExpectedResult	0
@@ -363,7 +351,7 @@
 			/UseConfig	GetStringTest
 			/Replace {
 				/TheAction.CallDA.Parameters.LOOPCOUNT	4096
-				/Result.TmpStore.SPExecute.QueryResult:0.RESULT ignore
+				/Result.TmpStore.SPExecute.RESULT ignore
 			}
 		}
 		/GetStringAboveMaxSizeTest {
@@ -374,7 +362,7 @@
 					/Query	"BEGIN getstring(:LOOPCOUNT,:RESULT); END;"
 					/QuerySource	"//sifs-coast1.hsr.ch:1521/orcl"
 					/Messages {
-						"OracleDAImpl::Error - ORA-06502: PL/SQL: numeric or value error: character string buffer too small\nORA-06512: at \"SCOTT.GETSTRING\", line 6\nORA-06512: at line 1\n"
+						"OracleDAImpl::Error - ORA-06502: PL/SQL: numeric or value error: character string buffer too small\nORA-06512: at \"ORATEST.GETSTRING\", line 6\nORA-06512: at line 1\n"
 					}
 				}
 				/ExpectedResult	0
