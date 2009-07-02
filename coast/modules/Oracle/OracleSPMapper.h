@@ -10,20 +10,25 @@
 #define _OracleSPMapper_H
 
 //---- ParameterMapper include -------------------------------------------------
+#include "config_coastoracle.h"
 #include "Mapper.h"
 
 //---- OracleSPMapper ----------------------------------------------------------
-//! <B>really brief class description</B>
+//! <B>provide OracleDAImpl with stored procedure/function specific parameters</B>
 /*!
-<B>Configuration:</B><PRE>
+\par Configuration
+\code
 {
-	/Slot1		[mandatory|optional], ...
-	...
-}</PRE>
-further explanation of the purpose of the class OracleSPMapper
-this may contain <B>HTML-Tags</B>
+	/Name		MapperSpec				mandatory, name of stored procedure/function to execute
+	/Params {							mandatory if IN or INOUT parameter values are used in call
+		/<PARAMNAME>	MapperSpec		mandatory, IN or INOUT parameter name and its value. The name must match with the parameter name of the declared stored procedure/function and must be written in all uppercase letters!
+		...
+	}
+}
+\endcode
+\note Parameter names need to be written in all uppercase letters, otherwise the implemented mapping will not work - an appropriate message will be written into the Messages slot.
 */
-class OracleSPMapper : public ParameterMapper
+class EXPORTDECL_COASTORACLE OracleSPMapper : public ParameterMapper
 {
 public:
 	//--- constructors

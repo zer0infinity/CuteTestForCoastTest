@@ -8,15 +8,18 @@
 #include <memory>
 
 //---- OracleModule ----------------------------------------------------------
-//: comment action
-//	Structure of config:
-//<PRE>	{
-//		/ConnectionPool {
-//			/ParallelQueries		long	defines number of parallel sql queries which can be issued, default 5
-//			/CloseConnectionTimeout	long	timeout after which to close open connections (not in use)
-//		}
-//      ...
-//	}</PRE>
+//! <B>Module to initialize Oracle Data Access</B>
+/*!
+\par Configuration
+\code
+{
+	/ConnectionPool {							optional, ConnectionPool configuration, if not specified, default values get used
+		/ParallelQueries			long		defines number of parallel queries/sp-calls which can be issued, default 5
+		/CloseConnectionTimeout		long		timeout after which to close open connections
+	}
+}
+\endcode
+*/
 class EXPORTDECL_COASTORACLE OracleModule : public WDModule
 {
 public:

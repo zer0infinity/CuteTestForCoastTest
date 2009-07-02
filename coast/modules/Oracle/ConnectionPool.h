@@ -18,10 +18,16 @@ class OracleConnection;
 class PeriodicAction;
 
 //---- ConnectionPool ----------------------------------------------------------
-//:single line description of the class
-// further explanation of the purpose of the class
-// this may contain <B>HTML-Tags</B>
-// ...
+//! <B>Almost generic class to handle backend connection pooling</B>
+/*!
+\par Configuration
+\code
+{
+	/ParallelQueries			long		defines number of parallel queries/sp-calls which can be issued in total, default 5
+	/CloseConnectionTimeout		long		timeout after which to close open connections
+}
+\endcode
+*/
 class EXPORTDECL_COASTORACLE ConnectionPool
 {
 public:
