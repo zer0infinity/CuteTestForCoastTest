@@ -531,7 +531,7 @@ bool OracleDAImpl::GetSPDescription(Anything &desc, ResultMapper *pmapOut, Strin
 	StartTrace(OracleDAImpl.GetSPDescription);
 	// returns array of element descriptions: each description is
 	// an Anything array with 4 entries:
-	// name of the collumn, type of the data, length of the data in bytes, scale
+	// name of the column, type of the data, length of the data in bytes, scale
 
 	text const *objptr = reinterpret_cast<const text *> ((const char *)spname);
 	bool error(false);
@@ -628,12 +628,13 @@ bool OracleDAImpl::GetSPDescription(Anything &desc, ResultMapper *pmapOut, Strin
 		}
 		Trace(String("size: ") << (int)data_len);
 
-		Anything &param = desc[String((char*) name, namelen)];
+		Anything param;
 		param[0L] = Anything(); // dummy
 		param[eColumnName] = String((char *) name, namelen);
 		param[eColumnType] = dtype;
 		param[eDataLength] = (int) data_len;
 		param[eInOutType] = iomode;
+		desc.Append(param);
 	}
 
 	TraceAny(desc, "stored procedure description");
@@ -664,41 +665,23 @@ bool OracleDAImpl::BindSPVariables(Anything &desc, ParameterMapper *pmapIn, Resu
 {
 	StartTrace(OracleDAImpl.BindSPVariables);
 	// use 'desc' to allocate output area used by oracle library
-	// to store fetched data (binary Anything buffers are allocated and
+	// to bind variables (binary Anything buffers are allocated and
 	// stored within the 'desc' structure... for automatic storage
 	// management)
+
 	bool error(false);
 	String strErr;
 	sword status;
 
-//	sb4 found = 0;
-//	text *bvnp[1];
-//	ub1 bvnl[1];
-//	text *invp[1];
-//	ub1 inpl[1];
-//	ub1 dupl[1];
-//	OCIBind *hndl[1];
-//	status = OCIStmtGetBindInfo(pConnection->StmtHandle(), pConnection->ErrorHandle(), 0, 1, &found, bvnp, bvnl, invp, inpl, dupl, hndl);
-//	error = pConnection->checkError(status);
-//	if (error) {
-//		Error(ctx, pmapOut, pConnection->errorMessage(status));
-//	}
-
-//	Trace(String("found variables: ") << abs(found));
-	Anything_iterator it( desc.begin() );
-	for (; it != desc.end(); ++it) {
-//	for(int i = 1; i <= abs(found); ++i) { // oracle starts counting on 1
-//		status = OCIStmtGetBindInfo(pConnection->StmtHandle(), pConnection->ErrorHandle(), 1, i, &found, bvnp, bvnl, invp, inpl, dupl, hndl);
-//		if (error) {
-//			Error(ctx, pmapOut, pConnection->errorMessage(status));
-//			return error;
-//		}
-
-		Anything &col( *it );
+	AnyExtensions::Iterator<Anything> descIter(desc);
+	Anything col;
+	while (descIter.Next(col)) {
+		long bindPos( descIter.Index() + 1 ); // first bind variable position is 1
 
 		long len;
 		Anything buf;
-		String strValue, strParamname( col[eColumnName].AsString() );
+		String strValue;
+		String strParamname( col[eColumnName].AsString() );
 
 		if (col[eInOutType] == OCI_TYPEPARAM_IN || col[eInOutType] == OCI_TYPEPARAM_INOUT) {
 			if ( !pmapIn->Get( String("Params.").Append(strParamname), strValue, ctx ) ) {
@@ -709,16 +692,9 @@ bool OracleDAImpl::BindSPVariables(Anything &desc, ParameterMapper *pmapIn, Resu
 			col[eColumnType] = SQLT_STR;
 			len = col[eDataLength].AsLong() + 1;
 			buf = Anything((void *)(const char *)strValue, len);
-
-//			if (col[eColumnType].AsLong() == SQLT_INT) {
-//				pmapIn->Get( String("Params.").Append(strParamname), strValue, ctx );
-//				sword val = strValue.AsLong(0L);
-//				buf = Anything((void*)&val, len);
-//			}
 		} else {
 			switch ( col[eColumnType].AsLong() ) {
 				case SQLT_DAT:
-					// --- date field
 					col[eDataLength] = 9;
 					col[eColumnType] = SQLT_STR;
 					len = col[eDataLength].AsLong() + 1;
@@ -737,6 +713,12 @@ bool OracleDAImpl::BindSPVariables(Anything &desc, ParameterMapper *pmapIn, Resu
 					col[eColumnType] = SQLT_STR;
 					len = col[eDataLength].AsLong() + 1;
 					break;
+				case SQLT_CUR:
+				case SQLT_RSET: {
+					//TODO
+					col[eColumnType] = SQLT_RSET;
+					break;
+				}
 				default:
 					len = col[eDataLength].AsLong() + 1;
 					break;
@@ -757,10 +739,11 @@ bool OracleDAImpl::BindSPVariables(Anything &desc, ParameterMapper *pmapIn, Resu
 		col[eEffectiveLength] = effectiveSize;
 
 		OCIBind *bndp = 0;
-		status = OCIBindByName(pConnection->StmtHandle(), &bndp, pConnection->ErrorHandle(),
-							   (text *)(const char *) strParamname, strParamname.Length(), (ub1 *) col[eRawBuf].AsCharPtr(), (sword) len, col[eColumnType].AsLong(),
-							   (dvoid *) indicator.AsCharPtr(), (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT);
-		if (pConnection->checkError(status, strErr)) {
+		status = OCIBindByPos(pConnection->StmtHandle(), &bndp, pConnection->ErrorHandle(),
+							  (ub4) bindPos, (ub1 *) col[eRawBuf].AsCharPtr(), (sword) len, col[eColumnType].AsLong(),
+							  (dvoid *) indicator.AsCharPtr(), (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT);
+		error = pConnection->checkError(status, strErr);
+		if (error) {
 			Error(ctx, pmapOut, strErr);
 			return error;
 		}
