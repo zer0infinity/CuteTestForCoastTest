@@ -388,7 +388,7 @@
 		/FunctionTestOverriddenReturn {
 			/UseConfig	FunctionTest
 			/Replace {
-				/TmpStore.SPReturn	"MyReturn"
+				/TmpStore.Return	"MyReturn"
 				/Result.TmpStore.SPExecute {
 					/Query	"BEGIN :MyReturn := getmaxsalary(); END;"
 					/MyReturn	5000

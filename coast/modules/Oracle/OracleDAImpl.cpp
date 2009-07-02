@@ -617,7 +617,7 @@ bool OracleDAImpl::GetSPDescription(String const &spname, bool &pIsFunction, Any
 		if (pIsFunction && i == start && strName.Length() == 0) {
 			Trace("Overriding return param name");
 			strName = spname;
-			pmapIn->Get( "SPReturn", strName, ctx );
+			pmapIn->Get( "Return", strName, ctx );
 		}
 		Trace("Name: " << strName);
 
