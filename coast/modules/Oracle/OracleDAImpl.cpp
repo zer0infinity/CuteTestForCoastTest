@@ -148,9 +148,10 @@ bool OracleDAImpl::Exec(Context &ctx, ParameterMapper *in, ResultMapper *out)
 						String strErr;
 
 						MetaThing desc;
-						error = GetSPDescription(desc, out, command, pConnection, ctx);
+						bool bIsFunction(false);
+						error = GetSPDescription(command, bIsFunction, desc, in, out, pConnection, ctx);
 
-						String strSP( ConstructSPStr(command, desc) );
+						String strSP( ConstructSPStr(command, bIsFunction, desc) );
 
 						Trace(String("prepare stored procedure: ") << strSP);
 						error = pConnection->checkError(pConnection->StmtPrepare((text *) (const char *) strSP), strErr);
@@ -526,7 +527,7 @@ void OracleDAImpl::FetchRowData(Anything &descs, ParameterMapper *pmapIn, Result
 	}
 }
 
-bool OracleDAImpl::GetSPDescription(Anything &desc, ResultMapper *pmapOut, String const &spname, OracleConnection *pConnection, Context &ctx)
+bool OracleDAImpl::GetSPDescription(String const &spname, bool &pIsFunction, Anything &desc, ParameterMapper *pmapIn, ResultMapper *pmapOut, OracleConnection *pConnection, Context &ctx)
 {
 	StartTrace(OracleDAImpl.GetSPDescription);
 	// returns array of element descriptions: each description is
@@ -537,11 +538,11 @@ bool OracleDAImpl::GetSPDescription(Anything &desc, ResultMapper *pmapOut, Strin
 	bool error(false);
 	String strErr;
 
-	bool bIsFunction(false);
+	pIsFunction = false;
 	Trace("get the describe handle for the procedure");
 	error = pConnection->checkError(OCIDescribeAny(pConnection->SvcHandle(), pConnection->ErrorHandle(), (dvoid *)objptr, (ub4)strlen((char *)objptr), OCI_OTYPE_NAME, 0, OCI_PTYPE_PROC, pConnection->DscHandle()), strErr);
 	if (error) {
-		bIsFunction = true;
+		pIsFunction = true;
 		error = pConnection->checkError(OCIDescribeAny(pConnection->SvcHandle(), pConnection->ErrorHandle(), (dvoid *)objptr, (ub4)strlen((char *)objptr), OCI_OTYPE_NAME, 0, OCI_PTYPE_FUNC, pConnection->DscHandle()), strErr);
 		if (error) {
 			Error(ctx, pmapOut, String("DB-Object is neither procedure nor function (") << strErr << ")");
@@ -584,7 +585,7 @@ bool OracleDAImpl::GetSPDescription(Anything &desc, ResultMapper *pmapOut, Strin
 	// For a procedure, we begin with i = 1; for a function, we begin with i = 0.
 	int start = 0;
 	int end = numargs;
-	if (!bIsFunction) {
+	if (!pIsFunction) {
 		++start;
 		++end;
 	}
@@ -604,14 +605,21 @@ bool OracleDAImpl::GetSPDescription(Anything &desc, ResultMapper *pmapOut, Strin
 			Error(ctx, pmapOut, strErr);
 			return error;
 		}
-		Trace(String("data type: ") << dtype);
+		Trace("Data type: " << dtype);
 
 		error = pConnection->checkError(OCIAttrGet((dvoid *) arg, OCI_DTYPE_PARAM, (dvoid *) &name, (ub4 *) &namelen, OCI_ATTR_NAME, pConnection->ErrorHandle()), strErr);
 		if (error) {
 			Error(ctx, pmapOut, strErr);
 			return error;
 		}
-		Trace(String("name: ") << String((char *)name, namelen));
+		String strName((char *) name, namelen);
+		// the first param of a function is the return param
+		if (pIsFunction && i == start && strName.Length() == 0) {
+			Trace("Overriding return param name");
+			strName = spname;
+			pmapIn->Get( "SPReturn", strName, ctx );
+		}
+		Trace("Name: " << strName);
 
 		// 0 = IN (OCI_TYPEPARAM_IN), 1 = OUT (OCI_TYPEPARAM_OUT), 2 = IN/OUT (OCI_TYPEPARAM_INOUT)
 		error = pConnection->checkError(OCIAttrGet((dvoid *) arg, OCI_DTYPE_PARAM, (dvoid *) &iomode, (ub4 *) 0, OCI_ATTR_IOMODE, pConnection->ErrorHandle()), strErr);
@@ -619,18 +627,18 @@ bool OracleDAImpl::GetSPDescription(Anything &desc, ResultMapper *pmapOut, Strin
 			Error(ctx, pmapOut, strErr);
 			return error;
 		}
-		Trace(String("IO type: ") << iomode);
+		Trace("IO type: " << iomode);
 
 		error = pConnection->checkError(OCIAttrGet((dvoid *) arg, OCI_DTYPE_PARAM, (dvoid *) &data_len, (ub4 *) 0, OCI_ATTR_DATA_SIZE, pConnection->ErrorHandle()), strErr);
 		if (error) {
 			Error(ctx, pmapOut, strErr);
 			return error;
 		}
-		Trace(String("size: ") << (int)data_len);
+		Trace("Size: " << (int)data_len);
 
 		Anything param;
 		param[0L] = Anything(); // dummy
-		param[eColumnName] = String((char *) name, namelen);
+		param[eColumnName] = strName;
 		param[eColumnType] = dtype;
 		param[eDataLength] = (int) data_len;
 		param[eInOutType] = iomode;
@@ -652,11 +660,17 @@ struct ConstructPlSql {
 	}
 };
 
-String OracleDAImpl::ConstructSPStr( String &command, Anything &desc )
+String OracleDAImpl::ConstructSPStr( String &command, bool pIsFunction, Anything const &desc )
 {
 	String plsql, strParams;
-	std::for_each(desc.begin(), desc.end(), ConstructPlSql(strParams));
-	plsql << "BEGIN " << command << "(" << strParams << "); END;";
+	plsql << "BEGIN ";
+	Anything_const_iterator begin( desc.begin() );
+	if (pIsFunction) {
+		plsql << ":" << (*begin).At(OracleDAImpl::eColumnName).AsString() << " := ";
+		++begin;
+	}
+	std::for_each(begin, desc.end(), ConstructPlSql(strParams));
+	plsql << command << "(" << strParams << "); END;";
 	StatTrace(OracleDAImpl.ConstructSPStr, "SP string [" << plsql << "]", Storage::Current());
 	return plsql;
 }

@@ -56,7 +56,7 @@ protected:
 	bool GetOutputDescription(Anything &desc, ResultMapper *pmapOut, ub2 &fncode, OracleConnection *pConnection, Context &ctx);
 	bool DefineOutputArea(Anything &desc, ResultMapper *pmapOut, OracleConnection *pConnection, Context &ctx);
 
-	bool GetSPDescription(Anything &desc, ResultMapper *pmapOut, String const &spname, OracleConnection *pConnection, Context &ctx);
+	bool GetSPDescription(String const &spname, bool &pIsFunction, Anything &desc, ParameterMapper *pmapIn, ResultMapper *pmapOut, OracleConnection *pConnection, Context &ctx);
 	bool BindSPVariables(Anything &desc, ParameterMapper *pmapIn, ResultMapper *pmapOut, OracleConnection *pConnection, Context &ctx);
 
 private:
@@ -64,7 +64,7 @@ private:
 	bool DoPrepareSQL( String &command, Context &ctx, ParameterMapper *in);
 	bool DoPrepareSP( String &command, Context &ctx, ParameterMapper *in);
 
-	String ConstructSPStr( String &command, Anything &desc );
+	String ConstructSPStr( String &command, bool pIsFunction, Anything const &desc );
 
 	void Warning(Context &ctx, ResultMapper *pResultMapper, String str);
 	void Error(Context &ctx, ResultMapper *pResultMapper, String str);

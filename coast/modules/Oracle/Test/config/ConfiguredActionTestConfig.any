@@ -368,5 +368,33 @@
 				/ExpectedResult	0
 			}
 		}
+		/FunctionTest {
+			/TmpStore {
+				/SPName	getmaxsalary
+			}
+			/TheAction {
+				/CallDA 	SPExecute
+			}
+			/Result {
+				/TmpStore {
+					/SPExecute {
+						/Query	"BEGIN :getmaxsalary := getmaxsalary(); END;"
+						/getmaxsalary	5000
+						/QuerySource	"//sifs-coast1.hsr.ch:1521/orcl"
+					}
+				}
+			}
+		}
+		/FunctionTestOverriddenReturn {
+			/UseConfig	FunctionTest
+			/Replace {
+				/TmpStore.SPReturn	"MyReturn"
+				/Result.TmpStore.SPExecute {
+					/Query	"BEGIN :MyReturn := getmaxsalary(); END;"
+					/MyReturn	5000
+					/QuerySource	"//sifs-coast1.hsr.ch:1521/orcl"
+				}
+			}
+		}
 	}
 }
