@@ -51,8 +51,8 @@
 			}
 		}
 		/MapperTestDAImpl {
-			/SPSlotTest {
-				SPRenderedParamTest
+			/OracleSPMapperSlotTest {
+				SPRenderedOracleSPMapperParamTest
 			}
 		}
 	}
@@ -72,16 +72,16 @@
 					SPMaxSalary
 					SPExecute
 				}
-				/SPSlotTest {
-					SPRenderedParamTest
+				/OracleSPMapperSlotTest {
+					SPRenderedOracleSPMapperParamTest
 				}
 			}
 		}
 		/Output {
 			/ResultMapper {
 				/PutResultMapper {
-					/SPSlotTest {
-						SPRenderedParamTest
+					/OracleSPMapperSlotTest {
+						SPRenderedOracleSPMapperParamTest
 					}
 				}
 				/OracleDAImpl {
@@ -248,13 +248,13 @@
 				}
 			}
 		}
-		/ParamTest {
+		/OracleSPMapperParamTest {
 			/TheAction {
-				/CallDA 	SPSlotTest
+				/CallDA 	OracleSPMapperSlotTest
 			}
 			/Result {
 				/TmpStore {
-					/SPSlotTest {
+					/OracleSPMapperSlotTest {
 						/SPName		ourSPName
 						/Param1		first
 						/SPNameNativ		ourSPName
@@ -262,16 +262,16 @@
 				}
 			}
 		}
-		/RenderedParamTest {
+		/RenderedOracleSPMapperParamTest {
 			/TmpStore {
 				/P1	theContextParam
 			}
 			/TheAction {
-				/CallDA 	SPRenderedParamTest
+				/CallDA 	SPRenderedOracleSPMapperParamTest
 			}
 			/Result {
 				/TmpStore {
-					/SPSlotTest {
+					/OracleSPMapperSlotTest {
 						/SPName		ourSPName
 						/Param1		theContextParam
 						/SPNameNativ		ourSPName

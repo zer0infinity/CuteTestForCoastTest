@@ -28,8 +28,8 @@
 	/SelectEmployeesTitlesOnce {
 		/DestinationSlot	SelectEmployeesTitlesOnce
 	}
-	/SPSlotTest {
-		/DestinationSlot	SPSlotTest
+	/OracleSPMapperSlotTest {
+		/DestinationSlot	OracleSPMapperSlotTest
 	}
 	/SPMaxSalary {
 		/PutPolicy			Put
@@ -38,8 +38,5 @@
 	/SPExecute {
 		/PutPolicy			Put
 		/DestinationSlot	SPExecute
-	}
-	/LoadOratestSchema {
-		/DestinationSlot	LoadOratestSchema
 	}
 }

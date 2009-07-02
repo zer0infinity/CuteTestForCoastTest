@@ -19,18 +19,6 @@
 			"SELECT ename, job FROM emp"
 		}
 	}
-	/LoadOratestSchema {
-		/SQL	{ /RendererMapper {
-			/SQL {
-				/StringTokenizeRenderer {
-					/String			!createOratest.any?SQL
-					/Token			"@"
-					/RenderToken	"1-"
-					/OutputFiller	"\""
-				}
-			}
-		} }
-	}
 	/SelectEmployeesTitlesOnce {
 		/DBResultFormat		TitlesOnce
 	}
@@ -41,13 +29,13 @@
 			/ID		7839
 		}
 	}
-	/SPSlotTest {
+	/OracleSPMapperSlotTest {
 		/Name	ourSPName
 		/Params {
 			/P1		first
 		}
 	}
-	/SPRenderedParamTest {
+	/SPRenderedOracleSPMapperParamTest {
 		/Params {
 			/P1		{ /LookupMapper * }
 		}
