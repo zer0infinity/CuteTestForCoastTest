@@ -1,3 +1,4 @@
+from __future__ import with_statement
 import os, subprocess
 import StanfordUtils
 
@@ -5,10 +6,10 @@ packagename = StanfordUtils.getPackageName(__name__)
 
 def runSQL(connectstring, filename):
     targets = StanfordUtils.programLookup.getPackageTarget('oracle', 'sqlplus')
-    
+
     if not targets['target'] or not os.path.isfile(filename):
         return False
-    
+
     args = [targets['target'].abspath, connectstring]
     res = 0
     with open(filename) as file:
@@ -35,7 +36,7 @@ buildSettings = {
                                                                    'config/*.tst',
                                                                    'config/*.sql',
                                                                    'tmp/*.any']),
-                     'runConfig'        : { 
+                     'runConfig'        : {
                                            'setUp': setUp,
                                            'tearDown': tearDown,
                                           },
