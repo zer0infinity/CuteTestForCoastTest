@@ -42,9 +42,8 @@
 		}
 	}
 	/OracleConnection {
-		/MainSwitch						0
+		/MainSwitch						10
 		/EnableAll						10
-		/checkerr						10
 	}
 	/ConnectionPool {
 		/MainSwitch						0

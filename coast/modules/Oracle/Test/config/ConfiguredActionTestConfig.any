@@ -98,6 +98,8 @@
 ######## Test specific section ########
 
 	/RunOnly {
+		#GetStringTest
+		FunctionTest
 	}
 	/TestCases {
 		/SelectEmployeesTest {

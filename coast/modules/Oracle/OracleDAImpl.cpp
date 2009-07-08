@@ -193,13 +193,15 @@ bool OracleDAImpl::Exec(Context &ctx, ParameterMapper *in, ResultMapper *out)
 								// out->Put("SP_Retcode", strRetcode, ctx);
 							}
 						}
+						// according to documentation, def handles will get cleaned too
+						pConnection->StmtCleanup();
 					} else {
 						out->Put("Messages", "Rendered slot SQL resulted in an empty string", ctx);
 						bDoRetry = false;
 					}
 				}
 			}
-			if (pConnection) {
+			if (pConnectionPool && pConnection) {
 				pConnectionPool->ReleaseConnection(pConnection, bIsOpen, server, user);
 			}
 			if (bDoRetry && lTryCount > 0) {
@@ -540,10 +542,15 @@ bool OracleDAImpl::GetSPDescription(String const &spname, bool &pIsFunction, Any
 
 	pIsFunction = false;
 	Trace("get the describe handle for the procedure");
-	error = pConnection->checkError(OCIDescribeAny(pConnection->SvcHandle(), pConnection->ErrorHandle(), (dvoid *)objptr, (ub4)strlen((char *)objptr), OCI_OTYPE_NAME, 0, OCI_PTYPE_PROC, pConnection->DscHandle()), strErr);
+	DscHandleType aDscHandle;
+	OCIHandleAlloc(pConnection->EnvHandle(), aDscHandle.getVoidAddr(), (ub4)OCI_HTYPE_DESCRIBE, 0, 0);
+	error = pConnection->checkError(OCIDescribeAny(pConnection->SvcHandle(), pConnection->ErrorHandle(), (dvoid *)objptr, (ub4)strlen((char *)objptr), OCI_OTYPE_NAME, 0, OCI_PTYPE_PROC, aDscHandle.getHandle()), strErr);
+	Trace("dscaddr after describe proc: &" << (long)&aDscHandle.fHandle << " content: " << (long)aDscHandle.getHandle());
 	if (error) {
+		Trace("try to describe function");
 		pIsFunction = true;
-		error = pConnection->checkError(OCIDescribeAny(pConnection->SvcHandle(), pConnection->ErrorHandle(), (dvoid *)objptr, (ub4)strlen((char *)objptr), OCI_OTYPE_NAME, 0, OCI_PTYPE_FUNC, pConnection->DscHandle()), strErr);
+		error = pConnection->checkError(OCIDescribeAny(pConnection->SvcHandle(), pConnection->ErrorHandle(), (dvoid *)objptr, (ub4)strlen((char *)objptr), OCI_OTYPE_NAME, 0, OCI_PTYPE_FUNC, aDscHandle.getHandle()), strErr);
+		Trace("dscaddr after describe func: &" << (long)&aDscHandle.fHandle << " content: " << (long)aDscHandle.getHandle());
 		if (error) {
 			Error(ctx, pmapOut, String("DB-Object is neither procedure nor function (") << strErr << ")");
 			return error;
@@ -552,12 +559,12 @@ bool OracleDAImpl::GetSPDescription(String const &spname, bool &pIsFunction, Any
 
 	Trace("get the parameter handle");
 	OCIParam *parmh( 0 );
-	error = pConnection->checkError(OCIAttrGet(pConnection->DscHandle(), OCI_HTYPE_DESCRIBE, (dvoid *)&parmh, (ub4 *)0, OCI_ATTR_PARAM, pConnection->ErrorHandle()), strErr);
+	error = pConnection->checkError(OCIAttrGet(aDscHandle.getHandle(), OCI_HTYPE_DESCRIBE, (dvoid *)&parmh, (ub4 *)0, OCI_ATTR_PARAM, pConnection->ErrorHandle()), strErr);
 	if (error) {
 		Error(ctx, pmapOut, strErr);
 		return error;
 	}
-
+	Trace("addr of parmh: &" << (long)parmh);
 	Trace("get the number of arguments and the arg list");
 	OCIParam *arglst( 0 );
 	ub2 numargs = 0;
@@ -692,7 +699,7 @@ bool OracleDAImpl::BindSPVariables(Anything &desc, ParameterMapper *pmapIn, Resu
 	while (descIter.Next(col)) {
 		long bindPos( descIter.Index() + 1 ); // first bind variable position is 1
 
-		long len;
+		long len(0L);
 		Anything buf;
 		String strValue;
 		String strParamname( col[eColumnName].AsString() );
@@ -731,13 +738,19 @@ bool OracleDAImpl::BindSPVariables(Anything &desc, ParameterMapper *pmapIn, Resu
 				case SQLT_RSET: {
 					//TODO
 					col[eColumnType] = SQLT_RSET;
+					len = sizeof(OCIStmt *);
+//				OCIStmt* pHndl;
+//				OCIHandleAlloc();
+//				buf = Anything();
 					break;
 				}
 				default:
 					len = col[eDataLength].AsLong() + 1;
 					break;
 			}
-			buf = Anything((void *) 0, len);
+			if ( buf.IsNull() ) {
+				buf = Anything((void *) 0, len);
+			}
 		}
 
 		col[eRawBuf] = buf;
@@ -754,7 +767,7 @@ bool OracleDAImpl::BindSPVariables(Anything &desc, ParameterMapper *pmapIn, Resu
 
 		OCIBind *bndp = 0;
 		status = OCIBindByPos(pConnection->StmtHandle(), &bndp, pConnection->ErrorHandle(),
-							  (ub4) bindPos, (ub1 *) col[eRawBuf].AsCharPtr(), (sword) len, col[eColumnType].AsLong(),
+							  (ub4) bindPos, (dvoid *) col[eRawBuf].AsCharPtr(), (sword) len, col[eColumnType].AsLong(),
 							  (dvoid *) indicator.AsCharPtr(), (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT);
 		error = pConnection->checkError(status, strErr);
 		if (error) {

@@ -9,7 +9,8 @@
 #if (1)
 dvoid *malloc_func(dvoid * /* ctxp */, size_t size)
 {
-	dvoid *ptr(malloc(size));
+//	dvoid * ptr(malloc(size));
+	dvoid *ptr(Storage::Global()->Malloc(size));
 	StatTrace(OracleConnection.malloc_func, "size: " << (long)size << " ptr: &" << (long)ptr, Storage::Current());
 	return ptr;
 }
@@ -22,7 +23,8 @@ dvoid *realloc_func(dvoid * /* ctxp */, dvoid *ptr, size_t size)
 void free_func(dvoid * /* ctxp */, dvoid *ptr)
 {
 	StatTrace(OracleConnection.free_func, "ptr: &" << (long)ptr, Storage::Current());
-	free(ptr);
+//	free(ptr);
+	Storage::Global()->Free(ptr);
 }
 #else
 #	define	malloc_func		NULL
@@ -48,51 +50,6 @@ OracleConnection::~OracleConnection()
 	StartTrace(OracleConnection.~OracleConnection);
 	// disconnect if OracleConnection exists
 	Close();
-}
-
-sword OracleConnection::AllocStmtHandle()
-{
-	StartTrace(OracleConnection.AllocStmtHandle);
-	// allocates and returns new statement handle
-	return OCIHandleAlloc(fEnvhp.getHandle(), fStmthp.getVoidAddr(), (ub4) OCI_HTYPE_STMT, (size_t) 0, (dvoid **) 0);
-}
-
-void OracleConnection::StmtCleanup()
-{
-	StartTrace(OracleConnection.StmtCleanup);
-	fStmthp.reset();
-}
-
-sword OracleConnection::GetReplyDescription()
-{
-	StartTrace(OracleConnection.GetReplyDescription);
-	// retrieves descriptions of return values for a
-	// given SQL statement
-
-	return OCIStmtExecute(fSvchp.getHandle(), fStmthp.getHandle(), fErrhp.getHandle(), (ub4) 1, (ub4) 0, (CONST OCISnapshot *) NULL, (OCISnapshot *) NULL, OCI_DESCRIBE_ONLY);
-}
-
-sword OracleConnection::ExecuteStmt()
-{
-	StartTrace(OracleConnection.ExecuteStmt);
-	// executes a SQL statement (first row is also fetched)
-
-	return OCIStmtExecute(fSvchp.getHandle(), fStmthp.getHandle(), fErrhp.getHandle(), (ub4) 1, (ub4) 0, (CONST OCISnapshot *) NULL, (OCISnapshot *) NULL, OCI_COMMIT_ON_SUCCESS);
-}
-
-sword OracleConnection::StmtPrepare(text *stmt)
-{
-	StartTrace(OracleConnection.StmtPrepare);
-	// prepare SQL statement for execution (not much to do in
-	// our environment, since the complete statement is already
-	// constructed and binds of input variables are not necessary)
-
-	// --- alloc statement handle
-	sword sStatus = AllocStmtHandle();
-	if (checkError(sStatus)) {
-		return sStatus;
-	}
-	return OCIStmtPrepare(fStmthp.getHandle(), fErrhp.getHandle(), stmt, (ub4) strlen((const char *) stmt), (ub4) OCI_NTV_SYNTAX, (ub4) OCI_DEFAULT);
 }
 
 bool OracleConnection::Open(String const &strServer, String const &strUsername, String const &strPassword)
@@ -207,6 +164,7 @@ bool OracleConnection::Close(bool bForce)
 	fErrhp.reset();
 	fUsrhp.reset();
 	fEnvhp.reset();
+	fDschp.reset();
 	fConnected = false;
 	return true;
 }
