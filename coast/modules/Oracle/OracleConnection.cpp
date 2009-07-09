@@ -6,7 +6,7 @@
 #include <string.h>		// for strlen
 
 // set to 1 to track OCI's memory usage
-#if (1)
+#if (0)
 dvoid *malloc_func(dvoid * /* ctxp */, size_t size)
 {
 //	dvoid * ptr(malloc(size));
@@ -40,7 +40,7 @@ static struct OraTerminator {
 
 //----- OracleConnection -----------------------------------------------------------------
 OracleConnection::OracleConnection() :
-	fConnected(false), fEnvhp(), fErrhp(), fSrvhp(), fSvchp(), fUsrhp(), fStmthp()
+	fConnected(false), fEnvhp(), fErrhp(), fSrvhp(), fSvchp(), fUsrhp()
 {
 	StartTrace(OracleConnection.OracleConnection);
 }
@@ -158,7 +158,6 @@ bool OracleConnection::Close(bool bForce)
 			SysLog::Error("FAILED: OCISessionEnd() on srvhp failed");
 		}
 	}
-	fStmthp.reset();
 	fSrvhp.reset();
 	fSvchp.reset();
 	fErrhp.reset();

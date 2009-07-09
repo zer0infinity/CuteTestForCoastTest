@@ -10,26 +10,41 @@
 
 #include "config_coastoracle.h"
 #include "OracleConnection.h"
+#include "Anything.h"
 
 class EXPORTDECL_COASTORACLE OracleStatement
 {
 	OracleStatement();
-	OracleConnection fpConnection;
+	OracleConnection *fpConnection;
+	String fStmt;
 	StmtHandleType fStmthp;
 	Anything fErrorMessages;
 	bool AllocHandle();
+	void Cleanup();
 
 public:
-	OracleStatement(OracleConnection *pConn, String const &strStmt);
+	OracleStatement( OracleConnection *pConn, String const &strStmt );
 	virtual ~OracleStatement();
 
 	bool Prepare();
 	sword GetReplyDescription();
-	sword Execute();
-	void Cleanup();
+	sword Execute( ub4 mode );
+	sword Fetch( ub4 numRows = 1 );
+
+	OCIStmt *getHandle() const {
+		return fStmthp.getHandle();
+	}
+	OracleConnection *getConnection() const {
+		return fpConnection;
+	}
+	bool GetOutputDescription( Anything &desc, ub2 &fncode );
+	bool DefineOutputArea( Anything &desc );
 
 	const Anything &GetErrorMessages() const {
 		return fErrorMessages;
+	}
+	String GetLastErrorMessage() const {
+		return ROAnything( fErrorMessages )[fErrorMessages.GetSize() - 1L].AsString( "" );
 	}
 };
 
