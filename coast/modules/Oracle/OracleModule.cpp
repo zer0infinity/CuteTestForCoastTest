@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2009, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+ * All rights reserved.
+ *
+ * This library/application is free software; you can redistribute and/or modify it under the terms of
+ * the license that is included with this library/application in the file license.txt.
+ */
 
 //--- interface include --------------------------------------------------------
 #include "OracleModule.h"
@@ -29,7 +36,7 @@ bool OracleModule::Init(const ROAnything config)
 		TraceAny(myCfg, "OracleModuleConfig");
 		// initialize ConnectionPool
 		if ( !fpConnectionPool.get() ) {
-			fpConnectionPool = ConnectionPoolPtr(new ConnectionPool("OracleConnectionPool"));
+			fpConnectionPool = ConnectionPoolPtr(new Coast::Oracle::ConnectionPool("OracleConnectionPool"));
 		}
 		ROAnything roaPoolConfig( myCfg["ConnectionPool"] );
 		TraceAny(roaPoolConfig, "initializing ConnectionPool with config");
@@ -38,7 +45,7 @@ bool OracleModule::Init(const ROAnything config)
 	return true;
 }
 
-ConnectionPool *OracleModule::GetConnectionPool()
+Coast::Oracle::ConnectionPool *OracleModule::GetConnectionPool()
 {
 	StatTrace(OracleModule.GetConnectionPool, "poolptr: &" << (long)fpConnectionPool.get(), Storage::Current());
 	return fpConnectionPool.get();

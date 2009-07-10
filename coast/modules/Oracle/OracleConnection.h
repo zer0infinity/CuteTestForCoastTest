@@ -1,15 +1,23 @@
+/*
+ * Copyright (c) 2009, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+ * All rights reserved.
+ *
+ * This library/application is free software; you can redistribute and/or modify it under the terms of
+ * the license that is included with this library/application in the file license.txt.
+ */
+
 #ifndef O8CONNECTION_H_
 #define O8CONNECTION_H_
 
 //--- modules used in the interface
 #include "config_coastoracle.h"
-#include "ITOString.h"
 #include "IFAObject.h"
-
 #include "OciAutoHandle.h"
 
+class String;
+
 //---- OracleConnection -----------------------------------------------------------
-// connection to oracle db ... not thread safe... may not be used concurrently
+// connection to oracle db
 
 class EXPORTDECL_COASTORACLE OracleConnection: public IFAObject
 {
@@ -20,28 +28,9 @@ public:
 	bool Open(String const &strServer, String const &strUsername, String const &strPassword);
 	bool Close(bool bForce = false);
 
-	bool SuccessfullyConnected() {
-		return fConnected;
+	oracle::occi::Connection *getConnection() const {
+		return fConnection.get();
 	}
-
-	OCIError *ErrorHandle() {
-		return fErrhp.getHandle();
-	}
-	OCIEnv *EnvHandle() {
-		return fEnvhp.getHandle();
-	}
-
-	OCISvcCtx *SvcHandle() {
-		return fSvchp.getHandle();
-	}
-
-	OCIDescribe *DscHandle() {
-		return fDschp.getHandle();
-	}
-
-	String errorMessage(sword status);
-	bool checkError(sword status, String &message);
-	bool checkError(sword status);
 
 protected:
 	// returns nothing, object not cloneable
@@ -49,15 +38,9 @@ protected:
 		return NULL;
 	};
 
-	bool fConnected;
-
 	// --- oracle API
-	EnvHandleType fEnvhp; // OCI environment handle
-	ErrHandleType fErrhp; // OCI error handle
-	SrvHandleType fSrvhp; // OCI server connection handle (at most one outstanding call at a time!)
-	SvcHandleType fSvchp; // OCI service context handle
-	UsrHandleType fUsrhp; // OCI user session handle
-	DscHandleType fDschp;
+	oracle::occi::Environment *fpEnvironment;
+	ConnectionPtrType fConnection;
 };
 
 #endif /* O8CONNECTION_H_ */

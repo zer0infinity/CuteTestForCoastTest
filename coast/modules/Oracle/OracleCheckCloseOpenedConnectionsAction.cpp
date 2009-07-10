@@ -1,8 +1,9 @@
 /*
- * OracleCheckCloseOpenedConnectionsAction.cpp
+ * Copyright (c) 2009, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+ * All rights reserved.
  *
- *  Created on: Jun 17, 2009
- *      Author: m1huber
+ * This library/application is free software; you can redistribute and/or modify it under the terms of
+ * the license that is included with this library/application in the file license.txt.
  */
 
 #include "OracleCheckCloseOpenedConnectionsAction.h"
@@ -17,7 +18,7 @@ bool OracleCheckCloseOpenedConnectionsAction::DoExecAction(String &transitionTok
 {
 	StartTrace(OracleCheckCloseOpenedConnectionsAction.DoExecAction);
 	OracleModule *pModule = SafeCast(WDModule::FindWDModule("OracleModule"), OracleModule);
-	ConnectionPool *pConnectionPool(0);
+	Coast::Oracle::ConnectionPool *pConnectionPool(0);
 	if ( pModule && ( pConnectionPool = pModule->GetConnectionPool()) ) {
 		return pConnectionPool->CheckCloseOpenedConnections(ctx.Lookup("PeriodicActionTimeout", 60L));
 	}

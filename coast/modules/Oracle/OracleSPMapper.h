@@ -46,32 +46,55 @@ protected:
 		\return returns true if the mapping was successful otherwise false */
 	virtual bool DoGetAny(const char *key, Anything &value, Context &ctx, ROAnything script);
 
-	//! major hook method for subclasses, default does script interpretation
-	/*! \param key the name defines kind of values to write or the slot in the script to use
-		\param os the stream to be mapped on
-		\param ctx the context of the invocation
-		\param script to be interpreted if any, for subclasses this is the config to use
-		\return returns true if the mapping was successful otherwise false */
-//	virtual bool DoGetStream(const char *key, ostream &os, Context &ctx, ROAnything script);
-
-	//! hook for recursion stopper in Mapper script interpretation, looks for value in context using the key and appends it to value
-	/*! \param key the name defines kind of values to write or the slot in the script to use
-		\param value container to put returned value into
-		\param ctx the context of the invocation
-		\return returns true if the mapping was successful otherwise false */
-//	virtual bool DoFinalGetAny(const char *key, Anything &value, Context &ctx);
-
-	//! Hook for recursion stopper in Mapper script interpretation. The default is to write value from context found via key to os. If the value is a composite anything the anything is Printed on os, otherwise the value is rendered literally as a string
-	/*! \param key the name defines kind of values to write or the slot in the script to use
-		\param os stream to put returned value into
-		\param ctx the context of the invocation
-		\return returns true if the mapping was successful otherwise false */
-//	virtual bool DoFinalGetStream(const char *key, ostream &os, Context &ctx);
-
 private:
 	OracleSPMapper();
 	OracleSPMapper(const OracleSPMapper &);
 	OracleSPMapper &operator=(const OracleSPMapper &);
+};
+
+//---- OracleResultMapper ----------------------------------------------------------
+//! <B>provide OracleDAImpl with stored procedure/function specific output mapping</B>
+/*!
+\par Configuration
+\code
+{
+	/QueryResult 		MapperSpec			optional, specify default behavior when results get put,
+											when a stored procedure parameter gets put - usually as PARAMNAME.QueryResult - and
+											it is not specialized like below, this MapperSpec will get used
+	/QueryTitles		MapperSpec			optional, as above
+	/QueryCount	 		MapperSpec			optional, as above
+
+	/<PARAMNAME> {							optional, specialize MapperSpec for named stored procedure/function parameter
+		/QueryResult 	MapperSpec			optional, MapperSpec to use when PARAMNAME.QueryResult gets put
+		/QueryTitles	MapperSpec			optional, as above
+		/QueryCount	 	MapperSpec			optional, as above
+	}
+}
+\endcode
+\note Parameter names need to be written in all uppercase letters, otherwise the implemented mapping will not work.
+*/
+class EXPORTDECL_COASTORACLE OracleResultMapper : public ResultMapper
+{
+public:
+	//--- constructors
+	OracleResultMapper(const char *name);
+	//--- support for prototype
+	IFAObject *Clone() const;
+
+protected:
+	// decide which hook to overwrite
+	//! Major hook for subclasses that want to do something with their config passed as script. The default is to interpret the script and put a value for every script item used. Recursion will be stopped by DoFinalPutAny which places its value under slot key below given DoGetDestinationSlot()
+	/*! \param key the key usually defines the associated kind of output-value
+		\param value the value to be mapped
+		\param ctx the context of the invocation
+		\param script current mapper configuration as ROAnything
+		\return returns true if the mapping was successful otherwise false */
+	virtual bool DoPutAny(const char *key, Anything value, Context &ctx, ROAnything script);
+
+private:
+	OracleResultMapper();
+	OracleResultMapper(const OracleResultMapper &);
+	OracleResultMapper &operator=(const OracleResultMapper &);
 };
 
 #endif

@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) 2009, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+ * All rights reserved.
+ *
+ * This library/application is free software; you can redistribute and/or modify it under the terms of
+ * the license that is included with this library/application in the file license.txt.
+ */
+
 #ifndef _OracleModule_H
 #define _OracleModule_H
 
@@ -32,14 +40,10 @@ public:
 	//:implementers should terminate module expecting destruction
 	virtual bool Finis();
 
-	ConnectionPool *GetConnectionPool();
+	Coast::Oracle::ConnectionPool *GetConnectionPool();
 
-//	//:initializes module after termination for reinitialization; default uses Init; check if this applies
-//	virtual bool ResetInit(const ROAnything config);
-//	//:terminates module for reinitialization; default uses Finis; check if this applies
-//	virtual bool ResetFinis(const ROAnything config);
 private:
-	typedef std::auto_ptr<ConnectionPool> ConnectionPoolPtr;
+	typedef std::auto_ptr<Coast::Oracle::ConnectionPool> ConnectionPoolPtr;
 	ConnectionPoolPtr fpConnectionPool;
 };
 

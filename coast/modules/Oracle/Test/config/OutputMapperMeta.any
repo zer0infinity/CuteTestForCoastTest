@@ -10,6 +10,9 @@
 	/PutResultMapper {
 		/PutPolicy			Put
 	}
+	/AppendResultMapper {
+		/PutPolicy			Append
+	}
 
 	/OracleDAImpl {
 		/DestinationSlot	TestOutput
@@ -18,9 +21,6 @@
 		/QueryCount			{ /PutResultMapper * }
 		/QuerySource		{ /PutResultMapper * }
 		/QueryTitles		{ /ResultMapper * }
-		/SP_Retcode			{ /PutResultMapper * }
-		/MainMsgErrNumber	{ /ResultMapper * }
-		/MainMsgErr			{ /ResultMapper * }
 	}
 	/SelectEmployees {
 		/DestinationSlot	SelectEmployees
@@ -38,5 +38,12 @@
 	/SPExecute {
 		/PutPolicy			Put
 		/DestinationSlot	SPExecute
+		/Messages			{ /AppendResultMapper * }
+		/QueryResult		{ /AppendResultMapper * }
+		/QueryTitles		{ /AppendResultMapper * }
+		/EMPCURSOR {
+			/QueryResult	{ /AppendResultMapper * }
+			/QueryTitles	{ /AppendResultMapper * }
+		}
 	}
 }

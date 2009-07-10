@@ -79,11 +79,14 @@
 		}
 		/Output {
 			/ResultMapper {
+				AppendResultMapper
 				/PutResultMapper {
 					/OracleSPMapperSlotTest {
 						SPRenderedOracleSPMapperParamTest
 					}
 				}
+			}
+			/OracleResultMapper {
 				/OracleDAImpl {
 					SelectEmployees
 					SelectEmployeesTitlesOnce
@@ -341,7 +344,7 @@
 					/Query	"BEGIN getstring(:LOOPCOUNT,:RESULT); END;"
 					/QuerySource	"//sifs-coast1.hsr.ch:1521/orcl"
 					/Messages {
-						"OracleDAImpl::Error - ORA-06502: PL/SQL: numeric or value error: character string buffer too small\nORA-06512: at \"ORATEST.GETSTRING\", line 6\nORA-06512: at line 1\n"
+						"OracleDAImpl::Exec: ORA-06502: PL/SQL: numeric or value error: character string buffer too small\nORA-06512: at \"ORATEST.GETSTRING\", line 6\nORA-06512: at line 1\n"
 					}
 				}
 				/ExpectedResult	0
@@ -362,7 +365,7 @@
 					/Query	"BEGIN getstring(:LOOPCOUNT,:RESULT); END;"
 					/QuerySource	"//sifs-coast1.hsr.ch:1521/orcl"
 					/Messages {
-						"OracleDAImpl::Error - ORA-06502: PL/SQL: numeric or value error: character string buffer too small\nORA-06512: at \"ORATEST.GETSTRING\", line 6\nORA-06512: at line 1\n"
+						"OracleDAImpl::Exec: ORA-06502: PL/SQL: numeric or value error: character string buffer too small\nORA-06512: at \"ORATEST.GETSTRING\", line 6\nORA-06512: at line 1\n"
 					}
 				}
 				/ExpectedResult	0
@@ -393,6 +396,154 @@
 					/Query	"BEGIN :MyReturn := getmaxsalary(); END;"
 					/MyReturn	5000
 					/QuerySource	"//sifs-coast1.hsr.ch:1521/orcl"
+				}
+			}
+		}
+		/NonExistingProcedureOrFunctionTest {
+			/UseConfig	FunctionTest
+			/Replace {
+				/TmpStore.SPName	"spNotExisting"
+				/Result.TmpStore.SPExecute {
+					/QuerySource	"//sifs-coast1.hsr.ch:1521/orcl"
+				}
+				/ExpectedResult	0
+			}
+		}
+		/ProcedureResultSetTest {
+			/TmpStore {
+				/SPName	getemps
+			}
+			/TheAction {
+				/CallDA {
+					/DataAccess	SPExecute
+				}
+			}
+			/Result {
+				/TmpStore {
+					/SPExecute {
+						/Query	"BEGIN getemps(:EMPCURSOR); END;"
+						/EMPCURSOR {
+							/QueryResult {
+								{
+								  /ENAME "ADAMS"
+								}
+								{
+								  /ENAME "ALLEN"
+								}
+								{
+								  /ENAME "BLAKE"
+								}
+								{
+								  /ENAME "CLARK"
+								}
+								{
+								  /ENAME "FORD"
+								}
+								{
+								  /ENAME "JAMES"
+								}
+								{
+								  /ENAME "JONES"
+								}
+								{
+								  /ENAME "KING"
+								}
+								{
+								  /ENAME "MARTIN"
+								}
+								{
+								  /ENAME "MILLER"
+								}
+								{
+								  /ENAME "SCOTT"
+								}
+								{
+								  /ENAME "SMITH"
+								}
+								{
+								  /ENAME "TURNER"
+								}
+								{
+								  /ENAME "WARD"
+								}
+							}
+							/QueryCount		14
+						}
+						/QuerySource	"//sifs-coast1.hsr.ch:1521/orcl"
+					}
+				}
+			}
+		}
+		/ProcedureResultSetTitlesOnceTest {
+			/TmpStore {
+				/SPName	getemps
+			}
+			/TheAction {
+				/CallDA {
+					/DataAccess	SPExecute
+					/Parameters {
+						/DBResultFormat		TitlesOnce
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/SPExecute {
+						/Query	"BEGIN getemps(:EMPCURSOR); END;"
+						/EMPCURSOR {
+							/QueryTitles {
+								{
+								  /ENAME 0
+								}
+							}
+							/QueryResult {
+								{
+								  "ADAMS"
+								}
+								{
+								  "ALLEN"
+								}
+								{
+								  "BLAKE"
+								}
+								{
+								  "CLARK"
+								}
+								{
+								  "FORD"
+								}
+								{
+								  "JAMES"
+								}
+								{
+								  "JONES"
+								}
+								{
+								  "KING"
+								}
+								{
+								  "MARTIN"
+								}
+								{
+								  "MILLER"
+								}
+								{
+								  "SCOTT"
+								}
+								{
+								  "SMITH"
+								}
+								{
+								  "TURNER"
+								}
+								{
+								  "WARD"
+								}
+							}
+							/QueryCount		14
+						}
+						/QuerySource	"//sifs-coast1.hsr.ch:1521/orcl"
+					}
 				}
 			}
 		}

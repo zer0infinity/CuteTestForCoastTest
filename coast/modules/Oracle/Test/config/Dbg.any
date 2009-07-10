@@ -61,6 +61,14 @@
 		/MainSwitch						1
 		/EnableAll						10
 	}
+	/OracleResultMapper {
+		/MainSwitch						1
+		/EnableAll						10
+	}
+	/occi_auto_handle {
+		/MainSwitch						1
+		/EnableAll						10
+	}
 ###
 	/WorkerPoolManager {
 		/MainSwitch						0
@@ -84,7 +92,8 @@
 	}
 	/ResultMapper {
 		/MainSwitch						0
-		/EnableAll						10
+		/EnableAll						0
+		/DoSelectScript					10
 	}
 	/ParameterMapper {
 		/MainSwitch						0
