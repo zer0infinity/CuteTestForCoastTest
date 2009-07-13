@@ -6,41 +6,48 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#ifndef O8CONNECTION_H_
-#define O8CONNECTION_H_
+#ifndef ORACLECONNECTION_H_
+#define ORACLECONNECTION_H_
 
 //--- modules used in the interface
 #include "config_coastoracle.h"
+#include "ITOString.h"
 #include "IFAObject.h"
+
 #include "OciAutoHandle.h"
 
-class String;
+class OracelEnvironment;
 
-//---- OracleConnection -----------------------------------------------------------
-// connection to oracle db
+//---- OraclePooledConnection -----------------------------------------------------------
+// connection to oracle db ... not thread safe... may not be used concurrently
 
-class EXPORTDECL_COASTORACLE OracleConnection: public IFAObject
+class EXPORTDECL_COASTORACLE OracleConnection
 {
+	bool fConnected;
+	OracleEnvironment &fOracleEnv;
+	ErrHandleType fErrhp; // OCI error handle
+	SrvHandleType fSrvhp; // OCI server connection handle (at most one outstanding call at a time!)
+	SvcHandleType fSvchp; // OCI service context handle
+	UsrHandleType fUsrhp; // OCI user session handle
+	DscHandleType fDschp;
 public:
 	OracleConnection();
 	~OracleConnection();
 
-	bool Open(String const &strServer, String const &strUsername, String const &strPassword);
-	bool Close(bool bForce = false);
+	bool Open();
 
-	oracle::occi::Connection *getConnection() const {
-		return fConnection.get();
+private:
+	OCIError *ErrorHandle() {
+		return fErrhp.getHandle();
 	}
 
-protected:
-	// returns nothing, object not cloneable
-	IFAObject *Clone() const {
-		return NULL;
-	};
+	OCISvcCtx *SvcHandle() {
+		return fSvchp.getHandle();
+	}
 
-	// --- oracle API
-	oracle::occi::Environment *fpEnvironment;
-	ConnectionPtrType fConnection;
+	OCIDescribe *DscHandle() {
+		return fDschp.getHandle();
+	}
 };
 
-#endif /* O8CONNECTION_H_ */
+#endif /* ORACLECONNECTION_H_ */

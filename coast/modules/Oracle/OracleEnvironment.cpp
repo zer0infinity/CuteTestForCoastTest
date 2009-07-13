@@ -1,0 +1,65 @@
+/*
+ * Copyright (c) 2009, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+ * All rights reserved.
+ *
+ * This library/application is free software; you can redistribute and/or modify it under the terms of
+ * the license that is included with this library/application in the file license.txt.
+ */
+
+#include "OracleEnvironment.h"
+
+// set to 1 to track OCI's memory usage
+#if (0)
+dvoid *malloc_func(dvoid * /* ctxp */, size_t size)
+{
+//	dvoid * ptr(malloc(size));
+	dvoid *ptr(Storage::Global()->Malloc(size));
+	StatTrace(OraclePooledConnection.malloc_func, "size: " << (long)size << " ptr: &" << (long)ptr, Storage::Current());
+	return ptr;
+}
+dvoid *realloc_func(dvoid * /* ctxp */, dvoid *ptr, size_t size)
+{
+	dvoid *nptr(realloc(ptr, size));
+	StatTrace(OraclePooledConnection.realloc_func, "size: " << (long)size << " oldptr: &" << (long)ptr << " new ptr: &" << (long)nptr, Storage::Current());
+	return (nptr);
+}
+void free_func(dvoid * /* ctxp */, dvoid *ptr)
+{
+	StatTrace(OraclePooledConnection.free_func, "ptr: &" << (long)ptr, Storage::Current());
+//	free(ptr);
+	Storage::Global()->Free(ptr);
+}
+#else
+#	define	malloc_func		NULL
+#	define	realloc_func	NULL
+#	define	free_func		NULL
+#endif
+
+OracleEnvironment::OracleEnvironment() : fEnvhp()
+{
+	// caution: the following memory handles supplied must allocate on Storage::Global()
+	// because memory gets allocated through them in Open and freed in Close. Throughout the
+	// lifetime of the connection, mutliple threads could share the same connection and so we
+	// must take care not to allocate on the first Thread opening the connection
+	if ( OCIEnvCreate( fEnvhp.getHandleAddr(), ( ub4 )( OCI_THREADED | OCI_ENV_NO_MUTEX ), NULL, // context
+					   malloc_func, // malloc function to allocate handles and env specific memory
+					   realloc_func, // realloc function to allocate handles and env specific memory
+					   free_func, // free function to allocate handles and env specific memory
+					   0, // extra memory to allocate
+					   NULL // pointer to user-memory
+					 ) != OCI_SUCCESS ) {
+		SysLog::Error( "FAILED: OCIEnvCreate(): could not create OCI environment" );
+		fEnvhp.reset();
+	}
+}
+
+OracleEnvironment::~OracleEnvironment()
+{
+	fEnvhp.reset();
+}
+
+OracleConnection OracleEnvironment::createConnection( String const &strUsr, String const &strPwd, String const &strSrv )
+{
+
+}
+

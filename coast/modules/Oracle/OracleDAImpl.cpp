@@ -124,6 +124,81 @@ void OracleDAImpl::ProcessResultSet( oracle::occi::ResultSet &aRSet, ParameterMa
 	}
 }
 
+String prefixResultSlot(String const &strPrefix, String const &strSlotName)
+{
+	String strReturn;
+	if ( strPrefix.Length() ) {
+		strReturn.Append(strPrefix).Append('.');
+	}
+	return strReturn.Append(strSlotName);
+}
+
+void OracleDAImpl::ProcessResultSet( OracleResultset &aRSet, ParameterMapper *& in, Context &ctx,
+									 ResultMapper *& out, String strResultPrefix )
+{
+	StartTrace(OracleDAImpl.ProcessResultSet);
+//	typedef std::vector<MetaData> MetaDataVector;
+//	MetaDataVector rsetMetaData( aRSet.getColumnListMetaData() );
+//	MetaThing desc;
+//	MetaDataVector::iterator aIter( rsetMetaData.begin() );
+//	int iNumCols( 0 );
+//	while ( aIter != rsetMetaData.end() ) {
+//		++iNumCols;
+//		String strName( aIter->getString( MetaData::ATTR_NAME ).c_str() );
+//		Anything anyColDesc;
+//		anyColDesc["Name"] = strName;
+//		anyColDesc["Idx"] = iNumCols;
+//		anyColDesc["Type"] = (long) ( aIter->getInt( MetaData::ATTR_DATA_TYPE ) );
+//		desc.Append( anyColDesc );
+//		++aIter;
+//	}TraceAny(desc, "column descriptions (" << iNumCols << ")")
+//	String resultformat, resultsize;
+//	in->Get( "DBResultFormat", resultformat, ctx );
+//	bool bTitlesOnce = resultformat.IsEqual( "TitlesOnce" );
+//	if ( bTitlesOnce ) {
+//		// put column name information
+//		AnyExtensions::Iterator<ROAnything> aAnyIter( desc );
+//		ROAnything roaCol;
+//		Anything temp;
+//		while ( aAnyIter.Next( roaCol ) ) {
+//			String strColName( roaCol["Name"].AsString() );
+//			Trace("colname@" << aAnyIter.Index() << " [" << strColName << "]");
+//			temp[strColName] = aAnyIter.Index();
+//		}
+//		out->Put( prefixResultSlot(strResultPrefix, "QueryTitles"), temp, ctx );
+//	}
+//	ResultSet::Status rsetStatus( aRSet.next() );
+//	Trace("ResultSet->next() status: " << (long)rsetStatus );
+//	long lRowCount( 0L );
+//	while ( rsetStatus == ResultSet::DATA_AVAILABLE || rsetStatus == ResultSet::STREAM_DATA_AVAILABLE ) {
+//		// do something
+//		AnyExtensions::Iterator<ROAnything> aAnyIter( desc );
+//		ROAnything roaCol;
+//		Anything anyResult;
+//		while ( aAnyIter.Next( roaCol ) ) {
+//			long lColType( roaCol["Type"].AsLong() );
+//			if ( lColType == OCCI_SQLT_CUR || lColType == OCCI_SQLT_RSET ) {
+//			} else {
+//				String strValueCol( aRSet.getString( roaCol["Idx"].AsLong() ).c_str() );
+//				Trace("value of column [" << roaCol["Name"].AsString() << "] has value [" << strValueCol << "]")
+//				if ( bTitlesOnce )
+//					anyResult[aAnyIter.Index()] = strValueCol;
+//				else
+//					anyResult[roaCol["Name"].AsString()] = strValueCol;
+//			}
+//		}
+//		out->Put( prefixResultSlot(strResultPrefix, "QueryResult"), anyResult, ctx );
+//		++lRowCount;
+//		rsetStatus = aRSet.next();
+//		Trace("ResultSet.next() status: " << (long)rsetStatus );
+//	}
+//	bool bShowRowCount( true );
+//	in->Get( "ShowQueryCount", bShowRowCount, ctx );
+//	if ( bShowRowCount ) {
+//		out->Put( prefixResultSlot(strResultPrefix, "QueryCount"), lRowCount, ctx );
+//	}
+}
+
 bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 {
 	StartTrace(OracleDAImpl.Exec);
@@ -132,7 +207,7 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 	OracleModule *pModule = SafeCast(WDModule::FindWDModule("OracleModule"), OracleModule);
 	Coast::Oracle::ConnectionPool *pConnectionPool( 0 );
 	if ( pModule && ( pConnectionPool = pModule->GetConnectionPool() ) ) {
-		// we need the server and user to see if there is an existing and Open OracleConnection
+		// we need the server and user to see if there is an existing and Open OraclePooledConnection
 		String user, server, passwd;
 		in->Get( "DBUser", user, ctx );
 		in->Get( "DBPW", passwd, ctx );
@@ -148,9 +223,9 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 			lTryCount = 1L;
 		}
 		// we slipped through and are ready to get a connection and execute a query
-		// find a free OracleConnection, we should always get a valid OracleConnection here!
+		// find a free OraclePooledConnection, we should always get a valid OraclePooledConnection here!
 		while ( bDoRetry && --lTryCount >= 0 ) {
-			OracleConnection *pConnection = NULL;
+			OraclePooledConnection *pConnection = NULL;
 			String command;
 
 			// --- establish db connection

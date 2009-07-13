@@ -19,15 +19,15 @@
 //---- OracleSPMapper ------------------------------------------------------------------
 RegisterParameterMapper(OracleSPMapper);
 
-OracleSPMapper::OracleSPMapper( const char *name ) :
-	ParameterMapper( name )
+OracleSPMapper::OracleSPMapper(const char *name)
+	: ParameterMapper(name)
 {
 	StartTrace(OracleSPMapper.Ctor);
 }
 
 IFAObject *OracleSPMapper::Clone() const
 {
-	return new OracleSPMapper( fName );
+	return new OracleSPMapper(fName);
 }
 
 bool OracleSPMapper::DoGetAny( const char *key, Anything &value, Context &ctx, ROAnything script )

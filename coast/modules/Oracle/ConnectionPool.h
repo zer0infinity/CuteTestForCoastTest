@@ -15,7 +15,7 @@
 #include "Threads.h"
 
 //---- forward declaration -----------------------------------------------
-class OracleConnection;
+class OraclePooledConnection;
 class PeriodicAction;
 
 namespace Coast
@@ -47,11 +47,11 @@ namespace Coast
 
 			bool CheckCloseOpenedConnections(long lTimeout);
 
-			bool BorrowConnection(OracleConnection *&pConnection, bool &bIsOpen, const String &server, const String &user);
-			void ReleaseConnection(OracleConnection *&pConnection, bool bIsOpen, const String &server, const String &user);
+			bool BorrowConnection(OraclePooledConnection *&pConnection, bool &bIsOpen, const String &server, const String &user);
+			void ReleaseConnection(OraclePooledConnection *&pConnection, bool bIsOpen, const String &server, const String &user);
 
 		protected:
-			bool IntGetOpen(OracleConnection *&pConnection, bool &bIsOpen, const String &server, const String &user);
+			bool IntGetOpen(OraclePooledConnection *&pConnection, bool &bIsOpen, const String &server, const String &user);
 
 			SimpleMutex fStructureMutex;
 			Anything fListOfConnections;
@@ -60,8 +60,8 @@ namespace Coast
 			Semaphore *fpResourcesSema;
 
 		private:
-			bool IntBorrowConnection(OracleConnection *&pConnection, bool &bIsOpen, const String &server, const String &user);
-			void IntReleaseConnection(OracleConnection *&pConnection, bool bIsOpen, const String &server, const String &user);
+			bool IntBorrowConnection(OraclePooledConnection *&pConnection, bool &bIsOpen, const String &server, const String &user);
+			void IntReleaseConnection(OraclePooledConnection *&pConnection, bool bIsOpen, const String &server, const String &user);
 
 			//constructor
 			ConnectionPool();
