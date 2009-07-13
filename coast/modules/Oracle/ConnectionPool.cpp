@@ -8,7 +8,7 @@
 
 #include "ConnectionPool.h"
 
-#include "OracleConnection.h"
+#include "OraclePooledConnection.h"
 
 //--- standard modules used ----------------------------------------------------
 #include "SysLog.h"

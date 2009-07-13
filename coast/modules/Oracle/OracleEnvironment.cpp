@@ -7,6 +7,8 @@
  */
 
 #include "OracleEnvironment.h"
+#include "OracleConnection.h"
+#include "SysLog.h"
 
 // set to 1 to track OCI's memory usage
 #if (0)
@@ -14,18 +16,18 @@ dvoid *malloc_func(dvoid * /* ctxp */, size_t size)
 {
 //	dvoid * ptr(malloc(size));
 	dvoid *ptr(Storage::Global()->Malloc(size));
-	StatTrace(OraclePooledConnection.malloc_func, "size: " << (long)size << " ptr: &" << (long)ptr, Storage::Current());
+	StatTrace(OracleEnvironment.malloc_func, "size: " << (long)size << " ptr: &" << (long)ptr, Storage::Current());
 	return ptr;
 }
 dvoid *realloc_func(dvoid * /* ctxp */, dvoid *ptr, size_t size)
 {
 	dvoid *nptr(realloc(ptr, size));
-	StatTrace(OraclePooledConnection.realloc_func, "size: " << (long)size << " oldptr: &" << (long)ptr << " new ptr: &" << (long)nptr, Storage::Current());
+	StatTrace(OracleEnvironment.realloc_func, "size: " << (long)size << " oldptr: &" << (long)ptr << " new ptr: &" << (long)nptr, Storage::Current());
 	return (nptr);
 }
 void free_func(dvoid * /* ctxp */, dvoid *ptr)
 {
-	StatTrace(OraclePooledConnection.free_func, "ptr: &" << (long)ptr, Storage::Current());
+	StatTrace(OracleEnvironment.free_func, "ptr: &" << (long)ptr, Storage::Current());
 //	free(ptr);
 	Storage::Global()->Free(ptr);
 }
@@ -58,8 +60,11 @@ OracleEnvironment::~OracleEnvironment()
 	fEnvhp.reset();
 }
 
-OracleConnection OracleEnvironment::createConnection( String const &strUsr, String const &strPwd, String const &strSrv )
+OracleConnection *OracleEnvironment::createConnection( String const &strUsr, String const &strPwd, String const &strSrv )
 {
-
+	OracleConnection *pConnection( new OracleConnection(*this) );
+	if ( pConnection ) {
+		pConnection->Open(strUsr, strPwd, strSrv);
+	}
+	return pConnection;
 }
-

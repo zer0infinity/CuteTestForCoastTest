@@ -6,40 +6,47 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
+#include "OracleConnection.h"
+#include "OracleEnvironment.h"
+#include "SysLog.h"
+#include "Dbg.h"
+
+#include <string.h>	// for strlen
+
 OracleConnection::OracleConnection(OracleEnvironment &rEnv) :
 	fConnected(false), fOracleEnv(rEnv), fErrhp(), fSrvhp(), fSvchp(), fUsrhp()
 {
 	// --- alloc error handle
-	if ( OCIHandleAlloc( fEnvhp.getHandle(), fErrhp.getVoidAddr(), (ub4) OCI_HTYPE_ERROR, (size_t) 0, (dvoid **) 0 )
+	if ( OCIHandleAlloc( fOracleEnv.EnvHandle(), fErrhp.getVoidAddr(), (ub4) OCI_HTYPE_ERROR, (size_t) 0, (dvoid **) 0 )
 		 != OCI_SUCCESS ) {
 		SysLog::Error( "FAILED: OCIHandleAlloc(): alloc error handle failed" );
-		return false;
+//		return false;
 	}
 
 	String strErr;
 
 	// --- alloc service context handle
-	if ( checkError( OCIHandleAlloc( fEnvhp.getHandle(), fSvchp.getVoidAddr(), (ub4) OCI_HTYPE_SVCCTX, (size_t) 0,
+	if ( checkError( OCIHandleAlloc( fOracleEnv.EnvHandle(), fSvchp.getVoidAddr(), (ub4) OCI_HTYPE_SVCCTX, (size_t) 0,
 									 (dvoid **) 0 ), strErr ) ) {
 		SysLog::Error( String( "FAILED: OCIHandleAlloc(): alloc service context handle failed (" ) << strErr << ")" );
-		return false;
+//		return false;
 	}
 	// --- alloc server connection handle
-	if ( checkError( OCIHandleAlloc( fEnvhp.getHandle(), fSrvhp.getVoidAddr(), (ub4) OCI_HTYPE_SERVER, (size_t) 0,
+	if ( checkError( OCIHandleAlloc( fOracleEnv.EnvHandle(), fSrvhp.getVoidAddr(), (ub4) OCI_HTYPE_SERVER, (size_t) 0,
 									 (dvoid **) 0 ), strErr ) ) {
 		SysLog::Error( String( "FAILED: OCIHandleAlloc(): alloc server connection handle failed (" ) << strErr << ")" );
-		return false;
+//		return false;
 	}
 	// --- alloc user session handle
-	if ( checkError( OCIHandleAlloc( fEnvhp.getHandle(), fUsrhp.getVoidAddr(), (ub4) OCI_HTYPE_SESSION, (size_t) 0,
+	if ( checkError( OCIHandleAlloc( fOracleEnv.EnvHandle(), fUsrhp.getVoidAddr(), (ub4) OCI_HTYPE_SESSION, (size_t) 0,
 									 (dvoid **) 0 ), strErr ) ) {
 		SysLog::Error( String( "FAILED: OCIHandleAlloc(): alloc user session handle failed (" ) << strErr << ")" );
-		return false;
+//		return false;
 	}
-	if ( checkError( OCIHandleAlloc( fEnvhp.getHandle(), fDschp.getVoidAddr(), (ub4) OCI_HTYPE_DESCRIBE, (size_t) 0,
+	if ( checkError( OCIHandleAlloc( fOracleEnv.EnvHandle(), fDschp.getVoidAddr(), (ub4) OCI_HTYPE_DESCRIBE, (size_t) 0,
 									 (dvoid **) 0 ), strErr ) ) {
 		SysLog::Error( String( "FAILED: OCIHandleAlloc(): alloc describe handle failed (" ) << strErr << ")" );
-		return false;
+//		return false;
 	}
 }
 
@@ -55,6 +62,8 @@ bool OracleConnection::Open( String const &strServer, String const &strUsername,
 		SYSERROR("tried to open already opened connection to server [" << strServer << "] and user [" << strUsername << "]!");
 		return false;
 	}
+
+	String strErr;
 
 	// --- attach server
 	if ( checkError( OCIServerAttach( fSrvhp.getHandle(), fErrhp.getHandle(), server, strlen( (const char *) server ),
@@ -124,4 +133,62 @@ void OracleConnection::Close( )
 	fErrhp.reset();
 	fUsrhp.reset();
 	fDschp.reset();
+}
+
+bool OracleConnection::checkError( sword status )
+{
+	StartTrace1(OracleConnection.checkError, "status: " << (long) status);
+	if ( status == OCI_SUCCESS || status == OCI_NO_DATA ) {
+		return false;
+	}
+	return true;
+}
+
+bool OracleConnection::checkError( sword status, String &message )
+{
+	message = errorMessage( status );
+	return checkError( status );
+}
+
+String OracleConnection::errorMessage( sword status )
+{
+	// error handling: checks 'status' for errors
+	// in case of an error an error message is generated
+
+	text errbuf[512];
+	sb4 errcode;
+	String error;
+
+	switch ( status ) {
+		case OCI_NO_DATA:
+		case OCI_SUCCESS:
+			// no error
+			return error;
+			break;
+		case OCI_SUCCESS_WITH_INFO:
+			error << "Error - OCI_SUCCESS_WITH_INFO";
+			break;
+		case OCI_NEED_DATA:
+			error << "Error - OCI_NEED_DATA";
+			break;
+		case OCI_ERROR:
+			if ( fErrhp.getHandle() )
+				OCIErrorGet( (dvoid *) fErrhp.getHandle(), (ub4) 1, (text *) NULL, &errcode, errbuf,
+							 (ub4) sizeof ( errbuf ), (ub4) OCI_HTYPE_ERROR );
+			error << "Error - " << (char *) errbuf;
+			break;
+		case OCI_INVALID_HANDLE:
+			error << "Error - OCI_INVALID_HANDLE";
+			break;
+		case OCI_STILL_EXECUTING:
+			error << "Error - OCI_STILL_EXECUTE";
+			break;
+		case OCI_CONTINUE:
+			error << "Error - OCI_CONTINUE";
+			break;
+		default:
+			break;
+	}
+
+	return error;
 }

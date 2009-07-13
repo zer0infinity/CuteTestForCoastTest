@@ -9,7 +9,15 @@
 #ifndef ORACLEENVIRONMENT_H_
 #define ORACLEENVIRONMENT_H_
 
-class OracleEnvironment
+//--- modules used in the interface
+#include "config_coastoracle.h"
+
+#include "OciAutoHandle.h"
+
+class OracleConnection;
+class String;
+
+class EXPORTDECL_COASTORACLE OracleEnvironment
 {
 	EnvHandleType fEnvhp; // OCI environment handle
 public:
@@ -24,7 +32,7 @@ public:
 		return fEnvhp;
 	}
 
-	OracleConnection createConnection( String const &strUsr, String const &strPwd, String const &strSrv );
+	OracleConnection *createConnection( String const &strUsr, String const &strPwd, String const &strSrv );
 
 };
 

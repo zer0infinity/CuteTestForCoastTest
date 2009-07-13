@@ -13,8 +13,10 @@
 #include "config_coastoracle.h"
 #include "ITOString.h"
 #include "IFAObject.h"
+#include <memory>	// for auto_ptr
 
-#include "OciAutoHandle.h"
+class OracleEnvironment;
+class OracleConnection;
 
 //---- OraclePooledConnection -----------------------------------------------------------
 // connection to oracle db ... not thread safe... may not be used concurrently
@@ -39,10 +41,6 @@ public:
 	OracleConnection *getConnection() const {
 		return fConnection.get();
 	}
-
-	String errorMessage(sword status);
-	bool checkError(sword status, String &message);
-	bool checkError(sword status);
 
 protected:
 	// returns nothing, object not cloneable

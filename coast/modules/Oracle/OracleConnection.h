@@ -16,7 +16,7 @@
 
 #include "OciAutoHandle.h"
 
-class OracelEnvironment;
+class OracleEnvironment;
 
 //---- OraclePooledConnection -----------------------------------------------------------
 // connection to oracle db ... not thread safe... may not be used concurrently
@@ -31,10 +31,11 @@ class EXPORTDECL_COASTORACLE OracleConnection
 	UsrHandleType fUsrhp; // OCI user session handle
 	DscHandleType fDschp;
 public:
-	OracleConnection();
+	OracleConnection(OracleEnvironment &rEnv);
 	~OracleConnection();
 
-	bool Open();
+	bool Open(String const &strServer, String const &strUsername, String const &strPassword);
+	void Close();
 
 private:
 	OCIError *ErrorHandle() {
@@ -48,6 +49,9 @@ private:
 	OCIDescribe *DscHandle() {
 		return fDschp.getHandle();
 	}
+	String errorMessage(sword status);
+	bool checkError(sword status, String &message);
+	bool checkError(sword status);
 };
 
 #endif /* ORACLECONNECTION_H_ */
