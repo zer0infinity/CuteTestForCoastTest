@@ -9,81 +9,75 @@
 #ifndef OCIAUTOHANDLE_H_
 #define OCIAUTOHANDLE_H_
 
-#include "Dbg.h"
-#include "occi.h"
+#include "oci.h"
 
-//---- occi_auto_handle -----------------------------------------------------------
-//! <B>wrapper template class around OCCI object requiring special destruction</B>
+//---- oci_auto_handle -----------------------------------------------------------
+//! <B>wrapper template class around OCI handles</B>
 /*!
- Simplifies memory handling on allocated OCCI objects like Connection, Statement and so on.
- Frees the internal handle if allocated using the specified destruction function. It almost works like
- a std::auto_ptr in behavior of assignment, construction etc.
- \note Ownership of the pointer is not shared (no extended reference counting), it gets always passed when assigning.
+ Simplifies memory handling on allocated handles, frees the internal handle if allocated. It works almost like a std::auto_ptr in behavior of assignment, construction etc.
  */
-template<typename objectType, typename parentType>
-struct occi_auto_handle {
-	typedef objectType *obj_ptr_type;
-	typedef parentType *parent_ptr_type;
-	typedef void (parentType::*terminateFunc)( obj_ptr_type );
+template<typename handle, ub4 handleType>
+struct oci_auto_handle {
+	typedef handle *handle_ptr_type;
+	typedef handle * &handle_ptr_type_ref;
+	typedef handle **handle_ptr_addr_type;
 
-	obj_ptr_type fpObj;
-	parent_ptr_type fpParent;
-	terminateFunc fpTermFunc;
-
-	occi_auto_handle() :
-		fpObj( 0 ), fpParent( 0 ), fpTermFunc( 0 ) {
+	handle_ptr_type fHandle;
+	oci_auto_handle() :
+		fHandle( 0 ) {
 	}
-
-	occi_auto_handle( obj_ptr_type pObj, parent_ptr_type pParent, terminateFunc pFunc ) :
-		fpObj( pObj ), fpParent( pParent ), fpTermFunc( pFunc ) {
-		StatTrace(occi_auto_handle.occi_auto_handle, "constructing, fpObj: " << (long)fpObj << " parent: " << (long)fpParent << " deleteFunc: " << (long)&fpTermFunc, Storage::Current());
+	oci_auto_handle(handle_ptr_type pHandle) :
+		fHandle( pHandle ) {
 	}
-	~occi_auto_handle() {
-		StatTrace(occi_auto_handle.~occi_auto_handle, "destructing, fpObj: " << (long)fpObj << " parent: " << (long)fpParent << " deleteFunc: " << (long)&fpTermFunc, Storage::Current());
+	~oci_auto_handle() {
 		doDelete();
 	}
-	occi_auto_handle &operator=( occi_auto_handle &rhs ) throw () {
+	oci_auto_handle &operator=( oci_auto_handle &rhs ) throw () {
 		reset( rhs.release() );
-		fpParent = rhs.fpParent;
-		fpTermFunc = rhs.fpTermFunc;
-		StatTrace(occi_auto_handle.operator = , "assignment, fpObj: " << (long)fpObj << " parent: " << (long)fpParent << " deleteFunc: " << (long)&fpTermFunc, Storage::Current());
 		return *this;
 	}
-	obj_ptr_type release() {
-		obj_ptr_type p( fpObj );
-		fpObj = 0;
+	handle_ptr_type release() {
+		handle_ptr_type p( fHandle );
+		fHandle = 0;
 		return p;
 	}
-	void reset( obj_ptr_type ptr = 0 ) throw () {
-		if ( fpObj && fpObj != ptr ) {
+	void reset( handle_ptr_type ptr = 0 ) throw () {
+		if ( fHandle != ptr ) {
 			doDelete();
+			fHandle = ptr;
 		}
-		fpObj = ptr;
 	}
 	void doDelete() throw () {
-		StatTrace(occi_auto_handle.doDelete, "releasing object fpObj: " << (long)fpObj << " parent: " << (long)fpParent << " deleteFunc: " << (long)&fpTermFunc, Storage::Current());
-		if ( fpObj ) {
-			if ( fpParent ) {
-				( fpParent->*fpTermFunc )( release() );
-				StatTrace(occi_auto_handle.doDelete, "object released", Storage::Current());
-			}
+		if ( fHandle ) {
+			OCIHandleFree( reinterpret_cast<dvoid *> ( release() ), handleType );
 		}
 	}
-	obj_ptr_type get() const {
-		return fpObj;
+	handle_ptr_type getHandle() const {
+		return fHandle;
 	}
-	obj_ptr_type operator->() const throw () {
-		return fpObj;
+
+	// the following operators are only used when creating a new handle
+	handle_ptr_addr_type getHandleAddr() {
+		doDelete();
+		return &fHandle;
+	}
+	dvoid **getVoidAddr() {
+		doDelete();
+		return (dvoid **) &fHandle;
 	}
 	operator const bool() const {
-		return fpObj != 0;
+		return fHandle != 0;
 	}
 private:
-	occi_auto_handle( occi_auto_handle &rhs );
+	oci_auto_handle( oci_auto_handle &rhs );
 };
 
-typedef occi_auto_handle<oracle::occi::Connection, oracle::occi::Environment> ConnectionPtrType;
-typedef occi_auto_handle<oracle::occi::Statement, oracle::occi::Connection> StatementPtrType;
-typedef occi_auto_handle<oracle::occi::ResultSet, oracle::occi::Statement> ResultSetPtrType;
+typedef oci_auto_handle<OCIDescribe, OCI_HTYPE_DESCRIBE> DscHandleType;
+typedef oci_auto_handle<OCIStmt, OCI_HTYPE_STMT> StmtHandleType;
+typedef oci_auto_handle<OCIEnv, OCI_HTYPE_ENV> EnvHandleType; // OCI environment handle
+typedef oci_auto_handle<OCIError, OCI_HTYPE_ERROR> ErrHandleType; // OCI error handle
+typedef oci_auto_handle<OCIServer, OCI_HTYPE_SERVER> SrvHandleType; // OCI server connection handle	(at most one
+typedef oci_auto_handle<OCISvcCtx, OCI_HTYPE_SVCCTX> SvcHandleType; // OCI service context handle
+typedef oci_auto_handle<OCISession, OCI_HTYPE_SESSION> UsrHandleType; // OCI user session handle
 
 #endif /* OCIAUTOHANDLE_H_ */

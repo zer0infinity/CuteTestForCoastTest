@@ -28,8 +28,6 @@ public:
 private:
 	OracleStatement &frStmt;
 	Status fFetchStatus;
-	Anything fanyDescription;
-	Anything fBuffer;
 
 	bool DefineOutputArea();
 public:

@@ -93,8 +93,7 @@ void OracleDAImpl::ProcessResultSet( OracleResultset &aRSet, ParameterMapper *& 
 		while ( aAnyIter.Next( roaCol ) ) {
 			long lColType( roaCol["Type"].AsLong() );
 			Trace("column data type: " << lColType);
-			//			if ( lColType == OCCI_SQLT_CUR || lColType == OCCI_SQLT_RSET ) {
-			if ( lColType == OCI_DTYPE_RSET ) {
+			if ( lColType == SQLT_CUR || lColType == SQLT_RSET ) {
 			} else {
 				String strValueCol( aRSet.getString( roaCol["Idx"].AsLong() ) );
 				Trace("value of column [" << roaCol["Name"].AsString() << "] has value [" << strValueCol << "]")
@@ -216,16 +215,13 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 													long lOraColIdx( roaCol["Idx"].AsLong() );
 													long lColType( roaCol["Type"].AsLong() );
 													Trace("got column of type " << lColType)
-//												if ( lColType == OCCI_SQLT_CUR || lColType == OCCI_SQLT_RSET ) {
-													if ( lColType == OCI_DTYPE_RSET ) {
-//													ResultSetPtrType aRSet( aStmt->getCursor( lOraColIdx ),
-//															aStmt.get(), &Statement::closeResultSet );
-//													ProcessResultSet( *aRSet.get(), in, ctx, out,
-//															roaCol["Name"].AsString() );
+													if ( lColType == SQLT_CUR || lColType == SQLT_RSET ) {
+														OracleResultsetPtr aRSet( aStmt->getCursor( lOraColIdx ) );
+														ProcessResultSet( *aRSet.get(), in, ctx, out, roaCol["Name"].AsString() );
 													} else {
-//													String strValueCol( aStmt->getString( lOraColIdx ) );
-//													Trace("value of column [" << roaCol["Name"].AsString() << "] has value [" << strValueCol << "]")
-//													out->Put( roaCol["Name"].AsString(), strValueCol, ctx );
+														String strValueCol( aStmt->getString( lOraColIdx ) );
+														Trace("value of column [" << roaCol["Name"].AsString() << "] has value [" << strValueCol << "]")
+														out->Put( roaCol["Name"].AsString(), strValueCol, ctx );
 													}
 												}
 												bool bShowUpdateCount( false );
@@ -430,46 +426,6 @@ bool OracleDAImpl::GetSPDescription( String &command, Anything &desc, ParameterM
 		desc.Append( param );
 	}
 	TraceAny(desc, "stored procedure description");
-
-	//	int iType( ubFuncType );
-	//	Trace(command << " is of type " << iType)
-	//	// oracle starts numbering at 1 ...
-	//	int iColIdx( 1 );
-	//	switch ( iType ) {
-	//	case OCI_PTYPE_PROC:
-	//		bIsFunction = false;
-	//	case OCI_PTYPE_FUNC: {
-	////		typedef std::vector<MetaData> MetaDataVector;
-	////		MetaDataVector argMetaData( aMetaData.getVector( MetaData::ATTR_LIST_ARGUMENTS ) );
-	////		MetaDataVector::iterator aIter( argMetaData.begin() );
-	////		while ( aIter != argMetaData.end() ) {
-	////			String strName( aIter->getString( MetaData::ATTR_NAME ).c_str() );
-	////			Anything anyColDesc;
-	////			// column index 0 is for functions only
-	////			//  it is used to define the return value 'pseudo' column
-	////			if ( bIsFunction && iColIdx == 1 ) {
-	////				// we always use the function name as name to put the value as except...
-	////				strName = command;
-	////				// ... someone overrides it using the special slotname Return
-	////				pmapIn->Get( "Return", strName, ctx );
-	////			}
-	////			anyColDesc["Name"] = strName;
-	////			anyColDesc["Idx"] = iColIdx;
-	////			anyColDesc["Type"] = (long) aIter->getInt( MetaData::ATTR_DATA_TYPE );
-	////			// 0 = IN (OCI_TYPEPARAM_IN), 1 = OUT (OCI_TYPEPARAM_OUT), 2 = IN/OUT (OCI_TYPEPARAM_INOUT)
-	////			anyColDesc["IoMode"] = (long) aIter->getInt( MetaData::ATTR_IOMODE );
-	////			desc.Append( anyColDesc );
-	////			++aIter;
-	////			++iColIdx;
-	////		}
-	//		TraceAny(desc, "column descriptions (" << iColIdx << ")")
-	//		break;
-	//	}
-	//	default:
-	//		strError << command << " is neither a stored procedure nor a function";
-	//		Error( ctx, pmapOut, strError );
-	//		return false;
-	//	}
 	command = ConstructSPStr( command, bIsFunction, desc );
 	return true;
 }
@@ -518,7 +474,6 @@ bool OracleDAImpl::BindSPVariables( Anything &desc, ParameterMapper *pmapIn, Res
 	Anything col;
 	while ( descIter.Next( col ) ) {
 		long bindPos( descIter.Index() + 1 ); // first bind variable position is 1
-
 		long len( 0L );
 		Anything buf;
 		String strValue;
@@ -528,7 +483,7 @@ bool OracleDAImpl::BindSPVariables( Anything &desc, ParameterMapper *pmapIn, Res
 			if ( !pmapIn->Get( String( "Params." ).Append( strParamname ), strValue, ctx ) ) {
 				Error( ctx, pmapOut, String( "BindSPVariables: In(out) parameter [" ) << strParamname
 					   << "] not found in config, is it defined in upper case letters?" );
-				return true;
+				return false;
 			}
 			col["Length"] = strValue.Length();
 			col["Type"] = SQLT_STR;
@@ -559,35 +514,14 @@ bool OracleDAImpl::BindSPVariables( Anything &desc, ParameterMapper *pmapIn, Res
 				case SQLT_RSET: {
 					//TODO
 					col["Type"] = SQLT_RSET;
-
-					//				result = OCIHandleAlloc (
-					//					to->conn->environment_handle,
-					//					reinterpret_cast <void **> (&rs_handle),
-					//					OCI_HTYPE_STMT,
-					//					0,		// extra memory to allocate
-					//					NULL);	// pointer to user-memory
-					//
-					//				// bind statement handle as result set
-					//				if (result == OCI_SUCCESS)
-					//					result = OCIBindByName (
-					//						to->stmt_handle,
-					//						&bind_handle,
-					//						to->conn->error_handle,
-					//						(text *) param_name.data (),
-					//						param_name.length (),
-					//						&rs_handle,
-					//						size,
-					//						oci_type,
-					//						NULL,	// pointer to array of indicator variables
-					//						NULL,	// pointer to array of actual length of array elements
-					//						NULL,	// pointer to array of column-level return codes
-					//						0,		// maximum possible number of elements of type m_nType
-					//						NULL,	// a pointer to the actual number of elements (PL/SQL binds)
-					//						OCI_DEFAULT);
+					OCIStmt *phCursor(0);
+					status = OCIHandleAlloc ( aStmt.getConnection()->getEnvironment().EnvHandle(),
+											  (void **)&phCursor,
+											  OCI_HTYPE_STMT,
+											  0,		// extra memory to allocate
+											  NULL);	// pointer to user-memory
 					len = sizeof(OCIStmt *);
-					//				OCIStmt* pHndl;
-					//				OCIHandleAlloc();
-					//				buf = Anything();
+					buf = Anything( (void *)phCursor, len );
 					break;
 				}
 				default:
@@ -614,7 +548,7 @@ bool OracleDAImpl::BindSPVariables( Anything &desc, ParameterMapper *pmapIn, Res
 		OCIBind *bndp = 0;
 		status = OCIBindByPos( aStmt.getHandle(), &bndp, aStmt.getConnection()->ErrorHandle(), (ub4) bindPos,
 							   (dvoid *) col["RawBuf"].AsCharPtr(), (sword) len, col["Type"].AsLong(),
-							   (dvoid *) indicator.AsCharPtr(), (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT );
+							   (dvoid *) indicator.AsCharPtr(), 0, 0, 0, 0, OCI_DEFAULT );
 		if ( aStmt.getConnection()->checkError( status, strErr ) ) {
 			Error( ctx, pmapOut, strErr );
 			return false;

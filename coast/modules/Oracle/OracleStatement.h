@@ -15,8 +15,11 @@
 #include <memory>
 
 class OracleResultset;
+class OracleStatement;
 
-class EXPORTDECL_COASTORACLE OracleStatement
+typedef std::auto_ptr<OracleStatement> OracleStatementPtr;
+
+class EXPORTDECL_COASTORACLE OracleStatement : public IFAObject
 {
 public:
 	enum Status {
@@ -44,9 +47,13 @@ private:
 	Anything fErrorMessages;
 	Status fStatus;
 	StmtType fStmtType;
-
+	Anything fanyDescription;
+	Anything fBuffer;
+	Anything fSubStatements;
 	bool AllocHandle();
 	void Cleanup();
+
+	OracleStatement( OracleConnection *pConn, OCIStmt *phStmt );
 
 public:
 	OracleStatement( OracleConnection *pConn, String const &strStmt );
@@ -65,6 +72,8 @@ public:
 	unsigned long getUpdateCount() const;
 
 	OracleResultset *getResultset();
+	OracleResultset *getCursor( long lColumnIndex );
+	String getString( long lColumnIndex );
 
 	OCIStmt *getHandle() const {
 		return fStmthp.getHandle();
@@ -72,8 +81,9 @@ public:
 	OracleConnection *getConnection() const {
 		return fpConnection;
 	}
-	bool GetOutputDescription( Anything &desc, ub2 &fncode );
-	bool DefineOutputArea( Anything &desc );
+
+	ROAnything GetOutputDescription();
+	bool DefineOutputArea();
 
 	const Anything &GetErrorMessages() const {
 		return fErrorMessages;
@@ -81,8 +91,10 @@ public:
 	String GetLastErrorMessage() const {
 		return ROAnything( fErrorMessages )[fErrorMessages.GetSize() - 1L].AsString( "" );
 	}
-};
 
-typedef std::auto_ptr<OracleStatement> OracleStatementPtr;
+	virtual IFAObject *Clone() const {
+		return NULL;
+	}
+};
 
 #endif /* ORACLESTATEMENT_H_ */
