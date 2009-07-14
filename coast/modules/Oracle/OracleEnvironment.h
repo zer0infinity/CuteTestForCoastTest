@@ -19,9 +19,14 @@ class String;
 
 class EXPORTDECL_COASTORACLE OracleEnvironment
 {
+private:
 	EnvHandleType fEnvhp; // OCI environment handle
+
 public:
-	OracleEnvironment();
+	enum Mode {
+		DEFAULT = OCI_DEFAULT, THREADED_MUTEXED = OCI_THREADED, THREADED_UNMUTEXED = OCI_THREADED | OCI_NO_MUTEX,
+	};
+	OracleEnvironment( Mode eMode );
 	virtual ~OracleEnvironment();
 
 	OCIEnv *EnvHandle() {

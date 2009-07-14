@@ -38,14 +38,14 @@ void free_func(dvoid * /* ctxp */, dvoid *ptr)
 #	define	free_func		NULL
 #endif
 
-OracleEnvironment::OracleEnvironment() : fEnvhp()
+OracleEnvironment::OracleEnvironment(Mode eMode) : fEnvhp()
 {
 	StartTrace(OracleEnvironment.OracleEnvironment);
 	// caution: the following memory handles supplied must allocate on Storage::Global()
 	// because memory gets allocated through them in Open and freed in Close. Throughout the
 	// lifetime of the connection, mutliple threads could share the same connection and so we
 	// must take care not to allocate on the first Thread opening the connection
-	if ( OCIEnvCreate( fEnvhp.getHandleAddr(), ( ub4 )( OCI_THREADED | OCI_ENV_NO_MUTEX ), NULL, // context
+	if ( OCIEnvCreate( fEnvhp.getHandleAddr(), eMode, NULL, // context
 					   malloc_func, // malloc function to allocate handles and env specific memory
 					   realloc_func, // realloc function to allocate handles and env specific memory
 					   free_func, // free function to allocate handles and env specific memory

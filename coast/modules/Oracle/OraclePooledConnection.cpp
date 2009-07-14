@@ -39,7 +39,7 @@ bool OraclePooledConnection::Open( String const &strServer, String const &strUse
 	StartTrace(OraclePooledConnection.Open);
 
 	if ( !fEnvironment.get() ) {
-		fEnvironment = OracleEnvironmentPtr(new OracleEnvironment());
+		fEnvironment = OracleEnvironmentPtr(new OracleEnvironment(OracleEnvironment::THREADED_UNMUTEXED));
 		if ( fEnvironment->valid() ) {
 			fConnection = OracleConnectionPtr( fEnvironment->createConnection(strServer, strUsername, strPassword) );
 		}

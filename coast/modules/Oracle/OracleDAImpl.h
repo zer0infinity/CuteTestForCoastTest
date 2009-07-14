@@ -40,16 +40,9 @@ public:
 	virtual bool Exec( Context &ctx, ParameterMapper *in, ResultMapper *out );
 
 protected:
-
 	bool ConnectOracleUser( const char *name, const char *pw );
-	void FetchRowData( Anything &descs, ParameterMapper *pmapIn, ResultMapper *pmapOut, OracleStatement &aStmt, Context &ctx );
-	void GetRecordData( Anything &descs, Anything &record, bool bTitlesOnce );
 
-	// original sample methods
-	//	bool GetOutputDescription(Anything &desc, ResultMapper *pmapOut, ub2 &fncode, OracleConnection *pConnection, Context &ctx);
-	//	bool DefineOutputArea(Anything &desc, ResultMapper *pmapOut, OracleConnection *pConnection, Context &ctx);
-
-	bool GetSPDescription( String const &spname, bool &pIsFunction, Anything &desc, ParameterMapper *pmapIn, ResultMapper *pmapOut,
+	bool GetSPDescription( String &spname, Anything &desc, ParameterMapper *pmapIn, ResultMapper *pmapOut,
 						   OracleConnection *pConnection, Context &ctx );
 	bool BindSPVariables( Anything &desc, ParameterMapper *pmapIn, ResultMapper *pmapOut, OracleStatement &aStmt, Context &ctx );
 
@@ -58,7 +51,7 @@ private:
 	bool DoPrepareSQL( String &command, Context &ctx, ParameterMapper *in );
 	bool DoPrepareSP( String &command, Context &ctx, ParameterMapper *in );
 
-	String ConstructSPStr( String &command, bool pIsFunction, Anything const &desc );
+	String ConstructSPStr( String const &command, bool pIsFunction, Anything const &desc );
 	void ProcessResultSet( OracleResultset &aRSet, ParameterMapper *& in, Context &ctx, ResultMapper *& out, String strResultPrefix );
 
 	void Error( Context &ctx, ResultMapper *pResultMapper, String str );

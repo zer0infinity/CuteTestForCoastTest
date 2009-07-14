@@ -17,6 +17,7 @@
 #include "OciAutoHandle.h"
 
 class OracleEnvironment;
+class OracleStatement;
 
 //---- OraclePooledConnection -----------------------------------------------------------
 // connection to oracle db ... not thread safe... may not be used concurrently
@@ -41,6 +42,8 @@ public:
 		return fOracleEnv;
 	}
 
+	OracleStatement *createStatement( String const &strStatement);
+
 	OCIError *ErrorHandle() {
 		return fErrhp.getHandle();
 	}
@@ -56,7 +59,6 @@ public:
 	bool checkError(sword status, String &message);
 	bool checkError(sword status);
 
-private:
 	String errorMessage(sword status);
 };
 

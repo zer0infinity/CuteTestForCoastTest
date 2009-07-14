@@ -8,20 +8,20 @@
 
 #include "OracleConnection.h"
 #include "OracleEnvironment.h"
+#include "OracleStatement.h"
 #include "SysLog.h"
 #include "Dbg.h"
 
 #include <string.h>	// for strlen
-
-OracleConnection::OracleConnection(OracleEnvironment &rEnv) :
-	fConnected(false), fOracleEnv(rEnv), fErrhp(), fSrvhp(), fSvchp(), fUsrhp()
+OracleConnection::OracleConnection( OracleEnvironment &rEnv ) :
+	fConnected( false ), fOracleEnv( rEnv ), fErrhp(), fSrvhp(), fSvchp(), fUsrhp()
 {
 	StartTrace(OracleConnection.OracleConnection);
 	// --- alloc error handle
 	if ( OCIHandleAlloc( fOracleEnv.EnvHandle(), fErrhp.getVoidAddr(), (ub4) OCI_HTYPE_ERROR, (size_t) 0, (dvoid **) 0 )
 		 != OCI_SUCCESS ) {
 		SysLog::Error( "FAILED: OCIHandleAlloc(): alloc error handle failed" );
-//		return false;
+		//		return false;
 	}
 
 	String strErr;
@@ -30,24 +30,24 @@ OracleConnection::OracleConnection(OracleEnvironment &rEnv) :
 	if ( checkError( OCIHandleAlloc( fOracleEnv.EnvHandle(), fSvchp.getVoidAddr(), (ub4) OCI_HTYPE_SVCCTX, (size_t) 0,
 									 (dvoid **) 0 ), strErr ) ) {
 		SysLog::Error( String( "FAILED: OCIHandleAlloc(): alloc service context handle failed (" ) << strErr << ")" );
-//		return false;
+		//		return false;
 	}
 	// --- alloc server connection handle
 	if ( checkError( OCIHandleAlloc( fOracleEnv.EnvHandle(), fSrvhp.getVoidAddr(), (ub4) OCI_HTYPE_SERVER, (size_t) 0,
 									 (dvoid **) 0 ), strErr ) ) {
 		SysLog::Error( String( "FAILED: OCIHandleAlloc(): alloc server connection handle failed (" ) << strErr << ")" );
-//		return false;
+		//		return false;
 	}
 	// --- alloc user session handle
 	if ( checkError( OCIHandleAlloc( fOracleEnv.EnvHandle(), fUsrhp.getVoidAddr(), (ub4) OCI_HTYPE_SESSION, (size_t) 0,
 									 (dvoid **) 0 ), strErr ) ) {
 		SysLog::Error( String( "FAILED: OCIHandleAlloc(): alloc user session handle failed (" ) << strErr << ")" );
-//		return false;
+		//		return false;
 	}
-	if ( checkError( OCIHandleAlloc( fOracleEnv.EnvHandle(), fDschp.getVoidAddr(), (ub4) OCI_HTYPE_DESCRIBE, (size_t) 0,
-									 (dvoid **) 0 ), strErr ) ) {
+	if ( checkError( OCIHandleAlloc( fOracleEnv.EnvHandle(), fDschp.getVoidAddr(), (ub4) OCI_HTYPE_DESCRIBE,
+									 (size_t) 0, (dvoid **) 0 ), strErr ) ) {
 		SysLog::Error( String( "FAILED: OCIHandleAlloc(): alloc describe handle failed (" ) << strErr << ")" );
-//		return false;
+		//		return false;
 	}
 }
 
@@ -121,7 +121,7 @@ OracleConnection::~OracleConnection()
 	Close();
 }
 
-void OracleConnection::Close( )
+void OracleConnection::Close()
 {
 	if ( OCISessionEnd( fSvchp.getHandle(), fErrhp.getHandle(), fUsrhp.getHandle(), (ub4) 0 ) ) {
 		SysLog::Error( "FAILED: OCISessionEnd() on svchp failed" );
@@ -193,4 +193,13 @@ String OracleConnection::errorMessage( sword status )
 	}
 
 	return error;
+}
+
+OracleStatement *OracleConnection::createStatement( const String &strStatement )
+{
+	OracleStatement *pStmt( new OracleStatement(this, strStatement) );
+	if ( pStmt ) {
+		pStmt->Prepare();
+	}
+	return pStmt;
 }

@@ -9,11 +9,12 @@
 #include "OracleStatement.h"
 
 #include "OracleEnvironment.h"
-#include "OracleColumn.h"
+#include "OracleException.h"
+#include "OracleResultset.h"
 #include "Dbg.h"
 
 OracleStatement::OracleStatement( OracleConnection *pConn, String const &strStmt ) :
-	fpConnection( pConn ), fStmt( strStmt )
+	fpConnection( pConn ), fStmt( strStmt ), fStatus( UNPREPARED ), fStmtType( Coast_OCI_STMT_UNKNOWN )
 {
 }
 
@@ -27,8 +28,8 @@ bool OracleStatement::AllocHandle()
 	StartTrace(OracleStatement.AllocHandle);
 	// allocates and returns new statement handle
 	String strError( 32L );
-	bool bSuccess( !fpConnection->checkError( OCIHandleAlloc( fpConnection->getEnvironment().EnvHandle(), fStmthp.getVoidAddr(),
-				   (ub4) OCI_HTYPE_STMT, (size_t) 0, (dvoid **) 0 ), strError ) );
+	bool bSuccess( !fpConnection->checkError( OCIHandleAlloc( fpConnection->getEnvironment().EnvHandle(),
+				   fStmthp.getVoidAddr(), (ub4) OCI_HTYPE_STMT, (size_t) 0, (dvoid **) 0 ), strError ) );
 	if ( !bSuccess ) {
 		fErrorMessages.Append( strError );
 	}
@@ -40,28 +41,54 @@ void OracleStatement::Cleanup()
 	StartTrace(OracleStatement.Cleanup);
 	// according to documentation, def handles will get cleaned too
 	fStmthp.reset();
+	fStatus = UNPREPARED;
 }
 
-sword OracleStatement::GetReplyDescription()
+OracleStatement::Status OracleStatement::execute( ub4 mode, ub4 iters )
 {
-	StartTrace(OracleStatement.GetReplyDescription);
-	// retrieves descriptions of return values for a given SQL statement
-	return Execute( OCI_DESCRIBE_ONLY );
-}
-
-sword OracleStatement::Execute( ub4 mode )
-{
-	StartTrace(OracleStatement.Execute);
-	// executes a SQL statement (first row is also fetched)
-	return OCIStmtExecute( fpConnection->SvcHandle(), getHandle(), fpConnection->ErrorHandle(), (ub4) 1,
-						   (ub4) 0, (const OCISnapshot *) NULL, (OCISnapshot *) NULL, mode );
+	StartTrace(OracleStatement.execute);
+	// executes a SQL statement (first row is also fetched only if iters > 0)
+	// depending on the query type, we could use 'scrollable cursor mode' ( OCI_STMT_SCROLLABLE_READONLY )
+	sword status = OCIStmtExecute( fpConnection->SvcHandle(), getHandle(), fpConnection->ErrorHandle(), iters, 0, NULL,
+								   NULL, mode );
+	if ( status != OCI_SUCCESS ) {
+		throw OracleException( *fpConnection, status );
+	} else {
+		// how can we find out about the result type? -> see Prepare
+		switch ( fStmtType ) {
+			case Coast_OCI_STMT_SELECT:
+				fStatus = RESULT_SET_AVAILABLE;
+				break;
+			case Coast_OCI_STMT_CREATE:
+			case Coast_OCI_STMT_DROP:
+			case Coast_OCI_STMT_ALTER:
+				//FIXME: is this correct?
+				fStatus = UPDATE_COUNT_AVAILABLE;
+				break;
+			case Coast_OCI_STMT_DELETE:
+			case Coast_OCI_STMT_INSERT:
+			case Coast_OCI_STMT_UPDATE:
+				fStatus = UPDATE_COUNT_AVAILABLE;
+				break;
+			default:
+				//FIXME: check if this makes sense
+				fStatus = PREPARED;
+		}
+	}
+	return fStatus;
 }
 
 sword OracleStatement::Fetch( ub4 numRows )
 {
 	StartTrace(OracleStatement.Fetch);
 	// fetch another row
-	return OCIStmtFetch( getHandle(), fpConnection->ErrorHandle(), numRows, OCI_FETCH_NEXT, OCI_DEFAULT );
+	return OCIStmtFetch2( getHandle(), fpConnection->ErrorHandle(), numRows, OCI_FETCH_NEXT, 0, OCI_DEFAULT );
+}
+
+unsigned long OracleStatement::getUpdateCount() const
+{
+
+	return 0UL;
 }
 
 bool OracleStatement::Prepare()
@@ -71,158 +98,34 @@ bool OracleStatement::Prepare()
 	String strErr( 32L );
 	bool bSuccess( AllocHandle() );
 	if ( bSuccess ) {
-		if ( ! ( bSuccess = !fpConnection->checkError( OCIStmtPrepare( getHandle(),
-							fpConnection->ErrorHandle(), (const text *) (const char *) fStmt, (ub4) fStmt.Length(),
-							(ub4) OCI_NTV_SYNTAX, (ub4) OCI_DEFAULT ), strErr ) ) ) {
+		if ( ! ( bSuccess = !fpConnection->checkError( OCIStmtPrepare( getHandle(), fpConnection->ErrorHandle(),
+							(const text *) (const char *) fStmt, (ub4) fStmt.Length(), OCI_NTV_SYNTAX, OCI_DEFAULT ), strErr ) ) ) {
 			fErrorMessages.Append( strErr );
+		} else {
+			ub2 fncode;
+			if ( fpConnection->checkError( OCIAttrGet( getHandle(), OCI_HTYPE_STMT, (dvoid *) &fncode, 0,
+										   OCI_ATTR_STMT_TYPE, fpConnection->ErrorHandle() ), strErr ) ) {
+				fErrorMessages.Append( strErr );
+				bSuccess = false;
+			} else {
+				fStmtType = (StmtType) fncode;
+				Trace("statement type is " << (long)fncode);
+				fStatus = PREPARED;
+			}
 		}
 	}
 	return bSuccess;
 }
 
-bool OracleStatement::GetOutputDescription( Anything &desc, ub2 &fncode )
+OracleResultset *OracleStatement::getResultset()
 {
-	StartTrace(OracleStatement.GetOutputDescription);
-	// returns array of element descriptions: each description is
-	// an Anything array with 4 entries:
-	// name of the collumn, type of the data, length of the data in bytes, scale
-
-	OCIError *eh( fpConnection->ErrorHandle() );
-	String strErr;
-
-	OCIStmt *pStmthp( getHandle() ); // OCI statement handle
-
-	if ( fpConnection->checkError( OCIAttrGet( (dvoid *) pStmthp, OCI_HTYPE_STMT, (dvoid *) &fncode, (ub4 *) 0,
-								   OCI_ATTR_STMT_TYPE, eh ), strErr ) ) {
-		fErrorMessages.Append( strErr );
-		return false;
+	OracleResultset *pResult( 0 );
+	if ( fStatus == RESULT_SET_AVAILABLE ) {
+		pResult = new OracleResultset( *this );
+	} else {
+		String strMessage("Error - getResultset failed, no resultset available, current status is ");
+		strMessage << (long)fStatus;
+		throw OracleException(*fpConnection, strMessage);
 	}
-
-	if ( fncode == OCI_STMT_SELECT ) {
-
-		if ( fpConnection->checkError( GetReplyDescription(), strErr ) ) {
-			fErrorMessages.Append( strErr );
-			return false;
-		}
-
-		OCIParam *mypard;
-		ub2 dtype;
-		ub4 data_len;
-		text *col_name;
-		ub4 col_name_len;
-
-		// Request a parameter descriptor for position 1 in the select-list
-		ub4 counter = 1;
-		sb4 parm_status = OCIParamGet( pStmthp, OCI_HTYPE_STMT, eh, (void **) &mypard, (ub4) counter );
-
-		if ( fpConnection->checkError( parm_status, strErr ) ) {
-			fErrorMessages.Append( strErr );
-			return false;
-		}
-
-		// Loop only if a descriptor was successfully retrieved for
-		// current  position, starting at 1
-
-		while ( parm_status == OCI_SUCCESS ) {
-			data_len = 0;
-			col_name = 0;
-			col_name_len = 0;
-
-			// Retrieve the data type attribute
-			if ( fpConnection->checkError( OCIAttrGet( (dvoid *) mypard, (ub4) OCI_DTYPE_PARAM, (dvoid *) &dtype,
-										   (ub4 *) 0, (ub4) OCI_ATTR_DATA_TYPE, (OCIError *) eh ), strErr ) ) {
-				fErrorMessages.Append( strErr );
-				return false;
-			}
-
-			if ( fpConnection->checkError( OCIAttrGet( (dvoid *) mypard, (ub4) OCI_DTYPE_PARAM, (dvoid *) &data_len,
-										   (ub4 *) 0, (ub4) OCI_ATTR_DISP_SIZE, (OCIError *) eh ), strErr ) ) {
-				fErrorMessages.Append( strErr );
-				return false;
-			}
-
-			// Retrieve the column name attribute
-			if ( fpConnection->checkError( OCIAttrGet( (dvoid *) mypard, (ub4) OCI_DTYPE_PARAM, (dvoid **) &col_name,
-										   (ub4 *) &col_name_len, (ub4) OCI_ATTR_NAME, (OCIError *) eh ), strErr ) ) {
-				fErrorMessages.Append( strErr );
-				return false;
-			}
-
-			Anything param;
-			param[0L] = Anything(); // dummy
-			param[OracleColumn::eColumnName] = String( (char *) col_name, col_name_len );
-			param[OracleColumn::eColumnType] = dtype;
-			param[OracleColumn::eDataLength] = (int) data_len;
-			desc.Append( param );
-
-			// increment counter and get next descriptor, if there is one
-			++counter;
-			parm_status = OCIParamGet( pStmthp, OCI_HTYPE_STMT, eh, (void **) &mypard, (ub4) counter );
-		}
-	}
-	TraceAny(desc, "descriptions");
-	return true;
-}
-
-bool OracleStatement::DefineOutputArea( Anything &desc )
-{
-	StartTrace(OracleStatement.DefineOutputArea);
-	// use 'desc' to allocate output area used by oracle library
-	// to store fetched data (binary Anything buffers are allocated and
-	// stored within the 'desc' structure... for automatic storage
-	// management)
-
-	OCIError *eh = fpConnection->ErrorHandle();
-	OCIStmt *pStmthp( getHandle() ); // OCI statement handle
-	String strErr;
-
-	for ( ub4 i = 0; i < desc.GetSize(); i++ ) {
-		Anything &col = desc[static_cast<long> ( i )];
-
-		sb4 dummy;
-		OCIDefine *defHandle = 0;
-		long len;
-		if ( col[OracleColumn::eColumnType].AsLong() == SQLT_DAT ) {
-			// --- date field
-
-			col[OracleColumn::eDataLength] = 9;
-			col[OracleColumn::eColumnType] = SQLT_STR;
-
-			len = col[OracleColumn::eDataLength].AsLong() + 1;
-
-		} else if ( col[OracleColumn::eColumnType].AsLong() == SQLT_NUM ) {
-			// --- number field
-			//			if (col[OracleColumn::eScale].AsLong() != 0) {					// dont need floats now
-			//				col[OracleColumn::eDataLength]= (sword) sizeof(float);
-			//				col[OracleColumn::eColumnType]= SQLT_FLT;
-			//            } else {
-			col[OracleColumn::eDataLength] = (sword) sizeof(sword);
-			col[OracleColumn::eColumnType] = SQLT_INT;
-			//            }
-			len = col[OracleColumn::eDataLength].AsLong();
-
-		} else {
-			len = col[OracleColumn::eDataLength].AsLong() + 1;
-		}
-
-		// allocate space for the returned data
-		Anything buf = Anything( (void *) 0, len );
-		col[OracleColumn::eRawBuf] = buf;
-
-		// accocate space for NULL indicator
-		Anything indicator = Anything( (void *) 0, sizeof(OCIInd) );
-		col[OracleColumn::eIndicator] = indicator;
-
-		// allocate space to store effective result size
-		Anything effectiveSize = Anything( (void *) 0, sizeof(ub2) );
-		col[OracleColumn::eEffectiveLength] = effectiveSize;
-
-		if ( fpConnection->checkError( OCIDefineByPos( pStmthp, &defHandle, eh, i + 1, (void *) buf.AsCharPtr(), len,
-									   col[OracleColumn::eColumnType].AsLong(), (dvoid *) indicator.AsCharPtr(),
-									   (ub2 *) effectiveSize.AsCharPtr(), 0, OCI_DEFAULT ), strErr ) ) {
-			fErrorMessages.Append( strErr );
-			return false;
-		}
-	}
-	return true;
+	return pResult;
 }
