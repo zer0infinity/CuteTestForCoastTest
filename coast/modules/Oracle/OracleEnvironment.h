@@ -32,8 +32,7 @@ public:
 		return fEnvhp;
 	}
 
-	OracleConnection *createConnection( String const &strUsr, String const &strPwd, String const &strSrv );
-
+	OracleConnection *createConnection( String const &strSrv, String const &strUsr, String const &strPwd );
 };
 
 #endif /* ORACLEENVIRONMENT_H_ */

@@ -45,6 +45,22 @@
 		/MainSwitch						10
 		/EnableAll						10
 	}
+	/OraclePooledConnection {
+		/MainSwitch						10
+		/EnableAll						10
+	}
+	/OracleEnvironment {
+		/MainSwitch						10
+		/EnableAll						10
+	}
+	/OracleResultset {
+		/MainSwitch						10
+		/EnableAll						10
+	}
+	/OracleStatement {
+		/MainSwitch						10
+		/EnableAll						10
+	}
 	/ConnectionPool {
 		/MainSwitch						0
 		/EnableAll						10

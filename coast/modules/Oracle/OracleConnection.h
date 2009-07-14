@@ -37,7 +37,10 @@ public:
 	bool Open(String const &strServer, String const &strUsername, String const &strPassword);
 	void Close();
 
-private:
+	OracleEnvironment &getEnvironment() const {
+		return fOracleEnv;
+	}
+
 	OCIError *ErrorHandle() {
 		return fErrhp.getHandle();
 	}
@@ -49,9 +52,12 @@ private:
 	OCIDescribe *DscHandle() {
 		return fDschp.getHandle();
 	}
-	String errorMessage(sword status);
+
 	bool checkError(sword status, String &message);
 	bool checkError(sword status);
+
+private:
+	String errorMessage(sword status);
 };
 
 #endif /* ORACLECONNECTION_H_ */

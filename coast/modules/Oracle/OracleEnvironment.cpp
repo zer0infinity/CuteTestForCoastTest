@@ -9,9 +9,10 @@
 #include "OracleEnvironment.h"
 #include "OracleConnection.h"
 #include "SysLog.h"
+#include "Dbg.h"
 
 // set to 1 to track OCI's memory usage
-#if (0)
+#if (1)
 dvoid *malloc_func(dvoid * /* ctxp */, size_t size)
 {
 //	dvoid * ptr(malloc(size));
@@ -39,6 +40,7 @@ void free_func(dvoid * /* ctxp */, dvoid *ptr)
 
 OracleEnvironment::OracleEnvironment() : fEnvhp()
 {
+	StartTrace(OracleEnvironment.OracleEnvironment);
 	// caution: the following memory handles supplied must allocate on Storage::Global()
 	// because memory gets allocated through them in Open and freed in Close. Throughout the
 	// lifetime of the connection, mutliple threads could share the same connection and so we
@@ -57,14 +59,16 @@ OracleEnvironment::OracleEnvironment() : fEnvhp()
 
 OracleEnvironment::~OracleEnvironment()
 {
+	StartTrace(OracleEnvironment.~OracleEnvironment);
 	fEnvhp.reset();
 }
 
-OracleConnection *OracleEnvironment::createConnection( String const &strUsr, String const &strPwd, String const &strSrv )
+OracleConnection *OracleEnvironment::createConnection( String const &strSrv, String const &strUsr, String const &strPwd )
 {
+	StartTrace(OracleEnvironment.createConnection);
 	OracleConnection *pConnection( new OracleConnection(*this) );
 	if ( pConnection ) {
-		pConnection->Open(strUsr, strPwd, strSrv);
+		pConnection->Open(strSrv, strUsr, strPwd);
 	}
 	return pConnection;
 }

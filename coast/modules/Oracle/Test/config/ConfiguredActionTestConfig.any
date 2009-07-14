@@ -344,7 +344,7 @@
 					/Query	"BEGIN getstring(:LOOPCOUNT,:RESULT); END;"
 					/QuerySource	"//sifs-coast1.hsr.ch:1521/orcl"
 					/Messages {
-						"OracleDAImpl::Exec: ORA-06502: PL/SQL: numeric or value error: character string buffer too small\nORA-06512: at \"ORATEST.GETSTRING\", line 6\nORA-06512: at line 1\n"
+						"OracleDAImpl::Error - ORA-06502: PL/SQL: numeric or value error: character string buffer too small\nORA-06512: at \"ORATEST.GETSTRING\", line 6\nORA-06512: at line 1\n"
 					}
 				}
 				/ExpectedResult	0
@@ -365,7 +365,7 @@
 					/Query	"BEGIN getstring(:LOOPCOUNT,:RESULT); END;"
 					/QuerySource	"//sifs-coast1.hsr.ch:1521/orcl"
 					/Messages {
-						"OracleDAImpl::Exec: ORA-06502: PL/SQL: numeric or value error: character string buffer too small\nORA-06512: at \"ORATEST.GETSTRING\", line 6\nORA-06512: at line 1\n"
+						"OracleDAImpl::Error - ORA-06502: PL/SQL: numeric or value error: character string buffer too small\nORA-06512: at \"ORATEST.GETSTRING\", line 6\nORA-06512: at line 1\n"
 					}
 				}
 				/ExpectedResult	0

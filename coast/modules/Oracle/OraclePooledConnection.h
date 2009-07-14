@@ -11,12 +11,11 @@
 
 //--- modules used in the interface
 #include "config_coastoracle.h"
+#include "OracleEnvironment.h"
+#include "OracleConnection.h"
 #include "ITOString.h"
 #include "IFAObject.h"
 #include <memory>	// for auto_ptr
-
-class OracleEnvironment;
-class OracleConnection;
 
 //---- OraclePooledConnection -----------------------------------------------------------
 // connection to oracle db ... not thread safe... may not be used concurrently

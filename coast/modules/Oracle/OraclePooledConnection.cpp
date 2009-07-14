@@ -8,14 +8,13 @@
 
 #include "OraclePooledConnection.h"
 
-#include "OracleEnvironment.h"
-
-#include "oci.h"
-
 #include "SysLog.h"
 #include "Dbg.h"
 
+#include "oci.h"
+
 #include <string.h>		// for strlen
+
 static struct OraTerminator {
 	~OraTerminator() {
 		OCITerminate( OCI_DEFAULT );
@@ -45,10 +44,13 @@ bool OraclePooledConnection::Open( String const &strServer, String const &strUse
 			fConnection = OracleConnectionPtr( fEnvironment->createConnection(strServer, strUsername, strPassword) );
 		}
 	}
+	return fConnection.get();
 }
 
 bool OraclePooledConnection::Close( bool bForce )
 {
 	StartTrace1(OraclePooledConnection.Close, (bForce ? "" : "not ") << "forcing connection closing");
+	fConnection.reset();
+	fEnvironment.reset();
 	return true;
 }

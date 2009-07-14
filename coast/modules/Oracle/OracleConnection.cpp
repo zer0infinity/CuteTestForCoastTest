@@ -16,6 +16,7 @@
 OracleConnection::OracleConnection(OracleEnvironment &rEnv) :
 	fConnected(false), fOracleEnv(rEnv), fErrhp(), fSrvhp(), fSvchp(), fUsrhp()
 {
+	StartTrace(OracleConnection.OracleConnection);
 	// --- alloc error handle
 	if ( OCIHandleAlloc( fOracleEnv.EnvHandle(), fErrhp.getVoidAddr(), (ub4) OCI_HTYPE_ERROR, (size_t) 0, (dvoid **) 0 )
 		 != OCI_SUCCESS ) {
@@ -116,6 +117,7 @@ bool OracleConnection::Open( String const &strServer, String const &strUsername,
 
 OracleConnection::~OracleConnection()
 {
+	StartTrace(OracleConnection.~OracleConnection);
 	Close();
 }
 

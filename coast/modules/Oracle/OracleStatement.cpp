@@ -1,11 +1,14 @@
 /*
- * OracleStatement.cpp
+ * Copyright (c) 2009, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+ * All rights reserved.
  *
- *  Created on: Jul 8, 2009
- *      Author: m1huber
+ * This library/application is free software; you can redistribute and/or modify it under the terms of
+ * the license that is included with this library/application in the file license.txt.
  */
 
 #include "OracleStatement.h"
+
+#include "OracleEnvironment.h"
 #include "OracleColumn.h"
 #include "Dbg.h"
 
@@ -24,7 +27,7 @@ bool OracleStatement::AllocHandle()
 	StartTrace(OracleStatement.AllocHandle);
 	// allocates and returns new statement handle
 	String strError( 32L );
-	bool bSuccess( !fpConnection->checkError( OCIHandleAlloc( fpConnection->EnvHandle(), fStmthp.getVoidAddr(),
+	bool bSuccess( !fpConnection->checkError( OCIHandleAlloc( fpConnection->getEnvironment().EnvHandle(), fStmthp.getVoidAddr(),
 				   (ub4) OCI_HTYPE_STMT, (size_t) 0, (dvoid **) 0 ), strError ) );
 	if ( !bSuccess ) {
 		fErrorMessages.Append( strError );
