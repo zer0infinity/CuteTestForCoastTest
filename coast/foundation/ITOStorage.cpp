@@ -228,15 +228,6 @@ void operator delete(void *ptr, void *vp)
 }
 #endif
 
-#if !defined (WIN32)
-void operator delete(void *ptr)
-{
-	if (ptr) {
-		::free(ptr);
-	}
-}
-#endif
-
 //---- Storage ------------------------------------------
 Allocator *Storage::fgGlobalPool = 0;
 StorageHooks *Storage::fgHooks = 0; // exchange this object when MT_Storage is used
