@@ -195,12 +195,12 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 						MetaThing desc;
 						if ( GetSPDescription( command, desc, in, out, pConnection, ctx ) ) {
 							Trace(String("prepare stored procedure/function: ") << command);
-							OracleStatementPtr aStmt( pConnection->createStatement( command ) );
+							OracleStatementPtr aStmt( pConnection->createStatement( command, desc ) );
 							Trace("statement status:" << (long)aStmt->status());
 							if ( aStmt->status() == OracleStatement::PREPARED ) {
 								out->Put( "Query", command, ctx );
-								if ( BindSPVariables( desc, in, out, *aStmt.get(), ctx ) ) {
-									try {
+								try {
+									if ( BindSPVariables( desc, in, out, *aStmt.get(), ctx ) ) {
 										Trace("executing statement");
 										OracleStatement::Status status = aStmt->execute(OCI_DEFAULT);
 										switch ( status ) {
@@ -237,11 +237,11 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 										}
 										bRet = true;
 										bDoRetry = false;
-									} catch ( OracleException &ex ) {
-										String strError( "Exec: " );
-										strError << ex.getMessage();
-										Error( ctx, out, strError );
 									}
+								} catch ( OracleException &ex ) {
+									String strError( "Exec: " );
+									strError << ex.getMessage();
+									Error( ctx, out, strError );
 								}
 							}
 						}
@@ -384,7 +384,7 @@ bool OracleDAImpl::GetSPDescription( String &command, Anything &desc, ParameterM
 			Error( ctx, pmapOut, strErr );
 			return error;
 		}
-		Trace("Data type: " << dtype);
+		Trace("Data type: " << dtype)
 
 		error = pConnection->checkError( OCIAttrGet( (dvoid *) arg, OCI_DTYPE_PARAM, (dvoid *) &name, (ub4 *) &namelen,
 										 OCI_ATTR_NAME, pConnection->ErrorHandle() ), strErr );
@@ -399,7 +399,7 @@ bool OracleDAImpl::GetSPDescription( String &command, Anything &desc, ParameterM
 			strName = command;
 			pmapIn->Get( "Return", strName, ctx );
 		}
-		Trace("Name: " << strName);
+		Trace("Name: " << strName)
 
 		// 0 = IN (OCI_TYPEPARAM_IN), 1 = OUT (OCI_TYPEPARAM_OUT), 2 = IN/OUT (OCI_TYPEPARAM_INOUT)
 		error = pConnection->checkError( OCIAttrGet( (dvoid *) arg, OCI_DTYPE_PARAM, (dvoid *) &iomode, (ub4 *) 0,
@@ -408,7 +408,7 @@ bool OracleDAImpl::GetSPDescription( String &command, Anything &desc, ParameterM
 			Error( ctx, pmapOut, strErr );
 			return error;
 		}
-		Trace("IO type: " << iomode);
+		Trace("IO type: " << iomode)
 
 		error = pConnection->checkError( OCIAttrGet( (dvoid *) arg, OCI_DTYPE_PARAM, (dvoid *) &data_len, (ub4 *) 0,
 										 OCI_ATTR_DATA_SIZE, pConnection->ErrorHandle() ), strErr );
@@ -416,13 +416,14 @@ bool OracleDAImpl::GetSPDescription( String &command, Anything &desc, ParameterM
 			Error( ctx, pmapOut, strErr );
 			return error;
 		}
-		Trace("Size: " << (int)data_len);
+		Trace("Size: " << (int)data_len)
 
 		Anything param;
 		param["Name"] = strName;
 		param["Type"] = dtype;
 		param["Length"] = (int) data_len;
 		param["IoMode"] = iomode;
+		param["Idx"] = (long)( bIsFunction ? i + 1 : i );
 		desc.Append( param );
 	}
 	TraceAny(desc, "stored procedure description");
@@ -470,91 +471,42 @@ bool OracleDAImpl::BindSPVariables( Anything &desc, ParameterMapper *pmapIn, Res
 	String strErr( "BindSPVariables: " );
 	sword status;
 
-	AnyExtensions::Iterator<Anything> descIter( desc );
-	Anything col;
+	AnyExtensions::Iterator<ROAnything> descIter( desc );
+	ROAnything col;
 	while ( descIter.Next( col ) ) {
-		long bindPos( descIter.Index() + 1 ); // first bind variable position is 1
-		long len( 0L );
-		Anything buf;
-		String strValue;
+		// first bind variable position is 1
+		long bindPos( descIter.Index() + 1 );
 		String strParamname( col["Name"].AsString() );
 
-		if ( col["IoMode"] == OCI_TYPEPARAM_IN || col["IoMode"] == OCI_TYPEPARAM_INOUT ) {
-			if ( !pmapIn->Get( String( "Params." ).Append( strParamname ), strValue, ctx ) ) {
-				Error( ctx, pmapOut, String( "BindSPVariables: In(out) parameter [" ) << strParamname
-					   << "] not found in config, is it defined in upper case letters?" );
-				return false;
-			}
-			col["Length"] = strValue.Length();
-			col["Type"] = SQLT_STR;
-			len = col["Length"].AsLong() + 1;
-			buf = Anything( (void *) (const char *) strValue, len );
-		} else {
-			switch ( col["Type"].AsLong() ) {
-				case SQLT_DAT:
-					col["Length"] = 9;
-					col["Type"] = SQLT_STR;
-					len = col["Length"].AsLong() + 1;
-					break;
-				case SQLT_CHR:
-				case SQLT_STR: {
-					long lBufSize( glStringBufferSize );
-					pmapIn->Get( "StringBufferSize", lBufSize, ctx );
-					col["Length"] = lBufSize;
-					col["Type"] = SQLT_STR;
-					len = col["Length"].AsLong() + 1;
-					break;
+		switch ( col["Type"].AsLong() ) {
+			case SQLT_CUR:
+			case SQLT_RSET:
+				Trace("cursor or resultset binding")
+				if ( col["IoMode"].AsLong() == (long) OCI_TYPEPARAM_OUT || col["IoMode"].AsLong()
+					 == (long) OCI_TYPEPARAM_INOUT ) {
+					Trace("binding value of type:" << col["Type"].AsLong())
+					aStmt.registerOutParam( bindPos );
 				}
-				case SQLT_NUM:
-					col["Length"] = 38;
-					col["Type"] = SQLT_STR;
-					len = col["Length"].AsLong() + 1;
-					break;
-				case SQLT_CUR:
-				case SQLT_RSET: {
-					//TODO
-					col["Type"] = SQLT_RSET;
-					OCIStmt *phCursor(0);
-					status = OCIHandleAlloc ( aStmt.getConnection()->getEnvironment().EnvHandle(),
-											  (void **)&phCursor,
-											  OCI_HTYPE_STMT,
-											  0,		// extra memory to allocate
-											  NULL);	// pointer to user-memory
-					len = sizeof(OCIStmt *);
-					buf = Anything( (void *)phCursor, len );
-					break;
+				break;
+			default:
+				if ( col["IoMode"].AsLong() == (long) OCI_TYPEPARAM_IN || col["IoMode"].AsLong()
+					 == (long) OCI_TYPEPARAM_INOUT ) {
+					String strValue;
+					if ( !pmapIn->Get( String( "Params." ).Append( strParamname ), strValue, ctx ) ) {
+						Error( ctx, pmapOut, String( "BindSPVariables: In(out) parameter [" ) << strParamname
+							   << "] not found in config, is it defined in upper case letters?" );
+						return false;
+					}
+					aStmt.setString( bindPos, strValue );
 				}
-				default:
-					len = col["Length"].AsLong() + 1;
-					break;
-			}
-			if ( buf.IsNull() ) {
-				buf = Anything( (void *) 0, len );
-			}
-		}
-
-		col["RawBuf"] = buf;
-		Trace("binding variable: " << strParamname << ", length: " << len);
-
-		// allocate space for NULL indicator
-		Anything indicator = Anything( (void *) 0, sizeof(OCIInd) );
-		col["Indicator"] = indicator;
-
-		// allocate space to store effective result size
-		ub2 ub2Len( (ub2) col["Length"].AsLong( 0L ) );
-		Anything effectiveSize = Anything( (void *) (ub2 *) &ub2Len, sizeof(ub2) );
-		col["EffectiveLength"] = effectiveSize;
-
-		OCIBind *bndp = 0;
-		status = OCIBindByPos( aStmt.getHandle(), &bndp, aStmt.getConnection()->ErrorHandle(), (ub4) bindPos,
-							   (dvoid *) col["RawBuf"].AsCharPtr(), (sword) len, col["Type"].AsLong(),
-							   (dvoid *) indicator.AsCharPtr(), 0, 0, 0, 0, OCI_DEFAULT );
-		if ( aStmt.getConnection()->checkError( status, strErr ) ) {
-			Error( ctx, pmapOut, strErr );
-			return false;
+				if ( col["IoMode"].AsLong() == (long) OCI_TYPEPARAM_OUT || col["IoMode"].AsLong()
+					 == (long) OCI_TYPEPARAM_INOUT ) {
+					Trace("binding value of type: " << col["Type"].AsLong())
+					long lBufferSize( glStringBufferSize );
+					pmapIn->Get( "StringBufferSize", lBufferSize, ctx );
+					aStmt.registerOutParam( bindPos, OracleStatement::INTERNAL, lBufferSize );
+				}
 		}
 	}
-
-	TraceAny(desc, "bind description");
 	return true;
 }

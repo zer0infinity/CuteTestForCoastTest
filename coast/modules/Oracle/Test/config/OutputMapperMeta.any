@@ -19,11 +19,15 @@
 		/PutPolicy			Append
 		/Query				{ /PutResultMapper * }
 		/QueryCount			{ /PutResultMapper * }
+		/UpdateCount		{ /PutResultMapper * }
 		/QuerySource		{ /PutResultMapper * }
 		/QueryTitles		{ /ResultMapper * }
 	}
 	/SelectEmployees {
 		/DestinationSlot	SelectEmployees
+	}
+	/UpdateEmployees {
+		/DestinationSlot	UpdateEmployees
 	}
 	/SelectEmployeesTitlesOnce {
 		/DestinationSlot	SelectEmployeesTitlesOnce

@@ -19,6 +19,12 @@
 			"SELECT ename, job FROM emp"
 		}
 	}
+	/UpdateEmployees {
+		/SQL	{
+			"update emp set ename='gugus' where ename='ADAMS' or ename='BLAKE'"
+		}
+		/ShowUpdateCount 1
+	}
 	/SelectEmployeesTitlesOnce {
 		/DBResultFormat		TitlesOnce
 	}

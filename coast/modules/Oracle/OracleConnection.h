@@ -11,8 +11,7 @@
 
 //--- modules used in the interface
 #include "config_coastoracle.h"
-#include "ITOString.h"
-#include "IFAObject.h"
+#include "Anything.h"
 
 #include "OciAutoHandle.h"
 
@@ -42,7 +41,7 @@ public:
 		return fOracleEnv;
 	}
 
-	OracleStatement *createStatement( String const &strStatement);
+	OracleStatement *createStatement( String const &strStatement, ROAnything roaSPDescription = ROAnything());
 
 	OCIError *ErrorHandle() {
 		return fErrhp.getHandle();

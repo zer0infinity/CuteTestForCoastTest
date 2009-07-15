@@ -12,6 +12,7 @@
 #include "config_coastoracle.h"
 #include "OracleConnection.h"
 #include "Anything.h"
+#include "IFAObject.h"
 #include <memory>
 
 class OracleResultset;
@@ -39,6 +40,10 @@ public:
 		Coast_OCI_STMT_DECLARE = OCI_STMT_DECLARE, /* declare .. (pl/sql statement ) */
 		Coast_OCI_STMT_CALL = OCI_STMT_CALL, /* corresponds to kpu call */
 	};
+
+	enum BindType {
+		INTERNAL, CURSOR, STRING
+	};
 private:
 	OracleStatement();
 	OracleConnection *fpConnection;
@@ -55,12 +60,14 @@ private:
 
 	OracleStatement( OracleConnection *pConn, OCIStmt *phStmt );
 
+	Anything &GetOutputArea();
+	sword bindColumn( long lBindPos, Anything &col, long len );
 public:
 	OracleStatement( OracleConnection *pConn, String const &strStmt );
 	virtual ~OracleStatement();
 
 	bool Prepare();
-	Status execute( ub4 mode, ub4 iters = 0 );
+	Status execute( ub4 mode );
 	sword Fetch( ub4 numRows = 1 );
 
 	Status status() const {
@@ -75,6 +82,9 @@ public:
 	OracleResultset *getCursor( long lColumnIndex );
 	String getString( long lColumnIndex );
 
+	void registerOutParam( long lBindPos, BindType bindType = INTERNAL, long lBufferSize = -1);
+	void setString( long lBindPos, String const &strValue );
+
 	OCIStmt *getHandle() const {
 		return fStmthp.getHandle();
 	}
@@ -84,6 +94,7 @@ public:
 
 	ROAnything GetOutputDescription();
 	bool DefineOutputArea();
+	void setSPDescription(ROAnything roaSPDescription);
 
 	const Anything &GetErrorMessages() const {
 		return fErrorMessages;

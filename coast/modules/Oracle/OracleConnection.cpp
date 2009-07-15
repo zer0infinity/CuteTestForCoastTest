@@ -195,11 +195,14 @@ String OracleConnection::errorMessage( sword status )
 	return error;
 }
 
-OracleStatement *OracleConnection::createStatement( const String &strStatement )
+OracleStatement *OracleConnection::createStatement( const String &strStatement, ROAnything roaSPDescription )
 {
 	OracleStatement *pStmt( new OracleStatement(this, strStatement) );
 	if ( pStmt ) {
 		pStmt->Prepare();
+		if ( pStmt->getStatementType() == OracleStatement::Coast_OCI_STMT_BEGIN ) {
+			pStmt->setSPDescription(roaSPDescription);
+		}
 	}
 	return pStmt;
 }
