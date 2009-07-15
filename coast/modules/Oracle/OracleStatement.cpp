@@ -68,7 +68,7 @@ OracleStatement::Status OracleStatement::execute( ub4 mode )
 	ub4 iters = ( fStmtType == Coast_OCI_STMT_SELECT ? 0 : 1 );
 	sword status = OCIStmtExecute( fpConnection->SvcHandle(), getHandle(), fpConnection->ErrorHandle(), iters, 0, NULL,
 								   NULL, mode );
-	if ( status == OCI_SUCCESS || status == OCI_SUCCESS_WITH_INFO ) {
+	if ( status == OCI_SUCCESS || status == OCI_SUCCESS_WITH_INFO || status == OCI_NO_DATA ) {
 		// how can we find out about the result type? -> see Prepare
 		switch ( fStmtType ) {
 			case Coast_OCI_STMT_SELECT:

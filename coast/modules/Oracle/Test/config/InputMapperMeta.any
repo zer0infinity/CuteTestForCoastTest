@@ -15,14 +15,20 @@
 	/SifsCoastOrclSP  %SifsCoastOrcl
 
 	/SelectEmployees {
-		/SQL	{
-			"SELECT ename, job FROM emp"
-		}
+		/SQL	{ /RendererMapper {
+			"SELECT ename, job FROM emp" { /ContextLookupRenderer whereClause }
+		} }
 	}
 	/UpdateEmployees {
 		/SQL	{
 			"update emp set ename='gugus' where ename='ADAMS' or ename='BLAKE'"
 		}
+		/ShowUpdateCount 1
+	}
+	/SimpleSQLAccess {
+		/SQL	{ /RendererMapper {
+			/ContextLookupRenderer SQL
+		} }
 		/ShowUpdateCount 1
 	}
 	/SelectEmployeesTitlesOnce {

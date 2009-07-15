@@ -112,6 +112,7 @@ void OracleDAImpl::ProcessResultSet( OracleResultset &aRSet, ParameterMapper *& 
 	bool bShowRowCount( true );
 	in->Get( "ShowQueryCount", bShowRowCount, ctx );
 	if ( bShowRowCount ) {
+		Trace("count according to statement " << (long)aRSet.getStatement()->getUpdateCount())
 		out->Put( prefixResultSlot( strResultPrefix, "QueryCount" ), lRowCount, ctx );
 	}
 }

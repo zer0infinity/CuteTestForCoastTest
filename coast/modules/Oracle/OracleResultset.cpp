@@ -43,7 +43,7 @@ OracleResultset::Status OracleResultset::next()
 			if ( status == OCI_SUCCESS || status == OCI_SUCCESS_WITH_INFO ) {
 				fFetchStatus = DATA_AVAILABLE;
 			} else
-				// if ( status == SQL_NO_DATA ) ??
+				// SQL_NO_DATA and other error/warn conditions
 			{
 				fFetchStatus = END_OF_FETCH;
 			}

@@ -49,6 +49,7 @@
 				SPExecute
 				LoadOratestSchema
 				UpdateEmployees
+				SimpleSQLAccess
 			}
 		}
 		/MapperTestDAImpl {
@@ -65,6 +66,7 @@
 					/SelectEmployees {
 						SelectEmployeesTitlesOnce
 						UpdateEmployees
+						SimpleSQLAccess
 					}
 					LoadOratestSchema
 				}
@@ -96,6 +98,7 @@
 					SPExecute
 					LoadOratestSchema
 					UpdateEmployees
+					SimpleSQLAccess
 				}
 			}
 		}
@@ -559,6 +562,171 @@
 					/UpdateEmployees {
 						/Query	"update emp set ename='gugus' where ename='ADAMS' or ename='BLAKE'"
 						/UpdateCount 2
+					}
+				}
+			}
+		}
+		/SelectEmployeesNoDataTest {
+			/TheAction {
+				/CallDA {
+					/DataAccess	SelectEmployees
+					/Parameters {
+						/whereClause " where ename='JuppiDuppi'"
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/SelectEmployees {
+						/Query	"SELECT ename, job FROM emp where ename='JuppiDuppi'"
+						/QueryCount 0
+					}
+				}
+			}
+		}
+		/insertEmployeesTest {
+			/TheAction {
+				/CallDA {
+					/DataAccess SimpleSQLAccess
+					/Parameters {
+						/SQL	"insert into DEPT (deptno, dname, loc) values (47,'IFS','Rappi')"
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/SimpleSQLAccess {
+						/Query	"insert into DEPT (deptno, dname, loc) values (47,'IFS','Rappi')"
+						/UpdateCount 1
+					}
+				}
+			}
+		}
+		/createTableTest {
+			/TheAction {
+				/CallDA {
+					/DataAccess SimpleSQLAccess
+					/Parameters {
+						/SQL	"CREATE TABLE IFS ( NAME VARCHAR2(10), JOB VARCHAR2(9), SAL NUMBER )"
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/SimpleSQLAccess {
+						/Query	"CREATE TABLE IFS ( NAME VARCHAR2(10), JOB VARCHAR2(9), SAL NUMBER )"
+						/UpdateCount 0
+					}
+				}
+			}
+		}
+		/alterTableTest {
+			/TheAction {
+				/CallDA {
+					/DataAccess SimpleSQLAccess
+					/Parameters {
+						/SQL	"ALTER TABLE IFS ADD CONSTRAINT PK_IFS PRIMARY KEY (NAME) ENABLE"
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/SimpleSQLAccess {
+						/Query	"ALTER TABLE IFS ADD CONSTRAINT PK_IFS PRIMARY KEY (NAME) ENABLE"
+						/UpdateCount 0
+					}
+				}
+			}
+		}
+		/insertIfsDataTest {
+			/TheAction {
+				/CallDA {
+					/DataAccess SimpleSQLAccess
+					/Parameters {
+						/SQL	"insert into IFS (name, job, sal) values ('Marcel','Engineer',1234)"
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/SimpleSQLAccess {
+						/Query	"insert into IFS (name, job, sal) values ('Marcel','Engineer',1234)"
+						/UpdateCount 1
+					}
+				}
+			}
+		}
+		/insertIfsDataTest2 {
+			/TheAction {
+				/CallDA {
+					/DataAccess SimpleSQLAccess
+					/Parameters {
+						/SQL	"insert into IFS (name, job, sal) values ('Dominik','Engineer',4567)"
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/SimpleSQLAccess {
+						/Query	"insert into IFS (name, job, sal) values ('Dominik','Engineer',4567)"
+						/UpdateCount 1
+					}
+				}
+			}
+		}
+		/delettIfsDataTest {
+			/TheAction {
+				/CallDA {
+					/DataAccess SimpleSQLAccess
+					/Parameters {
+						/SQL	"delete from IFS where job='Engineer'"
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/SimpleSQLAccess {
+						/Query	"delete from IFS where job='Engineer'"
+						/UpdateCount 2
+					}
+				}
+			}
+		}
+		/dropUnknownTableTest {
+			/TheAction {
+				/CallDA {
+					/DataAccess SimpleSQLAccess
+					/Parameters {
+						/SQL	"DROP TABLE GUGUSELI cascade constraints"
+					}
+				}
+			}
+			/ExpectedResult 0
+			/Result {
+				/TmpStore {
+					/SimpleSQLAccess {
+						/Query	"DROP TABLE GUGUSELI cascade constraints"
+						/Messages {
+							"OracleDAImpl::Exec: Error - ORA-00942: table or view does not exist\n"
+						}
+					}
+				}
+			}
+		}
+		/dropTableTest {
+			/TheAction {
+				/CallDA {
+					/DataAccess SimpleSQLAccess
+					/Parameters {
+						/SQL	"DROP TABLE IFS cascade constraints"
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/SimpleSQLAccess {
+						/Query	"DROP TABLE IFS cascade constraints"
+						/UpdateCount 0
 					}
 				}
 			}

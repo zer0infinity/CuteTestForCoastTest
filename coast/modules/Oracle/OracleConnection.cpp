@@ -13,6 +13,7 @@
 #include "Dbg.h"
 
 #include <string.h>	// for strlen
+
 OracleConnection::OracleConnection( OracleEnvironment &rEnv ) :
 	fConnected( false ), fOracleEnv( rEnv ), fErrhp(), fSrvhp(), fSvchp(), fUsrhp()
 {
@@ -123,10 +124,10 @@ OracleConnection::~OracleConnection()
 
 void OracleConnection::Close()
 {
-	if ( OCISessionEnd( fSvchp.getHandle(), fErrhp.getHandle(), fUsrhp.getHandle(), (ub4) 0 ) ) {
+	if ( OCISessionEnd( fSvchp.getHandle(), fErrhp.getHandle(), fUsrhp.getHandle(), 0 ) ) {
 		SysLog::Error( "FAILED: OCISessionEnd() on svchp failed" );
 	}
-	if ( OCIServerDetach( fSrvhp.getHandle(), fErrhp.getHandle(), (ub4) OCI_DEFAULT ) ) {
+	if ( OCIServerDetach( fSrvhp.getHandle(), fErrhp.getHandle(), OCI_DEFAULT ) ) {
 		SysLog::Error( "FAILED: OCISessionEnd() on srvhp failed" );
 	}
 
@@ -175,8 +176,8 @@ String OracleConnection::errorMessage( sword status )
 			break;
 		case OCI_ERROR:
 			if ( fErrhp.getHandle() )
-				OCIErrorGet( (dvoid *) fErrhp.getHandle(), (ub4) 1, (text *) NULL, &errcode, errbuf,
-							 (ub4) sizeof ( errbuf ), (ub4) OCI_HTYPE_ERROR );
+				OCIErrorGet( (dvoid *) fErrhp.getHandle(), 1, NULL, &errcode, errbuf, (ub4) sizeof ( errbuf ),
+							 OCI_HTYPE_ERROR );
 			error << "Error - " << (char *) errbuf;
 			break;
 		case OCI_INVALID_HANDLE:
@@ -197,11 +198,11 @@ String OracleConnection::errorMessage( sword status )
 
 OracleStatement *OracleConnection::createStatement( const String &strStatement, ROAnything roaSPDescription )
 {
-	OracleStatement *pStmt( new OracleStatement(this, strStatement) );
+	OracleStatement *pStmt( new OracleStatement( this, strStatement ) );
 	if ( pStmt ) {
 		pStmt->Prepare();
 		if ( pStmt->getStatementType() == OracleStatement::Coast_OCI_STMT_BEGIN ) {
-			pStmt->setSPDescription(roaSPDescription);
+			pStmt->setSPDescription( roaSPDescription );
 		}
 	}
 	return pStmt;

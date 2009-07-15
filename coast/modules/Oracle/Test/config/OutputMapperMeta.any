@@ -29,6 +29,9 @@
 	/UpdateEmployees {
 		/DestinationSlot	UpdateEmployees
 	}
+	/SimpleSQLAccess {
+		/DestinationSlot	SimpleSQLAccess
+	}
 	/SelectEmployeesTitlesOnce {
 		/DestinationSlot	SelectEmployeesTitlesOnce
 	}

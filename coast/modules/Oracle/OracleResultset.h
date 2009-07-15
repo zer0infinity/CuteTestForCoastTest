@@ -36,6 +36,9 @@ public:
 	}
 	~OracleResultset();
 	ROAnything GetOutputDescription();
+	OracleStatement *getStatement() const {
+		return &frStmt;
+	}
 	Status next();
 	String getString( long lColumnIndex );
 };
