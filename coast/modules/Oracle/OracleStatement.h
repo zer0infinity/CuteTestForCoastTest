@@ -61,7 +61,7 @@ private:
 	OracleStatement( OracleConnection *pConn, OCIStmt *phStmt );
 
 	Anything &GetOutputArea();
-	sword bindColumn( long lBindPos, Anything &col, long len );
+	sword bindColumn( long lBindPos, Anything &col, long len, bool bIsNull = false );
 public:
 	OracleStatement( OracleConnection *pConn, String const &strStmt );
 	virtual ~OracleStatement();

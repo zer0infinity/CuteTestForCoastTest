@@ -303,6 +303,29 @@
 				}
 			}
 		}
+		/EmpSalaryNULLTest {
+			/TmpStore {
+				/SPName	getempsalary
+			}
+			/TheAction {
+				/CallDA {
+					/DataAccess	SPExecute
+					/Parameters {
+						/ID		NULL
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/SPExecute {
+						/Query	"BEGIN getempsalary(:ID,:SALARY); END;"
+						/ID			NULL
+						/SALARY		0
+						/QuerySource	"//sifs-coast1.hsr.ch:1521/orcl"
+					}
+				}
+			}
+		}
 		/GetFloatTest {
 			/TmpStore {
 				/SPName	getfloat

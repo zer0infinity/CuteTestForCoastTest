@@ -179,7 +179,11 @@ set define off;
 , salary OUT emp.sal%type
 ) AS
 BEGIN
-  select emp.sal into salary from emp where emp.empno=id;
+  IF id IS NULL THEN
+    salary := 0;
+  ELSE
+    select emp.sal into salary from emp where emp.empno=id;
+  END IF;
 END GETEMPSALARY;
 
 /

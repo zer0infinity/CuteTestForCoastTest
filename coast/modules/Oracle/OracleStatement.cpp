@@ -466,7 +466,7 @@ void OracleStatement::setString( long lBindPos, String const &strValue )
 
 		col["RawBuf"] = buf;
 
-		status = bindColumn( lBindPos + 1, col, len );
+		status = bindColumn( lBindPos + 1, col, len, strValue.IsEqual("NULL") );
 		if ( status != OCI_SUCCESS ) {
 			throw OracleException( *getConnection(), status );
 		}
@@ -474,12 +474,16 @@ void OracleStatement::setString( long lBindPos, String const &strValue )
 	}
 }
 
-sword OracleStatement::bindColumn( long lBindPos, Anything &col, long len )
+sword OracleStatement::bindColumn( long lBindPos, Anything &col, long len, bool bIsNull )
 {
-	StartTrace1(OracleStatement.bindColumn, "column index " << lBindPos);
+	StartTrace1(OracleStatement.bindColumn, "column index " << lBindPos << " is " << (bIsNull ? "" : "not ") << "null");
 
 	// allocate space for NULL indicator
-	col["Indicator"] = Anything( (void *) 0, sizeof(OCIInd) );
+	OCIInd nullInd( 0 );
+	if ( bIsNull ) {
+		nullInd = -1 ;
+	}
+	col["Indicator"] = Anything( (void *) &nullInd, sizeof(OCIInd) );
 
 	// allocate space to store effective result size
 	ub2 ub2Len( (ub2) col["Length"].AsLong( 0L ) );
