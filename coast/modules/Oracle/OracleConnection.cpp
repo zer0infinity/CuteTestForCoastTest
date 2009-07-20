@@ -196,10 +196,11 @@ String OracleConnection::errorMessage( sword status )
 	return error;
 }
 
-OracleStatement *OracleConnection::createStatement( const String &strStatement, ROAnything roaSPDescription )
+OracleStatement *OracleConnection::createStatement( const String &strStatement, long lPrefetchRows, ROAnything roaSPDescription )
 {
 	OracleStatement *pStmt( new OracleStatement( this, strStatement ) );
 	if ( pStmt ) {
+		pStmt->setPrefetchRows( lPrefetchRows );
 		pStmt->Prepare();
 		if ( pStmt->getStatementType() == OracleStatement::Coast_OCI_STMT_BEGIN ) {
 			pStmt->setSPDescription( roaSPDescription );

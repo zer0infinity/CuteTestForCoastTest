@@ -139,6 +139,17 @@ bool OracleStatement::Prepare()
 	return bSuccess;
 }
 
+void OracleStatement::setPrefetchRows( long lPrefetchRows )
+{
+	String strErr( 32L );
+	ub4 prefetch( lPrefetchRows );
+	if (fpConnection->checkError(OCIAttrSet(getHandle(),
+											OCI_HTYPE_STMT, &prefetch, sizeof(prefetch),
+											OCI_ATTR_PREFETCH_ROWS, fpConnection->ErrorHandle()))) {
+		fErrorMessages.Append( strErr );
+	}
+}
+
 OracleResultset *OracleStatement::getResultset()
 {
 	StartTrace(OracleStatement.getResultset);

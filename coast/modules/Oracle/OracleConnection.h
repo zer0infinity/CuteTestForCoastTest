@@ -41,7 +41,7 @@ public:
 		return fOracleEnv;
 	}
 
-	OracleStatement *createStatement( String const &strStatement, ROAnything roaSPDescription = ROAnything());
+	OracleStatement *createStatement( String const &strStatement, long lPrefetchRows, ROAnything roaSPDescription = ROAnything());
 
 	OCIError *ErrorHandle() {
 		return fErrhp.getHandle();

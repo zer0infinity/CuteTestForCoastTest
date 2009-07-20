@@ -76,6 +76,7 @@ public:
 	StmtType getStatementType() const {
 		return fStmtType;
 	}
+	void setPrefetchRows( long lPrefetchRows );
 	unsigned long getUpdateCount() const;
 
 	OracleResultset *getResultset();

@@ -123,7 +123,7 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 	bool bRet( false );
 	DAAccessTimer(OracleDAImpl.Exec, fName, ctx);
 	OracleModule *pModule = SafeCast(WDModule::FindWDModule("OracleModule"), OracleModule);
-	ConnectionPool *pConnectionPool( 0 );
+	Coast::Oracle::ConnectionPool *pConnectionPool( 0 );
 	if ( pModule && ( pConnectionPool = pModule->GetConnectionPool() ) ) {
 		// we need the server and user to see if there is an existing and Open OraclePooledConnection
 		String user, server, passwd;
@@ -140,6 +140,8 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 		if ( lTryCount < 1 ) {
 			lTryCount = 1L;
 		}
+		long lPrefetchRows( 10L );
+		in->Get("PrefetchRows", lPrefetchRows, ctx);
 		// we slipped through and are ready to get a connection and execute a query
 		// find a free OraclePooledConnection, we should always get a valid OraclePooledConnection here!
 		while ( bDoRetry && --lTryCount >= 0 ) {
@@ -155,7 +157,7 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 					OracleConnection *pConnection( pPooledConnection->getConnection() );
 					bIsOpen = true;
 					if ( DoPrepareSQL( command, ctx, in ) ) {
-						OracleStatementPtr aStmt( pConnection->createStatement( command ) );
+						OracleStatementPtr aStmt( pConnection->createStatement( command, lPrefetchRows ) );
 						Trace("statement status:" << (long)aStmt->status());
 						if ( aStmt->status() == OracleStatement::PREPARED ) {
 							Trace("statement is prepared");
@@ -196,14 +198,14 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 						MetaThing desc;
 						if ( GetSPDescription( command, desc, in, out, pConnection, ctx ) ) {
 							Trace(String("prepare stored procedure/function: ") << command);
-							OracleStatementPtr aStmt( pConnection->createStatement( command, desc ) );
+							OracleStatementPtr aStmt( pConnection->createStatement( command, lPrefetchRows, desc ) );
 							Trace("statement status:" << (long)aStmt->status());
 							if ( aStmt->status() == OracleStatement::PREPARED ) {
 								out->Put( "Query", command, ctx );
 								try {
 									if ( BindSPVariables( desc, in, out, *aStmt.get(), ctx ) ) {
 										Trace("executing statement");
-										OracleStatement::Status status = aStmt->execute(OCI_DEFAULT);
+										OracleStatement::Status status = aStmt->execute( OCI_DEFAULT );
 										switch ( status ) {
 											case OracleStatement::RESULT_SET_AVAILABLE:
 												Trace("RESULT_SET_AVAILABLE")
@@ -218,7 +220,8 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 													Trace("got column of type " << lColType)
 													if ( lColType == SQLT_CUR || lColType == SQLT_RSET ) {
 														OracleResultsetPtr aRSet( aStmt->getCursor( lOraColIdx ) );
-														ProcessResultSet( *aRSet.get(), in, ctx, out, roaCol["Name"].AsString() );
+														ProcessResultSet( *aRSet.get(), in, ctx, out,
+																		  roaCol["Name"].AsString() );
 													} else {
 														String strValueCol( aStmt->getString( lOraColIdx ) );
 														Trace("value of column [" << roaCol["Name"].AsString() << "] has value [" << strValueCol << "]")
@@ -310,23 +313,20 @@ bool OracleDAImpl::GetSPDescription( String &command, Anything &desc, ParameterM
 	bool error( false );
 	String strErr( "GetSPDescription: " );
 
-	Trace("get the describe handle for the procedure");
-	DscHandleType aDscHandle;
 	sword attrStat;
-	OCIHandleAlloc( pConnection->getEnvironment().EnvHandle(), aDscHandle.getVoidAddr(), (ub4) OCI_HTYPE_DESCRIBE, 0, 0 );
 	attrStat = OCIDescribeAny( pConnection->SvcHandle(), pConnection->ErrorHandle(), (dvoid *) objptr, (ub4) strlen(
-								   (char *) objptr ), OCI_OTYPE_NAME, 0, OCI_PTYPE_UNK, aDscHandle.getHandle() );
+								   (char *) objptr ), OCI_OTYPE_NAME, 0, OCI_PTYPE_UNK, pConnection->DscHandle() );
 	Trace("status after DESCRIBEANY::OCI_PTYPE_UNK: " << (long)attrStat)
 	if ( attrStat != OCI_SUCCESS ) {
 		strErr << command << " is neither a stored procedure nor a function";
 		Error( ctx, pmapOut, strErr );
 		return false;
 	}
-	Trace("dscaddr after describe proc: &" << (long)&aDscHandle.fHandle << " content: " << (long)aDscHandle.getHandle())
+
 	OCIParam *parmh( 0 );
 	ub1 ubFuncType( 0 );
 	Trace("get the parameter handle")
-	attrStat = OCIAttrGet( aDscHandle.getHandle(), OCI_HTYPE_DESCRIBE, (dvoid *) &parmh, 0, OCI_ATTR_PARAM,
+	attrStat = OCIAttrGet( pConnection->DscHandle(), OCI_HTYPE_DESCRIBE, (dvoid *) &parmh, 0, OCI_ATTR_PARAM,
 						   pConnection->ErrorHandle() );
 	Trace("status after OCI_HTYPE_DESCRIBE::OCI_ATTR_PARAM: " << (long)attrStat);
 	attrStat
@@ -424,7 +424,7 @@ bool OracleDAImpl::GetSPDescription( String &command, Anything &desc, ParameterM
 		param["Type"] = dtype;
 		param["Length"] = (int) data_len;
 		param["IoMode"] = iomode;
-		param["Idx"] = (long)( bIsFunction ? i + 1 : i );
+		param["Idx"] = (long) ( bIsFunction ? i + 1 : i );
 		desc.Append( param );
 	}
 	TraceAny(desc, "stored procedure description");
