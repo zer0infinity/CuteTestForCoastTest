@@ -170,6 +170,22 @@ end;
 /
 
 --------------------------------------------------------
+--  DDL for Function GETEMPSFUNC
+--------------------------------------------------------
+
+  CREATE OR REPLACE FUNCTION "GETEMPSFUNC" 
+return SYS_REFCURSOR
+is
+	EmpCursor SYS_REFCURSOR;
+begin
+  open EmpCursor for
+    select emp.ename from emp order by emp.ename;
+  return EmpCursor;
+end;
+
+/
+
+--------------------------------------------------------
 --  DDL for Procedure GETEMPSALARY
 --------------------------------------------------------
 set define off;

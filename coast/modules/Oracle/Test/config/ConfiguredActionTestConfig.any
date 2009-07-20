@@ -428,6 +428,69 @@
 				}
 			}
 		}
+		/FunctionTestResultset {
+			/TmpStore {
+				/SPName	getempsfunc
+			}
+			/TheAction {
+				/CallDA 	SPExecute
+			}
+			/Result {
+				/TmpStore {
+					/SPExecute {
+						/Query	"BEGIN :getempsfunc := getempsfunc(); END;"
+						/getempsfunc {
+							/QueryResult {
+							    {
+							      /ENAME "ADAMS"
+							    }
+							    {
+							      /ENAME "ALLEN"
+							    }
+							    {
+							      /ENAME "BLAKE"
+							    }
+							    {
+							      /ENAME "CLARK"
+							    }
+							    {
+							      /ENAME "FORD"
+							    }
+							    {
+							      /ENAME "JAMES"
+							    }
+							    {
+							      /ENAME "JONES"
+							    }
+							    {
+							      /ENAME "KING"
+							    }
+							    {
+							      /ENAME "MARTIN"
+							    }
+							    {
+							      /ENAME "MILLER"
+							    }
+							    {
+							      /ENAME "SCOTT"
+							    }
+							    {
+							      /ENAME "SMITH"
+							    }
+							    {
+							      /ENAME "TURNER"
+							    }
+							    {
+							      /ENAME "WARD"
+							    }
+							}
+							/QueryCount 14
+						}
+						/QuerySource	"//sifs-coast1.hsr.ch:1521/orcl"
+					}
+				}
+			}
+		}
 		/NonExistingProcedureOrFunctionTest {
 			/UseConfig	FunctionTest
 			/Replace {
