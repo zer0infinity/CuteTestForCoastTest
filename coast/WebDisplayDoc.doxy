@@ -1,4 +1,4 @@
-# Doxyfile 1.5.6
+# Doxyfile 1.5.9
 
 # This file describes the settings to be used by the documentation system
 # doxygen (www.doxygen.org) for a project
@@ -54,11 +54,11 @@ CREATE_SUBDIRS         = NO
 # information to generate all constant output in the proper language.
 # The default language is English, other supported languages are:
 # Afrikaans, Arabic, Brazilian, Catalan, Chinese, Chinese-Traditional,
-# Croatian, Czech, Danish, Dutch, Farsi, Finnish, French, German, Greek,
-# Hungarian, Italian, Japanese, Japanese-en (Japanese with English messages),
-# Korean, Korean-en, Lithuanian, Norwegian, Macedonian, Persian, Polish,
-# Portuguese, Romanian, Russian, Serbian, Slovak, Slovene, Spanish, Swedish,
-# and Ukrainian.
+# Croatian, Czech, Danish, Dutch, Esperanto, Farsi, Finnish, French, German,
+# Greek, Hungarian, Italian, Japanese, Japanese-en (Japanese with English
+# messages), Korean, Korean-en, Lithuanian, Norwegian, Macedonian, Persian,
+# Polish, Portuguese, Romanian, Russian, Serbian, Serbian-Cyrilic, Slovak,
+# Slovene, Spanish, Swedish, Ukrainian, and Vietnamese.
 
 OUTPUT_LANGUAGE        = English
 
@@ -155,13 +155,6 @@ QT_AUTOBRIEF           = NO
 
 MULTILINE_CPP_IS_BRIEF = YES
 
-# If the DETAILS_AT_TOP tag is set to YES then Doxygen
-# will output the detailed description near the top, like JavaDoc.
-# If set to NO, the detailed description appears after the member
-# documentation.
-
-DETAILS_AT_TOP         = YES
-
 # If the INHERIT_DOCS tag is set to YES (the default) then an undocumented
 # member inherits the documentation from any documented member that it
 # re-implements.
@@ -213,6 +206,17 @@ OPTIMIZE_FOR_FORTRAN   = NO
 # VHDL.
 
 OPTIMIZE_OUTPUT_VHDL   = NO
+
+# Doxygen selects the parser to use depending on the extension of the files it parses.
+# With this tag you can assign which parser to use for a given extension.
+# Doxygen has a built-in mapping, but you can override or extend it using this tag.
+# The format is ext=language, where ext is a file extension, and language is one of
+# the parsers supported by doxygen: IDL, Java, Javascript, C#, C, C++, D, PHP,
+# Objective-C, Python, Fortran, VHDL, C, C++. For instance to make doxygen treat
+# .inc files as Fortran files (default is PHP), and .f files as C (default is Fortran),
+# use: inc=Fortran f=C. Note that for custom extensions you also need to set FILE_PATTERNS otherwise the files are not read by doxygen.
+
+EXTENSION_MAPPING      =
 
 # If you use STL classes (i.e. std::string, std::vector, etc.) but do not want
 # to include (a tag file for) the STL sources as input, then you should
@@ -267,6 +271,22 @@ SUBGROUPING            = YES
 # types are typedef'ed and only the typedef is referenced, never the tag name.
 
 TYPEDEF_HIDES_STRUCT   = NO
+
+# The SYMBOL_CACHE_SIZE determines the size of the internal cache use to
+# determine which symbols to keep in memory and which to flush to disk.
+# When the cache is full, less often used symbols will be written to disk.
+# For small to medium size projects (<1000 input files) the default value is
+# probably good enough. For larger projects a too small cache size can cause
+# doxygen to be busy swapping symbols to and from disk most of the time
+# causing a significant performance penality.
+# If the system has enough physical memory increasing the cache will improve the
+# performance by keeping more symbols in memory. Note that the value works on
+# a logarithmic scale so increasing the size by one will rougly double the
+# memory usage. The cache size is given by this formula:
+# 2^(16+SYMBOL_CACHE_SIZE). The valid range is 0..9, the default is 0,
+# corresponding to a cache size of 2^16 = 65536 symbols
+
+SYMBOL_CACHE_SIZE      = 0
 
 #---------------------------------------------------------------------------
 # Build related configuration options
@@ -459,7 +479,8 @@ SHOW_DIRECTORIES       = YES
 SHOW_FILES             = YES
 
 # Set the SHOW_NAMESPACES tag to NO to disable the generation of the
-# Namespaces page.  This will remove the Namespaces entry from the Quick Index
+# Namespaces page.
+# This will remove the Namespaces entry from the Quick Index
 # and from the Folder Tree View (if specified). The default is YES.
 
 SHOW_NAMESPACES        = YES
@@ -473,6 +494,15 @@ SHOW_NAMESPACES        = YES
 # is used as the file version. See the manual for examples.
 
 FILE_VERSION_FILTER    =
+
+# The LAYOUT_FILE tag can be used to specify a layout file which will be parsed by
+# doxygen. The layout file controls the global structure of the generated output files
+# in an output format independent way. The create the layout file that represents
+# doxygen's defaults, run doxygen with the -l option. You can optionally specify a
+# file name after the option, if omitted DoxygenLayout.xml will be used as the name
+# of the layout file.
+
+LAYOUT_FILE            =
 
 #---------------------------------------------------------------------------
 # configuration options related to warning and progress messages
@@ -534,44 +564,44 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories
 # with spaces.
 
-INPUT                  =  ../coast
-INPUT                  += ../coast/foundation
-INPUT                  += ../../zlib
-INPUT                  += ../coast/compress
-INPUT                  += ../coast/regex
-INPUT                  += ../coast/mtfoundation
-INPUT                  += ../coast/wdbase
-INPUT                  += ../wdapp
-INPUT                  += ../coast/modules/AccessControl
-INPUT                  += ../coast/modules/Actions
-INPUT                  += ../coast/modules/AppLog
-INPUT                  += ../coast/modules/CacheHandler
-INPUT                  += ../coast/modules/DataAccess
-INPUT                  += ../coast/modules/EBCDIC
-INPUT                  += ../coast/modules/HTTP
-INPUT                  += ../coast/modules/LDAP
-INPUT                  += ../coast/modules/LDAPDAICacheHandler
-INPUT                  += ../coast/modules/LDAPDataAccess
-INPUT                  += ../coast/modules/MySQL
-INPUT                  += ../coast/modules/Renderer
-INPUT                  += ../coast/modules/Security
-INPUT                  += ../coast/modules/SSL
-INPUT                  += ../coast/modules/StdDataAccess
-INPUT                  += ../coast/modules/SybaseCT
-INPUT                  += ../coast/modules/WorkerPoolManager
-INPUT                  += ../modules/AppAndUserRights
-INPUT                  += ../modules/FunctionalActions
-INPUT                  += ../modules/HTMLRenderers
-INPUT                  += ../modules/MomsQueueModule
-INPUT                  += ../modules/Queueing
-INPUT                  += ../modules/StringRenderers
-INPUT                  += ../modules/SystemFunctions
-INPUT                  += ../modules/TKSAppLog
-INPUT                  += ../../testfw
-INPUT                  += ../coast/foundation/testfwFoundation
-INPUT                  += ../coast/wdtest/bases
-INPUT                  += ../perfTest/src
-INPUT                  += ../perfTest/ATT
+INPUT                  = ../coast \
+                         ../coast/foundation \
+                         ../../zlib \
+                         ../coast/compress \
+                         ../coast/regex \
+                         ../coast/mtfoundation \
+                         ../coast/wdbase \
+                         ../wdapp \
+                         ../coast/modules/AccessControl \
+                         ../coast/modules/Actions \
+                         ../coast/modules/AppLog \
+                         ../coast/modules/CacheHandler \
+                         ../coast/modules/DataAccess \
+                         ../coast/modules/EBCDIC \
+                         ../coast/modules/HTTP \
+                         ../coast/modules/LDAP \
+                         ../coast/modules/LDAPDAICacheHandler \
+                         ../coast/modules/LDAPDataAccess \
+                         ../coast/modules/MySQL \
+                         ../coast/modules/Renderer \
+                         ../coast/modules/Security \
+                         ../coast/modules/SSL \
+                         ../coast/modules/StdDataAccess \
+                         ../coast/modules/SybaseCT \
+                         ../coast/modules/WorkerPoolManager \
+                         ../modules/AppAndUserRights \
+                         ../modules/FunctionalActions \
+                         ../modules/HTMLRenderers \
+                         ../modules/MomsQueueModule \
+                         ../modules/Queueing \
+                         ../modules/StringRenderers \
+                         ../modules/SystemFunctions \
+                         ../modules/TKSAppLog \
+                         ../../testfw \
+                         ../coast/foundation/testfwFoundation \
+                         ../coast/wdtest/bases \
+                         ../perfTest/src \
+                         ../perfTest/ATT
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is
@@ -655,14 +685,17 @@ IMAGE_PATH             = .
 # by executing (via popen()) the command <filter> <input-file>, where <filter>
 # is the value of the INPUT_FILTER tag, and <input-file> is the name of an
 # input file. Doxygen will then use the output that the filter program writes
-# to standard output.  If FILTER_PATTERNS is specified, this tag will be
+# to standard output.
+# If FILTER_PATTERNS is specified, this tag will be
 # ignored.
 
 INPUT_FILTER           =
 
 # The FILTER_PATTERNS tag can be used to specify filters on a per file pattern
-# basis.  Doxygen will compare the file name with each pattern and apply the
-# filter if there is a match.  The filters are a list of the form:
+# basis.
+# Doxygen will compare the file name with each pattern and apply the
+# filter if there is a match.
+# The filters are a list of the form:
 # pattern=filter (like *.cpp=my_cpp_filter). See INPUT_FILTER for further
 # info on how filters are used. If FILTER_PATTERNS is empty, INPUT_FILTER
 # is applied to all files.
@@ -712,7 +745,8 @@ REFERENCES_RELATION    = NO
 # If the REFERENCES_LINK_SOURCE tag is set to YES (the default)
 # and SOURCE_BROWSER tag is set to YES, then the hyperlinks from
 # functions in REFERENCES_RELATION and REFERENCED_BY_RELATION lists will
-# link to the source code.  Otherwise they will link to the documentstion.
+# link to the source code.
+# Otherwise they will link to the documentation.
 
 REFERENCES_LINK_SOURCE = YES
 
@@ -801,12 +835,13 @@ HTML_STYLESHEET        =
 
 HTML_ALIGN_MEMBERS     = YES
 
-# If the GENERATE_HTMLHELP tag is set to YES, additional index files
-# will be generated that can be used as input for tools like the
-# Microsoft HTML help workshop to generate a compiled HTML help file (.chm)
-# of the generated HTML documentation.
+# If the HTML_DYNAMIC_SECTIONS tag is set to YES then the generated HTML
+# documentation will contain sections that can be hidden and shown after the
+# page has loaded. For this to work a browser that supports
+# JavaScript and DHTML is required (for instance Mozilla 1.0+, Firefox
+# Netscape 6.0+, Internet explorer 5.0+, Konqueror, or Safari).
 
-GENERATE_HTMLHELP      = NO
+HTML_DYNAMIC_SECTIONS  = NO
 
 # If the GENERATE_DOCSET tag is set to YES, additional index files
 # will be generated that can be used as input for Apple's Xcode 3
@@ -816,6 +851,7 @@ GENERATE_HTMLHELP      = NO
 # directory and running "make install" will install the docset in
 # ~/Library/Developer/Shared/Documentation/DocSets so that Xcode will find
 # it at startup.
+# See http://developer.apple.com/tools/creatingdocsetswithdoxygen.html for more information.
 
 GENERATE_DOCSET        = NO
 
@@ -833,13 +869,12 @@ DOCSET_FEEDNAME        = "Doxygen generated docs"
 
 DOCSET_BUNDLE_ID       = org.doxygen.Project
 
-# If the HTML_DYNAMIC_SECTIONS tag is set to YES then the generated HTML
-# documentation will contain sections that can be hidden and shown after the
-# page has loaded. For this to work a browser that supports
-# JavaScript and DHTML is required (for instance Mozilla 1.0+, Firefox
-# Netscape 6.0+, Internet explorer 5.0+, Konqueror, or Safari).
+# If the GENERATE_HTMLHELP tag is set to YES, additional index files
+# will be generated that can be used as input for tools like the
+# Microsoft HTML help workshop to generate a compiled HTML help file (.chm)
+# of the generated HTML documentation.
 
-HTML_DYNAMIC_SECTIONS  = NO
+GENERATE_HTMLHELP      = NO
 
 # If the GENERATE_HTMLHELP tag is set to YES, the CHM_FILE tag can
 # be used to specify the file name of the resulting .chm file. You
@@ -878,6 +913,55 @@ BINARY_TOC             = NO
 
 TOC_EXPAND             = NO
 
+# If the GENERATE_QHP tag is set to YES and both QHP_NAMESPACE and QHP_VIRTUAL_FOLDER
+# are set, an additional index file will be generated that can be used as input for
+# Qt's qhelpgenerator to generate a Qt Compressed Help (.qch) of the generated
+# HTML documentation.
+
+GENERATE_QHP           = NO
+
+# If the QHG_LOCATION tag is specified, the QCH_FILE tag can
+# be used to specify the file name of the resulting .qch file.
+# The path specified is relative to the HTML output folder.
+
+QCH_FILE               =
+
+# The QHP_NAMESPACE tag specifies the namespace to use when generating
+# Qt Help Project output. For more information please see
+# http://doc.trolltech.com/qthelpproject.html#namespace
+
+QHP_NAMESPACE          =
+
+# The QHP_VIRTUAL_FOLDER tag specifies the namespace to use when generating
+# Qt Help Project output. For more information please see
+# http://doc.trolltech.com/qthelpproject.html#virtual-folders
+
+QHP_VIRTUAL_FOLDER     = doc
+
+# If QHP_CUST_FILTER_NAME is set, it specifies the name of a custom filter to add.
+# For more information please see
+# http://doc.trolltech.com/qthelpproject.html#custom-filters
+
+QHP_CUST_FILTER_NAME   =
+
+# The QHP_CUST_FILT_ATTRS tag specifies the list of the attributes of the custom filter to add.For more information please see
+# <a href="http://doc.trolltech.com/qthelpproject.html#custom-filters">Qt Help Project / Custom Filters</a>.
+
+QHP_CUST_FILTER_ATTRS  =
+
+# The QHP_SECT_FILTER_ATTRS tag specifies the list of the attributes this project's
+# filter section matches.
+# <a href="http://doc.trolltech.com/qthelpproject.html#filter-attributes">Qt Help Project / Filter Attributes</a>.
+
+QHP_SECT_FILTER_ATTRS  =
+
+# If the GENERATE_QHP tag is set to YES, the QHG_LOCATION tag can
+# be used to specify the location of Qt's qhelpgenerator.
+# If non-empty doxygen will try to run qhelpgenerator on the generated
+# .qhp file.
+
+QHG_LOCATION           =
+
 # The DISABLE_INDEX tag can be used to turn on/off the condensed index at
 # top of each HTML page. The value NO (the default) enables the index and
 # the value YES disables it.
@@ -898,7 +982,7 @@ ENUM_VALUES_PER_LINE   = 4
 # Netscape 6.0+, Internet explorer 5.0+, or Konqueror). Windows users are
 # probably better off using the HTML help feature. Other possible values
 # for this tag are: HIERARCHIES, which will generate the Groups, Directories,
-# and Class Hiererachy pages using a tree view instead of an ordered list;
+# and Class Hierarchy pages using a tree view instead of an ordered list;
 # ALL, which combines the behavior of FRAME and HIERARCHIES; and NONE, which
 # disables this behavior completely. For backwards compatibility with previous
 # releases of Doxygen, the values YES and NO are equivalent to FRAME and NONE
@@ -995,6 +1079,10 @@ LATEX_BATCHMODE        = NO
 # in the output.
 
 LATEX_HIDE_INDICES     = NO
+
+# If LATEX_SOURCE_CODE is set to YES then doxygen will include source code with syntax highlighting in the LaTeX output. Note that which sources are shown also depends on other settings such as SOURCE_BROWSER.
+
+LATEX_SOURCE_CODE      = NO
 
 #---------------------------------------------------------------------------
 # configuration options related to the RTF output
@@ -1132,8 +1220,10 @@ GENERATE_PERLMOD       = NO
 PERLMOD_LATEX          = NO
 
 # If the PERLMOD_PRETTY tag is set to YES the Perl module output will be
-# nicely formatted so it can be parsed by a human reader.  This is useful
-# if you want to understand what is going on.  On the other hand, if this
+# nicely formatted so it can be parsed by a human reader.
+# This is useful
+# if you want to understand what is going on.
+# On the other hand, if this
 # tag is set to NO the size of the Perl module output will be much smaller
 # and Perl will parse it just the same.
 
@@ -1178,12 +1268,12 @@ SEARCH_INCLUDES        = YES
 # contain include files that are not input files but should be processed by
 # the preprocessor.
 
-INCLUDE_PATH           = ../../3rdparty/installed/boost
-INCLUDE_PATH          += ../../3rdparty/installed/iplanet_ldap/include
-INCLUDE_PATH          += ../../3rdparty/installed/loki/include
-INCLUDE_PATH          += ../../3rdparty/installed/mqm/inc
-INCLUDE_PATH          += ../../3rdparty/installed/openssl/include
-INCLUDE_PATH          += ../../3rdparty/installed/sybase/include
+INCLUDE_PATH           = ../../3rdparty/installed/boost \
+                         ../../3rdparty/installed/iplanet_ldap/include \
+                         ../../3rdparty/installed/loki/include \
+                         ../../3rdparty/installed/mqm/inc \
+                         ../../3rdparty/installed/openssl/include \
+                         ../../3rdparty/installed/sybase/include
 
 # You can use the INCLUDE_FILE_PATTERNS tag to specify one or more wildcard
 # patterns (like *.h and *.hpp) to filter out the header-files in the
@@ -1200,20 +1290,20 @@ INCLUDE_FILE_PATTERNS  =
 # undefined via #undef or recursively expanded use the := operator
 # instead of the = operator.
 
-PREDEFINED             = DEBUG
-PREDEFINED             += __GNUG__
-PREDEFINED             += __sun
-PREDEFINED             += ONLY_STD_IOSTREAM
-PREDEFINED             += OS_SYSV
-PREDEFINED             += OS_SOLARIS
-PREDEFINED             += OS_RELMAJOR=5
-PREDEFINED             += OS_RELMINOR=10
-PREDEFINED             += WD_OPT
-PREDEFINED             += _POSIX_THREADS
-PREDEFINED             += _POSIX_PTHREAD_SEMANTICS
-PREDEFINED             += _REENTRANT
-PREDEFINED             += _LARGEFILE64_SOURCE
-PREDEFINED             += TRACE_LOCKS
+PREDEFINED             = DEBUG \
+                         __GNUG__ \
+                         __sun \
+                         ONLY_STD_IOSTREAM \
+                         OS_SYSV \
+                         OS_SOLARIS \
+                         OS_RELMAJOR=5 \
+                         OS_RELMINOR=10 \
+                         WD_OPT \
+                         _POSIX_THREADS \
+                         _POSIX_PTHREAD_SEMANTICS \
+                         _REENTRANT \
+                         _LARGEFILE64_SOURCE \
+                         TRACE_LOCKS
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then
 # this tag can be used to specify a list of macro names that should be expanded.
@@ -1238,9 +1328,11 @@ SKIP_FUNCTION_MACROS   = YES
 # Optionally an initial location of the external documentation
 # can be added for each tagfile. The format of a tag file without
 # this location is as follows:
-#   TAGFILES = file1 file2 ...
+#
+# TAGFILES = file1 file2 ...
 # Adding location for the tag files is done as follows:
-#   TAGFILES = file1=loc1 "file2 = loc2" ...
+#
+# TAGFILES = file1=loc1 "file2 = loc2" ...
 # where "loc1" and "loc2" can be relative or absolute paths or
 # URLs. If a location is present for each tag, the installdox tool
 # does not have to be run to correct the links.
@@ -1318,6 +1410,11 @@ HAVE_DOT               = YES
 # containing the font.
 
 DOT_FONTNAME           = FreeSans
+
+# The DOT_FONTSIZE tag can be used to set the size of the font of dot graphs.
+# The default size is 10pt.
+
+DOT_FONTSIZE           = 10
 
 # By default doxygen will tell dot to use the output directory to look for the
 # FreeSans.ttf font (which doxygen will put there itself). If you specify a
@@ -1436,10 +1533,10 @@ DOT_GRAPH_MAX_NODES    = 80
 MAX_DOT_GRAPH_DEPTH    = 7
 
 # Set the DOT_TRANSPARENT tag to YES to generate images with a transparent
-# background. This is enabled by default, which results in a transparent
-# background. Warning: Depending on the platform used, enabling this option
-# may lead to badly anti-aliased labels on the edges of a graph (i.e. they
-# become hard to read).
+# background. This is disabled by default, because dot on Windows does not
+# seem to support this out of the box. Warning: Depending on the platform used,
+# enabling this option may lead to badly anti-aliased labels on the edges of
+# a graph (i.e. they become hard to read).
 
 DOT_TRANSPARENT        = YES
 
@@ -1463,7 +1560,7 @@ GENERATE_LEGEND        = YES
 DOT_CLEANUP            = NO
 
 #---------------------------------------------------------------------------
-# Configuration::additions related to the search engine
+# Options related to the search engine
 #---------------------------------------------------------------------------
 
 # The SEARCHENGINE tag specifies whether or not a search engine should be
