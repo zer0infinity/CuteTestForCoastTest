@@ -20,10 +20,8 @@
 /*!
 \par Configuration
 \code
-{
-	/ConnectionPool {							optional, ConnectionPool configuration, if not specified, default values get used
-		/ParallelQueries			long		defines number of parallel queries/sp-calls which can be issued, default 5
-		/CloseConnectionTimeout		long		timeout after which to close open connections
+/OracleModule {
+	/ConnectionPool {		optional, Coast::Oracle::ConnectionPool configuration
 	}
 }
 \endcode

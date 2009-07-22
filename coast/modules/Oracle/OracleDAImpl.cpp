@@ -10,10 +10,7 @@
 #include "OracleDAImpl.h"
 
 //--- standard modules used ----------------------------------------------------
-//#include "OracleConnectionManager.h"
 #include "OraclePooledConnection.h"
-#include "OracleEnvironment.h"
-#include "OracleConnection.h"
 #include "OracleStatement.h"
 #include "OracleException.h"
 #include "OracleResultset.h"

@@ -12,7 +12,6 @@
 //--- modules used in the interface
 #include "config_coastoracle.h"
 #include "Anything.h"
-
 #include "OciAutoHandle.h"
 
 class OracleEnvironment;
@@ -25,10 +24,15 @@ class EXPORTDECL_COASTORACLE OracleConnection
 {
 	bool fConnected;
 	OracleEnvironment &fOracleEnv;
-	ErrHandleType fErrhp; // OCI error handle
-	SrvHandleType fSrvhp; // OCI server connection handle (at most one outstanding call at a time!)
-	SvcHandleType fSvchp; // OCI service context handle
-	UsrHandleType fUsrhp; // OCI user session handle
+	//! OCI error handle
+	ErrHandleType fErrhp;
+	//! OCI server connection handle (at most one outstanding call at a time!)
+	SrvHandleType fSrvhp;
+	//! OCI service context handle
+	SvcHandleType fSvchp;
+	//! OCI user session handle
+	UsrHandleType fUsrhp;
+	//! OCI description handle
 	DscHandleType fDschp;
 public:
 	OracleConnection(OracleEnvironment &rEnv);

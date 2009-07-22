@@ -24,13 +24,13 @@ namespace Coast
 	{
 
 //---- ConnectionPool ----------------------------------------------------------
-//! <B>Almost generic class to handle backend connection pooling</B>
+//! <b>Oracle specific class to handle backend connection pooling</b>
 		/*!
 		\par Configuration
 		\code
 		{
-			/ParallelQueries			long		defines number of parallel queries/sp-calls which can be issued in total, default 5
-			/CloseConnectionTimeout		long		timeout after which to close open connections
+			/ParallelQueries			long		defines number of parallel queries/sp-calls which can be issued, default 5
+			/CloseConnectionTimeout		long		timeout [s] after which to close open connections, default 60
 		}
 		\endcode
 		*/

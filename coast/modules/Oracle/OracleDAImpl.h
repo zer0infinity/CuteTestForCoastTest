@@ -13,8 +13,6 @@
 #include "config_coastoracle.h"
 #include "DataAccessImpl.h"
 
-#include "oci.h"
-
 class OracleConnection;
 class OracleResultset;
 class OracleStatement;

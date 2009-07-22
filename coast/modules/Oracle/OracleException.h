@@ -11,6 +11,7 @@
 
 #include "config_coastoracle.h"
 #include "OracleConnection.h"
+#include "ITOString.h"
 #include <exception>
 
 class EXPORTDECL_COASTORACLE OracleException : public std::exception
