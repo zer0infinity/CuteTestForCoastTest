@@ -31,6 +31,9 @@ PeriodicAction::~PeriodicAction()
 void PeriodicAction::Run()
 {
 	StartTrace(PeriodicAction.Run);
+	Context ctx;
+	Anything anyConfig;
+	anyConfig["PeriodicActionTimeout"] = fWaitTime;
 	while ( CheckState( eRunning, 0, 1 ) ) {
 		Trace("Waiting " << fWaitTime << "s for next period");
 		// we will never reach eWorking, but the function will return when entering termination
@@ -41,8 +44,7 @@ void PeriodicAction::Run()
 		// -> otherwise we will block until program termination...
 		if ( CheckState( eRunning, 0, 1 ) && !CheckState(eTerminationRequested, 0, 1) ) {
 			Trace("Starting work and calling Action [" << fAction << "]");
-			Context ctx;
-			ctx.GetTmpStore()["PeriodicActionTimeout"] = fWaitTime;
+			Context::PushPopEntry<Anything> aEntry(ctx, "PeriodicActionContent", anyConfig);
 			ctx.Process(fAction);
 		}
 	}
