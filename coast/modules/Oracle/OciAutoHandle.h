@@ -106,6 +106,8 @@ struct oci_auto_handle {
 		return fHandle != 0;
 	}
 private:
+	/*! forbid copy ctor
+	 */
 	oci_auto_handle( oci_auto_handle &rhs );
 };
 

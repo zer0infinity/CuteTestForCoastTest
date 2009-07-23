@@ -13,15 +13,29 @@
 #include "Action.h"
 
 //---- OracleCheckCloseOpenedConnectionsAction ----------------------------------------------------------
-//: triggers cleanup of open but unused connections
+//! <b>Periodic action to check for timed out connections</b>
+/*!
+ * @par Configuration
+ * There is no configuration possible.
+ * @par Documentation
+ * The action will get called from within a PeriodicAction through its registered name.
+ * The setup of the PeriodicAction is done in Coast::Oracle::ConnectionPool::Init.
+ */
 class EXPORTDECL_COASTORACLE OracleCheckCloseOpenedConnectionsAction : public Action
 {
 public:
-	//--- constructors
+	/*! ctor
+	 * @param name unique name to register this action
+	 */
 	OracleCheckCloseOpenedConnectionsAction(const char *name) : Action(name) { }
+	//! dtor
 	~OracleCheckCloseOpenedConnectionsAction() {}
-
-	//:cleans the session list from timeouted sessions
+	/*! cleans the session list from timeouted sessions
+	 * @param transitionToken string passed in when action was executed
+	 * @param ctx Context to be used for action processing
+	 * @param config actoin specific configuration from context
+	 * @return true in case the actions was executed successfully
+	 */
 	virtual bool DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config);
 };
 

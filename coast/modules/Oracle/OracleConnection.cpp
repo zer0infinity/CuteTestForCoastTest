@@ -13,7 +13,6 @@
 #include "Dbg.h"
 
 #include <string.h>	// for strlen
-
 OracleConnection::OracleConnection( OracleEnvironment &rEnv ) :
 	fConnected( false ), fOracleEnv( rEnv ), fErrhp(), fSrvhp(), fSvchp(), fUsrhp()
 {
@@ -149,8 +148,12 @@ bool OracleConnection::checkError( sword status )
 
 bool OracleConnection::checkError( sword status, String &message )
 {
-	message = errorMessage( status );
-	return checkError( status );
+	bool bError( checkError( status ) );
+	if ( bError ) {
+		message = errorMessage( status );
+		StatTrace(OracleConnection.checkError, "status: " << (long) status << " message [" << message << "]", Storage::Current());
+	}
+	return bError;
 }
 
 String OracleConnection::errorMessage( sword status )
@@ -196,7 +199,8 @@ String OracleConnection::errorMessage( sword status )
 	return error;
 }
 
-OracleStatement *OracleConnection::createStatement( const String &strStatement, long lPrefetchRows, ROAnything roaSPDescription )
+OracleStatement *OracleConnection::createStatement( const String &strStatement, long lPrefetchRows,
+		ROAnything roaSPDescription )
 {
 	OracleStatement *pStmt( new OracleStatement( this, strStatement ) );
 	if ( pStmt ) {

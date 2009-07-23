@@ -27,7 +27,7 @@ namespace Coast
 
 //---- ConnectionPool ----------------------------------------------------------------
 		ConnectionPool::ConnectionPool(const char *name)
-			: fStructureMutex("StructureMutex", Storage::Global())
+			: fStructureMutex(String(name).Append("StructureMutex"), Storage::Global())
 			, fListOfConnections(Storage::Global())
 			, fInitialized(false)
 			, fpPeriodicAction(NULL)
