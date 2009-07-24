@@ -145,6 +145,8 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 		// find a free OraclePooledConnection, we should always get a valid OraclePooledConnection here!
 		while ( bDoRetry && --lTryCount >= 0 ) {
 			OraclePooledConnection *pPooledConnection = NULL;
+			// do not move away command, it is used to log when retrying
+			String command;
 
 			// --- establish db connection
 			if ( !pConnectionPool->BorrowConnection( pPooledConnection, bIsOpen, server, user ) ) {
@@ -153,7 +155,6 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 			} else {
 				if ( bIsOpen || pPooledConnection->Open( server, user, passwd ) ) {
 					OracleConnection *pConnection( pPooledConnection->getConnection() );
-					String command;
 					bIsOpen = true;
 					if ( DoPrepareSQL( command, ctx, in ) ) {
 						OracleStatementPtr aStmt( pConnection->createStatement( command, lPrefetchRows ) );
