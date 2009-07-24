@@ -29,7 +29,7 @@ class OracleStatement;
  * @par Configuration
  * --
  */
-class  OracleResultset   //EXPORTDECL_COASTORACLE
+class EXPORTDECL_COASTORACLE OracleResultset
 {
 public:
 	/*! Status is used for internal state transition */
@@ -52,7 +52,7 @@ private:
 	bool DefineOutputArea();
 
 	OracleResultset();
-	OracleResultset(const OracleResultset &);
+	OracleResultset( const OracleResultset & );
 public:
 	/*! Initializes this OracleResultset object using the given OracleStatement
 	 * @param rStmt OracleStatement to use for result processing
