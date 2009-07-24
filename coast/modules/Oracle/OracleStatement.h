@@ -11,7 +11,6 @@
 
 #include "config_coastoracle.h"
 #include "OracleConnection.h"
-#include "Anything.h"
 #include "IFAObject.h"
 #include <memory>
 

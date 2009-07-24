@@ -122,6 +122,8 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 	OracleModule *pModule = SafeCast(WDModule::FindWDModule("OracleModule"), OracleModule);
 	Coast::Oracle::ConnectionPool *pConnectionPool( 0 );
 	if ( pModule && ( pConnectionPool = pModule->GetConnectionPool() ) ) {
+		//FIXME: a nicer solution would be appreciated where the following line could be omitted
+		Coast::Oracle::ConnectionPool::ConnectionLock aConnLock(*pConnectionPool);
 		// we need the server and user to see if there is an existing and Open OraclePooledConnection
 		String user, server, passwd;
 		in->Get( "DBUser", user, ctx );
@@ -143,7 +145,6 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 		// find a free OraclePooledConnection, we should always get a valid OraclePooledConnection here!
 		while ( bDoRetry && --lTryCount >= 0 ) {
 			OraclePooledConnection *pPooledConnection = NULL;
-			String command;
 
 			// --- establish db connection
 			if ( !pConnectionPool->BorrowConnection( pPooledConnection, bIsOpen, server, user ) ) {
@@ -152,6 +153,7 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 			} else {
 				if ( bIsOpen || pPooledConnection->Open( server, user, passwd ) ) {
 					OracleConnection *pConnection( pPooledConnection->getConnection() );
+					String command;
 					bIsOpen = true;
 					if ( DoPrepareSQL( command, ctx, in ) ) {
 						OracleStatementPtr aStmt( pConnection->createStatement( command, lPrefetchRows ) );
@@ -284,7 +286,7 @@ bool OracleDAImpl::DoPrepareSP( String &command, Context &ctx, ParameterMapper *
 {
 	StartTrace(OracleDAImpl.DoPrepareSP);
 	DAAccessTimer(OracleDAImpl.DoPrepareSP, fName, ctx);
-	return in->Get( "SP", command, ctx );
+	return in->Get( "Name", command, ctx );
 }
 
 void OracleDAImpl::Error( Context &ctx, ResultMapper *pResultMapper, String str )

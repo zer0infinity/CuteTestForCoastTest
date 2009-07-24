@@ -6,8 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#ifndef O8CONNECTION_H_
-#define O8CONNECTION_H_
+#ifndef ORACLEPOOLEDCONNECTION_H_
+#define ORACLEPOOLEDCONNECTION_H_
 
 //--- modules used in the interface
 #include "config_coastoracle.h"
@@ -18,8 +18,15 @@
 #include <memory>	// for auto_ptr
 
 //---- OraclePooledConnection -----------------------------------------------------------
-// connection to oracle db ... not thread safe... may not be used concurrently
-
+//! <b>Connection adapter to handle Oracle specific connections using Coast::Oracle::ConnectionPool</b>
+/*!
+ * @par Description
+ * This class deals with oracle connection specific things like OracleEnvironment and OracleConnection. When
+ * such an object is first requested for OraclePooledConnection::Open, it will allocate the needed resources
+ * like an environment and a connection which can then be used to process oracle database requests.
+ * @par Configuration
+ * --
+ */
 class EXPORTDECL_COASTORACLE OraclePooledConnection: public IFAObject
 {
 	typedef std::auto_ptr<OracleEnvironment> OracleEnvironmentPtr;
@@ -28,24 +35,45 @@ class EXPORTDECL_COASTORACLE OraclePooledConnection: public IFAObject
 	OracleEnvironmentPtr fEnvironment;
 	OracleConnectionPtr fConnection;
 public:
+	/*! Default ctor
+	 */
 	OraclePooledConnection();
+	/*! Close connection and free allocated resources
+	 */
 	~OraclePooledConnection();
 
-	bool Open(String const &strServer, String const &strUsername, String const &strPassword);
-	bool Close(bool bForce = false);
-
+	/*! Create and initialize necessary objects for oracle database access
+	 *
+	 * @param strServer Server connection string to connect with
+	 * @param strUsername Username to connect as
+	 * @param strPassword Password for the given user
+	 * @return true in case we could create necessary objects
+	 */
+	bool Open( String const &strServer, String const &strUsername, String const &strPassword );
+	/*! Close the connection to the backend if it was opened before
+	 * @param bForce when set to true, close the current connection to the back end regardless if a statement is still
+	 * executing.
+	 * @return true in case it was successful
+	 */
+	bool Close( bool bForce = false );
+	/*! Access the associated environment object
+	 * @return  pointer to OracleEnvironment
+	 */
 	OracleEnvironment *getEnvironment() const {
 		return fEnvironment.get();
 	}
+	/*! Access the associated connection object
+	 * @return  pointer to OracleConnection
+	 */
 	OracleConnection *getConnection() const {
 		return fConnection.get();
 	}
 
 protected:
-	// returns nothing, object not cloneable
+	//! returns nothing, object not to clone
 	IFAObject *Clone() const {
 		return NULL;
-	};
+	}
 };
 
-#endif /* O8CONNECTION_H_ */
+#endif /* ORACLEPOOLEDCONNECTION_H_ */

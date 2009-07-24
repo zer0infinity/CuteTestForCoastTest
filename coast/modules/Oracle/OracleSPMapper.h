@@ -16,17 +16,22 @@
 //---- OracleSPMapper ----------------------------------------------------------
 //! <B>provide OracleDAImpl with stored procedure/function specific parameters</B>
 /*!
-\par Configuration
+ * @par Description
+ * --
+ * @par Configuration
 \code
 {
-	/Name		MapperSpec				mandatory, name of stored procedure/function to execute
+	/Name				MapperSpec		mandatory, name of stored procedure/function to execute
 	/Params {							mandatory if IN or INOUT parameter values are used in call
-		/<PARAMNAME>	MapperSpec		mandatory, IN or INOUT parameter name and its value. The name must match with the parameter name of the declared stored procedure/function and must be written in all uppercase letters!
+		/<PARAMNAME>	MapperSpec		mandatory, IN or INOUT parameter name and its value. The name must match with
+											the parameter name of the declared stored procedure/function and must be
+											written in all upper case letters!
 		...
 	}
 }
 \endcode
-\note Parameter names need to be written in all uppercase letters, otherwise the implemented mapping will not work - an appropriate message will be written into the Messages slot.
+\note Parameter names need to be written in all upper case letters, otherwise the implemented mapping will not work -
+ an appropriate message will be written into the Messages slot.
 */
 class EXPORTDECL_COASTORACLE OracleSPMapper : public ParameterMapper
 {
@@ -55,12 +60,14 @@ private:
 //---- OracleResultMapper ----------------------------------------------------------
 //! <B>provide OracleDAImpl with stored procedure/function specific output mapping</B>
 /*!
-\par Configuration
+ * @par Description
+ * --
+ * @par Configuration
 \code
 {
 	/QueryResult 		MapperSpec			optional, specify default behavior when results get put,
-											when a stored procedure parameter gets put - usually as PARAMNAME.QueryResult - and
-											it is not specialized like below, this MapperSpec will get used
+												when a stored procedure parameter gets put - usually as PARAMNAME.QueryResult -
+												and it is not specialized like below, this MapperSpec will get used
 	/QueryTitles		MapperSpec			optional, as above
 	/QueryCount	 		MapperSpec			optional, as above
 
@@ -71,7 +78,7 @@ private:
 	}
 }
 \endcode
-\note Parameter names need to be written in all uppercase letters, otherwise the implemented mapping will not work.
+\note Parameter names need to be written in all upper case letters, otherwise the implemented mapping will not work.
 */
 class EXPORTDECL_COASTORACLE OracleResultMapper : public ResultMapper
 {

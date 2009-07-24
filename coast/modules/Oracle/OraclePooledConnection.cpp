@@ -11,8 +11,6 @@
 #include "SysLog.h"
 #include "Dbg.h"
 
-#include "oci.h"
-
 #include <string.h>		// for strlen
 
 static struct OraTerminator {
@@ -30,7 +28,7 @@ OraclePooledConnection::OraclePooledConnection()
 OraclePooledConnection::~OraclePooledConnection()
 {
 	StartTrace(OraclePooledConnection.~OraclePooledConnection);
-	// disconnect if OraclePooledConnection exists
+	// disconnect if OracleConnection exists
 	Close();
 }
 

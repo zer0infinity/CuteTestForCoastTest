@@ -26,13 +26,6 @@ namespace Coast
 //---- ConnectionPool ----------------------------------------------------------
 //! <b>Oracle specific class to handle backend connection pooling</b>
 		/*!
-		 \par Configuration
-		 \code
-		 {
-			 /ParallelQueries			long	defines number of parallel queries/sp-calls which can be issued, default 5
-			 /CloseConnectionTimeout	long	timeout [s] after which to close open connections, default 60
-		 }
-		 \endcode
 		 * @par Description
 		 * A ConnectionPool is used to keep track of a predefined number of Connections to a back end of some type.
 		 * This pool will keep track of a number of connections against Oracle database servers. It is not limited to any number of connections
@@ -42,6 +35,13 @@ namespace Coast
 		 * having the same server/user combination, the previously release connection will be returned.
 		 * In the case there is no open connection to with a specific server/user connection and no unused/unopened connection around,
 		 * an existing and already opened connection will be selected, closed and returned to use with different credentials.
+		 \par Configuration
+		 \code
+		 {
+			 /ParallelQueries			long	defines number of parallel queries/sp-calls which can be issued, default 5
+			 /CloseConnectionTimeout	long	timeout [s] after which to close open connections, default 60
+		 }
+		 \endcode
 		 */
 		class EXPORTDECL_COASTORACLE ConnectionPool
 		{
@@ -100,7 +100,21 @@ namespace Coast
 			 */
 			void ReleaseConnection( OraclePooledConnection *&pConnection, bool bIsOpen, const String &server,
 									const String &user );
-
+			/*! Helper class to ensure requester lock out when all connections are currently in use
+			 * Makes use of automatic Semaphore.Acquire in ctor and Semaphore.Release in dtor using a SemaphoreEntry
+			 */
+			class ConnectionLock
+			{
+				SemaphoreEntry fSemaEntry;
+				ConnectionLock();
+				ConnectionLock(const ConnectionLock &);
+			public:
+				/*! Supply surrounding ConnectionPool object to allow access to Semaphore resource
+				 * @param rConnPool surrounding ConnectionPool object
+				 */
+				ConnectionLock(ConnectionPool &rConnPool) : fSemaEntry(*rConnPool.fpResourcesSema) {}
+				~ConnectionLock() {}
+			};
 		private:
 			/*! try to find a matching and open connection using the given credentials
 			 * @param pConnection connection returned

@@ -35,10 +35,6 @@ bool OracleSPMapper::DoGetAny( const char *key, Anything &value, Context &ctx, R
 	StartTrace1(OracleSPMapper.DoGetAny, NotNull(key) );
 
 	String strKey( key );
-	if ( strKey.IsEqual( "SP" ) ) {
-		// convenience to return name when we get asked if we are a SP Mapper
-		return Get( "Name", value, ctx );
-	}
 	//FIXME: should be extracted into ResultMapper function
 	char cDelim = Lookup( "Delim", "." )[0L];
 	String strParamPrefix( "Params" );

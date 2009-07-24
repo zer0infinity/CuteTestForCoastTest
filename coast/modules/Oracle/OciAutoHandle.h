@@ -14,7 +14,9 @@
 //---- oci_auto_handle -----------------------------------------------------------
 //! <B>Template wrapper around OCI handles</B>
 /*!
- Simplifies memory handling on allocated handles, frees the internal handle if allocated. It works almost like a std::auto_ptr in behavior of assignment, construction etc.
+ * @par Description
+ * Simplifies memory handling on allocated handles, frees the internal handle if allocated. It works almost like a
+ * std::auto_ptr in behavior of assignment, construction etc.
  */
 template<typename handle, ub4 handleType>
 struct oci_auto_handle {

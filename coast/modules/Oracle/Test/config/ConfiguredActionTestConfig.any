@@ -266,7 +266,6 @@
 					/OracleSPMapperSlotTest {
 						/SPName		ourSPName
 						/Param1		first
-						/SPNameNativ		ourSPName
 					}
 				}
 			}
@@ -283,7 +282,6 @@
 					/OracleSPMapperSlotTest {
 						/SPName		ourSPName
 						/Param1		theContextParam
-						/SPNameNativ		ourSPName
 					}
 				}
 			}

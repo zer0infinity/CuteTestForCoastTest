@@ -302,7 +302,7 @@ EXTRACT_ALL            = YES
 # If the EXTRACT_PRIVATE tag is set to YES all private members of a class
 # will be included in the documentation.
 
-EXTRACT_PRIVATE        = YES
+EXTRACT_PRIVATE        = NO
 
 # If the EXTRACT_STATIC tag is set to YES all static members of a file
 # will be included in the documentation.
@@ -976,7 +976,7 @@ FORMULA_FONTSIZE       = 10
 # If the GENERATE_LATEX tag is set to YES (the default) Doxygen will
 # generate Latex output.
 
-GENERATE_LATEX         = NO
+GENERATE_LATEX         = YES
 
 # The LATEX_OUTPUT tag is used to specify where the LaTeX docs will be put.
 # If a relative path is entered the value of OUTPUT_DIRECTORY will be
@@ -1043,7 +1043,7 @@ LATEX_BATCHMODE        = NO
 # include the index chapters (such as File Index, Compound Index, etc.)
 # in the output.
 
-LATEX_HIDE_INDICES     = NO
+LATEX_HIDE_INDICES     = YES
 
 # If LATEX_SOURCE_CODE is set to YES then doxygen will include source code with syntax highlighting in the LaTeX output. Note that which sources are shown also depends on other settings such as SOURCE_BROWSER.
 
@@ -1525,7 +1525,7 @@ GENERATE_LEGEND        = YES
 # remove the intermediate dot files that are used to generate
 # the various graphs.
 
-DOT_CLEANUP            = NO
+DOT_CLEANUP            = YES
 
 #---------------------------------------------------------------------------
 # Options related to the search engine

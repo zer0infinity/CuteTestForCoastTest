@@ -9,7 +9,6 @@
 #include "OracleResultset.h"
 #include "OracleStatement.h"
 #include "OracleException.h"
-#include "Anything.h"
 #include "Dbg.h"
 
 OracleResultset::~OracleResultset()

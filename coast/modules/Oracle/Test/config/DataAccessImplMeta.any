@@ -9,9 +9,8 @@
 {
 	/MapperTestDAImpl {
 		/transfer	{
-			/SP	SPName
+			/Name	SPName
 			/Params.P1 Param1
-			/Name	SPNameNativ
 		}
 	}
 }

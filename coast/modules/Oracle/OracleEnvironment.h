@@ -17,26 +17,58 @@
 class OracleConnection;
 class String;
 
+//! <b>Abstraction for an Oracle environment</b>
+/*!
+ * @par Description
+ * This class serves as abstraction for an OCI environment. Such an environment is needed to create an OracleConnection.
+ * @par Configuration
+ * --
+ */
 class EXPORTDECL_COASTORACLE OracleEnvironment
 {
-private:
-	EnvHandleType fEnvhp; // OCI environment handle
+	//! OCI environment handle
+	EnvHandleType fEnvhp;
 
 public:
+	/*! construction mode of environment */
 	enum Mode {
-		DEFAULT = OCI_DEFAULT, THREADED_MUTEXED = OCI_THREADED, THREADED_UNMUTEXED = OCI_THREADED | OCI_NO_MUTEX,
+		//! unknown default mode
+		DEFAULT = OCI_DEFAULT,
+		//! appl. in threaded environment
+		THREADED_MUTEXED = OCI_THREADED,
+		//! appl. in threaded environment but the environment handle will not be protected by a mutex internally
+		THREADED_UNMUTEXED = OCI_THREADED | OCI_NO_MUTEX,
 	};
+	/*! specify mode of environment when creating it
+	 * @param eMode chose one of the possible OracleEnvironment::Mode flags
+	 * @note As we use an environment per OraclePooledConnection, we could safely use OracleEnvironment::THREADED_UNMUTEXED
+	 */
 	OracleEnvironment( Mode eMode );
-	virtual ~OracleEnvironment();
+	/*! destruction of environment handle
+	 */
+	~OracleEnvironment();
 
+	/*! access internal OCIEnv handle pointer
+	 * @return OCIEnv handle
+	 */
 	OCIEnv *EnvHandle() {
 		return fEnvhp.getHandle();
 	}
 
+	/*! check if the handle was allocated (!=0)
+	 * @return true if a handle is available
+	 */
 	bool valid() const {
 		return fEnvhp;
 	}
 
+	/*! Create a new connection based on this objects environment handle
+	 * @param strSrv oracle database connection string
+	 * @param strUsr database user to connect with
+	 * @param strPwd password for the above user
+	 * @return pointer to newly created OracleConnection object
+	 * @note The returned OracleConnection object must be freed by the caller!
+	 */
 	OracleConnection *createConnection( String const &strSrv, String const &strUsr, String const &strPwd );
 };
 

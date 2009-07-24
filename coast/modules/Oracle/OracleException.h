@@ -14,16 +14,39 @@
 #include "ITOString.h"
 #include <exception>
 
+//! <B>Provide useful message when an exception gets thrown</B>
+/*!
+ * @par Description
+ * This class is used to abort the program flow with either a self written message or a message provided using the
+ * return code of the last OCI API call.
+ * @par Configuration
+ * --
+*/
 class EXPORTDECL_COASTORACLE OracleException : public std::exception
 {
 	OracleConnection &fConnection;
 	sword fStatus;
 	String fMessage;
 public:
+	/*! Create an exception object using an individual reason message
+	 * @param rConn reference to OracleConnection object
+	 * @param strMessage Individual mesage string returned to the catcher
+	 */
 	OracleException(OracleConnection &rConn, String const &strMessage);
+	/*! Create an exception object using OracleConnection and the status value to create a useful message string
+	 * @param rConn reference to OracleConnection object used to collect OCI specific error code and message
+	 * @param status value of last OCI API call
+	 */
 	OracleException(OracleConnection &rConn, sword status);
+	//! do nothing dtor
 	~OracleException() throw() {};
+	/*! Access error message
+	 * @return internally stored error message which lead to the exception
+	 */
 	const String &getMessage() const;
+	/*! Access error message
+	 * @return internally stored error message which lead to the exception
+	 */
 	const char *what() const throw();
 };
 
