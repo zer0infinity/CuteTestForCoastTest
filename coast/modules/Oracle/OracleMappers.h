@@ -6,14 +6,14 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#ifndef _OracleSPMapper_H
-#define _OracleSPMapper_H
+#ifndef _OracleMappers_H
+#define _OracleMappers_H
 
 //---- ParameterMapper include -------------------------------------------------
 #include "config_coastoracle.h"
 #include "Mapper.h"
 
-//---- OracleSPMapper ----------------------------------------------------------
+//---- OracleParameterMapper ----------------------------------------------------------
 //! <B>provide OracleDAImpl with stored procedure/function specific parameters</B>
 /*!
  * @par Description
@@ -33,11 +33,11 @@
 \note Parameter names need to be written in all upper case letters, otherwise the implemented mapping will not work -
  an appropriate message will be written into the Messages slot.
 */
-class EXPORTDECL_COASTORACLE OracleSPMapper : public ParameterMapper
+class EXPORTDECL_COASTORACLE OracleParameterMapper : public ParameterMapper
 {
 public:
 	//--- constructors
-	OracleSPMapper(const char *name);
+	OracleParameterMapper(const char *name);
 	//--- support for prototype
 	IFAObject *Clone() const;
 
@@ -52,9 +52,9 @@ protected:
 	virtual bool DoGetAny(const char *key, Anything &value, Context &ctx, ROAnything script);
 
 private:
-	OracleSPMapper();
-	OracleSPMapper(const OracleSPMapper &);
-	OracleSPMapper &operator=(const OracleSPMapper &);
+	OracleParameterMapper();
+	OracleParameterMapper(const OracleParameterMapper &);
+	OracleParameterMapper &operator=(const OracleParameterMapper &);
 };
 
 //---- OracleResultMapper ----------------------------------------------------------

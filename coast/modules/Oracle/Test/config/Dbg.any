@@ -73,7 +73,7 @@
 		/MainSwitch						1
 		/EnableAll						10
 	}
-	/OracleSPMapper {
+	/OracleParameterMapper {
 		/MainSwitch						1
 		/EnableAll						10
 	}

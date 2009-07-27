@@ -72,7 +72,7 @@
 					LoadOratestSchema
 				}
 			}
-			/OracleSPMapper {
+			/OracleParameterMapper {
 				IncompleteParamsDA
 				/SifsCoastOrclSP {
 					SPMaxSalary

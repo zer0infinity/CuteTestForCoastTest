@@ -7,32 +7,29 @@
  */
 
 //--- interface include --------------------------------------------------------
-#include "OracleSPMapper.h"
-
+#include "OracleMappers.h"
 //--- project modules used -----------------------------------------------------
-
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-
 //--- c-modules used -----------------------------------------------------------
 
-//---- OracleSPMapper ------------------------------------------------------------------
-RegisterParameterMapper(OracleSPMapper);
+//---- OracleParameterMapper ------------------------------------------------------------------
+RegisterParameterMapper(OracleParameterMapper);
 
-OracleSPMapper::OracleSPMapper(const char *name)
-	: ParameterMapper(name)
+OracleParameterMapper::OracleParameterMapper( const char *name ) :
+	ParameterMapper( name )
 {
-	StartTrace(OracleSPMapper.Ctor);
+	StartTrace(OracleParameterMapper.Ctor);
 }
 
-IFAObject *OracleSPMapper::Clone() const
+IFAObject *OracleParameterMapper::Clone() const
 {
-	return new OracleSPMapper(fName);
+	return new OracleParameterMapper( fName );
 }
 
-bool OracleSPMapper::DoGetAny( const char *key, Anything &value, Context &ctx, ROAnything script )
+bool OracleParameterMapper::DoGetAny( const char *key, Anything &value, Context &ctx, ROAnything script )
 {
-	StartTrace1(OracleSPMapper.DoGetAny, NotNull(key) );
+	StartTrace1(OracleParameterMapper.DoGetAny, NotNull(key) );
 
 	String strKey( key );
 	//FIXME: should be extracted into ResultMapper function

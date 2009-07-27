@@ -52,7 +52,7 @@
 
 	/Mappers {
 		/Input {
-			/OracleSPMapper {
+			/OracleParameterMapper {
 				/SifsCoastOrclSP {
 					MultiThreadedDA
 					MultiThreadedDAWithError

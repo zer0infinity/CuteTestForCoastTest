@@ -34,7 +34,7 @@ class EXPORTDECL_COASTORACLE OracleConnection
 {
 public:
 	enum Status {
-		//! default state if open was not called yet
+		//! state if constructor failed and connection can not be used
 		eUnitialized,
 		//! signals that all handles were allocated successfully
 		eHandlesAllocated,

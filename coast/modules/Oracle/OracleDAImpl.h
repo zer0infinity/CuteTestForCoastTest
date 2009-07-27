@@ -41,7 +41,7 @@ class OracleStatement;
 	/SQL				MapperSpec		mandatory if it is one of [select|insert|update|delete|create|drop|alter|...],
 											but not a stored procedure/function or another form of a PL/SQL block
 
-# stored procedure/function section, best used with OracleSPMapper
+# stored procedure/function section, best used with OracleParameterMapper
 
 	/Name				MapperSpec		mandatory if it is a stored procedure/function, resulting in a simple String
 											specifying the name of the stored procedure or function
