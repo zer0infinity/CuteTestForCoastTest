@@ -26,12 +26,9 @@ namespace Coast
 	{
 
 //---- ConnectionPool ----------------------------------------------------------------
-		ConnectionPool::ConnectionPool(const char *name)
-			: fStructureMutex(String(name).Append("StructureMutex"), Storage::Global())
-			, fListOfConnections(Storage::Global())
-			, fInitialized(false)
-			, fpPeriodicAction(NULL)
-			, fpResourcesSema(NULL)
+		ConnectionPool::ConnectionPool( const char *name ) :
+			fStructureMutex( String( name ).Append( "StructureMutex" ), Storage::Global() ), fListOfConnections(
+				Storage::Global() ), fInitialized( false ), fpPeriodicAction( NULL ), fpResourcesSema( NULL )
 		{
 			StartTrace(ConnectionPool.ConnectionPool);
 		}
@@ -41,25 +38,26 @@ namespace Coast
 			StartTrace(ConnectionPool.~ConnectionPool);
 		}
 
-		bool ConnectionPool::Init(ROAnything myCfg)
+		bool ConnectionPool::Init( ROAnything myCfg )
 		{
 			StartTrace(ConnectionPool.Init);
 			if ( !fInitialized ) {
-				long nrOfConnections( myCfg["ParallelQueries"].AsLong(5L));
-				long lCloseConnectionTimeout(myCfg["CloseConnectionTimeout"].AsLong(60L));
+				long nrOfConnections( myCfg["ParallelQueries"].AsLong( 5L ) );
+				long lCloseConnectionTimeout( myCfg["CloseConnectionTimeout"].AsLong( 60L ) );
 
-				LockUnlockEntry me(fStructureMutex);
+				LockUnlockEntry me( fStructureMutex );
 				{
 					// use the semaphore to block when no more resources are available
 					fListOfConnections["Size"] = nrOfConnections;
-					fpResourcesSema = new Semaphore(nrOfConnections);
+					fpResourcesSema = new Semaphore( nrOfConnections );
 					String server, user;
 					for ( long i = 0; i < nrOfConnections; ++i ) {
 						OraclePooledConnection *pConnection = new OraclePooledConnection();
-						IntReleaseConnection(pConnection, false, server, user);
+						IntReleaseConnection( pConnection, false, server, user );
 					}
 					if ( !fpPeriodicAction ) {
-						fpPeriodicAction = new PeriodicAction("OracleCheckCloseOpenedConnectionsAction", lCloseConnectionTimeout);
+						fpPeriodicAction = new PeriodicAction( "OracleCheckCloseOpenedConnectionsAction",
+															   lCloseConnectionTimeout );
 						fpPeriodicAction->Start();
 					}
 					fInitialized = true;
@@ -78,19 +76,19 @@ namespace Coast
 			}
 			bool bInitialized;
 			{
-				LockUnlockEntry me(fStructureMutex);
+				LockUnlockEntry me( fStructureMutex );
 				bInitialized = fInitialized;
 				// force pending/upcoming Exec calls to fail
 				fInitialized = false;
 			}
 			if ( bInitialized ) {
-				for (long lCount = 0L; lCount < fListOfConnections["Size"].AsLong(0L) && fpResourcesSema->Acquire(); ++lCount) {
+				for ( long lCount = 0L; lCount < fListOfConnections["Size"].AsLong( 0L ) && fpResourcesSema->Acquire(); ++lCount ) {
 					OraclePooledConnection *pConnection( NULL );
 					bool bIsOpen = false;
 					String strServer, strUser;
-					if ( BorrowConnection(pConnection, bIsOpen, strServer, strUser) ) {
+					if ( BorrowConnection( pConnection, bIsOpen, strServer, strUser ) ) {
 						if ( bIsOpen ) {
-							pConnection->Close(true);
+							pConnection->Close( true );
 						}
 						delete pConnection;
 					}
@@ -101,18 +99,20 @@ namespace Coast
 			return !fInitialized;
 		}
 
-		bool ConnectionPool::BorrowConnection(OraclePooledConnection *&pConnection, bool &bIsOpen, const String &server, const String &user)
+		bool ConnectionPool::BorrowConnection( OraclePooledConnection *&pConnection, bool &bIsOpen, const String &server,
+											   const String &user )
 		{
 			StartTrace(ConnectionPool.BorrowConnection);
-			LockUnlockEntry me(fStructureMutex);
-			return IntBorrowConnection(pConnection, bIsOpen, server, user);
+			LockUnlockEntry me( fStructureMutex );
+			return IntBorrowConnection( pConnection, bIsOpen, server, user );
 		}
 
-		void ConnectionPool::ReleaseConnection(OraclePooledConnection *&pConnection, bool bIsOpen, const String &server, const String &user)
+		void ConnectionPool::ReleaseConnection( OraclePooledConnection *&pConnection, bool bIsOpen, const String &server,
+												const String &user )
 		{
 			StartTrace(ConnectionPool.ReleaseConnection);
-			LockUnlockEntry me(fStructureMutex);
-			IntReleaseConnection(pConnection, bIsOpen, server, user);
+			LockUnlockEntry me( fStructureMutex );
+			IntReleaseConnection( pConnection, bIsOpen, server, user );
 		}
 
 		bool ConnectionPool::IntGetOpen(OraclePooledConnection *&pConnection, bool &bIsOpen, const String &server, const String &user)

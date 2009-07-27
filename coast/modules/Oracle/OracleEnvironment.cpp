@@ -68,7 +68,10 @@ OracleConnection *OracleEnvironment::createConnection( String const &strSrv, Str
 	StartTrace(OracleEnvironment.createConnection);
 	OracleConnection *pConnection( new OracleConnection(*this) );
 	if ( pConnection ) {
-		pConnection->Open(strSrv, strUsr, strPwd);
+		if ( !pConnection->Open(strSrv, strUsr, strPwd) ) {
+			delete pConnection;
+			pConnection = 0;
+		}
 	}
 	return pConnection;
 }

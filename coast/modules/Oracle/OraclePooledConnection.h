@@ -56,6 +56,13 @@ public:
 	 * @return true in case it was successful
 	 */
 	bool Close( bool bForce = false );
+
+	/*! Check whether the underlying connection is open
+	 * @return true if we are connected to the back end */
+	bool isOpen() const {
+		return ( fConnection.get() && fConnection->isOpen() );
+	}
+
 	/*! Access the associated environment object
 	 * @return  pointer to OracleEnvironment
 	 */

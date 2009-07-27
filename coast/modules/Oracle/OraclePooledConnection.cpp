@@ -29,7 +29,7 @@ OraclePooledConnection::~OraclePooledConnection()
 {
 	StartTrace(OraclePooledConnection.~OraclePooledConnection);
 	// disconnect if OracleConnection exists
-	Close();
+	Close( true );
 }
 
 bool OraclePooledConnection::Open( String const &strServer, String const &strUsername, String const &strPassword )
@@ -38,8 +38,12 @@ bool OraclePooledConnection::Open( String const &strServer, String const &strUse
 
 	if ( !fEnvironment.get() ) {
 		fEnvironment = OracleEnvironmentPtr(new OracleEnvironment(OracleEnvironment::THREADED_UNMUTEXED));
-		if ( fEnvironment->valid() ) {
+	}
+	if ( fEnvironment.get() && fEnvironment->valid() ) {
+		if ( !fConnection.get() ) {
 			fConnection = OracleConnectionPtr( fEnvironment->createConnection(strServer, strUsername, strPassword) );
+		} else {
+			fConnection->Open(strServer, strUsername, strPassword);
 		}
 	}
 	return fConnection.get();
@@ -48,7 +52,11 @@ bool OraclePooledConnection::Open( String const &strServer, String const &strUse
 bool OraclePooledConnection::Close( bool bForce )
 {
 	StartTrace1(OraclePooledConnection.Close, (bForce ? "" : "not ") << "forcing connection closing");
-	fConnection.reset();
-	fEnvironment.reset();
+	if ( bForce ) {
+		fConnection.reset();
+		fEnvironment.reset();
+	} else if ( fConnection.get() ) {
+		fConnection->Close();
+	}
 	return true;
 }

@@ -32,8 +32,20 @@ class OracleStatement;
  */
 class EXPORTDECL_COASTORACLE OracleConnection
 {
+public:
+	enum Status {
+		//! default state if open was not called yet
+		eUnitialized,
+		//! signals that all handles were allocated successfully
+		eHandlesAllocated,
+		//! server attached/connected
+		eServerAttached,
+		//! user authenticated, ready to execute statements
+		eSessionValid,
+	};
+private:
 	//! track the connection status
-	bool fConnected;
+	Status fStatus;
 	//! hold a reference to the surrounding environment
 	OracleEnvironment &fOracleEnv;
 	//! OCI error handle
@@ -46,6 +58,9 @@ class EXPORTDECL_COASTORACLE OracleConnection
 	UsrHandleType fUsrhp;
 	//! OCI description handle
 	DscHandleType fDschp;
+
+	OracleConnection();
+	OracleConnection(const OracleConnection &);
 public:
 	/*! Main construction entry point
 	 * @param rEnv the surrounding OracleEnvironment which was used to create us
@@ -65,6 +80,12 @@ public:
 	/*! Close the connection to the backend if it was opened before
 	 */
 	void Close();
+
+	/*! Check whether the connection is open
+	 * @return true if we are connected to the back end */
+	bool isOpen() const {
+		return fStatus == eSessionValid;
+	}
 
 	/*! Gain access to the surrounding OracleEnvironment class
 	 *

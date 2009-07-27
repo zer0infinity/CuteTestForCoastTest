@@ -159,7 +159,7 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 					if ( DoPrepareSQL( command, ctx, in ) ) {
 						OracleStatementPtr aStmt( pConnection->createStatement( command, lPrefetchRows ) );
 						Trace("statement status:" << (long)aStmt->status());
-						if ( aStmt->status() == OracleStatement::PREPARED ) {
+						if ( aStmt.get() && aStmt->status() == OracleStatement::PREPARED ) {
 							Trace("statement is prepared");
 							out->Put( "Query", command, ctx );
 							try {
@@ -200,7 +200,7 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 							Trace(String("prepare stored procedure/function: ") << command);
 							OracleStatementPtr aStmt( pConnection->createStatement( command, lPrefetchRows, desc ) );
 							Trace("statement status:" << (long)aStmt->status());
-							if ( aStmt->status() == OracleStatement::PREPARED ) {
+							if ( aStmt.get() && aStmt->status() == OracleStatement::PREPARED ) {
 								out->Put( "Query", command, ctx );
 								try {
 									if ( BindSPVariables( desc, in, out, *aStmt.get(), ctx ) ) {

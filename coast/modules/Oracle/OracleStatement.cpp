@@ -33,7 +33,7 @@ bool OracleStatement::AllocHandle()
 {
 	StartTrace(OracleStatement.AllocHandle);
 	// allocates and returns new statement handle
-	String strError( 32L );
+	String strError( 128L );
 	bool bSuccess( !fpConnection->checkError( OCIHandleAlloc( fpConnection->getEnvironment().EnvHandle(),
 				   fStmthp.getVoidAddr(), OCI_HTYPE_STMT, 0, 0 ), strError ) );
 	if ( !bSuccess ) {
@@ -117,7 +117,7 @@ bool OracleStatement::Prepare()
 {
 	StartTrace(OracleStatement.Prepare);
 	// prepare SQL statement for execution
-	String strErr( 32L );
+	String strErr( 128L );
 	bool bSuccess( AllocHandle() );
 	if ( bSuccess ) {
 		if ( ! ( bSuccess = !fpConnection->checkError( OCIStmtPrepare( getHandle(), fpConnection->ErrorHandle(),
@@ -141,7 +141,7 @@ bool OracleStatement::Prepare()
 
 void OracleStatement::setPrefetchRows( long lPrefetchRows )
 {
-	String strErr( 32L );
+	String strErr( 128L );
 	ub4 prefetch( lPrefetchRows );
 	if (fpConnection->checkError(OCIAttrSet(getHandle(),
 											OCI_HTYPE_STMT, &prefetch, sizeof(prefetch),
@@ -335,7 +335,7 @@ Anything &OracleStatement::GetOutputArea()
 String OracleStatement::getString( long lColumnIndex )
 {
 	StartTrace1(OracleStatement.getString, "col index: " << lColumnIndex);
-	String strColValue( 32L );
+	String strColValue( 128L );
 	// oracle always uses 1-based indexes...except for functions...
 	--lColumnIndex;
 	if ( lColumnIndex >= 0 && lColumnIndex < GetOutputArea().GetSize() ) {

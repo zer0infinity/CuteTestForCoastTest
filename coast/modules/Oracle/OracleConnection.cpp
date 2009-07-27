@@ -13,41 +13,45 @@
 #include "Dbg.h"
 
 #include <string.h>	// for strlen
+
 OracleConnection::OracleConnection( OracleEnvironment &rEnv ) :
-	fConnected( false ), fOracleEnv( rEnv ), fErrhp(), fSrvhp(), fSvchp(), fUsrhp()
+	fStatus( eUnitialized ), fOracleEnv( rEnv ), fErrhp(), fSrvhp(), fSvchp(), fUsrhp()
 {
 	StartTrace(OracleConnection.OracleConnection);
+	bool bCont( true );
 	// --- alloc error handle
 	if ( OCIHandleAlloc( fOracleEnv.EnvHandle(), fErrhp.getVoidAddr(), (ub4) OCI_HTYPE_ERROR, (size_t) 0, (dvoid **) 0 )
 		 != OCI_SUCCESS ) {
 		SysLog::Error( "FAILED: OCIHandleAlloc(): alloc error handle failed" );
-		//		return false;
+		bCont = false;
 	}
 
-	String strErr;
-
+	String strErr( 128L );
 	// --- alloc service context handle
-	if ( checkError( OCIHandleAlloc( fOracleEnv.EnvHandle(), fSvchp.getVoidAddr(), (ub4) OCI_HTYPE_SVCCTX, (size_t) 0,
-									 (dvoid **) 0 ), strErr ) ) {
+	if ( bCont && checkError( OCIHandleAlloc( fOracleEnv.EnvHandle(), fSvchp.getVoidAddr(), (ub4) OCI_HTYPE_SVCCTX, (size_t) 0,
+							  (dvoid **) 0 ), strErr ) ) {
 		SysLog::Error( String( "FAILED: OCIHandleAlloc(): alloc service context handle failed (" ) << strErr << ")" );
-		//		return false;
+		bCont = false;
 	}
 	// --- alloc server connection handle
-	if ( checkError( OCIHandleAlloc( fOracleEnv.EnvHandle(), fSrvhp.getVoidAddr(), (ub4) OCI_HTYPE_SERVER, (size_t) 0,
-									 (dvoid **) 0 ), strErr ) ) {
+	if ( bCont && checkError( OCIHandleAlloc( fOracleEnv.EnvHandle(), fSrvhp.getVoidAddr(), (ub4) OCI_HTYPE_SERVER, (size_t) 0,
+							  (dvoid **) 0 ), strErr ) ) {
 		SysLog::Error( String( "FAILED: OCIHandleAlloc(): alloc server connection handle failed (" ) << strErr << ")" );
-		//		return false;
+		bCont = false;
 	}
 	// --- alloc user session handle
-	if ( checkError( OCIHandleAlloc( fOracleEnv.EnvHandle(), fUsrhp.getVoidAddr(), (ub4) OCI_HTYPE_SESSION, (size_t) 0,
-									 (dvoid **) 0 ), strErr ) ) {
+	if ( bCont && checkError( OCIHandleAlloc( fOracleEnv.EnvHandle(), fUsrhp.getVoidAddr(), (ub4) OCI_HTYPE_SESSION, (size_t) 0,
+							  (dvoid **) 0 ), strErr ) ) {
 		SysLog::Error( String( "FAILED: OCIHandleAlloc(): alloc user session handle failed (" ) << strErr << ")" );
-		//		return false;
+		bCont = false;
 	}
-	if ( checkError( OCIHandleAlloc( fOracleEnv.EnvHandle(), fDschp.getVoidAddr(), (ub4) OCI_HTYPE_DESCRIBE,
-									 (size_t) 0, (dvoid **) 0 ), strErr ) ) {
+	if ( bCont && checkError( OCIHandleAlloc( fOracleEnv.EnvHandle(), fDschp.getVoidAddr(), (ub4) OCI_HTYPE_DESCRIBE,
+							  (size_t) 0, (dvoid **) 0 ), strErr ) ) {
 		SysLog::Error( String( "FAILED: OCIHandleAlloc(): alloc describe handle failed (" ) << strErr << ")" );
-		//		return false;
+		bCont = false;
+	}
+	if ( bCont ) {
+		fStatus = eHandlesAllocated;
 	}
 }
 
@@ -55,16 +59,19 @@ bool OracleConnection::Open( String const &strServer, String const &strUsername,
 {
 	StartTrace(OracleConnection.Open);
 
+	if ( fStatus < eHandlesAllocated ) {
+		SYSERROR("Allocation of OCI handles failed, can not connect to server [" << strServer << "] with user [" << strUsername << "]!");
+		return false;
+	}
+	if ( fStatus > eHandlesAllocated ) {
+		SYSERROR("tried to open already opened connection to server [" << strServer << "] and user [" << strUsername << "]!");
+		return false;
+	}
 	text const *server( reinterpret_cast<const text *> ( (const char *) strServer ) );
 	text const *username( reinterpret_cast<const text *> ( (const char *) strUsername ) );
 	text const *password( reinterpret_cast<const text *> ( (const char *) strPassword ) );
 
-	if ( fConnected ) {
-		SYSERROR("tried to open already opened connection to server [" << strServer << "] and user [" << strUsername << "]!");
-		return false;
-	}
-
-	String strErr;
+	String strErr( 128L );
 
 	// --- attach server
 	if ( checkError( OCIServerAttach( fSrvhp.getHandle(), fErrhp.getHandle(), server, strlen( (const char *) server ),
@@ -72,6 +79,7 @@ bool OracleConnection::Open( String const &strServer, String const &strUsername,
 		SysLog::Error( String( "FAILED: OCIServerAttach() to server [" ) << strServer << "] failed (" << strErr << ")" );
 		return false;
 	}
+	fStatus = eServerAttached;
 
 	// --- set attribute server context in the service context
 	if ( checkError( OCIAttrSet( fSvchp.getHandle(), (ub4) OCI_HTYPE_SVCCTX, fSrvhp.getHandle(), (ub4) 0,
@@ -104,7 +112,7 @@ bool OracleConnection::Open( String const &strServer, String const &strUsername,
 					   << ")" );
 		return false;
 	}
-	Trace( "connected to oracle as " << strUsername );
+	Trace( "connected to oracle as " << strUsername )
 
 	// --- Set the authentication handle in the Service handle
 	if ( checkError( OCIAttrSet( fSvchp.getHandle(), (ub4) OCI_HTYPE_SVCCTX, fUsrhp.getHandle(), (ub4) 0,
@@ -113,28 +121,35 @@ bool OracleConnection::Open( String const &strServer, String const &strUsername,
 					   << strErr << ")" );
 		return false;
 	}
+	fStatus = eSessionValid;
+	return true;
 }
 
 OracleConnection::~OracleConnection()
 {
 	StartTrace(OracleConnection.~OracleConnection);
 	Close();
-}
-
-void OracleConnection::Close()
-{
-	if ( OCISessionEnd( fSvchp.getHandle(), fErrhp.getHandle(), fUsrhp.getHandle(), 0 ) ) {
-		SysLog::Error( "FAILED: OCISessionEnd() on svchp failed" );
-	}
-	if ( OCIServerDetach( fSrvhp.getHandle(), fErrhp.getHandle(), OCI_DEFAULT ) ) {
-		SysLog::Error( "FAILED: OCISessionEnd() on srvhp failed" );
-	}
-
 	fSrvhp.reset();
 	fSvchp.reset();
 	fErrhp.reset();
 	fUsrhp.reset();
 	fDschp.reset();
+	fStatus = eUnitialized;
+}
+
+void OracleConnection::Close()
+{
+	if ( fStatus == eSessionValid ) {
+		if ( OCISessionEnd( fSvchp.getHandle(), fErrhp.getHandle(), fUsrhp.getHandle(), 0 ) ) {
+			SysLog::Error( "FAILED: OCISessionEnd() on svchp failed" );
+		}
+	}
+	if ( fStatus >= eServerAttached ) {
+		if ( OCIServerDetach( fSrvhp.getHandle(), fErrhp.getHandle(), OCI_DEFAULT ) ) {
+			SysLog::Error( "FAILED: OCIServerDetach() on srvhp failed" );
+		}
+	}
+	fStatus = eHandlesAllocated;
 }
 
 bool OracleConnection::checkError( sword status )
@@ -205,8 +220,7 @@ OracleStatement *OracleConnection::createStatement( const String &strStatement, 
 	OracleStatement *pStmt( new OracleStatement( this, strStatement ) );
 	if ( pStmt ) {
 		pStmt->setPrefetchRows( lPrefetchRows );
-		pStmt->Prepare();
-		if ( pStmt->getStatementType() == OracleStatement::Coast_OCI_STMT_BEGIN ) {
+		if ( pStmt->Prepare() && pStmt->getStatementType() == OracleStatement::Coast_OCI_STMT_BEGIN ) {
 			pStmt->setSPDescription( roaSPDescription );
 		}
 	}
