@@ -16,7 +16,6 @@
 //---- OracleParameterMapper ----------------------------------------------------------
 //! <B>Mapper able to handle Oracle specific stored procedure/function parameters</B>
 /*!
- * @par Description
  * This mapper can be used for any OracleDAImpl specific query but it is required for PL/SQL queries. To separate
  * between Parameter values and others, all Parameter values need to be placed below slot /Params in the parameter
  * mapper configuration.
@@ -69,7 +68,6 @@ private:
 //---- OracleResultMapper ----------------------------------------------------------
 //! <b>Mapper used to process Oracle specific output mappings</b>
 /*!
- * @par Description
  * This mapper should be used for any OracleDAImpl. It's main feature is to provide further mappings for stored
  * procedures/functions parameters. If just simple INOUT or OUT parameters are present, it will just put the value of
  * the parameter using its name. But if the parameter is a REF_CURSOR, the whole structure consisting of QueryResult,

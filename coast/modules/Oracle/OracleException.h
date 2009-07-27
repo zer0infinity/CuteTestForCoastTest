@@ -16,7 +16,6 @@
 
 //! <B>Provide useful message when an exception gets thrown</B>
 /*!
- * @par Description
  * This class is used to abort the program flow with either a self written message or a message provided using the
  * return code of the last OCI API call.
  * @par Configuration

@@ -18,7 +18,6 @@
 //---- OracleModule ----------------------------------------------------------
 //! <B>Module to initialize Oracle Data Access</B>
 /*!
- * @par Description
  * OracleModule is the module needed to initialize when wanting to access Oracle database server back ends. The
  * configuration needed is the configuration for Coast::Oracle::ConnectionPool which is best looked up there. Main
  * purpose of this module is to provide proper WDModule::Init and WDModule::Finis code to setup and cleanup all

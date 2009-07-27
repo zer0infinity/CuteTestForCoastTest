@@ -54,8 +54,7 @@ void OracleStatement::Cleanup()
 		}
 	}
 	fSubStatements = Anything();
-	//FIXME: do we need to cleanup sub-statement handle??
-	// -> if not, we should call release() on the fStmthp before resetting, not to delete it
+	// we need to cleanup the sub-statement handle
 	fStmthp.reset();
 	fStatus = UNPREPARED;
 }
@@ -77,7 +76,6 @@ OracleStatement::Status OracleStatement::execute( ub4 mode )
 			case STMT_CREATE:
 			case STMT_DROP:
 			case STMT_ALTER:
-				//FIXME: is this correct?
 				fStatus = UPDATE_COUNT_AVAILABLE;
 				break;
 			case STMT_DELETE:
@@ -89,7 +87,6 @@ OracleStatement::Status OracleStatement::execute( ub4 mode )
 				fStatus = UPDATE_COUNT_AVAILABLE;
 				break;
 			default:
-				//FIXME: check if this makes sense
 				fStatus = PREPARED;
 		}
 	} else {

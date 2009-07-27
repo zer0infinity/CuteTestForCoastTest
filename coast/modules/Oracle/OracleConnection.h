@@ -20,7 +20,6 @@ class OracleStatement;
 //---- OracleConnection -----------------------------------------------------------
 //! <b>Abstraction for an Oracle connection</b>
 /*!
- * @par Description
  * This class serves as abstraction for all the OCI calls which need to be done to establish a connection to an oracle back end.
  * The OracleConnection itself will be created when calling OracleEnvironment::createConnection. All this is done from within
  * OraclePooledConnection which will be tracked by Coast::Oracle::ConnectionPool.

@@ -20,7 +20,6 @@
 //---- OraclePooledConnection -----------------------------------------------------------
 //! <b>Connection adapter to handle Oracle specific connections using Coast::Oracle::ConnectionPool</b>
 /*!
- * @par Description
  * This class deals with oracle connection specific things like OracleEnvironment and OracleConnection. When
  * such an object is first requested for OraclePooledConnection::Open, it will allocate the needed resources
  * like an environment and a connection which can then be used to process oracle database requests.

@@ -20,10 +20,27 @@ class OracleStatement;
 //! type definition of auto cleanup'd OracleStatement
 typedef std::auto_ptr<OracleStatement> OracleStatementPtr;
 
-//! <b>Abstraction for an Oracle statement</b>
+//! @brief <b>Abstraction of an Oracle statement</b>
 /*!
- * @par Description
- * A statement is an either a simple SQL query or a stored procedure call.
+ * A statement is either a simple SQL query or a stored procedure call. The OracleStatement class is the main
+ * interface when wanting to execute queries/SP or when to retrieve result data. Several access methods exist to
+ * obtain either simple column/parameter values or a complete OracleResultset object to process row results. Internally
+ * the state of the statement is tracked using an enumerator OracleStatement::Status. The primary state just after
+ * creating a new OracleStatement is OracleStatement::UNPREPARED. After executing Prepare(), the state changes to
+ * OracleStatement::PREPARED to signal that the underlying OCI call was successful and we know the type of statement
+ * which is going to be executed.
+ * If the statement type is OracleStatement::STMT_BEGIN, we have to bind the input parameters first before continuing
+ * to execute() the statement.
+ * If execution of the statement was successful, the state either changes to OracleStatement::RESULT_SET_AVAILABLE or
+ * to OracleStatement::UPDATE_COUNT_AVAILABLE also depending on the type of the statement.
+ *
+ * @section DescribeSimpleSQL Simple Statements
+ * OracleStatment::RESULT_SET_AVAILABLE tells us that we can call getResultset() to get a valid OracleResultset object
+ * and work on it to fetch all rows of the query.
+ *
+ * @section DescribePLSQL PL/SQL stored procedure/function
+ * Blabla
+ *
  * @par Configuration
  * --
  */

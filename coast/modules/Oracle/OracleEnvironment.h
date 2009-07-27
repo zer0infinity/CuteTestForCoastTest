@@ -19,7 +19,6 @@ class String;
 
 //! <b>Abstraction for an Oracle environment</b>
 /*!
- * @par Description
  * This class serves as abstraction for an OCI environment. Such an environment is needed to create an OracleConnection.
  * @par Configuration
  * --

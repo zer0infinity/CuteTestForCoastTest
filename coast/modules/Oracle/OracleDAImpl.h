@@ -20,42 +20,41 @@ class OracleStatement;
 //---- OracleDAImpl -----------------------------------------------------------
 //! <b>Oracle DataAccessImpl using OCI</b>
 /*!
- * @par Description
  * Oracle specific DataAccessImpl to execute database access based on settings in the Context and configuration
  * for OracleDAImpl, ParameterMapper and ResultMapper.
- * @par Configuration
-<b>ParameterMapper Slots used:</b>
+ * @section s1 Configuration
+ * @subsection ss1 Used ParameterMapper slots
+ * The following are the basic connection settings:
+@par \c DBConnectString
+MapperSpec, \b mandatory, String value specifying oracle database connection string according to
+<a href="http://www.oracle.com/technology/tech/oci/instantclient/ic-faq.html#A4428">Oracle-InstantClient FAQ</a>
+@par \c DBUser
+MapperSpec, \b mandatory, String value specifying the database user to connect with
+@par \c DBPW
+MapperSpec, \b mandatory, String value containing the password for the given user
+@par \c DBTries
+MapperSpec, optional, <tt>default 3</tt>, how many times to retry if a database request fails due to recoverable errors
+
+@subsubsection sss1 Simple sql queries
+@par \c SQL
+MapperSpec, \b mandatory if it is one of [select|insert |update|delete|create|drop|alter|...], but not a stored
+procedure/function or another form of a PL/SQL block
+
+@subsubsection sss2 Stored procedure/function
+Any OracleDAImpl used to execute server side stored procedures should be used in conjunction with OracleParameterMapper.
+If not used together, parameters might not get looked up correctly.
+@par \c Name
+MapperSpec, \b mandatory if it is a stored procedure/function, resulting in a simple String specifying the name of the
+stored procedure or function <em>other forms of a PL/SQL blocks are not supported!</em>
+@par \c Return
+MapperSpec, optional, String value specifying the name of the output slot to use when putting a stored function return
+value, default is the name of the stored function
+@par <tt>Params.PARAMNAME</tt>
+MapperSpec, \b mandatory if IN or INOUT parameters, values to use as input parameters for stored procedures/functions,
+REFCURSOR INOUT values do not need to be specified.<em>Note that parameter names \b must be specified in upper case letters,
+oracle is not case preserving/sensitive for parameter names!</em>
+
 \code
-{
-# basic connection settings
-
-	/DBConnectString	MapperSpec		mandatory, String value specifying oracle database connection string
-											according to hints in instant client ic-faq.html#A4428
-	/DBUser				MapperSpec		mandatory, String value specifying the database user to connect with
-	/DBPW				MapperSpec		mandatory, String value containing the password for the above user
-	/DBTries			MapperSpec		optional, default 3, how many times to retry if a database request fails
-											due to recoverable errors
-
-# simple sql queries section
-
-	/SQL				MapperSpec		mandatory if it is one of [select|insert|update|delete|create|drop|alter|...],
-											but not a stored procedure/function or another form of a PL/SQL block
-
-# stored procedure/function section, best used with OracleParameterMapper
-
-	/Name				MapperSpec		mandatory if it is a stored procedure/function, resulting in a simple String
-											specifying the name of the stored procedure or function
-										-> other forms of a PL/SQL blocks are not supported!
-	/Return				MapperSpec		optional, String value specifying the name of the output slot to use when putting
-											a stored function return value, default is the name of the stored function
-	/Params {
-		/PARAMNAME		MapperSpec		mandatory if IN or INOUT parameters, values to use as input parameters for stored
-											procedures/functions, REFCURSOR INOUT values do not need to be specified
-										-> note that parameter names *must* be specified in upper case letters, oracle is
-										not case preserving/sensitive for parameter names
-		...
-	}
-
 # customizing output
 
 	/ShowQueryCount		MapperSpec		optional, long value (as boolean) to enable/disable QueryCount slot in result output
