@@ -53,7 +53,7 @@ namespace Coast
 					String server, user;
 					for ( long i = 0; i < nrOfConnections; ++i ) {
 						OraclePooledConnection *pConnection = new OraclePooledConnection();
-						IntReleaseConnection( pConnection, false, server, user );
+						IntReleaseConnection( pConnection, server, user );
 					}
 					if ( !fpPeriodicAction ) {
 						fpPeriodicAction = new PeriodicAction( "OracleCheckCloseOpenedConnectionsAction",
@@ -84,10 +84,9 @@ namespace Coast
 			if ( bInitialized ) {
 				for ( long lCount = 0L; lCount < fListOfConnections["Size"].AsLong( 0L ) && fpResourcesSema->Acquire(); ++lCount ) {
 					OraclePooledConnection *pConnection( NULL );
-					bool bIsOpen = false;
 					String strServer, strUser;
-					if ( BorrowConnection( pConnection, bIsOpen, strServer, strUser ) ) {
-						if ( bIsOpen ) {
+					if ( BorrowConnection( pConnection, strServer, strUser ) ) {
+						if ( pConnection->isOpen() ) {
 							pConnection->Close( true );
 						}
 						delete pConnection;
@@ -99,52 +98,50 @@ namespace Coast
 			return !fInitialized;
 		}
 
-		bool ConnectionPool::BorrowConnection( OraclePooledConnection *&pConnection, bool &bIsOpen, const String &server,
+		bool ConnectionPool::BorrowConnection( OraclePooledConnection *&pConnection, const String &server,
 											   const String &user )
 		{
 			StartTrace(ConnectionPool.BorrowConnection);
 			LockUnlockEntry me( fStructureMutex );
-			return IntBorrowConnection( pConnection, bIsOpen, server, user );
+			return IntBorrowConnection( pConnection, server, user );
 		}
 
-		void ConnectionPool::ReleaseConnection( OraclePooledConnection *&pConnection, bool bIsOpen, const String &server,
+		void ConnectionPool::ReleaseConnection( OraclePooledConnection *&pConnection, const String &server,
 												const String &user )
 		{
 			StartTrace(ConnectionPool.ReleaseConnection);
 			LockUnlockEntry me( fStructureMutex );
-			IntReleaseConnection( pConnection, bIsOpen, server, user );
+			IntReleaseConnection( pConnection, server, user );
 		}
 
-		bool ConnectionPool::IntGetOpen(OraclePooledConnection *&pConnection, bool &bIsOpen, const String &server, const String &user)
+		bool ConnectionPool::IntGetOpen( OraclePooledConnection *&pConnection, const String &server, const String &user )
 		{
 			StartTrace1(ConnectionPool.IntGetOpen, "server [" << server << "] user [" << user << "]");
 			pConnection = NULL;
-			bIsOpen = false;
-			Anything anyTimeStamp(Storage::Global()), anyEntry(Storage::Global());
+			Anything anyTimeStamp( Storage::Global() ), anyEntry( Storage::Global() );
 			TraceAny(fListOfConnections, "current list of connections");
-			if ( fListOfConnections.LookupPath(anyTimeStamp, "Open") && anyTimeStamp.GetSize() ) {
-				String strToLookup(server);
+			if ( fListOfConnections.LookupPath( anyTimeStamp, "Open" ) && anyTimeStamp.GetSize() ) {
+				String strToLookup( server );
 				if ( strToLookup.Length() && user.Length() ) {
 					strToLookup << '.' << user;
 				}
 				Trace("Lookup name [" << strToLookup << "]");
-				for (long lIdx = 0; lIdx < anyTimeStamp.GetSize(); ++lIdx) {
-					Anything anyTS(Storage::Global());
+				for ( long lIdx = 0; lIdx < anyTimeStamp.GetSize(); ++lIdx ) {
+					Anything anyTS( Storage::Global() );
 					anyTS = anyTimeStamp[lIdx];
-					for (long lTimeSub = 0L; lTimeSub < anyTS.GetSize(); ++lTimeSub) {
+					for ( long lTimeSub = 0L; lTimeSub < anyTS.GetSize(); ++lTimeSub ) {
 						if ( ( strToLookup.Length() <= 0 ) || strToLookup == anyTS[lTimeSub][1L].AsString() ) {
 							Trace("removing subentry :" << lIdx << ":" << lTimeSub);
 							anyEntry = anyTS[lTimeSub];
-							anyTS.Remove(lTimeSub);
+							anyTS.Remove( lTimeSub );
 							// we do not have to close the connection before using because the OraclePooledConnection is for the same server and user
-							bIsOpen = ( strToLookup.Length() > 0 );
 							break;
 						}
 					}
 					if ( !anyEntry.IsNull() ) {
 						pConnection = SafeCast(anyEntry[0L].AsIFAObject(), OraclePooledConnection);
 						if ( anyTS.GetSize() == 0L ) {
-							anyTimeStamp.Remove(lIdx);
+							anyTimeStamp.Remove( lIdx );
 						}
 						break;
 					}
@@ -153,26 +150,24 @@ namespace Coast
 			return !anyEntry.IsNull();
 		}
 
-		bool ConnectionPool::IntBorrowConnection(OraclePooledConnection *&pConnection, bool &bIsOpen, const String &server, const String &user)
+		bool ConnectionPool::IntBorrowConnection( OraclePooledConnection *&pConnection, const String &server,
+				const String &user )
 		{
 			StartTrace(ConnectionPool.IntBorrowConnection);
 			pConnection = NULL;
-			bIsOpen = false;
-			if ( !server.Length() || !user.Length() || !IntGetOpen(pConnection, bIsOpen, server, user) ) {
+			if ( !server.Length() || !user.Length() || !IntGetOpen( pConnection, server, user ) ) {
 				Trace("favour unused connection against open connection of different server/user");
 				if ( fListOfConnections["Unused"].GetSize() ) {
 					Trace("removing first unused element");
 					pConnection = SafeCast(fListOfConnections["Unused"][0L].AsIFAObject(), OraclePooledConnection);
-					fListOfConnections["Unused"].Remove(0L);
+					fListOfConnections["Unused"].Remove( 0L );
 				} else {
 					Trace("no unused connection found, try to look for any open connection not in use");
 					String strEmpty;
-					if ( IntGetOpen(pConnection, bIsOpen, strEmpty, strEmpty) ) {
-						if ( !bIsOpen ) {
-							Trace("need to close connection of different server or user");
-							// if this call would return false we could possibly delete and recreate an object
-							pConnection->Close();
-						}
+					if ( IntGetOpen( pConnection, strEmpty, strEmpty ) ) {
+						Trace("need to close connection of different server or user before using connection");
+						// if this call would return false we could possibly delete and recreate an object
+						pConnection->Close();
 					}
 				}
 			}
@@ -180,53 +175,54 @@ namespace Coast
 			if ( pConnection == NULL ) {
 				SYSERROR("could not get a valid OracleConnection");
 			}
-			return (pConnection != NULL);
+			return ( pConnection != NULL );
 		}
 
-		void ConnectionPool::IntReleaseConnection(OraclePooledConnection *&pConnection, bool bIsOpen, const String &server, const String &user)
+		void ConnectionPool::IntReleaseConnection( OraclePooledConnection *&pConnection, const String &server,
+				const String &user )
 		{
 			StartTrace1(ConnectionPool.IntReleaseConnection, "putting &" << (long)(IFAObject *)pConnection);
-			if ( bIsOpen ) {
-				String strToStore(server);
+			if ( pConnection->isOpen() ) {
+				String strToStore( server );
 				strToStore << '.' << user;
 				TimeStamp aStamp;
-				Anything anyTimeStamp(Storage::Global());
-				if ( !fListOfConnections.LookupPath(anyTimeStamp, "Open") ) {
-					anyTimeStamp = MetaThing(Storage::Global());
+				Anything anyTimeStamp( Storage::Global() );
+				if ( !fListOfConnections.LookupPath( anyTimeStamp, "Open" ) ) {
+					anyTimeStamp = MetaThing( Storage::Global() );
 					fListOfConnections["Open"] = anyTimeStamp;
 				}
-				Anything anyToStore(Storage::Global());
-				anyToStore[0L] = (IFAObject *)pConnection;
+				Anything anyToStore( Storage::Global() );
+				anyToStore[0L] = (IFAObject *) pConnection;
 				anyToStore[1L] = strToStore;
-				anyTimeStamp[aStamp.AsString()].Append(anyToStore);
+				anyTimeStamp[aStamp.AsString()].Append( anyToStore );
 			} else {
-				fListOfConnections["Unused"].Append((IFAObject *)pConnection);
+				fListOfConnections["Unused"].Append( (IFAObject *) pConnection );
 			}
 			TraceAny(fListOfConnections, "current list of connections");
 		}
 
-		bool ConnectionPool::CheckCloseOpenedConnections(long lTimeout)
+		bool ConnectionPool::CheckCloseOpenedConnections( long lTimeout )
 		{
 			StartTrace(ConnectionPool.CheckCloseOpenedConnections);
 			bool bRet = false;
-			Anything anyTimeStamp(Storage::Global());
+			Anything anyTimeStamp( Storage::Global() );
 			TimeStamp aStamp;
 			aStamp -= lTimeout;
 			Trace("current timeout " << lTimeout << "s, resulting time [" << aStamp.AsString() << "]");
-			LockUnlockEntry me(fStructureMutex);
+			LockUnlockEntry me( fStructureMutex );
 			if ( fInitialized ) {
 				TraceAny(fListOfConnections, "current list of connections");
-				if ( fListOfConnections.LookupPath(anyTimeStamp, "Open") && anyTimeStamp.GetSize() ) {
+				if ( fListOfConnections.LookupPath( anyTimeStamp, "Open" ) && anyTimeStamp.GetSize() ) {
 					OraclePooledConnection *pConnection = NULL;
 					long lTS = 0L;
 					// if we still have open connections and the last access is older than lTimeout seconds
-					while ( anyTimeStamp.GetSize() && ( aStamp > TimeStamp(anyTimeStamp.SlotName(lTS)) ) ) {
-						Anything anyTS(Storage::Global());
+					while ( anyTimeStamp.GetSize() && ( aStamp > TimeStamp( anyTimeStamp.SlotName( lTS ) ) ) ) {
+						Anything anyTS( Storage::Global() );
 						anyTS = anyTimeStamp[lTS];
 						TraceAny(anyTS, "stamp of connections to close [" << anyTimeStamp.SlotName(0L) << "]");
 						while ( anyTS.GetSize() ) {
 							pConnection = SafeCast(anyTS[0L][0L].AsIFAObject(), OraclePooledConnection);
-							anyTS.Remove(0L);
+							anyTS.Remove( 0L );
 							if ( pConnection != NULL ) {
 								Trace("closing timeouted connection");
 								if ( pConnection->Close() ) {
@@ -235,9 +231,9 @@ namespace Coast
 							} else {
 								SYSWARNING("connection with address " << (long)pConnection << " not valid anymore!");
 							}
-							fListOfConnections["Unused"].Append((IFAObject *)pConnection);
+							fListOfConnections["Unused"].Append( (IFAObject *) pConnection );
 						}
-						anyTimeStamp.Remove(lTS);
+						anyTimeStamp.Remove( lTS );
 					}
 				}
 			} else {

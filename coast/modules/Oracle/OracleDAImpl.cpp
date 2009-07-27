@@ -133,7 +133,7 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 		Trace("Connect string is [" << server << "]");
 		out->Put( "QuerySource", server, ctx );
 
-		bool bIsOpen = false, bDoRetry = true;
+		bool bDoRetry = true;
 		long lTryCount( 1L );
 		in->Get( "DBTries", lTryCount, ctx );
 		if ( lTryCount < 1 ) {
@@ -149,13 +149,12 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 			String command;
 
 			// --- establish db connection
-			if ( !pConnectionPool->BorrowConnection( pPooledConnection, bIsOpen, server, user ) ) {
+			if ( !pConnectionPool->BorrowConnection( pPooledConnection, server, user ) ) {
 				Error( ctx, out, "Exec: unable to get OracleConnection" );
 				bDoRetry = false;
 			} else {
-				if ( bIsOpen || pPooledConnection->Open( server, user, passwd ) ) {
+				if ( pPooledConnection->isOpen() || pPooledConnection->Open( server, user, passwd ) ) {
 					OracleConnection *pConnection( pPooledConnection->getConnection() );
-					bIsOpen = true;
 					if ( DoPrepareSQL( command, ctx, in ) ) {
 						OracleStatementPtr aStmt( pConnection->createStatement( command, lPrefetchRows ) );
 						Trace("statement status:" << (long)aStmt->status());
@@ -256,7 +255,7 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 				}
 			}
 			if ( pConnectionPool && pPooledConnection ) {
-				pConnectionPool->ReleaseConnection( pPooledConnection, bIsOpen, server, user );
+				pConnectionPool->ReleaseConnection( pPooledConnection, server, user );
 			}
 			if ( bDoRetry && lTryCount > 0 ) {
 				SYSWARNING("Internally retrying to execute command [" << command << "]");

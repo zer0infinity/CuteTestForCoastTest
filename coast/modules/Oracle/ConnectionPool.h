@@ -84,21 +84,19 @@ namespace Coast
 			/*! Borrow a connection against server using the given user name
 			 * If all connections are currently in use, the caller will get blocked until a connections gets released.
 			 * @param pConnection connection to borrow
-			 * @param bIsOpen flag which tells if the given connection is already open
 			 * @param server name of server to connect to - in oracle it is the same as the connection string
 			 * @param user name of the user to connect with
 			 * @return true in case of success, false signals internal bookkeeping failure
 			 * @note This method is thread safe and blocks until a connection is available.
 			 */
-			bool BorrowConnection( OraclePooledConnection *&pConnection, bool &bIsOpen, const String &server,
+			bool BorrowConnection( OraclePooledConnection *&pConnection, const String &server,
 								   const String &user );
 			/*! put back a connection not used anymore by the borrower
 			 * @param pConnection connection to release
-			 * @param bIsOpen flag to tell if the given connection is still open or if it had to be closed due to errors
 			 * @param server name of server to connect to - in oracle it is the same as the connection string
 			 * @param user name of the user which was used to connect
 			 */
-			void ReleaseConnection( OraclePooledConnection *&pConnection, bool bIsOpen, const String &server,
+			void ReleaseConnection( OraclePooledConnection *&pConnection, const String &server,
 									const String &user );
 			/*! Helper class to ensure requester lock out when all connections are currently in use
 			 * Makes use of automatic Semaphore.Acquire in ctor and Semaphore.Release in dtor using a SemaphoreEntry
@@ -118,33 +116,30 @@ namespace Coast
 		private:
 			/*! try to find a matching and open connection using the given credentials
 			 * @param pConnection connection returned
-			 * @param bIsOpen flag which tells if the given connection is already open
 			 * @param server name of server to connect to - in oracle it is the same as the connection string
 			 * @param user name of the user to connect with
 			 * @return true in case we found a matching and open connection, false otherwise
 			 * @note This method is not protected against concurrent access. The caller must ensure mutexed access!
 			 */
-			bool IntGetOpen( OraclePooledConnection *&pConnection, bool &bIsOpen, const String &server, const String &user );
+			bool IntGetOpen( OraclePooledConnection *&pConnection, const String &server, const String &user );
 
 			/*! internal method to borro a connection to use against server using the given user name
 			 * @param pConnection connection to borrow
-			 * @param bIsOpen flag which tells if the given connection is already open
 			 * @param server name of server to connect to - in oracle it is the same as the connection string
 			 * @param user name of the user to connect with
 			 * @return true in case of success, false signals internal bookkeeping failure
 			 * @note This method is not protected against concurrent access. The caller must ensure mutexed access!
 			 */
-			bool IntBorrowConnection( OraclePooledConnection *&pConnection, bool &bIsOpen, const String &server,
+			bool IntBorrowConnection( OraclePooledConnection *&pConnection, const String &server,
 									  const String &user );
 
 			/*! internal method to put back a connection not used anymore by the borrower
 			 * @param pConnection connection to release
-			 * @param bIsOpen flag to tell if the given connection is still open or if it had to be closed due to errors
 			 * @param server name of server to connect to - in oracle it is the same as the connection string
 			 * @param user name of the user which was used to connect
 			 * @note This method is not protected against concurrent access. The caller must ensure mutexed access!
 			 */
-			void IntReleaseConnection( OraclePooledConnection *&pConnection, bool bIsOpen, const String &server,
+			void IntReleaseConnection( OraclePooledConnection *&pConnection, const String &server,
 									   const String &user );
 
 			//! forbid default ctor
