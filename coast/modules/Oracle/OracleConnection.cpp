@@ -220,7 +220,7 @@ OracleStatement *OracleConnection::createStatement( const String &strStatement, 
 	OracleStatement *pStmt( new OracleStatement( this, strStatement ) );
 	if ( pStmt ) {
 		pStmt->setPrefetchRows( lPrefetchRows );
-		if ( pStmt->Prepare() && pStmt->getStatementType() == OracleStatement::Coast_OCI_STMT_BEGIN ) {
+		if ( pStmt->Prepare() && pStmt->getStatementType() == OracleStatement::STMT_BEGIN ) {
 			pStmt->setSPDescription( roaSPDescription );
 		}
 	}

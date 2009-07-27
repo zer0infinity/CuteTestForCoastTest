@@ -14,10 +14,15 @@
 #include "Mapper.h"
 
 //---- OracleParameterMapper ----------------------------------------------------------
-//! <B>provide OracleDAImpl with stored procedure/function specific parameters</B>
+//! <B>Mapper able to handle Oracle specific stored procedure/function parameters</B>
 /*!
  * @par Description
- * --
+ * This mapper can be used for any OracleDAImpl specific query but it is required for PL/SQL queries. To separate
+ * between Parameter values and others, all Parameter values need to be placed below slot /Params in the parameter
+ * mapper configuration.
+ * If a requested parameter key is not found using the full Params.key it will be searched using key only. This was
+ * implemented to simplify usage under some circumstances. Please note that all slot names in the Params section need
+ * to be in upper case letter as oracle is internally only uses upper case names.
  * @par Configuration
 \code
 {
@@ -36,21 +41,25 @@
 class EXPORTDECL_COASTORACLE OracleParameterMapper : public ParameterMapper
 {
 public:
-	//--- constructors
+	/*! Default registering ctor using a unique name to register mapper with
+	 * @param name Mapper gets registered using this name
+	 */
 	OracleParameterMapper(const char *name);
-	//--- support for prototype
-	IFAObject *Clone() const;
 
 protected:
-// decide which hook(s) you need to overwrite
-	//! major hook method for subclasses, default does script interpretation
-	/*! \param key the name defines kind of value to get or the slot in the script to use
-		\param value collects data within script
-		\param ctx the context of the invocation
-		\param script to be interpreted if any, for subclasses this is the config to use
-		\return returns true if the mapping was successful otherwise false */
+	/*! major hook method for subclasses, default does script interpretation
+	 * @param key Used to lookup a value in the Context
+	 * @param value Returned value
+	 * @param ctx The context used to perform input mapping
+	 * @param script to be interpreted if any, for subclasses this is the config to use
+	 * @return returns true if the mapping was successful otherwise false
+	 */
 	virtual bool DoGetAny(const char *key, Anything &value, Context &ctx, ROAnything script);
 
+	/*! Clone interface implementation
+	 * @return Pointer to IFAObject base class
+	 */
+	IFAObject *Clone() const;
 private:
 	OracleParameterMapper();
 	OracleParameterMapper(const OracleParameterMapper &);
@@ -58,10 +67,17 @@ private:
 };
 
 //---- OracleResultMapper ----------------------------------------------------------
-//! <B>provide OracleDAImpl with stored procedure/function specific output mapping</B>
+//! <b>Mapper used to process Oracle specific output mappings</b>
 /*!
  * @par Description
- * --
+ * This mapper should be used for any OracleDAImpl. It's main feature is to provide further mappings for stored
+ * procedures/functions parameters. If just simple INOUT or OUT parameters are present, it will just put the value of
+ * the parameter using its name. But if the parameter is a REF_CURSOR, the whole structure consisting of QueryResult,
+ * QueryTitles and QueryCount will be put below the parameters name. This is the only way to keep results of different
+ * parameters separate without confusing too much. Further it is possible to define mappings specific to subslots of
+ * such structured results.
+ * If the feature of specific parameter sub slot mapping is not needed, one can define a single top level mapping rule
+ * which is then applied if no specific rule is found. This might be a way to provide reasonable defaults.
  * @par Configuration
 \code
 {
@@ -83,20 +99,24 @@ private:
 class EXPORTDECL_COASTORACLE OracleResultMapper : public ResultMapper
 {
 public:
-	//--- constructors
+	/*! Default registering ctor using a unique name to register mapper with
+	 * @param name Mapper gets registered using this name
+	 */
 	OracleResultMapper(const char *name);
-	//--- support for prototype
-	IFAObject *Clone() const;
 
 protected:
-	// decide which hook to overwrite
-	//! Major hook for subclasses that want to do something with their config passed as script. The default is to interpret the script and put a value for every script item used. Recursion will be stopped by DoFinalPutAny which places its value under slot key below given DoGetDestinationSlot()
-	/*! \param key the key usually defines the associated kind of output-value
-		\param value the value to be mapped
-		\param ctx the context of the invocation
-		\param script current mapper configuration as ROAnything
-		\return returns true if the mapping was successful otherwise false */
+	/*! Major hook for subclasses that want to do something with their config passed as script. The default is to interpret the script and put a value for every script item used. Recursion will be stopped by DoFinalPutAny which places its value under slot key below given DoGetDestinationSlot()
+	 * @param key the key usually defines the associated kind of output-value
+	 * @param value the value to be mapped
+	 * @param ctx The context to put values into
+	 * @param script current mapper configuration as ROAnything
+	 * @return returns true if the mapping was successful otherwise false */
 	virtual bool DoPutAny(const char *key, Anything value, Context &ctx, ROAnything script);
+
+	/*! Clone interface implementation
+	 * @return Pointer to IFAObject base class
+	 */
+	IFAObject *Clone() const;
 
 private:
 	OracleResultMapper();

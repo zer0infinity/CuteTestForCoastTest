@@ -17,31 +17,57 @@
 class OracleResultset;
 class OracleStatement;
 
+//! type definition of auto cleanup'd OracleStatement
 typedef std::auto_ptr<OracleStatement> OracleStatementPtr;
 
+//! <b>Abstraction for an Oracle statement</b>
+/*!
+ * @par Description
+ * A statement is an either a simple SQL query or a stored procedure call.
+ * @par Configuration
+ * --
+ */
 class EXPORTDECL_COASTORACLE OracleStatement : public IFAObject
 {
 public:
 	enum Status {
-		UNPREPARED, PREPARED, RESULT_SET_AVAILABLE, UPDATE_COUNT_AVAILABLE, NEEDS_STREAM_DATA, STREAM_DATA_AVAILABLE
+		UNPREPARED,
+		PREPARED,
+		RESULT_SET_AVAILABLE,
+		UPDATE_COUNT_AVAILABLE,
+		NEEDS_STREAM_DATA,
+		STREAM_DATA_AVAILABLE
 	};
 
 	enum StmtType {
-		Coast_OCI_STMT_UNKNOWN = OCI_STMT_UNKNOWN, /* Unknown statement */
-		Coast_OCI_STMT_SELECT = OCI_STMT_SELECT, /* select statement */
-		Coast_OCI_STMT_UPDATE = OCI_STMT_UPDATE, /* update statement */
-		Coast_OCI_STMT_DELETE = OCI_STMT_DELETE, /* delete statement */
-		Coast_OCI_STMT_INSERT = OCI_STMT_INSERT, /* Insert Statement */
-		Coast_OCI_STMT_CREATE = OCI_STMT_CREATE, /* create statement */
-		Coast_OCI_STMT_DROP = OCI_STMT_DROP, /* drop statement */
-		Coast_OCI_STMT_ALTER = OCI_STMT_ALTER, /* alter statement */
-		Coast_OCI_STMT_BEGIN = OCI_STMT_BEGIN, /* begin ... (pl/sql statement)*/
-		Coast_OCI_STMT_DECLARE = OCI_STMT_DECLARE, /* declare .. (pl/sql statement ) */
-		Coast_OCI_STMT_CALL = OCI_STMT_CALL, /* corresponds to kpu call */
+		//! Unknown statement
+		STMT_UNKNOWN = OCI_STMT_UNKNOWN,
+		//! select statement
+		STMT_SELECT = OCI_STMT_SELECT,
+		//! update statement
+		STMT_UPDATE = OCI_STMT_UPDATE,
+		//! delete statement
+		STMT_DELETE = OCI_STMT_DELETE,
+		//! Insert Statement
+		STMT_INSERT = OCI_STMT_INSERT,
+		//! create statement
+		STMT_CREATE = OCI_STMT_CREATE,
+		//! drop statement
+		STMT_DROP = OCI_STMT_DROP,
+		//! alter statement
+		STMT_ALTER = OCI_STMT_ALTER,
+		//! begin ... (pl/sql statement)
+		STMT_BEGIN = OCI_STMT_BEGIN,
+		//! declare .. (pl/sql statement )
+		STMT_DECLARE = OCI_STMT_DECLARE,
+		//! corresponds to kpu call
+		STMT_CALL = OCI_STMT_CALL,
 	};
 
 	enum BindType {
-		INTERNAL, CURSOR, STRING
+		INTERNAL,
+		CURSOR,
+		STRING
 	};
 private:
 	OracleStatement();
@@ -103,6 +129,7 @@ public:
 		return ROAnything( fErrorMessages )[fErrorMessages.GetSize() - 1L].AsString( "" );
 	}
 
+protected:
 	virtual IFAObject *Clone() const {
 		return NULL;
 	}

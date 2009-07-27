@@ -15,12 +15,12 @@
 #include "Dbg.h"
 
 OracleStatement::OracleStatement( OracleConnection *pConn, String const &strStmt ) :
-	fpConnection( pConn ), fStmt( strStmt ), fStatus( UNPREPARED ), fStmtType( Coast_OCI_STMT_UNKNOWN )
+	fpConnection( pConn ), fStmt( strStmt ), fStatus( UNPREPARED ), fStmtType( STMT_UNKNOWN )
 {
 }
 
 OracleStatement::OracleStatement( OracleConnection *pConn, OCIStmt *phStmt ) :
-	fpConnection( pConn ), fStmthp( phStmt ), fStmt(), fStatus( PREPARED ), fStmtType( Coast_OCI_STMT_SELECT )
+	fpConnection( pConn ), fStmthp( phStmt ), fStmt(), fStatus( PREPARED ), fStmtType( STMT_SELECT )
 {
 }
 
@@ -65,27 +65,27 @@ OracleStatement::Status OracleStatement::execute( ub4 mode )
 	StartTrace1(OracleStatement.execute, "statement type " << (long)fStmtType);
 	// executes a SQL statement (first row is also fetched only if iters > 0)
 	// depending on the query type, we could use 'scrollable cursor mode' ( OCI_STMT_SCROLLABLE_READONLY )
-	ub4 iters = ( fStmtType == Coast_OCI_STMT_SELECT ? 0 : 1 );
+	ub4 iters = ( fStmtType == STMT_SELECT ? 0 : 1 );
 	sword status = OCIStmtExecute( fpConnection->SvcHandle(), getHandle(), fpConnection->ErrorHandle(), iters, 0, NULL,
 								   NULL, mode );
 	if ( status == OCI_SUCCESS || status == OCI_SUCCESS_WITH_INFO || status == OCI_NO_DATA ) {
 		// how can we find out about the result type? -> see Prepare
 		switch ( fStmtType ) {
-			case Coast_OCI_STMT_SELECT:
+			case STMT_SELECT:
 				fStatus = RESULT_SET_AVAILABLE;
 				break;
-			case Coast_OCI_STMT_CREATE:
-			case Coast_OCI_STMT_DROP:
-			case Coast_OCI_STMT_ALTER:
+			case STMT_CREATE:
+			case STMT_DROP:
+			case STMT_ALTER:
 				//FIXME: is this correct?
 				fStatus = UPDATE_COUNT_AVAILABLE;
 				break;
-			case Coast_OCI_STMT_DELETE:
-			case Coast_OCI_STMT_INSERT:
-			case Coast_OCI_STMT_UPDATE:
+			case STMT_DELETE:
+			case STMT_INSERT:
+			case STMT_UPDATE:
 				fStatus = UPDATE_COUNT_AVAILABLE;
 				break;
-			case Coast_OCI_STMT_BEGIN:
+			case STMT_BEGIN:
 				fStatus = UPDATE_COUNT_AVAILABLE;
 				break;
 			default:
@@ -206,7 +206,7 @@ ROAnything OracleStatement::GetOutputDescription()
 	StartTrace1( OracleStatement.GetOutputDescription, "statement type " << (long)fStmtType );
 
 	if ( fanyDescription.IsNull() ) {
-		if ( getStatementType() == Coast_OCI_STMT_SELECT ) {
+		if ( getStatementType() == STMT_SELECT ) {
 			OCIError *eh( getConnection()->ErrorHandle() );
 
 			OCIParam *mypard;
