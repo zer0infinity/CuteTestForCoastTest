@@ -187,11 +187,9 @@ bool SybCTnewDAImpl::IntDoGetConnection(SybCTnewDA *&pSyb, bool &bIsOpen, const 
 		} else {
 			String strEmpty;
 			if ( IntGetOpen(pSyb, bIsOpen, strEmpty, strEmpty) ) {
-				if ( !bIsOpen ) {
-					Trace("connection of different server or user");
-					// if this call would return false we could possibly delete and recreate an object
-					pSyb->Close();
-				}
+				Trace("connection of different server or user");
+				// if this call would return false we could possibly delete and recreate an object
+				pSyb->Close();
 			}
 		}
 	}
