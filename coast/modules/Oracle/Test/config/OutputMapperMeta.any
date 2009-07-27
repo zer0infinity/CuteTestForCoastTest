@@ -53,4 +53,10 @@
 			/QueryTitles	{ /AppendResultMapper * }
 		}
 	}
+	/MultiThreadedDA {
+		/DestinationSlot	MultiThreadedDA
+	}
+	/MultiThreadedDAWithError {
+		/DestinationSlot	MultiThreadedDAWithError
+	}
 }

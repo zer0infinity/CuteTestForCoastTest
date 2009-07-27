@@ -1,0 +1,82 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2009, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+	/DLL {
+		CoastAppLog
+		CoastDataAccess
+		CoastRenderers
+		CoastOracle
+	}
+	/Modules {
+		ActionsModule
+		RenderersModule
+		OracleModule
+		DataAccessImplsModule
+		MappersModule
+		AppLogModule
+		ServersModule
+	}
+
+	/Servers {}
+	# uncomment the server slot for enabling TimeLogging
+	/Server	Server
+
+	/Actions {
+		/CallDataAccessAction	{ CallDA }
+	}
+	/Renderers {
+		/SwitchRenderer 		{ Switch }
+		/ContextLookupRenderer 	{ Lookup }
+	}
+	/OracleModule {
+		/ConnectionPool {
+			/ParallelQueries		10
+			/CloseConnectionTimeout	20
+		}
+	}
+
+	/DataAccessImpls {
+		/OracleDAImpl {
+			/SifsCoastOrcl {
+				MultiThreadedDA
+				MultiThreadedDAWithError
+			}
+		}
+	}
+
+	/Mappers {
+		/Input {
+			/OracleSPMapper {
+				/SifsCoastOrclSP {
+					MultiThreadedDA
+					MultiThreadedDAWithError
+				}
+			}
+		}
+		/Output {
+			/OracleResultMapper {
+				/SifsCoastOrcl {
+					MultiThreadedDA
+					MultiThreadedDAWithError
+				}
+			}
+		}
+	}
+
+######## Test specific section ########
+
+	/DAImplTest {
+		#---- Worker pool configurations
+		/ThreadPoolSize					20
+		/PoolStorageSize				2000
+		/NumOfPoolBucketSizes			20
+		/SuccessDA						MultiThreadedDA
+		/FailureDA						MultiThreadedDAWithError
+	}
+}

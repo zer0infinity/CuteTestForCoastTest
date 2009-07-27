@@ -57,4 +57,29 @@
 		/Params {
 		}
 	}
+	/MultiThreadedDA {
+		/SQL
+		{
+			/RendererMapper
+			{
+				"select * from salesdetail "
+				" where title_id like 'BU%'"
+				" order by ord_num asc"
+			}
+		}
+	}
+
+	/MultiThreadedDAWithError
+	{
+		/SQL
+		{
+			/RendererMapper
+			{
+				"select * from salesdetail "
+				" where title_id = "
+				" order by ord_num asc"
+			}
+		}
+	}
+
 }

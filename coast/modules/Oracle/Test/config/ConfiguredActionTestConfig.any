@@ -42,6 +42,7 @@
 
 	/DataAccessImpls {
 		/OracleDAImpl {
+			IncompleteParamsDA
 			/SifsCoastOrcl {
 				SelectEmployees
 				SelectEmployeesTitlesOnce
@@ -72,6 +73,7 @@
 				}
 			}
 			/OracleSPMapper {
+				IncompleteParamsDA
 				/SifsCoastOrclSP {
 					SPMaxSalary
 					SPExecute
@@ -95,7 +97,9 @@
 					SelectEmployees
 					SelectEmployeesTitlesOnce
 					SPMaxSalary
-					SPExecute
+					/SPExecute {
+						IncompleteParamsDA
+					}
 					LoadOratestSchema
 					UpdateEmployees
 					SimpleSQLAccess
@@ -107,8 +111,22 @@
 ######## Test specific section ########
 
 	/RunOnly {
+
 	}
 	/TestCases {
+		/IncompleteParamsTest {
+			/TheAction {
+				/CallDA 	IncompleteParamsDA
+			}
+			/ExpectedResult 0
+			/Result {
+				/TmpStore {
+					/SPExecute {
+						/QuerySource ""
+					}
+				}
+			}
+		}
 		/SelectEmployeesTest {
 			/TheAction {
 				/CallDA 	SelectEmployees
