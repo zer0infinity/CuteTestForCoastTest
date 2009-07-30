@@ -274,6 +274,20 @@ protected:
 		\return the name of the slot for later lookup or the empty string */
 	String GetDestinationSlot(Context &ctx);
 
+	/*! Obtain path delimiter of current mapper configuration
+	 * @return single character used to delimit path segments in a Lookup, default is '.'
+	 */
+	const char getDelim() const {
+		return Lookup("Delim", ".")[0L];
+	}
+
+	/*! Obtain index delimiter of current mapper configuration
+	 * @return single character used to identify indexed segments in a Lookup, default is ':'
+	 */
+	const char getIndexDelim() const {
+		return Lookup("IndexDelim", ":")[0L];
+	}
+
 	//! Major hook for subclasses that want to do something with their config passed as script. The default is to interpret the script and put a value for every script item used. Recursion will be stopped by DoFinalPutAny which places its value under slot key below given DoGetDestinationSlot()
 	/*! \param key the key usually defines the associated kind of output-value
 		\param value the value to be mapped
