@@ -50,7 +50,7 @@ MemChecker::~MemChecker()
 void MemChecker::TraceDelta(const char *message)
 {
 	l_long delta = CheckDelta();
-	if ( delta > 0 ) {
+	if ( delta != 0 ) {
 		char msgbuf[1024] = {'\0'};
 		if (message) {
 			SysLog::WriteToStderr( message, strlen(message));

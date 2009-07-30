@@ -67,12 +67,6 @@ public:
 		: PoolAllocator(poolid, poolSize, maxKindOfBucket) TrackLockerInit(fCurrLockerId) {}
 	//! destroy a pool only if its empty, i.e. all allocated bytes are freed
 	virtual ~MTPoolAllocator() { }
-	//! implement hook for freeing memory
-	virtual inline void Free(void *vp) {
-		TrackLocker(fCurrLockerId);
-		PoolAllocator::Free(vp);
-	}
-
 protected:
 	TrackLockerDef(fCurrLockerId);
 	//!implement hook for allocating memory using bucketing
@@ -80,6 +74,12 @@ protected:
 		TrackLocker(fCurrLockerId);
 		return PoolAllocator::Alloc(allocSize);
 	}
+	//! implement hook for freeing memory
+	virtual inline void Free(void *vp) {
+		TrackLocker(fCurrLockerId);
+		PoolAllocator::Free(vp);
+	}
+
 };
 
 //------------- Utilities for Memory Tracking (multi threaded) --------------

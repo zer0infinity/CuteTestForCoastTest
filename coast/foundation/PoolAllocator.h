@@ -71,8 +71,6 @@ public:
 	PoolAllocator(long poolid, u_long poolSize = 1024, u_long maxKindOfBucket = 10);
 	//! destroy a pool only if its empty, i.e. all allocated bytes are freed
 	virtual ~PoolAllocator();
-	//! implement hook for freeing memory
-	virtual void  Free(void *vp);
 	/*! Hook to allow allocators to optimize allocation of string buffers for example.
 		\param size requested memory size
 		\return optimal (maximum) number of bytes which fit into the internal bucket */
@@ -100,6 +98,8 @@ protected:
 
 	//!implement hook for allocating memory using bucketing
 	virtual void *Alloc(u_long allocSize);
+	//! implement hook for freeing memory
+	virtual void  Free(void *vp);
 
 	//auxiliary methods for bucket handling
 	MemoryHeader *RemoveHeaderFromBucket(PoolBucket *bucket);
