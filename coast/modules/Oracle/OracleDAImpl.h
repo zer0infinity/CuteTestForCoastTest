@@ -219,14 +219,12 @@ public:
 private:
 	bool ConnectOracleUser( const char *name, const char *pw );
 
-	OracleStatement::ObjectType GetSPDescription( String &command, Anything &desc, const String &strReturnName, OracleConnection *pConnection );
-	bool BindSPVariables( Anything &desc, ParameterMapper *pmapIn, ResultMapper *pmapOut, OracleStatement &aStmt,
+	bool BindSPVariables( ROAnything desc, ParameterMapper *pmapIn, ResultMapper *pmapOut, OracleStatement &aStmt,
 						  Context &ctx );
 
 	bool DoPrepareSQL( String &command, Context &ctx, ParameterMapper *in );
 	bool DoPrepareSP( String &command, Context &ctx, ParameterMapper *in );
 
-	String ConstructSPStr( String const &command, bool pIsFunction, Anything const &desc );
 	void ProcessResultSet( OracleResultset &aRSet, ParameterMapper *& in, Context &ctx, ResultMapper *& out,
 						   String strResultPrefix );
 

@@ -34,15 +34,20 @@ public:
 	typedef std::auto_ptr<OracleConnection> OracleConnectionPtr;
 
 	enum Status {
-		//! state if constructor failed and connection can not be used
-		eUnitialized,
-		//! signals that all handles were allocated successfully
-		eHandlesAllocated,
-		//! server attached/connected
-		eServerAttached,
-		//! user authenticated, ready to execute statements
-		eSessionValid,
+		eUnitialized, //!< state if constructor failed and connection can not be used
+		eHandlesAllocated, //!< signals that all handles were allocated successfully
+		eServerAttached, //!< server attached/connected
+		eSessionValid, //!< user authenticated, ready to execute statements
 	};
+
+	//! Specify pseudo object type of a statement
+	enum ObjectType {
+		TYPE_UNK = OCI_PTYPE_UNK, //!< unknown type
+		TYPE_PROC = OCI_PTYPE_PROC, //!< procedure type
+		TYPE_FUNC = OCI_PTYPE_FUNC, //!< function type
+		TYPE_SIMPLE = 177, //!< simple query type, like select, update etc
+	};
+
 private:
 	//! track the connection status
 	Status fStatus;
@@ -58,7 +63,7 @@ private:
 	UsrHandleType fUsrhp;
 
 	OracleConnection();
-	OracleConnection(const OracleConnection &);
+	OracleConnection( const OracleConnection & );
 public:
 	/*! Main construction entry point
 	 * @param rEnv the surrounding OracleEnvironment which was used to create us
@@ -100,8 +105,11 @@ public:
 	 * @param roaSPDescription Needs to be supplied if the statement is a stored procedure or function. This data is needed to supply the correct parameter names and types.
 	 * @return newly created OracelStatment in case of success
 	 */
-	OracleStatement *createStatement( String const &strStatement, long lPrefetchRows, ROAnything roaSPDescription =
-										  ROAnything() );
+	OracleStatement *createStatement( String strStatement, long lPrefetchRows, OracleConnection::ObjectType aObjType = OracleConnection::TYPE_SIMPLE, String strReturnName = String() );
+
+	ObjectType GetSPDescription( String &command, Anything &desc, const String &strReturnName );
+
+	String ConstructSPStr( String const &command, bool pIsFunction, ROAnything desc );
 
 	/*! access OCIError handle
 	 *

@@ -86,14 +86,6 @@ public:
 		STMT_CALL = OCI_STMT_CALL,      //!< corresponds to kpu call
 	};
 
-	//! Specify pseudo object type of a statement
-	enum ObjectType {
-		TYPE_UNK = OCI_PTYPE_UNK, //!< unknown type
-		TYPE_PROC = OCI_PTYPE_PROC, //!< procedure type
-		TYPE_FUNC = OCI_PTYPE_FUNC, //!< function  type
-		TYPE_SIMPLE = 177, //!< simple query type, like select, update etc
-	};
-
 	//! Type to bind parameter
 	enum BindType {
 		INTERNAL,//!< Use type of parameter description as bind type
@@ -157,6 +149,10 @@ public:
 	StmtType getStatementType() const {
 		return fStmtType;
 	}
+	String getStatement() const {
+		return fStmt;
+	}
+
 	void setPrefetchRows( long lPrefetchRows );
 	unsigned long getUpdateCount() const;
 

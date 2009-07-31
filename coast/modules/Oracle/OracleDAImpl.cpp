@@ -23,7 +23,6 @@
 #include "AnyIterators.h"
 
 #include <limits>
-#include <algorithm>
 
 //--- c-library modules used ---------------------------------------------------
 #include <cstring>
@@ -193,19 +192,14 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 					} else if ( DoPrepareSP( command, ctx, in ) ) {
 						Trace("STORED PROCEDURE IS [" << command << "]");
 						try {
-							MetaThing desc;
 							String strReturnName;
 							in->Get( "Return", strReturnName, ctx );
-							OracleStatement::ObjectType aStmtType ( GetSPDescription( command, desc, strReturnName, pConnection ) );
-							command = ConstructSPStr( command, aStmtType == OracleStatement::TYPE_FUNC, desc );
-							Trace(String("prepare stored procedure/function: ") << command);
-
-							OracleStatementPtr aStmt( pConnection->createStatement( command, lPrefetchRows, desc ) );
+							OracleStatementPtr aStmt( pConnection->createStatement( command, lPrefetchRows, OracleConnection::TYPE_UNK, strReturnName ) );
 
 							Trace("statement status:" << (long)aStmt->status());
 							if ( aStmt.get() && aStmt->status() == OracleStatement::PREPARED ) {
-								out->Put( "Query", command, ctx );
-								if ( BindSPVariables( desc, in, out, *aStmt.get(), ctx ) ) {
+								out->Put( "Query", aStmt->getStatement(), ctx );
+								if ( BindSPVariables( aStmt->GetOutputDescription(), in, out, *aStmt.get(), ctx ) ) {
 									Trace("executing statement");
 									OracleStatement::Status status = aStmt->execute( OracleStatement::EXEC_DEFAULT );
 									switch ( status ) {
@@ -214,7 +208,7 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 											break;
 										case OracleStatement::UPDATE_COUNT_AVAILABLE: {
 											Trace("UPDATE_COUNT_AVAILABLE")
-											AnyExtensions::Iterator<ROAnything> aAnyIter( desc );
+											AnyExtensions::Iterator<ROAnything> aAnyIter( aStmt->GetOutputDescription() );
 											ROAnything roaCol;
 											while ( aAnyIter.Next( roaCol ) ) {
 												long lOraColIdx( roaCol["Idx"].AsLong() );
@@ -303,181 +297,7 @@ void OracleDAImpl::Error( Context &ctx, ResultMapper *pResultMapper, String str 
 	}
 }
 
-OracleStatement::ObjectType OracleDAImpl::GetSPDescription( String &command, Anything &desc, const String &strReturnName,
-		OracleConnection *pConnection )
-{
-	StartTrace(OracleDAImpl.GetSPDescription);
-	// returns array of element descriptions: each description is
-	// an Anything array with 4 entries:
-	// name of the column, type of the data, length of the data in bytes, scale
-
-	String strErr( "GetSPDescription: " );
-
-	MemChecker aCheckerLocal( "OracleDAImpl.GetSPDescription", pConnection->getEnvironment().getAllocator() );
-	MemChecker aCheckerGlobal( "OracleDAImpl.GetSPDescription", OracleEnvironment::getGlobalEnv().getAllocator() );
-
-	sword attrStat;
-	DscHandleType aDschp;
-	if ( pConnection->checkError( ( attrStat = OCIHandleAlloc( pConnection->getEnvironment().EnvHandle(),
-									aDschp.getVoidAddr(), OCI_HTYPE_DESCRIBE, 0, 0 ) ) ) ) {
-		throw OracleException( *pConnection, attrStat );
-	}
-	Trace("after HandleAlloc, local allocator:" << (long)pConnection->getEnvironment().getAllocator());
-	Trace("after HandleAlloc, global allocator:" << (long)OracleEnvironment::getGlobalEnv().getAllocator());
-
-	text const *objptr = reinterpret_cast<const text *> ( (const char *) command );
-	attrStat = OCIDescribeAny( pConnection->SvcHandle(), pConnection->ErrorHandle(), (dvoid *) objptr, (ub4) strlen(
-								   (char *) objptr ), OCI_OTYPE_NAME, 0, OCI_PTYPE_UNK, aDschp.getHandle() );
-	Trace("status after DESCRIBEANY::OCI_PTYPE_UNK: " << (long)attrStat)
-	if ( pConnection->checkError( attrStat, strErr ) ) {
-		strErr << "\n" << command << " is neither a stored procedure nor a function";
-		throw OracleException( *pConnection, strErr );
-	}
-
-	OracleStatement::ObjectType aStmtType( OracleStatement::TYPE_UNK );
-	OCIParam *parmh( 0 );
-	ub1 ubFuncType( 0 );
-	Trace("get the parameter handle")
-	attrStat = OCIAttrGet( aDschp.getHandle(), OCI_HTYPE_DESCRIBE, (dvoid *) &parmh, 0, OCI_ATTR_PARAM,
-						   pConnection->ErrorHandle() );
-	Trace("status after OCI_HTYPE_DESCRIBE::OCI_ATTR_PARAM: " << (long)attrStat);
-	if ( pConnection->checkError( attrStat ) ) {
-		throw OracleException( *pConnection, attrStat );
-	}
-	attrStat
-	= OCIAttrGet( parmh, OCI_DTYPE_PARAM, (dvoid *) &ubFuncType, 0, OCI_ATTR_PTYPE, pConnection->ErrorHandle() );
-	Trace("status after OCI_DTYPE_PARAM::OCI_ATTR_PTYPE: " << (long)attrStat << " funcType:" << (long)ubFuncType);
-	if ( pConnection->checkError( attrStat ) ) {
-		throw OracleException( *pConnection, attrStat );
-	}
-	aStmtType = (OracleStatement::ObjectType)ubFuncType;
-	bool bIsFunction = ( ubFuncType == OCI_PTYPE_FUNC );
-
-	Trace("get the number of arguments and the arg list for stored " << (bIsFunction ? "function" : "procedure"))
-	OCIParam *arglst( 0 );
-	ub2 numargs = 0;
-	if ( pConnection->checkError( ( attrStat = OCIAttrGet( (dvoid *) parmh, OCI_DTYPE_PARAM, (dvoid *) &arglst,
-									(ub4 *) 0, OCI_ATTR_LIST_ARGUMENTS, pConnection->ErrorHandle() ) ) ) ) {
-		throw OracleException( *pConnection, attrStat );
-	}
-	if ( pConnection->checkError( ( attrStat = OCIAttrGet( (dvoid *) arglst, OCI_DTYPE_PARAM, (dvoid *) &numargs,
-									(ub4 *) 0, OCI_ATTR_NUM_PARAMS, pConnection->ErrorHandle() ) ) ) ) {
-		throw OracleException( *pConnection, attrStat );
-	}
-	Trace(String("number of arguments: ") << numargs);
-
-	OCIParam *arg( 0 );
-	text *name;
-	ub4 namelen;
-	ub2 dtype;
-	OCITypeParamMode iomode;
-	ub4 data_len;
-
-	// For a procedure, we begin with i = 1; for a function, we begin with i = 0.
-	int start = 0;
-	int end = numargs;
-	if ( !bIsFunction ) {
-		++start;
-		++end;
-	}
-
-	for ( int i = start; i < end; ++i ) {
-		if ( pConnection->checkError( ( attrStat = OCIParamGet( (dvoid *) arglst, OCI_DTYPE_PARAM,
-										pConnection->ErrorHandle(), (dvoid **) &arg, (ub4) i ) ) ) ) {
-			throw OracleException( *pConnection, attrStat );
-		}
-		namelen = 0;
-		name = 0;
-		data_len = 0;
-
-		if ( pConnection->checkError( ( attrStat = OCIAttrGet( (dvoid *) arg, OCI_DTYPE_PARAM, (dvoid *) &dtype,
-										(ub4 *) 0, OCI_ATTR_DATA_TYPE, pConnection->ErrorHandle() ) ) ) ) {
-			throw OracleException( *pConnection, attrStat );
-		}
-		Trace("Data type: " << dtype)
-
-		if ( pConnection->checkError( ( attrStat = OCIAttrGet( (dvoid *) arg, OCI_DTYPE_PARAM, (dvoid *) &name,
-										(ub4 *) &namelen, OCI_ATTR_NAME, pConnection->ErrorHandle() ) ) ) ) {
-			throw OracleException( *pConnection, attrStat );
-		}
-		String strName( (char *) name, namelen );
-		// the first param of a function is the return param
-		if ( bIsFunction && i == start ) {
-			Trace("Overriding return param name");
-			strName = command;
-			if ( strReturnName.Length() ) {
-				strName = strReturnName;
-			}
-		}
-		Trace("Name: " << strName)
-
-		// 0 = IN (OCI_TYPEPARAM_IN), 1 = OUT (OCI_TYPEPARAM_OUT), 2 = IN/OUT (OCI_TYPEPARAM_INOUT)
-		if ( pConnection->checkError( ( attrStat = OCIAttrGet( (dvoid *) arg, OCI_DTYPE_PARAM, (dvoid *) &iomode,
-										(ub4 *) 0, OCI_ATTR_IOMODE, pConnection->ErrorHandle() ) ) ) ) {
-			throw OracleException( *pConnection, attrStat );
-		}
-		Trace("IO type: " << iomode)
-
-		if ( pConnection->checkError( ( attrStat = OCIAttrGet( (dvoid *) arg, OCI_DTYPE_PARAM, (dvoid *) &data_len,
-										(ub4 *) 0, OCI_ATTR_DATA_SIZE, pConnection->ErrorHandle() ) ) ) ) {
-			throw OracleException( *pConnection, attrStat );
-		}
-		Trace("Size: " << (int)data_len)
-
-		Anything param;
-		param["Name"] = strName;
-		param["Type"] = dtype;
-		param["Length"] = (int) data_len;
-		param["IoMode"] = iomode;
-		param["Idx"] = (long) ( bIsFunction ? i + 1 : i );
-		desc.Append( param );
-		if ( pConnection->checkError( ( attrStat = OCIDescriptorFree( arg, OCI_DTYPE_PARAM ) ) ) ) {
-			throw OracleException( *pConnection, attrStat );
-		}
-	}
-
-	TraceAny(desc, "parameter description");
-	return aStmtType;
-}
-
-/*! <b>Simple functor to create stored procedure query string from known parameter information</b>
- */
-struct ConstructPlSql {
-	//! reference to returned String
-	String &fStr;
-	/*! Constructor taking a String reference as argument
-	 * @param str String reference to finally contain generated stored procedure string
-	 */
-	ConstructPlSql( String &str ) :
-		fStr( str ) {
-	}
-	/*! main functor working hook
-	 * @param anyParam Anything describing the current parameter
-	 */
-	void operator()( const Anything &anyParam ) {
-		if ( fStr.Length() ) {
-			fStr.Append( ',' );
-		}
-		fStr.Append( ':' ).Append( anyParam["Name"].AsString() );
-	}
-};
-
-String OracleDAImpl::ConstructSPStr( String const &command, bool pIsFunction, Anything const &desc )
-{
-	String plsql, strParams;
-	plsql << "BEGIN ";
-	Anything_const_iterator begin( desc.begin() );
-	if ( pIsFunction ) {
-		plsql << ":" << ( *begin ).At( "Name" ).AsString() << " := ";
-		++begin;
-	}
-	std::for_each( begin, desc.end(), ConstructPlSql( strParams ) );
-	plsql << command << "(" << strParams << "); END;";
-	StatTrace(OracleDAImpl.ConstructSPStr, "SP string [" << plsql << "]", Storage::Current());
-	return plsql;
-}
-
-bool OracleDAImpl::BindSPVariables( Anything &desc, ParameterMapper *pmapIn, ResultMapper *pmapOut,
+bool OracleDAImpl::BindSPVariables( ROAnything desc, ParameterMapper *pmapIn, ResultMapper *pmapOut,
 									OracleStatement &aStmt, Context &ctx )
 {
 	StartTrace(OracleDAImpl.BindSPVariables);
