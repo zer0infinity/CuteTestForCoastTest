@@ -12,6 +12,7 @@
 //--- modules used in the interface
 #include "config_coastoracle.h"
 #include "Anything.h"
+#include "Threads.h"
 #include "OciAutoHandle.h"
 #include <memory>
 
@@ -37,7 +38,8 @@ public:
 		eUnitialized, //!< state if constructor failed and connection can not be used
 		eHandlesAllocated, //!< signals that all handles were allocated successfully
 		eServerAttached, //!< server attached/connected
-		eSessionValid, //!< user authenticated, ready to execute statements
+		eSessionValid,
+		//!< user authenticated, ready to execute statements
 	};
 
 	//! Specify pseudo object type of a statement
@@ -45,7 +47,8 @@ public:
 		TYPE_UNK = OCI_PTYPE_UNK, //!< unknown type
 		TYPE_PROC = OCI_PTYPE_PROC, //!< procedure type
 		TYPE_FUNC = OCI_PTYPE_FUNC, //!< function type
-		TYPE_SIMPLE = 177, //!< simple query type, like select, update etc
+		TYPE_SIMPLE = 177,
+		//!< simple query type, like select, update etc
 	};
 
 private:
@@ -61,6 +64,10 @@ private:
 	SvcHandleType fSvchp;
 	//! OCI user session handle
 	UsrHandleType fUsrhp;
+
+	static MetaThing fgDescriptionCache;
+	static ROAnything fgDescriptionCacheRO;
+	static RWLock fgDescriptionLock;
 
 	OracleConnection();
 	OracleConnection( const OracleConnection & );
@@ -105,11 +112,8 @@ public:
 	 * @param roaSPDescription Needs to be supplied if the statement is a stored procedure or function. This data is needed to supply the correct parameter names and types.
 	 * @return newly created OracelStatment in case of success
 	 */
-	OracleStatement *createStatement( String strStatement, long lPrefetchRows, OracleConnection::ObjectType aObjType = OracleConnection::TYPE_SIMPLE, String strReturnName = String() );
-
-	ObjectType GetSPDescription( String &command, Anything &desc, const String &strReturnName );
-
-	String ConstructSPStr( String const &command, bool pIsFunction, ROAnything desc );
+	OracleStatement *createStatement( String strStatement, long lPrefetchRows, OracleConnection::ObjectType aObjType =
+										  OracleConnection::TYPE_SIMPLE, String strReturnName = String() );
 
 	/*! access OCIError handle
 	 *
@@ -148,6 +152,12 @@ public:
 	 * @return true in case there was an error
 	 */
 	bool checkError( sword status );
+
+private:
+	ObjectType GetSPDescription( const String &command, ROAnything &desc );
+	ObjectType ReadSPDescriptionFromDB( const String &command, Anything &desc );
+
+	String ConstructSPStr( String const &command, bool pIsFunction, ROAnything desc, const String &strReturnName );
 };
 
 #endif /* ORACLECONNECTION_H_ */

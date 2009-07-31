@@ -15,6 +15,9 @@
 #include "Dbg.h"
 
 #include <string.h>	// for strlen
+MetaThing OracleConnection::fgDescriptionCache( Storage::Global() );
+ROAnything OracleConnection::fgDescriptionCacheRO( fgDescriptionCache );
+RWLock OracleConnection::fgDescriptionLock( "OracleDescriptorLock", Storage::Global() );
 
 OracleConnection::OracleConnection( OracleEnvironment &rEnv ) :
 	fStatus( eUnitialized ), fOracleEnv( rEnv ), fErrhp(), fSrvhp(), fSvchp(), fUsrhp()
@@ -30,20 +33,20 @@ OracleConnection::OracleConnection( OracleEnvironment &rEnv ) :
 
 	String strErr( 128L );
 	// --- alloc service context handle
-	if ( bCont && checkError( OCIHandleAlloc( fOracleEnv.EnvHandle(), fSvchp.getVoidAddr(), (ub4) OCI_HTYPE_SVCCTX, (size_t) 0,
-							  (dvoid **) 0 ), strErr ) ) {
+	if ( bCont && checkError( OCIHandleAlloc( fOracleEnv.EnvHandle(), fSvchp.getVoidAddr(), (ub4) OCI_HTYPE_SVCCTX,
+							  (size_t) 0, (dvoid **) 0 ), strErr ) ) {
 		SysLog::Error( String( "FAILED: OCIHandleAlloc(): alloc service context handle failed (" ) << strErr << ")" );
 		bCont = false;
 	}
 	// --- alloc server connection handle
-	if ( bCont && checkError( OCIHandleAlloc( fOracleEnv.EnvHandle(), fSrvhp.getVoidAddr(), (ub4) OCI_HTYPE_SERVER, (size_t) 0,
-							  (dvoid **) 0 ), strErr ) ) {
+	if ( bCont && checkError( OCIHandleAlloc( fOracleEnv.EnvHandle(), fSrvhp.getVoidAddr(), (ub4) OCI_HTYPE_SERVER,
+							  (size_t) 0, (dvoid **) 0 ), strErr ) ) {
 		SysLog::Error( String( "FAILED: OCIHandleAlloc(): alloc server connection handle failed (" ) << strErr << ")" );
 		bCont = false;
 	}
 	// --- alloc user session handle
-	if ( bCont && checkError( OCIHandleAlloc( fOracleEnv.EnvHandle(), fUsrhp.getVoidAddr(), (ub4) OCI_HTYPE_SESSION, (size_t) 0,
-							  (dvoid **) 0 ), strErr ) ) {
+	if ( bCont && checkError( OCIHandleAlloc( fOracleEnv.EnvHandle(), fUsrhp.getVoidAddr(), (ub4) OCI_HTYPE_SESSION,
+							  (size_t) 0, (dvoid **) 0 ), strErr ) ) {
 		SysLog::Error( String( "FAILED: OCIHandleAlloc(): alloc user session handle failed (" ) << strErr << ")" );
 		bCont = false;
 	}
@@ -150,7 +153,7 @@ void OracleConnection::Close()
 
 bool OracleConnection::checkError( sword status )
 {
-	bool bRet(true);
+	bool bRet( true );
 	if ( status == OCI_SUCCESS || status == OCI_NO_DATA ) {
 		bRet = false;
 	}
@@ -215,13 +218,13 @@ OracleStatement *OracleConnection::createStatement( String strStatement, long lP
 		OracleConnection::ObjectType aObjType, String strReturnName )
 {
 	StartTrace1(OracleConnection.createStatement, "sp name [" << strStatement << "]");
-	MetaThing desc;
+	ROAnything desc;
 	if ( aObjType == OracleConnection::TYPE_UNK ) {
 		try {
-			aObjType = GetSPDescription( strStatement, desc, strReturnName );
-			strStatement = ConstructSPStr( strStatement, aObjType == OracleConnection::TYPE_FUNC, desc );
-			Trace(String("prepared stored procedure/function: ") << strStatement);
-		} catch ( OracleException &ex) {
+			aObjType = GetSPDescription( strStatement, desc );
+			strStatement = ConstructSPStr( strStatement, aObjType == OracleConnection::TYPE_FUNC, desc, strReturnName );
+			Trace(String("prepared stored ") << ( (aObjType == OracleConnection::TYPE_FUNC) ? "function: " : "procedure: ") << strStatement);
+		} catch ( OracleException &ex ) {
 			Trace("caught exception but throwing again...");
 			throw ex;
 		}
@@ -230,36 +233,68 @@ OracleStatement *OracleConnection::createStatement( String strStatement, long lP
 	if ( pStmt ) {
 		pStmt->setPrefetchRows( lPrefetchRows );
 		if ( pStmt->Prepare() && pStmt->getStatementType() == OracleStatement::STMT_BEGIN ) {
-			pStmt->setSPDescription( desc );
+			pStmt->setSPDescription( desc, strReturnName );
 		}
 	}
 	return pStmt;
 }
 
-OracleConnection::ObjectType OracleConnection::GetSPDescription( String &command, Anything &desc, const String &strReturnName )
+OracleConnection::ObjectType OracleConnection::GetSPDescription( const String &command, ROAnything &desc )
 {
 	StartTrace(OracleConnection.GetSPDescription);
-	// returns array of element descriptions: each description is
-	// an Anything array with 4 entries:
-	// name of the column, type of the data, length of the data in bytes, scale
 
-	String strErr( "GetSPDescription: " );
+	ObjectType aObjType( TYPE_UNK );
+	ROAnything roaCacheEntry;
+	{
+		LockUnlockEntry aLockEntry( fgDescriptionLock, RWLock::eReading );
+		if ( fgDescriptionCacheRO.LookupPath( roaCacheEntry, command ) ) {
+			desc = roaCacheEntry["description"];
+			aObjType = (ObjectType) roaCacheEntry["type"].AsLong( (long) OracleConnection::TYPE_UNK );
+			TraceAny(roaCacheEntry, "entry found in cache");
+			return aObjType;
+		}
+	}
+	LockUnlockEntry aLockEntry( fgDescriptionLock, RWLock::eWriting );
+	// check if someone was faster and already stored the description
+	if ( fgDescriptionCacheRO.LookupPath( roaCacheEntry, command ) ) {
+		desc = roaCacheEntry["description"];
+		aObjType = (ObjectType) roaCacheEntry["type"].AsLong( (long) OracleConnection::TYPE_UNK );
+		TraceAny(roaCacheEntry, "entry found in cache");
+		return aObjType;
+	}
+	MetaThing anyCacheEntry( Storage::Global() );
+	anyCacheEntry["description"] = MetaThing( Storage::Global() );
+	Anything anyDesc( anyCacheEntry["description"] );
+	aObjType = ReadSPDescriptionFromDB( command, anyDesc );
+	anyCacheEntry["type"] = (long) aObjType;
+	fgDescriptionCache[command] = anyCacheEntry;
+	desc = anyDesc;
+	TraceAny(anyCacheEntry, "new entry created into cache");
+	return aObjType;
+}
 
-	MemChecker aCheckerLocal( "OracleConnection.GetSPDescription", getEnvironment().getAllocator() );
-	MemChecker aCheckerGlobal( "OracleConnection.GetSPDescription", OracleEnvironment::getGlobalEnv().getAllocator() );
+OracleConnection::ObjectType OracleConnection::ReadSPDescriptionFromDB( const String &command, Anything &desc )
+{
+	StartTrace(OracleConnection.ReadSPDescriptionFromDB);
+
+	String strErr( "ReadSPDescriptionFromDB: " );
+
+	MemChecker aCheckerLocal( "OracleConnection.ReadSPDescriptionFromDB", getEnvironment().getAllocator() );
+	MemChecker aCheckerGlobal( "OracleConnection.ReadSPDescriptionFromDB",
+							   OracleEnvironment::getGlobalEnv().getAllocator() );
 
 	sword attrStat;
 	DscHandleType aDschp;
-	if ( checkError( ( attrStat = OCIHandleAlloc( getEnvironment().EnvHandle(),
-								  aDschp.getVoidAddr(), OCI_HTYPE_DESCRIBE, 0, 0 ) ) ) ) {
+	if ( checkError( ( attrStat = OCIHandleAlloc( getEnvironment().EnvHandle(), aDschp.getVoidAddr(),
+								  OCI_HTYPE_DESCRIBE, 0, 0 ) ) ) ) {
 		throw OracleException( *this, attrStat );
 	}
 	Trace("after HandleAlloc, local allocator:" << (long)getEnvironment().getAllocator());
 	Trace("after HandleAlloc, global allocator:" << (long)OracleEnvironment::getGlobalEnv().getAllocator());
 
 	text const *objptr = reinterpret_cast<const text *> ( (const char *) command );
-	attrStat = OCIDescribeAny( SvcHandle(), ErrorHandle(), (dvoid *) objptr, (ub4) strlen(
-								   (char *) objptr ), OCI_OTYPE_NAME, 0, OCI_PTYPE_UNK, aDschp.getHandle() );
+	attrStat = OCIDescribeAny( SvcHandle(), ErrorHandle(), (dvoid *) objptr, (ub4) strlen( (char *) objptr ),
+							   OCI_OTYPE_NAME, 0, OCI_PTYPE_UNK, aDschp.getHandle() );
 	Trace("status after DESCRIBEANY::OCI_PTYPE_UNK: " << (long)attrStat)
 	if ( checkError( attrStat, strErr ) ) {
 		strErr << "{" << command << " is neither a stored procedure nor a function}";
@@ -270,30 +305,28 @@ OracleConnection::ObjectType OracleConnection::GetSPDescription( String &command
 	OCIParam *parmh( 0 );
 	ub1 ubFuncType( 0 );
 	Trace("get the parameter handle")
-	attrStat = OCIAttrGet( aDschp.getHandle(), OCI_HTYPE_DESCRIBE, (dvoid *) &parmh, 0, OCI_ATTR_PARAM,
-						   ErrorHandle() );
+	attrStat = OCIAttrGet( aDschp.getHandle(), OCI_HTYPE_DESCRIBE, (dvoid *) &parmh, 0, OCI_ATTR_PARAM, ErrorHandle() );
 	Trace("status after OCI_HTYPE_DESCRIBE::OCI_ATTR_PARAM: " << (long)attrStat);
 	if ( checkError( attrStat ) ) {
 		throw OracleException( *this, attrStat );
 	}
-	attrStat
-	= OCIAttrGet( parmh, OCI_DTYPE_PARAM, (dvoid *) &ubFuncType, 0, OCI_ATTR_PTYPE, ErrorHandle() );
+	attrStat = OCIAttrGet( parmh, OCI_DTYPE_PARAM, (dvoid *) &ubFuncType, 0, OCI_ATTR_PTYPE, ErrorHandle() );
 	Trace("status after OCI_DTYPE_PARAM::OCI_ATTR_PTYPE: " << (long)attrStat << " funcType:" << (long)ubFuncType);
 	if ( checkError( attrStat ) ) {
 		throw OracleException( *this, attrStat );
 	}
-	aStmtType = (ObjectType)ubFuncType;
+	aStmtType = (ObjectType) ubFuncType;
 	bool bIsFunction = ( ubFuncType == OCI_PTYPE_FUNC );
 
 	Trace("get the number of arguments and the arg list for stored " << (bIsFunction ? "function" : "procedure"))
 	OCIParam *arglst( 0 );
 	ub2 numargs = 0;
-	if ( checkError( ( attrStat = OCIAttrGet( (dvoid *) parmh, OCI_DTYPE_PARAM, (dvoid *) &arglst,
-								  (ub4 *) 0, OCI_ATTR_LIST_ARGUMENTS, ErrorHandle() ) ) ) ) {
+	if ( checkError( ( attrStat = OCIAttrGet( (dvoid *) parmh, OCI_DTYPE_PARAM, (dvoid *) &arglst, (ub4 *) 0,
+								  OCI_ATTR_LIST_ARGUMENTS, ErrorHandle() ) ) ) ) {
 		throw OracleException( *this, attrStat );
 	}
-	if ( checkError( ( attrStat = OCIAttrGet( (dvoid *) arglst, OCI_DTYPE_PARAM, (dvoid *) &numargs,
-								  (ub4 *) 0, OCI_ATTR_NUM_PARAMS, ErrorHandle() ) ) ) ) {
+	if ( checkError( ( attrStat = OCIAttrGet( (dvoid *) arglst, OCI_DTYPE_PARAM, (dvoid *) &numargs, (ub4 *) 0,
+								  OCI_ATTR_NUM_PARAMS, ErrorHandle() ) ) ) ) {
 		throw OracleException( *this, attrStat );
 	}
 	Trace(String("number of arguments: ") << numargs);
@@ -314,44 +347,40 @@ OracleConnection::ObjectType OracleConnection::GetSPDescription( String &command
 	}
 
 	for ( int i = start; i < end; ++i ) {
-		if ( checkError( ( attrStat = OCIParamGet( (dvoid *) arglst, OCI_DTYPE_PARAM,
-									  ErrorHandle(), (dvoid **) &arg, (ub4) i ) ) ) ) {
+		if ( checkError( ( attrStat = OCIParamGet( (dvoid *) arglst, OCI_DTYPE_PARAM, ErrorHandle(), (dvoid **) &arg,
+									  (ub4) i ) ) ) ) {
 			throw OracleException( *this, attrStat );
 		}
 		namelen = 0;
 		name = 0;
 		data_len = 0;
 
-		if ( checkError( ( attrStat = OCIAttrGet( (dvoid *) arg, OCI_DTYPE_PARAM, (dvoid *) &dtype,
-									  (ub4 *) 0, OCI_ATTR_DATA_TYPE, ErrorHandle() ) ) ) ) {
+		if ( checkError( ( attrStat = OCIAttrGet( (dvoid *) arg, OCI_DTYPE_PARAM, (dvoid *) &dtype, (ub4 *) 0,
+									  OCI_ATTR_DATA_TYPE, ErrorHandle() ) ) ) ) {
 			throw OracleException( *this, attrStat );
 		}
 		Trace("Data type: " << dtype)
 
-		if ( checkError( ( attrStat = OCIAttrGet( (dvoid *) arg, OCI_DTYPE_PARAM, (dvoid *) &name,
-									  (ub4 *) &namelen, OCI_ATTR_NAME, ErrorHandle() ) ) ) ) {
+		if ( checkError( ( attrStat = OCIAttrGet( (dvoid *) arg, OCI_DTYPE_PARAM, (dvoid *) &name, (ub4 *) &namelen,
+									  OCI_ATTR_NAME, ErrorHandle() ) ) ) ) {
 			throw OracleException( *this, attrStat );
 		}
 		String strName( (char *) name, namelen );
 		// the first param of a function is the return param
 		if ( bIsFunction && i == start ) {
-			Trace("Overriding return param name");
 			strName = command;
-			if ( strReturnName.Length() ) {
-				strName = strReturnName;
-			}
+			Trace("Name: " << strName)
 		}
-		Trace("Name: " << strName)
 
 		// 0 = IN (OCI_TYPEPARAM_IN), 1 = OUT (OCI_TYPEPARAM_OUT), 2 = IN/OUT (OCI_TYPEPARAM_INOUT)
-		if ( checkError( ( attrStat = OCIAttrGet( (dvoid *) arg, OCI_DTYPE_PARAM, (dvoid *) &iomode,
-									  (ub4 *) 0, OCI_ATTR_IOMODE, ErrorHandle() ) ) ) ) {
+		if ( checkError( ( attrStat = OCIAttrGet( (dvoid *) arg, OCI_DTYPE_PARAM, (dvoid *) &iomode, (ub4 *) 0,
+									  OCI_ATTR_IOMODE, ErrorHandle() ) ) ) ) {
 			throw OracleException( *this, attrStat );
 		}
 		Trace("IO type: " << iomode)
 
-		if ( checkError( ( attrStat = OCIAttrGet( (dvoid *) arg, OCI_DTYPE_PARAM, (dvoid *) &data_len,
-									  (ub4 *) 0, OCI_ATTR_DATA_SIZE, ErrorHandle() ) ) ) ) {
+		if ( checkError( ( attrStat = OCIAttrGet( (dvoid *) arg, OCI_DTYPE_PARAM, (dvoid *) &data_len, (ub4 *) 0,
+									  OCI_ATTR_DATA_SIZE, ErrorHandle() ) ) ) ) {
 			throw OracleException( *this, attrStat );
 		}
 		Trace("Size: " << (int)data_len)
@@ -372,17 +401,18 @@ OracleConnection::ObjectType OracleConnection::GetSPDescription( String &command
 	return aStmtType;
 }
 
-String OracleConnection::ConstructSPStr( String const &command, bool pIsFunction, ROAnything desc )
+String OracleConnection::ConstructSPStr( String const &command, bool pIsFunction, ROAnything desc,
+		const String &strReturnName )
 {
 	String plsql, strParams;
 	plsql << "BEGIN ";
-	AnyExtensions::Iterator<ROAnything> aIter(desc);
+	AnyExtensions::Iterator<ROAnything> aIter( desc );
 	ROAnything roaEntry;
 	if ( pIsFunction ) {
-		aIter.Next(roaEntry);
-		plsql << ":" << roaEntry["Name"].AsString() << " := ";
+		aIter.Next( roaEntry );
+		plsql << ":" << ( strReturnName.Length() ? strReturnName : roaEntry["Name"].AsString() ) << " := ";
 	}
-	while ( aIter.Next(roaEntry)) {
+	while ( aIter.Next( roaEntry ) ) {
 		if ( strParams.Length() ) {
 			strParams.Append( ',' );
 		}

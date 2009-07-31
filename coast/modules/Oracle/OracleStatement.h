@@ -101,12 +101,13 @@ public:
 private:
 	OracleStatement();
 	OracleConnection *fpConnection;
-	String fStmt;
+	String fStmt, fFuncReturnName;
 	StmtHandleType fStmthp;
 	Anything fErrorMessages;
 	Status fStatus;
 	StmtType fStmtType;
 	Anything fanyDescription;
+	ROAnything froaDescription;
 	Anything fBuffer;
 	Anything fSubStatements;
 	bool AllocHandle();
@@ -172,7 +173,7 @@ public:
 
 	ROAnything GetOutputDescription();
 	bool DefineOutputArea();
-	void setSPDescription( ROAnything roaSPDescription );
+	void setSPDescription( ROAnything roaSPDescription, const String &strReturnName );
 
 	const Anything &GetErrorMessages() const {
 		return fErrorMessages;

@@ -194,17 +194,18 @@ OracleResultset *OracleStatement::getCursor( long lColumnIndex )
 	return pResult;
 }
 
-void OracleStatement::setSPDescription( ROAnything roaSPDescription )
+void OracleStatement::setSPDescription( ROAnything roaSPDescription, const String &strReturnName )
 {
-	fanyDescription = roaSPDescription.DeepClone();
+	froaDescription = roaSPDescription;
 	fBuffer = GetOutputDescription().DeepClone();
+	fFuncReturnName = strReturnName;
 }
 
 ROAnything OracleStatement::GetOutputDescription()
 {
 	StartTrace1( OracleStatement.GetOutputDescription, "statement type " << (long)fStmtType );
 
-	if ( fanyDescription.IsNull() ) {
+	if ( froaDescription.IsNull() ) {
 		if ( getStatementType() == STMT_SELECT ) {
 			OCIError *eh( getConnection()->ErrorHandle() );
 
@@ -259,10 +260,11 @@ ROAnything OracleStatement::GetOutputDescription()
 				++counter;
 				parm_status = OCIParamGet( getHandle(), OCI_HTYPE_STMT, eh, (void **) &mypard, counter );
 			}
+			froaDescription = fanyDescription;
 		}
 	}
-	TraceAny( fanyDescription, "column descriptions (" << fanyDescription.GetSize() << ")" )
-	return ROAnything( fanyDescription );
+	TraceAny( froaDescription, "column descriptions (" << froaDescription.GetSize() << ")" )
+	return froaDescription;
 }
 
 bool OracleStatement::DefineOutputArea()
