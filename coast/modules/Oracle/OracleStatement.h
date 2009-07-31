@@ -12,6 +12,7 @@
 #include "config_coastoracle.h"
 #include "OracleConnection.h"
 #include "IFAObject.h"
+#include "AllocatorNewDelete.h"
 #include <memory>
 
 class OracleResultset;
@@ -58,7 +59,7 @@ typedef std::auto_ptr<OracleStatement> OracleStatementPtr;
  * 		using getString() or using getCursor() to process the results of a cursor type parameter\n
  * 		Please use OracleResultset::OracleResultsetPtr to automatically track destruction of the OracleResultset after use.
  */
-class OracleStatement: public IFAObject   //EXPORTDECL_COASTORACLE
+class OracleStatement: public IFAObject, public Coast::AllocatorNewDelete   //EXPORTDECL_COASTORACLE
 {
 public:
 	//! Tracking internal state of statement processing

@@ -154,7 +154,7 @@ OracleResultset *OracleStatement::getResultset()
 	StartTrace(OracleStatement.getResultset);
 	OracleResultset *pResult( 0 );
 	if ( fStatus == RESULT_SET_AVAILABLE ) {
-		pResult = new OracleResultset( *this );
+		pResult = new (Storage::Current()) OracleResultset( *this );
 	} else {
 		String strMessage( "Error - getResultset failed, no resultset available, current status is " );
 		strMessage << (long) fStatus;
@@ -180,9 +180,9 @@ OracleResultset *OracleStatement::getCursor( long lColumnIndex )
 				OCIStmt *phStmt = * ( (OCIStmt **) desc["RawBuf"].AsCharPtr() );
 				Trace("retrieved statement handle pointer &" << (long)phStmt)
 				if ( phStmt ) {
-					OracleStatement *pStmt = new OracleStatement( fpConnection, phStmt );
+					OracleStatement *pStmt = new (Storage::Current()) OracleStatement( fpConnection, phStmt );
 					fSubStatements.Append( pStmt );
-					pResult = new OracleResultset( *pStmt );
+					pResult = new (Storage::Current()) OracleResultset( *pStmt );
 				}
 				break;
 			}

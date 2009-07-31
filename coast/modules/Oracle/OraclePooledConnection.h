@@ -11,6 +11,7 @@
 
 //--- modules used in the interface
 #include "config_coastoracle.h"
+#include "AllocatorNewDelete.h"
 #include "OracleEnvironment.h"
 #include "OracleConnection.h"
 #include "ITOString.h"
@@ -24,7 +25,7 @@
  * such an object is first requested for OraclePooledConnection::Open, it will allocate the needed resources
  * like an environment and a connection which can then be used to process oracle database requests.
  */
-class EXPORTDECL_COASTORACLE OraclePooledConnection: public IFAObject
+class EXPORTDECL_COASTORACLE OraclePooledConnection: public IFAObject, public Coast::AllocatorNewDelete
 {
 	OracleEnvironment::OracleEnvironmentPtr fEnvironment;
 	OracleConnection::OracleConnectionPtr fConnection;

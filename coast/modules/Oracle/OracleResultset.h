@@ -11,6 +11,7 @@
 
 //--- modules used in the interface
 #include "config_coastoracle.h"
+#include "AllocatorNewDelete.h"
 #include "Anything.h"
 
 #include <memory>
@@ -26,7 +27,7 @@ class OracleStatement;
  * are needed to store the columns of a row. It is possible that some common parts of result row processing will
  * move into this class.
  */
-class EXPORTDECL_COASTORACLE OracleResultset
+class EXPORTDECL_COASTORACLE OracleResultset : public Coast::AllocatorNewDelete
 {
 public:
 	/*! Convenience type for automated resource management of OracleResultset instances

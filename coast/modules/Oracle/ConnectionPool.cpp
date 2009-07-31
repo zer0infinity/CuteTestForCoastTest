@@ -52,7 +52,7 @@ namespace Coast
 					fpResourcesSema = new Semaphore( nrOfConnections );
 					String server, user;
 					for ( long i = 0; i < nrOfConnections; ++i ) {
-						OraclePooledConnection *pConnection = new OraclePooledConnection( i,
+						OraclePooledConnection *pConnection = new (Storage::Global()) OraclePooledConnection( i,
 								myCfg["MemPoolSize"].AsLong( 2048L ), myCfg["MemPoolBuckets"].AsLong( 16L ) );
 						IntReleaseConnection( pConnection, server, user );
 					}

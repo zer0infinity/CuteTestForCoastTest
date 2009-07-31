@@ -11,6 +11,7 @@
 
 //--- modules used in the interface
 #include "config_coastoracle.h"
+#include "AllocatorNewDelete.h"
 #include "OciAutoHandle.h"
 #include "PoolAllocator.h"
 #include <memory>
@@ -24,7 +25,7 @@ typedef std::auto_ptr<Allocator> AllocatorPtr;
 /*!
  * This class serves as abstraction for an OCI environment. Such an environment is needed to create an OracleConnection.
  */
-class EXPORTDECL_COASTORACLE OracleEnvironment
+class EXPORTDECL_COASTORACLE OracleEnvironment : public Coast::AllocatorNewDelete
 {
 public:
 	typedef std::auto_ptr<OracleEnvironment> OracleEnvironmentPtr;
@@ -45,7 +46,7 @@ private:
 	static struct OraTerminator {
 		OracleEnvironmentPtr fEnvironment;
 		OraTerminator() {
-			fEnvironment = OracleEnvironmentPtr( new OracleEnvironment( OracleEnvironment::THREADED_MUTEXED, 64, 10240,
+			fEnvironment = OracleEnvironmentPtr( new (Storage::Global()) OracleEnvironment( OracleEnvironment::THREADED_MUTEXED, 64, 10240,
 												 16 ) );
 		}
 		~OraTerminator() {

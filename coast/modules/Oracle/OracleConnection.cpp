@@ -229,7 +229,7 @@ OracleStatement *OracleConnection::createStatement( String strStatement, long lP
 			throw ex;
 		}
 	}
-	OracleStatement *pStmt( new OracleStatement( this, strStatement ) );
+	OracleStatement *pStmt( new (Storage::Current()) OracleStatement( this, strStatement ) );
 	if ( pStmt ) {
 		pStmt->setPrefetchRows( lPrefetchRows );
 		if ( pStmt->Prepare() && pStmt->getStatementType() == OracleStatement::STMT_BEGIN ) {
