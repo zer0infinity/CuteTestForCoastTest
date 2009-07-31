@@ -9,43 +9,60 @@
 #include "OracleEnvironment.h"
 #include "OracleConnection.h"
 #include "SysLog.h"
+#include "MT_Storage.h"
 #include "Dbg.h"
 
-// set to 1 to track OCI's memory usage
+// set to 1 to track OCI's memory usage using our MemTracker infrastructure
 #if (1)
-dvoid *malloc_func(dvoid * /* ctxp */, size_t size)
+dvoid *malloc_func( void *ctxp, size_t size )
 {
-//	dvoid * ptr(malloc(size));
-	dvoid *ptr(Storage::Global()->Malloc(size));
-	StatTrace(OracleEnvironment.malloc_func, "size: " << (long)size << " ptr: &" << (long)ptr, Storage::Current());
+	Allocator *pAlloc( Storage::Global() );
+	if ( ctxp != 0 ) {
+		pAlloc = ( reinterpret_cast<OracleEnvironment *> ( ctxp ) )->getAllocator();
+	}
+	dvoid *ptr( pAlloc->Malloc( size ) );
+	StatTrace(OracleEnvironment.mem_alloc, "size: " << (long)size << " ptr: &" << (long)ptr << " allocator:" << (pAlloc == Storage::Global() ? "global" : "local") << "&" << (long)pAlloc, Storage::Current());
 	return ptr;
 }
-dvoid *realloc_func(dvoid * /* ctxp */, dvoid *ptr, size_t size)
+dvoid *realloc_func( void *ctxp, void *ptr, size_t size )
 {
-	dvoid *nptr(realloc(ptr, size));
-	StatTrace(OracleEnvironment.realloc_func, "size: " << (long)size << " oldptr: &" << (long)ptr << " new ptr: &" << (long)nptr, Storage::Current());
-	return (nptr);
+	Allocator *pAlloc( Storage::Global() );
+	if ( ctxp != 0 ) {
+		pAlloc = ( reinterpret_cast<OracleEnvironment *> ( ctxp ) )->getAllocator();
+	}
+	dvoid *nptr( realloc( ptr, size ) );
+	StatTrace(OracleEnvironment.mem_realloc, "size: " << (long)size << " oldptr: &" << (long)ptr << " new ptr: &" << (long)nptr << " allocator:" << (pAlloc == Storage::Global() ? "global" : "local") << "&" << (long)pAlloc, Storage::Current());
+	return ( nptr );
 }
-void free_func(dvoid * /* ctxp */, dvoid *ptr)
+void free_func( void *ctxp, dvoid *ptr )
 {
-	StatTrace(OracleEnvironment.free_func, "ptr: &" << (long)ptr, Storage::Current());
-//	free(ptr);
-	Storage::Global()->Free(ptr);
+	Allocator *pAlloc( Storage::Global() );
+	if ( ctxp != 0 ) {
+		pAlloc = ( reinterpret_cast<OracleEnvironment *> ( ctxp ) )->getAllocator();
+	}
+	StatTrace(OracleEnvironment.mem_free, "ptr: &" << (long)ptr << " allocator:" << (pAlloc == Storage::Global() ? "global" : "local") << "&" << (long)pAlloc, Storage::Current());
+	pAlloc->Free( ptr );
 }
+#define ctx_ptr this
 #else
 #	define	malloc_func		NULL
 #	define	realloc_func	NULL
 #	define	free_func		NULL
+#	define	ctx_ptr			NULL
 #endif
 
-OracleEnvironment::OracleEnvironment(Mode eMode) : fEnvhp()
+OracleEnvironment::OraTerminator OracleEnvironment::fgOraTerminator;
+
+OracleEnvironment::OracleEnvironment( Mode eMode, u_long ulPoolId, u_long ulPoolSize,
+									  unsigned long ulBuckets ) :
+	fEnvhp(), fMemPool( new PoolAllocator( (0xac1e << 16) | ulPoolId, ulPoolSize, ulBuckets ) )
 {
 	StartTrace(OracleEnvironment.OracleEnvironment);
 	// caution: the following memory handles supplied must allocate on Storage::Global()
 	// because memory gets allocated through them in Open and freed in Close. Throughout the
 	// lifetime of the connection, mutliple threads could share the same connection and so we
 	// must take care not to allocate on the first Thread opening the connection
-	if ( OCIEnvCreate( fEnvhp.getHandleAddr(), eMode, NULL, // context
+	if ( OCIEnvCreate( fEnvhp.getHandleAddr(), eMode, ctx_ptr, // context
 					   malloc_func, // malloc function to allocate handles and env specific memory
 					   realloc_func, // realloc function to allocate handles and env specific memory
 					   free_func, // free function to allocate handles and env specific memory
@@ -66,9 +83,9 @@ OracleEnvironment::~OracleEnvironment()
 OracleConnection *OracleEnvironment::createConnection( String const &strSrv, String const &strUsr, String const &strPwd )
 {
 	StartTrace(OracleEnvironment.createConnection);
-	OracleConnection *pConnection( new OracleConnection(*this) );
+	OracleConnection *pConnection( new OracleConnection( *this ) );
 	if ( pConnection ) {
-		if ( !pConnection->Open(strSrv, strUsr, strPwd) ) {
+		if ( !pConnection->Open( strSrv, strUsr, strPwd ) ) {
 			delete pConnection;
 			pConnection = 0;
 		}

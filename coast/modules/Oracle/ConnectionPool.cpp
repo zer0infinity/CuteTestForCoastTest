@@ -52,7 +52,8 @@ namespace Coast
 					fpResourcesSema = new Semaphore( nrOfConnections );
 					String server, user;
 					for ( long i = 0; i < nrOfConnections; ++i ) {
-						OraclePooledConnection *pConnection = new OraclePooledConnection();
+						OraclePooledConnection *pConnection = new OraclePooledConnection( i,
+								myCfg["MemPoolSize"].AsLong( 2048L ), myCfg["MemPoolBuckets"].AsLong( 16L ) );
 						IntReleaseConnection( pConnection, server, user );
 					}
 					if ( !fpPeriodicAction ) {
@@ -98,16 +99,14 @@ namespace Coast
 			return !fInitialized;
 		}
 
-		bool ConnectionPool::BorrowConnection( OraclePooledConnection *&pConnection, const String &server,
-											   const String &user )
+		bool ConnectionPool::BorrowConnection( OraclePooledConnection *&pConnection, const String &server, const String &user )
 		{
 			StartTrace(ConnectionPool.BorrowConnection);
 			LockUnlockEntry me( fStructureMutex );
 			return IntBorrowConnection( pConnection, server, user );
 		}
 
-		void ConnectionPool::ReleaseConnection( OraclePooledConnection *&pConnection, const String &server,
-												const String &user )
+		void ConnectionPool::ReleaseConnection( OraclePooledConnection *&pConnection, const String &server, const String &user )
 		{
 			StartTrace(ConnectionPool.ReleaseConnection);
 			LockUnlockEntry me( fStructureMutex );

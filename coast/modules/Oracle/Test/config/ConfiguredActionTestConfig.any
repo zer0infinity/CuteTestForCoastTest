@@ -111,7 +111,6 @@
 ######## Test specific section ########
 
 	/RunOnly {
-
 	}
 	/TestCases {
 		/IncompleteParamsTest {
@@ -305,6 +304,21 @@
 			}
 		}
 		/EmpSalaryTest {
+			/TheAction {
+				/CallDA 	SPMaxSalary
+			}
+			/Result {
+				/TmpStore {
+					/SPMaxSalary {
+						/Query	"BEGIN getempsalary(:ID,:SALARY); END;"
+						/ID			7839
+						/SALARY		5000
+						/QuerySource	"//sifs-coast1.hsr.ch:1521/orcl"
+					}
+				}
+			}
+		}
+		/EmpSalary2Test {
 			/TheAction {
 				/CallDA 	SPMaxSalary
 			}

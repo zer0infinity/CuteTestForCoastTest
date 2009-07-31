@@ -44,6 +44,7 @@
 	/OracleConnection {
 		/MainSwitch						10
 		/EnableAll						10
+		/checkError						10
 	}
 	/OraclePooledConnection {
 		/MainSwitch						10
@@ -76,10 +77,12 @@
 	/OracleParameterMapper {
 		/MainSwitch						1
 		/EnableAll						10
+		/Ctor							-10
 	}
 	/OracleResultMapper {
 		/MainSwitch						1
 		/EnableAll						10
+		/Ctor							-10
 	}
 	/occi_auto_handle {
 		/MainSwitch						1
@@ -169,6 +172,10 @@
 		/HasMore						-10
 	}
 	/RegisterableObject {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/MemChecker {
 		/MainSwitch						0
 		/EnableAll						10
 	}

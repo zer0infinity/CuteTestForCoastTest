@@ -28,19 +28,46 @@ namespace Coast
 		/*!
 		 * A ConnectionPool is used to keep track of a predefined number of Connections to a back end of some type.
 		 * This pool will keep track of a number of connections against Oracle database servers. It is not limited to any number of connections
-		 * or servers. The Connections tracked should allow a connect to any similar server/user combination as this is the key to keep
-		 * Connections open for some time to reduce overhead of opening/closing connections every time a request is made.
-		 * To achieve this, the connection to a specific server/user will stay open after usage and if a borrow request is made for a connection
-		 * having the same server/user combination, the previously release connection will be returned.
-		 * In the case there is no open connection to with a specific server/user connection and no unused/unopened connection around,
-		 * an existing and already opened connection will be selected, closed and returned to use with different credentials.
-		 \par Configuration
-		 \code
-		 {
-			 /ParallelQueries			long	defines number of parallel queries/sp-calls which can be issued, default 5
-			 /CloseConnectionTimeout	long	timeout [s] after which to close open connections, default 60
-		 }
-		 \endcode
+		 * or servers except a possible limit exists within oracle OCI API.
+		 *
+		 * The pooled Connections should allow connections to any server/user combination allowed by the back end. This combination is used
+		 * as key to keep the Connections in an open list for some time to reduce overhead of opening/closing connections every
+		 * time a request is made.
+		 * When a request is made for a connection having the same server/user combination, the previously released connection
+		 * will be returned.
+		 *
+		 * In case there is currently no open connection for the given server/user combination, and no unused/unopened connection around,
+		 * the next already opened connection will be selected (note that it has a different server/user setting), closed and returned to
+		 * the caller.
+		 *
+		 * @section cps1 Pool configuration
+		 * @see Check @ref oms1 to find out where to place the following configuration
+		 *
+		\code
+		{
+			/ParallelQueries
+			/CloseConnectionTimeout
+			/MemPoolSize
+			/MemPoolBuckets
+		}
+		\endcode
+		 *
+		 * @par \c ParallelQueries
+		 * Optional, default 5\n
+		 * Long	value to define number of concurrent back end calls. The pool will pre allocate the requested number of pooled
+		 * connections. The connections will not get opened unless a explicitly opened by the caller.
+		 *
+		 * @par \c CloseConnectionTimeout
+		 * Optional, default 60\n
+		 * Long	value to define time period in [s] after which to check for open connections to be closed.
+		 *
+		 * @par \c MemPoolSize
+		 * Optional, default 2048kB
+		 * Long value defining the size of the PoolAllocator used by the memory functions used with the connections environment
+		 *
+		 * @par \c MemPoolBuckets
+		 * Optional, default 16
+		 * Long value defining the number of bucket sizes to allocate inside the PoolAllocator
 		 */
 		class EXPORTDECL_COASTORACLE ConnectionPool
 		{

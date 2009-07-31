@@ -25,12 +25,14 @@ class OracleStatement;
  * Processing of such a OracleResultset will currently be done using OracleDAImpl::ProcessResultSet because Mappers
  * are needed to store the columns of a row. It is possible that some common parts of result row processing will
  * move into this class.
- * @par Configuration
- * --
  */
 class EXPORTDECL_COASTORACLE OracleResultset
 {
 public:
+	/*! Convenience type for automated resource management of OracleResultset instances
+	 */
+	typedef std::auto_ptr<OracleResultset> OracleResultsetPtr;
+
 	/*! Status is used for internal state transition */
 	enum Status {
 		//! this is the initial state when next() was not called yet
@@ -82,8 +84,5 @@ public:
 	 */
 	String getString( long lColumnIndex );
 };
-
-//! Convenience type for automated resource management of OracleResultset
-typedef std::auto_ptr<OracleResultset> OracleResultsetPtr;
 
 #endif /* ORACLERESULTSET_H_ */

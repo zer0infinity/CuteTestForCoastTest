@@ -15,17 +15,17 @@
 //---- MultiThreadedTest ----------------------------------------------------------
 //! <B>single line description of the class</B>
 /*!
-further explanation of the purpose of the class
-this may contain <B>HTML-Tags</B>
-*/
-class MultiThreadedTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
+ further explanation of the purpose of the class
+ this may contain <B>HTML-Tags</B>
+ */
+class MultiThreadedTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:
 	//--- constructors
 
 	//! ConfiguredTestCase constructor
 	//! \param name name of the test
-	MultiThreadedTest(TString tstrName);
+	MultiThreadedTest( TString tstrName );
 
 	//! destroys the test case
 	~MultiThreadedTest();
@@ -33,19 +33,19 @@ public:
 	//--- public api
 
 	//! builds up a suite of tests
-	static Test *suite ();
+	static Test *suite();
 
 	//! sets the environment for this test
-	void setUp ();
+	void setUp();
 
 	//! deletes the environment for this test
-	void tearDown ();
+	void tearDown();
 
 	//! describe this Test
 	void DAImplTest();
 
-	void DoTest(const char *goodDAName, const char *failDAName);
-	void Run(long id, const char *goodDAName, const char *failDAName);
+	void DoTest( ROAnything roaTestConfig, const char *goodDAName, const char *failDAName );
+	void Run( long id, const char *goodDAName, const char *failDAName, long lLoops, long lWait, ROAnything roaExpected );
 
 	bool fbWasInitialized;
 };

@@ -23,12 +23,15 @@
  * purpose of this module is to provide proper WDModule::Init and WDModule::Finis code to setup and cleanup all
  * the needed parts. In this case, initialization is delegated to Coast::Oracle::ConnectionPool which sets up its
  * connection pool to fulfill OracleDAImpl requests.
- * @par Configuration
+ * @section oms1 OracleModule configuration
  @code
  /OracleModule {
-	 /ConnectionPool {...}	optional, see Coast::Oracle::ConnectionPool configuration
+	 /ConnectionPool {...}
  }
  @endcode
+ * @par \c ConnectionPool
+ * Optional\n
+ * @see @ref cps1
  */
 class EXPORTDECL_COASTORACLE OracleModule: public WDModule
 {
@@ -39,7 +42,7 @@ public:
 	 * @param name Used to register in Registry
 	 */
 	OracleModule( const char *name );
-	/*! terminate oracle services */
+	/*! terminates oracle services */
 	~OracleModule();
 
 	/*! Currently the only way to gain access to the associated Coast::Oracle::ConnectionPool instance

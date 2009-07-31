@@ -25,8 +25,8 @@
   <!-- Layout definition for a class page -->
   <class>
     <briefdescription />
-    <detaileddescription title=""/>
     <includes visible="$SHOW_INCLUDE_FILES"/>
+    <detaileddescription title=""/>
     <inheritancegraph visible="$CLASS_GRAPH"/>
     <allmemberslink visible="yes"/>
     <memberdecl>

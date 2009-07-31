@@ -23,20 +23,18 @@
  * This class deals with oracle connection specific things like OracleEnvironment and OracleConnection. When
  * such an object is first requested for OraclePooledConnection::Open, it will allocate the needed resources
  * like an environment and a connection which can then be used to process oracle database requests.
- * @par Configuration
- * --
  */
 class EXPORTDECL_COASTORACLE OraclePooledConnection: public IFAObject
 {
-	typedef std::auto_ptr<OracleEnvironment> OracleEnvironmentPtr;
-	typedef std::auto_ptr<OracleConnection> OracleConnectionPtr;
-
-	OracleEnvironmentPtr fEnvironment;
-	OracleConnectionPtr fConnection;
+	OracleEnvironment::OracleEnvironmentPtr fEnvironment;
+	OracleConnection::OracleConnectionPtr fConnection;
+	unsigned long fId, fPoolSize, fPoolBuckets;
+	OraclePooledConnection(const OraclePooledConnection &);
+	OraclePooledConnection &operator=(const OraclePooledConnection &);
 public:
 	/*! Default ctor
 	 */
-	OraclePooledConnection();
+	OraclePooledConnection(u_long lId, u_long lPoolSize, u_long lPoolBuckets);
 	/*! Close connection and free allocated resources
 	 */
 	~OraclePooledConnection();

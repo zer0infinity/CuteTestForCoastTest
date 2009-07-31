@@ -17,25 +17,31 @@
 //! <B>Mapper able to handle Oracle specific stored procedure/function parameters</B>
 /*!
  * This mapper can be used for any OracleDAImpl specific query but it is required for PL/SQL queries. To separate
- * between Parameter values and others, all Parameter values need to be placed below slot /Params in the parameter
+ * between Parameter values and others, all Parameter values need to be placed below slot \c /Params in the parameter
  * mapper configuration.
  * If a requested parameter key is not found using the full Params.key it will be searched using key only. This was
  * implemented to simplify usage under some circumstances. Please note that all slot names in the Params section need
  * to be in upper case letter as oracle is internally only uses upper case names.
- * @par Configuration
+ *
+ * @section opms1 OracleParameterMapper configuration
+ *
 \code
 {
-	/Name				MapperSpec		mandatory, name of stored procedure/function to execute
-	/Params {							mandatory if IN or INOUT parameter values are used in call
-		/<PARAMNAME>	MapperSpec		mandatory, IN or INOUT parameter name and its value. The name must match with
-											the parameter name of the declared stored procedure/function and must be
-											written in all upper case letters!
+	/Name
+	/Params {
+		/<PARAMNAME>
 		...
 	}
 }
 \endcode
-\note Parameter names need to be written in all upper case letters, otherwise the implemented mapping will not work -
- an appropriate message will be written into the Messages slot.
+ *
+ * @par \c Name
+ * \b mandatory \n
+ * Name of stored procedure/function to execute
+ * @par \c Params \c .PARAMNAME
+ * \b mandatory if IN or INOUT parameter values are used in call\n
+ * IN or INOUT parameter name and its value. The name must match with the parameter name of the declared stored
+ * procedure/function and must be written in all upper case letters!
 */
 class EXPORTDECL_COASTORACLE OracleParameterMapper : public ParameterMapper
 {
@@ -68,31 +74,32 @@ private:
 //---- OracleResultMapper ----------------------------------------------------------
 //! <b>Mapper used to process Oracle specific output mappings</b>
 /*!
- * This mapper should be used for any OracleDAImpl. It's main feature is to provide further mappings for stored
- * procedures/functions parameters. If just simple INOUT or OUT parameters are present, it will just put the value of
- * the parameter using its name. But if the parameter is a REF_CURSOR, the whole structure consisting of QueryResult,
- * QueryTitles and QueryCount will be put below the parameters name. This is the only way to keep results of different
- * parameters separate without confusing too much. Further it is possible to define mappings specific to subslots of
- * such structured results.
- * If the feature of specific parameter sub slot mapping is not needed, one can define a single top level mapping rule
- * which is then applied if no specific rule is found. This might be a way to provide reasonable defaults.
- * @par Configuration
+ * This mapper should be used for any OracleDAImpl.
+ *
+ * The main feature of this mapper is to provide non-prefixed mapping if the prefixed key is not available
+ * in an OracleResultMapper derived configuration. The non-prefixed slot can then be seen as if it was
+ * a default mapping specification when there is not a specialized one.
+ *
+ * @section orms1 OracleResultMapper Configuration
+ *
 \code
 {
-	/QueryResult 		MapperSpec			optional, specify default behavior when results get put,
-												when a stored procedure parameter gets put - usually as PARAMNAME.QueryResult -
-												and it is not specialized like below, this MapperSpec will get used
-	/QueryTitles		MapperSpec			optional, as above
-	/QueryCount	 		MapperSpec			optional, as above
-
-	/<PARAMNAME> {							optional, specialize MapperSpec for named stored procedure/function parameter
-		/QueryResult 	MapperSpec			optional, MapperSpec to use when PARAMNAME.QueryResult gets put
-		/QueryTitles	MapperSpec			optional, as above
-		/QueryCount	 	MapperSpec			optional, as above
+	/key			<== non-prefixed key
+	...
+	/<PARAMNAME> {
+		/key		<== PARAMNAME prefixed key
+		...
 	}
 }
 \endcode
-\note Parameter names need to be written in all upper case letters, otherwise the implemented mapping will not work.
+ *
+ * @par \c key
+ * Optional, mapper specification to execute when key was used in ResultMapper::Put()\n
+ * If a prefixed key was used, separator used is \c Delim configuration entry or '.' as default, the prefix
+ * part in the key gets removed and DoPut() using the modified/stripped key will get called again.
+ *
+ * @par \c PARAMNAME \c .key
+ * Optional, specialized MapperSpec for prefixed key
 */
 class EXPORTDECL_COASTORACLE OracleResultMapper : public ResultMapper
 {

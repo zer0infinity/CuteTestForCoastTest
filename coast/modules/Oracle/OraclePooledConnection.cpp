@@ -12,38 +12,33 @@
 #include "Dbg.h"
 
 #include <string.h>		// for strlen
-
-static struct OraTerminator {
-	~OraTerminator() {
-		OCITerminate( OCI_DEFAULT );
-	}
-} fgOraTerminator;
-
 //----- OraclePooledConnection -----------------------------------------------------------------
-OraclePooledConnection::OraclePooledConnection()
+OraclePooledConnection::OraclePooledConnection( u_long lId, u_long lPoolSize, u_long lPoolBuckets ) :
+	fId( lId ), fPoolSize(lPoolSize), fPoolBuckets(lPoolBuckets)
 {
-	StartTrace(OraclePooledConnection.OraclePooledConnection);
+	StatTrace(OraclePooledConnection.OraclePooledConnection, "empty", Storage::Current());
 }
 
 OraclePooledConnection::~OraclePooledConnection()
 {
-	StartTrace(OraclePooledConnection.~OraclePooledConnection);
+	StatTrace(OraclePooledConnection.~OraclePooledConnection, "closing connection", Storage::Current());
 	// disconnect if OracleConnection exists
 	Close( true );
 }
 
 bool OraclePooledConnection::Open( String const &strServer, String const &strUsername, String const &strPassword )
 {
-	StartTrace(OraclePooledConnection.Open);
-
+	StartTrace1(OraclePooledConnection.Open, "server [" << strServer << "] user [" << strUsername << "]");
 	if ( !fEnvironment.get() ) {
-		fEnvironment = OracleEnvironmentPtr(new OracleEnvironment(OracleEnvironment::THREADED_UNMUTEXED));
+		fEnvironment = OracleEnvironment::OracleEnvironmentPtr( new OracleEnvironment(
+						   OracleEnvironment::THREADED_UNMUTEXED, fId, fPoolSize, fPoolBuckets ) );
 	}
 	if ( fEnvironment.get() && fEnvironment->valid() ) {
-		if ( !fConnection.get() ) {
-			fConnection = OracleConnectionPtr( fEnvironment->createConnection(strServer, strUsername, strPassword) );
-		} else {
-			fConnection->Open(strServer, strUsername, strPassword);
+		if ( !fConnection.get() )
+			fConnection = OracleConnection::OracleConnectionPtr( fEnvironment->createConnection( strServer,
+						  strUsername, strPassword ) );
+		else {
+			fConnection->Open( strServer, strUsername, strPassword );
 		}
 	}
 	return fConnection.get();
@@ -51,7 +46,7 @@ bool OraclePooledConnection::Open( String const &strServer, String const &strUse
 
 bool OraclePooledConnection::Close( bool bForce )
 {
-	StartTrace1(OraclePooledConnection.Close, (bForce ? "" : "not ") << "forcing connection closing");
+	StatTrace(OraclePooledConnection.Close, (bForce ? "" : "not ") << "forcing connection closing", Storage::Current());
 	if ( bForce ) {
 		fConnection.reset();
 		fEnvironment.reset();

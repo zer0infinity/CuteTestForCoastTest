@@ -59,45 +59,47 @@ void OracleStatement::Cleanup()
 	fStatus = UNPREPARED;
 }
 
-OracleStatement::Status OracleStatement::execute( ub4 mode )
+OracleStatement::Status OracleStatement::execute( ExecMode mode )
 {
 	StartTrace1(OracleStatement.execute, "statement type " << (long)fStmtType);
-	// executes a SQL statement (first row is also fetched only if iters > 0)
-	// depending on the query type, we could use 'scrollable cursor mode' ( OCI_STMT_SCROLLABLE_READONLY )
-	ub4 iters = ( fStmtType == STMT_SELECT ? 0 : 1 );
-	sword status = OCIStmtExecute( fpConnection->SvcHandle(), getHandle(), fpConnection->ErrorHandle(), iters, 0, NULL,
-								   NULL, mode );
-	if ( status == OCI_SUCCESS || status == OCI_SUCCESS_WITH_INFO || status == OCI_NO_DATA ) {
-		// how can we find out about the result type? -> see Prepare
-		switch ( fStmtType ) {
-			case STMT_SELECT:
-				fStatus = RESULT_SET_AVAILABLE;
-				break;
-			case STMT_CREATE:
-			case STMT_DROP:
-			case STMT_ALTER:
-				fStatus = UPDATE_COUNT_AVAILABLE;
-				break;
-			case STMT_DELETE:
-			case STMT_INSERT:
-			case STMT_UPDATE:
-				fStatus = UPDATE_COUNT_AVAILABLE;
-				break;
-			case STMT_BEGIN:
-				fStatus = UPDATE_COUNT_AVAILABLE;
-				break;
-			default:
-				fStatus = PREPARED;
+	if ( fStatus == PREPARED ) {
+		// depending on the query type, we could use 'scrollable cursor mode' ( OCI_STMT_SCROLLABLE_READONLY )
+		// executes a SQL statement (first row is also fetched only if iters > 0)
+		ub4 iters = ( fStmtType == STMT_SELECT ? 0 : 1 );
+		sword status = OCIStmtExecute( fpConnection->SvcHandle(), getHandle(), fpConnection->ErrorHandle(), iters, 0, NULL,
+									   NULL, mode );
+		if ( status == OCI_SUCCESS || status == OCI_SUCCESS_WITH_INFO || status == OCI_NO_DATA ) {
+			// how can we find out about the result type? -> see Prepare
+			switch ( fStmtType ) {
+				case STMT_SELECT:
+					fStatus = RESULT_SET_AVAILABLE;
+					break;
+				case STMT_CREATE:
+				case STMT_DROP:
+				case STMT_ALTER:
+					fStatus = UPDATE_COUNT_AVAILABLE;
+					break;
+				case STMT_DELETE:
+				case STMT_INSERT:
+				case STMT_UPDATE:
+					fStatus = UPDATE_COUNT_AVAILABLE;
+					break;
+				case STMT_BEGIN:
+					fStatus = UPDATE_COUNT_AVAILABLE;
+					break;
+				default:
+					fStatus = PREPARED;
+			}
+		} else {
+			throw OracleException( *fpConnection, status );
 		}
-	} else {
-		throw OracleException( *fpConnection, status );
 	}
 	return fStatus;
 }
 
 sword OracleStatement::Fetch( ub4 numRows )
 {
-	StartTrace(OracleStatement.Fetch);
+	StatTrace(OracleStatement.Fetch, "fetching " << (long)numRows << " rows", Storage::Current());
 	// fetch another row
 	return OCIStmtFetch2( getHandle(), fpConnection->ErrorHandle(), numRows, OCI_FETCH_NEXT, 0, OCI_DEFAULT );
 }
@@ -322,7 +324,7 @@ bool OracleStatement::DefineOutputArea()
 
 Anything &OracleStatement::GetOutputArea()
 {
-	StartTrace(OracleStatement.GetOutputArea);
+	StatTrace(OracleStatement.GetOutputArea, "output area " << ( fBuffer.IsNull() ? "not " : "") << "initialized", Storage::Current());
 	if ( fBuffer.IsNull() ) {
 		fBuffer = MetaThing();
 	}

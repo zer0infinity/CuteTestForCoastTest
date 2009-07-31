@@ -17,13 +17,11 @@
 /*!
  * The action will get called from within a PeriodicAction through its registered name.
  * The setup of the PeriodicAction is done in Coast::Oracle::ConnectionPool::Init.
- * @par Configuration
- * --
  */
 class EXPORTDECL_COASTORACLE OracleCheckCloseOpenedConnectionsAction : public Action
 {
 public:
-	/*! ctor
+	/*! Default ctor using a name
 	 * @param name unique name to register this action
 	 */
 	OracleCheckCloseOpenedConnectionsAction(const char *name) : Action(name) { }

@@ -11,23 +11,47 @@
 
 //--- modules used in the interface
 #include "config_coastoracle.h"
-
 #include "OciAutoHandle.h"
+#include "PoolAllocator.h"
+#include <memory>
 
 class OracleConnection;
 class String;
 
+typedef std::auto_ptr<Allocator> AllocatorPtr;
+
 //! <b>Abstraction for an Oracle environment</b>
 /*!
  * This class serves as abstraction for an OCI environment. Such an environment is needed to create an OracleConnection.
- * @par Configuration
- * --
  */
 class EXPORTDECL_COASTORACLE OracleEnvironment
 {
+public:
+	typedef std::auto_ptr<OracleEnvironment> OracleEnvironmentPtr;
+
+private:
 	//! OCI environment handle
 	EnvHandleType fEnvhp;
+	AllocatorPtr fMemPool;
 
+	OracleEnvironment();
+	OracleEnvironment( const OracleEnvironment & );
+	OracleEnvironment &operator=( const OracleEnvironment & );
+
+	//! <b>Automatic terminator of OCI</b>
+	/*!
+	 *  This static object should only be destructed once when OCI services are not in use anymore.
+	 */
+	static struct OraTerminator {
+		OracleEnvironmentPtr fEnvironment;
+		OraTerminator() {
+			fEnvironment = OracleEnvironmentPtr( new OracleEnvironment( OracleEnvironment::THREADED_MUTEXED, 64, 10240,
+												 16 ) );
+		}
+		~OraTerminator() {
+			OCITerminate( OCI_DEFAULT );
+		}
+	} fgOraTerminator;
 public:
 	/*! construction mode of environment */
 	enum Mode {
@@ -42,7 +66,7 @@ public:
 	 * @param eMode chose one of the possible OracleEnvironment::Mode flags
 	 * @note As we use an environment per OraclePooledConnection, we could safely use OracleEnvironment::THREADED_UNMUTEXED
 	 */
-	OracleEnvironment( Mode eMode );
+	OracleEnvironment( Mode eMode, unsigned long ulPoolId, u_long ulPoolSize, u_long ulBuckets );
 	/*! destruction of environment handle
 	 */
 	~OracleEnvironment();
@@ -69,6 +93,13 @@ public:
 	 * @note The returned OracleConnection object must be freed by the caller!
 	 */
 	OracleConnection *createConnection( String const &strSrv, String const &strUsr, String const &strPwd );
+
+	Allocator *getAllocator() {
+		return fMemPool.get();
+	}
+	static OracleEnvironment &getGlobalEnv() {
+		return *fgOraTerminator.fEnvironment.get();
+	}
 };
 
 #endif /* ORACLEENVIRONMENT_H_ */

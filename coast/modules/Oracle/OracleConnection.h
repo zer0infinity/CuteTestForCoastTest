@@ -13,6 +13,7 @@
 #include "config_coastoracle.h"
 #include "Anything.h"
 #include "OciAutoHandle.h"
+#include <memory>
 
 class OracleEnvironment;
 class OracleStatement;
@@ -24,14 +25,14 @@ class OracleStatement;
  * The OracleConnection itself will be created when calling OracleEnvironment::createConnection. All this is done from within
  * OraclePooledConnection which will be tracked by Coast::Oracle::ConnectionPool.
  * The main functions this class serves for is to OracleConnection::Open and OracleConnection::Close the connection
- * to the back end and to let OracleConnection::createStatement give us an OracleStatement. The statement is the holder for
- * any of simple statements up to complex StoredProcedure calls.
- * @par Configuration
- * --
+ * to the back end and to let OracleConnection::createStatement give us an OracleStatement. The statement is used to
+ * execute any type of valid oracle queries.
  */
 class EXPORTDECL_COASTORACLE OracleConnection
 {
 public:
+	typedef std::auto_ptr<OracleConnection> OracleConnectionPtr;
+
 	enum Status {
 		//! state if constructor failed and connection can not be used
 		eUnitialized,
@@ -55,8 +56,6 @@ private:
 	SvcHandleType fSvchp;
 	//! OCI user session handle
 	UsrHandleType fUsrhp;
-	//! OCI description handle
-	DscHandleType fDschp;
 
 	OracleConnection();
 	OracleConnection(const OracleConnection &);
@@ -118,14 +117,6 @@ public:
 	 */
 	OCISvcCtx *SvcHandle() {
 		return fSvchp.getHandle();
-	}
-
-	/*! access OCIDescribe handle
-	 *
-	 * @return OCIDescribe handle
-	 */
-	OCIDescribe *DscHandle() {
-		return fDschp.getHandle();
 	}
 
 	/*! check the given status value against an error condition and report it as message

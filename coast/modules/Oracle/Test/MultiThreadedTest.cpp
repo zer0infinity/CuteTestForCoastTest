@@ -15,6 +15,8 @@
 #include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
+#include "AnyIterators.h"
+#include "AnyUtils.h"
 #include "Dbg.h"
 #include "SysLog.h"
 #include "Threads.h"
@@ -26,8 +28,8 @@
 //--- c-modules used -----------------------------------------------------------
 
 //---- MultiThreadedTest ----------------------------------------------------------------
-MultiThreadedTest::MultiThreadedTest(TString tstrName)
-	: TestCaseType(tstrName)
+MultiThreadedTest::MultiThreadedTest( TString tstrName ) :
+	TestCaseType( tstrName )
 {
 	StartTrace(MultiThreadedTest.MultiThreadedTest);
 }
@@ -37,49 +39,58 @@ MultiThreadedTest::~MultiThreadedTest()
 	StartTrace(MultiThreadedTest.Dtor);
 }
 
-void MultiThreadedTest::setUp ()
+void MultiThreadedTest::setUp()
 {
 	StartTrace(MultiThreadedTest.setUp);
 }
 
-void MultiThreadedTest::tearDown ()
+void MultiThreadedTest::tearDown()
 {
 	StartTrace(MultiThreadedTest.tearDown);
 }
 
-class DATestThread : public Thread
+class DATestThread: public Thread
 {
 	MultiThreadedTest &fMaster;
-	long fId;
+	long fId, fLoopCount, fLoopWait;
 	const char *fGoodDAName, *fFailDAName;
+	ROAnything froaExpected;
 
 public:
-	DATestThread(MultiThreadedTest &master, long id, const char *goodDAName, const char *failDAName)
-		: Thread("DATestThread"), fMaster(master), fId(id), fGoodDAName(goodDAName), fFailDAName(failDAName)
-	{}
+	DATestThread( MultiThreadedTest &master, long id, const char *goodDAName, const char *failDAName,
+				  long lLoops, long lWait, ROAnything roaExpected ) :
+		Thread( "DATestThread" ), fMaster( master ), fId( id ), fLoopCount( lLoops ), fLoopWait( lWait ), fGoodDAName( goodDAName ), fFailDAName( failDAName ),
+		froaExpected( roaExpected ) {
+	}
 
 protected:
 	virtual void Run() {
-		fMaster.Run(fId, fGoodDAName, fFailDAName);
+		fMaster.Run( fId, fGoodDAName, fFailDAName, fLoopCount, fLoopWait, froaExpected );
 	}
 };
 
-void MultiThreadedTest::Run(long id, const char *goodDAName, const char *failDAName)
+void MultiThreadedTest::Run( long id, const char *goodDAName, const char *failDAName, long lLoops, long lWait, ROAnything roaExpected )
 {
-	for (int i = 0; i < 10; i++) {
-		Anything aEnv = GetConfig().DeepClone();
-		Context ctx(aEnv);
+	for ( int i = 0; i < lLoops; i++ ) {
+		Anything aEnv( GetConfig().DeepClone(Storage::Current()) );
+		Context ctx( aEnv );
 
-		DataAccess da(goodDAName);
+		DataAccess da( goodDAName );
 		t_assert(da.StdExec(ctx));
 		RequestTimeLogger(ctx);
 
 		Anything tmpStore = ctx.GetTmpStore();
-		assertComparem(30L, less_equal, tmpStore[goodDAName]["QueryResult"].GetSize(), goodDAName);
 
-		DataAccess da2(failDAName);
+		String strTestPath( goodDAName );
+		strTestPath << "." << toString();
+		assertAnyCompareEqual(roaExpected, tmpStore, strTestPath, '.', ':');
+
+		DataAccess da2( failDAName );
 		t_assertm( !da2.StdExec(ctx), TString(failDAName) << " expected test to fail because of SQL syntax error");
 		RequestTimeLogger(ctx);
+		if ( lWait > 0 && i != lLoops - 1 ) {
+			Thread::Wait(lWait);
+		}
 	}
 }
 
@@ -87,36 +98,43 @@ void MultiThreadedTest::DAImplTest()
 {
 	StartTrace(MultiThreadedTest.DAImplTest);
 	TraceAny(GetTestCaseConfig(), "case config");
-	DiffTimer aTimer;
-	DoTest(GetTestCaseConfig()["SuccessDA"].AsString("MultiThreadedDA"), GetTestCaseConfig()["FailureDA"].AsString("MultiThreadedDAWithError"));
-	SysLog::WriteToStderr(String("elapsed time for DAImplTest:") << (long)aTimer.Diff() << "ms\n");
+	AnyExtensions::Iterator<ROAnything> tcIterator( GetTestCaseConfig() );
+	ROAnything roaEntry;
+	while ( tcIterator.Next( roaEntry ) ) {
+		DiffTimer aTimer;
+		String strSuccDA( roaEntry["SuccessDA"].AsString( "MultiThreadedDA" ) ), strFailDA(
+			roaEntry["FailureDA"].AsString( "MultiThreadedDAWithError" ) );
+		DoTest( roaEntry, strSuccDA, strFailDA );
+		SysLog::WriteToStderr( String( "elapsed time for [" ) << strSuccDA << '&' << strFailDA << "] "
+							   << (long) aTimer.Diff() << "ms\n" );
+	}
 }
 
-void MultiThreadedTest::DoTest(const char *goodDAName, const char *failDAName)
+void MultiThreadedTest::DoTest( ROAnything roaTestConfig, const char *goodDAName, const char *failDAName )
 {
 	StartTrace(MultiThreadedTest.DoTest);
 
-	long nThreads = GetTestCaseConfig()["ThreadPoolSize"].AsLong(10L);
-	u_long lPoolSize = (u_long)GetTestCaseConfig()["PoolStorageSize"].AsLong(1000L);
-	u_long lPoolBuckets = (u_long)GetTestCaseConfig()["NumOfPoolBucketSizes"].AsLong(20L);
+	long nThreads = roaTestConfig["ThreadPoolSize"].AsLong( 10L );
+	u_long lPoolSize = (u_long) roaTestConfig["PoolStorageSize"].AsLong( 1000L );
+	u_long lPoolBuckets = (u_long) roaTestConfig["NumOfPoolBucketSizes"].AsLong( 20L );
 
 	DATestThread **threadArray = new DATestThread*[nThreads];
 	long i = 0;
-	for (i = 0; i < nThreads; i++) {
-		threadArray[i] = new DATestThread(*this, i, goodDAName, failDAName);
-		threadArray[i]->Start(MT_Storage::MakePoolAllocator(lPoolSize, lPoolBuckets, i));
+	for ( i = 0; i < nThreads; i++ ) {
+		threadArray[i] = new DATestThread( *this, i, goodDAName, failDAName, roaTestConfig["ThreadDALoops"].AsLong(10L), roaTestConfig["ThreadLoopWait"].AsLong(0L), roaTestConfig["Result"] );
+		threadArray[i]->Start( MT_Storage::MakePoolAllocator( lPoolSize, lPoolBuckets, i ) );
 	}
-	for (i = 0; i < nThreads; i++) {
-		threadArray[i]->CheckState(Thread::eTerminated);
+	for ( i = 0; i < nThreads; i++ ) {
+		threadArray[i]->CheckState( Thread::eTerminated );
 	}
-	for (i = 0; i < nThreads; i++) {
+	for ( i = 0; i < nThreads; i++ ) {
 		delete threadArray[i];
 	}
 	delete[] threadArray;
 }
 
 // builds up a suite of tests, add a line for each testmethod
-Test *MultiThreadedTest::suite ()
+Test *MultiThreadedTest::suite()
 {
 	StartTrace(MultiThreadedTest.suite);
 	TestSuite *testSuite = new TestSuite;

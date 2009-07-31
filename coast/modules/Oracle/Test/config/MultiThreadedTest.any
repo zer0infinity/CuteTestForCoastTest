@@ -37,7 +37,7 @@
 	/OracleModule {
 		/ConnectionPool {
 			/ParallelQueries		10
-			/CloseConnectionTimeout	20
+			/CloseConnectionTimeout	2
 		}
 	}
 
@@ -46,6 +46,8 @@
 			/SifsCoastOrcl {
 				MultiThreadedDA
 				MultiThreadedDAWithError
+				SPExecuteGetempsSucc
+				SPExecuteGetempsFail
 			}
 		}
 	}
@@ -56,14 +58,25 @@
 				/SifsCoastOrclSP {
 					MultiThreadedDA
 					MultiThreadedDAWithError
+					SPExecuteGetempsSucc
+					SPExecuteGetempsFail
 				}
 			}
 		}
 		/Output {
+			/ResultMapper {
+				AppendResultMapper
+				/PutResultMapper {
+				}
+			}
 			/OracleResultMapper {
-				/SifsCoastOrcl {
+				/OracleDAImpl {
 					MultiThreadedDA
 					MultiThreadedDAWithError
+					/SPExecute {
+						SPExecuteGetempsSucc
+						SPExecuteGetempsFail
+					}
 				}
 			}
 		}
@@ -72,11 +85,55 @@
 ######## Test specific section ########
 
 	/DAImplTest {
-		#---- Worker pool configurations
-		/ThreadPoolSize					20
-		/PoolStorageSize				2000
-		/NumOfPoolBucketSizes			20
-		/SuccessDA						MultiThreadedDA
-		/FailureDA						MultiThreadedDAWithError
+		{
+			/ThreadPoolSize					10
+			/PoolStorageSize				2000
+			/NumOfPoolBucketSizes			20
+			/SuccessDA						MultiThreadedDA
+			/FailureDA						MultiThreadedDAWithError
+			/ThreadDALoops					5
+			/Result {
+				/MultiThreadedDA {
+					/QueryCount ignore
+					/QueryResult ignore
+				}
+			}
+		}
+		{
+			/ThreadPoolSize					10
+			/PoolStorageSize				2000
+			/NumOfPoolBucketSizes			20
+			/SuccessDA						SPExecuteGetempsSucc
+			/FailureDA						SPExecuteGetempsFail
+			/ThreadDALoops					20
+			# force connection closing to see if handle memory gets freed
+			/ThreadLoopWait					0
+			/Result {
+				/SPExecuteGetempsSucc {
+					/EMPCURSOR {
+						/QueryResult ignore
+						/QueryCount	ignore
+					}
+				}
+			}
+		}
+		{
+			/ThreadPoolSize					2
+			/PoolStorageSize				2000
+			/NumOfPoolBucketSizes			20
+			/SuccessDA						SPExecuteGetempsSucc
+			/FailureDA						SPExecuteGetempsFail
+			/ThreadDALoops					2
+			# force connection closing to see if handle memory gets freed
+			/ThreadLoopWait					5
+			/Result {
+				/SPExecuteGetempsSucc {
+					/EMPCURSOR {
+						/QueryResult ignore
+						/QueryCount	ignore
+					}
+				}
+			}
+		}
 	}
 }

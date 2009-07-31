@@ -19,11 +19,12 @@ RegisterParameterMapper(OracleParameterMapper);
 OracleParameterMapper::OracleParameterMapper( const char *name ) :
 	ParameterMapper( name )
 {
-	StartTrace(OracleParameterMapper.Ctor);
+	StatTrace(OracleParameterMapper.Ctor, name, Storage::Current());
 }
 
 IFAObject *OracleParameterMapper::Clone() const
 {
+	StatTrace(OracleParameterMapper.Clone, fName, Storage::Current());
 	return new OracleParameterMapper( fName );
 }
 
@@ -32,7 +33,7 @@ bool OracleParameterMapper::DoGetAny( const char *key, Anything &value, Context 
 	StartTrace1(OracleParameterMapper.DoGetAny, NotNull(key) );
 
 	String strKey( key );
-	//FIXME: should be extracted into ResultMapper function
+	//!@FIXME Lookup("Delim,...) should be extracted into ResultMapper function, -> ResultMapper::getDelim()
 	char cDelim = Lookup( "Delim", "." )[0L];
 	String strParamPrefix( "Params" );
 	strParamPrefix.Append( cDelim );
@@ -48,11 +49,12 @@ RegisterResultMapper(OracleResultMapper);
 OracleResultMapper::OracleResultMapper( const char *name ) :
 	ResultMapper( name )
 {
-	StartTrace(OracleResultMapper.Ctor);
+	StatTrace(OracleResultMapper.Ctor, name, Storage::Current());
 }
 
 IFAObject *OracleResultMapper::Clone() const
 {
+	StatTrace(OracleResultMapper.Clone, fName, Storage::Current());
 	return new OracleResultMapper( fName );
 }
 
@@ -60,7 +62,7 @@ bool OracleResultMapper::DoPutAny( const char *key, Anything value, Context &ctx
 {
 	StartTrace1(OracleResultMapper.DoPutAny, NotNull(key));
 	String strKey( key );
-	//FIXME: should be extracted into ResultMapper function
+	//!@FIXME Lookup("Delim,...) should be extracted into ResultMapper function, -> ResultMapper::getDelim()
 	char cDelim = Lookup( "Delim", "." )[0L];
 	long lDelimIdx( strKey.StrRChr( cDelim ) );
 	if ( lDelimIdx != -1 ) {

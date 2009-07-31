@@ -59,4 +59,10 @@
 	/MultiThreadedDAWithError {
 		/DestinationSlot	MultiThreadedDAWithError
 	}
+	/SPExecuteGetempsSucc {
+		/DestinationSlot	SPExecuteGetempsSucc
+	}
+	/SPExecuteGetempsFail {
+		/DestinationSlot	SPExecuteGetempsFail
+	}
 }

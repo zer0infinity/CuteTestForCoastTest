@@ -45,11 +45,6 @@ OracleConnection::OracleConnection( OracleEnvironment &rEnv ) :
 		SysLog::Error( String( "FAILED: OCIHandleAlloc(): alloc user session handle failed (" ) << strErr << ")" );
 		bCont = false;
 	}
-	if ( bCont && checkError( OCIHandleAlloc( fOracleEnv.EnvHandle(), fDschp.getVoidAddr(), (ub4) OCI_HTYPE_DESCRIBE,
-							  (size_t) 0, (dvoid **) 0 ), strErr ) ) {
-		SysLog::Error( String( "FAILED: OCIHandleAlloc(): alloc describe handle failed (" ) << strErr << ")" );
-		bCont = false;
-	}
 	if ( bCont ) {
 		fStatus = eHandlesAllocated;
 	}
@@ -114,7 +109,7 @@ bool OracleConnection::Open( String const &strServer, String const &strUsername,
 	}
 	Trace( "connected to oracle as " << strUsername )
 
-	// --- Set the authentication handle in the Service handle
+	// --- Set the authentication handle into the Service handle
 	if ( checkError( OCIAttrSet( fSvchp.getHandle(), (ub4) OCI_HTYPE_SVCCTX, fUsrhp.getHandle(), (ub4) 0,
 								 OCI_ATTR_SESSION, fErrhp.getHandle() ), strErr ) ) {
 		SysLog::Error( String( "FAILED: OCIAttrSet(): setting attribute <session> into the service context failed (" )
@@ -133,7 +128,6 @@ OracleConnection::~OracleConnection()
 	fSvchp.reset();
 	fErrhp.reset();
 	fUsrhp.reset();
-	fDschp.reset();
 	fStatus = eUnitialized;
 }
 
@@ -154,11 +148,12 @@ void OracleConnection::Close()
 
 bool OracleConnection::checkError( sword status )
 {
-	StartTrace1(OracleConnection.checkError, "status: " << (long) status);
+	bool bRet(true);
 	if ( status == OCI_SUCCESS || status == OCI_NO_DATA ) {
-		return false;
+		bRet = false;
 	}
-	return true;
+	StatTrace(OracleConnection.checkError, "status: " << (long) status << " retcode: " << (bRet ? "true" : "false"), Storage::Current());
+	return bRet;
 }
 
 bool OracleConnection::checkError( sword status, String &message )
@@ -178,7 +173,7 @@ String OracleConnection::errorMessage( sword status )
 
 	text errbuf[512];
 	sb4 errcode;
-	String error;
+	String error( 128L );
 
 	switch ( status ) {
 		case OCI_NO_DATA:

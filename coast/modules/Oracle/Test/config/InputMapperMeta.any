@@ -81,5 +81,15 @@
 			}
 		}
 	}
-
+	/SPExecuteGetempsSucc {
+		/Name		"getemps"
+		/Params {
+		}
+	}
+	/SPExecuteGetempsFail {
+		/Name		"getempsalary"
+		/Params {
+			/ID		abcd
+		}
+	}
 }
