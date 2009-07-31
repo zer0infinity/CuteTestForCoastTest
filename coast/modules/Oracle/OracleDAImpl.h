@@ -217,8 +217,6 @@ public:
 	virtual bool Exec( Context &ctx, ParameterMapper *in, ResultMapper *out );
 
 private:
-	bool ConnectOracleUser( const char *name, const char *pw );
-
 	bool BindSPVariables( ROAnything desc, ParameterMapper *pmapIn, ResultMapper *pmapOut, OracleStatement &aStmt,
 						  Context &ctx );
 
