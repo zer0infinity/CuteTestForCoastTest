@@ -15,7 +15,7 @@ OracleResultset::~OracleResultset()
 {
 }
 
-ROAnything OracleResultset::GetOutputDescription()
+OracleStatement::Description &OracleResultset::GetOutputDescription()
 {
 	StartTrace( OracleResultset.GetOutputDescription );
 	return frStmt.GetOutputDescription();

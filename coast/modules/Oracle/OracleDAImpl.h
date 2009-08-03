@@ -217,7 +217,7 @@ public:
 	virtual bool Exec( Context &ctx, ParameterMapper *in, ResultMapper *out );
 
 private:
-	bool BindSPVariables( ROAnything desc, ParameterMapper *pmapIn, ResultMapper *pmapOut, OracleStatement &aStmt,
+	bool BindSPVariables( OracleStatement::Description &desc, ParameterMapper *pmapIn, ResultMapper *pmapOut, OracleStatement &aStmt,
 						  Context &ctx );
 
 	bool DoPrepareSQL( String &command, Context &ctx, ParameterMapper *in );

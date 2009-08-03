@@ -12,10 +12,12 @@
 //--- test cases ---------------------------------------------------------------
 #include "ConfiguredActionTest.h"
 #include "MultiThreadedTest.h"
+#include "StatementDescriptionTest.h"
 
 void setupRunner(TestRunner &runner)
 {
 	// execute tests in test dir with defined structure
 	ADD_SUITE(runner, ConfiguredActionTest);
 	ADD_SUITE(runner, MultiThreadedTest);
+	ADD_SUITE(runner, StatementDescriptionTest);
 }

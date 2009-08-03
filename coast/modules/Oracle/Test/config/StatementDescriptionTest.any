@@ -1,0 +1,91 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2009, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+	/DescriptionIteratorTest {
+		/OnlyROTest {
+			/RO {
+				{
+					/Name	ROName0
+					/Idx	0
+				}
+				{
+					/Name	ROName1
+					/Idx	1
+				}
+			}
+			/WR {
+			}
+			/Expected {
+				{
+					/Name	ROName0
+					/Idx	0
+				}
+				{
+					/Name	ROName1
+					/Idx	1
+				}
+			}
+		}
+		/SomeWRTest {
+			/RO {
+				{
+					/Name	ROName0
+					/Idx	0
+				}
+				{
+					/Name	ROName1
+					/Idx	1
+				}
+			}
+			/WR {
+				{
+				}
+				{
+					/Name	WRName1
+					/NewSlot	Something
+				}
+			}
+			/Expected {
+				{
+					/Name	ROName0
+					/Idx	0
+				}
+				{
+					/Name	WRName1
+					/NewSlot Something
+					/Idx	1
+				}
+			}
+		}
+		/OnlyWRTest {
+			/RO {
+			}
+			/WR {
+				{
+					/Name	WRName0
+					/Idx	0
+				}
+				{
+					/Name	WRName1
+					/NewSlot	Something
+				}
+			}
+			/Expected {
+				{
+					/Name	WRName0
+					/Idx	0
+				}
+				{
+					/Name	WRName1
+					/NewSlot Something
+				}
+			}
+		}
+	}
+}

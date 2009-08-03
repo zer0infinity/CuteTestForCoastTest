@@ -14,6 +14,7 @@
 #include "IFAObject.h"
 #include "AllocatorNewDelete.h"
 #include <memory>
+#include <algorithm>
 
 class OracleResultset;
 class OracleStatement;
@@ -99,25 +100,115 @@ public:
 		EXEC_COMMIT = OCI_COMMIT_ON_SUCCESS, //!< Commit statement after successful completion
 		EXEC_SCROLLABLE_RO = OCI_STMT_SCROLLABLE_READONLY, //!< Special cursor processing mode where absolute or relative navigation is possible
 	};
+
+	class Description
+	{
+		friend class StatementDescriptionTest;
+		ROAnything fRBuf;
+		MetaThing fWBuf;
+		Description(const Description &);
+		Description &operator=(const Description &);
+	public:
+		class Element
+		{
+			friend class StatementDescriptionTest;
+			ROAnything fRBuf;
+			Anything fWBuf;
+			//! shorthand for At(const char *slotname) const
+			ROAnything operator[](const char *slotname) const {
+				ROAnything roaValue( fRBuf[slotname] );
+				if ( fWBuf.IsDefined(slotname) ) {
+					roaValue = fWBuf[slotname];
+				}
+				return roaValue;
+			}
+		public:
+			Element() {}
+			Element(const Element &elt) : fRBuf(elt.fRBuf), fWBuf(elt.fWBuf) {}
+			Element &operator=(const Element &elt) {
+				fRBuf = elt.fRBuf;
+				fWBuf = elt.fWBuf;
+			}
+			Element(ROAnything &roaEntry, Anything &anyEntry) : fRBuf(roaEntry), fWBuf(anyEntry) {}
+			~Element() {}
+			/*! returns a String representation of the implementation if any is set else the default, the string copies memory
+				beware of temporaries */
+			String AsString(const char *slotname, const char *dflt = 0) const {
+				String strValue = operator[](slotname).AsString(dflt);
+				return strValue;
+			}
+
+			//! returns a long representation of the implementation if possible else the default
+			long AsLong(const char *slotname, long dflt = 0) const {
+				long lValue = operator[](slotname).AsLong(dflt);
+				return lValue;
+			}
+
+			/*! returns a const char * representation of the implementation if any is set else the default
+				this method doesn't copy memory */
+			const char *AsCharPtr(const char *slotname, const char *dflt = 0) const {
+				return operator[](slotname).AsCharPtr(dflt);
+			}
+
+			//!shorthand for At(const char *slotname)
+			Anything &operator[](const char *slotname) {
+				return fWBuf[slotname];
+			}
+		};
+		Description() {}
+		~Description() {}
+		/*! Retrieve the number of slots in this Anything
+			\return The number of slots in this Anything */
+		long GetSize() const {
+			return std::max(fWBuf.GetSize(), fRBuf.GetSize());
+		}
+
+		//!assignment operator creates Anything of type a.GetType() returns
+		Description &operator= (const ROAnything &a) {
+			fRBuf = a;
+			return *this;
+		}
+
+		/*! Appends a new slot and stores <I>a</I> in it.
+			\param a the Anything added at the end of this Anything.
+			\return the index of the slot where <I>a</I> is now stored. */
+		long Append(const Anything &a) {
+			return fWBuf.Append(a);
+		}
+		//!returns name of slot (if any)
+		const char *SlotName(long slot) const {
+			static const char *gSlotname = "";
+			return gSlotname;
+		}
+
+		//! shorthand for At(long slot)
+		Element operator[](long slot) {
+			ROAnything roaR( fRBuf[slot] );
+			Anything anyW;
+			if ( !fWBuf.IsDefined(slot) ) {
+				fWBuf[slot] = MetaThing(fWBuf.GetAllocator());
+			}
+			anyW = fWBuf[slot];
+			Element aElt(roaR, anyW);
+			return aElt;
+		}
+	};
 private:
 	OracleStatement();
 	OracleConnection *fpConnection;
-	String fStmt, fFuncReturnName;
+	String fStmt;
 	StmtHandleType fStmthp;
 	Anything fErrorMessages;
 	Status fStatus;
 	StmtType fStmtType;
-	Anything fanyDescription;
-	ROAnything froaDescription;
-	Anything fBuffer;
 	Anything fSubStatements;
+	Description fDescriptions;
 	bool AllocHandle();
 	void Cleanup();
 
 	OracleStatement( OracleConnection *pConn, OCIStmt *phStmt );
 
-	Anything &GetOutputArea();
-	sword bindColumn( long lBindPos, Anything &col, long len, bool bIsNull = false );
+	sword bindColumn( long lBindPos, OracleStatement::Description::Element &aDescEl, long len, bool bIsNull = false );
 public:
 	/*! Create a new statement using the given connection and statement String
 	 * @param pConn Underlying OracleConnection object to use for operation
@@ -172,7 +263,7 @@ public:
 		return fpConnection;
 	}
 
-	ROAnything GetOutputDescription();
+	OracleStatement::Description &GetOutputDescription();
 	bool DefineOutputArea();
 	void setSPDescription( ROAnything roaSPDescription, const String &strReturnName );
 

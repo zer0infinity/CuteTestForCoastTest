@@ -62,19 +62,19 @@ void OracleDAImpl::ProcessResultSet( OracleResultset &aRSet, ParameterMapper *& 
 {
 	StartTrace(OracleDAImpl.ProcessResultSet);
 
-	ROAnything desc( aRSet.GetOutputDescription() );
+	OracleStatement::Description &desc( aRSet.GetOutputDescription() );
 	String resultformat, resultsize;
 	in->Get( "DBResultFormat", resultformat, ctx );
 	bool bTitlesOnce = resultformat.IsEqual( "TitlesOnce" );
 	if ( bTitlesOnce ) {
 		// put column name information
-		AnyExtensions::Iterator<ROAnything> aAnyIter( desc );
-		ROAnything roaCol;
+		AnyExtensions::Iterator<OracleStatement::Description, OracleStatement::Description::Element> aDescIter( desc );
+		OracleStatement::Description::Element aDescEl;
 		Anything temp;
-		while ( aAnyIter.Next( roaCol ) ) {
-			String strColName( roaCol["Name"].AsString() );
-			Trace("colname@" << aAnyIter.Index() << " [" << strColName << "]");
-			temp[strColName] = aAnyIter.Index();
+		while ( aDescIter.Next( aDescEl ) ) {
+			String strColName( aDescEl.AsString("Name") );
+			Trace("colname@" << aDescIter.Index() << " [" << strColName << "]");
+			temp[strColName] = aDescIter.Index();
 		}
 		out->Put( prefixResultSlot( strResultPrefix, "QueryTitles" ), temp, ctx );
 	}
@@ -83,20 +83,20 @@ void OracleDAImpl::ProcessResultSet( OracleResultset &aRSet, ParameterMapper *& 
 	long lRowCount( 0L );
 	while ( rsetStatus == OracleResultset::DATA_AVAILABLE || rsetStatus == OracleResultset::STREAM_DATA_AVAILABLE ) {
 		// do something
-		AnyExtensions::Iterator<ROAnything> aAnyIter( desc );
-		ROAnything roaCol;
+		AnyExtensions::Iterator<OracleStatement::Description, OracleStatement::Description::Element> aDescIter( desc );
+		OracleStatement::Description::Element aDescEl;
 		Anything anyResult;
-		while ( aAnyIter.Next( roaCol ) ) {
-			long lColType( roaCol["Type"].AsLong() );
+		while ( aDescIter.Next( aDescEl ) ) {
+			long lColType( aDescEl.AsLong("Type") );
 			Trace("column data type: " << lColType);
 			if ( lColType == SQLT_CUR || lColType == SQLT_RSET ) {
 			} else {
-				String strValueCol( aRSet.getString( roaCol["Idx"].AsLong() ) );
-				Trace("value of column [" << roaCol["Name"].AsString() << "] has value [" << strValueCol << "]")
+				String strValueCol( aRSet.getString( aDescEl.AsLong("Idx") ) );
+				Trace("value of column [" << aDescEl.AsString("Name") << "] has value [" << strValueCol << "]")
 				if ( bTitlesOnce ) {
-					anyResult[aAnyIter.Index()] = strValueCol;
+					anyResult[aDescIter.Index()] = strValueCol;
 				} else {
-					anyResult[roaCol["Name"].AsString()] = strValueCol;
+					anyResult[aDescEl.AsString("Name")] = strValueCol;
 				}
 			}
 		}
@@ -208,20 +208,20 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 											break;
 										case OracleStatement::UPDATE_COUNT_AVAILABLE: {
 											Trace("UPDATE_COUNT_AVAILABLE")
-											AnyExtensions::Iterator<ROAnything> aAnyIter( aStmt->GetOutputDescription() );
-											ROAnything roaCol;
-											while ( aAnyIter.Next( roaCol ) ) {
-												long lOraColIdx( roaCol["Idx"].AsLong() );
-												long lColType( roaCol["Type"].AsLong() );
+											AnyExtensions::Iterator<OracleStatement::Description, OracleStatement::Description::Element> aDescIter( aStmt->GetOutputDescription() );
+											OracleStatement::Description::Element aDescEl;
+											while ( aDescIter.Next( aDescEl ) ) {
+												long lOraColIdx( aDescEl.AsLong("Idx") );
+												long lColType( aDescEl.AsLong("Type") );
 												Trace("got column of type " << lColType)
 												if ( lColType == SQLT_CUR || lColType == SQLT_RSET ) {
 													OracleResultset::OracleResultsetPtr aRSet(
 														aStmt->getCursor( lOraColIdx ) );
-													ProcessResultSet( *aRSet.get(), in, ctx, out, roaCol["Name"].AsString() );
+													ProcessResultSet( *aRSet.get(), in, ctx, out, aDescEl.AsString("Name") );
 												} else {
 													String strValueCol( aStmt->getString( lOraColIdx ) );
-													Trace("value of column [" << roaCol["Name"].AsString() << "] has value [" << strValueCol << "]")
-													out->Put( roaCol["Name"].AsString(), strValueCol, ctx );
+													Trace("value of column [" << aDescEl.AsString("Name") << "] has value [" << strValueCol << "]")
+													out->Put( aDescEl.AsString("Name"), strValueCol, ctx );
 												}
 											}
 											bool bShowUpdateCount( false );
@@ -297,7 +297,7 @@ void OracleDAImpl::Error( Context &ctx, ResultMapper *pResultMapper, String str 
 	}
 }
 
-bool OracleDAImpl::BindSPVariables( ROAnything desc, ParameterMapper *pmapIn, ResultMapper *pmapOut,
+bool OracleDAImpl::BindSPVariables( OracleStatement::Description &desc, ParameterMapper *pmapIn, ResultMapper *pmapOut,
 									OracleStatement &aStmt, Context &ctx )
 {
 	StartTrace(OracleDAImpl.BindSPVariables);
@@ -309,25 +309,25 @@ bool OracleDAImpl::BindSPVariables( ROAnything desc, ParameterMapper *pmapIn, Re
 	String strErr( "BindSPVariables: " );
 	sword status;
 
-	AnyExtensions::Iterator<ROAnything> descIter( desc );
-	ROAnything col;
-	while ( descIter.Next( col ) ) {
+	AnyExtensions::Iterator<OracleStatement::Description, OracleStatement::Description::Element> aDescIter( desc );
+	OracleStatement::Description::Element aDescEl;
+	while ( aDescIter.Next( aDescEl ) ) {
 		// first bind variable position is 1
-		long bindPos( descIter.Index() + 1 );
-		String strParamname( col["Name"].AsString() );
+		long bindPos( aDescIter.Index() + 1 );
+		String strParamname( aDescEl.AsString("Name") );
 
-		switch ( col["Type"].AsLong() ) {
+		switch ( aDescEl.AsLong("Type") ) {
 			case SQLT_CUR:
 			case SQLT_RSET:
 				Trace("cursor or resultset binding")
-				if ( col["IoMode"].AsLong() == (long) OCI_TYPEPARAM_OUT || col["IoMode"].AsLong()
+				if ( aDescEl.AsLong("IoMode") == (long) OCI_TYPEPARAM_OUT || aDescEl.AsLong("IoMode")
 					 == (long) OCI_TYPEPARAM_INOUT ) {
-					Trace("binding value of type:" << col["Type"].AsLong())
+					Trace("binding value of type:" << aDescEl.AsLong("Type"))
 					aStmt.registerOutParam( bindPos );
 				}
 				break;
 			default:
-				if ( col["IoMode"].AsLong() == (long) OCI_TYPEPARAM_IN || col["IoMode"].AsLong()
+				if ( aDescEl.AsLong("IoMode") == (long) OCI_TYPEPARAM_IN || aDescEl.AsLong("IoMode")
 					 == (long) OCI_TYPEPARAM_INOUT ) {
 					String strValue;
 					if ( !pmapIn->Get( String( "Params." ).Append( strParamname ), strValue, ctx ) ) {
@@ -337,9 +337,9 @@ bool OracleDAImpl::BindSPVariables( ROAnything desc, ParameterMapper *pmapIn, Re
 					}
 					aStmt.setString( bindPos, strValue );
 				}
-				if ( col["IoMode"].AsLong() == (long) OCI_TYPEPARAM_OUT || col["IoMode"].AsLong()
+				if ( aDescEl.AsLong("IoMode") == (long) OCI_TYPEPARAM_OUT || aDescEl.AsLong("IoMode")
 					 == (long) OCI_TYPEPARAM_INOUT ) {
-					Trace("binding value of type: " << col["Type"].AsLong())
+					Trace("binding value of type: " << aDescEl.AsLong("Type"))
 					long lBufferSize( glStringBufferSize );
 					pmapIn->Get( "StringBufferSize", lBufferSize, ctx );
 					aStmt.registerOutParam( bindPos, OracleStatement::INTERNAL, lBufferSize );

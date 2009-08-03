@@ -12,11 +12,10 @@
 //--- modules used in the interface
 #include "config_coastoracle.h"
 #include "AllocatorNewDelete.h"
+#include "OracleStatement.h"
 #include "Anything.h"
 
 #include <memory>
-
-class OracleStatement;
 
 //---- OracleResultset -----------------------------------------------------------
 //! <b>Abstraction for a set of results </b>
@@ -67,7 +66,7 @@ public:
 	/*! Retrieve column layout of the current result set
 	 * @return Read only copy of the column descriptions
 	 */
-	ROAnything GetOutputDescription();
+	OracleStatement::Description &GetOutputDescription();
 	/*! Gain access to the underlying OracleStatement
 	 * @return Pointer to the underlying OracleStatement
 	 */

@@ -85,6 +85,10 @@
 		/EnableAll						10
 		/Ctor							-10
 	}
+	/StatementDescriptionTest {
+		/MainSwitch						10
+		/EnableAll						10
+	}
 ###
 	/WorkerPoolManager {
 		/MainSwitch						0
