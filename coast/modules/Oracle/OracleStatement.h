@@ -59,7 +59,7 @@ typedef std::auto_ptr<OracleStatement> OracleStatementPtr;
  * 		using getString() or using getCursor() to process the results of a cursor type parameter\n
  * 		Please use OracleResultset::OracleResultsetPtr to automatically track destruction of the OracleResultset after use.
  */
-class OracleStatement: public IFAObject, public Coast::AllocatorNewDelete   //EXPORTDECL_COASTORACLE
+class EXPORTDECL_COASTORACLE OracleStatement: public IFAObject, public Coast::AllocatorNewDelete
 {
 public:
 	//! Tracking internal state of statement processing

@@ -17,11 +17,11 @@
 	}
 ### common Sybase section
 	/OracleModule {
-		/MainSwitch						1
+		/MainSwitch						0
 		/EnableAll						10
 	}
 	/OracleDAImpl {
-		/MainSwitch						1
+		/MainSwitch						0
 		/EnableAll						11
 		/DoPrepareSQL {
 			/MainSwitch					10
@@ -42,29 +42,30 @@
 		}
 	}
 	/OracleConnection {
-		/MainSwitch						10
+		/MainSwitch						0
 		/EnableAll						10
 		/checkError						10
 	}
 	/OraclePooledConnection {
-		/MainSwitch						10
+		/MainSwitch						0
 		/EnableAll						10
 	}
 	/OracleEnvironment {
-		/MainSwitch						10
+		/MainSwitch						0
 		/EnableAll						10
 	}
 	/OracleResultset {
-		/MainSwitch						10
+		/MainSwitch						0
 		/EnableAll						10
 	}
 	/OracleStatement {
-		/MainSwitch						10
+		/MainSwitch						0
 		/EnableAll						10
 	}
 	/ConnectionPool {
 		/MainSwitch						0
 		/EnableAll						10
+		/IntGetOpen						0
 	}
 	/OracleDAImplTest {
 		/MainSwitch						1
@@ -75,18 +76,14 @@
 		/EnableAll						10
 	}
 	/OracleParameterMapper {
-		/MainSwitch						1
+		/MainSwitch						0
 		/EnableAll						10
 		/Ctor							-10
 	}
 	/OracleResultMapper {
-		/MainSwitch						1
+		/MainSwitch						0
 		/EnableAll						10
 		/Ctor							-10
-	}
-	/occi_auto_handle {
-		/MainSwitch						1
-		/EnableAll						10
 	}
 ###
 	/WorkerPoolManager {
@@ -145,7 +142,7 @@
 		/setUp							10
 	}
 	/ConfiguredActionTest {
-		/MainSwitch						1
+		/MainSwitch						0
 		/EnableAll						0
 		/DoTestWithContext				10
 		/PrepareConfig					10
@@ -176,6 +173,10 @@
 		/EnableAll						10
 	}
 	/MemChecker {
+		/MainSwitch						0
+		/EnableAll						10
+	}
+	/SlotCleaner {
 		/MainSwitch						0
 		/EnableAll						10
 	}

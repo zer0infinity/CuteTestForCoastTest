@@ -14,6 +14,7 @@ namespace Coast
 	static void *AllocatorNewDelete::operator new(size_t sz, Allocator *a)
 	{
 		if (a) {
+			//!FIXME: correct alignment could improve performance
 			void *mem = a->Calloc(1, sz + sizeof(Allocator *));
 			((Allocator **) mem)[0L] = a; // remember address of responsible Allocator
 			return (char *) mem + sizeof(Allocator *); // needs cast because of pointer arithmetic
@@ -22,8 +23,17 @@ namespace Coast
 	static void AllocatorNewDelete::operator delete(void *ptr)
 	{
 		if (ptr) {
+			//!FIXME: correct alignment could improve performance
 			void *realPtr = (char *) ptr - sizeof(Allocator *);
 			Allocator *a = ((Allocator **) realPtr)[0L]; // retrieve Allocator
+			a->Free(realPtr);
+		}
+	}
+	static void AllocatorNewDelete::operator delete(void *ptr, Allocator *a)
+	{
+		if (ptr && a) {
+			void *realPtr = (char *) ptr - sizeof(Allocator *);
+			assert(((Allocator **) realPtr)[0L] == a);
 			a->Free(realPtr);
 		}
 	}

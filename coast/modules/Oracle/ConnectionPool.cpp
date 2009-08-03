@@ -16,6 +16,7 @@
 #include "TimeStamp.h"
 #include "StringStream.h"
 #include "PeriodicAction.h"
+#include "AnyIterators.h"
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
@@ -52,7 +53,7 @@ namespace Coast
 					fpResourcesSema = new Semaphore( nrOfConnections );
 					String server, user;
 					for ( long i = 0; i < nrOfConnections; ++i ) {
-						OraclePooledConnection *pConnection = new (Storage::Global()) OraclePooledConnection( i,
+						OraclePooledConnection *pConnection = new ( Storage::Global() ) OraclePooledConnection( i,
 								myCfg["MemPoolSize"].AsLong( 2048L ), myCfg["MemPoolBuckets"].AsLong( 16L ) );
 						IntReleaseConnection( pConnection, server, user );
 					}
@@ -117,36 +118,39 @@ namespace Coast
 		{
 			StartTrace1(ConnectionPool.IntGetOpen, "server [" << server << "] user [" << user << "]");
 			pConnection = NULL;
-			Anything anyTimeStamp( Storage::Global() ), anyEntry( Storage::Global() );
+			ROAnything roaTimeStamp, roaTSEntry, roaConn;
 			TraceAny(fListOfConnections, "current list of connections");
-			if ( fListOfConnections.LookupPath( anyTimeStamp, "Open" ) && anyTimeStamp.GetSize() ) {
+			if ( ROAnything( fListOfConnections ).LookupPath( roaTimeStamp, "Open" ) && roaTimeStamp.GetSize() ) {
 				String strToLookup( server );
 				if ( strToLookup.Length() && user.Length() ) {
 					strToLookup << '.' << user;
 				}
 				Trace("Lookup name [" << strToLookup << "]");
-				for ( long lIdx = 0; lIdx < anyTimeStamp.GetSize(); ++lIdx ) {
-					Anything anyTS( Storage::Global() );
-					anyTS = anyTimeStamp[lIdx];
-					for ( long lTimeSub = 0L; lTimeSub < anyTS.GetSize(); ++lTimeSub ) {
-						if ( ( strToLookup.Length() <= 0 ) || strToLookup == anyTS[lTimeSub][1L].AsString() ) {
-							Trace("removing subentry :" << lIdx << ":" << lTimeSub);
-							anyEntry = anyTS[lTimeSub];
-							anyTS.Remove( lTimeSub );
+				bool bDone( false );
+				AnyExtensions::Iterator<ROAnything> aTSIter( roaTimeStamp );
+				while ( !bDone && aTSIter.Next( roaTSEntry ) ) {
+					AnyExtensions::Iterator<ROAnything> aConnIter( roaTSEntry );
+					while ( !bDone && aConnIter.Next( roaConn ) ) {
+						if ( ( strToLookup.Length() <= 0 ) || strToLookup.IsEqual( roaConn[1L].AsCharPtr("") ) ) {
+							String strTSEntry( "Open" );
+							strTSEntry << ':' << aTSIter.Index();
+							String strConnEntry( strTSEntry );
+							strConnEntry << ':' << aConnIter.Index();
+							Trace("removing conn entry :" << strConnEntry );
+							pConnection = SafeCast(roaConn[0L].AsIFAObject(), OraclePooledConnection);
+							SlotCleaner::Operate( fListOfConnections, strConnEntry );
+							if ( roaTSEntry.GetSize() <= 0 ) {
+								Trace("removing timestamp entry :" << strTSEntry );
+								SlotCleaner::Operate( fListOfConnections, strTSEntry );
+							}
+							TraceAny(fListOfConnections, "after cleaning");
 							// we do not have to close the connection before using because the OraclePooledConnection is for the same server and user
-							break;
+							bDone = true;
 						}
-					}
-					if ( !anyEntry.IsNull() ) {
-						pConnection = SafeCast(anyEntry[0L].AsIFAObject(), OraclePooledConnection);
-						if ( anyTS.GetSize() == 0L ) {
-							anyTimeStamp.Remove( lIdx );
-						}
-						break;
 					}
 				}
 			}
-			return !anyEntry.IsNull();
+			return pConnection;
 		}
 
 		bool ConnectionPool::IntBorrowConnection( OraclePooledConnection *&pConnection, const String &server,
