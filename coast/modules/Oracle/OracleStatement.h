@@ -13,14 +13,9 @@
 #include "OracleConnection.h"
 #include "IFAObject.h"
 #include "AllocatorNewDelete.h"
-#include <memory>
-#include <algorithm>
+#include <algorithm>	// std::max
 
 class OracleResultset;
-class OracleStatement;
-
-//! type definition of auto cleanup'd OracleStatement
-typedef std::auto_ptr<OracleStatement> OracleStatementPtr;
 
 //! <b>Abstraction of an Oracle statement</b>
 /*!
@@ -48,7 +43,7 @@ typedef std::auto_ptr<OracleStatement> OracleStatementPtr;
  * - \c OracleStatement::RESULT_SET_AVAILABLE \n
  * 		Tells us that we can call getResultset() to get a valid OracleResultset object and work on it to fetch all
  * 		rows of the query.\n
- * 		Please use OracleResultset::OracleResultsetPtr to automatically track destruction of the OracleResultset after use.
+ * 		Please use OracleResultsetPtr to automatically track destruction of the OracleResultset after use.
  * - \c OracleStatement::UPDATE_COUNT_AVAILABLE \n
  * 		Tells us how many rows were affected on the database by the query.
  *
@@ -58,7 +53,7 @@ typedef std::auto_ptr<OracleStatement> OracleStatementPtr;
  * - \c OracleStatement::UPDATE_COUNT_AVAILABLE \n
  * 		Tells us that we can now walk through the procedure parameters and retrieve either simple parameter values
  * 		using getString() or using getCursor() to process the results of a cursor type parameter\n
- * 		Please use OracleResultset::OracleResultsetPtr to automatically track destruction of the OracleResultset after use.
+ * 		Please use OracleResultsetPtr to automatically track destruction of the OracleResultset after use.
  */
 class EXPORTDECL_COASTORACLE OracleStatement: public IFAObject, public Coast::AllocatorNewDelete
 {
@@ -249,8 +244,8 @@ public:
 	void setPrefetchRows( long lPrefetchRows );
 	unsigned long getUpdateCount() const;
 
-	OracleResultset *getResultset();
-	OracleResultset *getCursor( long lColumnIndex );
+	OracleResultsetPtr getResultset();
+	OracleResultsetPtr getCursor( long lColumnIndex );
 	String getString( long lColumnIndex );
 
 	void registerOutParam( long lBindPos, BindType bindType = INTERNAL, long lBufferSize = -1 );

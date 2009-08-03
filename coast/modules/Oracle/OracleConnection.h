@@ -14,7 +14,6 @@
 #include "Anything.h"
 #include "Threads.h"
 #include "OciAutoHandle.h"
-#include <memory>
 
 class OracleEnvironment;
 class OracleStatement;
@@ -32,8 +31,6 @@ class OracleStatement;
 class EXPORTDECL_COASTORACLE OracleConnection
 {
 public:
-	typedef std::auto_ptr<OracleConnection> OracleConnectionPtr;
-
 	enum Status {
 		eUnitialized, //!< state if constructor failed and connection can not be used
 		eHandlesAllocated, //!< signals that all handles were allocated successfully
@@ -112,8 +109,8 @@ public:
 	 * @param roaSPDescription Needs to be supplied if the statement is a stored procedure or function. This data is needed to supply the correct parameter names and types.
 	 * @return newly created OracelStatment in case of success
 	 */
-	OracleStatement *createStatement( String strStatement, long lPrefetchRows, OracleConnection::ObjectType aObjType =
-										  OracleConnection::TYPE_SIMPLE, String strReturnName = String() );
+	OracleStatementPtr createStatement( String strStatement, long lPrefetchRows, OracleConnection::ObjectType aObjType =
+											OracleConnection::TYPE_SIMPLE, String strReturnName = String() );
 
 	/*! access OCIError handle
 	 *

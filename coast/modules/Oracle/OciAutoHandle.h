@@ -9,6 +9,7 @@
 #ifndef OCIAUTOHANDLE_H_
 #define OCIAUTOHANDLE_H_
 
+#include <memory>
 #include "oci.h"
 
 //---- oci_auto_handle -----------------------------------------------------------
@@ -126,5 +127,16 @@ typedef oci_auto_handle<OCIServer, OCI_HTYPE_SERVER> SrvHandleType;
 typedef oci_auto_handle<OCISvcCtx, OCI_HTYPE_SVCCTX> SvcHandleType;
 //! OCI user session handle
 typedef oci_auto_handle<OCISession, OCI_HTYPE_SESSION> UsrHandleType;
+
+class OracleResultset;
+class OracleStatement;
+class OracleConnection;
+class OracleEnvironment;
+
+//! type definition of auto cleanup'd OracleStatement
+typedef std::auto_ptr<OracleStatement> OracleStatementPtr;
+typedef std::auto_ptr<OracleResultset> OracleResultsetPtr;
+typedef std::auto_ptr<OracleConnection> OracleConnectionPtr;
+typedef std::auto_ptr<OracleEnvironment> OracleEnvironmentPtr;
 
 #endif /* OCIAUTOHANDLE_H_ */

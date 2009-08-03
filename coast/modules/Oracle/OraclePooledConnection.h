@@ -16,7 +16,6 @@
 #include "OracleConnection.h"
 #include "ITOString.h"
 #include "IFAObject.h"
-#include <memory>	// for auto_ptr
 
 //---- OraclePooledConnection -----------------------------------------------------------
 //! <b>Connection adapter to handle Oracle specific connections using Coast::Oracle::ConnectionPool</b>
@@ -27,8 +26,8 @@
  */
 class EXPORTDECL_COASTORACLE OraclePooledConnection: public IFAObject, public Coast::AllocatorNewDelete
 {
-	OracleEnvironment::OracleEnvironmentPtr fEnvironment;
-	OracleConnection::OracleConnectionPtr fConnection;
+	OracleEnvironmentPtr fEnvironment;
+	OracleConnectionPtr fConnection;
 	unsigned long fId, fPoolSize, fPoolBuckets;
 	OraclePooledConnection(const OraclePooledConnection &);
 	OraclePooledConnection &operator=(const OraclePooledConnection &);

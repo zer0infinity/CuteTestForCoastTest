@@ -30,13 +30,13 @@ bool OraclePooledConnection::Open( String const &strServer, String const &strUse
 {
 	StartTrace1(OraclePooledConnection.Open, "server [" << strServer << "] user [" << strUsername << "]");
 	if ( !fEnvironment.get() ) {
-		fEnvironment = OracleEnvironment::OracleEnvironmentPtr( new (Storage::Global()) OracleEnvironment(
-						   OracleEnvironment::THREADED_UNMUTEXED, fId, fPoolSize, fPoolBuckets ) );
+		fEnvironment = OracleEnvironmentPtr( new (Storage::Global()) OracleEnvironment(
+				OracleEnvironment::THREADED_UNMUTEXED, fId, fPoolSize, fPoolBuckets ) );
 	}
 	if ( fEnvironment.get() && fEnvironment->valid() ) {
 		if ( !fConnection.get() )
-			fConnection = OracleConnection::OracleConnectionPtr( fEnvironment->createConnection( strServer,
-						  strUsername, strPassword ) );
+			fConnection = OracleConnectionPtr( fEnvironment->createConnection( strServer,
+											   strUsername, strPassword ) );
 		else {
 			fConnection->Open( strServer, strUsername, strPassword );
 		}

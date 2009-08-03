@@ -80,14 +80,13 @@ OracleEnvironment::~OracleEnvironment()
 	fEnvhp.reset();
 }
 
-OracleConnection *OracleEnvironment::createConnection( String const &strSrv, String const &strUsr, String const &strPwd )
+OracleConnectionPtr OracleEnvironment::createConnection( String const &strSrv, String const &strUsr, String const &strPwd )
 {
 	StartTrace(OracleEnvironment.createConnection);
-	OracleConnection *pConnection( new OracleConnection( *this ) );
-	if ( pConnection ) {
+	OracleConnectionPtr pConnection( new OracleConnection( *this ) );
+	if ( pConnection.get() ) {
 		if ( !pConnection->Open( strSrv, strUsr, strPwd ) ) {
-			delete pConnection;
-			pConnection = 0;
+			pConnection.reset();
 		}
 	}
 	return pConnection;

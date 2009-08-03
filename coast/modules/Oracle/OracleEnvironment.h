@@ -27,9 +27,6 @@ typedef std::auto_ptr<Allocator> AllocatorPtr;
  */
 class EXPORTDECL_COASTORACLE OracleEnvironment : public Coast::AllocatorNewDelete
 {
-public:
-	typedef std::auto_ptr<OracleEnvironment> OracleEnvironmentPtr;
-
 private:
 	//! OCI environment handle
 	EnvHandleType fEnvhp;
@@ -93,7 +90,7 @@ public:
 	 * @return pointer to newly created OracleConnection object
 	 * @note The returned OracleConnection object must be freed by the caller!
 	 */
-	OracleConnection *createConnection( String const &strSrv, String const &strUsr, String const &strPwd );
+	OracleConnectionPtr createConnection( String const &strSrv, String const &strUsr, String const &strPwd );
 
 	Allocator *getAllocator() {
 		return fMemPool.get();

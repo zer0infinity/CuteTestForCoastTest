@@ -164,7 +164,7 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 								switch ( status ) {
 									case OracleStatement::RESULT_SET_AVAILABLE: {
 										Trace("RESULT_SET_AVAILABLE");
-										OracleResultset::OracleResultsetPtr aRSet( aStmt->getResultset() );
+										OracleResultsetPtr aRSet( aStmt->getResultset() );
 										ProcessResultSet( *aRSet.get(), in, ctx, out, "" );
 										break;
 									}
@@ -215,7 +215,7 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 												long lColType( aDescEl.AsLong("Type") );
 												Trace("got column of type " << lColType)
 												if ( lColType == SQLT_CUR || lColType == SQLT_RSET ) {
-													OracleResultset::OracleResultsetPtr aRSet(
+													OracleResultsetPtr aRSet(
 														aStmt->getCursor( lOraColIdx ) );
 													ProcessResultSet( *aRSet.get(), in, ctx, out, aDescEl.AsString("Name") );
 												} else {

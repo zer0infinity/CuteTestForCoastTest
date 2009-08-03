@@ -15,8 +15,6 @@
 #include "OracleStatement.h"
 #include "Anything.h"
 
-#include <memory>
-
 //---- OracleResultset -----------------------------------------------------------
 //! <b>Abstraction for a set of results </b>
 /*!
@@ -29,10 +27,6 @@
 class EXPORTDECL_COASTORACLE OracleResultset : public Coast::AllocatorNewDelete
 {
 public:
-	/*! Convenience type for automated resource management of OracleResultset instances
-	 */
-	typedef std::auto_ptr<OracleResultset> OracleResultsetPtr;
-
 	/*! Status is used for internal state transition */
 	enum Status {
 		//! this is the initial state when next() was not called yet

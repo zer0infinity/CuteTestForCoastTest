@@ -214,7 +214,7 @@ String OracleConnection::errorMessage( sword status )
 	return error;
 }
 
-OracleStatement *OracleConnection::createStatement( String strStatement, long lPrefetchRows,
+OracleStatementPtr OracleConnection::createStatement( String strStatement, long lPrefetchRows,
 		OracleConnection::ObjectType aObjType, String strReturnName )
 {
 	StartTrace1(OracleConnection.createStatement, "sp name [" << strStatement << "]");
@@ -229,8 +229,8 @@ OracleStatement *OracleConnection::createStatement( String strStatement, long lP
 			throw ex;
 		}
 	}
-	OracleStatement *pStmt( new (Storage::Current()) OracleStatement( this, strStatement ) );
-	if ( pStmt ) {
+	OracleStatementPtr pStmt( new (Storage::Current()) OracleStatement( this, strStatement ) );
+	if ( pStmt.get() ) {
 		pStmt->setPrefetchRows( lPrefetchRows );
 		if ( pStmt->Prepare() && pStmt->getStatementType() == OracleStatement::STMT_BEGIN ) {
 			pStmt->setSPDescription( desc, strReturnName );
