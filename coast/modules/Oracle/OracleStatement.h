@@ -70,6 +70,12 @@ public:
 
 	//! after statement preparation, the type of statement is known
 	enum StmtType {
+#ifndef OCI_STMT_UNKNOWN
+#define OCI_STMT_UNKNOWN 0	//!< define value for oracle ic-libs <11.x
+#endif
+#ifndef OCI_STMT_CALL
+#define OCI_STMT_CALL 10	//!< define value for oracle ic-libs <11.x
+#endif
 		STMT_UNKNOWN = OCI_STMT_UNKNOWN,//!< unknown statement
 		STMT_SELECT = OCI_STMT_SELECT,  //!< select statement
 		STMT_UPDATE = OCI_STMT_UPDATE,  //!< update statement
