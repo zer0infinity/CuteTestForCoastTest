@@ -239,37 +239,49 @@ OracleStatementPtr OracleConnection::createStatement( String strStatement, long 
 	return pStmt;
 }
 
+bool checkGetCacheEntry(ROAnything &roaCache, OracleConnection::ObjectType &aObjType, const String &command, ROAnything &desc )
+{
+	StartTrace(OracleConnection.checkGetCacheEntry);
+	ROAnything roaCacheEntry;
+	if ( roaCache.LookupPath( roaCacheEntry, command ) ) {
+		desc = roaCacheEntry["description"];
+		aObjType = (OracleConnection::ObjectType) roaCacheEntry["type"].AsLong( (long) OracleConnection::TYPE_UNK );
+		TraceAny(roaCacheEntry, "entry [" << command << "] found in cache");
+		return true;
+	}
+	return false;
+}
+
 OracleConnection::ObjectType OracleConnection::GetSPDescription( const String &command, ROAnything &desc )
 {
 	StartTrace(OracleConnection.GetSPDescription);
 
 	ObjectType aObjType( TYPE_UNK );
-	ROAnything roaCacheEntry;
 	{
 		LockUnlockEntry aLockEntry( fgDescriptionLock, RWLock::eReading );
-		if ( fgDescriptionCacheRO.LookupPath( roaCacheEntry, command ) ) {
-			desc = roaCacheEntry["description"];
-			aObjType = (ObjectType) roaCacheEntry["type"].AsLong( (long) OracleConnection::TYPE_UNK );
-			TraceAny(roaCacheEntry, "entry found in cache");
+		if ( checkGetCacheEntry(fgDescriptionCacheRO, aObjType, command, desc) ) {
 			return aObjType;
 		}
 	}
-	LockUnlockEntry aLockEntry( fgDescriptionLock, RWLock::eWriting );
-	// check if someone was faster and already stored the description
-	if ( fgDescriptionCacheRO.LookupPath( roaCacheEntry, command ) ) {
-		desc = roaCacheEntry["description"];
-		aObjType = (ObjectType) roaCacheEntry["type"].AsLong( (long) OracleConnection::TYPE_UNK );
-		TraceAny(roaCacheEntry, "entry found in cache");
-		return aObjType;
+	{
+		LockUnlockEntry aLockEntry( fgDescriptionLock, RWLock::eWriting );
+		// check if someone was faster and already stored the description
+		if ( checkGetCacheEntry(fgDescriptionCacheRO, aObjType, command, desc) ) {
+			return aObjType;
+		}
+		Anything anyDesc( fgDescriptionCache.GetAllocator() );
+		Anything anyType( fgDescriptionCache.GetAllocator() );
+		aObjType = ReadSPDescriptionFromDB( command, anyDesc );
+		anyType = (long) aObjType;
+
+		SlotPutter::Operate(anyDesc, fgDescriptionCache, String(command).Append('.').Append("description"));
+		SlotPutter::Operate(anyType, fgDescriptionCache, String(command).Append('.').Append("type"));
+
+		TraceAny(anyDesc, "new entry [" << command << "] stored in cache");
+		if ( checkGetCacheEntry(fgDescriptionCacheRO, aObjType, command, desc) ) {
+			return aObjType;
+		}
 	}
-	MetaThing anyCacheEntry( Storage::Global() );
-	anyCacheEntry["description"] = MetaThing( Storage::Global() );
-	Anything anyDesc( anyCacheEntry["description"] );
-	aObjType = ReadSPDescriptionFromDB( command, anyDesc );
-	anyCacheEntry["type"] = (long) aObjType;
-	fgDescriptionCache[command] = anyCacheEntry;
-	desc = anyDesc;
-	TraceAny(anyCacheEntry, "new entry created into cache");
 	return aObjType;
 }
 
@@ -385,7 +397,7 @@ OracleConnection::ObjectType OracleConnection::ReadSPDescriptionFromDB( const St
 		}
 		Trace("Size: " << (int)data_len)
 
-		Anything param;
+		Anything param( desc.GetAllocator() );
 		param["Name"] = strName;
 		param["Type"] = dtype;
 		param["Length"] = (int) data_len;
