@@ -4,17 +4,16 @@ import StanfordUtils
 packagename = StanfordUtils.getPackageName(__name__)
 
 buildSettings = {
-                 'CoastCompress' : {
-                     'includeSubdir'    : '',
-                     'linkDependencies'       : ['CoastFoundation', 'zlib'],
-                     'sourceFiles'      : StanfordUtils.listFiles(['*.cpp']),
-                     'targetType'       : 'LibraryShared',
-                     'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL'] },
-                     'public' : {
-                                 'includes'     : StanfordUtils.listFiles(['*.h']),
-#                                 'appendUnique' : { 'CPPDEFINES' : [], 'LIBS' : [] },
-                    }
-                 }
-                }
+     packagename : {
+         'includeSubdir'    : '',
+         'linkDependencies'       : ['CoastFoundation', 'zlib'],
+         'sourceFiles'      : StanfordUtils.listFiles(['*.cpp']),
+         'targetType'       : 'LibraryShared',
+         'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL'] },
+         'public' : {
+                     'includes'     : StanfordUtils.listFiles(['*.h']),
+        }
+     }
+    }
 
 StanfordUtils.createTargets(packagename, buildSettings)

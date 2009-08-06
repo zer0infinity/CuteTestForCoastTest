@@ -4,7 +4,7 @@ import StanfordUtils
 packagename = StanfordUtils.getPackageName( __name__ )
 
 buildSettings = {
-    'CoastMTFoundation' : {
+    packagename : {
         'includeSubdir'    : '',
         'linkDependencies' : ['CoastFoundation'],
         'sourceFiles'      : StanfordUtils.listFiles( ['*.cpp'] ),
@@ -18,3 +18,4 @@ buildSettings = {
 }
 
 StanfordUtils.createTargets( packagename, buildSettings )
+

@@ -4,17 +4,16 @@ import StanfordUtils
 packagename = StanfordUtils.getPackageName(__name__)
 
 buildSettings = {
-                 'CoastHTTP' : {
-                     'includeSubdir'    : '',
-                     'linkDependencies'       : ['CoastSecurity'],
-                     'sourceFiles'      : StanfordUtils.listFiles(['*.cpp']),
-                     'targetType'       : 'LibraryShared',
-                     'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL'] },
-                     'public' : {
-                                 'includes'     : StanfordUtils.listFiles(['*.h']),
-#                                'appendUnique' : { 'CPPDEFINES' : 'fooX' },
-                    }
-                 }
-                }
+     packagename : {
+         'includeSubdir'    : '',
+         'linkDependencies'       : ['CoastSecurity'],
+         'sourceFiles'      : StanfordUtils.listFiles(['*.cpp']),
+         'targetType'       : 'LibraryShared',
+         'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL'] },
+         'public' : {
+                     'includes'     : StanfordUtils.listFiles(['*.h']),
+        }
+     }
+    }
 
 StanfordUtils.createTargets(packagename, buildSettings)

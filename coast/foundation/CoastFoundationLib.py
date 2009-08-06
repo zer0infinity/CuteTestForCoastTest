@@ -11,7 +11,6 @@ buildSettings = {
         'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL'] },
         'public' : {
             'includes'     : StanfordUtils.listFiles(['*.h']),
-#            'appendUnique' : { 'CPPDEFINES' : 'fooX' },
        }
     }
 }

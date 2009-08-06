@@ -4,17 +4,16 @@ import StanfordUtils
 packagename = StanfordUtils.getPackageName(__name__)
 
 buildSettings = {
-                 'CoastActions' : {
-                     'includeSubdir'    : '',
-                     'linkDependencies'       : ['CoastWDBase', 'CoastRegex'],
-                     'sourceFiles'      : StanfordUtils.listFiles(['*.cpp']),
-                     'targetType'       : 'LibraryShared',
-                     'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL'] },
-                     'public' : {
-                                 'includes'     : StanfordUtils.listFiles(['*.h']),
-#                                'appendUnique' : { 'CPPDEFINES' : 'fooX' },
-                    }
-                 }
-                }
+     packagename : {
+         'includeSubdir'    : '',
+         'linkDependencies'       : ['CoastWDBase', 'CoastRegex'],
+         'sourceFiles'      : StanfordUtils.listFiles(['*.cpp']),
+         'targetType'       : 'LibraryShared',
+         'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL'] },
+         'public' : {
+                     'includes'     : StanfordUtils.listFiles(['*.h']),
+        }
+     }
+    }
 
 StanfordUtils.createTargets(packagename, buildSettings)
