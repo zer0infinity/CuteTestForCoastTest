@@ -3,8 +3,6 @@
 	<name>CoastWDBase</name>
 	<comment></comment>
 	<projects>
-		<project>compress</project>
-		<project>mtfoundationTest</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

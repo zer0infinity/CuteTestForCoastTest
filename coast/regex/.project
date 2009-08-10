@@ -3,7 +3,6 @@
 	<name>CoastRegex</name>
 	<comment></comment>
 	<projects>
-		<project>foundation</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

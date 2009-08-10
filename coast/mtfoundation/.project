@@ -13,34 +13,6 @@
 		<buildCommand>
 			<name>org.nic_nac_project.lothar.sconsbuilder.SConsBuilder</name>
 			<arguments>
-				<dictionary>
-					<key>buildconfiguration</key>
-					<value>release</value>
-				</dictionary>
-				<dictionary>
-					<key>buildconfigurations</key>
-					<value>release\ndebug\ncoverage</value>
-				</dictionary>
-				<dictionary>
-					<key>commandlineargs</key>
-					<value>-u coast_mtfoundation</value>
-				</dictionary>
-				<dictionary>
-					<key>numjobs</key>
-					<value>1</value>
-				</dictionary>
-				<dictionary>
-					<key>showcommands</key>
-					<value>true</value>
-				</dictionary>
-				<dictionary>
-					<key>usecache</key>
-					<value>false</value>
-				</dictionary>
-				<dictionary>
-					<key>verbosity</key>
-					<value>1</value>
-				</dictionary>
 			</arguments>
 		</buildCommand>
 	</buildSpec>
