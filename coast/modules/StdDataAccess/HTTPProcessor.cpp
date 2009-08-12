@@ -135,11 +135,8 @@ void HTTPProcessor::DoProcessRequest(ostream &reply, Context &ctx)
 bool HTTPProcessor::IsZipEncodingAcceptedByClient(Context &ctx)
 {
 	StartTrace(HTTPProcessor.IsZipEncodingAcceptedByClient);
-
 	TraceAny(ctx.GetRequest(), "Request");
-
 	ROAnything roaEncoding;
-
 	if (!ctx.Lookup("DisableZipEncoding", 0L) && ctx.Lookup("header.ACCEPT-ENCODING", roaEncoding) ) {
 		AnyExtensions::LeafIterator<ROAnything> iter(roaEncoding);
 

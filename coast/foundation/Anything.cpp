@@ -137,7 +137,7 @@ private:
 bool AnythingToken::isNameDelimiter(char c)
 {
 	// alternative Impl: return strchr(" \t\n\r\v\"/#{}[&*",c) != 0;
-	// isprint( (unsigned char) c) shouldn't be used because of umlauts ��� and signed chars
+	// isprint( (unsigned char) c) shouldn't be used because of umlauts äüö and signed chars
 	// may be double quotes " should also be considered delimiters
 	return isspace((unsigned char) c) || '/' == c || '#' == c || '&' == c || '*' == c
 		   || '{' == c || '}' == c || '[' == c //|| ']' == c
