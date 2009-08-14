@@ -29,5 +29,5 @@
 	path = site_scons
 	url = ssh://sifs-coast1.hsr.ch/var/repositories/git/sconsider.git
 [submodule "scripts"]
-	path = scripts
-	url = ssh://sifs-coast1.hsr.ch/var/repositories/git/wdscripts.git
+    path = scripts
+    url = ssh://sifs-coast1.hsr.ch/var/repositories/git/wdscripts.git
