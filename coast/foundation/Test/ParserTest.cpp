@@ -448,7 +448,6 @@ void ParserTest::assertParsedAsDouble(const char *in, double val, int id)
 
 	is >> any;
 	assertEqual(AnyDoubleType, any.GetType());
-
 	if (AnyDoubleType == any.GetType()) {
 		assertDoublesEqual(any.AsDouble(), val, 1E-8);
 	} else {
@@ -471,7 +470,6 @@ void ParserTest::assertParsedAsLong(const char *in, long val, int id)
 
 	is >> any;
 	assertEqual(AnyLongType, any.GetType());
-
 	if (AnyLongType == any.GetType()) {
 		assertEqual(val, any.AsLong());
 	} else {
@@ -494,7 +492,6 @@ void ParserTest::assertParsedAsString(const char *in, int id)
 
 	is >> any;
 	assertEqual(AnyCharPtrType, any.GetType());
-
 	if (AnyCharPtrType == any.GetType()) {
 		assertEqual(in, any.AsCharPtr());
 	} else {
@@ -757,7 +754,6 @@ void ParserTest::parseSimpleTypeCharPtr ()
 	anyTest.Import( is4 );
 	t_assert( anyTest.GetType() == AnyCharPtrType );
 	t_assert( anyTest.GetSize() == 1 );
-
 	// korrekte Syntax (alle char mit Esc-Seq.)
 	String input5;
 	input5.Append("\"");
@@ -1024,7 +1020,6 @@ void  ParserTest::Semantic0Test()
 		// SlotName should be NULL but it is not:  errMsg
 		t_assert( false );
 	}
-
 	t_assert( any[1L].GetType() == AnyCharPtrType );
 	assertCharPtrEqual( any[1L].AsCharPtr(), "\x01" );
 	if (any.SlotName(1L) != NULL ) {
@@ -1038,21 +1033,18 @@ void  ParserTest::Semantic0Test()
 		// SlotName should be NULL but it is not:  errMsg
 		t_assert( false );
 	}
-
 	t_assert( any[3L].GetType() == AnyCharPtrType );
 	assertCharPtrEqual( any[3L].AsCharPtr(), "\\\\x41" );
 	if (any.SlotName(3L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
 		t_assert( false );
 	}
-
 	t_assert( any[4L].GetType() == AnyCharPtrType );
 	assertCharPtrEqual( any[4L].AsCharPtr(), "\x41" );
 	if (any.SlotName(4L) != NULL ) {
 		// SlotName should be NULL but it is not:  errMsg
 		t_assert( false );
 	}
-
 	t_assert( any["{}"].GetType() == AnyLongType );
 	t_assert( any["{}"].AsLong() == 1L );
 	t_assert( any[5L].GetType() == AnyLongType );

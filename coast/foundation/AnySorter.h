@@ -137,5 +137,4 @@ namespace AnyExtensions
 		}
 	};
 };
-
 #endif
