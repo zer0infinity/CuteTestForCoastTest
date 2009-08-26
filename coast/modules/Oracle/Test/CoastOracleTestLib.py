@@ -1,6 +1,7 @@
 from __future__ import with_statement
 import os, subprocess, pdb
 import StanfordUtils
+from stat import *
 
 packagename = StanfordUtils.getPackageName(__name__)
 
@@ -43,21 +44,17 @@ def tearDown(target, source, env):
     runSQL("oratest/oratest@sifs-coast1.hsr.ch:1521/orcl", path.File('drop_oratest_schema.sql').abspath, logpath.abspath)
 
 buildSettings = {
-                 packagename : {
-                     'targetType'       : 'ProgramTest',
-                     'linkDependencies' : ['CoastOracle', 'testfwWDBase'],
-                     'requires'         : ['CoastAppLog', 'CoastRenderers', 'oracle.sqlplus'],
-                     'sourceFiles'      : StanfordUtils.listFiles(['*.cpp']),
-                     'configFiles'      : StanfordUtils.listFiles(['config/*.any',
-                                                                   'config/*.txt',
-                                                                   'config/*.tst',
-                                                                   'config/*.sql',
-                                                                   'tmp/*.any']),
-                     'runConfig'        : {
-                                           'setUp': setUp,
-                                           'tearDown': tearDown,
-                                          },
-                     },
-                 }
+    packagename : {
+        'targetType'       : 'ProgramTest',
+        'linkDependencies' : ['CoastOracle', 'testfwWDBase'],
+        'requires'         : ['CoastAppLog', 'CoastRenderers', 'oracle.sqlplus'],
+        'sourceFiles'      : StanfordUtils.listFiles(['*.cpp']),
+        'copyFiles'        : [(StanfordUtils.findFiles(['.'],['.any','.txt','.tst','.sql']), S_IRUSR|S_IRGRP|S_IROTH)],
+        'runConfig'        : {
+                              'setUp': setUp,
+                              'tearDown': tearDown,
+                             },
+    },
+}
 
 StanfordUtils.createTargets(packagename, buildSettings)

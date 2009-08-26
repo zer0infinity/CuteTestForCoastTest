@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>CoastPerfTestTest</name>
+	<name>CoastFoundation</name>
 	<comment></comment>
 	<projects>
+		<project>loki</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -13,6 +14,30 @@
 		<buildCommand>
 			<name>org.nic_nac_project.lothar.sconsbuilder.SConsBuilder</name>
 			<arguments>
+				<dictionary>
+					<key>buildconfiguration</key>
+					<value>debug</value>
+				</dictionary>
+				<dictionary>
+					<key>buildconfigurations</key>
+					<value>release\ndebug\ncoverage</value>
+				</dictionary>
+				<dictionary>
+					<key>numjobs</key>
+					<value>1</value>
+				</dictionary>
+				<dictionary>
+					<key>showcommands</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>usecache</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>verbosity</key>
+					<value>15</value>
+				</dictionary>
 			</arguments>
 		</buildCommand>
 	</buildSpec>

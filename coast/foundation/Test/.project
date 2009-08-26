@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>CoastPerfTest</name>
+	<name>CoastFoundationTest</name>
 	<comment></comment>
 	<projects>
+		<project>foundation</project>
+		<project>loki</project>
+		<project>testfw</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -22,20 +25,16 @@
 					<value>release\ndebug\ncoverage</value>
 				</dictionary>
 				<dictionary>
-					<key>commandlineargs</key>
-					<value>-u</value>
-				</dictionary>
-				<dictionary>
 					<key>numjobs</key>
 					<value>1</value>
 				</dictionary>
 				<dictionary>
 					<key>showcommands</key>
-					<value>false</value>
+					<value>true</value>
 				</dictionary>
 				<dictionary>
 					<key>usecache</key>
-					<value>false</value>
+					<value>true</value>
 				</dictionary>
 				<dictionary>
 					<key>verbosity</key>
