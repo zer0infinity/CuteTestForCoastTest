@@ -16,22 +16,28 @@
 using namespace std;
 #endif
 
-void TextTestResult::addError (TestLocation *e)
+void TextTestResult::addError (TestLocation *loc)
 {
-	TestResult::addError (e);
-	cerr << "E\n";
+	TestResult::addError (loc);
+	cerr << "E";
 }
 
-void TextTestResult::addFailure (TestLocation *e)
+void TextTestResult::addFailure (TestLocation *loc)
 {
-	TestResult::addFailure (e);
-	cerr << "F\n";
+	TestResult::addFailure (loc);
+	cerr << "F";
 }
 
 void TextTestResult::startTest (Test *test)
 {
 	TestResult::startTest (test);
-	cerr << ".";
+	cerr << "--" << test->toString() << "--";
+}
+
+void TextTestResult::endTest (Test *test)
+{
+	TestResult::endTest (test);
+	cerr << endl;
 }
 
 void TextTestResult::printCauses(ostream &stream, TestLocList &causes)
@@ -46,7 +52,7 @@ void TextTestResult::printCauses(ostream &stream, TestLocList &causes)
 
 	TestLocation *cause;
 	for ( cause = causes.first(); cause != 0; cause = causes.next() ) {
-		stream	<< i << ") " << "line: "
+		stream	<< i << ") " << cause->getTestName() << " at line: "
 				<< cause->getFileName()
 				<< ":"
 				<< cause->getLineNumber()
@@ -105,7 +111,7 @@ void TextTestResult::print (ostream &stream)
 void TextTestResult::printHeader (ostream &stream)
 {
 	if (wasSuccessful ())
-		cout << endl << "OK (" << runTests () << " tests and "
+		cout << "OK (" << runTests () << " tests and "
 			 << testSuccesses() << " assertions in " << elapsedTime() << " ms)" << endl;
 	else
 		cout << endl

@@ -12,8 +12,7 @@
 #include "TestLocation.h"
 #include "TestLocList.h"
 #include "TestTimer.h"
-
-class Test;
+#include "Test.h"
 
 //! <B>collect the results of the tests</B>
 /*!

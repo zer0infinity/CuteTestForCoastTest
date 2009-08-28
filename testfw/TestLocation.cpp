@@ -31,6 +31,7 @@ TestLocation::TestLocation (Test *aTest, TString &cause, TString &fileName,
 		fMessage << "; " << message;
 	} // if
 	fFileName << fileName;
+	fTestName << aTest->toString();
 	fLineNumber = lineNumber;
 }
 

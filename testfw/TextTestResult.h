@@ -21,9 +21,10 @@
 class TextTestResult : public TestResult
 {
 public:
-	virtual void		addError	(TestLocation *e);
-	virtual void		addFailure	(TestLocation *e);
+	virtual void		addError	(TestLocation *loc);
+	virtual void		addFailure	(TestLocation *loc);
 	virtual void		startTest	(Test *test);
+	virtual void		endTest		(Test *test);
 	virtual void		print (ostream &stream);
 	virtual void		printCauses (ostream &stream, TestLocList &causes);
 	virtual void		printErrors (ostream &stream);

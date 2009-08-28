@@ -21,6 +21,7 @@ protected:
 	TString fMessage;
 	long 	fLineNumber;
 	TString fFileName;
+	TString fTestName;
 
 public:
 	TestLocation (Test *aTest, TString &cause, TString &fileName,
@@ -29,7 +30,6 @@ public:
 	// We do not own the test ...
 	~TestLocation () {};
 
-	Test	*failedTest ();
 	TString	toString ();
 
 	TString	&getMessage() {
@@ -40,6 +40,9 @@ public:
 	};
 	TString	&getFileName() {
 		return(fFileName);
+	};
+	TString	&getTestName() {
+		return(fTestName);
 	};
 
 	// TestLocation		operator = (TestLocation);
