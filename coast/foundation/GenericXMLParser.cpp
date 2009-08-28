@@ -402,10 +402,7 @@ Anything GenericXMLParser::ProcessArgs(const String &renderer, const String &arg
 	}
 //FIXME
 	result[renderer] = aargs;
-
-#ifdef DEBUG
 	TraceAny(aargs, "aargs");
-#endif
 	return result;
 }
 

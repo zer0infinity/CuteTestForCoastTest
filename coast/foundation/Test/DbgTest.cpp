@@ -28,7 +28,7 @@ DbgTest::~DbgTest()
 {
 }
 
-#ifdef DEBUG
+#ifdef COAST_TRACE
 
 void DbgTest::CheckTriggerTest()
 {
@@ -242,7 +242,7 @@ void DbgTest::CheckMacrosCompile()
 Test *DbgTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
-#ifdef DEBUG
+#ifdef COAST_TRACE
 	ADD_CASE(testSuite, DbgTest, CheckTriggerTest);
 	ADD_CASE(testSuite, DbgTest, CheckContextTriggerFailure);
 	ADD_CASE(testSuite, DbgTest, CheckTriggerTestFile);

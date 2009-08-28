@@ -12,7 +12,7 @@
 #include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 
 //---- Tracer --------------------------------------------------------------------------
-#ifdef DEBUG
+#ifdef COAST_TRACE
 #include "ITOString.h"
 
 class EXPORTDECL_FOUNDATION Anything;
@@ -23,10 +23,10 @@ class EXPORTDECL_FOUNDATION TracerHelper;
 /*! \file
 The trace facility of Coast is very powerful due to its flexibility based on configuration in a file. To enable/disable
 trace output, no recompilation of code is necessary. Simple changes in a file named \b Dbg.any are necessary. Due to some overhead
-to evaluate if trace messages are to be printed or not, the facility will only be enabled when flag \em DEBUG was enabled at compile time.
+to evaluate if trace messages are to be printed or not, the facility will only be enabled when flag \em COAST_TRACE was enabled at compile time.
 
 \par Preprocessor Flags
-If the preprocessor flag \em DEBUG is not set, the macros described here expand into nothing. To keep the trace output at acceptable levels we introduced a config
+If the preprocessor flag \em COAST_TRACE is not set, the macros described here expand into nothing. To keep the trace output at acceptable levels we introduced a config
 file for debugging, \b Dbg.any. Therein you can switch the trace on and off at a global level but also at method level if needed.
 
 \par Trace mechanics

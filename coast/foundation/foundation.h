@@ -9,20 +9,23 @@
 #ifndef _FOUNDATION_H
 #define _FOUNDATION_H
 
-#if defined(WD_OPT) && defined(DEBUG)
-#define WD_OPTFLAG	"OPT_DBG"
-#elif defined(WD_OPT) && !defined(DEBUG)
-#define WD_OPTFLAG	"OPT"
+#if defined(WD_OPT)
+#define STR_MODE	"OPT"
 #else
-#define WD_OPTFLAG	"DBG"
+#define STR_MODE	"DBG"
 #endif
-
+#if defined(COAST_TRACE)
+#define STR_TRACE	"_TRACE"
+#else
+#define STR_TRACE	""
+#endif
 #if defined(ONLY_STD_IOSTREAM)
-#define WD_IOVERSION	"_STDIO"
+#define STR_IOVERSION	"_STDIO"
 #else
-#define WD_IOVERSION	""
+#define STR_IOVERSION	""
 #endif
-#define WD_BUILDFLAGS		WD_OPTFLAG WD_IOVERSION
+#define WD_BUILDFLAGS		STR_MODE STR_TRACE STR_IOVERSION
+
 #if defined(__GNUG__)
 #define WD_COMPILER		"GCC_"  __VERSION__
 #elif defined(WIN32) && defined(_MSC_VER)

@@ -273,7 +273,7 @@ void Context::CollectLinkState(Anything &a)
 
 void Context::DebugStores(const char *msg, ostream &reply, bool printAny)
 {
-#ifdef DEBUG
+#ifdef COAST_TRACE
 	reply << "+++++++++++++++++++" << NotNull(msg) << "+++++++++++++++++++++++++\n";
 	reply << "fLookupStack(" << fLookupStack.RefCount() << "): \n";
 	if ( printAny ) {
@@ -293,7 +293,7 @@ void Context::DebugStores(const char *msg, ostream &reply, bool printAny)
 
 void Context::HTMLDebugStores(ostream &reply)
 {
-#ifdef DEBUG
+#ifdef COAST_TRACE
 	if ( Tracer::CheckWDDebug("Context.HTMLWDDebug", Storage::Current()) ) {
 		reply << DebugStoreSeparator;
 		reply << "<hr>\n<pre>\n";

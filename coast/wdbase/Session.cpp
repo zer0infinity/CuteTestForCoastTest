@@ -282,7 +282,7 @@ void Session::PutInStore(const char *key, const Anything &a)
 
 void Session::HTMLDebugStore(ostream &reply)
 {
-#ifdef DEBUG
+#ifdef COAST_TRACE
 	if ( Tracer::CheckWDDebug( "Session.HTMLSessionStore", Storage::Current() ) ) {
 		reply << "Session Store:\n" << fStore << "\n";
 	}

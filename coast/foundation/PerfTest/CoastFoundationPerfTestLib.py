@@ -9,7 +9,7 @@ buildSettings = {
         'linkDependencies' : ['CoastFoundation', 'testfwFoundation'],
         'sourceFiles'      : StanfordUtils.listFiles(['*.cpp']),
         'targetType'       : 'ProgramTest',
-        'copyFiles'        : [(StanfordUtils.findFiles(['.'],['.any']), S_IRUSR|S_IRGRP|S_IROTH)],
+        'copyFiles'        : [(StanfordUtils.findFiles(['.'],['.any']), S_IRUSR|S_IRGRP|S_IROTH|S_IWUSR)],
     }
 }
 

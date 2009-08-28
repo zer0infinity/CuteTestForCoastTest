@@ -12,7 +12,7 @@
 #include "foundation.h"
 
 #include "ITOString.h"
-#if defined(DEBUG)
+#if defined(COAST_TRACE)
 #include "StringStream.h"
 #endif
 #include "Dbg.h"

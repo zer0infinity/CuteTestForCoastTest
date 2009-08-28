@@ -24,7 +24,7 @@ public:
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
 
-#ifdef DEBUG
+#ifdef COAST_TRACE
 	//!tests the Socket class with a fd from Connector
 	void CheckTriggerTest();
 

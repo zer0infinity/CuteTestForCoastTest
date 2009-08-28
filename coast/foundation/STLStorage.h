@@ -36,9 +36,9 @@
 #define BOOST_NO_PROPER_STL_DEALLOCATE
 #endif
 
-// disable tracing if requested, even if in DEBUG mode, eg. performance tests
+// disable tracing if requested, even if in COAST_TRACE mode, eg. performance tests
 #define WD_DISABLE_TRACE
-#if !defined(DEBUG) || defined(WD_DISABLE_TRACE)
+#if !defined(COAST_TRACE) || defined(WD_DISABLE_TRACE)
 #define _StatTrace(trigger, msg, allocator)
 #define _StartTrace(trigger)
 #define _StartTrace1(trigger, msg)

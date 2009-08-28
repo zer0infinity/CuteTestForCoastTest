@@ -17,7 +17,7 @@
 //--- c-library modules used ---------------------------------------------------
 #include <cstring>
 
-#ifdef DEBUG
+#ifdef COAST_TRACE
 
 //---- Tracer -------------------------------------------------------------------------
 int Tracer::fgLevel = 0;

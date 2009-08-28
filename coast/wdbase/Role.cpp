@@ -90,7 +90,7 @@ bool Role::CheckLevel(const String &queryRoleName) const
 
 	bool bLevelOk = false;
 	if ( !( bLevelOk = queryRoleName.IsEqual(strRoleName) ) ) {
-#if defined(DEBUG)
+#if defined(COAST_TRACE)
 // the following code would be nice to see role relations
 // -> but we need to re-authenticate as soon as the role names are different
 		// names are not equal, check for their relation

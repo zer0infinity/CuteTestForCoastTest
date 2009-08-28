@@ -263,10 +263,7 @@ Anything TemplateParser::ProcessArgs(const String &renderer, const String &args)
 			Error(errmsg);
 		}
 	}
-
-#ifdef DEBUG
 	TraceAny(aargs, "aargs");
-#endif
 	return result;
 }
 

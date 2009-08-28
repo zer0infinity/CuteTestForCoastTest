@@ -25,6 +25,10 @@
 					<value>release\ndebug\ncoverage</value>
 				</dictionary>
 				<dictionary>
+					<key>commandlineargs</key>
+					<value>-u</value>
+				</dictionary>
+				<dictionary>
 					<key>numjobs</key>
 					<value>1</value>
 				</dictionary>

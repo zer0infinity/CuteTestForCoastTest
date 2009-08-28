@@ -258,7 +258,7 @@ bool HTTPDAImpl::DoExecRecord(Connector *csc, ConnectorParams *cps, Context &con
 bool HTTPDAImpl::SendInput(iostream *Ios, Socket *s, long timeout, Context &context, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(HTTPDAImpl.SendInput);
-#ifdef DEBUG
+#ifdef COAST_TRACE
 	Trace("Debug Version");
 
 	if ( Tracer::CheckWDDebug("HTTPDAImpl.SendInput", Storage::Current()) ) {
