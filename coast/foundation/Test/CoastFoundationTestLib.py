@@ -6,7 +6,6 @@ packagename = StanfordUtils.getPackageName(__name__)
 
 def tearDown(target, source, env):
     # delete generated files
-    pdb.set_trace()
     filesToDelete = StanfordUtils.listFiles(['include.any', 'config/PipeExecutorTest.txt', 'tmp/*.res', 'tmp/*.tst', 'tmp/*.txt', 'testout2.txt' ])
     for fname in filesToDelete:
         os.unlink(fname)
