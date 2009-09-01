@@ -135,14 +135,14 @@ void SystemTest::statTests()
 {
 	t_assertm(System::IsDirectory("."), "expected '.' to be a directory");
 	t_assertm(System::IsDirectory(".."), "expected '.' to be a directory");
-	t_assertm(!System::IsDirectory("prjRunTest.sh"), "expected 'prjRunTest.sh' to be a file");
+	t_assertm(!System::IsDirectory("Test.any"), "expected 'Test.any' to be a file");
 	t_assertm(!System::IsDirectory("config/Dbg.any"), "expected 'Dbg.any' to be a file");
 	t_assertm(!System::IsRegularFile("."), "expected '.' to be a directory");
 	t_assertm(!System::IsRegularFile(".."), "expected '.' to be a directory");
-	t_assertm(System::IsRegularFile("prjRunTest.sh"), "expected 'prjRunTest.sh' to be a file");
+	t_assertm(System::IsRegularFile("Test.any"), "expected 'Test.any' to be a file");
 	t_assertm(System::IsRegularFile("config/Dbg.any"), "expected 'Dbg.any' to be a file");
-	String strLinkToPrjRunTest("aLinkToPrjRunTest");
-	if ( assertComparem( System::eSuccess, equal_to, System::CreateSymbolicLink("prjRunTest.sh", strLinkToPrjRunTest) , "expected creation of symbolic link to file to succeed" ) ) {
+	String strLinkToPrjRunTest("aLinkToTestAny");
+	if ( assertComparem( System::eSuccess, equal_to, System::CreateSymbolicLink("Test.any", strLinkToPrjRunTest) , "expected creation of symbolic link to file to succeed" ) ) {
 		t_assertm(System::IsSymbolicLink(strLinkToPrjRunTest), "expected link to be valid");
 		t_assertm(!System::IsDirectory(strLinkToPrjRunTest), "expected link not to be a directory");
 		t_assertm(System::IsRegularFile(strLinkToPrjRunTest), "expected link to point to a regular file");
@@ -573,9 +573,9 @@ void SystemTest::getFilePathTest()
 #endif
 	System::Chmod(subPath, 0640); //clean up to make it usable again
 
-	path = System::GetFilePath("SystemTest", "cpp");
+	path = System::GetFilePath("Dbg", "any");
 
-	subPath = "./SystemTest.cpp";
+	subPath = "./Dbg.any";
 	System::ResolvePath(subPath);
 	assertEqual(subPath, path.SubString(path.Length() - subPath.Length()));
 }
@@ -587,10 +587,7 @@ void SystemTest::dirFileListTest()
 
 	assertEqual( 0L, dir.GetSize() );
 
-	dir = System::DirFileList(".", "cpp");
-	t_assert( dir.GetSize() > 0L );
-
-	dir = System::DirFileList(".", "h");
+	dir = System::DirFileList(".", "any");
 	t_assert( dir.GetSize() > 0L );
 
 	dir = System::DirFileList("..", "");
@@ -1258,7 +1255,7 @@ void SystemTest::MakeRemoveDirectoryTest()
 			assertCharPtrEqual(strSaveParam, str2Level);
 			t_assertm( System::IsDirectory(str2Level), "expected an accessible directory tree" );
 			assertComparem( System::eRecurseDeleteNotAllowed, equal_to, System::RemoveDirectory(str2Level, true), "expected deletion of multiple absolute dir levels to fail" );
-			assertComparem( System::eExists, equal_to, System::RemoveDirectory(str1Level, false), "expected deletion of parent dir level to fail" );
+			assertComparem( System::eExists, equal_to, System::RemoveDirectory(str1Level, false), TString("expected deletion of parent dir [") << str1Level << "] to fail" );
 			assertComparem( System::eSuccess, equal_to, System::RemoveDirectory(str2Level, false), "expected deletion of one absolute dir level to succeed" );
 			assertComparem( System::eSuccess, equal_to, System::RemoveDirectory(str1Level, false), "expected deletion of one absolute dir level to succeed" );
 			t_assertm( !System::IsDirectory(str2Level), "expected directory to be deleted" );

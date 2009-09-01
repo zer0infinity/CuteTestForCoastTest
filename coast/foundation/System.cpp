@@ -1349,16 +1349,15 @@ System::DirStatusCode System::IntRemoveDirectory(String &path, bool bRecurse, bo
 	} else {
 		SYSERROR("rmdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "]");
 		switch ( System::GetSystemError() ) {
-			case EEXIST: {
+			case EEXIST:
+			case ENOTEMPTY:
 				aDirStatus = System::eExists;
 				break;
-			}
-			case ENOENT: {
+			case ENOENT:
 				aDirStatus = System::eNotExists;
 				break;
-			}
-			default: {
-			}
+			default:
+				;
 		}
 	}
 	return aDirStatus;

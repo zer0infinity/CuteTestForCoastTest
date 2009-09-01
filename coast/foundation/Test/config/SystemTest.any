@@ -7,14 +7,16 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-
 	# The following temporary directory must already exist and will be used to create and delete subdirectories from within tests
 	/TmpDir			"/tmp"
+#	/TmpDir			"c:/temp"					# cygwin
 	/BlocksLeftOnFSTest {
 		/FS			"/"
+#		/FS			"c:/"						# cygwin
 	}
 	/MakeDirectoryTest {
 		/BasePath	"/tmp/MKDIRTEST"
+#		/BasePath	"c:/temp/MKDIRTEST"			# cygwin
 		/MaxNumDirs	30
 	}
 	/SymbolicLinkTest {
@@ -27,19 +29,13 @@
 	/MakeDirectoryExtendTest {
 		/OnelevelExtendedTest {
 			/BaseDir			"/hiku_ds_root/chunk_space/2007/13/814"
-			/ExpectedBaseDir	"/hiku_ds_root/chunk_space/2007/13/814_ex7"
-			/PathToCreate		"TestCaseDir1"
 		}
 		/MutlilevelExtendedTest {
 			/BaseDir			"/hiku_ds_root/chunk_space/2007/13/814"
-			/ExpectedBaseDir	"/hiku_ds_root/chunk_space/2007/13/814_ex7"
-			/PathToCreate		"TestCaseSubDir1/TestCaseSubDir2"
 		}
 		/OnelevelExtendedExistTest {
 			/EnsureDirExists	"/hiku_ds_root/chunk_space/2007/13/814_ex7/ExistingDir"
 			/BaseDir			"/hiku_ds_root/chunk_space/2007/13/814"
-			/ExpectedBaseDir	"/hiku_ds_root/chunk_space/2007/13/814_ex7"
-			/PathToCreate		"ExistingDir/SubDir"
 		}
 	}
 }
