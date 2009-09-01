@@ -33,9 +33,6 @@ public:
 	//! \return a new test is created by this method
 	static Test *suite ();
 
-	//!tests  resolution of parameter as dns name to ipaddress
-	void dnsNameParam();
-
 	//!tests setting of ephemeral port by os
 	void getPort();
 

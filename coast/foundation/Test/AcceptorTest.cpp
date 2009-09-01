@@ -29,12 +29,6 @@ AcceptorTest::~AcceptorTest()
 {
 }
 
-void AcceptorTest::dnsNameParam()
-{
-	Acceptor acceptor(GetConfig()["dnsNameParam"]["name"].AsString(), 0, 0, 0);
-	assertEqual( GetConfig()["dnsNameParam"]["ip"].AsString(), acceptor.GetAddress() );
-}
-
 void AcceptorTest::getPort()
 {
 	Acceptor acceptor(GetConfig()["Localhost"]["ip"].AsString(), 0, 0, 0);

@@ -11,6 +11,7 @@
 	/ShellInvocationTest {
 		/NonExistingShellTest {
 			/Params {
+#				/Executable	"noShell.exe"			#cygwin
 				/Executable	"/bin/noshell"
 				/Env 		*
 				/Path		"."
@@ -26,7 +27,8 @@
 		}
 		/SimpleKshDefaultEnvTest {
 			/Params {
-				/Executable	"/bin/ksh"
+#				/Executable	"bash.exe"			# cygwin
+				/Executable	"/bin/sh"
 				/Path		"."
 				/Timeout	1000
 				/UseStderr	1
@@ -40,7 +42,8 @@
 		}
 		/SimpleKshDifferentPathTest {
 			/Params {
-				/Executable	"/bin/ksh"
+#				/Executable	"bash.exe"			# cygwin
+				/Executable	"/bin/sh"
 				/Env 		*
 				/Path		"./config"
 				/Timeout	1000
