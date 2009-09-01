@@ -19,17 +19,27 @@
 			/ip		"127.0.0.1"
 		}
 	}
-	/HTTPTestHost {
+	/SocketConnectSuccessHost {
 		/ip			"127.0.0.1"
-		/port		80
-		/faultyport	28
+		/port		9876
+		/timeout	5		# in ms
 	}
-	/Replyhost {
-		/name	"127.0.0.1"
-		/port	80
+	/SocketConnectTimeoutHost {
+		# use some non-existing IP in your LAN!
+		# found on http://www.developerweb.net/forum/archive/index.php/t-3608.html
+		/ip 		"192.167.121.212"
+		/port		12345
+		/timeout	10
 	}
-	/Timeouthost {
-		/name 	"www.gov.au"
-		/port	80
+	/SocketNotAcceptingHost %SocketConnectTimeoutHost
+	/HTTPReplyHost {
+		/name		"127.0.0.1"
+		/port		9875
+		/timeout	10
+	}
+	/SocketConnectButNoSendRecv  {
+		/ip			"127.0.0.1"
+		/port		9874
+		/timeout	100		# in ms
 	}
 }

@@ -32,7 +32,7 @@ SocketStreamTest::~SocketStreamTest()
 void SocketStreamTest::setUp()
 {
 	// try to reach the test 'server' on the local host
-	fConnector = new Connector(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port"].AsLong(), 1000L); // PS: wait only one second
+	fConnector = new Connector(GetConfig()["HTTPReplyHost"]["ip"].AsString(), GetConfig()["HTTPReplyHost"]["port"].AsLong(), 1000L); // PS: wait only one second
 }
 
 void SocketStreamTest::tearDown ()
@@ -100,10 +100,10 @@ void SocketStreamTest::simpleWrite()
 
 void SocketStreamTest::timeoutTest()
 {
-	Connector connector(GetConfig()["Timeouthost"]["name"].AsString(), GetConfig()["Timeouthost"]["port"].AsLong(), 5000L);
+	Connector connector(GetConfig()["SocketConnectButNoSendRecv"]["name"].AsString(), GetConfig()["SocketConnectButNoSendRecv"]["port"].AsLong(), GetConfig()["SocketConnectButNoSendRecv"]["timeout"].AsLong(5000L));
 	Socket *socket = connector.MakeSocket();
 	// http server doesn't run if assert fails
-	if ( t_assertm( socket != NULL, TString("socket creation to [") << GetConfig()["Timeouthost"]["name"].AsString() << ":" << GetConfig()["Timeouthost"]["port"].AsLong() << "] failed" ) ) {
+	if ( t_assertm( socket != NULL, TString("socket creation to [") << GetConfig()["SocketConnectButNoSendRecv"]["name"].AsString() << ":" << GetConfig()["SocketConnectButNoSendRecv"]["port"].AsLong() << "] failed" ) ) {
 		t_assert(socket->IsReadyForWriting());
 		SocketStream Ios(socket);
 		t_assert(!!Ios); // make sure Ios is valid
@@ -127,10 +127,10 @@ void SocketStreamTest::timeoutTest()
 void SocketStreamTest::opLeftShiftTest()
 {
 	const long theTimeout = 1000L;
-	Connector connector(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port"].AsLong(), 1000L);
+	Connector connector(GetConfig()["HTTPReplyHost"]["ip"].AsString(), GetConfig()["HTTPReplyHost"]["port"].AsLong(), 1000L);
 	Socket *socket = connector.MakeSocket();
 
-	if ( t_assertm( socket != NULL, TString("socket creation to [") << GetConfig()["Testhost"]["name"].AsString() << ":" << GetConfig()["Testhost"]["port"].AsLong() << "] failed"  ) ) {
+	if ( t_assertm( socket != NULL, TString("socket creation to [") << GetConfig()["HTTPReplyHost"]["name"].AsString() << ":" << GetConfig()["HTTPReplyHost"]["port"].AsLong() << "] failed"  ) ) {
 		assertEqual(theTimeout, socket->GetTimeout());
 		SocketStream Ios(socket);
 		t_assert(!!Ios); // make sure Ios is valid
@@ -151,10 +151,10 @@ void SocketStreamTest::opLeftShiftTest()
 
 void SocketStreamTest::parseHTTPReplyTest()
 {
-	Connector connector(GetConfig()["Replyhost"]["name"].AsString(), GetConfig()["Replyhost"]["port"].AsLong(), 2000L);
+	Connector connector(GetConfig()["HTTPReplyHost"]["name"].AsString(), GetConfig()["HTTPReplyHost"]["port"].AsLong(), 2000L);
 	Socket *socket = connector.MakeSocket();
 
-	if ( t_assertm( socket != NULL, TString("socket creation to [") << GetConfig()["Replyhost"]["name"].AsString() << ":" << GetConfig()["Replyhost"]["port"].AsLong() << "] failed"  ) ) { // http server doesn't run if assert fails
+	if ( t_assertm( socket != NULL, TString("socket creation to [") << GetConfig()["HTTPReplyHost"]["name"].AsString() << ":" << GetConfig()["HTTPReplyHost"]["port"].AsLong() << "] failed"  ) ) { // http server doesn't run if assert fails
 		SocketStream Ios(socket, 1000L); // wait at most a second
 		assertEqual(1000L, Ios.rdbuf()->GetTimeout());
 		t_assert(!!Ios); // make sure Ios is valid

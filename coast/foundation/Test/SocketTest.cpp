@@ -43,10 +43,10 @@ SocketTest::~SocketTest()
 
 void SocketTest::simpleConstructorTest()
 {
-	Connector connector(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port"].AsLong());
+	Connector connector(GetConfig()["SocketConnectSuccessHost"]["ip"].AsString(), GetConfig()["SocketConnectSuccessHost"]["port"].AsLong());
 	Socket *socket = connector.MakeSocket();
 
-	if ( t_assertm( socket != NULL, (const char *)connector.GetAddress() ) ) { // fails without HTTP Server
+	if ( t_assertm( socket != NULL, (const char *)connector.GetAddress() ) ) {
 		long socketfd = socket->GetFd();
 		t_assert( socketfd > 0 );
 
@@ -61,11 +61,11 @@ void SocketTest::allocatorConstructorTest()
 	PoolAllocator pa(1, 8 * 1024, 21);
 	TestStorageHooks tsh(&pa);
 
-	Connector connector(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port"].AsLong());
+	Connector connector(GetConfig()["SocketConnectSuccessHost"]["ip"].AsString(), GetConfig()["SocketConnectSuccessHost"]["port"].AsLong());
 	connector.SetThreadLocal();
 	Socket *socket = connector.MakeSocket();
 
-	if ( t_assertm( socket != NULL, (const char *)connector.GetAddress() ) ) { // fails without HTTP Server
+	if ( t_assertm( socket != NULL, (const char *)connector.GetAddress() ) ) {
 		long socketfd = socket->GetFd();
 		t_assert( socketfd > 0 );
 
@@ -97,11 +97,11 @@ void SocketTest::faultyConstructorTest()
 
 void SocketTest::httpClientTest()
 {
-	Connector connector(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port"].AsLong());
+	Connector connector(GetConfig()["HTTPReplyHost"]["ip"].AsString(), GetConfig()["HTTPReplyHost"]["port"].AsLong());
 	Socket *socket = connector.MakeSocket();
 
-	assertEqual( GetConfig()["Testhost"]["ip"].AsString(), connector.GetAddress() );
-	assertEqual( GetConfig()["Testhost"]["port"].AsLong(), connector.fPort );
+	assertEqual( GetConfig()["HTTPReplyHost"]["ip"].AsString(), connector.GetAddress() );
+	assertEqual( GetConfig()["HTTPReplyHost"]["port"].AsLong(), connector.fPort );
 	assertEqual( (long)NULL, (long)connector.fSocket );
 
 	if ( t_assertm( socket != NULL, (const char *)connector.GetAddress() ) ) { // fails without HTTP Server
@@ -134,11 +134,11 @@ void SocketTest::httpClientTest()
 
 void SocketTest::faultyClientTest()
 {
-	Connector connector(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["faultyport"].AsLong(), GetConfig()["ConnectorTimeout"].AsLong(10000L));  // this port should not be in use check with /etc/services
+	Connector connector(GetConfig()["SocketNotAcceptingHost"]["ip"].AsString(), GetConfig()["SocketNotAcceptingHost"]["port"].AsLong(), GetConfig()["SocketNotAcceptingHost"]["timeout"].AsLong(5000L));
 	Socket *socket = connector.MakeSocket();
 
-	assertEqual( GetConfig()["Testhost"]["ip"].AsString(), connector.GetAddress() );
-	assertEqual( GetConfig()["Testhost"]["faultyport"].AsLong(), connector.fPort );
+	assertEqual( GetConfig()["SocketNotAcceptingHost"]["ip"].AsString(), connector.GetAddress() );
+	assertEqual( GetConfig()["SocketNotAcceptingHost"]["port"].AsLong(), connector.fPort );
 
 	t_assert( socket == NULL );
 	delete socket;

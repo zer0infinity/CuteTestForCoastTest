@@ -37,8 +37,8 @@ ConnectorTest::~ConnectorTest()
 
 void ConnectorTest::simpleConstructorTest()
 {
-	String theHost(GetConfig()["Testhost"]["ip"].AsString());
-	long   thePort(GetConfig()["Testhost"]["port"].AsLong());
+	String theHost(GetConfig()["SocketConnectSuccessHost"]["ip"].AsString());
+	long   thePort(GetConfig()["SocketConnectSuccessHost"]["port"].AsLong());
 	TString msg("Connecting ");
 	msg << theHost << ":" << thePort;
 	Connector connector(theHost, thePort);
@@ -50,7 +50,7 @@ void ConnectorTest::simpleConstructorTest()
 
 	// assert the funtionality of the public api
 	Socket *socket = connector.MakeSocket();
-	t_assertm( socket != NULL , msg);				// these fail without HTTP Server
+	t_assertm( socket != NULL , msg);
 	t_assertm( connector.Use() != NULL , msg);
 	t_assertm( connector.GetStream() != NULL, msg );
 	delete socket;
@@ -63,10 +63,6 @@ void ConnectorTest::ConnectAndAssert(const char *host, long port, long timeout, 
 	Connector connector(host, port, timeout, String(), 0L, threadLocal);
 
 	// assert the internal state of the connector
-
-	// you can not assert this anymore since in case of dns round robin load balancing
-	// the ip addresses do not have to be the same e.g. www.microsoft.com
-//	assertEqual( Resolver::DNS2IPAddress(host), connector.GetAddress() );
 	assertEqual( port, connector.fPort );
 	assertEqual( timeout, connector.fConnectTimeout );
 	assertEqual( (long)NULL, (long)connector.fSocket );
@@ -91,21 +87,15 @@ void ConnectorTest::ConnectAndAssert(const char *host, long port, long timeout, 
 
 void ConnectorTest::timeOutTest()
 {
-#if !defined(ATRAXOSA) && !defined(WIN32)
-	ConnectAndAssert(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port"].AsLong(), 1L, true, false);
-#else
-	ConnectAndAssert(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port"].AsLong(), 1000L, true, false);
-#endif
-	ConnectAndAssert(GetConfig()["Testhost2"]["name"].AsString(), GetConfig()["Testhost2"]["port"].AsLong(), 5000L, true, false);
-	ConnectAndAssert(GetConfig()["Testhost3"]["name"].AsString(), GetConfig()["Testhost3"]["port"].AsLong(), 100L, true, true);
+	ConnectAndAssert(GetConfig()["SocketConnectSuccessHost"]["ip"].AsString(), GetConfig()["SocketConnectSuccessHost"]["port"].AsLong(), GetConfig()["SocketConnectSuccessHost"]["timeout"].AsLong(1L), true, false);
+	ConnectAndAssert(GetConfig()["SocketConnectTimeoutHost"]["ip"].AsString(), GetConfig()["SocketConnectTimeoutHost"]["port"].AsLong(), GetConfig()["SocketConnectTimeoutHost"]["timeout"].AsLong(100L), true, true);
 } // timeOutTest
 
 void ConnectorTest::bindingConstructorTest()
 {
-	ROAnything targetConfig = GetConfig()["Localhost"];
+	ROAnything targetConfig = GetConfig()["SocketConnectSuccessHost"];
 	const long SRC_PORT = 0L;
 	const long TIMEOUT = 0L;
-	// does not work on WIN32 without HTTP-server... FIXME
 	Connector connector(targetConfig["ip"].AsString(), targetConfig["port"].AsLong(), TIMEOUT, targetConfig["ip"].AsString(), SRC_PORT, true);
 
 	// assert the internal state of the connector
@@ -141,12 +131,12 @@ void ConnectorTest::faultyConstructorTest()
 
 void ConnectorTest::makeSocketTest()
 {
-	// connect to http server on localhost
-	Connector connector(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port"].AsLong(), 0L, String(), 0L, true);
+	// connect to socket server
+	Connector connector(GetConfig()["SocketConnectSuccessHost"]["ip"].AsString(), GetConfig()["SocketConnectSuccessHost"]["port"].AsLong(), 0L, String(), 0L, true);
 
 	// assert the internal state
-	assertEqual( GetConfig()["Testhost"]["ip"].AsString(), connector.GetAddress() );
-	assertEqual( GetConfig()["Testhost"]["port"].AsLong(), connector.fPort );
+	assertEqual( GetConfig()["SocketConnectSuccessHost"]["ip"].AsString(), connector.GetAddress() );
+	assertEqual( GetConfig()["SocketConnectSuccessHost"]["port"].AsLong(), connector.fPort );
 	assertEqual( (long)NULL, (long)connector.fSocket );
 
 	// check basic functionality
@@ -178,11 +168,11 @@ void ConnectorTest::makeSocketTest()
 void ConnectorTest::makeSocketWithReuseTest()
 {
 	// connect to http server on localhost
-	Connector connector(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port"].AsLong(), 0L, String(), 0L, true);
+	Connector connector(GetConfig()["SocketConnectSuccessHost"]["ip"].AsString(), GetConfig()["SocketConnectSuccessHost"]["port"].AsLong(), 0L, String(), 0L, true);
 
 	// assert the internal state
-	assertEqual( GetConfig()["Testhost"]["ip"].AsString(), connector.GetAddress() );
-	assertEqual( GetConfig()["Testhost"]["port"].AsLong(), connector.fPort );
+	assertEqual( GetConfig()["SocketConnectSuccessHost"]["ip"].AsString(), connector.GetAddress() );
+	assertEqual( GetConfig()["SocketConnectSuccessHost"]["port"].AsLong(), connector.fPort );
 	assertEqual( (long)NULL, (long)connector.fSocket );
 
 	// check basic functionality
@@ -213,16 +203,16 @@ void ConnectorTest::makeSocketWithReuseTest()
 
 void ConnectorTest::useSocketTest()
 {
-	Connector connector(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port"].AsLong(), 0L, String(), 0L, true);
+	Connector connector(GetConfig()["SocketConnectSuccessHost"]["ip"].AsString(), GetConfig()["SocketConnectSuccessHost"]["port"].AsLong(), 0L, String(), 0L, true);
 
 	Socket *s1 = connector.Use();
 	Socket *s2 = connector.Use();
-	t_assert( s1 != NULL );			// these fail without HTTP Server
+	t_assert( s1 != NULL );
 	t_assert( s2 != NULL );
 	t_assert( s1 == s2 );
 
 	// don't delete s1 or s2
-	// conncector is the owner of the
+	// connector is the owner of the
 	// object
 //	delete s1; // should result in SEGV
 //	delete s2; // should result in SEGV
@@ -230,16 +220,16 @@ void ConnectorTest::useSocketTest()
 
 void ConnectorTest::getStreamTest()
 {
-	Connector connector(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port"].AsLong(), 0L, String(), 0L, true);
+	Connector connector(GetConfig()["SocketConnectSuccessHost"]["ip"].AsString(), GetConfig()["SocketConnectSuccessHost"]["port"].AsLong(), 0L, String(), 0L, true);
 
 	iostream *s1 = connector.GetStream();
 	iostream *s2 = connector.GetStream();
-	t_assert( s1 != NULL );			// these fail without HTTP Server
+	t_assert( s1 != NULL );
 	t_assert( s2 != NULL );
 	t_assert( s1 == s2 );
 
 	// don't delete s1 or s2
-	// conncector is the owner of the
+	// connector is the owner of the
 	// object
 //	delete s1; // should result in SEGV
 //	delete s2; // should result in SEGV
@@ -251,7 +241,7 @@ void ConnectorTest::allocatorConstructorTest()
 		PoolAllocator pa(1, 8 * 1024, 21);
 		TestStorageHooks tsh(&pa);
 
-		Connector connector(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port"].AsLong(), 0L, String(), 0L, true);
+		Connector connector(GetConfig()["SocketConnectSuccessHost"]["ip"].AsString(), GetConfig()["SocketConnectSuccessHost"]["port"].AsLong(), 0L, String(), 0L, true);
 		Socket *socket = connector.MakeSocket();
 
 		if ( t_assert( socket != NULL ) && t_assertm(&pa == socket->fAllocator, "allocator should match") ) {
@@ -266,7 +256,7 @@ void ConnectorTest::allocatorConstructorTest()
 	{
 		TestStorageHooks tsh(Storage::Global());
 
-		Connector connector(GetConfig()["Testhost"]["ip"].AsString(), GetConfig()["Testhost"]["port"].AsLong(), false);
+		Connector connector(GetConfig()["SocketConnectSuccessHost"]["ip"].AsString(), GetConfig()["SocketConnectSuccessHost"]["port"].AsLong(), false);
 		Socket *socket = connector.MakeSocket();
 
 		if ( t_assert( socket != NULL ) && t_assertm(Storage::Global() == socket->fAllocator, "allocator should match") ) {

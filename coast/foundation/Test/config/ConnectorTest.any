@@ -7,9 +7,7 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-	# the host given here must have an accessible http-server listening on port 80
-	/Localhost !Defaults.any?HTTPTestHost
-	/Testhost !Defaults.any?Replyhost
-	/Testhost2 !Defaults.any?Replyhost
-	/Testhost3 !Defaults.any?Timeouthost
+	# the host given here must have an accessible tcp-socket server listening on some port
+	/SocketConnectSuccessHost !Defaults.any?SocketConnectSuccessHost
+	/SocketConnectTimeoutHost !Defaults.any?SocketConnectTimeoutHost
 }

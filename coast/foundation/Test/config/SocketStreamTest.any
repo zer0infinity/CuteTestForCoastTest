@@ -7,7 +7,6 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-	/Testhost !Defaults.any?HTTPTestHost
-	/Replyhost !Defaults.any?Replyhost
-	/Timeouthost !Defaults.any?Timeouthost
+	/SocketConnectButNoSendRecv !Defaults.any?SocketConnectButNoSendRecv
+	/HTTPReplyHost !Defaults.any?HTTPReplyHost
 }

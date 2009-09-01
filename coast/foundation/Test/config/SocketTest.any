@@ -12,7 +12,9 @@
 	/ReadyForWritingTimeout	5000
 	/ConnectorTimeout		5000
 
-	/Testhost !Defaults.any?HTTPTestHost
+	/SocketConnectSuccessHost !Defaults.any?SocketConnectSuccessHost
+	/SocketNotAcceptingHost !Defaults.any?SocketNotAcceptingHost
+	/HTTPReplyHost !Defaults.any?HTTPReplyHost
 
 	/MakeInetAddrTest
 	{
