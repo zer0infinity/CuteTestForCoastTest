@@ -26,7 +26,7 @@ TestLocation::TestLocation (Test *aTest, TString &cause, TString &fileName,
 //   message:
 
 {
-	fMessage << aTest->getClassName() << ": " << cause;
+	fMessage << cause;
 	if (message.Length() > 0) {
 		fMessage << "; " << message;
 	} // if

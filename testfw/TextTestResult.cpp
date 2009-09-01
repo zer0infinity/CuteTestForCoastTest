@@ -52,11 +52,11 @@ void TextTestResult::printCauses(ostream &stream, TestLocList &causes)
 
 	TestLocation *cause;
 	for ( cause = causes.first(); cause != 0; cause = causes.next() ) {
-		stream	<< i << ") " << cause->getTestName() << " at line: "
+		stream	<< i << ") " << cause->getTestName() << ": "
 				<< cause->getFileName()
 				<< ":"
 				<< cause->getLineNumber()
-				<< " "
+				<< ": "
 				<< cause->getMessage()
 				<< endl;
 		++i;
