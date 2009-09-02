@@ -600,21 +600,14 @@ void SystemTest::GetProcessEnvironmentTest()
 	Anything env;
 	System::GetProcessEnvironment(env);
 	t_assert(env.IsDefined("PATH"));
-	t_assert(env.IsDefined("SHELL"));
-#if !defined(WIN32)
-	t_assert(env.IsDefined("LD_LIBRARY_PATH"));
-#endif
 	t_assert(!env.IsDefined("this_shouldnt_be_in_the_environment"));
-	t_assert(env.IsDefined("HOME"));
 	t_assert(env.GetSize() > 1);
 }
 
 void SystemTest::allocFreeTests()
 {
 	void *vp = Storage::Current()->Calloc(32, sizeof(char));
-
 	t_assert(vp != 0);
-
 	Storage::Current()->Free(vp);
 }
 
