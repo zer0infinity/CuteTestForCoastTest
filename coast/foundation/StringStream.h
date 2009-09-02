@@ -137,17 +137,6 @@ public:
 	~IStringStreamTmpl() { }
 
 #if defined(WIN32) && !defined(ONLY_STD_IOSTREAM)
-	// fixing bug in istream runtime lib, the default value in long conversion
-	// is overwritten in case the conversion fails. Other cases should be tested too !
-	ThisClassType &operator >>( long &l ) {
-		long save = l;
-		istream::operator>>(l);
-		if (fail()) {
-			l = save;
-		}
-		return *this;
-	}
-
 	ThisClassType &operator >>( unsigned long &ul ) {
 		istream::operator>>(ul);
 		return *this;
@@ -196,10 +185,6 @@ public:
 		istream::operator>>(f);
 		return *this;
 	}
-	ThisClassType &operator >>( double &d ) {
-		istream::operator>>(d);
-		return *this;
-	}
 	ThisClassType &operator >>( streambuf *psb ) {
 		istream::operator>>(psb);
 		return *this;
@@ -220,6 +205,27 @@ private:
 	IStringStreamTmpl(const char *);
 	ThisClassType &operator=(const ThisClassType &);
 };
+
+// fixing bug in istream runtime lib, the default value in long/double conversion
+// is overwritten in case the conversion fails. Other cases should be tested too !
+template < typename BT > IStringStreamTmpl<BT>& operator >>( IStringStreamTmpl<BT>& is, long &l )
+{
+	long dflt = l;
+	is.operator >> (l);
+	if ( ( is.rdstate() & istream::failbit ) != 0 ) {
+		l = dflt;
+	}
+	return is;
+}
+template < typename BT > IStringStreamTmpl<BT>& operator >>( IStringStreamTmpl<BT>& is, double &d )
+{
+	double dflt = d;
+	is.operator >> (d);
+	if ( ( is.rdstate() & istream::failbit ) != 0 ) {
+		d = dflt;
+	}
+	return is;
+}
 
 typedef IStringStreamTmpl<String> IStringStream;
 

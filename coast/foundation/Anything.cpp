@@ -137,7 +137,7 @@ private:
 bool AnythingToken::isNameDelimiter(char c)
 {
 	// alternative Impl: return strchr(" \t\n\r\v\"/#{}[&*",c) != 0;
-	// isprint( (unsigned char) c) shouldn't be used because of umlauts äüö and signed chars
+	// isprint( (unsigned char) c) shouldn't be used because of umlauts ï¿½ï¿½ï¿½ and signed chars
 	// may be double quotes " should also be considered delimiters
 	return isspace((unsigned char) c) || '/' == c || '#' == c || '&' == c || '*' == c
 		   || '{' == c || '}' == c || '[' == c //|| ']' == c
@@ -940,10 +940,10 @@ bool Anything::Remove(const char *k)
 	return false;
 }
 
-void Anything::InsertReserve(long slot, long size)
+void Anything::InsertReserve(long slot, long sz)
 {
 	if (IsArrayImpl(GetImpl())) {
-		ArrayImpl(GetImpl())->InsertReserve(slot, size);
+		ArrayImpl(GetImpl())->InsertReserve(slot, sz);
 	}
 }
 

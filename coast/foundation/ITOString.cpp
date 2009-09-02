@@ -877,7 +877,7 @@ long String::ContainsCharAbove(unsigned highMark, const String excludeSet) const
 			} else {
 				bool found = false;
 				for ( long ii = 0; ii < excludeSetLength; ++ii) {
-					if ( found = ((unsigned char) excludeSet.At(ii) == c) ) {
+					if ( ( found = ((unsigned char) excludeSet.At(ii) == c) ) ) {
 						break;
 					}
 				}

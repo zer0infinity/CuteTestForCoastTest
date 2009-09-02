@@ -94,7 +94,7 @@ public:
 	Anything(const Anything &any, Allocator *a = Storage::Current());
 
 	//! destructor
-	~Anything();
+	virtual ~Anything();
 
 	/*! Clones this Anything and all its content recursively.
 		\param a allocator to use for the Anything and copied Impls
@@ -503,7 +503,7 @@ protected:
 	//!changes fAnyImp from simple type to array
 	void Expand() const;
 	//!makes room for insert() implementation, moves elements eventually from slot to slot+size
-	void InsertReserve(long slot, long size);
+	void InsertReserve(long slot, long sz);
 
 	//!get Anything at i; create necessary entries if i is out of range
 	Anything &DoAt(long i) const;
