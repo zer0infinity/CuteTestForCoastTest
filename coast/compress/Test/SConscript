@@ -1,10 +1,1 @@
-import StanfordUtils, pdb
-
-progEnv = StanfordUtils.CloneBaseEnv()
-
-targetname='compress_Test'
-StanfordUtils.DependsOn(progEnv, 'CoastCompress')
-StanfordUtils.DependsOn(progEnv, 'testfwFoundation')
-createdProgram = progEnv.Program(targetname, StanfordUtils.listFiles(['*.cpp']))
-progEnv.Tool('registerObjects', package=targetname, testApps=[createdProgram], config=StanfordUtils.listFiles(['config/*.any', 'config/*.txt', 'config/*.tst', 'config/testscript.sh', 'config/prjconfig.sh', 'tmp/*.any']))
-
+import CoastCompressTestLib

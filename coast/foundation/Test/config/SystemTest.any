@@ -28,14 +28,23 @@
 	}
 	/MakeDirectoryExtendTest {
 		/OnelevelExtendedTest {
-			/BaseDir			"/hiku_ds_root/chunk_space/2007/13/814"
+			/BaseDir			"/tmp/dirextension/test"
+			/ExpectedBaseDir	"/tmp/dirextension/test_ex0"
+			/PathToCreate		"TestCaseDir1"
+			##NUMHARDLINKS##
 		}
 		/MutlilevelExtendedTest {
-			/BaseDir			"/hiku_ds_root/chunk_space/2007/13/814"
+			/BaseDir			"/tmp/dirextension/test"
+			/ExpectedBaseDir	"/tmp/dirextension/test_ex0"
+			/PathToCreate		"TestCaseSubDir1/TestCaseSubDir2"
+			##NUMHARDLINKS##
 		}
 		/OnelevelExtendedExistTest {
-			/EnsureDirExists	"/hiku_ds_root/chunk_space/2007/13/814_ex7/ExistingDir"
-			/BaseDir			"/hiku_ds_root/chunk_space/2007/13/814"
+			/EnsureDirExists	"/tmp/dirextension/test_ex0/ExistingDir"
+			/BaseDir			"/tmp/dirextension/test"
+			/ExpectedBaseDir	"/tmp/dirextension/test_ex0"
+			/PathToCreate		"ExistingDir/SubDir"
+			##NUMHARDLINKS##
 		}
 	}
 }
