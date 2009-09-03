@@ -1311,55 +1311,92 @@ void SystemTest::MakeDirectoryExtendTest()
 {
 	StartTrace(SystemTest.MakeDirectoryExtendTest);
 
-	AnyExtensions::Iterator<ROAnything> aIterator(GetTestCaseConfig());
-	ROAnything roaConfig;
-	while ( aIterator(roaConfig) ) {
-		String strEnsureDir(roaConfig["EnsureDirExists"].AsString());
-		String strBaseDir(roaConfig["BaseDir"].AsString());
-		String strExpectBaseDir(roaConfig["ExpectedBaseDir"].AsString());
-		String strCreateDirRel(roaConfig["PathToCreate"].AsString());
-		String strLinkName(strCreateDirRel);
-		int iNumLinks = (int)roaConfig["NumLinks"].AsLong(32767L);
-		String strCreateDir(strBaseDir), strExpectDir(strExpectBaseDir);
-		strCreateDir.Append(System::Sep()).Append(strCreateDirRel);
-		strExpectDir.Append(System::Sep()).Append(strCreateDirRel);
-		long lSep = strLinkName.StrChr(System::Sep());
-		if ( lSep > 0L ) {
-			strLinkName.Trim(lSep);
+	String strBaseDir(GetTestCaseConfig()["BaseDir"].AsString());
+	const char pcFillerPrefix[] = "dummydir_";
+	bool bCreatedDirs( false );
+	if ( strBaseDir.Length() > 0L ) {
+		long lIdx(1L);
+		System::DirStatusCode aStatusCode(System::eSuccess);
+		if ( !System::IsDirectory(strBaseDir) ) {
+			System::MakeDirectory(strBaseDir, 0755, true, false);
 		}
-		Trace("Dir to create [" << strCreateDir << "] ExpectedDir [" << strExpectDir << "] first seg [" << strLinkName << "]");
-		Trace("first seg [" << strLinkName << "] of rel path [" << strCreateDirRel << "]");
-		if ( strCreateDirRel.Length() > 0L && strCreateDir.Length() > 0L && strExpectDir.Length() > 0L ) {
-			bool bDidCreateDir(false);
-			if ( strEnsureDir.Length() ) {
-				System::DirStatusCode aCode(System::MakeDirectory(strEnsureDir, 0755, true, false));
-				bDidCreateDir = (aCode == System::eSuccess);
+		String strFillerDir(strBaseDir);
+		strFillerDir.Append(System::Sep()).Append(pcFillerPrefix);
+		long lTrimLen(strFillerDir.Length());
+		strFillerDir.Append(lIdx);
+		while ( ( aStatusCode = System::MakeDirectory(strFillerDir, 0755, true, false) ) == System::eSuccess ) {
+			strFillerDir.Trim(lTrimLen);
+			strFillerDir.Append(++lIdx);
+			if ( ( lIdx % 1000 ) == 0 ) {
+				SysLog::WriteToStdout( String("directory [").Append(strFillerDir).Append("] created...\n") );
 			}
-			if ( !System::IsDirectory(strCreateDir) ) {
-				String strTmpDir(strCreateDir);
-				// test should fail without extend link option
-				if ( assertComparem( System::eNoMoreHardlinks, equal_to, System::MakeDirectory(strTmpDir, 0755, true, false) , TString("expected creation of directory to fail due to no more available hardlinks, is the test-directory [") << strTmpDir << "] full of subdirs?" ) ) {
-					strTmpDir.Trim(strTmpDir.StrRChr(System::Sep()));
-					Trace("exhausted directory [" << strTmpDir << "]");
-					assertCompare( iNumLinks, equal_to, System::GetNumberOfHardLinks(strTmpDir));
-					strTmpDir = strCreateDir;
-					if ( assertComparem( System::eSuccess, equal_to, System::MakeDirectory(strTmpDir, 0755, true, true) , "expected creation of extended directory to succeed" ) ) {
-						String wd;
-						System::GetCWD(wd);
-						t_assertm(System::IsDirectory(strExpectDir), "expected extension directory to be created");
-						if ( strLinkName.Length() && t_assert( System::ChangeDir(strBaseDir) ) ) {
-							t_assertm(System::IsSymbolicLink(strLinkName), "expected directory (link) to be created");
-							assertComparem( System::eSuccess, equal_to, System::RemoveDirectory(strLinkName) , "expected removal of symbolic link to succeed" );
+			bCreatedDirs = true;
+		}
+		--lIdx;
+		// add two directories to the number of created dirs: '.' and '..'
+		long iNumLinks = lIdx + 2;
+		Trace("number of dirs created: " << lIdx << ", num of hardlinks: " << iNumLinks);
+
+		AnyExtensions::Iterator<ROAnything> aIterator(GetTestCaseConfig()["Tests"]);
+		ROAnything roaConfig;
+		while ( lIdx > 0L && aIterator(roaConfig) ) {
+			String strEnsureDir(roaConfig["EnsureDirExists"].AsString());
+			String strExpectBaseDir(roaConfig["ExpectedBaseDir"].AsString());
+			String strCreateDirRel(roaConfig["PathToCreate"].AsString());
+			String strLinkName(strCreateDirRel);
+			String strCreateDir(strBaseDir), strExpectDir(strExpectBaseDir);
+			strCreateDir.Append(System::Sep()).Append(strCreateDirRel);
+			strExpectDir.Append(System::Sep()).Append(strCreateDirRel);
+			long lSep = strLinkName.StrChr(System::Sep());
+			if ( lSep > 0L ) {
+				strLinkName.Trim(lSep);
+			}
+			Trace("Dir to create [" << strCreateDir << "] ExpectedDir [" << strExpectDir << "] first seg [" << strLinkName << "]");
+			Trace("first seg [" << strLinkName << "] of rel path [" << strCreateDirRel << "]");
+			if ( strCreateDirRel.Length() > 0L && strCreateDir.Length() > 0L && strExpectDir.Length() > 0L ) {
+				bool bDidCreateDir(false);
+				if ( strEnsureDir.Length() ) {
+					System::DirStatusCode aCode(System::MakeDirectory(strEnsureDir, 0755, true, false));
+					bDidCreateDir = (aCode == System::eSuccess);
+				}
+				if ( !System::IsDirectory(strCreateDir) ) {
+					String strTmpDir(strCreateDir);
+					// test should fail without extend link option
+					if ( assertComparem( System::eNoMoreHardlinks, equal_to, System::MakeDirectory(strTmpDir, 0755, true, false) , TString("expected creation of directory to fail due to no more available hardlinks, is the test-directory [") << strTmpDir << "] full of subdirs?" ) ) {
+						strTmpDir.Trim(strTmpDir.StrRChr(System::Sep()));
+						Trace("exhausted directory [" << strTmpDir << "]");
+						assertCompare( iNumLinks, equal_to, (long)System::GetNumberOfHardLinks(strTmpDir));
+						strTmpDir = strCreateDir;
+						if ( assertComparem( System::eSuccess, equal_to, System::MakeDirectory(strTmpDir, 0755, true, true) , "expected creation of extended directory to succeed" ) ) {
+							String wd;
+							System::GetCWD(wd);
+							t_assertm(System::IsDirectory(strExpectDir), "expected extension directory to be created");
+							if ( strLinkName.Length() && t_assert( System::ChangeDir(strBaseDir) ) ) {
+								t_assertm(System::IsSymbolicLink(strLinkName), "expected directory (link) to be created");
+								assertComparem( System::eSuccess, equal_to, System::RemoveDirectory(strLinkName) , "expected removal of symbolic link to succeed" );
+							}
+							if ( t_assert( System::ChangeDir(strExpectBaseDir) ) ) {
+								assertComparem( System::eSuccess, equal_to, System::RemoveDirectory(strCreateDirRel, true) , "expected removal of directory to succeed" );
+							}
+							System::ChangeDir(wd);
 						}
-						if ( t_assert( System::ChangeDir(strExpectBaseDir) ) ) {
-							assertComparem( System::eSuccess, equal_to, System::RemoveDirectory(strCreateDirRel, true) , "expected removal of directory to succeed" );
-						}
-						System::ChangeDir(wd);
 					}
 				}
+				if ( bDidCreateDir && System::IsDirectory(strEnsureDir) ) {
+					assertComparem( System::eSuccess, equal_to, System::RemoveDirectory(strEnsureDir), "failed to remove directory we created for testing");
+				}
 			}
-			if ( bDidCreateDir && System::IsDirectory(strEnsureDir) ) {
-				assertComparem( System::eSuccess, equal_to, System::RemoveDirectory(strEnsureDir), "failed to remove directory we created for testing");
+		}
+		if ( bCreatedDirs ) {
+			Trace("deleting created directories");
+			strFillerDir.Trim(lTrimLen);
+			strFillerDir.Append(lIdx);
+			while ( System::IsDirectory(strFillerDir) && System::RemoveDirectory(strFillerDir) ) {
+				strFillerDir.Trim(lTrimLen);
+				strFillerDir.Append(--lIdx);
+				if ( ( lIdx % 1000 ) == 0 ) {
+					SysLog::WriteToStdout( String("directory [").Append(strFillerDir).Append("] deleted...\n") );
+				}
 			}
 		}
 	}

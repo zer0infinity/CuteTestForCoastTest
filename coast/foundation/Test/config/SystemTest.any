@@ -8,15 +8,12 @@
 
 {
 	# The following temporary directory must already exist and will be used to create and delete subdirectories from within tests
-	/TmpDir			"/tmp"
-#	/TmpDir			"c:/temp"					# cygwin
+	/TmpDir			"##TMPDIR##"
 	/BlocksLeftOnFSTest {
-		/FS			"/"
-#		/FS			"c:/"						# cygwin
+		/FS			"##ROOTFS##"
 	}
 	/MakeDirectoryTest {
-		/BasePath	"/tmp/MKDIRTEST"
-#		/BasePath	"c:/temp/MKDIRTEST"			# cygwin
+		/BasePath	"##TMPDIR##/MKDIRTEST"
 		/MaxNumDirs	30
 	}
 	/SymbolicLinkTest {
@@ -27,24 +24,21 @@
 		}
 	}
 	/MakeDirectoryExtendTest {
-		/OnelevelExtendedTest {
-			/BaseDir			"/tmp/dirextension/test"
-			/ExpectedBaseDir	"/tmp/dirextension/test_ex0"
-			/PathToCreate		"TestCaseDir1"
-			##NUMHARDLINKS##
-		}
-		/MutlilevelExtendedTest {
-			/BaseDir			"/tmp/dirextension/test"
-			/ExpectedBaseDir	"/tmp/dirextension/test_ex0"
-			/PathToCreate		"TestCaseSubDir1/TestCaseSubDir2"
-			##NUMHARDLINKS##
-		}
-		/OnelevelExtendedExistTest {
-			/EnsureDirExists	"/tmp/dirextension/test_ex0/ExistingDir"
-			/BaseDir			"/tmp/dirextension/test"
-			/ExpectedBaseDir	"/tmp/dirextension/test_ex0"
-			/PathToCreate		"ExistingDir/SubDir"
-			##NUMHARDLINKS##
+		/BaseDir			"##DIREXTENDBASEDIR##"
+		/Tests {
+			/OnelevelExtendedTest {
+				/ExpectedBaseDir	"##DIREXTENDBASEDIR##_ex0"
+				/PathToCreate		"TestCaseDir1"
+			}
+			/MutlilevelExtendedTest {
+				/ExpectedBaseDir	"##DIREXTENDBASEDIR##_ex0"
+				/PathToCreate		"TestCaseSubDir1/TestCaseSubDir2"
+			}
+			/OnelevelExtendedExistTest {
+				/EnsureDirExists	"##DIREXTENDBASEDIR##_ex0/ExistingDir"
+				/ExpectedBaseDir	"##DIREXTENDBASEDIR##_ex0"
+				/PathToCreate		"ExistingDir/SubDir"
+			}
 		}
 	}
 }

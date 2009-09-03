@@ -7,7 +7,7 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-	/LowerBound							0
+	/LowerBound							11
 	/UpperBound							20
 	/DumpAnythings  					1
 
@@ -117,8 +117,8 @@
 		/EnableAll						1000
 	}
 	/System {
-		/MainSwitch						20
-		/EnableAll						11
+		/MainSwitch						11
+		/EnableAll						30
 		/FindFile						1000
 		/CheckPath						-20
 		/DoSingleSelect					1000
@@ -165,7 +165,7 @@
 		/MergeTest						11
 	}
 	/SystemTest {
-		/MainSwitch						20
+		/MainSwitch						11
 		/EnableAll						11
 		/MakeDirectoryTest				0
 	}

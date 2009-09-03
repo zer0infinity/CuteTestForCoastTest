@@ -22,26 +22,11 @@ def noSendRecvCallback( sock, addr ):
     sock.shutdown( socket.SHUT_RDWR )
     sock.close()
 
-dirnumber = 1
-basepath = '/tmp/dirextension/test'
-relpath = 'pythondir_'
+basepath = ''
 
-def SystemTestMakeDirectoryExtendSetup( env, cfgfilename ):
-    global dirnumber, basepath, relpath
-    if not os.path.exists( basepath ):
-        os.makedirs( basepath )
-    bdir = os.path.join( basepath, relpath )
-    try:
-        while True:
-            if not os.path.isdir( bdir + str( dirnumber ) ):
-                os.mkdir( bdir + str( dirnumber ) )
-            dirnumber += 1
-            if dirnumber % 1000 == 0:
-                print "directory", bdir + str( dirnumber ), "created..."
-    except:
-        print "directory", bdir + str( dirnumber ), "could not be created anymore"
-
-    dirnumber -= 1
+def SystemTestModifyConfig( env, cfgfilename ):
+    global basepath
+    basepath = os.path.join( os.path.join( env['BASEOUTDIR'].Dir( env['RELTARGETDIR'] ).abspath, 'makedirextendtest' ), 'test' )
     tdirabs = env['BASEOUTDIR'].Dir( env['RELTARGETDIR'] ).abspath
     fname = os.path.join( tdirabs, cfgfilename )
     ## set writable cfgfilename
@@ -49,20 +34,16 @@ def SystemTestMakeDirectoryExtendSetup( env, cfgfilename ):
         os.chmod( fname, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH )
         ## replace some token in Tests configuration file to store number of existing directories so far
         ## the number of existing dirs is dirnumber + 2 ('.' and '..')
-        StanfordUtils.replaceRegexInFile( fname, "##NUMHARDLINKS##", '/NumLinks ' + str( dirnumber + 2 ) )
+        StanfordUtils.replaceRegexInFile( fname, "##DIREXTENDBASEDIR##", basepath )
+        if str( env['PLATFORM'] ) == 'cygwin':
+            StanfordUtils.replaceRegexInFile( fname, "##TMPDIR##", 'c:/temp' )
+            StanfordUtils.replaceRegexInFile( fname, "##ROOTFS##", 'c:/' )
+        else:
+            StanfordUtils.replaceRegexInFile( fname, "##TMPDIR##", '/tmp' )
+            StanfordUtils.replaceRegexInFile( fname, "##ROOTFS##", '/' )
 
 def SystemTestMakeDirectoryExtendCleanup():
-    global dirnumber, basepath, relpath
-    bdir = os.path.join( basepath, relpath )
-    try:
-        while dirnumber >= 0:
-            if os.path.isdir( bdir + str( dirnumber ) ):
-                os.rmdir( bdir + str( dirnumber ) )
-            dirnumber -= 1
-            if dirnumber % 1000 == 0:
-                print "directory", bdir + str( dirnumber ), "deleted..."
-    except:
-        print "directory", bdir + str( dirnumber ), "could not be deleted"
+    global basepath
     for p in [basepath + '_ex0', basepath, os.path.split( basepath )[0]]:
         if os.path.isdir( p ):
             try:
@@ -70,7 +51,7 @@ def SystemTestMakeDirectoryExtendCleanup():
             except: pass
 
 def setUp( target, source, env ):
-    SystemTestMakeDirectoryExtendSetup( env, 'config/SystemTest.any' )
+    SystemTestModifyConfig( env, 'config/SystemTest.any' )
     # setup listener threads for socket tests
     global acceptorThreads
     acceptorThreads.append( SocketHelpers.AcceptorThread( addr = '', port = 9876, callback = acceptorCallback ) )
