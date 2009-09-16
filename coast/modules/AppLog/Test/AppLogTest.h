@@ -42,6 +42,8 @@ public:
 	void LogRotatorLocalTimeTest();
 	//! test logfile rotation using absolute seconds, using GMT
 	void LogRotatorGmtTest();
+	//! test logfile rotation that happend every nth intervall
+	void LogRotationEveryNSecondsTest();
 	//! test logfile rotation using RotateTime
 	void LogRotationTimeTest();
 	//! Request log rotation for a channel

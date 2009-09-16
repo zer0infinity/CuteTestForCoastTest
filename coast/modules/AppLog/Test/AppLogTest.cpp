@@ -196,6 +196,12 @@ void AppLogTest::LogRotatorLocalTimeTest()
 	LogRotatorTestsCommon();
 }
 
+void AppLogTest::LogRotationEveryNSecondsTest()
+{
+	StartTrace(AppLogTest.LogRotationEveryNSecondsTest);
+	LogRotatorTestsCommon();
+}
+
 void AppLogTest::LogRotatorTestsCommon()
 {
 	StartTrace(AppLogTest.LogRotatorTestsCommon);
@@ -214,8 +220,11 @@ void AppLogTest::LogRotatorTestsCommon()
 			tt = System::GmTime(&now, &res);
 		}
 		long lDeltaSec = GetTestCaseConfig()["SecondsToWaitOnRotate"].AsLong(5);
-		long lRotationTime = ( ( ( ( tt->tm_hour * 60 ) + tt->tm_min ) * 60 ) + tt->tm_sec + lDeltaSec) % 86400;
-		anyModuleConfig["AppLogModule"]["RotateSecond"] = lRotationTime;
+		long multiRotations = GetTestCaseConfig()["MultiRotations"].AsLong(0);
+		if ( !multiRotations ) {
+			long lRotationTime = ( ( ( ( tt->tm_hour * 60 ) + tt->tm_min ) * 60 ) + tt->tm_sec + lDeltaSec) % 86400;
+			anyModuleConfig["AppLogModule"]["RotateSecond"] = lRotationTime;
+		}
 		if ( t_assertm(pModule->Init(anyModuleConfig), "Module initialization should have succeeded!") ) {
 			if ( t_assert( ( server = Server::FindServer("TestServer") ) ) ) {
 				Context ctx;
@@ -253,7 +262,11 @@ void AppLogTest::LogRotatorTestsCommon()
 								}
 
 							}
-							assertEqualm( 1, lFound, TString("expected exactly one rotated file of [") << strFileName << "] to exist in rotate directory [" << rotatedir << "]");
+							if ( !multiRotations ) {
+								assertEqualm( 1, lFound, TString("expected exactly one rotated file of [") << strFileName << "] to exist in rotate directory [" << rotatedir << "]");
+							} else {
+								t_assertm(lFound >= multiRotations, TString("Minimum :[ ") << multiRotations << "] rotates expected, but found [" << lFound << "]");
+							}
 						}
 					}
 				}
@@ -540,6 +553,7 @@ Test *AppLogTest::suite ()
 	ADD_CASE(testSuite, AppLogTest, LogRotatorLocalTimeTest);
 	ADD_CASE(testSuite, AppLogTest, LogRotatorGmtTest);
 	ADD_CASE(testSuite, AppLogTest, LogRotationTimeTest);
+	ADD_CASE(testSuite, AppLogTest, LogRotationEveryNSecondsTest);
 	ADD_CASE(testSuite, AppLogTest, RotateSpecificLogTest);
 	ADD_CASE(testSuite, AppLogTest, LoggingActionTest);
 	ADD_CASE(testSuite, AppLogTest, TimeLoggingActionTest);

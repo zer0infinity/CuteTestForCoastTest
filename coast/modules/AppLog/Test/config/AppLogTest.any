@@ -200,6 +200,41 @@
 			}
 		}
 	}
+	/LogRotationEveryNSecondsTest {
+		/Modules {
+			RenderersModule
+			ActionsModule
+			ServersModule
+		}
+		/Server				%Server
+		/Servers			%Servers
+		/Renderers			%Renderers
+		/Actions			%Actions
+		/SecondsToWaitOnRotate	3
+		/MultiRotations 		3
+		/AppLogModule {
+			/LogDir		"config"
+			/RotateEveryNSecondsTime	"00:00:01"
+			/Servers {
+				/TestServer	{
+					/RotateLog	{
+						/FileName		"LogRotationEveryNSecondsTest.log"
+						/Format			%AccessLogFormat
+						/Header			"Rotate Header"
+					}
+					/DoNotRotateLog	{
+						/FileName		"DoNotLogRotationEveryNSecondsTest.log"
+						/DoNotRotate	1
+						/Format			%AccessLogFormat
+						/Header			"DoNotRotate Header"
+					}
+				}
+			}
+		}
+		/AccessLogFormat	%AccessLogFormat
+		/ErrorLogFormat		%ErrorLogFormat
+		/MethodTimeFormat	%MethodTimeFormat
+	}
 	/RotateSpecificLogTest {
 		/Modules {
 			RenderersModule
