@@ -80,6 +80,8 @@ bool AppLogModule::Init(const ROAnything config)
 		TraceAny(fLogConnections, "LogConnections: ");
 		if (retCode && StartLogRotator(appLogConfig["RotateTime"].AsCharPtr("24:00"),
 									   appLogConfig["RotateSecond"].AsLong(0L),
+									   appLogConfig["RotateEveryNSecondsTime"].AsCharPtr("00:00:00"),
+									   appLogConfig["RotateEveryNSeconds"].AsLong(0L),
 									   appLogConfig["RotateTimeIsGmTime"].AsLong(0L)
 									  ) ) {
 			fgAppLogModule = this;
@@ -223,9 +225,9 @@ bool AppLogModule::DoRotateLogs()
 	return true;
 }
 
-bool AppLogModule::StartLogRotator(const char *rotateTime, long lRotateSecond, bool isGmTime)
+bool AppLogModule::StartLogRotator(const char *rotateTime, long lRotateSecond,  const char *everyNSecondsTime, long lEveryNSeconds, bool isGmTime)
 {
-	fRotator = new LogRotator(rotateTime, lRotateSecond, isGmTime);
+	fRotator = new LogRotator(rotateTime, everyNSecondsTime,  lRotateSecond, lEveryNSeconds, isGmTime);
 
 	if (fRotator) {
 		return fRotator->Start();
@@ -669,44 +671,68 @@ String AppLogChannel::GenTimeStamp(const String &format)
 }
 
 //--- LogRotator ----------------------
-AppLogModule::LogRotator::LogRotator(const char *rotateTime, long lRotateSecond, bool isGmTime)
+AppLogModule::LogRotator::LogRotator(const char *rotateTime, const char *everyNSecondsTime, long lRotateSecond, long leveryNSeconds, bool isGmTime)
 	: Thread("LogRotator")
 	, fRotateSecond(lRotateSecond)
+	, fEveryNSeconds(leveryNSeconds)
 	, fIsGmTime(isGmTime)
 {
 	StartTrace(LogRotator.LogRotator);
-	if ( fRotateSecond == 0 ) {
-		StringTokenizer st(rotateTime, ':');
-		String hour, minute, second;
-
-		if ( !(st.NextToken(hour) && st.NextToken(minute)) ) {
-			SYSERROR("wrong time format [" << rotateTime << "]");
-		} else {
-			// optional seconds spec
-			st.NextToken(second);
-			fRotateSecond = ( ( hour.AsLong(0) % 24 * 60 ) + minute.AsLong(0) % 60 ) * 60 + second.AsLong(0) % 60;
+	if ( fEveryNSeconds == 0 ) {
+		long rotateSecond = ParseTimeString(everyNSecondsTime);
+		if ( rotateSecond != 0 ) {
+			fEveryNSeconds = rotateSecond;
 		}
 	}
-	Trace("RotateTime [" << rotateTime << "] param lRotateSecond: " << lRotateSecond << " -> fRotateSecond: " << fRotateSecond);
+	if ( fEveryNSeconds == 0 ) {
+		if ( fRotateSecond == 0 ) {
+			fRotateSecond = ParseTimeString(rotateTime);
+		}
+	}
+	Trace("fRotateSecond: [" << fRotateSecond << "] fEveryNSeconds: [" << fEveryNSeconds << "]");
+}
+
+long AppLogModule::LogRotator::ParseTimeString( const char *time)
+{
+	StartTrace(LogRotator.ParseTimeString);
+
+	StringTokenizer st(time, ':');
+	String hour, minute, second;
+	long rotateSecond = 0L;
+
+	if ( !(st.NextToken(hour) && st.NextToken(minute)) ) {
+		SYSERROR("wrong time format [" << time << "]");
+	} else {
+		// optional seconds spec
+		st.NextToken(second);
+		rotateSecond = ( ( hour.AsLong(0) % 24 * 60 ) + minute.AsLong(0) % 60 ) * 60 + second.AsLong(0) % 60;
+	}
+	Trace("rotateSecond: [" << rotateSecond << "]");
+	return rotateSecond;
 }
 
 long AppLogModule::LogRotator::GetSecondsToWait()
 {
 	StartTrace(LogRotator.GetSecondsToWait);
 
-	time_t now = time(0);
-	struct tm res, *tt;
-	tt = ((fIsGmTime == false) ? (System::LocalTime(&now, &res)) :
-		  (System::GmTime(&now, &res)));
+	long lSecondsToWait = 0;
+	if ( fEveryNSeconds != 0 ) {
+		lSecondsToWait = fEveryNSeconds;
+	} else {
+		time_t now = time(0);
 
-	long lCurrentSecondInDay = ( ( ( ( tt->tm_hour * 60 ) + tt->tm_min ) * 60 ) + tt->tm_sec ) % 86400;
-	Trace("fRotateSecond: [" << fRotateSecond << "] lCurrentSecondInDay: [" <<
-		  lCurrentSecondInDay << "] fIsGmTime: [" << fIsGmTime << "]");
-	long lSecondsToWait = fRotateSecond - lCurrentSecondInDay;
-	if ( lSecondsToWait <= 0 ) {
-		lSecondsToWait += 86400;
+		struct tm res, *tt;
+		tt = ((fIsGmTime == false) ? (System::LocalTime(&now, &res)) :
+			  (System::GmTime(&now, &res)));
+
+		long lCurrentSecondInDay = ( ( ( ( tt->tm_hour * 60 ) + tt->tm_min ) * 60 ) + tt->tm_sec ) % 86400;
+		Trace("fRotateSecond: [" << fRotateSecond << "] lCurrentSecondInDay: [" <<
+			  lCurrentSecondInDay << "] fIsGmTime: [" << fIsGmTime << "]");
+		lSecondsToWait = fRotateSecond - lCurrentSecondInDay;
+		if ( lSecondsToWait <= 0 ) {
+			lSecondsToWait += 86400;
+		}
 	}
-
 	Assert(lSecondsToWait > 0);
 	Trace("SecondsToWait: [" << lSecondsToWait << "] s fIsGmTime: [" << fIsGmTime << "]");
 	return lSecondsToWait;
