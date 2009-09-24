@@ -399,6 +399,8 @@ void TimeStampTest::SetTimeTest()
 		assertCharPtrEqual("19700101235959", aStamp.AsString());
 		t_assert( !aStamp.SetTime(23, 60, 59) );
 		t_assert( !aStamp.SetTime(23, 59, 60) );
+		t_assert( aStamp.SetTime(0, 0, 0) );
+		assertCharPtrEqual("19700101000000", aStamp.AsString());
 	}
 }
 
