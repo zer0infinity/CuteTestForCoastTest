@@ -104,7 +104,6 @@ bool Role::CheckLevel(const String &queryRoleName) const
 				// check if current role is a parent of the query-role
 				Role *pRole = pQRole;
 				while ( !bLevelOk && pRole && ( pRole = (Role *)pRole->GetSuper() ) && pRole ) {
-					String strRoleName;
 					pRole->GetName(strRoleName);
 					bLevelOk = strRoleName.IsEqual(fName);
 					Trace("role [" << strRoleName << "]" << (bLevelOk ? " is parent" : ""));

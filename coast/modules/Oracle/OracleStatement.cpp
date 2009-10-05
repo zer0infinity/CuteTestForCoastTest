@@ -20,7 +20,7 @@ OracleStatement::OracleStatement( OracleConnection *pConn, String const &strStmt
 }
 
 OracleStatement::OracleStatement( OracleConnection *pConn, OCIStmt *phStmt ) :
-	fpConnection( pConn ), fStmthp( phStmt ), fStmt(), fStatus( PREPARED ), fStmtType( STMT_SELECT )
+	fpConnection( pConn ), fStmt(), fStmthp( phStmt ), fStatus( PREPARED ), fStmtType( STMT_SELECT )
 {
 }
 
@@ -66,9 +66,9 @@ OracleStatement::Status OracleStatement::execute( ExecMode mode )
 		// depending on the query type, we could use 'scrollable cursor mode' ( OCI_STMT_SCROLLABLE_READONLY )
 		// executes a SQL statement (first row is also fetched only if iters > 0)
 		ub4 iters = ( fStmtType == STMT_SELECT ? 0 : 1 );
-		sword status = OCIStmtExecute( fpConnection->SvcHandle(), getHandle(), fpConnection->ErrorHandle(), iters, 0,
-									   NULL, NULL, mode );
-		if ( status == OCI_SUCCESS || status == OCI_SUCCESS_WITH_INFO || status == OCI_NO_DATA ) {
+		sword execStatus = OCIStmtExecute( fpConnection->SvcHandle(), getHandle(), fpConnection->ErrorHandle(), iters, 0,
+										   NULL, NULL, mode );
+		if ( execStatus == OCI_SUCCESS || execStatus == OCI_SUCCESS_WITH_INFO || execStatus == OCI_NO_DATA ) {
 			// how can we find out about the result type? -> see Prepare
 			switch ( fStmtType ) {
 				case STMT_SELECT:
@@ -91,7 +91,7 @@ OracleStatement::Status OracleStatement::execute( ExecMode mode )
 					fStatus = PREPARED;
 			}
 		} else {
-			throw OracleException( *fpConnection, status );
+			throw OracleException( *fpConnection, execStatus );
 		}
 	}
 	return fStatus;
@@ -314,11 +314,11 @@ bool OracleStatement::DefineOutputArea()
 		aDescEl["EffectiveLength"] = effectiveSize;
 
 		OCIDefine *defHandle = 0;
-		sword status = OCIDefineByPos( pStmthp, &defHandle, eh, lColIndex, (void *) buf.AsCharPtr(), len,
-									   aDescEl.AsLong( "Type" ), (dvoid *) indicator.AsCharPtr(), (ub2 *) effectiveSize.AsCharPtr(), 0,
-									   OCI_DEFAULT );
-		if ( status != OCI_SUCCESS ) {
-			throw OracleException( *getConnection(), status );
+		sword execStatus = OCIDefineByPos( pStmthp, &defHandle, eh, lColIndex, (void *) buf.AsCharPtr(), len,
+										   aDescEl.AsLong( "Type" ), (dvoid *) indicator.AsCharPtr(), (ub2 *) effectiveSize.AsCharPtr(), 0,
+										   OCI_DEFAULT );
+		if ( execStatus != OCI_SUCCESS ) {
+			throw OracleException( *getConnection(), execStatus );
 		}
 	}
 	return true;
@@ -383,7 +383,7 @@ void OracleStatement::registerOutParam( long lBindPos, BindType bindType, long l
 	StartTrace1(OracleStatement.registerOutParam, "column index " << lBindPos << " bindType " << (long)bindType);
 	long len( 0L );
 	Anything buf;
-	sword status;
+	sword execStatus;
 	--lBindPos;
 	if ( lBindPos >= 0 && lBindPos < fDescriptions.GetSize() ) {
 		OracleStatement::Description::Element aDescEl = fDescriptions[lBindPos];
@@ -422,9 +422,9 @@ void OracleStatement::registerOutParam( long lBindPos, BindType bindType, long l
 			case SQLT_RSET: {
 				aDescEl["Type"] = SQLT_RSET;
 				OCIStmt *phCursor( 0 );
-				status = OCIHandleAlloc( getConnection()->getEnvironment().EnvHandle(), (void **) &phCursor,
-										 OCI_HTYPE_STMT, 0, // extra memory to allocate
-										 NULL ); // pointer to user-memory
+				execStatus = OCIHandleAlloc( getConnection()->getEnvironment().EnvHandle(), (void **) &phCursor,
+											 OCI_HTYPE_STMT, 0, // extra memory to allocate
+											 NULL ); // pointer to user-memory
 				len = sizeof(OCIStmt *);
 				aDescEl["Length"] = len;
 				buf = Anything( (void *) &phCursor, len );
@@ -442,9 +442,9 @@ void OracleStatement::registerOutParam( long lBindPos, BindType bindType, long l
 
 		aDescEl["RawBuf"] = buf;
 
-		status = bindColumn( lBindPos + 1, aDescEl, len );
-		if ( status != OCI_SUCCESS ) {
-			throw OracleException( *getConnection(), status );
+		execStatus = bindColumn( lBindPos + 1, aDescEl, len );
+		if ( execStatus != OCI_SUCCESS ) {
+			throw OracleException( *getConnection(), execStatus );
 		}
 	}
 }
@@ -456,7 +456,7 @@ void OracleStatement::setString( long lBindPos, String const &strValue )
 	Anything buf;
 	--lBindPos;
 	if ( lBindPos >= 0 && lBindPos < fDescriptions.GetSize() ) {
-		sword status;
+		sword execStatus;
 		OracleStatement::Description::Element aDescEl = fDescriptions[lBindPos];
 
 		aDescEl["Length"] = strValue.Length();
@@ -466,9 +466,9 @@ void OracleStatement::setString( long lBindPos, String const &strValue )
 
 		aDescEl["RawBuf"] = buf;
 
-		status = bindColumn( lBindPos + 1, aDescEl, len, strValue.IsEqual( "NULL" ) );
-		if ( status != OCI_SUCCESS ) {
-			throw OracleException( *getConnection(), status );
+		execStatus = bindColumn( lBindPos + 1, aDescEl, len, strValue.IsEqual( "NULL" ) );
+		if ( execStatus != OCI_SUCCESS ) {
+			throw OracleException( *getConnection(), execStatus );
 		}
 	}
 }

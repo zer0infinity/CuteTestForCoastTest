@@ -207,13 +207,14 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 											Trace("RESULT_SET_AVAILABLE")
 											break;
 										case OracleStatement::UPDATE_COUNT_AVAILABLE: {
-											Trace("UPDATE_COUNT_AVAILABLE")
+											Trace("UPDATE_COUNT_AVAILABLE");
 											AnyExtensions::Iterator<OracleStatement::Description, OracleStatement::Description::Element> aDescIter( aStmt->GetOutputDescription() );
+											Trace("processing " << (long)aStmt->GetOutputDescription().GetSize() << " description elements");
 											OracleStatement::Description::Element aDescEl;
 											while ( aDescIter.Next( aDescEl ) ) {
 												long lOraColIdx( aDescEl.AsLong("Idx") );
 												long lColType( aDescEl.AsLong("Type") );
-												Trace("got column of type " << lColType)
+												Trace("got named column [" << aDescEl.AsString("Name") << "] of type " << lColType)
 												if ( lColType == SQLT_CUR || lColType == SQLT_RSET ) {
 													OracleResultsetPtr aRSet(
 														aStmt->getCursor( lOraColIdx ) );
@@ -307,7 +308,6 @@ bool OracleDAImpl::BindSPVariables( OracleStatement::Description &desc, Paramete
 	// management)
 
 	String strErr( "BindSPVariables: " );
-	sword status;
 
 	AnyExtensions::Iterator<OracleStatement::Description, OracleStatement::Description::Element> aDescIter( desc );
 	OracleStatement::Description::Element aDescEl;

@@ -129,6 +129,7 @@ public:
 			Element &operator=(const Element &elt) {
 				fRBuf = elt.fRBuf;
 				fWBuf = elt.fWBuf;
+				return *this;
 			}
 			Element(ROAnything &roaEntry, Anything &anyEntry) : fRBuf(roaEntry), fWBuf(anyEntry) {}
 			~Element() {}
