@@ -87,6 +87,23 @@
 
 	/TestCases
 	{
+		## Nested LookuRendererTests
+		/NestedLookupRendererTest{
+			/TmpStore {
+				/Indirect "Direct"
+				/Direct	"Gotcha!"
+			}
+			/Renderer {
+				/Lookup {
+					{
+						/Lookup
+						{
+							/Lookup Indirect
+						}
+					}
+				}			}
+			/Expected	"Gotcha!"
+		}
 		## StringTokenizeRenderer-Tests
 		/StringTokenizeRendererEmptyTest {
 			/Env {
@@ -2018,6 +2035,7 @@
 		/TemplateLocalizedTestDefault { # [[#wd ]] Macro Style uncached (E see below )
 			/Env {
 				/TestMe		Hallo
+				/Language "D"
 			}
 			/Renderer {
 				/HTML {
