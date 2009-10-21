@@ -201,7 +201,7 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 								out->Put( "Query", aStmt->getStatement(), ctx );
 								if ( BindSPVariables( aStmt->GetOutputDescription(), in, out, *aStmt.get(), ctx ) ) {
 									Trace("executing statement");
-									OracleStatement::Status status = aStmt->execute( OracleStatement::EXEC_DEFAULT );
+									OracleStatement::Status status = aStmt->execute( OracleStatement::EXEC_COMMIT );
 									switch ( status ) {
 										case OracleStatement::RESULT_SET_AVAILABLE:
 											Trace("RESULT_SET_AVAILABLE")
