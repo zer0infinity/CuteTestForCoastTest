@@ -22,6 +22,8 @@ function doTestRemote
 	# use rexec to set up mysql
 	# first 'copy' the needed files to /tmp/DailyMYSQLTests on remote machine
 	echo '   importing mysql-data';
+	LD_LIBRARY_PATH_SAVED=$LD_LIBRARY_PATH
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH_NATIVE
 	( $RSH_CMD -n -l $LOGIN_USER $REMOTE_HOST "mkdir -p $REMOTE_TMPDIR/config;"; )
 	for myfile in config/TestDBDefinition.sql config/dropTestDefinitions.sql; do
 		( $RSH_CMD -l $LOGIN_USER $REMOTE_HOST "cat >$REMOTE_TMPDIR/$myfile; chmod +x $REMOTE_TMPDIR/$myfile;" <./$myfile; )
@@ -43,6 +45,7 @@ function doTestRemote
 		# if code is still 44 then everything was good
 		importcode=0;
 	fi
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH_SAVED
 }
 
 function doCleanupLocal
@@ -59,6 +62,8 @@ function doCleanupRemote
 {
 	# use rexec to set stop
 	echo '   remote dropping db';
+	LD_LIBRARY_PATH_SAVED=$LD_LIBRARY_PATH
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH_NATIVE
 	( $RSH_CMD -n -l $LOGIN_USER $REMOTE_HOST "cd $REMOTE_TMPDIR; $DROP_CMD; echo \$?" >rexec.out 2>rexec.err )
 	local mycode=`tail -1 rexec.out`;
 	if [ $mycode -ne 0 ]; then
@@ -71,6 +76,7 @@ function doCleanupRemote
 	fi
 	( $RSH_CMD -n -l $LOGIN_USER $REMOTE_HOST 'rm -rf $REMOTE_TMPDIR;'; )
 	rm -f rexec.out rexec.err
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH_SAVED
 }
 
 ## add test specific things before the call to callTest
