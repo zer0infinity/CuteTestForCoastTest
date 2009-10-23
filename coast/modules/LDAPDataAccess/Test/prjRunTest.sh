@@ -21,8 +21,11 @@ function doTestLocal
 function doTestRemote
 {
 	echo '   importing ldap-data';
+	LD_LIBRARY_PATH_SAVED=$LD_LIBRARY_PATH
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH_NATIVE
 	${loadscript} -r -f $ldif2import -i $ldapinstance -l $LOGIN_USER -h $REMOTE_HOST -v $VERSION load
 	importcode=$?;
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH_SAVED
 }
 
 function doCleanupLocal
@@ -41,7 +44,10 @@ function doCleanupLocal
 
 function doCleanupRemote
 {
+	LD_LIBRARY_PATH_SAVED=$LD_LIBRARY_PATH
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH_NATIVE
 	${loadscript} -r -i $ldapinstance -l $LOGIN_USER -h $REMOTE_HOST -v $VERSION stop
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH_SAVED
 }
 
 ## add test specific things before the call to callTest
