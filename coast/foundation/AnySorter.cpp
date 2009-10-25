@@ -15,7 +15,6 @@
 #include "AnyComparers.h"
 
 //--- c-library modules used ---------------------------------------------------
-
 //! shuffles anys where lookuppath is not defined towards the end, keeping their original sequence
 SpecialLookupComparer::SpecialLookupComparer(const char *lookuppath, const AnyComparer &theValueComparer)
 	: AnyLookupValueComparer(lookuppath, theValueComparer)

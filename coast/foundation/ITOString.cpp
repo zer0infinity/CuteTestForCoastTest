@@ -41,7 +41,6 @@ using namespace std;
 #include <stdio.h>
 #include <stdlib.h>
 #endif
-
 //---- String ----------------------------------------------------------------
 // tunable parameters for string implementation
 const long cStrAllocMinimum = 32; // minimum size of buffer, tuning param for optimizing
