@@ -1378,7 +1378,7 @@ bool System::GetLockFileState(const char *lockFileName)
 {
 	StartTrace(System.CreateLockFile);
 	// O_EXCL must be set to guarantee atomic lock file creation.
-	int fd = open(lockFileName, O_WRONLY | O_CREAT | O_EXCL);
+	int fd = open(lockFileName, O_WRONLY | O_CREAT | O_EXCL, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 	if (fd < 0 && errno == EEXIST) {
 		// the file already exist; another process is
 		// holding the lock
