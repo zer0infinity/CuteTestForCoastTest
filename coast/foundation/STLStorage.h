@@ -13,6 +13,7 @@
 #include "SysLog.h"
 #include "Dbg.h"
 #include <cstring>
+#include <cstdio>
 
 #include <exception>
 

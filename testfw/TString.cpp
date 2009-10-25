@@ -15,6 +15,7 @@
 #if defined(ONLY_STD_IOSTREAM)
 #include <sstream>
 #include <iostream>
+#include <cstdio>
 using namespace std;
 #else
 #if !defined(WIN32)
