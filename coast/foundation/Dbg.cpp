@@ -252,7 +252,7 @@ bool Tracer::DoCheckLevel(const char *trigger, const ROAnything &level, long lev
 
 bool Tracer::DoCheckTrigger(const char *trigger, const ROAnything &level, long levelSwitch, long levelAll, long enableAll, Allocator *pAlloc)
 {
-	char *cPos( strchr(trigger, '.') );
+	const char *cPos( strchr(trigger, '.') );
 	if ( cPos != NULL ) {
 		long lpos(cPos - trigger);
 		char pcPart[512] = { 0 };
