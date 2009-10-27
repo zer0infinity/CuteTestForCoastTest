@@ -11,7 +11,7 @@ buildSettings = {
         'includeSubdir'    : '',
         'linkDependencies' : ['testfwWDBase', 'CoastPerfTest'],
     },
-    'PerfTestRunner' : {
+    'Runner' : {
         'targetType'       : 'AppTest',
         'requires'         : ['CoastStdDataAccess', 'CoastActions', 'CoastRenderers', packagename + '.' + packagename],
         'usedTarget'       : 'wdapp.wdapp',
