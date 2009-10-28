@@ -74,7 +74,7 @@ function doCleanupRemote
 		cat rexec.err
 		break;
 	fi
-	( $RSH_CMD -n -l $LOGIN_USER $REMOTE_HOST 'rm -rf $REMOTE_TMPDIR;'; )
+	( $RSH_CMD -n -l $LOGIN_USER $REMOTE_HOST "ls $REMOTE_TMPDIR && rm  $REMOTE_TMPDIR/config/* && rmdir $REMOTE_TMPDIR/config && rmdir $REMOTE_TMPDIR;"; )
 	rm -f rexec.out rexec.err
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH_SAVED
 }
