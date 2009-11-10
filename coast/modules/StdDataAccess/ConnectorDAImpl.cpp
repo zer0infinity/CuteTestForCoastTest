@@ -50,17 +50,17 @@ bool ConnectorDAImpl::Exec( Context &context, ParameterMapper *in, ResultMapper 
 	Connector *pConnector = NULL;
 	Socket *pSocket = NULL;
 	in->Get("CloseSocket", bCloseSocket, context);
-	TraceAny(context.GetTmpStore(), "TempStore");
-	if ( in->Get("SocketParams", anySocketParams, context) ) {
-		TraceAny(anySocketParams, "SocketParams");
+	if ( in->Get("SocketParams", anySocketParams, context) && !anySocketParams.IsNull() ) {
+		TraceAny(anySocketParams, "Reloaded SocketParams");
 		if ( (pSocket = RecreateSocket(anySocketParams, context, in, out)) != NULL ) {
 			bRecreate = true;
 		} else {
-			// remove SocketParams from TmpStore
-			context.GetTmpStore().Remove("SocketParams");
+			// clean SocketParams and anySocketParams
 			anySocketParams = Anything();
+			out->Put("SocketParams", anySocketParams, context);
 		}
 	}
+
 	if ( pSocket == NULL ) {
 		// create new connector
 		pConnector = DoMakeConnector(context, in, out);
@@ -96,9 +96,10 @@ bool ConnectorDAImpl::Exec( Context &context, ParameterMapper *in, ResultMapper 
 	delete pConnector;
 	pSocket = NULL;
 	if ( bCloseSocket ) {
-		// remove SocketParams from TmpStore
-		context.GetTmpStore().Remove("SocketParams");
+		// clean SocketParams
+		out->Put("SocketParams", Anything(), context);
 	}
+
 	return bRetCode;
 }
 
@@ -150,8 +151,9 @@ Socket *ConnectorDAImpl::RecreateSocket(Anything &anyParams, Context &context, P
 
 	if ( socketFd != 0L ) {
 		int error = 0;
+		// check if given socketFd is valid
 		bool bSuccess = Socket::GetSockOptInt(socketFd, SO_ERROR, error);
-		if ( bSuccess ) {
+		if ( bSuccess && error == 0 ) {
 			// recreate socket using the params
 			in->Get("UseSSL", bUseSSL, context);
 			if ( roaParams["HTTPS"].AsBool() || bUseSSL ) {
@@ -159,8 +161,21 @@ Socket *ConnectorDAImpl::RecreateSocket(Anything &anyParams, Context &context, P
 			} else {
 				s = new (Storage::Global()) Socket(socketFd, anyParams, true);
 			}
+
+			Trace("socket recreated");
+			long retCode;
+			if ( s->IsReadyForReading(0, retCode) ) {
+				iostream *pIos = s->GetStream();
+				pIos->peek();
+				if ( !pIos->good() ) {
+					Trace("stream is bad, destroying recreated socket");
+					delete s;
+					s = NULL;
+				}
+			}
 		}
 	}
+
 	return s;
 }
 

@@ -44,6 +44,7 @@ public:
 	//! describe this testcase
 	void SendReceiveOnceTest();
 	void RecreateSocketTest();
+	void RecreateClosedSocketTest();
 
 	TString getConfigFileName();
 

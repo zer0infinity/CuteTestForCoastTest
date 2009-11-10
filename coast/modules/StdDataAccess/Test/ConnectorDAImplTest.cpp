@@ -201,6 +201,57 @@ void ConnectorDAImplTest::RecreateSocketTest()
 	t_assertm(!IsSocketValid(socketFd), "expected socket to be invalid");
 }
 
+void ConnectorDAImplTest::RecreateClosedSocketTest()
+{
+	StartTrace(ConnectorDAImplTest.RecreateSocketTest);
+	TraceAny(GetTestCaseConfig(), "TestCaseConfig");
+	Anything anyEnv = GetTestCaseConfig().DeepClone();
+	Context ctx(anyEnv);
+	{
+		DataAccess aDA("RecreateSocket");
+		ctx.GetTmpStore()["Input"] = "{ \"Kurt hat recht\" }";
+		t_assert(aDA.StdExec(ctx));
+		Anything anyExpected;
+		String strIn = ctx.GetTmpStore()["Input"].AsString();
+		IStringStream stream(strIn);
+		anyExpected.Import(stream);
+		assertAnyEqual(anyExpected, fCallBack->GetLastRequest());
+	}
+
+	// test if socketFd is still valid
+	int socketFd = ctx.GetTmpStore()["SocketParams"]["SocketFd"].AsLong(0L);
+	if ( assertCompare(0, not_equal_to, socketFd) ) {
+		t_assertm(IsSocketValid(socketFd), "expected socket to be valid");
+		// force EchoMsgCallBack to close the socket from the server side
+		{
+			DataAccess aDA("RecreateSocket");
+			Anything anyMessage;
+			anyMessage["CloseConnection"] = 1;
+			ctx.GetTmpStore()["Input"] = anyMessage;
+			t_assert(aDA.StdExec(ctx));
+			assertAnyEqual(anyMessage, fCallBack->GetLastRequest());
+		}
+	}
+
+	// although the socket is closed from the server side, the socketFd should still seem to be valid
+	socketFd = ctx.GetTmpStore()["SocketParams"]["SocketFd"].AsLong(0L);
+	if ( assertCompare(0, not_equal_to, socketFd) ) {
+		t_assertm(IsSocketValid(socketFd), "expected socket to be valid");
+		{
+			DataAccess aDA("SendReceiveOnce");
+			ctx.GetTmpStore()["Input"] = "{ \"Marcel auch\" }";
+			t_assert(aDA.StdExec(ctx));
+			Anything anyExpected;
+			String strIn(ctx.GetTmpStore()["Input"].AsString());
+			IStringStream stream(strIn);
+			anyExpected.Import(stream);
+			assertAnyEqual(anyExpected, fCallBack->GetLastRequest());
+		}
+	}
+	// test if socketFd is not valid any longer
+	t_assertm(!IsSocketValid(socketFd), "expected socket to be invalid");
+}
+
 Anything &EchoMsgCallBack::GetLastRequest()
 {
 	StartTrace(EchoMsgCallBack.GetLastRequest);
@@ -243,6 +294,10 @@ void EchoMsgCallBack::CallBack(Socket *pSocket)
 					fReplyMessage.PrintOn(*Ios, false) << flush;
 				} else {
 					SYSWARNING("socket not ready for writing!");
+				}
+				if ( anyMessage.IsDefined("CloseConnection") && anyMessage["CloseConnection"].AsBool(false) ) {
+					Trace("closing socket");
+					break;
 				}
 			}
 		}
@@ -295,6 +350,7 @@ Test *ConnectorDAImplTest::suite ()
 
 	ADD_CASE(testSuite, ConnectorDAImplTest, SendReceiveOnceTest);
 	ADD_CASE(testSuite, ConnectorDAImplTest, RecreateSocketTest);
+	ADD_CASE(testSuite, ConnectorDAImplTest, RecreateClosedSocketTest);
 
 	return testSuite;
 }
