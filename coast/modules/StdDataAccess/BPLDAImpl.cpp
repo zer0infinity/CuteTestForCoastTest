@@ -150,12 +150,16 @@ bool BPLDAImpl::DoExec(Connector *csc, ConnectorParams *cps, Context &context, P
 	}
 
 	{
+		context.Push("ParameterMapper", in);
+		String strDummy;
 		DAAccessTimer(BPLDAImpl.DoExec, " writing", context);
 
 		if ( !SendInput(Ios, s, cps->Timeout(), context, in, out) || !(*Ios)) {
 			Trace("ERROR ON SendInput");
+			context.Pop(strDummy);
 			return false;
 		}
+		context.Pop(strDummy);
 	}
 	{
 		DAAccessTimer(BPLDAImpl.DoExec, " reading", context);
