@@ -52,39 +52,16 @@ bool StreamToAnythingMapper::DoPutStream(const char *key, istream &is, Context &
 {
 	StartTrace1(StreamToAnythingMapper.DoPutStream, NotNull(key));
 	Anything anyResult;
-	String strBuf(4096);
-	bool importok = false;
-	long lToCopy = 4096L, lCopied = 0L, lTotal = 0L;
-	bool bSuccess = true;
+	bool importok;
 	{
-		OStringStream ostr(strBuf);
-		DAAccessTimer(StreamToAnythingMapper.DoPutStream, "copying from stream", ctx);
-		while ( ( bSuccess = NSStringStream::PlainCopyStream2Stream(&is, ostr, lCopied, lToCopy) ) && ( lCopied >= lToCopy ) ) {
-			lTotal += lCopied;
-			Trace("bytes read so far: " << lTotal);
-		}
-		lTotal += lCopied;
+		DAAccessTimer(StreamToAnythingMapper.DoPutStream, "importing from stream", ctx);
+		importok = anyResult.Import(is);
 	}
-	if ( bSuccess ) {
-		Trace("Length of received content:" << lTotal);
-		SubTrace(TraceBuf, "content [" << strBuf << "]");
-		{
-			DAAccessTimer(StreamToAnythingMapper.DoPutStream, "importing Anything", ctx);
-#if 0
-			String strDump = strBuf.DumpAsHex(32);
-			SysLog::WriteToStderr(strDump);
-#endif
-			IStringStream istr(strBuf);
-			importok = anyResult.Import(istr, "ImportingFromStream");
-		}
-		if ( importok ) {
-			SubTraceAny(TraceResult, anyResult, "anything imported from stream:");
-			importok = DoPutAny(key, anyResult, ctx, script);
-		} else {
-			SYSWARNING("importing Anything from stream failed: total input-length:" << lTotal);
-		}
+	if ( importok ) {
+		TraceAny(anyResult, "anything imported from stream:");
+		importok = DoPutAny(key, anyResult, ctx, script);
 	} else {
-		SYSWARNING("receiving stream content failed: bytes received so far:" << lTotal);
+		SYSWARNING("importing Anything from stream failed!");
 	}
 	return importok;
 }

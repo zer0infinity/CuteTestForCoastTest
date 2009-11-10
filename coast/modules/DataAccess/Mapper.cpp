@@ -677,14 +677,16 @@ bool ResultMapper::DoFinalPutAny(const char *key, Anything value, Context &ctx)
 
 	Anything anyTarget;
 	DoGetDestinationAny(kPrefix, anyTarget, ctx);
+	TraceAny(anyTarget, "store before");
 	String strPutPolicy = Lookup("PutPolicy", ( anyTarget.IsDefined(kKey) ? "Append" : "Put" ) );
 	if ( strPutPolicy == "Append" ) {
 		Trace("appending value");
 		anyTarget[kKey].Append(value);
 	} else {
-		Trace("replacing value");
+		TraceAny(value, "replacing value at [" << kKey << "]");
 		anyTarget[kKey] = value;
 	}
+	TraceAny(anyTarget, "store after");
 	return true;
 }
 
