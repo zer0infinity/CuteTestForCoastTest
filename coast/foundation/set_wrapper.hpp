@@ -60,6 +60,7 @@ public:
 	typedef std::pair< typename Type::iterator, bool > InsertResultType;
 	typedef typename Type::iterator IteratorType;
 	typedef typename Type::const_iterator ConstIteratorType;
+	typedef typename Type::const_reverse_iterator ConstReverseIteratorType;
 
 	LOKI_DEFINE_VISITABLE()
 
@@ -156,6 +157,22 @@ public:
 			LockUnlockEntry aGuard( *const_cast<MutexPolicy *>(&fLock) );
 			rItemsBegin = IntGetConstListPtr()->begin();
 			rItemsEnd = IntGetConstListPtr()->end();
+			bFound = ( rItemsBegin != rItemsEnd );
+		}
+		return bFound;
+	}
+
+	/*! Return reverse_iterators spanning all elements
+		\param rItemsBegin r-beginning position of range
+		\param rItemsEnd r-end position of range
+		\return true in case the range is not empty */
+	bool FullReverseRange(ConstReverseIteratorType &rItemsBegin, ConstReverseIteratorType &rItemsEnd) const {
+		swStartTrace(set_wrapper.FullReverseRange);
+		bool bFound(false);
+		if ( HasList() ) {
+			LockUnlockEntry aGuard( *const_cast<MutexPolicy *>(&fLock) );
+			rItemsBegin = IntGetConstListPtr()->rbegin();
+			rItemsEnd = IntGetConstListPtr()->rend();
 			bFound = ( rItemsBegin != rItemsEnd );
 		}
 		return bFound;
