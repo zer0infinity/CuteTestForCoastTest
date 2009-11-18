@@ -255,7 +255,7 @@ public:
 	OracleResultsetPtr getCursor( long lColumnIndex );
 	String getString( long lColumnIndex );
 
-	void registerOutParam( long lBindPos, BindType bindType = INTERNAL, long lBufferSize = -1 );
+	void registerOutParam( long lBindPos, BindType bindType = INTERNAL, long lBufferSize = -1, const String &strValue = String() );
 	void setString( long lBindPos, String const &strValue );
 
 	OCIStmt *getHandle() const {

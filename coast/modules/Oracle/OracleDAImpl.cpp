@@ -92,7 +92,7 @@ void OracleDAImpl::ProcessResultSet( OracleResultset &aRSet, ParameterMapper *& 
 			if ( lColType == SQLT_CUR || lColType == SQLT_RSET ) {
 			} else {
 				String strValueCol( aRSet.getString( aDescEl.AsLong("Idx") ) );
-				Trace("value of column [" << aDescEl.AsString("Name") << "] has value [" << strValueCol << "]")
+				Trace("value of column [" << aDescEl.AsString("Name") << "] has value [" << strValueCol << "]");
 				if ( bTitlesOnce ) {
 					anyResult[aDescIter.Index()] = strValueCol;
 				} else {
@@ -108,7 +108,7 @@ void OracleDAImpl::ProcessResultSet( OracleResultset &aRSet, ParameterMapper *& 
 	bool bShowRowCount( true );
 	in->Get( "ShowQueryCount", bShowRowCount, ctx );
 	if ( bShowRowCount ) {
-		Trace("count according to statement " << (long)aRSet.getStatement()->getUpdateCount())
+		Trace("count according to statement " << (long)aRSet.getStatement()->getUpdateCount());
 		out->Put( prefixResultSlot( strResultPrefix, "QueryCount" ), lRowCount, ctx );
 	}
 }
@@ -169,7 +169,7 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 										break;
 									}
 									case OracleStatement::UPDATE_COUNT_AVAILABLE: {
-										Trace("UPDATE_COUNT_AVAILABLE")
+										Trace("UPDATE_COUNT_AVAILABLE");
 										bool bShowUpdateCount( false );
 										in->Get( "ShowUpdateCount", bShowUpdateCount, ctx );
 										if ( bShowUpdateCount ) {
@@ -178,7 +178,7 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 										break;
 									}
 									default:
-										Trace("got status:" << (long)status)
+										Trace("got status:" << (long)status);
 										break;
 								}
 								bRet = true;
@@ -204,7 +204,7 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 									OracleStatement::Status status = aStmt->execute( OracleStatement::EXEC_COMMIT );
 									switch ( status ) {
 										case OracleStatement::RESULT_SET_AVAILABLE:
-											Trace("RESULT_SET_AVAILABLE")
+											Trace("RESULT_SET_AVAILABLE");
 											break;
 										case OracleStatement::UPDATE_COUNT_AVAILABLE: {
 											Trace("UPDATE_COUNT_AVAILABLE");
@@ -214,14 +214,14 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 											while ( aDescIter.Next( aDescEl ) ) {
 												long lOraColIdx( aDescEl.AsLong("Idx") );
 												long lColType( aDescEl.AsLong("Type") );
-												Trace("got named column [" << aDescEl.AsString("Name") << "] of type " << lColType)
+												Trace("got named column [" << aDescEl.AsString("Name") << "] of type " << lColType);
 												if ( lColType == SQLT_CUR || lColType == SQLT_RSET ) {
 													OracleResultsetPtr aRSet(
 														aStmt->getCursor( lOraColIdx ) );
 													ProcessResultSet( *aRSet.get(), in, ctx, out, aDescEl.AsString("Name") );
 												} else {
 													String strValueCol( aStmt->getString( lOraColIdx ) );
-													Trace("value of column [" << aDescEl.AsString("Name") << "] has value [" << strValueCol << "]")
+													Trace("value of column [" << aDescEl.AsString("Name") << "] has value [" << strValueCol << "]");
 													out->Put( aDescEl.AsString("Name"), strValueCol, ctx );
 												}
 											}
@@ -233,7 +233,7 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 											break;
 										}
 										default:
-											Trace("got status:" << (long)status)
+											Trace("got status:" << (long)status);
 											break;
 									}
 									bRet = true;
@@ -319,30 +319,30 @@ bool OracleDAImpl::BindSPVariables( OracleStatement::Description &desc, Paramete
 		switch ( aDescEl.AsLong("Type") ) {
 			case SQLT_CUR:
 			case SQLT_RSET:
-				Trace("cursor or resultset binding")
+				Trace("cursor or resultset binding");
 				if ( aDescEl.AsLong("IoMode") == (long) OCI_TYPEPARAM_OUT || aDescEl.AsLong("IoMode")
 					 == (long) OCI_TYPEPARAM_INOUT ) {
-					Trace("binding value of type:" << aDescEl.AsLong("Type"))
+					Trace("binding value of type:" << aDescEl.AsLong("Type"));
 					aStmt.registerOutParam( bindPos );
 				}
 				break;
 			default:
+				String strValue;
 				if ( aDescEl.AsLong("IoMode") == (long) OCI_TYPEPARAM_IN || aDescEl.AsLong("IoMode")
 					 == (long) OCI_TYPEPARAM_INOUT ) {
-					String strValue;
 					if ( !pmapIn->Get( String( "Params." ).Append( strParamname ), strValue, ctx ) ) {
 						Error( ctx, pmapOut, String( "BindSPVariables: In(out) parameter [" ) << strParamname
 							   << "] not found in config, is it defined in upper case letters?" );
 						return false;
 					}
-					aStmt.setString( bindPos, strValue );
 				}
-				if ( aDescEl.AsLong("IoMode") == (long) OCI_TYPEPARAM_OUT || aDescEl.AsLong("IoMode")
-					 == (long) OCI_TYPEPARAM_INOUT ) {
-					Trace("binding value of type: " << aDescEl.AsLong("Type"))
+				if ( aDescEl.AsLong("IoMode") == (long) OCI_TYPEPARAM_IN ) {
+					aStmt.setString( bindPos, strValue );
+				} else {
+					Trace("binding value of type: " << aDescEl.AsLong("Type"));
 					long lBufferSize( glStringBufferSize );
 					pmapIn->Get( "StringBufferSize", lBufferSize, ctx );
-					aStmt.registerOutParam( bindPos, OracleStatement::INTERNAL, lBufferSize );
+					aStmt.registerOutParam( bindPos, OracleStatement::INTERNAL, lBufferSize, strValue );
 				}
 		}
 	}
