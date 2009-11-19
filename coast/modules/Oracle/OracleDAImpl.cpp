@@ -72,7 +72,7 @@ void OracleDAImpl::ProcessResultSet( OracleResultset &aRSet, ParameterMapper *& 
 		OracleStatement::Description::Element aDescEl;
 		Anything temp;
 		while ( aDescIter.Next( aDescEl ) ) {
-			String strColName( aDescEl.AsString("Name") );
+			String strColName( aDescEl.AsString( "Name" ) );
 			Trace("colname@" << aDescIter.Index() << " [" << strColName << "]");
 			temp[strColName] = aDescIter.Index();
 		}
@@ -87,16 +87,16 @@ void OracleDAImpl::ProcessResultSet( OracleResultset &aRSet, ParameterMapper *& 
 		OracleStatement::Description::Element aDescEl;
 		Anything anyResult;
 		while ( aDescIter.Next( aDescEl ) ) {
-			long lColType( aDescEl.AsLong("Type") );
+			long lColType( aDescEl.AsLong( "Type" ) );
 			Trace("column data type: " << lColType);
 			if ( lColType == SQLT_CUR || lColType == SQLT_RSET ) {
 			} else {
-				String strValueCol( aRSet.getString( aDescEl.AsLong("Idx") ) );
+				String strValueCol( aRSet.getString( aDescEl.AsLong( "Idx" ) ) );
 				Trace("value of column [" << aDescEl.AsString("Name") << "] has value [" << strValueCol << "]");
 				if ( bTitlesOnce ) {
 					anyResult[aDescIter.Index()] = strValueCol;
 				} else {
-					anyResult[aDescEl.AsString("Name")] = strValueCol;
+					anyResult[aDescEl.AsString( "Name" )] = strValueCol;
 				}
 			}
 		}
@@ -113,11 +113,140 @@ void OracleDAImpl::ProcessResultSet( OracleResultset &aRSet, ParameterMapper *& 
 	}
 }
 
+bool OracleDAImpl::TryExecuteQuery( ParameterMapper *in, Context &ctx, OraclePooledConnection *& pPooledConnection,
+									String &server, String &user, String &passwd, ResultMapper *out, bool bRet )
+{
+	StartTrace(OracleDAImpl.TryExecuteQuery);
+	bool bDoRetry = true;
+	long lTryCount( 1L );
+	in->Get( "DBTries", lTryCount, ctx );
+	if ( lTryCount < 1 ) {
+		lTryCount = 1L;
+	}
+	while ( bDoRetry && --lTryCount >= 0 ) {
+		// do not move away command, it is used to log when retrying
+		String command;
+		if ( pPooledConnection->isOpen() || pPooledConnection->Open( server, user, passwd ) ) {
+			OracleConnection *pConnection( pPooledConnection->getConnection() );
+			long lPrefetchRows( 10L );
+			in->Get( "PrefetchRows", lPrefetchRows, ctx );
+			if ( DoPrepareSQL( command, ctx, in ) ) {
+				Trace("SIMPLE STATEMENT IS [" << command << "]");
+				String strReturnName;
+				OracleConnection::ObjectType aObjType = OracleConnection::TYPE_SIMPLE;
+				try {
+					OracleStatementPtr aStmt( pConnection->createStatement( command, lPrefetchRows, aObjType,
+											  strReturnName ) );
+					Trace("statement status:" << (long)aStmt->status());
+					if ( aStmt.get() && aStmt->status() == OracleStatement::PREPARED ) {
+						Trace("statement is prepared");
+						out->Put( "Query", command, ctx );
+						Trace("executing statement");
+						OracleStatement::Status status = aStmt->execute( OracleStatement::EXEC_COMMIT );
+						switch ( status ) {
+							case OracleStatement::RESULT_SET_AVAILABLE: {
+								Trace("RESULT_SET_AVAILABLE");
+								OracleResultsetPtr aRSet( aStmt->getResultset() );
+								ProcessResultSet( *aRSet.get(), in, ctx, out, "" );
+								break;
+							}
+							case OracleStatement::UPDATE_COUNT_AVAILABLE: {
+								Trace("UPDATE_COUNT_AVAILABLE");
+								bool bShowUpdateCount( false );
+								in->Get( "ShowUpdateCount", bShowUpdateCount, ctx );
+								if ( bShowUpdateCount ) {
+									out->Put( "UpdateCount", (long) aStmt->getUpdateCount(), ctx );
+								}
+								break;
+							}
+							default:
+								Trace("got status:" << (long)status);
+								break;
+						}
+						bRet = true;
+						bDoRetry = false;
+					}
+				} catch ( OracleException &ex ) {
+					String strError( "Exec: " );
+					strError << ex.getMessage();
+					Error( ctx, out, strError );
+				}
+			} else if ( DoPrepareSP( command, ctx, in ) ) {
+				Trace("STORED PROCEDURE IS [" << command << "]");
+				String strReturnName;
+				in->Get( "Return", strReturnName, ctx );
+				OracleConnection::ObjectType aObjType = OracleConnection::TYPE_UNK;
+				try {
+					OracleStatementPtr aStmt( pConnection->createStatement( command, lPrefetchRows, aObjType,
+											  strReturnName ) );
+					Trace("statement status:" << (long)aStmt->status());
+					if ( aStmt.get() && aStmt->status() == OracleStatement::PREPARED ) {
+						out->Put( "Query", aStmt->getStatement(), ctx );
+						if ( BindSPVariables( aStmt->GetOutputDescription(), in, out, *aStmt.get(), ctx ) ) {
+							Trace("executing statement");
+							OracleStatement::Status status = aStmt->execute( OracleStatement::EXEC_COMMIT );
+							switch ( status ) {
+								case OracleStatement::RESULT_SET_AVAILABLE:
+									Trace("RESULT_SET_AVAILABLE");
+									break;
+								case OracleStatement::UPDATE_COUNT_AVAILABLE: {
+									Trace("UPDATE_COUNT_AVAILABLE");
+									AnyExtensions::Iterator < OracleStatement::Description,
+												  OracleStatement::Description::Element >
+												  aDescIter( aStmt->GetOutputDescription() );
+									Trace("processing " << (long)aStmt->GetOutputDescription().GetSize() << " description elements");
+									OracleStatement::Description::Element aDescEl;
+									while ( aDescIter.Next( aDescEl ) ) {
+										long lOraColIdx( aDescEl.AsLong( "Idx" ) );
+										long lColType( aDescEl.AsLong( "Type" ) );
+										Trace("got named column [" << aDescEl.AsString("Name") << "] of type " << lColType);
+										if ( lColType == SQLT_CUR || lColType == SQLT_RSET ) {
+											OracleResultsetPtr aRSet( aStmt->getCursor( lOraColIdx ) );
+											ProcessResultSet( *aRSet.get(), in, ctx, out, aDescEl.AsString( "Name" ) );
+										} else {
+											String strValueCol( aStmt->getString( lOraColIdx ) );
+											Trace("value of column [" << aDescEl.AsString("Name") << "] has value [" << strValueCol << "]");
+											out->Put( aDescEl.AsString( "Name" ), strValueCol, ctx );
+										}
+									}
+									bool bShowUpdateCount( false );
+									in->Get( "ShowUpdateCount", bShowUpdateCount, ctx );
+									if ( bShowUpdateCount ) {
+										out->Put( "UpdateCount", (long) aStmt->getUpdateCount(), ctx );
+									}
+									break;
+								}
+								default:
+									Trace("got status:" << (long)status);
+									break;
+							}
+							bRet = true;
+							bDoRetry = false;
+						}
+					}
+				} catch ( OracleException &ex ) {
+					String strError( "Exec: " );
+					strError << ex.getMessage();
+					Error( ctx, out, strError );
+				}
+			} else {
+				out->Put( "Messages", "Rendered slot SQL resulted in an empty string", ctx );
+				bDoRetry = false;
+			}
+		}
+		if ( bDoRetry && lTryCount > 0 ) {
+			pPooledConnection->Close();
+			SYSWARNING("Internally retrying to execute command [" << command << "]");
+		}
+	}
+	return bRet;
+}
+
 bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 {
 	StartTrace(OracleDAImpl.Exec);
 	bool bRet( false );
-	DAAccessTimer(OracleDAImpl.Exec, fName, ctx);
+	DAAccessTimer( OracleDAImpl.Exec, fName, ctx );
 	OracleModule *pModule = SafeCast(WDModule::FindWDModule("OracleModule"), OracleModule);
 	Coast::Oracle::ConnectionPool *pConnectionPool( 0 );
 	if ( pModule && ( pConnectionPool = pModule->GetConnectionPool() ) ) {
@@ -132,14 +261,6 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 		Trace("Connect string is [" << server << "]");
 		out->Put( "QuerySource", server, ctx );
 
-		bool bDoRetry = true;
-		long lTryCount( 1L );
-		in->Get( "DBTries", lTryCount, ctx );
-		if ( lTryCount < 1 ) {
-			lTryCount = 1L;
-		}
-		long lPrefetchRows( 10L );
-		in->Get( "PrefetchRows", lPrefetchRows, ctx );
 		// we slipped through and are ready to get a connection and execute a query
 		OraclePooledConnection *pPooledConnection = NULL;
 
@@ -147,114 +268,7 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 		if ( !pConnectionPool->BorrowConnection( pPooledConnection, server, user ) ) {
 			Error( ctx, out, "Exec: unable to get OracleConnection" );
 		} else {
-			while ( bDoRetry && --lTryCount >= 0 ) {
-				// do not move away command, it is used to log when retrying
-				String command;
-				if ( pPooledConnection->isOpen() || pPooledConnection->Open( server, user, passwd ) ) {
-					OracleConnection *pConnection( pPooledConnection->getConnection() );
-					if ( DoPrepareSQL( command, ctx, in ) ) {
-						OracleStatementPtr aStmt( pConnection->createStatement( command, lPrefetchRows ) );
-						Trace("statement status:" << (long)aStmt->status());
-						if ( aStmt.get() && aStmt->status() == OracleStatement::PREPARED ) {
-							Trace("statement is prepared");
-							out->Put( "Query", command, ctx );
-							try {
-								Trace("executing statement");
-								OracleStatement::Status status = aStmt->execute( OracleStatement::EXEC_COMMIT );
-								switch ( status ) {
-									case OracleStatement::RESULT_SET_AVAILABLE: {
-										Trace("RESULT_SET_AVAILABLE");
-										OracleResultsetPtr aRSet( aStmt->getResultset() );
-										ProcessResultSet( *aRSet.get(), in, ctx, out, "" );
-										break;
-									}
-									case OracleStatement::UPDATE_COUNT_AVAILABLE: {
-										Trace("UPDATE_COUNT_AVAILABLE");
-										bool bShowUpdateCount( false );
-										in->Get( "ShowUpdateCount", bShowUpdateCount, ctx );
-										if ( bShowUpdateCount ) {
-											out->Put( "UpdateCount", (long) aStmt->getUpdateCount(), ctx );
-										}
-										break;
-									}
-									default:
-										Trace("got status:" << (long)status);
-										break;
-								}
-								bRet = true;
-								bDoRetry = false;
-							} catch ( OracleException &ex ) {
-								String strError( "Exec: " );
-								strError << ex.getMessage();
-								Error( ctx, out, strError );
-							}
-						}
-					} else if ( DoPrepareSP( command, ctx, in ) ) {
-						Trace("STORED PROCEDURE IS [" << command << "]");
-						try {
-							String strReturnName;
-							in->Get( "Return", strReturnName, ctx );
-							OracleStatementPtr aStmt( pConnection->createStatement( command, lPrefetchRows, OracleConnection::TYPE_UNK, strReturnName ) );
-
-							Trace("statement status:" << (long)aStmt->status());
-							if ( aStmt.get() && aStmt->status() == OracleStatement::PREPARED ) {
-								out->Put( "Query", aStmt->getStatement(), ctx );
-								if ( BindSPVariables( aStmt->GetOutputDescription(), in, out, *aStmt.get(), ctx ) ) {
-									Trace("executing statement");
-									OracleStatement::Status status = aStmt->execute( OracleStatement::EXEC_COMMIT );
-									switch ( status ) {
-										case OracleStatement::RESULT_SET_AVAILABLE:
-											Trace("RESULT_SET_AVAILABLE");
-											break;
-										case OracleStatement::UPDATE_COUNT_AVAILABLE: {
-											Trace("UPDATE_COUNT_AVAILABLE");
-											AnyExtensions::Iterator<OracleStatement::Description, OracleStatement::Description::Element> aDescIter( aStmt->GetOutputDescription() );
-											Trace("processing " << (long)aStmt->GetOutputDescription().GetSize() << " description elements");
-											OracleStatement::Description::Element aDescEl;
-											while ( aDescIter.Next( aDescEl ) ) {
-												long lOraColIdx( aDescEl.AsLong("Idx") );
-												long lColType( aDescEl.AsLong("Type") );
-												Trace("got named column [" << aDescEl.AsString("Name") << "] of type " << lColType);
-												if ( lColType == SQLT_CUR || lColType == SQLT_RSET ) {
-													OracleResultsetPtr aRSet(
-														aStmt->getCursor( lOraColIdx ) );
-													ProcessResultSet( *aRSet.get(), in, ctx, out, aDescEl.AsString("Name") );
-												} else {
-													String strValueCol( aStmt->getString( lOraColIdx ) );
-													Trace("value of column [" << aDescEl.AsString("Name") << "] has value [" << strValueCol << "]");
-													out->Put( aDescEl.AsString("Name"), strValueCol, ctx );
-												}
-											}
-											bool bShowUpdateCount( false );
-											in->Get( "ShowUpdateCount", bShowUpdateCount, ctx );
-											if ( bShowUpdateCount ) {
-												out->Put( "UpdateCount", (long) aStmt->getUpdateCount(), ctx );
-											}
-											break;
-										}
-										default:
-											Trace("got status:" << (long)status);
-											break;
-									}
-									bRet = true;
-									bDoRetry = false;
-								}
-							}
-						} catch ( OracleException &ex ) {
-							String strError( "Exec: " );
-							strError << ex.getMessage();
-							Error( ctx, out, strError );
-						}
-					} else {
-						out->Put( "Messages", "Rendered slot SQL resulted in an empty string", ctx );
-						bDoRetry = false;
-					}
-				}
-				if ( bDoRetry && lTryCount > 0 ) {
-					pPooledConnection->Close();
-					SYSWARNING("Internally retrying to execute command [" << command << "]");
-				}
-			}
+			bRet = TryExecuteQuery( in, ctx, pPooledConnection, server, user, passwd, out, bRet );
 			if ( pConnectionPool && pPooledConnection ) {
 				pConnectionPool->ReleaseConnection( pPooledConnection, server, user );
 			}
@@ -272,7 +286,7 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 bool OracleDAImpl::DoPrepareSQL( String &command, Context &ctx, ParameterMapper *in )
 {
 	StartTrace(OracleDAImpl.DoPrepareSQL);
-	DAAccessTimer(OracleDAImpl.DoPrepareSQL, fName, ctx);
+	DAAccessTimer( OracleDAImpl.DoPrepareSQL, fName, ctx );
 	OStringStream os( command );
 	in->Get( "SQL", os, ctx );
 	os.flush();
@@ -283,7 +297,7 @@ bool OracleDAImpl::DoPrepareSQL( String &command, Context &ctx, ParameterMapper 
 bool OracleDAImpl::DoPrepareSP( String &command, Context &ctx, ParameterMapper *in )
 {
 	StartTrace(OracleDAImpl.DoPrepareSP);
-	DAAccessTimer(OracleDAImpl.DoPrepareSP, fName, ctx);
+	DAAccessTimer( OracleDAImpl.DoPrepareSP, fName, ctx );
 	return in->Get( "Name", command, ctx );
 }
 
@@ -314,13 +328,13 @@ bool OracleDAImpl::BindSPVariables( OracleStatement::Description &desc, Paramete
 	while ( aDescIter.Next( aDescEl ) ) {
 		// first bind variable position is 1
 		long bindPos( aDescIter.Index() + 1 );
-		String strParamname( aDescEl.AsString("Name") );
+		String strParamname( aDescEl.AsString( "Name" ) );
 
-		switch ( aDescEl.AsLong("Type") ) {
+		switch ( aDescEl.AsLong( "Type" ) ) {
 			case SQLT_CUR:
 			case SQLT_RSET:
 				Trace("cursor or resultset binding");
-				if ( aDescEl.AsLong("IoMode") == (long) OCI_TYPEPARAM_OUT || aDescEl.AsLong("IoMode")
+				if ( aDescEl.AsLong( "IoMode" ) == (long) OCI_TYPEPARAM_OUT || aDescEl.AsLong( "IoMode" )
 					 == (long) OCI_TYPEPARAM_INOUT ) {
 					Trace("binding value of type:" << aDescEl.AsLong("Type"));
 					aStmt.registerOutParam( bindPos );
@@ -328,7 +342,7 @@ bool OracleDAImpl::BindSPVariables( OracleStatement::Description &desc, Paramete
 				break;
 			default:
 				String strValue;
-				if ( aDescEl.AsLong("IoMode") == (long) OCI_TYPEPARAM_IN || aDescEl.AsLong("IoMode")
+				if ( aDescEl.AsLong( "IoMode" ) == (long) OCI_TYPEPARAM_IN || aDescEl.AsLong( "IoMode" )
 					 == (long) OCI_TYPEPARAM_INOUT ) {
 					if ( !pmapIn->Get( String( "Params." ).Append( strParamname ), strValue, ctx ) ) {
 						Error( ctx, pmapOut, String( "BindSPVariables: In(out) parameter [" ) << strParamname
@@ -336,7 +350,7 @@ bool OracleDAImpl::BindSPVariables( OracleStatement::Description &desc, Paramete
 						return false;
 					}
 				}
-				if ( aDescEl.AsLong("IoMode") == (long) OCI_TYPEPARAM_IN ) {
+				if ( aDescEl.AsLong( "IoMode" ) == (long) OCI_TYPEPARAM_IN ) {
 					aStmt.setString( bindPos, strValue );
 				} else {
 					Trace("binding value of type: " << aDescEl.AsLong("Type"));

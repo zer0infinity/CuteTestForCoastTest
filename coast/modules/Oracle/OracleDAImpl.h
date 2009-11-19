@@ -15,6 +15,7 @@
 #include "OracleStatement.h"
 
 class OracleResultset;
+class OraclePooledConnection;
 
 //---- OracleDAImpl -----------------------------------------------------------
 //! <b>Oracle DataAccessImpl using OCI</b>
@@ -23,35 +24,35 @@ class OracleResultset;
  * for OracleDAImpl, ParameterMapper and ResultMapper.
  * @section s1 ParameterMapper configuration
  *
-\code
-{
-# Basic connection settings
-	/DBConnectString
-	/DBUser
-	/DBPW
-	/DBTries
+ \code
+ {
+ # Basic connection settings
+ /DBConnectString
+ /DBUser
+ /DBPW
+ /DBTries
 
-# Simple sql queries section
-	/SQL
+ # Simple sql queries section
+ /SQL
 
-# Stored procedure/function
-	/Name
-	/Return
-	/Params {
-		/PARAMNAME
-		...
-	}
+ # Stored procedure/function
+ /Name
+ /Return
+ /Params {
+ /PARAMNAME
+ ...
+ }
 
-# Customizing output
-	/ShowQueryCount
-	/ShowUpdateCount
-	/DBResultFormat
-}
-# Optimizing performance
-	/StringBufferSize
-	/PrefetchRows
-}
-\endcode
+ # Customizing output
+ /ShowQueryCount
+ /ShowUpdateCount
+ /DBResultFormat
+ }
+ # Optimizing performance
+ /StringBufferSize
+ /PrefetchRows
+ }
+ \endcode
  *
  * @subsection s1s1 Basic connection settings
  *
@@ -122,38 +123,38 @@ class OracleResultset;
  *
  * @section s2 ResultMapper configuration
  *
-\code
-{
-# Common output
-	/QuerySource
-	/Query
-	/Messages {
-		"some message"
-		...
-	}
+ \code
+ {
+ # Common output
+ /QuerySource
+ /Query
+ /Messages {
+ "some message"
+ ...
+ }
 
-# Simple sql queries
-	/QueryCount
-	/QueryResult {
-		{ results of first row }
-		{ ... }
-	}
-	/QueryTitles {
-		/ColName	colidx
-		...
-	}
-	/UpdateCount
+ # Simple sql queries
+ /QueryCount
+ /QueryResult {
+ { results of first row }
+ { ... }
+ }
+ /QueryTitles {
+ /ColName	colidx
+ ...
+ }
+ /UpdateCount
 
-# Stored procedure/function
-	/PARAMNAME		value
-or
-	/PARAMNAME {
-		/QueryCount
-		/QueryResult
-		/QueryTitles
-	}
-}
-\endcode
+ # Stored procedure/function
+ /PARAMNAME		value
+ or
+ /PARAMNAME {
+ /QueryCount
+ /QueryResult
+ /QueryTitles
+ }
+ }
+ \endcode
  *
  * @subsection s2s1 Common output
  *
@@ -213,12 +214,12 @@ public:
 	 * \param ctx The context in which the transaction takes place
 	 * \param in A ParameterMapper object that is mapping data from the client space (Context) to the data access object on request
 	 * \param out A ResultMapper object that maps the result into client space (Context)
-	*/
+	 */
 	virtual bool Exec( Context &ctx, ParameterMapper *in, ResultMapper *out );
 
 private:
-	bool BindSPVariables( OracleStatement::Description &desc, ParameterMapper *pmapIn, ResultMapper *pmapOut, OracleStatement &aStmt,
-						  Context &ctx );
+	bool BindSPVariables( OracleStatement::Description &desc, ParameterMapper *pmapIn, ResultMapper *pmapOut,
+						  OracleStatement &aStmt, Context &ctx );
 
 	bool DoPrepareSQL( String &command, Context &ctx, ParameterMapper *in );
 	bool DoPrepareSP( String &command, Context &ctx, ParameterMapper *in );
@@ -231,7 +232,10 @@ private:
 	// compiler supplied functions forbidden due to Clone() interface
 	OracleDAImpl();
 	OracleDAImpl( const OracleDAImpl & );
-	OracleDAImpl &operator=( const OracleDAImpl & );
+	OracleDAImpl &operator =( const OracleDAImpl & );
+protected:
+	bool TryExecuteQuery( ParameterMapper *in, Context &ctx, OraclePooledConnection *& pPooledConnection,
+						  String &server, String &user, String &passwd, ResultMapper *out, bool bRet );
 };
 
 #endif
