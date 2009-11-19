@@ -29,6 +29,7 @@ class EXPORTDECL_COASTORACLE OraclePooledConnection: public IFAObject, public Co
 	OracleEnvironmentPtr fEnvironment;
 	OracleConnectionPtr fConnection;
 	unsigned long fId, fPoolSize, fPoolBuckets;
+	String fServer, fUser;
 	OraclePooledConnection(const OraclePooledConnection &);
 	OraclePooledConnection &operator=(const OraclePooledConnection &);
 public:
@@ -47,6 +48,7 @@ public:
 	 * @return true in case we could create necessary objects
 	 */
 	bool Open( String const &strServer, String const &strUsername, String const &strPassword );
+
 	/*! Close the connection to the backend if it was opened before
 	 * @param bForce when set to true, close the current connection to the back end regardless if a statement is still
 	 * executing.
@@ -60,6 +62,15 @@ public:
 		return ( fConnection.get() && fConnection->isOpen() );
 	}
 
+	/*! Check whether the underlying connection is open
+	 *
+	 * @param strServer Server connection string to verify
+	 * @param strUsername Username to verify
+	 * @return true if we are connected to the back end matching server and user too */
+	bool isOpenFor(String const &strServer, String const &strUsername) {
+		return fServer.IsEqual( strServer ) && fUser.IsEqual( strUsername ) && isOpen();
+	}
+
 	/*! Access the associated environment object
 	 * @return  pointer to OracleEnvironment
 	 */
@@ -71,6 +82,13 @@ public:
 	 */
 	OracleConnection *getConnection() const {
 		return fConnection.get();
+	}
+
+	const String &getServer() const {
+		return fServer;
+	}
+	const String &getUser() const {
+		return fUser;
 	}
 
 protected:

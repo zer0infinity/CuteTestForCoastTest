@@ -78,7 +78,7 @@ namespace Coast
 			 */
 			Anything fListOfConnections;
 			//! track if the pool is initialized - if not, every access will fail
-			bool fInitialized;
+			bool fInitialized, fTLSUsable;
 			//! pointer to action which periodically checks for timed out connections to close
 			PeriodicAction *fpPeriodicAction;
 			//! counting semaphore to keep track of the available connections
@@ -116,14 +116,13 @@ namespace Coast
 			 * @note This method is thread safe and blocks until a connection is available.
 			 */
 			bool BorrowConnection( OraclePooledConnection *&pConnection, const String &server,
-								   const String &user );
+								   const String &user, bool bUseTLS = false );
 			/*! put back a connection not used anymore by the borrower
 			 * @param pConnection connection to release
 			 * @param server name of server to connect to - in oracle it is the same as the connection string
 			 * @param user name of the user which was used to connect
 			 */
-			void ReleaseConnection( OraclePooledConnection *&pConnection, const String &server,
-									const String &user );
+			void ReleaseConnection( OraclePooledConnection *&pConnection, bool bUseTLS = false );
 			/*! Helper class to ensure requester lock out when all connections are currently in use
 			 * Makes use of automatic Semaphore.Acquire in ctor and Semaphore.Release in dtor using a SemaphoreEntry
 			 */
@@ -139,6 +138,8 @@ namespace Coast
 				ConnectionLock(ConnectionPool &rConnPool) : fSemaEntry(*rConnPool.fpResourcesSema) {}
 				~ConnectionLock() {}
 			};
+
+			static THREADKEY fgTSCCleanerKey;
 		private:
 			/*! try to find a matching and open connection using the given credentials
 			 * @param pConnection connection returned
@@ -165,8 +166,7 @@ namespace Coast
 			 * @param user name of the user which was used to connect
 			 * @note This method is not protected against concurrent access. The caller must ensure mutexed access!
 			 */
-			void IntReleaseConnection( OraclePooledConnection *&pConnection, const String &server,
-									   const String &user );
+			void IntReleaseConnection( OraclePooledConnection *&pConnection );
 
 			//! forbid default ctor
 			ConnectionPool();

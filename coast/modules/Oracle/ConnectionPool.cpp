@@ -29,7 +29,7 @@ namespace Coast
 //---- ConnectionPool ----------------------------------------------------------------
 		ConnectionPool::ConnectionPool( const char *name ) :
 			fStructureMutex( String( name ).Append( "StructureMutex" ), Storage::Global() ), fListOfConnections(
-				Storage::Global() ), fInitialized( false ), fpPeriodicAction( NULL ), fpResourcesSema( NULL )
+				Storage::Global() ), fInitialized( false ), fTLSUsable(false), fpPeriodicAction( NULL ), fpResourcesSema( NULL )
 		{
 			StartTrace(ConnectionPool.ConnectionPool);
 		}
@@ -39,12 +39,41 @@ namespace Coast
 			StartTrace(ConnectionPool.~ConnectionPool);
 		}
 
+//:perform close and destruction of OraclePooledConnection in thread specific storage
+		static class ThreadSpecificConnectionCleaner : public CleanupHandler
+		{
+		protected:
+			//:close and destruct OraclePooledConnection
+			virtual bool DoCleanup() {
+				StatTrace(ThreadSpecificConnectionCleaner.DoCleanup, "ThrdId: " << Thread::MyId(), Storage::Global());
+				OraclePooledConnection *pConnection = 0;
+				if (GETTLSDATA(ConnectionPool::fgTSCCleanerKey, pConnection, OraclePooledConnection)) {
+					if ( pConnection->isOpen() ) {
+						pConnection->Close( true );
+					}
+					delete pConnection;
+					pConnection = 0;
+					if (SETTLSDATA(ConnectionPool::fgTSCCleanerKey, pConnection)) {
+						return true;
+					}
+				}
+				return false;
+			}
+		} fgTSCCleaner;
+		THREADKEY ConnectionPool::fgTSCCleanerKey = 0;
+
 		bool ConnectionPool::Init( ROAnything myCfg )
 		{
 			StartTrace(ConnectionPool.Init);
 			if ( !fInitialized ) {
 				long nrOfConnections( myCfg["ParallelQueries"].AsLong( 5L ) );
 				long lCloseConnectionTimeout( myCfg["CloseConnectionTimeout"].AsLong( 60L ) );
+
+				if ( THRKEYCREATE(ConnectionPool::fgTSCCleanerKey, 0) != 0 ) {
+					SYSERROR("TlsAlloc of ConnectionPool::fgTSCCleanerKey failed");
+				} else {
+					fTLSUsable = true;
+				}
 
 				LockUnlockEntry me( fStructureMutex );
 				{
@@ -55,7 +84,7 @@ namespace Coast
 					for ( long i = 0; i < nrOfConnections; ++i ) {
 						OraclePooledConnection *pConnection = new ( Storage::Global() ) OraclePooledConnection( i,
 								myCfg["MemPoolSize"].AsLong( 2048L ), myCfg["MemPoolBuckets"].AsLong( 16L ) );
-						IntReleaseConnection( pConnection, server, user );
+						IntReleaseConnection( pConnection );
 					}
 					if ( !fpPeriodicAction ) {
 						fpPeriodicAction = new PeriodicAction( "OracleCheckCloseOpenedConnectionsAction",
@@ -96,22 +125,53 @@ namespace Coast
 				}
 				delete fpResourcesSema;
 				fpResourcesSema = NULL;
+
+				if ( fTLSUsable ) {
+					if (THRKEYDELETE(ConnectionPool::fgTSCCleanerKey) != 0) {
+						SYSERROR("TlsFree of ConnectionPool::fgTSCCleanerKey failed" );
+					}
+				}
 			}
 			return !fInitialized;
 		}
 
-		bool ConnectionPool::BorrowConnection( OraclePooledConnection *&pConnection, const String &server, const String &user )
+		bool ConnectionPool::BorrowConnection( OraclePooledConnection *&pConnection, const String &server, const String &user, bool bUseTLS )
 		{
 			StartTrace(ConnectionPool.BorrowConnection);
-			LockUnlockEntry me( fStructureMutex );
-			return IntBorrowConnection( pConnection, server, user );
+			bool bRet(false);
+			if ( fTLSUsable && bUseTLS ) {
+				if ( ( bRet = GETTLSDATA(ConnectionPool::fgTSCCleanerKey, pConnection, OraclePooledConnection) ) ) {
+					// verify if current connection is for same server/user
+					Trace("got connection from TLS, server [" << pConnection->getServer() << "], user [" << pConnection->getUser() << "]");
+					if ( !pConnection->isOpenFor(server, user) ) {
+						Trace("got connection for different server/user, closing");
+						pConnection->Close();
+					}
+				} else {
+					Trace("need to create new Connection")
+					Thread::RegisterCleaner(&fgTSCCleaner);
+					pConnection = new ( Storage::Global() ) OraclePooledConnection( Thread::MyId(), 2048L, 26L );
+					if ( pConnection != NULL ) {
+						bRet = SETTLSDATA(ConnectionPool::fgTSCCleanerKey, pConnection);
+						Trace("connection stored in TLS:" << (bRet ? "true" : "false"));
+					}
+				}
+			} else {
+				LockUnlockEntry me( fStructureMutex );
+				bRet = IntBorrowConnection( pConnection, server, user );
+			}
+			return bRet;
 		}
 
-		void ConnectionPool::ReleaseConnection( OraclePooledConnection *&pConnection, const String &server, const String &user )
+		void ConnectionPool::ReleaseConnection( OraclePooledConnection *&pConnection, bool bUseTLS )
 		{
 			StartTrace(ConnectionPool.ReleaseConnection);
-			LockUnlockEntry me( fStructureMutex );
-			IntReleaseConnection( pConnection, server, user );
+			if ( fTLSUsable && bUseTLS ) {
+				Trace("nothing to do, keep connection as long as we (Thread) are alive");
+			} else {
+				LockUnlockEntry me( fStructureMutex );
+				IntReleaseConnection( pConnection );
+			}
 		}
 
 		bool ConnectionPool::IntGetOpen( OraclePooledConnection *&pConnection, const String &server, const String &user )
@@ -181,13 +241,12 @@ namespace Coast
 			return ( pConnection != NULL );
 		}
 
-		void ConnectionPool::IntReleaseConnection( OraclePooledConnection *&pConnection, const String &server,
-				const String &user )
+		void ConnectionPool::IntReleaseConnection( OraclePooledConnection *&pConnection )
 		{
 			StartTrace1(ConnectionPool.IntReleaseConnection, "putting &" << (long)(IFAObject *)pConnection);
 			if ( pConnection->isOpen() ) {
-				String strToStore( server );
-				strToStore << '.' << user;
+				String strToStore( pConnection->getServer() );
+				strToStore << '.' << pConnection->getUser();
 				TimeStamp aStamp;
 				Anything anyTimeStamp( Storage::Global() );
 				if ( !fListOfConnections.LookupPath( anyTimeStamp, "Open" ) ) {

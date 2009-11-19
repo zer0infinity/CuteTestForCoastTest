@@ -254,9 +254,11 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 		Coast::Oracle::ConnectionPool::ConnectionLock aConnLock( *pConnectionPool );
 		// we need the server and user to see if there is an existing and Open OraclePooledConnection
 		String user, server, passwd;
+		bool bUseTLS(false);
 		in->Get( "DBUser", user, ctx );
 		in->Get( "DBPW", passwd, ctx );
 		in->Get( "DBConnectString", server, ctx );
+		in->Get( "UseTLS", bUseTLS, ctx);
 		Trace("USER IS:" << user);
 		Trace("Connect string is [" << server << "]");
 		out->Put( "QuerySource", server, ctx );
@@ -265,12 +267,12 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 		OraclePooledConnection *pPooledConnection = NULL;
 
 		// find a free OraclePooledConnection, we should always get a valid OraclePooledConnection here!
-		if ( !pConnectionPool->BorrowConnection( pPooledConnection, server, user ) ) {
+		if ( !pConnectionPool->BorrowConnection( pPooledConnection, server, user, bUseTLS ) ) {
 			Error( ctx, out, "Exec: unable to get OracleConnection" );
 		} else {
 			bRet = TryExecuteQuery( in, ctx, pPooledConnection, server, user, passwd, out, bRet );
 			if ( pConnectionPool && pPooledConnection ) {
-				pConnectionPool->ReleaseConnection( pPooledConnection, server, user );
+				pConnectionPool->ReleaseConnection( pPooledConnection, bUseTLS );
 			}
 		}
 	} else {

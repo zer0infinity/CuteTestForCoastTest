@@ -7,7 +7,7 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-	/LowerBound		1		# debugging on or off
+	/LowerBound		0		# debugging on or off
 	/UpperBound		11		# override switch: turns everything on
 	/DumpAnythings  1		# print full Anythings
 
@@ -47,7 +47,7 @@
 		/checkError						10
 	}
 	/OraclePooledConnection {
-		/MainSwitch						0
+		/MainSwitch						1
 		/EnableAll						10
 	}
 	/OracleEnvironment {
@@ -63,9 +63,23 @@
 		/EnableAll						10
 	}
 	/ConnectionPool {
-		/MainSwitch						0
+		/MainSwitch						1
 		/EnableAll						10
 		/IntGetOpen						0
+	}
+	/ThreadSpecificConnectionCleaner {
+		/MainSwitch						1
+		/EnableAll						10
+	}
+	/Thread {
+		/MainSwitch						1
+		/EnableAll						0
+		/Exit							10
+		/Destructor						10
+		/Start							10
+		/IntRun							10
+		/RegisterCleaner				10
+		/CleanupThreadStorage			10
 	}
 	/OracleDAImplTest {
 		/MainSwitch						1

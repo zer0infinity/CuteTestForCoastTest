@@ -40,6 +40,8 @@ bool OraclePooledConnection::Open( String const &strServer, String const &strUse
 		else {
 			fConnection->Open( strServer, strUsername, strPassword );
 		}
+		fServer = strServer;
+		fUser = strUsername;
 	}
 	return fConnection.get();
 }
@@ -47,11 +49,12 @@ bool OraclePooledConnection::Open( String const &strServer, String const &strUse
 bool OraclePooledConnection::Close( bool bForce )
 {
 	StatTrace(OraclePooledConnection.Close, (bForce ? "" : "not ") << "forcing connection closing", Storage::Current());
+	if ( fConnection.get() ) {
+		fConnection->Close();
+	}
 	if ( bForce ) {
 		fConnection.reset();
 		fEnvironment.reset();
-	} else if ( fConnection.get() ) {
-		fConnection->Close();
 	}
 	return true;
 }
