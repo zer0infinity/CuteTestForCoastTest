@@ -361,9 +361,9 @@ Will print out following messages
 #define StartTrace(trigger)
 #define StartTrace1(trigger, msg)
 // debug statements
-#define TraceBuf(buf, sz)	;
-#define Trace(msg)	;
-#define TraceAny(any, msg)	;
+#define TraceBuf(buf, sz)
+#define Trace(msg)
+#define TraceAny(any, msg)
 // subdebugs
 #define SubTrace(subtrigger, msg)
 #define SubTraceAny(subtrigger, any, msg)
