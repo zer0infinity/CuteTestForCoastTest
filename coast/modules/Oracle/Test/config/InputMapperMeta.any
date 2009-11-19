@@ -11,7 +11,7 @@
 		/DBUser "oratest"
 		/DBPW	"oratest"
 		/DBConnectString	"//sifs-coast1.hsr.ch:1521/orcl"
-		/UseTLS	0
+		/UseTLS	1
 	}
 	/SifsCoastOrclSP  %SifsCoastOrcl
 

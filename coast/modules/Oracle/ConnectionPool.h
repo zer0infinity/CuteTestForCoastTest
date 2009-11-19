@@ -123,21 +123,6 @@ namespace Coast
 			 * @param user name of the user which was used to connect
 			 */
 			void ReleaseConnection( OraclePooledConnection *&pConnection, bool bUseTLS = false );
-			/*! Helper class to ensure requester lock out when all connections are currently in use
-			 * Makes use of automatic Semaphore.Acquire in ctor and Semaphore.Release in dtor using a SemaphoreEntry
-			 */
-			class ConnectionLock
-			{
-				SemaphoreEntry fSemaEntry;
-				ConnectionLock();
-				ConnectionLock(const ConnectionLock &);
-			public:
-				/*! Supply surrounding ConnectionPool object to allow access to Semaphore resource
-				 * @param rConnPool surrounding ConnectionPool object
-				 */
-				ConnectionLock(ConnectionPool &rConnPool) : fSemaEntry(*rConnPool.fpResourcesSema) {}
-				~ConnectionLock() {}
-			};
 
 			static THREADKEY fgTSCCleanerKey;
 		private:

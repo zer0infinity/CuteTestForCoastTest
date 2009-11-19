@@ -167,7 +167,7 @@ bool OracleDAImpl::TryExecuteQuery( ParameterMapper *in, Context &ctx, OraclePoo
 						bDoRetry = false;
 					}
 				} catch ( OracleException &ex ) {
-					String strError( "Exec: " );
+					String strError( "TryExecuteQuery: " );
 					strError << ex.getMessage();
 					Error( ctx, out, strError );
 				}
@@ -225,7 +225,7 @@ bool OracleDAImpl::TryExecuteQuery( ParameterMapper *in, Context &ctx, OraclePoo
 						}
 					}
 				} catch ( OracleException &ex ) {
-					String strError( "Exec: " );
+					String strError( "TryExecuteQuery: " );
 					strError << ex.getMessage();
 					Error( ctx, out, strError );
 				}
@@ -250,8 +250,6 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 	OracleModule *pModule = SafeCast(WDModule::FindWDModule("OracleModule"), OracleModule);
 	Coast::Oracle::ConnectionPool *pConnectionPool( 0 );
 	if ( pModule && ( pConnectionPool = pModule->GetConnectionPool() ) ) {
-		//!@FIXME a nicer solution would be appreciated where the following line could be omitted
-		Coast::Oracle::ConnectionPool::ConnectionLock aConnLock( *pConnectionPool );
 		// we need the server and user to see if there is an existing and Open OraclePooledConnection
 		String user, server, passwd;
 		bool bUseTLS(false);
@@ -308,7 +306,7 @@ void OracleDAImpl::Error( Context &ctx, ResultMapper *pResultMapper, String str 
 	StartTrace(OracleDAImpl.Error);
 	String strErr( "OracleDAImpl::" );
 	strErr.Append( str );
-	SysLog::Error( TimeStamp::Now().AsStringWithZ().Append( ' ' ).Append( strErr ) );
+	SysLog::Warning( TimeStamp::Now().AsStringWithZ().Append( ' ' ).Append( strErr ) );
 	if ( pResultMapper ) {
 		pResultMapper->Put( "Messages", strErr, ctx );
 	}

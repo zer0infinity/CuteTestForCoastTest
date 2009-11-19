@@ -91,7 +91,7 @@
 			/NumOfPoolBucketSizes			20
 			/SuccessDA						MultiThreadedDA
 			/FailureDA						MultiThreadedDAWithError
-			/ThreadDALoops					5
+			/ThreadDALoops					50
 			/Result {
 				/MultiThreadedDA {
 					/QueryCount ignore
@@ -105,7 +105,7 @@
 			/NumOfPoolBucketSizes			20
 			/SuccessDA						SPExecuteGetempsSucc
 			/FailureDA						SPExecuteGetempsFail
-			/ThreadDALoops					20
+			/ThreadDALoops					100
 			# force connection closing to see if handle memory gets freed
 			/ThreadLoopWait					0
 			/Result {

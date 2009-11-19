@@ -113,10 +113,10 @@ namespace Coast
 				fInitialized = false;
 			}
 			if ( bInitialized ) {
-				for ( long lCount = 0L; lCount < fListOfConnections["Size"].AsLong( 0L ) && fpResourcesSema->Acquire(); ++lCount ) {
+				for ( long lCount = 0L; lCount < fListOfConnections["Size"].AsLong( 0L ); ++lCount ) {
 					OraclePooledConnection *pConnection( NULL );
 					String strServer, strUser;
-					if ( BorrowConnection( pConnection, strServer, strUser ) ) {
+					if ( BorrowConnection( pConnection, strServer, strUser, false ) ) {
 						if ( pConnection->isOpen() ) {
 							pConnection->Close( true );
 						}
@@ -157,6 +157,7 @@ namespace Coast
 					}
 				}
 			} else {
+				fpResourcesSema->Acquire();
 				LockUnlockEntry me( fStructureMutex );
 				bRet = IntBorrowConnection( pConnection, server, user );
 			}
@@ -171,6 +172,7 @@ namespace Coast
 			} else {
 				LockUnlockEntry me( fStructureMutex );
 				IntReleaseConnection( pConnection );
+				fpResourcesSema->Release();
 			}
 		}
 
