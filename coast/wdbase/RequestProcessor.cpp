@@ -49,6 +49,7 @@ void RequestProcessor::ProcessRequest(Context &ctx)
 		ROAnything timeout;
 		fServer->Lookup("SocketReadTimeout", timeout);
 		socket->SetTimeout(timeout.AsLong(10 * 1000L));
+		TraceAny(socket->ClientInfo(), "socket client info");
 		Ios = socket->GetStream();
 	}
 
@@ -72,7 +73,10 @@ void RequestProcessor::ProcessRequest(Context &ctx)
 	} else {
 		String logMsg("No valid stream from socket: ");
 		logMsg << ((socket) ? socket->GetFd() : -1L);
-		SysLog::Error(logMsg);
+		if ( socket ) {
+			logMsg << " (" << socket->ClientInfo()["REMOTE_ADDR"].AsString() << ':' << socket->ClientInfo()["REMOTE_PORT"].AsString() << ')';
+		}
+		SysLog::Warning(logMsg);
 	}
 }
 
@@ -90,10 +94,8 @@ void RequestProcessor::ForceConnectionClose(Context &ctx)
 bool RequestProcessor::KeepConnectionAlive(Context &ctx)
 {
 	bool retVal = false;
-
-	ROAnything persConn = ctx.Lookup("PersistentConnections");
-
-	if (persConn.AsBool(false)) {
+	StatTrace(RequestProcessor.KeepConnectionAlive, "PersistentConnections:" << (ctx.Lookup("PersistentConnections").AsBool(false) ? "true" : "false"), Storage::Current());
+	if ( ctx.Lookup("PersistentConnections").AsBool(false) ) {
 		// first check if we already know the result
 		ROAnything lookupAny;
 		if (ctx.Lookup("Keep-Alive", lookupAny) && !lookupAny.IsNull() ) {
@@ -104,6 +106,7 @@ bool RequestProcessor::KeepConnectionAlive(Context &ctx)
 			ctx.GetTmpStore()["Keep-Alive"] = retVal;
 		}
 	}
+	StatTrace(RequestProcessor.KeepConnectionAlive, "Keep-Alive:" << (retVal ? "true" : "false"), Storage::Current());
 	return retVal;
 }
 
@@ -127,13 +130,13 @@ void RequestProcessor::Error(ostream &reply, const String &msg, Context &ctx)
 
 void RequestProcessor::DoReadInput(iostream &Ios, Context &ctx)
 {
-	StartTrace(RequestProcessor.DoReadInput);
 	// default implementation just
 	// import the anything from the
 	// socket stream
 
 	Anything args;
 	args.Import(Ios);
+	StatTraceAny(RequestProcessor.DoReadInput, args, "request arguments", Storage::Current());
 	ctx.PushRequest(args);
 }
 

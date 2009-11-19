@@ -629,17 +629,14 @@ bool Context::LookupObjects(const char *key, ROAnything &result, char delim, cha
 
 bool Context::LookupRequest(const char *key, ROAnything &result, char delim, char indexdelim) const
 {
-	StartTrace1(Context.LookupRequest, "key:<" << NotNull(key) << ">");
-	ROAnything env = ROAnything(fRequest)["env"];
-	ROAnything query = ROAnything(fRequest)["query"];
-
-	if ( env.LookupPath(result, key, delim, indexdelim) ) {
-		return true;
+	bool bRet(false);
+	if ( ! ( bRet = ROAnything(fRequest)["env"].LookupPath(result, key, delim, indexdelim) ) ) {
+		if ( ! ( bRet = ROAnything(fRequest)["query"].LookupPath(result, key, delim, indexdelim) ) ) {
+			bRet = ROAnything(fRequest).LookupPath(result, key, delim, indexdelim);
+		}
 	}
-	if ( query.LookupPath(result, key, delim, indexdelim) ) {
-		return true;
-	}
-	return ROAnything(fRequest).LookupPath(result, key, delim, indexdelim);
+	StatTrace(Context.LookupRequest, "key:<" << NotNull(key) << "> " << (bRet ? "" : "not ") << "found", Storage::Current());
+	return bRet;
 }
 
 bool Context::LookupLocalized(const char *key, ROAnything &result, char delim, char indexdelim) const
