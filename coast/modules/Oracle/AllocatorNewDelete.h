@@ -27,21 +27,23 @@ namespace Coast
 		 * @param sz size of memory block to allocate
 		 * @param a Allocator used for allocating memory
 		 */
-		static void *operator new(size_t sz, Allocator *a);
+		static void *operator new(std::size_t sz, Allocator *a) throw();
 		/*! operator used when delete() gets called
 		 * @param ptr memory block to delete
 		 */
-		static void operator delete(void *ptr);
+		static void operator delete(void *ptr) throw();
 		/*! operator used when delete gets called within ctor of allocated class
 		 * @param ptr memory block to delete
 		 * @param a Allocator used for freeing memory
 		 */
-		static void operator delete(void *ptr, Allocator *a);
+		static void operator delete(void *ptr, Allocator *a) throw();
+
 	private:
 		//! disallow unintended creation of non-Allocator instances
-		static void *operator new(size_t sz);
+		static void *operator new(std::size_t sz) throw (std::bad_alloc);
+		static void *operator new (std::size_t size, const std::nothrow_t &nothrow_constant) throw();
+		static void operator delete (void *ptr, const std::nothrow_t &nothrow_constant) throw();
 	};
 
 }
-
 #endif /* ALLOCATORNEWDELETE_H_ */

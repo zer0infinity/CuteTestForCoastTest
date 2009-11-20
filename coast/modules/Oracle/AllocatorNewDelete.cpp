@@ -11,7 +11,7 @@
 namespace Coast
 {
 
-	static void *AllocatorNewDelete::operator new(size_t sz, Allocator *a)
+	static void *AllocatorNewDelete::operator new(size_t sz, Allocator *a) throw()
 	{
 		if (a) {
 			//!FIXME: correct alignment could improve performance
@@ -19,8 +19,9 @@ namespace Coast
 			((Allocator **) mem)[0L] = a; // remember address of responsible Allocator
 			return (char *) mem + sizeof(Allocator *); // needs cast because of pointer arithmetic
 		}
+		return a;
 	}
-	static void AllocatorNewDelete::operator delete(void *ptr)
+	static void AllocatorNewDelete::operator delete(void *ptr) throw()
 	{
 		if (ptr) {
 			//!FIXME: correct alignment could improve performance
@@ -29,7 +30,7 @@ namespace Coast
 			a->Free(realPtr);
 		}
 	}
-	static void AllocatorNewDelete::operator delete(void *ptr, Allocator *a)
+	static void AllocatorNewDelete::operator delete(void *ptr, Allocator *a) throw()
 	{
 		if (ptr && a) {
 			void *realPtr = (char *) ptr - sizeof(Allocator *);
@@ -41,4 +42,5 @@ namespace Coast
 	AllocatorNewDelete::~AllocatorNewDelete()
 	{
 	}
+
 }
