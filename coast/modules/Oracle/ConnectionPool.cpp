@@ -62,6 +62,27 @@ namespace Coast
 		} fgTSCCleaner;
 		THREADKEY ConnectionPool::fgTSCCleanerKey = 0;
 
+		static Allocator *getListAllocator( const ROAnything roaConfig )
+		{
+			Allocator *pAlloc = Storage::Global();
+			if ( roaConfig["UsePoolStorage"].AsLong( 1 ) == 1 ) {
+				// create unique allocator id based on a pointer value
+				long lAllocatorId = 0x011e0FFF;
+				pAlloc = MT_Storage::MakePoolAllocator( roaConfig["PoolStorageSize"].AsLong( 99 ),
+														roaConfig["NumOfPoolBucketSizes"].AsLong( 26 ), lAllocatorId );
+				if ( pAlloc == NULL ) {
+					StatTrace(ConnectionPool.getListAllocator, "failed to create PoolAllocator, using Storage::Global()", Storage::Current());
+					SYSWARNING("was not able to create PoolAllocator with Id:" << lAllocatorId);
+					pAlloc = Storage::Global();
+				} else {
+					StatTrace(ConnectionPool.getListAllocator, "created PoolAllocator", Storage::Current());
+					// store allocator pointer for later deletion
+					MT_Storage::RefAllocator( pAlloc );
+				}
+			}
+			return pAlloc;
+		}
+
 		bool ConnectionPool::Init( ROAnything myCfg )
 		{
 			StartTrace(ConnectionPool.Init);
@@ -77,10 +98,11 @@ namespace Coast
 
 				LockUnlockEntry me( fStructureMutex );
 				{
+					// the following call is guaranteed to return a valid Allocator
+					fListOfConnections.SetAllocator( getListAllocator( myCfg ) );
 					// use the semaphore to block when no more resources are available
 					fListOfConnections["Size"] = nrOfConnections;
 					fpResourcesSema = new Semaphore( nrOfConnections );
-					String server, user;
 					for ( long i = 0; i < nrOfConnections; ++i ) {
 						OraclePooledConnection *pConnection = new ( Storage::Global() ) OraclePooledConnection( i,
 								myCfg["MemPoolSize"].AsLong( 2048L ), myCfg["MemPoolBuckets"].AsLong( 16L ) );
@@ -95,6 +117,14 @@ namespace Coast
 				}
 			}
 			return fInitialized;
+		}
+
+		static void releaseListAllocator( Allocator *pAlloc )
+		{
+			if ( pAlloc != Storage::Global() ) {
+				StatTrace(ConnectionPool.releaseListAllocator, "unreferencing Allocator", Storage::Current());
+				MT_Storage::UnrefAllocator( pAlloc );
+			}
 		}
 
 		bool ConnectionPool::Finis()
@@ -131,6 +161,10 @@ namespace Coast
 						SYSERROR("TlsFree of ConnectionPool::fgTSCCleanerKey failed" );
 					}
 				}
+				Allocator *pAlloc = fListOfConnections.GetAllocator();
+				fListOfConnections.clear();
+				fListOfConnections.SetAllocator(Storage::Global());
+				releaseListAllocator(pAlloc);
 			}
 			return !fInitialized;
 		}
@@ -250,12 +284,12 @@ namespace Coast
 				String strToStore( pConnection->getServer() );
 				strToStore << '.' << pConnection->getUser();
 				TimeStamp aStamp;
-				Anything anyTimeStamp( Storage::Global() );
+				Anything anyTimeStamp( fListOfConnections.GetAllocator() );
 				if ( !fListOfConnections.LookupPath( anyTimeStamp, "Open" ) ) {
-					anyTimeStamp = MetaThing( Storage::Global() );
+					anyTimeStamp = MetaThing( fListOfConnections.GetAllocator() );
 					fListOfConnections["Open"] = anyTimeStamp;
 				}
-				Anything anyToStore( Storage::Global() );
+				Anything anyToStore( fListOfConnections.GetAllocator() );
 				anyToStore[0L] = (IFAObject *) pConnection;
 				anyToStore[1L] = strToStore;
 				anyTimeStamp[aStamp.AsString()].Append( anyToStore );
@@ -269,19 +303,19 @@ namespace Coast
 		{
 			StartTrace(ConnectionPool.CheckCloseOpenedConnections);
 			bool bRet = false;
-			Anything anyTimeStamp( Storage::Global() );
 			TimeStamp aStamp;
 			aStamp -= lTimeout;
 			Trace("current timeout " << lTimeout << "s, resulting time [" << aStamp.AsString() << "]");
 			LockUnlockEntry me( fStructureMutex );
 			if ( fInitialized ) {
+				Anything anyTimeStamp( fListOfConnections.GetAllocator() );
 				TraceAny(fListOfConnections, "current list of connections");
 				if ( fListOfConnections.LookupPath( anyTimeStamp, "Open" ) && anyTimeStamp.GetSize() ) {
 					OraclePooledConnection *pConnection = NULL;
 					long lTS = 0L;
 					// if we still have open connections and the last access is older than lTimeout seconds
 					while ( anyTimeStamp.GetSize() && ( aStamp > TimeStamp( anyTimeStamp.SlotName( lTS ) ) ) ) {
-						Anything anyTS( Storage::Global() );
+						Anything anyTS( fListOfConnections.GetAllocator() );
 						anyTS = anyTimeStamp[lTS];
 						TraceAny(anyTS, "stamp of connections to close [" << anyTimeStamp.SlotName(0L) << "]");
 						while ( anyTS.GetSize() ) {
