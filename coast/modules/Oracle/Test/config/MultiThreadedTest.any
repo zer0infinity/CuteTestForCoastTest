@@ -36,7 +36,7 @@
 	}
 	/OracleModule {
 		/ConnectionPool {
-			/ParallelQueries		10
+			/ParallelQueries		20
 			/CloseConnectionTimeout	2
 		}
 	}
@@ -86,12 +86,12 @@
 
 	/DAImplTest {
 		{
-			/ThreadPoolSize					10
+			/ThreadPoolSize					20
 			/PoolStorageSize				2000
 			/NumOfPoolBucketSizes			20
 			/SuccessDA						MultiThreadedDA
 			/FailureDA						MultiThreadedDAWithError
-			/ThreadDALoops					50
+			/ThreadDALoops					100
 			/Result {
 				/MultiThreadedDA {
 					/QueryCount ignore
@@ -100,12 +100,12 @@
 			}
 		}
 		{
-			/ThreadPoolSize					10
+			/ThreadPoolSize					20
 			/PoolStorageSize				2000
 			/NumOfPoolBucketSizes			20
 			/SuccessDA						SPExecuteGetempsSucc
 			/FailureDA						SPExecuteGetempsFail
-			/ThreadDALoops					100
+			/ThreadDALoops					200
 			# force connection closing to see if handle memory gets freed
 			/ThreadLoopWait					0
 			/Result {
