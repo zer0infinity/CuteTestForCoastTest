@@ -13,6 +13,8 @@ ConnectString=oratest/oratest@sifs-coast1.hsr.ch:1521/orcl
 DB_IMPORTFILE='config/oratest_schema.sql'
 DB_DROPFILE='config/drop_oratest_schema.sql'
 
+export NLS_LANG=".WE8ISO8859P1"
+
 ## add test specific things before the call to callTest
 function prepareTest
 {
