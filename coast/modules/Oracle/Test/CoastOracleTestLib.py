@@ -33,6 +33,8 @@ def runSQL(connectstring, filename, logpath):
     return res
 
 def setUp(target, source, env):
+    if not os.environ.has_key('NLS_LANG'):
+        os.environ['NLS_LANG'] = '.WE8ISO8859P1'
     logpath = env['BASEOUTDIR'].Dir(os.path.join('tests', packagename, env['LOGDIR'], env['VARIANTDIR']))
     path = env['BASEOUTDIR'].Dir(os.path.join('tests', packagename)).Dir('config')
     runSQL("oratest/oratest@sifs-coast1.hsr.ch:1521/orcl", path.File('drop_oratest_schema.sql').abspath, logpath.abspath)
