@@ -93,6 +93,8 @@ public:
 	enum ExecMode {
 		EXEC_DEFAULT = OCI_DEFAULT,	//!< Use default execution mode
 		EXEC_COMMIT = OCI_COMMIT_ON_SUCCESS, //!< Commit statement after successful completion
+		EXEC_COMMIT_BATCH_ERRORS = OCI_COMMIT_ON_SUCCESS | OCI_BATCH_ERRORS, //!< Commit statement only if no errors occurred in iterate mode
+		EXEC_BATCH_ERRORS = OCI_BATCH_ERRORS, //!< array DML operation, report errors using specific handle for each iterated call
 		EXEC_SCROLLABLE_RO = OCI_STMT_SCROLLABLE_READONLY, //!< Special cursor processing mode where absolute or relative navigation is possible
 	};
 
@@ -280,6 +282,7 @@ public:
 	void setPrefetchRows( long lPrefetchRows );
 
 	unsigned long getUpdateCount() const;
+	unsigned long getErrorCount() const;
 
 	OracleResultsetPtr getResultset();
 	OracleResultsetPtr getCursor( long lColumnIndex, long lRowIdx = 0 );

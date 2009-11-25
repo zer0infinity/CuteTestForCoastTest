@@ -82,7 +82,9 @@ struct oci_auto_handle {
 	handle_ptr_type getHandle() const {
 		return fHandle;
 	}
-
+	ub4 getHandleType() const {
+		return handleType;
+	}
 	/*! Accessor to use when creating a new handle.
 	 * This method will give access to the handle data field which is needed to allocate a new handle of a given type in this object.
 	 * @return address of the internal handle data area

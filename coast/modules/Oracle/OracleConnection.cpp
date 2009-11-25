@@ -23,36 +23,28 @@ OracleConnection::OracleConnection( OracleEnvironment &rEnv ) :
 	fStatus( eUnitialized ), fOracleEnv( rEnv ), fErrhp(), fSrvhp(), fSvchp(), fUsrhp()
 {
 	StartTrace(OracleConnection.OracleConnection);
-	bool bCont( true );
-	// --- alloc error handle
-	if ( OCIHandleAlloc( fOracleEnv.EnvHandle(), fErrhp.getVoidAddr(), (ub4) OCI_HTYPE_ERROR, (size_t) 0, (dvoid **) 0 )
-		 != OCI_SUCCESS ) {
-		SysLog::Error( "FAILED: OCIHandleAlloc(): alloc error handle failed" );
-		bCont = false;
-	}
 
-	String strErr( 128L );
-	// --- alloc service context handle
-	if ( bCont && checkError( OCIHandleAlloc( fOracleEnv.EnvHandle(), fSvchp.getVoidAddr(), (ub4) OCI_HTYPE_SVCCTX,
-							  (size_t) 0, (dvoid **) 0 ), strErr ) ) {
-		SysLog::Error( String( "FAILED: OCIHandleAlloc(): alloc service context handle failed (" ) << strErr << ")" );
-		bCont = false;
-	}
-	// --- alloc server connection handle
-	if ( bCont && checkError( OCIHandleAlloc( fOracleEnv.EnvHandle(), fSrvhp.getVoidAddr(), (ub4) OCI_HTYPE_SERVER,
-							  (size_t) 0, (dvoid **) 0 ), strErr ) ) {
-		SysLog::Error( String( "FAILED: OCIHandleAlloc(): alloc server connection handle failed (" ) << strErr << ")" );
-		bCont = false;
-	}
-	// --- alloc user session handle
-	if ( bCont && checkError( OCIHandleAlloc( fOracleEnv.EnvHandle(), fUsrhp.getVoidAddr(), (ub4) OCI_HTYPE_SESSION,
-							  (size_t) 0, (dvoid **) 0 ), strErr ) ) {
-		SysLog::Error( String( "FAILED: OCIHandleAlloc(): alloc user session handle failed (" ) << strErr << ")" );
-		bCont = false;
-	}
-	if ( bCont ) {
+	// ---
+	if ( AllocateHandle( fErrhp ) /* alloc error handle */
+		 && AllocateHandle( fSvchp ) /* alloc service context handle */
+		 && AllocateHandle( fSrvhp ) /* alloc server connection handle */
+		 && AllocateHandle( fUsrhp ) /* alloc user session handle */
+	   ) {
 		fStatus = eHandlesAllocated;
 	}
+}
+
+template< class handlePtrType >
+bool OracleConnection::AllocateHandle( handlePtrType &aHandlePtr )
+{
+	StartTrace(OracleConnection.AllocateHandle);
+	if ( OCIHandleAlloc( fOracleEnv.EnvHandle(), aHandlePtr.getVoidAddr(), aHandlePtr.getHandleType(), (size_t) 0,
+						 (dvoid **) 0 ) != OCI_SUCCESS ) {
+		SysLog::Error( String( "FAILED: OCIHandleAlloc(): alloc handle of type " ) << (long) aHandlePtr.getHandleType()
+					   << " failed" );
+		return false;
+	}
+	return true;
 }
 
 bool OracleConnection::Open( String const &strServer, String const &strUsername, String const &strPassword )

@@ -387,6 +387,40 @@
 				}
 			}
 		}
+		/EmpSalaryForceExceptionTest {
+			/TmpStore {
+				/ArrayValues {
+					{
+						/ID		7839
+					}
+					{
+						/ID		99
+					}
+					{
+						/ID		7839
+					}
+				}
+			}
+			/TheAction {
+				/CallDA {
+					/DataAccess	SPExecute
+					/Parameters {
+						/SPName	getempsalary
+						/ArrayValuesSlotName	ArrayValues
+					}
+				}
+			}
+			/ExpectedResult	0
+			/Result {
+				/TmpStore {
+					/SPExecute {
+						/Query	"BEGIN getempsalary(:ID,:SALARY); END;"
+						/QuerySource	"//sifs-coast1.hsr.ch:1521/orcl"
+						/Messages ignore
+					}
+				}
+			}
+		}
 		/GetFloatTest {
 			/TmpStore {
 				/SPName	getfloat

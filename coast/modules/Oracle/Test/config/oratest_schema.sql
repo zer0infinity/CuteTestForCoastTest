@@ -319,12 +319,18 @@ set define off;
 ( id IN NUMBER
 , salary OUT emp.sal%type
 ) AS
+  myException EXCEPTION;
 BEGIN
   IF id IS NULL THEN
     salary := 0;
+  ELSIF id = 99 THEN
+  	RAISE myException;
   ELSE
     select emp.sal into salary from emp where emp.empno=id;
   END IF;
+-- EXCEPTION
+--   WHEN myException THEN
+--     DBMS_OUTPUT.PUT_LINE('my forced exception on value 99');
 END GETEMPSALARY;
 
 /

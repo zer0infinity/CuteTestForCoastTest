@@ -150,6 +150,9 @@ public:
 	 */
 	bool checkError( sword status );
 
+	template< class handlePtrType >
+	bool AllocateHandle( handlePtrType &aHandlePtr );
+
 private:
 	ObjectType GetSPDescription( const String &command, ROAnything &desc );
 	ObjectType ReadSPDescriptionFromDB( const String &command, Anything &desc );

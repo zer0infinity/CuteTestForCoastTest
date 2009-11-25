@@ -72,6 +72,7 @@ OracleStatement::Status OracleStatement::execute( ExecMode mode, long lIteration
 		Trace("iterations:" << (long)iters);
 		sword execStatus = OCIStmtExecute( fpConnection->SvcHandle(), getHandle(), fpConnection->ErrorHandle(), iters, 0,
 										   NULL, NULL, mode );
+		Trace("execution status:" << (long)execStatus);
 		if ( execStatus == OCI_SUCCESS || execStatus == OCI_SUCCESS_WITH_INFO || execStatus == OCI_NO_DATA ) {
 			// how can we find out about the result type? -> see Prepare
 			switch ( fStmtType ) {
@@ -113,6 +114,17 @@ unsigned long OracleStatement::getUpdateCount() const
 	ub4 count( 0 );
 	OCIAttrGet( getHandle(), OCI_HTYPE_STMT, (dvoid *) &count, 0, OCI_ATTR_ROW_COUNT, fpConnection->ErrorHandle() );
 	StatTrace(OracleStatement.getUpdateCount, "update count " << (long)count, Storage::Current());
+	return count;
+}
+
+unsigned long OracleStatement::getErrorCount() const
+{
+	ub4 count( 0 );
+	ErrHandleType aHandlePtr;
+	if ( fpConnection->AllocateHandle( aHandlePtr ) ) {
+		OCIAttrGet( getHandle(), OCI_HTYPE_STMT, (dvoid *) &count, 0, OCI_ATTR_NUM_DML_ERRORS, aHandlePtr.getHandle() );
+		StatTrace(OracleStatement.getErrorCount, "error count " << (long)count, Storage::Current());
+	}
 	return count;
 }
 

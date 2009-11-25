@@ -21,25 +21,26 @@
 		/EnableAll						10
 	}
 	/OracleDAImpl {
-		/MainSwitch						1
-		/EnableAll						11
+		/MainSwitch						10
+		/EnableAll						0
 		/DoPrepareSQL {
 			/MainSwitch					10
-			/EnableAll					10
+			/EnableAll					-10
 			/Query						10
 		}
 		/GetRecordData {
 			/MainSwitch					10
-			/EnableAll					10
+			/EnableAll					-10
 			/TraceDesc					10
 			/TraceColType				10
 			/TraceBuf					10
 		}
 		/FetchRowData {
 			/MainSwitch					10
-			/EnableAll					10
+			/EnableAll					-10
 			/TraceRow					-10
 		}
+		/TryExecuteQuery				10
 	}
 	/OracleConnection {
 		/MainSwitch						0
@@ -47,7 +48,7 @@
 		/checkError						10
 	}
 	/OraclePooledConnection {
-		/MainSwitch						1
+		/MainSwitch						0
 		/EnableAll						10
 	}
 	/OracleEnvironment {
@@ -60,19 +61,20 @@
 	}
 	/OracleStatement {
 		/MainSwitch						1
-		/EnableAll						10
+		/EnableAll						0
+		/execute						10
 	}
 	/ConnectionPool {
-		/MainSwitch						1
+		/MainSwitch						0
 		/EnableAll						10
 		/IntGetOpen						0
 	}
 	/ThreadSpecificConnectionCleaner {
-		/MainSwitch						1
+		/MainSwitch						0
 		/EnableAll						10
 	}
 	/Thread {
-		/MainSwitch						1
+		/MainSwitch						0
 		/EnableAll						0
 		/Exit							10
 		/Destructor						10
@@ -82,7 +84,7 @@
 		/CleanupThreadStorage			10
 	}
 	/OracleDAImplTest {
-		/MainSwitch						1
+		/MainSwitch						0
 		/EnableAll						10
 	}
 	/OracleCheckCloseOpenedConnectionsAction {
@@ -90,12 +92,12 @@
 		/EnableAll						10
 	}
 	/OracleParameterMapper {
-		/MainSwitch						1
+		/MainSwitch						0
 		/EnableAll						10
 		/Ctor							-10
 	}
 	/OracleResultMapper {
-		/MainSwitch						1
+		/MainSwitch						0
 		/EnableAll						10
 		/Ctor							-10
 	}
