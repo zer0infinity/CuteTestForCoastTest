@@ -78,3 +78,24 @@ bool OracleResultMapper::DoPutAny( const char *key, Anything value, Context &ctx
 	}
 	return ResultMapper::DoPutAny( key, value, ctx, script );
 }
+
+void OracleResultMapper::DoGetDestinationAny( const char *key, Anything &targetAny, Context &ctx )
+{
+	StartTrace1(OracleResultMapper.DoGetDestinationAny, NotNull(key));
+	String path = GetDestinationSlot( ctx ), kPrefix( key ), strIdxValue = ctx.Lookup( "_OracleArrayResultIndex_", "" );
+	String strArrayValuesSlot = Lookup("ArrayValuesSlotName", "ArrayResults");
+	char cDelim = Lookup( "Delim", "." )[0L], cIndexDelim = Lookup( "IndexDelim", ":" )[0L];
+
+	if ( strIdxValue.Length() ) {
+		Trace("index value is:" << strIdxValue);
+		path.Append( cDelim ).Append( strArrayValuesSlot );
+		path.Append( cIndexDelim ).Append( strIdxValue );
+	}
+	if ( path.Length() > 0 && kPrefix.Length() ) {
+		path.Append( cDelim );
+	}
+	path.Append( kPrefix );
+	Trace("Path for slotfinder: [" << path << "]");
+	SlotFinder::Operate( ctx.GetTmpStore(), targetAny, path, cDelim, cIndexDelim );
+	TraceAny(targetAny, "current value at target");
+}

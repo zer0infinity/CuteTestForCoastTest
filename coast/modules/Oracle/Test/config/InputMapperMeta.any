@@ -58,6 +58,12 @@
 		/Params {
 		}
 	}
+	/SPExecuteArray {
+		/ArraySlot	{ /RendererMapper { /ContextLookupRenderer ArrayValuesSlotName } }
+		/Params {
+			/ID	{ /RendererMapper { /ContextLookupRenderer ID } }
+		}
+	}
 	/MultiThreadedDA {
 		/SQL
 		{

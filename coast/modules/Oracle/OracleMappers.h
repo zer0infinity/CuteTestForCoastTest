@@ -118,6 +118,12 @@ protected:
 	 * @return returns true if the mapping was successful otherwise false */
 	virtual bool DoPutAny(const char *key, Anything value, Context &ctx, ROAnything script);
 
+	//! Looks up the Anything at key in Context using SlotFinder
+	/*!	\param key the key usually defines the associated kind of output-value
+		\param targetAny Anything reference into TmpStore to finally put values at. It uses DestinationSlot and key to get the correct location in Context.
+		\param ctx the context of the invocation */
+	virtual void DoGetDestinationAny( const char *key, Anything &targetAny, Context &ctx );
+
 	/*! Clone interface implementation
 	 * @return Pointer to IFAObject base class
 	 */

@@ -218,9 +218,6 @@ public:
 	virtual bool Exec( Context &ctx, ParameterMapper *in, ResultMapper *out );
 
 private:
-	bool BindSPVariables( OracleStatement::Description &desc, ParameterMapper *pmapIn, ResultMapper *pmapOut,
-						  OracleStatement &aStmt, Context &ctx );
-
 	bool DoPrepareSQL( String &command, Context &ctx, ParameterMapper *in );
 	bool DoPrepareSP( String &command, Context &ctx, ParameterMapper *in );
 
@@ -229,13 +226,15 @@ private:
 
 	void Error( Context &ctx, ResultMapper *pResultMapper, String str );
 
+	Anything getMappedInputValues( ParameterMapper *pmapIn, OracleStatement &aStmt, Context &ctx );
+
+	bool TryExecuteQuery( ParameterMapper *in, Context &ctx, OraclePooledConnection *& pPooledConnection,
+						  String &server, String &user, String &passwd, ResultMapper *out, bool bRet );
+
 	// compiler supplied functions forbidden due to Clone() interface
 	OracleDAImpl();
 	OracleDAImpl( const OracleDAImpl & );
 	OracleDAImpl &operator =( const OracleDAImpl & );
-protected:
-	bool TryExecuteQuery( ParameterMapper *in, Context &ctx, OraclePooledConnection *& pPooledConnection,
-						  String &server, String &user, String &passwd, ResultMapper *out, bool bRet );
 };
 
 #endif

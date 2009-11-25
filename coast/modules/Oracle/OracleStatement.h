@@ -89,12 +89,6 @@ public:
 		STMT_CALL = OCI_STMT_CALL,      //!< corresponds to kpu call
 	};
 
-	//! Type to bind parameter
-	enum BindType {
-		INTERNAL,//!< Use type of parameter description as bind type
-		CURSOR,  //!< Explicitly change parameter type to CURSOR
-		STRING   //!< Explicitly change parameter type to STRING
-	};
 	//! Defines valid statement execution modes
 	enum ExecMode {
 		EXEC_DEFAULT = OCI_DEFAULT,	//!< Use default execution mode
@@ -150,6 +144,36 @@ public:
 				this method doesn't copy memory */
 			const char *AsCharPtr(const char *slotname, const char *dflt = 0) const {
 				return operator[](slotname).AsCharPtr(dflt);
+			}
+
+			char *getRawBufferPtr(long lRowIndex = 0) {
+				long len = AsLong("Length");
+				if ( AsLong("Type") == SQLT_STR ) {
+					++len;
+				}
+				long lOffset = len * lRowIndex;
+				char *pBuf = const_cast<char *>(AsCharPtr( "RawBuf" ));
+				return pBuf + lOffset;
+			}
+
+			char *getIndicatorBufferPtr(long lRowIndex = 0) {
+				long lOffset = sizeof(OCIInd) * lRowIndex;
+				char *pBuf = const_cast<char *>(AsCharPtr( "Indicator" ));
+				return pBuf + lOffset;
+			}
+
+			OCIInd getIndicatorValue( long lRowIndex = 0) {
+				return *(reinterpret_cast<OCIInd *>(getIndicatorBufferPtr(lRowIndex)));
+			}
+
+			char *getEffectiveLengthBufferPtr(long lRowIndex = 0) {
+				long lOffset = sizeof(ub2) * lRowIndex;
+				char *pBuf = const_cast<char *>(AsCharPtr( "EffectiveLength" ));
+				return pBuf + lOffset;
+			}
+
+			ub2 getEffectiveLengthValue( long lRowIndex = 0) {
+				return *(reinterpret_cast<ub2 *>(getEffectiveLengthBufferPtr(lRowIndex)));
 			}
 
 			//!shorthand for At(const char *slotname)
@@ -210,7 +234,11 @@ private:
 
 	OracleStatement( OracleConnection *pConn, OCIStmt *phStmt );
 
-	sword bindColumn( long lBindPos, OracleStatement::Description::Element &aDescEl, long len, bool bIsNull = false );
+	void adjustColumnType( OracleStatement::Description::Element &aDescEl );
+	void prepareAndBindBuffer( OracleStatement::Description::Element &aDescEl, long lBindPos, long lRows);
+	sword bindColumn( long lBindPos, OracleStatement::Description::Element &aDescEl, long len );
+	void fillRowColValue( OracleStatement::Description::Element &aDescEl, long lRowIndex, ROAnything const roaValue );
+	void adjustPrepareAndBindCols( long lRows);
 public:
 	/*! Create a new statement using the given connection and statement String
 	 * @param pConn Underlying OracleConnection object to use for operation
@@ -225,10 +253,11 @@ public:
 	bool Prepare();
 	/*! Execute the prepared statement
 	 * @param mode ExecMode of statement execution
+	 * @param lIterations number of iterations to execute - for select statement it always needs to be 0
 	 * @return Usually the Status after execution will be either RESULT_SET_AVAILABLE or UPDATE_COUNT_AVAILABLE to
 	 * signal that Fetch can be called
 	 */
-	Status execute( ExecMode mode );
+	Status execute( ExecMode mode, long lIterations = 0L);
 	/*! Fetch the given number of rows into the internally allocated column buffers
 	 * @param numRows Number of rows to fetch at once
 	 * @return OCI status of executing the OCI fetch command
@@ -249,14 +278,12 @@ public:
 	}
 
 	void setPrefetchRows( long lPrefetchRows );
+
 	unsigned long getUpdateCount() const;
 
 	OracleResultsetPtr getResultset();
-	OracleResultsetPtr getCursor( long lColumnIndex );
-	String getString( long lColumnIndex );
-
-	void registerOutParam( long lBindPos, BindType bindType = INTERNAL, long lBufferSize = -1, const String &strValue = String() );
-	void setString( long lBindPos, String const &strValue );
+	OracleResultsetPtr getCursor( long lColumnIndex, long lRowIdx = 0 );
+	String getString( long lColumnIndex, long lRowIdx = 0 );
 
 	OCIStmt *getHandle() const {
 		return fStmthp.getHandle();
@@ -268,6 +295,8 @@ public:
 	OracleStatement::Description &GetOutputDescription();
 	bool DefineOutputArea();
 	void setSPDescription( ROAnything roaSPDescription, const String &strReturnName );
+
+	void bindAndFillInputValues( ROAnything const roaArrayValues );
 
 	const Anything &GetErrorMessages() const {
 		return fErrorMessages;

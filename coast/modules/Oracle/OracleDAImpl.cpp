@@ -123,6 +123,7 @@ bool OracleDAImpl::TryExecuteQuery( ParameterMapper *in, Context &ctx, OraclePoo
 	if ( lTryCount < 1 ) {
 		lTryCount = 1L;
 	}
+	out->Put( "QuerySource", server, ctx );
 	while ( bDoRetry && --lTryCount >= 0 ) {
 		// do not move away command, it is used to log when retrying
 		String command;
@@ -132,6 +133,7 @@ bool OracleDAImpl::TryExecuteQuery( ParameterMapper *in, Context &ctx, OraclePoo
 			in->Get( "PrefetchRows", lPrefetchRows, ctx );
 			if ( DoPrepareSQL( command, ctx, in ) ) {
 				Trace("SIMPLE STATEMENT IS [" << command << "]");
+				out->Put( "Query", command, ctx );
 				String strReturnName;
 				OracleConnection::ObjectType aObjType = OracleConnection::TYPE_SIMPLE;
 				try {
@@ -140,9 +142,9 @@ bool OracleDAImpl::TryExecuteQuery( ParameterMapper *in, Context &ctx, OraclePoo
 					Trace("statement status:" << (long)aStmt->status());
 					if ( aStmt.get() && aStmt->status() == OracleStatement::PREPARED ) {
 						Trace("statement is prepared");
-						out->Put( "Query", command, ctx );
-						Trace("executing statement");
-						OracleStatement::Status status = aStmt->execute( OracleStatement::EXEC_COMMIT );
+						Trace("executing statement [" << aStmt->getStatement() << "]");
+						long lIterations(1L);
+						OracleStatement::Status status = aStmt->execute( OracleStatement::EXEC_COMMIT, lIterations );
 						switch ( status ) {
 							case OracleStatement::RESULT_SET_AVAILABLE: {
 								Trace("RESULT_SET_AVAILABLE");
@@ -172,7 +174,8 @@ bool OracleDAImpl::TryExecuteQuery( ParameterMapper *in, Context &ctx, OraclePoo
 					Error( ctx, out, strError );
 				}
 			} else if ( DoPrepareSP( command, ctx, in ) ) {
-				Trace("STORED PROCEDURE IS [" << command << "]");
+				Trace("STORED PROC/FUNC IS [" << command << "]");
+				out->Put( "ProcedureName", command, ctx );
 				String strReturnName;
 				in->Get( "Return", strReturnName, ctx );
 				OracleConnection::ObjectType aObjType = OracleConnection::TYPE_UNK;
@@ -181,38 +184,43 @@ bool OracleDAImpl::TryExecuteQuery( ParameterMapper *in, Context &ctx, OraclePoo
 											  strReturnName ) );
 					Trace("statement status:" << (long)aStmt->status());
 					if ( aStmt.get() && aStmt->status() == OracleStatement::PREPARED ) {
+						Trace("executing statement [" << aStmt->getStatement() << "]");
 						out->Put( "Query", aStmt->getStatement(), ctx );
-						if ( BindSPVariables( aStmt->GetOutputDescription(), in, out, *aStmt.get(), ctx ) ) {
-							Trace("executing statement");
-							OracleStatement::Status status = aStmt->execute( OracleStatement::EXEC_COMMIT );
+						long lIterations(1L);
+						Anything anyRowInputValues = getMappedInputValues( in, *aStmt.get(), ctx);
+						lIterations = anyRowInputValues.GetSize();
+						if ( lIterations > 0L ) {
+							TraceAny(anyRowInputValues, "collected values");
+							aStmt->bindAndFillInputValues(anyRowInputValues);
+							OracleStatement::Status status = aStmt->execute( OracleStatement::EXEC_COMMIT, lIterations );
 							switch ( status ) {
 								case OracleStatement::RESULT_SET_AVAILABLE:
 									Trace("RESULT_SET_AVAILABLE");
 									break;
 								case OracleStatement::UPDATE_COUNT_AVAILABLE: {
 									Trace("UPDATE_COUNT_AVAILABLE");
-									AnyExtensions::Iterator < OracleStatement::Description,
-												  OracleStatement::Description::Element >
-												  aDescIter( aStmt->GetOutputDescription() );
-									Trace("processing " << (long)aStmt->GetOutputDescription().GetSize() << " description elements");
-									OracleStatement::Description::Element aDescEl;
-									while ( aDescIter.Next( aDescEl ) ) {
-										long lOraColIdx( aDescEl.AsLong( "Idx" ) );
-										long lColType( aDescEl.AsLong( "Type" ) );
-										Trace("got named column [" << aDescEl.AsString("Name") << "] of type " << lColType);
-										if ( lColType == SQLT_CUR || lColType == SQLT_RSET ) {
-											OracleResultsetPtr aRSet( aStmt->getCursor( lOraColIdx ) );
-											ProcessResultSet( *aRSet.get(), in, ctx, out, aDescEl.AsString( "Name" ) );
-										} else {
-											String strValueCol( aStmt->getString( lOraColIdx ) );
-											Trace("value of column [" << aDescEl.AsString("Name") << "] has value [" << strValueCol << "]");
-											out->Put( aDescEl.AsString( "Name" ), strValueCol, ctx );
+									OracleStatement::Description &aOutDescription(aStmt->GetOutputDescription());
+									for ( long lRowIdx = 0; lRowIdx < lIterations; ++lRowIdx) {
+										Anything anyRowIndex(lRowIdx);
+										Context::PushPopEntry<Anything> aRowIndexEntry(ctx, "ResultRowIndex", anyRowIndex, (lIterations > 1 ? "_OracleArrayResultIndex_" : "Guguseli"));
+										AnyExtensions::Iterator < OracleStatement::Description,
+													  OracleStatement::Description::Element >
+													  aDescIter( aOutDescription );
+										Trace("processing " << (long)aOutDescription.GetSize() << " description elements");
+										OracleStatement::Description::Element aDescEl;
+										while ( aDescIter.Next( aDescEl ) ) {
+											long lOraColIdx( aDescEl.AsLong( "Idx" ) );
+											long lColType( aDescEl.AsLong( "Type" ) );
+											Trace("got named column [" << aDescEl.AsString("Name") << "] of type " << lColType);
+											if ( lColType == SQLT_CUR || lColType == SQLT_RSET ) {
+												OracleResultsetPtr aRSet( aStmt->getCursor( lOraColIdx, lRowIdx ) );
+												ProcessResultSet( *aRSet.get(), in, ctx, out, aDescEl.AsString("Name") );
+											} else {
+												String strValueCol( aStmt->getString( lOraColIdx, lRowIdx ) );
+												Trace("value of column [" << aDescEl.AsString("Name") << "] has value [" << strValueCol << "]");
+												out->Put( aDescEl.AsString("Name"), strValueCol, ctx );
+											}
 										}
-									}
-									bool bShowUpdateCount( false );
-									in->Get( "ShowUpdateCount", bShowUpdateCount, ctx );
-									if ( bShowUpdateCount ) {
-										out->Put( "UpdateCount", (long) aStmt->getUpdateCount(), ctx );
 									}
 									break;
 								}
@@ -259,7 +267,6 @@ bool OracleDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out )
 		in->Get( "UseTLS", bUseTLS, ctx);
 		Trace("USER IS:" << user);
 		Trace("Connect string is [" << server << "]");
-		out->Put( "QuerySource", server, ctx );
 
 		// we slipped through and are ready to get a connection and execute a query
 		OraclePooledConnection *pPooledConnection = NULL;
@@ -312,53 +319,46 @@ void OracleDAImpl::Error( Context &ctx, ResultMapper *pResultMapper, String str 
 	}
 }
 
-bool OracleDAImpl::BindSPVariables( OracleStatement::Description &desc, ParameterMapper *pmapIn, ResultMapper *pmapOut,
-									OracleStatement &aStmt, Context &ctx )
+Anything OracleDAImpl::getMappedInputValues( ParameterMapper *pmapIn, OracleStatement &aStmt, Context &ctx )
 {
-	StartTrace(OracleDAImpl.BindSPVariables);
-	// use 'desc' to allocate output area used by oracle library
-	// to bind variables (binary Anything buffers are allocated and
-	// stored within the 'desc' structure... for automatic storage
-	// management)
+	StartTrace(OracleDAImpl.getMappedInputValues);
 
-	String strErr( "BindSPVariables: " );
-
-	AnyExtensions::Iterator<OracleStatement::Description, OracleStatement::Description::Element> aDescIter( desc );
-	OracleStatement::Description::Element aDescEl;
-	while ( aDescIter.Next( aDescEl ) ) {
-		// first bind variable position is 1
-		long bindPos( aDescIter.Index() + 1 );
-		String strParamname( aDescEl.AsString( "Name" ) );
-
-		switch ( aDescEl.AsLong( "Type" ) ) {
-			case SQLT_CUR:
-			case SQLT_RSET:
-				Trace("cursor or resultset binding");
-				if ( aDescEl.AsLong( "IoMode" ) == (long) OCI_TYPEPARAM_OUT || aDescEl.AsLong( "IoMode" )
-					 == (long) OCI_TYPEPARAM_INOUT ) {
-					Trace("binding value of type:" << aDescEl.AsLong("Type"));
-					aStmt.registerOutParam( bindPos );
-				}
-				break;
-			default:
-				String strValue;
-				if ( aDescEl.AsLong( "IoMode" ) == (long) OCI_TYPEPARAM_IN || aDescEl.AsLong( "IoMode" )
-					 == (long) OCI_TYPEPARAM_INOUT ) {
-					if ( !pmapIn->Get( String( "Params." ).Append( strParamname ), strValue, ctx ) ) {
-						Error( ctx, pmapOut, String( "BindSPVariables: In(out) parameter [" ) << strParamname
-							   << "] not found in config, is it defined in upper case letters?" );
-						return false;
-					}
-				}
-				if ( aDescEl.AsLong( "IoMode" ) == (long) OCI_TYPEPARAM_IN ) {
-					aStmt.setString( bindPos, strValue );
-				} else {
-					Trace("binding value of type: " << aDescEl.AsLong("Type"));
-					long lBufferSize( glStringBufferSize );
-					pmapIn->Get( "StringBufferSize", lBufferSize, ctx );
-					aStmt.registerOutParam( bindPos, OracleStatement::INTERNAL, lBufferSize, strValue );
-				}
-		}
+	long lIterations = 1L;
+	String strArraySlot;
+	pmapIn->Get( "ArrayValuesSlotName", strArraySlot, ctx);
+	Anything anyArrayValues;
+	if ( strArraySlot.Length() && pmapIn->Get(strArraySlot, anyArrayValues, ctx) ) {
+		lIterations = anyArrayValues.GetSize();
 	}
-	return true;
+
+	long lBufferSize( glStringBufferSize );
+	pmapIn->Get( "StringBufferSize", lBufferSize, ctx );
+	MetaThing anyMappedInputValues;
+	for (long lIdx = 0; lIdx < lIterations; ++lIdx) {
+		Context::PushPopEntry<Anything> aEntry(ctx, "ArrayValues", anyArrayValues[lIdx]);
+		Anything anyRow;
+		AnyExtensions::Iterator<OracleStatement::Description, OracleStatement::Description::Element> aDescIter( aStmt.GetOutputDescription() );
+		OracleStatement::Description::Element aDescEl;
+		while ( aDescIter.Next( aDescEl ) ) {
+			long lRowLength = aDescEl.AsLong( "MaxStringBufferSize", 0L );
+			String strParamname( aDescEl.AsString( "Name" ) );
+			String strValue;
+			if ( aDescEl.AsLong( "IoMode" ) == (long) OCI_TYPEPARAM_IN || aDescEl.AsLong( "IoMode" )
+				 == (long) OCI_TYPEPARAM_INOUT ) {
+				bool bIsRSET = ( aDescEl.AsLong( "Type" ) == SQLT_CUR ) || ( aDescEl.AsLong( "Type" ) == SQLT_RSET );
+				if ( !pmapIn->Get( String( "Params." ).Append( strParamname ), strValue, ctx ) && !bIsRSET ) {
+					throw OracleException(*(aStmt.getConnection()), String( "getMappedInputValues: In(out) parameter [" ) << strParamname
+										  << "] not found in config, is it defined in upper case letters?" );
+				}
+				anyRow[strParamname] = strValue;
+				lRowLength = std::max(lRowLength, strValue.Length());
+			} else {
+				lRowLength = lBufferSize;
+			}
+			aDescEl["MaxStringBufferSize"] = lRowLength;
+		}
+		anyMappedInputValues[lIdx] = anyRow;
+	}
+	TraceAny(anyMappedInputValues, "collected input values");
+	return anyMappedInputValues;
 }

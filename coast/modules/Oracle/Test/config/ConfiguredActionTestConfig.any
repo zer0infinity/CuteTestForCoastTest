@@ -47,7 +47,9 @@
 				SelectEmployees
 				SelectEmployeesTitlesOnce
 				SPMaxSalary
-				SPExecute
+				/SPExecute {
+					SPExecuteArray
+				}
 				LoadOratestSchema
 				UpdateEmployees
 				SimpleSQLAccess
@@ -56,6 +58,7 @@
 		/MapperTestDAImpl {
 			/OracleSPMapperSlotTest {
 				SPRenderedOracleSPMapperParamTest
+				OracleResultMapperArrayIdxTest
 			}
 		}
 	}
@@ -76,34 +79,39 @@
 				IncompleteParamsDA
 				/SifsCoastOrclSP {
 					SPMaxSalary
-					SPExecute
+					/SPExecute {
+						SPExecuteArray
+					}
 				}
 				/OracleSPMapperSlotTest {
 					SPRenderedOracleSPMapperParamTest
 				}
+				OracleResultMapperArrayIdxTest
 			}
 		}
 		/Output {
 			/ResultMapper {
+			}
+			/OracleResultMapper {
 				AppendResultMapper
 				/PutResultMapper {
 					/OracleSPMapperSlotTest {
 						SPRenderedOracleSPMapperParamTest
 					}
 				}
-			}
-			/OracleResultMapper {
 				/OracleDAImpl {
 					SelectEmployees
 					SelectEmployeesTitlesOnce
 					SPMaxSalary
 					/SPExecute {
 						IncompleteParamsDA
+						SPExecuteArray
 					}
 					LoadOratestSchema
 					UpdateEmployees
 					SimpleSQLAccess
 				}
+				OracleResultMapperArrayIdxTest
 			}
 		}
 	}
@@ -299,6 +307,31 @@
 					/OracleSPMapperSlotTest {
 						/SPName		ourSPName
 						/Param1		theContextParam
+					}
+				}
+			}
+		}
+		/OracleResultMapperArrayIdxTest {
+			/TmpStore {
+				/_OracleArrayResultIndex_	2
+				/ID	77
+			}
+			/TheAction {
+				/CallDA 	OracleResultMapperArrayIdxTest
+			}
+			/Result {
+				/TmpStore {
+					/OracleResultMapperArrayIdxTest {
+						/ArrayResults {
+							*
+							*
+							{
+								/ID	77
+							}
+						}
+					}
+					/ResultMapper {
+						/DestinationSlot	OracleResultMapperArrayIdxTest
 					}
 				}
 			}
@@ -841,6 +874,45 @@
 					/SimpleSQLAccess {
 						/Query	"DROP TABLE IFS cascade constraints"
 						/UpdateCount 0
+					}
+				}
+			}
+		}
+		/GetEmpNames {
+			/TmpStore {
+				/SPName	GETEMPNAME
+				/ArrayValues {
+					{
+						/ID	7839
+					}
+					{
+						/ID	7902
+					}
+				}
+			}
+			/TheAction {
+				/CallDA {
+					/DataAccess	SPExecuteArray
+					/Parameters {
+						/ArrayValuesSlotName	ArrayValues
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/SPExecuteArray {
+						/QuerySource "//sifs-coast1.hsr.ch:1521/orcl"
+						/Query "BEGIN GETEMPNAME(:ID,:NAME); END;"
+						/ArrayResults {
+							{
+								/ID		7839
+								/NAME	KING
+							}
+							{
+								/ID		7902
+								/NAME	FORD
+							}
+						}
 					}
 				}
 			}

@@ -13,4 +13,10 @@
 			/Params.P1 Param1
 		}
 	}
+	/OracleResultMapperArrayIdxTest {
+		/transfer {
+			/ID	ID
+		}
+		/DataType	long
+	}
 }

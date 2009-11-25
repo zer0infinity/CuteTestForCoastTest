@@ -62,13 +62,14 @@ void OracleStatement::Cleanup()
 	fStatus = UNPREPARED;
 }
 
-OracleStatement::Status OracleStatement::execute( ExecMode mode )
+OracleStatement::Status OracleStatement::execute( ExecMode mode, long lIterations )
 {
 	StartTrace1(OracleStatement.execute, "statement type " << (long)fStmtType);
 	if ( fStatus == PREPARED ) {
 		// depending on the query type, we could use 'scrollable cursor mode' ( OCI_STMT_SCROLLABLE_READONLY )
 		// executes a SQL statement (first row is also fetched only if iters > 0)
-		ub4 iters = ( fStmtType == STMT_SELECT ? 0 : 1 );
+		ub4 iters = ( fStmtType == STMT_SELECT ? 0 : lIterations );
+		Trace("iterations:" << (long)iters);
 		sword execStatus = OCIStmtExecute( fpConnection->SvcHandle(), getHandle(), fpConnection->ErrorHandle(), iters, 0,
 										   NULL, NULL, mode );
 		if ( execStatus == OCI_SUCCESS || execStatus == OCI_SUCCESS_WITH_INFO || execStatus == OCI_NO_DATA ) {
@@ -165,21 +166,21 @@ OracleResultsetPtr OracleStatement::getResultset()
 	return pResult;
 }
 
-OracleResultsetPtr OracleStatement::getCursor( long lColumnIndex )
+OracleResultsetPtr OracleStatement::getCursor( long lColumnIndex, long lRowIdx )
 {
-	StartTrace1(OracleStatement.getCursor, "column index: " << lColumnIndex);
+	StartTrace1(OracleStatement.getCursor, "column index: " << lColumnIndex << " rowidx:" << lRowIdx);
 	OracleResultsetPtr pResult;
 	--lColumnIndex;
 	if ( lColumnIndex >= 0 && lColumnIndex < fDescriptions.GetSize() ) {
 		OracleStatement::Description::Element aDescEl = fDescriptions[lColumnIndex];
 		Anything value;
-		SubTrace(TraceColType, "column type is: " << aDescEl.AsLong("Type") << " indicator: " << aDescEl.AsLong("Indicator"));
-		SubTrace(TraceBuf, "buf ptr " << (long) (aDescEl.AsCharPtr("RawBuf")) );
+		SubTrace(TraceColType, "column type is: " << aDescEl.AsLong("Type") << " indicator: " << (long)aDescEl.getIndicatorValue(lRowIdx));
+		SubTrace(TraceBuf, "buf ptr " << (long) (aDescEl.getRawBufferPtr(lRowIdx)) );
 		switch ( aDescEl.AsLong( "Type" ) ) {
 			case SQLT_RSET:
 			case SQLT_CUR: {
 				Trace("SQLT_RSET/SQLT_CUR");
-				OCIStmt *phStmt = * ( (OCIStmt **) aDescEl.AsCharPtr( "RawBuf" ) );
+				OCIStmt *phStmt = * ( (OCIStmt **) aDescEl.getRawBufferPtr( lRowIdx ) );
 				Trace("retrieved statement handle pointer &" << (long)phStmt);
 				if ( phStmt ) {
 					OracleStatement *pStmt = new ( Storage::Current() ) OracleStatement( fpConnection, phStmt );
@@ -327,51 +328,48 @@ bool OracleStatement::DefineOutputArea()
 	return true;
 }
 
-String OracleStatement::getString( long lColumnIndex )
+String OracleStatement::getString( long lColumnIndex, long lRowIdx )
 {
-	StartTrace1(OracleStatement.getString, "col index: " << lColumnIndex);
+	StartTrace1(OracleStatement.getString, "col index: " << lColumnIndex << " rowidx:" << lRowIdx);
 	String strColValue( 128L );
 	// oracle always uses 1-based indexes...except for functions...
 	--lColumnIndex;
 	if ( lColumnIndex >= 0 && lColumnIndex < fDescriptions.GetSize() ) {
 		OracleStatement::Description::Element aDescEl = fDescriptions[lColumnIndex];
 		Anything value;
-		SubTrace(TraceColType, "column type is: " << aDescEl.AsLong("Type") << " indicator: " << aDescEl.AsLong("Indicator"));
-		SubTrace(TraceBuf, "buf ptr " << (long) (aDescEl.AsCharPtr("RawBuf")) << " length: " << (long) * ((ub2 *) aDescEl.AsCharPtr("EffectiveLength")));
+		SubTrace(TraceColType, "column type is: " << aDescEl.AsLong("Type") << " indicator: " << (long)aDescEl.getIndicatorValue(lRowIdx));
+		SubTrace(TraceBuf, "buf ptr " << (long) (aDescEl.getRawBufferPtr(lRowIdx)) << " length: " << (long)aDescEl.getEffectiveLengthValue());
 		switch ( aDescEl.AsLong( "Type" ) ) {
 			case SQLT_INT:
 				Trace("SQLT_INT");
-				if ( aDescEl.AsLong( "Indicator" ) == OCI_IND_NULL ) {
+				if ( aDescEl.getIndicatorValue(lRowIdx) == OCI_IND_NULL ) {
 					value = 0L;
 				} else {
-					value = ( * ( (sword *) aDescEl.AsCharPtr( "RawBuf" ) ) );
+					value = ( * ( (sword *) aDescEl.getRawBufferPtr( lRowIdx ) ) );
 				}
 				break;
 			case SQLT_FLT:
 				Trace("SQLT_FLT");
-				if ( aDescEl.AsLong( "Indicator" ) == OCI_IND_NULL ) {
+				if ( aDescEl.getIndicatorValue(lRowIdx) == OCI_IND_NULL ) {
 					value = 0.0f;
 				} else {
-					value = ( * ( (float *) aDescEl.AsCharPtr( "RawBuf" ) ) );
+					value = ( * ( (float *) aDescEl.getRawBufferPtr( lRowIdx ) ) );
 				}
 				break;
 			case SQLT_STR:
 				Trace("SQLT_STR");
-				if ( aDescEl.AsLong( "Indicator" ) == OCI_IND_NULL ) {
-					value = "";
+				if ( aDescEl.getIndicatorValue(lRowIdx) == OCI_IND_NULL ) {
+					value = "NULL";
 				} else {
-					value = String( aDescEl.AsCharPtr( "RawBuf" ) );
+					value = aDescEl.getRawBufferPtr( lRowIdx );
 				}
 				break;
 			default:
-				SubTraceBuf(TraceBuf, aDescEl.AsCharPtr("RawBuf"), *((ub2 *) aDescEl.AsCharPtr("EffectiveLength")));
-				if ( aDescEl.AsLong( "Indicator" ) == OCI_IND_NULL ) {
+				SubTraceBuf(TraceBuf, aDescEl.getRawBufferPtr( lRowIdx ), aDescEl.getEffectiveLengthValue());
+				if ( aDescEl.getIndicatorValue(lRowIdx) == OCI_IND_NULL ) {
 					value = "";
 				} else {
-					value
-					= String( static_cast<void *> ( const_cast<char *> ( aDescEl.AsCharPtr( "RawBuf" ) ) ),
-							  (long) * ( reinterpret_cast<ub2 *> ( const_cast<char *> ( aDescEl.AsCharPtr(
-											 "EffectiveLength" ) ) ) ) );
+					value = String( static_cast<void *> ( aDescEl.getRawBufferPtr( lRowIdx ) ), (long)aDescEl.getEffectiveLengthValue() );
 				}
 				break;
 		}
@@ -381,126 +379,149 @@ String OracleStatement::getString( long lColumnIndex )
 	return strColValue;
 }
 
-void OracleStatement::registerOutParam( long lBindPos, BindType bindType, long lBufferSize, const String &strValue)
+void OracleStatement::adjustColumnType( OracleStatement::Description::Element &aDescEl )
 {
-	StartTrace1(OracleStatement.registerOutParam, "column index " << lBindPos << " bindType " << (long)bindType);
-	long len( 0L );
-	Anything buf;
-	sword execStatus;
-	--lBindPos;
-	if ( lBindPos >= 0 && lBindPos < fDescriptions.GetSize() ) {
-		OracleStatement::Description::Element aDescEl = fDescriptions[lBindPos];
-		switch ( bindType ) {
-			case CURSOR: {
-				aDescEl["Type"] = SQLT_RSET;
-				break;
-			}
-			case STRING: {
-				aDescEl["Type"] = SQLT_STR;
-				break;
-			}
-			default: // INTERNAL
-				len = aDescEl.AsLong( "Length" ) + 1;
-				break;
+	StartTrace1(OracleStatement.adjustColumnType, "column index:" << aDescEl.AsLong("Idx", -1L) << " type:" << aDescEl.AsLong( "Type" ));
+	switch ( aDescEl.AsLong( "Type" ) ) {
+		case SQLT_DAT:
+			Trace("SQLT_DAT");
+			aDescEl["Length"] = 9;
+			aDescEl["Type"] = SQLT_STR;
+			break;
+		case SQLT_CHR:
+		case SQLT_STR: {
+			Trace("SQLT_CHR/STR");
+			aDescEl["Length"] = aDescEl.AsLong( "MaxStringBufferSize", 0L );
+			aDescEl["Type"] = SQLT_STR;
+			break;
 		}
-
-		switch ( aDescEl.AsLong( "Type" ) ) {
-			case SQLT_DAT:
-				aDescEl["Length"] = 9;
-				aDescEl["Type"] = SQLT_STR;
-				len = aDescEl.AsLong( "Length" ) + 1;
-				break;
-			case SQLT_CHR:
-			case SQLT_STR: {
-				if ( lBufferSize >= 0 ) {
-					aDescEl["Length"] = lBufferSize;
-				}
-				aDescEl["Type"] = SQLT_STR;
-				len = aDescEl.AsLong( "Length" ) + 1;
-				break;
-			}
-			case SQLT_NUM:
-				aDescEl["Length"] = 38;
-				aDescEl["Type"] = SQLT_STR;
-				len = aDescEl.AsLong( "Length" ) + 1;
-				break;
-			case SQLT_CUR:
-			case SQLT_RSET: {
-				aDescEl["Type"] = SQLT_RSET;
-				OCIStmt *phCursor( 0 );
-				execStatus = OCIHandleAlloc( getConnection()->getEnvironment().EnvHandle(), (void **) &phCursor,
-											 OCI_HTYPE_STMT, 0, // extra memory to allocate
-											 NULL ); // pointer to user-memory
-				len = sizeof(OCIStmt *);
-				aDescEl["Length"] = len;
-				buf = Anything( (void *) &phCursor, len );
-				Trace("statement handle &" << (long)phCursor);
-				break;
-			}
-			default:
-				len = aDescEl.AsLong( "Length" ) + 1;
-				break;
+		case SQLT_NUM:
+			Trace("SQLT_NUM");
+			aDescEl["Length"] = 38;
+			aDescEl["Type"] = SQLT_STR;
+			break;
+		case SQLT_CUR:
+		case SQLT_RSET: {
+			Trace("SQLT_CUR/RSET");
+			aDescEl["Type"] = SQLT_RSET;
+			aDescEl["Length"] = (long)sizeof(OCIStmt *);
+			break;
 		}
-
-		if ( buf.IsNull() ) {
-			buf = Anything( (void *) 0, len );
-			if ( strValue.Length() ) {
-				Trace("value to pass given [" << strValue << "]");
-				strncpy(const_cast<char *>(buf.AsCharPtr()), (const char *)strValue, std::min(len - 1, strValue.Length()));
-			}
-		}
-
-		aDescEl["RawBuf"] = buf;
-
-		execStatus = bindColumn( lBindPos + 1, aDescEl, len );
-		if ( execStatus != OCI_SUCCESS ) {
-			throw OracleException( *getConnection(), execStatus );
-		}
+		default:
+			Trace("SQLT_DEFAULT");
+			break;
 	}
 }
 
-void OracleStatement::setString( long lBindPos, String const &strValue )
+void OracleStatement::prepareAndBindBuffer( OracleStatement::Description::Element &aDescEl, long lBindPos, long lRows)
 {
-	StartTrace1(OracleStatement.setString, "column index " << lBindPos << " value [" << strValue << "]");
-	long len( 0L );
+	StartTrace1(OracleStatement.prepareAndBindBuffer, "bindPos:" << lBindPos << "  numRows:" << lRows);
+
+	long len( aDescEl["Length"].AsLong() );
 	Anything buf;
-	--lBindPos;
-	if ( lBindPos >= 0 && lBindPos < fDescriptions.GetSize() ) {
-		sword execStatus;
-		OracleStatement::Description::Element aDescEl = fDescriptions[lBindPos];
-
-		aDescEl["Length"] = strValue.Length();
-		aDescEl["Type"] = SQLT_STR;
-		len = aDescEl.AsLong( "Length" ) + 1;
-		buf = Anything( (void *) (const char *) strValue, len );
-
-		aDescEl["RawBuf"] = buf;
-
-		execStatus = bindColumn( lBindPos + 1, aDescEl, len, strValue.IsEqual( "NULL" ) );
-		if ( execStatus != OCI_SUCCESS ) {
-			throw OracleException( *getConnection(), execStatus );
-		}
+	if ( aDescEl["Type"] != SQLT_RSET ) {
+		// add one byte for 'terminating' character
+		++len;
 	}
-}
-
-sword OracleStatement::bindColumn( long lBindPos, OracleStatement::Description::Element &aDescEl, long len,
-								   bool bIsNull )
-{
-	StartTrace1(OracleStatement.bindColumn, "column index " << lBindPos << " is " << (bIsNull ? "" : "not ") << "null");
+	Trace("allocating buffer of size len*rows=" << len << "*" << lRows << "=" << len * lRows);
+	buf = Anything( (void *)0, len * lRows );
+	aDescEl["RawBuf"] = buf;
 
 	// allocate space for NULL indicator
-	OCIInd nullInd( 0 );
-	if ( bIsNull ) {
-		nullInd = -1;
+	// a OCIInd value of 0 equals using a non-NULL value
+	aDescEl["Indicator"] = Anything( (void *) 0, sizeof(OCIInd) * lRows );
+
+	// fake effective result size
+	// only used when not using bind
+	aDescEl["EffectiveLength"] = Anything( (void *) 0, sizeof(ub2) * lRows );
+
+	sword execStatus;
+	execStatus = bindColumn( lBindPos, aDescEl, len );
+	if ( execStatus != OCI_SUCCESS ) {
+		throw OracleException( *getConnection(), execStatus );
 	}
-	aDescEl["Indicator"] = Anything( (void *) &nullInd, sizeof(OCIInd) );
+}
 
-	// allocate space to store effective result size
-	ub2 ub2Len( (ub2) aDescEl.AsLong( "Length", 0L ) );
-	aDescEl["EffectiveLength"] = Anything( (void *) (ub2 *) &ub2Len, sizeof(ub2) );
-
+sword OracleStatement::bindColumn( long lBindPos, OracleStatement::Description::Element &aDescEl, long len )
+{
+	StartTrace1(OracleStatement.bindColumn, "column index " << lBindPos);
 	OCIBind *bndp = 0;
 	return OCIBindByPos( getHandle(), &bndp, getConnection()->ErrorHandle(), (ub4) lBindPos,
-						 (dvoid *) aDescEl.AsCharPtr( "RawBuf" ), (sword) len, aDescEl.AsLong( "Type" ),
-						 (dvoid *) aDescEl.AsCharPtr( "Indicator" ), 0, 0, 0, 0, OCI_DEFAULT );
+						 (dvoid *) aDescEl.getRawBufferPtr( 0L ), (sword) len, aDescEl.AsLong( "Type" ),
+						 (dvoid *) aDescEl.getIndicatorBufferPtr( 0L ), 0, 0, 0, 0, OCI_DEFAULT );
+}
+
+void OracleStatement::adjustPrepareAndBindCols( long lRows)
+{
+	StartTrace1(OracleStatement.adjustPrepareAndBindCols, "numRows:" << lRows);
+	AnyExtensions::Iterator<OracleStatement::Description, OracleStatement::Description::Element> aDescIter( GetOutputDescription() );
+	OracleStatement::Description::Element aDescEl;
+	while ( aDescIter.Next( aDescEl ) ) {
+		// first bind variable position is 1
+		long lBindPos = aDescEl.AsLong( "Idx" );
+		adjustColumnType( aDescEl );
+		prepareAndBindBuffer( aDescEl, lBindPos, lRows);
+	}
+}
+
+void OracleStatement::bindAndFillInputValues( ROAnything const roaArrayValues )
+{
+	StartTrace1(OracleStatement.bindAndFillInputValues, "numRows:" << roaArrayValues.GetSize());
+
+	adjustPrepareAndBindCols( roaArrayValues.GetSize() );
+
+	AnyExtensions::Iterator<ROAnything> aRowIterator( roaArrayValues);
+	ROAnything roaRowValues;
+	while ( aRowIterator.Next(roaRowValues) ) {
+		TraceAny(roaRowValues, "values of row:" << aRowIterator.Index());
+		AnyExtensions::Iterator<OracleStatement::Description, OracleStatement::Description::Element> aDescIter( GetOutputDescription() );
+		OracleStatement::Description::Element aDescEl;
+		while ( aDescIter.Next( aDescEl ) ) {
+			String strParamname( aDescEl.AsString( "Name" ) );
+			ROAnything roaColValue = roaRowValues[strParamname];
+			TraceAny(roaColValue, "value for column [" << strParamname << "]");
+			fillRowColValue( aDescEl, aRowIterator.Index(), roaColValue );
+		}
+	}
+}
+
+void fillCBuffer( OracleStatement::Description::Element &aDescEl, char const *pcWhere, long len, long lRowIndex,
+				  Anything &buf )
+{
+	char *pC = const_cast<char *> ( aDescEl[pcWhere].AsCharPtr() );
+	StatTrace(OracleStatement.fillRowColValue, "adjust for row in buffer, before:" << (long)pC << " after:" << (long)(pC + (len * lRowIndex)), Storage::Current());
+	pC += ( len * lRowIndex );
+	String strBuf( buf.AsString() );
+	void *pDest = static_cast<void *> ( pC );
+	void *pSrc = static_cast<void *> ( const_cast<char *>((const char *)strBuf) );
+	memcpy( pDest, pSrc, strBuf.Length() );
+}
+
+void OracleStatement::fillRowColValue( OracleStatement::Description::Element &aDescEl, long lRowIndex, ROAnything const roaValue )
+{
+	StartTrace1(OracleStatement.fillRowColValue, "Row:" << lRowIndex << " [" << roaValue.AsString() << "]");
+	Anything buf;
+	long len = aDescEl.AsLong("Length", 0L);
+	if ( aDescEl["Type"].AsLong() == SQLT_RSET ) {
+		OCIStmt *phCursor( 0 );
+		sword execStatus;
+		execStatus = OCIHandleAlloc( getConnection()->getEnvironment().EnvHandle(), (void **) &phCursor,
+									 OCI_HTYPE_STMT, 0, // extra memory to allocate
+									 NULL ); // pointer to user-memory
+		buf = Anything( (void *) &phCursor, len );
+		fillCBuffer(aDescEl, "RawBuf", len, lRowIndex, buf);
+	} else {
+		String strValue(roaValue.AsString());
+		if ( String::CaselessCompare(strValue, "NULL" ) == 0 ) {
+			OCIInd nullInd( -1 );
+			long lenNULL = sizeof(OCIInd);
+			buf = Anything( static_cast<void *>(&nullInd), lenNULL );
+			fillCBuffer(aDescEl, "Indicator", lenNULL, lRowIndex, buf);
+		}
+		buf = Anything( (void *) (const char *)strValue, std::min(len, strValue.Length()) );
+		fillCBuffer(aDescEl, "RawBuf", len + 1, lRowIndex, buf);
+	}
+	ub2 ub2len( len );
+	buf = Anything( (void *) &ub2len, sizeof(ub2) );
+	fillCBuffer(aDescEl, "EffectiveLength", sizeof(ub2), lRowIndex, buf);
 }

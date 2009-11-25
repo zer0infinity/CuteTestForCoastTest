@@ -21,7 +21,7 @@
 		/EnableAll						10
 	}
 	/OracleDAImpl {
-		/MainSwitch						0
+		/MainSwitch						1
 		/EnableAll						11
 		/DoPrepareSQL {
 			/MainSwitch					10
@@ -59,7 +59,7 @@
 		/EnableAll						10
 	}
 	/OracleStatement {
-		/MainSwitch						0
+		/MainSwitch						1
 		/EnableAll						10
 	}
 	/ConnectionPool {
@@ -90,12 +90,12 @@
 		/EnableAll						10
 	}
 	/OracleParameterMapper {
-		/MainSwitch						0
+		/MainSwitch						1
 		/EnableAll						10
 		/Ctor							-10
 	}
 	/OracleResultMapper {
-		/MainSwitch						0
+		/MainSwitch						1
 		/EnableAll						10
 		/Ctor							-10
 	}
@@ -126,7 +126,7 @@
 	}
 	/ResultMapper {
 		/MainSwitch						0
-		/EnableAll						0
+		/EnableAll						10
 		/DoSelectScript					10
 	}
 	/ParameterMapper {

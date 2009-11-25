@@ -21,7 +21,7 @@
 		/QueryCount			{ /PutResultMapper * }
 		/UpdateCount		{ /PutResultMapper * }
 		/QuerySource		{ /PutResultMapper * }
-		/QueryTitles		{ /ResultMapper * }
+		/QueryTitles		{ /PutResultMapper * }
 	}
 	/SelectEmployees {
 		/DestinationSlot	SelectEmployees
@@ -53,6 +53,11 @@
 			/QueryTitles	{ /AppendResultMapper * }
 		}
 	}
+	/SPExecuteArray {
+		/PutPolicy			Put
+		/DestinationSlot	SPExecuteArray
+		/Messages			{ /AppendResultMapper * }
+	}
 	/MultiThreadedDA {
 		/DestinationSlot	MultiThreadedDA
 	}
@@ -64,5 +69,8 @@
 	}
 	/SPExecuteGetempsFail {
 		/DestinationSlot	SPExecuteGetempsFail
+	}
+	/OracleResultMapperArrayIdxTest {
+		/DestinationSlot	OracleResultMapperArrayIdxTest
 	}
 }
