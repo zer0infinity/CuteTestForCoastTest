@@ -386,3 +386,19 @@ END GETSTRING;
 
 /
 
+--------------------------------------------------------
+--  DDL for Procedure GETEMPSOFDEPT
+--------------------------------------------------------
+set define off;
+
+  CREATE OR REPLACE PROCEDURE "GETEMPSOFDEPT" (deptname IN VARCHAR2, EmpCursor in out SYS_REFCURSOR) is
+begin
+  open EmpCursor for
+    SELECT emp.ename
+      FROM emp INNER JOIN dept
+      ON emp.deptno = dept.deptno
+      WHERE dept.dname = deptname
+      ORDER BY emp.ename;
+end;
+
+/
