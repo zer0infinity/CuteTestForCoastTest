@@ -645,9 +645,7 @@
 						/Query	"BEGIN getemps(:EMPCURSOR); END;"
 						/EMPCURSOR {
 							/QueryTitles {
-								{
-								  /ENAME 0
-								}
+							  /ENAME 0
 							}
 							/QueryResult {
 								{
@@ -696,19 +694,6 @@
 							/QueryCount		14
 						}
 						/QuerySource	"//sifs-coast1.hsr.ch:1521/orcl"
-					}
-				}
-			}
-		}
-		/UpdateEmployeesTest {
-			/TheAction {
-				/CallDA 	UpdateEmployees
-			}
-			/Result {
-				/TmpStore {
-					/UpdateEmployees {
-						/Query	"update emp set ename='gugus' where ename='ADAMS' or ename='BLAKE'"
-						/UpdateCount 2
 					}
 				}
 			}
@@ -913,6 +898,207 @@
 								/NAME	FORD
 							}
 						}
+					}
+				}
+			}
+		}
+		/GETEMPSOFDEPTTest {
+			/TmpStore {
+				/SPName	GETEMPSOFDEPT
+				/ArrayValues {
+					{
+						/DEPTNAME	OPERATIONS
+					}
+					{
+						/DEPTNAME	RESEARCH
+					}
+					{
+						/DEPTNAME	SALES
+					}
+				}
+			}
+			/TheAction {
+				/CallDA {
+					/DataAccess	SPExecuteArray
+					/Parameters {
+						/ArrayValuesSlotName	ArrayValues
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/SPExecuteArray {
+						/QuerySource "//sifs-coast1.hsr.ch:1521/orcl"
+						/Query "BEGIN GETEMPSOFDEPT(:DEPTNAME,:EMPCURSOR); END;"
+						/ArrayResults {
+							{
+								/DEPTNAME OPERATIONS
+								/EMPCURSOR {
+									/QueryCount	0
+								}
+							}
+							{
+								/DEPTNAME RESEARCH
+								/EMPCURSOR {
+									/QueryResult {
+								        {
+										  /ENAME "ADAMS"
+										}
+										{
+										  /ENAME "FORD"
+										}
+										{
+										  /ENAME "JONES"
+										}
+										{
+										  /ENAME "SCOTT"
+										}
+										{
+										  /ENAME "SMITH"
+										}
+									}
+									/QueryCount	5
+								}
+							}
+							{
+								/DEPTNAME SALES
+								/EMPCURSOR {
+									/QueryResult {
+										{
+										  /ENAME "ALLEN"
+										}
+										{
+										  /ENAME "BLAKE"
+										}
+										{
+										  /ENAME "JAMES"
+										}
+										{
+										  /ENAME "MARTIN"
+										}
+										{
+										  /ENAME "TURNER"
+										}
+										{
+										  /ENAME "WARD"
+										}
+									}
+									/QueryCount	6
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		/GETEMPSOFDEPTTitlesOnceTest {
+			/TmpStore {
+				/SPName	GETEMPSOFDEPT
+				/ArrayValues {
+					{
+						/DEPTNAME	OPERATIONS
+					}
+					{
+						/DEPTNAME	RESEARCH
+					}
+					{
+						/DEPTNAME	SALES
+					}
+				}
+			}
+			/TheAction {
+				/CallDA {
+					/DataAccess	SPExecuteArray
+					/Parameters {
+						/ArrayValuesSlotName	ArrayValues
+						/DBResultFormat		TitlesOnce
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/SPExecuteArray {
+						/QuerySource "//sifs-coast1.hsr.ch:1521/orcl"
+						/Query "BEGIN GETEMPSOFDEPT(:DEPTNAME,:EMPCURSOR); END;"
+						/ArrayResults {
+							{
+								/DEPTNAME OPERATIONS
+								/EMPCURSOR {
+									/QueryTitles {
+										/ENAME 0
+									}
+									/QueryCount	0
+								}
+							}
+							{
+								/DEPTNAME RESEARCH
+								/EMPCURSOR {
+									/QueryTitles {
+										/ENAME 0
+									}
+									/QueryResult {
+								        {
+										  "ADAMS"
+										}
+										{
+										  "FORD"
+										}
+										{
+										  "JONES"
+										}
+										{
+										  "SCOTT"
+										}
+										{
+										  "SMITH"
+										}
+									}
+									/QueryCount	5
+								}
+							}
+							{
+								/DEPTNAME SALES
+								/EMPCURSOR {
+									/QueryTitles {
+										/ENAME 0
+									}
+									/QueryResult {
+										{
+										  "ALLEN"
+										}
+										{
+										  "BLAKE"
+										}
+										{
+										  "JAMES"
+										}
+										{
+										  "MARTIN"
+										}
+										{
+										  "TURNER"
+										}
+										{
+										  "WARD"
+										}
+									}
+									/QueryCount	6
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		/UpdateEmployeesTest {
+			/TheAction {
+				/CallDA 	UpdateEmployees
+			}
+			/Result {
+				/TmpStore {
+					/UpdateEmployees {
+						/Query	"update emp set ename='gugus' where ename='ADAMS' or ename='BLAKE'"
+						/UpdateCount 2
 					}
 				}
 			}

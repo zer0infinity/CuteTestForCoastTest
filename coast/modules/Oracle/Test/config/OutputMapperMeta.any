@@ -47,10 +47,10 @@
 		/DestinationSlot	SPExecute
 		/Messages			{ /AppendResultMapper * }
 		/QueryResult		{ /AppendResultMapper * }
-		/QueryTitles		{ /AppendResultMapper * }
+		/QueryTitles		{ /PutResultMapper * }
 		/EMPCURSOR {
 			/QueryResult	{ /AppendResultMapper * }
-			/QueryTitles	{ /AppendResultMapper * }
+			/QueryTitles	{ /PutResultMapper * }
 		}
 	}
 	/SPExecuteArray {
