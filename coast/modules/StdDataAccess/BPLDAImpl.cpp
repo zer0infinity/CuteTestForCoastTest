@@ -180,40 +180,26 @@ bool BPLDAImpl::DoExec(Connector *csc, ConnectorParams *cps, Context &context, P
 		Trace("WASTE: " << waste);
 
 		Anything responseAny;
-		*Ios >> responseAny;
+		long lRowCount(0L);
+		while ( Ios->good() ) {
+			*Ios >> responseAny;
+			TraceAny(responseAny, "Response Anything");
+			if ( responseAny.IsDefined("Status") && responseAny["Status"].IsDefined("Code")) {
+				break;
+			}
+			out->Put("QueryResult", responseAny, context);
+			++lRowCount;
+		}
 
-//		TraceAny(responseAny, "Response Anything");
+		out->Put("QueryCount", lRowCount, context);
 
 		if (responseAny["Status"]["Code"] != "200") {
 			Trace("ERROR Status Code");
 			TraceAny(responseAny, "ERROR ANY RESP");
 			out->Put("Error", GenerateErrorMessage(responseAny["Status"]["Message"].AsString(), context), context);
+			SYSERROR(responseAny["Status"]["Message"].AsString() << " ErrorMsg: " << responseAny["Status"]["Error"].AsString());
 			return false;
 		}
-
-		responseAny.Remove("Status");
-
-//		TraceAny(responseAny, "Response Anything");
-
-		long responseSize = responseAny.GetSize();
-		out->Put("QueryCount", responseSize, context);
-
-		for (long i = 0; i < responseSize; i++) {
-//			TraceAny(responseAny[i], "anypart " << i);
-			out->Put("QueryResult", responseAny[i], context);
-		}
-
-//		if (! out->Put("QueryResult", responseAny, context) )
-//		{
-//			out->Put("Error",GenerateErrorMessage("Receiving reply of ", context),context);
-//			return false;
-//		}
-//
-//		ROAnything roAnyTmp;
-//
-//		context.Lookup ("DBselectExtListings", roAnyTmp);
-//
-//		TraceAny(roAnyTmp,"RESULT roAnyTmp");
 
 		return true;
 	}
