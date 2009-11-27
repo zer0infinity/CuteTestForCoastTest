@@ -180,8 +180,8 @@ namespace STLStorage
 		// deallocate storage p of deleted elements
 		void deallocate (pointer p, size_type num) {
 			// print message and deallocate memory with global delete
-			_StartTrace1(STLAllocator.deallocate, "num:" << (long)num << " of size:" << (long)sizeof(T));
-			fAllocator->Free((void *)p);
+			size_t sz(fAllocator->Free((void *)p));
+			_StartTrace1(STLAllocator.deallocate, "num:" << (long)num << " of sizeof(T):" << (long)sizeof(T) << " sz:" << (long)sz);
 		}
 
 		Allocator *fAllocator;

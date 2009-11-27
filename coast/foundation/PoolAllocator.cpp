@@ -468,11 +468,12 @@ void PoolAllocator::IntDumpStillAllocated(MemTracker *pTracker, u_long lSize, u_
 	}
 }
 
-void PoolAllocator::Free(void *vp)
+size_t PoolAllocator::Free(void *vp)
 {
 	MemoryHeader *header = RealMemStart(vp);
-
+	size_t sz(0);
 	if ( header ) {
+		sz = header->fUsableSize;
 		if (header->fState == MemoryHeader::eUsed ) {	// most likely case first
 			// recycle into pool
 			PoolBucket *bucket = FindBucketBySize( header->fUsableSize + MemoryHeader::AlignedSize());
@@ -529,6 +530,7 @@ void PoolAllocator::Free(void *vp)
 		// something wrong, either 0 ptr, invalid pointer or corrupted memory
 		Assert(0 == vp);
 	}
+	return sz;
 }
 
 // users of sizeHint pay a price for optimal sizing...

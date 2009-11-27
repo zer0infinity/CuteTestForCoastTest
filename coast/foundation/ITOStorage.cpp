@@ -458,11 +458,13 @@ void *GlobalAllocator::Alloc(u_long allocSize)
 	return NULL;
 }
 
-void  GlobalAllocator::Free(void *vp)
+size_t GlobalAllocator::Free(void *vp)
 {
+	size_t sz(0);
 	if ( vp ) {
 		MemoryHeader *header = RealMemStart(vp);
 		if (header && header->fMagic == MemoryHeader::gcMagic) {
+			sz = header->fUsableSize;
 			Assert(header->fMagic == MemoryHeader::gcMagic); // should combine magic with state
 			Assert(header->fState & MemoryHeader::eUsed);
 			if ( fTracker ) {
@@ -472,6 +474,7 @@ void  GlobalAllocator::Free(void *vp)
 		}
 		::free(vp);
 	}
+	return sz;
 }
 
 #ifdef __370__
