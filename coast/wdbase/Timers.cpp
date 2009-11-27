@@ -13,6 +13,7 @@
 #include "AnythingUtils.h"
 #include "Registry.h"
 #include "Dbg.h"
+#include "Threads.h"
 
 //--- c-library modules used ---------------------------------------------------
 
@@ -86,6 +87,8 @@ TimeLogger::TimeLogger(const char *pSection, const char *pKey, const String &msg
 	, fContext(ctx)
 	, fDiffTimer( (DiffTimer::eResolution)aResolution )
 	, fpcUnit( aResolution == TimeLogger::eMilliseconds ? "ms" : ( aResolution == TimeLogger::eMicroseconds ? "us" : ( aResolution == TimeLogger::eNanoseconds ? "ns" : "s" ) ) )
+	, fanyNestingLevel( fContext.Lookup("TimeLoggerNestingLevel", -1L) + 1L )
+	, fEntry(fContext, "nesting", fanyNestingLevel, "TimeLoggerNestingLevel")
 {
 }
 
@@ -104,6 +107,8 @@ TimeLogger::~TimeLogger()
 			data["Time"] = (long)lDiffTime;
 			data["Msg"] = fMsgStr;
 			data["Unit"] = fpcUnit;
+			data["ThreadId"] = Thread::MyId();
+			data["NestingLevel"] = fanyNestingLevel;
 			StatTraceAny(TimeLogger.~TimeLogger, data, "ENABLED  Section <" << fpSection << "> Key <" << fpKey << "> Message <" << fMsgStr << ">", Storage::Current());
 			StorePutter::Operate(data, fContext, "", strLogTimeKey, true);
 		} else {

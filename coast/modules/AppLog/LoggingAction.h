@@ -79,7 +79,8 @@ protected:
 	/*!	\param entryPath the path traversed so far
 		\param entry the entry to be logged; it can contain substructures or be an array
 		\param ctx the context
-		\param channel the channel to log to */
+		\param channel the channel to log to
+		\param iLevel Severity level of message, see AppLogModule::eLogLevel */
 	virtual bool GenLogEntry(const String &entryPath, const ROAnything &entry, Context &ctx, const String &channel, AppLogModule::eLogLevel iLevel);
 };
 

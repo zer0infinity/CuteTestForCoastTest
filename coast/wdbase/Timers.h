@@ -82,6 +82,8 @@ protected:
 	DiffTimer fDiffTimer;
 	//! store unit
 	const char *fpcUnit;
+	Anything fanyNestingLevel;
+	Context::PushPopEntry<Anything> fEntry;
 
 private:
 	//!do not use
