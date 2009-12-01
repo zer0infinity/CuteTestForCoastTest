@@ -187,7 +187,8 @@ bool OracleDAImpl::TryExecuteQuery( ParameterMapper *in, Context &ctx, OraclePoo
 						Trace("executing statement [" << aStmt->getStatement() << "]");
 						out->Put( "Query", aStmt->getStatement(), ctx );
 						long lIterations(1L);
-						Anything anyRowInputValues = getMappedInputValues( in, *aStmt.get(), ctx);
+						bool bIsArrayExecute(false);
+						Anything anyRowInputValues = getMappedInputValues( in, *aStmt.get(), ctx, bIsArrayExecute);
 						lIterations = anyRowInputValues.GetSize();
 						if ( lIterations > 0L ) {
 							TraceAny(anyRowInputValues, "collected values");
@@ -202,7 +203,7 @@ bool OracleDAImpl::TryExecuteQuery( ParameterMapper *in, Context &ctx, OraclePoo
 									OracleStatement::Description &aOutDescription(aStmt->GetOutputDescription());
 									for ( long lRowIdx = 0; lRowIdx < lIterations; ++lRowIdx) {
 										Anything anyRowIndex(lRowIdx);
-										Context::PushPopEntry<Anything> aRowIndexEntry(ctx, "ResultRowIndex", anyRowIndex, (lIterations > 1 ? "_OracleArrayResultIndex_" : "Guguseli"));
+										Context::PushPopEntry<Anything> aRowIndexEntry(ctx, "ResultRowIndex", anyRowIndex, (bIsArrayExecute ? "_OracleArrayResultIndex_" : "Guguseli"));
 										AnyExtensions::Iterator < OracleStatement::Description,
 													  OracleStatement::Description::Element >
 													  aDescIter( aOutDescription );
@@ -319,7 +320,7 @@ void OracleDAImpl::Error( Context &ctx, ResultMapper *pResultMapper, String str 
 	}
 }
 
-Anything OracleDAImpl::getMappedInputValues( ParameterMapper *pmapIn, OracleStatement &aStmt, Context &ctx )
+Anything OracleDAImpl::getMappedInputValues( ParameterMapper *pmapIn, OracleStatement &aStmt, Context &ctx, bool &bIsArrayExecute )
 {
 	StartTrace(OracleDAImpl.getMappedInputValues);
 
@@ -327,8 +328,10 @@ Anything OracleDAImpl::getMappedInputValues( ParameterMapper *pmapIn, OracleStat
 	String strArraySlot;
 	pmapIn->Get( "ArrayValuesSlotName", strArraySlot, ctx);
 	Anything anyArrayValues;
+	bIsArrayExecute = false;
 	if ( strArraySlot.Length() && pmapIn->Get(strArraySlot, anyArrayValues, ctx) ) {
 		lIterations = anyArrayValues.GetSize();
+		bIsArrayExecute = true;
 	}
 
 	long lBufferSize( glStringBufferSize );

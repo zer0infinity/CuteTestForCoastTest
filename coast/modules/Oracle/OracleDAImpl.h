@@ -226,7 +226,7 @@ private:
 
 	void Error( Context &ctx, ResultMapper *pResultMapper, String str );
 
-	Anything getMappedInputValues( ParameterMapper *pmapIn, OracleStatement &aStmt, Context &ctx );
+	Anything getMappedInputValues( ParameterMapper *pmapIn, OracleStatement &aStmt, Context &ctx, bool &bIsArrayExecute );
 
 	bool TryExecuteQuery( ParameterMapper *in, Context &ctx, OraclePooledConnection *& pPooledConnection,
 						  String &server, String &user, String &passwd, ResultMapper *out, bool bRet );

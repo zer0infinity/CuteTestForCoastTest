@@ -936,6 +936,63 @@
 				}
 			}
 		}
+		/GetEmpNamesSingleArrayValue {
+			/TmpStore {
+				/SPName	GETEMPNAME
+				/ArrayValues {
+					{
+						/ID	7839
+					}
+				}
+			}
+			/TheAction {
+				/CallDA {
+					/DataAccess	SPExecuteArray
+					/Parameters {
+						/ArrayValuesSlotName	ArrayValues
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/SPExecuteArray {
+						/QuerySource "//sifs-coast1.hsr.ch:1521/orcl"
+						/Query "BEGIN GETEMPNAME(:ID,:NAME); END;"
+						/ArrayResults {
+							{
+								/ID		7839
+								/NAME	KING
+							}
+						}
+					}
+				}
+			}
+		}
+		/GetEmpNamesEmptyArrayValue {
+			/TmpStore {
+				/SPName	GETEMPNAME
+				/ArrayValues {
+				}
+			}
+			/TheAction {
+				/CallDA {
+					/DataAccess	SPExecuteArray
+					/Parameters {
+						/ArrayValuesSlotName	ArrayValues
+					}
+				}
+			}
+			/ExpectedResult 0
+			/Result {
+				/TmpStore {
+					/SPExecuteArray {
+						/QuerySource "//sifs-coast1.hsr.ch:1521/orcl"
+						/ProcedureName "GETEMPNAME"
+						/Query "BEGIN GETEMPNAME(:ID,:NAME); END;"
+					}
+				}
+			}
+		}
 		/GETEMPSOFDEPTTest {
 			/TmpStore {
 				/SPName	GETEMPSOFDEPT
