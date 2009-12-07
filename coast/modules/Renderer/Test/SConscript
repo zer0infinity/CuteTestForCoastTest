@@ -1,10 +1,1 @@
-import StanfordUtils, pdb
-
-progEnv = StanfordUtils.CloneBaseEnv()
-
-targetname='Renderer_Test'
-StanfordUtils.DependsOn(progEnv, 'CoastRenderers')
-StanfordUtils.DependsOn(progEnv, 'testfwWDBase')
-createdProgram = progEnv.Program(targetname, StanfordUtils.listFiles(['*.cpp']))
-progEnv.Tool('registerObjects', package=targetname, testApps=[createdProgram], config=StanfordUtils.listFiles(['config/*.any', 'config/*.txt', 'config/*.tst', 'config/prjconfig.sh', '*.any']))
-
+import CoastRendererTestLib

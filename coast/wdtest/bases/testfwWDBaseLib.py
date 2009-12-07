@@ -4,18 +4,18 @@ import StanfordUtils
 packagename = StanfordUtils.getPackageName(__name__)
 
 buildSettings = {
-                 'testfwWDBase' : {
-                     'includeSubdir'    : '',
-                     'linkDependencies'       : ['testfwFoundation', 'CoastWDBase'],
-                     'sourceFiles'      : StanfordUtils.listFiles(['*.cpp']),
-                     'targetType'       : 'LibraryShared',
-                     'lazylinking'      : True,
-                     'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL'] },
-                     'public' : {
-                                 'includes'     : StanfordUtils.listFiles(['*.h']),
-#                                'appendUnique' : { 'CPPDEFINES' : 'fooX' },
-                    }
-                 }
-                }
+	packagename : {
+		'linkDependencies' : ['testfw', 'CoastWDBase'],
+		'includeSubdir'    : '',
+		'sourceFiles'      : StanfordUtils.listFiles(['*.cpp']),
+		'targetType'       : 'LibraryShared',
+		'lazylinking'      : True,
+		'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL'] },
+		'public' : {
+			'includeSubdir': '',
+			'includes'     : StanfordUtils.listFiles(['*.h']),
+		}
+	}
+}
 
 StanfordUtils.createTargets(packagename, buildSettings)
