@@ -38,6 +38,7 @@
 #include "TemplateParserTest.h"
 #include "NewRendererTest.h"
 #include "GetEnvRendererTest.h"
+#include "UTF8RendererTest.h"
 
 void setupRunner(TestRunner &runner)
 {
@@ -70,4 +71,5 @@ void setupRunner(TestRunner &runner)
 	ADD_SUITE(runner, FirstNonEmptyRendererTest);
 	ADD_SUITE(runner, TemplateParserTest);
 	ADD_SUITE(runner, GetEnvRendererTest);
+	ADD_SUITE(runner, UTF8RendererTest);
 } // setupRunner

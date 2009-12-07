@@ -29,5 +29,23 @@ void UTF8Renderer::RenderAll(ostream &reply, Context &c, const ROAnything &confi
 		lookupName = config[0L];
 	}
 	TraceAny(lookupName, "rendering content to convert");
-	reply << RenderToString(c, lookupName).AsUTF8();
+	reply << AsUTF8(RenderToString(c, lookupName));
+}
+
+String UTF8Renderer::AsUTF8(String const &strInput)
+{
+	StartTrace(UTF8Renderer.AsUTF8);
+	String strRet(strInput.Length());
+	if (strInput.Length()) {
+		for (const char *s = strInput; *s; s++) {
+			unsigned char c = *s;
+			if (c < 128) {
+				strRet.Append((char) c);
+			} else {
+				strRet.Append((char) ((c >> 6) | 0xC0));
+				strRet.Append((char) ((c & 0x3F) | 0x80));
+			}
+		}
+	}
+	return strRet;
 }

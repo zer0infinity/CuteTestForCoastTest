@@ -3445,5 +3445,25 @@
 			}
 			/Expected "Thu, 07 Aug 1997 01:00:00 GMT"
 		}
+		/UTF8RendererWithSlotnameTest {
+			/Env {
+				/InString	"H\xe4ll\xf6"
+			}
+			/Renderer {
+				/UTF8Renderer {
+					/String			{ /Lookup InString }
+				}
+			}
+			/Expected	"H\xc3\xa4ll\xc3\xb6"
+		}
+		/UTF8RendererInlineTest {
+			/Env {
+				/InString	"H\xe4ll\xf6"
+			}
+			/Renderer {
+				/UTF8Renderer { { /Lookup InString } }
+			}
+			/Expected	"H\xc3\xa4ll\xc3\xb6"
+		}
 	}
 }

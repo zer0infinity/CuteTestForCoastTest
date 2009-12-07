@@ -38,6 +38,10 @@ public:
 	//! \param c the context the renderer runs within.
 	//! \param config the configuration of the renderer.
 	virtual void RenderAll(ostream &reply, Context &c, const ROAnything &config);
+
+private:
+	String AsUTF8(String const &strInput);
+
 };
 
 #endif
