@@ -84,9 +84,6 @@ int doWaitObject(HANDLE h, HANDLE m, long time /* milliseconds...*/)
 			break;
 		}
 		case WAIT_TIMEOUT:
-			//#ifdef DEBUG
-			//		cerr << "##ID: " << (long)h << " Wait timeout!! ##" << endl;
-			//#endif
 			break;
 		case WAIT_OBJECT_0:
 			fooLOCKOBJECT(h);

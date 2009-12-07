@@ -73,7 +73,7 @@ void ConditionalRenderer::TestCondition(Context &context, const ROAnything &conf
 			}
 			return; // we are done. anything else is an error.
 		}
-#ifdef DEBUG
+#ifdef COAST_TRACE
 		else {
 			String strbuf;
 			StringStream stream(strbuf);
