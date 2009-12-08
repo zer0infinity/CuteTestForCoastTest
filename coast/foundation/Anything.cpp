@@ -171,13 +171,12 @@ AnythingToken::AnythingToken(InputContext &context) : fToken(0)
 						}
 						c = 0;
 					}
-					if (isdigit( (unsigned char) c)) {
-						DoReadNumber(context, c);
-						if (fToken == AnythingToken::eDecimalNumber) {
-							fToken = AnythingToken::eObject;
-							return;
-						}
-					}// anything else is a syntax error!
+					c = DoReadNumber(context, c);
+					if (fToken == AnythingToken::eDecimalNumber) {
+						fToken = AnythingToken::eObject;
+						context.Putback(c);
+						return;
+					}
 					// consume invalid characters up to a whitespace
 					do {
 						fText.Append(c);
