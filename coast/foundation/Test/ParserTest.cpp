@@ -14,6 +14,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
 #include "System.h"
+#include "IFAObject.h"
 
 //--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
@@ -49,6 +50,8 @@ Test *ParserTest::suite ()
 	ADD_CASE(testSuite, ParserTest, importEmptyStream );
 	ADD_CASE(testSuite, ParserTest, readWriteAnything );
 	ADD_CASE(testSuite, ParserTest, parseTestFiles );
+	ADD_CASE(testSuite, ParserTest, testObjectParsing );
+	ADD_CASE(testSuite, ParserTest, testNumberParsing );
 	ADD_CASE(testSuite, ParserTest, Semantic0Test);
 	ADD_CASE(testSuite, ParserTest, Semantic1Test);
 	ADD_CASE(testSuite, ParserTest, Semantic2Test);
@@ -3159,3 +3162,85 @@ void ParserTest::slashSlotnames()
 		assertEqual(12, any["Test"].AsLong(-1));	// contains an empty any
 	}
 } // slashSlotnames
+
+class myObject : public IFAObject
+{
+public:
+	myObject() {}
+	virtual ~myObject() {}
+
+	//! support for prototypes is required
+	virtual IFAObject *Clone() const {
+		return (IFAObject *)this;
+	}
+};
+
+void ParserTest::testObjectParsing() {
+	{
+		String buf("{/myObjectImpl &12345}");
+		std::cerr << "buf [" << buf << "]" << std::endl;
+		IStringStream is(buf);
+		Anything any;
+		t_assert(any.Import(is));
+		any.PrintOn(std::cerr, false) << std::endl;
+		assertEqual("myObjectImpl", any.SlotName(0));
+		assertCompare(12345L, equal_to, (long)any["myObjectImpl"].AsIFAObject(0));
+	}
+	{
+		String buf("{/myObjectImpl &-12345}");
+		std::cerr << "buf [" << buf << "]" << std::endl;
+		IStringStream is(buf);
+		Anything any;
+		t_assert(any.Import(is));
+		any.PrintOn(std::cerr, false) << std::endl;
+		assertEqual("myObjectImpl", any.SlotName(0));
+		assertCompare(-12345L, equal_to, (long)any["myObjectImpl"].AsIFAObject(0));
+	}
+	myObject aObj;
+	{
+		String buf("{/myObjectImpl &");
+		buf.Append((long)&aObj);
+		buf.Append("}");
+		std::cerr << "buf [" << buf << "]" << std::endl;
+		IStringStream is(buf);
+		Anything any;
+		t_assert(any.Import(is));
+		any.PrintOn(std::cerr, false) << std::endl;
+		assertEqual("myObjectImpl", any.SlotName(0));
+		assertCompare((IFAObject *)&aObj, equal_to, any["myObjectImpl"].AsIFAObject(0));
+	}
+	{
+		String buf("{/myObjectImpl &");
+		buf.Append((long)&aObj);
+		buf.Append("/some content}");
+		std::cerr << "buf [" << buf << "]" << std::endl;
+		IStringStream is(buf);
+		Anything any;
+		t_assert(any.Import(is));
+		assertCharPtrEqual("myObjectImpl", any.SlotName(0));
+		assertCompare((IFAObject *)&aObj, equal_to, any["myObjectImpl"].AsIFAObject(0));
+		assertCharPtrEqual("some", any.SlotName(1));
+		assertEqual("content", any["some"].AsCharPtr());
+	}
+}
+
+void ParserTest::testNumberParsing() {
+	{
+		String buf("{/myLong 12345}");
+		IStringStream is(buf);
+		Anything any;
+		t_assert(any.Import(is));
+		assertCharPtrEqual("myLong", any.SlotName(0));
+		assertCompare(12345L, equal_to, any["myLong"].AsLong(0));
+	}
+	{
+		String buf("{/myLong 12345/some content}");
+		IStringStream is(buf);
+		Anything any;
+		t_assert(any.Import(is));
+		assertCharPtrEqual("myLong", any.SlotName(0));
+		assertCompare(12345L, equal_to, any["myLong"].AsLong(0));
+		assertCharPtrEqual("some", any.SlotName(1));
+		assertEqual("content", any["some"].AsCharPtr());
+	}
+}

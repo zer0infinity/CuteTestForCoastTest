@@ -49,6 +49,8 @@ public:
 	void		importEmptyStream();
 	void		readWriteAnything();
 	void		parseTestFiles();
+	void		testObjectParsing();
+	void		testNumberParsing();
 	void	SemanticAnythingTest();
 	void		Semantic0Test();
 	void		Semantic1Test();
