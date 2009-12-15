@@ -121,44 +121,17 @@ long RendererDispatcher::FindURIPrefixInList(const String &requestURI, const ROA
 	return -1;
 }
 
-void RendererDispatcher::FindVHostInList(const String &requestVhost, const String &requestURI, const ROAnything &vhostList, long *matchedVhost, long *matchedVhostPrefix)
-{
-	StartTrace(RendererDispatcher.FindVHostInList);
-
-	long apSz = vhostList.GetSize();
-	for (long i = 0; i < apSz; i++) {
-		const char *vhost = vhostList.SlotName(i);
-		if ( vhost && requestVhost.StartsWith(vhost) ) {
-			long matchedPrefix = FindURIPrefixInList(requestURI, vhostList[i]);
-			if (matchedPrefix >= 0) {
-				*matchedVhost = i;
-				*matchedVhostPrefix = matchedPrefix;
-				break;
-			}
-		}
-	}
-}
-
 String RendererDispatcher::FindServiceName(Context &ctx)
 {
 	StartTrace(RendererDispatcher.FindServiceName);
 
 	ROAnything uriPrefixList(ctx.Lookup("URIPrefix2ServiceMap"));
-	ROAnything vhostList(ctx.Lookup("VHost2ServiceMap"));
 	String requestURI(ctx.Lookup("REQUEST_URI", ""));
-	Trace("request URI [" << requestURI << "]");
-	String requestVhost(ctx.Lookup("header.HOST", ""));
 
 	Anything query(ctx.GetQuery());
 	SubTraceAny(uriPrefixList, uriPrefixList, "Service Prefixes: ");
 
 	long matchedPrefix = FindURIPrefixInList(requestURI, uriPrefixList);
-	long matchedVhost = -1;
-	long matchedVhostPrefix = -1;
-	FindVHostInList(requestVhost, requestURI, vhostList, &matchedVhost, &matchedVhostPrefix);
-
-	TraceAny(ctx.GetTmpStore(), "tmpStore:");
-	TraceAny(ctx.GetSessionStore(), "sessionStore:");
 
 	if (matchedPrefix >= 0) {
 		String service;
@@ -166,28 +139,15 @@ String RendererDispatcher::FindServiceName(Context &ctx)
 		query["Service"] = service;
 		query["URIPrefix"] = uriPrefixList.SlotName(matchedPrefix);
 		query["EntryPage"] = requestURI;
-
 		SubTraceAny(query, query, "Query: ");
 		Trace("Service:<" << service << ">");
 		return service;
-	} else if (matchedVhost >= 0) {
-		String service;
-		Renderer::RenderOnString(service, ctx, vhostList[matchedVhost][matchedVhostPrefix]);
-		query["Service"] = service;
-		query["VHost"] = vhostList.SlotName(matchedVhost);
-		query["URIPrefix"] = vhostList[matchedVhost].SlotName(matchedVhostPrefix);
-		query["EntryPage"] = requestURI;
-
-		SubTraceAny(query, query, "Query: ");
-		Trace("Service:<" << service << ">");
-		return service;
-	} else if (uriPrefixList.GetSize() > 0 && vhostList.GetSize() > 0) {
+	} else if (uriPrefixList.GetSize() > 0) {
 		query["Error"] = "ServiceNotFound";
 	}
 
 	String defaultHandler(ServiceDispatcher::FindServiceName(ctx));
 	Trace("Service:<" << defaultHandler << ">");
-
 	return defaultHandler;
 }
 
