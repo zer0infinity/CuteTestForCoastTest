@@ -206,5 +206,5 @@ void HTTPMimeHeaderMapper::StoreCookies(Anything &header, Context &ctx)
 	}
 
 	ctx.GetSessionStore()["StoredCookies"][backendName]["Plain"] = cookies;
-	TraceAny(ctx.GetSessionStore(), "SessionStore:")
+	TraceAny(ctx.GetSessionStore()["StoredCookies"][backendName], "stored cookies")
 }
