@@ -399,7 +399,8 @@ SSL_CTX *SSLModule::DoMakeServerContext(LookupInterface *object)
 		ctx = PrepareServerContext(object);
 
 		if ( ctx ) {
-
+			// Ephemeral key exchange initialization, inherited by all SSLCtx
+			// It is a bad idea to generate the keys on the fly
 			DH *dh = get_dh512();
 			SSL_CTX_set_tmp_dh(ctx, dh);
 			DH_free(dh);
@@ -411,11 +412,12 @@ SSL_CTX *SSLModule::DoMakeServerContext(LookupInterface *object)
 
 //			SSL_CTX_set_tmp_rsa_callback(ctx,tmp_rsa_cb);
 
+				// Here we could load our own cihper lists
 //			Trace("Setting ciphers: " << NotNull(ciphers));
 //			if (ciphers) SSL_CTX_set_cipher_list(ctx,ciphers);
 
 				Trace("Generating temp (512 bit) RSA key..." );
-
+				// RSA_F4 -> Exponent 17
 				RSA *rsa = RSA_generate_key(512, RSA_F4, NULL, NULL);
 				Assert(rsa);
 				if (1 != (ret = SSL_CTX_set_tmp_rsa(ctx, rsa))) {
