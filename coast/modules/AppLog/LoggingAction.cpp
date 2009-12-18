@@ -13,6 +13,7 @@
 #include "Timers.h"
 #include "Renderer.h"
 #include "Dbg.h"
+#include "AnyIterators.h"
 
 //---- LoggingAction ---------------------------------------------------------------
 RegisterAction(LoggingAction);
@@ -54,63 +55,49 @@ bool TimeLoggingAction::DoExecAction(String &transitionToken, Context &ctx, cons
 	String channel( config["Channel"].AsString() );
 	if ( channel.Length() ) {
 		Trace("Channel: <" << channel << ">");
-		ROAnything roaEntryBase, roaSelectedEntries;
+		ROAnything roaEntryBase;
 		if ( ctx.Lookup( TimeLoggingModule::fgpLogEntryBasePath, roaEntryBase ) ) {
-			String strKey( config["TimeEntries"].AsString() );
-			if ( strKey.Length() ) {
-				bRet = roaEntryBase.LookupPath( roaSelectedEntries, strKey );
-			} else {
-				roaSelectedEntries = roaEntryBase;
-				bRet = true;
-			}
-			if ( bRet ) {
-				TraceAny(roaSelectedEntries, "Entries");
-				String key;
-				bRet = GenLogEntries(key, roaSelectedEntries, ctx, channel, (AppLogModule::eLogLevel)config["Severity"].AsLong((long)AppLogModule::eINFO));
-			}
+			String strSection( config["TimeEntries"].AsString() );
+			Trace("section [" << (strSection.Length() ? strSection : "*") << "]");
+			bRet = GenLogEntries(strSection, roaEntryBase, ctx, channel, (AppLogModule::eLogLevel)config["Severity"].AsLong((long)AppLogModule::eINFO));
 		}
 	}
 	return bRet;
 }
 
-bool TimeLoggingAction::GenLogEntries(const String &entryPath, const ROAnything &entry, Context &ctx, const String &channel, AppLogModule::eLogLevel iLevel)
+bool TimeLoggingAction::GenLogEntries(const String &strSection, const ROAnything &entry, Context &ctx, const String &channel, AppLogModule::eLogLevel iLevel)
 {
-	StartTrace(TimeLoggingAction.GenLogEntries);
-	long entriesSz( entry.GetSize() );
-
-	if ( entry.SlotName(0L) ) { // it is an anonymous array
-		// assume a substructure we traverse recursively
-		String path;
-		for (long i = entriesSz - 1; i >= 0; --i) {
-			if ( entryPath.Length() > 0 ) {
-				path = entryPath;
-				path.Append('.');
-			} else {
-				path.Trim(0L);
+	StartTrace1(TimeLoggingAction.GenLogEntries, "section [" << (strSection.Length() ? strSection : "*") << "]");
+	AnyExtensions::Iterator<ROAnything> aEntryIter(entry);
+	ROAnything roaEntry;
+	while ( aEntryIter.Next(roaEntry) ) {
+		// structure of entry:
+		//	/Section
+		//	/Key
+		//	/Time
+		//	/Msg
+		//	/Unit
+		//	/NestingLevel
+		TraceAny(roaEntry, "current entry");
+		if ( strSection.Length() == 0 || strSection.IsEqual(roaEntry["Section"].AsCharPtr()) ) {
+			// override key using the section prefix if any
+			String strKey( roaEntry[TimeLogger::eSection].AsString() );
+			if ( strKey.Length() > 0 ) {
+				strKey.Append('.');
 			}
-			path.Append( entry.SlotName(i) );
-			Trace("Path: <" << path << ">");
-			if (!GenLogEntries(path, entry[i], ctx, channel, iLevel)) {
-				return false;
-			}
-		}
-	} else {
-		// assume an array of timing entries
-		for (long i = entriesSz - 1; i >= 0; --i) {
-			if (!GenLogEntry(entryPath, entry[i], ctx, channel, iLevel)) {
+			Anything anyKey;
+			anyKey["Section"] = roaEntry[TimeLogger::eSection].AsString();
+			anyKey["Time"] = roaEntry[TimeLogger::eTime].AsLong();
+			anyKey["Msg"] = roaEntry[TimeLogger::eMsg].AsString();
+			anyKey["Unit"] = roaEntry[TimeLogger::eUnit].AsString();
+			anyKey["NestingLevel"] = roaEntry[TimeLogger::eNestingLevel].AsLong();
+			anyKey["Key"] = String(strKey).Append( roaEntry[TimeLogger::eKey].AsString() );
+			anyKey["ThreadId"] = Thread::MyId();
+			Context::PushPopEntry<Anything> aKeyEntry( ctx, "LoggingEntryKey", anyKey, "TimeLogEntry" );
+			if ( !AppLogModule::Log(ctx, channel, iLevel) ) {
 				return false;
 			}
 		}
 	}
 	return true;
-}
-
-bool TimeLoggingAction::GenLogEntry(const String &key, const ROAnything &entry, Context &ctx, const String &channel, AppLogModule::eLogLevel iLevel)
-{
-	StatTraceAny(TimeLoggingAction.GenLogEntry, entry, "Entries: " << (long)entry.GetSize(), Storage::Current() );
-	Anything anyKey;
-	anyKey["Key"] = key;
-	Context::PushPopEntry<ROAnything> aValuesEntry( ctx, "LoggingEntries", entry, "TimeLogEntry" );
-	Context::PushPopEntry<Anything> aKeyEntry( ctx, "LoggingEntryKey", anyKey, "TimeLogEntry" );
-	return AppLogModule::Log(ctx, channel, iLevel);
 }

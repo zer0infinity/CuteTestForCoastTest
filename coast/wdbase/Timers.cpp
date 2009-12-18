@@ -23,6 +23,27 @@ RegisterModule(TimeLoggingModule);
 bool TimeLoggingModule::fgDoTiming = false;
 bool TimeLoggingModule::fgDoLogging = false;
 const char *TimeLoggingModule::fgpLogEntryBasePath = "Log.Times";
+THREADKEY TimeLoggingModule::fgNestingLevelKey = 0;
+bool TimeLoggingModule::fgTLSUsable = false;
+
+//:perform close and destruction of OraclePooledConnection in thread specific storage
+static class ThreadSpecificNestingLevelCleaner : public CleanupHandler
+{
+protected:
+	//:destruct nesting level
+	virtual bool DoCleanup() {
+		StatTrace(ThreadSpecificNestingLevelCleaner.DoCleanup, "ThrdId: " << Thread::MyId(), Storage::Global());
+		long *pLevel = 0;
+		if (GETTLSDATA(TimeLoggingModule::fgNestingLevelKey, pLevel, long)) {
+			delete pLevel;
+			pLevel = 0;
+			if (SETTLSDATA(TimeLoggingModule::fgNestingLevelKey, pLevel)) {
+				return true;
+			}
+		}
+		return false;
+	}
+} fgTSNLCleaner;
 
 TimeLoggingModule::TimeLoggingModule(const char *name)
 	: WDModule(name)
@@ -46,6 +67,11 @@ bool TimeLoggingModule::Init(const ROAnything config)
 		fgDoTiming = roaModuleConfig["DoTiming"].AsBool(false);
 		// logging only makes sense if Timing enabled
 		fgDoLogging = fgDoTiming && roaModuleConfig["DoLogging"].AsBool(false);
+		if ( THRKEYCREATE(TimeLoggingModule::fgNestingLevelKey, 0) != 0 ) {
+			SYSWARNING("TlsAlloc of TimeLoggingModule::fgNestingLevelKey failed");
+		} else {
+			fgTLSUsable = true;
+		}
 		return true;
 	}
 	return false;
@@ -54,6 +80,11 @@ bool TimeLoggingModule::Init(const ROAnything config)
 bool TimeLoggingModule::Finis()
 {
 	StartTrace(TimeLoggingModule.Finis);
+	if ( fgTLSUsable ) {
+		if (THRKEYDELETE(TimeLoggingModule::fgNestingLevelKey) != 0) {
+			SYSERROR("TlsFree of TimeLoggingModule::fgNestingLevelKey failed" );
+		}
+	}
 	return true;
 }
 
@@ -71,8 +102,11 @@ bool TimeLoggingModule::ResetFinis(const ROAnything config)
 
 //---- TimeLoggerEntry --------------------------------------------------------------------------
 TimeLoggerEntry::TimeLoggerEntry(const char *pSection, const char *pKey, String &msg, Context &ctx, TimeLogger::eResolution aResolution)
-	: fLogger( pSection, pKey, msg, ctx, aResolution)
+	: fpLogger(0)
 {
+	if ( TimeLoggingModule::fgDoTiming ) {
+		fpLogger = TimeLoggerPtr(new TimeLogger( pSection, pKey, msg, ctx, aResolution ));
+	}
 }
 
 TimeLoggerEntry::~TimeLoggerEntry()
@@ -87,32 +121,45 @@ TimeLogger::TimeLogger(const char *pSection, const char *pKey, const String &msg
 	, fContext(ctx)
 	, fDiffTimer( (DiffTimer::eResolution)aResolution )
 	, fpcUnit( aResolution == TimeLogger::eMilliseconds ? "ms" : ( aResolution == TimeLogger::eMicroseconds ? "us" : ( aResolution == TimeLogger::eNanoseconds ? "ns" : "s" ) ) )
-	, fanyNestingLevel( fContext.Lookup("TimeLoggerNestingLevel", -1L) + 1L )
-	, fEntry(fContext, "nesting", fanyNestingLevel, "TimeLoggerNestingLevel")
 {
+	if ( TimeLoggingModule::fgTLSUsable ) {
+		long *pNestingLevel(0);
+		if ( !GETTLSDATA(TimeLoggingModule::fgNestingLevelKey, pNestingLevel, long) ) {
+			Thread::RegisterCleaner(&fgTSNLCleaner);
+			pNestingLevel = new long;
+			*pNestingLevel = -1L;
+		}
+		++(*pNestingLevel);
+		SETTLSDATA(TimeLoggingModule::fgNestingLevelKey, pNestingLevel);
+	}
 }
 
 TimeLogger::~TimeLogger()
 {
-	if ( TimeLoggingModule::fgDoTiming ) {
-		DiffTimer::tTimeType lDiffTime( fDiffTimer.Diff() );
-		ROAnything roaBase, roaSection, roaValue;
-		if ( fContext.Lookup("EnabledValues", roaBase ) && roaBase.LookupPath( roaSection, fpSection ) && roaSection.LookupPath( roaValue, fpKey ) && roaValue.AsBool(false) ) {
-			Anything data;
-			if ( fContext.Lookup("SimulatedValues", roaBase) && roaBase.LookupPath( roaSection, fpSection ) && roaSection.LookupPath( roaValue, fpKey ) ) {
-				lDiffTime = roaValue.AsLong(-1L);
-			}
-			String strLogTimeKey( TimeLoggingModule::fgpLogEntryBasePath );
-			strLogTimeKey.Append('.').Append(fpSection).Append('.').Append(fpKey);
-			data["Time"] = (long)lDiffTime;
-			data["Msg"] = fMsgStr;
-			data["Unit"] = fpcUnit;
-			data["ThreadId"] = Thread::MyId();
-			data["NestingLevel"] = fanyNestingLevel;
-			StatTraceAny(TimeLogger.~TimeLogger, data, "ENABLED  Section <" << fpSection << "> Key <" << fpKey << "> Message <" << fMsgStr << ">", Storage::Current());
-			StorePutter::Operate(data, fContext, "", strLogTimeKey, true);
-		} else {
-			StatTrace(TimeLogger.~TimeLogger, "DISABLED Section <" << fpSection << "> Key <" << fpKey << ">", Storage::Current());
+	DiffTimer::tTimeType lDiffTime( fDiffTimer.Diff() );
+	ROAnything roaBase, roaSection, roaValue;
+	long lNestingLevel(0L);
+	if ( TimeLoggingModule::fgTLSUsable ) {
+		long *pNestingLevel(0);
+		if ( GETTLSDATA(TimeLoggingModule::fgNestingLevelKey, pNestingLevel, long) ) {
+			lNestingLevel = (*pNestingLevel)--;
+			SETTLSDATA(TimeLoggingModule::fgNestingLevelKey, pNestingLevel);
 		}
+	}
+	if ( fContext.Lookup("EnabledValues", roaBase ) && roaBase.LookupPath( roaSection, fpSection ) && roaSection.LookupPath( roaValue, fpKey ) && roaValue.AsBool(false) ) {
+		Anything data;
+		if ( fContext.Lookup("SimulatedValues", roaBase) && roaBase.LookupPath( roaSection, fpSection ) && roaSection.LookupPath( roaValue, fpKey ) ) {
+			lDiffTime = roaValue.AsLong(-1L);
+		}
+		data[eSection] = fpSection;
+		data[eKey] = fpKey;
+		data[eTime] = (long)lDiffTime;
+		data[eMsg] = fMsgStr;
+		data[eUnit] = fpcUnit;
+		data[eNestingLevel] = lNestingLevel;
+		StatTraceAny(TimeLogger.~TimeLogger, data, "ENABLED  Section <" << fpSection << "> Key <" << fpKey << "> Message <" << fMsgStr << ">", Storage::Current());
+		StorePutter::Operate(data, fContext, "", TimeLoggingModule::fgpLogEntryBasePath, true);
+	} else {
+		StatTrace(TimeLogger.~TimeLogger, "DISABLED Section <" << fpSection << "> Key <" << fpKey << ">", Storage::Current());
 	}
 }

@@ -13,6 +13,7 @@
 #include "DiffTimer.h"
 #include "Context.h"
 #include "WDModule.h"
+#include "Threads.h"
 
 //---- TimeLoggingModule ----------------------------------------------------------
 //! <B>Module to enable/disable timing and logging of methods</B>
@@ -51,6 +52,8 @@ public:
 	static bool fgDoTiming;
 	static bool fgDoLogging;
 	static const char *fgpLogEntryBasePath;
+	static THREADKEY fgNestingLevelKey;
+	static bool fgTLSUsable;
 };
 
 //---- TimeLogger --------------------------------------------------------------------------
@@ -65,13 +68,20 @@ public:
 		eMicroseconds = DiffTimer::eMicroseconds,
 		eNanoseconds = DiffTimer::eNanoseconds
 	};
-
-protected:
+	enum eTimeEntryMap {
+		eSection,
+		eKey,
+		eTime,
+		eUnit,
+		eMsg,
+		eNestingLevel,
+	};
 	//!starts the timer for request nr
 	TimeLogger(const char *pSection, const char *pKey, const String &msg, Context &ctx, TimeLogger::eResolution aResolution);
 	//!stops the timer and prints the results for this request and thread
 	~TimeLogger();
 
+protected:
 	//!message string printed in the destructor
 	const String &fMsgStr;
 	//!key that defines the place where the info is stored
@@ -82,8 +92,6 @@ protected:
 	DiffTimer fDiffTimer;
 	//! store unit
 	const char *fpcUnit;
-	Anything fanyNestingLevel;
-	Context::PushPopEntry<Anything> fEntry;
 
 private:
 	//!do not use
@@ -103,11 +111,12 @@ It is also important to have because there is no flexible other way to have time
 class EXPORTDECL_WDBASE TimeLoggerEntry
 {
 public:
+	typedef std::auto_ptr<TimeLogger> TimeLoggerPtr;
 	TimeLoggerEntry(const char *pSection, const char *pKey, String &msg, Context &ctx, TimeLogger::eResolution aResolution);
 	~TimeLoggerEntry();
 
 private:
-	TimeLogger	fLogger;
+	TimeLoggerPtr fpLogger;
 };
 
 #define MethodTimer(key, msg, ctx)	\
