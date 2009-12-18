@@ -20,6 +20,7 @@
 #include "Server.h"
 #include "Action.h"
 #include "AnyIterators.h"
+#include "AnyUtils.h"
 
 //--- c-library modules used ---------------------------------------------------
 
@@ -460,13 +461,47 @@ void AppLogTest::TimeLoggingActionTest()
 				String msg("AppLogTimeTest");
 				ctx.GetTmpStore() = MetaThing();
 				Anything expected;
-				Anything data;
-				data["Time"] = 10L;
-				data["Msg"] = "AppLogTimeTest";
-				data["Unit"] = "ms";
-				expected["Log"]["Times"]["Method"]["Test"]["SubA"].Append(data.DeepClone());
-				expected["Log"]["Times"]["Method"]["Test"]["SubB"].Append(data.DeepClone());
-				expected["Log"]["Times"]["Request"]["Cycle"].Append(data.DeepClone());
+				Anything dataA, dataB, dataBA, dataBB, dataBAA, dataC, *data;
+				dataA[TimeLogger::eTime] = 10L;
+				dataA[TimeLogger::eMsg] = "AppLogTimeTest";
+				dataA[TimeLogger::eUnit] = "ms";
+				dataA[TimeLogger::eNestingLevel] = 0;
+				dataB = dataA.DeepClone();
+				dataBAA = dataA.DeepClone();
+				dataBA = dataA.DeepClone();
+				dataBB = dataA.DeepClone();
+				dataC = dataA.DeepClone();
+				data = &dataA;
+				(*data)[TimeLogger::eKey] = "Test.SubA";
+				(*data)[TimeLogger::eSection] = "Method";
+				data = &dataB;
+				(*data)[TimeLogger::eKey] = "Test.SubB";
+				(*data)[TimeLogger::eSection] = "Method";
+				data = &dataC;
+				(*data)[TimeLogger::eKey] = "Cycle";
+				(*data)[TimeLogger::eSection] = "Request";
+				data = &dataBA;
+				(*data)[TimeLogger::eKey] = "Test.SubBA";
+				(*data)[TimeLogger::eSection] = "Method";
+				(*data)[TimeLogger::eNestingLevel] = 1;
+				(*data)[TimeLogger::eTime] = 2L;
+				data = &dataBB;
+				(*data)[TimeLogger::eKey] = "Test.SubBB";
+				(*data)[TimeLogger::eSection] = "Method";
+				(*data)[TimeLogger::eNestingLevel] = 1;
+				(*data)[TimeLogger::eTime] = 2L;
+				data = &dataBAA;
+				(*data)[TimeLogger::eKey] = "Test.SubBAA";
+				(*data)[TimeLogger::eSection] = "Method";
+				(*data)[TimeLogger::eUnit] = "us";
+				(*data)[TimeLogger::eNestingLevel] = 2;
+				(*data)[TimeLogger::eTime] = 2L;
+				expected.Append(dataA);
+				expected.Append(dataBB);
+				expected.Append(dataBAA);
+				expected.Append(dataBA);
+				expected.Append(dataB);
+				expected.Append(dataC);
 
 				//call different methods
 				{
@@ -476,21 +511,41 @@ void AppLogTest::TimeLoggingActionTest()
 				{
 					// trigger the destructor by defining its own scope
 					MethodTimer(Test.SubB, msg, ctx);
+					{
+						{
+							// trigger the destructor by defining its own scope
+							MethodTimer(Test.SubBA, msg, ctx);
+							{
+								// trigger the destructor by defining its own scope
+								MethodTimerUnit(Test.SubBAA, msg, ctx, TimeLogger::eMicroseconds);
+							}
+						}
+						{
+							// trigger the destructor by defining its own scope
+							MethodTimer(Test.SubBB, msg, ctx);
+						}
+					}
 				}
-
 				{
 					// trigger the destructor by defining its own scope
 					RequestTimer(Cycle, msg, ctx);
 				}
 				TraceAny(ctx.GetTmpStore(), "TmpStore");
-				assertAnyEqual(expected, ctx.GetTmpStore());
+				TraceAny(expected, "TmpStore");
+				assertAnyCompareEqual(expected, ctx.Lookup("Log.Times"), "TmpStore.Log.Times", '.', ':');
 			}
 
 			String token("TimeLogTestAction");
 			t_assertm(Action::ExecAction(token, ctx, GetTestCaseConfig()[token]), "Action Time Logging 1");
 			assertEqual("TimeLogTestAction", token);
 
-			CheckFile(ctx, "TimeLog1", "TimeLogTestHeader\n<Method.Test.SubA>: AppLogTimeTest->10 ms\n<Method.Test.SubB>: AppLogTimeTest->10 ms\n<Request.Cycle>: AppLogTimeTest->10 ms\n");
+			CheckFile(ctx, "TimeLog1", "TimeLogTestHeader\n"
+					  "<Method.Test.SubA>: AppLogTimeTest->10 ms 0\n"
+					  "<Method.Test.SubBAA>: AppLogTimeTest->2 us 2\n"
+					  "<Method.Test.SubBA>: AppLogTimeTest->2 ms 1\n"
+					  "<Method.Test.SubBB>: AppLogTimeTest->2 ms 1\n"
+					  "<Method.Test.SubB>: AppLogTimeTest->10 ms 0\n"
+					  "<Request.Cycle>: AppLogTimeTest->10 ms 0\n");
 		}
 	}
 }
@@ -525,7 +580,7 @@ void AppLogTest::CheckFile(Context &ctx, const char *channelname, String expecte
 
 void AppLogTest::CheckFileAfterChannelTermination(Context &ctx, const char *strLogFilename, String expected, bool bExpectSuccess)
 {
-	StartTrace(AppLogTest.CheckFile);
+	StartTrace(AppLogTest.CheckFileAfterChannelTermination);
 	t_assertm( System::IsRegularFile(strLogFilename), "expected log file to be there");
 
 	iostream *fp = System::OpenIStream(strLogFilename, NULL);

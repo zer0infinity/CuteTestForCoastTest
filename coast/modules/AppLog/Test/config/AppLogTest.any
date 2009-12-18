@@ -428,7 +428,10 @@
 	  { /Lookup TimeLogEntry.Msg }
 	  "->"
 	  { /Lookup TimeLogEntry.Time }
-	  " ms"
+	  " "
+	  { /Lookup TimeLogEntry.Unit }
+	  " "
+	  { /Lookup TimeLogEntry.NestingLevel }
 	}
 	/NoHeaderLogFormat
 	{
@@ -481,6 +484,9 @@
 		/Test	{
 		  /SubA	1
 		  /SubB 1
+		  /SubBA 1
+		  /SubBB 1
+		  /SubBAA 1
 		}
 	  }
 	  /Request {
@@ -492,6 +498,9 @@
 		/Test {
 		  /SubA	10
 		  /SubB	10
+		  /SubBA 2
+		  /SubBB 2
+		  /SubBAA 2
 		}
 	  }
 	  /Request {
