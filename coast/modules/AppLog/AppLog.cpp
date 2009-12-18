@@ -463,7 +463,7 @@ bool AppLogChannel::LogAll(Context &ctx, AppLogModule::eLogLevel iLevel, const R
 			return true;
 		}
 		if ( ( iLevel & fSeverity ) > 0 ) {
-			TraceAny(config, "config: ");
+			SubTraceAny(TraceConfig, config, "config: ");
 			Anything anyLogSev;
 			anyLogSev["LogSeverity"] = (long)iLevel;
 			anyLogSev["LogSeverityText"] = AppLogModule::GetSeverityText(iLevel);
@@ -474,9 +474,9 @@ bool AppLogChannel::LogAll(Context &ctx, AppLogModule::eLogLevel iLevel, const R
 				logMsg << "\n";
 				if ( fBufferItems == 1L ) {
 					LockUnlockEntry me(fChannelMutex);
-					Trace("fLogStream state before logging: " << (long)fLogStream->rdstate());
+					Trace("fLogStream rdstate before logging: " << (long)fLogStream->rdstate());
 					(*fLogStream) << logMsg << flush;
-					Trace("fLogStream state after logging: " << (long)fLogStream->rdstate());
+					Trace("fLogStream rdstate after logging: " << (long)fLogStream->rdstate());
 					return (!!(*fLogStream));
 				} else {
 					LockUnlockEntry me(fChannelMutex);
@@ -484,9 +484,9 @@ bool AppLogChannel::LogAll(Context &ctx, AppLogModule::eLogLevel iLevel, const R
 						fBuffer.Append(logMsg);
 						++fItemsWritten;
 						if ( ( fItemsWritten % fBufferItems ) == 0L ) {
-							Trace("fLogStream state before logging: " << (long)fLogStream->rdstate());
+							Trace("fLogStream rdstate before logging: " << (long)fLogStream->rdstate());
 							(*fLogStream) << fBuffer << flush;
-							Trace("fLogStream state after logging: " << (long)fLogStream->rdstate());
+							Trace("fLogStream rdstate after logging: " << (long)fLogStream->rdstate());
 							fBuffer.Trim(0L);
 							fItemsWritten = 0L;
 							return (!!(*fLogStream));

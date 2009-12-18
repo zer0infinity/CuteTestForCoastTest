@@ -540,12 +540,12 @@ void AppLogTest::TimeLoggingActionTest()
 			assertEqual("TimeLogTestAction", token);
 
 			CheckFile(ctx, "TimeLog1", "TimeLogTestHeader\n"
-					  "<Method.Test.SubA>: AppLogTimeTest->10 ms 0\n"
-					  "<Method.Test.SubBAA>: AppLogTimeTest->2 us 2\n"
-					  "<Method.Test.SubBA>: AppLogTimeTest->2 ms 1\n"
-					  "<Method.Test.SubBB>: AppLogTimeTest->2 ms 1\n"
-					  "<Method.Test.SubB>: AppLogTimeTest->10 ms 0\n"
-					  "<Request.Cycle>: AppLogTimeTest->10 ms 0\n");
+					  "<Test.SubA>: AppLogTimeTest->10 ms 0\n"
+					  "<Test.SubBAA>: AppLogTimeTest->2 us 2\n"
+					  "<Test.SubBA>: AppLogTimeTest->2 ms 1\n"
+					  "<Test.SubBB>: AppLogTimeTest->2 ms 1\n"
+					  "<Test.SubB>: AppLogTimeTest->10 ms 0\n"
+					  "<Cycle>: AppLogTimeTest->10 ms 0\n");
 		}
 	}
 }
