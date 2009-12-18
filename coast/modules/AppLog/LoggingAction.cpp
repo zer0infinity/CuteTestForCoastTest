@@ -79,11 +79,11 @@ bool TimeLoggingAction::GenLogEntries(const String &strSection, const ROAnything
 		//	/Unit
 		//	/NestingLevel
 		TraceAny(roaEntry, "current entry");
-		if ( strSection.Length() == 0 || strSection.IsEqual(roaEntry["Section"].AsCharPtr()) ) {
+		String strEntrySection( roaEntry[TimeLogger::eSection].AsString() );
+		if ( strSection.Length() == 0 || strSection.IsEqual( strEntrySection ) ) {
 			// override key using the section prefix if any
-			String strKey( roaEntry[TimeLogger::eSection].AsString() );
-			if ( strKey.Length() > 0 ) {
-				strKey.Append('.');
+			if ( strEntrySection.Length() > 0 ) {
+				strEntrySection.Append('.');
 			}
 			Anything anyKey;
 			anyKey["Section"] = roaEntry[TimeLogger::eSection].AsString();
@@ -91,7 +91,7 @@ bool TimeLoggingAction::GenLogEntries(const String &strSection, const ROAnything
 			anyKey["Msg"] = roaEntry[TimeLogger::eMsg].AsString();
 			anyKey["Unit"] = roaEntry[TimeLogger::eUnit].AsString();
 			anyKey["NestingLevel"] = roaEntry[TimeLogger::eNestingLevel].AsLong();
-			anyKey["Key"] = String(strKey).Append( roaEntry[TimeLogger::eKey].AsString() );
+			anyKey["Key"] = strEntrySection.Append( roaEntry[TimeLogger::eKey].AsString() );
 			anyKey["ThreadId"] = Thread::MyId();
 			Context::PushPopEntry<Anything> aKeyEntry( ctx, "LoggingEntryKey", anyKey, "TimeLogEntry" );
 			if ( !AppLogModule::Log(ctx, channel, iLevel) ) {
