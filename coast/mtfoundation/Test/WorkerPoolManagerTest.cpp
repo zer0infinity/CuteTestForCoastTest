@@ -96,8 +96,8 @@ void WorkerPoolManagerTest::EnterLeaveTests()
 	expected["CurrentParallelRequests"] = 0;
 	expected["MaxParallelRequests"] = 2;
 	expected["TotalRequests"] = 4;
-	statistic.Remove("TotalTime"); // since varies
-	statistic.Remove("AverageTime"); // since varies
+	statistic.Remove("TotalTime [ms]"); // since varies
+	statistic.Remove("AverageTime [ms]"); // since varies
 	statistic.Remove("TRX/sec"); // since varies
 
 	assertAnyEqualm(expected, statistic, "statistic differs");

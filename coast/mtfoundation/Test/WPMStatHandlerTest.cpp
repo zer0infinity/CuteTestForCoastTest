@@ -119,27 +119,26 @@ void WPMStatHandlerTest::StatisticTests()
 	expected["CurrentParallelRequests"] = 2;
 	expected["MaxParallelRequests"] = 2;
 	expected["TotalRequests"] = 0;
-	expected["TotalTime"] = 0;
-	expected["AverageTime"] = 0;
-	expected["TRX/sec"] = 0;
+	expected["TotalTime [ms]"] = 0;
+	expected["AverageTime [ms]"] = "0";
+	expected["TRX/sec"] = "0";
 	assertAnyEqual(expected, value);
 
 	wpm.HandleStatEvt(WPMStatHandler::eLeave);
 	wpm.HandleStatEvt(WPMStatHandler::eLeave);
 
 	wpm.Statistic(value);
-	value.Remove("TotalTime");
-	value.Remove("AverageTime");
+	value.Remove("TotalTime [ms]");
+	value.Remove("AverageTime [ms]");
 	value.Remove("TRX/sec");
-	expected.Remove("TotalTime");
+	expected.Remove("TotalTime [ms]");
 	expected["PoolSize"] = 100;
 	expected["CurrentParallelRequests"] = 0;
 	expected["MaxParallelRequests"] = 2;
 	expected["TotalRequests"] = 2;
-	expected.Remove("AverageTime");
+	expected.Remove("AverageTime [ms]");
 	expected.Remove("TRX/sec");
 	assertAnyEqual(expected, value);
-
 }
 
 // builds up a suite of testcases, add a line for each testmethod
@@ -153,5 +152,4 @@ Test *WPMStatHandlerTest::suite ()
 	ADD_CASE(testSuite, WPMStatHandlerTest, StatisticTests);
 
 	return testSuite;
-
 }

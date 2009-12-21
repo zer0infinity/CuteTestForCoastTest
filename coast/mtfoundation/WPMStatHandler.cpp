@@ -14,6 +14,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "SysLog.h"
 #include "Dbg.h"
+#include "boost/format.hpp"
 
 static DiffTimer::eResolution ullResolution = DiffTimer::eMicroseconds;
 
@@ -72,24 +73,23 @@ void WPMStatHandler::DoHandleStatEvt(long evt)
 void WPMStatHandler::DoStatistic(Anything &statElements)
 {
 	StartTrace(WPMStatHandler.DoStatistic);
-	LockUnlockEntry me(fMutex);
-	statElements["PoolSize"] = fPoolSize;
-	statElements["CurrentParallelRequests"] = fCurrentParallelRequests;
-	statElements["MaxParallelRequests"] = fMaxParallelRequests;
-	statElements["TotalRequests"] = (long)fTotalRequests;
-	// scale to milliseconds
-	statElements["TotalTime"] = (long)( fTotalTime / 1000ULL );
-	// beware of wrong scaling
-	long lScaled( 0L );
-	ul_long ulTotTime( fTotalTime ? fTotalTime : 1ULL ), ulTotReq( fTotalRequests ? fTotalRequests : 1ULL );
-	// scale to milliseconds
-	statElements["AverageTime"] = (long)( fTotalTime / ulTotReq / 1000ULL );
-	if ( fTotalRequests < ulTotTime ) {
-		lScaled = (long)( ( ullResolution * fTotalRequests ) / ulTotTime );
-	} else {
-		lScaled = (long)( ullResolution * ( fTotalRequests / ulTotTime ) );
+	ul_long ullTotalTime, ullTotalRequests;
+	static double dResolution( ullResolution );
+	{
+		LockUnlockEntry me(fMutex);
+		statElements["PoolSize"] = fPoolSize;
+		statElements["CurrentParallelRequests"] = fCurrentParallelRequests;
+		statElements["MaxParallelRequests"] = fMaxParallelRequests;
+		ullTotalTime = fTotalTime;
+		ullTotalRequests = fTotalRequests;
 	}
-	statElements["TRX/sec"] = lScaled;
+	statElements["TotalRequests"] = (long)ullTotalRequests;
+	// scale to milliseconds
+	statElements["TotalTime [ms]"] = (long)( ullTotalTime / 1000ULL );
+	boost::format avgFmt("%-0.1f"), trxFmt("%-0.1f");
+	double dTotalTime( ullTotalTime ), dTotalRequests( ullTotalRequests );
+	statElements["AverageTime [ms]"] = (ullTotalRequests ? ( avgFmt % ( dTotalTime / dTotalRequests / 1000.0 ) ).str().c_str() : "0");
+	statElements["TRX/sec"] = (ullTotalRequests ? (trxFmt % ( dResolution * ( dTotalRequests / dTotalTime ) ) ).str().c_str() : "0");
 	TraceAny(statElements, "statElements");
 }
 
