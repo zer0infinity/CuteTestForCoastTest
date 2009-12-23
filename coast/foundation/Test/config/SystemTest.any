@@ -24,7 +24,10 @@
 		}
 	}
 	/MakeDirectoryExtendTest {
-		/BaseDir			"##DIREXTENDBASEDIR##"
+		# enabling BaseDir slot activates directory extension test, empty value disables
+		# note: on file systems like ext3 and above, zfs etc. it will probably not work...
+#		/BaseDir			"##DIREXTENDBASEDIR##"
+		/BaseDir			""
 		/Tests {
 			/OnelevelExtendedTest {
 				/ExpectedBaseDir	"##DIREXTENDBASEDIR##_ex0"
