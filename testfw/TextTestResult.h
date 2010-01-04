@@ -31,6 +31,8 @@ public:
 	virtual void		printFailures (ostream &stream);
 	virtual void		printHeader (ostream &stream);
 	virtual void		logSuccesses(ostream &stream);
+private:
+	long fStartTime;
 };
 
 /* insertion operator for easy output */

@@ -31,12 +31,14 @@ void TextTestResult::addFailure (TestLocation *loc)
 void TextTestResult::startTest (Test *test)
 {
 	TestResult::startTest (test);
+	fStartTime = elapsedTime();
 	cerr << "--" << test->toString() << "--";
 }
 
 void TextTestResult::endTest (Test *test)
 {
 	TestResult::endTest (test);
+	cerr << " (" << (elapsedTime() - fStartTime) << "ms)";
 	cerr << endl;
 }
 
