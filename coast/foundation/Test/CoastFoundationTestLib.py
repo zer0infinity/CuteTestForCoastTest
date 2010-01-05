@@ -1,27 +1,9 @@
 import os, socket, pdb
+import SocketServer, threading, BaseHTTPServer
 import StanfordUtils
-import SocketHelpers
 from stat import *
 
 packagename = StanfordUtils.getPackageName(__name__)
-acceptorThreads = []
-
-def acceptorCallback(sock, addr):
-    data = SocketHelpers.sockrecv(sock)
-    sock.send('')
-    sock.shutdown(socket.SHUT_RDWR)
-    sock.close()
-
-def httpReplyCallback(sock, addr):
-    data = SocketHelpers.sockrecv(sock)
-    sock.send("HTTP/1.1 200 OK\n\n")
-    sock.shutdown(socket.SHUT_RDWR)
-    sock.close()
-
-def noSendRecvCallback(sock, addr):
-    sock.shutdown(socket.SHUT_RDWR)
-    sock.close()
-
 basepath = ''
 
 def SystemTestModifyConfig(env, cfgfilename):
@@ -49,22 +31,38 @@ def SystemTestMakeDirectoryExtendCleanup():
                 os.rmdir(p)
             except: pass
 
+class AcceptorHandler(SocketServer.StreamRequestHandler):
+    def handle(self):
+        data = self.rfile.readlines()
+        self.request.send('')
+
+class HTTPHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        pass
+
+class NoSendRecvHandler(SocketServer.BaseRequestHandler):
+    def handle(self):
+        pass
+
+servers = []
+def startServer(host, port, server_class, handler_class):
+    server = server_class((host, port), handler_class)
+    servers.append(server)
+    server.serve_forever()
+
 def setUp(target, source, env):
     SystemTestModifyConfig(env, 'config/SystemTest.any')
     # setup listener threads for socket tests
-    global acceptorThreads
-    acceptorThreads.append(SocketHelpers.AcceptorThread(addr='', port=9876, callback=acceptorCallback))
-    acceptorThreads.append(SocketHelpers.AcceptorThread(addr='', port=9875, callback=httpReplyCallback))
-    acceptorThreads.append(SocketHelpers.AcceptorThread(addr='', port=9874, callback=noSendRecvCallback))
-    for t in acceptorThreads:
-        t.start()
+    threading.Thread(target=startServer, args=['localhost',9876, SocketServer.TCPServer, AcceptorHandler]).start()
+    threading.Thread(target=startServer, args=['localhost',9875, BaseHTTPServer.HTTPServer, HTTPHandler]).start()
+    threading.Thread(target=startServer, args=['localhost',9874, SocketServer.TCPServer, NoSendRecvHandler]).start()
 
 def tearDown(target, source, env):
-    global acceptorThreads
-    for t in acceptorThreads:
-        if t.isAlive():
-            t.terminate()
-            t.join()
+    for server in servers:
+        server.shutdown()
+    
     # delete generated files
     StanfordUtils.removeFiles(StanfordUtils.findFiles([env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])], extensions=['.res', '.tst', '.txt' ], matchfiles=['include.any']))
     SystemTestMakeDirectoryExtendCleanup()
