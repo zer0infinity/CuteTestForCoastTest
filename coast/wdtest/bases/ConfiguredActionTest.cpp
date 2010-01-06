@@ -205,6 +205,7 @@ void ConfiguredActionTest::DoTestWithContext(Anything testCase, const String &te
 	StartTrace(ConfiguredActionTest.DoTestWithContext);
 	TraceAny(testCase, "Config of " << testCaseName);
 
+	AlterTestStoreHook(testCase);
 	PutInStore(testCase["SessionStore"], ctx.GetSessionStore());
 	PutInStore(testCase["RoleStore"], ctx.GetRoleStoreGlobal());
 	// Can not use real Session Store because Lookup does not find it ! - fix me
@@ -238,6 +239,11 @@ void ConfiguredActionTest::DoTestWithContext(Anything testCase, const String &te
 	TraceAny(ctx.GetTmpStore(), "tmp store after action");
 	String expectedToken = testCase["ExpectedToken"].AsString("TheAction");
 	assertEqualm(expectedToken, token, (const char *)testCaseName);
+}
+
+void ConfiguredActionTest::AlterTestStoreHook(Anything &testCase)
+{
+	StartTrace(ConfiguredActionTest.AlterTestStoreHook);
 }
 
 // builds up a suite of testcases, add a line for each testmethod

@@ -176,6 +176,9 @@ protected:
 
 	//! helper method to generate a list of paths out of an anything
 	virtual void GeneratePathList(Anything &pathList, ROAnything &input, String pathSoFar, char delimSlot);
+
+	//! Hook that allows alteration of the stores as read from caseConfig
+	virtual void AlterTestStoreHook(Anything &testCase);
 };
 
 #endif
