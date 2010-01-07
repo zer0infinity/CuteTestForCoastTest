@@ -27,6 +27,25 @@ public:
 
 	enum EWPMStatEvt { eEnter, eLeave };
 
+	/*! set new PoolSize, currently it is only used when printing statistics
+		\param lNewPoolSize new size of Pool for printing statistics */
+	void setPoolSize(long lNewPoolSize) {
+		LockUnlockEntry me(fMutex);
+		fPoolSize = lNewPoolSize;
+	}
+	/*! get current PoolSize
+		\return current PoolSize */
+	long getPoolSize() {
+		LockUnlockEntry me(fMutex);
+		return fPoolSize;
+	}
+	/*! atomically increment current PoolSize
+		\return new PoolSize */
+	long incrementPoolSize() {
+		LockUnlockEntry me(fMutex);
+		return ++fPoolSize;
+	}
+
 protected:
 	//!gathering statistics for event evt
 	void DoHandleStatEvt(long evt);
@@ -47,7 +66,7 @@ private:
 	//! number of total requests serviced
 	ul_long fTotalRequests;
 	//! number of ms used to service the fTotalRequests
-	ul_long fTotalTime;
+	double fTotalTime;
 	//!timer to measure elapsed time during processing of requests
 	DiffTimer fTimer;
 	//!guard for setting values

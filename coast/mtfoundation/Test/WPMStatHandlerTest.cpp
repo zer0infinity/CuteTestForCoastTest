@@ -119,7 +119,7 @@ void WPMStatHandlerTest::StatisticTests()
 	expected["CurrentParallelRequests"] = 2;
 	expected["MaxParallelRequests"] = 2;
 	expected["TotalRequests"] = 0;
-	expected["TotalTime [ms]"] = 0;
+	expected["TotalTime [ms]"] = "0";
 	expected["AverageTime [ms]"] = "0";
 	expected["TRX/sec"] = "0";
 	assertAnyEqual(expected, value);

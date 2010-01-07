@@ -25,7 +25,7 @@ WPMStatHandler::WPMStatHandler(long poolSize)
 	, fMaxParallelRequests(0)
 	, fCurrentParallelRequests(0)
 	, fTotalRequests(0)
-	, fTotalTime(0)
+	, fTotalTime(0.0)
 	, fTimer( ullResolution )
 	, fMutex( "WPMStatHandler", Storage::Global() )
 {
@@ -73,23 +73,26 @@ void WPMStatHandler::DoHandleStatEvt(long evt)
 void WPMStatHandler::DoStatistic(Anything &statElements)
 {
 	StartTrace(WPMStatHandler.DoStatistic);
-	ul_long ullTotalTime, ullTotalRequests;
-	static double dResolution( ullResolution );
+	ul_long ullTotalRequests(0LL);
+	double dTotalTime(0.0);
 	{
 		LockUnlockEntry me(fMutex);
 		statElements["PoolSize"] = fPoolSize;
 		statElements["CurrentParallelRequests"] = fCurrentParallelRequests;
 		statElements["MaxParallelRequests"] = fMaxParallelRequests;
-		ullTotalTime = fTotalTime;
+		dTotalTime = fTotalTime;
 		ullTotalRequests = fTotalRequests;
 	}
 	statElements["TotalRequests"] = (long)ullTotalRequests;
-	// scale to milliseconds
-	statElements["TotalTime [ms]"] = (long)( ullTotalTime / 1000ULL );
-	boost::format avgFmt("%-0.1f"), trxFmt("%-0.1f");
-	double dTotalTime( ullTotalTime ), dTotalRequests( ullTotalRequests );
-	statElements["AverageTime [ms]"] = (ullTotalRequests ? ( avgFmt % ( dTotalTime / dTotalRequests / 1000.0 ) ).str().c_str() : "0");
-	statElements["TRX/sec"] = (ullTotalRequests ? (trxFmt % ( dResolution * ( dTotalRequests / dTotalTime ) ) ).str().c_str() : "0");
+	// scale from microseconds to milliseconds
+	boost::format avgFmt("%-0.1f"), trxFmt("%-0.1f"), totFmt("%-0.1f");
+	double dTotalRequests( ullTotalRequests ),
+		   dTrxPusec = ( dTotalTime > 0.0 ? ( dTotalRequests / dTotalTime ) : 0.0 ),
+		   dAvgTimemsec = ( dTrxPusec > 0.0 ? ( 0.001 / dTrxPusec ) : 0.0 ),
+		   dTrxPSec = ( dTotalTime > 0.0 ? ( 1000.0 / dAvgTimemsec ) : 0.0 );
+	statElements["TotalTime [ms]"] = ( dTotalTime > 0.0 ? (totFmt % ( dTotalTime / 1000.0 )).str().c_str() : "0" );
+	statElements["AverageTime [ms]"] = (ullTotalRequests ? ( avgFmt % dAvgTimemsec ).str().c_str() : "0");
+	statElements["TRX/sec"] = (ullTotalRequests ? ( trxFmt % dTrxPSec ).str().c_str() : "0");
 	TraceAny(statElements, "statElements");
 }
 
