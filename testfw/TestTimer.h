@@ -47,6 +47,13 @@ inline HRTESTTIME nanoSecondTime()
 
 #define GetHRTESTTIME()		nanoSecondTime()
 #define GetHRVTIME()	nanoSecondTime()
+#else
+#include <time.h>
+#include <sys/times.h>
+typedef clock_t			HRTESTTIME;
+extern "C" HRTESTTIME gettimes();
+#define GetHRTESTTIME()	gettimes()
+#define GetHRVTIME()	gettimes()
 #endif
 
 //---- TestTimer ----------------------------------------------------------

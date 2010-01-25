@@ -47,6 +47,12 @@ inline HRTIME nanoSecondTime()
 } // nanoSecondTime
 
 #define GetHRTIME()		nanoSecondTime()
+#else
+#include <time.h>
+#include <sys/times.h>
+typedef clock_t			HRTIME;
+extern "C" HRTIME gettimes();
+#define GetHRTIME()	gettimes()
 #endif
 
 //---- DiffTimer ----------------------------------------------------------
