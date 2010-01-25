@@ -123,7 +123,7 @@ Anything LDAPDAIDataAcccessLoader::Load(const char *ldapDa)
 	Context ctx;
 	Context::PushPopEntry<Anything> aEntry(ctx, "LdapLoader", fConfig);
 
-	if (ldapDa != "") {
+	if ( String(ldapDa).Length() ) {
 		DataAccess da(ldapDa);
 		bool retCode = da.StdExec(ctx);
 		Anything tmpStore(ctx.GetTmpStore());
@@ -152,7 +152,7 @@ Anything LDAPDAIActionLoader::Load(const char *ldapDaAction)
 	Anything theResult(Storage::Global());
 	Context ctx;
 	Context::PushPopEntry<Anything> aEntry(ctx, "LdapLoader", fConfig);
-	if (ldapDaAction != "") {
+	if ( String(ldapDaAction).Length() ) {
 		Anything tmpStore = ctx.GetTmpStore();
 		String transition;
 		Anything config;

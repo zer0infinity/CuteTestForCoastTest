@@ -9,15 +9,6 @@
 //--- interface include --------------------------------------------------------
 #include "a2ee2a.h"
 
-#ifdef __GNUG__
-static void USE()
-{
-	if (!static_h_rcs_id && static_c_rcs_id) {
-		USE();
-	}
-}
-#endif
-
 const unsigned char os_toascii[256] = {
 	0x00, 0x01, 0x02, 0x03, 0x85, 0x09, 0x86, 0x7f, /* 00-0f:           */
 	0x87, 0x8d, 0x8e, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, /* ................ */
