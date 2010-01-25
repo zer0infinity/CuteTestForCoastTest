@@ -94,7 +94,7 @@ bool HTTPDAImpl::DoExec(Connector *csc, ConnectorParams *cps, Context &context, 
 		DAAccessTimer(HTTPDAImpl.DoExec, "connecting <" << fName << ">", context);
 		s = csc->Use();
 		// Store client info
-		context.GetTmpStore()["ClientInfoBackends"][cps->IPAddress()][cps->PortAsString()] = csc->ClientInfo();
+		context.GetTmpStore()["ClientInfoBackends"] = csc->ClientInfo();
 		if ( s ) {
 			Ios = csc->GetStream();
 			if ( cps->UseSSL() ) {

@@ -82,10 +82,9 @@ void HTTPDAImplTest::SSLTests()
 		assertEquals(httpDAImpl.Exec(ctx, &in, &out), cConfig["Results"]["HTTPDAImplRet"].AsBool(0));
 		Anything tmp = ctx.GetTmpStore();
 		Anything clientInfo;
-		clientInfo = tmp["ClientInfoBackends"][cConfig["Config"]["CurrentServer"]["Server"].AsString()]
-					 [cConfig["Config"]["CurrentServer"]["Port"].AsString()];
+		clientInfo = tmp["ClientInfoBackends"];
 		TraceAny(clientInfo, "ClientInfo used to verify test results.");
-		assertEqual(cConfig["Results"]["SSLCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["SSLCertVerifyStatus"].AsBool(0));
+		assertEqual(cConfig["Results"]["SSLCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["SSLCertVerifyStatus"]["SSL"]["Ok"].AsBool(0));
 		assertEqual(cConfig["Results"]["AppLevelCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["AppLevelCertVerifyStatus"].AsBool(0));
 		TraceAny(ctx.GetTmpStore(), "Tempstore after");
 	}
