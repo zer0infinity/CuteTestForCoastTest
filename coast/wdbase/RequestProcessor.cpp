@@ -27,7 +27,7 @@ RegisterRequestProcessor(RequestProcessor);
 
 RequestProcessor::RequestProcessor(const char *processorName)
 	: RegisterableObject(processorName)
-	, fServer(0)
+	, fServer(0), fErrors()
 {
 	StartTrace(RequestProcessor.RequestProcessor);
 }

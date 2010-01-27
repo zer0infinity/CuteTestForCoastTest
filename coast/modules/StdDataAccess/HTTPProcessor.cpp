@@ -16,6 +16,8 @@
 #include "Server.h"
 #include "HTTPProtocolReplyRenderer.h"
 #include "AnyIterators.h"
+#include "AppBooter.h"
+#include "AppLog.h"
 
 //--- c-library modules used ---------------------------------------------------
 
@@ -36,6 +38,9 @@ void HTTPProcessor::Init(Server *server)
 		fUrlExhaustiveDecode = server->Lookup("URLExhaustiveDecode", fUrlExhaustiveDecode);
 		fFixDirectoryTraversial = server->Lookup("FixDirectoryTraversial", fFixDirectoryTraversial);
 		fURLEncodeExclude = server->Lookup("URLEncodeExclude", fURLEncodeExclude);
+		fCheckHeaderFields = server->Lookup("CheckHeaderFields", (long) fCheckHeaderFields);
+		fRejectRequestsWithInvalidHeaders = server->Lookup("RejectRequestsWithInvalidHeaders", (long) fRejectRequestsWithInvalidHeaders);
+
 	}
 	RequestProcessor::Init(server);
 }
@@ -75,6 +80,12 @@ void HTTPProcessor::ReadRequestBody(iostream &Ios, Anything &request, MIMEHeader
 	if ( request["REQUEST_METHOD"] == "POST" ) {
 		RequestBodyParser sm(header, Ios);
 		sm.Parse();
+		if (fCheckHeaderFields && header.AreSuspiciosHeadersPresent() ) {
+			Anything erreanousRequest(ctx.GetRequest());
+			ctx.GetTmpStore()["ReadRequestBodyError"] =
+				DoLogError(400, "Possible SSL Renegotiation attack. A multipart mime header (in POST) contains a GET/POST request",
+						   ctx.GetRequest()["REQUEST_URI"].AsString(), ctx.GetRequest()["ClientInfo"], "", erreanousRequest, "RequestBodyParser");
+		}
 		request["REQUEST_BODY"] = sm.GetContent();
 		request["WHOLE_REQUEST_BODY"] = sm.GetUnparsedContent();
 
@@ -170,6 +181,34 @@ void HTTPProcessor::DoRenderProtocolStatus(ostream &os, Context &ctx)
 {
 	HTTPProtocolReplyRenderer r("HTTPProtocolReplyRenderer");
 	r.RenderAll( os, ctx, ROAnything());
+}
+
+Anything HTTPProcessor::DoLogError(long errcode, const String &reason, const String &line, const Anything &clientInfo, const String &msg, Anything &request, const char *who)
+{
+	StartTrace(HTTPProcessor.DoLogError);
+	TraceAny(clientInfo, "client info:");
+	// define SecurityLog according to the AppLog rules if you want to see this output.
+	Context ctx;
+	Anything tmp = ctx.GetTmpStore();
+	tmp[who]["REMOTE_ADDR"] = clientInfo["REMOTE_ADDR"];
+	tmp[who]["HTTPS"] = clientInfo["HTTPS"];
+	tmp[who]["Request"] = request;
+	tmp[who]["HttpStatusCode"]	=  errcode;
+	tmp[who]["HttpResponseMsg"] = msg;
+	tmp[who]["Reason"] = reason;
+	tmp[who]["FaultyRequestLine"] = line;
+	fErrors[who] = tmp[who];
+	Application *pApp = NULL;
+	Server *pServer = NULL;
+	String strServerName;
+	pApp = AppBooter().FindApplication(Application::GetConfig(), strServerName);
+	TraceAny(tmp[who], "global server, aka 'MasterServer', is [" << strServerName << "]");
+	pServer = SafeCast(pApp, Server);
+	if ( pServer ) {
+		ctx.SetServer(pServer);
+	}
+	AppLogModule::Log(ctx, "SecurityLog", AppLogModule::eERROR);
+	return tmp;
 }
 
 //! render the protocol specific error msg

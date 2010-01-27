@@ -27,14 +27,6 @@ public:
 	//!get the resulting anything if read request was successful
 	Anything GetRequest();
 
-	//!get the resulting anything if read request was successful
-	Anything GetErrors() {
-		return fErrors;
-	};
-	bool	 HasErrors()	{
-		return fErrors.GetSize() > 0 ? true : false;
-	};
-
 protected:
 	//!read the one input line stream and check it against limits,
 	//! my generate an error reply in case of "attacks"
@@ -61,7 +53,7 @@ protected:
 	bool VerifyUrlArgs(String &urlArgs);
 
 	//!writes back http error codes with html msg
-	bool DoHandleError(iostream &Ios, long errcode, const String &reason, const String &line, const Anything &clientInfo, const String & = String("Page not found."));
+	bool DoHandleError(iostream &Ios, long errcode, const String &reason, const String &line, const Anything &clientInfo, bool reject = true, const String & = String("Page not found."));
 
 	//!Logs  the error if SecurityLog is defined in AppLog config
 	void DoLogError(long errcode, const String &reason, const String &line, const Anything &clientInfo, const String &msg);
@@ -84,7 +76,6 @@ protected:
 	//!flag defining the first line
 	bool fFirstLine;
 
-	Anything fErrors;
 };
 
 #endif

@@ -19,6 +19,7 @@ MIMEHeader::MIMEHeader(URLUtils::NormalizeTag normalizeKey, MIMEHeader::ProcessM
 	: fBoundaryChecked(false)
 	, fNormalizeKey(normalizeKey)
 	, fSplitHeaderFields(splitHeaderFields)
+	, fAreSuspiciosHeadersPresent(false)
 {
 	StartTrace(MIMEHeader.Ctor);
 }
@@ -123,8 +124,11 @@ bool MIMEHeader::ParseField(String &line, MIMEHeader::ProcessMode splitHeaderFie
 		if ( (splitHeaderFields == eDoSplitHeaderFields) || (splitHeaderFields == eDoSplitHeaderFieldsCookie) ) {
 			StringTokenizer st1(((const char *)line) + pos + 1, (splitHeaderFields == eDoSplitHeaderFields ? ',' : ';'));
 			while (st1.NextToken(fieldvalue)) {
+				Trace("fieldname: [" << fieldname << "] fieldvalue: [" << fieldvalue << "]");
 				if ( fieldvalue.Length() ) {
 					URLUtils::TrimBlanks(fieldvalue);
+					URLUtils::RemoveQuotes(fieldvalue);
+					CheckValues(fieldvalue);
 					if ( splitHeaderFields == eDoSplitHeaderFields ) {
 						URLUtils::AppendValueTo(fHeader, fieldname, fieldvalue);
 					} else if ( splitHeaderFields == eDoSplitHeaderFieldsCookie ) {
@@ -141,6 +145,7 @@ bool MIMEHeader::ParseField(String &line, MIMEHeader::ProcessMode splitHeaderFie
 			fieldvalue = line.SubString(pos + 1);
 			if ( fieldvalue.Length() ) {
 				URLUtils::TrimBlanks(fieldvalue);
+				CheckValues(fieldvalue);
 				URLUtils::AppendValueTo(fHeader, fieldname, fieldvalue);
 				TraceAny(fHeader, "fHeader");
 			}
@@ -150,6 +155,30 @@ bool MIMEHeader::ParseField(String &line, MIMEHeader::ProcessMode splitHeaderFie
 	}
 
 	return (fieldname.Length() > 0);
+}
+
+bool MIMEHeader::CheckValues(String &value)
+{
+	StartTrace(MIMEHeader.CheckValues);
+	String work(value);
+	work.ToUpper();
+	bool ret = work.StartsWith("GET") || work.StartsWith("POST");
+	if (ret) {
+		fAreSuspiciosHeadersPresent = true;
+	}
+	return ret;
+}
+
+bool MIMEHeader::AreSuspiciosHeadersPresent()
+{
+	StartTrace(MIMEHeader.AreSuspiciosHeadersPresent);
+	return fAreSuspiciosHeadersPresent;
+}
+
+void MIMEHeader::SetAreSuspiciosHeadersPresent(bool newValue)
+{
+	StartTrace(MIMEHeader.SetAreSuspiciosHeadersPresent);
+	fAreSuspiciosHeadersPresent = newValue;
 }
 
 bool MIMEHeader::IsMultiPart()

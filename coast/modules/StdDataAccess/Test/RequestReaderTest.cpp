@@ -62,18 +62,23 @@ void RequestReaderTest::CleanupRequestLineTest()
 		httpProc.fUrlExhaustiveDecode										= cConfig["URLExhaustiveDecode"].AsLong(0);
 		httpProc.fFixDirectoryTraversial									= cConfig["FixDirectoryTraversial"].AsLong(0);
 		httpProc.fURLEncodeExclude											= cConfig["URLEncodeExclude"].AsString("/?");
+		httpProc.fURLEncodeExclude											= cConfig["URLEncodeExclude"].AsString("/?");
+		httpProc.fURLEncodeExclude											= cConfig["URLEncodeExclude"].AsString("/?");
+		httpProc.fCheckHeaderFields											= cConfig["CheckHeaderFields"].AsLong(1);
+		httpProc.fRejectRequestsWithInvalidHeaders							= cConfig["RejectRequestsWithInvalidHeaders"].AsLong(1);
+
 		RequestReader 	reader(&httpProc, header);
 		String uri(cConfig["RequestLine"].AsString());
 		StringStreamSocket ss(uri);
 		reader.ReadRequest(*(ss.GetStream()), ss.ClientInfo());
 		Anything request(reader.GetRequest());
 		TraceAny(request, "request:");
-		long hasErrors = reader.HasErrors();
-		Anything errors = reader.GetErrors();
+		long hasErrors = httpProc.HasErrors();
+		Anything errors = httpProc.GetErrors();
 		Trace("Checking HasErrors");
 		assertEqual(cConfig["HasErrors"].AsLong(0), hasErrors);
 		Trace("Checking Reason");
-		assertEqual(cConfig["Reason"].AsString(), errors["Reason"].AsString(""));
+		assertEqual(cConfig["Reason"].AsString(), errors["RequestReader"]["Reason"].AsString(""));
 		Trace("Checking ExpectedRequest");
 		assertEqual(cConfig["ExpectedRequest"].AsString(), request["REQUEST_URI"].AsString());
 		Trace("Resulting REQUEST_URI: " << request["REQUEST_URI"].AsString());
@@ -91,9 +96,11 @@ void RequestReaderTest::ReadMinimalInputTest()
 		Context ctx;
 		MIMEHeader header;
 		HTTPProcessor httpProc("HTTPProc");
-		httpProc.fRequestSizeLimit 	= cConfig["RequestSizeLimit"].AsLong(0);
-		httpProc.fLineSizeLimit 	= cConfig["LineSizeLimit"].AsLong(0);
-		httpProc.fURISizeLimit		= cConfig["UriSizeLimit"].AsLong(0);
+		httpProc.fRequestSizeLimit 					= cConfig["RequestSizeLimit"].AsLong(0);
+		httpProc.fLineSizeLimit 					= cConfig["LineSizeLimit"].AsLong(0);
+		httpProc.fURISizeLimit						= cConfig["UriSizeLimit"].AsLong(0);
+		httpProc.fCheckHeaderFields					= cConfig["CheckHeaderFields"].AsLong(1);
+		httpProc.fRejectRequestsWithInvalidHeaders	= cConfig["RejectRequestsWithInvalidHeaders"].AsLong(1);
 		RequestReader 	reader(&httpProc, header);
 
 		String uri(cConfig["RequestLine"].AsString());
@@ -106,10 +113,13 @@ void RequestReaderTest::ReadMinimalInputTest()
 		if ( cConfig["Expected"].IsDefined("REQUEST_METHOD") ) {
 			assertEqualm(cConfig["Expected"]["REQUEST_METHOD"].AsString(), request["REQUEST_METHOD"].AsString(), TString("At index: ") << aEntryIterator.Index());
 		}
+
 		if ( cConfig["Expected"].IsDefined("FirstResponseLine") ) {
+			Trace("!!");
 			StringTokenizer2 st(uri, "\r\n");
 			String tok;
 			st.NextToken(tok);
+			Trace("tok: [" << tok << "]");
 			assertEqualm(cConfig["Expected"]["FirstResponseLine"].AsString(), tok, TString("At index: ") << aEntryIterator.Index());
 		}
 	}

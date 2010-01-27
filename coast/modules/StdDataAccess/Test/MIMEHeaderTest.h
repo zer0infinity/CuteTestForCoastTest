@@ -35,6 +35,7 @@ public:
 	void SetCookieTest();
 	void MultiPartHeaderTest();
 	void PartHeaderTest();
+	void BadHeadersTest();
 
 protected:
 

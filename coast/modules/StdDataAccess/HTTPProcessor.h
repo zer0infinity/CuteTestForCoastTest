@@ -31,7 +31,9 @@ public:
 		  fCheckUrlArgEncodingOverride(),
 		  fUrlExhaustiveDecode(0),
 		  fFixDirectoryTraversial(0),
-		  fURLEncodeExclude("/?") {}
+		  fURLEncodeExclude("/?"),
+		  fCheckHeaderFields(true),
+		  fRejectRequestsWithInvalidHeaders(false) {}
 
 	virtual ~HTTPProcessor()	{ }
 
@@ -69,6 +71,9 @@ protected:
 	//! render the protocol specific error msg
 	virtual void DoError(ostream &reply, const String &msg, Context &ctx);
 
+	//! Log the error to Security.log
+	Anything DoLogError(long errcode, const String &reason, const String &line, const Anything &clientInfo, const String &msg, Anything &request, const char *who);
+
 	long 		fLineSizeLimit;
 	long 		fRequestSizeLimit;
 	long 		fURISizeLimit;
@@ -80,7 +85,8 @@ protected:
 	long		fUrlExhaustiveDecode;
 	long		fFixDirectoryTraversial;
 	String		fURLEncodeExclude;
-
+	bool		fCheckHeaderFields;
+	bool		fRejectRequestsWithInvalidHeaders;
 	friend class HTTPProcessorTest;
 	friend class RequestReaderTest;
 	friend class RequestReader;

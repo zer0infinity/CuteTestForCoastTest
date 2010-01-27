@@ -277,16 +277,52 @@ void HTTPProcessorTest::DoReadInputTest()
 void HTTPProcessorTest::DoReadMinimalInputTest()
 {
 	StartTrace(HTTPProcessorTest.DoReadMinimalInputTest);
-	Context ctx;
-	HTTPProcessor fds("test");
 	// ((errornous) Minimal request, the two blanks after GET are critically
 	String uri;
-	uri = 	"GET  HTTP/1.0\r\n\r\n";
-
+	HTTPProcessor fds("test");
 	String expected =    String("") << "HTTP/1.1 400 Bad Request" << ENDL
 						 << "Connection: close\r\ncontent-type: text/html" << ENDL << ENDL
 						 << "<html><head>\n<title>400 Bad Request</title>\n"
 						 << common;
+	fds.fCheckHeaderFields	= true;
+	fds.fRejectRequestsWithInvalidHeaders	= true;
+
+	// Form (post) request containing evil header
+	uri =	"POST /alibaba HTTP/1.0\r\nX-Evil: GET /gaga HTTP/1.0\r\nContent-type: application/x-www-form-urlencoded\r\nkey=value&Content-length: 11\r\n\r\n";
+	Anything tmpStore;
+	tmpStore = DoReadMinimalInputTestHelper(fds, uri, expected);
+	TraceAny(tmpStore, "tmpStore");
+
+	uri = 	"GET  HTTP/1.0\r\n\r\n";
+	DoReadMinimalInputTestHelper(fds, uri, expected);
+	uri = 	"GET /alibaba HTTP/1.0\r\nX-Evil: POST\r\n\r\n";
+	DoReadMinimalInputTestHelper(fds, uri, expected);
+	uri = 	"GET /alibaba HTTP/1.0\r\nX-Evil: GET\r\n\r\n";
+	DoReadMinimalInputTestHelper(fds, uri, expected);
+	uri = 	"GET /alibaba HTTP/1.0\r\nX-Evil: xGET\r\n\r\n";
+	expected = "";
+	DoReadMinimalInputTestHelper(fds, uri, expected);
+
+	// Mime (post) request containing evil header
+	uri =	"POST /alibaba HTTP/1.0\r\nContent-type: multipart/form-data; boundary=me;\r\nContent-length: 64\r\n\r\n--me\r\nX-Evil: GET /gaga HTTP/1.0\r\nThis is the content.\r\n--me--\r\n";
+	expected = "";
+	tmpStore = DoReadMinimalInputTestHelper(fds, uri, expected);
+	TraceAny(tmpStore, "tmpStore");
+	assertEqual("Possible SSL Renegotiation attack. A multipart mime header (in POST) contains a GET/POST request",
+				tmpStore["ReadRequestBodyError"]["RequestBodyParser"]["Reason"].AsString());
+
+	// Log header attack only
+	fds.fCheckHeaderFields	= true;
+	fds.fRejectRequestsWithInvalidHeaders	= false;
+	uri = 	"GET /alibaba HTTP/1.0\r\nX-Evil: GET\r\n\r\n";
+	expected = "";
+	DoReadMinimalInputTestHelper(fds, uri, expected);
+}
+
+Anything HTTPProcessorTest::DoReadMinimalInputTestHelper(HTTPProcessor &fds, String &uri, String &expected)
+{
+	StartTrace(HTTPProcessorTest.DoReadMinimalInputTestHelper);
+	Context ctx;
 
 	StringStreamSocket ss(uri);
 	fds.DoReadInput(*(ss.GetStream()), ctx);
@@ -295,6 +331,8 @@ void HTTPProcessorTest::DoReadMinimalInputTest()
 	assertEqual( expected, reply );
 	Trace(uri);
 	Trace(expected);
+	TraceAny(ctx.GetTmpStore(), "tmpStore");
+	return ctx.GetTmpStore();
 }
 
 void HTTPProcessorTest::FileUploadTest()

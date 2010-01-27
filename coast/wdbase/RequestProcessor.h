@@ -71,6 +71,15 @@ protected:
 
 	//!the server we use as callback for application functionality
 	Server *fServer;
+	Anything fErrors;
+
+	//!get the resulting anything if read request was successful
+	Anything GetErrors() {
+		return fErrors;
+	};
+	bool	 HasErrors() {
+		return fErrors.GetSize() > 0 ? true : false;
+	};
 
 	friend class RequestProcessorTest;
 

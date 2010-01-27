@@ -10,6 +10,82 @@
 
 	/ReadMinimalInputTest
 	{
+
+		{
+			/RequestLine 	"GET /alibaba HTTP/1.0\r\nX-Evil: GET /gaga HTTP/1.0\r\n\r\n"
+			/UriSizeLimit		271
+			/LineSizeLimit		4096
+			/RequestSizeLimit	5120
+			/DoURLDecoding		1
+			/URLEncodeExclude   "/?"
+			/CheckHeaderFields	1
+			/RejectRequestsWithInvalidHeaders 0
+			/Expected
+			{
+				/FirstResponseLine "GET /alibaba HTTP/1.0"
+				/Return			1
+			}
+		}
+		{
+			/RequestLine 	"GET /alibaba HTTP/1.0\r\nX-Evil: GET /gaga HTTP/1.0\r\n\r\n"
+			/UriSizeLimit		271
+			/LineSizeLimit		4096
+			/RequestSizeLimit	5120
+			/DoURLDecoding		1
+			/URLEncodeExclude   "/?"
+			/CheckHeaderFields	1
+			/RejectRequestsWithInvalidHeaders 1
+			/Expected
+			{
+				/FirstResponseLine	"HTTP/1.1 400 Bad Request"
+				/Return			0
+			}
+		}
+		{
+			/RequestLine 	"GET /alibaba HTTP/1.0\r\nX-Evil: POST\r\n\r\n"
+			/UriSizeLimit		271
+			/LineSizeLimit		4096
+			/RequestSizeLimit	5120
+			/DoURLDecoding		1
+			/URLEncodeExclude   "/?"
+			/CheckHeaderFields	1
+			/RejectRequestsWithInvalidHeaders 1
+			/Expected
+			{
+				/FirstResponseLine	"HTTP/1.1 400 Bad Request"
+				/Return			0
+			}
+		}
+		{
+			/RequestLine 	"GET /alibaba HTTP/1.0\r\nX-Evil: vGET\r\n\r\n"
+			/UriSizeLimit		271
+			/LineSizeLimit		4096
+			/RequestSizeLimit	5120
+			/DoURLDecoding		1
+			/URLEncodeExclude   "/?"
+			/CheckHeaderFields	1
+			/RejectRequestsWithInvalidHeaders 1
+			/Expected
+			{
+				/FirstResponseLine	"GET /alibaba HTTP/1.0"
+				/Return			1
+			}
+		}
+		{
+			/RequestLine 	"GET /alibaba HTTP/1.0\r\nX-Evil: vGET /gaga HTTP1.0\r\n\r\n"
+			/UriSizeLimit		271
+			/LineSizeLimit		4096
+			/RequestSizeLimit	5120
+			/DoURLDecoding		1
+			/URLEncodeExclude   "/?"
+			/CheckHeaderFields	1
+			/RejectRequestsWithInvalidHeaders 1
+			/Expected
+			{
+				/FirstResponseLine	"GET /alibaba HTTP/1.0"
+				/Return			1
+			}
+		}
 		{
 			/RequestLine "\r\n\r\n"
 			/UriSizeLimit		271
@@ -17,6 +93,8 @@
 			/RequestSizeLimit	5120
 			/DoURLDecoding		1
 			/URLEncodeExclude   "/?"
+			/CheckHeaderFields	1
+			/RejectRequestsWithInvalidHeaders 1
 			/Expected
 			{
 				/FirstResponseLine	"HTTP/1.1 400 Bad Request"
@@ -30,6 +108,8 @@
 			/RequestSizeLimit	5120
 			/DoURLDecoding		1
 			/URLEncodeExclude   "/?"
+			/CheckHeaderFields	1
+			/RejectRequestsWithInvalidHeaders 1
 			/Expected
 			{
 				/REQUEST_METHOD	"GET"
@@ -43,6 +123,8 @@
 			/RequestSizeLimit	5120
 			/DoURLDecoding		1
 			/URLEncodeExclude   "/?"
+			/CheckHeaderFields	1
+			/RejectRequestsWithInvalidHeaders 1
 			/Expected
 			{
 				/FirstResponseLine	"HTTP/1.1 414 Request-URL Too Large"
@@ -56,6 +138,8 @@
 			/RequestSizeLimit	5120
 			/DoURLDecoding		1
 			/URLEncodeExclude   "/?"
+			/CheckHeaderFields	1
+			/RejectRequestsWithInvalidHeaders 1
 			/Expected
 			{
 				/FirstResponseLine	"HTTP/1.1 413 Request Entity Too Large"
@@ -67,8 +151,10 @@
 			/UriSizeLimit		271
 			/LineSizeLimit		4096
 			/RequestSizeLimit	8
-				/DoURLDecoding		1
-				/URLEncodeExclude   "/?"
+			/DoURLDecoding		1
+			/URLEncodeExclude   "/?"
+			/CheckHeaderFields	1
+			/RejectRequestsWithInvalidHeaders 1
 			/Expected
 			{
 				/FirstResponseLine	"HTTP/1.1 413 Request Entity Too Large"
@@ -82,6 +168,8 @@
 			/RequestSizeLimit	5120
 			/DoURLDecoding		1
 			/URLEncodeExclude   "/?"
+			/CheckHeaderFields	1
+			/RejectRequestsWithInvalidHeaders 1
 			/Expected
 			{
 				/FirstResponseLine "HTTP/1.1 405 Method Not Allowed"

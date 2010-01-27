@@ -195,6 +195,10 @@ bool RequestBodyParser::ParseMultiPart(istream *is, const String &bound)
 				partInfo["body"] = part.GetContent();
 				fContent.Append(partInfo);
 			}
+			// Communicate with "Main" header
+			if (hinner.AreSuspiciosHeadersPresent() ) {
+				fHeader.SetAreSuspiciosHeadersPresent(true);
+			}
 		}
 	}
 	Trace("Actual length of unparsed body: " << fUnparsedContent.Length());

@@ -14,12 +14,13 @@
 #include "AppLog.h"
 #include "Server.h"
 #include "AppBooter.h"
+#include "StringStream.h"
 
 //--- c-library modules used ---------------------------------------------------
 
 //---- RequestReader -----------------------------------------------------------
 RequestReader::RequestReader(HTTPProcessor *p, MIMEHeader &header)
-	: fProc(p), fHeader(header), fRequestBufferSize(0), fFirstLine(true), fErrors()
+	: fProc(p), fHeader(header), fRequestBufferSize(0), fFirstLine(true)
 {
 	StartTrace(RequestReader.RequestReader);
 }
@@ -69,6 +70,7 @@ bool RequestReader::ReadRequest(iostream &Ios, const Anything &clientInfo)
 	Trace("======================= reading input ==================");
 	bool hadError = false;
 	bool doContinue = ReadLine(Ios, line, clientInfo, hadError);
+	bool ret = true;
 	if ( !doContinue) {
 		return false;
 	}
@@ -90,15 +92,23 @@ bool RequestReader::ReadRequest(iostream &Ios, const Anything &clientInfo)
 		// handle request lines
 		fHeader.DoParseHeaderLine(line);
 	}
-	if ( fRequestBufferSize == 0 ) {
-		return DoHandleError(Ios, 400, "Empty request", line, clientInfo);
+	if ( fProc->fCheckHeaderFields && fHeader.AreSuspiciosHeadersPresent() ) {
+		String tmp;
+		OStringStream oss(tmp);
+		fHeader.GetInfo().PrintOn(oss, false);
+		oss.flush();
+		line.Append(" ");
+		line.Append(tmp);
+		ret = DoHandleError(Ios, 400, "Possible SSL Renegotiation attack. A header contains a GET/POST request", line, clientInfo, fProc->fRejectRequestsWithInvalidHeaders);
+	} else if ( fRequestBufferSize == 0 ) {
+		ret =  DoHandleError(Ios, 400, "Empty request", line, clientInfo);
 	}
 
 #ifdef REQ_TRACING
 	SystemLog::WriteToStderr(String("<") << fRequestBuffer << ">\n");
 #endif
 	TraceAny(fHeader.GetInfo(), "RequestHeader:");
-	return true;
+	return ret;
 }
 
 bool RequestReader::CheckReqLineSize(iostream &Ios, long lineLength, const String &line, const Anything &clientInfo)
@@ -285,50 +295,35 @@ Anything RequestReader::GetRequest()
 }
 
 // handle error
-bool RequestReader::DoHandleError(iostream &Ios, long errcode, const String &reason, const String &line, const Anything &clientInfo, const String &msg)
+bool RequestReader::DoHandleError(iostream &Ios, long errcode, const String &reason, const String &line, const Anything &clientInfo, bool reject, const String &msg)
 {
 	StartTrace(RequestReader.DoHandleError);
-	Trace("Errcode: " << errcode << " Message: " << msg << " Faulty line: " << line);
-	if ( !!Ios ) {
-		Context ctx;
+	Trace("Errcode: [" << errcode << "] Message: [" << msg << "] Faulty line: [" << line << "] reject: [" << reject << "]");
+	if ( reject == true ) {
+		if ( !!Ios ) {
+			Context ctx;
 
-		Anything tmpStore = ctx.GetTmpStore();
-		tmpStore["HTTPStatus"]["ResponseCode"] = errcode;
-		fProc->DoError(Ios, msg, ctx);
+			Anything tmpStore = ctx.GetTmpStore();
+			tmpStore["HTTPStatus"]["ResponseCode"] = errcode;
+			fProc->DoError(Ios, msg, ctx);
 
-		Ios << ENDL;
-		Ios.flush();
-		Ios.clear(ios::badbit);
-	} else {
-		Trace("Can not send error msg.");
+			Ios << ENDL;
+			Ios.flush();
+			Ios.clear(ios::badbit);
+		} else {
+			Trace("Can not send error msg.");
+		}
 	}
 	DoLogError(errcode, reason, line, clientInfo, msg);
-	return false;
+	// If we do only logging, the request must be valid for further processing to be successful.
+	bool ret = (reject ? false : true);
+	Trace("Returning: " << ret);
+	return ret;
 }
 
 void RequestReader::DoLogError(long errcode, const String &reason, const String &line, const Anything &clientInfo, const String &msg)
 {
 	StartTrace(RequestReader.DoLogError);
-	TraceAny(clientInfo, "client info:");
-	// define SecurityLog according to the AppLog rules if you want to see this output.
-	Context ctx;
-	Anything tmpStore = ctx.GetTmpStore();
-	tmpStore["RequestReader"]["REMOTE_ADDR"] = clientInfo["REMOTE_ADDR"];
-	tmpStore["RequestReader"]["HTTPS"] = clientInfo["HTTPS"];
-	tmpStore["RequestReader"]["Request"] = GetRequest();
-	tmpStore["RequestReader"]["HttpStatusCode"]	=  errcode;
-	tmpStore["RequestReader"]["HttpResponseMsg"] = msg;
-	tmpStore["RequestReader"]["Reason"] = reason;
-	tmpStore["RequestReader"]["FaultyRequestLine"] = line;
-	fErrors = tmpStore["RequestReader"];
-	Application *pApp = NULL;
-	Server *pServer = NULL;
-	String strServerName;
-	pApp = AppBooter().FindApplication(Application::GetConfig(), strServerName);
-	TraceAny(tmpStore["RequestReader"], "global server, aka 'MasterServer', is [" << strServerName << "]");
-	pServer = SafeCast(pApp, Server);
-	if ( pServer ) {
-		ctx.SetServer(pServer);
-	}
-	AppLogModule::Log(ctx, "SecurityLog", AppLogModule::eERROR);
+	Anything request = GetRequest();
+	fProc->DoLogError(errcode, reason, line, clientInfo, msg, request, "RequestReader");
 }
