@@ -21,9 +21,9 @@
 class Anything;
 class LockUnlockEntry;
 
-// disable tracing if requested, even if in DEBUG mode, eg. performance tests
+// disable tracing if requested, even if in COAST_TRACE mode, eg. performance tests
 #define WD_DISABLE_TRACE
-#if !defined(DEBUG) || defined(WD_DISABLE_TRACE)
+#if !defined(COAST_TRACE) || defined(WD_DISABLE_TRACE)
 #define swStatTrace(trigger, msg, allocator)
 #define swStartTrace(trigger)
 #define swStartTrace1(trigger, msg)

@@ -197,7 +197,7 @@ const char *LDAPModifyCompareParams::Attribute()
 
 void LDAPModifyCompareParams::DebugEntries2Modify(ostream &os)
 {
-#ifdef DEBUG
+#ifdef COAST_TRACE
 
 	LDAPMod **modifies = Entries2Modify();
 	LDAPMod *aMod;

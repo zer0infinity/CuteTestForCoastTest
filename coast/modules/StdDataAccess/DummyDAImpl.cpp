@@ -73,7 +73,7 @@ bool DummyDAImpl::BuildRequest( String &request, Context &context, ParameterMapp
 		}
 	}
 
-#ifdef DEBUG
+#ifdef COAST_TRACE
 	tmpStore["ParameterMapper"]["RequestMade"] = request;
 #endif
 
@@ -144,7 +144,7 @@ bool DummyDAImpl::DoExec( Context &context, ParameterMapper *in, ResultMapper *o
 		theReply = GetReplyMatchingRequest(recording, context, request);
 	}
 
-#ifdef DEBUG
+#ifdef COAST_TRACE
 	String infoMsg = "\r\nReply from server ";
 	infoMsg << theReply;
 	SystemLog::Info( infoMsg ); // perhaps enable this line with an entry in RequestLineRenderer.any.... future

@@ -14,7 +14,6 @@
 #include "Dbg.h"
 #include <cstring>
 #include <cstdio>
-
 #include <exception>
 
 // std::numeric_limits

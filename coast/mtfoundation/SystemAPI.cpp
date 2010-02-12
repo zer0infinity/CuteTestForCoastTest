@@ -6,8 +6,6 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#include <cstdlib>
-
 //--- interface include --------------------------------------------------------
 #include "SystemAPI.h"
 
@@ -270,7 +268,7 @@ bool doStartThread(void *obj, bool *b, pthread_t *thrId, void * (*wrapper)(void 
 		};
 
 		String logMsg;
-		SystemLog::Error(logMsg << "Thread::Start: error in thr_create " << (long)retVal); //SystemLog::SysErrorMsg(errno));
+		SystemLog::Error(logMsg << "Thread::Start: error in thr_create " << (long)retVal);
 		return false;
 	}
 	return true;

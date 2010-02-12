@@ -16,8 +16,8 @@
 #include "Base64.h"
 
 //--- c-modules used -----------------------------------------------------------
-#include "des.h" // be careful to really use our 3rdparty openssl instead of an older one
-#include "md4.h"
+#include <openssl/des.h> // be careful to really use our 3rdparty openssl instead of an older one
+#include <openssl/md4.h>
 
 //---- NTLMCoder ----------------------------------------------------------------
 //NTLMCoder::NTLMCoder(){}

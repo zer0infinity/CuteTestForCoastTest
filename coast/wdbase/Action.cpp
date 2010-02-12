@@ -12,7 +12,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "Registry.h"
 #include "Page.h"
-#include "Dbg.h"
+#include "Timers.h"
 
 //---- ActionsModule -----------------------------------------------------------
 RegisterModule(ActionsModule);
@@ -60,6 +60,7 @@ bool Action::ExecAction(String &transitionToken, Context &c)
 bool Action::ExecAction(String &transitionToken, Context &c, const ROAnything &config)
 {
 	StatTrace(Action.ExecAction, "<" << transitionToken << ">", Storage::Current());
+	MethodTimer(Action.ExecAction, transitionToken, c);
 	bool result(false);
 	switch (config.GetType()) {
 		case AnyArrayType: {

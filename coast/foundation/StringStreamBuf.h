@@ -11,7 +11,6 @@
 
 #include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include <cstdio>
-
 //! StringStreamBuf adapts String objects to the iostream framework
 /*! the underlying string is used directly as the buffer to save copying overhead */
 namespace NSStringStream

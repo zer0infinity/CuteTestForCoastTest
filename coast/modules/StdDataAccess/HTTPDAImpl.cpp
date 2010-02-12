@@ -233,7 +233,7 @@ bool HTTPDAImpl::DoExecRecord(Connector *csc, ConnectorParams *cps, Context &con
 		result = false;
 	}
 
-#ifdef DEBUG
+#ifdef COAST_TRACE
 	String infoMsg = "\r\nReply from server ";
 	infoMsg << theReply;
 	SystemLog::Info( infoMsg ); // perhaps enable this line with an entry in RequestLineRenderer.any.... future
