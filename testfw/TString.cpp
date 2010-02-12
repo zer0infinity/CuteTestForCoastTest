@@ -11,6 +11,7 @@
 
 //--- c-library modules used ---------------------------------------------------
 #include <cstdlib>
+#include <cstdio>
 
 #if defined(ONLY_STD_IOSTREAM)
 #include <sstream>
