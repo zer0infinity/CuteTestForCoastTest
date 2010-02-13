@@ -13,7 +13,6 @@ buildSettings = {
                      'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL'] },
                      'public' : {
                                  'includes'     : SConsider.listFiles(['*.h']),
-#                                'appendUnique' : { 'CPPDEFINES' : 'fooX' },
                     }
                  }
                 }

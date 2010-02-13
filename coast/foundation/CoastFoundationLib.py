@@ -8,10 +8,9 @@ buildSettings = {
         'linkDependencies' : ['loki', 'boost'],
         'sourceFiles'      : SConsider.listFiles(['*.cpp']),
         'targetType'       : 'LibraryShared',
-        'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL'] },
+        'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL','FOUNDATION_IMPL'] },
         'public' : {
-            'includes'     : SConsider.listFiles(['*.h']),
-#            'appendUnique' : { 'CPPDEFINES' : 'fooX' },
+            'includes'     : SConsider.listFiles(['*.h','*.hpp']),
        }
     }
 }

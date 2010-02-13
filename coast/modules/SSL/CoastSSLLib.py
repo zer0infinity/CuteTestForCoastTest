@@ -9,7 +9,7 @@ buildSettings = {
                      'linkDependencies' : ['CoastSecurity', 'openssl'],
                      'sourceFiles'      : SConsider.listFiles(['*.cpp']),
                      'targetType'       : 'LibraryShared',
-                     'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL'] },
+                     'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL','SSL_IMPL'] },
                      'public' : {
                                  'includes'     : SConsider.listFiles(['*.h']),
                                  'includeSubdir'    : '',

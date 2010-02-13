@@ -9,7 +9,7 @@ buildSettings = {
                      'linkDependencies'       : ['CoastFoundation'],
                      'sourceFiles'      : SConsider.listFiles(['*.cpp']),
                      'targetType'       : 'LibraryShared',
-                     'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL'] },
+                     'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL','REGEX_IMPL'] },
                      'public' : {
                                  'includes'     : SConsider.listFiles(['*.h']),
 #                                'appendUnique' : { 'CPPDEFINES' : 'fooX' },
