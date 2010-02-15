@@ -14,7 +14,7 @@
 
 #include "STLStorage.h"
 #include <set>
-
+#include <functional>
 #include "DummyMutex.h"
 
 //---- forward declaration -----------------------------------------------
@@ -44,14 +44,14 @@ this may contain <B>HTML-Tags</B>
 template <
 typename T,
 		 class MutexPolicy = DummyMutex,
-		 template < typename > class AllocType = DefaultAllocatorGlobalType
+		 template < typename > class AllocType = DefaultAllocatorGlobalType,
+		 class CompareType = typename T::key_compare
 		 >
 class set_wrapper : public Loki::BaseVisitable< Anything >
 {
 	set_wrapper(const set_wrapper &);
 
 public:
-	typedef std::less< T > CompareType;
 	typedef T ItemType;
 	typedef AllocType< ItemType > allocator_type;
 	typedef std::set< T, CompareType, allocator_type > Type;
@@ -62,15 +62,14 @@ public:
 	typedef typename Type::const_iterator ConstIteratorType;
 	typedef typename Type::const_reverse_iterator ConstReverseIteratorType;
 
-	LOKI_DEFINE_VISITABLE()
+	LOKI_DEFINE_VISITABLE();
 
-	set_wrapper( const char *pName = "set_wrapper_lock" )
-		: fpList( NULL )
-		, fLock( pName, Storage::Global() )
-	{}
+	set_wrapper(const char *pName = "set_wrapper_lock") :
+		fpList(NULL), fLock(pName, Storage::Global()) {
+	}
 	~set_wrapper() {
 		LockUnlockEntry aGuard( fLock );
-		if ( IntHasList() ) {
+		if (IntHasList()) {
 			IntGetListPtr()->clear();
 		}
 		delete fpList;
@@ -89,7 +88,7 @@ public:
 		return IntDeleteItem( aItem );
 	}
 
-	bool DeleteItem( const ConstIteratorType &aItemPos ) {
+	bool DeleteItem(const ConstIteratorType &aItemPos) {
 		swStartTrace(set_wrapper.DeleteItem);
 		LockUnlockEntry aGuard( fLock );
 		return IntDeleteItem( aItemPos );
@@ -108,7 +107,7 @@ public:
 	bool FindItem(const ItemType &aItem, ConstIteratorType &rItemPos) const {
 		swStartTrace(set_wrapper.FindItem);
 		bool bFound(false);
-		if ( HasList() ) {
+		if (HasList()) {
 			LockUnlockEntry aGuard( *const_cast<MutexPolicy *>(&fLock) );
 			rItemPos = IntGetConstListPtr()->find( aItem );
 			bFound = ( rItemPos != IntGetConstListPtr()->end() );
@@ -122,10 +121,11 @@ public:
 		\param rItemsBegin iterator position pointing to first element in range
 		\param rItemsEnd iterator position pointing to element after last element in range
 		\return true in case the range is not empty */
-	bool FindItemRange(const ItemType &aItemMin, const ItemType &aItemMax, ConstIteratorType &rItemsBegin, ConstIteratorType &rItemsEnd) const {
+	bool FindItemRange(const ItemType &aItemMin, const ItemType &aItemMax, ConstIteratorType &rItemsBegin,
+					   ConstIteratorType &rItemsEnd) const {
 		swStartTrace1(set_wrapper.FindItemRange, "find items for range [" << aItemMin.AsString() << "," << aItemMax.AsString() << "]");
 		bool bFound(false);
-		if ( HasList() ) {
+		if (HasList()) {
 			LockUnlockEntry aGuard( *const_cast<MutexPolicy *>(&fLock) );
 			bFound = IntFindItemRange( aItemMin, aItemMax, rItemsBegin, rItemsEnd );
 		}
@@ -139,7 +139,7 @@ public:
 	bool ReduceToRange(const ItemType &aItemMin, const ItemType &aItemMax) {
 		swStartTrace1(set_wrapper.ReduceToRange, "reduce items to range [" << aItemMin.AsString() << "," << aItemMax.AsString() << "]");
 		bool bModified(false);
-		if ( HasList() ) {
+		if (HasList()) {
 			LockUnlockEntry aGuard( fLock );
 			bModified = IntReduceToRange( aItemMin, aItemMax );
 		}
@@ -153,7 +153,7 @@ public:
 	bool FullRange(ConstIteratorType &rItemsBegin, ConstIteratorType &rItemsEnd) const {
 		swStartTrace(set_wrapper.FullRange);
 		bool bFound(false);
-		if ( HasList() ) {
+		if (HasList()) {
 			LockUnlockEntry aGuard( *const_cast<MutexPolicy *>(&fLock) );
 			rItemsBegin = IntGetConstListPtr()->begin();
 			rItemsEnd = IntGetConstListPtr()->end();
@@ -169,7 +169,7 @@ public:
 	bool FullReverseRange(ConstReverseIteratorType &rItemsBegin, ConstReverseIteratorType &rItemsEnd) const {
 		swStartTrace(set_wrapper.FullReverseRange);
 		bool bFound(false);
-		if ( HasList() ) {
+		if (HasList()) {
 			LockUnlockEntry aGuard( *const_cast<MutexPolicy *>(&fLock) );
 			rItemsBegin = IntGetConstListPtr()->rbegin();
 			rItemsEnd = IntGetConstListPtr()->rend();
@@ -181,7 +181,7 @@ public:
 	bool DeleteItemRange(const IteratorType &rItemsBegin, const IteratorType &rItemsEnd) {
 		swStartTrace1(set_wrapper.DeleteItemRange, "[" << ( ( rItemsBegin != IntGetConstListPtr()->end() ) ? (*rItemsBegin).AsString() : "<end>" ) << "," << ( ( rItemsEnd != IntGetConstListPtr()->end() ) ? (*rItemsEnd).AsString() : "<end>" ) << ")");
 		bool bRet(false);
-		if ( HasList() ) {
+		if (HasList()) {
 			LockUnlockEntry aGuard( fLock );
 			IntGetCreateListPtr()->erase(rItemsBegin, rItemsEnd);
 			bRet = true;
@@ -192,10 +192,10 @@ public:
 	bool DeleteItemRange(const ItemType &aItemMin, const ItemType &aItemMax) {
 		swStartTrace1(set_wrapper.DeleteItemRange, "deleting items for range [" << aItemMin.AsString() << "," << aItemMax.AsString() << "]");
 		bool bRet(false);
-		if ( HasList() ) {
+		if (HasList()) {
 			LockUnlockEntry aGuard( fLock );
 			IteratorType rItemsBegin, rItemsEnd;
-			if ( IntFindItemRange(aItemMin, aItemMax, rItemsBegin, rItemsEnd) ) {
+			if (IntFindItemRange(aItemMin, aItemMax, rItemsBegin, rItemsEnd)) {
 				IntGetCreateListPtr()->erase(rItemsBegin, rItemsEnd);
 				bRet = true;
 			}
@@ -205,7 +205,7 @@ public:
 
 	void Clear() {
 		LockUnlockEntry aGuard( *const_cast<MutexPolicy *>(&fLock) );
-		if ( IntHasList() ) {
+		if (IntHasList()) {
 			IntGetListPtr()->clear();
 		}
 	}
@@ -213,7 +213,7 @@ public:
 	size_type Size() const {
 		LockUnlockEntry aGuard( *const_cast<MutexPolicy *>(&fLock) );
 		size_type sz(0);
-		if ( IntHasList() ) {
+		if (IntHasList()) {
 			sz = IntGetConstListPtr()->size();
 		}
 		return sz;
@@ -237,14 +237,14 @@ public:
 	set_wrapper &operator=(const set_wrapper &other) {
 		return Assign( other );
 	}
-	template < class M, template < class > class A >
-	set_wrapper &operator=(const set_wrapper<T, M, A>& other) {
+	template<class M, template<class > class A, class C>
+	set_wrapper &operator=(const set_wrapper<T, M, A, C>& other) {
 		return Assign( other );
 	}
 
-	template < class M, template < class > class A >
-	set_wrapper &Assign(const set_wrapper<T, M, A>& other) {
-		if ( other.HasList() ) {
+	template<class M, template<class > class A, class C>
+	set_wrapper &Assign(const set_wrapper<T, M, A, C>& other) {
+		if (other.HasList()) {
 			LockUnlockEntry aGuard( fLock );
 			CopyItems(IntGetCreateListPtr(), other.GetConstListPtr());
 		}
@@ -277,7 +277,7 @@ protected:
 
 	Type *IntGetCreateListPtr() {
 		swStartTrace(set_wrapper.IntGetCreateListPtr);
-		if ( !IntHasList() ) {
+		if (!IntHasList()) {
 			fpList = new Type();
 		}
 		Type *pList( fpList );
@@ -291,15 +291,16 @@ protected:
 		\param rItemsBegin iterator position pointing to first element in range
 		\param rItemsEnd iterator position pointing to element after last element in range
 		\return true in case the range is not empty */
-	bool IntFindItemRange(const ItemType &aItemMin, const ItemType &aItemMax, ConstIteratorType &rItemsBegin, ConstIteratorType &rItemsEnd) const {
+	bool IntFindItemRange(const ItemType &aItemMin, const ItemType &aItemMax, ConstIteratorType &rItemsBegin,
+						  ConstIteratorType &rItemsEnd) const {
 		swStartTrace1(set_wrapper.IntFindItemRange, "find items for range [" << aItemMin.AsString() << "," << aItemMax.AsString() << "]");
 		bool bFound(false);
-		if ( IntHasList() ) {
+		if (IntHasList()) {
 			ConstIteratorType aEnd( IntGetConstListPtr()->end() );
 			rItemsBegin = IntGetConstListPtr()->lower_bound( aItemMin );
 			rItemsEnd = IntGetConstListPtr()->upper_bound( aItemMax );
 			swTrace("[" << ( ( rItemsBegin != aEnd ) ? (*rItemsBegin).AsString() : "<end>" ) << "," << ( ( rItemsEnd != aEnd ) ? (*rItemsEnd).AsString() : "<end>" ) << ")");
-			if ( ( rItemsBegin != aEnd || rItemsEnd != aEnd ) ) {
+			if ((rItemsBegin != aEnd || rItemsEnd != aEnd)) {
 				// check if values are within range
 				// -> begin value must at least be lower or equal the given aItemMax
 				bFound = ( *rItemsBegin < aItemMax || !( aItemMax < *rItemsBegin ) );
@@ -315,16 +316,16 @@ protected:
 	bool IntReduceToRange(const ItemType &aItemMin, const ItemType &aItemMax) {
 		swStartTrace1(set_wrapper.IntReduceToRange, "reduce items to range [" << aItemMin.AsString() << "," << aItemMax.AsString() << "]");
 		bool bModified( false );
-		if ( IntHasList() ) {
+		if (IntHasList()) {
 			IteratorType aEnd( IntGetListPtr()->end() ), aBoundPos;
 			aBoundPos = IntGetListPtr()->upper_bound( aItemMin );
-			if ( ( aBoundPos != aEnd ) && ( aBoundPos != IntGetListPtr()->begin() ) ) {
+			if ((aBoundPos != aEnd) && (aBoundPos != IntGetListPtr()->begin())) {
 				swTrace("removing [" << IntGetListPtr()->begin()->AsString() << "," << ( ( aBoundPos != aEnd ) ? aBoundPos->AsString() : "<end>" ) << ")");
 				IntGetListPtr()->erase( IntGetListPtr()->begin(), aBoundPos );
 				bModified = true;
 			}
 			aBoundPos = IntGetListPtr()->upper_bound( aItemMax );
-			if ( aBoundPos != aEnd ) {
+			if (aBoundPos != aEnd) {
 				swTrace("removing [" << aBoundPos->AsString() << ",<end>)");
 				IntGetListPtr()->erase( aBoundPos, IntGetListPtr()->end() );
 				bModified = true;
@@ -343,7 +344,7 @@ protected:
 	bool IntDeleteItem(const ItemType &aItem) {
 		swStartTrace(set_wrapper.IntDeleteItem);
 		bool bRet(false);
-		if ( IntHasList() ) {
+		if (IntHasList()) {
 			size_type aRetCode( IntGetCreateListPtr()->erase( aItem ) );
 			// number of elements == 1 means success
 			bRet = ( aRetCode == 1 );
@@ -354,7 +355,7 @@ protected:
 	bool IntDeleteItem(const ConstIteratorType &aItemPos) {
 		swStartTrace(set_wrapper.IntDeleteItem);
 		bool bRet(false);
-		if ( IntHasList() ) {
+		if (IntHasList()) {
 			IntGetCreateListPtr()->erase( aItemPos );
 			bRet = true;
 		}
@@ -369,7 +370,6 @@ private:
 template < class AL, class AR >
 inline void CopyItems(AL *pThisList, const AR *pOtherList)
 {
-//	pThisList->reserve(pOtherList->size());
 	std::copy(pOtherList->begin(), pOtherList->end(), std::inserter(*pThisList, pThisList->begin()));
 }
 
