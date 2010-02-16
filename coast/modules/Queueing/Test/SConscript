@@ -1,10 +1,1 @@
-import SConsider, pdb
-
-progEnv = SConsider.CloneBaseEnv()
-
-targetname='Queueing_Test'
-SConsider.DependsOn(progEnv, 'CoastQueueing')
-SConsider.DependsOn(progEnv, 'testfwFoundation')
-createdProgram = progEnv.Program(targetname, SConsider.listFiles(['*.cpp']))
-progEnv.Tool('registerObjects', package=targetname, testApps=[createdProgram], config=SConsider.listFiles(['config/*.any', 'config/*.txt', 'config/*.tst', 'config/testscript.sh', 'config/prjconfig.sh', 'tmp/*.any']))
-
+import CoastQueueingTestLib
