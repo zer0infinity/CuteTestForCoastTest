@@ -436,7 +436,7 @@ protected:
 	long		fMaxLoad, fBlockingPutCount, fBlockingGetCount;
 	u_long		fAlive;
 	BlockingSide feBlocked;
-	Mutex		fQueueLock;
+	SimpleMutex  fQueueLock;
 	RWLock		fBlockedLock;
 	SimpleMutex fBlockingPutLock, fBlockingGetLock;
 	SimpleMutex::ConditionType fBlockingPutCond, fBlockingGetCond;
