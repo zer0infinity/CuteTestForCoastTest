@@ -19,7 +19,7 @@
 //---- DataAccess ----------------------------------------------------------------------
 
 DataAccess::DataAccess(const char *trxName)
-	: fName(trxName, -1, Storage::Global())
+	: fName(trxName)
 {
 	StartTrace1(DataAccess.DataAccess, "trxName: [" << trxName << "]");
 }
