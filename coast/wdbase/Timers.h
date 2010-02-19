@@ -10,6 +10,7 @@
 #define _TIMERS_H
 
 #include "config_wdbase.h"
+#include "AllocatorNewDelete.h"
 #include "DiffTimer.h"
 #include "Context.h"
 #include "WDModule.h"
@@ -58,7 +59,7 @@ public:
 
 //---- TimeLogger --------------------------------------------------------------------------
 //!helper class to log timing information
-class EXPORTDECL_WDBASE TimeLogger
+class EXPORTDECL_WDBASE TimeLogger : public Coast::AllocatorNewDelete
 {
 	friend class TimeLoggerEntry;
 public:

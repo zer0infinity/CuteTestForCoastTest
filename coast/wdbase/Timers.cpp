@@ -15,8 +15,6 @@
 #include "Dbg.h"
 #include "Threads.h"
 
-//--- c-library modules used ---------------------------------------------------
-
 //---- TimeLoggingModule ---------------------------------------------------------------
 RegisterModule(TimeLoggingModule);
 
@@ -105,13 +103,12 @@ TimeLoggerEntry::TimeLoggerEntry(const char *pSection, const char *pKey, String 
 	: fpLogger(0)
 {
 	if ( TimeLoggingModule::fgDoTiming ) {
-		fpLogger = TimeLoggerPtr(new TimeLogger( pSection, pKey, msg, ctx, aResolution ));
+		fpLogger = TimeLoggerPtr(new (Storage::Current()) TimeLogger( pSection, pKey, msg, ctx, aResolution ));
 	}
 }
 
 TimeLoggerEntry::~TimeLoggerEntry()
-{
-}
+{}
 
 //---- TimeLogger --------------------------------------------------------------------------
 TimeLogger::TimeLogger(const char *pSection, const char *pKey, const String &msg, Context &ctx, TimeLogger::eResolution aResolution)

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+ * Copyright (c) 2010, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
  * All rights reserved.
  *
  * This library/application is free software; you can redistribute and/or modify it under the terms of
@@ -9,7 +9,7 @@
 #ifndef ALLOCATORNEWDELETE_H_
 #define ALLOCATORNEWDELETE_H_
 
-#include "config_coastoracle.h"
+#include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include "ITOStorage.h"
 #include <new>
 #include <cassert>
@@ -17,7 +17,7 @@
 namespace Coast
 {
 
-	class EXPORTDECL_COASTORACLE AllocatorNewDelete
+	class EXPORTDECL_FOUNDATION AllocatorNewDelete
 	{
 	public:
 		//! force creation of vtable to allow for dynamic_cast
