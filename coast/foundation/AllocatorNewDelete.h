@@ -45,5 +45,16 @@ namespace Coast
 		static void operator delete (void *ptr, const std::nothrow_t &nothrow_constant) throw();
 	};
 
+	namespace Memory
+	{
+		template<class T>
+		inline size_t AlignedSize()
+		{
+			const size_t rest = sizeof(T) % sizeof(long double);
+			const size_t alignedsize = sizeof(T) + ( rest ? sizeof(long double) - rest : 0);
+			return alignedsize;
+		}
+	}
+
 }
 #endif /* ALLOCATORNEWDELETE_H_ */

@@ -9,7 +9,7 @@
 {
 
 	/LowerBound		0
-	/UpperBound		34
+	/UpperBound		3400
 	/DumpAnythings	1
 
 	/ConfiguredTestCase {
@@ -270,7 +270,7 @@
 		/EnableAll	33
 	}
 	/TimeLoggingModule {
-		/MainSwitch	0
+		/MainSwitch	3000
 		/EnableAll	3100
 	}
 	/TimeLoggerEntry {
@@ -280,6 +280,10 @@
 	/TimeLogger {
 		/MainSwitch	3000
 		/EnableAll	3100
+	}
+	/AllocatorNewDelete {
+		/MainSwitch	10
+		/EnableAll	10
 	}
 	/LogTimerTest {
 		/MainSwitch	3000

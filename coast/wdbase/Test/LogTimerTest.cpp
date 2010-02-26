@@ -36,6 +36,7 @@ void LogTimerTest::MethodTimerTest()
 {
 	StartTrace(LogTimerTest.MethodTimerTest);
 	Context ctx;
+	TimeLoggingModule::fgDoTiming = true;
 	String msg("Test MethodTimer");
 	{
 		MetaThing expected;

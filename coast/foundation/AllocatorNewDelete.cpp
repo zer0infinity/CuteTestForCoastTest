@@ -15,11 +15,10 @@ namespace Coast
 	static void *AllocatorNewDelete::operator new(size_t sz, Allocator *a) throw()
 	{
 		if (a) {
-			//!FIXME: correct alignment could improve performance
-			void *mem = a->Calloc(1, sz + sizeof(Allocator *));
+			void *mem = a->Calloc(1, sz + Memory::AlignedSize<Allocator *>());
 			((Allocator **) mem)[0L] = a; // remember address of responsible Allocator
-			char *ptr = (char *)mem + sizeof(Allocator *); // needs cast because of pointer arithmetic
-			StatTrace(AllocatorNewDelete.new, "sz:" << (long)sz << " a:" << (long)a << " ptr:" << (long)ptr, Storage::Current());
+			char *ptr = (char *)mem + Memory::AlignedSize<Allocator *>(); // needs cast because of pointer arithmetic
+			StatTrace(AllocatorNewDelete.new, " a:" << (long)a << " ptr:" << (long)ptr << " sz:" << (long)sz  << " alignedAllocSize:" << (long)Memory::AlignedSize<Allocator *>(), Storage::Current());
 			return ptr;
 		}
 		return a;
@@ -27,8 +26,7 @@ namespace Coast
 	static void AllocatorNewDelete::operator delete(void *ptr) throw()
 	{
 		if (ptr) {
-			//!FIXME: correct alignment could improve performance
-			void *realPtr = (char *) ptr - sizeof(Allocator *);
+			void *realPtr = (char *) ptr - Memory::AlignedSize<Allocator *>();
 			Allocator *a = ((Allocator **) realPtr)[0L]; // retrieve Allocator
 			size_t sz(a->Free(realPtr));
 			StatTrace(AllocatorNewDelete.delete, " a:" << (long)a << " ptr:" << (long)ptr << " sz:" << (long)sz, Storage::Current());
@@ -37,9 +35,10 @@ namespace Coast
 	static void AllocatorNewDelete::operator delete(void *ptr, Allocator *a) throw()
 	{
 		if (ptr && a) {
-			void *realPtr = (char *) ptr - sizeof(Allocator *);
-			assert(((Allocator **) realPtr)[0L] == a);
-			size_t sz(a->Free(realPtr));
+			void *realPtr = (char *) ptr - Memory::AlignedSize<Allocator *>();
+			Allocator *aStored = ((Allocator **) realPtr)[0L]; // retrieve Allocator
+			assert(aStored == a);
+			size_t sz(aStored->Free(realPtr));
 			StatTrace(AllocatorNewDelete.delete, " a:" << (long)a << " ptr:" << (long)ptr << " sz:" << (long)sz, Storage::Current());
 		}
 	}
