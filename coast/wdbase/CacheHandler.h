@@ -9,6 +9,7 @@
 #ifndef _CACHEHANDLER_H
 #define _CACHEHANDLER_H
 
+#include "config_wdbase.h"
 #include "WDModule.h"
 
 class Mutex;
@@ -80,6 +81,7 @@ class EXPORTDECL_WDBASE AnythingLoaderPolicy : public CacheLoadPolicy
 {
 public:
 	AnythingLoaderPolicy(const Anything &anyToCache);
+	AnythingLoaderPolicy(const ROAnything roaToCache);
 	virtual ~AnythingLoaderPolicy();
 	virtual Anything Load(const char *);
 

@@ -33,6 +33,11 @@ Anything CacheLoadPolicy::Load(const char *)
 AnythingLoaderPolicy::AnythingLoaderPolicy(const Anything &anyToCache)
 	: fCachedAny(anyToCache, Storage::Global())
 { }
+
+AnythingLoaderPolicy::AnythingLoaderPolicy(const ROAnything roaToCache)
+	: fCachedAny(roaToCache.DeepClone(Storage::Global()))
+{}
+
 AnythingLoaderPolicy::~AnythingLoaderPolicy() { }
 
 Anything AnythingLoaderPolicy::Load(const char *)
@@ -112,8 +117,7 @@ void CacheHandler::Finis()
 
 ROAnything CacheHandler::Reload(const char *group, const char *key,  CacheLoadPolicy *clp)
 {
-	MutexEntry me(*fgCacheHandlerMutex);
-	me.Use();
+	LockUnlockEntry me(*fgCacheHandlerMutex);
 	Anything toCache(clp->Load(key), Storage::Global());
 	if (! toCache.IsNull() ) {
 		fCache[group][key] = toCache;

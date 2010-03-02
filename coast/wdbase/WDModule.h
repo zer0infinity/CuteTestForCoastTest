@@ -9,6 +9,7 @@
 #ifndef _WDMODULE_H
 #define _WDMODULE_H
 
+#include "config_wdbase.h"
 #include "IFAConfObject.h"
 
 class Registry;

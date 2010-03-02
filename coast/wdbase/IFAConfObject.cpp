@@ -206,7 +206,7 @@ bool ConfNamedObject::DoUnloadConfig()
 	return true;
 }
 
-void ConfNamedObject::SetConfig(const char *category, const char *key, Anything newConfig)
+void ConfNamedObject::SetConfig(const char *category, const char *key, ROAnything newConfig)
 {
 	StartTrace( ConfNamedObject.SetConfig);
 	TraceAny(fConfig, "currentConfig:");
