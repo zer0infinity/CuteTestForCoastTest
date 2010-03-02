@@ -67,4 +67,3 @@ void StringTestExtreme::extremeLength ()
 	// Init a string without parameters
 	assertEqual(trueString.length(), extremelyLongString.Length());
 }
-

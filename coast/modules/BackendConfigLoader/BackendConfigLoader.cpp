@@ -33,7 +33,6 @@ Anything BackendConfigLoaderModule::backendConfigurations = InitBackendConfigura
 
 BackendConfigLoaderModule::BackendConfigLoaderModule(const char *name)
 	: WDModule(name)
-
 {
 }
 
@@ -87,7 +86,6 @@ bool BackendConfigLoaderModule::Init(const Anything &config)
 		fgBackendConfigLoaderModule = 0L;
 		SystemLog::WriteToStderr(" failed\n");
 	}
-
 	return retCode;
 }
 
@@ -183,7 +181,6 @@ bool BackendConfigLoaderModule::RegisterBackend(String backendName)
 		TraceAny(namedObjectConfig, "namedObjectConfig:");
 		role->SetConfig("Role", "CGRole", namedObjectConfig);
 	}
-
 	return ret;
 }
 
@@ -199,4 +196,3 @@ bool BackendConfigLoaderModule::RegisterBackends()
 	}
 	return ret;
 }
-
