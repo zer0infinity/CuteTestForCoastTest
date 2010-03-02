@@ -9,20 +9,21 @@
 //--- interface include --------------------------------------------------------
 #include "StringTestExtreme.h"
 
+//--- test modules used --------------------------------------------------------
+#include "TestSuite.h"
+
+//--- standard modules used ----------------------------------------------------
+#include "System.h"
+#include "StringStream.h"
+
 //--- c-library modules used ---------------------------------------------------
 #include <ctype.h>
 #include <string.h>
 #include <climits>
 #include <float.h>
 
-//--- standard modules used ----------------------------------------------------
-#include "System.h"
-#include "StringStream.h"
-
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
-
-StringTestExtreme::StringTestExtreme (TString tname) : TestCase(tname)
+StringTestExtreme::StringTestExtreme (TString tname)
+	: TestCaseType(tname)
 {
 }
 
@@ -34,7 +35,6 @@ void StringTestExtreme::setUp ()
 {
 	char s;
 	extremelyLongString = "";
-
 	trueString = "";
 
 	iostream *is = System::OpenStream("longString", "txt");
@@ -44,21 +44,12 @@ void StringTestExtreme::setUp ()
 			trueString.append(1, s);
 		}
 	}
-
-}
-
-Test *StringTestExtreme::worksuite ()
-{
-	TestSuite *testSuite = new TestSuite;
-	return testSuite;
 }
 
 Test *StringTestExtreme::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
-
-	testSuite->addTest (NEW_CASE(StringTestExtreme, extremeLength));
-
+	ADD_CASE(testSuite, StringTestExtreme, extremeLength);
 	return testSuite;
 }
 

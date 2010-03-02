@@ -12,22 +12,20 @@
 #include "TestCase.h"
 
 //---- forward declaration -----------------------------------------------
-#include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include "ITOString.h"
 //---- StringTestExtreme -----------------------------------------------------------
 //!testcases for String
-class StringTestExtreme : public TestCase
+class StringTestExtreme : public TestFramework::TestCase
 {
 protected:
 	String extremelyLongString;
 	std::string trueString;
 
 public:
-	StringTestExtreme (TString name); // : TestCase (name) {}
+	StringTestExtreme (TString tstrName);
 	virtual ~StringTestExtreme();
 
 	virtual void			setUp ();
-	static Test				*worksuite ();
 	static Test				*suite ();
 
 	void			extremeLength ();

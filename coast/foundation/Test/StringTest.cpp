@@ -2669,7 +2669,7 @@ void StringTest::subString4()
 	t_assert ( str.SubString( -5, 3 ).Capacity() >= str.SubString( -5, 3 ).Length() );
 	t_assert ( str.SubString( -5, 3 ) == "012" );
 
-	// Negative L�nge:  bis zum Ende
+	// Negative Länge:  bis zum Ende
 	// Es ist OK (KEIN FEHLER)
 	String subStr1 = str.SubString( 5, -3 );
 	// von Stelle Nummer 5 bis zum Ende (d.h. ab der 6. Position!)
