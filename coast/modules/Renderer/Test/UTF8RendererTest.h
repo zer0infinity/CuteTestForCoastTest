@@ -18,14 +18,14 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class UTF8RendererTest : public TestCase
+class UTF8RendererTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
 
 	//! TestCase constructor
 	//! \param name name of the test
-	UTF8RendererTest(TString name);
+	UTF8RendererTest(TString tname);
 
 	//! destroys the test case
 	~UTF8RendererTest();

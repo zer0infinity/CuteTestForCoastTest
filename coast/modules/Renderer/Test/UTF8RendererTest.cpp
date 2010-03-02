@@ -13,17 +13,19 @@
 #include "TestSuite.h"
 
 //--- module under test --------------------------------------------------------
+#include "UTF8Renderer.h"
 
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "System.h"
 #include "Context.h"
 #include "Renderer.h"
+#include "StringStream.h"
 
 //--- c-modules used -----------------------------------------------------------
 
 //---- UTF8RendererTest ----------------------------------------------------------------
-UTF8RendererTest::UTF8RendererTest(TString name) : TestCase(name)
+UTF8RendererTest::UTF8RendererTest(TString tname) : TestCaseType(tname)
 {
 	StartTrace(UTF8RendererTest.Ctor);
 }
@@ -49,8 +51,16 @@ void UTF8RendererTest::conversionTest()
 	StartTrace(UTF8RendererTest.conversionTest);
 	char in[] = {'H', 0xe4, 'l', 'l', 0xf6, '\0' };
 	char utf8exp[] = {'H', 0xc3, 0xa4, 'l', 'l', 0xc3, 0xb6, '\0' };
-	String str(in), strExpected(utf8exp);
-	assertEqual(strExpected, str.AsUTF8());
+	String strExpected(utf8exp), strReply;
+	UTF8Renderer aRenderer("bla");
+	Context ctx;
+	Anything anyConfig;
+	anyConfig["String"] = in;
+	{
+		OStringStream reply(strReply);
+		aRenderer.RenderAll(reply, ctx, anyConfig);
+	}
+	assertEqual(strExpected, strReply);
 }
 
 // builds up a suite of testcases, add a line for each testmethod
