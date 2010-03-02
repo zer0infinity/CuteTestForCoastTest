@@ -259,7 +259,7 @@ bool HTTPDAImpl::DoExecRecord(Connector *csc, ConnectorParams *cps, Context &con
 bool HTTPDAImpl::SendInput(iostream *Ios, Socket *s, long timeout, Context &context, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(HTTPDAImpl.SendInput);
-
+	//XXX: for what is this good for BEGIN
 	long uploadSize = context.Lookup("PostContentLengthToStream", -1L);
 
 	String contentLength = "";
@@ -280,7 +280,7 @@ bool HTTPDAImpl::SendInput(iostream *Ios, Socket *s, long timeout, Context &cont
 	}
 
 	context.GetTmpStore()["Request"]["BodyLength"] = contentLength;
-
+	//XXX: for what is this good for END
 #ifdef COAST_TRACE
 	Trace("Debug Version");
 

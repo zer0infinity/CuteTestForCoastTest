@@ -6,14 +6,14 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
+//--- interface include --------------------------------------------------------
+#include "ConnectorParams.h"
+
 //--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "Context.h"
 #include "DataAccessImpl.h"
 #include "Dbg.h"
-
-//--- interface include --------------------------------------------------------
-#include "ConnectorParams.h"
 
 //---- ConnectorParams ----------------------------------------------
 ConnectorParams::ConnectorParams(DataAccessImpl *master, Context &ctx) : fMaster(master), fContext(ctx)
