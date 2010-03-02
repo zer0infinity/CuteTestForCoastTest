@@ -45,6 +45,18 @@
 	"HISAL" NUMBER
    ) ;
 
+--------------------------------------------------------
+--  DDL for Table LISTINGS
+--------------------------------------------------------
+
+  CREATE TABLE "LISTINGS"
+   (	"MC" NUMBER(7,0),
+	"CC" VARCHAR2(7),
+	"VN" VARCHAR2(12),
+	"LID" VARCHAR2(18),
+	"LASTDATAMODIFICATION" DATE
+   ) ;
+
 ---------------------------------------------------
 --   DATA FOR TABLE SALESDETAIL
 ---------------------------------------------------
@@ -233,6 +245,17 @@ Insert into DEPT (DEPTNO,DNAME,LOC) values (40,'OPERATIONS','BOSTON');
 --   END DATA FOR TABLE DEPT
 ---------------------------------------------------
 
+---------------------------------------------------
+--   DATA FOR TABLE LISTINGS
+---------------------------------------------------
+REM INSERTING into LISTINGS
+Insert into LISTINGS (MC,CC,VN,LID,LASTDATAMODIFICATION) values (10,1,1111,151515,sysdate);
+Insert into LISTINGS (MC,CC,VN,LID,LASTDATAMODIFICATION) values (20,2,2222,252525,sysdate);
+Insert into LISTINGS (MC,CC,VN,LID,LASTDATAMODIFICATION) values (30,3,3333,353535,sysdate);
+---------------------------------------------------
+--   END DATA FOR TABLE LISTINGS
+---------------------------------------------------
+
 --------------------------------------------------------
 --  Constraints for Table DEPT
 --------------------------------------------------------
@@ -406,5 +429,28 @@ begin
       WHERE dept.dname = deptname
       ORDER BY emp.ename;
 end;
+
+/
+
+--------------------------------------------------------
+--  DDL for Procedure GETLISTINGID
+--------------------------------------------------------
+set define off;
+
+  CREATE FUNCTION "GETLISTINGID"  (imarketCode IN NUMBER, icurrencyCode IN NUMBER, ivalorNumber IN NUMBER) RETURN NUMBER
+IS
+  var_lid NUMBER;
+  var_rowId ROWID;
+BEGIN
+  SELECT LID, rowId INTO var_lid, var_rowId FROM Listings 
+  WHERE MC = imarketcode
+  AND CC = icurrencycode
+  AND VN = ivalornumber;
+
+  UPDATE Listings SET LASTDATAMODIFICATION = sysdate
+  WHERE rowId = var_rowId;
+        
+  return var_lid;
+END;
 
 /

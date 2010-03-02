@@ -8,8 +8,12 @@
 
 {
 	/SifsCoastOrcl {
-		/DBUser "oratest"
-		/DBPW	"oratest"
+		 /DBUser { /RendererMapper {
+			/ContextLookupRenderer { DBUser "oratest" }
+		} }
+		/DBPW { /RendererMapper {
+			/ContextLookupRenderer { DBPW "oratest" }
+		} }
 		/DBConnectString	"//sifs-coast1.hsr.ch:1521/orcl"
 		/UseTLS	1
 	}

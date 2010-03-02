@@ -7,19 +7,35 @@
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
 
-#DB_SHELL=$DEV_HOME/3rdparty/installed/oracle/bin/${OSREL}/sqlplus
-DB_SHELL=sqlplus
-ConnectString=oratest/oratest@sifs-coast1.hsr.ch:1521/orcl
+DB_SHELL=$( cd $DEV_HOME/3rdparty/installed/oracle/bin && cd $( ${SNIFF_DIR}/make_support/osreldir.sh ${MAKE_64BIT} ) && pwd -P )/sqlplus
+#DB_SHELL=sqlplus
+ConnectStringTestWrite=hikudevtestwrite/dhiku80_HIKUdevtestWRITE@(description=(address_list=(address=(protocol=TCP)(host=sczdhiku02)(port=1521)))(connect_data=(service_name=dhiku80)))
+ConnectString=hikudevtest/Welc0me@(description=(address_list=(address=(protocol=TCP)(host=sczdhiku02)(port=1521)))(connect_data=(service_name=dhiku80)))
+
 DB_IMPORTFILE='config/oratest_schema.sql'
-DB_DROPFILE='config/drop_oratest_schema.sql'
+DB_DROPFILE='config/oratest_dropschema.sql'
+DB_CREATEUSERFILE='config/oratest_createuser.sql'
+
+DB_GRANTFILE='config/oratest_grant.sql'
+DB_CREATESYNONYMFILE='config/oratest_synonym.sql'
 
 export NLS_LANG=".WE8ISO8859P1"
 
 ## add test specific things before the call to callTest
 function prepareTest
 {
+	# won't work, must be done under SYSDBA rights:
+	# $DB_SHELL ${ConnectString} < ${DB_CREATEUSERFILE}
+
+	# Drop an reload the schema, logged in as hikudevtest
 	$DB_SHELL ${ConnectString} < ${DB_DROPFILE}
 	$DB_SHELL ${ConnectString} < ${DB_IMPORTFILE}
+
+	# grants for hikudevtestwrite, logged in as hikudevtest
+	$DB_SHELL ${ConnectString} < ${DB_GRANTFILE}
+
+	# Logged in as hikudevtestwrite: must create synonym for user hikudevtestwrite (so that tests can run under hikudevtest user)
+	$DB_SHELL ${ConnectStringTestWrite} < ${DB_CREATESYNONYMFILE}
 	echo
 }
 

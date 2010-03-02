@@ -1194,5 +1194,67 @@
 				}
 			}
 		}
+		/TestWriteUser {
+			/TmpStore {
+				/SPName	getlistingid
+				/DBUser	"oratest2"
+				/DBPW	"oratest2"
+			}
+			/TheAction {
+				/CallDA {
+					/DataAccess	SPExecute
+					/Parameters {
+						/Return	LISTINGID
+						/IMARKETCODE	10
+						/ICURRENCYCODE	1
+						/IVALORNUMBER	1111
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/SPName "getlistingid"
+					/SPExecute {
+						/QuerySource !InputMapperMeta.any?SifsCoastOrcl.DBConnectString
+						/ProcedureName "getlistingid"
+						/Query "BEGIN :LISTINGID := getlistingid(:IMARKETCODE,:ICURRENCYCODE,:IVALORNUMBER); END;"
+						/LISTINGID "151515"
+						/IMARKETCODE "10"
+						/ICURRENCYCODE "1"
+						/IVALORNUMBER "1111"
+					}
+				}
+			}
+		}
+		/TestDefaultUser {
+			/TmpStore {
+				/SPName	getlistingid
+			}
+			/TheAction {
+				/CallDA {
+					/DataAccess	SPExecute
+					/Parameters {
+						/Return	LISTINGID
+						/IMARKETCODE	10
+						/ICURRENCYCODE	1
+						/IVALORNUMBER	1111
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/SPName "getlistingid"
+					/SPExecute {
+						/QuerySource !InputMapperMeta.any?SifsCoastOrcl.DBConnectString
+						/ProcedureName "getlistingid"
+						/Query "BEGIN :LISTINGID := getlistingid(:IMARKETCODE,:ICURRENCYCODE,:IVALORNUMBER); END;"
+						/LISTINGID "151515"
+						/IMARKETCODE "10"
+						/ICURRENCYCODE "1"
+						/IVALORNUMBER "1111"
+					}
+				}
+			}
+		}
 	}
 }

@@ -41,9 +41,10 @@ public:
 
 	//! Specify pseudo object type of a statement
 	enum ObjectType {
-		TYPE_UNK = OCI_PTYPE_UNK, //!< unknown type
-		TYPE_PROC = OCI_PTYPE_PROC, //!< procedure type
-		TYPE_FUNC = OCI_PTYPE_FUNC, //!< function type
+		TYPE_UNK = OCI_PTYPE_UNK, //!< unknown type (0)
+		TYPE_PROC = OCI_PTYPE_PROC, //!< procedure type (3)
+		TYPE_FUNC = OCI_PTYPE_FUNC, //!< function type (4)
+		TYPE_SYN = OCI_PTYPE_SYN, //!< synonym type (7)
 		TYPE_SIMPLE = 177,
 		//!< simple query type, like select, update etc
 	};
@@ -156,6 +157,7 @@ public:
 private:
 	ObjectType GetSPDescription( const String &command, ROAnything &desc );
 	ObjectType ReadSPDescriptionFromDB( const String &command, Anything &desc );
+	ObjectType DescribeObjectByName(const String &command, DscHandleType &aDschp, OCIParam *&parmh);
 
 	String ConstructSPStr( String const &command, bool pIsFunction, ROAnything desc, const String &strReturnName );
 };

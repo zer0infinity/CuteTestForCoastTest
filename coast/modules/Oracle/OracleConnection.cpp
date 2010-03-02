@@ -277,6 +277,37 @@ OracleConnection::ObjectType OracleConnection::GetSPDescription( const String &c
 	return aObjType;
 }
 
+OracleConnection::ObjectType OracleConnection::DescribeObjectByName(const String &command, DscHandleType &aDschp, OCIParam *&parmh)
+{
+	StartTrace(OracleConnection.DescribeObjectByName);
+	text const *objptr = reinterpret_cast<const text *> ( (const char *) command );
+	String strErr( "DescribeObjectByName: " );
+	sword attrStat = OCIDescribeAny( SvcHandle(), ErrorHandle(), (dvoid *) objptr, (ub4) strlen( (char *) objptr ),
+									 OCI_OTYPE_NAME, 0, OCI_PTYPE_UNK, aDschp.getHandle() );
+	Trace("status after DESCRIBEANY::OCI_PTYPE_UNK: " << (long)attrStat)
+	if ( checkError( attrStat, strErr ) ) {
+		strErr << "{" << command << " is neither a stored procedure nor a function}";
+		throw OracleException( *this, strErr );
+	}
+
+	Trace("get the parameter handle")
+	attrStat = OCIAttrGet( aDschp.getHandle(), OCI_HTYPE_DESCRIBE, (dvoid *) &parmh, 0, OCI_ATTR_PARAM, ErrorHandle() );
+	Trace("status after OCI_HTYPE_DESCRIBE::OCI_ATTR_PARAM: " << (long)attrStat);
+	if ( checkError( attrStat ) ) {
+		throw OracleException( *this, attrStat );
+	}
+
+	ObjectType aStmtType( TYPE_UNK );
+	ub1 ubFuncType( 0 );
+	attrStat = OCIAttrGet( parmh, OCI_DTYPE_PARAM, (dvoid *) &ubFuncType, 0, OCI_ATTR_PTYPE, ErrorHandle() );
+	Trace("status after OCI_DTYPE_PARAM::OCI_ATTR_PTYPE: " << (long)attrStat << " funcType:" << (long)ubFuncType);
+	if ( checkError( attrStat ) ) {
+		throw OracleException( *this, attrStat );
+	}
+	aStmtType = (ObjectType)ubFuncType;
+	return aStmtType;
+}
+
 OracleConnection::ObjectType OracleConnection::ReadSPDescriptionFromDB( const String &command, Anything &desc )
 {
 	StartTrace(OracleConnection.ReadSPDescriptionFromDB);
@@ -296,31 +327,33 @@ OracleConnection::ObjectType OracleConnection::ReadSPDescriptionFromDB( const St
 	Trace("after HandleAlloc, local allocator:" << (long)getEnvironment().getAllocator());
 	Trace("after HandleAlloc, global allocator:" << (long)OracleEnvironment::getGlobalEnv().getAllocator());
 
-	text const *objptr = reinterpret_cast<const text *> ( (const char *) command );
-	attrStat = OCIDescribeAny( SvcHandle(), ErrorHandle(), (dvoid *) objptr, (ub4) strlen( (char *) objptr ),
-							   OCI_OTYPE_NAME, 0, OCI_PTYPE_UNK, aDschp.getHandle() );
-	Trace("status after DESCRIBEANY::OCI_PTYPE_UNK: " << (long)attrStat)
-	if ( checkError( attrStat, strErr ) ) {
-		strErr << "{" << command << " is neither a stored procedure nor a function}";
-		throw OracleException( *this, strErr );
-	}
-
-	ObjectType aStmtType( TYPE_UNK );
 	OCIParam *parmh( 0 );
-	ub1 ubFuncType( 0 );
-	Trace("get the parameter handle")
-	attrStat = OCIAttrGet( aDschp.getHandle(), OCI_HTYPE_DESCRIBE, (dvoid *) &parmh, 0, OCI_ATTR_PARAM, ErrorHandle() );
-	Trace("status after OCI_HTYPE_DESCRIBE::OCI_ATTR_PARAM: " << (long)attrStat);
-	if ( checkError( attrStat ) ) {
-		throw OracleException( *this, attrStat );
+	ObjectType aStmtType = DescribeObjectByName(command, aDschp, parmh);
+	if ( aStmtType == TYPE_SYN ) {
+		Trace("as we identified a synonym, we need to collect the scheme name and the referenced object name to ask for description");
+		text *name(0);
+		ub4 namelen(0);
+		String strSchemaName;
+		attrStat = OCIAttrGet( (dvoid *) parmh, OCI_DTYPE_PARAM, (dvoid *) &name, (ub4 *) &namelen, OCI_ATTR_SCHEMA_NAME, ErrorHandle() );
+		if ( checkError( ( attrStat ) ) ) {
+			throw OracleException( *this, attrStat );
+		}
+		strSchemaName.Append(String( (char *) name, namelen ));
+		Trace("SchemaName: " << strSchemaName);
+
+		attrStat = OCIAttrGet( (dvoid *) parmh, OCI_DTYPE_PARAM, (dvoid *) &name, (ub4 *) &namelen, OCI_ATTR_NAME, ErrorHandle() );
+		if ( checkError( ( attrStat ) ) ) {
+			throw OracleException( *this, attrStat );
+		}
+		if ( strSchemaName.Length() ) {
+			strSchemaName.Append('.');
+		}
+		strSchemaName.Append(String( (char *) name, namelen ));
+
+		Trace("trying to get descriptions for " << strSchemaName);
+		aStmtType = DescribeObjectByName(strSchemaName, aDschp, parmh);
 	}
-	attrStat = OCIAttrGet( parmh, OCI_DTYPE_PARAM, (dvoid *) &ubFuncType, 0, OCI_ATTR_PTYPE, ErrorHandle() );
-	Trace("status after OCI_DTYPE_PARAM::OCI_ATTR_PTYPE: " << (long)attrStat << " funcType:" << (long)ubFuncType);
-	if ( checkError( attrStat ) ) {
-		throw OracleException( *this, attrStat );
-	}
-	aStmtType = (ObjectType) ubFuncType;
-	bool bIsFunction = ( ubFuncType == OCI_PTYPE_FUNC );
+	bool bIsFunction = ( aStmtType == TYPE_FUNC );
 
 	Trace("get the number of arguments and the arg list for stored " << (bIsFunction ? "function" : "procedure"))
 	OCIParam *arglst( 0 );
