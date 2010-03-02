@@ -1,13 +1,13 @@
 import os
-import StanfordUtils
+import SConsider
 from stat import *
 
-packagename = StanfordUtils.getPackageName(__name__)
+packagename = SConsider.getPackageName(__name__)
 
 buildSettings = {
     packagename : {
         'targetType'       : 'LibraryShared',
-        'sourceFiles'      : StanfordUtils.listFiles(['*.cpp']),
+        'sourceFiles'      : SConsider.listFiles(['*.cpp']),
         'includeSubdir'    : '',
         'linkDependencies' : ['testfwWDBase', 'CoastPerfTest'],
     },
@@ -15,8 +15,8 @@ buildSettings = {
         'targetType'       : 'AppTest',
         'requires'         : ['CoastStdDataAccess', 'CoastActions', 'CoastRenderers', packagename + '.' + packagename],
         'usedTarget'       : 'wdapp.wdapp',
-        'copyFiles'        : [(StanfordUtils.findFiles(['.'],['.txt', '.html', '.any']), S_IRUSR|S_IRGRP|S_IROTH)],
+        'copyFiles'        : [(SConsider.findFiles(['.'],['.txt', '.html', '.any']), S_IRUSR|S_IRGRP|S_IROTH)],
     },
 }
 
-StanfordUtils.createTargets(packagename, buildSettings)
+SConsider.createTargets(packagename, buildSettings)

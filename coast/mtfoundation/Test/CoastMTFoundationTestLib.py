@@ -1,8 +1,8 @@
 import os
-import StanfordUtils
+import SConsider
 from stat import *
 
-packagename = StanfordUtils.getPackageName( __name__ )
+packagename = SConsider.getPackageName( __name__ )
 
 def setUp( target, source, env ):
     None
@@ -14,9 +14,9 @@ def tearDown( target, source, env ):
 buildSettings = {
     packagename : {
         'linkDependencies' : ['CoastMTFoundation', 'testfwFoundation'],
-        'sourceFiles'      : StanfordUtils.listFiles( ['*.cpp'] ),
+        'sourceFiles'      : SConsider.listFiles( ['*.cpp'] ),
         'targetType'       : 'ProgramTest',
-        'copyFiles'        : [( StanfordUtils.findFiles( ['config'], ['.any'] ), S_IRUSR | S_IRGRP | S_IROTH )],
+        'copyFiles'        : [( SConsider.findFiles( ['config'], ['.any'] ), S_IRUSR | S_IRGRP | S_IROTH )],
         'runConfig'        : {
             'setUp'        : setUp,
             'tearDown'     : tearDown,
@@ -24,4 +24,4 @@ buildSettings = {
     }
 }
 
-StanfordUtils.createTargets( packagename, buildSettings )
+SConsider.createTargets( packagename, buildSettings )

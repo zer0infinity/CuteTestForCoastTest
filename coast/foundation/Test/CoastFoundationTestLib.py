@@ -1,9 +1,9 @@
 import os, socket, pdb
 import SocketServer, threading, BaseHTTPServer
-import StanfordUtils
+import SConsider
 from stat import *
 
-packagename = StanfordUtils.getPackageName(__name__)
+packagename = SConsider.getPackageName(__name__)
 basepath = ''
 
 def SystemTestModifyConfig(env, cfgfilename):
@@ -21,7 +21,7 @@ def SystemTestModifyConfig(env, cfgfilename):
             searchReplace.extend([ (r"##TMPDIR##", 'c:/temp'), (r"##ROOTFS##", 'c:/') ])
         else:
             searchReplace.extend([ (r"##TMPDIR##", '/tmp'), (r"##ROOTFS##", '/') ])
-        StanfordUtils.replaceRegexInFile(fname, searchReplace)
+        SConsider.replaceRegexInFile(fname, searchReplace)
 
 def SystemTestMakeDirectoryExtendCleanup():
     global basepath
@@ -31,16 +31,21 @@ def SystemTestMakeDirectoryExtendCleanup():
                 os.rmdir(p)
             except: pass
 
-class AcceptorHandler(SocketServer.StreamRequestHandler):
+class MyTCPServer(SocketServer.TCPServer):
+    allow_reuse_address = True
+
+class MyHTTPServer(BaseHTTPServer.HTTPServer):
+    allow_reuse_address = True
+
+class AcceptorHandler(SocketServer.BaseRequestHandler):
     def handle(self):
-        data = self.rfile.readlines()
+        data = self.request.recv(1024)
         self.request.send('')
 
 class HTTPHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     def do_GET(self):
         self.send_response(200)
         self.end_headers()
-        pass
 
 class NoSendRecvHandler(SocketServer.BaseRequestHandler):
     def handle(self):
@@ -55,25 +60,25 @@ def startServer(host, port, server_class, handler_class):
 def setUp(target, source, env):
     SystemTestModifyConfig(env, 'config/SystemTest.any')
     # setup listener threads for socket tests
-    threading.Thread(target=startServer, args=['localhost',9876, SocketServer.TCPServer, AcceptorHandler]).start()
-    threading.Thread(target=startServer, args=['localhost',9875, BaseHTTPServer.HTTPServer, HTTPHandler]).start()
-    threading.Thread(target=startServer, args=['localhost',9874, SocketServer.TCPServer, NoSendRecvHandler]).start()
+    threading.Thread(target=startServer, args=['localhost',9876, MyTCPServer, AcceptorHandler]).start()
+    threading.Thread(target=startServer, args=['localhost',9875, MyHTTPServer, HTTPHandler]).start()
+    threading.Thread(target=startServer, args=['localhost',9874, MyTCPServer, NoSendRecvHandler]).start()
 
 def tearDown(target, source, env):
     for server in servers:
         server.shutdown()
     
     # delete generated files
-    StanfordUtils.removeFiles(StanfordUtils.findFiles([env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])], extensions=['.res', '.tst', '.txt' ], matchfiles=['include.any']))
+    SConsider.removeFiles(SConsider.findFiles([env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])], extensions=['.res', '.tst', '.txt' ], matchfiles=['include.any']))
     SystemTestMakeDirectoryExtendCleanup()
 
 buildSettings = {
     packagename : {
         'linkDependencies' : ['CoastFoundation', 'testfwFoundation'],
-        'sourceFiles'      : StanfordUtils.listFiles(['*.cpp']),
+        'sourceFiles'      : SConsider.listFiles(['*.cpp']),
         'targetType'       : 'ProgramTest',
-        'copyFiles'        : [(StanfordUtils.findFiles(['.'], ['.any', '.txt', '.tst']), S_IRUSR | S_IRGRP | S_IROTH),
-                              (StanfordUtils.findFiles(['config'], ['.sh']), S_IRUSR | S_IRGRP | S_IROTH | S_IXUSR)],
+        'copyFiles'        : [(SConsider.findFiles(['.'], ['.any', '.txt', '.tst']), S_IRUSR | S_IRGRP | S_IROTH),
+                              (SConsider.findFiles(['config'], ['.sh']), S_IRUSR | S_IRGRP | S_IROTH | S_IXUSR)],
         'runConfig'        : {
                               'setUp': setUp,
                               'tearDown': tearDown,
@@ -81,4 +86,4 @@ buildSettings = {
     }
 }
 
-StanfordUtils.createTargets(packagename, buildSettings)
+SConsider.createTargets(packagename, buildSettings)

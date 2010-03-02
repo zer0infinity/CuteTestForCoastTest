@@ -1,10 +1,10 @@
-import StanfordUtils, pdb
+import SConsider, pdb
 
-progEnv = StanfordUtils.CloneBaseEnv()
+progEnv = SConsider.CloneBaseEnv()
 
 targetname='LDAPDAICacheHandler_Test'
-StanfordUtils.DependsOn(progEnv, 'CoastLDAPDAICacheHandler')
-StanfordUtils.DependsOn(progEnv, 'testfwWDBase')
-createdProgram = progEnv.Program(targetname, StanfordUtils.listFiles(['*.cpp']))
-progEnv.Tool('registerObjects', package=targetname, testApps=[createdProgram], config=StanfordUtils.listFiles(['config/*.any', 'config/*.txt', 'config/*.tst', 'config/testscript.sh', 'config/prjconfig.sh', 'tmp/*.any']))
+SConsider.DependsOn(progEnv, 'CoastLDAPDAICacheHandler')
+SConsider.DependsOn(progEnv, 'testfwWDBase')
+createdProgram = progEnv.Program(targetname, SConsider.listFiles(['*.cpp']))
+progEnv.Tool('registerObjects', package=targetname, testApps=[createdProgram], config=SConsider.listFiles(['config/*.any', 'config/*.txt', 'config/*.tst', 'config/testscript.sh', 'config/prjconfig.sh', 'tmp/*.any']))
 

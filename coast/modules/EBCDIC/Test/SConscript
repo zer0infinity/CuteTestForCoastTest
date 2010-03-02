@@ -1,11 +1,11 @@
-import StanfordUtils, pdb
+import SConsider, pdb
 
-progEnv = StanfordUtils.CloneBaseEnv()
+progEnv = SConsider.CloneBaseEnv()
 
 targetname='EBCDIC_Test'
-StanfordUtils.DependsOn(progEnv, 'CoastEBCDIC')
-StanfordUtils.DependsOn(progEnv, 'CoastMTFoundation')
-StanfordUtils.DependsOn(progEnv, 'testfwFoundation')
-createdProgram = progEnv.Program(targetname, StanfordUtils.listFiles(['*.cpp']))
-progEnv.Tool('registerObjects', package=targetname, testApps=[createdProgram], config=StanfordUtils.listFiles(['config/*.any', 'config/*.txt', 'config/*.tst', 'config/testscript.sh', 'config/prjconfig.sh', 'tmp/*.any']))
+SConsider.DependsOn(progEnv, 'CoastEBCDIC')
+SConsider.DependsOn(progEnv, 'CoastMTFoundation')
+SConsider.DependsOn(progEnv, 'testfwFoundation')
+createdProgram = progEnv.Program(targetname, SConsider.listFiles(['*.cpp']))
+progEnv.Tool('registerObjects', package=targetname, testApps=[createdProgram], config=SConsider.listFiles(['config/*.any', 'config/*.txt', 'config/*.tst', 'config/testscript.sh', 'config/prjconfig.sh', 'tmp/*.any']))
 

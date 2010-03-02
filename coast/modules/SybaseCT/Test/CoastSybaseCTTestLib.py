@@ -1,16 +1,16 @@
 import os
-import StanfordUtils
+import SConsider
 from stat import *
 
-packagename = StanfordUtils.getPackageName(__name__)
+packagename = SConsider.getPackageName(__name__)
 
 buildSettings = {
     packagename : {
         'targetType'       : 'ProgramTest',
         'linkDependencies' : ['CoastSybaseCT', 'testfwWDBase'],
-        'sourceFiles'      : StanfordUtils.listFiles(['*.cpp']),
-        'copyFiles'        : [(StanfordUtils.findFiles(['.'],['.any','.txt','.tst','.sql']), S_IRUSR|S_IRGRP|S_IROTH)],
+        'sourceFiles'      : SConsider.listFiles(['*.cpp']),
+        'copyFiles'        : [(SConsider.findFiles(['.'],['.any','.txt','.tst','.sql']), S_IRUSR|S_IRGRP|S_IROTH)],
     },
 }
 
-StanfordUtils.createTargets(packagename, buildSettings)
+SConsider.createTargets(packagename, buildSettings)

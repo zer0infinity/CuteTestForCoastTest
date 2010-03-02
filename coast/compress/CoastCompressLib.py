@@ -1,19 +1,20 @@
 import os, pdb
-import StanfordUtils
+import SConsider
 
-packagename = StanfordUtils.getPackageName(__name__)
+packagename = SConsider.getPackageName(__name__)
 
 buildSettings = {
      packagename : {
-         'includeSubdir'    : '',
-         'linkDependencies'       : ['CoastFoundation', 'zlib'],
-         'sourceFiles'      : StanfordUtils.listFiles(['*.cpp']),
-         'targetType'       : 'LibraryShared',
-         'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL'] },
-         'public' : {
-                     'includes'     : StanfordUtils.listFiles(['*.h']),
-        }
-     }
-    }
+                     'includeSubdir'    : '',
+                     'linkDependencies'       : ['CoastFoundation', 'zlib'],
+                     'sourceFiles'      : SConsider.listFiles(['*.cpp']),
+                     'targetType'       : 'LibraryShared',
+                     'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL'] },
+                     'public' : {
+                                 'includes'     : SConsider.listFiles(['*.h']),
+#                                 'appendUnique' : { 'CPPDEFINES' : [], 'LIBS' : [] },
+                    }
+                 }
+                }
 
-StanfordUtils.createTargets(packagename, buildSettings)
+SConsider.createTargets(packagename, buildSettings)

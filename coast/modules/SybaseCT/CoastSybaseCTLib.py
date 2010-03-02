@@ -1,18 +1,18 @@
-import StanfordUtils
+import SConsider
 
-packagename = StanfordUtils.getPackageName(__name__)
+packagename = SConsider.getPackageName(__name__)
 
 buildSettings = {
                  packagename : {
                      'linkDependencies' : ['sybase', 'CoastDataAccess'],
-                     'sourceFiles'      : StanfordUtils.listFiles(['*.cpp']),
+                     'sourceFiles'      : SConsider.listFiles(['*.cpp']),
                      'targetType'       : 'LibraryShared',
                      'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL'] },
                      'public' : {
-                                 'includes'     : StanfordUtils.listFiles(['*.h']),
+                                 'includes'     : SConsider.listFiles(['*.h']),
 #                                'appendUnique' : { 'CPPDEFINES' : 'fooX' },
                     }
                  }
                 }
 
-StanfordUtils.createTargets(packagename, buildSettings)
+SConsider.createTargets(packagename, buildSettings)

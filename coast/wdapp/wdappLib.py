@@ -1,7 +1,7 @@
 import os, pdb
-import StanfordUtils
+import SConsider
 
-packagename = StanfordUtils.getPackageName(__name__)
+packagename = SConsider.getPackageName(__name__)
 
 buildSettings = {
                    packagename : {
@@ -12,4 +12,4 @@ buildSettings = {
                    }
                  }
 
-StanfordUtils.createTargets(packagename, buildSettings)
+SConsider.createTargets(packagename, buildSettings)

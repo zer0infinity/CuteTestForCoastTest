@@ -1,16 +1,16 @@
-import StanfordUtils
+import SConsider
 
-packagename = StanfordUtils.getPackageName(__name__)
+packagename = SConsider.getPackageName(__name__)
 
 buildSettings = {
-    packagename : {
-        'linkDependencies' : ['testfw'],
-        'sourceFiles'      : [],
-        'targetType'       : 'IncludeOnly',
-        'public' : {
-            'includes'     : StanfordUtils.listFiles(['*.h']),
-        }
-    }
-}
+                 packagename : {
+                     'linkDependencies' : ['testfw'],
+                     'sourceFiles'      : [],
+                     'targetType'       : 'IncludeOnly',
+                     'public' : {
+                         'includes'     : SConsider.listFiles(['*.h']),
+                    }
+                 }
+                }
 
-StanfordUtils.createTargets(packagename, buildSettings)
+SConsider.createTargets(packagename, buildSettings)
