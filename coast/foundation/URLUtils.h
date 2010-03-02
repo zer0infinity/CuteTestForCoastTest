@@ -38,16 +38,15 @@ public:
 	static void Split(const char *buf, char delim, Anything &out, char delim2 = '=', NormalizeTag norm = URLUtils::eUntouched);
 
 	//! encodes the given string by expanding problematic characters into %XX escapes
-	static String urlEncode(const String &str);
 	static String MSUrlEncode(const String &str);
 	//! RFC1808 compliant url encoder, allows chars to be excluded from escaping
-	static String urlEncode(const String &str, String &exclusionSet);
+	static String urlEncode(const String &str, const String &exclusionSet = String());
 
-	//! URL decodes the given string, (%xx, %uxxxx) Only values <= xFF are valid
+	//! URL decodes the given string, (\%xx, \%uxxxx) Only values <= xFF are valid
 	static String urlDecode(const String &str, URLUtils::URLCheckStatus &eUrlCheckStatus, bool replacePlusByBlank = true);
 	static String urlDecode(const String &str, bool replacePlusByBlank = true);
 
-	//! HTML decodes the given string, (&#xffff - &#xf, &#dddd - &#d). Only values <= xFF are valid
+	//! HTML decodes the given string, (\&\#xffff - \&\#xf, \&\#dddd - \&\#d). Only values <= xFF are valid
 	static String HTMLDecode(const String &str);
 
 	//! Decode URL until no more escape sequences are left
@@ -61,10 +60,18 @@ public:
 	static void DecodeAll(Anything &a);
 
 	//! check URL Path Encoding according to RFC1738
-	static bool CheckUrlEncoding(String &str);
+	static bool CheckUrlEncoding(const String &str, const String &override = String());
 
 	//! check URL Args Encoding according to RFC1738
-	static bool CheckUrlArgEncoding(String &str);
+	static bool CheckUrlArgEncoding(String &str, const String &override = String());
+
+	//! check URL Path char to be safe according to RFC1738
+	//! You may pass in your own set of unsafe chars (overrideUnsafe
+	//! If asciiExtended is enabled, you may define chars which are in the extended set which are ignored
+	//! by this check.
+	//! The default applies to RFC1738
+	static bool CheckUrlPathContainsUnsafeChars(String &str, const String &overrideUnsafe = String(),
+			const String &overrideAscii = String(), bool asciiExtended = true);
 
 	//! takes a full uri and decomposes it into a query anything
 	//! \param query resulting anything structure
@@ -72,13 +79,14 @@ public:
 	static void HandleURI(Anything &query, const String &uri);
 
 	//! takes a full uri and decomposes it into a query anything with known slotnames, certain slots will not be written e.g. "localhost" in domain
-	//! \param query resulting anything structure
-	//! \param uri input string from http server
+	/*! \param query resulting anything structure
+		\param uri input string from http server
+		\param baseURL if specified, will be prepended to uri */
 	static void HandleURI2(Anything &query, const String &uri, const char *baseURL = "" );
 
-	//! takes an in simple anything containing keys and single values and forms a form content string from them
-	//! \param query resulting anything structure
-	//! \param uri input string from http server
+	//! takes an anything containing keys and single values and forms a form content string out of them
+	/*! \param kVPairs Anything containing key value pairs to compose a form string of
+		\return encoded string composed of key values pairs in kVPairs */
 	static String EncodeFormContent(Anything &kVPairs);
 
 	//!remove '\'' and '"' at front and end
@@ -111,7 +119,7 @@ private:
 	static void DecodeSpecialHTMLChars(const String &str, String &res, long &lPos);
 	static void ExtractDecimal(const String &str, String &res, long &lPos, long delta);
 	static void ExtractHex(const String &str, String &res, long &lPos, long delta);
-
+	static bool DoUrlEncode(const String &str, const String &exclusionSet, String &encoded, bool doCheck);
 };
 
 #endif
