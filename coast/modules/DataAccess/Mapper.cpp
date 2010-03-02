@@ -87,7 +87,7 @@ bool ParameterMapper::DoLoadConfig(const char *category)
 	Trace("category: " << category << " fName: " << fName);
 
 	if (BackendConfigLoaderModule::GetBackendConfig()[fName].IsDefined("InputMapper")) {
-		Anything backendConfig;
+		ROAnything backendConfig;
 		backendConfig = BackendConfigLoaderModule::GetBackendConfig(fName)["InputMapper"];
 		ConfNamedObject::SetConfig(category, fName, backendConfig);
 		TraceAny(fConfig, "Extracted fConfig: (Returning true)");
@@ -466,7 +466,7 @@ bool ResultMapper::DoLoadConfig(const char *category)
 	Trace("category: " << category << " fName: " << fName);
 
 	if (BackendConfigLoaderModule::GetBackendConfig()[fName].IsDefined("OutputMapper")) {
-		Anything backendConfig;
+		ROAnything backendConfig;
 		backendConfig = BackendConfigLoaderModule::GetBackendConfig(fName)["OutputMapper"];
 		ConfNamedObject::SetConfig(category, fName, backendConfig);
 		TraceAny(fConfig, "Extracted fConfig: (Returning true)");
