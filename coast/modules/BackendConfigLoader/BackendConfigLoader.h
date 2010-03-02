@@ -23,21 +23,18 @@ public:
 	BackendConfigLoaderModule(const char *name);
 	~BackendConfigLoaderModule();
 
-	virtual bool Init(const Anything &config);
+	virtual bool Init(const ROAnything config);
 	virtual bool Finis();
-	static Anything GetBackendConfig(String backendName);
-	static Anything GetBackendConfig();
-	static Anything GetBackendList();
-	static void GetBackendConfig(Anything &any, String backendName);
-	static Anything	InitBackendConfigurations();
+	static ROAnything GetBackendConfig(const String &backendName);
+	static ROAnything GetBackendConfig();
+	static ROAnything GetBackendList();
 
 protected:
 	static bool RegisterBackend(String backendName);
 	static bool RegisterBackends();
 
-protected:
+private:
 	static Anything backendConfigurations;
-
 	static BackendConfigLoaderModule *fgBackendConfigLoaderModule;
 };
 

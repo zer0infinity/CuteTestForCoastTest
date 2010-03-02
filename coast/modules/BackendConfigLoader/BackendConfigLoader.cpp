@@ -29,7 +29,7 @@
 RegisterModule(BackendConfigLoaderModule);
 
 BackendConfigLoaderModule *BackendConfigLoaderModule::fgBackendConfigLoaderModule = 0;
-Anything BackendConfigLoaderModule::backendConfigurations = InitBackendConfigurations();
+Anything BackendConfigLoaderModule::backendConfigurations = MetaThing(Storage::Global());
 
 BackendConfigLoaderModule::BackendConfigLoaderModule(const char *name)
 	: WDModule(name)
@@ -40,17 +40,11 @@ BackendConfigLoaderModule::~BackendConfigLoaderModule()
 {
 }
 
-Anything BackendConfigLoaderModule::InitBackendConfigurations()
-{
-	Anything init;
-	return init;
-}
-
-bool BackendConfigLoaderModule::Init(const Anything &config)
+bool BackendConfigLoaderModule::Init(const ROAnything config)
 {
 	StartTrace(BackendConfigLoaderModule.Init);
 	bool retCode = true;
-	Anything BackendConfigLoaderConfig;
+	ROAnything BackendConfigLoaderConfig;
 
 	if ( config.LookupPath(BackendConfigLoaderConfig, "BackendConfigLoaderModule") && BackendConfigLoaderConfig.IsDefined("BackendConfigDir") && BackendConfigLoaderConfig["BackendConfigDir"].GetSize() ) {
 		TraceAny(BackendConfigLoaderConfig, "BackendConfigLoaderConfig:");
@@ -100,19 +94,19 @@ bool BackendConfigLoaderModule::Finis()
 	return true;
 }
 
-Anything BackendConfigLoaderModule::GetBackendConfig(String backendName)
+ROAnything BackendConfigLoaderModule::GetBackendConfig(const String &backendName)
 {
 	StartTrace(BackendConfigLoaderModule.GetBackendConfig);
-	TraceAny(backendConfigurations, "Backend Configurations:")
+	TraceAny(backendConfigurations, "Backend Configurations:");
 	return backendConfigurations[backendName].DeepClone();
 }
 
-Anything BackendConfigLoaderModule::GetBackendConfig()
+ROAnything BackendConfigLoaderModule::GetBackendConfig()
 {
 	return backendConfigurations.DeepClone();
 }
 
-Anything BackendConfigLoaderModule::GetBackendList()
+ROAnything BackendConfigLoaderModule::GetBackendList()
 {
 	StartTrace(BackendConfigLoaderModule.GetBackendList);
 	Anything backendList;
@@ -121,13 +115,6 @@ Anything BackendConfigLoaderModule::GetBackendList()
 	}
 	TraceAny(backendList, "List of all Backends:");
 	return backendList.DeepClone();
-}
-
-void BackendConfigLoaderModule::GetBackendConfig(Anything &any, String backendName)
-{
-	StartTrace(BackendConfigLoaderModule.GetBackendConfig);
-	TraceAny(backendConfigurations, "Backend Configurations:")
-	any = backendConfigurations[backendName].DeepClone();
 }
 
 bool BackendConfigLoaderModule::RegisterBackend(String backendName)
@@ -187,8 +174,8 @@ bool BackendConfigLoaderModule::RegisterBackend(String backendName)
 bool BackendConfigLoaderModule::RegisterBackends()
 {
 	StartTrace(BackendConfigLoaderModule.RegisterBackends);
-	Anything backendList = GetBackendList();
-	TraceAny(backendList, "Backends to register:")
+	ROAnything backendList = GetBackendList();
+	TraceAny(backendList, "Backends to register:");
 	bool ret = true;
 	for (int i = 0; i < backendList.GetSize(); i++) {
 		String backendName = backendList[i].AsString();
