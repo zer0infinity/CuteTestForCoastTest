@@ -174,7 +174,7 @@ bool Tracer::CheckWDDebug(const char *trigger, Allocator *pAlloc)
 {
 	if (!fgIsInitialised) {
 		fgIsInitialised = true;
-		Tracer::fgTerminated = (System::EnvGet("NO_DEBUG") == "true") ? true : false;
+		Tracer::fgTerminated = (System::EnvGet("NO_TRACE") == "true") ? true : false;
 	}
 
 	if ( fgTerminated ) {
