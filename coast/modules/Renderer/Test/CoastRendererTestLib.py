@@ -12,10 +12,11 @@ def tearDown( target, source, env ):
 
 buildSettings = {
     packagename : {
-        'linkDependencies' : ['CoastRenderers', 'testfwWDBase'],
-		'includeSubdir'    : 'src',
-        'sourceFiles'      : StanfordUtils.listFiles( ['src/*.cpp'] ),
         'targetType'       : 'ProgramTest',
+        'linkDependencies' : ['CoastRenderers', 'testfwWDBase'],
+        'requires'         : [],
+		'includeSubdir'    : '',
+        'sourceFiles'      : StanfordUtils.listFiles( ['*.cpp'] ),
         'copyFiles'        : [( StanfordUtils.findFiles( ['.'], ['.any', '.txt', '.tst', '.html'] ), S_IRUSR | S_IRGRP | S_IROTH ),
                               ( StanfordUtils.findFiles( ['config'], ['.sh'] ), S_IRUSR | S_IRGRP | S_IROTH | S_IXUSR )],
         'runConfig'        : {

@@ -5,7 +5,7 @@ packagename = StanfordUtils.getPackageName(__name__)
 
 buildSettings = {
 	packagename : {
-		'linkDependencies' : ['testfw', 'CoastWDBase'],
+		'linkDependencies' : ['testfwFoundation', 'CoastWDBase'],
 		'includeSubdir'    : '',
 		'sourceFiles'      : StanfordUtils.listFiles(['*.cpp']),
 		'targetType'       : 'LibraryShared',
