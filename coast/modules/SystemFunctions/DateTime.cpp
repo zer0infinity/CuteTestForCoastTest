@@ -13,7 +13,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 
 //--- c-modules used -----------------------------------------------------------
 #include <time.h>

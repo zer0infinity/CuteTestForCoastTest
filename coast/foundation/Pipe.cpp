@@ -11,7 +11,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "System.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 #include "Socket.h"
 
@@ -64,7 +64,7 @@ bool Pipe::ShutDown(long fd)
 	StartTrace1(Pipe.ShutDown, "fd:" << fd);
 	if ( (fd >= 0) && closeSocket(fd) < 0 ) {
 		String logMsg("error in close (");
-		logMsg << SysLog::LastSysError() << ")";
+		logMsg << SystemLog::LastSysError() << ")";
 		SYSERROR(logMsg);
 		Trace(logMsg);
 		return false;
@@ -117,10 +117,10 @@ bool Pipe::IsReady(bool forreading, long timeout)
 	fHadTimeout = (0 == res);
 	if (res < 0) {
 		String logMsg;
-		SysLog::Error(logMsg
-					  << "Pipe, select failed, error number: " << (long) errno
-					  << " <" << SysLog::LastSysError()
-					  << "> return code " << res);
+		SystemLog::Error(logMsg
+						 << "Pipe, select failed, error number: " << (long) errno
+						 << " <" << SystemLog::LastSysError()
+						 << "> return code " << res);
 	}
 	return res > 0;
 }
@@ -216,8 +216,8 @@ bool Pipe::Open()
 		bRet = true;
 	} else {
 		String logMsg("pipe() creation failed:");
-		logMsg << SysLog::LastSysError();
-		SysLog::Error(logMsg);
+		logMsg << SystemLog::LastSysError();
+		SystemLog::Error(logMsg);
 		Trace(logMsg);
 	}
 #endif

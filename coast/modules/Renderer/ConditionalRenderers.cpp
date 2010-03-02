@@ -10,7 +10,7 @@
 #include "ConditionalRenderers.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 
 //---- ConditionalRenderer ----------------------------------------------------------------
@@ -80,10 +80,10 @@ void ConditionalRenderer::TestCondition(Context &context, const ROAnything &conf
 			stream << "Error: Invalid lookup name: ";
 			lookupNameConfig.PrintOn(stream) << "\n";
 			stream.flush();
-			SysLog::WriteToStderr(strbuf);
+			SystemLog::WriteToStderr(strbuf);
 		}
 	} else {
-		SysLog::WriteToStderr("Error: ContextCondition not specified!\n");
+		SystemLog::WriteToStderr("Error: ContextCondition not specified!\n");
 #endif
 	}
 	res = "Error";
@@ -165,7 +165,7 @@ void SwitchRenderer::RenderAll(ostream &reply, Context &context, const ROAnythin
 				} else {
 					// handle error: no configuration for desired alternatives available
 
-					SysLog::Error("SwitchRenderer::RenderAll: missing Case structure");
+					SystemLog::Error("SwitchRenderer::RenderAll: missing Case structure");
 				}
 			} else {
 				// handle error: looked up data unsuitabe as a switch condition
@@ -175,7 +175,7 @@ void SwitchRenderer::RenderAll(ostream &reply, Context &context, const ROAnythin
 				result.PrintOn(os);	// append Anything to ease debugging
 				os.flush();
 				error << '\n' << "ContextLookupName was [" << condname << "]" << '\n';
-				SysLog::Error(error);
+				SystemLog::Error(error);
 			}
 		} else {
 			// handle error: invalid lookup slot name
@@ -185,9 +185,9 @@ void SwitchRenderer::RenderAll(ostream &reply, Context &context, const ROAnythin
 			OStringStream os(&error);
 			lookupName.PrintOn(os, false);	// append Anything to ease debugging
 
-			SysLog::Error(error);
+			SystemLog::Error(error);
 		}
 	} else {
-		SysLog::Error("SwitchRenderer::RenderAll: ContextCondition not specified!");
+		SystemLog::Error("SwitchRenderer::RenderAll: ContextCondition not specified!");
 	}
 }

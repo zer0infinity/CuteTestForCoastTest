@@ -17,7 +17,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "System.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "StringStream.h"
 #include "Dbg.h"
 

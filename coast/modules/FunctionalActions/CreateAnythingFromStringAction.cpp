@@ -11,7 +11,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "AnythingUtils.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Renderer.h"
 #include "Dbg.h"
 
@@ -32,7 +32,7 @@ bool CreateAnythingFromStringAction::DoExecAction(String &transitionToken, Conte
 	if (config.LookupPath(roString, "String")) {
 		Renderer::RenderOnString(string, ctx, roString);
 	} else {
-		SysLog::Warning("CreateAnythingFromStringAction::DoExecAction: String slot not defined in config!");
+		SystemLog::Warning("CreateAnythingFromStringAction::DoExecAction: String slot not defined in config!");
 		return false;
 	}
 	Trace("resulting string before creating the any:[" << string << "]");
@@ -46,7 +46,7 @@ bool CreateAnythingFromStringAction::DoExecAction(String &transitionToken, Conte
 
 	ROAnything destConfig;
 	if (!config.LookupPath(destConfig, "Destination")) {
-		SysLog::Warning("CreateAnythingFromStringAction::DoExecAction: Destination slot not defined in config!");
+		SystemLog::Warning("CreateAnythingFromStringAction::DoExecAction: Destination slot not defined in config!");
 		return false;
 	}
 

@@ -13,7 +13,7 @@
 #include "DiffTimer.h"
 #include "Application.h"
 #include "Dbg.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 
 //--- standard modules used ----------------------------------------------------
 #include "StresserThread.h"

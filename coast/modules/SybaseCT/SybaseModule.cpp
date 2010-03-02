@@ -10,7 +10,7 @@
 #include "SybaseModule.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 #include "SybCTnewDAImpl.h"
 

@@ -9,7 +9,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "StringStream.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Context.h"
 #include "Mapper.h"
 #include "DiffTimer.h"
@@ -100,7 +100,7 @@ String DummyDAImpl::GetReplyMatchingRequest( Anything &recording, Context &conte
 		if ( ! recordedRequest.IsEqual( request ) ) {
 			String eMsg = "Error: at index ";
 			eMsg << index << " request did not match recorded request:" << request;
-			SysLog::Warning("Error: request did not match recorded request");
+			SystemLog::Warning("Error: request did not match recorded request");
 		}
 
 		String eMsg = "Reply not found, index:";
@@ -147,7 +147,7 @@ bool DummyDAImpl::DoExec( Context &context, ParameterMapper *in, ResultMapper *o
 #ifdef DEBUG
 	String infoMsg = "\r\nReply from server ";
 	infoMsg << theReply;
-	SysLog::Info( infoMsg ); // perhaps enable this line with an entry in RequestLineRenderer.any.... future
+	SystemLog::Info( infoMsg ); // perhaps enable this line with an entry in RequestLineRenderer.any.... future
 #endif
 
 	if (! RenderReply( theReply, context, out ) ) {

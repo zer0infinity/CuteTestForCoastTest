@@ -14,7 +14,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "StringStream.h"
 #include "Timers.h"
 #include "System.h"
@@ -286,7 +286,7 @@ CS_RETCODE SybCTnewDA::Init(CS_CONTEXT **context, Anything *pMessages, const Str
 			String strMsg("MAX_CONNECTIONS of SybCTnewDA: ");
 			strMsg << maxCons;
 			Trace(strMsg);
-			SysLog::Info(strMsg);
+			SystemLog::Info(strMsg);
 		}
 	}
 	if (retcode == CS_SUCCEED && strInterfacesPathName.Length()) {
@@ -505,7 +505,7 @@ bool SybCTnewDA::SqlExec(DaParams &params, String query, String resultformat, co
 					Error(params, String("SqlExec: ct_res_info(msgtype) failed (") << GetStringFromRetCode(retcode) << ")");
 					query_code = CS_FAIL;
 				} else {
-					SysLog::Info(String("SybCTnewDA::SqlExec: we got a MessageResult with id:") << (long)msg_id);
+					SystemLog::Info(String("SybCTnewDA::SqlExec: we got a MessageResult with id:") << (long)msg_id);
 				}
 				break;
 			}
@@ -985,7 +985,7 @@ void SybCTnewDA::Warning(DaParams &params, String str)
 	StartTrace(SybCTnewDA.Warning);
 	String strErr("SybCTnewDA::");
 	strErr.Append(str);
-	SysLog::Warning( TimeStamp::Now().AsStringWithZ().Append(' ').Append(strErr) );
+	SystemLog::Warning( TimeStamp::Now().AsStringWithZ().Append(' ').Append(strErr) );
 	ResultMapper *pResultMapper = params.fpOut;
 	Context &aContext( *(params.fpContext) );
 	if ( pResultMapper ) {
@@ -998,7 +998,7 @@ void SybCTnewDA::Error(DaParams &params, String str)
 	StartTrace(SybCTnewDA.Error);
 	String strErr("SybCTnewDA::");
 	strErr.Append(str);
-	SysLog::Error( TimeStamp::Now().AsStringWithZ().Append(' ').Append(strErr) );
+	SystemLog::Error( TimeStamp::Now().AsStringWithZ().Append(' ').Append(strErr) );
 	ResultMapper *pResultMapper( params.fpOut );
 	Context &aContext( *(params.fpContext) );
 	if ( pResultMapper ) {
@@ -1118,10 +1118,10 @@ CS_RETCODE SybCTnewDA_servermsg_handler(CS_CONTEXT *context, CS_CONNECTION *conn
 				bFuncCode = SybCTnewDA::PutMessages(daParams, anyData);
 			}
 			if ( !bFuncCode ) {
-				SysLog::Error("SybCTnewDA_servermsg_handler: could not put messages using Mapper");
+				SystemLog::Error("SybCTnewDA_servermsg_handler: could not put messages using Mapper");
 			}
 		} else {
-			SysLog::Error("SybCTnewDA_servermsg_handler: could not get Message anything");
+			SystemLog::Error("SybCTnewDA_servermsg_handler: could not get Message anything");
 		}
 	}
 	return CS_SUCCEED;
@@ -1178,7 +1178,7 @@ CS_RETCODE SybCTnewDA_clientmsg_handler(CS_CONTEXT *context, CS_CONNECTION *conn
 				bFuncCode = SybCTnewDA::PutMessages(daParams, anyData);
 			}
 			if ( !bFuncCode ) {
-				SysLog::Error("SybCTnewDA_clientmsg_handler: could not put messages using Mapper");
+				SystemLog::Error("SybCTnewDA_clientmsg_handler: could not put messages using Mapper");
 			}
 
 #define ERROR_SNOL(e, s, n, o, l) \
@@ -1202,22 +1202,22 @@ CS_RETCODE SybCTnewDA_clientmsg_handler(CS_CONTEXT *context, CS_CONNECTION *conn
 				// have via the CS_LOGIN_STATUS property.
 				CS_INT status = 0;
 				if ( ct_con_props(connection, CS_GET, CS_LOGIN_STATUS, (CS_VOID *)&status, CS_UNUSED, NULL) != CS_SUCCEED ) {
-					SysLog::Error("SybCTnewDA_clientmsg_handler: could not retrieve CS_LOGIN_STATUS");
+					SystemLog::Error("SybCTnewDA_clientmsg_handler: could not retrieve CS_LOGIN_STATUS");
 					return CS_FAIL;
 				}
 
 				if (status) {
 					// Results timeout
-					SysLog::Warning("SybCTnewDA_clientmsg_handler: cancelling the query due to a result timeout...");
+					SystemLog::Warning("SybCTnewDA_clientmsg_handler: cancelling the query due to a result timeout...");
 					(CS_VOID)ct_cancel(connection, (CS_COMMAND *)NULL, CS_CANCEL_ATTN);
 				} else {
 					// Login timeout
-					SysLog::Warning("SybCTnewDA_clientmsg_handler: aborting connection(login) attempt...");
+					SystemLog::Warning("SybCTnewDA_clientmsg_handler: aborting connection(login) attempt...");
 					return CS_FAIL;
 				}
 			}
 		} else {
-			SysLog::Error("SybCTnewDA_clientmsg_handler: could not get Message anything");
+			SystemLog::Error("SybCTnewDA_clientmsg_handler: could not get Message anything");
 		}
 	}
 	return CS_SUCCEED;
@@ -1275,7 +1275,7 @@ CS_RETCODE SybCTnewDA_csmsg_handler(CS_CONTEXT *context, CS_CLIENTMSG *errmsg)
 				}
 			}
 		} else {
-			SysLog::Error("SybCTnewDA_csmsg_handler: could not get Message anything");
+			SystemLog::Error("SybCTnewDA_csmsg_handler: could not get Message anything");
 		}
 	}
 	return CS_SUCCEED;

@@ -55,7 +55,7 @@ bool BackendConfigLoaderModule::Init(const Anything &config)
 
 	if ( config.LookupPath(BackendConfigLoaderConfig, "BackendConfigLoaderModule") && BackendConfigLoaderConfig.IsDefined("BackendConfigDir") && BackendConfigLoaderConfig["BackendConfigDir"].GetSize() ) {
 		TraceAny(BackendConfigLoaderConfig, "BackendConfigLoaderConfig:");
-		SysLog::WriteToStderr("\tReading Backend Configuration Files");
+		SystemLog::WriteToStderr("\tReading Backend Configuration Files");
 		String path = BackendConfigLoaderConfig["BackendConfigDir"].AsCharPtr();
 		if (!System::IsAbsolutePath(path)) {
 			String cwd;
@@ -65,7 +65,7 @@ bool BackendConfigLoaderModule::Init(const Anything &config)
 		}
 		Anything dirlist = System::DirFileList(path, "any");
 		for (int i = 0 ; i < dirlist.GetSize(); i++) {
-			SysLog::WriteToStderr(".");
+			SystemLog::WriteToStderr(".");
 			String backendName = dirlist[i].AsString();
 			Anything backendConfig;
 			if (!System::LoadConfigFile(backendConfig, backendName)) {
@@ -82,10 +82,10 @@ bool BackendConfigLoaderModule::Init(const Anything &config)
 
 	if (retCode) {
 		fgBackendConfigLoaderModule = this;
-		SysLog::WriteToStderr(" done\n");
+		SystemLog::WriteToStderr(" done\n");
 	} else {
 		fgBackendConfigLoaderModule = 0L;
-		SysLog::WriteToStderr(" failed\n");
+		SystemLog::WriteToStderr(" failed\n");
 	}
 
 	return retCode;
@@ -95,9 +95,9 @@ bool BackendConfigLoaderModule::Finis()
 {
 	StartTrace(BackendConfigLoaderModule.Finis);
 
-	SysLog::WriteToStderr("\tTerminating BackendConfigLoader Module");
+	SystemLog::WriteToStderr("\tTerminating BackendConfigLoader Module");
 	fgBackendConfigLoaderModule = 0L;
-	SysLog::WriteToStderr(" done\n");
+	SystemLog::WriteToStderr(" done\n");
 
 	return true;
 }

@@ -13,7 +13,7 @@
 #include "Anything.h"
 #include "Dbg.h"
 #include "ConversionUtils.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 
 //--- c-modules used -----------------------------------------------------------
 #if defined(__SUNPRO_CC)

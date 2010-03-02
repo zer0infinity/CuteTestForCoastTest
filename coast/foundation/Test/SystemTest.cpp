@@ -17,7 +17,7 @@
 
 //--- standard modules used -------------------------------------------------
 #include "DiffTimer.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "AnyIterators.h"
 
 #if defined(ONLY_STD_IOSTREAM)
@@ -55,7 +55,7 @@ void SystemTest::DoSingleSelectTest()
 	Trace("difference to expected waittime of " << waittime << "ms : " << difft << "ms");
 	assertEqual(0L, iSSRet);
 	if ( iSSRet < 0 ) {
-		SYSERROR("error in DoSingleSelect [" << SysLog::LastSysError() << "]");
+		SYSERROR("error in DoSingleSelect [" << SystemLog::LastSysError() << "]");
 	}
 	// need some tolerance on some systems, eg. older SunOS5.6
 	t_assertm(difft >= -10, TString("assume waiting long enough >=-10ms, diff was:") << difft << "ms");
@@ -1328,7 +1328,7 @@ void SystemTest::MakeDirectoryExtendTest()
 			strFillerDir.Trim(lTrimLen);
 			strFillerDir.Append(++lIdx);
 			if ( ( lIdx % 1000 ) == 0 ) {
-				SysLog::WriteToStdout( String("directory [").Append(strFillerDir).Append("] created...\n") );
+				SystemLog::WriteToStdout( String("directory [").Append(strFillerDir).Append("] created...\n") );
 			}
 			bCreatedDirs = true;
 		}
@@ -1395,7 +1395,7 @@ void SystemTest::MakeDirectoryExtendTest()
 				strFillerDir.Trim(lTrimLen);
 				strFillerDir.Append(--lIdx);
 				if ( ( lIdx % 1000 ) == 0 ) {
-					SysLog::WriteToStdout( String("directory [").Append(strFillerDir).Append("] deleted...\n") );
+					SystemLog::WriteToStdout( String("directory [").Append(strFillerDir).Append("] deleted...\n") );
 				}
 			}
 		}

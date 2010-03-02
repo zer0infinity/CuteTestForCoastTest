@@ -12,7 +12,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "System.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "DataAccess.h"
 #include "Action.h"
 
@@ -41,7 +41,7 @@ bool LDAPDAICachePolicyModule::Init(const ROAnything config)
 	ROAnything dataAccesses(config["LDAPDAICachePolicyModule"]["LDAPDAIDataAccess"]);
 	ROAnything dataAccessActions(config["LDAPDAICachePolicyModule"]["LDAPDAIDataAccessAction"]);
 	if ( dataAccesses.GetSize() == 0 && dataAccessActions.GetSize() == 0 ) {
-		SysLog::WriteToStderr("\tLDAPDAICachePolicyModule::Init can't read needed configuration data.\n");
+		SystemLog::WriteToStderr("\tLDAPDAICachePolicyModule::Init can't read needed configuration data.\n");
 		return false;
 	}
 	if ( InitialLoad(dataAccesses, LDAPDAICachePolicyModule::dataaccess, config.DeepClone()) 	== false ||
@@ -52,11 +52,11 @@ bool LDAPDAICachePolicyModule::Init(const ROAnything config)
 	CheckContractIsFulfilled(failedDataAccesses, dataAccesses);
 	CheckContractIsFulfilled(failedDataAccesses, dataAccessActions);
 	if (failedDataAccesses.Length() != 0 ) {
-		SysLog::WriteToStderr(String("\tLDAPDAICachePolicyModule::LDAP Query: ") << failedDataAccesses <<
-							  String(" returned no data.\n"));
+		SystemLog::WriteToStderr(String("\tLDAPDAICachePolicyModule::LDAP Query: ") << failedDataAccesses <<
+								 String(" returned no data.\n"));
 		return false;
 	}
-	SysLog::WriteToStderr("\tLDAPDAICachePolicyModule done\n");
+	SystemLog::WriteToStderr("\tLDAPDAICachePolicyModule done\n");
 	return true;
 }
 
@@ -81,7 +81,7 @@ bool LDAPDAICachePolicyModule::InitialLoad(const ROAnything dataAccesses, LDAPDA
 			}
 		}
 	} else {
-		SysLog::WriteToStderr("\tLDAPDAICachePolicyModule::InitialLoad: NoCacheHandlerFound\n");
+		SystemLog::WriteToStderr("\tLDAPDAICachePolicyModule::InitialLoad: NoCacheHandlerFound\n");
 		ret = false;
 	}
 	return ret;
@@ -133,7 +133,7 @@ Anything LDAPDAIDataAcccessLoader::Load(const char *ldapDa)
 		} else {
 			String msg;
 			msg << "\tLDAPDAICachePolicyModule::Load Unable to exec LDAP query for: " << ldapDa << "\n";
-			SysLog::WriteToStderr(msg);
+			SystemLog::WriteToStderr(msg);
 		}
 	}
 
@@ -169,7 +169,7 @@ Anything LDAPDAIActionLoader::Load(const char *ldapDaAction)
 		} else {
 			String msg;
 			msg << "\tLDAPDAICachePolicyModule::Load Unable to exec LDAP query for: " << ldapDaAction << "\n";
-			SysLog::WriteToStderr(msg);
+			SystemLog::WriteToStderr(msg);
 		}
 	}
 	return (theResult);

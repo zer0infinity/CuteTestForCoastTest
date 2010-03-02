@@ -10,7 +10,7 @@
 #include "DataAccess.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Timers.h"
 #include "Dbg.h"
 
@@ -180,7 +180,7 @@ void DataAccess::HandleError(Context &context, String mapperName, const char *fi
 
 	String logMsg = (pos < 0) ? filePath : filePath.SubString(pos + 1);
 	logMsg << ":" << line << " " << msg << " for [" << mapperName << "]";
-	SysLog::Error(logMsg);
+	SystemLog::Error(logMsg);
 	Trace(logMsg);
 	context.GetTmpStore()["DataAccess"][mapperName]["Error"].Append(logMsg);
 }

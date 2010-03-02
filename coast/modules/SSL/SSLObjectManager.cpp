@@ -15,7 +15,7 @@
 #include "Anything.h"
 #include "TraceLocks.h"
 #include "Threads.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 #include "Registry.h"
 #include "SSLModule.h"
@@ -42,7 +42,7 @@ SSLObjectManager::SSLObjectManager(const char *name)
 	, fSSLSessionIdStore(Storage::Global())
 {
 	StartTrace1(SSLObjectManager.SSLObjectManager, "Name:<" << NotNull(name) << ">");
-	SysLog::Info("SSLObjectManager: <unblocked>");
+	SystemLog::Info("SSLObjectManager: <unblocked>");
 }
 
 SSLObjectManager::~SSLObjectManager()
@@ -142,7 +142,7 @@ void SSLObjectManager::SetSessionId(const String &ip, const String &port, SSL_SE
 bool SSLObjectManager::Init(const ROAnything config)
 {
 	StartTrace(SSLObjectManager.Init);
-	SysLog::WriteToStderr(String("\t") << fName << ". done\n");
+	SystemLog::WriteToStderr(String("\t") << fName << ". done\n");
 	return ResetInit(config);
 }
 

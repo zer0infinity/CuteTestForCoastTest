@@ -13,7 +13,7 @@
 #include "Session.h"
 #include "Registry.h"
 #include "Renderer.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 #include <cstring>
 
@@ -344,7 +344,7 @@ Role *Role::FindRoleWithDefault(const char *role_name, Context &ctx, const char 
 		String msg;
 		msg << "<" << ctx.GetSessionId() << "> "
 			<< "no valid role <" << role_name << "> found; using <" << dflt << ">";
-		SysLog::Info(msg);
+		SystemLog::Info(msg);
 
 		ret = Role::FindRole(dflt);
 	}

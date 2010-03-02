@@ -11,7 +11,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Anything.h"
 
 //---- StatEvtHandler -----------------------------------------------------------
@@ -69,7 +69,7 @@ void StatGatherer::PrintStatisticsOnStderr( const String &strName )
 		}
 		statistic.PrintOn(stream) << "\n";
 	}
-	SysLog::WriteToStderr(strbuf);
+	SystemLog::WriteToStderr(strbuf);
 }
 
 //---- StatObserver -----------------------------------------------------------

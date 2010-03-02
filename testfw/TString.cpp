@@ -140,7 +140,7 @@ void TString::Set(long start, const char *s, long len)
 				free(oldBuf);
 			}
 		} else {
-//			SysLog::Error("Memory allocation failed (calloc, TString::Set)");
+//			SystemLog::Error("Memory allocation failed (calloc, TString::Set)");
 			// restore TString
 			fCapacity = oldCapacity;
 			fLength = oldLength;

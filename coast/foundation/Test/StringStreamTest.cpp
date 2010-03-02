@@ -17,7 +17,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "System.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 
 #if defined(ONLY_STD_IOSTREAM)
 using namespace std;
@@ -191,7 +191,7 @@ void StringStreamTest::ReadFromAndWriteToAnythingTest()
 	istream *ifp = System::OpenStream("Test", "any");
 	if (ifp == 0) {
 		String logMsg;
-		SysLog::Error(logMsg << "can't open file Test.any");
+		SystemLog::Error(logMsg << "can't open file Test.any");
 		t_assertm(0, (const char *)logMsg);
 		return;
 	}
@@ -213,7 +213,7 @@ void StringStreamTest::ReadFromAndWriteToAnythingTest2()
 	istream *ifp = System::OpenStream("Test", "any");
 	if (ifp == 0) {
 		String logMsg;
-		SysLog::Error(logMsg << "can't open file Test.any");
+		SystemLog::Error(logMsg << "can't open file Test.any");
 		t_assertm(0, (const char *)logMsg);
 		return;
 	}

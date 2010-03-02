@@ -13,7 +13,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "Renderer.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 
 //--- c-modules used -----------------------------------------------------------

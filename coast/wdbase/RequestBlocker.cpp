@@ -15,7 +15,7 @@
 #include "Anything.h"
 #include "TraceLocks.h"
 #include "Threads.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Context.h"
 #include "Dbg.h"
 #include "Registry.h"
@@ -39,7 +39,7 @@ RequestBlocker::RequestBlocker(const char *name)
 	, fRequestBlockerRWLock("RequestBlockerRWLock")
 {
 	StartTrace1(RequestBlocker.RequestBlocker, "Name:<" << NotNull(name) << ">");
-	SysLog::Info("RequestBlocker: <unblocked>");
+	SystemLog::Info("RequestBlocker: <unblocked>");
 }
 
 RequestBlocker::~RequestBlocker()
@@ -59,7 +59,7 @@ bool RequestBlocker::Block()
 		LockUnlockEntry me(fRequestBlockerRWLock, RWLock::eWriting);
 		fBlocked = true;
 	}
-	SysLog::Info("RequestBlocker: <  blocked>");
+	SystemLog::Info("RequestBlocker: <  blocked>");
 	return true;
 }
 
@@ -76,7 +76,7 @@ bool RequestBlocker::UnBlock()
 		LockUnlockEntry me(fRequestBlockerRWLock, RWLock::eWriting);
 		fBlocked = false;
 	}
-	SysLog::Info("RequestBlocker: <unblocked>");
+	SystemLog::Info("RequestBlocker: <unblocked>");
 	return true;
 }
 

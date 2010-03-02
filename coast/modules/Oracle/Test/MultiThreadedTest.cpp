@@ -18,7 +18,7 @@
 #include "AnyIterators.h"
 #include "AnyUtils.h"
 #include "Dbg.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Threads.h"
 #include "DataAccess.h"
 #include "DiffTimer.h"
@@ -105,8 +105,8 @@ void MultiThreadedTest::DAImplTest()
 		String strSuccDA( roaEntry["SuccessDA"].AsString( "MultiThreadedDA" ) ), strFailDA(
 			roaEntry["FailureDA"].AsString( "MultiThreadedDAWithError" ) );
 		DoTest( roaEntry, strSuccDA, strFailDA );
-		SysLog::WriteToStderr( String( "elapsed time for [" ) << strSuccDA << '&' << strFailDA << "] "
-							   << (long) aTimer.Diff() << "ms\n" );
+		SystemLog::WriteToStderr( String( "elapsed time for [" ) << strSuccDA << '&' << strFailDA << "] "
+								  << (long) aTimer.Diff() << "ms\n" );
 	}
 }
 

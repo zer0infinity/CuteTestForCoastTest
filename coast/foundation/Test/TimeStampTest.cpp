@@ -18,7 +18,7 @@
 //--- project modules used -----------------------------------------------------
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 
 //--- c-modules used -----------------------------------------------------------
 #include <limits.h>

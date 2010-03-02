@@ -13,7 +13,7 @@
 #include "TestCase.h"
 
 //---- SysLogTest ----------------------------------------------------------
-//!testcases for the SysLog class
+//!testcases for the SystemLog class
 class SysLogTest : public TestFramework::TestCase
 {
 public:

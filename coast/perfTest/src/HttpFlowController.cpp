@@ -14,7 +14,7 @@
 #include "URLUtils.h"
 #include "Resolver.h"
 #include "Renderer.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Scheduler.h"
 #include "SSLAPI.h"
 #include "System.h"
@@ -485,7 +485,7 @@ bool HttpFlowController::DoProcessToken( Context &ctx, bool &boJump )
 
 		// process incoming config step.
 		for ( long i = 0; i < tokenConfig.GetSize(); i++ ) {
-			SysLog::WriteToStderr(".", 1);
+			SystemLog::WriteToStderr(".", 1);
 			String stringToFind = "";
 			jumpName = "";
 			jumpNr = -1L; // init
@@ -624,7 +624,7 @@ void HttpFlowController::HandleTheError(String &theMsg, Anything &tmpStore )
 
 	completedMsg << theMsg;
 
-	SysLog::Error(completedMsg);
+	SystemLog::Error(completedMsg);
 	tmpStore["result"]["ErrorMessage"].Append(completedMsg);
 }
 
@@ -640,7 +640,7 @@ void HttpFlowController::DoCommand(Context &ctx, ROAnything commandConfig)
 	if (retVal != 0) {
 		String errorMsg = cmd;
 		errorMsg << "; returned " << retVal;
-		SysLog::Error(errorMsg);
+		SystemLog::Error(errorMsg);
 	}
 }
 
@@ -678,7 +678,7 @@ bool HttpFlowController::PrepareRequest(Context &ctx, bool &bPrepareRequestSucce
 			stream << "\nSuspending execution for " << lDelay / 1000L << " seconds before ";
 			stepConfig["Label"].PrintOn(stream) << " gets executed.\n";
 			stream.flush();
-			SysLog::WriteToStderr(strbuf);
+			SystemLog::WriteToStderr(strbuf);
 		}
 		SimpleMutex mtx("delay", Storage::Current());
 		SimpleMutex::ConditionType cond;
@@ -692,7 +692,7 @@ bool HttpFlowController::PrepareRequest(Context &ctx, bool &bPrepareRequestSucce
 			stream << "\nResuming execution of    ";
 			stepConfig["Label"].PrintOn(stream) << " now.\n";
 			stream.flush();
-			SysLog::WriteToStderr(strbuf);
+			SystemLog::WriteToStderr(strbuf);
 		}
 	}
 ////foo:
@@ -1149,8 +1149,8 @@ bool HttpFlowController::GenericScheduling( Anything &tmpStore, Anything &schedu
 			return false;
 		}
 
-		SysLog::WriteToStderr(String("From:") << from << " Till:" << till << " currentTimeDate:" << currentTimeDate << "\n");
-		SysLog::WriteToStderr(String("currentTimeDate.Compare(from):") << (long)currentTimeDate.Compare(from) <<  "currentTimeDate.Compare(till):" << (long)currentTimeDate.Compare(till) << "\n");
+		SystemLog::WriteToStderr(String("From:") << from << " Till:" << till << " currentTimeDate:" << currentTimeDate << "\n");
+		SystemLog::WriteToStderr(String("currentTimeDate.Compare(from):") << (long)currentTimeDate.Compare(from) <<  "currentTimeDate.Compare(till):" << (long)currentTimeDate.Compare(till) << "\n");
 
 		if (	( from.Length() > 0  )
 				&&	( till.Length() > 0  )

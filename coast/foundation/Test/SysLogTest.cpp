@@ -10,7 +10,7 @@
 #include "SysLogTest.h"
 
 //--- module under test --------------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 
 //--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
@@ -35,19 +35,19 @@ SysLogTest::~SysLogTest()
 void SysLogTest::setUp ()
 {
 	StartTrace(SysLogTest.setUp);
-	SysLog::Init("SysLogTest");
+	SystemLog::Init("SysLogTest");
 }
 
 void SysLogTest::tearDown ()
 {
 	StartTrace(SysLogTest.tearDown);
-	SysLog::Terminate();
+	SystemLog::Terminate();
 }
 
 void SysLogTest::TestFlags ()
 {
 	StartTrace(SysLogTest.TestFlags);
-	t_assertm(SysLog::fgSysLog != NULL, " expected creation of fgSysLog");
+	t_assertm(SystemLog::fgSysLog != NULL, " expected creation of fgSysLog");
 }
 
 // builds up a suite of testcases, add a line for each testmethod

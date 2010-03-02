@@ -13,7 +13,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 
 //--- c-modules used -----------------------------------------------------------
 
@@ -36,7 +36,7 @@ void BasicAuthenticationRenderer::RenderAll(ostream &reply, Context &ctx, const 
 	if ( (user.Length() == 0L) || (password.Length() == 0L) ) {
 		String msg;
 		msg.Append("Authorization: Missing userid/password");
-		SysLog::Error(msg);
+		SystemLog::Error(msg);
 		Trace(msg);
 		reply << msg;
 	}

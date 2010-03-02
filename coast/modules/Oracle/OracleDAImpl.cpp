@@ -15,7 +15,7 @@
 #include "OracleException.h"
 #include "OracleResultset.h"
 #include "OracleModule.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Timers.h"
 #include "StringStream.h"
 #include "TimeStamp.h"
@@ -314,7 +314,7 @@ void OracleDAImpl::Error( Context &ctx, ResultMapper *pResultMapper, String str 
 	StartTrace(OracleDAImpl.Error);
 	String strErr( "OracleDAImpl::" );
 	strErr.Append( str );
-	SysLog::Warning( TimeStamp::Now().AsStringWithZ().Append( ' ' ).Append( strErr ) );
+	SystemLog::Warning( TimeStamp::Now().AsStringWithZ().Append( ' ' ).Append( strErr ) );
 	if ( pResultMapper ) {
 		pResultMapper->Put( "Messages", strErr, ctx );
 	}

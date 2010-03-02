@@ -72,7 +72,7 @@ void ComputeDateRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnythi
 		// output is seconds since 00:00:00 UTC, January 1, 1970
 		reply << ( ConvertToTimeStamp(strFromDate, strInputFormat).AsLong() + offset );
 	} else {
-		SysLog::Warning("ComputeDateRenderer::RenderAll: mandatory 'FromDate' slot is missing in configuration!");
+		SystemLog::Warning("ComputeDateRenderer::RenderAll: mandatory 'FromDate' slot is missing in configuration!");
 	}
 }
 

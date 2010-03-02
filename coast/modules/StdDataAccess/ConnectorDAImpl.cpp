@@ -14,7 +14,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "SSLSocket.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "SocketStream.h"
 #include "Timers.h"
 

@@ -10,7 +10,7 @@
 #include "WebAppService.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Session.h"
 #include "SessionListManager.h"
 #include "RequestProcessor.h"
@@ -40,7 +40,7 @@ void WebAppService::DoHandleService(ostream &reply, Context &ctx)
 	// first stage: verify the request
 	if (!VerifyRequest(reply, ctx)) {
 		Trace("request verification failed");
-		SysLog::Info("request verification failed");
+		SystemLog::Info("request verification failed");
 		RequestProcessor::Error(reply, "Access denied. Lookuptoken: VFSF", ctx);
 		return;
 	}
@@ -87,14 +87,14 @@ bool WebAppService::VerifyRequest(ostream &, Context &ctx)
 {
 	Anything args(ctx.GetRequest());
 	if (args.IsNull()) {
-		SysLog::Info("got no args from Coast");
+		SystemLog::Info("got no args from Coast");
 		return false;
 	}
 
 	// do we got an environment record?
 	Anything env;
 	if (!args.LookupPath(env, "env") || env.IsNull()) {
-		SysLog::Info("malformed request");
+		SystemLog::Info("malformed request");
 		return false;
 	}
 
@@ -108,7 +108,7 @@ bool WebAppService::VerifyRequest(ostream &, Context &ctx)
 	}
 
 	if (!remoteAddr) {
-		SysLog::Info("request doesn't contain REMOTE_ADDR field");
+		SystemLog::Info("request doesn't contain REMOTE_ADDR field");
 		return false;
 	}
 

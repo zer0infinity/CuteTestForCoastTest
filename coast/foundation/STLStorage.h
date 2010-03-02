@@ -10,7 +10,7 @@
 #define _STLStorage_H
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 #include <cstring>
 #include <cstdio>
@@ -159,7 +159,7 @@ namespace STLStorage
 			if ( ret == NULL ) {
 				static char pMsg[255] = { 0 };
 				snprintf(pMsg, 254, "STLAllocator::allocate failed to allocate memory of size %lub!\n", (unsigned long)num);
-				SysLog::WriteToStderr(pMsg, strlen(pMsg));
+				SystemLog::WriteToStderr(pMsg, strlen(pMsg));
 			}
 			return ret;
 		}

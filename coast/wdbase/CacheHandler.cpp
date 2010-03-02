@@ -15,7 +15,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "Threads.h"
 #include "System.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
@@ -187,12 +187,12 @@ CacheHandlerModule::~CacheHandlerModule()
 bool CacheHandlerModule::Init(const ROAnything )
 {
 	StartTrace(CacheHandlerModule.Init);
-	SysLog::WriteToStderr("\tCacheHandler");
+	SystemLog::WriteToStderr("\tCacheHandler");
 	if (CacheHandler::Get()) {
-		SysLog::WriteToStderr(". done\n");
+		SystemLog::WriteToStderr(". done\n");
 		return true;
 	}
-	SysLog::WriteToStderr(". failed\n");
+	SystemLog::WriteToStderr(". failed\n");
 	return false;
 }
 

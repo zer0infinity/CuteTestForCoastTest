@@ -12,7 +12,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
 #include "Registry.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 #include "System.h"
 #include "DiffTimer.h" /* for GetHRTIME() */
@@ -89,7 +89,7 @@ bool SecurityItem::DoGetConfigName(const char *category, const char *objName, St
 bool SecurityItem::DoLoadConfig(const char *category)
 {
 	StartTrace1(SecurityItem.DoLoadConfig, fName);
-	SysLog::WriteToStderr(".");
+	SystemLog::WriteToStderr(".");
 	if ( HierarchConfNamed::DoLoadConfig(category)) {
 		if ( fConfig.IsDefined(fName) ) {
 			// trx impls use only a subset of the whole configuration file
@@ -194,7 +194,7 @@ bool SecurityModule::Init(const ROAnything config)
 	StartTrace( SecurityModule.Init );
 	bool result = true;
 	TraceAny(config, "Config");
-	SysLog::WriteToStderr(String("\t") << fName << ". ");
+	SystemLog::WriteToStderr(String("\t") << fName << ". ");
 #if !defined(WIN32)
 	srand48((long)GetHRTIME());
 #else
@@ -217,7 +217,7 @@ bool SecurityModule::Init(const ROAnything config)
 	if ( compressor ) {
 		compressor->Init(config);
 	}
-	SysLog::WriteToStderr(result ? "done\n" : "failed\n");
+	SystemLog::WriteToStderr(result ? "done\n" : "failed\n");
 	Trace("result :" << (result ? "done\n" : "failed\n"));
 	return result;
 }
@@ -229,7 +229,7 @@ bool SecurityModule::ResetInit(const ROAnything config)
 	if ( moduleConfig["DoNotReset"].AsBool(0) == 1 ) {
 		String msg;
 		msg << "\t" << fName << "  Configured not to call Init() on reset\n";
-		SysLog::WriteToStderr(msg);
+		SystemLog::WriteToStderr(msg);
 		return true;
 	}
 	return SecurityModule::Init(config);
@@ -242,7 +242,7 @@ bool SecurityModule::ResetFinis(const ROAnything config)
 	if ( moduleConfig["DoNotReset"].AsBool(0) == 1 ) {
 		String msg;
 		msg << "\t" << fName << "  Configured not to call Finis() on reset\n";
-		SysLog::WriteToStderr(msg);
+		SystemLog::WriteToStderr(msg);
 		return true;
 	}
 	AliasTerminator at("SecurityItems");
@@ -291,16 +291,16 @@ void SecurityModule::ScrambleState(String &result, const Anything &state)
 		result.Append(encodedText);
 
 #ifdef URLSTAT_TRACING
-		SysLog::WriteToStderr(String("URL comp<") << compressedText << ">\n");
-		SysLog::WriteToStderr("URL: (c, e, c, p) ");
+		SystemLog::WriteToStderr(String("URL comp<") << compressedText << ">\n");
+		SystemLog::WriteToStderr("URL: (c, e, c, p) ");
 		// do some length tracking
 		long rawLen =	compressedText.Length();
 		long resLen =	encodedText.Length();
 		long cryptLen =	cryptText.Length();
-		SysLog::WriteToStderr(String() << rawLen << ", ");
-		SysLog::WriteToStderr(String() << cryptLen << ", ");
-		SysLog::WriteToStderr(String() << resLen << ", ");
-		SysLog::WriteToStderr(String() << ((resLen * 100) / (rawLen)) << "%\n");
+		SystemLog::WriteToStderr(String() << rawLen << ", ");
+		SystemLog::WriteToStderr(String() << cryptLen << ", ");
+		SystemLog::WriteToStderr(String() << resLen << ", ");
+		SystemLog::WriteToStderr(String() << ((resLen * 100) / (rawLen)) << "%\n");
 #endif
 	}
 	Trace("resulting text <" << result << ">");
@@ -327,7 +327,7 @@ bool SecurityModule::UnscrambleState(Anything &state, const String &s)
 			if ( Signer::Check(compressedText, signedText) ) {
 				Trace("Checked ok: <" << compressedText << ">");
 #ifdef URLSTAT_TRACING
-				SysLog::WriteToStderr(String("URL2exp<") << compressedText << ">\n");
+				SystemLog::WriteToStderr(String("URL2exp<") << compressedText << ">\n");
 #endif
 				if ( Compressor::Expand(state, compressedText) ) {
 					TraceAny(state, "state: ");
@@ -337,7 +337,7 @@ bool SecurityModule::UnscrambleState(Anything &state, const String &s)
 		}
 	}
 	if (crypt == "AnyArrayImpl") {
-		SysLog::Error("Expected one token to unscramble, got > 1. Maybe duplicate cookies, /Domain wrong.");
+		SystemLog::Error("Expected one token to unscramble, got > 1. Maybe duplicate cookies, /Domain wrong.");
 	}
 	Trace("Unscrambling failed");
 	return false;

@@ -11,7 +11,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "System.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "SecurityModule.h"
 #include "HTTPProtocolReplyRenderer.h"
 #include "AccessManager.h"

@@ -187,7 +187,7 @@ bool ThreadPoolManager::AwaitReady(long secs)
 			os << "MaxSecToWait: " << setw(4) << secs <<
 			   "  SecsWaited: "	 << setw(4) << msgCount <<
 			   "  Pending requests: " <<  setw(6) <<  lCurrRequests << endl;
-			SysLog::Info( os.str() );
+			SystemLog::Info( os.str() );
 		}
 	}
 	lCurrRequests = fpStatEvtHandler->GetCurrentParallelRequests();
@@ -506,7 +506,7 @@ int WorkerPoolManager::PreparePool(int usePoolStorage, int poolStorageSize, int 
 	// it makes no sense to start the thread pool if no processor is available
 	String logMessage("cannot re-init pool");
 	Trace(logMessage);
-	SysLog::Alert(logMessage);
+	SystemLog::Alert(logMessage);
 	return -1;
 }
 
@@ -615,7 +615,7 @@ bool WorkerPoolManager::AwaitEmpty(long sec)
 			os << "MaxSecToWait: " << setw(4) << sec <<
 			   "  SecsWaited: "	 << setw(4) << msgCount <<
 			   "  Pending requests: " <<  setw(6) <<  lCurrRequests << endl;
-			SysLog::Info( os.str() );
+			SystemLog::Info( os.str() );
 		}
 	}
 	lCurrRequests = fpStatEvtHandler->GetCurrentParallelRequests();

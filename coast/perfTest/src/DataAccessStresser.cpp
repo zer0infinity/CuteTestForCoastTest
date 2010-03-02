@@ -11,7 +11,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "Timers.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "StringStream.h"
 #include "DataAccess.h"
 #include "Dbg.h"
@@ -64,7 +64,7 @@ Anything DataAccessStresser::Run(long id)
 				OStringStream outstream(strBuf);
 				ctx.GetTmpStore()["Mapper"].PrintOn(outstream, true);
 				outstream.flush();
-				SysLog::WriteToStderr(strBuf);
+				SystemLog::WriteToStderr(strBuf);
 				nError++;
 				results["ErrorMessageCtr"][strStepNr] = ctx.GetTmpStore()["Mapper"];
 			}

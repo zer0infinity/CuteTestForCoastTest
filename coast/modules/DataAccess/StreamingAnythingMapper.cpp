@@ -13,7 +13,7 @@
 #include "StringStream.h"
 #include "Dbg.h"
 #include "Timers.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 
 #if defined(ONLY_STD_IOSTREAM)
 using namespace std;

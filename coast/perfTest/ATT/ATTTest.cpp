@@ -19,7 +19,7 @@
 #include "Scheduler.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 
 #if defined(ONLY_STD_IOSTREAM)
@@ -100,12 +100,12 @@ void ATTTest::PrintResult(String &stresserName, Anything &result)
 
 	if (result["Error"].AsBool(1) ) {
 		fNrOfErrors++;
-		SysLog::WriteToStdout(String("\n") << stresserName << " ... failed\n"
-							  << result["CompareResults"].AsString("no compare entry") << "\n");
+		SystemLog::WriteToStdout(String("\n") << stresserName << " ... failed\n"
+								 << result["CompareResults"].AsString("no compare entry") << "\n");
 		osssum << "<a href=\"#" << stresserName << "\">" << stresserName << "</a> ... failed<br>"
 			   << result["CompareResults"].AsString("no compare entry") << "<br>" << endl;
 	} else {
-		SysLog::WriteToStdout(String("\n") << stresserName << " ... ok\n");
+		SystemLog::WriteToStdout(String("\n") << stresserName << " ... ok\n");
 		osssum << "<a href=\"#" << stresserName << "\">" << stresserName << "</a> ... ok<br>" << endl;
 	}
 	ossres << "<a name=\"" << stresserName << "\"><h2>" << stresserName << "</h2></a><a href=\"#top\">Top</a>" << endl;
@@ -141,13 +141,13 @@ void ATTTest::PrintResultTotals()
 	pathfile << resultfile;
 	ostream *os = System::OpenOStream(pathfile, "html", ios::out);
 
-	SysLog::WriteToStdout(String("\n") << fNrOfTests << " scenarios run, "
-						  << fNrOfErrors << " failures; "
-						  << (fNrOfTests - fNrOfErrors) * 100L / (fNrOfTests > 0 ? fNrOfTests : 1L) << "% complete.\n"
-						  << fNrOfSteps << " steps run, "
-						  << fNrOfStepErrors << " failures; "
-						  << (fNrOfSteps - fNrOfStepErrors) * 100L / (fNrOfSteps > 0 ? fNrOfSteps : 1L) << "% complete.\n\n"
-						  << "Results: http://sentosa.hsr.loc/FuncTestResults/" << resultfile << ".html\n");
+	SystemLog::WriteToStdout(String("\n") << fNrOfTests << " scenarios run, "
+							 << fNrOfErrors << " failures; "
+							 << (fNrOfTests - fNrOfErrors) * 100L / (fNrOfTests > 0 ? fNrOfTests : 1L) << "% complete.\n"
+							 << fNrOfSteps << " steps run, "
+							 << fNrOfStepErrors << " failures; "
+							 << (fNrOfSteps - fNrOfStepErrors) * 100L / (fNrOfSteps > 0 ? fNrOfSteps : 1L) << "% complete.\n\n"
+							 << "Results: http://sentosa.hsr.loc/FuncTestResults/" << resultfile << ".html\n");
 
 	*os << "<hr>" << "<a name=\"top\"><h1>" << name() << " results from " << actualtimehtml << "</h1></a>"
 		<< "<p>" << fNrOfTests << " scenarios run, "

@@ -247,7 +247,7 @@ void SelectBoxRenderer::RenderAll(ostream &reply, Context &context, const ROAnyt
 		}
 		reply << "</select>\n";
 	} else {
-		SysLog::Warning("SelectBoxRenderer::RenderAll: mandatory 'Name' slot is missing in configuration!");
+		SystemLog::Warning("SelectBoxRenderer::RenderAll: mandatory 'Name' slot is missing in configuration!");
 	}
 }
 
@@ -508,7 +508,7 @@ void FieldRenderer::RenderAll(ostream &reply, Context &context, const ROAnything
 		RenderOptions(reply, context, config);
 		reply << ">";
 	} else {
-		SysLog::Error("FieldRenderer::RenderAll: mandatory 'Name' slot is missing in configuration!");
+		SystemLog::Error("FieldRenderer::RenderAll: mandatory 'Name' slot is missing in configuration!");
 	}
 }
 
@@ -607,7 +607,7 @@ void TextAreaRenderer::RenderAll(ostream &reply, Context &context,
 
 		reply << "</TEXTAREA>";
 	} else {
-		SysLog::Error("TextAreaRenderer::RenderAll() mandatory 'Name' slot is missing in configuration!");
+		SystemLog::Error("TextAreaRenderer::RenderAll() mandatory 'Name' slot is missing in configuration!");
 	}
 }
 

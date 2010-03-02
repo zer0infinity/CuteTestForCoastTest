@@ -102,7 +102,7 @@ public:
 			StringStream aStream;
 			aStream << "Statistics for [" << GetName() << "]\n";
 			anyStat.PrintOn(aStream, true) << "\n" << std::flush;
-			SysLog::WriteToStderr(aStream.str());
+			SystemLog::WriteToStderr(aStream.str());
 		}
 
 		// delete Queue, also wakes up blocked threads, threads MUST be in termination sequence!!

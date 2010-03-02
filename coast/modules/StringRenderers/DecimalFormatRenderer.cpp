@@ -13,7 +13,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "AnythingUtils.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 
 //--- c-modules used -----------------------------------------------------------
@@ -54,7 +54,7 @@ bool DecimalFormatRenderer::ReadConfig( Context &ctx, const ROAnything &config, 
 	if (config.LookupPath(roaSlotConfig, "String")) {
 		RenderOnString(sString, ctx, roaSlotConfig);
 	} else {
-		SysLog::Error("DecimalFormatRenderer::RenderAll: String not defined");
+		SystemLog::Error("DecimalFormatRenderer::RenderAll: String not defined");
 		return false;
 	}
 	Trace("String: [" << sString << "]");
@@ -62,7 +62,7 @@ bool DecimalFormatRenderer::ReadConfig( Context &ctx, const ROAnything &config, 
 	if (config.LookupPath(roaSlotConfig, "Scale")) {
 		RenderOnString(sScale, ctx, roaSlotConfig);
 	} else {
-		SysLog::Error("DecimalFormatRenderer::RenderAll: Scale not defined");
+		SystemLog::Error("DecimalFormatRenderer::RenderAll: Scale not defined");
 		return false;
 	}
 	Trace("Scale: [" << sScale << "]");

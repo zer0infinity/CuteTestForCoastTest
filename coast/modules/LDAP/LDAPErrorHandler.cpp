@@ -11,7 +11,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "StringStream.h"
 #include "TimeStamp.h"
 
@@ -70,7 +70,7 @@ void LDAPErrorHandler::HandleUnbindError(LDAP *handle)
 	} else {
 		msg << " LdapCode: [no valid handle] LdapMsg: [no valid handle] ldap_unbind";
 	}
-	SysLog::Error(msg);
+	SystemLog::Error(msg);
 	Trace(msg);
 }
 
@@ -102,8 +102,8 @@ String LDAPErrorHandler::WriteSysLog(Anything error, String &msg)
 	OStringStream ossSysLog(&sSysLog);
 	error.PrintOn(ossSysLog, false);
 	ossSysLog.flush();
-	// log all ldap session errors in SysLog
-	SysLog::Error(TimeStamp::Now().AsStringWithZ() << " " <<  msg << " " << fName << " " << sSysLog);
+	// log all ldap session errors in SystemLog
+	SystemLog::Error(TimeStamp::Now().AsStringWithZ() << " " <<  msg << " " << fName << " " << sSysLog);
 	String msgAsString;
 	msgAsString << "LdapDataAccess: [" << fName << "]";
 	for ( long l = 0; l < error.GetSize(); ++l ) {
@@ -194,7 +194,7 @@ void LDAPErrorHandler::SetShouldRetry()
 	} else {
 		msg << "Retry already attempted. Not setting retry state: [" << RetryStateAsString(fRetryState) << "]";
 	}
-	SysLog::Info(msg);
+	SystemLog::Info(msg);
 }
 
 LDAPErrorHandler::eRetryState LDAPErrorHandler::GetRetryState()

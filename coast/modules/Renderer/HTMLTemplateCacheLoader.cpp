@@ -57,7 +57,7 @@ Anything HTMLTemplateCacheLoader::Load(const char *key)
 	} else {
 		String logMsg("HTMLTemplateRenderer::RenderAll: cannot open file ");
 		logMsg << key << ".html";
-		SysLog::Error(logMsg);
+		SystemLog::Error(logMsg);
 	}
 	SubTraceAny(TraceCache, cache, "Cache:");
 	return cache;
@@ -70,7 +70,7 @@ void HTMLTemplateCacheLoader::BuildCache(Anything &cache, istream &reader, const
 		TraceAny(froaConfig["ParserConfig"], "parser config to use");
 		cache = fParser->Parse(reader, filename, 1L, cache.GetAllocator(), froaConfig["ParserConfig"]);
 	} else {
-		SysLog::Error("HTMLTemplateCacheLoader::BuildCache: OOPS Parser undefined");
+		SystemLog::Error("HTMLTemplateCacheLoader::BuildCache: OOPS Parser undefined");
 	}
 }
 
@@ -78,7 +78,7 @@ void HTMLTemplateCacheLoader::BuildCache(Anything &cache, istream &reader, const
 void HTMLTemplateCacheBuilder::BuildCache(const ROAnything config)
 {
 	StartTrace(HTMLTemplateCacheBuilder.BuildCache);
-	SysLog::WriteToStderr("\tBuilding HTML Templates cache");
+	SystemLog::WriteToStderr("\tBuilding HTML Templates cache");
 
 	ROAnything langDirMap(config["LanguageDirMap"]);
 
@@ -118,7 +118,7 @@ void HTMLTemplateCacheBuilder::BuildCache(const ROAnything config)
 	HTMLTemplateNameMapLoader htnml(fileNameMap);
 	cache->Load("HTMLMappings", "HTMLTemplNameMap", &htnml);
 
-	SysLog::WriteToStderr(" done\n");
+	SystemLog::WriteToStderr(" done\n");
 }
 
 void HTMLTemplateCacheBuilder::CacheDir(const char *filepath, CacheHandler *cache, CacheLoadPolicy *htcl, const ROAnything langDirMap, Anything &fileNameMap)
@@ -143,7 +143,7 @@ void HTMLTemplateCacheBuilder::CacheDir(const char *filepath, CacheHandler *cach
 		}
 		// reset the filekey
 		fileKey = "";
-		SysLog::WriteToStderr(".", 1);
+		SystemLog::WriteToStderr(".", 1);
 	}
 }
 
@@ -166,6 +166,6 @@ void HTMLTemplateCacheBuilder::CacheDir(const char *filepath, CacheHandler *cach
 		fileNameMap[file][langKey] = fileKey;
 		// reset the filekey
 		fileKey = "";
-		SysLog::WriteToStderr(".", 1);
+		SystemLog::WriteToStderr(".", 1);
 	}
 }

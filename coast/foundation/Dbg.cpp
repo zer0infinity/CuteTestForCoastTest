@@ -11,7 +11,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "System.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "StringStream.h"
 
 //--- c-library modules used ---------------------------------------------------
@@ -40,7 +40,7 @@ public:
 	}
 	~TracerHelper() {
 		fStream.flush();
-		SysLog::WriteToStderr(fStrBuf);
+		SystemLog::WriteToStderr(fStrBuf);
 	}
 	void Tab(int n) {
 		for (int i = 0; i < n; ++i) {

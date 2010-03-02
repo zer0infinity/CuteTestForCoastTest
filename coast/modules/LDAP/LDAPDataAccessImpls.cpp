@@ -13,7 +13,7 @@
 #include "Renderer.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 
 //--- c-modules used -----------------------------------------------------------
@@ -592,7 +592,7 @@ int LDAPSearchDAI::DoLDAPRequest(Context &ctx, ParameterMapper *getter, LDAPConn
 		attrs = (char **) calloc(size + 1, sizeof(char *));
 		if (!attrs) {
 			static const char crashmsg[] = "FATAL: Attribute calloc failed in LDAPSearchDAI::DoLDAPRequest. Will crash.";
-			SysLog::WriteToStderr(crashmsg, sizeof(crashmsg));
+			SystemLog::WriteToStderr(crashmsg, sizeof(crashmsg));
 			return -1;
 		}
 		for (long i = 0; i < size; ++i) {

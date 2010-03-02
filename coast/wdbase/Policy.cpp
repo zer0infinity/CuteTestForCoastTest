@@ -10,7 +10,7 @@
 #include "Policy.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Registry.h"
 #include "Dbg.h"
 
@@ -20,7 +20,7 @@
 bool InstallerPolicy::Install(const ROAnything installerSpec, Registry *r)
 {
 	StartTrace1(InstallerPolicy.DoInstall, "Category: " << GetCategory());
-	SysLog::WriteToStderr(String("\t") << GetCategory());
+	SystemLog::WriteToStderr(String("\t") << GetCategory());
 	// let specific handler install its configured objects first
 	bool bRet = DoInstall(installerSpec, r);
 	bRet = IntInitialize(r) && bRet;
@@ -42,7 +42,7 @@ bool InstallerPolicy::IntInitialize(Registry *r)
 			bool bSucc = ro->Initialize(GetCategory());
 			Trace("initializing <" << name << "> was " << (bSucc ? "" : "not ") << "successful");
 			if ( !bSucc ) {
-				SysLog::Warning(String("initializing <") << name << "> was not successful!");
+				SystemLog::Warning(String("initializing <") << name << "> was not successful!");
 			}
 			bRet = bRet && bSucc;
 		}
@@ -53,9 +53,9 @@ bool InstallerPolicy::IntInitialize(Registry *r)
 void InstallerPolicy::TellSuccess(bool success)
 {
 	if ( success ) {
-		SysLog::WriteToStderr(" done\n");
+		SystemLog::WriteToStderr(" done\n");
 	} else {
-		SysLog::WriteToStderr(" failed\n");
+		SystemLog::WriteToStderr(" failed\n");
 	}
 }
 
@@ -82,7 +82,7 @@ bool TerminationPolicy::IntFinalize(Registry *r)
 			bool bSucc = ro->Finalize();
 			Trace("finalizing <" << name << "> was " << (bSucc ? "" : "not ") << "successful");
 			if ( !bSucc ) {
-				SysLog::Warning(String("finalizing <") << name << "> was not successful!");
+				SystemLog::Warning(String("finalizing <") << name << "> was not successful!");
 			}
 			bRet = bRet && bSucc;
 		}
@@ -130,7 +130,7 @@ bool AliasInstaller::DoInstall(const ROAnything installerSpec, Registry *r)
 								reg->Register(alias, GetCategory());
 								reg->Initialize(GetCategory());
 								t->SetName(origName);
-								SysLog::WriteToStderr(".", 1);
+								SystemLog::WriteToStderr(".", 1);
 							} else {
 								SYSERROR("Alias configuration error in category: " << GetCategory() << " for RegisterableObject <" << NotNull(pcRegObjectName) << ">, empty alias name!");
 								installationSuccess = false;
@@ -287,7 +287,7 @@ HierarchConfNamed *HierarchyInstaller::GetLeaf(const char *leafName, HierarchCon
 		// loading of objects configuration
 		leaf->Initialize(GetCategory());
 	}
-	SysLog::WriteToStderr(".", 1);
+	SystemLog::WriteToStderr(".", 1);
 
 	return leaf;
 }

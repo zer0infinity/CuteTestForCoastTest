@@ -12,7 +12,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
 #include "Timers.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "RequestProcessor.h"
 #include "RequestListener.h"
 #include "WPMStatHandler.h"
@@ -129,7 +129,7 @@ RequestReactor::~RequestReactor()
 		StringStream stream(strbuf);
 		statistic.PrintOn(stream) << "\n";
 		stream.flush();
-		SysLog::WriteToStderr(strbuf);
+		SystemLog::WriteToStderr(strbuf);
 		delete fStatHandler;
 	}
 }
@@ -209,7 +209,7 @@ bool RequestReactor::AwaitEmpty(long sec)
 				os << "MaxSecToWait: " << setw(4) << sec <<
 				   "  SecsWaited: "	 << setw(4) << msgCount <<
 				   "  Pending requests: " <<  setw(6) <<  parallelRequests << endl;
-				SysLog::WriteToStderr(os.str());
+				SystemLog::WriteToStderr(os.str());
 			}
 		}
 

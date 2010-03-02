@@ -16,7 +16,7 @@
 #include "SystemAPITest.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "System.h"
 #include "Dbg.h"
 
@@ -324,7 +324,7 @@ THREADWRAPPERFUNCDECL(CONDITIONTestWaitOnSignalFunc, thrdparam)
 	Trace("*** Unlock mutex after cond-signaled");
 	t_assertm_intoany(UNLOCKMUTEX(param.mtx, iRet), "mutex unlock failed", param.result);
 	if (!SIGNALCOND(param.cond)) {
-		SysLog::Error("SIGNALCOND failed");
+		SystemLog::Error("SIGNALCOND failed");
 	}
 
 	// wakeup joiners etc
@@ -454,7 +454,7 @@ void SystemAPITest::CONDITIONTimedWaitTimeoutTest()
 	if ( !t_assertm(abs(difference - WAITUSEC) < 20000, "assert 20 milisecond accuracy of condition timed wait") ) {
 		String strTimes("WAITUSEC:");
 		strTimes << (long)WAITUSEC << " difference:" << difference;
-		SysLog::WriteToStderr(strTimes);
+		SystemLog::WriteToStderr(strTimes);
 	}
 
 	t_assertm(UNLOCKMUTEX(mtx, iRet), "mutex unlock failed");

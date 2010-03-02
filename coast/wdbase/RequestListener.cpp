@@ -10,7 +10,7 @@
 #include "RequestListener.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Registry.h"
 #include "Dbg.h"
 
@@ -131,7 +131,7 @@ bool AcceptorFactory::DoLoadConfig(const char *category)
 	}
 	String cfgFilename;
 	DoGetConfigName(fCategory, fName, cfgFilename);
-	SysLog::Info(String("AcceptorFactory::DoLoadConfig: no specific config entry for <") << fName << "> found in " << cfgFilename << ".any");
+	SystemLog::Info(String("AcceptorFactory::DoLoadConfig: no specific config entry for <") << fName << "> found in " << cfgFilename << ".any");
 	fConfig = Anything();
 	// because these object are hierarchical, it can be that some of them do not have their own config
 	// so we must not fail here
@@ -180,28 +180,28 @@ int ListenerThread::Init(ROAnything args)
 		String msg("AcceptorFactory: ");
 		msg << fAcceptorName << " not found!";
 		Trace(msg);
-		SysLog::Error(msg);
+		SystemLog::Error(msg);
 		return -1;
 	}
 
 	fAcceptor = acf->MakeAcceptor(fCallBack);
 	if (!fAcceptor) {
 		String logMsg;
-		SysLog::Error(logMsg << "no acceptor created");
+		SystemLog::Error(logMsg << "no acceptor created");
 		Trace(logMsg);
 		return -1;
 	}
 	int retVal;
 	if ( (retVal = fAcceptor->PrepareAcceptLoop()) != 0) {
 		String logMsg;
-		SysLog::Error(logMsg << "server (" << fAcceptorName << ")  prepare accept failed");
+		SystemLog::Error(logMsg << "server (" << fAcceptorName << ")  prepare accept failed");
 		Trace(logMsg << " with retVal " << (long)retVal );
 		return retVal;
 	}
 	// start the accept loop
 	String m;
 	m << GetName() << " ready on ip: " << fAcceptor->GetAddress() << " port: " << fAcceptor->GetPort() << "\n";
-	SysLog::WriteToStderr(m);
+	SystemLog::WriteToStderr(m);
 	return 0;
 }
 
@@ -225,7 +225,7 @@ void ListenerThread::DoTerminationRequestHook(ROAnything args)
 	if (fAcceptor && fAcceptor->StopAcceptLoop()) {
 		String m;
 		m << "\tQuitting Server::Run loop <" << fAcceptorName << ">" << "\n";
-		SysLog::WriteToStderr(m);
+		SystemLog::WriteToStderr(m);
 	}
 }
 

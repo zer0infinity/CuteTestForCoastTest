@@ -10,7 +10,7 @@
 #include "ITOStorage.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "System.h"
 #include "MemHeader.h"
 #include "InitFinisManagerFoundation.h"
@@ -53,10 +53,10 @@ void MemChecker::TraceDelta(const char *message)
 	if ( delta != 0 ) {
 		char msgbuf[1024] = {'\0'};
 		if (message) {
-			SysLog::WriteToStderr( message, strlen(message));
+			SystemLog::WriteToStderr( message, strlen(message));
 		}
 		int bufsz = snprintf(msgbuf, sizeof(msgbuf), "\nMem Usage change by %.0f bytes in %s\nAllocator [%02ld]\n", (double)delta, fScope, ( fAllocator ? fAllocator->GetId() : 0L ) );
-		SysLog::WriteToStderr( msgbuf, bufsz );
+		SystemLog::WriteToStderr( msgbuf, bufsz );
 	}
 }
 
@@ -148,7 +148,7 @@ void MemTracker::TrackFree(MemoryHeader *mh)
 void MemTracker::DumpUsedBlocks()
 {
 	if ( fpUsedList && fpUsedList->size() ) {
-		SysLog::Error(String(Storage::Global()).Append("memory blocks still in use for ").Append(fpName).Append(':'));
+		SystemLog::Error(String(Storage::Global()).Append("memory blocks still in use for ").Append(fpName).Append(':'));
 		UsedListType::const_iterator aUsedIterator;
 		long lIdx = 0;
 		for ( aUsedIterator = fpUsedList->begin(); aUsedIterator != fpUsedList->end(); ++lIdx, ++aUsedIterator) {
@@ -158,7 +158,7 @@ void MemTracker::DumpUsedBlocks()
 			strOut.Append("Block ").Append(lIdx).Append('\n');
 			strOut.Append("MemoryHeader:\n").Append(String((void *)pMH, MemoryHeader::AlignedSize(), Storage::Global()).DumpAsHex()).Append('\n');
 			strOut.Append("Content:\n").Append(String((void *)((char *)pMH + MemoryHeader::AlignedSize()), pMH->fUsableSize, Storage::Global()).DumpAsHex()).Append('\n');
-			SysLog::WriteToStderr(strOut);
+			SystemLog::WriteToStderr(strOut);
 		}
 	}
 }
@@ -187,7 +187,7 @@ void MemTracker::PrintStatistic(long lLevel)
 				 fSizeFreed, fNumFrees, (long)(fSizeFreed / ((fNumFrees) ? fNumFrees : 1)),
 				 fAllocated
 				);
-		SysLog::WriteToStderr(buf, strlen(buf));
+		SystemLog::WriteToStderr(buf, strlen(buf));
 	}
 }
 
@@ -453,7 +453,7 @@ void *GlobalAllocator::Alloc(u_long allocSize)
 	} else {
 		static char crashmsg[255] = { 0 };
 		snprintf(crashmsg, 254, "FATAL: GlobalAllocator::Alloc malloc of sz:%lub failed. I will crash :-(\n", allocSize);
-		SysLog::WriteToStderr(crashmsg, strlen(crashmsg));
+		SystemLog::WriteToStderr(crashmsg, strlen(crashmsg));
 	}
 	return NULL;
 }

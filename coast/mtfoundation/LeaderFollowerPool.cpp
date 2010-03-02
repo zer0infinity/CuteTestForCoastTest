@@ -180,7 +180,7 @@ bool LeaderFollowerPool::InitReactor(ROAnything args)
 			os << setw(20) <<  args.SlotName(i) << " Accepting requests from: " <<
 			   acceptor->GetAddress() << " port: " << acceptor->GetPort() << " backlog: " <<
 			   acceptor->GetBacklog() << endl;
-			SysLog::WriteToStderr(os.str());
+			SystemLog::WriteToStderr(os.str());
 			fReactor->RegisterHandle(acceptor);
 		} else {
 			return false;
@@ -343,7 +343,7 @@ Acceptor *HandleSet::WaitForEvents(long timeout)
 		retCode = poll(fds, NOFDS, timeout);
 #endif
 		SYSERROR("select/poll call interrupted. I do a restart. Socket error number: " <<
-				 (long) SOCKET_ERROR << " return code " << retCode << " LastSyError: " <<  SysLog::LastSysError());
+				 (long) SOCKET_ERROR << " return code " << retCode << " LastSyError: " <<  SystemLog::LastSysError());
 	}
 	if ( retCode > 0 ) {
 		for (i = 0, sz = fDemuxTable.GetSize(); i < sz; ++i) {
@@ -366,7 +366,7 @@ Acceptor *HandleSet::WaitForEvents(long timeout)
 	}
 	SYSERROR("select/poll call with acceptors failed");
 	SYSERROR("Socket error number: " << (long) SOCKET_ERROR << " return code " << retCode <<
-			 " LastSyError: " <<  SysLog::LastSysError());
+			 " LastSyError: " <<  SystemLog::LastSysError());
 	return 0;
 }
 

@@ -18,7 +18,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "SocketStream.h"
 #include "Dbg.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "System.h"
 #include "DataAccess.h"
 

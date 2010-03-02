@@ -15,7 +15,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "StringStream.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 
 //--- c-modules used -----------------------------------------------------------
 #include <ctype.h>
@@ -636,11 +636,11 @@ void GenericXMLParser::Error(const char *msg)
 	StartTrace(GenericXMLParser.Error);
 	String m(" ");
 	m.Append(fFileName).Append(".xml:").Append(fLine).Append(" ").Append(msg);
-	SysLog::Warning(m);
+	SystemLog::Warning(m);
 	fParseTree["Errors"].Append(m);
 	Trace(m);
 	m << "\n";
-	SysLog::WriteToStderr(m);
+	SystemLog::WriteToStderr(m);
 }
 void GenericXMLPrinter::PrintXml(ostream &os, ROAnything domany)
 {

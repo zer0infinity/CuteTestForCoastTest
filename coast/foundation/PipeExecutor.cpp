@@ -11,7 +11,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "System.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Pipe.h"
 #include "TimeStamp.h"
 #include "Dbg.h"
@@ -126,14 +126,14 @@ long PipeExecutor::TerminateChild(int termSignal, bool tryhard)
 		int wres = waitpid(fChildPid, &wstat, (tryhard ? WNOHANG : 0) | WUNTRACED);
 		Trace("waitpid delivers : " << long(wres) << " and stat " << long(wstat));
 		if (wres < 0) {
-			Trace("errno after wait:" << (long)errno << " " << SysLog::SysErrorMsg(errno));
+			Trace("errno after wait:" << (long)errno << " " << SystemLog::SysErrorMsg(errno));
 		}
 		if (wres == fChildPid) {
 			Trace("found child");
 			return WEXITSTATUS(wstat); // already dead!
 		} else if (wres <= 0 && tryhard) {
 			if ( kill(fChildPid, termSignal) < 0 ) {
-				Trace("kill failed, errno =" << (long)errno << " " << SysLog::SysErrorMsg(errno));
+				Trace("kill failed, errno =" << (long)errno << " " << SystemLog::SysErrorMsg(errno));
 				if (errno == ESRCH) {
 					// already gone and removed?
 				} else if (errno == EPERM) {
@@ -302,7 +302,7 @@ bool PipeExecutor::ForkAndRun(Anything parm, Anything env)
 								   strerror(iError));
 				write(1, buff, len);
 				write(2, buff, len);
-				SysLog::Error(buff);
+				SystemLog::Error(buff);
 				_exit(EXIT_FAILURE); // point of no return for child process.....
 			} else if (fChildPid > 0) {
 				Trace("forked pipe-exec-child with pid:" << fChildPid);
@@ -316,8 +316,8 @@ bool PipeExecutor::ForkAndRun(Anything parm, Anything env)
 			} else {
 				// we failed to fork
 				String msg(strTime);
-				msg.Append(" fork failed for child pid ").Append( (long)fChildPid ).Append(" with sysmsg [").Append( SysLog::LastSysError() ).Append(']');
-				SysLog::Error(msg);
+				msg.Append(" fork failed for child pid ").Append( (long)fChildPid ).Append(" with sysmsg [").Append( SystemLog::LastSysError() ).Append(']');
+				SystemLog::Error(msg);
 			}
 #else
 			// now create new process
@@ -388,7 +388,7 @@ bool PipeExecutor::ForkAndRun(Anything parm, Anything env)
 			}
 		}
 	} else {
-		SysLog::Error(String("error in PipeExecutor::ForkAndRun (") << SysLog::LastSysError() << ")");
+		SystemLog::Error(String("error in PipeExecutor::ForkAndRun (") << SystemLog::LastSysError() << ")");
 	}
 	return (0 != fPipe); // we failed
 }

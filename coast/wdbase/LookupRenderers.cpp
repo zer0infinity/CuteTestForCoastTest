@@ -10,7 +10,7 @@
 #include "LookupRenderers.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 
 static const char *gcSlotName =		"LookupName";
@@ -70,7 +70,7 @@ void LookupRenderer::RenderAll(ostream &reply, Context &context, const ROAnythin
 		OStringStream os(&error);
 		lookupName.PrintOn(os, false);	// append Anything to ease debugging
 
-		SysLog::Error(error);
+		SystemLog::Error(error);
 		return;
 	}
 

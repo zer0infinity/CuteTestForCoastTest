@@ -10,7 +10,7 @@
 #include "WDModule.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Registry.h"
 #include "Dbg.h"
 
@@ -157,45 +157,45 @@ int WDModule::Install(const ROAnything roaConfig)
 int WDModule::Terminate(const ROAnything roaConfig)
 {
 	StartTrace(WDModule.Terminate);
-	SysLog::WriteToStderr("\tTerminating modules:\n");
+	SystemLog::WriteToStderr("\tTerminating modules:\n");
 	ROAnything roaModules;
 	WDTerminate wdt(roaConfig);
 
 	if ( roaConfig.LookupPath(roaModules, "Modules") ) {
 		return ConfiguredWDMIterator(&wdt, roaModules, false).DoForEach();
 	}
-	SysLog::WriteToStderr("\t\tNO /Modules configured: Terminating ALL REGISTERED MODULES!\n");
+	SystemLog::WriteToStderr("\t\tNO /Modules configured: Terminating ALL REGISTERED MODULES!\n");
 	return RegistryWDMIterator(&wdt, false).DoForEach();
 }
 
 int WDModule::ResetInstall(const ROAnything roaConfig)
 {
 	StartTrace(WDModule.ResetInstall);
-	SysLog::WriteToStderr("\tInstalling modules after reset:\n");
+	SystemLog::WriteToStderr("\tInstalling modules after reset:\n");
 	ROAnything roaModules;
 	WDResetInstall wdt(roaConfig);
 	int result = 0;
 	if ( roaConfig.LookupPath(roaModules, "Modules") ) {
 		result = ConfiguredWDMIterator(&wdt, roaModules).DoForEach();
 	} else {
-		SysLog::WriteToStderr("\t\tNO /Modules configured: ResetInstal all registered modules\n");
+		SystemLog::WriteToStderr("\t\tNO /Modules configured: ResetInstal all registered modules\n");
 		result = RegistryWDMIterator(&wdt).DoForEach();
 	}
-	SysLog::WriteToStderr("\tInstallation of modules after reset: DONE\n");
+	SystemLog::WriteToStderr("\tInstallation of modules after reset: DONE\n");
 	return result;
 }
 
 int WDModule::ResetTerminate(const ROAnything roaConfig)
 {
 	StartTrace(WDModule.ResetTerminate);
-	SysLog::WriteToStderr("\tTerminating modules for reset:\n");
+	SystemLog::WriteToStderr("\tTerminating modules for reset:\n");
 	ROAnything roaModules;
 	WDResetTerminate wdt(roaConfig);
 
 	if ( roaConfig.LookupPath(roaModules, "Modules") ) {
 		return ConfiguredWDMIterator(&wdt, roaModules, false).DoForEach();
 	}
-	SysLog::WriteToStderr("\t\tNO /Modules configured: Terminating ALL REGISTERED MODULES for reset\n");
+	SystemLog::WriteToStderr("\t\tNO /Modules configured: Terminating ALL REGISTERED MODULES for reset\n");
 	return RegistryWDMIterator(&wdt, false).DoForEach();
 }
 
@@ -275,7 +275,7 @@ WDModule *ConfiguredWDMIterator::Next()
 	WDModule *wdm = WDModule::FindWDModule(moduleName);
 	(fForward) ? ++fIndex : --fIndex;
 	if ( !wdm ) {
-		SysLog::WriteToStderr(moduleName << " not found.\n");
+		SystemLog::WriteToStderr(moduleName << " not found.\n");
 	}
 	return wdm;
 }
@@ -334,7 +334,7 @@ void WDModuleCaller::HandleError(WDModule *wdm)
 {
 	// call failed, send a message for the poor config debugger
 	if (wdm) {
-		SysLog::WriteToStderr(String(CallName()) << " of " << fModuleName << " failed\n");
+		SystemLog::WriteToStderr(String(CallName()) << " of " << fModuleName << " failed\n");
 	}
 }
 bool WDInit::DoCall(WDModule *wdm)
@@ -344,14 +344,14 @@ bool WDInit::DoCall(WDModule *wdm)
 
 bool WDTerminate::DoCall(WDModule *wdm)
 {
-	SysLog::WriteToStderr("\tTerminating ");
-	SysLog::WriteToStderr(wdm->GetName());
+	SystemLog::WriteToStderr("\tTerminating ");
+	SystemLog::WriteToStderr(wdm->GetName());
 	bool ret = DoCallInner(wdm);
 	if ( !wdm->IsStatic() ) {
 		Registry::GetRegistry("WDModule")->UnregisterRegisterableObject(fModuleName);
 		delete wdm;
 	}
-	SysLog::WriteToStderr( ( ret ? " done\n" : " failed\n" ) );
+	SystemLog::WriteToStderr( ( ret ? " done\n" : " failed\n" ) );
 	return ret;
 }
 

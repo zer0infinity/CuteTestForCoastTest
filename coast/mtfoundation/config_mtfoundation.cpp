@@ -12,7 +12,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "InitFinisManagerMTFoundation.h"
 
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Threads.h"
 
 static void Init()
@@ -51,17 +51,17 @@ void EXPORTDECL_MTFOUNDATION TerminateKilledThreads()
 	static bool once = false;
 	if (!once) {
 		if (fgThreads.GetSize()) {
-			SysLog::Warning("mtfoundation: following threads were still active !!");
+			SystemLog::Warning("mtfoundation: following threads were still active !!");
 			String strbuf;
 			StringStream stream(strbuf);
 			fgThreads.PrintOn(stream) << "\n";
 			stream.flush();
-			SysLog::WriteToStderr(strbuf);
+			SystemLog::WriteToStderr(strbuf);
 			AnyExtensions::Iterator<ROAnything> aIter(fgThreads);
 			ROAnything aAny;
 			while (aIter.Next(aAny)) {
 				Thread *pThr = (Thread *)aAny["Addr"].AsIFAObject();
-				SysLog::Warning(String("  Thread[") << aAny["Name"].AsString() << "] Handle[" << aAny["id"].AsLong() << "] Addr [" << (long)aAny["Addr"].AsIFAObject() << "]");
+				SystemLog::Warning(String("  Thread[") << aAny["Name"].AsString() << "] Handle[" << aAny["id"].AsLong() << "] Addr [" << (long)aAny["Addr"].AsIFAObject() << "]");
 				if (pThr && pThr->IsAlive()) {
 					pThr->IntSetState(Thread::eTerminationRequested);
 				}
@@ -93,25 +93,25 @@ BOOL WINAPI DllMain(HANDLE hinstDLL,  // DLL module handle
 		case DLL_PROCESS_ATTACH:
 			Init();
 			if (THRKEYCREATE(fgThreadPtrKey, 0)) {
-				SysLog::Error("TlsAlloc of fgThreadPtrKey failed");
+				SystemLog::Error("TlsAlloc of fgThreadPtrKey failed");
 			}
 			break;
 
 			// The attached process creates a new thread.
 		case DLL_THREAD_ATTACH:
-			SysLog::Info(String("mtfoundation: DLL_THREAD_ATTACH for [") << Thread::MyId() << "]");
+			SystemLog::Info(String("mtfoundation: DLL_THREAD_ATTACH for [") << Thread::MyId() << "]");
 			break;
 
 			// The thread of the attached process terminates.
 		case DLL_THREAD_DETACH: {
 			Thread *pThr = (Thread *)TlsGetValue(fgThreadPtrKey);
-			SysLog::Info(String("DLL_THREAD_DETACH for [") << Thread::MyId() << "] &Thread:"  << (long)pThr );
+			SystemLog::Info(String("DLL_THREAD_DETACH for [") << Thread::MyId() << "] &Thread:"  << (long)pThr );
 			if ( pThr ) {
 				// there seems to be a valid ThreadPtr, eg. it is a mtfoundation Thread
 				RemoveThreadDetach(pThr);
 				pThr->SetState(Thread::eTerminated);
 			} else {
-				SYSINFO("Thread* was NULL for [" << Thread::MyId() << "] ErrorMessage: [" << SysLog::LastSysError() << "]");
+				SYSINFO("Thread* was NULL for [" << Thread::MyId() << "] ErrorMessage: [" << SystemLog::LastSysError() << "]");
 			}
 			break;
 		}

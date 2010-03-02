@@ -18,7 +18,7 @@
 #include "StringStream.h"
 #include "Base64.h"
 #include "MD5.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 
 //--- c-modules used -----------------------------------------------------------
 #include <string.h>		// used for memset on older compilers
@@ -37,14 +37,14 @@ void PersistentLDAPConnection::tsd_setup()
 	if ( !SETTLSDATA(LDAPConnectionManager::fgErrnoKey, tsd) ) {
 		Trace("Setting Thread specific data for fgErrnoKey failed. Thread [" << Thread::MyId() << "]");
 	}
-	SysLog::Info(String("PersistentLDAPConnection::tsdsetup() Setting thread specific data. Thread [") <<  Thread::MyId() << "]");
+	SystemLog::Info(String("PersistentLDAPConnection::tsdsetup() Setting thread specific data. Thread [") <<  Thread::MyId() << "]");
 }
 
 void PersistentLDAPConnection::tsd_destruct(void *tsd)
 {
 	StartTrace(PersistentLDAPConnection.tsd_destruct);
 	if ( tsd != (void *) NULL ) {
-		SysLog::Info(String("PersistentLDAPConnection::tsd_destruct() Releasing thread specific data. Thread [") <<  Thread::MyId() << "]");
+		SystemLog::Info(String("PersistentLDAPConnection::tsd_destruct() Releasing thread specific data. Thread [") <<  Thread::MyId() << "]");
 		free(tsd);
 	}
 }

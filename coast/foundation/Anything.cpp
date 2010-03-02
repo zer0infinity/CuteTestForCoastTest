@@ -12,7 +12,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "AnyImpls.h"
 #include "System.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "StringStream.h"
 #include "Dbg.h"
 #include "AnyVisitor.h"
@@ -608,7 +608,7 @@ public:
 			} else if (!any.LookupPath(preslot, strSlotName)) {
 				String m;
 				m << "lookup of slotname [" << strSlotName << "] failed!" << "\n";
-				SysLog::WriteToStderr(m);
+				SystemLog::WriteToStderr(m);
 			}
 			if (!preslot.IsNull()) {
 				if (anyIdx.GetType() == AnyLongType) {
@@ -620,7 +620,7 @@ public:
 				if (!any.LookupPath(ref, strRefName)) {
 					String m;
 					m << "lookup of reference [" << strRefName << "] failed!" << "\n";
-					SysLog::WriteToStderr(m);
+					SystemLog::WriteToStderr(m);
 				} else {
 					if (anyIdx.GetType() == AnyLongType) {
 						preslot[anyIdx.AsLong(0L)] = ref;
@@ -1388,7 +1388,7 @@ bool Anything::Import(istream &is, const char *fname)
 			}
 			m << strFName << (bHasExt ? ":" : ".any");
 			m.Append(": syntax error");
-			SysLog::WriteToStderr(m << "\n");
+			SystemLog::WriteToStderr(m << "\n");
 			SYSERROR(m);
 			return false;
 		}
@@ -2241,7 +2241,7 @@ void AnythingParser::Error(const char *msg, const char *toktext)
 	m << (bHasExt ? ":" : ".any:") << fContext.LineRef() << " " << msg << " [" << toktext << "]";
 	SYSWARNING(m);
 	m << "\n";
-	SysLog::WriteToStderr(m);
+	SystemLog::WriteToStderr(m);
 }
 
 //---------------- test case support ------------

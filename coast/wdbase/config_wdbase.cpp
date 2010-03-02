@@ -13,7 +13,7 @@
 #include "InitFinisManagerWDBase.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 
 // special include to inline static objects needed for registry
 // -> this one needs to be here - or say needs to be the first object linked/created by the linker/runtime
@@ -58,12 +58,12 @@ BOOL WINAPI DllMain(HANDLE hinstDLL,  // DLL module handle
 
 			// The attached process creates a new thread.
 		case DLL_THREAD_ATTACH:
-			SysLog::Info(String("wdbase::DLL_THREAD_ATTACH for [") << Thread::MyId() << "]");
+			SystemLog::Info(String("wdbase::DLL_THREAD_ATTACH for [") << Thread::MyId() << "]");
 			break;
 
 			// The thread of the attached process terminates.
 		case DLL_THREAD_DETACH:
-			SysLog::Info(String("wdbase::DLL_THREAD_DETACH for [") << Thread::MyId() << "]");
+			SystemLog::Info(String("wdbase::DLL_THREAD_DETACH for [") << Thread::MyId() << "]");
 			break;
 
 			// The DLL unloading due to process termination or call to FreeLibrary.

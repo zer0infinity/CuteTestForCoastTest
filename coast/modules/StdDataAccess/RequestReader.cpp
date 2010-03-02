@@ -95,7 +95,7 @@ bool RequestReader::ReadRequest(iostream &Ios, const Anything &clientInfo)
 	}
 
 #ifdef REQ_TRACING
-	SysLog::WriteToStderr(String("<") << fRequestBuffer << ">\n");
+	SystemLog::WriteToStderr(String("<") << fRequestBuffer << ">\n");
 #endif
 	TraceAny(fHeader.GetInfo(), "RequestHeader:");
 	return true;

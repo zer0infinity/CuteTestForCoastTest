@@ -11,7 +11,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "System.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 
 #if defined(ONLY_STD_IOSTREAM)
@@ -293,7 +293,7 @@ bool Recording::ReadinRecording( const String &fileName, Anything &recording )
 	if (ifp == 0) {
 		String eMsg = "Can't open recording file ";
 		eMsg << recFilename << ".any";
-		SysLog::Error( eMsg );
+		SystemLog::Error( eMsg );
 		return false;
 	} else {
 		recording.Import(*ifp);
@@ -316,7 +316,7 @@ bool Recording::WriteoutRecording( const String &fileName, Anything &recording )
 	if (ifp == 0) {
 		String eMsg = "Can't open config file for writing ";
 		eMsg << recFilename << ".any";
-		SysLog::Error( eMsg );
+		SystemLog::Error( eMsg );
 		return false;
 	} else {
 		// write back new any to file....

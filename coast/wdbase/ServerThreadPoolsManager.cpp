@@ -156,11 +156,11 @@ bool ServerThreadPoolsManager::BlockRequests(Server *server)
 	ctx.Push("ServerThreadPoolsManager", this);
 	fActiveRequests->BlockRequests();
 	String m(" done\n");
-	SysLog::WriteToStderr(m);
+	SystemLog::WriteToStderr(m);
 	Trace("done");
 
 	m = "Waiting for requests to terminate \n";
-	SysLog::WriteToStderr(m);
+	SystemLog::WriteToStderr(m);
 	Trace("Waiting for requests to terminate ");
 	return fActiveRequests->AwaitEmpty(ctx.Lookup("AwaitResetEmpty", 120L));
 }
@@ -186,11 +186,11 @@ void ServerThreadPoolsManager::Terminate()
 
 	if ( fActiveRequests ) {
 		String m("Waiting for requests to terminate \n");
-		SysLog::WriteToStderr(m);
+		SystemLog::WriteToStderr(m);
 		fActiveRequests->AwaitEmpty(Lookup("AwaitResetEmpty", 120L));			// wait for the last request to terminate
 		bool reallyterminated = fActiveRequests->Terminate();	// AwaitEmpty() may be obsolete
 		m = (reallyterminated ? "done\n" : "OOPS threads not correctly terminated\n");
-		SysLog::WriteToStderr(m);
+		SystemLog::WriteToStderr(m);
 		Assert(reallyterminated); // SOP should we kill the program?
 		delete fActiveRequests;
 		fActiveRequests = 0;

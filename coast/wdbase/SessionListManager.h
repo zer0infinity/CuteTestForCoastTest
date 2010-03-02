@@ -219,7 +219,7 @@ protected:
 	long fMaxSessionsAllowed;
 	//!pointer to session factory
 	SessionFactory *fSessionFactory;
-	//!additional loggin of session info to cerr (not only SysLog)
+	//!additional loggin of session info to cerr (not only SystemLog)
 	long fLogToCerr;
 	//!ID that's unique across multiple hosts and/or processes.
 	//!May depend on IP address (through gethostid()).

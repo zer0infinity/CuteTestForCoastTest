@@ -14,7 +14,7 @@
 #include "LDAPMessageEntry.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Renderer.h"
 #include "Dbg.h"
 #include "Timers.h"
@@ -56,7 +56,7 @@ bool LDAPDAImpl::Exec(Context &ctx, ParameterMapper *in, ResultMapper *out)
 			if ( rc != LDAP_SUCCESS ) {
 				String msg("LDAPSearch  Base[");
 				msg << params.Base() << "] Filter[" << params.Filter() << "] " << ldap_err2string( rc );
-				SysLog::Error(msg);
+				SystemLog::Error(msg);
 				Anything aError;
 				aError["Error"]["Msg"] = msg;
 				aError["Error"]["Code"] = rc;
@@ -67,7 +67,7 @@ bool LDAPDAImpl::Exec(Context &ctx, ParameterMapper *in, ResultMapper *out)
 				retVal = DoSearch(ldapHdl, "LDAPSearch", msgId, 0,  ctx, in, out);
 			}
 		} else {
-			SysLog::Error("No SearchFilter defined");
+			SystemLog::Error("No SearchFilter defined");
 			out->Put("Error", String("No SearchFilter defined"), ctx);
 			retVal = false;
 		}
@@ -103,7 +103,7 @@ void LDAPDAImpl::HandleError(LDAP *ldapHdl, Context &ctx, ResultMapper *out, con
 		out->Put("ErrorConnect", aError, ctx);
 	}
 	out->Put("Error", msg, ctx);
-	SysLog::Error(msg);
+	SystemLog::Error(msg);
 }
 
 LDAP *LDAPDAImpl::Connect(Context &ctx, ParameterMapper *in, ResultMapper *out)
@@ -206,9 +206,13 @@ int LDAPDAImpl::WaitForResult( LDAPMessage **result, LDAP *ldapHdl, String messa
 	}
 	if (rc == -1) {
 		// in case we don't have a LDAPMessage structure
+#if defined(USE_OPENSSL)
 		String msg(messageIn <<  "  " << "ldap_result() failed with -1");
-
-		SysLog::Error(msg);
+#else
+		int rc_errno = ldap_get_lderrno( ldapHdl, NULL, NULL );
+		String msg(messageIn <<  "  " << ldap_err2string( rc_errno ));
+#endif
+		SystemLog::Error(msg);
 		out->Put("Error", msg, c);
 		out->Put("ErrorWaitForResult", msg, c);
 	}
@@ -315,7 +319,7 @@ bool LDAPDAImpl::CheckConnectResult(int opRet, bool &outcome, LDAPMessage *resul
 	int rc = ldap_result2error(ldapHdl, result, 0);
 	if (rc != LDAP_SUCCESS) {
 		String msg(messageIn <<  "  " << ldap_err2string( rc ));
-		SysLog::Error(msg);
+		SystemLog::Error(msg);
 		Trace("===================== ldap_result2error failed !!!  [" << msg << "]");
 		outcome = false;
 		return true;
@@ -395,7 +399,7 @@ bool LDAPDAImpl::CheckSearchResult(int opRet, bool &outcome, LDAPMessage *result
 						if ( matched_msg != NULL && *matched_msg != '\0' ) {
 							partialMatch <<  matched_msg;
 						}
-						SysLog::Error(msg);
+						SystemLog::Error(msg);
 						Anything aError;
 						aError["Error"]["Msg"] = msg;
 						aError["Error"]["Code"] = opRet;
@@ -446,7 +450,7 @@ bool LDAPDAImpl::CheckSearchResult(int opRet, bool &outcome, LDAPMessage *result
 			if ( parse_rc != LDAP_SUCCESS ) {
 				String msg;
 				msg << messageIn << "  dn<" << params.DName() << ">: " << ldap_err2string( opRet );
-				SysLog::Error(msg);
+				SystemLog::Error(msg);
 				Anything aError;
 				aError["Error"]["Msg"] = msg;
 				aError["Error"]["Code"] = opRet;
@@ -471,7 +475,7 @@ bool LDAPDAImpl::CheckSearchResult(int opRet, bool &outcome, LDAPMessage *result
 					if ( matched_msg != NULL && *matched_msg != '\0' ) {
 						partialMatch <<  matched_msg;
 					}
-					SysLog::Error(msg);
+					SystemLog::Error(msg);
 					Anything aError;
 					aError["Error"]["Msg"] = msg;
 					aError["Error"]["Code"] = opRet;
@@ -559,7 +563,7 @@ bool LDAPDAImpl::CheckSearchResult(int opRet, bool &outcome, LDAPMessage *result
 		if (timeLimitIn->tv_sec != 0 || timeLimitIn->tv_usec != 0) {		// no polling, timeout)
 			msg << "The request <" << messageIn << "> took more then <" << (long) timeLimitIn->tv_sec << "> seconds. ";
 			ldap_abandon_ext(ldapHdl, msgId, NULL, NULL);
-			SysLog::Error(msg);
+			SystemLog::Error(msg);
 			out->Put("Error", msg, c);
 			out->Put("ErrorTimeout", msg, c);
 			outcome = false;
@@ -600,7 +604,7 @@ bool LDAPDAImpl::CheckSearchResult(int opRet, bool &outcome, LDAPMessage *result
 				if ( rc != LDAP_SUCCESS ) {
 					String msg("LDAPCompare  ");
 					msg << "dn<" << params.DName() << ">: " << ldap_err2string( rc );
-					SysLog::Error(msg);
+					SystemLog::Error(msg);
 					Anything aError;
 					aError["Error"]["Msg"] = msg;
 					aError["Error"]["Code"] = rc;
@@ -623,7 +627,7 @@ bool LDAPDAImpl::CheckSearchResult(int opRet, bool &outcome, LDAPMessage *result
 					}
 				}
 			} else {
-				SysLog::Error("No DN defined");
+				SystemLog::Error("No DN defined");
 				out->Put("Error", String("No DN defined"), ctx);
 				retVal = false;
 			}
@@ -650,7 +654,7 @@ bool LDAPDAImpl::CheckSearchResult(int opRet, bool &outcome, LDAPMessage *result
 			if ( parse_rc != LDAP_SUCCESS ) {
 				String msg("LDAPCompare  ");
 				msg << "dn<" << params.DName() << ">: " << ldap_err2string( opRet );
-				SysLog::Error(msg);
+				SystemLog::Error(msg);
 				Anything aError;
 				aError["Error"]["Msg"] = msg;
 				aError["Error"]["Code"] = opRet;
@@ -670,7 +674,7 @@ bool LDAPDAImpl::CheckSearchResult(int opRet, bool &outcome, LDAPMessage *result
 					case LDAP_COMPARE_FALSE: {
 						String msg("LDAPCompare  ");
 						msg << "dn<" << params.DName() << ">: " << ldap_err2string( opRet );
-						SysLog::Error(msg);
+						SystemLog::Error(msg);
 						Anything aError;
 						aError["Error"]["Msg"] = msg;
 						aError["Error"]["Code"] = opRet;
@@ -690,7 +694,7 @@ bool LDAPDAImpl::CheckSearchResult(int opRet, bool &outcome, LDAPMessage *result
 						if ( matched_msg != NULL && *matched_msg != '\0' ) {
 							partialMatch <<  matched_msg;
 						}
-						SysLog::Error(msg);
+						SystemLog::Error(msg);
 						Anything aError;
 						aError["Error"]["Msg"] = msg;
 						aError["Error"]["Code"] = opRet;
@@ -729,7 +733,7 @@ bool LDAPDAImpl::CheckSearchResult(int opRet, bool &outcome, LDAPMessage *result
 				if ( rc != LDAP_SUCCESS ) {
 					String msg("LDAPModify  ");
 					msg << "dn<" << params.DName() << ">: " << ldap_err2string( rc );
-					SysLog::Error(msg);
+					SystemLog::Error(msg);
 					Anything aError;
 					aError["Error"]["Msg"] = msg;
 					aError["Error"]["Code"] = rc;
@@ -739,7 +743,7 @@ bool LDAPDAImpl::CheckSearchResult(int opRet, bool &outcome, LDAPMessage *result
 					retVal = DoAddModifyDel(ldapHdl, "LDAPModify", msgId, 0,  ctx, in, out);
 				}
 			} else {
-				SysLog::Error("No DN defined");
+				SystemLog::Error("No DN defined");
 				out->Put("Error", String("No DN defined"), ctx);
 				retVal = false;
 			}
@@ -778,7 +782,7 @@ bool LDAPDAImpl::CheckSearchResult(int opRet, bool &outcome, LDAPMessage *result
 					Trace( "======================== rc != LDAP_SUCCESS !!!");
 					String msg("LDAPAdd  ");
 					msg << "dn<" << params.DName() << ">: " << ldap_err2string( rc );
-					SysLog::Error(msg);
+					SystemLog::Error(msg);
 					Anything aError;
 					aError["Error"]["Msg"] = msg;
 					aError["Error"]["Code"] = rc;
@@ -790,7 +794,7 @@ bool LDAPDAImpl::CheckSearchResult(int opRet, bool &outcome, LDAPMessage *result
 				}
 			} else {
 				Trace( "======================== DName is NOT Defined !!!");
-				SysLog::Error("No DN defined");
+				SystemLog::Error("No DN defined");
 				out->Put("Error", String("No DN defined"), ctx);
 				retVal = false;
 			}
@@ -829,7 +833,7 @@ bool LDAPDAImpl::CheckSearchResult(int opRet, bool &outcome, LDAPMessage *result
 					Trace( "======================== rc != LDAP_SUCCESS !!!");
 					String msg("LDAPDel  ");
 					msg << "dn<" << params.DName() << ">: " << ldap_err2string( rc );
-					SysLog::Error(msg);
+					SystemLog::Error(msg);
 					Anything aError;
 					aError["Error"]["Msg"] = msg;
 					aError["Error"]["Code"] = rc;
@@ -841,7 +845,7 @@ bool LDAPDAImpl::CheckSearchResult(int opRet, bool &outcome, LDAPMessage *result
 				}
 			} else {
 				Trace( "======================== DName is NOT Defined !!!");
-				SysLog::Error("No DN defined");
+				SystemLog::Error("No DN defined");
 				out->Put("Error", String("No DN defined"), ctx);
 				retVal = false;
 			}

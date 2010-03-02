@@ -12,7 +12,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
 #include "System.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Application.h"
 #include "Registry.h"
 #include "WDModule.h"
@@ -149,13 +149,13 @@ int AppBooter::Run(int argc, const char *argv[], bool doHalt)
 				application->GlobalTerminate(retVal);
 				String logMsg("Initialization of ");
 				logMsg << applicationName << " failed with code " << retVal;
-				SysLog::Error(logMsg);
+				SystemLog::Error(logMsg);
 			}
 			application = 0;
 		} else {
 			String logMsg("Configured Application Name (");
 			logMsg << applicationName << ") not found in Registry.";
-			SysLog::Error(logMsg);
+			SystemLog::Error(logMsg);
 			retVal = -2;
 		}
 		if (doHalt) {
@@ -163,7 +163,7 @@ int AppBooter::Run(int argc, const char *argv[], bool doHalt)
 			Halt(config);
 		}
 	} else {
-		SysLog::Error("Can't load initial configuration! exiting...");
+		SystemLog::Error("Can't load initial configuration! exiting...");
 	}
 	return retVal;
 }
@@ -237,13 +237,13 @@ bool AppBooter::Boot(Anything &args) // access the intial config file
 		Application::InitializeGlobalConfig(config);//Application::fgConfig= config;
 
 		// initialize syslog channel
-		SysLog::Init(config["AppId"].AsCharPtr("Coast"));
+		SystemLog::Init(config["AppId"].AsCharPtr("Coast"));
 		// log first event
-		SysLog::Info("started");
+		SystemLog::Info("started");
 		OStringStream os;
 		os <<  setw(20) << "" << " I will be using " << numberOfCpus << " cpus !\n";
 		os.flush();
-		SysLog::WriteToStderr(os.str());
+		SystemLog::WriteToStderr(os.str());
 
 		// load the shared objects defined in the config file
 		// those are the client parts not known at link time of this
@@ -278,7 +278,7 @@ bool AppBooter::ReadFromFile(Anything &config, const char *filename)
 	istream *ifp = System::OpenStream(filename, "any");
 	if (ifp == 0) {
 		String logMsg;
-		SysLog::Error(logMsg << "AppBooter::ReadFromFile: can't open file " << NotNull(filename) << ".any. Are WD_ROOT/WD_PATH correctly set?");
+		SystemLog::Error(logMsg << "AppBooter::ReadFromFile: can't open file " << NotNull(filename) << ".any. Are WD_ROOT/WD_PATH correctly set?");
 		return false;
 	}
 	config.Import(*ifp);
@@ -302,12 +302,12 @@ bool AppBooter::OpenLibs(const Anything &config)
 				if (!dllLoader.DLOpen()) {
 					String msg(dllName);
 					msg << ": " << dllLoader.DLError();
-					SysLog::Alert(msg);
+					SystemLog::Alert(msg);
 					return false;
 				} else {
 					String msg("successfully opened DLL: ");
 					msg << dllName;
-					SysLog::Info(msg);
+					SystemLog::Info(msg);
 					fLibArray[dllName] = dllLoader.DLHandle();
 				}
 			}
@@ -329,14 +329,14 @@ bool AppBooter::CloseLibs()
 			// PS: we've got an error
 			String msg("failed to close DLL: ");
 			msg << fLibArray.SlotName(i) << " " << dllLoader.DLError();
-			SysLog::Error(msg);
-			SysLog::WriteToStderr(msg << "\n");
+			SystemLog::Error(msg);
+			SystemLog::WriteToStderr(msg << "\n");
 			ret = false;
 		} else {
 			String msg("closed DLL: ");
 			msg << NotNull(fLibArray.SlotName(i));
-			SysLog::Info(msg);
-			SysLog::WriteToStderr(msg << "\n");
+			SystemLog::Info(msg);
+			SystemLog::WriteToStderr(msg << "\n");
 		}
 	}
 	return ret;
@@ -495,7 +495,7 @@ bool UnixDynLibLoader::DLClose()
 	if (fHandle) {
 		int ret = dlclose(fHandle);
 		if ( ret ) {
-			SysLog::WriteToStderr(String(dlerror()) << "\n");
+			SystemLog::WriteToStderr(String(dlerror()) << "\n");
 		}
 		return (ret == 0);
 	}

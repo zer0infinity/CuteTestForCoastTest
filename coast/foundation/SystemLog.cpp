@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+ * Copyright (c) 2007, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
  * All rights reserved.
  *
  * This library/application is free software; you can redistribute and/or modify it under the terms of
@@ -7,7 +7,7 @@
  */
 
 //--- interface include --------------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #if defined(WIN32)
 #define IOSTREAM_IS_THREADSAFE
 #endif
@@ -27,13 +27,13 @@
 #include <stdio.h>
 #endif
 
-//--- SysLog ----------------------------------------------------------
-SysLog *SysLog::fgSysLog = 0;
-SysLog::eLogLevel SysLog::fgDoSystemLevelLog = SysLog::eALERT;
-SysLog::eLogLevel SysLog::fgDoLogOnCerr = SysLog::eERR;
+//--- SystemLog ----------------------------------------------------------
+SystemLog *SystemLog::fgSysLog = 0;
+SystemLog::eLogLevel SystemLog::fgDoSystemLevelLog = SystemLog::eALERT;
+SystemLog::eLogLevel SystemLog::fgDoLogOnCerr = SystemLog::eERR;
 
 //--- module initialization/termination
-void SysLog::Init(const char *appId)
+void SystemLog::Init(const char *appId)
 {
 	// beware this is not thread safe
 	// the syslog channel is initialized
@@ -72,7 +72,7 @@ void SysLog::Init(const char *appId)
 	}
 }
 
-void SysLog::Terminate()
+void SystemLog::Terminate()
 {
 	if ( fgSysLog ) {
 		delete fgSysLog;
@@ -85,7 +85,7 @@ void SysLog::Terminate()
 // severity eDEBUG for tracing server
 // activity during development and
 // deployment
-void SysLog::Debug(const char *msg)
+void SystemLog::Debug(const char *msg)
 {
 	Log(eDEBUG, msg);
 }
@@ -93,7 +93,7 @@ void SysLog::Debug(const char *msg)
 // severity eINFO for general information
 // log general useful information about server
 // activity
-void SysLog::Info(const char *msg)
+void SystemLog::Info(const char *msg)
 {
 	Log(eINFO, msg);
 }
@@ -101,7 +101,7 @@ void SysLog::Info(const char *msg)
 // severity eWARNING	for information about
 // inconsistent state or potential dangerous
 // situation
-void SysLog::Warning(const char *msg)
+void SystemLog::Warning(const char *msg)
 {
 	Log(eWARNING, msg);
 }
@@ -109,7 +109,7 @@ void SysLog::Warning(const char *msg)
 // severity eERR for outright errors
 // during operation of the server without
 // fatal results
-void SysLog::Error(const char *msg)
+void SystemLog::Error(const char *msg)
 {
 	Log(eERR, msg);
 }
@@ -117,21 +117,21 @@ void SysLog::Error(const char *msg)
 // severity eALERT for fatal errors
 // this call triggers also an alert on
 // the operator console
-void SysLog::Alert(const char *msg)
+void SystemLog::Alert(const char *msg)
 {
 	Log(eALERT, msg);
 }
 
 // bottleneck routine used by others
 // here you can use severity levels directly
-void SysLog::Log(eLogLevel level, const char *msg)
+void SystemLog::Log(eLogLevel level, const char *msg)
 {
 	if ( InitOnce() ) {
 		fgSysLog->DoLog(level, msg);
 	}
 }
 
-bool SysLog::InitOnce()
+bool SystemLog::InitOnce()
 {
 	static bool once = false;
 	if (!once) {
@@ -147,7 +147,7 @@ bool SysLog::InitOnce()
 // to an error  message  string,  and returns a pointer to that string.
 // SysErrorMsg(long errnum) uses the same set of error messages as perror().
 // The returned string should not be overwritten.
-String SysLog::SysErrorMsg(long errnum)
+String SystemLog::SysErrorMsg(long errnum)
 {
 #if defined(WIN32)
 	LPVOID lpMsgBuf;
@@ -181,7 +181,7 @@ String SysLog::SysErrorMsg(long errnum)
 
 // const char *LastSysError() returns the error message retrieved with errno
 // from SysErrorMsg(errno)
-String SysLog::LastSysError()
+String SystemLog::LastSysError()
 {
 	int iError( System::GetSystemError() );
 	if ( iError != 0 ) {
@@ -190,33 +190,33 @@ String SysLog::LastSysError()
 	return String().Append((long)iError).Append(": no system-error");
 }
 
-//magic function to be used by Assert macro to avoid dependency to class SysLog and SysLog.h
+//magic function to be used by Assert macro to avoid dependency to class SystemLog and SystemLog.h
 int syslog_assert(const char *file, long line, const char *assertion)
 {
-	return SysLog::LogAssert(file, line, assertion);
+	return SystemLog::LogAssert(file, line, assertion);
 }
 
-int SysLog::LogAssert(const char *file, long line, const char *assertion)
+int SystemLog::LogAssert(const char *file, long line, const char *assertion)
 {
 	// implement brain dead with C style things to avoid problems of recursion
 	char asrt_buf[2048];
 	int asrt_buf_used = sprintf(asrt_buf, "%s:%ld\n Assert(%s) failed\n", file, line, assertion);
 	\
-	SysLog::WriteToStderr(asrt_buf, asrt_buf_used);
+	SystemLog::WriteToStderr(asrt_buf, asrt_buf_used);
 	return 0;
 }
 
-void SysLog::WriteToStderr(const String &msg)
+void SystemLog::WriteToStderr(const String &msg)
 {
-	SysLog::WriteToStderr((const char *)msg, msg.Length());
+	SystemLog::WriteToStderr((const char *)msg, msg.Length());
 }
 
-void SysLog::WriteToStderr(char *msg, long length)
+void SystemLog::WriteToStderr(char *msg, long length)
 {
-	SysLog::WriteToStderr((const char *)msg, length);
+	SystemLog::WriteToStderr((const char *)msg, length);
 }
 
-void SysLog::WriteToStderr(const char *msg, long length)
+void SystemLog::WriteToStderr(const char *msg, long length)
 {
 	if ( msg ) {
 		long sLen = length;
@@ -231,17 +231,17 @@ void SysLog::WriteToStderr(const char *msg, long length)
 	}
 }
 
-void SysLog::WriteToStdout(const String &msg)
+void SystemLog::WriteToStdout(const String &msg)
 {
-	SysLog::WriteToStdout((const char *)msg, msg.Length());
+	SystemLog::WriteToStdout((const char *)msg, msg.Length());
 }
 
-void SysLog::WriteToStdout(char *msg, long length)
+void SystemLog::WriteToStdout(char *msg, long length)
 {
-	SysLog::WriteToStdout((const char *)msg, length);
+	SystemLog::WriteToStdout((const char *)msg, length);
 }
 
-void SysLog::WriteToStdout(const char *msg, long length)
+void SystemLog::WriteToStdout(const char *msg, long length)
 {
 	if ( msg ) {
 		long sLen = length;
@@ -256,15 +256,15 @@ void SysLog::WriteToStdout(const char *msg, long length)
 	}
 }
 
-SysLog::SysLog()
+SystemLog::SystemLog()
 {
 }
 
-SysLog::~SysLog()
+SystemLog::~SystemLog()
 {
 }
 
-void SysLog::DoLog(eLogLevel level, const char *msg)
+void SystemLog::DoLog(eLogLevel level, const char *msg)
 {
 	// override logging parameter if it is an alert message
 	if ( level >= fgDoSystemLevelLog ) {
@@ -276,15 +276,15 @@ void SysLog::DoLog(eLogLevel level, const char *msg)
 	}
 }
 
-void SysLog::DoTraceLevel(const char *level, const char *msg)
+void SystemLog::DoTraceLevel(const char *level, const char *msg)
 {
 	String finalMessage(level, strlen(level), Storage::Global());
 	finalMessage.Append(msg);
 	finalMessage.Append('\n');
-	SysLog::WriteToStderr(finalMessage, finalMessage.Length());
+	SystemLog::WriteToStderr(finalMessage, finalMessage.Length());
 }
 
-void SysLog::DoLogTrace(eLogLevel level, const char *logMsg)
+void SystemLog::DoLogTrace(eLogLevel level, const char *logMsg)
 {
 	switch (level) {
 		case eDEBUG:
@@ -345,7 +345,7 @@ void S370SysLog::DoSystemLevelLog(eLogLevel level, const char *msg)
 	cerr << "level " << level << ": " << logMsg << endl;
 }
 
-void SysLog::DoLogTrace(long level, const char *msg)
+void SystemLog::DoLogTrace(long level, const char *msg)
 {
 	// do nothing we already logged it on cerr
 }

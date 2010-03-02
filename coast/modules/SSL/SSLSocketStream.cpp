@@ -12,7 +12,7 @@
 #include "SSLAPI.h"
 #include "SSLSocket.h"
 #include "SSLObjectManager.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 //#define STREAM_TRACE
 
@@ -93,7 +93,7 @@ long SSLSocketStreamBuf::DoWrite(const char *buf, long len)
 			 && ((SSLSocket *)fSocket)->ShouldRetry(fContext, bytesSent, false));
 #ifdef STREAM_TRACE
 	if ( bytesSent > 0 ) {
-		SysLog::WriteToStderr(buf, bytesSent);
+		SystemLog::WriteToStderr(buf, bytesSent);
 	}
 #endif
 	SetStreamState(bytesSent);
@@ -116,7 +116,7 @@ long SSLSocketStreamBuf::DoRead(char *buf, long len) const
 			 && ((SSLSocket *)fSocket)->ShouldRetry(fContext, bytesRead, false));
 #ifdef STREAM_TRACE
 	if ( bytesRead > 0 ) {
-		SysLog::WriteToStderr(buf, bytesRead);
+		SystemLog::WriteToStderr(buf, bytesRead);
 	}
 #endif
 	SetStreamState(bytesRead);

@@ -10,7 +10,7 @@
 #include "MultifunctionListBoxRenderer.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 
 #if defined(ONLY_STD_IOSTREAM)
@@ -464,7 +464,7 @@ void MultifunctionListBoxRenderer::RenderAll(ostream &reply, Context &c, const R
 
 		reply << "<!-- END [" << strBoxName << "] -->\n";
 	} else {
-		SysLog::Warning("MultifunctionListBoxRenderer::RenderAll: mandatory 'Name' slot is missing in configuration!");
+		SystemLog::Warning("MultifunctionListBoxRenderer::RenderAll: mandatory 'Name' slot is missing in configuration!");
 	}
 }
 
@@ -547,7 +547,7 @@ void MultifunctionListBoxRenderer::RenderHeader(ostream &reply, Context &c, cons
 			reply << "<th class='" << strClass << "'>&nbsp;&nbsp;</th>\n";
 			reply << "</tr>\n";
 		} else {
-			SysLog::Warning("No ColumnList given");
+			SystemLog::Warning("No ColumnList given");
 		}
 	}
 }
@@ -696,7 +696,7 @@ void MultifunctionListBoxRenderer::RenderColumnInputFields(ostream &reply, Conte
 				pRenderer->RenderAll(reply, c, rendererConfig);
 			}
 		} else {
-			SysLog::Warning("No ColumnList given");
+			SystemLog::Warning("No ColumnList given");
 		}
 	}
 }

@@ -10,7 +10,7 @@
 #include "AnyToXMLRenderer.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
@@ -72,7 +72,7 @@ void AnyToXMLRenderer::RenderNamedChilds(ostream &reply, ROAnything &list)
 	for ( long i = 0; i < sz; ++i) {
 		String slotname = list.SlotName(i);
 		if (!slotname.Length()) {
-			SysLog::Error("Unnamed child in RenderNamedChilds found");
+			SystemLog::Error("Unnamed child in RenderNamedChilds found");
 			continue;
 		}
 
@@ -102,7 +102,7 @@ void AnyToXMLRenderer::RenderUnnamedChilds(ostream &reply, String &tagname, ROAn
 		ROAnything element = list[i];
 		if (HasUnnamedChilds(element)) {
 			// Unnamed childs -> should not happen
-			SysLog::Error("Unnamed childs of an unnamed child found");
+			SystemLog::Error("Unnamed childs of an unnamed child found");
 		} else {
 			reply << "<" << tagname << ">";
 			if (element.GetType() == AnyArrayType) {

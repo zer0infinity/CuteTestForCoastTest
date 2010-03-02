@@ -17,7 +17,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "DiffTimer.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "System.h"
 #include "Dbg.h"
 
@@ -76,7 +76,7 @@ void SybCTnewDATest::InitOpenSetConPropTest()
 				TraceAny(anyCtxMessages, "Messages");
 				// trace messages which occurred without a connection
 				while (anyCtxMessages.GetSize()) {
-					SysLog::Warning(String() << anyCtxMessages[0L].AsCharPtr() << "\n");
+					SystemLog::Warning(String() << anyCtxMessages[0L].AsCharPtr() << "\n");
 					anyCtxMessages.Remove(0L);
 				}
 			}
@@ -120,7 +120,7 @@ void SybCTnewDATest::SimpleQueryTest()
 				TraceAny(anyCtxMessages, "Messages");
 				// trace messages which occurred without a connection
 				while (anyCtxMessages.GetSize()) {
-					SysLog::Warning(String() << anyCtxMessages[0L].AsCharPtr() << "\n");
+					SystemLog::Warning(String() << anyCtxMessages[0L].AsCharPtr() << "\n");
 					anyCtxMessages.Remove(0L);
 				}
 			}
@@ -171,7 +171,7 @@ void SybCTnewDATest::LimitedMemoryTest()
 				TraceAny(anyCtxMessages, "Messages");
 				// trace messages which occurred without a connection
 				while (anyCtxMessages.GetSize()) {
-					SysLog::Warning(String() << anyCtxMessages[0L].AsCharPtr() << "\n");
+					SystemLog::Warning(String() << anyCtxMessages[0L].AsCharPtr() << "\n");
 					anyCtxMessages.Remove(0L);
 				}
 			}
@@ -194,7 +194,7 @@ void SybCTnewDATest::LoginTimeoutTest()
 			TraceAny(anyCtxMessages, "Messages");
 			// trace messages which occurred without a connection
 			while (anyCtxMessages.GetSize()) {
-				SysLog::Warning(String() << anyCtxMessages[0L].AsCharPtr() << "\n");
+				SystemLog::Warning(String() << anyCtxMessages[0L].AsCharPtr() << "\n");
 				anyCtxMessages.Remove(0L);
 			}
 			SybCTnewDA::Finis(context);
@@ -271,7 +271,7 @@ void SybCTnewDATest::ResultTimeoutTest()
 			TraceAny(anyCtxMessages, "Messages");
 			// trace messages which occurred without a connection
 			while (anyCtxMessages.GetSize()) {
-				SysLog::Warning(String() << anyCtxMessages[0L].AsCharPtr() << "\n");
+				SystemLog::Warning(String() << anyCtxMessages[0L].AsCharPtr() << "\n");
 				anyCtxMessages.Remove(0L);
 			}
 		}

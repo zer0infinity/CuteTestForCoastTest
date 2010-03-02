@@ -65,7 +65,7 @@ Anything LDAPConnectionManager::GetLdapConnection(bool isLocked, long maxConnect
 		} else {
 			String msg;
 			msg << "Retrieving semaphore poolId: [" << poolId << "]failed!";
-			SysLog::Info(msg);
+			SystemLog::Info(msg);
 			return returned;
 		}
 		ret = GetHandleInfo(maxConnections, poolId, handleInfo);
@@ -97,7 +97,7 @@ Anything LDAPConnectionManager::HandleRebindTimeout(Anything &returned, long reb
 	String msg;
 	if ( handle == (LDAP *) NULL ) {
 		msg << "Rebind because connection handle is [NULL]";
-		SysLog::Info(msg);
+		SystemLog::Info(msg);
 		Trace(msg);
 		mustRebind = true;
 	} else {
@@ -106,7 +106,7 @@ Anything LDAPConnectionManager::HandleRebindTimeout(Anything &returned, long reb
 			if ( mustRebind ) {
 				msg << "Now: " << now.AsStringWithZ() << " LastRebind: " << lastRebind.AsStringWithZ() << " RebindTimeout: " <<
 					rebindTimeout << " Must rebind: " << mustRebind;
-				SysLog::Info(msg);
+				SystemLog::Info(msg);
 				Trace(msg);
 			}
 		} else {
@@ -282,7 +282,7 @@ bool LDAPConnectionManager::ReleaseHandleInfo(long maxConnections, const String 
 				String msg;
 				msg << "Releasing LDAP connection at entry: [" << slotIndex << "] for connection pool: " << poolId;
 				Trace(msg);
-//				SysLog::Info(msg);
+//				SystemLog::Info(msg);
 			}
 		}
 	}
@@ -340,7 +340,7 @@ long LDAPConnectionManager::ReGetLockedSlot(long maxConnections, const String &p
 	}
 	String msg;
 	msg << "ReGetLockedSlot failed for poolId: [" << poolId << "]failed!";
-	SysLog::Info(msg);
+	SystemLog::Info(msg);
 	Trace(msg);
 	return -1L;
 }
@@ -356,11 +356,11 @@ bool LDAPConnectionManager::Init(const ROAnything config)
 	Trace("fDefMaxConnections: " << fDefMaxConnections);
 	if ( THRKEYCREATE(LDAPConnectionManager::fgErrnoKey, PersistentLDAPConnection::tsd_destruct)) {
 		Trace("Thread key creation for fgErrnoKey failed.");
-		SysLog::Error("Thread key creation for fgErrnoKey failed.");
+		SystemLog::Error("Thread key creation for fgErrnoKey failed.");
 		return false;
 	}
-	SysLog::WriteToStderr(String("\t") << fName << " Default is [" << fDefMaxConnections << "] connections per pool\n");
-	SysLog::WriteToStderr(String("\t") << fName << ". done\n");
+	SystemLog::WriteToStderr(String("\t") << fName << " Default is [" << fDefMaxConnections << "] connections per pool\n");
+	SystemLog::WriteToStderr(String("\t") << fName << ". done\n");
 	return ResetInit(config);
 }
 
@@ -374,16 +374,16 @@ bool LDAPConnectionManager::Finis()
 			TraceAny(fLdapConnectionStore, "fLdapConnectionStore");
 			for ( long pools = 0; pools < fLdapConnectionStore.GetSize(); pools++ ) {
 				for ( long items = 0; items < fLdapConnectionStore[pools]["Mutexes"].GetSize(); items++ ) {
-					SysLog::Info(String("LDAPConnectionManager: At index: [") << items   << "]");
+					SystemLog::Info(String("LDAPConnectionManager: At index: [") << items   << "]");
 					Mutex *mutex = (Mutex * ) fLdapConnectionStore[pools]["Mutexes"][items].AsIFAObject(0);
 					if ( mutex != ( Mutex * ) NULL ) {
 						bool locked = mutex->TryLock();
 						if ( locked ) {
 							LDAP *handle = (LDAP *) fLdapConnectionStore[pools]["HandleInfo"][items]["Handle"].AsIFAObject(0);
-							SysLog::Info(String("LDAPConnectionManager: Pool: [") << fLdapConnectionStore.SlotName(pools) << "] " <<
-										 "At index: [" << items   << "] " <<
-										 "LDAPConnectionManager: Freeing LDAP " <<
-										 PersistentLDAPConnection::DumpConnectionHandle(handle) << "\n");
+							SystemLog::Info(String("LDAPConnectionManager: Pool: [") << fLdapConnectionStore.SlotName(pools) << "] " <<
+											"At index: [" << items   << "] " <<
+											"LDAPConnectionManager: Freeing LDAP " <<
+											PersistentLDAPConnection::DumpConnectionHandle(handle) << "\n");
 							if (handle) {
 								PersistentLDAPConnection::Disconnect(handle);
 							}
@@ -391,9 +391,9 @@ bool LDAPConnectionManager::Finis()
 							delete mutex;
 						}
 					} else {
-						SysLog::Info(String("LDAPConnectionManager: Pool: [") << fLdapConnectionStore.SlotName(pools) << "] " <<
-									 "At index: [" << items   << "] " <<
-									 "LDAPConnectionManager: TryLock mutex and deleting of mutex failed!");
+						SystemLog::Info(String("LDAPConnectionManager: Pool: [") << fLdapConnectionStore.SlotName(pools) << "] " <<
+										"At index: [" << items   << "] " <<
+										"LDAPConnectionManager: TryLock mutex and deleting of mutex failed!");
 						ret = false;
 					}
 				}

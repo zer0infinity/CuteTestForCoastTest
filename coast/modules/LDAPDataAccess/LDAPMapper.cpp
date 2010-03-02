@@ -12,7 +12,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "Registry.h"
 #include "StringStream.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Base64.h"
 #include "Dbg.h"
 #include "Timers.h"
@@ -315,7 +315,7 @@ bool LDAPModifyValsMapper::DoGetAny(const char *key, Anything &value, Context &c
 							// There are no data!!
 							String msg("LDAPModify BuildQuery: There are no inputdata ");
 							msg << "Into Modifyslot " << i << " at value " << m;
-							SysLog::Error(msg);
+							SystemLog::Error(msg);
 							retVal = false;
 						}
 					}

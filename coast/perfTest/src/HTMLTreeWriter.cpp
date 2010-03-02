@@ -11,7 +11,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 
 //--- HTMLTreeWriter -----------------------------------------------------
 HTMLTreeWriter::HTMLTreeWriter()

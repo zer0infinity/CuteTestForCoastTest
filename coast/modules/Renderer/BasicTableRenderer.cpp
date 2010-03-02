@@ -10,7 +10,7 @@
 #include "BasicTableRenderer.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Timers.h"
 #include "Dbg.h"
 
@@ -198,7 +198,7 @@ void BasicTableRenderer::RenderAll(ostream &reply, Context &c, const ROAnything 
 		if (!tmpStore.LookupPath(reportData, slot)) {
 			String msg("BasicTableRenderer::RenderAll()...invalid data source <");
 			msg << slot << ">";
-			SysLog::Error(msg);
+			SystemLog::Error(msg);
 		}
 	}
 
@@ -269,16 +269,16 @@ void BasicTableRenderer::RenderAll(ostream &reply, Context &c, const ROAnything 
 						} else {
 							String msg("BasicTableRenderer: no data was found for table section");
 							msg << " (" << key.AsCharPtr() << ")";
-							SysLog::Warning(msg);
+							SystemLog::Warning(msg);
 						}
 					} else {
-						SysLog::Error("BasicTableRenderer: no DataSource was specified for this section");
+						SystemLog::Error("BasicTableRenderer: no DataSource was specified for this section");
 					}
 				}
 			}
 		}
 	} else {
-		SysLog::Error("BasicTableRenderer.. misconfiguration: no Outline section was defined");
+		SystemLog::Error("BasicTableRenderer.. misconfiguration: no Outline section was defined");
 	}
 	reply << "</TABLE>\n</TD></TR>\n</TABLE>\n";
 }
@@ -452,7 +452,7 @@ RowAccessor *BasicTableRenderer::SetupRowAccessors(const ROAnything &conf, Conte
 						} else {
 							String msg("BasicTableRenderer: Type: ");
 							msg << type << "not found";
-							SysLog::Error(msg);
+							SystemLog::Error(msg);
 						}
 					}
 				}
@@ -479,7 +479,7 @@ RowAccessor *BasicTableRenderer::SetupRowAccessors(const ROAnything &conf, Conte
 				accessor.SetConfig(config);
 
 			} else {
-				SysLog::Error("BasicTableRenderer::DoHandleAdditionalRenderers() unsupported item !");
+				SystemLog::Error("BasicTableRenderer::DoHandleAdditionalRenderers() unsupported item !");
 			}
 		}
 	}

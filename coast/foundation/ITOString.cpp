@@ -10,7 +10,7 @@
 #include "ITOString.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "StringStream.h"
 #include "InitFinisManagerFoundation.h"
 
@@ -101,7 +101,7 @@ void String::alloc(long capacity)
 
 	if (!fStringImpl) {
 		//--- allocation failed
-		SysLog::Error("String::alloc: Memory allocation failed!");
+		SystemLog::Error("String::alloc: Memory allocation failed!");
 	} else {
 		// substract to get netto capacity again.
 		fStringImpl->fCapacity = capacity - sizeof(*fStringImpl);
@@ -271,7 +271,7 @@ note: if start > fLength then the new buffer will contain undefined
 			}
 		} else {
 			static const char crashmsg[] = "FATAL: String::Set allocation failed. I will crash :-(\n";
-			SysLog::WriteToStderr(crashmsg, sizeof crashmsg);
+			SystemLog::WriteToStderr(crashmsg, sizeof crashmsg);
 			// restore string
 			fStringImpl = oldImpl;
 			return;
@@ -356,7 +356,7 @@ String &String::Append(const String &s)
 void String::Dump() const
 {
 	String logMsg;
-	SysLog::Info(logMsg.Append("String::Dump: length ").Append(Length()).Append(", capacity ").Append(Capacity())  );
+	SystemLog::Info(logMsg.Append("String::Dump: length ").Append(Length()).Append(", capacity ").Append(Capacity())  );
 }
 
 String String::DumpAsHex(long dumpwidth, const char *pcENDL) const
@@ -565,7 +565,7 @@ String String::SubString(long from, long len) const
 	}
 	if (from < 0) {
 		from = 0;
-		SysLog::Error("String::GetSub: from < 0");
+		SystemLog::Error("String::GetSub: from < 0");
 	}
 	if ( (len < 0) || (from + len > l) ) {
 		len = l - from;
@@ -1133,7 +1133,7 @@ long String::IntReadFrom(istream &is, const char quote)
 					// do a nasty trick, return a negative number to
 					// show this syntactical error
 					// sorry there is no error message (yet)
-					//SysLog::Warning("String::IntReadFrom: unexpected end of line (missing quote?)");
+					//SystemLog::Warning("String::IntReadFrom: unexpected end of line (missing quote?)");
 					++newlinecounter;
 					return 0 - newlinecounter;
 				}

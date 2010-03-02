@@ -10,7 +10,7 @@
 #include "IFAObject.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 
 //---- NamedObject ----------------------------------------------------------
 NamedObject::NamedObject(const char *name)

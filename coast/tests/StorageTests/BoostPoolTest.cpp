@@ -20,7 +20,7 @@
 #include <loki/SmallObj.h>
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #define WD_DISABLE_TRACE
 #include "STLStorage.h"
 #include "Threads.h"

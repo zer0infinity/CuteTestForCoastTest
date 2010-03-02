@@ -71,7 +71,7 @@ These templates are interpreted only once and are then stored in the cache in a
 preprocessed intermediate format. (This improves performance as compared to
 templates that are defined inline.)
 
-HTMLTemplateRenderer uses the SysLog mechanism to record error conditions!
+HTMLTemplateRenderer uses the SystemLog mechanism to record error conditions!
 */
 class EXPORTDECL_RENDERER HTMLTemplateRenderer : public Renderer
 {

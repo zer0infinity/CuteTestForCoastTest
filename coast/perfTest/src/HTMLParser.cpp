@@ -16,7 +16,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "DiffTimer.h"
 #include "Dbg.h"
 
@@ -511,7 +511,7 @@ void HTMLParser::ParseCharacterEntity()
 					}
 				}
 				if (cc < 0) {
-					SysLog::WriteToStderr(String("can't find special character: ") << name << "\n");
+					SystemLog::WriteToStderr(String("can't find special character: ") << name << "\n");
 					IntPut('&');
 					Put(name);
 					if (c == ';') {
@@ -1448,8 +1448,8 @@ MethodInfoCollector::~MethodInfoCollector()
 	for (long i = 0; i < sz; i++) {
 		u_long ul = fResults[i][1L].AsLong(1);
 		HRTIME t = ul;
-		SysLog::WriteToStderr(String(fResults.SlotName(i)) << ":[");
-		SysLog::WriteToStderr(String() << fResults[i][0L].AsLong(1) << ", ");
-		SysLog::WriteToStderr(String() << (long)(t * 1000L / DiffTimer::TicksPerSecond()) << "]\n");
+		SystemLog::WriteToStderr(String(fResults.SlotName(i)) << ":[");
+		SystemLog::WriteToStderr(String() << fResults[i][0L].AsLong(1) << ", ");
+		SystemLog::WriteToStderr(String() << (long)(t * 1000L / DiffTimer::TicksPerSecond()) << "]\n");
 	}
 }

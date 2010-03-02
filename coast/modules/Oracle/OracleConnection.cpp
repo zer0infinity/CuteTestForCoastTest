@@ -11,7 +11,7 @@
 #include "OracleStatement.h"
 #include "OracleException.h"
 #include "AnyIterators.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 
 #include <string.h>	// for strlen
@@ -40,8 +40,8 @@ bool OracleConnection::AllocateHandle( handlePtrType &aHandlePtr )
 	StartTrace(OracleConnection.AllocateHandle);
 	if ( OCIHandleAlloc( fOracleEnv.EnvHandle(), aHandlePtr.getVoidAddr(), aHandlePtr.getHandleType(), (size_t) 0,
 						 (dvoid **) 0 ) != OCI_SUCCESS ) {
-		SysLog::Error( String( "FAILED: OCIHandleAlloc(): alloc handle of type " ) << (long) aHandlePtr.getHandleType()
-					   << " failed" );
+		SystemLog::Error( String( "FAILED: OCIHandleAlloc(): alloc handle of type " ) << (long) aHandlePtr.getHandleType()
+						  << " failed" );
 		return false;
 	}
 	return true;
@@ -68,7 +68,7 @@ bool OracleConnection::Open( String const &strServer, String const &strUsername,
 	// --- attach server
 	if ( checkError( OCIServerAttach( fSrvhp.getHandle(), fErrhp.getHandle(), server, strlen( (const char *) server ),
 									  (ub4) OCI_DEFAULT ), strErr ) ) {
-		SysLog::Error( String( "FAILED: OCIServerAttach() to server [" ) << strServer << "] failed (" << strErr << ")" );
+		SystemLog::Error( String( "FAILED: OCIServerAttach() to server [" ) << strServer << "] failed (" << strErr << ")" );
 		return false;
 	}
 	fStatus = eServerAttached;
@@ -76,32 +76,32 @@ bool OracleConnection::Open( String const &strServer, String const &strUsername,
 	// --- set attribute server context in the service context
 	if ( checkError( OCIAttrSet( fSvchp.getHandle(), (ub4) OCI_HTYPE_SVCCTX, fSrvhp.getHandle(), (ub4) 0,
 								 (ub4) OCI_ATTR_SERVER, fErrhp.getHandle() ), strErr ) ) {
-		SysLog::Error( String( "FAILED: OCIAttrSet(): setting attribute <server> into the service context failed (" )
-					   << strErr << ")" );
+		SystemLog::Error( String( "FAILED: OCIAttrSet(): setting attribute <server> into the service context failed (" )
+						  << strErr << ")" );
 		return false;
 	}
 
 	// --- set attributes in the authentication handle
 	if ( checkError( OCIAttrSet( fUsrhp.getHandle(), (ub4) OCI_HTYPE_SESSION, (dvoid *) username, (ub4) strlen(
 									 (const char *) username ), (ub4) OCI_ATTR_USERNAME, fErrhp.getHandle() ), strErr ) ) {
-		SysLog::Error( String(
-						   "FAILED: OCIAttrSet(): setting attribute <username> in the authentication handle failed (" ) << strErr
-					   << ")" );
+		SystemLog::Error( String(
+							  "FAILED: OCIAttrSet(): setting attribute <username> in the authentication handle failed (" ) << strErr
+						  << ")" );
 		return false;
 	}
 
 	if ( checkError( OCIAttrSet( fUsrhp.getHandle(), (ub4) OCI_HTYPE_SESSION, (dvoid *) password, (ub4) strlen(
 									 (const char *) password ), (ub4) OCI_ATTR_PASSWORD, fErrhp.getHandle() ), strErr ) ) {
-		SysLog::Error( String(
-						   "FAILED: OCIAttrSet(): setting attribute <password> in the authentication handle failed (" ) << strErr
-					   << ")" );
+		SystemLog::Error( String(
+							  "FAILED: OCIAttrSet(): setting attribute <password> in the authentication handle failed (" ) << strErr
+						  << ")" );
 		return false;
 	}
 
 	if ( checkError( OCISessionBegin( fSvchp.getHandle(), fErrhp.getHandle(), fUsrhp.getHandle(), OCI_CRED_RDBMS,
 									  (ub4) OCI_DEFAULT ), strErr ) ) {
-		SysLog::Error( String( "FAILED: OCISessionBegin() with user [" ) << strUsername << "] failed (" << strErr
-					   << ")" );
+		SystemLog::Error( String( "FAILED: OCISessionBegin() with user [" ) << strUsername << "] failed (" << strErr
+						  << ")" );
 		return false;
 	}
 	Trace( "connected to oracle as " << strUsername )
@@ -109,8 +109,8 @@ bool OracleConnection::Open( String const &strServer, String const &strUsername,
 	// --- Set the authentication handle into the Service handle
 	if ( checkError( OCIAttrSet( fSvchp.getHandle(), (ub4) OCI_HTYPE_SVCCTX, fUsrhp.getHandle(), (ub4) 0,
 								 OCI_ATTR_SESSION, fErrhp.getHandle() ), strErr ) ) {
-		SysLog::Error( String( "FAILED: OCIAttrSet(): setting attribute <session> into the service context failed (" )
-					   << strErr << ")" );
+		SystemLog::Error( String( "FAILED: OCIAttrSet(): setting attribute <session> into the service context failed (" )
+						  << strErr << ")" );
 		return false;
 	}
 	fStatus = eSessionValid;
@@ -132,12 +132,12 @@ void OracleConnection::Close()
 {
 	if ( fStatus == eSessionValid ) {
 		if ( OCISessionEnd( fSvchp.getHandle(), fErrhp.getHandle(), fUsrhp.getHandle(), 0 ) ) {
-			SysLog::Error( "FAILED: OCISessionEnd() on svchp failed" );
+			SystemLog::Error( "FAILED: OCISessionEnd() on svchp failed" );
 		}
 	}
 	if ( fStatus >= eServerAttached ) {
 		if ( OCIServerDetach( fSrvhp.getHandle(), fErrhp.getHandle(), OCI_DEFAULT ) ) {
-			SysLog::Error( "FAILED: OCIServerDetach() on srvhp failed" );
+			SystemLog::Error( "FAILED: OCIServerDetach() on srvhp failed" );
 		}
 	}
 	fStatus = eHandlesAllocated;

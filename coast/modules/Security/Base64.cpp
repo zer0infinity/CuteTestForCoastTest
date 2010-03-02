@@ -110,7 +110,7 @@ bool Base64::DoDecode(String &str, const String &encStr) const
 
 	if ( remBytes != 0 ) {
 		Trace("invalid aligned input string");
-		SysLog::Warning(String("Warning encoded String is corrupted - In str:") << str << " EncStr:" << encStr);
+		SystemLog::Warning(String("Warning encoded String is corrupted - In str:") << str << " EncStr:" << encStr);
 		return false;
 	}
 	return true;

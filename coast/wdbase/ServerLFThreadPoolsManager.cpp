@@ -13,7 +13,7 @@
 #include "Registry.h"
 #include "Timers.h"
 #include "Server.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "LFListenerPool.h"
 #include "WPMStatHandler.h"
 #include "RequestProcessor.h"
@@ -107,11 +107,11 @@ bool ServerLFThreadPoolsManager::BlockRequests(Server *server)
 	fLFPool->BlockRequests();
 
 	String m(" done\n");
-	SysLog::WriteToStderr(m);
+	SystemLog::WriteToStderr(m);
 	Trace("done");
 
 	m = "Waiting for requests to terminate \n";
-	SysLog::WriteToStderr(m);
+	SystemLog::WriteToStderr(m);
 	Trace(m);
 	Context ctx;
 	ctx.SetServer(server);

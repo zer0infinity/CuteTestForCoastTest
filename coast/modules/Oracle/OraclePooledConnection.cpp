@@ -8,7 +8,7 @@
 
 #include "OraclePooledConnection.h"
 
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 
 #include <string.h>		// for strlen

@@ -12,7 +12,7 @@
 //--- project modules used -----------------------------------------------------
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 
 //--- c-modules used -----------------------------------------------------------
 #include <cstring>
@@ -70,6 +70,6 @@ void InitFinisManager::IFMTrace(const char *pMsg)
 	static const char *pEnvVar = getenv("TRACE_INITFINIS");
 	static bool bTrace = ( pEnvVar != 0 && strcmp(pEnvVar, "1") == 0 );
 	if ( bTrace ) {
-		SysLog::WriteToStderr(pMsg);
+		SystemLog::WriteToStderr(pMsg);
 	}
 }

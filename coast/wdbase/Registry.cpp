@@ -10,7 +10,7 @@
 #include "Registry.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
@@ -144,7 +144,7 @@ Registry *Registry::MakeRegistry(const char *category)
 	StatTrace(Registry.MakeRegistry, "category <" << NotNull(category) << ">", Storage::Current());
 	String msg("Creating Registry for: <");
 	msg.Append(NotNull(category)).Append('>');
-	SysLog::Info(msg);
+	SystemLog::Info(msg);
 
 	Registry *r = new Registry(category);
 	GetRegTable()[category] = Anything(r, Storage::Global()); // r stored as pointer to IFAObject (AB)
@@ -157,7 +157,7 @@ Registry *Registry::RemoveRegistry(const char *category)
 	msg << NotNull(category) << ">";
 	StartTrace1(Registry.RemoveRegistry, "category <" << NotNull(category) << ">");
 
-	SysLog::Info(msg);
+	SystemLog::Info(msg);
 
 	Registry *r = 0;
 	Anything a;

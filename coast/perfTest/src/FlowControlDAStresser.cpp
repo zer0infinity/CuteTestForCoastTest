@@ -15,7 +15,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 
 //---- FlowControlDAStresser -----------------------------------------------------------
@@ -222,7 +222,7 @@ Anything FlowControlDAStresser::Run( long id)
 			CheckCopyErrorMessage(result, ctx.GetTmpStore(), nrSteps, (lastErrors != nError));
 			lastErrors = nError;
 			tmpStore["result"]["ConfigStep"] = nrSteps + 1;
-			SysLog::WriteToStderr(".", 1);	// progress indication
+			SystemLog::WriteToStderr(".", 1);	// progress indication
 			// remove slots which should not stay persistent between requests
 			// enable FlowController to cleanup its own mess
 			flowCntrl->CleanupAfterStep(ctx);

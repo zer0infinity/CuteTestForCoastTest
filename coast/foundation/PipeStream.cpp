@@ -10,7 +10,7 @@
 #include "PipeStream.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "System.h"
 #include "Pipe.h"
 #include "Dbg.h"
@@ -199,8 +199,8 @@ long PipeStreamBuf::DoWrite(const char *bufPtr, long bytes2Send)
 				break;
 			}
 			String logMsg("write on pipe: ");
-			logMsg << (long)wfd << " failed <" << SysLog::LastSysError() << ">" << " transmitted: " << bytesSent;
-			SysLog::Error(logMsg);
+			logMsg << (long)wfd << " failed <" << SystemLog::LastSysError() << ">" << " transmitted: " << bytesSent;
+			SystemLog::Error(logMsg);
 			Ios->clear(ios::badbit);
 		}
 	} else if (Ios) {
@@ -257,10 +257,10 @@ ostream  &operator<<(ostream &os, PipeStreamBuf *ssbuf)
 			} else if (bytesRead < 0) {
 				String logMsg("Pipe error on read: ");
 				logMsg << (long) errno;
-				SysLog::Error( logMsg );
+				SystemLog::Error( logMsg );
 			} // if
 			else {
-				SysLog::Error( "Pipe closed on read: " );
+				SystemLog::Error( "Pipe closed on read: " );
 			}
 		} while ( bytesRead > 0 );
 

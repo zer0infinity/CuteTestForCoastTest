@@ -18,7 +18,7 @@ using namespace std;
 #endif
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
@@ -307,7 +307,7 @@ void System::GetCWD(String &cwd)
 	String buf(4096L);
 	cwd = ".";
 	if (!getcwd((char *)(const char *)buf, buf.Capacity())) {
-		SysLog::Alert("puh, cannot obtain current working directory" );
+		SystemLog::Alert("puh, cannot obtain current working directory" );
 		return;
 	} else {
 		cwd = String((void *)(const char *)buf, strlen((const char *)buf));
@@ -436,12 +436,12 @@ void System::SetRootDir(const char *root, bool print)
 			System::ResolvePath(rPath);
 		}
 		if (print) {
-			SysLog::WriteToStderr( String("Root Dir: <") << rPath << ">" << "\n" );
+			SystemLog::WriteToStderr( String("Root Dir: <") << rPath << ">" << "\n" );
 		}
 
 		String logMsg("Root Dir: <");
 		logMsg << rPath << ">";
-		SysLog::Info(logMsg);
+		SystemLog::Info(logMsg);
 
 		fgRootDir.SetAllocator(Storage::Global());
 		fgRootDir = rPath;
@@ -452,12 +452,12 @@ void System::SetPathList(const char *pathlist, bool print)
 {
 	if (pathlist) {
 		if (print) {
-			SysLog::WriteToStderr( String("Pathlist: <") << pathlist << ">" << "\n" );
+			SystemLog::WriteToStderr( String("Pathlist: <") << pathlist << ">" << "\n" );
 		}
 
 		String logMsg("Pathlist: <");
 		logMsg << pathlist << ">";
-		SysLog::Info(logMsg);
+		SystemLog::Info(logMsg);
 
 		fgPathList.SetAllocator(Storage::Global());
 		fgPathList = pathlist;
@@ -599,7 +599,7 @@ bool System::CheckPath(const char *path, struct stat *stbuf, bool &bIsSymbolicLi
 	bool result = false;
 	while ( !(result = (lstat(path, stbuf) == 0)) && SyscallWasInterrupted() ) {
 		String msg("OOPS, lstat failed with ");
-		msg << SysLog::LastSysError() << " on " << path;
+		msg << SystemLog::LastSysError() << " on " << path;
 		Trace(msg);
 		SYSWARNING(msg);
 	}
@@ -609,7 +609,7 @@ bool System::CheckPath(const char *path, struct stat *stbuf, bool &bIsSymbolicLi
 	}
 	while ( !(result = (stat(path, stbuf) == 0)) && SyscallWasInterrupted() ) {
 		String msg("OOPS, stat failed with ");
-		msg << SysLog::LastSysError() << " on " << path;
+		msg << SystemLog::LastSysError() << " on " << path;
 		Trace(msg);
 		SYSWARNING(msg);
 	}
@@ -661,7 +661,7 @@ bool System::FindFile(String &fullPathName, const char *file, const char *path)
 		bRet = true;
 	} else {
 		// some error occured, set a warning
-		SYSWARNING(String("tried to find [") << file << "], error is:" << SysLog::LastSysError());
+		SYSWARNING(String("tried to find [") << file << "], error is:" << SystemLog::LastSysError());
 	}
 #else
 	// HUM: found this somewhere but don't know how to make functional on Solaris/Linux
@@ -689,7 +689,7 @@ bool System::FindFile(String &fullPathName, const char *file, const char *path)
 //	}
 //	else
 //	{ // some error occured, set a warning
-//		SYSWARNING(String("tried to find [") << file << "], error is:" << SysLog::LastSysError());
+//		SYSWARNING(String("tried to find [") << file << "], error is:" << SystemLog::LastSysError());
 //	}
 #endif
 	return bRet;
@@ -1121,7 +1121,7 @@ bool System::BlocksLeftOnFS(const char *pFsPath, ul_long &ulBlocks, unsigned lon
 	} else
 #endif
 	{
-		SYSWARNING("Failed to get blocks left on FS [" << SysLog::LastSysError() << "]");
+		SYSWARNING("Failed to get blocks left on FS [" << SystemLog::LastSysError() << "]");
 	}
 	return false;
 }
@@ -1185,47 +1185,47 @@ System::DirStatusCode System::IntMakeDirectory(String &path, int pmode, bool bRe
 			switch ( System::GetSystemError() ) {
 					// if errno is set to EEXIST, someone else might already have created the dir, so do not complain
 				case EEXIST: {
-					SYSINFO("mkdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "] because the directory was created by someone else in the meantime?!");
+					SYSINFO("mkdir of [" << path << "] was unsuccessful [" << SystemLog::LastSysError() << "] because the directory was created by someone else in the meantime?!");
 					aDirStatus = System::eExists;
 					break;
 				}
 				case EDQUOT: {
-					SYSERROR("mkdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "]");
+					SYSERROR("mkdir of [" << path << "] was unsuccessful [" << SystemLog::LastSysError() << "]");
 					aDirStatus = System::eQuotaExceeded;
 					break;
 				}
 				case ENOSPC: {
-					SYSERROR("mkdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "] -> check for free inodes using $>df -F ufs -o i <FS>");
+					SYSERROR("mkdir of [" << path << "] was unsuccessful [" << SystemLog::LastSysError() << "] -> check for free inodes using $>df -F ufs -o i <FS>");
 					aDirStatus = System::eNoSpaceLeft;
 					break;
 				}
 				case EACCES: {
-					SYSWARNING("mkdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "]");
+					SYSWARNING("mkdir of [" << path << "] was unsuccessful [" << SystemLog::LastSysError() << "]");
 					aDirStatus = System::eNoPermission;
 					break;
 				}
 				case ENOENT: {
-					SYSWARNING("mkdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "]");
+					SYSWARNING("mkdir of [" << path << "] was unsuccessful [" << SystemLog::LastSysError() << "]");
 					aDirStatus = System::eNotExists;
 					break;
 				}
 				case ENOTDIR: {
-					SYSWARNING("mkdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "]");
+					SYSWARNING("mkdir of [" << path << "] was unsuccessful [" << SystemLog::LastSysError() << "]");
 					aDirStatus = System::eNotDirectory;
 					break;
 				}
 				case EIO: {
-					SYSERROR("mkdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "]");
+					SYSERROR("mkdir of [" << path << "] was unsuccessful [" << SystemLog::LastSysError() << "]");
 					aDirStatus = System::eIOOperationFailed;
 					break;
 				}
 				case EFAULT: {
-					SYSERROR("mkdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "]");
+					SYSERROR("mkdir of [" << path << "] was unsuccessful [" << SystemLog::LastSysError() << "]");
 					aDirStatus = System::ePathIllegal;
 					break;
 				}
 				case EMLINK: {
-					SYSWARNING("mkdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "] because the parent directory is exhausted of hardlinks!");
+					SYSWARNING("mkdir of [" << path << "] was unsuccessful [" << SystemLog::LastSysError() << "] because the parent directory is exhausted of hardlinks!");
 					aDirStatus = System::eNoMoreHardlinks;
 					if ( bExtendByLinks ) {
 						// if no more directories can be created, we use 'extension' links instead
@@ -1234,7 +1234,7 @@ System::DirStatusCode System::IntMakeDirectory(String &path, int pmode, bool bRe
 					break;
 				}
 				default: {
-					SYSERROR("mkdir of [" << path << "] failed with [" << SysLog::LastSysError() << "]");
+					SYSERROR("mkdir of [" << path << "] failed with [" << SystemLog::LastSysError() << "]");
 					aDirStatus = System::eCreateDirFailed;
 				}
 			}
@@ -1336,7 +1336,7 @@ System::DirStatusCode System::IntRemoveDirectory(String &path, bool bRecurse, bo
 			}
 		}
 	} else {
-		SYSERROR("rmdir of [" << path << "] was unsuccessful [" << SysLog::LastSysError() << "]");
+		SYSERROR("rmdir of [" << path << "] was unsuccessful [" << SystemLog::LastSysError() << "]");
 		switch ( System::GetSystemError() ) {
 			case EEXIST:
 			case ENOTEMPTY:
@@ -1374,7 +1374,7 @@ bool System::GetLockFileState(const char *lockFileName)
 		return true;
 	}
 	if (fd < 0) {
-		SYSERROR("Getting lock state failed. Reason: [" << SysLog::LastSysError() << "]");
+		SYSERROR("Getting lock state failed. Reason: [" << SystemLog::LastSysError() << "]");
 		// What to do in case of an error? Let's be conservative and consider the lockfile as locked.
 		return true;
 	}
@@ -1389,7 +1389,7 @@ int System::GetNumberOfHardLinks(const char *path)
 
 	// acquire inode information
 	if (stat(path, &mystat) == -1) {
-		SYSERROR("Could not acquire inode information for " << path << "; stat reports [" << SysLog::LastSysError() << "]");
+		SYSERROR("Could not acquire inode information for " << path << "; stat reports [" << SystemLog::LastSysError() << "]");
 		return -1;
 	}
 	// return number of hard links to <path>
@@ -1400,7 +1400,7 @@ System::DirStatusCode System::CreateSymbolicLink(const char *filename, const cha
 {
 	StartTrace1(System.CreateSymbolicLink, "directory [" << NotNull(filename) << "] link [" << NotNull(symlinkname) << "]");
 	if ( symlink(filename, symlinkname) == -1 ) {
-		SYSERROR("Could not create symbolic link " << symlinkname << " to file " << filename << "; symlink reports [" << SysLog::LastSysError() << "]");
+		SYSERROR("Could not create symbolic link " << symlinkname << " to file " << filename << "; symlink reports [" << SystemLog::LastSysError() << "]");
 		return System::eCreateSymlinkFailed;
 	}
 	// success

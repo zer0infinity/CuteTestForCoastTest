@@ -14,7 +14,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "System.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 
 //--- c-modules used -----------------------------------------------------------
 #include <ctype.h>

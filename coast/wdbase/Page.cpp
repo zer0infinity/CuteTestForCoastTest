@@ -20,7 +20,7 @@
 #include "RequestProcessor.h"
 #include "Dbg.h"
 #ifdef PAGE_TRACING
-#include "SysLog.h"
+#include "SystemLog.h"
 #endif
 
 //---- PagesModule -----------------------------------------------------------
@@ -143,9 +143,9 @@ void Page::Render(ostream &reply, Context &c)
 	RenderProtocolBody(replyInt, c);
 	RenderProtocolTail(replyInt, c);
 
-	SysLog::WriteToStderr(String("Page::Render\n") <<
-						  "------------ start -----------\n" << dbg <<
-						  "------------  end ------------\n");
+	SystemLog::WriteToStderr(String("Page::Render\n") <<
+							 "------------ start -----------\n" << dbg <<
+							 "------------  end ------------\n");
 #endif
 	//SOP: try if we can get better responsiveness releasing the session
 	SessionReleaser slr(c);

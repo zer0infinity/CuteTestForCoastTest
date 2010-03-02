@@ -85,9 +85,9 @@ user.emerg					*
 #define TRACE_LOCK_START(methodname) 	String lmsgf; lmsgf << time(0) << " " << Thread::MyId() << " " << (methodname); \
 								  String lname; String lmsgw;	String lmsg
 #define TRACE_LOCK_ACQUIRE(lockname)   lname = " "; lname << (lockname);  lmsgw = "  locked "; lmsg = ""; \
-								  lmsg << lmsgw << lmsgf << lname; SysLog::Info(lmsg)
+								  lmsg << lmsgw << lmsgf << lname; SystemLog::Info(lmsg)
 #define TRACE_LOCK_RELEASE(lockname)   lname = " "; lname << (lockname);  lmsgw = "unlocked "; lmsg = ""; \
-								  lmsg << lmsgw << lmsgf << lname; SysLog::Info(lmsg)
+								  lmsg << lmsgw << lmsgf << lname; SystemLog::Info(lmsg)
 #else
 #define TRACE_LOCK_START(methodname)
 #define TRACE_LOCK_ACQUIRE(lockname)

@@ -10,7 +10,7 @@
 #include "TruncateStringRenderer.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 
 //---- TruncateStringRenderer ---------------------------------------------------------------
@@ -31,7 +31,7 @@ void TruncateStringRenderer::RenderAll(ostream &reply, Context &c, const ROAnyth
 	if (config.LookupPath(roaSlotConfig, "String")) {
 		RenderOnString(value, c, roaSlotConfig);
 	} else {
-		SysLog::Error("TruncateStringRenderer::RenderAll: String not defined");
+		SystemLog::Error("TruncateStringRenderer::RenderAll: String not defined");
 		return;
 	}
 	Trace("String: [" << value << "]");
@@ -39,7 +39,7 @@ void TruncateStringRenderer::RenderAll(ostream &reply, Context &c, const ROAnyth
 	if (config.LookupPath(roaSlotConfig, "Token")) {
 		RenderOnString(prefix, c, roaSlotConfig);
 	} else {
-		SysLog::Error("TruncateStringRenderer::RenderAll: Token not defined");
+		SystemLog::Error("TruncateStringRenderer::RenderAll: Token not defined");
 		return;
 	}
 	Trace("Token: [" << prefix << "]");
@@ -48,14 +48,14 @@ void TruncateStringRenderer::RenderAll(ostream &reply, Context &c, const ROAnyth
 	Trace("Direction: [" << direction << "]");
 
 	if ( !direction.IsEqual("LR") &&  !direction.IsEqual("RL") ) {
-		SysLog::Error("TruncateStringRenderer::RenderAll: Wrong direction given");
+		SystemLog::Error("TruncateStringRenderer::RenderAll: Wrong direction given");
 		return;
 	}
 
 	String strPart2Use = config["PartToUse"].AsString("L");
 	Trace("PartToUse: [" << strPart2Use << "]");
 	if ( !strPart2Use.IsEqual("L") &&  !strPart2Use.IsEqual("R") ) {
-		SysLog::Error("TruncateStringRenderer::RenderAll: Wrong PartToUse given");
+		SystemLog::Error("TruncateStringRenderer::RenderAll: Wrong PartToUse given");
 		return;
 	}
 

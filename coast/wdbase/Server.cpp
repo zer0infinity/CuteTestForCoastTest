@@ -265,7 +265,7 @@ int Server::DoGlobalReinit()
 		System::SetRootDir( Lookup("Root", System::GetRootDir()), true);
 		// fgConfig file may redefine path list
 		System::SetPathList( Lookup("PathList", System::GetPathList()), true);
-		SysLog::WriteToStderr("Environment set\nResetting Components\n");
+		SystemLog::WriteToStderr("Environment set\nResetting Components\n");
 
 		TraceAny(GetConfig(), "Old Config");
 		TraceAny(config, "New Config");
@@ -298,7 +298,7 @@ int Server::DoInit()
 			fPoolManager = (ServerPoolsManagerInterface *)fPoolManager->ConfiguredClone("ServerPoolsManagerInterface", poolManagerName, true);
 			if ( fPoolManager ) {
 				if ( (fPoolManager->Init(this) == 0) && (SetupDispatcher() == 0) ) {
-					SysLog::Info(String("Server init of [") << strServerName << "] OK.");
+					SystemLog::Info(String("Server init of [") << strServerName << "] OK.");
 					return 0;
 				}
 			}
@@ -347,15 +347,15 @@ int Server::DoTerminate(int val)
 {
 	StartTrace(Server.DoTerminate);
 	if ( fPoolManager ) {
-		SysLog::WriteToStderr("\t\tTerminating running requests");
+		SystemLog::WriteToStderr("\t\tTerminating running requests");
 		if ( fPoolManager->IsReady(false, 10) ) {
 			fPoolManager->Terminate();
 			fPoolManager->Finalize();
 			delete fPoolManager;
 			fPoolManager = 0;
-			SysLog::WriteToStderr(" done\n");
+			SystemLog::WriteToStderr(" done\n");
 		} else {
-			SysLog::WriteToStderr(" failed\n");
+			SystemLog::WriteToStderr(" failed\n");
 		}
 	}
 	return fRetVal;
@@ -428,7 +428,7 @@ RequestProcessor *Server::MakeProcessor()
 	Trace("Processor: <" << NotNull(rpn) << ">");
 	rp = RequestProcessor::FindRequestProcessor(rpn);
 	if (rp == 0) {
-		SysLog::WriteToStderr(String("RequestProcessor ") << rpn << " not found\n");
+		SystemLog::WriteToStderr(String("RequestProcessor ") << rpn << " not found\n");
 		// shut down the server
 		PrepareShutdown(-1);
 	} else {
@@ -568,7 +568,7 @@ int Server::DoDeletePIDFile(const String &pidFilePath)
 	StartTrace(Server.DoDeletePIDFile);
 
 	if ( System::IO::unlink(pidFilePath) != 0 ) {
-		SYSWARNING("couldn't delete pid file " << pidFilePath << ": " << SysLog::LastSysError());
+		SYSWARNING("couldn't delete pid file " << pidFilePath << ": " << SystemLog::LastSysError());
 		return -1;
 	}
 	return 0;
@@ -597,13 +597,13 @@ int Server::SetUid()
 		// get real id
 		if (!(ent = getpwnam(username))) {
 			m << "bad user name %s\n" << username << "\n" ;
-			SysLog::WriteToStderr(m);
+			SystemLog::WriteToStderr(m);
 		}
 
 		if ((geteuid() != ent->pw_uid) && (setuid(ent->pw_uid) == -1)) {
 			m = "";
 			m << "WARNING setuid - unable to change uid to " << lookupedUser << "\n";
-			SysLog::WriteToStderr(m);
+			SystemLog::WriteToStderr(m);
 			ret = 0;
 		}
 	}
@@ -617,7 +617,7 @@ int Server::SetUid()
 	m << geteuid();
 #endif
 	m << "), server-pid: " << GetPid() << "\n";
-	SysLog::WriteToStderr(m);
+	SystemLog::WriteToStderr(m);
 #endif
 	return ret;
 }
@@ -806,7 +806,7 @@ int MasterServer::DoTerminate(int val)
 	for (long i = 0; i < fNumServers; ++i) {
 		String m(50L);
 		m << "\t\tTerminating <" << fServerThreads[i].GetName() << ">\n";
-		SysLog::WriteToStderr(m);
+		SystemLog::WriteToStderr(m);
 		Thread::EThreadState aState = fServerThreads[i].GetState(false, Thread::eRunning);
 		if ( aState < Thread::eTerminationRequested ) {
 			fServerThreads[i].Terminate(60, retval);
@@ -814,7 +814,7 @@ int MasterServer::DoTerminate(int val)
 		fServerThreads[i].CheckState(Thread::eTerminated, 10);
 		m.Trim(0);
 		m << "\t\tTerminating <" << fServerThreads[i].GetName() << "> done\n";
-		SysLog::WriteToStderr(m);
+		SystemLog::WriteToStderr(m);
 	}
 	Trace("deleting server threads");
 	delete [] fServerThreads;

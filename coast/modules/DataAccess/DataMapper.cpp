@@ -10,7 +10,7 @@
 #include "DataMapper.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Renderer.h"
 #include "Dbg.h"
 
@@ -179,7 +179,7 @@ bool LookupMapper::DoGetStream(const char *key, ostream &os, Context &ctx, ROAny
 			OStringStream ostr(&error);
 			lookupName.PrintOn(ostr, false);	// append Anything to ease debugging
 		}
-		SysLog::Error(error);
+		SystemLog::Error(error);
 		return false;
 	}
 }

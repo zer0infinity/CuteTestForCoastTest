@@ -73,7 +73,7 @@ public:
 	//! \param ssl the ssl structure if available
 	//! \param res the return value of the previous SSL_xxx call
 	static unsigned long GetSSLError(SSL *ssl = 0, int res = 1);
-	//!emit SSL error message on SysLog and Trace
+	//!emit SSL error message on SystemLog and Trace
 	//! \param err value returned by GetSSLError
 	static void ReportSSLError(unsigned long err);
 	//!Store SSL error in supplied Anything. No logging takes place.

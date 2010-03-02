@@ -126,6 +126,6 @@ void MySQLDAImpl::SetErrorMsg(const char *msg, MYSQL *mysql, Context &context, R
 	errorMsg << " " << mysql_error(mysql);
 
 	out->Put("Error", errorMsg, context);
-	SysLog::Error(errorMsg);
+	SystemLog::Error(errorMsg);
 	Trace("MySQL Error >" << errorMsg);
 }

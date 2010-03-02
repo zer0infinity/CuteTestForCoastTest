@@ -89,7 +89,7 @@ public:
 		\param name the filename, it can be relative or absolute
 		\param extension the extension of the file
 		\param mode ios mode flags
-		\param trace flag if true traces the operation with SysLog::Debug messages
+		\param trace flag if true traces the operation with SystemLog::Debug messages
 		\return the pointer to the open iostream or NULL, the client is responsible for destruction */
 	static iostream *OpenStream(const char *name, const char *extension, openmode mode = (ios::in), bool trace = false);
 
@@ -97,7 +97,7 @@ public:
 	/*! \param name the filename, it can be relative or absolute
 		\param extension the extension of the file
 		\param mode ios mode flags
-		\param trace flag if true traces the operation with SysLog::Debug messages
+		\param trace flag if true traces the operation with SystemLog::Debug messages
 		\return the pointer to the open iostream or NULL, the client is responsible for destruction */
 	static iostream *OpenIStream(const char *name, const char *extension, openmode mode = (ios::in), bool trace = false);
 
@@ -105,7 +105,7 @@ public:
 	/*! \param name the filename, it can be relative or absolute
 		\param extension the extension of the file
 		\param mode ios mode flags
-		\param trace flag if true traces the operation with SysLog::Debug messages
+		\param trace flag if true traces the operation with SystemLog::Debug messages
 		\return the pointer to the open iostream or NULL, the client is responsible for destruction */
 	static iostream *OpenOStream(const char *name, const char *extension, openmode mode = ios::out | ios::trunc, bool trace = false);
 
@@ -390,7 +390,7 @@ private:
 		\param name the filename, it can be relative or absolute
 		\param extension the extension of the file
 		\param mode the mode of the stream to be opened e.g. ios::in, mode flags can be combined by the | operation
-		\param trace if true writes messages to SysLog
+		\param trace if true writes messages to SystemLog
 		\return an open iostream or NULL if the open fails */
 	static iostream *IntOpenStream(String &resultPath, const char *name, const char *extension, bool search, openmode mode, bool trace = false);
 
@@ -399,7 +399,7 @@ private:
 		\param pathlist the pathlist to be searched,relative to the root directory
 		\param name the filename, it can be relative or absolute, it contains the extension
 		\param mode the mode of the stream to be opened e.g. ios::in, mode flags can be combined by the | operation
-		\param trace if true writes messages to SysLog
+		\param trace if true writes messages to SystemLog
 		\return an open iostream or NULL if the open fails */
 	static iostream *IntOpenStreamBySearch(String &resultPath, const char *name, const char *pathlist, openmode mode, bool trace = false);
 
@@ -407,7 +407,7 @@ private:
 	/*! \param resultPath the location of the iostream opened
 		\param name the filename, it can be relative or absolute, it contains the extension
 		\param mode the mode of the stream to be opened e.g. ios::in, mode flags can be combined by the | operation
-		\param trace if true writes messages to SysLog
+		\param trace if true writes messages to SystemLog
 		\return an open iostream or NULL if the open fails */
 	static iostream *DoOpenStream(String &resultPath, const char *name, openmode mode, bool trace = false);
 

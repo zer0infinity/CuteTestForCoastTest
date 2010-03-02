@@ -11,7 +11,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "System.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Resolver.h"
 #include "SocketStream.h"
 #include "Dbg.h"
@@ -353,9 +353,9 @@ void Socket::LogError(int socketfd, const char *contextmessage, long lRetCode)
 	StartTrace1(Socket.LogError, "fd:" << socketfd);
 	String logMsg(contextmessage);
 	logMsg << " of socket fd=" << socketfd
-		   << " failed with function retCode:" << lRetCode << " (#" << (long)System::GetSystemError() << ") " << SysLog::LastSysError();
+		   << " failed with function retCode:" << lRetCode << " (#" << (long)System::GetSystemError() << ") " << SystemLog::LastSysError();
 	Trace(logMsg);
-	SysLog::Error(logMsg);
+	SystemLog::Error(logMsg);
 }
 
 bool Socket::GetSockOptInt(int socketFd, int optionName, int &lValue)
@@ -364,7 +364,7 @@ bool Socket::GetSockOptInt(int socketFd, int optionName, int &lValue)
 	bool boRet = true;
 	socklen_type len = sizeof(lValue);
 	if ( getsockopt(socketFd, SOL_SOCKET, optionName, (char *)&lValue, &len) < 0 ) {
-		SYSWARNING("sockopt-error [" << SysLog::LastSysError() << "]");
+		SYSWARNING("sockopt-error [" << SystemLog::LastSysError() << "]");
 		boRet = false;
 	}
 	Trace("returned value:" << (long)lValue);
@@ -443,7 +443,7 @@ bool Socket::SetToNonBlocking(int fd, bool dontblock)
 	}
 #endif
 	String logMsg;
-	SYSERROR(logMsg << "error in SetToNonBlocking fcntl  (" << SysLog::LastSysError() << ")");
+	SYSERROR(logMsg << "error in SetToNonBlocking fcntl  (" << SystemLog::LastSysError() << ")");
 
 	return false;
 }
@@ -472,9 +472,9 @@ void EndPoint::LogError(const char *contextmessage)
 	String logMsg(contextmessage);
 	logMsg << " of socket " << (long)GetFd()
 		   << " with address: " << fIPAddress << " port: " << fPort
-		   << " failed (#" << (long)System::GetSystemError() << ") " << SysLog::LastSysError();
+		   << " failed (#" << (long)System::GetSystemError() << ") " << SystemLog::LastSysError();
 	Trace(logMsg);
-	SysLog::Error(logMsg);
+	SystemLog::Error(logMsg);
 }
 
 bool EndPoint::CreateSocket()
@@ -792,7 +792,7 @@ ConnectStat::ConnectStat(String usage)
 
 ConnectStat::~ConnectStat()
 {
-	SysLog::WriteToStderr( fUsage << " " << fTimer.Diff() << " ms" << "\n" );
+	SystemLog::WriteToStderr( fUsage << " " << fTimer.Diff() << " ms" << "\n" );
 }
 #endif
 

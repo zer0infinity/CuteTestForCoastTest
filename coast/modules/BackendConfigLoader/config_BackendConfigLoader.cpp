@@ -23,7 +23,7 @@ BOOL WINAPI DllMain(HANDLE hinstDLL,  // DLL module handle
 			// The DLL is loading due to process
 			// initialization or a call to LoadLibrary.
 		case DLL_PROCESS_ATTACH:
-			SysLog::Info("BackendConfigLoader: DLL_PROCESS_ATTACH called");
+			SystemLog::Info("BackendConfigLoader: DLL_PROCESS_ATTACH called");
 			break;
 
 			// The attached process creates a new thread.
@@ -36,7 +36,7 @@ BOOL WINAPI DllMain(HANDLE hinstDLL,  // DLL module handle
 
 			// The DLL unloading due to process termination or call to FreeLibrary.
 		case DLL_PROCESS_DETACH:
-			SysLog::Info("BackendConfigLoader: DLL_PROCESS_DETACH called");
+			SystemLog::Info("BackendConfigLoader: DLL_PROCESS_DETACH called");
 			break;
 
 		default:

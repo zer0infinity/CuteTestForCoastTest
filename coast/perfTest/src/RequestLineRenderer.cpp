@@ -10,7 +10,7 @@
 #include "RequestLineRenderer.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "SecurityModule.h"
 #include "Dbg.h"
 
@@ -160,7 +160,7 @@ void RequestLineRenderer::RenderAll(ostream &reply, Context &c, const ROAnything
 				replyDebugBuffer << "\r\n" << authorizationHeaderFieldName << ": Basic " << encodeddata;
 				Trace("string [" << strUserPass << "] encoded [" << encodeddata << "]");
 			} else {
-				SysLog::Warning("Base64 encoder not found! Authorization not added to request!");
+				SystemLog::Warning("Base64 encoder not found! Authorization not added to request!");
 			}
 		}
 
@@ -191,7 +191,7 @@ void RequestLineRenderer::RenderAll(ostream &reply, Context &c, const ROAnything
 
 #ifdef COAST_TRACE
 		if ( Tracer::CheckWDDebug("RequestLineRenderer.Render", Storage::Current()) ) {
-			SysLog::Info( infoMsg ); // perhaps enable this line with an entry in RequestLineRenderer.any.... future
+			SystemLog::Info( infoMsg ); // perhaps enable this line with an entry in RequestLineRenderer.any.... future
 		}
 #endif
 

@@ -64,7 +64,7 @@ void HTMLTemplateRenderer::RenderAll(ostream &reply, Context &context, const ROA
 		String filename;
 		Renderer::RenderOnString(filename, context, args["TemplateName"]);
 		if (filename.Length() == 0) {
-			SysLog::Error("HTMLTemplateRenderer::RenderAll: cannot find template name");
+			SystemLog::Error("HTMLTemplateRenderer::RenderAll: cannot find template name");
 		} else {
 			const char *lang = context.Language();		// cache language flag for localized strings
 			TraceAny(fgNameMap, "current cache map");
@@ -87,7 +87,7 @@ void HTMLTemplateRenderer::RenderAll(ostream &reply, Context &context, const ROA
 				} else {
 					String logMsg("HTMLTemplateRenderer::RenderAll: cannot open file ");
 					logMsg << filename << ".html";
-					SysLog::Error(logMsg);
+					SystemLog::Error(logMsg);
 				}
 			}
 		}
@@ -102,7 +102,7 @@ void HTMLTemplateRenderer::RenderAll(ostream &reply, Context &context, const ROA
 			OStringStream str;
 			str << "HTMLTemplateRenderer::RenderAll: neither Template nor TemplateName is defined :";
 			args.PrintOn(str); // log what we've got
-			SysLog::Error(str.str());
+			SystemLog::Error(str.str());
 			return;
 		}
 

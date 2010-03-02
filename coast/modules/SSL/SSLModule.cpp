@@ -10,7 +10,7 @@
 #include "SSLModule.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "System.h"
 #include "SSLSocket.h"
 #include "SSLAPI.h"
@@ -146,7 +146,7 @@ bool SSLModule::Init(const ROAnything config)
 {
 	StartTrace(SSLModule.Init);
 	thread_setup();
-	SysLog::WriteToStderr(String("\t") << fName << ". done\n");
+	SystemLog::WriteToStderr(String("\t") << fName << ". done\n");
 //	BIO *pbio = BIO_new(BIO_s_file());
 //	BIO_set_fp(pbio,stderr,BIO_NOCLOSE);
 //	CRYPTO_malloc_debug_init();
@@ -182,7 +182,7 @@ SSL_CTX *SSLModule::GetSSLCtx(ConfNamedObject *object)
 			String logMsg("Could not create SSL Context for: ");
 			logMsg << name;
 			Trace(logMsg);
-			SysLog::Error(logMsg);
+			SystemLog::Error(logMsg);
 		}
 	}
 	return ctx;
@@ -285,7 +285,7 @@ SSL_CTX *SSLModule::SetOwnCertificateAndKey(SSL_CTX *ctx, LookupInterface *objec
 		String logMsg("SSL PrivateKey File: ");
 		logMsg << keyFileName << " not found";
 		Trace(logMsg);
-		SysLog::Error(logMsg);
+		SystemLog::Error(logMsg);
 		SSL_CTX_free(ctx);
 		return 0;
 	}
@@ -303,7 +303,7 @@ SSL_CTX *SSLModule::SetOwnCertificateAndKey(SSL_CTX *ctx, LookupInterface *objec
 		String logMsg("SSL Certificate File: ");
 		logMsg << certFileName << " not found";
 		Trace(logMsg);
-		SysLog::Error(logMsg);
+		SystemLog::Error(logMsg);
 		SSL_CTX_free(ctx);
 		return 0;
 	}
@@ -325,7 +325,7 @@ SSL_CTX *SSLModule::SetOwnCertificateAndKey(SSL_CTX *ctx, LookupInterface *objec
 		SSLSocket::ReportSSLError(SSLSocket::GetSSLError(0, ret));
 		String logMsg("Private key does not match the certificate public key\n");
 		Trace(logMsg);
-		SysLog::Error(logMsg);
+		SystemLog::Error(logMsg);
 		SSL_CTX_free(ctx);
 		return(0);
 	}

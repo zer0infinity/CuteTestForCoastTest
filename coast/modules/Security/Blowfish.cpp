@@ -558,7 +558,7 @@ void BlowfishScrambler::DoECB_multipleBlockEncrypt(unsigned char *blockPtr, unsi
 {
 	unsigned int i;
 	if (length % BF_BLOCK) {
-		SysLog::WriteToStderr("Blowfish requires the input to be a multiple of 8 bytes (64 bits) to work.\n");
+		SystemLog::WriteToStderr("Blowfish requires the input to be a multiple of 8 bytes (64 bits) to work.\n");
 		return;
 	}
 
@@ -575,7 +575,7 @@ bool BlowfishScrambler::DoECB_multipleBlockDecrypt(unsigned char *blockPtr, unsi
 {
 	unsigned int i;
 	if (length % BF_BLOCK) {
-		SysLog::WriteToStderr("Blowfish requires the input to be a multiple of 8 bytes (64bits) to work.\n");
+		SystemLog::WriteToStderr("Blowfish requires the input to be a multiple of 8 bytes (64bits) to work.\n");
 		return false;
 	}
 

@@ -79,7 +79,7 @@ void HTTPProcessor::ReadRequestBody(iostream &Ios, Anything &request, MIMEHeader
 		request["WHOLE_REQUEST_BODY"] = sm.GetUnparsedContent();
 
 #ifdef REQ_TRACING
-		SysLog::WriteToStderr(String("Body: ") << request["REQUEST_BODY"] << "\n");
+		SystemLog::WriteToStderr(String("Body: ") << request["REQUEST_BODY"] << "\n");
 #endif
 		TraceAny(request["REQUEST_BODY"], "Body");
 		TraceAny(request["WHOLE_REQUEST_BODY"], "Whole Body");

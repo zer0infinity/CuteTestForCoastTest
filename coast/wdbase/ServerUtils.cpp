@@ -11,7 +11,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "Socket.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "StringStream.h"
 #include "Server.h"
 #include "RequestProcessor.h"
@@ -125,7 +125,7 @@ void WIN32InterruptHandler::ShutDown()
 {
 	StartTrace(WIN32InterruptHandler.ShutDown);
 	if (fgServer) {
-		SysLog::Info("caught SIGINT");
+		SystemLog::Info("caught SIGINT");
 		fgServer->PrepareShutdown();
 		fgServer->RemovePIDFile();
 		fgServer = NULL;

@@ -10,7 +10,7 @@
 #include "SybCTnewDAImpl.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "SybCTnewDA.h"
 #include "Timers.h"
 #include "TimeStamp.h"
@@ -123,7 +123,7 @@ bool SybCTnewDAImpl::Finis()
 		SybCTnewDA::Finis(fg_cs_context);
 		// trace messages which occurred without a connection
 		while ( fgContextMessages.GetSize() ) {
-			SysLog::Warning(fgContextMessages[0L].AsString());
+			SystemLog::Warning(fgContextMessages[0L].AsString());
 			fgContextMessages.Remove(0L);
 		}
 	}
@@ -333,7 +333,7 @@ bool SybCTnewDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out)
 			}
 		}
 	} else {
-		SysLog::Error("Tried to access SybCTnewDAImpl when SybaseModule was not initialized!\n Try to add a slot SybaseModule to Modules slot and /SybaseModule { /SybCTnewDAImpl { <config> } } into Config.any");
+		SystemLog::Error("Tried to access SybCTnewDAImpl when SybaseModule was not initialized!\n Try to add a slot SybaseModule to Modules slot and /SybaseModule { /SybCTnewDAImpl { <config> } } into Config.any");
 	}
 	return bRet;
 }

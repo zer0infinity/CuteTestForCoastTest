@@ -19,7 +19,7 @@
 
 #ifdef RECORD
 #include "AnyUtils.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #endif
 
 #if defined(ONLY_STD_IOSTREAM)
@@ -236,7 +236,7 @@ bool HTTPDAImpl::DoExecRecord(Connector *csc, ConnectorParams *cps, Context &con
 #ifdef DEBUG
 	String infoMsg = "\r\nReply from server ";
 	infoMsg << theReply;
-	SysLog::Info( infoMsg ); // perhaps enable this line with an entry in RequestLineRenderer.any.... future
+	SystemLog::Info( infoMsg ); // perhaps enable this line with an entry in RequestLineRenderer.any.... future
 #endif
 
 	if (! RenderReply( theReply, context, out ) ) {

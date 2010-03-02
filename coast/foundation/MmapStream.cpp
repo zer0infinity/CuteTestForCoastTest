@@ -12,7 +12,7 @@
 #if !defined(WIN32)
 //--- standard modules used ----------------------------------------------------
 #include "System.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 
 //--- c-library modules used ---------------------------------------------------
 #include <fcntl.h>
@@ -198,7 +198,7 @@ bool MmapStreamBuf::xinit(int fd)
 			}
 			if (0 > munmap(fAddr, fLength - fMapOffset)) { // re-mapping after adjustment of size
 				// oops munmap fails, potential vm leak notify
-				SysLog::Error("MmapStreamBuf::xinit: munmap failed, potential VM leak");
+				SystemLog::Error("MmapStreamBuf::xinit: munmap failed, potential VM leak");
 			}
 		}
 		if (fMapFd != fd) {
@@ -323,7 +323,7 @@ bool MmapStreamBuf::reserve(long newlength)
 			if (lengthminus1 == -1 || 1 != write(fMapFd, "", 1)) {
 				// write something to create the pages in the file
 				// OOPS we got an error
-				SysLog::Error("MmapStreamBuf::reserve file could not append, not open?");
+				SystemLog::Error("MmapStreamBuf::reserve file could not append, not open?");
 				return false;
 			}
 			// adjust the buffer info

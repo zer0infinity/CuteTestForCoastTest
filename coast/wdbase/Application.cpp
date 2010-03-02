@@ -12,7 +12,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "AppBooter.h"
 #include "Registry.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
@@ -62,7 +62,7 @@ int Application::Run()
 int Application::DoRun()
 {
 	StartTrace(Application.DoRun);
-	SysLog::WriteToStderr("That all I'm doing ;-)\n");
+	SystemLog::WriteToStderr("That all I'm doing ;-)\n");
 	return 0;
 }
 
@@ -73,13 +73,13 @@ int Application::Terminate(int val)
 
 	String m(50);
 	m << "\tTerminating <" << fName << ">" << "\n";
-	SysLog::WriteToStderr(m);
+	SystemLog::WriteToStderr(m);
 
 	int iRetVal = DoTerminate(val);
 
 	m.Trim(0);
 	m << "\tTerminating <" << fName << "> done\n";
-	SysLog::WriteToStderr(m);
+	SystemLog::WriteToStderr(m);
 
 	return iRetVal;
 }
@@ -120,13 +120,13 @@ ROAnything Application::GetConfig()
 		LockUnlockEntry me(fgConfigMutex);
 		static bool bootonce = false;
 		if ( !bootonce && fgConfig.IsNull() ) {
-			SysLog::Info("implicit Application booting");
+			SystemLog::Info("implicit Application booting");
 
 			bootonce = true;
 			AppBooter booter;
 			Anything dummyargs;
 			if (!booter.Boot(dummyargs)) {
-				SysLog::Error("Application booting failed");
+				SystemLog::Error("Application booting failed");
 			}
 		}
 	}
@@ -188,7 +188,7 @@ int Application::GlobalRun()
 int Application::DoGlobalRun()
 {
 	StartTrace(Application.DoGlobalRun);
-	SysLog::WriteToStderr("=> Have fun :-)\n");
+	SystemLog::WriteToStderr("=> Have fun :-)\n");
 	return Run();
 }
 

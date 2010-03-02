@@ -220,7 +220,7 @@ protected:
 	//! \param which defines which side of the socket is shutdown see shutdown man page
 	virtual bool ShutDown(long fd, long which);
 
-	/*! print out the last error message caused by a socket error, it will get printed on SysLog and Trace
+	/*! print out the last error message caused by a socket error, it will get printed on SystemLog and Trace
 		\param socketfd filedescriptor of socket on which the error occured
 		\param contextmessage some text explaining why it was
 		\param lRetCode return code of the function which failed previously */

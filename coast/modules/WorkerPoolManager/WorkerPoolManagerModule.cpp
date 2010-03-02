@@ -10,7 +10,7 @@
 #include "WorkerPoolManagerModule.h"
 #include "WorkerPoolManagerModulePoolManager.h"
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 
 //---- WorkerPoolManagerModule ---------------------------------------------------------------
@@ -72,7 +72,7 @@ WorkerPoolManagerModulePoolManager *WorkerPoolManagerModule::GetPoolManager(cons
 		return (WorkerPoolManagerModulePoolManager *)fWorkerPools[pPoolName].AsIFAObject();
 	}
 	Trace(String(pPoolName) << ": No Pool found!!");
-	SysLog::Warning(String(pPoolName) << ": No Pool found!!");
+	SystemLog::Warning(String(pPoolName) << ": No Pool found!!");
 	return NULL;
 }
 

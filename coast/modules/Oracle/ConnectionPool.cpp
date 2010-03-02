@@ -11,7 +11,7 @@
 #include "OraclePooledConnection.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Timers.h"
 #include "TimeStamp.h"
 #include "StringStream.h"

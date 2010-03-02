@@ -10,7 +10,7 @@
 #include "LocalizedStrings.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "System.h"
 #include "StringStream.h"
 #include "Dbg.h"
@@ -100,7 +100,7 @@ bool LocalizationModule::ReadFromFile(Anything &config, const char *filename)
 	istream *ifp = System::OpenStream(filename, "any");
 	if (ifp == 0) {
 		String logMsg;
-		SysLog::Error(logMsg << "LocalizationModule::ReadFromFile: can't open file " << filename << ".any");
+		SystemLog::Error(logMsg << "LocalizationModule::ReadFromFile: can't open file " << filename << ".any");
 		return false;
 	}
 	config.Import(*ifp);

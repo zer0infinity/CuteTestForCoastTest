@@ -159,12 +159,12 @@ bool SessionListManager::ResetInit(const ROAnything config)
 	if ( !fSessionCleaner ) {
 		String m;
 		m << "\tLaunching new session cleaner";
-		SysLog::WriteToStderr(m);
+		SystemLog::WriteToStderr(m);
 		fSessionCleaner = new PeriodicAction(cleanerAction, cleanerWait);		// periodically clean up sessions
 		fSessionCleaner->Start();
 		m = "";
 		m << " done" << "\n";
-		SysLog::WriteToStderr(m);
+		SystemLog::WriteToStderr(m);
 	}
 
 	Trace("Init " << ((ret) ? "succeeded" : "failed"));
@@ -256,7 +256,7 @@ Session *SessionListManager::CreateSession(String &sessionId, Context &ctx)
 		Trace("sessionId added:<" << sessionId << ">");
 	} else {
 		Trace("Session allocation failed");
-		SysLog::Error("can't create session");
+		SystemLog::Error("can't create session");
 	}
 
 	return session;
@@ -297,7 +297,7 @@ void SessionListManager::AddSession(const String &id, Session *session, Context 
 		fSessions[id] = Anything(session, Storage::Global());
 		String msg("Session created; Sessions in use: ");
 		msg << fSessions.GetSize();
-		SysLog::Info(msg);
+		SystemLog::Info(msg);
 	}
 	session->Notify(Session::eAdded, ctx);
 }
@@ -350,7 +350,7 @@ void SessionListManager::GetNextId(String &s, Context &ctx)
 
 	if ( fNextId <= lastId ) {
 		if ( (lastId - fNextId) > 1 ) {
-			SysLog::Warning("Session Id generation instable");
+			SystemLog::Warning("Session Id generation instable");
 		}
 		fNextId = lastId + 1;
 	}
@@ -383,7 +383,7 @@ bool SessionListManager::VerifySession(Session *session, String &sessionId, Cont
 	if (!session->Verify(ctx)) {
 		String logMsg(session->GetId());
 		logMsg << " Can't verify session";
-		SysLog::Info(logMsg);
+		SystemLog::Info(logMsg);
 		String newId;
 		GetNextId(newId, ctx);
 		ctx.GetQuery()["sessionId"] = newId;
@@ -434,7 +434,7 @@ long SessionListManager::CleanupSessions(Context &ctx, bool forceLock)
 	bool wasLocked = false;
 	if (fLogToCerr) {
 		String m("SLM::CleanupSessions entering.\n");
-		SysLog::WriteToStderr(m);
+		SystemLog::WriteToStderr(m);
 	}
 	{
 		wasLocked = fSessionsMutex.TryLock();
@@ -446,7 +446,7 @@ long SessionListManager::CleanupSessions(Context &ctx, bool forceLock)
 			if (fLogToCerr) {
 				String m;
 				m << "SLM::CleanupSessions got mutex (Start cleaning). Time: [" << TimeStamp::Now().AsString() << "]\n";
-				SysLog::WriteToStderr(m);
+				SystemLog::WriteToStderr(m);
 			}
 			wasLocked = true;
 			szActiveBefore = fSessions.GetSize();
@@ -473,13 +473,13 @@ long SessionListManager::CleanupSessions(Context &ctx, bool forceLock)
 			os	<< "Sessions now Active   : <" << setw(7) << szActiveAfter << ">  " <<
 				"Deleted  : <" << setw(7) << (szActiveBefore - szActiveAfter) << ">  " <<
 				"Disabled : <" << setw(9) << szDisabled << ">" << endl;
-			SysLog::WriteToStderr(os.str());
+			SystemLog::WriteToStderr(os.str());
 		}
 	}
 	if (fLogToCerr) {
 		String m;
 		m << "SLM::CleanupSessions leave.    (End   cleaning). Time: [" << TimeStamp::Now().AsString() << "]\n";
-		SysLog::WriteToStderr(m);
+		SystemLog::WriteToStderr(m);
 	}
 	return szActiveAfter;
 }
@@ -535,14 +535,14 @@ void SessionListManager::ForcedSessionCleanUp(Context &ctx)
 		String logMsg("Force deleting ");
 		logMsg << szNumberOfSessions << " Sessions";
 		Trace(logMsg);
-		SysLog::Info(logMsg);
+		SystemLog::Info(logMsg);
 		DoDeleteSessions(fSessions, ctx);
 		fSessions = MetaThing();
 
 		logMsg = "Force deleting ";
 		logMsg << fDisabledSessions.GetSize() << " disabled Sessions";
 		Trace(logMsg);
-		SysLog::Info(logMsg);
+		SystemLog::Info(logMsg);
 		DoDeleteSessions(fDisabledSessions, ctx);
 		fDisabledSessions = MetaThing();
 	}
@@ -571,7 +571,7 @@ URLFilter *SessionListManager::FindURLFilter(Context &ctx)
 	if (!uf) {
 		String logMsg("URLFilter <");
 		logMsg << ufName << "> not found";
-		SysLog::Error(logMsg);
+		SystemLog::Error(logMsg);
 		uf = URLFilter::FindURLFilter("URLFilter");
 	} else {
 		Trace("Using Filter <" << ufName << ">");
@@ -617,7 +617,7 @@ bool SessionListManager::FilterQuery(Context &ctx)
 		ROAnything filterCookieConf(ctx.Lookup("CookieFilterSpec"));
 		if (!filterCookieConf.IsNull()) {
 			if (!uf->HandleCookie(query, env, filterCookieConf, ctx)) {
-				SysLog::Warning("Environment contained no cookies");
+				SystemLog::Warning("Environment contained no cookies");
 			}
 		}
 

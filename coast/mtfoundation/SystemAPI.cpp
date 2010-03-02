@@ -31,7 +31,7 @@ THREADWRAPPERFUNCDECL(ThreadWrapper, thread)
 		t->fThreadId = (void *)THRID();
 #if defined(_DLL)
 		if (!TlsSetValue(fgThreadPtrKey, (void *)t)) {
-			SysLog::Error( String("ThreadWrapper[") << (long)t->fThreadId << "] failed to store Thread* into TLS");
+			SystemLog::Error( String("ThreadWrapper[") << (long)t->fThreadId << "] failed to store Thread* into TLS");
 		}
 		Anything aAny;
 		aAny["id"] = (long)t->fThreadId;
@@ -75,12 +75,12 @@ int doWaitObject(HANDLE h, HANDLE m, long time /* milliseconds...*/)
 		case WAIT_FAILED: {
 			String strErr("Wait failed!! (");
 			strErr << (long)GetLastError() << ")\n";
-			SysLog::WriteToStderr(strErr);
+			SystemLog::WriteToStderr(strErr);
 			break;
 		}
 		case WAIT_ABANDONED: {
 			String strErr("Wait abandoned!!\n");
-			SysLog::WriteToStderr(strErr);
+			SystemLog::WriteToStderr(strErr);
 			break;
 		}
 		case WAIT_TIMEOUT:
@@ -146,7 +146,7 @@ bool doStartThread(void *obj, bool *b, thread_t *thrId, void * (*wrapper)(void *
 	int retVal;
 	if ( (retVal = thr_create(NULL, 0, wrapper, obj, flags, thrId)) != 0 ) {
 		String logMsg;
-		SysLog::Error(logMsg << "Thread::Start: error in thr_create" << SysLog::SysErrorMsg(retVal));
+		SystemLog::Error(logMsg << "Thread::Start: error in thr_create" << SystemLog::SysErrorMsg(retVal));
 		return false;
 	}
 	return true;
@@ -157,12 +157,12 @@ bool doTryLock(mutex_t *m, int &ret)
 	ret = mutex_trylock(m);
 	String logMsg;
 	if ( ret == EFAULT ) {
-		SysLog::Error(logMsg << "doTryLock" << SysLog::SysErrorMsg(ret));
+		SystemLog::Error(logMsg << "doTryLock" << SystemLog::SysErrorMsg(ret));
 		StartTrace1(Mutex.TryLock, "EFAULT");	// reuse Mutex.TryLock switch
 		return false;
 	}
 	if ( ret == EINVAL ) {
-		SysLog::Error(logMsg << "doTryLock" << SysLog::SysErrorMsg(ret));
+		SystemLog::Error(logMsg << "doTryLock" << SystemLog::SysErrorMsg(ret));
 		StartTrace1(Mutex.TryLock, "EINVAL");	// reuse Mutex.TryLock switch
 		return false;
 	}
@@ -257,20 +257,20 @@ bool doStartThread(void *obj, bool *b, pthread_t *thrId, void * (*wrapper)(void 
 
 		switch (retVal) {
 			case EAGAIN:
-				SysLog::Error("EAGAIN");
+				SystemLog::Error("EAGAIN");
 				break;
 			case EINVAL:
-				SysLog::Error("EINVAL" );
+				SystemLog::Error("EINVAL" );
 				break;
 			case ENOMEM:
-				SysLog::Error("ENOMEM");
+				SystemLog::Error("ENOMEM");
 				break;
 			default:
 				break;
 		};
 
 		String logMsg;
-		SysLog::Error(logMsg << "Thread::Start: error in thr_create " << (long)retVal); //SysLog::SysErrorMsg(errno));
+		SystemLog::Error(logMsg << "Thread::Start: error in thr_create " << (long)retVal); //SystemLog::SysErrorMsg(errno));
 		return false;
 	}
 	return true;
@@ -281,11 +281,11 @@ bool doTryLock(pthread_mutex_t *m, int &ret)
 	ret = pthread_mutex_trylock(m);
 	String logMsg;
 	if ( ret == EFAULT ) {
-		SysLog::Error(logMsg << "doTryLock" << SysLog::SysErrorMsg(ret));
+		SystemLog::Error(logMsg << "doTryLock" << SystemLog::SysErrorMsg(ret));
 		return false;
 	}
 	if ( ret == EINVAL ) {
-		SysLog::Error(logMsg << "doTryLock" << SysLog::SysErrorMsg(ret));
+		SystemLog::Error(logMsg << "doTryLock" << SystemLog::SysErrorMsg(ret));
 		return false;
 	}
 	if ( ret == EBUSY ) {

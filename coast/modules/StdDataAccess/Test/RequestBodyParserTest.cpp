@@ -22,7 +22,7 @@
 #include "System.h"
 #include "Dbg.h"
 #include "Renderer.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 
 //---- RequestBodyParserTest ----------------------------------------------------------------
 RequestBodyParserTest::RequestBodyParserTest(TString tname)

@@ -10,7 +10,7 @@
 #include "CallRenderer.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 
 //--- c-modules used -----------------------------------------------------------
@@ -46,7 +46,7 @@ ROAnything CallRenderer::IntGetCallee(Context &ctx, ROAnything callee)
 		if (!ctx.Lookup(callname, callee)) {
 			String msg;
 			msg << "CallRenderer: definition not found: " << callname;
-			SysLog::Warning(msg);
+			SystemLog::Warning(msg);
 			Trace(msg);
 		}
 	}

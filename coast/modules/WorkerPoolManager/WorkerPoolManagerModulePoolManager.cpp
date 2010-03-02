@@ -10,7 +10,7 @@
 #include "WorkerPoolManagerModulePoolManager.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------

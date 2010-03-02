@@ -10,7 +10,7 @@
 #define _CONTEXT_H
 
 #include "config_wdbase.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 #include "AnyLookupInterfaceAdapter.h"
 

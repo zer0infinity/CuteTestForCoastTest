@@ -8,7 +8,7 @@
 
 #include "OracleEnvironment.h"
 #include "OracleConnection.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "MT_Storage.h"
 #include "Dbg.h"
 
@@ -69,7 +69,7 @@ OracleEnvironment::OracleEnvironment( Mode eMode, u_long ulPoolId, u_long ulPool
 					   0, // extra memory to allocate
 					   NULL // pointer to user-memory
 					 ) != OCI_SUCCESS ) {
-		SysLog::Error( "FAILED: OCIEnvCreate(): could not create OCI environment" );
+		SystemLog::Error( "FAILED: OCIEnvCreate(): could not create OCI environment" );
 		fEnvhp.reset();
 	}
 }

@@ -46,7 +46,7 @@ bool AppLogModule::Init(const ROAnything config)
 {
 	// initialization of application logging tries a socket connection
 	// defined in the configuration file
-	SysLog::WriteToStderr("\tStarting Application Logging");
+	SystemLog::WriteToStderr("\tStarting Application Logging");
 	bool retCode = true;
 	ROAnything appLogConfig;
 	StartTrace(AppLogModule.Init);
@@ -75,7 +75,7 @@ bool AppLogModule::Init(const ROAnything config)
 				cfg["RotateDir"] = strRotateDir;
 				retCode = retCode && MakeChannels(servername, cfg);
 			}
-			SysLog::WriteToStderr(".", 1);
+			SystemLog::WriteToStderr(".", 1);
 		}
 		TraceAny(fLogConnections, "LogConnections: ");
 		if (retCode && StartLogRotator(appLogConfig["RotateTime"].AsCharPtr("24:00"),
@@ -86,13 +86,13 @@ bool AppLogModule::Init(const ROAnything config)
 									  ) ) {
 			fgAppLogModule = this;
 			fROLogConnections = fLogConnections;
-			SysLog::WriteToStderr(" done\n");
+			SystemLog::WriteToStderr(" done\n");
 		} else {
 			fgAppLogModule = 0L;
-			SysLog::WriteToStderr(" failed\n");
+			SystemLog::WriteToStderr(" failed\n");
 		}
 	} else {
-		SysLog::WriteToStderr(" done\n");
+		SystemLog::WriteToStderr(" done\n");
 	}
 	return retCode;
 }
@@ -414,7 +414,7 @@ AppLogChannel::~AppLogChannel()
 			String msg;
 			msg << " AppLogChannel: [" << fName << "] flushing [" << fItemsWritten << "] " <<
 				"buffered messages to log [" << fChannelInfo["FileName"].AsString() << "]\n";
-			SysLog::WriteToStderr(msg);
+			SystemLog::WriteToStderr(msg);
 
 		}
 		delete fLogStream;
@@ -597,7 +597,7 @@ bool AppLogChannel::RotateLog(const String &logdirName, const String &rotatedirN
 		}
 		retCode = ::rename(oldLogFileName, newLogFileName);
 		if ( retCode != 0 ) {
-			SYSWARNING("rotate of [" << oldLogFileName << "] with [" << newLogFileName << "] failed! (" << (long)errno << ") " << SysLog::LastSysError());
+			SYSWARNING("rotate of [" << oldLogFileName << "] with [" << newLogFileName << "] failed! (" << (long)errno << ") " << SystemLog::LastSysError());
 		}
 	}
 	// assign full filename of log to use

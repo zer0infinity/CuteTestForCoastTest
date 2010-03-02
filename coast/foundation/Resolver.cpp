@@ -10,7 +10,7 @@
 #include "Resolver.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Socket.h"
 #include "Dbg.h"
 
@@ -77,7 +77,7 @@ String Resolver::DNS2IPAddress( const String &dnsName )
 
 		String logMsg("Resolving of DNS Name<");
 		logMsg << dnsName << "> failed";
-		SysLog::Error(logMsg);
+		SystemLog::Error(logMsg);
 	}
 	return "127.0.0.1";
 }
@@ -92,7 +92,7 @@ String Resolver::IPAddress2DNS( const String &ipAddress )
 	if ( !sysResolver.IP2DNS(dnsName, ipAddress, addr) ) {
 		String logMsg("Resolving of IPAddress <");
 		logMsg << ipAddress << "> failed";
-		SysLog::Error(logMsg);
+		SystemLog::Error(logMsg);
 	}
 	dnsName.ToLower();
 	return dnsName;

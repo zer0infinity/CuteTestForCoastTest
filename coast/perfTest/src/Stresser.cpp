@@ -12,7 +12,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "Registry.h"
 #include "DiffTimer.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 
 //---- Stresser -----------------------------------------------------------
@@ -61,7 +61,7 @@ bool Stresser::DoLoadConfig(const char *category)
 		return (!fConfig.IsNull());
 	}
 	fConfig = ROAnything();
-	SysLog::Info(String("Stresser::DoLoadConfig: no configuration entry for <") << fName << "> defined, still returning true");
+	SystemLog::Info(String("Stresser::DoLoadConfig: no configuration entry for <") << fName << "> defined, still returning true");
 	return true;
 }
 

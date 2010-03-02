@@ -874,10 +874,10 @@ void TemplateParser::Error(const char *msg)
 	StartTrace(TemplateParser.Error);
 	String m(" ");
 	m.Append(fFileName).Append(".html:").Append(fLine).Append(" ").Append(msg);
-	SysLog::Warning(m);
+	SystemLog::Warning(m);
 	Trace(m);
 	m << "\n";
-	SysLog::WriteToStderr(m);
+	SystemLog::WriteToStderr(m);
 }
 
 // --- FormTemplateParser ---

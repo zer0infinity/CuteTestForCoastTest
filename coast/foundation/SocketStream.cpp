@@ -10,7 +10,7 @@
 #include "SocketStream.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "System.h"
 #include "Dbg.h"
 
@@ -266,16 +266,16 @@ long SocketStreamBuf::DoWrite(const char *buf, long len)
 		logMsg << fSocket->GetFd()
 			   << " failed - socket error number "
 			   << (long) SOCKET_ERROR
-			   << " <" << SysLog::LastSysError() << ">" << " transmitted: " << bytesSent;
+			   << " <" << SystemLog::LastSysError() << ">" << " transmitted: " << bytesSent;
 
-		SysLog::Error(logMsg);
+		SystemLog::Error(logMsg);
 		Ios->clear(ios::badbit);
 	}
 
 	if ( bytesSent > 0 ) {
 		AddWriteCount( bytesSent );
 #if defined(STREAM_TRACE)
-		SysLog::WriteToStderr(buf, bytesSent);
+		SystemLog::WriteToStderr(buf, bytesSent);
 #endif
 	}
 
@@ -295,14 +295,14 @@ long SocketStreamBuf::DoRead(char *buf, long len) const
 
 			if ( bytesRead < 0 ) {
 				String msg("Socket Error: <");
-				msg << (long)errno << ">=" << SysLog::SysErrorMsg(errno);
-				SysLog::Error(msg);
+				msg << (long)errno << ">=" << SystemLog::SysErrorMsg(errno);
+				SystemLog::Error(msg);
 				Ios->clear(ios::badbit);
 			} else if ( bytesRead == 0 ) {
 #if defined(STREAM_TRACE)
 				String msg("Socket:    end of data (read)              on file descriptor: ");
 				msg << fSocket->GetFd();
-				SysLog::Info(msg);
+				SystemLog::Info(msg);
 #endif
 				// socket is closed, stream recognizes this via
 				// streambuf::underflow() returning eof, if no more bytes are available
@@ -312,7 +312,7 @@ long SocketStreamBuf::DoRead(char *buf, long len) const
 		}
 #ifdef STREAM_TRACE
 		if ( bytesRead > 0 ) {
-			SysLog::WriteToStderr(buf, bytesRead);
+			SystemLog::WriteToStderr(buf, bytesRead);
 		}
 #endif
 	}
@@ -337,10 +337,10 @@ ostream  &operator<<(ostream &os, SocketStreamBuf *ssbuf)
 			} else if (bytesRead < 0) {
 				String logMsg("Socket error on recv: ");
 				logMsg << (long) errno;
-				SysLog::Error( logMsg );
+				SystemLog::Error( logMsg );
 			} // if
 			else {
-				SysLog::Error( "Socket closed on recv: " );
+				SystemLog::Error( "Socket closed on recv: " );
 			}
 		} while ( bytesRead > 0 );
 

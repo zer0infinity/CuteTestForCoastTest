@@ -51,7 +51,7 @@ protected:
 //---- Server -----------------------------------------------------------
 //!manages the components of the process
 //!manages the life-cycle of the server: init run terminate
-//!the server initializes SysLog, sets RootDir and Path and initializes the global modules using WDModule::Install(fgConfig)<p>
+//!the server initializes SystemLog, sets RootDir and Path and initializes the global modules using WDModule::Install(fgConfig)<p>
 //!handles service requests as a session based service handler<p>
 //!filters and verifies requests
 class EXPORTDECL_WDBASE Server : public Application

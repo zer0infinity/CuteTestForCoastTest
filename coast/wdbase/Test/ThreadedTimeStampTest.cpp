@@ -18,7 +18,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "TimeStampTestThread.h"
 #include "AnyUtils.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 
 //---- ThreadedTimeStampTest ----------------------------------------------------------------
 ThreadedTimeStampTest::ThreadedTimeStampTest(TString tstrName)
@@ -77,7 +77,7 @@ void ThreadedTimeStampTest::DoTimeStampConcurrencyTest(long numberOfRuns, long n
 	String strRemainder;
 	strRemainder << "Threads: " << (numberOfThreads > 9 ? "" : " ") << numberOfThreads << " Concurrency: " << concurrencyFactor << " Runs: " << numberOfRuns << " UTC-Test: " << (roaConfig["UTCCtorTest"].AsBool(false) ? "true " : "false") << " Compare: " << (roaConfig["CompareStamps"].AsBool(false) ? "true " : "false") << "\n";
 	Trace(TimeStamp().AsString() << " Start    " << strRemainder);
-	SysLog::WriteToStderr(strRemainder);
+	SystemLog::WriteToStderr(strRemainder);
 	{
 		CatchTimeType aTimer(TString("TimeStampConcurrencyTest/") << numberOfThreads << "t/" << (roaConfig["CompareStamps"].AsBool(false) ? "Compare" : "NoCompare") << "/" << (roaConfig["UTCCtorTest"].AsBool(false) ? "UTC/" : "Local/") << numberOfRuns, this);
 		for (long i = 0; i < numberOfThreads * concurrencyFactor; i++) {

@@ -10,7 +10,7 @@
 #include "SSLSocket.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "System.h"
 #include "SSLSocketStream.h"
 #include "Resolver.h" // to verify host name versus certificate
@@ -64,7 +64,7 @@ void SSLSocket::ReportSSLError( unsigned long err)
 #endif
 		String logMsg("SSL error: ");
 		logMsg << (long)err << " : " << buf;
-		SysLog::Error(logMsg);
+		SystemLog::Error(logMsg);
 		Trace(logMsg);
 
 		err = GetSSLError();
@@ -111,7 +111,7 @@ bool SSLSocket::ShouldRetry(SSL *ssl, int res, bool handshake)
 		// Do not report SSL error
 		String msg("SSLSocket: end of data (connection closed) on file descriptor: ");
 		msg << GetFd() << (handshake ? " at Handshake" : " at normal r/w");
-		SysLog::Info(msg);
+		SystemLog::Info(msg);
 #endif
 		return false;
 	}
@@ -156,7 +156,7 @@ iostream *SSLSocket::DoMakeStream()
 	// Returning a NULL pointer is a trifle better.
 	if ( ssl == (SSL *) NULL ) {
 		String logMsg("SSL error: SSLContext not good.");
-		SysLog::Error(logMsg);
+		SystemLog::Error(logMsg);
 		return NULL;
 	}
 
@@ -169,7 +169,7 @@ iostream *SSLSocket::DoMakeStream()
 		int thread_id = (unsigned)Thread::MyId() % 1000000;
 		if ( SSL_set_ex_data(ssl, thread_id, &appData) == false ) {
 			String logMsg("SSL error: Setting application specific data failed.");
-			SysLog::Error(logMsg);
+			SystemLog::Error(logMsg);
 			return NULL;
 		}
 	}
@@ -226,7 +226,7 @@ iostream *SSLSocket::DoMakeStream()
 	if ( (sslSessionCurrent = SSL_get_session(ssl)) == (SSL_SESSION *) NULL) {
 		Trace("No valid SSL_SESSION created!!!");
 		String logMsg("SSL error: SSLSession not good.");
-		SysLog::Error(logMsg);
+		SystemLog::Error(logMsg);
 		return NULL;
 	} else {
 		TraceAny(SSLObjectManager::TraceSSLSession(sslSessionCurrent), "sslSessionCurrent");

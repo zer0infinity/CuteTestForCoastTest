@@ -41,7 +41,7 @@ bool LdapCachePolicyModule::Init(const ROAnything config)
 	ROAnything dataAccesses(ldapCachePolicyModuleConfig["LdapDataAccess"]);
 	ROAnything dataAccessActions(ldapCachePolicyModuleConfig["LdapDataAccessAction"]);
 	if ( dataAccesses.GetSize() == 0 && dataAccessActions.GetSize() == 0 ) {
-		SysLog::WriteToStderr("\tLdapCachePolicyModule::Init can't read needed configuration data.\n");
+		SystemLog::WriteToStderr("\tLdapCachePolicyModule::Init can't read needed configuration data.\n");
 		return false;
 	}
 	if ( InitialLoad(dataAccesses, LdapCachePolicyModule::dataaccess) 	== false ||
@@ -52,11 +52,11 @@ bool LdapCachePolicyModule::Init(const ROAnything config)
 	CheckContractIsFulfilled(failedDataAccesses, dataAccesses);
 	CheckContractIsFulfilled(failedDataAccesses, dataAccessActions);
 	if (failedDataAccesses.Length() != 0 ) {
-		SysLog::WriteToStderr(String("\tLdapCachePolicyModule::LDAP Query: ") << failedDataAccesses <<
-							  String(" returned no data.\n"));
+		SystemLog::WriteToStderr(String("\tLdapCachePolicyModule::LDAP Query: ") << failedDataAccesses <<
+								 String(" returned no data.\n"));
 		return false;
 	}
-	SysLog::WriteToStderr("\tLdapCachePolicyModule done\n");
+	SystemLog::WriteToStderr("\tLdapCachePolicyModule done\n");
 	return true;
 }
 
@@ -80,7 +80,7 @@ bool LdapCachePolicyModule::InitialLoad(const ROAnything dataAccesses, LdapCache
 			}
 		}
 	} else {
-		SysLog::WriteToStderr("\tLdapCachePolicyModule::InitialLoad: NoCacheHandlerFound\n");
+		SystemLog::WriteToStderr("\tLdapCachePolicyModule::InitialLoad: NoCacheHandlerFound\n");
 		ret = false;
 	}
 	return ret;
@@ -132,7 +132,7 @@ Anything LdapDataAccessLoader::Load(const char *ldapDa)
 		} else {
 			String msg;
 			msg << "\tLdapCachePolicyModule::Load Unable to exec LDAP query for: " << ldapDa << "\n";
-			SysLog::WriteToStderr(msg);
+			SystemLog::WriteToStderr(msg);
 		}
 	}
 	return theResult;
@@ -165,7 +165,7 @@ Anything LdapActionLoader::Load(const char *ldapDaAction)
 		} else {
 			String msg;
 			msg << "\tLdapCachePolicyModule::Load Unable to exec LDAP query for: " << ldapDaAction << "\n";
-			SysLog::WriteToStderr(msg);
+			SystemLog::WriteToStderr(msg);
 		}
 	}
 	return theResult;

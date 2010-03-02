@@ -14,14 +14,14 @@
 #include "Socket.h"
 #endif
 #include "Dbg.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "InitFinisManagerFoundation.h"
 
 static void Init()
 {
 	InitFinisManager::IFMTrace(">> foundation::Init\n");
 	// initialize syslog channel
-	SysLog::Init("Coast");
+	SystemLog::Init("Coast");
 	// initialize tracing - if available
 	ResetTracer();
 	// initialize InitFinisManagerFoundation relative components
@@ -46,7 +46,7 @@ static void Finis()
 		InitFinisManagerFoundation::Instance()->Finis();
 		delete InitFinisManagerFoundation::Instance();
 	}
-	SysLog::Terminate();
+	SystemLog::Terminate();
 	InitFinisManager::IFMTrace("<< foundation::Finis\n");
 }
 

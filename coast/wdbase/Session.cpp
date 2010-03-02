@@ -13,7 +13,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "TraceLocks.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Role.h"
 #include "Page.h"
 #include "RequestProcessor.h"
@@ -65,14 +65,14 @@ Session::~Session()
 	StartTrace1(Session.~Session, "Session id: <" << fId << ">");
 	String logMsg("deleted");
 	logMsg << " " << fId;
-	SysLog::Info(logMsg);
+	SystemLog::Info(logMsg);
 	{
 		LockUnlockEntry me(fMutex);
 		if (fRefCount != 0) {
 			logMsg = "";
 			logMsg << "deleted Session id: <" << fId << "> and Refcount WAS NOT ZERO but: <" << fRefCount << ">\n";
 
-			SysLog::WriteToStderr(logMsg);
+			SystemLog::WriteToStderr(logMsg);
 			SYSERROR(logMsg);
 		}
 	}
@@ -105,7 +105,7 @@ void Session::Init(const char *id, Context &ctx)
 	}
 	String logMsg("created: ");
 	logMsg << fId;
-	SysLog::Info(logMsg);
+	SystemLog::Info(logMsg);
 }
 
 //---- Getters, Setters
@@ -193,7 +193,7 @@ void Session::SetRole(Role *newRole, Context &ctx)
 		String msg("switching newRole from <");
 		msg << oldRoleName << "> to <" << newRoleName << ">";
 		Trace(msg);
-		SysLog::Info(msg);
+		SystemLog::Info(msg);
 		PutInStore("RoleName", newRoleName);
 		// Needed only when context used with copy of session store
 		ctx.GetSessionStore()["RoleName"] = newRoleName;
@@ -302,7 +302,7 @@ bool Session::MakeInvalid(Context &ctx)
 		StartTrace1(Session.MakeInvalid, "Session id: <" << fId << ">");
 		String logMsg("Session: <");
 		logMsg << fId << "> invalidation request";
-		SysLog::Info(logMsg);
+		SystemLog::Info(logMsg);
 
 		// invalidate session by setting last access time before timeout period
 		fAccessTime = time(0) - GetTimeout(ctx) - 1;
@@ -368,7 +368,7 @@ bool Session::IsDeletable(long secs, Context &ctx, bool roleNotRelevant)
 	if (isBusy) {
 		msg << "SessionId <" << fId << ">  isBusy " << isBusy << " isUnRefed " << isUnRefed <<
 			" isTimeout " << isTimeout << " [" << delta << "," << timeout << "] isDeletable 0";
-		SysLog::Info(msg);
+		SystemLog::Info(msg);
 		return false;
 	}
 
@@ -377,7 +377,7 @@ bool Session::IsDeletable(long secs, Context &ctx, bool roleNotRelevant)
 	}
 	msg << "SessionId <" << fId << ">  isBusy " << isBusy << " isUnRefed " << isUnRefed <<
 		" isTimeout " << isTimeout << " [" << delta << "," << timeout << "] isDeletable " << isDeletable;
-	SysLog::Info(msg);
+	SystemLog::Info(msg);
 	return isDeletable;
 }
 
@@ -407,7 +407,7 @@ bool Session::Verify(Context &ctx)
 	// check for termination flag
 	if (fTerminated) {
 		logMsg << " Session already terminated";
-		SysLog::Info(logMsg);
+		SystemLog::Info(logMsg);
 		return false;
 	}
 
@@ -415,11 +415,11 @@ bool Session::Verify(Context &ctx)
 
 	String reason;
 	if (!CheckHeader(ctx, "REMOTE_ADDR", fRemoteAddr, "InstableRemoteAdress", reason)) {
-		SysLog::Info(reason);
+		SystemLog::Info(reason);
 		return false;
 	}
 	if (!CheckHeader(ctx, "HTTP_USER_AGENT", fBrowser, "InstableUserAgent", reason)) {
-		SysLog::Info(reason);
+		SystemLog::Info(reason);
 		return false;
 	}
 

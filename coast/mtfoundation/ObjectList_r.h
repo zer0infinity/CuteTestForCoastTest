@@ -14,7 +14,7 @@
 
 //---- standard-module include ----------------------------------------------
 #include "config_mtfoundation.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Threads.h"
 
 //---- c-module include -----------------------------------------------------

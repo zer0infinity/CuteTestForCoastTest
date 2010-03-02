@@ -11,7 +11,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "MemHeader.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "StringStream.h"
 #include "Dbg.h"
 
@@ -242,7 +242,7 @@ void ExcessTrackerElt::Refresh()
 		if ( pTracker && ( pTracker->CurrentlyAllocated() > 0 ) ) {
 			char buf[256] = { 0 };
 			snprintf(buf, sizeof(buf), "ExcessAllocator was still in use! (id: %ld, name: %s) in Refresh()", pTracker->GetId(), NotNull(pTracker->GetName()));
-			SysLog::Error(buf);
+			SystemLog::Error(buf);
 		}
 		pElt = pElt->fpNext;
 	}
@@ -281,12 +281,12 @@ PoolAllocator::PoolAllocator(long poolid, u_long poolSize, u_long maxPoolBuckets
 
 	if (!fPoolMemory || !fPoolBuckets) {
 		static const char crashmsg[] = "FATAL: PoolAllocator::PoolAllocator calloc failed. I will crash :-(\n";
-		SysLog::WriteToStderr(crashmsg, sizeof(crashmsg));
+		SystemLog::WriteToStderr(crashmsg, sizeof(crashmsg));
 
 		// We might never see the following because we have no memory.
 		String msg("PoolAllocator: ");
 		msg << "allocation of PoolStorage: " << (long)poolSize << ", " << (long)maxPoolBuckets << " failed";
-		SysLog::Error(msg);
+		SystemLog::Error(msg);
 		Unref(); // signal allocation failure
 		return;
 	}
@@ -355,7 +355,7 @@ PoolAllocator::~PoolAllocator()
 					if ( bFirst ) {
 						char buf[256] = { 0 };
 						snprintf(buf, sizeof(buf), "PoolAllocator was still in use! (id: %ld, name: %s) in PoolAllocator::~PoolAllocator()", pTracker->GetId(), NotNull(pTracker->GetName()));
-						SysLog::Error(buf);
+						SystemLog::Error(buf);
 						bFirst = false;
 					}
 					IntDumpStillAllocated(pTracker, fPoolBuckets[i].fSize, fPoolBuckets[i].fUsableSize);
@@ -405,8 +405,8 @@ PoolAllocator::~PoolAllocator()
 	StatTrace(PoolAllocator.~PoolAllocator, "id:" << fAllocatorId << " PoolTotalTrackers deleted", Storage::Global());
 
 	if ( lStatisticLevel >= 1 ) {
-		SysLog::WriteToStderr(String("\nAllocator [", Storage::Global()).Append(fAllocatorId).Append("]\n"));
-		SysLog::WriteToStderr(strUsedPoolSize.Append("\n"));
+		SystemLog::WriteToStderr(String("\nAllocator [", Storage::Global()).Append(fAllocatorId).Append("]\n"));
+		SystemLog::WriteToStderr(strUsedPoolSize.Append("\n"));
 		if ( lNumUsed > 0  ) {
 			strUsedBucketSizes.Append("]");
 			ul_long ulSize = fgMinPayloadSize;
@@ -416,8 +416,8 @@ PoolAllocator::~PoolAllocator()
 			}
 			lMaxUsedBucket = std::max(lMaxUsedBucket, lMaxExcessBit);
 			strUnusedBucketSizes.Append("]\n -> optimal BucketSizesParam: ").Append(lMaxUsedBucket).Append(" now: ").Append(fNumOfPoolBucketSizes).Append("\n");
-			SysLog::WriteToStderr(strUsedBucketSizes.Append('\n'));
-			SysLog::WriteToStderr(strUnusedBucketSizes);
+			SystemLog::WriteToStderr(strUsedBucketSizes.Append('\n'));
+			SystemLog::WriteToStderr(strUnusedBucketSizes);
 		}
 	}
 	StatTrace(PoolAllocator.~PoolAllocator, "id:" << fAllocatorId << " deleting BucketTrackers", Storage::Global());
@@ -451,7 +451,7 @@ void PoolAllocator::DumpStillAllocated()
 				if ( bFirst ) {
 					char buf[256] = { 0 };
 					snprintf(buf, sizeof(buf), "PoolAllocator was still in use! (id: %ld, name: %s) in PoolAllocator::DumpStillAllocated()", pTracker->GetId(), NotNull(pTracker->GetName()));
-					SysLog::Error(buf);
+					SystemLog::Error(buf);
 					bFirst = false;
 				}
 				IntDumpStillAllocated(pTracker, fPoolBuckets[i].fSize, fPoolBuckets[i].fUsableSize);
@@ -490,7 +490,7 @@ size_t PoolAllocator::Free(void *vp)
 				}
 				InsertFreeHeaderIntoBucket(header, bucket);
 			} else {
-				SysLog::Error("bucket not found!");
+				SystemLog::Error("bucket not found!");
 				Assert(0);
 			}
 		} else if ( header->fState == MemoryHeader::eUsedNotPooled ) {
@@ -505,7 +505,7 @@ size_t PoolAllocator::Free(void *vp)
 			::free(header);
 		} else  {
 			// something wrong happened, double free
-			SysLog::Error("wrong header status, double free?");
+			SystemLog::Error("wrong header status, double free?");
 			String strBuf(Storage::Global());
 			strBuf << "MemoryHeader [";
 			{
@@ -514,7 +514,7 @@ size_t PoolAllocator::Free(void *vp)
 				strContent.DumpAsHex(stream, (long)header->AlignedSize());
 			}
 			strBuf << "]";
-			SysLog::Error(strBuf);
+			SystemLog::Error(strBuf);
 			strBuf.Trim(0L);
 			strBuf << "Buffer, Size:" << (l_long)header->fUsableSize << " [";
 			{
@@ -523,7 +523,7 @@ size_t PoolAllocator::Free(void *vp)
 				strContent.DumpAsHex(stream, 16L);
 			}
 			strBuf << "]";
-			SysLog::Error(strBuf);
+			SystemLog::Error(strBuf);
 			Assert(0);
 		}
 	} else {
@@ -642,7 +642,7 @@ void *PoolAllocator::Alloc(u_long allocSize)
 	}
 	static char crashmsg[255] = { 0 };
 	snprintf(crashmsg, 254, "FATAL: PoolAllocator::Alloc [global memory] calloc of sz:%lub failed. I will crash :-(\n", allocSize);
-	SysLog::WriteToStderr(crashmsg, strlen(crashmsg));
+	SystemLog::WriteToStderr(crashmsg, strlen(crashmsg));
 
 	return 0;
 }
@@ -737,7 +737,7 @@ void PoolAllocator::Refresh()
 		if ( pTracker && pTracker->CurrentlyAllocated() > 0 ) {
 			char buf[256] = { 0 };
 			snprintf(buf, sizeof(buf), "PoolAllocator was still in use! (id: %ld, name: %s) in PoolAllocator::Refresh()", pTracker->GetId(), NotNull(pTracker->GetName()));
-			SysLog::Error(buf);
+			SystemLog::Error(buf);
 		}
 	}
 	if ( fpExcessTrackerList ) {

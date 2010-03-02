@@ -10,7 +10,7 @@
 #include "IFAConfObject.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Registry.h"
 #include "CacheHandler.h"
 #include "System.h"
@@ -257,7 +257,7 @@ bool ConfNamedObject::DoLookup(const char *key, ROAnything &result, char delim, 
 {
 	StartTrace1(ConfNamedObject.DoLookup, "key: <" << NotNull(key) << ">" << " Name: <" << fName << ">" );
 	if ( !IsConfigLoaded() ) {
-		SysLog::Warning(String("ConfNamedObject::DoLookup: failed, object <") << fName << "> of registry category <" << fCategory << "> not initialized!\n");
+		SystemLog::Warning(String("ConfNamedObject::DoLookup: failed, object <") << fName << "> of registry category <" << fCategory << "> not initialized!\n");
 	}
 	Trace("fConfig &" << (long)&fConfig);
 	return ( IsConfigLoaded() && fConfig.LookupPath(result, key, delim, indexdelim) );
@@ -309,7 +309,7 @@ RegisterableObjectInstaller::RegisterableObjectInstaller(const char *name, const
 	if (fObject) {
 		static bool bTrace = (System::EnvGet("TRACE_STATICALLOC") == "1");
 		if ( bTrace ) {
-			SysLog::WriteToStderr(String("installing <") << name << "> into <" << category << ">\n");
+			SystemLog::WriteToStderr(String("installing <") << name << "> into <" << category << ">\n");
 		}
 		fObject->Register(name, category);
 		fObject->MarkStatic();
@@ -322,7 +322,7 @@ RegisterableObjectInstaller::~RegisterableObjectInstaller()
 	if (fObject) {
 		static bool bTrace = (System::EnvGet("TRACE_STATICALLOC") == "1");
 		if ( bTrace ) {
-			SysLog::WriteToStderr(String("deleting <") << fObject->GetName() << "> from <" << fCategory << ">\n");
+			SystemLog::WriteToStderr(String("deleting <") << fObject->GetName() << "> from <" << fCategory << ">\n");
 		}
 		fObject->Unregister(fObject->GetName(), fCategory);
 		delete fObject;

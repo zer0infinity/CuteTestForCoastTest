@@ -15,7 +15,7 @@
 #include "Dbg.h"
 #include "SecurityModule.h"
 #include "Base64.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 
 //--- c-modules used -----------------------------------------------------------
 
@@ -44,7 +44,7 @@ void BlowfishRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything 
 		if (!scrambler->DoDecode(decodedInput, deArmouredInput)) {
 			msg << " Couldn't decode Base64ArmouredInput";
 			Trace(msg);
-			SysLog::Error(msg);
+			SystemLog::Error(msg);
 			reply << msg;
 		} else {
 			Trace("decoded Input: [" << decodedInput << "]");
@@ -53,7 +53,7 @@ void BlowfishRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything 
 	} else {
 		msg << " BlowfishSecurityItem not configured";
 		Trace(msg);
-		SysLog::Error(msg);
+		SystemLog::Error(msg);
 		reply << msg;
 	}
 }

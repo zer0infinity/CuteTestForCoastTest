@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+ * Copyright (c) 2010, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
  * All rights reserved.
  *
  * This library/application is free software; you can redistribute and/or modify it under the terms of
@@ -12,7 +12,7 @@
 #include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include "ITOString.h"
 
-//--- SysLog ----------------------------------------------------------
+//--- SystemLog ----------------------------------------------------------
 /*! <b>API for syslog access</b>
 This is the Coast system logging API. It is used for system-level and application-level logging.
 The values of <tt>WD_LOGONCERR</tt> and <tt>WD_DOLOG</tt> control the level of severities shown either on the console or in the syslog. Possible values are:
@@ -28,7 +28,7 @@ The loggers behavior is to write ALERT messages into syslog and to log ERROR and
 
 The flag <tt>TRACE_STATICALLOC</tt> shows you the allocation and deletion of all statically allocated objects used in Coast.
 */
-class EXPORTDECL_FOUNDATION SysLog
+class EXPORTDECL_FOUNDATION SystemLog
 {
 public:
 	//! module initialization
@@ -100,8 +100,8 @@ public:
 
 protected:
 	/*---- object api for different platforms ---*/
-	SysLog();
-	virtual ~SysLog();
+	SystemLog();
+	virtual ~SystemLog();
 
 	//!template method
 	virtual void DoLog(eLogLevel level, const char *msg);
@@ -120,11 +120,11 @@ protected:
 
 private:
 	//! fgSysLog is the system dependent variable that calls a system's log api
-	//! since SysLog messages might be generated from everywhere we don't
+	//! since SystemLog messages might be generated from everywhere we don't
 	//! know when this is happening for the first time<P>
 	//! Init is called normally in the bootstrap process once but then the syslog
 	//! might already be in use
-	static SysLog *fgSysLog;
+	static SystemLog *fgSysLog;
 	static eLogLevel fgDoSystemLevelLog;
 	static eLogLevel fgDoLogOnCerr;
 };
@@ -132,27 +132,27 @@ private:
 #define	SYSDEBUG(msg) \
 	{ String strFileLineMsg(Storage::Global());\
 	strFileLineMsg << "( " << __FILE__ << ":" << (long)__LINE__ << " ) " << msg;\
-	SysLog::Debug(strFileLineMsg); }
+	SystemLog::Debug(strFileLineMsg); }
 #define	SYSINFO(msg) \
 	{ String strFileLineMsg(Storage::Global());\
 	strFileLineMsg << "( " << __FILE__ << ":" << (long)__LINE__ << " ) " << msg;\
-	SysLog::Info(strFileLineMsg); }
+	SystemLog::Info(strFileLineMsg); }
 #define	SYSWARNING(msg) \
 	{ String strFileLineMsg(Storage::Global());\
 	strFileLineMsg << "( " << __FILE__ << ":" << (long)__LINE__ << " ) " << msg;\
-	SysLog::Warning(strFileLineMsg); }
+	SystemLog::Warning(strFileLineMsg); }
 #define	SYSERROR(msg) \
 	{ String strFileLineMsg(Storage::Global());\
 	strFileLineMsg << "( " << __FILE__ << ":" << (long)__LINE__ << " ) " << msg;\
-	SysLog::Error(strFileLineMsg); }
+	SystemLog::Error(strFileLineMsg); }
 #define	SYSALERT(msg) \
 	{ String strFileLineMsg(Storage::Global());\
 	strFileLineMsg << "( " << __FILE__ << ":" << (long)__LINE__ << " ) " << msg;\
-	SysLog::Alert(strFileLineMsg); }
+	SystemLog::Alert(strFileLineMsg); }
 
 #if defined(WIN32)
-//! implementation of SysLog api for WIN32
-class EXPORTDECL_FOUNDATION Win32SysLog : public SysLog
+//! implementation of SystemLog api for WIN32
+class EXPORTDECL_FOUNDATION Win32SysLog : public SystemLog
 {
 public:
 	Win32SysLog(const char *appId);
@@ -164,8 +164,8 @@ protected:
 	HANDLE fLogHandle;
 };
 #elif defined(__370__)
-//! implementation of SysLog api for System/370; just uses cerr
-class S370SysLog: public SysLog
+//! implementation of SystemLog api for System/370; just uses cerr
+class S370SysLog: public SystemLog
 {
 public:
 	S370SysLog() { }
@@ -176,7 +176,7 @@ protected:
 };
 #else
 //! implementation for Unix syslog api
-class UnixSysLog : public SysLog
+class UnixSysLog : public SystemLog
 {
 public:
 	UnixSysLog(const char *appId);

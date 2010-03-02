@@ -15,7 +15,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "Threads.h"
 #include "PoolAllocator.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
@@ -42,7 +42,7 @@ public:
 			long lOther = frLockerId;
 			char buf[256] = { 0 };
 			snprintf(buf, sizeof(buf), "\n%s:%ld Another Locker entered already! otherThreadId:%ld currentThreadId:%ld\n", pFile, lLine, lOther, Thread::MyId());
-			SysLog::WriteToStderr(buf, strlen(buf));
+			SystemLog::WriteToStderr(buf, strlen(buf));
 		}
 	}
 };
@@ -89,7 +89,7 @@ MT_MemTracker::MT_MemTracker(const char *name, long lId)
 {
 	int iRet = 0;
 	if ( !CREATEMUTEX(fMutex, iRet) ) {
-		SYSERROR("Mutex create failed: " << SysLog::SysErrorMsg(iRet));
+		SYSERROR("Mutex create failed: " << SystemLog::SysErrorMsg(iRet));
 	}
 	SetId( lId );
 }
@@ -98,7 +98,7 @@ MT_MemTracker::~MT_MemTracker()
 {
 	int iRet = 0;
 	if ( !DELETEMUTEX(fMutex, iRet) ) {
-		SYSERROR("Mutex delete failed: " << SysLog::SysErrorMsg(iRet));
+		SYSERROR("Mutex delete failed: " << SystemLog::SysErrorMsg(iRet));
 	}
 }
 
@@ -127,11 +127,11 @@ void MT_MemTracker::TrackAlloc(MemoryHeader *mh)
 {
 	int iRet = 0;
 	if ( !LOCKMUTEX(fMutex, iRet) ) {
-		SYSERROR("Mutex lock failed: " << SysLog::SysErrorMsg(iRet));
+		SYSERROR("Mutex lock failed: " << SystemLog::SysErrorMsg(iRet));
 	}
 	MemTracker::TrackAlloc(mh);
 	if ( !UNLOCKMUTEX(fMutex, iRet) ) {
-		SYSERROR("Mutex unlock failed" << SysLog::SysErrorMsg(iRet));
+		SYSERROR("Mutex unlock failed" << SystemLog::SysErrorMsg(iRet));
 	}
 }
 
@@ -139,11 +139,11 @@ void MT_MemTracker::TrackFree(MemoryHeader *mh)
 {
 	int iRet = 0;
 	if ( !LOCKMUTEX(fMutex, iRet) ) {
-		SYSERROR("Mutex lock failed: " << SysLog::SysErrorMsg(iRet));
+		SYSERROR("Mutex lock failed: " << SystemLog::SysErrorMsg(iRet));
 	}
 	MemTracker::TrackFree(mh);
 	if ( !UNLOCKMUTEX(fMutex, iRet) ) {
-		SYSERROR("Mutex unlock failed: " << SysLog::SysErrorMsg(iRet));
+		SYSERROR("Mutex unlock failed: " << SystemLog::SysErrorMsg(iRet));
 	}
 }
 
@@ -152,11 +152,11 @@ l_long MT_MemTracker::CurrentlyAllocated()
 	l_long l;
 	int iRet = 0;
 	if ( !LOCKMUTEX(fMutex, iRet) ) {
-		SYSERROR("Mutex lock failed: " << SysLog::SysErrorMsg(iRet));
+		SYSERROR("Mutex lock failed: " << SystemLog::SysErrorMsg(iRet));
 	}
 	l = fAllocated;
 	if ( !UNLOCKMUTEX(fMutex, iRet) ) {
-		SYSERROR("Mutex lock failed: " << SysLog::SysErrorMsg(iRet));
+		SYSERROR("Mutex lock failed: " << SystemLog::SysErrorMsg(iRet));
 	}
 	return  l;
 }
@@ -165,11 +165,11 @@ void MT_MemTracker::PrintStatistic(long lLevel)
 {
 	int iRet = 0;
 	if ( !LOCKMUTEX(fMutex, iRet) ) {
-		SYSERROR("Mutex lock failed: " << SysLog::SysErrorMsg(iRet));
+		SYSERROR("Mutex lock failed: " << SystemLog::SysErrorMsg(iRet));
 	}
 	MemTracker::PrintStatistic(lLevel);
 	if ( !UNLOCKMUTEX(fMutex, iRet) ) {
-		SYSERROR("Mutex lock failed: " << SysLog::SysErrorMsg(iRet));
+		SYSERROR("Mutex lock failed: " << SystemLog::SysErrorMsg(iRet));
 	}
 }
 
@@ -224,7 +224,7 @@ public:
 	virtual void DoInit() {
 		IFMTrace("MTStorageInitializer::DoInit\n");
 		if (THRKEYCREATE(MT_Storage::fgAllocatorKey, 0)) {
-			SysLog::Error("TlsAlloc of MT_Storage::fgAllocatorKey failed");
+			SystemLog::Error("TlsAlloc of MT_Storage::fgAllocatorKey failed");
 		}
 		MT_Storage::fgpAllocatorInit = new SimpleMutex("AllocatorInit", Storage::Global());
 		MT_Storage::Initialize();
@@ -236,7 +236,7 @@ public:
 		delete MT_Storage::fgpAllocatorInit;
 		MT_Storage::fgpAllocatorInit = NULL;
 		if (THRKEYDELETE(MT_Storage::fgAllocatorKey) != 0) {
-			SysLog::Error("TlsFree of MT_Storage::fgAllocatorKey failed" );
+			SystemLog::Error("TlsFree of MT_Storage::fgAllocatorKey failed" );
 		}
 	}
 };
@@ -311,8 +311,8 @@ void MT_Storage::RefAllocator(Allocator *wdallocator)
 			// catch memory allocation problem
 			if (!elmt) {
 				static const char crashmsg[] = "FATAL: MT_Storage::RefAllocator calloc failed. I will crash :-(\n";
-				SysLog::WriteToStderr(crashmsg, sizeof(crashmsg));
-				SysLog::Error("allocation failed for RefAllocator");
+				SystemLog::WriteToStderr(crashmsg, sizeof(crashmsg));
+				SystemLog::Error("allocation failed for RefAllocator");
 				return;
 			}
 
@@ -408,7 +408,7 @@ Allocator *MT_Storage::MakePoolAllocator(u_long poolStorageSize, u_long numOfPoo
 	if (!newPoolAllocator) {
 		String msg("allocation of PoolStorage: ");
 		msg << (long)poolStorageSize << ", " << (long)numOfPoolBucketSizes << " failed";
-		SysLog::Error(msg);
+		SystemLog::Error(msg);
 		return newPoolAllocator;
 	}
 	if (newPoolAllocator->RefCnt() <= -1) {

@@ -11,7 +11,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "Registry.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 
 //---- RenderersModule -----------------------------------------------------------
@@ -110,7 +110,7 @@ void Renderer::Render(ostream &reply, Context &c, const ROAnything &info)
 					logStream << "Renderer::Render: No renderer found with name [" << type << "], config [";
 					info.PrintOn(logStream, false) << "] discarding config";
 				}
-				SysLog::Warning(logMsg);
+				SystemLog::Warning(logMsg);
 			} // if (r)if (type)
 		} else { // new type configuration
 			Trace( "Render, NEW Type style" );
@@ -140,7 +140,7 @@ void Renderer::Render(ostream &reply, Context &c, const ROAnything &info)
 							logStream << "Renderer::Render: No renderer found with name [" << slotname << "], config [";
 							info.PrintOn(logStream, false) << "] calling Render with config of " << slotname << " again";
 						}
-						SysLog::Warning(logMsg);
+						SystemLog::Warning(logMsg);
 					}
 					Render(reply, c, info[i]);
 				}

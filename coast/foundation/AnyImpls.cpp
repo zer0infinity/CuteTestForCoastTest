@@ -13,7 +13,7 @@
 #include "StringStream.h"
 #include "IFAObject.h"
 #include "AnyVisitor.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include <algorithm>
 
 //--- c-modules used -----------------------------------------------------------
@@ -431,10 +431,10 @@ void AnyKeyTable::PrintHash()
 		if ( fHashTable[i] > -1 ) {
 			String m;
 			m << "[" << i << "]<" << fHashTable[i] << "> ";
-			SysLog::WriteToStderr(m);
+			SystemLog::WriteToStderr(m);
 		}
 	}
-	SysLog::WriteToStderr("\n", 1);
+	SystemLog::WriteToStderr("\n", 1);
 }
 
 void *AnyKeyTable::operator new(size_t size, Allocator *a)
@@ -665,7 +665,7 @@ void AnyIndTable::PrintTable()
 	for ( long i = 0; i < fSize; ++i) {
 		m << "[" << i << "] <" << fIndexTable[i] << ">" << "\n";
 	}
-	SysLog::WriteToStderr(m);
+	SystemLog::WriteToStderr(m);
 }
 
 void *AnyIndTable::operator new(size_t size, Allocator *a)
@@ -979,7 +979,7 @@ void AnyArrayImpl::Expand(long newsize)
 			MyAllocator()->Free(old); // frees the old ptr buffer array not the contents buffer
 		} else {
 			static const char crashmsg[] = "FATAL: AnyArrayImpl::Expand calloc failed (increasing pointer buffer). I will crash :-(\n";
-			SysLog::WriteToStderr(crashmsg, sizeof(crashmsg));
+			SystemLog::WriteToStderr(crashmsg, sizeof(crashmsg));
 
 			fContents = old;
 			fCapacity = oldCap;
@@ -1001,7 +1001,7 @@ void AnyArrayImpl::Expand(long newsize)
 #endif
 			if (fContents[i] == 0) {
 				static const char crashmsg[] = "FATAL: AnyArrayImpl::Expand calloc failed (assigning memory to increased pointer buffers).\nI will crash :-(\n";
-				SysLog::WriteToStderr(crashmsg, sizeof(crashmsg));
+				SystemLog::WriteToStderr(crashmsg, sizeof(crashmsg));
 
 				allocOk = false;
 			} else {
@@ -1069,7 +1069,7 @@ void AnyArrayImpl::PrintKeys()
 		}
 		String m;
 		m << "[" << i << "]<" << NotNullStr(fContents[IntAtBuf(at)][IntAtSlot(at)].Key()) << ">(" << hash << ")" << "\n";
-		SysLog::WriteToStderr(m);
+		SystemLog::WriteToStderr(m);
 	}
 }
 
@@ -1078,7 +1078,7 @@ void AnyArrayImpl::PrintHash()
 	if (fKeys) {
 		fKeys->PrintHash();
 	} else {
-		SysLog::WriteToStderr("*", 1);
+		SystemLog::WriteToStderr("*", 1);
 	}
 }
 

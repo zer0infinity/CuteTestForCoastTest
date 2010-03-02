@@ -17,7 +17,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Threads.h"
 #include "DataAccess.h"
 #include "DiffTimer.h"
@@ -95,7 +95,7 @@ void SybCTThreadTest::SybCTnewDAImplTest()
 	if ( t_assert(SybCTnewDAImpl::Init(GetTestCaseConfig())) ) {
 		DiffTimer aTimer;
 		DoTest("SybTestThreadnewDA", "SybTestThreadnewDAWithError");
-		SysLog::WriteToStderr(String("elapsed time for SybCTnewDAImplTest:") << (long)aTimer.Diff() << "ms\n");
+		SystemLog::WriteToStderr(String("elapsed time for SybCTnewDAImplTest:") << (long)aTimer.Diff() << "ms\n");
 	}
 }
 

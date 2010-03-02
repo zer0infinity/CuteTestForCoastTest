@@ -15,7 +15,7 @@
 #include "Registry.h"
 #include "Server.h"
 #include "ServerUtils.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 // #include "System.h"
 
@@ -76,7 +76,7 @@ void RequestProcessor::ProcessRequest(Context &ctx)
 		if ( socket ) {
 			logMsg << " (" << socket->ClientInfo()["REMOTE_ADDR"].AsString() << ':' << socket->ClientInfo()["REMOTE_PORT"].AsString() << ')';
 		}
-		SysLog::Warning(logMsg);
+		SystemLog::Warning(logMsg);
 	}
 }
 

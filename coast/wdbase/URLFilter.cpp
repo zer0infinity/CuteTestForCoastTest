@@ -13,7 +13,7 @@
 #include "Registry.h"
 #include "SecurityModule.h"
 #include "Renderer.h"
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "Dbg.h"
 
 //--- URLFilter ----------------------------------------------------------
@@ -47,7 +47,7 @@ bool URLFilter::HandleCookie(Anything &query, Anything &env, const ROAnything &f
 					query[slotName] = "";
 					String errMsg("Cookie: <");
 					errMsg << slotName << "> was sent <" << size << "> times. " << slotName << " set to blank.";
-					SysLog::Error(errMsg);
+					SystemLog::Error(errMsg);
 					env["NrOfCookies"][slotName] = size;
 				}
 				Trace("query[" << slotName << "]= " << cookies[slotName].AsCharPtr(""));
@@ -215,13 +215,13 @@ bool URLFilter::DoUnscrambleState(Anything &query, const char *slotName, Context
 			} else {
 				String errMsg("Private state of URL is corrupt:<");
 				errMsg << slotName << ">";
-				SysLog::Error(errMsg);
+				SystemLog::Error(errMsg);
 				return false;
 			}
 		} else {
 			String errMsg("Empty Slot for unscrambling:<");
 			errMsg << slotName << ">";
-			SysLog::Error(errMsg);
+			SystemLog::Error(errMsg);
 			return false;
 		}
 	}

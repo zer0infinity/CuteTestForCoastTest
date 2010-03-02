@@ -10,7 +10,7 @@
 #include "LDAPParams.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "SysLog.h"
+#include "SystemLog.h"
 #include "StringStream.h"
 #include "Mapper.h"
 #include "LDAPAPI.h"
@@ -121,7 +121,7 @@ char **LDAPParams::Attributes()
 		fLDAPAttr = (char **) calloc(sz + 1, sizeof(char *));
 		if (fLDAPAttr == NULL) {
 			static const char crashmsg[] = "FATAL: LDAPParams::Attribute calloc failed. I will crash :-(\n";
-			SysLog::WriteToStderr(crashmsg, sizeof(crashmsg));
+			SystemLog::WriteToStderr(crashmsg, sizeof(crashmsg));
 		}
 		for (long i = 0; i < sz; i++) {
 			fLDAPAttr[i] = (char *)fAttributes[i].AsCharPtr("");
