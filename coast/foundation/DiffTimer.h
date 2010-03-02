@@ -20,12 +20,6 @@ typedef __int64 HRTIME;
 #include <sys/times.h>
 typedef hrtime_t 		HRTIME;
 #define GetHRTIME()		gethrtime()
-#elif defined(__linux__)
-#include <time.h>
-#include <sys/times.h>
-typedef clock_t			HRTIME;
-extern "C" HRTIME 		gettimes();
-#define GetHRTIME()		gettimes()
 #elif defined(_AIX)
 #include <time.h>
 #include <sys/time.h>
@@ -51,8 +45,8 @@ inline HRTIME nanoSecondTime()
 #include <time.h>
 #include <sys/times.h>
 typedef clock_t			HRTIME;
-extern "C" HRTIME gettimes();
-#define GetHRTIME()	gettimes()
+extern "C" HRTIME 		gettimes();
+#define GetHRTIME()		gettimes()
 #endif
 
 //---- DiffTimer ----------------------------------------------------------
