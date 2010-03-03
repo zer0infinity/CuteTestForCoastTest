@@ -6,7 +6,7 @@ packagename = StanfordUtils.getPackageName(__name__)
 buildSettings = {
      packagename : {
          'includeSubdir'    : '',
-         'linkDependencies'       : ['CoastWDBase'],
+         'linkDependencies' : ['CoastDataAccess'],
          'sourceFiles'      : StanfordUtils.listFiles(['*.cpp']),
          'targetType'       : 'LibraryShared',
          'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL'] },
