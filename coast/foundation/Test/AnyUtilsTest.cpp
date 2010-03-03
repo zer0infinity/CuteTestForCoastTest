@@ -27,11 +27,10 @@ AnyUtilsTest::AnyUtilsTest(TString tname) :
 	TestCaseType(tname)
 {
 }
-;
+
 AnyUtilsTest::~AnyUtilsTest()
 {
 }
-;
 
 void AnyUtilsTest::CompareTest()
 {

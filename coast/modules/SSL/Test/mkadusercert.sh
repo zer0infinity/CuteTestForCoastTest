@@ -61,7 +61,7 @@ CATOP=./demoCA
 cd ${target_dir}
 
 echo "Creating client certificate"
-USER_FILE_NAME=${username// /_}
+USER_FILE_NAME=ad_user_${username// /_}
 mkdir $USER_FILE_NAME
 cd $USER_FILE_NAME
 ${openssl_bin} genrsa -out client.key 1024
@@ -75,11 +75,12 @@ testdom
 
 $username
 
+Hello
 EOF1
 
 echo "Signing Client certificte by subCA1"
 cd ../subCA1
-${openssl_bin} x509 -req $DAYS -passin pass:gugus  -CA ${CATOP}/cacert.pem \
+${openssl_bin} x509 -req -days $days -passin pass:gugus  -CA ${CATOP}/cacert.pem \
 			  -CAkey ${CATOP}/private/cakey.pem \
 			  -CAcreateserial -in ../$USER_FILE_NAME/client.csr -out ../$USER_FILE_NAME/clientcert.pem
 

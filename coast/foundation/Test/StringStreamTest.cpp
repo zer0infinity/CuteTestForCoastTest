@@ -35,7 +35,6 @@ StringStreamTest::StringStreamTest(TString tname) :
 	TestCaseType(tname)
 {
 }
-;
 
 StringStreamTest::~StringStreamTest()
 {
