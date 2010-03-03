@@ -13,6 +13,7 @@
 #include "config_coastoracle.h"
 #include "DataAccessImpl.h"
 #include "Threads.h"
+#include "WPMStatHandler.h"
 
 //---- forward declaration -----------------------------------------------
 class OraclePooledConnection;
@@ -69,7 +70,7 @@ namespace Coast
 		 * Optional, default 16
 		 * Long value defining the number of bucket sizes to allocate inside the PoolAllocator
 		 */
-		class EXPORTDECL_COASTORACLE ConnectionPool
+		class EXPORTDECL_COASTORACLE ConnectionPool : public StatGatherer
 		{
 			//! lock to protect internal bookkeeping structure and list of connections
 			SimpleMutex fStructureMutex;
@@ -83,6 +84,14 @@ namespace Coast
 			PeriodicAction *fpPeriodicAction;
 			//! counting semaphore to keep track of the available connections
 			Semaphore *fpResourcesSema;
+			//! name of the Pool
+			String fName;
+
+			typedef std::auto_ptr<WPMStatHandler> StatEvtHandlerPtrType;
+
+			//! statistic event handler
+			StatEvtHandlerPtrType fpStatEvtHandlerPool, fpStatEvtHandlerTLS;
+
 		public:
 			/*! construct the connection pool
 			 * @param name used to distinguish the internal structure mutex from others
@@ -125,6 +134,18 @@ namespace Coast
 			void ReleaseConnection( OraclePooledConnection *&pConnection, bool bUseTLS = false );
 
 			static THREADKEY fgTSCCleanerKey;
+
+		protected:
+			/*! implements the StatGatherer interface used by StatObserver
+				\param statistics Anything to get statistics data */
+			void DoGetStatistic(Anything &statistics);
+
+			/*! get this instances given name
+				\return name of this objects instance */
+			const String &GetName() const {
+				return fName;
+			}
+
 		private:
 			/*! try to find a matching and open connection using the given credentials
 			 * @param pConnection connection returned

@@ -29,7 +29,7 @@ namespace Coast
 //---- ConnectionPool ----------------------------------------------------------------
 		ConnectionPool::ConnectionPool( const char *name ) :
 			fStructureMutex( String( name ).Append( "StructureMutex" ), Storage::Global() ), fListOfConnections(
-				Storage::Global() ), fInitialized( false ), fTLSUsable(false), fpPeriodicAction( NULL ), fpResourcesSema( NULL )
+				Storage::Global() ), fInitialized( false ), fTLSUsable(false), fpPeriodicAction( NULL ), fpResourcesSema( NULL ), fName(name)
 		{
 			StartTrace(ConnectionPool.ConnectionPool);
 		}
@@ -37,6 +37,21 @@ namespace Coast
 		ConnectionPool::~ConnectionPool()
 		{
 			StartTrace(ConnectionPool.~ConnectionPool);
+			PrintStatisticsOnStderr( GetName() );
+		}
+
+		void ConnectionPool::DoGetStatistic(Anything &statistics)
+		{
+			if ( fpStatEvtHandlerPool.get() ) {
+				Anything anyStats;
+				fpStatEvtHandlerPool->Statistic( anyStats );
+				statistics["Pool"] = anyStats;
+			}
+			if ( fpStatEvtHandlerTLS.get() ) {
+				Anything anyStats;
+				fpStatEvtHandlerTLS->Statistic( anyStats );
+				statistics["TLS"] = anyStats;
+			}
 		}
 
 //:perform close and destruction of OraclePooledConnection in thread specific storage
@@ -94,6 +109,7 @@ namespace Coast
 					SYSERROR("TlsAlloc of ConnectionPool::fgTSCCleanerKey failed");
 				} else {
 					fTLSUsable = true;
+					fpStatEvtHandlerTLS = StatEvtHandlerPtrType( new WPMStatHandler( 0 ) );
 				}
 
 				LockUnlockEntry me( fStructureMutex );
@@ -108,6 +124,7 @@ namespace Coast
 								myCfg["MemPoolSize"].AsLong( 2048L ), myCfg["MemPoolBuckets"].AsLong( 16L ) );
 						IntReleaseConnection( pConnection );
 					}
+					fpStatEvtHandlerPool = StatEvtHandlerPtrType( new WPMStatHandler( nrOfConnections ) );
 					if ( !fpPeriodicAction ) {
 						fpPeriodicAction = new PeriodicAction( "OracleCheckCloseOpenedConnectionsAction",
 															   lCloseConnectionTimeout );
@@ -146,7 +163,9 @@ namespace Coast
 				for ( long lCount = 0L; lCount < fListOfConnections["Size"].AsLong( 0L ); ++lCount ) {
 					OraclePooledConnection *pConnection( NULL );
 					String strServer, strUser;
-					if ( BorrowConnection( pConnection, strServer, strUser, false ) ) {
+					fpResourcesSema->Acquire();
+					LockUnlockEntry me( fStructureMutex );
+					if ( IntBorrowConnection( pConnection, strServer, strUser ) ) {
 						if ( pConnection->isOpen() ) {
 							pConnection->Close( true );
 						}
@@ -188,9 +207,18 @@ namespace Coast
 					if ( pConnection != NULL ) {
 						bRet = SETTLSDATA(ConnectionPool::fgTSCCleanerKey, pConnection);
 						Trace("connection stored in TLS:" << (bRet ? "true" : "false"));
+						if ( fpStatEvtHandlerTLS.get() ) {
+							fpStatEvtHandlerTLS->incrementPoolSize();
+						}
 					}
 				}
+				if ( fpStatEvtHandlerTLS.get() ) {
+					fpStatEvtHandlerTLS->HandleStatEvt( WPMStatHandler::eEnter );
+				}
 			} else {
+				if ( fpStatEvtHandlerPool.get() ) {
+					fpStatEvtHandlerPool->HandleStatEvt( WPMStatHandler::eEnter );
+				}
 				fpResourcesSema->Acquire();
 				LockUnlockEntry me( fStructureMutex );
 				bRet = IntBorrowConnection( pConnection, server, user );
@@ -203,10 +231,18 @@ namespace Coast
 			StartTrace(ConnectionPool.ReleaseConnection);
 			if ( fTLSUsable && bUseTLS ) {
 				Trace("nothing to do, keep connection as long as we (Thread) are alive");
+				if ( fpStatEvtHandlerTLS.get() ) {
+					fpStatEvtHandlerTLS->HandleStatEvt( WPMStatHandler::eLeave );
+				}
 			} else {
-				LockUnlockEntry me( fStructureMutex );
-				IntReleaseConnection( pConnection );
-				fpResourcesSema->Release();
+				{
+					LockUnlockEntry me( fStructureMutex );
+					IntReleaseConnection( pConnection );
+					fpResourcesSema->Release();
+				}
+				if ( fpStatEvtHandlerPool.get() ) {
+					fpStatEvtHandlerPool->HandleStatEvt( WPMStatHandler::eLeave );
+				}
 			}
 		}
 
