@@ -18,8 +18,6 @@
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 
-//--- c-modules used -----------------------------------------------------------
-
 //---- Base64RendererTest ----------------------------------------------------------------
 Base64RendererTest::Base64RendererTest(TString name) : TestCase(name)
 {

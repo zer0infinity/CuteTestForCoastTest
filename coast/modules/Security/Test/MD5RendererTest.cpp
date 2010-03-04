@@ -18,8 +18,6 @@
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 
-//--- c-modules used -----------------------------------------------------------
-
 //---- MD5RendererTest ----------------------------------------------------------------
 MD5RendererTest::MD5RendererTest(TString name) : TestCase(name)
 {

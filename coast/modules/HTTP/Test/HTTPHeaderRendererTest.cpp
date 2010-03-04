@@ -14,10 +14,9 @@
 
 //--- module under test --------------------------------------------------------
 #include "HTTPHeaderRenderer.h"
+
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- HTTPHeaderRendererTest ----------------------------------------------------------------
 HTTPHeaderRendererTest::HTTPHeaderRendererTest(TString name) : TestCase(name)

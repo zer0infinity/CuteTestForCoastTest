@@ -64,9 +64,9 @@ bool BackendConfigLoaderModule::Init(const ROAnything config)
 			if (!System::LoadConfigFile(backendConfig, backendName)) {
 				retCode = false;
 			}
-			backendConfigurations[backendName] = backendConfig.DeepClone();
+			backendConfigurations[backendName] = backendConfig;
 		}
-		TraceAny(backendConfigurations, "Backend Configurations:")
+		TraceAny(backendConfigurations, "Backend Configurations:");
 	} else {
 		retCode = false;
 	}
@@ -98,12 +98,12 @@ ROAnything BackendConfigLoaderModule::GetBackendConfig(const String &backendName
 {
 	StartTrace(BackendConfigLoaderModule.GetBackendConfig);
 	TraceAny(backendConfigurations, "Backend Configurations:");
-	return backendConfigurations[backendName].DeepClone();
+	return backendConfigurations[backendName];
 }
 
 ROAnything BackendConfigLoaderModule::GetBackendConfig()
 {
-	return backendConfigurations.DeepClone();
+	return backendConfigurations;
 }
 
 ROAnything BackendConfigLoaderModule::GetBackendList()
@@ -114,7 +114,7 @@ ROAnything BackendConfigLoaderModule::GetBackendList()
 		backendList.Append(backendConfigurations.SlotName(i));
 	}
 	TraceAny(backendList, "List of all Backends:");
-	return backendList.DeepClone();
+	return backendList;
 }
 
 bool BackendConfigLoaderModule::RegisterBackend(String backendName)
