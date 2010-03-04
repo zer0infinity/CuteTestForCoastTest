@@ -308,7 +308,7 @@ void SystemLog::DoLogTrace(eLogLevel level, const char *logMsg)
 	}
 }
 
-//---- UnixSysLog ----------------------------------------------------------------
+//---- System specific logger ----------------------------------------------------------------
 #if defined(WIN32)
 Win32SysLog::Win32SysLog(const char *appId)
 {
@@ -343,11 +343,6 @@ void Win32SysLog::DoSystemLevelLog(eLogLevel level, const char *logMsg)
 void S370SysLog::DoSystemLevelLog(eLogLevel level, const char *msg)
 {
 	cerr << "level " << level << ": " << logMsg << endl;
-}
-
-void SystemLog::DoLogTrace(long level, const char *msg)
-{
-	// do nothing we already logged it on cerr
 }
 #else
 UnixSysLog::UnixSysLog(const char *appId)
