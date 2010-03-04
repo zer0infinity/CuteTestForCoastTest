@@ -17,7 +17,6 @@
 #include "AppBooter.h"
 
 //--- c-modules used -----------------------------------------------------------
-//#include <stdlib.h>
 #include <unistd.h>
 
 class MyAppBooter : public AppBooter
