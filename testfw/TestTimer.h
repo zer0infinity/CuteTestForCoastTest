@@ -9,6 +9,7 @@
 #ifndef _TestTimer_H
 #define _TestTimer_H
 
+#include <ctime>
 #include <cmath>
 
 #if defined(WIN32)
@@ -17,14 +18,8 @@ typedef __int64 HRTESTTIME;
 #define GetHRTESTTIME()	GetTickCount()
 #elif defined(__sun)
 #include <sys/times.h>
-typedef hrtime_t HRTESTTIME;
-#define GetHRTESTTIME()	gethrtime()
-#elif defined(__linux__)
-#include <time.h>
-#include <sys/times.h>
-typedef clock_t			HRTESTTIME;
-extern "C" HRTESTTIME gettimes();
-#define GetHRTESTTIME()	gettimes()
+typedef hrtime_t 		HRTESTTIME;
+#define GetHRTESTTIME()		gethrtime()
 #elif defined(_AIX)
 #include <time.h>
 #include <sys/time.h>
@@ -46,14 +41,12 @@ inline HRTESTTIME nanoSecondTime()
 } // nanoSecondTime
 
 #define GetHRTESTTIME()		nanoSecondTime()
-#define GetHRVTIME()	nanoSecondTime()
 #else
 #include <time.h>
 #include <sys/times.h>
 typedef clock_t			HRTESTTIME;
 extern "C" HRTESTTIME gettimes();
 #define GetHRTESTTIME()	gettimes()
-#define GetHRVTIME()	gettimes()
 #endif
 
 //---- TestTimer ----------------------------------------------------------

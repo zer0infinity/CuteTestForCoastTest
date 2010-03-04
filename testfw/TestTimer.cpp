@@ -80,11 +80,13 @@ TestTimer::tTimeType TestTimer::Reset()
 
 TestTimer::tTimeType TestTimer::TicksPerSecond()
 {
+	tTimeType tps( 1 );
 #if defined(__sun)
-	return 1000000000;
+	tps = 1000000000;
 #elif defined(WIN32)
-	return 1000;
+	tps = 1000;
 #else
-	return sysconf(_SC_CLK_TCK);
+	tps = sysconf(_SC_CLK_TCK);
 #endif
+	return tps;
 }
