@@ -106,7 +106,7 @@ bool HTTPHeaderParameterMapper::DoGetStream(const char *key, ostream &os, Contex
 	} else {
 		TraceAny(ctx.GetTmpStore(), "no headers, get ReqHeader in tmp store:");
 		String strHeaderfields;
-		if (mapSuccess = Get("ReqHeader", strHeaderfields, ctx)) {
+		if ( ( mapSuccess = Get("ReqHeader", strHeaderfields, ctx) ) ) {
 			os << strHeaderfields;
 		}
 	}
@@ -205,7 +205,7 @@ bool HTTPBodyParameterMapper::DoFinalGetStream(const char *key, ostream &os, Con
 		}
 	} else {
 		String bodyParams;
-		if (mapSuccess = Get(key, bodyParams, ctx)) {
+		if ( ( mapSuccess = Get(key, bodyParams, ctx) ) ) {
 			os << bodyParams;
 		}
 	}
