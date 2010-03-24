@@ -21,7 +21,7 @@ This test can test any access manager that exports the default API.
 It runs configured unit tests for the following API functions:
 <i>Validate, AuthenticateWeak, AuthenticateStrong, ChangePassword,
 ResetPassword, IsAllowed</i> and <i>GetAllowed</i>.
-AccessManagers are defined and registered in the config of the wdapp.
+AccessManagers are defined and registered in the config of the coastd.
 They have a config themselves, which in turn defines the backends
 (i.e. AccessControllers) that they utilize to get access to user-
 and token information.

@@ -200,7 +200,7 @@ SSL_CTX *SSLModule::PrepareServerContext(LookupInterface *object)
 									  (long)SSL_SESSION_CACHE_MAX_SIZE_DEFAULT);     // default of openssl is 1024 * 20
 		long sslSessionTimeout = object->Lookup(
 									 "SSLSessionTimeout", (long)300); // default is 5 minutes
-		String sslSessionIdContext(object->Lookup("SSLSessionIdContext", "wdapp"));
+		String sslSessionIdContext(object->Lookup("SSLSessionIdContext", "coastd"));
 		sslSessionIdContext.Trim(SSL_MAX_SSL_SESSION_ID_LENGTH);
 
 		// set some ssl options
@@ -229,7 +229,7 @@ SSL_CTX *SSLModule::PrepareClientContext(LookupInterface *object)
 	long sslSessionTimeout = object->Lookup(
 								 "SSLClientSessionTimeout", (long)300);		  // default is 5 minutes
 
-	String sslSessionIdContext(object->Lookup("SSLClientSessionIdContext", "wdapp"));
+	String sslSessionIdContext(object->Lookup("SSLClientSessionIdContext", "coastd"));
 	sslSessionIdContext.Trim(SSL_MAX_SSL_SESSION_ID_LENGTH);
 
 	if (ctx) {

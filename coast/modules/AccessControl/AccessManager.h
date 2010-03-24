@@ -19,7 +19,7 @@ class Context;
 //---- AccessManagerModule ----------------------------------------------------------
 //! <B>Manages access managers</B>
 /*!
-Installs configured access managers list from wdapp config.
+Installs configured access managers list from coastd config.
 Gives access to default access manager implementation.
 */
 class EXPORTDECL_ACCESSCONTROL AccessManagerModule : public WDModule

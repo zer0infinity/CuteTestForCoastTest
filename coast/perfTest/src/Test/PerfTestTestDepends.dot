@@ -10,7 +10,7 @@ digraph PerfTestTest {
 	CoastRenderers;
 	CoastSecurity;
 	testfwWDBaseLib;
-	wdapp;
+	coastd;
 	CoastWDBaseLib;
 	CoastMTFoundationLib;
 	CoastFoundationLib;
@@ -32,10 +32,10 @@ digraph PerfTestTest {
 	PerfTestTest -> CoastStdDataAccessLib [ arrowhead="open", style="dashed" ]
 	PerfTestTest -> CoastActions [ arrowhead="open", style="dashed" ]
 	PerfTestTest -> CoastRenderers [ arrowhead="open", style="dashed" ]
-	PerfTestTest -> wdapp [ arrowhead="open", style="dashed" ]
+	PerfTestTest -> coastd [ arrowhead="open", style="dashed" ]
 	CoastPerfTestLib -> CoastSSLLib [ arrowhead="open" ]
 	CoastPerfTestLib -> CoastDataAccessLib [ arrowhead="open" ]
-	wdapp -> CoastWDBaseLib [ arrowhead="open" ]
+	coastd -> CoastWDBaseLib [ arrowhead="open" ]
 	CoastFoundationLib -> loki [ arrowhead="open" ]
 	CoastMTFoundationLib -> CoastFoundationLib [ arrowhead="open" ]
 	CoastWDBaseLib -> CoastMTFoundationLib [ arrowhead="open" ]

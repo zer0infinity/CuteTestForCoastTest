@@ -14,7 +14,7 @@ buildSettings = {
     'Runner' : {
         'targetType'       : 'AppTest',
         'requires'         : ['CoastStdDataAccess', 'CoastActions', 'CoastRenderers', packagename + '.' + packagename],
-        'usedTarget'       : 'wdapp.wdapp',
+        'usedTarget'       : 'coastd.coastd',
         'copyFiles'        : [(SConsider.findFiles(['.'],['.txt', '.html', '.any']), S_IRUSR|S_IRGRP|S_IROTH)],
     },
 }
