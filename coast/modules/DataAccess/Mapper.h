@@ -116,7 +116,7 @@ public:
 
 	//! method for setting the internal configuration
 	//! \param configuration to be set
-	virtual void SetConfig(ROAnything config);
+	void SetConfig(ROAnything config);
 
 	//!FIXME: remove Finds InputMappers, too
 	static ParameterMapper *FindInputMapper(const char *name);

@@ -258,7 +258,7 @@ public:
 	}
 
 	//FIXME: remove virtual public
-	virtual void SetConfig(const char *category, const char *key, ROAnything newConfig);
+	void SetConfig(const char *category, const char *key, ROAnything newConfig);
 	virtual ROAnything GetNamedObjectConfig() {
 		return fConfig;
 	};
