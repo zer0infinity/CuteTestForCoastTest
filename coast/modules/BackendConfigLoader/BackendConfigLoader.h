@@ -27,7 +27,7 @@ public:
 	virtual bool Finis();
 	static ROAnything GetBackendConfig(const String &backendName);
 	static ROAnything GetBackendConfig();
-	static ROAnything GetBackendList();
+	static Anything GetBackendList();
 
 protected:
 	static bool RegisterBackend(String backendName);

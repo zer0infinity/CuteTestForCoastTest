@@ -106,7 +106,7 @@ ROAnything BackendConfigLoaderModule::GetBackendConfig()
 	return backendConfigurations;
 }
 
-ROAnything BackendConfigLoaderModule::GetBackendList()
+Anything BackendConfigLoaderModule::GetBackendList()
 {
 	StartTrace(BackendConfigLoaderModule.GetBackendList);
 	Anything backendList;
@@ -174,7 +174,7 @@ bool BackendConfigLoaderModule::RegisterBackend(String backendName)
 bool BackendConfigLoaderModule::RegisterBackends()
 {
 	StartTrace(BackendConfigLoaderModule.RegisterBackends);
-	ROAnything backendList = GetBackendList();
+	Anything backendList = GetBackendList();
 	TraceAny(backendList, "Backends to register:");
 	bool ret = true;
 	for (int i = 0; i < backendList.GetSize(); i++) {
