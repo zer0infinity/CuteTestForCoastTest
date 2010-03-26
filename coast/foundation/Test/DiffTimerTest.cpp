@@ -77,7 +77,7 @@ void DiffTimerTest::DiffTest()
 	const HRTIME wait = 200L; //one fifth of a second, not only one twentieth
 	t_assertm(System::MicroSleep(wait * resolution), "oops, interrupted"); // >= 50 miliseconds
 	HRTIME result = dt.Diff() - wait;
-	t_assertm( (result < 0 ? result * -1 : result) <= wait / 5 , (const char *)(String("assume (+-20%) accuracy but was ") << result));
+	t_assertm( (result < 0 ? - result : result) <= wait / 5 , (const char *)(String("assume (+-20%) accuracy but was ") << static_cast<long>(result)));
 	dt = DiffTimer(DiffTimer::eSeconds);
 	t_assertm(System::MicroSleep(600 * resolution), "oops, interrupted"); // >= 50 miliseconds
 	result = dt.Diff();
