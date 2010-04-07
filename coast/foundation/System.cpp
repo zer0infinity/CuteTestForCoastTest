@@ -498,7 +498,7 @@ String System::GetFilePath(const char *name, const char *extension)
 // if the stream exists otherwise null
 iostream *System::DoOpenStream(String &resultPath, const char *name, openmode mode, bool trace)
 {
-	StartTrace(System.DoOpenStream);
+	StartTrace1(System.DoOpenStream, "file [" << NotNull(name) << "]");
 	// adjust mode to output, append implies it
 	if ( mode & (ios::app | ios::ate) ) {
 		mode |= ios::out;
