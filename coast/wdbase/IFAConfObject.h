@@ -71,6 +71,8 @@ public:
 		return (const char *)fName;
 	}
 
+	const String& getInstalledCategory() const { return fCategory; }
+
 	// support for registerable named objects
 	// this method gets called during initialization
 
@@ -176,9 +178,9 @@ protected:
 		_NAME1_(category) *catMember = 0;														\
 		if (name)																				\
 		{																						\
-			Trace("Looking for <" << name << "> in category <" << _QUOTE_(category) << ">");	\
 			catMember= SafeCast(fgRegistry->Find(name),_NAME1_(category));						\
 		}																						\
+		Trace("Looking for <" << NotNull(name) << "> in category <" << _QUOTE_(category) << ">" << (catMember?" succeeded":" failed"));\
 		return catMember;																		\
 	}
 
@@ -257,11 +259,13 @@ public:
 		return fbConfigLoaded;
 	}
 
-	//FIXME: remove virtual public
+	/*! Intermediary function to force set or merge the objects configuration. The usual mechanism by loading an appropriate file will be skipped.
+	 * If this function gets called on an already initialized object, the existing configuration will not be replaced but merged. This is important
+	 * because already existing ROAnything references would otherwise be dangling and lead to pure virtual method calls...
+	 * \param category primary key in Registry to store objects of this kind
+	 * \param key name of the ConfNamedObject to set the configuration
+	 * \param newConfig configuration to merge in */
 	void SetConfig(const char *category, const char *key, ROAnything newConfig);
-	virtual ROAnything GetNamedObjectConfig() {
-		return fConfig;
-	};
 
 protected:
 	/*! subclass initialize api; specific things can be done here, like configuration loading and so on
@@ -322,6 +326,7 @@ protected:
 	//! the configuration of this object
 	ROAnything fConfig;
 
+	//! Configuration filename associated with this object
 	String fConfigName;
 
 	//! flag to track if config of object was loaded

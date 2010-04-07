@@ -216,6 +216,8 @@ void ConfNamedObject::SetConfig(const char *category, const char *key, ROAnythin
 	AnythingLoaderPolicy alp(newConfig);
 	fConfig = cache->Reload(category, key, &alp);
 	TraceAny(fConfig, "adjustedConfig:");
+	// ensure that the next call to CheckConfig succeeds without loading config again
+	fbConfigLoaded = true;
 }
 
 bool ConfNamedObject::DoGetConfigName(const char *category, const char *objName, String &configFileName)
@@ -256,11 +258,14 @@ bool ConfNamedObject::DoLoadConfig(const char *category)
 bool ConfNamedObject::DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const
 {
 	StartTrace1(ConfNamedObject.DoLookup, "key: <" << NotNull(key) << ">" << " Name: <" << fName << ">" );
-	if ( !IsConfigLoaded() ) {
+	bool bSuccess(IsConfigLoaded());
+	if ( !bSuccess ) {
 		SystemLog::Warning(String("ConfNamedObject::DoLookup: failed, object <") << fName << "> of registry category <" << fCategory << "> not initialized!\n");
+	} else {
+		bSuccess = fConfig.LookupPath(result, key, delim, indexdelim);
 	}
-	Trace("fConfig &" << (long)&fConfig);
-	return ( IsConfigLoaded() && fConfig.LookupPath(result, key, delim, indexdelim) );
+	TraceAny(result, "lookup for key [" << key << "] " << (bSuccess?"succeeded":"failed"));
+	return bSuccess;
 }
 
 //---- HierarchConfNamed ----------------------------------------------------------

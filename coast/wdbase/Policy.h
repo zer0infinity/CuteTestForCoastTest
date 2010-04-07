@@ -110,6 +110,7 @@ public:
 
 protected:
 	virtual bool DoInstall(const ROAnything installerSpec, Registry *r);
+    virtual void DoInitializeLeaf(const char *leafName, HierarchConfNamed *& leaf);
 	HierarchConfNamed *Find(const char *name, Registry *r);
 	bool HasSuper(HierarchConfNamed *super, const char *name);
 

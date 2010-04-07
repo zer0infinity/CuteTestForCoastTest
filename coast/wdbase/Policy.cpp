@@ -284,10 +284,14 @@ HierarchConfNamed *HierarchyInstaller::GetLeaf(const char *leafName, HierarchCon
 		}
 	}
 	if ( leaf ) {
-		// loading of objects configuration
-		leaf->Initialize(GetCategory());
+		DoInitializeLeaf(leafName, leaf);
 	}
 	SystemLog::WriteToStderr(".", 1);
 
 	return leaf;
+}
+
+void HierarchyInstaller::DoInitializeLeaf(const char *leafName, HierarchConfNamed *& leaf)
+{
+    leaf->Initialize(GetCategory());
 }
