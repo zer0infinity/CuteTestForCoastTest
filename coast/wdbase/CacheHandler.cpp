@@ -16,6 +16,7 @@
 #include "Threads.h"
 #include "System.h"
 #include "SystemLog.h"
+#include "AnyUtils.h"
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
@@ -115,14 +116,19 @@ void CacheHandler::Finis()
 	}
 }
 
-ROAnything CacheHandler::Reload(const char *group, const char *key,  CacheLoadPolicy *clp)
+ROAnything CacheHandler::Reload(const char *group, const char *key, CacheLoadPolicy *clp)
 {
 	LockUnlockEntry me(*fgCacheHandlerMutex);
-	Anything toCache(clp->Load(key), Storage::Global());
-	if (! toCache.IsNull() ) {
-		fCache[group][key] = toCache;
+	Anything toCache(clp->Load(key), fCache.GetAllocator());
+	if ( !toCache.IsNull() ) {
+		if ( IsLoaded(group, key) ) {
+			//! \note  never replace a cached anything because tracking ROAnything's will not detect the changed Impl!
+			AnyUtils::AnyMerge(fCache[group][key], toCache, true);
+		} else {
+			fCache[group][key] = toCache;
+		}
 	}
-	return toCache;
+	return Get(group, key);
 }
 
 ROAnything CacheHandler::Load(const char *group, const char *key,  CacheLoadPolicy *clp)
