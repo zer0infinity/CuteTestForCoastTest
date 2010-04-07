@@ -71,12 +71,17 @@ void RequestProcessor::ProcessRequest(Context &ctx)
 			//FIXME: BufferReply mechanism possible
 		}
 	} else {
-		String logMsg("No valid stream from socket: ");
-		logMsg << ((socket) ? socket->GetFd() : -1L);
+		String logMsg("No valid stream from socket");
+		SystemLog::eLogLevel level(SystemLog::eWARNING);
 		if ( socket ) {
-			logMsg << " (" << socket->ClientInfo()["REMOTE_ADDR"].AsString() << ':' << socket->ClientInfo()["REMOTE_PORT"].AsString() << ')';
+			logMsg << ", fd:" << ((socket) ? socket->GetFd() : -1L);
+			logMsg << ", from " << socket->ClientInfo()["REMOTE_ADDR"].AsString() << ':' << socket->ClientInfo()["REMOTE_PORT"].AsString();
+			if ( socket->HadTimeout() ) {
+				logMsg << ", had timeout (" << socket->GetTimeout() << "ms)";
+				level = SystemLog::eINFO;
+			}
 		}
-		SystemLog::Warning(logMsg);
+		SystemLog::Log(level, logMsg);
 	}
 }
 
