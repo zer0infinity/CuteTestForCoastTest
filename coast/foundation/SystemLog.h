@@ -53,6 +53,9 @@ public:
 		eLast
 	};
 
+	//! bottleneck routine used by the other methods, you can use severity levels directly
+	static void Log(eLogLevel level, const char *msg);
+
 	//! severity eDEBUG for tracing server activity during development and deployment
 	static void Debug(const char *msg);
 
@@ -114,9 +117,6 @@ protected:
 
 	//!write log messages to cerr if preprocessor flags are set accordingly
 	virtual void DoTraceLevel(const char *level, const char *msg);
-
-	//! bottleneck routine used by the other methods, you can use severity levels directly
-	static void Log(eLogLevel level, const char *msg);
 
 private:
 	//! fgSysLog is the system dependent variable that calls a system's log api
