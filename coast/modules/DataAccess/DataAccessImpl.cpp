@@ -65,29 +65,31 @@ DataAccessImplsModule::~DataAccessImplsModule()
 
 bool DataAccessImplsModule::Init(const ROAnything config)
 {
-	// installation of transaction implementation objects for the different backends
-	// data provider
-	if (config.IsDefined("DataAccessImpls")) {
-		HierarchyInstaller hi("DataAccessImpl");
-		return RegisterableObject::Install(config["DataAccessImpls"], "DataAccessImpl", &hi);
+	ROAnything roaImpls;
+	if ( config.LookupPath(roaImpls, DataAccessImpl::gpcConfigPath) ) {
+		HierarchyInstaller hi(DataAccessImpl::gpcCategory);
+		return RegisterableObject::Install(roaImpls, DataAccessImpl::gpcCategory, &hi);
 	}
 	return false;
 }
 
 bool DataAccessImplsModule::ResetFinis(const ROAnything config)
 {
-	AliasTerminator at("DataAccessImpl");
-	return RegisterableObject::ResetTerminate("DataAccessImpl", &at);
+	AliasTerminator at(DataAccessImpl::gpcCategory);
+	return RegisterableObject::ResetTerminate(DataAccessImpl::gpcCategory, &at);
 }
 
 bool DataAccessImplsModule::Finis()
 {
-	return StdFinis("DataAccessImpl", "DataAccessImpls");
+	return StdFinis(DataAccessImpl::gpcCategory, DataAccessImpl::gpcConfigPath);
 }
 
 //--- DataAccessImpl --------------------------------------------------
 RegisterDataAccessImpl(DataAccessImpl);
 RegCacheImpl(DataAccessImpl);
+
+const char* DataAccessImpl::gpcCategory = "DataAccessImpl";
+const char* DataAccessImpl::gpcConfigPath = "DataAccessImpls";
 
 DataAccessImpl::DataAccessImpl(const char *name) : HierarchConfNamed(name)
 {

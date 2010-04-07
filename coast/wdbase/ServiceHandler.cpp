@@ -14,6 +14,9 @@
 #include "Dbg.h"
 
 //---- ServiceHandler -----------------------------------------------------------
+const char* ServiceHandler::gpcCategory = "ServiceHandler";
+const char* ServiceHandler::gpcConfigPath = "ServiceHandlers";
+
 ServiceHandler::ServiceHandler(const char *ServiceHandlerName)
 	: HierarchConfNamed(ServiceHandlerName)
 {
@@ -28,7 +31,7 @@ ServiceHandler::~ServiceHandler()
 void ServiceHandler::HandleService(ostream &os, Context &ctx)
 {
 	StartTrace(ServiceHandler.HandleService);
-	Trace("servicename:" << fName);
+	Trace("Service [" << fName << "]");
 	ctx.Push("ServiceHandler", this);
 	DoHandleService(os, ctx);
 	String strKey;
@@ -52,20 +55,21 @@ ServiceHandlersModule::~ServiceHandlersModule()
 
 bool ServiceHandlersModule::Init(const ROAnything config)
 {
-	if (config.IsDefined("ServiceHandlers")) {
-		HierarchyInstaller ai("ServiceHandler");
-		return RegisterableObject::Install(config["ServiceHandlers"], "ServiceHandler", &ai);
+	ROAnything roaHandlerConfig;
+	if ( config.LookupPath(roaHandlerConfig, ServiceHandler::gpcConfigPath) ) {
+		HierarchyInstaller ai(ServiceHandler::gpcCategory);
+		return RegisterableObject::Install(roaHandlerConfig, ServiceHandler::gpcCategory, &ai);
 	}
 	return false;
 }
 
 bool ServiceHandlersModule::ResetFinis(const ROAnything config)
 {
-	AliasTerminator at("ServiceHandler");
-	return RegisterableObject::ResetTerminate("ServiceHandler", &at);
+	AliasTerminator at(ServiceHandler::gpcCategory);
+	return RegisterableObject::ResetTerminate(ServiceHandler::gpcCategory, &at);
 }
 
 bool ServiceHandlersModule::Finis()
 {
-	return StdFinis("ServiceHandler", "ServiceHandlers");
+	return StdFinis(ServiceHandler::gpcCategory, ServiceHandler::gpcConfigPath);
 }

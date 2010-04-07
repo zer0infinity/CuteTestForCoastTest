@@ -43,7 +43,10 @@ public:
 //!	IFAObject *Clone() const { return new ServiceHandler(fName); }
 
 	//!handles requested service
-	virtual void HandleService(ostream &os, Context &ctx);
+	void HandleService(ostream &os, Context &ctx);
+
+	static const char* gpcCategory;
+	static const char* gpcConfigPath;
 
 protected:
 	//!subclass hook to implement service handling

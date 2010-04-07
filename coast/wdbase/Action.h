@@ -68,6 +68,9 @@ public:
 
 	RegCacheDef(Action);	// FindAction()
 
+	static const char* gpcCategory;
+	static const char* gpcConfigPath;
+
 protected:
 	//!Searches and executes an Action Component
 	//! \param actionName the Name of the Action to be called.

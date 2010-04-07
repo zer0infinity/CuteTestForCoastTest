@@ -37,6 +37,9 @@ public:
 	DataAccessImpl(const char *name);
 	~DataAccessImpl();
 
+	static const char* gpcCategory;
+	static const char* gpcConfigPath;
+
 	//!factory method to create a generic data access object, not very useful
 	IFAObject *Clone() const;
 

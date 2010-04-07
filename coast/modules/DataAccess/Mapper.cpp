@@ -33,39 +33,41 @@ bool MappersModule::Init(const ROAnything config)
 {
 	StartTrace(MappersModule.Init);
 	// installation of different mapping objects for the different backend objects
-	if (config.IsDefined("Mappers")) {
-		ROAnything mappers(config["Mappers"]);
-
-		HierarchyInstaller ai1("ParameterMapper");
-		HierarchyInstaller ai2("ResultMapper");
-		bool ret = RegisterableObject::Install(mappers["Input"], "ParameterMapper", &ai1);
-		return RegisterableObject::Install(mappers["Output"], "ResultMapper", &ai2) && ret;
+	ROAnything roaConfig;
+	bool installCodeParam(false), installCodeResult(false);
+	if ( config.LookupPath(roaConfig, ParameterMapper::gpcConfigPath) ) {
+		HierarchyInstaller ai1(ParameterMapper::gpcCategory);
+		installCodeParam = RegisterableObject::Install(roaConfig, ParameterMapper::gpcCategory, &ai1);
 	}
-	return false;
+	if ( config.LookupPath(roaConfig, ResultMapper::gpcConfigPath) ) {
+		HierarchyInstaller ai2(ResultMapper::gpcCategory);
+		installCodeResult = RegisterableObject::Install(roaConfig, ResultMapper::gpcCategory, &ai2);
+	}
+	return installCodeParam && installCodeResult;
 }
 
 bool MappersModule::ResetFinis(const ROAnything config)
 {
 	// installation of different mapping objects for the different backend objects
-	AliasTerminator at1("ParameterMapper");
-	AliasTerminator at2("ResultMapper");
-
-	bool ret = RegisterableObject::ResetTerminate("ParameterMapper", &at1);
-	return RegisterableObject::ResetTerminate("ResultMapper", &at2) && ret;
+	AliasTerminator at1(ParameterMapper::gpcCategory);
+	AliasTerminator at2(ResultMapper::gpcCategory);
+	bool ret = RegisterableObject::ResetTerminate(ParameterMapper::gpcCategory, &at1);
+	return RegisterableObject::ResetTerminate(ResultMapper::gpcCategory, &at2) && ret;
 }
 
 bool MappersModule::Finis()
 {
-	bool retVal;
-	retVal = StdFinis("ParameterMapper", "ParameterMapper");
-
-	return StdFinis("ResultMapper", "ResultMapper") && retVal;
+	bool retVal = StdFinis(ParameterMapper::gpcCategory, ParameterMapper::gpcCategory);
+	return StdFinis(ResultMapper::gpcCategory, ResultMapper::gpcCategory) && retVal;
 }
 
 //---- ParameterMapper ------------------------------------------------------------------------
 RegisterParameterMapper(ParameterMapper);
 RegisterParameterMapperAlias(Mapper, ParameterMapper);
 RegCacheImpl(ParameterMapper);
+
+const char* ParameterMapper::gpcCategory = "ParameterMapper";
+const char* ParameterMapper::gpcConfigPath = "Mappers.Input";
 
 ParameterMapper::ParameterMapper(const char *name)
 	: HierarchConfNamed(name)
@@ -108,7 +110,7 @@ bool ParameterMapper::DoGetConfigName(const char *category, const char *, String
 {
 	StartTrace(ParameterMapper.DoGetConfigName);
 
-	if (String("ParameterMapper").IsEqual(category)) {
+	if (String(ParameterMapper::gpcCategory).IsEqual(category)) {
 		configFileName = "InputMapperMeta"; // keep legacy name to avoid config problems
 	} else {
 		configFileName = category;
@@ -433,6 +435,9 @@ RegisterResultMapper(ResultMapper);
 RegisterResultMapperAlias(Mapper, ResultMapper);
 RegCacheImpl(ResultMapper);	// FindResultMapper()
 
+const char* ResultMapper::gpcCategory = "ResultMapper";
+const char* ResultMapper::gpcConfigPath = "Mappers.Output";
+
 ResultMapper::ResultMapper(const char *name)
 	: HierarchConfNamed(name)
 {
@@ -487,7 +492,7 @@ bool ResultMapper::DoGetConfigName(const char *category, const char *objName, St
 {
 	StartTrace(ResultMapper.DoGetConfigName);
 
-	if (String("ResultMapper").IsEqual(category)) {
+	if (String(ResultMapper::gpcCategory).IsEqual(category)) {
 		configFileName = "OutputMapperMeta";    // keep legacy name to avoid config problems
 	} else {
 		configFileName = (String(category) << "Meta");

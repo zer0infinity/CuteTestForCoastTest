@@ -53,6 +53,9 @@ public:
 	//---- registry api
 	RegCacheDef(ParameterMapper);	// FindParameterMapper()
 
+	static const char* gpcCategory;
+	static const char* gpcConfigPath;
+
 	//! Pulls out an int according to key. Clients use this method to pull out an int value with name key from the Mapper
 	/*! \param key the name defines kind of value to get
 		\param value the value to be mapped
@@ -220,6 +223,9 @@ public:
 
 	//---- registry api
 	RegCacheDef(ResultMapper);	// FindResultMapper()
+
+	static const char* gpcCategory;
+	static const char* gpcConfigPath;
 
 	//! Takes an int for mapping according to key. Clients use this method to push an int value with name key into the Mapper
 	/*! \param key the name defines kind of input for the value

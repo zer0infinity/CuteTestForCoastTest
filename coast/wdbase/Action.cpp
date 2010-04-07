@@ -17,6 +17,9 @@
 //---- ActionsModule -----------------------------------------------------------
 RegisterModule(ActionsModule);
 
+const char* Action::gpcCategory = "Action";
+const char* Action::gpcConfigPath = "Actions";
+
 ActionsModule::ActionsModule(const char *name) : WDModule(name)
 {
 }
@@ -27,22 +30,23 @@ ActionsModule::~ActionsModule()
 
 bool ActionsModule::Init(const ROAnything config)
 {
-	if (config.IsDefined("Actions")) {
-		AliasInstaller ai("Action");
-		return RegisterableObject::Install(config["Actions"], "Action", &ai);
+	ROAnything roaActions;
+	if ( config.LookupPath(roaActions, Action::gpcConfigPath) ) {
+		AliasInstaller ai(Action::gpcCategory);
+		return RegisterableObject::Install(roaActions, Action::gpcCategory, &ai);
 	}
 	return false;
 }
 
 bool ActionsModule::ResetFinis(const ROAnything )
 {
-	AliasTerminator at("Action");
-	return RegisterableObject::ResetTerminate("Action", &at);
+	AliasTerminator at(Action::gpcCategory);
+	return RegisterableObject::ResetTerminate(Action::gpcCategory, &at);
 }
 
 bool ActionsModule::Finis()
 {
-	return StdFinis("Action", "Actions");
+	return StdFinis(Action::gpcCategory, Action::gpcConfigPath);
 }
 
 //---- Action ----------------------------------------------------------
