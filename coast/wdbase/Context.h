@@ -25,7 +25,7 @@ using std::iostream;
 #endif
 
 //---- Context -------------------------------------------------------------------
-//!Request Context object that contains read only configuration information and read writeable stores
+//!Request Context object that contains read only configuration information and read writable stores
 class EXPORTDECL_WDBASE Context : public virtual LookupInterface
 {
 public:
@@ -212,7 +212,7 @@ public:
 		return fLanguage;
 	}
 
-	/*! Aets the language key values can be D E F I etc
+	/*! Sets the language key values can be D E F I etc
 		\param lang value of language key */
 	void SetLanguage(const char *lang) 	{
 		fLanguage = lang;
@@ -241,14 +241,19 @@ public:
 	static const String DebugStoreSeparator;
 
 protected:
-	/*! the central hook for looking up read only context information;  policy is stores before configuration before request information (query and environment)
+	/*! Hook for looking up read only context information. The lookup order is as follows:
+	 * -# LookupStack(), eg. LookupInterface objects which were pushed before
+	 * -# LookupStores(), eg, RoleStore before SessionStore
+	 * -# LookupLocalized(), eg. using LocalizedStrings
+	 * -# LookupObjects(), eg. objects which hooked themselves into the context to get looked up
+	 * -# LookupRequest(), eg. env, query or anything inside #fRequest
 		\param key the key we are looking for
 		\param result the ROAnything that provides the result
 		\param delim the delimiter for structured keys
 		\return returns true if key is found otherwise false */
 	bool DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const;
 
-	/*! Lookup information in the contexts store stack.
+	/*! Lookup information in the contexts store stack, either pushed Anythings or LookupInterface objects
 		\param key the key we are looking for
 		\param result the ROAnything that provides the result
 		\param delim the delimiter for structured keys
@@ -270,7 +275,7 @@ protected:
 		\return returns true if key is found otherwise false */
 	bool LookupObjects(const char *key, ROAnything &result, char delim, char indexdelim) const;
 
-	/*! Lookup information from the contexts request
+	/*! Lookup information from the contexts request, eg. env, query or anything inside #fRequest
 		\param key the key we are looking for
 		\param result the ROAnything that provides the result
 		\param delim the delimiter for structured keys
