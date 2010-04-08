@@ -27,6 +27,8 @@ public:
 	ServiceHandler *FindServiceHandler(Context &ctx);
 
 private:
+	ServiceHandler *findServiceBasedOnLongestURIPrefixMatch(Context &ctx, String& requestURI);
+
 	// block the following default elements of this class
 	// because they're not allowed to be used
 	VHostServiceDispatcher();
