@@ -335,39 +335,36 @@ SSL_CTX *SSLModule::SetOwnCertificateAndKey(SSL_CTX *ctx, LookupInterface *objec
 void SSLModule::SetSSLSetAcceptableClientCAs(SSL_CTX *ctx, LookupInterface *object)
 {
 	StartTrace(SSLModule.SetSSLSetAcceptableClientCAs);
-	String peerCAFileName = (char *)object->Lookup(
-								"SSLPeerCAFile", "" ); // used for verify location and client CA list
-	String realpeerCAFileName =  System::GetFilePath(peerCAFileName, (const char *)0);
-	if (peerCAFileName.Length()) {
-		Trace("using client CA list from \n" << realpeerCAFileName << "\n");
-		SSL_CTX_set_client_CA_list(ctx,
-								   SSL_load_client_CA_file(realpeerCAFileName));
+	String peerCAFileName( object->Lookup("SSLPeerCAFile", "" ) ); // used for verify location and client CA list
+	if ( peerCAFileName.Length() ) {
+		peerCAFileName = System::GetFilePath(peerCAFileName, "");
+	}
+	if ( peerCAFileName.Length() ) {
+		Trace("using client CA list from \n" << peerCAFileName << "\n");
+		SSL_CTX_set_client_CA_list(ctx, SSL_load_client_CA_file(peerCAFileName));
 	}
 }
 void SSLModule::SetSSLCtxVerifyParameters(SSL_CTX *ctx, LookupInterface *object)
 {
 	StartTrace(SSLModule.SetSSLCtxVerifyParameters);
 	long ret;
-	String peerCAFileName = (char *)object->Lookup(
-								"SSLPeerCAFile", "" ); // used for verify location and client CA list
-	long sslVerifyPeerCert = object->Lookup(
-								 "SSLVerifyPeerCert", (long)0); // default client
+	String peerCAFileName( object->Lookup("SSLPeerCAFile", "" ) ); // used for verify location and client CA list
+	if ( peerCAFileName.Length() ) {
+		peerCAFileName = System::GetFilePath(peerCAFileName, "");
+	}
+	long sslVerifyPeerCert = object->Lookup("SSLVerifyPeerCert", (long)0); // default client
 
-	long sslVerifyFailIfNoPeerCert = object->Lookup(
-										 "SSLVerifyFailIfNoPeerCert", (long)0); // default client
+	long sslVerifyFailIfNoPeerCert = object->Lookup("SSLVerifyFailIfNoPeerCert", (long)0); // default client
 	int sslVerifyMode =
 		(sslVerifyPeerCert ? SSL_VERIFY_PEER : SSL_VERIFY_NONE)
 		| (sslVerifyFailIfNoPeerCert ? SSL_VERIFY_FAIL_IF_NO_PEER_CERT : 0);
-	String sslVerifyPath = object->Lookup(
-							   "SSLVerifyPath", (const char *)0); // must be prepared with openssl's c_rehash if defined
-	int sslVerifyDepth = object->Lookup(
-							 "SSLVerifyDepth", (long)0); // default client CA verification depth
+	String sslVerifyPath( object->Lookup("SSLVerifyPath", "") ); // must be prepared with openssl's c_rehash if defined
+	int sslVerifyDepth = object->Lookup("SSLVerifyDepth", (long)0); // default client CA verification depth
 	Trace("SSLVerifyMode = " << (long)sslVerifyMode);
 	Trace("SSLVerifyDepth = " << (long)sslVerifyDepth);
 	SSL_CTX_set_verify_depth(ctx, sslVerifyDepth);
 
-	long sslUseAppCallBack = object->Lookup(
-								 "SSLUseAppCallback", (long)0);
+	long sslUseAppCallBack = object->Lookup("SSLUseAppCallback", (long)0);
 	if (sslUseAppCallBack == 0L) {
 		SSL_CTX_set_verify(ctx, sslVerifyMode, 0);
 	} else {
@@ -375,19 +372,17 @@ void SSLModule::SetSSLCtxVerifyParameters(SSL_CTX *ctx, LookupInterface *object)
 		// callback provided in SSLSocket.
 		SSL_CTX_set_verify(ctx, sslVerifyMode, SSLSocket::SSLVerifyCallback);
 	}
-	if (peerCAFileName.Length() || sslVerifyPath) {
-		peerCAFileName = System::GetFilePath(peerCAFileName, (const char *)0);
+	if ( peerCAFileName.Length() || sslVerifyPath.Length() ) {
 		const char *pcafn = peerCAFileName.Length() ? (const char *)peerCAFileName : (const char *)0;
-		if ( sslVerifyPath.Length() == 0L ) {
-			sslVerifyPath = (const char *) NULL;
-		}
-		Trace("load SSL verify locations from: " <<  NotNull(pcafn) << "\n path=" << sslVerifyPath);
-		if (1 != (ret = SSL_CTX_load_verify_locations(ctx, pcafn, sslVerifyPath))) {
+		const char *pcvfy = sslVerifyPath.Length() ? (const char *)sslVerifyPath : (const char *)0;
+		Trace("load SSL verify locations from [" <<  NotNull(pcafn) << "] path [" << NotNull(pcvfy) << "]");
+		if (1 != (ret = SSL_CTX_load_verify_locations(ctx, pcafn, pcvfy))) {
 			SSLSocket::ReportSSLError(SSLSocket::GetSSLError(0, ret));
 			Trace("couldn't load verify locations from" << peerCAFileName << sslVerifyPath );
 		}
 	}
 }
+
 SSL_CTX *SSLModule::DoMakeServerContext(LookupInterface *object)
 {
 	StartTrace(SSLModule.DoMakeServerContext);

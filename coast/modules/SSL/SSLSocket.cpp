@@ -107,12 +107,11 @@ bool SSLSocket::ShouldRetry(SSL *ssl, int res, bool handshake)
 	} else if (SSL_ERROR_WANT_WRITE == err) {
 		return IsReadyForWriting();
 	} else if (SSL_ERROR_ZERO_RETURN) { // clean  way to handle peer did not send data
-#if defined(STREAM_TRACE)
+		ReportSSLError(err);
 		// Do not report SSL error
 		String msg("SSLSocket: end of data (connection closed) on file descriptor: ");
 		msg << GetFd() << (handshake ? " at Handshake" : " at normal r/w");
 		SystemLog::Info(msg);
-#endif
 		return false;
 	}
 	ReportSSLError(err);
@@ -186,7 +185,8 @@ iostream *SSLSocket::DoMakeStream()
 	do {
 		res = PrepareSocket(ssl);
 	} while (ShouldRetry(ssl, res, true));
-	if ( res <= 0 ) { // 0 = Handshake failure, SSL layer shut down connection properly, -1 = error, 1 = ok
+	if ( res <= 0 ) {
+		// 0 = Handshake failure, SSL layer shut down connection properly, -1 = error, 1 = ok
 		if ( ssl ) {
 			SSL_free (ssl);
 		}
@@ -418,8 +418,9 @@ SSLClientSocket::~SSLClientSocket()
 
 int SSLClientSocket::PrepareSocket(SSL *ssl)
 {
-	StartTrace(SSLClientSocket.PrepareSocket);
-	return SSL_connect( ssl );
+	int res = SSL_connect( ssl );
+	StatTrace(SSLClientSocket.PrepareSocket, "res:" << (long)res, Storage::Current());
+	return res;
 }
 
 SSL_SESSION *SSLClientSocket::SessionResumptionHookResumeSession(SSL *ssl)
