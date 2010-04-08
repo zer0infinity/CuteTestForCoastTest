@@ -202,11 +202,11 @@ public:
 	//! reveal the Capacity of the underlying buffer
 	long Capacity() const;
 	//! cut (remove) newStart characters from the begining of the String
-	void TrimFront(long newStart) ;
+	String& TrimFront(const long newStart) ;
 	//! cut (remove) characters from the end of the String, make it shorter
 	//! no-op if newlen >= Length()
-	void Trim(long newlen) ;
-	void TrimWhitespace();
+	String& Trim(const long newlen);
+	String& TrimWhitespace();
 	//! ensure internal buffer contains at least minreserve characters
 	//! \post Capacity() >= minreserve
 	void Reserve(long minreserve) ;

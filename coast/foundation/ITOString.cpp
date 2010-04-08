@@ -695,7 +695,7 @@ long String::StrRChr(char c, long start) const
 	return result;
 }
 
-void String::TrimFront(long newstart)
+String& String::TrimFront(const long newstart)
 {
 	if ( newstart >= 0 && newstart < Length()) {
 		Set(0, GetContent() + newstart, Length() - newstart);
@@ -705,16 +705,18 @@ void String::TrimFront(long newstart)
 			*GetContent() = 0;
 		}
 	}
+	return *this;
 }
 
-void String::Trim(long newlen)
+String& String::Trim(const long newlen)
 {
 	if ( newlen <= Length() ) {
 		Set( ( newlen > 0 ) ? newlen : 0, 0, 0);
 	}
+	return *this;
 }
 
-void String::TrimWhitespace()
+String& String::TrimWhitespace()
 {
 	while (At(0) == ' ' || At(0) == '\t') {
 		TrimFront(1);
@@ -723,6 +725,7 @@ void String::TrimWhitespace()
 	while (At(Length() - 1) == ' ' || At(Length() - 1) == '\t') {
 		Trim(Length() - 1);
 	}
+	return *this;
 }
 
 void String::Reserve(long minreserve)
