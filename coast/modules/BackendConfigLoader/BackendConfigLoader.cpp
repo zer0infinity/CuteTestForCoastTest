@@ -10,9 +10,15 @@
 #include "BackendConfigLoader.h"
 
 //--- project modules used -----------------------------------------------------
+#include "HierarchyInstallerWithConfig.h"
+#include "DataAccessImpl.h"
+#include "Mapper.h"
+#include "ServiceHandler.h"
 #include "Server.h"
 #include "Renderer.h"
+#include "CacheHandler.h"
 #include "Registry.h"
+#include "Role.h"
 
 //--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
@@ -44,22 +50,21 @@ bool BackendConfigLoaderModule::Init(const ROAnything config)
 {
 	StartTrace(BackendConfigLoaderModule.Init);
 	bool retCode = true;
-	ROAnything BackendConfigLoaderConfig;
+	ROAnything roaModuleConfig, roaConfigDir;
 
-	if ( config.LookupPath(BackendConfigLoaderConfig, "BackendConfigLoaderModule") && BackendConfigLoaderConfig.IsDefined("BackendConfigDir") && BackendConfigLoaderConfig["BackendConfigDir"].GetSize() ) {
-		TraceAny(BackendConfigLoaderConfig, "BackendConfigLoaderConfig:");
+	if ( config.LookupPath(roaModuleConfig, "BackendConfigLoaderModule") && roaModuleConfig.LookupPath(roaConfigDir, "BackendConfigDir") ) {
+		TraceAny(roaModuleConfig, "BackendConfigLoaderConfig:");
 		SystemLog::WriteToStderr("\tReading Backend Configuration Files");
-		String path = BackendConfigLoaderConfig["BackendConfigDir"].AsCharPtr();
+		String path( roaConfigDir.AsString() );
 		if (!System::IsAbsolutePath(path)) {
-			String cwd;
-			cwd = System::GetRootDir();
+			String cwd( System::GetRootDir() );
 			path = cwd << "/" << path;
 			System::ResolvePath(path);
 		}
 		Anything dirlist = System::DirFileList(path, "any");
-		for (int i = 0 ; i < dirlist.GetSize(); i++) {
+		for (int i = 0, sz=dirlist.GetSize() ; retCode && i < sz; ++i) {
 			SystemLog::WriteToStderr(".");
-			String backendName = dirlist[i].AsString();
+			String backendName( dirlist[i].AsString() );
 			Anything backendConfig;
 			if (!System::LoadConfigFile(backendConfig, backendName)) {
 				retCode = false;
@@ -71,7 +76,7 @@ bool BackendConfigLoaderModule::Init(const ROAnything config)
 		retCode = false;
 	}
 
-	RegisterBackends();
+	retCode = retCode && RegisterBackends();
 
 	if (retCode) {
 		fgBackendConfigLoaderModule = this;
@@ -110,63 +115,35 @@ Anything BackendConfigLoaderModule::GetBackendList()
 {
 	StartTrace(BackendConfigLoaderModule.GetBackendList);
 	Anything backendList;
-	for (int i = 0; i < backendConfigurations.GetSize(); i++) {
+	for (int i = 0, sz=backendConfigurations.GetSize(); i < sz; ++i) {
 		backendList.Append(backendConfigurations.SlotName(i));
 	}
 	TraceAny(backendList, "List of all Backends:");
 	return backendList;
 }
 
-bool BackendConfigLoaderModule::RegisterBackend(String backendName)
+bool BackendConfigLoaderModule::RegisterBackend(const String& backendName)
 {
 	StartTrace(BackendConfigLoaderModule.RegisterBackend);
 	Trace("Registering backend:" << backendName);
-	Anything config;
-	config["DataAccessImpls"]["DataAccessImpl"]["HTTPDAImpl"] = backendName;
-	config["Input"]["Mapper"] = backendName;
-	config["Output"]["Mapper"] = backendName;
-	HierarchyInstaller hi("DataAccessImpl");
-	bool ret = true;
-	ret = RegisterableObject::Install(config["DataAccessImpls"], "DataAccessImpl", &hi) && ret;
-
-	AliasInstaller ai1("ParameterMapper");
-	ret = RegisterableObject::Install(config["Input"], "ParameterMapper", &ai1) && ret;
-
-	AliasInstaller ai2("ResultMapper");
-	ret = RegisterableObject::Install(config["Output"], "ResultMapper", &ai2) && ret;
-
-	Server *server = (Server *)Registry::GetRegistry("Application")->Find("Server");
-	if (backendConfigurations[backendName].IsDefined("VHost2ServiceMap")) {
-		Anything namedObjectConfig = server->GetNamedObjectConfig().DeepClone();
-		Anything backendVHosts = backendConfigurations[backendName]["VHost2ServiceMap"];
-		for (int i = 0; i < backendVHosts.GetSize(); i++) {
-			String key = backendVHosts.SlotName(i);
-			namedObjectConfig["VHost2ServiceMap"][key] = backendVHosts[key];
-		}
-		TraceAny(namedObjectConfig, "namedObjectConfig:");
-		server->SetConfig("Application", "Server", namedObjectConfig);
+	bool ret=true;
+	ROAnything roaBackendConfig( GetBackendConfig(backendName) ), roaObjectConfig;
+	if ( roaBackendConfig.LookupPath(roaObjectConfig, ParameterMapper::gpcConfigPath) ) {
+		HierarchyInstallerWithConfig ip(ParameterMapper::gpcCategory, roaBackendConfig);
+		ret = RegisterableObject::Install(roaObjectConfig, ParameterMapper::gpcCategory, &ip) && ret;
 	}
-	if (backendConfigurations[backendName].IsDefined("URIPrefix2ServiceMap")) {
-		Anything namedObjectConfig = server->GetNamedObjectConfig().DeepClone();
-		Anything uriPrefixes = backendConfigurations[backendName]["URIPrefix2ServiceMap"];
-		for (int i = 0; i < uriPrefixes.GetSize(); i++) {
-			String key = uriPrefixes.SlotName(i);
-			namedObjectConfig["URIPrefix2ServiceMap"][key] = uriPrefixes[key];
-		}
-		TraceAny(namedObjectConfig, "namedObjectConfig:");
-		server->SetConfig("Application", "Server", namedObjectConfig);
+	if ( roaBackendConfig.LookupPath(roaObjectConfig, ResultMapper::gpcConfigPath) ) {
+		HierarchyInstallerWithConfig ip(ResultMapper::gpcCategory, roaBackendConfig);
+		ret = RegisterableObject::Install(roaObjectConfig, ResultMapper::gpcCategory, &ip) && ret;
 	}
-
-	if (backendConfigurations[backendName].IsDefined("ServiceActionMapping")) {
-		ConfNamedObject *role = (ConfNamedObject *)Registry::GetRegistry("Role")->Find("CGRole");
-		Anything namedObjectConfig = role->GetNamedObjectConfig().DeepClone();
-		Anything serviceActionMapping = backendConfigurations[backendName]["ServiceActionMapping"];
-		for (int i = 0; i < serviceActionMapping.GetSize(); i++) {
-			String key = serviceActionMapping.SlotName(i);
-			namedObjectConfig["DefaultCustomerAction"]["SwitchRenderer"]["Case"][key] = serviceActionMapping[key];
-		}
-		TraceAny(namedObjectConfig, "namedObjectConfig:");
-		role->SetConfig("Role", "CGRole", namedObjectConfig);
+	if ( roaBackendConfig.LookupPath(roaObjectConfig, DataAccessImpl::gpcConfigPath) ) {
+		HierarchyInstallerWithConfig ip(DataAccessImpl::gpcCategory, roaBackendConfig);
+		ret = RegisterableObject::Install(roaObjectConfig, DataAccessImpl::gpcCategory, &ip) && ret;
+	}
+	if ( roaBackendConfig.LookupPath(roaObjectConfig, ServiceHandler::gpcConfigPath) ) {
+		// here we need to pass an unusual slot delim because we want a.b.c to be found as a single piece and not a path
+		HierarchyInstallerWithConfig ip(ServiceHandler::gpcCategory, roaBackendConfig, '#');
+		ret = RegisterableObject::Install(roaObjectConfig, ServiceHandler::gpcCategory, &ip) && ret;
 	}
 	return ret;
 }
@@ -177,9 +154,8 @@ bool BackendConfigLoaderModule::RegisterBackends()
 	Anything backendList = GetBackendList();
 	TraceAny(backendList, "Backends to register:");
 	bool ret = true;
-	for (int i = 0; i < backendList.GetSize(); i++) {
-		String backendName = backendList[i].AsString();
-		ret = RegisterBackend(backendName) && ret;
+	for (int i = 0, sz=backendList.GetSize(); ret && i < sz; ++i) {
+		ret = RegisterBackend(backendList[i].AsString()) && ret;
 	}
 	return ret;
 }

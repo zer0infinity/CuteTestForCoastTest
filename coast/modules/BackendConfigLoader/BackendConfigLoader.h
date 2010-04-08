@@ -27,13 +27,11 @@ public:
 	virtual bool Finis();
 	static ROAnything GetBackendConfig(const String &backendName);
 	static ROAnything GetBackendConfig();
-	static Anything GetBackendList();
-
-protected:
-	static bool RegisterBackend(String backendName);
-	static bool RegisterBackends();
 
 private:
+	bool RegisterBackend(const String& backendName);
+	bool RegisterBackends();
+	Anything GetBackendList();
 	static Anything backendConfigurations;
 	static BackendConfigLoaderModule *fgBackendConfigLoaderModule;
 };

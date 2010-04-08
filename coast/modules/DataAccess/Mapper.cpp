@@ -14,9 +14,6 @@
 #include "Registry.h"
 #include "Dbg.h"
 #include "Timers.h"
-#include "BackendConfigLoader.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 //---- MappersModule -----------------------------------------------------------
 RegisterModule(MappersModule);
@@ -88,13 +85,7 @@ bool ParameterMapper::DoLoadConfig(const char *category)
 	StartTrace(ParameterMapper.DoLoadConfig);
 	Trace("category: " << category << " fName: " << fName);
 
-	if (BackendConfigLoaderModule::GetBackendConfig()[fName].IsDefined("InputMapper")) {
-		ROAnything backendConfig;
-		backendConfig = BackendConfigLoaderModule::GetBackendConfig(fName)["InputMapper"];
-		ConfNamedObject::SetConfig(category, fName, backendConfig);
-		TraceAny(fConfig, "Extracted fConfig: (Returning true)");
-		return true;
-	} else if ( HierarchConfNamed::DoLoadConfig(category) && fConfig.IsDefined(fName) ) {
+	if ( HierarchConfNamed::DoLoadConfig(category) && fConfig.IsDefined(fName) ) {
 		Trace("Meta-file for " << category << " found. Extracting config for " << fName);
 		// mappers use only a subset of the whole configuration file
 		fConfig = fConfig[fName];
@@ -470,13 +461,7 @@ bool ResultMapper::DoLoadConfig(const char *category)
 	StartTrace(ResultMapper.DoLoadConfig);
 	Trace("category: " << category << " fName: " << fName);
 
-	if (BackendConfigLoaderModule::GetBackendConfig()[fName].IsDefined("OutputMapper")) {
-		ROAnything backendConfig;
-		backendConfig = BackendConfigLoaderModule::GetBackendConfig(fName)["OutputMapper"];
-		ConfNamedObject::SetConfig(category, fName, backendConfig);
-		TraceAny(fConfig, "Extracted fConfig: (Returning true)");
-		return true;
-	} else if ( HierarchConfNamed::DoLoadConfig(category) && fConfig.IsDefined(fName) ) {
+	if ( HierarchConfNamed::DoLoadConfig(category) && fConfig.IsDefined(fName) ) {
 		TraceAny(fConfig, "fConfig before: ");
 		// mappers use only a subset of the whole configuration file
 		fConfig = fConfig[fName];
