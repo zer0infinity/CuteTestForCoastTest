@@ -38,13 +38,11 @@ bool CallDataAccessAction::DoExecAction(String &action, Context &ctx, const ROAn
 
 	String dataAccessName;
 	Renderer::RenderOnString(dataAccessName, ctx, dataAccessNameSpec);
+	TraceAny(dataAccessNameSpec, "resulting DataAccess name for spec [" << dataAccessName << "]");
 	if (dataAccessName.Length() == 0) {
 		return false;
 	}
-
 	Context::PushPopEntry<ROAnything> aEntry(ctx, "ActionParameters", config["Parameters"]);
-
-	Trace("DataAccess to perform : " << dataAccessName);
 	DataAccess da(dataAccessName);
 	return da.StdExec(ctx);
 }
