@@ -534,6 +534,21 @@ void Session::DoFindNextPage(Context &context, String &transition, String &curre
 	Trace("after transition =<" << transition << "> page = <" << currentpage << "> role of session = <" << NotNullStr(GetRoleName(context)) << ">");
 }
 
+namespace {
+	void getDefaultAction(Context& context, String& transition) {
+		StartTrace(Session.getDefaultAction);
+		ROAnything roTransition;
+		if (context.Lookup("DefaultAction", roTransition) ) {
+			TraceAny(roTransition, "transition/action evaluation config");
+			transition.Trim(0);
+			Renderer::RenderOnString( transition, context, roTransition );
+		} else {
+			transition = "Home";
+		}
+		Trace("resulting transition <" << transition << ">");
+	}
+}
+
 void Session::SetupContext(Context &context, String &transition, String &pagename)
 {
 	StartTrace(Session.SetupContext);
@@ -550,14 +565,7 @@ void Session::SetupContext(Context &context, String &transition, String &pagenam
 	context.SetLanguage(LocalizationUtils::FindLanguageKey(context, context.Lookup("Language", "E")));
 
 	// the action to be executed
-	ROAnything roTransition;
-	if (context.Lookup("DefaultAction", roTransition) ) {
-		transition = "";
-		Renderer::RenderOnString( transition, context, roTransition );
-	} else {
-		transition = "Home";
-	}
-	//transition=(context.Lookup("DefaultAction", "Home"));	// use default
+	getDefaultAction(context, transition);
 	if (query.IsDefined("action")) {
 		String theToken = query["action"].AsCharPtr(transition);
 		if (theToken != "") {
@@ -777,13 +785,8 @@ bool Session::RetrieveFromDelayed(Context &context, String &action, String &curr
 				fStore.Remove("delayed"); // clean up
 			}
 
-			ROAnything roTransition;
-			String transition = "";
-			if (context.Lookup("DefaultAction", roTransition)) {
-				Renderer::RenderOnString( transition, context, roTransition );
-			} else {
-				transition = "Home";
-			}
+			String transition;
+			getDefaultAction(context, transition);
 			Trace("transition [" << transition << "]");
 			String lastAction(delayed["action"].AsCharPtr(transition));
 			const char *lastpage = delayed["page"].AsCharPtr(context.Lookup("StartPage", "HomePage"));
