@@ -24,12 +24,7 @@ public:
 		return new VHostServiceDispatcher(fName);
 	}
 
-	//!uses a table to map uri prefixes to service name; renders entry found, if nothing matches, renders "DefaultService"
-	virtual String FindServiceName(Context &ctx);
-
-protected:
-	void FindVHostInList(const String &requestVhost, const String &requestURI, const ROAnything &vhostList,
-						 long &matchedVhost, long &matchedVhostPrefix);
+	ServiceHandler *FindServiceHandler(Context &ctx);
 
 private:
 	// block the following default elements of this class
