@@ -59,7 +59,6 @@ ServiceDispatcher::ServiceDispatcher(const char *ServiceDispatcherName)
 ServiceDispatcher::~ServiceDispatcher()
 {
 	StartTrace(ServiceDispatcher.Dtor);
-
 }
 
 void ServiceDispatcher::Dispatch2Service(ostream &reply, Context &ctx)
@@ -67,14 +66,15 @@ void ServiceDispatcher::Dispatch2Service(ostream &reply, Context &ctx)
 	StartTrace(ServiceDispatcher.Dispatch2Service);
 	ctx.Push("ServiceDispatcher", this);
 	ServiceHandler *sh = FindServiceHandler(ctx);
-
-	// if no service handler is found DefaultHandler is used
+	// if no service handler is found, use DefaultHandler instead
 	if (!sh) {
-		String def = ctx.Lookup("DefaultHandler", "WebAppService");
-		Trace("not found, looking for DefaultHandler:" << def);
+		String def = ServiceDispatcher::FindServiceName(ctx);
+		Trace("using DefaultHandler [" << def << "]");
 		sh = ServiceHandler::FindServiceHandler(def);
 	}
-	sh->HandleService(reply, ctx);
+	if ( sh ) {
+		sh->HandleService(reply, ctx);
+	}
 	String strKey;
 	ctx.Pop(strKey);
 }
@@ -83,14 +83,13 @@ ServiceHandler *ServiceDispatcher::FindServiceHandler(Context &ctx)
 {
 	StartTrace(ServiceDispatcher.FindServiceHandler);
 	String name = FindServiceName(ctx);
-	Trace("Service:" << name);
+	Trace("Service [" << name << "]");
 	return ServiceHandler::FindServiceHandler(name);
 }
 
 String ServiceDispatcher::FindServiceName(Context &ctx)
 {
 	StartTrace(ServiceDispatcher.FindServiceName);
-
 	return ctx.Lookup("DefaultService", "WebAppService");
 }
 
@@ -98,14 +97,10 @@ RegisterServiceDispatcher(RendererDispatcher);
 //--- RendererDispatcher ---------------------------------------------------
 RendererDispatcher::RendererDispatcher(const char *rendererDispatcherName)
 	: ServiceDispatcher(rendererDispatcherName)
-{
-
-}
+{}
 
 RendererDispatcher::~RendererDispatcher()
-{
-
-}
+{}
 
 long RendererDispatcher::FindURIPrefixInList(const String &requestURI, const ROAnything &uriPrefixList)
 {
@@ -138,12 +133,11 @@ String RendererDispatcher::FindServiceName(Context &ctx)
 		Renderer::RenderOnString(service, ctx, uriPrefixList[matchedPrefix]);
 		query["Service"] = service;
 		query["URIPrefix"] = uriPrefixList.SlotName(matchedPrefix);
-		query["EntryPage"] = requestURI;
 		SubTraceAny(query, query, "Query: ");
-		Trace("Service:<" << service << ">");
+		Trace("Service [" << service << "]");
 		return service;
 	} else if (uriPrefixList.GetSize() > 0) {
-		query["Error"] = "ServiceNotFound";
+		query["Error"] = String("Service[").Append(requestURI.SubString(0,requestURI.StrChr('/',1))).Append("]NotFound");
 	}
 
 	String defaultHandler(ServiceDispatcher::FindServiceName(ctx));
