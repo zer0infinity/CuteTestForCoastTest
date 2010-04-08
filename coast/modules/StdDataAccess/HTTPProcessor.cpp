@@ -149,13 +149,14 @@ bool HTTPProcessor::IsZipEncodingAcceptedByClient(Context &ctx)
 	TraceAny(ctx.GetRequest(), "Request");
 	ROAnything roaEncoding;
 	if (!ctx.Lookup("DisableZipEncoding", 0L) && ctx.Lookup("header.ACCEPT-ENCODING", roaEncoding) ) {
+		TraceAny(roaEncoding, "accepted encodings");
 		AnyExtensions::LeafIterator<ROAnything> iter(roaEncoding);
-
 		ROAnything roaCurrAny;
 		while (iter.Next(roaCurrAny)) {
 			String enc = roaCurrAny.AsString("---");
 			enc.ToLower();
 			if (enc.IsEqual("gzip")) {
+				Trace("accepting gzip");
 				return true;
 			}
 		}

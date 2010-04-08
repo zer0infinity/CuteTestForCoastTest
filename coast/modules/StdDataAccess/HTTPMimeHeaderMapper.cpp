@@ -138,10 +138,6 @@ void HTTPMimeHeaderMapper::Substitute(Anything &header, ROAnything &addlist, Con
 		RE substRegex(pattern, RE::MATCH_ICASE);
 		for (int i = 0; i < header.GetSize(); i++) {
 			if (header.SlotName(i) == key) {
-				if (!ctx.GetSessionStore()[ctx.GetQuery()["Service"].AsString()].IsDefined("EntryPage")) {
-					ctx.GetSessionStore()[ctx.GetQuery()["Service"].AsString()]["EntryPage"] = ctx.GetQuery()["EntryPage"].DeepClone();
-				}
-
 				header[i] = substRegex.Subst(header[i].AsString(), replacement);
 			}
 		}
@@ -154,10 +150,6 @@ void HTTPMimeHeaderMapper::Substitute(Anything &header, ROAnything &addlist, Con
 			RE substRegex(pattern, RE::MATCH_ICASE);
 			for (int j = 0; j < header.GetSize(); j++) {
 				if (header.SlotName(j) == key) {
-					if (!ctx.GetSessionStore()[ctx.GetQuery()["Service"].AsString()].IsDefined("EntryPage")) {
-						ctx.GetSessionStore()[ctx.GetQuery()["Service"].AsString()]["EntryPage"] = ctx.GetQuery()["EntryPage"].DeepClone();
-					}
-
 					header[j] = substRegex.Subst(header[j].AsString(), replacement);
 				}
 			}

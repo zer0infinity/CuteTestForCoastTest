@@ -63,5 +63,5 @@ long ConnectorParams::Timeout()
 
 bool ConnectorParams::UseThreadLocal()
 {
-	return fContext.Lookup("CurrentServer.UseThreadLocalMemory", fMaster->Lookup("UseThreadLocalMemory", 0L)) != 0L; // since timeout is in milliseconds
+	return fContext.Lookup("CurrentServer.UseThreadLocalMemory", fMaster->Lookup("UseThreadLocalMemory", 0L)) != 0L;
 }
