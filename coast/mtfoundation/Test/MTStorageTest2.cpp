@@ -183,21 +183,19 @@ void MTStorageTest2::twoThreadCopyConstructorTest()
 void MTStorageTest2::twoThreadArrayAccessTest()
 {
 	StartTrace1(MTStorageTest2.twoThreadArrayAccessTest, "ThrdId: " << Thread::MyId());
+	DataProviderThread *t1 = new DataProviderThread(fPool);
 	l_long l = fGlobal->CurrentlyAllocated();
 	{
-		DataProviderThread *t1 = new DataProviderThread(fPool);
 		t1->Start(fPool);
+		assertCompare( l, equal_to, fGlobal->CurrentlyAllocated());
 
 		// wait for other thread to finish
 		t1->CheckState(Thread::eTerminated);
-
-		ROAnything sub(t1->GetData()["Sub"]["2"]);	// no copy should be necessary for access
-
+		assertCompare( l, equal_to, fGlobal->CurrentlyAllocated());
 		// CAUTION: always pass a reference to long lived Anything to ROAnything! methods
 		//          often return a temporary Anything which is *NOT* suitable to initialize
 		//          a ROAnything...
-
-		assertCompare( l, equal_to, fGlobal->CurrentlyAllocated()); //no longer true
+		ROAnything sub(t1->GetData()["Sub"]["2"]);	// no copy should be necessary for access
 		assertEqual( "ok", sub.AsCharPtr("") );
 
 		Anything copy(t1->GetData()["Sub"]["2"]);	// must be copied since allocators dont match
