@@ -27,16 +27,14 @@ namespace {
 		long lSlashIdx = requestURI.StrChr('?');
 		if ( lSlashIdx != -1 ) {
 			requestURI.Trim(lSlashIdx);
-			Trace("trimmed URI [" << requestURI << "]");
-			anySegments.Append(requestURI);
 		}
-		lSlashIdx=requestURI.StrRChr('/');
-		while ( lSlashIdx != -1 ) {
-			// copy segment including trailing slash
-			requestURI.Trim(lSlashIdx+1);
-			Trace("trimmed URI [" << requestURI << "]");
+		while ( requestURI.Length() ) {
+			Trace("adding URI [" << requestURI << "]");
 			anySegments.Append(requestURI);
 			lSlashIdx=requestURI.StrRChr('/', lSlashIdx);
+			// trim to previous slash including trailing slash if any
+			requestURI.Trim(lSlashIdx+1);
+			Trace("trimmed URI [" << requestURI << "]");
 		}
 		return anySegments;
 	}
