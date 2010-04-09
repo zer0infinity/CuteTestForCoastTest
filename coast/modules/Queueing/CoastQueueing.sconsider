@@ -1,0 +1,19 @@
+import os, pdb
+import SConsider
+
+Import('*')
+
+buildSettings = {
+                 packagename : {
+                     'linkDependencies' : ['CoastAppLog', 'CoastSystemFunctions'],
+                     'sourceFiles'      : SConsider.listFiles(['*.cpp']),
+                     'targetType'       : 'LibraryShared',
+                     'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL'] },
+                     'public' : {
+                                 'includes'     : SConsider.listFiles(['*.h']),
+#                                'appendUnique' : { 'CPPDEFINES' : 'fooX' },
+                    }
+                 }
+                }
+
+SConsider.createTargets(packagename, buildSettings)

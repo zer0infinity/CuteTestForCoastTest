@@ -1,0 +1,17 @@
+import os, pdb
+import SConsider
+
+Import('*')
+
+buildSettings = {
+    packagename : {
+        'sourceFiles'      : SConsider.listFiles(['*.cpp']),
+        'targetType'       : 'LibraryShared',
+        'lazylinking'      : True,
+        'public' : {
+            'includes'     : SConsider.listFiles(['*.h']),
+        }
+    }
+}
+
+SConsider.createTargets(packagename, buildSettings)

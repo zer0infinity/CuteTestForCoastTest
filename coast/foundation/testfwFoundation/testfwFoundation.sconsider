@@ -1,0 +1,16 @@
+import SConsider
+
+Import('*')
+
+buildSettings = {
+                 packagename : {
+                     'linkDependencies' : ['testfw'],
+                     'sourceFiles'      : [],
+                     'targetType'       : 'IncludeOnly',
+                     'public' : {
+                         'includes'     : SConsider.listFiles(['*.h']),
+                    }
+                 }
+                }
+
+SConsider.createTargets(packagename, buildSettings)

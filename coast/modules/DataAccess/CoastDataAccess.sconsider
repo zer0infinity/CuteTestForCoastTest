@@ -1,0 +1,19 @@
+import os, pdb
+import SConsider
+
+Import('*')
+
+buildSettings = {
+    packagename : {
+        'includeSubdir'    : '',
+        'linkDependencies' : ['CoastWDBase'],
+        'sourceFiles'      : SConsider.listFiles(['*.cpp']),
+        'targetType'       : 'LibraryShared',
+        'appendUnique'     : { 'CPPDEFINES' : ['DATAACCESS_IMPL'] },
+        'public' : {
+            'includes'     : SConsider.listFiles(['*.h']),
+        }
+    }
+}
+
+SConsider.createTargets(packagename, buildSettings)

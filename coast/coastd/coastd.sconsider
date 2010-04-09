@@ -1,0 +1,14 @@
+import SConsider
+
+Import('*')
+
+buildSettings = {
+    packagename : {
+        'includeSubdir'    : '',
+        'linkDependencies' : ['CoastWDBase'],
+        'sourceFiles'      : ['Main.cpp'],
+        'targetType'       : 'Program',
+    }
+}
+
+SConsider.createTargets(packagename, buildSettings)
