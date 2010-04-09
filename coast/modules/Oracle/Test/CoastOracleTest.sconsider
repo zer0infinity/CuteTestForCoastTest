@@ -15,7 +15,7 @@ connectstring1 = connectstring.format(**dict(db, **user1))
 connectstring2 = connectstring.format(**dict(db, **user2))
 
 def runSQL(connectstring, filename, logpath, filter=None):
-    targets = SConsider.programLookup.getPackageTarget('oracle', 'sqlplus')
+    targets = SConsider.packageRegistry.getPackageTarget('oracle', 'sqlplus')
     target = targets['target']
     if not target or not os.path.isfile(filename):
         return False
