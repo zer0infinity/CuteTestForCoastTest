@@ -12,7 +12,7 @@
 		CoastSecurity
 		CoastStdDataAccess
 		CoastActions
-		PerfTestTest
+		CoastPerfTestTest
 	}
 	/Modules {
 		CacheHandlerModule
