@@ -27,9 +27,9 @@ HTTPStringEncodeRenderer::~HTTPStringEncodeRenderer() { }
 void HTTPStringEncodeRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(HTTPStringEncodeRenderer.RenderAll);
-	String str;
-
-	RenderOnString(str, ctx, config["String"]);
-	Trace("String: <" << str << ">");
-	reply << URLUtils::urlEncode(str);
+	String str(32L);
+	RenderOnString(str,ctx,config["String"]);
+	Trace("encoded String: <" << str << ">");
+	// use MSUrlEncode function because it converts almost all reserved characters
+	reply << URLUtils::MSUrlEncode(str);
 }

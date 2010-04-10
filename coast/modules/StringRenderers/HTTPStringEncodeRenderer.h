@@ -14,32 +14,30 @@
 #include "Renderer.h"
 
 //---- HTTPStringEncodeRenderer ----------------------------------------------------------
-//! <B>really brief class description</B>
+//! <b>URL-Encode given string</b>
 /*!
-\par Configuration
+ * @section htser1 Renderer configuration
 \code
 {
-	/String		Rendererspec	[mandatory], ...
-	...
+	/String		Rendererspec	mandatory, string to be URL encoded
 }
 \endcode
-
-further explanation of the purpose of the class
-this may contain <B>HTML-Tags</B>
-*/
+ * @par \c String
+ * Mandatory
+ * String value which gets URL encoded
+ */
 class EXPORTDECL_STRINGRENDERERS HTTPStringEncodeRenderer : public Renderer
 {
 public:
-	//--- constructors
 	/*! \param name defines the name of the renderer */
 	HTTPStringEncodeRenderer(const char *name);
 	~HTTPStringEncodeRenderer();
 
-	/*! Renders ?? on <I>reply </I>
-		\param reply the stream where the rendered output is written on.
-		\param ctx the context the renderer runs within.
-		\param config the configuration of the renderer.
-	*/
+	/*! Renders URL encoded string onto stream
+	 * @param reply the stream where the rendered output is written on.
+	 * @param ctx the context the renderer runs within.
+	 * @param config the configuration of the renderer.
+	 */
 	virtual void RenderAll(ostream &reply, Context &ctx, const ROAnything &config);
 };
 
