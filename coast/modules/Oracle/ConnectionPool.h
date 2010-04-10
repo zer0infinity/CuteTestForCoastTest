@@ -63,11 +63,11 @@ namespace Coast
 		 * Long	value to define time period in [s] after which to check for open connections to be closed.
 		 *
 		 * @par \c MemPoolSize
-		 * Optional, default 2048kB
+		 * Optional, default 2048kB\n
 		 * Long value defining the size of the PoolAllocator used by the memory functions used with the connections environment
 		 *
 		 * @par \c MemPoolBuckets
-		 * Optional, default 16
+		 * Optional, default 16\n
 		 * Long value defining the number of bucket sizes to allocate inside the PoolAllocator
 		 */
 		class EXPORTDECL_COASTORACLE ConnectionPool : public StatGatherer

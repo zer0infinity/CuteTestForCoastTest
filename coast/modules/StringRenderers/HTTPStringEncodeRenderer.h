@@ -19,17 +19,19 @@
  * @section htser1 Renderer configuration
 \code
 {
-	/String		Rendererspec	mandatory, string to be URL encoded
+	/String
 }
 \endcode
  * @par \c String
- * Mandatory
+ * Mandatory\n
  * String value which gets URL encoded
  */
 class EXPORTDECL_STRINGRENDERERS HTTPStringEncodeRenderer : public Renderer
 {
+	HTTPStringEncodeRenderer();
 public:
-	/*! \param name defines the name of the renderer */
+	/*! Default constructor for NamedObject
+	 * @param name defines the name of the Renderer */
 	HTTPStringEncodeRenderer(const char *name);
 	~HTTPStringEncodeRenderer();
 
