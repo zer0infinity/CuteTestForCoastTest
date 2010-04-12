@@ -204,7 +204,7 @@ void RegexTest::LargeLiteralTest()
 	RE literal(gLiteralExpr);
 	long s = 0, l = 0;
 	// should be timed:
-	istream *pStream = System::OpenIStream("LargeLiteralData", "h");
+	istream *pStream = System::OpenStream("LargeLiteralData", "h");
 	if (t_assert(pStream != NULL)) {
 		String largeData;
 		while (pStream->good()) {
@@ -225,7 +225,7 @@ void RegexTest::LargeDotStarTest()
 	RE literal(gDotStarExpr);
 	long s = 0, l = 0;
 	// should be timed:
-	istream *pStream = System::OpenIStream("LargeLiteralData", "h");
+	istream *pStream = System::OpenStream("LargeLiteralData", "h");
 	if (t_assert(pStream != NULL)) {
 		String largeData;
 		while (pStream->good()) {
@@ -287,7 +287,7 @@ void RegexTest::MatchConfig()
 {
 	StartTrace(RegexTest.MatchConfig);
 
-	istream *is = System::OpenIStream("RegexTest", "any");
+	istream *is = System::OpenStream("RegexTest", "any");
 	t_assert(is && is->good());
 	if (!is || !is->good()) {
 		return;
@@ -359,7 +359,7 @@ void RegexTest::GrepTest()
 {
 	StartTrace(RegexTest.GrepTest);
 
-	istream *is = System::OpenIStream("Dbg", "any");
+	istream *is = System::OpenStream("Dbg", "any");
 	t_assert(is && is->good());
 	if (!is || !is->good()) {
 		return;
@@ -380,7 +380,7 @@ void RegexTest::GrepSlotNamesTest()
 {
 	StartTrace(RegexTest.GrepSlotNamesTest);
 
-	istream *is = System::OpenIStream("Dbg", "any");
+	istream *is = System::OpenStream("Dbg", "any");
 	t_assert(is && is->good());
 	if (!is || !is->good()) {
 		return;
@@ -397,37 +397,6 @@ void RegexTest::GrepSlotNamesTest()
 	t_assert(res.IsDefined("RegexTest"));
 }
 
-void RegexTest::TimingWithPoolAllocator()
-{
-	StartTrace(RegexTest.TimingWithPoolAllocator);
-
-	Trace("ShortLiteralTest");
-	TimeaTestWithPoolAllocator((CaseMemberPtr)(&RegexTest::ShortLiteralTest));
-	Trace("LargeDotStarTest");
-	TimeaTestWithPoolAllocator((CaseMemberPtr)&RegexTest::LargeDotStarTest);
-	Trace("MatchConfig");
-	TimeaTestWithPoolAllocator((CaseMemberPtr)&RegexTest::MatchConfig);
-}
-
-void RegexTest::TimeaTestWithPoolAllocator(CaseMemberPtr testtotime)
-{
-	StartTrace(RegexTest.TimeaTestWithPoolAllocator);
-
-	TestTimer tt;
-	tt.Start();
-	(this->*testtotime)();
-	long firstrun = tt.Diff();
-	Trace("elapsed time standard allocator:" << firstrun);
-	// need at least a bit more than 1MB pool size
-	PoolAllocator pa(123, 2 * 1024, 21);
-	TestStorageHooks tsh(&pa);
-	tt.Start();
-	(this->*testtotime)();
-	long secondrun = tt.Diff();
-	Trace("elapsed time pool allocator:" << secondrun);
-	t_assertm(secondrun <= firstrun, TString("first: ") << firstrun << " second: " << secondrun); // assume pool allocator is faster
-}
-
 // builds up a suite of testcases, add a line for each testmethod
 Test *RegexTest::suite ()
 {
@@ -441,7 +410,6 @@ Test *RegexTest::suite ()
 	ADD_CASE(testSuite, RegexTest, MatchAStar);
 	ADD_CASE(testSuite, RegexTest, LargeLiteralTest);
 	ADD_CASE(testSuite, RegexTest, BackRefTest);
-	ADD_CASE(testSuite, RegexTest, TimingWithPoolAllocator);
 	ADD_CASE(testSuite, RegexTest, ShortLiteralTest);
 	ADD_CASE(testSuite, RegexTest, LargeDotStarTest);
 	ADD_CASE(testSuite, RegexTest, MatchConfig);
