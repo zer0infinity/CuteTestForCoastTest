@@ -259,28 +259,22 @@ bool HTTPDAImpl::DoExecRecord(Connector *csc, ConnectorParams *cps, Context &con
 bool HTTPDAImpl::SendInput(iostream *Ios, Socket *s, long timeout, Context &context, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(HTTPDAImpl.SendInput);
-	//XXX: for what is this good for BEGIN
+	//XXX: this section should probably be conditional
 	long uploadSize = context.Lookup("PostContentLengthToStream", -1L);
-
-	String contentLength = "";
-	if (uploadSize == -1) {
-		String content;
+	if (uploadSize == -1L) {
+		String content(16384L);
 		OStringStream oss(&content);
 		in->Get("Input", oss, context);
 		oss.flush();
-		String body = content.SubString("\r\n\r\n");
-
-		if (body.Length() >= 4) {
-			contentLength.Append(body.Length() - 4); //subtract "\r\n\r\n"
+		long lIdx = content.Contains("\r\n\r\n");
+		if (lIdx >= 0) {
+			lIdx += 4L; // subtract \r\n\r\n
+			uploadSize = content.Length() - lIdx;
 		} else {
-			contentLength.Append((long int)0);
+			uploadSize = 0L;
 		}
-	} else {
-		contentLength.Append((long int)uploadSize);
 	}
-
-	context.GetTmpStore()["Request"]["BodyLength"] = contentLength;
-	//XXX: for what is this good for END
+	context.GetTmpStore()["Request"]["BodyLength"] = uploadSize;
 #ifdef COAST_TRACE
 	Trace("Debug Version");
 
