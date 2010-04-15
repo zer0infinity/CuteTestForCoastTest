@@ -81,14 +81,14 @@ void Renderer::Render(ostream &reply, Context &c, const ROAnything &info)
 	// if info is an array we assume it is a
 	// renderer specification
 	else if ( aImplType == AnyArrayType) {
-		Trace( "Render, is eArray" );
+		Trace( "Array entry found" );
 		// Check for old style configuration
 		if (info.IsDefined("Type")) {
 			//----------------------------------------
 			// info has a structure like { /Type ... /Data { ... } }
 			// or { /Type ... /AnyKey ... /... }
 			// the type defines the renderer to be used
-			Trace( "Render, old Type style" );
+			Trace( "old Type style renderer" );
 
 			const char *type = info["Type"].AsCharPtr(0);
 			if (type && (r = FindRenderer(type))) { // whe have to check otherwise FindRenderer cores
@@ -113,22 +113,18 @@ void Renderer::Render(ostream &reply, Context &c, const ROAnything &info)
 				SystemLog::Warning(logMsg);
 			} // if (r)if (type)
 		} else { // new type configuration
-			Trace( "Render, NEW Type style" );
-
 			// treat as a collection of renderer specifications, Sequence Renderer
 			for (long i = 0, size = info.GetSize(); i < size; ++i) {
 				// Check if slot has a name and if this is a renderer
 				// otherwise interpret the slot content
 				String slotname(info.SlotName(i));
-				Trace( "Render, finder renderer matching slotname " << slotname << " and do recursive call on it" );
-
 				if ( slotname.Length() > 0 && (r = FindRenderer(slotname)) ) {
 					// renderer found - let it work
-					Trace( "Render, found for " << slotname << " Do recursive call on it" );
+					TraceAny(info[i], "found [" << slotname << "], calling with config");
 					r->RenderAll(reply, c, info[i]);
 				} // renderer found
 				else {
-					Trace("Render, No renderer found with name " << slotname);
+					Trace((slotname.Length()?slotname:"<unnamed slot>") << " not found as renderer");
 					// Not a renderername or no slotname
 					// - ignore it and try to interpret the slots content
 					// PS: we should consider to diversify again
