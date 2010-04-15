@@ -420,9 +420,7 @@ GlobalAllocator::~GlobalAllocator()
 MemTracker *GlobalAllocator::ReplaceMemTracker(MemTracker *t)
 {
 	MemTracker *pOld = fTracker;
-	if ( fTracker ) {
-		fTracker = t;
-	}
+	fTracker = t;
 	return pOld;
 }
 

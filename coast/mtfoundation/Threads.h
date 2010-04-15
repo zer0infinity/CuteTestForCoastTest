@@ -724,6 +724,9 @@ protected:
 	virtual void DoStartedHook(ROAnything args);
 
 	//!subclass hook
+	virtual void DoRunningHook(ROAnything args);
+
+	//!subclass hook
 	virtual void DoTerminationRequestHook(ROAnything args);
 
 	/*! subclass hook to catch event when thread specific (derived) Run() method returns */

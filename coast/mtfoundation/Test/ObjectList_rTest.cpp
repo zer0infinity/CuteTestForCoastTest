@@ -84,6 +84,9 @@ ObjectList_rTest::~ObjectList_rTest()
 
 void ObjectList_rTest::CtorTest()
 {
+	std::auto_ptr<MemTracker> newTracker( Storage::MakeMemTracker("GlobalAllocator", false) );
+	MemTracker *oldTracker = Storage::Global()->ReplaceMemTracker( newTracker.get() );
+
 	StartTrace(ObjectList_rTest.CtorTest);
 	StartTraceMem(ObjectList_rTest.CtorTest);
 	{
@@ -168,6 +171,8 @@ void ObjectList_rTest::CtorTest()
 	OBJECTLISTMACRO(std::list, std::allocator);
 #endif
 	TraceMemDelta("before terminating");
+
+	Storage::Global()->ReplaceMemTracker( oldTracker );
 }
 
 // builds up a suite of testcases, add a line for each testmethod

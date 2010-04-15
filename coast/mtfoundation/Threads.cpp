@@ -186,7 +186,7 @@ Thread::~Thread()
 		if ( bDidLock ) {
 			fStateCond.TimedWait(fStateMutex, 0, 10000000);
 			fStateMutex.Unlock();
-			SystemLog::WriteToStderr("°", 1);
+			SystemLog::WriteToStderr("*", 1);
 		} else {
 			Thread::Wait(0L, 20000000);
 			SystemLog::WriteToStderr("~", 1);
@@ -489,6 +489,10 @@ bool Thread::CallStateHooks(EThreadState state, ROAnything args)
 			StatTrace(Thread.CallStateHooks, "eStarted", Storage::Current());
 			DoStartedHook(args);
 			break;
+		case eRunning:
+			StatTrace(Thread.CallStateHooks, "eRunning", Storage::Current());
+			DoRunningHook(args);
+			break;
 		case eTerminationRequested:
 			StatTrace(Thread.CallStateHooks, "eTerminationRequested", Storage::Current());
 			DoTerminationRequestHook(args);
@@ -512,6 +516,7 @@ bool Thread::DoStartRequestedHook(ROAnything)
 	return true;
 };
 void Thread::DoStartedHook(ROAnything) {};
+void Thread::DoRunningHook(ROAnything) {};
 void Thread::DoTerminationRequestHook(ROAnything) {};
 void Thread::DoTerminatedRunMethodHook() {};
 void Thread::DoTerminatedHook() {};

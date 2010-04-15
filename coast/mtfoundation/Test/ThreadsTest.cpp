@@ -206,54 +206,99 @@ void ThreadsTest::ThreadHookArgsTest()
 	assertAnyEqual(anyTerminationArgs, t.fTerminationArgs);
 }
 
+class StateTransitionTestThread: public TerminateMeTestThread
+{
+public:
+	StateTransitionTestThread(bool willStart=true)
+		: TerminateMeTestThread(willStart), fStates() {};
+	virtual ~StateTransitionTestThread() {};
+	bool DoStartRequestedHook(ROAnything args) {
+		fStates.Append(eStartRequested);
+		return TerminateMeTestThread::DoStartRequestedHook(args);
+	};
+	void DoStartedHook(ROAnything args) {
+		fStates.Append(eStarted);
+	};
+
+	void DoRunningHook(ROAnything args) {
+		fStates.Append(eRunning);
+	};
+
+	void DoTerminationRequestHook(ROAnything args) {
+		fStates.Append(eTerminationRequested);
+	};
+
+	void DoTerminatedRunMethodHook() {
+		fStates.Append(eTerminatedRunMethod);
+	};
+
+	void DoTerminatedHook() {
+		fStates.Append(eTerminated);
+	};
+
+	MetaThing fStates;
+};
+
 void ThreadsTest::ThreadStateTransitionTest()
 {
 	StartTrace(ThreadsTest.ThreadStateTransitionTest);
 
+	String str;
+	Anything anyExpected;
+
 	// "Normal case" goes from Created to Started,Running, toggles between Ready and Working and gets Terminated
-	TerminateMeTestThread t;
+	StateTransitionTestThread t;
 
 	bool bIsRunning( false );
 	t_assertm(t.CheckState(Thread::eCreated), "State should be eCreated");
 	assertEqual(Thread::eCreated, t.GetState());
 	t_assert(t.Start());
-	t_assertm(t.CheckState(Thread::eRunning, 10), "State should be eRunning");
+	t_assertm(t.CheckState(Thread::eRunning, 100), "State should be eRunning");
 	t_assertm(t.IsRunning( bIsRunning ) && bIsRunning, "Thread should be Running");
 	assertEqual(Thread::eRunning, t.GetState()); //Semantically equal to IsRunning()
 
 	t_assert(t.Terminate(100));
 	assertComparem(Thread::eTerminated, equal_to, t.GetState(false, Thread::eRunning), "Thread is not running anymore");
 
-	//-- Can not be restarted ----------------------------------
-	t_assertm(t.Start(), "should be restartable, since thread cannot be restarted");
-	t_assertm(t.CheckState(Thread::eStarted, 10), "State should be eStarted");
-	t_assertm(t.CheckState(Thread::eRunning, 10), "State should be eRunning");
+	//-- Can be restarted ----------------------------------
+	t_assertm(t.Start(), "should be restartable");
+	t_assertm(t.CheckState(Thread::eRunning, 100), "State should be eRunning");
+
 	t_assert(t.Terminate(10));
-	assertCompare( Thread::eTerminated, equal_to, t.GetState() ); // Can not start again
+	assertCompare( Thread::eTerminated, equal_to, t.GetState() );
 	t_assertm( !t.IsRunning( bIsRunning ), "Thread is not running anymore");
-	t_assertm( t.CheckState(Thread::eTerminated, 10), "State should be eTerminated");
+	t_assertm( t.CheckState(Thread::eTerminated, 100), "State should be eTerminated");
+
+	str = _QUOTE_( { 1 3 4 5 6 7 1 3 4 5 6 7 });
+	IStringStream is1(str);
+	anyExpected.Import(is1);
+	assertAnyEqual(anyExpected, t.fStates)
 
 	//-- Terminate before Start ---------------------------------
-	TerminateMeTestThread t2;
-	t_assertm(t2.CheckState(Thread::eCreated, 10), "State should be eCreated");
+	StateTransitionTestThread t2;
+	t_assertm(t2.CheckState(Thread::eCreated, 100), "State should be eCreated");
 	t_assert(t2.Terminate(10));
 	assertEqual(Thread::eTerminated, t2.GetState());
 	t_assertm(t2.Start(), "should be restartable, since already terminated");
-	t_assertm(t2.CheckState(Thread::eStarted, 10), "State should be eStarted");
-	t_assertm(t2.CheckState(Thread::eRunning, 10), "State should be eRunning");
+	t_assertm(t2.CheckState(Thread::eRunning, 100), "State should be eRunning");
 	t_assert(t2.Terminate(10));
 	assertCompare(Thread::eTerminated, equal_to, t2.GetState()); // Can not start again
 	t_assertm( !t2.IsRunning( bIsRunning ), "Thread is not running anymore");
-	t_assertm(t2.CheckState(Thread::eTerminated, 10), "State should be eTerminated");
+	t_assertm(t2.CheckState(Thread::eTerminated, 100), "State should be eTerminated");
+
+	str = _QUOTE_( { 7 1 3 4 5 6 7 });
+	IStringStream is2(str);
+	anyExpected.Import(is2);
+	assertAnyEqual(anyExpected, t2.fStates)
 
 	//-- Terminate because precondition of Start fails ---
 	TerminateMeTestThread t3(false);
 	t_assertm(!t3.Start(), "start should fail");
 	assertEqual(Thread::eTerminated, t3.GetState()); // Can not start again
-	assertComparem( Thread::eStarted, less_equal, t3.GetState(10), "State should be higher than eStarted");
-	assertComparem( Thread::eRunning, less_equal, t3.GetState(10), "State should be higher than eRunning");
+	assertComparem( Thread::eStarted, less_equal, t3.GetState(100), "State should be higher than eStarted");
+	assertComparem( Thread::eRunning, less_equal, t3.GetState(100), "State should be higher than eRunning");
 	t_assertm( ( t3.IsRunning( bIsRunning ) && !bIsRunning ), "Thread is not running anymore");
-	t_assertm(t3.CheckState(Thread::eTerminated, 10), "State should be eTerminated");
+	t_assertm(t3.CheckState(Thread::eTerminated, 100), "State should be eTerminated");
 }
 
 class ContentionRunner: public Thread
