@@ -13,15 +13,15 @@
 #include "Renderer.h"
 
 // ---- ConditionalRenderer ---------------------------------------------------------
-//! <B>This renderer checks the value of a specified slot in the Context and - dependingon the outcome of the test - renders a predefined renderer specification.</B>
+//! <B>This renderer checks the value of a specified slot in the Context and - depending on the outcome of the test - renders a predefined renderer specification.</B>
 /*!
 \par Configuration
 \code
 {
-	/ContextCondition	Rendererspec	mandatory, resulting a String used to Lookup the Context. (Lookuped value is usually an integer)
+	/ContextCondition	Rendererspec	mandatory, resulting a String used to Lookup the Context. (value looked up is usually an integer)
 	/True				Rendererspec	optional, if ContextCondition-value evaluates to true, the content of this slot will be rendered
 	/False				Rendererspec	optional, if ContextCondition-value evaluates to false, the content of this slot will be rendered
-	/Defined			Rendererspec	optional, if ContextCondition-value is fefined in Context, the content of this slot will be rendered
+	/Defined			Rendererspec	optional, if ContextCondition-value is defined in Context, the content of this slot will be rendered
 	/Undefined			Rendererspec	optional, if ContextCondition-value not defined in Context, the content of this slot will be rendered
 	/Error				Rendererspec	optional, if the renderer received invalid input, the content of this slot will be rendered
 }

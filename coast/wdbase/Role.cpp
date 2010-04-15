@@ -68,18 +68,18 @@ IFAObject *Role::Clone() const
 
 bool Role::Init(Context &)
 {
-	StartTrace1(Role.Init, fName << ": abstract returning always true" );
+	StatTrace(Role.Init, fName << ": abstract - nothing to init, returning true", Storage::Current());
 	return true;
 }
 
 void Role::Finis(Session &, Role *)
 {
-	StartTrace1(Role.Finis, fName << ": abstract - no clean up" );
+	StatTrace(Role.Finis, fName << ": abstract - nothing to do", Storage::Current());
 }
 
 bool Role::Synchronize(Context &)
 {
-	StartTrace1(Role.Synchronize, fName << ": abstract returning always true" );
+	StatTrace(Role.Synchronize, fName << ": abstract returning true", Storage::Current());
 	return true;
 }
 
@@ -230,13 +230,15 @@ bool Role::GetNextActionConfig(ROAnything &entry, String &transition, String &pa
 
 bool Role::IsStayOnSamePageToken(String &transition)
 {
-	StartTrace(Role.IsStayOnSamePageToken);
+	StartTrace1(Role.IsStayOnSamePageToken, "checking token <" << transition << ">");
 	ROAnything tokens;
+	bool bIsStayToken(false);
 	if ( transition == "StayOnSamePage" || ( Lookup("StayOnSamePageTokens", tokens) && tokens.Contains(transition) ) ) {
 		transition = "PreprocessAction";
-		return true;
+		bIsStayToken=true;
 	}
-	return false;
+	Trace("resulting token <" << transition << "> is " << (bIsStayToken?"":"not ") << "to StayOnSamePage");
+	return bIsStayToken;
 }
 
 void Role::CollectLinkState(Anything &stateIn, Context &c)

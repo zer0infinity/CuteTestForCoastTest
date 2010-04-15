@@ -592,23 +592,23 @@ void Session::SetupContext(Context &context, String &transition, String &pagenam
 
 void Session::SetInReauthenticate(Context &context)
 {
-	StartTrace(Session.SetInReauthenticate);
 	Anything tmpStore(context.GetTmpStore());
 	Role *r = context.GetRole();
 	String roleName("Role");
 	if (r) {
 		r->GetName(roleName);
 	}
+	StatTrace(Session.SetInReauthenticate, "Role [" << roleName << "]", Storage::Current());
 	tmpStore["InReauthenticate"] = roleName;
 }
 
 void Session::ForcedLogin(Context &context, String &transition, String &currentpage)
 {
-	StartTrace(Session.ForcedLogin);
 	// we always go the transition "Login" for wrong roles
 	transition = "Login";
 	// and start this transition from the /StartPage or HomePage
 	currentpage = context.Lookup("StartPage", "HomePage");
+	StatTrace(Session.ForcedLogin, "transition <" << transition << "> startpage <" << currentpage << ">", Storage::Current());
 }
 
 bool Session::NeedsPageInsert(Context &context, String &transition, String &currentpage)
