@@ -51,7 +51,10 @@ void RemoteStresserTest::setUp ()
 
 		fServerRunner = new ServerThread(fStressServer);
 		if (fStressServer && fServerRunner) {
-			if ( t_assertm(fServerRunner->Start() && fServerRunner->CheckState(Thread::eStarted) && fServerRunner->IsInitialized(), "StressServer init failed") ) {
+			bool bSuccess = fServerRunner->Start();
+			fServerRunner->CheckState(Thread::eStarted);
+			bSuccess = bSuccess && fServerRunner->serverIsInitialized();
+			if ( t_assertm(bSuccess, "StressServer init failed") ) {
 				fServerRunner->CheckState(Thread::eRunning, 10);
 				fServerRunner->SetWorking();
 			}

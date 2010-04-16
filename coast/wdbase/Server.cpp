@@ -679,7 +679,9 @@ int MasterServer::DoInit()
 						pAlloc = Storage::Global();
 					}
 				}
-				bStartSuccess = fServerThreads[lIdx].Start(pAlloc, roaServerConfig) && fServerThreads[lIdx].CheckState(Thread::eStarted) && fServerThreads[lIdx].IsInitialized();
+				bStartSuccess = fServerThreads[lIdx].Start(pAlloc, roaServerConfig);
+				fServerThreads[lIdx].CheckState(Thread::eStarted);
+				bStartSuccess = bStartSuccess && fServerThreads[lIdx].serverIsInitialized();
 				Trace("Start of ServerThread:" << lIdx << "<" << roaServerConfig["ServerName"].AsString() << "> " << ( bStartSuccess ? "successful" : "unsuccessful" ) );
 				if ( !bStartSuccess ) {
 					SYSERROR("Start of ServerThread:" << lIdx << "<" << roaServerConfig["ServerName"].AsString() << "> unsuccessful");
@@ -825,7 +827,7 @@ int MasterServer::DoTerminate(int val)
 ServerThread::ServerThread()
 	: Thread("ServerThread")
 	, fServer(0)
-	, fbInitialized(false)
+	, fbServerIsInitialized(false)
 	, fTerminationMutex( "ServerThreadTerminationMutex", Storage::Global() )
 {
 }
@@ -833,7 +835,7 @@ ServerThread::ServerThread()
 ServerThread::ServerThread(Server *aServer)
 	: Thread("ServerThread")
 	, fServer(aServer)
-	, fbInitialized(false)
+	, fbServerIsInitialized(false)
 	, fTerminationMutex( "ServerThreadTerminationMutex", Storage::Global() )
 {
 }
@@ -858,7 +860,7 @@ void ServerThread::DoStartedHook(ROAnything config)
 	strName.Append(serverName);
 	SetName(strName);
 	if ( fServer ) {
-		fbInitialized = ( fServer->Init() == 0 );
+		fbServerIsInitialized = ( fServer->Init() == 0 );
 	}
 	Trace("Server <" << GetName() << "> started");
 }
@@ -867,8 +869,8 @@ int ServerThread::ReInit(const ROAnything config)
 {
 	StartTrace1(ServerThread.ReInit, "<" << GetName() << ">");
 	int iRet = -1;
-	if ( fServer && fbInitialized ) {
-		fbInitialized = ( ( iRet = fServer->ReInit(config) ) == 0 );
+	if ( fServer && fbServerIsInitialized ) {
+		fbServerIsInitialized = ( ( iRet = fServer->ReInit(config) ) == 0 );
 	}
 	return iRet;
 }
@@ -876,7 +878,7 @@ int ServerThread::ReInit(const ROAnything config)
 void ServerThread::Run()
 {
 	StartTrace1(ServerThread.Run, "<" << GetName() << ">");
-	if ( fbInitialized && CheckRunningState( eWorking ) ) {
+	if ( fbServerIsInitialized && CheckRunningState( eWorking ) ) {
 		if (fServer) {
 			fServer->Run();
 		}
@@ -890,16 +892,16 @@ void ServerThread::Run()
 void ServerThread::DoTerminatedRunMethodHook()
 {
 	StartTrace1(ServerThread.DoTerminatedRunMethodHook, "<" << GetName() << ">");
-	if ( fServer && fbInitialized ) {
+	if ( fServer && fbServerIsInitialized ) {
 		fServer->Terminate(0L);
-		fbInitialized = false;
+		fbServerIsInitialized = false;
 	}
 }
 
 void ServerThread::PrepareShutdown(long retCode)
 {
 	StartTrace1(ServerThread.PrepareShutdown, "<" << GetName() << ">");
-	if ( fServer && fbInitialized ) {
+	if ( fServer && fbServerIsInitialized ) {
 		LockUnlockEntry me(fTerminationMutex);
 		fServer->PrepareShutdown(retCode);
 	}
@@ -907,7 +909,7 @@ void ServerThread::PrepareShutdown(long retCode)
 
 int ServerThread::BlockRequests()
 {
-	if ( fServer && fbInitialized ) {
+	if ( fServer && fbServerIsInitialized ) {
 		return fServer->BlockRequests();
 	}
 	return 0;
@@ -915,7 +917,7 @@ int ServerThread::BlockRequests()
 
 int ServerThread::UnblockRequests()
 {
-	if ( fServer && fbInitialized ) {
+	if ( fServer && fbServerIsInitialized ) {
 		return fServer->UnblockRequests();
 	}
 	return 0;
@@ -924,7 +926,7 @@ int ServerThread::UnblockRequests()
 bool ServerThread::IsReady(bool ready, long timeout)
 {
 	StartTrace1(ServerThread.IsReady, "ready: [" << ready << "] timeout: [" << timeout << "]");
-	if ( fServer && fbInitialized ) {
+	if ( fServer && fbServerIsInitialized ) {
 		return fServer->IsReady(ready, timeout);
 	}
 	return (ready == false);

@@ -273,8 +273,8 @@ public:
 	int UnblockRequests();
 	int ReInit(const ROAnything config);
 
-	bool IsInitialized() {
-		return fbInitialized;
+	bool serverIsInitialized() {
+		return fbServerIsInitialized;
 	}
 
 	//!check if server is ready and running
@@ -285,7 +285,7 @@ private:
 	void DoTerminatedRunMethodHook();
 
 	Server *fServer;
-	bool fbInitialized;
+	bool fbServerIsInitialized;
 	SimpleMutex fTerminationMutex;
 };
 

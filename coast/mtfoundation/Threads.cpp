@@ -462,6 +462,8 @@ bool Thread::IntSetState(EThreadState state, ROAnything args)
 	bool bRet = false;
 	if ( CallStateHooks(state, args) ) {
 		Anything anyEvt;
+		anyEvt["this"] = static_cast<IFAObject*>(this);
+		anyEvt["ParentThreadId"] = (long)fParentThreadId;
 		anyEvt["ThreadId"] = (long)GetId();
 		anyEvt["ThreadState"]["Old"] = (long)fState;
 		anyEvt["ThreadState"]["New"] = (long)state;

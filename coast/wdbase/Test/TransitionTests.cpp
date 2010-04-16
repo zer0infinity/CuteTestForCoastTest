@@ -307,7 +307,7 @@ void TransitionTests::RunRequestSequence()
 	if ( t_assert(server != 0) ) {
 		ServerThread mt(server);
 		if ( t_assert(mt.Start()) && t_assert(mt.CheckState(Thread::eRunning, 5)) ) {
-			if ( t_assertm(mt.IsInitialized(), "expected initialization to succeed") ) {
+			if ( t_assertm(mt.serverIsInitialized(), "expected initialization to succeed") ) {
 				mt.SetWorking();
 				// --- run various request
 				//     sequences

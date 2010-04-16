@@ -73,7 +73,7 @@ void MasterServerTest::InitRunTerminateTest()
 				ServerThread mt(server);
 				numOfThreads = Thread::NumOfThreads();
 				if ( t_assert(mt.Start()) && t_assert(mt.CheckState(Thread::eRunning, 5)) ) {
-					if ( t_assertm(mt.IsInitialized(), "expected initialization to succeed") ) {
+					if ( t_assertm(mt.serverIsInitialized(), "expected initialization to succeed") ) {
 						mt.SetWorking();
 						if (t_assertm(mt.IsReady(true, 5), "expected server to become ready within 5 seconds")) {
 							// --- run various request
@@ -120,7 +120,7 @@ void MasterServerTest::InitRunResetRunTerminateTest ()
 				ServerThread mt(server);
 				numOfThreads = Thread::NumOfThreads();
 				if ( t_assert(mt.Start()) && t_assert(mt.CheckState(Thread::eRunning, 5)) ) {
-					if ( t_assertm(mt.IsInitialized(), "expected initialization to succeed") ) {
+					if ( t_assertm(mt.serverIsInitialized(), "expected initialization to succeed") ) {
 						mt.SetWorking();
 						if (t_assertm(mt.IsReady(true, 5), "expected server to become ready within 5 seconds")) {
 							// --- run various request
