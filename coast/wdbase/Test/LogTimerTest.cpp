@@ -50,10 +50,13 @@ void LogTimerTest::MethodTimerTest()
 		Context::PushPopEntry<Anything> aEntry(ctx, "setup", setup);
 		Anything expected;
 		Anything data;
-		data["Time"] = 10L;
-		data["Msg"] = "Test MethodTimer";
-		data["Unit"] = "ms";
-		expected["Log"]["Times"]["Method"]["Test"].Append(data);
+		data[TimeLogger::eSection] = "Method";
+		data[TimeLogger::eKey] = "Test";
+		data[TimeLogger::eTime] = 10L;
+		data[TimeLogger::eMsg] = "Test MethodTimer";
+		data[TimeLogger::eUnit] = "ms";
+		data[TimeLogger::eNestingLevel] = 0L;
+		expected["Log"]["Times"].Append(data);
 
 		{
 			// trigger the destructor by defining its own scope
@@ -70,11 +73,14 @@ void LogTimerTest::MethodTimerTest()
 		Context::PushPopEntry<Anything> aEntry(ctx, "setup", setup);
 		Anything expected;
 		Anything data;
-		data["Time"] = 10L;
-		data["Msg"] = "Test MethodTimer";
-		data["Unit"] = "ms";
-		expected["Log"]["Times"]["Method"]["Test"].Append(data.DeepClone());
-		expected["Log"]["Times"]["Method"]["Test"].Append(data.DeepClone());
+		data[TimeLogger::eSection] = "Method";
+		data[TimeLogger::eKey] = "Test";
+		data[TimeLogger::eTime] = 10L;
+		data[TimeLogger::eMsg] = "Test MethodTimer";
+		data[TimeLogger::eUnit] = "ms";
+		data[TimeLogger::eNestingLevel] = 0L;
+		expected["Log"]["Times"].Append(data.DeepClone());
+		expected["Log"]["Times"].Append(data.DeepClone());
 
 		//call a method twice
 		{
@@ -97,12 +103,17 @@ void LogTimerTest::MethodTimerTest()
 		setup["SimulatedValues"]["Method"]["Test"]["SubB"] = 10;
 		Context::PushPopEntry<Anything> aEntry(ctx, "setup", setup);
 		Anything expected;
-		Anything data;
-		data["Time"] = 10L;
-		data["Msg"] = "Test MethodTimer";
-		data["Unit"] = "ms";
-		expected["Log"]["Times"]["Method"]["Test"]["SubA"].Append(data.DeepClone());
-		expected["Log"]["Times"]["Method"]["Test"]["SubB"].Append(data.DeepClone());
+		Anything dataA;
+		dataA[TimeLogger::eSection] = "Method";
+		dataA[TimeLogger::eKey] = "Test.SubA";
+		dataA[TimeLogger::eTime] = 10L;
+		dataA[TimeLogger::eMsg] = "Test MethodTimer";
+		dataA[TimeLogger::eUnit] = "ms";
+		dataA[TimeLogger::eNestingLevel] = 0L;
+		Anything dataB( dataA.DeepClone() );
+		dataB[TimeLogger::eKey] = "Test.SubB";
+		expected["Log"]["Times"].Append(dataA.DeepClone());
+		expected["Log"]["Times"].Append(dataB.DeepClone());
 
 		//call different methods of a class
 		{

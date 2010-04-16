@@ -15,19 +15,12 @@
 	/AppId	wdbasetest
 
 	/Modules {
-		CacheHandlerModule
 		RenderersModule
 		AcceptorFactoriesModule
 		ServerPoolsManagerInterfacesModule
 		ServiceDispatchersModule
 		ServiceHandlersModule
 		ServersModule
-		SessionListManager
-	}
-
-	/SessionListManager {
-		/MaxSessionsAllowed	10
-		/CleanerTimeout		12
 	}
 
 	/ServerPoolsManagerInterfaces {

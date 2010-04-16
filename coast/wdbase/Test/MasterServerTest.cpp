@@ -114,7 +114,7 @@ void MasterServerTest::InitRunResetRunTerminateTest ()
 		if ( t_assertm(server != NULL, (const char *)msg) ) {
 			long numOfThreads = 0;
 			TraceAny(roaConfig, "Ports to check");
-			serverName << "_of_InitRunResetTerminateTest";
+			serverName << "_of_InitRunResetRunTerminateTest";
 			server = (Server *)server->ConfiguredClone("Server", serverName, true);
 			if ( t_assertm(server != NULL, "expected server-clone to succeed") ) {
 				ServerThread mt(server);
@@ -135,7 +135,7 @@ void MasterServerTest::InitRunResetRunTerminateTest ()
 						mt.Terminate(10);
 					}
 				}
-				mt.CheckState(Thread::eTerminated, 10);
+				t_assertm(mt.CheckState(Thread::eTerminated, 10), "expected server thread to become terminated");
 				server->Finalize();
 				delete server;
 			}

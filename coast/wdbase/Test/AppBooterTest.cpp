@@ -266,11 +266,11 @@ void AppBooterTest::OpenLibsTest()
 		// existing already loaded lib test
 		Anything config;
 		AppBooter appBooter;
-		config["DLL"].Append("libfoundation");
+		config["DLL"].Append("libCoastFoundation");
 
 		t_assertm(appBooter.OpenLibs(config), "expected to quietly ignore already loaded library");
-		assertEqualm("libfoundation", appBooter.fLibArray.SlotName(0L), "expected loaded library to be stored in libArray");
-		t_assertm(0 != appBooter.fLibArray["libfoundation"].AsLong(0), "expected to store handle in libArray");
+		assertEqualm("libCoastFoundation", appBooter.fLibArray.SlotName(0L), "expected loaded library to be stored in libArray");
+		t_assertm(0 != appBooter.fLibArray["libCoastFoundation"].AsLong(0), "expected to store handle in libArray");
 	}
 	{
 		// existing lib test

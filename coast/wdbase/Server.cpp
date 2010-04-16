@@ -765,7 +765,7 @@ bool MasterServer::StartServers()
 		ROAnything roaServerConfig;
 		long lIdx = 0L;
 		while ( aServersIterator.Next(roaServerConfig) && success ) {
-			success = fServerThreads[lIdx].SetWorking(roaServerConfig);
+			success = fServerThreads[lIdx].CheckState(Thread::eRunning, 5) && fServerThreads[lIdx].SetWorking(roaServerConfig);
 			Trace("SetWorking of ServerThread:" << lIdx << "<" << roaServerConfig["ServerName"].AsString() << "> " << ( success ? "successful" : "unsuccessful" ) );
 			if ( !success ) {
 				SYSERROR("SetWorking of ServerThread:" << lIdx << "<" << roaServerConfig["ServerName"].AsString() << "> unsuccessful");
