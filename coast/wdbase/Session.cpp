@@ -618,16 +618,14 @@ bool Session::NeedsPageInsert(Context &context, String &transition, String &curr
 	if (context.GetQuery().IsNull() || GetRole(context)->Verify(context, transition, currentpage)) {
 		// hook
 		return RequirePageInsert(context, transition, currentpage);
-	} else {
-		// the role is insufficient
-		ForcedLogin(context, transition, currentpage);
-		return true;
 	}
+	// the role is insufficient
+	ForcedLogin(context, transition, currentpage);
+	return true;
 }
 
 bool Session::RequirePageInsert(Context &context, String &transition, String &currentpage)
 {
-	StartTrace(Session.RequirePageInsert);
 	// just a hook might use a lookup for easier configurability
 	// invent a config key based on currentpage
 	// use /InsertPage { /page transitiontotake }
@@ -640,8 +638,10 @@ bool Session::RequirePageInsert(Context &context, String &transition, String &cu
 //            return true;
 //        }
 //    }
+	StatTrace(Session.RequirePageInsert,"returning false", Storage::Current());
 	return false;
 }
+
 void Session::SaveToDelayed(Context &context, String &transition, String &pagename)
 {
 	StartTrace(Session.SaveToDelayed);

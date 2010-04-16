@@ -86,10 +86,8 @@ bool Role::Synchronize(Context &)
 bool Role::CheckLevel(const String &queryRoleName) const
 {
 	StartTrace1(Role.CheckLevel, "my role name [" << fName << "], query-role to check for [" << queryRoleName << "]");
-	String strRoleName(fName);
-
 	bool bLevelOk = false;
-	if ( !( bLevelOk = queryRoleName.IsEqual(strRoleName) ) ) {
+	if ( !( bLevelOk = fName.IsEqual(queryRoleName) ) ) {
 #if defined(COAST_TRACE)
 // the following code would be nice to see role relations
 // -> but we need to re-authenticate as soon as the role names are different
@@ -103,6 +101,7 @@ bool Role::CheckLevel(const String &queryRoleName) const
 			if ( lQRoleLevel > lThisLevel ) {
 				// check if current role is a parent of the query-role
 				Role *pRole = pQRole;
+				String strRoleName;
 				while ( !bLevelOk && pRole && ( pRole = (Role *)pRole->GetSuper() ) && pRole ) {
 					pRole->GetName(strRoleName);
 					bLevelOk = strRoleName.IsEqual(fName);
@@ -289,7 +288,7 @@ String Role::GetRequestRoleName(Context &ctx) const
 
 // this method verifies the authentication level of role
 // if everything is ok it let's the subclass verify the
-// detailed paramaters of the query in DoVerify
+// detailed parameters of the query in DoVerify
 bool Role::Verify(Context &c, String &transition, String &pagename)
 {
 	StartTrace1(Role.Verify, "Rolename <" << fName << "> currentpage= <" << pagename << ">, transition= <" << transition << ">");
@@ -320,7 +319,7 @@ bool Role::Verify(Context &c, String &transition, String &pagename)
 
 bool Role::DoVerify(Context &, String &, String &)
 {
-	StartTrace1(Role.DoVerify, fName << ": abstract returning always true" );
+	StatTrace(Role.DoVerify, "of role <" << fName << "> is not defined, returning true", Storage::Current());
 	return true;
 }
 

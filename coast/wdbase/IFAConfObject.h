@@ -165,38 +165,32 @@ protected:
 
 //!creates definition for a Find method for category
 #define RegCacheDef(category) 										\
-	static category *_NAME2_(Find, category)(const char *)
+	static _NAME1_(category) *_NAME2_(Find, category)(const char *)
 
 //!creates implementation for a Find method for category
 #define RegCacheImpl(category) 																	\
 	_NAME1_(category) *_NAME1_(category)::_NAME2_(Find, category)(const char *name) 			\
 	{ 																							\
-		StartTrace(_NAME1_(category)._NAME2_(Find, category));									\
 		static Registry *fgRegistry= 0;															\
-																								\
 		if ( !fgRegistry || RegisterableObject::fgResetCache ) fgRegistry= Registry::GetRegistry(_NAME1_(_QUOTE_(category))); 				\
 		_NAME1_(category) *catMember = 0;														\
-		if (name)																				\
-		{																						\
+		if (name) {																				\
 			catMember= SafeCast(fgRegistry->Find(name),_NAME1_(category));						\
 		}																						\
-		Trace("Looking for <" << NotNull(name) << "> in category <" << _QUOTE_(category) << ">" << (catMember?" succeeded":" failed"));\
+		StatTrace(_NAME1_(category)._NAME2_(Find, category), "Looking for <" << NotNull(name) << "> in category <" << _QUOTE_(category) << ">" << (catMember?" succeeded":" failed"), Storage::Current());\
 		return catMember;																		\
 	}
 
 #define RegCacheImplInline(category) 										\
-	static category *_NAME2_(Find, category)(const char *name)\
+	static _NAME1_(category) *_NAME2_(Find, category)(const char *name)		\
 	{ 																							\
-		StartTrace(_NAME1_(category)._NAME2_(Find, category));									\
 		static Registry *fgRegistry= 0;															\
-																								\
 		if ( !fgRegistry || RegisterableObject::fgResetCache ) fgRegistry= Registry::GetRegistry(_NAME1_(_QUOTE_(category))); 				\
 		_NAME1_(category) *catMember = 0;														\
-		if (name)																				\
-		{																						\
-			Trace("Looking for <" << name << "> in category <" << _QUOTE_(category) << ">");	\
+		if (name) {																				\
 			catMember= SafeCast(fgRegistry->Find(name),_NAME1_(category));						\
 		}																						\
+		StatTrace(_NAME1_(category)._NAME2_(Find, category), "Looking for <" << NotNull(name) << "> in category <" << _QUOTE_(category) << ">" << (catMember?" succeeded":" failed"), Storage::Current());\
 		return catMember;																		\
 	}
 
