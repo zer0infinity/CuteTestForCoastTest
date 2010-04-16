@@ -848,20 +848,21 @@ Role *Session::CheckRoleExchange(const char *action, Context &c)
 {
 	StartTrace1(Session.CheckRoleExchange, "action: <" << NotNull(action) << ">");
 
-	// a role change is only possible if we can find RoleChanges in configfile
-	ROAnything roleInfo = c.Lookup("RoleChanges");
+	// a role change is only possible if we can find RoleChanges in the context
+	String strActionToRoleEntry("RoleChanges.");
+	strActionToRoleEntry.Append(action);
+	ROAnything actionRoleChanges = c.Lookup(String("RoleChanges.").Append(action));
 
-	Role *r = 0;
-	String roleName;
-	AnyImplType tp = roleInfo[action].GetType();
-	if ((AnyArrayType == tp) && (r = GetRole(c))) {
+	Role *contextRole = GetRole(c);
+	if ( contextRole ) {
 		String oldrole;
-		r->GetName(oldrole);
-		roleName = roleInfo[action][oldrole].AsCharPtr(0);
-	} else {
-		// find the corresponding Role name
-		roleName = roleInfo[action].AsCharPtr(0);
+		contextRole->GetName(oldrole);
+		if ( oldrole.Length() ) {
+			strActionToRoleEntry.Append('.').Append(oldrole);
+		}
 	}
+	String roleName = c.Lookup(strActionToRoleEntry).AsString("");
+	Trace("action to role entry to lookup in context [" << strActionToRoleEntry << "] resulted in rolename [" << roleName << "]");
 	// now lets try to find this role
 	return Role::FindRole(roleName);
 }
