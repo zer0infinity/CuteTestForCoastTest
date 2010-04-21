@@ -1,0 +1,17 @@
+import SConsider, os
+from stat import *
+
+Import('*')
+
+buildSettings = {
+    packagename : {
+        'linkDependencies' : ['CoastActions', 'testfwWDBase'],
+        'sourceFiles'      : SConsider.listFiles(['*.cpp']),
+        'targetType'       : 'ProgramTest',
+        'copyFiles'        : [(SConsider.listFiles(['config/*.any']), S_IRUSR | S_IRGRP | S_IROTH)],
+        'runConfig'        : {
+                             },
+    }
+}
+
+SConsider.createTargets(packagename, buildSettings)
