@@ -210,14 +210,14 @@ iostream *SSLSocket::DoMakeStream()
 
 	// Application decides to continue or not depending on CLIENT_INFO
 	TraceAny(fClientInfo, "SSL client info");
-	Trace(" session cache number: " << SSL_CTX_sess_number(fContext) << ENDL
-		  << " size: " << SSL_CTX_sess_get_cache_size(fContext) << ENDL
-		  << " hits: " << SSL_CTX_sess_hits(fContext) << ENDL
-		  << " misses: " << SSL_CTX_sess_misses(fContext) << ENDL
-		  << " timeouts: " << SSL_CTX_sess_timeouts(fContext) << ENDL
-		  << " overflows: " << SSL_CTX_sess_cache_full(fContext) << ENDL
-		  << " mode: " << SSL_CTX_get_session_cache_mode(fContext) << ENDL
-		  << " timeout : " << SSL_CTX_get_timeout(fContext) << ENDL
+	Trace(" session cache number: " << SSL_CTX_sess_number(fContext) << '\n'
+		  << " size: " << SSL_CTX_sess_get_cache_size(fContext) << '\n'
+		  << " hits: " << SSL_CTX_sess_hits(fContext) << '\n'
+		  << " misses: " << SSL_CTX_sess_misses(fContext) << '\n'
+		  << " timeouts: " << SSL_CTX_sess_timeouts(fContext) << '\n'
+		  << " overflows: " << SSL_CTX_sess_cache_full(fContext) << '\n'
+		  << " mode: " << SSL_CTX_get_session_cache_mode(fContext) << '\n'
+		  << " timeout: " << SSL_CTX_get_timeout(fContext) << '\n'
 		 );
 
 	SessionResumptionHookSetSession(ssl, sslSessionStored, sslinfo["SessionIsResumed"].AsLong(0) != 0L);
