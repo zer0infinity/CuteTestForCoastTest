@@ -9,37 +9,40 @@
 {
 
 	/ReadUserData {
-		/Filename					"FileTestUserDB.any"
+		/Filename					"config/FileTestUserDB.any"
 		/FallbackParameterMapper	ParameterMapper
 		/FallbackResultMapper		RootMapper
 	}
 
 	/WriteUserData {
-		/Filename					"FileTestUserDB.any"
+		/Filename					"config/FileTestUserDB.any"
+		/Mode						"truncate"
 		/FallbackParameterMapper	ParameterMapper
 		/FallbackResultMapper		RootMapper
 	}
 
 	/ReadTokenData {
-		/Filename					"FileTestActerDB.any"
+		/Filename					"config/FileTestActerDB.any"
 		/FallbackParameterMapper	ParameterMapper
 		/FallbackResultMapper		RootMapper
 	}
 
 	/WriteTokenData {
-		/Filename					"FileTestActerDB.any"
+		/Filename					"config/FileTestActerDB.any"
+		/Mode						"truncate"
 		/FallbackParameterMapper	ParameterMapper
 		/FallbackResultMapper		RootMapper
 	}
 
 	/ReadEntityData {
-		/Filename					"FileTestRightsDB.any"
+		/Filename					"config/FileTestRightsDB.any"
 		/FallbackParameterMapper	ParameterMapper
 		/FallbackResultMapper		RootMapper
 	}
 
 	/WriteEntityData {
-		/Filename					"FileTestRightsDB.any"
+		/Filename					"config/FileTestRightsDB.any"
+		/Mode						"truncate"
 		/FallbackParameterMapper	ParameterMapper
 		/FallbackResultMapper		RootMapper
 	}
