@@ -220,7 +220,7 @@ Role *Context::GetRole() const
 
 void Context::SetPage(Page *p)
 {
-	StartTrace1(Context.SetPage, "New Page &" << (long)p );
+	StatTrace(Context.SetPage, "New Page [" << (p?p->GetName():"null") << "]", Storage::Current());
 	Replace("Page", p);
 }
 

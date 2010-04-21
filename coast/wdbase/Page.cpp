@@ -99,6 +99,7 @@ void Page::Footer(ostream &reply, Context &)
 
 void Page::Start(ostream &reply, Context &context)
 {
+	StartTrace1(Page.Start, fName << ":");
 	context.SetPage(this);
 	Render(reply, context);
 }
@@ -127,7 +128,7 @@ bool Page::ProcessToken(String &transitionToken, Context &context)
 
 void Page::Preprocess(Context &c)
 {
-	StartTrace1(Page.Preprocess, fName << ":");
+	StatTrace(Page.Preprocess, fName << ":", Storage::Current());
 }
 
 void Page::Render(ostream &reply, Context &c)

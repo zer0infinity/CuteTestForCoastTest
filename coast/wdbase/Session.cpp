@@ -208,16 +208,16 @@ Role *Session::GetRole(Context &ctx)
 	String role_name = ((ROAnything)fStore)["RoleName"].AsString("");
 	if (role_name.Length() > 0) {
 		role = Role::FindRole(role_name);
-		Trace("RoleName of fStore: [" << role_name << "]");
+		Trace("using RoleName from fStore");
 	} else {
 		role_name = Role::GetDefaultRoleName(ctx);
 		role = Role::FindRoleWithDefault(role_name, ctx);
-		Trace("Default RoleName: [" << role_name << "]");
+		Trace("using default RoleName");
 		if (role) {
 			PutInStore("RoleName", role_name);
 		}
 	}
-	Trace("RoleName: [" << role_name << "], addr &" << (long)role);
+	Trace("returning [" << role_name << "], addr &" << (long)role);
 	return role;
 }
 
@@ -613,15 +613,16 @@ void Session::ForcedLogin(Context &context, String &transition, String &currentp
 
 bool Session::NeedsPageInsert(Context &context, String &transition, String &currentpage)
 {
-	StartTrace(Session.NeedsPageInsert);
+	bool bNeedsInsert(true);
 	// we only check the role for non-empty queries
 	if (context.GetQuery().IsNull() || GetRole(context)->Verify(context, transition, currentpage)) {
-		// hook
-		return RequirePageInsert(context, transition, currentpage);
+		bNeedsInsert = RequirePageInsert(context, transition, currentpage);
+	} else {
+		// the role is insufficient
+		ForcedLogin(context, transition, currentpage);
 	}
-	// the role is insufficient
-	ForcedLogin(context, transition, currentpage);
-	return true;
+	StatTrace(Session.NeedsPageInsert, (bNeedsInsert?"needs":"no need for") << " page insert", Storage::Current());
+	return bNeedsInsert;
 }
 
 bool Session::RequirePageInsert(Context &context, String &transition, String &currentpage)
@@ -638,7 +639,7 @@ bool Session::RequirePageInsert(Context &context, String &transition, String &cu
 //            return true;
 //        }
 //    }
-	StatTrace(Session.RequirePageInsert,"returning false", Storage::Current());
+	StatTrace(Session.RequirePageInsert,"transition [" << transition << "] current page [" << currentpage << "] returning false", Storage::Current());
 	return false;
 }
 

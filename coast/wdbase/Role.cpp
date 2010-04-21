@@ -15,6 +15,7 @@
 #include "Renderer.h"
 #include "SystemLog.h"
 #include "Dbg.h"
+#include "AnyIterators.h"
 #include <cstring>
 
 //---- RolesModule -----------------------------------------------------------
@@ -246,16 +247,17 @@ void Role::CollectLinkState(Anything &stateIn, Context &c)
 
 	// copy selected fields from TmpStore into Link
 	// the symmetric operation is in GetNewPageName
-	ROAnything stateFullList;
-
+	ROAnything stateFullList, roaStatefulEntry;
 	if (Lookup("StateFull", stateFullList)) {
 		Anything tmpStore = c.GetTmpStore();
-
-		for (int i = 0, szf = stateFullList.GetSize(); i < szf; ++i) {
-			const char *stateName = stateFullList[i].AsCharPtr(0);
-			if (stateName) {
-				if (!stateIn.IsDefined(stateName) && tmpStore.IsDefined(stateName)) {
-					stateIn[stateName] = tmpStore[stateName];
+		AnyExtensions::Iterator<ROAnything> statefulIter(stateFullList);
+		String strStateName(32L);
+		while (statefulIter.Next(roaStatefulEntry)) {
+			strStateName = roaStatefulEntry.AsString();
+			if (strStateName.Length()) {
+				if (!stateIn.IsDefined(strStateName) && tmpStore.IsDefined(strStateName)) {
+					Trace("copying content of TmpStore[\"" << strStateName << "\"]");
+					stateIn[strStateName] = tmpStore[strStateName];
 				}
 			}
 		}
@@ -269,19 +271,19 @@ void Role::CollectLinkState(Anything &stateIn, Context &c)
 
 bool Role::TransitionAlwaysOK(const String &transition)
 {
-	return (transition ==  "Logout");
+	return (transition == "Logout");
 }
 
 String Role::GetRequestRoleName(Context &ctx) const
 {
-	StartTrace(Role.GetRequestRoleName);
 	String name;
 	Anything query = ctx.GetQuery();
 	if ( query.IsDefined("role") ) {
 		name = query["role"].AsString(name);
-		Trace("got Role <" << name << "> from query");
+		StatTrace(Role.GetRequestRoleName, "got query role <" << name << ">", Storage::Current());
 	} else {
 		name = GetDefaultRoleName(ctx);
+		StatTrace(Role.GetRequestRoleName, "got default role <" << name << ">", Storage::Current());
 	}
 	return name;
 }
