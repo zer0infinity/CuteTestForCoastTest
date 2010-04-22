@@ -1907,7 +1907,7 @@
 					}
 				}
 			}
-			/Expected	"<A HREF=\"https://test.hsr.loc/testApp?X=Encoder-Scrambler-Signer-Compressor-%7B%2Frole%20%22TestRole%22%2FsessionId%20%22TestSession%22%2Fpage%20%22TestPage%22%2Faction%20%22GoTest%22%2FName%20%22Test%22%2FKey%20%22XYZ%22%7D\" >Test</A>"
+			/Expected	"<a href=\"https://test.hsr.loc/testApp?X=Encoder-Scrambler-Signer-Compressor-%7B%2Frole%20%22TestRole%22%2FsessionId%20%22TestSession%22%2Fpage%20%22TestPage%22%2Faction%20%22GoTest%22%2FName%20%22Test%22%2FKey%20%22XYZ%22%7D\" >Test</a>"
 		}
 		{
 			/Env {
