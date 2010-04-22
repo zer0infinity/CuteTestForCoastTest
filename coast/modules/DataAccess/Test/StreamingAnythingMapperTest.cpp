@@ -41,7 +41,7 @@ void StreamingAnythingMapperTest::GetTest()
 	String streamedAny;
 	OStringStream out(&streamedAny);
 	mapper.Get("Input", out, ctx);
-	assertEqual( _QUOTE_({/Slot1 "Something" /Slot2 42}) , streamedAny);
+	assertEqual( _QUOTE_({\x0A\x20\x20/Slot1 "Something"\x0A\x20\x20/Slot2 42\x0A}) , streamedAny);
 
 	String streamedAny2;
 	OStringStream out2(&streamedAny2);

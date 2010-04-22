@@ -163,8 +163,8 @@
 				  /DataAccess {
 					/DATest_NoMappersGiven {
 					  /Error {
-						"DataAccess.cpp:140 DataAccess::GetMyParameterMapper returned 0 for [DATest_NoMappersGiven]"
-						"DataAccess.cpp:185 DataAccess::GetMyResultMapper returned 0 for [DATest_NoMappersGiven]"
+						"DataAccess.cpp:128 DataAccess::GetMyParameterMapper returned 0 for [DATest_NoMappersGiven]"
+						"DataAccess.cpp:164 DataAccess::GetMyResultMapper returned 0 for [DATest_NoMappersGiven]"
 					  }
 					}
 				  }
@@ -185,7 +185,7 @@
 				  /DataAccess {
 					/DATest_OnlyResultMapperGiven {
 					  /Error {
-						"DataAccess.cpp:140 DataAccess::GetMyParameterMapper returned 0 for [DATest_OnlyResultMapperGiven]"
+						"DataAccess.cpp:128 DataAccess::GetMyParameterMapper returned 0 for [DATest_OnlyResultMapperGiven]"
 					  }
 					}
 				  }
@@ -923,7 +923,7 @@
 			/Result {
 				/TmpStore {
 					/Mapper	{
-						/FileContent	"#--------------------------------------------------------------------\x0A# Copyright (c) 2005 ifs\x0A# All Rights Reserved\x0A#--------------------------------------------------------------------\x0A{\x0A	/Version    1234\x0A	/Guguseli	Hallo\x0A}\x0A"
+						/FileContent	"#-----------------------------------------------------------------------------------------------------\x0A# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland\x0A# All rights reserved.\x0A#\x0A# This library/application is free software; you can redistribute and/or modify it under the terms of\x0A# the license that is included with this library/application in the file license.txt.\x0A#-----------------------------------------------------------------------------------------------------\x0A\x0A{\x0A	/Version    1234\x0A	/Guguseli	Hallo\x0A}\x0A"
 					}
 				}
 			}
@@ -943,7 +943,7 @@
 			/Result {
 				/TmpStore {
 					/Mapper	{
-						/FileContent	"#--------------------------------------------------------------------\x0A# Copyright (c) 2005 ifs\x0A# All Rights Reserved\x0A#--------------------------------------------------------------------\x0A{\x0A	/Version    1234\x0A	/Guguseli	Hallo\x0A}\x0A"
+						/FileContent	"#-----------------------------------------------------------------------------------------------------\x0A# Copyright (c) 2005, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland\x0A# All rights reserved.\x0A#\x0A# This library/application is free software; you can redistribute and/or modify it under the terms of\x0A# the license that is included with this library/application in the file license.txt.\x0A#-----------------------------------------------------------------------------------------------------\x0A\x0A{\x0A	/Version    1234\x0A	/Guguseli	Hallo\x0A}\x0A"
 					}
 				}
 			}
