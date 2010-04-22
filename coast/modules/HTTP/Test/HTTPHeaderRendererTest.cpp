@@ -19,7 +19,7 @@
 #include "Dbg.h"
 
 //---- HTTPHeaderRendererTest ----------------------------------------------------------------
-HTTPHeaderRendererTest::HTTPHeaderRendererTest(TString name) : TestCase(name)
+HTTPHeaderRendererTest::HTTPHeaderRendererTest(TString name) : TestCaseType(name)
 {
 	StartTrace(HTTPHeaderRendererTest.Ctor);
 }

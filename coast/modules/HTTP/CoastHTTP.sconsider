@@ -4,17 +4,16 @@ import SConsider
 Import('*')
 
 buildSettings = {
-     packagename : {
-                     'includeSubdir'    : '',
-                     'linkDependencies'       : ['CoastSecurity'],
-                     'sourceFiles'      : SConsider.listFiles(['*.cpp']),
-                     'targetType'       : 'LibraryShared',
-                     'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL'] },
-                     'public' : {
-                                 'includes'     : SConsider.listFiles(['*.h']),
-#                                'appendUnique' : { 'CPPDEFINES' : 'fooX' },
-                    }
-                 }
-                }
+    packagename : {
+        'includeSubdir'    : '',
+        'linkDependencies' : ['CoastSecurity'],
+        'sourceFiles'      : SConsider.listFiles(['*.cpp']),
+        'targetType'       : 'LibraryShared',
+        'appendUnique'     : { 'CPPDEFINES' : ['HTTP_IMPL'] },
+        'public' : {
+            'includes'     : SConsider.listFiles(['*.h']),
+        }
+    }
+}
 
 SConsider.createTargets(packagename, buildSettings)

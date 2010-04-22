@@ -18,7 +18,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class HTTPHeaderRendererTest : public TestCase
+class HTTPHeaderRendererTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors
