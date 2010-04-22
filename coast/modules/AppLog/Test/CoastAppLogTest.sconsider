@@ -1,0 +1,30 @@
+import SConsider, os, fnmatch
+from stat import *
+
+Import('*')
+
+def setUp(target, source, env):
+    env['ENV']['WD_USE_MMAP_STREAMS'] = "0"
+
+def tearDown(target, source, env):
+    dir = env['BASEOUTDIR'].Dir('tests').Dir(packagename).Dir('config')
+    for root, dirs, files in os.walk(dir.abspath):
+        for f in files:
+            if fnmatch.fnmatch(f, '*.log*'):
+                os.unlink(os.path.join(root, f))
+
+buildSettings = {
+    packagename : {
+        'linkDependencies' : ['CoastAppLog', 'testfwWDBase'],
+        'sourceFiles'      : SConsider.listFiles(['*.cpp']),
+        'targetType'       : 'ProgramTest',
+        'copyFiles'        : [(SConsider.listFiles(['config/*.any']), S_IRUSR | S_IRGRP | S_IROTH),
+                              ([Dir('config/rotate')], S_IRUSR | S_IRGRP | S_IROTH | S_IWUSR | S_IXUSR | S_IXGRP | S_IXOTH)],
+        'runConfig'        : {
+                              'setUp': setUp,
+                              'tearDown': tearDown,
+                             },
+    }
+}
+
+SConsider.createTargets(packagename, buildSettings)

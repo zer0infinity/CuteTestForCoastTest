@@ -3,15 +3,11 @@ from stat import *
 
 Import('*')
 
-old_env = None
-
 def setUp(target, source, env):
-    old_env = dict(os.environ)
-    os.environ['TRACE_STORAGE'] = "1"
+    env['ENV']['TRACE_STORAGE'] = "1"
 
 def tearDown(target, source, env):
-    os.environ.clear()
-    os.environ.update(old_env)
+    pass
 
 buildSettings = {
     packagename : {
