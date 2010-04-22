@@ -7,7 +7,7 @@ def setUp(target, source, env):
     env['ENV']['WD_USE_MMAP_STREAMS'] = "0"
 
 def tearDown(target, source, env):
-    dir = env['BASEOUTDIR'].Dir('tests').Dir(packagename).Dir('config')
+    dir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).Dir('config')
     for root, dirs, files in os.walk(dir.abspath):
         for f in files:
             if fnmatch.fnmatch(f, '*.log*'):
