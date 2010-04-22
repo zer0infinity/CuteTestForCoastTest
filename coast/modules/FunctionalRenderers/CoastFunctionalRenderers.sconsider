@@ -8,10 +8,8 @@ buildSettings = {
                      'linkDependencies' : ['CoastRenderers'],
                      'sourceFiles'      : SConsider.listFiles(['*.cpp']),
                      'targetType'       : 'LibraryShared',
-                     'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL'] },
                      'public' : {
                                  'includes'     : SConsider.listFiles(['*.h']),
-#                                'appendUnique' : { 'CPPDEFINES' : 'fooX' },
                     }
                  }
                 }
