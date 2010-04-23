@@ -1,0 +1,19 @@
+import os, pdb
+import SConsider
+from stat import *
+
+Import('*')
+
+buildSettings = {
+    packagename : {
+        'includeSubdir'    : '',
+        'linkDependencies' : ['CoastSecurity', 'testfwWDBase'],
+        'sourceFiles'      : SConsider.listFiles( ['*.cpp'] ),
+        'targetType'       : 'ProgramTest',
+        'copyFiles'        : [(SConsider.findFiles(['config'], ['.any', '.txt']), S_IRUSR | S_IRGRP | S_IROTH)],
+        'public' : {
+        }
+    }
+}
+
+SConsider.createTargets( packagename, buildSettings )

@@ -18,8 +18,12 @@
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
+
 //---- MD5RendererTest ----------------------------------------------------------------
-MD5RendererTest::MD5RendererTest(TString name) : TestCase(name)
+MD5RendererTest::MD5RendererTest(TString name) : TestCaseType(name)
 {
 	StartTrace(MD5RendererTest.Ctor);
 }

@@ -18,7 +18,7 @@
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>
 */
-class MD5RendererTest : public TestCase
+class MD5RendererTest : public TestFramework::TestCase
 {
 public:
 	//--- constructors

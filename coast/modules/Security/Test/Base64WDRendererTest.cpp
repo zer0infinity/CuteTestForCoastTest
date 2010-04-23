@@ -18,8 +18,12 @@
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
+
 //---- Base64WDRendererTest ----------------------------------------------------------------
-Base64WDRendererTest::Base64WDRendererTest(TString name) : TestCase(name)
+Base64WDRendererTest::Base64WDRendererTest(TString name) : TestCaseType(name)
 {
 	StartTrace(Base64WDRendererTest.Ctor);
 }

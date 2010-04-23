@@ -18,8 +18,12 @@
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
+
 //---- Base64RendererTest ----------------------------------------------------------------
-Base64RendererTest::Base64RendererTest(TString name) : TestCase(name)
+Base64RendererTest::Base64RendererTest(TString name) : TestCaseType(name)
 {
 	StartTrace(Base64RendererTest.Ctor);
 }
