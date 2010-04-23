@@ -4,16 +4,16 @@ import SConsider
 Import('*')
 
 buildSettings = {
-                 packagename : {
-                     'linkDependencies' : ['CoastSecurity', 'CoastWDBase', 'openssl'],
-                     'sourceFiles'      : SConsider.listFiles(['*.cpp']),
-                     'targetType'       : 'LibraryShared',
-                     'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL'] },
-                     'public' : {
-                                 'includes'     : SConsider.listFiles(['*.h']),
-                                 'includeSubdir'    : '',
-                    }
-                 }
-                }
+    packagename : {
+        'linkDependencies' : ['CoastSecurity', 'CoastWDBase', 'openssl'],
+        'sourceFiles'      : SConsider.listFiles(['*.cpp']),
+        'targetType'       : 'LibraryShared',
+        'appendUnique'     : { 'CPPDEFINES' : ['NTLMAUTH_IMPL'] },
+        'public' : {
+            'includes'     : SConsider.listFiles(['*.h']),
+            'includeSubdir'    : '',
+        }
+    }
+}
 
 SConsider.createTargets(packagename, buildSettings)
