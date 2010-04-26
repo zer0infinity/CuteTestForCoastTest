@@ -1,8 +1,8 @@
 -- Definition for the test data base
 
-DROP Database IF EXISTS mySQLTest;
-Create Database mySQLTest;
-use mySQLTest;
+DROP Database IF EXISTS coast_tests;
+Create Database coast_tests;
+use coast_tests;
 
 Create TABLE TestTable (	
 	Name VARCHAR(10) NOT NULL PRIMARY KEY,
@@ -14,10 +14,10 @@ INSERT INTO TestTable VALUES ("MySQL",2);
 INSERT INTO TestTable VALUES ("Now",33);
 
 GRANT SELECT,INSERT,UPDATE,DELETE
-ON mySQLTest.TestTable
-TO 'TestUser'@'localhost' IDENTIFIED BY 'allTests';
+ON coast_tests.TestTable
+TO 'TestUser'@'localhost' IDENTIFIED BY 'CoastMySQL10';
 
 GRANT SELECT,INSERT,UPDATE,DELETE
-ON mySQLTest.TestTable
-TO 'TestUser'@'sinv-56025.edu.hsr.ch' IDENTIFIED BY 'allTests';
+ON coast_tests.TestTable
+TO 'TestUser'@'sifs-coast1.hsr.ch' IDENTIFIED BY 'CoastMySQL10';
 

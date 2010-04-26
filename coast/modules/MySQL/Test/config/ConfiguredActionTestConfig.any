@@ -51,10 +51,10 @@
 	/TestCases {
 		/InsertTest {
 			/TmpStore {
-				/Host		sinv-56025.edu.hsr.ch
-				/Database	mySQLTest
+				/Host		sifs-coast1.hsr.ch
+				/Database	coast_tests
 				/MySQLUser	TestUser
-				/MySQLPW	allTests
+				/MySQLPW	CoastMySQL10
 			}
 			/TheAction {
 				/CallDA 	InsertTest
@@ -69,7 +69,7 @@
 		}
 		/DeleteTest {
 			/TmpStore {
-				/Database	mySQLTest
+				/Database	coast_tests
 			}
 			/TheAction {
 				/CallDA	DeleteTest
@@ -84,7 +84,7 @@
 		}
 		/SelectTest {
 			/TmpStore {
-				/Database	mySQLTest
+				/Database	coast_tests
 			}
 			/TheAction {
 				/CallDA		SelectTest
@@ -113,7 +113,7 @@
 		}
 		/SelectTestWithoutQueryCount {
 			/TmpStore {
-				/Database	mySQLTest
+				/Database	coast_tests
 			}
 			/TheAction {
 				/CallDA		SelectTestWithoutQueryCount
@@ -141,7 +141,7 @@
 		}
 		/SQLErrorTest {
 			/TmpStore {
-				/Database	mySQLTest
+				/Database	coast_tests
 			}
 			/TheAction {
 				/CallDA SQLErrorTest
@@ -157,7 +157,7 @@
 		}
 		/WrongPortTest {
 			/TmpStore {
-				/Database	mySQLTest
+				/Database	coast_tests
 			}
 			/TheAction {
 				/CallDA WrongPortTest
@@ -170,7 +170,7 @@
 		}
 		/WrongHostTest {
 			/TmpStore {
-				/Database	mySQLTest
+				/Database	coast_tests
 			}
 			/TheAction {
 				/CallDA WrongHostTest
@@ -179,14 +179,14 @@
 			/Result {
 				/TmpStore {
 					/WrongHostTest	{
-						/Error "Couldn't connect to mySQL engine! Unknown MySQL server host 'nonexistenthost' (1)"
+						/Error "Couldn't connect to mySQL engine! Unknown MySQL Server Host 'nonexistenthost' (1)"
 					}
 				}
 			}
 		}
 		/WrongPasswordTest {
 			/TmpStore {
-				/Database	mySQLTest
+				/Database	coast_tests
 				/MySQLUser	TestUser
 				/MySQLPW	wrong
 			}

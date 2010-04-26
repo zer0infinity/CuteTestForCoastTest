@@ -1,1 +1,1 @@
-DROP Database IF EXISTS mySQLTest;
+DROP Database IF EXISTS coast_tests;
