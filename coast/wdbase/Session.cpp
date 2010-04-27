@@ -253,7 +253,7 @@ void Session::Notify(ESessionEvt evt, Context &ctx)
 
 void Session::IntNotify(ESessionEvt evt, Context &ctx)
 {
-	StartTrace1(Session.IntNotify, "virtual function not overridden!");
+	StatTrace(Session.IntNotify, "virtual function not overridden!", Storage::Current());
 }
 
 //--- immutable context
@@ -648,7 +648,7 @@ void Session::SaveToDelayed(Context &context, String &transition, String &pagena
 	StartTrace(Session.SaveToDelayed);
 	if (!InReAuthenticate(GetRole(context), context)) {
 		// to prevent endless loops
-		Trace("normal <" << transition << "> pg:<" << pagename << ">");
+		Trace("transition [" << transition << "] page [" << pagename << "]");
 		// remember last current query for later processing
 		Anything query;
 		Anything delayed = context.GetQuery().DeepClone(fStore.GetAllocator());
