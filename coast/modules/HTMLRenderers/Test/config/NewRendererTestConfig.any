@@ -7,8 +7,10 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-
-	/DLL {}
+	/DLL {
+		CoastStringRenderers
+		CoastHTMLRenderers
+	}
 	/Modules {
 		PagesModule
 		RolesModule
@@ -43,10 +45,9 @@
 		}
 		/MultiFuncBoxHeaderTest {
 			/TmpStore {
-				/BoxInputData			!"OptionBoxTestConfig.any?TestData"
-				/BoxColumns				!"OptionBoxTestConfig.any?MultifunctionListBoxRendererTest.List"
+				/BoxInputData			!"OptionBoxTestConfig.any?MultifunctionListBoxRendererAlignTest.TestData"
+				/BoxColumns				!"OptionBoxTestConfig.any?MultifunctionListBoxRendererAlignTest.List"
 				/myRenderer {
-					"<form name=test>"
 					/MultifunctionListBoxRenderer {
 						/Name 			MyBox
 						/Size			10
@@ -55,13 +56,12 @@
 						/ValueRenderer { /Lookup BoxColumns.Value }
 						/EditableList	1
 					}
-					"</form>"
 				}
 			}
 			/Renderer {
 				/ContextLookupRenderer myRenderer
 			}
-			/Expected	!"OptionBoxTestConfig.any?MultifunctionListBoxRendererTestOutput"
+			/Expected	!"OptionBoxTestConfig.any?MultifunctionListBoxRendererAlignTest.Output"
 		}
 	}
 }

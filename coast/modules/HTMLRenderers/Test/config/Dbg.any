@@ -7,7 +7,6 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-
 	/LowerBound		0
 	/UpperBound		10
 	/DumpAnythings	1
@@ -25,6 +24,26 @@
 		/EnableAll	10
 	}
 	/AppBooter {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/HeaderListRenderer {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/MultifunctionListBoxRenderer {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/ColumnInputFieldRenderer {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/MultiColumnRenderer {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/MultiOptionListRenderer {
 		/MainSwitch	10
 		/EnableAll	10
 	}
