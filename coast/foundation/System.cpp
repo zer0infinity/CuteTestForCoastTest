@@ -1021,6 +1021,7 @@ bool System::Uname(Anything &anyInfo)
 		anyInfo["version"] = name.version;
 		anyInfo["machine"] = name.machine;
 	}
+	TraceAny(anyInfo, "uname retcode:" << (long)iRet);
 	return ( iRet >= 0);
 }
 #endif /* WIN32 */
