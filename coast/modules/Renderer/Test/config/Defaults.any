@@ -1,0 +1,5 @@
+{
+	/FullQualifiedDomainName	"##FQDN##"
+	/HostName					"##HOSTNAME##"
+	/DomainName					"##DOMAINONLY##"
+}

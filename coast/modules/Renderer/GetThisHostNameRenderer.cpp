@@ -32,12 +32,14 @@ void GetThisHostNameRenderer::RenderAll(ostream &reply, Context &ctx, const ROAn
 	if ( System::HostName(thisHostName) ) {
 		String thisHostIp(Resolver::DNS2IPAddress(thisHostName));
 		String thisHostDns(Resolver::IPAddress2DNS(thisHostIp));
+		Trace("hostname [" << thisHostName << "] ip [" << thisHostIp << "] dns [" << thisHostDns << "]");
 		StringTokenizer tokens(thisHostDns, '.');
 		String hostName, domain;
-		String what(config["Representation"].AsString("Full"));
 		if (tokens.NextToken(hostName)) {
 			domain = tokens.GetRemainder(false);
 		}
+		Trace("host [" << hostName << "] domain [" << domain << "]");
+		String what(config["Representation"].AsString("Full"));
 		if ( what == "Full" ) {
 			reply << thisHostDns;
 		} else if ( what == "HostOnly" ) {

@@ -7,7 +7,6 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-
 	/Modules {
 		RenderersModule
 		SecurityModule
@@ -2543,7 +2542,8 @@
 					/Representation "Full"
 				}
 			}
-			/Expected       "sinv-56025.edu.hsr.ch"
+			/Expected       !Defaults.any?FullQualifiedDomainName
+
 		}
 		/GetThisHostNameRendererHostTest
 		{
@@ -2554,7 +2554,7 @@
 					/Representation "HostOnly"
 				}
 			}
-			/Expected       "sinv-56025"
+			/Expected       !Defaults.any?HostName
 		}
 		/GetThisHostNameRendererDNSTest
 		{
@@ -2565,7 +2565,7 @@
 					/Representation "DomainOnly"
 				}
 			}
-			/Expected       "edu.hsr.ch"
+			/Expected       !Defaults.any?DomainName
 		}
 		/AnythingContentRendererTest
 		{

@@ -1,11 +1,29 @@
-import os, pdb
+import os, pdb, socket
 import SConsider
 from stat import *
 
 Import('*')
 
+def ModifyHostinfoConfig(env, cfgfilename):
+    tdirabs = env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).abspath
+    fname = os.path.join(tdirabs, cfgfilename)
+    ## set writable cfgfilename
+    if os.path.isfile(fname):
+        os.chmod(fname, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)
+        ## replace some token in Tests configuration file
+        fqdn=socket.getfqdn()
+        hostonly=fqdn.split('.')[0]
+        try:
+            domain='.'.join(fqdn.split('.')[1:])
+        except:
+            domain=""
+        searchReplace = [(r"##FQDN##", fqdn),
+                         (r"##HOSTNAME##", hostonly),
+                         (r"##DOMAINONLY##", domain) ]
+        SConsider.replaceRegexInFile(fname, searchReplace)
+
 def setUp( target, source, env ):
-	pass
+    ModifyHostinfoConfig(env, 'config/Defaults.any')
 
 def tearDown( target, source, env ):
 	pass
@@ -20,8 +38,8 @@ buildSettings = {
         'copyFiles'        : [( SConsider.findFiles( ['.'], ['.any', '.txt', '.tst', '.html'] ), S_IRUSR | S_IRGRP | S_IROTH ),
                               ( SConsider.findFiles( ['config'], ['.sh'] ), S_IRUSR | S_IRGRP | S_IROTH | S_IXUSR )],
         'runConfig'        : {
-#			'setUp': setUp,
-#			'tearDown': tearDown,
+			'setUp': setUp,
+			'tearDown': tearDown,
 		},
     }
 }
