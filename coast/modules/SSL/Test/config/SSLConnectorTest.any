@@ -5,17 +5,14 @@
 # This library/application is free software; you can redistribute and/or modify it under the terms of
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
-
 {
-
 	/InternalSSLhost {
-		/ip		"sinv-56025.edu.hsr.ch"
-		/port		443
+		/ip		!Defaults.any?SSLHost
+		/port		!Defaults.any?SSLPort
 	}
 	/RemoteSSLhost {
-		/name	"sinv-56025.edu.hsr.ch"
-		/port		443
-		/faultyport	8081
+		/name		!Defaults.any?RemoteSSLHost
+		/port		!Defaults.any?RemoteSSLPort
+		/faultyport	!Defaults.any?FaultySSLPort
 	}
 }
-
