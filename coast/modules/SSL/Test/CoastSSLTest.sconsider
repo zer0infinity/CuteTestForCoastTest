@@ -1,5 +1,5 @@
 import SConsider
-import os, socket, pdb
+import os, socket, pdb, re
 import threading, shutil
 from stat import *
 from SocketServer import BaseServer
@@ -76,11 +76,9 @@ def runCommand(args, logpath, stdincontent=None):
     if theCommand_out:
         with open(os.path.join(logpath, logfilebasename + '.stdout'), 'w') as outfile:
             outfile.write(theCommand_out)
+    return theCommand.returncode
 
-
-def setUp( target, source, env ):
-    ModifyHostinfoConfig(env, 'config/Defaults.any')
-    pdb.set_trace()
+def createCertificates(env):
     tdirabs = env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).abspath
     mkcaScriptName = os.path.join(tdirabs, 'mkca-new.sh')
     ## set writable cfgfilename
@@ -103,16 +101,29 @@ def setUp( target, source, env ):
     commandargs.extend(['-d', mkcertDirectory])
     # maybe we should do the following step by hand because we do not need cert suffixes
     commandargs.extend(['-c', certOutDir])
-#    commandargs.extend(['-C', hostonly])
-#    commandargs.extend(['-S', hostonly])
+    commandargs.extend(['-C', hostonly])
+    commandargs.extend(['-S', hostonly])
     if domain:
         commandargs.extend(['-S', fqdn])
-    runCommand(commandargs, tdirabs, "")
-    # create certificate files:
-# openssl req -new -x509 -keyout server.pem -out server.pem -days 365 -nodes
-# if there is now c_rehash available, use the following script, from http://www.commandlinefu.com/commands/view/2532/c_rehash-replacement
-# for file in *crt.pem; do theHash=$(openssl x509 -hash -noout -in $file 2>/dev/null) && ! test -f ${theHash}.0 && ln -s $file ${theHash}.0; done
-#    threading.Thread(target=startServer, args=[hostonly, sslport, SecureHTTPServer, SecureHTTPRequestHandler, certFile, keyFile]).start()
+    retCode=runCommand(commandargs, tdirabs, "")
+    certFileNodesList=[]
+    if retCode == 0:
+        # get list of copied certificates
+        certFileNodesList=SConsider.findFiles([certOutDir], ['.pem','.p12'])
+    return certFileNodesList
+    # openssl req -new -x509 -keyout server.pem -out server.pem -days 365 -nodes
+    # if there is now c_rehash available, use the following script, from http://www.commandlinefu.com/commands/view/2532/c_rehash-replacement
+    # for file in *crt.pem; do theHash=$(openssl x509 -hash -noout -in $file 2>/dev/null) && ! test -f ${theHash}.0 && ln -s $file ${theHash}.0; done
+
+def setUp( target, source, env ):
+    ModifyHostinfoConfig(env, 'config/Defaults.any')
+    # create certificate files
+    certFileNodesList=createCertificates(env)
+    if certFileNodesList:
+        serverCert=[c.abspath for c in certFileNodesList if re.match(r'servercrt(_'+hostonly+')?\.pem', os.path.split(c.abspath)[1])]
+        serverKey=[c.abspath for c in certFileNodesList if re.match(r'serverkey(_'+hostonly+')?\.pem', os.path.split(c.abspath)[1])]
+        if serverCert and serverKey:
+            threading.Thread(target=startServer, args=[hostonly, sslport, SecureHTTPServer, SecureHTTPRequestHandler, serverCert[0], serverKey[0]]).start()
 
 def tearDown(target, source, env):
     for server in servers:

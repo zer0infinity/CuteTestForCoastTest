@@ -27,7 +27,7 @@ target_dir=""
 errorexit()
 {
 	echo "!!!!!!!!!!!!!!!!!! CERTIFICATE VERIFICATION FAILURE!!!!!!!!!!!!!!!"
-	exit 999
+	exit 99
 }
 
 showhelp()
@@ -387,51 +387,51 @@ mkdir ${target_dir}/client && cd ${target_dir}/client && (
 )
 
 cd ${target_dir}/subCA1 && (
-echo "Building result directory  ${target_dir}/ucerts"
-cp  ${CATOP}/cacert.pem ${target_dir}/ucerts/subCA1crt.pem
-for commonnameserver_var in ${commonnameserver}
-do
-	cp  newcert_${commonnameserver_var}.pem       ${target_dir}/ucerts/servercrt_${commonnameserver_var}.pem
-	cp  newreq_${commonnameserver_var}.plain.pem  ${target_dir}/ucerts/serverkey_${commonnameserver_var}.pem
-done
+	echo "Building result directory  ${target_dir}/ucerts"
+	cp  ${CATOP}/cacert.pem ${target_dir}/ucerts/subCA1crt.pem
+	for commonnameserver_var in ${commonnameserver}
+	do
+		cp  newcert_${commonnameserver_var}.pem       ${target_dir}/ucerts/servercrt_${commonnameserver_var}.pem
+		cp  newreq_${commonnameserver_var}.plain.pem  ${target_dir}/ucerts/serverkey_${commonnameserver_var}.pem
+	done
 )
 
 cd ${target_dir} && (
-cp ${CATOP}/cacert.pem ${target_dir}/ucerts/rootCA1crt.pem
-if [ -z ${pathtoexistingcacert} ]
-then
-	cp ${CATOP}/cacert.p12 ${target_dir}/ucerts/rootCA1.p12
-fi
+	cp ${CATOP}/cacert.pem ${target_dir}/ucerts/rootCA1crt.pem
+	if [ -z ${pathtoexistingcacert} ]
+	then
+		cp ${CATOP}/cacert.p12 ${target_dir}/ucerts/rootCA1.p12
+	fi
 )
 
 cd ${target_dir}/client && (
-for commonnameclient_var in ${commonnameclient}
-do
-	cp  clientcrt_${commonnameclient_var}.p12      ${target_dir}/ucerts/clientcrt_${commonnameclient_var}.p12
-	cp  clientcrt_${commonnameclient_var}.pem	   ${target_dir}/ucerts/clientcrt_${commonnameclient_var}.pem
-	cp  client_${commonnameclient_var}.key		   ${target_dir}/ucerts/clientkey_${commonnameclient_var}.pem
-done
+	for commonnameclient_var in ${commonnameclient}
+	do
+		cp  clientcrt_${commonnameclient_var}.p12      ${target_dir}/ucerts/clientcrt_${commonnameclient_var}.p12
+		cp  clientcrt_${commonnameclient_var}.pem	   ${target_dir}/ucerts/clientcrt_${commonnameclient_var}.pem
+		cp  client_${commonnameclient_var}.key		   ${target_dir}/ucerts/clientkey_${commonnameclient_var}.pem
+	done
 )
 
 cd ${target_dir}/ucerts && (
-echo "Creating Chain without Server Cert)"
-cp  subCA1crt.pem     chainwoservercrt.pem
-cat rootCA1crt.pem >> chainwoservercrt.pem
-for commonnameserver_var in ${commonnameserver}
-do
-	echo "Creating Full Cain file (Server/subCA1/rootCA1) for ${commonnameserver_var}"
-	cp  servercrt_${commonnameserver_var}.pem     fullchain_${commonnameserver_var}.pem
-	cat subCA1crt.pem     >> fullchain_${commonnameserver_var}.pem
-	cat rootCA1crt.pem    >> fullchain_${commonnameserver_var}.pem
-done
+	echo "Creating Chain without Server Cert)"
+	cp  subCA1crt.pem     chainwoservercrt.pem
+	cat rootCA1crt.pem >> chainwoservercrt.pem
+	for commonnameserver_var in ${commonnameserver}
+	do
+		echo "Creating Full Cain file (Server/subCA1/rootCA1) for ${commonnameserver_var}"
+		cp  servercrt_${commonnameserver_var}.pem     fullchain_${commonnameserver_var}.pem
+		cat subCA1crt.pem     >> fullchain_${commonnameserver_var}.pem
+		cat rootCA1crt.pem    >> fullchain_${commonnameserver_var}.pem
+	done
 
-for commonnameserver_var in ${commonnameserver}
-do
-	echo "Creating Chain without the CA the client trusts (without rootCA1) for ${commonnameserver_var}"
-	echo "You might use this in Frontdoor"
-	cp  servercrt_${commonnameserver_var}.pem     serverchain_${commonnameserver_var}.pem
-	cat subCA1crt.pem     >> serverchain_${commonnameserver_var}.pem
-done
+	for commonnameserver_var in ${commonnameserver}
+	do
+		echo "Creating Chain without the CA the client trusts (without rootCA1) for ${commonnameserver_var}"
+		echo "You might use this in Frontdoor"
+		cp  servercrt_${commonnameserver_var}.pem     serverchain_${commonnameserver_var}.pem
+		cat subCA1crt.pem     >> serverchain_${commonnameserver_var}.pem
+	done
 )
 
 echo "Your certificates are in ${target_dir}/ucerts"
@@ -443,26 +443,25 @@ then
 	fi
 	echo "Copying SERVER related files: serverkey servercrt ...  to ${copyto}:"
 	cd ${target_dir}/ucerts && (
-	for commonnameserver_var in ${commonnameserver}
-	do
-		cp servercrt_${commonnameserver_var}.pem          ${copyto}
-		cp serverkey_${commonnameserver_var}.pem          ${copyto}
-		cp chainwoservercrt.pem   ${copyto}
-		cp fullchain_${commonnameserver_var}.pem          ${copyto}
-		cp serverchain_${commonnameserver_var}.pem    	  ${copyto}
-	done
-	)
-	echo "Copying CLIENT related files: clientcrt clientkey clientcrt.p12 to ${copyto}:"
-	cd ${target_dir}/client && (
-	for commonnameclient_var in ${commonnameclient}
-	do
-		cp clientcrt_${commonnameclient_var}.pem	 ${copyto}
-		cp clientkey_${commonnameclient_var}.pem	 ${copyto}
-		cp clientcrt_${commonnameclient_var}.p12	 ${copyto}
-	done
+		for commonnameserver_var in ${commonnameserver}
+		do
+			cp servercrt_${commonnameserver_var}.pem          ${copyto}
+			cp serverkey_${commonnameserver_var}.pem          ${copyto}
+			cp chainwoservercrt.pem   ${copyto}
+			cp fullchain_${commonnameserver_var}.pem          ${copyto}
+			cp serverchain_${commonnameserver_var}.pem    	  ${copyto}
+		done
+		echo "Copying CLIENT related files: clientcrt clientkey clientcrt.p12 to ${copyto}:"
+		for commonnameclient_var in ${commonnameclient}
+		do
+			cp clientcrt_${commonnameclient_var}.pem	 ${copyto}
+			cp clientkey_${commonnameclient_var}.pem	 ${copyto}
+			cp clientcrt_${commonnameclient_var}.p12	 ${copyto}
+		done
 	)
 fi
 
+echo "Verifying certificates in ${target_dir}/ucerts"
 cd ${target_dir}/ucerts
 for commonnameserver_var in ${commonnameserver}
 do
@@ -487,17 +486,18 @@ do
 		-purpose sslserver \
 		-CAfile fullchain_${commonnameserver_var}.pem \
 		servercrt_${commonnameserver_var}.pem || errorexit;
-
-	for commonnameclient_var in ${commonnameclient}
-	do
-		echo "Verifying cert chain with full chain and clientcrt.pem for ${commonnameclient_var}"
-		${openssl_bin} verify \
-			-verbose \
-			-purpose sslclient \
-			-CAfile fullchain_${commonnameserver_var}.pem \
-			clientcrt_${commonnameclient_var}.pem || errorexit;
-	done
 done
+
+for commonnameclient_var in ${commonnameclient}
+do
+	echo "Verifying cert chain with full chain and clientcrt.pem for ${commonnameclient_var}"
+	${openssl_bin} verify \
+		-verbose \
+		-purpose sslclient \
+		-CAfile fullchain_${commonnameserver_var}.pem \
+		clientcrt_${commonnameclient_var}.pem || errorexit;
+done
+
 echo "RootCA1 Certificate is:"
 ${openssl_bin} x509 \
 	-text \
@@ -524,7 +524,7 @@ do
 		-in clientcrt_${commonnameclient_var}.pem \
 		-noout
 done
-echo ""
+
 echo ""
 echo "What to do with all these certs.....?"
 echo ""
@@ -571,3 +571,4 @@ echo "Remember the PKCS#12 encrypted clientcrt.p12 cert password is client"
 echo "Remember the password for the root CA is hank"
 echo "Remember the password for the sub CA is gugus"
 
+exit 0
