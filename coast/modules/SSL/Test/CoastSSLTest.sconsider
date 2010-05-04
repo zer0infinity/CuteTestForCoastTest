@@ -1,0 +1,143 @@
+import SConsider
+import os, socket, pdb
+import threading, shutil
+from stat import *
+from SocketServer import BaseServer
+from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
+from SimpleHTTPServer import SimpleHTTPRequestHandler
+from OpenSSL import SSL
+
+Import('*')
+
+## creating an SSL enabled HTTPServer
+## see http://code.activestate.com/recipes/442473/
+
+class SecureHTTPServer(HTTPServer):
+    allow_reuse_address = True
+    def __init__(self, server_address, HandlerClass, certFile, keyFile):
+        BaseServer.__init__(self, server_address, HandlerClass)
+        ctx = SSL.Context(SSL.SSLv3_METHOD)
+        ctx.use_privatekey_file (keyFile)
+        ctx.use_certificate_file(certFile)
+        self.socket = SSL.Connection(ctx, socket.socket(self.address_family,self.socket_type))
+        self.server_bind()
+        self.server_activate()
+
+class SecureHTTPRequestHandler(SimpleHTTPRequestHandler):
+    def setup(self):
+        self.connection = self.request
+        self.rfile = socket._fileobject(self.request, "rb", self.rbufsize)
+        self.wfile = socket._fileobject(self.request, "wb", self.wbufsize)
+
+sslport=43443
+sslfaultyport=43444
+fqdn=socket.getfqdn()
+hostonly=fqdn.split('.')[0]
+try:
+    domain='.'.join(fqdn.split('.')[1:])
+except:
+    domain=""
+
+def ModifyHostinfoConfig(env, cfgfilename):
+    tdirabs = env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).abspath
+    fname = os.path.join(tdirabs, cfgfilename)
+    ## set writable cfgfilename
+    if os.path.isfile(fname):
+        os.chmod(fname, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)
+        ## replace some token in Tests configuration file
+        searchReplace = [(r"##FQDN##", fqdn),
+                         (r"##HOSTNAME##", hostonly),
+                         (r"##DOMAINONLY##", domain),
+                         (r"##SSLPORT##", str(sslport)),
+                         (r"##FAULTYPORT##", str(sslfaultyport)),
+                          ]
+        SConsider.replaceRegexInFile(fname, searchReplace)
+
+servers = []
+def startServer(host, port, server_class, handler_class, certFile, keyFile):
+    server = server_class((host, port), handler_class, certFile, keyFile)
+    servers.append(server)
+    server.serve_forever()
+
+def runCommand(args, logpath, stdincontent=None):
+    import subprocess
+    theCommand = subprocess.Popen(args, stdin=subprocess.PIPE,
+                                 stderr=subprocess.PIPE,
+                                 stdout=subprocess.PIPE)
+
+    theCommand_out, theCommand_err = theCommand.communicate(stdincontent)
+
+    if not os.path.isdir(logpath):
+        os.makedirs(logpath)
+    logfilebasename=os.path.basename(args[0])
+    if theCommand_err:
+        with open(os.path.join(logpath, logfilebasename + '.stderr'), 'w') as errfile:
+            errfile.write(theCommand_err)
+    if theCommand_out:
+        with open(os.path.join(logpath, logfilebasename + '.stdout'), 'w') as outfile:
+            outfile.write(theCommand_out)
+
+
+def setUp( target, source, env ):
+    ModifyHostinfoConfig(env, 'config/Defaults.any')
+    pdb.set_trace()
+    tdirabs = env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).abspath
+    mkcaScriptName = os.path.join(tdirabs, 'mkca-new.sh')
+    ## set writable cfgfilename
+    targets = SConsider.packageRegistry.getPackageTarget('openssl', 'openSSL')
+    target = targets['target']
+    if not os.path.isfile(mkcaScriptName):
+        return False
+    commandargs=[mkcaScriptName]
+    if target:
+        commandargs.extend(['-b', target.abspath])
+        commandargs.extend(['-B', '-S --'])
+    cnfFilename=os.path.join(tdirabs, 'openssl.cnf')
+    if cnfFilename:
+        commandargs.extend(['-o', cnfFilename])
+    mkcertDirectory = os.path.join(tdirabs, 'mkcertdir')
+    certOutDir = os.path.join(tdirabs, 'cert_files')
+    for theDir in [mkcertDirectory, certOutDir]:
+        if os.path.isdir(theDir):
+            shutil.rmtree(theDir, ignore_errors=True)
+    commandargs.extend(['-d', mkcertDirectory])
+    # maybe we should do the following step by hand because we do not need cert suffixes
+    commandargs.extend(['-c', certOutDir])
+#    commandargs.extend(['-C', hostonly])
+#    commandargs.extend(['-S', hostonly])
+    if domain:
+        commandargs.extend(['-S', fqdn])
+    runCommand(commandargs, tdirabs, "")
+    # create certificate files:
+# openssl req -new -x509 -keyout server.pem -out server.pem -days 365 -nodes
+# if there is now c_rehash available, use the following script, from http://www.commandlinefu.com/commands/view/2532/c_rehash-replacement
+# for file in *crt.pem; do theHash=$(openssl x509 -hash -noout -in $file 2>/dev/null) && ! test -f ${theHash}.0 && ln -s $file ${theHash}.0; done
+#    threading.Thread(target=startServer, args=[hostonly, sslport, SecureHTTPServer, SecureHTTPRequestHandler, certFile, keyFile]).start()
+
+def tearDown(target, source, env):
+    for server in servers:
+        server.shutdown()
+    # delete generated files
+#    SConsider.removeFiles(SConsider.findFiles([env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])], extensions=['.res', '.tst', '.txt' ], matchfiles=['include.any']))
+
+buildSettings = {
+    packagename : {
+        'targetType'       : 'ProgramTest',
+        'linkDependencies' : ['CoastSSL', 'testfwWDBase'],
+        'requires'         : ['openssl.openSSL'],
+		'includeSubdir'    : '',
+        'sourceFiles'      : SConsider.listFiles( ['*.cpp'] ),
+        'copyFiles'        : [
+            ( SConsider.findFiles( ['.'], ['.any'] ), S_IRUSR | S_IRGRP | S_IROTH ),
+            ( SConsider.listFiles( ['openssl.cnf'] ), S_IRUSR | S_IRGRP | S_IROTH ),
+            ( SConsider.listFiles( ['mkca-new.sh'] ), S_IRUSR | S_IRGRP | S_IROTH | S_IXUSR ),
+        ],
+        'runConfig'        : {
+			'setUp': setUp,
+			'tearDown': tearDown,
+		},
+    }
+}
+
+SConsider.createTargets( packagename, buildSettings )
+
