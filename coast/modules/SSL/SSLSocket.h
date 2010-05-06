@@ -141,7 +141,7 @@ private:
 //--- SSLServerSocket ---
 class EXPORTDECL_SSL SSLServerSocket : public SSLSocket
 {
-	// opens a client side socket connection
+	// opens a server side socket connection
 	// and closes it in destructor
 public:
 	SSLServerSocket(SSL_CTX *ctx, int socket, const Anything &clientInfo, bool doClose = true,
@@ -194,9 +194,6 @@ protected:
 	SSL_CTX *fContext;
 	SSLSocketArgs fSSLSocketArgs;
 	bool fDeleteCtx;
-
-	//!for testcases only
-	friend class SSLConnectorTest;
 
 private:
 	// don't use these

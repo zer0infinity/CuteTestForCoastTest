@@ -263,7 +263,6 @@ private:
 	//! it is not implemented don't use it
 	Socket &operator=(const Socket &s);
 
-	friend class SSLConnectorTest;
 	friend class ConnectorTest;
 };
 
@@ -349,7 +348,6 @@ protected:
 	bool fThreadLocal;
 
 	friend class ConnectorTest;
-	friend class SSLConnectorTest;
 };
 
 //--- ConnectorArgs-------------------------------------------------------------------------
@@ -450,7 +448,6 @@ protected:
 	friend class ConnectorTest;
 	friend class SocketTest;
 	friend class ConnectorAcceptorTest;
-	friend class SSLConnectorTest;
 
 private:
 	//! this standard operator is private to block its use

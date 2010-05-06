@@ -102,6 +102,7 @@ bool SSLSocket::ShouldRetry(SSL *ssl, int res, bool handshake)
 		return false;
 	}
 	unsigned long err = GetSSLError(ssl, res);
+	Trace("err:" << static_cast<long>(err));
 	if (SSL_ERROR_WANT_READ == err) {
 		return IsReadyForReading();
 	} else if (SSL_ERROR_WANT_WRITE == err) {

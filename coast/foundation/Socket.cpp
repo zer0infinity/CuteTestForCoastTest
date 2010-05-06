@@ -480,7 +480,7 @@ void EndPoint::LogError(const char *contextmessage)
 bool EndPoint::CreateSocket()
 {
 	StartTrace(EndPoint.CreateSocket);
-	if ((fSockFd = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
+	if ((fSockFd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 		LogError("socket()");
 		return false;
 	}
@@ -720,6 +720,7 @@ Socket *Connector::Use()
 
 iostream *Connector::GetStream()
 {
+	StartTrace(Connector.GetStream);
 	Socket *psocket = Use();
 	if ( psocket ) {
 		return psocket->GetStream();
