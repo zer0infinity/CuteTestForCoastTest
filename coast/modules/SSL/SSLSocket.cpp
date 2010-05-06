@@ -55,18 +55,11 @@ void SSLSocket::ReportSSLError( unsigned long err)
 		// need to empty per thread error queue of SSL
 		const int buflen = 256;
 		char buf[buflen];
-#if defined(__sun) // SOP: FIXME use openssl version > 0.9.6
-		// old openssl call:
-		ERR_error_string(err, buf);
-#else
-		// new openssl call:
 		ERR_error_string_n(err, buf, buflen);
-#endif
 		String logMsg("SSL error: ");
 		logMsg << (long)err << " : " << buf;
 		SystemLog::Error(logMsg);
 		Trace(logMsg);
-
 		err = GetSSLError();
 	}
 }
@@ -78,13 +71,7 @@ Anything SSLSocket::ReportSSLError(Anything &errAny, unsigned long err)
 		// need to empty per thread error queue of SSL
 		const int buflen = 256;
 		char buf[buflen];
-#if defined(__sun) // SOP: FIXME use openssl version > 0.9.6
-		// old openssl call:
-		ERR_error_string(err, buf);
-#else
-		// new openssl call:
 		ERR_error_string_n(err, buf, buflen);
-#endif
 		String logMsg("SSL error: ");
 		logMsg << (long)err << " : " << buf;
 		errAny.Append(logMsg);

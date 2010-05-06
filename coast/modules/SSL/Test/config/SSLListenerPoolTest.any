@@ -7,7 +7,6 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-
 #--- Modules ------------------------------------
 	/Modules {
 		AcceptorFactoriesModule
@@ -26,91 +25,91 @@
 	/PoolTest {
 		# Check peer's (server) cert, don't show cert to peer
 		/Connector5010 {
-			/Address "127.0.0.1"
+			/Address !Defaults.any?HostName
 			/Port 5010
 			/SSLVerifyDepth 2
-			/SSLPeerCAFile "cert_files/fullchain.pem"
+			/SSLPeerCAFile !Defaults.any?FullChainCertRelative
 			/SSLVerifyPeerCert 1
 			/SSLVerifyFailIfNoPeerCert 1
 		}
 		# Check peer's (server) cert, show cert to peer
 		/Connector5012 {
-			/Address "127.0.0.1"
+			/Address !Defaults.any?HostName
 			/Port 5012
-			/KeyFileClient	"cert_files/clientkey.pem"
-			/CertFileClient	"cert_files/clientcrt.pem"
+			/KeyFileClient	!Defaults.any?KeyFileClientRelative
+			/CertFileClient	!Defaults.any?CertFileClientRelative
 			/SSLVerifyDepth 2
-			/SSLPeerCAFile "cert_files/fullchain.pem"
+			/SSLPeerCAFile !Defaults.any?FullChainCertRelative
 			/SSLVerifyPeerCert 1
 			/SSLVerifyFailIfNoPeerCert 1
 		}
 		# Check peer's (server) cert, show cert to peer
 		/Connector5013 {
-			/Address "127.0.0.1"
+			/Address !Defaults.any?HostName
 			/Port 5013
 			/SessionResumption 1
-			/KeyFileClient	"cert_files/clientkey.pem"
-			/CertFileClient	"cert_files/clientcrt.pem"
+			/KeyFileClient	!Defaults.any?KeyFileClientRelative
+			/CertFileClient	!Defaults.any?CertFileClientRelative
 			/SSLVerifyDepth 2
-			/SSLPeerCAFile "cert_files/fullchain.pem"
+			/SSLPeerCAFile !Defaults.any?FullChainCertRelative
 			/SSLVerifyPeerCert 1
 			/SSLVerifyFailIfNoPeerCert 1
 		}
 		# Check peer's (server) cert, show cert to peer
 		/Connector5014{
-			/Address "127.0.0.1"
+			/Address !Defaults.any?HostName
 			/Port 5014
-			/KeyFileClient	"cert_files/clientkey.pem"
-			/CertFileClient	"cert_files/clientcrt.pem"
+			/KeyFileClient	!Defaults.any?KeyFileClientRelative
+			/CertFileClient	!Defaults.any?CertFileClientRelative
 			/SSLVerifyDepth 2
-			/SSLPeerCAFile "cert_files/fullchain.pem"
+			/SSLPeerCAFile !Defaults.any?FullChainCertRelative
 			/SSLVerifyPeerCert 1
 			/SSLVerifyFailIfNoPeerCert 1
 		}
 		/Connector5015 {
-			/Address "127.0.0.1"
+			/Address !Defaults.any?HostName
 			/Port 5015
-			/KeyFileClient	"cert_files/clientkey.pem"
-			/CertFileClient	"cert_files/clientcrt.pem"
+			/KeyFileClient	!Defaults.any?KeyFileClientRelative
+			/CertFileClient	!Defaults.any?CertFileClientRelative
 		}
 		/Connector5016 {
-			/Address "127.0.0.1"
+			/Address !Defaults.any?HostName
 			/Port 5016
-			/KeyFileClient	"cert_files/clientkey.pem"
-			/CertFileClient	"cert_files/clientcrt.pem"
+			/KeyFileClient	!Defaults.any?KeyFileClientRelative
+			/CertFileClient	!Defaults.any?CertFileClientRelative
 		}
 		/Connector5017 {
-			/Address "127.0.0.1"
+			/Address !Defaults.any?HostName
 			/Port 5017
-			/KeyFileClient	"cert_files/clientkey.pem"
-			/CertFileClient	"cert_files/clientcrt.pem"
+			/KeyFileClient	!Defaults.any?KeyFileClientRelative
+			/CertFileClient	!Defaults.any?CertFileClientRelative
 		}
 		/Connector5018 {
-			/Address "127.0.0.1"
+			/Address !Defaults.any?HostName
 			/Port 5018
 			/SSLVerifyDepth 2
-			/SSLPeerCAFile "cert_files/fullchain.pem"
+			/SSLPeerCAFile !Defaults.any?FullChainCertRelative
 			/SSLVerifyPeerCert 1
 			/SSLVerifyFailIfNoPeerCert 1
 		}
 		# Check peer's (server) cert, show cert to peer
 		/Connector5019 {
-			/Address "127.0.0.1"
+			/Address !Defaults.any?HostName
 			/Port 5019
-			/KeyFileClient	"cert_files/clientkey.pem"
-			/CertFileClient	"cert_files/clientcrt.pem"
+			/KeyFileClient	!Defaults.any?KeyFileClientRelative
+			/CertFileClient	!Defaults.any?CertFileClientRelative
 			/SSLVerifyDepth 2
-			/SSLPeerCAFile "cert_files/fullchain.pem"
+			/SSLPeerCAFile !Defaults.any?FullChainCertRelative
 			/SSLVerifyPeerCert 1
 			/SSLVerifyFailIfNoPeerCert 1
 		}
 		/Connector5020 {
-			/Address "127.0.0.1"
+			/Address !Defaults.any?HostName
 			/Port 5020
-			/KeyFileClient	"cert_files/rootCA1key.pem"
-			/CertFileClient	"cert_files/rootCA1crt.pem"
+			/KeyFileClient	!Defaults.any?RootCAKeyFileRelative
+			/CertFileClient	!Defaults.any?RootCACertFileRelative
 			/SSLVerifyDepth 2
-			/SSLPeerCAFile "cert_files/rootCA1crt.pem"
+			/SSLPeerCAFile !Defaults.any?RootCACertFileRelative
 			/SSLVerifyPeerCert 1
 			/SSLVerifyFailIfNoPeerCert 1
 		}
@@ -167,13 +166,13 @@
 				{
 					/"SSL.Peer.AppLevelCertVerifyStatus" 1
 					/"SSL.Peer.SSLCertVerifyStatus.SSL.Ok" 1
-					/"SSL.Peer.Whole"	"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ClientSite,L=ZH,ST=ZH,C=CH"
+					/"SSL.Peer.Whole"	!Defaults.any?CertFileClientSubject
 				}
 				/LastChecksToDo
 				{
 					/"SSL.Peer.AppLevelCertVerifyStatus" 1
 					/"SSL.Peer.SSLCertVerifyStatus.SSL.Ok" 1
-					/"SSL.Peer.Whole"	"emailAddress=dylan.hank.com@wildplanet.com,CN=dylan.hank.com,OU=CertIssueing,O=ClientSite,L=ZH,ST=ZH,C=CH"
+					/"SSL.Peer.Whole"	!Defaults.any?CertFileClientSubject
 					/"SSL.SessionIsResumed" 1
 				}
 			}
@@ -189,7 +188,7 @@
 				{
 					/"SSL.Peer.AppLevelCertVerifyStatus" 1
 					/"SSL.Peer.SSLCertVerifyStatus.SSL.Ok" 1
-					/"SSL.Peer.Whole" "emailAddress=rootca1@wildplanet.com,CN=RootCA1,OU=CertIssueing,O=RootCA1,L=ZH,ST=ZH,C=CH"
+					/"SSL.Peer.Whole" !Defaults.any?RootCACertFileSubject
 				}
 			}
 		}

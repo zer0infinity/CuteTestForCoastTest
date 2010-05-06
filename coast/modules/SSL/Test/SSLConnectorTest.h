@@ -56,15 +56,6 @@ public:
 	//!tests SSLConnector constructor with faulty parameters
 	void faultyConstructorTest();
 
-	//!tests method MakeSocket
-	void makeSocketTest();
-
-	//!tests method MakeSocket with boolean flag == false
-	void makeSocketWithReuseTest();
-
-	//!tests method UseSocket
-	void useSocketTest();
-
 	//!tests method GetStream
 	void getStreamTest();
 

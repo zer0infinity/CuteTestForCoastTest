@@ -7,14 +7,13 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-
 	/LoadCertAndKeyTest
 	{
 		{
 			/Config
 			{
-				/KeyFileServer	"cert_files/serverkey.pem"
-				/CertFileServer	"cert_files/servercrt.pem"
+				/KeyFileServer	!Defaults.any?KeyFileServerRelative
+				/CertFileServer	!Defaults.any?CertFileServerRelative
 			}
 			/TestData
 			{
@@ -25,8 +24,8 @@
 		{
 			/Config
 			{
-				/KeyFileClient	"cert_files/clientkey.pem"
-				/CertFileClient	"cert_files/clientcrt.pem"
+				/KeyFileClient	!Defaults.any?KeyFileClientRelative
+				/CertFileClient	!Defaults.any?CertFileClientRelative
 			}
 			/TestData
 			{

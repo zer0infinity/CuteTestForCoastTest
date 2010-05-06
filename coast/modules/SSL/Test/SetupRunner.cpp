@@ -24,11 +24,11 @@
 
 void setupRunner(TestRunner &runner)
 {
-	ADD_SUITE(runner, SSLConnectorTest);
-	ADD_SUITE(runner, SSLModuleTest);
-	ADD_SUITE(runner, SSLListenerPoolTest);
-	ADD_SUITE(runner, SSLCertificateTest);
 	ADD_SUITE(runner, SSLSocketArgsTest);
 	ADD_SUITE(runner, SSLSocketUtilsTest);
+	ADD_SUITE(runner, SSLModuleTest);
+	ADD_SUITE(runner, SSLConnectorTest);
+	ADD_SUITE(runner, SSLListenerPoolTest);
+	ADD_SUITE(runner, SSLCertificateTest);
 	ADD_SUITE(runner, SSLObjectManagerTest);
 } // setupRunner

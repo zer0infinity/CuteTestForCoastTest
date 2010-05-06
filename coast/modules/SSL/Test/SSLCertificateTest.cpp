@@ -48,15 +48,16 @@ void SSLCertificateTest::ClientCertificateTest()
 		Anything clientInfo(sc.ClientInfo());
 		assertEqual(cConfig["Results"]["SSLCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["SSLCertVerifyStatus"]["SSL"]["Ok"].AsBool(0));
 		assertEqual(cConfig["Results"]["AppLevelCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["AppLevelCertVerifyStatus"].AsBool(0));
-		assertEqual(cConfig["Results"]["IsCertCheckPassed"].AsBool(1), s->IsCertCheckPassed(cConfig["Config"]));
 		if ( cConfig["Results"]["GetRequestOk"].AsBool(1) ) {
 			if (t_assert(s1 != NULL) && t_assert(s != NULL)) {
+				assertEqual(cConfig["Results"]["IsCertCheckPassed"].AsBool(1), s->IsCertCheckPassed(cConfig["Config"]));
 				TraceAny(s->ClientInfo(), "peer info");
 				(*s1) << "GET / HTTP/1.0" << ENDL << ENDL << flush;
 				String reply;
 				getline(*s1, reply);
 				assertEqual(cConfig["Results"]["GetRequestOk"].AsBool(1) , !!(*s1));
 				assertEqual( "HTTP", reply.SubString(0, 4)) ;
+				while (getline(*s1, reply));
 			}
 		}
 	}
@@ -75,6 +76,7 @@ void SSLCertificateTest::CheckServerCertificateTest()
 		getline(*s1, reply);
 		t_assert(!!(*s1));
 		assertEqual( "HTTP", reply.SubString(0, 4)) ;
+		while (getline(*s1, reply));
 	}
 }
 // builds up a suite of tests, add a line for each testmethod

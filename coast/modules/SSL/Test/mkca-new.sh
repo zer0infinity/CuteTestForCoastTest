@@ -23,6 +23,7 @@ openssl_bin=`which openssl`
 openssl_binOpts=""
 conf=/etc/ssl/openssl.cnf
 target_dir=""
+serialnum=$(date +'%s')
 
 errorexit()
 {
@@ -120,11 +121,11 @@ then
 fi
 echo "Using openssl config file ${conf}"
 
-if [ -z ${commonnameclient} ]
+if [ -z "${commonnameclient}" ]
 then
 	commonnameclient="IAMACLIENT";
 fi
-if [ -z ${commonnameserver} ]
+if [ -z "${commonnameserver}" ]
 then
 	commonnameserver="IAMASERVER";
 fi
@@ -161,7 +162,7 @@ mkdir ${CATOP}/certs
 mkdir ${CATOP}/crl
 mkdir ${CATOP}/newcerts
 mkdir ${CATOP}/private
-echo "01" > ${CATOP}/serial
+echo ${serialnum} > ${CATOP}/serial
 touch ${CATOP}/index.txt
 
 if [ -z ${pathtoexistingcacert} ]
@@ -256,7 +257,7 @@ mkdir ${CATOP}/certs
 mkdir ${CATOP}/crl
 mkdir ${CATOP}/newcerts
 mkdir ${CATOP}/private
-echo "01" > ${CATOP}/serial
+echo ${serialnum} > ${CATOP}/serial
 touch ${CATOP}/index.txt
 
 if [ -z ${pathtoexistingcacert} ]
@@ -458,6 +459,10 @@ then
 			cp clientkey_${commonnameclient_var}.pem	 ${copyto}
 			cp clientcrt_${commonnameclient_var}.p12	 ${copyto}
 		done
+
+		echo "Copying CA related files: subCA1 rootCA1 to ${copyto}:"
+		cp subCA1*.pem	 ${copyto}
+		cp rootCA1*.pem	 ${copyto}
 	)
 fi
 

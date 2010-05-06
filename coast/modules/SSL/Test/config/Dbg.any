@@ -7,116 +7,131 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
+    /LowerBound 0
+    /UpperBound	5020
+    /DumpAnythings 1
 
-        /LowerBound 	0
-        /UpperBound	5002
-        /DumpAnythings 1
+    /ConfiguredTestCase {
+    	/MainSwitch	5000
+		/EnableAll	200
+		/setUp	5001
+    }
+    /HierarchyInstaller {
+		/MainSwitch	00
+		/EnableAll	200
+    }
+    /RegisterableObject {
+		/MainSwitch	00
+		/EnableAll	400
+		/Register	300
+    }
+    /ConfNamedObject {
+		/MainSwitch	0
+		/EnableAll	200
+    }
+	/SSLAcceptorFactory {
+		/MainSwitch	200
+		/EnableAll	200
+    }
+	/AcceptorFactory {
+		/MainSwitch	200
+		/EnableAll	200
+    }
+    /ListenerThread {
+		/MainSwitch	200
+		/EnableAll	200
+    }
 
-        /ConfiguredTestCase {
-        	/MainSwitch	5000
-			/EnableAll	200
-			/setUp	5001
-        }
-        /HierarchyInstaller {
-			/MainSwitch	00
-			/EnableAll	200
-        }
-        /RegisterableObject {
-			/MainSwitch	300
-			/EnableAll	400
-			/Register	300
-        }
-        /ConfNamedObject {
-			/MainSwitch	0
-			/EnableAll	200
-        }
-		/SSLAcceptorFactory {
-			/MainSwitch	200
-			/EnableAll	200
-        }
-		/AcceptorFactory {
-			/MainSwitch	200
-			/EnableAll	200
-        }
-        /ListenerThread {
-			/MainSwitch	200
-			/EnableAll	200
-        }
-
-        /ThreadPoolManager {
-			/MainSwitch	2000
-			/EnableAll	2000
-        }
-        /ListenerPool {
-			/MainSwitch	2000
-			/EnableAll	2000
-        }
-        /SSLModule {
-			/MainSwitch	5000
-			/EnableAll	5002
-			/DoMakeContext	5002
-			/SetSSLCtxVerifyParameters 5000
-			/SetOwnCertificateAndKey 5000
-			/PrepareClientContext 5000
-			/GetSSLClientCtx 5000
-			/SetSSLSetAcceptableClientCAs 5000
-        }
-		/SSLObjectManager {
-			/MainSwitch	5000
-			/EnableAll	5002
-		}
-		/SSLSocketArgs {
-			/MainSwitch	3000
-			/EnableAll	3000
-		}
-		/SSLSocketUtils {
-			/MainSwitch	3000
-			/EnableAll	3000
-		}
-		/SSLClientSocket {
-			/MainSwitch	3000
-			/EnableAll	3000
-		}
-		/SSLServerSocket {
-			/MainSwitch	3000
-			/EnableAll	3000
-		}
-		/SSLSocket {
-			/MainSwitch	5000
-			/EnableAll	5002
-			/ReportSSLError 4003
-			/DoMakeStream 5002
-			/CheckPeerCertificate 5002
-			/DoCheckPeeerCertificate	5002
-		}
-		/SSLListenerPoolTest {
-			/MainSwitch	5000
-			/EnableAll	2000
-			/DoTestConnect 5001
-		}
-		/SSLConnectorTest {
-			/MainSwitch	2000
-			/EnableAll	2000
-		}
-		/SSLSocketArgsTest {
-			/MainSwitch	2000
-			/EnableAll	2000
-		}
-		/SSLObjectManagerTest {
-			/MainSwitch	5000
-			/EnableAll	5002
-		}
-		/SSLCertificateTest {
-			/MainSwitch	5000
-			/EnableAll	5000
-		}
-		/SSLConnector {
-			/MainSwitch	5000
-			/EnableAll	5000
-		}
-		/Connector {
-			/MainSwitch	3000
-			/EnableAll	3000
-		}
+    /ThreadPoolManager {
+		/MainSwitch	2000
+		/EnableAll	2000
+    }
+    /ListenerPool {
+		/MainSwitch	2000
+		/EnableAll	2000
+    }
+    /SSLModule {
+		/MainSwitch	5000
+		/EnableAll	5002
+		/DoMakeContext	5002
+		/SetSSLCtxVerifyParameters 5000
+		/SetOwnCertificateAndKey 5000
+		/PrepareClientContext 5000
+		/GetSSLClientCtx 5000
+		/SetSSLSetAcceptableClientCAs 5000
+    }
+	/SSLObjectManager {
+		/MainSwitch	5000
+		/EnableAll	5002
+	}
+	/SSLSocketArgs {
+		/MainSwitch	3000
+		/EnableAll	3000
+	}
+	/SSLSocketUtils {
+		/MainSwitch	3000
+		/EnableAll	3000
+	}
+	/SSLClientSocket {
+		/MainSwitch	3000
+		/EnableAll	3000
+	}
+	/SSLServerSocket {
+		/MainSwitch	3000
+		/EnableAll	3000
+	}
+	/SSLSocket {
+		/MainSwitch	5000
+		/EnableAll	5002
+		/ReportSSLError 4003
+		/DoMakeStream 5002
+		/CheckPeerCertificate 5002
+		/DoCheckPeeerCertificate	5002
+	}
+	/ListenerPoolTest {
+		/MainSwitch	5000
+		/EnableAll	2000
+	}
+	/SSLListenerPoolTest {
+		/MainSwitch	5000
+		/EnableAll	2000
+		/DoTestConnect 5001
+	}
+	/SSLConnectorTest {
+		/MainSwitch	2000
+		/EnableAll	2000
+	}
+	/SSLSocketArgsTest {
+		/MainSwitch	2000
+		/EnableAll	2000
+	}
+	/SSLObjectManagerTest {
+		/MainSwitch	5000
+		/EnableAll	5002
+	}
+	/SSLCertificateTest {
+		/MainSwitch	5000
+		/EnableAll	5000
+	}
+	/SSLConnector {
+		/MainSwitch	5000
+		/EnableAll	5000
+	}
+	/SSLAcceptor {
+		/MainSwitch	5000
+		/EnableAll	5000
+	}
+	/Connector {
+		/MainSwitch	3000
+		/EnableAll	3000
+	}
+	/Acceptor {
+		/MainSwitch	3000
+		/EnableAll	3000
+	}
+	/Socket {
+		/MainSwitch	3000
+		/EnableAll	3000
+	}
 }
 

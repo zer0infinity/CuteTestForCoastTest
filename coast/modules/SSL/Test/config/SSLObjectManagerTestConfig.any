@@ -6,140 +6,18 @@
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
 {
-
-	/ReUseCreatedCtxTest	%UsePassedInCtxTest
-	/UsePassedInCtxTest
-	{
-		{
-			/Config
-			{
-				/Address	"sinv-56025.edu.hsr.ch"
-				/Port		443
-				/UseThreadLocalMemoryMemory		1
-				/KeyFileClient	"cert_files/clientkey.pem"
-				/CertFileClient	"cert_files/clientcrt.pem"
-				/SSLVerifyDepth 3
-				/SSLVerifyFailIfNoPeerCert 0
-				/SSLUseAppCallback		1
-				/SSLPeerCAFile "cert_files/rootCA1crt.pem"
-				/VerifyCertifiedEntity 1
-				/SessionResumption 1
-				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.com,CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
-			/Results
-			{
-				/SSLCertVerifyStatus		1
-				/AppLevelCertVerifyStatus	1
-				/IsCertCheckPassed			1
-			}
-		}
-	}
-	/SessionResumptionWithMinimalConfigTest
-	{
-		{
-			/Config
-			{
-				/Address	"10.146.127.226"
-				/Port		22222
-				/SessionResumption 			1
-				/NoCertAndPrivateKey		1
-			}
-			/Results
-			{
-				/SSLCertVerifyStatus		0
-				/AppLevelCertVerifyStatus	0
-				/IsCertCheckPassed			0
-			}
-		}
-	}
-	/SessionResumptionTest
-	{
-		{
-			/Config
-			{
-				/Address	"sinv-56025.edu.hsr.ch"
-				/Port		443
-				/UseThreadLocalMemoryMemory		1
-				/SSLClientSessionTimeout	1
-				/SSLVerifyDepth 3
-				/KeyFileClient	"cert_files/clientkey.pem"
-				/CertFileClient	"cert_files/clientcrt.pem"
-				/SSLVerifyFailIfNoPeerCert 0
-				/SSLUseAppCallback		1
-				/SSLPeerCAFile "cert_files/rootCA1crt.pem"
-				/VerifyCertifiedEntity 1
-				/SessionResumption 1
-				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.com,CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
-			}
-			/Results
-			{
-				/SSLCertVerifyStatus		1
-				/AppLevelCertVerifyStatus	1
-				/IsCertCheckPassed			1
-			}
-		}
-	}
-	/SessionResumptionWithMinimumConfigTest %SessionResumptionTest
-	/NoSessionResumptionTest
-	{
-		{
-			/Config
-			{
-				/Address	"sinv-56025.edu.hsr.ch"
-				/Port		443
-				/UseThreadLocalMemoryMemory		1
-				/SSLClientSessionTimeout	1
-				/SSLVerifyDepth 3
-				/KeyFileClient	"cert_files/clientkey.pem"
-				/CertFileClient	"cert_files/clientcrt.pem"
-				/SSLVerifyFailIfNoPeerCert 0
-				/SSLUseAppCallback		1
-				/SSLPeerCAFile "cert_files/rootCA1crt.pem"
-				/VerifyCertifiedEntity 1
-				/SessionResumption 0
-				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.com,CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
-			}
-			/Results
-			{
-				/SSLCertVerifyStatus		1
-				/AppLevelCertVerifyStatus	1
-				/IsCertCheckPassed			1
-			}
-		}
-		}
-	}
-	/SessionResumptionTest
-	{
-		{
-			/Address	"153.46.168.202"
-			/Port		22222
-			/SSLClientSessionTimeout	1
-			/SSLVerifyDepth 3
-			/KeyFileClient	"cert_files/clientkey.pem"
-			/CertFileClient	"cert_files/clientcrt.pem"
-			/SSLVerifyFailIfNoPeerCert 0
-			/SSLUseAppCallback		1
-			/SSLPeerCAFile "cert_files/rootCA1.pem"
-			/VerifyCertifiedEntity 1
-			/SessionResumption 1
-			/CertVerifyStringIsFilter 0
-			/CertVerifyString		"emailAddress=hank@wildplanet.com,CN=hank,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
-		}
-	}
 	/GetDefaultCtxTest
 	{
 		{
-			/Address	"sinv-56025.edu.hsr.ch"
-			/Port		443
+			/Address	!Defaults.any?SSLHost
+			/Port		!Defaults.any?SSLPort
 		}
 	}
 	/SessionIdTest
 	{
 		{
-			/Address "sinv-56025.edu.hsr.ch"
-			/Port	 "443"
+			/Address	!Defaults.any?SSLHost
+			/Port		!Defaults.any?SSLPort
 			/Version 1111
 		}
 		{
@@ -156,6 +34,109 @@
 			/Address "gugus"
 			/Port	 "9999"
 			/Version 4444
+		}
+	}
+	/UsePassedInCtxTest
+	{
+		{
+			/Config
+			{
+				/Address	!Defaults.any?SSLHost
+				/Port		!Defaults.any?SSLPort
+				/SSLVerifyDepth 3
+				/KeyFileClient	!Defaults.any?KeyFileClientRelative
+				/CertFileClient	!Defaults.any?CertFileClientRelative
+				/SSLVerifyFailIfNoPeerCert 0
+				/SSLUseAppCallback		1
+				/SSLPeerCAFile !Defaults.any?RootCACertFileAbsolute
+				/VerifyCertifiedEntity 1
+				/SessionResumption 1
+				/CertVerifyStringIsFilter 0
+				/CertVerifyString		!Defaults.any?CertFileServerSubject
+			}
+			/Results
+			{
+				/SSLCertVerifyStatus		1
+				/AppLevelCertVerifyStatus	1
+				/IsCertCheckPassed			1
+			}
+		}
+	}
+	/ReUseCreatedCtxTest	%UsePassedInCtxTest
+	/SessionResumptionWithMinimalConfigTest
+	{
+		{
+			/Config
+			{
+				/Address	!Defaults.any?SSLHost
+				/Port		!Defaults.any?SSLPort
+				/SessionResumption 			1
+				/NoCertAndPrivateKey		1
+			}
+			/Results
+			{
+				/SSLCertVerifyStatus		0
+				/AppLevelCertVerifyStatus	0
+				/IsCertCheckPassed			0
+			}
+		}
+	}
+	/SessionResumptionTest
+	{
+		{
+			/Config
+			{
+				/Runs 100
+				/Address	!Defaults.any?SSLHost
+				/Port		!Defaults.any?SSLPort
+				/UseThreadLocalMemoryMemory		1
+				/SSLClientSessionTimeout	1
+				/SSLVerifyDepth 3
+				/KeyFileClient	!Defaults.any?KeyFileClientRelative
+				/CertFileClient	!Defaults.any?CertFileClientRelative
+				/SSLVerifyFailIfNoPeerCert 0
+				/SSLUseAppCallback		1
+				/SSLPeerCAFile !Defaults.any?RootCACertFileAbsolute
+				/VerifyCertifiedEntity 1
+				/SessionResumption 1
+				/CertVerifyStringIsFilter 0
+				/CertVerifyString		!Defaults.any?CertFileServerSubject
+			}
+			/Results
+			{
+				/SSLCertVerifyStatus		1
+				/AppLevelCertVerifyStatus	1
+				/IsCertCheckPassed			1
+			}
+		}
+	}
+	/SessionResumptionWithMinimumConfigTest %SessionResumptionTest
+	/NoSessionResumptionTest
+	{
+		{
+			/Config
+			{
+				/Address	!Defaults.any?SSLHost
+				/Port		!Defaults.any?SSLPort
+				/UseThreadLocalMemoryMemory		1
+				/SSLClientSessionTimeout	1
+				/SSLVerifyDepth 3
+				/KeyFileClient	!Defaults.any?KeyFileClientRelative
+				/CertFileClient	!Defaults.any?CertFileClientRelative
+				/SSLVerifyFailIfNoPeerCert 0
+				/SSLUseAppCallback		1
+				/SSLPeerCAFile !Defaults.any?RootCACertFileAbsolute
+				/VerifyCertifiedEntity 1
+				/SessionResumption 0
+				/CertVerifyStringIsFilter 0
+				/CertVerifyString		!Defaults.any?CertFileServerSubject
+			}
+			/Results
+			{
+				/SSLCertVerifyStatus		1
+				/AppLevelCertVerifyStatus	1
+				/IsCertCheckPassed			1
+			}
 		}
 	}
 }

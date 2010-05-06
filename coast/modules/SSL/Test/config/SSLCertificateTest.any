@@ -7,11 +7,10 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-
 	/RemoteCertificateHost {
-		/Address	"sinv-56025.edu.hsr.ch"
-		/Port		443
-		/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
+		/Address	!Defaults.any?SSLHost
+		/Port		!Defaults.any?SSLPort
+		/SSLPeerCAFile !Defaults.any?RootCACertFileAbsolute
 		/SSLVerifyPeerCert 1
 		/SSLVerifyDepth 2
 	}
@@ -21,17 +20,17 @@
 		{
 			/Config
 			{
-				/Address	"sinv-56025.edu.hsr.ch"
-				/Port		443
+				/Address	!Defaults.any?SSLHost
+				/Port		!Defaults.any?SSLPort
 				/SSLVerifyDepth 3
-				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
-				/CertFileClient	"/tmp/SSLSocketTestHashedCerts/clientcrt.pem"
+				/KeyFileClient	!Defaults.any?KeyFileClientRelative
+				/CertFileClient	!Defaults.any?CertFileClientRelative
 				/SSLVerifyFailIfNoPeerCert 0
 				/SSLUseAppCallback		1
-				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
+				/SSLPeerCAFile !Defaults.any?RootCACertFileAbsolute
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.com,CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		!Defaults.any?CertFileServerSubject
 			}
 			/Results
 			{
@@ -41,23 +40,22 @@
 				/IsCertCheckPassed			1
 			}
 		}
-
 		# 1
 		#		CertChainDepth error
 		{
 			/Config
 			{
-				/Address	"sinv-56025.edu.hsr.ch"
-				/Port		443
+				/Address	!Defaults.any?SSLHost
+				/Port		!Defaults.any?SSLPort
 				/SSLVerifyDepth 1
-				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
-				/CertFileClient	"/tmp/SSLSocketTestHashedCerts/clientcrt.pem"
+				/KeyFileClient	!Defaults.any?KeyFileClientRelative
+				/CertFileClient	!Defaults.any?CertFileClientRelative
 				/SSLVerifyFailIfNoPeerCert 0
 				/SSLUseAppCallback		1
-				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
+				/SSLPeerCAFile !Defaults.any?RootCACertFileAbsolute
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.com,CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		!Defaults.any?CertFileServerSubject
 			}
 			/Results
 			{
@@ -67,23 +65,22 @@
 				/IsCertCheckPassed			0
 			}
 		}
-
 		# 2
 		#		Check parsed DN, pass filter spec
 		{
 			/Config
 			{
-				/Address	"sinv-56025.edu.hsr.ch"
-				/Port		443
+				/Address	!Defaults.any?SSLHost
+				/Port		!Defaults.any?SSLPort
 				/SSLVerifyDepth 3
-				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
-				/CertFileClient	"/tmp/SSLSocketTestHashedCerts/clientcrt.pem"
+				/KeyFileClient	!Defaults.any?KeyFileClientRelative
+				/CertFileClient	!Defaults.any?CertFileClientRelative
 				/SSLVerifyFailIfNoPeerCert 0
 				/SSLUseAppCallback		1
-				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
+				/SSLPeerCAFile !Defaults.any?RootCACertFileAbsolute
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 1
-				/CertVerifyString		"CN=sinv-56025.edu.hsr.ch"
+				/CertVerifyString		!"file:///Defaults.any?CertFileClientSubjectParts:1"	# CN
 			}
 			/Results
 			{
@@ -93,23 +90,22 @@
 				/IsCertCheckPassed			1
 			}
 		}
-
 		# 3
 		#		Check parsed DN, pass filter spec, wrong filter (value wrong)
 		{
 			/Config
 			{
-				/Address	"sinv-56025.edu.hsr.ch"
-				/Port		443
+				/Address	!Defaults.any?SSLHost
+				/Port		!Defaults.any?SSLPort
 				/SSLVerifyDepth 3
-				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
-				/CertFileClient	"/tmp/SSLSocketTestHashedCerts/clientcrt.pem"
+				/KeyFileClient	!Defaults.any?KeyFileClientRelative
+				/CertFileClient	!Defaults.any?CertFileClientRelative
 				/SSLVerifyFailIfNoPeerCert 0
 				/SSLUseAppCallback		1
-				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
+				/SSLPeerCAFile !Defaults.any?RootCACertFileAbsolute
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 1
-				/CertVerifyString		"CN=sinv-56025.edu.hsr.chxxxxxxxxxxxxxxx"
+				/CertVerifyString		"CN=SoMeInVaLiDXxCn"
 
 			}
 			/Results
@@ -120,49 +116,22 @@
 				/IsCertCheckPassed			0
 			}
 		}
-
-		# 4
-		#		Check parsed DN, pass filter spec, wrong filter (dn name part wrong)
-		{
-			/Config
-			{
-				/Address	"sinv-56025.edu.hsr.ch"
-				/Port		443
-				/SSLVerifyDepth 3
-				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
-				/CertFileClient	"/tmp/SSLSocketTestHashedCerts/clientcrt.pem"
-				/SSLVerifyFailIfNoPeerCert 0
-				/SSLUseAppCallback		1
-				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
-				/VerifyCertifiedEntity 1
-				/CertVerifyStringIsFilter 1
-				/CertVerifyString		"xCN=sinv-56025.edu.hsr.ch"
-			}
-			/Results
-			{
-				/SSLCertVerifyStatus		1
-				/AppLevelCertVerifyStatus	0
-				/GetRequestOk				1
-				/IsCertCheckPassed			0
-			}
-		}
-
 		# 5
-		#		Check parsed DN, wrong DN, no filter
+		#		Check parsed DN, wrong DN (from client), no filter
 		{
 			/Config
 			{
-				/Address	"sinv-56025.edu.hsr.ch"
-				/Port		443
+				/Address	!Defaults.any?SSLHost
+				/Port		!Defaults.any?SSLPort
 				/SSLVerifyDepth 3
-				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
-				/CertFileClient	"/tmp/SSLSocketTestHashedCerts/clientcrt.pem"
+				/KeyFileClient	!Defaults.any?KeyFileClientRelative
+				/CertFileClient	!Defaults.any?CertFileClientRelative
 				/SSLVerifyFailIfNoPeerCert 0
 				/SSLUseAppCallback		1
-				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
+				/SSLPeerCAFile !Defaults.any?RootCACertFileAbsolute
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.Xom,CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		!Defaults.any?CertFileClientSubject
 			}
 			/Results
 			{
@@ -172,24 +141,23 @@
 				/IsCertCheckPassed			0
 			}
 		}
-
 		# 6
 		#		Do not use application callback - SSLVerifyPeerCert is crucial now!!!!!!!
 		{
 			/Config
 			{
-				/Address	"sinv-56025.edu.hsr.ch"
-				/Port		443
+				/Address	!Defaults.any?SSLHost
+				/Port		!Defaults.any?SSLPort
 				/SSLVerifyDepth 3
-				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
-				/CertFileClient	"/tmp/SSLSocketTestHashedCerts/clientcrt.pem"
+				/KeyFileClient	!Defaults.any?KeyFileClientRelative
+				/CertFileClient	!Defaults.any?CertFileClientRelative
 				/SSLVerifyFailIfNoPeerCert 0
 				/SSLUseAppCallback		0
 				/SSLVerifyPeerCert		1
-				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
+				/SSLPeerCAFile !Defaults.any?RootCACertFileAbsolute
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.com,CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		!Defaults.any?CertFileServerSubject
 			}
 			/Results
 			{
@@ -205,18 +173,18 @@
 		{
 			/Config
 			{
-				/Address	"sinv-56025.edu.hsr.ch"
-				/Port		443
+				/Address	!Defaults.any?SSLHost
+				/Port		!Defaults.any?SSLPort
 				/SSLVerifyDepth 1
-				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
-				/CertFileClient	"/tmp/SSLSocketTestHashedCerts/clientcrt.pem"
+				/KeyFileClient	!Defaults.any?KeyFileClientRelative
+				/CertFileClient	!Defaults.any?CertFileClientRelative
 				/SSLVerifyFailIfNoPeerCert 0
 				/SSLUseAppCallback		0
 				/SSLVerifyPeerCert		1
-				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
+				/SSLPeerCAFile !Defaults.any?RootCACertFileAbsolute
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.com,CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		!Defaults.any?CertFileServerSubject
 			}
 			/Results
 			{
@@ -232,18 +200,18 @@
 		{
 			/Config
 			{
-				/Address	"sinv-56025.edu.hsr.ch"
-				/Port		443
+				/Address	!Defaults.any?SSLHost
+				/Port		!Defaults.any?SSLPort
 				/SSLVerifyDepth 1
-				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
-				/CertFileClient	"/tmp/SSLSocketTestHashedCerts/clientcrt.pem"
+				/KeyFileClient	!Defaults.any?KeyFileClientRelative
+				/CertFileClient	!Defaults.any?CertFileClientRelative
 				/SSLVerifyFailIfNoPeerCert 0
 				/SSLUseAppCallback		0
 				/SSLVerifyPeerCert		0
-				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
+				/SSLPeerCAFile !Defaults.any?RootCACertFileAbsolute
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.com,CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		!Defaults.any?CertFileServerSubject
 			}
 			/Results
 			{
@@ -255,23 +223,24 @@
 		}
 		# 9
 		#		Do not use application callback - SSLVerifyPeerCert is crucial now!!!!!!!
+		#		verify peer cert now
 		#		This are the settings we would use in production.
 		#		Stream would be BAD.
 		{
 			/Config
 			{
-				/Address	"sinv-56025.edu.hsr.ch"
-				/Port		443
+				/Address	!Defaults.any?SSLHost
+				/Port		!Defaults.any?SSLPort
 				/SSLVerifyDepth 1
-				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
-				/CertFileClient	"/tmp/SSLSocketTestHashedCerts/clientcrt.pem"
+				/KeyFileClient	!Defaults.any?KeyFileClientRelative
+				/CertFileClient	!Defaults.any?CertFileClientRelative
 				/SSLVerifyFailIfNoPeerCert 1
 				/SSLUseAppCallback		0
 				/SSLVerifyPeerCert		1
-				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
+				/SSLPeerCAFile !Defaults.any?RootCACertFileAbsolute
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.com,CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		!Defaults.any?CertFileServerSubject
 			}
 			/Results
 			{
@@ -288,18 +257,18 @@
 		{
 			/Config
 			{
-				/Address	"sinv-56025.edu.hsr.ch"
-				/Port		443
+				/Address	!Defaults.any?SSLHost
+				/Port		!Defaults.any?SSLPort
 				/SSLVerifyDepth 1
-				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
-				/CertFileClient	"/tmp/SSLSocketTestHashedCerts/clientcrt.pem"
+				/KeyFileClient	!Defaults.any?KeyFileClientRelative
+				/CertFileClient	!Defaults.any?CertFileClientRelative
 				/SSLVerifyFailIfNoPeerCert 0
 				/SSLUseAppCallback		1
 				/SSLVerifyPeerCert		1
-				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
+				/SSLPeerCAFile !Defaults.any?RootCACertFileAbsolute
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.com,CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		!Defaults.any?CertFileServerSubject
 			}
 			/Results
 			{
@@ -315,18 +284,18 @@
 		{
 			/Config
 			{
-				/Address	"sinv-56025.edu.hsr.ch"
-				/Port		443
+				/Address	!Defaults.any?SSLHost
+				/Port		!Defaults.any?SSLPort
 				/SSLVerifyDepth 1
-				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
-				/CertFileClient	"/tmp/SSLSocketTestHashedCerts/clientcrt.pem"
+				/KeyFileClient	!Defaults.any?KeyFileClientRelative
+				/CertFileClient	!Defaults.any?CertFileClientRelative
 				/SSLVerifyFailIfNoPeerCert 1
 				/SSLUseAppCallback		0
 				/SSLVerifyPeerCert		0
-				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
+				/SSLPeerCAFile !Defaults.any?RootCACertFileAbsolute
 				/VerifyCertifiedEntity 0
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.com,CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		!Defaults.any?CertFileServerSubject
 			}
 			/Results
 			{
@@ -342,18 +311,18 @@
 		{
 			/Config
 			{
-				/Address	"sinv-56025.edu.hsr.ch"
-				/Port		443
+				/Address	!Defaults.any?SSLHost
+				/Port		!Defaults.any?SSLPort
 				/SSLVerifyDepth 1
-				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
-				/CertFileClient	"/tmp/SSLSocketTestHashedCerts/clientcrt.pem"
+				/KeyFileClient	!Defaults.any?KeyFileClientRelative
+				/CertFileClient	!Defaults.any?CertFileClientRelative
 				/SSLVerifyFailIfNoPeerCert 	0
 				/SSLUseAppCallback		0
 				/SSLVerifyPeerCert		0
-				/SSLPeerCAFile "/tmp/SSLSocketTestHashedCerts/rootCA1.pem"
+				/SSLPeerCAFile !Defaults.any?RootCACertFileAbsolute
 				/VerifyCertifiedEntity 0
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.com,CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		!Defaults.any?CertFileServerSubject
 			}
 			/Results
 			{
@@ -369,18 +338,18 @@
 		{
 			/Config
 			{
-				/Address	"sinv-56025.edu.hsr.ch"
-				/Port		443
+				/Address	!Defaults.any?SSLHost
+				/Port		!Defaults.any?SSLPort
 				/SSLVerifyDepth 3
-				/KeyFileClient	"/tmp/SSLSocketTestHashedCerts/clientkey.pem"
-				/CertFileClient	"/tmp/SSLSocketTestHashedCerts/clientcrt.pem"
+				/KeyFileClient	!Defaults.any?KeyFileClientRelative
+				/CertFileClient	!Defaults.any?CertFileClientRelative
 				/SSLVerifyFailIfNoPeerCert 	1
 				/SSLUseAppCallback		1
 				/SSLVerifyPeerCert		1
-				/SSLVerifyPath 		"/tmp/SSLSocketTestHashedCerts"
+				/SSLVerifyPath 		!Defaults.any?CertDirAbsolute
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 1
-				/CertVerifyString		"CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		!Defaults.any?CertFileServerSubject
 			}
 			/Results
 			{
@@ -394,8 +363,8 @@
 		{
 			/Config
 			{
-				/Address	"sifsstud1.hsr.ch"
-				/Port		443
+				/Address	!Defaults.any?SSLHost
+				/Port		!Defaults.any?SSLPort
 				/NoCertAndPrivateKey		1
 				/UseThreadLocalMemory		1
 			}
@@ -409,4 +378,3 @@
 		}
 	}
 }
-
