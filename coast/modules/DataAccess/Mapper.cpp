@@ -31,7 +31,7 @@ bool MappersModule::Init(const ROAnything config)
 	StartTrace(MappersModule.Init);
 	// installation of different mapping objects for the different backend objects
 	ROAnything roaConfig;
-	bool installCodeParam(false), installCodeResult(false);
+	bool installCodeParam(true), installCodeResult(true);
 	if ( config.LookupPath(roaConfig, ParameterMapper::gpcConfigPath) ) {
 		HierarchyInstaller ai1(ParameterMapper::gpcCategory);
 		installCodeParam = RegisterableObject::Install(roaConfig, ParameterMapper::gpcCategory, &ai1);
