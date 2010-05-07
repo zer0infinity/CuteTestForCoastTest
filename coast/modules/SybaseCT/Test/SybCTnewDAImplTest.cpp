@@ -59,9 +59,9 @@ void SybCTnewDAImplTest::UninitializedExecTest()
 	StartTrace(SybCTnewDAImplTest.UninitializedExecTest);
 
 	Anything params;
-	params["SybDBUser"] = "wdtester";
-	params["SybDBPW"] = "all2test";
-	params["SybDBHost"] = "HIKU_INT2";
+	params["SybDBUser"] = GetConfig()["SybDBUser"].AsString();
+	params["SybDBPW"] = GetConfig()["SybDBPW"].AsString();
+	params["SybDBHost"] = GetConfig()["SybDBHost"].AsString();
 	params["SybDBApp"] = "SybCTnewDAImplTest";
 	params["SQL"] = "select au_fname, au_lname from authors where au_lname='Bennet'";
 
@@ -190,49 +190,6 @@ void SybCTnewDAImplTest::DoPutbackConnectionTest()
 	}
 }
 
-void SybCTnewDAImplTest::SimpleDATest()
-{
-	StartTrace(SybCTnewDAImplTest.SimpleDATest);
-
-	Anything params;
-	params["SybDBUser"] = "wdtester";
-	params["SybDBPW"] = "all2test";
-	params["SybDBHost"] = "HIKU_INT2";
-	params["SybDBApp"] = "SybCTnewDAImplTest";
-	params["SQL"] = "select au_fname, au_lname from authors where au_lname='Bennet'";
-
-	TraceAny(params, "Input params:");
-	Context ctx(params);
-
-	Anything result;
-	Anything expected;
-	expected["Mapper"]["Query"] = params["SQL"];
-	expected["Mapper"]["QueryCount"] = 1;
-	expected["Mapper"]["QueryResult"]["0"]["au_fname"] = "Abraham";
-	expected["Mapper"]["QueryResult"]["0"]["au_lname"] = "Bennet";
-	expected["Mapper"]["QuerySource"] = "HIKU_INT2";
-	TraceAny(expected, "expected tmpstore: ");
-	// force load of configuration
-	SybCTnewDAImpl da("SybSearchTestCoded");
-	da.Initialize("SybCTnewDAImpl");
-	ParameterMapper	inpMapper("SybSearchTestCoded");
-	inpMapper.Initialize("ParameterMapper");
-	ResultMapper	outMapper("SybSearchTestCoded");
-	outMapper.Initialize("ResultMapper");
-
-	ctx.Push("DataAccess", &da);
-	t_assert(da.Exec(ctx, &inpMapper, &outMapper));
-	ctx.Remove("DataAccess");
-
-	result = ctx.GetTmpStore();
-	Anything cfg;
-	cfg["Slot"] = "Mapper.Messages";
-	SlotCleaner::Operate(result, cfg);
-	TraceAny(result, "resulting tmpstore: ");
-
-	assertAnyEqual(expected, result);
-}
-
 // builds up a suite of testcases, add a line for each testmethod
 Test *SybCTnewDAImplTest::suite ()
 {
@@ -243,7 +200,6 @@ Test *SybCTnewDAImplTest::suite ()
 	ADD_CASE(testSuite, SybCTnewDAImplTest, InitTest);
 	ADD_CASE(testSuite, SybCTnewDAImplTest, DoGetConnectionTest);
 	ADD_CASE(testSuite, SybCTnewDAImplTest, DoPutbackConnectionTest);
-///	ADD_CASE(testSuite, SybCTnewDAImplTest, SimpleDATest);
 	return testSuite;
 
 }

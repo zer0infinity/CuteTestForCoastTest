@@ -25,12 +25,12 @@
 				}
 			}
 		}
-		/SybDBHost	HIKU_INT2
+		/SybDBHost	!Defaults.any?Sybase.Server
 	}
 	/SybLocalSa {
-		/SybDBUser  "wdtester"
-		/SybDBPW	"all2test"
-		/SybDBHost	HIKU_INT2
+		/SybDBUser  !Defaults.any?Sybase.Username
+		/SybDBPW	!Defaults.any?Sybase.Password
+		/SybDBHost	!Defaults.any?Sybase.Server
 	}
 
 	/SybSearchTest {
@@ -63,14 +63,14 @@
 	/SybInsertDatabases {
 		/SQL	{
 			/RendererMapper {
-				"INSERT INTO pub2..au_pix VALUES ( 'cirp',NULL,NULL,NULL,NULL,NULL)"
+				"INSERT INTO au_pix VALUES ( 'cirp',NULL,NULL,NULL,NULL,NULL)"
 			}
 		}
 	}
 	/SybDeleteFromDatabase {
 		/SQL	{
 			/RendererMapper {
-				"DELETE FROM pub2..au_pix where au_id='cirp'"
+				"DELETE FROM au_pix where au_id='cirp'"
 			}
 		}
 	}
@@ -164,9 +164,9 @@
 		}
 	}
 	/SybTestThreadnewDA {
-		/SybDBUser  "wdtester"
-		/SybDBPW	"all2test"
-		/SybDBHost	HIKU_INT2
+		/SybDBUser  !Defaults.any?Sybase.Username
+		/SybDBPW	!Defaults.any?Sybase.Password
+		/SybDBHost	!Defaults.any?Sybase.Server
 		/SQL
 		{
 			/RendererMapper

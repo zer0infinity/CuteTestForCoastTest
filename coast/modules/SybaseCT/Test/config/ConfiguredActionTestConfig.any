@@ -12,6 +12,7 @@
 		CoastAppLog
 		CoastDataAccess
 		CoastRenderers
+		CoastActions
 	}
 	/Modules {
 		ActionsModule
@@ -38,7 +39,7 @@
 		/SybCTnewDAImpl {
 			/ParallelQueries		1
 			/CloseConnectionTimeout	60
-			/InterfacesPathName		"config/interfaces.any"
+			/InterfacesPathName		"config/interfaces"
 		}
 	}
 
@@ -150,7 +151,7 @@
 								/au_lname	"Bennet"
 							}
 						}
-						/QuerySource	"HIKU_INT2"
+						/QuerySource	!Defaults.any?Sybase.Server
 					}
 				}
 			}
@@ -209,7 +210,7 @@
 		}
 		/SybShowDatabases {
 			/TmpStore {
-				/DesiredFields "name,crdate"
+				/DesiredFields "name"
 			}
 			/TheAction {
 				/CallDA 	SybShowDatabases
@@ -217,15 +218,14 @@
 			/Result {
 				/TmpStore {
 					/SybShowDatabases {
-						/Query	"SELECT name,crdate FROM master..sysdatabases where name='master'"
+						/Query	"SELECT name FROM master..sysdatabases where name='master'"
 						/QueryCount 1
 						/QueryResult	{
 							{
 								/name "master"
-								/crdate "Apr 16 2008 11:07AM"
 							}
 						}
-						/QuerySource	"HIKU_INT2"
+						/QuerySource	!Defaults.any?Sybase.Server
 					}
 				}
 			}
@@ -237,7 +237,7 @@
 			/Result {
 				/TmpStore {
 					/SybInsertDatabases {
-						/Query "INSERT INTO pub2..au_pix VALUES ( 'cirp',NULL,NULL,NULL,NULL,NULL)"
+						/Query "INSERT INTO au_pix VALUES ( 'cirp',NULL,NULL,NULL,NULL,NULL)"
 					}
 				}
 			}
@@ -249,7 +249,7 @@
 			/Result {
 				/TmpStore {
 					/SybDeleteFromDatabase {
-						/Query "DELETE FROM pub2..au_pix where au_id='cirp'"
+						/Query "DELETE FROM au_pix where au_id='cirp'"
 					}
 				}
 			}
@@ -386,7 +386,7 @@
 								/au_lname	"Bennet"
 							}
 						}
-						/QuerySource	"HIKU_INT2"
+						/QuerySource	!Defaults.any?Sybase.Server
 					}
 				}
 			}
@@ -417,7 +417,7 @@
 								"Bennet"
 							}
 						}
-						/QuerySource	"HIKU_INT2"
+						/QuerySource	!Defaults.any?Sybase.Server
 					}
 				}
 			}
@@ -439,7 +439,7 @@
 						}
 						/QueryCount		23
 						/QueryResult	ignore
-						/QuerySource	"HIKU_INT2"
+						/QuerySource	!Defaults.any?Sybase.Server
 					}
 				}
 			}
@@ -462,7 +462,7 @@
 						}
 						/QueryCount	13
 						/QueryResult	ignore
-						/QuerySource	"HIKU_INT2"
+						/QuerySource	!Defaults.any?Sybase.Server
 					}
 				}
 			}
@@ -486,7 +486,7 @@
 						}
 						/QueryCount	13
 						/QueryResult	ignore
-						/QuerySource	"HIKU_INT2"
+						/QuerySource	!Defaults.any?Sybase.Server
 						/Messages {
 							"SybCTnewDA::SqlExec[SybNewDASearchTest]: rows limited due to SybDBMaxResultSize(6kB) or SybDBMaxRows(13)!"
 						}
@@ -512,7 +512,7 @@
 						}
 						/QueryCount		23
 						/QueryResult	ignore
-						/QuerySource	"HIKU_INT2"
+						/QuerySource	!Defaults.any?Sybase.Server
 					}
 				}
 			}

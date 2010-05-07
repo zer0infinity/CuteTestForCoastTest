@@ -1,4 +1,0 @@
-HIKU_INT2
-        master tcp ether svzdhiku01 7777
-        query  tcp ether svzdhiku01 7777
-

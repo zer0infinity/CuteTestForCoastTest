@@ -12,8 +12,8 @@
 		/SybDBApp	SybShowDatabases
 	}
 	/SybNewLocal {
-		/TheTestUser	wdtester
-		/TheTestUserPW	all2test
+		/TheTestUser	!Defaults.any?Sybase.Username
+		/TheTestUserPW	!Defaults.any?Sybase.Password
 		/SybDBApp		SybCTnewDAImplTest
 	}
 

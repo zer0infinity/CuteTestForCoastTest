@@ -1,0 +1,5 @@
+{
+	/SybDBUser  !Defaults.any?Sybase.Username
+	/SybDBPW	!Defaults.any?Sybase.Password
+	/SybDBHost	!Defaults.any?Sybase.Server
+}

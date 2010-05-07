@@ -1,41 +1,28 @@
-/* %Z% generic/sproc/%M% %I% %G% */
-
-/* 7/17/98 added use master at start, use pub2 at end */
-/* installpub2 1.0 4/5/91 */
-/* has primary and foreign keys, plus text and image tables*/
 use master
 go
 set nocount on
-create database pub2 on int2_pub2_DL = 50
 go
 
-sp_dboption pub2, "trunc log on chkpt",true
+sp_dboption ##database##, "trunc log on chkpt", true
 go
 
-sp_dboption pub2, "select into/bulkcopy",true
+sp_dboption ##database##, "select into/bulkcopy", true
 go
 
-use pub2
+use ##database##
 go
 
-CHECKPOINT
-go
-
-sp_changedbowner wdtester , true
-go
-use pub2
-go
 checkpoint
 go
 if exists (select * from master.dbo.sysdatabases
-		where name = "pub2")
+		where name = "##database##")
 begin
 	execute sp_addtype id, "varchar(11)", "not null"
 	execute sp_addtype tid, "varchar(6)", "not null"
 end
 go
 if exists (select * from master.dbo.sysdatabases
-		where name = "pub2")
+		where name = "##database##")
 begin
 	create table authors
 	(au_id id not null,
@@ -52,7 +39,7 @@ go
 grant select on authors to public
 go
 if exists (select * from master.dbo.sysdatabases
-		where name = "pub2")
+		where name = "##database##")
 begin
 	create table publishers
 	(pub_id char(4) not null,
@@ -64,7 +51,7 @@ go
 grant select on publishers to public
 go
 if exists (select * from master.dbo.sysdatabases
-		where name = "pub2")
+		where name = "##database##")
 begin
 	create table roysched
 	(title_id tid not null,
@@ -76,7 +63,7 @@ go
 grant select on roysched to public
 go
 if exists (select * from master.dbo.sysdatabases
-		where name = "pub2")
+		where name = "##database##")
 begin
 	create table sales
 	(stor_id char(4) not null,
@@ -87,7 +74,7 @@ go
 grant select on sales to public
 go
 if exists (select * from master.dbo.sysdatabases
-		where name = "pub2")
+		where name = "##database##")
 begin
 	create table salesdetail
 	(stor_id char(4) not null,
@@ -100,7 +87,7 @@ go
 grant select on salesdetail to public
 go
 if exists (select * from master.dbo.sysdatabases
-		where name = "pub2")
+		where name = "##database##")
 begin
 	create table titleauthor
 	(au_id id not null,
@@ -112,7 +99,7 @@ go
 grant select on titleauthor to public
 go
 if exists (select * from master.dbo.sysdatabases
-		where name = "pub2")
+		where name = "##database##")
 begin
 	create table titles
 	(title_id tid not null,
@@ -130,7 +117,7 @@ go
 grant select on titles to public
 go
 if exists (select * from master.dbo.sysdatabases
-		where name = "pub2")
+		where name = "##database##")
 begin
 	create table stores
 	(stor_id char(4) not null,
@@ -146,7 +133,7 @@ go
 grant select on stores to public
 go
 if exists (select * from master.dbo.sysdatabases
-		where name = "pub2")
+		where name = "##database##")
 begin
 	create table discounts
 	(discounttype   varchar(40) not null,
@@ -159,7 +146,7 @@ go
 grant select on discounts to public
 go
 if exists (select * from master.dbo.sysdatabases
-                where name = "pub2")
+                where name = "##database##")
 begin
 	create table au_pix
 	(au_id		char(11) not null,
@@ -173,7 +160,7 @@ go
 grant select on au_pix to public
 go
 if exists (select * from master.dbo.sysdatabases 
-                where name = "pub2") 
+                where name = "##database##") 
 begin 
 	create table blurbs
 	(au_id	id not null,
@@ -619,7 +606,7 @@ go
 insert roysched
 values('PS1372', 40001, 50000, 18)
 go
-dump transaction pub2 with truncate_only
+dump transaction ##database## with truncate_only
 go
 insert sales values ('7066', 'BA27618', '10/12/85')
 go
@@ -1092,7 +1079,7 @@ insert titles (title_id, title, type, pub_id, notes, contract)
 values('PC9999', 'Net Etiquette', 'popular_comp', '1389',
 'A must-read for computer conferencing debutantes!', 0)
 go
-dump transaction pub2 with truncate_only
+dump transaction ##database## with truncate_only
 go
 insert stores
 values('7066', "Barnum's", '567 Pasadena Ave.', 'Tustin', 'CA',
@@ -1322,58 +1309,8 @@ grant exec on waitSomeSeconds to public
 go
 grant create procedure to public
 go
-if exists (select * from master.dbo.sysdatabases
-		where name = "pub2")
-begin
-	execute sp_adduser guest
-end
+
+dump transaction ##database## with truncate_only
 go
-if exists (select * from master.dbo.sysdatabases
-		where name = "pub2")
-begin
-	grant all on publishers to guest
-	grant all on titles to guest
-	grant all on authors to guest
-	grant all on titleauthor to guest
-	grant all on sales to guest
-	grant all on salesdetail to guest
-	grant all on roysched to guest
-	grant all on stores to guest
-	grant all on discounts to guest
-	grant all on au_pix to guest
-	grant all on blurbs to guest
-	grant exec on byroyalty to guest
-	grant exec on history_proc to guest
-	grant exec on discount_proc to guest
-	grant exec on titleid_proc to guest
-	grant exec on waitSomeSeconds to guest
-	grant exec on storename_proc to guest
-	grant exec on storeid_proc to guest
-	grant exec on insert_sales_proc to guest
-	grant exec on insert_salesdetail_proc to guest
-	grant exec on title_proc to guest
-	grant create table to guest
-	grant create view to guest
-	grant create rule to guest
-	grant create default to guest
-	grant create procedure to guest
-end
-go
-use sybsystemprocs
-go
-grant exec on sp_bindefault to guest
-grant exec on sp_unbindefault to guest
-grant exec on sp_bindrule to guest
-grant exec on sp_unbindrule to guest
-grant exec on sp_addtype to guest
-grant exec on sp_droptype to guest
-grant exec on sp_spaceused to guest
-grant exec on sp_help to guest
-grant exec on sp_helpgroup to guest
-grant exec on sp_helpindex to guest
-grant exec on sp_helprotect to guest
-go
-dump transaction pub2 with truncate_only
-go
-use pub2
+use ##database##
 go

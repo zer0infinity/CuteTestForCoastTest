@@ -18,8 +18,11 @@
 				PutResultMapper
 			}
 		}
+		/Input {
+		}
 	}
-	/InterfacesFile	"config/interfaces.any"
+
+	/Sybase !Defaults.any?Sybase
 
 	/LoginTimeoutTest {
 		/Connections	25

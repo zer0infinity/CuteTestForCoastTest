@@ -1,0 +1,9 @@
+{
+	/Sybase {
+		/Username	"coast_user"
+		/Password	"coast_pwd"
+		/Server		"SIFSCOAST1"
+		/Database	"coast_test"
+		/InterfacesFile	"config/interfaces"
+	}
+}

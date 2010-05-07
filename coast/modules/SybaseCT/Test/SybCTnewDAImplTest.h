@@ -10,11 +10,11 @@
 #define _SybCTnewDAImplTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "TestCase.h"
+#include "FoundationTestTypes.h"
 
 //---- SybCTnewDAImplTest ----------------------------------------------------------
 //:TestCases description
-class SybCTnewDAImplTest : public TestFramework::TestCase
+class SybCTnewDAImplTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//--- constructors

@@ -39,7 +39,8 @@ void SybCTnewDATest::InitOpenSetConPropTest()
 		StartTrace(SybCTnewDATest.InitOpenSetConPropTest);
 		StartTraceMem(SybCTnewDATest.InitOpenSetConPropTest);
 		Anything anyCtxMessages(Storage::Global());
-		String strInterfacesFileName = GetConfig()["InterfacesFile"].AsString();
+		ROAnything roaDbParams( GetConfig()["Sybase"] );
+		String strInterfacesFileName = roaDbParams["InterfacesFile"].AsString();
 		if ( t_assertm(strInterfacesFileName.Length(), "expected non-empty interfaces filename") ) {
 			CS_CONTEXT *context;
 			Context ctx;
@@ -52,7 +53,9 @@ void SybCTnewDATest::InitOpenSetConPropTest()
 			if (t_assertm(SybCTnewDA::Init(&context, &anyCtxMessages, strInterfacesFileName, 5) == CS_SUCCEED, "Context should have been created")) {
 				SybCTnewDA sybct(context);
 				SybCTnewDA::DaParams myParams(&ctx, &aParamMapper, &aResultMapper, &strDAName);
-				if (t_assertm(sybct.Open( myParams, "wdtester", "all2test", "HIKU_INT2", "SimpleQueryTest"), "dbOpen should have succeeded")) {
+				if (t_assertm(sybct.Open( myParams, roaDbParams["Username"].AsString(),
+						roaDbParams["Password"].AsString(), roaDbParams["Server"].AsString(),
+						  "SimpleQueryTest"), "dbOpen should have succeeded")) {
 					SybCTnewDA::DaParams outParams;
 					if ( t_assertm(sybct.GetConProps(CS_USERDATA, (CS_VOID **)&outParams, CS_SIZEOF(SybCTnewDA::DaParams)) == CS_SUCCEED, "expected setting of properties to succeed") ) {
 						assertEqual((long)myParams.fpContext, (long)outParams.fpContext);
@@ -92,7 +95,8 @@ void SybCTnewDATest::SimpleQueryTest()
 		StartTrace(SybCTnewDATest.SimpleQueryTest);
 		StartTraceMem(SybCTnewDATest.SimpleQueryTest);
 		Anything anyCtxMessages(Storage::Global());
-		String strInterfacesFileName = GetConfig()["InterfacesFile"].AsString();
+		ROAnything roaDbParams( GetConfig()["Sybase"] );
+		String strInterfacesFileName = roaDbParams["InterfacesFile"].AsString();
 		if ( t_assertm(strInterfacesFileName.Length(), "expected non-empty interfaces filename") ) {
 			CS_CONTEXT *context;
 			// create context
@@ -106,8 +110,11 @@ void SybCTnewDATest::SimpleQueryTest()
 			if (t_assertm(SybCTnewDA::Init(&context, &anyCtxMessages, strInterfacesFileName, 5) == CS_SUCCEED, "Context should have been created")) {
 				SybCTnewDA sybct(context);
 				SybCTnewDA::DaParams myParams(&ctx, &aParamMapper, &aResultMapper, &strDAName);
-				if (t_assertm(sybct.Open( myParams, "wdtester", "all2test", "HIKU_INT2", "SimpleQueryTest"), "dbOpen should have succeeded")) {
-					if (t_assert(sybct.SqlExec(myParams, "use pub2"))) {
+				if (t_assertm(sybct.Open( myParams, roaDbParams["Username"].AsString(),
+						roaDbParams["Password"].AsString(), roaDbParams["Server"].AsString(),
+						  "SimpleQueryTest"), "dbOpen should have succeeded")) {
+					String useDB("use ");
+					if (t_assert(sybct.SqlExec(myParams, useDB << roaDbParams["Database"].AsString()))) {
 						if ( t_assert(sybct.SqlExec(myParams, "select * from authors") ) ) {
 							TraceAny(ctx.GetTmpStore()["TestOutput"], "TestOutput");
 							assertEqual(23, ctx.GetTmpStore()["TestOutput"]["QueryCount"].AsLong(-1));
@@ -136,7 +143,8 @@ void SybCTnewDATest::LimitedMemoryTest()
 		StartTrace(SybCTnewDATest.LimitedMemoryTest);
 		StartTraceMem(SybCTnewDATest.LimitedMemoryTest);
 		Anything anyCtxMessages(Storage::Global());
-		String strInterfacesFileName = GetConfig()["InterfacesFile"].AsString();
+		ROAnything roaDbParams( GetConfig()["Sybase"] );
+		String strInterfacesFileName = roaDbParams["InterfacesFile"].AsString();
 		if ( t_assertm(strInterfacesFileName.Length(), "expected non-empty interfaces filename") ) {
 			CS_CONTEXT *context;
 			// create context
@@ -150,8 +158,11 @@ void SybCTnewDATest::LimitedMemoryTest()
 			if (t_assertm(SybCTnewDA::Init(&context, &anyCtxMessages, strInterfacesFileName, 5) == CS_SUCCEED, "Context should have been created")) {
 				SybCTnewDA sybct(context);
 				SybCTnewDA::DaParams myParams(&ctx, &aParamMapper, &aResultMapper, &strDAName);
-				if (t_assertm(sybct.Open( myParams, "wdtester", "all2test", "HIKU_INT2", "SimpleQueryTest"), "dbOpen should have succeeded")) {
-					if ( t_assert(sybct.SqlExec(myParams, "use pub2")) ) {
+				if (t_assertm(sybct.Open( myParams, roaDbParams["Username"].AsString(),
+						roaDbParams["Password"].AsString(), roaDbParams["Server"].AsString(),
+						  "SimpleQueryTest"), "dbOpen should have succeeded")) {
+					String useDB("use ");
+					if ( t_assert(sybct.SqlExec(myParams, useDB << roaDbParams["Database"].AsString())) ) {
 						// we must get a success here even though we bailed out due to a memory limit
 						if ( t_assert( sybct.SqlExec(myParams, "select * from authors", "TitlesAlways", 4L) ) ) {
 							TraceAny(ctx.GetTmpStore()["TestOutput"], "TestOutput");
@@ -184,7 +195,7 @@ void SybCTnewDATest::LoginTimeoutTest()
 {
 	StartTrace(SybCTnewDATest.LoginTimeoutTest);
 	Anything anyCtxMessages(Storage::Global());
-	String strInterfacesFileName = GetConfig()["InterfacesFile"].AsString();
+	String strInterfacesFileName = GetConfig()["Sybase"]["InterfacesFile"].AsString();
 	if ( t_assertm(strInterfacesFileName.Length(), "expected non-empty interfaces filename") ) {
 		long lMaxConnections = GetTestCaseConfig()["Connections"].AsLong(26L);
 		// create context
@@ -215,7 +226,9 @@ void SybCTnewDATest::IntLoginTimeoutTest(CS_CONTEXT *context, long lMaxNumber, l
 	strDAName << lCurrent;
 	SybCTnewDA::DaParams myParams(&ctx, &aParamMapper, &aResultMapper, &strDAName);
 	DiffTimer aTimer;
-	if ( sybct.Open( myParams, "wdtester", "all2test", "HIKU_INT2", "LoginTimeoutTest") ) {
+	ROAnything roaDbParams( GetConfig()["Sybase"] );
+	if ( sybct.Open( myParams, roaDbParams["Username"].AsString(), roaDbParams["Password"].AsString(),
+			roaDbParams["Server"].AsString(), "LoginTimeoutTest") ) {
 		long lDTime = aTimer.Diff();
 		long lTimeout = GetTestCaseConfig()["Timeout"].AsLong(5L) * 1000L;
 		Trace("time used in Open: " << lDTime << "ms, Timeout is: " << lTimeout << "ms");
@@ -238,7 +251,8 @@ void SybCTnewDATest::ResultTimeoutTest()
 {
 	StartTrace(SybCTnewDATest.ResultTimeoutTest);
 	Anything anyCtxMessages(Storage::Global());
-	String strInterfacesFileName = GetConfig()["InterfacesFile"].AsString();
+	ROAnything roaDbParams( GetConfig()["Sybase"] );
+	String strInterfacesFileName = roaDbParams["InterfacesFile"].AsString();
 	if ( t_assertm(strInterfacesFileName.Length(), "expected non-empty interfaces filename") ) {
 		CS_CONTEXT *context;
 		// create context
@@ -252,9 +266,12 @@ void SybCTnewDATest::ResultTimeoutTest()
 		if (t_assertm(SybCTnewDA::Init(&context, &anyCtxMessages, strInterfacesFileName, 5) == CS_SUCCEED, "Context should have been created")) {
 			SybCTnewDA sybct(context);
 			SybCTnewDA::DaParams myParams(&ctx, &aParamMapper, &aResultMapper, &strDAName);
-			if (t_assertm(sybct.Open( myParams, "wdtester", "all2test", "HIKU_INT2", "ResultTimeoutTest"), "dbOpen should have succeeded")) {
+			if (t_assertm(sybct.Open( myParams, roaDbParams["Username"].AsString(),
+					roaDbParams["Password"].AsString(), roaDbParams["Server"].AsString(),
+					"ResultTimeoutTest"), "dbOpen should have succeeded")) {
 				DiffTimer aTimer;
-				if (t_assert(sybct.SqlExec(myParams, "use pub2"))) {
+				String useDB("use ");
+				if (t_assert(sybct.SqlExec(myParams, useDB << roaDbParams["Database"].AsString()))) {
 					String strQuery("exec waitSomeSeconds \"00:00:");
 					strQuery << GetTestCaseConfig()["TimeToWait"].AsString("20") << "\"";
 					t_assertm( !sybct.SqlExec(myParams, strQuery), "exec should have failed because of result timeout" );

@@ -1,15 +1,74 @@
-import os
+import os, subprocess, pdb
 import SConsider
 from stat import *
+from SomeUtils import multiple_replace
+
+dbconn = {'server': 'SIFSCOAST1', 'database': 'coast_test', 'user': 'coast_user', 'pw': 'coast_pwd'}
 
 Import('*')
+
+def runSQL(filename, interfaces, logpath, filter=None, **kw):
+    targets = SConsider.packageRegistry.getPackageTarget('sybase', 'isql')
+    target = targets['target']
+    if not target or not os.path.isfile(filename):
+        return False
+    args = [target.abspath, '-U', dbconn['user'], '-P', dbconn['pw'], '-S', dbconn['server'], '-I', interfaces]
+    print args
+    res = 1
+    
+    with open(filename) as file:
+        isql = subprocess.Popen(args, stdin=subprocess.PIPE,
+                                     stderr=subprocess.PIPE,
+                                     stdout=subprocess.PIPE, **kw)
+        content = file.read()
+        if callable(filter):
+            content = filter(content)
+        isql_out, isql_err = isql.communicate(content)
+
+        if not os.path.isdir(logpath):
+            os.makedirs(logpath)
+        logfilebasename = target.name + '.' + os.path.basename(filename)
+        if isql_err:
+            with open(os.path.join(logpath, logfilebasename + '.stderr'), 'w') as errfile:
+                errfile.write(isql_err)
+        if isql_out:
+            with open(os.path.join(logpath, logfilebasename + '.stdout'), 'w') as outfile:
+                outfile.write(isql_out)
+        
+        res = isql.returncode
+
+    return res
+
+def setUp(target, source, env):
+	relDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])	
+	logDir = relDir.Dir(env['LOGDIR']).Dir(env['VARIANTDIR'])
+	interfacesFile = relDir.Dir('config').File('interfaces')
+	sqlFile = relDir.Dir('config').File('createPub2.sql')
+	runSQL(sqlFile.abspath, interfacesFile.abspath, logDir.abspath,
+		   filter=lambda string: multiple_replace([("##database##", dbconn['database'])], string),
+		   env=env['ENV'])
+	
+
+def tearDown(target, source, env):
+	relDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
+	logDir = relDir.Dir(env['LOGDIR']).Dir(env['VARIANTDIR'])
+	interfacesFile = relDir.Dir('config').File('interfaces')
+	sqlFile = relDir.Dir('config').File('dropPub2.sql')
+	runSQL(sqlFile.abspath, interfacesFile.abspath, logDir.abspath,
+		   filter=lambda string: multiple_replace([("##database##", dbconn['database'])], string),
+		   env=env['ENV'])
 
 buildSettings = {
     packagename : {
         'targetType'       : 'ProgramTest',
         'linkDependencies' : ['CoastSybaseCT', 'testfwWDBase'],
+        'requires'         : ['CoastActions'],
         'sourceFiles'      : SConsider.listFiles(['*.cpp']),
-        'copyFiles'        : [(SConsider.findFiles(['.'],['.any','.txt','.tst','.sql']), S_IRUSR|S_IRGRP|S_IROTH)],
+        'copyFiles'        : [(SConsider.listFiles(['config/*.any', 'config/*.sql', 'config/interfaces']), S_IRUSR|S_IRGRP|S_IROTH)],
+        'runConfig'        : {
+                              'setUp': setUp,
+                              'tearDown': tearDown,
+                             },
     },
 }
 
