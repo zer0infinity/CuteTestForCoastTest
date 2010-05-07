@@ -44,16 +44,16 @@
 ######## Test specific section ########
 
 	/SendReceiveOnceTest {
-		/Address 	"127.0.0.1"
+		/Address 	!Defaults.any?HostName
 		/Port 		7183
 		/Input		"{ \"Marcel hat immer recht !!!\" }"
 	}
 	/RecreateSocketTest {
-		/Address 	"127.0.0.1"
+		/Address 	!Defaults.any?HostName
 		/Port 		7183
 	}
 	/RecreateClosedSocketTest {
-		/Address 	"127.0.0.1"
+		/Address 	!Defaults.any?HostName
 		/Port 		7183
 	}
 }

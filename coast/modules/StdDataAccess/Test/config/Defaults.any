@@ -1,0 +1,57 @@
+#--------------------------------------------------------------------
+# Copyright (c) 2010, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#--------------------------------------------------------------------
+{
+	/HostName				"##HOSTNAME##"
+	/DomainName				"##DOMAINONLY##"
+	/SSLHost				"##FQDN##"
+	/SSLPort				"##SSLPORT##"
+	/RemoteSSLHost			%SSLHost
+	/RemoteSSLPort			%SSLPort
+	/FaultySSLPort			"##FAULTYPORT##"
+
+	/CertDirRelative		"##certdir_rel##"
+	/CertDirAbsolute		"##certdir_abs##"
+
+#! server section
+	/KeyFileServerRelative	"##serverkey_rel##"
+	/KeyFileServerAbsolute	"##serverkey_abs##"
+	/CertFileServerRelative	"##servercrt_rel##"
+	/CertFileServerAbsolute	"##servercrt_abs##"
+	/CertFileServerIssuer	"##servercrt_issuer##"
+	/CertFileServerSubject	"##servercrt_subject##"
+	/CertFileServerSubjectParts	{ ##servercrt_subject_parts## }
+
+#! client section
+	/KeyFileClientRelative	"##clientkey_rel##"
+	/KeyFileClientAbsolute	"##clientkey_abs##"
+	/CertFileClientRelative	"##clientcrt_rel##"
+	/CertFileClientAbsolute	"##clientcrt_abs##"
+	/CertFileClientIssuer	"##clientcrt_issuer##"
+	/CertFileClientSubject	"##clientcrt_subject##"
+	/CertFileClientSubjectParts	{ ##clientcrt_subject_parts## }
+
+#! root and sub CA files
+	/RootCACertFileRelative	"##rootCA1crt_rel##"
+	/RootCACertFileAbsolute	"##rootCA1crt_abs##"
+	/RootCACertFileIssuer	"##rootCA1crt_issuer##"
+	/RootCACertFileSubject	"##rootCA1crt_subject##"
+	/RootCAKeyFileRelative	"##rootCA1key_rel##"
+	/RootCAKeyFileAbsolute	"##rootCA1key_abs##"
+
+	/SubCACertFileRelative	"##subCA1crt_rel##"
+	/SubCACertFileAbsolute	"##subCA1crt_abs##"
+	/SubCACertFileIssuer	"##subCA1crt_issuer##"
+	/SubCACertFileSubject	"##subCA1crt_subject##"
+	/SubCAKeyFileRelative	"##subCA1key_rel##"
+	/SubCAKeyFileAbsolute	"##subCA1key_abs##"
+
+#! cert chains
+	/ServerChainCertRelative	"##serverchain_rel##"
+	/FullChainCertRelative		"##fullchain_rel##"
+	/ChainWoServerCertRelative	"##chainwoservercrt_rel##"
+}

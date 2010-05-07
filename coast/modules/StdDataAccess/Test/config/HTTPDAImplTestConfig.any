@@ -22,7 +22,7 @@
 			{
 				/CurrentServer
 				{
-					/Server		"127.0.0.1"
+					/Server		!Defaults.any?HostName
 					/Port		55555
 					/UseSSL		1
 					/Timeout	5
@@ -31,12 +31,12 @@
 				/SSLModuleCfg
 				{
 					/SSLVerifyDepth 3
-					/KeyFileCert	"cert_files/clientkey.pem"
-					/CertFileCert	"cert_files/clientcrt.pem"
+					/KeyFileClient	!Defaults.any?KeyFileClientRelative
+					/CertFileClient	!Defaults.any?CertFileClientRelative
 					/SSLVerifyFailIfNoPeerCert 0
 					/SSLUseAppCallback		0
 					/SSLVerifyPeerCert		1
-					/SSLPeerCAFile "cert_files/rootCA1crt.pem"
+					/SSLPeerCAFile !Defaults.any?RootCACertFileRelative
 				}
 				/VerifyCertifiedEntity 0
 				/SessionResumption		1
@@ -56,7 +56,7 @@
 			{
 				/CurrentServer
 				{
-					/Server		"127.0.0.1"
+					/Server		!Defaults.any?HostName
 					/Port		55555
 					/UseSSL		1
 					/Timeout	5
@@ -65,12 +65,12 @@
 				/SSLModuleCfg
 				{
 					/SSLVerifyDepth 3
-					/KeyFileCert	"cert_files/clientkey.pem"
-					/CertFileCert	"cert_files/clientcrt.pem"
+					/KeyFileClient	!Defaults.any?KeyFileClientRelative
+					/CertFileClient	!Defaults.any?CertFileClientRelative
 					/SSLVerifyFailIfNoPeerCert 0
 					/SSLUseAppCallback		0
 					/SSLVerifyPeerCert		1
-					/SSLPeerCAFile "cert_files/rootCA1crt.pem"
+					/SSLPeerCAFile !Defaults.any?RootCACertFileRelative
 				}
 				/VerifyCertifiedEntity 0
 				/SessionResumption		1
@@ -91,7 +91,8 @@
 			{
 				/CurrentServer
 				{
-					/Port		443
+					/Server		!Defaults.any?SSLHost
+					/Port		!Defaults.any?SSLPort
 					/UseSSL		1
 					/Timeout	30
 					/UseThreadLocalMemory 1
@@ -99,16 +100,16 @@
 				/SSLModuleCfg
 				{
 					/SSLVerifyDepth 3
-					/KeyFileClient	"cert_files/clientkey.pem"
-					/CertFileClient	"cert_files/clientcrt.pem"
+					/KeyFileClient	!Defaults.any?KeyFileClientRelative
+					/CertFileClient	!Defaults.any?CertFileClientRelative
 					/SSLVerifyFailIfNoPeerCert 0
 					/SSLUseAppCallback		0
 					/SSLVerifyPeerCert		1
-					/SSLPeerCAFile "cert_files/rootCA1crt.pem"
+					/SSLPeerCAFile !Defaults.any?RootCACertFileRelative
 				}
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.com,CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		!Defaults.any?CertFileServerSubject
 			}
 			/Results
 			{
@@ -123,7 +124,8 @@
 			{
 				/CurrentServer
 				{
-					/Port		443
+					/Server		!Defaults.any?SSLHost
+					/Port		!Defaults.any?SSLPort
 					/UseSSL		1
 					/Timeout	30
 					/UseThreadLocalMemory 1
@@ -131,16 +133,16 @@
 				/SSLModuleCfg
 				{
 					/SSLVerifyDepth 1
-					/KeyFileClient	"cert_files/clientkey.pem"
-					/CertFileClient	"cert_files/clientcrt.pem"
+					/KeyFileClient	!Defaults.any?KeyFileClientRelative
+					/CertFileClient	!Defaults.any?CertFileClientRelative
 					/SSLVerifyFailIfNoPeerCert 0
 					/SSLUseAppCallback		0
 					/SSLVerifyPeerCert		1
-					/SSLPeerCAFile "cert_files/rootCA1crt.pem"
+					/SSLPeerCAFile !Defaults.any?RootCACertFileRelative
 				}
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.com,CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		!Defaults.any?CertFileServerSubject
 			}
 			/Results
 			{
@@ -155,7 +157,8 @@
 			{
 				/CurrentServer
 				{
-					/Port		443
+					/Server		!Defaults.any?SSLHost
+					/Port		!Defaults.any?SSLPort
 					/UseSSL		1
 					/Timeout	30
 					/UseThreadLocalMemory 1
@@ -163,16 +166,16 @@
 				/SSLModuleCfg
 				{
 					/SSLVerifyDepth 3
-					/KeyFileClient	"cert_files/clientkey.pem"
-					/CertFileClient	"cert_files/clientcrt.pem"
+					/KeyFileClient	!Defaults.any?KeyFileClientRelative
+					/CertFileClient	!Defaults.any?CertFileClientRelative
 					/SSLVerifyFailIfNoPeerCert 0
 					/SSLUseAppCallback		0
 					/SSLVerifyPeerCert		1
-					/SSLPeerCAFile "cert_files/rootCA1crt.pem"
+					/SSLPeerCAFile !Defaults.any?RootCACertFileRelative
 				}
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 0
-				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.com,xCN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		"CN=SoMeInVaLiDXxCn"
 			}
 			/Results
 			{
@@ -187,7 +190,8 @@
 			{
 				/CurrentServer
 				{
-					/Port		443
+					/Server		!Defaults.any?SSLHost
+					/Port		!Defaults.any?SSLPort
 					/UseSSL		1
 					/Timeout	30
 					/UseThreadLocalMemory 1
@@ -195,16 +199,16 @@
 				/SSLModuleCfg
 				{
 					/SSLVerifyDepth 3
-					/KeyFileClient	"cert_files/clientkey.pem"
-					/CertFileClient	"cert_files/clientcrt.pem"
+					/KeyFileClient	!Defaults.any?KeyFileClientRelative
+					/CertFileClient	!Defaults.any?CertFileClientRelative
 					/SSLVerifyFailIfNoPeerCert 0
 					/SSLUseAppCallback		0
 					/SSLVerifyPeerCert		1
-					/SSLPeerCAFile "cert_files/rootCA1crt.pem"
+					/SSLPeerCAFile !Defaults.any?RootCACertFileRelative
 				}
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 1
-				/CertVerifyString		"xCN=sinv-56025.edu.hsr.ch"
+				/CertVerifyString		"CN=SoMeInVaLiDXxCn"
 			}
 			/Results
 			{
@@ -219,7 +223,8 @@
 			{
 				/CurrentServer
 				{
-					/Port		443
+					/Server		!Defaults.any?SSLHost
+					/Port		!Defaults.any?SSLPort
 					/UseSSL		1
 					/Timeout	30
 					/UseThreadLocalMemory 0
@@ -227,16 +232,16 @@
 				/SSLModuleCfg
 				{
 					/SSLVerifyDepth 3
-					/KeyFileClient	"cert_files/clientkey.pem"
-					/CertFileClient	"cert_files/clientcrt.pem"
+					/KeyFileClient	!Defaults.any?KeyFileClientRelative
+					/CertFileClient	!Defaults.any?CertFileClientRelative
 					/SSLVerifyFailIfNoPeerCert 0
 					/SSLUseAppCallback		0
 					/SSLVerifyPeerCert		1
-					/SSLPeerCAFile "cert_files/rootCA1crt.pem"
+					/SSLPeerCAFile !Defaults.any?RootCACertFileRelative
 				}
 				/VerifyCertifiedEntity 1
 				/CertVerifyStringIsFilter 1
-				/CertVerifyString		"emailAddress=sinv-56025.edu.hsr.ch@wildplanet.com,CN=sinv-56025.edu.hsr.ch,OU=CertIssueing,O=ServerSite,L=ZH,ST=ZH,C=CH"
+				/CertVerifyString		!Defaults.any?CertFileServerSubject
 			}
 			/Results
 			{
