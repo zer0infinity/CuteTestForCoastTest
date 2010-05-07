@@ -1,3 +1,3 @@
-#!/bin/ksh
+#!/bin/sh
 
 echo Just something

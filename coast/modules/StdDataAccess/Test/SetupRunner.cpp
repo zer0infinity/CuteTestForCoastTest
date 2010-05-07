@@ -29,9 +29,12 @@
 #include "HTTPProtocolReplyRendererTest.h"
 #include "NewRendererTest.h"
 #include "RequestReaderTest.h"
+#include "ConnectorDAImplTest.h"
 
 void setupRunner(TestRunner &runner)
 {
+	ADD_SUITE(runner, ConnectorDAImplTest);
+	ADD_SUITE(runner, MIMEHeaderTest);
 	ADD_SUITE(runner, HTTPDAImplTest);
 	ADD_SUITE(runner, HTTPMapperTest);
 	ADD_SUITE(runner, XMLBodyMapperTest);
@@ -40,13 +43,12 @@ void setupRunner(TestRunner &runner)
 	ADD_SUITE(runner, CgiCallerTest);
 	ADD_SUITE(runner, CgiParamsTest);
 	ADD_SUITE(runner, AuthenticationServiceTest);
-	ADD_SUITE(runner, ConfiguredActionTest);
 	ADD_SUITE(runner, HTTPFileLoaderTest);
-	ADD_SUITE(runner, MIMEHeaderTest);
 	ADD_SUITE(runner, RequestBodyParserTest);
 	ADD_SUITE(runner, HTTPProtocolReplyRendererTest);
-	ADD_SUITE(runner, NewRendererTest);
 	ADD_SUITE(runner, HTTPResponseMapperTest);
 	ADD_SUITE(runner, HTTPMimeHeaderMapperTest);
 	ADD_SUITE(runner, RequestReaderTest);
+	ADD_SUITE(runner, ConfiguredActionTest);
+	ADD_SUITE(runner, NewRendererTest);
 }

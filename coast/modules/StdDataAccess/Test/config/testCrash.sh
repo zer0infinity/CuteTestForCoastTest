@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/sh
 
 $(dirname $0)/testcgi.sh
 
