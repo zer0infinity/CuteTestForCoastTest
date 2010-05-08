@@ -144,7 +144,7 @@ protected:
 		\return returns true if the mapping was successful otherwise false */
 	virtual bool DoGetStream(const char *key, ostream &os, Context &ctx, ROAnything script);
 
-	//! Hook for recursion stoppper in Mapper script interpretation. Looks for value in context using the key and appends it to value.
+	//! Hook for recursion stopper in Mapper script interpretation. Looks for value in context using the key and appends it to value.
 	virtual bool DoFinalGetAny(const char *key, Anything &value, Context &ctx);
 
 	//! Hook for recursion stopper in Mapper script interpretation. Default is to write value from context found via key to os. If value is a composite anything the anything is Printed on os, otherwise the value is rendered literally as a string.

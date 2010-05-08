@@ -92,10 +92,8 @@ bool CgiCaller::ProcessFile(const String &filename, Context &context, ParameterM
 
 	Anything cgienviron;
 	bool retVal = in->Get("cgienv", cgienviron, context);
-
 	if (retVal) {
-
-		Trace("calling program :" << path << " " << file);
+		Trace("calling in path [" << path << "] program [" << file << "]");
 		PipeExecutor cgi(filename, cgienviron, path, timeout);
 		iostream *ioStream = 0;
 		if (cgi.Start() && (ioStream = cgi.GetStream())) {

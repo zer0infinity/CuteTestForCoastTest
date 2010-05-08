@@ -42,6 +42,10 @@
 		/MainSwitch						10
 		/EnableAll						0
 	}
+	/ResultMapper {
+		/MainSwitch						10
+		/EnableAll						0
+	}
 	/HTTPHeaderParameterMapper {
 		/MainSwitch						10
 		/EnableAll						0
@@ -139,6 +143,10 @@
 		/MainSwitch						10
 		/EnableAll						20
 	}
+	/PipeExecutor {
+		/MainSwitch						10
+		/EnableAll						20
+	}
 	/SSLSocket {
 		/MainSwitch						210
 		/EnableAll						210
@@ -196,10 +204,6 @@
 		/EnableAll						0
 	}
 	/AccessManager {
-		/MainSwitch						10
-		/EnableAll						0
-	}
-	/ResultMapper {
 		/MainSwitch						10
 		/EnableAll						0
 	}

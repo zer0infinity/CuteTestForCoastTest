@@ -26,7 +26,6 @@ bool URI2FileNameMapper::DoFinalGetAny(const char *key, Anything &val, Context &
 	String strKey(key);
 	if (strKey == "FileName") {
 		String value;
-		Anything tmpStore(ctx.GetTmpStore());
 		String uri;
 		Get("REQUEST_URI", uri, ctx);
 		TrimUriArguments(uri, ctx);
@@ -82,6 +81,7 @@ bool URI2FileNameMapper::DoFinalGetAny(const char *key, Anything &val, Context &
 			// do nothing yet
 		} else if ( System::IsDirectory(value) ) {
 			if ( value[long(value.Length() - 1)] != '/' || uri.Length() == 0 ) {
+				Anything tmpStore(ctx.GetTmpStore());
 				if (uri.Length() == 0) {
 					// set bad request error
 					tmpStore["HTTPError"] = 400L;
@@ -129,9 +129,8 @@ bool URI2FileNameMapper::ResolveInvalidFile(String &path, String &uri, String &v
 	tmpStore["HTTPError"] = 404;
 	tmpStore["HTTPResponse"] = "Not Found";
 
-	Trace("resolved invalid name is: [" << path << uri << "]");
+	Trace("resolved invalid name is: [" << value << "]");
 	return false;
-
 }
 
 void URI2FileNameMapper::TrimUriArguments(String &filename, Context &ctx)

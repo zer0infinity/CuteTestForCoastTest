@@ -577,7 +577,7 @@ bool MailDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(MailDAImpl.Exec);
 
-	// Config dynamiclly from MetaData
+	// Config dynamically from MetaData
 	String address = ctx.Lookup("Mailhost", "127.0.0.1");
 	long port = ctx.Lookup("MailhostPort", 25L);
 	long timeout = ctx.Lookup("Timeout", 10L) * 1000;
