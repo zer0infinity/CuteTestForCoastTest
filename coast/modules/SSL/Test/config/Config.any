@@ -9,7 +9,6 @@
 	# -- Config for Acceptor Factories  in  ListenerPoolTest
 	# These are the SLLServerSocket test cases.
 	/TCP5010 {
-		/Address !Defaults.any?HostName
 		/Port	5010
 		/KeyFileServer	!Defaults.any?KeyFileClientRelative
 		/CertFileServer	!Defaults.any?CertFileClientRelative

@@ -129,6 +129,10 @@
 		/MainSwitch	3000
 		/EnableAll	3000
 	}
+	/EndPoint {
+		/MainSwitch	3000
+		/EnableAll	3000
+	}
 	/Socket {
 		/MainSwitch	3000
 		/EnableAll	3000
