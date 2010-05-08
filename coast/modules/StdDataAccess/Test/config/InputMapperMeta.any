@@ -167,7 +167,7 @@
 			"GET / HTTP/1.0\r\n"
 			"Connection: Keep-Alive\r\n"
 			"User/Agent: Mozilla/4.61 [en] (X11; U; Linux 2.2.10 i686\r\n"
-			"Host: zaphod.hsr.loc\r\n"
+			"Host: ssl.some.dom\r\n"
 			"\r\n"
 		}
 	}
@@ -178,12 +178,22 @@
 			"GET / HTTP/1.0\r\n"
 			"Connection: Close\r\n"
 			"User/Agent: Mozilla/4.61 [en] (X11; U; Linux 2.2.10 i686\r\n"
-			"Host: zaphod.hsr.ch\r\n"
+			"Host: ssl.som.dom\r\n"
 			"\r\n"
 		}
 	}
 	/SendReceiveOnce {
+		/UseSSL					0
+		/ConnectTimeout			5
+		/SocketStreamTimeout	5
+		/CheckReadyTimeout		5
+		/CloseSocket			1
 	}
 	/RecreateSocket {
+		/UseSSL					0
+		/ConnectTimeout			5
+		/SocketStreamTimeout	5
+		/CheckReadyTimeout		5
+		/CloseSocket			0
 	}
 }

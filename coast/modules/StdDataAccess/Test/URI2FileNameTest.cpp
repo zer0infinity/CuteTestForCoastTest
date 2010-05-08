@@ -49,11 +49,8 @@ void URI2FileNameTest::Uri2FilenameTest()
 	// call should fail and set error state
 	env["REQUEST_URI"] = "/foobaz/foo/";
 	t_assertm(!tst.Get("FileName", result, ctx), "expected Get to fail");
-	expected = rootdir;
-	expected << "/foobaz/foo/";
 	assertEqual(404, ctx.Lookup("HTTPError", 200L));
 	assertEqual("Not Found", ctx.Lookup("HTTPResponse", "Failed"));
-	assertEqual(expected, result);
 	tmpStore.Remove("HTTPError");
 	tmpStore.Remove("HTTPResponse");
 
@@ -61,11 +58,8 @@ void URI2FileNameTest::Uri2FilenameTest()
 	// call should fail and set error state
 	env["REQUEST_URI"] = "/foobaz/foo";
 	t_assertm(!tst.Get("FileName", result, ctx), "expected Get to fail");
-	expected = rootdir;
-	expected << "/foobaz/foo";
 	assertEqual(404, ctx.Lookup("HTTPError", 200L));
 	assertEqual("Not Found", ctx.Lookup("HTTPResponse", "Failed"));
-	assertEqual(expected, result);
 	tmpStore.Remove("HTTPError");
 	tmpStore.Remove("HTTPResponse");
 
@@ -85,13 +79,12 @@ void URI2FileNameTest::Uri2FilenameTest()
 	// uri == "/" DocumentRoot set relativ -> should prepend WD_ROOT
 	env["REQUEST_URI"] = "/config";
 	t_assertm(!tst.Get("FileName", result, ctx), "expected Get to fail");
-	expected = rootdir;
-	expected << "/config/";
-	assertEqual(expected, result);
 
 	//check error settings: they should not be set
 	assertEqual(301, ctx.Lookup("HTTPError", 200L));
 	assertEqual("Permanently moved", ctx.Lookup("HTTPResponse", "not set"));
+	expected = rootdir;
+	expected << "/config/";
 	assertEqual(expected, ctx.Lookup("HTTPLocation", "foo"));
 	tmpStore.Remove("HTTPError");
 	tmpStore.Remove("HTTPResponse");
@@ -148,9 +141,6 @@ Test *URI2FileNameTest::suite ()
 {
 	StartTrace(URI2FileNameTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
 	ADD_CASE(testSuite, URI2FileNameTest, Uri2FilenameTest);
-
 	return testSuite;
-
 }

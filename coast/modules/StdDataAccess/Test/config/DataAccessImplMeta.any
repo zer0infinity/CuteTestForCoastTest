@@ -7,39 +7,38 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-
 	/fdputargs
 	{
-		/Server				"153.46.248.7"	# finxs server
-		/Port				"80"
+		/Server				!Defaults.any?HostName
+		/Port				!Defaults.any?HttpPort
 	}
 	/fdputargs2
 	{
-		/Server				"153.46.248.7"	# finxs server
-		/Port				"80"
+		/Server				!Defaults.any?HostName
+		/Port				!Defaults.any?HttpPort
 	}
 
 	/useSSLTest
 	{
-		/Server				"sinv-56025.edu.hsr.ch"
-		/Port				"443"
+		/Server				!Defaults.any?SSLHost
+		/Port				!Defaults.any?SSLPort
 		/UseSSL				1
 		/Timeout			30
 	}
 
 	/ErrorHandlingTest {
-		/Server				"sinv-56025.edu.hsr.ch"
-		/Port				"8181"
+		/Server				!Defaults.any?HostName
+		/Port				!Defaults.any?FaultyHttpPort
 		/UseSSL				0
 		/Timeout			1
 	}
 
 	/webappputargs {
-		/Server		"192.168.85.5"
-		/Port		"443"
+		/Server		!Defaults.any?SSLHost
+		/Port		!Defaults.any?SSLPort
 	}
 	/webappputargs2 {
-		/Server		"192.168.85.5"
-		/Port		"443"
+		/Server		!Defaults.any?SSLHost
+		/Port		!Defaults.any?SSLPort
 	}
 }

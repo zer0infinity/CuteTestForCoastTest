@@ -66,9 +66,11 @@
 		/DoNotSplitHeaderFields 1
 	}
 	/SendReceiveOnce {
+		/PutPolicy Put
 		/DestinationSlot	""
 	}
 	/RecreateSocket {
+		/PutPolicy Put
 		/DestinationSlot	""
 	}
 }

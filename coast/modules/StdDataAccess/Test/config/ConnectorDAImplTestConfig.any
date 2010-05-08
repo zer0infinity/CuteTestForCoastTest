@@ -16,23 +16,18 @@
 	}
 	/DataAccessImpls {
 		/ConnectorDAImpl {
-			HPSMessageTest
 			SendReceiveOnce
 			RecreateSocket
 		}
 	}
 	/Mappers {
 		/Input {
-			/Mapper {
-				HPSMessageTest
+			/ParameterMapper {
 				SendReceiveOnce
 				RecreateSocket
 			}
 		}
 		/Output {
-			/Mapper {
-				HPSMessageTest
-			}
 			/StreamToAnythingMapper {
 				SendReceiveOnce
 				RecreateSocket

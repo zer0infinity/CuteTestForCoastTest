@@ -8,10 +8,13 @@
 
 {
 	/Modules {
-		MappersModule
 		DataAccessImplsModule
+		MappersModule
 	}
-	/Mappers {}
+	/Mappers {
+		/Input {}
+		/Output {}
+	}
 	/DataAccessImpls {}
 	/SSLNirvanaConnectTests
 	{

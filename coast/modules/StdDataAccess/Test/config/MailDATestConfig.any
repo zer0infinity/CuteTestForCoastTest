@@ -28,9 +28,6 @@
 		/MailDAImpl {
 			TestMail
 		}
-		/CgiCaller {
-			CgiExecTest
-		}
 	}
 
 	/Mappers {
@@ -38,32 +35,24 @@
 			/ParameterMapper {
 				TestMail
 			}
-			/CgiParams { CgiExecTest }
 		}
 		/Output {
 			/ResultMapper {
 				TestMail
-				ExecTestOut
-				CgiExecTest
 			}
 		}
 	}
 
 ######## Test specific section ########
-
-	/Mailhost	pop.bluewin.ch
-	/Helo		hank.com
-	/FromName	pfm@bluewin.ch
-	/ToName		{ pfm@bluewin.ch }
-
 	/TestCases {
 		/MailDAOkTestWithHelo	{
 			/TheAction	{ /CallDA	{ /DataAccess TestMail } }
 			/Query {
-				/Mailhost	%Mailhost
-				/Helo		%Helo
-				/From		%FromName
-				/To			%ToName
+				/Mailhost	!Defaults.any?SMTPMailhost
+				/MailhostPort	!Defaults.any?SMTPMailhostPort
+				/Helo		!Defaults.any?SMTPHelo
+				/From		!Defaults.any?SMTPFromName
+				/To			!Defaults.any?SMTPToName
 				/Subject	"MailDA Test"
 				/Message	"Test is ok"
 				/Timeout 120
@@ -72,9 +61,11 @@
 		/MailDAOkTest	{
 			/TheAction	{ /CallDA	{ /DataAccess TestMail } }
 			/Query {
-				/Mailhost	%Mailhost
-				/From		%FromName
-				/To			%ToName
+				/Mailhost	!Defaults.any?SMTPMailhost
+				/MailhostPort	!Defaults.any?SMTPMailhostPort
+				/Helo		!Defaults.any?SMTPHelo
+				/From		!Defaults.any?SMTPFromName
+				/To			!Defaults.any?SMTPToName
 				/Subject	"MailDA Test"
 				/Message	"Test is ok"
 			}
@@ -82,8 +73,9 @@
 		/MailDAFailTestNoTo {
 			/TheAction	{ /CallDA	{ /DataAccess TestMail } }
 			/Query {
-				/Mailhost	%Mailhost
-				/From		%FromName
+				/Mailhost	!Defaults.any?SMTPMailhost
+				/MailhostPort	!Defaults.any?SMTPMailhostPort
+				/From		!Defaults.any?SMTPFromName
 				/Subject	"MailDA Test"
 				/Message	"Test is not ok"
 			}
@@ -92,10 +84,10 @@
 		/MailDAFailTestWrongPort	{
 			/TheAction	{ /CallDA	{ /DataAccess TestMail } }
 			/Query {
-				/Mailhost	%Mailhost
-				/MailhostPort	21121
-				/From		%FromName
-				/To			%ToName
+				/Mailhost	!Defaults.any?SMTPMailhost
+				/MailhostPort	!Defaults.any?SMTPMailhostPortFaulty
+				/From		!Defaults.any?SMTPFromName
+				/To			!Defaults.any?SMTPToName
 				/Subject	"MailDA Test"
 				/Message	"Test is not ok"
 			}
