@@ -173,6 +173,10 @@
 		/MainSwitch						20
 		/EnableAll						20
 	}
+	/Resolver {
+		/MainSwitch						20
+		/EnableAll						20
+	}
 	/StorageTest {
 		/MainSwitch						20
 		/EnableAll						20

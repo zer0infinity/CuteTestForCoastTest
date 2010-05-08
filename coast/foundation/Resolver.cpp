@@ -197,18 +197,23 @@ bool AppleResolver::IP2DNS(String &dnsName, const String &ipAddress, unsigned lo
 
 bool LinuxResolver::DNS2IP(String &ipAddress, const String &dnsName)
 {
+	StartTrace1(Resolver.DNS2IP, "dns [" << dnsName << "]");
 	struct hostent he;
-	struct hostent *res;
+	struct hostent *res=0;
 	const int bufSz = 8192;
-	char buf[bufSz];
-	int err;
+	char buf[bufSz] = {0};
+	int err=0;
 
 	if (gethostbyname_r(dnsName, &he, buf, bufSz, &res, &err) == 0) {
-		char **pptr;
-		char str[INET6_ADDRSTRLEN];
-		pptr = he.h_addr_list;
-		ipAddress = inet_ntop(he.h_addrtype, *pptr, str, sizeof(str));
-		return true;
+		Trace("err:" << static_cast<long>(err) << " res:" << reinterpret_cast<long>(res));
+		// according to man page of gethostbyname_r, res != NULL can be taken as valid result
+		if (res!=0) {
+			char **pptr;
+			char str[INET6_ADDRSTRLEN]={0};
+			pptr = he.h_addr_list;
+			ipAddress = inet_ntop(he.h_addrtype, *pptr, str, sizeof(str));
+			return true;
+		}
 	}
 	return false;
 }
