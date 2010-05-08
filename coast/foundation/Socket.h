@@ -297,7 +297,7 @@ public:
 	//! \return true if socket succeeded, false if failure, store file descriptor in fSockFd
 	bool CreateSocket();
 	//!unify error logging
-	void LogError(const char *contextmessage);
+	void LogError(const char *contextmessage, int sockerrno=0);
 	//!obtain port bound to socket after connect or accept
 	long GetBoundPort();
 	//!bind endpoint to a ip address and or port

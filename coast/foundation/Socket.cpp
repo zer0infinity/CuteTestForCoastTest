@@ -466,13 +466,16 @@ public:
 #endif
 
 //--- EndPoint ---------------------------------------
-void EndPoint::LogError(const char *contextmessage)
+void EndPoint::LogError(const char *contextmessage, int sockerrno)
 {
 	StartTrace(EndPoint.LogError);
 	String logMsg(contextmessage);
 	logMsg << " of socket " << (long)GetFd()
 		   << " with address: " << fIPAddress << " port: " << fPort
 		   << " failed (#" << (long)System::GetSystemError() << ") " << SystemLog::LastSysError();
+	if (sockerrno!=0) {
+		logMsg << ", last error [" << SystemLog::SysErrorMsg(sockerrno) << "]";
+	}
 	Trace(logMsg);
 	SystemLog::Error(logMsg);
 }
@@ -593,8 +596,7 @@ bool EndPoint::SockOptGetError()
 	int error = 0;
 	bool bSuccess = Socket::GetSockOptInt(GetFd(), SO_ERROR, error);
 	if ( !bSuccess || error != 0 ) {
-		LogError("getsockopt() ");
-		SYSWARNING("SO_ERROR code:" << (long)error);
+		LogError("getsockopt(SO_ERROR) ", error);
 		return true;
 	}
 	return false;
