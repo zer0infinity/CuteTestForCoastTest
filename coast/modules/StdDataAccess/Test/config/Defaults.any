@@ -8,11 +8,22 @@
 {
 	/HostName				"##HOSTNAME##"
 	/DomainName				"##DOMAINONLY##"
+	/HttpPort				##HTTPPORT##
+	/FaultyHttpPort			##FAULTYHTTPPORT##
+
 	/SSLHost				"##FQDN##"
-	/SSLPort				"##SSLPORT##"
+	/SSLPort				##SSLPORT##
+
 	/RemoteSSLHost			%SSLHost
 	/RemoteSSLPort			%SSLPort
-	/FaultySSLPort			"##FAULTYPORT##"
+	/FaultySSLPort			##FAULTYSSLPORT##
+
+	/SMTPMailhost			%HostName
+	/SMTPMailhostPort		##SMTPPORT##
+	/SMTPMailhostPortFaulty	##SMTPFAULTYPORT##
+	/SMTPHelo				%DomainName
+	/SMTPFromName			a@b.c
+	/SMTPToName				{ z@b.c }
 
 	/CertDirRelative		"##certdir_rel##"
 	/CertDirAbsolute		"##certdir_abs##"

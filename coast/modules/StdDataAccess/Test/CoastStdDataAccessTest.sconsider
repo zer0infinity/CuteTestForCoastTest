@@ -1,13 +1,46 @@
 import SConsider
 import os, socket, pdb, re
-import threading, shutil
+import threading, shutil, asyncore
 from stat import *
+from smtpd import SMTPServer
 from SocketServer import BaseServer
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from SimpleHTTPServer import SimpleHTTPRequestHandler
 from OpenSSL import SSL, crypto
 
 Import('*')
+
+class SMTPFileSinkServer(SMTPServer):
+
+    RECIPIENT_COUNTER = {}
+
+    def __init__(self, localaddr, remoteaddr, path, logfile=None):
+        SMTPServer.__init__(self, localaddr, remoteaddr)
+        self.path = path
+        self.log_file=logfile
+        asyncore.loop()
+
+    def process_message(self, peer, mailfrom, rcpttos, data):
+        self.message("Incoming mail")
+        for recipient in rcpttos:
+            self.message("Capturing mail to %s" % recipient)
+            count = self.RECIPIENT_COUNTER.get(recipient, 0) + 1
+            self.RECIPIENT_COUNTER[recipient] = count
+            filename = os.path.join(self.path, "%s.%s" % (recipient, count))
+            filename = filename.replace("<", "").replace(">", "")
+            f = file(filename, "w")
+            f.write(data + "\n")
+            f.close()
+            self.message("Mail to %s saved" % recipient)
+        self.message("Incoming mail dispatched")
+
+    def message(self, text):
+        if self.log_file is not None:
+            f = file(os.path.join(self.path,self.log_file), "a")
+            f.write(text + "\n")
+            f.close()
+        else:
+            print text
 
 ## creating an SSL enabled HTTPServer
 ## see http://code.activestate.com/recipes/442473/
@@ -36,6 +69,10 @@ class SecureHTTPRequestHandler(SimpleHTTPRequestHandler):
         self.rfile = socket._fileobject(self.request, "rb", self.rbufsize)
         self.wfile = socket._fileobject(self.request, "wb", self.wbufsize)
 
+smtpport=43025
+smtpfaultyport=43026
+httpport=43080
+faultyhttpport=43081
 sslport=43443
 sslfaultyport=43444
 fqdn=socket.getfqdn()
@@ -71,8 +108,12 @@ def ModifyHostinfoConfig(env, cfgfilename, certOutDir, certDict):
         searchReplace = [(r"##FQDN##", fqdn),
                          (r"##HOSTNAME##", hostonly),
                          (r"##DOMAINONLY##", domain),
+                         (r"##HTTPPORT##", str(httpport)),
+                         (r"##FAULTYHTTPPORT##", str(faultyhttpport)),
                          (r"##SSLPORT##", str(sslport)),
-                         (r"##FAULTYPORT##", str(sslfaultyport)),
+                         (r"##FAULTYSSLPORT##", str(sslfaultyport)),
+                         (r"##SMTPPORT##", str(smtpport)),
+                         (r"##SMTPFAULTYPORT##", str(smtpfaultyport)),
                           ]
         for key,value in certDict.items():
             searchReplace.append((r"##"+key+"_abs##",value));
@@ -84,8 +125,8 @@ def ModifyHostinfoConfig(env, cfgfilename, certOutDir, certDict):
         SConsider.replaceRegexInFile(fname, searchReplace)
 
 servers = []
-def startServer(host, port, server_class, handler_class, certFile=None, keyFile=None, caChain=None):
-    server = server_class((host, port), handler_class, certFile, keyFile, caChain)
+def startServer(host, port, server_class, handlerOrRemote=None, **kw):
+    server = server_class((host, port), handlerOrRemote, **kw)
     servers.append(server)
     server.serve_forever()
 
@@ -177,7 +218,12 @@ def setUp( target, source, env ):
     certOutDir,certFileNodesList,certDict=createCertificates(env)
     if certDict:
         ModifyHostinfoConfig(env, 'config/Defaults.any', certOutDir, certDict)
-        threading.Thread(target=startServer, args=[hostonly, sslport, SecureHTTPServer, SecureHTTPRequestHandler, certDict.get('servercrt'), certDict.get('serverkey'), certDict.get('chainwoservercrt')]).start()
+        threading.Thread(target=startServer, args=[hostonly, sslport, SecureHTTPServer, SecureHTTPRequestHandler], kwargs={'certFile':certDict.get('servercrt'), 'keyFile':certDict.get('serverkey'), 'caChainFile':certDict.get('chainwoservercrt')}).start()
+        threading.Thread(target=startServer, args=[hostonly, httpport, HTTPServer, SimpleHTTPRequestHandler]).start()
+        threading.Thread(target=startServer, args=[hostonly, smtpport, SMTPFileSinkServer, None], kwargs={'path':env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).Dir(os.path.join(env['LOGDIR'], env['VARIANTDIR'])).abspath, 'logfile':'smtp.log'}).start()
+    #FIXME: the following setting is needed to let CgiCallerTest succeed
+    env['ENV']['WD_ROOT'] = env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).abspath
+#    env['ENV']['WD_PATH'] = ':'.join(['config', '.'])
 
 def tearDown(target, source, env):
     for server in servers:
@@ -193,10 +239,11 @@ buildSettings = {
 		'includeSubdir'    : '',
         'sourceFiles'      : SConsider.listFiles( ['*.cpp'] ),
         'copyFiles'        : [
-            ( SConsider.findFiles( ['.'], ['.sh'] ), S_IRUSR | S_IRGRP | S_IROTH | S_IXUSR ),
-            ( SConsider.findFiles( ['.'], ['.any', '.html', '.gif', '.txt'] ), S_IRUSR | S_IRGRP | S_IROTH ),
-            ( SConsider.listFiles( ['openssl.cnf'] ), S_IRUSR | S_IRGRP | S_IROTH ),
-            ( SConsider.listFiles( ['mkca-new.sh'] ), S_IRUSR | S_IRGRP | S_IROTH | S_IXUSR ),
+            ( SConsider.findFiles( ['.'], extensions=['.sh'] ), S_IRUSR | S_IRGRP | S_IROTH | S_IXUSR ),
+            ( SConsider.findFiles( ['.'], extensions=['.any', '.html', '.gif', '.txt'] ), S_IRUSR | S_IRGRP | S_IROTH ),
+            ( SConsider.findFiles( ['config'], matchfiles=['NotReadable'] ), S_IXUSR ),
+            ( SConsider.findFiles( ['.'], matchfiles=['openssl.cnf'] ), S_IRUSR | S_IRGRP | S_IROTH ),
+            ( SConsider.findFiles( ['.'], matchfiles=['mkca-new.sh'] ), S_IRUSR | S_IRGRP | S_IROTH | S_IXUSR ),
         ],
         'runConfig'        : {
 			'setUp': setUp,
