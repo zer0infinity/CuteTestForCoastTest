@@ -36,6 +36,8 @@ class SecureHTTPRequestHandler(SimpleHTTPRequestHandler):
         self.rfile = socket._fileobject(self.request, "rb", self.rbufsize)
         self.wfile = socket._fileobject(self.request, "wb", self.wbufsize)
 
+httpport=43080
+faultyhttpport=43081
 sslport=43443
 sslfaultyport=43444
 fqdn=socket.getfqdn()
@@ -71,8 +73,10 @@ def ModifyHostinfoConfig(env, cfgfilename, certOutDir, certDict):
         searchReplace = [(r"##FQDN##", fqdn),
                          (r"##HOSTNAME##", hostonly),
                          (r"##DOMAINONLY##", domain),
+                         (r"##HTTPPORT##", str(httpport)),
+                         (r"##FAULTYHTTPPORT##", str(faultyhttpport)),
                          (r"##SSLPORT##", str(sslport)),
-                         (r"##FAULTYPORT##", str(sslfaultyport)),
+                         (r"##FAULTYSSLPORT##", str(sslfaultyport)),
                           ]
         for key,value in certDict.items():
             searchReplace.append((r"##"+key+"_abs##",value));
@@ -84,8 +88,8 @@ def ModifyHostinfoConfig(env, cfgfilename, certOutDir, certDict):
         SConsider.replaceRegexInFile(fname, searchReplace)
 
 servers = []
-def startServer(host, port, server_class, handler_class, certFile=None, keyFile=None, caChain=None):
-    server = server_class((host, port), handler_class, certFile, keyFile, caChain)
+def startServer(host, port, server_class, handler_class, **kw):
+    server = server_class((host, port), handler_class, **kw)
     servers.append(server)
     server.serve_forever()
 
@@ -177,7 +181,11 @@ def setUp( target, source, env ):
     certOutDir,certFileNodesList,certDict=createCertificates(env)
     if certDict:
         ModifyHostinfoConfig(env, 'config/Defaults.any', certOutDir, certDict)
-        threading.Thread(target=startServer, args=[hostonly, sslport, SecureHTTPServer, SecureHTTPRequestHandler, certDict.get('servercrt'), certDict.get('serverkey'), certDict.get('chainwoservercrt')]).start()
+        threading.Thread(target=startServer, args=[hostonly, sslport, SecureHTTPServer, SecureHTTPRequestHandler], kwargs={'certFile':certDict.get('servercrt'), 'keyFile':certDict.get('serverkey'), 'caChainFile':certDict.get('chainwoservercrt')}).start()
+#        threading.Thread(target=startServer, args=[hostonly, httpport, HTTPServer, SimpleHTTPRequestHandler]).start()
+#    env['ENV']['WD_ROOT'] = env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).abspath
+#    env['ENV']['WD_LOGONCERR'] = '3'
+#    env['ENV']['WD_PATH'] = ':'.join(['config', '.'])
 
 def tearDown(target, source, env):
     for server in servers:
@@ -193,9 +201,9 @@ buildSettings = {
 		'includeSubdir'    : '',
         'sourceFiles'      : SConsider.listFiles( ['*.cpp'] ),
         'copyFiles'        : [
-            ( SConsider.findFiles( ['.'], ['.any'] ), S_IRUSR | S_IRGRP | S_IROTH ),
-            ( SConsider.listFiles( ['openssl.cnf'] ), S_IRUSR | S_IRGRP | S_IROTH ),
-            ( SConsider.listFiles( ['mkca-new.sh'] ), S_IRUSR | S_IRGRP | S_IROTH | S_IXUSR ),
+            ( SConsider.findFiles( ['.'], extensions=['.any'] ), S_IRUSR | S_IRGRP | S_IROTH ),
+            ( SConsider.findFiles( ['.'], matchfiles=['openssl.cnf'] ), S_IRUSR | S_IRGRP | S_IROTH ),
+            ( SConsider.findFiles( ['.'], matchfiles=['mkca-new.sh'] ), S_IRUSR | S_IRGRP | S_IROTH | S_IXUSR ),
         ],
         'runConfig'        : {
 			'setUp': setUp,
