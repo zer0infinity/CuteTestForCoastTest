@@ -94,9 +94,9 @@ bool SSLSocket::ShouldRetry(SSL *ssl, int res, bool handshake)
 		return IsReadyForReading();
 	} else if (SSL_ERROR_WANT_WRITE == err) {
 		return IsReadyForWriting();
-	} else if (SSL_ERROR_ZERO_RETURN) { // clean  way to handle peer did not send data
-		ReportSSLError(err);
-		// Do not report SSL error
+	} else if (SSL_ERROR_ZERO_RETURN) {
+		// clean  way to handle peer did not send data
+		// according to http://www.mail-archive.com/openssl-users@openssl.org/msg03175.html we shall not use ERR_error_string method with SSL error codes
 		String msg("SSLSocket: end of data (connection closed) on file descriptor: ");
 		msg << GetFd() << (handshake ? " at Handshake" : " at normal r/w");
 		SystemLog::Info(msg);

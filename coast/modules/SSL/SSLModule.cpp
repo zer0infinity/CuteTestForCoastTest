@@ -59,6 +59,9 @@ SSLModule::SSLModule(const char *name) : WDModule(name)
 	StartTrace(SSLModule.SSLModule);
 	SSL_library_init();
 	SSL_load_error_strings();
+	ERR_load_ERR_strings();
+	ERR_load_crypto_strings();
+
 #ifdef __sun
 	// SOP: seed the random number generator on Solaris
 	//     because it lacks /dev/random (up to Solaris 8)
