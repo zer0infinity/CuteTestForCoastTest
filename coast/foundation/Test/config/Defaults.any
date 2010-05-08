@@ -22,7 +22,7 @@
 	/SocketConnectSuccessHost {
 		/ip			"127.0.0.1"
 		/port		9876
-		/timeout	5		# in ms
+		/timeout	50		# in ms
 	}
 	/SocketConnectTimeoutHost {
 		# use some non-existing IP in your LAN!
