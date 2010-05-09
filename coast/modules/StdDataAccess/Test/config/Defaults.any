@@ -18,10 +18,10 @@
 	/RemoteSSLPort			%SSLPort
 	/FaultySSLPort			##FAULTYSSLPORT##
 
-	/SMTPMailhost			%HostName
+	/SMTPMailhost			"##HOSTNAME##"
 	/SMTPMailhostPort		##SMTPPORT##
 	/SMTPMailhostPortFaulty	##SMTPFAULTYPORT##
-	/SMTPHelo				%DomainName
+	/SMTPHelo				"b.c"
 	/SMTPFromName			a@b.c
 	/SMTPToName				{ z@b.c }
 

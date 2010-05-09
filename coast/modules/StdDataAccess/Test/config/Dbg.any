@@ -231,4 +231,8 @@
 		/MainSwitch			10
 		/EnableAll			10
 	}
+	/Resolver {
+		/MainSwitch			10
+		/EnableAll			10
+	}
 }
