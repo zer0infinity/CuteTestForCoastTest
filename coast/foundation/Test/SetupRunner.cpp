@@ -13,6 +13,11 @@
 //--- standard modules used ----------------------------------------------------
 
 //--- test cases -------------------------------------------------------------
+#include "AnythingConstructorsTest.h"
+#include "AnythingDeepCloneTest.h"
+#include "AnythingImportExportTest.h"
+#include "AnythingLookupTest.h"
+#include "AnythingKeyIndexTest.h"
 #include "AnythingTest.h"
 #include "AnySorterTest.h"
 #include "AcceptorTest.h"
@@ -21,7 +26,8 @@
 #include "StringTestExtreme.h"
 #include "StringTokenizerTest.h"
 #include "StringTokenizer2Test.h"
-#include "ParserTest.h"
+#include "AnythingParserSemanticTest.h"
+#include "AnythingParserTest.h"
 #include "URLUtilsTest.h"
 #include "AnyUtilsTest.h"
 #include "SocketStreamTest.h"
@@ -67,10 +73,16 @@ void setupRunner(TestRunner &runner)
 	ADD_SUITE(runner, DiffTimerTest);
 	ADD_SUITE(runner, StringTest);
 	ADD_SUITE(runner, AnyImplsTest);
+	ADD_SUITE(runner, AnythingConstructorsTest);
+	ADD_SUITE(runner, AnythingKeyIndexTest);
 	ADD_SUITE(runner, AnythingTest);
+	ADD_SUITE(runner, AnythingDeepCloneTest);
+	ADD_SUITE(runner, AnythingImportExportTest);
+	ADD_SUITE(runner, AnythingLookupTest);
 	ADD_SUITE(runner, AnySorterTest);
 	ADD_SUITE(runner, AcceptorTest);
-	ADD_SUITE(runner, ParserTest);
+	ADD_SUITE(runner, AnythingParserSemanticTest);
+	ADD_SUITE(runner, AnythingParserTest);
 	ADD_SUITE(runner, ResolverTest);
 	ADD_SUITE(runner, URLUtilsTest);
 	ADD_SUITE(runner, AnyUtilsTest);
