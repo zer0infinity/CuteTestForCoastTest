@@ -23,7 +23,7 @@ openssl_bin=`which openssl`
 openssl_binOpts=""
 conf=/etc/ssl/openssl.cnf
 target_dir=""
-serialnum=$(date +'%s')
+serialnum=`date +'%s'`
 
 errorexit()
 {
@@ -74,7 +74,7 @@ do
         ;;
         o)
     		# openssl needs absolute path to config file
-    		_conf="$(readlink -e ${OPTARG})";
+    		_conf="`readlink -e ${OPTARG}`";
         	if [ -n "${_conf}" -a -r ${_conf} ]; then
 				conf="${_conf}";
     		fi;
@@ -104,7 +104,7 @@ do
     esac
 done
 
-shift $(($OPTIND - 1))
+shift `expr $OPTIND - 1`
 
 if [ ! -x ${openssl_bin} ]
 then
@@ -165,7 +165,7 @@ mkdir ${CATOP}/private
 echo ${serialnum} > ${CATOP}/serial
 touch ${CATOP}/index.txt
 
-if [ -z ${pathtoexistingcacert} ]
+if [ -z "${pathtoexistingcacert}" ]
 then
 	${openssl_bin} req \
 		-config $conf \
@@ -260,7 +260,7 @@ mkdir ${CATOP}/private
 echo ${serialnum} > ${CATOP}/serial
 touch ${CATOP}/index.txt
 
-if [ -z ${pathtoexistingcacert} ]
+if [ -z "${pathtoexistingcacert}" ]
 then
 	echo "Stripping Certificate and private Key from Certificate for SubCA1"
 	csplit -f work -s -n 2  ${target_dir}/newreq.pem '/-----BEGIN CERTIFICATE REQUEST-----/'
@@ -399,7 +399,7 @@ cd ${target_dir}/subCA1 && (
 
 cd ${target_dir} && (
 	cp ${CATOP}/cacert.pem ${target_dir}/ucerts/rootCA1crt.pem
-	if [ -z ${pathtoexistingcacert} ]
+	if [ -z "${pathtoexistingcacert}" ]
 	then
 		cp ${CATOP}/cacert.p12 ${target_dir}/ucerts/rootCA1.p12
 	fi
@@ -436,7 +436,7 @@ cd ${target_dir}/ucerts && (
 )
 
 echo "Your certificates are in ${target_dir}/ucerts"
-if [ ! -z ${copyto} ]
+if [ ! -z "${copyto}" ]
 then
 	if [ ! -d ${copyto} ]
 	then
@@ -568,7 +568,7 @@ echo "                         cp serverchain_XXX.pem serverchain.pem"
 echo "                         cp fullchain_XXX.pem fullchain.pem"
 echo ""
 echo "clientcrt_XXX.p12 may be used by your browser after you import it."
-if [ -z ${pathtoexistingcacert} ]
+if [ -z "${pathtoexistingcacert}" ]
 then
 	echo "Remember the PKCS#12 encrypted rootCA1.p12    cert password is rootca1"
 fi
