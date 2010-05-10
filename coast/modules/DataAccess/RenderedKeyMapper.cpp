@@ -9,13 +9,9 @@
 //--- interface include --------------------------------------------------------
 #include "RenderedKeyMapper.h"
 
-//--- project modules used -----------------------------------------------------
-
 //--- standard modules used ----------------------------------------------------
 #include "Renderer.h"
 #include "Dbg.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- RenderedKeyMapper ------------------------------------------------------------------
 RegisterResultMapper(RenderedKeyMapper);
@@ -48,4 +44,39 @@ bool RenderedKeyMapper::DoPutAny(const char *key, Anything value, Context &ctx, 
 		}
 	}
 	return ResultMapper::DoPutAny(strKey, value, ctx, script);
+}
+
+//---- RenderedKeyParameterMapper ------------------------------------------------------------------
+RegisterParameterMapper(RenderedKeyParameterMapper);
+
+RenderedKeyParameterMapper::RenderedKeyParameterMapper(const char *name)
+: ParameterMapper(name)
+{
+	StartTrace(RenderedKeyParameterMapper.Ctor);
+}
+
+IFAObject *RenderedKeyParameterMapper::Clone() const
+{
+	return new RenderedKeyParameterMapper(fName);
+}
+
+bool RenderedKeyParameterMapper::DoGetAny(const char *key, Anything &value, Context &ctx, ROAnything script)
+{
+	StartTrace1(RenderedKeyMapper.DoPutAny, NotNull(key));
+	String strKey(key);
+	ROAnything roaKeySpec;
+	if ( Lookup("KeySpec", roaKeySpec) )
+	{
+		Context::PushPopEntry<Anything> aEntry(ctx, "ValuesToLookupFirst", value);
+		strKey = Renderer::RenderToStringWithDefault(ctx, roaKeySpec, key);
+		Trace("new key [" << strKey << "]");
+		ROAnything roaStoreSpec;
+		if ( Lookup("StoreKeyAt", roaStoreSpec) )
+		{
+			Anything anyToPut(strKey);
+			Trace("storing key in TmpStore at [" << roaStoreSpec.AsString() << "]");
+			SlotPutter::Operate(anyToPut, ctx.GetTmpStore(), roaStoreSpec.AsString(), false);
+		}
+	}
+	return ParameterMapper::DoGetAny(strKey, value, ctx, script);
 }

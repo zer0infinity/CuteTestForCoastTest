@@ -178,4 +178,30 @@
 		/LeftValue		{ /Lookup Value }
 		/RightValue 	{ /Lookup DateTime }
 	}
+
+	/TestRenderedKeyParameterMapperDA {
+		/DestinationSlot	""
+	}
+
+	/ConfigurableStoreResultMapper {
+		/DestinationSlot	""
+	}
+	/TmpStoreResultMapper {
+		/Store	TmpStore
+	}
+	/SessionStoreResultMapper {
+		/Store	Session
+		/PutPolicy	Put
+	}
+
+	/TmpStoreResultMapperDA {
+		/Out {
+			/TmpStoreResultMapper *
+		}
+	}
+	/SessionStoreResultMapperDA {
+		/Out {
+			/SessionStoreResultMapper *
+		}
+	}
 }

@@ -7,7 +7,6 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-
 	/DLL {
 	}
 	/Modules {
@@ -53,6 +52,10 @@
 			DATest_StdMappers_MoreComplexScript
 			DATest_NonexistingMapper
 			DATest_UseFallbackMapper
+
+			TestRenderedKeyParameterMapperDA
+			TmpStoreResultMapperDA
+			SessionStoreResultMapperDA
 		}
 		/ReadFileDAImpl {
 			SimpleFileReadTest
@@ -101,6 +104,12 @@
 				TestFileXMLReadDAImplXMLMapperTwo
 				TestFileXMLReadDAImplXMLMapperThree
 				TestFileXMLReadDAImplXMLMapperFour
+				TestRenderedKeyParameterMapperDA
+				TmpStoreResultMapperDA
+				SessionStoreResultMapperDA
+			}
+			/RenderedKeyParameterMapper {
+				BlubRenderedKeyParameterMapper
 			}
 		}
 		/Output {
@@ -131,6 +140,17 @@
 				NameUsingTestWithNullConfig
 
 				DATest_OnlyResultMapperGiven
+
+				TmpStoreResultMapperDA
+				SessionStoreResultMapperDA
+				TestRenderedKeyParameterMapperDA
+			}
+			/SlotnameOutputMapper {
+				SlotnameOutputMapperListings
+			}
+			/ConfigurableStoreResultMapper {
+				TmpStoreResultMapper
+				SessionStoreResultMapper
 			}
 			/NameUsingOutputMapper {
 				QueryCountMapper
@@ -1281,6 +1301,48 @@
 			/NotResult {
 				/TmpStore {
 					/DBselectExtListings.QueryResult *
+				}
+			}
+		}
+		/RenderedKeyParameterMapperTest {
+			/TmpStore {
+				/Blub	"blabla"
+			}
+			/TheAction {
+				/CallDataAccessAction	TestRenderedKeyParameterMapperDA
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore {
+					/Out	"blabla"
+				}
+			}
+		}
+		/TmpConfigurableStoreResultMapperTest {
+			/TmpStore {
+				/In	"blabla"
+			}
+			/TheAction {
+				/CallDataAccessAction	TmpStoreResultMapperDA
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore {
+					/Out	"blabla"
+				}
+			}
+		}
+		/SessionConfigurableStoreResultMapperTest {
+			/TmpStore {
+				/In	"blabla"
+			}
+			/TheAction {
+				/CallDataAccessAction	SessionStoreResultMapperDA
+			}
+			/ExpectedResult 1
+			/Result {
+				/SessionStore {
+					/Out	"blabla"
 				}
 			}
 		}

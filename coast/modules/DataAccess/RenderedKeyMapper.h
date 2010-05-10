@@ -50,4 +50,40 @@ private:
 	RenderedKeyMapper &operator=(const RenderedKeyMapper &);
 };
 
+//---- RenderedKeyParameterMapper ----------------------------------------------------------
+//! <B>dynamically create Get-key according to rendererspec</B>
+/*!
+\par Configuration
+\code
+{
+	/KeySpec		Rendererspec	mandatory, renderer specification to create new key
+	/StoreKeyAt		String			optional, default not stored in context, location in LookupPath semantics to store created key value in context
+}
+\endcode
+
+The value Anything to put will be temporarily pushed onto the context to allow lookups within.
+*/
+class EXPORTDECL_DATAACCESS RenderedKeyParameterMapper : public ParameterMapper
+{
+public:
+	//--- constructors
+	RenderedKeyParameterMapper(const char *name);
+	//--- support for prototype
+	IFAObject *Clone() const;
+
+protected:
+	//! Major hook method for subclasses, default does script interpretation
+	/*! \param key the name defines kind of value to get or the slot in the script to use
+		\param value collects data within script
+		\param ctx the thread context of the invocation
+		\param script to be interpreted if any, for subclasses this is the config to use
+		\return returns true if the mapping was successful otherwise false */
+	virtual bool DoGetAny(const char *key, Anything &value, Context &ctx, ROAnything script);
+
+private:
+	RenderedKeyParameterMapper();
+	RenderedKeyParameterMapper(const RenderedKeyParameterMapper &);
+	RenderedKeyParameterMapper &operator=(const RenderedKeyParameterMapper &);
+};
+
 #endif

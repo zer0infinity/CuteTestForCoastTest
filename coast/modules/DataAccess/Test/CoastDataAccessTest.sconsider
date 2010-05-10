@@ -6,13 +6,16 @@ Import('*')
 buildSettings = {
     packagename : {
         'linkDependencies' : ['CoastDataAccess', 'testfwWDBase'],
+        'requires'        : [],
         'sourceFiles'      : SConsider.listFiles(['*.cpp']),
         'targetType'       : 'ProgramTest',
-        'copyFiles'        : [(SConsider.listFiles(['config/*.any', 'config/*.xml']), S_IRUSR | S_IRGRP | S_IROTH)],
+        'copyFiles'        : [
+            (SConsider.listFiles(['config/*.any', 'config/*.xml']), S_IRUSR | S_IRGRP | S_IROTH)
+        ],
         'runConfig'        : {
-#                              'setUp': setUp,
-#                              'tearDown': tearDown,
-                             },
+#            'setUp'        : setUp,
+#            'tearDown'     : tearDown,
+        },
     }
 }
 
