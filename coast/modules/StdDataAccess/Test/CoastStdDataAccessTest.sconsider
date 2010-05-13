@@ -98,31 +98,16 @@ def appendReplaceCommandForCert(key, filename, searchReplace):
         searchReplace.append((r"##"+outname+"##",','.join([k+'='+v for k,v in complist])));
     except:pass
 
-def ModifyHostinfoConfig(env, cfgfilename, certOutDir, certDict):
-    tdirabs = env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).abspath
-    fname = os.path.join(tdirabs, cfgfilename)
-    ## set writable cfgfilename
-    if os.path.isfile(fname):
-        os.chmod(fname, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)
-        ## replace some token in Tests configuration file
-        searchReplace = [(r"##FQDN##", fqdn),
-                         (r"##HOSTNAME##", hostonly),
-                         (r"##DOMAINONLY##", domain),
-                         (r"##HTTPPORT##", str(httpport)),
-                         (r"##FAULTYHTTPPORT##", str(faultyhttpport)),
-                         (r"##SSLPORT##", str(sslport)),
-                         (r"##FAULTYSSLPORT##", str(sslfaultyport)),
-                         (r"##SMTPPORT##", str(smtpport)),
-                         (r"##SMTPFAULTYPORT##", str(smtpfaultyport)),
-                          ]
-        for key,value in certDict.items():
-            searchReplace.append((r"##"+key+"_abs##",value));
-            searchReplace.append((r"##"+key+"_rel##",os.path.relpath(value, tdirabs)));
-            if key.endswith('crt'):
-                appendReplaceCommandForCert(key, value, searchReplace)
-        searchReplace.append((r"##certdir_abs##",certOutDir));
-        searchReplace.append((r"##certdir_rel##",os.path.relpath(certOutDir, tdirabs)));
-        SConsider.replaceRegexInFile(fname, searchReplace)
+def ModifyConfigFiles(env, searchReplace=[], files=[]):
+    for file in files:
+        fname = file.abspath
+        if os.path.isfile(fname):
+            oldmode=os.stat(fname).st_mode
+            ## set writable
+            os.chmod(fname, oldmode | S_IWUSR)
+            ## replace tokens in file
+            SConsider.replaceRegexInFile(fname, searchReplace)
+            os.chmod(fname, oldmode)
 
 servers = []
 def startServer(host, port, server_class, handlerOrRemote=None, **kw):
@@ -213,11 +198,34 @@ def createCertDict(certFileNodesList):
         except: pass
     return certDict
 
-def setUp( target, source, env ):
+def setUp(target, source, env):
+    tdir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
+    tdirabs = tdir.abspath
+    logpath = tdir.Dir(os.path.join(env['LOGDIR'], env['VARIANTDIR']))
+    configdir = tdir.Dir('config')
+
     # create certificate files
     certOutDir,certFileNodesList,certDict=createCertificates(env)
     if certDict:
-        ModifyHostinfoConfig(env, 'config/Defaults.any', certOutDir, certDict)
+        searchReplace = [
+            (r"##FQDN##", fqdn),
+            (r"##HOSTNAME##", hostonly),
+            (r"##DOMAINONLY##", domain),
+            (r"##HTTPPORT##", str(httpport)),
+            (r"##FAULTYHTTPPORT##", str(faultyhttpport)),
+            (r"##SSLPORT##", str(sslport)),
+            (r"##FAULTYSSLPORT##", str(sslfaultyport)),
+            (r"##SMTPPORT##", str(smtpport)),
+            (r"##SMTPFAULTYPORT##", str(smtpfaultyport)),
+        ]
+        for key,value in certDict.items():
+            searchReplace.append((r"##"+key+"_abs##",value));
+            searchReplace.append((r"##"+key+"_rel##",os.path.relpath(value, tdirabs)));
+            if key.endswith('crt'):
+                appendReplaceCommandForCert(key, value, searchReplace)
+        searchReplace.append((r"##certdir_abs##",certOutDir));
+        searchReplace.append((r"##certdir_rel##",os.path.relpath(certOutDir, tdirabs)));
+        ModifyConfigFiles(env, searchReplace, SConsider.findFiles([configdir],['.any']))
         threading.Thread(target=startServer, args=[hostonly, sslport, SecureHTTPServer, SecureHTTPRequestHandler], kwargs={'certFile':certDict.get('servercrt'), 'keyFile':certDict.get('serverkey'), 'caChainFile':certDict.get('chainwoservercrt')}).start()
         threading.Thread(target=startServer, args=[hostonly, httpport, HTTPServer, SimpleHTTPRequestHandler]).start()
         threading.Thread(target=startServer, args=[hostonly, smtpport, SMTPFileSinkServer, None], kwargs={'path':env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).Dir(os.path.join(env['LOGDIR'], env['VARIANTDIR'])).abspath, 'logfile':'smtp.log'}).start()
