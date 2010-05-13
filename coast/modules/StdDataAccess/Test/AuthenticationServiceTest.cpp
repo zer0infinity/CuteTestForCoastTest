@@ -18,8 +18,9 @@
 //--- standard modules used ----------------------------------------------------
 #include "SecurityModule.h"
 
-//--- c-library modules used ---------------------------------------------------
-
+#if defined(ONLY_STD_IOSTREAM)
+using namespace std;
+#endif
 //---- TestService ----------------------------------------------------------
 //:simple stub class to test service dispatcher
 class AuthTestService : public ServiceHandler

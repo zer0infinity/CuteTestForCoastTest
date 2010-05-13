@@ -246,17 +246,17 @@ buildSettings = {
         'requires'         : ['openssl.openSSL', 'CoastRenderers'],
 		'includeSubdir'    : '',
         'sourceFiles'      : SConsider.listFiles( ['*.cpp'] ),
-        'copyFiles'        : [
+        'copyFiles' : [
             ( SConsider.findFiles( ['.'], extensions=['.sh'] ), S_IRUSR | S_IRGRP | S_IROTH | S_IXUSR ),
             ( SConsider.findFiles( ['.'], extensions=['.any', '.html', '.gif', '.txt'] ), S_IRUSR | S_IRGRP | S_IROTH ),
             ( SConsider.findFiles( ['config'], matchfiles=['NotReadable'] ), S_IXUSR ),
             ( SConsider.findFiles( ['.'], matchfiles=['openssl.cnf'] ), S_IRUSR | S_IRGRP | S_IROTH ),
             ( SConsider.findFiles( ['.'], matchfiles=['mkca-new.sh'] ), S_IRUSR | S_IRGRP | S_IROTH | S_IXUSR ),
         ],
-        'runConfig'        : {
-			'setUp': setUp,
-			'tearDown': tearDown,
-		},
+        'runConfig' : {
+            'setUp'        : setUp,
+            'tearDown'     : tearDown,
+        },
     }
 }
 
