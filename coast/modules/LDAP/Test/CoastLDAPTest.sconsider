@@ -1,0 +1,74 @@
+import os, socket, subprocess, re, pdb
+import SConsider
+from stat import *
+
+Import('*')
+
+fqdn=socket.getfqdn()
+hostonly=fqdn.split('.')[0]
+try:
+    domain='.'.join(fqdn.split('.')[1:])
+except:
+    domain=""
+
+faultyfqdn='nonexisting.server.loc'
+ldapport=43389
+faultyldapport=43399
+ldapbinddn='super-dn'
+ldapbindpw='super-pw'
+ldapwrongbinddn='wrong-dn'
+ldapwrongbindpw='wrong-pw'
+
+ldapBindFailureCodeSunOne=91
+ldapBindFailureCodeOpenldap=-1
+
+def ModifyConfigFiles(env, searchReplace=[], files=[]):
+    for file in files:
+        fname = file.abspath
+        if os.path.isfile(fname):
+            oldmode=os.stat(fname).st_mode
+            ## set writable
+            os.chmod(fname, oldmode | S_IWUSR)
+            ## replace tokens in file
+            SConsider.replaceRegexInFile(fname, searchReplace)
+            os.chmod(fname, oldmode)
+
+def setUp(target, source, env):
+    tdir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
+    logpath = tdir.Dir(os.path.join(env['LOGDIR'], env['VARIANTDIR']))
+    configdir = tdir.Dir('config')
+    searchReplace = [
+        (r"##LDAPHOST##", fqdn),
+        (r"##LDAPFAULTYHOST##", str(faultyfqdn)),
+        (r"##HOSTNAME##", hostonly),
+        (r"##DOMAINONLY##", domain),
+        (r"##LDAPPORT##", str(ldapport)),
+        (r"##LDAPFAULTYPORT##", str(faultyldapport)),
+        (r"##BINDDN##", str(ldapbinddn)),
+        (r"##WRONGBINDDN##", str(ldapwrongbinddn)),
+        (r"##BINDPW##", str(ldapbindpw)),
+        (r"##WRONGBINDPW##", str(ldapwrongbindpw)),
+        (r"##BINDFAILCODE##", str(ldapBindFailureCodeOpenldap)),
+    ]
+    ModifyConfigFiles(env, searchReplace, SConsider.findFiles([configdir],['.any']))
+
+def tearDown(target, source, env):
+    pass
+
+buildSettings = {
+    packagename : {
+        'targetType'       : 'ProgramTest',
+        'linkDependencies' : ['CoastLDAP', 'CoastActions', 'testfwWDBase'],
+        'requires'         : [],
+        'sourceFiles'      : SConsider.listFiles(['*.cpp']),
+        'copyFiles'        : [
+            (SConsider.findFiles(['config'], extensions=['.any', '.ldif'], matchfiles=[]), S_IRUSR|S_IRGRP|S_IROTH),
+        ],
+        'runConfig'        : {
+            'setUp': setUp,
+            'tearDown': tearDown,
+        },
+    },
+}
+
+SConsider.createTargets(packagename, buildSettings)

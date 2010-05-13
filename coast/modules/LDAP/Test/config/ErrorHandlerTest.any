@@ -9,6 +9,7 @@
 {
 	/DLL {
 		CoastLDAP
+		CoastActions
 	}
 
 #--- Modules ------------------------------------

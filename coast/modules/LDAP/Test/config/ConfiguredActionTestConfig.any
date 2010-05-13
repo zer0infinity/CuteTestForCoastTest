@@ -7,9 +7,9 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-
 	/DLL {
 		CoastLDAP
+		CoastActions
 	}
 	/Modules {
 		DataAccessImplsModule
@@ -245,10 +245,10 @@
 	# ------------------------------------------------------------
 	/LDAPConfig_NotPooled
 	{
-		/LDAPServer		"marvin.hsr.loc"
-		/LDAPPort		"49999"
-		/LDAPBindName	"cn=Directory Manager"
-		/LDAPBindPW		"ifaifaifa"
+		/LDAPServer		"##LDAPHOST##"
+		/LDAPPort		##LDAPPORT##
+		/LDAPBindName	"##BINDDN##"
+		/LDAPBindPW		"##BINDPW##"
 		/LDAPConnectionTimeout	5
 		/LDAPTimeout	10
 		/LDAPPooledConnections 0
@@ -257,8 +257,10 @@
 
 	/LDAPConfig_NotPooledBinary
 	{
-		/LDAPPort		"389"
-		/LDAPBindName	"cn=admin,dc=sifsstud1,dc=hsr,dc=ch"
+		/LDAPServer		"##LDAPHOST##"
+		/LDAPPort		##LDAPPORT##
+		/LDAPBindName	"##BINDDN##"
+		/LDAPBindPW		"##BINDPW##"
 		/LDAPConnectionTimeout	5
 		/LDAPTimeout			10
 		/LDAPPooledConnections 	0
@@ -268,8 +270,10 @@
 
 	/LDAPConfig_Pooled
 	{
-		/LDAPPort		"389"
-		/LDAPBindName	"cn=admin,dc=sinv-56025,dc=edu,dc=hsr,dc=ch"
+		/LDAPServer		"##LDAPHOST##"
+		/LDAPPort		##LDAPPORT##
+		/LDAPBindName	"##BINDDN##"
+		/LDAPBindPW		"##BINDPW##"
 		/LDAPConnectionTimeout	5
 		/LDAPTimeout	10
 		/LDAPPooledConnections 1
@@ -279,10 +283,10 @@
 
 	/LDAPConfig_PooledBinary
 	{
-		/LDAPServer		"marvin.hsr.loc"
-		/LDAPPort		"49999"
-		/LDAPBindName	"cn=Directory Manager"
-		/LDAPBindPW		"ifaifaifa"
+		/LDAPServer		"##LDAPHOST##"
+		/LDAPPort		##LDAPPORT##
+		/LDAPBindName	"##BINDDN##"
+		/LDAPBindPW		"##BINDPW##"
 		/LDAPConnectionTimeout	5
 		/LDAPTimeout			10
 		/LDAPPooledConnections 	1
@@ -373,8 +377,10 @@
 		{
 			/TmpStore	{
 				# connection config
-				/LDAPPort		"389"
-				/LDAPBindName	"cn=admin,dc=sifsstud1,dc=hsr,dc=ch"
+				/LDAPServer		"##LDAPHOST##"
+				/LDAPPort		##LDAPPORT##
+				/LDAPBindName	"##BINDDN##"
+				/LDAPBindPW		"##BINDPW##"
 				/LDAPConnectionTimeout	5
 				/LDAPTimeout	10
 				/LDAPPooledConnections 0
@@ -412,8 +418,10 @@
 		{
 			/TmpStore	{
 				# connection config
-				/LDAPPort		"389"
-				/LDAPBindName	"cn=admin,dc=sinv-56025,dc=edu,dc=hsr,dc=ch"
+				/LDAPServer		"##LDAPHOST##"
+				/LDAPPort		##LDAPPORT##
+				/LDAPBindName	"##BINDDN##"
+				/LDAPBindPW		"##BINDPW##"
 				/LDAPConnectionTimeout	5
 				/LDAPTimeout	10
 				/LDAPPooledConnections 1
@@ -421,7 +429,7 @@
 				/LDAPRebindTimeout 60
 
 				# test config
-				/LDAPBase		"ou=tkfu,o=10601,c=CH,dc=sinv-56025.edu.hsr.ch"
+				/LDAPBase		"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
 				/LDAPScope		"subtree"
 			}
 			/Env {
@@ -549,7 +557,7 @@
 							# just check a few expected things (samples)
 							/Entries
 							{
-								/"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=sinv-56025.edu.hsr.ch"
+								/"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
 								{
 									/objectclass {
 										"person"
@@ -619,7 +627,7 @@
 							# check a few expected things within the returned entries
 							/Entries
 							{
-								/"ou=tkfu,o=10601,c=CH,dc=sinv-56025.edu.hsr.ch"
+								/"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
 								{
 									/objectclass {
 										"organizationalUnit"
@@ -781,9 +789,9 @@
 							/NumberOfEntries 1
 							# check a few expected things within the returned entries
 							/Entries {
-								/"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=sinv-56025.edu.hsr.ch"
+								/"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
 								{
-									/pd-dn "cn=CH10601-tkrefactor,dc=sinv-56025.edu.hsr.ch"
+									/pd-dn "cn=CH10601-tkrefactor,dc=tkfpd.hsr.ch"
 									/language "D"
 								}
 							}
@@ -814,7 +822,7 @@
 							# check a few expected things within the returned entries
 							/Entries
 							{
-								/"ou=tkfu,o=10601,c=CH,dc=sinv-56025.edu.hsr.ch" {
+								/"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch" {
 									"objectclass"
 									"ou"
 									"name"
@@ -849,7 +857,7 @@
 							# check a few expected things within the returned entries
 							/Entries
 							{
-								/"ou=tkfu,o=10601,c=CH,dc=sinv-56025.edu.hsr.ch" {
+								/"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch" {
 									"objectclass"
 									"ou"
 									"name"
@@ -885,7 +893,7 @@
 							# check a few expected things within the returned entries
 							/Entries
 							{
-							  /"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=sinv-56025.edu.hsr.ch"
+							  /"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
 							  {
 								/objectclass {
 								  "person"
@@ -923,7 +931,7 @@
 							# check a few expected things within the returned entries
 							/Entries
 							{
-							  /"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=sinv-56025.edu.hsr.ch"
+							  /"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
 							  {
 								/objectclass {
 								  "person"
@@ -2002,7 +2010,7 @@
 
 							# only check the stuff we've changed
 							/Entries {
-							  /uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=sinv-56025.edu.hsr.ch {
+							  /uid=tkrefactor1,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch {
 								/tids {
 								  "172.016.001.041"
 								  "172.016.200.013"
@@ -2170,7 +2178,7 @@
 			/Result
 			{
 				/Delim "^"
-				/IndexDelim "ï¿½"
+				/IndexDelim "£"
 				/TmpStore
 				{
 					/LDAPResult {
@@ -2186,7 +2194,7 @@
 						  /NumberOfEntries 1
 						  # only check the relevant fields of the returned entries
 						  /Entries {
-							/uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=sinv-56025.edu.hsr.ch {
+							/uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch {
 							  /passwordexp "20010101_00:00:00"
 							}
 						  }
@@ -2210,7 +2218,7 @@
 			/Result
 			{
 				/Delim "^"
-				/IndexDelim "§"
+				/IndexDelim "£"
 				/TmpStore
 				{
 					/LDAPResult {

@@ -5,7 +5,6 @@
 # This library/application is free software; you can redistribute and/or modify it under the terms of
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
-
 {
 	/Modules {
 		CacheHandlerModule
@@ -16,151 +15,186 @@
 	/Mappers {}
 	/DataAccessImpls {}
 
-	/LDAPPort		"389"
-	/LDAPBind		"cn=admin,dc=sinv-56025,dc=edu,dc=hsr,dc=ch"
-	/LDAPBindPW		"hankhank"
-	/LDAPTimeout	10
-	/LDAPConnectionTimeout 5
-
 	/ConnectionTest
 	{
-		# Wrong server
-		{
-			/LDAPServer		"nonexisting.server.loc"
-			/LDAPPort		%LDAPPort
-			/LDAPTimeout		%LDAPTimeout
-			/LDAPConnectionTimeout	%LDAPConnectionTimeout
-			/LDAPBindName		%LDAPBind
-			/LDAPBindPW		%LDAPBindPW
-			/Expected 		0
+		/WrongServer {
+			/LDAPServer		"##LDAPFAULTYHOST##"
+			/LDAPPort		##LDAPPORT##
+			/LDAPTimeout		10
+			/LDAPConnectionTimeout	5
+			/LDAPBindName		"##BINDDN##"
+			/LDAPBindPW		"##BINDPW##"
+			/LDAPPooledConnections 0
+			/LDAPRebindTimeout 0
+			/LDAPTryAutoRebind		0
+			/ConnectIsOk	0
+			/ConnectRet 	"eBindNok"
 			/Error {
-				/Msg 		"Binding request failed. [Server: 'nonexisting.server.loc', Port: '389']  (Authorized bind.)"
-#				/LdapCode	81	# code on iPlanet-LDAP
-				/LdapCode	-1	# code on openldap server
+				/Msg 		"Binding request failed. [Server: '##LDAPFAULTYHOST##', Port: '##LDAPPORT##']  (Authorized bind.)"
+				/LdapCode	##BINDFAILCODE##
 				/LdapMsg	"Can't contact LDAP server"
 				/LdapConnectionParams {
-					/Server "nonexisting.server.loc"
-					/Port 389
+					/Server "##LDAPFAULTYHOST##"
+					/Port ##LDAPPORT##
 					/Timeout 10
 					/ConnectionTimeout 5
-					/BindName "cn=admin,dc=sinv-56025,dc=edu,dc=hsr,dc=ch"
-					/BindPW "hankhank"
+					/BindName "##BINDDN##"
+					/BindPW "##BINDPW##"
 					/PooledConnections 0
 					/RebindTimeout 0
 					/TryAutoRebind		0
-					/MaxConnections 2				}
+					/MaxConnections 2
 				}
-				/MsgAsString "LdapDataAccess: [DataAccess_0] Msg [Binding request failed. [Server: 'nonexisting.server.loc', Port: '49999']  (Authorized bind.)] LdapCode [91] LdapMsg [Can't connect to the LDAP server] LdapConnectionParams [{/Server \"nonexisting.server.loc\"/Port 49999/Timeout 10/ConnectionTimeout 5/BindName \"cn=Directory Manager\"/BindPW \"WipedOut\"/PooledConnections 0/RebindTimeout 0/TryAutoRebind 0/MaxConnections 2}]"
+				/MsgAsString "LdapDataAccess: [DataAccess_0] Msg [Binding request failed. [Server: '##LDAPFAULTYHOST##', Port: '##LDAPPORT##']  (Authorized bind.)] LdapCode [##BINDFAILCODE##] LdapMsg [Can't connect to the LDAP server] LdapConnectionParams [{/Server \"##LDAPFAULTYHOST##\"/Port ##LDAPPORT##/Timeout 10/ConnectionTimeout 5/BindName \"##BINDDN##\"/BindPW \"WipedOut\"/PooledConnections 0/RebindTimeout 0/TryAutoRebind 0/MaxConnections 2}]"
 			}
 		}
-
+		/WrongPort {
+			/LDAPServer		"##LDAPHOST##"
+			/LDAPPort		##LDAPFAULTYPORT##
+			/LDAPTimeout		10
+			/LDAPConnectionTimeout	5
+			/LDAPBindName		"##BINDDN##"
+			/LDAPBindPW		"##BINDPW##"
+			/LDAPPooledConnections 0
+			/LDAPRebindTimeout 0
+			/LDAPTryAutoRebind		0
+			/ConnectIsOk	0
+			/ConnectRet 	"eBindNok"
+			/Error {
+				/Msg 		"Binding request failed. [Server: '##LDAPHOST##', Port: '##LDAPFAULTYPORT##']  (Authorized bind.)"
+				/LdapCode	##BINDFAILCODE##
+				/LdapMsg	"Can't contact LDAP server"
+				/LdapConnectionParams {
+					/Server "##LDAPHOST##"
+					/Port ##LDAPFAULTYPORT##
+					/Timeout 10
+					/ConnectionTimeout 5
+					/BindName "##BINDDN##"
+					/BindPW "##BINDPW##"
+					/PooledConnections 0
+					/RebindTimeout 0
+					/TryAutoRebind		0
+					/MaxConnections 2
+				}
+				/MsgAsString "LdapDataAccess: [DataAccess_1] Msg [Binding request failed. [Server: '##LDAPHOST##', Port: '##LDAPFAULTYPORT##']  (Authorized bind.)] LdapCode [##BINDFAILCODE##] LdapMsg [Can't connect to the LDAP server] LdapConnectionParams [{/Server \"##LDAPHOST##\"/Port ##LDAPFAULTYPORT##/Timeout 10/ConnectionTimeout 5/BindName \"##BINDDN##\"/BindPW \"WipedOut\"/PooledConnections 0/RebindTimeout 0/TryAutoRebind 0/MaxConnections 2}]"
+			}
+		}
 		/AnonymousBind {
-			/LDAPServer		%LDAPServer
-			/LDAPPort		%LDAPPort
-			/LDAPTimeout		%LDAPTimeout
-			/LDAPConnectionTimeout	%LDAPConnectionTimeout
+			/LDAPServer		"##LDAPHOST##"
+			/LDAPPort		##LDAPPORT##
+			/LDAPTimeout		10
+			/LDAPConnectionTimeout	5
 			/LDAPBindName		""
 			/LDAPBindPW		""
-			/Expected 		1		# success, no error
+			/ConnectIsOk	1
+			/ConnectRet 	"eOk"
 		}
+		/CorrectBindNotPooled {
+			/LDAPServer		"##LDAPHOST##"
+			/LDAPPort		##LDAPPORT##
+			/LDAPTimeout		10
+			/LDAPConnectionTimeout	5
+			/LDAPBindName		"##BINDDN##"
+			/LDAPBindPW		"##BINDPW##"
 
-		# Wrong bind name
-		{
-			/LDAPServer		%LDAPServer
-			/LDAPPort		%LDAPPort
-			/LDAPTimeout		%LDAPTimeout
-			/LDAPConnectionTimeout	%LDAPConnectionTimeout
-			/LDAPBindName		"cn=WrongBindName,dc=sinv-56025,dc=edu,dc=hsr,dc=ch"
-			/LDAPBindPW		%LDAPBindPW
-			/Expected 		0
+			/ConnectIsOk	1
+			/ConnectRet 	"eOk"
+		}
+		/WrongBindName {
+			/LDAPServer		"##LDAPHOST##"
+			/LDAPPort		##LDAPPORT##
+			/LDAPTimeout		10
+			/LDAPConnectionTimeout	5
+			/LDAPBindName		"##WRONGBINDDN##"
+			/LDAPBindPW		"##BINDPW##"
+			/LDAPPooledConnections 0
+			/LDAPRebindTimeout 0
+			/LDAPTryAutoRebind		0
+
+			/ConnectIsOk	0
+			/ConnectRet 	"eBindNok"
 			/Error {
 				/Msg "LDAP request failed."
-				/LdapCode 49
-				/LdapMsg "Invalid credentials"
+				/LdapCode 32 # 32:openldap, 49:SunOne
+				/LdapMsg "Invalid credentials" # openldap, "No such object":SunOne
 				/LdapConnectionParams {
-					/Server "sinv-56025.edu.hsr.ch"
-					/Port 389
+					/Server "##LDAPHOST##"
+					/Port ##LDAPPORT##
 					/Timeout 10
 					/ConnectionTimeout 5
-					/BindName "cn=WrongBindName,dc=sinv-56025,dc=edu,dc=hsr,dc=ch"
-					/BindPW "hankhank"
+					/BindName "##WRONGBINDDN##"
+					/BindPW "##BINDPW##"
 					/PooledConnections 0
 					/RebindTimeout 0
 					/TryAutoRebind		0
 					/MaxConnections 2
 				}
+				/MsgAsString "LdapDataAccess: [DataAccess_2] Msg [LDAP request failed.] LdapCode [32] LdapMsg [Invalid credentials] LdapConnectionParams [{/Server \"##LDAPHOST##\"/Port ##LDAPPORT##/Timeout 10/ConnectionTimeout 5/BindName \"##WRONGBINDDN##\"/BindPW \"WipedOut\"/PooledConnections 0/RebindTimeout 0/TryAutoRebind 0/MaxConnections 2}]"
 			}
 		}
+		/WrongBindPW {
+			/LDAPServer		"##LDAPHOST##"
+			/LDAPPort		##LDAPPORT##
+			/LDAPTimeout		10
+			/LDAPConnectionTimeout	5
+			/LDAPBindName		"##BINDDN##"
+			/LDAPBindPW		"##WRONGBINDPW##"
+			/LDAPPooledConnections 0
+			/LDAPRebindTimeout 	   0
+			/LDAPTryAutoRebind		0
 
-		# WrongBindPW
-		{
-			/LDAPServer		%LDAPServer
-			/LDAPPort		%LDAPPort
-			/LDAPTimeout		%LDAPTimeout
-			/LDAPConnectionTimeout	%LDAPConnectionTimeout
-			/LDAPBindName		%LDAPBind
-			/LDAPBindPW		"SillyNonexistingBindPW"
-			/Expected 		0
+			/ConnectIsOk	0
+			/ConnectRet 	"eBindNok"
 			/Error {
 				/Msg "LDAP request failed."
 				/LdapCode 49
 				/LdapMsg "Invalid credentials"
 				/LdapConnectionParams {
-					/Server "sinv-56025.edu.hsr.ch"
-					/Port 389
+					/Server "##LDAPHOST##"
+					/Port ##LDAPPORT##
 					/Timeout 10
 					/ConnectionTimeout 5
-					/BindName "cn=admin,dc=sinv-56025,dc=edu,dc=hsr,dc=ch"
-					/BindPW "SillyNonexistingBindPW"
+					/BindName "##BINDDN##"
+					/BindPW "##WRONGBINDPW##"
 					/PooledConnections 0
 					/RebindTimeout 0
 					/TryAutoRebind		0
 					/MaxConnections 2
 				}
+				/MsgAsString "LdapDataAccess: [DataAccess_3] Msg [LDAP request failed.] LdapCode [49] LdapMsg [Invalid credentials] LdapConnectionParams [{/Server \"##LDAPHOST##\"/Port ##LDAPPORT##/Timeout 10/ConnectionTimeout 5/BindName \"##BINDDN##\"/BindPW \"WipedOut\"/PooledConnections 0/RebindTimeout 0/TryAutoRebind 0/MaxConnections 2}]"
 			}
 		}
-		#	Pooled connect, first
-		{
+		/PooledConnectFirst {
 			/NumberOfConnects 1
-			/LDAPServer		"marvin.hsr.loc"
-			/LDAPPort		"49999"
-			/LDAPBind		"cn=Directory Manager"
-			/LDAPBindPW		"ifaifaifa"
+			/LDAPServer		"##LDAPHOST##"
+			/LDAPPort		"##LDAPPORT##"
+			/LDAPBind		"##BINDDN##"
+			/LDAPBindPW		"##BINDPW##"
 			/LDAPTimeout	10
 			/LDAPConnectionTimeout 5
 			/LDAPMaxConnections	   2
-			/ConnectIsOk	1
-			/ConnectRet 	"eOk"
 			/LDAPPooledConnections 1
 			/LDAPTryAutoRebind			1
 			/LDAPRebindTimeout 600
-		}
-		# Pooled connect, follow ups
-		{
-			/NumberOfConnects 10
-			/LDAPServer		"marvin.hsr.loc"
-			/LDAPPort		"49999"
-			/LDAPBind		"cn=Directory Manager"
-			/LDAPBindPW		"ifaifaifa"
-			/LDAPTimeout	10
-			/LDAPConnectionTimeout 5
-			/ConnectIsOk	1
-			/ConnectRet 	"eOk"
-			/LDAPPooledConnections 1
-			/LDAPMaxConnections	   2
-			/LDAPTryAutoRebind			1
-			/LDAPRebindTimeout 600
-		}
 
-		# Correct bind, not pooled
-		{
-			/LDAPServer		%LDAPServer
-			/LDAPPort		%LDAPPort
-			/LDAPTimeout		%LDAPTimeout
-			/LDAPConnectionTimeout	%LDAPConnectionTimeout
-			/LDAPBindName		%LDAPBind
-			/LDAPBindPW		%LDAPBindPW
-			/Expected 		1		# success, no error
+			/ConnectIsOk	1
+			/ConnectRet 	"eOk"
+		}
+		/PooledConnectFollowUps {
+			/NumberOfConnects 10
+			/LDAPServer		"##LDAPHOST##"
+			/LDAPPort		"##LDAPPORT##"
+			/LDAPBind		"##BINDDN##"
+			/LDAPBindPW		"##BINDPW##"
+			/LDAPTimeout	10
+			/LDAPConnectionTimeout 5
+			/LDAPPooledConnections 1
+			/LDAPMaxConnections	   2
+			/LDAPTryAutoRebind			1
+			/LDAPRebindTimeout 600
+
+			/ConnectIsOk	1
+			/ConnectRet 	"eOk"
 		}
 	}
 }

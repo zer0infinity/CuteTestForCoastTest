@@ -7,7 +7,6 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-
 	/ConnectionTestResultMapper {
 		/DestinationSlot	""	# put at root of tmp
 	}

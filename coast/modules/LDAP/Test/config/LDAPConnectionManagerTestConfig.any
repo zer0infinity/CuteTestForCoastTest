@@ -7,7 +7,6 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-
 	/DLL {
 		CoastLDAP
 	}
@@ -221,10 +220,10 @@
 
 	/TestAutoRebindBadConnection
 	{
-		/LDAPServer		"127.0.0.1"
-		/LDAPPort		"389"
-		/LDAPBindName	"gugus"
-		/LDAPBindPW		"dada"
+		/LDAPServer		"##LDAPHOST##"
+		/LDAPPort		##LDAPPORT##
+		/LDAPBindName	"##WRONGBINDDN##"
+		/LDAPBindPW		"##WRONGBINDPW##"
 		/LDAPPooledConnections	1
 		/LDAPMaxConnections		2
 		/LDAPConnectionTimeout  1
@@ -258,8 +257,8 @@
 					{
 						/Data
 						{
-
-							/LDAPPort		"49999"
+							/LDAPServer		"##LDAPHOST##"
+							/LDAPPort		##LDAPPORT##
 							/PoolId		"FristConnection"
 							/LDAPMaxConnections		1
 						}
@@ -388,8 +387,8 @@
 					{
 						/Data
 						{
-
-							/LDAPPort		"49999"
+							/LDAPServer		"##LDAPHOST##"
+							/LDAPPort		##LDAPPORT##
 							/PoolId		"SecondConnection"
 							/LDAPMaxConnections		1
 						}
@@ -487,8 +486,8 @@
 					{
 						/Data
 						{
-
-							/LDAPPort		"49999"
+							/LDAPServer		"##LDAPHOST##"
+							/LDAPPort		##LDAPPORT##
 							/PoolId		"ThirdConnection"
 							/LDAPMaxConnections		1
 						}
@@ -582,8 +581,8 @@
 					{
 						/Data
 						{
-
-							/LDAPPort		"49999"
+							/LDAPServer		"##LDAPHOST##"
+							/LDAPPort		##LDAPPORT##
 							/PoolId		"ThirdConnection"
 							/LDAPMaxConnections		1
 						}
@@ -642,8 +641,8 @@
 					{
 						/Data
 						{
-
-							/LDAPPort		"49999"
+							/LDAPServer		"##LDAPHOST##"
+							/LDAPPort		##LDAPPORT##
 							/PoolId		"ForthConnection"
 							/LDAPMaxConnections		1
 						}
@@ -907,12 +906,12 @@
 							  /LdapCode 32
 							  /LdapMsg "No such object"
 							  /LdapConnectionParams {
-								/Server "surlej.hsr.ch"
-								/Port 49999
+								/Server "##LDAPHOST##"
+								/Port ##LDAPPORT##
 								/Timeout 10
 								/ConnectionTimeout 5
-								/BindName "cn=Directory Manager"
-								/BindPW "all2test"
+								/BindName "##BINDDN##"
+								/BindPW "##BINDPW##"
 								/MapUTF8 1
 								/PlainBinaryValues 0
 								/PooledConnections 1
@@ -920,6 +919,7 @@
 								/TryAutoRebind 1
 								/RebindTimeout 0
 							  }
+	                          /MsgAsString "LdapDataAccess: [LDAPConnectionManagerTest_Query] Msg [LDAP request failed.] LdapCode [32] LdapMsg [No such object] LdapConnectionParams [{/Server \"##LDAPHOST##\"/Port ##LDAPPORT##/Timeout 10/ConnectionTimeout 5/BindName \"##BINDDN##\"/BindPW \"WipedOut\"/MapUTF8 1/PlainBinaryValues 0/PooledConnections 1/MaxConnections 2/TryAutoRebind 1/RebindTimeout 0}]"
 		                    }
 			              }
  						}
@@ -1270,18 +1270,19 @@
 							  /LdapCode 85
 							  /LdapMsg "Timed out"
 							  /LdapConnectionParams {
-								/Server "surlej.hsr.ch"
-								/Port 49999
+								/Server "##LDAPHOST##"
+								/Port ##LDAPPORT##
 								/Timeout 10
 								/ConnectionTimeout 5
-								/BindName "cn=Directory Manager"
-								/BindPW "all2test"
+								/BindName "##BINDDN##"
+								/BindPW "##BINDPW##"
 								/MapUTF8 1
 								/PooledConnections 1
 								/MaxConnections 2
 								/TryAutoRebind 0
 								/RebindTimeout 0
 							  }
+							  /MsgAsString "LdapDataAccess: [LDAPConnectionManagerTest_Query] Msg [Asynchronous Wait4Result: The request <-1> timed out. Request abandoned: binding handle was invalid, ldap_abandon not called] LdapCode [85] LdapMsg [Timed out] LdapConnectionParams [{/Server \"##LDAPHOST##\"/Port ##LDAPPORT##/Timeout 10/ConnectionTimeout 5/BindName \"##BINDDN##\"/BindPW \"WipedOut\"/MapUTF8 1/PlainBinaryValues 0/PooledConnections 1/MaxConnections 2/TryAutoRebind 0/RebindTimeout 0}]"
 							}
 						  }
  						}
@@ -1312,19 +1313,20 @@
 							  /LdapCode 85
 							  /LdapMsg "Timed out"
 							  /LdapConnectionParams {
-								/Server "surlej.hsr.ch"
-								/Port 49999
+								/Server "##LDAPHOST##"
+								/Port ##LDAPPORT##
 								/Timeout 10
 								/ConnectionTimeout 5
-								/BindName "cn=Directory Manager"
-								/BindPW "all2test"
+								/BindName "##BINDDN##"
+								/BindPW "##BINDPW##"
 								/MapUTF8 1
 								/PooledConnections 1
 								/MaxConnections 2
 								/TryAutoRebind 0
 								/RebindTimeout 0
 							  }
-								}
+							  /MsgAsString "LdapDataAccess: [LDAPConnectionManagerTest_Delete] Msg [Asynchronous Wait4Result: The request <-1> timed out. Request abandoned: binding handle was invalid, ldap_abandon not called] LdapCode [85] LdapMsg [Timed out] LdapConnectionParams [{/Server \"##LDAPHOST##\"/Port ##LDAPPORT##/Timeout 10/ConnectionTimeout 5/BindName \"##BINDDN##\"/BindPW \"WipedOut\"/MapUTF8 1/PlainBinaryValues 0/PooledConnections 1/MaxConnections 2/TryAutoRebind 0/RebindTimeout 0}]"
+							}
 						  }
 						}
 					}
@@ -1354,18 +1356,19 @@
 							  /LdapCode 85
 							  /LdapMsg "Timed out"
 							  /LdapConnectionParams {
-								/Server "surlej.hsr.ch"
-								/Port 49999
+								/Server "##LDAPHOST##"
+								/Port ##LDAPPORT##
 								/Timeout 10
 								/ConnectionTimeout 5
-								/BindName "cn=Directory Manager"
-								/BindPW "all2test"
+								/BindName "##BINDDN##"
+								/BindPW "##BINDPW##"
 								/MapUTF8 1
 								/PooledConnections 1
 								/MaxConnections 2
 								/TryAutoRebind 0
 								/RebindTimeout 0
 							  }
+							  /MsgAsString "LdapDataAccess: [LDAPConnectionManagerTest_Add] Msg [Asynchronous Wait4Result: The request <-1> timed out. Request abandoned: binding handle was invalid, ldap_abandon not called] LdapCode [85] LdapMsg [Timed out] LdapConnectionParams [{/Server \"##LDAPHOST##\"/Port ##LDAPPORT##/Timeout 10/ConnectionTimeout 5/BindName \"##BINDDN##\"/BindPW \"WipedOut\"/MapUTF8 1/PlainBinaryValues 0/PooledConnections 1/MaxConnections 2/TryAutoRebind 0/RebindTimeout 0}]"
 							}
  						  }
  						}
@@ -1396,18 +1399,19 @@
 							  /LdapCode 85
 							  /LdapMsg "Timed out"
 							  /LdapConnectionParams {
-								/Server "surlej.hsr.ch"
-								/Port 49999
+								/Server "##LDAPHOST##"
+								/Port ##LDAPPORT##
 								/Timeout 10
 								/ConnectionTimeout 5
-								/BindName "cn=Directory Manager"
-								/BindPW "all2test"
+								/BindName "##BINDDN##"
+								/BindPW "##BINDPW##"
 								/MapUTF8 1
 								/PooledConnections 1
 								/MaxConnections 2
 								/TryAutoRebind 0
 								/RebindTimeout 0
 							  }
+							  /MsgAsString "LdapDataAccess: [LDAPConnectionManagerTest_MultipleModify] Msg [Asynchronous Wait4Result: The request <-1> timed out. Request abandoned: binding handle was invalid, ldap_abandon not called] LdapCode [85] LdapMsg [Timed out] LdapConnectionParams [{/Server \"##LDAPHOST##\"/Port ##LDAPPORT##/Timeout 10/ConnectionTimeout 5/BindName \"##BINDDN##\"/BindPW \"WipedOut\"/MapUTF8 1/PlainBinaryValues 0/PooledConnections 1/MaxConnections 2/TryAutoRebind 0/RebindTimeout 0}]"
 							}
 						  }
 						}
@@ -1437,18 +1441,19 @@
 							  /LdapCode 85
 							  /LdapMsg "Timed out"
 							  /LdapConnectionParams {
-								/Server "surlej.hsr.ch"
-								/Port 49999
+								/Server "##LDAPHOST##"
+								/Port ##LDAPPORT##
 								/Timeout 10
 								/ConnectionTimeout 5
-								/BindName "cn=Directory Manager"
-								/BindPW "all2test"
+								/BindName "##BINDDN##"
+								/BindPW "##BINDPW##"
 								/MapUTF8 1
 								/PooledConnections 1
 								/MaxConnections 2
 								/TryAutoRebind 0
 								/RebindTimeout 0
 							  }
+							  /MsgAsString "LdapDataAccess: [LDAPConnectionManagerTest_Compare] Msg [Asynchronous Wait4Result: The request <-1> timed out. Request abandoned: binding handle was invalid, ldap_abandon not called] LdapCode [85] LdapMsg [Timed out] LdapConnectionParams [{/Server \"##LDAPHOST##\"/Port ##LDAPPORT##/Timeout 10/ConnectionTimeout 5/BindName \"##BINDDN##\"/BindPW \"WipedOut\"/MapUTF8 1/PlainBinaryValues 0/PooledConnections 1/MaxConnections 2/TryAutoRebind 0/RebindTimeout 0}]"
 							}
 						  }
 						}
@@ -1459,10 +1464,10 @@
 	}
 	/LDAPConnectionDataAutoRetry
 	{
-		/LDAPServer		"marvin.hsr.loc"
-		/LDAPPort		"49999"
-		/LDAPBindName	"cn=Directory Manager"
-		/LDAPBindPW		"ifaifaifa"
+		/LDAPServer		"##LDAPHOST##"
+		/LDAPPort		##LDAPPORT##
+		/LDAPBindName	"##BINDDN##"
+		/LDAPBindPW		"##BINDPW##"
 		/LDAPConnectionTimeout	5
 		/LDAPTimeout			10
 		/LDAPPooledConnections	1
@@ -1473,10 +1478,10 @@
 
 	/LDAPConnectionDataNoAutoRetry
 	{
-		/LDAPServer		"marvin.hsr.loc"
-		/LDAPPort		"49999"
-		/LDAPBindName	"cn=Directory Manager"
-		/LDAPBindPW		"ifaifaifa"
+		/LDAPServer		"##LDAPHOST##"
+		/LDAPPort		##LDAPPORT##
+		/LDAPBindName	"##BINDDN##"
+		/LDAPBindPW		"##BINDPW##"
 		/LDAPConnectionTimeout	5
 		/LDAPTimeout			10
 		/LDAPPooledConnections	1
