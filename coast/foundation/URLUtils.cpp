@@ -742,7 +742,6 @@ void URLUtils::HandleURI2(Anything &query, const String &currentUri, const char 
 		// For gethostbyname - Form www.sbb.ch only, NOT localhost:2023 or
 		// http://www.sbb.ch/pv/index_d.htm etc.
 		query["Server"] = Resolver::DNS2IPAddress(myServerStr);
-		myServerStr.ToUpper();
 		query["ServerName"] = myServerStr;
 	}
 

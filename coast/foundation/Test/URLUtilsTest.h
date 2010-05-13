@@ -9,11 +9,11 @@
 #ifndef _URLUtilsTest_h_
 #define _URLUtilsTest_h_
 
-#include "TestCase.h"
+#include "FoundationTestTypes.h"
 
 //---- URLUtilsTest -----------------------------------------------------------
 //!testcases for URLUtils
-class URLUtilsTest : public TestFramework::TestCase
+class URLUtilsTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	URLUtilsTest(TString tstrName);

@@ -1,12 +1,16 @@
 {
+	/ResolvableHost {
+		/name		"##RESOLVABLEHOSTFQDN##"
+		/ip			"##RESOLVABLEHOSTIP##"
+	}
 	/simpleDNS2IPTest {
 		/localhost {
 			/name	"localhost"
 			/ip		"127.0.0.1"
 		}
-		/ip-plus {
-			/name	"ns1.ip-plus.net"
-			/ip		"164.128.36.34"
+		/resolvableHost {
+			/name	%ResolvableHost.name
+			/ip		%ResolvableHost.ip
 		}
 		/noHostToBeFound {
 			/name	"NotExisting.Nowhere.NoDomain"

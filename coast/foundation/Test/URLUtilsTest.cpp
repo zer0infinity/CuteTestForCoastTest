@@ -1159,11 +1159,14 @@ void URLUtilsTest::HandleURITest()
 
 void URLUtilsTest::HandleURI2Test()
 {
+	ROAnything roaTestConfig=GetTestCaseConfig();
 	// standard query case
-	String uriQuery("https://www.hsr.ch/part1/part2/part3");
-	const String testHost("www.hsr.ch");
-	const String testHostIp = Resolver::DNS2IPAddress(testHost); // assume resolver is working
-	Anything query;
+	const String testHost = roaTestConfig["name"].AsString();
+	const String testHostIp = roaTestConfig["ip"].AsString();
+ 	Anything query;
+	String uriQuery(64L);
+
+	uriQuery << "https://" << testHost << "/part1/part2/part3";
 
 	URLUtils::HandleURI2(query, uriQuery);
 	t_assert(query.IsDefined("Protocol"));
@@ -1172,12 +1175,11 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(query.IsDefined("ServerName"));
 	t_assert(query.IsDefined("Port"));
 
-	assertEqual("HTTPS", query["Protocol"].AsCharPtr());
-	assertEqual("/part1/part2/part3", query["Path"].AsCharPtr() );
-	assertEqual(testHostIp, query["Server"].AsCharPtr());
+	assertCharPtrEqual("HTTPS", query["Protocol"].AsCharPtr());
+	assertCharPtrEqual( "443", query["Port"].AsCharPtr());
+	assertCharPtrEqual(testHostIp, query["Server"].AsCharPtr());
 	t_assert(!String::CaselessCompare(testHost, query["ServerName"].AsCharPtr()));
-	assertEqual( "443", query["Port"].AsCharPtr());
-	//t_assert(query.GetSize() == 3);
+	assertCharPtrEqual("/part1/part2/part3", query["Path"].AsCharPtr() );
 
 	Dump(cerr, query, uriQuery);
 	//---------------------------------------------------------------------
@@ -1194,12 +1196,11 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(query.IsDefined("ServerName"));
 	t_assert(query.IsDefined("Port"));
 
-	t_assert(query["Protocol"] == "HTTPS");
-	assertEqual("/part1/part2/../part2.1/part3.1", query["Path"].AsCharPtr() );
-	assertEqual(testHostIp, query["Server"].AsCharPtr());
+	assertCharPtrEqual("HTTPS", query["Protocol"].AsCharPtr());
+	assertCharPtrEqual( "443", query["Port"].AsCharPtr());
+	assertCharPtrEqual(testHostIp, query["Server"].AsCharPtr());
 	t_assert(!String::CaselessCompare(testHost, query["ServerName"].AsCharPtr()));
-	t_assert(query["Port"] == "443");
-	//t_assert(query.GetSize() == 3);
+	assertCharPtrEqual("/part1/part2/../part2.1/part3.1", query["Path"].AsCharPtr() );
 
 	Dump(cerr, query, uriQuery);
 	//---------------------------------------------------------------------
@@ -1216,12 +1217,11 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(query.IsDefined("ServerName"));
 	t_assert(query.IsDefined("Port"));
 
-	t_assert(query["Protocol"] == "HTTPS");
-	assertEqual( "/part1/part2/../part2.1/part3.2/part4.2", query["Path"].AsCharPtr());
-	assertEqual(testHostIp, query["Server"].AsCharPtr());
+	assertCharPtrEqual("HTTPS", query["Protocol"].AsCharPtr());
+	assertCharPtrEqual( "443", query["Port"].AsCharPtr());
+	assertCharPtrEqual(testHostIp, query["Server"].AsCharPtr());
 	t_assert(!String::CaselessCompare(testHost, query["ServerName"].AsCharPtr()));
-	t_assert(query["Port"] == "443");
-	//t_assert(query.GetSize() == 3);
+	assertCharPtrEqual( "/part1/part2/../part2.1/part3.2/part4.2", query["Path"].AsCharPtr());
 
 	Dump(cerr, query, uriQuery);
 	//---------------------------------------------------------------------
@@ -1238,12 +1238,11 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(query.IsDefined("ServerName"));
 	t_assert(query.IsDefined("Port"));
 
-	t_assert(query["Protocol"] == "HTTPS");
-	t_assert(query["Path"] == "/part1.1/part2.2");
-	assertEqual(testHostIp, query["Server"].AsCharPtr());
+	assertCharPtrEqual("HTTPS", query["Protocol"].AsCharPtr());
+	assertCharPtrEqual( "443", query["Port"].AsCharPtr());
+	assertCharPtrEqual(testHostIp, query["Server"].AsCharPtr());
 	t_assert(!String::CaselessCompare(testHost, query["ServerName"].AsCharPtr()));
-	t_assert(query["Port"] == "443");
-	//t_assert(query.GetSize() == 3);
+	assertCharPtrEqual( "/part1.1/part2.2", query["Path"].AsCharPtr());
 
 	Dump(cerr, query, uriQuery);
 
@@ -1261,19 +1260,18 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(query.IsDefined("ServerName"));
 	t_assert(query.IsDefined("Port"));
 
-	t_assert(query["Protocol"] == "HTTPS");
-	//t_assert(query["Path"] == "/part1/part2.1/part3.1"); // ignored, as before??
-	assertEqual( "/part1.1/../../../../part2.2/part3.2", query["Path"].AsCharPtr() ); // stripped down as far as possible and then added as if absolute in fact
-	assertEqual(testHostIp, query["Server"].AsCharPtr());
+	assertCharPtrEqual("HTTPS", query["Protocol"].AsCharPtr());
+	assertCharPtrEqual( "443", query["Port"].AsCharPtr());
+	assertCharPtrEqual(testHostIp, query["Server"].AsCharPtr());
 	t_assert(!String::CaselessCompare(testHost, query["ServerName"].AsCharPtr()));
-	t_assert(query["Port"] == "443");
-	//t_assert(query.GetSize() == 3);
+	assertCharPtrEqual( "/part1.1/../../../../part2.2/part3.2", query["Path"].AsCharPtr());
 
 	Dump(cerr, query, uriQuery);
 	//---------------------------------------------------------------------
 	// builds on previous // NO query.Free();
 	// Protocol change->new protocol, new default Port
-	uriQuery = "HTTP://www.hsr.ch/part2.2/part3.2";
+	uriQuery.Trim(0);
+	uriQuery << "HTTP://" << testHost << "/part2.2/part3.2";
 
 	URLUtils::HandleURI2(query, uriQuery);
 
@@ -1283,19 +1281,18 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(query.IsDefined("ServerName"));
 	t_assert(query.IsDefined("Port"));
 
-	t_assert(query["Protocol"] == "HTTP");
-	//t_assert(query["Path"] == "/part1/part2.1/part3.1"); // ignored, as before
-	t_assert(query["Path"] == "/part2.2/part3.2"); // stripped down as far as possible and then added as if absolute in fact
-	assertEqual(testHostIp, query["Server"].AsCharPtr());
+	assertCharPtrEqual("HTTP", query["Protocol"].AsCharPtr());
+	assertCharPtrEqual( "80", query["Port"].AsCharPtr());
+	assertCharPtrEqual(testHostIp, query["Server"].AsCharPtr());
 	t_assert(!String::CaselessCompare(testHost, query["ServerName"].AsCharPtr()));
-	t_assert(query["Port"] == "80");
-	//t_assert(query.GetSize() == 3);
+	assertCharPtrEqual( "/part2.2/part3.2", query["Path"].AsCharPtr());
 
 	Dump(cerr, query, uriQuery);
 	//---------------------------------------------------------------------
 	// builds on previous // NO query.Free();
 	// domain change
-	uriQuery = "HTTP://www.muc.de";
+	uriQuery.Trim(0);
+	uriQuery << "HTTP://" << testHost;
 
 	URLUtils::HandleURI2(query, uriQuery);
 
@@ -1305,19 +1302,18 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(query.IsDefined("ServerName"));
 	t_assert(query.IsDefined("Port"));
 
-	t_assert(query["Protocol"] == "HTTP");
-	//t_assert(query["Path"] == "/part1/part2.1/part3.1"); // ignored, as before
-	assertEqual("/", query["Path"].AsCharPtr() ); // stripped down as far as possible and then added as if absolute in fact
-	t_assert(query["Server"] == "193.149.48.10");
-	t_assert(query["ServerName"] == "WWW.MUC.DE");
-	t_assert(query["Port"] == "80");
-	//t_assert(query.GetSize() == 3);
+	assertCharPtrEqual("HTTP", query["Protocol"].AsCharPtr());
+	assertCharPtrEqual( "80", query["Port"].AsCharPtr());
+	assertCharPtrEqual(testHostIp, query["Server"].AsCharPtr());
+	t_assert(!String::CaselessCompare(testHost, query["ServerName"].AsCharPtr()));
+	assertCharPtrEqual( "/", query["Path"].AsCharPtr());
 
 	Dump(cerr, query, uriQuery);
 	//---------------------------------------------------------------------
 	// builds on previous // NO query.Free();
 	// domain change
-	uriQuery = "HTTP://www.muc.de/part2.2/part3.2";
+	uriQuery.Trim(0);
+	uriQuery << "HTTP://" << testHost << "/part2.2/part3.2";
 
 	URLUtils::HandleURI2(query, uriQuery);
 
@@ -1327,19 +1323,18 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(query.IsDefined("ServerName"));
 	t_assert(query.IsDefined("Port"));
 
-	t_assert(query["Protocol"] == "HTTP");
-	//t_assert(query["Path"] == "/part1/part2.1/part3.1"); // ignored, as before
-	t_assert(query["Path"] == "/part2.2/part3.2"); // stripped down as far as possible and then added as if absolute in fact
-	t_assert(query["Server"] == "193.149.48.10");
-	t_assert(query["ServerName"] == "WWW.MUC.DE");
-	t_assert(query["Port"] == "80");
-	//t_assert(query.GetSize() == 3);
+	assertCharPtrEqual("HTTP", query["Protocol"].AsCharPtr());
+	assertCharPtrEqual( "80", query["Port"].AsCharPtr());
+	assertCharPtrEqual(testHostIp, query["Server"].AsCharPtr());
+	t_assert(!String::CaselessCompare(testHost, query["ServerName"].AsCharPtr()));
+	assertCharPtrEqual( "/part2.2/part3.2", query["Path"].AsCharPtr());
 
 	Dump(cerr, query, uriQuery);
 	//---------------------------------------------------------------------
 	// builds on previous // NO query.Free();
 	// domain change
-	uriQuery = "HTTPS://www.muc.de/part2.2/part3.2";
+	uriQuery.Trim(0);
+	uriQuery << "HTTPS://" << testHost << "/part2.2/part3.2";
 
 	URLUtils::HandleURI2(query, uriQuery);
 
@@ -1349,19 +1344,18 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(query.IsDefined("ServerName"));
 	t_assert(query.IsDefined("Port"));
 
-	t_assert(query["Protocol"] == "HTTPS");
-	//t_assert(query["Path"] == "/part1/part2.1/part3.1"); // ignored, as before
-	t_assert(query["Path"] == "/part2.2/part3.2"); // stripped down as far as possible and then added as if absolute in fact
-	t_assert(query["Server"] == "193.149.48.10");
-	t_assert(query["ServerName"] == "WWW.MUC.DE");
-	t_assert(query["Port"] == "443");
-	//t_assert(query.GetSize() == 3);
+	assertCharPtrEqual("HTTPS", query["Protocol"].AsCharPtr());
+	assertCharPtrEqual( "443", query["Port"].AsCharPtr());
+	assertCharPtrEqual(testHostIp, query["Server"].AsCharPtr());
+	t_assert(!String::CaselessCompare(testHost, query["ServerName"].AsCharPtr()));
+	assertCharPtrEqual( "/part2.2/part3.2", query["Path"].AsCharPtr());
 
 	Dump(cerr, query, uriQuery);
 	//---------------------------------------------------------------------
 	// builds on previous // NO query.Free();
 	// domain change
-	uriQuery = "HTTP://www.muc.de/part2.2/part3.2";
+	uriQuery.Trim(0);
+	uriQuery << "HTTPS://" << testHost << ":1919/part2.2/part3.2";
 
 	URLUtils::HandleURI2(query, uriQuery);
 
@@ -1371,19 +1365,18 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(query.IsDefined("ServerName"));
 	t_assert(query.IsDefined("Port"));
 
-	t_assert(query["Protocol"] == "HTTP");
-	//t_assert(query["Path"] == "/part1/part2.1/part3.1"); // ignored, as before
-	t_assert(query["Path"] == "/part2.2/part3.2"); // stripped down as far as possible and then added as if absolute in fact
-	t_assert(query["Server"] == "193.149.48.10");
-	t_assert(query["ServerName"] == "WWW.MUC.DE");
-	t_assert(query["Port"] == "80");
-	//t_assert(query.GetSize() == 3);
+	assertCharPtrEqual("HTTPS", query["Protocol"].AsCharPtr());
+	assertCharPtrEqual( "1919", query["Port"].AsCharPtr());
+	assertCharPtrEqual(testHostIp, query["Server"].AsCharPtr());
+	t_assert(!String::CaselessCompare(testHost, query["ServerName"].AsCharPtr()));
+	assertCharPtrEqual( "/part2.2/part3.2", query["Path"].AsCharPtr());
 
 	Dump(cerr, query, uriQuery);
 	//---------------------------------------------------------------------
 	// builds on previous // NO query.Free();
 	// domain change
-	uriQuery = "HTTPS://www.muc.de:1919/part2.2/part3.2";
+	uriQuery.Trim(0);
+	uriQuery << "HTTPS://" << testHost << ":2020/part2.2/part3.2";
 
 	URLUtils::HandleURI2(query, uriQuery);
 
@@ -1393,19 +1386,18 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(query.IsDefined("ServerName"));
 	t_assert(query.IsDefined("Port"));
 
-	t_assert(query["Protocol"] == "HTTPS");
-	//t_assert(query["Path"] == "/part1/part2.1/part3.1"); // ignored, as before
-	t_assert(query["Path"] == "/part2.2/part3.2"); // stripped down as far as possible and then added as if absolute in fact
-	t_assert(query["Server"] == "193.149.48.10");
-	t_assert(query["ServerName"] == "WWW.MUC.DE");
-	t_assert(query["Port"] == "1919");
-	//t_assert(query.GetSize() == 3);
+	assertCharPtrEqual("HTTPS", query["Protocol"].AsCharPtr());
+	assertCharPtrEqual( "2020", query["Port"].AsCharPtr());
+	assertCharPtrEqual(testHostIp, query["Server"].AsCharPtr());
+	t_assert(!String::CaselessCompare(testHost, query["ServerName"].AsCharPtr()));
+	assertCharPtrEqual( "/part2.2/part3.2", query["Path"].AsCharPtr());
 
 	Dump(cerr, query, uriQuery);
 	//---------------------------------------------------------------------
 	// builds on previous // NO query.Free();
 	// domain change
-	uriQuery = "HTTPS://www.muc.de:2020/part2.2/part3.2";
+	uriQuery.Trim(0);
+	uriQuery << "HTTP://" << testHost << ":1919/part2.2/part3.2";
 
 	URLUtils::HandleURI2(query, uriQuery);
 
@@ -1415,42 +1407,18 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(query.IsDefined("ServerName"));
 	t_assert(query.IsDefined("Port"));
 
-	t_assert(query["Protocol"] == "HTTPS");
-	//t_assert(query["Path"] == "/part1/part2.1/part3.1"); // ignored, as before
-	t_assert(query["Path"] == "/part2.2/part3.2"); // stripped down as far as possible and then added as if absolute in fact
-	t_assert(query["Server"] == "193.149.48.10");
-	t_assert(query["ServerName"] == "WWW.MUC.DE");
-	t_assert(query["Port"] == "2020");
-	//t_assert(query.GetSize() == 3);
-
-	Dump(cerr, query, uriQuery);
-	//---------------------------------------------------------------------
-	// builds on previous // NO query.Free();
-	// domain change
-	uriQuery = "HTTP://www.muc.de:1919/part2.2/part3.2";
-
-	URLUtils::HandleURI2(query, uriQuery);
-
-	t_assert(query.IsDefined("Protocol"));
-	t_assert(query.IsDefined("Path"));
-	t_assert(query.IsDefined("Server"));
-	t_assert(query.IsDefined("ServerName"));
-	t_assert(query.IsDefined("Port"));
-
-	t_assert(query["Protocol"] == "HTTP");
-	//t_assert(query["Path"] == "/part1/part2.1/part3.1"); // ignored, as before
-	t_assert(query["Path"] == "/part2.2/part3.2"); // stripped down as far as possible and then added as if absolute in fact
-	t_assert(query["Server"] == "193.149.48.10");
-	t_assert(query["ServerName"] == "WWW.MUC.DE");
-	t_assert(query["Port"] == "1919");
-	//t_assert(query.GetSize() == 3);
+	assertCharPtrEqual("HTTP", query["Protocol"].AsCharPtr());
+	assertCharPtrEqual( "1919", query["Port"].AsCharPtr());
+	assertCharPtrEqual(testHostIp, query["Server"].AsCharPtr());
+	t_assert(!String::CaselessCompare(testHost, query["ServerName"].AsCharPtr()));
+	assertCharPtrEqual( "/part2.2/part3.2", query["Path"].AsCharPtr());
 
 	Dump(cerr, query, uriQuery);
 	//---------------------------------------------------------------------
 	// builds on previous // NO query.Free();
 	// IP address directly given as domain...
-	uriQuery = "HTTP://";
-	uriQuery << testHostIp << "/part2.2/part3.2";
+	uriQuery.Trim(0);
+	uriQuery << "HTTP://" << testHostIp << "/part2.2/part3.2";
 
 	URLUtils::HandleURI2(query, uriQuery);
 
@@ -1460,13 +1428,11 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(query.IsDefined("ServerName"));
 	t_assert(query.IsDefined("Port"));
 
-	t_assert(query["Protocol"] == "HTTP");
-	//t_assert(query["Path"] == "/part1/part2.1/part3.1"); // ignored, as before
-	t_assert(query["Path"] == "/part2.2/part3.2"); // stripped down as far as possible and then added as if absolute in fact
-	assertEqual(testHostIp, query["Server"].AsCharPtr());
-	assertEqual(testHostIp, query["ServerName"].AsCharPtr() );
-	t_assert(query["Port"] == "80");
-	//t_assert(query.GetSize() == 3);
+	assertCharPtrEqual("HTTP", query["Protocol"].AsCharPtr());
+	assertCharPtrEqual( "80", query["Port"].AsCharPtr());
+	assertCharPtrEqual(testHostIp, query["Server"].AsCharPtr());
+	t_assert(!String::CaselessCompare(testHostIp, query["ServerName"].AsCharPtr()));
+	assertCharPtrEqual( "/part2.2/part3.2", query["Path"].AsCharPtr());
 
 	Dump(cerr, query, uriQuery);
 
@@ -1474,7 +1440,6 @@ void URLUtilsTest::HandleURI2Test()
 	// builds? on previous // NO query.Free();
 	// domain change
 	uriQuery = "part3.3";
-	//String baseHREF= "http://www.muc.de:1929/base/part2.2";
 
 	URLUtils::HandleURI2(query, uriQuery);
 
@@ -1484,14 +1449,11 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(query.IsDefined("ServerName"));
 	t_assert(query.IsDefined("Port"));
 
-	t_assert(query["Protocol"] == "HTTP");
-	//t_assert(query["Path"] == "/part1/part2.1/part3.1"); // ignored, as before
-	//t_assert(query["Path"] == "/part2.2/part3.2"); // stripped down as far as possible and then added as if absolute in fact
-	assertEqual( "/part2.2/part3.3", query["Path"].AsCharPtr() );
-	assertEqual( testHostIp, query["Server"].AsCharPtr() );
-	assertEqual( testHostIp, query["ServerName"].AsCharPtr() );
-	assertEqual( "80", query["Port"].AsCharPtr() );
-	//t_assert(query.GetSize() == 3);
+	assertCharPtrEqual("HTTP", query["Protocol"].AsCharPtr());
+	assertCharPtrEqual( "80", query["Port"].AsCharPtr());
+	assertCharPtrEqual(testHostIp, query["Server"].AsCharPtr());
+	t_assert(!String::CaselessCompare(testHostIp, query["ServerName"].AsCharPtr()));
+	assertCharPtrEqual( "/part2.2/part3.3", query["Path"].AsCharPtr());
 
 	Dump(cerr, query, uriQuery);
 
@@ -1499,7 +1461,8 @@ void URLUtilsTest::HandleURI2Test()
 	// builds? on previous // NO query.Free();
 	// domain change
 	uriQuery = "part3.2";
-	String baseHREF = "http://www.muc.de:1929/base/part2.2";
+	String baseHREF(32L);
+	baseHREF << "HTTP://" << testHostIp << ":1929/base/part2.2";
 
 	URLUtils::HandleURI2(query, uriQuery, baseHREF );
 
@@ -1509,14 +1472,11 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(query.IsDefined("ServerName"));
 	t_assert(query.IsDefined("Port"));
 
-	t_assert(query["Protocol"] == "HTTP");
-	//t_assert(query["Path"] == "/part1/part2.1/part3.1"); // ignored, as before
-	//t_assert(query["Path"] == "/part2.2/part3.2"); // stripped down as far as possible and then added as if absolute in fact
-	assertEqual( "/base/part3.2", query["Path"].AsCharPtr() );
-	assertEqual( "193.149.48.10", query["Server"].AsCharPtr() );
-	assertEqual( "WWW.MUC.DE", query["ServerName"].AsCharPtr() );
-	assertEqual( "1929", query["Port"].AsCharPtr() );
-	//t_assert(query.GetSize() == 3);
+	assertCharPtrEqual("HTTP", query["Protocol"].AsCharPtr());
+	assertEqual( 1929, query["Port"].AsLong());
+	assertCharPtrEqual(testHostIp, query["Server"].AsCharPtr());
+	t_assert(!String::CaselessCompare(testHostIp, query["ServerName"].AsCharPtr()));
+	assertCharPtrEqual( "/base/part3.2", query["Path"].AsCharPtr());
 
 	Dump(cerr, query, uriQuery);
 
@@ -1524,8 +1484,8 @@ void URLUtilsTest::HandleURI2Test()
 	// builds? on previous // NO query.Free();
 	// domain change
 	uriQuery = "\'part3.2\'";
-	// TEST with base href string in quotes...
-	baseHREF = "\'http://www.muc.de:1939/base/part2.2\'";
+	baseHREF.Trim(0);
+	baseHREF << "\'http://" << testHost << ":1939/base/part2.2\'";
 
 	URLUtils::HandleURI2(query, uriQuery, baseHREF );
 
@@ -1535,14 +1495,11 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(query.IsDefined("ServerName"));
 	t_assert(query.IsDefined("Port"));
 
-	t_assert(query["Protocol"] == "HTTP");
-	//t_assert(query["Path"] == "/part1/part2.1/part3.1"); // ignored, as before
-	//t_assert(query["Path"] == "/part2.2/part3.2"); // stripped down as far as possible and then added as if absolute in fact
-	assertEqual( "/base/part3.2", query["Path"].AsCharPtr() );
-	assertEqual( "193.149.48.10", query["Server"].AsCharPtr() );
-	assertEqual( "WWW.MUC.DE", query["ServerName"].AsCharPtr() );
-	assertEqual( "1939", query["Port"].AsCharPtr() );
-	//t_assert(query.GetSize() == 3);
+	assertCharPtrEqual("HTTP", query["Protocol"].AsCharPtr());
+	assertEqual( 1939, query["Port"].AsLong());
+	assertCharPtrEqual(testHostIp, query["Server"].AsCharPtr());
+	t_assert(!String::CaselessCompare(testHost, query["ServerName"].AsCharPtr()));
+	assertCharPtrEqual( "/base/part3.2", query["Path"].AsCharPtr());
 
 	Dump(cerr, query, uriQuery);
 
@@ -1550,8 +1507,8 @@ void URLUtilsTest::HandleURI2Test()
 	// builds? on previous // NO query.Free();
 	// domain change
 	uriQuery = "\"part3.2\"";
-	// TEST with base href string in quotes...
-	baseHREF = "\"http://www.muc.de:1949/base/part2.2\"";
+	baseHREF.Trim(0);
+	baseHREF << "\"http://" << testHost << ":1949/base/part2.2\"";
 
 	URLUtils::HandleURI2(query, uriQuery, baseHREF );
 
@@ -1561,23 +1518,19 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(query.IsDefined("ServerName"));
 	t_assert(query.IsDefined("Port"));
 
-	t_assert(query["Protocol"] == "HTTP");
-	//t_assert(query["Path"] == "/part1/part2.1/part3.1"); // ignored, as before
-	//t_assert(query["Path"] == "/part2.2/part3.2"); // stripped down as far as possible and then added as if absolute in fact
-	assertEqual( "/base/part3.2", query["Path"].AsCharPtr() );
-	assertEqual( "193.149.48.10", query["Server"].AsCharPtr() );
-	assertEqual( "WWW.MUC.DE", query["ServerName"].AsCharPtr() );
-	assertEqual( "1949", query["Port"].AsCharPtr() );
-	//t_assert(query.GetSize() == 3);
+	assertCharPtrEqual("HTTP", query["Protocol"].AsCharPtr());
+	assertEqual( 1949, query["Port"].AsLong());
+	assertCharPtrEqual(testHostIp, query["Server"].AsCharPtr());
+	t_assert(!String::CaselessCompare(testHost, query["ServerName"].AsCharPtr()));
+	assertCharPtrEqual( "/base/part3.2", query["Path"].AsCharPtr());
 
 	Dump(cerr, query, uriQuery);
-
 	//---------------------------------------------------------------------
 	// builds? on previous // NO query.Free();
 	// domain change
 	uriQuery = "\"part3.2\"";
-	// TEST with "/" at end of BASE HREF string
-	baseHREF = "\"http://www.muc.de:1949/base/part2.2/\"";
+	baseHREF.Trim(0);
+	baseHREF << "\"http://" << testHost << ":1949/base/part2.2/\"";
 
 	URLUtils::HandleURI2(query, uriQuery, baseHREF );
 
@@ -1587,17 +1540,13 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(query.IsDefined("ServerName"));
 	t_assert(query.IsDefined("Port"));
 
-	t_assert(query["Protocol"] == "HTTP");
-	//t_assert(query["Path"] == "/part1/part2.1/part3.1"); // ignored, as before
-	//t_assert(query["Path"] == "/part2.2/part3.2"); // stripped down as far as possible and then added as if absolute in fact
-	assertEqual( "/base/part2.2/part3.2", query["Path"].AsCharPtr() );
-	assertEqual( "193.149.48.10", query["Server"].AsCharPtr() );
-	assertEqual( "WWW.MUC.DE", query["ServerName"].AsCharPtr() );
-	assertEqual( "1949", query["Port"].AsCharPtr() );
-	//t_assert(query.GetSize() == 3);
+	assertCharPtrEqual("HTTP", query["Protocol"].AsCharPtr());
+	assertEqual( 1949, query["Port"].AsLong());
+	assertCharPtrEqual(testHostIp, query["Server"].AsCharPtr());
+	t_assert(!String::CaselessCompare(testHost, query["ServerName"].AsCharPtr()));
+	assertCharPtrEqual( "/base/part2.2/part3.2", query["Path"].AsCharPtr());
 
 	Dump(cerr, query, uriQuery);
-
 	//---------------------------------------------------------------------
 	// Mike: baseHREF must always be a full URI, if not what do browsers do? ignore it??
 	// Thats what we do here
@@ -1616,17 +1565,13 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(query.IsDefined("ServerName"));
 	t_assert(query.IsDefined("Port"));
 
-	t_assert(query["Protocol"] == "HTTP");
-	//t_assert(query["Path"] == "/part1/part2.1/part3.1"); // ignored, as before
-	//t_assert(query["Path"] == "/part2.2/part3.2"); // stripped down as far as possible and then added as if absolute in fact
-	assertEqual( "/base/part2.2/part3.4", query["Path"].AsCharPtr() );
-	assertEqual( "193.149.48.10", query["Server"].AsCharPtr() );
-	assertEqual( "WWW.MUC.DE", query["ServerName"].AsCharPtr() );
-	assertEqual( "1949", query["Port"].AsCharPtr() );
-	//t_assert(query.GetSize() == 3);
+	assertCharPtrEqual("HTTP", query["Protocol"].AsCharPtr());
+	assertEqual( 1949, query["Port"].AsLong());
+	assertCharPtrEqual(testHostIp, query["Server"].AsCharPtr());
+	t_assert(!String::CaselessCompare(testHost, query["ServerName"].AsCharPtr()));
+	assertCharPtrEqual( "/base/part2.2/part3.4", query["Path"].AsCharPtr());
 
 	Dump(cerr, query, uriQuery);
-
 }
 
 void URLUtilsTest::TrimBlanksTest ()
