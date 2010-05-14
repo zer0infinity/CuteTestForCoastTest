@@ -22,6 +22,7 @@ class Socket;
 
 #if defined(ONLY_STD_IOSTREAM)
 using std::iostream;
+using std::ostream;
 #endif
 
 //---- Context -------------------------------------------------------------------
