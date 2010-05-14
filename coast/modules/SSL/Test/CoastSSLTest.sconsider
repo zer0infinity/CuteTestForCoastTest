@@ -150,7 +150,7 @@ def createCertificates(env):
         if target:
             sslbin=''+target.abspath+' -S --'
         # if there is now c_rehash available, use the following improved script, (base from from http://www.commandlinefu.com/commands/view/2532/c_rehash-replacement)
-        command='for file in *crt*.pem; do theHash=$('+sslbin+' x509 -hash -noout -in $file 2>/dev/null) && ! test -f ${theHash}.0 && ln -s $file ${theHash}.0; done'
+        command='for file in *crt*.pem; do theHash=`'+sslbin+' x509 -hash -noout -in $file 2>/dev/null` && test ! -f ${theHash}.0 && ln -s $file ${theHash}.0; done'
         retCode=runCommand(command, logpath.abspath, stdincontent=None, useShell=True, cwd=certOutDir)
     return (certOutDir, certFileNodesList, certDict)
 
