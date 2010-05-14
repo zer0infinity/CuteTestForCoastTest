@@ -58,11 +58,13 @@ buildSettings = {
         'linkDependencies' : ['CoastMySQL', 'testfwWDBase'],
         'requires'         : ['CoastAppLog', 'CoastRenderers', 'mysql.mysqlbin'],
         'sourceFiles'      : SConsider.listFiles(['*.cpp']),
-        'copyFiles'        : [(SConsider.findFiles(['.'],['.any','.txt','.tst','.sql']), S_IRUSR|S_IRGRP|S_IROTH)],
-        'runConfig'        : {
-                              'setUp': setUp,
-                              'tearDown': tearDown,
-                             },
+        'copyFiles' : [
+            (SConsider.findFiles(['.'],['.any','.sql']), S_IRUSR|S_IRGRP|S_IROTH),
+        ],
+        'runConfig' : {
+            'setUp'        : setUp,
+            'tearDown'     : tearDown,
+         },
     },
 }
 

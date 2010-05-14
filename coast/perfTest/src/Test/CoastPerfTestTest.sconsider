@@ -9,13 +9,24 @@ buildSettings = {
         'targetType'       : 'LibraryShared',
         'sourceFiles'      : SConsider.listFiles(['*.cpp']),
         'includeSubdir'    : '',
-        'linkDependencies' : ['testfwWDBase', 'CoastPerfTest'],
+        'appendUnique'     : { 'CPPDEFINES' : ['PERFTESTTEST_IMPL'] },
+        'linkDependencies' : [
+            'testfwWDBase',
+            'CoastPerfTest',
+        ],
     },
     'Runner' : {
         'targetType'       : 'AppTest',
-        'requires'         : ['CoastStdDataAccess', 'CoastActions', 'CoastRenderers', packagename + '.' + packagename],
+        'requires' : [
+            packagename + '.' + packagename,
+            'CoastStdDataAccess',
+            'CoastActions',
+            'CoastRenderers',
+        ],
         'usedTarget'       : 'coastd.coastd',
-        'copyFiles'        : [(SConsider.findFiles(['.'],['.txt', '.html', '.any']), S_IRUSR|S_IRGRP|S_IROTH)],
+        'copyFiles' : [
+            (SConsider.findFiles(['.'],['.txt', '.html', '.any']), S_IRUSR|S_IRGRP|S_IROTH),
+        ],
     },
 }
 
