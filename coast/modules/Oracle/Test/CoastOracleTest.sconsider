@@ -19,7 +19,7 @@ def runSQL(connectstring, filename, logpath, filter=None, **kw):
     target = targets['target']
     if not target or not os.path.isfile(filename):
         return False
-    args = [target.abspath, connectstring]
+    args = [target.abspath, '--', connectstring]
     res = 0
 
     with open(filename) as file:
@@ -73,11 +73,20 @@ def tearDown(target, source, env):
 buildSettings = {
     packagename : {
         'targetType'       : 'ProgramTest',
-        'linkDependencies' : ['CoastOracle', 'testfwWDBase'],
-        'requires'         : ['CoastAppLog', 'CoastRenderers', 'oracle.sqlplus'],
+        'linkDependencies' : [
+            'CoastOracle',
+            'testfwWDBase',
+        ],
+        'requires' : [
+            'CoastAppLog',
+            'CoastRenderers',
+            'oracle.sqlplus',
+        ],
         'sourceFiles'      : SConsider.listFiles(['*.cpp']),
-        'copyFiles'        : [(SConsider.findFiles(['.'],['.any','.txt','.tst','.sql']), S_IRUSR|S_IRGRP|S_IROTH)],
-        'runConfig'        : {
+        'copyFiles' : [
+            (SConsider.findFiles(['.'],['.any','.txt','.tst','.sql']), S_IRUSR|S_IRGRP|S_IROTH),
+        ],
+        'runConfig' : {
             'setUp': setUp,
             'tearDown': tearDown,
         },
