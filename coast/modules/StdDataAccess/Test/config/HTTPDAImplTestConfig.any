@@ -26,7 +26,7 @@
 				/CurrentServer
 				{
 					/Server		!Defaults.any?HostName
-					/Port		55555
+					/Port		!Defaults.any?FaultySSLPort
 					/UseSSL		1
 					/Timeout	5
 					/UseThreadLocalMemory 1
@@ -60,7 +60,7 @@
 				/CurrentServer
 				{
 					/Server		!Defaults.any?HostName
-					/Port		55555
+					/Port		!Defaults.any?FaultySSLPort
 					/UseSSL		1
 					/Timeout	5
 					/UseThreadLocalMemory 1

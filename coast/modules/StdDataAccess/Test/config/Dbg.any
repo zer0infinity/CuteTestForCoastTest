@@ -147,6 +147,10 @@
 		/MainSwitch						10
 		/EnableAll						20
 	}
+	/Socket {
+		/MainSwitch						210
+		/EnableAll						210
+	}
 	/SSLSocket {
 		/MainSwitch						210
 		/EnableAll						210

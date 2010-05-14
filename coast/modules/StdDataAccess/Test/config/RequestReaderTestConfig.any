@@ -7,6 +7,15 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
+	/Modules {
+		DataAccessImplsModule
+		MappersModule
+	}
+	/Mappers {
+		/Input {}
+		/Output {}
+	}
+	/DataAccessImpls {}
 
 	/ReadMinimalInputTest
 	{
@@ -499,7 +508,7 @@
 		}
 
 		# 42
-		# this are encoded chars > ascii 127 (À¯À¯), thus invalid
+		# this are encoded chars > ascii 127 (//), thus invalid
 		{
 				/RequestLine 	"GET /ftimage%C0%AF%C0%AF/image/my.gif HTTP/1.0\r\n"
 				/ExpectedRequest		""
@@ -947,7 +956,7 @@
 		}
 		# 95
 		# Not allowed chars in URL-path, default is "<>\"#%{}|\\^~[]`" ( after decoding )
-		# x84=ä is extended ascii
+		# x84=ï¿½ is extended ascii
 		{
 				/RequestLine 	"GET /ftimage/%u0084umlaut.gif HTTP/1.0\r\n"
 				/ExpectedRequest	""
@@ -964,7 +973,7 @@
 				/Reason				""
 		}
 		# 97
-		# Now allow  0xe4=ä 0xf6=ö, given in \x notation
+		# Now allow  0xe4=ï¿½ 0xf6=ï¿½, given in \x notation
 		{
 				/RequestLine 	"GET /ftimage/%u00e4%f6umlaut.gif HTTP/1.0\r\n"
 				/ExpectedRequest	"/ftimage/%u00e4%f6umlaut.gif"
@@ -983,7 +992,7 @@
 				/Reason				""
 		}
 		# 99
-		# this are encoded chars > ascii 127 (À¯À¯), do not complain because CheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii
+		# this are encoded chars > ascii 127 (//), do not complain because CheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii
 		{
 				/RequestLine 	"GET /ftimage%C0%AF%C0%AF/image/my.gif HTTP/1.0\r\n"
 				/CheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii 1

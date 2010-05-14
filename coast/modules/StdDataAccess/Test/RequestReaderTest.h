@@ -10,16 +10,10 @@
 #define _RequestReaderTest_H
 
 //---- baseclass include -------------------------------------------------
-#include "FoundationTestTypes.h"
+#include "WDBaseTestPolicies.h"
 
 //---- RequestReaderTest ----------------------------------------------------
-
-//---- Forward declarations ----------------------------------------------
-
-class TimeSeries;
-
-class RequestReaderTest : public TestFramework::TestCaseWithConfig
-{
+class RequestReaderTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
 	//--- constructors
 
@@ -33,7 +27,7 @@ public:
 	//--- public api
 
 	//! builds up a suite of testcases for this test
-	static Test *suite ();
+	static Test *suite();
 
 	TString getConfigFileName();
 
