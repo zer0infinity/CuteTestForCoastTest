@@ -40,6 +40,7 @@ using namespace std;
 #if defined(__SUNPRO_CC)
 #include <time.h>
 #include <limits.h>
+#include <sys/types.h>
 #endif
 
 //---- System --------------------------------------------------------------------------
