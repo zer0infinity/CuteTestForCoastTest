@@ -22,7 +22,7 @@
 	/SMTPMailhostPort		##SMTPPORT##
 	/SMTPMailhostPortFaulty	##SMTPFAULTYPORT##
 	/SMTPHelo				"b.c"
-	/SMTPFromName			a@b.c
+	/SMTPFromName			"a@b.c"
 	/SMTPToName				{ z@b.c }
 
 	/CertDirRelative		"##certdir_rel##"
