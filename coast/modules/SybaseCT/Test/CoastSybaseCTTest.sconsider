@@ -46,7 +46,7 @@ def setUp(target, source, env):
 	sqlFile = relDir.Dir('config').File('createPub2.sql')
 	runSQL(sqlFile.abspath, interfacesFile.abspath, logDir.abspath,
 		   filter=lambda string: multiple_replace([("##database##", dbconn['database'])], string),
-		   env=env['ENV'])
+		   env=SConsider.getFlatENV(env))
 	
 
 def tearDown(target, source, env):
@@ -56,7 +56,7 @@ def tearDown(target, source, env):
 	sqlFile = relDir.Dir('config').File('dropPub2.sql')
 	runSQL(sqlFile.abspath, interfacesFile.abspath, logDir.abspath,
 		   filter=lambda string: multiple_replace([("##database##", dbconn['database'])], string),
-		   env=env['ENV'])
+		   env=SConsider.getFlatENV(env))
 
 buildSettings = {
     packagename : {

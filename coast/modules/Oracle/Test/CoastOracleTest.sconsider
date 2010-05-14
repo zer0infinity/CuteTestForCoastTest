@@ -14,7 +14,7 @@ connectstring = "{user}/{pw}@{server}:{port}/{sid}"
 connectstring1 = connectstring.format(**dict(db, **user1))
 connectstring2 = connectstring.format(**dict(db, **user2))
 
-def runSQL(connectstring, filename, logpath, filter=None):
+def runSQL(connectstring, filename, logpath, filter=None, **kw):
     targets = SConsider.packageRegistry.getPackageTarget('oracle', 'sqlplus')
     target = targets['target']
     if not target or not os.path.isfile(filename):
@@ -25,7 +25,7 @@ def runSQL(connectstring, filename, logpath, filter=None):
     with open(filename) as file:
         sqlplus = subprocess.Popen(args, stdin=subprocess.PIPE,
                                      stderr=subprocess.PIPE,
-                                     stdout=subprocess.PIPE)
+                                     stdout=subprocess.PIPE, **kw)
         content = file.read()
         if callable(filter):
             content = filter(content)
@@ -47,23 +47,28 @@ def setUp(target, source, env):
     env['ENV']['NLS_LANG'] = '.WE8ISO8859P1'
     logpath = env['BASEOUTDIR'].Dir(os.path.join('tests', packagename, env['LOGDIR'], env['VARIANTDIR']))
     path = env['BASEOUTDIR'].Dir(os.path.join('tests', packagename)).Dir('config')
-    runSQL(connectstring1, path.File('oratest_dropschema.sql').abspath, logpath.abspath)
-    runSQL(connectstring1, path.File('oratest_schema.sql').abspath, logpath.abspath)
+    runSQL(connectstring1, path.File('oratest_dropschema.sql').abspath, logpath.abspath,
+           env=SConsider.getFlatENV(env))
+    runSQL(connectstring1, path.File('oratest_schema.sql').abspath, logpath.abspath,
+           env=SConsider.getFlatENV(env))
     runSQL(connectstring1, path.File('oratest_grant.sql').abspath, logpath.abspath,
            filter=lambda string: multiple_replace([
                                                    ("##user1##", user1['user']),
                                                    ("##user2##", user2['user'])
-                                                   ], string) )
+                                                   ], string),
+           env=SConsider.getFlatENV(env))
     runSQL(connectstring2, path.File('oratest_synonym.sql').abspath, logpath.abspath,
            filter=lambda string: multiple_replace([
                                                    ("##user1##", user1['user']),
                                                    ("##user2##", user2['user'])
-                                                   ], string) )
+                                                   ], string),
+           env=SConsider.getFlatENV(env))
 
 def tearDown(target, source, env):
     logpath = env['BASEOUTDIR'].Dir(os.path.join('tests', packagename, env['LOGDIR'], env['VARIANTDIR']))
     path = env['BASEOUTDIR'].Dir(os.path.join('tests', packagename)).Dir('config')
-    runSQL(connectstring1, path.File('oratest_dropschema.sql').abspath, logpath.abspath)
+    runSQL(connectstring1, path.File('oratest_dropschema.sql').abspath, logpath.abspath,
+           env=SConsider.getFlatENV(env))
 
 buildSettings = {
     packagename : {
