@@ -63,7 +63,7 @@ public:
 
 String Resolver::DNS2IPAddress( const String &dnsName )
 {
-	StartTrace(Resolver.DNS2IPAddress);
+	StartTrace1(Resolver.DNS2IPAddress, "dns [" << dnsName << "]");
 	// no need to change Server IP address if localhost (?)
 	if ( (dnsName.Length() <= 0) || isdigit( dnsName.At(0) ) ) {
 		return dnsName;
@@ -72,6 +72,7 @@ String Resolver::DNS2IPAddress( const String &dnsName )
 		SystemSpecific(Resolver) sysResolver;
 
 		if ( sysResolver.DNS2IP(ipAddress, dnsName) ) {
+			Trace("resolved ip [" << ipAddress << "]");
 			return ipAddress;
 		}
 
@@ -84,6 +85,7 @@ String Resolver::DNS2IPAddress( const String &dnsName )
 
 String Resolver::IPAddress2DNS( const String &ipAddress )
 {
+	StartTrace1(Resolver.IPAddress2DNS, "ip [" << ipAddress << "]");
 	unsigned long addr = EndPoint::MakeInetAddr(ipAddress);
 	String dnsName("localhost");
 
@@ -95,6 +97,7 @@ String Resolver::IPAddress2DNS( const String &ipAddress )
 		SystemLog::Error(logMsg);
 	}
 	dnsName.ToLower();
+	Trace("resolved name [" << dnsName << "]");
 	return dnsName;
 }
 
@@ -103,18 +106,18 @@ Resolver::~Resolver() {}
 
 //--- system dependent subclasses ----
 #if defined(__sun)
-extern "C" const char *inet_ntop __P((int af, const void *src, char *dst, size_t s));
 
 bool SunResolver::DNS2IP(String &ipAddress, const String &dnsName)
 {
+	StartTrace1(Resolver.DNS2IP, "<sun> dns [" << dnsName << "]");
 	struct hostent he;
 	const int bufSz = 8192;
-	char buf[bufSz];
+	char buf[bufSz] = { 0 };
 	int err = 0;
 
 	if (gethostbyname_r(dnsName, &he, buf, bufSz, &err)) {
 		char **pptr;
-		char str[INET6_ADDRSTRLEN];
+		char str[INET6_ADDRSTRLEN] = { 0 };
 		pptr = he.h_addr_list;
 		ipAddress = inet_ntop(he.h_addrtype, *pptr, str, sizeof(str));
 		return true;
@@ -124,14 +127,33 @@ bool SunResolver::DNS2IP(String &ipAddress, const String &dnsName)
 
 bool SunResolver::IP2DNS(String &dnsName, const String &ipAddress, unsigned long addr)
 {
-	struct hostent he;
-	int err;
+	StartTrace1(Resolver.IP2DNS, "<sun> ip [" << ipAddress << "]");
+	struct hostent result = { 0 };
+	int err = 0;
 
 	const int bufSz = 8192;
-	char buf[bufSz];
+	char buf[bufSz] = { 0 };
 
-	if (gethostbyaddr_r((char *)&addr, sizeof(addr), AF_INET, &he, buf, bufSz, &err)) {
-		dnsName = he.h_name;
+	struct hostent *hret = gethostbyaddr_r((char *)&addr, sizeof(addr), AF_INET, &result, buf, bufSz, &err);
+	Trace("err:" << static_cast<long>(err));
+	if (hret != 0) {
+		Anything anyAliases;
+		dnsName = result.h_name;
+		anyAliases.Append(dnsName);
+		// try to find fqdn for dnsName (if not already)
+		if ( dnsName.StrChr('.') <= 0 ) {
+			String strAlias(32L);
+			for (char **q=result.h_aliases; *q != 0; ++q) {
+				strAlias = *q;
+				anyAliases.Append(strAlias);
+				if ( strAlias.StrChr('.') > 0 && strAlias.Contains(dnsName) >= 0 ) {
+					Trace("fqdn found [" << strAlias << "]");
+					dnsName=strAlias;
+				}
+			}
+		}
+		TraceAny(anyAliases, "names for given ip [" << ipAddress << "]");
+		Trace("resolved name [" << dnsName << "]");
 		return true;
 	}
 	return false;
@@ -197,7 +219,7 @@ bool AppleResolver::IP2DNS(String &dnsName, const String &ipAddress, unsigned lo
 
 bool LinuxResolver::DNS2IP(String &ipAddress, const String &dnsName)
 {
-	StartTrace1(Resolver.DNS2IP, "dns [" << dnsName << "]");
+	StartTrace1(Resolver.DNS2IP, "<linux> dns [" << dnsName << "]");
 	struct hostent he;
 	struct hostent *res=0;
 	const int bufSz = 8192;
@@ -220,6 +242,7 @@ bool LinuxResolver::DNS2IP(String &ipAddress, const String &dnsName)
 
 bool LinuxResolver::IP2DNS(String &dnsName, const String &ipAddress, unsigned long addr)
 {
+	StartTrace1(Resolver.IP2DNS, "<linux> ip [" << ipAddress << "]");
 	struct hostent he;
 	struct hostent *res = 0;
 	int err = 0;

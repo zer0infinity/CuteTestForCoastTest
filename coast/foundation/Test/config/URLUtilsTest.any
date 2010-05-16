@@ -5,10 +5,9 @@
 # This library/application is free software; you can redistribute and/or modify it under the terms of
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
-
 {
 	/HandleURI2Test {
-		/name	!Defaults.any?ResolvableHost.name
-		/ip		!Defaults.any?ResolvableHost.ip
+		/name	!Defaults.any?ResolvableHostFqdn
+		/ip		!Defaults.any?ResolvableHostIp
 	}
 }

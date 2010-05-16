@@ -6,33 +6,19 @@
 # the license that is included with this library/application in the file license.txt.
 #--------------------------------------------------------------------
 {
-	/ResolvableHost {
-		/name		"##RESOLVABLEHOSTFQDN##"
-		/ip			"##RESOLVABLEHOSTIP##"
-	}
-	/simpleDNS2IPTest {
-		/localhost {
-			/name	"localhost"
-			/ip		"127.0.0.1"
-		}
-		/resolvableHost {
-			/name	%ResolvableHost.name
-			/ip		%ResolvableHost.ip
-		}
-		/noHostToBeFound {
-			/name	"NotExisting.Nowhere.NoDomain"
-			/ip		"127.0.0.1"
-		}
-	}
-	/simpleIP2DNSTest {
-		/localhost {
-			/name	"localhost"
-			/ip		"127.0.0.1"
-		}
-	}
+	/FullQualifiedDomainName	"##FQDN##"
+	/HostName					"##HOSTNAME##"
+	/HostNameIp					"##HOSTNAMEIP##"
+	/DomainName					"##DOMAINONLY##"
+	/LocalHostName				"##LOCALHOSTNAME##"
+	/LocalHostIp				"##LOCALHOSTIP##"
+	/ResolvableHostFqdn			"##RESOLVABLEHOSTFQDN##"
+	/ResolvableHostIp			"##RESOLVABLEHOSTIP##"
+	/FaultyFqdn					"##FAULTYFQDN##"
+
 	/SocketConnectSuccessHost {
-		/ip			"127.0.0.1"
-		/port		9876
+		/ip			%LocalHostIp
+		/port		##TCPSENDRECVPORT##
 		/timeout	50		# in ms
 	}
 	/SocketConnectTimeoutHost {
@@ -44,13 +30,13 @@
 	}
 	/SocketNotAcceptingHost %SocketConnectTimeoutHost
 	/HTTPReplyHost {
-		/name		"127.0.0.1"
-		/port		9875
+		/name		%LocalHostName
+		/port		##HTTPSENDRECVPORT##
 		/timeout	10
 	}
 	/SocketConnectButNoSendRecv  {
-		/ip			"127.0.0.1"
-		/port		9874
+		/ip			%LocalHostIp
+		/port		##TCPNOSENDRECVPORT##
 		/timeout	100		# in ms
 	}
 }

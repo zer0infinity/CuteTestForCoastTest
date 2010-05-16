@@ -1,13 +1,13 @@
 import os, socket, pdb
-import SocketServer, threading, BaseHTTPServer
+import threading
 import SConsider
 from stat import *
+from SocketServer import BaseServer, TCPServer, BaseRequestHandler
+from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
+from SimpleHTTPServer import SimpleHTTPRequestHandler
 
 Import('*')
 basepath = ''
-
-hosttoresolvename='www.hsr.ch'
-hosttoresolveip=socket.gethostbyname(hosttoresolvename)
 
 def ModifyConfigFiles(env, searchReplace=[], files=[]):
     for file in files:
@@ -28,23 +28,27 @@ def SystemTestMakeDirectoryExtendCleanup():
                 os.rmdir(p)
             except: pass
 
-class MyTCPServer(SocketServer.TCPServer):
+class MyTCPServer(TCPServer):
+    """This class wrapper is needed to set allow_reuse_address to True
+    prior to initializing it"""
     allow_reuse_address = True
 
-class MyHTTPServer(BaseHTTPServer.HTTPServer):
+class MyHTTPServer(HTTPServer):
+    """This class wrapper is needed to set allow_reuse_address to True
+    prior to initializing it"""
     allow_reuse_address = True
 
-class AcceptorHandler(SocketServer.BaseRequestHandler):
+class AcceptorHandler(BaseRequestHandler):
     def handle(self):
         data = self.request.recv(1024)
         self.request.send('')
 
-class HTTPHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+class HTTPHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         self.send_response(200)
         self.end_headers()
 
-class NoSendRecvHandler(SocketServer.BaseRequestHandler):
+class NoSendRecvHandler(BaseRequestHandler):
     def handle(self):
         pass
 
@@ -54,31 +58,61 @@ def startServer(host, port, server_class, handler_class):
     servers.append(server)
     server.serve_forever()
 
+tcpnosendrecvport=43000
+tcpsendrecvport=43001
+httpsendrecvport=43002
+fqdn=socket.getfqdn()
+hostonly=fqdn.split('.')[0]
+try:
+    domain='.'.join(fqdn.split('.')[1:])
+except:
+    domain=""
+faultyfqdn='nonexisting.server.loc'
+localhostname='localhost'
+localhostip=socket.gethostbyname(localhostname)
+hosttoresolvename='www.hsr.ch'
+hosttoresolveip=socket.gethostbyname(hosttoresolvename)
+
 def setUp(target, source, env):
     global basepath
     tdirabs = env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).abspath
     basepath = os.path.join(tdirabs, 'makedirextendtest', 'test')
     searchReplace = [
+        (r"##FQDN##", fqdn),
+        (r"##FAULTYFQDN##", faultyfqdn),
+        (r"##HOSTNAME##", hostonly),
+        (r"##HOSTNAMEIP##", socket.gethostbyname(hostonly)),
+        (r"##DOMAINONLY##", domain),
+        (r"##TCPNOSENDRECVPORT##", str(tcpnosendrecvport)),
+        (r"##TCPSENDRECVPORT##", str(tcpsendrecvport)),
+        (r"##HTTPSENDRECVPORT##", str(httpsendrecvport)),
         (r"##DIREXTENDBASEDIR##", basepath),
+        (r"##LOCALHOSTNAME##", localhostname),
+        (r"##LOCALHOSTIP##", localhostip),
         (r"##RESOLVABLEHOSTFQDN##", hosttoresolvename),
         (r"##RESOLVABLEHOSTIP##", hosttoresolveip),
     ]
     if str(env['PLATFORM']) == 'cygwin':
-        searchReplace.extend([ (r"##TMPDIR##", 'c:/temp'), (r"##ROOTFS##", 'c:/') ])
+        searchReplace.extend([
+            (r"##TMPDIR##", 'c:/temp'),
+            (r"##ROOTFS##", 'c:/'),
+        ])
     else:
-        searchReplace.extend([ (r"##TMPDIR##", '/tmp'), (r"##ROOTFS##", '/') ])
+        searchReplace.extend([
+            (r"##TMPDIR##", '/tmp'),
+            (r"##ROOTFS##", '/'),
+        ])
 
     ModifyConfigFiles(env, searchReplace, SConsider.findFiles([os.path.join(tdirabs,'config')],['.any']))
 
     # setup listener threads for socket tests
-    threading.Thread(target=startServer, args=['localhost',9876, MyTCPServer, AcceptorHandler]).start()
-    threading.Thread(target=startServer, args=['localhost',9875, MyHTTPServer, HTTPHandler]).start()
-    threading.Thread(target=startServer, args=['localhost',9874, MyTCPServer, NoSendRecvHandler]).start()
+    threading.Thread(target=startServer, args=[localhostname, tcpsendrecvport, MyTCPServer, AcceptorHandler]).start()
+    threading.Thread(target=startServer, args=[localhostname, httpsendrecvport, MyHTTPServer, HTTPHandler]).start()
+    threading.Thread(target=startServer, args=[localhostname, tcpnosendrecvport, MyTCPServer, NoSendRecvHandler]).start()
 
 def tearDown(target, source, env):
     for server in servers:
         server.shutdown()
-
     # delete generated files
     SConsider.removeFiles(SConsider.findFiles([env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])], extensions=['.res'], matchfiles=['include.any']))
     SystemTestMakeDirectoryExtendCleanup()

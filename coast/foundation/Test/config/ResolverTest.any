@@ -5,8 +5,37 @@
 # This library/application is free software; you can redistribute and/or modify it under the terms of
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
-
 {
-	/simpleDNS2IPTest !Defaults.any?simpleDNS2IPTest
-	/simpleIP2DNSTest !Defaults.any?simpleIP2DNSTest
+	/simpleDNS2IPTest {
+		/localhost {
+			/name	!Defaults.any?LocalHostName
+			/ip		!Defaults.any?LocalHostIp
+		}
+		/thisHost {
+			/name	!Defaults.any?HostName
+			/ip		!Defaults.any?HostNameIp
+		}
+		/thisHostFqdn {
+			/name	!Defaults.any?FullQualifiedDomainName
+			/ip		!Defaults.any?HostNameIp
+		}
+		/resolvableHost {
+			/name	!Defaults.any?ResolvableHostFqdn
+			/ip		!Defaults.any?ResolvableHostIp
+		}
+		/noHostToBeFound {
+			/name	!Defaults.any?FaultyFqdn
+			/ip		!Defaults.any?LocalHostIp
+		}
+	}
+	/simpleIP2DNSTest {
+		/localhost {
+			/name	!Defaults.any?LocalHostName
+			/ip		!Defaults.any?LocalHostIp
+		}
+		/thisHost {
+			/name	!Defaults.any?FullQualifiedDomainName
+			/ip		!Defaults.any?HostNameIp
+		}
+	}
 }
