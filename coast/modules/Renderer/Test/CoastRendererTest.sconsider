@@ -4,26 +4,32 @@ from stat import *
 
 Import('*')
 
-def ModifyHostinfoConfig(env, cfgfilename):
-    tdirabs = env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).abspath
-    fname = os.path.join(tdirabs, cfgfilename)
-    ## set writable cfgfilename
-    if os.path.isfile(fname):
-        os.chmod(fname, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)
-        ## replace some token in Tests configuration file
-        fqdn=socket.getfqdn()
-        hostonly=fqdn.split('.')[0]
-        try:
-            domain='.'.join(fqdn.split('.')[1:])
-        except:
-            domain=""
-        searchReplace = [(r"##FQDN##", fqdn),
-                         (r"##HOSTNAME##", hostonly),
-                         (r"##DOMAINONLY##", domain) ]
-        SConsider.replaceRegexInFile(fname, searchReplace)
+fqdn=socket.getfqdn()
+hostonly=fqdn.split('.')[0]
+try:
+    domain='.'.join(fqdn.split('.')[1:])
+except:
+    domain=""
+
+def ModifyConfigFiles(env, searchReplace=[], files=[]):
+    for file in files:
+        fname = file.abspath
+        if os.path.isfile(fname):
+            oldmode=os.stat(fname).st_mode
+            ## set writable
+            os.chmod(fname, oldmode | S_IWUSR)
+            ## replace tokens in file
+            SConsider.replaceRegexInFile(fname, searchReplace)
+            os.chmod(fname, oldmode)
 
 def setUp( target, source, env ):
-    ModifyHostinfoConfig(env, 'config/Defaults.any')
+    tdirabs = env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).abspath
+    searchReplace = [
+        (r"##FQDN##", fqdn),
+        (r"##HOSTNAME##", hostonly),
+        (r"##DOMAINONLY##", domain),
+    ]
+    ModifyConfigFiles(env, searchReplace, SConsider.findFiles([os.path.join(tdirabs,'config')],['.any']))
 
 def tearDown( target, source, env ):
 	pass

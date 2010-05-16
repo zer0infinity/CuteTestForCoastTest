@@ -2352,7 +2352,7 @@
 			}
 			/Expected	"bar"
 		}
-		/SubStringRendererLookupTest
+		/SubStringRendererLookupStartTest
 		{
 			/Env
 			{
@@ -3434,7 +3434,7 @@
 			}
 			/Expected "Thu, 07 Aug 1997 00:00:00 GMT"
 		}
-		/DateRendererRFC2616DdateTest {
+		/DateRendererRFC2616DdateOffsetTest {
 			/TmpStore {}
 			/Renderer {
 				/DateRenderer {
