@@ -69,12 +69,17 @@ class SecureHTTPRequestHandler(SimpleHTTPRequestHandler):
         self.rfile = socket._fileobject(self.request, "rb", self.rbufsize)
         self.wfile = socket._fileobject(self.request, "wb", self.wbufsize)
 
-smtpport=43025
-smtpfaultyport=43026
-httpport=43080
-faultyhttpport=43081
-sslport=43443
-sslfaultyport=43444
+class MyHTTPServer(HTTPServer):
+    """This class wrapper is needed to set allow_reuse_address to True
+    prior to initializing it"""
+    allow_reuse_address = True
+
+smtpport=43020
+smtpfaultyport=43021
+httpport=43022
+faultyhttpport=43023
+sslport=43024
+sslfaultyport=43025
 fqdn=socket.getfqdn()
 hostonly=fqdn.split('.')[0]
 try:
@@ -227,7 +232,7 @@ def setUp(target, source, env):
         searchReplace.append((r"##certdir_rel##",os.path.relpath(certOutDir, tdirabs)));
         ModifyConfigFiles(env, searchReplace, SConsider.findFiles([configdir],['.any']))
         threading.Thread(target=startServer, args=[hostonly, sslport, SecureHTTPServer, SecureHTTPRequestHandler], kwargs={'certFile':certDict.get('servercrt'), 'keyFile':certDict.get('serverkey'), 'caChainFile':certDict.get('chainwoservercrt')}).start()
-        threading.Thread(target=startServer, args=[hostonly, httpport, HTTPServer, SimpleHTTPRequestHandler]).start()
+        threading.Thread(target=startServer, args=[hostonly, httpport, MyHTTPServer, SimpleHTTPRequestHandler]).start()
         threading.Thread(target=startServer, args=[hostonly, smtpport, SMTPFileSinkServer, None], kwargs={'path':env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).Dir(os.path.join(env['LOGDIR'], env['VARIANTDIR'])).abspath, 'logfile':'smtp.log'}).start()
     #FIXME: the following setting is needed to let CgiCallerTest succeed
     env['ENV']['WD_ROOT'] = env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).abspath

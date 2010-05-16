@@ -12,8 +12,8 @@ except:
     domain=""
 
 faultyfqdn='nonexisting.server.loc'
-ldapport=43389
-faultyldapport=43399
+ldapport=43040
+faultyldapport=43041
 ldapbinddn='super-dn'
 ldapbindpw='super-pw'
 ldapwrongbinddn='wrong-dn'

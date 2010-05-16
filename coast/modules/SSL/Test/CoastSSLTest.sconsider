@@ -36,10 +36,15 @@ class SecureHTTPRequestHandler(SimpleHTTPRequestHandler):
         self.rfile = socket._fileobject(self.request, "rb", self.rbufsize)
         self.wfile = socket._fileobject(self.request, "wb", self.wbufsize)
 
-httpport=43080
-faultyhttpport=43081
-sslport=43443
-sslfaultyport=43444
+class MyHTTPServer(HTTPServer):
+    """This class wrapper is needed to set allow_reuse_address to True
+    prior to initializing it"""
+    allow_reuse_address = True
+
+httpport=43010
+faultyhttpport=43011
+sslport=43012
+sslfaultyport=43013
 fqdn=socket.getfqdn()
 hostonly=fqdn.split('.')[0]
 try:
@@ -189,7 +194,7 @@ def setUp(target, source, env):
         searchReplace.append((r"##certdir_rel##",os.path.relpath(certOutDir, tdirabs)));
         ModifyConfigFiles(env, searchReplace, SConsider.findFiles([configdir],['.any']))
         threading.Thread(target=startServer, args=[hostonly, sslport, SecureHTTPServer, SecureHTTPRequestHandler], kwargs={'certFile':certDict.get('servercrt'), 'keyFile':certDict.get('serverkey'), 'caChainFile':certDict.get('chainwoservercrt')}).start()
-#        threading.Thread(target=startServer, args=[hostonly, httpport, HTTPServer, SimpleHTTPRequestHandler]).start()
+#        threading.Thread(target=startServer, args=[hostonly, httpport, MyHTTPServer, SimpleHTTPRequestHandler]).start()
 #    env['ENV']['WD_ROOT'] = env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).abspath
 #    env['ENV']['WD_LOGONCERR'] = '3'
 #    env['ENV']['WD_PATH'] = ':'.join(['config', '.'])
