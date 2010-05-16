@@ -39,7 +39,7 @@ void HTMLParserTest::ParseFileTest()
 	StartTrace(HTMLParserTest.ParseFileTest);
 
 	iostream *input = System::OpenIStream("eSport", "html");
-	iostream *expectedResultInput = System::OpenIStream("eSportResult", "any");
+	iostream *expectedResultInput = System::OpenStream("eSportResult", "any");
 
 	if (	t_assertm(input != NULL, "expected eSport.html to be there") &&
 			t_assertm(expectedResultInput != NULL, "expected eSportResult.any to be there")

@@ -1,8 +1,95 @@
-import os
 import SConsider
+import os, socket, pdb, re
+import threading, shutil
 from stat import *
+from SocketServer import BaseServer
+from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
+from SimpleHTTPServer import SimpleHTTPRequestHandler
 
 Import('*')
+
+## creating an SSL enabled HTTPServer
+## see http://code.activestate.com/recipes/442473/
+
+#class SecureHTTPServer(HTTPServer):
+#    allow_reuse_address = True
+#    def __init__(self, server_address, HandlerClass, certFile=None, keyFile=None, caChainFile=None, sslContextMethod=SSL.SSLv23_METHOD):
+#        BaseServer.__init__(self, server_address, HandlerClass)
+#        ctx = SSL.Context(sslContextMethod)
+#        if keyFile:
+#            ctx.use_privatekey_file (keyFile)
+#        if certFile:
+#            ctx.use_certificate_file(certFile)
+#        if certFile and keyFile:
+#            ctx.check_privatekey()
+#        ctx.set_timeout(60)
+#        if caChainFile:
+#            ctx.load_verify_locations(caChainFile)
+#        self.socket = SSL.Connection(ctx, socket.socket(self.address_family,self.socket_type))
+#        self.server_bind()
+#        self.server_activate()
+#
+#class SecureHTTPRequestHandler(SimpleHTTPRequestHandler):
+#    def setup(self):
+#        self.connection = self.request
+#        self.rfile = socket._fileobject(self.request, "rb", self.rbufsize)
+#        self.wfile = socket._fileobject(self.request, "wb", self.wbufsize)
+
+httpport=43030
+faultyhttpport=43031
+stressserverport=43032
+fqdn=socket.getfqdn()
+hostonly=fqdn.split('.')[0]
+try:
+    domain='.'.join(fqdn.split('.')[1:])
+except:
+    domain=""
+
+def ModifyConfigFiles(env, searchReplace=[], files=[]):
+    for file in files:
+        fname = file.abspath
+        if os.path.isfile(fname):
+            oldmode=os.stat(fname).st_mode
+            ## set writable
+            os.chmod(fname, oldmode | S_IWUSR)
+            ## replace tokens in file
+            SConsider.replaceRegexInFile(fname, searchReplace)
+            os.chmod(fname, oldmode)
+
+class MyHTTPServer(HTTPServer):
+    """This class wrapper is needed to set allow_reuse_address to True
+    prior to initializing it"""
+    allow_reuse_address = True
+
+servers = []
+def startServer(host, port, server_class, handler_class, **kw):
+    server = server_class((host, port), handler_class, **kw)
+    servers.append(server)
+    server.serve_forever()
+
+def setUp(target, source, env):
+    tdir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
+    tdirabs = tdir.abspath
+    logpath = tdir.Dir(os.path.join(env['LOGDIR'], env['VARIANTDIR']))
+    configdir = tdir.Dir('config')
+    searchReplace = [
+        (r"##FQDN##", fqdn),
+        (r"##HOSTNAME##", hostonly),
+        (r"##DOMAINONLY##", domain),
+        (r"##HTTPPORT##", str(httpport)),
+        (r"##FAULTYHTTPPORT##", str(faultyhttpport)),
+        (r"##STRESSSERVERPORT##", str(stressserverport)),
+    ]
+    ModifyConfigFiles(env, searchReplace, SConsider.findFiles([configdir],['.any']))
+    threading.Thread(target=startServer, args=[hostonly, httpport, MyHTTPServer, SimpleHTTPRequestHandler]).start()
+#    threading.Thread(target=startServer, args=[hostonly, sslport, SecureHTTPServer, SecureHTTPRequestHandler], kwargs={'certFile':certDict.get('servercrt'), 'keyFile':certDict.get('serverkey'), 'caChainFile':certDict.get('chainwoservercrt')}).start()
+
+def tearDown(target, source, env):
+    for server in servers:
+        server.shutdown()
+    # delete generated files
+    SConsider.removeFiles(SConsider.findFiles([env['BASEOUTDIR'].Dir(os.path.join(env['RELTARGETDIR'],'config'))], extensions=[], matchfiles=['time.txt']))
+
 
 buildSettings = {
     packagename : {
@@ -25,8 +112,13 @@ buildSettings = {
         ],
         'usedTarget'       : 'coastd.coastd',
         'copyFiles' : [
-            (SConsider.findFiles(['.'],['.txt', '.html', '.any']), S_IRUSR|S_IRGRP|S_IROTH),
+            (SConsider.findFiles(['.'],['.txt', '.html']), S_IRUSR|S_IRGRP|S_IROTH),
+            (SConsider.findFiles(['config'],['.any']), S_IRUSR|S_IRGRP|S_IROTH),
         ],
+        'runConfig' : {
+            'setUp': setUp,
+            'tearDown': tearDown,
+        },
     },
 }
 

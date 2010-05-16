@@ -4,11 +4,11 @@
 #
 # This library/application is free software; you can redistribute and/or modify it under the terms of
 # the license that is included with this library/application in the file license.txt.
-#-----------------------------------------------------------------------------------------------------
 
 {
-
-	/DLL {}
+	/DLL {
+		CoastPerfTest
+	}
 	/Modules {
 		PagesModule
 		RolesModule
@@ -218,17 +218,17 @@
 			}
 			/Expected "POST /path7 HTTP/1.1\r\nUser-Agent: Mozilla/4.51 [en] (WinNT; I)\r\nHost: localhost\r\nConnection: Close\r\nAccept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, image/png, */*\r\nAccept-Language: en-GB,de\r\nAccept-Charset: iso-8859-1,*,utf-8\r\nContent-Length: 245\r\nContent-Type: multipart/form-data; boundary=7d12412839011e\r\n\r\n--7d12412839011e\r\nContent-Disposition: form-data; name=\"upfile\"; filename=\r\nContent-Type: text/plain\r\n\r\nHello Coast\r\n\r\n--7d12412839011e\r\nContent-Disposition: form-data; name=\"note\"; filename=\r\nContent-Type: text/plain\r\n\r\n\r\n\r\n--7d12412839011e--\r\n"
 		}
-		{
+		/CookieToServerRendererServernameCaseTest {
 			/TmpStore {
 				/CurrentServer {
-					/ServerName "test.hsr.loc"
+					/ServerName "test.hsr.ch"
 				}
 				/Cookies {
 					/"TEST.HSR.CH" {
 						/A "A=42"
 						/B "B=29"
 					}
-					/"test.hsr.loc" {
+					/"test.hsr.ch" {
 						/A "A=29"
 						/X "X=42"
 					}
@@ -239,14 +239,14 @@
 			}
 			/Expected "\r\nCookie: A=42; B=29"
 		}
-		{
+		/CookieToServerRendererServernameCaseSingleValueTest{
 			/TmpStore {
 				/CurrentServer {
-					/ServerName "test.hsr.loc"
+					/ServerName "test.hsr.ch"
 				}
 				/Cookies {
 					/"TEST.HSR.CH" "A=42"
-					/"test.hsr.loc" {
+					/"test.hsr.ch" {
 						/A "A=29"
 						/X "X=42"
 					}
@@ -257,10 +257,10 @@
 			}
 			/Expected "\r\nCookie: A=42"
 		}
-		{
+		/CookieToServerRendererServernameWithPortTest{
 			/TmpStore {
 				/CurrentServer {
-					/ServerName "test.hsr.loc"
+					/ServerName "test.hsr.ch"
 					/Port	8088
 				}
 				/Cookies {
@@ -271,7 +271,7 @@
 						"Language=D"
 						"XYZ=abc"
 					}
-					/"test.hsr.loc" {
+					/"test.hsr.ch" {
 						/A "A=29"
 						/X "X=42"
 					}

@@ -7,7 +7,6 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-
 	/Application TestRunnerApplication
 
 	/DLL {
@@ -18,7 +17,7 @@
 	}
 
 	/StressServer6666 {
-		/Port	6666
+		/Port	!Defaults.any?StressServerPort
 	}
 
 	/Modules {

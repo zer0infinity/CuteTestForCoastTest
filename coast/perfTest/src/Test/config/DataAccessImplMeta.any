@@ -7,22 +7,21 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-
 	/AWebServer {
-		/Server		172.16.0.11
-		/Port		80
+		/Server		!Defaults.any?HostName
+		/Port		!Defaults.any?HttpPort
 	}
 
 	/AStressServer {
-		/Server		127.0.0.1
-		/Port		6666
+		/Server		!Defaults.any?HostName
+		/Port		!Defaults.any?StressServerPort
 	}
 	/ItopiaCh {
-		/Server		172.16.0.11
-		/Port		80
+		/Server		!Defaults.any?HostName
+		/Port		!Defaults.any?HttpPort
 	}
 	/HostUnknown {
-		/Server		127.0.0.1
-		/Port		12345
+		/Server		!Defaults.any?HostName
+		/Port		!Defaults.any?FaultyHttpPort
 	}
 }

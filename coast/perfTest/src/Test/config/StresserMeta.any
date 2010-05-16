@@ -7,7 +7,6 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-
     /TStresserRunner {
 		/Stressers {
 			/Dummy1		4
@@ -30,7 +29,7 @@
 	/Connection1 {
 		/DataAccess		AWebServer
 		/NumberOfCalls		10
-		/Input	"Get / HTTP1.0\n\n"
+		/Input	"GET / HTTP/1.0\n\n"
 	}
 	/FlowControlled {
 		/DataAccess		ItopiaCh

@@ -34,6 +34,7 @@ void CookieToServerRenderer::RenderAll(ostream &reply, Context &c, const ROAnyth
 	TraceAny( c.GetTmpStore(), "<<- Overall TMP Store" );
 
 	String explicitDomainName = c.Lookup("CurrentServer.ServerName", "");
+	explicitDomainName.ToUpper();
 	// without Port part
 	OutputCookies( explicitDomainName, reply, c );
 

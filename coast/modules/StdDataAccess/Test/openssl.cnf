@@ -223,9 +223,7 @@ keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 
 [ v3_ca ]
 
-
 # Extensions for a typical CA
-
 
 # PKIX recommendation.
 

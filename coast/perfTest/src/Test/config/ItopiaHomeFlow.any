@@ -9,14 +9,14 @@
 {
 
 	/PreRun	{
-		{	/Input	"Get / HTTP1.0\n\n"	}
+		{	/Input	"GET / HTTP/1.0\n\n"	}
 	}
 	/NumberOfRuns	5		# Number of times the series is run
 	/Run	{				# Inputconfiguration for the series of requests (run NumberOfRuns times)
-		{	/Input	"Get /team/team_01.html HTTP1.0\n\n"	}
-		{	/Input	"Get /team/team_02.html HTTP1.0\n\n"	}
-		{	/Input	"Get /team/team_03.html HTTP1.0\n\n"	}
-		{	/Input	"Get /team/team_04.html HTTP1.0\n\n"	}
-		{	/Input	"Get /team/team_05.html HTTP1.0\n\n"	}
+		{	/Input	"GET /team/team_01.html HTTP/1.0\n\n"	}
+		{	/Input	"GET /team/team_02.html HTTP/1.0\n\n"	}
+		{	/Input	"GET /team/team_03.html HTTP/1.0\n\n"	}
+		{	/Input	"GET /team/team_04.html HTTP/1.0\n\n"	}
+		{	/Input	"GET /team/team_05.html HTTP/1.0\n\n"	}
 	}
 }
