@@ -49,14 +49,38 @@
 #define SystemSpecific(className)		_NAME2_(Linux, className)
 #endif
 
-class EXPORTDECL_FOUNDATION SystemSpecific(Resolver): public Resolver
+class EXPORTDECL_FOUNDATION SystemSpecific(Resolver)
 {
+	Anything fAliases;
+	String fCanonicalName;
+
+	void extractFromHostent( const hostent& result ) {
+		StartTrace(Resolver.extractFromHostent);
+		fCanonicalName = result.h_name;
+		fCanonicalName.ToLower();
+		String strAlias(32L);
+		for (char **q=result.h_aliases; *q != 0; ++q) {
+			strAlias = *q;
+			strAlias.ToLower();
+			fAliases.Append(strAlias);
+			if ( strAlias.StrChr('.') > 0 && strAlias.Contains(fCanonicalName) >= 0 ) {
+				Trace("fqdn found [" << strAlias << "]");
+				fCanonicalName=strAlias;
+			}
+		}
+		TraceAny(fAliases, "names for given ip");
+		Trace("resolved name [" << fCanonicalName << "]");
+	}
+
 public:
-	SystemSpecific(Resolver)() {}
+	SystemSpecific(Resolver)() : fCanonicalName("localhost") {}
 	~SystemSpecific(Resolver)() {}
 
-	virtual bool DNS2IP(String &ipAddress, const String &dnsName);
-	virtual bool IP2DNS(String &dnsName, const String &ipAddress, unsigned long addr);
+	const String& getCanonicalName() const { return fCanonicalName; }
+	ROAnything getAliases() const { return fAliases; }
+
+	bool DNS2IP(String &ipAddress, const String &dnsName);
+	bool IP2DNS(const String &ipAddress, unsigned long addr);
 };
 
 //---- Resolver ----------------------------------------------------------------
@@ -87,18 +111,16 @@ String Resolver::IPAddress2DNS( const String &ipAddress )
 {
 	StartTrace1(Resolver.IPAddress2DNS, "ip [" << ipAddress << "]");
 	unsigned long addr = EndPoint::MakeInetAddr(ipAddress);
-	String dnsName("localhost");
 
 	SystemSpecific(Resolver) sysResolver;
 
-	if ( !sysResolver.IP2DNS(dnsName, ipAddress, addr) ) {
+	if ( !sysResolver.IP2DNS(ipAddress, addr) ) {
 		String logMsg("Resolving of IPAddress <");
 		logMsg << ipAddress << "> failed";
 		SystemLog::Error(logMsg);
 	}
-	dnsName.ToLower();
-	Trace("resolved name [" << dnsName << "]");
-	return dnsName;
+	Trace("resolved name [" << sysResolver.getCanonicalName() << "]");
+	return sysResolver.getCanonicalName();
 }
 
 Resolver::Resolver() {}
@@ -125,7 +147,7 @@ bool SunResolver::DNS2IP(String &ipAddress, const String &dnsName)
 	return false;
 }
 
-bool SunResolver::IP2DNS(String &dnsName, const String &ipAddress, unsigned long addr)
+bool SunResolver::IP2DNS(const String &ipAddress, unsigned long addr)
 {
 	StartTrace1(Resolver.IP2DNS, "<sun> ip [" << ipAddress << "]");
 	struct hostent result = { 0 };
@@ -137,23 +159,7 @@ bool SunResolver::IP2DNS(String &dnsName, const String &ipAddress, unsigned long
 	struct hostent *hret = gethostbyaddr_r((char *)&addr, sizeof(addr), AF_INET, &result, buf, bufSz, &err);
 	Trace("err:" << static_cast<long>(err));
 	if (hret != 0) {
-		Anything anyAliases;
-		dnsName = result.h_name;
-		anyAliases.Append(dnsName);
-		// try to find fqdn for dnsName (if not already)
-		if ( dnsName.StrChr('.') <= 0 ) {
-			String strAlias(32L);
-			for (char **q=result.h_aliases; *q != 0; ++q) {
-				strAlias = *q;
-				anyAliases.Append(strAlias);
-				if ( strAlias.StrChr('.') > 0 && strAlias.Contains(dnsName) >= 0 ) {
-					Trace("fqdn found [" << strAlias << "]");
-					dnsName=strAlias;
-				}
-			}
-		}
-		TraceAny(anyAliases, "names for given ip [" << ipAddress << "]");
-		Trace("resolved name [" << dnsName << "]");
+		extractFromHostent(result);
 		return true;
 	}
 	return false;
@@ -176,11 +182,11 @@ bool Win32Resolver::DNS2IP(String &ipAddress, const String &dnsName)
 	return false;
 }
 
-bool Win32Resolver::IP2DNS(String &dnsName, const String &ipAddress, unsigned long addr)
+bool Win32Resolver::IP2DNS(const String &ipAddress, unsigned long addr)
 {
 	struct hostent *hePtr;
 	if (hePtr = gethostbyaddr((char *)&addr, sizeof(addr), AF_INET)) {
-		dnsName = (hePtr->h_name);
+		extractFromHostent(*hePtr);
 		return true;
 	}
 	return false;
@@ -203,12 +209,12 @@ bool AppleResolver::DNS2IP(String &ipAddress, const String &dnsName)
 	return false;
 }
 
-bool AppleResolver::IP2DNS(String &dnsName, const String &ipAddress, unsigned long addr)
+bool AppleResolver::IP2DNS(const String &ipAddress, unsigned long addr)
 {
 	struct hostent *ptrHe;
 	int error_num = 0;
 	if (ptrHe = getipnodebyaddr((char *)&addr, sizeof(addr), AF_INET, &error_num)) {
-		dnsName = (ptrHe->h_name);
+		extractFromHostent(*ptrHe);
 		freehostent(ptrHe);
 		return true;
 	}
@@ -240,7 +246,7 @@ bool LinuxResolver::DNS2IP(String &ipAddress, const String &dnsName)
 	return false;
 }
 
-bool LinuxResolver::IP2DNS(String &dnsName, const String &ipAddress, unsigned long addr)
+bool LinuxResolver::IP2DNS(const String &ipAddress, unsigned long addr)
 {
 	StartTrace1(Resolver.IP2DNS, "<linux> ip [" << ipAddress << "]");
 	struct hostent he;
@@ -252,7 +258,7 @@ bool LinuxResolver::IP2DNS(String &dnsName, const String &ipAddress, unsigned lo
 
 	int result = gethostbyaddr_r((char *)&addr, sizeof(addr), AF_INET, &he, buf, bufSz, &res, &err);
 	if ( result == 0 && err == NETDB_SUCCESS) {
-		dnsName = res->h_name;
+		extractFromHostent(*res);
 		return true;
 	}
 	return false;
