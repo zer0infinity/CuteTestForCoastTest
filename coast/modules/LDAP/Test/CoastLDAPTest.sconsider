@@ -51,6 +51,7 @@ def setUp(target, source, env):
         (r"##BINDFAILCODE##", str(ldapBindFailureCodeOpenldap)),
     ]
     ModifyConfigFiles(env, searchReplace, SConsider.findFiles([configdir],['.any']))
+    raise SConsider.SkipTest('ldap backend not available yet...')
 
 def tearDown(target, source, env):
     pass
@@ -65,8 +66,8 @@ buildSettings = {
             (SConsider.findFiles(['config'], extensions=['.any', '.ldif'], matchfiles=[]), S_IRUSR|S_IRGRP|S_IROTH),
         ],
         'runConfig'        : {
-            'setUp': setUp,
-            'tearDown': tearDown,
+            'setUp'        : setUp,
+            'tearDown'     : tearDown,
         },
     },
 }
