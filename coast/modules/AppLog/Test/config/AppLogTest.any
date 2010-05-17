@@ -402,8 +402,8 @@
 					/Header		"# Relative-File"
 				}
 				/AbsoluteLogDir	{
-					/LogDir		"/tmp"
-					/RotateDir	"/tmp"
+					/LogDir		"##LOGDIR##"
+					/RotateDir	"##ROTATEDIR##"
 					/FileName	"Absolute.log"
 					/Format		"Nothing"
 					/Header		"# Absolute-File"
