@@ -37,8 +37,8 @@ void StringTestExtreme::setUp ()
 	extremelyLongString = "";
 	trueString = "";
 
-	iostream *is = System::OpenStream("longString", "txt");
-	while (!is->eof()) {
+	iostream *is = System::OpenIStream("longString", "txt");
+	while (is && !is->eof()) {
 		if (is->read(&s, 1)) {
 			extremelyLongString.Append(s);
 			trueString.append(1, s);
@@ -56,5 +56,6 @@ Test *StringTestExtreme::suite ()
 void StringTestExtreme::extremeLength ()
 {
 	// Init a string without parameters
+	t_assert(extremelyLongString.Length()>0);
 	assertEqual(trueString.length(), extremelyLongString.Length());
 }
