@@ -14,7 +14,6 @@
 
 //--- test cases -------------------------------------------------------------
 #include "MemTrackerTest.h"
-#include "StorageTest.h"
 #include "PoolAllocatorTest.h"
 #include "STLStorageTest.h"
 #include "BoostPoolTest.h"
@@ -22,7 +21,6 @@
 void setupRunner(TestRunner &runner)
 {
 	ADD_SUITE(runner, MemTrackerTest);
-	ADD_SUITE(runner, StorageTest);
 	ADD_SUITE(runner, PoolAllocatorTest);
 	ADD_SUITE(runner, STLStorageTest);
 	ADD_SUITE(runner, BoostPoolTest);
