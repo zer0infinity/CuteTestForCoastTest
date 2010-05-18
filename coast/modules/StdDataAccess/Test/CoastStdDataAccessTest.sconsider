@@ -18,7 +18,6 @@ class SMTPFileSinkServer(SMTPServer):
         SMTPServer.__init__(self, localaddr, remoteaddr)
         self.path = path
         self.log_file=logfile
-        asyncore.loop()
 
     def process_message(self, peer, mailfrom, rcpttos, data):
         self.message("Incoming mail")
@@ -41,6 +40,15 @@ class SMTPFileSinkServer(SMTPServer):
             f.close()
         else:
             print text
+
+class SMTPThread(threading.Thread):
+    def __init__(self, host, port, path, logfile):
+        super(SMTPThread, self).__init__()
+        self.smtpd = SMTPFileSinkServer((host, port), None, path, logfile)
+        self.daemon = True
+
+    def run(self):
+        asyncore.loop()
 
 ## creating an SSL enabled HTTPServer
 ## see http://code.activestate.com/recipes/442473/
@@ -233,7 +241,8 @@ def setUp(target, source, env):
         ModifyConfigFiles(env, searchReplace, SConsider.findFiles([configdir],['.any']))
         threading.Thread(target=startServer, args=[hostonly, sslport, SecureHTTPServer, SecureHTTPRequestHandler], kwargs={'certFile':certDict.get('servercrt'), 'keyFile':certDict.get('serverkey'), 'caChainFile':certDict.get('chainwoservercrt')}).start()
         threading.Thread(target=startServer, args=[hostonly, httpport, MyHTTPServer, SimpleHTTPRequestHandler]).start()
-        threading.Thread(target=startServer, args=[hostonly, smtpport, SMTPFileSinkServer, None], kwargs={'path':env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).Dir(os.path.join(env['LOGDIR'], env['VARIANTDIR'])).abspath, 'logfile':'smtp.log'}).start()
+        SMTPThread(hostonly, smtpport, env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).Dir(env['LOGDIR']).Dir(env['VARIANTDIR']).abspath, 'smtp.log').start()
+
     #FIXME: the following setting is needed to let CgiCallerTest succeed
     env['ENV']['WD_ROOT'] = env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).abspath
 #    env['ENV']['WD_PATH'] = ':'.join(['config', '.'])
