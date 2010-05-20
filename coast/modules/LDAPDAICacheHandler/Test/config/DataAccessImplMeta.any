@@ -5,15 +5,5 @@
 # This library/application is free software; you can redistribute and/or modify it under the terms of
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
-
-#!Defines the available physical backends and any required loadbalancing.
 {
-
-	/LDAPDAImpl
-	{
-		/Server		"sifsstud1.hsr.ch"
-		/Port		"389"
-		/Bind		"cn=admin,dc=sifsstud1,dc=hsr,dc=ch"
-		/Timeout	10
-	}
 }

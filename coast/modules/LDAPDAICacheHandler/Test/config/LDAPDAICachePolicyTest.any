@@ -5,15 +5,7 @@
 # This library/application is free software; you can redistribute and/or modify it under the terms of
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
-
 {
-
-	/LDAPServer		"marvin.hsr.loc"
-	/LDAPPort		"49999"
-	/LDAPBindName	"cn=Directory Manager"
-	/LDAPBindPW		"ifaifaifa"
-	/LDAPTimeout	10
-
 	/NoDataReadTest {
 		/DLL {
 			CoastLDAP
@@ -54,11 +46,6 @@
 				}
 			}
 		}
-		/LDAPServer		%LDAPServer
-		/LDAPPort		%LDAPPort
-		/LDAPBindName	%LDAPBindName
-		/LDAPBindPW		%LDAPBindPW
-		/LDAPTimeout	%LDAPTimeout
 	}
 	/ReInitTest {
 		/DLL {
@@ -104,11 +91,6 @@
 				}
 			}
 		}
-		/LDAPServer		%LDAPServer
-		/LDAPPort		%LDAPPort
-		/LDAPBindName	%LDAPBindName
-		/LDAPBindPW		%LDAPBindPW
-		/LDAPTimeout	%LDAPTimeout
 	}
 	/CallsInARow %ReInitTest
 }

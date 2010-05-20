@@ -13,7 +13,7 @@
 #if defined(WIN32)
 #ifdef _DLL
 #include <windows.h>
-#ifdef CACHE_IMPL
+#ifdef LDAPDAICACHE_IMPL
 #define EXPORTDECL_LDAPDAICACHE	__declspec(dllexport)
 #else
 #define EXPORTDECL_LDAPDAICACHE	__declspec(dllimport)

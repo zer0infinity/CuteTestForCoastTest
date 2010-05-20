@@ -13,8 +13,6 @@
 #include "config_ldapdaicache.h"
 #include "CacheHandler.h"
 
-class LDAPDAICacheGetter;
-
 //--- LDAPDAIDataAcccessLoader -----------------------------------------------
 class EXPORTDECL_LDAPDAICACHE LDAPDAIDataAcccessLoader : public CacheLoadPolicy
 {
@@ -70,9 +68,6 @@ private:
 //! Design by Contract: Every configured LDAPDataAccessImpl query must return data
 	bool CheckContractIsFulfilled(String &failedDataAccesseses, const ROAnything dataAccesses);
 	friend class LdapCacheLoaderTest;
-
-	// Instance variables
-	LDAPDAIDataAcccessLoader fLDAPDAIDataAcccessLoader;
 };
 
 //---- LDAPDAICacheGetter -----------------------------------------------------------
