@@ -487,7 +487,7 @@ void AnythingImportExportTest::AnyIncludeTest()
 		}
 		assertAnyEqual(anyRef, anyMain);
 	}
-	//FIXME: needs further analysis what to do when specifying a machine name
+	//!@FIXME needs further analysis what to do when specifying a machine name
 	// it seems that when a machine name other than localhost is used wh should use FTP to get the file
 	//	{
 	//		// Test an include in a named slot with a relativ uri with localhost

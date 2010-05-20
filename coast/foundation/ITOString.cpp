@@ -348,7 +348,7 @@ String &String::Append(istream &is, long length)
 String &String::Append(const String &s)
 {
 	if ( s.GetImpl() ) {
-		Set(Length(), s.GetContent(), s.Length());// FIXME provide special Set..
+		Set(Length(), s.GetContent(), s.Length());//!@FIXME provide special Set..
 	}
 	return *this;
 }

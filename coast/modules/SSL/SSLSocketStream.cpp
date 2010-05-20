@@ -125,7 +125,7 @@ long SSLSocketStreamBuf::DoRead(char *buf, long len) const
 
 void SSLSocketStreamBuf::SetStreamState(long bytesProcessed) const
 {
-	if (bytesProcessed < 1) { // FIXME refactor in a method
+	if (bytesProcessed < 1) { //!@FIXME refactor in a method
 		// tell the stream that something is really wrong.
 		iostream *Ios = fSocket->GetStream();
 		Ios->clear(ios::badbit);

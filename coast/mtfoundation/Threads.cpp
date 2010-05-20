@@ -111,7 +111,7 @@ public:
 
 static ThreadInitializer *psgThreadInitializer = new ThreadInitializer(15);
 
-#if defined(__APPLE__)	//FIXME: check if this is still needed with most current version of framework
+#if defined(__APPLE__)	//!@FIXME check if this is still needed with most current version of framework
 // notice: never delete this class or its internal structure!
 // check with the base class FinalCleaner for understanding the sequence of deletion
 // the CleanupInitializer instance will be deleted from within FinalCleaner::~FinalCleaner

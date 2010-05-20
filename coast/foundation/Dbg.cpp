@@ -180,7 +180,7 @@ bool Tracer::CheckWDDebug(const char *trigger, Allocator *pAlloc)
 	if ( fgTerminated ) {
 		return false;
 	}
-	static bool trying( false );	// FIXME: hack until recursive mutex are implemented
+	static bool trying( false );	//!@FIXME hack until recursive mutex are implemented
 
 	if (fgWDDebugContext.GetType() == AnyNullType) {
 		if ( trying ) {

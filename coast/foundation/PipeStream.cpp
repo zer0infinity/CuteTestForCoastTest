@@ -154,7 +154,7 @@ int PipeStreamBuf::sync()
 	}
 	if (pptr()) {
 		setp(startw(), endw());	// reinitialize put area
-// FIXME: PS this is not always OK for pipes, is it?
+//!@FIXME PS this is not always OK for pipes, is it?
 	}
 	return 0; // no error
 }

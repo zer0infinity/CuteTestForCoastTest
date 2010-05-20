@@ -68,7 +68,7 @@ void RequestProcessor::ProcessRequest(Context &ctx)
 			// process this arguments and
 			// write the output to the reply
 			DoProcessRequest(*Ios, ctx);
-			//FIXME: BufferReply mechanism possible
+			//!@FIXME BufferReply mechanism possible
 		}
 	} else {
 		String logMsg("No valid stream from socket");

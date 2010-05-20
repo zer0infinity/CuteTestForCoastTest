@@ -421,7 +421,7 @@ bool Compressor::Expand(Anything &result, const String &encodedText)
 		return false;
 	}
 	Compressor *compressor = Compressor::FindCompressor(compressorname);
-	// FIXME: inconsistency!
+	//!@FIXME inconsistency!
 	// no problem if we don't find the compressor but inconsistent!
 	return compressor && compressor->DoExpand(result, encodedText.SubString(delimiterposition + 1, encodedText.Length()));
 }

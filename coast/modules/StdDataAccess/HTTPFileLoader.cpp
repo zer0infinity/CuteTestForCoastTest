@@ -67,7 +67,7 @@ bool HTTPFileLoader::GenReplyHeader(Context &context, ParameterMapper *in, Resul
 	condSpec["ContextCondition"] = "Mapper.content-length";
 	condSpec["Defined"]   = contentLengthSpec;
 
-//FIXME: allow for content-compression...
+//!@FIXME allow for content-compression...
 
 	Anything headerSpec;
 	headerSpec[0L] = "Content-Type: ";

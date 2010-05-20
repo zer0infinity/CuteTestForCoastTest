@@ -76,7 +76,7 @@ void SocketStreamTest::simpleWrite()
 {
 	Socket *sock = fConnector->Use();
 	if (t_assert(sock != NULL)) {
-		//FIXME: is it really useful that Connector and Stream have the same timeout
+		//!@FIXME is it really useful that Connector and Stream have the same timeout
 		assertEqual(1000L, sock->GetTimeout());
 		sock->SetTimeout(15L * 1000L); // increase timeout for reading and writing on the stream
 		iostream *Ios = fConnector->GetStream();

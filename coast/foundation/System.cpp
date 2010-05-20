@@ -337,7 +337,7 @@ int System::Chmod(const char *filename, int pmode)
 
 struct tm *System::LocalTime( const time_t *timer, struct tm *res ) {
 #if defined(WIN32)
-	// FIXME not 100% thread safe, localtime uses a global variable to store its content
+	//!@FIXME not 100% thread safe, localtime uses a global variable to store its content
 	// subsequent calls will overwrite the value
 	(*res) = (*::localtime(timer));
 	return res;
@@ -348,7 +348,7 @@ struct tm *System::LocalTime( const time_t *timer, struct tm *res ) {
 
 struct tm *System::GmTime( const time_t *timer, struct tm *res ) {
 #if defined(WIN32)
-	// FIXME not 100% thread safe, localtime uses a global variable to store its content
+	//!@FIXME not 100% thread safe, localtime uses a global variable to store its content
 	// subsequent calls will overwrite the value
 	(*res) = (*::localtime(timer));
 	return res;

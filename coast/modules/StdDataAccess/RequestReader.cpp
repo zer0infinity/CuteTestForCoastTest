@@ -173,7 +173,7 @@ bool RequestReader::ParseRequest(iostream &Ios, String &line, const Anything &cl
 	if ( st.NextToken(tok) ) {
 		// request type
 		tok.ToUpper();
-		if ( tok == "GET" || tok == "POST" ) { // FIXME: allow more methods..., make it configurable?
+		if ( tok == "GET" || tok == "POST" ) { //!@FIXME allow more methods..., make it configurable?
 			fRequest["REQUEST_METHOD"] = tok;
 		} else {
 			return DoHandleError(Ios, 405, "Method Not Allowed", line, clientInfo);

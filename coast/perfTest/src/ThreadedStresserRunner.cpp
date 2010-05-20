@@ -33,7 +33,7 @@ ThreadedStresserRunner::~ThreadedStresserRunner()
 
 long ThreadedStresserRunner::ConfigStressers(long numOfStressers, long &sz, ROAnything &stresser)
 {
-	//FIXME: hack assume one sort of stressers if numOfStressers != 0
+	//!@FIXME hack assume one sort of stressers if numOfStressers != 0
 	// Create and Initialize the StresserThreads
 	StartTrace1(ThreadedStresserRunner.ConfigStressers, "NumOfStressers: " << numOfStressers);
 	long numStressers = numOfStressers;
@@ -53,8 +53,8 @@ long ThreadedStresserRunner::ConfigStressers(long numOfStressers, long &sz, ROAn
 
 Anything ThreadedStresserRunner::Run(long /* id */)
 {
-	//FIXME: this method is a bunch of crap and needs a major refactoring!!
-	//FIXME: for british people: this code is a major disaster
+	//!@FIXME this method is a bunch of crap and needs a major refactoring!!
+	//!@FIXME for british people: this code is a major disaster
 	StartTrace(ThreadedStresserRunner.Run);
 	String stresserName;
 	StresserThread *vastArrayOfStressers = 0;
@@ -65,8 +65,8 @@ Anything ThreadedStresserRunner::Run(long /* id */)
 	Mutex		stresserMutex(fName);
 	bool hasScriptConfig = false;
 
-	//FIXME: hack to configure number of threads on the fly from scripting arguments
-	//FIXME: this solution only supports one kind of stresser flow controllers
+	//!@FIXME hack to configure number of threads on the fly from scripting arguments
+	//!@FIXME this solution only supports one kind of stresser flow controllers
 	ROAnything stresser;
 
 	String appName;

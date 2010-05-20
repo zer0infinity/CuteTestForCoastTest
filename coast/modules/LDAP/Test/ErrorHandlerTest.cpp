@@ -75,9 +75,9 @@ void ErrorHandlerTest::HandleConnectionErrorTest()
 	if ( !error.IsNull() ) {
 		assertAnyEqual(error["LdapConnectionParams"], cp);
 #if defined(USE_OPENLDAP)
-		assertEqual(error["LdapCode"].AsLong(), -1L);	//FIXME: code on openldap
+		assertEqual(error["LdapCode"].AsLong(), -1L);	//!@FIXME code on openldap
 #else
-		assertEqual(error["LdapCode"].AsLong(), 91L);	//FIXME: code on iPlanet-LDAP
+		assertEqual(error["LdapCode"].AsLong(), 91L);	//!@FIXME code on iPlanet-LDAP
 #endif
 	}
 }

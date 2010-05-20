@@ -50,7 +50,7 @@ bool CgiParams::DoGetAny(const char *key, Anything &value, Context &ctx,  ROAnyt
 		Trace("key found");
 		SynthesizeMinimalCGIEnvironment(value, ctx);
 		AddToEnvironment(ctx, value, ctx.Lookup("cgienv"));
-		AddToEnvironment(ctx, value, Lookup("cgienv")); // fixme: double entry with next one?
+		AddToEnvironment(ctx, value, Lookup("cgienv")); //!@FIXME double entry with next one?
 		AddToEnvironment(ctx, value, config["cgienv"]); // already discriminated when scripted
 		return true;
 	}
@@ -64,7 +64,7 @@ bool CgiParams::DoGetStream(const char *key, ostream &os, Context &ctx,  ROAnyth
 	String k(key); // for easier comparison
 	if (k == "stdin") {
 		Trace("key found");
-		// FIXME: should use Get("WHOLE_REQUEST_BODY",body,ctx);
+		//!@FIXME should use Get("WHOLE_REQUEST_BODY",body,ctx);
 		String body = ctx.Lookup("WHOLE_REQUEST_BODY").AsString("");
 		if (body.Length() > 0) {
 			os << body;

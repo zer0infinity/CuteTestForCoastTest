@@ -556,7 +556,7 @@ void Session::SetupContext(Context &context, String &transition, String &pagenam
 	Anything query(context.GetQuery());		// get query
 
 	Normalize(query);	// remove "fld_" first implicit dependency to FieldRenderers
-	// FIXME: 	this dependency should be removed
+	//!@FIXME this dependency should be removed
 	//			the prefix mechanism should be standardized
 	//			with several types e.g. buttons
 
@@ -673,7 +673,7 @@ void Session::SaveToDelayed(Context &context, String &transition, String &pagena
 			}
 			delayed["delayedEnv"] = delayedEnv;
 		}
-		//FIXME allow only one delayed query, quick fix for no logon of frontdoor stresser
+		//!@FIXME allow only one delayed query, quick fix for no logon of frontdoor stresser
 		fStore["delayed"][0L] = delayed;
 		query["delayedIndex"] = 0L;
 		tmpStore["delayed"] = delayed; // to make it accessible by Lookups for delayed

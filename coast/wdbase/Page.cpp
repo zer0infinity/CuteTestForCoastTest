@@ -158,7 +158,7 @@ void Page::Render(ostream &reply, Context &c)
 	bool zip = false;
 	if (c.Lookup("ClientAcceptsGzipEnc").AsBool(false)) {
 		ROAnything contentEncoding = c.Lookup("ContentGzipEncoding");
-		// FIXME leu: sometimes we have "Content-type: text/html; someotherstuff"
+		//!@FIXME leu: sometimes we have "Content-type: text/html; someotherstuff"
 		String contentType = c.Lookup("content-type").AsString("text/html");
 		if (contentEncoding[contentType].AsBool(false)) {
 			zip = true;

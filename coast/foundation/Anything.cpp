@@ -1312,7 +1312,7 @@ protected:
 public:
 	XrefAnyPrinter(ostream &os, long level = 0): PrettyAnyPrinter(os, level) {
 	}
-	// FIXME: take mechanics from IntPrintOnWithRef to this class.
+	//!@FIXME take mechanics from IntPrintOnWithRef to this class.
 	virtual void	VisitCharPtr(const String &value, const AnyImpl *id, long lIdx, const char *slotname) {
 		if (!PrintAsXref(id)) {
 			PrettyAnyPrinter::VisitCharPtr(value, id, lIdx, slotname);

@@ -166,7 +166,7 @@ bool Test::assertEquals (double expected,
 }
 
 /* build a message about a failed equality check */
-// FIXME: make the message a parameter
+//!@FIXME make the message a parameter
 TString Test::notEqualsMessage (long expected, long actual)
 {
 	TString message("expected: ");

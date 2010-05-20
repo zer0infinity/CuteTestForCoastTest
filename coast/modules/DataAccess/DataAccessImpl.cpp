@@ -167,7 +167,7 @@ bool LoopBackDAImpl::Exec(Context &c, ParameterMapper *input, ResultMapper *outp
 				if (streaming == 1) {
 					StringStream Ios(inputStr);
 					bGetCode = input->DoGetStream(slotname, Ios, c, ROAnything());
-					//FIXME bGetCode = input->Get(slotname, Ios, c, ROAnything());
+					//!@FIXME bGetCode = input->Get(slotname, Ios, c, ROAnything());
 					Ios << flush;
 					if (bGetCode) {
 						bPutCode = output->Put(config[i].AsCharPtr(), inputStr, c);

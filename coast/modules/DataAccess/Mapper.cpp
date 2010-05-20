@@ -674,7 +674,7 @@ bool ResultMapper::DoFinalPutAny(const char *key, Anything value, Context &ctx)
 	}
 
 	// check if key is a path, if so, split it into prefix and key
-	//FIXME: should be extracted into function
+	//!@FIXME should be extracted into function
 	char cDelim = Lookup("Delim", ".")[0L];
 	long idx = kStr.StrRChr(cDelim);
 	String kPrefix, kKey(key);

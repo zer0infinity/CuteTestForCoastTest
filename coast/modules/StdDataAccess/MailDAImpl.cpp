@@ -341,7 +341,7 @@ bool MailSTARTState::ProduceMsg(Anything &context, ostream &os)
 {
 	os << "HELO ";
 	os << context["Helo"].AsCharPtr(DEF_UNKNOWN);
-	os << CRLF; // FIXME: should test whether this always works
+	os << CRLF; //!@FIXME should test whether this always works
 
 	StatTrace(MailDAImpl.ProduceMsg, "Produce MailSTARTState " << context["Helo"].AsCharPtr(DEF_UNKNOWN), Storage::Current());
 	return (os.good() != 0);
@@ -369,7 +369,7 @@ bool MailFROMState::ProduceMsg(Anything &context, ostream &os)
 		os << "Unknown";			// Should define better default sender
 	}
 
-	os << CRLF; // FIXME: should test whether this always works
+	os << CRLF; //!@FIXME should test whether this always works
 	StatTrace(MailDAImpl.ProduceMsg, "Produce MailFROMState " << context["From"].AsCharPtr("?"), Storage::Current());
 	return (os.good() != 0);
 }
@@ -417,7 +417,7 @@ bool MailRCPTState::ProduceMsg(Anything &context, ostream &os)
 		os << "Unknown";			// Should define better default sender
 	}
 
-	os << CRLF; // FIXME: check whether this work always
+	os << CRLF; //!@FIXME check whether this work always
 
 	StatTrace(MailDAImpl.ProduceMsg, "Produce MailRCPTState " << context["To"].AsCharPtr("?"), Storage::Current());
 	return (!!os);

@@ -64,7 +64,7 @@ bool RegisterableObject::ResetTerminate(const char *category, TerminationPolicy 
 	r = Registry::GetRegistry(category);
 	if ( r ) {
 		Trace("found registry, terminating it");
-		// FIXME: how to delete registered alias without
+		//!@FIXME how to delete registered alias without
 		// crashing the shutdown
 		r->Terminate(terminator);
 		return true;

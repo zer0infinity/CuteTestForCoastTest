@@ -65,7 +65,7 @@ private:
 	MD5Context &operator=(const MD5Context &);
 };
 
-// FIXME: there is no way to determine processor byte order
+//!@FIXME there is no way to determine processor byte order
 // by the preprocessor.
 #ifdef __sparc__
 #define HIGHFIRST

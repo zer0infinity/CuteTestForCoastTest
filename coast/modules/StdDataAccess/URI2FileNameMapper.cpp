@@ -123,7 +123,7 @@ bool URI2FileNameMapper::ResolveInvalidFile(String &path, String &uri, String &v
 	StartTrace(URI2FileNameMapper.ResolveInvalidFile);
 
 	Anything tmpStore(ctx.GetTmpStore());
-	// FIXME: might be more intelligent with resolving unknown files
+	//!@FIXME might be more intelligent with resolving unknown files
 
 	// no regular file and no directory set the error status
 	tmpStore["HTTPError"] = 404;

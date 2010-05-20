@@ -34,7 +34,7 @@ BasicRendererTest::~BasicRendererTest()
 void BasicRendererTest::setUp ()
 {
 	StartTrace(BasicRendererTest.setUp);
-	//FIXME: depends on AppBooterTest loading libTestLib.so
+	//!@FIXME depends on AppBooterTest loading libTestLib.so
 	// should init renderer module and dll loading itself.
 }
 
