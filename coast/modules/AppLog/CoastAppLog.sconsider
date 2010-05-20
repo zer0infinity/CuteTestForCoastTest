@@ -9,7 +9,7 @@ buildSettings = {
                      'linkDependencies'       : ['CoastDataAccess'],
                      'sourceFiles'      : SConsider.listFiles(['*.cpp']),
                      'targetType'       : 'LibraryShared',
-                     'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL', 'APPLOG_IMPL'] },
+                     'appendUnique'     : { 'CPPDEFINES' : [ 'APPLOG_IMPL'] },
                      'public' : {
                                  'includes'     : SConsider.listFiles(['*.h']),
 #                                'appendUnique' : { 'CPPDEFINES' : 'fooX' },

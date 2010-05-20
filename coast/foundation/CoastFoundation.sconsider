@@ -1,4 +1,3 @@
-import os, pdb
 import SConsider
 
 Import('*')
@@ -8,7 +7,7 @@ buildSettings = {
         'linkDependencies' : ['loki', 'boost'],
         'sourceFiles'      : SConsider.listFiles(['*.cpp']),
         'targetType'       : 'LibraryShared',
-        'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL','FOUNDATION_IMPL'] },
+        'appendUnique'     : { 'CPPDEFINES' : ['FOUNDATION_IMPL'] },
         'public' : {
             'includes'     : SConsider.listFiles(['*.h','*.hpp']),
        }

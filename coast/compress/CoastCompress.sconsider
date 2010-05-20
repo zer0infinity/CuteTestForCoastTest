@@ -1,20 +1,18 @@
-import os, pdb
 import SConsider
 
 Import('*')
 
 buildSettings = {
-     packagename : {
-                     'includeSubdir'    : '',
-                     'linkDependencies'       : ['CoastFoundation', 'zlib'],
-                     'sourceFiles'      : SConsider.listFiles(['*.cpp']),
-                     'targetType'       : 'LibraryShared',
-                     'appendUnique'     : { 'CPPDEFINES' : [packagename.upper() + '_IMPL','COMPRESS_IMPL'] },
-                     'public' : {
-                                 'includes'     : SConsider.listFiles(['*.h']),
-#                                 'appendUnique' : { 'CPPDEFINES' : [], 'LIBS' : [] },
-                    }
-                 }
-                }
+    packagename : {
+        'includeSubdir'    : '',
+        'linkDependencies' : ['CoastFoundation', 'zlib'],
+        'sourceFiles'      : SConsider.listFiles(['*.cpp']),
+        'targetType'       : 'LibraryShared',
+        'appendUnique'     : { 'CPPDEFINES' : ['COMPRESS_IMPL'] },
+        'public' : {
+            'includes'     : SConsider.listFiles(['*.h']),
+        }
+    }
+}
 
 SConsider.createTargets(packagename, buildSettings)
