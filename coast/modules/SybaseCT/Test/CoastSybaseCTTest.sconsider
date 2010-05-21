@@ -64,10 +64,10 @@ buildSettings = {
         'requires'         : ['CoastActions'],
         'sourceFiles'      : SConsider.listFiles(['*.cpp']),
         'copyFiles'        : [(SConsider.listFiles(['config/*.any', 'config/*.sql', 'config/interfaces']), S_IRUSR|S_IRGRP|S_IROTH)],
-        'runConfig'        : {
-                              'setUp': setUp,
-                              'tearDown': tearDown,
-                             },
+        'runConfig' : {
+            'setUp'        : setUp,
+            'tearDown'     : tearDown,
+        },
     },
 }
 
