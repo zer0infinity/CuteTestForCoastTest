@@ -31,3 +31,6 @@
 [submodule "scripts"]
     path = scripts
     url = ssh://sifs-coast1.hsr.ch/var/repositories/git/wdscripts.git
+[submodule "helloworld"]
+	path = helloworld
+	url = ssh://sifs-coast1.hsr.ch/var/repositories/git/helloworld.git
