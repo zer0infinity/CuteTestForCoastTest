@@ -103,7 +103,7 @@ buildSettings = {
         ],
     },
     'Runner' : {
-        'targetType'       : 'AppTest',
+        'targetType'       : 'ProgramTest',
         'requires' : [
             packagename + '.' + packagename,
             'CoastStdDataAccess',
