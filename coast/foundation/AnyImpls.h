@@ -56,7 +56,7 @@ public:
 
 	virtual String AsString(const char *dflt) const = 0;
 
-	virtual bool IsEqual(AnyImpl *) const = 0;
+	virtual bool IsEqual(AnyImpl /*const*/ *) const = 0;
 
 	AnyImpl *DeepClone(Allocator *a, Anything &xreftable);
 
@@ -77,7 +77,7 @@ public:
 
 	String ThisToHex(Allocator *a = Storage::Current()) const {
 		String hexStr(a);
-		return hexStr.Append((long)this);
+		return hexStr.Append(reinterpret_cast<unsigned long>(this));
 	}
 
 	static void *operator new(size_t size, Allocator *a);
@@ -95,8 +95,8 @@ protected:
 
 private:
 	virtual AnyImpl *DoDeepClone(Allocator *a, Anything &xreftable) = 0;
-
-	AnyImpl(const AnyImpl &);
+	AnyImpl(AnyImpl const &);
+	AnyImpl& operator=(AnyImpl const &);
 	long		fRefCount;
 	Allocator	*fAllocator;
 };
@@ -126,14 +126,14 @@ public:
 	}
 
 	double AsDouble(double) 					{
-		return (double) fLong;
+		return static_cast<double>(fLong);
 	}
 
 	const char *AsCharPtr(const char *) const;
 
 	const char *AsCharPtr(const char *, long &buflen) const;
 
-	bool IsEqual(AnyImpl *fAnyImp) const		{
+	bool IsEqual(AnyImpl /*const*/ *fAnyImp) const		{
 		return fLong == fAnyImp->AsLong(-1);
 	}
 
@@ -149,7 +149,8 @@ private:
 class EXPORTDECL_FOUNDATION AnyObjectImpl : public AnyImpl
 {
 	IFAObject *fObject;
-
+	AnyObjectImpl(AnyObjectImpl const &);
+	AnyObjectImpl& operator=(AnyObjectImpl const&);
 public:
 	AnyObjectImpl(IFAObject *o, Allocator *a) : AnyImpl(a), fObject(o) { }
 
@@ -158,7 +159,7 @@ public:
 	}
 
 	long AsLong(long) 							{
-		return (long) fObject;
+		return reinterpret_cast<long> (fObject);
 	}
 
 	IFAObject *AsIFAObject(IFAObject *) const	{
@@ -171,7 +172,7 @@ public:
 
 	String AsString(const char *) const;
 
-	bool IsEqual(AnyImpl *) const				{
+	bool IsEqual(AnyImpl /*const*/ *) const				{
 		return false;
 	}
 
@@ -208,14 +209,14 @@ public:
 	}
 
 	long AsLong(long) 							{
-		return (long) fDouble;
+		return static_cast<long>(fDouble);
 	}
 
 	double AsDouble(double) 					{
 		return fDouble;
 	}
 
-	bool IsEqual(AnyImpl *fAnyImp) const		{
+	bool IsEqual(AnyImpl /*const*/ *fAnyImp) const		{
 		return fDouble == fAnyImp->AsDouble(-1);
 	}
 
@@ -237,7 +238,7 @@ class EXPORTDECL_FOUNDATION AnyBinaryBufImpl : public AnyImpl
 	String fBuf;
 
 public:
-	AnyBinaryBufImpl(void *buf, long len, Allocator *a)
+	AnyBinaryBufImpl(void const *buf, long len, Allocator *a)
 		: AnyImpl(a)
 		, fBuf(buf, len, a)
 	{ }
@@ -249,13 +250,13 @@ public:
 	}
 
 	const char *AsCharPtr(const char *dflt) const		{
-		return fBuf.Capacity() > 0 ? (const char *)fBuf : dflt;
+		return fBuf.Capacity() > 0 ? static_cast<const char *>(fBuf) : dflt;
 	}
 
 	const char *AsCharPtr(const char *, long &buflen) const;
 
 	long AsLong(long) 								{
-		return (long)(const char *)fBuf;
+		return reinterpret_cast<long>(static_cast<const char *>(fBuf));
 	}
 
 	double AsDouble(double dft) 					{
@@ -266,8 +267,8 @@ public:
 		return fBuf;
 	}
 
-	bool IsEqual(AnyImpl *impl) const				{
-		return ((AnyImpl *)this == impl);
+	bool IsEqual(AnyImpl /*const*/ *impl) const				{
+		return (dynamic_cast<AnyImpl const *>(this) == impl);
 	}
 
 	virtual void Accept(AnyVisitor &v, long lIdx, const char *slotname) const;
@@ -301,7 +302,7 @@ public:
 
 	double AsDouble(double dflt);
 
-	bool IsEqual(AnyImpl *anyImpl) const			{
+	bool IsEqual(AnyImpl /*const*/ *anyImpl) const			{
 		return fString.IsEqual(anyImpl->AsCharPtr(0)) ;
 	}
 
@@ -356,6 +357,8 @@ private:
 	long *fHashTable;
 	long fThreshold, fCapacity;
 	Allocator *fAllocator;
+	AnyKeyTable(AnyKeyTable const &);
+	AnyKeyTable& operator=(AnyKeyTable const &);
 };
 
 //---- AnyIndTable --------------------------------------------------
@@ -393,6 +396,8 @@ private:
 	long fCapacity;
 	long fSize;
 	Allocator *fAllocator;
+	AnyIndTable(AnyIndTable const &);
+	AnyIndTable & operator=(AnyIndTable const &);
 };
 
 class EXPORTDECL_FOUNDATION AnyKeyAssoc;
@@ -463,7 +468,7 @@ public:
 
 	const String &VisitSlotName(long slot);
 
-	virtual bool IsEqual(AnyImpl *) const				{
+	virtual bool IsEqual(AnyImpl /*const*/ *) const				{
 		return false;
 	}
 
@@ -566,6 +571,8 @@ public:
 
 private:
 	AnyImpl *DoDeepClone(Allocator *a, Anything &xreftable);
+	AnyArrayImpl(AnyArrayImpl const &);
+	AnyArrayImpl& operator=(AnyArrayImpl const &);
 };
 
 // convenience macros for AnyImpl simplification

@@ -131,23 +131,23 @@ private:
 
 #define	SYSDEBUG(msg) \
 	{ String strFileLineMsg(Storage::Current());\
-	strFileLineMsg << "( " << __FILE__ << ":" << (long)__LINE__ << " ) " << msg;\
+	strFileLineMsg << "( " << __FILE__ << ":" << static_cast<long>(__LINE__) << " ) " << msg;\
 	SystemLog::Debug(strFileLineMsg); }
 #define	SYSINFO(msg) \
 	{ String strFileLineMsg(Storage::Current());\
-	strFileLineMsg << "( " << __FILE__ << ":" << (long)__LINE__ << " ) " << msg;\
+	strFileLineMsg << "( " << __FILE__ << ":" << static_cast<long>(__LINE__) << " ) " << msg;\
 	SystemLog::Info(strFileLineMsg); }
 #define	SYSWARNING(msg) \
 	{ String strFileLineMsg(Storage::Current());\
-	strFileLineMsg << "( " << __FILE__ << ":" << (long)__LINE__ << " ) " << msg;\
+	strFileLineMsg << "( " << __FILE__ << ":" << static_cast<long>(__LINE__) << " ) " << msg;\
 	SystemLog::Warning(strFileLineMsg); }
 #define	SYSERROR(msg) \
 	{ String strFileLineMsg(Storage::Current());\
-	strFileLineMsg << "( " << __FILE__ << ":" << (long)__LINE__ << " ) " << msg;\
+	strFileLineMsg << "( " << __FILE__ << ":" << static_cast<long>(__LINE__) << " ) " << msg;\
 	SystemLog::Error(strFileLineMsg); }
 #define	SYSALERT(msg) \
 	{ String strFileLineMsg(Storage::Current());\
-	strFileLineMsg << "( " << __FILE__ << ":" << (long)__LINE__ << " ) " << msg;\
+	strFileLineMsg << "( " << __FILE__ << ":" << static_cast<long>(__LINE__) << " ) " << msg;\
 	SystemLog::Alert(strFileLineMsg); }
 
 #if defined(WIN32)

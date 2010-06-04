@@ -52,7 +52,7 @@ void AnyImpl::operator delete(void *d, Allocator *a)
 void AnyImpl::operator delete(void *d)
 {
 	if (d) {
-		Allocator *a = ((AnyImpl *)d)->fAllocator;
+		Allocator *a = static_cast<AnyImpl *>(d)->fAllocator;
 #if defined(WIN32) && (_MSC_VER >= 1200) // VC6 or greater
 		AnyImpl::operator delete(d, a);
 #else
@@ -86,13 +86,13 @@ String AnyLongImpl::AsString(const char *) const
 
 const char *AnyLongImpl::AsCharPtr(const char *) const
 {
-	return (const char *)fBuf;
+	return static_cast<const char *>(fBuf);
 }
 
 const char *AnyLongImpl::AsCharPtr(const char *, long &buflen) const
 {
 	buflen = fBuf.Length();
-	return (const char *)fBuf;
+	return static_cast<const char *>(fBuf);
 }
 
 void AnyLongImpl::Accept(AnyVisitor &v, long lIdx, const char *slotname) const
@@ -152,13 +152,13 @@ String AnyDoubleImpl::AsString(const char *) const
 
 const char *AnyDoubleImpl::AsCharPtr(const char *dflt) const
 {
-	return (const char *)fBuf;
+	return static_cast<const char *>(fBuf);
 }
 
 const char *AnyDoubleImpl::AsCharPtr(const char *dflt, long &buflen) const
 {
 	buflen = fBuf.Length();
-	return (const char *)fBuf;
+	return static_cast<const char *>(fBuf);
 }
 
 AnyImpl *AnyDoubleImpl::DoDeepClone(Allocator *a, Anything &xreftable)
@@ -177,7 +177,7 @@ const char *AnyBinaryBufImpl::AsCharPtr(const char *dflt, long &buflen) const
 {
 	if (fBuf.Capacity() > 0) {
 		buflen = fBuf.Length();
-		return (const char *)fBuf;
+		return static_cast<const char *>(fBuf);
 	} else {
 		buflen = 0;
 		return dflt;
@@ -191,7 +191,7 @@ void AnyBinaryBufImpl::Accept(AnyVisitor &v, long lIdx, const char *slotname) co
 
 AnyImpl *AnyBinaryBufImpl::DoDeepClone(Allocator *a, Anything &xreftable)
 {
-	AnyImpl *ret = new ((a) ? a : Storage::Current()) AnyBinaryBufImpl((void *)(const char *)this->fBuf, this->fBuf.Length(), a);
+	AnyImpl *ret = new ((a) ? a : Storage::Current()) AnyBinaryBufImpl((static_cast<const char *>(this->fBuf)), this->fBuf.Length(), a);
 	return ret;
 }
 
@@ -221,13 +221,13 @@ String AnyStringImpl::AsString(const char *) const
 
 const char *AnyStringImpl::AsCharPtr(const char *) const
 {
-	return (const char *)fString; // PS: fString.AsCharPtr(dft); use operator const char * instead
+	return static_cast<const char *>(fString); // PS: fString.AsCharPtr(dft); use operator const char * instead
 }
 
 const char *AnyStringImpl::AsCharPtr(const char *, long &buflen) const
 {
 	buflen = fString.Length();
-	return (const char *)fString;
+	return static_cast<const char *>(fString);
 }
 
 void AnyStringImpl::Accept(AnyVisitor &v, long lIdx, const char *slotname) const
@@ -290,7 +290,7 @@ void AnyKeyTable::InitTable(long cap)
 		cap = cInitCapacity;
 	}
 	fCapacity = IFANextPrime(cap);
-	fHashTable = (long *)fAllocator->Malloc(fCapacity * sizeof(long));
+	fHashTable = static_cast<long *>(fAllocator->Malloc(fCapacity * sizeof(long)));
 	fThreshold = (3 * fCapacity) / 4;
 	Clear();
 }
@@ -465,7 +465,7 @@ void AnyKeyTable::operator delete(void *d, Allocator *a)
 void AnyKeyTable::operator delete(void *d)
 {
 	if (d) {
-		Allocator *a = ((AnyKeyTable *)d)->fAllocator;
+		Allocator *a = reinterpret_cast<AnyKeyTable *>(d)->fAllocator;
 #if defined(WIN32) && (_MSC_VER >= 1200) // VC6 or greater
 		AnyKeyTable::operator delete(d, a);
 #else
@@ -505,7 +505,7 @@ AnyIndTable::~AnyIndTable()
 void AnyIndTable::InitTable(long cap)
 {
 	fCapacity = cap;
-	fIndexTable = (long *)fAllocator->Malloc(fCapacity * sizeof(long));
+	fIndexTable = static_cast<long *>(fAllocator->Malloc(fCapacity * sizeof(long)));
 	Clear();
 }
 
@@ -554,7 +554,7 @@ void AnyIndTable::InitEmpty(long oldCap, long newCap)
 	long i = 0;
 
 	// allocate the new size of the empty table
-	fEmptyTable = (long *)fAllocator->Malloc(newCap * sizeof(long));
+	fEmptyTable = static_cast<long *>(fAllocator->Malloc(newCap * sizeof(long)));
 
 	// calculate the size to be copied
 	if ( oldCap < newCap )	{
@@ -928,7 +928,7 @@ const char *AnyArrayImpl::SlotName(long slot)
 	// calculate the slot name given an
 	// index
 	const String &k = Key(slot);
-	return (k.Length() > 0) ? (const char *)k : (const char *)0;
+	return (k.Length() > 0) ? static_cast<const char *>(k) : reinterpret_cast<const char *>(0);
 }
 const String &AnyArrayImpl::VisitSlotName(long slot)
 {
@@ -971,7 +971,7 @@ void AnyArrayImpl::Expand(long newsize)
 
 		// allocate the new size
 		AnyKeyAssoc **old = fContents;
-		fContents = (AnyKeyAssoc **)MyAllocator()->Calloc(fNumOfBufs, sizeof(AnyKeyAssoc *));
+		fContents = reinterpret_cast<AnyKeyAssoc **>(MyAllocator()->Calloc(fNumOfBufs, sizeof(AnyKeyAssoc *)));
 		if (fContents) {
 			for (long bufs = 0; bufs < numOfExistingBufs; ++bufs) {
 				fContents[bufs] = old[bufs];

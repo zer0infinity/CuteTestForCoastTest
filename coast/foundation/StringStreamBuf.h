@@ -52,7 +52,7 @@ public:
 		: fStore(0)
 		, fDeleteStore(false)
 		, fOpenMode(mode) {
-		xinit((ConstPlainTypePtr)&s);
+		xinit(static_cast<ConstPlainTypePtr>(&s));
 		setbufpointers(0, 0);
 	}
 
@@ -119,12 +119,12 @@ protected: // seekxxx are protected in the std..
 #endif
 
 	/*! standard iostream behavior, adjust put or get position absolutely */
-	virtual pos_type seekpos(pos_type p, openmode mode = (openmode)(ios::in | ios::out) ) {
+	virtual pos_type seekpos(pos_type p, openmode mode = static_cast<openmode>(ios::in | ios::out) ) {
 		AdjustStringLength(IoDirType());
 		if (long(p) >= long(fStore->Capacity())) {
 			// we need to enlarge the string
 			// we can only if we write
-			if (! (mode & ios::out) || !reserve((long)p)) {
+			if (! (mode & ios::out) || !reserve(p)) {
 				// OOPS we got a problem
 				return pos_type(EOF);
 			}
@@ -148,7 +148,7 @@ protected: // seekxxx are protected in the std..
 	}
 
 	/*! standard iostream behavior, adjust put or get position relatively */
-	virtual pos_type seekoff(off_type of, seekdir dir, openmode mode = (openmode)(ios::in | ios::out) ) {
+	virtual pos_type seekoff(off_type of, seekdir dir, openmode mode = static_cast<openmode>(ios::in | ios::out) ) {
 		//sync(); // will adjust fFileLength if needed
 		AdjustStringLength(IoDirType()); // recognize where we have been with putting
 		long pos = long(of);
@@ -317,7 +317,7 @@ private:
 	}
 
 	/*! enlarge the underlying String, adjust buffer pointers if needed (expand file size and mapped region) */
-	bool reserve ( long newlength ) {
+	bool reserve ( pos_type newlength ) {
 		// we might check if newlength is really bigger than fLength
 		// second, only if fProtection includes eWrite it is possible to enlarge the file
 		if (newlength >= fStore->Capacity()) {

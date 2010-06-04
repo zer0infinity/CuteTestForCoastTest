@@ -27,43 +27,56 @@ using std::ios;
 #endif
 
 //---- String --------------------------------------------------------------
-//!simple mt-safe string handling class
-//!mt-safe string handling class that eases use of strings and its memory management, a notorious source of errors in c and c++
+//! simple mt-safe string handling class
+/*! class that eases use of strings and its memory management, a notorious source of errors in c and c++ */
 class EXPORTDECL_FOUNDATION String
 {
-	// factor out mem alloc for ctors and Set()
-	//!allocation bottleneck, writes Syslog if memory exhausted
+	//! factor out mem alloc for ctors and Set()
+	//! allocation bottleneck, writes to Syslog if memory exhausted
 	void alloc(long capacity);
-	//!calculate the real capacity to ask for, optimization for
-	//!saving calls to alloc on expanding the string
-	//!strategy is: start with a minimum size, double in the middle
-	//!and  round to the next 1k for large strings (> 4k)
-	//!new allocators provide additional support exploited by alloc to
-	//!find an optimal size for allocation
+
+	//! calculate the real capacity to ask for, optimized to save calls to alloc on expanding the string
+	/*! strategy is: start with a minimum size, double in the middle
+		and  round to the next 1k for large strings (\> 4k)
+		new allocators provide additional support exploited by alloc to
+		find an optimal size for allocation */
 	long allocCapacity(long newLength);
 
 public:
 	//! default ctor, makes an empty string
+	/*! \param a Allocator to allocate memory from */
 	String( Allocator *a = Storage::Current());
+
 	//! ctor, reserves buffer spaces with capacity bytes
-	//! \param capacity number of bytes reserved
+	/*! \param capacity number of bytes reserved
+		\param a Allocator to allocate memory from */
 	String(long capacity, Allocator *a = Storage::Current());
+
 	//! ctor, creates string with a copy of s
-	//! \param s initial value of String object, may be 0
-	//! \param length take at most length characters from s, if negative use strlen(s)
+	/*! \param s initial value of String object, may be 0
+		\param length take at most length characters from s, if negative use strlen(s)
+		\param a Allocator to allocate memory from */
 	String(const char *s, long length = -1,  Allocator *a = Storage::Current());
+
 	//! ctor, creates string with a copy of binary buffer s
-	//! \param s initial value of String object
-	//! \param length take exactly length bytes from s
-	//! \pre length >= 0 AND s != 0, false implies empty string
-	String(void *s, long length,  Allocator *a = Storage::Current());
+	/*! \param s initial value of String object
+		\param length take exactly length bytes from s
+		\param a Allocator to allocate memory from
+		\pre length >= 0 AND s != 0, false implies empty string */
+	String(void const *s, long length,  Allocator *a = Storage::Current());
+
 	//! copy ctor
+	/*! \param s initial value of String object
+		\param a Allocator to allocate memory from */
 	String(const String &s, Allocator *a = Storage::Current());
+
 	//! dtor, deallocates memory used by string content
 	~String();
+
 	//! assignment with character pointers, uses strlen(s)
 	//! \param s new value of string, if 0 makes this empty
 	String &operator= (const char *s);
+
 	//! assignment with new String value
 	//! \param s new value of this, no buffer sharing
 	String &operator= (const String &s);
@@ -114,9 +127,9 @@ public:
 	String &AppendAsHex(unsigned char cc);
 
 	//! append len single bytes in hexadecimal encoding, results in two characters added
-	//! \param cc  - points a string of bytes
-	//! \param len count of bytes to be hex encoded
-	//! \param delimiter delimiter used between two encoded byes (default ('\0') -> no delimiter)
+	/*! \param cc  - points a string of bytes
+		\param len count of bytes to be hex encoded
+		\param delimiter delimiter used between two encoded byes (default ('\\0') -> no delimiter) */
 	String &AppendAsHex(const unsigned char *cc, long len, char delimiter = '\0');
 
 	//! decode a hexadecimal number with two digits pointed to by cc, append the resulting byte
@@ -146,13 +159,13 @@ public:
 		return Append(c);
 	}
 	String &operator << (int i)					{
-		return Append((long)i);
+		return Append(static_cast<long>(i));
 	}
 	String &operator << (long l)				{
 		return Append(l);
 	}
 	String &operator << (bool b)				{
-		return Append((long)b);
+		return Append(static_cast<long>(b));
 	}
 	String &operator << (double d)				{
 		return Append(d);
@@ -238,7 +251,7 @@ public:
 	long FirstCharOf(const String &charSet) const;
 	//! Return position of first char in string beeing > highMark or -1 if no char matching to criterion found.
 	//! Chars contained in the exclusion set are excluded from the check.
-	long ContainsCharAbove(unsigned highMark = (unsigned) 127, const String excludeSet = "") const;
+	long ContainsCharAbove(unsigned highMark = 127u, const String excludeSet = "") const;
 	//! computes the length of the maximum initial segment of the string that consists entirely
 	//! of characters from the string pointed to by charSet
 	//! -1 indicates the string contains no chars from charSet
@@ -302,12 +315,16 @@ public:
 	static long CaselessCompare(const char *s1, const char *s2);
 
 	//! internal output routine with masking and embedding in quote characters
-	//! to be used by AnyStringImpl
-	//! example:
-	//! String("Hello World\n").IntPrintOn(cerr)
-	//! delivers
-	//! "Hello World\x0A"
-	//! on stdout
+	/*! to be used by AnyStringImpl
+		example:
+		\code
+		String("Hello World\n").IntPrintOn(cerr)
+		\endcode
+		delivers
+		\code
+		"Hello World\x0A"
+		\endcode
+		on stdout */
 	ostream &IntPrintOn(ostream &os, const char quote = '\"') const;
 
 	/*! output routine to dump the string content as hexadecimal numbers in the form: 30 31 32 33  0123
@@ -323,16 +340,17 @@ public:
 	ostream &DumpAsHex(ostream &os, long dumpwidth = 16L) const;
 
 	//! internal input routine with masking and embedding in quote characters
-	//! symmetric function to IntPrintOn
-	//! if quote is '\0' reads up to the next white space character
-	//! otherwise it assumes that quote is the first char on
-	//! the stream. The previous content of the string object is deleted
-	//! in any case
-	//! \return the number of newline characters read for adjusting line count in parsing
+	/*! symmetric function to IntPrintOn
+		if quote is '\\0' reads up to the next white space character
+		otherwise it assumes that quote is the first char on
+		the stream. The previous content of the string object is deleted
+		in any case
+		\return the number of newline characters read for adjusting line count in parsing */
 	long IntReadFrom(istream &os, const char quote = '\"');
+
 	//! canonical input operator for strings
-	//! reads up to the next whitespace character
-	//! use getline() function for reading lines
+	/*! reads up to the next whitespace character
+		use getline() function for reading lines */
 	friend EXPORTDECL_FOUNDATION istream &operator>>(istream &is, String &s);
 
 // We don't use ostream directly because of the locking overhead. Because of
@@ -352,9 +370,9 @@ public:
 #endif
 
 	//! function for reading strings from a stream up to a delimiter
-	//! \param is istream read from
-	//! \param s result of input is stored here
-	//! \param c delimiting character, usually newline
+	/*! \param is istream read from
+		\param s result of input is stored here
+		\param c delimiting character, usually newline */
 	friend EXPORTDECL_FOUNDATION istream  &getline(istream &is, String &s, char c);
 
 	//! manually set the allocator (should not usually be used...)
@@ -385,11 +403,11 @@ protected:
 		long fLength;
 		//! the allocated characters follow just after this so the start of the characters is (char *)(fStringImpl+1);
 		char *Content() {
-			return (char *)(this + 1);
+			return reinterpret_cast<char *>(this + 1);
 		}
 		//! the allocated characters follow just after this so the start of the characters is (char *)(fStringImpl+1);
 		const char *Content() const {
-			return (char *)(this + 1);
+			return reinterpret_cast<char const *>(this + 1);
 		}
 	} *fStringImpl;
 

@@ -16,29 +16,32 @@ namespace Coast
 	{
 		if (a) {
 			void *mem = a->Calloc(1, sz + Memory::AlignedSize<Allocator *>());
-			((Allocator **) mem)[0L] = a; // remember address of responsible Allocator
-			char *ptr = (char *)mem + Memory::AlignedSize<Allocator *>(); // needs cast because of pointer arithmetic
-			StatTrace(AllocatorNewDelete.new, " a:" << (long)a << " ptr:" << (long)ptr << " sz:" << (long)sz  << " alignedAllocSize:" << (long)Memory::AlignedSize<Allocator *>(), Storage::Current());
+			(reinterpret_cast<Allocator **>( mem))[0L] = a; // remember address of responsible Allocator
+			char *ptr = reinterpret_cast<char *>(mem) + Memory::AlignedSize<Allocator *>(); // needs cast because of pointer arithmetic
+			StatTrace(AllocatorNewDelete.new, " a:" << reinterpret_cast<long>(a) << " ptr:" <<reinterpret_cast<long>(ptr) << " sz:" << static_cast<long>(sz)  << " alignedAllocSize:" << static_cast<long>(Memory::AlignedSize<Allocator *>()), Storage::Current());
 			return ptr;
 		}
 		return a;
 	}
+	//TODO: refactor to DRY, check if alignedSize is an issue with pointers (might be with 32bit pointers)
 	static void AllocatorNewDelete::operator delete(void *ptr) throw()
 	{
 		if (ptr) {
-			void *realPtr = (char *) ptr - Memory::AlignedSize<Allocator *>();
-			Allocator *a = ((Allocator **) realPtr)[0L]; // retrieve Allocator
-			size_t sz(a->Free(realPtr));
+			void *realPtr = reinterpret_cast<char *>( ptr) - Memory::AlignedSize<Allocator *>();
+			Allocator *a = (reinterpret_cast<Allocator **>(realPtr))[0L]; // retrieve Allocator
+			size_t sz; // separate assignment to avoid compiler warning of unused variable
+			sz=(a->Free(realPtr));
 			StatTrace(AllocatorNewDelete.delete, " a:" << (long)a << " ptr:" << (long)ptr << " sz:" << (long)sz, Storage::Current());
 		}
 	}
 	static void AllocatorNewDelete::operator delete(void *ptr, Allocator *a) throw()
 	{
 		if (ptr && a) {
-			void *realPtr = (char *) ptr - Memory::AlignedSize<Allocator *>();
-			Allocator *aStored = ((Allocator **) realPtr)[0L]; // retrieve Allocator
+			void *realPtr = reinterpret_cast<char *>( ptr) - Memory::AlignedSize<Allocator *>();
+			Allocator *aStored = (reinterpret_cast<Allocator **>( realPtr))[0L]; // retrieve Allocator
 			assert(aStored == a);
-			size_t sz(aStored->Free(realPtr));
+			size_t sz;// separate assignment to avoid compiler warning of unused variable
+			sz=(aStored->Free(realPtr));
 			StatTrace(AllocatorNewDelete.delete, " a:" << (long)a << " ptr:" << (long)ptr << " sz:" << (long)sz, Storage::Current());
 		}
 	}

@@ -153,7 +153,7 @@ String::String(const char *s, long l, Allocator *a)
 	}
 }
 
-String::String(void *s, long l, Allocator *a)
+String::String(void const *s, long l, Allocator *a)
 	: fStringImpl(0)
 	, fAllocator((a) ? a : Storage::Current())
 {
