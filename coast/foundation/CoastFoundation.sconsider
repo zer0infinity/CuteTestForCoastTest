@@ -4,7 +4,7 @@ Import('*')
 
 buildSettings = {
     packagename : {
-        'linkDependencies' : ['loki', 'boost'],
+        'linkDependencies' : ['loki.include', 'boost.include'],
         'sourceFiles'      : SConsider.listFiles(['*.cpp']),
         'targetType'       : 'LibraryShared',
         'appendUnique'     : { 'CPPDEFINES' : ['FOUNDATION_IMPL'] },
