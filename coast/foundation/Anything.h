@@ -94,7 +94,7 @@ public:
 	Anything(const Anything &any, Allocator *a = Storage::Current());
 
 	//! destructor
-	virtual ~Anything();
+	~Anything();
 
 	/*! Clones this Anything and all its content recursively.
 		\param a allocator to use for the Anything and copied Impls
@@ -833,31 +833,9 @@ class EXPORTDECL_FOUNDATION ROAnything
 {
 public:
 	ROAnything();
-
-private:
-	// CR #23
-	// make this operators private to prevent
-	// the compiler from applying conversion
-	// operators with temporary anythings
-	ROAnything(int);
-#if !defined(BOOL_NOT_SUPPORTED)
-	ROAnything(bool);
-#endif
-	ROAnything(long);
-	ROAnything(float);
-	ROAnything(double);
-	ROAnything(const char *);
-	ROAnything(const char *, long len);
-	ROAnything(const String &);
-	ROAnything(void *buf, long len);
-	ROAnything(IFAObject *);
-
-public:
 	ROAnything(const Anything &a);
 	//! Copy constructor
 	ROAnything(const ROAnything &a);
-	//! Destructor
-	~ROAnything();
 
 	/*! Clones this Anything and recursivley all its content.
 		\return the copy of this Anything */
@@ -875,20 +853,6 @@ public:
 
 	ROAnything &operator= (const ROAnything &a);
 	ROAnything &operator= (const Anything &a);
-
-private:
-	// make this operators private to prevent
-	// the compiler from applying conversion
-	// operators with temporary anythings
-	ROAnything &operator= (int);
-#if !defined(BOOL_NOT_SUPPORTED)
-	ROAnything &operator= (bool);
-#endif
-	ROAnything &operator= (long);
-	ROAnything &operator= (float);
-	ROAnything &operator= (double);
-	ROAnything &operator= (const char *);
-	ROAnything &operator= (const String &);
 
 public:
 	// comparison

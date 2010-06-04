@@ -1653,13 +1653,6 @@ ROAnything::ROAnything(const ROAnything &a)
 	// ref counting
 }
 
-ROAnything::~ROAnything()
-{
-	// no unref necessary
-	// ROAnything don't do any
-	// ref counting
-}
-
 Anything ROAnything::DeepClone(Allocator *a) const
 {
 	Anything xref(a);
