@@ -32,16 +32,16 @@ static const char *Monthes[] = { "---", "Jan", "Feb", "Mar", "Apr", "May", "Jun"
 static const char *Days[] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
 
 //---- TimeStamp ----------------------------------------------------------------
-TimeStamp::TimeStamp()
+TimeStamp::TimeStamp():fTimeStruct()
 {
 	StartTrace1(TimeStamp.TimeStamp, "empty");
 	SetTimeT(time(0));
 }
 
-TimeStamp::TimeStamp(const TimeStamp &aTimeStamp)
+TimeStamp::TimeStamp(const TimeStamp &aTimeStamp):fTimeStruct(aTimeStamp.fTimeStruct)
 {
 	StartTrace1(TimeStamp.TimeStamp, "copy [" << aTimeStamp.AsString() << "]");
-	operator=(aTimeStamp);
+	//operator=(aTimeStamp);
 }
 
 //! With given UTC

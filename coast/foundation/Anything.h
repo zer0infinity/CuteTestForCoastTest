@@ -772,7 +772,6 @@ class EXPORTDECL_FOUNDATION MetaThing : public Anything
 {
 public:
 	MetaThing(Allocator *a = Storage::Current());
-	~MetaThing();
 };
 
 //---- TrickyThing -----------------------------------------------------------------------
@@ -925,10 +924,10 @@ protected:
 	long AssertRange(long) const;
 	long AssertRange(const char *) const;
 
-	AnyImpl *fAnyImp;
+	AnyImpl const *fAnyImp;
 	//hack for visitor...
 	friend class AnyArrayImpl;
-	ROAnything(AnyImpl *imp)
+	ROAnything(AnyImpl const *imp)
 		: fAnyImp( imp )
 	{}
 };

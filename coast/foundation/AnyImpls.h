@@ -35,20 +35,22 @@ public:
 
 	virtual AnyImplType GetType() const = 0;
 
-	virtual long GetSize() {
+	virtual long GetSize() const
+	{
 		return 1;
 	}
-	virtual long Contains(const char *) {
+	virtual long Contains(const char *) const
+	{
 		return -1;
 	}
 
-	virtual long AsLong(long dflt) = 0;
+	virtual long AsLong(long dflt) const = 0;
 
 	virtual IFAObject *AsIFAObject(IFAObject *dflt) const {
 		return dflt;
 	}
 
-	virtual double AsDouble(double dflt) = 0;
+	virtual double AsDouble(double dflt) const = 0;
 
 	virtual const char *AsCharPtr(const char *dflt) const = 0;
 
@@ -56,9 +58,9 @@ public:
 
 	virtual String AsString(const char *dflt) const = 0;
 
-	virtual bool IsEqual(AnyImpl /*const*/ *) const = 0;
+	virtual bool IsEqual(AnyImpl const *) const = 0;
 
-	AnyImpl *DeepClone(Allocator *a, Anything &xreftable);
+	AnyImpl *DeepClone(Allocator *a, Anything &xreftable)const;
 
 	virtual void Accept(AnyVisitor &v, long lIdx, const char *slotname) const = 0;
 
@@ -89,12 +91,13 @@ public:
 #endif
 
 protected:
-	Allocator	*MyAllocator() {
+	Allocator	*MyAllocator() const {
 		return fAllocator;
 	}
 
 private:
-	virtual AnyImpl *DoDeepClone(Allocator *a, Anything &xreftable) = 0;
+	virtual AnyImpl *DoDeepClone(Allocator *a, Anything &xreftable) const
+	= 0;
 	AnyImpl(AnyImpl const &);
 	AnyImpl& operator=(AnyImpl const &);
 	long		fRefCount;
@@ -121,11 +124,13 @@ public:
 		return AnyLongType;
 	}
 
-	long AsLong(long)							{
+	long AsLong(long)const
+	{
 		return fLong;
 	}
 
-	double AsDouble(double) 					{
+	double AsDouble(double) const
+	{
 		return static_cast<double>(fLong);
 	}
 
@@ -133,7 +138,7 @@ public:
 
 	const char *AsCharPtr(const char *, long &buflen) const;
 
-	bool IsEqual(AnyImpl /*const*/ *fAnyImp) const		{
+	bool IsEqual(AnyImpl const *fAnyImp) const		{
 		return fLong == fAnyImp->AsLong(-1);
 	}
 
@@ -142,7 +147,7 @@ public:
 	void Accept(AnyVisitor &v, long lIdx, const char *slotname) const;
 
 private:
-	AnyImpl *DoDeepClone(Allocator *a, Anything &xreftable);
+	AnyImpl *DoDeepClone(Allocator *a, Anything &xreftable)const;
 };
 
 //---- AnyObjectImpl -----------------------------------------------------------------
@@ -158,7 +163,8 @@ public:
 		return AnyObjectType;
 	}
 
-	long AsLong(long) 							{
+	long AsLong(long) const
+	{
 		return reinterpret_cast<long> (fObject);
 	}
 
@@ -172,17 +178,18 @@ public:
 
 	String AsString(const char *) const;
 
-	bool IsEqual(AnyImpl /*const*/ *) const				{
+	bool IsEqual(AnyImpl const *) const				{
 		return false;
 	}
 
-	double AsDouble(double dft) 				{
+	double AsDouble(double dft) 	const
+	{
 		return dft;
 	}
 
 private:
 	// PS,JW: check if we need fObject->Clone() instead
-	AnyImpl *DoDeepClone(Allocator *a, Anything &xreftable);
+	AnyImpl *DoDeepClone(Allocator *a, Anything &xreftable)const;
 
 	void Accept(AnyVisitor &v, long lIdx, const char *slotname) const;
 };
@@ -208,15 +215,17 @@ public:
 		return AnyDoubleType;
 	}
 
-	long AsLong(long) 							{
+	long AsLong(long) const
+	{
 		return static_cast<long>(fDouble);
 	}
 
-	double AsDouble(double) 					{
+	double AsDouble(double) const
+	{
 		return fDouble;
 	}
 
-	bool IsEqual(AnyImpl /*const*/ *fAnyImp) const		{
+	bool IsEqual(AnyImpl const *fAnyImp) const		{
 		return fDouble == fAnyImp->AsDouble(-1);
 	}
 
@@ -229,7 +238,7 @@ public:
 	void Accept(AnyVisitor &v, long lIdx, const char *slotname) const;
 
 private:
-	AnyImpl *DoDeepClone(Allocator *a, Anything &xreftable);
+	AnyImpl *DoDeepClone(Allocator *a, Anything &xreftable)const;
 };
 
 //---- AnyBinaryBufImpl -----------------------------------------------------------------
@@ -250,16 +259,18 @@ public:
 	}
 
 	const char *AsCharPtr(const char *dflt) const		{
-		return fBuf.Capacity() > 0 ? static_cast<const char *>(fBuf) : dflt;
+		return fBuf.Capacity() > 0 ? fBuf.cstr() : dflt;
 	}
 
 	const char *AsCharPtr(const char *, long &buflen) const;
 
-	long AsLong(long) 								{
-		return reinterpret_cast<long>(static_cast<const char *>(fBuf));
+	long AsLong(long) const
+	{
+		return reinterpret_cast<long>(fBuf.cstr());
 	}
 
-	double AsDouble(double dft) 					{
+	double AsDouble(double dft) const
+	{
 		return dft;
 	}
 
@@ -267,14 +278,14 @@ public:
 		return fBuf;
 	}
 
-	bool IsEqual(AnyImpl /*const*/ *impl) const				{
+	bool IsEqual(AnyImpl const *impl) const				{
 		return (dynamic_cast<AnyImpl const *>(this) == impl);
 	}
 
 	virtual void Accept(AnyVisitor &v, long lIdx, const char *slotname) const;
 
 private:
-	AnyImpl *DoDeepClone(Allocator *a, Anything &xreftable);
+	AnyImpl *DoDeepClone(Allocator *a, Anything &xreftable)const;
 };
 
 //---- AnyStringImpl -----------------------------------------------------------------
@@ -294,15 +305,15 @@ public:
 		return AnyCharPtrType;
 	}
 
-	long Contains(const char *k)					{
+	long Contains(const char *k)	const				{
 		return Compare(k);
 	}
 
-	long AsLong(long dflt);
+	long AsLong(long dflt)const;
 
-	double AsDouble(double dflt);
+	double AsDouble(double dflt)const;
 
-	bool IsEqual(AnyImpl /*const*/ *anyImpl) const			{
+	bool IsEqual(AnyImpl const *anyImpl) const			{
 		return fString.IsEqual(anyImpl->AsCharPtr(0)) ;
 	}
 
@@ -315,10 +326,10 @@ public:
 	virtual void Accept(AnyVisitor &v, long lIdx, const char *slotname) const;
 
 protected:
-	long Compare(const char *other);
+	long Compare(const char *other)const;
 
 private:
-	AnyImpl *DoDeepClone(Allocator *a, Anything &xreftable);
+	AnyImpl *DoDeepClone(Allocator *a, Anything &xreftable)const;
 };
 
 class EXPORTDECL_FOUNDATION AnyArrayImpl;
@@ -339,7 +350,7 @@ public:
 
 	long At(const char *key, long hashhint = -1, u_long hashhint1 = 0	) const;
 
-	void PrintHash();
+	void PrintHash();//const
 
 	static void *operator new(size_t size, Allocator *a);
 	static void operator delete(void *d);
@@ -368,9 +379,10 @@ public:
 	AnyIndTable(long initCapacity, Allocator *a);
 	~AnyIndTable();
 
-	long At(long);
+	long At(long); //const/non-const overload
+	long At(long)const; //const/non-const overload
 	// return -1 if slot could not be found
-	long FindAt(long slot);
+	long FindAt(long slot); //const
 	void Remove(long slot);
 
 	static void *operator new(size_t size, Allocator *a);
@@ -418,33 +430,39 @@ public:
 
 	~AnyArrayImpl();
 
-	Anything &At(long i);
+	Anything &At(long i);//const/non-const overload
+	Anything At(long i)const;
 
-	Anything &operator[](long i)						{
+	Anything &operator[](long i) //const/nont-const overload
+	{
 		return At(i);
 	}
-
+	Anything operator[](long i) const;
 	void Expand(long c);
 
 	void InsertReserve(long pos, long size);
 
 	void Remove(long slot);
 
-	long GetSize()										{
+	long GetSize()	const
+	{
 		return fSize;
 	}
 
-	long Contains(const char *k);
+	long Contains(const char *k)const;
 
-	long FindIndex(const char *k, long sizehint = -1, u_long hashhint = 0);
+	long FindIndex(const char *k, long sizehint = -1, u_long hashhint = 0);//const
 
-	long FindIndex(const long lIdx);
+	long FindIndex(const long lIdx);//const
 
-	Anything &At(const char *key);
+	Anything &At(const char *key);//const/non-const overload
+	Anything At(const char *key) const;//const/non-const overload
 
-	Anything &operator[](const char *key)				{
+	Anything &operator[](const char *key)//const/non-const overload
+	{
 		return At(key);
 	}
+	Anything operator[](const char *key)const;
 
 	const char *AsCharPtr(const char *) const;
 
@@ -452,11 +470,13 @@ public:
 
 	String AsString(const char *) const;
 
-	double AsDouble(double dflt) 						{
+	double AsDouble(double dflt) const
+	{
 		return dflt;
 	}
 
-	long AsLong(long dflt)								{
+	long AsLong(long dflt)const
+	{
 		return dflt;
 	}
 
@@ -464,27 +484,34 @@ public:
 		return AnyArrayType;
 	}
 
-	const char *SlotName(long slot);
+	const char *SlotName(long slot)const;
 
-	const String &VisitSlotName(long slot);
+	const String &VisitSlotName(long slot);//const
 
-	virtual bool IsEqual(AnyImpl /*const*/ *) const				{
+	virtual bool IsEqual(AnyImpl const *) const				{
 		return false;
 	}
 
-	void PrintKeys();
+	void PrintKeys();//const
 
-	void PrintHash();
+	void PrintHash();//const
 
-	long IntAt(long at)			{
+	long IntAt(long at)	//const ev. non-const overload
+	{
+		return fInd->At(at);
+	}
+	long IntAt(long at)	const
+	{
 		return fInd->At(at);
 	}
 
-	long IntAtBuf(long at)		{
+	long IntAtBuf(long at) const
+	{
 		return at / fBufSize;
 	}
 
-	long IntAtSlot(long at)		{
+	long IntAtSlot(long at)	const
+	{
 		return at % fBufSize;
 	}
 
@@ -505,13 +532,13 @@ public:
 	void RecreateKeyTable();
 
 	//!similar to SlotName(at)
-	const String &Key(long slot) ;
+	const String &Key(long slot) const;
 
 	//!works with index into fContents
-	const Anything &IntValue(long at);
+	const Anything &IntValue(long at); //const/non-const?
 
 	//!works with index into fContents
-	const String &IntKey(long at) ;
+	const String &IntKey(long at) ; //const/non-const?
 
 	//!interface for internal comparing during sort
 	class EXPORTDECL_FOUNDATION AnyIntCompare
@@ -570,7 +597,7 @@ public:
 	};
 
 private:
-	AnyImpl *DoDeepClone(Allocator *a, Anything &xreftable);
+	AnyImpl *DoDeepClone(Allocator *a, Anything &xreftable) const;
 	AnyArrayImpl(AnyArrayImpl const &);
 	AnyArrayImpl& operator=(AnyArrayImpl const &);
 };

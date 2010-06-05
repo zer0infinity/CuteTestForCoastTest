@@ -1625,7 +1625,6 @@ MetaThing::MetaThing(Allocator *a) : Anything(new ((a) ? a : Storage::Current())
 {
 }
 
-MetaThing::~MetaThing() { }
 TrickyThing::TrickyThing(Allocator *a) : Anything(new ((a) ? a : Storage::Current()) AnyArrayImpl(a))
 {
 }

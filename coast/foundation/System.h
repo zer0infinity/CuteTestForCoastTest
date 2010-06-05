@@ -138,7 +138,7 @@ public:
 	static const char *GetPathList();
 
 	//! returns the system's path seperator e.g. '/' on unix
-	static const char Sep() {
+	static char Sep() {
 		return System::cSep;
 	}
 

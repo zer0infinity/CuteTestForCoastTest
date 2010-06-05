@@ -192,8 +192,10 @@ public:
 	//! canonical Add operation with optimal buffer handling, see OOPSLA 98
 	String    Add(const String &) const ;
 
-	//! convenient operator for easier use when GetLength is not needed one can use const char * params
+	//! deprecated: convenient operator for easier use when GetLength is not needed one can use const char * params
 	operator const char *() const;
+	//! future substitution for static_cast<const char *>(*this)
+    const char * cstr() const;
 	//! compare this with char *, return true if equal
 	bool IsEqual(const char *other) const;
 	//! compare this with String, return true if equal
@@ -511,7 +513,7 @@ protected:
 //---- inlines -----------------------------------------------------------------
 
 #define NotNull(s) ((s) ? (s) : "null")
-#define NotNullStr(s) ((s.Length() > 0) ? (const char *)(s) : "null")
+#define NotNullStr(s) ((s.Length() > 0) ? s.cstr() : "null")
 
 inline bool String::SetAllocator(Allocator *a)
 {
@@ -548,6 +550,9 @@ inline long String::Capacity() const
 }
 inline String::operator const char *() const
 {
+	return cstr();
+}
+inline char const * String::cstr() const {
 	if (GetImpl()) {
 		return GetContent();
 	} else {
