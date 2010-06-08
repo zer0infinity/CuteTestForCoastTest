@@ -1,9 +1,7 @@
 import os, subprocess, pdb
-import SConsider
+import SConsider, Anything
 from stat import *
 from SomeUtils import multiple_replace
-
-dbconn = {'server': 'SIFSCOAST1', 'database': 'coast_test', 'user': 'coast_user', 'pw': 'coast_pwd'}
 
 Import('*')
 
@@ -12,7 +10,10 @@ def runSQL(filename, interfaces, logpath, filter=None, **kw):
     target = targets['target']
     if not target or not os.path.isfile(filename):
         return False
-    args = [target.abspath, '-U', dbconn['user'], '-P', dbconn['pw'], '-S', dbconn['server'], '-I', interfaces]
+    defaults = Anything.loadFromFile('Defaults.any')
+    args = [target.abspath, '-U', defaults['Sybase']['Username'],
+                            '-P', defaults['Sybase']['Password'],
+                            '-S', defaults['Sybase']['Server'], '-I', interfaces]
     res = 1
 
     with open(filename) as file:
@@ -39,23 +40,28 @@ def runSQL(filename, interfaces, logpath, filter=None, **kw):
     return res
 
 def setUp(target, source, env):
-	relDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
-	logDir = relDir.Dir(env['LOGDIR']).Dir(env['VARIANTDIR'])
-	interfacesFile = relDir.Dir('config').File('interfaces')
-	sqlFile = relDir.Dir('config').File('createPub2.sql')
-	runSQL(sqlFile.abspath, interfacesFile.abspath, logDir.abspath,
-		   filter=lambda string: multiple_replace([("##database##", dbconn['database'])], string),
-		   env=SConsider.getFlatENV(env))
+    relDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
+    Anything.setLocalEnv(WD_ROOT=relDir.abspath)
+
+    defaults = Anything.loadFromFile('Defaults.any')
+
+    logDir = relDir.Dir(env['LOGDIR']).Dir(env['VARIANTDIR'])
+    interfacesFile = relDir.Dir('config').File('interfaces')
+    sqlFile = relDir.Dir('config').File('createPub2.sql')
+    runSQL(sqlFile.abspath, interfacesFile.abspath, logDir.abspath,
+           filter=lambda string: multiple_replace([("##database##", defaults['Sybase']['Database'])], string),
+           env=SConsider.getFlatENV(env))
 
 
 def tearDown(target, source, env):
-	relDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
-	logDir = relDir.Dir(env['LOGDIR']).Dir(env['VARIANTDIR'])
-	interfacesFile = relDir.Dir('config').File('interfaces')
-	sqlFile = relDir.Dir('config').File('dropPub2.sql')
-	runSQL(sqlFile.abspath, interfacesFile.abspath, logDir.abspath,
-		   filter=lambda string: multiple_replace([("##database##", dbconn['database'])], string),
-		   env=SConsider.getFlatENV(env))
+    defaults = Anything.loadFromFile('Defaults.any')
+    relDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
+    logDir = relDir.Dir(env['LOGDIR']).Dir(env['VARIANTDIR'])
+    interfacesFile = relDir.Dir('config').File('interfaces')
+    sqlFile = relDir.Dir('config').File('dropPub2.sql')
+    runSQL(sqlFile.abspath, interfacesFile.abspath, logDir.abspath,
+           filter=lambda string: multiple_replace([("##database##", defaults['Sybase']['Database'])], string),
+           env=SConsider.getFlatENV(env))
 
 buildSettings = {
     packagename : {
