@@ -21,8 +21,6 @@ this may contain <B>HTML-Tags</B>
 class HTTPHeaderRendererTest : public TestFramework::TestCase
 {
 public:
-	//--- constructors
-
 	//! TestCase constructor
 	//! \param name name of the test
 	HTTPHeaderRendererTest(TString name);
@@ -30,16 +28,8 @@ public:
 	//! destroys the test case
 	~HTTPHeaderRendererTest();
 
-	//--- public api
-
 	//! builds up a suite of testcases for this test
 	static Test *suite ();
-
-	//! sets the environment for this test
-	void setUp ();
-
-	//! deletes the environment for this test
-	void tearDown ();
 
 	//! describe this testcase
 	void SingleLine();
