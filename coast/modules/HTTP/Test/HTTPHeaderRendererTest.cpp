@@ -29,16 +29,6 @@ HTTPHeaderRendererTest::~HTTPHeaderRendererTest()
 	StartTrace(HTTPHeaderRendererTest.Dtor);
 }
 
-// setup for this TestCase
-void HTTPHeaderRendererTest::setUp ()
-{
-	StartTrace(HTTPHeaderRendererTest.setUp);
-}
-
-void HTTPHeaderRendererTest::tearDown ()
-{
-	StartTrace(HTTPHeaderRendererTest.tearDown);
-}
 void HTTPHeaderRendererTest::WholeHeaderConfig()
 {
 	StartTrace(HTTPHeaderRendererTest.WholeHeaderConfig);
@@ -103,11 +93,9 @@ Test *HTTPHeaderRendererTest::suite ()
 {
 	StartTrace(HTTPHeaderRendererTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
 	ADD_CASE(testSuite, HTTPHeaderRendererTest, SingleLine);
 	ADD_CASE(testSuite, HTTPHeaderRendererTest, MultiLine);
 	ADD_CASE(testSuite, HTTPHeaderRendererTest, SingleLineMultiValue);
 	ADD_CASE(testSuite, HTTPHeaderRendererTest, WholeHeaderConfig);
-
 	return testSuite;
 }
