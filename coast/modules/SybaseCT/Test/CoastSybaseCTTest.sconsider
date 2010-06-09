@@ -5,12 +5,14 @@ from SomeUtils import multiple_replace
 
 Import('*')
 
+defaults = None
+
 def runSQL(filename, interfaces, logpath, filter=None, **kw):
     targets = SConsider.packageRegistry.getPackageTarget('sybase', 'isql')
     target = targets['target']
     if not target or not os.path.isfile(filename):
         return False
-    defaults = Anything.loadFromFile('Defaults.any')
+
     args = [target.abspath, '-U', defaults['Sybase']['Username'],
                             '-P', defaults['Sybase']['Password'],
                             '-S', defaults['Sybase']['Server'], '-I', interfaces]
@@ -43,7 +45,10 @@ def setUp(target, source, env):
     relDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
     Anything.setLocalEnv(WD_ROOT=relDir.abspath)
 
+    global defaults
     defaults = Anything.loadFromFile('Defaults.any')
+    if not defaults.has_key('Sybase'):
+        raise SConsider.SkipTest('sybase backend not configured')
 
     logDir = relDir.Dir(env['LOGDIR']).Dir(env['VARIANTDIR'])
     interfacesFile = relDir.Dir('config').File('interfaces')
@@ -54,7 +59,6 @@ def setUp(target, source, env):
 
 
 def tearDown(target, source, env):
-    defaults = Anything.loadFromFile('Defaults.any')
     relDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
     logDir = relDir.Dir(env['LOGDIR']).Dir(env['VARIANTDIR'])
     interfacesFile = relDir.Dir('config').File('interfaces')
