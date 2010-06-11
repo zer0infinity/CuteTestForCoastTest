@@ -59,7 +59,7 @@ protected:
 			}
 		}
 		bool bRet = fContainer.LookupPath(result, strKey, delim, indexdelim);
-		TraceAny(result, "Looking up [" << strKey << "] resulted in");
+		TraceAny(result, "Looking up [" << strKey << "] " << (bRet?"resulted in":"failed, result any unchanged"));
 		return bRet;
 	}
 };

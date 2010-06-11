@@ -165,7 +165,7 @@ bool Session::GetSessionInfo(Anything &sessionListInfo, Context &ctx, const char
 	return ret;
 }
 
-long Session::GetTimeout(Context &ctx)
+long Session::GetTimeout(Context &ctx) const
 {
 	Role *role = GetRole(ctx);
 	// assumption fMutex is already set by caller
@@ -200,34 +200,27 @@ void Session::SetRole(Role *newRole, Context &ctx)
 	}
 }
 
-Role *Session::GetRole(Context &ctx)
+Role *Session::GetRole(Context &ctx) const
 {
 	StartTrace(Session.GetRole);
 	// assumption fMutex is already set by caller
 	Role *role = 0;
-	String role_name = ((ROAnything)fStore)["RoleName"].AsString("");
+	String role_name = GetRoleName(ctx);
 	if (role_name.Length() > 0) {
 		role = Role::FindRole(role_name);
-		Trace("using RoleName from fStore");
+		Trace("using RoleName [" << role_name << "] from fStore");
 	} else {
 		role_name = Role::GetDefaultRoleName(ctx);
 		role = Role::FindRoleWithDefault(role_name, ctx);
-		Trace("using default RoleName");
-		if (role) {
-			PutInStore("RoleName", role_name);
-		}
+		Trace("using default RoleName [" << role_name << "]");
 	}
 	Trace("returning [" << role_name << "], addr &" << (long)role);
 	return role;
 }
 
-String Session::GetRoleName(Context &ctx)
+String Session::GetRoleName(Context &ctx, String const &strDefaultRolename) const
 {
-	// assumption fMutex is already set by caller
-	if ( fStore.IsDefined("RoleName") ) {
-		return fStore["RoleName"].AsCharPtr("Role");
-	}
-	return Role::GetDefaultRoleName(ctx);
+	return ((ROAnything)fStore)["RoleName"].AsString(strDefaultRolename);
 }
 
 bool Session::IsBusy()
@@ -381,20 +374,22 @@ bool Session::IsDeletable(long secs, Context &ctx, bool roleNotRelevant)
 	return isDeletable;
 }
 
-bool CheckHeader(Context &ctx, const String &hdrSlot, const String &expValue, const String &turnOffSlot, String &reason)
-{
-	reason.Trim(0);
-	ROAnything env(ctx.GetEnvStore());
-	String currValue(env[hdrSlot].AsString(""));
-	if ((expValue != currValue) && !(ctx.Lookup(turnOffSlot, 0L))) {
-		if (currValue.Length() == 0) {
-			reason << " Requests " << hdrSlot << " info is null";
-		} else {
-			reason << hdrSlot << " doesn't match last info";
+namespace {
+	bool CheckHeader(Context &ctx, const String &hdrSlot, const String &expValue, const String &turnOffSlot, String &reason)
+	{
+		reason.Trim(0);
+		ROAnything env(ctx.GetEnvStore());
+		String currValue(env[hdrSlot].AsString(""));
+		if ((expValue != currValue) && !(ctx.Lookup(turnOffSlot, 0L))) {
+			if (currValue.Length() == 0) {
+				reason << " Requests " << hdrSlot << " info is null";
+			} else {
+				reason << hdrSlot << " doesn't match last info";
+			}
+			return false;
 		}
-		return false;
+		return true;
 	}
-	return true;
 }
 
 bool Session::Verify(Context &ctx)
@@ -531,7 +526,7 @@ void Session::DoFindNextPage(Context &context, String &transition, String &curre
 	if ( !done ) {
 		SYSERROR("Cancelled DoFindNextPage due to potential endless loop on Page [" << strLastPage << "] and Token [" << strLastTransition << "], InitialPage was [" << strInitialPage << "]");
 	}
-	Trace("after transition =<" << transition << "> page = <" << currentpage << "> role of session = <" << NotNullStr(GetRoleName(context)) << ">");
+	Trace("after transition =<" << transition << "> page = <" << currentpage << "> role of session = <" << GetRoleName(context) << ">");
 }
 
 namespace {
@@ -845,7 +840,7 @@ bool Session::InReAuthenticate(Role *r, Context &context)
 }
 
 //------------------------------------------------------------------------------------
-Role *Session::CheckRoleExchange(const char *action, Context &c)
+Role *Session::CheckRoleExchange(const char *action, Context &c) const
 {
 	StartTrace1(Session.CheckRoleExchange, "action: <" << NotNull(action) << ">");
 
@@ -853,16 +848,20 @@ Role *Session::CheckRoleExchange(const char *action, Context &c)
 	String strActionToRoleEntry("RoleChanges.");
 	strActionToRoleEntry.Append(action);
 	ROAnything roaActionToRoleEntry = c.Lookup(strActionToRoleEntry);
-
 	Role *contextRole = GetRole(c);
 	if ( contextRole ) {
 		String strEntrynameToOldRole(strActionToRoleEntry);
 		strEntrynameToOldRole.Append('.').Append(contextRole->GetName());
+		Trace("role lookup string appended with current rolename [" << strEntrynameToOldRole << "]");
 		if ( c.Lookup(strEntrynameToOldRole, roaActionToRoleEntry) ) {
 			strActionToRoleEntry = strEntrynameToOldRole;
 		}
 	}
-	String roleName = roaActionToRoleEntry.AsString();
+	TraceAny(roaActionToRoleEntry, "reduced role entry");
+	String roleName;
+	if ( roaActionToRoleEntry.GetType() != AnyArrayType ) {
+		roleName = roaActionToRoleEntry.AsString(roleName);
+	}
 	Trace("action to role entry to lookup in context [" << strActionToRoleEntry << "] resulted in rolename [" << roleName << "]");
 	// now lets try to find this role
 	return Role::FindRole(roleName);
@@ -897,7 +896,7 @@ void Session::CollectLinkState(Anything &a, Context &c) const
 bool Session::Info(Anything &info, Context &ctx)
 {
 	StartTrace(Session.Info);
-	info["Role"] = GetRoleName(ctx);
+	info["Role"] = GetRoleName(ctx, Role::GetDefaultRoleName(ctx));
 	info["Accessed"] = GetAccessCounter();
 	info["Last"] = GetAccessTime();
 	info["Timeout"] = GetTimeout(ctx);

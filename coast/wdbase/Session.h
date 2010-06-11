@@ -103,30 +103,29 @@ public:
 	virtual void Notify(ESessionEvt evt, Context &ctx);
 	//! returns information about session
 	virtual bool GetSessionInfo(Anything &sessionListInfo, Context &ctx, const char *slotName);
+	//!returns configured timeout
+	virtual long GetTimeout(Context &ctx) const;
+	//! Get the current Role, returns default role
+	virtual Role *GetRole(Context &ctx) const;
+	//! getting the name of the current role
+	virtual String GetRoleName(Context &ctx, String const &strDefaultRolename="") const;
+	//! define the new role
+	virtual void SetRole(Role *newRole, Context &ctx);
 
 protected:
-	//!returns configured timeout
-	virtual long GetTimeout(Context &ctx);
 	//! unlocked render nextpage
 	virtual void DoRenderNextPage(ostream &reply, Context &context);
 	//! prepare the context of the request and initialize transition and the pagename
 	//! reply with a busy page
 	virtual void DoRenderBusyPage(ostream &reply, Context &ctx);
 	virtual void SetupContext(Context &c, String &transition, String &pagename);
-	//! define the new role
-	virtual void SetRole(Role *newRole, Context &ctx);
-	//! Get the current Role, returns default role, but does not change fStore like previous versions of this code did.
-	virtual Role *GetRole(Context &ctx);
-	//! getting the name of the current role
-	virtual String GetRoleName(Context &ctx);
 	//! check if role change is triggered by action and performs it
-	//! uses /RoleChanges in context for looku. This anything maps
-	//! actions to role names
+	//! uses /RoleChanges in context for lookup. This anything maps actions to role names
 	//! \return returns 0 if this lookup fails with action
 	//! the role returned might be the role we are already in
 	//! \param action name of the transition that can trigger a role change
 	//! \param context the current request context
-	virtual Role *CheckRoleExchange(const char *action, Context &context);
+	virtual Role *CheckRoleExchange(const char *action, Context &context) const;
 
 	// implementing the state transition
 

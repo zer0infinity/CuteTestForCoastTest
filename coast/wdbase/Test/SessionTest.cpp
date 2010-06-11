@@ -61,18 +61,18 @@ void SessionTest::SetGetRole ()
 		t_assert(0 != s.GetRole(ctx));
 		Role *defr = GetDefaultRole(ctx);
 		t_assert(defr != 0);
-		t_assert(defr == s.GetRole(ctx));
-		t_assert(GetDefaultRole(ctx) == s.GetRole(ctx));
-		// DoGetDefaultRole does store the default Role in the session's fStore!
-		assertEqual("Role", ROAnything(s.fStore)["RoleName"].AsString("X"));
+		assertCompare(defr, equal_to, s.GetRole(ctx));
+		assertCompare(GetDefaultRole(ctx), equal_to, s.GetRole(ctx));
+		assertEqual("X", ROAnything(s.fStore)["RoleName"].AsString("X"));
 		ctx.GetTmpStore()["DefaultRole"] = "RTCustomer";
-		// DoGetDefaultRole and SetRole are now returning RTCustomer Role
-		t_assert(GetDefaultRole(ctx) == cust);
-		t_assert(defr == s.GetRole(ctx));
-		assertEqual("Role", ROAnything(s.fStore)["RoleName"].AsString("X"));
+		assertCompare(cust, equal_to, GetDefaultRole(ctx));
+		assertCompare(cust, equal_to, s.GetRole(ctx));
+		assertCharPtrEqual("X", ROAnything(s.fStore)["RoleName"].AsString("X"));
 
 		s.SetRole(cust, ctx);
+		// DoGetDefaultRole and GetRole are now returning RTCustomer Role
 		assertEqual("RTCustomer", ROAnything(s.fStore)["RoleName"].AsString("X"));
+		assertCompare(cust, equal_to, s.GetRole(ctx));
 
 		t_assert(defr != s.GetRole(ctx));
 		t_assert(cust == s.GetRole(ctx));
@@ -329,13 +329,12 @@ void SessionTest::InfoTest()
 			Anything resultedInfo;
 			Anything expectedInfo;
 
-			expectedInfo["Role"] = s.GetRoleName(ctx);
+			expectedInfo["Role"] = Role::GetDefaultRoleName(ctx);
 			expectedInfo["Accessed"] = s.GetAccessCounter();
 			expectedInfo["Last"] = s.GetAccessTime();
 			expectedInfo["Timeout"] = s.GetTimeout(ctx);
 			expectedInfo["Referenced"] = s.GetRefCount();
 			expectedInfo["SessionStore"]["RoleStore"] = MetaThing();
-			expectedInfo["SessionStore"]["RoleName"] = s.GetRoleName(ctx);
 			TraceAny(expectedInfo, "expected:");
 			t_assertm(s.Info(resultedInfo, ctx), "expected info to succeed");
 			assertAnyEqual(expectedInfo, resultedInfo);
@@ -427,7 +426,7 @@ public:
 	}
 };
 
-void SessionTest::IntCheckRoleExchange(char *source_role, char *target_role, char *transition, STTestSession &s, Context &theCtx, bool should_succeed = true)
+void SessionTest::IntCheckRoleExchange(const char *source_role, const char *target_role, const char *transition, STTestSession &s, Context &theCtx, bool should_succeed = true)
 {
 	Role *rs = Role::FindRole(source_role);
 	s.SetRole(rs, theCtx);
@@ -435,14 +434,13 @@ void SessionTest::IntCheckRoleExchange(char *source_role, char *target_role, cha
 	Role *rt = s.PublicCheckRoleExchange(transition, theCtx);
 
 	if (should_succeed) {
-		if (!t_assertm(rt != NULL, (const char *)(String("") << source_role << " " << transition << " " << target_role))) {
-			return;
+		if (t_assertm(rt != 0, TString("srcR [") << source_role << "] transi [" << transition << "] trgR [" << target_role << "]")) {
+			String rn;
+			rt->GetName(rn);
+			assertCharPtrEqualm(target_role, rn, TString("srcR [") << source_role << "] transi [" << transition << "] trgR [" << target_role << "]");
 		}
-		String rn;
-		rt->GetName(rn);
-		assertEqual(target_role, rn);
 	} else {
-		t_assert(!rt);
+		t_assertm(!rt, TString("srcR [") << source_role << "] transi [" << transition << "] trgR [" << target_role << "]");
 	}
 }
 

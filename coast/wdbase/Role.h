@@ -49,20 +49,20 @@ public:
 		\param transition direction to go in state machine (2nd index to map)
 		\param pagename page we come from (1st index to map) and page we go to if true
 		\return true if pagename is set, false if transition couldn't find a page */
-	virtual bool GetNewPageName(Context &c, String &transition, String &pagename );
+	virtual bool GetNewPageName(Context &c, String &transition, String &pagename ) const;
 
 	/*! get the action page map config from the role's configuration file
 		\param entry token-specific config from map or Null if not defined
 		\param transition direction to go in state machine (2nd index to map)
 		\param pagename page we come from (1st index to map) and page we go to if true
 		\return true if corresponding token-config was found */
-	bool GetNextActionConfig(ROAnything &entry, String &transition, String &pagename);
+	bool GetNextActionConfig(ROAnything &entry, String &transition, String &pagename) const;
 
 	/*! check if the given transition is a StayOnSamePage-token
 		These tokens can be specified on a per Role basis using the slot StayOnSamePageTokens
 		\param transition token to check
 		\return true if the given token was defined as StayOnSamePage token */
-	bool IsStayOnSamePageToken(String &transition);
+	bool IsStayOnSamePageToken(String &transition) const;
 
 	//!copies information from query or query["fields"] into the tmp store; if they are not already defined there; this takes place before processing the request
 	virtual void PrepareTmpStore(Context &c);				// copies state contained in the query to the TmpStore
@@ -77,15 +77,15 @@ public:
 	virtual void Finis(Session &s, Role *newrole);
 
 	//!hook to synchronize the rolestore with the required content to process the query at hand; default implementation does nothing
-	virtual bool Synchronize(Context &c);
+	virtual bool Synchronize(Context &c) const;
 
 	//! test if this role is valid and if the query is well formed for the role
-	bool Verify(Context &c, String &transition, String &pagename);
+	bool Verify(Context &c, String &transition, String &pagename) const;
 
 	/*! return the session timeout value for this role
 		This is retrieved from the roles configuration slot "SessionTimeout", if not configured the default is 60 seconds. Configuration hierarchy is used
 		\return session timeout value for this role */
-	virtual long GetTimeout();
+	virtual long GetTimeout() const;
 
 	RegCacheDef(Role);	// FindRole()
 
@@ -110,12 +110,12 @@ protected:
 	/*! verifies query params default implementation
 		default implementation does nothing
 		\param query prepared query to check if some wrong things are in there */
-	virtual bool DoVerify(Context &c, String &transition, String &pagename);
+	virtual bool DoVerify(Context &c, String &transition, String &pagename) const;
 
 	/*! check if the transition/action is valid for this role, regardless of the rest
 		default implementation allows "Logout" for all roles
 		\param transition paramater from query["action"] (called action for historical reasons) */
-	virtual bool TransitionAlwaysOK(const String &transition);
+	virtual bool TransitionAlwaysOK(const String &transition) const;
 
 private:
 	long GetRoleLevel(const Role *pRole) const;

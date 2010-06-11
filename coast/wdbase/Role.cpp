@@ -78,7 +78,7 @@ void Role::Finis(Session &, Role *)
 	StatTrace(Role.Finis, fName << ": abstract - nothing to do", Storage::Current());
 }
 
-bool Role::Synchronize(Context &)
+bool Role::Synchronize(Context &) const
 {
 	StatTrace(Role.Synchronize, fName << ": abstract returning true", Storage::Current());
 	return true;
@@ -131,8 +131,7 @@ long Role::GetRoleLevel(const Role *pRole) const
 	return lLevel;
 }
 
-long Role::GetTimeout()
-{
+long Role::GetTimeout() const {
 	return Lookup("SessionTimeout", 60L);
 }
 
@@ -172,20 +171,19 @@ void Role::PrepareTmpStore(Context &c)
 	}
 }
 
-bool Role::GetNewPageName( Context &c, String &transition, String &pagename)
-{
+bool Role::GetNewPageName(Context &c, String &transition, String &pagename) const {
 	// this method implements the default page resolving mechanism
 	// it searches a new page through a lookup in the action/page map
 	// table, defined in the role's *.any file
 
 	StartTrace1(Role.GetNewPageName, "Rolename <" << fName << "> currentpage= <" << pagename << ">, transition= <" << transition << ">");
 
-	if ( IsStayOnSamePageToken(transition) ) {
+	if (IsStayOnSamePageToken(transition)) {
 		return true;
 	}
 
 	ROAnything entry;
-	if ( GetNextActionConfig(entry, transition, pagename) ) {
+	if (GetNextActionConfig(entry, transition, pagename)) {
 		// now look for new map entries consisting of page and action
 		const char *newpagename = 0;
 		if (entry.IsDefined("Page")) {
@@ -211,7 +209,7 @@ bool Role::GetNewPageName( Context &c, String &transition, String &pagename)
 	return false;
 }
 
-bool Role::GetNextActionConfig(ROAnything &entry, String &transition, String &pagename)
+bool Role::GetNextActionConfig(ROAnything &entry, String &transition, String &pagename) const
 {
 	StartTrace(Role.GetNextActionConfig);
 	// get the action page map from the role's configuration file
@@ -228,7 +226,7 @@ bool Role::GetNextActionConfig(ROAnything &entry, String &transition, String &pa
 	return !entry.IsNull();
 }
 
-bool Role::IsStayOnSamePageToken(String &transition)
+bool Role::IsStayOnSamePageToken(String &transition) const
 {
 	StartTrace1(Role.IsStayOnSamePageToken, "checking token <" << transition << ">");
 	ROAnything tokens;
@@ -269,7 +267,7 @@ void Role::CollectLinkState(Anything &stateIn, Context &c)
 	}
 }
 
-bool Role::TransitionAlwaysOK(const String &transition)
+bool Role::TransitionAlwaysOK(const String &transition) const
 {
 	return (transition == "Logout");
 }
@@ -291,7 +289,7 @@ String Role::GetRequestRoleName(Context &ctx) const
 // this method verifies the authentication level of role
 // if everything is ok it let's the subclass verify the
 // detailed parameters of the query in DoVerify
-bool Role::Verify(Context &c, String &transition, String &pagename)
+bool Role::Verify(Context &c, String &transition, String &pagename) const
 {
 	StartTrace1(Role.Verify, "Rolename <" << fName << "> currentpage= <" << pagename << ">, transition= <" << transition << ">");
 	// if the action is always possible (e.g. logout) no further checking
@@ -319,7 +317,7 @@ bool Role::Verify(Context &c, String &transition, String &pagename)
 	return false;
 }
 
-bool Role::DoVerify(Context &, String &, String &)
+bool Role::DoVerify(Context &, String &, String &) const
 {
 	StatTrace(Role.DoVerify, "of role <" << fName << "> is not defined, returning true", Storage::Current());
 	return true;
@@ -327,8 +325,7 @@ bool Role::DoVerify(Context &, String &, String &)
 
 RegCacheImpl(Role);	// FindRole()
 
-String Role::GetDefaultRoleName(Context &ctx)
-{
+String Role::GetDefaultRoleName(Context &ctx) {
 	String ret;
 	ROAnything rspec;
 	if (ctx.Lookup("DefaultRole", rspec)) {
@@ -339,27 +336,21 @@ String Role::GetDefaultRoleName(Context &ctx)
 	return ret;
 }
 
-Role *Role::FindRoleWithDefault(const char *role_name, Context &ctx, const char *dflt)
-{
+Role *Role::FindRoleWithDefault(const char *role_name, Context &ctx, const char *dflt) {
 	Role *ret = Role::FindRole(role_name);
-
 	if (ret == 0) {
 		String msg;
-		msg << "<" << ctx.GetSessionId() << "> "
-			<< "no valid role <" << role_name << "> found; using <" << dflt << ">";
+		msg << "<" << ctx.GetSessionId() << "> " << "no valid role <" << role_name << "> found; using <" << dflt << ">";
 		SystemLog::Info(msg);
-
 		ret = Role::FindRole(dflt);
-	}
-	if (ret == 0) {
-		String msg;
-		msg << "<" << ctx.GetSessionId() << "> "
-			<< "Role <" << role_name << "> and Role <" << dflt
-			<< "> not registered -- Danger";
-		SYSERROR(msg);
-		// fake a new role...as a last resort before crash
-		Assert(ret != 0); // fail in Debug mode
-		::abort();
+		if (ret == 0) {
+			msg.Trim(0);
+			msg << "<" << ctx.GetSessionId() << "> " << "Role <" << role_name << "> and Role <" << dflt << "> not registered -- Danger";
+			SYSERROR(msg);
+			// fake a new role...as a last resort before crash
+			Assert(ret != 0); // fail in Debug mode
+			::abort();
+		}
 	}
 	return ret;
 }

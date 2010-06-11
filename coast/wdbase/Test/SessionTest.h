@@ -64,7 +64,7 @@ protected:
 	void    DoFindNextPageLogin();
 	void    SetGetRole();
 	void    RetrieveFromDelayed();
-	void    IntCheckRoleExchange(char *source_role, char *target_role, char *transition, STTestSession &s, Context &theCtx, bool should_succeed);
+	void    IntCheckRoleExchange(const char *source_role, const char *target_role, const char *transition, STTestSession &s, Context &theCtx, bool should_succeed);
 };
 
 #endif
