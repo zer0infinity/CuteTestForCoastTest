@@ -6,11 +6,14 @@
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
 {
-	/Sybase {
-		/Username	"coast_user"
-		/Password	"coast_pwd"
-		/Server		"SIFSCOAST1"
-		/Database	"coast_test"
-		/InterfacesFile	"config/interfaces"
+	/MySQL {
+		/Server			"sifs-coast1.hsr.ch"
+		/FaultyServer	"some.nonexistent.loc"
+		/Port			3306
+		/FaultyPort		3307
+		/Username		"TestUser"
+		/Password		"CoastMySQL10"
+		/FaultyPassword	"wrong"
+		/Database		"coast_tests"
 	}
 }

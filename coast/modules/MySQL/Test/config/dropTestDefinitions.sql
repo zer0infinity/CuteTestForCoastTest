@@ -1,1 +1,1 @@
-DROP Database IF EXISTS coast_tests;
+DROP Database IF EXISTS ##database##;

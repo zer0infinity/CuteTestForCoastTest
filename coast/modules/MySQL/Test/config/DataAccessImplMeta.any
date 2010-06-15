@@ -8,27 +8,28 @@
 
 {
 	/MySQLDAImpl {
-		/Host		sifs-coast1.hsr.ch
-		/MySQLUser	TestUser
-		/MySQLPW	CoastMySQL10
+		/Host		!Defaults.any?MySQL.Server
+		/Port		!Defaults.any?MySQL.Port
+		/MySQLUser	!Defaults.any?MySQL.Username
+		/MySQLPW	!Defaults.any?MySQL.Password
 	}
 
 	/SelectTest {
-		/Host   "sifs-coast1.hsr.ch"
-		/Port   "3306"               		# this is default
+		/Host   !Defaults.any?MySQL.Server
+		/Port   !Defaults.any?MySQL.Port
 	}
 	/InsertTest {
-		/Host   "sifs-coast1.hsr.ch"        			# this is default
+		/Host   !Defaults.any?MySQL.Server
 	}
 	/DeleteTest {
 	}
 	/WrongHostTest {
-		/Host   "nonexistenthost"
-		/Port   "3306"               		# this is default
+		/Host   !Defaults.any?MySQL.FaultyServer
+		/Port   !Defaults.any?MySQL.Port
 	}
 	/WrongPortTest {
-		/Host   "sifs-coast1.hsr.ch"
-		/Port   "3307"               		# failure port
+		/Host   !Defaults.any?MySQL.Server
+		/Port   !Defaults.any?MySQL.FaultyPort
 	}
 	/SelectTestWithoutQueryCount {
 		/NoQueryCount   1

@@ -7,7 +7,6 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-
 	/DLL {
 	}
 	/Modules {
@@ -51,10 +50,10 @@
 	/TestCases {
 		/InsertTest {
 			/TmpStore {
-				/Host		sifs-coast1.hsr.ch
-				/Database	coast_tests
-				/MySQLUser	TestUser
-				/MySQLPW	CoastMySQL10
+				/Host		!Defaults.any?MySQL.Server
+				/Database	!Defaults.any?MySQL.Database
+				/MySQLUser	!Defaults.any?MySQL.Username
+				/MySQLPW	!Defaults.any?MySQL.Password
 			}
 			/TheAction {
 				/CallDA 	InsertTest
@@ -69,7 +68,7 @@
 		}
 		/DeleteTest {
 			/TmpStore {
-				/Database	coast_tests
+				/Database	!Defaults.any?MySQL.Database
 			}
 			/TheAction {
 				/CallDA	DeleteTest
@@ -84,7 +83,7 @@
 		}
 		/SelectTest {
 			/TmpStore {
-				/Database	coast_tests
+				/Database	!Defaults.any?MySQL.Database
 			}
 			/TheAction {
 				/CallDA		SelectTest
@@ -113,7 +112,7 @@
 		}
 		/SelectTestWithoutQueryCount {
 			/TmpStore {
-				/Database	coast_tests
+				/Database	!Defaults.any?MySQL.Database
 			}
 			/TheAction {
 				/CallDA		SelectTestWithoutQueryCount
@@ -141,7 +140,7 @@
 		}
 		/SQLErrorTest {
 			/TmpStore {
-				/Database	coast_tests
+				/Database	!Defaults.any?MySQL.Database
 			}
 			/TheAction {
 				/CallDA SQLErrorTest
@@ -157,7 +156,7 @@
 		}
 		/WrongPortTest {
 			/TmpStore {
-				/Database	coast_tests
+				/Database	!Defaults.any?MySQL.Database
 			}
 			/TheAction {
 				/CallDA WrongPortTest
@@ -170,7 +169,7 @@
 		}
 		/WrongHostTest {
 			/TmpStore {
-				/Database	coast_tests
+				/Database	!Defaults.any?MySQL.Database
 			}
 			/TheAction {
 				/CallDA WrongHostTest
@@ -186,9 +185,9 @@
 		}
 		/WrongPasswordTest {
 			/TmpStore {
-				/Database	coast_tests
-				/MySQLUser	TestUser
-				/MySQLPW	wrong
+				/Database	!Defaults.any?MySQL.Database
+				/MySQLUser	!Defaults.any?MySQL.Username
+				/MySQLPW	!Defaults.any?MySQL.FaultyPassword
 			}
 			/TheAction {
 				/CallDA WrongPasswordTest
@@ -201,4 +200,3 @@
 		}
 	}
 }
-

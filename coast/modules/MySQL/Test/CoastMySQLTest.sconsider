@@ -1,62 +1,105 @@
-from __future__ import with_statement
-import os, subprocess, re, pdb
-import SConsider
+import os, subprocess, re, sys, pdb
+import SConsider, Anything
 from stat import *
 from SomeUtils import multiple_replace
-
-user = {'user': 'TestUser', 'pw': 'CoastMySQL10'}
-db = {'server': 'sifs-coast1.hsr.ch', 'port': 3306}
+from fileinput import close
 
 Import('*')
 
-connectstringtmpl = "-h {server} -u {user} --password={pw}"
-connectstring = connectstringtmpl.format(**dict(db, **user))
+defaults = None
 
-def runSQL(connectstring, filename, logpath, filter=None):
+def runSQL(filename, logpath, filter=None, **kw):
     targets = SConsider.packageRegistry.getPackageTarget('mysql', 'mysqlbin')
     target = targets['target']
     if not target or not os.path.isfile(filename):
         return False
-    args = [target.abspath] + connectstring.split()
-    res = 0
-
+    command = [
+        target.abspath,
+        '-h', str(defaults['MySQL']['Server']),
+        '--port='+str(defaults['MySQL']['Port']),
+        '-u', str(defaults['MySQL']['Username']),
+        '--password='+str(defaults['MySQL']['Password']),
+        '--connect_timeout=5',
+    ]
+    res = 1
+    content=None
     with open(filename) as file:
-        mysql = subprocess.Popen(args, stdin=subprocess.PIPE,
-                                     stderr=subprocess.PIPE,
-                                     stdout=subprocess.PIPE)
         content = file.read()
         if callable(filter):
             content = filter(content)
-        mysql_out, mysql_err = mysql.communicate(content)
 
-        if not os.path.isdir(logpath):
-            os.makedirs(logpath)
-        logfilebasename = target.name + '.' + os.path.basename(filename)
+    mysql = subprocess.Popen(command,
+                                stdin=subprocess.PIPE,
+                                stderr=subprocess.PIPE,
+                                stdout=subprocess.PIPE,
+                                **kw)
+
+    if not os.path.isdir(logpath):
+        os.makedirs(logpath)
+    logfilebasename = target.name + '.' + os.path.basename(filename)
+    errfilename = os.path.join(logpath, logfilebasename + '.stderr')
+    outfilename = os.path.join(logpath, logfilebasename + '.stdout')
+    try:
+        mysql_out, mysql_err = mysql.communicate(content)
         if mysql_err:
-            with open(os.path.join(logpath, logfilebasename + '.stderr'), 'w') as errfile:
+            with open(errfilename, 'w') as errfile:
                 errfile.write(mysql_err)
         if mysql_out:
-            with open(os.path.join(logpath, logfilebasename + '.stdout'), 'w') as outfile:
+            with open(outfilename, 'w') as outfile:
                 outfile.write(mysql_out)
-
+        res = mysql.returncode
+    except OSError, e:
+        with open(errfilename, 'w') as errfile:
+            print >>errfile, e
+            for line in mysql.stderr:
+                print >>errfile, line
     return res
 
 def setUp(target, source, env):
-    logpath = env['BASEOUTDIR'].Dir(os.path.join('tests', packagename, env['LOGDIR'], env['VARIANTDIR']))
-    path = env['BASEOUTDIR'].Dir(os.path.join('tests', packagename)).Dir('config')
-    runSQL(connectstring, path.File('dropTestDefinitions.sql').abspath, logpath.abspath)
-    runSQL(connectstring, path.File('TestDBDefinition.sql').abspath, logpath.abspath)
+    relDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
+    Anything.setLocalEnv(WD_ROOT=relDir.abspath)
+
+    global defaults
+    defaults = Anything.loadFromFile('Defaults.any')
+    if not defaults.has_key('MySQL'):
+        raise SConsider.SkipTest('mysql backend not configured or disabled')
+
+    searchreplacespec= [
+        ('##database##', str(defaults['MySQL']['Database'])),
+        ('##server##', str(defaults['MySQL']['Server'])),
+        ('##port##', str(defaults['MySQL']['Port'])),
+        ('##username##', str(defaults['MySQL']['Username'])),
+        ('##password##', str(defaults['MySQL']['Password'])),
+    ]
+    logDir = relDir.Dir(env['LOGDIR']).Dir(env['VARIANTDIR'])
+    path = relDir.Dir('config')
+    res = runSQL(path.File('dropTestDefinitions.sql').abspath, logDir.abspath,
+           filter=lambda string: multiple_replace(searchreplacespec, string),
+           env=SConsider.getFlatENV(env))
+    if res != 0:
+        raise SConsider.SkipTest('failed to drop test database (rc='+str(res)+'), check error log')
+
+    res = runSQL(path.File('TestDBDefinition.sql').abspath, logDir.abspath,
+           filter=lambda string: multiple_replace(searchreplacespec, string),
+           env=SConsider.getFlatENV(env))
+    if res != 0:
+        raise SConsider.SkipTest('failed to load test database (rc='+str(res)+'), check error log')
 
 def tearDown(target, source, env):
-    logpath = env['BASEOUTDIR'].Dir(os.path.join('tests', packagename, env['LOGDIR'], env['VARIANTDIR']))
-    path = env['BASEOUTDIR'].Dir(os.path.join('tests', packagename)).Dir('config')
-    runSQL(connectstring, path.File('dropTestDefinitions.sql').abspath, logpath.abspath)
+    pass
 
 buildSettings = {
     packagename : {
         'targetType'       : 'ProgramTest',
-        'linkDependencies' : ['CoastMySQL', 'testfwWDBase'],
-        'requires'         : ['CoastAppLog', 'CoastRenderers', 'mysql.mysqlbin'],
+        'linkDependencies' : [
+            'CoastMySQL',
+            'testfwWDBase',
+        ],
+        'requires' : [
+            'CoastAppLog',
+            'CoastRenderers',
+            'mysql.mysqlbin',
+        ],
         'sourceFiles'      : SConsider.listFiles(['*.cpp']),
         'copyFiles' : [
             (SConsider.findFiles(['.'],['.any','.sql']), S_IRUSR|S_IRGRP|S_IROTH),
@@ -64,7 +107,7 @@ buildSettings = {
         'runConfig' : {
             'setUp'        : setUp,
             'tearDown'     : tearDown,
-         },
+        },
     },
 }
 
