@@ -19,10 +19,12 @@ def setUp(target, source, env):
 
     targetDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
     tmppath = targetDir.Dir('tmp').abspath
-    if os.path.isdir(tmppath):
-        shutil.rmtree(tmppath)
     for d in [tmppath,targetDir.Dir(os.path.join('config','rotate')).abspath]:
-        os.makedirs(d)
+        if os.path.isdir(d):
+            shutil.rmtree(d)
+        try:
+            os.makedirs(d)
+        except oserror: pass
     searchReplace = [
         (r"##LOGDIR##", tmppath),
         (r"##ROTATEDIR##", tmppath),
