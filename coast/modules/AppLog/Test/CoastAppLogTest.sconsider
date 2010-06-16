@@ -21,7 +21,8 @@ def setUp(target, source, env):
     tmppath = targetDir.Dir('tmp').abspath
     if os.path.isdir(tmppath):
         shutil.rmtree(tmppath)
-    os.makedirs(tmppath)
+    for d in [tmppath,targetDir.Dir(os.path.join('config','rotate')).abspath]:
+        os.makedirs(d)
     searchReplace = [
         (r"##LOGDIR##", tmppath),
         (r"##ROTATEDIR##", tmppath),
@@ -40,12 +41,13 @@ buildSettings = {
         'linkDependencies' : ['CoastAppLog', 'testfwWDBase'],
         'sourceFiles'      : SConsider.listFiles(['*.cpp']),
         'targetType'       : 'ProgramTest',
-        'copyFiles'        : [(SConsider.listFiles(['config/*.any']), S_IRUSR | S_IRGRP | S_IROTH),
-                              ([Dir('config/rotate')], S_IRUSR | S_IRGRP | S_IROTH | S_IWUSR | S_IXUSR | S_IXGRP | S_IXOTH)],
-        'runConfig'        : {
-                              'setUp': setUp,
-                              'tearDown': tearDown,
-                             },
+        'copyFiles' : [
+            (SConsider.listFiles(['config/*.any']), S_IRUSR | S_IRGRP | S_IROTH),
+        ],
+        'runConfig' : {
+            'setUp': setUp,
+            'tearDown': tearDown,
+        },
     }
 }
 
