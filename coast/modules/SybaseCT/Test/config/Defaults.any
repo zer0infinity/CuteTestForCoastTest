@@ -10,6 +10,8 @@
 		/Username	"coast_user"
 		/Password	"coast_pwd"
 		/Server		"SIFSCOAST1"
+		/Hostname	"sifs-coast1.hsr.ch"
+		/Port		5000
 		/Database	"coast_test"
 		/InterfacesFile	"config/interfaces"
 	}

@@ -1,4 +1,4 @@
-import os, subprocess, pdb
+import os, subprocess, re, sys, shlex, pdb
 import SConsider, Anything
 from stat import *
 from SomeUtils import multiple_replace
@@ -7,42 +7,61 @@ Import('*')
 
 defaults = None
 
-def runSQL(filename, interfaces, logpath, filter=None, **kw):
-    targets = SConsider.packageRegistry.getPackageTarget('sybase', 'isql')
-    target = targets['target']
-    if not target or not os.path.isfile(filename):
-        return False
-
-    args = [target.abspath, '-U', defaults['Sybase']['Username'],
-                            '-P', defaults['Sybase']['Password'],
-                            '-S', defaults['Sybase']['Server'], '-I', interfaces]
+def runCommand(command, filename, logpath, filter=None, **kw):
     res = 1
-
+    content=None
     with open(filename) as file:
-        isql = subprocess.Popen(args, stdin=subprocess.PIPE,
-                                     stderr=subprocess.PIPE,
-                                     stdout=subprocess.PIPE, **kw)
         content = file.read()
         if callable(filter):
             content = filter(content)
-        isql_out, isql_err = isql.communicate(content)
 
-        if not os.path.isdir(logpath):
-            os.makedirs(logpath)
-        logfilebasename = target.name + '.' + os.path.basename(filename)
-        if isql_err:
-            with open(os.path.join(logpath, logfilebasename + '.stderr'), 'w') as errfile:
-                errfile.write(isql_err)
-        if isql_out:
-            with open(os.path.join(logpath, logfilebasename + '.stdout'), 'w') as outfile:
-                outfile.write(isql_out)
+    popenObject = subprocess.Popen(command,
+                                stdin=subprocess.PIPE,
+                                stderr=subprocess.PIPE,
+                                stdout=subprocess.PIPE,
+                                **kw)
 
-        res = isql.returncode
-
+    if not os.path.isdir(logpath):
+        os.makedirs(logpath)
+    logfilebasename = os.path.basename(command[0]) + '.' + os.path.basename(filename)
+    errfilename = os.path.join(logpath, logfilebasename + '.stderr')
+    outfilename = os.path.join(logpath, logfilebasename + '.stdout')
+    try:
+        popen_out, popen_err = popenObject.communicate(content)
+        if popen_err:
+            with open(errfilename, 'w') as errfile:
+                errfile.write(popen_err)
+        if popen_out:
+            with open(outfilename, 'w') as outfile:
+                outfile.write(popen_out)
+        res = popenObject.returncode
+    except OSError, e:
+        with open(errfilename, 'w') as errfile:
+            print >>errfile, e
+            for line in popenObject.stderr:
+                print >>errfile, line
     return res
 
+def ModifyConfigFiles(env, searchReplace=[], files=[]):
+    for file in files:
+        fname = file.abspath
+        if os.path.isfile(fname):
+            oldmode=os.stat(fname).st_mode
+            ## set writable
+            os.chmod(fname, oldmode | S_IWUSR)
+            ## replace tokens in file
+            SConsider.replaceRegexInFile(fname, searchReplace)
+            os.chmod(fname, oldmode)
+
 def setUp(target, source, env):
+    targets = SConsider.packageRegistry.getPackageTarget('sybase', 'isql')
+    target = targets['target']
+    if not target:
+        raise SConsider.SkipTest('required isql executable not found, skipping test')
+
     relDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
+    logDir = relDir.Dir(env['LOGDIR']).Dir(env['VARIANTDIR'])
+    configdir = relDir.Dir('config')
     Anything.setLocalEnv(WD_ROOT=relDir.abspath)
 
     global defaults
@@ -50,33 +69,60 @@ def setUp(target, source, env):
     if not defaults.has_key('Sybase'):
         raise SConsider.SkipTest('sybase backend not configured')
 
-    logDir = relDir.Dir(env['LOGDIR']).Dir(env['VARIANTDIR'])
-    interfacesFile = relDir.Dir('config').File('interfaces')
-    sqlFile = relDir.Dir('config').File('createPub2.sql')
-    runSQL(sqlFile.abspath, interfacesFile.abspath, logDir.abspath,
-           filter=lambda string: multiple_replace([("##database##", defaults['Sybase']['Database'])], string),
-           env=SConsider.getFlatENV(env))
+    searchreplacespec= [
+        ('##database##', str(defaults['Sybase']['Database'])),
+        ('##server##', str(defaults['Sybase']['Server'])),
+        ('##hostname##', str(defaults['Sybase']['Hostname'])),
+        ('##port##', str(defaults['Sybase']['Port'])),
+        ('##username##', str(defaults['Sybase']['Username'])),
+        ('##password##', str(defaults['Sybase']['Password'])),
+    ]
 
+    ModifyConfigFiles(env, searchreplacespec, SConsider.findFiles([configdir],matchfiles=['interfaces']))
+
+    command = [target.abspath]
+    command.extend(shlex.split("-U {Username!s} -P {Password!s} -S {Server!s}".format(**defaults['Sybase'])))
+    command.extend(['-I' , configdir.File('interfaces').abspath])
+    res = runCommand(
+        command,
+        configdir.File('dropPub2.sql').abspath,
+        logDir.abspath,
+        filter=lambda string: multiple_replace(searchreplacespec, string),
+        env=SConsider.getFlatENV(env)
+    )
+    if res != 0:
+        raise SConsider.SkipTest('failed to drop test database (rc='+str(res)+'), check error log')
+    res = runCommand(
+        command,
+        configdir.File('createPub2.sql').abspath,
+        logDir.abspath,
+        filter=lambda string: multiple_replace(searchreplacespec, string),
+        env=SConsider.getFlatENV(env)
+    )
+    if res != 0:
+        raise SConsider.SkipTest('failed to create test database (rc='+str(res)+'), check error log')
 
 def tearDown(target, source, env):
-    relDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
-    logDir = relDir.Dir(env['LOGDIR']).Dir(env['VARIANTDIR'])
-    interfacesFile = relDir.Dir('config').File('interfaces')
-    sqlFile = relDir.Dir('config').File('dropPub2.sql')
-    runSQL(sqlFile.abspath, interfacesFile.abspath, logDir.abspath,
-           filter=lambda string: multiple_replace([("##database##", defaults['Sybase']['Database'])], string),
-           env=SConsider.getFlatENV(env))
+    pass
 
 buildSettings = {
     packagename : {
         'targetType'       : 'ProgramTest',
-        'linkDependencies' : ['CoastSybaseCT', 'testfwWDBase'],
-        'requires'         : ['CoastActions'],
+        'linkDependencies' : [
+            'CoastSybaseCT',
+            'testfwWDBase',
+        ],
+        'requires' : [
+            'CoastActions',
+            SConsider.generateFulltargetname('sybase','isql'),
+        ],
         'sourceFiles'      : SConsider.listFiles(['*.cpp']),
-        'copyFiles'        : [(SConsider.listFiles(['config/*.any', 'config/*.sql', 'config/interfaces']), S_IRUSR|S_IRGRP|S_IROTH)],
+        'copyFiles' : [
+            (SConsider.listFiles(['config/*.any', 'config/*.sql', 'config/interfaces']), S_IRUSR|S_IRGRP|S_IROTH),
+        ],
         'runConfig' : {
-            'setUp'        : setUp,
-            'tearDown'     : tearDown,
+            'setUp' : setUp,
+            'tearDown' : tearDown,
         },
     },
 }

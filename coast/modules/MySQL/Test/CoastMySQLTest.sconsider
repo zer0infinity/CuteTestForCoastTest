@@ -47,6 +47,7 @@ def setUp(target, source, env):
     target = targets['target']
     if not target:
         raise SConsider.SkipTest('required mysqlbin executable not found, skipping test')
+
     relDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
     Anything.setLocalEnv(WD_ROOT=relDir.abspath)
 
@@ -65,9 +66,10 @@ def setUp(target, source, env):
     logDir = relDir.Dir(env['LOGDIR']).Dir(env['VARIANTDIR'])
     path = relDir.Dir('config')
 
-    connectstring = "-h {Server!s} --port={Port!s} -u {Username!s} --password={Password!s} --connect_timeout={ConnectTimeout!s}".format(**defaults['MySQL'])
+    command = [target.abspath]
+    command.extend(shlex.split("-h {Server!s} --port={Port!s} -u {Username!s} --password={Password!s} --connect_timeout={ConnectTimeout!s}".format(**defaults['MySQL'])))
     res = runCommand(
-        [target.abspath, connectstring],
+        command,
         path.File('dropTestDefinitions.sql').abspath,
         logDir.abspath,
         filter=lambda string: multiple_replace(searchreplacespec, string),
@@ -77,7 +79,7 @@ def setUp(target, source, env):
         raise SConsider.SkipTest('failed to drop test database (rc='+str(res)+'), check error log')
 
     res = runCommand(
-        [target.abspath, connectstring],
+        command,
         path.File('TestDBDefinition.sql').abspath,
         logDir.abspath,
         filter=lambda string: multiple_replace(searchreplacespec, string),

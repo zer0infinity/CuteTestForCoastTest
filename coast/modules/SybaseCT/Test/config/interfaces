@@ -1,4 +1,4 @@
-SIFSCOAST1
-        master tcp ether sifs-coast1.hsr.ch 5000
-        query  tcp ether sifs-coast1.hsr.ch 5000
+##server##
+        master tcp ether ##hostname## ##port##
+        query  tcp ether ##hostname## ##port##
 
