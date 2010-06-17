@@ -1,74 +1,112 @@
-from __future__ import with_statement
-import os, subprocess, re, pdb
-import SConsider
+import os, subprocess, re, sys, pdb
+import SConsider, Anything
 from stat import *
 from SomeUtils import multiple_replace
 
-user1 = {'user': 'oratest', 'pw': 'oratest'}
-user2 = {'user': 'oratest2', 'pw': 'oratest2'}
-db = {'server': 'sifs-coast1.hsr.ch', 'port': 1521, 'sid': 'orcl'}
-
 Import('*')
 
-connectstring = "{user}/{pw}@{server}:{port}/{sid}"
-connectstring1 = connectstring.format(**dict(db, **user1))
-connectstring2 = connectstring.format(**dict(db, **user2))
+defaults = None
 
-def runSQL(connectstring, filename, logpath, filter=None, **kw):
-    targets = SConsider.packageRegistry.getPackageTarget('oracle', 'sqlplus')
-    target = targets['target']
-    if not target or not os.path.isfile(filename):
-        return False
-    args = [target.abspath, '--', connectstring]
-    res = 0
-
+def runCommand(command, filename, logpath, filter=None, **kw):
+    res = 1
+    content=None
     with open(filename) as file:
-        sqlplus = subprocess.Popen(args, stdin=subprocess.PIPE,
-                                     stderr=subprocess.PIPE,
-                                     stdout=subprocess.PIPE, **kw)
         content = file.read()
         if callable(filter):
             content = filter(content)
-        sqlplus_out, sqlplus_err = sqlplus.communicate(content)
 
-        if not os.path.isdir(logpath):
-            os.makedirs(logpath)
-        logfilebasename = target.name + '.' + os.path.basename(filename)
-        if sqlplus_err:
-            with open(os.path.join(logpath, logfilebasename + '.stderr'), 'w') as errfile:
-                errfile.write(sqlplus_err)
-        if sqlplus_out:
-            with open(os.path.join(logpath, logfilebasename + '.stdout'), 'w') as outfile:
-                outfile.write(sqlplus_out)
+    popenObject = subprocess.Popen(command,
+                                stdin=subprocess.PIPE,
+                                stderr=subprocess.PIPE,
+                                stdout=subprocess.PIPE,
+                                **kw)
 
+    if not os.path.isdir(logpath):
+        os.makedirs(logpath)
+    logfilebasename = os.path.basename(command[0]) + '.' + os.path.basename(filename)
+    errfilename = os.path.join(logpath, logfilebasename + '.stderr')
+    outfilename = os.path.join(logpath, logfilebasename + '.stdout')
+    try:
+        popen_out, popen_err = popenObject.communicate(content)
+        if popen_err:
+            with open(errfilename, 'w') as errfile:
+                errfile.write(popen_err)
+        if popen_out:
+            with open(outfilename, 'w') as outfile:
+                outfile.write(popen_out)
+        res = popenObject.returncode
+    except OSError, e:
+        with open(errfilename, 'w') as errfile:
+            print >>errfile, e
+            for line in popenObject.stderr:
+                print >>errfile, line
     return res
 
 def setUp(target, source, env):
+    targets = SConsider.packageRegistry.getPackageTarget('oracle', 'sqlplus')
+    target = targets['target']
+    if not target:
+        raise SConsider.SkipTest('required sqlplus executable not found, skipping test')
+
     env['ENV']['NLS_LANG'] = '.WE8ISO8859P1'
-    logpath = env['BASEOUTDIR'].Dir(os.path.join('tests', packagename, env['LOGDIR'], env['VARIANTDIR']))
-    path = env['BASEOUTDIR'].Dir(os.path.join('tests', packagename)).Dir('config')
-    runSQL(connectstring1, path.File('oratest_dropschema.sql').abspath, logpath.abspath,
-           env=SConsider.getFlatENV(env))
-    runSQL(connectstring1, path.File('oratest_schema.sql').abspath, logpath.abspath,
-           env=SConsider.getFlatENV(env))
-    runSQL(connectstring1, path.File('oratest_grant.sql').abspath, logpath.abspath,
-           filter=lambda string: multiple_replace([
-                                                   ("##user1##", user1['user']),
-                                                   ("##user2##", user2['user'])
-                                                   ], string),
-           env=SConsider.getFlatENV(env))
-    runSQL(connectstring2, path.File('oratest_synonym.sql').abspath, logpath.abspath,
-           filter=lambda string: multiple_replace([
-                                                   ("##user1##", user1['user']),
-                                                   ("##user2##", user2['user'])
-                                                   ], string),
-           env=SConsider.getFlatENV(env))
+    relDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
+    Anything.setLocalEnv(WD_ROOT=relDir.abspath)
+
+    global defaults
+    defaults = Anything.loadFromFile('Defaults.any')
+    if not defaults.has_key('Oracle'):
+        raise SConsider.SkipTest('oracle backend not configured or disabled')
+
+    searchreplacespec= [
+        ('##server##', str(defaults['Oracle']['Server'])),
+        ('##port##', str(defaults['Oracle']['Port'])),
+        ('##sid##', str(defaults['Oracle']['sid'])),
+        ("##user1##", str(defaults['Oracle']['Username1'])),
+        ("##user2##", str(defaults['Oracle']['Username2'])),
+        ("##pass1##", str(defaults['Oracle']['Password1'])),
+        ("##pass2##", str(defaults['Oracle']['Password2'])),
+    ]
+    logDir = relDir.Dir(env['LOGDIR']).Dir(env['VARIANTDIR'])
+    path = relDir.Dir('config')
+
+    connectstring = "{Username1!s}/{Password1!s}@{Server!s}:{Port!s}/{sid!s}".format(**defaults['Oracle'])
+    res = runCommand(
+        [target.abspath,'--','-S',connectstring],
+        path.File('oratest_dropschema.sql').abspath,
+        logDir.abspath,
+        env=SConsider.getFlatENV(env)
+    )
+    if res != 0:
+        raise SConsider.SkipTest('failed to drop test schema (rc='+str(res)+'), check error log')
+    res = runCommand(
+        [target.abspath,'--','-S',connectstring],
+        path.File('oratest_schema.sql').abspath,
+        logDir.abspath,
+        env=SConsider.getFlatENV(env)
+    )
+    res = runCommand(
+        [target.abspath,'--','-S',connectstring],
+        path.File('oratest_grant.sql').abspath,
+        logDir.abspath,
+        filter=lambda string: multiple_replace(searchreplacespec, string),
+        env=SConsider.getFlatENV(env)
+    )
+    if res != 0:
+        raise SConsider.SkipTest('failed to grant permissions (rc='+str(res)+'), check error log')
+
+    connectstring = "{Username2!s}/{Password2!s}@{Server!s}:{Port!s}/{sid!s}".format(**defaults['Oracle'])
+    res = runCommand(
+        [target.abspath,'--','-S',connectstring],
+        path.File('oratest_synonym.sql').abspath,
+        logDir.abspath,
+        filter=lambda string: multiple_replace(searchreplacespec, string),
+        env=SConsider.getFlatENV(env)
+    )
+    if res != 0:
+        raise SConsider.SkipTest('failed to create synonyms (rc='+str(res)+'), check error log')
 
 def tearDown(target, source, env):
-    logpath = env['BASEOUTDIR'].Dir(os.path.join('tests', packagename, env['LOGDIR'], env['VARIANTDIR']))
-    path = env['BASEOUTDIR'].Dir(os.path.join('tests', packagename)).Dir('config')
-    runSQL(connectstring1, path.File('oratest_dropschema.sql').abspath, logpath.abspath,
-           env=SConsider.getFlatENV(env))
+    pass
 
 buildSettings = {
     packagename : {

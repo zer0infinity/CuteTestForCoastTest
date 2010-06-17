@@ -9,12 +9,12 @@
 {
 	/SifsCoastOrcl {
 		 /DBUser { /RendererMapper {
-			/ContextLookupRenderer { DBUser "oratest" }
+			/ContextLookupRenderer { DBUser !Defaults.any?Oracle.Username1 }
 		} }
 		/DBPW { /RendererMapper {
-			/ContextLookupRenderer { DBPW "oratest" }
+			/ContextLookupRenderer { DBPW !Defaults.any?Oracle.Password1 }
 		} }
-		/DBConnectString	"//sifs-coast1.hsr.ch:1521/orcl"
+		/DBConnectString	!Defaults.any?Oracle.ConnectString
 		/UseTLS	1
 	}
 	/SifsCoastOrclSP  %SifsCoastOrcl

@@ -1197,8 +1197,8 @@
 		/TestWriteUser {
 			/TmpStore {
 				/SPName	getlistingid
-				/DBUser	"oratest2"
-				/DBPW	"oratest2"
+				/DBUser	!Defaults.any?Oracle.Username2
+				/DBPW	!Defaults.any?Oracle.Password2
 			}
 			/TheAction {
 				/CallDA {

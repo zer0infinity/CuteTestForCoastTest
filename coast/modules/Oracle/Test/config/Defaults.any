@@ -1,0 +1,19 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2010, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+{
+	/Oracle {
+		/ConnectString	"//sifs-coast1.hsr.ch:1521/orcl"
+		/Server			"sifs-coast1.hsr.ch"
+		/Port			1521
+		/sid			"orcl"
+		/Username1		"oratest"
+		/Password1		"oratest"
+		/Username2		"oratest2"
+		/Password2		"oratest2"
+	}
+}
