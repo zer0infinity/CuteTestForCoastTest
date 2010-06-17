@@ -1,4 +1,4 @@
-import os, subprocess, re, sys, pdb
+import os, subprocess, re, sys, shlex, pdb
 import SConsider, Anything
 from stat import *
 from SomeUtils import multiple_replace
