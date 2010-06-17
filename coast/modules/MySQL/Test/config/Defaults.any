@@ -15,5 +15,6 @@
 		/Password		"CoastMySQL10"
 		/FaultyPassword	"wrong"
 		/Database		"coast_tests"
+		/ConnectTimeout	5
 	}
 }

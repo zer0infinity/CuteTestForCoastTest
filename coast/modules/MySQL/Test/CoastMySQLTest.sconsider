@@ -2,25 +2,12 @@ import os, subprocess, re, sys, pdb
 import SConsider, Anything
 from stat import *
 from SomeUtils import multiple_replace
-from fileinput import close
 
 Import('*')
 
 defaults = None
 
-def runSQL(filename, logpath, filter=None, **kw):
-    targets = SConsider.packageRegistry.getPackageTarget('mysql', 'mysqlbin')
-    target = targets['target']
-    if not target or not os.path.isfile(filename):
-        return False
-    command = [
-        target.abspath,
-        '-h', str(defaults['MySQL']['Server']),
-        '--port='+str(defaults['MySQL']['Port']),
-        '-u', str(defaults['MySQL']['Username']),
-        '--password='+str(defaults['MySQL']['Password']),
-        '--connect_timeout=5',
-    ]
+def runCommand(command, filename, logpath, filter=None, **kw):
     res = 1
     content=None
     with open(filename) as file:
@@ -28,7 +15,7 @@ def runSQL(filename, logpath, filter=None, **kw):
         if callable(filter):
             content = filter(content)
 
-    mysql = subprocess.Popen(command,
+    popenObject = subprocess.Popen(command,
                                 stdin=subprocess.PIPE,
                                 stderr=subprocess.PIPE,
                                 stdout=subprocess.PIPE,
@@ -36,26 +23,30 @@ def runSQL(filename, logpath, filter=None, **kw):
 
     if not os.path.isdir(logpath):
         os.makedirs(logpath)
-    logfilebasename = target.name + '.' + os.path.basename(filename)
+    logfilebasename = os.path.basename(command[0]) + '.' + os.path.basename(filename)
     errfilename = os.path.join(logpath, logfilebasename + '.stderr')
     outfilename = os.path.join(logpath, logfilebasename + '.stdout')
     try:
-        mysql_out, mysql_err = mysql.communicate(content)
-        if mysql_err:
+        popen_out, popen_err = popenObject.communicate(content)
+        if popen_err:
             with open(errfilename, 'w') as errfile:
-                errfile.write(mysql_err)
-        if mysql_out:
+                errfile.write(popen_err)
+        if popen_out:
             with open(outfilename, 'w') as outfile:
-                outfile.write(mysql_out)
-        res = mysql.returncode
+                outfile.write(popen_out)
+        res = popenObject.returncode
     except OSError, e:
         with open(errfilename, 'w') as errfile:
             print >>errfile, e
-            for line in mysql.stderr:
+            for line in popenObject.stderr:
                 print >>errfile, line
     return res
 
 def setUp(target, source, env):
+    targets = SConsider.packageRegistry.getPackageTarget('mysql', 'mysqlbin')
+    target = targets['target']
+    if not target:
+        raise SConsider.SkipTest('required mysqlbin executable not found, skipping test')
     relDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
     Anything.setLocalEnv(WD_ROOT=relDir.abspath)
 
@@ -73,15 +64,25 @@ def setUp(target, source, env):
     ]
     logDir = relDir.Dir(env['LOGDIR']).Dir(env['VARIANTDIR'])
     path = relDir.Dir('config')
-    res = runSQL(path.File('dropTestDefinitions.sql').abspath, logDir.abspath,
-           filter=lambda string: multiple_replace(searchreplacespec, string),
-           env=SConsider.getFlatENV(env))
+
+    connectstring = "-h {Server!s} --port={Port!s} -u {Username!s} --password={Password!s} --connect_timeout={ConnectTimeout!s}".format(**defaults['MySQL'])
+    res = runCommand(
+        [target.abspath, connectstring],
+        path.File('dropTestDefinitions.sql').abspath,
+        logDir.abspath,
+        filter=lambda string: multiple_replace(searchreplacespec, string),
+        env=SConsider.getFlatENV(env)
+    )
     if res != 0:
         raise SConsider.SkipTest('failed to drop test database (rc='+str(res)+'), check error log')
 
-    res = runSQL(path.File('TestDBDefinition.sql').abspath, logDir.abspath,
-           filter=lambda string: multiple_replace(searchreplacespec, string),
-           env=SConsider.getFlatENV(env))
+    res = runCommand(
+        [target.abspath, connectstring],
+        path.File('TestDBDefinition.sql').abspath,
+        logDir.abspath,
+        filter=lambda string: multiple_replace(searchreplacespec, string),
+        env=SConsider.getFlatENV(env)
+    )
     if res != 0:
         raise SConsider.SkipTest('failed to load test database (rc='+str(res)+'), check error log')
 
@@ -105,8 +106,8 @@ buildSettings = {
             (SConsider.findFiles(['.'],['.any','.sql']), S_IRUSR|S_IRGRP|S_IROTH),
         ],
         'runConfig' : {
-            'setUp'        : setUp,
-            'tearDown'     : tearDown,
+            'setUp' : setUp,
+            'tearDown' : tearDown,
         },
     },
 }
