@@ -3,6 +3,8 @@
 	<name>CoastAccessControl</name>
 	<comment></comment>
 	<projects>
+		<project>CoastFoundation</project>
+		<project>CoastWDBase</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

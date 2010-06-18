@@ -96,23 +96,55 @@ bool LDAPAbstractDAI::DoExec( Context &ctx, ParameterMapper *getter, ResultMappe
 
 	// 3. connect
 	Anything cp;
-	String server, bindName, bindPw;
-	long port;
-	cp["Server"] = server = ctx.Lookup("LDAPServer", "localhost");
-	cp["Port"] = port = ctx.Lookup("LDAPPort", 389L);
-	cp["Timeout"] = ctx.Lookup("LDAPTimeout", 10L);
-	cp["ConnectionTimeout"] = ctx.Lookup("LDAPConnectionTimeout", 10L);
-	cp["BindName"] = bindName = ctx.Lookup("LDAPBindName", "");
-	cp["BindPW"] = bindPw = ctx.Lookup("LDAPBindPW", "");
-	cp["MapUTF8"] = !ctx.Lookup("NoHTMLCharMapping", 0L);
-	cp["PlainBinaryValues"] = ctx.Lookup("PlainBinaryValues", 0L);
-	cp["PooledConnections"] = ctx.Lookup("LDAPPooledConnections", 0L);
-	cp["MaxConnections"] = ctx.Lookup("LDAPMaxConnections", 0L);
-	cp["TryAutoRebind"] = ctx.Lookup("LDAPTryAutoRebind", 0L);
-	cp["RebindTimeout"] = ctx.Lookup("LDAPRebindTimeout", 3600L);
 
-	TraceAny(cp, "connection/query params");
-	// store connection params in ctx (lookup for error-handling)
+	String server("No server specified!");
+	getter->Get("LDAPServer", server, ctx);
+	cp["Server"] = server;
+
+	long port = 389L;
+	getter->Get("LDAPPort", port, ctx);
+	cp["Port"] = port;
+
+	String bindName("No bind name specified!");
+	getter->Get("LDAPBindName", bindName, ctx);
+	cp["BindName"] = bindName;
+
+	String bindPw("No bind password specified!");
+	getter->Get("LDAPBindPW", bindPw, ctx);
+	cp["BindPW"] = bindPw;
+
+	long timeout = 10L;
+	getter->Get("LDAPTimeout", timeout, ctx);
+	cp["Timeout"] = timeout;
+
+	long connTimeout = 10L;
+	getter->Get("LDAPConnectionTimeout", connTimeout, ctx);
+	cp["ConnectionTimeout"] = connTimeout;
+
+	long noHTMLCharMapping = 0L;
+	getter->Get("NoHTMLCharMapping", noHTMLCharMapping, ctx);
+	cp["MapUTF8"] = !noHTMLCharMapping;
+
+	long plainBinaryValues = 0L;
+	getter->Get("PlainBinaryValues", plainBinaryValues, ctx);
+	cp["PlainBinaryValues"] = plainBinaryValues;
+
+	long pooledConnections = 0L;
+	getter->Get("LDAPPooledConnections", pooledConnections, ctx);
+	cp["PooledConnections"] = pooledConnections;
+
+	long maxConnections = 0L;
+	getter->Get("LDAPMaxConnections", maxConnections, ctx);
+	cp["MaxConnections"] = maxConnections;
+
+	long tryAutoRebind = 0L;
+	getter->Get("LDAPTryAutoRebind", tryAutoRebind, ctx);
+	cp["TryAutoRebind"] = tryAutoRebind;
+
+	long rebindTimeout = 3600L;
+	getter->Get("LDAPRebindTimeout", rebindTimeout, ctx);
+	cp["RebindTimeout"] = rebindTimeout;
+
 	eh.PutConnectionParams(cp);
 
 	LDAPConnection *lc( LDAPConnectionFactory(cp) );

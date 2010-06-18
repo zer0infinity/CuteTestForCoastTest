@@ -40,6 +40,7 @@ public:
 
 private:
 	LDAP *CreateBadConnectionHandle(const String &name, String &badConnectionPoolId, long &maxBadConnections);
+	String fetchPoolId(ParameterMapper *pGetter);
 };
 
 #endif

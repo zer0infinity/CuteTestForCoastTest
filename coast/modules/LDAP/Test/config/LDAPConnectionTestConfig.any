@@ -32,7 +32,7 @@
 			/Error {
 				/Msg 		"Binding request failed. [Server: '##LDAPFAULTYHOST##', Port: '##LDAPPORT##']  (Authorized bind.)"
 				/LdapCode	##BINDFAILCODE##
-				/LdapMsg	"Can't contact LDAP server"
+				/LdapMsg	"Can't connect to the LDAP server"
 				/LdapConnectionParams {
 					/Server "##LDAPFAULTYHOST##"
 					/Port ##LDAPPORT##
@@ -45,7 +45,7 @@
 					/TryAutoRebind		0
 					/MaxConnections 2
 				}
-				/MsgAsString "LdapDataAccess: [DataAccess_0] Msg [Binding request failed. [Server: '##LDAPFAULTYHOST##', Port: '##LDAPPORT##']  (Authorized bind.)] LdapCode [##BINDFAILCODE##] LdapMsg [Can't connect to the LDAP server] LdapConnectionParams [{/Server \"##LDAPFAULTYHOST##\"/Port ##LDAPPORT##/Timeout 10/ConnectionTimeout 5/BindName \"##BINDDN##\"/BindPW \"WipedOut\"/PooledConnections 0/RebindTimeout 0/TryAutoRebind 0/MaxConnections 2}]"
+				/MsgAsString ignore
 			}
 		}
 		/WrongPort {
@@ -63,7 +63,7 @@
 			/Error {
 				/Msg 		"Binding request failed. [Server: '##LDAPHOST##', Port: '##LDAPFAULTYPORT##']  (Authorized bind.)"
 				/LdapCode	##BINDFAILCODE##
-				/LdapMsg	"Can't contact LDAP server"
+				/LdapMsg	ignore
 				/LdapConnectionParams {
 					/Server "##LDAPHOST##"
 					/Port ##LDAPFAULTYPORT##
@@ -76,7 +76,7 @@
 					/TryAutoRebind		0
 					/MaxConnections 2
 				}
-				/MsgAsString "LdapDataAccess: [DataAccess_1] Msg [Binding request failed. [Server: '##LDAPHOST##', Port: '##LDAPFAULTYPORT##']  (Authorized bind.)] LdapCode [##BINDFAILCODE##] LdapMsg [Can't connect to the LDAP server] LdapConnectionParams [{/Server \"##LDAPHOST##\"/Port ##LDAPFAULTYPORT##/Timeout 10/ConnectionTimeout 5/BindName \"##BINDDN##\"/BindPW \"WipedOut\"/PooledConnections 0/RebindTimeout 0/TryAutoRebind 0/MaxConnections 2}]"
+				/MsgAsString ignore
 			}
 		}
 		/AnonymousBind {
@@ -116,7 +116,7 @@
 			/Error {
 				/Msg "LDAP request failed."
 				/LdapCode 32 # 32:openldap, 49:SunOne
-				/LdapMsg "Invalid credentials" # openldap, "No such object":SunOne
+				/LdapMsg "No such object"
 				/LdapConnectionParams {
 					/Server "##LDAPHOST##"
 					/Port ##LDAPPORT##
@@ -129,7 +129,7 @@
 					/TryAutoRebind		0
 					/MaxConnections 2
 				}
-				/MsgAsString "LdapDataAccess: [DataAccess_2] Msg [LDAP request failed.] LdapCode [32] LdapMsg [Invalid credentials] LdapConnectionParams [{/Server \"##LDAPHOST##\"/Port ##LDAPPORT##/Timeout 10/ConnectionTimeout 5/BindName \"##WRONGBINDDN##\"/BindPW \"WipedOut\"/PooledConnections 0/RebindTimeout 0/TryAutoRebind 0/MaxConnections 2}]"
+				/MsgAsString ignore
 			}
 		}
 		/WrongBindPW {
@@ -161,7 +161,7 @@
 					/TryAutoRebind		0
 					/MaxConnections 2
 				}
-				/MsgAsString "LdapDataAccess: [DataAccess_3] Msg [LDAP request failed.] LdapCode [49] LdapMsg [Invalid credentials] LdapConnectionParams [{/Server \"##LDAPHOST##\"/Port ##LDAPPORT##/Timeout 10/ConnectionTimeout 5/BindName \"##BINDDN##\"/BindPW \"WipedOut\"/PooledConnections 0/RebindTimeout 0/TryAutoRebind 0/MaxConnections 2}]"
+				/MsgAsString ignore
 			}
 		}
 		/PooledConnectFirst {

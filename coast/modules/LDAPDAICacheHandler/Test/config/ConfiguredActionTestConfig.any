@@ -42,7 +42,9 @@
 		{
 			/ParameterMapper
 			{
-				TestDA1 TestDA2 TestDA3  TestDA4 TestDA5 TestDA1Action TestDA2Action TestDA3Action TestDA4Action TestDA5Action
+    			/LDAPSearchDAI {
+    				TestDA1 TestDA2 TestDA3  TestDA4 TestDA5 TestDA1Action TestDA2Action TestDA3Action TestDA4Action TestDA5Action
+    			}
 			}
 		}
 		/Output

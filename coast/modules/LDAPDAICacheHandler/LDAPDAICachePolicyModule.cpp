@@ -118,7 +118,7 @@ LDAPDAIDataAcccessLoader::LDAPDAIDataAcccessLoader(Anything config) : fConfig(co
 LDAPDAIDataAcccessLoader::~LDAPDAIDataAcccessLoader() { }
 Anything LDAPDAIDataAcccessLoader::Load(const char *ldapDa)
 {
-	StartTrace(LDAPDAIDataAcccessLoader.Load);
+	StartTrace1(LDAPDAIDataAcccessLoader.Load, "da name to execute [" << NotNull(ldapDa) << "]");
 	Anything theResult(Storage::Global());
 	Context ctx;
 	Context::PushPopEntry<Anything> aEntry(ctx, "LdapLoader", fConfig);
@@ -127,7 +127,7 @@ Anything LDAPDAIDataAcccessLoader::Load(const char *ldapDa)
 		DataAccess da(ldapDa);
 		bool retCode = da.StdExec(ctx);
 		Anything tmpStore(ctx.GetTmpStore());
-
+		TraceAny(tmpStore, "da execution " << (retCode?"successful":"failed"));
 		if (retCode && tmpStore["LDAPResult"][ldapDa]["NumberOfEntries"].AsLong() > 0) {
 			theResult = tmpStore["LDAPResult"][ldapDa]["Entries"];
 		} else {

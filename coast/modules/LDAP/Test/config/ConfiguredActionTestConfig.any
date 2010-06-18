@@ -964,9 +964,9 @@
 				{
 					/LDAPError {
 						/LDAPSearchTest_WrongDN {
-							/Msg "LDAP request failed."
+							/Msg ignore
 							/LdapCode 32
-							/LdapMsg "No such object"
+							/LdapMsg ignore
 						}
 					}
 				}
@@ -987,9 +987,9 @@
 				{
 					/LDAPError {
 						/LDAPSearchTest_WrongDN {
-							/Msg "LDAP request failed."
+							/Msg ignore
 							/LdapCode 32
-							/LdapMsg "No such object"
+							/LdapMsg ignore
 						}
 					}
 				}
@@ -1061,9 +1061,9 @@
 				{
 					/LDAPError {
 						/LDAPDeleteTest_NonLeaf {
-							/Msg "LDAP request failed."
+							/Msg ignore
 							/LdapCode 66
-							/LdapMsg "Operation not allowed on nonleaf"
+							/LdapMsg ignore
 						}
 					}
 				}
@@ -1084,9 +1084,9 @@
 				{
 					/LDAPError {
 						/LDAPDeleteTest_NonLeaf {
-							/Msg "LDAP request failed."
+							/Msg ignore
 							/LdapCode 66
-							/LdapMsg "Operation not allowed on nonleaf"
+							/LdapMsg ignore
 						}
 					}
 				}
@@ -1108,9 +1108,9 @@
 				{
 					/LDAPError {
 						/LDAPDeleteTest_NonExisting {
-							/Msg "LDAP request failed."
+							/Msg ignore
 							/LdapCode 32
-							/LdapMsg "No such object"
+							/LdapMsg ignore
 						}
 					}
 				}
@@ -1131,9 +1131,9 @@
 				{
 					/LDAPError {
 						/LDAPDeleteTest_NonExisting {
-							/Msg "LDAP request failed."
+							/Msg ignore
 							/LdapCode 32
-							/LdapMsg "No such object"
+							/LdapMsg ignore
 						}
 					}
 				}
@@ -1205,9 +1205,9 @@
 				{
 					/LDAPError {
 						/LDAPCompareTest_NonExistingEntry {
-							/Msg "LDAP request failed."
+							/Msg ignore
 							/LdapCode 32
-							/LdapMsg "No such object"
+							/LdapMsg ignore
 						}
 					}
 				}
@@ -1228,9 +1228,9 @@
 				{
 					/LDAPError {
 						/LDAPCompareTest_NonExistingEntry {
-							/Msg "LDAP request failed."
+							/Msg ignore
 							/LdapCode 32
-							/LdapMsg "No such object"
+							/LdapMsg ignore
 						}
 					}
 				}
@@ -1252,9 +1252,9 @@
 				{
 					/LDAPError {
 						/LDAPCompareTest_NonExistingAttribute {
-							/Msg "LDAP request failed."
+						    /Msg ignore
 							/LdapCode 16
-							/LdapMsg "No such attribute"
+							/LdapMsg ignore
 						}
 					}
 				}
@@ -1274,9 +1274,9 @@
 				{
 					/LDAPError {
 						/LDAPCompareTest_NonExistingAttribute {
-							/Msg "LDAP request failed."
+							/Msg ignore
 							/LdapCode 16
-							/LdapMsg "No such attribute"
+							/LdapMsg ignore
 						}
 					}
 				}
@@ -1301,7 +1301,7 @@
 							/Type "LDAP_RES_COMPARE"
 							/Equal 1
 							/LdapCode 6
-							/LdapMsg "Compare true"
+							/LdapMsg ignore
 						}
 					}
 				}
@@ -1324,7 +1324,7 @@
 							/Type "LDAP_RES_COMPARE"
 							/Equal 1
 							/LdapCode 6
-							/LdapMsg "Compare true"
+							/LdapMsg ignore
 						}
 					}
 				}
@@ -1349,7 +1349,7 @@
 							/Type "LDAP_RES_COMPARE"
 							/Equal 0
 							/LdapCode 5
-							/LdapMsg "Compare false"
+							/LdapMsg ignore
 						}
 					}
 				}
@@ -1372,7 +1372,7 @@
 							/Type "LDAP_RES_COMPARE"
 							/Equal 0
 							/LdapCode 5
-							/LdapMsg "Compare false"
+							/LdapMsg ignore
 						}
 					}
 				}
@@ -1397,7 +1397,7 @@
 							/Type "LDAP_RES_COMPARE"
 							/Equal 1
 							/LdapCode 6
-							/LdapMsg "Compare true"
+							/LdapMsg ignore
 						}
 					}
 				}
@@ -1420,7 +1420,7 @@
 							/Type "LDAP_RES_COMPARE"
 							/Equal 1
 							/LdapCode 6
-							/LdapMsg "Compare true"
+							/LdapMsg ignore
 						}
 					}
 				}
@@ -1613,9 +1613,9 @@
 				{
 					/LDAPError {
 						/LDAPAddTest_ExistingEntry {
-							/Msg "LDAP request failed."
+							/Msg ignore
 							/LdapCode 68
-							/LdapMsg "Already exists"
+							/LdapMsg ignore
 						}
 					}
 				}
@@ -1635,9 +1635,9 @@
 				{
 					/LDAPError {
 						/LDAPAddTest_ExistingEntry {
-							/Msg "LDAP request failed."
+							/Msg ignore
 							/LdapCode 68
-							/LdapMsg "Already exists"
+							/LdapMsg ignore
 						}
 					}
 				}
@@ -1707,9 +1707,9 @@
 				{
 					/LDAPError {
 						/LDAPAddTest_MissingRequiredAttributes {
-							/Msg "LDAP request failed."
+							/Msg ignore
 							/LdapCode 65
-							/LdapMsg "Object class violation"
+							/LdapMsg ignore
 						}
 					}
 				}
@@ -1729,9 +1729,9 @@
 				{
 					/LDAPError {
 						/LDAPAddTest_MissingRequiredAttributes {
-							/Msg "LDAP request failed."
+							/Msg ignore
 							/LdapCode 65
-							/LdapMsg "Object class violation"
+							/LdapMsg ignore
 						}
 					}
 				}
@@ -1753,9 +1753,9 @@
 				{
 					/LDAPError {
 						/LDAPAddTest_NonExistingAttribute {
-							/Msg "LDAP request failed."
+							/Msg ignore
 							/LdapCode 65
-							/LdapMsg "Object class violation" # attribute specified is not known to server
+							/LdapMsg ignore
 						}
 					}
 				}
@@ -1776,9 +1776,9 @@
 				{
 					/LDAPError {
 						/LDAPAddTest_NonExistingAttribute {
-							/Msg "LDAP request failed."
+							/Msg ignore
 							/LdapCode 65
-							/LdapMsg "Object class violation" # attribute specified is not known to server
+							/LdapMsg ignore
 						}
 					}
 				}
@@ -1801,9 +1801,9 @@
 				{
 					/LDAPError {
 						/LDAPModifyTest_UnknownAttribute {
-							/Msg "LDAP request failed."
+							/Msg ignore
 							/LdapCode 16
-							/LdapMsg "No such attribute"
+							/LdapMsg ignore
 						}
 					}
 				}
@@ -1823,9 +1823,9 @@
 				{
 					/LDAPError {
 						/LDAPModifyTest_UnknownAttribute {
-							/Msg "LDAP request failed."
+							/Msg ignore
 							/LdapCode 16
-							/LdapMsg "No such attribute"
+							/LdapMsg ignore
 						}
 					}
 				}
@@ -1847,9 +1847,9 @@
 				{
 					/LDAPError {
 						/LDAPModifyTest_AddExistingValue {
-							/Msg "LDAP request failed."
+							/Msg ignore
 							/LdapCode 20
-							/LdapMsg "Type or value exists"
+							/LdapMsg ignore
 						}
 					}
 				}
@@ -1869,9 +1869,9 @@
 				{
 					/LDAPError {
 						/LDAPModifyTest_AddExistingValue {
-							/Msg "LDAP request failed."
+							/Msg ignore
 							/LdapCode 20
-							/LdapMsg "Type or value exists"
+							/LdapMsg ignore
 						}
 					}
 				}
@@ -1893,9 +1893,9 @@
 				{
 					/LDAPError {
 						/LDAPModifyTest_DeleteRequiredAttribute {
-							/Msg "LDAP request failed."
+							/Msg ignore
 							/LdapCode 65
-							/LdapMsg "Object class violation"
+							/LdapMsg ignore
 						}
 					}
 				}
@@ -1915,9 +1915,9 @@
 				{
 					/LDAPError {
 						/LDAPModifyTest_DeleteRequiredAttribute {
-							/Msg "LDAP request failed."
+							/Msg ignore
 							/LdapCode 65
-							/LdapMsg "Object class violation"
+							/LdapMsg ignore
 						}
 					}
 				}
@@ -2131,9 +2131,9 @@
 				{
 					/LDAPError {
 						/LDAPModifyTest_DeleteNonExistingValue {
-							/Msg "LDAP request failed."
+							/Msg ignore
 							/LdapCode 16
-							/LdapMsg "No such attribute"	# this is the correct error msg!
+							/LdapMsg ignore
 						}
 					}
 				}
@@ -2153,9 +2153,9 @@
 				{
 					/LDAPError {
 						/LDAPModifyTest_DeleteNonExistingValue {
-							/Msg "LDAP request failed."
+							/Msg ignore
 							/LdapCode 16
-							/LdapMsg "No such attribute"	# this is the correct error msg!
+							/LdapMsg ignore
 						}
 					}
 				}
@@ -2178,7 +2178,7 @@
 			/Result
 			{
 				/Delim "^"
-				/IndexDelim "£"
+				/IndexDelim "ï¿½"
 				/TmpStore
 				{
 					/LDAPResult {
@@ -2218,7 +2218,7 @@
 			/Result
 			{
 				/Delim "^"
-				/IndexDelim "£"
+				/IndexDelim "ï¿½"
 				/TmpStore
 				{
 					/LDAPResult {
@@ -2269,7 +2269,7 @@
 							/Type "LDAP_RES_COMPARE"
 							/Equal 1
 							/LdapCode 6
-							/LdapMsg "Compare true"
+							/LdapMsg ignore
 						}
 						/LDAPSearchTest_LanguageAttr {
 							/NumberOfResultMessages 2
@@ -2303,7 +2303,7 @@
 							/Type "LDAP_RES_COMPARE"
 							/Equal 1
 							/LdapCode 6
-							/LdapMsg "Compare true"
+							/LdapMsg ignore
 						}
 					}
 				}
@@ -2360,7 +2360,7 @@
 							/Type "LDAP_RES_COMPARE"
 							/Equal 1
 							/LdapCode 6
-							/LdapMsg "Compare true"
+							/LdapMsg ignore
 						}
 						/LDAPSearchTest_LanguageAttr {
 							/NumberOfResultMessages 2

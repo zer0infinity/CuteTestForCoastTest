@@ -17,6 +17,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "AnyIterators.h"
+#include "AnyUtils.h"
 #include "Dbg.h"
 
 //--- c-modules used -----------------------------------------------------------
@@ -86,7 +87,9 @@ void LDAPConnectionTest::ConnectionTest()
 			bool ret = LDAPConnection::IsConnectOk(eConnectState);
 			assertEqual(cConfig["ConnectIsOk"].AsBool(1), ret);
 			if (!ret) {
-				assertAnyEqual(cConfig["Error"], error);
+				String where;
+				aEntryIterator.SlotName(where);
+				assertAnyCompareEqual(cConfig["Error"], error, String(getConfigFileName()) << ":" << where, '.',':');
 			}
 			// now release sema and lock
 			lc.ReleaseHandleInfo();

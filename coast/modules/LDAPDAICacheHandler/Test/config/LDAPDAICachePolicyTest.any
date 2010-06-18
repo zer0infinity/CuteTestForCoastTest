@@ -33,8 +33,10 @@
 		/Mappers {
 			/Input {
 				/ParameterMapper {
-					NoDataDA
-					NoDataDAAction
+                    /LDAPSearchDAI {
+    					NoDataDA
+    					NoDataDAAction
+    				}
 				}
 			}
 			/Output {
@@ -80,8 +82,10 @@
 		/Mappers {
 			/Input {
 				/ParameterMapper {
-					TestDA1 TestDA2
-					TestDA1Action TestDA2Action
+                    /LDAPSearchDAI {
+    					TestDA1 TestDA2
+    					TestDA1Action TestDA2Action
+    				}
 				}
 			}
 			/Output {

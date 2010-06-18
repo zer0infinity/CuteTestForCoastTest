@@ -100,60 +100,63 @@
 	/Mappers {
 		/Input {
 			/ParameterMapper {
-				"LDAPTest_LookupTmpAndEnv"
+    			/LDAPSearchDAI {
 
-				"LDAPSearchTest_IllegalQuery"
-				"LDAPSearchTest_ScopeBase"
-				"LDAPSearchTest_ScopeOneLevel"
-				"LDAPSearchTest_ScopeSubTree"
-				"LDAPSearchTest_SizeLimit"
-				"LDAPSearchTest_AttrSelection"
-				"LDAPSearchTest_AttrsOnly"
-				"LDAPSearchTest_Filter"
-				"LDAPSearchTest_WrongDN"
-				"LDAPSearchTest_EmptyResult"
+    				"LDAPTest_LookupTmpAndEnv"
 
-				"LDAPSearchQuery_LookupTkrefactor_NotPooled"
-				"LDAPSearchQuery_LookupTkrefactor_Pooled"
+    				"LDAPSearchTest_IllegalQuery"
+    				"LDAPSearchTest_ScopeBase"
+    				"LDAPSearchTest_ScopeOneLevel"
+    				"LDAPSearchTest_ScopeSubTree"
+    				"LDAPSearchTest_SizeLimit"
+    				"LDAPSearchTest_AttrSelection"
+    				"LDAPSearchTest_AttrsOnly"
+    				"LDAPSearchTest_Filter"
+    				"LDAPSearchTest_WrongDN"
+    				"LDAPSearchTest_EmptyResult"
 
-				"LDAPConnectionManagerTest_StableQuery"
-				"LDAPConnectionManagerTest_Query"
-				"LDAPConnectionManagerTest_Query_Added"
-				"LDAPConnectionManagerTest_Delete"
-				"LDAPConnectionManagerTest_Add"
-				"LDAPConnectionManagerTest_MultipleModify"
-				"LDAPConnectionManagerTest_Compare"
+    				"LDAPSearchQuery_LookupTkrefactor_NotPooled"
+    				"LDAPSearchQuery_LookupTkrefactor_Pooled"
 
-				"LDAPDeleteTest_NonLeaf"
-				"LDAPDeleteTest_NonExisting"
-				"LDAPDeleteTest_ExistingLeaf_NotPooled"
-				"LDAPDeleteTest_ExistingLeaf_Pooled"
+    				"LDAPConnectionManagerTest_StableQuery"
+    				"LDAPConnectionManagerTest_Query"
+    				"LDAPConnectionManagerTest_Query_Added"
+    				"LDAPConnectionManagerTest_Delete"
+    				"LDAPConnectionManagerTest_Add"
+    				"LDAPConnectionManagerTest_MultipleModify"
+    				"LDAPConnectionManagerTest_Compare"
 
-				"LDAPCompareTest_NonExistingEntry"
-				"LDAPCompareTest_NonExistingAttribute"
-				"LDAPCompareTest_EqualValue"
-				"LDAPCompareTest_UnequalValue"
-				"LDAPCompareTest_MissingAttrNameParam"
-				"LDAPCompareTest_MissingAttrValueParam"
+    				"LDAPDeleteTest_NonLeaf"
+    				"LDAPDeleteTest_NonExisting"
+    				"LDAPDeleteTest_ExistingLeaf_NotPooled"
+    				"LDAPDeleteTest_ExistingLeaf_Pooled"
 
-				"LDAPAddTest_ExistingEntry"
-				"LDAPAddTest_NonExistingEntry_NotPooled"
-				"LDAPAddTest_NonExistingEntry_Pooled"
-				"LDAPAddTest_MissingRequiredAttributes"
-				"LDAPAddTest_NonExistingAttribute"
-				"LDAPAddTest_MissingAttrsParam"
-				"LDAPAddTest_SingleValues"
+    				"LDAPCompareTest_NonExistingEntry"
+    				"LDAPCompareTest_NonExistingAttribute"
+    				"LDAPCompareTest_EqualValue"
+    				"LDAPCompareTest_UnequalValue"
+    				"LDAPCompareTest_MissingAttrNameParam"
+    				"LDAPCompareTest_MissingAttrValueParam"
 
-				"LDAPModifyTest_UnknownAttribute"
-				"LDAPModifyTest_AddExistingValue"
-				"LDAPModifyTest_DeleteRequiredAttribute"
-				"LDAPModifyTest_MultipleModify_NotPooled"
-				"LDAPModifyTest_MultipleModify_Pooled"
-				"LDAPModifyTest_WrongMods"
-				"LDAPModifyTest_EmptyModsGiven"
-				"LDAPModifyTest_DeleteNonExistingValue"
-				"LDAPModifyTest_DeleteAndAddWholeAttr_NotPooled"
-				"LDAPModifyTest_DeleteAndAddWholeAttr_Pooled"
+    				"LDAPAddTest_ExistingEntry"
+    				"LDAPAddTest_NonExistingEntry_NotPooled"
+    				"LDAPAddTest_NonExistingEntry_Pooled"
+    				"LDAPAddTest_MissingRequiredAttributes"
+    				"LDAPAddTest_NonExistingAttribute"
+    				"LDAPAddTest_MissingAttrsParam"
+    				"LDAPAddTest_SingleValues"
+
+    				"LDAPModifyTest_UnknownAttribute"
+    				"LDAPModifyTest_AddExistingValue"
+    				"LDAPModifyTest_DeleteRequiredAttribute"
+    				"LDAPModifyTest_MultipleModify_NotPooled"
+    				"LDAPModifyTest_MultipleModify_Pooled"
+    				"LDAPModifyTest_WrongMods"
+    				"LDAPModifyTest_EmptyModsGiven"
+    				"LDAPModifyTest_DeleteNonExistingValue"
+    				"LDAPModifyTest_DeleteAndAddWholeAttr_NotPooled"
+    				"LDAPModifyTest_DeleteAndAddWholeAttr_Pooled"
+    			}
 			}
 		}
 		/Output {
@@ -220,8 +223,6 @@
 
 	/TestAutoRebindBadConnection
 	{
-		/LDAPServer		"##LDAPHOST##"
-		/LDAPPort		##LDAPPORT##
 		/LDAPBindName	"##WRONGBINDDN##"
 		/LDAPBindPW		"##WRONGBINDPW##"
 		/LDAPPooledConnections	1
@@ -257,8 +258,6 @@
 					{
 						/Data
 						{
-							/LDAPServer		"##LDAPHOST##"
-							/LDAPPort		##LDAPPORT##
 							/PoolId		"FristConnection"
 							/LDAPMaxConnections		1
 						}
@@ -387,8 +386,6 @@
 					{
 						/Data
 						{
-							/LDAPServer		"##LDAPHOST##"
-							/LDAPPort		##LDAPPORT##
 							/PoolId		"SecondConnection"
 							/LDAPMaxConnections		1
 						}
@@ -486,8 +483,6 @@
 					{
 						/Data
 						{
-							/LDAPServer		"##LDAPHOST##"
-							/LDAPPort		##LDAPPORT##
 							/PoolId		"ThirdConnection"
 							/LDAPMaxConnections		1
 						}
@@ -581,8 +576,6 @@
 					{
 						/Data
 						{
-							/LDAPServer		"##LDAPHOST##"
-							/LDAPPort		##LDAPPORT##
 							/PoolId		"ThirdConnection"
 							/LDAPMaxConnections		1
 						}
@@ -641,8 +634,6 @@
 					{
 						/Data
 						{
-							/LDAPServer		"##LDAPHOST##"
-							/LDAPPort		##LDAPPORT##
 							/PoolId		"ForthConnection"
 							/LDAPMaxConnections		1
 						}
@@ -741,7 +732,6 @@
 									  "person"
 									  "client"
 									  "tkfModify"
-									  "top"
 									}
 									/uid "tkgae"
 									/sn "tkgae"
@@ -813,7 +803,6 @@
  									"person"
  									"client"
  									"tkfModify"
- 									"top"
  								  }
  								  /uid 	"connectionmanagertest"
  								  /sn "connectionmanagertest"
@@ -902,16 +891,12 @@
  						{
 						  /LDAPError {
 							/LDAPConnectionManagerTest_Query {
-							  /Msg "LDAP request failed."
+							  /Msg ignore
 							  /LdapCode 32
-							  /LdapMsg "No such object"
+							  /LdapMsg ignore
 							  /LdapConnectionParams {
-								/Server "##LDAPHOST##"
-								/Port ##LDAPPORT##
 								/Timeout 10
 								/ConnectionTimeout 5
-								/BindName "##BINDDN##"
-								/BindPW "##BINDPW##"
 								/MapUTF8 1
 								/PlainBinaryValues 0
 								/PooledConnections 1
@@ -919,7 +904,7 @@
 								/TryAutoRebind 1
 								/RebindTimeout 0
 							  }
-	                          /MsgAsString "LdapDataAccess: [LDAPConnectionManagerTest_Query] Msg [LDAP request failed.] LdapCode [32] LdapMsg [No such object] LdapConnectionParams [{/Server \"##LDAPHOST##\"/Port ##LDAPPORT##/Timeout 10/ConnectionTimeout 5/BindName \"##BINDDN##\"/BindPW \"WipedOut\"/MapUTF8 1/PlainBinaryValues 0/PooledConnections 1/MaxConnections 2/TryAutoRebind 1/RebindTimeout 0}]"
+	                          /MsgAsString ignore
 		                    }
 			              }
  						}
@@ -1016,7 +1001,6 @@
  									"client"
  									"tkfModify"
  									"person"
- 									"top"
  								  }
  								  /uid "connectionmanagertest_added"
  								  /cn "added cn"
@@ -1082,6 +1066,7 @@
 				}
 			}
 		}
+
 		# 7
  		{
  			/ConfiguredActionTestAction
@@ -1121,7 +1106,6 @@
 									"client"
 									"tkfModify"
 									"person"
-									"top"
 								  }
 								  /uid "connectionmanagertest_added"
 								  /cn "added cn"
@@ -1162,7 +1146,7 @@
 							  /Type "LDAP_RES_COMPARE"
 							  /Equal 1
 							  /LdapCode 6
-							  /LdapMsg "Compare true"
+							  /LdapMsg ignore
 							}
 						  }
 						}
@@ -1211,7 +1195,6 @@
 									  "person"
 									  "client"
 									  "tkfModify"
-									  "top"
 									}
 									/uid "tkgae"
 									/sn "tkgae"
@@ -1266,23 +1249,19 @@
  						{
 						  /LDAPError {
 							/LDAPConnectionManagerTest_Query {
-							  /Msg "Asynchronous Wait4Result: The request <-1> timed out. Request abandoned: binding handle was invalid, ldap_abandon not called"
-							  /LdapCode 85
-							  /LdapMsg "Timed out"
+							  /Msg ignore
+							  /LdapCode 32
+							  /LdapMsg ignore
 							  /LdapConnectionParams {
-								/Server "##LDAPHOST##"
-								/Port ##LDAPPORT##
 								/Timeout 10
 								/ConnectionTimeout 5
-								/BindName "##BINDDN##"
-								/BindPW "##BINDPW##"
 								/MapUTF8 1
 								/PooledConnections 1
 								/MaxConnections 2
 								/TryAutoRebind 0
 								/RebindTimeout 0
 							  }
-							  /MsgAsString "LdapDataAccess: [LDAPConnectionManagerTest_Query] Msg [Asynchronous Wait4Result: The request <-1> timed out. Request abandoned: binding handle was invalid, ldap_abandon not called] LdapCode [85] LdapMsg [Timed out] LdapConnectionParams [{/Server \"##LDAPHOST##\"/Port ##LDAPPORT##/Timeout 10/ConnectionTimeout 5/BindName \"##BINDDN##\"/BindPW \"WipedOut\"/MapUTF8 1/PlainBinaryValues 0/PooledConnections 1/MaxConnections 2/TryAutoRebind 0/RebindTimeout 0}]"
+							  /MsgAsString ignore
 							}
 						  }
  						}
@@ -1309,23 +1288,19 @@
 						{
 						  /LDAPError {
 							/LDAPConnectionManagerTest_Delete {
-							  /Msg "Asynchronous Wait4Result: The request <-1> timed out. Request abandoned: binding handle was invalid, ldap_abandon not called"
+							  /Msg ignore
 							  /LdapCode 85
-							  /LdapMsg "Timed out"
+							  /LdapMsg ignore
 							  /LdapConnectionParams {
-								/Server "##LDAPHOST##"
-								/Port ##LDAPPORT##
 								/Timeout 10
 								/ConnectionTimeout 5
-								/BindName "##BINDDN##"
-								/BindPW "##BINDPW##"
 								/MapUTF8 1
 								/PooledConnections 1
 								/MaxConnections 2
 								/TryAutoRebind 0
 								/RebindTimeout 0
 							  }
-							  /MsgAsString "LdapDataAccess: [LDAPConnectionManagerTest_Delete] Msg [Asynchronous Wait4Result: The request <-1> timed out. Request abandoned: binding handle was invalid, ldap_abandon not called] LdapCode [85] LdapMsg [Timed out] LdapConnectionParams [{/Server \"##LDAPHOST##\"/Port ##LDAPPORT##/Timeout 10/ConnectionTimeout 5/BindName \"##BINDDN##\"/BindPW \"WipedOut\"/MapUTF8 1/PlainBinaryValues 0/PooledConnections 1/MaxConnections 2/TryAutoRebind 0/RebindTimeout 0}]"
+							  /MsgAsString ignore
 							}
 						  }
 						}
@@ -1352,23 +1327,19 @@
  						{
 						  /LDAPError {
 							/LDAPConnectionManagerTest_Add {
-							  /Msg "Asynchronous Wait4Result: The request <-1> timed out. Request abandoned: binding handle was invalid, ldap_abandon not called"
+							  /Msg ignore
 							  /LdapCode 85
-							  /LdapMsg "Timed out"
+							  /LdapMsg ignore
 							  /LdapConnectionParams {
-								/Server "##LDAPHOST##"
-								/Port ##LDAPPORT##
 								/Timeout 10
 								/ConnectionTimeout 5
-								/BindName "##BINDDN##"
-								/BindPW "##BINDPW##"
 								/MapUTF8 1
 								/PooledConnections 1
 								/MaxConnections 2
 								/TryAutoRebind 0
 								/RebindTimeout 0
 							  }
-							  /MsgAsString "LdapDataAccess: [LDAPConnectionManagerTest_Add] Msg [Asynchronous Wait4Result: The request <-1> timed out. Request abandoned: binding handle was invalid, ldap_abandon not called] LdapCode [85] LdapMsg [Timed out] LdapConnectionParams [{/Server \"##LDAPHOST##\"/Port ##LDAPPORT##/Timeout 10/ConnectionTimeout 5/BindName \"##BINDDN##\"/BindPW \"WipedOut\"/MapUTF8 1/PlainBinaryValues 0/PooledConnections 1/MaxConnections 2/TryAutoRebind 0/RebindTimeout 0}]"
+							  /MsgAsString ignore
 							}
  						  }
  						}
@@ -1395,23 +1366,19 @@
 						{
 						  /LDAPError {
 							/LDAPConnectionManagerTest_MultipleModify {
-							  /Msg "Asynchronous Wait4Result: The request <-1> timed out. Request abandoned: binding handle was invalid, ldap_abandon not called"
+							  /Msg ignore
 							  /LdapCode 85
-							  /LdapMsg "Timed out"
+							  /LdapMsg ignore
 							  /LdapConnectionParams {
-								/Server "##LDAPHOST##"
-								/Port ##LDAPPORT##
 								/Timeout 10
 								/ConnectionTimeout 5
-								/BindName "##BINDDN##"
-								/BindPW "##BINDPW##"
 								/MapUTF8 1
 								/PooledConnections 1
 								/MaxConnections 2
 								/TryAutoRebind 0
 								/RebindTimeout 0
 							  }
-							  /MsgAsString "LdapDataAccess: [LDAPConnectionManagerTest_MultipleModify] Msg [Asynchronous Wait4Result: The request <-1> timed out. Request abandoned: binding handle was invalid, ldap_abandon not called] LdapCode [85] LdapMsg [Timed out] LdapConnectionParams [{/Server \"##LDAPHOST##\"/Port ##LDAPPORT##/Timeout 10/ConnectionTimeout 5/BindName \"##BINDDN##\"/BindPW \"WipedOut\"/MapUTF8 1/PlainBinaryValues 0/PooledConnections 1/MaxConnections 2/TryAutoRebind 0/RebindTimeout 0}]"
+							  /MsgAsString ignore
 							}
 						  }
 						}
@@ -1437,23 +1404,19 @@
  						{
 						  /LDAPError {
 							/LDAPConnectionManagerTest_Compare {
-							  /Msg "Asynchronous Wait4Result: The request <-1> timed out. Request abandoned: binding handle was invalid, ldap_abandon not called"
+							  /Msg ignore
 							  /LdapCode 85
-							  /LdapMsg "Timed out"
+							  /LdapMsg ignore
 							  /LdapConnectionParams {
-								/Server "##LDAPHOST##"
-								/Port ##LDAPPORT##
 								/Timeout 10
 								/ConnectionTimeout 5
-								/BindName "##BINDDN##"
-								/BindPW "##BINDPW##"
 								/MapUTF8 1
 								/PooledConnections 1
 								/MaxConnections 2
 								/TryAutoRebind 0
 								/RebindTimeout 0
 							  }
-							  /MsgAsString "LdapDataAccess: [LDAPConnectionManagerTest_Compare] Msg [Asynchronous Wait4Result: The request <-1> timed out. Request abandoned: binding handle was invalid, ldap_abandon not called] LdapCode [85] LdapMsg [Timed out] LdapConnectionParams [{/Server \"##LDAPHOST##\"/Port ##LDAPPORT##/Timeout 10/ConnectionTimeout 5/BindName \"##BINDDN##\"/BindPW \"WipedOut\"/MapUTF8 1/PlainBinaryValues 0/PooledConnections 1/MaxConnections 2/TryAutoRebind 0/RebindTimeout 0}]"
+							  /MsgAsString ignore
 							}
 						  }
 						}
@@ -1464,10 +1427,6 @@
 	}
 	/LDAPConnectionDataAutoRetry
 	{
-		/LDAPServer		"##LDAPHOST##"
-		/LDAPPort		##LDAPPORT##
-		/LDAPBindName	"##BINDDN##"
-		/LDAPBindPW		"##BINDPW##"
 		/LDAPConnectionTimeout	5
 		/LDAPTimeout			10
 		/LDAPPooledConnections	1
@@ -1478,10 +1437,6 @@
 
 	/LDAPConnectionDataNoAutoRetry
 	{
-		/LDAPServer		"##LDAPHOST##"
-		/LDAPPort		##LDAPPORT##
-		/LDAPBindName	"##BINDDN##"
-		/LDAPBindPW		"##BINDPW##"
 		/LDAPConnectionTimeout	5
 		/LDAPTimeout			10
 		/LDAPPooledConnections	1

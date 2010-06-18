@@ -17,6 +17,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "PersistentLDAPConnection.h"
+#include "Mapper.h"
 #include "AnyIterators.h"
 
 //--- c-modules used -----------------------------------------------------------
@@ -97,6 +98,7 @@ LDAP *LDAPConnectionManagerTest::CreateBadConnectionHandle(const String &name, S
 	params["BindPW"] 			= GetConfig()[name]["LDAPBindPW"].AsString();
 	params["PooledConnections"]	= GetConfig()[name]["LDAPPooledConnections"].AsLong(0L);
 	params["ConnectionTimeout"]	= GetConfig()[name]["LDAPConnectionTimeout"].AsLong();
+
 	badConnectionPoolId = PersistentLDAPConnection::GetLdapPoolId(GetConfig()[name]["LDAPServer"].AsString(),
 						  GetConfig()[name]["LDAPPort"].AsLong(0),
 						  GetConfig()[name]["LDAPBindName"].AsString(),
@@ -125,23 +127,24 @@ void LDAPConnectionManagerTest::NoAutoRebindTest()
 
 	ROAnything caseConfig;
 	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
+
 	while ( aEntryIterator.Next(caseConfig) ) {
 		TraceAny(caseConfig["ConfiguredActionTestAction"], "ConfiguredActionTestAction");
-		String poolId = PersistentLDAPConnection::GetLdapPoolId(GetConfig()["LDAPConnectionDataNoAutoRetry"]["LDAPServer"].AsString(),
-						GetConfig()["LDAPConnectionDataNoAutoRetry"]["LDAPPort"].AsLong(0),
-						GetConfig()["LDAPConnectionDataNoAutoRetry"]["LDAPBindName"].AsString(),
-						GetConfig()["LDAPConnectionDataNoAutoRetry"]["LDAPBindPW"].AsString(),
-						GetConfig()["LDAPConnectionDataNoAutoRetry"]["LDAPConnectionTimeout"].AsLong() * 1000L);
-		Trace("poolId: " << poolId);
-		DoTest(PrepareConfig(GetConfig()["NoAutoRetryOkQueryTest"][0L]["ConfiguredActionTestAction"][0L].DeepClone()),
-			   GetConfig()["NoAutoRetryOkQueryTest"][0L]["ConfiguredActionTestAction"].SlotName(0));
-		String badConnectionPoolId;
-		long maxBadConnections;
-		LDAP *badConnectionHandle = CreateBadConnectionHandle("TestAutoRebindBadConnection", badConnectionPoolId, maxBadConnections);
-		assertEqual(true, LDAPConnectionManager::LDAPCONNMGR()->ReplaceHandlesForConnectionPool(poolId, badConnectionHandle));
 		String testCaseName = caseConfig["ConfiguredActionTestAction"].SlotName(0);
-		DoTest(PrepareConfig(caseConfig["ConfiguredActionTestAction"][0L].DeepClone()), testCaseName);
-		assertEqual(true, LDAPConnectionManager::LDAPCONNMGR()->ReplaceHandlesForConnectionPool(poolId, ( LDAP * ) NULL ));
+		ParameterMapper *pGetter = ParameterMapper::FindParameterMapper(testCaseName);
+
+		if ( t_assertm(pGetter!=0, TString("could not find ParameterMapper [").Append(testCaseName).Append(']')) ) {
+			String poolId = fetchPoolId(pGetter);
+			Trace("poolId: " << poolId);
+			DoTest(PrepareConfig(GetConfig()["NoAutoRetryOkQueryTest"][0L]["ConfiguredActionTestAction"][0L].DeepClone()),
+				   GetConfig()["NoAutoRetryOkQueryTest"][0L]["ConfiguredActionTestAction"].SlotName(0));
+			String badConnectionPoolId;
+			long maxBadConnections;
+			LDAP *badConnectionHandle = CreateBadConnectionHandle("TestAutoRebindBadConnection", badConnectionPoolId, maxBadConnections);
+			assertEqual(true, LDAPConnectionManager::LDAPCONNMGR()->ReplaceHandlesForConnectionPool(poolId, badConnectionHandle));
+			DoTest(PrepareConfig(caseConfig["ConfiguredActionTestAction"][0L].DeepClone()), testCaseName);
+			assertEqual(true, LDAPConnectionManager::LDAPCONNMGR()->ReplaceHandlesForConnectionPool(poolId, ( LDAP * ) NULL ));
+		}
 	}
 }
 
@@ -152,23 +155,40 @@ void LDAPConnectionManagerTest::AutoRebindTest()
 	ROAnything caseConfig;
 	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
 	while ( aEntryIterator.Next(caseConfig) ) {
-		TraceAny(caseConfig["ConfiguredActionTestAction"], "ConfiguredActionTestAction");
-		String poolId = PersistentLDAPConnection::GetLdapPoolId(GetConfig()["LDAPConnectionDataAutoRetry"]["LDAPServer"].AsString(),
-						GetConfig()["LDAPConnectionDataAutoRetry"]["LDAPPort"].AsLong(0),
-						GetConfig()["LDAPConnectionDataAutoRetry"]["LDAPBindName"].AsString(),
-						GetConfig()["LDAPConnectionDataAutoRetry"]["LDAPBindPW"].AsString(),
-						GetConfig()["LDAPConnectionDataAutoRetry"]["LDAPConnectionTimeout"].AsLong() * 1000L);
-		Trace("poolId: " << poolId);
-		DoTest(PrepareConfig(GetConfig()["TestAutoRebind"][0L]["ConfiguredActionTestAction"][0L].DeepClone()),
-			   GetConfig()["TestAutoRebind"][0L]["ConfiguredActionTestAction"].SlotName(0));
-		String badConnectionPoolId;
-		long maxBadConnections;
-		LDAP *badConnectionHandle = CreateBadConnectionHandle("TestAutoRebindBadConnection", badConnectionPoolId, maxBadConnections);
-		assertEqual(true, LDAPConnectionManager::LDAPCONNMGR()->ReplaceHandlesForConnectionPool(poolId, badConnectionHandle));
 		String testCaseName = caseConfig["ConfiguredActionTestAction"].SlotName(0);
-		DoTest(PrepareConfig(caseConfig["ConfiguredActionTestAction"][0L].DeepClone()), testCaseName);
+		ParameterMapper *pGetter = ParameterMapper::FindParameterMapper(testCaseName);
+
+		if ( t_assertm(pGetter!=0, TString("could not find ParameterMapper [").Append(testCaseName).Append(']')) ) {
+			String poolId = fetchPoolId(pGetter);
+			Trace("poolId: " << poolId);
+			TraceAny(caseConfig["ConfiguredActionTestAction"], "ConfiguredActionTestAction");
+			DoTest(PrepareConfig(GetConfig()["TestAutoRebind"][0L]["ConfiguredActionTestAction"][0L].DeepClone()),
+				   GetConfig()["TestAutoRebind"][0L]["ConfiguredActionTestAction"].SlotName(0));
+			String badConnectionPoolId;
+			long maxBadConnections;
+			LDAP *badConnectionHandle = CreateBadConnectionHandle("TestAutoRebindBadConnection", badConnectionPoolId, maxBadConnections);
+			assertEqual(true, LDAPConnectionManager::LDAPCONNMGR()->ReplaceHandlesForConnectionPool(poolId, badConnectionHandle));
+			DoTest(PrepareConfig(caseConfig["ConfiguredActionTestAction"][0L].DeepClone()), testCaseName);
+		}
 	}
 }
+
+String LDAPConnectionManagerTest::fetchPoolId(ParameterMapper *pGetter) {
+	Context ctx;
+	String server("No server specified!");
+	pGetter->Get("LDAPServer", server, ctx);
+	String bindName("No bind name specified!");
+	pGetter->Get("LDAPBindName", bindName, ctx);
+	String bindPw("No bind password specified!");
+	pGetter->Get("LDAPBindPW", bindPw, ctx);
+	long port = 0L;
+	pGetter->Get("LDAPPort", port, ctx);
+	long connectionTimeout = 0L;
+	pGetter->Get("LDAPConnectionTimeout", connectionTimeout, ctx);
+
+	return PersistentLDAPConnection::GetLdapPoolId(server, port, bindName, bindPw, connectionTimeout * 1000L);
+}
+
 
 // builds up a suite of tests, add a line for each testmethod
 Test *LDAPConnectionManagerTest::suite ()

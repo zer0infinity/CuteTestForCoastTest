@@ -1,60 +1,209 @@
-import os, socket, subprocess, re, pdb
-import SConsider
+from SomeUtils import multiple_replace
+from StringIO import StringIO
+from ldap.cidict import cidict
+from ldif import LDIFParser, LDIFWriter
 from stat import *
+import SConsider
+import Anything
+import ldap
+import ldap.modlist as modlist
+import ldif
+import os
+import socket
+import subprocess
+import re
+import pdb
+import sys
 
 Import('*')
 
-fqdn=socket.getfqdn()
-hostonly=fqdn.split('.')[0]
-try:
-    domain='.'.join(fqdn.split('.')[1:])
-except:
-    domain=""
+defaults = None
 
-faultyfqdn='nonexisting.server.loc'
-ldapport=43040
-faultyldapport=43041
-ldapbinddn='super-dn'
-ldapbindpw='super-pw'
-ldapwrongbinddn='wrong-dn'
-ldapwrongbindpw='wrong-pw'
-
-ldapBindFailureCodeSunOne=91
-ldapBindFailureCodeOpenldap=-1
-
-def ModifyConfigFiles(env, searchReplace=[], files=[]):
-    for file in files:
-        fname = file.abspath
-        if os.path.isfile(fname):
-            oldmode=os.stat(fname).st_mode
-            ## set writable
-            os.chmod(fname, oldmode | S_IWUSR)
-            ## replace tokens in file
-            SConsider.replaceRegexInFile(fname, searchReplace)
-            os.chmod(fname, oldmode)
 
 def setUp(target, source, env):
-    tdir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
-    logpath = tdir.Dir(os.path.join(env['LOGDIR'], env['VARIANTDIR']))
-    configdir = tdir.Dir('config')
-    searchReplace = [
-        (r"##LDAPHOST##", fqdn),
-        (r"##LDAPFAULTYHOST##", str(faultyfqdn)),
-        (r"##HOSTNAME##", hostonly),
-        (r"##DOMAINONLY##", domain),
-        (r"##LDAPPORT##", str(ldapport)),
-        (r"##LDAPFAULTYPORT##", str(faultyldapport)),
-        (r"##BINDDN##", str(ldapbinddn)),
-        (r"##WRONGBINDDN##", str(ldapwrongbinddn)),
-        (r"##BINDPW##", str(ldapbindpw)),
-        (r"##WRONGBINDPW##", str(ldapwrongbindpw)),
-        (r"##BINDFAILCODE##", str(ldapBindFailureCodeOpenldap)),
-    ]
-    ModifyConfigFiles(env, searchReplace, SConsider.findFiles([configdir],['.any']))
-    raise SConsider.SkipTest('ldap backend not available yet...')
+    relDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
+    configdir = relDir.Dir('config')
+    replaceConfigParams(env, relDir, configdir)
+    bulkLoadLdap(configdir)
 
+        
 def tearDown(target, source, env):
     pass
+
+
+def replaceConfigParams(env, relDir, configdir):
+    Anything.setLocalEnv(WD_ROOT=relDir.abspath)
+    global defaults
+    defaults = Anything.loadFromFile('Defaults.any')
+    
+    if not defaults.has_key('LDAP'):
+        raise SConsider.SkipTest('ldap backend not configured or disabled')
+    
+    searchreplacespec = [
+        ('##LDAPHOST##', str(defaults['LDAP']['Server'])), 
+        ('##LDAPFAULTYHOST##', str(defaults['LDAP']['FaultyServer'])), 
+        ('##LDAPPORT##', str(defaults['LDAP']['Port'])), 
+        ('##LDAPFAULTYPORT##', str(defaults['LDAP']['FaultyPort'])), 
+        ('##BINDDN##', str(defaults['LDAP']['BindDn'])), 
+        ('##WRONGBINDDN##', str(defaults['LDAP']['FaultyBindDn'])), 
+        ('##BINDPW##', str(defaults['LDAP']['Password'])), 
+        ('##WRONGBINDPW##', str(defaults['LDAP']['FaultyPassword'])), 
+        ('##BINDFAILCODE##', str(defaults['LDAP']['BindFailureCode']))]
+    
+    modifyConfigFles(env, searchreplacespec, SConsider.findFiles([configdir], ['.any']))
+
+
+def modifyConfigFles(env, searchReplace=[], files=[]):
+    for file in files:
+        fname = file.abspath
+    
+        if os.path.isfile(fname):
+            oldmode = os.stat(fname).st_mode
+            os.chmod(fname, oldmode | S_IWUSR)
+            SConsider.replaceRegexInFile(fname, searchReplace)
+            os.chmod(fname, oldmode)
+            
+            
+def bulkLoadLdap(configdir):
+    try:
+        l = ldap.initialize('ldap://' + defaults['LDAP']['Server'] + ':' + str(defaults['LDAP']['Port']))
+        l.bind_s(str(defaults['LDAP']['BindDn']), str(defaults['LDAP']['Password']))
+    
+        deleteLdapEntries(l)
+        addLdapEntries(l, configdir)
+    except ldap.INVALID_CREDENTIALS:
+        raise SConsider.SkipTest('username or password is incorrect.')
+    except ldap.LDAPError, e:        
+        strList = []
+
+        if type(e.message) == dict:
+            for (k, v) in e.message.iteritems():
+                strList.append("%s: %s\n" % (k, v))
+        else:
+            strList.append(e)
+        raise SConsider.SkipTest(''.join(strList))        
+    finally:
+        try:
+            l.unbind()
+        except Exception:
+            pass
+
+            
+def deleteLdapEntries(l):
+    try:
+        sys.stdout.write("ldap record deletion started.")
+        sys.stdout.flush()
+        rawRes = l.search_s(str(defaults['LDAP']['BindDc']), ldap.SCOPE_SUBTREE, '(objectclass=*)')
+        res = transformLdapSearchResults(rawRes)
+        i = 0
+        
+        for record in res:
+            l.delete_s(record.getDn())
+            if i % 10 == 0:
+                sys.stdout.write(".")
+                sys.stdout.flush() 
+            i += 1
+        print "finished."
+    except ldap.NO_SUCH_OBJECT:
+        # No issue, could be that somebody deleted all entries manually
+        pass
+
+
+class LdifLoader(LDIFParser):
+   def __init__(self, input, con):
+      LDIFParser.__init__(self, input)
+      self.con = con
+      self.cnt = 0
+
+   def handle(self, dn, entry):
+      ldifEntry = modlist.addModlist(entry)
+      self.con.add_s(dn, ldifEntry)
+      
+      if self.cnt % 10 == 0:
+          sys.stdout.write(".")
+          sys.stdout.flush() 
+      self.cnt += 1
+
+
+def addLdapEntries(l, configdir):
+    filePath = configdir.File(str(defaults['LDAP']['LdifFileName'])).abspath
+        
+    if not os.path.isfile(filePath):
+        raise SConsider.SkipTest('ldif file not available.')
+    
+    sys.stdout.write("ldap record load started.")
+    sys.stdout.flush()
+    loader = LdifLoader(open(filePath, 'rb'), l)
+    loader.parse()
+    print "finished."
+
+
+def transformLdapSearchResults(results):
+    res = []
+
+    if type(results) == tuple and len(results) == 2 :
+        (code, arr) = results
+    elif type(results) == list:
+        arr = results
+
+    if len(results) == 0:
+        return res
+
+    for item in arr:
+        res.append(LDAPSearchResult(item))
+    
+    # Need to reverse the result in order to be able to delete the entries bottom-up
+    res.reverse()
+
+    return res
+
+
+class LDAPSearchResult:
+    dn = ''
+
+    def __init__(self, entryTuple):
+        (dn, attrs) = entryTuple
+        if dn:
+            self.dn = dn
+        else:
+            return
+
+        self.attrs = cidict(attrs)
+
+    def getAttributes(self):
+        return self.attrs
+
+    def setAttributes(self, attrDict):
+        self.attrs = cidict(attrDict)
+
+    def hasAttributes(self, attrName):
+        return self.attrs.has_key(attrName)
+
+    def getAttrValues(self, key):
+        return self.attrs[key]
+
+    def getAttrNames(self):
+        return self.attrs.keys()
+
+    def getDn(self):
+        return self.dn
+                         
+    def prettyPrint(self):
+        str = "DN: " + self.dn + "\n"
+        for a, vList in self.attrs.iteritems():
+            str = str + "Name: " + a + "\n"
+            for v in vList:
+                str = str + "  Value: " + v + "\n"
+        str = str + "========"
+        
+        return str
+
+    def toLdif(self):
+        out = StringIO()
+        ldif_out = ldif.LDIFWriter(out)
+        ldif_out.unparse(self.dn, self.attrs)
+        return out.getvalue()
+
 
 buildSettings = {
     packagename : {
@@ -63,7 +212,7 @@ buildSettings = {
         'requires'         : [],
         'sourceFiles'      : SConsider.listFiles(['*.cpp']),
         'copyFiles'        : [
-            (SConsider.findFiles(['config'], extensions=['.any', '.ldif'], matchfiles=[]), S_IRUSR|S_IRGRP|S_IROTH),
+            (SConsider.findFiles(['config'], extensions=['.any', '.ldif'], matchfiles=[]), S_IRUSR | S_IRGRP | S_IROTH),
         ],
         'runConfig'        : {
             'setUp'        : setUp,

@@ -6,7 +6,7 @@
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
 {
-	/LowerBound	00
+	/LowerBound	10
 	/UpperBound	211
 	/DumpAnythings  1		# print full Anythings
 
@@ -34,6 +34,14 @@
 		/MainSwitch	10
 		/EnableAll	10
 	}
+    /ParameterMapper {
+        /MainSwitch 10
+        /EnableAll  10
+    }
+    /ResultMapper {
+        /MainSwitch 10
+        /EnableAll  10
+    }
 	/LDAPDAIDataAccessTestAction {
 		/MainSwitch	10
 		/EnableAll	10

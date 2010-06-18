@@ -43,6 +43,15 @@
 #		# for deletions: no extra parameters (/LDAPBase only)
 #	}
 
+    /LDAPSearchDAI {
+        /LDAPServer             "##LDAPHOST##"
+        /LDAPPort               ##LDAPPORT##
+        /LDAPTimeout            10
+        /LDAPConnectionTimeout  5
+        /LDAPBindName           "##BINDDN##"
+        /LDAPBindPW             "##BINDPW##"
+    }
+
 	# --------------------------- Queries --------------------------------
 
 	/LDAPSearchQuery_LookupTkrefactor_NotPooled %LDAPSearchTest_ScopeBase

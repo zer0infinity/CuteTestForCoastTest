@@ -3,6 +3,7 @@
 	<name>CoastMySQL</name>
 	<comment></comment>
 	<projects>
+		<project>CoastFoundation</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
