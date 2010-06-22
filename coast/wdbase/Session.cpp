@@ -84,7 +84,10 @@ void Session::Init(const char *id, Context &ctx)
 	// is entrypoint but doesn't need Mutex, since it is similar to a constructor
 	fId = id;
 	PutInStore("SessionId", fId);
-	GetRole(ctx);
+	Role* pRole = GetRole(ctx);
+	if (pRole) {
+		PutInStore("RoleName", pRole->GetName());
+	}
 
 	// extract some information from environment
 	// for verification purposes
