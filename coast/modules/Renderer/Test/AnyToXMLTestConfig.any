@@ -7,7 +7,6 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-
 	# Internal representation of
 	# <!--   DTD for Availability Output  -->
 	# <!ELEMENT Itinerary (Flight+,Time)>

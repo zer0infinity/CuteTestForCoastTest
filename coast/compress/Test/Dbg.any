@@ -7,7 +7,6 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-
 	/LowerBound		0 		# define lower bound of debug range, 0 turns it off completly
 	/UpperBound		150		# define upper bound of debug range
 	/DumpAnythings  1		# print full Anythings

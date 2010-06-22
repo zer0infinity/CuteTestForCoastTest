@@ -7,7 +7,6 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-
 	/UserDataAccessController	UserData
 	/EntityDataAccessController	EntityData
 	/TokenDataAccessController	TokenData

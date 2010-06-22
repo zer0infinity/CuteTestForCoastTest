@@ -7,7 +7,6 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-
 	/ServiceDispatchers {
 		/ServiceDispatcher {
 			/TestDispatcher { SecondTestDipatcher }

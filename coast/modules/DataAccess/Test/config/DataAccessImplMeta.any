@@ -7,7 +7,6 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-
 	/testdai {	#data access impl for test purposes
 		/testitem1	"foo"
 		/testitem2  "bah"

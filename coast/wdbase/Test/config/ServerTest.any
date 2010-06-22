@@ -7,7 +7,6 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-
 	# important for GlobalReInit to load this file again!
 	/WD_BOOTFILE	ServerTest
 

@@ -7,7 +7,6 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-
 	/URIPrefix2ServiceMap {
 	  /"/simpleServiceURL/"		SimpleService
 	  /"/rendererdServiceURL/"	{ /ContextLookupRenderer ServiceTwo }
