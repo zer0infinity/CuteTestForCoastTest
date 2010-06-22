@@ -483,8 +483,8 @@
 		/EnableAll				5001
 	}
 	/URLFilter {
-		/MainSwitch				5000
-		/EnableAll				5001
+		/MainSwitch				500
+		/EnableAll				501
 	}
 	/AnyLookupInterfaceAdapter {
 		/MainSwitch				10
@@ -500,6 +500,10 @@
 		/EnableAll				0
 	}
 	/LockedValueIncrementDecrementEntry {
+		/MainSwitch				34
+		/EnableAll				34
+	}
+	/TransitionTests {
 		/MainSwitch				34
 		/EnableAll				34
 	}

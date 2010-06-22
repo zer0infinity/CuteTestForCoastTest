@@ -8,7 +8,9 @@
 
 {
 	/RoleChanges {
-		rc1 rc2 rc3
+		/rc1 *
+		/rc2 *
+		/rc3 *
 	}
 
 	# -- Config for pid file handling

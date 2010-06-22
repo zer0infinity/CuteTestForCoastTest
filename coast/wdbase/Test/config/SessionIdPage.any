@@ -7,8 +7,10 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-	/PageLayout {					# render session id on all pages
-		/PageNameRenderer * "\n"
-		{ /Type SessionInfoRenderer }
+	/PageLayout {
+		"{"
+		"/page " { /PageNameRenderer * } "\n"
+		{ /SessionInfoRenderer * }
+		"}"
 	}
 }

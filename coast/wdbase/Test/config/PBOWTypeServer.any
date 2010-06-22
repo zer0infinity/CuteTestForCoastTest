@@ -23,6 +23,11 @@
 		/Logout				"PBOWTypeGuest"			# 'Logout' token is predefined
 	}
 
+	/URLFilterSpec  {
+		/Tags2Suppress { sessionId role page }
+		/Tags2Unscramble { X X1 X2 }
+	}
+
 #--- Paths used ---------------------------------------------------------------
 	/ImagePath		    "/images/"	# the images referenced by this server
 

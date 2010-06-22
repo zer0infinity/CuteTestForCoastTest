@@ -22,6 +22,7 @@
 #include "StringStream.h"
 #include "Dbg.h"
 #include "Context.h"
+#include "AnyIterators.h"
 
 #if defined(ONLY_STD_IOSTREAM)
 using namespace std;
@@ -581,6 +582,7 @@ URLFilter *SessionListManager::FindURLFilter(Context &ctx)
 
 Anything SessionListManager::StdFilterTags(Context &ctx)
 {
+	StartTrace(SessionListManager.StdFilterTags);
 	Anything tmpFilter;
 
 	// setup filter manually to be backward compatible
@@ -588,9 +590,17 @@ Anything SessionListManager::StdFilterTags(Context &ctx)
 	tmpFilter["Tags2Suppress"].Append("role");
 	tmpFilter["Tags2Suppress"].Append("page");
 
-	ROAnything roleChangeActions;
+	ROAnything roleChangeActions, roaEntry;
 	if (ctx.Lookup("RoleChanges", roleChangeActions) ) {
-		tmpFilter["Tags2Suppress"]["action"] = roleChangeActions.DeepClone();
+		TraceAny(roleChangeActions,"role changes");
+		AnyExtensions::Iterator<ROAnything> slotIter(roleChangeActions);
+		String strAction;
+		while (slotIter.Next(roaEntry)) {
+			if ( slotIter.SlotName(strAction)) {
+				Trace("adding action [" << strAction << "]");
+				tmpFilter["Tags2Suppress"]["action"].Append(strAction);
+			}
+		}
 	}
 
 	long useBaseURL = 0;
@@ -600,8 +610,8 @@ Anything SessionListManager::StdFilterTags(Context &ctx)
 	} else {
 		tmpFilter["Tags2Unscramble"].Append("X");
 	}
+	TraceAny(tmpFilter, "default filter tags");
 	return tmpFilter;
-
 }
 
 bool SessionListManager::FilterQuery(Context &ctx)

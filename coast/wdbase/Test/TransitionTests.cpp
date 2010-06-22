@@ -45,14 +45,9 @@ void SessionInfoRenderer::RenderAll(ostream &reply, Context &c, const ROAnything
 {
 	String roleName;
 	c.GetRole()->GetName(roleName);
-	reply << c.GetSession()->GetId() << endl << roleName;
-
-	Anything query = c.GetQuery();
-	if (query.IsDefined("delayedIndex")) {
-		reply << endl << query["delayedIndex"].AsLong(-1);
-	} else {
-		reply << endl << "-1";
-	}
+	reply << "/sessionId \"" << c.GetSession()->GetId() << "\"" << endl;
+	reply << "/role " << roleName << endl;
+	reply << "/delayed " << ROAnything(c.GetQuery())["delayedIndex"].AsLong(-1) << endl;
 }
 
 //---- LoginAction ----------------------------------------------------------------------
@@ -112,15 +107,16 @@ void TransitionTests::setUp ()
 
 bool TransitionTests::EvalRequest(ROAnything request, Anything &returned)
 {
+	StartTrace(TransitionTests.EvalRequest);
 	// connect to the server
-	String reply;
+	StringStream reply;
 	Connector connector("127.0.0.1", GetConfig()["testport"].AsLong());
 	iostream *Ios = connector.Use()->GetStream();
 	t_assert(Ios != 0);
 
 	if (Ios) {
 		String resultRole, resultPage, resultPage2, sessionId, delayed;
-
+		TraceAny(request, "evalrequest");
 		// post request
 		(*Ios) << request;
 
@@ -129,22 +125,15 @@ bool TransitionTests::EvalRequest(ROAnything request, Anything &returned)
 		while ((c = Ios->get()) != EOF) {
 			reply << c;
 		}
-
+		Trace("native reply [" << reply.str() << "]");
 		// extract infos about the received page
-		StringTokenizer st(reply, '\n');
-		if (st.NextToken(resultPage) && st.NextToken(resultPage2) && st.NextToken(sessionId)
-			&& st.NextToken(resultRole) && st.NextToken(delayed)) {
-
+		if ( getline(reply, resultPage) ) {
+			// trim carriage return
 			resultPage.Trim(resultPage.Length() - 1);	// since page is written as the response header
-			// the is an additional newline that separates
-			// it from the other data
-
-			returned["page"] = resultPage;
-			assertEqual(resultPage, resultPage2);
-			returned["sessionId"] = sessionId;
-			returned["role"] = resultRole;
-			returned["delayed"] = delayed;
-
+			Trace("resultpage [" << resultPage << "]");
+			t_assertm(returned.Import(reply, "stream"),"failed to import anything from server stream");
+			TraceAny(returned, "result");
+			assertEqual(resultPage, returned["page"].AsString());
 			return true;
 		}
 		return false;

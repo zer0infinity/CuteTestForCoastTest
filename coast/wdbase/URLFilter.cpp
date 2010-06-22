@@ -15,6 +15,7 @@
 #include "Renderer.h"
 #include "SystemLog.h"
 #include "Dbg.h"
+#include "AnyIterators.h"
 
 //--- URLFilter ----------------------------------------------------------
 bool URLFilter::HandleCookie(Anything &query, Anything &env, const ROAnything &filterCookieConf, Context &ctx)
@@ -107,38 +108,33 @@ bool URLFilter::FilterState(Anything &query, const ROAnything &filterTags, Conte
 	SubTraceAny(query, query, "Query: ");
 	SubTraceAny(filterTags, filterTags, "Filter: ");
 	bool retCode = true;
-
-	long numOfFilters = filterTags.GetSize();
-	for (long i = 0; i < numOfFilters; ++i) {
-		const char *slotName = filterTags.SlotName(i);
-		ROAnything filter(filterTags[i]);
-		if (!slotName) {
-			String filterVal;
-			if (filter.GetType() != AnyCharPtrType) {
-				// assume renderer expression
-				Renderer::RenderOnString(filterVal, ctx, filter);
-			} else {
-				filterVal = filter.AsCharPtr(0);
-			}
-			if ( filterVal.Length() == 0 ) {
-				retCode = false;
-			} else
-				// simple filter just remove it from query
-			{
-				retCode = DoFilterState(query, filterVal, ctx) && retCode;
-			}
-		} else if (slotName) {
-			// complex filter; remove from query if
-			// filter[slotName].Contains(query[slotName]);
-			if (	query.IsDefined(slotName) &&
-					filter.Contains(query[slotName].AsCharPtr("")) ) {
-				Trace("removing <" << slotName << ">=<" << query[slotName].AsCharPtr("") << ">");
+	ROAnything filter, roaQuery(query);
+	String slotName;
+	AnyExtensions::Iterator<ROAnything> aIterator(filterTags);
+	while(aIterator.Next(filter)) {
+		if ( aIterator.SlotName(slotName)) {
+			TraceAny(filter, "filter entry slotname [" << slotName << "]");
+			// key=value type filter
+			// -> remove from query if query[key] is contained in filter
+			if ( filter.Contains(roaQuery[slotName].AsString()) ) {
+				Trace("removing query[" << slotName << "] <" << query[slotName].AsString() << ">");
 				query.Remove(slotName);
-				retCode = true && retCode;
 			}
 		} else {
-			// we don't handle any other type
-			retCode = false;
+			TraceAny(filter, "filter entry");
+			if (filter.GetType() != AnyCharPtrType) {
+				// assume renderer expression
+				slotName = Renderer::RenderToString(ctx, filter);
+			} else {
+				slotName = filter.AsString();
+			}
+			Trace("rendered slotname to remove (if) [" << slotName << "]");
+			if ( !slotName.Length() ) {
+				retCode = false;
+			} else {
+				// simple filter just remove it from query
+				retCode = DoFilterState(query, slotName, ctx) && retCode;
+			}
 		}
 	}
 	return retCode;
