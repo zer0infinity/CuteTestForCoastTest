@@ -6,16 +6,18 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
+//--- interface include --------------------------------------------------------
+#include "ConnectorAcceptorTest.h"
 
 //--- module under test --------------------------------------------------------
 #include "EBCDICConnector.h"
 
-//--- interface include --------------------------------------------------------
-#include "ConnectorAcceptorTest.h"
+//--- test modules used --------------------------------------------------------
+#include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
+#include "Socket.h"
+#include "Threads.h"
 #include "StringStream.h"
 #include "Dbg.h"
 
@@ -28,31 +30,121 @@ using namespace std;
 #include <io.h>
 #endif
 
-const char *localHost = "127.0.0.1";
-const long localPort = 7183;
+//!Callback for echo or return of a fixed message
+//! echos incoming messages if the length of the return message is 0 or
+//! returns a fixed message if one has been set
+class EBCDICEchoMsgCallBack: public AcceptorCallBack {
+public:
 
-ConnectorAcceptorTest::ConnectorAcceptorTest(TString tname)
-	: TestCaseType(tname),
-	  fCallBack(0),
-	  fAcceptorThread(0)
-{
+	//!default constructor is empty since class provides only protocol no implementation
+	EBCDICEchoMsgCallBack() :
+		fLastRequest(), fReplyMessage() {
+	}
+
+	//!default destructor is empty since class provides only protocol no implementation
+	virtual ~EBCDICEchoMsgCallBack() {
+	}
+
+	//!call back functionality provides the socket object
+	//! \param socket the Socket object resulting from the accepted connection
+	virtual void CallBack(Socket *socket) {
+		StartTrace(EBCDICEchoMsgCallBack.CallBack);
+		if (socket != 0) { // might be 0 if we run out of memory, not likely
+			StringStream is(&fLastRequest);
+			iostream *Ios = socket->GetStream();
+
+			if (Ios != 0) {
+				is << Ios->rdbuf() << flush;
+				if (fReplyMessage.Length() > 0) {
+					(*Ios) << fReplyMessage << flush;
+				} else {
+					(*Ios) << fLastRequest << flush;
+				} // if
+			} // if
+			socket->ShutDownWriting();
+		} // if
+		delete socket;
+	} // CallBack
+
+	//!I return the last message I read
+	virtual String &GetLastRequest() {
+		StartTrace(EBCDICEchoMsgCallBack.GetLastRequest);
+		return fLastRequest;
+	}
+
+	//!Set the message that I shall return on subsequent requests
+	void SetReplyMessage(String &reply) {
+		StartTrace(EBCDICEchoMsgCallBack.SetReplyMessage);
+		fReplyMessage = reply;
+	}
+
+protected:
+	// no locking as only one thread initiates actions and the second thread
+	// only accesses while the first one waits for I/O
+	String fLastRequest;
+	String fReplyMessage;
+};
+
+//!a thread to run a specific acceptor
+//! very simple server thread that allows one connection, useful for testing Sockets
+class AcceptorThread: public Thread {
+public:
+	AcceptorThread(Acceptor *acceptor) :
+		Thread("AcceptorThread"), fAcceptor(acceptor) {
+	}
+	~AcceptorThread() {
+		StartTrace(AcceptorThread.Dtor);
+		if (fAcceptor) {
+			delete fAcceptor;
+		}
+		fAcceptor = 0;
+	}
+
+	void Run() {
+		StartTrace(AcceptorThread.Run);
+		if (fAcceptor) {
+			fAcceptor->RunAcceptLoop();
+		} // if
+	}
+
+protected:
+	bool DoStartRequestedHook(ROAnything args) {
+		StartTrace(AcceptorThread.DoStartRequestedHook);
+		if (fAcceptor) {
+			fAcceptor->SetThreadLocal(true);
+			return (fAcceptor->PrepareAcceptLoop() == 0);
+		}
+		return false;
+	}
+	void DoTerminationRequestHook(ROAnything) {
+		StartTrace(AcceptorThread.DoTerminationRequestHook);
+		if (fAcceptor) {
+			fAcceptor->StopAcceptLoop();
+		}
+	}
+private:
+	Acceptor *fAcceptor;
+};
+
+ConnectorAcceptorTest::ConnectorAcceptorTest(TString tname) :
+	TestCaseType(tname), fCallBack(0), fAcceptorThread(0) {
 	StartTrace(ConnectorAcceptorTest.Ctor);
 }
 
-ConnectorAcceptorTest::~ConnectorAcceptorTest()
-{
+ConnectorAcceptorTest::~ConnectorAcceptorTest() {
 	StartTrace(ConnectorAcceptorTest.Dtor);
 }
 
-void ConnectorAcceptorTest::setUp ()
-{
-	StartTrace(ConnectorAcceptorTest.setUp);
+void ConnectorAcceptorTest::setUp() {
+	StartTrace(ConnectorAcceptorTest.setUp); TraceAny(GetTestCaseConfig(), "TestCaseConfig");
+	String strHost = GetTestCaseConfig()["Address"].AsString();
+	long lPort = GetTestCaseConfig()["Port"].AsLong();
+
 	fCallBack = new EBCDICEchoMsgCallBack();
-	fAcceptorThread = new AcceptorThread(new Acceptor(localHost, localPort, 2, fCallBack));
+	fAcceptorThread = new AcceptorThread(new Acceptor(strHost, lPort, 2, fCallBack));
 	t_assert(fCallBack != 0);
 	t_assert(fAcceptorThread != 0);
-	if (	(fCallBack) &&
-			(fAcceptorThread) ) {
+	if ((fCallBack) && (fAcceptorThread)) {
 		bool startsuccesful = fAcceptorThread->Start();
 		t_assertm(startsuccesful, "probably bind failed; since thread not started");
 		bool running = fAcceptorThread->CheckState(Thread::eRunning, 3);
@@ -68,31 +160,29 @@ void ConnectorAcceptorTest::setUp ()
 	delete fAcceptorThread;
 	fAcceptorThread = 0;
 	t_assertm(fAcceptorThread != 0, "expected AcceptorThread to be ready; init or startup failed");
-};
+}
 
-void ConnectorAcceptorTest::tearDown ()
-{
+void ConnectorAcceptorTest::tearDown() {
 	StartTrace(ConnectorAcceptorTest.tearDown);
 	if (fAcceptorThread) {
 		fAcceptorThread->Terminate();
 		t_assert(fAcceptorThread->CheckState(Thread::eTerminated, 3));
 		delete fAcceptorThread;
 		fAcceptorThread = 0;
-	} // if
+	}
 }
 
-void ConnectorAcceptorTest::basicOperation ()
-{
+void ConnectorAcceptorTest::basicOperation() {
 	StartTrace(ConnectorAcceptorTest.basicOperation);
 	if (fAcceptorThread) {
-		EBCDICConnector conn(localHost, localPort);
-
+		TraceAny(GetTestCaseConfig(), "TestCaseConfig");
+		EBCDICConnector conn(GetTestCaseConfig()["Address"].AsString(), GetTestCaseConfig()["Port"].AsLong());
 		Socket *socket = conn.MakeSocket();
 		t_assert( socket != 0 );
-		if ( socket != 0 ) {
+		if (socket != 0) {
 			iostream *Ios = socket->GetStream();
 			t_assert( Ios != 0 );
-			if ( Ios != 0 ) {
+			if (Ios != 0) {
 				String input("ABC");
 				(*Ios) << input << flush;
 				Trace("written:<" << input << ">");
@@ -111,7 +201,7 @@ void ConnectorAcceptorTest::basicOperation ()
 				}
 				Trace("reply read:<" << reply << ">");
 				assertEqual(input, reply);
-				String inEBCDIC( fCallBack->GetLastRequest() );
+				String inEBCDIC(fCallBack->GetLastRequest());
 				assertEqual( input.Length(), inEBCDIC.Length() );
 				StringStream intermediate;
 				inEBCDIC.IntPrintOn(intermediate);
@@ -121,19 +211,18 @@ void ConnectorAcceptorTest::basicOperation ()
 	}
 }
 
-void ConnectorAcceptorTest::basicOperationWithAllocator ()
-{
+void ConnectorAcceptorTest::basicOperationWithAllocator() {
 	StartTrace(ConnectorAcceptorTest.basicOperationWithAllocator);
 	if (fAcceptorThread) {
-		EBCDICConnector conn(localHost, localPort);
+		EBCDICConnector conn(GetTestCaseConfig()["Address"].AsString(), GetTestCaseConfig()["Port"].AsLong());
 		conn.SetThreadLocal(true);
 
 		Socket *socket = conn.MakeSocket();
 		t_assert( socket != 0 );
-		if ( socket != 0 ) {
+		if (socket != 0) {
 			iostream *Ios = socket->GetStream();
 			t_assert( Ios != 0 );
-			if ( Ios != 0 ) {
+			if (Ios != 0) {
 				String input("ABC");
 				(*Ios) << input << flush;
 				t_assert(!!(*Ios));
@@ -145,7 +234,7 @@ void ConnectorAcceptorTest::basicOperationWithAllocator ()
 				reply << Ios->rdbuf() << flush;
 				t_assert(!!(*Ios));
 				assertEqual(input, reply.str());
-				String inEBCDIC( fCallBack->GetLastRequest() );
+				String inEBCDIC(fCallBack->GetLastRequest());
 				assertEqual( input.Length(), inEBCDIC.Length() );
 				StringStream intermediate;
 				inEBCDIC.IntPrintOn(intermediate);
@@ -155,18 +244,17 @@ void ConnectorAcceptorTest::basicOperationWithAllocator ()
 	}
 }
 
-void ConnectorAcceptorTest::differentReply ()
-{
+void ConnectorAcceptorTest::differentReply() {
 	StartTrace(ConnectorAcceptorTest.differentReply);
 	if (fAcceptorThread) {
-		EBCDICConnector conn(localHost, localPort);
+		EBCDICConnector conn(GetTestCaseConfig()["Address"].AsString(), GetTestCaseConfig()["Port"].AsLong());
 
 		Socket *socket = conn.MakeSocket();
 		t_assert( socket != 0 );
-		if ( socket != 0 ) {
+		if (socket != 0) {
 			iostream *Ios = socket->GetStream();
 			t_assert( Ios != 0 );
-			if ( Ios != 0 ) {
+			if (Ios != 0) {
 				String EBCDICReply("\xC3\xC4\xC5\xC6");
 				fCallBack->SetReplyMessage(EBCDICReply);
 				String input("ABC");
@@ -181,81 +269,11 @@ void ConnectorAcceptorTest::differentReply ()
 	}
 } // differentReply
 
-Test *ConnectorAcceptorTest::suite ()
-{
+Test *ConnectorAcceptorTest::suite() {
 	StartTrace(ConnectorAcceptorTest.suite);
 	TestSuite *testSuite = new TestSuite;
 	ADD_CASE(testSuite, ConnectorAcceptorTest, basicOperation);
 	ADD_CASE(testSuite, ConnectorAcceptorTest, differentReply);
 	ADD_CASE(testSuite, ConnectorAcceptorTest, basicOperationWithAllocator);
-
 	return testSuite;
-}
-
-String &EBCDICEchoMsgCallBack::GetLastRequest()
-{
-	StartTrace(EBCDICEchoMsgCallBack.GetLastRequest);
-	return fLastRequest;
-}
-
-void EBCDICEchoMsgCallBack::SetReplyMessage( String &reply )
-{
-	StartTrace(EBCDICEchoMsgCallBack.SetReplyMessage);
-	fReplyMessage = reply;
-}
-
-void EBCDICEchoMsgCallBack::CallBack(Socket *socket)
-{
-	StartTrace(EBCDICEchoMsgCallBack.CallBack);
-	if (socket != 0) {	// might be 0 if we run out of memory, not likely
-		StringStream is(&fLastRequest);
-		iostream *Ios = socket->GetStream();
-
-		if ( Ios != 0 ) {
-			is << Ios->rdbuf() << flush;
-			if ( fReplyMessage.Length() > 0 ) {
-				(*Ios) << fReplyMessage << flush;
-			} else {
-				(*Ios) << fLastRequest << flush;
-			} // if
-		} // if
-		socket->ShutDownWriting();
-	} // if
-	delete socket;
-} // CallBack
-
-AcceptorThread::~AcceptorThread()
-{
-	StartTrace(AcceptorThread.Dtor);
-	if (fAcceptor) {
-		delete fAcceptor;
-	}
-	fAcceptor = 0;
-}
-
-bool AcceptorThread::DoStartRequestedHook(ROAnything args)
-{
-	StartTrace(AcceptorThread.DoStartRequestedHook);
-	if (fAcceptor) {
-		fAcceptor->SetThreadLocal(true);
-		return (fAcceptor->PrepareAcceptLoop() == 0);
-	}
-	return false;
-}
-
-void AcceptorThread::Run()
-{
-	StartTrace(AcceptorThread.Run);
-	if (fAcceptor) {
-		fAcceptor->RunAcceptLoop();
-	} // if
-
-}
-
-void AcceptorThread::DoTerminationRequestHook(ROAnything)
-{
-	StartTrace(AcceptorThread.DoTerminationRequestHook);
-	if (fAcceptor) {
-		fAcceptor->StopAcceptLoop();
-	}
 }

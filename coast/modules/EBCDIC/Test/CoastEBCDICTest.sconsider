@@ -1,17 +1,57 @@
 import SConsider
+import os, socket, pdb, re
 from stat import *
 
 Import('*')
 
+cport1=43041
+cport2=43042
+cport3=43043
+fqdn=socket.getfqdn()
+hostonly=fqdn.split('.')[0]
+
+def ModifyConfigFiles(env, searchReplace=[], files=[]):
+    for file in files:
+        fname = file.abspath
+        if os.path.isfile(fname):
+            oldmode=os.stat(fname).st_mode
+            ## set writable
+            os.chmod(fname, oldmode | S_IWUSR)
+            ## replace tokens in file
+            SConsider.replaceRegexInFile(fname, searchReplace)
+            os.chmod(fname, oldmode)
+
+def setUp(target, source, env):
+    tdir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
+    configdir = tdir.Dir('config')
+    searchReplace = [
+        (r"##HOSTNAME##", hostonly),
+        (r"##CPORT1##", str(cport1)),
+        (r"##CPORT2##", str(cport2)),
+        (r"##CPORT3##", str(cport3)),
+    ]
+    ModifyConfigFiles(env, searchReplace, SConsider.findFiles([configdir],['.any']))
+#    env['ENV']['WD_LOGONCERR'] = 2
+#    env['ENV']['WD_PATH'] = ':'.join(['config', '.'])
+
+def tearDown(target, source, env):
+    pass
+
 buildSettings = {
     packagename : {
-        'linkDependencies' : ['CoastEBCDIC', 'CoastMTFoundation', 'testfwFoundation'],
+        'linkDependencies' : [
+            'CoastEBCDIC',
+            'CoastMTFoundation',
+            'testfwFoundation',
+        ],
         'sourceFiles'      : SConsider.listFiles(['*.cpp']),
         'targetType'       : 'ProgramTest',
         'copyFiles'        : [(SConsider.listFiles(['config/*.any']), S_IRUSR | S_IRGRP | S_IROTH)],
-        'runConfig'        : {
-                             },
-    }
+        'runConfig' : {
+            'setUp'        : setUp,
+            'tearDown'     : tearDown,
+        },
+    },
 }
 
 SConsider.createTargets(packagename, buildSettings)
