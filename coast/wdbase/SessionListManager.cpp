@@ -644,20 +644,16 @@ bool SessionListManager::FilterQuery(Context &ctx)
 		return false;
 	}
 	TraceAny(query, "query: ");
-	Trace("==============================================================");
 	return true;
 }
 
-String SessionListManager::FilterQueryAndGetId(Context &ctx)
-{
+String SessionListManager::FilterQueryAndGetId(Context &ctx) {
 	StartTrace(SessionListManager.FilterQueryAndGetId);
 	// now we try to find a session id
 	String sessionId;
 	Anything query(ctx.GetQuery());
 	Anything sid;
-	if ( FilterQuery(ctx) 		&&
-		 query.LookupPath(sid, "sessionId")
-	   ) {
+	if (FilterQuery(ctx) && query.LookupPath(sid, "sessionId")) {
 		TraceAny(query, "query: ");
 		sessionId = sid.AsCharPtr(0);
 	}

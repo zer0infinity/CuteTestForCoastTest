@@ -118,13 +118,14 @@ bool TransitionTests::EvalRequest(ROAnything request, Anything &returned)
 		String resultRole, resultPage, resultPage2, sessionId, delayed;
 		TraceAny(request, "evalrequest");
 		// post request
-		(*Ios) << request;
+		(*Ios) << request << flush;
 
 		// read reply
 		char c;
 		while ((c = Ios->get()) != EOF) {
 			reply << c;
 		}
+		reply << flush;
 		Trace("native reply [" << reply.str() << "]");
 		// extract infos about the received page
 		if ( getline(reply, resultPage) ) {
@@ -298,17 +299,20 @@ void TransitionTests::RunRequestSequence()
 		if ( t_assert(mt.Start()) && t_assert(mt.CheckState(Thread::eRunning, 5)) ) {
 			if ( t_assertm(mt.serverIsInitialized(), "expected initialization to succeed") ) {
 				mt.SetWorking();
-				// --- run various request
-				//     sequences
-				PBOWLoginSequence1();
-				PBOWLoginSequence2();
-				PBOWFailedBookmarkSequence();
-				PBOWBookmarkSequence();
-
-				server->PrepareShutdown(0);
-				mt.Terminate(0);
+				if (t_assertm(mt.IsReady(true, 5), "expected server to become ready within 5 seconds")) {
+					// --- run various request sequences
+					PBOWLoginSequence1();
+					PBOWLoginSequence2();
+					PBOWFailedBookmarkSequence();
+					PBOWBookmarkSequence();
+					mt.PrepareShutdown(0);
+				}
+			}
+			if (t_assertm(mt.IsReady(false, 5), "expected server to become terminated within 5 seconds")) {
+				mt.Terminate(10);
 			}
 		}
+		t_assertm(mt.CheckState(Thread::eTerminated, 10), "expected server thread to become terminated");
 	}
 }
 

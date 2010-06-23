@@ -227,7 +227,7 @@
 		/EnableAll	1221
 	}
 	/DiffTimer {
-		/MainSwitch	1220
+		/MainSwitch	0
 		/EnableAll	1222
 		/Scale		1221
 		/Diff		1221
