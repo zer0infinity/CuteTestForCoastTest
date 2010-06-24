@@ -646,7 +646,7 @@ public:
 
 private:
 	void 	ImportIncludeAny(Anything &element, const String &url);
-	void    Error(const char *text, const char *what);
+	void    Error(String const &msg, String const &toktext);
 	InputContext &fContext;
 };
 
@@ -1388,7 +1388,6 @@ bool Anything::Import(istream &is, const char *fname)
 			}
 			m << strFName << (bHasExt ? ":" : ".any");
 			m.Append(": syntax error");
-			SystemLog::WriteToStderr(m << "\n");
 			SYSERROR(m);
 			return false;
 		}
@@ -2040,12 +2039,15 @@ bool AnythingParser::DoParseSequence(Anything &any, ParserXrefHandler &xrefs)
 		switch (tok.Token()) {
 			case '}' : // '{' this is to cheat sniff
 				return ok; // we are done...
-			case AnythingToken::eError:
+			case AnythingToken::eError: {
 				lastok = false; // try to resync
-				Error("syntax error invalid token", tok.Text());
+				String strError("syntax error invalid token:");
+				strError.Append(static_cast<long>(tok.Token()));
+				Error(strError, tok.Text().DumpAsHex(tok.Text().Length()));
 				break;
+			}
 			case AnythingToken::eNullSym:
-				// premature EOF
+				Error("premature EOF token encountered", tok.Text());
 				return false;
 
 			case AnythingToken::eInclude : {
@@ -2178,10 +2180,16 @@ bool AnythingParser::MakeSimpleAny(AnythingToken &tok, Anything &any)
 			// make it an AnyObjectImpl
 			any = Anything((IFAObject *)atol(tok.Text()), a);
 			break;
-		default:
-			// this is an error
-			Error("syntax error invalid token", tok.Text());
+		case AnythingToken::eNullSym:
+			Error("unexpected EOF token encountered", "");
 			return false;
+		default: {
+			// this is an error
+			String strError("syntax error invalid token:");
+			strError.Append(static_cast<long>(tok.Token()));
+			Error(strError, tok.Text().DumpAsHex(tok.Text().Length()));
+			return false;
+		}
 	}
 	return true;
 }
@@ -2228,7 +2236,7 @@ void AnythingParser::ImportIncludeAny(Anything &element, const String &url)
 	}
 }
 
-void AnythingParser::Error(const char *msg, const char *toktext)
+void AnythingParser::Error(String const &msg, String const &toktext)
 {
 	// put a space in front to give poor Sniff a chance
 	String m(fContext.FileName());
@@ -2240,8 +2248,6 @@ void AnythingParser::Error(const char *msg, const char *toktext)
 	}
 	m << (bHasExt ? ":" : ".any:") << fContext.LineRef() << " " << msg << " [" << toktext << "]";
 	SYSWARNING(m);
-	m << "\n";
-	SystemLog::WriteToStderr(m);
 }
 
 //---------------- test case support ------------

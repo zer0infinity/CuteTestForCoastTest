@@ -12,42 +12,40 @@
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 
-//--- c-library modules used ---------------------------------------------------
-
 #if defined(ONLY_STD_IOSTREAM)
 using namespace std;
 #endif
 
-bool NSStringStream::PlainCopyStream2Stream(istream *streamSrc, ostream &streamDest, long &copiedBytes, long lBytes2Copy)
-{
-	StartTrace(StringStream.PlainCopyStream2Stream);
-	streamsize szReadSize = 0;
-	Trace("Bytes to copy: " << lBytes2Copy);
-	String sBuf(lBytes2Copy);
-	char *buf = (char *)(const char *) sBuf;
-	copiedBytes = 0L;
-	bool bRet = true;
-	while ( lBytes2Copy > 0L ) {
-		if ( streamSrc->good() ) {
-			if ( streamDest.good() ) {
-				streamSrc->read(buf, (int)lBytes2Copy);
-				szReadSize = streamSrc->gcount();
-				streamDest.write(buf, szReadSize);
-				copiedBytes += (long)szReadSize;
-				lBytes2Copy -= (long)szReadSize;
-				Trace("Bytes copied so far: " << copiedBytes);
+namespace NSStringStream {
+	bool PlainCopyStream2Stream(istream *streamSrc, ostream &streamDest, long &copiedBytes, long lBytes2Copy) {
+		StartTrace(StringStream.PlainCopyStream2Stream);
+		streamsize szReadSize = 0;
+		Trace("Bytes to copy: " << lBytes2Copy);
+		String sBuf(lBytes2Copy);
+		char *buf = (char *) (const char *) sBuf;
+		copiedBytes = 0L;
+		bool bRet = true;
+		while (lBytes2Copy > 0L) {
+			if (streamSrc->good()) {
+				if (streamDest.good()) {
+					streamSrc->read(buf, (int) lBytes2Copy);
+					szReadSize = streamSrc->gcount();
+					streamDest.write(buf, szReadSize);
+					copiedBytes += (long) szReadSize;
+					lBytes2Copy -= (long) szReadSize;
+					Trace("Bytes copied so far: " << copiedBytes);
+				} else {
+					Trace("Destination stream is not good , aborting copy!");
+					bRet = false;
+					break;
+				}
 			} else {
-				Trace("Destination stream is not good , aborting copy!");
-				bRet = false;
+				// test if we reached eof of streamSrc
+				bRet = (streamSrc->eof() != 0);
+				Trace("Source stream is not good anymore" << (bRet ? " (eof)" : "") << ", finishing copy!" );
 				break;
 			}
-		} else {
-			// test if we reached eof of streamSrc
-			bRet = (streamSrc->eof() != 0);
-			Trace("Source stream is not good anymore" << (bRet ? " (eof)" : "") << ", finishing copy!" );
-			break;
-		}
+		} Trace("bytes copied this time: " << copiedBytes);
+		return bRet;
 	}
-	Trace("bytes copied this time: " << copiedBytes);
-	return bRet;
 }
