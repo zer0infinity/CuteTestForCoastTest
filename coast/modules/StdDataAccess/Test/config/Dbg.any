@@ -12,18 +12,18 @@
 	/DumpAnythings  1
 
 	/Registry {
-		/MainSwitch						10
+		/MainSwitch						0
 		/EnableAll						0
 		/FinalizeRegArray				10
 		/RemoveRegistry					10
 		/GetRegistry					10
 	}
 	/AliasTerminator {
-		/MainSwitch						10
+		/MainSwitch						0
 		/EnableAll						10
 	}
 	/TerminationPolicy {
-		/MainSwitch						10
+		/MainSwitch						0
 		/EnableAll						10
 	}
 	/DataAccessImpl {
@@ -44,7 +44,7 @@
 	}
 	/ResultMapper {
 		/MainSwitch						10
-		/EnableAll						0
+		/EnableAll						10
 	}
 	/HTTPHeaderParameterMapper {
 		/MainSwitch						10
@@ -220,23 +220,23 @@
 		/EnableAll						200
 	}
 	/ConnectorDAImplTest {
-		/MainSwitch			10
-		/EnableAll			10
+		/MainSwitch			20
+		/EnableAll			20
 	}
 	/ConnectorDAImpl {
-		/MainSwitch			10
-		/EnableAll			10
+		/MainSwitch			20
+		/EnableAll			20
 	}
 	/EchoMsgCallBack {
-		/MainSwitch			10
-		/EnableAll			10
+		/MainSwitch			20
+		/EnableAll			20
 	}
 	/StreamToAnythingMapper {
-		/MainSwitch			10
-		/EnableAll			10
+		/MainSwitch			20
+		/EnableAll			20
 	}
 	/Resolver {
-		/MainSwitch			10
-		/EnableAll			10
+		/MainSwitch			20
+		/EnableAll			20
 	}
 }

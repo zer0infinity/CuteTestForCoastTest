@@ -88,6 +88,9 @@ httpport=43022
 faultyhttpport=43023
 sslport=43024
 sslfaultyport=43025
+cport1=43031
+cport2=43032
+cport3=43033
 fqdn=socket.getfqdn()
 hostonly=fqdn.split('.')[0]
 try:
@@ -225,6 +228,9 @@ def setUp(target, source, env):
             (r"##HOSTNAME##", hostonly),
             (r"##DOMAINONLY##", domain),
             (r"##HTTPPORT##", str(httpport)),
+            (r"##CPORT1##", str(cport1)),
+            (r"##CPORT2##", str(cport2)),
+            (r"##CPORT3##", str(cport3)),
             (r"##FAULTYHTTPPORT##", str(faultyhttpport)),
             (r"##SSLPORT##", str(sslport)),
             (r"##FAULTYSSLPORT##", str(sslfaultyport)),
@@ -245,6 +251,7 @@ def setUp(target, source, env):
 
     #FIXME: the following setting is needed to let CgiCallerTest succeed
     env['ENV']['WD_ROOT'] = env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).abspath
+    env['ENV']['WD_LOGONCERR'] = 2
 #    env['ENV']['WD_PATH'] = ':'.join(['config', '.'])
 
 def tearDown(target, source, env):

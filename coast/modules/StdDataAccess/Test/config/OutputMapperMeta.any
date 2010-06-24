@@ -68,9 +68,23 @@
 	/SendReceiveOnce {
 		/PutPolicy Put
 		/DestinationSlot	""
+		/Output {
+			/ImportResponseAny *
+		}
 	}
 	/RecreateSocket {
 		/PutPolicy Put
 		/DestinationSlot	""
+		/Output {
+			/ImportResponseAny *
+		}
+	}
+	/ImportResponseAny {
+		/PutPolicy Put
+		/DestinationSlot	""
+	}
+	/EatUpToEOFMapper {
+		/PutPolicy Append
+		/DestinationSlot	"Rubbish"
 	}
 }

@@ -28,9 +28,16 @@
 			}
 		}
 		/Output {
+			/RootMapper {
+				EatUpToEOFMapper
+			}
+			/ResultMapper {
+				/SendReceiveOnce {
+					RecreateSocket
+				}
+			}
 			/StreamToAnythingMapper {
-				SendReceiveOnce
-				RecreateSocket
+				ImportResponseAny
 			}
 		}
 	}
@@ -39,15 +46,15 @@
 
 	/SendReceiveOnceTest {
 		/Address 	!Defaults.any?HostName
-		/Port 		7183
+		/Port 		!Defaults.any?ConnectorPort1
 		/Input		"{ \"Marcel hat immer recht !!!\" }"
 	}
 	/RecreateSocketTest {
 		/Address 	!Defaults.any?HostName
-		/Port 		7183
+		/Port 		!Defaults.any?ConnectorPort2
 	}
 	/RecreateClosedSocketTest {
 		/Address 	!Defaults.any?HostName
-		/Port 		7183
+		/Port 		!Defaults.any?ConnectorPort3
 	}
 }
