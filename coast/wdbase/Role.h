@@ -95,7 +95,13 @@ public:
 	/*! Default implementation of DefaultRole mechanism, renders content of /DefaultRole slot */
 	static String GetDefaultRoleName(Context &ctx);
 
-	String GetRequestRoleName(Context &ctx) const;
+	static String GetRequestRoleName(Context &ctx);
+
+	/*! Get a number of the given Role's hierarchy depth, based on the configured hierarchy
+	 * @param pRole Role to get the level for
+	 * @return number which tells how many hierarchy levels we are away from the top level Role, or -1 if given Role is not valid
+	 */
+	static long GetRoleLevel(const Role *pRole);
 
 protected:
 	//! mandatory operation
@@ -116,9 +122,6 @@ protected:
 		default implementation allows "Logout" for all roles
 		\param transition paramater from query["action"] (called action for historical reasons) */
 	virtual bool TransitionAlwaysOK(const String &transition) const;
-
-private:
-	long GetRoleLevel(const Role *pRole) const;
 };
 
 #define RegisterRole(name) RegisterObject(name, Role)

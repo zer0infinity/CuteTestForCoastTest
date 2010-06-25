@@ -16,6 +16,8 @@
 #include "SystemLog.h"
 #include "Dbg.h"
 #include "AnyIterators.h"
+
+#include <typeinfo>
 #include <cstring>
 
 //---- RolesModule -----------------------------------------------------------
@@ -95,37 +97,44 @@ bool Role::CheckLevel(const String &queryRoleName) const
 		// names are not equal, check for their relation
 		long lThisLevel = GetRoleLevel( this );
 		Role *pQRole = Role::FindRole(queryRoleName);
-		long lQRoleLevel = GetRoleLevel( pQRole );
-		Trace("my role level:" << lThisLevel << " query-role level:" << lQRoleLevel);
-		// if the roles are on the same level, they cannot be related
-		if ( lThisLevel != lQRoleLevel ) {
-			if ( lQRoleLevel > lThisLevel ) {
-				// check if current role is a parent of the query-role
-				Role *pRole = pQRole;
-				String strRoleName;
-				while ( !bLevelOk && pRole && ( pRole = (Role *)pRole->GetSuper() ) && pRole ) {
-					pRole->GetName(strRoleName);
-					bLevelOk = strRoleName.IsEqual(fName);
-					Trace("role [" << strRoleName << "]" << (bLevelOk ? " is parent" : ""));
+		if ( pQRole ) {
+			long lQRoleLevel = GetRoleLevel( pQRole );
+			Trace("my role level:" << lThisLevel << " query-role level:" << lQRoleLevel);
+			// if the roles are on the same level, they cannot be related
+			if ( lThisLevel != lQRoleLevel ) {
+				if ( lQRoleLevel > lThisLevel ) {
+					// check if current role is a parent of the query-role
+					Role *pRole = pQRole;
+					String strRoleName;
+					while ( !bLevelOk && pRole && ( pRole = (Role*)pRole->GetSuper() ) && pRole ) {
+						pRole->GetName(strRoleName);
+						bLevelOk = strRoleName.IsEqual(fName);
+						Trace("role [" << strRoleName << "]" << (bLevelOk ? " is parent" : ""));
+					}
 				}
 			}
 		}
+		// reset to false because it is not intended to be used like this at the moment
 		bLevelOk = false;
 #endif
 	}
 	return bLevelOk;
 }
 
-long Role::GetRoleLevel(const Role *pRole) const
-{
+long Role::GetRoleLevel(const Role *pRole) {
 	StartTrace(Role.GetRoleLevel);
-	long lLevel = 0;
+	long lLevel = -1;
 	String strRoleName;
-	if ( pRole ) {
+	if (pRole) {
+		lLevel = 0L;
 		pRole->GetName(strRoleName);
-	}
-	while ( pRole && ( pRole = (Role *)pRole->GetSuper() ) ) {
-		++lLevel;
+		try {
+			while (pRole && (pRole = dynamic_cast<const Role *> (pRole->GetSuper()))) {
+				++lLevel;
+			}
+		} catch (std::bad_cast& bc) {
+			SYSINFO("bad_cast caught: " << bc.what());
+		}
 	}
 	Trace("Role <" << strRoleName << "> has Level " << lLevel);
 	return lLevel;
@@ -272,7 +281,7 @@ bool Role::TransitionAlwaysOK(const String &transition) const
 	return (transition == "Logout");
 }
 
-String Role::GetRequestRoleName(Context &ctx) const
+String Role::GetRequestRoleName(Context &ctx)
 {
 	String name;
 	Anything query = ctx.GetQuery();

@@ -361,7 +361,7 @@ public:
 	void SetSuper(HierarchConfNamed *super);
 
 	//! hierarchical relationship API; get super object
-	HierarchConfNamed *GetSuper() const;
+	const HierarchConfNamed *GetSuper() const;
 
 protected:
 	/*! Creates a new object through cloning. Generates a cloned object with a different name.

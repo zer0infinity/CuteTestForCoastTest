@@ -191,7 +191,7 @@ bool HierarchyInstaller::DoInstall(const ROAnything installerSpec, Registry *r)
 	return installSuccess;
 }
 
-bool HierarchyInstaller::HasSuper(HierarchConfNamed *super, const char *name)
+bool HierarchyInstaller::HasSuper(const HierarchConfNamed *super, const char *name) const
 {
 	StartTrace1(HierarchyInstaller.HasSuper, "name [" << NotNull(name) << "] addr:" << (long)super);
 	if (!name) {

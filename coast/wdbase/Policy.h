@@ -112,7 +112,7 @@ protected:
 	virtual bool DoInstall(const ROAnything installerSpec, Registry *r);
     virtual void DoInitializeLeaf(const char *leafName, HierarchConfNamed *& leaf);
 	HierarchConfNamed *Find(const char *name, Registry *r);
-	bool HasSuper(HierarchConfNamed *super, const char *name);
+	bool HasSuper(const HierarchConfNamed *super, const char *name) const;
 
 	bool InstallRoot(HierarchConfNamed *root, const char *name);
 	bool InstallTree(HierarchConfNamed *root, const char *rootName, const ROAnything tree, Registry *r);

@@ -288,7 +288,7 @@ void HierarchConfNamed::SetSuper(HierarchConfNamed *super)
 	fSuper = super;
 }
 
-HierarchConfNamed *HierarchConfNamed::GetSuper() const
+const HierarchConfNamed *HierarchConfNamed::GetSuper() const
 {
 	return fSuper;
 }
