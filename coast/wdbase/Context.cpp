@@ -274,20 +274,52 @@ void Context::CollectLinkState(Anything &a)
 void Context::DebugStores(const char *msg, ostream &reply, bool printAny)
 {
 #ifdef COAST_TRACE
-	reply << "+++++++++++++++++++" << NotNull(msg) << "+++++++++++++++++++++++++\n";
-	reply << "fLookupStack(" << fLookupStack.RefCount() << "): \n";
-	if ( printAny ) {
-		fLookupStack.PrintOn(reply) << "\n";
+	if ( msg ) {
+		reply << "+++++++++++++++++++" << NotNull(msg) << "+++++++++++++++++++++++++\n";
 	}
-	reply << "fStore(" << fStore.RefCount() << "): \n";
-	if ( printAny ) {
-		fStore.PrintOn(reply) << "\n";
+	Session *s = fSession;
+	if (s) {
+		reply << "Session-Nummer: " << s->GetId() << '\n';
+		reply << "Access-Counter: " << s->GetAccessCounter() << '\n';
+		reply << "Access-Time:    " << s->GetAccessTime() << '\n';
+		reply << "Ref-Count:      " << s->GetRefCount() << '\n';
 	}
-	reply << "fRequest(" << fRequest.RefCount() << "): \n";
-	if ( printAny ) {
-		fRequest.PrintOn(reply) << "\n";
+	Page *page = GetPage();
+	if (page) {
+		String pName;
+		page->GetName(pName);
+		reply << "Page:           " << pName << '\n';
 	}
-	reply << "-------------------" << NotNull(msg) << "-------------------------\n";
+	String rName("None");
+	Role *r = GetRole();
+	if (r) {
+		r->GetName(rName);
+	}
+	reply << "Role:           " << rName << "\n\n";
+
+	// show Lookup stack on html page
+	if ( Tracer::CheckWDDebug("Context.HTMLWDDebug.LookupStack", Storage::Current()) || printAny ) {
+		reply << "Lookup stack #refs:" << fLookupStack.RefCount() << '\n' << fLookupStack << '\n';
+	}
+
+	// show tmp store on html page
+	if ( Tracer::CheckWDDebug("Context.HTMLWDDebug.TmpStore", Storage::Current()) || printAny ) {
+		reply << "Tmp store #refs:" << fStore.RefCount() << '\n' << fStore << '\n';
+	}
+
+	// show session store on html page
+	if ( fSession  ) {
+		fSession->HTMLDebugStore(reply);
+	}
+
+	// show request store on html page
+	if ( Tracer::CheckWDDebug("Context.HTMLWDDebug.EnvStore", Storage::Current()) || printAny ) {
+		reply << "Request #refs:" << fRequest.RefCount() << '\n' << fRequest << '\n';
+	}
+	if ( msg ) {
+		reply << "-------------------" << NotNull(msg) << "-------------------------\n";
+	}
+	reply.flush();
 #endif
 }
 
@@ -297,45 +329,7 @@ void Context::HTMLDebugStores(ostream &reply)
 	if ( Tracer::CheckWDDebug("Context.HTMLWDDebug", Storage::Current()) ) {
 		reply << DebugStoreSeparator;
 		reply << "<hr>\n<pre>\n";
-		Session *s = fSession;
-		if (s) {
-			reply << "Session-Nummer: " << s->GetId() << "\n";
-			reply << "Access-Counter: " << s->GetAccessCounter() << "\n";
-			reply << "Access-Time:    " << s->GetAccessTime() << "\n";
-			reply << "Ref-Count:      " << s->GetRefCount() << "\n";
-		}
-		Page *page = GetPage();
-		if (page) {
-			String pName;
-			page->GetName(pName);
-			reply << "Page:           " << pName << "\n";
-		}
-		String rName("None");
-		Role *r = GetRole();
-		if (r) {
-			r->GetName(rName);
-		}
-		reply << "Role:           " << rName << "\n\n";
-
-		// show Lookup stack on html page
-		if ( Tracer::CheckWDDebug("Context.HTMLWDDebug.LookupStack", Storage::Current()) ) {
-			reply << "Lookup stack:\n" << fLookupStack << "\n";
-		}
-
-		// show tmp store on html page
-		if ( Tracer::CheckWDDebug("Context.HTMLWDDebug.TmpStore", Storage::Current()) ) {
-			reply << "Tmp store:\n" << fStore << "\n";
-		}
-
-		// show session store on html page
-		if ( fSession  ) {
-			fSession->HTMLDebugStore(reply);
-		}
-
-		// show request store on html page
-		if ( Tracer::CheckWDDebug("Context.HTMLWDDebug.EnvStore", Storage::Current()) ) {
-			reply << "Request:\n" << fRequest << "\n";
-		}
+		DebugStores(0, reply);
 		reply << "</pre>\n";
 	}
 #endif

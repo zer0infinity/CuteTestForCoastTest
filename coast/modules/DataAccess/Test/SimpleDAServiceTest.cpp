@@ -124,5 +124,5 @@ void TestHTTPProcessor::DoError(ostream &reply, const String &msg, Context &ctx)
 	reply << "<head><title>Error</title></head>";
 	reply << "<body>" << "<h1>Error</h1>" << msg << "</body></html>";
 
-	HTMLTraceStores(reply, ctx);
+	ctx.HTMLDebugStores(reply);
 }

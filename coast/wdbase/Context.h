@@ -233,7 +233,7 @@ public:
 	/*! Generate debug output onto reply;
 		\param msg the msg to mark this output
 		\param reply the stream to generate output to
-		\param printAny flag if true Anythings containing the store and request are dumped */
+		\param printAny either dump all stores if true or rely on Context.HTMLWDDebug.[LookupStack|TmpStore|EnvStore] to be enabled in Dbg.any */
 	void DebugStores(const char *msg, ostream &reply, bool printAny = false);
 
 	//!generates output into the reply stream as HTML if the flag in Dbg.any are set accordingly

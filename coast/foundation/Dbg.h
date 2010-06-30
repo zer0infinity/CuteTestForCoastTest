@@ -350,11 +350,6 @@ Will print out following messages
 //! Unload trace switch configuration and disable tracing
 #define TerminateTracer()	Tracer::Terminate()
 
-/*! Macro to trace internal stores of context
-	\param reply stream to print content on
-	\param context Context to trace */
-#define HTMLTraceStores(reply, context)	context.HTMLDebugStores(reply)
-
 #else
 //--- optimized versions of the debug macros they expand into nothing
 // constructor
@@ -377,7 +372,6 @@ Will print out following messages
 
 #define ResetTracer()
 #define TerminateTracer()
-#define HTMLTraceStores(reply, context)
 #endif
 
 #endif		//not defined _Dbg_H

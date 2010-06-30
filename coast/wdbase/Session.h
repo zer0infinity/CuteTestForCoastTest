@@ -80,8 +80,10 @@ public:
 	//! \param c the current request context
 	virtual void CollectLinkState(Anything &a, Context &c) const;
 
-	// debugging
-	void HTMLDebugStore(ostream &reply);
+	/*! Generate debug output onto reply;
+		\param reply the stream to generate output to
+		\param printAny either dump fStore if true or rely on Session.HTMLSessionStore to be enabled in Dbg.any */
+	void HTMLDebugStore(ostream &reply, bool printAny = false);
 
 	//! reply with a busy page
 	virtual bool Info(Anything &info, Context &ctx);

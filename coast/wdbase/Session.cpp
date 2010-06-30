@@ -276,11 +276,11 @@ void Session::PutInStore(const char *key, const Anything &a)
 	fStore[key] = a;
 }
 
-void Session::HTMLDebugStore(ostream &reply)
+void Session::HTMLDebugStore(ostream &reply, bool printAny)
 {
 #ifdef COAST_TRACE
-	if ( Tracer::CheckWDDebug( "Session.HTMLSessionStore", Storage::Current() ) ) {
-		reply << "Session Store:\n" << fStore << "\n";
+	if ( Tracer::CheckWDDebug( "Session.HTMLSessionStore", Storage::Current() ) || printAny ) {
+		reply << "Session Store #refs:" << fStore.RefCount() << '\n' << fStore << '\n';
 	}
 #endif
 }

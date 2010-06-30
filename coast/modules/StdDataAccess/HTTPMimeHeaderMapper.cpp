@@ -9,14 +9,10 @@
 //--- interface include --------------------------------------------------------
 #include "HTTPMimeHeaderMapper.h"
 
-//--- project modules used -----------------------------------------------------
-
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "MIMEHeader.h"
 #include "RE.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- HTTPMimeHeaderMapper ------------------------------------------------------------------
 RegisterResultMapper(HTTPMimeHeaderMapper);

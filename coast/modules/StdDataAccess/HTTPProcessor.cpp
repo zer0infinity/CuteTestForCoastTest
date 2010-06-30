@@ -228,7 +228,7 @@ void HTTPProcessor::DoError(ostream &reply, const String &msg, Context &ctx)
 	reply << "Press the back button to return to the previous page!<br><br>\n";
 	reply << "<FORM><input type=button value=\"Back\" onClick=\"javascript:history.back(1)\"></FORM>\n";
 	reply << "</center>\n";
-	HTMLTraceStores(reply, ctx);
+	ctx.HTMLDebugStores(reply);
 
 	reply << "</body></html>\n";
 }

@@ -221,7 +221,7 @@ void Page::RenderProtocolTail(ostream &reply, Context &c)
 	StartTrace1(Page.RenderProtocolTail, "<" << fName << ">");
 
 	// we render optional debug output
-	HTMLTraceStores(reply, c);
+	c.HTMLDebugStores(reply);
 }
 
 RegCacheImpl(Page);	// FindPage()
