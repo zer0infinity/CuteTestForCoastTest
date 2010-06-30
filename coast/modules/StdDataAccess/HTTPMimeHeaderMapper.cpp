@@ -153,16 +153,17 @@ void HTTPMimeHeaderMapper::Substitute(Anything &header, ROAnything &addlist, Con
 	}
 }
 
-void HTTPMimeHeaderMapper::StoreCookies(Anything &header, Context &ctx)
-{
+void HTTPMimeHeaderMapper::StoreCookies(Anything &header, Context &ctx) {
 	StartTrace(HTTPMimeHeaderMapper.StoreCookies);
 
-	String backendName = ctx.GetTmpStore()["Backend"]["Name"].AsString();
-	String cookieEnd = ";";
+	const String cookieID("set-cookie");
+	const String cookieEnd(";");
+	const String backendName(ctx.Lookup("Backend.Name", ""));
+	String cookies(128L);
 
-	for (int i = 0; i < header.GetSize(); i++) {
+	for (int i = 0, sz = header.GetSize(); i < sz; ++i) {
 		Trace("SlotName: " << header.SlotName(i));
-		if (String(header.SlotName(i)).IsEqual("set-cookie")) {
+		if (cookieID.IsEqual(header.SlotName(i))) {
 			String cookie = header[i].AsString();
 			int pos = cookie.Contains(cookieEnd);
 			if (pos == -1) {
@@ -179,20 +180,17 @@ void HTTPMimeHeaderMapper::StoreCookies(Anything &header, Context &ctx)
 
 			if (!cookieValue.IsEqual("")) {
 				ctx.GetSessionStore()["StoredCookies"][backendName]["Structured"][cookieName] = cookieValue;
+				if (!cookies.Length()) {
+					cookies.Append("Cookie:");
+				}
+				cookies.Append(' ').Append(cookieName).Append('=').Append(cookieValue).Append(cookieEnd);
 			} else {
 				ctx.GetSessionStore()["StoredCookies"][backendName]["Structured"].Remove(cookieName);
 			}
 		}
 	}
-
-	String cookies = "Cookie:";
-	for (int i = 0; i < ctx.GetSessionStore()["StoredCookies"][backendName]["Structured"].GetSize(); i++) {
-		cookies = cookies 	<< " "
-				  << ctx.GetSessionStore()["StoredCookies"][backendName]["Structured"].SlotName(i)
-				  << "=" << ctx.GetSessionStore()["StoredCookies"][backendName]["Structured"][i].AsString()
-				  << ";";
+	if ( cookies.Length() ) {
+		ctx.GetSessionStore()["StoredCookies"][backendName]["Plain"] = cookies;
 	}
-
-	ctx.GetSessionStore()["StoredCookies"][backendName]["Plain"] = cookies;
-	TraceAny(ctx.GetSessionStore()["StoredCookies"][backendName], "stored cookies");
+	TraceAny(ctx.Lookup(String("StoredCookies.").Append(backendName)), "stored cookies");
 }

@@ -66,7 +66,7 @@ bool HTTPResponseMapper::DoPutStream(const char *key, istream &is, Context &ctx,
 	}
 
 	TraceAny(response, "Parsed response is: ");
-	ResultMapper::DoFinalPutAny("HTTPResponse", response, ctx);
+	ResultMapper::DoPutAny("HTTPResponse", response, ctx, conf);
 	return (is.good() != 0);
 }
 

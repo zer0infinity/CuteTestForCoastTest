@@ -765,9 +765,9 @@ void HTMLParser::ParseArguments(const char *tag, Anything &node)
 					Error(msg);
 				}
 			} else {
-				TraceAny(node, "node");
-				String msg("unexpected <");
-				msg << token << "> in argument list (2) for tag <" << tag << ">";
+				TraceAny(node, tag);
+				String msg("unexpected token [");
+				msg << token << "] for type " << static_cast<char>(t) << " in argument list (2) for tag <" << tag << ">";
 				Error(msg);
 			}
 			t = NextToken(key, false);
@@ -1000,25 +1000,26 @@ void MyHTMLWriter::Put(char c )
 void MyHTMLWriter::Put(Unicode c )
 {
 	Meter(MyHTMLWriter.Put);
-	StartTrace(MyHTMLWriter.Put);
 	if (fInScript == true ) {
 		return;
 	}
 
 	if ( fStoreTitle ) {
-		fTitle.Append( (char) c );
+		StatTrace(MyHTMLWriter.Put, "storing title, unicode:" << c << " ->" << static_cast<char>(c) << "<-", Storage::Current());
+		fTitle.Append( static_cast<char>(c) );
 		if ( isalnum(c) ) {
-			fAllStringsInPage.Append( (char)c );
+			fAllStringsInPage.Append( static_cast<char>(c) );
 		}
 	} else {
 		if ( fNodeStack.GetSize() > 0 ) {
+			StatTrace(MyHTMLWriter.Put, "nodestack, unicode:" << c << " ->" << static_cast<char>(c) << "<-", Storage::Current());
 			String myString(fNodeStack[fNodeStack.GetSize()-1]["String"].AsCharPtr());
 			if ( ( (c != ' ') && (c != '\n') && (c != '\t') && (c != '\r') ) || ( ( myString.Length() > 0 ) && (c == ' ') )	 ) {
-				myString.Append( (char)c );
+				myString.Append( static_cast<char>(c) );
 				// only add text for valid tags
 				// - should not add text for __unstructured tag anymore
 				if ( fNodeStack[fNodeStack.GetSize()-1].IsDefined("Tag") ) {
-					fAllStringsInPage.Append((char)c );
+					fAllStringsInPage.Append( static_cast<char>(c) );
 					fNodeStack[fNodeStack.GetSize()-1]["String"] = myString;
 				}
 			}
