@@ -13,6 +13,8 @@
 #include "Dbg.h"
 #include "MIMEHeader.h"
 #include "RE.h"
+#include "AnyIterators.h"
+#include "AnythingUtils.h"
 
 //---- HTTPMimeHeaderMapper ------------------------------------------------------------------
 RegisterResultMapper(HTTPMimeHeaderMapper);
@@ -46,6 +48,7 @@ bool HTTPMimeHeaderMapper::DoPutStream(const char *, istream &is, Context &ctx, 
 		if (eProcMode == MIMEHeader::eDoSplitHeaderFields) {
 			CorrectDateFormats(header);
 		}
+		//!@FIXME: all of the following should go to separate mappers
 		if (config["StoreCookies"].AsLong(0)) {
 			StoreCookies(header, ctx);
 		}
@@ -61,6 +64,7 @@ bool HTTPMimeHeaderMapper::DoPutStream(const char *, istream &is, Context &ctx, 
 			ROAnything addlist(config["Substitute"]);
 			Substitute(header, addlist, ctx);
 		}
+		//!@FIXME: here we should use Put()/DoPutAny() to allow further processing of header data before storing
 		result = DoFinalPutAny("HTTPHeader", header, ctx);
 	}
 	return result && is.good();
@@ -153,44 +157,66 @@ void HTTPMimeHeaderMapper::Substitute(Anything &header, ROAnything &addlist, Con
 	}
 }
 
-void HTTPMimeHeaderMapper::StoreCookies(Anything &header, Context &ctx) {
+void HTTPMimeHeaderMapper::StoreCookies(ROAnything const header, Context &ctx) {
 	StartTrace(HTTPMimeHeaderMapper.StoreCookies);
 
+	const String valueSlotName("_value_");
+	const String attrSlotName("_attrs_");
 	const String cookieID("set-cookie");
-	const String cookieEnd(";");
 	const String backendName(ctx.Lookup("Backend.Name", ""));
-	String cookies(128L);
-
-	for (int i = 0, sz = header.GetSize(); i < sz; ++i) {
-		Trace("SlotName: " << header.SlotName(i));
-		if (cookieID.IsEqual(header.SlotName(i))) {
-			String cookie = header[i].AsString();
-			int pos = cookie.Contains(cookieEnd);
-			if (pos == -1) {
-				continue;
-			}
-			cookie = cookie.SubString(0, pos + 1);
-			int equalityPos = cookie.Contains("=");
-			String cookieName = cookie.SubString(0, equalityPos);
-			cookieName.TrimWhitespace();
-			Trace("cookieName: " << cookieName);
-			String cookieValue = cookie.SubString(equalityPos + 1, cookie.Length() - (equalityPos + 1) - 1);
-			cookieValue.TrimWhitespace();
-			Trace("cookieValue: " << cookieValue);
-
-			if (!cookieValue.IsEqual("")) {
-				ctx.GetSessionStore()["StoredCookies"][backendName]["Structured"][cookieName] = cookieValue;
-				if (!cookies.Length()) {
-					cookies.Append("Cookie:");
+	const char cookieEnd = ';';
+	String strKeyValue(64L), strCookie(128L), strKey(32L), strValue(64L);
+	Anything anyCookies;
+	ROAnything roaCookie;
+	AnyExtensions::Iterator<ROAnything> cookieIterator(header[cookieID]);
+	while ( cookieIterator.Next(roaCookie) ) {
+		TraceAny(roaCookie, "current cookie entry");
+		strCookie = roaCookie.AsString();
+		String cookieName(32L);
+		StringTokenizer semiTokenizer(strCookie, cookieEnd);
+		Anything anyNamedCookie;
+		while ( semiTokenizer.NextToken(strKeyValue) ) {
+			StringTokenizer valueTokenizer(strKeyValue, '=');
+			if ( valueTokenizer.NextToken(strKey) ) {
+				strKey.TrimWhitespace();
+				strValue = valueTokenizer.GetRemainder();
+				if ( !cookieName.Length() ) {
+					cookieName = strKey;
+					if ( strValue.Length() ) {
+						anyNamedCookie[valueSlotName] = strValue;
+					}
+				} else {
+					if ( strValue.Length() ) {
+						anyNamedCookie[attrSlotName][strKey] = strValue;
+					} else {
+						anyNamedCookie[attrSlotName].Append(strKey);
+					}
 				}
-				cookies.Append(' ').Append(cookieName).Append('=').Append(cookieValue).Append(cookieEnd);
-			} else {
-				ctx.GetSessionStore()["StoredCookies"][backendName]["Structured"].Remove(cookieName);
 			}
 		}
+		if ( anyNamedCookie.GetSize() > 0 && cookieName.Length() ) {
+			anyCookies[cookieName].Append(anyNamedCookie);
+		}
 	}
-	if ( cookies.Length() ) {
-		ctx.GetSessionStore()["StoredCookies"][backendName]["Plain"] = cookies;
+	//!@FIXME: this part should be factored out into separate mapper
+	String destSlotname("StoredCookies.");
+	destSlotname.Append(backendName);
+	if ( anyCookies.GetSize() > 0 ) {
+		String plainCookieString(256L), cookieName(32L);
+		AnyExtensions::Iterator<ROAnything> structureIter(anyCookies);
+		ROAnything roaEntry;
+		while ( structureIter.Next(roaEntry) ) {
+			if (!plainCookieString.Length()) {
+				plainCookieString.Append("Cookie:");
+			}
+			structureIter.SlotName(cookieName);
+			//!@FIXME: in future we should decide on attributes to select correct value entry to use, currently we use the last one (roaEntry.GetSize()-1) if multiple entries exist
+			plainCookieString.Append(' ').Append(cookieName).Append('=').Append(roaEntry[roaEntry.GetSize()-1][valueSlotName].AsString()).Append(cookieEnd);
+		}
+		Anything anyPlainString(plainCookieString);
+		StorePutter::Operate(anyPlainString, ctx, "Session", String(destSlotname).Append(".Plain"));
 	}
-	TraceAny(ctx.Lookup(String("StoredCookies.").Append(backendName)), "stored cookies");
+	TraceAny(anyCookies, "prepared cookie values");
+	StorePutter::Operate(anyCookies, ctx, "Session", String(destSlotname).Append(".Structured"));
+	TraceAny(ctx.Lookup("StoredCookies"), "cookies from context");
 }
