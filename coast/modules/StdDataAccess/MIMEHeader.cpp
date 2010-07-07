@@ -27,12 +27,12 @@ MIMEHeader::MIMEHeader(URLUtils::NormalizeTag normalizeKey, MIMEHeader::ProcessM
 bool MIMEHeader::DoReadHeader(istream &in, long maxlinelen, long maxheaderlen)
 {
 	StartTrace(MIMEHeader.DoReadHeader);
-	String line;
+	String line(maxlinelen);
 	long headerlength = 0;
 
 	while (in.good()) {
 		// reset line
-		line = "";
+		line.Trim(0L);
 		// read line up to but not including next \n
 		line.Append(in, maxlinelen + 2, '\n');
 		Trace("Line [" << line.Length() << "] maxlinelen [" << maxlinelen << "]\nLineContent: <" << line << "\n>");
@@ -47,7 +47,7 @@ bool MIMEHeader::DoReadHeader(istream &in, long maxlinelen, long maxheaderlen)
 		}
 
 		// we are done with the header
-		if (line == "\r" || line == "") {
+		if (line == "\r" || line.Length() == 0L ) {
 			return true;
 		}
 	}
