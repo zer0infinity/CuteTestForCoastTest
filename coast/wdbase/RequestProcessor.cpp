@@ -47,7 +47,7 @@ void RequestProcessor::ProcessRequest(Context &ctx)
 
 	if ( socket != (Socket *) NULL ) {
 		ROAnything timeout;
-		fServer->Lookup("SocketReadTimeout", timeout);
+		ctx.Lookup("SocketReadTimeout", timeout);
 		socket->SetTimeout(timeout.AsLong(10 * 1000L));
 		TraceAny(socket->ClientInfo(), "socket client info");
 		Ios = socket->GetStream();
