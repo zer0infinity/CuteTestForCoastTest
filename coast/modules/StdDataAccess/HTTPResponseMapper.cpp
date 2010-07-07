@@ -9,12 +9,8 @@
 //--- interface include --------------------------------------------------------
 #include "HTTPResponseMapper.h"
 
-//--- project modules used -----------------------------------------------------
-
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- HTTPResponseMapper ------------------------------------------------------------------
 RegisterResultMapper(HTTPResponseMapper);
