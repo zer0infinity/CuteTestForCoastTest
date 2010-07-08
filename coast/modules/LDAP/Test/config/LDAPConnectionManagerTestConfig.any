@@ -1250,7 +1250,7 @@
 						  /LDAPError {
 							/LDAPConnectionManagerTest_Query {
 							  /Msg ignore
-							  /LdapCode 32
+							  /LdapCode 85
 							  /LdapMsg ignore
 							  /LdapConnectionParams {
 								/Timeout 10

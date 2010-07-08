@@ -152,7 +152,7 @@
 					/CLDAICA
 					{
 							/Da		"TestDA1"
-							/Key	":3"
+							/Key	":7"
 					}
 			}
 			/ExpectedResult		1
@@ -165,6 +165,7 @@
 						{
 						  "entitledService"
 						  "tkfModify"
+						  "top"
 						}
 						/esid "1100/153.046.016.009"
 						/apptype "undef"
@@ -521,7 +522,7 @@
 					/CLDAICA
 					{
 							/Da		"TestDA1Action"
-							/Key	":3"
+							/Key	":7"
 					}
 			}
 			/ExpectedResult		1

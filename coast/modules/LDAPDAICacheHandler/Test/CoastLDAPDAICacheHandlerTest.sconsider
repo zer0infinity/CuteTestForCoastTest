@@ -50,10 +50,10 @@ def replaceConfigParams(env, relDir, configdir):
         ('##WRONGBINDPW##', str(defaults['LDAP']['FaultyPassword'])), 
         ('##BINDFAILCODE##', str(defaults['LDAP']['BindFailureCode']))]
     
-    modifyConfigFles(env, searchreplacespec, SConsider.findFiles([configdir], ['.any']))
+    modifyConfigFiles(env, searchreplacespec, SConsider.findFiles([configdir], ['.any']))
 
 
-def modifyConfigFles(env, searchReplace=[], files=[]):
+def modifyConfigFiles(env, searchReplace=[], files=[]):
     for file in files:
         fname = file.abspath
     
