@@ -49,7 +49,7 @@ void HTTPDAImplTest::useSSLTest() {
 
 void HTTPDAImplTest::ErrorHandlingTest() {
 	StartTrace(HTTPDAImplTest.ErrorHandlingTest);
-	ParameterMapper in("useSSL");
+	ParameterMapper in("ErrorHandling");
 	ResultMapper out("useSSL");
 	HTTPDAImpl httpDAImpl("ErrorHandlingTest");
 	t_assert(in.Initialize("ParameterMapper"));
@@ -58,12 +58,9 @@ void HTTPDAImplTest::ErrorHandlingTest() {
 
 	Anything dummy;
 	Context ctx(dummy, dummy, 0, 0, 0, 0);
-
 	t_assert(!httpDAImpl.Exec(ctx, &in, &out));
-	TString strMsg("Connection to  [Server Name:ErrorHandlingTest IP:");
-	strMsg << ctx.Lookup("Backend.Server", "") << " Port:" << ctx.Lookup("Backend.Port", "") << "] failed";
 	TraceAny(ctx.GetTmpStore()["Mapper"]["Error"], "Mapper.Error");
-	assertEqual(strMsg, ctx.GetTmpStore()["Mapper"]["Error"].AsCharPtr("bad"));
+	assertComparem(0L, less, ctx.Lookup("Mapper.Error").AsString().Length(), "expected error message length");
 }
 
 void HTTPDAImplTest::SSLTests() {

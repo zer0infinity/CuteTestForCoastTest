@@ -16,11 +16,15 @@
     }
 	/fdputargs
 	{
+		/Server				!Defaults.any?HostName
+		/Port				!Defaults.any?HttpPort
 		/Method				GET
 		/HTTPVersion		"HTTP/1.0"
 	}
 	/fdputargs2
 	{
+		/Server				!Defaults.any?HostName
+		/Port				!Defaults.any?HttpPort
 		/Method				POST
 		/HTTPVersion		"HTTP/1.0"
 	}
@@ -51,6 +55,8 @@
 	}
 
 	/webappputargs {
+		/Server		!Defaults.any?SSLHost
+		/Port		!Defaults.any?SSLPort
 		/Method		GET
 		/URI		"/udb/udbdemo"
 		/HTTPVersion	"HTTP/1.0"
@@ -159,8 +165,24 @@
 			}
 		}
 	}
-
+	/ErrorHandling {
+		/Server				!Defaults.any?HostName
+		/Port				!Defaults.any?FaultyHttpPort
+		/UseSSL				0
+		/Timeout			1
+		/Input {
+			"GET / HTTP/1.0\r\n"
+			"Connection: Keep-Alive\r\n"
+			"User/Agent: Mozilla/4.61 [en] (X11; U; Linux 2.2.10 i686\r\n"
+			"Host: ssl.some.dom\r\n"
+			"\r\n"
+		}
+	}
 	/useSSL {
+		/Server				!Defaults.any?SSLHost
+		/Port				!Defaults.any?SSLPort
+		/UseSSL				1
+		/Timeout			30
 		/Input {
 			"GET / HTTP/1.0\r\n"
 			"Connection: Keep-Alive\r\n"
@@ -172,6 +194,11 @@
 
 	/SSLTests
 	{
+		/Server		!Defaults.any?SSLHost
+		/Port		!Defaults.any?SSLPort
+		/UseSSL		1
+		/Timeout	30
+		/UseThreadLocalMemory 0
 		/Input {
 			"GET / HTTP/1.0\r\n"
 			"Connection: Close\r\n"
@@ -179,6 +206,13 @@
 			"Host: ssl.som.dom\r\n"
 			"\r\n"
 		}
+	}
+	/SSLNirvanaConnectTests {
+		/Server		!Defaults.any?HostName
+		/Port		!Defaults.any?FaultySSLPort
+		/UseSSL		1
+		/Timeout	5
+		/UseThreadLocalMemory 1
 	}
 	/SendReceiveOnce {
 		/UseSSL					0

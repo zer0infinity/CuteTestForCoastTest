@@ -227,6 +227,15 @@ bool ParameterMapper::Get(const char *key, Anything &value, Context &ctx)
 	return false;
 }
 
+Anything ParameterMapper::Get(const char *key, Context &ctx)
+{
+	StartTrace1(ParameterMapper.Get, "( \"" << NotNull(key) << "\" , Context &ctx)");
+	DAAccessTimer(ParameterMapper.Get, key << " as Anything", ctx);
+	Anything anyValue;
+	DoGetAny(key, anyValue, ctx, DoSelectScript(key, fConfig, ctx));
+	return anyValue;
+}
+
 bool ParameterMapper::Get(const char *key, ostream &os, Context &ctx)
 {
 	StartTrace1(ParameterMapper.Get, "( \"" << NotNull(key) << "\" , ostream &os, Context &ctx)");

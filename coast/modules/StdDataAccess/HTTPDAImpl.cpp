@@ -47,13 +47,11 @@ String HTTPDAImpl::GenerateErrorMessage(const char *msg, Context &context)
 	ROAnything appPref(context.Lookup("URIPrefix2ServiceMap"));
 	Anything anyPrefix = appPref.SlotName(appPref.FindValue(fName));
 
-	Anything tmp(context.GetTmpStore());
-	String otherInfo = "";
-	otherInfo << "Server Name:" << tmp["Backend"]["ServerName"].AsCharPtr(fName);
-	otherInfo << " IP:" << tmp["Backend"]["Server"].AsCharPtr("no IP");
-	otherInfo << " Port:" << tmp["Backend"]["Port"].AsCharPtr("no Port");
 	String errorMsg(msg);
-	errorMsg << anyPrefix.AsCharPtr(fName) << " [" << otherInfo << "] failed";
+	errorMsg << anyPrefix.AsString(fName) << " [";
+	errorMsg << " Server:" << context.Lookup("Backend.Server").AsString("no IP");
+	errorMsg << " Port:" << context.Lookup("Backend.Port").AsString("no Port");
+	errorMsg << "] failed";
 	return errorMsg;
 }
 
@@ -61,7 +59,7 @@ bool HTTPDAImpl::Exec( Context &context, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(HTTPDAImpl.Exec);
 
-	ConnectorParams cps(this, context);
+	ConnectorParams cps(context, in);
 	Trace( "Address<" << cps.IPAddress() << "> Port[" << cps.Port() << "] SSL(" << ((cps.UseSSL()) ? "yes" : "no") << ")" );
 
 	if ( cps.UseSSL() ) {

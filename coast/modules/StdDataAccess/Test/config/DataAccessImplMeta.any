@@ -5,40 +5,5 @@
 # This library/application is free software; you can redistribute and/or modify it under the terms of
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
-
 {
-	/fdputargs
-	{
-		/Server				!Defaults.any?HostName
-		/Port				!Defaults.any?HttpPort
-	}
-	/fdputargs2
-	{
-		/Server				!Defaults.any?HostName
-		/Port				!Defaults.any?HttpPort
-	}
-
-	/useSSLTest
-	{
-		/Server				!Defaults.any?SSLHost
-		/Port				!Defaults.any?SSLPort
-		/UseSSL				1
-		/Timeout			30
-	}
-
-	/ErrorHandlingTest {
-		/Server				!Defaults.any?HostName
-		/Port				!Defaults.any?FaultyHttpPort
-		/UseSSL				0
-		/Timeout			1
-	}
-
-	/webappputargs {
-		/Server		!Defaults.any?SSLHost
-		/Port		!Defaults.any?SSLPort
-	}
-	/webappputargs2 {
-		/Server		!Defaults.any?SSLHost
-		/Port		!Defaults.any?SSLPort
-	}
 }

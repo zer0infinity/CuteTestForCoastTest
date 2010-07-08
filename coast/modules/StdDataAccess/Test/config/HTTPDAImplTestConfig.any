@@ -23,14 +23,6 @@
 			/UseSSLObjectManager	0
 			/Config
 			{
-				/CurrentServer
-				{
-					/Server		!Defaults.any?HostName
-					/Port		!Defaults.any?FaultySSLPort
-					/UseSSL		1
-					/Timeout	5
-					/UseThreadLocalMemory 1
-				}
 				/SSLModuleCfg
 				{
 					/SSLVerifyDepth 3
@@ -57,14 +49,6 @@
 			/UseSSLObjectManager	1
 			/Config
 			{
-				/CurrentServer
-				{
-					/Server		!Defaults.any?HostName
-					/Port		!Defaults.any?FaultySSLPort
-					/UseSSL		1
-					/Timeout	5
-					/UseThreadLocalMemory 1
-				}
 				/SSLModuleCfg
 				{
 					/SSLVerifyDepth 3
@@ -92,14 +76,6 @@
 		{
 			/Config
 			{
-				/CurrentServer
-				{
-					/Server		!Defaults.any?SSLHost
-					/Port		!Defaults.any?SSLPort
-					/UseSSL		1
-					/Timeout	30
-					/UseThreadLocalMemory 1
-				}
 				/SSLModuleCfg
 				{
 					/SSLVerifyDepth 3
@@ -125,14 +101,6 @@
 		{
 			/Config
 			{
-				/CurrentServer
-				{
-					/Server		!Defaults.any?SSLHost
-					/Port		!Defaults.any?SSLPort
-					/UseSSL		1
-					/Timeout	30
-					/UseThreadLocalMemory 1
-				}
 				/SSLModuleCfg
 				{
 					/SSLVerifyDepth 1
@@ -158,14 +126,6 @@
 		{
 			/Config
 			{
-				/CurrentServer
-				{
-					/Server		!Defaults.any?SSLHost
-					/Port		!Defaults.any?SSLPort
-					/UseSSL		1
-					/Timeout	30
-					/UseThreadLocalMemory 1
-				}
 				/SSLModuleCfg
 				{
 					/SSLVerifyDepth 3
@@ -191,14 +151,6 @@
 		{
 			/Config
 			{
-				/CurrentServer
-				{
-					/Server		!Defaults.any?SSLHost
-					/Port		!Defaults.any?SSLPort
-					/UseSSL		1
-					/Timeout	30
-					/UseThreadLocalMemory 1
-				}
 				/SSLModuleCfg
 				{
 					/SSLVerifyDepth 3
@@ -224,14 +176,6 @@
 		{
 			/Config
 			{
-				/CurrentServer
-				{
-					/Server		!Defaults.any?SSLHost
-					/Port		!Defaults.any?SSLPort
-					/UseSSL		1
-					/Timeout	30
-					/UseThreadLocalMemory 0
-				}
 				/SSLModuleCfg
 				{
 					/SSLVerifyDepth 3

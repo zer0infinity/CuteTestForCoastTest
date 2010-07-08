@@ -10,58 +10,45 @@
 #include "ConnectorParams.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "Context.h"
-#include "DataAccessImpl.h"
-#include "Dbg.h"
+#include "Mapper.h"
 
 //---- ConnectorParams ----------------------------------------------
-ConnectorParams::ConnectorParams(DataAccessImpl *master, Context &ctx) : fMaster(master), fContext(ctx)
-{
-	// store away the servers ip address or dns name for later use
-	Anything tmpStore(fContext.GetTmpStore());
-	tmpStore["Backend"]["Name"] = Name();
-	tmpStore["Backend"]["Server"] = IPAddress();
-	tmpStore["Backend"]["Port"] = Port();
-	tmpStore["Backend"]["UseSSL"] = UseSSL();
+ConnectorParams::ConnectorParams(Context &ctx, ParameterMapper *pMapper) : fParamEntry(ctx, "ConnectorParams", fParams, "Backend") {
+	fParams["Name"] = pMapper->Get("Name", ctx).AsString();
+	fParams["Server"] = pMapper->Get("Server", ctx).AsString("127.0.0.1");
+	fParams["Port"] = pMapper->Get("Port", ctx).AsLong(80L);
+	fParams["UseSSL"] = (pMapper->Get("UseSSL", ctx).AsLong(0L) != 0L);
+	fParams["Timeout"] = (pMapper->Get("Timeout", ctx).AsLong(0L) * 1000L);
+	fParams["UseThreadLocalMemory"] = (pMapper->Get("UseThreadLocalMemory", ctx).AsLong(0L) != 0L);
 }
 
-ConnectorParams::~ConnectorParams()
-{
+ConnectorParams::~ConnectorParams() {
 }
 
-String ConnectorParams::Name()
-{
-	return fContext.Lookup("CurrentServer.Name", fMaster->Lookup("Name", ""));
+String ConnectorParams::Name() {
+	return fParams["Name"].AsString();
 }
 
-bool ConnectorParams::UseSSL()
-{
-	return (fContext.Lookup("CurrentServer.UseSSL", fMaster->Lookup("UseSSL", 0L)) != 0);
+bool ConnectorParams::UseSSL() {
+	return fParams["UseSSL"].AsBool();
 }
 
-String ConnectorParams::IPAddress()
-{
-	return fContext.Lookup("CurrentServer.Server", fMaster->Lookup("Server", "127.0.0.1"));
+String ConnectorParams::IPAddress() {
+	return fParams["Server"].AsString();
 }
 
-long ConnectorParams::Port()
-{
-	return fContext.Lookup("CurrentServer.Port", fMaster->Lookup("Port", 80L));
+long ConnectorParams::Port() {
+	return fParams["Port"].AsLong(80L);
 }
 
-String ConnectorParams::PortAsString()
-{
-	String work;
-	return work.Append(fContext.Lookup("CurrentServer.Port", fMaster->Lookup("Port", 80L)));
+String ConnectorParams::PortAsString() {
+	return fParams["Port"].AsString();
 }
 
-long ConnectorParams::Timeout()
-{
-	return fContext.Lookup("CurrentServer.Timeout", fMaster->Lookup("Timeout", 0L)) * 1000; // since timeout is in milliseconds
+long ConnectorParams::Timeout() {
+	return fParams["Timeout"].AsLong(80L);
 }
 
-bool ConnectorParams::UseThreadLocal()
-{
-	return fContext.Lookup("CurrentServer.UseThreadLocalMemory", fMaster->Lookup("UseThreadLocalMemory", 0L)) != 0L;
+bool ConnectorParams::UseThreadLocal() {
+	return fParams["UseThreadLocalMemory"].AsBool();
 }

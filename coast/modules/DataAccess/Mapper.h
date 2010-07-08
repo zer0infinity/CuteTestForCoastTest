@@ -106,6 +106,12 @@ public:
 		\return returns true if the mapping was successful otherwise false */
 	bool Get(const char *key, Anything &value, Context &ctx);
 
+	//! Pulls out an Anything according to key. Clients use this method to pull out an Anything value with name key from the Mapper
+	/*! \param key the name defines kind of value to get
+		\param ctx the thread context of the invocation
+		\return mapped value as Anything, will be Null-Anything if not found or mapping failure */
+	Anything Get(const char *key, Context &ctx);
+
 	//! Write to the ostream os values according to key. Clients use this method to write to the stream values associated with the key
 	/*! \param key the name defines kind of values to write
 		\param os the stream to be mapped

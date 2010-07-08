@@ -11,33 +11,30 @@
 
 //--- superclass interface ---
 #include "config_stddataaccess.h"
+#include "Context.h"
 
-class DataAccessImpl;
-class String;
-class Context;
+class ParameterMapper;
 
 class EXPORTDECL_STDDATAACCESS ConnectorParams
 {
 public:
-	ConnectorParams(DataAccessImpl *master, Context &ctx);
-	virtual ~ConnectorParams();
+	ConnectorParams(Context &ctx, ParameterMapper *pMapper);
+	~ConnectorParams();
 
-	virtual String Name();
-	virtual bool UseSSL();
-	virtual String IPAddress();
-	virtual long Port();
-	virtual String PortAsString();
-	virtual long Timeout();
-	virtual bool UseThreadLocal();
-
-protected:
-	DataAccessImpl *fMaster;
-	Context &fContext;
+	String Name();
+	bool UseSSL();
+	String IPAddress();
+	long Port();
+	String PortAsString();
+	long Timeout();
+	bool UseThreadLocal();
 
 private:
+	MetaThing fParams;
+	Context::PushPopEntry<Anything> fParamEntry;
 	ConnectorParams();
 	ConnectorParams(const ConnectorParams &);
 	ConnectorParams &operator=(const ConnectorParams &);
 };
 
-#endif		//not defined _ConnectorParams_H
+#endif

@@ -5,37 +5,29 @@
  * This library/application is free software; you can redistribute and/or modify it under the terms of
  * the license that is included with this library/application in the file license.txt.
  */
-
+//--- interface include --------------------------------------------------------
+#include "DummyHTTPDAImpl.h"
 //--- standard modules used ----------------------------------------------------
-#include "Anything.h"
 #include "ConnectorParams.h" // for ConnectorParams
 #include "Mapper.h"
 #include "Context.h"
 #include "Dbg.h"
-
-//--- interface include --------------------------------------------------------
-#include "DummyHTTPDAImpl.h"
-
 //--- DummyHTTPDAImpl -----------------------------------------------------
 RegisterDataAccessImpl(DummyHTTPDAImpl);
 
-DummyHTTPDAImpl::DummyHTTPDAImpl(const char *name) : DummyDAImpl(name)
-{
+DummyHTTPDAImpl::DummyHTTPDAImpl(const char *name) :
+	DummyDAImpl(name) {
 }
 
-DummyHTTPDAImpl::~DummyHTTPDAImpl()
-{
+DummyHTTPDAImpl::~DummyHTTPDAImpl() {
 }
 
-IFAObject *DummyHTTPDAImpl::Clone() const
-{
+IFAObject *DummyHTTPDAImpl::Clone() const {
 	return new DummyHTTPDAImpl(fName);
 }
 
-bool DummyHTTPDAImpl::Exec( Context &context, ParameterMapper *in, ResultMapper *out)
-{
+bool DummyHTTPDAImpl::Exec(Context &context, ParameterMapper *in, ResultMapper *out) {
 	StartTrace(DummyHTTPDAImpl.Exec);
-
-	ConnectorParams cps(this, context);
+	ConnectorParams cps(context, in);
 	return DoExec(context, in, out);
 }
