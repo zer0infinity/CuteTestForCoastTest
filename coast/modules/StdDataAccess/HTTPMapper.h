@@ -13,10 +13,60 @@
 #include "Mapper.h"
 
 // --------------------- HTTPHeaderParameterMapper -------------------------
-class EXPORTDECL_STDDATAACCESS HTTPHeaderParameterMapper : public EagerParameterMapper
+//! <b>HTTP header parameter mapping</b>
+/*!
+ * This mapper will do a Context::Lookup() using the given key. It expectes a list
+ * (Anything) split into <tt>/headerkey value</tt> pairs. This list will be used as
+ * input to write onto the \c ostream argument given in the DoGetStream() function. The
+ * contents of every headerkey not listed in the <em>Suppress</em> slot will get
+ * rendered as <b><tt>headerkey: value\\r\\n</tt></b> pairs onto the stream.
+ * @section headermapperconfig Mapper configuration
+ *
+ * @par \c Suppress
+ * \b optional, default is to render all headerkey/value pairs\n
+ * Anything, list specifying HTTP header fields to suppress.
+ *
+ * @section headermapperexample Example
+ * @subsection headermapperexampleconfig Configuration (InputMapperMeta.any)
+ * \code
+/MyMapperAlias {
+	/Suppress {
+        keep-alive
+        ACCEPT-ENCODING
+        { accept connection }
+	}
+}
+ * \endcode
+ * @subsection headermapperexampletmpstore Prepared content of TmpStore
+ * Assume the configured DataAccess will issue a ParameterMapper::Get("Header", ...)
+ * \code
+/TmpStore {
+	/Header {
+	    /HOST "my.host.dom"
+        /USER-AGENT "Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.6) Gecko/20100629 Ubuntu/10.10 (maverick) Firefox/3.6.6 GTB7.0"
+        /ACCEPT {
+          "text/html"
+          "application/xhtml+xml"
+          "application/xml;q=0.9"
+        }
+        /ACCEPT-ENCODING {
+          "gzip"
+          "deflate"
+        }
+        /KEEP-ALIVE "115"
+        /CONNECTION "keep-alive"
+	}
+}
+ * \endcode
+ * @subsection headermapperexampleoutput Returned content on stream
+ * \code
+HOST: my.host.dom\r\nUSER-AGENT: Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.6) Gecko/20100629 Ubuntu/10.10 (maverick) Firefox/3.6.6 GTB7.0\r\n
+ * \endcode
+ */
+class EXPORTDECL_STDDATAACCESS HTTPHeaderParameterMapper : public ParameterMapper
 {
 public:
-	HTTPHeaderParameterMapper(const char *name) : EagerParameterMapper(name) { }
+	HTTPHeaderParameterMapper(const char *name) : ParameterMapper(name) { }
 	~HTTPHeaderParameterMapper()	{ }
 
 	//! support for prototype pattern, implements standard api
@@ -24,12 +74,12 @@ public:
 		return new HTTPHeaderParameterMapper(fName);
 	}
 
-	//! prepares headerfield input for http connection
-	//! \param key expected HTTPHeader (indicates where to find the headerfield info)
-	//! \param os the stream we write the http header fields to
-	//! \param ctx the context for this call
-	//! \param conf the configuration for this call. may contain a slot
-	//              /Suppress that contains names of headers to suppress
+	/*! Render http header fields, look'd up in the Context using the given key and render not suppressed headers onto os
+	 * \param key expected HTTPHeader (indicates where to find the headerfield info)
+	 * \param os the stream we write the http header fields to
+	 * \param ctx the context for this call
+	 * \param conf further mapper configuration script
+	 */
 	bool DoGetStream(const char *key, ostream &os, Context &ctx,  ROAnything conf);
 private:
 	HTTPHeaderParameterMapper();

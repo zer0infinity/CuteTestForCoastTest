@@ -26,6 +26,9 @@
 			/HTTPBodyMapper *
 		}
 	}
+	/HeaderSuppressMapper {
+		/DestinationSlot "Mapper"
+	}
 	/HTTPMimeHeaderMapper { # dummy, but not empty
 		/DoNotSplitHeaderFields 1
 	}

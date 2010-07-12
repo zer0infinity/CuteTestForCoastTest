@@ -29,13 +29,17 @@
 		/HTTPVersion		"HTTP/1.0"
 	}
 
-	/HeaderSuppressTestMapper {	#mapper for test purposes
-		/Header	{
-			/HTTPHeaderParameterMapper {
-				/Suppress {
-					{ test1 Test2 }
-					test3
-				}
+	/HTTPHeaderParameterMapper {
+		/Suppress {
+			{ ACCEPT-LANGUAGE ACCEPT-ENCODING ACCEPT-CHARSET }
+			USER-AGENT
+			ACCEPT
+		}
+	}
+	/HeaderSuppressMapper {
+		/In {
+			/Header	{
+				/HTTPHeaderParameterMapper *
 			}
 		}
 	}
