@@ -22,39 +22,9 @@ class OraclePooledConnection;
 /*!
  * Oracle specific DataAccessImpl to execute database access based on settings in the Context and configuration
  * for OracleDAImpl, ParameterMapper and ResultMapper.
- * @section s1 ParameterMapper configuration
+ * @section oracleparammapper ParameterMapper keys
  *
- \code
- {
- # Basic connection settings
- /DBConnectString
- /DBUser
- /DBPW
- /DBTries
-
- # Simple sql queries section
- /SQL
-
- # Stored procedure/function
- /Name
- /Return
- /Params {
- /PARAMNAME
- ...
- }
-
- # Customizing output
- /ShowQueryCount
- /ShowUpdateCount
- /DBResultFormat
- }
- # Optimizing performance
- /StringBufferSize
- /PrefetchRows
- }
- \endcode
- *
- * @subsection s1s1 Basic connection settings
+ * @subsection oracleparameterbasicconnsettings Basic connection settings
  *
  * @par \c DBConnectString
  * \b mandatory \n
@@ -69,13 +39,13 @@ class OraclePooledConnection;
  * optional, default 3\n
  * How many times to retry if a database request fails due to recoverable errors
  *
- * @subsection s1s2 Simple sql queries
+ * @subsection oracleparametersimplequeries Simple sql queries
  *
  * @par \c SQL
  * \b mandatory if it is one of [select|insert|update|delete|create|drop|alter|...], but not a stored procedure/function or another form of a PL/SQL block\n
  * String value representing the SQL query to execute in valid oracle syntax.
  *
- * @subsection s1s3 Stored procedure/function
+ * @subsection oracleparameterprocedurefunction Stored procedure/function
  *
  * Any OracleDAImpl used to execute server side stored procedures should be used in conjunction with OracleParameterMapper.
  * If not used together, parameters might not get looked up correctly.
@@ -93,7 +63,7 @@ class OraclePooledConnection;
  * Values to use as input parameters for stored procedures/functions\n
  * <em>Note that parameter names \b must be specified in upper case letters, oracle is not case preserving/sensitive for parameter names!</em>
  *
- * @subsection s1s4 Customizing output
+ * @subsection oracleparameteroutput Customizing output
  *
  * @par \c ShowQueryCount
  * optional, default 1\n
@@ -112,7 +82,7 @@ class OraclePooledConnection;
  *		Will create a \c QueryTitles output slot containing a dictionary of column names and their index to access the
  *		column value in a \c QueryResult row using this index
  *
- * @subsection s1s5 Optimizing performance
+ * @subsection oracleparameterperformance Optimizing performance
  *
  * @par \c StringBufferSize
  * optional, default 4096\n
@@ -121,42 +91,9 @@ class OraclePooledConnection;
  * optional, default 10\n
  * Long value, how many rows to fetch in a OCI server round trip
  *
- * @section s2 ResultMapper configuration
+ * @section oracleresultmapper ResultMapper keys
  *
- \code
- {
- # Common output
- /QuerySource
- /Query
- /Messages {
- "some message"
- ...
- }
-
- # Simple sql queries
- /QueryCount
- /QueryResult {
- { results of first row }
- { ... }
- }
- /QueryTitles {
- /ColName	colidx
- ...
- }
- /UpdateCount
-
- # Stored procedure/function
- /PARAMNAME		value
- or
- /PARAMNAME {
- /QueryCount
- /QueryResult
- /QueryTitles
- }
- }
- \endcode
- *
- * @subsection s2s1 Common output
+ * @subsection oracleresultcommonoutput Common output
  *
  * @par \c QuerySource
  * This slot will contain the connect string of the back end where the query was executed
@@ -165,7 +102,7 @@ class OraclePooledConnection;
  * @par \c Messages
  * Errors occurring during execution will be appended as textual messages
  *
- * @subsection s2s2 Simple SQL queries
+ * @subsection oracleresultsimplequeries Simple SQL queries
  *
  * @par \c QueryCount
  * enabled by default, set \c ShowQueryCount to 0 in ParameterMapper configuration to disable output\n
@@ -183,7 +120,7 @@ class OraclePooledConnection;
  * disabled by default, set \c ShowUpdateCount to 1 in ParameterMapper configuration to enable output\n
  * Long value, if a non select query was issued, it represents what the database tells us about updates that were made.\n
  *
- * @subsection s2s3 Stored procedure/function
+ * @subsection oracleresultprocedurefuntcion Stored procedure/function
  *
  * @par \c PARAMNAME
  * Every stored procedure/function parameter will be put using its PARAMNAME. If it is a simple value, the value appears as
