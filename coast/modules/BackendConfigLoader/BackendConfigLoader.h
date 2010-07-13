@@ -29,8 +29,7 @@ public:
 	static ROAnything GetBackendConfig();
 
 private:
-	bool RegisterBackend(const String& backendName);
-	bool RegisterBackends();
+	bool RegisterBackend(const String& backendName, ROAnything roaBackendConfig);
 	Anything GetBackendList();
 	static Anything backendConfigurations;
 	static BackendConfigLoaderModule *fgBackendConfigLoaderModule;
