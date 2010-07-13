@@ -1121,7 +1121,7 @@ void MyHTMLWriter::Tag(int t, const char *s )
 					RenderFontTag(t, s, node); // promote text to containing node
 				} else {
 					if (t == '/') {
-						TraceAny(fNodeStack, "NodeStack");
+						SubTraceAny(NodeStack, fNodeStack, "NodeStack");
 						String thisNodesTag, oldLevel, levelOfFailure;
 						Anything anyStructPos = node;
 						long stackTop = fNodeStack.GetSize() - 1;

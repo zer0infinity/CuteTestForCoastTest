@@ -328,7 +328,7 @@ bool Role::Verify(Context &c, String &transition, String &pagename) const
 
 bool Role::DoVerify(Context &, String &, String &) const
 {
-	StatTrace(Role.DoVerify, "of role <" << fName << "> is not defined, returning true", Storage::Current());
+	StatTrace(Role.DoVerify, "not overridden for <" << fName << ">, returning true", Storage::Current());
 	return true;
 }
 

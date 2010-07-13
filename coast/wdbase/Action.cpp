@@ -13,6 +13,7 @@
 #include "Registry.h"
 #include "Page.h"
 #include "Timers.h"
+#include "AnyIterators.h"
 
 //---- ActionsModule -----------------------------------------------------------
 RegisterModule(ActionsModule);
@@ -57,24 +58,27 @@ Action::Action(const char *name) : NotCloned(name)
 
 bool Action::ExecAction(String &transitionToken, Context &c)
 {
-	StatTrace(Action.ExecAction, "<" << transitionToken << ">", Storage::Current());
+	StartTrace1(Action.ExecAction, "transition <" << transitionToken << ">");
 	return ExecAction(transitionToken, c, ROAnything());
 }
 
 bool Action::ExecAction(String &transitionToken, Context &c, const ROAnything &config)
 {
-	StatTrace(Action.ExecAction, "<" << transitionToken << ">", Storage::Current());
+	StartTrace1(Action.ExecAction, "transition <" << transitionToken << "> + config");
 	MethodTimer(Action.ExecAction, transitionToken, c);
 	bool result(false);
 	switch (config.GetType()) {
 		case AnyArrayType: {
+			TraceAny(config, "processing action script");
 			String slotname( 32L );
-			for (long i = 0, sz = config.GetSize(); i < sz; ++i) {
-				slotname = config.SlotName(i);
-				if (slotname.Length() > 0) {
-					result = CallAction(slotname, transitionToken, c, config[i]);
+			ROAnything roaEntry;
+			AnyExtensions::Iterator<ROAnything> scriptIterator(config);
+			while ( scriptIterator.Next(roaEntry) ) {
+				if ( scriptIterator.SlotName(slotname) ) {
+					TraceAny(roaEntry, "trying slotname <" << slotname << "> as action with config");
+					result = CallAction(slotname, transitionToken, c, roaEntry);
 				} else {
-					result = ExecAction(transitionToken, c, config[i]);
+					result = ExecAction(transitionToken, c, roaEntry);
 				}
 				if ( !result ) {
 					return result;
@@ -82,25 +86,26 @@ bool Action::ExecAction(String &transitionToken, Context &c, const ROAnything &c
 			}
 		}
 		break;
-
 		case AnyCharPtrType:
 			transitionToken = config.AsString();
+			Trace("action script is simple string, implicitly changing transition to <" << transitionToken << ">");
 			result = CallAction(transitionToken, transitionToken, c, ROAnything());
 			break;
-
 		default:
+			TraceAny(config, "action script is neither any nor simple string, token remains <" << transitionToken << ">");
 			result = CallAction(transitionToken, transitionToken, c, config);
 	}
-	// it is not a valid action
 	return result;
 }
 
 bool Action::CallAction(String &actionName, String &transitionToken, Context &c, const ROAnything &config)
 {
-	StatTrace(Action.CallAction, "<" << actionName << "/" << transitionToken << ">", Storage::Current());
+	StartTrace1(Action.CallAction, "transition <" << transitionToken << "> action <" << actionName << ">");
 	if (actionName.Length() > 0) {
+		TraceAny(config, "config given");
 		Action *a( FindAction(actionName) );
 		if (a) {
+			Trace("action found, executing it");
 			return a->DoExecAction(transitionToken, c, config);
 		} else if (!config.IsNull()) {
 			return ExecAction(transitionToken, c, config);

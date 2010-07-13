@@ -123,7 +123,9 @@ bool Page::ProcessToken(String &transitionToken, Context &context)
 {
 	StartTrace1(Page.ProcessToken, fName << ": <" << transitionToken << ">");
 	context.SetPage(this);
-	return Action::ExecAction(transitionToken, context, context.Lookup(transitionToken));
+	ROAnything roaTransitionConfig = context.Lookup(transitionToken);
+	TraceAny(roaTransitionConfig, "context config for <" << transitionToken << ">");
+	return Action::ExecAction(transitionToken, context, roaTransitionConfig);
 }
 
 void Page::Preprocess(Context &c)
