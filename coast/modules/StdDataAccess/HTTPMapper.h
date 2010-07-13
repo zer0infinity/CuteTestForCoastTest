@@ -20,6 +20,9 @@
  * input to write onto the \c ostream argument given in the DoGetStream() function. The
  * contents of every headerkey not listed in the <em>Suppress</em> slot will get
  * rendered as <b><tt>headerkey: value\\r\\n</tt></b> pairs onto the stream.
+ * Hierarchical <em>Suppress</em> slot configuration is possible so that derived
+ * Mappers will inherit suppressed entries of their parents.
+ *
  * @section headermapperconfig Mapper configuration
  *
  * @par \c Suppress
@@ -82,6 +85,9 @@ public:
 	 */
 	bool DoGetStream(const char *key, ostream &os, Context &ctx,  ROAnything conf);
 private:
+	bool DoInitialize();
+	bool DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const;
+
 	HTTPHeaderParameterMapper();
 	HTTPHeaderParameterMapper(const HTTPHeaderParameterMapper &);
 	HTTPHeaderParameterMapper &operator=(const HTTPHeaderParameterMapper &);

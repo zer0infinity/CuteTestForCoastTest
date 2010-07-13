@@ -31,7 +31,9 @@
 			CgiExecTest
 		}
 		/MapperTestDAImpl {
-			HeaderSuppressMapper
+			/HeaderSuppressMapper {
+				HeaderSuppressMapperHierarch
+			}
 		}
 	}
 
@@ -40,6 +42,12 @@
 			/ParameterMapper {
 				TestMail
 				HeaderSuppressMapper
+				HeaderSuppressMapperHierarch
+			}
+			/HTTPHeaderParameterMapper {
+				/MyHeaderSuppressMapper {
+					HierarchHeaderSuppressMapper
+				}
 			}
 			/CgiParams { CgiExecTest }
 		}
@@ -49,6 +57,7 @@
 				ExecTestOut
 				CgiExecTest
 				HeaderSuppressMapper
+				HeaderSuppressMapperHierarch
 			}
 		}
 	}
@@ -182,6 +191,53 @@
 				/TmpStore {
 					/Mapper	{
 						/Out "HOST: sso.badgeportal:9090\r\nKEEP-ALIVE: 115\r\nCONNECTION: keep-alive\r\n"
+					}
+				}
+			}
+		}
+		/HeaderSuppressMapperHierarchTest {
+			/TmpStore {
+				/Header {
+	                /HOST "sso.badgeportal:9090"
+	                /USER-AGENT "Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.6) Gecko/20100629 Ubuntu/10.10 (maverick) Firefox/3.6.6 GTB7.0"
+	                /ACCEPT {
+	                  "text/html"
+	                  "application/xhtml+xml"
+	                  "application/xml;q=0.9"
+	                  "*/*;q=0.8"
+	                }
+	                /ACCEPT-LANGUAGE {
+	                  "en-us"
+	                  "en;q=0.5"
+	                }
+	                /ACCEPT-ENCODING {
+	                  "gzip"
+	                  "deflate"
+	                }
+	                /ACCEPT-CHARSET {
+	                  "ISO-8859-1"
+	                  "utf-8;q=0.7"
+	                  "*;q=0.7"
+	                }
+	                /KEEP-ALIVE "115"
+	                /CONNECTION "keep-alive"
+				}
+			}
+			/TheAction {
+				/CallDA {
+					/DataAccess	HeaderSuppressMapperHierarch
+					/Parameters {
+						/DataType	StringStream
+						/transfer {
+							/In Out
+						}
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/Mapper	{
+						/Out "HOST: sso.badgeportal:9090\r\nCONNECTION: keep-alive\r\n"
 					}
 				}
 			}

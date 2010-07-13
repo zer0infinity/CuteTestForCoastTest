@@ -13,8 +13,8 @@
 #include "StringStream.h"
 #include "Timers.h"
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
+#include "CacheHandler.h"
+#include "AnyIterators.h"
 
 RegisterParameterMapper(HTTPHeaderParameterMapper);
 
@@ -67,34 +67,80 @@ namespace {
 	}
 }
 
+namespace {
+	static const char *gsGroupName="HeaderMapperCache";
+	static const char *gsSuppressName="Suppress";
+}
+
+bool HTTPHeaderParameterMapper::DoInitialize()
+{
+	StartTrace1(HTTPHeaderParameterMapper.DoInitialize, "cat <" << fCategory << "> name <" << fName << ">");
+	ROAnything roaSuppressList(fConfig[gsSuppressName]);
+	Anything suppresslist;
+	SuppressListToUpper(roaSuppressList, suppresslist);
+	TraceAny(suppresslist, "suppress list to cache");
+	if ( !suppresslist.IsNull() ) {
+		MetaThing toCache;
+		toCache[gsSuppressName] = suppresslist;
+		CacheHandler *cache= CacheHandler::Get();
+		AnythingLoaderPolicy loader(toCache);
+		ROAnything roaList = cache->Load(gsGroupName, GetName(), &loader);
+		TraceAny(roaList, "cached suppress list");
+	}
+	return true;
+}
+
+bool HTTPHeaderParameterMapper::DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const {
+	StartTrace1(HTTPHeaderParameterMapper.DoLookup, "fName <" << GetName() << ">");
+	// check first in cache with this object name as prefix
+	bool bValueFound = false;
+	if ( String(key).StartsWith(gsSuppressName) ) {
+		ROAnything roaCache = CacheHandler::Get()->Get(gsGroupName, GetName());
+		TraceAny(roaCache, "result from cache for [" << GetName() << "]");
+		if (!roaCache.IsNull()) {
+			bValueFound = roaCache.LookupPath(result, key);
+			TraceAny(result, "result at [" << key << "]");
+		}
+	}
+	// delegate further if not found yet
+	if ( !bValueFound ) {
+		bValueFound = HierarchConfNamed::DoLookup(key, result, delim, indexdelim);
+		TraceAny(result, "uncached result of parent DoLookup delegation at key [" << key << "]");
+	}
+	return bValueFound;
+}
+
 bool HTTPHeaderParameterMapper::DoGetStream(const char *key, ostream &os, Context &ctx, ROAnything info)
 {
 	StartTrace1(HTTPHeaderParameterMapper.DoGetStream, "Key:<" << NotNull(key) << ">");
 
 	bool mapSuccess = true;
-	ROAnything roaSuppressList(Lookup("Suppress"));
-	Anything suppresslist;
-	SuppressListToUpper(roaSuppressList, suppresslist);
-	TraceAny(suppresslist, "header fields to suppress");
 	ROAnything headerfields(ctx.Lookup(key));
 	TraceAny(headerfields, "Headerfields available for key " << key);
 
 	if ( !headerfields.IsNull() ) {
-		// map a configured set of headerfields
-		for (long i = 0, szh = headerfields.GetSize(); i < szh; ++i) {
-			// header fields are uppercased already
-			String strFieldName = headerfields.SlotName(i);
-			Anything value;
-			ROAnything rvalue;
-			if (strFieldName.Length() && !suppresslist.IsDefined(strFieldName)) {
-				Trace("slot: " << strFieldName);
-				if (!Get(strFieldName, value, ctx)) {
-					rvalue = headerfields[strFieldName];
-				} else {
-					rvalue = value;
-				}
-				if ( !HandleMoreLinesForHeaderField(os, strFieldName, rvalue) ) {
-					HandleOneLineForHeaderField(os, strFieldName, rvalue);
+		String strFieldName;
+		ROAnything roaValue;
+		AnyExtensions::Iterator<ROAnything> headerIterator(headerfields);
+		while (headerIterator.Next(roaValue)) {
+			if ( headerIterator.SlotName(strFieldName) ) {
+				strFieldName.ToUpper();
+				String strKey(gsSuppressName);
+				strKey.Append('.').Append(strFieldName);
+				Trace("trying to Lookup [" << strKey << "] in own or config");
+				// map non suppressed headerfields
+				if ( Lookup(strKey).AsLong(0L) == 0L ) {
+					Anything value;
+					ROAnything rvalue;
+					Trace("slot: " << strFieldName);
+					if (!Get(strFieldName, value, ctx)) {
+						rvalue = roaValue;
+					} else {
+						rvalue = value;
+					}
+					if ( !HandleMoreLinesForHeaderField(os, strFieldName, rvalue) ) {
+						HandleOneLineForHeaderField(os, strFieldName, rvalue);
+					}
 				}
 			}
 		}

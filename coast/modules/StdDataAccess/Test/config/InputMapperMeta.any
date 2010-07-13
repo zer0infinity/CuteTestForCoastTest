@@ -29,17 +29,29 @@
 		/HTTPVersion		"HTTP/1.0"
 	}
 
-	/HTTPHeaderParameterMapper {
+	/MyHeaderSuppressMapper {
 		/Suppress {
 			{ ACCEPT-LANGUAGE ACCEPT-ENCODING ACCEPT-CHARSET }
 			USER-AGENT
 			ACCEPT
 		}
 	}
+	/HierarchHeaderSuppressMapper {
+		/Suppress {
+			KEEP-Alive
+		}
+	}
 	/HeaderSuppressMapper {
 		/In {
 			/Header	{
-				/HTTPHeaderParameterMapper *
+				/MyHeaderSuppressMapper *
+			}
+		}
+	}
+	/HeaderSuppressMapperHierarch {
+		/In {
+			/Header	{
+				/HierarchHeaderSuppressMapper *
 			}
 		}
 	}
