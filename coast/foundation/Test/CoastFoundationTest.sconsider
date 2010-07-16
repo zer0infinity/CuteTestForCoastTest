@@ -71,7 +71,11 @@ faultyfqdn='nonexisting.server.loc'
 localhostname='localhost'
 localhostip=socket.gethostbyname(localhostname)
 hosttoresolvename='www.hsr.ch'
-hosttoresolveip=socket.gethostbyname(hosttoresolvename)
+try:
+    hosttoresolveip=socket.gethostbyname(hosttoresolvename)
+except:
+    hosttoresolvename=localhostname
+    hosttoresolveip=localhostip
 
 def setUp(target, source, env):
     global basepath
