@@ -122,14 +122,14 @@ bool HTTPDAImpl::DoExec(Connector *csc, ConnectorParams *cps, Context &context, 
 	}
 	{
 		DAAccessTimer(HTTPDAImpl.DoExec, " reading", context);
-		if (! out->Put("Output", *Ios, context) ) {
-			out->Put("Error", GenerateErrorMessage("Receiving reply of ", context), context);
-			return false;
-		}
+		bool bPutSuccess= out->Put("Output", *Ios, context);
 		OStringStream ostr;
 		context.DebugStores(0, ostr, true);
 		SubTrace(Stores, ostr.str());
-		return true;
+		if ( !bPutSuccess ){
+			out->Put("Error", GenerateErrorMessage("Receiving reply of ", context), context);
+		}
+		return bPutSuccess;
 	}
 }
 #if defined(RECORD)
