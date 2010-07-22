@@ -14,8 +14,7 @@
 
 //---- RegexTest ----------------------------------------------------------
 //!TestCases description
-class RegexTest : public TestFramework::TestCase
-{
+class RegexTest: public TestFramework::TestCase {
 public:
 	//--- constructors
 
@@ -29,7 +28,7 @@ public:
 	//--- public api
 
 	//!builds up a suite of testcases for this test
-	static Test *suite ();
+	static Test *suite();
 
 	//!match literal
 	void MatchLiteral();

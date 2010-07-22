@@ -7,8 +7,8 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-	/LowerBound 	100
-	/UpperBound 	110
+	/LowerBound 	00
+	/UpperBound 	310
 	/DumpAnythings	1
 
 	/RegexTest {

@@ -136,4 +136,16 @@
 		/MainSwitch	1250
 		/EnableAll	1260
 	}
+	/RegExpAction {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/RECompiler {
+		/MainSwitch	10
+		/EnableAll	10
+	}
+	/RE {
+		/MainSwitch	10
+		/EnableAll	10
+	}
 }

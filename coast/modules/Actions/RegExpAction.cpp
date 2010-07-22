@@ -9,15 +9,12 @@
 //--- interface include --------------------------------------------------------
 #include "RegExpAction.h"
 
-//--- project modules used -----------------------------------------------------
-
 //--- standard modules used ----------------------------------------------------
 #include "Context.h"
 #include "Renderer.h"
 #include "AnythingUtils.h"
 #include "Dbg.h"
 #include "RE.h"
-//--- c-modules used -----------------------------------------------------------
 
 //---- RegExpAction ---------------------------------------------------------------
 RegisterAction(RegExpAction);

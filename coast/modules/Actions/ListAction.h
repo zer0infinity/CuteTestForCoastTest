@@ -51,7 +51,6 @@ protected:
 	/*! Gets called for each entry
 		\param transitionToken (in/out) the event passed by the caller, can be modified.
 		\param ctx the context the action runs within
-		\param config the configuration of the action
 		\param entryAction the configuration of the action to execute
 		\return true if execution of EntryAction returned true, false otherwise. */
 	virtual bool ExecEntry(String &transitionToken, Context &ctx, const ROAnything &entryAction);

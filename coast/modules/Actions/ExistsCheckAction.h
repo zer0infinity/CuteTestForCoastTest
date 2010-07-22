@@ -21,7 +21,7 @@
 	A render spec
 }
 \endcode
-\parExample:
+\par Example:
 \code
 {
 	"LostAndFound.HandBags."

@@ -23,8 +23,6 @@
 #include "TestTimer.h"
 #include "Dbg.h"
 
-//--- c-library modules used ---------------------------------------------------
-
 //---- RegexTest ----------------------------------------------------------------
 RegexTest::RegexTest(TString tstrName) : TestCaseType(tstrName)
 {
