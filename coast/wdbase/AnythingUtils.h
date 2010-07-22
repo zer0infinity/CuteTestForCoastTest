@@ -80,33 +80,41 @@ private:
 };
 
 //---- StorePutter -----------------------------------------------------------
-
-//! Use this class to put a Anything into a context store using lookup-syntax
-//! To use this class; create an instance and call Operate on it.
+//! <b>Use this class to put an Anything into a context store using lookup-syntax</b>
+/*! To use this class; create an instance and call Operate on it.
+ * @section storeputterconfiguration StorePutter Configuration
+ * @par \c Store
+ * \b optional, default TempStore, in which store shall the values be put, possible store names are\n
+ * \li Role
+ * \li Session
+ * \li Request
+ * @par \c Slot
+ * \b mandatory, slotname in Anything::LookupPath semantics like \c Level1.Level2	where to store the values.\n
+ * This is a Renderer specification, producing the final \c Slot argument used to store away the destination content.
+ * The (nested) slot(s) will be created if they do not exist.\n
+ * If \c Slot contains an empty string (""), nothing will be stored
+ * @par \c Append
+ * \b optional, values [0|1], default 0\n
+ * Specify if we should append (1) to destination or overwrite (0)
+ * @par \c Delim
+ * \b optional, default "."\n
+ * First character is taken as delimiter for named slots
+ * @par \c IndexDelim
+ * \b optional, default ":"\n
+ * First character is taken as delimiter for indexed slots
+ */
 class EXPORTDECL_WDBASE StorePutter
 {
 public:
-	//! looks up the slot in the store, creates it if not found.
-	//! The config Anything should have the form
-	//! <PRE>{
-	//! 	/Store	Role			# opt, The Store where the Slot is lookuped
-	//!								# (Known Stores are Role,Session,Request,default TempStore)
-	//! 	/Slot	Level1.Level2	# Rendererspec producing the Slot that is assigned to source - if it does not exists it is created
-	//!		/Append   				optional [0|1], default 0, append source to destination, overwrite otherwise
-	//!		/Delim   				optional, default ".", first char is taken as delimiter for named slots
-	//!		/IndexDelim				optional, default ":", first char is taken as delimiter for indexed slots
-	//! }</PRE>
-	//! You can specify the Slotname as a dot separated list of names to retrieve slots from any
-	//! hierarchy level (e.g fields.System).
-	//! If /Slot contains an empty string ("") not will happen
-	//! \param source The Anything that provides the data, remains unchanged
-	//! \param c the context that provides the store
-	//! \param config the configuration
-	//! \post c.LookupPath(config["Slot"].AsString("")) = source
+	/*! Store source Anything into Context using the specification given in config
+	 * @param source The Anything that provides the data, remains unchanged
+	 * @param c the context that provides the store
+	 * @param config configuration how to put source, see \ref storeputterconfiguration for specs
+	 * @post c.LookupPath(config["Slot"].AsString("")) = source */
 	static void Operate(Anything &source, Context &c, const Anything &config);
 	static void Operate(Anything &source, Context &c, const ROAnything &config);
 
-	/*! puts the Anything source into context using a <I>LookupPath</I>-like slot specification
+	/*! puts the Anything source into context using a \em LookupPath like slot specification
 		\param source The Anything that provides the data, remains unchanged
 		\param c Context to operate on
 		\param strStoreName name of store in Context to put destination Anything into
