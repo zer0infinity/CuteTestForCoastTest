@@ -75,6 +75,8 @@ public:
 	void GrepTest();
 	//!test "grepping" for Anything slot names
 	void GrepSlotNamesTest();
+	//!test getting match groups using GetMatch()
+	void GetMatchTest();
 };
 
 #endif

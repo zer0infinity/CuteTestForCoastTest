@@ -13,79 +13,72 @@
 #include "Anything.h"
 
 //!implement a simple regular expression engine for Coast
-//! it uses WD's memory management mechanisms with Anythings and Strings
-//! to make it useful for multi-threaded programs (which the standard recomp(),reexec()
-//! aren't). Derived from Jakarta's regular expression subproject java source
-//! and heavily refactored.
-//! the compiled regular expression is stored in an Anything
-//! each slot represents a node in the non-deterministic (backtracking)
-//! automaton. each node is a 3 slot anything with opcode, opdata (=parameter),
-//! and opnext, the relative offset to the next node to consider if
-//! the current node matches.
+/*! it uses WD's memory management mechanisms with Anythings and Strings
+	to make it useful for multi-threaded programs (which the standard recomp(),reexec()
+	aren't). Derived from Jakarta's regular expression subproject java source
+	and heavily refactored.
+	the compiled regular expression is stored in an Anything
+	each slot represents a node in the non-deterministic (backtracking)
+	automaton. each node is a 3 slot anything with opcode, opdata (=parameter),
+	and opnext, the relative offset to the next node to consider if
+	the current node matches. */
 class EXPORTDECL_REGEX RE
 {
 public:
-	//!with this RE impl. the matching engine handles the following flags, not the
-	//!RE compiler as it is the case with regcomp/regexec fuctions
-	//!flag combinations for further convenience
+	/*! with this RE impl. the matching engine handles the following flags, not the
+		RE compiler as it is the case with regcomp/regexec fuctions */
+	//! flag combinations for further convenience
 	enum eMatchFlags {
-		//Specifies normal, case-sensitive matching behaviour.
-		MATCH_NORMAL          = 0x0000,
-		//Flag to indicate that matching should be case-independent (folded)
-		MATCH_ICASE = 0x0001,
-		// Newlines should match as BOL/EOL (^ and $)
-		MATCH_MULTILINE       = 0x0002,
-
-		ICASE_MULTILINE		  = 0x0003, // convenience
-
-		//Consider all input a single body of text - newlines are matched by .
-		DOT_MATCHES_NEWLINE   = 0x0004,
-
-		ICASE_NEWLINE		  = 0x0005, //convenience
-		MULTI_NEWLINE    	  = 0x0006, // not a very sensible combination
-		ICASE_MULTI_NEWLINE	  = 0x0007  // convenience
+		MATCH_NORMAL          = 0x0000, //!< Specifies normal, case-sensitive matching behaviour.
+		MATCH_ICASE           = 0x0001, //!< Flag to indicate that matching should be case-independent (folded)
+		MATCH_MULTILINE       = 0x0002, //!< Newlines should match as BOL/EOL (^ and $)
+		ICASE_MULTILINE		  = 0x0003, //!< convenience
+		DOT_MATCHES_NEWLINE   = 0x0004, //!< Consider all input a single body of text - newlines are matched by .
+		ICASE_NEWLINE		  = 0x0005, //!< convenience
+		MULTI_NEWLINE    	  = 0x0006, //!< not a very sensible combination
+		ICASE_MULTI_NEWLINE	  = 0x0007  //!< convenience
 	};
 
+	//! the opcodes of our RE engine
 	enum eOpCodes {
-		// the opcodes of our RE engine
 		//   Opcode              Char       Opdata/Operand  Meaning
 		//   ----------          ---------- --------------- --------------------------------------------------
-		OP_END              = 'E',  //                 end of program
-		OP_BOL              = '^',  //                 match only if at beginning of line
-		OP_EOL              = '$',  //                 match only if at end of line
-		OP_ANY              = '.',  //                 match any single character except newline
-		OP_ANYOF            = '[',  // count/ranges    match any char in the list of ranges
-		OP_BRANCH           = '|',  // node            match this alternative or the next one
-		OP_ATOM             = 'A',  // length/string   length of string followed by string itself
-		OP_OPEN             = '(',  // number          nth opening paren
-		OP_CLOSE            = ')',  // number          nth closing paren
-		OP_BACKREF          = '#',  // number          reference nth already matched parenthesized string
-		OP_GOTO             = 'G',  //                 nothing but a (back-)pointer
-		OP_NOTHING          = 'N',  //                 match null string such as in '(a|)'
-		OP_RELUCTANTSTAR    = '8',  // none/expr       reluctant '*' (mnemonic for char is unshifted '*')
-		OP_RELUCTANTPLUS    = '=',  // none/expr       reluctant '+' (mnemonic for char is unshifted '+')
-		OP_RELUCTANTMAYBE   = '/',  // none/expr       reluctant '?' (mnemonic for char is unshifted '?')
-		OP_BOW		        = 'b'   // bool	           match at word boundary or not at word boundary
+		OP_END              = 'E',  //!<                 end of program
+		OP_BOL              = '^',  //!<                 match only if at beginning of line
+		OP_EOL              = '$',  //!<                 match only if at end of line
+		OP_ANY              = '.',  //!<                 match any single character except newline
+		OP_ANYOF            = '[',  //!< count/ranges    match any char in the list of ranges
+		OP_BRANCH           = '|',  //!< node            match this alternative or the next one
+		OP_ATOM             = 'A',  //!< length/string   length of string followed by string itself
+		OP_OPEN             = '(',  //!< number          nth opening paren
+		OP_CLOSE            = ')',  //!< number          nth closing paren
+		OP_BACKREF          = '#',  //!< number          reference nth already matched parenthesized string
+		OP_GOTO             = 'G',  //!<                 nothing but a (back-)pointer
+		OP_NOTHING          = 'N',  //!<                 match null string such as in '(a|)'
+		OP_RELUCTANTSTAR    = '8',  //!< none/expr       reluctant '*' (mnemonic for char is unshifted '*')
+		OP_RELUCTANTPLUS    = '=',  //!< none/expr       reluctant '+' (mnemonic for char is unshifted '+')
+		OP_RELUCTANTMAYBE   = '/',  //!< none/expr       reluctant '?' (mnemonic for char is unshifted '?')
+		OP_BOW		        = 'b'   //!< bool	           match at word boundary or not at word boundary
 	};
 
+	//! special Escape codes supported within atoms/literals and character classes [...]
 	enum eEscapeCodes {
-		// special Escape codes supported within atoms/literals and character classes [...]
-		E_ALNUM             = 'w',  // Alphanumeric
-		E_NALNUM            = 'W',  // Non-alphanumeric
-		E_BOUND             = 'b',  // Word boundary - not in character class []
-		E_NBOUND            = 'B',  // Non-word boundary - not in character class []
-		E_SPACE             = 's',  // Whitespace
-		E_NSPACE            = 'S',  // Non-whitespace
-		E_DIGIT             = 'd',  // Digit
-		E_NDIGIT            = 'D'   // Non-digit
+		E_ALNUM             = 'w',  //!< Alphanumeric
+		E_NALNUM            = 'W',  //!< Non-alphanumeric
+		E_BOUND             = 'b',  //!< Word boundary - not in character class []
+		E_NBOUND            = 'B',  //!< Non-word boundary - not in character class []
+		E_SPACE             = 's',  //!< Whitespace
+		E_NSPACE            = 'S',  //!< Non-whitespace
+		E_DIGIT             = 'd',  //!< Digit
+		E_NDIGIT            = 'D'   //!< Non-digit
 	};
 
+	//! Node layout constants, we use a three slot Anything per node
 	enum eLayoutConstants {
-		// Node layout constants, we use a three slot Anything per node
-		offsetOpcode = 0,            // Opcode offset
-		offsetOpdata = 1,            // Opdata offset
-		offsetNext   = 2,            // Next index offset
-		nodeSize     = 1             // Node size (in Anything offsets)
+		offsetOpcode = 0,            //!< Opcode offset
+		offsetOpdata = 1,            //!< Opdata offset
+		offsetNext   = 2,            //!< Next index offset
+		nodeSize     = 1             //!< Node size (in Anything offsets)
 	};
 
 public:
@@ -140,21 +133,21 @@ public:
 	//after the match use the following methods to access the
 	//matched substrings
 	//!how many parentheses exist and matched last time in the re
-	long GetRegisterCount() {
+	long GetRegisterCount() const {
 		return fRegisters.GetSize();
 	}
 	//!get the matched string, 0 means complete match, >0 take register
-	String GetMatch(long subMatch = 0L);
+	String GetMatch(long const subMatch = 0L) const;
 	//! return the start and end of a RE subexpression
 	//!!param - which: 0 means position of whole mach, > 0 register of match
-	long GetStartRegister(long which);
-	long GetEndRegister(long which);
+	long GetStartRegister(long const which) const;
+	long GetEndRegister(long const which) const;
 
 protected:
 	//! auxiliaries used for matching
-	void SetStartRegister(long which, long posInSearch);
+	void SetStartRegister(long const which, long const posInSearch);
 
-	void SetEndRegister(long which, long posInSearch);
+	void SetEndRegister(long const which, long const posInSearch);
 	//!implement the recursive (backtracking) NFA engine
 	//! matches fSearch from position idxStart with the
 	//! (sub-)NFA from firstNode to lastNode

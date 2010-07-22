@@ -164,10 +164,30 @@ void RegexTest::LeftMostLongestTest()
 	assertEqual(4, l);
 	assertEqual(0, tomatch.GetStartRegister(1));
 	assertEqual(4, tomatch.GetEndRegister(1));
+	assertCharPtrEqual("abcd", tomatch.GetMatch(1));
 	assertEqual(4, tomatch.GetStartRegister(2));
 	assertEqual(4, tomatch.GetEndRegister(2));
-
+	assertCharPtrEqual("", tomatch.GetMatch(2));
 }
+
+void RegexTest::GetMatchTest()
+{
+	StartTrace(RegexTest.GetMatchTest);
+	{
+		RE tomatch("\\btest\\b");
+		t_assert(tomatch.ContainedIn("this is a test string"));
+		assertCharPtrEqual("test", tomatch.GetMatch(0));
+	}
+	{
+		RE tomatch("((\\bt\\w+)(.*\\2))");
+		t_assert(tomatch.ContainedIn("now test this test string"));
+		assertCharPtrEqual("test this test", tomatch.GetMatch(0));
+		assertCharPtrEqual("test this test", tomatch.GetMatch(1));
+		assertCharPtrEqual("test", tomatch.GetMatch(2));
+		assertCharPtrEqual(" this test", tomatch.GetMatch(3));
+	}
+}
+
 
 void RegexTest::BackRefTest()
 {
@@ -400,7 +420,6 @@ Test *RegexTest::suite ()
 {
 	StartTrace(RegexTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
 	ADD_CASE(testSuite, RegexTest, MatchLiteral);
 	ADD_CASE(testSuite, RegexTest, MatchDot);
 	ADD_CASE(testSuite, RegexTest, MatchDotDotDot);
@@ -416,6 +435,6 @@ Test *RegexTest::suite ()
 	ADD_CASE(testSuite, RegexTest, SubstTest);
 	ADD_CASE(testSuite, RegexTest, GrepTest);
 	ADD_CASE(testSuite, RegexTest, GrepSlotNamesTest);
-
+	ADD_CASE(testSuite, RegexTest, GetMatchTest);
 	return testSuite;
 }

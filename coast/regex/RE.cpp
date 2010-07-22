@@ -78,34 +78,34 @@ String RE::SimplePatternToFullRegularExpression(const String &pattern)
 	}
 	return buf;
 }
-String RE::GetMatch(long which)
+String RE::GetMatch(long const which) const
 {
-	StartTrace(RE.GetMatch);
+	StartTrace1(RE.GetMatch, "match#" << which);
 	long start;
 	if (which < fRegisters.GetSize() && (start = GetStartRegister(which)) >= 0) {
-		return fSearch.SubString(start, GetEndRegister(which));
+		return fSearch.SubString(start, GetEndRegister(which)-start);
 	}
 	return String();
 }
 
-long RE::GetStartRegister(long which)
+long RE::GetStartRegister(long const which) const
 {
-	StartTrace(RE.GetStartRegister);
+	StatTrace(RE.GetStartRegister, "match#" << which << " position: " << ROAnything(fRegisters)[which][0L].AsLong(-1), Storage::Current());
 	return ROAnything(fRegisters)[which][0L].AsLong(-1);
 }
-long RE::GetEndRegister(long which)
+long RE::GetEndRegister(long const which) const
 {
-	StartTrace(RE.GetEndRegister);
+	StatTrace(RE.GetEndRegister, "match#" << which << " position: " << ROAnything(fRegisters)[which][1L].AsLong(-1), Storage::Current());
 	return ROAnything(fRegisters)[which][1L].AsLong(-1);
 }
-void RE::SetStartRegister(long which, long i)
+void RE::SetStartRegister(long const which, long const i)
 {
-	StartTrace(RE.SetStartRegister);
+	StatTrace(RE.SetStartRegister, "match#" << which << " pos:" << i, Storage::Current());
 	fRegisters[which][0L] = i;
 }
-void RE::SetEndRegister(long which, long i)
+void RE::SetEndRegister(long const which, long const i)
 {
-	StartTrace(RE.SetEndRegister);
+	StatTrace(RE.SetEndRegister, "match#" << which << " pos:" << i, Storage::Current());
 	fRegisters[which][1L] = i;
 }
 long RE::MatchNodes(long firstNode, long lastNode, long idxStart)
