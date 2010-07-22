@@ -24,6 +24,7 @@
 		/NotEmptyCheckAction	{ CheckNotEmpty }
 		/EmailAddressCheckAction { CheckEmailAddress }
 		/CopyContextAction	{ Copy }
+		/RegExpAction	{ RE }
 	}
 	/Renderers {
 		/SwitchRenderer 		{ Switch }
@@ -1602,6 +1603,102 @@
 							/C 2
 						}
 						"Three"
+					}
+				}
+			}
+		}
+		/RegExpActionSimpleMatchTest {
+			/TheAction {
+				/RE {
+					/Text	"match something in here"
+					/Pattern "some\\w+"
+					/Destination {
+						/Slot	"matches"
+					}
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore {
+					/matches {
+						"something"
+					}
+				}
+			}
+		}
+		/RegExpActionSimpleCaselessMatchTest {
+			/TheAction {
+				/RE {
+					/Text	"match SoMeThInG in here"
+					/Pattern "some\\w+"
+					/MatchFlags	1
+					/Destination {
+						/Slot	"matches"
+					}
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore {
+					/matches {
+						"SoMeThInG"
+					}
+				}
+			}
+		}
+		/RegExpActionSimpleNoMatchTest {
+			/TheAction {
+				/RE {
+					/Text	"match something in here"
+					/Pattern "bla\\w+"
+					/Destination {
+						/Slot	"matches"
+					}
+				}
+			}
+			/ExpectedResult 0
+			/Result {
+				/TmpStore {
+				}
+			}
+		}
+		/RegExpActionWordMatchTest {
+			/TheAction {
+				/RE {
+					/Text	"this is a test string"
+					/Pattern "\\btest\\b"
+					/Destination {
+						/Slot	"matches"
+					}
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore {
+					/matches {
+						"test"
+					}
+				}
+			}
+		}
+		/RegExpActionGroupMatchTest {
+			/TheAction {
+				/RE {
+					/Text	"now test this test string"
+					/Pattern "((\\bt\\w+)(.*\\2))"
+					/Destination {
+						/Slot	"matches"
+					}
+				}
+			}
+			/ExpectedResult 1
+			/Result {
+				/TmpStore {
+					/matches {
+						"test this test"
+						"test this test"
+						"test"
+						" this test"
 					}
 				}
 			}
