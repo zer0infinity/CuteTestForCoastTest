@@ -26,7 +26,7 @@ void RegisterableObject::ResetCache(bool resetCache)
 bool RegisterableObject::fgResetCache = false;
 
 RegisterableObject::RegisterableObject(const char *name)
-	: NamedObject(name)
+	: NamedObject()
 	, fName(name, -1, Storage::Global())
 	, fStaticallyInitialized(false)
 	, fbInitialized(false)

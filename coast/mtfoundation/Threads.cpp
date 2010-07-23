@@ -140,7 +140,7 @@ static CleanupAllocator fgInitKey;
 #endif
 
 Thread::Thread(const char *name, bool daemon, bool detached, bool suspended, bool bound, Allocator *a)
-	: NamedObject(name)
+	: NamedObject()
 	, tObservableBase(name, a)
 	, fAllocator(a)
 	, fAllocCleaner(this)

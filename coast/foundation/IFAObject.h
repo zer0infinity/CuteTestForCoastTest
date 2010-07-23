@@ -15,38 +15,49 @@
 class String;
 
 //---- IFAObject ----------------------------------------------------------
-//! This is the abstract root class for all IFAObjects
-//! It defines cloning API Clone, that is needed for the prototype pattern
-class EXPORTDECL_FOUNDATION IFAObject
-{
+//! <b>This is the abstract root class for all IFAObjects</b>
+/*! It defines the cloning API IFAObject.Clone(), that is needed for the prototype pattern.
+ */
+class EXPORTDECL_FOUNDATION IFAObject {
 public:
-	IFAObject() {}
-	virtual ~IFAObject() {}
+	IFAObject() {
+	}
+	/*! virtual destructor to nicely cleanup derived types */
+	virtual ~IFAObject() {
+	}
 
-	//! support for prototypes is required
+	/*! Support for prototype pattern
+	 * @return Baseclass pointer to cloned instance of a derived type
+	 */
 	virtual IFAObject *Clone() const = 0;
 };
 
 //---- NamedObject ----------------------------------------------------------
-//!defines named object api
-class EXPORTDECL_FOUNDATION NamedObject : public IFAObject
-{
+//!<b>Defines abstract named object api</b>
+/*! This object serves as a base class for \em logically \em named objects of same type.
+ * The name could be used to distinguish different instances of an object of the same base.
+ */
+class EXPORTDECL_FOUNDATION NamedObject: public IFAObject {
 public:
-	//!named object constructor
-	NamedObject(const char *name);
+	/*! named object default constructor */
+	NamedObject() : IFAObject() {}
 
-	//!naming support setting name
-	virtual void SetName(const char *) = 0;
-	//!naming support getting name
-	virtual bool GetName(String &str) const;
-	//!naming support getting name
-	virtual const char *GetName() const {
-		return "anonymous";
-	}
+	/*! Naming support interface to set the objects name
+	 * @param name
+	 */
+	virtual void SetName(const char *name) = 0;
+	/*! Naming support interface for getting this objects name as String
+	 * @param name String representation of this objects name
+	 * @return true in case retrieval of name was successful
+	 * @note The default implementation here will return false to force overriding in derived classes.
+	 */
+	virtual bool GetName(String &name) const = 0;
+	/*! Naming support interface for getting this objects name as plain old char array
+	 * @return char array representation of this objects name
+	 */
+	virtual const char *GetName() const  = 0;
 
 private:
-	//!not allowed
-	NamedObject();
 	//!not allowed
 	NamedObject(const NamedObject &);
 	//!not allowed

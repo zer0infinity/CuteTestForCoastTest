@@ -8,18 +8,3 @@
 
 //--- interface include --------------------------------------------------------
 #include "IFAObject.h"
-
-//--- standard modules used ----------------------------------------------------
-#include "SystemLog.h"
-
-//---- NamedObject ----------------------------------------------------------
-NamedObject::NamedObject(const char *name)
-	: IFAObject()
-{
-}
-
-bool NamedObject::GetName(String &str) const
-{
-	str = GetName();
-	return false;
-}

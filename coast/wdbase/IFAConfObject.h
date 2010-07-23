@@ -24,7 +24,9 @@ class TerminationPolicy;
 class EXPORTDECL_WDBASE RegisterableObject : public NamedObject
 {
 public:
-	//!name object constructor
+	/*! named object constructor
+	 * @param name Used to distinguish between objects of same type
+	 */
 	RegisterableObject(const char *name);
 
 	virtual ~RegisterableObject() {};
