@@ -50,7 +50,7 @@ void LookupRenderer::RenderAll(ostream &reply, Context &context, const ROAnythin
 	}
 
 	// lookup data and use it as a renderer specification
-	if (! lookupName.IsNull()) {		// check if lookupName is defined somehow
+	if ( !lookupName.IsNull()) {		// check if lookupName is defined somehow
 		// render lookupname first
 		String lookup;
 		RenderOnString(lookup, context, lookupName);
@@ -65,11 +65,11 @@ void LookupRenderer::RenderAll(ostream &reply, Context &context, const ROAnythin
 		}
 	} else {
 		// handle error: lookup name is not a string
-		String error("LookupRenderer::RenderAll: invalid lookup name: ");
-
-		OStringStream os(&error);
-		lookupName.PrintOn(os, false);	// append Anything to ease debugging
-
+		String error("LookupRenderer::RenderAll: empty lookup name for config ");
+		{
+			OStringStream os(error);
+			config.PrintOn(os, false);	// append Anything to ease debugging
+		}
 		SystemLog::Error(error);
 		return;
 	}

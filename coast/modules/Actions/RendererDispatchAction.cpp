@@ -6,7 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- c-library modules used ---------------------------------------------------
+//--- interface include --------------------------------------------------------
+#include "RendererDispatchAction.h"
 
 //--- standard modules used ----------------------------------------------------
 #include "Anything.h"
@@ -15,11 +16,7 @@
 #include "Renderer.h"
 #include "Dbg.h"
 
-//--- interface include --------------------------------------------------------
-#include "RendererDispatchAction.h"
-
 //---- RendererDispatchAction ---------------------------------------------------------------
-
 RegisterAction(RendererDispatchAction);
 
 RendererDispatchAction::RendererDispatchAction(const char *name) : Action(name) { }
@@ -35,14 +32,9 @@ bool RendererDispatchAction::DoExecAction(String &transitionToken, Context &ctx,
 	if (!config.LookupPath(rendererSpec, "Renderer")) {
 		rendererSpec = config[0L];
 	}
-	TraceAny(rendererSpec, "RendererSpec" );
-
-	String nextAction;
-	OStringStream os(nextAction);
-	Renderer::Render(os, ctx, rendererSpec);
-	os.flush();
-
-	Trace("NextAction: <" << nextAction << ">" );
+	String nextAction(64L);
+	Renderer::RenderOnString(nextAction, ctx, rendererSpec);
+	TraceAny(rendererSpec, "RendererSpec resulted in Action <" << nextAction << ">");
 
 	if (nextAction != "") {
 		ROAnything nextActionConfig = ctx.Lookup(nextAction);
@@ -54,5 +46,4 @@ bool RendererDispatchAction::DoExecAction(String &transitionToken, Context &ctx,
 		return Action::ExecAction(transitionToken, ctx, nextActionConfig);
 	}
 	return true;
-
 }
