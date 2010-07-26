@@ -30,7 +30,7 @@ bool RendererDispatchAction::DoExecAction(String &transitionToken, Context &ctx,
 	TraceAny(config, "Configuration")
 	ROAnything rendererSpec;
 	if (!config.LookupPath(rendererSpec, "Renderer")) {
-		rendererSpec = config[0L];
+		rendererSpec = config;
 	}
 	String nextAction(64L);
 	Renderer::RenderOnString(nextAction, ctx, rendererSpec);

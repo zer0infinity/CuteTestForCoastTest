@@ -133,6 +133,14 @@
 			}
 			/ExpectedToken		GoOkPage
 		}
+		/ConcatenatedTokenDispatchingTest {
+			/SessionStore {
+			}
+			/TheAction {
+				/RDispatch { Go Ok Page }
+			}
+			/ExpectedToken		GoOkPage
+		}
 		/CompactDispatchingTest {
 			/SessionStore {
 				/XY			Test
