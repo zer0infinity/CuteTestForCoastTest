@@ -18,16 +18,11 @@
 
 //---- RegExpAction ---------------------------------------------------------------
 RegisterAction(RegExpAction);
-
-RegExpAction::RegExpAction(const char *name) : Action(name) { }
-
-RegExpAction::~RegExpAction() { }
-
 bool RegExpAction::DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config)
 {
 	StartTrace(RegExpAction.DoExecAction);
 	ROAnything roaText, roaPattern, roaDest, roaMatchFlags;
-	if ( !config.LookupPath(roaText, "Text") || !config.LookupPath(roaPattern, "Pattern") || !config.LookupPath(roaDest, "Destination") ) {
+	if ( !config.LookupPath(roaText, "Text", '\000') || !config.LookupPath(roaPattern, "Pattern", '\000') || !config.LookupPath(roaDest, "Destination", '\000') ) {
 		return false;
 	}
 	// check if the string is already a string value or if it equals a "/Lookup ...", in which case has to be rendered to a string
@@ -35,7 +30,7 @@ bool RegExpAction::DoExecAction(String &transitionToken, Context &ctx, const ROA
 	Renderer::RenderOnString(sText, ctx, roaText);
 	String sPattern( roaPattern.AsString() );
 	Trace("String [" << sText << "] using pattern [" << sPattern << "]");
-	config.LookupPath(roaMatchFlags, "MatchFlags");
+	config.LookupPath(roaMatchFlags, "MatchFlags", '\000');
 	RE aRE(sPattern, static_cast<RE::eMatchFlags>(roaMatchFlags.AsLong(0L)));
 	if ( aRE.IsValid() ) {
 		// does the pattern match from position 0 within search string (but doesn't return the matched String)

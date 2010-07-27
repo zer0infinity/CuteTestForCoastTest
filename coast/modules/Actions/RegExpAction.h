@@ -45,17 +45,13 @@
 class RegExpAction : public Action
 {
 public:
-	//--- constructors
-	/*! \param name defines the name of the action */
-	RegExpAction(const char *name);
-	~RegExpAction();
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
+	RegExpAction(const char *name) : Action(name) {}
 
-	/*! DoSomething method for configured Actions
-		\param transitionToken (in/out) the event passed by the caller, can be modified.
-		\param ctx the context the action runs within.
-		\param config the configuration of the action.
-		\return true if the action run successfully, false if an error occurred.
-	*/
+	/*! Search regular expression in string
+	 * @copydetails Action::DoExecAction(String &, Context &, const ROAnything &)
+	 * @return The result of the executed Actionscript if the renderer produces a String that is found in the Context
+	 * @return true otherwise */
 	virtual bool DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config);
 };
 

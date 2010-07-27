@@ -15,16 +15,18 @@
 
 //---- TransitionDispatchAction ----------------------------------------------------------
 //! <b>Lookups the transitionToken in context and executes the configuration as actionscript</b>
-/*!
-<b>Configuration: None</b><br>
-This Action is useful if anyone wants to dispatch an action(script) based on the value of the transitionToken returned from a previously called Action(script).
-
-Example:<pre>
+/*! @section TransitionDispatchActionDescription Description
+ * This Action is useful if anyone wants to dispatch an action(script) based on the value of the transitionToken returned from a previously called Action(script).
+ * @subsection TransitionDispatchActionConfiguration Configuration
+ * There is nothing to configure for this Action.
+ * @subsection TransitionDispatchActionExamples Examples
+ * In the following example, the action specification given in slot \b AuthenticateSuccess gets executed as it is assumed to be the result of the LoginAction.
+@code
 /SomeActionScript {
 	/LoginAction {
 		/...
 	}
-	# assume that LoginAction changed transitionToken to <b>AuthenticateSuccess</b>
+	# assume that LoginAction changed transitionToken to AuthenticateSuccess
 	/TransitionDispatchAction *
 }
 /AuthenticateSuccess {
@@ -34,22 +36,18 @@ Example:<pre>
 /AuthenticateFailed {
 	/WhateverWeMustDoHere {}
 }
-</pre>
-In this case the action specification given in slot <b>AuthenticateSuccess</b> gets executed.
+@endcode
 */
 class EXPORTDECL_ACTIONS TransitionDispatchAction : public Action
 {
 public:
-	//! constructor
-	TransitionDispatchAction(const char *name);
-	//! destructor
-	~TransitionDispatchAction();
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
+	TransitionDispatchAction(const char *name) : Action(name) {}
 
-	/*! DoSomething method for configured Actions
-		\param transitionToken (in/out) the event passed by the caller, can be modified.
-		\param ctx the context the action runs within.
-		\param config the configuration of the action.
-		\return true if the action run successfully, false if an error occurred. */
+	/*! Uses a Renderer script to decide what to execute next
+	 * @copydetails Action::DoExecAction(String &, Context &, const ROAnything &)
+	 * @return The result of the executed Actionscript if the renderer produces a String that is found in the Context
+	 * @return true otherwise */
 	virtual bool DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config);
 };
 

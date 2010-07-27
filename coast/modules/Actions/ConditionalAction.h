@@ -14,27 +14,35 @@
 #include "Action.h"
 
 //---- ConditionalAction ----------------------------------------------------------
-//! <B>Dispatches on success of a call to another Action</B><BR>Configuration:
-//! <PRE>
-//! {
-//!		/Call 	Actionscript	mandatory, is called and the result is used to decide
-//!		/True	Actionscript	optional, is called if the /Call Action results true
-//!								returns the result of the Actionscript or true if not specified
-//!		/False	Actionscript	optional, is called if the /Call Action results false
-//!								returns the result of the Actionscript or false if not specified
-//! }
-//! </PRE>
+//! <b>Dispatches on success of a call to another Action</c>
+/*! @section ConditionalActionDescription Description
+ * The purpose of this Action is to catch the return code of the \c Call Action and
+ * dispatch another Action script based on this return code.
+ * If there is no configuration for either \c True or \c False slots, it will return true, otherwise it will
+ * return the code of the executed Action script.
+ * The former might be useful in an Action script when one of its Actions fails from time to time but should
+ * not terminate the script.
+ * @subsection ConditionalActionConfiguration Configuration
+ * @code
+{
+	/Call 	Actionscript	mandatory, is called and the result is used to decide
+	/True	Actionscript	optional, is called if the /Call Action results true
+							returns the result of the Actionscript or true if not specified
+	/False	Actionscript	optional, is called if the /Call Action results false
+							returns the result of the Actionscript or true if not specified
+}
+ * @endcode
+*/
 class EXPORTDECL_ACTIONS ConditionalAction : public Action
 {
 public:
-	//--- constructors
-	ConditionalAction(const char *name);
-	~ConditionalAction();
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
+	ConditionalAction(const char *name) : Action(name) {}
 
-	//! \param transitionToken (in/out) the event passed by the caller, can be modified.
-	//! \param ctx the context the action runs within.
-	//! \param config the configuration of the action.
-	//! \return true or false, depending on the success of the configured actions.
+	/*! Executes the contents of Call slot as Action script and dispatches contents of either \c True or \c False
+	 * @copydetails Action::DoExecAction(String &, Context &, const ROAnything &)
+	 * @return The result of the executed Actionscript if the renderer produces a String that is found in the Context
+	 * @return true otherwise */
 	virtual bool DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config);
 };
 

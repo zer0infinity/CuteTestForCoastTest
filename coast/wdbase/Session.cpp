@@ -809,9 +809,10 @@ bool Session::PreparePage(Context &context, String &transition, String &currentp
 	Page *p = Page::FindPage(currentpage);
 	if (p) {
 		bool ret = p->Prepare(transition, context);
-		Trace("after: Transition: <" << transition << ">, Page: <" << currentpage << ">");
+		Trace(currentpage << ".Prepare() " << (ret?"successful":"failed") << " -> transition [" << transition << "]");
 		return ret;
 	}
+	Trace("oops, could not find page [" << currentpage << "]");
 	String errorpage = context.Lookup("ErrorPage", "ErrorPage");
 	if (currentpage == errorpage) {
 		// we have already tried to find the error page
