@@ -14,7 +14,7 @@
 
 //---- FirstNonEmptyRenderer ----------------------------------------------------------
 //! <b>Renders the first non-empty slot of the configuration Anything onto the stream</b>
-/*! @section FirstNonEmptyRendererDescription
+/*! @section FirstNonEmptyRendererDescription FirstNonEmptyRenderer Description
  * The main principle is to render the content of the first indexed configuration slot if its Renderer specification
  * results in a non empty String.
  * @subsection FirstNonEmptyRendererConfiguration FirstNonEmptyRenderer Configuration
