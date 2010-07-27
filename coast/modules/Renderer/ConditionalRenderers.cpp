@@ -16,13 +16,13 @@
 //---- ConditionalRenderer ----------------------------------------------------------------
 RegisterRenderer(ConditionalRenderer);
 
-static void IdentifyPathAndIndexDelim(char &pathDelim, char &indexDelim, Context &context, const ROAnything &config)
+static void IdentifyPathAndIndexDelim(char &pathDelim, char &indexDelim, Context &ctx, const ROAnything &config)
 {
 	pathDelim	= '.';
 	indexDelim	= ':';
 	if ( config.IsDefined("PathDelim") ) {
 		String renderedPathDelim;;
-		Renderer::RenderOnString(renderedPathDelim, context, config["PathDelim"]);
+		Renderer::RenderOnString(renderedPathDelim, ctx, config["PathDelim"]);
 		if (renderedPathDelim.Length() > 0 ) {
 			if (renderedPathDelim == "Ignore") {
 				pathDelim = '\0';
@@ -33,7 +33,7 @@ static void IdentifyPathAndIndexDelim(char &pathDelim, char &indexDelim, Context
 	}
 	if ( config.IsDefined("IndexDelim") ) {
 		String renderedIndexDelim;;
-		Renderer::RenderOnString(renderedIndexDelim, context, config["IndexDelim"]);
+		Renderer::RenderOnString(renderedIndexDelim, ctx, config["IndexDelim"]);
 		if (renderedIndexDelim.Length() > 0 ) {
 			if (renderedIndexDelim == "Ignore") {
 				indexDelim = '\0';
@@ -47,22 +47,22 @@ static void IdentifyPathAndIndexDelim(char &pathDelim, char &indexDelim, Context
 ConditionalRenderer::ConditionalRenderer(const char *name) : Renderer(name)
 {
 }
-void ConditionalRenderer::TestCondition(Context &context, const ROAnything &config, String &res)
+void ConditionalRenderer::TestCondition(Context &ctx, const ROAnything &config, String &res)
 {
 	StartTrace(ConditionalRenderer.TestCondition);
 	ROAnything lookupNameConfig;
 	if (config.LookupPath(lookupNameConfig, "ContextCondition")) {
 		String condname;
-		RenderOnString(condname, context, lookupNameConfig);
+		RenderOnString(condname, ctx, lookupNameConfig);
 
 		if (condname.Length() > 0) {
 			char pathDelim;
 			char indexDelim;
-			IdentifyPathAndIndexDelim(pathDelim, indexDelim, context, config);
+			IdentifyPathAndIndexDelim(pathDelim, indexDelim, ctx, config);
 			Trace("pathDelim: [" << pathDelim << "] indexDelim: [" << indexDelim << "]");
 			Trace("condition: [" <<  condname << "]");
 
-			ROAnything result = context.Lookup(condname, pathDelim, indexDelim);
+			ROAnything result = ctx.Lookup(condname, pathDelim, indexDelim);
 
 			if (result.IsNull()) {
 				res = "Undefined";
@@ -89,23 +89,23 @@ void ConditionalRenderer::TestCondition(Context &context, const ROAnything &conf
 	res = "Error";
 }
 
-void ConditionalRenderer::RenderAll(ostream &reply, Context &context, const ROAnything &config)
+void ConditionalRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(ConditionalRenderer.Render);
 	TraceAny(config, "config");
 
 	String result;
-	TestCondition(context, config, result);
+	TestCondition(ctx, config, result);
 
 	Trace("result: <" << result << ">");
 
 	ROAnything renderer;
 	if (config.LookupPath(renderer, result) && (!renderer.IsNull()) ) {
-		Render(reply, context, renderer);
+		Render(reply, ctx, renderer);
 	} else if ( result == "True" || result == "False" ) {
 		// Check if there is a specification for Defined
 		if (config.LookupPath(renderer, "Defined") && (!renderer.IsNull()) ) {
-			Render(reply, context, renderer);
+			Render(reply, ctx, renderer);
 		}
 	}
 }
@@ -118,25 +118,25 @@ SwitchRenderer::SwitchRenderer(const char *name) : Renderer(name)
 {
 }
 
-void SwitchRenderer::RenderAll(ostream &reply, Context &context, const ROAnything &config)
+void SwitchRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(SwitchRenderer.Render);
 	TraceAny(config, "config");
 
-	// check context condition
+	// check ctx condition
 
 	ROAnything lookupName;
 	char pathDelim;
 	char indexDelim;
-	IdentifyPathAndIndexDelim(pathDelim, indexDelim, context, config);
+	IdentifyPathAndIndexDelim(pathDelim, indexDelim, ctx, config);
 	Trace("pathDelim: [" << pathDelim << "] indexDelim: [" << indexDelim << "]");
 	if (config.LookupPath(lookupName, "ContextLookupName")) {
 		// determine lookup slot name
 		String condname;
-		RenderOnString(condname, context, lookupName);
+		RenderOnString(condname, ctx, lookupName);
 		if (condname.Length() > 0) {
 			// lookup data
-			ROAnything result = context.Lookup(condname, pathDelim, indexDelim);
+			ROAnything result = ctx.Lookup(condname, pathDelim, indexDelim);
 			if ((result.GetType() == AnyCharPtrType) || // accept only these simple types
 				(result.GetType() == AnyLongType) ||
 				(result.GetType() == AnyDoubleType) ||
@@ -160,7 +160,7 @@ void SwitchRenderer::RenderAll(ostream &reply, Context &context, const ROAnythin
 						}
 					}
 					if (!renderer.IsNull()) {
-						Render(reply, context, renderer);
+						Render(reply, ctx, renderer);
 					}
 				} else {
 					// handle error: no configuration for desired alternatives available

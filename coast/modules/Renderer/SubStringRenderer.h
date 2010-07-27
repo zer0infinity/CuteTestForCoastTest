@@ -24,19 +24,16 @@
 	/Length		Rendererspec	optional, default -1, length of substring, -1 means all remaining chars
 }
 \endcode
-
 */
 class EXPORTDECL_RENDERER SubStringRenderer : public Renderer
 {
 public:
-	//--- constructors
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	SubStringRenderer(const char *name);
 	~SubStringRenderer();
 
-	//! Renders ?? on <I>reply </I>
-	//! \param reply out - the stream where the rendered output is written on.
-	//! \param c the context the renderer runs within.
-	//! \param config the configuration of the renderer.
+	//! Renders String.SubString() from \c Start with length \c Length onto \em reply
+	/*! @copydetails Renderer::RenderAll(ostream &, Context &, const ROAnything &) */
 	virtual void RenderAll(ostream &reply, Context &ctx, const ROAnything &config);
 };
 

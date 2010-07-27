@@ -54,7 +54,7 @@ void SessionTest::SetGetRole ()
 	Role *cust = Role::FindRole("RTCustomer"); // from RoleTest
 
 	Context theCtx;
-	Session s("dummysession", theCtx);
+	Session s("dummysession");
 	{
 		Context ctx;
 		// does now also update the slot RoleName
@@ -105,7 +105,7 @@ void SessionTest::TestInit ()
 	MakeDummyArg(arg);
 	Context theCtx;
 
-	Session s("dummysession", theCtx);
+	Session s("dummysession");
 	{
 		Context ctx(arg);;
 		s.Init("sessionid", ctx);
@@ -126,7 +126,7 @@ void SessionTest::DoFindNextPageLogin ()
 	Anything arg;
 	MakeDummyArg(arg);
 	Context theCtx;
-	Session s("dummysession", theCtx);
+	Session s("dummysession");
 	{
 		Context ctx(arg);
 
@@ -192,7 +192,7 @@ void SessionTest::RetrieveFromDelayed ()
 	Anything arg;
 	MakeDummyArg(arg);
 	Context theCtx;
-	Session s("dummysession", theCtx);
+	Session s("dummysession");
 
 	{
 		Context ctx(arg);
@@ -253,7 +253,7 @@ void SessionTest::UseSessionStoreTest()
 	TestStorageHooks tsh(&pa);
 
 	Context theCtx;
-	Session s("TestSession", theCtx);
+	Session s("TestSession");
 	{
 		Context ctx;
 
@@ -303,7 +303,7 @@ void SessionTest::VerifyTest()
 	ROAnything cConfig;
 	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
 	while ( aEntryIterator.Next(cConfig) ) {
-		Session s("TestSession", theCtx);
+		Session s("TestSession");
 		{
 			Anything args;
 			args["env"] = cConfig["Session"].DeepClone();
@@ -322,7 +322,7 @@ void SessionTest::InfoTest()
 	{
 		// simple case no environment no session settings
 		Context theCtx;
-		Session s("TestSession", theCtx);
+		Session s("TestSession");
 		{
 			Context ctx;
 			ctx.Push(&s);
@@ -351,7 +351,7 @@ void SessionTest::IsDeletableTest()
 		Context theCtx;
 		long notTimeout = time(0) + 1;
 		long isTimeout = time(0) + 200000;
-		Session s("TestSession", theCtx);
+		Session s("TestSession");
 		s.ResetAccessTime(); // set time to "now"
 		{
 			// This one fails because the session is still referenced by the context
@@ -388,7 +388,7 @@ void SessionTest::SetupContextTest()
 	Anything arg;
 	MakeDummyArg(arg);
 	Context theContext;
-	Session s("dummysession", theContext);
+	Session s("dummysession");
 	{
 		Context ctx(arg);
 
@@ -420,7 +420,7 @@ void SessionTest::SetupContextTest()
 class STTestSession : public Session
 {
 public:
-	STTestSession(const char *nm, Context &ctx) : Session(nm, ctx) {}
+	STTestSession(const char *nm) : Session(nm) {}
 	Role *PublicCheckRoleExchange(const char *t, Context &ctx) {
 		return CheckRoleExchange(t, ctx);
 	}
@@ -451,7 +451,7 @@ void SessionTest::CheckRoleExchangeTest()
 	Context theCtx;
 	Context::PushPopEntry<ROAnything> aEntry(theCtx, "fConfig", GetConfig());
 
-	STTestSession s("dummysession", theCtx);
+	STTestSession s("dummysession");
 
 	IntCheckRoleExchange("Role", "RTCustomer", "LoginOk", s, theCtx);
 	IntCheckRoleExchange("RTCustomer", "RTGuest", "Logoff", s, theCtx);

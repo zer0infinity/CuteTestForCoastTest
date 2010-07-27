@@ -36,7 +36,6 @@ with a FormRenderer.
 displayed by the Web browser! "GET" should therefore be avoided if confidential password information is to be entered on a page!
 
 \par Example:
-<PRE>
 \code
 {
 	/Method			"GET"				# parameters are passed using the "GET" method
@@ -44,7 +43,6 @@ displayed by the Web browser! "GET" should therefore be avoided if confidential 
 	/TemplateName	"MyTemplate"		# the file MyTemplate.html is used inside the form, eg. HTMLTemplateRenderer is used to render the content of the form
 }
 \endcode
-
 */
 class EXPORTDECL_RENDERER FormRenderer: public HTMLTemplateRenderer
 {
@@ -62,7 +60,7 @@ protected:
 //! FieldRenderer is the base to render any type of FORM widgets
 /*!
 If a form is submitted, the fields go into query["fields"] which has the following form
-<PRE>
+@code
 /query {
    ....                 # other slots
    /Button    "Ok"      # Name of the pressed button to submit form (either a button or imagebutton)
@@ -71,7 +69,7 @@ If a form is submitted, the fields go into query["fields"] which has the followi
       /my2FieldName  "UserEnteredValue"
       ....
 }
-</PRE>
+@endcode
 Breaking FieldRenderer into several individual renderers serves to avoid confusion
 regarding the different parameters that may be applicable with the different
 widgets. It also makes configuration files more readable.

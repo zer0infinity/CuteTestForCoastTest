@@ -43,7 +43,7 @@ void NewRendererTest::TestCases()
 		Server *theServer = Server::FindServer("Server");
 		t_assert(theServer != NULL);
 		Context ctx;
-		Session theSession("TestSession", ctx);
+		Session theSession("TestSession");
 		Page *thePage = Page::FindPage("TestPage");
 		t_assert(thePage != NULL);
 		Role *theRole = Role::FindRole("TestRole");

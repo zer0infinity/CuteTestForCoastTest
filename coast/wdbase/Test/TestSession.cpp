@@ -6,7 +6,11 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- c-library modules used ---------------------------------------------------
+//--- interface include --------------------------------------------------------
+#include "TestSession.h"
+
+//--- module under test --------------------------------------------------------
+#include "SessionListManagerTest.h"
 
 //--- standard modules used ----------------------------------------------------
 #include "Anything.h"
@@ -14,22 +18,10 @@
 #include "Threads.h"
 #include "Dbg.h"
 
-//--- test modules used --------------------------------------------------------
-#include "TString.h"
-#include "TestLocation.h"
-#include "TestLocList.h"
-#include "TestResult.h"
-
-//--- module under test --------------------------------------------------------
-#include "SessionListManagerTest.h"
-
-//--- interface include --------------------------------------------------------
-#include "TestSession.h"
-
 //---- TestSession ----------------------------------------------------------
 //:test the notify protocol of session
 TestSession::TestSession(const char *name, Context &ctx, SessionListManagerTest *slmt)
-	: 	Session(name, ctx),
+	: 	Session(name),
 		fTest(slmt)
 {
 	StartTrace(TestSession.Ctor);

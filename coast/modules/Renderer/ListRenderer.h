@@ -117,7 +117,7 @@ protected:
 	/*! renders a list footer using the given configuration
 		\param reply stream to generate output on
 		\param ctx Context to be used for output generation
-		\param listHeader renderer configuration for the footer */
+		\param listFooter renderer configuration for the footer */
 	virtual void RenderListFooter(ostream &reply, Context &ctx, const ROAnything &listFooter);
 
 	/*! renders a list entry using the given configuration

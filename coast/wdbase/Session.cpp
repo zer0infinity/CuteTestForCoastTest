@@ -43,7 +43,7 @@ AccessTimer::~AccessTimer()
 }
 
 //---- Session -----------------------------------------------------------
-Session::Session(const char *name, Context &ctx)
+Session::Session(const char *name)
 	: NotCloned(name)
 	, fMutex("Session")
 	, fTerminated(false)

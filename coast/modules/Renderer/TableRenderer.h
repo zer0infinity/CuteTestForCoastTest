@@ -65,7 +65,7 @@ config from Query:
 	/StartPos		Long		optional, default 0, index from where to start in DataSource, passed from mini-form when using ListNavTable
 }
 \endcode
-\note Following things of the outer table are hardcoded: BORDER=1 ALIGN=CENTER CELLPADDING=2 BGCOLOR=#BEBEBE
+\note Following things of the outer table are hardcoded: BORDER=1 ALIGN=CENTER CELLPADDING=2 BGCOLOR=\#BEBEBE
 */
 class EXPORTDECL_RENDERER TableRenderer : public Renderer
 {

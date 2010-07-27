@@ -14,32 +14,34 @@
 #include "Renderer.h"
 
 //---- TestContextFlagRenderer ----------------------------------------------------------
-//! <B>Test for existence and truth of a boolean in context</B>
-/*!
+//! <b>Context.Lookup() result of rendered \c FlagName slot as long value and either render \c WhenSet (!=0) or \c WhenNotSet (==0) Renderer specification</b>
+/*! @deprecated Use either ConditionalRenderer or SwitchRenderer which are even more flexible
 \par Configuration
 \code
 {
-	/FlagName		Rendererspec	mandatory, Path of the flag in Context
-	/WhenSet		Rendererspec	optional, gets evaluated when flag exists and is true
-	/WhenNotSet		Rendererspec	optional, gets evaluated when flag does not exist or is false
+	/FlagName		Rendererspec	mandatory, rendered result will be used to lookup value in Context
+	/WhenSet		Rendererspec	optional, gets evaluated when lookup of rendered FlagName slot evaluates to != 0
+	/WhenNotSet		Rendererspec	optional, gets evaluated when lookup of rendered FlagName slot evaluates to == 0
 }
 \endcode
-Is equivalent
+Is equivalent to
 \code
 /SwitchRenderer { /ContextLookupName <FlagName> /Case { /1 <IsSet> } /Default <NotSet> }
+\endcode
+or also
+\code
+/ConditionalRenderer { /ContextCondition <FlagName> /True <IsSet> /False <NotSet> }
 \endcode
 */
 class EXPORTDECL_RENDERER TestContextFlagRenderer : public Renderer
 {
 public:
-	//--- constructors
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	TestContextFlagRenderer(const char *name);
 	~TestContextFlagRenderer();
 
-	//! Renders ?? on <I>reply </I>
-	//! \param reply out - the stream where the rendered output is written on.
-	//! \param c the context the renderer runs within.
-	//! \param config the configuration of the renderer.
+	//! Render output onto \em reply based on \c long lookup of rendered \c FlagName slot
+	/*! @copydetails Renderer::RenderAll(ostream &, Context &, const ROAnything &) */
 	virtual void RenderAll(ostream &reply, Context &ctx, const ROAnything &config);
 };
 

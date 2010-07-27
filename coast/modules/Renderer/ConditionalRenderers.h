@@ -30,15 +30,19 @@
 class EXPORTDECL_RENDERER ConditionalRenderer : public Renderer
 {
 public:
-	ConditionalRenderer(const char *);
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
+	ConditionalRenderer(const char *name);
 
-	void RenderAll(ostream &reply, Context &c, const ROAnything &config);
+	//! Render result to stream based on existence of rendered ContextCondition string in Context
+	/*! @copydoc Renderer::RenderAll(ostream &, Context &, const ROAnything &) */
+	void RenderAll(ostream &reply, Context &ctx, const ROAnything &config);
 
 protected:
 	/*! TestCondition does the actual testing. Result of test is returned via res. Errors are signaled using the value "Error".
-		\param context context to work with
-		\param res conditions test result */
-	virtual void TestCondition(Context &context, const ROAnything &args, String &res);
+	 * @param ctx Context to work with
+	 * @param config configuration which drives the output generation
+	 * @param res conditions test result */
+	virtual void TestCondition(Context &ctx, const ROAnything &config, String &res);
 };
 
 // ---- SwitchRenderer ---------------------------------------------------------
@@ -59,14 +63,16 @@ protected:
 	/Default			Rendererspec	optional, for all unspecified conditions (not listed in Case slot), the content of this slot will be rendered
 }
 \endcode
-
 */
 class EXPORTDECL_RENDERER SwitchRenderer : public Renderer
 {
 public:
-	SwitchRenderer(const char *);
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
+	SwitchRenderer(const char *name);
 
-	void RenderAll(ostream &reply, Context &c, const ROAnything &config);
+	//! Render result to stream based on evaluation of ContextLookupName
+	/*! @copydoc Renderer::RenderAll(ostream &, Context &, const ROAnything &) */
+	void RenderAll(ostream &reply, Context &ctx, const ROAnything &config);
 };
 
 #endif	//not defined _ConditionalRenderers_H

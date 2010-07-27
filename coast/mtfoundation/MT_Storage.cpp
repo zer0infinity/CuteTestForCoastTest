@@ -61,8 +61,9 @@ class MTPoolAllocator: public PoolAllocator
 {
 public:
 	//! create and initialize a pool allocator
-	//! \param poolid use poolid to distinguish more than one pool
-	//! \param poolSize size of pre-allocated pool in kBytes, default 1MByte
+	/*! \param poolid use poolid to distinguish more than one pool
+		\param poolSize size of pre-allocated pool in kBytes, default 1MByte
+		\param maxKindOfBucket number of different allocation units within PoolAllocator, starts at 16 bytes and doubles the size for maxKindOfBucket times. So maxKindOfBucket=10 will give a max usable size of 8192 bytes. */
 	MTPoolAllocator(long poolid, u_long poolSize = 1024, u_long maxKindOfBucket = 10)
 		: PoolAllocator(poolid, poolSize, maxKindOfBucket) TrackLockerInit(fCurrLockerId) {}
 	//! destroy a pool only if its empty, i.e. all allocated bytes are freed

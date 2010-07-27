@@ -39,10 +39,11 @@ class EXPORTDECL_FOUNDATION Socket
 {
 public:
 	//! constructor sets the variables
-	//! \param  socket - the socket filedescriptor for the socket endpoint
-	//! \param  clientInfo - contains information about the other connected endpoint like ip adress and port
-	//! \param doClose - flag that defines the behaviour of the destructor with regard to closing the socket <BR>doClose == <B>true</B> closes the socketdescriptor in the destructor <BR>doClose == <B>false</B> leaves the socket open
-	//! \param  timeout - timeout for socket communication over the stream (default is 5 minutes)
+	//! \param socket the socket filedescriptor for the socket endpoint
+	//! \param clientInfo contains information about the other connected endpoint like ip adress and port
+	//! \param doClose flag that defines the behaviour of the destructor with regard to closing the socket <BR>doClose == <B>true</B> closes the socketdescriptor in the destructor <BR>doClose == <B>false</B> leaves the socket open
+	//! \param timeout timeout for socket communication over the stream (default is 5 minutes)
+	//! \param a Allocator to use for allocation
 	//! \pre  socket is a valid connected socket file descriptor
 	//! \post  a usable socket object which allocates the stream on demand
 	Socket(int socket, const Anything &clientInfo = Anything(), bool doClose = true, long timeout = 300L * 1000L /* 5 minutes */, Allocator *a = Storage::Global());
@@ -146,7 +147,7 @@ public:
 		\param fd socket filedescriptor to read from
 		\param buf character buffer which receives the bytes read
 		\param len length of the supplied character buffer buf
-		\param special flags for WIN32
+		\param flags special flags for WIN32
 		\return number of bytes received, 0 if the connection has been gracefully closed and negative in case of an error */
 	static int read(int fd, char *buf, int len, int flags = 0);
 
@@ -154,7 +155,7 @@ public:
 		\param fd socket filedescriptor to write to
 		\param buf character buffer which contains the data to be sent
 		\param len number of characters to send from buf
-		\param special flags for WIN32
+		\param flags special flags for WIN32
 		\return number of bytes sent (can be lower than the given amount if non-blocking), negative in case of an error */
 	static int write(int fd, const char *buf, int len, int flags = 0);
 
@@ -217,6 +218,7 @@ protected:
 //@}
 
 	//!bottleneck routine that calls shutdown system call
+	//!	\param fd the file descriptor to be set to non-blocking with fcntl
 	//! \param which defines which side of the socket is shutdown see shutdown man page
 	virtual bool ShutDown(long fd, long which);
 
@@ -332,7 +334,7 @@ public:
 protected:
 	//!factory method for Socket creation, it creates a Socket object as default override this if you need sth. else
 	//! overwrite this method if you want to provide a subclass of Socket as product
-	//! \param socket the socket file descriptor
+	//! \param socketfd the socket file descriptor
 	//! \param clientInfo the information about other endpoint ip adress and port
 	//! \param doClose flag that defines whether the generated Socket object closes the socket on delete
 	virtual Socket *DoMakeSocket(int socketfd, Anything &clientInfo, bool doClose = true);
@@ -385,15 +387,16 @@ private:
 class EXPORTDECL_FOUNDATION Connector: public EndPoint
 {
 public:
-	//!constructor with ip adress, port and socketoptions, holds specification to create socket object on demand
-	//! \param ipAdr defines the ip adress of the other endpoint in dot notation like 127.0.0.1
-	//! \param port defines the port number of the connection: a 16-bit integer
-	//! \param connectTimeout the time we wait until we must have a connection or we abort the try ( in milliseconds)
-	//! \param srcIpAdr the ip adress we bind this end of the socket to
-	//! \param srcPort the port we bind this end of the socket to
-	//! \pre ipAdr is a valid, reachable server ip adress, port is a valid port number
-	//! \post Connector holds the socket specification, the socket is not yet connected
-	Connector(String ipAdr, long port, long connectTimeout = 0, String srcIpAdr = "", long srcPort = 0, bool threadLocal = 0);
+	//! Constructor with ip adress, port and socketoptions, holds specification to create socket object on demand
+	/*! \param ipAdr defines the ip adress of the other endpoint in dot notation like 127.0.0.1
+		\param port defines the port number of the connection: a 16-bit integer
+		\param connectTimeout the time we wait until we must have a connection or we abort the try ( in milliseconds)
+		\param srcIpAdr the ip adress we bind this end of the socket to
+		\param srcPort the port we bind this end of the socket to
+		\param threadLocal Allocate underlying Socket object in memory pool of calling Thread if set to true
+		\pre ipAdr is a valid, reachable server ip adress, port is a valid port number
+		\post Connector holds the socket specification, the socket is not yet connected */
+	Connector(String ipAdr, long port, long connectTimeout = 0, String srcIpAdr = "", long srcPort = 0, bool threadLocal = false);
 	//!same as above, but take a ConnectorArgs object which wraps ipAdr, port, connectTimeout
 	Connector(ConnectorArgs &connectorArgs, String srcIpAdr = "", long srcPort = 0,  bool threadLocal = 0);
 
@@ -401,7 +404,6 @@ public:
 	virtual ~Connector();
 
 	//!creates an internal Socket, Connector deletes it in the destructor;
-	//! \param connectTimeout specifies the wait time for the successful establishment of a socket connection connectTimeout == 0 means we wait system timeout
 	virtual Socket *Use();
 
 	//!creates an internal Socket and returns its stream, Connector deletes it in the destructor;
@@ -564,7 +566,6 @@ public:
 	virtual ~CallBackFactory() { }
 
 	//!call back functionality provides the socket object
-	//! \param socket the Socket object resulting from the accepted connection
 	virtual AcceptorCallBack *MakeCallBack() = 0;
 
 private:

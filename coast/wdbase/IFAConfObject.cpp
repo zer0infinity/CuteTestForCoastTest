@@ -16,8 +16,6 @@
 #include "System.h"
 #include "Dbg.h"
 
-//--- c-library modules used ---------------------------------------------------
-
 //---- RegisterableObject ----------------------------------------------------------
 void RegisterableObject::ResetCache(bool resetCache)
 {

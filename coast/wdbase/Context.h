@@ -54,7 +54,7 @@ public:
 	void Push(Session *s);
 
 	/*! Push the Request object
-		\param s the Request anything */
+		\param request the Request anything */
 	void PushRequest(const Anything &request);
 
 	/*! Pop the top pushed stack element.
@@ -251,6 +251,7 @@ protected:
 		\param key the key we are looking for
 		\param result the ROAnything that provides the result
 		\param delim the delimiter for structured keys
+		\param indexdelim the index delimiter that defines indexed subparts
 		\return returns true if key is found otherwise false */
 	bool DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const;
 
@@ -258,6 +259,7 @@ protected:
 		\param key the key we are looking for
 		\param result the ROAnything that provides the result
 		\param delim the delimiter for structured keys
+		\param indexdelim the index delimiter that defines indexed subparts
 		\return returns true if key is found otherwise false
 		\note This method does not include the tmp store while processing the store stack! */
 	bool LookupStack(const char *key, ROAnything &result, char delim, char indexdelim) const;
@@ -266,6 +268,7 @@ protected:
 		\param key the key we are looking for
 		\param result the ROAnything that provides the result
 		\param delim the delimiter for structured keys
+		\param indexdelim the index delimiter that defines indexed subparts
 		\return returns true if key is found otherwise false */
 	bool LookupStores(const char *key, ROAnything &result, char delim, char indexdelim) const;
 
@@ -273,6 +276,7 @@ protected:
 		\param key the key we are looking for
 		\param result the ROAnything that provides the result
 		\param delim the delimiter for structured keys
+		\param indexdelim the index delimiter that defines indexed subparts
 		\return returns true if key is found otherwise false */
 	bool LookupObjects(const char *key, ROAnything &result, char delim, char indexdelim) const;
 
@@ -280,6 +284,7 @@ protected:
 		\param key the key we are looking for
 		\param result the ROAnything that provides the result
 		\param delim the delimiter for structured keys
+		\param indexdelim the index delimiter that defines indexed subparts
 		\return returns true if key is found otherwise false */
 	bool LookupRequest(const char *key, ROAnything &result, char delim, char indexdelim) const;
 
@@ -287,6 +292,7 @@ protected:
 		\param key the key we are looking for
 		\param result the ROAnything that provides the result
 		\param delim the delimiter for structured keys
+		\param indexdelim the index delimiter that defines indexed subparts
 		\return returns true if key is found otherwise false */
 	bool LookupLocalized(const char *key, ROAnything &result, char delim, char indexdelim) const;
 
@@ -322,10 +328,9 @@ protected:
 	long FindIndex(const Anything &anyStack, const char *key, long lStartIdx = -1L) const;
 
 	/*! access a stacked store by name
-		\param key the path to the store
-		\param result the anything representing the store in case of success
-		\param bFullStore set to true if the whole stack should be returned, otherwise the top element will be returned only
-		\return true if the store exists, false otherwise */
+		\param key name of the object to search
+		\param index returns stack index of the returned object
+		\return the anything representing the store in case of success */
 	Anything &IntGetStore(const char *key, long &index);
 
 	/*! relese session lock, if configured to do so

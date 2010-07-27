@@ -180,7 +180,7 @@ Session *SessionListManager::DoMakeSession(Context &ctx)
 	if ( fSessionFactory ) {
 		return fSessionFactory->DoMakeSession(ctx);
 	}
-	return new Session("Session", ctx);;
+	return new Session("Session");
 }
 
 Session *SessionListManager::MakeSession(Context &ctx)
@@ -760,7 +760,7 @@ Session *SessionFactory::DoMakeSession(Context &ctx)
 {
 	StartTrace(SessionFactory.DoMakeSession);
 	Trace("fName: " << fName);
-	return new Session(fName, ctx);
+	return new Session(fName);
 }
 
 Session *SessionFactory::DoPrepareSession(Context &ctx, Session *session, bool &isBusy)

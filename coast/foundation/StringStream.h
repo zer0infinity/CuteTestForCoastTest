@@ -253,7 +253,8 @@ public:
 	}
 
 	/*! ctor, take s as output target
-		\param s use *s as the underlying output buffer directly, no copying */
+		\param s use *s as the underlying output buffer directly, no copying
+		\param mode specify streams input/output mode */
 	explicit OStringStreamTmpl(PlainTypePtr s, int mode = ios::app)
 		: StreamBaseType(s, mode | ios::out)
 		, ostream(StreamBaseType::rdbuf()) {
@@ -262,7 +263,8 @@ public:
 
 	/*! ctor, take s as output target
 		i am not sure if compiler will take this correctly with the const String& constructor, needs to be tested
-		\param s use s contents as initial content */
+		\param s use s contents as initial content
+		\param mode specify streams input/output mode */
 	explicit OStringStreamTmpl(PlainTypeRef s, int mode = ios::app)
 		: StreamBaseType(&s, mode | ios::out)
 		, ostream(StreamBaseType::rdbuf()) {
@@ -303,7 +305,8 @@ public:
 		SS_TRACE(StringStreamTmpl.StringStreamTmpl);
 	}
 	/*! ctor, take s as output target, resp. input source
-		\param s use *s as the underlying output buffer directly, no copying */
+		\param s use *s as the underlying output buffer directly, no copying
+		\param mode specify streams input/output mode */
 	explicit StringStreamTmpl(PlainTypePtr s, int mode = ios::out | ios::in)
 		: StreamBaseType(s, mode)
 		, iostream(StreamBaseType::rdbuf()) {
@@ -311,7 +314,8 @@ public:
 	}
 	/*! ctor, take s as initial content,
 		makes sense with mode containting ios::app|ios::ate|ios::in
-		\param s use s contents as initial content */
+		\param s use s contents as initial content
+		\param mode specify streams input/output mode */
 	explicit StringStreamTmpl(ConstPlainTypeRef s, int mode = ios::in)
 		: StreamBaseType(s, mode)
 		, iostream(StreamBaseType::rdbuf()) {
@@ -320,7 +324,8 @@ public:
 	/*! ctor, take s as output target and input source
 		i am not sure if compiler will take this correctly with the const String&
 		constructor, needs to be tested
-		\param s use s contents as initial content */
+		\param s use s contents as initial content
+		\param mode specify streams input/output mode */
 	explicit StringStreamTmpl(PlainTypeRef s, int mode = ios::out | ios::in)
 		: StreamBaseType(&s, mode | ios::out)
 		, iostream(StreamBaseType::rdbuf()) {

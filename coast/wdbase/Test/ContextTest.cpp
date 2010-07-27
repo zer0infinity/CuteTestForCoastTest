@@ -687,7 +687,7 @@ void ContextTest::SessionPushTest()
 	// session destruction that the reference count doesn't equal 0.
 	{
 		Context sessionsCtx;
-		Session s(0, sessionsCtx);
+		Session s(0);
 		{
 			Anything sessionStore;
 			MetaThing emptyStore;
@@ -730,7 +730,7 @@ void ContextTest::SessionPushTest()
 	}
 	{
 		Context sessionsCtx;
-		Session s(0, sessionsCtx);
+		Session s(0);
 		{
 			// We push the session and manipulate the session afterwards.
 			// This should not be reflected in the pushed session, because
@@ -780,7 +780,7 @@ void ContextTest::SessionPushTest()
 	}
 	{
 		Context sessionsCtx;
-		Session s(0, sessionsCtx);
+		Session s(0);
 		{
 			// We push the session and set the unlock session flag.
 			// Session should be unlocked from then on.
@@ -804,7 +804,7 @@ void ContextTest::SessionPushTest()
 	}
 	{
 		Context sessionsCtx;
-		Session s(0, sessionsCtx);
+		Session s(0);
 		{
 			// We push the session and set the lock (default) session flag.
 			// Session should be locked from then on.
@@ -836,8 +836,8 @@ void ContextTest::RefCountTest()
 	// scope before the session does. With this setup there are no complaints on
 	// session destruction that the reference count doesn't equal 0.
 	Context ctx;
-	Session s1("hank1", ctx);
-	Session s2("hank2", ctx);
+	Session s1("hank1");
+	Session s2("hank2");
 	s1.Init("1", ctx);
 	s2.Init("2", ctx);
 	{
@@ -905,7 +905,7 @@ void ContextTest::RefCountTest()
 void ContextTest::RoleStoreTest()
 {
 	Context ctx1;
-	Session s(0, ctx1);
+	Session s(0);
 	{
 		Context ctx;
 		Anything roleStore;
@@ -955,7 +955,7 @@ void ContextTest::RoleStoreTest()
 void ContextTest::SessionStoreTest()
 {
 	Context ctx1;
-	Session s(0, ctx1);
+	Session s(0);
 	{
 		Context ctx;
 		Anything sessionStore;
@@ -1135,7 +1135,7 @@ void ContextTest::SessionUnlockingTest()
 {
 	StartTrace(ContextTest.SessionUnlockingTest);
 	Context initsessioncontext;
-	Session s("SessionUnlockingTest", initsessioncontext);
+	Session s("SessionUnlockingTest");
 	t_assert(!s.IsLockedByMe());
 	{
 		Context c;

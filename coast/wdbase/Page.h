@@ -34,7 +34,7 @@ public:
 class EXPORTDECL_WDBASE Page : public HierarchConfNamed
 {
 public:
-	//!standard named object constructor
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	Page(const char *name);
 
 	//!destructor does nothing

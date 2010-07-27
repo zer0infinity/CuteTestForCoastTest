@@ -40,8 +40,8 @@ public:
 		virtual ~Observer() {}
 
 		/*! interface which must be implemented if you want to be notified when objects's state changes
-			\param aObserved the object to be observed
-			\param aArgs arguments that describe the change */
+			\param pObserved the object to be observed
+			\param aUpdateArgs arguments that describe the change */
 		virtual void Update(tObservedPtr pObserved, tArgsRef aUpdateArgs) = 0;
 	};
 

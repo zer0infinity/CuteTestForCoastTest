@@ -91,15 +91,15 @@ public:
 		c.GetTmpStore()["session"] = c.GetSession()->IsLockedByMe() ? "LOCKED" : "unlocked";
 		return true;
 	}
-
 };
+
 RegisterDataAccessImpl(SessionUnlockTestDAImpl);
 
 void DataAccessTest::CopySessionStoreTest()
 {
 	StartTrace(DataAccessTest.SessionUnlockTest);
 	Context sessionctx;
-	Session s("SessionUnlockTest", sessionctx);
+	Session s("SessionUnlockTest");
 	{
 		Context c;
 		c.Push(&s);

@@ -24,7 +24,7 @@
 	/ToEscape		String			mandatory, characters to escape
 }
 \endcode
-\parExample:
+\par Example
 \code
 { /EscapeRenderer {
 	/String			"You can't escape this String's content"

@@ -33,22 +33,24 @@ public:
 class EXPORTDECL_WDBASE Action : public NotCloned
 {
 public:
-	//!standard named object constructor
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	Action(const char *name);
 
 	//!abstract method; DoSomething method for unconfigured Action
 	//! \param transitionToken (in/out) the event passed by the caller, can be modified.
-	//! \param c the context the action runs within.
-	//! \return true if the action run successfully, false if an error occurred.
-	virtual bool DoAction(String &transitionToken, Context &) {
+	//! \param ctx the context the action runs within.
+	//! \return true if the action run successfully
+	//! \return false if an error occurred.
+	virtual bool DoAction(String &transitionToken, Context &ctx) {
 		return false;
 	}
 
-	//!DoSomething method for configured Actions
-	//! \param transitionToken (in/out) the event passed by the caller, can be modified.
-	//! \param c the context the action runs within.
-	//! \param config the configuration of the action.
-	//! \return true if the action run successfully, false if an error occurred.
+	/*! Main Action hook; overwrite this method in subclasses
+	 * \param transitionToken (in/out) Event token passed by the caller, can be modified.
+	 * \param ctx Context the action will be executed with
+	 * \param config Configuration of the action.
+	 * \return true if the action run successfully
+	 * \return false if an error occurred and further processing should be stopped */
 	virtual bool DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config) {
 		return DoAction(transitionToken, ctx);
 	}

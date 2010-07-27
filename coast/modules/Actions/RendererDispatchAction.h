@@ -42,16 +42,15 @@
 class EXPORTDECL_ACTIONS RendererDispatchAction : public Action
 {
 public:
-	/*! @copydoc RegisterableObject.RegisterableObject() */
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	RendererDispatchAction(const char *name);
 	~RendererDispatchAction();
 
 protected:
-	/*! uses a Renderer to decide which action gets executed
-	\param transitionToken (in/out) the event passed by the caller, can be modified.
-	\param ctx the context the action runs within.
-	\param config the configuration of the action.
-	\return if the renderer produces a String that is found in the Context, the result of the Actionscript, false otherwise */
+	/*! Uses a Renderer script to decide which Action to execute next
+	 * @copydetails Action::DoExecAction(String &, Context &, const ROAnything &)
+	 * @return The result of the executed Actionscript if the renderer produces a String that is found in the Context
+	 * @return trueotherwise */
 	virtual bool DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config);
 };
 

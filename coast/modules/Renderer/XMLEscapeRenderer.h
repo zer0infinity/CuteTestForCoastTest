@@ -18,14 +18,12 @@
 class EXPORTDECL_RENDERER XMLEscapeRenderer : public Renderer
 {
 public:
-	//--- constructors
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	XMLEscapeRenderer(const char *name);
 	~XMLEscapeRenderer();
 
-	//! Renders ?? on <I>reply </I>
-	//! \param reply out - the stream where the rendered output is written on.
-	//! \param c the context the renderer runs within.
-	//! \param config the configuration of the renderer.
+	//! Escapes html entities within rendered content and puts it onto \em reply
+	/*! @copydetails Renderer::RenderAll(ostream &, Context &, const ROAnything &) */
 	virtual void RenderAll(ostream &reply, Context &ctx, const ROAnything &config);
 };
 
@@ -34,14 +32,12 @@ public:
 class EXPORTDECL_RENDERER XMLUnescapeRenderer : public Renderer
 {
 public:
-	//--- constructors
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	XMLUnescapeRenderer(const char *name);
 	~XMLUnescapeRenderer();
 
-	//! Renders ?? on <I>reply </I>
-	//! \param reply out - the stream where the rendered output is written on.
-	//! \param c the context the renderer runs within.
-	//! \param config the configuration of the renderer.
+	//! Unescapes html entities within rendered content and puts it onto \em reply
+	/*! @copydetails Renderer::RenderAll(ostream &, Context &, const ROAnything &) */
 	virtual void RenderAll(ostream &reply, Context &ctx, const ROAnything &config);
 };
 

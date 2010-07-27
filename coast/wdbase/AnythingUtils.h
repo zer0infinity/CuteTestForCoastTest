@@ -114,14 +114,14 @@ public:
 	static void Operate(Anything &source, Context &c, const Anything &config);
 	static void Operate(Anything &source, Context &c, const ROAnything &config);
 
-	/*! puts the Anything source into context using a \em LookupPath like slot specification
+	/*! puts the Anything source into context using a Anything.LookupPath() like slot specification
 		\param source The Anything that provides the data, remains unchanged
 		\param c Context to operate on
 		\param strStoreName name of store in Context to put destination Anything into
 		\param destSlotname slotname to put destination Anything into
 		\param append set to true if the source anything should be appended to existing content
-		\param delim LookupPath' slot delimiter '
-		\param delimIdx LookupPath' index delimiter '
+		\param delim LookupPath slot delimiter
+		\param indexdelim LookupPath index delimiter
 		\post dest.LookupPath(destSlotname, delim, delimIdx)[.Append] = source */
 	static void Operate(Anything &source, Context &c, String strStoreName, String destSlotname, bool append = false, char delim = '.', char indexdelim = ':');
 

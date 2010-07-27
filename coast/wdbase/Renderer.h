@@ -32,60 +32,57 @@ public:
 class EXPORTDECL_WDBASE Renderer : public NotCloned
 {
 public:
-	//!standard named object constructor
-	//! \param name object name for registry
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	Renderer(const char *name);
 	//!destructor does nothing
 	virtual ~Renderer();
 
-	//!rendering hook; overwrite this method in subclasses
-	//!generates output on reply driven by config using the context given
-	//! \param reply stream to generate output on
-	//! \param c Context to be used for output generation
-	//! \param config configuration which drives the output generation
-	virtual void RenderAll(ostream &reply, Context &c, const ROAnything &config);
+	/*! Main Rendering hook; overwrite this method in subclasses
+	 * Generates output on reply driven by configuration using the Context
+	 * @param reply stream to generate output on
+	 * @param ctx Context to be used for output generation
+	 * @param config configuration which drives the output generation */
+	virtual void RenderAll(ostream &reply, Context &ctx, const ROAnything &config);
 
 	//!script interpreter that generates output interpreting info as rendering script
 	//!generates output on reply driven by the script info using the context given
 	//! \param reply stream to generate output on
-	//! \param c Context to be used for output generation
+	//! \param ctx Context to be used for output generation
 	//! \param info script which drives the output generation
-	static void Render(ostream &reply, Context &c, const ROAnything &info);
+	static void Render(ostream &reply, Context &ctx, const ROAnything &info);
 
 	//!utility method to generate the contents of a string using renderer scripts
 	//!generates output using the strings memory
 	//! \param s string to generate output into
-	//! \param c Context to be used for output generation
+	//! \param ctx Context to be used for output generation
 	//! \param info script which drives the output generation
-	static void RenderOnString(String &s, Context &c, const ROAnything &info);
+	static void RenderOnString(String &s, Context &ctx, const ROAnything &info);
 	//!utility method to generate the contents of a string using renderer scripts
 	//!generates output using the strings memory
-	//! \param s string to generate output into
-	//! \param c Context to be used for output generation
+	//! \param ctx Context to be used for output generation
 	//! \param info script which drives the output generation
-	static String RenderToString(Context &c, const ROAnything &info);
+	static String RenderToString(Context &ctx, const ROAnything &info);
 
 	//!utility method to generate the contents of a string using renderer scripts
 	//!generates output using the strings memory
 	//! \param s string to generate output into
-	//! \param c Context to be used for output generation
+	//! \param ctx Context to be used for output generation
 	//! \param info script which drives the output generation
 	//! \param def script which drives the output generation if info is empty
-	static void RenderOnStringWithDefault(String &s, Context &c, const ROAnything &info, Anything def = "");
+	static void RenderOnStringWithDefault(String &s, Context &ctx, const ROAnything &info, Anything def = "");
 	//!utility method to generate the contents of a string using renderer scripts
 	//!generates output using the strings memory
-	//! \param s string to generate output into
-	//! \param c Context to be used for output generation
+	//! \param ctx Context to be used for output generation
 	//! \param info script which drives the output generation
 	//! \param def script which drives the output generation if info is empty
-	static String RenderToStringWithDefault(Context &c, const ROAnything &info, Anything def = "");
+	static String RenderToStringWithDefault(Context &ctx, const ROAnything &info, Anything def = "");
 
 	//!utility method to print html options easily legacy implementation
 	static void PrintOptions(ostream &reply, const char *tag, const ROAnything &any);
 	//!utility method to print html options easily legacy implementation
 	static void PrintOptions2(ostream &reply, const ROAnything &any);
 	//!utility method to print html options easily using OptionsPrinter
-	static void PrintOptions3(ostream &reply, Context &c, const ROAnything &config);
+	static void PrintOptions3(ostream &reply, Context &ctx, const ROAnything &config);
 
 	RegCacheDef(Renderer);	// FindRenderer()
 };

@@ -201,7 +201,7 @@ public:
 	long FindIndex(const char *k, long sizehint = -1, u_long hashhint = 0) const;
 
 	/*! returns slot index of key index if defined
-		\param index the index of the slot we are looking for
+		\param lIdx the index of the slot we are looking for
 		\return slot index of key k if defined
 		\return -1 if key is not defined */
 	long FindIndex(const long lIdx) const;
@@ -612,15 +612,17 @@ public:
 		\param source The source Anything in which the slot should be found
 		\param dest The Anything reference to the slot found
 		\param destSlotname name of slot to find using LookupPath semantics
-		\param delim LookupPath' slot delimiter '
-		\param indexdelim LookupPath' index delimiter '
+		\param delim LookupPath slot delimiter
+		\param indexdelim LookupPath index delimiter
 		\post dest = source.LookupPath(destSlotname, delim, indexdelim) */
 	static void Operate(Anything &source, Anything &dest, String destSlotname, char delim = '.', char indexdelim = ':' );
 
 	/*! returns the source Anything in such way that an assignment can be made in the form dest[destSlotname] = xxx; or dest[destIdx] = xxx;
 		\param dest resulting Anything, one level below for easy assignment operations
 		\param destSlotname last segment of config[Slot] or empty if it is an index
-		\param destIdx last segment of config[Slot] as index or -1 if not an index */
+		\param destIdx last segment of config[Slot] as index or -1 if not an index
+		\param delim LookupPath slot delimiter
+		\param indexdelim LookupPath index delimiter */
 	static bool IntOperate(Anything &dest, String &destSlotname, long &destIdx, char delim = '.', char indexdelim = ':');
 };
 //---- SlotPutter -----------------------------------------------------------
@@ -660,8 +662,8 @@ public:
 		\param dest The Anything that is updated
 		\param destSlotname slotname to put destination Anything into
 		\param append set to true if the source anything should be appended to existing content
-		\param delim LookupPath' slot delimiter '
-		\param delimIdx LookupPath' index delimiter '
+		\param delim LookupPath slot delimiter
+		\param indexdelim LookupPath index delimiter
 		\post dest.LookupPath(destSlotname, delim, delimIdx)[.Append] = source */
 	static void Operate(Anything &source, Anything &dest, String destSlotname, bool append = false, char delim = '.', char indexdelim = ':');
 };
@@ -699,8 +701,8 @@ public:
 		\param dest The Anything that is updated
 		\param slotName name of slot to remove
 		\param removeLast set to true if only the last element within the slotName should be removed
-		\param delim LookupPath' slot delimiter '
-		\param indexdelim LookupPath' index delimiter '
+		\param delim LookupPath slot delimiter
+		\param indexdelim LookupPath index delimiter
 		\post dest.LookupPath(slotName, delim, indexdelim) is removed */
 	static void Operate(Anything &dest, String slotName, bool removeLast = false, char delim = '.', char indexdelim = ':');
 };
@@ -724,12 +726,16 @@ public:
 	/*! Copies slots from source to dest accoring to config
 		\param source The Anything that provides the data, remains unchanged
 		\param dest The Anything that is updated.
-		\param config Contains the list of source and destination slotnames. */
+		\param config Contains the list of source and destination slotnames.
+		\param delim LookupPath slot delimiter
+		\param indexdelim LookupPath index delimiter */
 	static void Operate(Anything &source, Anything &dest, const Anything &config, char delim = '.', char indexdelim = ':');
 	/*! Copies slots from source to dest accoring to config
 		\param source The Anything that provides the data, remains unchanged
 		\param dest The Anything that is updated.
-		\param config Contains the list of source and destination slotnames. */
+		\param config Contains the list of source and destination slotnames.
+		\param delim LookupPath slot delimiter
+		\param indexdelim LookupPath index delimiter */
 	static void Operate(Anything &source, Anything &dest, const ROAnything &config, char delim = '.', char indexdelim = ':');
 };
 
@@ -754,7 +760,8 @@ class EXPORTDECL_FOUNDATION SlotnameSorter
 public:
 	enum EMode { asc, desc };
 	/*! Sorts the Anything <I>toSort</I> by slotname
-		\param toSort in/out - the Anything to be sorted */
+		\param toSort in/out - the Anything to be sorted
+		\param mode define sort mode, ascending or descending, default is ascending */
 	static void Sort(Anything &toSort, EMode mode = asc);
 };
 

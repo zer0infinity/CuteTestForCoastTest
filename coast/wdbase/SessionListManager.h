@@ -106,10 +106,12 @@ public:
 	virtual void DisableSession(const String &id, Context &ctx);
 	//! clean up sessions that have had a timeout; locks fSessionsMutex
 	virtual long CleanupSessions(Context &ctx, bool forceLock = false);
-	//! retrieves information about the session list; locks fSessionsMutex
-	//! \param sessionListInfo the resulting anything containing all session information grouped by session id
-	//! \param ctx the context used
-	//! \return false if lock cannot be obtained
+	//! Retrieves information about the session list and stores the information in slot \b SessionInfo in the TmpStore, locks fSessionsMutex
+	/*! \param sessionListInfo the resulting anything containing all session information grouped by session id
+		\param ctx Context used
+		\param config Configuration used when only a subset of all available Sessions should get listed, valid names are \c Start and \c PageSize
+		\return true if lock could be obtained
+		\return false otherwise */
 	virtual bool SessionListInfo(Anything &sessionListInfo, Context &ctx, const ROAnything &config);
 	//! retrieves information about a specific session; locks fSessionsMutex
 	virtual bool GetASessionsInfo(Anything &sessionInfo, const String &sessionId, Context &ctx, const ROAnything &config);
@@ -135,23 +137,29 @@ protected:
 	//! hook for subclasses if they want to create their own sessions; preferred way use factories
 	virtual Session *DoMakeSession(Context &ctx);
 	//!initialize the newly created session
-	virtual String &InitSession(String &id, Session *session, Context &ctx);	//
+	virtual String &InitSession(String &id, Session *session, Context &ctx);
 	//!store the session in the fSessions list with the key id
 	virtual void AddSession(const String &id, Session *session, Context &ctx);
 
 	//--- url filtering ---
-	//! filters and unscrambles query content by using an URLFilter object
-	/*! This method uses \code /URLFilter <URLFilterName> \endcode defined in the configuration or in slot \em URLFilterName
-		to manipulate the query Anything. The URLFilter is configured by a filter spec defined in the configuration by the tag
-		\code /URLFilterSpec {  } \endcode See URLFilter for definition of the builtin filters.
-		If you define nothing at all, the method should behave backward compatible.
-		Default filtering applies for the tags sessionId, role, page if they appear in the unscrambled part.
-		action is also filtered if it is a rolechange action.
-		It unscrambles the tags X (when not using baseurls) or X1 and X2 (when using baseurls)
-		\param ctx containing the request e.g. query and environment as well as all configurable objects
-		\return true if URLFilter could be found and processing was possible
-		\return false otherwise
-	*/
+	//! Filters and unscrambles query content by using an URLFilter object
+	/*! This method tries to find a registered URLFilter by looking up its name in the Context at \b URLFilterName. If no name is set,
+	 * the default URLFilter is used.
+	 * The URLFilter configuration must be defined in the Context as it gets looked up using the name \b URLFilterSpec
+	 * Check @ref URLFilterHandleQueryConfiguration to see how to configure.
+	 *
+	 * Default filtering applies for the tags if they appear in the unscrambled part:
+	 * \li \c sessionId
+	 * \li \c role
+	 * \li \c page
+	 *
+	 * \c action is also filtered if it is a rolechange action
+	 *
+	 * Default unscrambling applies for the tags X (when not using baseurls) or X1 and X2 (when using baseurls)
+	 *
+	 * @param ctx Context containing the request e.g. query and environment as well as all configurable objects
+	 * @return true if URLFilter could be found and processing was possible
+	 * @return false otherwise */
 	virtual bool FilterQuery(Context &ctx);
 
 	//! generate standard filter to be backward compatible if nothing specified
@@ -164,7 +172,7 @@ protected:
 	//! retrieves a session object from the sessions list
 	//!accesses the fSessions list of sessions; therefore it locks the fSessionsListMutex
 	//! it returns the session found if it is not terminated or busy
-	//! \param id the session id
+	//! \param sessionId the session id
 	//! \param ctx the request context
 	virtual Session *IntLookupSession(const String &sessionId, Context &ctx);
 	//!check if session is in use i.e. the sessions mutex is locked

@@ -39,6 +39,7 @@ This configuration defines mappings from a transition token to a new page name, 
 class EXPORTDECL_WDBASE Role : public HierarchConfNamed
 {
 public:
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	Role(const char *name);
 	~Role();
 
@@ -113,9 +114,12 @@ protected:
 		\return returns false if this doesn't have privileges of role with name */
 	virtual bool CheckLevel(const String &name) const;
 
-	/*! verifies query params default implementation
-		default implementation does nothing
-		\param query prepared query to check if some wrong things are in there */
+	//! Subclass hook to verify Role
+	/*!	Default implementation does nothing and returns true
+	 * @param c Context that might be used for decision
+	 * @param transition Current direction to go
+	 * @param pagename Page we come from
+	 * @return true always */
 	virtual bool DoVerify(Context &c, String &transition, String &pagename) const;
 
 	/*! check if the transition/action is valid for this role, regardless of the rest

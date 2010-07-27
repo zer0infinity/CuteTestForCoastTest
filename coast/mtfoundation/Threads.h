@@ -538,7 +538,7 @@ public:
 		<b>eTerminated</b><br>Thread::Run has been left and its own thread of control is terminated. The object still exists and can be restarted now<p>
 		The following <b>state transitions</b> from current to next state are possible:<br>
 		<table border=1 align=center>
-		<tr><th align=center>CurrentState\NextState</th><th>eCreated</th><th>eStartRequested</th><th>eStarted</th><th>eRunning</th><th>eTerminationRequested</th><th>eTerminated</th></tr>
+		<tr><th align=center>CurrentState/NextState</th><th>eCreated</th><th>eStartRequested</th><th>eStarted</th><th>eRunning</th><th>eTerminationRequested</th><th>eTerminated</th></tr>
 		<tr><td>eCreated</td><td align=center>1</td><td align=center>1</td><td align=center>0</td><td align=center>0</td><td align=center>0</td><td align=center>1</td></tr>
 		<tr><td>eStartRequested</td><td align=center>0</td><td align=center>1</td><td align=center>1</td><td align=center>0</td><td align=center>0</td><td align=center>0</td></tr>
 		<tr><td>eStarted</td><td align=center>0</td><td align=center>0</td><td align=center>1</td><td align=center>1</td><td align=center>0</td><td align=center>0</td></tr>
@@ -570,7 +570,8 @@ public:
 		\param daemon sets the daomon flag
 		\param detached if set to true the thread is not joinable by other threads
 		\param suspended creates this thread in suspended mode
-		\param bound bounds this thread to a lwp */
+		\param bound bounds this thread to a lwp
+		\param a Allocator to use for member allocation */
 	Thread(const char *name, bool daemon = false, bool detached = true, bool suspended = false, bool bound = false, Allocator *a = 0);
 
 	/*! since it is not possible to terminate a thread in the superclass destructor, because most of the object has gone by that time,

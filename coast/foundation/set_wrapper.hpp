@@ -102,7 +102,8 @@ public:
 	}
 
 	/*! this is the exact match version of find
-		\param
+		\param aItem item to search for
+		\param rItemPos iterator position to item if found
 		\return true in case we found the item, rItemPos will then be the iterator pointing to the item */
 	bool FindItem(const ItemType &aItem, ConstIteratorType &rItemPos) const {
 		swStartTrace(set_wrapper.FindItem);

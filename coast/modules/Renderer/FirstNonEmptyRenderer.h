@@ -13,17 +13,20 @@
 #include "Renderer.h"
 
 //---- FirstNonEmptyRenderer ----------------------------------------------------------
-//! <B>Renders the first non-empty slot of the configuration Anything</B>
-/*!
-\par Configuration
+//! <b>Renders the first non-empty slot of the configuration Anything onto the stream</b>
+/*! @section FirstNonEmptyRendererDescription
+ * The main principle is to render the content of the first indexed configuration slot if its Renderer specification
+ * results in a non empty String.
+ * @subsection FirstNonEmptyRendererConfiguration FirstNonEmptyRenderer Configuration
 \code
 {
 	/NamedSlot		Rendererspec	optional, gets output if the rendered content is not empty
 	"unnamed slot"	Rendererspec	optional, gets output if the rendered content is not empty
+	{ some complicated /ContextLookupRenderer whatever  configuration }
 	...
 }
 \endcode
-\par Example:
+ * @subsection FirstNonEmptyRendererExample FirstNonEmptyRenderer Example
 \code
 /FirstNonEmptyRenderer {
 	""
@@ -32,20 +35,17 @@
 	/CheckThis	{ /Lookup Now }
 }
 \endcode
-
-In this example the second slot ["this slot is not empty"] will be output because the first one is empty.
+ * In this example the second slot ["this slot is not empty"] will be output because the first one is empty.
 */
 class EXPORTDECL_RENDERER FirstNonEmptyRenderer : public Renderer
 {
 public:
-	//--- constructors
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	FirstNonEmptyRenderer(const char *name);
 	~FirstNonEmptyRenderer();
 
-	//! Renders on <I>reply</I>
-	//! \param reply out - the stream where the rendered output is written on.
-	//! \param ctx the context the renderer runs within.
-	//! \param config the configuration of the renderer.
+	//! Renders first non empty configuration entry as output
+	/*! @copydetails Renderer::RenderAll(ostream &, Context &, const ROAnything &) */
 	virtual void RenderAll(ostream &reply, Context &ctx, const ROAnything &config);
 };
 

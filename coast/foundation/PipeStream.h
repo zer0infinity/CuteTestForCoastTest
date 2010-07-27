@@ -23,6 +23,7 @@ public:
 	/*! constructor takes socket object and timeout
 		\param pipe the pipe this streambuf is writing to and/or reading from
 		\param timeout the timeout for a read or write operation uses Pipe->IsReady... Method
+		\param sockbufsz initial internal read/write buffer size
 		\param mode is the pipe reading, writing or both, default: in/out */
 	PipeStreamBuf(Pipe *pipe, long timeout = 500, long sockbufsz = cPipeStreamBufferSize, int mode = ios::out | ios::in);
 	PipeStreamBuf(const PipeStreamBuf &ssbuf);
@@ -159,8 +160,9 @@ class  EXPORTDECL_FOUNDATION IPipeStream : public iosCoastPipe, public istream
 {
 public:
 	/*! constructor creates iosCoastPipe
-		\param s the socket for the istream
-		\param timeout the timeout for read operations */
+		\param p the pipe for the istream
+		\param timeout the timeout for read operations
+		\param bufsz initial internal read/write buffer size */
 	IPipeStream(Pipe *p, long timeout = 500, long bufsz = cPipeStreamBufferSize)
 		: iosCoastPipe(p, timeout, bufsz, ios::in)
 #if defined(ONLY_STD_IOSTREAM)
@@ -183,7 +185,8 @@ class  EXPORTDECL_FOUNDATION OPipeStream : public iosCoastPipe, public ostream
 public:
 	/*! constructor creates iosCoastPipe
 		\param s the socket for the ostream
-		\param timeout the timeout for write operations */
+		\param timeout the timeout for write operations
+		\param bufsz initial internal pipe buffer size */
 	OPipeStream(Pipe *s, long timeout = 500, long bufsz = cPipeStreamBufferSize)
 		: iosCoastPipe(s, timeout, bufsz, ios::out)
 #if defined(ONLY_STD_IOSTREAM)
@@ -208,7 +211,7 @@ public:
 	/*! constructor creates iosCoastPipe
 		\param s the socket for the iostream
 		\param timeout the timeout for read/write operations
-		\param buffer size of the underlying PipeStreamBuf */
+		\param sockbufsz size of the underlying PipeStreamBuf */
 	PipeStream(Pipe *s, long timeout = 500, long sockbufsz = cPipeStreamBufferSize);
 
 	//! destructor does nothing

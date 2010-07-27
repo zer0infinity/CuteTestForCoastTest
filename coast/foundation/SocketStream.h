@@ -21,10 +21,11 @@ const int cSocketStreamBufferSize = 8024;
 class EXPORTDECL_FOUNDATION SocketStreamBuf : public streambuf
 {
 public:
-	//!constructor takes socket object and timeout
-	//! \param socket the socket this streambuf is writing to or reading from
-	//! \param timeout the timeout for a read or write operation uses Socket->IsReady... Method
-	//! \param mode is the socket reading, writing or both, default: in/out
+	//! constructor takes socket object and timeout
+	/*! \param socket the socket this streambuf is writing to or reading from
+		\param timeout the timeout for a read or write operation uses Socket->IsReady... Method
+		\param sockbufsz initial internal read/write buffer size
+		\param mode is the socket reading, writing or both, default: in/out */
 	SocketStreamBuf(Socket *socket, long timeout = 300 * 1000, long sockbufsz = cSocketStreamBufferSize, int mode = ios::out | ios::in);
 	SocketStreamBuf(const SocketStreamBuf &ssbuf);
 
@@ -167,8 +168,9 @@ class  EXPORTDECL_FOUNDATION ISocketStream : public iosITOSocket, public istream
 {
 public:
 	//! constructor creates iosITOSocket
-	//! \param s the socket for the istream
-	//! \param timeout the timeout for read operations
+	/*! \param s the socket for the istream
+		\param timeout the timeout for read operations
+		\param sockbufsz initial internal read/write buffer size */
 	ISocketStream(Socket *s, long timeout = 300 * 1000, long sockbufsz = cSocketStreamBufferSize)
 		: iosITOSocket(s, timeout, sockbufsz, ios::in)
 #if defined(ONLY_STD_IOSTREAM)
@@ -190,8 +192,9 @@ class  EXPORTDECL_FOUNDATION OSocketStream : public iosITOSocket, public ostream
 {
 public:
 	//! constructor creates iosITOSocket
-	//! \param s the socket for the ostream
-	//! \param timeout the timeout for write operations
+	/*! \param s the socket for the ostream
+		\param timeout the timeout for write operations
+		\param sockbufsz initial internal read/write buffer size */
 	OSocketStream(Socket *s, long timeout = 300 * 1000, long sockbufsz = cSocketStreamBufferSize)
 		: iosITOSocket(s, timeout, sockbufsz, ios::out)
 #if defined(ONLY_STD_IOSTREAM)
@@ -214,8 +217,9 @@ class  EXPORTDECL_FOUNDATION SocketStream : public iosITOSocket, public iostream
 {
 public:
 	//! constructor creates iosITOSocket
-	//! \param s the socket for the ostream
-	//! \param timeout the timeout for read/write operations
+	/*! \param s the socket for the ostream
+		\param timeout the timeout for read/write operations
+		\param sockbufsz initial internal read/write buffer size */
 	SocketStream(Socket *s, long timeout = 300 * 1000, long sockbufsz = cSocketStreamBufferSize);
 
 	//! destructor does nothing

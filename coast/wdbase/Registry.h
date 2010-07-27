@@ -53,9 +53,8 @@ public:
 	//! \param name name used for registration
 	void UnregisterRegisterableObject(const char *name);
 
-	//!returns the object associated with name (if any)
-	//! \param name name used for registration
-	//! \return returns the object found or null
+	//! Remove registered aliases for given RegisterableObject
+	//! \param obj RegisterableObject to be used for deregistering aliases
 	void RemoveAliases(RegisterableObject *obj);
 
 	RegisterableObject *Find(const char *name);

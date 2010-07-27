@@ -12,8 +12,6 @@
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 
-//--- c-modules used -----------------------------------------------------------
-
 //---- FirstNonEmptyRenderer ---------------------------------------------------------------
 RegisterRenderer(FirstNonEmptyRenderer);
 
@@ -26,10 +24,10 @@ void FirstNonEmptyRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnyt
 	StartTrace(FirstNonEmptyRenderer.RenderAll);
 	for (long i = 0, sz = config.GetSize(); i < sz; ++i) {
 		String result;
-		TraceAny(config[i], "Trying at index [" << i << "]");
 		Renderer::RenderOnString(result, ctx, config[i]);
+		TraceAny(config[i], "Trying at index [" << i << "] with result [" << result << "]");
 		if (result.Length() > 0) {
-			Trace("Found at index  [" << i << "]: " << result);
+			Trace("Returning result of index  [" << i << "] [" << result << "]");
 			reply << result;
 			return;
 		}

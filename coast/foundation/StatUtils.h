@@ -56,7 +56,7 @@ public:
 	virtual ~StatGatherer();
 
 	/*! get collected statistics
-		\param statistics Anything to get statistics data */
+		\param statElements Anything to get statistics data */
 	void Statistic(Anything &statElements);
 
 	/*! prints collected pool statistics on stderr */
