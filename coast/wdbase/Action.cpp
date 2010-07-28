@@ -105,7 +105,7 @@ bool Action::CallAction(String &actionName, String &transitionToken, Context &c,
 		TraceAny(config, "config given");
 		Action *a( FindAction(actionName) );
 		if (a) {
-			Trace("action found, executing it");
+			Trace(actionName << " found, executing it");
 			return a->DoExecAction(transitionToken, c, config);
 		} else if (!config.IsNull()) {
 			return ExecAction(transitionToken, c, config);

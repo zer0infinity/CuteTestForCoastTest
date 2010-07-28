@@ -6,23 +6,16 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- c-library modules used ---------------------------------------------------
+//--- interface include --------------------------------------------------------
+#include "RemoveAction.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "Anything.h"
 #include "AnythingUtils.h"
 #include "Renderer.h"
 #include "Dbg.h"
 
-//--- interface include --------------------------------------------------------
-#include "RemoveAction.h"
-
 //---- RemoveAction ---------------------------------------------------------------
 RegisterAction(RemoveAction);
-
-RemoveAction::RemoveAction(const char *name) : Action(name) { }
-
-RemoveAction::~RemoveAction() { }
 
 bool RemoveAction::DoExecAction(String &transitionToken, Context &ctx, const ROAnything &config)
 {

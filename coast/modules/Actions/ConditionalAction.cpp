@@ -22,7 +22,7 @@ bool ConditionalAction::DoExecAction(String &transitionToken, Context &ctx, cons
 	bool result = ExecAction(transitionToken, ctx, roaActionSpec);
 	Trace("executing Call action was " << (result?"":"not ") << "successful, new transition [" << transitionToken << "]");
 	if ( config.LookupPath(roaActionSpec, result ? "True" : "False", '\000') ) {
-		TraceAny(roaActionSpec, "next action specification for transition [" << transitionToken << "]");
+		TraceAny(roaActionSpec, (result ? "True" : "False") << " action specification for transition [" << transitionToken << "]");
 		return ExecAction(transitionToken, ctx, roaActionSpec);
 	}
 	return true;
