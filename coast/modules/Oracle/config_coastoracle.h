@@ -32,7 +32,7 @@
 
 #endif
 
-/*! @mainpage Coast Oracle API Documentation
+/*! @page Coast Oracle API Documentation
  *
  * This documentation describes the Oracle DataAccess component infrastructure of the Coast application framework.
  * It is intended to be used against Oracle database servers 10.x and above. The OCI interface used by this component
