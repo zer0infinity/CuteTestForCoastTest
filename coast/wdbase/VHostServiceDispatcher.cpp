@@ -24,13 +24,16 @@ namespace {
 	Anything buildPathSegmentList(String requestURI) {
 		StartTrace1(VHostServiceDispatcher.buildPathSegmentList, "input URI [" << requestURI << "]");
 		Anything anySegments;
-		long lSlashIdx = requestURI.StrChr('?');
-		if ( lSlashIdx != -1 ) {
+		long lSlashIdx = requestURI.StrChr('?'), lAppendIdx=-1L;
+		if ( lSlashIdx != -1L ) {
 			requestURI.Trim(lSlashIdx);
+			lSlashIdx = -1L;
 		}
 		while ( requestURI.Length() ) {
-			Trace("adding URI [" << requestURI << "]");
-			anySegments.Append(requestURI);
+			if ( lAppendIdx < 0L || !anySegments[lAppendIdx].IsEqual(static_cast<const char*>(requestURI)) ) {
+				Trace("adding URI [" << requestURI << "]");
+				lAppendIdx = anySegments.Append(requestURI);
+			}
 			lSlashIdx=requestURI.StrRChr('/', lSlashIdx);
 			// trim to previous slash including trailing slash if any
 			requestURI.Trim(lSlashIdx+1);
