@@ -163,7 +163,6 @@ void HTTPMimeHeaderMapper::StoreCookies(ROAnything const header, Context &ctx) {
 	const String valueSlotName("_value_");
 	const String attrSlotName("_attrs_");
 	const String cookieID("set-cookie");
-	const String backendName(ctx.Lookup("Backend.Name", ""));
 	const char cookieEnd = ';';
 	String strKeyValue(64L), strCookie(128L), strKey(32L), strValue(64L);
 	Anything anyCookies;
@@ -200,8 +199,10 @@ void HTTPMimeHeaderMapper::StoreCookies(ROAnything const header, Context &ctx) {
 	}
 	//!@FIXME: this part should be factored out into separate mapper
 	String destSlotname("StoredCookies.");
+	const String backendName(ctx.Lookup("Backend.Name", ""));
 	destSlotname.Append(backendName);
 	if ( anyCookies.GetSize() > 0 ) {
+		TraceAny(anyCookies, "prepared cookie values");
 		String plainCookieString(256L), cookieName(32L);
 		AnyExtensions::Iterator<ROAnything> structureIter(anyCookies);
 		ROAnything roaEntry;
@@ -215,8 +216,7 @@ void HTTPMimeHeaderMapper::StoreCookies(ROAnything const header, Context &ctx) {
 		}
 		Anything anyPlainString(plainCookieString);
 		StorePutter::Operate(anyPlainString, ctx, "Session", String(destSlotname).Append(".Plain"));
+		StorePutter::Operate(anyCookies, ctx, "Session", String(destSlotname).Append(".Structured"));
 	}
-	TraceAny(anyCookies, "prepared cookie values");
-	StorePutter::Operate(anyCookies, ctx, "Session", String(destSlotname).Append(".Structured"));
 	TraceAny(ctx.Lookup("StoredCookies"), "cookies from context");
 }
