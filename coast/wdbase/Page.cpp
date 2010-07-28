@@ -107,7 +107,7 @@ void Page::Start(ostream &reply, Context &context)
 bool Page::Prepare(String &transitionToken, Context &context)
 {
 	StartTrace1(Page.Prepare, fName << ": <" << transitionToken << ">");
-	if (transitionToken == "") {
+	if ( !transitionToken.Length() ) {
 		return true;
 	}
 	return ProcessToken(transitionToken, context);
@@ -221,9 +221,13 @@ void Page::RenderProtocolBody(ostream &reply, Context &c)
 void Page::RenderProtocolTail(ostream &reply, Context &c)
 {
 	StartTrace1(Page.RenderProtocolTail, "<" << fName << ">");
-
-	// we render optional debug output
-	c.HTMLDebugStores(reply);
+	//!@FIXME: this is a temporary workaround to only render Debug output onto html pages
+	OStringStream ostr;
+	RenderProtocolHeader(ostr, c);
+	if ( ostr.str().Contains("text/html") ) {
+		// we render optional debug output
+		c.HTMLDebugStores(reply);
+	}
 }
 
 RegCacheImpl(Page);	// FindPage()
