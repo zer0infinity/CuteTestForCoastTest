@@ -298,7 +298,7 @@ protected:
 	//! generate the config file name (without extension, which is assumed to be any)
 	//! out of category and objName
 	//! the default implementation just takes the objName
-	virtual bool DoGetConfigName(const char *category, const char *objName, String &configFileName);
+	virtual bool DoGetConfigName(const char *category, const char *objName, String &configFileName) const;
 
 	//!load the configuration anything
 	//! load an anything and make it available by storing a reference in fConfig

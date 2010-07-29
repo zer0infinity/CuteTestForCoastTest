@@ -97,7 +97,7 @@ bool ParameterMapper::DoLoadConfig(const char *category)
 	return true;
 }
 
-bool ParameterMapper::DoGetConfigName(const char *category, const char *, String &configFileName)
+bool ParameterMapper::DoGetConfigName(const char *category, const char *, String &configFileName) const
 {
 	StartTrace(ParameterMapper.DoGetConfigName);
 
@@ -482,7 +482,7 @@ bool ResultMapper::DoLoadConfig(const char *category)
 	return true;
 }
 
-bool ResultMapper::DoGetConfigName(const char *category, const char *objName, String &configFileName)
+bool ResultMapper::DoGetConfigName(const char *category, const char *objName, String &configFileName) const
 {
 	StartTrace(ResultMapper.DoGetConfigName);
 

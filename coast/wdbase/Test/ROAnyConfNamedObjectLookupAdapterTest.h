@@ -54,7 +54,7 @@ public:
 	RegCacheDef(TestConfNamedObj);	// FindTestConfNamedObj()
 
 protected:
-	bool DoGetConfigName(const char *category, const char *objName, String &configFileName);
+	bool DoGetConfigName(const char *category, const char *objName, String &configFileName) const;
 	bool DoLoadConfig(const char *category);
 
 private:

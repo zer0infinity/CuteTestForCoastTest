@@ -56,7 +56,7 @@ protected:
 	//!loads configuration as entry from main config
 	bool DoLoadConfig(const char *category);
 	//!sets config name to Config -> reads configuration from Config.any
-	bool DoGetConfigName(const char *category, const char *objName, String &configFileName);
+	bool DoGetConfigName(const char *category, const char *objName, String &configFileName) const;
 
 private:
 	// block the following default elements of this class

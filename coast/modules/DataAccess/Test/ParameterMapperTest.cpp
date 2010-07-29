@@ -20,8 +20,6 @@
 #include "StringStream.h"
 #include "CacheHandler.h"
 
-//--- c-modules used -----------------------------------------------------------
-
 //---- ParameterMapperTest ----------------------------------------------------------------
 ParameterMapperTest::ParameterMapperTest(TString tstrName) : TestCaseType(tstrName)
 {

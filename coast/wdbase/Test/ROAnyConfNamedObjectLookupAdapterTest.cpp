@@ -141,7 +141,7 @@ IFAObject *TestConfNamedObj::Clone() const
 	return nonconst_this;
 }
 
-bool TestConfNamedObj::DoGetConfigName(const char *category, const char *objName, String &configFileName)
+bool TestConfNamedObj::DoGetConfigName(const char *category, const char *objName, String &configFileName) const
 {
 	StartTrace(TestConfNamedObj.DoGetConfigName);
 	configFileName = "TestConfNamedObj";

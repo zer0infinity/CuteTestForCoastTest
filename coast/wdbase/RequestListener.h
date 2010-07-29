@@ -50,7 +50,7 @@ protected:
 	//!special impelementation of configuration loading
 	bool DoLoadConfig(const char *category);
 	//!overriden impelementation of config file handling
-	bool DoGetConfigName(const char *category, const char *objName, String &configFileName);
+	bool DoGetConfigName(const char *category, const char *objName, String &configFileName) const;
 
 private:
 	// block the following default elements of this class

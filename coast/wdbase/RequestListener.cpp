@@ -138,7 +138,7 @@ bool AcceptorFactory::DoLoadConfig(const char *category)
 	return true;
 }
 
-bool AcceptorFactory::DoGetConfigName(const char *category, const char *objName, String &configFileName)
+bool AcceptorFactory::DoGetConfigName(const char *category, const char *objName, String &configFileName) const
 {
 	StartTrace1(AcceptorFactory.DoGetConfigName, "category: <" << NotNull(category) << "> object: <" << NotNull(objName) << ">");
 	configFileName = "Config";

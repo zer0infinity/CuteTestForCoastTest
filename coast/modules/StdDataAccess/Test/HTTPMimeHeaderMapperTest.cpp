@@ -18,8 +18,6 @@
 #include "Dbg.h"
 #include "StringStream.h"
 
-//--- c-modules used -----------------------------------------------------------
-
 //---- HTTPMimeHeaderMapperTest ----------------------------------------------------------------
 HTTPMimeHeaderMapperTest::HTTPMimeHeaderMapperTest(TString tstrName)
 	: TestCaseType(tstrName)

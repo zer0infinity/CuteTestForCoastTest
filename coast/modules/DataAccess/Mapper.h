@@ -157,7 +157,7 @@ protected:
 	virtual bool DoFinalGetStream(const char *key, ostream &os, Context &ctx);
 
 	//! Generate the config file name (without extension, which is assumed to be any). Is simply the concatenation of category and "Meta". Iif category is "ParameterMapper" we use "ParameterMapper" instead, to keep compatibility.
-	virtual bool DoGetConfigName(const char *category, const char *, String &configFileName);
+	virtual bool DoGetConfigName(const char *category, const char *, String &configFileName) const;
 
 	//! Load an anything and make it available by storing a reference in fConfig. The default implementation uses the cache handler. If you provide your own implementation be careful about the lifetime of the loaded anything otherwise fConfig points to invalid data.
 	virtual bool DoLoadConfig(const char *category);
@@ -363,7 +363,7 @@ protected:
 	virtual void DoGetDestinationAny(const char *key, Anything &targetAny, Context &ctx);
 
 	//! Generate the config file name (without extension, which is assumed to be any) out of category and objName. The default implementation just takes the objName.
-	virtual bool DoGetConfigName(const char *category, const char *objName, String &configFileName);
+	virtual bool DoGetConfigName(const char *category, const char *objName, String &configFileName) const;
 
 	//! Load an anything and make it available by storing a reference in fConfig. The default implementation uses the cache handler. If you provide your own implementation be careful about the lifetime of the loaded anything otherwise fConfig points to invalid data.
 	virtual bool DoLoadConfig(const char *category);

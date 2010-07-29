@@ -218,7 +218,7 @@ void ConfNamedObject::SetConfig(const char *category, const char *key, ROAnythin
 	fbConfigLoaded = true;
 }
 
-bool ConfNamedObject::DoGetConfigName(const char *category, const char *objName, String &configFileName)
+bool ConfNamedObject::DoGetConfigName(const char *category, const char *objName, String &configFileName) const
 {
 	StartTrace1(ConfNamedObject.DoGetConfigName, "cat <" << NotNull(category) << "> fName <" << fName << "> objName <" << NotNull(objName) << ">");
 	// generate config file name from object name

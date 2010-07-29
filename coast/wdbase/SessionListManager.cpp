@@ -786,7 +786,7 @@ bool SessionFactory::DoLoadConfig(const char *category)
 	return false;
 }
 
-bool SessionFactory::DoGetConfigName(const char *category, const char *objName, String &configFileName)
+bool SessionFactory::DoGetConfigName(const char *category, const char *objName, String &configFileName) const
 {
 	StartTrace1(SessionFactory.DoGetConfigName, "category: <" << NotNull(category) << "> object: <" << NotNull(objName) << ">");
 	configFileName = "Config";

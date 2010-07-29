@@ -11,8 +11,7 @@
 
 //---- TestCase include -------------------------------------------------
 #include "TestCase.h"
-
-//---- forward declaration -----------------------------------------------
+#include "Anything.h"
 
 //---- DataAccessImplTest ----------------------------------------------------------
 //!single line description of the class

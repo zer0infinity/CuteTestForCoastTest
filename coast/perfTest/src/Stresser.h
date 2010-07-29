@@ -43,7 +43,7 @@ protected:
 	// generate the config file name (without extension, which is assumed to be any)
 	// out of category and objName
 	// this implementation just returns "StresserMeta"
-	virtual bool DoGetConfigName(const char *category, const char *objName, String &configFileName);
+	virtual bool DoGetConfigName(const char *category, const char *objName, String &configFileName) const;
 
 	//! loads an anything and make it available by storing a reference in fConfig.
 	//! Using the cache handler, the file that name is defined with DoGetConfigName is loaded.

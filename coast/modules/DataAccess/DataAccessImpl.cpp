@@ -132,7 +132,7 @@ bool DataAccessImpl::DoLoadConfig(const char *category)
 	return true;
 }
 
-bool DataAccessImpl::DoGetConfigName(const char *category, const char *objName, String &configFileName)
+bool DataAccessImpl::DoGetConfigName(const char *category, const char *objName, String &configFileName) const
 {
 	configFileName = "DataAccessImplMeta";
 	return true;

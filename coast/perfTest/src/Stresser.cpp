@@ -44,7 +44,7 @@ Anything Stresser::RunStresser(const String &StresserName, long id)
 	return anyRet;
 }
 
-bool Stresser::DoGetConfigName(const char *category, const char *objName, String &configFileName)
+bool Stresser::DoGetConfigName(const char *category, const char *objName, String &configFileName) const
 {
 	configFileName = "StresserMeta";
 	return true;

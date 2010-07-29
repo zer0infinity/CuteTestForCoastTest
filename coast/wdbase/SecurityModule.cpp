@@ -77,7 +77,7 @@ bool SecurityItem::Decode(String &cleartext, const String &encodedText)
 	return encoder && encoder->DoDecode(cleartext, encodedText.SubString(delimiterposition + 1, encodedText.Length()));
 }
 
-bool SecurityItem::DoGetConfigName(const char *category, const char *objName, String &configFileName)
+bool SecurityItem::DoGetConfigName(const char *category, const char *objName, String &configFileName) const
 {
 	configFileName = "SecurityItems";
 	return true;

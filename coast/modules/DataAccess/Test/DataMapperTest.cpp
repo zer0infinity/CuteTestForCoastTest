@@ -19,8 +19,6 @@
 using namespace std;
 #endif
 
-//--- c-library modules used ---------------------------------------------------
-
 //---- DataMapperTest ----------------------------------------------------------------
 Test *DataMapperTest::suite ()
 {
