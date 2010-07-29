@@ -262,6 +262,15 @@ public:
 	 * \param newConfig configuration to merge in */
 	void SetConfig(const char *category, const char *key, ROAnything newConfig);
 
+	/*! Get this objects associated config file name
+	 * @return associated conffiguration file name if any
+	 */
+	const String GetConfigName() const {
+		String configFileName;
+		DoGetConfigName(getInstalledCategory(), GetName(), configFileName);
+		return configFileName;
+	}
+
 protected:
 	/*! subclass initialize api; specific things can be done here, like configuration loading and so on
 		\return true in case of success, false otherwise */

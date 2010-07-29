@@ -60,14 +60,9 @@ void ResultMapperTest::DoLoadConfigTest()
 void ResultMapperTest::DoGetConfigNameTest()
 {
 	StartTrace(ResultMapperTest.DoGetConfigNameTest);
-
-	String configName;
-	ResultMapper rm("");
-
-	rm.DoGetConfigName("ResultMapper", "", configName);
-	assertEqual("OutputMapperMeta", configName);
-	rm.DoGetConfigName("SomeOtherMapper", "", configName);
-	assertEqual("SomeOtherMapperMeta", configName);
+	ResultMapper rm("GetConfigNameTest");
+	rm.Initialize(ResultMapper::gpcCategory);
+	assertCharPtrEqual("OutputMapperMeta", rm.GetConfigName());
 }
 
 void ResultMapperTest::DoFinalPutAnyTest()

@@ -129,8 +129,7 @@ bool AcceptorFactory::DoLoadConfig(const char *category)
 		TraceAny(fConfig, "fConfig: ");
 		return (!fConfig.IsNull());
 	}
-	String cfgFilename;
-	DoGetConfigName(fCategory, fName, cfgFilename);
+	String cfgFilename = GetConfigName();
 	SystemLog::Info(String("AcceptorFactory::DoLoadConfig: no specific config entry for <") << fName << "> found in " << cfgFilename << ".any");
 	fConfig = Anything();
 	// because these object are hierarchical, it can be that some of them do not have their own config

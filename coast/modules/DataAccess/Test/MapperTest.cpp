@@ -440,20 +440,13 @@ void MapperTest::ExtendedPutTest()
 
 void MapperTest::GetConfigNameTest()
 {
-	String configName;
-
 	String mapperName("testmapper");
-	String categoryName("ParameterMapper");
 	ParameterMapper inputMapper(mapperName);
-
-	t_assert( inputMapper.DoGetConfigName(categoryName, mapperName, configName) );
-	assertEqual("InputMapperMeta", configName);
-
-	categoryName = "ResultMapper";
+	inputMapper.Initialize(ParameterMapper::gpcCategory);
+	assertCharPtrEqual("InputMapperMeta", inputMapper.GetConfigName());
 	ResultMapper outputMapper(mapperName);
-
-	t_assert( outputMapper.DoGetConfigName(categoryName, mapperName, configName) );
-	assertEqual("OutputMapperMeta", configName);
+	outputMapper.Initialize(ResultMapper::gpcCategory);
+	assertCharPtrEqual("OutputMapperMeta", outputMapper.GetConfigName());
 }
 
 void MapperTest::DoLoadConfigTest()

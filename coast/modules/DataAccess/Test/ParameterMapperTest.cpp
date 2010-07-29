@@ -58,14 +58,9 @@ void ParameterMapperTest::DoLoadConfigTest()
 void ParameterMapperTest::DoGetConfigNameTest()
 {
 	StartTrace(ParameterMapperTest.DoGetConfigNameTest);
-
-	String configName;
-	ParameterMapper pm("");
-
-	pm.DoGetConfigName("ParameterMapper", "", configName);
-	assertEqual("InputMapperMeta", configName);
-	pm.DoGetConfigName("SomeOtherMapper", "", configName);
-	assertEqual("SomeOtherMapperMeta", configName);
+	ParameterMapper pm("GetConfigNameTest");
+	pm.Initialize(ParameterMapper::gpcCategory);
+	assertCharPtrEqual("InputMapperMeta", pm.GetConfigName());
 }
 
 void ParameterMapperTest::PlaceIntoAnyOrAppendIfNotEmptyTest()
