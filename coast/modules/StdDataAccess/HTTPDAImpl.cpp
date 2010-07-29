@@ -261,9 +261,10 @@ bool HTTPDAImpl::SendInput(iostream *Ios, Socket *s, long timeout, Context &cont
 	StartTrace(HTTPDAImpl.SendInput);
 	//XXX: this section should probably be conditional
 	long uploadSize = context.Lookup("PostContentLengthToStream", -1L);
+	Trace("PostContentLengthToStream:" << uploadSize);
 	if (uploadSize == -1L) {
 		String content(16384L);
-		OStringStream oss(&content);
+		OStringStream oss(content);
 		in->Get("Input", oss, context);
 		oss.flush();
 		long lIdx = content.Contains("\r\n\r\n");
@@ -274,15 +275,16 @@ bool HTTPDAImpl::SendInput(iostream *Ios, Socket *s, long timeout, Context &cont
 			uploadSize = 0L;
 		}
 	}
+	Trace("Request.BodyLength:" << uploadSize);
 	context.GetTmpStore()["Request"]["BodyLength"] = uploadSize;
 #ifdef COAST_TRACE
 	Trace("Debug Version");
-
 	if ( Tracer::CheckWDDebug("HTTPDAImpl.SendInput", Storage::Current()) ) {
-		String request;
+		String request(16384L);
 		{
-			OStringStream os(&request);
-			if ( ! in->Get("Input", os, context) ) {
+			OStringStream os(request);
+			if ( !in->Get("Input", os, context) ) {
+				Trace("getting Input failed, content so far:" << request);
 				out->Put("Error", GenerateErrorMessage("Input Collection of ", context), context);
 				return false;
 			}
@@ -294,12 +296,14 @@ bool HTTPDAImpl::SendInput(iostream *Ios, Socket *s, long timeout, Context &cont
 
 		if (Ios) {
 			if ( s->IsReadyForWriting() ) {
+				Trace("sending input");
 				s->SetNoDelay();
 				(*Ios) << request;
 				(*Ios) << flush;
 				// don't use ShutDownWriting, since not all HTTP-Agents understand it (e.g. CICS-WebInterface)
 				return true;
 			} else {
+				Trace("socket not ready for writing");
 				out->Put("Error", GenerateErrorMessage("Sending request ", context), context);
 				return false;
 			}

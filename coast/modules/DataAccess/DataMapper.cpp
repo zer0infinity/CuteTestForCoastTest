@@ -99,25 +99,26 @@ IFAObject *RendererMapper::Clone() const
 bool RendererMapper::DoGetStream(const char *key, ostream &os, Context &ctx, ROAnything info)
 {
 	StartTrace1(RendererMapper.DoGetStream, NotNull(key));
-	TraceAny(info, "info");
-	if (!info.IsNull()) {
+	bool bInfoIsNull(true);
+	if (!(bInfoIsNull=info.IsNull())) {
 		Renderer::Render( os, ctx, info );
-		return true;
 	}
-	return false;
+	TraceAny(info, "Renderer spec content, returning " << (bInfoIsNull?"false":"true"));
+	return !bInfoIsNull;
 }
 
 bool RendererMapper::DoGetAny(const char *key, Anything &value, Context &ctx, ROAnything info)
 {
 	StartTrace1(RendererMapper.DoGetAny, NotNull(key));
-	String strBuf;
+	bool bGetSuccess(true);
+	String strBuf(16384L);
 	OStringStream stream(strBuf);
-	if (DoGetStream(key, stream, ctx, info)) {
+	if ((bGetSuccess=DoGetStream(key, stream, ctx, info))) {
 		stream.flush();
 		value = strBuf;
-		return true;
 	}
-	return false;
+	Trace("returnging " << (bGetSuccess?"true":"false"));
+	return bGetSuccess;
 }
 
 //special case, because we are non-eager in the anything case.
@@ -125,7 +126,6 @@ bool RendererMapper::Get(const char *key, Anything &value, Context &ctx)
 {
 	StartTrace1(RendererMapper.Get, "( \"" << NotNull(key) << "\" , Anything &value, Context &ctx)");
 	Anything anyValue;
-
 	if (DoGetAny(key, anyValue, ctx, ParameterMapper::DoSelectScript(key, fConfig, ctx))) {
 		value = anyValue;
 		TraceAny(value, "returned value");
