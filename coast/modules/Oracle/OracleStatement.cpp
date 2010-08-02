@@ -512,14 +512,15 @@ void OracleStatement::fillRowColValue( OracleStatement::Description::Element &aD
 		buf = Anything( (void *) &phCursor, len );
 		fillCBuffer(aDescEl, "RawBuf", len, lRowIndex, buf);
 	} else {
-		String strValue(roaValue.AsString());
-		if ( String::CaselessCompare(strValue, "NULL" ) == 0 ) {
+		if ( roaValue.IsNull() ) {
 			OCIInd nullInd( -1 );
 			long lenNULL = sizeof(OCIInd);
-			buf = Anything( static_cast<void *>(&nullInd), lenNULL );
-			fillCBuffer(aDescEl, "Indicator", lenNULL, lRowIndex, buf);
+			Anything indBuf = Anything( static_cast<void *>(&nullInd), lenNULL );
+			fillCBuffer(aDescEl, "Indicator", lenNULL, lRowIndex, indBuf);
+		} else {
+			String strValue(roaValue.AsString());
+			buf = Anything(static_cast<void *>(const_cast<char *>((const char *)strValue)), std::min(len, strValue.Length()));
 		}
-		buf = Anything( (void *) (const char *)strValue, std::min(len, strValue.Length()) );
 		fillCBuffer(aDescEl, "RawBuf", len + 1, lRowIndex, buf);
 	}
 	ub2 ub2len( len );
