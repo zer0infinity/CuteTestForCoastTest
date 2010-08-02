@@ -380,7 +380,7 @@
 				/TmpStore {
 					/SPExecute {
 						/Query	"BEGIN getempsalary(:ID,:SALARY); END;"
-						/ID			NULL
+						/ID		*
 						/SALARY		0
 						/QuerySource	 !InputMapperMeta.any?SifsCoastOrcl.DBConnectString        # !InputMapperMeta.any?SifsCoastOrcl.DBConnectString
 					}
