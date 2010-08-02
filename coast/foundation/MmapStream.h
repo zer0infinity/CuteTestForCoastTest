@@ -21,7 +21,6 @@ typedef fstream MmapStream;
 //!helper class to manage dependencies between ios flags and c-api mmap flags
 class EXPORTDECL_FOUNDATION MmapMagicFlags
 {
-//friend class MmapStreamBuf;
 public:
 	MmapMagicFlags(int omode, int syncflag);
 	int GetIOSMode() {
