@@ -164,8 +164,11 @@ void HTTPMimeHeaderMapper::StoreCookies(ROAnything const header, Context &ctx) {
 	const String attrSlotName("_attrs_");
 	const String cookieID("set-cookie");
 	const char cookieEnd = ';';
+	String destSlotname("StoredCookies.");
+	const String backendName(ctx.Lookup("Backend.Name", ""));
+	destSlotname.Append(backendName);
+
 	String strKeyValue(64L), strCookie(128L), strKey(32L), strValue(64L);
-	Anything anyCookies;
 	ROAnything roaCookie;
 	AnyExtensions::Iterator<ROAnything> cookieIterator(header[cookieID]);
 	while ( cookieIterator.Next(roaCookie) ) {
@@ -194,13 +197,14 @@ void HTTPMimeHeaderMapper::StoreCookies(ROAnything const header, Context &ctx) {
 			}
 		}
 		if ( anyNamedCookie.GetSize() > 0 && cookieName.Length() ) {
-			anyCookies[cookieName].Append(anyNamedCookie);
+			String strStructured(destSlotname);
+			strStructured.Append(".Structured.").Append(cookieName);
+			TraceAny(anyNamedCookie, "storing named cookie at [" << strStructured << "]");
+			StorePutter::Operate(anyNamedCookie, ctx, "Session", strStructured);
 		}
 	}
 	//!@FIXME: this part should be factored out into separate mapper
-	String destSlotname("StoredCookies.");
-	const String backendName(ctx.Lookup("Backend.Name", ""));
-	destSlotname.Append(backendName);
+	ROAnything anyCookies = ctx.Lookup(String(destSlotname).Append(".Structured"));
 	if ( anyCookies.GetSize() > 0 ) {
 		TraceAny(anyCookies, "prepared cookie values");
 		String plainCookieString(256L), cookieName(32L);
@@ -215,8 +219,8 @@ void HTTPMimeHeaderMapper::StoreCookies(ROAnything const header, Context &ctx) {
 			plainCookieString.Append(' ').Append(cookieName).Append('=').Append(roaEntry[roaEntry.GetSize()-1][valueSlotName].AsString()).Append(cookieEnd);
 		}
 		Anything anyPlainString(plainCookieString);
+		Trace("plain cookie string [" << plainCookieString << "]");
 		StorePutter::Operate(anyPlainString, ctx, "Session", String(destSlotname).Append(".Plain"));
-		StorePutter::Operate(anyCookies, ctx, "Session", String(destSlotname).Append(".Structured"));
 	}
 	TraceAny(ctx.Lookup("StoredCookies"), "cookies from context");
 }
