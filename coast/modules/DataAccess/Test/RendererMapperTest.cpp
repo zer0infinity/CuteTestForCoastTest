@@ -57,22 +57,26 @@ void RendererMapperTest::StdGetTest()
 
 void RendererMapperTest::GetOnAnyTest()
 {
-	Anything dummy;
-	Context ctx(fStdContextAny, dummy, 0, 0, 0, 0);
-
-	// fConfig does not appear to be set properly
-	RendererMapper mapper("renderertestmapper");
-	mapper.Initialize("ParameterMapper");
-
-	// test the overloaded get api
-	Anything result;
-	t_assert(mapper.Get("NotRelevant", result, ctx));
-	assertEqual("Get www.muc.de/~kenny http/1.0\r\n\r\n", result.AsString());
-
-	// test nonexisting slot
-	result = Anything();
-	t_assert(!mapper.Get("NonExisting", result, ctx));
-	t_assert(result.IsNull());
+	{
+		Anything dummy;
+		Context ctx(fStdContextAny, dummy, 0, 0, 0, 0);
+		RendererMapper mapper("renderertestmapper");
+		mapper.Initialize("ParameterMapper");
+		// test the overloaded get api
+		Anything result;
+		t_assert(mapper.Get("NotRelevant", result, ctx));
+		assertEqual("Get www.muc.de/~kenny http/1.0\r\n\r\n", result.AsString());
+	}
+	{
+		Anything dummy;
+		Context ctx(fStdContextAny, dummy, 0, 0, 0, 0);
+		RendererMapper mapper("renderertestmapper");
+		mapper.Initialize("ParameterMapper");
+		// test nonexisting slot
+		Anything result;
+		t_assert(!mapper.Get("NonExisting", result, ctx));
+		t_assert(result.IsNull());
+	}
 }
 
 void RendererMapperTest::setUp ()

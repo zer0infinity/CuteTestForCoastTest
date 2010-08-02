@@ -44,7 +44,7 @@ public:
 	XMLMapper(const char *name);
 	//--- support for prototype
 	IFAObject *Clone() const;
-	// ignores the DoSelectScript-Hook, operates directly on fConfig (FIXME?)
+	// ignores the SelectScript-Hook, operates directly on fConfig (FIXME?)
 	virtual bool DoPutAny(const char *key, Anything value, Context &ctx, ROAnything);
 
 protected:

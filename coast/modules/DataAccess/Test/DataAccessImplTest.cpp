@@ -41,10 +41,9 @@ void DataAccessImplTest::GetConfigNameTest() {
 
 void DataAccessImplTest::DoLoadConfigTest() {
 	DataAccessImpl dai("testdai");
-
-	t_assert( dai.DoLoadConfig("DataAccessImpl") );
-	t_assert(dai.fConfig.IsDefined("testitem1"));
-	assertEqual("foo", dai.fConfig["testitem1"].AsCharPtr());
-	t_assert(dai.fConfig.IsDefined("testitem2"));
-	assertEqual("bah", dai.fConfig["testitem2"].AsCharPtr());
+	t_assert( dai.Initialize("DataAccessImpl") );
+	t_assert(dai.GetConfig().IsDefined("testitem1"));
+	assertEqual("foo", dai.GetConfig()["testitem1"].AsCharPtr());
+	t_assert(dai.GetConfig().IsDefined("testitem2"));
+	assertEqual("bah", dai.GetConfig()["testitem2"].AsCharPtr());
 }

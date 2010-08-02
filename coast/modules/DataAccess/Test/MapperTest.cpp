@@ -286,12 +286,6 @@ void MapperTest::StdGetTest()
 	t_assert(aTestVal.IsDefined("foo"));
 	assertEqual("baz", aTestVal["foo"].AsCharPtr());
 
-	Anything aTestVal2;
-	t_assert(mapper.DoGetAny("testAny", aTestVal2, ctx, ROAnything()));
-	TraceAny(aTestVal2, "aTestVal2");
-	t_assert(aTestVal2.IsDefined("foo"));
-	assertEqual("baz", aTestVal2["foo"].AsCharPtr());
-
 	String strTest;
 	StringStream Ios(strTest);
 	t_assert(mapper.Get("testString", Ios, ctx));
@@ -455,20 +449,16 @@ void MapperTest::DoLoadConfigTest()
 	String categoryName("ParameterMapper");
 	ParameterMapper inputMapper(mapperName);
 
-	t_assert( inputMapper.DoLoadConfig(categoryName) );
-	t_assert(inputMapper.fConfig.IsDefined("testitem1"));
-	assertEqual("foo", inputMapper.fConfig["testitem1"].AsCharPtr());
-	t_assert(inputMapper.fConfig.IsDefined("testitem2"));
-	assertEqual("bah", inputMapper.fConfig["testitem2"].AsCharPtr());
+	t_assert( inputMapper.Initialize(categoryName) );
+	assertEqual("foo", inputMapper.Lookup("testitem1").AsCharPtr());
+	assertEqual("bah", inputMapper.Lookup("testitem2").AsCharPtr());
 
 	ResultMapper outputMapper(mapperName);
 	categoryName = "ResultMapper";
 
-	t_assert( outputMapper.DoLoadConfig(categoryName) );
-	t_assert(outputMapper.fConfig.IsDefined("testitem1"));
-	assertEqual("foo", outputMapper.fConfig["testitem1"].AsCharPtr());
-	t_assert(outputMapper.fConfig.IsDefined("testitem2"));
-	assertEqual("bah", outputMapper.fConfig["testitem2"].AsCharPtr());
+	t_assert( outputMapper.Initialize(categoryName) );
+	assertEqual("foo", outputMapper.Lookup("testitem1").AsCharPtr());
+	assertEqual("bah", outputMapper.Lookup("testitem2").AsCharPtr());
 }
 
 void MapperTest::LookupMapperGetTest()

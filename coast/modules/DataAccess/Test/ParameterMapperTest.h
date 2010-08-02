@@ -16,9 +16,8 @@
 //! <B>Tests Functionality of ParameterMapper and EagerParameterMapper.</B>
 /*!
 To understand the results of those tests, you should additionally
-consult "InputMapperMeta.any" and "MapperTestScripts.any".
+consult "InputMapperMeta.any"
 */
-
 class ParameterMapperTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:

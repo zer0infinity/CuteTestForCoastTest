@@ -32,9 +32,7 @@
 //									float: 		use Get(FromSlot, float, Context), Put(ToSlot, float, Context)
 //									double: 	use Get(FromSlot, double, Context), Put(ToSlot, double, Context)
 //									Anything: 	use Get(FromSlot, Anything, Context), Put(ToSlot, Anything, Context)
-//									Anything2: 	use Get(FromSlot, Anything, Context, ROAnything()), Put(ToSlot, Anything, Context)
 //									StringStream: use Get(FromSlot, StringStream, Context), Put(ToSlot, StringStream, Context)
-//									StringStream2: use Get(FromSlot, StringStream, Context, ROAnything()), Put(ToSlot, StringStream, Context)
 //	}
 class EXPORTDECL_DATAACCESS MapperTestDAImpl : public DataAccessImpl
 {

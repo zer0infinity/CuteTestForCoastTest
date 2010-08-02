@@ -14,8 +14,6 @@
 #include "Renderer.h"
 #include "Dbg.h"
 
-//--- c-library modules used ---------------------------------------------------
-
 //---- FixedSizeMapper ------------------------------------------------------------------
 RegisterParameterMapper(FixedSizeMapper);
 

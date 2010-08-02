@@ -18,8 +18,6 @@
 //--- standard modules used ----------------------------------------------------
 #include "AnyIterators.h"
 
-//--- c-modules used -----------------------------------------------------------
-
 //---- ConfigMapperTest ----------------------------------------------------------------
 ConfigMapperTest::ConfigMapperTest(TString tstrName)
 	: TestCaseType(tstrName)
@@ -40,7 +38,7 @@ ConfigMapperTest::~ConfigMapperTest()
 void ConfigMapperTest::ConfigTest()
 {
 	StartTrace(ConfigMapperTest.ConfigTest);
-
+	String leafName("Test");
 	ROAnything caseConfig;
 	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
 	while ( aEntryIterator.Next(caseConfig) ) {
@@ -54,8 +52,10 @@ void ConfigMapperTest::ConfigTest()
 
 		// call
 		Anything result;
-		ConfigMapper cm("Test");
-		cm.DoGetAny("", result, ctx, caseConfig["MapperConfig"]);
+		ConfigMapper cm(caseName);
+		cm.Initialize(ParameterMapper::gpcCategory);
+		cm.SetConfig(cm.getInstalledCategory(), caseName, caseConfig["MapperConfig"]);
+		cm.Get("", result, ctx);
 		TraceAny(result, "resulting config: ");
 
 		// compare result and expected

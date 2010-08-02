@@ -50,7 +50,7 @@ bool MapperTestDAImpl::Exec( Context &context, ParameterMapper *input, ResultMap
 		for (long i = 0; i < config.GetSize(); i++) {
 			const char *slotname = config.SlotName(i);
 			if (slotname) {
-				String inputStr;
+				String inputStr(128L);
 				bool bGetCode, bPutCode = false;
 				if (strMode.Compare("int") == 0) {
 					int iTestVal = 0;
@@ -97,30 +97,12 @@ bool MapperTestDAImpl::Exec( Context &context, ParameterMapper *input, ResultMap
 						Ios << flush;
 						Trace("From [" << slotname << "] to [" << config[i].AsCharPtr() << "]: [" << inputStr << "]");
 					}
-				} else if (strMode.Compare("Anything2") == 0) {
-					Anything aTestVal;
-					bGetCode = input->DoGetAny(slotname, aTestVal, context, ROAnything());
-					if (bGetCode) {
-						bPutCode = output->Put(config[i].AsCharPtr(), aTestVal, context);
-						StringStream Ios(inputStr);
-						aTestVal.PrintOn(Ios);
-						Ios << flush;
-						Trace("From [" << slotname << "] to [" << config[i].AsCharPtr() << "]: [" << inputStr << "]");
-					}
 				} else if (strMode.Compare("StringStream") == 0) {
 					StringStream Ios(inputStr);
 					bGetCode = input->Get(slotname, Ios, context);
 					Ios << flush;
 					if (bGetCode) {
 						bPutCode = output->Put(config[i].AsCharPtr(), Ios, context);
-						Trace("From [" << slotname << "] to [" << config[i].AsCharPtr() << "]: [" << inputStr << "]");
-					}
-				} else if (strMode.Compare("StringStream2") == 0) {
-					StringStream Ios(inputStr);
-					bGetCode = input->DoGetStream(slotname, Ios, context, ROAnything());
-					Ios << flush;
-					if (bGetCode) {
-						bPutCode = output->DoPutStream(config[i].AsCharPtr(), Ios, context, ROAnything());
 						Trace("From [" << slotname << "] to [" << config[i].AsCharPtr() << "]: [" << inputStr << "]");
 					}
 				} else {

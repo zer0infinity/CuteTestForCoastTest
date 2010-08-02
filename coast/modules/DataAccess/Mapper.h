@@ -46,8 +46,8 @@ public:
 class EXPORTDECL_DATAACCESS ParameterMapper : public HierarchConfNamed
 {
 public:
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	ParameterMapper(const char *name);
-	virtual ~ParameterMapper();
 	IFAObject *Clone() const;
 
 	//---- registry api
@@ -119,13 +119,29 @@ public:
 		\return returns true if the mapping was successful otherwise false */
 	bool Get(const char *key, ostream &os, Context &ctx);
 
-	//! method for getting the internal configuration
-	//! \return returns the configuration as Anything
-	virtual ROAnything GetConfig();
+	//! Get mapper script for the given key if any. Subclasses can overwrite DoSelectScript() to avoid scripting (recursion) or tailor to their needs.
+	/*! Default is to return script[key].
+	 * Mappers that want complete scripting should return whole script for interpretation regardless of key given.
+	 * @param key current mapping key
+	 * @param script script in which to check for the given key, if omitted or the key was not found, we will check using hierarchic Lookup() mechanism.
+	 * @param ctx Context which might be used for special cases
+	 * @return new script according to given key or null Anything in case nothing was found
+	 */
+	ROAnything SelectScript(const char *key, ROAnything script, Context &ctx) const {
+		return DoSelectScript(key, script, ctx);
+	}
 
-	//! method for setting the internal configuration
-	//! \param configuration to be set
-	void SetConfig(ROAnything config);
+	//! Defines the name space where to get values from, like a prefix. Subclasses can overwrite DoGetSourceSlot().
+	/*! Default is to Lookup("SourceSlot") in our own config. If it is not found, \em fName.SourceSlot will be searched in Context.
+	 * If it is still not found, an empty default value will be returned, i.e. the key will then be looked up directly without any prefix.
+	 * The lookup will be of the form [sourceslot.]key, where [sourceslot] may itself be an Anything::LookupPath() like path.
+	 * @param ctx Context used to lookup the SourceSlot prefix.
+	 * @return value of SourceSlot lookup
+	 * @return empty when not specified in config
+	 */
+	String GetSourceSlot(Context &ctx) const {
+		return DoGetSourceSlot(ctx);
+	}
 
 	//!FIXME: remove Finds InputMappers, too
 	static ParameterMapper *FindInputMapper(const char *name);
@@ -162,25 +178,20 @@ protected:
 	//! Load an anything and make it available by storing a reference in fConfig. The default implementation uses the cache handler. If you provide your own implementation be careful about the lifetime of the loaded anything otherwise fConfig points to invalid data.
 	virtual bool DoLoadConfig(const char *category);
 
-	//! Subclasses might overwrite this method to avoid scripting (recursion).Default is to pass script[key], mappers that want complete scripting should return whole script for interpretation if key not found.
-	virtual ROAnything DoSelectScript(const char *key, ROAnything script, Context &ctx);
+	//! Subclass hook which can be overridden for special behavior
+	/*! @copydetails SelectScript()
+	 */
+	virtual ROAnything DoSelectScript(const char *key, ROAnything script, Context &ctx) const;
 
-	//! Defines the name space where to get values from. Default is -none-, i.e. the key will be looked up directly. If this method is overridden in subclasses, the lookup will be of the form [sourceslot].key, where [sourceslot] may also be a "."-separated path.
-	virtual String DoGetSourceSlot(Context &ctx);
+	//! Subclass hook to be overridden for special behavior
+	/*! @copydetails GetSourceSlot()
+	 */
+	virtual String DoGetSourceSlot(Context &ctx) const;
 
 private:
 	ParameterMapper();
 	ParameterMapper(const ParameterMapper &);
 	ParameterMapper &operator=(const ParameterMapper &);
-
-	friend class ParameterMapperTest;
-	friend class MapperTest;
-	friend class DataMapperTest;
-	friend class MapperTestDAImpl;
-	friend class ConfigMapper;
-	friend class LoopBackDAImpl;
-	friend class LDAPParams;
-	friend class HTTPDirectBodyMapperTest;
 };
 
 //---------------- EagerParameterMapper ------------------------------
@@ -188,22 +199,20 @@ private:
 class EXPORTDECL_DATAACCESS EagerParameterMapper : public ParameterMapper
 {
 public:
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	EagerParameterMapper(const char *name): ParameterMapper(name) {}
 	EagerParameterMapper(const char *name, ROAnything config);
-	virtual ~EagerParameterMapper() {}
 	IFAObject *Clone() const {
 		return new EagerParameterMapper(fName);
 	}
 
 protected:
-	virtual ROAnything DoSelectScript(const char *key, ROAnything script, Context &ctx);
+	virtual ROAnything DoSelectScript(const char *key, ROAnything script, Context &ctx) const;
 
 private:
 	EagerParameterMapper();
 	EagerParameterMapper(const EagerParameterMapper &);
 	EagerParameterMapper &operator=(const EagerParameterMapper &);
-
-	friend class ParameterMapperTest;
 };
 
 //---------------- ResultMapper ------------------------------
@@ -223,8 +232,8 @@ private:
 class EXPORTDECL_DATAACCESS ResultMapper : public HierarchConfNamed
 {
 public:
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	ResultMapper(const char *name);
-	virtual ~ResultMapper();
 	IFAObject *Clone() const;
 
 	//---- registry api
@@ -291,12 +300,24 @@ public:
 		\return returns true if the mapping was successful otherwise false */
 	bool Put(const char *key, istream &is, Context &ctx);
 
-protected:
 	/*! Calls DoGetDestinationSlot to get the name - or empty string - which will be used as base path in tmpstore. The 'base' path - the one returned here - will be stored in ResultMapper.DestinationSlot for later usage.
 		\param ctx the context in which to look for the destination slot
 		\return the name of the slot for later lookup or the empty string */
 	String GetDestinationSlot(Context &ctx);
 
+	//! Get mapper script for the given key if any. Subclasses can overwrite DoSelectScript() to avoid scripting (recursion) or tailor to their needs.
+	/*! Default is to return script[key].
+	 * Mappers that want complete scripting should return whole script for interpretation regardless of key given.
+	 * @param key current mapping key
+	 * @param script script in which to check for the given key, if omitted or the key was not found, we will check using hierarchic Lookup() mechanism.
+	 * @param ctx Context which might be used for special cases
+	 * @return new script according to given key or null Anything in case nothing was found
+	 */
+	ROAnything SelectScript(const char *key, ROAnything script, Context &ctx) const {
+		return DoSelectScript(key, script, ctx);
+	}
+
+protected:
 	/*! Obtain path delimiter of current mapper configuration
 	 * @return single character used to delimit path segments in a Lookup, default is '.'
 	 */
@@ -368,21 +389,15 @@ protected:
 	//! Load an anything and make it available by storing a reference in fConfig. The default implementation uses the cache handler. If you provide your own implementation be careful about the lifetime of the loaded anything otherwise fConfig points to invalid data.
 	virtual bool DoLoadConfig(const char *category);
 
-	//! Subclasses might overwrite this method to enable deep scripting (recursion). Default is to pass script[key], mappers that want complete scripting can return whole script.
-	virtual ROAnything DoSelectScript(const char *key, ROAnything script, Context &ctx);
+	//! Subclass hook which can be overridden for special behavior
+	/*! @copydetails SelectScript()
+	 */
+	virtual ROAnything DoSelectScript(const char *key, ROAnything script, Context &ctx) const;
 
 private:
 	ResultMapper();
 	ResultMapper(const ResultMapper &);
 	ResultMapper &operator=(const ResultMapper &);
-
-	friend class ResultMapperTest;
-	friend class MapperTest;
-	friend class MapperTestDAImpl;
-	friend class LoopBackDAImpl;
-	friend class HTTPMimeHeaderMapperTest;
-	friend class XMLBodyMapperTest;
-	friend class TestHTTPMapper;
 };
 
 //---------------- EagerResultMapper ------------------------------
@@ -390,22 +405,20 @@ private:
 class EXPORTDECL_DATAACCESS EagerResultMapper : public ResultMapper
 {
 public:
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	EagerResultMapper(const char *name): ResultMapper(name) {}
 	EagerResultMapper(const char *name, ROAnything config);
-	virtual ~EagerResultMapper() {}
 	IFAObject *Clone() const {
 		return new EagerResultMapper(fName);
 	}
 
 protected:
-	virtual ROAnything DoSelectScript(const char *key, ROAnything script, Context &ctx);
+	virtual ROAnything DoSelectScript(const char *key, ROAnything script, Context &ctx) const;
 
 private:
 	EagerResultMapper();
 	EagerResultMapper(const EagerResultMapper &);
 	EagerResultMapper &operator=(const EagerResultMapper &);
-
-	friend class ResultMapperTest;
 };
 
 #define RegisterParameterMapper(name) RegisterObject(name, ParameterMapper)
@@ -422,8 +435,8 @@ private:
 class EXPORTDECL_DATAACCESS RootMapper : public ResultMapper
 {
 public:
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	RootMapper(const char *name) : ResultMapper(name) {}
-	virtual ~RootMapper() {}
 	IFAObject *Clone() const {
 		return new RootMapper(fName);
 	}
@@ -465,6 +478,7 @@ Example:<pre>
 class EXPORTDECL_DATAACCESS ConfigMapper : public EagerParameterMapper
 {
 public:
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	ConfigMapper(const char *name) : EagerParameterMapper(name) {};
 	IFAObject *Clone() const {
 		return new ConfigMapper(fName);
@@ -478,8 +492,6 @@ private:
 	ConfigMapper();
 	ConfigMapper(const ConfigMapper &);
 	ConfigMapper &operator=(const ConfigMapper &);
-
-	friend class ConfigMapperTest;
 };
 
 #endif

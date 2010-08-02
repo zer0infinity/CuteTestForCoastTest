@@ -5,7 +5,6 @@
 # This library/application is free software; you can redistribute and/or modify it under the terms of
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
-
 {
 	/LowerBound		0	# debugging on or off
 	/UpperBound		11	# override switch: turns everything on
@@ -198,6 +197,14 @@
 		/EnableAll		1100
 	}
 	/RequestProcessor {
+		/MainSwitch 11
+		/EnableAll 11
+	}
+	/ConfigMapper {
+		/MainSwitch 11
+		/EnableAll 11
+	}
+	/EagerParameterMapper {
 		/MainSwitch 11
 		/EnableAll 11
 	}

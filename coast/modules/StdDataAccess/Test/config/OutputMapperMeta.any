@@ -90,4 +90,12 @@
 		/PutPolicy Append
 		/DestinationSlot	"Rubbish"
 	}
+	/literalSuppressedHeader {
+		/Suppress {
+			"Connection"
+			"server"
+		}
+	}
+	/TestedMapper {
+	}
 }

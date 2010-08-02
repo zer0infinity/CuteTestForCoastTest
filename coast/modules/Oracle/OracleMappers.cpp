@@ -8,10 +8,8 @@
 
 //--- interface include --------------------------------------------------------
 #include "OracleMappers.h"
-//--- project modules used -----------------------------------------------------
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-//--- c-modules used -----------------------------------------------------------
 
 //---- OracleParameterMapper ------------------------------------------------------------------
 RegisterParameterMapper(OracleParameterMapper);
@@ -68,11 +66,11 @@ bool OracleResultMapper::DoPutAny( const char *key, Anything value, Context &ctx
 	if ( lDelimIdx != -1 ) {
 		Trace("combined key")
 		// check within script/LookupInterface if combined key exists
-		ROAnything roaScript( DoSelectScript( key, script, ctx ) );
+		ROAnything roaScript( SelectScript( key, script, ctx ) );
 		if ( roaScript.IsNull() ) {
 			strKey.TrimFront( lDelimIdx + 1 );
 			Trace("key reduced to [" << strKey << "]")
-			roaScript = DoSelectScript( strKey, script, ctx );
+			roaScript = SelectScript( strKey, script, ctx );
 		}
 		return ResultMapper::DoPutAny( key, value, ctx, roaScript );
 	}

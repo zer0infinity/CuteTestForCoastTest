@@ -28,8 +28,6 @@ public:
 	/*! @param name Used to distinguish between objects of same type */
 	RegisterableObject(const char *name);
 
-	virtual ~RegisterableObject() {};
-
 	//! register api; objects can be registered with a category and a name
 	void Register(const char *name, const char *category);
 
@@ -204,12 +202,14 @@ protected:
 class EXPORTDECL_WDBASE NotCloned : public RegisterableObject
 {
 public:
-	//!named object constructor
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	NotCloned(const char *name)
 		: RegisterableObject(name)
 	{}
 
-	//!returns pseudo clone this; provides singleton
+	//! Public api to return reference to this object instead of cloning, e.g. like a singleton
+	/*! @return pseudo clone of this, like a singleton
+	 */
 	IFAObject *Clone() const {
 		NotCloned *nonconst_this = (NotCloned *) this;
 		return nonconst_this;
@@ -232,24 +232,23 @@ for most classes ( eg. Role and Page ) */
 class EXPORTDECL_WDBASE ConfNamedObject : public RegisterableObject, public virtual LookupInterface
 {
 public:
-	//!named object constructor
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	ConfNamedObject(const char *name)
 		: RegisterableObject(name)
 		, fbConfigLoaded(false)
 	{}
 
-	//!does nothing
-	virtual ~ConfNamedObject() {};
-
-	/*! Public api to create a cloned object. The real work is delegated to the virtual Do.. method. After successful cloning, the objects configuration data gets loaded if possible.
-		\param category Name of the category in which the objects configuration will be stored in the Cache
-		\param name Name of the clone
-		\param bInitializeConfig If set to true, the objects configuration will be loaded based on the cloned objects settings
-		\return New object clone with initialized configuration if requested */
+	//! Public api to create a configured clone object. The real work is delegated to DoConfiguredClone().
+	/*! After successful cloning, the objects configuration data gets loaded if possible.
+	 * @param category Name of the category in which the objects configuration will be stored in the Cache
+	 * @param name Name of the clone
+	 * @param bInitializeConfig If set to true, the objects configuration will be loaded based on the cloned objects settings
+	 * @return New object clone with configuration initialized if requested */
 	ConfNamedObject *ConfiguredClone(const char *category, const char *name, bool bInitializeConfig);
 
-	/*! Check if object has loaded its config already.
-		\return true in case the config is loaded, false otherwise */
+	//! Check if object has loaded its config already.
+	/*! @return true in case the config is loaded
+	 * @return false otherwise */
 	bool IsConfigLoaded() const {
 		return fbConfigLoaded;
 	}
@@ -262,8 +261,15 @@ public:
 	 * \param newConfig configuration to merge in */
 	void SetConfig(const char *category, const char *key, ROAnything newConfig);
 
-	/*! Get this objects associated config file name
-	 * @return associated conffiguration file name if any
+	//! Getting the objects configuration if any
+	/*! @return returns the objects configuration as ROAnything
+	*/
+	ROAnything GetConfig() const {
+		return fConfig;
+	}
+
+	//! Get this objects associated config file name
+	/*! @return associated conffiguration file name if any
 	 */
 	const String GetConfigName() const {
 		String configFileName;
@@ -296,33 +302,33 @@ protected:
 		\return true in case the config could be unloaded successfully */
 	bool DoUnloadConfig();
 
-	/*! Creates a new object through cloning. Generates a cloned object with a different name.
-		\param category Name of the category in which the objects configuration will be stored in the Cache
-		\param name Name of the clone
-		\param bInitializeConfig If set to true, the objects configuration will always be loaded for new
-		\return New object clone, name is set but configuration will be initialized in calling method */
+	//! Creates a new object through cloning having a different name.
+	/*!	@copydetails ConfiguredClone() */
 	virtual ConfNamedObject *DoConfiguredClone(const char *category, const char *name, bool bInitializeConfig);
 
-	//!generate the config file name
-	//! generate the config file name (without extension, which is assumed to be any)
-	//! out of category and objName
-	//! the default implementation just takes the objName
+	//! Generate the config file name out of category and objName
+	/*! The generated name is without extension, it is assumed to be \em .any
+	 * The default implementation just uses the objName as configuration file name.
+	 * @param category Name of the category in which the objects configuration will be stored in the Cache
+	 * @param objName Name of the configured object to get a configuration file name for
+	 * @param configFileName String to hold the resulting config file name
+	 * @return true in case either fConfigName was already set or objName was not the empty string
+	 * @return false otherwise */
 	virtual bool DoGetConfigName(const char *category, const char *objName, String &configFileName) const;
 
-	//!load the configuration anything
-	//! load an anything and make it available by storing a reference in fConfig
-	//! the default implementation uses the cache handler
-	//! if you provide your own implementation be careful about the lifetime of
-	//! the loaded anything otherwise fConfig points to invalid data
+	//! Load the objects configuration from an anything (file), subclasses may overwrite this hook.
+	/*! The loaded configuration file will be stored in the CacheHandler and this objects keeps a ROAnything reference in fConfig
+		If you provide your own implementation, be careful about the lifetime of the underlying Anything as the fConfig
+		ROAnything must always point to a valid AnyImpl */
 	virtual bool DoLoadConfig(const char *category);
 
-	//!implement the LookupInterface
-	//! method to subclass if the lookup behaviour shall deviate from the standard
-	//! implementation (i.e. allow more Anys to be searched, hierarchical, etc)
+	//! Subclassed implementation of the LookupInterface, which checks if the key can be found inside our configuration (fConfig)
+	/*! @copydetails LookupInterface::DoLookup() */
 	virtual bool DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const;
 
-	/*! Set the name of the underlying configuration file. This name will differ from the objects name when a ConfiguredClone is made.
-		\param cfgName Name of the underlying configuration file */
+	//! Set the name of the underlying configuration file.
+	/*! This name will differ from the objects name when a ConfiguredClone is made.
+	 * @param cfgName Name of the underlying configuration file */
 	void SetConfigName(const char *cfgName) {
 		fConfigName = cfgName;
 	}
@@ -354,18 +360,16 @@ private:
 };
 
 //---- HierarchConfNamed ----------------------------------------------------------
-
 //!configurable object; api for configuration support with hierachical object relationships (inheritance)
 //!implements inheritance relationship of configurations through super objects
 class EXPORTDECL_WDBASE HierarchConfNamed : public ConfNamedObject
 {
 public:
-	//!named object constructor
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	HierarchConfNamed(const char *name)
 		: ConfNamedObject(name)
 		, fSuper(0)
 	{}
-	virtual ~HierarchConfNamed() {}
 
 	//! hierarchical relationship API; set super object
 	void SetSuper(HierarchConfNamed *super);
@@ -374,14 +378,12 @@ public:
 	const HierarchConfNamed *GetSuper() const;
 
 protected:
-	/*! Creates a new object through cloning. Generates a cloned object with a different name.
-		\param category Name of the category in which the objects configuration will be stored in the Cache
-		\param name Name of the clone
-		\param bInitializeConfig If set to true, the objects configuration will always be loaded for new
-		\return New object clone, name is set but configuration will be initialized in calling method */
+	//! Creates a new object through cloning using a different name. The main feature is a configuration support with hierachical object relationships (inheritance).
+	/*!	@copydetails ConfNamedObject::ConfiguredClone() */
 	virtual ConfNamedObject *DoConfiguredClone(const char *category, const char *name, bool bInitializeConfig);
 
-	//!implement lookup of immutable configuration
+	//! Subclassed implementation of the LookupInterface, which checks if the key can be found inside our configuration of any of our super classes.
+	/*! @copydetails LookupInterface::DoLookup() */
 	virtual bool DoLookup(const char *key, class ROAnything &resultconst, char delim, char indexdelim) const;
 
 	//!pointer to super object

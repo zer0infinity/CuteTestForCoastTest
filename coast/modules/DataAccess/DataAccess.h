@@ -36,8 +36,6 @@ public:
 	bool Exec(ParameterMapper *input, ResultMapper *output, Context &context);
 
 protected:
-	friend class DataAccessTest;
-
 	//! find the DataAccessImpl by Name
 	//! \param daName the name of the mapper sought
 	//! \param context the context of this data access call

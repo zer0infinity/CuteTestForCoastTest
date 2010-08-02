@@ -66,13 +66,8 @@ RegCacheImpl(ParameterMapper);
 const char* ParameterMapper::gpcCategory = "ParameterMapper";
 const char* ParameterMapper::gpcConfigPath = "Mappers.Input";
 
-ParameterMapper::ParameterMapper(const char *name)
-	: HierarchConfNamed(name)
-{
-}
-
-ParameterMapper::~ParameterMapper()
-{
+ParameterMapper::ParameterMapper(const char *name) :
+	HierarchConfNamed(name) {
 }
 
 IFAObject *ParameterMapper::Clone() const
@@ -110,7 +105,7 @@ bool ParameterMapper::DoGetConfigName(const char *category, const char *, String
 	return true;
 }
 
-ROAnything ParameterMapper::DoSelectScript(const char *key, ROAnything script, Context &ctx)
+ROAnything ParameterMapper::DoSelectScript(const char *key, ROAnything script, Context &ctx) const
 {
 	StartTrace1(ParameterMapper.DoSelectScript, "getting key [" << NotNull(key) << "]");
 	TraceAny(script, "script config");
@@ -218,10 +213,10 @@ bool ParameterMapper::Get(const char *key, Anything &value, Context &ctx)
 {
 	StartTrace1(ParameterMapper.Get, "( \"" << NotNull(key) << "\" , Anything &value, Context &ctx)");
 	DAAccessTimer(ParameterMapper.Get, key << " (Anything)", ctx);
-
 	Anything anyValue;
-	if (DoGetAny(key, anyValue, ctx, DoSelectScript(key, fConfig, ctx))) {
+	if (DoGetAny(key, anyValue, ctx, SelectScript(key, fConfig, ctx))) {
 		value = anyValue;
+		TraceAny(value, "returned value");
 		return true;
 	}
 	return false;
@@ -232,7 +227,7 @@ Anything ParameterMapper::Get(const char *key, Context &ctx)
 	StartTrace1(ParameterMapper.Get, "( \"" << NotNull(key) << "\" , Context &ctx)");
 	DAAccessTimer(ParameterMapper.Get, key << " as Anything", ctx);
 	Anything anyValue;
-	DoGetAny(key, anyValue, ctx, DoSelectScript(key, fConfig, ctx));
+	DoGetAny(key, anyValue, ctx, SelectScript(key, fConfig, ctx));
 	return anyValue;
 }
 
@@ -240,8 +235,7 @@ bool ParameterMapper::Get(const char *key, ostream &os, Context &ctx)
 {
 	StartTrace1(ParameterMapper.Get, "( \"" << NotNull(key) << "\" , ostream &os, Context &ctx)");
 	DAAccessTimer(ParameterMapper.Get, key << " (stream)", ctx);
-
-	return DoGetStream(key, os, ctx, DoSelectScript(key, fConfig, ctx));
+	return DoGetStream(key, os, ctx, SelectScript(key, fConfig, ctx));
 }
 
 // convenience method
@@ -290,10 +284,10 @@ bool ParameterMapper::DoGetAny(const char *key, Anything &value, Context &ctx, R
 				// no more config in script, use original mappers config
 				// fallback to orignal mapping with m's config
 				Trace("Slotval is null. Calling " << slotname << " with it's default config...");
-				retval = m->DoGetAny(key, value, ctx, m->DoSelectScript(key, m->fConfig, ctx));
+				retval = m->DoGetAny(key, value, ctx, m->SelectScript(key, m->fConfig, ctx));
 			} else {
 				Trace("Calling " << slotname << " with script[" << i << "][\"" << NotNull(key) << "\"]...");
-				retval = m->DoGetAny(key, value, ctx, m->DoSelectScript(key, script[i], ctx));
+				retval = m->DoGetAny(key, value, ctx, m->SelectScript(key, script[i], ctx));
 			}
 		} else {
 			Trace("Slotname " << slotname << " is not a mapper (not found).");
@@ -335,10 +329,10 @@ bool ParameterMapper::DoGetStream(const char *key, ostream &os, Context &ctx, RO
 				// no more config in script, use original mappers config
 				// fallback to orignal mapping with m's config
 				Trace("Slotval is null. Calling " << slotname << " with it's default config...");
-				retval = m->DoGetStream(key, os, ctx, m->DoSelectScript(key, m->fConfig, ctx));
+				retval = m->DoGetStream(key, os, ctx, m->SelectScript(key, m->fConfig, ctx));
 			} else {
 				Trace("Calling " << slotname << " with script[" << i << "][\"" << NotNull(key) << "\"]...");
-				retval = m->DoGetStream(key, os, ctx, m->DoSelectScript(key, script[i], ctx));
+				retval = m->DoGetStream(key, os, ctx, m->SelectScript(key, script[i], ctx));
 			}
 		} else {
 			Trace("Slotname " << slotname << " is not a mapper (not found).");
@@ -354,7 +348,7 @@ bool ParameterMapper::DoFinalGetAny(const char *key, Anything &value, Context &c
 	StartTrace1(ParameterMapper.DoFinalGetAny, NotNull(key));
 
 	ROAnything ctxValue;
-	String sourceSlot = DoGetSourceSlot(ctx);
+	String sourceSlot = GetSourceSlot(ctx);
 	sourceSlot = sourceSlot.IsEqual("") ? String(key) : (sourceSlot << "." << key);
 
 	if (ctx.Lookup(sourceSlot, ctxValue) && !ctxValue.IsNull() ) {
@@ -380,7 +374,7 @@ bool ParameterMapper::DoFinalGetStream(const char *key, ostream &os, Context &ct
 	StartTrace1(ParameterMapper.DoFinalGetStream, NotNull(key));
 
 	ROAnything ctxValue;
-	String sourceSlot = DoGetSourceSlot(ctx);
+	String sourceSlot = GetSourceSlot(ctx);
 	sourceSlot = sourceSlot.IsEqual("") ? String(key) : (sourceSlot << "." << key);
 
 	if (ctx.Lookup(sourceSlot, ctxValue) && !ctxValue.IsNull() ) {
@@ -393,35 +387,23 @@ bool ParameterMapper::DoFinalGetStream(const char *key, ostream &os, Context &ct
 	return false;
 }
 
-String ParameterMapper::DoGetSourceSlot(Context &ctx)
+String ParameterMapper::DoGetSourceSlot(Context &ctx) const
 {
 	ROAnything slotname;
-
 	String slotnamename(fName, Storage::Current());
 	slotnamename.Append(".SourceSlot");
-	return (Lookup("SourceSlot", slotname) || ctx.Lookup(slotnamename, slotname)) ? slotname.AsCharPtr() : "";
-}
-
-ROAnything ParameterMapper::GetConfig()
-{
-	return fConfig;
-}
-
-void ParameterMapper::SetConfig(ROAnything config)
-{
-	fConfig = config;
+	return (Lookup("SourceSlot", slotname) || ctx.Lookup(slotnamename, slotname)) ? slotname.AsString() : String();
 }
 
 //---- EagerParameterMapper ------------------------------------------------
 RegisterParameterMapper(EagerParameterMapper);
 
-EagerParameterMapper::EagerParameterMapper(const char *name, ROAnything config)
-	: ParameterMapper(name)
-{
+EagerParameterMapper::EagerParameterMapper(const char *name, ROAnything config) :
+	ParameterMapper(name) {
 	fConfig = config;
 }
 
-ROAnything EagerParameterMapper::DoSelectScript(const char *key, ROAnything script, Context &ctx)
+ROAnything EagerParameterMapper::DoSelectScript(const char *key, ROAnything script, Context &ctx) const
 {
 	ROAnything roaReturn(ParameterMapper::DoSelectScript(key, script, ctx));
 	if ( roaReturn.IsNull() ) {
@@ -438,13 +420,8 @@ RegCacheImpl(ResultMapper);	// FindResultMapper()
 const char* ResultMapper::gpcCategory = "ResultMapper";
 const char* ResultMapper::gpcConfigPath = "Mappers.Output";
 
-ResultMapper::ResultMapper(const char *name)
-	: HierarchConfNamed(name)
-{
-}
-
-ResultMapper::~ResultMapper()
-{
+ResultMapper::ResultMapper(const char *name) :
+	HierarchConfNamed(name) {
 }
 
 IFAObject *ResultMapper::Clone() const
@@ -452,7 +429,7 @@ IFAObject *ResultMapper::Clone() const
 	return new ResultMapper(fName);
 }
 
-ROAnything ResultMapper::DoSelectScript(const char *key, ROAnything script, Context &ctx)
+ROAnything ResultMapper::DoSelectScript(const char *key, ROAnything script, Context &ctx) const
 {
 	StartTrace1(ResultMapper.DoSelectScript, "getting key [" << NotNull(key) << "]");
 	TraceAny(script, "script config");
@@ -535,14 +512,14 @@ bool ResultMapper::Put(const char *key, Anything value, Context &ctx)
 {
 	StartTrace(ResultMapper.Put);
 	DAAccessTimer(ResultMapper.Put, key, ctx);
-	return DoPutAny(key, value, ctx, DoSelectScript(key, fConfig, ctx));
+	return DoPutAny(key, value, ctx, SelectScript(key, fConfig, ctx));
 }
 
 bool ResultMapper::Put(const char *key, istream &is, Context &ctx)
 {
 	StartTrace1(ResultMapper.Put, NotNull(key));
 	DAAccessTimer(ResultMapper.Put, key, ctx);
-	return DoPutStream(key, is, ctx, DoSelectScript(key, fConfig, ctx));
+	return DoPutStream(key, is, ctx, SelectScript(key, fConfig, ctx));
 }
 
 bool ResultMapper::DoPutAny(const char *key, Anything value, Context &ctx, ROAnything script)
@@ -583,7 +560,7 @@ bool ResultMapper::DoPutAny(const char *key, Anything value, Context &ctx, ROAny
 					retval = m->Put(key, value, ctx);
 				} else {
 					Trace("Calling " << slotname << " with script[" << i << "][\"" << NotNull(key) << "\"]...");
-					retval = m->DoPutAny(key, value, ctx, m->DoSelectScript(key, roaScript, ctx));
+					retval = m->DoPutAny(key, value, ctx, m->SelectScript(key, roaScript, ctx));
 				}
 			} else {
 				Trace("Using slotname [" << slotname << "] as new key (not a mapper)");
@@ -641,7 +618,7 @@ bool ResultMapper::DoPutStream(const char *key, istream &is, Context &ctx, ROAny
 					retval = m->Put(key, is, ctx);
 				} else {
 					Trace("Calling " << slotname << " with script[" << i << "][\"" << NotNull(key) << "\"]");
-					retval = m->DoPutStream(key, is, ctx, m->DoSelectScript(key, roaScript, ctx));
+					retval = m->DoPutStream(key, is, ctx, m->SelectScript(key, roaScript, ctx));
 				}
 			} else {
 				Trace("Using slotname [" << slotname << "] as new key (not a mapper)");
@@ -762,7 +739,7 @@ EagerResultMapper::EagerResultMapper(const char *name, ROAnything config)
 	fConfig = config;
 }
 
-ROAnything EagerResultMapper::DoSelectScript(const char *key, ROAnything script, Context &ctx)
+ROAnything EagerResultMapper::DoSelectScript(const char *key, ROAnything script, Context &ctx) const
 {
 	ROAnything roaReturn(ResultMapper::DoSelectScript(key, script, ctx));
 	if ( roaReturn.IsNull() ) {
@@ -782,20 +759,27 @@ RegisterParameterMapper(ConfigMapper);
 bool ConfigMapper::DoGetAny(const char *key, Anything &value, Context &ctx, ROAnything config)
 {
 	StartTrace(ConfigMapper.DoGetAny);
-
 	// step recursively through config and check, if we need to restart scripting
-	EvaluateConfig(config, value, ctx);
+	if ( ctx.Lookup("DoDefaultDoGetAny", 0L) ) {
+		ParameterMapper::DoGetAny(key, value, ctx, config);
+	} else {
+		EvaluateConfig(config, value, ctx);
+	}
 	return true;
 }
 
 void ConfigMapper::EvaluateConfig(ROAnything config, Anything &value, Context &ctx)
 {
+	StartTrace(ConfigMapper.EvaluateConfig);
+	TraceAny(config, "current config");
 	if (config.GetType() == AnyArrayType) {
+		const String strMS("MapperScript");
+		const Anything anyBreak(1L);
 		for (int i = 0, sz = config.GetSize(); i < sz; ++i) {
-			if ( String(config.SlotName(i)).IsEqual("MapperScript") ) {
+			if ( strMS.IsEqual(config.SlotName(i)) ) {
 				// must start scripting again (no key given)
-				EagerParameterMapper epm("temp");
-				epm.DoGetAny("", value, ctx, config[i]);
+				Context::PushPopEntry<Anything> aDefaultEntry(ctx, "DoDefaultDoGetAny", anyBreak, "DoDefaultDoGetAny");
+				DoGetAny("", value, ctx, config[i]);
 			} else {
 				EvaluateConfig(config[i], value[config.SlotName(i)], ctx);
 			}

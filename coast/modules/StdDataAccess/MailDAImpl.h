@@ -15,31 +15,23 @@
 #include "DataAccessImpl.h"
 
 //! DataAccess for
-class EXPORTDECL_STDDATAACCESS MailDAImpl: public DataAccessImpl
-{
-
+class EXPORTDECL_STDDATAACCESS MailDAImpl: public DataAccessImpl {
 public:
 	MailDAImpl(const char *name);
 	~MailDAImpl();
 
-// returns a new TRX object
 	IFAObject *Clone() const;
 
-//! executes the transaction
-//! \param c The context of the transaction
+	//! executes the transaction
+	//! \param c The context of the transaction
 	virtual bool Exec(Context &c, ParameterMapper *, ResultMapper *);
 
 private:
-
 	//constructor
 	MailDAImpl();
 	MailDAImpl(const MailDAImpl &);
 	//assignement
 	MailDAImpl &operator=(const MailDAImpl &);
-
-//friend class MailDAImplTest;
-
 };
 
-/* Don't add stuff after this #endif */
 #endif		//not defined _MailDAImpl_H

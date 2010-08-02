@@ -15,6 +15,7 @@
 	/Mappers {}
 
 	/ConfigTest {
+		## important, always specify a test name (slotname) !!
 		/LiteralConfig {
 			/TmpStore {
 				# not used (no lookups)

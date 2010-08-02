@@ -135,10 +135,6 @@ void RequestProcessor::Error(ostream &reply, const String &msg, Context &ctx)
 
 void RequestProcessor::DoReadInput(iostream &Ios, Context &ctx)
 {
-	// default implementation just
-	// import the anything from the
-	// socket stream
-
 	Anything args;
 	args.Import(Ios);
 	StatTraceAny(RequestProcessor.DoReadInput, args, "request arguments", Storage::Current());

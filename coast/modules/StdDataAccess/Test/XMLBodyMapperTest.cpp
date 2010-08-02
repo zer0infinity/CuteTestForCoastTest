@@ -6,19 +6,16 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- standard modules used ----------------------------------------------------
-#include "Anything.h"
-#include "StringStream.h"
-#include "System.h"
-#include "Context.h"
+//--- interface include --------------------------------------------------------
+#include "XMLBodyMapperTest.h"
 
 //--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
 
-//--- module under test --------------------------------------------------------
-
-//--- interface include --------------------------------------------------------
-#include "XMLBodyMapperTest.h"
+//--- standard modules used ----------------------------------------------------
+#include "StringStream.h"
+#include "System.h"
+#include "Context.h"
 
 XMLBodyMapperTest::XMLBodyMapperTest(TString tname)
 	: TestCaseType(tname)
@@ -46,9 +43,8 @@ void XMLBodyMapperTest::PutTest()
 	Context c(dummy, fConfig, 0, 0, 0, 0);
 	String input = fConfig["TeamXML"].AsString("X");
 	IStringStream in(input);
-	fXMLBodyMapper.DoPutStream("Output", in, c, fConfig["MapperConfig"]);
-	Anything tmpStore = c.GetTmpStore();
-	assertAnyEqual(fConfig["TeamAny"], tmpStore["Mapper"]["Output"]);
+	fXMLBodyMapper.Put("Output", in, c);
+	assertAnyEqual(fConfig["TeamAny"], c.Lookup("Mapper.Output"));
 }
 
 Test *XMLBodyMapperTest::suite ()

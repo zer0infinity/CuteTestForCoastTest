@@ -112,7 +112,7 @@ void DataMapperTest::NegativGetTest()
 	t_assert(!aTestVal.IsDefined("foo"));
 
 	OStringStream os;
-	t_assert(!mapper.DoGetStream("noStdStreams", os, ctx, Anything()));
+	t_assert(!mapper.Get("noStdStreams", os, ctx));
 }
 
 void DataMapperTest::FixedSizeTest()

@@ -65,8 +65,6 @@ protected:
 	// the loaded anything otherwise fConfig points to invalid data
 	virtual bool DoLoadConfig(const char *category);
 
-	friend class DataAccessImplTest;
-
 private:
 	DataAccessImpl();
 	DataAccessImpl(const DataAccessImpl &);

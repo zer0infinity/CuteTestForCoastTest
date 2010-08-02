@@ -166,8 +166,7 @@ bool LoopBackDAImpl::Exec(Context &c, ParameterMapper *input, ResultMapper *outp
 				bool bGetCode, bPutCode = false;
 				if (streaming == 1) {
 					StringStream Ios(inputStr);
-					bGetCode = input->DoGetStream(slotname, Ios, c, ROAnything());
-					//!@FIXME bGetCode = input->Get(slotname, Ios, c, ROAnything());
+					bGetCode = input->Get(slotname, Ios, c);
 					Ios << flush;
 					if (bGetCode) {
 						bPutCode = output->Put(config[i].AsCharPtr(), inputStr, c);
@@ -177,14 +176,14 @@ bool LoopBackDAImpl::Exec(Context &c, ParameterMapper *input, ResultMapper *outp
 					bGetCode = input->Get(slotname, inputStr, c);
 					Ios << flush;
 					if (bGetCode) {
-						bPutCode = output->DoPutStream(config[i].AsCharPtr(), Ios, c, ROAnything());
+						bPutCode = output->Put(config[i].AsCharPtr(), Ios, c);
 					}
 				} else if (streaming == 3) {
 					StringStream Ios(inputStr);
-					bGetCode = input->DoGetStream(slotname, Ios, c, ROAnything());
+					bGetCode = input->Get(slotname, Ios, c);
 					Ios << flush;
 					if (bGetCode) {
-						bPutCode = output->DoPutStream(config[i].AsCharPtr(), Ios, c, ROAnything());
+						bPutCode = output->Put(config[i].AsCharPtr(), Ios, c);
 					}
 				} else {
 					bGetCode = input->Get(slotname, inputStr, c);

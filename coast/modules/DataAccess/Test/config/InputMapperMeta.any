@@ -54,8 +54,8 @@
 
 	/NestedMapperHardConfiguredMapper {
 		/AKey {
-				%testmapper
-				/bar "bar"
+			%testmapper
+			/bar "bar"
 		}
 	}
 
@@ -202,4 +202,57 @@
 			/BlubRenderedKeyParameterMapper *
 		}
 	}
+
+	/SingleScript1	"ding"
+	/SingleScript2 {
+		/"-"	"dong"
+	}
+
+	/CollectorScript {
+		/mapkey {
+			# lookup in context
+			# the key "aKey" should be present in context
+			/aKey 	*
+
+			# append a value
+			"ValueToGet"
+
+			# append a series of values (nesting is not really necessary)
+			{
+				"x"
+				"y"
+				"z"
+			}
+		}
+	}
+
+	/DelegationScript {
+		/mapkey {
+			{ 	/UpperCaseMapper {
+					/aKey *
+				}
+			}
+			{ 	/UpperCaseMapper {
+					"b"
+				}
+			}
+		}
+	}
+
+	/DysfunctionalScript {
+		/mapkey {
+			# key is not known in context or as mapper --> stop
+			/unknownKey	*
+
+			# the following will not be executed
+			/UpperCaseMapper {
+				"at the doctor"
+			}
+
+			"you must say"
+
+			/aKey	*
+		}
+	}
+
 }

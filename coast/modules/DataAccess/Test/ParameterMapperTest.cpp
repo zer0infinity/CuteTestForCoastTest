@@ -39,8 +39,8 @@ void ParameterMapperTest::DoSelectScriptTest()
 	script["KeyA"] = "a";
 	ParameterMapper pm("");
 	Context ctx;
-	assertAnyEqual(pm.DoSelectScript("KeyA", script, ctx), script["KeyA"]);
-	assertAnyEqual(pm.DoSelectScript("KeyNonex", script, ctx), empty);
+	assertAnyEqual(pm.SelectScript("KeyA", script, ctx), script["KeyA"]);
+	assertAnyEqual(pm.SelectScript("KeyNonex", script, ctx), empty);
 }
 
 void ParameterMapperTest::DoLoadConfigTest()
@@ -48,10 +48,11 @@ void ParameterMapperTest::DoLoadConfigTest()
 	StartTrace(ParameterMapperTest.DoLoadConfigTest);
 
 	ParameterMapper pm("ParameterMapperTest");
+	t_assertm(pm.Initialize("ParameterMapper"), "Couldn't load config");
 
-	t_assertm(pm.DoLoadConfig("ParameterMapper"), "Couldn't load config");
-	if ( t_assertm(pm.DoLoadConfig("NonExistingMapper"), "initialization hould succeed") ) {
-		t_assertm(pm.fConfig.IsNull(), "Found a config, but shouldn't!");
+	ParameterMapper fm("ParameterMapperFail");
+	if ( t_assertm(fm.Initialize("NonExistingMapper"), "initialization should succeed") ) {
+		t_assertm(fm.GetConfig().IsNull(), "Found a config, but shouldn't!");
 	}
 }
 
@@ -84,14 +85,15 @@ void ParameterMapperTest::DoFinalGetAnyTest()
 	StartTrace(ParameterMapperTest.DoFinalGetAnyTest);
 
 	ParameterMapper pm("");
+	pm.Initialize(ParameterMapper::gpcCategory);
 	Anything res, store;
 	store["aKey"] = "a";
 	Context ctx;
 	Context::PushPopEntry<Anything> aEntry(ctx, "test", store);
 
-	t_assert(pm.DoFinalGetAny("aKey", res, ctx));
+	t_assert(pm.Get("aKey", res, ctx));
 	t_assert(res.AsString().IsEqual("a"));
-	t_assert(!pm.DoFinalGetAny("unknownKey", res, ctx));
+	t_assert(!pm.Get("unknownKey", res, ctx));
 }
 
 void ParameterMapperTest::DoFinalGetStreamTest()
@@ -99,6 +101,7 @@ void ParameterMapperTest::DoFinalGetStreamTest()
 	StartTrace(ParameterMapperTest.DoFinalGetStreamTest);
 
 	ParameterMapper pm("");
+	pm.Initialize(ParameterMapper::gpcCategory);
 	Anything store, res;
 	store["aKey"] = "a";
 	Context ctx;
@@ -106,94 +109,92 @@ void ParameterMapperTest::DoFinalGetStreamTest()
 	OStringStream os;
 
 	// Default implementation gets value of key from context
-	t_assert(pm.DoFinalGetStream("aKey", os, ctx));
+	t_assert(pm.Get("aKey", os, ctx));
 	t_assert(os.str().IsEqual("a"));
-	t_assert(!pm.DoFinalGetStream("unknownKey", os, ctx));
+	t_assert(!pm.Get("unknownKey", os, ctx));
 }
 
 void ParameterMapperTest::DoGetAnyTest()
 {
 	StartTrace(ParameterMapperTest.DoGetAnyTest);
-
-	SimpleAnyLoader sal;
-	Anything scripts = sal.Load("MapperTestScripts");
-	ROAnything script;
-	Anything store, res, exp;
+	Anything store;
 	store["aKey"] = "a";
 	Context ctx;
 	Context::PushPopEntry<Anything> aEntry(ctx, "test", store);
-	ParameterMapper pm("");
-
 	// --- 1. Mapper without script (i.e. script == empty)
+	{
+		ParameterMapper pm("MyPlainMapperWithoutConfig");
+		pm.Initialize(ParameterMapper::gpcCategory);
+		Anything res;
+		// 1.1. Known key in context
+		t_assertm(pm.Get("aKey", res, ctx), "key should be found in context");
+		t_assert(res.GetSize() == 1);
+		t_assert(res.Contains("a"));
 
-	// 1.1. Known key in context
-	res = Anything();
-	pm.DoGetAny("aKey", res, ctx, script);
-	t_assert(res.GetSize() == 1);
-	t_assert(res.Contains("a"));
-
-	// 1.2. Unknown key in context
-	res = Anything();
-	pm.DoGetAny("unknownKey", res, ctx, script);
-	t_assert(res.GetSize() == 0);
-	t_assert(res.IsNull());
-
-	// --- 2. Mapper with simple valued script (key/context do not matter)
-
-	// 2.1. Value is empty before call -> insert
-	res = Anything();
-	script = pm.DoSelectScript("SingleScript1", scripts, ctx);
-	pm.DoGetAny("-", res, ctx, script);
-	t_assert(res.GetSize() == 1);
-	t_assert(res.Contains("ding"));
-
+		res = Anything();
+		t_assertm(!pm.Get("unknownKey", res, ctx), "key should not be found");
+		t_assert(res.GetSize() == 0);
+		t_assert(res.IsNull());
+	}
+	// --- 2. Mapper with simple valued (key matters)
+	{
+		ParameterMapper pm("SingleScript1");
+		pm.Initialize(ParameterMapper::gpcCategory);
+		Anything res;
+		t_assertm(!pm.Get("-", res, ctx), "should fail because key is not found in mapper config");
+		t_assert(res.GetSize() == 0);
+	}
 	// 2.2. Value is not empty before call -> collect (append)
-	script = pm.DoSelectScript("SingleScript2", scripts, ctx);
-	pm.DoGetAny("-", res, ctx, script);
-	t_assert(res.GetSize() == 2);
-	t_assert(res.Contains("dong"));
-
+	{
+		ParameterMapper pm("SingleScript2");
+		pm.Initialize(ParameterMapper::gpcCategory);
+		Anything res;
+		t_assertm(pm.Get("-", res, ctx), "key should be found within mapper config");
+		assertCompare(1L, equal_to, res.GetSize());
+		t_assert(res.Contains("dong"));
+	}
 	// --- 3. Mapper with a full script (interpreatation)
-
 	// 3.1 Collector Script
-	res = Anything();
-	script = pm.DoSelectScript("CollectorScript", scripts, ctx);
-	pm.DoGetAny("-", res, ctx, script);
-	String strIn("{ a ValueToGet x y z }");
-	IStringStream is(strIn);
-	is >> exp;
-	assertAnyEqual(exp, res);
-
+	{
+		ParameterMapper pm("CollectorScript");
+		pm.Initialize(ParameterMapper::gpcCategory);
+		Anything res, exp;
+		t_assertm(pm.Get("mapkey", res, ctx), "key should be found in mapper config");
+		String strIn("{ a ValueToGet x y z }");
+		IStringStream is(strIn);
+		is >> exp;
+		assertAnyEqualm(exp, res, "content should equal because stream-Get is appending content when not a mapper");
+	}
 	// 3.2 Delegation Script
-	OStringStream os;
-	script = pm.DoSelectScript("DelegationScript", scripts, ctx);
-	pm.DoGetStream("-", os, ctx, script);
-	assertEqualm("AB", os.str(), "Result not as expected. Was RendererMapper called?");
-
+	{
+		ParameterMapper pm("DelegationScript");
+		pm.Initialize(ParameterMapper::gpcCategory);
+		Anything res;
+		OStringStream os;
+		t_assertm(pm.Get("mapkey", os, ctx), "key should be found in mapper config");
+		assertEqualm("AB", os.str(), "Result not as expected. Was RendererMapper called?");
+	}
 	// 3.3 Dysfunctional Script (stop at first slot)
-	res = Anything();
-	script = pm.DoSelectScript("DysfunctionalScript", scripts, ctx);
-	pm.DoGetAny("-", res, ctx, script);
-	t_assert(res.IsNull());
+	{
+		ParameterMapper pm("DysfunctionalScript");
+		pm.Initialize(ParameterMapper::gpcCategory);
+		Anything res;
+		t_assertm(!pm.Get("mapkey", res, ctx), "should fail because not everything in mapper config is a mapper and therefor leads to an error in mapping");
+		t_assert(res.IsNull());
+	}
 }
 
 void ParameterMapperTest::DoGetStreamTest()
 {
 	StartTrace(ParameterMapperTest.DoFinalGetStreamTest);
-
-	// Implementation forwards to DoGetAny(), so we just do a sanity-check
-
-	SimpleAnyLoader sal;
-	Anything scripts = sal.Load("MapperTestScripts");
 	Anything store, res;
 	store["aKey"] = "a";
 	Context ctx;
 	Context::PushPopEntry<Anything> aEntry(ctx, "test", store);
-	ParameterMapper pm("");
 	OStringStream os;
-
-	ROAnything script = pm.DoSelectScript("CollectorScript", scripts, ctx);
-	pm.DoGetStream("-", os, ctx, script);
+	ParameterMapper pm("CollectorScript");
+	pm.Initialize(ParameterMapper::gpcCategory);
+	pm.Get("mapkey", os, ctx);
 	assertEqual(os.str(), "aValueToGetxyz");
 }
 
@@ -253,8 +254,8 @@ void ParameterMapperTest::EagerDoSelectScriptTest()
 	script["KeyA"] = "a";
 	EagerParameterMapper epm("");
 	Context ctx;
-	assertAnyEqual(epm.DoSelectScript("KeyA", script, ctx), script["KeyA"]);
-	assertAnyEqual(epm.DoSelectScript("KeyNonex", script, ctx), script);
+	assertAnyEqual(epm.SelectScript("KeyA", script, ctx), script["KeyA"]);
+	assertAnyEqual(epm.SelectScript("KeyNonex", script, ctx), script);
 }
 
 void ParameterMapperTest::EagerGetTest()
@@ -288,15 +289,15 @@ void ParameterMapperTest::DoSetSourceSlotDynamicallyTest()
 	ParameterMapper pm("DynamicFetcher");
 
 	// without config (no path returned)
-	assertEqual("", pm.DoGetSourceSlot(ctx));
+	assertEqual("", pm.GetSourceSlot(ctx));
 
 	// set in tmp-store
 	ctx.GetTmpStore()["DynamicFetcher"]["SourceSlot"] = "Mapper.a.b.c";
-	assertEqual("Mapper.a.b.c", pm.DoGetSourceSlot(ctx));
+	assertEqual("Mapper.a.b.c", pm.GetSourceSlot(ctx));
 
 	// with config (overrides dest in tmp store)
 	pm.Initialize("ParameterMapper");
-	assertEqual("Mapper.foo.bar", pm.DoGetSourceSlot(ctx));
+	assertEqual("Mapper.foo.bar", pm.GetSourceSlot(ctx));
 }
 
 void ParameterMapperTest::DoGetSourceSlotWithPathTest()

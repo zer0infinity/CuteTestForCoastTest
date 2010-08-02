@@ -793,34 +793,6 @@
 				}
 			}
 		}
-		/MyTestGenericAnything2Test {
-			/TmpStore {
-				/In		{
-					/A	hallo
-					/B	1234
-					Gugus
-				}
-			}
-			/TheAction {
-				/CallDA {
-					MyTestGeneric
-					/Parameters {
-						/DataType	Anything2
-					}
-				}
-			}
-			/Result {
-				/TmpStore {
-					/Mapper	{
-						/Out	{
-							/A	hallo
-							/B	1234
-							Gugus
-						}
-					}
-				}
-			}
-		}
 		/MyTestRendererDAScriptTest {
 			/TmpStore {
 				/A	hallo

@@ -94,11 +94,10 @@ void HTTPMimeHeaderMapperTest::LiteralSuppressedHeadersTest()
 	StartTrace(HTTPMimeHeaderMapperTest.LiteralSuppressedHeadersTest);
 	String strIn(GetConfig()["simpleHeader"].AsCharPtr());
 	IStringStream is(strIn);
-	HTTPMimeHeaderMapper m("HTTPMimeHeader");
+	HTTPMimeHeaderMapper m("literalSuppressedHeader");
 	t_assert(m.Initialize("ResultMapper"));
-	ROAnything config(GetConfig()["literalSuppressedHeader"]);
 	Context ctx;
-	t_assert(((ResultMapper &)m).DoPutStream("", is, ctx, config)); // key not necessary
+	t_assert(m.Put("", is, ctx)); // key not necessary
 	assertAnyEqual(GetConfig()["suppressedHeaderResult"], ctx.GetTmpStore()["Mapper"]["HTTPHeader"]);
 }
 void HTTPMimeHeaderMapperTest::AddHeadersTest()

@@ -40,6 +40,14 @@ DataAccessTest::~DataAccessTest()
 {
 }
 
+class GetImplDataAccess : public DataAccess {
+public:
+	GetImplDataAccess(const char* name) : DataAccess(name) {}
+	DataAccessImpl *MyGetImpl(const char *daName, Context &context) {
+		return GetImpl(daName, context);
+	}
+};
+
 void DataAccessTest::GetImplTest()
 {
 	Anything dummy;
@@ -47,14 +55,14 @@ void DataAccessTest::GetImplTest()
 	Anything tmpStore(ctx.GetTmpStore());
 
 	const char *daName = "daTest";
-	DataAccess daTest(daName);
-	DataAccessImpl *m = daTest.GetImpl(daName, ctx);
+	GetImplDataAccess daTest(daName);
+	DataAccessImpl *m = daTest.MyGetImpl(daName, ctx);
 
 	t_assert( m != 0 );
 
 	daName = "daTestNone";
-	DataAccess daTestNone(daName);
-	DataAccessImpl *none = daTestNone.GetImpl(daName, ctx);
+	GetImplDataAccess daTestNone(daName);
+	DataAccessImpl *none = daTestNone.MyGetImpl(daName, ctx);
 
 	t_assert( !none );
 	String str(tmpStore["DataAccess"][daName]["Error"][0L].AsCharPtr());

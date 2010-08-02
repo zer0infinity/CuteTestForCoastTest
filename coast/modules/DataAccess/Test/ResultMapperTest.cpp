@@ -20,8 +20,6 @@
 #include "StringStream.h"
 #include "CacheHandler.h"
 
-//--- c-modules used -----------------------------------------------------------
-
 //---- ResultMapperTest ----------------------------------------------------------------
 ResultMapperTest::ResultMapperTest(TString tstrName) : TestCaseType(tstrName)
 {
@@ -41,8 +39,8 @@ void ResultMapperTest::DoSelectScriptTest()
 	script["Sub"] = "a";
 	ResultMapper rm("");
 	Context ctx;
-	assertAnyEqual(rm.DoSelectScript("Sub", script, ctx), script["Sub"]);
-	assertAnyEqual(rm.DoSelectScript("Nonex", script, ctx), empty);
+	assertAnyEqual(rm.SelectScript("Sub", script, ctx), script["Sub"]);
+	assertAnyEqual(rm.SelectScript("Nonex", script, ctx), empty);
 }
 
 void ResultMapperTest::DoLoadConfigTest()
@@ -50,10 +48,11 @@ void ResultMapperTest::DoLoadConfigTest()
 	StartTrace(ResultMapperTest.DoLoadConfigTest);
 
 	ResultMapper rm("ResultMapperTest");
+	t_assertm(rm.Initialize("ResultMapper"), "Couldn't load config");
 
-	t_assertm(rm.DoLoadConfig("ResultMapper"), "Couldn't load config");
-	if ( t_assertm(rm.DoLoadConfig("NonExistingMapper"), "initialization hould succeed") ) {
-		t_assertm(rm.fConfig.IsNull(), "Found a config, but shouldn't!");
+	ResultMapper fm("ResultMapperFail");
+	if ( t_assertm(fm.Initialize("NonExistingMapper"), "initialization should succeed") ) {
+		t_assertm(fm.GetConfig().IsNull(), "Found a config, but shouldn't!");
 	}
 }
 
@@ -70,20 +69,21 @@ void ResultMapperTest::DoFinalPutAnyTest()
 	StartTrace(ResultMapperTest.DoFinalPutAnyTest);
 
 	ResultMapper rm("");
+	rm.Initialize(ResultMapper::gpcCategory);
 	Context ctx;
 	Anything a = "first", b = "second", res;
 
 	// 1. Empty key not allowed
-	t_assert(!rm.DoFinalPutAny("", a, ctx));
+	t_assert(!rm.Put("", a, ctx));
 	ctx.GetTmpStore().LookupPath(res, "Mapper");
 	t_assert(res.IsNull());
 
 	// 2. Use key
-	rm.DoFinalPutAny("rmt", a, ctx);
+	rm.Put("rmt", a, ctx);
 	ctx.GetTmpStore().LookupPath(res, "Mapper.rmt");
 	assertAnyEqual(a, res);
 
-	rm.DoFinalPutAny("rmt", b, ctx);
+	rm.Put("rmt", b, ctx);
 	ctx.GetTmpStore().LookupPath(res, "Mapper.rmt");
 	t_assert(res.GetSize() == 2);
 	t_assert(res.Contains(a.AsString()));
@@ -96,10 +96,11 @@ void ResultMapperTest::DoFinalPutStreamTest()
 	String msg = "MessageToStore";
 	IStringStream is(msg);
 	ResultMapper rm("");
+	rm.Initialize(ResultMapper::gpcCategory);
 	Context ctx;
 	Anything res;
 
-	rm.DoFinalPutStream("rmt", is, ctx);
+	rm.Put("rmt", is, ctx);
 	ctx.GetTmpStore().LookupPath(res, "Mapper.rmt");
 	assertEqual(msg, res.AsString());
 }
@@ -107,80 +108,87 @@ void ResultMapperTest::DoFinalPutStreamTest()
 void ResultMapperTest::DoPutAnyTest()
 {
 	StartTrace(ResultMapperTest.DoPutAnyTest);
-
-	SimpleAnyLoader sal;
-	Anything scripts = sal.Load("MapperTestScripts");
-	ROAnything script;
-	Anything any = "value";
-	Context ctx;
-	ResultMapper rm("");
-
 	// --- 1. Mapper without script (i.e. script == empty)
-
-	rm.DoPutAny("rmt", any, ctx, script);
-	assertAnyEqual(any, ctx.GetTmpStore()["Mapper"]["rmt"]);
-
+	{
+		Context ctx;
+		Anything any = "value";
+		ResultMapper rm("MyPlainMapperWithoutConfig");
+		rm.Initialize(ResultMapper::gpcCategory);
+		t_assert(rm.Put("rmt", any, ctx));
+		assertAnyEqual(any, ctx.GetTmpStore()["Mapper"]["rmt"]);
+	}
 	// --- 2. Mapper with simple valued script (key/context do not matter)
-
-	script = rm.DoSelectScript("SingleScript1", scripts, ctx);
-	rm.DoPutAny("-", any, ctx, script);
-	assertAnyEqual(any, ctx.GetTmpStore()["Mapper"]["ding"]);
-
+	{
+		Context ctx;
+		Anything any = "value";
+		ResultMapper rm("SingleScript1");
+		rm.Initialize(ResultMapper::gpcCategory);
+		rm.Put("ding", any, ctx);
+		assertAnyEqual(any, ctx.GetTmpStore()["Mapper"]["ding"]);
+	}
 	// --- 3. Mapper with a full script (interpreatation, init key doesn't matter)
-
 	// 3.1 DistributorScript
-	Context ctx2;
-	script = rm.DoSelectScript("DistributorScript", scripts, ctx);
-	rm.DoPutAny("-", any, ctx2, script);
-	OStringStream os;
-	os << ctx2.GetTmpStore()["Mapper"];
-	assertEqual("{\n  /a "_QUOTE_("value")"\n  /b "_QUOTE_("value")"\n  /c "_QUOTE_("value")"\n  /d "_QUOTE_("value")"\n}", os.str());
-
+	{
+		Context ctx;
+		Anything any = "value";
+		ResultMapper rm("DistributorScript");
+		rm.Initialize(ResultMapper::gpcCategory);
+		rm.Put("out", any, ctx);
+		OStringStream os;
+		os << ctx.Lookup("Mapper") << std::flush;
+		assertEqual("{\n  /a "_QUOTE_("value")"\n  /b "_QUOTE_("value")"\n  /c "_QUOTE_("value")"\n  /d "_QUOTE_("value")"\n}", os.str());
+		TraceAny(ctx.GetTmpStore(), "tmp");
+	}
 	// 3.2 DelegationScript
-	script = rm.DoSelectScript("AnyPlacerScript", scripts, ctx);
-	rm.DoPutAny("Inside", any, ctx, script);
-	assertAnyEqualm(any, ctx.GetTmpStore()["SomeSlot"]["Inside"], "Was NameUsingOutputMapper called?");
-	assertAnyEqualm(any, ctx.GetTmpStore()["SomeOtherSlot"]["Deep"]["Inside"], "Was NameUsingOutputMapper called?");
-
-	TraceAny(ctx.GetTmpStore(), "tmp");
+	{
+		Context ctx;
+		Anything any = "value";
+		ResultMapper rm("AnyPlacerScript");
+		rm.Initialize(ResultMapper::gpcCategory);
+		rm.Put("Inside", any, ctx);
+		assertAnyEqualm(any, ctx.GetTmpStore()["SomeSlot"]["Inside"], "Was NameUsingOutputMapper called?");
+		assertAnyEqualm(any, ctx.GetTmpStore()["SomeOtherSlot"]["Deep"]["Inside"], "Was NameUsingOutputMapper called?");
+		TraceAny(ctx.GetTmpStore(), "tmp");
+	}
 }
 
 void ResultMapperTest::DoPutStreamTest()
 {
 	StartTrace(ResultMapperTest.DoFinalPutStreamTest);
-
-	// cannot "distribute" a stream like in example above, since
-	// stream will be consumed when accessed - no renewal
-
-	SimpleAnyLoader sal;
-	Anything scripts = sal.Load("MapperTestScripts");
-	ROAnything script;
-	Context ctx;
-	ResultMapper rm("");
-	String msg = "myMsgStream";
-
 	// --- 1. Mapper without script (i.e. script == empty)
-
-	IStringStream is(msg);
-	rm.DoPutStream("rmt", is, ctx, script);
-	assertEqual(msg, ctx.GetTmpStore()["Mapper"]["rmt"].AsString());
-
+	{
+		Context ctx;
+		ResultMapper rm("MyPlainMapperWithoutConfig");
+		rm.Initialize(ResultMapper::gpcCategory);
+		String msg = "myMsgStream";
+		IStringStream is(msg);
+		rm.Put("rmt", is, ctx);
+		assertEqual(msg, ctx.GetTmpStore()["Mapper"]["rmt"].AsString());
+	}
 	// --- 2. Mapper with simple valued script (key/context do not matter)
-
-	IStringStream is2(msg);
-	script = rm.DoSelectScript("SingleScript1", scripts, ctx);
-	rm.DoPutStream("-", is2, ctx, script);
-	assertEqual(msg, ctx.GetTmpStore()["Mapper"]["ding"].AsString());
-
+	{
+		Context ctx;
+		ResultMapper rm("SingleScript1");
+		rm.Initialize(ResultMapper::gpcCategory);
+		String msg = "myMsgStream";
+		IStringStream is2(msg);
+		rm.Put("ding", is2, ctx);
+		assertEqual(msg, ctx.GetTmpStore()["Mapper"]["ding"].AsString());
+	}
 	// --- 3. Mapper with a full script (interpreatation)
-
-	IStringStream is3(msg);
-	Anything res;
-	script = rm.DoSelectScript("StreamPlacerScript", scripts, ctx);
-	rm.DoPutStream("StreamSlot", is3, ctx, script);
-	assertEqualm(msg, ctx.GetTmpStore()["SomeSlot"]["StreamSlot"].AsString(), "Was NameUsingOutputMapper called?");
-	t_assert(ctx.GetTmpStore().LookupPath(res, "EmptyStuff.StreamSlot"));
-	assertEqualm("", res.AsString(), "Should be empty, because stream was consumed!");
+	{
+		Context ctx;
+		ResultMapper rm("StreamPlacerScript");
+		rm.Initialize(ResultMapper::gpcCategory);
+		String msg = "myMsgStream";
+		IStringStream is3(msg);
+		Anything res;
+		rm.Put("StreamSlot", is3, ctx);
+		assertEqualm(msg, ctx.GetTmpStore()["SomeSlot"]["StreamSlot"].AsString(), "Was NameUsingOutputMapper called?");
+		t_assert(ctx.GetTmpStore().LookupPath(res, "EmptyStuff.StreamSlot"));
+		assertEqualm("", res.AsString(), "Should be empty, because stream was consumed!");
+		TraceAny(ctx.GetTmpStore(), "tmp");
+	}
 }
 
 void ResultMapperTest::PutTest()
@@ -262,8 +270,8 @@ void ResultMapperTest::EagerDoSelectScriptTest()
 	script["Sub"] = "a";
 	EagerResultMapper erm("");
 	Context ctx;
-	assertAnyEqual(erm.DoSelectScript("Sub", script, ctx), script["Sub"]);
-	assertAnyEqual(erm.DoSelectScript("Nonex", script, ctx), script);
+	assertAnyEqual(erm.SelectScript("Sub", script, ctx), script["Sub"]);
+	assertAnyEqual(erm.SelectScript("Nonex", script, ctx), script);
 }
 
 void ResultMapperTest::EagerPutTest()

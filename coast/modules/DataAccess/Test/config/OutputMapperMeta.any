@@ -203,4 +203,53 @@
 			/SessionStoreResultMapper *
 		}
 	}
+
+	/SingleScript1 {}
+	/DistributorScript {
+		/out {
+			"a"
+			/b *
+			/dummy {
+				"c"
+				/d *
+			}
+		}
+	}
+	/AnyPlacerScript {
+		/Inside {
+			{ 	/NameUsingOutputMapper {
+					/Destination {
+						/Store TmpStore
+						/Slot "SomeSlot"
+					}
+				}
+			}
+			{ 	/NameUsingOutputMapper {
+					/Destination {
+						/Store TmpStore
+						/Slot "SomeOtherSlot.Deep"
+					}
+				}
+			}
+		}
+	}
+	/StreamPlacerScript {
+		/StreamSlot {
+			{ 	/NameUsingOutputMapper {
+					/Destination {
+						/Store TmpStore
+						/Slot "SomeSlot"
+					}
+				}
+			}
+			{ 	/NameUsingOutputMapper {
+					/Destination {
+						/Store TmpStore
+						/Slot EmptyStuff
+					}
+				}
+			}
+		}
+	}
+
 }

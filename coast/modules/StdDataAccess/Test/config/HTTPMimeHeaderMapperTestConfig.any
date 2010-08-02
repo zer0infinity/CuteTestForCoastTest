@@ -128,12 +128,6 @@ Set-Cookie2: Test1=test_value3; expires=Sat, 03-Jan-2003 03:03:03 GMT; path=/;\r
 			"Kaspar"
 		}
 	}
-	/literalSuppressedHeader {
-		/Suppress {
-			"Connection"
-			"server"
-		}
-	}
 	/suppressedHeaderResult {
 		/date "Fri, 05 Dec 2003 12:41:30 GMT"
 		/location "/ch/"

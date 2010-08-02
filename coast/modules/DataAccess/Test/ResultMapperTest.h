@@ -26,15 +26,13 @@ protected:
 	String DoGetDestinationSlot(Context &ctx, const char *pcDefault) {
 		return "Mapper.x.y.z";
 	}
-
-	friend class ResultMapperTest;
 };
 
 //---- ResultMapperTest ----------------------------------------------------------
 //! <B>Tests functionality of ResultMapper and EagerResultMapper.</B>
 /*!
 To understand the results of those tests, you should additionally
-consult "OutputMapperMeta.any" and "MapperTestScripts.any".
+consult "OutputMapperMeta.any"
 */
 class ResultMapperTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
