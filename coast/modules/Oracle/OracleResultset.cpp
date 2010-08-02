@@ -54,8 +54,8 @@ OracleResultset::Status OracleResultset::next()
 	return fFetchStatus;
 }
 
-String OracleResultset::getString( long lColumnIndex )
+Anything OracleResultset::getValue( long lColumnIndex )
 {
-	StartTrace1(OracleResultset.getString, "col index: " << lColumnIndex);
-	return frStmt.getString( lColumnIndex );
+	StartTrace1(OracleResultset.getValue, "col index: " << lColumnIndex);
+	return frStmt.getValue( lColumnIndex );
 }

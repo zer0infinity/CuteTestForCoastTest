@@ -52,7 +52,7 @@ class OracleResultset;
  * 		Not implemented
  * - \c OracleStatement::UPDATE_COUNT_AVAILABLE \n
  * 		Tells us that we can now walk through the procedure parameters and retrieve either simple parameter values
- * 		using getString() or using getCursor() to process the results of a cursor type parameter\n
+ * 		using getValue() or using getCursor() to process the results of a cursor type parameter\n
  * 		Please use OracleResultsetPtr to automatically track destruction of the OracleResultset after use.
  */
 class EXPORTDECL_COASTORACLE OracleStatement: public IFAObject, public Coast::AllocatorNewDelete
@@ -286,7 +286,7 @@ public:
 
 	OracleResultsetPtr getResultset();
 	OracleResultsetPtr getCursor( long lColumnIndex, long lRowIdx = 0 );
-	String getString( long lColumnIndex, long lRowIdx = 0 );
+	Anything getValue( long lColumnIndex, long lRowIdx = 0 );
 
 	OCIStmt *getHandle() const {
 		return fStmthp.getHandle();

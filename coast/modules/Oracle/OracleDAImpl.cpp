@@ -91,12 +91,12 @@ void OracleDAImpl::ProcessResultSet( OracleResultset &aRSet, ParameterMapper *& 
 			Trace("column data type: " << lColType);
 			if ( lColType == SQLT_CUR || lColType == SQLT_RSET ) {
 			} else {
-				String strValueCol( aRSet.getString( aDescEl.AsLong( "Idx" ) ) );
-				Trace("value of column [" << aDescEl.AsString("Name") << "] has value [" << strValueCol << "]");
+				Anything anyValueCol( aRSet.getValue( aDescEl.AsLong( "Idx" ) ) );
+				Trace("value of column [" << aDescEl.AsString("Name") << "] has value [" << anyValueCol.AsString("NULL") << "]");
 				if ( bTitlesOnce ) {
-					anyResult[aDescIter.Index()] = strValueCol;
+					anyResult[aDescIter.Index()] = anyValueCol;
 				} else {
-					anyResult[aDescEl.AsString( "Name" )] = strValueCol;
+					anyResult[aDescEl.AsString( "Name" )] = anyValueCol;
 				}
 			}
 		}
@@ -217,9 +217,9 @@ bool OracleDAImpl::TryExecuteQuery( ParameterMapper *in, Context &ctx, OraclePoo
 												OracleResultsetPtr aRSet( aStmt->getCursor( lOraColIdx, lRowIdx ) );
 												ProcessResultSet( *aRSet.get(), in, ctx, out, aDescEl.AsString("Name") );
 											} else {
-												String strValueCol( aStmt->getString( lOraColIdx, lRowIdx ) );
-												Trace("value of column [" << aDescEl.AsString("Name") << "] has value [" << strValueCol << "]");
-												out->Put( aDescEl.AsString("Name"), strValueCol, ctx );
+												Anything anyValueCol( aStmt->getValue( lOraColIdx, lRowIdx ) );
+												Trace("value of column [" << aDescEl.AsString("Name") << "] has value [" << anyValueCol.AsString("NULL") << "]");
+												out->Put( aDescEl.AsString("Name"), anyValueCol, ctx );
 											}
 										}
 									}

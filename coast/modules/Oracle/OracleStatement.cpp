@@ -340,56 +340,42 @@ bool OracleStatement::DefineOutputArea()
 	return true;
 }
 
-String OracleStatement::getString( long lColumnIndex, long lRowIdx )
+Anything OracleStatement::getValue( long lColumnIndex, long lRowIdx )
 {
-	StartTrace1(OracleStatement.getString, "col index: " << lColumnIndex << " rowidx:" << lRowIdx);
-	String strColValue( 128L );
+	StartTrace1(OracleStatement.getValue, "col index: " << lColumnIndex << " rowidx:" << lRowIdx);
+	Anything anyColValue;
 	// oracle always uses 1-based indexes...except for functions...
 	--lColumnIndex;
 	if ( lColumnIndex >= 0 && lColumnIndex < fDescriptions.GetSize() ) {
 		OracleStatement::Description::Element aDescEl = fDescriptions[lColumnIndex];
-		bool bIsNullValue = ( aDescEl.getIndicatorValue(lRowIdx) == OCI_IND_NULL );
-		Anything value;
-		SubTrace(TraceColType, "column type is: " << aDescEl.AsLong("Type") << " indicator: " << (long)aDescEl.getIndicatorValue(lRowIdx) << (bIsNullValue?" (NULL)":""));
+		if ( aDescEl.getIndicatorValue(lRowIdx) == OCI_IND_NULL ) {
+			Trace("result value is NULL, returning");
+			return anyColValue;
+		}
+		SubTrace(TraceColType, "column type is: " << aDescEl.AsLong("Type") << " indicator: " << (long)aDescEl.getIndicatorValue(lRowIdx));
 		SubTrace(TraceBuf, "buf ptr " << (long) (aDescEl.getRawBufferPtr(lRowIdx)) << " length: " << (long)aDescEl.getEffectiveLengthValue());
 		switch ( aDescEl.AsLong( "Type" ) ) {
 			case SQLT_INT:
-				Trace("SQLT_INT" << (bIsNullValue?" (NULL)":""));
-				if ( bIsNullValue ) {
-					value = 0L;
-				} else {
-					value = *reinterpret_cast<sword *>(aDescEl.getRawBufferPtr( lRowIdx ) );
-				}
+				Trace("SQLT_INT");
+				anyColValue = *reinterpret_cast<sword *>(aDescEl.getRawBufferPtr( lRowIdx ) );
 				break;
 			case SQLT_FLT:
-				Trace("SQLT_FLT" << (bIsNullValue?" (NULL)":""));
-				if ( bIsNullValue ) {
-					value = 0.0f;
-				} else {
-					value = *reinterpret_cast<float *>(aDescEl.getRawBufferPtr( lRowIdx ) );
-				}
+				Trace("SQLT_FLT");
+				anyColValue = *reinterpret_cast<float *>(aDescEl.getRawBufferPtr( lRowIdx ) );
 				break;
 			case SQLT_STR:
-				Trace("SQLT_STR" << (bIsNullValue?" (NULL)":""));
-				if ( bIsNullValue ) {
-					value = "NULL";
-				} else {
-					value = aDescEl.getRawBufferPtr( lRowIdx );
-				}
+				Trace("SQLT_STR");
+				anyColValue = aDescEl.getRawBufferPtr( lRowIdx );
 				break;
 			default:
+				Trace("default type, using AnyBufImpl");
 				SubTraceBuf(TraceBuf, aDescEl.getRawBufferPtr( lRowIdx ), aDescEl.getEffectiveLengthValue());
-				if ( bIsNullValue ) {
-					value = "";
-				} else {
-					value = String( static_cast<void *> ( aDescEl.getRawBufferPtr( lRowIdx ) ), (long)aDescEl.getEffectiveLengthValue() );
-				}
+				anyColValue = Anything(static_cast<void *> ( aDescEl.getRawBufferPtr( lRowIdx ) ), (long)aDescEl.getEffectiveLengthValue() );
 				break;
 		}
-		strColValue = value.AsString();
 	}
-	Trace("returning value [" << strColValue << "]");
-	return strColValue;
+	TraceAny(anyColValue, "returned value");
+	return anyColValue;
 }
 
 void OracleStatement::adjustColumnType( OracleStatement::Description::Element &aDescEl )

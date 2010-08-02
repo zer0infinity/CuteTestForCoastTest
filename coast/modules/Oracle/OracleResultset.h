@@ -71,12 +71,12 @@ public:
 	 * @return OracleResultset::Status signaling what to do next
 	 */
 	Status next();
-	/*! Get a column value as String
-	 * @param lColumnIndex 1-based column index
-	 * @return String representing the columns result
+	//! Get a column value as Anything, AnyNullType signals a NULL SQL value
+	/*! @param lColumnIndex 1-based column index
+	 * @return Anything representing the columns result, AnyNullType signals a NULL SQL value
 	 * @note lColumnIndex is 1-based, it is not like any normal C++ array index...!
 	 */
-	String getString( long lColumnIndex );
+	Anything getValue( long lColumnIndex );
 };
 
 #endif /* ORACLERESULTSET_H_ */
