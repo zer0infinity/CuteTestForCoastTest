@@ -24,20 +24,16 @@ IFAObject *ConfigurableStoreResultMapper::Clone() const {
 void ConfigurableStoreResultMapper::DoGetDestinationAny(const char *key, Anything &targetAny, Context &ctx) {
 	StartTrace1(ConfigurableStoreResultMapper.DoGetDestinationAny, NotNull(key));
 	String path = GetDestinationSlot(ctx), kPrefix(key);
-	String cDelim = Lookup("Delim", "."), cIndexDelim = Lookup("IndexDelim", ":");
-	String strStore = Lookup("Store", "TmpStore");
-
 	if (path.Length() > 0 && kPrefix.Length()) {
-		path << cDelim << kPrefix;
-	} else {
-		path << kPrefix;
+		path.Append(getDelim());
 	}
+	path.Append(kPrefix);
 
 	Anything anyConfig;
-	anyConfig["Store"] = strStore;
+	anyConfig["Store"] = Lookup("Store", "TmpStore");
 	anyConfig["Slot"] = path;
-	anyConfig["Delim"] = cDelim;
-	anyConfig["IndexDelim"] = cIndexDelim;
+	anyConfig["Delim"] = getDelim();
+	anyConfig["IndexDelim"] = getIndexDelim();
 
 	TraceAny(anyConfig, "StoreFinderConfig");
 	StoreFinder::Operate(ctx, targetAny, anyConfig);

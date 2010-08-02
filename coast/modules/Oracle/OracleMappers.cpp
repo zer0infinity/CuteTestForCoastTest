@@ -29,12 +29,9 @@ IFAObject *OracleParameterMapper::Clone() const
 bool OracleParameterMapper::DoGetAny( const char *key, Anything &value, Context &ctx, ROAnything script )
 {
 	StartTrace1(OracleParameterMapper.DoGetAny, NotNull(key) );
-
 	String strKey( key );
-	//!@FIXME Lookup("Delim,...) should be extracted into ResultMapper function, -> ResultMapper::getDelim()
-	char cDelim = Lookup( "Delim", "." )[0L];
 	String strParamPrefix( "Params" );
-	strParamPrefix.Append( cDelim );
+	strParamPrefix.Append( getDelim() );
 	if ( strKey.StartsWith( strParamPrefix ) ) {
 		strKey.Replace( strParamPrefix, "" );
 		return ParameterMapper::DoGetAny( strKey, value, ctx, script );
@@ -60,9 +57,7 @@ bool OracleResultMapper::DoPutAny( const char *key, Anything value, Context &ctx
 {
 	StartTrace1(OracleResultMapper.DoPutAny, NotNull(key));
 	String strKey( key );
-	//!@FIXME Lookup("Delim,...) should be extracted into ResultMapper function, -> ResultMapper::getDelim()
-	char cDelim = Lookup( "Delim", "." )[0L];
-	long lDelimIdx( strKey.StrRChr( cDelim ) );
+	long lDelimIdx( strKey.StrRChr( getDelim() ) );
 	if ( lDelimIdx != -1 ) {
 		Trace("combined key")
 		// check within script/LookupInterface if combined key exists
@@ -82,18 +77,16 @@ void OracleResultMapper::DoGetDestinationAny( const char *key, Anything &targetA
 	StartTrace1(OracleResultMapper.DoGetDestinationAny, NotNull(key));
 	String path = GetDestinationSlot( ctx ), kPrefix( key ), strIdxValue = ctx.Lookup( "_OracleArrayResultIndex_", "" );
 	String strArrayValuesSlot = Lookup("ArrayValuesSlotName", "ArrayResults");
-	char cDelim = Lookup( "Delim", "." )[0L], cIndexDelim = Lookup( "IndexDelim", ":" )[0L];
-
 	if ( strIdxValue.Length() ) {
 		Trace("index value is:" << strIdxValue);
-		path.Append( cDelim ).Append( strArrayValuesSlot );
-		path.Append( cIndexDelim ).Append( strIdxValue );
+		path.Append( getDelim() ).Append( strArrayValuesSlot );
+		path.Append( getIndexDelim() ).Append( strIdxValue );
 	}
 	if ( path.Length() > 0 && kPrefix.Length() ) {
-		path.Append( cDelim );
+		path.Append( getDelim() );
 	}
 	path.Append( kPrefix );
 	Trace("Path for slotfinder: [" << path << "]");
-	SlotFinder::Operate( ctx.GetTmpStore(), targetAny, path, cDelim, cIndexDelim );
+	SlotFinder::Operate( ctx.GetTmpStore(), targetAny, path, getDelim(), getIndexDelim() );
 	TraceAny(targetAny, "current value at target");
 }

@@ -346,12 +346,13 @@ bool ParameterMapper::DoGetStream(const char *key, ostream &os, Context &ctx, RO
 bool ParameterMapper::DoFinalGetAny(const char *key, Anything &value, Context &ctx)
 {
 	StartTrace1(ParameterMapper.DoFinalGetAny, NotNull(key));
-
-	ROAnything ctxValue;
 	String sourceSlot = GetSourceSlot(ctx);
-	sourceSlot = sourceSlot.IsEqual("") ? String(key) : (sourceSlot << "." << key);
-
-	if (ctx.Lookup(sourceSlot, ctxValue) && !ctxValue.IsNull() ) {
+	if ( sourceSlot.Length() > 0L ) {
+		sourceSlot.Append(getDelim());
+	}
+	sourceSlot.Append(key);
+	ROAnything ctxValue;
+	if ( ctx.Lookup(sourceSlot, ctxValue, getDelim(), getIndexDelim()) ) {
 		Trace("Found key [" << sourceSlot << "] in context...");
 		PlaceIntoAnyOrAppendIfNotEmpty(value, ctxValue);
 		return true;
@@ -360,24 +361,26 @@ bool ParameterMapper::DoFinalGetAny(const char *key, Anything &value, Context &c
 	return false;
 }
 
-static void PlaceAnyOnStream(ostream &os, ROAnything value)
-{
-	if (value.GetType() == AnyArrayType) {
-		os << value;
-	} else {
-		os << value.AsString();
+namespace {
+	static void PlaceAnyOnStream(ostream &os, ROAnything value) {
+		if (value.GetType() == AnyArrayType) {
+			os << value;
+		} else {
+			os << value.AsString();
+		}
 	}
 }
 
 bool ParameterMapper::DoFinalGetStream(const char *key, ostream &os, Context &ctx)
 {
 	StartTrace1(ParameterMapper.DoFinalGetStream, NotNull(key));
-
-	ROAnything ctxValue;
 	String sourceSlot = GetSourceSlot(ctx);
-	sourceSlot = sourceSlot.IsEqual("") ? String(key) : (sourceSlot << "." << key);
-
-	if (ctx.Lookup(sourceSlot, ctxValue) && !ctxValue.IsNull() ) {
+	if ( sourceSlot.Length() > 0L ) {
+		sourceSlot.Append(getDelim());
+	}
+	sourceSlot.Append(key);
+	ROAnything ctxValue;
+	if ( ctx.Lookup(sourceSlot, ctxValue, getDelim(), getIndexDelim()) ) {
 		Trace("Found key [" << sourceSlot << "] in context with value [" << ctxValue.AsString() << "]");
 		Trace("Putting value onto return stream...");
 		PlaceAnyOnStream(os, ctxValue);
@@ -635,16 +638,13 @@ void ResultMapper::DoGetDestinationAny(const char *key, Anything &targetAny, Con
 {
 	StartTrace1(ResultMapper.DoGetDestinationAny, NotNull(key));
 	String path = GetDestinationSlot(ctx), kPrefix(key);
-	char cDelim = Lookup("Delim", ".")[0L], cIndexDelim = Lookup("IndexDelim", ":")[0L];
-
 	if (path.Length() > 0 && kPrefix.Length()) {
-		path << cDelim << kPrefix;
-	} else {
-		path << kPrefix;
+		path.Append(getDelim());
 	}
+	path.Append(kPrefix);
 	Trace("Path for slotfinder: [" << path << "]");
 	if (path.Length() > 0) {
-		SlotFinder::Operate(ctx.GetTmpStore(), targetAny, path, cDelim, cIndexDelim);
+		SlotFinder::Operate(ctx.GetTmpStore(), targetAny, path, getDelim(), getIndexDelim());
 	} else {
 		targetAny = ctx.GetTmpStore();
 	}
@@ -658,11 +658,8 @@ bool ResultMapper::DoFinalPutAny(const char *key, Anything value, Context &ctx)
 	if (kStr.Length() <= 0) {
 		return false;    // empty key not allowed
 	}
-
 	// check if key is a path, if so, split it into prefix and key
-	//!@FIXME should be extracted into function
-	char cDelim = Lookup("Delim", ".")[0L];
-	long idx = kStr.StrRChr(cDelim);
+	long idx = kStr.StrRChr(getDelim());
 	String kPrefix, kKey(key);
 	if ( idx > -1 ) {
 		Trace("Key is a path: " << kKey);

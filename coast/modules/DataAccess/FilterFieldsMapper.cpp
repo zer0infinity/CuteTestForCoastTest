@@ -9,12 +9,8 @@
 //--- interface include --------------------------------------------------------
 #include "FilterFieldsMapper.h"
 
-//--- project modules used -----------------------------------------------------
-
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- FilterFieldsMapper ------------------------------------------------------------------
 RegisterResultMapper(FilterFieldsMapper);
@@ -37,12 +33,11 @@ bool FilterFieldsMapper::DoPutAny(const char *key, Anything value, Context &ctx,
 	ROAnything roaFieldList;
 	Anything anyNew, anyFilterValue;
 	if ( Lookup("FieldList", roaFieldList) ) {
-		char cIndexDelim( Lookup("IndexDelim", ":")[0L] );
 		const char *pSlotname( NULL );
 		for ( long lIdx = 0, lSize = roaFieldList.GetSize(); lIdx < lSize; ++lIdx) {
 			pSlotname = roaFieldList[lIdx].AsCharPtr();
 			if ( pSlotname != NULL && value.LookupPath( anyFilterValue, pSlotname ) ) {
-				if ( pSlotname[0L] == cIndexDelim ) {
+				if ( pSlotname[0L] == getIndexDelim() ) {
 					Trace("appending value in output because it was an indexed lookup [" << pSlotname << "]");
 					anyNew.Append( anyFilterValue );
 				} else {

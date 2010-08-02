@@ -40,6 +40,8 @@ public:
 		}
 	}
 	...
+	/Delim			char		optional, default '.', specify path delimiting character for Lookup() operations from within DoFinalGetAny() and DoFinalGetStream()
+	/IndexDelim		char		optional, default ':', specify index delimiting character for Lookup() operations from within DoFinalGetAny() and DoFinalGetStream()
 }
 \endcode
 */
@@ -143,6 +145,24 @@ public:
 		return DoGetSourceSlot(ctx);
 	}
 
+	//! Obtain mapper specific named slot delimiter used when looking up values using Anything.LookupPath() semantics.
+	/*! Lookup() slot \em Delim in mapper configuration to get the delimiter or use a dot '.' as default.
+	 * @return First character of \em Delim as specified in mapper configuration
+	 * @return Otherwise a dot '.'
+	 */
+	const char getDelim() const {
+		return Lookup( "Delim", "." )[0L];
+	}
+
+	//! Obtain mapper specific indexed slot delimiter used when looking up values using Anything.LookupPath() semantics.
+	/*! Lookup() slot \em IndexDelim in mapper configuration to get the delimiter or use a colon ':' as default.
+	 * @return First character of IndexDelim as specified in mapper configuration
+	 * @return Otherwise a colon ':'
+	 */
+	const char getIndexDelim() const {
+		return Lookup( "IndexDelim", ":" )[0L];
+	}
+
 	//!FIXME: remove Finds InputMappers, too
 	static ParameterMapper *FindInputMapper(const char *name);
 
@@ -159,17 +179,31 @@ protected:
 	virtual bool DoGetAny(const char *key, Anything &value, Context &ctx, ROAnything script);
 
 	//! Major hook method for subclasses, default does script interpretation
-	/*! \param key the name defines kind of values to write or the slot in the script to use
-		\param os the stream to be mapped on
+	/*! \param key the name defines kind of values to get or the slot in the script to use
+		\param os The stream to map values onto
 		\param ctx the thread context of the invocation
 		\param script to be interpreted if any, for subclasses this is the config to use
 		\return returns true if the mapping was successful otherwise false */
 	virtual bool DoGetStream(const char *key, ostream &os, Context &ctx, ROAnything script);
 
-	//! Hook for recursion stopper in Mapper script interpretation. Looks for value in context using the key and appends it to value.
+	//! Hook for recursion stopper in Mapper script interpretation returning an Anything value.
+	/*! Looks for value in context using the key and assigns or appends to value depending if value was Null before.
+	 * @param key the name defines kind of values to get or the slot in the script to use
+	 * @param value Result value collector, if value is not AnyNullImpl, values will get appended
+	 * @param ctx Context used to lookup the \em key
+	 * @return true in case the key was found and resulted in any value; a Null Anything is also a valid value
+	 * @return false otherwise
+	 */
 	virtual bool DoFinalGetAny(const char *key, Anything &value, Context &ctx);
 
-	//! Hook for recursion stopper in Mapper script interpretation. Default is to write value from context found via key to os. If value is a composite anything the anything is Printed on os, otherwise the value is rendered literally as a string.
+	//! Hook for recursion stopper in Mapper script interpretation printing value of DoFinalGetAny() onto stream.
+	/*! Composite Anything values are printed on os, non-array values are rendered literally as String.
+	 * @param key the name defines kind of values to get or the slot in the script to use
+	 * @param os The stream to map/print values onto
+	 * @param ctx Context used to lookup the \em key
+	 * @return true in case the key was found and resulted in any value; a Null Anything is also a valid value
+	 * @return false otherwise
+	 */
 	virtual bool DoFinalGetStream(const char *key, ostream &os, Context &ctx);
 
 	//! Generate the config file name (without extension, which is assumed to be any). Is simply the concatenation of category and "Meta". Iif category is "ParameterMapper" we use "ParameterMapper" instead, to keep compatibility.
@@ -317,21 +351,25 @@ public:
 		return DoSelectScript(key, script, ctx);
 	}
 
-protected:
-	/*! Obtain path delimiter of current mapper configuration
-	 * @return single character used to delimit path segments in a Lookup, default is '.'
+	//! Obtain mapper specific named slot delimiter used when looking up values using Anything.LookupPath() semantics.
+	/*! Lookup() slot \em Delim in mapper configuration to get the delimiter or use a dot '.' as default.
+	 * @return First character of \em Delim as specified in mapper configuration
+	 * @return Otherwise a dot '.'
 	 */
 	const char getDelim() const {
 		return Lookup("Delim", ".")[0L];
 	}
 
-	/*! Obtain index delimiter of current mapper configuration
-	 * @return single character used to identify indexed segments in a Lookup, default is ':'
+	//! Obtain mapper specific indexed slot delimiter used when looking up values using Anything.LookupPath() semantics.
+	/*! Lookup() slot \em IndexDelim in mapper configuration to get the delimiter or use a colon ':' as default.
+	 * @return First character of IndexDelim as specified in mapper configuration
+	 * @return Otherwise a colon ':'
 	 */
 	const char getIndexDelim() const {
 		return Lookup("IndexDelim", ":")[0L];
 	}
 
+protected:
 	//! Major hook for subclasses that want to do something with their config passed as script. The default is to interpret the script and put a value for every script item used. Recursion will be stopped by DoFinalPutAny which places its value under slot key below given DoGetDestinationSlot()
 	/*! \param key the key usually defines the associated kind of output-value
 		\param value the value to be mapped
