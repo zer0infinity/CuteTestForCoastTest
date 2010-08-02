@@ -31,6 +31,7 @@
 	/simpleIP2DNSTest {
 		/localhost {
 			/name	!Defaults.any?LocalHostName
+			/fqdn	!Defaults.any?FullQualifiedDomainName
 			/ip		!Defaults.any?LocalHostIp
 		}
 		/thisHost {

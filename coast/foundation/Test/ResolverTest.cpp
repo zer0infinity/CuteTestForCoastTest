@@ -58,11 +58,14 @@ void ResolverTest::simpleIP2DNSTest()
 		if (!aEntryIterator.SlotName(strCase)) {
 			strCase << "idx:" << aEntryIterator.Index();
 		}
-		String expDN, resDN, ip;
-		expDN = roaConfig["name"].AsCharPtr();
+		String expDN, expFQDN, resDN, ip;
+		expDN = roaConfig["name"].AsString("localhost");
+		expFQDN = roaConfig["fqdn"].AsString();
 		ip = roaConfig["ip"].AsString();
 		resDN = Resolver::IPAddress2DNS(ip);
-		assertEqualm(expDN, resDN, TString("Failed at ") << strCase);
+		if ( !expDN.IsEqual(resDN) && !expFQDN.IsEqual(resDN) ) {
+			assertEqualm(expDN, resDN, TString("Failed at ") << strCase);
+		}
 	}
 }
 
