@@ -21,7 +21,7 @@
  * mapper configuration.
  * If a requested parameter key is not found using the full Params.key it will be searched using key only. This was
  * implemented to simplify usage under some circumstances. Please note that all slot names in the Params section need
- * to be in upper case letter as oracle is internally only uses upper case names.
+ * to be in upper case letter as oracle internally only uses upper case names.
  *
  * @section opms1 OracleParameterMapper configuration
  *

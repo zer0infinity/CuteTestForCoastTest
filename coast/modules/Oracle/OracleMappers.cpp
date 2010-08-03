@@ -34,9 +34,8 @@ bool OracleParameterMapper::DoGetAny( const char *key, Anything &value, Context 
 	strParamPrefix.Append( getDelim() );
 	if ( strKey.StartsWith( strParamPrefix ) ) {
 		strKey.Replace( strParamPrefix, "" );
-		return ParameterMapper::DoGetAny( strKey, value, ctx, script );
 	}
-	return ParameterMapper::DoGetAny( key, value, ctx, script );
+	return ParameterMapper::DoGetAny( strKey, value, ctx, script );
 }
 //---- OracleResultMapper ------------------------------------------------------------------
 RegisterResultMapper(OracleResultMapper);
