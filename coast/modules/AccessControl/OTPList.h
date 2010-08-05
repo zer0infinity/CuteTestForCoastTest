@@ -16,7 +16,7 @@
 class TokenDataAccessController;
 
 //---- OTPListsModule -----------------------------------------------------------
-//! <B>Manages OneTimePasswordList-Singletons</B>
+//! Manages OneTimePasswordList-Singletons
 class EXPORTDECL_ACCESSCONTROL OTPListsModule : public WDModule
 {
 public:
@@ -28,7 +28,7 @@ public:
 };
 
 //---- OTPList -----------------------------------------------------------
-//! <B><i>Abstract</i> OneTimePassword List. Do not instantiate directly.</B>
+//! \em Abstract OneTimePassword List. Do not instantiate directly.
 class EXPORTDECL_ACCESSCONTROL OTPList : public ConfNamedObject
 {
 public:

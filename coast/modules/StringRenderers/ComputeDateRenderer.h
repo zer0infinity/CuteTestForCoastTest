@@ -15,7 +15,7 @@
 
 class TimeStamp;
 //---- ComputeDateRenderer ----------------------------------------------------------
-//! <b>Converts the given Date/Time according to the specified format into a bunch of seconds (unix-time, seconds since 1. Jan. 1970 00:00)</b>
+//! Converts the given Date/Time according to the specified format into a bunch of seconds (unix-time, seconds since 1. Jan. 1970 00:00)
 /*!
 \par Configuration
 \code

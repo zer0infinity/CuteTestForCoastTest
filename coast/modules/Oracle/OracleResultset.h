@@ -16,7 +16,7 @@
 #include "Anything.h"
 
 //---- OracleResultset -----------------------------------------------------------
-//! <b>Abstraction for a set of results </b>
+//! Abstraction for a set of results 
 /*!
  * This class - or a corresponding object of it - acts like a row iterator on the underlying statement. An instance
  * will be returned by calling OracleStatement::getResultset or OracleStatement::getCursor.

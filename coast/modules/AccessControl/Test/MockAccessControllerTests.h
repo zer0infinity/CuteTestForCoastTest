@@ -13,7 +13,7 @@
 #include "FileAccessControllerTests.h"
 
 //---- MockAccessControllerTests ------------------------------------------
-//! <B>Tests the MockAccessControllers (MockUDAC, MockTDAC, MockEDAC)</B>
+//! Tests the MockAccessControllers (MockUDAC, MockTDAC, MockEDAC)
 /*!
 Each of the tested AccessControllers has an own config file.
 */

@@ -14,7 +14,7 @@
 #include "ReadFileDAImpl.h"
 
 //---- ReadXMLFileDAImpl ----------------------------------------------------------
-//! <B>DataAccess for reading a file from disk</B>
+//! DataAccess for reading a file from disk
 /*!
 <B>Inputmapper-Configuration:</B><PRE>
 {

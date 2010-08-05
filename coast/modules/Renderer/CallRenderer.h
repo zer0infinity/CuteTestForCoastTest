@@ -14,7 +14,7 @@
 #include "Renderer.h"
 
 //---- CallRenderer ----------------------------------------------------------
-//! <B>Call a renderer config with parameters (lazy evaluation)</B>
+//! Call a renderer config with parameters (lazy evaluation)
 /*!
 \par Configuration
 \code
@@ -57,7 +57,7 @@ public:
 	virtual void RenderAll(ostream &reply, Context &ctx, const ROAnything &config);
 };
 //---- EagerCallRenderer ----------------------------------------------------------
-//! <B>call a renderer config with rendered parameters (eager evaluation)</B>
+//! call a renderer config with rendered parameters (eager evaluation)
 /*!
 \par Configuration
 \code

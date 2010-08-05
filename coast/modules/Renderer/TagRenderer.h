@@ -13,7 +13,7 @@
 #include "Renderer.h"
 
 //---- TagRenderer -----------------------------------------------------------
-//! <B>Renders a given HTML-Tag with the end Tag</B>
+//! Renders a given HTML-Tag with the end Tag
 /*!
 \par Configuration
 \code

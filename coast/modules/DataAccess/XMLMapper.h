@@ -13,7 +13,7 @@
 #include "Mapper.h"
 
 //---- XMLMapper ----------------------------------------------------------
-//! <B>Mapper to use with ReadXMLFileDAImpl</B>
+//! Mapper to use with ReadXMLFileDAImpl
 /*!
 <B>XMLMapper-Configuration:</B><PRE>
 {

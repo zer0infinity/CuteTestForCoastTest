@@ -15,7 +15,7 @@
 #include "Mapper.h"
 
 //---- LDAPErrorHandler ----------------------------------------------------------
-//! <B>Handles LDAP Errors</B>
+//! Handles LDAP Errors
 class EXPORTDECL_LDAPDA LDAPErrorHandler
 {
 public:

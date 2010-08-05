@@ -199,7 +199,7 @@ protected:
 //---- MasterServer -------------------------------------------------------------------
 class ServerThread;
 
-//! <B>Manages several servers as a composite server</B>
+//! Manages several servers as a composite server
 /*!
 \par Configuration
 \code

@@ -12,7 +12,7 @@
 #include "config_ntlmauth.h"
 #include "ITOString.h"
 //---- NTLMAuthMessage ----------------------------------------------------------
-//! <B>simple class wrapping NTLMAuthMessages</B>
+//! simple class wrapping NTLMAuthMessages
 /*!
 further explanation of the purpose of the class
 this may contain <B>HTML-Tags</B>

@@ -13,7 +13,7 @@
 #include "Renderer.h"
 
 //---- DateRenderer ----------------------------------------------------------------
-//! <B>The DateRenderer is used to insert a date and time into the output stream</B>
+//! The DateRenderer is used to insert a date and time into the output stream
 /*!
 \par Configuration
 \code

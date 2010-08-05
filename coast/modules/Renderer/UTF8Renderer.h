@@ -14,7 +14,7 @@
 #include "Renderer.h"
 
 //---- UTF8Renderer ----------------------------------------------------------
-//! <B>Converts ascii character String to UTF8 representation</B>
+//! Converts ascii character String to UTF8 representation
 /*!
 <B>Configuration:</B><PRE>
 {

@@ -16,7 +16,7 @@ class Registry;
 class Server;
 
 //---- WDModule -----------------------------------------------------------
-//! <b>component for initialization, termination and reset</b>
+//! component for initialization, termination and reset
 /*!
  * extension api that supports installation, termination and resets of components<br>
  * static api supports installation, termination and resets of configured extensions

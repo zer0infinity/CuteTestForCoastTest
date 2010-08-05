@@ -14,7 +14,7 @@
 #include "Action.h"
 
 //---- DirFileListAction ----------------------------------------------------------
-//! <B>Retrieve directory entries at given Path and put results in context</B>
+//! Retrieve directory entries at given Path and put results in context
 /*!
 \par Configuration
 \code

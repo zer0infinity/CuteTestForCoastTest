@@ -14,7 +14,7 @@
 #include "Renderer.h"
 
 //---- UnTaintRenderer ----------------------------------------------------------
-//! <B>Load a file, render content</B>
+//! Load a file, render content
 /*!
 \par Configuration
 \code

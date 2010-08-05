@@ -14,7 +14,7 @@
 #include "Action.h"
 
 //---- TransitionDispatchAction ----------------------------------------------------------
-//! <b>Lookups the transitionToken in context and executes the configuration as actionscript</b>
+//! Lookups the transitionToken in context and executes the configuration as actionscript
 /*! @section TransitionDispatchActionDescription Description
  * This Action is useful if anyone wants to dispatch an action(script) based on the value of the transitionToken returned from a previously called Action(script).
  * @subsection TransitionDispatchActionConfiguration Configuration

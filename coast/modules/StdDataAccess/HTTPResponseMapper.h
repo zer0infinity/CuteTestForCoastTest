@@ -14,7 +14,7 @@
 #include "Mapper.h"
 
 //---- HTTPResponseMapper ----------------------------------------------------------
-//! <B>Parses a http response from a stream and puts it under Mapper.HTTPResponse</B>
+//! Parses a http response from a stream and puts it under Mapper.HTTPResponse
 class EXPORTDECL_STDDATAACCESS HTTPResponseMapper : public ResultMapper
 {
 public:

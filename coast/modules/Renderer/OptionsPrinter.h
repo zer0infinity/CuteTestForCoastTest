@@ -13,7 +13,7 @@
 #include "Renderer.h"
 
 //---- OptionsPrinter -----------------------------------------------------------
-//! <B>Renders options within a tag</B>
+//! Renders options within a tag
 /*!
 \par Configuration
 \code

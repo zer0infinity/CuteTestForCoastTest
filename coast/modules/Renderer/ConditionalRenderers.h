@@ -13,7 +13,7 @@
 #include "Renderer.h"
 
 // ---- ConditionalRenderer ---------------------------------------------------------
-//! <B>This renderer checks the value of a specified slot in the Context and - depending on the outcome of the test - renders a predefined renderer specification.</B>
+//! This renderer checks the value of a specified slot in the Context and - depending on the outcome of the test - renders a predefined renderer specification.
 /*!
 \par Configuration
 \code
@@ -46,7 +46,7 @@ protected:
 };
 
 // ---- SwitchRenderer ---------------------------------------------------------
-//! <B>The SwitchRenderer provides an indirection depending on some value in the Context</B>
+//! The SwitchRenderer provides an indirection depending on some value in the Context
 /*!
 \par Configuration
 \code

@@ -14,7 +14,7 @@
 #include "Action.h"
 
 //---- RemoveAction ----------------------------------------------------------
-//! <b>Removes slots from store</b>
+//! Removes slots from store
 /*! @section RemoveActionConfiguration Configuration$
 @code
 {

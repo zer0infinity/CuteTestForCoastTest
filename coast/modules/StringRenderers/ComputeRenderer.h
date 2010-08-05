@@ -13,7 +13,7 @@
 #include "Renderer.h"
 
 //---- ComputeRenderer ----------------------------------------------------------------
-//! <B>Compute two values</B>
+//! Compute two values
 /*!
 \par Configuration
 \code

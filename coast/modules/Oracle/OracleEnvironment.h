@@ -21,7 +21,7 @@ class String;
 
 typedef std::auto_ptr<Allocator> AllocatorPtr;
 
-//! <b>Abstraction for an Oracle environment</b>
+//! Abstraction for an Oracle environment
 /*!
  * This class serves as abstraction for an OCI environment. Such an environment is needed to create an OracleConnection.
  */

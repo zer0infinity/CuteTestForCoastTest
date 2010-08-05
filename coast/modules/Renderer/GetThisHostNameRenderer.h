@@ -14,7 +14,7 @@
 #include "Renderer.h"
 
 //---- GetThisHostNameRenderer ----------------------------------------------------------
-//! <B>Get DNS name of the host this program is running</B>
+//! Get DNS name of the host this program is running
 /*! \par Configuration
 \code
 {

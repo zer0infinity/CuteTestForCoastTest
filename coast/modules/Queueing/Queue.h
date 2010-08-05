@@ -18,7 +18,7 @@
 #include <limits.h>
 
 //---- Queue ----------------------------------------------------------
-//! <B>Base class for simple, thread-safe, container based queue</B>
+//! Base class for simple, thread-safe, container based queue
 /*!
 Queue elements are represented using either by objects of their type or Anythings. The internal queue itself is either a std::container or an Anything which allows
 simple handling.
@@ -444,7 +444,7 @@ protected:
 	Anything	fAnyStatistics;
 };
 
-//! <B>Stl-container based queue</B>
+//! Stl-container based queue
 template <
 class TElementType,
 	  class TListStorageType
@@ -466,7 +466,7 @@ public:
 	}
 };
 
-//! <B>Anything based queue, internal storage type still to be specified</B>
+//! Anything based queue, internal storage type still to be specified
 template <
 class TElementType
 >
@@ -488,7 +488,7 @@ public:
 	}
 };
 
-//! <B>Anything based queue using Anything as elements</B>
+//! Anything based queue using Anything as elements
 typedef Queue<Anything, Anything> AnyQueueType;
 
 #endif

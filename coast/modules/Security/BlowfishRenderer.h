@@ -13,7 +13,7 @@
 #include "Renderer.h"
 
 //---- BlowfishRenderer ----------------------------------------------------------
-//! <B>Renderer for Blowfish symmetric encryption</B>
+//! Renderer for Blowfish symmetric encryption
 /*!
 \par Configuration
 \code

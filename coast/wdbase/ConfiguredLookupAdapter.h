@@ -18,7 +18,7 @@
 //---- forward declaration -----------------------------------------------
 
 //---- newclass ----------------------------------------------------------
-//! <B>LookupInterface with configured default</B>
+//! LookupInterface with configured default
 /*!
 Param1		ROAnything containing the configuration
 Param2		ROAnything containing the defaults

@@ -17,7 +17,7 @@
 
 class OracleResultset;
 
-//! <b>Abstraction of an Oracle statement</b>
+//! Abstraction of an Oracle statement
 /*!
  * A statement is either a simple SQL query or a stored procedure call. The OracleStatement class is the main
  * interface when executing queries/SP and to retrieve result data. Several methods exist to

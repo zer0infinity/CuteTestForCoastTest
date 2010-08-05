@@ -13,7 +13,7 @@
 #include "Renderer.h"
 
 //---- AnyToXMLRenderer -----------------------------------------------------------
-//! <B>Renders XML and a DTD out of an Anything</B>
+//! Renders XML and a DTD out of an Anything
 /*!
 \par Configuration
 \code

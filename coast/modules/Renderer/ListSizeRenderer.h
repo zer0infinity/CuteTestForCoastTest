@@ -14,7 +14,7 @@
 #include "Renderer.h"
 
 //---- ListSizeRenderer ----------------------------------------------------------
-//! <B>Renders the Size of an anything.</B>
+//! Renders the Size of an anything.
 /*!
 \par Configuration
 \code

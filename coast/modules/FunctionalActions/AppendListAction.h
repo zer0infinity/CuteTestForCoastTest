@@ -15,7 +15,7 @@
 
 class Context;
 //---- AppendListAction ----------------------------------------------------------
-//! <B>Appends data from a slot to an other slot </B>
+//! Appends data from a slot to an other slot 
 /*!
 \par Configuration
 \code

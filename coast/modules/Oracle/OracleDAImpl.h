@@ -18,7 +18,7 @@ class OracleResultset;
 class OraclePooledConnection;
 
 //---- OracleDAImpl -----------------------------------------------------------
-//! <b>Oracle DataAccessImpl using OCI</b>
+//! Oracle DataAccessImpl using OCI
 /*!
  * Oracle specific DataAccessImpl to execute database access based on settings in the Context and configuration
  * for OracleDAImpl, ParameterMapper and ResultMapper.

@@ -12,7 +12,7 @@
 #include "Test.h"
 class TestList;
 
-//! <B>A TestSuite is a Composite of Tests</B>
+//! A TestSuite is a Composite of Tests
 /*!
  * A TestSuite is a Composite of Tests.
  * It runs a collection of test cases. Here is an example.

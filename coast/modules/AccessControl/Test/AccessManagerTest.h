@@ -15,7 +15,7 @@
 class AccessManager;
 
 //---- AccessManagerTest ----------------------------------------------------------
-//! <B>Test access managers with the default API.</B>
+//! Test access managers with the default API.
 /*!
 This test can test any access manager that exports the default API.
 It runs configured unit tests for the following API functions:

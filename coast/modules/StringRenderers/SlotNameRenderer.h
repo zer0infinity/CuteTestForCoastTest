@@ -14,7 +14,7 @@
 #include "Renderer.h"
 
 //---- SlotNameRenderer ----------------------------------------------------------
-//! <b>Renderers the name of an Array-Anything slot to the given index, if any.</b>
+//! Renderers the name of an Array-Anything slot to the given index, if any.
 /*!
 \par Configuration
 \code

@@ -14,7 +14,7 @@
 #include <time.h>
 
 //---- TimeStamp ----------------------------------------------------------
-//! <B>Timestamps as used by Frontdoor with external representation</B>
+//! Timestamps as used by Frontdoor with external representation
 /*!
 The external representation is "%Y%m%d%H%M%S" relative to timezone GMT.
 */

@@ -14,7 +14,7 @@
 #include "Mapper.h"
 
 //---- NameUsingOutputMapper ----------------------------------------------------------
-//! <B>Stores values to put below a configured slot or its aliased name in TempStore</B>
+//! Stores values to put below a configured slot or its aliased name in TempStore
 /*!
 \par Configuration
 \code

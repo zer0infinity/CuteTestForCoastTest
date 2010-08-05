@@ -14,7 +14,7 @@
 #include "LDAPErrorHandler.h"
 
 //---- LDAPConnection ----------------------------------------------------------
-//! <B>Not persitent	LDAP connection.</B>
+//! Not persitent	LDAP connection.
 //!
 //!						Below values apply to LDAPConnections and PersistentLDAPConnections
 ///!/Server				IP or DNS name of the target server. Default is localhost.

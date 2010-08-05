@@ -13,7 +13,7 @@
 #include "config_foundation.h"
 
 //---- InitFinisManager ----------------------------------------------------------
-//! <B>support class for initializing/cleaning things up in a deterministic sequence</B>
+//! support class for initializing/cleaning things up in a deterministic sequence
 /*!
 Subclasses can define initialize/clean up code in DoInit() / DoFinis() methods. Objects are automatically added to the cleanup list
 using the given priority to set the sequence of initialization and destruction. */

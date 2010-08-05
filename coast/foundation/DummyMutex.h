@@ -14,7 +14,7 @@ class Allocator;
 class DummyCondition;
 
 //---- DummyMutex ----------------------------------------------------------
-//! <B>Dummy implementation of Mutex</B>
+//! Dummy implementation of Mutex
 /*! Can be used to instantiate classes using Mutex interface without any locking effects.
 */
 class DummyMutex
@@ -49,7 +49,7 @@ private:
 	void operator=(const DummyMutex &);
 };
 
-//! <B>Dummy implementation of Condition</B>
+//! Dummy implementation of Condition
 /*! Can be used to instantiate classes using Condition interface without any blocking effects.
 */
 class DummyCondition

@@ -25,7 +25,7 @@ protected:
 };
 
 //---- TestLocList ------------------------------------------------------
-//! <B>simple list of test locations to avoid the use of STL</B>
+//! simple list of test locations to avoid the use of STL
 class TestLocList
 {
 protected:

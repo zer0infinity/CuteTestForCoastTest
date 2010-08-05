@@ -13,7 +13,7 @@
 #include "Mapper.h"
 
 //---- LoggingMapper ----------------------------------------------------------
-//! <b>Mapper which logs messages on a configurable channel and routes message again</b>
+//! Mapper which logs messages on a configurable channel and routes message again
 /*!
 \par Configuration
 \code

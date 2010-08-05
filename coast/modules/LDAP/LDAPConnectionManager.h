@@ -16,7 +16,7 @@
 #include "ldap.h"
 
 //---- LDAPConnectionManager ----------------------------------------------------------
-//! <B>Manages LDAP connections represented by binding handles.</B>
+//! Manages LDAP connections represented by binding handles.
 /*!
 Because ldap connections remain open (there is no shutdown on the socket) an implementation
 should allow to limit the usage of open connections. This avoids "out of filehandle" conditions.

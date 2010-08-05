@@ -17,7 +17,7 @@
 #include "Threads.h"
 
 //---- TimeLoggingModule ----------------------------------------------------------
-//! <B>Module to enable/disable timing and logging of methods</B>
+//! Module to enable/disable timing and logging of methods
 /*!
 \par Configuration
 \code
@@ -104,7 +104,7 @@ private:
 };
 
 //---- TimeLoggerEntry --------------------------------------------------------------------------
-//! <B>Abstracting object to instantiate a TimeLogger object only if global TimeLoggingModule::fgDoTiming is enabled</B>
+//! Abstracting object to instantiate a TimeLogger object only if global TimeLoggingModule::fgDoTiming is enabled
 /*!
 This level of abstraction is needed to reduce the overhead of always instantiating a DiffTimer object as done in TimeLogger.
 It is also important to have because there is no flexible other way to have time logging enabled/disabled on demand without recompiling everytime.

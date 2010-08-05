@@ -14,7 +14,7 @@
 #include "Renderer.h"
 
 //---- HTTPStringEncodeRenderer ----------------------------------------------------------
-//! <b>URL-Encode given string</b>
+//! URL-Encode given string
 /*!
  * @section htser1 Renderer configuration
 \code

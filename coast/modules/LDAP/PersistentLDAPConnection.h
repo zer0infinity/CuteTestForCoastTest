@@ -14,7 +14,7 @@
 #include "LDAPConnection.h"
 
 //---- PersistentLDAPConnection ----------------------------------------------------------
-//! <B>Persistent LDAP connections used by LDAPConnectonManger.</B>
+//! Persistent LDAP connections used by LDAPConnectonManger.
 /*!
 Below values apply to LDAPConnections and PersistentLDAPConnections
 \par Configuration

@@ -10,7 +10,7 @@
 #define _AnyImplTypes_H
 
 //---- AnyImplTypes ----------------------------------------------------------
-//! <B>Definition of AnyImpl type values</B>
+//! Definition of AnyImpl type values
 /*!
 This is done in this separate file to break include dependencies of Anything.h to AnyImpl.h
 */

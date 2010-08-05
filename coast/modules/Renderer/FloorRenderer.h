@@ -14,7 +14,7 @@
 #include "ComparingRenderer.h"
 
 //---- FloorRenderer ----------------------------------------------------------
-//! <B>Renders the configuration of the slot in an Anything that is lower than a given Key</B>
+//! Renders the configuration of the slot in an Anything that is lower than a given Key
 /*!
 \par Configuration
 \code

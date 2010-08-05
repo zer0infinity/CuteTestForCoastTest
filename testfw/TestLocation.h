@@ -11,7 +11,7 @@
 
 #include "TString.h"
 class Test;
-//! <B>A TestLocation collects information about a test result (success or failure)</B>
+//! A TestLocation collects information about a test result (success or failure)
 /*!
  see TestResult and TestSuite
 */

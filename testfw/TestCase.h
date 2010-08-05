@@ -13,7 +13,7 @@
 #include "TestResult.h"
 
 //---- ##Class## ----------------------------------------------------------
-//! <B>A TestCase defines the fixture to run multiple tests</B>
+//! A TestCase defines the fixture to run multiple tests
 /*!
  A test case defines the fixture to run multiple tests. To define a test case
  1) implement a subclass of TestCase

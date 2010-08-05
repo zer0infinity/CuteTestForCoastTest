@@ -18,7 +18,7 @@
 #include "StringStream.h"
 
 //---- QueueWorkingModule ----------------------------------------------------------
-//! <B>Queue based module for message passing systems</B>
+//! Queue based module for message passing systems
 /*!
 \par Configuration
 \code

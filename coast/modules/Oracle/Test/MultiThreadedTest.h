@@ -13,7 +13,7 @@
 #include "WDBaseTestPolicies.h"
 
 //---- MultiThreadedTest ----------------------------------------------------------
-//! <B>single line description of the class</B>
+//! single line description of the class
 /*!
  further explanation of the purpose of the class
  this may contain <B>HTML-Tags</B>

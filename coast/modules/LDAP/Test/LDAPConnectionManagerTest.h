@@ -14,7 +14,7 @@
 #include "LDAPConnection.h"
 
 //---- LDAPConnectionManagerTest ----------------------------------------------------------
-//! <B>Tests LDAPConnecton and LDAPErrorHandler</B>
+//! Tests LDAPConnecton and LDAPErrorHandler
 class LDAPConnectionManagerTest : public ConfiguredActionTest
 {
 public:

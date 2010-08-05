@@ -14,7 +14,7 @@
 #include "Renderer.h"
 
 //---- ComparingRenderer ----------------------------------------------------------
-//! <B>Abstract base renderer that finds a slot in a Anything according to a Key</B>
+//! Abstract base renderer that finds a slot in a Anything according to a Key
 /*!
 \par Configuration
 \code

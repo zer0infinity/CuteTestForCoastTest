@@ -14,7 +14,7 @@
 #include "Renderer.h"
 
 //---- Base64WDRenderer ----------------------------------------------------------
-//! <B>Coast style Base64 encoding</B>
+//! Coast style Base64 encoding
 class EXPORTDECL_SECURITY Base64WDRenderer : public Renderer
 {
 public:

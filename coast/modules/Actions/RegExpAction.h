@@ -13,7 +13,7 @@
 #include "Action.h"
 
 //---- RegExpAction ----------------------------------------------------------
-//! <b>Search for regular expression in a string</b>
+//! Search for regular expression in a string
 /*!
  * Searches a regular expression pattern in a string and stores the matched string or groups (if any) into the defined Destination.
  * When no group expression is present, the matched string will be stored at index 0 within the destination slot.

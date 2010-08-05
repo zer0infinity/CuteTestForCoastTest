@@ -13,7 +13,7 @@
 #include "Renderer.h"
 
 //---- HTMLTemplateRenderer ----------------------------------------------------
-//! <B>Uses HTML, file or inline, as input to render a page</B>
+//! Uses HTML, file or inline, as input to render a page
 /*!
 \par Configuration
 \code

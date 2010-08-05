@@ -29,7 +29,7 @@ bool Tracer::fgDumpAnythings = false;
 bool Tracer::fgTerminated = true;
 static bool fgIsInitialised = false;
 
-//! <b>Utility class to keep track of trace indent</b>
+//! Utility class to keep track of trace indent
 class TracerHelper
 {
 public:

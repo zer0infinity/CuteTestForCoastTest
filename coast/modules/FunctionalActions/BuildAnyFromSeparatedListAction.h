@@ -13,7 +13,7 @@
 #include "Action.h"
 
 //---- BuildAnyFromSeparatedListAction ----------------------------------------------------------
-//! <b>Stores a generated Anything into the defined Destination</b>
+//! Stores a generated Anything into the defined Destination
 /*!
 \par Configuration
 \code

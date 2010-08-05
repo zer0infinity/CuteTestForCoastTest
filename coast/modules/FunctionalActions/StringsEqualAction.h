@@ -16,7 +16,7 @@
 class Context;
 
 //---- StringsEqualAction ----------------------------------------------------------
-//! <B>Compares if the two strings are equal</B>
+//! Compares if the two strings are equal
 /*!
 \par Configuration
 \code

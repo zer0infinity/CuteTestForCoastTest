@@ -13,7 +13,7 @@
 #include "IFAConfObject.h"
 
 //---- UserDataAccessController -----------------------------------------------------------
-//! <B>This should be the superclass of all user data access controller implementations.</B>
+//! This should be the superclass of all user data access controller implementations.
 //! Abstract class.
 class EXPORTDECL_ACCESSCONTROL UserDataAccessController : public HierarchConfNamed
 {
@@ -51,7 +51,7 @@ private:
 #define RegisterUserDataAccessController(name) RegisterObject(name, UserDataAccessController)
 
 //---- TokenDataAccessController -----------------------------------------------------------
-//! <B>This should be the superclass of all token data access controller implementations.</B>
+//! This should be the superclass of all token data access controller implementations.
 //! Abstract class.
 class EXPORTDECL_ACCESSCONTROL TokenDataAccessController : public HierarchConfNamed
 {
@@ -83,7 +83,7 @@ private:
 #define RegisterTokenDataAccessController(name) RegisterObject(name, TokenDataAccessController)
 
 //---- EntityDataAccessController -----------------------------------------------------------
-//! <B>This should be the superclass of all entity data access controller implementations.</B>
+//! This should be the superclass of all entity data access controller implementations.
 //! Abstract class.
 class EXPORTDECL_ACCESSCONTROL EntityDataAccessController : public HierarchConfNamed
 {

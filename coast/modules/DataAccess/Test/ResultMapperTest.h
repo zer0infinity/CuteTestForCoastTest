@@ -29,7 +29,7 @@ protected:
 };
 
 //---- ResultMapperTest ----------------------------------------------------------
-//! <B>Tests functionality of ResultMapper and EagerResultMapper.</B>
+//! Tests functionality of ResultMapper and EagerResultMapper.
 /*!
 To understand the results of those tests, you should additionally
 consult "OutputMapperMeta.any"

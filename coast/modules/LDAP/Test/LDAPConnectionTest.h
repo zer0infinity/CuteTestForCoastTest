@@ -13,7 +13,7 @@
 #include "WDBaseTestPolicies.h"
 
 //---- LDAPConnectionTest ----------------------------------------------------------
-//! <B>Tests LDAPConnecton and LDAPErrorHandler</B>
+//! Tests LDAPConnecton and LDAPErrorHandler
 class LDAPConnectionTest : public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading
 {
 public:

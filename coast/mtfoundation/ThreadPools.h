@@ -14,7 +14,7 @@
 #include "ObserverIf.h"
 
 //---- ThreadPoolManager ------------------------------------------------
-//! <b>abstract class which handles initialization, starting and termination of threads in a pool</b>
+//! abstract class which handles initialization, starting and termination of threads in a pool
 /*!
 A thread pool can be used in cases where we do not need to know what each thread does or when it does anything. Important is, that we can have an amount of parallel workers running and waiting on something to do.
 <p>The thing is that we do not need an element of control which gets work from somewhere, selects a free Thread and lets it process the work. The Thread can do this on its own. Just implement a special kind of Thread which does exactly this. An excellent usage could be processing elements from a queue.
@@ -170,7 +170,7 @@ private:
 };
 
 //---- WorkerThread -----------------------------------------------
-//!<b>abstraction for processing some work on demand</b>
+//! abstraction for processing some work on demand
 /*! The WorkerThread processes the workload assigned by its WorkerPoolManager<br>
 After processing the workload it sets its running state back to ERunningState::eReady and waits until it gets selected by the WorkerPoolManager again
 */
@@ -317,7 +317,7 @@ private:
 };
 
 //---- WorkerPoolManager ------------------------------------------------
-//!<b>manages a pool of worker threads</b>
+//! manages a pool of worker threads
 /*! this abstract class handles the critical region of parallel active requests
 it uses a semaphore which is set by the parameter numMaxParallelRequests
 see SamplePoolManager for an example on how to use this class */

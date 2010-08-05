@@ -13,7 +13,7 @@
 #include "Renderer.h"
 
 //---- NavBarRenderer -----------------------------------------------------------
-//! <B>Renders a multi-level navigation bar using tables</B>
+//! Renders a multi-level navigation bar using tables
 /*!
 \par Configuration
 \code

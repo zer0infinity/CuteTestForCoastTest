@@ -13,7 +13,7 @@
 #include "Anything.h"
 
 //---- AnyUtils ----------------------------------------------------------------------
-//! <B>Utility functions to compare and merge anythings</B>
+//! Utility functions to compare and merge anythings
 /*!
 <b>AnyUtils::AnyCompareEqual</b><br></br>
 Compare two anythings along a complete hierarchy.
@@ -154,7 +154,7 @@ protected:
 };
 
 //---- Recording ----------------------------------------------------------------------
-//! <B>read and write anythings as testrun input</B>
+//! read and write anythings as testrun input
 /*!
 Defines a recorder api to read in and write out an anything containing activities for testruns
 */

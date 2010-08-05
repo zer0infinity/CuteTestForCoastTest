@@ -14,7 +14,7 @@
 #include "Mapper.h"
 
 //---- HTTPMimeHeaderMapper ----------------------------------------------------------
-//! <B>Parses header fields from stream and stores them under Mapper.HTTPHeader</B>
+//! Parses header fields from stream and stores them under Mapper.HTTPHeader
 //! config: config.Suppress is an optional list of headers to suppress, config.Add is
 //! an optional list of /key "header" entries to add.
 //! Example: { /Suppress { "server", "content-type" } /Add { /server "Mozilla" /FD-Info "blah" } }

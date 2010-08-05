@@ -15,7 +15,7 @@
 #include "System.h"
 
 //---- FileDAImpl ----------------------------------------------------------
-//! <B>Abstract DataAccess for reading file from disk, see FileDAImpl relatives for concrete implementations</B>
+//! Abstract DataAccess for reading file from disk, see FileDAImpl relatives for concrete implementations
 /*!
 <B>Inputmapper-Configuration:</B><PRE>
 {

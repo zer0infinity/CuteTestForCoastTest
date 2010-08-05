@@ -14,7 +14,7 @@
 #include "Renderer.h"
 
 //---- XMLEscapeRenderer ----------------------------------------------------------
-//! <B>Escapes &lt &gt &amp &quot &apos</B>
+//! Escapes &lt &gt &amp &quot &apos
 class EXPORTDECL_RENDERER XMLEscapeRenderer : public Renderer
 {
 public:
@@ -28,7 +28,7 @@ public:
 };
 
 //---- XMLEscapeRenderer ----------------------------------------------------------
-//! <B>Unescapes &lt &gt &amp &quot &apos</B>
+//! Unescapes &lt &gt &amp &quot &apos
 class EXPORTDECL_RENDERER XMLUnescapeRenderer : public Renderer
 {
 public:

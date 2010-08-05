@@ -13,7 +13,7 @@
 #include "Mapper.h"
 
 // --------------------- HTTPHeaderParameterMapper -------------------------
-//! <b>HTTP header parameter mapping</b>
+//! HTTP header parameter mapping
 /*!
  * This mapper will do a Context::Lookup() using the given key. It expectes a list
  * (Anything) split into <tt>/headerkey value</tt> pairs. This list will be used as

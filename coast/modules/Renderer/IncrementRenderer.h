@@ -13,7 +13,7 @@
 #include "Renderer.h"
 
 //---- IncrementRenderer ---------------------------------------------------------------
-//! <B>This is a simple renderer used to increment a renderer Number</B>
+//! This is a simple renderer used to increment a renderer Number
 /*!
 \par Configuration
 \code

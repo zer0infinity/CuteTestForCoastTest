@@ -13,7 +13,7 @@
 #include "Renderer.h"
 
 //---- StringCompareRenderer -----------------------------------------------------------
-//! <B>Renderer compares two strings and choses renderer depending if they are equal or not</B>
+//! Renderer compares two strings and choses renderer depending if they are equal or not
 /*!
 \par Configuration
 \code

@@ -13,7 +13,7 @@
 #include "Action.h"
 
 //---- CallLdapCacheAction ----------------------------------------------------------
-//!<b>Action for testing LDAPCachePoliy.</b>
+//! Action for testing LDAPCachePoliy.
 //! Overwrites TmpStore in Context.
 class CallLdapCacheAction : public Action
 {

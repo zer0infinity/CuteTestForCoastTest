@@ -15,7 +15,7 @@
 class Context;
 
 //---- ConfiguredActionTest ----------------------------------------------------------
-//!<b>generic test case for configured action testing</b>
+//! generic test case for configured action testing
 /*!
 To use this testing method you have to do the following steps:
 -# include "ConfiguredActionTest.h" in SetupRunner

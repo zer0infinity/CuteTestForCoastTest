@@ -14,7 +14,7 @@
 #include "Action.h"
 
 //---- RendererDispatchAction ----------------------------------------------------------
-//! <b>Executes the result of a Context.Lookup() on the rendered String as an Action</b>
+//! Executes the result of a Context.Lookup() on the rendered String as an Action
 /*! @section RendererDispatchActionDescription Description
  * This action is useful to let a Renderer script decide what to execute next. Let the various Renderers define the flow of control.
  * The resulting token of the rendering process is used as Context.Lookup() to get the corresponding Action script and

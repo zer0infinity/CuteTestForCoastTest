@@ -119,7 +119,7 @@ protected:
 };
 
 //---- MockUDAC -----------------------------------------------------------
-//! <B>Mock UserDataAccessController for easy testing.</B>
+//! Mock UserDataAccessController for easy testing.
 /*!
 Configuration:<PRE>
 {
@@ -176,7 +176,7 @@ protected:
 };
 
 //---- MockTDAC -----------------------------------------------------------
-//! <B>Mock TokenDataAccessController for easy testing.</B>
+//! Mock TokenDataAccessController for easy testing.
 /*!
 Configuration:<PRE>
 {
@@ -223,7 +223,7 @@ protected:
 };
 
 //---- MockEDAC -----------------------------------------------------------
-//! <B>Mock EntityDataAccessController for easy testing.</B>
+//! Mock EntityDataAccessController for easy testing.
 /*!
 Configuration:<PRE>
 {

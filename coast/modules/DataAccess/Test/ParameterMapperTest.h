@@ -13,7 +13,7 @@
 #include "WDBaseTestPolicies.h"
 
 //---- ParameterMapperTest ----------------------------------------------------------
-//! <B>Tests Functionality of ParameterMapper and EagerParameterMapper.</B>
+//! Tests Functionality of ParameterMapper and EagerParameterMapper.
 /*!
 To understand the results of those tests, you should additionally
 consult "InputMapperMeta.any"

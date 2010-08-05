@@ -279,7 +279,7 @@ protected:
 };
 
 //---- PulldownMenuRenderer ---------------------------------------------------------------
-//! <B>This renderer renders a pulldown menu - a list from which the user has to select exactly one entry</B>
+//! This renderer renders a pulldown menu - a list from which the user has to select exactly one entry
 /*!
 Except for the \b Size and \b Multiple slots - which are meaningless here -
 PulldownMenuRenderer uses exactly the same Configuration as a SelectBoxRenderer.
@@ -475,7 +475,7 @@ protected:
 };
 
 //---- ImageButtonRenderer ---------------------------------------------------------------
-//! <B>ImageButtonRenderer renders an HTML INPUT with Type Image, that can be used to submit a form</B>
+//! ImageButtonRenderer renders an HTML INPUT with Type Image, that can be used to submit a form
 /*!
 \par Configuration
 \code
@@ -562,7 +562,7 @@ protected:
 };
 
 //---- TextFieldRenderer ---------------------------------------------------------------
-//! <B>TextFieldRenderer is supposed to be used for text- and password input fields</B>
+//! TextFieldRenderer is supposed to be used for text- and password input fields
 /*!
 \par Configuration
 \code
@@ -601,7 +601,7 @@ protected:
 };
 
 //---- TextAreaRenderer --------------------------------------------------------------
-//! <B>TextAreaRenderer serves to create a multi-line text input area</B>
+//! TextAreaRenderer serves to create a multi-line text input area
 /*!
 \par Configuration
 \code

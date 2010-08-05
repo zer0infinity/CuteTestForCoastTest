@@ -13,7 +13,7 @@
 #include "Renderer.h"
 
 //---- AppletRenderer ---------------------------------------------------------------
-//! <B>Renderer used to embed Java Applets into an HTML page</B>
+//! Renderer used to embed Java Applets into an HTML page
 /*!
 \par Configuration
 \code

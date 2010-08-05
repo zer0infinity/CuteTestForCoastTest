@@ -15,7 +15,7 @@
 #include "Renderer.h"
 
 //---- TimeStampRenderer ----------------------------------------------------------
-//! <B>Renders a TimeStamp to the stream</B>
+//! Renders a TimeStamp to the stream
 /*!
 \par Configuration
 \code

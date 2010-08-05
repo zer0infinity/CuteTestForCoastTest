@@ -13,7 +13,7 @@
 #include "Action.h"
 
 //---- CompareAction ----------------------------------------------------------
-//! <B>Compares two literal (rendered) values or two locations.</B>
+//! Compares two literal (rendered) values or two locations.
 /*!
 \par Configuration
 \code

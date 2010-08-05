@@ -18,7 +18,7 @@
 #include "IFAObject.h"
 
 //---- OraclePooledConnection -----------------------------------------------------------
-//! <b>Connection adapter to handle Oracle specific connections using Coast::Oracle::ConnectionPool</b>
+//! Connection adapter to handle Oracle specific connections using Coast::Oracle::ConnectionPool
 /*!
  * This class deals with oracle connection specific things like OracleEnvironment and OracleConnection. When
  * such an object is first requested for OraclePooledConnection::Open, it will allocate the needed resources

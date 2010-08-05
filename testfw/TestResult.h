@@ -14,7 +14,7 @@
 #include "TestTimer.h"
 #include "Test.h"
 
-//! <B>collect the results of the tests</B>
+//! collect the results of the tests
 /*!
  * A TestResult collects the results of executing a test case. It is an
  * instance of the Collecting Parameter pattern.

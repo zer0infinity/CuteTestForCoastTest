@@ -14,7 +14,7 @@
 #include "Renderer.h"
 
 //---- EscapeRenderer ----------------------------------------------------------
-//! <B>Inserts a given escape character before the character(s) to escape</B>
+//! Inserts a given escape character before the character(s) to escape
 /*!
 \par Configuration
 \code

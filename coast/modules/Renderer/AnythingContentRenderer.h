@@ -13,7 +13,7 @@
 #include "Renderer.h"
 
 //---- AnythingContentRenderer -----------------------------------------------------------
-//! <B>Render the content of an Anything</B>
+//! Render the content of an Anything
 /*!
 \par Configuration
 \code

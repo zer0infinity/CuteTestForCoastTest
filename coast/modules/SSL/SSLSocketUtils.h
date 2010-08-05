@@ -18,7 +18,7 @@
 #include "Anything.h"
 
 //---- SSLSocketUtils ----------------------------------------------------------
-//! <B>Helper methods for X509 certificates</B>
+//! Helper methods for X509 certificates
 class EXPORTDECL_SSL SSLSocketUtils
 {
 public:

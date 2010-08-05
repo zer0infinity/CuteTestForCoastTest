@@ -14,7 +14,7 @@
 #include "ITOString.h"
 #include <exception>
 
-//! <B>Provide useful message when an exception gets thrown</B>
+//! Provide useful message when an exception gets thrown
 /*!
  * This class is used to abort the program flow with either a self written message or a message provided using the
  * return code of the last OCI API call.

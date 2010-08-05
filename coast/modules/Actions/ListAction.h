@@ -14,7 +14,7 @@
 #include "Action.h"
 
 //---- ListAction ----------------------------------------------------------
-//! <B>Action counterpart of the ListRenderer -> Loops over an Anything and calls /EntryAction for each slot.</B>
+//! Action counterpart of the ListRenderer -> Loops over an Anything and calls /EntryAction for each slot.
 /*!
 \par Configuration
 \code

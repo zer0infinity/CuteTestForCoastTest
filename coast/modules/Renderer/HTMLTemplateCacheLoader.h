@@ -18,7 +18,7 @@
 class TemplateParser;
 
 //---- TemplatesCacheModule -----------------------------------------------------------
-//! <B>Used to load HTML-pages at startup and cache them for later access</B>
+//! Used to load HTML-pages at startup and cache them for later access
 //! <BR>Configuration: -> check HTMLTemplateCacheLoader for the configuration
 class EXPORTDECL_RENDERER TemplatesCacheModule : public WDModule
 {
@@ -31,7 +31,7 @@ public:
 };
 
 //--- HTMLTemplateCacheLoader ------------------------------------------------------
-//! <B>Policy implementation to cache HTML files</B>
+//! Policy implementation to cache HTML files
 /*!
 <B>Configuration:</B>
 <B>slots to define within Config.any</B><PRE>
@@ -93,7 +93,7 @@ private:
 };
 
 //--- HTMLTemplateCacheBuilder ------------------------------------------------------
-//! <B>Worker class to load the html-files using the given CacheHandler and CacheLoadPolicy</B>
+//! Worker class to load the html-files using the given CacheHandler and CacheLoadPolicy
 class EXPORTDECL_RENDERER HTMLTemplateCacheBuilder
 {
 public:
@@ -108,7 +108,7 @@ private:
 };
 
 //--- HTMLTemplateNameMapLoader ------------------------------------------------------
-//! <B>Dummy policy to cache the TemplateName to FilesystemFile map</B>
+//! Dummy policy to cache the TemplateName to FilesystemFile map
 class EXPORTDECL_RENDERER HTMLTemplateNameMapLoader : public CacheLoadPolicy
 {
 public:

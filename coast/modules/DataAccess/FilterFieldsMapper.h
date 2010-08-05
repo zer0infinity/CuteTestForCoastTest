@@ -15,7 +15,7 @@
 #include "Mapper.h"
 
 //---- FilterFieldsMapper ----------------------------------------------------------
-//! <B>Mapper to filter out unwanted named slots from within the value Anything to put</B>
+//! Mapper to filter out unwanted named slots from within the value Anything to put
 /*!
 \par Configuration
 \code

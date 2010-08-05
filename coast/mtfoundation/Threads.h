@@ -501,7 +501,7 @@ protected:
 };
 
 //---- AllocatorUnref ------------------------------------------------------------
-//!<b>utility class used for proper destruction of thread local storage</b>
+//! utility class used for proper destruction of thread local storage
 /*!destruction of thread local store belonging to a thread has to take place at the very
 last moment possible; but it has to be done; it is the only task of this class */
 class EXPORTDECL_MTFOUNDATION AllocatorUnref
@@ -519,7 +519,7 @@ protected:
 #include "ObserverIf.h"
 
 //---- Thread ------------------------------------------------------------
-//!<b>thread abstraction implementing its own thread state model using EThreadState and the available nativ thread api</b>
+//! thread abstraction implementing its own thread state model using EThreadState and the available nativ thread api
 /*!
 this class implements the thread abstraction ( its own thread of control ) using the system dependent thread api available.<br>
 To ease its use we have defined a state machine which let clients query a thread object about the state.<br>

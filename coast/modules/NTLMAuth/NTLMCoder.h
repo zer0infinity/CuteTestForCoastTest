@@ -13,7 +13,7 @@
 #include "ITOString.h"
 
 //---- NTLMCoder ----------------------------------------------------------
-//! <B>encode and decode NTLM HTTP Authenticate messages</B>
+//! encode and decode NTLM HTTP Authenticate messages
 /*!
 basic mechanics for implementing WWW-Authenticate: NTLM
 */

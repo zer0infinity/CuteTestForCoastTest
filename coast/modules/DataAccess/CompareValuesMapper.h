@@ -14,7 +14,7 @@
 #include "Mapper.h"
 
 //---- CompareValuesMapper ----------------------------------------------------------
-//! <B>Mapper to conditionally put a result based on a configurable comparison operation</B>
+//! Mapper to conditionally put a result based on a configurable comparison operation
 /*!
 <B>Configuration for configured Mapper in OutputMapperMeta.any:</B><PRE>
 {

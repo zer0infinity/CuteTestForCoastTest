@@ -14,7 +14,7 @@
 #include "Renderer.h"
 
 //---- TestContextFlagRenderer ----------------------------------------------------------
-//! <b>Context.Lookup() result of rendered \c FlagName slot as long value and either render \c WhenSet (!=0) or \c WhenNotSet (==0) Renderer specification</b>
+//! Context.Lookup() result of rendered \c FlagName slot as long value and either render \c WhenSet (!=0) or \c WhenNotSet (==0) Renderer specification
 /*! @deprecated Use either ConditionalRenderer or SwitchRenderer which are even more flexible
 \par Configuration
 \code

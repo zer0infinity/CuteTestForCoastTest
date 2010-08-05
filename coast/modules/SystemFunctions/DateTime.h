@@ -14,7 +14,7 @@
 #include "Anything.h"
 
 //---- DateTime ----------------------------------------------------------
-//! <B>wrapper class for date and time functions</B>
+//! wrapper class for date and time functions
 /*!
 */
 class EXPORTDECL_SYSTEMFUNCTIONS DateTime

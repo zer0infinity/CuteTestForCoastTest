@@ -14,7 +14,7 @@
 
 //---- ServerManagement ----------------------------------------------------------------
 //@{ \deprecated
-//! <B>Executes a server command.</B>
+//! Executes a server command.
 //@}
 class EXPORTDECL_ACTIONS ServerManagement : public Action
 {

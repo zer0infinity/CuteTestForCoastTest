@@ -14,7 +14,7 @@
 #include "Renderer.h"
 
 //---- HTTPHeaderRenderer ----------------------------------------------------------
-//! <B>Interpret an anything and render it as a MIME Header</B>
+//! Interpret an anything and render it as a MIME Header
 /*!
 \par Configuration
 \code

@@ -15,7 +15,7 @@
 class TokenDataAccessController;
 
 //---- MockOTPList -----------------------------------------------------------
-//! <B>Mock-Implementation of the OTPList API.</B>
+//! Mock-Implementation of the OTPList API.
 /*! Config:<pre>
 {
 	/TokenX {

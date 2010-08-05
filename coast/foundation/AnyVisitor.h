@@ -14,7 +14,7 @@
 #include "Anything.h"
 
 //---- AnyVisitor ----------------------------------------------------------
-//! <B>apply Visitor pattern to Anything structures</B>
+//! apply Visitor pattern to Anything structures
 /*!
 apply the visitor pattern and externalize algorithms traversing anythings.
 means to get rid of manually dispatching using GetType()

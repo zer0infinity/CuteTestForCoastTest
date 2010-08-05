@@ -117,7 +117,7 @@ protected:
 };
 
 //---- BaseURLPrinter -------------------------------------------------------
-//! <B>Generate the HREF part of a HTML-BASE tag</B>
+//! Generate the HREF part of a HTML-BASE tag
 /*!
 The BaseURLPrinter is used to generate the HREF in the \<BASE\> tag of
 the HTML header this significantly reduces page sizes, when many
@@ -136,7 +136,7 @@ protected:
 };
 
 //---- BaseURLRenderer -------------------------------------------------------
-//! <B>Generate the HTML-BASE tag using BaseURLPrinter to render the HREF</B>
+//! Generate the HTML-BASE tag using BaseURLPrinter to render the HREF
 /*!
 The BaseURLRenderer is used to generate \<BASE\> tag in the HTML header
 It uses the BaseURLPrinter to generate the necessary URL
@@ -149,7 +149,7 @@ public:
 };
 
 //---- SimpleURLPrinter -------------------------------------------------------
-//! <B>Used for pages where Base-URL is used - only renders private state</B>
+//! Used for pages where Base-URL is used - only renders private state
 /*!
 The SimpleURLPrinter is used on pages generated with the \<BASE\> tag using
 the BaseURLPrinter. It just emits the private state of the URL

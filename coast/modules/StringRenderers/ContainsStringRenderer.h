@@ -14,7 +14,7 @@
 #include "Renderer.h"
 
 //---- ContainsStringRenderer ----------------------------------------------------------
-//! <b>Search string within another string.</b>
+//! Search string within another string.
 /*!
  * @section cosr1 Renderer configuration
 \code

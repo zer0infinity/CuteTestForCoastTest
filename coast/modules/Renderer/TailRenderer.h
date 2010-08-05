@@ -14,7 +14,7 @@
 #include "Renderer.h"
 
 //---- TailRenderer ----------------------------------------------------------
-//! <B>Renders the right hand side part of a string delimited by the given delimiter</B>
+//! Renders the right hand side part of a string delimited by the given delimiter
 /*!
 \par Configuration
 \code

@@ -23,7 +23,7 @@ class TestList;
 	(RUNNER).addTest(#SUITE, SUITE::suite());
 
 //---- TestRunner -----------------------------------------------------------
-//! <B>main class running tests</B>
+//! main class running tests
 /*!
  * A command line based tool to run tests.
  * TestRunner expects as its only argument the name of a TestCase class.

@@ -18,7 +18,7 @@
 #include "RendererTest.h"
 
 //---- CallRendererTest ----------------------------------------------------------
-//! <B>test the new Call (aka Lambda) Renderer</B>
+//! test the new Call (aka Lambda) Renderer
 /*!
 Testcase to create test-first the proposed CallRenderer.
 This renderer should allow the reuse of complex renderer specifications

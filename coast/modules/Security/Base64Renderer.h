@@ -14,7 +14,7 @@
 #include "Renderer.h"
 
 //---- Base64Renderer ----------------------------------------------------------
-//! <B>Base64 renderer (original b64 char set)</B>
+//! Base64 renderer (original b64 char set)
 class EXPORTDECL_SECURITY Base64Renderer : public Renderer
 {
 public:

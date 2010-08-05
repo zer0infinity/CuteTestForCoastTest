@@ -27,7 +27,7 @@ protected:
 };
 
 //---- TestList ------------------------------------------------------
-//! <B>simple list class for tests to avoid the use of STL</B>
+//! simple list class for tests to avoid the use of STL
 class TestList
 {
 protected:

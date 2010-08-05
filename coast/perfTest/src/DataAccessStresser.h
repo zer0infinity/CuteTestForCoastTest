@@ -13,7 +13,7 @@
 #include "Stresser.h"
 
 //---- DataAccessStresser -----------------------------------------------------------
-//!<b>Simple Stresser which executes a DataAccess</b>
+//! Simple Stresser which executes a DataAccess
 /*!
 \par Configuration
 \code

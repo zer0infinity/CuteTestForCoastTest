@@ -16,7 +16,7 @@
 class Connector;
 
 //---- ConnectorDAImpl ----------------------------------------------------------
-//! <B>Protocol less connector to send and receive from a remote host</B>
+//! Protocol less connector to send and receive from a remote host
 /*!
 Use a specific Mapper to implement a protocol. For example you can use a AnythingToStreamMapper or a StreamToAnythingMapper to use an Anything as transport packet
 \par Configuration

@@ -15,7 +15,7 @@
 class String;
 
 //---- IFAObject ----------------------------------------------------------
-//! <b>This is the abstract root class for all IFAObjects</b>
+//! This is the abstract root class for all IFAObjects
 /*! It defines the cloning API IFAObject.Clone(), that is needed for the prototype pattern.
  */
 class EXPORTDECL_FOUNDATION IFAObject {
@@ -33,7 +33,7 @@ public:
 };
 
 //---- NamedObject ----------------------------------------------------------
-//!<b>Defines abstract named object api</b>
+//! Defines abstract named object api
 /*! This object serves as a base class for \em logically \em named objects of same type.
  * The name could be used to distinguish different instances of an object of the same base.
  */

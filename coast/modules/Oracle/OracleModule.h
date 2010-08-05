@@ -16,7 +16,7 @@
 #include <memory>
 
 //---- OracleModule ----------------------------------------------------------
-//! <B>Module to initialize Oracle Data Access</B>
+//! Module to initialize Oracle Data Access
 /*!
  * OracleModule is the module needed to initialize when wanting to access Oracle database server back ends. The
  * configuration needed is the configuration for Coast::Oracle::ConnectionPool which is best looked up there. Main

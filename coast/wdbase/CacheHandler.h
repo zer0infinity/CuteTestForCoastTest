@@ -76,7 +76,7 @@ public:
 };
 
 //--- AnythingLoaderPolicy -----------------------------------------------
-//! <B>Dummy policy wrap an Anything to cache</B>
+//! Dummy policy wrap an Anything to cache
 class EXPORTDECL_WDBASE AnythingLoaderPolicy : public CacheLoadPolicy
 {
 public:

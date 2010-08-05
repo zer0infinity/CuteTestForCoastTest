@@ -15,7 +15,7 @@
 class RowAccessor;
 
 //---- BasicTableRenderer -------------------------------------------------------------------
-//! <B>BasicTableRenderer is a fairly generic renderer used to generate simple HTML-tables.</B>
+//! BasicTableRenderer is a fairly generic renderer used to generate simple HTML-tables.
 /*!
 \par Configuration
 \code
@@ -398,7 +398,7 @@ protected:
 };
 
 //---- SequenceRenderer --------------------------------------------------------------
-//! <B>Just renders what is given in the config, similar to the renderers default behavior</B>
+//! Just renders what is given in the config, similar to the renderers default behavior
 /*!
 \par Configuration
 \code

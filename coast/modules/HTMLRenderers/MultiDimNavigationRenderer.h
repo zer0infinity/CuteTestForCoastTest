@@ -14,7 +14,7 @@
 #include "Renderer.h"
 
 //---- MultiDimNavigationRenderer ----------------------------------------------------------
-//! <B>Preconfigured Table renderer, some things are hardcoded</B>
+//! Preconfigured Table renderer, some things are hardcoded
 /*!
 \par Configuration
 \code

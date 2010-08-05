@@ -13,7 +13,7 @@
 #include "Renderer.h"
 
 //---- ListRenderer -----------------------------------------------------------
-//! <B>Renders output for all entries in a given list using a configurable renderer specification</B>
+//! Renders output for all entries in a given list using a configurable renderer specification
 /*!
 \par Configuration
 \code

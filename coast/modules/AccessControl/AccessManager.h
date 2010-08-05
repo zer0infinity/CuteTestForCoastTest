@@ -17,7 +17,7 @@ class AccessManager;
 class Context;
 
 //---- AccessManagerModule ----------------------------------------------------------
-//! <B>Manages access managers</B>
+//! Manages access managers
 /*!
 Installs configured access managers list from coastd config.
 Gives access to default access manager implementation.
@@ -41,7 +41,7 @@ protected:
 };
 
 //---- AbstractAccessManager ----------------------------------------------------------
-//! <B>Interface for all AccessManagers.</B>
+//! Interface for all AccessManagers.
 class EXPORTDECL_ACCESSCONTROL AccessManager : public HierarchConfNamed
 {
 public:

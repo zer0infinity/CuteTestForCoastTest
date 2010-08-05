@@ -229,7 +229,7 @@ private:
 };
 
 //---------------- EagerParameterMapper ------------------------------
-//! <b>A ParameterMapper eager to interpret its config, interprets full config if key is not found</b>
+//! A ParameterMapper eager to interpret its config, interprets full config if key is not found
 class EXPORTDECL_DATAACCESS EagerParameterMapper : public ParameterMapper
 {
 public:
@@ -439,7 +439,7 @@ private:
 };
 
 //---------------- EagerResultMapper ------------------------------
-//! <b>A ResultMapper eager to do something with its config, interprets full config if key is not found</b>
+//! A ResultMapper eager to do something with its config, interprets full config if key is not found
 class EXPORTDECL_DATAACCESS EagerResultMapper : public ResultMapper
 {
 public:
@@ -491,7 +491,7 @@ private:
 };
 
 //  -------------------------- ConfigMapper ----------------------------
-//! <b>Eager mapper that simply returns it's config (Scripting-Blocker)</b>
+//! Eager mapper that simply returns it's config (Scripting-Blocker)
 /*! Config: any config, is returned identically when Get("Anykey", Anything, ctx) is called.<br>
 Scripting can be re-activated with /MapperScript { ... a script ... }, the script is then evaluated and the results are inserted in place of the call.<br>
 Example:<pre>

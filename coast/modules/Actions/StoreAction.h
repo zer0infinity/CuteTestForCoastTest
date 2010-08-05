@@ -14,7 +14,7 @@
 #include "Action.h"
 
 //---- StoreAction ----------------------------------------------------------
-//! <b>Stores a rendered Value into a slot in a store.</b>
+//! Stores a rendered Value into a slot in a store.
 /*! @section storeactionconfiguration StoreAction Configuration
  * @par \c Value
  * \b mandatory, Renderer specification\n

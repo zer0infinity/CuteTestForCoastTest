@@ -14,7 +14,7 @@
 #include "NameUsingOutputMapper.h"
 
 //---- SlotnameOutputMapper ----------------------------------------------------------
-//! <b>Stores values below a configured slot and groups the output using the SlotnameSlots specification -> see example</b>
+//! Stores values below a configured slot and groups the output using the SlotnameSlots specification -> see example
 /*!
 <b>Configuration in OutputMapperMeta.any:</b><pre>
 {

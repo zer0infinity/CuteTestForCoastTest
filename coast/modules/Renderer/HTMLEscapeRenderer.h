@@ -14,7 +14,7 @@
 #include "Renderer.h"
 
 //---- HTMLEscapeRenderer ----------------------------------------------------------
-//! <B>Render config an HTML-escaped result string</B>
+//! Render config an HTML-escaped result string
 class EXPORTDECL_RENDERER HTMLEscapeRenderer : public Renderer
 {
 public:

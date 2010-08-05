@@ -18,7 +18,7 @@ class MD5Signer;
 #include "ITOString.h"
 
 //---- UniqueIdGen ----------------------------------------------------------
-//! <B>Generate a Unique ID</B>
+//! Generate a Unique ID
 /*!
 Returns a String containing a unique id.
 */

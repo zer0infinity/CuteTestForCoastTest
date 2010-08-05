@@ -16,7 +16,7 @@
 //---- forward declaration -----------------------------------------------
 
 //---- InitFinisManagerFoundation ----------------------------------------------------------
-//! <B>support class for initializing/cleaning things up in a deterministic sequence</B>
+//! support class for initializing/cleaning things up in a deterministic sequence
 /*!
 This is the 'singleton' instance for foundation specific initialization and cleanup. If you want to add foundation-specific InitFinisManager based objects you have to derive from this class.
 Normally you do not have to edit this object manually, just derive a class based on this one and add code to the DoInit() and DoFinis() method.

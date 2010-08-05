@@ -14,7 +14,7 @@
 #include "Renderer.h"
 
 //---- ContainsRenderer ----------------------------------------------------------
-//! <B>Conditional Renderering if a given value is contained in a List ( ListName.Contains(ValueToCheck) )</B>
+//! Conditional Renderering if a given value is contained in a List ( ListName.Contains(ValueToCheck) )
 /*!
 \par Configuration
 \code

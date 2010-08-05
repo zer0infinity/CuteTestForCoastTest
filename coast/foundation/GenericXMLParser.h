@@ -19,7 +19,7 @@ this may contain <B>HTML-Tags</B>
 #include "Anything.h"
 //---- forward declaration -----------------------------------------------
 
-//! <B>construct a simple DOM representation using Anything from an XML file</B>
+//! construct a simple DOM representation using Anything from an XML file
 /*!
 construct an anything representation of DOM parsing the XML
 */

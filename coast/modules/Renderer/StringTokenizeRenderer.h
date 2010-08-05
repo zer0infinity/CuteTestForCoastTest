@@ -14,7 +14,7 @@
 #include "Renderer.h"
 
 //---- StringTokenizeRenderer ----------------------------------------------------------
-//! <B>Tokenizes a given string by a given character and prints out whatever wanted</B>
+//! Tokenizes a given string by a given character and prints out whatever wanted
 /*!
 \par Configuration
 \code

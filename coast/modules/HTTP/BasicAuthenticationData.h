@@ -16,7 +16,7 @@
 //---- forward declaration -----------------------------------------------
 
 //---- BasicAuthenticationData ----------------------------------------------------------
-//! <B>Decoder for HTTP Basic authentication scheme</B>
+//! Decoder for HTTP Basic authentication scheme
 class EXPORTDECL_HTTP BasicAuthenticationData
 {
 public:

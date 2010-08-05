@@ -13,7 +13,7 @@
 #include "Action.h"
 
 //---- ExistsCheckAction ----------------------------------------------------------
-//! <B>Checks whether a given Slot exists.</B>
+//! Checks whether a given Slot exists.
 /*!
 \par Configuration
 \code

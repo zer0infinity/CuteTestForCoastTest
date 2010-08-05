@@ -81,7 +81,7 @@ The following macros help keep the coding expense for inserting trace statements
 		- SubTraceAny(subtrigger, anything, message) \code SubTraceAny(tmpStore, tmp, "tmpStore at open:"); \endcode
 */
 
-//! <b>class and macros, that provide tracing support</b>
+//! class and macros, that provide tracing support
 /*! Detailed description of how tracing works can be found in \b Dbg.h */
 class EXPORTDECL_FOUNDATION Tracer
 {

@@ -14,7 +14,7 @@
 #include "FileDAImpl.h"
 
 //---- WriteFileDAImpl ----------------------------------------------------------
-//! <B>DataAccess for writing a file to disk</B>
+//! DataAccess for writing a file to disk
 /*!
 <B>Inputmapper-Configuration:</B><PRE>
 {

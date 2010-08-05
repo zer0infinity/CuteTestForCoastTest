@@ -16,7 +16,7 @@
 class AccessManager;
 
 //---- AuthenticateWeakAction -----------------------------------------
-//! <B>Authenticates an user weakly with uid and password</B>
+//! Authenticates an user weakly with uid and password
 /*!
 \par Configuration
 \code
@@ -55,7 +55,7 @@ protected:
 };
 
 //---- AuthenticateStrongAction -----------------------------------------
-//! <B>Authenticates an user weakly with uid and password</B>
+//! Authenticates an user weakly with uid and password
 /*!
 \par Configuration
 \code

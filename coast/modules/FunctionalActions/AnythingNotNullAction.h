@@ -14,7 +14,7 @@
 #include "Action.h"
 
 //---- AnythingNotNullAction ----------------------------------------------------------
-//! <B>Check if a given slot in a store is not null</B>
+//! Check if a given slot in a store is not null
 /*!
 \par Configuration
 \code

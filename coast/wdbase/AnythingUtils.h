@@ -80,7 +80,7 @@ private:
 };
 
 //---- StorePutter -----------------------------------------------------------
-//! <b>Use this class to put an Anything into a context store using lookup-syntax</b>
+//! Use this class to put an Anything into a context store using lookup-syntax
 /*! To use this class; create an instance and call Operate on it.
  * @section storeputterconfiguration StorePutter Configuration
  * @par \c Store

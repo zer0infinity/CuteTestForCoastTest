@@ -15,7 +15,7 @@
 #include "Mapper.h"
 
 //---- RenderedKeyMapper ----------------------------------------------------------
-//! <B>dynamically create Put-key according to rendererspec</B>
+//! dynamically create Put-key according to rendererspec
 /*!
 \par Configuration
 \code
@@ -51,7 +51,7 @@ private:
 };
 
 //---- RenderedKeyParameterMapper ----------------------------------------------------------
-//! <B>dynamically create Get-key according to rendererspec</B>
+//! dynamically create Get-key according to rendererspec
 /*!
 \par Configuration
 \code

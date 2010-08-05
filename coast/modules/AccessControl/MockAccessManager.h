@@ -14,7 +14,7 @@
 #include "AccessManager.h"
 
 //---- MockAccessManager ----------------------------------------------------------
-//! <B>Mock Access Manager to simplify testing.</B>
+//! Mock Access Manager to simplify testing.
 /*! Config:<pre>
 {
 	/AcceptedCodes {

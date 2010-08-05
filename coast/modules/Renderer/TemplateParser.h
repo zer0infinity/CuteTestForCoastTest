@@ -13,7 +13,7 @@
 #include "Anything.h"
 
 //---- TemplateParser ----------------------------------------------------------
-//! <B>Used to parse HTML-Templates during TemplatesCache initialization</B>
+//! Used to parse HTML-Templates during TemplatesCache initialization
 /*!
 \par Configuration
 \code
@@ -81,7 +81,7 @@ protected:
 };
 
 //---- FormTemplateParser ----------------------------------------------------------
-//! <B>Used to parse Form-specific HTML-Template content</B>
+//! Used to parse Form-specific HTML-Template content
 class EXPORTDECL_RENDERER FormTemplateParser: public TemplateParser
 {
 protected:
@@ -90,7 +90,7 @@ protected:
 };
 
 //---- ScriptTemplateParser ----------------------------------------------------------
-//! <B>Used to parse script-specific HTML-Template content</B>
+//! Used to parse script-specific HTML-Template content
 class EXPORTDECL_RENDERER ScriptTemplateParser: public TemplateParser
 {
 protected:

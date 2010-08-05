@@ -25,7 +25,7 @@ namespace Coast
 	{
 
 //---- ConnectionPool ----------------------------------------------------------
-//! <b>Oracle specific class to handle backend connection pooling</b>
+//! Oracle specific class to handle backend connection pooling
 		/*!
 		 * A ConnectionPool is used to keep track of a predefined number of Connections to a back end of some type.
 		 * This pool will keep track of a number of connections against Oracle database servers. It is not limited to any number of connections

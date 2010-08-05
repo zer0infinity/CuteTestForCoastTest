@@ -39,7 +39,7 @@ typedef int Unicode;
 #define NotNull(s) ((s) ? (s) : "null")
 #define NotNullStr(s) ((s.Length() > 0) ? (const char *)(s) : "null")
 //---- TString --------------------------------------------------------------
-//! <B>trivial implementation of a string class</B>
+//! trivial implementation of a string class
 class TString
 {
 	void alloc(long capacity); // factor out mem alloc for ctors

@@ -13,7 +13,7 @@
 #include "StringStream.h"
 
 //---- HTTPStreamStack ----------------------------------------------------------
-//! <B>Helper class to handle chunked and gzip encoding of http bodys.</B>
+//! Helper class to handle chunked and gzip encoding of http bodys.
 class EXPORTDECL_WDBASE HTTPStreamStack
 {
 public:

@@ -15,7 +15,7 @@
 class ROAnything;
 
 //---- LookupInterface ----------------------------------------------------------
-//! <b>Define client API for lookupable context information</b>
+//! Define client API for lookupable context information
 /*! public members define the lookup protocol for clients, protected members define implementation protocol for subclasses
  * The information can be addressed by a Anything::LookupPath() path expression. */
 class EXPORTDECL_WDBASE LookupInterface

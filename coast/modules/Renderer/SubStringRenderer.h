@@ -14,7 +14,7 @@
 #include "Renderer.h"
 
 //---- SubStringRenderer ----------------------------------------------------------
-//! <B>String.SubString() as Renderer</B>
+//! String.SubString() as Renderer
 /*!
 \par Configuration
 \code

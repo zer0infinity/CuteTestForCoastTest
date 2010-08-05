@@ -17,7 +17,7 @@ class TokenDataAccessController;
 class EntityDataAccessController;
 
 //---- FileCreator ----------------------------------------------------------
-//! <B>Writea a given Anything to a file.</B>
+//! Writea a given Anything to a file.
 class FileCreator
 {
 public:
