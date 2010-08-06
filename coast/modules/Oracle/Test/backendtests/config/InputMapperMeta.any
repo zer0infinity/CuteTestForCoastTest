@@ -57,9 +57,17 @@
 			/P1		{ /LookupMapper * }
 		}
 	}
+	/MapNullID {
+		/TreatAsNull {
+			""
+			NULL
+			null
+		}
+	}
 	/SPExecute {
 		/Name	{ /RendererMapper { /ContextLookupRenderer SPName } }
 		/Params {
+			/ID { /MapNullID * }
 		}
 	}
 	/SPExecuteArray {

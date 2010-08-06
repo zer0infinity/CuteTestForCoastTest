@@ -78,6 +78,9 @@
 					}
 				}
 			}
+			/NullParameterMapper {
+				MapNullID
+			}
 		}
 		/Output {
 			/ResultMapper {
@@ -304,7 +307,7 @@
 					/DataAccess	SPExecute
 					/Parameters {
 						/SPName	getempsalary
-						/ID		NULL
+						/ID		*
 					}
 				}
 			}

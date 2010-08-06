@@ -347,16 +347,16 @@ Anything OracleDAImpl::getMappedInputValues( ParameterMapper *pmapIn, OracleStat
 		while ( aDescIter.Next( aDescEl ) ) {
 			long lRowLength = aDescEl.AsLong( "MaxStringBufferSize", 0L );
 			String strParamname( aDescEl.AsString( "Name" ) );
-			String strValue;
+			Anything anyValue;
 			if ( aDescEl.AsLong( "IoMode" ) == (long) OCI_TYPEPARAM_IN || aDescEl.AsLong( "IoMode" )
 				 == (long) OCI_TYPEPARAM_INOUT ) {
 				bool bIsRSET = ( aDescEl.AsLong( "Type" ) == SQLT_CUR ) || ( aDescEl.AsLong( "Type" ) == SQLT_RSET );
-				if ( !pmapIn->Get( String( "Params." ).Append( strParamname ), strValue, ctx ) && !bIsRSET ) {
+				if ( !pmapIn->Get( String( "Params." ).Append( strParamname ), anyValue, ctx ) && !bIsRSET ) {
 					throw OracleException(*(aStmt.getConnection()), String( "getMappedInputValues: In(out) parameter [" ) << strParamname
 										  << "] not found in config, is it defined in upper case letters?" );
 				}
-				anyRow[strParamname] = strValue;
-				lRowLength = std::max(lRowLength, strValue.Length());
+				anyRow[strParamname] = anyValue;
+				lRowLength = std::max(lRowLength, anyValue.AsString().Length());
 			} else {
 				lRowLength = lBufferSize;
 			}
