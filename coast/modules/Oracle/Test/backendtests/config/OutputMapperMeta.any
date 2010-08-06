@@ -1,0 +1,76 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2009, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+	/PutResultMapper {
+		/PutPolicy			Put
+	}
+	/AppendResultMapper {
+		/PutPolicy			Append
+	}
+
+	/OracleDAImpl {
+		/DestinationSlot	TestOutput
+		/PutPolicy			Append
+		/Query				{ /PutResultMapper * }
+		/QueryCount			{ /PutResultMapper * }
+		/UpdateCount		{ /PutResultMapper * }
+		/QuerySource		{ /PutResultMapper * }
+		/QueryTitles		{ /PutResultMapper * }
+	}
+	/SelectEmployees {
+		/DestinationSlot	SelectEmployees
+	}
+	/UpdateEmployees {
+		/DestinationSlot	UpdateEmployees
+	}
+	/SimpleSQLAccess {
+		/DestinationSlot	SimpleSQLAccess
+	}
+	/SelectEmployeesTitlesOnce {
+		/DestinationSlot	SelectEmployeesTitlesOnce
+	}
+	/OracleSPMapperSlotTest {
+		/DestinationSlot	OracleSPMapperSlotTest
+	}
+	/SPMaxSalary {
+		/PutPolicy			Put
+		/DestinationSlot	SPMaxSalary
+	}
+	/SPExecute {
+		/PutPolicy			Put
+		/DestinationSlot	SPExecute
+		/Messages			{ /AppendResultMapper * }
+		/QueryResult		{ /AppendResultMapper * }
+		/QueryTitles		{ /PutResultMapper * }
+		/EMPCURSOR {
+			/QueryResult	{ /AppendResultMapper * }
+			/QueryTitles	{ /PutResultMapper * }
+		}
+	}
+	/SPExecuteArray {
+		/PutPolicy			Put
+		/DestinationSlot	SPExecuteArray
+		/Messages			{ /AppendResultMapper * }
+	}
+	/MultiThreadedDA {
+		/DestinationSlot	MultiThreadedDA
+	}
+	/MultiThreadedDAWithError {
+		/DestinationSlot	MultiThreadedDAWithError
+	}
+	/SPExecuteGetempsSucc {
+		/DestinationSlot	SPExecuteGetempsSucc
+	}
+	/SPExecuteGetempsFail {
+		/DestinationSlot	SPExecuteGetempsFail
+	}
+	/OracleResultMapperArrayIdxTest {
+		/DestinationSlot	OracleResultMapperArrayIdxTest
+	}
+}

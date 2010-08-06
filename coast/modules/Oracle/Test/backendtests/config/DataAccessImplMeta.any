@@ -5,6 +5,7 @@
 # This library/application is free software; you can redistribute and/or modify it under the terms of
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
+
 {
 	/MapperTestDAImpl {
 		/transfer	{
@@ -17,16 +18,5 @@
 			/ID	ID
 		}
 		/DataType	long
-	}
-	/NullParamMappingTest {
-		/transfer	{
-			/Params.P1 P1
-			/Params.P2 P2
-			/Params.P3 P3
-			/Params.P4 P4
-			/Params.P5 P5
-			/Params.P6 P6
-		}
-		/DataType	Anything
 	}
 }

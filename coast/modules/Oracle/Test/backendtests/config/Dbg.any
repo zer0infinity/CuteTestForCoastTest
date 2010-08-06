@@ -5,8 +5,9 @@
 # This library/application is free software; you can redistribute and/or modify it under the terms of
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
+
 {
-	/LowerBound		10		# debugging on or off
+	/LowerBound		0		# debugging on or off
 	/UpperBound		11		# override switch: turns everything on
 	/DumpAnythings  1		# print full Anythings
 
@@ -40,10 +41,6 @@
 			/TraceRow					-10
 		}
 		/TryExecuteQuery				10
-	}
-	/MapperTestDAImpl {
-		/MainSwitch						10
-		/EnableAll						10
 	}
 	/OracleConnection {
 		/MainSwitch						0
@@ -95,13 +92,9 @@
 		/EnableAll						10
 	}
 	/OracleParameterMapper {
-		/MainSwitch						10
+		/MainSwitch						0
 		/EnableAll						10
 		/Ctor							-10
-	}
-	/NullParameterMapper {
-		/MainSwitch						10
-		/EnableAll						10
 	}
 	/OracleResultMapper {
 		/MainSwitch						0
@@ -130,7 +123,7 @@
 		/EnableAll						10
 	}
 	/RendererMapper {
-		/MainSwitch						10
+		/MainSwitch						0
 		/EnableAll						10
 	}
 	/ResultMapper {
@@ -139,7 +132,7 @@
 		/DoSelectScript					10
 	}
 	/ParameterMapper {
-		/MainSwitch						10
+		/MainSwitch						0
 		/EnableAll						10
 		/DoSelectScript					-10
 	}

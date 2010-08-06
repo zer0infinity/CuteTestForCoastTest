@@ -1,0 +1,106 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2009, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+
+{
+	/SifsCoastOrcl {
+		 /DBUser { /RendererMapper {
+			/ContextLookupRenderer { DBUser !Defaults.any?Oracle.Username1 }
+		} }
+		/DBPW { /RendererMapper {
+			/ContextLookupRenderer { DBPW !Defaults.any?Oracle.Password1 }
+		} }
+		/DBConnectString	!Defaults.any?Oracle.ConnectString
+		/UseTLS	1
+	}
+	/SifsCoastOrclSP  %SifsCoastOrcl
+
+	/SelectEmployees {
+		/SQL	{ /RendererMapper {
+			"SELECT ename, job FROM emp" { /ContextLookupRenderer whereClause }
+		} }
+	}
+	/UpdateEmployees {
+		/SQL	{
+			"update emp set ename='gugus' where ename='ADAMS' or ename='BLAKE'"
+		}
+		/ShowUpdateCount 1
+	}
+	/SimpleSQLAccess {
+		/SQL	{ /RendererMapper {
+			/ContextLookupRenderer SQL
+		} }
+		/ShowUpdateCount 1
+	}
+	/SelectEmployeesTitlesOnce {
+		/DBResultFormat		TitlesOnce
+	}
+
+	/SPMaxSalary {
+		/Name		"getempsalary"
+		/Params {
+			/ID		7839
+		}
+	}
+	/OracleSPMapperSlotTest {
+		/Name	ourSPName
+		/Params {
+			/P1		first
+		}
+	}
+	/SPRenderedOracleSPMapperParamTest {
+		/Params {
+			/P1		{ /LookupMapper * }
+		}
+	}
+	/SPExecute {
+		/Name	{ /RendererMapper { /ContextLookupRenderer SPName } }
+		/Params {
+		}
+	}
+	/SPExecuteArray {
+		/ArraySlot	{ /RendererMapper { /ContextLookupRenderer ArrayValuesSlotName } }
+		/Params {
+			/ID	{ /RendererMapper { /ContextLookupRenderer ID } }
+		}
+	}
+	/MultiThreadedDA {
+		/SQL
+		{
+			/RendererMapper
+			{
+				"select * from salesdetail "
+				" where title_id like 'BU%'"
+				" order by ord_num asc"
+			}
+		}
+	}
+
+	/MultiThreadedDAWithError
+	{
+		/SQL
+		{
+			/RendererMapper
+			{
+				"select * from salesdetail "
+				" where title_id = "
+				" order by ord_num asc"
+			}
+		}
+	}
+	/SPExecuteGetempsSucc {
+		/Name		"getemps"
+		/Params {
+		}
+	}
+	/SPExecuteGetempsFail {
+		/Name		"getempsalary"
+		/Params {
+			/ID		abcd
+		}
+	}
+}

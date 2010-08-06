@@ -50,7 +50,8 @@ def setUp(target, source, env):
 
     env['ENV']['NLS_LANG'] = '.WE8ISO8859P1'
     relDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
-    Anything.setLocalEnv(WD_ROOT=relDir.abspath)
+    configDir='backendtests/config'
+    Anything.setLocalEnv(WD_ROOT=relDir.abspath, WD_PATH=configDir)
 
     global defaults
     defaults = Anything.loadFromFile('Defaults.any')
@@ -67,7 +68,7 @@ def setUp(target, source, env):
         ("##pass2##", str(defaults['Oracle']['Password2'])),
     ]
     logDir = relDir.Dir(env['LOGDIR']).Dir(env['VARIANTDIR'])
-    path = relDir.Dir('config')
+    path = relDir.Dir(configDir)
 
     connectstring = "{Username1!s}/{Password1!s}@{Server!s}:{Port!s}/{sid!s}".format(**defaults['Oracle'])
     res = runCommand(
@@ -118,11 +119,26 @@ buildSettings = {
         'requires' : [
             'CoastAppLog',
             'CoastRenderers',
+        ],
+        'sourceFiles' : SConsider.listFiles(['*.cpp']),
+        'copyFiles' : [
+            (SConsider.findFiles(['config'],['.any','.txt','.tst','.sql']), S_IRUSR|S_IRGRP|S_IROTH),
+        ],
+    },
+    'backendTests' : {
+        'targetType'       : 'ProgramTest',
+        'linkDependencies' : [
+            'CoastOracle',
+            'testfwWDBase',
+        ],
+        'requires' : [
+            'CoastAppLog',
+            'CoastRenderers',
             'oracle.sqlplus',
         ],
-        'sourceFiles'      : SConsider.listFiles(['*.cpp']),
+        'sourceFiles'      : SConsider.listFiles(['backendtests/*.cpp']),
         'copyFiles' : [
-            (SConsider.findFiles(['.'],['.any','.txt','.tst','.sql']), S_IRUSR|S_IRGRP|S_IROTH),
+            (SConsider.findFiles(['backendtests/config'],['.any','.txt','.tst','.sql']), S_IRUSR|S_IRGRP|S_IROTH),
         ],
         'runConfig' : {
             'setUp': setUp,

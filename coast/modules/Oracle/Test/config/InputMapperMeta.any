@@ -5,47 +5,7 @@
 # This library/application is free software; you can redistribute and/or modify it under the terms of
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
-
 {
-	/SifsCoastOrcl {
-		 /DBUser { /RendererMapper {
-			/ContextLookupRenderer { DBUser !Defaults.any?Oracle.Username1 }
-		} }
-		/DBPW { /RendererMapper {
-			/ContextLookupRenderer { DBPW !Defaults.any?Oracle.Password1 }
-		} }
-		/DBConnectString	!Defaults.any?Oracle.ConnectString
-		/UseTLS	1
-	}
-	/SifsCoastOrclSP  %SifsCoastOrcl
-
-	/SelectEmployees {
-		/SQL	{ /RendererMapper {
-			"SELECT ename, job FROM emp" { /ContextLookupRenderer whereClause }
-		} }
-	}
-	/UpdateEmployees {
-		/SQL	{
-			"update emp set ename='gugus' where ename='ADAMS' or ename='BLAKE'"
-		}
-		/ShowUpdateCount 1
-	}
-	/SimpleSQLAccess {
-		/SQL	{ /RendererMapper {
-			/ContextLookupRenderer SQL
-		} }
-		/ShowUpdateCount 1
-	}
-	/SelectEmployeesTitlesOnce {
-		/DBResultFormat		TitlesOnce
-	}
-
-	/SPMaxSalary {
-		/Name		"getempsalary"
-		/Params {
-			/ID		7839
-		}
-	}
 	/OracleSPMapperSlotTest {
 		/Name	ourSPName
 		/Params {
@@ -54,53 +14,33 @@
 	}
 	/SPRenderedOracleSPMapperParamTest {
 		/Params {
-			/P1		{ /LookupMapper * }
+			/P1		{ /ParameterMapper * }
 		}
 	}
-	/SPExecute {
-		/Name	{ /RendererMapper { /ContextLookupRenderer SPName } }
+	/NullParameterMapper {
+		/TreatAsNull {
+			""
+			"NULL"
+			"null"
+		}
+	}
+	/DirectParamNullMapping {
+		/P1 { /RealNull * }
+		/P5 { /SomeThing * }
+	}
+	/RenderedNullMapping {
+		/P2 { /RendererMapper { /Lookup P2 } }
+		/P3 { /RendererMapper { /Lookup P3 } }
+		/P4 { /RendererMapper { /Lookup P4 } }
+	}
+	/NullParamMappingTest {
 		/Params {
-		}
-	}
-	/SPExecuteArray {
-		/ArraySlot	{ /RendererMapper { /ContextLookupRenderer ArrayValuesSlotName } }
-		/Params {
-			/ID	{ /RendererMapper { /ContextLookupRenderer ID } }
-		}
-	}
-	/MultiThreadedDA {
-		/SQL
-		{
-			/RendererMapper
-			{
-				"select * from salesdetail "
-				" where title_id like 'BU%'"
-				" order by ord_num asc"
-			}
-		}
-	}
-
-	/MultiThreadedDAWithError
-	{
-		/SQL
-		{
-			/RendererMapper
-			{
-				"select * from salesdetail "
-				" where title_id = "
-				" order by ord_num asc"
-			}
-		}
-	}
-	/SPExecuteGetempsSucc {
-		/Name		"getemps"
-		/Params {
-		}
-	}
-	/SPExecuteGetempsFail {
-		/Name		"getempsalary"
-		/Params {
-			/ID		abcd
+			/P1 { /DirectParamNullMapping * }
+			/P2 { /RenderedNullMapping * }
+			/P3 { /RenderedNullMapping * }
+			/P4 { /RenderedNullMapping * }
+			/P5 { /DirectParamNullMapping * }
+			/P6 { /DirectParamNullMapping * }
 		}
 	}
 }
