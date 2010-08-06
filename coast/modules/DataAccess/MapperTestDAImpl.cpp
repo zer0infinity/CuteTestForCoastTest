@@ -23,10 +23,6 @@ MapperTestDAImpl::MapperTestDAImpl(const char *name) : DataAccessImpl(name)
 {
 }
 
-MapperTestDAImpl::~MapperTestDAImpl()
-{
-}
-
 IFAObject *MapperTestDAImpl::Clone() const
 {
 	return new MapperTestDAImpl(fName);

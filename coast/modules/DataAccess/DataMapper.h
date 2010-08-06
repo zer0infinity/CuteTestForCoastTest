@@ -49,12 +49,12 @@ private:
 };
 
 //---- LookupMapper -------------------------------------------------------------------
+//! @deprecated special mapper with a strange behavior, not really needed any more with modern mapper scripting
+/*! uses slot /LookupName "aMapperName" and delegates to mapper aMapperName if found
+ * new scripting mechanics allows almost the same with /key { /aMapperName literalconfig }
+ */
 class EXPORTDECL_DATAACCESS LookupMapper : public EagerParameterMapper
 {
-
-//! special mapper with a strange behavior, not really needed any more with modern mapper scripting
-//! uses slot /LookupName "aMapperName" and delegates to mapper aMapperName if found
-//! new scripting mechanics allows almost the same with /key { /aMapperName literalconfig }
 public:
 	LookupMapper(const char *name);
 

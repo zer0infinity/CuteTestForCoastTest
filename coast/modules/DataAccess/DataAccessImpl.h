@@ -15,11 +15,39 @@
 class Registry;
 
 //---- DataAccessImplsModule -----------------------------------------------------------
+//! WDModule to initialize, configure and register DataAccessImpl objects
+/*! @section DataAccessImplsModuleDescription Description
+ * To initialize DataAccessImpl objects, this module should be listed in the \c /Modules section
+ * of your main configuration file.
+ * Module specific entries are expected within the subslot as defined in DataAccessImpl::gpcConfigPath.
+ *
+ * @subsection DataAccessImplsModulePurpose Purpose
+    Definition of a root class for data access implementation.
+    It manages all the implementation subclasses in a registry.
+    This class defines the protocol for getting data in and out of a
+    persistency layer.
+ *
+ * @subsection DataAccessImplsModuleConcurrency Concurrency
+	DataAccessImpls are used in a MT-Environment. One thread per request.
+    If a DataAccessImpl holds state in order to process a single request,
+    it is not thread safe.
+    Therefore it has to be allocated and deleted on a request basis.
+ *
+ * @subsection DataAccessImplsModuleCollaborations Collaborations
+    An DataAccessImpl is called from the DataAccess object.
+    It calls mapper in order to move the data in and out.
+ *
+ * @subsection DataAccessImplsModuleErrorhandling Errorhandling
+    Errorhandling is implicit e.g. via parameters moved in and out by the mappers
+ *
+ * @subsection DataAccessImplsModuleAssumptions Assumptions
+    The transaction name is unique in the system.
+ */
 class EXPORTDECL_DATAACCESS DataAccessImplsModule : public WDModule
 {
 public:
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	DataAccessImplsModule(const char *name);
-	~DataAccessImplsModule();
 
 	virtual bool Init(const ROAnything config);
 	virtual bool ResetFinis(const ROAnything );
@@ -27,42 +55,40 @@ public:
 };
 
 //--- DataAccessImpl --------------------------------------------------
-//! base class for classes implementing access to data delivery services
-//! it has single api Exec that must implement the access in one call
-//! if data access is conversational, the conversation taking place is done through
-//! the mapper objects
+//! Base class for implementing access to data delivery services
+/*! Concrete classes need to implement the Exec() function and perform the access in one call.
+ * Parameters needed to configure the data access operation should be retrieved using the supplied ParameterMapper,
+ * results should be stored away using the supplied ResultMapper. */
 class EXPORTDECL_DATAACCESS DataAccessImpl : public HierarchConfNamed
 {
 public:
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	DataAccessImpl(const char *name);
-	~DataAccessImpl();
 
 	static const char* gpcCategory;
 	static const char* gpcConfigPath;
+	//! Name of the configuration Anything file
+	static const char* gpcConfigFileName;
 
-	//!factory method to create a generic data access object, not very useful
+	/*! @copydoc IFAObject::Clone() */
 	IFAObject *Clone() const;
 
 	//!protocol provided to implement data access
-	//! \param c The context in with the transaction takes place
-	//! \param trxname the name of the data access entity
-	//! \param input a mapper object that is mapping data from the client space to the data access object on request
-	//! \param output a mapper object that maps the result of the access back into client space
-	virtual bool Exec(Context &c, ParameterMapper *input, ResultMapper *output);
+	/*! @param ctx The context in which the transaction takes place
+	 * @param input ParameterMapper object that is mapping data from the client space to the data access object on request
+	 * @param output ResultMapper object that maps the result of the access back into client space */
+	virtual bool Exec(Context &ctx, ParameterMapper *input, ResultMapper *output);
 
 	//--- Registration
 	RegCacheDef(DataAccessImpl);	// FindDataAccessImpl()
 
 protected:
-	// generate the config file name (without extension, which is assumed to be any)
-	// out of category and objName
-	// the default implementation just takes the objName
+	//! Name of the file in which configurations for DataAccessImpl objects are stored, \ref gpcConfigFileName
+	/*! @copydetails ConfNamedObject::DoGetConfigName() */
 	virtual bool DoGetConfigName(const char *category, const char *objName, String &configFileName) const;
 
-	// load an anything and make it available by storing a reference in fConfig
-	// the default implementation uses the cache handler
-	// if you provide your own implementation be careful about the lifetime of
-	// the loaded anything otherwise fConfig points to invalid data
+	//! DataAccessImpl objects will get initialized using their named configuration from within the common configuration file
+	/*! @copydetails ConfNamedObject::DoLoadConfig() */
 	virtual bool DoLoadConfig(const char *category);
 
 private:
@@ -72,39 +98,39 @@ private:
 };
 
 //--- LoopBackDAImpl ---------------------------------------------------
-
-//	Structure of config:
-//<PRE>	{
-//		/transfer {					config entry to specify slots to transfer
-//			/FromSlot1	ToSlot1		using ParameterMapper->Get to lookup FromSlot and
-//									putting it using ResultMapper->Put to store it at ToSlot
-//			/FromSlot2	ToSlot2		...
-//			...
-//		}
-//		/Streaming					optional, 0L/1L/2L/3L, default 0L, defining streaming mode
-//									0L or default: no streaming used, using Get(FromSlot, String, Context)
-//									1L: ParameterMapper->Get using StringStream, eg. Get(FromSlot, ostream, Context, ROAnything)
-//										ResultMapper->Put using String, eg. Put(ToSlot, String, Context)
-//									2L: ParameterMapper->Get using String, eg. Get(FromSlot, String, Context)
-//										ResultMapper->Put using StringStream, eg. Put(ToSlot, istream, Context, ROAnything)
-//									3L: ParameterMapper->Get using StringStream, eg. Get(FromSlot, ostream, Context, ROAnything)
-//										ResultMapper->Put using StringStream, eg. Put(ToSlot, istream, Context, ROAnything)
-//	}
+//! Simple loop back DataAccessImpl to transfer String or StringStream values from input to output
+/*! LoopBackDAImpl can be useful when wanting to test ParameterMapper or ResultMapper implementations.
+@code
+{
+	/transfer {					config entry to specify slots to transfer
+		/FromSlot1	ToSlot1		using ParameterMapper->Get to lookup FromSlot and
+								putting it using ResultMapper->Put to store it at ToSlot
+		/FromSlot2	ToSlot2		...
+		...
+	}
+	/Streaming					optional, 0L/1L/2L/3L, default 0L, defining streaming mode
+								0L or default: no streaming used, using Get(FromSlot, String, Context)
+								1L: ParameterMapper->Get using StringStream, eg. Get(FromSlot, ostream, Context, ROAnything)
+									ResultMapper->Put using String, eg. Put(ToSlot, String, Context)
+								2L: ParameterMapper->Get using String, eg. Get(FromSlot, String, Context)
+									ResultMapper->Put using StringStream, eg. Put(ToSlot, istream, Context, ROAnything)
+								3L: ParameterMapper->Get using StringStream, eg. Get(FromSlot, ostream, Context, ROAnything)
+									ResultMapper->Put using StringStream, eg. Put(ToSlot, istream, Context, ROAnything)
+}
+@endcode
+ */
 class EXPORTDECL_DATAACCESS LoopBackDAImpl: public DataAccessImpl
 {
 public:
-	LoopBackDAImpl(const char *name);
-	~LoopBackDAImpl();
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
+	LoopBackDAImpl(const char *name) : DataAccessImpl(name) {}
 
-	//!factory method to create a generic data access object, not very useful
+	/*! @copydoc IFAObject::Clone() */
 	IFAObject *Clone() const;
 
-	//!protocol provided to implement data access
-	//! \param c The context in with the transaction takes place
-	//! \param trxname the name of the data access entity
-	//! \param input a mapper object that is mapping data from the client space to the data access object on request
-	//! \param output a mapper object that maps the result of the access back into client space
-	virtual bool Exec(Context &c, ParameterMapper *input, ResultMapper *output);
+	//! Loopback specific implementation of the data access
+	/*! @copydetails DataAccessImpl::Exec() */
+	virtual bool Exec(Context &ctx, ParameterMapper *input, ResultMapper *output);
 
 private:
 	LoopBackDAImpl();

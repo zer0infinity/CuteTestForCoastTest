@@ -6,39 +6,6 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-/****
-  Purpose_Begin
-    Definition of a root class for data access implementation.
-    It manages all the implementation subclasses in a registry.
-    This class defines the protocol for getting data in and out of a
-    persistency layer.
-  Purpose_End
-
-  Paramters_Begin
-    insert your comment here !!
-  Paramters_End
-
-  Concurrency_Begin
-	DataAccessImpls are used in a MT-Environment. One thread per request.
-    If a DataAccessImpl holds state in order to process a single request,
-    it is not thread safe.
-    Therefore it has to be allocated and deleted on a request basis.
-  Concurrency_End
-
-  Collaborations_Begin
-    An DataAccessImpl is called from the DataAccess object.
-    It calls mapper in order to move the data in and out.
-  Collaborations_End
-
-  Errorhandling_Begin
-    Errorhandling is implicit e.g. via parameters moved in and out by the mappers
-  Errorhandling_End
-
-  Assumptions_Begin
-    The transaction name is unique in the system.
-  Assumptions_End
-****/
-
 //--- interface include --------------------------------------------------------
 #include "DataAccessImpl.h"
 
@@ -56,10 +23,6 @@ using namespace std;
 RegisterModule(DataAccessImplsModule);
 
 DataAccessImplsModule::DataAccessImplsModule(const char *name) : WDModule(name)
-{
-}
-
-DataAccessImplsModule::~DataAccessImplsModule()
 {
 }
 
@@ -90,13 +53,10 @@ RegCacheImpl(DataAccessImpl);
 
 const char* DataAccessImpl::gpcCategory = "DataAccessImpl";
 const char* DataAccessImpl::gpcConfigPath = "DataAccessImpls";
+const char* DataAccessImpl::gpcConfigFileName = "DataAccessImplMeta";
 
-DataAccessImpl::DataAccessImpl(const char *name) : HierarchConfNamed(name)
-{
-}
-
-DataAccessImpl::~DataAccessImpl()
-{
+DataAccessImpl::DataAccessImpl(const char *name) :
+	HierarchConfNamed(name) {
 }
 
 IFAObject *DataAccessImpl::Clone() const
@@ -134,17 +94,13 @@ bool DataAccessImpl::DoLoadConfig(const char *category)
 
 bool DataAccessImpl::DoGetConfigName(const char *category, const char *objName, String &configFileName) const
 {
-	configFileName = "DataAccessImplMeta";
+	configFileName = DataAccessImpl::gpcConfigFileName;
 	return true;
 }
 
 //---- LoopBackDAImpl ------------------------------------------------------
 RegisterDataAccessImpl(LoopBackDAImpl);
 
-LoopBackDAImpl::LoopBackDAImpl(const char *name) : DataAccessImpl(name) { }
-LoopBackDAImpl::~LoopBackDAImpl() { }
-
-//:factory method to create a generic data access object, not very useful
 IFAObject *LoopBackDAImpl::Clone() const
 {
 	return new LoopBackDAImpl(fName);

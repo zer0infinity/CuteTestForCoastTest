@@ -14,39 +14,42 @@
 #include "DataAccessImpl.h"
 
 //---- MapperTestDAImpl ----------------------------------------------------------
-// This DAImpl can be used to test Mappers, it uses executes a Get and a Put of a specified type.
-// The structure of Configuration is basically adapted from LoopbackDAImpl
-//	Structure of config:
-//<PRE>	{
-//		/transfer {					config entry to specify slots to transfer
-//			/FromSlot1	ToSlot1		using ParameterMapper->Get to lookup FromSlot and
-//									putting it using ResultMapper->Put to store it at ToSlot
-//			/FromSlot2	ToSlot2		...
-//			...
-//		}
-//		/DataType					optional, default String, specifies the Get/Put methods used
-//									String: 	use Get(FromSlot, String, Context), Put(ToSlot, String, Context)
-//									int: 		use Get(FromSlot, int, Context), Put(ToSlot, int, Context)
-//									long: 		use Get(FromSlot, long, Context), Put(ToSlot, long, Context)
-//									bool: 		use Get(FromSlot, bool, Context), Put(ToSlot, bool, Context)
-//									float: 		use Get(FromSlot, float, Context), Put(ToSlot, float, Context)
-//									double: 	use Get(FromSlot, double, Context), Put(ToSlot, double, Context)
-//									Anything: 	use Get(FromSlot, Anything, Context), Put(ToSlot, Anything, Context)
-//									StringStream: use Get(FromSlot, StringStream, Context), Put(ToSlot, StringStream, Context)
-//	}
+//! This DataAccessImpl can be used to test ParameterMapper or ResultMapper implementations
+/*! This data access implementation uses ParameterMapper.Get() and ResultMapper.Put() of a specified type to put through the requested values.
+ * The structure of Configuration is basically adapted from LoopbackDAImpl
+ * @todo Merge with LoopBackDAImpl
+@code
+{
+	/transfer {					config entry to specify slots to transfer
+		/FromSlot1	ToSlot1		using ParameterMapper->Get to lookup FromSlot and
+								putting it using ResultMapper->Put to store it at ToSlot
+		/FromSlot2	ToSlot2		...
+		...
+	}
+	/DataType					optional, default String, specifies the Get/Put methods used
+								String: 	use Get(FromSlot, String, Context), Put(ToSlot, String, Context)
+								int: 		use Get(FromSlot, int, Context), Put(ToSlot, int, Context)
+								long: 		use Get(FromSlot, long, Context), Put(ToSlot, long, Context)
+								bool: 		use Get(FromSlot, bool, Context), Put(ToSlot, bool, Context)
+								float: 		use Get(FromSlot, float, Context), Put(ToSlot, float, Context)
+								double: 	use Get(FromSlot, double, Context), Put(ToSlot, double, Context)
+								Anything: 	use Get(FromSlot, Anything, Context), Put(ToSlot, Anything, Context)
+								StringStream: use Get(FromSlot, StringStream, Context), Put(ToSlot, StringStream, Context)
+}
+@endcode
+ */
 class EXPORTDECL_DATAACCESS MapperTestDAImpl : public DataAccessImpl
 {
 public:
-	//--- constructors
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	MapperTestDAImpl(const char *name);
-	~MapperTestDAImpl();
 
-	// returns a new TRX object
+	/*! @copydoc IFAObject::Clone() */
 	IFAObject *Clone() const;
 
-	//! executes the transaction
-	//! \param c The context of the transaction
-	virtual bool Exec(Context &c, ParameterMapper *, ResultMapper *);
+	//! Loopback like implementation of the data access
+	/*! @copydetails DataAccessImpl::Exec() */
+	virtual bool Exec(Context &ctx, ParameterMapper *input, ResultMapper *output);
 
 private:
 	//constructor
