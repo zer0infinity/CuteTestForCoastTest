@@ -36,8 +36,9 @@ class OraclePooledConnection;
  * \b mandatory \n
  * String value containing the password for the given user
  * @par \c DBTries
- * optional, default 3\n
- * How many times to retry if a database request fails due to recoverable errors
+ * optional, default 1, no retry\n
+ * How many times to try a database request. Set to a value higher than 1 if you want the request to be retried
+ * in case of a recoverable error.
  *
  * @subsection oracleparametersimplequeries Simple sql queries
  *
@@ -134,25 +135,17 @@ class OraclePooledConnection;
 class EXPORTDECL_COASTORACLE OracleDAImpl: public DataAccessImpl
 {
 public:
-	/*! Initialize base class using the name given to register this DataAccessImpl in the Registry
-	 *
-	 * @param name Name to register this DataAccessImpl
-	 */
+	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	OracleDAImpl( const char *name );
 	~OracleDAImpl();
 
-	/*! Implement Clone interface and return a copy of this OracleDAImpl
-	 *
-	 * @return A copy of this OracleDAImpl
-	 */
+	//! Return a copy of this OracleDAImpl
+	/*! @copydoc IFAObject::Clone() */
 	IFAObject *Clone() const;
 
-	/*! protocol provided to implement data access
-	 * \param ctx The context in which the transaction takes place
-	 * \param in A ParameterMapper object that is mapping data from the client space (Context) to the data access object on request
-	 * \param out A ResultMapper object that maps the result into client space (Context)
-	 */
-	virtual bool Exec( Context &ctx, ParameterMapper *in, ResultMapper *out );
+	//! Implementation of oracle data access
+	/*! @copydetails DataAccessImpl::Exec() */
+	virtual bool Exec( Context &ctx, ParameterMapper *input, ResultMapper *output );
 
 private:
 	bool DoPrepareSQL( String &command, Context &ctx, ParameterMapper *in );

@@ -243,9 +243,11 @@ bool OracleDAImpl::TryExecuteQuery( ParameterMapper *in, Context &ctx, OraclePoo
 				bDoRetry = false;
 			}
 		}
-		if ( bDoRetry && lTryCount > 0 ) {
+		if ( bDoRetry ) {
 			pPooledConnection->Close();
-			SYSWARNING("Internally retrying to execute command [" << command << "]");
+			if ( lTryCount > 0 ) {
+				SYSWARNING("Internally retrying to execute command [" << command << "]");
+			}
 		}
 	}
 	return bRet;

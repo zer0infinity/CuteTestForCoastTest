@@ -37,6 +37,7 @@ bool OracleParameterMapper::DoGetAny( const char *key, Anything &value, Context 
 	}
 	return ParameterMapper::DoGetAny( strKey, value, ctx, script );
 }
+
 //---- OracleResultMapper ------------------------------------------------------------------
 RegisterResultMapper(OracleResultMapper);
 
