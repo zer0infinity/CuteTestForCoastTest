@@ -51,6 +51,8 @@ def setUp(target, source, env):
     env['ENV']['NLS_LANG'] = '.WE8ISO8859P1'
     relDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
     configDir='backendtests/config'
+    env['ENV']['WD_PATH'] = configDir
+    #env['ENV']['WD_LOGONCERR'] = '2'
     Anything.setLocalEnv(env={}, WD_ROOT=relDir.abspath, WD_PATH=configDir)
 
     global defaults

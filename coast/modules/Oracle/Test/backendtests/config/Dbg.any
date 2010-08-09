@@ -41,6 +41,7 @@
 			/TraceRow					-10
 		}
 		/TryExecuteQuery				10
+		/ProcessResultSet				-10
 	}
 	/OracleConnection {
 		/MainSwitch						0

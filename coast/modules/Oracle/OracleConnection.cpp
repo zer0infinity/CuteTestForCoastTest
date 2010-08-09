@@ -130,6 +130,7 @@ OracleConnection::~OracleConnection()
 
 void OracleConnection::Close()
 {
+	StartTrace(OracleConnection.Close);
 	if ( fStatus == eSessionValid ) {
 		if ( OCISessionEnd( fSvchp.getHandle(), fErrhp.getHandle(), fUsrhp.getHandle(), 0 ) ) {
 			SystemLog::Error( "FAILED: OCISessionEnd() on svchp failed" );
