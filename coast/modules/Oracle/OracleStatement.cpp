@@ -368,9 +368,9 @@ Anything OracleStatement::getValue( long lColumnIndex, long lRowIdx )
 				anyColValue = aDescEl.getRawBufferPtr( lRowIdx );
 				break;
 			default:
-				Trace("default type, using AnyBufImpl");
+				Trace("default type, using String");
 				SubTraceBuf(TraceBuf, aDescEl.getRawBufferPtr( lRowIdx ), aDescEl.getEffectiveLengthValue());
-				anyColValue = Anything(static_cast<void *> ( aDescEl.getRawBufferPtr( lRowIdx ) ), (long)aDescEl.getEffectiveLengthValue() );
+				anyColValue = Anything(String(static_cast<void *> ( aDescEl.getRawBufferPtr( lRowIdx ) ), (long)aDescEl.getEffectiveLengthValue() ));
 				break;
 		}
 	}
