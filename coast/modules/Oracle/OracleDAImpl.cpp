@@ -313,9 +313,9 @@ bool OracleDAImpl::DoPrepareSP( String &command, Context &ctx, ParameterMapper *
 
 void OracleDAImpl::Error( Context &ctx, ResultMapper *pResultMapper, String str )
 {
-	StartTrace(OracleDAImpl.Error);
 	String strErr( "OracleDAImpl::" );
 	strErr.Append( str );
+	StartTrace1(OracleDAImpl.Error, strErr);
 	SystemLog::Warning( TimeStamp::Now().AsStringWithZ().Append( ' ' ).Append( strErr ) );
 	if ( pResultMapper ) {
 		pResultMapper->Put( "Messages", strErr, ctx );
