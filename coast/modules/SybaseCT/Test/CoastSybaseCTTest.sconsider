@@ -62,11 +62,11 @@ def setUp(target, source, env):
     relDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
     logDir = relDir.Dir(env['LOGDIR']).Dir(env['VARIANTDIR'])
     configdir = relDir.Dir('config')
-    Anything.setLocalEnv(WD_ROOT=relDir.abspath)
-
+    Anything.setLocalEnv(env={}, WD_ROOT=relDir.abspath)
     global defaults
-    defaults = Anything.loadFromFile('Defaults.any')
-    if not defaults.has_key('Sybase'):
+    try: defaults = Anything.loadFromFile('Defaults.any')
+    except IOError: pass
+    if not defaults or not defaults.has_key('Sybase'):
         raise SConsider.SkipTest('sybase backend not configured')
 
     searchreplacespec= [

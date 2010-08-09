@@ -51,11 +51,12 @@ def setUp(target, source, env):
     env['ENV']['NLS_LANG'] = '.WE8ISO8859P1'
     relDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
     configDir='backendtests/config'
-    Anything.setLocalEnv(WD_ROOT=relDir.abspath, WD_PATH=configDir)
+    Anything.setLocalEnv(env={}, WD_ROOT=relDir.abspath, WD_PATH=configDir)
 
     global defaults
-    defaults = Anything.loadFromFile('Defaults.any')
-    if not defaults.has_key('Oracle'):
+    try: defaults = Anything.loadFromFile('Defaults.any')
+    except IOError: pass
+    if not defaults or not defaults.has_key('Oracle'):
         raise SConsider.SkipTest('oracle backend not configured or disabled')
 
     searchreplacespec= [

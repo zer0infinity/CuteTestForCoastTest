@@ -49,11 +49,12 @@ def setUp(target, source, env):
         raise SConsider.SkipTest('required mysqlbin executable not found, skipping test')
 
     relDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
-    Anything.setLocalEnv(WD_ROOT=relDir.abspath)
+    Anything.setLocalEnv(env={}, WD_ROOT=relDir.abspath)
 
     global defaults
-    defaults = Anything.loadFromFile('Defaults.any')
-    if not defaults.has_key('MySQL'):
+    try: defaults = Anything.loadFromFile('Defaults.any')
+    except IOError: pass
+    if not defaults or not defaults.has_key('MySQL'):
         raise SConsider.SkipTest('mysql backend not configured or disabled')
 
     searchreplacespec= [
