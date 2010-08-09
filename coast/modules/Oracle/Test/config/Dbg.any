@@ -6,7 +6,7 @@
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
 {
-	/LowerBound		10		# debugging on or off
+	/LowerBound		0		# debugging on or off
 	/UpperBound		11		# override switch: turns everything on
 	/DumpAnythings  1		# print full Anythings
 
@@ -14,7 +14,6 @@
 		/MainSwitch						0
 		/EnableAll						10
 	}
-### common Sybase section
 	/OracleModule {
 		/MainSwitch						0
 		/EnableAll						10
