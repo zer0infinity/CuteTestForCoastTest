@@ -74,7 +74,9 @@ do
         ;;
         o)
     		# openssl needs absolute path to config file
-    		_conf="`readlink -e ${OPTARG}`";
+    		_conf="`dirname ${OPTARG}`";
+    		_conf="`cd ${_conf} 2>/dev/null && pwd -P`";
+    		_conf="${_conf}/`basename ${OPTARG}`";
         	if [ -n "${_conf}" -a -r ${_conf} ]; then
 				conf="${_conf}";
     		fi;
