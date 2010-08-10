@@ -1,0 +1,9 @@
+"""
+This SConscript contains some project specifics.
+"""
+
+Import('env')
+
+env = SConscript('builders.SConscript', 'env')
+
+Return('env')

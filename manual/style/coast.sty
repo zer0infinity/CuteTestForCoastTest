@@ -1,0 +1,57 @@
+\usepackage[utf8]{inputenc}
+\usepackage[pdftex]{graphicx}
+\usepackage[colorlinks=true, linkcolor=black, urlcolor=black, citecolor=black, plainpages=false]{hyperref}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\setkomafont{sectioning}{\rmfamily \bfseries}
+\usepackage{fixltx2e}
+\usepackage{multicol}
+\usepackage{color}
+\usepackage{scrhack}
+
+% The path(s) to the graphics files:
+\graphicspath{{images/}{generated/}}
+
+\bibliographystyle{alpha}
+
+\usepackage{color}
+\usepackage{listings}
+
+% Title Page
+\definecolor{gray}{rgb}{0.9,0.9,0.9}
+\definecolor{keyword_color}{rgb}{0.643, 0.207, 0.478}
+\definecolor{string_color}{rgb}{0.165, 0, 1}
+\definecolor{comment_color}{rgb}{0.309, 0.541, 0.423}
+
+\lstset{basicstyle=\scriptsize\ttfamily, framexleftmargin=5mm, 
+framextopmargin=3mm, framexbottommargin=3mm, frame=shadowbox,
+rulesepcolor=\color{gray}, aboveskip=5mm, belowskip=5mm,
+xleftmargin=5mm, keywordstyle=\color{keyword_color}\bfseries,
+stringstyle=\color{string_color},
+commentstyle=\color{comment_color},showstringspaces=false, tabsize=2, captionpos=b}
+
+\lstdefinelanguage{C++}{language=C++}
+\lstdefinestyle{Console}{language=bash,basicstyle=\scriptsize\ttfamily}
+\lstdefinestyle{Python}{language=python,basicstyle=\scriptsize\ttfamily}
+
+\usepackage{fancyhdr}
+\setlength{\parindent}{0em}
+\setlength{\topmargin}{0cm}
+
+\pagestyle{fancy}
+
+\lhead{COAST Webframework} 
+\chead{} 
+\rhead{} 
+\lfoot{ \hrule Institute for Software } 
+\cfoot{\hrule \thepage} 
+\rfoot{\hrule \today}
+
+\fancypagestyle{plain}{
+\lhead{COAST Webframework} 
+\chead{} 
+\rhead{} 
+\lfoot{ \hrule Institute for Software } 
+\cfoot{\hrule \thepage} 
+\rfoot{\hrule \today}}
+

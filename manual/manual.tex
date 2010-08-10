@@ -1,0 +1,46 @@
+\documentclass[11pt,a4paper,oneside]{scrreprt}
+\usepackage{style/coast}
+
+% BEGIN Title Page
+\title{COAST Webframework}
+\author{IFS - Institute for Software}
+\begin{document}
+\begin{titlepage}
+\topmargin 0in
+\thispagestyle{empty}
+\begin{center}
+\begin{figure}[h]
+ \centering
+ \includegraphics[width=0.3\hsize]{logo/logo_ifs_english.png}
+\end{figure}
+\vspace{1,5cm}
+{\Large \bfseries University of Applied Sciences Rapperswil\\} 
+\vspace{0,5cm}
+{\Large \bfseries Institute for Software\\}
+\vspace{2cm}
+\sffamily
+{\Huge \bfseries Technical Documentation}\\
+\vspace{0.5cm}
+{\Huge \bfseries COAST Webframework}\\
+\vspace{1,5cm}
+Peter Sommerlad, Marcel Huber, Dominic Wild, Michael Rueegg\\\url{ifs@hsr.ch}\\\vspace{1,0cm}
+\begin{scriptsize}\url{https://sifs-coast1.hsr.ch/}\\\end{scriptsize}
+\vspace{2,5cm}
+\vspace{0,3cm}
+\today
+\end{center}
+\end{titlepage}
+% END Title Page
+
+% BEGIN Table of Contents
+\pagenumbering{roman}
+\setcounter{tocdepth}{2}
+\tableofcontents
+% END Table of Contents
+
+% BEGIN Include Chapters
+\include{chapters/chap01}
+\include{chapters/chap02}
+% END Include Chapters
+
+\end{document}
