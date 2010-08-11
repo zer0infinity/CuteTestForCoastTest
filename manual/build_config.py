@@ -15,7 +15,8 @@ FILE_EXTENSIONS = {'eps': '.eps',
                    'png': '.png',
                    'jpg': '.jpg',
                    'gnuplot': '.gnuplot',
-                   'dot': '.dot'}
+                   'dot': '.dot',
+                   'msc': '.msc'}
 
 MAKEINDEX_EXTENSIONS = ['.glg', '.glo', '.gls']
 

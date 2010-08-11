@@ -8,7 +8,7 @@ import ConfigParser
 import shutil
 import build_config
 
-env = Environment()
+env = Environment(ENV = os.environ)
 env = SConscript('aux/SConscript', 'env')
 
 
@@ -30,7 +30,8 @@ class LatexBuilder(object):
                         'png': [],
                         'jpg': [],
                         'gnuplot': [],
-                        'dot': []}
+                        'dot': [],
+                        'msc': []}
 
         self._get_chapters()
         self._collect_figures_from_dirs()
@@ -74,7 +75,7 @@ class LatexBuilder(object):
     def _collect_figures_from_dirs(self):
         """Find all figures in the modules and add them to my list."""
         for chapter in self.chapters:
-            for extension in ['eps', 'pdf', 'png', 'jpg', 'gnuplot', 'dot']:
+            for extension in ['eps', 'pdf', 'png', 'jpg', 'gnuplot', 'dot', 'msc']:
                 new_files = self._find_files(chapter,
                                              build_config.FILE_EXTENSIONS[extension])
                 self.figures[extension].extend(new_files)
@@ -147,16 +148,27 @@ class LatexBuilder(object):
                                         item + build_config.FILE_EXTENSIONS['dot'])
             png_file = os.path.join(build_config.GENERATED_DIRECTORY,
                                     item + build_config.FILE_EXTENSIONS['png'])          
-            eps_file = os.path.join(build_config.GENERATED_DIRECTORY,
-                                    item + build_config.FILE_EXTENSIONS['eps'])
-            pdf_file = os.path.join(build_config.GENERATED_DIRECTORY,
-                                    item + build_config.FILE_EXTENSIONS['pdf'])
-            env.DOT(source=dot_file, target=png_file)
-            env.Png2eps(eps_file, png_file)
-            dep = env.Eps2pdf(source=eps_file, target=pdf_file)
-            env.Depends(dep, eps_file)
-            env.Depends(self.dvi_output, eps_file)
-            env.Depends(self.pdf_output, pdf_file)
+            #eps_file = os.path.join(build_config.GENERATED_DIRECTORY,
+            #                        item + build_config.FILE_EXTENSIONS['eps'])
+            #pdf_file = os.path.join(build_config.GENERATED_DIRECTORY,
+            #                        item + build_config.FILE_EXTENSIONS['pdf'])
+            env.Dot(source=dot_file, target=png_file)
+            env.Depends(self.pdf_output, png_file)
+            #env.Png2eps(eps_file, png_file)
+            #dep = env.Eps2pdf(source=eps_file, target=pdf_file)
+            #env.Depends(dep, eps_file)
+            #env.Depends(self.dvi_output, eps_file)
+            #env.Depends(self.pdf_output, pdf_file)
+
+    def _build_msc(self, msc_figures):
+        """Build MscGen figures."""
+        for item in msc_figures:
+            msc_file = os.path.join(build_config.IMAGES_DIRECTORY,
+                                        item + build_config.FILE_EXTENSIONS['msc'])
+            png_file = os.path.join(build_config.GENERATED_DIRECTORY,
+                                    item + build_config.FILE_EXTENSIONS['png'])          
+            env.Msc(source=msc_file, target=png_file)
+            env.Depends(self.pdf_output, png_file)
 
 
     def build_figures(self):
@@ -167,6 +179,7 @@ class LatexBuilder(object):
         self._build_pdf(self.figures['pdf'])
         self._build_eps(self.figures['eps'])
         self._build_dot(self.figures['dot'])
+        self._build_msc(self.figures['msc'])
 
 
 def copy_images():

@@ -42,7 +42,13 @@ env.Append(BUILDERS={'Gnuplot': gnuplot_builder})
 dot_builder = Builder(action='dot -Tpng -o $TARGET $SOURCE',
                           suffix=build_config.FILE_EXTENSIONS['png'],
                           src_suffix=build_config.FILE_EXTENSIONS['dot'])
-env.Append(BUILDERS={'DOT': dot_builder})
+env.Append(BUILDERS={'Dot': dot_builder})
+
+## MscGen builder.
+mscgen_builder = Builder(action='mscgen -Tpng -o $TARGET $SOURCE',
+                          suffix=build_config.FILE_EXTENSIONS['png'],
+                          src_suffix=build_config.FILE_EXTENSIONS['msc'])
+env.Append(BUILDERS={'Msc': mscgen_builder})
 
 # Pass back the modified environment.
 Return('env')
