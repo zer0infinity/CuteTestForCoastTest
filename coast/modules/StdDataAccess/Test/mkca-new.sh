@@ -24,6 +24,10 @@ openssl_binOpts=""
 conf=/etc/ssl/openssl.cnf
 target_dir=""
 serialnum=`date +'%s'`
+if [ "$serialnum" = "%s" ]; then
+	# date seems to be non-gnu style, workaround approximation!
+	serialnum=`expr \( \( \`date +%Y\` - 1970 \) \* 365 + \( \`date +%Y\` - 1970 \) / 4 - 1 + \`date +%j\` \) \* 86400 + \`date +%H\` \* 3600 + \`date +%M\` \* 60 + \`date +%S\` `
+fi
 
 errorexit()
 {
