@@ -13,8 +13,12 @@
 #include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 
 //---- forward declaration -----------------------------------------------
-class EXPORTDECL_FOUNDATION String;
+#include "ITOString.h"
 
+namespace {
+	static const String defaultIP("127.0.0.1");
+	static const String defaultName("localhost");
+}
 //---- Resolver ----------------------------------------------------------
 //!dns to ip adress and vice versa resolver
 //!api wrapper to resolver library;
@@ -22,20 +26,15 @@ class EXPORTDECL_FOUNDATION String;
 class EXPORTDECL_FOUNDATION Resolver
 {
 public:
-	Resolver();
-	~Resolver();
-
 	//!resolve the dns name to an ip address using the resolver lib
-	static String DNS2IPAddress( const String &dnsName );
+	static String DNS2IPAddress( const String &dnsName, const String &dflt=defaultIP );
 	//!find the dns name of the ip address
-	static String IPAddress2DNS( const String &ipAddress );
+	static String IPAddress2DNS( const String &ipAddress, const String &dflt=defaultName );
 
 private:
-	// use careful, you inhibit subclass use
-	//--- private class api
+	Resolver();
 	Resolver(const Resolver &);
 	Resolver &operator=(const Resolver &);
-	//--- private member variables
 };
 
 #endif

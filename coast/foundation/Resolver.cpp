@@ -73,7 +73,7 @@ class EXPORTDECL_FOUNDATION SystemSpecific(Resolver)
 	}
 
 public:
-	SystemSpecific(Resolver)() : fCanonicalName("localhost") {}
+	SystemSpecific(Resolver)() {}
 	~SystemSpecific(Resolver)() {}
 
 	const String& getCanonicalName() const { return fCanonicalName; }
@@ -85,7 +85,7 @@ public:
 
 //---- Resolver ----------------------------------------------------------------
 
-String Resolver::DNS2IPAddress( const String &dnsName )
+String Resolver::DNS2IPAddress( const String &dnsName, const String &dflt )
 {
 	StartTrace1(Resolver.DNS2IPAddress, "dns [" << dnsName << "]");
 	// no need to change Server IP address if localhost (?)
@@ -104,10 +104,10 @@ String Resolver::DNS2IPAddress( const String &dnsName )
 		logMsg << dnsName << "> failed";
 		SystemLog::Error(logMsg);
 	}
-	return "127.0.0.1";
+	return dflt;
 }
 
-String Resolver::IPAddress2DNS( const String &ipAddress )
+String Resolver::IPAddress2DNS( const String &ipAddress, const String &dflt )
 {
 	StartTrace1(Resolver.IPAddress2DNS, "ip [" << ipAddress << "]");
 	unsigned long addr = EndPoint::MakeInetAddr(ipAddress);
@@ -118,13 +118,11 @@ String Resolver::IPAddress2DNS( const String &ipAddress )
 		String logMsg("Resolving of IPAddress <");
 		logMsg << ipAddress << "> failed";
 		SystemLog::Error(logMsg);
+		return dflt;
 	}
 	Trace("resolved name [" << sysResolver.getCanonicalName() << "]");
 	return sysResolver.getCanonicalName();
 }
-
-Resolver::Resolver() {}
-Resolver::~Resolver() {}
 
 //--- system dependent subclasses ----
 #if defined(__sun)
