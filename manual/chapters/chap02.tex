@@ -2,10 +2,28 @@
 
 \begin{figure}[hbt]
   \centering
-  \includegraphics[width=0.5\hsize]{chap01/Acceptor}
-  \caption{Acceptor.}
-  \label{fig:zipstream}
+  \includegraphics[width=0.9\hsize]{chap02/classQueue__coll__graph}
+  \caption{Queue.}
+  \label{fig:queue}
 \end{figure}
 
+\begin{lstlisting}[language=C++, caption=Example Source]
+#include <iostream>
+#include <vector>
+#include <iterator>
+#include <algorithm>
 
+using namespace std;
 
+bool isNotPalindrom(string s) {
+  return !(equal(s.begin(), s.end(), s.rbegin()));
+}
+
+int main() {
+  vector<string> v;
+  typedef istream_iterator<string> input;
+  typedef ostream_iterator<string> out;
+  copy(input(cin), input(), back_inserter(v));
+  remove_copy_if(v.begin(), v.end(), out(cout, " "), isNotPalindrom);
+}
+\end{lstlisting}

@@ -148,17 +148,9 @@ class LatexBuilder(object):
                                         item + build_config.FILE_EXTENSIONS['dot'])
             png_file = os.path.join(build_config.GENERATED_DIRECTORY,
                                     item + build_config.FILE_EXTENSIONS['png'])          
-            #eps_file = os.path.join(build_config.GENERATED_DIRECTORY,
-            #                        item + build_config.FILE_EXTENSIONS['eps'])
-            #pdf_file = os.path.join(build_config.GENERATED_DIRECTORY,
-            #                        item + build_config.FILE_EXTENSIONS['pdf'])
             env.Dot(source=dot_file, target=png_file)
             env.Depends(self.pdf_output, png_file)
-            #env.Png2eps(eps_file, png_file)
-            #dep = env.Eps2pdf(source=eps_file, target=pdf_file)
-            #env.Depends(dep, eps_file)
-            #env.Depends(self.dvi_output, eps_file)
-            #env.Depends(self.pdf_output, pdf_file)
+
 
     def _build_msc(self, msc_figures):
         """Build MscGen figures."""
@@ -195,7 +187,9 @@ def copy_images():
     for chapter in config.sections():
         for mapping in config.options(chapter):
             img_src_file = os.path.join('..', mapping)
-            img_dest_file = os.path.join(build_config.IMAGES_DIRECTORY, chapter, config.get(chapter, mapping))
+            img_dest_suffix = config.get(chapter, mapping) if config.has_option(chapter, mapping) \
+                              else os.path.basename(img_src_file)
+            img_dest_file = os.path.join(build_config.IMAGES_DIRECTORY, chapter, img_dest_suffix)
 
             if os.path.exists(img_src_file):
                 shutil.copy(img_src_file, img_dest_file)
