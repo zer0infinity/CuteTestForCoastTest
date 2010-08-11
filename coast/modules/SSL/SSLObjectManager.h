@@ -16,9 +16,6 @@
 #include "SSLModule.h"
 #include "SSLAPI.h"
 
-//---- forward declaration -----------------------------------------------
-class RWLock;
-
 //---- SSLObjectManager ----------------------------------------------------------
 //! Manages SSL_CTX and SSL_SESSIONS. SSL_CTX creation involves reading cert files,
 //! private keys and certificate verification chains/pathes from the file system.
@@ -81,10 +78,10 @@ protected:
 	Mutex fSSLSessionIdStoreMutex;
 
 	//!The Anything containing the SSL Context objects
-	Anything fSSLCtxStore;
+	MetaThing fSSLCtxStore;
 
 	//!The Anything containing the SSL sessionId strigs
-	Anything fSSLSessionIdStore;
+	MetaThing fSSLSessionIdStore;
 
 private:
 	SSLObjectManager(const SSLObjectManager &);

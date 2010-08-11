@@ -6,8 +6,8 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- c-library modules used ---------------------------------------------------
-#include <stdlib.h>
+//--- interface include --------------------------------------------------------
+#include "SSLObjectManager.h"
 
 //#define TRACE_LOCKS
 
@@ -20,9 +20,10 @@
 #include "Registry.h"
 #include "SSLModule.h"
 #include "SSLAPI.h"
+#include "Resolver.h"
 
-//--- interface include --------------------------------------------------------
-#include "SSLObjectManager.h"
+//--- c-library modules used ---------------------------------------------------
+#include <stdlib.h>
 
 SSLObjectManager *SSLObjectManager::fgSSLObjectManager = 0;
 
@@ -33,6 +34,10 @@ SSLObjectManager *SSLObjectManager::SSLOBJMGR()
 }
 
 RegisterModule(SSLObjectManager);
+
+namespace {
+	const char storeIdDelim('@');
+}
 //---- SSLObjectManager ----------------------------------------------------------------
 SSLObjectManager::SSLObjectManager(const char *name)
 	: WDModule(name)
@@ -53,89 +58,109 @@ SSLObjectManager::~SSLObjectManager()
 
 SSL_CTX *SSLObjectManager::GetCtx(const String &ip, const String &port, ROAnything sslModuleCfg)
 {
-	StartTrace(SSLObjectManager.GetCtx);
-	SSL_CTX *sslctx;
-	TraceAny(sslModuleCfg, "sslModuleCfg");
+	StartTrace1(SSLObjectManager.GetCtx, "ip: " << ip << " port: " << port);
+	String storeId(Resolver::DNS2IPAddress(ip, ip).Append(storeIdDelim).Append(port));
+	Trace("storeId [" << storeId << "]");
 	TRACE_LOCK_START("GetCtx");
 	{
+		Anything anySess;
 		LockUnlockEntry me(fSSLCtxStoreMutex);
-		if ( ( sslctx = (SSL_CTX *) fSSLCtxStore[ip][port].AsIFAObject(0)) != (SSL_CTX *) NULL ) {
-			Trace("Found ssl context for ip: " << ip << " port:  " << port);
-			return sslctx;
+		if ( fSSLCtxStore.LookupPath(anySess, storeId, storeIdDelim) && anySess.AsIFAObject(0) != 0 ) {
+			Trace("Found ssl context for id " << storeId);
+			return reinterpret_cast<SSL_CTX*>(anySess.AsIFAObject(0));
 		}
 	}
+	SSL_CTX *sslctx(0);
 	if (!(sslModuleCfg.IsNull())) {
-		Trace("Creating ssl context [SSLModule with config] for ip: " << ip << " port:  " << port);
-		{
-			LockUnlockEntry me(fSSLCtxStoreMutex);
-			sslctx = SSLModule::GetSSLClientCtx(sslModuleCfg);
-			fSSLCtxStore[ip][port] = (IFAObject *) sslctx;
-		}
+		TraceAny(sslModuleCfg, "sslModuleCfg");
+		Trace("Creating ssl context [SSLModule with config] for id " << storeId);
+		sslctx = SSLModule::GetSSLClientCtx(sslModuleCfg);
 	} else {
-		Trace("Creating ssl context [default SSLV23_client_method] for ip: " << ip << " port:  " << port);
-		{
-			LockUnlockEntry me(fSSLCtxStoreMutex);
-			sslctx = SSL_CTX_new(SSLv23_client_method());
-			fSSLCtxStore[ip][port] = (IFAObject *) sslctx;
-		}
+		Trace("Creating ssl context [default SSLV23_client_method] for id " << storeId);
+		sslctx = SSL_CTX_new(SSLv23_client_method());
+	}
+	if ( sslctx != 0 ) {
+		LockUnlockEntry me(fSSLCtxStoreMutex);
+		Anything anySess(reinterpret_cast<IFAObject*>(sslctx));
+		SlotPutter::Operate(anySess, fSSLCtxStore, storeId, false, storeIdDelim);
+		TraceAny(ROAnything(fSSLCtxStore), "SSL context store");
 	}
 	return sslctx;
 }
 
 bool SSLObjectManager::RemoveCtx(const String &ip, const String &port)
 {
-	StartTrace(SSLObjectManager.RemoveCtx);
-	SSL_CTX *sslctx;
+	StartTrace1(SSLObjectManager.RemoveCtx, "ip: " << ip << " port: " << port);
+	String storeId(Resolver::DNS2IPAddress(ip, ip).Append(storeIdDelim).Append(port));
+	Trace("storeId [" << storeId << "]");
 	TRACE_LOCK_START("GetCtx");
 	{
+		Anything anySess;
 		LockUnlockEntry me(fSSLCtxStoreMutex);
-		if ( ( sslctx = (SSL_CTX *) fSSLCtxStore[ip][port].AsIFAObject(0)) != (SSL_CTX *) NULL ) {
-			Trace("Found ssl context for ip: " << ip << " port:  " << port);
-			SSL_CTX_free(sslctx);
-			fSSLCtxStore[ip][port] = (IFAObject *) NULL;
+		if ( fSSLCtxStore.LookupPath(anySess, storeId, storeIdDelim) && anySess.AsIFAObject(0) != 0 ) {
+			Trace("Found ssl context for id " << storeId);
+			SSL_CTX_free(reinterpret_cast<SSL_CTX*>(anySess.AsIFAObject(0)));
+			SlotCleaner::Operate(fSSLCtxStore, storeId, true, storeIdDelim);
+			TraceAny(fSSLCtxStore, "session store after removal");
 			return true;
 		}
+		TraceAny(fSSLCtxStore, "session store, no removal");
 	}
 	return false;
 }
 
 SSL_SESSION *SSLObjectManager::GetSessionId(const String &ip, const String &port)
 {
-	StartTrace(SSLObjectManager.GetSessionId);
+	StartTrace1(SSLObjectManager.GetSessionId, "ip: " << ip << " port: " << port);
 	String thrId;
 	thrId.Append( Thread::MyId());
+	String storeId(Resolver::DNS2IPAddress(ip, ip).Append(storeIdDelim).Append(port).Append(storeIdDelim).Append(thrId));
+	Trace("storeId [" << storeId << "]");
+	SSL_SESSION *sslsess(0);
 	TRACE_LOCK_START("GetSessionId");
 	{
+		Anything anySess;
 		LockUnlockEntry me(fSSLSessionIdStoreMutex);
-
-		Trace("Got SessionId for: " << ip << " port:  " << port <<
-			  " thread: " << thrId <<
-			  " session: " << SessionIdAsHex((SSL_SESSION *) fSSLSessionIdStore[ip][port][thrId]["session"].AsIFAObject(0)));
-		return (SSL_SESSION *) fSSLSessionIdStore[ip][port][thrId]["session"].AsIFAObject(0);
+		TraceAny(ROAnything(fSSLSessionIdStore), "SSL session store");
+		if ( fSSLSessionIdStore.LookupPath(anySess, storeId, storeIdDelim) && anySess["session"].AsIFAObject(0) != 0 ) {
+			sslsess=reinterpret_cast<SSL_SESSION *>(anySess["session"].AsIFAObject(0));
+			Trace("Got SessionId for id " << storeId << " thread: " << thrId <<
+			  " session: " << SessionIdAsHex(sslsess));
+		}
 	}
+	return sslsess;
 }
 
 void SSLObjectManager::SetSessionId(const String &ip, const String &port, SSL_SESSION *sslSession)
 {
-	StartTrace(SSLObjectManager.SetSessionId);
+	StartTrace1(SSLObjectManager.SetSessionId, "ip: " << ip << " port: " << port);
 	String thrId;
 	thrId.Append( Thread::MyId());
-	SSL_SESSION *sslSessionStored = NULL;
+	String storeId(Resolver::DNS2IPAddress(ip, ip).Append(storeIdDelim).Append(port).Append(storeIdDelim).Append(thrId));
+	Trace("storeId [" << storeId << "]");
+	SSL_SESSION *sslSessionStored(0);
 	TRACE_LOCK_START("SetSessionId");
 	{
 		LockUnlockEntry me(fSSLSessionIdStoreMutex);
+		TraceAny(ROAnything(fSSLSessionIdStore), "SSL session store before");
+		Anything anySess;
 		// If there is already a session stored in this slot, free it
-		sslSessionStored = (SSL_SESSION *) fSSLSessionIdStore[ip][port][thrId]["session"].AsIFAObject(0);
-		if ( sslSessionStored != (SSL_SESSION *) NULL ) {
+		if ( fSSLSessionIdStore.LookupPath(anySess, storeId, storeIdDelim) && anySess["session"].AsIFAObject(0) != 0 ) {
+			sslSessionStored=reinterpret_cast<SSL_SESSION *>(anySess["session"].AsIFAObject(0));
 			Trace("Freeing old SessionId: "  << SessionIdAsHex(sslSessionStored) << " RefCount: " << sslSessionStored->references);
 			SSL_SESSION_free(sslSessionStored);
-			fSSLSessionIdStore[ip][port][thrId].Remove("length");
 		}
-		fSSLSessionIdStore[ip][port][thrId]["session"] = (IFAObject *) sslSession;
-		fSSLSessionIdStore[ip][port][thrId]["length"] =
-			(long) ((sslSession != (SSL_SESSION *)  NULL) ? sslSession->session_id_length : 0L);
+		if ( sslSession != 0 ) {
+			anySess["session"] = (IFAObject *) sslSession;
+			anySess["length"] = static_cast<long>(sslSession->session_id_length);
+			Trace("Storing SessionId: "  << SessionIdAsHex(sslSession) << " RefCount: " << sslSession->references);
+			SlotPutter::Operate(anySess, fSSLSessionIdStore, storeId, false, storeIdDelim);
+		} else {
+			SlotCleaner::Operate(fSSLSessionIdStore, storeId, true, storeIdDelim);
+		}
+		TraceAny(ROAnything(fSSLSessionIdStore), "SSL session store after");
 	}
-	Trace("Set SessionId for: " << ip << " port:  " << port << " thread: " << thrId <<
+	Trace("Set SessionId for id " << storeId << " thread: " << thrId <<
 		  " session: " << SessionIdAsHex(sslSession));
 }
 
@@ -161,7 +186,7 @@ bool SSLObjectManager::Finis()
 				}
 			}
 		}
-		fSSLCtxStore = Anything(Storage::Global());
+		fSSLCtxStore = MetaThing(fSSLCtxStore.GetAllocator());
 	}
 	{
 		TraceAny(fSSLSessionIdStore, "fSSLSessionIdStore");
@@ -173,13 +198,13 @@ bool SSLObjectManager::Finis()
 						Trace("Freeing ssl session for address: " << fSSLSessionIdStore.SlotName(ip) <<
 							  " port: " << fSSLSessionIdStore[ip].SlotName(port) <<
 							  " thread: " << fSSLSessionIdStore[ip][port].SlotName(thrId) <<
-							  " sessionId" <<  SessionIdAsHex((SSL_SESSION *) fSSLSessionIdStore[ip][port][thrId]["session"].AsIFAObject(0)));
+							  " session: " <<  SessionIdAsHex((SSL_SESSION *) fSSLSessionIdStore[ip][port][thrId]["session"].AsIFAObject(0)));
 						SSL_SESSION_free((SSL_SESSION *) fSSLSessionIdStore[ip][port][thrId]["session"].AsIFAObject(0));
 					}
 				}
 			}
 		}
-		fSSLSessionIdStore = Anything(Storage::Global());
+		fSSLSessionIdStore = MetaThing(fSSLSessionIdStore.GetAllocator());
 	}
 	return true;
 }
@@ -187,7 +212,7 @@ bool SSLObjectManager::Finis()
 void SSLObjectManager::EmptySessionIdStore()
 {
 	StartTrace(SSLObjectManager.EmptySessionIdStore);
-	fSSLSessionIdStore = Anything(Storage::Global());
+	fSSLSessionIdStore = MetaThing(fSSLSessionIdStore.GetAllocator());
 }
 
 bool SSLObjectManager::ResetFinis(const ROAnything )
@@ -226,11 +251,10 @@ String SSLObjectManager::SessionIdAsHex(SSL_SESSION *sslSession)
 Anything SSLObjectManager::TraceSSLSession(SSL_SESSION *sslSession)
 {
 	Anything result;
+	result["session_id"] = SSLObjectManager::SessionIdAsHex(sslSession);
 	if (sslSession == (SSL_SESSION *) NULL) {
-		result["session_id"] = SSLObjectManager::SessionIdAsHex(sslSession);
 		return result;
 	}
-	result["session_id"] = SSLObjectManager::SessionIdAsHex(sslSession);
 	if (sslSession->key_arg != (unsigned char *) NULL) {
 		result["session_size"] = i2d_SSL_SESSION(sslSession, (unsigned char **) NULL);
 	} else {
