@@ -422,7 +422,7 @@ SSL_SESSION *SSLClientSocket::SessionResumptionHookResumeSession(SSL *ssl)
 			Trace("Trying to re-use sslSessionIdStored: " << SSLObjectManager::SessionIdAsHex(sslSessionStored));
 			int res = SSL_set_session(ssl, sslSessionStored);
 			ReportSSLError(GetSSLError(ssl, res));
-			Trace("Trying re-using sslSessionIdStored:  returned: " << res);
+			Trace("Trying re-using sslSessionIdStored; SSL_set_session() returned: " << res);
 		}
 	}
 	return   sslSessionStored;

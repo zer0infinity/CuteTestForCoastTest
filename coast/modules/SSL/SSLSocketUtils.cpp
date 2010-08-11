@@ -44,8 +44,8 @@ String SSLSocketUtils::GetNameFromX509Name(X509_NAME *x509_name, unsigned long f
 	if (data) {
 		result.Append((void *)data, data_len);
 	}
-
 	BIO_free(mem);
+	Trace("returning [" << result << "]");
 	return result;
 }
 

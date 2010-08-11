@@ -139,15 +139,15 @@ void SSLObjectManagerTest::SessionResumptionWithMinimumConfigTest()
 			iostream *s1 = sc.GetStream();
 			Socket *s = sc.Use();
 			Anything clientInfo(sc.ClientInfo());
-			TraceAny(clientInfo, "clientInfo");
+			TraceAny(clientInfo, "clientInfo for iteration " << ii);
 			assertEqual(cConfig["Results"]["SSLCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["SSLCertVerifyStatus"]["SSL"]["Ok"].AsBool(0));
 			assertEqual(cConfig["Results"]["AppLevelCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["AppLevelCertVerifyStatus"].AsBool(0));
 			TString msg;
 			msg << "At index: [" <<  ii << "]";
 			if ( ii == 0 ) {
-				assertEqualm(0, clientInfo["SSL"]["SessionIsResumed"].AsLong(1), msg);
+				assertComparem(0L, equal_to, clientInfo["SSL"]["SessionIsResumed"].AsLong(1), msg);
 			} else {
-				assertEqualm(1, clientInfo["SSL"]["SessionIsResumed"].AsLong(0), msg);
+				assertComparem(1L, equal_to, clientInfo["SSL"]["SessionIsResumed"].AsLong(0), msg);
 			}
 			if (t_assert(s1 != NULL) && t_assert(s != NULL)) {
 				assertEqual(cConfig["Results"]["IsCertCheckPassed"].AsBool(1), s->IsCertCheckPassed(cConfig["Config"]));
@@ -187,15 +187,15 @@ void SSLObjectManagerTest::SessionResumptionTest()
 			iostream *s1 = sc.GetStream();
 			Socket *s = sc.Use();
 			Anything clientInfo(sc.ClientInfo());
-			TraceAny(clientInfo, "clientInfo");
+			TraceAny(clientInfo, "clientInfo for iteration " << ii);
 			assertEqual(cConfig["Results"]["SSLCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["SSLCertVerifyStatus"]["SSL"]["Ok"].AsBool(0));
 			assertEqual(cConfig["Results"]["AppLevelCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["AppLevelCertVerifyStatus"].AsBool(0));
 			TString msg;
 			msg << "At index: [" <<  ii << "]";
 			if ( ii == 0 ) {
-				assertEqualm(0, clientInfo["SSL"]["SessionIsResumed"].AsLong(1), msg);
+				assertComparem(0L, equal_to, clientInfo["SSL"]["SessionIsResumed"].AsLong(1), msg);
 			} else {
-				assertEqualm(1, clientInfo["SSL"]["SessionIsResumed"].AsLong(0), msg);
+				assertComparem(1L, equal_to, clientInfo["SSL"]["SessionIsResumed"].AsLong(0), msg);
 			}
 			if (t_assert(s1 != NULL) && t_assert(s != NULL)) {
 				assertEqual(cConfig["Results"]["IsCertCheckPassed"].AsBool(1), s->IsCertCheckPassed(cConfig["Config"]));
@@ -293,11 +293,12 @@ void SSLObjectManagerTest::SessionIdTest()
 		while ( aEntryIterator.Next(cConfig) ) {
 			SSL_SESSION sslSession;
 			sslSession.session_id_length = sizeof(sslSession);
-			long expected(cConfig["Version"].AsLong(0));
+			int expected(cConfig["Version"].AsLong(0));
 			sslSession.ssl_version = expected;
 			SSLObjectManager::SSLOBJMGR()->SetSessionId(cConfig["Address"].AsString(), cConfig["Port"].AsString(), &sslSession);
 			SSL_SESSION *sslSessionResult = SSLObjectManager::SSLOBJMGR()->GetSessionId(cConfig["Address"].AsString(), cConfig["Port"].AsString());
-			assertEqual(sslSessionResult->ssl_version, expected);
+			assertCompare(&sslSession, equal_to, sslSessionResult);
+			assertCompare(expected, equal_to, sslSessionResult->ssl_version);
 		}
 	}
 	// Since we did not set real ssl sessions, freeing them in Finis() would coredump.
