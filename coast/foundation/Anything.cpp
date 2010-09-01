@@ -31,13 +31,14 @@
 
 static const String fgStrEmpty(Storage::Global()); //avoid temporary
 static const Anything fgAnyEmpty(Storage::Global()); // avoid temporary
-
 //--- auxiliary calculating hash value and the length of the key
 long IFAHash(const char *key, long &len, char stop1, char stop2)
+//long DoIFAHash(const unsigned char *key, long &len, unsigned char stop1, unsigned char stop2)
 {
 	register long h = 0;
 	register u_long g;
-	register const unsigned char *p = (const unsigned char *)key;
+	const unsigned char *const keyp = reinterpret_cast<const unsigned char *>(key);
+	register const unsigned char *p = keyp;
 	if (key) {
 		while (*p && *p != stop1 && *p != stop2) {
 			h = (h << 4) + *p++;
@@ -46,7 +47,7 @@ long IFAHash(const char *key, long &len, char stop1, char stop2)
 			}
 		}
 	}
-	len = (long)(p) - (long)(key);
+	len = p - keyp;
 	return h;
 }
 
@@ -137,9 +138,9 @@ private:
 bool AnythingToken::isNameDelimiter(char c)
 {
 	// alternative Impl: return strchr(" \t\n\r\v\"/#{}[&*",c) != 0;
-	// isprint( (unsigned char) c) shouldn't be used because of umlauts äüö and signed chars
+	// isprint( static_cast<unsigned char>(c)) shouldn't be used because of umlauts äüö and signed chars
 	// may be double quotes " should also be considered delimiters
-	return isspace((unsigned char) c) || '/' == c || '#' == c || '&' == c || '*' == c
+	return isspace(static_cast<unsigned char>(c)) || '/' == c || '#' == c || '&' == c || '*' == c
 		   || '{' == c || '}' == c || '[' == c //|| ']' == c
 		   || '\"' == c || 0 == c || '%' == c || '!' == c;
 }
@@ -164,7 +165,7 @@ AnythingToken::AnythingToken(InputContext &context) : fToken(0)
 					fToken = c;
 					return;
 				case '&': // a object indicator a number must follow
-					while (context.Get(c) && isspace((unsigned char)c)) {// consume spaces
+					while (context.Get(c) && isspace(static_cast<unsigned char>(c))) {// consume spaces
 						// adjust line count!
 						if ('\n' == c || '\r' == c) {
 							++context.LineRef();
@@ -180,7 +181,7 @@ AnythingToken::AnythingToken(InputContext &context) : fToken(0)
 					// consume invalid characters up to a whitespace
 					do {
 						fText.Append(c);
-					} while (!isspace( (unsigned char) c) && context.Get(c));
+					} while (!isspace( static_cast<unsigned char>(c)) && context.Get(c));
 					if ('\n' == c || '\r' == c) {
 						++context.LineRef();
 					}
@@ -195,7 +196,7 @@ AnythingToken::AnythingToken(InputContext &context) : fToken(0)
 						if ('"' == c) {
 							DoReadString(context, c);
 						} else if (!isNameDelimiter(c)) {
-							//                      if (isalnum( (unsigned char) c) || '_' == c || '-' == c) {
+							//                      if (isalnum( static_cast<unsigned char>(c)) || '_' == c || '-' == c) {
 							// should we allow more? YES! Note this code corresponts to
 							// DoReadName below
 							c = DoReadName(context, c);
@@ -269,7 +270,7 @@ AnythingToken::AnythingToken(InputContext &context) : fToken(0)
 					context.SkipToEOL();
 					break;
 				default:
-					if (isalnum( (unsigned char) c) || '_' == c) { // do we need to allow more?
+					if (isalnum( static_cast<unsigned char>(c)) || '_' == c) { // do we need to allow more?
 						// a name or string read it
 						c = DoReadName(context, c);
 						// should check for delimiter
@@ -277,7 +278,7 @@ AnythingToken::AnythingToken(InputContext &context) : fToken(0)
 						if (c) {
 							context.Putback(c);
 						}
-					} else if (isspace( (unsigned char) c)) {
+					} else if (isspace( static_cast<unsigned char>(c))) {
 						// ignore it but count line changes
 						if ('\n' == c || '\r' == c) {
 							++context.LineRef();
@@ -364,7 +365,7 @@ char AnythingToken::DoReadName(InputContext &context, char firstchar)
 	fText.Append(firstchar);
 	fToken = AnythingToken::eString;
 	while (context.Get(c)) {
-		//        if (isalnum( (unsigned char) c) || '_' == c || '-' == c) { // should we allow more? YES!
+		//        if (isalnum( static_cast<unsigned char>(c)) || '_' == c || '-' == c) { // should we allow more? YES!
 		if (!isNameDelimiter(c)) {
 			// collect almost all printable chars except comments and nested anys
 			fText.Append(c);
@@ -384,7 +385,7 @@ char AnythingToken::DoReadDigits(InputContext &context)
 	// returns 0 in case of eof
 	char c = 0;
 	while (context.Get(c)) {
-		if (isdigit( (unsigned char) c)) {
+		if (isdigit( static_cast<unsigned char>(c))) {
 			fText.Append(c);
 		} else {
 			return c; // we are done
@@ -412,7 +413,7 @@ char AnythingToken::DoReadOctalOrHex(InputContext &context)
 			char saveXcase = c;
 			fToken = AnythingToken::eHexNumber;
 			while (context.Get(c)) {
-				if (isxdigit( (unsigned char) c)) {
+				if (isxdigit( static_cast<unsigned char>(c))) {
 					fText.Append(c);
 				} else if (!isNameDelimiter(c)) {
 					// we might have some problem here if c is not a delim
@@ -482,7 +483,7 @@ char AnythingToken::DoReadNumber(InputContext &context, char firstchar)
 			context.Get(firstchar);
 		}
 		// processed [+-]? follow: [0-9]*\.?[0-9]*([eE][+-]?[0-9]+)?
-		if (isdigit( (unsigned char) firstchar)) {
+		if (isdigit( static_cast<unsigned char>(firstchar))) {
 			// collect decimal digits
 			intpart = true;
 			fText.Append(firstchar);
@@ -508,7 +509,7 @@ char AnythingToken::DoReadNumber(InputContext &context, char firstchar)
 				context.Get(firstchar);
 			}
 			// processed [+-]?[0-9]*\.?[0-9]*([eE][+-]? follow: [0-9]+)?
-			if (isdigit( (unsigned char) firstchar)) {
+			if (isdigit( static_cast<unsigned char>(firstchar))) {
 				exponent = true;
 				fText.Append(firstchar);
 				firstchar = DoReadDigits(context);
@@ -517,7 +518,7 @@ char AnythingToken::DoReadNumber(InputContext &context, char firstchar)
 	} else {
 		// special case one digit number
 		fText.Append(firstchar);
-		if (isdigit( (unsigned char) firstchar)) {
+		if (isdigit( static_cast<unsigned char>(firstchar))) {
 			intpart = true;
 		} else {
 			fToken = AnythingToken::eError;
@@ -782,7 +783,7 @@ long Anything::AsLong(long dflt) const
 bool Anything::AsBool(bool dflt) const
 {
 	if IsLongImpl(GetImpl()) {
-		return (LongImpl(GetImpl())->AsLong((long) dflt) != 0);
+		return (LongImpl(GetImpl())->AsLong(static_cast<long>(dflt)) != 0);
 	}
 	return dflt;
 }
@@ -1186,7 +1187,7 @@ protected:
 
 		fOs << '/';
 
-		if (isdigit( (unsigned char) s[0L])) {
+		if (isdigit( static_cast<unsigned char>(s[0L]))) {
 			needquote = true;	// quote all numbers
 		} else {
 			for (long i = s.Length(); --i >= 0 && !needquote; ) {
@@ -1244,12 +1245,12 @@ public:
 	}
 	virtual void	VisitVoidBuf(const String &value, const AnyImpl *, long lIdx, const char *slotname) {
 		fOs << '[' << value.Length() << ';'; // separator
-		fOs.write((const char *)value, value.Length());
+		fOs.write(value.cstr(), value.Length());
 		fOs << ']';
 
 	}
 	virtual void	VisitObject(IFAObject *value, const AnyImpl *id, long lIdx, const char *slotname) {
-		fOs << '&' << (long) value;
+		fOs << '&' << reinterpret_cast<unsigned long>(value);
 	}
 };
 
@@ -1287,11 +1288,11 @@ class XrefAnyPrinter : public PrettyAnyPrinter
 protected:
 	PrinterXrefHandler fXref;
 	bool PrintAsXref(const AnyImpl *ai) {
-		if (!fXref.IsDefined((long)ai)) {
-			fXref.DefineBackRef((long)ai); // remember symbolic slot name
+		if (!fXref.IsDefined(reinterpret_cast<long>(ai))) {
+			fXref.DefineBackRef(reinterpret_cast<long>(ai)); // remember symbolic slot name
 			return false;
 		} else {
-			fOs << "%\"" << fXref.GetBackRef((long)ai) << "\"";
+			fOs << "%\"" << fXref.GetBackRef(reinterpret_cast<long>(ai)) << "\"";
 			return true;
 		}
 
@@ -1701,8 +1702,8 @@ long ROAnything::AsLong(long dflt) const
 
 bool ROAnything::AsBool(bool dflt) const
 {
-	if IsLongImpl(fAnyImp) {
-		return (LongImpl(fAnyImp)->AsLong((long) dflt) != 0);
+	if (IsLongImpl(fAnyImp)) {
+		return (LongImpl(fAnyImp)->AsLong(static_cast<long>(dflt)) != 0);
 	}
 	return dflt;
 }
@@ -2149,14 +2150,14 @@ bool AnythingParser::MakeSimpleAny(AnythingToken &tok, Anything &any)
 			break;
 			// long impl.
 		case AnythingToken::eDecimalNumber:
-			any = atol(tok.Text());
+			any = atol(tok.Text().cstr()); // correct? should this be atol(tok.Text().cstr())?
 			break;
 		case AnythingToken::eOctalNumber:
-			any = static_cast<long>(strtoul((const char *)tok.Text(), 0, 8)); // AB: use explicit cast to make g++ happy
+			any = static_cast<long>(strtoul(tok.Text().cstr(), 0, 8)); // AB: use explicit cast to make g++ happy
 			// we do not check for conversion errors here
 			break;
 		case AnythingToken::eHexNumber:
-			any = static_cast<long>(strtoul((const char *)tok.Text(), 0, 16)); // AB: use explicit cast to make g++ happy
+			any = static_cast<long>(strtoul(tok.Text().cstr(), 0, 16)); // AB: use explicit cast to make g++ happy
 			// we do not check for conversion errors here
 			break;
 		case AnythingToken::eFloatNumber:
@@ -2166,11 +2167,11 @@ bool AnythingParser::MakeSimpleAny(AnythingToken &tok, Anything &any)
 		case AnythingToken::eBinaryBuf:
 			// oops we cannot yet assign a binary-buf impl ?
 			// but a temporary anything should be sufficient
-			any = Anything((void *)(const char *)tok.Text(), tok.Text().Length(), a);
+			any = Anything(reinterpret_cast<void *>(const_cast<char *>(tok.Text().cstr())), tok.Text().Length(), a);
 			break;
 		case AnythingToken::eObject:
 			// make it an AnyObjectImpl
-			any = Anything((IFAObject *)atol(tok.Text()), a);
+			any = Anything(reinterpret_cast<IFAObject *>(atol(tok.Text().cstr())), a);
 			break;
 		case AnythingToken::eNullSym:
 			Error("unexpected EOF token encountered", "");
@@ -2312,8 +2313,8 @@ AnyKeyAssoc::AnyKeyAssoc(const AnyKeyAssoc &aka)
 }
 // used when allocating arrays... CAUTION: elements then must be initialized manually with Init()!
 AnyKeyAssoc::AnyKeyAssoc()
-	: fValue((Allocator *)0)
-	, fKey((Allocator *)0)
+	: fValue(static_cast<Allocator *>(0))
+	, fKey(static_cast<Allocator *>(0))
 	, fAllocator(0)
 {
 }
@@ -2476,8 +2477,8 @@ void SlotPutter::Operate(Anything &source, Anything &dest, String destSlotname, 
 {
 	StartTrace(SlotPutter.Operate);
 	Trace("Destination slotname[" << destSlotname << "]");
-	Trace("sourceImpl:" << (long)source.GetType() << " destImpl:" << (long)dest.GetType());
-	Trace("source any alloc:" << (long)source.GetAllocator() << " dest.alloc:" << (long)dest.GetAllocator());
+	Trace("sourceImpl:" << static_cast<long>(source.GetType()) << " destImpl:" << static_cast<long>(dest.GetType()));
+	Trace("source any alloc:" << static_cast<long>(source.GetAllocator()) << " dest.alloc:" << static_cast<long>(dest.GetAllocator()));
 	SubTraceAny(TraceAny, source, "source");
 	// ensure that the destination anything is real
 	Anything::EnsureArrayImpl(dest);
