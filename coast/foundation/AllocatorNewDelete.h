@@ -47,13 +47,12 @@ namespace Coast
 
 	namespace Memory
 	{
-		template<class T>
-		inline size_t AlignedSize()
-		{
-			const size_t rest = sizeof(T) % sizeof(long double);
-			const size_t alignedsize = sizeof(T) + ( rest ? sizeof(long double) - rest : 0);
-			return alignedsize;
-		}
+		template<typename T>
+		struct AlignedSize {
+			static const size_t value = sizeof(T) +
+					( sizeof(T) % sizeof(long double) ?
+							(sizeof(long double) - sizeof(T) % sizeof(long double)) : 0);
+		};
 	}
 
 }
