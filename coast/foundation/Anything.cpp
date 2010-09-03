@@ -704,7 +704,7 @@ Anything::Anything(const Anything &any, Allocator *a) : fAnyImp(0)
 	SetAllocator(a);
 	if (GetAllocator() == any.GetAllocator()) {
 		// add reference
-		fAnyImp = any.GetImpl();
+		fAnyImp = const_cast<AnyImpl*>(any.GetImpl());
 		if (GetImpl()) {
 			GetImpl()->Ref();
 		}
@@ -1018,7 +1018,7 @@ Anything &Anything::operator= (const Anything &a)
 		// do a deepclone if allocators don't match
 		AnyImpl *oldImpl = GetImpl();
 		if (a.GetAllocator() == al) {
-			fAnyImp = a.GetImpl();
+			fAnyImp = const_cast<AnyImpl*>(a.GetImpl());
 			if (GetImpl()) {
 				GetImpl()->Ref();
 			}
@@ -1387,7 +1387,15 @@ Allocator *Anything::GetImplAllocator() const
 	return 0;
 }
 
-AnyImpl *Anything::GetImpl() const
+AnyImpl const *Anything::GetImpl() const
+{
+	if (bits & 0x01) {
+		return 0;
+	} else {
+		return fAnyImp;
+	}
+}
+AnyImpl  *Anything::GetImpl()
 {
 	if (bits & 0x01) {
 		return 0;
