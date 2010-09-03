@@ -114,32 +114,6 @@ public:
 		\return The number of slots in this Anything */
 	long GetSize() const;
 
-	//! assignment operator creates Anything of type eLong
-	Anything &operator= (int);
-
-#if !defined(BOOL_NOT_SUPPORTED)
-	//! assignment operator creates Anything of type eLong
-	Anything &operator= (bool);
-#endif
-
-	//! assignment operator creates Anything of type eLong
-	Anything &operator= (long);
-
-	//! assignment operator creates Anything of type eDouble
-	Anything &operator= (float);
-
-	//!assignment operator creates Anything of type eDouble
-	Anything &operator= (double);
-
-	//!assignment operator creates Anything of type eObject
-	Anything &operator= (IFAObject *);
-
-	//!assignment operator creates Anything of type eCharPtr
-	Anything &operator= (const char *);
-
-	//!assignment operator creates Anything of type eCharPtr
-	Anything &operator= (const String &);
-
 	//!assignment operator creates Anything of type a.GetType() returns
 	Anything &operator= (const Anything &a);
 
