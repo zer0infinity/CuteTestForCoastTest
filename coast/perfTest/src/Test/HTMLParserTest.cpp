@@ -21,6 +21,7 @@
 
 //--- interface include --------------------------------------------------------
 #include "HTMLParserTest.h"
+#include "AnyUtils.h"
 
 //---- HTMLParserTest ----------------------------------------------------------------
 HTMLParserTest::HTMLParserTest(TString tstrName) : TestCaseType(tstrName)
@@ -57,7 +58,7 @@ void HTMLParserTest::ParseFileTest()
 		mw.Flush();
 
 		t_assertm(!mw.GetReqFailed(), "expected parsing to succeed");
-		assertAnyEqual(expected, allReqs);
+		assertAnyCompareEqual(expected, allReqs, "Expected", '.', ':');
 	}
 }
 
