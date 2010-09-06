@@ -244,10 +244,8 @@ public:
 	/*! Since OpenStream uses fgRootDir and fgPathList we have to make sure that they contain reasonable defaults whenever they are used.
 		fgRootDir is initialized to the environment variable WD_ROOT if set, to '.' otherwise
 		fgPathList is initialized to the environment variable WD_PATH if set, to ".:config:src" if root is set and to ".:../config:../src:" if root is not set
-		\param resultPath the location of the iostream opened
-		\param name the filename, it can be relative or absolute, it contains the extension
-		\param mode the mode of the stream to be opened e.g. ios::in, mode flags can be combined by the | operation
-		\return an open iostream or NULL if the open fails */
+		\param root path to be used when wanting to override default of WD_ROOT
+		\param path path to be used when wanting to override default of WD_PATH */
 	static void InitPath(const char *root = 0, const char *path = 0);
 
 	/*! Status code of directory creation operations. */
@@ -277,7 +275,7 @@ public:
 		\param path relative or absolute path to create new directory
 		\param pmode permission of new directory, octal number
 		\param bRecurse set to true if nonexisting parent directories should be created
-		\param bExtendByLinks if a directory can not be created because its parent dir is exhausted of hard links (subdirectories), a true means to create an 'extension' parent directory of name <dir>_ex[0-9]+ and link the newly created directory into the original location
+		\param bExtendByLinks if a directory can not be created because its parent dir is exhausted of hard links (subdirectories), a true means to create an 'extension' parent directory of name \<dir\>_ex[0-9]+ and link the newly created directory into the original location
 		\return System::eSuccess if new directory was created */
 	static DirStatusCode MakeDirectory(String &path, int pmode = 0755, bool bRecurse = false, bool bExtendByLinks = false);
 

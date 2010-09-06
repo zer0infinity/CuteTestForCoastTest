@@ -15,14 +15,15 @@
 //---- AnyUtils ----------------------------------------------------------------------
 //! Utility functions to compare and merge anythings
 /*!
-<b>AnyUtils::AnyCompareEqual</b><br></br>
+\par AnyUtils::AnyCompareEqual
 Compare two anythings along a complete hierarchy.
 To compare two anythings, the master anything contains only the slots to be checked for, the input any may
 contain more slots, but these are ignored. Any leaves are compared as strings.
 Slots without names are nevertheless checked for exact matches only
-If you ARE interested in the presence of a slot but not in its contents (for example if you know the slot
-contents will be different), use the string <b>ignore</b> as the slot value in the master any.
-<br></br><b>Example configuration:</b><pre>
+If you ARE interested in the presence of a slot but not in its contents (for example if you know that the slot contents will be different),
+use the string \b ignore as the slot value in the master any.
+Example configuration:
+\code
 inputAny
 {
 	/Test2 { Hallo }
@@ -39,10 +40,10 @@ masterAny
 	/Test3 ignore
 	/Test4:1.A	3
 }
-</pre>
+\endcode
 \note In slots without names, comparison are not shown at the leaf level but from the point at which the slotname free entries began. This is because we attempt to match slots without name by recursive comparison, and verbose is turned off during this matchmaking.
 
-<b>AnyUtils::AnyMerge</b><br></br>
+\par AnyUtils::AnyMerge
 Recursively merge the content of two anythings.
 There are four different merging strategies:
 -# Named simple valued slot\n
@@ -60,7 +61,8 @@ If the value does not yet exist it will be appended at the specified level.
 -# Unnamed array slot\n
 It will check all unnamed slots for the <b><i>best matching</i></b> slot which then gets merged.
 
-<br></br><b>Example configuration:</b><pre>
+Example configuration:
+\code
 anyMaster
 {
 	{
@@ -101,7 +103,7 @@ modified anyMaster
 		Me
 	}
 }
-</pre>
+\endcode
 \note For more realistic examples see AnyMergeTest.any in Test/config directory
 */
 class EXPORTDECL_FOUNDATION AnyUtils
@@ -117,11 +119,12 @@ public:
 	//! \return overall match of all wanted slots, if a single slot fails, comparison fails, if verbose flag is set details of failure are output to cerr
 	static bool AnyCompareEqual( const ROAnything &inputAny, const ROAnything &masterAny, String pathSoFar, ostream *verbose, char delimSlot = '.', char delimIdx = ':');
 
-	//!render an anything to simple XML rep,
-	//! user namespace any: for anonymous stuff
-	//! e.g. <any:seq></any:seq> for {}
-	//!  <any:seq><any:elt>foo</any:elt><bar>baz</bar></any:seq>
-	//! for { foo /bar baz }
+	//! render an anything to simple XML representation
+	/*! namespace \b any:seq will be used for array entries, \b any:elt for anonymous (value only) entries<br>
+		Anything \code {} \endcode would be converted into:
+		\code <any:seq></any:seq> \endcode
+		Anything \code { foo /bar baz } \endcode would be converted into:
+		\code <any:seq><any:elt>foo</any:elt><bar>baz</bar></any:seq> \endcode */
 	static void PrintSimpleXML( ostream &os, ROAnything output);
 
 	//! Merge the content of two anythings. The master anything gets modified using the specification from roaToMerge

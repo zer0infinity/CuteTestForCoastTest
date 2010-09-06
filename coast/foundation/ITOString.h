@@ -35,7 +35,7 @@ class EXPORTDECL_FOUNDATION String
 	//! allocation bottleneck, writes to Syslog if memory exhausted
 	void alloc(long capacity);
 
-	//! calculate the real capacity to ask for, optimized to save calls to alloc on expanding the string
+	//! calculate the real capacity to ask for, optimizated to save calls to alloc on expanding the string
 	/*! strategy is: start with a minimum size, double in the middle
 		and  round to the next 1k for large strings (\> 4k)
 		new allocators provide additional support exploited by alloc to

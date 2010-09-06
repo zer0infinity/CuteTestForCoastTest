@@ -33,9 +33,9 @@ Anything_iterator::reference Anything_iterator::operator*() const
 }
 
 Anything_iterator::reference
-Anything_iterator::operator[](Anything_iterator::difference_type offset) const
+Anything_iterator::operator[](difference_type index) const
 {
-	return a[position+offset];
+	return a[position+index];
 }
 
 Anything_iterator::difference_type
@@ -72,9 +72,9 @@ const Anything &Anything_const_iterator::operator*() const
 }
 
 Anything_const_iterator::reference
-Anything_const_iterator::operator[](Anything_const_iterator::difference_type offset) const
+Anything_const_iterator::operator[](difference_type index) const
 {
-	return a[position+offset];
+	return a[position+index];
 }
 
 Anything_const_iterator::difference_type

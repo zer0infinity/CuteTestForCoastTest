@@ -78,7 +78,7 @@ namespace AnyExtensions
 		}
 
 		/*! Get slotname of current position if any
-			\param
+			\param strSlotName name of slot to check for
 			\return true if it is a named slot and slotname could be retrieved */
 		bool SlotName(SlotNameTypeRef strSlotName) const {
 			const char *pcSN = fAny.SlotName(fPosition);
