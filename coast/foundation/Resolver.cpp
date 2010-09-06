@@ -57,11 +57,9 @@ class EXPORTDECL_FOUNDATION SystemSpecific(Resolver)
 	void extractFromHostent( const hostent& result ) {
 		StartTrace(Resolver.extractFromHostent);
 		fCanonicalName = result.h_name;
-		fCanonicalName.ToLower();
 		String strAlias(32L);
 		for (char **q=result.h_aliases; *q != 0; ++q) {
 			strAlias = *q;
-			strAlias.ToLower();
 			fAliases.Append(strAlias);
 			if ( strAlias.StrChr('.') > 0 && strAlias.Contains(fCanonicalName) >= 0 ) {
 				Trace("fqdn found [" << strAlias << "]");
