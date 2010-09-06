@@ -2480,7 +2480,7 @@ void SlotPutter::Operate(Anything &source, Anything &dest, String destSlotname, 
 	StartTrace(SlotPutter.Operate);
 	Trace("Destination slotname[" << destSlotname << "]");
 	Trace("sourceImpl:" << static_cast<long>(source.GetType()) << " destImpl:" << static_cast<long>(dest.GetType()));
-	Trace("source any alloc:" << static_cast<long>(source.GetAllocator()) << " dest.alloc:" << static_cast<long>(dest.GetAllocator()));
+	Trace("source any alloc:" << reinterpret_cast<long>(source.GetAllocator()) << " dest.alloc:" << reinterpret_cast<long>(dest.GetAllocator()));
 	SubTraceAny(TraceAny, source, "source");
 	// ensure that the destination anything is real
 	Anything::EnsureArrayImpl(dest);
