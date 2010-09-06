@@ -36,8 +36,6 @@ class ostream;
 #endif
 typedef int Unicode;
 
-#define NotNull(s) ((s) ? (s) : "null")
-#define NotNullStr(s) ((s.Length() > 0) ? (const char *)(s) : "null")
 //---- TString --------------------------------------------------------------
 //! trivial implementation of a string class
 class TString
