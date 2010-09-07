@@ -6,7 +6,7 @@
 # the license that is included with this library/application in the file license.txt.
 #-----------------------------------------------------------------------------------------------------
 {
-	/LowerBound	10
+	/LowerBound	0
 	/UpperBound	211
 	/DumpAnythings  1		# print full Anythings
 
