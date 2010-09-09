@@ -57,7 +57,7 @@
 	/LDAPSearchQuery_LookupTkrefactor_NotPooled %LDAPSearchTest_ScopeBase
 	/LDAPSearchQuery_LookupTkrefactor_Pooled
 	{
-		/LDAPBase		"uid=tkrefactor1,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase		"uid=tkrefactor1,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		#/LDAPScope		"base"	# base is default
 	}
 
@@ -73,28 +73,28 @@
 	}
 
 	/LDAPSearchTest_ScopeBase {
-		/LDAPBase		"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase		"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		#/LDAPScope		"base"	# base is default
 	}
 
 	/LDAPSearchTest_ScopeOneLevel {
-		/LDAPBase		"o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase		"o=10601,c=CH,dc=##BINDDC##"
 		/LDAPScope		"onelevel"
 	}
 
 	/LDAPSearchTest_ScopeSubTree {
-		/LDAPBase		"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase		"ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPScope		"subtree"
 	}
 
 	/LDAPSearchTest_SizeLimit {
-		/LDAPBase		"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase		"ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPScope		"subtree"
 		/LDAPSizeLimit	10
 	}
 
 	/LDAPSearchTest_AttrSelection {
-		/LDAPBase		"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase		"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPAttrs {
 			"pd-dn"
 			"language"
@@ -102,30 +102,30 @@
 	}
 
 	/LDAPSearchTest_LanguageAttr {
-		/LDAPBase		"uid=tkrefactor2,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase		"uid=tkrefactor2,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPAttrs {
 			"language"
 		}
 	}
 
 	/LDAPSearchTest_AttrsOnly {
-		/LDAPBase		"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase		"ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPAttrsOnly	1
 	}
 
 	/LDAPSearchTest_Filter {
-		/LDAPBase		"o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase		"o=10601,c=CH,dc=##BINDDC##"
 		/LDAPScope		"subtree"
 		/LDAPFilter		"(&(objectclass=client)(uid=tkrefactor))"	# this could be assembled, using a script
 	}
 
 	/LDAPSearchTest_WrongDN {
-		/LDAPBase		"o=10601,c=TX,dc=tkfcd.hsr.ch"	# c=TX does not exist
+		/LDAPBase		"o=10601,c=TX,dc=##BINDDC##"	# c=TX does not exist
 		/LDAPScope		"subtree"
 	}
 
 	/LDAPSearchTest_EmptyResult {
-		/LDAPBase		"o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase		"o=10601,c=CH,dc=##BINDDC##"
 		/LDAPScope		"subtree"
 		/LDAPFilter		"(&(objectclass=client)(uid=nonexistinguser))" # uid is wrong
 	}
@@ -133,55 +133,55 @@
 	# ---------------------------------------------------------
 
 	/LDAPDeleteTest_NonLeaf {
-		/LDAPBase		"o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase		"o=10601,c=CH,dc=##BINDDC##"
 	}
 
 	/LDAPDeleteTest_NonExisting {
-		/LDAPBase		"uid=nonexusr,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase		"uid=nonexusr,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 	}
 
 	/LDAPDeleteTest_ExistingLeaf_NotPooled {
-		/LDAPBase		"tid=152.000.021.001,ou=tkftc,o=1,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase		"tid=152.000.021.001,ou=tkftc,o=1,c=CH,dc=##BINDDC##"
 	}
 
 	/LDAPDeleteTest_ExistingLeaf_Pooled {
-		/LDAPBase		"tid=153.046.016.001,ou=tkftc,o=1,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase		"tid=153.046.016.001,ou=tkftc,o=1,c=CH,dc=##BINDDC##"
 	}
 
 	# ---------------------------------------------------------
 
 	/LDAPCompareTest_NonExistingEntry {
-		/LDAPBase		"uid=nonexusr,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase		"uid=nonexusr,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPAttrName	"DoesNotMatter"
 		/LDAPAttrValue	"FantasyValue"
 	}
 
 	/LDAPCompareTest_NonExistingAttribute {
-		/LDAPBase		"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase		"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPAttrName	"NonExistingAttribute"
 		/LDAPAttrValue	"FantasyValue"
 	}
 
 	/LDAPCompareTest_EqualValue {
-		/LDAPBase		"uid=tkrefactor2,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase		"uid=tkrefactor2,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPAttrName	"language"
 		/LDAPAttrValue	"Marcel"
 	}
 
 	/LDAPCompareTest_UnequalValue {
-		/LDAPBase		"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase		"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPAttrName	"uid"
 		/LDAPAttrValue	"tkfoo"
 	}
 
 	/LDAPCompareTest_EqualValueBinary {
-		/LDAPBase		"uid=tkrefactor2,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase		"uid=tkrefactor2,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPAttrName	"language"
 		/LDAPAttrValue	"Marcel\x00 Huber"
 	}
 
 	/LDAPModifyTest_ModifyBinaryValue {
-		/LDAPBase	"uid=tkrefactor2,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase	"uid=tkrefactor2,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPMods {
 			/ConfigMapper {
 				/Replace {
@@ -192,25 +192,25 @@
 	}
 
 	/LDAPCompareTest_EqualValueNonBinaryModified {
-		/LDAPBase		"uid=tkrefactor2,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase		"uid=tkrefactor2,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPAttrName	"language"
 		/LDAPAttrValue	"This"
 	}
 
 	/LDAPCompareTest_EqualValueBinaryModified {
-		/LDAPBase		"uid=tkrefactor2,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase		"uid=tkrefactor2,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPAttrName	"language"
 		/LDAPAttrValue	"This\x00 should have been stored!\x01"
 	}
 
 	/LDAPCompareTest_MissingAttrNameParam {
-		/LDAPBase		"dc=tkfcd.hsr.ch"
+		/LDAPBase		"dc=##BINDDC##"
 		# no /LDAPAttrName
 		/LDAPAttrValue	"tkfoo"
 	}
 
 	/LDAPCompareTest_MissingAttrValueParam {
-		/LDAPBase		"dc=tkfcd.hsr.ch"
+		/LDAPBase		"dc=##BINDDC##"
 		/LDAPAttrName	"childModtime"
 		# no /LDAPAttrValue
 	}
@@ -218,12 +218,12 @@
 	# ---------------------------------------------------------
 
 	/LDAPAddTest_MissingAttrsParam {
-		/LDAPBase	"dc=tkfcd.hsr.ch"
+		/LDAPBase	"dc=##BINDDC##"
 		# no /LDAPAttrs	parameter
 	}
 
 	/LDAPAddTest_SingleValues {
-		/LDAPBase	"dc=tkfcd.hsr.ch"
+		/LDAPBase	"dc=##BINDDC##"
 		/LDAPAttrs {
 			"uid"
 			"otherStuff"
@@ -231,7 +231,7 @@
 	}
 
 	/LDAPAddTest_ExistingEntry {
-		/LDAPBase	"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase	"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPAttrs	{
 			/ConfigMapper {
 				/uid "NotRelevant"
@@ -243,7 +243,7 @@
 	}
 
 	/LDAPAddTest_NonExistingEntry_NotPooled {
-		/LDAPBase	"uid=addtest1,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase	"uid=addtest1,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPAttrs	{
 			/ConfigMapper {
 				/objectclass { "client" "tkfModify" "person" }
@@ -255,7 +255,7 @@
 	}
 
 	/LDAPAddTest_NonExistingEntry_Pooled {
-		/LDAPBase	"uid=addtest2,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase	"uid=addtest2,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPAttrs	{
 			/ConfigMapper {
 				/objectclass { "client" "tkfModify" "person" }
@@ -267,7 +267,7 @@
 	}
 
 	/LDAPAddTest_MissingRequiredAttributes {
-		/LDAPBase	"uid=addtest3,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase	"uid=addtest3,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPAttrs	{
 			/ConfigMapper {
 				/objectclass { "client" "tkfModify" "person" }
@@ -279,7 +279,7 @@
 	}
 
 	/LDAPAddTest_NonExistingAttribute {
-		/LDAPBase	"uid=addtest3,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase	"uid=addtest3,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPAttrs	{
 			/ConfigMapper {
 				/objectclass { "client" "tkfModify" "person" }
@@ -293,7 +293,7 @@
 	# ---------------------------------------------------------
 
 	/LDAPModifyTest_UnknownAttribute {
-		/LDAPBase	"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase	"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPMods {
 			/ConfigMapper {
 				/Delete {
@@ -304,7 +304,7 @@
 	}
 
 	/LDAPModifyTest_AddExistingValue {
-		/LDAPBase	"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase	"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPMods {
 			/ConfigMapper {
 				/Add {
@@ -315,7 +315,7 @@
 	}
 
 	/LDAPModifyTest_DeleteRequiredAttribute {
-		/LDAPBase	"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase	"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPMods {
 			/ConfigMapper {
 				/Delete {
@@ -326,7 +326,7 @@
 	}
 
 	/LDAPModifyTest_MultipleModify_NotPooled {
-		/LDAPBase	"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase	"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPMods {
 			/ConfigMapper {
 				/Delete {
@@ -346,7 +346,7 @@
 	}
 
 	/LDAPModifyTest_MultipleModify_Pooled {
-		/LDAPBase	"uid=tkrefactor1,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase	"uid=tkrefactor1,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPMods {
 			/ConfigMapper {
 				/Delete {
@@ -366,7 +366,7 @@
 	}
 
 	/LDAPModifyTest_WrongMods {
-		/LDAPBase	"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase	"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPMods {
 			/ConfigMapper {
 				/NonExistingModOp {		# this should be filtered out
@@ -377,14 +377,14 @@
 	}
 
 	/LDAPModifyTest_EmptyModsGiven {
-		/LDAPBase	"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase	"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPMods {
 			# /LDAPMods slot is empty --> error
 		}
 	}
 
 	/LDAPModifyTest_DeleteNonExistingValue {
-		/LDAPBase	"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase	"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPMods {
 			/ConfigMapper {
 				/Delete {
@@ -395,7 +395,7 @@
 	}
 
 	/LDAPModifyTest_DeleteAndAddWholeAttr_NotPooled {
-		/LDAPBase	"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase	"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPMods {
 			/ConfigMapper {
 				/Delete {
@@ -408,7 +408,7 @@
 		}
 	}
 	/LDAPModifyTest_DeleteAndAddWholeAttr_Pooled {
-		/LDAPBase	"uid=tkrefactor1,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase	"uid=tkrefactor1,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPMods {
 			/ConfigMapper {
 				/Delete {
@@ -423,26 +423,26 @@
 
 	# ----- definitions for LDAPConnectionManagerTest
 	/LDAPConnectionManagerTest_Query{
-		/LDAPBase		"uid=connectionmanagertest,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase		"uid=connectionmanagertest,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPScope		"base"
 	}
 
 	/LDAPConnectionManagerTest_StableQuery{
-		/LDAPBase		"uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase		"uid=tkgae,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPScope		"base"
 	}
 
 	/LDAPConnectionManagerTest_Query_Added{
-		/LDAPBase		"uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase		"uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPScope		"base"
 	}
 
 	/LDAPConnectionManagerTest_Delete {
-		/LDAPBase		"uid=connectionmanagertest,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase		"uid=connectionmanagertest,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 	}
 
 	/LDAPConnectionManagerTest_Add {
-		/LDAPBase	"uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase	"uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPAttrs	{
 			/ConfigMapper {
 				/objectclass { "client" "tkfModify" "person" }
@@ -457,7 +457,7 @@
 		}
 	}
 	/LDAPConnectionManagerTest_MultipleModify {
-		/LDAPBase	"uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase	"uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPMods {
 			/ConfigMapper {
 				/Delete {
@@ -476,7 +476,7 @@
 		}
 	}
 	/LDAPConnectionManagerTest_Compare {
-		/LDAPBase	"uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+		/LDAPBase	"uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 		/LDAPAttrName	"tids"
 		/LDAPAttrValue	"111.111.111.111"
 	}

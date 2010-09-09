@@ -714,7 +714,7 @@
 							  /LDAPConnectionManagerTest_StableQuery {
 								/Type "LDAP_RES_SEARCH_ENTRY"
 								/Query {
-								  /Base "uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+								  /Base "uid=tkgae,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 								  /Scope 0
 								  /ScopeStringRepr "base"
 								  /Filter "(objectclass=*)"
@@ -727,7 +727,7 @@
 								/NumberOfEntries 1
 								/SizeLimitExceeded 0
 								/Entries {
-								  /uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch {
+								  /uid=tkgae,ou=tkfu,o=10601,c=CH,dc=##BINDDC## {
 									/objectclass {
 									  "person"
 									  "client"
@@ -785,7 +785,7 @@
  							/LDAPConnectionManagerTest_Query {
  							  /Type "LDAP_RES_SEARCH_ENTRY"
  							  /Query {
- 								/Base "uid=connectionmanagertest,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+ 								/Base "uid=connectionmanagertest,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
  								/Scope 0
  								/ScopeStringRepr "base"
  								/Filter "(objectclass=*)"
@@ -798,7 +798,7 @@
  							  /NumberOfEntries 1
  							  /SizeLimitExceeded 0
  							  /Entries {
- 								/uid=connectionmanagertest,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch {
+ 								/uid=connectionmanagertest,ou=tkfu,o=10601,c=CH,dc=##BINDDC## {
  								  /objectclass {
  									"person"
  									"client"
@@ -856,7 +856,7 @@
 							/LDAPConnectionManagerTest_Delete {
 							  /Type "LDAP_RES_DELETE"
 							  /Query {
-								/Base "uid=connectionmanagertest,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+								/Base "uid=connectionmanagertest,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 							  }
 							  /NumberOfResultMessages 1
 							  /NumberOfEntries 0
@@ -933,7 +933,7 @@
  							/LDAPConnectionManagerTest_Add {
  							  /Type "LDAP_RES_ADD"
  							  /Query {
- 								/Base "uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+ 								/Base "uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
  								/Mods {
 								  /add {
 									  /objectclass {
@@ -983,7 +983,7 @@
  							/LDAPConnectionManagerTest_Query_Added {
  							  /Type "LDAP_RES_SEARCH_ENTRY"
  							  /Query {
- 								/Base "uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+ 								/Base "uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
  								/Scope 0
  								/ScopeStringRepr "base"
  								/Filter "(objectclass=*)"
@@ -996,7 +996,7 @@
  							  /NumberOfEntries 1
  							  /SizeLimitExceeded 0
  							  /Entries {
- 								/uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch {
+ 								/uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=##BINDDC## {
  								  /objectclass {
  									"client"
  									"tkfModify"
@@ -1039,7 +1039,7 @@
 							/LDAPConnectionManagerTest_MultipleModify {
 							  /Type "LDAP_RES_MODIFY"
 							  /Query {
-								/Base "uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+								/Base "uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 								/Mods {
 								  /delete {
 									/tids "555.666.777.888"
@@ -1088,7 +1088,7 @@
 							/LDAPConnectionManagerTest_Query_Added {
 							  /Type "LDAP_RES_SEARCH_ENTRY"
 							  /Query {
-								/Base "uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+								/Base "uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 								/Scope 0
 								/ScopeStringRepr "base"
 								/Filter "(objectclass=*)"
@@ -1101,7 +1101,7 @@
 							  /NumberOfEntries 1
 							  /SizeLimitExceeded 0
 							  /Entries {
-								/uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch {
+								/uid=connectionmanagertest_added,ou=tkfu,o=10601,c=CH,dc=##BINDDC## {
 								  /objectclass {
 									"client"
 									"tkfModify"
@@ -1177,7 +1177,7 @@
 							  /LDAPConnectionManagerTest_StableQuery {
 								/Type "LDAP_RES_SEARCH_ENTRY"
 								/Query {
-								  /Base "uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+								  /Base "uid=tkgae,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 								  /Scope 0
 								  /ScopeStringRepr "base"
 								  /Filter "(objectclass=*)"
@@ -1190,7 +1190,7 @@
 								/NumberOfEntries 1
 								/SizeLimitExceeded 0
 								/Entries {
-								  /uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch {
+								  /uid=tkgae,ou=tkfu,o=10601,c=CH,dc=##BINDDC## {
 									/objectclass {
 									  "person"
 									  "client"

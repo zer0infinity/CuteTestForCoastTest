@@ -387,7 +387,7 @@
 				/LDAPTryAutoRebind		0
 
 				# test config
-				/LDAPBase		"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+				/LDAPBase		"ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 				/LDAPScope		"subtree"
 			}
 			/Env {
@@ -429,7 +429,7 @@
 				/LDAPRebindTimeout 60
 
 				# test config
-				/LDAPBase		"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+				/LDAPBase		"ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 				/LDAPScope		"subtree"
 			}
 			/Env {
@@ -522,7 +522,7 @@
 							# just check a few expected things (samples)
 							/Entries
 							{
-								/"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+								/"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 								{
 									/objectclass {
 										"person"
@@ -557,7 +557,7 @@
 							# just check a few expected things (samples)
 							/Entries
 							{
-								/"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+								/"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 								{
 									/objectclass {
 										"person"
@@ -592,7 +592,7 @@
 							# check a few expected things within the returned entries
 							/Entries
 							{
-								/"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+								/"ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 								{
 									/objectclass {
 										"organizationalUnit"
@@ -627,7 +627,7 @@
 							# check a few expected things within the returned entries
 							/Entries
 							{
-								/"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+								/"ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 								{
 									/objectclass {
 										"organizationalUnit"
@@ -758,7 +758,7 @@
 							/NumberOfEntries 1
 							# check a few expected things within the returned entries
 							/Entries {
-								/"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+								/"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 								{
 									/pd-dn "cn=CH10601-tkrefactor,dc=tkfpd.hsr.ch"
 									/language "D"
@@ -789,7 +789,7 @@
 							/NumberOfEntries 1
 							# check a few expected things within the returned entries
 							/Entries {
-								/"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+								/"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 								{
 									/pd-dn "cn=CH10601-tkrefactor,dc=tkfpd.hsr.ch"
 									/language "D"
@@ -822,7 +822,7 @@
 							# check a few expected things within the returned entries
 							/Entries
 							{
-								/"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch" {
+								/"ou=tkfu,o=10601,c=CH,dc=##BINDDC##" {
 									"objectclass"
 									"ou"
 									"name"
@@ -857,7 +857,7 @@
 							# check a few expected things within the returned entries
 							/Entries
 							{
-								/"ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch" {
+								/"ou=tkfu,o=10601,c=CH,dc=##BINDDC##" {
 									"objectclass"
 									"ou"
 									"name"
@@ -893,7 +893,7 @@
 							# check a few expected things within the returned entries
 							/Entries
 							{
-							  /"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+							  /"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 							  {
 								/objectclass {
 								  "person"
@@ -931,7 +931,7 @@
 							# check a few expected things within the returned entries
 							/Entries
 							{
-							  /"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+							  /"uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 							  {
 								/objectclass {
 								  "person"
@@ -1956,7 +1956,7 @@
 
 							# only check the stuff we've changed
 							/Entries {
-							  /uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch {
+							  /uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=##BINDDC## {
 								/tids {
 								  "172.016.001.041"
 								  "172.016.200.013"
@@ -2010,7 +2010,7 @@
 
 							# only check the stuff we've changed
 							/Entries {
-							  /uid=tkrefactor1,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch {
+							  /uid=tkrefactor1,ou=tkfu,o=10601,c=CH,dc=##BINDDC## {
 								/tids {
 								  "172.016.001.041"
 								  "172.016.200.013"
@@ -2194,7 +2194,7 @@
 						  /NumberOfEntries 1
 						  # only check the relevant fields of the returned entries
 						  /Entries {
-							/uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch {
+							/uid=tkrefactor,ou=tkfu,o=10601,c=CH,dc=##BINDDC## {
 							  /passwordexp "20010101_00:00:00"
 							}
 						  }
@@ -2234,7 +2234,7 @@
 						  /NumberOfEntries 1
 						  # only check the relevant fields of the returned entries
 						  /Entries {
-							/uid=tkrefactor1,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch {
+							/uid=tkrefactor1,ou=tkfu,o=10601,c=CH,dc=##BINDDC## {
 							  /passwordexp "20010101_00:00:00"
 							}
 						  }
@@ -2276,7 +2276,7 @@
 							/NumberOfEntries 1
 							# check a few expected things within the returned entries
 							/Entries {
-								/"uid=tkrefactor2,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+								/"uid=tkrefactor2,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 								{
 									/language "This"	## the rest will be cut away when storing...
 								}
@@ -2367,7 +2367,7 @@
 							/NumberOfEntries 1
 							# check a few expected things within the returned entries
 							/Entries {
-								/"uid=tkrefactor2,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+								/"uid=tkrefactor2,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 								{
 									/language "This\x00 should have been stored!\x01"
 								}

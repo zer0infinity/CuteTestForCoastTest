@@ -26,7 +26,7 @@ def setUp(target, source, env):
     replaceConfigParams(env, relDir, configdir)
     bulkLoadLdap(configdir)
 
-        
+
 def tearDown(target, source, env):
     pass
 
@@ -38,42 +38,43 @@ def replaceConfigParams(env, relDir, configdir):
     except IOError: pass
     if not defaults or not defaults.has_key('LDAP'):
         raise SConsider.SkipTest('ldap backend not configured or disabled')
-    
+
     searchreplacespec = [
-        ('##LDAPHOST##', str(defaults['LDAP']['Server'])), 
-        ('##LDAPFAULTYHOST##', str(defaults['LDAP']['FaultyServer'])), 
-        ('##LDAPPORT##', str(defaults['LDAP']['Port'])), 
-        ('##LDAPFAULTYPORT##', str(defaults['LDAP']['FaultyPort'])), 
-        ('##BINDDN##', str(defaults['LDAP']['BindDn'])), 
-        ('##WRONGBINDDN##', str(defaults['LDAP']['FaultyBindDn'])), 
-        ('##BINDPW##', str(defaults['LDAP']['Password'])), 
-        ('##WRONGBINDPW##', str(defaults['LDAP']['FaultyPassword'])), 
-        ('##BINDFAILCODE##', str(defaults['LDAP']['BindFailureCode']))]
-    
-    modifyConfigFiles(env, searchreplacespec, SConsider.findFiles([configdir], ['.any']))
+        ('##LDAPHOST##', str(defaults['LDAP']['Server'])),
+        ('##LDAPFAULTYHOST##', str(defaults['LDAP']['FaultyServer'])),
+        ('##LDAPPORT##', str(defaults['LDAP']['Port'])),
+        ('##LDAPFAULTYPORT##', str(defaults['LDAP']['FaultyPort'])),
+        ('##BINDDN##', str(defaults['LDAP']['BindDn'])),
+        ('##WRONGBINDDN##', str(defaults['LDAP']['FaultyBindDn'])),
+        ('##BINDPW##', str(defaults['LDAP']['Password'])),
+        ('##WRONGBINDPW##', str(defaults['LDAP']['FaultyPassword'])),
+        ('##BINDFAILCODE##', str(defaults['LDAP']['BindFailureCode'])),
+        ('##BINDDC##', str(defaults['LDAP']['BindDc'])),]
+
+    modifyConfigFiles(env, searchreplacespec, SConsider.findFiles([configdir], ['.any', '.ldif']))
 
 
 def modifyConfigFiles(env, searchReplace=[], files=[]):
     for file in files:
         fname = file.abspath
-    
+
         if os.path.isfile(fname):
             oldmode = os.stat(fname).st_mode
             os.chmod(fname, oldmode | S_IWUSR)
             SConsider.replaceRegexInFile(fname, searchReplace)
             os.chmod(fname, oldmode)
-            
-            
+
+
 def bulkLoadLdap(configdir):
     try:
         l = ldap.initialize('ldap://' + defaults['LDAP']['Server'] + ':' + str(defaults['LDAP']['Port']))
         l.bind_s(str(defaults['LDAP']['BindDn']), str(defaults['LDAP']['Password']))
-    
+
         deleteLdapEntries(l)
         addLdapEntries(l, configdir)
     except ldap.INVALID_CREDENTIALS:
         raise SConsider.SkipTest('username or password is incorrect.')
-    except ldap.LDAPError, e:        
+    except ldap.LDAPError, e:
         strList = []
 
         if type(e.message) == dict:
@@ -81,27 +82,27 @@ def bulkLoadLdap(configdir):
                 strList.append("%s: %s\n" % (k, v))
         else:
             strList.append(e)
-        raise SConsider.SkipTest(''.join(strList))        
+        raise SConsider.SkipTest(''.join(strList))
     finally:
         try:
             l.unbind()
         except Exception:
             pass
 
-            
+
 def deleteLdapEntries(l):
     try:
         sys.stdout.write("ldap record deletion started.")
         sys.stdout.flush()
-        rawRes = l.search_s(str(defaults['LDAP']['BindDc']), ldap.SCOPE_SUBTREE, '(objectclass=*)')
+        rawRes = l.search_s('dc='+str(defaults['LDAP']['BindDc']), ldap.SCOPE_SUBTREE, '(objectclass=*)')
         res = transformLdapSearchResults(rawRes)
         i = 0
-        
+
         for record in res:
             l.delete_s(record.getDn())
             if i % 10 == 0:
                 sys.stdout.write(".")
-                sys.stdout.flush() 
+                sys.stdout.flush()
             i += 1
         print "finished."
     except ldap.NO_SUCH_OBJECT:
@@ -118,19 +119,19 @@ class LdifLoader(LDIFParser):
    def handle(self, dn, entry):
       ldifEntry = modlist.addModlist(entry)
       self.con.add_s(dn, ldifEntry)
-      
+
       if self.cnt % 10 == 0:
           sys.stdout.write(".")
-          sys.stdout.flush() 
+          sys.stdout.flush()
       self.cnt += 1
 
 
 def addLdapEntries(l, configdir):
     filePath = configdir.File(str(defaults['LDAP']['LdifFileName'])).abspath
-        
+
     if not os.path.isfile(filePath):
         raise SConsider.SkipTest('ldif file not available.')
-    
+
     sys.stdout.write("ldap record load started.")
     sys.stdout.flush()
     loader = LdifLoader(open(filePath, 'rb'), l)
@@ -151,7 +152,7 @@ def transformLdapSearchResults(results):
 
     for item in arr:
         res.append(LDAPSearchResult(item))
-    
+
     # Need to reverse the result in order to be able to delete the entries bottom-up
     res.reverse()
 
@@ -187,7 +188,7 @@ class LDAPSearchResult:
 
     def getDn(self):
         return self.dn
-                         
+
     def prettyPrint(self):
         str = "DN: " + self.dn + "\n"
         for a, vList in self.attrs.iteritems():
@@ -195,7 +196,7 @@ class LDAPSearchResult:
             for v in vList:
                 str = str + "  Value: " + v + "\n"
         str = str + "========"
-        
+
         return str
 
     def toLdif(self):

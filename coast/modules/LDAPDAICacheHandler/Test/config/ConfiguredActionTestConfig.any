@@ -160,7 +160,7 @@
 			{
 				/TmpStore
 				{
-#					/"esid=1100/153.046.016.009,uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+#					/"esid=1100/153.046.016.009,uid=tkgae,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 						/objectclass
 						{
 						  "entitledService"
@@ -170,10 +170,10 @@
 						/esid "1100/153.046.016.009"
 						/apptype "undef"
 						/stype "undef"
-						/s-dn "sid=1100,ou=tkfs,o=1,c=CH,dc=tkfcd.hsr.ch"
+						/s-dn "sid=1100,ou=tkfs,o=1,c=CH,dc=##BINDDC##"
 						/s-uid "1100"
 						/sid "1100"
-						/tc-dn "tid=153.046.016.009,ou=tkftc,o=1,c=CH,dc=tkfcd.hsr.ch"
+						/tc-dn "tid=153.046.016.009,ou=tkftc,o=1,c=CH,dc=##BINDDC##"
 						/tc-uid "153.046.016.009"
 						/tid "153.046.016.009"
 						/tc-type "dummy"
@@ -224,7 +224,7 @@
 			{
 				/TmpStore
 				{
-#                   /uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch
+#                   /uid=tkgae,ou=tkfu,o=10601,c=CH,dc=##BINDDC##
 					/objectclass
 					{
 						"person"
@@ -272,7 +272,7 @@
 			{
 				/TmpStore
 				{
-#					/"uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+#					/"uid=tkgae,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 					/objectclass
 					{
 						"person"
@@ -320,7 +320,7 @@
 			{
 				/TmpStore
 				{
-#                  /"esid=1100/172.016.200.013,uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+#                  /"esid=1100/172.016.200.013,uid=tkgae,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
                     /objectclass
                     {
 						"entitledService"
@@ -329,10 +329,10 @@
                     /esid "1100/172.016.200.013"
                     /apptype "undef"
                     /stype "undef"
-                    /s-dn "sid=1100,ou=tkfs,o=1,c=CH,dc=tkfcd.hsr.ch"
+                    /s-dn "sid=1100,ou=tkfs,o=1,c=CH,dc=##BINDDC##"
                     /s-uid "1100"
                     /sid "1100"
-                    /tc-dn "tid=172.016.200.013,ou=tkftc,o=1,c=CH,dc=tkfcd.hsr.ch"
+                    /tc-dn "tid=172.016.200.013,ou=tkftc,o=1,c=CH,dc=##BINDDC##"
                     /tc-uid "172.016.200.013"
                     /tid "172.016.200.013"
                     /tc-type "dummy"
@@ -357,7 +357,7 @@
 				{
 					/:0
 					 {
-#                  /uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch
+#                  /uid=tkgae,ou=tkfu,o=10601,c=CH,dc=##BINDDC##
 						/objectclass
 						{
 						  "person"
@@ -406,7 +406,7 @@
 			{
 				/TmpStore
 				{
-					"tid=172.016.200.013,ou=tkftc,o=1,c=CH,dc=tkfcd.hsr.ch"
+					"tid=172.016.200.013,ou=tkftc,o=1,c=CH,dc=##BINDDC##"
 				}
 			}
 		}
@@ -425,7 +425,7 @@
 			{
 				/TmpStore
 				{
-					"sid=1100,ou=tkfs,o=1,c=CH,dc=tkfcd.hsr.ch"
+					"sid=1100,ou=tkfs,o=1,c=CH,dc=##BINDDC##"
 				}
 			}
 		}
@@ -530,7 +530,7 @@
 			{
 				/TmpStore
 				{
-#					/"esid=1100/153.046.016.009,uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+#					/"esid=1100/153.046.016.009,uid=tkgae,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 					/objectclass
 					{
 					  "entitledService"
@@ -539,10 +539,10 @@
 					/esid "1100/153.046.016.009"
 					/apptype "undef"
 					/stype "undef"
-					/s-dn "sid=1100,ou=tkfs,o=1,c=CH,dc=tkfcd.hsr.ch"
+					/s-dn "sid=1100,ou=tkfs,o=1,c=CH,dc=##BINDDC##"
 					/s-uid "1100"
 					/sid "1100"
-					/tc-dn "tid=153.046.016.009,ou=tkftc,o=1,c=CH,dc=tkfcd.hsr.ch"
+					/tc-dn "tid=153.046.016.009,ou=tkftc,o=1,c=CH,dc=##BINDDC##"
 					/tc-uid "153.046.016.009"
 					/tid "153.046.016.009"
 					/tc-type "dummy"
@@ -593,7 +593,7 @@
 			{
 				/TmpStore
 				{
-#                   /"uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+#                   /"uid=tkgae,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 					/objectclass
 					{
 					  "person"
@@ -641,7 +641,7 @@
 			{
 				/TmpStore
 				{
-#					/"uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+#					/"uid=tkgae,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
 					/objectclass
 					{
 					  "person"
@@ -689,7 +689,7 @@
 			{
 				/TmpStore
 				{
-#                  /"esid=1100/172.016.200.013,uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch"
+#                  /"esid=1100/172.016.200.013,uid=tkgae,ou=tkfu,o=10601,c=CH,dc=##BINDDC##"
                     /objectclass
                     {
                       "entitledService"
@@ -698,10 +698,10 @@
                     /esid "1100/172.016.200.013"
                     /apptype "undef"
                     /stype "undef"
-                    /s-dn "sid=1100,ou=tkfs,o=1,c=CH,dc=tkfcd.hsr.ch"
+                    /s-dn "sid=1100,ou=tkfs,o=1,c=CH,dc=##BINDDC##"
                     /s-uid "1100"
                     /sid "1100"
-                    /tc-dn "tid=172.016.200.013,ou=tkftc,o=1,c=CH,dc=tkfcd.hsr.ch"
+                    /tc-dn "tid=172.016.200.013,ou=tkftc,o=1,c=CH,dc=##BINDDC##"
                     /tc-uid "172.016.200.013"
                     /tid "172.016.200.013"
                     /tc-type "dummy"
@@ -726,7 +726,7 @@
 				{
 					/:0
 					 {
-#                  /uid=tkgae,ou=tkfu,o=10601,c=CH,dc=tkfcd.hsr.ch
+#                  /uid=tkgae,ou=tkfu,o=10601,c=CH,dc=##BINDDC##
 						/objectclass
 						{
 						  "person"
@@ -775,7 +775,7 @@
 			{
 				/TmpStore
 				{
-					"tid=172.016.200.013,ou=tkftc,o=1,c=CH,dc=tkfcd.hsr.ch"
+					"tid=172.016.200.013,ou=tkftc,o=1,c=CH,dc=##BINDDC##"
 				}
 			}
 		}
@@ -794,7 +794,7 @@
 			{
 				/TmpStore
 				{
-					"sid=1100,ou=tkfs,o=1,c=CH,dc=tkfcd.hsr.ch"
+					"sid=1100,ou=tkfs,o=1,c=CH,dc=##BINDDC##"
 				}
 			}
 		}

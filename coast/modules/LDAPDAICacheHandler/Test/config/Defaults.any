@@ -16,7 +16,7 @@
         /Password           "error80+"
         /FaultyPassword     "wrong"
         /BindFailureCode    91
-        /BindDc             "dc=tkfcd.hsr.ch"
+        /BindDc             "tkfcd.hsr.ch"
         /LdifFileName       "testdbdataSunOne.ldif"
     }
 }
