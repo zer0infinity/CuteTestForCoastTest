@@ -1,4 +1,4 @@
-import os, socket, pdb
+import os, socket, shutil, pdb
 import threading
 import SConsider
 from stat import *
@@ -7,26 +7,6 @@ from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from SimpleHTTPServer import SimpleHTTPRequestHandler
 
 Import('*')
-basepath = ''
-
-def ModifyConfigFiles(env, searchReplace=[], files=[]):
-    for file in files:
-        fname = file.abspath
-        if os.path.isfile(fname):
-            oldmode=os.stat(fname).st_mode
-            ## set writable
-            os.chmod(fname, oldmode | S_IWUSR)
-            ## replace tokens in file
-            SConsider.replaceRegexInFile(fname, searchReplace)
-            os.chmod(fname, oldmode)
-
-def SystemTestMakeDirectoryExtendCleanup():
-    global basepath
-    for p in [basepath + '_ex0', basepath, os.path.split(basepath)[0]]:
-        if os.path.isdir(p):
-            try:
-                os.rmdir(p)
-            except: pass
 
 class MyTCPServer(TCPServer):
     """This class wrapper is needed to set allow_reuse_address to True
@@ -77,38 +57,31 @@ except:
     hosttoresolvename=localhostname
     hosttoresolveip=localhostip
 
-def setUp(target, source, env):
-    global basepath
+searchReplace = {
+    'FQDN': fqdn,
+    'FAULTYFQDN': faultyfqdn,
+    'HOSTNAME': hostonly,
+    'HOSTNAMEIP': socket.gethostbyname(hostonly),
+    'DOMAINONLY': domain,
+    'TCPNOSENDRECVPORT': str(tcpnosendrecvport),
+    'TCPSENDRECVPORT': str(tcpsendrecvport),
+    'HTTPSENDRECVPORT': str(httpsendrecvport),
+    'DIREXTENDBASEDIR': lambda env: os.path.join(env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).abspath, 'makedirextendtest', 'test'),
+    'LOCALHOSTNAME': localhostname,
+    'LOCALHOSTIP': localhostip,
+    'RESOLVABLEHOSTFQDN': hosttoresolvename,
+    'RESOLVABLEHOSTIP': hosttoresolveip,
+    'TMPDIR': lambda env: 'c:/temp' if str(env['PLATFORM']) == 'cygwin' else '/tmp',
+    'ROOTFS': lambda env: 'c:/' if str(env['PLATFORM']) == 'cygwin' else '/',
+}
+
+def SystemTestMakeDirectoryExtendCleanup(env):
     tdirabs = env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).abspath
-    basepath = os.path.join(tdirabs, 'makedirextendtest', 'test')
-    searchReplace = [
-        (r"##FQDN##", fqdn),
-        (r"##FAULTYFQDN##", faultyfqdn),
-        (r"##HOSTNAME##", hostonly),
-        (r"##HOSTNAMEIP##", socket.gethostbyname(hostonly)),
-        (r"##DOMAINONLY##", domain),
-        (r"##TCPNOSENDRECVPORT##", str(tcpnosendrecvport)),
-        (r"##TCPSENDRECVPORT##", str(tcpsendrecvport)),
-        (r"##HTTPSENDRECVPORT##", str(httpsendrecvport)),
-        (r"##DIREXTENDBASEDIR##", basepath),
-        (r"##LOCALHOSTNAME##", localhostname),
-        (r"##LOCALHOSTIP##", localhostip),
-        (r"##RESOLVABLEHOSTFQDN##", hosttoresolvename),
-        (r"##RESOLVABLEHOSTIP##", hosttoresolveip),
-    ]
-    if str(env['PLATFORM']) == 'cygwin':
-        searchReplace.extend([
-            (r"##TMPDIR##", 'c:/temp'),
-            (r"##ROOTFS##", 'c:/'),
-        ])
-    else:
-        searchReplace.extend([
-            (r"##TMPDIR##", '/tmp'),
-            (r"##ROOTFS##", '/'),
-        ])
+    basepath = os.path.join(tdirabs, 'makedirextendtest')
+    if os.path.isdir(basepath):
+        shutil.rmtree(basepath, ignore_errors=True)
 
-    ModifyConfigFiles(env, searchReplace, SConsider.findFiles([os.path.join(tdirabs,'config')],['.any']))
-
+def setUp(target, source, env):
     # setup listener threads for socket tests
     threading.Thread(target=startServer, args=[localhostname, tcpsendrecvport, MyTCPServer, AcceptorHandler]).start()
     threading.Thread(target=startServer, args=[localhostname, httpsendrecvport, MyHTTPServer, HTTPHandler]).start()
@@ -119,7 +92,7 @@ def tearDown(target, source, env):
         server.shutdown()
     # delete generated files
     SConsider.removeFiles(SConsider.findFiles([env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])], extensions=['.res'], matchfiles=['include.any']))
-    SystemTestMakeDirectoryExtendCleanup()
+    SystemTestMakeDirectoryExtendCleanup(env)
 
 buildSettings = {
     packagename : {
@@ -127,7 +100,8 @@ buildSettings = {
         'sourceFiles'      : SConsider.listFiles(['*.cpp']),
         'targetType'       : 'ProgramTest',
         'copyFiles'        : [
-            (SConsider.findFiles(['.'], ['.any', '.txt', '.tst']), S_IRUSR | S_IRGRP | S_IROTH),
+            (SConsider.findFiles(['.'], ['.any']), S_IRUSR | S_IRGRP | S_IROTH, searchReplace),
+            (SConsider.findFiles(['.'], ['.txt', '.tst']), S_IRUSR | S_IRGRP | S_IROTH),
             (SConsider.findFiles(['config'], ['.sh']), S_IRUSR | S_IRGRP | S_IROTH | S_IXUSR),
         ],
         'runConfig'        : {
