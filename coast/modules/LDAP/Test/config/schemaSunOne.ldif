@@ -1,0 +1,595 @@
+#
+# TKF-ED SCHEMA
+# *************
+#
+# NOTES:
+# To avoid configuration errors with the standard DS 5.2 schemas the following attributes are
+# manually  modified:
+# - name-oid deleted (already exists in 00core.ldif => X-ORIGIN 'RFC 2256')
+# - passwordexp deleted (already exists in 00core.ldif => X-ORIGIN 'Sun ONE Directory Server')
+# - info-oid already exists as info in 28pilot.ldif
+dn: cn=schema
+attributeTypes: ( appinst-oid NAME ( 'appinst' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( hidden-oid NAME ( 'hidden' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( compstyle-oid NAME ( 'compstyle' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( tc-type-oid NAME ( 'tc-type' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( s-uid-oid NAME ( 's-uid' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( hex5-oid NAME ( 'hex5' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( fkisCountryCode-oid NAME ( 'fkisCountryCode' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( city-oid NAME ( 'city'e ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( tkfAdmin-oid NAME ( 'tkfAdmin' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( tids-oid NAME ( 'tids' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15  
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( language-oid NAME ( 'language' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( domicile-oid NAME ( 'domicile' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( firstname-oid NAME ( 'firstname' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( lastname-oid NAME ( 'lastname' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( ouname-oid NAME ( 'ouname' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( userabbrev-oid NAME ( 'userabbrev' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( pd-dn-oid NAME ( 'pd-dn' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.12 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( ifs-id-oid NAME ( 'ifs-id' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.26  
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( esid-oid NAME ( 'esid' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( stype-oid NAME ( 'stype' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( s-dn-oid NAME ( 's-dn' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.12 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( tc-dn-oid NAME ( 'tc-dn' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.12 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( tc-uid-oid NAME ( 'tc-uid' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( hexid-oid NAME ( 'hexid' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( hextk-oid NAME ( 'hextk' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( cluster-oid NAME ( 'cluster' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( idperm-oid NAME ( 'idperm' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( userGroup-oid NAME ( 'userGroup' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( sid-oid NAME ( 'sid' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( peid-oid NAME ( 'peid' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( mnc-oid NAME ( 'mnc' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( pec-oid NAME ( 'pec' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( berclass-oid NAME ( 'berclass' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( insttype-oid NAME ( 'insttype' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( mmarklist-oid NAME ( 'mmarklist' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( rulehps-oid NAME ( 'rulehps' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( mnt-oid NAME ( 'mnt' )
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' )
+)
+attributeTypes: ( dataclass-oid NAME ( 'dataclass' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( exception-oid NAME ( 'exception' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( chargebas-oid NAME ( 'chargebas' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( delay-oid NAME ( 'delay' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( delayper-oid NAME ( 'delayper' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( delaypercode-oid NAME ( 'delaypercode' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( datadeliv-oid NAME ( 'datadeliv' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( provider-oid NAME ( 'provider' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( providercode-oid NAME ( 'providercode' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( idcode-oid NAME ( 'idcode' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( active-oid NAME ( 'active' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( vendor-oid NAME ( 'vendor' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( tid-oid NAME ( 'tid' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( trustClass-oid NAME ( 'trustClass' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( tcPriority-oid NAME ( 'tcPriority' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( fdDisplayname-oid NAME ( 'fdDisplayname' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( encryptionMandatory-oid NAME ( 'encryptionMandatory' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( allowTempForceLogin-oid NAME ( 'allowTempForceLogin' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( forceLoginTime-oid NAME ( 'forceLoginTime' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( forceLoginCount-oid NAME ( 'forceLoginCount' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( aid-oid NAME ( 'aid' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( appType-oid NAME ( 'appType' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( appInstancePriority-oid NAME ( 'appInstancePriority' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( tc-dns-oid NAME ( 'tc-dns' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.12  
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( ip-oid NAME ( 'ip' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( port-oid NAME ( 'port' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( location-oid NAME ( 'location' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( appKey-oid NAME ( 'appKey' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( relocateAddress-oid NAME ( 'relocateAddress' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( portEncrypted-oid NAME ( 'portEncrypted' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( loadBalanced-oid NAME ( 'loadBalanced' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( webBased-oid NAME ( 'webBased' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' )
+)
+attributeTypes: ( fdTimeout-oid NAME ( 'fdTimeout' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' )
+)
+#attributeTypes: ( info-oid NAME ( 'info' ) 
+#    DESC 'User Defined Attribute' 
+#    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+#    X-ORIGIN ( 'user defined' 'TKF-ED' )
+#)
+attributeTypes: ( backendEncryptionMandatory-oid NAME 'backendEncryptionMandatory' 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE X-ORIGIN 
+    ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( SSLVerifyPeerCert-oid NAME 'SSLVerifyPeerCert' 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE X-ORIGIN 
+    ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( SSLVerifyFailIfNoPeerCert-oid NAME 'SSLVerifyFailIfNoPeerCert' 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( SSLUseAppCallback-oid NAME 'SSLUseAppCallback' 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( SSLVerifyDepth-oid NAME 'SSLVerifyDepth' 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( VerifyCertifiedEntity-oid NAME 'VerifyCertifiedEntity' 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( CertVerifyString-oid NAME 'CertVerifyString' 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( CertVerifyStringIsFilter-oid NAME 'CertVerifyStringIsFilter' 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: (SessionResumption-oid NAME 'SessionResumption' 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( basicAuthPasswd-oid NAME ( 'basicAuthPasswd' )
+    DESC 'User Defined Attribute'
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+    SINGLE-VALUE
+    X-ORIGIN ( 'user defined' 'TKF-ED' )
+)
+attributeTypes: ( basicAuthTechnicalUser-oid NAME ( 'basicAuthTechnicalUser' )
+    DESC 'User Defined Attribute'
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+    SINGLE-VALUE
+    X-ORIGIN ( 'user defined' 'TKF-ED' )
+)
+attributeTypes: ( tkfmodtime-oid NAME ( 'tkfmodtime' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15  
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+attributeTypes: ( childmodtime-oid NAME ( 'childmodtime' ) 
+    DESC 'User Defined Attribute' 
+    SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+    SINGLE-VALUE 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+objectClasses: ( tkfCountry-oid NAME 'tkfCountry' 
+    DESC '' SUP top STRUCTURAL 
+    MUST ( c ) 
+    MAY ( fkisCountryCode $ name $ description $ l ) 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+objectClasses: ( tkfModify-oid NAME 'tkfModify' 
+    DESC '' SUP top STRUCTURAL 
+    MUST ( ) 
+    MAY ( tkfModtime $ childModtime ) 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+objectClasses: ( personal-data-oid NAME 'personal-data' 
+    DESC '' SUP top STRUCTURAL 
+    MUST ( uid $ cn $ sn ) 
+    MAY ( userpassword $ tkfModtime $ allowTempForceLogin $ forceLoginTime $ forceLoginCount ) 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+objectClasses: ( ftp-userdata-oid NAME 'ftp-userdata' 
+    DESC '' SUP top STRUCTURAL 
+    MUST ( ou ) 
+    MAY ( userPassword $ cn ) 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+objectClasses: ( tkfOrganization-oid NAME 'tkfOrganization' 
+    DESC '' SUP top STRUCTURAL 
+    MUST ( o ) 
+    MAY ( name $ ou $ street $ postalcode $ city $ l $ tkfAdmin $ description $ tids ) 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+objectClasses: ( container-oid NAME 'container' 
+    DESC '' SUP top STRUCTURAL 
+    MUST ( ou ) 
+    MAY ( name $ cn ) 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+objectClasses: ( client-oid NAME 'client' 
+    DESC '' SUP top STRUCTURAL 
+    MUST ( uid $ sn $ cn )
+    MAY ( language $ domicile $ tids $ pd-dn $ ifs-id $ passwordExp $ userPassword $
+          firstname $ lastname $ ouname $ userabbrev )
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+objectClasses: ( entitledService-oid NAME 'entitledService' 
+    DESC '' 
+    SUP top STRUCTURAL 
+    MUST ( esid ) 
+    MAY ( s-uid $ stype $ tc-type $ appType $ s-dn $ tc-dn $ sid $ tc-uid $ tid ) 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+objectClasses: ( hexAddress-oid NAME 'hexAddress' 
+    DESC '' SUP top STRUCTURAL 
+    MUST ( hexid ) 
+    MAY ( hextk $ hex5 $ cluster $ idperm $ userGroup ) 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+objectClasses: ( service-oid NAME 'service' 
+    DESC '' SUP top STRUCTURAL 
+    MUST ( sid ) 
+    MAY ( stype $ name $ cn $ appType $ description ) 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+objectClasses: ( permissibleEntity-oid NAME 'permissibleEntity' 
+    DESC '' SUP top STRUCTURAL 
+    MUST ( peid ) 
+    MAY ( hidden $ compstyle $ mnc $ pec $ name $ cn $ berclass $ insttype $ mmarklist $ rulehps $ 
+          mnt $ dataclass $ exception $ chargebas $ delay $ 
+          delayper $ delaypercode $ datadeliv $ provider $ providercode $ 
+          vendor $ idcode $ active ) 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+objectClasses: ( termcluster-oid NAME 'termcluster' 
+    DESC '' SUP top STRUCTURAL 
+    MUST ( appinst $ tid $ trustClass $ tcPriority $ appType ) 
+    MAY ( tc-type $ cn $ fdDisplayname $ description $ encryptionMandatory ) 
+    X-ORIGIN ( 'user defined' 'TKF-ED' ) 
+)
+objectClasses: ( appInstance-oid NAME 'appInstance' 
+    DESC '' SUP top STRUCTURAL 
+    MUST ( aid $ appType ) 
+    MAY ( trustClass $ appInstancePriority $ name $ tids $ tc-dns $ ip $ port $ location $ appKey $ userpassword $ relocateAddress $ portEncrypted $ loadBalanced $ webBased $ fdTimeout $ info $
+    backendEncryptionMandatory $ SSLVerifyPeerCert $ SSLVerifyFailIfNoPeerCert $ SSLUseAppCallback $ SSLVerifyDepth $ VerifyCertifiedEntity $ CertVerifyString $ CertVerifyStringIsFilter $ SessionResumption $
+    basicAuthPasswd $ basicAuthTechnicalUser ) 
+    X-ORIGIN ( 'user defined' 'TKF-ED' )
+)
