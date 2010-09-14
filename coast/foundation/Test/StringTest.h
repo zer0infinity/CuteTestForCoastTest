@@ -88,13 +88,6 @@ public:
 	void compareN0 ();
 	void compareN1 ();
 
-	void 			copyTos ();
-	void copyTo0 ();
-	void copyTo1 ();
-	void copyTo2 ();
-	void copyTo3 ();
-	void copyTo4 ();
-
 	void 			ats();
 	void at0 ();
 

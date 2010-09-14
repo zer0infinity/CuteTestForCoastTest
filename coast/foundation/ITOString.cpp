@@ -801,23 +801,6 @@ int  String::CompareN(const char *other, long length, long start) const
 	}
 }
 
-long String::CopyTo(char *buf, long n, long pos) const
-{
-	if (pos < 0) {
-		pos = 0;    // must not copy from outside
-	}
-
-	long  rest = Length() - pos; // do not copy too much
-
-	if (n > rest) {
-		n = rest;
-	}
-	if ( n > 0 && GetImpl() ) {
-		memcpy(buf, GetContent() + pos, n);
-	}
-	return n;
-}
-
 void String::PutAt( long pos, char c)
 {
 	if (pos >= 0  ) {

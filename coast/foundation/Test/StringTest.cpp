@@ -1172,9 +1172,6 @@ void StringTest::methods()
 	// CompareN    STRNCMP
 	compareNs();
 
-	// CopyTo
-	copyTos();
-
 	// At
 	ats();
 
@@ -1556,87 +1553,6 @@ void StringTest::compareNs()
 //        C O M P A R E N            Ende
 //==============================================================================================
 
-//==============================================================================================
-//        C O P Y T O              Beginn
-//==============================================================================================
-void StringTest::copyTo0 ()
-{
-	String str;
-	char buf[50];
-	str.Append( "0123456789" );
-	long i, i_max, result;
-
-	i_max = str.Length() + 5;
-	for ( i = 0; i < i_max; i++ ) {
-		memset( buf, 0, sizeof(buf) );
-		result = str.CopyTo( buf, i, 0 );
-		if ( i < str.Length() ) {
-			t_assert ( memcmp( buf, (const char *)str, i ) == 0 );
-			assertCompare((long)strlen(buf), equal_to, i);
-		} else {
-			t_assert ( memcmp( buf, (const char *)str, str.Length() ) == 0 );
-			assertCompare((long)strlen(buf), equal_to, str.Length());
-		}
-	}
-}
-
-void StringTest::copyTo1()
-{
-	StartTrace(StringTest.copyTo1);
-	// Test strlen( (const char *)str ) < str.Length():  There is a \0 within the content of the string
-	char buf0[5] = { 'a', 'b', (char)0, 'c', 'd' }, buf1[50] = {0};
-	String str;
-	str.Append( (void *) buf0, 5 );
-	// the void* cast is necessary as otherwise Append does not read past 0
-	str.CopyTo( buf1, 5, 0 );
-	t_assert( memcmp( buf0, buf1, 5) == 0 );
-	assertCompare(str.Length(), equal_to, 5L);
-	t_assert( str.Capacity() >= str.Length() );
-}
-
-void StringTest::copyTo2()
-{
-	StartTrace(StringTest.copyTo2);
-	// Test:  nr of char to copy is negative:  CopyTo bewirkt nichts!  OK
-	char 	buf[50] = {0}, bufHlp[50] = {0};
-	String	str = "0123456789";
-
-	str.CopyTo( buf, -7, 0 );
-	t_assert ( memcmp( buf, bufHlp, sizeof(buf) ) == 0 );
-}
-
-void StringTest::copyTo3()
-{
-	StartTrace(StringTest.copyTo3);
-	// Test:  copy into the buffer but not from position 0
-	char buf[50] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'l', 'm', 'n', 'o', 0};
-	int len = strlen( buf );
-	String str = "0123456789";
-	str.CopyTo( buf, 5, 3 );  // len = 5    pos = 3
-	t_assert( memcmp( buf, "34567fghilmno", len ) == 0 );
-}
-
-void StringTest::copyTo4()
-{
-	StartTrace(StringTest.copyTo4);
-	// Test:  copy into the buffer from a negative position
-	String str = "0123456789";
-	char buf[50] = {0};
-	str.CopyTo( buf, 5, -2 );
-}
-
-void StringTest::copyTos()
-{
-	StartTrace(StringTest.copyTos);
-	copyTo0();
-	copyTo1();
-	copyTo2();
-	copyTo3();
-	copyTo4();
-}
-//==============================================================================================
-//        C O P Y T O              Ende
-//==============================================================================================
 
 //==============================================================================================
 //         T O L O W E R           Beginn

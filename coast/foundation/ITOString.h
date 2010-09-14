@@ -225,10 +225,6 @@ public:
 	//! ensure internal buffer contains at least minreserve characters
 	//! \post Capacity() >= minreserve
 	void Reserve(long minreserve) ;
-	//! take n bytes starting at pos from this and place them to buf
-	//! I am not sure if that operation is still useful
-	//! \pre buf AND pos>=0 AND n <= Length()-pos
-	long CopyTo(char *buf, long n, long pos) const;
 	//! take n characters from buf and place them into this at position pos
 	//! I am not sure if that operation is still useful, it has been used by old IFAStringStream
 	//! \pre buf AND n > 0 AND pos >= 0
