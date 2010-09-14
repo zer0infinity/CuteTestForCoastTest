@@ -1546,9 +1546,8 @@ TrickyThing::TrickyThing(Allocator *a) : Anything(new ((a) ? a : Storage::Curren
 
 //---- ROAnything ---------------------------------------------------------------------
 
-ROAnything::ROAnything()
+ROAnything::ROAnything() : fAnyImp(0)
 {
-	fAnyImp = 0;
 }
 
 ROAnything::ROAnything(const Anything &a)
