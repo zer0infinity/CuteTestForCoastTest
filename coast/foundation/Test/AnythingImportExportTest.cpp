@@ -50,6 +50,7 @@ Test *AnythingImportExportTest::suite()
 	ADD_CASE(testSuite, AnythingImportExportTest, WriteRead8Test);
 	ADD_CASE(testSuite, AnythingImportExportTest, RefSlotTest);
 	ADD_CASE(testSuite, AnythingImportExportTest, AnyIncludeTest);
+	ADD_CASE(testSuite, AnythingImportExportTest, RefBug227Test);
 	return testSuite;
 }
 
@@ -604,4 +605,31 @@ void AnythingImportExportTest::ReadFailsTest()
 	Anything any;
 	t_assert(!any.Import(is));
 	assertEqual("Ending curly bracket", any["Slot"]["No"].AsString("x"));
+}
+
+void AnythingImportExportTest::RefBug227Test()
+{
+	{
+		// test an unnamed reference
+		String str(_QUOTE_( { /200 { /"a.b.c" * } /name blub }));
+		Anything anyResult, anyExpected;
+		IStringStream is(str);
+		anyResult.Import(is);
+		anyExpected["200"]["a.b.c"] = Anything();
+		anyExpected["name"] = "blub";
+		assertAnyEqual(anyExpected, anyResult);
+	}
+	{
+		// test an unnamed reference
+		String str(_QUOTE_( { /200 { /"a.b.c" * } /name blub /100 { %name /e 123 } /300 { %100 } }));
+		Anything anyResult, anyExpected;
+		IStringStream is(str);
+		anyResult.Import(is);
+		anyExpected["200"]["a.b.c"] = Anything();
+		anyExpected["name"] = "blub";
+		anyExpected["100"][0L] = anyExpected["name"];
+		anyExpected["100"]["e"] = 123;
+		anyExpected["300"][0L] = anyExpected["100"];
+		assertAnyEqual(anyExpected, anyResult);
+	}
 }
