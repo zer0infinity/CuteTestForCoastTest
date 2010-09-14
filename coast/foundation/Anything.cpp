@@ -29,6 +29,20 @@
 #include <stdlib.h>
 #endif
 
+// disable tracing if requested, even if in COAST_TRACE mode, eg. performance tests
+//#define WD_DISABLE_TRACE
+#if !defined(COAST_TRACE) || defined(WD_DISABLE_TRACE)
+#define anyStatTrace(trigger, msg, allocator)
+#define anyStartTrace(trigger)
+#define anyStartTrace1(trigger, msg)
+#define anyTrace(msg);
+#else
+#define anyStatTrace(trigger, msg, allocator) 	StatTrace(trigger, msg, allocator)
+#define anyStartTrace(trigger)					StartTrace(trigger)
+#define anyStartTrace1(trigger, msg)				StartTrace1(trigger, msg)
+#define anyTrace(msg)							Trace(msg);
+#endif
+
 static const String fgStrEmpty(Storage::Global()); //avoid temporary
 static const Anything fgAnyEmpty(Storage::Global()); // avoid temporary
 //--- auxiliary calculating hash value and the length of the key
@@ -586,18 +600,20 @@ class ParserXrefHandler : public AnyXrefHandler
 {
 public:
 	void DefinePatchRef(long lIdx) {
+		anyStartTrace1(ParserXrefHandler.DefinePatchRef, "parseLevel:" << fParseLevel << " idx:" << lIdx);
 		Anything patch;
 		patch[0L] = fParseLevel;
 		patch[1L] = lIdx;
 		fXrefs.Append(patch);
 	}
-	void	DefinePatchRef(const String &reference) {
+	void DefinePatchRef(const String &reference) {
+		anyStartTrace1(ParserXrefHandler.DefinePatchRef, "parseLevel:" << fParseLevel << " ref [" << reference << "]");
 		Anything patch;
 		patch[0L] = fParseLevel;
 		patch[1L] = reference;
 		fXrefs.Append(patch);
 	}
-	void	Patch(Anything &any) {
+	void Patch(Anything &any) {
 		String strSlotName, strRefName;
 		Anything preslot, slot, ref, anyIdx;
 		for (long i = 0, lSize = fXrefs.GetSize(); i < lSize; ++i) {
@@ -759,13 +775,13 @@ AnyImplType Anything::GetType() const
 
 void Anything::EnsureArrayImpl(Anything &anyToEnsure)
 {
-	StartTrace(Anything.EnsureArrayImpl);
+	anyStartTrace(Anything.EnsureArrayImpl);
 	if ( anyToEnsure.GetType() != AnyArrayType ) {
-		Trace("is not array");
+		anyTrace("is not array");
 		// behave friendly if current slot is not an array impl, eg don't lose current entry
 		MetaThing expander(anyToEnsure.GetAllocator());
 		if ( !anyToEnsure.IsNull() ) {
-			Trace("was not Null");
+			anyTrace("was not Null");
 			expander.Append(anyToEnsure);
 		}
 		anyToEnsure = expander;
@@ -1886,7 +1902,7 @@ void InputContext::SkipToEOL()
 //     |  '*' | '&' eDecimalNumber | eBinaryBufImpl | eError
 bool AnythingParser::DoParse(Anything &any)
 {
-//	StartTrace(AnythingParser.DoParse);
+	anyStartTrace(AnythingParser.DoParse);
 	// free old impl
 	Allocator *a = any.GetAllocator();
 	any = Anything((a) ? a : Storage::Current()); // assignment should be OK, but we keep it safe
@@ -1914,7 +1930,7 @@ bool AnythingParser::DoParse(Anything &any)
 
 bool AnythingParser::DoParseSequence(Anything &any, ParserXrefHandler &xrefs)
 {
-//	StartTrace(AnythingParser.DoParseSequence);
+	anyStartTrace(AnythingParser.DoParseSequence);
 	Allocator *a = (any.GetAllocator()) ? any.GetAllocator() : Storage::Current();
 	bool ok = true;
 	// we need to make it an array
@@ -1923,9 +1939,8 @@ bool AnythingParser::DoParseSequence(Anything &any, ParserXrefHandler &xrefs)
 		Anything element(a);
 		String key;
 		bool lastok = true;
-
 		AnythingToken tok(fContext);
-//		Trace("Tok[" << tok.fText << "]");
+		anyTrace("Token [" << tok.Token() << "] Text [" << tok.Text() << "]");
 	restart:    // for behaving nicely in case of a syntax error
 		switch (tok.Token()) {
 			case '}' : // '{' this is to cheat sniff
@@ -1948,7 +1963,7 @@ bool AnythingParser::DoParseSequence(Anything &any, ParserXrefHandler &xrefs)
 			}
 			case AnythingToken::eRef : {
 				// a unnamed slot with a reference
-//			Trace("AnythingToken::eRef");
+				anyTrace("AnythingToken::eRef");
 				// we use '%' to devide the slotNamePath and the index of the unnamed slot
 				// to keep the order of the inserted slots as requested we need
 				// to add a dummy slot which will be linked in a second step
@@ -1959,9 +1974,9 @@ bool AnythingParser::DoParseSequence(Anything &any, ParserXrefHandler &xrefs)
 				break;
 			}
 			case AnythingToken::eIndex :
-//			Trace("AnythingToken::eIndex");
+				anyTrace("AnythingToken::eIndex");
 				key = tok.Text(); // remember index
-//            Trace("key:" << key);
+				anyTrace("key:" << key);
 				if (key.Length() > 0) {
 					if (any.IsDefined(key)) {
 						// double definition, should be a warning....
@@ -2087,7 +2102,7 @@ bool AnythingParser::MakeSimpleAny(AnythingToken &tok, Anything &any)
 
 void AnythingParser::ImportIncludeAny(Anything &element, const String &url)
 {
-//	StartTrace(AnythingParser.ImportIncludeAny);
+	anyStartTrace(AnythingParser.ImportIncludeAny);
 	Anything query;
 
 	long colonpos = url.StrChr(':');
