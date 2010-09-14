@@ -11,7 +11,6 @@
 
 #if !defined(WIN32)
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
 #include "SystemLog.h"
 
 //--- c-library modules used ---------------------------------------------------
