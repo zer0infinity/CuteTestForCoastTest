@@ -176,23 +176,10 @@ bool Tracer::CheckWDDebug(const char *trigger, Allocator *pAlloc)
 		fgIsInitialised = true;
 		Tracer::fgTerminated = (System::EnvGet("NO_TRACE") == "true") ? true : false;
 	}
-
 	if ( fgTerminated ) {
 		return false;
 	}
-	static bool trying( false );	//!@FIXME hack until recursive mutex are implemented
-
-	if (fgWDDebugContext.GetType() == AnyNullType) {
-		if ( trying ) {
-			return false;
-		}
-		trying = true;
-		Reset();
-		// try to read Dbg.any only once <<- doesn't work as expected
-		trying = false;
-	}
-
-	if (fgLowerBound > 0) {
+	if (fgROWDDebugContext.GetType() != AnyNullType && fgLowerBound > 0) {
 		return CheckTrigger(trigger, pAlloc);
 	}
 	return false;
@@ -301,7 +288,7 @@ void Tracer::Reset()
 		fgROWDDebugContext = fgWDDebugContext;
 		delete ifp;
 	}
-	if (fgWDDebugContext.GetType() != AnyNullType) {
+	if (fgROWDDebugContext.GetType() != AnyNullType) {
 		fgLowerBound = fgWDDebugContext["LowerBound"].AsLong(0);
 		fgUpperBound = fgWDDebugContext["UpperBound"].AsLong(0);
 		fgDumpAnythings = fgWDDebugContext["DumpAnythings"].AsBool(true);
