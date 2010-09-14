@@ -276,11 +276,11 @@ void AppBooterTest::OpenLibsTest()
 		// existing lib test
 		Anything config;
 		AppBooter appBooter;
-		config["DLL"].Append("TestLib");
+		config["DLL"].Append("CoastWDBaseTestTestLib");
 
 		t_assertm(appBooter.OpenLibs(config), "expected to load existing library");
-		assertEqualm("TestLib", appBooter.fLibArray.SlotName(0L), "expected loaded library to be stored in libArray");
-		t_assertm(0 != appBooter.fLibArray["TestLib"].AsLong(0), "expected to store handle in libArray");
+		assertEqualm("CoastWDBaseTestTestLib", appBooter.fLibArray.SlotName(0L), "expected loaded library to be stored in libArray");
+		t_assertm(0 != appBooter.fLibArray["CoastWDBaseTestTestLib"].AsLong(0), "expected to store handle in libArray");
 	}
 }
 
