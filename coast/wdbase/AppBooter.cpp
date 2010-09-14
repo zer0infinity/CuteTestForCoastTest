@@ -173,11 +173,11 @@ String AppBooter::PrepareBootFileLoading(const ROAnything &roconfig)
 	StartTrace(AppBooter.PrepareBootFileLoading);
 
 	System::InitPath(
-		roconfig["WD_ROOT"].AsCharPtr(0),
-		roconfig["WD_PATH"].AsCharPtr(0)
+		roconfig["COAST_ROOT"].AsCharPtr(0),
+		roconfig["COAST_PATH"].AsCharPtr(0)
 	);
 
-	return roconfig["WD_BOOTFILE"].AsCharPtr("Config");
+	return roconfig["COAST_BOOTFILE"].AsCharPtr("Config");
 }
 
 void AppBooter::MergeConfigWithArgs(Anything &config, const Anything &args)
@@ -278,7 +278,7 @@ bool AppBooter::ReadFromFile(Anything &config, const char *filename)
 	istream *ifp = System::OpenStream(filename, "any");
 	if (ifp == 0) {
 		String logMsg;
-		SystemLog::Error(logMsg << "AppBooter::ReadFromFile: can't open file " << NotNull(filename) << ".any. Are WD_ROOT/WD_PATH correctly set?");
+		SystemLog::Error(logMsg << "AppBooter::ReadFromFile: can't open file " << NotNull(filename) << ".any. Are COAST_ROOT/COAST_PATH correctly set?");
 		return false;
 	}
 	config.Import(*ifp);

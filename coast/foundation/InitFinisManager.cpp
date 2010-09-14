@@ -67,7 +67,7 @@ void InitFinisManager::Add(InitFinisManager *pManager, InitFinisManager *pCleane
 
 void InitFinisManager::IFMTrace(const char *pMsg)
 {
-	static const char *pEnvVar = getenv("TRACE_INITFINIS");
+	static const char *pEnvVar = getenv("COAST_TRACE_INITFINIS");
 	static bool bTrace = ( pEnvVar != 0 && strcmp(pEnvVar, "1") == 0 );
 	if ( bTrace ) {
 		SystemLog::WriteToStderr(pMsg);

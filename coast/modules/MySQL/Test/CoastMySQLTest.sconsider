@@ -49,7 +49,7 @@ def setUp(target, source, env):
         raise SConsider.SkipTest('required mysqlbin executable not found, skipping test')
 
     relDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
-    Anything.setLocalEnv(env={}, WD_ROOT=relDir.abspath)
+    Anything.setLocalEnv(env={}, COAST_ROOT=relDir.abspath)
 
     global defaults
     try: defaults = Anything.loadFromFile('Defaults.any')

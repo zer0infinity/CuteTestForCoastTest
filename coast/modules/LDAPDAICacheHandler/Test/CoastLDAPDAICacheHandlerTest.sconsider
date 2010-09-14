@@ -32,7 +32,7 @@ def tearDown(target, source, env):
 
 
 def replaceConfigParams(env, relDir, configdir):
-    Anything.setLocalEnv(env={}, WD_ROOT=relDir.abspath)
+    Anything.setLocalEnv(env={}, COAST_ROOT=relDir.abspath)
     global defaults
     try: defaults = Anything.loadFromFile('Defaults.any')
     except IOError: pass

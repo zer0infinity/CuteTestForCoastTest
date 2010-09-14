@@ -31,8 +31,8 @@ def setUp(target, source, env):
         (r"##CPORT3##", str(cport3)),
     ]
     ModifyConfigFiles(env, searchReplace, SConsider.findFiles([configdir],['.any']))
-#    env['ENV']['WD_LOGONCERR'] = 2
-#    env['ENV']['WD_PATH'] = ':'.join(['config', '.'])
+#    env['ENV']['COAST_LOGONCERR'] = 2
+#    env['ENV']['COAST_PATH'] = ':'.join(['config', '.'])
 
 def tearDown(target, source, env):
     pass

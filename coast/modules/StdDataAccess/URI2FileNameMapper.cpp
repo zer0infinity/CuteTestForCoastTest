@@ -37,7 +37,7 @@ bool URI2FileNameMapper::DoFinalGetAny(const char *key, Anything &val, Context &
 		String path = documentRoot;
 		if (!System::IsAbsolutePath(documentRoot)) {
 			// document root is not set or relative
-			// set path to WD_ROOT
+			// set path to COAST_ROOT
 			path = System::GetRootDir();
 			if (documentRoot.Length() > 0) {
 				// document root is given and seems to be a relative path

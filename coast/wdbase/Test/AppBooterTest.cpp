@@ -132,7 +132,7 @@ void AppBooterTest::PrepareBootFileLoadingTest()
 
 		assertEqualm("Config", appBooter.PrepareBootFileLoading(config), "expected default name");
 
-		// this tests succeeds only if WD_PATH and WD_ROOT are not set in the environment
+		// this tests succeeds only if COAST_PATH and COAST_ROOT are not set in the environment
 		// it is not testable in this way since every environment is different
 //		assertEqualm(".", System::GetRootDir(), "expected local directory");
 //		assertEqualm(".:config:src:", System::GetPathList(), "expected default path list");
@@ -145,14 +145,14 @@ void AppBooterTest::PrepareBootFileLoadingTest()
 		String actualRoot = System::GetRootDir();
 		String actualPath = System::GetPathList();
 
-		config["WD_BOOTFILE"] = "MyConfig";
-		config["WD_PATH"] = "app:app_src:app_log";
-		config["WD_ROOT"] = "/foo/bah/end";
+		config["COAST_BOOTFILE"] = "MyConfig";
+		config["COAST_PATH"] = "app:app_src:app_log";
+		config["COAST_ROOT"] = "/foo/bah/end";
 		AppBooter appBooter;
 
 		assertEqualm("MyConfig", appBooter.PrepareBootFileLoading(config), "expected default name");
 
-		// this tests succeeds only if WD_PATH and WD_ROOT are not set in the environment
+		// this tests succeeds only if COAST_PATH and COAST_ROOT are not set in the environment
 		assertEqualm("/foo/bah/end", System::GetRootDir(), "expected local directory");
 		assertEqualm("app:app_src:app_log", System::GetPathList(), "expected default path list");
 		//restore actual settings

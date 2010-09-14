@@ -132,7 +132,7 @@ namespace TestFramework
 			StartTrace(AnythingStatisticTestPolicy.AddStatisticOutput);
 			Anything anyToStore(lMilliTime, fStatistics.GetAllocator());
 			String strSlot(strSummaryName);
-			strSlot.Append(delim).Append(fHostName).Append(delim).Append(WD_BUILDFLAGS).Append(delim).Append(WD_COMPILER).Append(delim).Append(fDatetime);
+			strSlot.Append(delim).Append(fHostName).Append(delim).Append(COAST_BUILDFLAGS).Append(delim).Append(COAST_COMPILER).Append(delim).Append(fDatetime);
 			SlotPutter::Operate(anyToStore, fStatistics, strSlot, false, delim, indexdelim);
 		}
 

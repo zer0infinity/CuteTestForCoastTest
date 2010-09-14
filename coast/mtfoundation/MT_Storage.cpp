@@ -251,7 +251,7 @@ void MT_Storage::Initialize()
 	if ( !fgInitialized ) {
 		sgpMTHooks = new MTStorageHooks();
 		Storage::SetHooks(sgpMTHooks);
-		// switch to thread safe memory tracker if enabled through TRACE_STORAGE
+		// switch to thread safe memory tracker if enabled through COAST_TRACE_STORAGE
 		Allocator *a = Storage::Global();
 		if ( a && Storage::GetStatisticLevel() >= 1 ) {
 			fOldTracker = a->ReplaceMemTracker(Storage::MakeMemTracker("MTGlobalAllocator", true));

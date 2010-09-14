@@ -318,7 +318,7 @@ public:
 	//! get currently used allocator (thread specific)
 	static Allocator *Current();
 
-	/*! get statistic level which was initialized by getting value of TRACE_STORAGE environment variable
+	/*! get statistic level which was initialized by getting value of COAST_TRACE_STORAGE environment variable
 		\return logging level, see description of fglStatisticLevel */
 	static long GetStatisticLevel() {
 		return fglStatisticLevel;
@@ -357,7 +357,7 @@ protected:
 	//!flag to force global store temporarily
 	static bool fgForceGlobal;
 
-	/*! define the logging level of memory statistics by defining TRACE_STORAGE appropriately
+	/*! define the logging level of memory statistics by defining COAST_TRACE_STORAGE appropriately
 		0: No pool statistic tracing, even not for excess memory nor GlobalAllocator usage
 		1: Trace overall statistics
 		2: + trace detailed statistics

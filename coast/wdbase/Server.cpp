@@ -259,7 +259,7 @@ int Server::DoGlobalReinit()
 	StartTrace(Server.DoGlobalReinit);
 
 	Anything config;
-	const char *bootfilename = GetConfig()["WD_BOOTFILE"].AsCharPtr("Config");
+	const char *bootfilename = GetConfig()["COAST_BOOTFILE"].AsCharPtr("Config");
 	if (AppBooter().ReadFromFile(config, bootfilename)) {
 		// config file may redefine root directory
 		System::SetRootDir( Lookup("Root", System::GetRootDir()), true);

@@ -9,7 +9,7 @@
 #ifndef _FOUNDATION_H
 #define _FOUNDATION_H
 
-#if defined(WD_OPT)
+#if defined(COAST_OPT)
 #define STR_MODE	"OPT"
 #else
 #define STR_MODE	"DBG"
@@ -24,24 +24,24 @@
 #else
 #define STR_IOVERSION	""
 #endif
-#define WD_BUILDFLAGS		STR_MODE STR_TRACE STR_IOVERSION
+#define COAST_BUILDFLAGS		STR_MODE STR_TRACE STR_IOVERSION
 
 #if defined(__GNUG__)
-#define WD_COMPILER		"GCC_"  __VERSION__
+#define COAST_COMPILER		"GCC_"  __VERSION__
 #elif defined(WIN32) && defined(_MSC_VER)
-#define WD_COMPILER		"MSC_" _MSC_VER
+#define COAST_COMPILER		"MSC_" _MSC_VER
 #elif defined(__SUNPRO_CC)
 #if ( __SUNPRO_CC >= 0x500 ) && ( __SUNPRO_CC < 0x580 )
-#define WD_COMPILER	"SunCC_5.7"
+#define COAST_COMPILER	"SunCC_5.7"
 #elif ( __SUNPRO_CC >= 0x580 ) && ( __SUNPRO_CC < 0x590 )
-#define WD_COMPILER	"SunCC_5.8"
+#define COAST_COMPILER	"SunCC_5.8"
 #elif ( __SUNPRO_CC >= 0x590 ) && ( __SUNPRO_CC < 0x600 )
-#define WD_COMPILER	"SunCC_5.9"
+#define COAST_COMPILER	"SunCC_5.9"
 #else
-#define WD_COMPILER		"SunCC_4.x"
+#define COAST_COMPILER		"SunCC_4.x"
 #endif
 #else
-#define WD_COMPILER		"CompilerUnknown"
+#define COAST_COMPILER		"CompilerUnknown"
 #endif
 
 // symbol concatenation operator

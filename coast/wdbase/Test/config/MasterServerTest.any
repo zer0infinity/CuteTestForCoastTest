@@ -7,7 +7,7 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
-	/WD_BOOTFILE	MasterServerTest
+	/COAST_BOOTFILE	MasterServerTest
 
 	/Application "SimpleTestApp"
 

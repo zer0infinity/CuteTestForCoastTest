@@ -92,11 +92,11 @@ void SystemTest::initPathTest()
 	assertEqual("bin", System::GetPathList());
 
 #if defined(__linux)
-	unsetenv("WD_ROOT");
-	unsetenv("WD_PATH");
+	unsetenv("COAST_ROOT");
+	unsetenv("COAST_PATH");
 #else
-	putenv("WD_ROOT=");
-	putenv("WD_PATH=");
+	putenv("COAST_ROOT=");
+	putenv("COAST_PATH=");
 #endif
 	// should have no effect now, path and root should remain
 	System::InitPath();

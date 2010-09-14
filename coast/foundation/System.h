@@ -242,10 +242,10 @@ public:
 
 	//! initialization routine that sets fgRootDir and fgPathList, does not take parameters ;-)
 	/*! Since OpenStream uses fgRootDir and fgPathList we have to make sure that they contain reasonable defaults whenever they are used.
-		fgRootDir is initialized to the environment variable WD_ROOT if set, to '.' otherwise
-		fgPathList is initialized to the environment variable WD_PATH if set, to ".:config:src" if root is set and to ".:../config:../src:" if root is not set
-		\param root path to be used when wanting to override default of WD_ROOT
-		\param path path to be used when wanting to override default of WD_PATH */
+		fgRootDir is initialized to the environment variable COAST_ROOT if set, to '.' otherwise
+		fgPathList is initialized to the environment variable COAST_PATH if set, to ".:config:src" if root is set and to ".:../config:../src:" if root is not set
+		\param root path to be used when wanting to override default of COAST_ROOT
+		\param path path to be used when wanting to override default of COAST_PATH */
 	static void InitPath(const char *root = 0, const char *path = 0);
 
 	/*! Status code of directory creation operations. */

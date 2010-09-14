@@ -292,7 +292,7 @@ void Storage::DoInitialize()
 {
 	static bool once = true;
 	if (once) {
-		const char *pEnvVar = getenv("TRACE_STORAGE");
+		const char *pEnvVar = getenv("COAST_TRACE_STORAGE");
 		long lLevel = ( ( pEnvVar != 0 ) ? atol(pEnvVar) : 0 );
 		fglStatisticLevel = lLevel;
 		once = false;

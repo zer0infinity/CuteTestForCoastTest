@@ -310,7 +310,7 @@ RegisterableObjectInstaller::RegisterableObjectInstaller(const char *name, const
 	, fCategory(category)
 {
 	if (fObject) {
-		static bool bTrace = (System::EnvGet("TRACE_STATICALLOC") == "1");
+		static bool bTrace = (System::EnvGet("COAST_TRACE_STATICALLOC") == "1");
 		if ( bTrace ) {
 			SystemLog::WriteToStderr(String("installing <") << name << "> into <" << category << ">\n");
 		}
@@ -323,7 +323,7 @@ RegisterableObjectInstaller::~RegisterableObjectInstaller()
 {
 	StartTrace(RegisterableObjectInstaller.~RegisterableObjectInstaller);
 	if (fObject) {
-		static bool bTrace = (System::EnvGet("TRACE_STATICALLOC") == "1");
+		static bool bTrace = (System::EnvGet("COAST_TRACE_STATICALLOC") == "1");
 		if ( bTrace ) {
 			SystemLog::WriteToStderr(String("deleting <") << fObject->GetName() << "> from <" << fCategory << ">\n");
 		}

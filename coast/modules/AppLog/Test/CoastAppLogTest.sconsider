@@ -15,7 +15,7 @@ def ModifyConfigFiles(env, searchReplace=[], files=[]):
             os.chmod(fname, oldmode)
 
 def setUp(target, source, env):
-    env['ENV']['WD_USE_MMAP_STREAMS'] = "0"
+    env['ENV']['COAST_USE_MMAP_STREAMS'] = "0"
 
     targetDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
     tmppath = targetDir.Dir('tmp').abspath

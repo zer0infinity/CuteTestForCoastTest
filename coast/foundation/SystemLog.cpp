@@ -47,12 +47,12 @@ void SystemLog::Init(const char *appId)
 		appId = "Coast";
 	}
 
-	String strValue = System::EnvGet("WD_DOLOG");
+	String strValue = System::EnvGet("COAST_DOLOG");
 	int iValue = (int)strValue.AsLong(eNone);
 	if ( ( eNone < iValue ) && ( iValue < eLast ) ) {
 		fgDoSystemLevelLog = (eLogLevel)iValue;
 	}
-	strValue = System::EnvGet("WD_LOGONCERR");
+	strValue = System::EnvGet("COAST_LOGONCERR");
 	iValue = (int)strValue.AsLong(eNone);
 	if ( ( eNone < iValue ) && ( iValue < eLast ) ) {
 		fgDoLogOnCerr = (eLogLevel)iValue;

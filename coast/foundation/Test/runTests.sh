@@ -1,6 +1,6 @@
 #!/bin/sh
 
-export WD_PATH=config:.
+export COAST_PATH=config:.
 
 if [ "$1" != "" ] ; then
 	src/wdtest $1

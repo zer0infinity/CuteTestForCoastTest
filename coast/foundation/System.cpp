@@ -410,8 +410,8 @@ String System::fgPathList(0L, Storage::Global());
 void System::InitPath(const char *root, const char *path)
 {
 	static bool once = false;
-	String tmpRoot((root) ? String(root) : System::EnvGet("WD_ROOT"));
-	String tmpPath((path) ? String(path) : System::EnvGet("WD_PATH"));
+	String tmpRoot((root) ? String(root) : System::EnvGet("COAST_ROOT"));
+	String tmpPath((path) ? String(path) : System::EnvGet("COAST_PATH"));
 
 	if (!once || tmpRoot.Length() > 0 || tmpPath.Length() > 0) {
 		once = true;
@@ -516,7 +516,7 @@ iostream *System::DoOpenStream(String &resultPath, const char *name, openmode mo
 		if ( mode & ios::ate ) {
 			mode |= ios::out;
 		}
-		static bool bUseMmapStreams = ( System::EnvGet("WD_USE_MMAP_STREAMS").AsLong(1L) == 1L );
+		static bool bUseMmapStreams = ( System::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L );
 		if ( bUseMmapStreams ) {
 			MmapStream *fp = new MmapStream(name, mode);
 			if ( fp->good() && fp->rdbuf()->is_open() ) {

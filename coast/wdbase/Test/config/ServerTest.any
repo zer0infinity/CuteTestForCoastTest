@@ -8,7 +8,7 @@
 
 {
 	# important for GlobalReInit to load this file again!
-	/WD_BOOTFILE	ServerTest
+	/COAST_BOOTFILE	ServerTest
 
 	/Application "SimpleTestApp"
 

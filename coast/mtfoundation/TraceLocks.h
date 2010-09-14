@@ -16,7 +16,7 @@ these macros allow you to write output to syslog while running the optimized
 code. Before the usage of the macros in a method you have to invoke TRACE_LOCK_START(methodname)
 define \b TRACE_LOCKS to enable the macros.
 Sample may be found in SessionListManager.cpp
-To examine the lock parity, enable syslogging with \b WD_DOLOG=2 and use the following script
+To examine the lock parity, enable syslogging with \b COAST_DOLOG=2 and use the following script
 
 \par Script to analyze output
 \code

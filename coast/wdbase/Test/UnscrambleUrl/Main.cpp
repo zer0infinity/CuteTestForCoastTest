@@ -38,7 +38,7 @@ public:
 	int GlobalInit(int argc, char *argv[], const Anything &config) {
 		if (argc < 2) {
 			cerr << "Unscramble Coast URL state." << endl;
-			cerr << "To run, use same WD_ROOT and WD_PATH as the WD-App which generated the URLs" << endl;
+			cerr << "To run, use same COAST_ROOT and COAST_PATH as the WD-App which generated the URLs" << endl;
 			cerr << "Usage: " << argv[0] << " [ <url> ]+" << endl;
 			exit(-1);
 		}

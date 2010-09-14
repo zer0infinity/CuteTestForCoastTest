@@ -25,8 +25,8 @@ conveniently. The method of this class are called by Coast
 \par Configuration
 \code
 {
-	/LogDir					String				optional, default "log", relative - to WD_ROOT - or absolute path of logfile location
-	/RotateDir				String				optional, default <LogDir>/rotate, relative - to WD_ROOT - or absolute path to store away logfiles during rotate or module startup
+	/LogDir					String				optional, default "log", relative - to COAST_ROOT - or absolute path of logfile location
+	/RotateDir				String				optional, default <LogDir>/rotate, relative - to COAST_ROOT - or absolute path to store away logfiles during rotate or module startup
 	/RotateTime				String				optional, default "24:00", time of rotation hh:mm[:ss], rotation will be done daily at the given time, seconds can be optionally specified
 	/RotateSecond			long				optional, default 0, second in day when rotation takes place, takes precedence in case RotateTime is also given
 	/RotateTimeIsGmTime		bool				optional, default 0, use GMT time to determine log rotation time. Default is local time.

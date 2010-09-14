@@ -15,7 +15,7 @@
 //--- SystemLog ----------------------------------------------------------
 /*! <b>API for syslog access</b>
 This is the Coast system logging API. It is used for system-level and application-level logging.
-The values of <tt>WD_LOGONCERR</tt> and <tt>WD_DOLOG</tt> control the level of severities shown either on the console or in the syslog. Possible values are:
+The values of <tt>COAST_LOGONCERR</tt> and <tt>COAST_DOLOG</tt> control the level of severities shown either on the console or in the syslog. Possible values are:
 <pre>
 1: DEBUG
 2: INFO
@@ -26,7 +26,7 @@ The values of <tt>WD_LOGONCERR</tt> and <tt>WD_DOLOG</tt> control the level of s
 All messages with a severity above or equal the specified value will log on the appropriate channel.<br>
 The loggers behavior is to write ALERT messages into syslog and to log ERROR and ALERT messages to the console by default.
 
-The flag <tt>TRACE_STATICALLOC</tt> shows you the allocation and deletion of all statically allocated objects used in Coast.
+The flag <tt>COAST_TRACE_STATICALLOC</tt> shows you the allocation and deletion of all statically allocated objects used in Coast.
 */
 class EXPORTDECL_FOUNDATION SystemLog
 {

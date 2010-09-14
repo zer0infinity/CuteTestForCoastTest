@@ -4,7 +4,7 @@ from stat import *
 Import('*')
 
 def setUp(target, source, env):
-    env['ENV']['TRACE_STORAGE'] = "1"
+    env['ENV']['COAST_TRACE_STORAGE'] = "1"
 
 def tearDown(target, source, env):
     pass

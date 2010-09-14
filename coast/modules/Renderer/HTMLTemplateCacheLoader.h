@@ -36,7 +36,7 @@ public:
 <B>Configuration:</B>
 <B>slots to define within Config.any</B><PRE>
 /HTMLTemplateConfig {
-	/TemplateDir		String		optional, default "config/HTMLTemplates", relative path to WD_ROOT in which to look for html-files
+	/TemplateDir		String		optional, default "config/HTMLTemplates", relative path to COAST_ROOT in which to look for html-files
 									use ":" to delimit multiple path segments
 	/LanguageDirMap {				mandatory, specify the supported languages, if not specified the caching will not be active
 		/D				String		optional, locale specific path to html-files, will be appended to TemplateDir

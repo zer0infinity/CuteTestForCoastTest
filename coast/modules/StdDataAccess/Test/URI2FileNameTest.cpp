@@ -45,7 +45,7 @@ void URI2FileNameTest::Uri2FilenameTest()
 	String result, expected;
 	String rootdir = System::GetRootDir();
 
-	// uri == "/foobaz/foo/" DocumentRoot not set -> should prepend WD_ROOT
+	// uri == "/foobaz/foo/" DocumentRoot not set -> should prepend COAST_ROOT
 	// call should fail and set error state
 	env["REQUEST_URI"] = "/foobaz/foo/";
 	t_assertm(!tst.Get("FileName", result, ctx), "expected Get to fail");
@@ -54,7 +54,7 @@ void URI2FileNameTest::Uri2FilenameTest()
 	tmpStore.Remove("HTTPError");
 	tmpStore.Remove("HTTPResponse");
 
-	// uri == "/foobaz/foo" DocumentRoot not set -> should prepend WD_ROOT
+	// uri == "/foobaz/foo" DocumentRoot not set -> should prepend COAST_ROOT
 	// call should fail and set error state
 	env["REQUEST_URI"] = "/foobaz/foo";
 	t_assertm(!tst.Get("FileName", result, ctx), "expected Get to fail");
@@ -63,7 +63,7 @@ void URI2FileNameTest::Uri2FilenameTest()
 	tmpStore.Remove("HTTPError");
 	tmpStore.Remove("HTTPResponse");
 
-	// uri == "/" DocumentRoot set relativ -> should prepend WD_ROOT
+	// uri == "/" DocumentRoot set relativ -> should prepend COAST_ROOT
 	env["REQUEST_URI"] = "/config/";
 	t_assertm(tst.Get("FileName", result, ctx), "expected Get to succeed");
 	expected = rootdir;
@@ -76,7 +76,7 @@ void URI2FileNameTest::Uri2FilenameTest()
 	tmpStore.Remove("HTTPError");
 	tmpStore.Remove("HTTPResponse");
 
-	// uri == "/" DocumentRoot set relativ -> should prepend WD_ROOT
+	// uri == "/" DocumentRoot set relativ -> should prepend COAST_ROOT
 	env["REQUEST_URI"] = "/config";
 	t_assertm(!tst.Get("FileName", result, ctx), "expected Get to fail");
 
@@ -89,7 +89,7 @@ void URI2FileNameTest::Uri2FilenameTest()
 	tmpStore.Remove("HTTPError");
 	tmpStore.Remove("HTTPResponse");
 
-	// uri == "/" DocumentRoot set relativ -> should prepend WD_ROOT
+	// uri == "/" DocumentRoot set relativ -> should prepend COAST_ROOT
 	env["DocumentRoot"] = "config";
 	env["DirectoryIndex"] = "Config.any";
 
@@ -125,7 +125,7 @@ void URI2FileNameTest::Uri2FilenameTest()
 	}
 #endif
 
-	// uri == "/" DocumentRoot set absolute -> should not prepend WD_ROOT
+	// uri == "/" DocumentRoot set absolute -> should not prepend COAST_ROOT
 	env["DocumentRoot"] = pwd;
 	env["DirectoryIndex"] = "Config.any";
 	env["REQUEST_URI"] = "/config/";

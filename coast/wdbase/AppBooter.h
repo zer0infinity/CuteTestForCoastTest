@@ -24,7 +24,7 @@ class Application;
 class EXPORTDECL_WDBASE AppBooter
 {
 	// load the global config file with the information
-	// set in the environment variable WD_ROOT
+	// set in the environment variable COAST_ROOT
 	// or with a minimal relative path
 public:
 	AppBooter();
@@ -40,7 +40,7 @@ public:
 	void HandleArgs(int argc, const char *argv[], Anything &config);
 	void SetSignalMask();
 
-	//!sets WD_ROOT and WD_PATH if set in args; returns bootfilename
+	//!sets COAST_ROOT and COAST_PATH if set in args; returns bootfilename
 	String PrepareBootFileLoading(const ROAnything &roconfig);
 
 	//!merges command line arguments into global configuration anything

@@ -250,9 +250,9 @@ def setUp(target, source, env):
         SMTPThread(hostonly, smtpport, env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).Dir(env['LOGDIR']).Dir(env['VARIANTDIR']).abspath, 'smtp.log').start()
 
     #FIXME: the following setting is needed to let CgiCallerTest succeed
-    env['ENV']['WD_ROOT'] = env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).abspath
-    env['ENV']['WD_LOGONCERR'] = 2
-#    env['ENV']['WD_PATH'] = ':'.join(['config', '.'])
+    env['ENV']['COAST_ROOT'] = env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).abspath
+    env['ENV']['COAST_LOGONCERR'] = 2
+#    env['ENV']['COAST_PATH'] = ':'.join(['config', '.'])
 
 def tearDown(target, source, env):
     for server in servers:

@@ -33,7 +33,7 @@ public:
 	//! Method used to finalize the added objects in the reversed order given by the priority number
 	void Finis();
 
-	/*! method which can be used to trace something based on the setting of environment variable TRACE_INITFINIS
+	/*! method which can be used to trace something based on the setting of environment variable COAST_TRACE_INITFINIS
 		\param pMsg message to print, including newline character if needed */
 	static void IFMTrace(const char *pMsg);
 

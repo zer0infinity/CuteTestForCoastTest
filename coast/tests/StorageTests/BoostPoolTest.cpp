@@ -21,7 +21,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
-#define WD_DISABLE_TRACE
+#define COAST_DISABLE_TRACE
 #include "STLStorage.h"
 #include "Threads.h"
 #include "Dbg.h"

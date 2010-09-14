@@ -1,6 +1,6 @@
 #!/usr/local/bin/bash
 
-export WD_ROOT=`pwd`
-export WD_PATH=.
+export COAST_ROOT=`pwd`
+export COAST_PATH=.
 
 $DEV_HOME/wdserver/wdserver

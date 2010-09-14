@@ -62,7 +62,7 @@ def setUp(target, source, env):
     relDir = env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])
     logDir = relDir.Dir(env['LOGDIR']).Dir(env['VARIANTDIR'])
     configdir = relDir.Dir('config')
-    Anything.setLocalEnv(env={}, WD_ROOT=relDir.abspath)
+    Anything.setLocalEnv(env={}, COAST_ROOT=relDir.abspath)
     global defaults
     try: defaults = Anything.loadFromFile('Defaults.any')
     except IOError: pass
