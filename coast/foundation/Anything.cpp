@@ -23,6 +23,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <algorithm>
+#include <functional>
 #if defined(__SUNPRO_CC)
 #include <stdio.h>
 #include <strings.h>
@@ -35,12 +36,14 @@
 #define anyStatTrace(trigger, msg, allocator)
 #define anyStartTrace(trigger)
 #define anyStartTrace1(trigger, msg)
-#define anyTrace(msg);
+#define anyTrace(msg)
+#define anyTraceAny(any, msg)
 #else
 #define anyStatTrace(trigger, msg, allocator) 	StatTrace(trigger, msg, allocator)
 #define anyStartTrace(trigger)					StartTrace(trigger)
-#define anyStartTrace1(trigger, msg)				StartTrace1(trigger, msg)
+#define anyStartTrace1(trigger, msg)			StartTrace1(trigger, msg)
 #define anyTrace(msg)							Trace(msg);
+#define anyTraceAny(any, msg)					TraceAny(any, msg);
 #endif
 
 static const String fgStrEmpty(Storage::Global()); //avoid temporary
@@ -548,33 +551,49 @@ char AnythingToken::DoReadNumber(InputContext &context, char firstchar)
 	return firstchar;
 }
 
+namespace {
+	char const fgPathDelim = '.';
+	char const fgIndexDelim = ':';
+	struct appendAnyLevelToString : std::unary_function<Anything const&,void> {
+		String fStr;
+		void operator()(Anything const& anyValue) {
+			if ( anyValue.GetType() == AnyCharPtrType ) {
+				if ( fStr.Length() ) fStr.Append(fgPathDelim);
+				fStr.Append(anyValue.AsString());
+				return;
+			}
+			if ( anyValue.GetType() == AnyLongType ) {
+				fStr.Append(fgIndexDelim).Append(anyValue.AsLong());
+				return;
+			}
+		}
+	};
+}
+
 class  EXPORTDECL_FOUNDATION AnyXrefHandler
 {
+	Anything fParseLevel;
 protected:
-	String	fParseLevel;
-	Anything	fXrefs;
+	Anything fXrefs;
 public:
 	AnyXrefHandler() {};
-	String	GetCurrentLevel() {
-		return fParseLevel;
+	Anything ParseLevel() {
+		return fParseLevel.DeepClone();
 	}
-	void	ResetLevel(const String &s) {
-		fParseLevel = s;
+	String ParseLevelAsString() {
+		return std::for_each(fParseLevel.begin(), fParseLevel.end(), appendAnyLevelToString()).fStr;
 	}
-	void	PushKey(const String &key) {
-		if (fParseLevel.Length() > 0) {
-			fParseLevel.Append('.');
-		}
+	void ResetLevel(Anything const &any) {
+		fParseLevel = any;
+	}
+	void PushKey(const String &key) {
 		fParseLevel.Append(key);
 	}
-	void	PushIndex(long lIdx) {
-		fParseLevel.Append(':').Append(lIdx);
+	void PushIndex(long lIdx) {
+		fParseLevel.Append(lIdx);
 	}
 	void Pop() {
-		long icolon = fParseLevel.StrRChr(':');
-		long idot   = fParseLevel.StrRChr('.');
-		long trim = icolon > idot ? icolon : idot;
-		fParseLevel.Trim(trim);
+		fParseLevel.Remove(fParseLevel.GetSize()-1);
 	}
 };
 
@@ -588,10 +607,10 @@ public:
 		return fXrefs.IsDefined(ToId(id));
 	}
 	void	DefineBackRef(long id) {
-		fXrefs[ToId(id)] = fParseLevel;
+		fXrefs[ToId(id)] = ParseLevel();
 	}
 	String	GetBackRef(long id) {
-		return fXrefs[ToId(id)].AsString();
+		return std::for_each(fXrefs[ToId(id)].begin(), fXrefs[ToId(id)].end(), appendAnyLevelToString()).fStr;
 	}
 
 };
@@ -600,45 +619,50 @@ class ParserXrefHandler : public AnyXrefHandler
 {
 public:
 	void DefinePatchRef(long lIdx) {
-		anyStartTrace1(ParserXrefHandler.DefinePatchRef, "parseLevel:" << fParseLevel << " idx:" << lIdx);
+		anyStartTrace1(ParserXrefHandler.DefinePatchRef, "parseLevel:" << ParseLevelAsString() << " idx:" << lIdx);
 		Anything patch;
-		patch[0L] = fParseLevel;
+		patch[0L] = ParseLevel();
 		patch[1L] = lIdx;
 		fXrefs.Append(patch);
 	}
 	void DefinePatchRef(const String &reference) {
-		anyStartTrace1(ParserXrefHandler.DefinePatchRef, "parseLevel:" << fParseLevel << " ref [" << reference << "]");
+		anyStartTrace1(ParserXrefHandler.DefinePatchRef, "parseLevel:" << ParseLevelAsString() << " ref [" << reference << "]");
 		Anything patch;
-		patch[0L] = fParseLevel;
+		patch[0L] = ParseLevel();
 		patch[1L] = reference;
 		fXrefs.Append(patch);
 	}
 	void Patch(Anything &any) {
-		String strSlotName, strRefName;
-		Anything preslot, slot, ref, anyIdx;
+		anyStartTrace(ParserXrefHandler.Patch);
+		String strRefName, strLevel;
+		Anything preslot, anyReferenced, ref, anyLevel, anyIdx;
 		for (long i = 0, lSize = fXrefs.GetSize(); i < lSize; ++i) {
-			strSlotName = fXrefs[i][0L].AsString();
+			anyLevel = fXrefs[i][0L];
 			anyIdx = fXrefs[i][1L];
-			// Slot
-			if (!strSlotName.Length()) {
+			strLevel = std::for_each(anyLevel.begin(), anyLevel.end(), appendAnyLevelToString()).fStr;
+			anyTraceAny(anyLevel, "strLevel [" << strLevel << "] for reference [" << anyIdx.AsString() << "]");
+			if (anyLevel.IsNull()) { // root level node
 				preslot = any;
-			} else if (!any.LookupPath(preslot, strSlotName)) {
+			} else if (!any.LookupPath(preslot, strLevel)) {
 				String m;
-				m << "lookup of slotname [" << strSlotName << "] failed!" << "\n";
+				m << "lookup of slotname [" << strLevel << "] failed!" << "\n";
 				SystemLog::WriteToStderr(m);
 			}
 			if (!preslot.IsNull()) {
 				if (anyIdx.GetType() == AnyLongType) {
-					slot = preslot[anyIdx.AsLong(0L)];
+					anyReferenced = preslot[anyIdx.AsLong(0L)];
 				} else {
-					slot = preslot[anyIdx.AsString()];
+					anyReferenced = preslot[anyIdx.AsString()];
 				}
-				strRefName = slot.AsString();
+				//!@FIXME: allow escape characters in reference text to lookup -> LookupPath must be adjusted
+				strRefName = anyReferenced.AsString();
+				anyTrace("referenced any as string [" << strRefName << "]");
 				if (!any.LookupPath(ref, strRefName)) {
 					String m;
 					m << "lookup of reference [" << strRefName << "] failed!" << "\n";
 					SystemLog::WriteToStderr(m);
 				} else {
+					//!@FIXME: replace if with anyReferenced=ref; assignment
 					if (anyIdx.GetType() == AnyLongType) {
 						preslot[anyIdx.AsLong(0L)] = ref;
 					} else {
@@ -2013,7 +2037,7 @@ bool AnythingParser::DoParseSequence(Anything &any, ParserXrefHandler &xrefs)
 			default:
 				if ( '{' == tok.Token() ) {
 					long lIdx = 0;
-					String marklevel = xrefs.GetCurrentLevel();
+					Anything marklevel = xrefs.ParseLevel();
 					if (key.Length() > 0) {
 						xrefs.PushKey(key);
 					} else {
