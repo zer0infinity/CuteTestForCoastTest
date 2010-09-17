@@ -32,14 +32,11 @@ DbgTest::~DbgTest()
 
 void DbgTest::CheckTriggerTest()
 {
-	// load a debug context with all zero
-	Tracer::Reset();
-
 	// setup context with a range of main enable all 5L 10L
 	Tracer::fgLowerBound = 5L;
 	Tracer::fgUpperBound =  10L;
-	Tracer::fgWDDebugContext["UpperBound"] = 10L;
 	Tracer::fgWDDebugContext["LowerBound"] = 5L;
+	Tracer::fgWDDebugContext["UpperBound"] = 10L;
 
 	// test the normal case, all main switches on and switch in range
 	Tracer::fgWDDebugContext["DbgTest"]["MainSwitch"] = 5L;
@@ -194,9 +191,6 @@ void DbgTest::CheckTriggerTest()
 
 void DbgTest::CheckContextTriggerFailure()
 {
-	// load a debug context with all zero
-	Tracer::Reset();
-
 	// setup context with a range of main enable all 5L 10L
 	Tracer::fgLowerBound = 30;
 	Tracer::fgUpperBound =  50;
@@ -208,9 +202,6 @@ void DbgTest::CheckContextTriggerFailure()
 
 void DbgTest::CheckTriggerTestFile()
 {
-	// load a debug context with all zero
-	Tracer::Reset();
-
 	// setup context with a range of main enable all 5L 10L
 	Tracer::fgLowerBound = 550;
 	Tracer::fgUpperBound =  650;
@@ -226,7 +217,6 @@ void DbgTest::CheckTriggerTestFile()
 
 void DbgTest::CheckMacrosCompile()
 {
-	ResetTracer();
 	StartTrace(DbgTest.CheckMacrosCompile);
 	Trace("i was here");
 	TraceBuf("buftrace so long", 10);
@@ -236,7 +226,6 @@ void DbgTest::CheckMacrosCompile()
 	SubTraceAny("test", a, "a sub trace any");
 	SubTraceBuf("test", "a subtrace buffer", 10);
 	StatTrace("test", "a stat trace", Storage::Current());
-// couldn't test here TerminateTracer() and HTMLTraceStores()
 }
 
 Test *DbgTest::suite ()

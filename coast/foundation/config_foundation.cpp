@@ -22,8 +22,6 @@ static void Init()
 	InitFinisManager::IFMTrace(">> foundation::Init\n");
 	// initialize syslog channel
 	SystemLog::Init("Coast");
-	// initialize tracing - if available
-	ResetTracer();
 	// initialize InitFinisManagerFoundation relative components
 	if ( InitFinisManagerFoundation::Instance() != NULL ) {
 		InitFinisManagerFoundation::Instance()->Init();
@@ -40,7 +38,6 @@ static void Finis()
 #if defined(WIN32)
 	Socket::CleanupWSock();
 #endif
-	TerminateTracer();
 	// finalize InitFinisManagerFoundation relative components
 	if ( InitFinisManagerFoundation::Instance() != NULL ) {
 		InitFinisManagerFoundation::Instance()->Finis();

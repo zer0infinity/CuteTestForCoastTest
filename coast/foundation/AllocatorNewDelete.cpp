@@ -7,11 +7,11 @@
  */
 
 #include "AllocatorNewDelete.h"
+#include "ITOString.h"
 #include "Dbg.h"
 
 namespace Coast
 {
-
 	static void *AllocatorNewDelete::operator new(size_t sz, Allocator *a) throw()
 	{
 		if (a) {

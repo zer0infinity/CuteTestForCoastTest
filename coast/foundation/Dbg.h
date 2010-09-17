@@ -13,11 +13,10 @@
 
 //---- Tracer --------------------------------------------------------------------------
 #ifdef COAST_TRACE
-#include "ITOString.h"
 
+class EXPORTDECL_FOUNDATION Allocator;
 class EXPORTDECL_FOUNDATION Anything;
 class EXPORTDECL_FOUNDATION ROAnything;
-class EXPORTDECL_FOUNDATION TracerHelper;
 
 //! Macros to simplify the task of printing out messages to the console together with full control of what to print.
 /*! \file
@@ -143,56 +142,7 @@ public:
 		\return false otherwise */
 	static bool CheckWDDebug(const char *trigger, Allocator *pAlloc);
 
-	//! (Re-)Load trace switch configuration from \b Dbg.any into global fgWDDebugContext
-	static void Reset();
-
-	//! Unload trace switch configuration and disable tracing
-	static void Terminate();
-
-protected:
-	friend class DbgTest;
-
-	//! forwarding method to DoCheckLevel()
-	/*! \param trigger scope of trigger to check for
-		\param pAlloc Allocator to use for allocating memory */
-	static bool CheckTrigger(const char *trigger, Allocator *pAlloc);
-
-	//! Checks if current scope is enabled or not and delegates to DoCheckTrigger() if a trigger entry needs to be checked
-	/*! \param trigger scope of trigger to check for
-		\param level ROAnything referencing specific trace switch config entry used by looking up \em trigger in fgWDDebugContext
-		\param levelSwitch lower bound at current scope to test for
-		\param levelAll log level of outer scope
-		\param enableAll enable all level of outer scope
-		\param pAlloc Allocator to use for allocating memory */
-	static bool DoCheckLevel(const char *trigger, const ROAnything &level, long levelSwitch, long levelAll, long enableAll, Allocator *pAlloc);
-
-	//! Checks if trigger entry is enabled for tracing or not
-	/*! \param trigger scope of trigger to check for
-		\param level ROAnything referencing specific trace switch config entry used by looking up \em trigger in fgWDDebugContext
-		\param levelSwitch lower bound at current scope to test for
-		\param levelAll log level of outer scope
-		\param enableAll enable all level of outer scope
-		\param pAlloc Allocator to use for allocating memory */
-	static bool DoCheckTrigger(const char *trigger, const ROAnything &level, long levelSwitch, long levelAll, long enableAll, Allocator *pAlloc);
-
-	//! Checks if level of trigger entry is to be enabled for tracing
-	/*! \param switchValue value to test for
-		\param levelSwitch lower bound value
-		\param levelAll upper bound value */
-	static bool DoCheckSwitch(long switchValue, long levelSwitch, long levelAll);
-
-	//! Checks if level of trigger entry is to be enabled for tracing based on coresponding MainSwitch value
-	/*! \param mainSwitch value to test for
-		\param levelSwitch lower bound value
-		\param levelAll upper bound value */
-	static bool CheckMainSwitch(long mainSwitch, long levelSwitch, long levelAll);
-
 private:
-	//! method to convert ROAnything into traceable stream
-	/*! \param any (RO)Anything to print out
-		\param hlp TracerHelper instance to use for output */
-	static void IntAnyWDDebug(const ROAnything &any, TracerHelper &hlp);
-
 	//! pointer to character buffer storing the trigger
 	const char *fTrigger;
 	//! flag to store if main trigger is enabled or not
@@ -201,21 +151,6 @@ private:
 	const char *fpMsg;
 	//! pointer to Allocator to use for allocating memory of internally used String buffers
 	Allocator *fpAlloc;
-
-	//! globally used indent level to structure output
-	static int fgLevel;
-	//! global Anything to store trace switch entries loaded from \b Dbg.any
-	static Anything fgWDDebugContext;
-	//! global ROAnything which is wrapped around fgWDDebugContext to support multi threading safety
-	static ROAnything fgROWDDebugContext;
-	//! global variable to store LowerBound value read from \b Dbg.any
-	static long fgLowerBound;
-	//! global variable to store UpperBound value read from \b Dbg.any
-	static long fgUpperBound;
-	//! global variable to store if Anything content should be traced or not
-	static bool fgDumpAnythings;
-	//! global variable to store if tracing is initialized/terminated
-	static bool fgTerminated;
 };
 
 /*! Macro to start a trace block using trigger string \em trigger
@@ -344,12 +279,6 @@ Will print out following messages
 #define TraceTriggered(trigger, allocator) \
 	Tracer::CheckWDDebug(_QUOTE_(trigger), allocator)
 
-//! (Re-)Load trace switch configuration from \b Dbg.any into global fgWDDebugContext
-#define ResetTracer()	Tracer::Reset()
-
-//! Unload trace switch configuration and disable tracing
-#define TerminateTracer()	Tracer::Terminate()
-
 #else
 //--- optimized versions of the debug macros they expand into nothing
 // constructor
@@ -369,9 +298,6 @@ Will print out following messages
 #define StatTraceAny(trigger, any, msg, allocator)
 // helper to check if we are triggered
 #define TraceTriggered(trigger, allocator)		false
-
-#define ResetTracer()
-#define TerminateTracer()
 #endif
 
 #endif		//not defined _Dbg_H
