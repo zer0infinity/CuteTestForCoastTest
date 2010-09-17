@@ -729,7 +729,7 @@ l_long PoolAllocator::CurrentlyAllocated()
 
 void PoolAllocator::Refresh()
 {
-	if ( TraceTriggered(PoolAllocator.Refresh, Storage::Global()) ) {
+	if ( TriggerEnabled(PoolAllocator.Refresh) ) {
 		PrintStatistic();
 	}
 	for (long i = 0; i < (long)fNumOfPoolBucketSizes; ++i) {

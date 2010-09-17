@@ -18,23 +18,24 @@ class DbgTest : public TestFramework::TestCase
 {
 public:
 	//!constructors
-	DbgTest(TString tstrName);
-	~DbgTest();
+	DbgTest(TString tstrName) : TestCaseType(tstrName) {}
 
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
 
-#ifdef COAST_TRACE
-	//!tests the Socket class with a fd from Connector
-	void CheckTriggerTest();
+	void setUp();
 
-	//!test case for some weird behaviour
-	void CheckContextTriggerFailure();
+	void tearDown();
 
-	//!test case for some weird behaviour
-	void CheckTriggerTestFile();
+	void DbgTestExplicitlyEnabled();
+	void DbgTestLowerBoundZero();
+	void DbgTestEnableAllFirstLevel();
+	void DbgTestEnableAllSecondLevel();
+	void DbgTestEnableAllThirdLevel();
+	void DbgTestEnableAllAboveUpperBound();
+	void DbgTestEnableAllBelowLowerBound();
+	void DbgTestEnableAllSecondAndBelowDisabled();
 
-#endif
 	//!test case for the Dbg.h test macros
 	void CheckMacrosCompile();
 };

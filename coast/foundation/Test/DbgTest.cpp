@@ -19,224 +19,290 @@
 #include "Anything.h"
 
 //---- DbgTest ----------------------------------------------------------------
-DbgTest::DbgTest(TString tname)
-	: TestCaseType(tname)
-{
-}
-
-DbgTest::~DbgTest()
-{
-}
-
+void DbgTest::setUp() {
 #ifdef COAST_TRACE
-
-void DbgTest::CheckTriggerTest()
-{
-	// setup context with a range of main enable all 5L 10L
-	Tracer::fgLowerBound = 5L;
-	Tracer::fgUpperBound =  10L;
-	Tracer::fgWDDebugContext["LowerBound"] = 5L;
-	Tracer::fgWDDebugContext["UpperBound"] = 10L;
-
-	// test the normal case, all main switches on and switch in range
-	Tracer::fgWDDebugContext["DbgTest"]["MainSwitch"] = 5L;
-	Tracer::fgWDDebugContext["DbgTest"]["FirstLevel"] = 5L;
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.FirstLevel", Storage::Current()));
-
-	// test the normal case second level
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["MainSwitch"] = 5L;
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["SecondLevel"] = 5L;
-	assertEqual(0L, Tracer::fgWDDebugContext["DbgTest"]["EnableAll"].AsLong(1));
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.SecondLevel", Storage::Current()));
-
-	// test the normal case third level
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["Third"]["MainSwitch"] = 5L;
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["Third"]["ThirdLevel"] = 5L;
-	assertEqual(0L, Tracer::fgWDDebugContext["DbgTest"]["Second"]["EnableAll"].AsLong(1));
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel", Storage::Current()));
-
-	// test main switch off at various levels
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["Third"]["MainSwitch"] = 0L;
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel", Storage::Current()));
-
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["MainSwitch"] = 0L;
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel", Storage::Current()));
-
-	Tracer::fgWDDebugContext["DbgTest"]["MainSwitch"] = 0L;
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.FirstLevel", Storage::Current()));
-
-	// reset all main switches to on but set master switch off
-	Tracer::fgWDDebugContext["LowerBound"] = 0L;
-	Tracer::fgLowerBound = 0L;
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["Third"]["MainSwitch"] = 5L;
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["MainSwitch"] = 5L;
-	Tracer::fgWDDebugContext["DbgTest"]["MainSwitch"] = 5L;
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.FirstLevel", Storage::Current()));
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel", Storage::Current()));
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel", Storage::Current()));
-
-	// reset master switch to initial values and test out of range values
-	// for the level switches, main switches are normal and on
-	Tracer::fgWDDebugContext["LowerBound"] = 5L;
-	Tracer::fgLowerBound = 5L;
-
-	// underflow
-	Tracer::fgWDDebugContext["DbgTest"]["FirstLevel"] = 4L;
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["SecondLevel"] = 4L;
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["Third"]["ThirdLevel"] = 4L;
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.FirstLevel", Storage::Current()));
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel", Storage::Current()));
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel", Storage::Current()));
-
-	// overflow
-	Tracer::fgWDDebugContext["DbgTest"]["FirstLevel"] = 11L;
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["SecondLevel"] = 11L;
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["Third"]["ThirdLevel"] = 11L;
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.FirstLevel", Storage::Current()));
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel", Storage::Current()));
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel", Storage::Current()));
-
-	// reset level switches and test main switches out of range
-	Tracer::fgWDDebugContext["DbgTest"]["FirstLevel"] = 5L;
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["SecondLevel"] = 5L;
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["Third"]["ThirdLevel"] = 5L;
-
-	// underflow
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["Third"]["MainSwitch"] = 4L;
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel", Storage::Current()));
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["MainSwitch"] = 4L;
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel", Storage::Current()));
-	Tracer::fgWDDebugContext["DbgTest"]["MainSwitch"] = 4L;
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.FirstLevel", Storage::Current()));
-
-	// overflow
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["Third"]["MainSwitch"] = 11L;
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel", Storage::Current()));
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["MainSwitch"] = 11L;
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel", Storage::Current()));
-	Tracer::fgWDDebugContext["DbgTest"]["MainSwitch"] = 11L;
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.FirstLevel", Storage::Current()));
-
-	// reset main switches and test enable all values
-	Tracer::fgWDDebugContext["DbgTest"]["MainSwitch"] = 5L;
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["MainSwitch"] = 5L;
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["Third"]["MainSwitch"] = 5L;
-
-	// disable level switches
-	Tracer::fgWDDebugContext["DbgTest"]["FirstLevel"] = 0L;
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["SecondLevel"] = 0L;
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["Third"]["ThirdLevel"] = 0L;
-
-	// enable all on the first level
-	Tracer::fgWDDebugContext["DbgTest"]["EnableAll"] = 7L;
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.FirstLevel", Storage::Current()));
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.SecondLevel", Storage::Current()));
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel", Storage::Current()));
-
-	// enable all on the second level
-	Tracer::fgWDDebugContext["DbgTest"]["EnableAll"] = 0L;
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["EnableAll"] = 7L;
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.FirstLevel", Storage::Current()));
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.SecondLevel", Storage::Current()));
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel", Storage::Current()));
-
-	// enable all on the third level
-	Tracer::fgWDDebugContext["DbgTest"]["EnableAll"] = 0L;
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["EnableAll"] = 0L;
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["Third"]["EnableAll"] = 7L;
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.FirstLevel", Storage::Current()));
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel", Storage::Current()));
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel", Storage::Current()));
-
-	// enable all out of range overflow
-	// enable all on the first level
-	Tracer::fgWDDebugContext["DbgTest"]["EnableAll"] = 11L;
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["Third"]["EnableAll"] = 0L;
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.FirstLevel", Storage::Current()));
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel", Storage::Current()));
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel", Storage::Current()));
-
-	// enable all out of range underflow
-	// enable all on the first level
-	Tracer::fgWDDebugContext["DbgTest"]["EnableAll"] = 4L;
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.FirstLevel", Storage::Current()));
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel", Storage::Current()));
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel", Storage::Current()));
-
-	// check EnableAll with exclusion
-	Tracer::fgWDDebugContext["DbgTest"]["EnableAll"] = 10L;
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["Third"]["EnableAll"] = -1L;
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.FirstLevel", Storage::Current()));
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.SecondLevel", Storage::Current()));
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel", Storage::Current()));
-
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["Third"]["EnableAll"] = 7L;
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["Third"]["MainSwitch"] = -1L;
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.FirstLevel", Storage::Current()));
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.SecondLevel", Storage::Current()));
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel", Storage::Current()));
-
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["MainSwitch"] = -7L;
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["Third"]["MainSwitch"] = 1L;
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.FirstLevel", Storage::Current()));
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel", Storage::Current()));
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel", Storage::Current()));
-
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["MainSwitch"] = 7L;
-	Tracer::fgWDDebugContext["DbgTest"]["Second"]["SecondLevel"] = -7L;
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.FirstLevel", Storage::Current()));
-	assertEqual(false, Tracer::CheckTrigger("DbgTest.Second.SecondLevel", Storage::Current()));
-	assertEqual(true, Tracer::CheckTrigger("DbgTest.Second.Third.ThirdLevel", Storage::Current()));
-}
-
-void DbgTest::CheckContextTriggerFailure()
-{
-	// setup context with a range of main enable all 5L 10L
-	Tracer::fgLowerBound = 30;
-	Tracer::fgUpperBound =  50;
-	Tracer::fgWDDebugContext["UpperBound"] = 50L;
-	Tracer::fgWDDebugContext["LowerBound"] = 30L;
-
-	assertEqual(true, Tracer::CheckTrigger("Context.HTMLDebug", Storage::Current()));
-}
-
-void DbgTest::CheckTriggerTestFile()
-{
-	// setup context with a range of main enable all 5L 10L
-	Tracer::fgLowerBound = 550;
-	Tracer::fgUpperBound =  650;
-	Tracer::fgWDDebugContext["UpperBound"] = 650L;
-	Tracer::fgWDDebugContext["LowerBound"] = 550L;
-
-	assertEqual(false, Tracer::CheckTrigger("URLFilter.FilterState", Storage::Current()));
-	assertEqual(false, Tracer::CheckTrigger("URLFilter.DoFilterState", Storage::Current()));
-	assertEqual(true, Tracer::CheckTrigger("Server.FilterQuery", Storage::Current()));
-}
-
+	Tracer::ExchangeConfigFile(name());
 #endif
+}
+
+void DbgTest::tearDown() {
+#ifdef COAST_TRACE
+	// restore original Dbg.any File to not fail following tests... or wanted output
+	Tracer::ExchangeConfigFile("Dbg");
+#endif
+}
+
+void DbgTest::DbgTestExplicitlyEnabled()
+{
+#ifdef COAST_TRACE
+	// test explicitly enabled switches between lower and upper bound
+	assertEqual(true, TriggerEnabled(DbgTest.FirstLevelEnabled));
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelDisabled));
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelBelow));
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelAbove));
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelNegative));
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelNotDefined));
+
+	assertEqual(true, TriggerEnabled(DbgTest.Second.SecondLevelEnabled));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelDisabled));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelBelow));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelAbove));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelNegative));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelNotDefined));
+
+	assertEqual(true, TriggerEnabled(DbgTest.Second.Third.ThirdLevelEnabled));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.Third.ThirdLevelDisabled));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.Third.ThirdLevelBelow));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.Third.ThirdLevelAbove));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.Third.ThirdLevelNegative));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.Third.ThirdLevelNotDefined));
+
+	assertEqual(false, TriggerEnabled(DbgTest.SlotNotDefined));
+	assertEqual(false, TriggerEnabled(SectionNotDefined));
+	assertEqual(false, TriggerEnabled(SectionNotDefined.SlotNotDefined));
+#endif
+}
+
+void DbgTest::DbgTestLowerBoundZero()
+{
+#ifdef COAST_TRACE
+	// test lower bound set to 0
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelEnabled));
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelDisabled));
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelBelow));
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelAbove));
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelNegative));
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelNotDefined));
+
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelEnabled));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelDisabled));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelBelow));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelAbove));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelNegative));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelNotDefined));
+
+	assertEqual(false, TriggerEnabled(DbgTest.Second.Third.ThirdLevelEnabled));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.Third.ThirdLevelDisabled));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.Third.ThirdLevelBelow));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.Third.ThirdLevelAbove));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.Third.ThirdLevelNegative));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.Third.ThirdLevelNotDefined));
+
+	assertEqual(false, TriggerEnabled(DbgTest.SlotNotDefined));
+	assertEqual(false, TriggerEnabled(SectionNotDefined));
+	assertEqual(false, TriggerEnabled(SectionNotDefined.SlotNotDefined));
+#endif
+}
+
+void DbgTest::DbgTestEnableAllFirstLevel()
+{
+#ifdef COAST_TRACE
+	// enable all on the first level
+	assertEqual(true, TriggerEnabled(DbgTest.FirstLevelEnabled));
+	assertEqual(true, TriggerEnabled(DbgTest.FirstLevelDisabled));
+	assertEqual(true, TriggerEnabled(DbgTest.FirstLevelBelow));
+	assertEqual(true, TriggerEnabled(DbgTest.FirstLevelAbove));
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelNegative));
+	assertEqual(true, TriggerEnabled(DbgTest.FirstLevelNotDefined));
+
+	assertEqual(true, TriggerEnabled(DbgTest.Second.SecondLevelEnabled));
+	assertEqual(true, TriggerEnabled(DbgTest.Second.SecondLevelDisabled));
+	assertEqual(true, TriggerEnabled(DbgTest.Second.SecondLevelBelow));
+	assertEqual(true, TriggerEnabled(DbgTest.Second.SecondLevelAbove));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelNegative));
+	assertEqual(true, TriggerEnabled(DbgTest.Second.SecondLevelNotDefined));
+
+	assertEqual(true, TriggerEnabled(DbgTest.Second.Third.ThirdLevelEnabled));
+	assertEqual(true, TriggerEnabled(DbgTest.Second.Third.ThirdLevelDisabled));
+	assertEqual(true, TriggerEnabled(DbgTest.Second.Third.ThirdLevelBelow));
+	assertEqual(true, TriggerEnabled(DbgTest.Second.Third.ThirdLevelAbove));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.Third.ThirdLevelNegative));
+	assertEqual(true, TriggerEnabled(DbgTest.Second.Third.ThirdLevelNotDefined));
+
+	assertEqual(true, TriggerEnabled(DbgTest.SlotNotDefined));
+	assertEqual(false, TriggerEnabled(SectionNotDefined));
+	assertEqual(false, TriggerEnabled(SectionNotDefined.SlotNotDefined));
+#endif
+}
+
+void DbgTest::DbgTestEnableAllSecondLevel()
+{
+#ifdef COAST_TRACE
+	// enable all on the second level
+	assertEqual(true, TriggerEnabled(DbgTest.FirstLevelEnabled));
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelDisabled));
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelBelow));
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelAbove));
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelNegative));
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelNotDefined));
+
+	assertEqual(true, TriggerEnabled(DbgTest.Second.SecondLevelEnabled));
+	assertEqual(true, TriggerEnabled(DbgTest.Second.SecondLevelDisabled));
+	assertEqual(true, TriggerEnabled(DbgTest.Second.SecondLevelBelow));
+	assertEqual(true, TriggerEnabled(DbgTest.Second.SecondLevelAbove));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelNegative));
+	assertEqual(true, TriggerEnabled(DbgTest.Second.SecondLevelNotDefined));
+
+	assertEqual(true, TriggerEnabled(DbgTest.Second.Third.ThirdLevelEnabled));
+	assertEqual(true, TriggerEnabled(DbgTest.Second.Third.ThirdLevelDisabled));
+	assertEqual(true, TriggerEnabled(DbgTest.Second.Third.ThirdLevelBelow));
+	assertEqual(true, TriggerEnabled(DbgTest.Second.Third.ThirdLevelAbove));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.Third.ThirdLevelNegative));
+	assertEqual(true, TriggerEnabled(DbgTest.Second.Third.ThirdLevelNotDefined));
+
+	assertEqual(false, TriggerEnabled(DbgTest.SlotNotDefined));
+	assertEqual(false, TriggerEnabled(SectionNotDefined));
+	assertEqual(false, TriggerEnabled(SectionNotDefined.SlotNotDefined));
+#endif
+}
+
+void DbgTest::DbgTestEnableAllThirdLevel()
+{
+#ifdef COAST_TRACE
+	// enable all on the third level
+	assertEqual(true, TriggerEnabled(DbgTest.FirstLevelEnabled));
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelDisabled));
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelBelow));
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelAbove));
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelNegative));
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelNotDefined));
+
+	assertEqual(true, TriggerEnabled(DbgTest.Second.SecondLevelEnabled));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelDisabled));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelBelow));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelAbove));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelNegative));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelNotDefined));
+
+	assertEqual(true, TriggerEnabled(DbgTest.Second.Third.ThirdLevelEnabled));
+	assertEqual(true, TriggerEnabled(DbgTest.Second.Third.ThirdLevelDisabled));
+	assertEqual(true, TriggerEnabled(DbgTest.Second.Third.ThirdLevelBelow));
+	assertEqual(true, TriggerEnabled(DbgTest.Second.Third.ThirdLevelAbove));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.Third.ThirdLevelNegative));
+	assertEqual(true, TriggerEnabled(DbgTest.Second.Third.ThirdLevelNotDefined));
+
+	assertEqual(false, TriggerEnabled(DbgTest.SlotNotDefined));
+	assertEqual(false, TriggerEnabled(SectionNotDefined));
+	assertEqual(false, TriggerEnabled(SectionNotDefined.SlotNotDefined));
+#endif
+}
+
+void DbgTest::DbgTestEnableAllAboveUpperBound()
+{
+#ifdef COAST_TRACE
+	// enable all above upper bound switch
+	assertEqual(true, TriggerEnabled(DbgTest.FirstLevelEnabled));
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelDisabled));
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelBelow));
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelAbove));
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelNegative));
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelNotDefined));
+
+	assertEqual(true, TriggerEnabled(DbgTest.Second.SecondLevelEnabled));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelDisabled));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelBelow));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelAbove));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelNegative));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelNotDefined));
+
+	assertEqual(true, TriggerEnabled(DbgTest.Second.Third.ThirdLevelEnabled));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.Third.ThirdLevelDisabled));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.Third.ThirdLevelBelow));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.Third.ThirdLevelAbove));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.Third.ThirdLevelNegative));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.Third.ThirdLevelNotDefined));
+#endif
+}
+
+void DbgTest::DbgTestEnableAllBelowLowerBound()
+{
+#ifdef COAST_TRACE
+	// enable all below lower bound switch
+	assertEqual(true, TriggerEnabled(DbgTest.FirstLevelEnabled));
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelDisabled));
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelBelow));
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelAbove));
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelNegative));
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelNotDefined));
+
+	assertEqual(true, TriggerEnabled(DbgTest.Second.SecondLevelEnabled));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelDisabled));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelBelow));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelAbove));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelNegative));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelNotDefined));
+
+	assertEqual(true, TriggerEnabled(DbgTest.Second.Third.ThirdLevelEnabled));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.Third.ThirdLevelDisabled));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.Third.ThirdLevelBelow));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.Third.ThirdLevelAbove));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.Third.ThirdLevelNegative));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.Third.ThirdLevelNotDefined));
+
+	assertEqual(false, TriggerEnabled(DbgTest.SlotNotDefined));
+	assertEqual(false, TriggerEnabled(SectionNotDefined));
+	assertEqual(false, TriggerEnabled(SectionNotDefined.SlotNotDefined));
+#endif
+}
+
+void DbgTest::DbgTestEnableAllSecondAndBelowDisabled()
+{
+#ifdef COAST_TRACE
+	// check EnableAll with exclusion and disable all below second level
+	assertEqual(true, TriggerEnabled(DbgTest.FirstLevelEnabled));
+	assertEqual(true, TriggerEnabled(DbgTest.FirstLevelDisabled));
+	assertEqual(true, TriggerEnabled(DbgTest.FirstLevelBelow));
+	assertEqual(true, TriggerEnabled(DbgTest.FirstLevelAbove));
+	assertEqual(false, TriggerEnabled(DbgTest.FirstLevelNegative));
+	assertEqual(true, TriggerEnabled(DbgTest.FirstLevelNotDefined));
+
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelEnabled));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelDisabled));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelBelow));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelAbove));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelNegative));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.SecondLevelNotDefined));
+
+	assertEqual(false, TriggerEnabled(DbgTest.Second.Third.ThirdLevelEnabled));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.Third.ThirdLevelDisabled));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.Third.ThirdLevelBelow));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.Third.ThirdLevelAbove));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.Third.ThirdLevelNegative));
+	assertEqual(false, TriggerEnabled(DbgTest.Second.Third.ThirdLevelNotDefined));
+
+	assertEqual(true, TriggerEnabled(DbgTest.SlotNotDefined));
+	assertEqual(false, TriggerEnabled(SectionNotDefined));
+	assertEqual(false, TriggerEnabled(SectionNotDefined.SlotNotDefined));
+#endif
+}
 
 void DbgTest::CheckMacrosCompile()
 {
 	StartTrace(DbgTest.CheckMacrosCompile);
+	Anything a;
 	Trace("i was here");
 	TraceBuf("buftrace so long", 10);
-	Anything a;
 	TraceAny(a, "an any");
 	SubTrace("test", "a sub trace message");
 	SubTraceAny("test", a, "a sub trace any");
 	SubTraceBuf("test", "a subtrace buffer", 10);
 	StatTrace("test", "a stat trace", Storage::Current());
+	StatTraceBuf("bli.bla", "0123456789012345", 10, Storage::Current());
+	StatTraceAny("test.x", a, "an any", Storage::Current());
+	TriggerEnabled(SectionNotDefined.SlotNotDefined);
 }
 
 Test *DbgTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
-#ifdef COAST_TRACE
-	ADD_CASE(testSuite, DbgTest, CheckTriggerTest);
-	ADD_CASE(testSuite, DbgTest, CheckContextTriggerFailure);
-	ADD_CASE(testSuite, DbgTest, CheckTriggerTestFile);
-#endif
 	ADD_CASE(testSuite, DbgTest, CheckMacrosCompile);
+	ADD_CASE(testSuite, DbgTest, DbgTestExplicitlyEnabled);
+	ADD_CASE(testSuite, DbgTest, DbgTestLowerBoundZero);
+	ADD_CASE(testSuite, DbgTest, DbgTestEnableAllFirstLevel);
+	ADD_CASE(testSuite, DbgTest, DbgTestEnableAllSecondLevel);
+	ADD_CASE(testSuite, DbgTest, DbgTestEnableAllThirdLevel);
+	ADD_CASE(testSuite, DbgTest, DbgTestEnableAllAboveUpperBound);
+	ADD_CASE(testSuite, DbgTest, DbgTestEnableAllBelowLowerBound);
+	ADD_CASE(testSuite, DbgTest, DbgTestEnableAllSecondAndBelowDisabled);
 	return testSuite;
-
 }

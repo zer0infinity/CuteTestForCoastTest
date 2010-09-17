@@ -10,24 +10,9 @@
 	/UpperBound							20
 	/DumpAnythings  					1
 
-	/DbgTest {
-		/MainSwitch						0
-		/EnableAll						0
-
-		/FirstLevel						0
-		/Second {
-			/MainSwitch					0
-			/EnableAll					0
-
-			/SecondLevel				0
-			/Third {
-				/ThirdLevel				0
-			}
-		}
-	}
 	/AnythingParser {
-		/MainSwitch						60
-		/EnableAll						0
+		/MainSwitch						20
+		/EnableAll						20
 		/any							60
 		/DoParseSequence				50
 		/DoParse {
@@ -38,7 +23,7 @@
 		/ImportIncludeAny				60
 	}
 	/ParserXrefHandler {
-		/MainSwitch						0
+		/MainSwitch						20
 		/EnableAll						20
 		/DefinePatchRef					0
 	}
@@ -55,7 +40,7 @@
 		/EnableAll						0
 	}
 	/Anything {
-		/MainSwitch						0
+		/MainSwitch						20
 		/EnableAll						20
 		/LookupPath {
 			/MainSwitch					40

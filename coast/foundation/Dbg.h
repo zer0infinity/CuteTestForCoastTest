@@ -137,10 +137,13 @@ public:
 
 	//! Check if \em trigger is activated
 	/*! \param trigger scope of trigger to check for
-		\param pAlloc Allocator to use for allocating memory
 		\return true if trigger is active
 		\return false otherwise */
-	static bool CheckWDDebug(const char *trigger, Allocator *pAlloc);
+	static bool CheckWDDebug(const char *trigger);
+
+	//! Accessor to exchange underlying debug configuration file
+	/*! \param filename if no filename is given, just reload the default config file */
+	static void ExchangeConfigFile(const char *filename = 0);
 
 private:
 	//! pointer to character buffer storing the trigger
@@ -274,10 +277,9 @@ Will print out following messages
 }
 
 /*! helper to check if trigger is enabled
-	\param trigger scope of trigger to check for
-	\param allocator Allocator to use for allocating memory */
-#define TraceTriggered(trigger, allocator) \
-	Tracer::CheckWDDebug(_QUOTE_(trigger), allocator)
+	\param trigger scope of trigger to check for */
+#define TriggerEnabled(trigger) \
+	Tracer::CheckWDDebug(_QUOTE_(trigger))
 
 #else
 //--- optimized versions of the debug macros they expand into nothing
@@ -297,7 +299,7 @@ Will print out following messages
 #define StatTraceBuf(trigger, buf, sz, allocator)
 #define StatTraceAny(trigger, any, msg, allocator)
 // helper to check if we are triggered
-#define TraceTriggered(trigger, allocator)		false
+#define TriggerEnabled(trigger)		false
 #endif
 
 #endif		//not defined _Dbg_H

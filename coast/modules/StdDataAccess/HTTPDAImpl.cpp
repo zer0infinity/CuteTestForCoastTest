@@ -279,7 +279,7 @@ bool HTTPDAImpl::SendInput(iostream *Ios, Socket *s, long timeout, Context &cont
 	context.GetTmpStore()["Request"]["BodyLength"] = uploadSize;
 #ifdef COAST_TRACE
 	Trace("Debug Version");
-	if ( Tracer::CheckWDDebug("HTTPDAImpl.SendInput", Storage::Current()) ) {
+	if ( TriggerEnabled(HTTPDAImpl.SendInput) ) {
 		String request(16384L);
 		{
 			OStringStream os(request);

@@ -189,11 +189,9 @@ void RequestLineRenderer::RenderAll(ostream &reply, Context &c, const ROAnything
 		infoMsg << " Port:" << c.Lookup("CurrentServer.Port", "") << ")\r\n";
 		infoMsg << replyDebugBuffer.str();
 
-#ifdef COAST_TRACE
-		if ( Tracer::CheckWDDebug("RequestLineRenderer.Render", Storage::Current()) ) {
+		if ( TriggerEnabled(RequestLineRenderer.Render) ) {
 			SystemLog::Info( infoMsg ); // perhaps enable this line with an entry in RequestLineRenderer.any.... future
 		}
-#endif
 
 #ifdef WDOG_RELEASE
 		// tracing of the request which in the Watchdog release version can be switched on/off from the GUI

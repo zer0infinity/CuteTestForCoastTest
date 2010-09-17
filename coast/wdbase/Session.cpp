@@ -279,7 +279,7 @@ void Session::PutInStore(const char *key, const Anything &a)
 void Session::HTMLDebugStore(ostream &reply, bool printAny)
 {
 #ifdef COAST_TRACE
-	if ( Tracer::CheckWDDebug( "Session.HTMLSessionStore", Storage::Current() ) || printAny ) {
+	if ( TriggerEnabled( "Session.HTMLSessionStore") || printAny ) {
 		reply << "Session Store #refs:" << fStore.RefCount() << '\n' << fStore << '\n';
 	}
 #endif

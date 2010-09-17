@@ -1,0 +1,44 @@
+#-----------------------------------------------------------------------------------------------------
+# Copyright (c) 2010, Peter Sommerlad and IFS Institute for Software at HSR Rapperswil, Switzerland
+# All rights reserved.
+#
+# This library/application is free software; you can redistribute and/or modify it under the terms of
+# the license that is included with this library/application in the file license.txt.
+#-----------------------------------------------------------------------------------------------------
+{
+	/LowerBound							5
+	/UpperBound							10
+	/DumpAnythings  					1
+
+	/DbgTest {
+		/MainSwitch						5
+		/EnableAll						0
+
+		/FirstLevelEnabled				5
+		/FirstLevelDisabled				0
+		/FirstLevelBelow				4
+		/FirstLevelAbove				11
+		/FirstLevelNegative				-5
+
+		/Second {
+			/MainSwitch					5
+			/EnableAll					7
+
+			/SecondLevelEnabled			5
+			/SecondLevelDisabled		0
+			/SecondLevelBelow			4
+			/SecondLevelAbove			11
+			/SecondLevelNegative		-5
+
+			/Third {
+				/MainSwitch				5
+
+				/ThirdLevelEnabled		5
+				/ThirdLevelDisabled		0
+				/ThirdLevelBelow		4
+				/ThirdLevelAbove		11
+				/ThirdLevelNegative		-5
+			}
+		}
+	}
+}

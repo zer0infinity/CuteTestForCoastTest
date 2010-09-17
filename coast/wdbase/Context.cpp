@@ -298,12 +298,12 @@ void Context::DebugStores(const char *msg, ostream &reply, bool printAny)
 	reply << "Role:           " << rName << "\n\n";
 
 	// show Lookup stack on html page
-	if ( Tracer::CheckWDDebug("Context.HTMLWDDebug.LookupStack", Storage::Current()) || printAny ) {
+	if ( TriggerEnabled(Context.HTMLWDDebug.LookupStack) || printAny ) {
 		reply << "Lookup stack #refs:" << fLookupStack.RefCount() << '\n' << fLookupStack << '\n';
 	}
 
 	// show tmp store on html page
-	if ( Tracer::CheckWDDebug("Context.HTMLWDDebug.TmpStore", Storage::Current()) || printAny ) {
+	if ( TriggerEnabled(Context.HTMLWDDebug.TmpStore) || printAny ) {
 		reply << "Tmp store #refs:" << fStore.RefCount() << '\n' << fStore << '\n';
 	}
 
@@ -313,7 +313,7 @@ void Context::DebugStores(const char *msg, ostream &reply, bool printAny)
 	}
 
 	// show request store on html page
-	if ( Tracer::CheckWDDebug("Context.HTMLWDDebug.EnvStore", Storage::Current()) || printAny ) {
+	if ( TriggerEnabled(Context.HTMLWDDebug.EnvStore) || printAny ) {
 		reply << "Request #refs:" << fRequest.RefCount() << '\n' << fRequest << '\n';
 	}
 	if ( msg ) {
@@ -326,7 +326,7 @@ void Context::DebugStores(const char *msg, ostream &reply, bool printAny)
 void Context::HTMLDebugStores(ostream &reply)
 {
 #ifdef COAST_TRACE
-	if ( Tracer::CheckWDDebug("Context.HTMLWDDebug", Storage::Current()) ) {
+	if ( TriggerEnabled(Context.HTMLWDDebug) ) {
 		reply << DebugStoreSeparator;
 		reply << "<hr>\n<pre>\n";
 		DebugStores(0, reply);

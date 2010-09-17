@@ -126,7 +126,7 @@ protected:
 #define StartTraceMem1(scope, allocator) MemChecker rekcehc1(_QUOTE_(scope), allocator)
 #define TraceMemDelta1(message) rekcehc1.TraceDelta(message)
 
-#define PoolTrackStatTriggered(trigger, pAlloc, level) if ( TraceTriggered(trigger, Storage::Global()) ) { pAlloc->PrintStatistic(level); }
+#define PoolTrackStatTriggered(trigger, pAlloc, level) if ( TriggerEnabled(trigger) ) { pAlloc->PrintStatistic(level); }
 
 //! Base class for memory allocation policies
 class EXPORTDECL_FOUNDATION Allocator

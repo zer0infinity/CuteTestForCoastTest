@@ -15,22 +15,119 @@
 #include "StringStream.h"
 #include "InitFinisManagerFoundation.h"
 
-//--- c-library modules used ---------------------------------------------------
 #include <cstring>
 
 #ifdef COAST_TRACE
 
 //---- Tracer -------------------------------------------------------------------------
 namespace {
+	char const fgPathDelim = '.';
+	char const *fgDbgAnyName = "Dbg";
+	char const *fgLowerBoundName = "LowerBound";
+	char const *fgUpperBoundName = "UpperBound";
+	char const *fgDumpAnythingsName = "DumpAnythings";
+	char const *fgMainSwitchName = "MainSwitch";
+	char const *fgEnableAllName = "EnableAll";
 	int fgLevel = 0;
-	Anything fgWDDebugContext(Storage::Global());
-	ROAnything fgROWDDebugContext;
+	Anything fgTriggerMap(Storage::Global());
+	ROAnything fgROTriggerMap;
 	long fgLowerBound = 0;
 	long fgUpperBound = 0;
 	bool fgDumpAnythings = false;
 	bool fgTerminated = true;
 	bool fgIsInitialised = false;
-	char const *fgDbgAnyName = "Dbg";
+
+	enum EnablingMode {
+		eUndecided = -1,
+		eDisableAll = 0,
+		eEnableAll = 1,
+	};
+	bool TracingActive() {
+		return ( fgLowerBound > 0 && fgUpperBound >= fgLowerBound );
+	}
+	bool CheckEntryGreaterEqual(long lEntryValue, long lMainSwitch) {
+		return ( lEntryValue <= fgUpperBound && lEntryValue >= fgLowerBound && lEntryValue >= lMainSwitch );
+	}
+	bool EntryEnabled(long lMainSwitch, long lEnableAll, long lEntryValue) {
+		return (lMainSwitch > 0L) && ( CheckEntryGreaterEqual(lEnableAll, lMainSwitch) || CheckEntryGreaterEqual(lEntryValue, lMainSwitch) );
+	}
+	void ProcessEntry(ROAnything anySection, String entryKey, EnablingMode parentMode) {
+		long lMainSwitch = anySection[fgMainSwitchName].AsLong(0L);
+		long lEnableAll = anySection[fgEnableAllName].AsLong(-1L);
+		EnablingMode myMode = parentMode;
+		if ( lMainSwitch < 0L ) { // disable this level and all levels below
+			myMode = eDisableAll;
+		} else if (lEnableAll >= lMainSwitch && lEnableAll <= fgUpperBound) {
+			myMode = eEnableAll;
+		}
+		if ( entryKey.Length() && ( myMode == eEnableAll || myMode == eDisableAll ) ) {
+			fgTriggerMap[entryKey] = static_cast<long>(myMode);
+		}
+		String strSlotname;
+		for (long lIdx = 0, lSize = anySection.GetSize(); lIdx < lSize; ++lIdx) {
+			strSlotname = anySection.SlotName(lIdx);
+			if (!strSlotname.Length() || strSlotname.IsEqual(fgMainSwitchName) || strSlotname.IsEqual(fgEnableAllName) || strSlotname.IsEqual(fgLowerBoundName) || strSlotname.IsEqual(fgUpperBoundName) || strSlotname.IsEqual(fgDumpAnythingsName) )
+				continue;
+			String currentKey = entryKey;
+			if ( currentKey.Length() ) currentKey.Append(fgPathDelim);
+			currentKey.Append(strSlotname);
+			if ( anySection[lIdx].GetType() == AnyArrayType ) {
+				ProcessEntry(anySection[lIdx], currentKey, myMode);
+			} else {
+				long lEntryValue = anySection[lIdx].AsLong(0L);
+				if ( myMode == eEnableAll || myMode == eDisableAll ) {
+					fgTriggerMap[currentKey] = ( lEntryValue < 0 ) ? 0L : static_cast<long>(myMode);
+				} else {
+					fgTriggerMap[currentKey] = EntryEnabled(lMainSwitch, lEnableAll, lEntryValue) ? 1L : 0L;
+				}
+			}
+		}
+	}
+
+	bool IsTriggerEnabled(const char *trigger) {
+		ROAnything dummy;
+		if (fgROTriggerMap.LookupPath(dummy, trigger, '\000')) {
+			return dummy.AsLong(0L) > 0L;
+		}
+		const char *cPos(strrchr(trigger, '.'));
+		if (cPos != NULL) {
+			int lpos(cPos - trigger);
+			int const iBufSize = 1024;
+			char pcPart[iBufSize] = { 0 };
+			memcpy(pcPart, trigger, std::min(lpos, iBufSize - 1));
+			return IsTriggerEnabled(pcPart);
+		}
+		return false;
+	}
+
+	void InitTracing(String const& strFilename = fgDbgAnyName) {
+		istream *ifp = System::OpenStream(strFilename, "any");
+		if (ifp) {
+			Anything anyDebugContext;
+			if ( anyDebugContext.Import(*ifp, strFilename) ) {
+				if (anyDebugContext.GetType() != AnyNullType) {
+					fgLowerBound = anyDebugContext[fgLowerBoundName].AsLong(0);
+					fgUpperBound = anyDebugContext[fgUpperBoundName].AsLong(0);
+					fgDumpAnythings = anyDebugContext[fgDumpAnythingsName].AsBool(true);
+					ProcessEntry(anyDebugContext, "", TracingActive()?eUndecided:eDisableAll);
+					fgROTriggerMap = fgTriggerMap;
+					String strbuf(4096L);
+					{ StringStream stream(strbuf); fgTriggerMap.PrintOn(stream) << "\n"; }
+					SystemLog::Debug(strbuf);
+				}
+			}
+			delete ifp;
+		}
+	}
+	void TerminateTracing() {
+		fgTriggerMap = Anything(fgTriggerMap.GetAllocator());
+		fgROTriggerMap = fgTriggerMap;
+		fgLowerBound = 0;
+		fgUpperBound = 0;
+		fgDumpAnythings = false;
+		fgTerminated = true;
+		fgIsInitialised = false;
+	}
 
 	class TracingInitializer : public InitFinisManagerFoundation
 	{
@@ -46,29 +143,12 @@ namespace {
 
 		virtual void DoInit() {
 			IFMTrace("TracingInitializer::DoInit\n");
-			istream *ifp = System::OpenStream(fgDbgAnyName, "any");
-			if (ifp) {
-				fgWDDebugContext.Import(*ifp, fgDbgAnyName);
-				fgROWDDebugContext = fgWDDebugContext;
-				delete ifp;
-			}
-			if (fgROWDDebugContext.GetType() != AnyNullType) {
-				fgLowerBound = fgWDDebugContext["LowerBound"].AsLong(0);
-				fgUpperBound = fgWDDebugContext["UpperBound"].AsLong(0);
-				fgDumpAnythings = fgWDDebugContext["DumpAnythings"].AsBool(true);
-			}
+			InitTracing();
 		}
 
 		virtual void DoFinis() {
 			IFMTrace("TracingInitializer::DoFinis\n");
-			fgTerminated = true;
-			fgWDDebugContext = Anything();
-			fgROWDDebugContext = fgWDDebugContext;
-			fgLowerBound = 0;
-			fgUpperBound = 0;
-			fgDumpAnythings = false;
-			fgTerminated = true;
-			fgIsInitialised = false;
+			TerminateTracing();
 		}
 	};
 
@@ -116,127 +196,26 @@ namespace {
 		}
 		hlp.GetStream() << "\n";
 	}
+}
 
-	//! Checks if level of trigger entry is to be enabled for tracing based on coresponding MainSwitch value
-	/*! \param mainSwitch value to test for
-		\param levelSwitch lower bound value
-		\param levelAll upper bound value */
-	bool CheckMainSwitch(long mainSwitch, long levelSwitch, long levelAll)
-	{
-		if ( mainSwitch == 0L ) {
-			return false;	// 0 is always off
-		}
-		// main switch out of range -> off
-		if (mainSwitch < levelSwitch) {
-			return false;
-		}
-		if ( ( levelAll > 0 ) && (mainSwitch > levelAll) ) {
-			return false;
-		}
-		return true;
+void Tracer::ExchangeConfigFile(const char *filename) {
+	TerminateTracing();
+	InitTracing( ( filename == 0 ) ? fgDbgAnyName : filename );
+}
+
+bool Tracer::CheckWDDebug(const char *trigger)
+{
+	if (!fgIsInitialised) {
+		fgIsInitialised = true;
+		fgTerminated = (System::EnvGet("COAST_NO_TRACE") == "true") ? true : false;
 	}
-
-	//! Checks if level of trigger entry is to be enabled for tracing
-	/*! \param switchValue value to test for
-		\param levelSwitch lower bound value
-		\param levelAll upper bound value */
-	bool DoCheckSwitch(long switchValue, long levelSwitch, long levelAll)
-	{
-		// check the switch value whether it enables tracing or not
-		if ( switchValue >= levelSwitch && switchValue <= levelAll ) {
-			return true;
-		}
+	if ( fgTerminated ) {
 		return false;
 	}
-
-	// forward declare
-	bool DoCheckTrigger(const char *trigger, const ROAnything &level, long levelSwitch, long levelAll, long enableAll);
-
-	//! Checks if current scope is enabled or not and delegates to DoCheckTrigger() if a trigger entry needs to be checked
-	/*! \param trigger scope of trigger to check for
-		\param level ROAnything referencing specific trace switch config entry used by looking up \em trigger in fgWDDebugContext
-		\param levelSwitch lower bound at current scope to test for
-		\param levelAll log level of outer scope
-		\param enableAll enable all level of outer scope */
-	bool DoCheckLevel(const char *trigger, const ROAnything &level, long levelSwitch, long levelAll, long enableAll)
-	{
-		// check the main switch if it exists
-		if ( level.IsDefined("MainSwitch") ) {
-			if ( enableAll ) {
-				if ( level["MainSwitch"].AsLong(0) < 0 ) {
-					return false;
-				} else {
-					return DoCheckTrigger(trigger, level, levelSwitch, levelAll, enableAll);
-				}
-			}
-			if (!CheckMainSwitch(level["MainSwitch"].AsLong(0), levelSwitch, levelAll)) {
-				return false;
-			}
-		}
-		if ( !enableAll && level.IsDefined("LowerBound") ) {
-			if (!CheckMainSwitch(level["LowerBound"].AsLong(0), levelSwitch, levelAll)) {
-				return false;
-			}
-		}
-
-		// check the enable all switch if it exists
-		if ( levelAll > 0 ) {
-			if (level.IsDefined("EnableAll")) {
-				enableAll = level["EnableAll"].AsLong(0L);
-				// enable all switch in range -> all on
-				if ( ( enableAll > 0L ) && ( enableAll >= levelSwitch ) && ( enableAll <= levelAll ) ) {
-					return DoCheckTrigger(trigger, level, levelSwitch, levelAll, enableAll);
-				}
-				enableAll = 0;
-			}
-		} else {
-			levelAll = fgUpperBound;
-		}
-		return DoCheckTrigger(trigger, level, levelSwitch, levelAll, enableAll);
+	if ( TracingActive() ) {
+		return IsTriggerEnabled(trigger);
 	}
-
-	//! forwarding method to DoCheckLevel()
-	/*! \param trigger scope of trigger to check for */
-	bool CheckTrigger(const char *trigger)
-	{
-		return DoCheckLevel(trigger, fgROWDDebugContext, fgLowerBound, 0L, 0L);
-	}
-
-	//! Checks if trigger entry is enabled for tracing or not
-	/*! \param trigger scope of trigger to check for
-		\param level ROAnything referencing specific trace switch config entry used by looking up \em trigger in fgWDDebugContext
-		\param levelSwitch lower bound at current scope to test for
-		\param levelAll log level of outer scope
-		\param enableAll enable all level of outer scope */
-	bool DoCheckTrigger(const char *trigger, const ROAnything &level, long levelSwitch, long levelAll, long enableAll)
-	{
-		const char *cPos( strchr(trigger, '.') );
-		if ( cPos != NULL ) {
-			long lpos(cPos - trigger);
-			char pcPart[512] = { 0 };
-			memcpy(pcPart, trigger, std::min( lpos, 511L ) );
-			if ( level.IsDefined(pcPart) && ( *++cPos != '\0' ) ) {
-				return DoCheckLevel(cPos, level[pcPart], levelSwitch, levelAll, enableAll);
-			}
-		}
-
-		if ( level.IsDefined(trigger) ) {
-			long switchValue;
-			if ( level[trigger].IsDefined("MainSwitch") ) {
-				switchValue = level[trigger]["MainSwitch"].AsLong(levelSwitch);
-			} else {
-				switchValue = level[trigger].AsLong(levelSwitch);
-			}
-			if ( switchValue < 0 ) {
-				return false;
-			}
-			if ( !enableAll ) {
-				return DoCheckSwitch(switchValue, levelSwitch, levelAll);
-			}
-		}
-		return (enableAll > 0);
-	}
-
+	return false;
 }
 
 Tracer::Tracer(const char *trigger)
@@ -245,7 +224,7 @@ Tracer::Tracer(const char *trigger)
 	, fpMsg(NULL)
 	, fpAlloc(Storage::Current())
 {
-	fTriggered = CheckWDDebug(fTrigger, fpAlloc);
+	fTriggered = CheckWDDebug(fTrigger);
 	if (fTriggered) {
 		TracerHelper hlp(fgLevel, fpAlloc);
 		hlp.GetStream() << fTrigger << ": --- entering ---\n";
@@ -259,7 +238,7 @@ Tracer::Tracer(const char *trigger, const char *msg)
 	, fpMsg(msg)
 	, fpAlloc(Storage::Current())
 {
-	fTriggered = CheckWDDebug(fTrigger, fpAlloc);
+	fTriggered = CheckWDDebug(fTrigger);
 	if (fTriggered) {
 		TracerHelper hlp(fgLevel, fpAlloc);
 		hlp.GetStream() << fTrigger << ": " << fpMsg << " --- entering ---\n";
@@ -302,7 +281,7 @@ void Tracer::SubWDDebug(const char *subtrigger, const char *msg)
 	String trigger(fTrigger, -1, fpAlloc);
 	trigger.Append('.').Append(subtrigger);
 
-	if (fTriggered && Tracer::CheckWDDebug(trigger, fpAlloc)) {
+	if (fTriggered && CheckWDDebug(trigger)) {
 		TracerHelper hlp(fgLevel, fpAlloc);
 		hlp.GetStream() << trigger << ": " << msg << "\n";
 	}
@@ -313,7 +292,7 @@ void Tracer::SubAnyWDDebug(const char *subtrigger, const ROAnything &any, const 
 	String trigger(fTrigger, -1, fpAlloc);
 	trigger.Append('.').Append(subtrigger);
 
-	if (fTriggered && Tracer::CheckWDDebug(trigger, fpAlloc)) {
+	if (fTriggered && CheckWDDebug(trigger)) {
 		TracerHelper hlp(fgLevel, fpAlloc);
 		hlp.GetStream() << trigger << ": " << msg << "\n";
 		IntAnyWDDebug(any, hlp);
@@ -322,7 +301,7 @@ void Tracer::SubAnyWDDebug(const char *subtrigger, const ROAnything &any, const 
 
 void Tracer::StatWDDebug(const char *trigger, const char *msg, Allocator *pAlloc)
 {
-	if (CheckWDDebug(trigger, pAlloc)) {
+	if (CheckWDDebug(trigger)) {
 		TracerHelper hlp(fgLevel, pAlloc);
 		hlp.GetStream() << trigger << ": " << msg << "\n";
 	}
@@ -330,26 +309,11 @@ void Tracer::StatWDDebug(const char *trigger, const char *msg, Allocator *pAlloc
 
 void Tracer::AnythingWDDebug(const char *trigger, const ROAnything &any, const char *msg, Allocator *pAlloc)
 {
-	if (CheckWDDebug(trigger, pAlloc)) {
+	if (CheckWDDebug(trigger)) {
 		TracerHelper hlp(fgLevel, pAlloc);
 		hlp.GetStream() << trigger << ": " << msg << "\n";
 		IntAnyWDDebug(any, hlp);
 	}
-}
-
-bool Tracer::CheckWDDebug(const char *trigger, Allocator *pAlloc)
-{
-	if (!fgIsInitialised) {
-		fgIsInitialised = true;
-		fgTerminated = (System::EnvGet("COAST_NO_TRACE") == "true") ? true : false;
-	}
-	if ( fgTerminated ) {
-		return false;
-	}
-	if (fgROWDDebugContext.GetType() != AnyNullType && fgLowerBound > 0) {
-		return CheckTrigger(trigger);
-	}
-	return false;
 }
 
 #endif
