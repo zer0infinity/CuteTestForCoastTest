@@ -7,10 +7,9 @@
  */
 
 //--- interface include -----------------------------------------------------
-#include "SystemTest.h"
+#include "SystemFileTest.h"
 
 //--- module under test --------------------------------------------------------
-#include "SystemBase.h"
 #include "SystemFile.h"
 
 using namespace Coast;
@@ -33,53 +32,17 @@ using namespace std;
 #include <stdlib.h>
 #endif
 
-//---- SystemTest --------------------------------------------------------
-SystemTest::SystemTest(TString tname)
+//---- SystemFileTest --------------------------------------------------------
+SystemFileTest::SystemFileTest(TString tname)
 	: TestCaseType(tname)
 {
 }
 
-SystemTest::~SystemTest()
+SystemFileTest::~SystemFileTest()
 {
 }
 
-void SystemTest::DoSingleSelectTest()
-{
-	StartTrace(SystemTest.DoSingleSelectTest);
-	// assume writability of stdout
-	assertEqual(1L, System::DoSingleSelect(1, 100, false, true));
-	// just wait 100ms
-	const long waittime = 1000L;
-	DiffTimer dt(DiffTimer::eMilliseconds);//1ms accuracy
-	int iSSRet = System::DoSingleSelect(0, waittime, false, false);
-	long difft = dt.Diff();
-	Trace("time waited: " << difft << "ms, return code of function:" << iSSRet);
-	difft -= waittime;
-	Trace("difference to expected waittime of " << waittime << "ms : " << difft << "ms");
-	assertEqual(0L, iSSRet);
-	if ( iSSRet < 0 ) {
-		SYSERROR("error in DoSingleSelect [" << SystemLog::LastSysError() << "]");
-	}
-	// need some tolerance on some systems, eg. older SunOS5.6
-	t_assertm(difft >= -10, TString("assume waiting long enough >=-10ms, diff was:") << difft << "ms");
-	t_assertm(difft < waittime / 5, (const char *)(String("assume 20% (20ms) accuracy, but was ") << difft));
-	// sanity check negative value
-	t_assert(System::DoSingleSelect(-1, 0, true, false) < 0);
-	// timeout tested indirectly in socket test cases
-	// cannot think of case forcing select really fail, i.e. return -1
-}
-
-void SystemTest::MicroSleepTest()
-{
-	DiffTimer::eResolution resolution( DiffTimer::eMicroseconds );
-	DiffTimer dt(resolution); // microsecond accuracy
-	const long SLEEP = resolution / 10; // = 100000L; // 100ms
-	t_assert(System::MicroSleep(SLEEP));
-	long sleptdelta = dt.Diff() - SLEEP;
-	t_assertm(SLEEP / 5 > abs(sleptdelta), (const char *)(String( "expected sleeping with 20% = 20'000 microsecs (0.02s) accuracy -- but was ") << sleptdelta << " microseconds"));
-}
-
-void SystemTest::initPathTest()
+void SystemFileTest::initPathTest()
 {
 	String pathList(System::GetPathList());
 	String rootDir(System::GetRootDir());
@@ -134,7 +97,7 @@ void SystemTest::initPathTest()
 	assertEqual(pathList, System::GetPathList());
 }
 
-void SystemTest::statTests()
+void SystemFileTest::statTests()
 {
 	t_assertm(System::IsDirectory("."), "expected '.' to be a directory");
 	t_assertm(System::IsDirectory(".."), "expected '.' to be a directory");
@@ -161,7 +124,7 @@ void SystemTest::statTests()
 	}
 }
 
-void SystemTest::pathListTest()
+void SystemFileTest::pathListTest()
 {
 	String pathList(System::GetPathList());
 
@@ -176,7 +139,7 @@ void SystemTest::pathListTest()
 	System::SetPathList(pathList, false);
 }
 
-void SystemTest::rooDirTest()
+void SystemFileTest::rooDirTest()
 {
 	String rootDir(System::GetRootDir());
 
@@ -192,7 +155,7 @@ void SystemTest::rooDirTest()
 	System::SetRootDir(rootDir, false);
 }
 
-void SystemTest::CWDTests()
+void SystemFileTest::CWDTests()
 {
 	String wd;
 	System::GetCWD(wd);
@@ -257,7 +220,7 @@ void SystemTest::CWDTests()
 	t_assertm(w1 != ".", "working dir should not be default .");
 }
 
-void SystemTest::IsAbsolutePathTest()
+void SystemFileTest::IsAbsolutePathTest()
 {
 	t_assertm(System::IsAbsolutePath("/"), "should be absolute");
 	t_assertm(System::IsAbsolutePath("//"), "should be absolute");
@@ -280,7 +243,7 @@ void SystemTest::IsAbsolutePathTest()
 #endif
 }
 
-void SystemTest::ResolvePathTest()
+void SystemFileTest::ResolvePathTest()
 {
 	String res, exp;
 	res = "";
@@ -518,7 +481,7 @@ void SystemTest::ResolvePathTest()
 #endif
 }
 
-void SystemTest::openStreamTest()
+void SystemFileTest::openStreamTest()
 {
 	// search file with path
 	iostream *Ios = System::OpenStream("Dbg", "any");
@@ -553,7 +516,7 @@ void SystemTest::openStreamTest()
 	}
 }
 
-void SystemTest::getFilePathTest()
+void SystemFileTest::getFilePathTest()
 {
 	String subPath("./config/Dbg.any");
 
@@ -583,9 +546,9 @@ void SystemTest::getFilePathTest()
 	assertEqual(subPath, path.SubString(path.Length() - subPath.Length()));
 }
 
-void SystemTest::dirFileListTest()
+void SystemFileTest::dirFileListTest()
 {
-	StartTrace(SystemTest.dirFileListTest);
+	StartTrace(SystemFileTest.dirFileListTest);
 	Anything dir(System::DirFileList("."));
 
 	assertEqual( 0L, dir.GetSize() );
@@ -598,26 +561,10 @@ void SystemTest::dirFileListTest()
 	TraceAny(dir, "entries of [..]");
 }
 
-void SystemTest::GetProcessEnvironmentTest()
-{
-	Anything env;
-	System::GetProcessEnvironment(env);
-	t_assert(env.IsDefined("PATH"));
-	t_assert(!env.IsDefined("this_shouldnt_be_in_the_environment"));
-	t_assert(env.GetSize() > 1);
-}
-
-void SystemTest::allocFreeTests()
-{
-	void *vp = Storage::Current()->Calloc(32, sizeof(char));
-	t_assert(vp != 0);
-	Storage::Current()->Free(vp);
-}
-
 //==============================================================================================
 //        O P . I N P U T             Beginn
 //==============================================================================================
-void SystemTest::IStreamTest ()
+void SystemFileTest::IStreamTest ()
 {
 	// istream& operator>>(istream& is, String& s)
 	// String noch nicht belegt: Capacity gesetzt (groesser als die Dateilaenge) und Inhalt gesetzt.
@@ -715,7 +662,7 @@ void SystemTest::IStreamTest ()
 //==============================================================================================
 //        O P . O U T P U T             Beginn
 //==============================================================================================
-void SystemTest::OStreamTest ()
+void SystemFileTest::OStreamTest ()
 {
 	//	ostream& operator<<(ostream& os, const String &s)
 	//-------------------------------------------------------------
@@ -882,7 +829,7 @@ void SystemTest::OStreamTest ()
 //        O P . O U T P U T             Ende
 //==============================================================================================
 
-void SystemTest::TimeTest ()
+void SystemFileTest::TimeTest ()
 {
 	time_t now = ::time(0);
 
@@ -903,7 +850,7 @@ void SystemTest::TimeTest ()
 //==============================================================================================
 //        O P . I N O U T P U T S             Beginn
 //==============================================================================================
-void SystemTest::IOStreamTest ()
+void SystemFileTest::IOStreamTest ()
 {
 	// Interaktion von >> und <<  :  Mit dem Operator "<<" wird der Inhalt gespeichert und mit ">>" wird der Inhalt gelesen.
 	// Die Capacity nicht!!
@@ -1058,7 +1005,7 @@ void SystemTest::IOStreamTest ()
 
 	// Test automatic creation of files for ios::app and ios::ate
 	{
-		StartTrace(SystemTest.IOStreamTest);
+		StartTrace(SystemFileTest.IOStreamTest);
 		// precondition: files should not exist already!!
 		String strAppFile("tmp/ios_app.tst"), strAteFile("tmp/ios_ate.tst");
 		if ( System::IsRegularFile(strAppFile) ) {
@@ -1160,7 +1107,7 @@ void SystemTest::IOStreamTest ()
 //        O P . I N O U T P U T S             Ende
 //==============================================================================================
 
-void SystemTest::LoadConfigFileTest()
+void SystemFileTest::LoadConfigFileTest()
 {
 	Anything dbgany;
 	t_assert(System::LoadConfigFile(dbgany, "Dbg")); // any extension automatic
@@ -1173,9 +1120,9 @@ void SystemTest::LoadConfigFileTest()
 	assertAnyEqual(dbgany, dbg2);
 }
 
-void SystemTest::MkRmDirTest()
+void SystemFileTest::MkRmDirTest()
 {
-	StartTrace(SystemTest.MkRmDirTest);
+	StartTrace(SystemFileTest.MkRmDirTest);
 	String strTmpDir = GetConfig()["TmpDir"].AsString("/tmp");
 	String str1LevelRel(name());
 	String str2LevelRel(str1LevelRel);
@@ -1212,9 +1159,9 @@ void SystemTest::MkRmDirTest()
 	}
 }
 
-void SystemTest::MakeRemoveDirectoryTest()
+void SystemFileTest::MakeRemoveDirectoryTest()
 {
-	StartTrace(SystemTest.MakeRemoveDirectoryTest);
+	StartTrace(SystemFileTest.MakeRemoveDirectoryTest);
 	String strTmpDir = GetConfig()["TmpDir"].AsString("/tmp");
 	String str1LevelRel(name());
 	String str2LevelRel(str1LevelRel);
@@ -1277,9 +1224,9 @@ void SystemTest::MakeRemoveDirectoryTest()
 	}
 }
 
-void SystemTest::MakeDirectoryTest()
+void SystemFileTest::MakeDirectoryTest()
 {
-	StartTrace(SystemTest.MakeDirectoryTest);
+	StartTrace(SystemFileTest.MakeDirectoryTest);
 	String strStartDir = GetTestCaseConfig()["BasePath"].AsString("/tmp");
 	long lNumDirsMax = GetTestCaseConfig()["MaxNumDirs"].AsLong(20L), lIdx = 0L;
 	Trace("BasePath [" << strStartDir << "], MaxDirs: " << lNumDirsMax);
@@ -1310,9 +1257,9 @@ void SystemTest::MakeDirectoryTest()
 	assertComparem( System::eSuccess, equal_to, System::RemoveDirectory(strStartDir, false), "expected deletion of directory to succeed");
 }
 
-void SystemTest::MakeDirectoryExtendTest()
+void SystemFileTest::MakeDirectoryExtendTest()
 {
-	StartTrace(SystemTest.MakeDirectoryExtendTest);
+	StartTrace(SystemFileTest.MakeDirectoryExtendTest);
 
 	String strBaseDir(GetTestCaseConfig()["BaseDir"].AsString());
 	const char pcFillerPrefix[] = "dummydir_";
@@ -1405,9 +1352,9 @@ void SystemTest::MakeDirectoryExtendTest()
 	}
 }
 
-void SystemTest::SymbolicLinkTest()
+void SystemFileTest::SymbolicLinkTest()
 {
-	StartTrace(SystemTest.SymbolicLinkTest);
+	StartTrace(SystemFileTest.SymbolicLinkTest);
 
 	AnyExtensions::Iterator<ROAnything> aIterator(GetTestCaseConfig());
 	ROAnything roaConfig;
@@ -1454,9 +1401,9 @@ void SystemTest::SymbolicLinkTest()
 	}
 }
 
-void SystemTest::GetFileSizeTest()
+void SystemFileTest::GetFileSizeTest()
 {
-	StartTrace(SystemTest.GetFileSizeTest);
+	StartTrace(SystemFileTest.GetFileSizeTest);
 	String path(System::GetFilePath("len5", "tst"));
 	if ( t_assertm(path.Length() > 0, "expected file path to be valid") ) {
 		ul_long ulSize = 0;
@@ -1473,19 +1420,9 @@ void SystemTest::GetFileSizeTest()
 	}
 }
 
-void SystemTest::LockFileTest()
+void SystemFileTest::BlocksLeftOnFSTest()
 {
-	StartTrace(SystemTest.GetFileSizeTest);
-	String lockFile("/tmp/LockFileTest.lck");
-	bool ret = System::GetLockFileState(lockFile);
-	t_assertm(false == ret, "expected Lockfile to be unlocked");
-	t_assertm(true == System::GetLockFileState(lockFile), "expected LockFile to be locked");
-	t_assertm(false == System::IO::unlink(lockFile), "expected unlinking LockFile to succeed.");
-}
-
-void SystemTest::BlocksLeftOnFSTest()
-{
-	StartTrace(SystemTest.BlocksLeftOnFSTest);
+	StartTrace(SystemFileTest.BlocksLeftOnFSTest);
 	// can only test that we have still some space left, nothing more for now
 	ul_long ulBlocks = 0;
 	unsigned long ulBlockSize = 0;
@@ -1497,35 +1434,30 @@ void SystemTest::BlocksLeftOnFSTest()
 	}
 }
 
-Test *SystemTest::suite ()
+Test *SystemFileTest::suite ()
 {
 	TestSuite *testSuite = new TestSuite;
-	ADD_CASE(testSuite, SystemTest, DoSingleSelectTest);
-	ADD_CASE(testSuite, SystemTest, initPathTest);
-	ADD_CASE(testSuite, SystemTest, pathListTest);
-	ADD_CASE(testSuite, SystemTest, rooDirTest);
-	ADD_CASE(testSuite, SystemTest, IsAbsolutePathTest);
-	ADD_CASE(testSuite, SystemTest, ResolvePathTest);
-	ADD_CASE(testSuite, SystemTest, openStreamTest);
-	ADD_CASE(testSuite, SystemTest, getFilePathTest);
-	ADD_CASE(testSuite, SystemTest, dirFileListTest);
-	ADD_CASE(testSuite, SystemTest, GetProcessEnvironmentTest);
-	ADD_CASE(testSuite, SystemTest, allocFreeTests);
-	ADD_CASE(testSuite, SystemTest, IStreamTest);
-	ADD_CASE(testSuite, SystemTest, OStreamTest);
-	ADD_CASE(testSuite, SystemTest, IOStreamTest);
-	ADD_CASE(testSuite, SystemTest, CWDTests);
-	ADD_CASE(testSuite, SystemTest, MicroSleepTest);
-	ADD_CASE(testSuite, SystemTest, LoadConfigFileTest);
-	ADD_CASE(testSuite, SystemTest, TimeTest);
-	ADD_CASE(testSuite, SystemTest, MkRmDirTest);
-	ADD_CASE(testSuite, SystemTest, MakeRemoveDirectoryTest);
-	ADD_CASE(testSuite, SystemTest, MakeDirectoryTest);
-	ADD_CASE(testSuite, SystemTest, SymbolicLinkTest);
-	ADD_CASE(testSuite, SystemTest, MakeDirectoryExtendTest);
-	ADD_CASE(testSuite, SystemTest, GetFileSizeTest);
-	ADD_CASE(testSuite, SystemTest, BlocksLeftOnFSTest);
-	ADD_CASE(testSuite, SystemTest, LockFileTest);
-	ADD_CASE(testSuite, SystemTest, statTests);	// needs to be last
+	ADD_CASE(testSuite, SystemFileTest, initPathTest);
+	ADD_CASE(testSuite, SystemFileTest, pathListTest);
+	ADD_CASE(testSuite, SystemFileTest, rooDirTest);
+	ADD_CASE(testSuite, SystemFileTest, IsAbsolutePathTest);
+	ADD_CASE(testSuite, SystemFileTest, ResolvePathTest);
+	ADD_CASE(testSuite, SystemFileTest, openStreamTest);
+	ADD_CASE(testSuite, SystemFileTest, getFilePathTest);
+	ADD_CASE(testSuite, SystemFileTest, dirFileListTest);
+	ADD_CASE(testSuite, SystemFileTest, IStreamTest);
+	ADD_CASE(testSuite, SystemFileTest, OStreamTest);
+	ADD_CASE(testSuite, SystemFileTest, IOStreamTest);
+	ADD_CASE(testSuite, SystemFileTest, CWDTests);
+	ADD_CASE(testSuite, SystemFileTest, LoadConfigFileTest);
+	ADD_CASE(testSuite, SystemFileTest, TimeTest);
+	ADD_CASE(testSuite, SystemFileTest, MkRmDirTest);
+	ADD_CASE(testSuite, SystemFileTest, MakeRemoveDirectoryTest);
+	ADD_CASE(testSuite, SystemFileTest, MakeDirectoryTest);
+	ADD_CASE(testSuite, SystemFileTest, SymbolicLinkTest);
+	ADD_CASE(testSuite, SystemFileTest, MakeDirectoryExtendTest);
+	ADD_CASE(testSuite, SystemFileTest, GetFileSizeTest);
+	ADD_CASE(testSuite, SystemFileTest, BlocksLeftOnFSTest);
+	ADD_CASE(testSuite, SystemFileTest, statTests);	// needs to be last
 	return testSuite;
 }

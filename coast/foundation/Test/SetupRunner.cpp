@@ -37,7 +37,8 @@
 #include "SysLogTest.h"
 #include "DiffTimerTest.h"
 #include "DbgTest.h"
-#include "SystemTest.h"
+#include "SystemBaseTest.h"
+#include "SystemFileTest.h"
 #include "ROSimpleAnythingTest.h"
 #include "GenericXMLParserTest.h"
 #include "AnyBuiltInSortTest.h"
@@ -111,6 +112,7 @@ void setupRunner(TestRunner &runner)
 
 	// put last since cirtical system paths are manipulated that may
 	// affect proper operation of other tests
-	ADD_SUITE(runner, SystemTest);
+	ADD_SUITE(runner, SystemBaseTest);
+	ADD_SUITE(runner, SystemFileTest);
 	ADD_SUITE(runner, StringTestExtreme);
 } // setupRunner

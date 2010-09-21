@@ -6,20 +6,20 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-#ifndef _SystemTest_H
-#define _SystemTest_H
+#ifndef SYSTEMFILETEST_H_
+#define SYSTEMFILETEST_H_
 
 //---- baseclass include -------------------------------------------------
 #include "FoundationTestTypes.h"
 
-//---- SystemTest ----------------------------------------------------------
-//!testcases for System
-class SystemTest : public TestFramework::TestCaseWithConfig
+//---- SystemFileTest ----------------------------------------------------------
+//!testcases for SystemFile
+class SystemFileTest : public TestFramework::TestCaseWithConfig
 {
 public:
 	//!constructors
-	SystemTest(TString tstrName);
-	~SystemTest();
+	SystemFileTest(TString tstrName);
+	~SystemFileTest();
 
 	//!builds up a suite of testcases for this test
 	static Test *suite ();
@@ -33,7 +33,6 @@ public:
 	void openStreamTest();
 	void getFilePathTest();
 	void dirFileListTest();
-	void GetProcessEnvironmentTest();
 	void IStreamTest();
 	void OStreamTest();
 	void IOStreamTest();
@@ -46,15 +45,10 @@ public:
 	void MakeDirectoryExtendTest();
 	void GetFileSizeTest();
 	void BlocksLeftOnFSTest();
-	void LockFileTest();
 
-	void DoSingleSelectTest();
-	void MicroSleepTest();
-	//!storage tests
-	void allocFreeTests();
 	void LoadConfigFileTest();
 
 	void TimeTest();
 };
 
-#endif
+#endif /* SYSTEMFILETEST_H_ */
