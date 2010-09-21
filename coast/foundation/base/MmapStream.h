@@ -15,8 +15,25 @@
 typedef fstream MmapStream;
 #else
 
-#include "StringStream.h"
 #include <sys/mman.h>
+
+#if defined(ONLY_STD_IOSTREAM)
+#include <cstdio>
+#include <iostream>
+#include <iomanip>
+using std::istream;
+using std::ostream;
+using std::iostream;
+using std::ios;
+using std::streambuf;
+#else
+#if !defined(WIN32)
+#include <streambuf.h>
+#endif
+#include <cstdio.h>
+#include <iostream.h>
+#include <iomanip.h>
+#endif
 
 //!helper class to manage dependencies between ios flags and c-api mmap flags
 class EXPORTDECL_FOUNDATION MmapMagicFlags
