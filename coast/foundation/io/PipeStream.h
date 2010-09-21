@@ -10,7 +10,25 @@
 #define _PipeStream_H
 
 #include "config_foundation.h"
-#include "StringStream.h"
+#include "ITOString.h"
+
+#if defined(ONLY_STD_IOSTREAM)
+#include <cstdio>
+#include <iostream>
+#include <iomanip>
+using std::istream;
+using std::ostream;
+using std::iostream;
+using std::ios;
+using std::streambuf;
+#else
+#if !defined(WIN32)
+#include <streambuf.h>
+#endif
+#include <cstdio.h>
+#include <iostream.h>
+#include <iomanip.h>
+#endif
 
 class Pipe;
 
