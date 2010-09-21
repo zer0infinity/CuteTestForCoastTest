@@ -11,8 +11,25 @@
 
 //--- module used in the interface
 #include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
-#include "StringStream.h"
 #include "Socket.h"
+
+#if defined(ONLY_STD_IOSTREAM)
+#include <cstdio>
+#include <iostream>
+#include <iomanip>
+using std::istream;
+using std::ostream;
+using std::iostream;
+using std::ios;
+using std::streambuf;
+#else
+#if !defined(WIN32)
+#include <streambuf.h>
+#endif
+#include <cstdio.h>
+#include <iostream.h>
+#include <iomanip.h>
+#endif
 
 const int cSocketStreamBufferSize = 8024;
 

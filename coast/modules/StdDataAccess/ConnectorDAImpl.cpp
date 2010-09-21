@@ -16,6 +16,7 @@
 #include "SSLSocket.h"
 #include "SystemLog.h"
 #include "SocketStream.h"
+#include "StringStream.h"
 #include "Timers.h"
 
 //--- c-modules used -----------------------------------------------------------
