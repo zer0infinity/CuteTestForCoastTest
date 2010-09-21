@@ -17,6 +17,8 @@
 
 //--- standard modules used ----------------------------------------------------
 
+using namespace Coast;
+
 //--- c-library modules used ---------------------------------------------------
 
 #if defined(ONLY_STD_IOSTREAM)

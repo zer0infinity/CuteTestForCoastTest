@@ -10,11 +10,13 @@
 #include "Socket.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
+#include "SystemBase.h"
 #include "SystemLog.h"
 #include "Resolver.h"
 #include "SocketStream.h"
 #include "Dbg.h"
+
+using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
 #include <cstring>

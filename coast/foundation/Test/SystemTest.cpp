@@ -10,7 +10,10 @@
 #include "SystemTest.h"
 
 //--- module under test --------------------------------------------------------
-#include "System.h"
+#include "SystemBase.h"
+#include "SystemFile.h"
+
+using namespace Coast;
 
 //--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
@@ -1176,10 +1179,10 @@ void SystemTest::MkRmDirTest()
 	String strTmpDir = GetConfig()["TmpDir"].AsString("/tmp");
 	String str1LevelRel(name());
 	String str2LevelRel(str1LevelRel);
-	str2LevelRel.Append(System::cSep).Append("Level2");
+	str2LevelRel.Append(System::Sep()).Append("Level2");
 	String str1Level(strTmpDir), str2Level(strTmpDir);
-	str1Level << System::cSep << str1LevelRel;
-	str2Level << System::cSep << str2LevelRel;
+	str1Level << System::Sep() << str1LevelRel;
+	str2Level << System::Sep() << str2LevelRel;
 	Trace("strTmpDir [" << strTmpDir << "]");
 	Trace("str1LevelRel [" << str1LevelRel << "]");
 	Trace("str2LevelRel [" << str2LevelRel << "]");
@@ -1215,10 +1218,10 @@ void SystemTest::MakeRemoveDirectoryTest()
 	String strTmpDir = GetConfig()["TmpDir"].AsString("/tmp");
 	String str1LevelRel(name());
 	String str2LevelRel(str1LevelRel);
-	str2LevelRel.Append(System::cSep).Append("Level2");
+	str2LevelRel.Append(System::Sep()).Append("Level2");
 	String str1Level(strTmpDir), str2Level(strTmpDir);
-	str1Level << System::cSep << str1LevelRel;
-	str2Level << System::cSep << str2LevelRel;
+	str1Level << System::Sep() << str1LevelRel;
+	str2Level << System::Sep() << str2LevelRel;
 	Trace("strTmpDir [" << strTmpDir << "]");
 	Trace("str1LevelRel [" << str1LevelRel << "]");
 	Trace("str2LevelRel [" << str2LevelRel << "]");
@@ -1290,7 +1293,7 @@ void SystemTest::MakeDirectoryTest()
 		System::DirStatusCode aDirStatus = System::eSuccess;
 		for ( ; lIdx < lNumDirsMax; ++lIdx) {
 			strDirToCreate.Trim(0L);
-			strDirToCreate.Append(strStartDir).Append(System::cSep).Append(lIdx);
+			strDirToCreate.Append(strStartDir).Append(System::Sep()).Append(lIdx);
 			if ( ( aDirStatus = System::MakeDirectory(strDirToCreate, 0755, false) ) != System::eSuccess ) {
 				SYSERROR("failed at index: " << lIdx);
 				break;
@@ -1300,7 +1303,7 @@ void SystemTest::MakeDirectoryTest()
 		SYSINFO("last directory created [" << strDirToCreate << "] Idx: " << lIdx);
 		while ( --lIdx >= 0L ) {
 			strDirToCreate.Trim(0L);
-			strDirToCreate.Append(strStartDir).Append(System::cSep).Append(lIdx);
+			strDirToCreate.Append(strStartDir).Append(System::Sep()).Append(lIdx);
 			System::RemoveDirectory(strDirToCreate, false);
 		}
 	}

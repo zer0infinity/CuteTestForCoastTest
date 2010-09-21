@@ -17,7 +17,6 @@
 #include "URLUtilsTest.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
 #include "Resolver.h"
 
 using namespace std;

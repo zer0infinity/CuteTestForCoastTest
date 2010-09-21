@@ -13,9 +13,11 @@
 #include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
+#include "SystemFile.h"
 #include "StringStream.h"
 #include "Dbg.h"
+
+using namespace Coast;
 
 #if defined(ONLY_STD_IOSTREAM)
 using namespace std;
@@ -3025,8 +3027,8 @@ void StringTest::TestContainsCharAbove()
 	String empty;
 	assertEqual(-1, empty.ContainsCharAbove(255));
 	assertEqual(0, empty.ContainsCharAbove(256));
-	assertEqual(-1, empty.ContainsCharAbove(255, "дц"));
-	assertEqual(0, empty.ContainsCharAbove(256, "дц"));
+	assertEqual(-1, empty.ContainsCharAbove(255, "пїЅпїЅ"));
+	assertEqual(0, empty.ContainsCharAbove(256, "пїЅпїЅ"));
 }
 
 void StringTest::TestLastCharOf()

@@ -41,7 +41,7 @@ void HTMLCacheLoaderTest::LoadEmptyCacheTest()
 	t_assert(Storage::Global() == result.GetAllocator());
 	//-- now the same with an existing but empty file
 	const char   *const TESTFILE = "HTMLCacheLoaderTestEmpty";
-	ostream *os = System::OpenOStream(TESTFILE, "html");
+	ostream *os = Coast::System::OpenOStream(TESTFILE, "html");
 	if (t_assertm((os != NULL), "assumed to be able to write file")) {
 		delete os;
 		result = htcl.Load(TESTFILE);
@@ -50,7 +50,7 @@ void HTMLCacheLoaderTest::LoadEmptyCacheTest()
 	}
 	String filename(TESTFILE);
 	filename.Append(".html");
-	t_assert(0 == System::IO::unlink(filename));
+	t_assert(0 == Coast::System::IO::unlink(filename));
 }
 
 void HTMLCacheLoaderTest::SimpleBuildCacheTest()

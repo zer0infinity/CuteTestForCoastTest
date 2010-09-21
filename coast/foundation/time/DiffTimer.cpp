@@ -10,7 +10,7 @@
 #include "DiffTimer.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
+#include "SystemBase.h"
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------

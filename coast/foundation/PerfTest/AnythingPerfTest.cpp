@@ -16,7 +16,6 @@
 #include "StringStream.h"
 #include "Dbg.h"
 #include "PoolAllocator.h"
-#include "System.h"
 
 //---- AnythingPerfTest ----------------------------------------------------------------
 AnythingPerfTest::AnythingPerfTest(TString tstrName)

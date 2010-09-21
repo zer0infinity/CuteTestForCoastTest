@@ -11,10 +11,12 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
-#include "System.h"
+#include "SystemBase.h"
 #include "Pipe.h"
 #include "Dbg.h"
 #include "Socket.h"
+
+using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
 #include <errno.h>

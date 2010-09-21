@@ -16,7 +16,6 @@
 #include "PipeTest.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
 #include "Socket.h"
 #include "Dbg.h"
 

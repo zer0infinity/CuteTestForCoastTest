@@ -19,6 +19,7 @@
 #include "PersistentLDAPConnection.h"
 #include "Mapper.h"
 #include "AnyIterators.h"
+#include "SystemBase.h"
 
 //--- c-modules used -----------------------------------------------------------
 
@@ -75,7 +76,7 @@ void LDAPConnectionManagerTest::ConnectionManagerTest()
 					long rebindTimeout	= get["Data"]["LDAPRebindTimeout"].AsLong(0L);
 					maxConnections = get["Data"]["LDAPMaxConnections"].AsLong(0);
 					long sleepTime 		= get["Data"]["SleepTime"].AsLong(0L);
-					System::MicroSleep(sleepTime * 1000000L);
+					Coast::System::MicroSleep(sleepTime * 1000000L);
 					Anything returned;
 					returned = LDAPConnectionManager::LDAPCONNMGR()->GetLdapConnection(false, maxConnections, poolId, rebindTimeout);
 					TraceAny(returned, "returned");

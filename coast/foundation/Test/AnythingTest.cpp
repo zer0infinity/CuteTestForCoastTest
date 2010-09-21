@@ -15,10 +15,12 @@
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
 #include "IFAObject.h"
-#include "System.h"
+#include "SystemFile.h"
 #include "Dbg.h"
 #include "AnyIterators.h"
 #include "SystemLog.h"
+
+using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
 #include <cstring>

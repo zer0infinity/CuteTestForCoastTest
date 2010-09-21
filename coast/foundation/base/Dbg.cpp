@@ -10,11 +10,15 @@
 #include "Dbg.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
+#include "SystemBase.h"
+#include "SystemFile.h"
 #include "SystemLog.h"
 #include "StringStream.h"
 #include "InitFinisManagerFoundation.h"
 
+using namespace Coast;
+
+//--- c-library modules used ---------------------------------------------------
 #include <cstring>
 
 #ifdef COAST_TRACE

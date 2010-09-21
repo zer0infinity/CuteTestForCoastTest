@@ -16,7 +16,6 @@
 #include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
 #include "PoolAllocator.h"
 
 #if defined(ONLY_STD_IOSTREAM)

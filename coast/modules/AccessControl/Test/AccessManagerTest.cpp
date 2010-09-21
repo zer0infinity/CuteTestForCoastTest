@@ -55,9 +55,9 @@ void AccessManagerTest::setUp ()
 void AccessManagerTest::tearDown ()
 {
 	StartTrace(AccessManagerTest.tearDown);
-	System::IO::unlink("config/FileTestUserDB.any");
-	System::IO::unlink("config/FileTestActerDB.any");
-	System::IO::unlink("config/FileTestRightsDB.any");
+	Coast::System::IO::unlink("config/FileTestUserDB.any");
+	Coast::System::IO::unlink("config/FileTestActerDB.any");
+	Coast::System::IO::unlink("config/FileTestRightsDB.any");
 }
 
 void AccessManagerTest::doTestAccessManager(ROAnything config, AccessManager *am)

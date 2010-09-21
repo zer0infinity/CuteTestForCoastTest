@@ -13,7 +13,9 @@
 #endif
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
+#include "SystemBase.h"
+
+using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
 #include <errno.h>

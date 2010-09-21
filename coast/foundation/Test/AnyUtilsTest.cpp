@@ -16,10 +16,12 @@
 #include "AnyUtils.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
+#include "SystemFile.h"
 #include "SystemLog.h"
 #include "StringStream.h"
 #include "Dbg.h"
+
+using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
 

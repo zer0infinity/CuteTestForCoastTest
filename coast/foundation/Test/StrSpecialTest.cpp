@@ -9,7 +9,9 @@
 //--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "StringStream.h"
-#include "System.h"
+#include "SystemFile.h"
+
+using namespace Coast;
 
 //--- test modules used --------------------------------------------------------
 #include "TestSuite.h"

@@ -14,7 +14,6 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "PoolAllocator.h"
-#include "System.h"
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
@@ -69,13 +68,13 @@ void StringPerfTest::referenceTest()
 	// short sample
 	RunLoop(sample, iterations);
 	RunPreallocLoop(sample, iterations);
-	System::MicroSleep(1000L);
+	Coast::System::MicroSleep(1000L);
 	RunPoolAllocLoop(sample, iterations);
 
 	// long sample
 	RunLoop(sample1, iterations);
 	RunPreallocLoop(sample1, iterations);
-	System::MicroSleep(1000L);
+	Coast::System::MicroSleep(1000L);
 	RunPoolAllocLoop(sample1, iterations);
 	t_assertm(true, "dummy assertion to generate summary output");
 }

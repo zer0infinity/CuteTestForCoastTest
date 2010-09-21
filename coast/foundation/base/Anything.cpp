@@ -11,13 +11,16 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "AnyImpls.h"
-#include "System.h"
+#include "SystemFile.h"
 #include "SystemLog.h"
 #include "StringStream.h"
 #include "Dbg.h"
 #include "AnyVisitor.h"
 #include "AnyComparers.h"
 #include "AllocatorNewDelete.h"
+
+using namespace Coast;
+
 //--- c-library modules used ---------------------------------------------------
 #include <cctype>
 #include <cstdlib>

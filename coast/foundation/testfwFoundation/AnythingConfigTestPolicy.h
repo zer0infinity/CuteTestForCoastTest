@@ -11,7 +11,7 @@
 
 //---- baseclass include -------------------------------------------------
 #include "StringStream.h"
-#include "System.h"
+#include "SystemFile.h"
 #include "Dbg.h"
 
 //---- forward declaration -----------------------------------------------
@@ -80,7 +80,7 @@ namespace TestFramework
 			if ( fCfgFileName != getConfigFileName() ) {
 				fCfgFileName = getConfigFileName();
 			}
-			if ( ( bRetCode = System::LoadConfigFile(fConfig, fCfgFileName, "any") ) ) {
+			if ( ( bRetCode = Coast::System::LoadConfigFile(fConfig, fCfgFileName, "any") ) ) {
 				fTestCaseConfig = fConfig[strTestName];
 			}
 			TraceAny(fConfig, "whole Config of [" << fCfgFileName << "]");

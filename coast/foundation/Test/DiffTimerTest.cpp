@@ -17,7 +17,9 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-#include "System.h"
+#include "SystemBase.h"
+
+using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
 

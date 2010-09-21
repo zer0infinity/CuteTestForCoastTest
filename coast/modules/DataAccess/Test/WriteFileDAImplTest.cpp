@@ -46,7 +46,7 @@ bool WriteFileDAImplTest::CompareResult(TString strResult)
 {
 	StartTrace(WriteFileDAImplTest.CompareResult);
 	bool bRet = false;
-	iostream *fp = System::OpenStream("WriteTestFile", "txt");
+	iostream *fp = Coast::System::OpenStream("WriteTestFile", "txt");
 	if (t_assert(fp != 0)) {
 		OStringStream os;
 		os << fp->rdbuf() << flush;
@@ -60,7 +60,7 @@ void WriteFileDAImplTest::WriteFileTest()
 	StartTrace(WriteFileDAImplTest.WriteFileTest);
 
 	String testCaseName(name());
-	System::IO::unlink("./WriteTestFile.txt");
+	Coast::System::IO::unlink("./WriteTestFile.txt");
 	Context ctx;
 	ROAnything roaConfig;
 	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());

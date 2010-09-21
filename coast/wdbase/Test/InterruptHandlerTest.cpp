@@ -71,7 +71,7 @@ void InterruptHandlerTest::PidFileHandlingTest()
 				String pidfilename;
 				server->PIDFileName(pidfilename);
 				Trace("PIDFileName: <" << pidfilename << ">");
-				iostream *Ios = System::OpenStream(pidfilename, (const char *)0, ios::in, true);
+				iostream *Ios = Coast::System::OpenStream(pidfilename, (const char *)0, ios::in, true);
 				if ( t_assertm(Ios != 0, "expected pid file to be there") ) {
 					delete Ios;
 				}
@@ -91,7 +91,7 @@ void InterruptHandlerTest::PidFileHandlingTest()
 		String pidfilename;
 		server->PIDFileName(pidfilename);
 		Trace("trying to open <" << pidfilename << ">");
-		iostream *Ios = System::OpenStream(pidfilename, (const char *)0);
+		iostream *Ios = Coast::System::OpenStream(pidfilename, (const char *)0);
 		if ( !t_assertm(Ios == 0, "expected pid file to be deleted") ) {
 			delete Ios;
 		}

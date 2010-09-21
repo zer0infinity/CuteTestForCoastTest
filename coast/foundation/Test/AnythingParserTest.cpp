@@ -11,8 +11,10 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
-#include "System.h"
+#include "SystemFile.h"
 #include "IFAObject.h"
+
+using namespace Coast;
 
 //--- test modules used --------------------------------------------------------
 #include "TestSuite.h"

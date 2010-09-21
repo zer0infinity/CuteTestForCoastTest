@@ -10,10 +10,12 @@
 #include "Pipe.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
+#include "SystemBase.h"
 #include "SystemLog.h"
 #include "Dbg.h"
 #include "Socket.h"
+
+using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
 #if !defined (WIN32)

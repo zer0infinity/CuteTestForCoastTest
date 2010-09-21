@@ -11,8 +11,10 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
-#include "System.h"
+#include "SystemBase.h"
 #include "Dbg.h"
+
+using namespace Coast;
 
 //#define STREAM_TRACE
 

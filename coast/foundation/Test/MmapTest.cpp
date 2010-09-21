@@ -16,7 +16,11 @@
 #include "MmapStream.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
+#include "SystemBase.h"
+#include "SystemFile.h"
+#include "StringStream.h"
+
+using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
 #if defined(WIN32)

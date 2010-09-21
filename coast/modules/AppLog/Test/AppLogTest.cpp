@@ -21,6 +21,9 @@
 #include "Action.h"
 #include "AnyIterators.h"
 #include "AnyUtils.h"
+#include "SystemBase.h"
+
+using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
 

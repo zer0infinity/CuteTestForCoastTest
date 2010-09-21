@@ -13,7 +13,6 @@
 #include "StringTokenizerTest.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
 
 //--- c-library modules used ---------------------------------------------------
 

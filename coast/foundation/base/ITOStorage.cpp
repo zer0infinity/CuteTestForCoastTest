@@ -11,7 +11,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
-#include "System.h"
+#include "SystemBase.h"
 #include "MemHeader.h"
 #include "InitFinisManagerFoundation.h"
 

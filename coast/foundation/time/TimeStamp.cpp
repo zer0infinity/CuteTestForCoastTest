@@ -13,7 +13,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-#include "System.h"
+#include "SystemBase.h"
 #include "SystemLog.h"
 
 //--- c-modules used -----------------------------------------------------------

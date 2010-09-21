@@ -10,9 +10,11 @@
 #include "AnyUtils.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
+#include "SystemFile.h"
 #include "SystemLog.h"
 #include "Dbg.h"
+
+using namespace Coast;
 
 #if defined(ONLY_STD_IOSTREAM)
 using namespace std;
