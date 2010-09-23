@@ -117,7 +117,7 @@ void PipeExecutorTest::CatWorkingDirTest()
 {
 	StartTrace(PipeExecutorTest.CatWorkingDirTest);
 	Anything env;
-	String wd("./config");
+	String wd = GetTestCaseConfig()["WorkingDir"].AsString();
 	String filename(wd);
 	const char *fileName = "PipeExecutorTest.txt";
 	String msg( "Hello_world!" );

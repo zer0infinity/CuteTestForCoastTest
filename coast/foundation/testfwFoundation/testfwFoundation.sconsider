@@ -4,7 +4,7 @@ Import('*')
 
 buildSettings = {
     packagename : {
-        'linkDependencies' : ['testfw'],
+        'linkDependencies' : ['testfw', 'CoastFoundation.AnythingOptional'],
         'sourceFiles'      : [],
         'targetType'       : 'IncludeOnly',
         'public' : {

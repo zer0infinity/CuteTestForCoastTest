@@ -7,6 +7,9 @@
 #-----------------------------------------------------------------------------------------------------
 
 {
+	/CatWorkingDirTest {
+		/WorkingDir	"./io/config"
+	}
 	/ShellInvocationTest {
 		/NonExistingShellTest {
 			/Params {
@@ -16,7 +19,7 @@
 				/Path		"."
 				/Timeout	1000
 				/UseStderr	1
-				/Command	"./config/testscript.sh -p gaga"
+				/Command	"./io/config/testscript.sh -p gaga"
 			}
 			/Expected {
 				/ExecOk 0
@@ -31,7 +34,7 @@
 				/Path		"."
 				/Timeout	1000
 				/UseStderr	1
-				/Command	"./config/testscript.sh -p gaga"
+				/Command	"./io/config/testscript.sh -p gaga"
 			}
 			/Expected {
 				/ExecOk	1
@@ -44,7 +47,7 @@
 #				/Executable	"bash.exe"			# cygwin
 				/Executable	"/bin/sh"
 				/Env 		*
-				/Path		"./config"
+				/Path		"./io/config"
 				/Timeout	1000
 				/UseStderr	1
 				/Command	"./testscript.sh -p gaga"

@@ -118,18 +118,6 @@
 		/EnableAll						120
 		/FilterQuery					550
 	}
-	/Pipe {
-		/MainSwitch						1000
-		/EnableAll						1000
-	}
-	/PipeExecutor {
-		/MainSwitch						1000
-		/EnableAll						1000
-	}
-	/PipeExecutorTest {
-		/MainSwitch						1000
-		/EnableAll						1000
-	}
 	/System {
 		/MainSwitch						20
 		/EnableAll						11
@@ -137,59 +125,10 @@
 		/CheckPath						-20
 		/DoSingleSelect					1000
 	}
-	/EndPoint {
-		/MainSwitch						10
-		/EnableAll						10
-	}
-	/Socket{
-		/MainSwitch						10
-		/EnableAll						10
-		/IsReady						1000
-	}
-	/Acceptor {
-		/MainSwitch						10
-		/EnableAll						10
-	}
-	/AcceptorTest {
-		/MainSwitch						10
-		/EnableAll						10
-	}
-	/Connector {
-		/MainSwitch						10
-		/EnableAll						10
-	}
-	/AnyUtils {
-		/MainSwitch						0
-		/EnableAll						0
-		/AnyCompareEqual				0
-		/AnyMerge {
-			/MainSwitch					11
-			/EnableAll					0
-			/TraceInputAny				0
-		}
-		/DoAnyMerge {
-			/MainSwitch					11
-			/EnableAll					0
-			/TraceInputAny				0
-		}
-	}
-	/AnyUtilsTest {
-		/MainSwitch						0
-		/EnableAll						0
-		/MergeTest						11
-	}
 	/SystemTest {
 		/MainSwitch						20
 		/EnableAll						11
 		/MakeDirectoryTest				0
-	}
-	/ResolverTest {
-		/MainSwitch						20
-		/EnableAll						20
-	}
-	/Resolver {
-		/MainSwitch						20
-		/EnableAll						20
 	}
 	/StorageTest {
 		/MainSwitch						20
@@ -200,10 +139,6 @@
 		/EnableAll						20
 	}
 	/PoolAllocatorTest {
-		/MainSwitch						20
-		/EnableAll						20
-	}
-	/ObjectListTest {
 		/MainSwitch						20
 		/EnableAll						20
 	}
@@ -237,14 +172,6 @@
 	}
 	/RefCountedWithFinalDestroy {
 		/MainSwitch						0
-		/EnableAll						20
-	}
-	/TimeStamp {
-		/MainSwitch						20
-		/EnableAll						20
-	}
-	/TimeStampTest {
-		/MainSwitch						20
 		/EnableAll						20
 	}
 	/Iterator {

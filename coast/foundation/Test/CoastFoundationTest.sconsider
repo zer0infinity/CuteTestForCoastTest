@@ -96,18 +96,65 @@ def tearDown(target, source, env):
     SystemTestMakeDirectoryExtendCleanup(env)
 
 buildSettings = {
-    packagename : {
-        'linkDependencies' : ['CoastFoundation', 'testfwFoundation'],
-        'sourceFiles'      : SConsider.listFiles(['*.cpp']),
+    'Base' : {
+        'linkDependencies' : ['CoastFoundation.Base', 'CoastFoundation.Time', 'testfwFoundation'],
+        'sourceFiles'      : SConsider.listFiles(['base/*.cpp']),
         'targetType'       : 'ProgramTest',
         'copyFiles'        : [
-            (SConsider.findFiles(['.'], ['.any']), S_IRUSR | S_IRGRP | S_IROTH, searchReplace),
-            (SConsider.findFiles(['.'], ['.txt', '.tst']), S_IRUSR | S_IRGRP | S_IROTH),
-            (SConsider.findFiles(['config'], ['.sh']), S_IRUSR | S_IRGRP | S_IROTH | S_IXUSR),
+            (SConsider.listFiles(['base/config/*.any']), S_IRUSR | S_IRGRP | S_IROTH, searchReplace),
+            (SConsider.listFiles(['base/config/*.tst', 'base/config/*.txt', 'base/tmp/*']), S_IRUSR | S_IRGRP | S_IROTH),
         ],
+        'appendUnique'     : {
+            'ENV': { 'COAST_PATH' : '.:base:base/config' }
+        },
+    },
+    'Time' : {
+        'linkDependencies' : ['CoastFoundation.Time', 'testfwFoundation'],
+        'sourceFiles'      : SConsider.listFiles(['time/*.cpp']),
+        'targetType'       : 'ProgramTest',
+        'copyFiles'        : [
+            (SConsider.listFiles(['time/config/*.any']), S_IRUSR | S_IRGRP | S_IROTH, searchReplace),
+        ],
+        'appendUnique'     : {
+            'ENV': { 'COAST_PATH' : '.:time/config' }
+        },
+    },
+    'IO' : {
+        'linkDependencies' : ['CoastFoundation.IO', 'CoastFoundation.Miscellaneous', 'testfwFoundation'],
+        'sourceFiles'      : SConsider.listFiles(['io/*.cpp']),
+        'targetType'       : 'ProgramTest',
+        'copyFiles'        : [
+            (SConsider.listFiles(['io/config/*.any']), S_IRUSR | S_IRGRP | S_IROTH, searchReplace),
+            (SConsider.listFiles(['io/config/*.sh']), S_IRUSR | S_IRGRP | S_IROTH | S_IXUSR),
+        ],
+        'appendUnique'     : {
+            'ENV': { 'COAST_PATH' : '.:io/config' }
+        },
         'runConfig'        : {
             'setUp'        : setUp,
             'tearDown'     : tearDown,
+        },
+    },
+    'Miscellaneous' : {
+        'linkDependencies' : ['CoastFoundation.Miscellaneous', 'testfwFoundation'],
+        'sourceFiles'      : SConsider.listFiles(['miscellaneous/*.cpp']),
+        'targetType'       : 'ProgramTest',
+        'copyFiles'        : [
+            (SConsider.listFiles(['miscellaneous/config/*.any']), S_IRUSR | S_IRGRP | S_IROTH, searchReplace),
+        ],
+        'appendUnique'     : {
+            'ENV': { 'COAST_PATH' : '.:miscellaneous/config' }
+        },
+    },
+    'AnythingOptional' : {
+        'linkDependencies' : ['CoastFoundation.AnythingOptional', 'testfwFoundation'],
+        'sourceFiles'      : SConsider.listFiles(['anythingoptional/*.cpp']),
+        'targetType'       : 'ProgramTest',
+        'copyFiles'        : [
+            (SConsider.listFiles(['anythingoptional/config/*.any']), S_IRUSR | S_IRGRP | S_IROTH, searchReplace),
+        ],
+        'appendUnique'     : {
+            'ENV': { 'COAST_PATH' : '.:anythingoptional:anythingoptional/config' }
         },
     }
 }

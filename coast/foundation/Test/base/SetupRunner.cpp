@@ -19,36 +19,19 @@
 #include "AnythingLookupTest.h"
 #include "AnythingKeyIndexTest.h"
 #include "AnythingTest.h"
-#include "AnySorterTest.h"
-#include "AcceptorTest.h"
-#include "ConnectorTest.h"
 #include "StringTest.h"
 #include "StringTestExtreme.h"
 #include "StringTokenizerTest.h"
 #include "StringTokenizer2Test.h"
 #include "AnythingParserSemanticTest.h"
 #include "AnythingParserTest.h"
-#include "URLUtilsTest.h"
-#include "AnyUtilsTest.h"
-#include "SocketStreamTest.h"
 #include "StrSpecialTest.h"
-#include "SocketTest.h"
-#include "ResolverTest.h"
 #include "SysLogTest.h"
-#include "DiffTimerTest.h"
 #include "DbgTest.h"
 #include "SystemBaseTest.h"
 #include "SystemFileTest.h"
 #include "ROSimpleAnythingTest.h"
-#include "GenericXMLParserTest.h"
 #include "AnyBuiltInSortTest.h"
-#include "PipeTest.h"
-#include "PipeStreamTest.h"
-#include "PipeExecutorTest.h"
-#include "ConnectorArgsTest.h"
-#include "ObjectListTest.h"
-#include "TimeStampTest.h"
-#include "ConversionUtilsTest.h"
 #include "AnyImplsTest.h"
 #include "TypeTraitsTest.h"
 #include "AnythingIteratorTest.h"
@@ -68,10 +51,6 @@ void setupRunner(TestRunner &runner)
 	// removed because of name clash
 #endif
 	ADD_SUITE(runner, StringTokenizer2Test);
-	ADD_SUITE(runner, PipeTest);
-	ADD_SUITE(runner, PipeStreamTest);
-	ADD_SUITE(runner, PipeExecutorTest);
-	ADD_SUITE(runner, DiffTimerTest);
 	ADD_SUITE(runner, StringTest);
 	ADD_SUITE(runner, AnyImplsTest);
 	ADD_SUITE(runner, AnythingConstructorsTest);
@@ -80,32 +59,19 @@ void setupRunner(TestRunner &runner)
 	ADD_SUITE(runner, AnythingDeepCloneTest);
 	ADD_SUITE(runner, AnythingImportExportTest);
 	ADD_SUITE(runner, AnythingLookupTest);
-	ADD_SUITE(runner, AnySorterTest);
-	ADD_SUITE(runner, AcceptorTest);
 	ADD_SUITE(runner, AnythingParserSemanticTest);
 	ADD_SUITE(runner, AnythingParserTest);
-	ADD_SUITE(runner, ResolverTest);
-	ADD_SUITE(runner, URLUtilsTest);
-	ADD_SUITE(runner, AnyUtilsTest);
 	ADD_SUITE(runner, StrSpecialTest);
 #if !defined(__370__) && !defined(WIN32)
 	ADD_SUITE(runner, MmapTest);
 #endif
-	ADD_SUITE(runner, SocketTest);
-	ADD_SUITE(runner, SocketStreamTest);
-	ADD_SUITE(runner, ConnectorTest);
 #if !defined(__370__)
 	ADD_SUITE(runner, StringStreamTest);
 #endif
 	ADD_SUITE(runner, DbgTest);
 	ADD_SUITE(runner, ROSimpleAnythingTest);
 	ADD_SUITE(runner, SysLogTest);
-	ADD_SUITE(runner, GenericXMLParserTest);
 	ADD_SUITE(runner, AnyBuiltInSortTest);
-	ADD_SUITE(runner, ConnectorArgsTest);
-	ADD_SUITE(runner, ObjectListTest);
-	ADD_SUITE(runner, TimeStampTest);
-	ADD_SUITE(runner, ConversionUtilsTest);
 	ADD_SUITE(runner, TypeTraitsTest);
 	ADD_SUITE(runner, AnythingIteratorTest);
 	ADD_SUITE(runner, AnythingSTLTest);
