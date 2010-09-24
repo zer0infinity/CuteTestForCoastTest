@@ -12,134 +12,129 @@
 //---- standard-module include ----------------------------------------------
 #include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 
-#if 1 //(__GNUC__ > 2)
-#include <loki/TypeTraits.h>
+#if defined(USE_TR1)
+#include <tr1/type_traits>
+namespace boost_or_tr1 = std::tr1;
+#elif defined(USE_STD0X)
+#include <type_traits>
+namespace boost_or_tr1 = std;
 #else
-
-namespace Loki
-{
-	struct NullType {};
-
-	template <int v>
-	struct Int2Type {
-		enum { value = v };
-	};
-
-	template <typename T>
-	class TypeTraits
-	{
-	private:
-		template <class U> struct PointerTraits {
-			enum { result = false };
-			typedef NullType PointeeType;
-		};
-
-		template <class U> struct PointerTraits<U *> {
-			enum { result = true };
-			typedef U PointeeType;
-		};
-
-		template <class U> struct PointerTraits<U* &> {
-			enum { result = true };
-			typedef U PointeeType;
-		};
-
-		template <class U> struct ReferenceTraits {
-			enum { result = false };
-			typedef NullType ReferredType;
-		};
-
-		template <class U> struct ReferenceTraits<U &> {
-			enum { result = true };
-			typedef U ReferredType;
-		};
-
-		template <class U> struct UnConst {
-			typedef U Result;
-		};
-
-		template <class U> struct UnConst<const U &> {
-			typedef U &Result;
-		};
-
-		template <class U> struct UnConst<const U> {
-			typedef U Result;
-		};
-
-	public:
-		enum { isPointer = PointerTraits<T>::result };
-		typedef typename PointerTraits<T>::PointeeType PointeeType;
-
-		enum { isReference = ReferenceTraits<T>::result };
-		typedef typename ReferenceTraits<T>::ReferredType ReferredType;
-	};
-};
+#include <boost/type_traits.hpp>
+#include <boost/mpl/int.hpp>
+namespace boost_or_tr1 = boost;
 #endif
 
-namespace Loki
+
+namespace Coast
 {
-	template <typename T>
-	class fooTypeTraits
+	namespace TypeTraits
 	{
-	private:
-		template <class U> struct PlainTypeGetter {
-			typedef U Result;
+		struct NullType {};
+
+		template <typename T>
+		class TypeTraits
+		{
+		private:
+			template <class U> struct PointerTraits {
+				enum { result = false };
+				typedef NullType PointeeType;
+			};
+
+			template <class U> struct PointerTraits<U *> {
+				enum { result = true };
+				typedef U PointeeType;
+			};
+
+			template <class U> struct PointerTraits<U* &> {
+				enum { result = true };
+				typedef U PointeeType;
+			};
+
+			template <class U> struct UnConst {
+				typedef U Result;
+				enum { isConst = 0 };
+			};
+
+			template <class U> struct UnConst<const U &> {
+				typedef U &Result;
+				enum { isConst = 1 };
+			};
+
+			template <class U> struct UnConst<const U> {
+				typedef U Result;
+				enum { isConst = 1 };
+			};
+
+		public:
+			typedef typename UnConst<T>::Result NonConstType;
+			enum { isConst  = UnConst<T>::isConst };
+			typedef typename PointerTraits<T>::PointeeType PointeeType;
+			enum { isPointer = PointerTraits<T>::result };
 		};
 
-		template <class U> struct PlainTypeGetter<U *> {
-			typedef U Result;
-		};
+		template <typename T>
+		class fooTypeTraits
+		{
+		private:
+			template <class U> struct PlainTypeGetter {
+				typedef U Result;
+			};
 
-		template <class U> struct PlainTypeGetter<U &> {
-			typedef U Result;
-		};
+			template <class U> struct PlainTypeGetter<U *> {
+				typedef U Result;
+			};
 
-		template <class U> struct PlainTypeGetter<const U> {
-			typedef U Result;
-		};
+			template <class U> struct PlainTypeGetter<U &> {
+				typedef U Result;
+			};
 
-		template <class U> struct PlainTypeGetter<const U *> {
-			typedef U Result;
-		};
+			template <class U> struct PlainTypeGetter<const U> {
+				typedef U Result;
+			};
 
-		template <class U> struct PlainTypeGetter<const U &> {
-			typedef U Result;
-		};
+			template <class U> struct PlainTypeGetter<const U *> {
+				typedef U Result;
+			};
 
-		template <class U> struct ConstCorrectRef2PtrGetter {
-			typedef U *Result;
-		};
+			template <class U> struct PlainTypeGetter<const U &> {
+				typedef U Result;
+			};
 
-		template <class U> struct ConstCorrectRef2PtrGetter<U &> {
-			typedef U *Result;
-		};
+			template <class U> struct ConstCorrectRef2PtrGetter {
+				typedef U *Result;
+			};
 
-		template <class U> struct ConstCorrectRef2PtrGetter<U *> {
-			typedef NullType Result;
-		};
+			template <class U> struct ConstCorrectRef2PtrGetter<U &> {
+				typedef U *Result;
+			};
 
-		template <class U> struct ConstCorrectPtr2RefGetter {
-			typedef U &Result;
-		};
+			template <class U> struct ConstCorrectRef2PtrGetter<U *> {
+				typedef NullType Result;
+			};
 
-		template <class U> struct ConstCorrectPtr2RefGetter<U *> {
-			typedef U &Result;
-		};
+			template <class U> struct ConstCorrectPtr2RefGetter {
+				typedef U &Result;
+			};
 
-		template <class U> struct ConstCorrectPtr2RefGetter<U &> {
-			typedef NullType Result;
-		};
+			template <class U> struct ConstCorrectPtr2RefGetter<U *> {
+				typedef U &Result;
+			};
 
-	public:
-		typedef typename PlainTypeGetter< typename Loki::TypeTraits<T>::NonConstType >::Result PlainType;
-		typedef const typename PlainTypeGetter< typename Loki::TypeTraits<T>::NonConstType >::Result ConstPlainType;
-		typedef typename PlainTypeGetter< typename Loki::TypeTraits<T>::NonConstType >::Result &PlainTypeRef;
-		typedef const typename PlainTypeGetter< typename Loki::TypeTraits<T>::NonConstType >::Result &ConstPlainTypeRef;
-		typedef typename PlainTypeGetter< typename Loki::TypeTraits<T>::NonConstType >::Result *PlainTypePtr;
-		typedef const typename PlainTypeGetter< typename Loki::TypeTraits<T>::NonConstType >::Result *ConstPlainTypePtr;
-		typedef typename ConstCorrectPtr2RefGetter< typename Loki::TypeTraits<T>::NonConstType >::Result ConstCorrectPtr2RefType;
-		typedef typename ConstCorrectRef2PtrGetter< typename Loki::TypeTraits<T>::NonConstType >::Result ConstCorrectRef2PtrType;
-	};
+			template <class U> struct ConstCorrectPtr2RefGetter<U &> {
+				typedef NullType Result;
+			};
+
+		public:
+			typedef typename PlainTypeGetter< typename boost_or_tr1::remove_const<T>::type>::Result PlainType;
+			typedef const typename PlainTypeGetter< typename boost_or_tr1::remove_const<T>::type>::Result ConstPlainType;
+			typedef typename PlainTypeGetter< typename boost_or_tr1::remove_const<T>::type>::Result &PlainTypeRef;
+			typedef const typename PlainTypeGetter< typename boost_or_tr1::remove_const<T>::type>::Result &ConstPlainTypeRef;
+			typedef typename PlainTypeGetter< typename boost_or_tr1::remove_const<T>::type>::Result *PlainTypePtr;
+			typedef const typename PlainTypeGetter< typename boost_or_tr1::remove_const<T>::type>::Result *ConstPlainTypePtr;
+			typedef typename ConstCorrectPtr2RefGetter< typename boost_or_tr1::remove_const<T>::type >::Result ConstCorrectPtr2RefType;
+			typedef typename ConstCorrectRef2PtrGetter< typename boost_or_tr1::remove_const<T>::type >::Result ConstCorrectRef2PtrType;
+		};
+	}
 };
 
 #endif

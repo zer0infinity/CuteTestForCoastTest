@@ -400,7 +400,7 @@ Anything GenericXMLParser::ProcessArgs(const String &renderer, const String &arg
 			aargs = readit;
 		}
 	}
-//!@FIXME 
+//!@FIXME
 	result[renderer] = aargs;
 	TraceAny(aargs, "aargs");
 	return result;

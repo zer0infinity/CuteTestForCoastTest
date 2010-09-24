@@ -42,17 +42,16 @@ private:
 	//! we have to delete elements if they were pointers, let an appropriate function do this work
 	struct DeleteWrapper {
 		// tricky section to determine if given type is a pointer and deletable
-		// ideas from Alexandrescu, loki-lib
 		enum DeleteFuncSelector { Reftype, Pointertype };
-		enum { delAlgo = (Loki::TypeTraits<Tp>::isPointer) ? Pointertype : Reftype };
+		enum { delAlgo = (boost_or_tr1::is_pointer<Tp>::value) ? Pointertype : Reftype };
 
-		void DoDeleteObject(const ListTypeValueType &newObjPtr, Loki::Int2Type<Reftype> ) {};
-		void DoDeleteObject(const ListTypeValueType &newObjPtr, Loki::Int2Type<Pointertype> ) {
+		void DoDeleteObject(const ListTypeValueType &newObjPtr, boost_or_tr1::mpl::int_<Reftype> ) {};
+		void DoDeleteObject(const ListTypeValueType &newObjPtr, boost_or_tr1::mpl::int_<Pointertype> ) {
 			StatTrace(ObjectList.DoDeleteObject, "deleting element:" << (long)newObjPtr, Storage::Current());
 			delete newObjPtr;
 		}
 		void operator() (Tp pElement) {
-			DoDeleteObject(pElement, Loki::Int2Type<delAlgo>() );
+			DoDeleteObject(pElement, boost_or_tr1::mpl::int_<delAlgo>() );
 		}
 	};
 

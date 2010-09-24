@@ -30,10 +30,10 @@ class EXPORTDECL_FOUNDATION StringStreamBuf : public streambuf
 	StringStreamBuf(const StringStreamBuf &);
 	StringStreamBuf &operator=(const StringStreamBuf &);
 public:
-	typedef typename Loki::fooTypeTraits<BufferType>::ConstPlainTypeRef ConstPlainTypeRef;
-	typedef typename Loki::fooTypeTraits<BufferType>::ConstPlainTypePtr ConstPlainTypePtr;
-	typedef typename Loki::fooTypeTraits<BufferType>::PlainTypePtr PlainTypePtr;
-	typedef typename Loki::fooTypeTraits<BufferType>::ConstCorrectPtr2RefType BufferTypeRef;
+	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::ConstPlainTypeRef ConstPlainTypeRef;
+	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::ConstPlainTypePtr ConstPlainTypePtr;
+	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::PlainTypePtr PlainTypePtr;
+	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::ConstCorrectPtr2RefType BufferTypeRef;
 
 	/*! default ctor, allocates new internal String object for output
 		\param mode ios modes, bitwise or of [in|out|app|ate]: if mode is ios::app or ios::ate output is appended */
@@ -82,11 +82,11 @@ public:
 		return specificSync(IoDirType());
 	}
 
-	int specificSync(Loki::Int2Type<NSStringStream::eIn>) {
+	int specificSync(boost_or_tr1::mpl::int_<NSStringStream::eIn>) {
 		return 0;
 	}
 
-	int specificSync(Loki::Int2Type<NSStringStream::eOut>) {
+	int specificSync(boost_or_tr1::mpl::int_<NSStringStream::eOut>) {
 		AdjustStringLength(IoDirType());
 		return 0;
 	}
@@ -246,6 +246,7 @@ private:
 				delete fStore;
 			}
 			SS_TRACE("const bare pointer assignment, no copy!");
+			// cannot convert 'String* const*' to 'String*' in assignment
 			fStore = contents;
 			fDeleteStore = false;
 		} else {
@@ -260,10 +261,10 @@ private:
 	}
 
 	/*! auxiliary operation to keep track of really output bytes, terminate string */
-	void AdjustStringLength(Loki::Int2Type<NSStringStream::eIn>) {
+	void AdjustStringLength(boost_or_tr1::mpl::int_<NSStringStream::eIn>) {
 	}
 
-	void AdjustStringLength(Loki::Int2Type<NSStringStream::eOut>) {
+	void AdjustStringLength(boost_or_tr1::mpl::int_<NSStringStream::eOut>) {
 		if (pbase() && (fOpenMode & ios::out)) {
 			Assert(pptr() && pptr() >= start());
 			long newlen = pptr() - pbase();
@@ -326,11 +327,11 @@ private:
 		return true; // space is still available, false alarm
 	}
 
-	bool doreserve( long newlength, Loki::Int2Type<NSStringStream::eIn> ) {
+	bool doreserve( long newlength, boost_or_tr1::mpl::int_<NSStringStream::eIn>) {
 		return false;
 	}
 
-	bool doreserve( long newlength, Loki::Int2Type<NSStringStream::eOut> ) {
+	bool doreserve( long newlength, boost_or_tr1::mpl::int_<NSStringStream::eOut>) {
 		AdjustStringLength(IoDirType());
 		Assert((pptr() - pbase()) == fStore->Length());
 		long putoffset = 0; // remember offsets if we readjust the mmap/file
@@ -390,8 +391,8 @@ typename BufferType,
 class EXPORTDECL_FOUNDATION StringStreambase : virtual public ios
 {
 public:
-	typedef typename Loki::fooTypeTraits<BufferType>::ConstPlainTypeRef ConstPlainTypeRef;
-	typedef typename Loki::fooTypeTraits<BufferType>::PlainTypePtr PlainTypePtr;
+	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::ConstPlainTypeRef ConstPlainTypeRef;
+	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::PlainTypePtr PlainTypePtr;
 	typedef StringStreamBuf<BufferType, IoDirType> StreamBufType;
 	typedef StringStreamBuf<BufferType, IoDirType>* StreamBufTypePtr;
 	typedef typename StreamBufType::BufferTypeRef BufferTypeRef;

@@ -35,7 +35,9 @@ namespace AnyExtensions
 		typedef XThing PlainType;
 		typedef XThing &PlainTypeRef;
 		typedef XRetThing &PlainRetTypeRef;
-		typedef typename Loki::Select< Loki::IsSameType<PlainType, ROAnything>::value , ROAnything, PlainTypeRef>::Result StoredType;
+		typedef typename boost_or_tr1::mpl::if_< boost_or_tr1::is_same<PlainType, ROAnything> ,
+				ROAnything,
+				PlainTypeRef>::type StoredType;
 
 		typedef long PositionType;
 		typedef long &PositionTypeRef;
