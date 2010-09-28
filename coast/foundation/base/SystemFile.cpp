@@ -99,21 +99,11 @@ namespace {
 	{
 		StartTrace1(System.DoOpenStream, "file [" << NotNull(name) << "]");
 		// adjust mode to output, append implies it
-		if ( mode & (ios::app | ios::ate) ) {
+		if ( mode & ios::app ) {
 			mode |= ios::out;
-		}
-		// clear out flag if ate mode given
-		// -> needed because some fstream implementations create the files even they should not!
-		if ( mode & ios::ate ) {
-			mode &= ~ios::out;
 		}
 
 		if ( Coast::System::IsRegularFile(name) || (mode & ios::out) ) {
-			// ios::ate is special, it should only work on existing files according to standard
-			// so must set the out flag here and not earlier
-			if ( mode & ios::ate ) {
-				mode |= ios::out;
-			}
 			static bool bUseMmapStreams = ( Coast::System::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L );
 			if ( bUseMmapStreams ) {
 				MmapStream *fp = new MmapStream(name, mode);
