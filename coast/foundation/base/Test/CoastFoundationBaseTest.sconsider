@@ -18,7 +18,7 @@ def SystemTestMakeDirectoryExtendCleanup(env):
 
 def tearDown(target, source, env):
     # delete generated files
-    SConsider.removeFiles(SConsider.findFiles([env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])], extensions=['.res'], matchfiles=['include.any']))
+    SConsider.removeFiles(SConsider.findFiles([env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])], extensions=['.res', '.tst'], matchfiles=['include.any']))
     SystemTestMakeDirectoryExtendCleanup(env)
 
 buildSettings = {
