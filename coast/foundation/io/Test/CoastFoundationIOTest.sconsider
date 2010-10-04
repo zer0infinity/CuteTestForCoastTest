@@ -1,0 +1,101 @@
+import os, socket, shutil, pdb
+import threading
+import SConsider
+from stat import *
+from SocketServer import BaseServer, TCPServer, BaseRequestHandler
+from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
+from SimpleHTTPServer import SimpleHTTPRequestHandler
+
+Import('*')
+
+class MyTCPServer(TCPServer):
+    """This class wrapper is needed to set allow_reuse_address to True
+    prior to initializing it"""
+    allow_reuse_address = True
+
+class MyHTTPServer(HTTPServer):
+    """This class wrapper is needed to set allow_reuse_address to True
+    prior to initializing it"""
+    allow_reuse_address = True
+
+class AcceptorHandler(BaseRequestHandler):
+    def handle(self):
+        data = self.request.recv(1024)
+        self.request.send('')
+
+class HTTPHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+
+class NoSendRecvHandler(BaseRequestHandler):
+    def handle(self):
+        pass
+
+servers = []
+def startServer(host, port, server_class, handler_class):
+    server = server_class((host, port), handler_class)
+    servers.append(server)
+    server.serve_forever()
+
+tcpnosendrecvport=43000
+tcpsendrecvport=43001
+httpsendrecvport=43002
+fqdn=socket.getfqdn()
+hostonly=fqdn.split('.')[0]
+try:
+    domain='.'.join(fqdn.split('.')[1:])
+except:
+    domain=""
+faultyfqdn='nonexisting.server.loc'
+localhostname='localhost'
+localhostip=socket.gethostbyname(localhostname)
+hosttoresolvename='www.hsr.ch'
+try:
+    hosttoresolveip=socket.gethostbyname(hosttoresolvename)
+except:
+    hosttoresolvename=localhostname
+    hosttoresolveip=localhostip
+
+searchReplace = {
+    'FQDN': fqdn,
+    'FAULTYFQDN': faultyfqdn,
+    'HOSTNAME': hostonly,
+    'HOSTNAMEIP': socket.gethostbyname(hostonly),
+    'DOMAINONLY': domain,
+    'TCPNOSENDRECVPORT': str(tcpnosendrecvport),
+    'TCPSENDRECVPORT': str(tcpsendrecvport),
+    'HTTPSENDRECVPORT': str(httpsendrecvport),
+    'LOCALHOSTNAME': localhostname,
+    'LOCALHOSTIP': localhostip,
+    'RESOLVABLEHOSTFQDN': hosttoresolvename,
+    'RESOLVABLEHOSTIP': hosttoresolveip,
+}
+
+def setUp(target, source, env):
+    # setup listener threads for socket tests
+    threading.Thread(target=startServer, args=[localhostname, tcpsendrecvport, MyTCPServer, AcceptorHandler]).start()
+    threading.Thread(target=startServer, args=[localhostname, httpsendrecvport, MyHTTPServer, HTTPHandler]).start()
+    threading.Thread(target=startServer, args=[localhostname, tcpnosendrecvport, MyTCPServer, NoSendRecvHandler]).start()
+
+def tearDown(target, source, env):
+    for server in servers:
+        server.shutdown()
+
+buildSettings = {
+    packagename : {
+        'linkDependencies' : ['CoastFoundation.IO', 'CoastFoundation.Miscellaneous', 'testfwFoundation'],
+        'sourceFiles'      : SConsider.listFiles(['*.cpp']),
+        'targetType'       : 'ProgramTest',
+        'copyFiles'        : [
+            (SConsider.listFiles(['config/*.any']), S_IRUSR | S_IRGRP | S_IROTH, searchReplace),
+            (SConsider.listFiles(['config/*.sh']), S_IRUSR | S_IRGRP | S_IROTH | S_IXUSR),
+        ],
+        'runConfig'        : {
+            'setUp'        : setUp,
+            'tearDown'     : tearDown,
+        },
+    },
+}
+
+SConsider.createTargets(packagename, buildSettings)

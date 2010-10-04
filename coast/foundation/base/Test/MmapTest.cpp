@@ -42,7 +42,7 @@ const char *const MmapTest::fgcContent =
 	"it consists of several lines of simple Text\n"
 	"and will be written to a file using the mmap iostream\n";
 
-const char *const MmapTest::fgcFilename = "base/tmp/MmapTest.txt";
+const char *const MmapTest::fgcFilename = "tmp/MmapTest.txt";
 
 MmapTest::MmapTest(TString tname)
 	: TestCaseType(tname)

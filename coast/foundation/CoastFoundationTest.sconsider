@@ -1,0 +1,17 @@
+import SConsider
+
+Import('*')
+
+buildSettings = {
+    packagename : {
+        'requires' : [
+                      'CoastFoundationBaseTest',
+                      'CoastFoundationIOTest',
+                      'CoastFoundationAnythingOptionalTest',
+                      'CoastFoundationMiscellaneousTest',
+                      'CoastFoundationTimeTest',
+                      ],
+    },
+}
+
+SConsider.createTargets(packagename, buildSettings)

@@ -1957,11 +1957,11 @@ void StringTest::intPrintOn0()
 	}
 
 	// With proper Read/Write-Methods
-	ostream *os = System::OpenOStream("base/tmp/fileprnt1", "tst");
+	ostream *os = System::OpenOStream("tmp/fileprnt1", "tst");
 	if ( os ) {
 		str.IntPrintOn( *os, '\"');
 		delete os;
-		istream *is = System::OpenIStream("base/tmp/fileprnt1", "tst");
+		istream *is = System::OpenIStream("tmp/fileprnt1", "tst");
 		if ( is ) {
 			String	str1;
 			str1.IntReadFrom( *is, '\"');
@@ -1970,11 +1970,11 @@ void StringTest::intPrintOn0()
 			delete is;
 
 			// With normal Read/Write-Methods
-			ostream *os1 = System::OpenOStream("base/tmp/fileprnt", "tst");
+			ostream *os1 = System::OpenOStream("tmp/fileprnt", "tst");
 			if ( os1 ) {
 				*os1 << str;
 				delete os1;
-				istream *is1 = System::OpenIStream("base/tmp/fileprnt", "tst");
+				istream *is1 = System::OpenIStream("tmp/fileprnt", "tst");
 				if ( is1 ) {
 					*is1 >> str1;
 					delete is1;
@@ -1983,16 +1983,16 @@ void StringTest::intPrintOn0()
 					t_assert( memcmp( (const char *)str, (const char *)str1, str.Length() ) < 0 );  // str1 does not have the leading SPACE ????
 					// << and >> are not symmetric if spaces are involved!!
 				} else {
-					assertEqual("'read file base/tmp/fileprnt.tst'", "'could not read base/tmp/fileprnt.tst'");
+					assertEqual("'read file tmp/fileprnt.tst'", "'could not read tmp/fileprnt.tst'");
 				}
 			} else {
-				assertEqual("'write to file base/tmp/fileprnt.tst'", "'could not write base/tmp/fileprnt.tst'");
+				assertEqual("'write to file tmp/fileprnt.tst'", "'could not write tmp/fileprnt.tst'");
 			}
 		} else {
-			assertEqual("'read file base/tmp/fileprnt1.tst'", "'could not read base/tmp/fileprnt1.tst'");
+			assertEqual("'read file tmp/fileprnt1.tst'", "'could not read tmp/fileprnt1.tst'");
 		}
 	} else {
-		assertEqual("'write to file base/tmp/fileprnt1.tst'", "'could not write base/tmp/fileprnt1.tst'");
+		assertEqual("'write to file tmp/fileprnt1.tst'", "'could not write tmp/fileprnt1.tst'");
 	}
 	// read from a stream with spaces
 	String text = " This test ";
@@ -2030,11 +2030,11 @@ void StringTest::intPrintOn1()
 		}
 	}
 
-	ostream *os = System::OpenOStream("base/tmp/filenoprnt", "tst");
+	ostream *os = System::OpenOStream("tmp/filenoprnt", "tst");
 	if ( os ) {
 		str.IntPrintOn( *os, '\"');
 		delete os;
-		istream *is = System::OpenIStream("base/tmp/filenoprnt", "tst");
+		istream *is = System::OpenIStream("tmp/filenoprnt", "tst");
 		if ( is ) {
 			String str1;
 			str1.IntReadFrom( *is, '\"');
@@ -2042,10 +2042,10 @@ void StringTest::intPrintOn1()
 			assertCompare(str.Length(), equal_to, str1.Length());
 			t_assert( memcmp( (const char *)str, (const char *)str1, str.Length() ) == 0 );
 		} else {
-			assertEqual("'read file base/tmp/filenoprnt.tst'", "'could not read base/tmp/filenoprnt.tst'");
+			assertEqual("'read file tmp/filenoprnt.tst'", "'could not read tmp/filenoprnt.tst'");
 		}
 	} else {
-		assertEqual("'write to file base/tmp/filenoprnt.tst'", "'could not write base/tmp/filenoprnt.tst'");
+		assertEqual("'write to file tmp/filenoprnt.tst'", "'could not write tmp/filenoprnt.tst'");
 	}
 }
 

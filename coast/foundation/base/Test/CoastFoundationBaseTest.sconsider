@@ -1,0 +1,39 @@
+import os
+import SConsider
+from stat import *
+
+Import('*')
+
+searchReplace = {
+    'DIREXTENDBASEDIR': lambda env: os.path.join(env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).abspath, 'makedirextendtest', 'test'),
+    'TMPDIR': lambda env: 'c:/temp' if str(env['PLATFORM']) == 'cygwin' else '/tmp',
+    'ROOTFS': lambda env: 'c:/' if str(env['PLATFORM']) == 'cygwin' else '/',
+}
+
+def SystemTestMakeDirectoryExtendCleanup(env):
+    tdirabs = env['BASEOUTDIR'].Dir(env['RELTARGETDIR']).abspath
+    basepath = os.path.join(tdirabs, 'makedirextendtest')
+    if os.path.isdir(basepath):
+        shutil.rmtree(basepath, ignore_errors=True)
+
+def tearDown(target, source, env):
+    # delete generated files
+    SConsider.removeFiles(SConsider.findFiles([env['BASEOUTDIR'].Dir(env['RELTARGETDIR'])], extensions=['.res'], matchfiles=['include.any']))
+    SystemTestMakeDirectoryExtendCleanup(env)
+
+buildSettings = {
+    packagename : {
+        'linkDependencies' : ['CoastFoundation.Base', 'CoastFoundation.Time', 'CoastFoundation.Miscellaneous', 'testfwFoundation'],
+        'sourceFiles'      : SConsider.listFiles(['*.cpp']),
+        'targetType'       : 'ProgramTest',
+        'copyFiles'        : [
+            (SConsider.listFiles(['config/*.any']), S_IRUSR | S_IRGRP | S_IROTH, searchReplace),
+            (SConsider.listFiles(['config/*.tst', 'config/*.txt', 'tmp/*']), S_IRUSR | S_IRGRP | S_IROTH),
+        ],
+        'runConfig'        : {
+            'tearDown'     : tearDown,
+        },
+    },
+}
+
+SConsider.createTargets(packagename, buildSettings)

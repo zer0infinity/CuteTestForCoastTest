@@ -576,7 +576,7 @@ void AnythingParserTest::parseOctal()
 	input[43] = "04.5e-3";
 	input[44] = "04.";
 
-	AnythingParserTest::writeResult( &input[0L], 45, "base/tmp/AnythingOctal", "res" );
+	AnythingParserTest::writeResult( &input[0L], 45, "tmp/AnythingOctal", "res" );
 }
 
 void AnythingParserTest::parseBinary()
@@ -617,7 +617,7 @@ void AnythingParserTest::parseBinary()
 	input[32] = "[2364663;3]";
 	input[33] = "[3;]]";
 
-	AnythingParserTest::writeResult( &input[0L], 34, "base/tmp/AnythingBinary", "res" );
+	AnythingParserTest::writeResult( &input[0L], 34, "tmp/AnythingBinary", "res" );
 }
 
 void AnythingParserTest::parseSimpleTypeNull ()
@@ -835,28 +835,28 @@ void AnythingParserTest::parseMixedAnything ()
 	anyAnew["H"] = 1234;
 	anyAnew["I"] = "String";
 
-	ostream *osHlp = System::OpenOStream("base/tmp/AnyTest", "txt", ios::trunc);
+	ostream *osHlp = System::OpenOStream("tmp/AnyTest", "txt", ios::trunc);
 	if ( osHlp ) {
 		*osHlp << anyAnew;
 		delete osHlp;
 	} else {
-		assertEqual("'write base/tmp/AnyTest.txt'", "'could not write base/tmp/AnyTest.txt'" );
+		assertEqual("'write tmp/AnyTest.txt'", "'could not write tmp/AnyTest.txt'" );
 	}
 
-	istream *isHlp = System::OpenIStream("base/tmp/AnyTest", "txt");
+	istream *isHlp = System::OpenIStream("tmp/AnyTest", "txt");
 	if ( !isHlp ) {
-		assertEqual("'read base/tmp/AnyTest.txt'", "'could not read base/tmp/AnyTest.txt'" );
+		assertEqual("'read tmp/AnyTest.txt'", "'could not read tmp/AnyTest.txt'" );
 	} else {	// if ( isHlp )
 		Anything anyHlp;
 		anyHlp.Import( *isHlp );
 		delete isHlp;
 
-		ostream *osNew = System::OpenOStream("base/tmp/AnyTestNew", "txt", ios::trunc);
+		ostream *osNew = System::OpenOStream("tmp/AnyTestNew", "txt", ios::trunc);
 		if ( osNew ) {
 			*osNew << anyHlp;
 			delete osNew;
 		} else {
-			assertEqual("'write base/tmp/AnyTestNew.txt'", "'could not write base/tmp/AnyTestNew.txt'" );
+			assertEqual("'write tmp/AnyTestNew.txt'", "'could not write tmp/AnyTestNew.txt'" );
 		}
 
 		anyHlp["A"].SlotName(0L);
@@ -1201,7 +1201,7 @@ void AnythingParserTest::parseTestFiles() {
 			AnythingParserTest::lineCounter = 1;
 			scanAnything( any0 );
 			// Schreibe das Ergebnis in eine Datei
-			String tmp = "base/tmp/";
+			String tmp = "tmp/";
 			tmp.Append(fileNames[testCnt]);
 			ostream *os = System::OpenOStream( (const char *)tmp, "res", ios::trunc );
 			if ( os ) {

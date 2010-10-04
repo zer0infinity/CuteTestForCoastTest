@@ -101,21 +101,21 @@ void SystemFileTest::statTests()
 {
 	t_assertm(System::IsDirectory("."), "expected '.' to be a directory");
 	t_assertm(System::IsDirectory(".."), "expected '.' to be a directory");
-	t_assertm(!System::IsDirectory("base/config/Test.any"), "expected 'Test.any' to be a file");
-	t_assertm(!System::IsDirectory("base/config/Dbg.any"), "expected 'Dbg.any' to be a file");
+	t_assertm(!System::IsDirectory("config/Test.any"), "expected 'Test.any' to be a file");
+	t_assertm(!System::IsDirectory("config/Dbg.any"), "expected 'Dbg.any' to be a file");
 	t_assertm(!System::IsRegularFile("."), "expected '.' to be a directory");
-	t_assertm(System::IsRegularFile("base/config/SystemFileTest.any"), "expected 'SystemTest.any' to be a file");
+	t_assertm(System::IsRegularFile("config/SystemFileTest.any"), "expected 'SystemTest.any' to be a file");
 	t_assertm(!System::IsRegularFile(".."), "expected '.' to be a directory");
-	t_assertm(System::IsRegularFile("base/config/Test.any"), "expected 'Test.any' to be a file");
-	t_assertm(System::IsRegularFile("base/config/Dbg.any"), "expected 'Dbg.any' to be a file");
-	String strLinkToPrjRunTest("base/aLinkToTestAny");
+	t_assertm(System::IsRegularFile("config/Test.any"), "expected 'Test.any' to be a file");
+	t_assertm(System::IsRegularFile("config/Dbg.any"), "expected 'Dbg.any' to be a file");
+	String strLinkToPrjRunTest("aLinkToTestAny");
 	if ( assertComparem( System::eSuccess, equal_to, System::CreateSymbolicLink("config/Test.any", strLinkToPrjRunTest) , "expected creation of symbolic link to file to succeed" ) ) {
 		t_assertm(System::IsSymbolicLink(strLinkToPrjRunTest), "expected link to be valid");
 		t_assertm(!System::IsDirectory(strLinkToPrjRunTest), "expected link not to be a directory");
 		t_assertm(System::IsRegularFile(strLinkToPrjRunTest), "expected link to point to a regular file");
 		assertComparem( System::eSuccess, equal_to, System::RemoveDirectory(strLinkToPrjRunTest) , "expected removal of symbolic link to succeed" );
 	}
-	String strLinkToDirectory("base/aLinkToDirectory");
+	String strLinkToDirectory("aLinkToDirectory");
 	if ( assertComparem( System::eSuccess, equal_to, System::CreateSymbolicLink("config", strLinkToDirectory) , "expected creation of symbolic link to file to succeed" ) ) {
 		t_assertm(System::IsSymbolicLink(strLinkToDirectory), "expected link to be valid");
 		t_assertm(System::IsDirectory(strLinkToDirectory), "expected link to point to a directory");
@@ -493,7 +493,7 @@ void SystemFileTest::openStreamTest()
 	}
 
 	// open file with relative path
-	Ios = System::OpenIStream("base/config/Dbg", "any");
+	Ios = System::OpenIStream("config/Dbg", "any");
 
 	t_assert( Ios != NULL );
 	if ( Ios ) {
@@ -506,7 +506,7 @@ void SystemFileTest::openStreamTest()
 	}
 
 	// open file with relative path for writing
-	Ios = System::OpenOStream("base/tmp/Test", "tst");
+	Ios = System::OpenOStream("tmp/Test", "tst");
 
 	t_assert( Ios != NULL );
 	if ( Ios ) {
@@ -519,7 +519,7 @@ void SystemFileTest::openStreamTest()
 
 void SystemFileTest::getFilePathTest()
 {
-	String subPath("./base/config/Dbg.any");
+	String subPath("./config/Dbg.any");
 
 	System::Chmod(subPath, 0400); // set it read only
 
@@ -554,7 +554,7 @@ void SystemFileTest::dirFileListTest()
 
 	assertEqual( 0L, dir.GetSize() );
 
-	dir = System::DirFileList("base/config", "any");
+	dir = System::DirFileList("config", "any");
 	t_assert( dir.GetSize() > 0L );
 
 	dir = System::DirFileList("..", "");
@@ -668,7 +668,7 @@ void SystemFileTest::OStreamTest ()
 	//	ostream& operator<<(ostream& os, const String &s)
 	//-------------------------------------------------------------
 	String str0 = "", str00 = "";
-	String sname("base/tmp/emptyStr");
+	String sname("tmp/emptyStr");
 	ostream *os0 = System::OpenOStream(sname, "tst");
 	TString msg("couldn't open ");
 	msg << System::GetFilePath(sname, "tst");
@@ -678,10 +678,10 @@ void SystemFileTest::OStreamTest ()
 		*os0 << str0;
 		delete os0;
 	} else {
-		assertEqual("'write to file base/tmp/emptyStr.tst'", "'could not write base/tmp/emptyStr.tst'");
+		assertEqual("'write to file tmp/emptyStr.tst'", "'could not write tmp/emptyStr.tst'");
 	}
 
-	istream *is0 = System::OpenStream("base/tmp/emptyStr", "tst");
+	istream *is0 = System::OpenStream("tmp/emptyStr", "tst");
 
 	if ( is0 ) {
 		*is0 >> str00;
@@ -693,20 +693,20 @@ void SystemFileTest::OStreamTest ()
 		t_assert( str00.Capacity() >= str00.Length() );
 		t_assert( memcmp( (const char *)str0, (const char *)str00, str0.Length() ) == 0 );
 	} else {
-		assertEqual("'read file base/tmp/emptyStr.tst'", "'could not read base/tmp/emptyStr.tst'");
+		assertEqual("'read file tmp/emptyStr.tst'", "'could not read tmp/emptyStr.tst'");
 	}
 
 	String str1, str11;
 	str1.Append("0123456789");
-	ostream *os1 = System::OpenOStream("base/tmp/zahlen", "tst");
+	ostream *os1 = System::OpenOStream("tmp/zahlen", "tst");
 
 	if ( os1 ) {
 		*os1 << str1;
 		delete os1;
 	} else {
-		assertEqual("'write to file base/tmp/zahlen.tst'", "'could not write base/tmp/zahlen.tst'");
+		assertEqual("'write to file tmp/zahlen.tst'", "'could not write tmp/zahlen.tst'");
 	}
-	istream *is1 = System::OpenStream("base/tmp/zahlen", "tst");
+	istream *is1 = System::OpenStream("tmp/zahlen", "tst");
 
 	if ( is1 ) {
 		*is1 >> str11;
@@ -718,20 +718,20 @@ void SystemFileTest::OStreamTest ()
 		t_assert( str11.Capacity() >= str11.Length() );
 		t_assert( memcmp( (const char *)str1, (const char *)str11, str1.Length() ) == 0 );
 	} else {
-		assertEqual("'read file base/tmp/zahlen.tst'", "'could not read base/tmp/zahlen.tst'");
+		assertEqual("'read file tmp/zahlen.tst'", "'could not read tmp/zahlen.tst'");
 	}
 
 	String str2, str22;
 	str2.Append("qwertzuiopasdfghjklyxcvbnm");
-	ostream *os2 = System::OpenOStream("base/tmp/buchst", "tst");
+	ostream *os2 = System::OpenOStream("tmp/buchst", "tst");
 
 	if ( os2 ) {
 		*os2 << str2;
 		delete os2;
 	} else {
-		assertEqual("'write to file base/tmp/buchst.tst'", "'could not write base/tmp/buchst.tst'");
+		assertEqual("'write to file tmp/buchst.tst'", "'could not write tmp/buchst.tst'");
 	}
-	istream *is2 = System::OpenStream("base/tmp/buchst", "tst");
+	istream *is2 = System::OpenStream("tmp/buchst", "tst");
 
 	if ( is2 ) {
 		*is2 >> str22;
@@ -743,22 +743,22 @@ void SystemFileTest::OStreamTest ()
 		t_assert( str22.Capacity() >= str22.Length() );
 		t_assert( memcmp( (const char *)str2, (const char *)str22, str2.Length() ) == 0 );
 	} else {
-		assertEqual("'read file base/tmp/buchst.tst'", "'could not read base/tmp/buchst.tst'");
+		assertEqual("'read file tmp/buchst.tst'", "'could not read tmp/buchst.tst'");
 	}
 
 	//	unsafe_ostream& operator<<(unsafe_ostream& os, const String &s)
 	//-----------------------------------------------------------------
 	String str0u = "", str00u;
-	ostream *os0u = System::OpenOStream("base/tmp/emptyStrU", "tst");
+	ostream *os0u = System::OpenOStream("tmp/emptyStrU", "tst");
 
 	if ( os0u ) {
 		*os0u << str0u;
 		delete os0u;
 	} else {
-		assertEqual("'write to file base/tmp/emptyStrU.tst'", "'could not write base/tmp/emptyStrU.tst'");
+		assertEqual("'write to file tmp/emptyStrU.tst'", "'could not write tmp/emptyStrU.tst'");
 	}
 
-	istream *is0u = System::OpenStream("base/tmp/emptyStrU", "tst");
+	istream *is0u = System::OpenStream("tmp/emptyStrU", "tst");
 
 	if ( is0u ) {
 		*is0u >> str00u;
@@ -770,20 +770,20 @@ void SystemFileTest::OStreamTest ()
 		t_assert( str00u.Capacity() >= str00u.Length() );
 		t_assert( memcmp( (const char *)str0u, (const char *)str00u, str0u.Length() ) == 0 );
 	} else {
-		assertEqual("'read file base/tmp/emptyStrU.tst'", "'could not read base/tmp/emptyStrU.tst'");
+		assertEqual("'read file tmp/emptyStrU.tst'", "'could not read tmp/emptyStrU.tst'");
 	}
 
 	String str1u;
 	str1u.Append("0123456789");
-	ostream *os1u = System::OpenOStream("base/tmp/zahlenU", "tst");
+	ostream *os1u = System::OpenOStream("tmp/zahlenU", "tst");
 
 	if ( os1u ) {
 		*os1u << str1u;
 		delete os1u;
 	} else {
-		assertEqual("'write to file base/tmp/zahlenU.tst'", "'could not write base/tmp/zahlenU.tst'");
+		assertEqual("'write to file tmp/zahlenU.tst'", "'could not write tmp/zahlenU.tst'");
 	}
-	istream *is1u = System::OpenStream("base/tmp/zahlenU", "tst");
+	istream *is1u = System::OpenStream("tmp/zahlenU", "tst");
 
 	if ( is1u ) {
 		String str11u;
@@ -796,21 +796,21 @@ void SystemFileTest::OStreamTest ()
 		t_assert( str11u.Capacity() >= str11u.Length() );
 		t_assert( memcmp( (const char *)str1u, (const char *)str11u, str1u.Length() ) == 0 );
 	} else {
-		assertEqual("'read file base/tmp/zahlenU.tst'", "'could not read base/tmp/zahlenU.tst'");
+		assertEqual("'read file tmp/zahlenU.tst'", "'could not read tmp/zahlenU.tst'");
 	}
 
 	String str2u;
 	str2u.Append("qwertzuiopasdfghjklyxcvbnm");
-	ostream *os2u = System::OpenOStream("base/tmp/buchstU", "tst");
+	ostream *os2u = System::OpenOStream("tmp/buchstU", "tst");
 
 	if ( os2u ) {
 		*os2u << str2u;
 		delete os2u;
 	} else {
-		assertEqual("'write to file base/tmp/buchstU.tst'", "'could not write base/tmp/buchstU.tst'");
+		assertEqual("'write to file tmp/buchstU.tst'", "'could not write tmp/buchstU.tst'");
 	}
 
-	istream *is2u = System::OpenStream("base/tmp/buchstU", "tst");
+	istream *is2u = System::OpenStream("tmp/buchstU", "tst");
 
 	if ( is2u ) {
 		String str22u;
@@ -823,7 +823,7 @@ void SystemFileTest::OStreamTest ()
 		t_assert( str22u.Capacity() >= str22u.Length() );
 		t_assert( memcmp( (const char *)str2u, (const char *)str22u, str2u.Length() ) == 0 );
 	} else {
-		assertEqual("'read file base/tmp/buchstU.tst'", "'could not read base/tmp/buchstU.tst'");
+		assertEqual("'read file tmp/buchstU.tst'", "'could not read tmp/buchstU.tst'");
 	}
 }
 //==============================================================================================
@@ -858,7 +858,7 @@ void SystemFileTest::IOStreamTest ()
 	//----------------------------------------------------------------------------------------------------------------------
 
 	String str0;
-	istream *is0 = System::OpenStream("base/tmp/zahlen", "tst");
+	istream *is0 = System::OpenStream("tmp/zahlen", "tst");
 
 	if ( is0 ) {
 		*is0 >> str0;
@@ -868,11 +868,11 @@ void SystemFileTest::IOStreamTest ()
 		t_assert( memcmp( (const char *)str0, "0123456789", strlen((const char *)str0) ) == 0 );
 		delete is0;
 	} else {
-		assertEqual("'read file base/tmp/zahlen.tst'", "'could not read base/tmp/zahlen.tst'");
+		assertEqual("'read file tmp/zahlen.tst'", "'could not read tmp/zahlen.tst'");
 	}
 
 	String str1;
-	istream *is1 = System::OpenStream("base/tmp/buchst", "tst");
+	istream *is1 = System::OpenStream("tmp/buchst", "tst");
 
 	if ( is1 ) {
 		*is1 >> str1;
@@ -882,14 +882,14 @@ void SystemFileTest::IOStreamTest ()
 		t_assert( memcmp( (const char *)str1, "qwertzuiopasdfghjklyxcvbnm", strlen((const char *)str1) ) == 0 );
 		delete is1;
 	} else {
-		assertEqual("'read file base/tmp/buchst.tst'", "'could not read base/tmp/buchst.tst'");
+		assertEqual("'read file tmp/buchst.tst'", "'could not read tmp/buchst.tst'");
 	}
 
 	// Konkatenation von 2 "<<"
 	// Das zweite "<<" loescht das Resultat des ersten "<<" ( ???? ist das gewuenscht ???? )
 	//-------------------------------------------------------------------------------------------
 	String str2 = "qwertzuiopasdfghjklyxcvbnm";
-	ostream *os2 = System::OpenOStream("base/tmp/dummy", "tst", ios::trunc);
+	ostream *os2 = System::OpenOStream("tmp/dummy", "tst", ios::trunc);
 
 	if ( os2 ) {
 		*os2 << str2;
@@ -902,7 +902,7 @@ void SystemFileTest::IOStreamTest ()
 		assertEqual("'write to file dummy.tst'", "'could not write dummy.tst'");
 	}
 	String str3 = "0123456789";
-	ostream *os3 = System::OpenOStream("base/tmp/dummy", "tst", ios::app);
+	ostream *os3 = System::OpenOStream("tmp/dummy", "tst", ios::app);
 
 	if ( os3 ) {
 		*os3 << str3;
@@ -914,7 +914,7 @@ void SystemFileTest::IOStreamTest ()
 	} else {
 		assertEqual("'write to file dummy.tst'", "'could not write dummy.tst'");
 	}
-	istream *isHlp = System::OpenStream("base/tmp/dummy", "tst");
+	istream *isHlp = System::OpenStream("tmp/dummy", "tst");
 
 	if ( isHlp ) {
 		String strHlp;
@@ -931,7 +931,7 @@ void SystemFileTest::IOStreamTest ()
 	// Mehrfaches "<<"-Operator
 	// Bei jedem Aufruf wird die Datei tmp/strChain.tst geloescht und neu geschrieben
 	String str4 = "StringA", str5 = "StringB";
-	ostream *os4 = System::OpenOStream("base/tmp/strChain", "tst");
+	ostream *os4 = System::OpenOStream("tmp/strChain", "tst");
 
 	if ( os4 ) {
 		// You must check if the file is OK   ( ???? )
@@ -943,13 +943,13 @@ void SystemFileTest::IOStreamTest ()
 			 << 0.2345e-7 << ' ' << 1.123456789e9;
 		delete os4;
 	} else {
-		assertEqual("'write to file base/tmp/strChain.tst'", "'could not write base/tmp/strChain.tst'");
+		assertEqual("'write to file tmp/strChain.tst'", "'could not write tmp/strChain.tst'");
 	}
 	// Mehrfaches ">>"-Operator
 	// Bei jedem Aufruf wird die Datei tmp/strChain.tst geloescht und neu geschrieben
 	String str6;
-	istream *is2  = System::OpenStream("base/tmp/buchst", "tst");
-	istream *is3 = System::OpenStream("base/tmp/zahlen", "tst");
+	istream *is2  = System::OpenStream("tmp/buchst", "tst");
+	istream *is3 = System::OpenStream("tmp/zahlen", "tst");
 
 	if ( is2 && is3 ) {
 		// Resultat ist wie erwartet oder falsch  ????
@@ -966,17 +966,17 @@ void SystemFileTest::IOStreamTest ()
 		delete is3;
 	}
 	if (!is2) {
-		assertEqual("'read file base/tmp/buchst.tst'", "'could not read base/tmp/buchst.tst'");
+		assertEqual("'read file tmp/buchst.tst'", "'could not read tmp/buchst.tst'");
 	}
 	if (!is3) {
-		assertEqual("'read file base/tmp/zahlen.tst'", "'could not read base/tmp/zahlen.tst'");
+		assertEqual("'read file tmp/zahlen.tst'", "'could not read tmp/zahlen.tst'");
 	}
 
 	// Einfluss von (char)0:  Length() = 5 ABER strlen = 2
 	String str7;
 	char bufHlp[5] = {'a', 'b', (char)0, 'c', 'd'};
 	str7.Append( (void *)bufHlp, 5 );
-	ostream *os5 = System::OpenOStream("base/tmp/strMit0", "tst");
+	ostream *os5 = System::OpenOStream("tmp/strMit0", "tst");
 
 	if ( os5 ) {
 		*os5 << str7;
@@ -990,7 +990,7 @@ void SystemFileTest::IOStreamTest ()
 		assertEqual("'write to file strMit0.tst'", "'could not write strMit0.tst'");
 	}
 	String str8;
-	istream *is4 = System::OpenStream("base/tmp/strMit0", "tst");
+	istream *is4 = System::OpenStream("tmp/strMit0", "tst");
 
 	if ( is4 ) {
 		*is4 >> str8;
@@ -1008,7 +1008,7 @@ void SystemFileTest::IOStreamTest ()
 	{
 		StartTrace(SystemFileTest.IOStreamTest);
 		// precondition: files should not exist already!!
-		String strAppFile("base/tmp/ios_app.tst"), strAteFile("base/tmp/ios_ate.tst");
+		String strAppFile("tmp/ios_app.tst"), strAteFile("tmp/ios_ate.tst");
 		if ( System::IsRegularFile(strAppFile) ) {
 			System::IO::unlink(strAppFile);
 		}
@@ -1412,11 +1412,11 @@ void SystemFileTest::GetFileSizeTest()
 			assertEqualm(5UL, ulSize, "expected same size");
 		}
 	}
-	path = System::GetFilePath("Dbg", "any");
+	path = System::GetFilePath("AnythingTest", "any");
 	if ( t_assertm(path.Length() > 0, "expected file path to be valid") ) {
 		ul_long ulSize = 0;
 		if ( t_assert(System::GetFileSize(path, ulSize)) ) {
-			assertEqualm(3064UL, ulSize, "expected same size");
+			assertEqualm(10701UL, ulSize, "expected same size");
 		}
 	}
 }
