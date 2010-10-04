@@ -89,133 +89,116 @@ namespace {
 		return result;
 	}
 
-	//! bottleneck routine that opens the stream if possible it returns null if not successful
-	/*! \param resultPath the location of the iostream opened
-		\param name the filename, it can be relative or absolute, it contains the extension
+	//! bottleneck routine which opens the stream if possible it returns null if not successful
+	/*! \param path the filepath, it can be relative or absolute, it contains the extension
 		\param mode the mode of the stream to be opened e.g. ios::in, mode flags can be combined by the | operation
 		\param trace if true writes messages to SystemLog
 		\return an open iostream or NULL if the open fails */
-	iostream *DoOpenStream(String &resultPath, const char *name, openmode mode, bool trace = false)
+	iostream *DoOpenStream(const char *path, Coast::System::openmode mode, bool log = false)
 	{
-		StartTrace1(System.DoOpenStream, "file [" << NotNull(name) << "]");
+		StartTrace1(System.DoOpenStream, "file [" << NotNull(path) << "]");
 		// adjust mode to output, append implies it
 		if ( mode & ios::app ) {
 			mode |= ios::out;
 		}
 
-		if ( Coast::System::IsRegularFile(name) || (mode & ios::out) ) {
+		if ( Coast::System::IsRegularFile(path) || (mode & ios::out) ) {
 			static bool bUseMmapStreams = ( Coast::System::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L );
 			if ( bUseMmapStreams ) {
-				MmapStream *fp = new MmapStream(name, mode);
+				MmapStream *fp = new MmapStream(path, mode);
 				if ( fp->good() && fp->rdbuf()->is_open() ) {
-					resultPath = name;
 					return fp;
 				}
-				Trace("failed to open MmapStream, file [" << name << "]");
+				Trace("failed to open MmapStream, file [" << path << "]");
 				delete fp;
 			} else {
-				fstream *fp = new fstream(name, (openmode)mode);
+				fstream *fp = new fstream(path, (Coast::System::openmode)mode);
 				if ( fp->good() && fp->rdbuf()->is_open() ) {
-					resultPath = name;
 					return fp;
 				}
-				Trace("failed to open fstream. file [" << name << "]");
+				Trace("failed to open fstream. file [" << path << "]");
 				delete fp;
 			}
 		} else {
-			if (trace) {
-				SYSWARNING(String("file [") << name << "] does not exist or is not accessible");
+			if (log) {
+				SYSWARNING(String("file [") << path << "] does not exist or is not accessible");
 			}
 		}
 		return 0;
 	}
 
-	//! internal method that opens a stream if possible, it searches the pathlist for the correct location
-	/*! \param resultPath the location of the iostream opened
-		\param pathlist the pathlist to be searched,relative to the root directory
-		\param name the filename, it can be relative or absolute, it contains the extension
+	//! internal method which opens a stream if possible
+	/*! \param path the filepath, it can be relative or absolute, it contains the extension
 		\param mode the mode of the stream to be opened e.g. ios::in, mode flags can be combined by the | operation
-		\param trace if true writes messages to SystemLog
 		\return an open iostream or NULL if the open fails */
-	iostream *IntOpenStreamBySearch(String &resultPath, const char *name, const char *path, openmode mode, bool trace = false)
+	iostream *IntOpenStream(const String &path, Coast::System::openmode mode)
 	{
-		StartTrace(System.IntOpenStreamBySearch);
-		// this methods open a stream searching over a search path
-		iostream *fp = 0;
+		StartTrace(System.IntOpenStream);
+
+		String filepath( path );
+
+		// fast exit
+		if ( filepath.Length() == 0L ) {
+			return 0;
+		}
+
+		Coast::System::ResolvePath(filepath);
+
+		if (Coast::System::IsAbsolutePath(filepath)) {
+			Trace("file [" << filepath << "] is going to be opened absolute");
+		} else {
+			Trace("file [" << filepath << "] is going to be opened relative");
+		}
+
+		iostream *Ios = DoOpenStream(filepath, mode);
+
+		if ( Ios ) {
+			Trace(filepath << " found");
+		} else {
+			Trace("can't open " << filepath);
+		}
+		if ( Ios == NULL ) {
+			Trace("couldn't open file [" << filepath << "] searched in [" << fgRootDir << "] with pathlist: [" << fgPathList << "]");
+		}
+
+		return Ios;
+	}
+
+	//! internal method which searches a pathlist for the location of a file
+	/*! \param name the filename (including extension), must be relative
+		\param path the pathlist to be searched, relative to the root directory
+		\return the location of the file found (empty if file was not found) */
+	String searchFilePath(const char *name, const char *path) {
+		StartTrace(System.searchFilePath);
+
+		// init the rootdir and pathlist environment if necessary
+		if ( fgPathList.Length() == 0L ) {
+			Coast::System::InitPath();
+		}
+
 		StringTokenizer st(path, ':');
 		String dirpath, filepath;
 		// search over pathlist
 		while (st.NextToken(dirpath)) {
 			filepath.Append(fgRootDir).Append(Coast::System::Sep()).Append(dirpath).Append(Coast::System::Sep()).Append(name);
 			Coast::System::ResolvePath(filepath);
+			Trace("trying [" << filepath << "]");
 
-			if ( (fp = DoOpenStream(resultPath, filepath, mode, trace)) != NULL ) {
-				return fp;
+			if ( Coast::System::IsRegularFile(filepath) && Coast::System::IO::access(filepath, R_OK)==0 ) {
+				return filepath;
 			}
 			// reset filepath and try next path
 			filepath = 0;
 		}
-		return fp;
+		return filepath;
 	}
 
-	//! internal method that opens a stream if possible
-	/*! \param resultPath the location of the iostream opened
-		\param search flag if true searches pathlist until a stream can be opened
-		\param name the filename, it can be relative or absolute
-		\param extension the extension of the file
-		\param mode the mode of the stream to be opened e.g. ios::in, mode flags can be combined by the | operation
-		\param trace if true writes messages to SystemLog
-		\return an open iostream or NULL if the open fails */
-	iostream *IntOpenStream(String &resultPath, const char *name, const char *extension, bool searchPath, openmode mode, bool trace = false)
-	{
-		StartTrace(System.IntOpenStream);
-		// fast exit
-		if ( name == 0 ) {
-			return 0 ;
-		}
-
-		// init the rootdir and pathlist environment
-		// if necessary
-		if ( fgPathList.Length() == 0 ) {
-			Coast::System::InitPath();
-		}
-
-		// we should use stat to look for the file prior to use
-
+	String buildFilename(const char *name, const char *extension) {
 		String filename(name);
 		if (extension && strlen(extension) > 0) {
 			filename.Append('.').Append(extension);
 		}
-
-		iostream *Ios = 0;
-		if (Coast::System::IsAbsolutePath(filename) || !searchPath) {
-			if (Coast::System::IsAbsolutePath(filename) && trace) {
-				SYSDEBUG(String("file [") << filename << "] is going to be opened absolute");
-			} else if (!searchPath && trace) {
-				SYSDEBUG(String("file [") << filename << "] is going to be opened relative");
-			}
-			Ios = DoOpenStream(resultPath, filename, mode, trace);
-		} else {
-			if (trace) {
-				SYSDEBUG(String("file [") << filename << "] is going to be searched in [" << fgRootDir << "] with pathlist: [" << fgPathList << "]");
-			}
-			Ios = IntOpenStreamBySearch(resultPath, filename, fgPathList, mode, trace);
-		}
-
-		if ( trace ) {
-			String logMsg;
-			if ( Ios ) {
-				logMsg << resultPath << " found";
-			} else {
-				logMsg << "can't open " << filename;
-			}
-			SYSDEBUG(logMsg);
-		}
-		if ( Ios == NULL ) {
-			SYSINFO(String("couldn't open file [") << filename << "] searched in [" << fgRootDir << "] with pathlist: [" << fgPathList << "]");
-		}
-		Coast::System::ResolvePath(resultPath);
-		return Ios;
+		return filename;
 	}
 
 	//! internal method to extend a directory with given permissions by creating 'extension' directories and softlinks
@@ -655,33 +638,97 @@ namespace Coast {
 			}
 		}
 
-		iostream *OpenIStream(const char *name, const char *extension, openmode mode, bool trace)
+		iostream *OpenIStream(const char *name, const char *extension, openmode mode, bool log)
 		{
-			String dummy;
-			return IntOpenStream(dummy, name, extension, false, mode | ios::in, trace);
+			return OpenIStream(buildFilename(name, extension), mode);
 		}
 
-		iostream *OpenOStream(const char *name, const char *extension, openmode mode, bool trace)
+		iostream *OpenOStream(const char *name, const char *extension, openmode mode, bool log)
 		{
-			String dummy;
-			return IntOpenStream(dummy, name, extension, false, mode | ios::out, trace);
+			return OpenOStream(buildFilename(name, extension), mode);
 		}
 
-		iostream *OpenStream(const char *name, const char *extension, openmode mode, bool trace)
+		iostream *OpenStream(const char *name, const char *extension, openmode mode, bool log)
 		{
-			String dummy;
-			return IntOpenStream(dummy, name, extension, true, mode, trace);
+			return OpenStreamWithSearch(buildFilename(name, extension), mode);
+		}
+
+		iostream *OpenIStream(const String &path, openmode mode)
+		{
+			return IntOpenStream(path, mode | ios::in);
+		}
+
+		iostream *OpenOStream(const String &path, openmode mode)
+		{
+			return IntOpenStream(path, mode | ios::out);
+		}
+
+		iostream *OpenStream(const String &path, openmode mode)
+		{
+			return IntOpenStream(path, mode);
+		}
+
+		iostream *OpenStreamWithSearch(const String &path, openmode mode)
+		{
+			return IntOpenStream(GetFilePathOrInput(path), mode);
 		}
 
 		String GetFilePath(const char *name, const char *extension)
 		{
-			String path;
-			iostream *Ios = IntOpenStream(path, name, extension, true, ios::in);
-			if (Ios) {
-				delete Ios;
+			StartTrace(System.GetFilePath);
+
+			String resultPath;
+
+			// fast exit
+			if ( name == 0 ) {
+				return resultPath;
 			}
 
-			return path;
+			String relpath(name);
+			if (extension && strlen(extension) > 0) {
+				relpath.Append('.').Append(extension);
+			}
+
+			return GetFilePath(relpath);
+		}
+
+		String GetFilePath(const String &relpath)
+		{
+			StartTrace(System.GetFilePath);
+
+			String resultPath;
+
+			// fast exit
+			if ( relpath.Length() == 0L ) {
+				return resultPath;
+			}
+
+			if (Coast::System::IsAbsolutePath(relpath)) {
+				Trace("absolute path given [" << relpath << "]");
+				resultPath = relpath;
+			} else {
+				Trace("file [" << relpath << "] is going to be searched in [" << fgRootDir << "] with pathlist: [" << fgPathList << "]");
+				resultPath = searchFilePath(relpath, fgPathList);
+			}
+
+			if (resultPath.Length() > 0L) {
+				Trace("path found: [" << resultPath << "]");
+			}
+			else {
+				Trace("couldn't find file [" << relpath << "] searched in [" << fgRootDir << "] with pathlist: [" << fgPathList << "]");
+			}
+
+			Coast::System::ResolvePath(resultPath);
+			return resultPath;
+		}
+
+		String GetFilePathOrInput(const String &relpath)
+		{
+			String foundpath( GetFilePath(relpath) );
+			if ( foundpath.Length() > 0L ) {
+				return foundpath;
+			}
+			return relpath;
 		}
 
 		bool FindFile(String &fullPathName, const char *file, const char *path)
@@ -1014,7 +1061,8 @@ namespace Coast {
 		bool LoadConfigFile(Anything &config, const char *name, const char *ext, String &realfilename)
 		{
 			StartTrace(System.LoadConfigFile);
-			istream *is = IntOpenStream(realfilename, name, ext, true, (ios::in), false);
+			realfilename = GetFilePath(buildFilename(name, ext));
+			istream *is = OpenStream(realfilename, (ios::in));
 			bool result = false;
 			if (!is || !(result = config.Import(*is, realfilename))) {
 				String logMsg("cannot import config file ");

@@ -481,16 +481,96 @@ void SystemFileTest::ResolvePathTest()
 #endif
 }
 
-void SystemFileTest::openStreamTest()
+void SystemFileTest::OpenStreamTest()
 {
-	StartTrace(SystemFileTest.openStreamTest);
-	// search file with path
-	iostream *Ios = System::OpenStream("Dbg", "any");
+	iostream *Ios = System::OpenStream("Dbg.any");
+	t_assert( Ios == NULL ); // should not be found!
+	if ( Ios ) {
+		delete Ios;
+		Ios = 0;
+	}
+
+	// open file with relative path
+	Ios = System::OpenStream("config/Dbg.any");
 	t_assert( Ios != NULL );
 	if ( Ios ) {
 		delete Ios;
 		Ios = 0;
 	}
+
+	// deprecated:
+
+	// search file with path
+	Ios = System::OpenStream("Dbg", "any");
+	t_assert( Ios != NULL ); // should be found
+	if ( Ios ) {
+		delete Ios;
+		Ios = 0;
+	}
+
+	// open file with relative path
+	Ios = System::OpenStream("config/Dbg", "any");
+	t_assert( Ios != NULL );
+	if ( Ios ) {
+		delete Ios;
+		Ios = 0;
+	}
+
+	// open file with relative path for writing
+	Ios = System::OpenStream("tmp/Test1", "tst", ios::out);
+	t_assert( Ios != NULL );
+	if ( Ios ) {
+		(*Ios) << "test" << endl;
+		t_assert(!!(*Ios));
+		delete Ios;
+		Ios = 0;
+	}
+}
+
+void SystemFileTest::OpenStreamWithSearchTest()
+{
+	iostream *Ios = System::OpenStreamWithSearch("Dbg.any");
+	t_assert( Ios != NULL );
+	if ( Ios ) {
+		delete Ios;
+		Ios = 0;
+	}
+
+	// open file with relative path
+	Ios = System::OpenStreamWithSearch("config/Dbg.any");
+	t_assert( Ios != NULL );
+	if ( Ios ) {
+		delete Ios;
+		Ios = 0;
+	}
+
+	// open file with relative path for writing
+	Ios = System::OpenStreamWithSearch("tmp/Test1.tst", ios::out);
+	t_assert( Ios != NULL );
+	if ( Ios ) {
+		(*Ios) << "test" << endl;
+		t_assert(!!(*Ios));
+		delete Ios;
+		Ios = 0;
+	}
+}
+
+void SystemFileTest::OpenIStreamTest()
+{
+	// open file with relative path
+	iostream *Ios = System::OpenIStream("config/Dbg.any");
+
+	t_assert( Ios != NULL );
+	if ( Ios ) {
+		Anything dbgTest;
+		(*Ios) >> dbgTest;
+		t_assert(!!(*Ios));
+		t_assert(dbgTest.GetSize() > 0);
+		delete Ios;
+		Ios = 0;
+	}
+
+	// deprecated:
 
 	// open file with relative path
 	Ios = System::OpenIStream("config/Dbg", "any");
@@ -504,6 +584,22 @@ void SystemFileTest::openStreamTest()
 		delete Ios;
 		Ios = 0;
 	}
+}
+
+void SystemFileTest::OpenOStreamTest()
+{
+	// open file with relative path for writing
+	iostream *Ios = System::OpenOStream("tmp/Test.tst");
+
+	t_assert( Ios != NULL );
+	if ( Ios ) {
+		(*Ios) << "test" << endl;
+		t_assert(!!(*Ios));
+		delete Ios;
+		Ios = 0;
+	}
+
+	// deprecated:
 
 	// open file with relative path for writing
 	Ios = System::OpenOStream("tmp/Test", "tst");
@@ -517,7 +613,66 @@ void SystemFileTest::openStreamTest()
 	}
 }
 
-void SystemFileTest::getFilePathTest()
+void SystemFileTest::GetFilePathTest()
+{
+	String subPath("./config/Dbg.any");
+
+	System::Chmod(subPath, 0400); // set it read only
+
+	String path(System::GetFilePath("Dbg.any"));
+
+	System::ResolvePath(subPath);
+	assertEqual(subPath, path.SubString(path.Length() - subPath.Length()));
+
+	System::Chmod(subPath, 0000); // set it to no access
+#if defined(WIN32)
+	t_assertm(false, " FIXME: NT lacks easy hiding of files or directories...");
+#endif
+
+	path = (System::GetFilePath("Dbg.any"));
+	// should fail now.... therefore path is equal
+
+#if !defined(WIN32)
+	assertEqual("", path);
+#endif
+	System::Chmod(subPath, 0640); //clean up to make it usable again
+
+	path = System::GetFilePath("Dbg.any");
+	subPath = "./Dbg.any";
+	System::ResolvePath(subPath);
+	assertEqual(subPath, path.SubString(path.Length() - subPath.Length()));
+}
+
+void SystemFileTest::GetFilePathOrInputTest()
+{
+	String subPath("./config/Dbg.any");
+
+	System::Chmod(subPath, 0400); // set it read only
+
+	String path(System::GetFilePathOrInput("Dbg.any"));
+
+	System::ResolvePath(subPath);
+	assertEqual(subPath, path.SubString(path.Length() - subPath.Length()));
+
+	System::Chmod(subPath, 0000); // set it to no access
+#if defined(WIN32)
+	t_assertm(false, " FIXME: NT lacks easy hiding of files or directories...");
+#endif
+
+	path = (System::GetFilePathOrInput("Dbg.any")); // should not be found but should...
+
+#if !defined(WIN32)
+	assertEqual("Dbg.any", path); // ...but should have returned input parameter
+#endif
+	System::Chmod(subPath, 0640); //clean up to make it usable again
+
+	path = System::GetFilePathOrInput("Dbg.any");
+	subPath = "./Dbg.any";
+	System::ResolvePath(subPath);
+	assertEqual(subPath, path.SubString(path.Length() - subPath.Length()));
+}
+
+void SystemFileTest::GetFilePathTest2()
 {
 	String subPath("./config/Dbg.any");
 
@@ -1114,11 +1269,17 @@ void SystemFileTest::LoadConfigFileTest()
 	t_assert(System::LoadConfigFile(dbgany, "Dbg")); // any extension automatic
 	t_assert(!dbgany.IsNull());
 	t_assert(dbgany.IsDefined("LowerBound"));
+
 	Anything dbg2;
 	String realfilename;
 	t_assert(System::LoadConfigFile(dbg2, "Dbg", "any", realfilename));
 	assertEqual("Dbg.any", realfilename.SubString(realfilename.Length() - 7, 7));
 	assertAnyEqual(dbgany, dbg2);
+
+	Anything dbg3;
+	t_assert(!System::LoadConfigFile(dbg3, "NotExisting", "any", realfilename));
+	assertEqual("", realfilename);
+	t_assert(dbg3.IsNull());
 }
 
 void SystemFileTest::MkRmDirTest()
@@ -1443,8 +1604,13 @@ Test *SystemFileTest::suite ()
 	ADD_CASE(testSuite, SystemFileTest, rooDirTest);
 	ADD_CASE(testSuite, SystemFileTest, IsAbsolutePathTest);
 	ADD_CASE(testSuite, SystemFileTest, ResolvePathTest);
-	ADD_CASE(testSuite, SystemFileTest, openStreamTest);
-	ADD_CASE(testSuite, SystemFileTest, getFilePathTest);
+	ADD_CASE(testSuite, SystemFileTest, OpenStreamTest);
+	ADD_CASE(testSuite, SystemFileTest, OpenStreamWithSearchTest);
+	ADD_CASE(testSuite, SystemFileTest, OpenOStreamTest);
+	ADD_CASE(testSuite, SystemFileTest, OpenIStreamTest);
+	ADD_CASE(testSuite, SystemFileTest, GetFilePathTest);
+	ADD_CASE(testSuite, SystemFileTest, GetFilePathOrInputTest);
+	ADD_CASE(testSuite, SystemFileTest, GetFilePathTest2);
 	ADD_CASE(testSuite, SystemFileTest, dirFileListTest);
 	ADD_CASE(testSuite, SystemFileTest, IStreamTest);
 	ADD_CASE(testSuite, SystemFileTest, OStreamTest);

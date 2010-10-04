@@ -18,14 +18,6 @@ using std::iostream;
 #include <iostream.h>
 #endif
 
-#if defined(ONLY_STD_IOSTREAM)
-	typedef std::ios::openmode	openmode;
-#elif defined(WIN32) && !defined(ONLY_STD_IOSTREAM)
-	typedef ios::open_mode openmode;
-#else
-	typedef ios::openmode openmode;
-#endif
-
 //  definitions for io namespace
 #if !defined (R_OK)
 #define R_OK    04      /* Test for Read permission. */
@@ -47,34 +39,80 @@ using std::iostream;
 namespace Coast {
 	namespace System {
 
+#if defined(ONLY_STD_IOSTREAM)
+	typedef std::ios::openmode openmode;
+#elif defined(WIN32) && !defined(ONLY_STD_IOSTREAM)
+	typedef ios::open_mode openmode;
+#else
+	typedef ios::openmode openmode;
+#endif
+
+		//! opens an iostream, search path is not used
+		/*! tries to open an iostream in the given mode.
+			\param path the filepath, it can be relative (to the current working directory) or absolute
+			\param mode ios mode flags
+			\return the pointer to the open iostream or NULL, the client is responsible for destruction */
+		iostream *OpenStream(const String &path, openmode mode = (ios::in));
+
+		//! opens an istream for reading, search path is not used
+		/*! \param path the filepath, it can be relative (to the current working directory) or absolute
+			\param mode ios mode flags
+			\return the pointer to the open iostream or NULL, the client is responsible for destruction */
+		iostream *OpenIStream(const String &path, openmode mode = (ios::in));
+
+		//! opens an ostream for writing, search path is not used
+		/*! \param path the filepath, it can be relative (to the current working directory) or absolute
+			\param mode ios mode flags
+			\return the pointer to the open iostream or NULL, the client is responsible for destruction */
+		iostream *OpenOStream(const String &path, openmode mode = ios::out | ios::trunc);
+
 		//! opens an iostream, uses search path
-		/*! it takes a filename and an extension. It tries to open an iostream in the given mode. It uses the
-			fgRootDir and fgPathList variables to search for the file unless it is an absolute filename
-			\param name the filename, it can be relative or absolute
+		/*! tries to open an iostream in the given mode. Uses fgRootDir and fgPathList variables to search
+		    for the file unless it is an absolute filename. If a relative filename is not found it is interpreted
+		    relative to the current working directory.
+		    \param path the filepath, it can be relative (searched in fgRootDir/fgPathList) or absolute
+			\param mode ios mode flags
+			\return the pointer to the open iostream or NULL, the client is responsible for destruction */
+		iostream *OpenStreamWithSearch(const String &path, openmode mode = (ios::in));
+
+		//! opens an iostream, uses search path
+		/*! tries to open an iostream in the given mode. Uses fgRootDir and fgPathList variables to search
+		    for the file unless it is an absolute filename. If a relative filename is not found it is interpreted
+		    relative to the current working directory.
+		    \deprecated use OpenStream(const String&, openmode) or OpenStreamWithSearch(const String&, openmode)
+			\param name the filename, it can be relative (searched in fgRootDir/fgPathList) or absolute
 			\param extension the extension of the file
 			\param mode ios mode flags
-			\param trace flag if true traces the operation with SystemLog::Debug messages
-			\return the pointer to the open iostream or NULL, the client is responsible for destruction */
-		iostream *OpenStream(const char *name, const char *extension, openmode mode = (ios::in), bool trace = false);
+			\param log turn SystemLog::Debug messages on or off
+			\return the pointer to the open iostream or NULL, the client is responsible for destruction	*/
+		iostream *OpenStream(const char *name, const char *extension, openmode mode = (ios::in), bool log = false);
 
-		//! opens an istream for reading, no search path is used
-		/*! \param name the filename, it can be relative or absolute
+		//! opens an istream for reading, search path is not used
+		/*! \deprecated use OpenIStream(const String&, openmode)
+			\param name the filename, it can be relative (to the current working directory) or absolute
 			\param extension the extension of the file
 			\param mode ios mode flags
-			\param trace flag if true traces the operation with SystemLog::Debug messages
+			\param log turn SystemLog::Debug messages on or off
 			\return the pointer to the open iostream or NULL, the client is responsible for destruction */
-		iostream *OpenIStream(const char *name, const char *extension, openmode mode = (ios::in), bool trace = false);
+		iostream *OpenIStream(const char *name, const char *extension, openmode mode = (ios::in), bool log = false);
 
-		//! opens an ostream for writing, no search path is used
-		/*! \param name the filename, it can be relative or absolute
+		//! opens an ostream for writing, search path is not used
+		/*! \deprecated use OpenOStream(const String&, openmode)
+		    \param name the filename, it can be relative (to the current working directory) or absolute
 			\param extension the extension of the file
 			\param mode ios mode flags
-			\param trace flag if true traces the operation with SystemLog::Debug messages
+			\param log turn SystemLog::Debug messages on or off
 			\return the pointer to the open iostream or NULL, the client is responsible for destruction */
-		iostream *OpenOStream(const char *name, const char *extension, openmode mode = ios::out | ios::trunc, bool trace = false);
+		iostream *OpenOStream(const char *name, const char *extension, openmode mode = ios::out | ios::trunc, bool log = false);
 
-		//! returns the path and filename.extension of a file found on the search path
+		//! returns the path and filename.extension of a file found using the search path
 		String GetFilePath(const char *name, const char *extension);
+
+		//! returns the path of a file found using the search path
+		String GetFilePath(const String &relpath);
+
+		//! returns the path of a file found using the search path or the relpath parameter
+		String GetFilePathOrInput(const String &relpath);
 
 		//! returns directory entries as anything, entries are filtered by extension filter
 		Anything DirFileList(const char *dir, const char *filter = "html");
@@ -114,9 +152,9 @@ namespace Coast {
 			\return true if path is a directory */
 		bool IsDirectory(const char *path);
 
-		//!determines if path points to a directory
+		//!determines if path is a symbolic link
 		/*! \param path fully qualified path to check
-			\return true if path is a directory */
+			\return true if path is a symbolic link */
 		bool IsSymbolicLink(const char *path);
 
 		//!determines the size of a file if it exists, works only for files less than 2^31 bytes for now!
@@ -238,7 +276,7 @@ namespace Coast {
 			//! check if a given file or directory is accessible using the given mode
 			/*! \param path file or directory path
 				\param amode permission setting, one or combination of [F_OK|X_OK|W_OK|R_OK]
-				\return 0 in case of success, -1 if file dows not exist or is not accessible in the given mode, check System::GetSystemError */
+				\return 0 in case of success, -1 if file does not exist or is not accessible in the given mode, check System::GetSystemError */
 			int access(const char *path, int amode);
 
 			//! make a directory, parent directory must exist already

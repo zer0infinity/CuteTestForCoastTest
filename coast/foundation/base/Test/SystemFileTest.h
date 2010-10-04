@@ -30,8 +30,13 @@ public:
 	void rooDirTest();
 	void IsAbsolutePathTest();
 	void ResolvePathTest();
-	void openStreamTest();
-	void getFilePathTest();
+	void OpenStreamTest();
+	void OpenStreamWithSearchTest();
+	void OpenOStreamTest();
+	void OpenIStreamTest();
+	void GetFilePathTest();
+	void GetFilePathOrInputTest();
+	void GetFilePathTest2();
 	void dirFileListTest();
 	void IStreamTest();
 	void OStreamTest();
