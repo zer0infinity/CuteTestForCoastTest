@@ -299,23 +299,31 @@ bool OracleStatement::DefineOutputArea()
 	OracleStatement::Description::Element aDescEl;
 	while ( aDescIter.Next( aDescEl ) ) {
 		String strColName( aDescEl.AsString( "Name" ) );
-		Trace("colname@" << aDescIter.Index() << " [" << strColName << "]");
+		Trace("colname@" << aDescIter.Index() << " [" << strColName << "] has type " << aDescEl.AsLong("Type"));
 		long lColIndex = aDescEl.AsLong( "Idx" );
-
-		long len;
-		if ( aDescEl.AsLong( "Type" ) == SQLT_DAT ) {
-			// --- date field
-			aDescEl["Length"] = 9;
-			aDescEl["Type"] = SQLT_STR;
-			len = aDescEl.AsLong( "Length" ) + 1;
-		} else if ( aDescEl.AsLong( "Type" ) == SQLT_NUM ) {
-			aDescEl["Length"] = (sword) sizeof(sword);
-			aDescEl["Type"] = SQLT_INT;
-			len = aDescEl.AsLong( "Length" );
-		} else {
-			aDescEl["Type"] = aDescEl.AsLong( "Type" );
-			len = aDescEl.AsLong( "Length" ) + 1;
+		long len = 0L;
+		switch ( aDescEl.AsLong( "Type" ) ) {
+			case SQLT_DAT:
+				Trace("SQLT_DAT");
+				aDescEl["Length"] = 9;
+				aDescEl["Type"] = SQLT_STR;
+				++len;
+				break;
+			case SQLT_NUM:
+				Trace("SQLT_NUM");
+				aDescEl["Length"] = 38;
+				aDescEl["Type"] = SQLT_STR;
+				++len;
+				break;
+			case SQLT_CHR:
+			case SQLT_STR:
+				++len;
+				break;
+			default:
+				Trace("SQLT_DEFAULT");
+				break;
 		}
+		len += aDescEl.AsLong( "Length" );
 
 		// allocate space for the returned data
 		Anything buf = Anything( static_cast<void *>(0), len );
