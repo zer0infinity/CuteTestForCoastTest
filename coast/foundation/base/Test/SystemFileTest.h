@@ -11,6 +11,7 @@
 
 //---- baseclass include -------------------------------------------------
 #include "FoundationTestTypes.h"
+#include "boost/function.hpp"
 
 //---- SystemFileTest ----------------------------------------------------------
 //!testcases for SystemFile
@@ -35,8 +36,6 @@ public:
 	void OpenOStreamTest();
 	void OpenIStreamTest();
 	void GetFilePathTest();
-	void GetFilePathOrInputTest();
-	void GetFilePathTest2();
 	void dirFileListTest();
 	void IStreamTest();
 	void OStreamTest();
@@ -54,6 +53,8 @@ public:
 	void LoadConfigFileTest();
 
 	void TimeTest();
+private:
+	void testGetFilePath(boost::function<String ()> func, const String& notFoundResult);
 };
 
 #endif /* SYSTEMFILETEST_H_ */

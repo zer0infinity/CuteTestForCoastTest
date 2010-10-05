@@ -32,6 +32,8 @@ using namespace std;
 #include <stdlib.h>
 #endif
 
+#include "boost/bind.hpp"
+
 //---- SystemFileTest --------------------------------------------------------
 SystemFileTest::SystemFileTest(TString tname)
 	: TestCaseType(tname)
@@ -613,93 +615,41 @@ void SystemFileTest::OpenOStreamTest()
 	}
 }
 
+void SystemFileTest::testGetFilePath(boost::function<String ()> func, const String& notFoundResult) {
+	StartTrace(SystemFileTest.testGetFilePath);
+	String subPath("./config/Dbg.any");
+
+	System::Chmod(subPath, 0400); // set it read only
+
+	String path(func());
+
+	System::ResolvePath(subPath);
+	assertEqual(subPath, path.SubString(path.Length() - subPath.Length()));
+
+	System::Chmod(subPath, 0000); // set it to no access
+#if defined(WIN32)
+	t_assertm(false, " FIXME: NT lacks easy hiding of files or directories...");
+#endif
+
+	path = func();
+	// should fail now.... therefore path is equal
+
+#if !defined(WIN32)
+	assertEqual(notFoundResult, path);
+#endif
+	System::Chmod(subPath, 0640); //clean up to make it usable again
+
+	path = func();
+	subPath = "./Dbg.any";
+	System::ResolvePath(subPath);
+	assertEqual(subPath, path.SubString(path.Length() - subPath.Length()));
+}
+
 void SystemFileTest::GetFilePathTest()
 {
-	String subPath("./config/Dbg.any");
-
-	System::Chmod(subPath, 0400); // set it read only
-
-	String path(System::GetFilePath("Dbg.any"));
-
-	System::ResolvePath(subPath);
-	assertEqual(subPath, path.SubString(path.Length() - subPath.Length()));
-
-	System::Chmod(subPath, 0000); // set it to no access
-#if defined(WIN32)
-	t_assertm(false, " FIXME: NT lacks easy hiding of files or directories...");
-#endif
-
-	path = (System::GetFilePath("Dbg.any"));
-	// should fail now.... therefore path is equal
-
-#if !defined(WIN32)
-	assertEqual("", path);
-#endif
-	System::Chmod(subPath, 0640); //clean up to make it usable again
-
-	path = System::GetFilePath("Dbg.any");
-	subPath = "./Dbg.any";
-	System::ResolvePath(subPath);
-	assertEqual(subPath, path.SubString(path.Length() - subPath.Length()));
-}
-
-void SystemFileTest::GetFilePathOrInputTest()
-{
-	String subPath("./config/Dbg.any");
-
-	System::Chmod(subPath, 0400); // set it read only
-
-	String path(System::GetFilePathOrInput("Dbg.any"));
-
-	System::ResolvePath(subPath);
-	assertEqual(subPath, path.SubString(path.Length() - subPath.Length()));
-
-	System::Chmod(subPath, 0000); // set it to no access
-#if defined(WIN32)
-	t_assertm(false, " FIXME: NT lacks easy hiding of files or directories...");
-#endif
-
-	path = (System::GetFilePathOrInput("Dbg.any")); // should not be found but should...
-
-#if !defined(WIN32)
-	assertEqual("Dbg.any", path); // ...but should have returned input parameter
-#endif
-	System::Chmod(subPath, 0640); //clean up to make it usable again
-
-	path = System::GetFilePathOrInput("Dbg.any");
-	subPath = "./Dbg.any";
-	System::ResolvePath(subPath);
-	assertEqual(subPath, path.SubString(path.Length() - subPath.Length()));
-}
-
-void SystemFileTest::GetFilePathTest2()
-{
-	String subPath("./config/Dbg.any");
-
-	System::Chmod(subPath, 0400); // set it read only
-
-	String path(System::GetFilePath("Dbg", "any"));
-
-	System::ResolvePath(subPath);
-	assertEqual(subPath, path.SubString(path.Length() - subPath.Length()));
-
-	System::Chmod(subPath, 0000); // set it to no access
-#if defined(WIN32)
-	t_assertm(false, " FIXME: NT lacks easy hiding of files or directories...");
-#endif
-
-	path = (System::GetFilePath("Dbg", "any"));
-	// should fail now.... therefore path is equal
-
-#if !defined(WIN32)
-	assertEqual("", path);
-#endif
-	System::Chmod(subPath, 0640); //clean up to make it usable again
-
-	path = System::GetFilePath("Dbg", "any");
-	subPath = "./Dbg.any";
-	System::ResolvePath(subPath);
-	assertEqual(subPath, path.SubString(path.Length() - subPath.Length()));
+	testGetFilePath(boost::bind(&Coast::System::GetFilePath, "Dbg", "any"), ""); // deprecated
+	testGetFilePath(boost::bind(&Coast::System::GetFilePath, "Dbg.any"), "");
+	testGetFilePath(boost::bind(&Coast::System::GetFilePathOrInput, "Dbg.any"), "Dbg.any");
 }
 
 void SystemFileTest::dirFileListTest()
@@ -1609,8 +1559,6 @@ Test *SystemFileTest::suite ()
 	ADD_CASE(testSuite, SystemFileTest, OpenOStreamTest);
 	ADD_CASE(testSuite, SystemFileTest, OpenIStreamTest);
 	ADD_CASE(testSuite, SystemFileTest, GetFilePathTest);
-	ADD_CASE(testSuite, SystemFileTest, GetFilePathOrInputTest);
-	ADD_CASE(testSuite, SystemFileTest, GetFilePathTest2);
 	ADD_CASE(testSuite, SystemFileTest, dirFileListTest);
 	ADD_CASE(testSuite, SystemFileTest, IStreamTest);
 	ADD_CASE(testSuite, SystemFileTest, OStreamTest);

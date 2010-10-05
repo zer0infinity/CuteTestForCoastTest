@@ -115,7 +115,7 @@ namespace Coast {
 		String GetFilePathOrInput(const String &relpath);
 
 		//! returns directory entries as anything, entries are filtered by extension filter
-		Anything DirFileList(const char *dir, const char *filter = "html");
+		Anything DirFileList(const char *dir, const char *extension = "html");
 
 		//! loads a config file as anything, returns resolved path
 		bool LoadConfigFile(Anything &config, const char *name, const char *ext, String &realfilename);
