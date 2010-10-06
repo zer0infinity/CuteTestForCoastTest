@@ -49,7 +49,7 @@ namespace {
 		return ( lEntryValue <= fgUpperBound && lEntryValue >= fgLowerBound && lEntryValue >= lMainSwitch );
 	}
 	bool EntryEnabled(long lMainSwitch, long lEnableAll, long lEntryValue) {
-		return (lMainSwitch > 0L) && ( CheckEntryGreaterEqual(lEnableAll, lMainSwitch) || CheckEntryGreaterEqual(lEntryValue, lMainSwitch) );
+		return (lMainSwitch >= fgLowerBound) && ( CheckEntryGreaterEqual(lEnableAll, lMainSwitch) || CheckEntryGreaterEqual(lEntryValue, lMainSwitch) );
 	}
 	void ProcessEntry(ROAnything anySection, String entryKey, EnablingMode parentMode) {
 		long lMainSwitch = anySection[fgMainSwitchName].AsLong(0L);
@@ -57,7 +57,7 @@ namespace {
 		EnablingMode myMode = parentMode;
 		if ( lMainSwitch < 0L ) { // disable this level and all levels below
 			myMode = eDisableAll;
-		} else if (lEnableAll >= lMainSwitch && lEnableAll <= fgUpperBound) {
+		} else if (lMainSwitch >= fgLowerBound && lEnableAll >= lMainSwitch && lEnableAll <= fgUpperBound) {
 			myMode = eEnableAll;
 		}
 		if ( entryKey.Length() && ( myMode == eEnableAll || myMode == eDisableAll ) ) {
