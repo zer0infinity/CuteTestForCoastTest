@@ -51,8 +51,8 @@ namespace {
 	bool EntryEnabled(long lMainSwitch, long lEnableAll, long lEntryValue) {
 		return (lMainSwitch >= fgLowerBound) && ( CheckEntryGreaterEqual(lEnableAll, lMainSwitch) || CheckEntryGreaterEqual(lEntryValue, lMainSwitch) );
 	}
-	void ProcessEntry(ROAnything anySection, String entryKey, EnablingMode parentMode) {
-		long lMainSwitch = anySection[fgMainSwitchName].AsLong(0L);
+	void ProcessEntry(ROAnything anySection, String entryKey, EnablingMode parentMode, long lParentMainSwitch) {
+		long lMainSwitch = anySection[fgMainSwitchName].AsLong(lParentMainSwitch);
 		long lEnableAll = anySection[fgEnableAllName].AsLong(-1L);
 		EnablingMode myMode = parentMode;
 		if ( lMainSwitch < 0L ) { // disable this level and all levels below
@@ -72,7 +72,7 @@ namespace {
 			if ( currentKey.Length() ) currentKey.Append(fgPathDelim);
 			currentKey.Append(strSlotname);
 			if ( anySection[lIdx].GetType() == AnyArrayType ) {
-				ProcessEntry(anySection[lIdx], currentKey, myMode);
+				ProcessEntry(anySection[lIdx], currentKey, myMode, lMainSwitch);
 			} else {
 				long lEntryValue = anySection[lIdx].AsLong(0L);
 				if ( myMode == eEnableAll || myMode == eDisableAll ) {
@@ -109,7 +109,7 @@ namespace {
 					fgLowerBound = anyDebugContext[fgLowerBoundName].AsLong(0);
 					fgUpperBound = anyDebugContext[fgUpperBoundName].AsLong(0);
 					fgDumpAnythings = anyDebugContext[fgDumpAnythingsName].AsBool(true);
-					ProcessEntry(anyDebugContext, "", TracingActive()?eUndecided:eDisableAll);
+					ProcessEntry(anyDebugContext, "", TracingActive()?eUndecided:eDisableAll, 0);
 					fgROTriggerMap = fgTriggerMap;
 					String strbuf(4096L);
 					{ StringStream stream(strbuf); fgTriggerMap.PrintOn(stream) << "\n"; }

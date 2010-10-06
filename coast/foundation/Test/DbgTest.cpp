@@ -286,6 +286,10 @@ void DbgTest::DbgTestNotAllAboveLowerBound()
 	assertEqual(false, TriggerEnabled(AboveUpperBound.SlotNotDefined));
 	assertEqual(true, TriggerEnabled(NotAllEnabled.IamActive));
 	assertEqual(false, TriggerEnabled(NotAllEnabled.SlotNotDefined));
+	assertEqual(false, TriggerEnabled(Context.SlotNotDefined));
+	assertEqual(true, TriggerEnabled(Context.HTMLWDDebug));
+	assertEqual(true, TriggerEnabled(Context.HTMLWDDebug.TmpStore));
+	assertEqual(true, TriggerEnabled(Context.HTMLWDDebug.EnvStore));
 #endif
 }
 

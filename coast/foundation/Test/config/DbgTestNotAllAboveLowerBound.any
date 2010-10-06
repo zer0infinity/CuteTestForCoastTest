@@ -31,4 +31,13 @@
 		/MainSwitch						11
 		/EnableAll						11
 	}
+	/Context {
+		/MainSwitch		7
+		/EnableAll		99999999
+		/HTMLWDDebug {
+			/TmpStore	10
+			/EnvStore	10
+			/EnableAll	10
+		}
+	}
 }
