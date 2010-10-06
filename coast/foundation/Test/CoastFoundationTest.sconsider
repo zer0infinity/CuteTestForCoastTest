@@ -86,6 +86,7 @@ def setUp(target, source, env):
     threading.Thread(target=startServer, args=[localhostname, tcpsendrecvport, MyTCPServer, AcceptorHandler]).start()
     threading.Thread(target=startServer, args=[localhostname, httpsendrecvport, MyHTTPServer, HTTPHandler]).start()
     threading.Thread(target=startServer, args=[localhostname, tcpnosendrecvport, MyTCPServer, NoSendRecvHandler]).start()
+    #env['ENV']['COAST_LOGONCERR'] = '1'
 
 def tearDown(target, source, env):
     for server in servers:
