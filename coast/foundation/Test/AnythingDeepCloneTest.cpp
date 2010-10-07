@@ -48,6 +48,7 @@ Test *AnythingDeepCloneTest::suite()
 	ADD_CASE(testSuite, AnythingDeepCloneTest, DeepClone4Test);
 	ADD_CASE(testSuite, AnythingDeepCloneTest, DeepClone5Test);
 	ADD_CASE(testSuite, AnythingDeepCloneTest, DeepCloneWithRef);
+	ADD_CASE(testSuite, AnythingDeepCloneTest, DeepCloneBug232Test);
 	return testSuite;
 }
 
@@ -546,4 +547,22 @@ void AnythingDeepCloneTest::DeepCloneWithRef()
 
 	c["slot1"][0L] = "hallo";
 	assertEqual("hallo", c["slot2"][0L].AsCharPtr("no"));
+}
+
+void AnythingDeepCloneTest::DeepCloneBug232Test() {
+	StartTrace(AnythingDeepCloneTest.DeepCloneBug232Test);
+	{
+		// test escaped reference
+		String str(_QUOTE_( { /level { /BackendShortName "avt" /BackendName { %level.BackendShortName /Lookup RenderSSODomain } /SSOBackendName { /Lookup RenderSSOPrefix "." %level.BackendName } /ServiceLink { /URL { { /Lookup RenderSSOProtocol } "://" %level.SSOBackendName { /Lookup RenderSSOPort } "/" } /Name "AVT" /Tooltip "Betrieb" /DisplayLoc "ExtServiceLinkList" /DisplayOrder "20" } } }));
+		Anything anyResult, anyExpected;
+		IStringStream is(str);
+		anyExpected.Import(is);
+		TraceAny(anyExpected, "imported and expected");
+		ROAnything roaEntry = anyExpected;
+		assertAnyEqualm(anyExpected, roaEntry, "expected ROAnything wrapper to match underlying");
+		TraceAny(roaEntry, "ROAnything");
+		anyResult = roaEntry.DeepClone();
+		TraceAny(anyResult, "cloned");
+		assertAnyEqualm(anyExpected, anyResult, "expected cloned any of ROAnything to match");
+	}
 }

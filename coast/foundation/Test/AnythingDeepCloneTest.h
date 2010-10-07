@@ -32,7 +32,7 @@ public:
 	void		DeepClone5Test();
 	//-- new test check for ref integrity with deepclone
 	void		DeepCloneWithRef();
-
+	void		DeepCloneBug232Test();
 protected:
 	Anything	init5DimArray(long);
 	bool		check5DimArray( Anything &, Anything &, long );

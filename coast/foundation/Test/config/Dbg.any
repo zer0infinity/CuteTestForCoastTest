@@ -64,6 +64,18 @@
 		/SlotCopierTest					0
 		/SlotPutterTest					0
 	}
+	/AnyArrayImpl {
+		/MainSwitch						20
+		/EnableAll						20
+	}
+	/AnyStringImpl {
+		/MainSwitch						20
+		/EnableAll						20
+	}
+	/AnythingDeepCloneTest {
+		/MainSwitch						20
+		/EnableAll						20
+	}
 	/Context {
 		/MainSwitch						30
 		/EnableAll						0
