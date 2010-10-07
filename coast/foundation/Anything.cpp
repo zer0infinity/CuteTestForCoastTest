@@ -554,20 +554,94 @@ char AnythingToken::DoReadNumber(InputContext &context, char firstchar)
 namespace {
 	char const fgPathDelim = '.';
 	char const fgIndexDelim = ':';
+	char const fgEscapeChar = '\\';
+
+	bool leftCharNotEscape(char const l, char const r) {
+		return ( l != fgEscapeChar && ( r == fgPathDelim || r == fgIndexDelim ) );
+	}
+	bool leftCharEscape(char const l, char const r) {
+		return ( l == fgEscapeChar && ( r == fgPathDelim || r == fgIndexDelim ) );
+	}
+	struct unescapeString {
+		String result;
+		void operator()(const char c) {
+			if ( result.Length() && leftCharEscape(result[result.Length()-1L], c) ) {
+				result.Trim(result.Length()-1L);
+			}
+			result.Append(c);
+		}
+	};
+	struct escapeString {
+		String result;
+		void operator()(const char c) {
+			if ( c == fgPathDelim || c == fgIndexDelim ) {
+				result.Append(fgEscapeChar);
+			}
+			result.Append(c);
+		}
+	};
+
 	struct appendAnyLevelToString : std::unary_function<Anything const&,void> {
 		String fStr;
 		void operator()(Anything const& anyValue) {
 			if ( anyValue.GetType() == AnyCharPtrType ) {
 				if ( fStr.Length() ) fStr.Append(fgPathDelim);
-				fStr.Append(anyValue.AsString());
-				return;
+			} else if ( anyValue.GetType() == AnyLongType ) {
+				fStr.Append(fgIndexDelim);
 			}
-			if ( anyValue.GetType() == AnyLongType ) {
-				fStr.Append(fgIndexDelim).Append(anyValue.AsLong());
-				return;
+			String strTok = anyValue.AsString();
+			fStr.Append(std::for_each(strTok.cstr(), strTok.cstr()+strTok.Length(),escapeString()).result);
+		}
+	};
+	struct resolveToAnyLevel : std::unary_function<Anything const&,void> {
+		Anything result;
+		resolveToAnyLevel(Anything const& anySource) : result(anySource) {}
+		void operator()(Anything const& anyValue) {
+			anyStartTrace1(resolveToAnyLevel.operator, "key [" << anyValue.AsString() << "], success: " << (result.IsNull()?"false":"true"));
+			if ( !result.IsNull() ) {
+				long lIdx = -1L;
+				if ( anyValue.GetType() == AnyCharPtrType ) {
+					lIdx = result.FindIndex(anyValue.AsString());
+					anyTrace("char key to idx: " << lIdx);
+				} else if ( anyValue.GetType() == AnyLongType ) {
+					lIdx = result.FindIndex(anyValue.AsLong(-1L));
+					anyTrace("long key to idx: " << lIdx);
+				}
+				if ( lIdx == -1L ) {
+					result = Anything();
+					return;
+				}
+				result = result[lIdx];
+				anyTraceAny(result, "retrieved reference so far")
 			}
 		}
 	};
+	Anything escapedQueryStringToAny(String const& query) {
+		anyStartTrace(AnythingParser.escapedQueryStringToAny);
+		char const *pStart = query.cstr(), *pEnd = pStart + query.Length(), *pPos = pStart;
+		Anything anyLevel;
+		for (; pPos != pEnd; ) {
+			pPos = std::adjacent_find(pStart, pEnd, leftCharNotEscape);
+			long lLen = pPos-pStart;
+			if ( pPos != pEnd ) ++lLen;
+			String strTok(pStart, lLen);
+			if ( *pStart == fgIndexDelim || *pStart == fgPathDelim ) {
+				strTok.TrimFront(1);
+			}
+			if ( *pStart == fgIndexDelim ) {
+				anyTrace("indextoken [" << strTok << "]")
+				anyLevel.Append(strTok.AsLong(-1L));
+			} else {
+				anyTrace("pathtoken [" << strTok << "]")
+				anyLevel.Append(std::for_each(strTok.cstr(), strTok.cstr()+strTok.Length(),unescapeString()).result);
+			}
+			if ( pPos != pEnd ) {
+				pStart = ++pPos;
+			}
+		}
+		anyTraceAny(anyLevel, "sequence");
+		return anyLevel;
+	}
 }
 
 class  EXPORTDECL_FOUNDATION AnyXrefHandler
@@ -612,7 +686,6 @@ public:
 	String	GetBackRef(long id) {
 		return std::for_each(fXrefs[ToId(id)].begin(), fXrefs[ToId(id)].end(), appendAnyLevelToString()).fStr;
 	}
-
 };
 
 class ParserXrefHandler : public AnyXrefHandler
@@ -634,35 +707,34 @@ public:
 	}
 	void Patch(Anything &any) {
 		anyStartTrace(ParserXrefHandler.Patch);
-		String strRefName, strLevel;
 		Anything preslot, anyReferenced, ref, anyLevel, anyIdx;
 		for (long i = 0, lSize = fXrefs.GetSize(); i < lSize; ++i) {
 			anyLevel = fXrefs[i][0L];
 			anyIdx = fXrefs[i][1L];
-			strLevel = std::for_each(anyLevel.begin(), anyLevel.end(), appendAnyLevelToString()).fStr;
-			anyTraceAny(anyLevel, "strLevel [" << strLevel << "] for reference [" << anyIdx.AsString() << "]");
+			anyTraceAny(anyLevel, "strLevel [" << std::for_each(anyLevel.begin(), anyLevel.end(), appendAnyLevelToString()).fStr << "] for reference [" << anyIdx.AsString() << "]");
 			if (anyLevel.IsNull()) { // root level node
 				preslot = any;
-			} else if (!any.LookupPath(preslot, strLevel)) {
-				String m;
-				m << "lookup of slotname [" << strLevel << "] failed!" << "\n";
-				SystemLog::WriteToStderr(m);
+			} else {
+				preslot = std::for_each(anyLevel.begin(), anyLevel.end(), resolveToAnyLevel(any)).result;
 			}
-			if (!preslot.IsNull()) {
+			anyTraceAny(preslot, "replacement reference");
+			if ( preslot.IsNull() ) {
+				String m;
+				m << "lookup of slotname [" << std::for_each(anyLevel.begin(), anyLevel.end(), appendAnyLevelToString()).fStr << "] failed!" << "\n";
+				SystemLog::WriteToStderr(m);
+			} else {
 				if (anyIdx.GetType() == AnyLongType) {
 					anyReferenced = preslot[anyIdx.AsLong(0L)];
 				} else {
 					anyReferenced = preslot[anyIdx.AsString()];
 				}
-				//!@FIXME: allow escape characters in reference text to lookup -> LookupPath must be adjusted
-				strRefName = anyReferenced.AsString();
-				anyTrace("referenced any as string [" << strRefName << "]");
-				if (!any.LookupPath(ref, strRefName)) {
+				ref = std::for_each(anyReferenced.begin(), anyReferenced.end(), resolveToAnyLevel(any)).result;
+				anyTraceAny(ref, "referenced any as string [" << std::for_each(anyReferenced.begin(), anyReferenced.end(), appendAnyLevelToString()).fStr << "]");
+				if ( ref.IsNull() ) {
 					String m;
-					m << "lookup of reference [" << strRefName << "] failed!" << "\n";
+					m << "lookup of reference [" << std::for_each(anyReferenced.begin(), anyReferenced.end(), appendAnyLevelToString()).fStr << "] failed!" << "\n";
 					SystemLog::WriteToStderr(m);
 				} else {
-					//!@FIXME: replace if with anyReferenced=ref; assignment
 					if (anyIdx.GetType() == AnyLongType) {
 						preslot[anyIdx.AsLong(0L)] = ref;
 					} else {
@@ -1369,7 +1441,7 @@ bool Anything::LookupPath(Anything &result, const char *path, char delimSlot, ch
 					return false; // not a valid number
 				}
 				// check if index is defined
-				if (lIdx >= c->GetSize() || (*c)[lIdx].IsNull()) { // caution: auto-enlargement!
+				if (lIdx >= c->GetSize() || (*c)[lIdx].IsNull()) {
 					return false;
 				}
 			} else if (*tokPtr) {
@@ -1987,10 +2059,11 @@ bool AnythingParser::DoParseSequence(Anything &any, ParserXrefHandler &xrefs)
 			case AnythingToken::eRef : {
 				// a unnamed slot with a reference
 				anyTrace("AnythingToken::eRef");
-				// we use '%' to devide the slotNamePath and the index of the unnamed slot
+				// we use '%' to divide the slotNamePath and the index of the unnamed slot
 				// to keep the order of the inserted slots as requested we need
 				// to add a dummy slot which will be linked in a second step
-				element = tok.Text();
+				element = escapedQueryStringToAny(tok.Text());
+				anyTraceAny(element,"eRef");
 				long lIdx = any.Append(element);
 				// add temporary for resolving reference after anything is fully parsed
 				xrefs.DefinePatchRef(lIdx);
@@ -2011,7 +2084,8 @@ bool AnythingParser::DoParseSequence(Anything &any, ParserXrefHandler &xrefs)
 				tok = AnythingToken(fContext); // get next one
 				if ( AnythingToken::eRef == tok.Token() ) {
 					// link it to the given slotname (must exist)
-					element = tok.Text();
+					element = escapedQueryStringToAny(tok.Text());
+					anyTraceAny(element,"eRef within eIndex");
 					any[key] = element;
 
 					// add temporary for resolving reference after anything is fully parsed
@@ -2150,13 +2224,16 @@ void AnythingParser::ImportIncludeAny(Anything &element, const String &url)
 
 		iostream *pStream = System::OpenStream(fileName, "");
 		if (pStream) {
-			element.Import(*pStream, fileName);
-			delete pStream;
-
-			if (queryString.Length() > 0 && !element.LookupPath(element, queryString) ) {
-				// query not found
-				element = Anything();
+			if ( element.Import(*pStream, fileName) && queryString.Length() > 0 ) {
+				Anything anyLevel = escapedQueryStringToAny(queryString);
+				element = std::for_each(anyLevel.begin(), anyLevel.end(), resolveToAnyLevel(element)).result;
+				if ( element.IsNull() ) {
+					String m;
+					m << "lookup of " << fileName << " slotname [" << std::for_each(anyLevel.begin(), anyLevel.end(), appendAnyLevelToString()).fStr << "] failed!" << "\n";
+					SystemLog::WriteToStderr(m);
+				}
 			}
+			delete pStream;
 		} else {
 			Error("cannot open included Anything at", url);
 		}
@@ -2225,7 +2302,7 @@ void AnyKeyAssoc::operator delete[](void *ptr, Allocator *a)
 void AnyKeyAssoc::operator delete[](void *ptr)
 {
 	if (ptr) {
-		void *realPtr = reinterpret_cast<char *>(ptr) -  Coast::Memory::AlignedSize<Allocator *>::value; // FIXME: ASSUMES Alignment (P.S.!)
+		void *realPtr = reinterpret_cast<char *>(ptr) -  Coast::Memory::AlignedSize<Allocator *>::value; //!@FIXME:ASSUMES Alignment (P.S.!)
 		Allocator *a = reinterpret_cast<Allocator **>(realPtr)[0L];	// retrieve Allocator
 #if defined(WIN32) && (_MSC_VER >= 1200) // VC6 or greater
 		AnyKeyAssoc::operator delete[](ptr, a);
