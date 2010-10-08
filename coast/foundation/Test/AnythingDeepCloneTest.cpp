@@ -565,4 +565,18 @@ void AnythingDeepCloneTest::DeepCloneBug232Test() {
 		TraceAny(anyResult, "cloned");
 		assertAnyEqualm(anyExpected, anyResult, "expected cloned any of ROAnything to match");
 	}
+	{
+		// test escaped reference
+		String str(_QUOTE_( { /level { /BackendShortName "avt" /BackendName { %level.BackendShortName /Lookup RenderSSODomain } /SSOBackendName { /Lookup RenderSSOPrefix "." %level.BackendName } /ServiceLink { /URL { { /Lookup RenderSSOProtocol } "://" %level.SSOBackendName { /Lookup RenderSSOPort } "/" } /Name "AVT" /Tooltip "Betrieb" /DisplayLoc "ExtServiceLinkList" /DisplayOrder "20" } } }));
+		Anything anyExpected;
+		IStringStream is(str);
+		anyExpected.Import(is);
+		TraceAny(anyExpected, "imported and expected");
+		ROAnything roaEntry = anyExpected;
+		assertAnyEqualm(anyExpected, roaEntry, "expected ROAnything wrapper to match underlying");
+		TraceAny(roaEntry, "ROAnything");
+		Anything anyResult = roaEntry["level"]["ServiceLink"].DeepClone();
+		TraceAny(anyResult, "cloned");
+		assertAnyEqualm(anyExpected["level"]["ServiceLink"], anyResult, "expected cloned any of ROAnything to match");
+	}
 }

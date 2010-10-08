@@ -43,6 +43,10 @@
 		/MainSwitch						77
 		/EnableAll						0
 	}
+	/ROAnything {
+		/MainSwitch						20
+		/EnableAll						20
+	}
 	/Anything {
 		/MainSwitch						20
 		/EnableAll						20
@@ -67,6 +71,7 @@
 	/AnyArrayImpl {
 		/MainSwitch						20
 		/EnableAll						20
+		/At								-1
 	}
 	/AnyStringImpl {
 		/MainSwitch						20
