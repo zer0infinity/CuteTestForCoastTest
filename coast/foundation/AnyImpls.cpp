@@ -14,13 +14,31 @@
 #include "IFAObject.h"
 #include "AnyVisitor.h"
 #include "SystemLog.h"
+#include "Dbg.h"
 #include <algorithm>
-
 //--- c-modules used -----------------------------------------------------------
 #include <cstring>
 #include <cstdlib>
 #if defined(ONLY_STD_IOSTREAM)
 using namespace std;
+#endif
+
+// disable tracing if requested, even if in COAST_TRACE mode, eg. performance tests
+//#define WD_DISABLE_TRACE
+#if !defined(COAST_TRACE) || defined(WD_DISABLE_TRACE)
+#define aimplStatTrace(trigger, msg, allocator)
+#define aimplStartTrace(trigger)
+#define aimplStartTrace1(trigger, msg)
+#define aimplTrace(msg)
+#define aimplStatTraceAny(trigger, any, msg, allocator)
+#define aimplTraceAny(any, msg)
+#else
+#define aimplStatTrace(trigger, msg, allocator) 	StatTrace(trigger, msg, allocator)
+#define aimplStartTrace(trigger)					StartTrace(trigger)
+#define aimplStartTrace1(trigger, msg)			StartTrace1(trigger, msg)
+#define aimplTrace(msg)							Trace(msg);
+#define aimplStatTraceAny(trigger, any, msg, allocator) StatTraceAny(trigger, any, msg, allocator);
+#define aimplTraceAny(any, msg)					TraceAny(any, msg);
 #endif
 
 static const String fgStrEmpty(Storage::Global()); //avoid temporary
@@ -102,6 +120,7 @@ void AnyLongImpl::Accept(AnyVisitor &v, long lIdx, const char *slotname) const
 
 AnyImpl *AnyLongImpl::DoDeepClone(Allocator *a, Anything &xreftable) const
 {
+	aimplStartTrace(AnyLongImpl.DoDeepClone);
 	AnyImpl *ret =  new ((a) ? a : Storage::Current()) AnyLongImpl(this->fLong, this->fBuf, a);
 	return ret;
 }
@@ -127,6 +146,7 @@ String AnyObjectImpl::AsString(const char *) const
 
 AnyImpl *AnyObjectImpl::DoDeepClone(Allocator *a, Anything &xreftable) const
 {
+	aimplStartTrace(AnyObjectImpl.DoDeepClone);
 	AnyImpl *ret = new ((a) ? a : Storage::Current()) AnyObjectImpl(this->fObject, a);
 	return ret;
 }
@@ -163,6 +183,7 @@ const char *AnyDoubleImpl::AsCharPtr(const char *dflt, long &buflen) const
 
 AnyImpl *AnyDoubleImpl::DoDeepClone(Allocator *a, Anything &xreftable) const
 {
+	aimplStartTrace(AnyDoubleImpl.DoDeepClone);
 	AnyImpl *ret = new ((a) ? a : Storage::Current()) AnyDoubleImpl(this->fDouble, this->fBuf, a);
 	return ret;
 }
@@ -191,6 +212,7 @@ void AnyBinaryBufImpl::Accept(AnyVisitor &v, long lIdx, const char *slotname) co
 
 AnyImpl *AnyBinaryBufImpl::DoDeepClone(Allocator *a, Anything &xreftable) const
 {
+	aimplStartTrace(AnyBinaryBufImpl.DoDeepClone);
 	AnyImpl *ret = new ((a) ? a : Storage::Current()) AnyBinaryBufImpl((this->fBuf.cstr()), this->fBuf.Length(), a);
 	return ret;
 }
@@ -237,6 +259,7 @@ void AnyStringImpl::Accept(AnyVisitor &v, long lIdx, const char *slotname) const
 
 AnyImpl *AnyStringImpl::DoDeepClone(Allocator *a, Anything &xreftable) const
 {
+	aimplStartTrace1(AnyStringImpl.DoDeepClone, "fString [" << this->fString << "]");
 	AnyImpl *ret = new ((a) ? a : Storage::Current()) AnyStringImpl(this->fString, a);
 	return ret;
 }
@@ -779,24 +802,18 @@ const char *AnyArrayImpl::AsCharPtr(const char *, long &buflen) const
 
 Anything &AnyArrayImpl::At(long slot) // const/non-const overload
 {
-	// return an address of an anything
-	// residing at slot
-	// expand the buffers as necessary to fullfill
-	// the request
-
+	// return an address of an anything residing at slot
+	// expand the buffers as necessary to fullfill the request
 	long newsz = slot + 1;
-
 	// check for logical expansion
 	if ( (newsz > fSize) ) {
 		// reset the size
 		fSize = newsz;
-
 		// check for physical expansion
 		if ( newsz >= fCapacity ) {
 			Expand(newsz);
 		}
 	}
-
 	// calculate the adress of the anything
 	long at = IntAt(slot);
 	return fContents[IntAtBuf(at)][IntAtSlot(at)].Value();
@@ -818,11 +835,9 @@ Anything AnyArrayImpl::operator [](long slot)const
 	return At(slot);
 }
 
-Anything &AnyArrayImpl::At(const char *key) //const/non-const overload!
+Anything &AnyArrayImpl::At(const char *key)
 {
-	// calculate the adress of an anything
-	// given its key
-
+	aimplStartTrace1(AnyArrayImpl.At, "key [" << key << "]");
 	long slot = -1;
 	if ( !fKeys ) {
 		// no keys exist yet
@@ -1128,19 +1143,20 @@ void AnyArrayImpl::PrintHash() // const
 
 AnyImpl *AnyArrayImpl::DoDeepClone(Allocator *a, Anything &xreftable) const
 {
-	String adr(ThisToHex(), a);
+	String adr(ThisToHex(a), a);
 	Anything &refEntry = xreftable[adr];
 	AnyImpl *res = reinterpret_cast<AnyImpl *>(refEntry.AsIFAObject(0));
+	aimplStartTrace1(AnyArrayImpl.DoDeepClone, "adr: " << adr << ", refEntry: " << reinterpret_cast<l_long>(res));
 	if (res != NULL) {
 		res->Ref(); // do not forget to count
 		return res;
 	}
-
 	AnyArrayImpl *ret = new ((a) ? a : Storage::Current()) AnyArrayImpl(a);
 	refEntry = reinterpret_cast<IFAObject *>(ret);
+	aimplTrace("stored xref entry for adr: " << adr << " is " << reinterpret_cast<l_long>(ret));
 	long count = this->GetSize();
-
 	for (long i = 0 ; i < count; ++i) {
+		aimplTrace("slotname " << i << " [" << this->SlotName(i) << "] type: " << (long)(this->At(i).GetType()) << " adr: " << this->At(i).GetImpl()->ThisToHex(a));
 		ret->At(this->SlotName(i)) = this->At(i).DeepClone(a, xreftable);
 	}
 	return ret;
@@ -1326,4 +1342,3 @@ int	AnyArrayImpl::AnyIntComparerCompare::Compare(AnyArrayImpl &that, long leftIn
 
 AnyArrayImpl::AnyIntKeyCompare AnyArrayImpl::theKeyComparer;
 AnyArrayImpl::AnyIntReverseKeyCompare AnyArrayImpl::theReverseKeyComparer;
-
