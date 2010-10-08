@@ -85,7 +85,7 @@ void AnyImpl::operator delete(void *d)
 
 AnyImpl *AnyImpl::DeepClone(Allocator *a, Anything &xreftable) const
 {
-	return this->DoDeepClone(a, xreftable);
+	return const_cast<AnyImpl*>(this)->DoDeepClone(a, xreftable); //!@FIXME: HUM: remove as soon as DoDeepClone are const
 }
 
 //---- AnyLongImpl -----------------------------------------------------------------
@@ -849,7 +849,7 @@ const char *AnyArrayImpl::AsCharPtr(const char *, long &buflen) const
 	return gcArrayText;
 }
 
-Anything &AnyArrayImpl::At(long slot) // const/non-const overload
+Anything &AnyArrayImpl::At(long slot) //const/non-const overload
 {
 	// return an address of an anything residing at slot
 	// expand the buffers as necessary to fullfill the request
@@ -884,7 +884,7 @@ Anything AnyArrayImpl::operator [](long slot)const
 	return At(slot);
 }
 
-Anything &AnyArrayImpl::At(const char *key)
+Anything &AnyArrayImpl::At(const char *key) //const/non-const overload!
 {
 	aimplStartTrace1(AnyArrayImpl.At, "key [" << key << "]");
 	long slot = -1;
@@ -1181,7 +1181,7 @@ void AnyArrayImpl::PrintKeys() //const
 	}
 }
 
-void AnyArrayImpl::PrintHash() // const
+void AnyArrayImpl::PrintHash() //const
 {
 	if (fKeys) {
 		fKeys->PrintHash();
