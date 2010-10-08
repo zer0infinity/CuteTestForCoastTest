@@ -276,6 +276,23 @@ void DbgTest::DbgTestEnableAllSecondAndBelowDisabled()
 #endif
 }
 
+void DbgTest::DbgTestNotAllAboveLowerBound()
+{
+#ifdef COAST_TRACE
+	// check EnableAll with exclusion and disable all below second level
+	assertEqual(false, TriggerEnabled(BelowLowerBound.SlotNotDefined));
+	assertEqual(true, TriggerEnabled(EnabledInRange.SlotNotDefined));
+	assertEqual(true, TriggerEnabled(AtUpperBound.SlotNotDefined));
+	assertEqual(false, TriggerEnabled(AboveUpperBound.SlotNotDefined));
+	assertEqual(true, TriggerEnabled(NotAllEnabled.IamActive));
+	assertEqual(false, TriggerEnabled(NotAllEnabled.SlotNotDefined));
+	assertEqual(false, TriggerEnabled(Context.SlotNotDefined));
+	assertEqual(true, TriggerEnabled(Context.HTMLWDDebug));
+	assertEqual(true, TriggerEnabled(Context.HTMLWDDebug.TmpStore));
+	assertEqual(true, TriggerEnabled(Context.HTMLWDDebug.EnvStore));
+#endif
+}
+
 void DbgTest::CheckMacrosCompile()
 {
 	StartTrace(DbgTest.CheckMacrosCompile);
@@ -304,5 +321,6 @@ Test *DbgTest::suite ()
 	ADD_CASE(testSuite, DbgTest, DbgTestEnableAllAboveUpperBound);
 	ADD_CASE(testSuite, DbgTest, DbgTestEnableAllBelowLowerBound);
 	ADD_CASE(testSuite, DbgTest, DbgTestEnableAllSecondAndBelowDisabled);
+	ADD_CASE(testSuite, DbgTest, DbgTestNotAllAboveLowerBound);
 	return testSuite;
 }

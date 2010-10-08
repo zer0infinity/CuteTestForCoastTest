@@ -35,6 +35,7 @@ public:
 	void DbgTestEnableAllAboveUpperBound();
 	void DbgTestEnableAllBelowLowerBound();
 	void DbgTestEnableAllSecondAndBelowDisabled();
+	void DbgTestNotAllAboveLowerBound();
 
 	//!test case for the Dbg.h test macros
 	void CheckMacrosCompile();

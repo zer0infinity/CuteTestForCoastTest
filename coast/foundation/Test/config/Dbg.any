@@ -27,6 +27,10 @@
 		/EnableAll						20
 		/DefinePatchRef					0
 	}
+	/resolveToAnyLevel {
+		/MainSwitch						20
+		/EnableAll						20
+	}
 	/SlotFinder{
 		/MainSwitch						77
 		/EnableAll						0

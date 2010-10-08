@@ -35,7 +35,9 @@ public:
 	void		AnyIncludeTest();
 
 	void        RefSlotTest ();
-	void        RefBug227Test ();
+	void        RefBug227Test();
+	void		RefBug231Test();
+	void        RefBug220Test();
 
 protected:
 	Anything	init5DimArray(long);

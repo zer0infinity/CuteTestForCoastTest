@@ -51,6 +51,8 @@ Test *AnythingImportExportTest::suite()
 	ADD_CASE(testSuite, AnythingImportExportTest, RefSlotTest);
 	ADD_CASE(testSuite, AnythingImportExportTest, AnyIncludeTest);
 	ADD_CASE(testSuite, AnythingImportExportTest, RefBug227Test);
+	ADD_CASE(testSuite, AnythingImportExportTest, RefBug231Test);
+	ADD_CASE(testSuite, AnythingImportExportTest, RefBug220Test);
 	return testSuite;
 }
 
@@ -571,6 +573,32 @@ void AnythingImportExportTest::AnyIncludeTest()
 		assertAnyEqual(anyRef, anyMain);
 	}
 	{
+		// Test an include with a query for a subtree with escaped path and index delims in the include file
+		Anything anyMain, anyIncl, anyRef;
+
+		String strMain(_QUOTE_( { /200 { /a gugus /b gaga } !"file:///include.any?a\.b\.c.d:0.\:bla" }));
+		String strIncl(_QUOTE_( { /"a.b.c" { /d { { /":bla" foo } } /e frim } }));
+		String strRef (_QUOTE_( { /200 { /a gugus /b gaga } "foo" }));
+		{
+			IStringStream is(strIncl);
+			anyIncl.Import(is);
+			iostream *pStream = System::OpenOStream("include", "any");
+			if (pStream) {
+				anyIncl.Export(*pStream);
+				delete pStream;
+			}
+		}
+		{
+			IStringStream is(strMain);
+			anyMain.Import(is);
+		}
+		{
+			IStringStream is(strRef);
+			anyRef.Import(is);
+		}
+		assertAnyEqual(anyRef, anyMain);
+	}
+	{
 		// Test an include with a query for a subtree in the include file that does not exist
 		Anything anyMain, anyIncl, anyRef;
 
@@ -610,7 +638,7 @@ void AnythingImportExportTest::ReadFailsTest()
 void AnythingImportExportTest::RefBug227Test()
 {
 	{
-		// test an unnamed reference
+		// test an empty Anything at dotted slotname
 		String str(_QUOTE_( { /200 { /"a.b.c" * } /name blub }));
 		Anything anyResult, anyExpected;
 		IStringStream is(str);
@@ -630,6 +658,63 @@ void AnythingImportExportTest::RefBug227Test()
 		anyExpected["100"][0L] = anyExpected["name"];
 		anyExpected["100"]["e"] = 123;
 		anyExpected["300"][0L] = anyExpected["100"];
+		assertAnyEqual(anyExpected, anyResult);
+	}
+}
+
+void AnythingImportExportTest::RefBug231Test()
+{
+	{
+		// test an unnamed reference
+		String str(_QUOTE_( { /BackendName blabla /Params { /Name "avt" /Server { /RendererMapper { %BackendName } } /Port 443 /Timeout 10 /UseSSL 1 } /a.b.c { 3 /NewRef %BackendName } }));
+		Anything anyResult, anyExpected;
+		IStringStream is(str);
+		anyResult.Import(is);
+		anyExpected["BackendName"] = "blabla";
+		anyExpected["Params"]["Name"] = "avt";
+		anyExpected["Params"]["Server"]["RendererMapper"][0L] = anyExpected["BackendName"];
+		anyExpected["Params"]["Port"] = 443L;
+		anyExpected["Params"]["Timeout"] = 10L;
+		anyExpected["Params"]["UseSSL"] = 1L;
+		anyExpected["a.b.c"][0L] = 3L;
+		anyExpected["a.b.c"]["NewRef"] = anyExpected["BackendName"];
+		assertAnyEqual(anyExpected, anyResult);
+	}
+}
+
+void AnythingImportExportTest::RefBug220Test()
+{
+	{
+		// test escaped reference
+		String str(_QUOTE_( { /"a.b.c" { 33 } /name blub /300 { %"a\.b\.c:0" } }));
+		Anything anyResult, anyExpected;
+		IStringStream is(str);
+		anyResult.Import(is);
+		anyExpected["a.b.c"][0L] = 33;
+		anyExpected["name"] = "blub";
+		anyExpected["300"][0L] = anyExpected["a.b.c"][0L];
+		assertAnyEqual(anyExpected, anyResult);
+	}
+	{
+		// test escaped reference
+		String str(_QUOTE_( { /"a.b.c" { /level1 { /level2 33 } } /name blub /300 { %"a\.b\.c.level1.level2" } }));
+		Anything anyResult, anyExpected;
+		IStringStream is(str);
+		anyResult.Import(is);
+		anyExpected["a.b.c"]["level1"]["level2"] = 33;
+		anyExpected["name"] = "blub";
+		anyExpected["300"][0L] = anyExpected["a.b.c"]["level1"]["level2"];
+		assertAnyEqual(anyExpected, anyResult);
+	}
+	{
+		// test escaped reference
+		String str(_QUOTE_( { /"a.b.c" { /":3" { /level2 33 } } /name blub /300 { %"a\.b\.c.\:3.level2" } }));
+		Anything anyResult, anyExpected;
+		IStringStream is(str);
+		anyResult.Import(is);
+		anyExpected["a.b.c"][":3"]["level2"] = 33;
+		anyExpected["name"] = "blub";
+		anyExpected["300"][0L] = anyExpected["a.b.c"][":3"]["level2"];
 		assertAnyEqual(anyExpected, anyResult);
 	}
 }

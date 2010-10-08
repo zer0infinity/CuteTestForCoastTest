@@ -373,6 +373,41 @@
 				}
 			}
 		}
+		/SelectFloatTest {
+			/TheAction {
+				/CallDA {
+					/DataAccess SimpleSQLAccess
+					/Parameters {
+						/SQL	"select STOR_ID,ORD_NUM,DISCOUNT from SALESDETAIL where STOR_ID=7131 and ORD_NUM='Fsoap867'
+					}
+				}
+			}
+			/Result {
+				/TmpStore {
+					/SimpleSQLAccess {
+						/Query "select STOR_ID,ORD_NUM,DISCOUNT from SALESDETAIL where STOR_ID=7131 and ORD_NUM='Fsoap867'"
+						/QueryResult {
+						      {
+						        /STOR_ID "7131"
+						        /ORD_NUM "Fsoap867"
+						        /DISCOUNT "46.7"
+						      }
+						      {
+						        /STOR_ID "7131"
+						        /ORD_NUM "Fsoap867"
+						        /DISCOUNT "46.7"
+						      }
+						      {
+						        /STOR_ID "7131"
+						        /ORD_NUM "Fsoap867"
+						        /DISCOUNT "46.7"
+						      }
+						}
+						/QueryCount 3
+					}
+				}
+			}
+		}
 		/GetStringTest {
 			/TmpStore {
 				/SPName	getstring
