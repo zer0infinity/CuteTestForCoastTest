@@ -21,10 +21,6 @@ using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //---- PipeExecutorTest ----------------------------------------------------------------
 PipeExecutorTest::PipeExecutorTest(TString className)
 	: TestCaseType(className)
@@ -51,9 +47,9 @@ void PipeExecutorTest::EchoEnvTest()
 	Trace("Path:[" << fullname << "]");
 	PipeExecutor Execute(fullname, env);
 	t_assert(Execute.Start());
-	ostream *os = Execute.GetStream();
+	std::ostream *os = Execute.GetStream();
 	t_assertm(os != NULL, "Execute env failed");
-	istream *is = Execute.GetStream();
+	std::istream *is = Execute.GetStream();
 	t_assertm(is != NULL, "Execute env failed");
 
 	if (is && os) {
@@ -75,9 +71,9 @@ void PipeExecutorTest::FailExecTest()
 	PipeExecutor Execute("/wuggiwaggi", env);
 	bool res = Execute.Start();
 	t_assertm(!res, "Execute.Start(/wuggiwaggi,env) succeeded");
-	ostream *os = Execute.GetStream();
+	std::ostream *os = Execute.GetStream();
 	t_assertm(0 == os, "oops Execute call succeeded");
-	istream *is = Execute.GetStream();
+	std::istream *is = Execute.GetStream();
 	t_assertm(0 == is, "oops Execute call succeeded");
 	if (res && is && os) {
 		// show what is wrong, we didn't expect to...
@@ -101,7 +97,7 @@ void PipeExecutorTest::CatGugusErrTest()
 	fullname << " ./gugus";
 	PipeExecutor Execute(fullname, env, ".", 3000L, true); // file doesn't exist
 	t_assert(Execute.Start());
-	istream *err = Execute.GetStderr();
+	std::istream *err = Execute.GetStderr();
 	t_assertm(err != NULL, "Execute cat stderr failed");
 
 	if (err) {
@@ -122,10 +118,10 @@ void PipeExecutorTest::CatWorkingDirTest()
 	const char *fileName = "PipeExecutorTest.txt";
 	String msg( "Hello_world!" );
 	filename << System::Sep() << fileName;
-	ostream *os = System::OpenOStream(filename, 0);
+	std::ostream *os = System::OpenOStream(filename, 0);
 	t_assertm(os && !!(*os), "opening test file for writing failed");
 	if (os) {
-		(*os) << msg << flush;
+		(*os) << msg << std::flush;
 		delete os;
 	}
 	String cmd;
@@ -138,7 +134,7 @@ void PipeExecutorTest::CatWorkingDirTest()
 	cmd << " " << fileName;
 	PipeExecutor Execute(cmd, env, wd);
 	t_assert(Execute.Start());
-	istream *is = Execute.GetStream();
+	std::istream *is = Execute.GetStream();
 	t_assertm(is != NULL, "Execute cat failed");
 
 	if (is ) {
@@ -165,16 +161,16 @@ void PipeExecutorTest::EchoCatTest()
 	Trace("Path:[" << fullname << "]");
 	PipeExecutor Execute(fullname, env);
 	t_assert(Execute.Start());
-	ostream *os = Execute.GetStream();
+	std::ostream *os = Execute.GetStream();
 	t_assertm(os != NULL, "Execute cat failed");
-	istream *is = Execute.GetStream();
+	std::istream *is = Execute.GetStream();
 	t_assertm(is != NULL, "Execute cat failed");
 
 	if (is && os) {
 		t_assertm(!!(*os), "Execute cat failed");
 		t_assertm(!!(*is), "Execute cat failed");
 		String s0("hallo");
-		(*os) << s0 << endl;
+		(*os) << s0 << std::endl;
 		t_assert(Execute.ShutDownWriting());
 		String s1;
 		// may be we need to close it here...
@@ -197,15 +193,15 @@ void PipeExecutorTest::KillTest()
 	Trace("Path:[" << fullname << "]");
 	PipeExecutor Execute(fullname, env, ".", 10000L);
 	t_assert(Execute.Start());
-	ostream *os = Execute.GetStream();
+	std::ostream *os = Execute.GetStream();
 	t_assertm(os != NULL, "Execute cat failed");
-	istream *is = Execute.GetStream();
+	std::istream *is = Execute.GetStream();
 	t_assertm(is != NULL, "Execute cat failed");
 
 	if (is && os) {
 		t_assertm(!!(*os), "writing to cat failed");
 		String s0("hallo");
-		(*os) << s0 << endl << flush;
+		(*os) << s0 << std::endl << std::flush;
 
 		// kill the bastard --- FIXME this code runs well in the debugger
 		// but fails in real life, either its timing or the way
@@ -299,9 +295,9 @@ void PipeExecutorTest::ShellInvocationTest()
 		TString tstrMsg("Executing ");
 		tstrMsg << fullname << " failed";
 		if ( t_assertm( Execute.Start() == roaExpected["ExecOk"].AsBool(false), tstrMsg) && roaExpected["ExecOk"].AsBool(false) ) {
-			ostream *os = Execute.GetStream();
+			std::ostream *os = Execute.GetStream();
 			t_assertm(os != NULL, "could not get stdout to write to!");
-			istream *is = Execute.GetStream(), *isErr = NULL;
+			std::istream *is = Execute.GetStream(), *isErr = NULL;
 			t_assertm(is != NULL, "could not get stdin to read from!");
 			if ( bUseStderr ) {
 				isErr = Execute.GetStderr();
@@ -310,7 +306,7 @@ void PipeExecutorTest::ShellInvocationTest()
 			if (is && os) {
 				t_assertm(!!(*os), "expected stdout to be good");
 				t_assertm(!!(*is), "expected stdin to be good");
-				(*os) << roaParams["Command"].AsString("notdefined") << endl;
+				(*os) << roaParams["Command"].AsString("notdefined") << std::endl;
 				t_assertm(Execute.ShutDownWriting(), "shutdown writing side failed");
 				OStringStream aShellOutput, aErrOutput;
 				long lRecv = 0, lToRecv = 2048;

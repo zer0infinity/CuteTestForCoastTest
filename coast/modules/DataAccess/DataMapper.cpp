@@ -38,7 +38,7 @@ void FixedSizeMapper::Pad(String &value, long length, char pad)
 	}
 }
 
-bool FixedSizeMapper::DoGetStream(const char *key, ostream &os, Context &ctx, ROAnything info)
+bool FixedSizeMapper::DoGetStream(const char *key, std::ostream &os, Context &ctx, ROAnything info)
 {
 	String value;
 	OStringStream osStr(&value);
@@ -71,7 +71,7 @@ IFAObject *UpperCaseMapper::Clone(Allocator *a) const
 	return new (a) UpperCaseMapper(fName);
 }
 
-bool UpperCaseMapper::DoGetStream(const char *key, ostream &os, Context &ctx, ROAnything info)
+bool UpperCaseMapper::DoGetStream(const char *key, std::ostream &os, Context &ctx, ROAnything info)
 {
 	String strBuf;
 	{
@@ -94,7 +94,7 @@ IFAObject *RendererMapper::Clone(Allocator *a) const
 	return new (a) RendererMapper(fName);
 }
 
-bool RendererMapper::DoGetStream(const char *key, ostream &os, Context &ctx, ROAnything info)
+bool RendererMapper::DoGetStream(const char *key, std::ostream &os, Context &ctx, ROAnything info)
 {
 	StartTrace1(RendererMapper.DoGetStream, NotNull(key));
 	bool bInfoIsNull(true);
@@ -146,7 +146,7 @@ IFAObject *LookupMapper::Clone(Allocator *a) const
 
 static const char *gcSlotName =		"LookupName";
 
-bool LookupMapper::DoGetStream(const char *key, ostream &os, Context &ctx, ROAnything info)
+bool LookupMapper::DoGetStream(const char *key, std::ostream &os, Context &ctx, ROAnything info)
 {
 	StartTrace(LookupMapper.DoGet);
 	TraceAny(info, "info");

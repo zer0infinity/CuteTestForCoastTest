@@ -19,10 +19,6 @@
 #include "System.h"
 #include "Dbg.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //--- c-library modules used ---------------------------------------------------
 #include <ctype.h>
 
@@ -103,15 +99,15 @@ void REBitSetTest::TestPredicateSet()
 	}
 }
 
-void REBitSetTest::GeneratePosixSet(ostream &cppfile, const char *pcName, REBitSet::Predicate predicate)
+void REBitSetTest::GeneratePosixSet(std::ostream &cppfile, const char *pcName, REBitSet::Predicate predicate)
 {
 	REBitSet s;
 	s.Set(predicate);
 
-	cppfile << endl;
-	cppfile << "const unsigned long _dummy_" << pcName << " [] = {" << endl;
-	cppfile << s << "};" << endl;
-	cppfile << "const REBitSet " << pcName << "(_dummy_" << pcName << ");" << endl;
+	cppfile << std::endl;
+	cppfile << "const unsigned long _dummy_" << pcName << " [] = {" << std::endl;
+	cppfile << s << "};" << std::endl;
+	cppfile << "const REBitSet " << pcName << "(_dummy_" << pcName << ");" << std::endl;
 }
 
 // auxiliary predicates for posix and special escape handling
@@ -143,10 +139,10 @@ void REBitSetTest::GeneratePosixSets()
 	// to be used by RECompiler to simplify charset handling for
 	// POSIX character sets and special escapes
 
-	ostream *os = System::OpenOStream("REPosixBitSets", "h");
+	std::ostream *os = System::OpenOStream("REPosixBitSets", "h");
 	if (t_assertm(os != NULL, "cannot write File REPosixBitSets.h")) {
-		*os << "//(c) copyright ifs 2005, all rights reserved" << endl;
-		*os << "//automatically generatest by REBitSetTest::GeneratePosixSets" << endl;
+		*os << "//(c) copyright ifs 2005, all rights reserved" << std::endl;
+		*os << "//automatically generatest by REBitSetTest::GeneratePosixSets" << std::endl;
 
 		GeneratePosixSet(*os, "gcSetIsAlnum", isalnum);
 		GeneratePosixSet(*os, "gcSetIsAlpha", isalpha);

@@ -97,7 +97,7 @@ void GzipHdr::SetModificationTime(TimeStamp aStamp)
 	}
 }
 
-ostream &operator<<(ostream &os, GzipHdr &header)
+std::ostream &operator<<(std::ostream &os, GzipHdr &header)
 {
 	StartTrace(GzipHdr.operator << );
 	String strHeader((void *)&header, 10);
@@ -130,7 +130,7 @@ ostream &operator<<(ostream &os, GzipHdr &header)
 	return os;
 }
 
-istream &operator>>(istream &is, GzipHdr &header)
+std::istream &operator>>(std::istream &is, GzipHdr &header)
 {
 	StartTrace(GzipHdr.operator >> );
 	// set to false if we could not read at lest 10 bytes of the header
@@ -204,7 +204,7 @@ ZipStreamBuf::ZipStreamBuf(ZipStream::eStreamMode aMode, Allocator *alloc)
 }
 
 //---- ZipOStreamBuf ----------------------------------------------------------------
-ZipOStreamBuf::ZipOStreamBuf(ostream &os, ZipStream::eStreamMode aMode, Allocator *alloc)
+ZipOStreamBuf::ZipOStreamBuf(std::ostream &os, ZipStream::eStreamMode aMode, Allocator *alloc)
 	: ZipStreamBuf(aMode, ( alloc ? alloc : Storage::Current() ) )
 	, fOs(&os)
 	, fCompLevel(Z_BEST_COMPRESSION)
@@ -321,18 +321,6 @@ int ZipOStreamBuf::sync()
 
 	return (err == Z_OK) ? 0 : -1;
 }
-
-#if !defined(ONLY_STD_IOSTREAM)
-streampos ZipOStreamBuf::seekpos(streampos, int mode)
-{
-	return streampos(0);
-}
-
-streampos ZipOStreamBuf::seekoff(streamoff, ios::seek_dir, int mode)
-{
-	return streampos(0);
-}
-#endif
 
 int ZipOStreamBuf::overflow(int c)
 {
@@ -498,7 +486,7 @@ void ZipOStreamBuf::zipinit()
 	}
 }
 
-ZipIStreamBuf::ZipIStreamBuf(istream &zis, istream &is, ZipStream::eStreamMode aMode, Allocator *alloc)
+ZipIStreamBuf::ZipIStreamBuf(std::istream &zis, std::istream &is, ZipStream::eStreamMode aMode, Allocator *alloc)
 	: ZipStreamBuf(aMode, ( alloc ? alloc : Storage::Current() ) )
 	, fZis(zis)
 	, fIs(&is)
@@ -580,7 +568,7 @@ int ZipIStreamBuf::underflow()
 			Trace("not at zstream end yet, syncing");
 			if ( sync() != 0 ) {
 				Trace("EOF, fZipErr: [" << fZipErr << "]");
-				fZis.setstate(ios::failbit | ios::eofbit);
+				fZis.setstate(std::ios::failbit | std::ios::eofbit);
 				return EOF;
 			}
 		} else {
@@ -588,7 +576,7 @@ int ZipIStreamBuf::underflow()
 		}
 		if ( gptr() >= egptr() ) {
 			Trace("no more data to read, signalling eof, fZipErr: [" << fZipErr << "]");
-			fZis.setstate(ios::failbit | ios::eofbit);
+			fZis.setstate(std::ios::failbit | std::ios::eofbit);
 			return EOF;
 		}
 	}
@@ -613,11 +601,7 @@ void ZipIStreamBuf::close()
 		Trace("Length check: " << (long) len << " vs. " << (long) fZip.total_out);
 
 		if (crc != fCrcData || fZip.total_out != len) {
-#if defined(WIN32) && !defined(ONLY_STD_IOSTREAM)
-			fZis.clear(ios::badbit | fZis.rdstate());
-#else
-			fZis.setstate(ios::badbit);
-#endif
+			fZis.setstate(std::ios::badbit);
 		}
 	}
 
@@ -675,11 +659,7 @@ void ZipIStreamBuf::zipinit()
 				(*fIs) >> fHeader;
 				if ( !fHeader.IsValid() ) {
 					Trace("Incomplete or wrong header");
-#if defined(WIN32) && !defined(ONLY_STD_IOSTREAM)
-					fZis.clear(ios::badbit | fZis.rdstate());
-#else
-					fZis.setstate(ios::badbit);
-#endif
+					fZis.setstate(std::ios::badbit);
 					fZipErr = Z_DATA_ERROR;
 				}
 			}
@@ -735,9 +715,9 @@ void ZipIStreamBuf::runInflate()
 	if (fZipErr != Z_OK && fZipErr != Z_STREAM_END ) {
 		Trace("zlib error: " << fZipErr);
 #if defined(WIN32)
-		fZis.clear(ios::badbit | fZis.rdstate());
+		fZis.clear(std::ios::badbit | fZis.rdstate());
 #else
-		fZis.setstate(ios::badbit);
+		fZis.setstate(std::ios::badbit);
 #endif
 	}
 
@@ -766,9 +746,9 @@ int ZipIStreamBuf::sync()
 	if ( !(fIs->good()) && fZip.avail_in == 0 && fZipErr == Z_OK ) {
 		Trace("premature end of stream");
 #if defined(WIN32)
-		fZis.clear(ios::failbit | fZis.rdstate());
+		fZis.clear(std::ios::failbit | fZis.rdstate());
 #else
-		fZis.setstate(ios::failbit);
+		fZis.setstate(std::ios::failbit);
 #endif
 		return -1;
 	}

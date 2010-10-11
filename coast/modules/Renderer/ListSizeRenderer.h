@@ -39,7 +39,7 @@ class EXPORTDECL_RENDERER ListSizeRenderer : public Renderer
 public:
 	//--- constructors
 	ListSizeRenderer(const char *name);
-	void RenderAll(ostream &reply, Context &ctx, const ROAnything &config);
+	void RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config);
 };
 
 #endif

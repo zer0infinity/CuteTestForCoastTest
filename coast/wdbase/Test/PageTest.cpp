@@ -20,10 +20,6 @@
 #include "TestAction.h"
 #include "Dbg.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //--- c-library modules used ---------------------------------------------------
 
 //---- PageTest ----------------------------------------------------------------
@@ -52,7 +48,7 @@ void PageTest::setUp ()
 		Anything tmpStore(fCtx.GetTmpStore());
 		tmpStore["DoTest"] = fActionConfig;
 	} else {
-		cerr << "couldn't find TestAction" << endl;
+		std::cerr << "couldn't find TestAction" << std::endl;
 	}
 }
 

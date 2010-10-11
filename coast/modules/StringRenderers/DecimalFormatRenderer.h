@@ -39,7 +39,7 @@ public:
 		\param ctx the context the renderer runs within.
 		\param config the configuration of the renderer.
 	*/
-	virtual void RenderAll(ostream &reply, Context &ctx, const ROAnything &config);
+	virtual void RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config);
 	bool ReadConfig( Context &ctx, const ROAnything &config, String &sString, String &sScale, String &sDecSeparator);
 	bool FormatNumber( String &sString, String &sScale, String &sDecSeparator );
 	void InsertFiller( String &sScale, String &strDecPlaces );

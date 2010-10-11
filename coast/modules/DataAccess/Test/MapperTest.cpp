@@ -19,10 +19,6 @@
 #include "DataAccessImpl.h"
 #include "Dbg.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //--- c-library modules used ---------------------------------------------------
 
 //---- MapperTest ----------------------------------------------------------------
@@ -69,7 +65,7 @@ void MapperTest::HardConfiguredGet()
 	OStringStream Ios(&input);
 
 	t_assert(httpmapper.Get("Input", Ios, ctx));
-	Ios << flush;
+	Ios << std::flush;
 	input << ">";
 	Trace("Input: " << input);
 	assertEqual("<GET /finVAL/XS.ISA?Action=Login HTTP/1.1\ntestcase: foobah\nContent-length: 0\n\n>", input);
@@ -96,7 +92,7 @@ void MapperTest::MixedConfiguredGet()
 	OStringStream ios1(&input1);
 
 	t_assert(httpmapper.Get("Msg", Ios, ctx));
-	Ios << flush;
+	Ios << std::flush;
 	input << ">";
 	Trace("Input: " << input);
 	assertEqual("<A1B7L007GET-HOMEDIR*****PETER                "
@@ -106,7 +102,7 @@ void MapperTest::MixedConfiguredGet()
 				"PATTERNs>", input);
 
 	t_assert(httpmapper.Get("FixedSize", ios1, ctx));
-	ios1 << flush;
+	ios1 << std::flush;
 	input1 << ">";
 	Trace("Input: " << input1);
 	assertEqual("<strozzi             >", input1);
@@ -289,7 +285,7 @@ void MapperTest::StdGetTest()
 	String strTest;
 	StringStream Ios(strTest);
 	t_assert(mapper.Get("testString", Ios, ctx));
-	Ios << flush;
+	Ios << std::flush;
 	assertEqual("foo baz", strTest);
 }
 

@@ -18,10 +18,6 @@
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //--- c-modules used -----------------------------------------------------------
 
 //---- SSLCertificateTest ----------------------------------------------------------------
@@ -43,7 +39,7 @@ void SSLCertificateTest::ClientCertificateTest()
 	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
 	while ( aEntryIterator.Next(cConfig) ) {
 		SSLConnector sc(cConfig["Config"], (SSL_CTX *) NULL); // add a new connector type using a config
-		iostream *s1 = sc.GetStream();
+		std::iostream *s1 = sc.GetStream();
 		Socket *s = sc.Use();
 		Anything clientInfo(sc.ClientInfo());
 		assertEqual(cConfig["Results"]["SSLCertVerifyStatus"].AsBool(1), clientInfo["SSL"]["Peer"]["SSLCertVerifyStatus"]["SSL"]["Ok"].AsBool(0));
@@ -52,7 +48,7 @@ void SSLCertificateTest::ClientCertificateTest()
 			if (t_assert(s1 != NULL) && t_assert(s != NULL)) {
 				assertEqual(cConfig["Results"]["IsCertCheckPassed"].AsBool(1), s->IsCertCheckPassed(cConfig["Config"]));
 				TraceAny(s->ClientInfo(), "peer info");
-				(*s1) << "GET / HTTP/1.0" << ENDL << ENDL << flush;
+				(*s1) << "GET / HTTP/1.0" << ENDL << ENDL << std::flush;
 				String reply;
 				getline(*s1, reply);
 				assertEqual(cConfig["Results"]["GetRequestOk"].AsBool(1) , !!(*s1));
@@ -67,11 +63,11 @@ void SSLCertificateTest::CheckServerCertificateTest()
 	StartTrace(SSLCertificateTest.CheckServerCertificateTest);
 	ROAnything scfg(GetConfig()["RemoteCertificateHost"]);
 	SSLConnector sc(scfg, (SSL_CTX *) NULL); // add a new connector type using a config
-	iostream *s1 = sc.GetStream();
+	std::iostream *s1 = sc.GetStream();
 	Socket *s = sc.Use();
 	if (t_assert(s1 != NULL) && t_assert(s != NULL)) {
 		TraceAny(s->ClientInfo(), "peer info");
-		(*s1) << "GET / HTTP/1.0" << ENDL << ENDL << flush;
+		(*s1) << "GET / HTTP/1.0" << ENDL << ENDL << std::flush;
 		String reply;
 		getline(*s1, reply);
 		t_assert(!!(*s1));

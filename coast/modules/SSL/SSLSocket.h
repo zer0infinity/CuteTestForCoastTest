@@ -33,7 +33,7 @@ public:
 	bool CertVerifyStringIsFilter();
 	bool SessionResumption();
 	String ShowState();
-	inline friend ostream &operator<< (ostream &os, SSLSocketArgs &sa) {
+	inline friend std::ostream &operator<< (std::ostream &os, SSLSocketArgs &sa) {
 		os << sa.ShowState();
 		return os;
 	}
@@ -100,7 +100,7 @@ public:
 	virtual bool IsCertCheckPassed(ROAnything config);
 
 protected:
-	virtual iostream *DoMakeStream();
+	virtual std::iostream *DoMakeStream();
 	virtual int PrepareSocket(SSL *) = 0;
 	virtual void DoCheckPeerCertificate(Anything &sslinfo, SSL *ssl);
 	virtual SSL_SESSION *SessionResumptionHookResumeSession(SSL *ssl);

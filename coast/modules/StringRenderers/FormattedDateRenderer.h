@@ -25,7 +25,7 @@ public:
 	//--- constructors
 	FormattedDateRenderer(const char *name);
 	~FormattedDateRenderer();
-	virtual void RenderAll(ostream &reply, Context &c, const ROAnything &config);
+	virtual void RenderAll(std::ostream &reply, Context &c, const ROAnything &config);
 
 };
 

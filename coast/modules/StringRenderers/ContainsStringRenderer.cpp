@@ -24,7 +24,7 @@ ContainsStringRenderer::~ContainsStringRenderer()
 {
 }
 
-void ContainsStringRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void ContainsStringRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	StartTrace(ContainsStringRenderer.RenderAll);
 	TraceAny(config, "config");

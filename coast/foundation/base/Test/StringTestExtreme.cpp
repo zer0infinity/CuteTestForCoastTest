@@ -39,7 +39,7 @@ void StringTestExtreme::setUp ()
 	extremelyLongString = "";
 	trueString = "";
 
-	iostream *is = System::OpenStream("longString", "txt", ios::in);
+	std::iostream *is = System::OpenStream("longString", "txt", std::ios::in);
 	while (is && !is->eof()) {
 		if (is->read(&s, 1)) {
 			extremelyLongString.Append(s);

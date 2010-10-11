@@ -20,12 +20,7 @@
 #include <errno.h>
 #include <cstring>
 
-#if defined(ONLY_STD_IOSTREAM)
 #include <fstream>
-using namespace std;
-#else
-#include <fstream.h>
-#endif
 
 #if defined(WIN32)
 #include <io.h>
@@ -94,15 +89,15 @@ namespace {
 		\param mode the mode of the stream to be opened e.g. ios::in, mode flags can be combined by the | operation
 		\param trace if true writes messages to SystemLog
 		\return an open iostream or NULL if the open fails */
-	iostream *DoOpenStream(const char *path, Coast::System::openmode mode, bool log = false)
+	std::iostream *DoOpenStream(const char *path, Coast::System::openmode mode, bool log = false)
 	{
 		StartTrace1(System.DoOpenStream, "file [" << NotNull(path) << "]");
 		// adjust mode to output, append implies it
-		if ( mode & ios::app ) {
-			mode |= ios::out;
+		if ( mode & std::ios::app ) {
+			mode |= std::ios::out;
 		}
 
-		if ( Coast::System::IsRegularFile(path) || (mode & ios::out) ) {
+		if ( Coast::System::IsRegularFile(path) || (mode & std::ios::out) ) {
 			static bool bUseMmapStreams = ( Coast::System::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L );
 			if ( bUseMmapStreams ) {
 				MmapStream *fp = new MmapStream(path, mode);
@@ -112,7 +107,7 @@ namespace {
 				Trace("failed to open MmapStream, file [" << path << "]");
 				delete fp;
 			} else {
-				fstream *fp = new fstream(path, (Coast::System::openmode)mode);
+				std::fstream *fp = new std::fstream(path, (Coast::System::openmode)mode);
 				if ( fp->good() && fp->rdbuf()->is_open() ) {
 					return fp;
 				}
@@ -131,7 +126,7 @@ namespace {
 	/*! \param path the filepath, it can be relative or absolute, it contains the extension
 		\param mode the mode of the stream to be opened e.g. ios::in, mode flags can be combined by the | operation
 		\return an open iostream or NULL if the open fails */
-	iostream *IntOpenStream(const String &path, Coast::System::openmode mode)
+	std::iostream *IntOpenStream(const String &path, Coast::System::openmode mode)
 	{
 		StartTrace(System.IntOpenStream);
 
@@ -150,7 +145,7 @@ namespace {
 			Trace("file [" << filepath << "] is going to be opened relative");
 		}
 
-		iostream *Ios = DoOpenStream(filepath, mode);
+		std::iostream *Ios = DoOpenStream(filepath, mode);
 
 		if ( Ios ) {
 			Trace(filepath << " found");
@@ -638,37 +633,37 @@ namespace Coast {
 			}
 		}
 
-		iostream *OpenIStream(const char *name, const char *extension, openmode mode, bool log)
+		std::iostream *OpenIStream(const char *name, const char *extension, openmode mode, bool log)
 		{
 			return OpenIStream(buildFilename(name, extension), mode);
 		}
 
-		iostream *OpenOStream(const char *name, const char *extension, openmode mode, bool log)
+		std::iostream *OpenOStream(const char *name, const char *extension, openmode mode, bool log)
 		{
 			return OpenOStream(buildFilename(name, extension), mode);
 		}
 
-		iostream *OpenStream(const char *name, const char *extension, openmode mode, bool log)
+		std::iostream *OpenStream(const char *name, const char *extension, openmode mode, bool log)
 		{
 			return OpenStreamWithSearch(buildFilename(name, extension), mode);
 		}
 
-		iostream *OpenIStream(const String &path, openmode mode)
+		std::iostream *OpenIStream(const String &path, openmode mode)
 		{
-			return IntOpenStream(path, mode | ios::in);
+			return IntOpenStream(path, mode | std::ios::in);
 		}
 
-		iostream *OpenOStream(const String &path, openmode mode)
+		std::iostream *OpenOStream(const String &path, openmode mode)
 		{
-			return IntOpenStream(path, mode | ios::out);
+			return IntOpenStream(path, mode | std::ios::out);
 		}
 
-		iostream *OpenStream(const String &path, openmode mode)
+		std::iostream *OpenStream(const String &path, openmode mode)
 		{
 			return IntOpenStream(path, mode);
 		}
 
-		iostream *OpenStreamWithSearch(const String &path, openmode mode)
+		std::iostream *OpenStreamWithSearch(const String &path, openmode mode)
 		{
 			return IntOpenStream(GetFilePathOrInput(path), mode);
 		}
@@ -1062,7 +1057,7 @@ namespace Coast {
 		{
 			StartTrace(System.LoadConfigFile);
 			realfilename = GetFilePath(buildFilename(name, ext));
-			istream *is = OpenStream(realfilename, (ios::in));
+			std::istream *is = OpenStream(realfilename, (std::ios::in));
 			bool result = false;
 			if (!is || !(result = config.Import(*is, realfilename))) {
 				String logMsg("cannot import config file ");

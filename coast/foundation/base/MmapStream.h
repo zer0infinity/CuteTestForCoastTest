@@ -17,23 +17,9 @@ typedef fstream MmapStream;
 
 #include <sys/mman.h>
 
-#if defined(ONLY_STD_IOSTREAM)
 #include <cstdio>
 #include <iostream>
 #include <iomanip>
-using std::istream;
-using std::ostream;
-using std::iostream;
-using std::ios;
-using std::streambuf;
-#else
-#if !defined(WIN32)
-#include <streambuf.h>
-#endif
-#include <cstdio.h>
-#include <iostream.h>
-#include <iomanip.h>
-#endif
 
 //!helper class to manage dependencies between ios flags and c-api mmap flags
 class EXPORTDECL_FOUNDATION MmapMagicFlags
@@ -58,20 +44,20 @@ public:
 	}
 
 	bool IsIosOut() {
-		return TestIos(ios::out);
+		return TestIos(std::ios::out);
 	}
 	bool IsIosIn() {
-		return TestIos(ios::in);
+		return TestIos(std::ios::in);
 	}
 	bool IsIosApp() {
-		return TestIos(ios::app);
+		return TestIos(std::ios::app);
 	}
 	bool IsIosAppendOrAtEnd() {
-		return TestIos( ios::app | ios::ate);
+		return TestIos( std::ios::app | std::ios::ate);
 	}
 	void IosClearAtEnd() {
-		if (TestIos(ios::ate)) {
-			fOpenMode &= ~ios::ate; // adjust it only once for ate
+		if (TestIos(std::ios::ate)) {
+			fOpenMode &= ~std::ios::ate; // adjust it only once for ate
 		}
 	}
 	enum { eRead = PROT_READ, eWrite = PROT_WRITE } ;
@@ -91,7 +77,7 @@ private:
 };
 
 //! streambuf class implementing mmap based file access on platforms supporting it
-class EXPORTDECL_FOUNDATION MmapStreamBuf : public streambuf
+class EXPORTDECL_FOUNDATION MmapStreamBuf : public std::streambuf
 {
 	friend class MmapStreambase;
 public:
@@ -118,29 +104,22 @@ public:
 		return fLength;
 	}
 
-#if defined(ONLY_STD_IOSTREAM)
 protected: // seekxxx are protected in the std..
-	typedef std::streambuf::pos_type	pos_type;
-	typedef std::streambuf::off_type	off_type;
-	typedef std::ios::seekdir	seekdir;
-	typedef std::ios::openmode	openmode;
-#else
-typedef streampos pos_type;
-typedef	streamoff off_type;
-typedef int 	openmode;
-typedef ios::seek_dir seekdir;
-#endif
+	typedef std::streambuf::pos_type pos_type;
+	typedef std::streambuf::off_type off_type;
+	typedef std::ios::seekdir seekdir;
+	typedef std::ios::openmode openmode;
 
 	//! standard iostream behavior, adjust put or get position absolutely
-	virtual pos_type seekpos(pos_type pos, openmode mode = ios::in | ios::out);
+	virtual pos_type seekpos(pos_type pos, openmode mode = std::ios::in | std::ios::out);
 	//! standard iostream behavior, adjust put or get position relatively
-	virtual pos_type seekoff(off_type off, seekdir, openmode mode = ios::in | ios::out);
-protected:
+	virtual pos_type seekoff(off_type off, seekdir, openmode mode = std::ios::in | std::ios::out);
+
 	//! auxiliary operation to keep track of really written bytes
 	void AdjustFileLength() ;
 	//!opens and map the file
 	//! \return returns this if OK, 0 otherwise
-	MmapStreamBuf *open(const char *path, int mode = ios::in, int prot = MmapStreamBuf::openprot);
+	MmapStreamBuf *open(const char *path, int mode = std::ios::in, int prot = MmapStreamBuf::openprot);
 	//! clean up and set this to nascent state
 	void close();
 	//! extends the mapped object to an additional next page
@@ -184,7 +163,7 @@ private:
 
 //! adapts ios to a Mmap buffer --> THIS CLASS IS NOT TO BE INSTANTIATED
 //! may be unsafe_ios
-class EXPORTDECL_FOUNDATION MmapStreambase : virtual public ios
+class EXPORTDECL_FOUNDATION MmapStreambase : virtual public std::ios
 {
 public:
 	//! constructor of empty stream
@@ -193,7 +172,7 @@ public:
 	}
 	//! normal constructor opening a file corresponds to fstream ctor
 	MmapStreambase(const char *name,
-				   int mode = ios::in,
+				   int mode = std::ios::in,
 				   int prot = MmapStreamBuf::openprot,
 				   int syncflag = MmapStreamBuf::eSync);
 	//! dtor for cleaning up
@@ -208,7 +187,7 @@ public:
 	//!disconnect file from stream
 	void close() {
 		rdbuf()->close();
-		setstate(ios::eofbit);
+		setstate(std::ios::eofbit);
 	}
 	//!let streambuf leak
 	MmapStreamBuf *rdbuf()  {
@@ -220,45 +199,39 @@ protected:
 }; // MmapStreambase
 
 //!implementation of istream with mmap
-class  EXPORTDECL_FOUNDATION IMmapStream : public MmapStreambase, public istream
+class  EXPORTDECL_FOUNDATION IMmapStream : public MmapStreambase, public std::istream
 {
 public:
 	//!constrcutor to use for read-only streams
-	IMmapStream(const char *path) : MmapStreambase(path, ios::in)
-#if defined(ONLY_STD_IOSTREAM)
-		, istream(&fMmapBuf)
-#endif
+	IMmapStream(const char *path) : MmapStreambase(path, std::ios::in)
+		, std::istream(&fMmapBuf)
 	{ }
 	~IMmapStream() {}
 }; // IMmapStream
 
 //!implementation of ostream with mmap
-class  EXPORTDECL_FOUNDATION OMmapStream : public MmapStreambase, public ostream
+class  EXPORTDECL_FOUNDATION OMmapStream : public MmapStreambase, public std::ostream
 {
 public:
 	//! constructor for output streams opening a file
 	OMmapStream(const char *path,
-				int mode = ios::out, int prot = MmapStreamBuf::openprot,
+				int mode = std::ios::out, int prot = MmapStreamBuf::openprot,
 				int syncflag = MmapStreamBuf::eSync)
-		: MmapStreambase(path, ios::out | mode, prot, syncflag)
-#if defined(ONLY_STD_IOSTREAM)
-		, ostream(&fMmapBuf)
-#endif
+		: MmapStreambase(path, std::ios::out | mode, prot, syncflag)
+		, std::ostream(&fMmapBuf)
 	{  }
 	virtual ~OMmapStream() { }
 }; // OMmapStream
 
 //!implementation of iostream with mmap
-class  EXPORTDECL_FOUNDATION MmapStream : public MmapStreambase, public iostream
+class  EXPORTDECL_FOUNDATION MmapStream : public MmapStreambase, public std::iostream
 {
 public:
 	//! constructor for intput/output streams opening a file
-	MmapStream(const char *path, int mode = ios::out | ios::in, int prot = MmapStreamBuf::openprot,
+	MmapStream(const char *path, int mode = std::ios::out | std::ios::in, int prot = MmapStreamBuf::openprot,
 			   int syncflag = MmapStreamBuf::eSync)
 		: MmapStreambase(path, mode, prot, syncflag)
-#if defined(ONLY_STD_IOSTREAM)
-		, iostream(&fMmapBuf)
-#endif
+		, std::iostream(&fMmapBuf)
 	{  }
 	virtual ~MmapStream() { }
 }; // MmapStream

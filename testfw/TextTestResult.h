@@ -13,11 +13,6 @@
 
 //--- c-library modules used ---------------------------------------------------
 
-#ifdef ostream
-#define RESTOREUNSAFEOSTREAM 1
-#undef ostream
-#endif
-
 class TextTestResult : public TestResult
 {
 public:
@@ -25,24 +20,21 @@ public:
 	virtual void		addFailure	(TestLocation *loc);
 	virtual void		startTest	(Test *test);
 	virtual void		endTest		(Test *test);
-	virtual void		print (ostream &stream);
-	virtual void		printCauses (ostream &stream, TestLocList &causes);
-	virtual void		printErrors (ostream &stream);
-	virtual void		printFailures (ostream &stream);
-	virtual void		printHeader (ostream &stream);
-	virtual void		logSuccesses(ostream &stream);
+	virtual void		print (std::ostream &stream);
+	virtual void		printCauses (std::ostream &stream, TestLocList &causes);
+	virtual void		printErrors (std::ostream &stream);
+	virtual void		printFailures (std::ostream &stream);
+	virtual void		printHeader (std::ostream &stream);
+	virtual void		logSuccesses(std::ostream &stream);
 private:
 	long fStartTime;
 };
 
 /* insertion operator for easy output */
-inline ostream &operator<< (ostream &stream, TextTestResult &result)
+inline std::ostream &operator<< (std::ostream &stream, TextTestResult &result)
 {
 	result.print (stream);
 	return stream;
 }
-#if defined(RESTOREUNSAFEOSTREAM)
-#define ostream unsafe_ostream
-#endif
 
 #endif

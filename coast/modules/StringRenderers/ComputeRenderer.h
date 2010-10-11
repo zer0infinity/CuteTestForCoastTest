@@ -32,7 +32,7 @@ class EXPORTDECL_STRINGRENDERERS ComputeRenderer : public Renderer
 public:
 	ComputeRenderer(const char *name);
 
-	void RenderAll(ostream &reply, Context &c, const ROAnything &data);
+	void RenderAll(std::ostream &reply, Context &c, const ROAnything &data);
 };
 
 #endif		//not defined _ComputeRenderer_H

@@ -12,19 +12,7 @@
 #include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include "ITOStorage.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-#include <iostream>
-#include <iomanip>
-using std::istream;
-using std::ostream;
-using std::ios;
-#else
-#if !defined(WIN32)
-#include <streambuf.h>
-#endif
-#include <iostream.h>
-#include <iomanip.h>
-#endif
+#include <iosfwd>
 
 //---- String --------------------------------------------------------------
 //! simple mt-safe string handling class
@@ -102,11 +90,11 @@ public:
 	//! append length bytes from stream is
 	//! read length bytes as is.
 	//! return value for convenient multi-appends
-	String &Append(istream &is, long length);
+	String &Append(std::istream &is, long length);
 
 	//! append string from is,  works like istream::get(char *, len, delim)
 	//! return value for convenient multi-appends
-	String &Append(istream &is, long length, char delim);
+	String &Append(std::istream &is, long length, char delim);
 
 	//! append integral number as decimal
 	String &Append(const long &number);
@@ -323,7 +311,7 @@ public:
 		"Hello World\x0A"
 		\endcode
 		on stdout */
-	ostream &IntPrintOn(ostream &os, const char quote = '\"') const;
+	std::ostream &IntPrintOn(std::ostream &os, const char quote = '\"') const;
 
 	/*! output routine to dump the string content as hexadecimal numbers in the form: 30 31 32 33  0123
 		\param dumpwidth number of buffered characters to trace per line into output string
@@ -335,7 +323,7 @@ public:
 		\param os the stream to print the hexdump onto
 		\param dumpwidth number of buffered characters to trace into output string
 		\return given stream reference */
-	ostream &DumpAsHex(ostream &os, long dumpwidth = 16L) const;
+	std::ostream &DumpAsHex(std::ostream &os, long dumpwidth = 16L) const;
 
 	//! internal input routine with masking and embedding in quote characters
 	/*! symmetric function to IntPrintOn
@@ -344,12 +332,12 @@ public:
 		the stream. The previous content of the string object is deleted
 		in any case
 		\return the number of newline characters read for adjusting line count in parsing */
-	long IntReadFrom(istream &os, const char quote = '\"');
+	long IntReadFrom(std::istream &os, const char quote = '\"');
 
 	//! canonical input operator for strings
 	/*! reads up to the next whitespace character
 		use getline() function for reading lines */
-	friend EXPORTDECL_FOUNDATION istream &operator>>(istream &is, String &s);
+	friend EXPORTDECL_FOUNDATION std::istream &operator>>(std::istream &is, String &s);
 
 // We don't use ostream directly because of the locking overhead. Because of
 // a compiler weakness we have to undef ostream, so we can define operator<<
@@ -361,7 +349,7 @@ public:
 #endif
 
 	//! canonical output operator for strings
-	friend EXPORTDECL_FOUNDATION ostream  &operator<<(ostream &os, const String &s);
+	friend EXPORTDECL_FOUNDATION std::ostream  &operator<<(std::ostream &os, const String &s);
 
 #if defined(__SUNPRO_CC) && !defined(__STD_OSTREAM__) && ( __SUNPRO_CC < 0x500 )
 #define ostream unsafe_ostream
@@ -371,7 +359,7 @@ public:
 	/*! \param is istream read from
 		\param s result of input is stored here
 		\param c delimiting character, usually newline */
-	friend EXPORTDECL_FOUNDATION istream  &getline(istream &is, String &s, char c);
+	friend EXPORTDECL_FOUNDATION std::istream  &getline(std::istream &is, String &s, char c);
 
 	//! manually set the allocator (should not usually be used...)
 	bool SetAllocator(Allocator *a) ;
@@ -567,7 +555,7 @@ inline bool String::IsEqual(const String &other) const
 }
 // this is just a performance shortcut
 
-EXPORTDECL_FOUNDATION inline istream &getline(istream &is, String &s)
+EXPORTDECL_FOUNDATION inline std::istream &getline(std::istream &is, String &s)
 {
 	return getline(is, s, '\n');
 }

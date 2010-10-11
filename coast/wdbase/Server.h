@@ -75,7 +75,7 @@ public:
 	//!service handling in its own thread
 	//! \param reply stream to generate the requests output on
 	//! \param ctx the context of this request, containing the request and all necessary configurable objects
-	virtual void ProcessRequest(ostream &reply, Context &ctx);
+	virtual void ProcessRequest(std::ostream &reply, Context &ctx);
 
 	//---- admin API -------------------
 	void PrepareShutdown(int retCode = 0);

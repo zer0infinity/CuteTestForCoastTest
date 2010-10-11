@@ -13,10 +13,6 @@
 #include "Anything.h"
 #include "Dbg.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //--- c-library modules used ---------------------------------------------------
 
 REBitSet::REBitSet(bool setall)
@@ -131,10 +127,10 @@ REBitSet &REBitSet::Set(Predicate p)
 	return *this;
 }
 
-ostream &operator<<(ostream &os, const REBitSet &s)
+std::ostream &operator<<(std::ostream &os, const REBitSet &s)
 {
 	for (unsigned long i = 0; i < REBitSet::fgcSize; ++i) {
-		os << hex << "0x" << s.fSet[i] << "UL ,";
+		os << std::hex << "0x" << s.fSet[i] << "UL ,";
 	}
 	return os;
 }

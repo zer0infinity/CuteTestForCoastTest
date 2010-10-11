@@ -222,7 +222,7 @@ void RegexTest::LargeLiteralTest()
 	RE literal(gLiteralExpr);
 	long s = 0, l = 0;
 	// should be timed:
-	istream *pStream = System::OpenStream("LargeLiteralData", "h");
+	std::istream *pStream = System::OpenStream("LargeLiteralData", "h");
 	if (t_assert(pStream != NULL)) {
 		String largeData;
 		while (pStream->good()) {
@@ -243,7 +243,7 @@ void RegexTest::LargeDotStarTest()
 	RE literal(gDotStarExpr);
 	long s = 0, l = 0;
 	// should be timed:
-	istream *pStream = System::OpenStream("LargeLiteralData", "h");
+	std::istream *pStream = System::OpenStream("LargeLiteralData", "h");
 	if (t_assert(pStream != NULL)) {
 		String largeData;
 		while (pStream->good()) {
@@ -305,7 +305,7 @@ void RegexTest::MatchConfig()
 {
 	StartTrace(RegexTest.MatchConfig);
 
-	istream *is = System::OpenStream("RegexTest", "any");
+	std::istream *is = System::OpenStream("RegexTest", "any");
 	t_assert(is && is->good());
 	if (!is || !is->good()) {
 		return;
@@ -377,7 +377,7 @@ void RegexTest::GrepTest()
 {
 	StartTrace(RegexTest.GrepTest);
 
-	istream *is = System::OpenStream("Dbg", "any");
+	std::istream *is = System::OpenStream("Dbg", "any");
 	t_assert(is && is->good());
 	if (!is || !is->good()) {
 		return;
@@ -398,7 +398,7 @@ void RegexTest::GrepSlotNamesTest()
 {
 	StartTrace(RegexTest.GrepSlotNamesTest);
 
-	istream *is = System::OpenStream("Dbg", "any");
+	std::istream *is = System::OpenStream("Dbg", "any");
 	t_assert(is && is->good());
 	if (!is || !is->good()) {
 		return;

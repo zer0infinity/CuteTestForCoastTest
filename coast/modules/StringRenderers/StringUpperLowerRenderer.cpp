@@ -19,7 +19,7 @@ StringUpperLowerRenderer::StringUpperLowerRenderer(const char *name) : Renderer(
 
 StringUpperLowerRenderer::~StringUpperLowerRenderer() { }
 
-void StringUpperLowerRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void StringUpperLowerRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	StartTrace(StringUpperLowerRenderer.RenderAll);
 

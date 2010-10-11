@@ -76,7 +76,7 @@ public:
 		\param ctx the thread context of the invocation
 		\param script specifies what to do
 		\return true if the Anything could be read successful and put into ctx */
-	virtual bool DoPutStream(const char *key, istream &is, Context &ctx, ROAnything script);
+	virtual bool DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything script);
 
 	virtual bool DoPutAnyWithSlotname(const char *key, Anything value, Context &ctx, ROAnything roaScript, const char *slotname);
 
@@ -114,7 +114,7 @@ public:
 		\param os the stream to write the Anything to
 		\param ctx the thread context of the invocation
 		\return returns true if the mapping was successful otherwise false */
-	virtual bool DoFinalGetStream(const char *key, ostream &os, Context &ctx);
+	virtual bool DoFinalGetStream(const char *key, std::ostream &os, Context &ctx);
 
 private:
 	AnythingToStreamMapper();

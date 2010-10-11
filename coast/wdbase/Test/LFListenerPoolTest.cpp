@@ -20,10 +20,6 @@
 #include "WPMStatHandler.h"
 #include "RequestProcessor.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //--- TestRequestReactor ----
 //:test driver for lf pool testing
 class TestProcessor: public RequestProcessor
@@ -260,7 +256,7 @@ bool LFListenerPoolTest::EventProcessed(Socket *socket)
 		String request;
 		(*socket->GetStream()) >> request;
 		assertEqual("hallo", request);
-		(*socket->GetStream()) << "HostReply" << endl;
+		(*socket->GetStream()) << "HostReply" << std::endl;
 		return true;
 	}
 	return false;
@@ -273,7 +269,7 @@ void LFListenerPoolTest::ProcessOneEvent()
 	String reply1;
 
 	if ( t_assert(c1.GetStream() != NULL) ) {
-		(*c1.GetStream()) << "hallo" << endl;
+		(*c1.GetStream()) << "hallo" << std::endl;
 		t_assert(!!(*c1.GetStream()));
 		(*c1.GetStream()) >> reply1;
 		t_assert(!!(*c1.GetStream()));
@@ -293,9 +289,9 @@ void LFListenerPoolTest::ProcessManyEvents()
 	String reply3;
 
 	if (t_assert(c1.GetStream() != NULL) && t_assert(c2.GetStream() != NULL) && t_assert(c3.GetStream() != NULL)) {
-		(*c1.GetStream()) << "hallo" << endl;
-		(*c2.GetStream()) << "hallo" << endl;
-		(*c3.GetStream()) << "hallo" << endl;
+		(*c1.GetStream()) << "hallo" << std::endl;
+		(*c2.GetStream()) << "hallo" << std::endl;
+		(*c3.GetStream()) << "hallo" << std::endl;
 		t_assert(!!(*c1.GetStream()));
 		t_assert(!!(*c2.GetStream()));
 		t_assert(!!(*c3.GetStream()));
@@ -321,8 +317,8 @@ void LFListenerPoolTest::ProcessTwoEvents()
 	String reply2;
 
 	if (t_assert(c1.GetStream() != NULL) && t_assert(c2.GetStream() != NULL)) {
-		(*c1.GetStream()) << "hallo" << endl;
-		(*c2.GetStream()) << "hallo" << endl;
+		(*c1.GetStream()) << "hallo" << std::endl;
+		(*c2.GetStream()) << "hallo" << std::endl;
 		t_assert(!!(*c1.GetStream()));
 		t_assert(!!(*c2.GetStream()));
 		(*c1.GetStream()) >> reply1;

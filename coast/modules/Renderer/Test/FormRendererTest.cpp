@@ -16,10 +16,6 @@
 
 //--- module under test --------------------------------------------------------
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 FormRendererTest::FormRendererTest (TString tname) : TestCaseType(tname),
 	fEnvironment(), fRole("FRTestRole"),
 	fContext( fEnvironment, Anything(), 0, 0, &fRole, 0 ),
@@ -48,7 +44,7 @@ FormRendererTest::~FormRendererTest()
 /*===============================================================*/
 void FormRendererTest::PrintResult()
 {
-	cerr << endl << (const char *)fCurrentTestMethod << " :   " << (const char *)fReply.str() << endl;
+	std::cerr << std::endl << (const char *)fCurrentTestMethod << " :   " << (const char *)fReply.str() << std::endl;
 }
 
 void FormRendererTest::ConfigureField6()

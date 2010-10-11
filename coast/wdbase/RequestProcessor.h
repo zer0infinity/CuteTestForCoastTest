@@ -42,32 +42,32 @@ public:
 	static void ForceConnectionClose(Context &ctx);
 
 	//! render the protocol specific status
-	static void RenderProtocolStatus(ostream &os, Context &ctx);
+	static void RenderProtocolStatus(std::ostream &os, Context &ctx);
 
 	//! render the protocol specific error msg
-	static void Error(ostream &reply, const String &msg, Context &ctx);
+	static void Error(std::ostream &reply, const String &msg, Context &ctx);
 
 	//! registry api
 	RegCacheDef(RequestProcessor);	// FindRequestProcessor()
 
 protected:
 	//!read the input arguments from the stream and generate an anything
-	virtual void DoReadInput(iostream &ios, Context &ctx);
+	virtual void DoReadInput(std::iostream &ios, Context &ctx);
 
 	//!process the arguments and generate a reply
-	virtual void DoProcessRequest(ostream &reply, Context &ctx);
+	virtual void DoProcessRequest(std::ostream &reply, Context &ctx);
 
 	//!process the arguments and generate a reply
-	virtual void DoWriteOutput(iostream &ios, ostream &reply, Context &ctx);
+	virtual void DoWriteOutput(std::iostream &ios, std::ostream &reply, Context &ctx);
 
 	//! render the protocol specific status
-	virtual void DoRenderProtocolStatus(ostream &os, Context &ctx);
+	virtual void DoRenderProtocolStatus(std::ostream &os, Context &ctx);
 
 	//! checks if the connection should keep-alive after the request has processed
 	virtual bool DoKeepConnectionAlive(Context &ctx);
 
 	//! render the protocol specific error msg
-	virtual void DoError(ostream &reply, const String &msg, Context &ctx);
+	virtual void DoError(std::ostream &reply, const String &msg, Context &ctx);
 
 	//!the server we use as callback for application functionality
 	Server *fServer;

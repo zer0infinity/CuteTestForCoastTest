@@ -72,32 +72,32 @@ IFAObject *Page::Clone(Allocator *a) const
 	return new (a) Page(fName);
 }
 
-void Page::Mime(ostream &reply, Context &c)
+void Page::Mime(std::ostream &reply, Context &c)
 {
 	reply << "Content-type: text/html" << ENDL;
 }
 
-void Page::Header(ostream &reply, Context &)
+void Page::Header(std::ostream &reply, Context &)
 {
 	reply << "<html><head><title>" << fName << "</title></head>\n<body>";
 }
 
-void Page::Title(ostream &reply, Context &)
+void Page::Title(std::ostream &reply, Context &)
 {
 	reply << "<h1>" << fName << "</h1>";
 }
 
-void Page::Body(ostream &reply, Context &)
+void Page::Body(std::ostream &reply, Context &)
 {
 	reply << "..." ;
 }
 
-void Page::Footer(ostream &reply, Context &)
+void Page::Footer(std::ostream &reply, Context &)
 {
 	reply << "</body></html>\n";
 }
 
-void Page::Start(ostream &reply, Context &context)
+void Page::Start(std::ostream &reply, Context &context)
 {
 	StartTrace1(Page.Start, fName << ":");
 	context.SetPage(this);
@@ -133,7 +133,7 @@ void Page::Preprocess(Context &c)
 	StatTrace(Page.Preprocess, fName << ":", Storage::Current());
 }
 
-void Page::Render(ostream &reply, Context &c)
+void Page::Render(std::ostream &reply, Context &c)
 {
 	StartTrace1(Page.RenderNew, "<" << fName << ">");
 	MethodTimer(Page.Render, "", c);
@@ -168,7 +168,7 @@ void Page::Render(ostream &reply, Context &c)
 	}
 
 	HTTPStreamStack stackStream(reply, RequestProcessor::KeepConnectionAlive(c), zip);
-	ostream &output = stackStream.GetBodyStream();
+	std::ostream &output = stackStream.GetBodyStream();
 
 	RenderProtocolBody(output, c);
 	RenderProtocolTail(output, c);
@@ -177,13 +177,13 @@ void Page::Render(ostream &reply, Context &c)
 	ProcessToken(token, c);
 }
 
-void Page::RenderProtocolStatus(ostream &reply, Context &c)
+void Page::RenderProtocolStatus(std::ostream &reply, Context &c)
 {
 	StartTrace1(Page.RenderProtocolStatus, "<" << fName << ">");
 	RequestProcessor::RenderProtocolStatus(reply, c);
 }
 
-void Page::RenderProtocolHeader(ostream &reply, Context &c)
+void Page::RenderProtocolHeader(std::ostream &reply, Context &c)
 {
 	StartTrace1(Page.RenderProtocolStatus, "<" << fName << ">");
 
@@ -198,7 +198,7 @@ void Page::RenderProtocolHeader(ostream &reply, Context &c)
 	}
 }
 
-void Page::RenderProtocolBody(ostream &reply, Context &c)
+void Page::RenderProtocolBody(std::ostream &reply, Context &c)
 {
 	StartTrace1(Page.RenderProtocolBody, "<" << fName << ">");
 
@@ -218,7 +218,7 @@ void Page::RenderProtocolBody(ostream &reply, Context &c)
 	}
 }
 
-void Page::RenderProtocolTail(ostream &reply, Context &c)
+void Page::RenderProtocolTail(std::ostream &reply, Context &c)
 {
 	StartTrace1(Page.RenderProtocolTail, "<" << fName << ">");
 	//!@FIXME: this is a temporary workaround to only render Debug output onto html pages

@@ -19,10 +19,6 @@
 #include "Pipe.h"
 #include "Dbg.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //---- PipeStreamTest ----------------------------------------------------------------
 PipeStreamTest::PipeStreamTest(TString className)
 	: TestCaseType(className)
@@ -40,15 +36,15 @@ void PipeStreamTest::SimpleWriteandRead()
 	StartTrace(PipeStreamTest.SimpleWriteandRead);
 
 	Pipe pipi;
-	iostream *stream = pipi.GetStream();
+	std::iostream *stream = pipi.GetStream();
 
 	t_assert(stream != NULL);
-	(*stream) << "hallo" << flush;
+	(*stream) << "hallo" << std::flush;
 	String h;
 	(*stream) >> h;
 	assertEqual("hallo", h);
 	pipi.ShutDownWriting();
-	(*stream) << "hallo" << flush;
+	(*stream) << "hallo" << std::flush;
 	t_assert(!stream->good()); // timeout ?
 	stream->clear();
 }
@@ -58,20 +54,20 @@ void PipeStreamTest::MoreWriteandRead()
 	StartTrace(PipeStreamTest.MoreWriteandRead);
 
 	Pipe pipi(5000L);
-	iostream *stream = pipi.GetStream();
+	std::iostream *stream = pipi.GetStream();
 
 	t_assert(stream != NULL);
 	if (stream) {
 		pipi.SetTimeout(0);
 		t_assert(pipi.IsReadyForWriting());
-		(*stream) << "hallo" << endl; // this might set IsReadyForWriting false
-		(*stream) << "peter" << flush;
+		(*stream) << "hallo" << std::endl; // this might set IsReadyForWriting false
+		(*stream) << "peter" << std::flush;
 		stream->clear();
 		String h;
 		(*stream) >> h;
 		assertEqual("hallo", h);
 		pipi.ShutDownWriting();
-		(*stream) << "hallo" << flush;
+		(*stream) << "hallo" << std::flush;
 		t_assert(!stream->good()); // timeout ?
 		stream->clear();
 	}
@@ -82,7 +78,7 @@ void PipeStreamTest::LoopWriteandRead()
 	StartTrace(PipeStreamTest.LoopWriteandRead);
 
 	Pipe pipi;
-	iostream *stream = pipi.GetStream();
+	std::iostream *stream = pipi.GetStream();
 	const long cBufSz = 4000;
 	String buf(cBufSz);
 	buf << "hallo2\n";
@@ -106,12 +102,12 @@ void PipeStreamTest::LoopWriteandRead()
 		// now flush again
 
 		t_assert(pipi.IsReadyForWriting());
-		(*stream) << flush;
+		(*stream) << std::flush;
 		while (stream->read((char *)(const char *)h, cBufSz)) {
 			assertEqual(expected, h);
 		}
 		pipi.ShutDownWriting();
-		(*stream) << "hallo" << flush;
+		(*stream) << "hallo" << std::flush;
 		t_assert(stream->fail() != 0); // timeout ?
 		stream->clear();
 	}

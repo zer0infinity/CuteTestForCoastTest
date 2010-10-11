@@ -42,7 +42,7 @@ void HTTPStreamStackTest::NoEncoding()
 	StringStream out;
 	{
 		HTTPStreamStack stack(out, false, false);
-		ostream &body = stack.GetBodyStream();
+		std::ostream &body = stack.GetBodyStream();
 		body << "TEST";
 	}
 	StringStream expected;
@@ -58,7 +58,7 @@ void HTTPStreamStackTest::ChunkedOnlyEncoding()
 	StringStream out;
 	{
 		HTTPStreamStack stack(out, true, false);
-		ostream &body = stack.GetBodyStream();
+		std::ostream &body = stack.GetBodyStream();
 		body << "TEST";
 	}
 
@@ -80,7 +80,7 @@ void HTTPStreamStackTest::GzipOnlyEncoding()
 	StringStream out;
 	{
 		HTTPStreamStack stack(out, false, true);
-		ostream &body = stack.GetBodyStream();
+		std::ostream &body = stack.GetBodyStream();
 		body << "TEST";
 	}
 
@@ -102,7 +102,7 @@ void HTTPStreamStackTest::ChunkedGzipEncoding()
 	StringStream out;
 	{
 		HTTPStreamStack stack(out, true, true);
-		ostream &body = stack.GetBodyStream();
+		std::ostream &body = stack.GetBodyStream();
 		body << "TEST";
 	}
 

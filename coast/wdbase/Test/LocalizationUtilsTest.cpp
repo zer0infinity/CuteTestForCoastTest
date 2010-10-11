@@ -490,7 +490,7 @@ void LocalizationUtilsTest::OpenStreamLangD()
 	assertEqual(".", System::GetRootDir());
 
 	String absoluteFileName;
-	istream *is = LocalizationUtils::OpenStream( fContext, "Test", absoluteFileName );
+	std::istream *is = LocalizationUtils::OpenStream( fContext, "Test", absoluteFileName );
 
 	Anything any;
 	if ( t_assert( is != NULL ) ) {
@@ -525,7 +525,7 @@ void LocalizationUtilsTest::OpenStreamLangDAbsolut()
 	PrepareRootDir();
 
 	String absoluteFileName;
-	istream *is = LocalizationUtils::OpenStream( fContext, "Test", absoluteFileName );
+	std::istream *is = LocalizationUtils::OpenStream( fContext, "Test", absoluteFileName );
 	t_assert( is != 0 );
 	// this will fail if daily build did not check out correctly
 
@@ -545,7 +545,7 @@ void LocalizationUtilsTest::OpenStreamLangF()
 	// using FindLanguage which is used during construction of the Context
 
 	String absoluteFileName;
-	istream *is = LocalizationUtils::OpenStream( fContext, "Test", absoluteFileName );
+	std::istream *is = LocalizationUtils::OpenStream( fContext, "Test", absoluteFileName );
 	t_assert( is != 0 );
 	Anything any;
 	if ( is ) {
@@ -564,7 +564,7 @@ void LocalizationUtilsTest::OpenStreamLangF1stTemplateDirWrong()
 	TmpStore["HTMLTemplateConfig"]["TemplateDir"] = "Schrott:TestDir1:TestDir2";
 
 	String absoluteFileName;
-	istream *is = LocalizationUtils::OpenStream( fContext, "Test", absoluteFileName );
+	std::istream *is = LocalizationUtils::OpenStream( fContext, "Test", absoluteFileName );
 	t_assert( is != 0 );
 	Anything any;
 	if ( is ) {
@@ -580,7 +580,7 @@ void LocalizationUtilsTest::OpenStreamLangDDefault()
 	fContext.SetLanguage("Key2");
 
 	String absoluteFileName;
-	istream *is = LocalizationUtils::OpenStream( fContext, "Test", absoluteFileName );
+	std::istream *is = LocalizationUtils::OpenStream( fContext, "Test", absoluteFileName );
 	t_assert( is != 0 );
 	Anything any;
 	if ( is ) {
@@ -603,7 +603,7 @@ void LocalizationUtilsTest::OpenStreamLangDDefaultAbsolut()
 	// language dir will not be found, use non localized version
 
 	String absoluteFileName;
-	istream *is = LocalizationUtils::OpenStream( fContext, "Test", absoluteFileName );
+	std::istream *is = LocalizationUtils::OpenStream( fContext, "Test", absoluteFileName );
 //	System::ResolvePath(absoluteFileName);
 	assertEqual(expectedPath, absoluteFileName);
 	t_assert( is != 0 );
@@ -625,7 +625,7 @@ void LocalizationUtilsTest::OpenStreamLangDDefaultAbsolut1stTemplateDirWrong()
 	fContext.SetLanguage("Key2");
 
 	String absoluteFileName;
-	istream *is = LocalizationUtils::OpenStream( fContext, "Test", absoluteFileName );
+	std::istream *is = LocalizationUtils::OpenStream( fContext, "Test", absoluteFileName );
 	t_assert( is != 0 );
 	// this will fail if daily build did not check out correctly
 	Anything any;
@@ -642,7 +642,7 @@ void LocalizationUtilsTest::OpenStreamDefaultTemplateDir()
 	fContext.SetLanguage("Key2");
 
 	String absoluteFileName;
-	istream *is = LocalizationUtils::OpenStream( fContext, "Test", absoluteFileName );
+	std::istream *is = LocalizationUtils::OpenStream( fContext, "Test", absoluteFileName );
 	t_assert( is != 0 );
 	Anything any;
 	if ( is ) {

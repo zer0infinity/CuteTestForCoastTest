@@ -10,12 +10,9 @@
 #define IT_TESTFW_TestRunner_h_
 
 #include "TestTimer.h"
-#if defined(ONLY_STD_IOSTREAM)
+
 #include <iosfwd>
-using std::ostream;
-#else
-class ostream;
-#endif
+
 class Test;
 class TestList;
 
@@ -42,16 +39,7 @@ class TestRunner
 protected:
 	bool		fWait;
 	TestList	*fMappings;
-// undef iostreams
-#ifdef ostream
-#define SAVEDOSTREAM 1
-#undef ostream
-#endif
-	ostream		*fLogStream;
-#if defined(SAVEDOSTREAM)
-#undef SAVEDOSTREAM
-#define ostream unsafe_ostream
-#endif
+	std::ostream		*fLogStream;
 	long		fNumberOfSuccesses;
 	long		fNumberOfFailures;
 	TestTimer	fElapsedTime;

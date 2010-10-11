@@ -27,7 +27,7 @@ XMLBodyMapperTest::~XMLBodyMapperTest() {};
 void XMLBodyMapperTest::setUp ()
 {
 	String configFilename("XMLBodyMapperTestConfig");
-	istream *ifp = System::OpenStream(configFilename, "any");
+	std::istream *ifp = System::OpenStream(configFilename, "any");
 
 	if (ifp) {	// found
 		fConfig.Import(*ifp, configFilename);

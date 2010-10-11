@@ -32,7 +32,7 @@ public:
 	TruncateStringRenderer(const char *name);
 	~TruncateStringRenderer();
 
-	virtual void RenderAll(ostream &reply, Context &c, const ROAnything &config);
+	virtual void RenderAll(std::ostream &reply, Context &c, const ROAnything &config);
 };
 
 #endif

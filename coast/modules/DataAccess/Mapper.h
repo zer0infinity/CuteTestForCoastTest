@@ -120,7 +120,7 @@ public:
 		\param os the stream to be mapped
 		\param ctx the thread context of the invocation
 		\return returns true if the mapping was successful otherwise false */
-	bool Get(const char *key, ostream &os, Context &ctx);
+	bool Get(const char *key, std::ostream &os, Context &ctx);
 
 	//! Get mapper script for the given key if any. Subclasses can overwrite DoSelectScript() to avoid scripting (recursion) or tailor to their needs.
 	/*! Default is to return script[key].
@@ -185,7 +185,7 @@ protected:
 		\param ctx the thread context of the invocation
 		\param script to be interpreted if any, for subclasses this is the config to use
 		\return returns true if the mapping was successful otherwise false */
-	virtual bool DoGetStream(const char *key, ostream &os, Context &ctx, ROAnything script);
+	virtual bool DoGetStream(const char *key, std::ostream &os, Context &ctx, ROAnything script);
 
 	//! Hook for recursion stopper in Mapper script interpretation returning an Anything value.
 	/*! Looks for value in context using the key and assigns or appends to value depending if value was Null before.
@@ -205,7 +205,7 @@ protected:
 	 * @return true in case the key was found and resulted in any value; a Null Anything is also a valid value
 	 * @return false otherwise
 	 */
-	virtual bool DoFinalGetStream(const char *key, ostream &os, Context &ctx);
+	virtual bool DoFinalGetStream(const char *key, std::ostream &os, Context &ctx);
 
 	//! Generate the config file name (without extension, which is assumed to be any). Is simply the concatenation of category and "Meta". Iif category is "ParameterMapper" we use "ParameterMapper" instead, to keep compatibility.
 	virtual bool DoGetConfigName(const char *category, const char *, String &configFileName) const;
@@ -335,7 +335,7 @@ public:
 		\param is the stream to be mapped
 		\param ctx the thread context of the invocation
 		\return returns true if the mapping was successful otherwise false */
-	bool Put(const char *key, istream &is, Context &ctx);
+	bool Put(const char *key, std::istream &is, Context &ctx);
 
 	/*! Calls DoGetDestinationSlot to get the name - or empty string - which will be used as base path in tmpstore. The 'base' path - the one returned here - will be stored in ResultMapper.DestinationSlot for later usage.
 		\param ctx the context in which to look for the destination slot
@@ -396,7 +396,7 @@ protected:
 		\param ctx the context of the invocation
 		\param script current mapper configuration as ROAnything
 		\return returns true if the mapping was successful otherwise false */
-	virtual bool DoPutStream(const char *key, istream &is, Context &ctx, ROAnything script);
+	virtual bool DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything script);
 
 	/*! Hook for breaking recursion in mapper script interpretation. Store the value in tmpstore under tmp.slot.key, where slot is retrieved with GetDestinationSlot(). if slot == "", then value is stored under tmp.key directly key may NOT be empty (fails otherwise).
 		\param key name used to distinguish kind of output
@@ -410,7 +410,7 @@ protected:
 		\param is stream whose content will be mapped
 		\param ctx the context of the invocation
 		\return returns true if the mapping was successful otherwise false */
-	virtual bool DoFinalPutStream(const char *key, istream &is, Context &ctx);
+	virtual bool DoFinalPutStream(const char *key, std::istream &is, Context &ctx);
 
 	//! Defines the base name space where to put values into tmpstore, default is "Mapper". May return a "."-separated path, such as x.y.z. If empty string, tmpstore will be used as base.
 	/*!	\param ctx the context in which to look for the destination slot

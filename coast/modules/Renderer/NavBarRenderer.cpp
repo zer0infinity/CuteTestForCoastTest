@@ -24,7 +24,7 @@ NavBarRenderer::~NavBarRenderer()
 {
 }
 
-void NavBarRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void NavBarRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 
 	StartTrace(NavBarRenderer.RenderAll);
@@ -48,7 +48,7 @@ void NavBarRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &con
 	}	// if initial checks are ok
 }
 
-void NavBarRenderer::RenderLevel(ostream &reply, Context &c, const ROAnything &config, Anything &info, String &entryStoreName)
+void NavBarRenderer::RenderLevel(std::ostream &reply, Context &c, const ROAnything &config, Anything &info, String &entryStoreName)
 {
 	StartTrace(NavBarRenderer.RenderLevel);
 	Anything tempStore = c.GetTmpStore();

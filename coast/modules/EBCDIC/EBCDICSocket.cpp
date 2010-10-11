@@ -22,7 +22,7 @@ EBCDICSocket::EBCDICSocket(int socket, const Anything &clientInfo, bool doClose,
 {
 }
 
-iostream *EBCDICSocket::DoMakeStream()
+std::iostream *EBCDICSocket::DoMakeStream()
 {
 	StartTrace(EBCDICSocket.DoMakeStream);
 	return new EBCDICSocketStream(this);

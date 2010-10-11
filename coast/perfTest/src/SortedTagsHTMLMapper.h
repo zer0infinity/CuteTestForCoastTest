@@ -31,7 +31,7 @@ public:
 	//! \param ctx the thread context of the invocation
 	//! \param config ignored
 	//! \return returns true if the mapping was successful otherwise false
-	virtual bool DoPutStream(const char *key, istream &is, Context &ctx, ROAnything config);
+	virtual bool DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything config);
 
 	//! reads an HTML document out of a string
 	//! creates a stream out of the string and calls DoPutStream (see above)

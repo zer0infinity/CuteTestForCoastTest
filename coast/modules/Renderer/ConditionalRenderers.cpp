@@ -86,7 +86,7 @@ void ConditionalRenderer::TestCondition(Context &ctx, const ROAnything &config, 
 	res = "Error";
 }
 
-void ConditionalRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config) {
+void ConditionalRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config) {
 	StartTrace(ConditionalRenderer.Render);
 	TraceAny(config, "config");
 
@@ -114,8 +114,9 @@ SwitchRenderer::SwitchRenderer(const char *name) :
 	Renderer(name) {
 }
 
-void SwitchRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config) {
-	StartTrace(SwitchRenderer.Render); TraceAny(config, "config");
+void SwitchRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config) {
+	StartTrace(SwitchRenderer.Render);
+	TraceAny(config, "config");
 
 	ROAnything lookupName;
 	char pathDelim;

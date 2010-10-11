@@ -25,7 +25,7 @@ RequestReader::RequestReader(HTTPProcessor *p, MIMEHeader &header)
 	StartTrace(RequestReader.RequestReader);
 }
 
-bool RequestReader::ReadLine(iostream &Ios, String &line, const Anything &clientInfo, bool &hadError)
+bool RequestReader::ReadLine(std::iostream &Ios, String &line, const Anything &clientInfo, bool &hadError)
 {
 	StartTrace(RequestReader.ReadLine);
 	char c;
@@ -62,7 +62,7 @@ bool RequestReader::ReadLine(iostream &Ios, String &line, const Anything &client
 	return false;
 }
 
-bool RequestReader::ReadRequest(iostream &Ios, const Anything &clientInfo)
+bool RequestReader::ReadRequest(std::iostream &Ios, const Anything &clientInfo)
 {
 	StartTrace(RequestReader.ReadRequest);
 	String line;
@@ -111,7 +111,7 @@ bool RequestReader::ReadRequest(iostream &Ios, const Anything &clientInfo)
 	return ret;
 }
 
-bool RequestReader::CheckReqLineSize(iostream &Ios, long lineLength, const String &line, const Anything &clientInfo)
+bool RequestReader::CheckReqLineSize(std::iostream &Ios, long lineLength, const String &line, const Anything &clientInfo)
 {
 	StartTrace(RequestReader.CheckReqLineSize);
 	if (lineLength > fProc->fLineSizeLimit) {
@@ -122,7 +122,7 @@ bool RequestReader::CheckReqLineSize(iostream &Ios, long lineLength, const Strin
 	return true;
 }
 
-bool RequestReader::CheckReqBufferSize(iostream &Ios, long lineLength, const String &line, const Anything &clientInfo)
+bool RequestReader::CheckReqBufferSize(std::iostream &Ios, long lineLength, const String &line, const Anything &clientInfo)
 {
 	StartTrace(RequestReader.CheckReqBufferSize);
 	if (lineLength > fProc->fRequestSizeLimit) {
@@ -133,7 +133,7 @@ bool RequestReader::CheckReqBufferSize(iostream &Ios, long lineLength, const Str
 	return true;
 }
 
-bool RequestReader::CheckReqURISize(iostream &Ios, long lineLength, const String &line, const Anything &clientInfo)
+bool RequestReader::CheckReqURISize(std::iostream &Ios, long lineLength, const String &line, const Anything &clientInfo)
 {
 	StartTrace(RequestReader.CheckReqURISize);
 	if (lineLength > fProc->fURISizeLimit) {
@@ -145,7 +145,7 @@ bool RequestReader::CheckReqURISize(iostream &Ios, long lineLength, const String
 	return true;
 }
 
-bool RequestReader::HandleFirstLine(iostream &Ios, String &line, const Anything &clientInfo)
+bool RequestReader::HandleFirstLine(std::iostream &Ios, String &line, const Anything &clientInfo)
 {
 	StartTrace(RequestReader.HandleFirstLine);
 	long llen = line.Length();
@@ -163,7 +163,7 @@ bool RequestReader::HandleFirstLine(iostream &Ios, String &line, const Anything 
 	return true;
 }
 
-bool RequestReader::ParseRequest(iostream &Ios, String &line, const Anything &clientInfo)
+bool RequestReader::ParseRequest(std::iostream &Ios, String &line, const Anything &clientInfo)
 {
 	StartTrace(RequestReader.ParseRequest);
 	Trace("Line:<" << line << ">");
@@ -237,7 +237,7 @@ bool RequestReader::ParseRequest(iostream &Ios, String &line, const Anything &cl
 	return true;
 }
 
-bool RequestReader::VerifyUrlPath(iostream &Ios, String &urlPath, const Anything &clientInfo)
+bool RequestReader::VerifyUrlPath(std::iostream &Ios, String &urlPath, const Anything &clientInfo)
 {
 	StartTrace(RequestReader.VerifyUrlPath);
 
@@ -295,7 +295,7 @@ Anything RequestReader::GetRequest()
 }
 
 // handle error
-bool RequestReader::DoHandleError(iostream &Ios, long errcode, const String &reason, const String &line, const Anything &clientInfo, bool reject, const String &msg)
+bool RequestReader::DoHandleError(std::iostream &Ios, long errcode, const String &reason, const String &line, const Anything &clientInfo, bool reject, const String &msg)
 {
 	StartTrace(RequestReader.DoHandleError);
 	Trace("Errcode: [" << errcode << "] Message: [" << msg << "] Faulty line: [" << line << "] reject: [" << reject << "]");
@@ -309,7 +309,7 @@ bool RequestReader::DoHandleError(iostream &Ios, long errcode, const String &rea
 
 			Ios << ENDL;
 			Ios.flush();
-			Ios.clear(ios::badbit);
+			Ios.clear(std::ios::badbit);
 		} else {
 			Trace("Can not send error msg.");
 		}

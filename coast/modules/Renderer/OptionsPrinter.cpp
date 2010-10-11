@@ -25,7 +25,7 @@ OptionsPrinter::~OptionsPrinter()
 {
 }
 
-void OptionsPrinter::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void OptionsPrinter::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	StartTrace(OptionsPrinter.Render);
 	TraceAny(config, "config");

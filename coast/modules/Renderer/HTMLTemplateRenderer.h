@@ -78,7 +78,7 @@ class EXPORTDECL_RENDERER HTMLTemplateRenderer : public Renderer
 public:
 	HTMLTemplateRenderer(const char *name);
 
-	void RenderAll(ostream &reply, Context &c, const ROAnything &config);
+	void RenderAll(std::ostream &reply, Context &c, const ROAnything &config);
 
 	static void BuildCache(const ROAnything config);
 	virtual class TemplateParser *GetParser();

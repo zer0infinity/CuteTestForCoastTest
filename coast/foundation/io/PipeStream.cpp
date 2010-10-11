@@ -26,10 +26,8 @@ using namespace Coast;
 
 //---- PipeStream -------------------------------------------------------------------
 PipeStream::PipeStream(Pipe *s, long timeout, long sockbufsz)
-	: iosCoastPipe(s, timeout, sockbufsz, ios::in | ios::out)
-#if defined(ONLY_STD_IOSTREAM)
-	, iostream(&fPipeBuf)
-#endif
+	: iosCoastPipe(s, timeout, sockbufsz, std::ios::in | std::ios::out)
+	, std::iostream(&fPipeBuf)
 {
 }
 
@@ -48,8 +46,8 @@ PipeTimeoutModifier::~PipeTimeoutModifier()
 
 //---- PipeStreamBuf -------------------------------------------------------------------
 PipeStreamBuf::PipeStreamBuf(Pipe *myPipe, long timeout, long sockbufsz, int mode)
-	: fReadBufStorage(mode &ios::in ? sockbufsz : 0L)
-	, fWriteBufStorage(mode &ios::out ? sockbufsz : 0L)
+	: fReadBufStorage(mode &std::ios::in ? sockbufsz : 0L)
+	, fWriteBufStorage(mode &std::ios::out ? sockbufsz : 0L)
 	, fPipe(myPipe)
 	, fReadCount(0)
 	, fWriteCount(0)
@@ -74,10 +72,10 @@ PipeStreamBuf::PipeStreamBuf(const PipeStreamBuf &ssbuf)
 	StartTrace1(PipeStreamBuf.PipeStreamBuf, "copy");
 	int mode = 0;
 	if (fReadBufStorage.Capacity() > 0) {
-		mode |= ios::in;
+		mode |= std::ios::in;
 	}
 	if (fWriteBufStorage.Capacity() > 0) {
-		mode |= ios::out;
+		mode |= std::ios::out;
 	}
 	xinit();
 }
@@ -179,7 +177,7 @@ long PipeStreamBuf::DoWrite(const char *bufPtr, long bytes2Send)
 {
 	StartTrace1(PipeStreamBuf.DoWrite, "bytes2Send:" << bytes2Send);
 	long bytesSent = 0;
-	iostream *Ios = fPipe ? fPipe->GetStream() : 0; // neeed for errorhandling
+	std::iostream *Ios = fPipe ? fPipe->GetStream() : 0; // neeed for errorhandling
 	long wfd = fPipe ? fPipe->GetWriteFd() : -1;
 
 	if (wfd >= 0) {
@@ -196,17 +194,17 @@ long PipeStreamBuf::DoWrite(const char *bufPtr, long bytes2Send)
 				continue;
 			}
 			if (fPipe->HadTimeout()) {
-				Ios->clear(ios::failbit);
+				Ios->clear(std::ios::failbit);
 				Trace("timeout");
 				break;
 			}
 			String logMsg("write on pipe: ");
 			logMsg << (long)wfd << " failed <" << SystemLog::LastSysError() << ">" << " transmitted: " << bytesSent;
 			SystemLog::Error(logMsg);
-			Ios->clear(ios::badbit);
+			Ios->clear(std::ios::badbit);
 		}
 	} else if (Ios) {
-		Ios->clear(ios::badbit | ios::eofbit | ios::failbit);
+		Ios->clear(std::ios::badbit | std::ios::eofbit | std::ios::failbit);
 	}
 	return (Ios && Ios->good()) ? bytesSent : EOF;
 }
@@ -217,7 +215,7 @@ long PipeStreamBuf::DoRead(char *buf, long len) const
 	long bytesRead = EOF;
 
 	if (fPipe) {
-		iostream *ioStream = fPipe->GetStream();
+		std::iostream *ioStream = fPipe->GetStream();
 		if ( fPipe->IsReadyForReading() ) {
 			do {
 				bytesRead = Socket::read(fPipe->GetReadFd(), buf, len);
@@ -225,22 +223,22 @@ long PipeStreamBuf::DoRead(char *buf, long len) const
 			} while (bytesRead < 0 && System::SyscallWasInterrupted());
 
 			if ( bytesRead < 0 ) {
-				ioStream->clear(ios::badbit);
+				ioStream->clear(std::ios::badbit);
 				Trace("something went wrong");
 			} else if (0 == bytesRead) {
-				ioStream->clear(ios::eofbit);
+				ioStream->clear(std::ios::eofbit);
 				Trace("nothing read, eof");
 			}
 		} else {
 			Trace("timeout or nothing to read");
-			ioStream->clear(fPipe->HadTimeout() ? ios::failbit : ios::badbit);
+			ioStream->clear(fPipe->HadTimeout() ? std::ios::failbit : std::ios::badbit);
 		}
 	}
 	Trace("bytesRead:" << bytesRead);
 	return bytesRead;
 }
 
-ostream  &operator<<(ostream &os, PipeStreamBuf *ssbuf)
+std::ostream  &operator<<(std::ostream &os, PipeStreamBuf *ssbuf)
 {
 	StartTrace(PipeStreamBuf.operator << );
 	if (ssbuf) {

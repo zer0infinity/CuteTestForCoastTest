@@ -18,7 +18,7 @@ class EXPORTDECL_WDBASE LocalizationUtils
 public:
 	static const char *Eval(const char *lang, const ROAnything &config);
 	static const ROAnything EvalAny(const char *lang, const ROAnything &config);
-	static istream *OpenStream(Context &c, const char *filename, String &relPath);
+	static std::istream *OpenStream(Context &c, const char *filename, String &relPath);
 	static const char *FindLanguageKey(Context &c, const char *dft);
 
 protected:

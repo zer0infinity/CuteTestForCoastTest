@@ -81,7 +81,7 @@ public:
 	 * @param c Context used for output generation
 	 * @param config configuration which drives the output generation
 	 */
-	virtual void RenderAll(ostream &reply, Context &c, const ROAnything &config);
+	virtual void RenderAll(std::ostream &reply, Context &c, const ROAnything &config);
 };
 
 #endif

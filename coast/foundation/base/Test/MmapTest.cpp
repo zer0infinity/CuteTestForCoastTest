@@ -27,12 +27,7 @@ using namespace Coast;
 #include <io.h>
 #endif
 #include <fcntl.h>
-#if defined(ONLY_STD_IOSTREAM)
 #include <fstream>
-using namespace std;
-#else
-#include <fstream.h>
-#endif
 
 // for additional functionality / syscalls
 #if !defined(WIN32)
@@ -78,28 +73,28 @@ Test *MmapTest::suite ()
 void MmapTest::TestMagicFlags()
 {
 	if ( System::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
-		MmapMagicFlags fl(ios::in, MmapStreamBuf::eSync);
+		MmapMagicFlags fl(std::ios::in, MmapStreamBuf::eSync);
 		t_assert(fl.IsIosIn());
 		t_assert(!fl.IsIosOut());
 		t_assert(fl.IsReadable());
 		t_assert(!(fl.GetSyscallOpenMode()&O_CREAT));
 		t_assert(!(fl.GetSyscallOpenMode()&O_TRUNC));
 
-		fl = MmapMagicFlags (ios::in, MmapStreamBuf::eSync);
+		fl = MmapMagicFlags (std::ios::in, MmapStreamBuf::eSync);
 		t_assert(fl.IsIosIn());
 		t_assert(!fl.IsIosOut());
 		t_assert(fl.IsReadable());
 		t_assert(!(fl.GetSyscallOpenMode()&O_CREAT));
 		t_assert(!(fl.GetSyscallOpenMode()&O_TRUNC));
 
-		fl = MmapMagicFlags(ios::out, MmapStreamBuf::eSync);
+		fl = MmapMagicFlags(std::ios::out, MmapStreamBuf::eSync);
 		t_assert(fl.IsIosOut());
 		t_assert(fl.IsWriteable());
 		t_assert(fl.GetSyscallOpenMode()&O_RDWR);
 		t_assert(fl.GetSyscallOpenMode()&O_CREAT);
 		t_assert(fl.GetSyscallOpenMode()&O_TRUNC);
 
-		fl = MmapMagicFlags(ios::app, MmapStreamBuf::eSync);
+		fl = MmapMagicFlags(std::ios::app, MmapStreamBuf::eSync);
 		t_assert(fl.IsIosOut());
 		t_assert(fl.IsIosApp());
 		t_assert(fl.IsIosAppendOrAtEnd());
@@ -108,7 +103,7 @@ void MmapTest::TestMagicFlags()
 		t_assert(fl.GetSyscallOpenMode()&O_CREAT);
 		t_assert(!(fl.GetSyscallOpenMode()&O_TRUNC));
 
-		fl = MmapMagicFlags(ios::in | ios::out, MmapStreamBuf::eSync);
+		fl = MmapMagicFlags(std::ios::in | std::ios::out, MmapStreamBuf::eSync);
 		t_assert(fl.IsIosIn());
 		t_assert(fl.IsIosOut());
 		t_assert(fl.IsWriteable());
@@ -160,7 +155,7 @@ void MmapTest::IntSimpleWrite(int openmode)
 {
 	System::IO::unlink(fgcFilename);
 	// note this can be a problem if more than one process runs this test
-	OMmapStream os(fgcFilename, ios::out, openmode);
+	OMmapStream os(fgcFilename, std::ios::out, openmode);
 	t_assert(os.good());
 	os << fgcContent;
 	os.close();
@@ -218,7 +213,7 @@ void MmapTest::OperatorShiftLeftWithReadBuf()
 			os << is.rdbuf();
 			t_assert(os.good());
 
-			istream *is2 = System::OpenIStream("testout2", "txt");
+			std::istream *is2 = System::OpenIStream("testout2", "txt");
 			if (!t_assert(is2)) {
 				return;
 			}
@@ -235,11 +230,11 @@ void MmapTest::EmptyFileRead()
 {
 	if ( System::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
 		String mname("tmp/mmapEmptyFile");
-		ostream *os0 = System::OpenOStream(mname, "tst");
+		std::ostream *os0 = System::OpenOStream(mname, "tst");
 		delete os0;
 
 		mname << ".tst";
-		MmapStream is(mname , (ios::in));
+		MmapStream is(mname , (std::ios::in));
 		t_assert(is.good());
 		if (is.good()) {
 			char c;
@@ -257,7 +252,7 @@ void MmapTest::EmptyFilePutback()
 	if ( System::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
 		System::IO::unlink(fgcFilename);
 		// note this can be a problem if more than one process runs this test
-		MmapStream ms(fgcFilename, ios::in | ios::out);
+		MmapStream ms(fgcFilename, std::ios::in | std::ios::out);
 
 		t_assert(ms.good());
 		if (ms.good()) {
@@ -281,7 +276,7 @@ void MmapTest::FStreamEmptyFilePutback()
 	if ( System::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
 		System::IO::unlink(fgcFilename);
 		// note this can be a problem if more than one process runs this test
-		fstream ms(fgcFilename, ios::in | ios::out);
+		std::fstream ms(fgcFilename, std::ios::in | std::ios::out);
 
 		t_assert(ms.good());
 		if (ms.good()) {
@@ -351,7 +346,7 @@ void MmapTest::SimplePutback()
 {
 	if ( System::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
 		this->IntSimpleWrite(); // set up testfile
-		MmapStream is(fgcFilename, ios::in | ios::out | ios::app); // do not trunc the file
+		MmapStream is(fgcFilename, std::ios::in | std::ios::out | std::ios::app); // do not trunc the file
 		t_assert(is.good());
 		char c;
 		TString s;
@@ -382,7 +377,7 @@ void MmapTest::SimpleAppend()
 {
 	if ( System::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
 		this->IntSimpleWrite(); // set up testfile
-		OMmapStream os(fgcFilename, ios::app);
+		OMmapStream os(fgcFilename, std::ios::app);
 		t_assert(os.good());
 		os << fgcContent;
 		os.close();
@@ -400,7 +395,7 @@ void MmapTest::SimpleTruncate()
 {
 	if ( System::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
 		this->IntSimpleWrite(); // set up testfile
-		MmapStream os(fgcFilename, ios::in | ios::out); // this truncates the file
+		MmapStream os(fgcFilename, std::ios::in | std::ios::out); // this truncates the file
 		t_assert(os.good());
 		os << "Hallo";
 		os.close();
@@ -421,12 +416,12 @@ void MmapTest::SimulatedLogAppend()
 		logfilename << ".log";
 		System::IO::unlink(logfilename);
 
-		OMmapStream os(logfilename, ios::app, MmapStreamBuf::openprot,
+		OMmapStream os(logfilename, std::ios::app, MmapStreamBuf::openprot,
 					   MmapStreamBuf::eSync); // eSync is default
 		t_assert(os.good());
 		for (int j = 0; j < 2; j++) {
 			for (int i = 0; i < 5; i++) {
-				os << j << ", " << i << fgcContent << endl; // endl should sync implicitely
+				os << j << ", " << i << fgcContent << std::endl; // endl should sync implicitely
 			}
 		}
 		os.close();
@@ -439,7 +434,7 @@ void MmapTest::SimpleAtEnd()
 {
 	if ( System::EnvGet("COAST_USE_MMAP_STREAMS").AsLong(1L) == 1L ) {
 		this->IntSimpleWrite(); // set up testfile
-		OMmapStream os(fgcFilename, ios::ate);
+		OMmapStream os(fgcFilename, std::ios::ate);
 		t_assert(os.good());
 		os << fgcContent;
 		os.close();

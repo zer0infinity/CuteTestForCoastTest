@@ -24,7 +24,7 @@ UnTaintRenderer::UnTaintRenderer(const char *name) : Renderer(name) { }
 
 UnTaintRenderer::~UnTaintRenderer() { }
 
-void UnTaintRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
+void UnTaintRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(UnTaintRenderer.RenderAll);
 

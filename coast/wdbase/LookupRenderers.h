@@ -57,7 +57,7 @@ public:
 		\param reply out - the stream where the rendered output is written on.
 		\param c the context the renderer runs within.
 		\param config the configuration of the renderer. */
-	void RenderAll(ostream &reply, Context &c, const ROAnything &config);
+	void RenderAll(std::ostream &reply, Context &c, const ROAnything &config);
 
 protected:
 	/*! DoLookup to be implemented by subclasses

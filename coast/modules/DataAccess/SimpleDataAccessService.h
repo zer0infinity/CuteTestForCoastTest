@@ -34,7 +34,7 @@ public:
 
 protected:
 	//!handles requested service
-	virtual void DoHandleService(ostream &os, Context &ctx);
+	virtual void DoHandleService(std::ostream &os, Context &ctx);
 
 private:
 	// block the following default elements of this class

@@ -27,7 +27,7 @@ public:
 
 protected:
 
-	virtual iostream *DoMakeStream();
+	virtual std::iostream *DoMakeStream();
 
 private:
 	EBCDICSocket(); // must not use these

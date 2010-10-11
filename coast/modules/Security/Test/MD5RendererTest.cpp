@@ -18,10 +18,6 @@
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //---- MD5RendererTest ----------------------------------------------------------------
 MD5RendererTest::MD5RendererTest(TString tname) : TestCaseType(tname)
 {
@@ -61,7 +57,7 @@ void MD5RendererTest::testOutputAsBase64()
 		String renderedResult;
 		StringStream aStream(renderedResult);
 		md5r.RenderAll(aStream, ctx, anyConfig);
-		aStream << flush; // sync with String object
+		aStream << std::flush; // sync with String object
 		Trace("Rendered Result: " << renderedResult);
 		assertEqual("KFcBRonj6FHndQldt8854g==", renderedResult);
 	}
@@ -72,7 +68,7 @@ void MD5RendererTest::testOutputAsBase64()
 		String renderedResult;
 		StringStream aStream(renderedResult);
 		md5r.RenderAll(aStream, ctx, anyConfig);
-		aStream << flush; // sync with String object
+		aStream << std::flush; // sync with String object
 		Trace("Rendered Result: " << renderedResult);
 		assertEqual("KFcBRonj6FHndQldt8854g==", renderedResult);
 	}
@@ -83,7 +79,7 @@ void MD5RendererTest::testOutputAsBase64()
 		String renderedResult;
 		StringStream aStream(renderedResult);
 		md5r.RenderAll(aStream, ctx, anyConfig);
-		aStream << flush; // sync with String object
+		aStream << std::flush; // sync with String object
 		Trace("Rendered Result: " << renderedResult);
 		assertEqual("jeBX5JJXdB4QW9p71t7a2Q==", renderedResult);
 	}
@@ -103,7 +99,7 @@ void MD5RendererTest::testOutputAsHex()
 		String renderedResult;
 		StringStream aStream(renderedResult);
 		md5r.RenderAll(aStream, ctx, anyConfig);
-		aStream << flush; // sync with String object
+		aStream << std::flush; // sync with String object
 		t_assert(renderedResult.Length() == 32);
 		Trace("Rendered Result: " <<  renderedResult);
 		assertEqual("d41d8cd98f00b204e9800998ecf8427e", renderedResult.ToLower());
@@ -115,7 +111,7 @@ void MD5RendererTest::testOutputAsHex()
 		String renderedResult;
 		StringStream aStream(renderedResult);
 		md5r.RenderAll(aStream, ctx, anyConfig);
-		aStream << flush; // sync with String object
+		aStream << std::flush; // sync with String object
 		Trace("Rendered Result: " << renderedResult);
 		assertEqual("0cc175b9c0f1b6a831c399e269772661", renderedResult.ToLower());
 	}
@@ -126,7 +122,7 @@ void MD5RendererTest::testOutputAsHex()
 		String renderedResult;
 		StringStream aStream(renderedResult);
 		md5r.RenderAll(aStream, ctx, anyConfig);
-		aStream << flush; // sync with String object
+		aStream << std::flush; // sync with String object
 		Trace("Rendered Result: " << renderedResult);
 		assertEqual("900150983cd24fb0d6963f7d28e17f72", renderedResult.ToLower());
 	}
@@ -137,7 +133,7 @@ void MD5RendererTest::testOutputAsHex()
 		String renderedResult;
 		StringStream aStream(renderedResult);
 		md5r.RenderAll(aStream, ctx, anyConfig);
-		aStream << flush; // sync with String object
+		aStream << std::flush; // sync with String object
 		Trace("Rendered Result: " << renderedResult);
 		assertEqual("f96b697d7cb7938d525a2f31aaf161d0", renderedResult.ToLower());
 	}
@@ -148,7 +144,7 @@ void MD5RendererTest::testOutputAsHex()
 		String renderedResult;
 		StringStream aStream(renderedResult);
 		md5r.RenderAll(aStream, ctx, anyConfig);
-		aStream << flush; // sync with String object
+		aStream << std::flush; // sync with String object
 		Trace("Rendered Result: " << renderedResult);
 		assertEqual("c3fcd3d76192e4007dfb496cca67e13b", renderedResult.ToLower());
 	}
@@ -159,7 +155,7 @@ void MD5RendererTest::testOutputAsHex()
 		String renderedResult;
 		StringStream aStream(renderedResult);
 		md5r.RenderAll(aStream, ctx, anyConfig);
-		aStream << flush; // sync with String object
+		aStream << std::flush; // sync with String object
 		Trace("Rendered Result: " << renderedResult);
 		assertEqual("d174ab98d277d9f5a5611c2c9f419d9f", renderedResult.ToLower());
 	}
@@ -170,7 +166,7 @@ void MD5RendererTest::testOutputAsHex()
 		String renderedResult;
 		StringStream aStream(renderedResult);
 		md5r.RenderAll(aStream, ctx, anyConfig);
-		aStream << flush; // sync with String object
+		aStream << std::flush; // sync with String object
 		Trace("Rendered Result: " << renderedResult);
 		assertEqual("57edf4a22be3c955ac49da2e2107b67a", renderedResult.ToLower());
 	}

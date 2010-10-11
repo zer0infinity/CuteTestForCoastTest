@@ -32,10 +32,10 @@ class EXPORTDECL_RENDERER ImageLocationRenderer : public Renderer
 public:
 	ImageLocationRenderer(const char *name);
 
-	void RenderAll(ostream &reply, Context &c, const ROAnything &data);
+	void RenderAll(std::ostream &reply, Context &c, const ROAnything &data);
 
 protected:
-	bool RenderPathAndFilename(ostream &reply, Context &c, const ROAnything &config);
+	bool RenderPathAndFilename(std::ostream &reply, Context &c, const ROAnything &config);
 };
 
 //---- ImageRenderer -------------------------------------------------------
@@ -106,7 +106,7 @@ class EXPORTDECL_RENDERER ImageRenderer : public ImageLocationRenderer
 public:
 	ImageRenderer(const char *name);
 
-	void RenderAll(ostream &reply, Context &c, const ROAnything &data);
+	void RenderAll(std::ostream &reply, Context &c, const ROAnything &data);
 };
 
 //---- FigureRenderer ---------------------------------------------------------------
@@ -135,7 +135,7 @@ class EXPORTDECL_RENDERER FigureRenderer : public ImageRenderer
 {
 public:
 	FigureRenderer(const char *name);
-	void RenderAll(ostream &reply, Context &c, const ROAnything &config);
+	void RenderAll(std::ostream &reply, Context &c, const ROAnything &config);
 };
 
 #endif		//not defined _ImageRenderers_H

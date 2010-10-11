@@ -21,10 +21,6 @@
 
 using namespace Coast;
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //--- c-library modules used ---------------------------------------------------
 #include <limits>
 
@@ -62,7 +58,7 @@ void StringStreamTest::SimpleWrite()
 	// note this can be a problem if more than one process runs this test
 	OStringStream os;
 	t_assert(os.good() != 0);
-	os << fgcContent << flush;
+	os << fgcContent << std::flush;
 	assertCharPtrEqual(fgcContent, os.str());
 	t_assert(os.good() != 0); // some error should occur, eof or fail or bad
 	assertEqual(0, os.rdstate()); // some error should occur, eof or fail or bad
@@ -113,7 +109,7 @@ void StringStreamTest::SimpleSeek()
 	t_assert(os.good() != 0);
 	os << fgcContent; // put something into it.
 	os.seekp(searchpos); // force enlargement
-	os << fgcContent << flush;
+	os << fgcContent << std::flush;
 	long len = os.str().Length();
 	assertEqual(searchpos + strlen(fgcContent), len);
 
@@ -189,7 +185,7 @@ void StringStreamTest::ReadFromAndWriteToStringTest()
 void StringStreamTest::ReadFromAndWriteToAnythingTest()
 {
 	Anything a;
-	istream *ifp = System::OpenStream("Test", "any");
+	std::istream *ifp = System::OpenStream("Test", "any");
 	if (ifp == 0) {
 		String logMsg;
 		SystemLog::Error(logMsg << "can't open file Test.any");
@@ -211,7 +207,7 @@ void StringStreamTest::ReadFromAndWriteToAnythingTest()
 void StringStreamTest::ReadFromAndWriteToAnythingTest2()
 {
 	Anything a;
-	istream *ifp = System::OpenStream("Test", "any");
+	std::istream *ifp = System::OpenStream("Test", "any");
 	if (ifp == 0) {
 		String logMsg;
 		SystemLog::Error(logMsg << "can't open file Test.any");
@@ -299,7 +295,7 @@ void StringStreamTest::OperatorShiftRightWithLongLong()
 	{
 		std::numeric_limits<long long> limit;
 		StringStream stream;
-		stream << limit.max() << flush;
+		stream << limit.max() << std::flush;
 		l_long llVal = INT64_LITERAL(-3);
 		stream >> llVal;
 		t_assert(limit.max() == llVal);
@@ -307,7 +303,7 @@ void StringStreamTest::OperatorShiftRightWithLongLong()
 	{
 		std::numeric_limits<long long> limit;
 		StringStream stream;
-		stream << limit.min() << flush;
+		stream << limit.min() << std::flush;
 		l_long llVal = INT64_LITERAL(+5);
 		stream >> llVal;
 		t_assert(limit.min() == llVal);
@@ -319,7 +315,7 @@ void StringStreamTest::OperatorShiftRightWithUnsignedLongLong()
 	{
 		std::numeric_limits<unsigned long long> limit;
 		StringStream stream;
-		stream << limit.max() << flush;
+		stream << limit.max() << std::flush;
 		ul_long ullVal = UINT64_LITERAL(1111);
 		stream >> ullVal;
 		t_assert(limit.max() == ullVal);

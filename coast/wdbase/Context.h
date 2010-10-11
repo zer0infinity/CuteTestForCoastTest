@@ -20,11 +20,6 @@ class Page;
 class Server;
 class Socket;
 
-#if defined(ONLY_STD_IOSTREAM)
-using std::iostream;
-using std::ostream;
-#endif
-
 //---- Context -------------------------------------------------------------------
 //!Request Context object that contains read only configuration information and read writable stores
 class EXPORTDECL_WDBASE Context : public virtual LookupInterface
@@ -38,7 +33,7 @@ public:
 
 	/*! Constructor of Context used for TestCases
 		\param ios stream for mocking up socket in tests */
-	Context(iostream *ios);
+	Context(std::iostream *ios);
 
 	//! constructor with request anything that contains all information of the request
 	Context(Anything &request);
@@ -131,7 +126,7 @@ public:
 
 	/*! Access to iostream based on socket or fMockStream for tests
 		\return iostream pointer if available or fMockStream */
-	iostream *GetStream();
+	std::iostream *GetStream();
 
 	/*! Get read count on internal socket if any
 		\return byte-length of last read reply of socket; otherwise zero */
@@ -234,10 +229,10 @@ public:
 		\param msg the msg to mark this output
 		\param reply the stream to generate output to
 		\param printAny either dump all stores if true or rely on Context.HTMLWDDebug.[LookupStack|TmpStore|EnvStore] to be enabled in Dbg.any */
-	void DebugStores(const char *msg, ostream &reply, bool printAny = false);
+	void DebugStores(const char *msg, std::ostream &reply, bool printAny = false);
 
 	//!generates output into the reply stream as HTML if the flag in Dbg.any are set accordingly
-	void HTMLDebugStores(ostream &reply);
+	void HTMLDebugStores(std::ostream &reply);
 
 	static const String DebugStoreSeparator;
 
@@ -375,7 +370,7 @@ protected:
 	Socket *fSocket;
 
 	//! mock of fSocket stream
-	iostream *fMockStream;
+	std::iostream *fMockStream;
 
 	/*! if set, make a copy of the session store. This allows concurrent requests using the same session because lookups targeting the session store don't need a lock. */
 	bool fCopySessionStore;

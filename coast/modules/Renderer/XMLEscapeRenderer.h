@@ -23,8 +23,8 @@ public:
 	~XMLEscapeRenderer();
 
 	//! Escapes html entities within rendered content and puts it onto \em reply
-	/*! @copydetails Renderer::RenderAll(ostream &, Context &, const ROAnything &) */
-	virtual void RenderAll(ostream &reply, Context &ctx, const ROAnything &config);
+	/*! @copydetails Renderer::RenderAll(std::ostream &, Context &, const ROAnything &) */
+	virtual void RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config);
 };
 
 //---- XMLEscapeRenderer ----------------------------------------------------------
@@ -37,8 +37,8 @@ public:
 	~XMLUnescapeRenderer();
 
 	//! Unescapes html entities within rendered content and puts it onto \em reply
-	/*! @copydetails Renderer::RenderAll(ostream &, Context &, const ROAnything &) */
-	virtual void RenderAll(ostream &reply, Context &ctx, const ROAnything &config);
+	/*! @copydetails Renderer::RenderAll(std::ostream &, Context &, const ROAnything &) */
+	virtual void RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config);
 };
 
 #endif

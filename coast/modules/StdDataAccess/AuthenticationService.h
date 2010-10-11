@@ -26,13 +26,13 @@ public:
 	}
 
 protected:
-	void DoHandleService(ostream &os, Context &ctx);
+	void DoHandleService(std::ostream &os, Context &ctx);
 	bool DoCheck(Context &ctx);
-	void ForwardToMainHandler(ostream &os, Context &ctx);
+	void ForwardToMainHandler(std::ostream &os, Context &ctx);
 	bool AuthenticationIsOk(Context &ctx);
 	void GetUserNameAndPw(Context &ctx, String &name, String &pw);
 	bool AuthenticateUser(Context &ctx, String &name, String &pw);
-	void Produce401Response(ostream &os, Context &ctx);
+	void Produce401Response(std::ostream &os, Context &ctx);
 };
 
 #endif

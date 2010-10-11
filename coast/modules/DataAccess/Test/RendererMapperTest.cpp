@@ -81,7 +81,7 @@ void RendererMapperTest::GetOnAnyTest()
 
 void RendererMapperTest::setUp ()
 {
-	iostream *Ios = System::OpenStream("StdContext", "any");
+	std::iostream *Ios = System::OpenStream("StdContext", "any");
 	if ( Ios ) {
 		fStdContextAny.Import((*Ios));
 		delete Ios;

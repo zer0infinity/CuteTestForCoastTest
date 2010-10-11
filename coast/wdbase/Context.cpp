@@ -53,9 +53,15 @@ Context::Context(Socket *socket) :
 	InitTmpStore();
 	fLanguage = LocalizationUtils::FindLanguageKey(*this, Lookup("Language", "E"));
 }
-Context::Context(iostream *stream) :
-	fSession(0), fSessionStoreGlobal(MetaThing(Storage::Global()), Storage::Global()), fSessionStoreCurrent(MetaThing(Storage::Current()),
-			Storage::Current()), fStackSz(0), fStoreSz(0), fSocket(0), fMockStream(stream), fCopySessionStore(false) {
+Context::Context(std::iostream *stream)  :
+	fSession(0),
+	fSessionStoreGlobal(MetaThing(Storage::Global()), Storage::Global()),
+	fSessionStoreCurrent(MetaThing(Storage::Current()), Storage::Current()),
+	fStackSz(0),
+	fStoreSz(0),
+	fSocket(0),
+	fMockStream(stream),
+	fCopySessionStore(false) {
 	// the arguments we get for this request
 	InitTmpStore();
 	fLanguage = LocalizationUtils::FindLanguageKey(*this, Lookup("Language", "E"));
@@ -218,7 +224,7 @@ void Context::CollectLinkState(Anything &a) {
 	}
 }
 
-void Context::DebugStores(const char *msg, ostream &reply, bool printAny) {
+void Context::DebugStores(const char *msg, std::ostream &reply, bool printAny) {
 	if (msg) {
 		reply << "+++++++++++++++++++" << NotNull(msg) << "+++++++++++++++++++++++++\n";
 	}
@@ -267,7 +273,7 @@ void Context::DebugStores(const char *msg, ostream &reply, bool printAny) {
 	reply.flush();
 }
 
-void Context::HTMLDebugStores(ostream &reply) {
+void Context::HTMLDebugStores(std::ostream &reply) {
 	if (TriggerEnabled(Context.HTMLWDDebug)) {
 		reply << DebugStoreSeparator;
 		reply << "<hr>\n<pre>\n";
@@ -563,7 +569,7 @@ Socket *Context::GetSocket() {
 	return fSocket;
 }
 
-iostream *Context::GetStream() {
+std::iostream *Context::GetStream() {
 	return (fSocket) ? fSocket->GetStream() : fMockStream;
 }
 

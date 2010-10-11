@@ -221,8 +221,8 @@ void ConnectorTest::getStreamTest()
 {
 	Connector connector(GetConfig()["SocketConnectSuccessHost"]["ip"].AsString(), GetConfig()["SocketConnectSuccessHost"]["port"].AsLong(), 0L, String(), 0L, true);
 
-	iostream *s1 = connector.GetStream();
-	iostream *s2 = connector.GetStream();
+	std::iostream *s1 = connector.GetStream();
+	std::iostream *s2 = connector.GetStream();
 	t_assert( s1 != NULL );
 	t_assert( s2 != NULL );
 	t_assert( s1 == s2 );
@@ -247,7 +247,7 @@ void ConnectorTest::allocatorConstructorTest()
 			long socketfd = socket->GetFd();
 			t_assert( socketfd > 0 );
 
-			iostream *Ios = socket->GetStream();
+			std::iostream *Ios = socket->GetStream();
 			t_assert( Ios != NULL);
 		}
 		delete socket;
@@ -262,7 +262,7 @@ void ConnectorTest::allocatorConstructorTest()
 			long socketfd = socket->GetFd();
 			t_assert( socketfd > 0 );
 
-			iostream *Ios = socket->GetStream();
+			std::iostream *Ios = socket->GetStream();
 			t_assert( Ios != NULL);
 		}
 		delete socket;

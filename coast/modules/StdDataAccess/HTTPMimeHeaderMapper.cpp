@@ -30,7 +30,7 @@ IFAObject *HTTPMimeHeaderMapper::Clone(Allocator *a) const
 	return new (a) HTTPMimeHeaderMapper(fName);
 }
 
-bool HTTPMimeHeaderMapper::DoPutStream(const char *, istream &is, Context &ctx,  ROAnything config)
+bool HTTPMimeHeaderMapper::DoPutStream(const char *, std::istream &is, Context &ctx,  ROAnything config)
 {
 	// Ignore key, store under Mapper.HTTPHeader by default
 	StartTrace(HTTPMimeHeaderMapper.DoPutStream);

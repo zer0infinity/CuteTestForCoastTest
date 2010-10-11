@@ -25,7 +25,7 @@ GetThisHostNameRenderer::GetThisHostNameRenderer(const char *name) : Renderer(na
 
 GetThisHostNameRenderer::~GetThisHostNameRenderer() { }
 
-void GetThisHostNameRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
+void GetThisHostNameRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(GetThisHostNameRenderer.RenderAll);
 	String thisHostName;

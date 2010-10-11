@@ -33,8 +33,8 @@ public:
 protected:
 	String GenerateErrorMessage(const char *msg, Context &ctx);
 
-	bool SendInput(iostream *ios, Socket *s, long timeout, Context &context, ParameterMapper *in, ResultMapper *out);
-	bool DoSendInput(iostream *ios, Socket *s, long timeout, Context &context, ParameterMapper *in, ResultMapper *out);
+	bool SendInput(std::iostream *ios, Socket *s, long timeout, Context &context, ParameterMapper *in, ResultMapper *out);
+	bool DoSendInput(std::iostream *ios, Socket *s, long timeout, Context &context, ParameterMapper *in, ResultMapper *out);
 	bool DoExec(Connector *csc, ConnectorParams *cps, Context &context, ParameterMapper *in, ResultMapper *out);
 
 #if defined(RECORD)
@@ -44,11 +44,11 @@ protected:
 	//! \param out output Mapper
 	bool DoExecRecord(Connector *csc, ConnectorParams *cps, Context &context, ParameterMapper *in, ResultMapper *out);
 
-	bool ReadReply( String &theReply, Context &context, iostream *ios );
+	bool ReadReply( String &theReply, Context &context, std::iostream *ios );
 	bool RenderReply( String &theReply, Context &context, ResultMapper *out  );
 //	long CompareRequest( Anything & recording, Context &context, String & request );
 	bool BuildRequest( String &request, Context &context, ParameterMapper *in, ResultMapper *out);
-	bool SendRequest(String &request, iostream *ios, Socket *s, ConnectorParams *cps );
+	bool SendRequest(String &request, std::iostream *ios, Socket *s, ConnectorParams *cps );
 #endif
 
 private:

@@ -48,7 +48,7 @@ TemplateParser *HTMLTemplateRenderer::GetParser()
 	return new TemplateParser;
 }
 
-void HTMLTemplateRenderer::RenderAll(ostream &reply, Context &context, const ROAnything &args)
+void HTMLTemplateRenderer::RenderAll(std::ostream &reply, Context &context, const ROAnything &args)
 {
 	StartTrace(HTMLTemplateRenderer.RenderAll);
 	TraceAny(args, "args");
@@ -73,9 +73,9 @@ void HTMLTemplateRenderer::RenderAll(ostream &reply, Context &context, const ROA
 			if ( pathUsed.Length() > 0 ) { // we got the filekey
 				theRendererConfig = fgTemplates[pathUsed];
 			} else {
-				istream *fp = LocalizationUtils::OpenStream(context, filename, pathUsed);
+				std::istream *fp = LocalizationUtils::OpenStream(context, filename, pathUsed);
 				if (fp) {
-					istream &reader = *fp;
+					std::istream &reader = *fp;
 					{
 						MethodTimer(HTMLTemplateRenderer.RenderAll, filename, context);
 						TemplateParser *tp = GetParser();

@@ -25,7 +25,7 @@ StressProcessor::~StressProcessor()
 {
 }
 
-void StressProcessor::DoProcessRequest(ostream &reply, Context &ctx)
+void StressProcessor::DoProcessRequest(std::ostream &reply, Context &ctx)
 {
 	StartTrace(StressProcessor.DoProcessRequest);
 	TraceAny(ctx.GetRequest(), "Request");

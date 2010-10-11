@@ -23,7 +23,7 @@
 #include <ctype.h>
 #endif
 
-Anything TemplateParser::Parse(istream &reader, const char *filename, long startline, Allocator *a, const ROAnything roaParserConfig)
+Anything TemplateParser::Parse(std::istream &reader, const char *filename, long startline, Allocator *a, const ROAnything roaParserConfig)
 {
 	StartTrace(TemplateParser.Parse);
 	fReader = &reader;

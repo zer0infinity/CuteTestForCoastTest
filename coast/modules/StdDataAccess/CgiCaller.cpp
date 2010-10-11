@@ -95,16 +95,16 @@ bool CgiCaller::ProcessFile(const String &filename, Context &context, ParameterM
 	if (retVal) {
 		Trace("calling in path [" << path << "] program [" << file << "]");
 		PipeExecutor cgi(filename, cgienviron, path, timeout);
-		iostream *ioStream = 0;
+		std::iostream *ioStream = 0;
 		if (cgi.Start() && (ioStream = cgi.GetStream())) {
 			// the following is tricky, because of potential pipe blocking
 			// if something large is passed, we do not check for now.
-			in->Get("stdin", *(ostream *)ioStream, context); // provide cgi's stdin
+			in->Get("stdin", *(std::ostream *)ioStream, context); // provide cgi's stdin
 			cgi.ShutDownWriting();
 			retVal = out->Put("ResponseCode", 200L, context) && retVal;
 			retVal = out->Put("ResponseMsg", String("Ok"), context) && retVal;
 			// call HTTPHeader rendering ?
-			retVal = out->Put("HTTPBody", *(istream *)ioStream, context) && retVal; // return cgi's output
+			retVal = out->Put("HTTPBody", *(std::istream *)ioStream, context) && retVal; // return cgi's output
 			long exitStatus = (long)cgi.TerminateChild();
 			Trace("cgi terminated exit status was " << exitStatus);
 			// we ignore the childs exit status as the response code has already been set

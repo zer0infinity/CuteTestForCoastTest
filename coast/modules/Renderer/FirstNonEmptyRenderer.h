@@ -45,8 +45,8 @@ public:
 	~FirstNonEmptyRenderer();
 
 	//! Renders first non empty configuration entry as output
-	/*! @copydetails Renderer::RenderAll(ostream &, Context &, const ROAnything &) */
-	virtual void RenderAll(ostream &reply, Context &ctx, const ROAnything &config);
+	/*! @copydetails Renderer::RenderAll(std::ostream &, Context &, const ROAnything &) */
+	virtual void RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config);
 };
 
 #endif

@@ -41,7 +41,7 @@ public:
 	StringTokenizeRenderer(const char *name);
 	~StringTokenizeRenderer();
 
-	virtual void RenderAll(ostream &reply, Context &c, const ROAnything &config);
+	virtual void RenderAll(std::ostream &reply, Context &c, const ROAnything &config);
 
 protected:
 	bool SplitStringIntoTokens(Context &ctx, const ROAnything &config, Anything &anyTokens);

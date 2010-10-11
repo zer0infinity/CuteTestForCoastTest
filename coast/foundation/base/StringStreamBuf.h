@@ -36,8 +36,8 @@ public:
 	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::ConstCorrectPtr2RefType BufferTypeRef;
 
 	/*! default ctor, allocates new internal String object for output
-		\param mode ios modes, bitwise or of [in|out|app|ate]: if mode is ios::app or ios::ate output is appended */
-	StringStreamBuf(int mode = ios::out)
+		\param mode ios modes, bitwise or of [in|out|app|ate]: if mode is std::ios::app or std::ios::ate output is appended */
+	StringStreamBuf(int mode = std::ios::out)
 		: fStore(0)
 		, fDeleteStore(false)
 		, fOpenMode(mode) {
@@ -47,8 +47,8 @@ public:
 
 	/*! ctor usually used for input
 		\param s contains characters to be read
-		\param mode ios modes, bitwise or of [in|out|app|ate]: if mode is ios::app or ios::ate output is appended */
-	StringStreamBuf(ConstPlainTypeRef s, int mode = ios::in)
+		\param mode ios modes, bitwise or of [in|out|app|ate]: if mode is std::ios::app or std::ios::ate output is appended */
+	StringStreamBuf(ConstPlainTypeRef s, int mode = std::ios::in)
 		: fStore(0)
 		, fDeleteStore(false)
 		, fOpenMode(mode) {
@@ -58,8 +58,8 @@ public:
 
 	/*! ctor usually used for output
 		\param s target string to be filled,
-		\param mode ios modes, bitwise or of [in|out|app|ate]: if mode is ios::app or ios::ate output is appended */
-	StringStreamBuf(PlainTypePtr s, int mode = ios::out)
+		\param mode ios modes, bitwise or of [in|out|app|ate]: if mode is std::ios::app or std::ios::ate output is appended */
+	StringStreamBuf(PlainTypePtr s, int mode = std::ios::out)
 		: fStore(0)
 		, fDeleteStore(false)
 		, fOpenMode(mode) {
@@ -100,40 +100,28 @@ public:
 		return *fStore;
 	}
 
-#if defined(ONLY_STD_IOSTREAM)
 protected: // seekxxx are protected in the std..
-	typedef std::streambuf::pos_type	pos_type;
-	typedef std::streambuf::off_type	off_type;
-	typedef std::ios::seekdir	seekdir;
-	typedef std::ios::openmode	openmode;
-#elif defined(WIN32) && !defined(ONLY_STD_IOSTREAM)
-	typedef streampos pos_type;
-	typedef	streamoff off_type;
-	typedef ios::seek_dir seekdir;
-	typedef ios::open_mode openmode;
-#else
-	typedef streampos pos_type;
-	typedef	streamoff off_type;
-	typedef ios::seek_dir seekdir;
-	typedef ios::openmode openmode;
-#endif
+	typedef std::streambuf::pos_type pos_type;
+	typedef std::streambuf::off_type off_type;
+	typedef std::ios::seekdir seekdir;
+	typedef std::ios::openmode openmode;
 
 	/*! standard iostream behavior, adjust put or get position absolutely */
-	virtual pos_type seekpos(pos_type p, openmode mode = static_cast<openmode>(ios::in | ios::out) ) {
+	virtual pos_type seekpos(pos_type p, openmode mode = static_cast<openmode>(std::ios::in | std::ios::out) ) {
 		AdjustStringLength(IoDirType());
 		if (long(p) >= long(fStore->Capacity())) {
 			// we need to enlarge the string
 			// we can only if we write
-			if (! (mode & ios::out) || !reserve(p)) {
+			if (! (mode & std::ios::out) || !reserve(p)) {
 				// OOPS we got a problem
 				return pos_type(EOF);
 			}
 		}
-		if (mode & ios::in) {
+		if (mode & std::ios::in) {
 			setgetpointer(p);
 		}
-		if (mode & ios::out) {
-			if (fOpenMode & ios::app) { // do this on a best try basis
+		if (mode & std::ios::out) {
+			if (fOpenMode & std::ios::app) { // do this on a best try basis
 				if (p < fStore->Length() && fStore->Length() > 0) {
 					p = fStore->Length();    // always go to the end
 				}
@@ -148,12 +136,12 @@ protected: // seekxxx are protected in the std..
 	}
 
 	/*! standard iostream behavior, adjust put or get position relatively */
-	virtual pos_type seekoff(off_type of, seekdir dir, openmode mode = static_cast<openmode>(ios::in | ios::out) ) {
+	virtual pos_type seekoff(off_type of, seekdir dir, openmode mode = static_cast<openmode>(std::ios::in | std::ios::out) ) {
 		//sync(); // will adjust fFileLength if needed
 		AdjustStringLength(IoDirType()); // recognize where we have been with putting
 		long pos = long(of);
-		pos += (dir == ios::cur) ? long((mode & ios::in ? gptr() : pptr()) - pbase()) :
-				   (dir == ios::end && fStore->Length() > 0) ? long(fStore->Length()) : 0L;
+		pos += (dir == std::ios::cur) ? long((mode & std::ios::in ? gptr() : pptr()) - pbase()) :
+				   (dir == std::ios::end && fStore->Length() > 0) ? long(fStore->Length()) : 0L;
 		if (pos < 0L ) {
 			return pos_type(EOF);
 		}
@@ -192,8 +180,8 @@ private:
 	/*! auxiliary StringStreamBuf initialization */
 	void xinit() {
 		// adjust fOpenMode to contain valid combination of flags
-		if (fOpenMode & (ios::ate | ios::app)) {
-			fOpenMode |= ios::out;
+		if (fOpenMode & (std::ios::ate | std::ios::app)) {
+			fOpenMode |= std::ios::out;
 		}
 		if ( fStore && fDeleteStore ) {
 			delete fStore;
@@ -205,11 +193,11 @@ private:
 
 	void xinit(PlainTypePtr s) {
 		// adjust fOpenMode to contain valid combination of flags
-		if (fOpenMode & (ios::ate | ios::app)) {
-			fOpenMode |= ios::out;
+		if (fOpenMode & (std::ios::ate | std::ios::app)) {
+			fOpenMode |= std::ios::out;
 		}
-		if (fOpenMode & ios::trunc) {
-			SS_TRACE("clear the string, i.e. ignore contents due to ios::trunc flag");
+		if (fOpenMode & std::ios::trunc) {
+			SS_TRACE("clear the string, i.e. ignore contents due to std::ios::trunc flag");
 			s = 0;
 		}
 		// initialize buffer, allocate new String object if required
@@ -233,11 +221,11 @@ private:
 
 	void xinit(ConstPlainTypePtr contents) {
 		// adjust fOpenMode to contain valid combination of flags
-		if (fOpenMode & (ios::ate | ios::app)) {
-			fOpenMode |= ios::out;
+		if (fOpenMode & (std::ios::ate | std::ios::app)) {
+			fOpenMode |= std::ios::out;
 		}
-		if (fOpenMode & ios::trunc) {
-			SS_TRACE("clear the string, i.e. ignore contents due to ios::trunc flag");
+		if (fOpenMode & std::ios::trunc) {
+			SS_TRACE("clear the string, i.e. ignore contents due to std::ios::trunc flag");
 			contents = 0;
 		}
 		// initialize buffer, allocate new String object if required
@@ -265,7 +253,7 @@ private:
 	}
 
 	void AdjustStringLength(Coast::TypeTraits::Int2Type<NSStringStream::eOut>) {
-		if (pbase() && (fOpenMode & ios::out)) {
+		if (pbase() && (fOpenMode & std::ios::out)) {
 			Assert(pptr() && pptr() >= start());
 			long newlen = pptr() - pbase();
 			Assert(newlen < fStore->Capacity());
@@ -283,7 +271,7 @@ private:
 		if (fStore && fStore->GetImpl()) {
 			eg = const_cast<char *>(fStore->GetContent()) + fStore->Length();    // points after get area
 		}
-		setg((fOpenMode & ios::in) ? start() : eg, start() + getoffset , eg);
+		setg((fOpenMode & std::ios::in) ? start() : eg, start() + getoffset , eg);
 	}
 
 	/*! auxiliary operation to set iostream buffer pointers according to parameters */
@@ -292,10 +280,10 @@ private:
 		if (fStore->GetImpl()) {
 			sc = const_cast<char *>(fStore->GetContent());
 		}
-		if ((fOpenMode & (ios::app | ios::ate)) && putoffset < fStore->Length()  ) {
+		if ((fOpenMode & (std::ios::app | std::ios::ate)) && putoffset < fStore->Length()  ) {
 			putoffset = fStore->Length(); // adjust it to the end
-			if (fOpenMode & (ios::ate)) {
-				fOpenMode &= ~ios::ate; // adjust it only once to the end
+			if (fOpenMode & (std::ios::ate)) {
+				fOpenMode &= ~std::ios::ate; // adjust it only once to the end
 			}
 		}
 		// save 1 byte for '\0' termination
@@ -388,7 +376,7 @@ template
 typename BufferType,
 		 typename IoDirType
 		 >
-class EXPORTDECL_FOUNDATION StringStreambase : virtual public ios
+class EXPORTDECL_FOUNDATION StringStreambase : virtual public std::ios
 {
 public:
 	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::ConstPlainTypeRef ConstPlainTypeRef;
@@ -399,8 +387,8 @@ public:
 
 public:
 	/*! default ctor, allocates new internal String object for output
-		\param mode ios modes, bitwise or of [in|out|app|ate]: if mode is ios::app or ios::ate output is appended */
-	StringStreambase(int mode = ios::out)
+		\param mode ios modes, bitwise or of [in|out|app|ate]: if mode is std::ios::app or std::ios::ate output is appended */
+	StringStreambase(int mode = std::ios::out)
 		: fSSBuf(mode) {
 		// init from ios is needed, because ios() won't do the job; (see comment in iostream.h)
 		init(&fSSBuf);
@@ -408,16 +396,16 @@ public:
 
 	/*! ctor usually used for input
 		\param s contains characters to be read
-		\param mode ios modes, bitwise or of [in|out|app|ate]: if mode is ios::app or ios::ate output is appended */
-	StringStreambase(ConstPlainTypeRef s, int mode = ios::in)
+		\param mode ios modes, bitwise or of [in|out|app|ate]: if mode is std::ios::app or std::ios::ate output is appended */
+	StringStreambase(ConstPlainTypeRef s, int mode = std::ios::in)
 		: fSSBuf(s, mode) {
 		init(&fSSBuf);
 	}
 
 	/*! ctor usually used for output
 		\param s target string to be filled,
-		\param mode ios modes, bitwise or of [in|out|app|ate]: if mode is ios::app or ios::ate output is appended */
-	StringStreambase(PlainTypePtr s, int mode = ios::out)
+		\param mode ios modes, bitwise or of [in|out|app|ate]: if mode is std::ios::app or std::ios::ate output is appended */
+	StringStreambase(PlainTypePtr s, int mode = std::ios::out)
 		: fSSBuf(s, mode) {
 		init(&fSSBuf);
 	}

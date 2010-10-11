@@ -34,13 +34,13 @@ public:
 
 protected:
 	//!handles requested service
-	virtual void DoHandleService(ostream &os, Context &ctx);
+	virtual void DoHandleService(std::ostream &os, Context &ctx);
 
 	//!prepares the request before decoding into query and verifying
 	virtual void PrepareRequest(Context &ctx);
 
 	//!verifies the request with regard to some basic attributes
-	virtual bool VerifyRequest(ostream &reply, Context &ctx);
+	virtual bool VerifyRequest(std::ostream &reply, Context &ctx);
 
 	//!build a query from a path expression and a query string
 	virtual Anything BuildQuery(const String &pathString, const String &queryString);

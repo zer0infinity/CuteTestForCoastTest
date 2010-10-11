@@ -276,7 +276,7 @@ void Session::PutInStore(const char *key, const Anything &a)
 	fStore[key] = a;
 }
 
-void Session::HTMLDebugStore(ostream &reply, bool printAny)
+void Session::HTMLDebugStore(std::ostream &reply, bool printAny)
 {
 	if ( TriggerEnabled(Session.HTMLSessionStore) || printAny ) {
 		reply << "Session Store #refs:" << fStore.RefCount() << '\n' << fStore << '\n';
@@ -423,7 +423,7 @@ bool Session::Verify(Context &ctx)
 	return true;
 }
 
-void Session::RenderNextPage(ostream &reply, Context &ctx, const ROAnything &roaConfig)
+void Session::RenderNextPage(std::ostream &reply, Context &ctx, const ROAnything &roaConfig)
 {
 	StartTrace(Session.RenderNextPage);
 	if (fMutex.TryLock()) {
@@ -438,7 +438,7 @@ void Session::RenderNextPage(ostream &reply, Context &ctx, const ROAnything &roa
 	}
 }
 
-void Session::DoRenderNextPage(ostream &reply, Context &context)
+void Session::DoRenderNextPage(std::ostream &reply, Context &context)
 {
 	StartTrace(Session.DoRenderNextPage);
 
@@ -464,7 +464,7 @@ void Session::DoRenderNextPage(ostream &reply, Context &context)
 	}
 }
 
-void Session::DoRenderBusyPage(ostream &reply, Context &ctx)
+void Session::DoRenderBusyPage(std::ostream &reply, Context &ctx)
 {
 	StartTrace(Session.RenderBusyPage);
 

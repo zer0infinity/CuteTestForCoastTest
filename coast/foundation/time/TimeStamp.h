@@ -147,7 +147,7 @@ public:
 	bool SetTime( unsigned char iHour, unsigned char iMin, unsigned char iSec );
 
 	// Output operator
-	inline friend ostream &operator<< (ostream &os, const TimeStamp &ts) {
+	inline friend std::ostream &operator<< (std::ostream &os, const TimeStamp &ts) {
 		os << ts.AsStringWithZ();
 		return os;
 	}

@@ -117,7 +117,7 @@ public:
 	//! \param delimSlot slot delimiter for LookupPath
 	//! \param delimIdx index delimiter for LookupPath
 	//! \return overall match of all wanted slots, if a single slot fails, comparison fails, if verbose flag is set details of failure are output to cerr
-	static bool AnyCompareEqual( const ROAnything &inputAny, const ROAnything &masterAny, String pathSoFar, ostream *verbose, char delimSlot = '.', char delimIdx = ':');
+	static bool AnyCompareEqual( const ROAnything &inputAny, const ROAnything &masterAny, String pathSoFar, std::ostream *verbose, char delimSlot = '.', char delimIdx = ':');
 
 	//! render an anything to simple XML representation
 	/*! namespace \b any:seq will be used for array entries, \b any:elt for anonymous (value only) entries<br>
@@ -125,7 +125,7 @@ public:
 		\code <any:seq></any:seq> \endcode
 		Anything \code { foo /bar baz } \endcode would be converted into:
 		\code <any:seq><any:elt>foo</any:elt><bar>baz</bar></any:seq> \endcode */
-	static void PrintSimpleXML( ostream &os, ROAnything output);
+	static void PrintSimpleXML( std::ostream &os, ROAnything output);
 
 	//! Merge the content of two anythings. The master anything gets modified using the specification from roaToMerge
 	//! non-array entries can also be overwritten
@@ -138,13 +138,13 @@ public:
 
 protected:
 	//!helper method to dump cerr output with additional message and information
-	static void Dump(const char *message, const ROAnything &inputAny, const ROAnything &masterAny, const String &masterSlotName, const String &pathSoFar, ostream *verbose);
+	static void Dump(const char *message, const ROAnything &inputAny, const ROAnything &masterAny, const String &masterSlotName, const String &pathSoFar, std::ostream *verbose);
 
 	//!helper method to spot differences in long anythings more easily; internal use only
 	//! \param masterString contents that should be
 	//! \param inputString actual content
 	//! \param verbose output stream used for comparison contains the result
-	static void ShowDifferences( String &masterString, String &inputString, ostream *verbose );
+	static void ShowDifferences( String &masterString, String &inputString, std::ostream *verbose );
 
 	//!helper method to do the merging work; internal use only
 	//! \param anyMaster master anything which gets modified by the content of roaToMerge

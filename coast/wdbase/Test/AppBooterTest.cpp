@@ -21,10 +21,6 @@
 #include "Context.h"
 #include "Dbg.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //--- c-library modules used ---------------------------------------------------
 
 //---- AppBooterTest ----------------------------------------------------------------
@@ -237,7 +233,7 @@ void AppBooterTest::OpenLibsTest()
 	StartTrace(AppBooterTest.OpenLibsTest);
 
 	//write pid to file to make it usable by scripts
-	ostream *os = System::OpenOStream("config/wdbasetest", "pid");
+	std::ostream *os = System::OpenOStream("config/wdbasetest", "pid");
 
 	if ( os ) {
 		Trace("PID File<config/wdbasetest> opened");

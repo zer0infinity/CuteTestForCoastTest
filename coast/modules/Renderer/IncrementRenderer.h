@@ -36,7 +36,7 @@ class EXPORTDECL_RENDERER IncrementRenderer : public Renderer
 {
 public:
 	IncrementRenderer(const char *name);
-	void RenderAll(ostream &reply, Context &c, const ROAnything &config);
+	void RenderAll(std::ostream &reply, Context &c, const ROAnything &config);
 };
 
 #endif

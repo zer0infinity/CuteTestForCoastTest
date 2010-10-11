@@ -16,10 +16,6 @@
 #include "RequestProcessor.h"
 #include "Dbg.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //---- SimpleDataAccessService -----------------------------------------------------------
 RegisterServiceHandler(SimpleDataAccessService);
 
@@ -32,7 +28,7 @@ SimpleDataAccessService::~SimpleDataAccessService()
 {
 }
 
-void SimpleDataAccessService::DoHandleService(ostream &reply, Context &ctx)
+void SimpleDataAccessService::DoHandleService(std::ostream &reply, Context &ctx)
 {
 	StartTrace(SimpleDataAccessService.DoHandleService);
 	if (!!reply ) {
@@ -83,6 +79,6 @@ void SimpleDataAccessService::DoHandleService(ostream &reply, Context &ctx)
 		} else {
 			Trace("no HTTPBody");
 		}
-		reply << flush;
+		reply << std::flush;
 	}
 }

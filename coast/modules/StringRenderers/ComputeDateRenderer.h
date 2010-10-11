@@ -87,7 +87,7 @@ public:
 	/*! \param reply stream to generate output on
 		\param c Context used for output generation
 		\param config configuration which drives the output generation */
-	void RenderAll(ostream &reply, Context &ctx, const ROAnything &config);
+	void RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config);
 
 	//! convert the given from date string into a TimeStamp using the specified scan format
 	/*! \param strFromDate date string to convert

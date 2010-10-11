@@ -36,7 +36,7 @@ public:
 	TagRenderer(const char *name);
 	~TagRenderer();
 
-	virtual void RenderAll(ostream &reply, Context &c, const ROAnything &config);
+	virtual void RenderAll(std::ostream &reply, Context &c, const ROAnything &config);
 };
 
 #endif		//ifndef _TAGRENDERER_H

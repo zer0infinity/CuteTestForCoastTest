@@ -26,7 +26,7 @@ TemplateParser *FormRenderer::GetParser()
 	return new FormTemplateParser;
 }
 
-void FormRenderer::RenderAll(ostream &reply, Context &context, const ROAnything &config)
+void FormRenderer::RenderAll(std::ostream &reply, Context &context, const ROAnything &config)
 {
 	StartTrace(FormRenderer.Render);
 	TraceAny(config, "config");
@@ -41,7 +41,7 @@ void FormRenderer::RenderAll(ostream &reply, Context &context, const ROAnything 
 	PrintFormEnd(reply, context);
 }
 
-void FormRenderer::PrintFormBegin(ostream &reply, Context &context, const ROAnything &config)
+void FormRenderer::PrintFormBegin(std::ostream &reply, Context &context, const ROAnything &config)
 {
 	reply << "<FORM ACTION=\"";
 	static Renderer *r = Renderer::FindRenderer("URLRenderer");
@@ -81,7 +81,7 @@ void FormRenderer::PrintFormBegin(ostream &reply, Context &context, const ROAnyt
 	}
 }
 
-void FormRenderer::PrintFormEnd(ostream &reply, Context &)
+void FormRenderer::PrintFormEnd(std::ostream &reply, Context &)
 {
 	reply << ("</FORM>");
 }
@@ -90,7 +90,7 @@ void FormRenderer::PrintFormEnd(ostream &reply, Context &)
 RegisterRenderer(PulldownMenuRenderer);
 
 PulldownMenuRenderer::PulldownMenuRenderer(const char *name) : SelectBoxRenderer(name) {}
-void PulldownMenuRenderer::RenderOptions(ostream &reply, Context &context, const ROAnything &config)
+void PulldownMenuRenderer::RenderOptions(std::ostream &reply, Context &context, const ROAnything &config)
 {
 	reply << " size='1\'";
 	FieldRenderer::RenderOptions(reply, context, config);
@@ -100,7 +100,7 @@ void PulldownMenuRenderer::RenderOptions(ostream &reply, Context &context, const
 RegisterRenderer(HiddenFieldRenderer);
 
 HiddenFieldRenderer::HiddenFieldRenderer(const char *name) : FieldRenderer(name) {}
-void HiddenFieldRenderer::RenderOptions(ostream &reply, Context &context, const ROAnything &config)
+void HiddenFieldRenderer::RenderOptions(std::ostream &reply, Context &context, const ROAnything &config)
 {
 	ROAnything value = config["Value"];
 	if (!value.IsNull()) {
@@ -115,7 +115,7 @@ void HiddenFieldRenderer::RenderOptions(ostream &reply, Context &context, const 
 RegisterRenderer(ButtonRenderer);
 
 ButtonRenderer::ButtonRenderer(const char *name) : FieldRenderer(name) {}
-void ButtonRenderer::RenderOptions(ostream &reply, Context &context, const ROAnything &config)
+void ButtonRenderer::RenderOptions(std::ostream &reply, Context &context, const ROAnything &config)
 {
 	ROAnything label = config["Label"];
 	if (!label.IsNull()) {
@@ -126,7 +126,7 @@ void ButtonRenderer::RenderOptions(ostream &reply, Context &context, const ROAny
 	FieldRenderer::RenderOptions(reply, context, config);
 }
 
-void ButtonRenderer::RenderName(ostream &reply, Context &context, const ROAnything &config)
+void ButtonRenderer::RenderName(std::ostream &reply, Context &context, const ROAnything &config)
 {
 	ROAnything name = config["Name"];
 	if (! name.IsNull()) {
@@ -140,7 +140,7 @@ RegisterRenderer(ImageButtonRenderer);
 
 ImageButtonRenderer::ImageButtonRenderer(const char *name) : FieldRenderer(name) {}
 
-void ImageButtonRenderer::RenderOptions(ostream &reply, Context &context, const ROAnything &config)
+void ImageButtonRenderer::RenderOptions(std::ostream &reply, Context &context, const ROAnything &config)
 {
 	ROAnything src = config["Src"];
 	if (!src.IsNull()) {
@@ -150,7 +150,7 @@ void ImageButtonRenderer::RenderOptions(ostream &reply, Context &context, const 
 	}
 	FieldRenderer::RenderOptions(reply, context, config);
 }
-void ImageButtonRenderer::RenderName(ostream &reply, Context &context, const ROAnything &config)
+void ImageButtonRenderer::RenderName(std::ostream &reply, Context &context, const ROAnything &config)
 {
 	ROAnything name = config["Name"];
 	if (!name.IsNull()) {
@@ -179,7 +179,7 @@ bool SelectBoxRenderer::IsMultipleSelect(Context &context, const ROAnything &con
 	return (str.AsLong(0L) == 1L);
 }
 
-void SelectBoxRenderer::RenderOptions(ostream &reply, Context &context, const ROAnything &config)
+void SelectBoxRenderer::RenderOptions(std::ostream &reply, Context &context, const ROAnything &config)
 {
 	// render SIZE argument
 	reply << " size=\"";
@@ -196,7 +196,7 @@ void SelectBoxRenderer::RenderOptions(ostream &reply, Context &context, const RO
 	FieldRenderer::RenderOptions(reply, context, config);
 }
 
-void SelectBoxRenderer::RenderAll(ostream &reply, Context &context, const ROAnything &config)
+void SelectBoxRenderer::RenderAll(std::ostream &reply, Context &context, const ROAnything &config)
 {
 	StartTrace(SelectBoxRenderer.Render);
 	TraceAny(config, "config");
@@ -251,7 +251,7 @@ void SelectBoxRenderer::RenderAll(ostream &reply, Context &context, const ROAnyt
 	}
 }
 
-void SelectBoxRenderer::RenderOptionList(ostream &reply, Context &context, const ROAnything &config, String listname)
+void SelectBoxRenderer::RenderOptionList(std::ostream &reply, Context &context, const ROAnything &config, String listname)
 {
 	StartTrace(SelectBoxRenderer.RenderOptionList);
 	TraceAny(config, "config");
@@ -293,7 +293,7 @@ void SelectBoxRenderer::RenderOptionList(ostream &reply, Context &context, const
 
 RegisterRenderer(OptionListRenderer);
 
-void OptionListRenderer::RenderEntry(ostream &reply, Context &c, const ROAnything &config, const ROAnything &entryRendererConfig, const ROAnything &listItem, Anything &anyRenderState)
+void OptionListRenderer::RenderEntry(std::ostream &reply, Context &c, const ROAnything &config, const ROAnything &entryRendererConfig, const ROAnything &listItem, Anything &anyRenderState)
 {
 	StartTrace(OptionListRenderer.RenderEntry);
 	ROAnything value;
@@ -356,7 +356,7 @@ bool OptionListRenderer::GetEntryFooter(const ROAnything &config, ROAnything &ro
 	return !roaEntryFooter.IsNull();
 }
 
-void OptionListRenderer::RenderEntryHeader(ostream &reply, Context &ctx, const ROAnything &entryHeader, const ROAnything &listItem, Anything &anyRenderState)
+void OptionListRenderer::RenderEntryHeader(std::ostream &reply, Context &ctx, const ROAnything &entryHeader, const ROAnything &listItem, Anything &anyRenderState)
 {
 	StartTrace(OptionListRenderer.RenderEntryHeader);
 	if ( !entryHeader.IsNull() ) {
@@ -391,7 +391,7 @@ void OptionListRenderer::RenderEntryHeader(ostream &reply, Context &ctx, const R
 	}
 }
 
-void OptionListRenderer::RenderEntryFooter(ostream &reply, Context &ctx, const ROAnything &entryFooter, const ROAnything &listItem, Anything &anyRenderState)
+void OptionListRenderer::RenderEntryFooter(std::ostream &reply, Context &ctx, const ROAnything &entryFooter, const ROAnything &listItem, Anything &anyRenderState)
 {
 	StartTrace(OptionListRenderer.RenderEntryFooter);
 	if ( !entryFooter.IsNull() ) {
@@ -413,7 +413,7 @@ void OptionListRenderer::RenderEntryFooter(ostream &reply, Context &ctx, const R
 	}
 }
 
-void OptionListRenderer::RenderValue(ostream &reply, Context &c, const ROAnything &config, const ROAnything &valueConfig, const ROAnything &listItem)
+void OptionListRenderer::RenderValue(std::ostream &reply, Context &c, const ROAnything &config, const ROAnything &valueConfig, const ROAnything &listItem)
 {
 	StartTrace(OptionListRenderer.RenderValue);
 	reply << " value=\"";
@@ -421,7 +421,7 @@ void OptionListRenderer::RenderValue(ostream &reply, Context &c, const ROAnythin
 	reply << "\"";
 }
 
-void OptionListRenderer::RenderSelected(ostream &reply, Context &c, const ROAnything &config, const ROAnything &selectedConfig, const ROAnything &listItem)
+void OptionListRenderer::RenderSelected(std::ostream &reply, Context &c, const ROAnything &config, const ROAnything &selectedConfig, const ROAnything &listItem)
 {
 	StartTrace(OptionListRenderer.RenderSelected);
 	String strSel;
@@ -434,7 +434,7 @@ void OptionListRenderer::RenderSelected(ostream &reply, Context &c, const ROAnyt
 	}
 }
 
-void OptionListRenderer::RenderText(ostream &reply, Context &c, const ROAnything &config, const ROAnything &textConfig, const ROAnything &listItem)
+void OptionListRenderer::RenderText(std::ostream &reply, Context &c, const ROAnything &config, const ROAnything &textConfig, const ROAnything &listItem)
 {
 	StartTrace(OptionListRenderer.RenderText);
 	Render(reply, c, textConfig);
@@ -445,7 +445,7 @@ RegisterRenderer(CheckBoxRenderer);
 
 CheckBoxRenderer::CheckBoxRenderer(const char *name) : FieldRenderer(name) {}
 
-void CheckBoxRenderer::RenderOptions(ostream &reply, Context &context, const ROAnything &config)
+void CheckBoxRenderer::RenderOptions(std::ostream &reply, Context &context, const ROAnything &config)
 {
 	// CAUTION: semantics changed as compared to the FieldRenderer version:
 	// In old version "Value" was always looked up in the context if a char* was
@@ -467,7 +467,7 @@ void CheckBoxRenderer::RenderOptions(ostream &reply, Context &context, const ROA
 RegisterRenderer(RadioButtonRenderer);
 
 RadioButtonRenderer::RadioButtonRenderer(const char *name) : FieldRenderer(name) {}
-void RadioButtonRenderer::RenderOptions(ostream &reply, Context &context, const ROAnything &config)
+void RadioButtonRenderer::RenderOptions(std::ostream &reply, Context &context, const ROAnything &config)
 {
 	// CAUTION: semantics changed as compared to the FieldRenderer version:
 	// In old version "Value" was always looked up in the context if a char* was
@@ -495,7 +495,7 @@ void RadioButtonRenderer::RenderOptions(ostream &reply, Context &context, const 
 FieldRenderer::FieldRenderer(const char *name) : Renderer(name)
 {
 }
-void FieldRenderer::RenderAll(ostream &reply, Context &context, const ROAnything &config)
+void FieldRenderer::RenderAll(std::ostream &reply, Context &context, const ROAnything &config)
 {
 	StartTrace(FieldRenderer.Render);
 	TraceAny(config, "config");
@@ -512,7 +512,7 @@ void FieldRenderer::RenderAll(ostream &reply, Context &context, const ROAnything
 	}
 }
 
-void FieldRenderer::RenderName(ostream &reply, Context &context, const ROAnything &config)
+void FieldRenderer::RenderName(std::ostream &reply, Context &context, const ROAnything &config)
 {
 	ROAnything name = config["Name"];
 	if (!name.IsNull()) {
@@ -521,7 +521,7 @@ void FieldRenderer::RenderName(ostream &reply, Context &context, const ROAnythin
 	}
 }
 
-void FieldRenderer::RenderOptions(ostream &reply, Context &context, const ROAnything &config)
+void FieldRenderer::RenderOptions(std::ostream &reply, Context &context, const ROAnything &config)
 {
 	// Renders any Key/Value pairs given in configs /Options Slot
 	PrintOptions3(reply, context, config);
@@ -530,7 +530,7 @@ void FieldRenderer::RenderOptions(ostream &reply, Context &context, const ROAnyt
 //---- TextFieldRenderer --------------------------------------------------------------
 RegisterRenderer(TextFieldRenderer);
 
-void TextFieldRenderer::RenderType(ostream &reply, Context &, const ROAnything &config)
+void TextFieldRenderer::RenderType(std::ostream &reply, Context &, const ROAnything &config)
 {
 	const char *type = "TEXT";
 	if (config.IsDefined("Unreadable")) {
@@ -538,7 +538,7 @@ void TextFieldRenderer::RenderType(ostream &reply, Context &, const ROAnything &
 	}
 	reply << type;
 }
-void TextFieldRenderer::RenderOptions(ostream &reply, Context &context, const ROAnything &config)
+void TextFieldRenderer::RenderOptions(std::ostream &reply, Context &context, const ROAnything &config)
 {
 	ROAnything value = config["Value"];
 	if (!value.IsNull()) {
@@ -568,7 +568,7 @@ TextAreaRenderer::TextAreaRenderer(const char *name) : FieldRenderer(name)
 {
 }
 
-void TextAreaRenderer::RenderAll(ostream &reply, Context &context,
+void TextAreaRenderer::RenderAll(std::ostream &reply, Context &context,
 								 const ROAnything &config)
 {
 	StartTrace(TextAreaRenderer.Render);
@@ -617,7 +617,7 @@ RegisterRenderer(FieldNameRenderer);
 FieldNameRenderer::FieldNameRenderer(const char *name) : Renderer(name)
 {
 }
-void FieldNameRenderer::RenderAll(ostream &reply, Context &context,
+void FieldNameRenderer::RenderAll(std::ostream &reply, Context &context,
 								  const ROAnything &config)
 {
 	StartTrace(FieldNameRenderer.Render);

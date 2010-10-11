@@ -18,7 +18,7 @@
 //---- SortedTagsHTMLMapper -----------------------------------------------------------
 RegisterResultMapper(SortedTagsHTMLMapper);
 
-bool SortedTagsHTMLMapper::DoPutStream(const char *key, istream &is, Context &ctx, ROAnything script) {
+bool SortedTagsHTMLMapper::DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything script) {
 	StartTrace1(SortedTagsHTMLMapper.PutStream, NotNull(key));
 
 	bool analyseReply = ctx.Lookup("SortedTagsHTMLMapperAnalyseReply", 0L);

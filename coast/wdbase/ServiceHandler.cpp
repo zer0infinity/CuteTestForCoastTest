@@ -28,7 +28,7 @@ ServiceHandler::~ServiceHandler()
 {
 	StartTrace(ServiceHandler.Dtor);
 }
-void ServiceHandler::HandleService(ostream &os, Context &ctx)
+void ServiceHandler::HandleService(std::ostream &os, Context &ctx)
 {
 	StartTrace(ServiceHandler.HandleService);
 	Trace("Service [" << fName << "]");

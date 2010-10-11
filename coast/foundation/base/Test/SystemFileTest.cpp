@@ -22,10 +22,6 @@ using namespace Coast;
 #include "SystemLog.h"
 #include "AnyIterators.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //--- c-library modules used ---------------------------------------------------
 #include <fcntl.h>
 #if defined(__SUNPRO_CC)
@@ -485,7 +481,7 @@ void SystemFileTest::ResolvePathTest()
 
 void SystemFileTest::OpenStreamTest()
 {
-	iostream *Ios = System::OpenStream("Dbg.any");
+	std::iostream *Ios = System::OpenStream("Dbg.any");
 	t_assert( Ios == NULL ); // should not be found!
 	if ( Ios ) {
 		delete Ios;
@@ -519,10 +515,10 @@ void SystemFileTest::OpenStreamTest()
 	}
 
 	// open file with relative path for writing
-	Ios = System::OpenStream("tmp/Test1", "tst", ios::out);
+	Ios = System::OpenStream("tmp/Test1", "tst", std::ios::out);
 	t_assert( Ios != NULL );
 	if ( Ios ) {
-		(*Ios) << "test" << endl;
+		(*Ios) << "test" << std::endl;
 		t_assert(!!(*Ios));
 		delete Ios;
 		Ios = 0;
@@ -531,7 +527,7 @@ void SystemFileTest::OpenStreamTest()
 
 void SystemFileTest::OpenStreamWithSearchTest()
 {
-	iostream *Ios = System::OpenStreamWithSearch("Dbg.any");
+	std::iostream *Ios = System::OpenStreamWithSearch("Dbg.any");
 	t_assert( Ios != NULL );
 	if ( Ios ) {
 		delete Ios;
@@ -547,10 +543,10 @@ void SystemFileTest::OpenStreamWithSearchTest()
 	}
 
 	// open file with relative path for writing
-	Ios = System::OpenStreamWithSearch("tmp/Test1.tst", ios::out);
+	Ios = System::OpenStreamWithSearch("tmp/Test1.tst", std::ios::out);
 	t_assert( Ios != NULL );
 	if ( Ios ) {
-		(*Ios) << "test" << endl;
+		(*Ios) << "test" << std::endl;
 		t_assert(!!(*Ios));
 		delete Ios;
 		Ios = 0;
@@ -560,7 +556,7 @@ void SystemFileTest::OpenStreamWithSearchTest()
 void SystemFileTest::OpenIStreamTest()
 {
 	// open file with relative path
-	iostream *Ios = System::OpenIStream("config/Dbg.any");
+	std::iostream *Ios = System::OpenIStream("config/Dbg.any");
 
 	t_assert( Ios != NULL );
 	if ( Ios ) {
@@ -591,11 +587,11 @@ void SystemFileTest::OpenIStreamTest()
 void SystemFileTest::OpenOStreamTest()
 {
 	// open file with relative path for writing
-	iostream *Ios = System::OpenOStream("tmp/Test.tst");
+	std::iostream *Ios = System::OpenOStream("tmp/Test.tst");
 
 	t_assert( Ios != NULL );
 	if ( Ios ) {
-		(*Ios) << "test" << endl;
+		(*Ios) << "test" << std::endl;
 		t_assert(!!(*Ios));
 		delete Ios;
 		Ios = 0;
@@ -608,7 +604,7 @@ void SystemFileTest::OpenOStreamTest()
 
 	t_assert( Ios != NULL );
 	if ( Ios ) {
-		(*Ios) << "test" << endl;
+		(*Ios) << "test" << std::endl;
 		t_assert(!!(*Ios));
 		delete Ios;
 		Ios = 0;
@@ -678,7 +674,7 @@ void SystemFileTest::IStreamTest ()
 	//-------------------------------------------------------------------------------------------------
 
 	String str0;
-	istream *is0 = System::OpenStream("len5", "tst");
+	std::istream *is0 = System::OpenStream("len5", "tst");
 	if ( is0 ) {
 		*is0 >> str0;
 		//PS? t_assert ( str0.Capacity() == 66 );
@@ -718,7 +714,7 @@ void SystemFileTest::IStreamTest ()
 	// Kombination von 2 ">>":  das zweite ">>" loescht das Resultat vom ersten ">>" und berechnet es neu.
 	//---------------------------------------------------------------------------------------------------------
 	String str1;
-	istream *is1 = System::OpenStream("len5", "tst");
+	std::istream *is1 = System::OpenStream("len5", "tst");
 	if ( is1 ) {
 		*is1 >> str1;
 		//PS? t_assert (str1.Capacity() == 66 );
@@ -731,7 +727,7 @@ void SystemFileTest::IStreamTest ()
 	} else {
 		assertEqual("'read file len5.tst'", "'could not read len5.tst'");
 	}
-	istream *is2 = System::OpenStream("len5", "tst");
+	std::istream *is2 = System::OpenStream("len5", "tst");
 	if ( is2 ) {
 		*is2 >> str1;
 		//PS? t_assert (str1.Capacity() == 66 );
@@ -746,7 +742,7 @@ void SystemFileTest::IStreamTest ()
 	}
 
 	String str3 = "qwertzuiopasdfghjklyxcvbnm";
-	istream *is3 = System::OpenStream("len5", "tst");
+	std::istream *is3 = System::OpenStream("len5", "tst");
 	if ( is3 ) {
 		*is3 >> str3;
 		//PS? t_assert (str3.Capacity() == 54 );
@@ -774,7 +770,7 @@ void SystemFileTest::OStreamTest ()
 	//-------------------------------------------------------------
 	String str0 = "", str00 = "";
 	String sname("tmp/emptyStr");
-	ostream *os0 = System::OpenOStream(sname, "tst");
+	std::ostream *os0 = System::OpenOStream(sname, "tst");
 	TString msg("couldn't open ");
 	msg << System::GetFilePath(sname, "tst");
 
@@ -786,7 +782,7 @@ void SystemFileTest::OStreamTest ()
 		assertEqual("'write to file tmp/emptyStr.tst'", "'could not write tmp/emptyStr.tst'");
 	}
 
-	istream *is0 = System::OpenStream("tmp/emptyStr", "tst");
+	std::istream *is0 = System::OpenStream("tmp/emptyStr", "tst");
 
 	if ( is0 ) {
 		*is0 >> str00;
@@ -803,7 +799,7 @@ void SystemFileTest::OStreamTest ()
 
 	String str1, str11;
 	str1.Append("0123456789");
-	ostream *os1 = System::OpenOStream("tmp/zahlen", "tst");
+	std::ostream *os1 = System::OpenOStream("tmp/zahlen", "tst");
 
 	if ( os1 ) {
 		*os1 << str1;
@@ -811,7 +807,7 @@ void SystemFileTest::OStreamTest ()
 	} else {
 		assertEqual("'write to file tmp/zahlen.tst'", "'could not write tmp/zahlen.tst'");
 	}
-	istream *is1 = System::OpenStream("tmp/zahlen", "tst");
+	std::istream *is1 = System::OpenStream("tmp/zahlen", "tst");
 
 	if ( is1 ) {
 		*is1 >> str11;
@@ -828,7 +824,7 @@ void SystemFileTest::OStreamTest ()
 
 	String str2, str22;
 	str2.Append("qwertzuiopasdfghjklyxcvbnm");
-	ostream *os2 = System::OpenOStream("tmp/buchst", "tst");
+	std::ostream *os2 = System::OpenOStream("tmp/buchst", "tst");
 
 	if ( os2 ) {
 		*os2 << str2;
@@ -836,7 +832,7 @@ void SystemFileTest::OStreamTest ()
 	} else {
 		assertEqual("'write to file tmp/buchst.tst'", "'could not write tmp/buchst.tst'");
 	}
-	istream *is2 = System::OpenStream("tmp/buchst", "tst");
+	std::istream *is2 = System::OpenStream("tmp/buchst", "tst");
 
 	if ( is2 ) {
 		*is2 >> str22;
@@ -854,7 +850,7 @@ void SystemFileTest::OStreamTest ()
 	//	unsafe_ostream& operator<<(unsafe_ostream& os, const String &s)
 	//-----------------------------------------------------------------
 	String str0u = "", str00u;
-	ostream *os0u = System::OpenOStream("tmp/emptyStrU", "tst");
+	std::ostream *os0u = System::OpenOStream("tmp/emptyStrU", "tst");
 
 	if ( os0u ) {
 		*os0u << str0u;
@@ -863,7 +859,7 @@ void SystemFileTest::OStreamTest ()
 		assertEqual("'write to file tmp/emptyStrU.tst'", "'could not write tmp/emptyStrU.tst'");
 	}
 
-	istream *is0u = System::OpenStream("tmp/emptyStrU", "tst");
+	std::istream *is0u = System::OpenStream("tmp/emptyStrU", "tst");
 
 	if ( is0u ) {
 		*is0u >> str00u;
@@ -880,7 +876,7 @@ void SystemFileTest::OStreamTest ()
 
 	String str1u;
 	str1u.Append("0123456789");
-	ostream *os1u = System::OpenOStream("tmp/zahlenU", "tst");
+	std::ostream *os1u = System::OpenOStream("tmp/zahlenU", "tst");
 
 	if ( os1u ) {
 		*os1u << str1u;
@@ -888,7 +884,7 @@ void SystemFileTest::OStreamTest ()
 	} else {
 		assertEqual("'write to file tmp/zahlenU.tst'", "'could not write tmp/zahlenU.tst'");
 	}
-	istream *is1u = System::OpenStream("tmp/zahlenU", "tst");
+	std::istream *is1u = System::OpenStream("tmp/zahlenU", "tst");
 
 	if ( is1u ) {
 		String str11u;
@@ -906,7 +902,7 @@ void SystemFileTest::OStreamTest ()
 
 	String str2u;
 	str2u.Append("qwertzuiopasdfghjklyxcvbnm");
-	ostream *os2u = System::OpenOStream("tmp/buchstU", "tst");
+	std::ostream *os2u = System::OpenOStream("tmp/buchstU", "tst");
 
 	if ( os2u ) {
 		*os2u << str2u;
@@ -915,7 +911,7 @@ void SystemFileTest::OStreamTest ()
 		assertEqual("'write to file tmp/buchstU.tst'", "'could not write tmp/buchstU.tst'");
 	}
 
-	istream *is2u = System::OpenStream("tmp/buchstU", "tst");
+	std::istream *is2u = System::OpenStream("tmp/buchstU", "tst");
 
 	if ( is2u ) {
 		String str22u;
@@ -963,7 +959,7 @@ void SystemFileTest::IOStreamTest ()
 	//----------------------------------------------------------------------------------------------------------------------
 
 	String str0;
-	istream *is0 = System::OpenStream("tmp/zahlen", "tst");
+	std::istream *is0 = System::OpenStream("tmp/zahlen", "tst");
 
 	if ( is0 ) {
 		*is0 >> str0;
@@ -977,7 +973,7 @@ void SystemFileTest::IOStreamTest ()
 	}
 
 	String str1;
-	istream *is1 = System::OpenStream("tmp/buchst", "tst");
+	std::istream *is1 = System::OpenStream("tmp/buchst", "tst");
 
 	if ( is1 ) {
 		*is1 >> str1;
@@ -994,7 +990,7 @@ void SystemFileTest::IOStreamTest ()
 	// Das zweite "<<" loescht das Resultat des ersten "<<" ( ???? ist das gewuenscht ???? )
 	//-------------------------------------------------------------------------------------------
 	String str2 = "qwertzuiopasdfghjklyxcvbnm";
-	ostream *os2 = System::OpenOStream("tmp/dummy", "tst", ios::trunc);
+	std::ostream *os2 = System::OpenOStream("tmp/dummy", "tst", std::ios::trunc);
 
 	if ( os2 ) {
 		*os2 << str2;
@@ -1007,7 +1003,7 @@ void SystemFileTest::IOStreamTest ()
 		assertEqual("'write to file dummy.tst'", "'could not write dummy.tst'");
 	}
 	String str3 = "0123456789";
-	ostream *os3 = System::OpenOStream("tmp/dummy", "tst", ios::app);
+	std::ostream *os3 = System::OpenOStream("tmp/dummy", "tst", std::ios::app);
 
 	if ( os3 ) {
 		*os3 << str3;
@@ -1019,7 +1015,7 @@ void SystemFileTest::IOStreamTest ()
 	} else {
 		assertEqual("'write to file dummy.tst'", "'could not write dummy.tst'");
 	}
-	istream *isHlp = System::OpenStream("tmp/dummy", "tst");
+	std::istream *isHlp = System::OpenStream("tmp/dummy", "tst");
 
 	if ( isHlp ) {
 		String strHlp;
@@ -1036,11 +1032,11 @@ void SystemFileTest::IOStreamTest ()
 	// Mehrfaches "<<"-Operator
 	// Bei jedem Aufruf wird die Datei tmp/strChain.tst geloescht und neu geschrieben
 	String str4 = "StringA", str5 = "StringB";
-	ostream *os4 = System::OpenOStream("tmp/strChain", "tst");
+	std::ostream *os4 = System::OpenOStream("tmp/strChain", "tst");
 
 	if ( os4 ) {
 		// You must check if the file is OK   ( ???? )
-		*os4 << str4 << endl <<  str5
+		*os4 << str4 << std::endl <<  str5
 			 << 'a' << 'b'
 			 << 123456789L << ' ' << -123456789L << ' '
 			 << true << ' ' << false
@@ -1053,8 +1049,8 @@ void SystemFileTest::IOStreamTest ()
 	// Mehrfaches ">>"-Operator
 	// Bei jedem Aufruf wird die Datei tmp/strChain.tst geloescht und neu geschrieben
 	String str6;
-	istream *is2  = System::OpenStream("tmp/buchst", "tst");
-	istream *is3 = System::OpenStream("tmp/zahlen", "tst");
+	std::istream *is2  = System::OpenStream("tmp/buchst", "tst");
+	std::istream *is3 = System::OpenStream("tmp/zahlen", "tst");
 
 	if ( is2 && is3 ) {
 		// Resultat ist wie erwartet oder falsch  ????
@@ -1081,7 +1077,7 @@ void SystemFileTest::IOStreamTest ()
 	String str7;
 	char bufHlp[5] = {'a', 'b', (char)0, 'c', 'd'};
 	str7.Append( (void *)bufHlp, 5 );
-	ostream *os5 = System::OpenOStream("tmp/strMit0", "tst");
+	std::ostream *os5 = System::OpenOStream("tmp/strMit0", "tst");
 
 	if ( os5 ) {
 		*os5 << str7;
@@ -1095,7 +1091,7 @@ void SystemFileTest::IOStreamTest ()
 		assertEqual("'write to file strMit0.tst'", "'could not write strMit0.tst'");
 	}
 	String str8;
-	istream *is4 = System::OpenStream("tmp/strMit0", "tst");
+	std::istream *is4 = System::OpenStream("tmp/strMit0", "tst");
 
 	if ( is4 ) {
 		*is4 >> str8;
@@ -1109,7 +1105,7 @@ void SystemFileTest::IOStreamTest ()
 		assertEqual("'read file strMit0.tst'", "'could not read strMit0.tst'");
 	}
 
-	// Test automatic creation of files for ios::app and ios::ate
+	// Test automatic creation of files for std::ios::app and std::ios::ate
 	{
 		StartTrace(SystemFileTest.IOStreamTest);
 		// precondition: files should not exist already!!
@@ -1121,12 +1117,12 @@ void SystemFileTest::IOStreamTest ()
 			System::IO::unlink(strAteFile);
 		}
 		String strOut("FirstEntryInAppFile"), strOutApp("-AppendedContent"), strReadIn;
-		iostream *pStream = System::OpenStream(strAppFile, NULL, ios::app);
+		std::iostream *pStream = System::OpenStream(strAppFile, NULL, std::ios::app);
 		if ( t_assertm(pStream != NULL, "expected file to be created") ) {
 			*pStream << strOut;
 			delete pStream;
 		}
-		pStream = System::OpenStream(strAppFile, NULL, ios::app);
+		pStream = System::OpenStream(strAppFile, NULL, std::ios::app);
 		if ( t_assertm(pStream != NULL, "expected file to be opened") ) {
 			*pStream << strOutApp;
 			delete pStream;
@@ -1139,7 +1135,7 @@ void SystemFileTest::IOStreamTest ()
 			strExpected << strOutApp;
 			assertCharPtrEqual(strExpected, strReadIn);
 		}
-		pStream = System::OpenStream(strAppFile, NULL, ios::app);
+		pStream = System::OpenStream(strAppFile, NULL, std::ios::app);
 		if ( t_assertm(pStream != NULL, "expected file to be opened") ) {
 			// can position in file but content gets still appended at the end
 			pStream->seekp(strOut.Length());
@@ -1156,12 +1152,12 @@ void SystemFileTest::IOStreamTest ()
 			strExpected << strOut;
 			assertCharPtrEqual(strExpected, strReadIn);
 		}
-		pStream = System::OpenStream(strAteFile, NULL, ios::ate);
+		pStream = System::OpenStream(strAteFile, NULL, std::ios::ate);
 		if ( !t_assertm( pStream == NULL, "expected file not to be opened") ) {
 			delete pStream;
 		}
 		Trace("before first app");
-		pStream = System::OpenStream(strAteFile, NULL, ios::app);
+		pStream = System::OpenStream(strAteFile, NULL, std::ios::app);
 		if ( t_assertm(pStream != NULL, "expected file to be opened") ) {
 			*pStream << strOut;
 			delete pStream;
@@ -1174,7 +1170,7 @@ void SystemFileTest::IOStreamTest ()
 			assertCharPtrEqual(strOut, strReadIn);
 		}
 		Trace("before second ate");
-		pStream = System::OpenStream(strAteFile, NULL, ios::ate);
+		pStream = System::OpenStream(strAteFile, NULL, std::ios::ate);
 		if ( t_assertm(pStream != NULL, "expected file to be opened") ) {
 			*pStream << strOutApp;
 			delete pStream;
@@ -1189,7 +1185,7 @@ void SystemFileTest::IOStreamTest ()
 			assertCharPtrEqual(strExpected, strReadIn);
 		}
 		Trace("before third ate");
-		pStream = System::OpenStream(strAteFile, NULL, ios::ate);
+		pStream = System::OpenStream(strAteFile, NULL, std::ios::ate);
 		if ( t_assertm(pStream != NULL, "expected file to be opened") ) {
 			// can position in file, contents get appended beginning from this location then
 			pStream->seekp(strOut.Length());

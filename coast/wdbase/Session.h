@@ -40,7 +40,7 @@ public:
 	//! \param reply the way all answers go, usually a socket to a client browser
 	//! \param ctx the Request Context for this call
 	//! \param roaConfig Configuration which might be used by derived classes
-	virtual void RenderNextPage(ostream &reply, Context &ctx, const ROAnything &roaConfig);
+	virtual void RenderNextPage(std::ostream &reply, Context &ctx, const ROAnything &roaConfig);
 	//! check if the preselected request arguments are sane for this session
 	//! \param ctx request Context
 	virtual bool Verify(Context &ctx);
@@ -80,7 +80,7 @@ public:
 	/*! Generate debug output onto reply;
 		\param reply the stream to generate output to
 		\param printAny either dump fStore if true or rely on Session.HTMLSessionStore to be enabled in Dbg.any */
-	void HTMLDebugStore(ostream &reply, bool printAny = false);
+	void HTMLDebugStore(std::ostream &reply, bool printAny = false);
 
 	//! reply with a busy page
 	virtual bool Info(Anything &info, Context &ctx);
@@ -113,10 +113,10 @@ public:
 
 protected:
 	//! unlocked render nextpage
-	virtual void DoRenderNextPage(ostream &reply, Context &context);
+	virtual void DoRenderNextPage(std::ostream &reply, Context &context);
 	//! prepare the context of the request and initialize transition and the pagename
 	//! reply with a busy page
-	virtual void DoRenderBusyPage(ostream &reply, Context &ctx);
+	virtual void DoRenderBusyPage(std::ostream &reply, Context &ctx);
 	virtual void SetupContext(Context &c, String &transition, String &pagename);
 	//! check if role change is triggered by action and performs it
 	//! uses /RoleChanges in context for lookup. This anything maps actions to role names

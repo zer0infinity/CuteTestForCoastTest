@@ -15,10 +15,6 @@
 #include "SystemLog.h"
 #include "Dbg.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //---- DataAccessImplsModule -----------------------------------------------------------
 RegisterModule(DataAccessImplsModule);
 
@@ -123,21 +119,21 @@ bool LoopBackDAImpl::Exec(Context &c, ParameterMapper *input, ResultMapper *outp
 				if (streaming == 1) {
 					StringStream Ios(inputStr);
 					bGetCode = input->Get(slotname, Ios, c);
-					Ios << flush;
+					Ios << std::flush;
 					if (bGetCode) {
 						bPutCode = output->Put(config[i].AsCharPtr(), inputStr, c);
 					}
 				} else if (streaming == 2) {
 					StringStream Ios(inputStr);
 					bGetCode = input->Get(slotname, inputStr, c);
-					Ios << flush;
+					Ios << std::flush;
 					if (bGetCode) {
 						bPutCode = output->Put(config[i].AsCharPtr(), Ios, c);
 					}
 				} else if (streaming == 3) {
 					StringStream Ios(inputStr);
 					bGetCode = input->Get(slotname, Ios, c);
-					Ios << flush;
+					Ios << std::flush;
 					if (bGetCode) {
 						bPutCode = output->Put(config[i].AsCharPtr(), Ios, c);
 					}

@@ -18,10 +18,6 @@
 //--- standard modules used ----------------------------------------------------
 #include "PoolAllocator.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //--- c-library modules used ---------------------------------------------------
 #if !defined(WIN32)
 #if !defined(__370__)
@@ -49,7 +45,7 @@ void SocketTest::simpleConstructorTest()
 		long socketfd = socket->GetFd();
 		t_assert( socketfd > 0 );
 
-		iostream *Ios = socket->GetStream();
+		std::iostream *Ios = socket->GetStream();
 		t_assert( Ios != NULL);
 	}
 	delete socket;
@@ -68,7 +64,7 @@ void SocketTest::allocatorConstructorTest()
 		long socketfd = socket->GetFd();
 		t_assert( socketfd > 0 );
 
-		iostream *Ios = socket->GetStream();
+		std::iostream *Ios = socket->GetStream();
 		t_assert( Ios != NULL);
 	}
 	delete socket;
@@ -81,7 +77,7 @@ void SocketTest::faultyConstructorTest()
 
 	assertEqual(-1, socketfd);
 
-	iostream *Ios = socket1.GetStream();
+	std::iostream *Ios = socket1.GetStream();
 	assertEqual( (long)NULL, (long)Ios );
 
 	assertEqual( false, socket1.IsReadyForWriting() );
@@ -109,14 +105,14 @@ void SocketTest::httpClientTest()
 
 		// this one sets the connect timeout
 		socket->SetTimeout(GetConfig()["GetStreamTimeout"].AsLong(5000L));
-		iostream *Ios = socket->GetStream();
+		std::iostream *Ios = socket->GetStream();
 		t_assert( Ios != NULL);
 		if ( Ios ) {
 			String query("GET / HTTP/1.0");
 			String reply;
 			long lRetCode;
 			if ( t_assertm(socket->IsReadyForWriting(GetConfig()["ReadyForWritingTimeout"].AsLong(5000L), lRetCode), TString("expected no timeout for sending http request to [") << connector.GetAddress() << ':' << connector.fPort << "]") && t_assert(lRetCode > 0) ) {
-				(*Ios) << query << endl << endl;
+				(*Ios) << query << std::endl << std::endl;
 				t_assert(!!(*Ios)); // make sure Ios is valid
 				if ( t_assertm(socket->IsReadyForReading(GetConfig()["ReadyForReadingTimeout"].AsLong(5000L), lRetCode), TString("expected no timeout for reading HTTP reply [") << connector.GetAddress() << ':' << connector.fPort << "]") && t_assert(lRetCode > 0) ) {
 					(*Ios) >> reply;

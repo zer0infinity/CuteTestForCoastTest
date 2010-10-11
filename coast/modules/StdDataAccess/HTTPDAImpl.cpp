@@ -22,10 +22,6 @@
 #include "SystemLog.h"
 #endif
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //--- HTTPDAImpl -----------------------------------------------------
 RegisterDataAccessImpl( HTTPDAImpl);
 
@@ -85,7 +81,7 @@ bool HTTPDAImpl::DoExec(Connector *csc, ConnectorParams *cps, Context &context, 
 
 	Trace("name: " << fName);
 	Socket *s = 0;
-	iostream *Ios = 0;
+	std::iostream *Ios = 0;
 
 	{
 		DAAccessTimer(HTTPDAImpl.DoExec, "Connecting <" << fName << ">", context);
@@ -125,7 +121,7 @@ bool HTTPDAImpl::DoExec(Connector *csc, ConnectorParams *cps, Context &context, 
 	}
 }
 #if defined(RECORD)
-bool HTTPDAImpl::ReadReply( String &theReply, Context &context, iostream *Ios )
+bool HTTPDAImpl::ReadReply( String &theReply, Context &context, std::iostream *Ios )
 {
 	if (Ios && !!(*Ios)) {
 		char ch;
@@ -169,14 +165,14 @@ bool HTTPDAImpl::BuildRequest( String &request, Context &context, ParameterMappe
 	return true; // request built successfully
 }
 
-bool HTTPDAImpl::SendRequest(String &request, iostream *Ios, Socket *s, ConnectorParams *cps )
+bool HTTPDAImpl::SendRequest(String &request, std::iostream *Ios, Socket *s, ConnectorParams *cps )
 {
 	if (Ios) {
 		long sockRetCode;
 		if ( s->IsReadyForWriting(cps->Timeout(), sockRetCode) ) {
 			s->SetNoDelay();
 			(*Ios) << request;
-			(*Ios) << flush;
+			(*Ios) << std::flush;
 			// don't use ShutDownWriting, since not all HTTP-Agents understand it (e.g. CICS-WebInterface)
 		}
 	}
@@ -196,7 +192,7 @@ bool HTTPDAImpl::DoExecRecord(Connector *csc, ConnectorParams *cps, Context &con
 
 	Trace("name: " << fName);
 	Socket *s = 0;
-	iostream *Ios = 0;
+	std::iostream *Ios = 0;
 	{
 		DAAccessTimer(HTTPDAImpl.DoExecRecord, "connecting <" << fName << ">", context);
 		s = csc->Use();
@@ -248,7 +244,7 @@ bool HTTPDAImpl::DoExecRecord(Connector *csc, ConnectorParams *cps, Context &con
 }
 #endif
 
-bool HTTPDAImpl::SendInput(iostream *Ios, Socket *s, long timeout, Context &context, ParameterMapper *in, ResultMapper *out) {
+bool HTTPDAImpl::SendInput(std::iostream *Ios, Socket *s, long timeout, Context &context, ParameterMapper *in, ResultMapper *out) {
 	StartTrace(HTTPDAImpl.SendInput);
 	//XXX: this section should probably be conditional
 	long uploadSize = context.Lookup("PostContentLengthToStream", -1L);
@@ -286,7 +282,7 @@ bool HTTPDAImpl::SendInput(iostream *Ios, Socket *s, long timeout, Context &cont
 				Trace("sending input");
 				s->SetNoDelay();
 				(*Ios) << request;
-				(*Ios) << flush;
+				(*Ios) << std::flush;
 				// don't use ShutDownWriting, since not all HTTP-Agents understand it (e.g. CICS-WebInterface)
 				return true;
 			} else {
@@ -301,7 +297,7 @@ bool HTTPDAImpl::SendInput(iostream *Ios, Socket *s, long timeout, Context &cont
 	return false;
 }
 
-bool HTTPDAImpl::DoSendInput(iostream *Ios, Socket *s, long timeout, Context &context, ParameterMapper *in, ResultMapper *out) {
+bool HTTPDAImpl::DoSendInput(std::iostream *Ios, Socket *s, long timeout, Context &context, ParameterMapper *in, ResultMapper *out) {
 	StartTrace(HTTPDAImpl.DoSendInput);
 
 	if (Ios) {

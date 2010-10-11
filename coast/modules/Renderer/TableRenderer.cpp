@@ -23,7 +23,7 @@ TableRenderer::TableRenderer(const char *name) : Renderer(name)
 {
 }
 
-void TableRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &any)
+void TableRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &any)
 {
 	//--- tracing
 	StartTrace1(TableRenderer.RenderAll, "");
@@ -76,7 +76,7 @@ void TableRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &any)
 	PrintControls(reply, c, startRow, rowsPerPage, eData.GetSize());
 }
 
-void TableRenderer::PrintControls(ostream &reply, Context &c, long start, long rowsperpage, long size)
+void TableRenderer::PrintControls(std::ostream &reply, Context &c, long start, long rowsperpage, long size)
 {
 	//--- list navigation elements
 	bool hasNextElements = start + rowsperpage < size;
@@ -119,7 +119,7 @@ void TableRenderer::PrintControls(ostream &reply, Context &c, long start, long r
 	reply << ("</TABLE>");
 }
 
-void TableRenderer::PrintHeader(ostream &reply, Context &c, const ROAnything &tbColHeader)
+void TableRenderer::PrintHeader(std::ostream &reply, Context &c, const ROAnything &tbColHeader)
 {
 	const char *titleBGColor = c.Lookup("TitleBGColor", (char *)0);
 	const char *titleFGColor = c.Lookup("TitleFGColor", (char *)0);
@@ -147,7 +147,7 @@ const char *TableRenderer::GetColor(long index, const ROAnything &config)
 	return config[index % config.GetSize()].AsCharPtr(0);
 }
 
-void TableRenderer::PrintRow(ostream &reply, Context &c, const ROAnything &row)
+void TableRenderer::PrintRow(std::ostream &reply, Context &c, const ROAnything &row)
 {
 	StartTrace1(TableRenderer.PrintRow, "");
 	TraceAny(row, "Table Row");
@@ -168,7 +168,7 @@ ItemRenderer::ItemRenderer(const char *name) : Renderer(name)
 {
 }
 
-void ItemRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void ItemRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	StartTrace(ItemRenderer.RenderAll);
 	TraceAny(config, "Item Config");

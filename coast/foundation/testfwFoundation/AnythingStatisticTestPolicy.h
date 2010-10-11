@@ -90,7 +90,7 @@ namespace TestFramework
 
 		void StoreData() {
 			StartTrace(AnythingStatisticTestPolicy.StoreData);
-			iostream *pStream = Coast::System::OpenOStream(fFilename, "");
+			std::iostream *pStream = Coast::System::OpenOStream(fFilename, "");
 			if ( pStream != NULL ) {
 				long lLevel(0L);
 				RecurseSort(fStatistics, lLevel);
@@ -108,7 +108,7 @@ namespace TestFramework
 			RecurseExportCsvStatistics(anyCsv, fStatistics, lLevel);
 
 			TraceAny(anyCsv, "collected");
-			iostream *pStream = Coast::System::OpenOStream(fStatClassName, "csv");
+			std::iostream *pStream = Coast::System::OpenOStream(fStatClassName, "csv");
 			if ( pStream != NULL ) {
 				long lRowIdx = anyCsv.GetSize();
 				if ( lRowIdx > 0 ) {

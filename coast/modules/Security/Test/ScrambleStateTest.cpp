@@ -39,7 +39,7 @@ ScrambleStateTest::~ScrambleStateTest()
 
 void ScrambleStateTest::setUp ()
 {
-	iostream *Ios = System::OpenStream("ScrambleStateTest", "any");
+	std::iostream *Ios = System::OpenStream("ScrambleStateTest", "any");
 	if ( Ios ) {
 		fStdContextAny.Import((*Ios));
 		delete Ios;

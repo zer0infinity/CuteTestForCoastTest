@@ -25,7 +25,7 @@ StringCompareRenderer::~StringCompareRenderer()
 {
 }
 
-void StringCompareRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void StringCompareRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	StartTrace(StringCompareRenderer.Render);
 	TraceAny(config, "config");

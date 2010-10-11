@@ -13,29 +13,15 @@
 #include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include "Socket.h"
 
-#if defined(ONLY_STD_IOSTREAM)
 #include <cstdio>
 #include <iostream>
 #include <iomanip>
-using std::istream;
-using std::ostream;
-using std::iostream;
-using std::ios;
-using std::streambuf;
-#else
-#if !defined(WIN32)
-#include <streambuf.h>
-#endif
-#include <cstdio.h>
-#include <iostream.h>
-#include <iomanip.h>
-#endif
 
 const int cSocketStreamBufferSize = 8024;
 
 //---- SocketStreamBuf -------------------------------------------------------------------
 //! streambuf implementation for sockets
-class EXPORTDECL_FOUNDATION SocketStreamBuf : public streambuf
+class EXPORTDECL_FOUNDATION SocketStreamBuf : public std::streambuf
 {
 public:
 	//! constructor takes socket object and timeout
@@ -43,7 +29,7 @@ public:
 		\param timeout the timeout for a read or write operation uses Socket->IsReady... Method
 		\param sockbufsz initial internal read/write buffer size
 		\param mode is the socket reading, writing or both, default: in/out */
-	SocketStreamBuf(Socket *socket, long timeout = 300 * 1000, long sockbufsz = cSocketStreamBufferSize, int mode = ios::out | ios::in);
+	SocketStreamBuf(Socket *socket, long timeout = 300 * 1000, long sockbufsz = cSocketStreamBufferSize, int mode = std::ios::out | std::ios::in);
 	SocketStreamBuf(const SocketStreamBuf &ssbuf);
 
 	//!destructor flushes the buffer and empties put and get areas
@@ -65,29 +51,22 @@ public:
 	}
 
 	//! canonical output operator for SocketStreamBufs
-	friend EXPORTDECL_FOUNDATION ostream &operator<<(ostream &os, SocketStreamBuf *ssbuf);
-#if defined(ONLY_STD_IOSTREAM)
+	friend EXPORTDECL_FOUNDATION std::ostream &operator<<(std::ostream &os, SocketStreamBuf *ssbuf);
+
 protected: // seekxxx are protected in the std..
-	typedef std::streambuf::pos_type	pos_type;
-	typedef std::streambuf::off_type	off_type;
-	typedef std::ios::seekdir	seekdir;
-	typedef std::ios::openmode	openmode;
-#else
-	typedef streampos pos_type;
-	typedef	streamoff off_type;
-	typedef int 	openmode;
-	typedef ios::seek_dir seekdir;
-#endif
+	typedef std::streambuf::pos_type pos_type;
+	typedef std::streambuf::off_type off_type;
+	typedef std::ios::seekdir seekdir;
+	typedef std::ios::openmode openmode;
 
 	//! standard iostream behavior, adjust put or get position absolutely
-	virtual pos_type seekpos(pos_type pos, openmode mode = ios::in | ios::out);
+	virtual pos_type seekpos(pos_type pos, openmode mode = std::ios::in | std::ios::out);
 	//! standard iostream behavior, adjust put or get position relatively
-	virtual pos_type seekoff(off_type off, seekdir dir, openmode mode = ios::in | ios::out);
+	virtual pos_type seekoff(off_type off, seekdir dir, openmode mode = std::ios::in | std::ios::out);
 
-protected:
 	SocketStreamBuf() { }
 	//! no buffer setting needed, because we carry our own buffer, a String object
-	streambuf *setbuf(char *buf, int length) {
+	std::streambuf *setbuf(char *buf, int length) {
 		return this;
 	}
 
@@ -152,10 +131,10 @@ protected:
 
 //---- iosITOSocket -------------------------------------------------------------------
 //! adapts ios to a Socket Stream buffer
-class EXPORTDECL_FOUNDATION iosITOSocket : virtual public ios
+class EXPORTDECL_FOUNDATION iosITOSocket : virtual public std::ios
 {
 public:
-	iosITOSocket(Socket *s, long timeout = 300 * 1000, long sockbufsz = cSocketStreamBufferSize, int mode = ios::in | ios::out );
+	iosITOSocket(Socket *s, long timeout = 300 * 1000, long sockbufsz = cSocketStreamBufferSize, int mode = std::ios::in | std::ios::out );
 	// s is the source resp. the sink;
 
 	virtual ~iosITOSocket() { }
@@ -181,7 +160,7 @@ protected:
 
 //---- ISocketStream -------------------------------------------------------------------
 //! istream for sockets
-class  EXPORTDECL_FOUNDATION ISocketStream : public iosITOSocket, public istream
+class  EXPORTDECL_FOUNDATION ISocketStream : public iosITOSocket, public std::istream
 {
 public:
 	//! constructor creates iosITOSocket
@@ -189,10 +168,8 @@ public:
 		\param timeout the timeout for read operations
 		\param sockbufsz initial internal read/write buffer size */
 	ISocketStream(Socket *s, long timeout = 300 * 1000, long sockbufsz = cSocketStreamBufferSize)
-		: iosITOSocket(s, timeout, sockbufsz, ios::in)
-#if defined(ONLY_STD_IOSTREAM)
-		, istream(&fSocketBuf)
-#endif
+		: iosITOSocket(s, timeout, sockbufsz, std::ios::in)
+		, std::istream(&fSocketBuf)
 	{ } // read from s
 
 	~ISocketStream() { }
@@ -205,7 +182,7 @@ private:
 
 //---- ISocketStream -------------------------------------------------------------------
 //! ostream for sockets
-class  EXPORTDECL_FOUNDATION OSocketStream : public iosITOSocket, public ostream
+class  EXPORTDECL_FOUNDATION OSocketStream : public iosITOSocket, public std::ostream
 {
 public:
 	//! constructor creates iosITOSocket
@@ -213,10 +190,8 @@ public:
 		\param timeout the timeout for write operations
 		\param sockbufsz initial internal read/write buffer size */
 	OSocketStream(Socket *s, long timeout = 300 * 1000, long sockbufsz = cSocketStreamBufferSize)
-		: iosITOSocket(s, timeout, sockbufsz, ios::out)
-#if defined(ONLY_STD_IOSTREAM)
-		, ostream(&fSocketBuf)
-#endif
+		: iosITOSocket(s, timeout, sockbufsz, std::ios::out)
+		, std::ostream(&fSocketBuf)
 	{  }
 
 	//! destructor does nothing
@@ -230,7 +205,7 @@ private:
 
 //---- SocketStream -------------------------------------------------------------------
 //! iostream for sockets
-class  EXPORTDECL_FOUNDATION SocketStream : public iosITOSocket, public iostream
+class  EXPORTDECL_FOUNDATION SocketStream : public iosITOSocket, public std::iostream
 {
 public:
 	//! constructor creates iosITOSocket

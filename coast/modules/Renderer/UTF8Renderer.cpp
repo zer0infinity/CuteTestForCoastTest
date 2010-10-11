@@ -21,7 +21,7 @@ UTF8Renderer::UTF8Renderer(const char *name) : Renderer(name) { }
 
 UTF8Renderer::~UTF8Renderer() { }
 
-void UTF8Renderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void UTF8Renderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	StartTrace(UTF8Renderer.RenderAll);
 	ROAnything lookupName;

@@ -18,10 +18,6 @@
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //---- Base64WDRendererTest ----------------------------------------------------------------
 Base64WDRendererTest::Base64WDRendererTest(TString tname) : TestCaseType(tname)
 {
@@ -55,7 +51,7 @@ void Base64WDRendererTest::RenderAllTest()
 		String str;
 		StringStream aStream(str);
 		aRenderer.RenderAll(aStream, ctx, anyConfig);
-		aStream << flush;
+		aStream << std::flush;
 		assertEqual("$$9hbHBoYQ==", str);
 	}
 	String aStr("X\357\376");
@@ -65,7 +61,7 @@ void Base64WDRendererTest::RenderAllTest()
 		String str;
 		StringStream aStream(str);
 		aRenderer.RenderAll(aStream, ctx, anyConfig);
-		aStream << flush;
+		aStream << std::flush;
 		assertEqual("AO$-", str);
 	}
 }

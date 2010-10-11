@@ -24,9 +24,6 @@ using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
 #include <cstring>
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
 
 //---- AnythingImportExportTest ---------------------------------------------------------
 
@@ -103,7 +100,7 @@ bool AnythingImportExportTest::check5DimArray(Anything &any0, Anything &any1, lo
 
 void AnythingImportExportTest::ImportTest()
 {
-	istream *ifp = System::OpenStream("tmp/ImportTest", "any");
+	std::istream *ifp = System::OpenStream("tmp/ImportTest", "any");
 	if (t_assertm(ifp != 0, "expected ImportTest file to be there")) {
 		Anything config;
 		config.Import(*ifp);
@@ -135,7 +132,7 @@ void AnythingImportExportTest::WriteRead1Test()
 {
 	Anything any0 = AnythingImportExportTest::init5DimArray(5);
 
-	ostream *os = System::OpenOStream("tmp/anything0", "tst", ios::out);
+	std::ostream *os = System::OpenOStream("tmp/anything0", "tst", std::ios::out);
 	if (os) {
 		any0.PrintOn(*os, true);
 		delete os;
@@ -144,7 +141,7 @@ void AnythingImportExportTest::WriteRead1Test()
 	}
 
 	Anything any1;
-	istream *is = System::OpenIStream("tmp/anything0", "tst");
+	std::istream *is = System::OpenIStream("tmp/anything0", "tst");
 	if (is) {
 		any1.Import(*is);
 		delete is;
@@ -159,7 +156,7 @@ void AnythingImportExportTest::WriteRead5Test()
 {
 	Anything any0("Anything: test");
 
-	ostream *os = System::OpenOStream("tmp/anything6", "tst", ios::out);
+	std::ostream *os = System::OpenOStream("tmp/anything6", "tst", std::ios::out);
 	if (os) {
 		int i;
 		for (i = 0; i < 5; i++) {
@@ -170,7 +167,7 @@ void AnythingImportExportTest::WriteRead5Test()
 		assertEqual( "'write tmp/anything6.tst'", "'could not write tmp/anything6.tst'" );
 	}
 
-	istream *is = System::OpenIStream("tmp/anything6", "tst");
+	std::istream *is = System::OpenIStream("tmp/anything6", "tst");
 	if (is) {
 		Anything any1;
 		*is >> any1;
@@ -215,7 +212,7 @@ void AnythingImportExportTest::WriteRead8Test()
 
 	any0 = AnythingImportExportTest::init5DimArray(5);
 
-	ostream *os0 = System::OpenOStream("tmp/anything9", "tst", ios::out);
+	std::ostream *os0 = System::OpenOStream("tmp/anything9", "tst", std::ios::out);
 	if (os0) {
 		any0.Export(*os0, 0);
 		delete os0;
@@ -223,7 +220,7 @@ void AnythingImportExportTest::WriteRead8Test()
 		assertEqual( "'write tmp/anything9.tst'", "'could not write tmp/anything9.tst'" );
 	}
 
-	istream *is0 = System::OpenIStream("tmp/anything9", "tst");
+	std::istream *is0 = System::OpenIStream("tmp/anything9", "tst");
 	if (is0) {
 		any1.Import(*is0);
 		delete is0;
@@ -449,7 +446,7 @@ void AnythingImportExportTest::AnyIncludeTest()
 		{
 			IStringStream is(strIncl);
 			anyIncl.Import(is);
-			iostream *pStream = System::OpenOStream("include", "any");
+			std::iostream *pStream = System::OpenOStream("include", "any");
 			if (pStream) {
 				anyIncl.Export(*pStream);
 				delete pStream;
@@ -476,7 +473,7 @@ void AnythingImportExportTest::AnyIncludeTest()
 		{
 			IStringStream is(strIncl);
 			anyIncl.Import(is);
-			iostream *pStream = System::OpenOStream("include", "any");
+			std::iostream *pStream = System::OpenOStream("include", "any");
 			if (pStream) {
 				anyIncl.Export(*pStream);
 				delete pStream;
@@ -504,7 +501,7 @@ void AnythingImportExportTest::AnyIncludeTest()
 	//		{
 	//			IStringStream is(strIncl);
 	//			anyIncl.Import(is);
-	//			iostream *pStream = System::OpenOStream("include", "any");
+	//			std::iostream *pStream = System::OpenOStream("include", "any");
 	//			if (pStream)
 	//			{
 	//				anyIncl.Export(*pStream);
@@ -531,7 +528,7 @@ void AnythingImportExportTest::AnyIncludeTest()
 	//		{
 	//			IStringStream is(strIncl);
 	//			anyIncl.Import(is);
-	//			iostream *pStream = System::OpenOStream("include", "any");
+	//			std::iostream *pStream = System::OpenOStream("include", "any");
 	//			if (pStream)
 	//			{
 	//				anyIncl.Export(*pStream);
@@ -558,7 +555,7 @@ void AnythingImportExportTest::AnyIncludeTest()
 		{
 			IStringStream is(strIncl);
 			anyIncl.Import(is);
-			iostream *pStream = System::OpenOStream("include", "any");
+			std::iostream *pStream = System::OpenOStream("include", "any");
 			if (pStream) {
 				anyIncl.Export(*pStream);
 				delete pStream;
@@ -584,7 +581,7 @@ void AnythingImportExportTest::AnyIncludeTest()
 		{
 			IStringStream is(strIncl);
 			anyIncl.Import(is);
-			iostream *pStream = System::OpenOStream("include", "any");
+			std::iostream *pStream = System::OpenOStream("include", "any");
 			if (pStream) {
 				anyIncl.Export(*pStream);
 				delete pStream;
@@ -610,7 +607,7 @@ void AnythingImportExportTest::AnyIncludeTest()
 		{
 			IStringStream is(strIncl);
 			anyIncl.Import(is);
-			iostream *pStream = System::OpenOStream("include", "any");
+			std::iostream *pStream = System::OpenOStream("include", "any");
 			if (pStream) {
 				anyIncl.Export(*pStream);
 				delete pStream;

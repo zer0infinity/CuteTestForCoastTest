@@ -22,17 +22,13 @@
 #include "Renderer.h"
 #include "SecurityModule.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //---- SessionInfoRenderer ----------------------------------------------------------------
 class SessionInfoRenderer : public Renderer
 {
 public:
 	SessionInfoRenderer(const char *name);
 
-	void RenderAll(ostream &reply, Context &c, const ROAnything &data);
+	void RenderAll(std::ostream &reply, Context &c, const ROAnything &data);
 };
 
 RegisterRenderer(SessionInfoRenderer);
@@ -41,13 +37,13 @@ SessionInfoRenderer::SessionInfoRenderer(const char *name) : Renderer(name)
 {
 }
 
-void SessionInfoRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void SessionInfoRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	String roleName;
 	c.GetRole()->GetName(roleName);
-	reply << "/sessionId \"" << c.GetSession()->GetId() << "\"" << endl;
-	reply << "/role " << roleName << endl;
-	reply << "/delayed " << ROAnything(c.GetQuery())["delayedIndex"].AsLong(-1) << endl;
+	reply << "/sessionId \"" << c.GetSession()->GetId() << "\"" << std::endl;
+	reply << "/role " << roleName << std::endl;
+	reply << "/delayed " << ROAnything(c.GetQuery())["delayedIndex"].AsLong(-1) << std::endl;
 }
 
 //---- LoginAction ----------------------------------------------------------------------
@@ -112,21 +108,21 @@ bool TransitionTests::EvalRequest(ROAnything request, Anything &returned)
 	// connect to the server
 	StringStream reply;
 	Connector connector("127.0.0.1", GetConfig()["testport"].AsLong());
-	iostream *Ios = connector.Use()->GetStream();
+	std::iostream *Ios = connector.Use()->GetStream();
 	t_assert(Ios != 0);
 
 	if (Ios) {
 		String resultRole, resultPage, resultPage2, sessionId, delayed;
 		TraceAny(request, "evalrequest");
 		// post request
-		(*Ios) << request << flush;
+		(*Ios) << request << std::flush;
 
 		// read reply
 		char c;
 		while ((c = Ios->get()) != EOF) {
 			reply << c;
 		}
-		reply << flush;
+		reply << std::flush;
 		Trace("native reply [" << reply.str() << "]");
 		// extract infos about the received page
 		if ( getline(reply, resultPage) ) {

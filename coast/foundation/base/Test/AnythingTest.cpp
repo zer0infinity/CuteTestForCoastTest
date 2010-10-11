@@ -24,9 +24,6 @@ using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
 #include <cstring>
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
 
 //---- AnythingTest ---------------------------------------------------------
 
@@ -564,7 +561,7 @@ void AnythingTest::BinaryBufOutput()
 	String testString;
 	OStringStream os(&testString);
 
-	os << testAny << flush;
+	os << testAny << std::flush;
 
 	assertEqual( "{\n  /T1 [10;1234567890]\n}", testString);
 	assertEqual(25, testString.Length());

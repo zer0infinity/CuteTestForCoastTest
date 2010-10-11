@@ -47,7 +47,7 @@ void HTTPProcessor::Init(Server *server)
 
 //#define REQ_TRACING
 
-void HTTPProcessor::DoReadInput(iostream &Ios, Context &ctx)
+void HTTPProcessor::DoReadInput(std::iostream &Ios, Context &ctx)
 {
 	StartTrace(HTTPProcessor.DoReadInput);
 
@@ -74,7 +74,7 @@ void HTTPProcessor::DoReadInput(iostream &Ios, Context &ctx)
 	SubTraceAny(request, request, "Arguments:");
 }
 
-void HTTPProcessor::ReadRequestBody(iostream &Ios, Anything &request, MIMEHeader &header, Context &ctx)
+void HTTPProcessor::ReadRequestBody(std::iostream &Ios, Anything &request, MIMEHeader &header, Context &ctx)
 {
 	StartTrace(HTTPProcessor.ReadRequestBody);
 	if ( request["REQUEST_METHOD"] == "POST" ) {
@@ -134,7 +134,7 @@ Anything HTTPProcessor::ParseCookie(const String &line)
 	return cookies;
 }
 
-void HTTPProcessor::DoProcessRequest(ostream &reply, Context &ctx)
+void HTTPProcessor::DoProcessRequest(std::ostream &reply, Context &ctx)
 {
 	StartTrace(HTTPProcessor.DoProcessRequest);
 	if (IsZipEncodingAcceptedByClient(ctx)) {
@@ -178,7 +178,7 @@ bool HTTPProcessor::DoKeepConnectionAlive(Context &ctx)
 	return keepAlive;
 }
 
-void HTTPProcessor::DoRenderProtocolStatus(ostream &os, Context &ctx)
+void HTTPProcessor::DoRenderProtocolStatus(std::ostream &os, Context &ctx)
 {
 	HTTPProtocolReplyRenderer r("HTTPProtocolReplyRenderer");
 	r.RenderAll( os, ctx, ROAnything());
@@ -213,7 +213,7 @@ Anything HTTPProcessor::DoLogError(long errcode, const String &reason, const Str
 }
 
 //! render the protocol specific error msg
-void HTTPProcessor::DoError(ostream &reply, const String &msg, Context &ctx)
+void HTTPProcessor::DoError(std::ostream &reply, const String &msg, Context &ctx)
 {
 	ROAnything httpStatus = ctx.Lookup("HTTPStatus");
 	long errorCode(httpStatus["ResponseCode"].AsLong(400L));

@@ -33,7 +33,7 @@ public:
 	StringCompareRenderer(const char *name);
 	~StringCompareRenderer();
 
-	virtual void RenderAll(ostream &reply, Context &c, const ROAnything &data);
+	virtual void RenderAll(std::ostream &reply, Context &c, const ROAnything &data);
 };
 
 #endif		//ifndef _STRINGCOMPARERENDERER_H

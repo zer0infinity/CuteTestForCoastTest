@@ -29,14 +29,14 @@ public:
 	~NavBarRenderer();
 
 	//! the well known Renderer main method
-	void RenderAll(ostream &reply, Context &c, const ROAnything &config);
+	void RenderAll(std::ostream &reply, Context &c, const ROAnything &config);
 
 protected:
 	//! Retrieves the List data and returns them in list
 	//! \return false if the list retrieval fails
 	/*! Maybe overwritten to fetch the list from another store
 	*/
-	virtual void RenderLevel(ostream &reply, Context &c, const ROAnything &config, Anything &list, String &entryStoreName);
+	virtual void RenderLevel(std::ostream &reply, Context &c, const ROAnything &config, Anything &list, String &entryStoreName);
 	//! Searchs the info data and returns True if found
 	bool GetInfo(Context &c, const ROAnything &config, Anything &info);
 };

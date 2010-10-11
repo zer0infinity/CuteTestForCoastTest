@@ -57,12 +57,12 @@ Renderer::~Renderer()
 {
 }
 
-void Renderer::RenderAll(ostream &reply, Context &, const ROAnything &)
+void Renderer::RenderAll(std::ostream &reply, Context &, const ROAnything &)
 {
 	reply << ("Renderer::RenderAll: abstract method!");
 }
 
-void Renderer::Render(ostream &reply, Context &c, const ROAnything &info)
+void Renderer::Render(std::ostream &reply, Context &c, const ROAnything &info)
 {
 	StartTrace(Renderer.Render);
 	SubTraceAny(In, info, "info");
@@ -175,7 +175,7 @@ String Renderer::RenderToStringWithDefault(Context &c, const ROAnything &info, A
 	return result;
 }
 
-void Renderer::PrintOptions(ostream &reply, const char *tag, const ROAnything &any)
+void Renderer::PrintOptions(std::ostream &reply, const char *tag, const ROAnything &any)
 {
 	reply << '<' << tag;
 	if (any.IsDefined("Options")) {
@@ -184,7 +184,7 @@ void Renderer::PrintOptions(ostream &reply, const char *tag, const ROAnything &a
 	reply << '>';
 }
 
-void Renderer::PrintOptions2(ostream &reply, const ROAnything &any)
+void Renderer::PrintOptions2(std::ostream &reply, const ROAnything &any)
 {
 	if (any.IsDefined("Options")) {
 		ROAnything layout = any["Options"];
@@ -198,7 +198,7 @@ void Renderer::PrintOptions2(ostream &reply, const ROAnything &any)
 	}
 }
 
-void Renderer::PrintOptions3(ostream &reply, Context &c, const ROAnything &config)
+void Renderer::PrintOptions3(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	ROAnything opts;
 	if ( config.LookupPath(opts, "Options") ) {

@@ -26,7 +26,7 @@ BlowfishRenderer::BlowfishRenderer(const char *name) : Renderer(name) { }
 
 BlowfishRenderer::~BlowfishRenderer() { }
 
-void BlowfishRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
+void BlowfishRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(BlowfishRenderer.RenderAll);
 

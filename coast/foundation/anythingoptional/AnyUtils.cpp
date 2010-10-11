@@ -16,18 +16,14 @@
 
 using namespace Coast;
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //---- Any utilities
-void AnyUtils::ShowDifferences( String &masterString, String &inputString, ostream *verbose )
+void AnyUtils::ShowDifferences( String &masterString, String &inputString, std::ostream *verbose )
 {
 	StartTrace(AnyUtils.ShowDifferences);
 	// show first difference
 	if (verbose) {
-		*verbose << "- Show First Difference: -" << endl;
-		*verbose << "Size Master:" << masterString.Length() << " Size Input:" << inputString.Length() << endl;
+		*verbose << "- Show First Difference: -" << std::endl;
+		*verbose << "Size Master:" << masterString.Length() << " Size Input:" << inputString.Length() << std::endl;
 
 		for ( long j = 0, sz = masterString.Length(); j < sz; ++j ) {
 			if ( masterString[j] != inputString[j] ) {
@@ -35,36 +31,36 @@ void AnyUtils::ShowDifferences( String &masterString, String &inputString, ostre
 				if ( inputString[j] != '\0' ) {
 					*verbose << inputString[j];
 				}
-				*verbose << "]" << endl;
+				*verbose << "]" << std::endl;
 				break;
 			} else {
 				*verbose << masterString[j];
 			}
 		}
-		*verbose << "- End Differences: -" << endl;
+		*verbose << "- End Differences: -" << std::endl;
 	}
 }
 
-void AnyUtils::Dump(const char *message, const ROAnything &inputAny, const ROAnything &masterAny, const String &masterSlotName, const String &pathSoFar, ostream *verbose)
+void AnyUtils::Dump(const char *message, const ROAnything &inputAny, const ROAnything &masterAny, const String &masterSlotName, const String &pathSoFar, std::ostream *verbose)
 {
 	StartTrace(AnyUtils.Dump);
 	Trace(String(message) << " [" << masterSlotName << "] at [" << pathSoFar << "]");
 	if (verbose) {
 		TraceAny(inputAny, "Input");
 		TraceAny(masterAny, "Master");
-		*verbose << "_________________________________________________" << endl;
-		*verbose << message << " at [" << pathSoFar << "]" << endl;
-		*verbose << "Master Slot: " << endl;
+		*verbose << "_________________________________________________" << std::endl;
+		*verbose << message << " at [" << pathSoFar << "]" << std::endl;
+		*verbose << "Master Slot: " << std::endl;
 		if (masterSlotName.Length()) {
 			*verbose << "/" << masterSlotName << " ";
 		}
-		*verbose << masterAny << endl;
-		*verbose << "Input: " << endl ;
-		*verbose << inputAny << endl;
+		*verbose << masterAny << std::endl;
+		*verbose << "Input: " << std::endl ;
+		*verbose << inputAny << std::endl;
 	}
 }
 
-bool AnyUtils::AnyCompareEqual( const ROAnything &inputAny, const ROAnything &masterAny, String pathSoFar, ostream *verbose, char delimSlot, char delimIdx )
+bool AnyUtils::AnyCompareEqual( const ROAnything &inputAny, const ROAnything &masterAny, String pathSoFar, std::ostream *verbose, char delimSlot, char delimIdx )
 {
 	StartTrace1(AnyUtils.AnyCompareEqual, "Delim[" << delimSlot << "] IndexDelim[" << delimIdx << "]");
 	//-------------------------------
@@ -290,7 +286,7 @@ bool Recording::ReadinRecording( const String &fileName, Anything &recording )
 	recFilename << System::Sep() << "config" << System::Sep();
 	recFilename << fileName;
 
-	iostream *ifp = System::OpenStream( recFilename, "any");
+	std::iostream *ifp = System::OpenStream( recFilename, "any");
 
 	if (ifp == 0) {
 		String eMsg = "Can't open recording file ";
@@ -313,7 +309,7 @@ bool Recording::WriteoutRecording( const String &fileName, Anything &recording )
 	recFilename << System::Sep() << "config" << System::Sep();
 	recFilename << fileName;
 
-	iostream *ifp = System::OpenStream( recFilename, "any", ios::out );
+	std::iostream *ifp = System::OpenStream( recFilename, "any", std::ios::out );
 
 	if (ifp == 0) {
 		String eMsg = "Can't open config file for writing ";
@@ -330,16 +326,16 @@ bool Recording::WriteoutRecording( const String &fileName, Anything &recording )
 	return true;
 }
 
-static void DoPrintSimpleXML( ostream &os, ROAnything output);
+static void DoPrintSimpleXML( std::ostream &os, ROAnything output);
 
-static void DoPrintEltXML( ostream &os, ROAnything output)
+static void DoPrintEltXML( std::ostream &os, ROAnything output)
 {
 	os << "<any:elt>" ;
 	DoPrintSimpleXML(os, output);
 	os << "</any:elt>";
 }
 
-static void DoPrintSimpleXML( ostream &os, ROAnything output)
+static void DoPrintSimpleXML( std::ostream &os, ROAnything output)
 {
 
 	if (output.IsNull()) {
@@ -366,7 +362,7 @@ static void DoPrintSimpleXML( ostream &os, ROAnything output)
 
 }
 
-void AnyUtils::PrintSimpleXML( ostream &os, ROAnything output)
+void AnyUtils::PrintSimpleXML( std::ostream &os, ROAnything output)
 {
 	if (! output.IsNull() && AnyArrayType != output.GetType()) {
 		DoPrintEltXML(os, output);

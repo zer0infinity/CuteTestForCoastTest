@@ -20,10 +20,6 @@
 #include "config_foundation.h"
 #include "Anything.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using std::iostream;
-#endif
-
 //--- forward declarations ------------------------------------------------------------
 class EXPORTDECL_FOUNDATION AcceptorCallBack;
 
@@ -56,7 +52,7 @@ public:
 	//! returns an iostream the iostream is allocated once and then cached
 	//! \pre socket contains a valid connected socket file descriptor and potentially a stream object
 	//! \post the stream is deleted and the socketfd is closed if fDoClose is true
-	virtual iostream *GetStream();
+	virtual std::iostream *GetStream();
 
 	//! accessor to the sockets fd
 	virtual long GetFd() const {
@@ -206,7 +202,7 @@ public:
 
 protected:
 	//! DoMakeStream allocates a socket iostream, overwrite these method if you need something specific
-	virtual iostream *DoMakeStream();
+	virtual std::iostream *DoMakeStream();
 
 	//! IsReady bottleneck routine that calls System::DoSingleSelect
 	virtual bool IsReady(bool forreading);
@@ -233,7 +229,7 @@ protected:
 	long fSockFd;
 
 	//! the iostream used to read and write to the socket ( default is SocketStream )
-	iostream *fStream;
+	std::iostream *fStream;
 
 	//! flag that determines whether the socket will be closed in the destructor
 	bool fDoClose;
@@ -407,7 +403,7 @@ public:
 	virtual Socket *Use();
 
 	//!creates an internal Socket and returns its stream, Connector deletes it in the destructor;
-	virtual iostream *GetStream();
+	virtual std::iostream *GetStream();
 
 	//!queries the set timeout. Note that this timeout is inherited by the socket instance
 	//! the connector uses, 0 is blocking > 0 non-blocking

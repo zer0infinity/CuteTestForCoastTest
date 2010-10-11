@@ -19,7 +19,7 @@ FormattedDateRenderer::FormattedDateRenderer(const char *name) : Renderer(name) 
 
 FormattedDateRenderer::~FormattedDateRenderer() { }
 
-void FormattedDateRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void FormattedDateRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	StartTrace(FormattedDateRenderer.RenderAll);
 	TraceAny(config, "config");

@@ -18,6 +18,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "StringStream.h"
+#include <iomanip>
 
 //---- AnyImplsTest ----------------------------------------------------------------
 AnyImplsTest::AnyImplsTest(TString tstrName) : TestCaseType(tstrName)

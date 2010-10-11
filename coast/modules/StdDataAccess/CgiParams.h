@@ -39,7 +39,7 @@ public:
 	//! \param ctx the thread context of the invocation
 	//! \param config current mapper configuration as ROAnything
 	//! \return returns true if the mapping was successful otherwise false
-	virtual bool DoGetStream(const char *key, ostream &os, Context &ctx,  ROAnything config);
+	virtual bool DoGetStream(const char *key, std::ostream &os, Context &ctx,  ROAnything config);
 
 protected:
 	virtual bool ResolveInvalidFile(String &path, String &uri, String &value, Context &ctx);

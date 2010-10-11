@@ -15,10 +15,6 @@
 //--- standard modules used ----------------------------------------------------
 #include "DataMapper.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //---- DataMapperTest ----------------------------------------------------------------
 Test *DataMapperTest::suite ()
 {
@@ -125,7 +121,7 @@ void DataMapperTest::FixedSizeTest()
 	String result("<");
 	OStringStream os(&result);
 	t_assert(FixedSizeMapper("noConfig").Get("Find.Key.Here", os, ctx));
-	os << ">" << flush;
+	os << ">" << std::flush;
 
 	assertEqual("<Result              >", result);
 }
@@ -140,7 +136,7 @@ void DataMapperTest::UppercaseTest()
 	String result("<");
 	OStringStream os(&result);
 	t_assert(UpperCaseMapper("noConfig").Get("Find.Key.Here", os, ctx));
-	os << ">" << flush;
+	os << ">" << std::flush;
 
 	assertEqual("<RESULT>", result);
 }

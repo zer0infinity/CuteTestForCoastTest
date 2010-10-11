@@ -78,7 +78,7 @@ void ReadFileDAImplTest::GetFileStreamTest()
 	tmpStore["DocumentRoot"] = ".";
 	tmpStore["Filename"] = "/config/TestData";
 	tmpStore["Extension"] = "any";
-	istream *pStream = hfl.GetFileStream(ctx, &mp);
+	std::istream *pStream = hfl.GetFileStream(ctx, &mp);
 	t_assertm(pStream != NULL, "expected valid file stream");
 	delete pStream;
 

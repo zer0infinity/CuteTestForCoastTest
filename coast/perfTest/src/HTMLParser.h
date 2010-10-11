@@ -141,13 +141,13 @@ private:
 class EXPORTDECL_PERFTEST AAT_HTMLReader
 {
 public:
-	AAT_HTMLReader(istream *fp = 0);
+	AAT_HTMLReader(std::istream *fp = 0);
 
 	Unicode Get();
 	void PutBack(char c);
 
 protected:
-	istream *fFile;
+	std::istream *fFile;
 };
 
 //---- AAT_HTMLWriter ---------------------------------------------------------------------------

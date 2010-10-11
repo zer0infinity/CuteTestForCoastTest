@@ -11,13 +11,6 @@
 
 #include "Anything.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-#include <iostream>
-using std::iostream;
-#else
-#include <iostream.h>
-#endif
-
 //  definitions for io namespace
 #if !defined (R_OK)
 #define R_OK    04      /* Test for Read permission. */
@@ -39,32 +32,26 @@ using std::iostream;
 namespace Coast {
 	namespace System {
 
-#if defined(ONLY_STD_IOSTREAM)
-	typedef std::ios::openmode openmode;
-#elif defined(WIN32) && !defined(ONLY_STD_IOSTREAM)
-	typedef ios::open_mode openmode;
-#else
-	typedef ios::openmode openmode;
-#endif
+		typedef std::ios::openmode openmode;
 
 		//! opens an iostream, search path is not used
 		/*! tries to open an iostream in the given mode.
 			\param path the filepath, it can be relative (to the current working directory) or absolute
 			\param mode ios mode flags
 			\return the pointer to the open iostream or NULL, the client is responsible for destruction */
-		iostream *OpenStream(const String &path, openmode mode = (ios::in));
+		std::iostream *OpenStream(const String &path, openmode mode = (std::ios::in));
 
 		//! opens an istream for reading, search path is not used
 		/*! \param path the filepath, it can be relative (to the current working directory) or absolute
 			\param mode ios mode flags
 			\return the pointer to the open iostream or NULL, the client is responsible for destruction */
-		iostream *OpenIStream(const String &path, openmode mode = (ios::in));
+		std::iostream *OpenIStream(const String &path, openmode mode = (std::ios::in));
 
 		//! opens an ostream for writing, search path is not used
 		/*! \param path the filepath, it can be relative (to the current working directory) or absolute
 			\param mode ios mode flags
 			\return the pointer to the open iostream or NULL, the client is responsible for destruction */
-		iostream *OpenOStream(const String &path, openmode mode = ios::out | ios::trunc);
+		std::iostream *OpenOStream(const String &path, openmode mode = std::ios::out | std::ios::trunc);
 
 		//! opens an iostream, uses search path
 		/*! tries to open an iostream in the given mode. Uses fgRootDir and fgPathList variables to search
@@ -73,7 +60,7 @@ namespace Coast {
 		    \param path the filepath, it can be relative (searched in fgRootDir/fgPathList) or absolute
 			\param mode ios mode flags
 			\return the pointer to the open iostream or NULL, the client is responsible for destruction */
-		iostream *OpenStreamWithSearch(const String &path, openmode mode = (ios::in));
+		std::iostream *OpenStreamWithSearch(const String &path, openmode mode = (std::ios::in));
 
 		//! opens an iostream, uses search path
 		/*! tries to open an iostream in the given mode. Uses fgRootDir and fgPathList variables to search
@@ -85,7 +72,7 @@ namespace Coast {
 			\param mode ios mode flags
 			\param log turn SystemLog::Debug messages on or off
 			\return the pointer to the open iostream or NULL, the client is responsible for destruction	*/
-		iostream *OpenStream(const char *name, const char *extension, openmode mode = (ios::in), bool log = false);
+		std::iostream *OpenStream(const char *name, const char *extension, openmode mode = (std::ios::in), bool log = false);
 
 		//! opens an istream for reading, search path is not used
 		/*! \deprecated use OpenIStream(const String&, openmode)
@@ -94,7 +81,7 @@ namespace Coast {
 			\param mode ios mode flags
 			\param log turn SystemLog::Debug messages on or off
 			\return the pointer to the open iostream or NULL, the client is responsible for destruction */
-		iostream *OpenIStream(const char *name, const char *extension, openmode mode = (ios::in), bool log = false);
+		std::iostream *OpenIStream(const char *name, const char *extension, openmode mode = (std::ios::in), bool log = false);
 
 		//! opens an ostream for writing, search path is not used
 		/*! \deprecated use OpenOStream(const String&, openmode)
@@ -103,7 +90,7 @@ namespace Coast {
 			\param mode ios mode flags
 			\param log turn SystemLog::Debug messages on or off
 			\return the pointer to the open iostream or NULL, the client is responsible for destruction */
-		iostream *OpenOStream(const char *name, const char *extension, openmode mode = ios::out | ios::trunc, bool log = false);
+		std::iostream *OpenOStream(const char *name, const char *extension, openmode mode = std::ios::out | std::ios::trunc, bool log = false);
 
 		//! returns the path and filename.extension of a file found using the search path
 		String GetFilePath(const char *name, const char *extension);

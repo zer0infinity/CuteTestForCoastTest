@@ -26,7 +26,7 @@ TagRenderer::~TagRenderer()
 {
 }
 
-void TagRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void TagRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	StartTrace(TagRenderer.Render);
 	TraceAny(config, "config");

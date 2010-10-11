@@ -41,7 +41,7 @@ public:
 	//! read the MIME header from is
 	//! reads MIME header from is withlimit the line size to
 	//! detect misuse of server
-	bool DoReadHeader(istream &is, long maxlinelen = cDefaultMaxLineSz, long maxheaderlen = cDefaultMaxHeaderSz);
+	bool DoReadHeader(std::istream &is, long maxlinelen = cDefaultMaxLineSz, long maxheaderlen = cDefaultMaxHeaderSz);
 
 	//! trim the line end and parse it according to the MIME Header rules
 	//! appends contents to fHeader
@@ -71,7 +71,7 @@ public:
 	void Normalize(String &str) const;
 
 	//!consume \n at end of line if any
-	bool ConsumeEOL(istream &in) const;
+	bool ConsumeEOL(std::istream &in) const;
 
 	// get name of header field and return the index where the delimiting ":" was found in the string
 	long GetNormalizedFieldName(String &line, String &fieldname);

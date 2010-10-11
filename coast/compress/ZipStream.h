@@ -21,8 +21,8 @@ struct EXPORTDECL_COMPRESS GzipHdr {
 	TimeStamp GetModificationTime() const;
 	void SetModificationTime(TimeStamp aStamp);
 
-	friend EXPORTDECL_COMPRESS ostream &operator<<(ostream &os, GzipHdr &header);
-	friend EXPORTDECL_COMPRESS istream &operator>>(istream &is, GzipHdr &header);
+	friend EXPORTDECL_COMPRESS std::ostream &operator<<(std::ostream &os, GzipHdr &header);
+	friend EXPORTDECL_COMPRESS std::istream &operator>>(std::istream &is, GzipHdr &header);
 
 	unsigned char ID1;					/* gzip magic header[0] */
 	unsigned char ID2;					/* gzip magic header[1] */
@@ -134,7 +134,7 @@ class EXPORTDECL_COMPRESS ZipIStreamBuf : public ZipStreamBuf
 {
 public:
 	//--- constructors
-	ZipIStreamBuf(istream &zis, istream &, ZipStream::eStreamMode aMode = ZipStream::eGZipMode, Allocator *alloc = Storage::Current());
+	ZipIStreamBuf(std::istream &zis, std::istream &, ZipStream::eStreamMode aMode = ZipStream::eGZipMode, Allocator *alloc = Storage::Current());
 	~ZipIStreamBuf();
 
 	void close();
@@ -167,8 +167,8 @@ protected:
 	//! get long from underlying stream
 	unsigned long getLong();
 
-	istream &fZis;
-	istream *fIs;
+	std::istream &fZis;
+	std::istream *fIs;
 
 private:
 	long fZipErr;
@@ -180,19 +180,12 @@ class EXPORTDECL_COMPRESS ZipOStreamBuf : public ZipStreamBuf
 {
 public:
 	//--- constructors
-	ZipOStreamBuf(ostream &, ZipStream::eStreamMode aMode = ZipStream::eGZipMode, Allocator *a = Storage::Current());
+	ZipOStreamBuf(std::ostream &, ZipStream::eStreamMode aMode = ZipStream::eGZipMode, Allocator *a = Storage::Current());
 	~ZipOStreamBuf();
 
 	//! not much to do when synchronizing, just insert string termination character
 	virtual int sync();
 	void close();
-#if !defined(ONLY_STD_IOSTREAM) /* no need to overwrite seek hooks */
-	//! flushes the buffer and sets streampos to 0 it is not possible to seek on a socket
-	virtual streampos seekpos(streampos, int mode = ios::in | ios::out);
-
-	//! flushes the buffer and sets streampos to 0 it is not possible to seek on a socket
-	virtual streampos seekoff(streamoff, ios::seek_dir, int mode = ios::in | ios::out);
-#endif
 
 	virtual const GzipHdr &Header();
 
@@ -217,7 +210,7 @@ protected:
 	void flushCompressedIfNecessary();
 	void putLong(unsigned long);
 
-	ostream *fOs;
+	std::ostream *fOs;
 	int fCompLevel, fCompStrategy;
 };
 
@@ -279,14 +272,12 @@ namespace ZipStream
 }
 //---- ZipOStream ----------------------------------------------------------
 //! wrap other ostream objects with compression
-class EXPORTDECL_COMPRESS ZipOStream : public ostream
+class EXPORTDECL_COMPRESS ZipOStream : public std::ostream
 {
 public:
 	//--- constructors
-	ZipOStream(ostream &os, ZipStream::eStreamMode aMode = ZipStream::eGZipMode):
-#if defined(ONLY_STD_IOSTREAM)
-		ostream(&fBuf),
-#endif
+	ZipOStream(std::ostream &os, ZipStream::eStreamMode aMode = ZipStream::eGZipMode):
+		std::ostream(&fBuf),
 		fBuf(os, aMode) {
 		init(&fBuf);
 	}
@@ -330,14 +321,12 @@ protected:
 
 //---- ZipOStreamBuf ----------------------------------------------------------
 //! wrap other istream objects with decompression
-class EXPORTDECL_COMPRESS ZipIStream : public istream
+class EXPORTDECL_COMPRESS ZipIStream : public std::istream
 {
 public:
 	//--- constructors
-	ZipIStream(istream &is, ZipStream::eStreamMode aMode = ZipStream::eGZipMode):
-#if defined(ONLY_STD_IOSTREAM)
-		istream(&fBuf),
-#endif
+	ZipIStream(std::istream &is, ZipStream::eStreamMode aMode = ZipStream::eGZipMode):
+		std::istream(&fBuf),
 		fBuf(*this, is, aMode) {
 		init(&fBuf);
 	}

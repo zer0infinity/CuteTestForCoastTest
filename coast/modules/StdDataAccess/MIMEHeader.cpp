@@ -24,7 +24,7 @@ MIMEHeader::MIMEHeader(URLUtils::NormalizeTag normalizeKey, MIMEHeader::ProcessM
 	StartTrace(MIMEHeader.Ctor);
 }
 
-bool MIMEHeader::DoReadHeader(istream &in, long maxlinelen, long maxheaderlen)
+bool MIMEHeader::DoReadHeader(std::istream &in, long maxlinelen, long maxheaderlen)
 {
 	StartTrace(MIMEHeader.DoReadHeader);
 	String line(maxlinelen);
@@ -219,7 +219,7 @@ long MIMEHeader::GetContentLength()
 	return ROAnything(fHeader)["CONTENT-LENGTH"].AsLong(-1);
 }
 
-bool MIMEHeader::ConsumeEOL(istream &in) const
+bool MIMEHeader::ConsumeEOL(std::istream &in) const
 {
 	StartTrace(MIMEHeader.ConsumeEOL);
 

@@ -20,13 +20,10 @@
 #include "StringStream.h"
 
 //--- c-library modules used ---------------------------------------------------
+#include <iomanip>
 #include <cstring>
 #if !defined(WIN32)
 #include <sys/time.h>
-#endif
-
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
 #endif
 
 //--- c-modules used -----------------------------------------------------------
@@ -82,7 +79,7 @@ String UniqueIdGen::HexHash(MD5Signer &md5, const char *s)
 	String buffer;
 	OStringStream os(buffer);
 	for (long i = 0 ; i < hash.Length(); i++) {
-		os << hex <<  setw(2) << setfill('0') << (int)(unsigned char)hash[i];
+		os << std::hex <<  std::setw(2) << std::setfill('0') << (int)(unsigned char)hash[i];
 	}
 	return buffer;
 }

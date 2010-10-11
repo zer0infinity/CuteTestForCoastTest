@@ -26,7 +26,7 @@ AnyToXMLRenderer::~AnyToXMLRenderer()
 {
 }
 
-void AnyToXMLRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void AnyToXMLRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	StartTrace(AnyToXMLRenderer.RenderAll);
 	TraceAny(config, "config");
@@ -49,7 +49,7 @@ void AnyToXMLRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &c
 	}
 }
 
-void AnyToXMLRenderer::RenderXML(ostream &reply, ROAnything &input)
+void AnyToXMLRenderer::RenderXML(std::ostream &reply, ROAnything &input)
 {
 	StartTrace(AnyToXMLRenderer.RenderXML);
 	TraceAny(input, "Input");
@@ -64,7 +64,7 @@ void AnyToXMLRenderer::RenderXML(ostream &reply, ROAnything &input)
 	RenderNamedChilds(reply, input);
 }
 
-void AnyToXMLRenderer::RenderNamedChilds(ostream &reply, ROAnything &list)
+void AnyToXMLRenderer::RenderNamedChilds(std::ostream &reply, ROAnything &list)
 {
 	StartTrace(AnyToXMLRenderer.RenderNamedChilds);
 
@@ -93,7 +93,7 @@ void AnyToXMLRenderer::RenderNamedChilds(ostream &reply, ROAnything &list)
 	}
 }
 
-void AnyToXMLRenderer::RenderUnnamedChilds(ostream &reply, String &tagname, ROAnything &list)
+void AnyToXMLRenderer::RenderUnnamedChilds(std::ostream &reply, String &tagname, ROAnything &list)
 {
 	StartTrace(AnyToXMLRenderer.RenderUnnamedChilds);
 

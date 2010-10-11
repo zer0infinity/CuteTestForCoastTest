@@ -231,7 +231,7 @@ Anything ParameterMapper::Get(const char *key, Context &ctx)
 	return anyValue;
 }
 
-bool ParameterMapper::Get(const char *key, ostream &os, Context &ctx)
+bool ParameterMapper::Get(const char *key, std::ostream &os, Context &ctx)
 {
 	StartTrace1(ParameterMapper.Get, "( \"" << NotNull(key) << "\" , ostream &os, Context &ctx)");
 	DAAccessTimer(ParameterMapper.Get, key << " (stream)", ctx);
@@ -297,7 +297,7 @@ bool ParameterMapper::DoGetAny(const char *key, Anything &value, Context &ctx, R
 	}
 	return retval;
 }
-bool ParameterMapper::DoGetStream(const char *key, ostream &os, Context &ctx, ROAnything script)
+bool ParameterMapper::DoGetStream(const char *key, std::ostream &os, Context &ctx, ROAnything script)
 {
 	StartTrace1(ParameterMapper.DoGetStream, "( \"" << NotNull(key) << "\" , ostream &os, Context &ctx, ROAnything script)");
 
@@ -362,7 +362,7 @@ bool ParameterMapper::DoFinalGetAny(const char *key, Anything &value, Context &c
 }
 
 namespace {
-	static void PlaceAnyOnStream(ostream &os, ROAnything value) {
+	static void PlaceAnyOnStream(std::ostream &os, ROAnything value) {
 		if (value.GetType() == AnyArrayType) {
 			os << value;
 		} else {
@@ -371,7 +371,7 @@ namespace {
 	}
 }
 
-bool ParameterMapper::DoFinalGetStream(const char *key, ostream &os, Context &ctx)
+bool ParameterMapper::DoFinalGetStream(const char *key, std::ostream &os, Context &ctx)
 {
 	StartTrace1(ParameterMapper.DoFinalGetStream, NotNull(key));
 	String sourceSlot = GetSourceSlot(ctx);
@@ -518,7 +518,7 @@ bool ResultMapper::Put(const char *key, Anything value, Context &ctx)
 	return DoPutAny(key, value, ctx, SelectScript(key, fConfig, ctx));
 }
 
-bool ResultMapper::Put(const char *key, istream &is, Context &ctx)
+bool ResultMapper::Put(const char *key, std::istream &is, Context &ctx)
 {
 	StartTrace1(ResultMapper.Put, NotNull(key));
 	DAAccessTimer(ResultMapper.Put, key, ctx);
@@ -583,7 +583,7 @@ bool ResultMapper::DoPutAnyWithSlotname(const char *key, Anything value, Context
 	return DoPutAny(slotname, value, ctx, roaScript);
 }
 
-bool ResultMapper::DoPutStream(const char *key, istream &is, Context &ctx, ROAnything script)
+bool ResultMapper::DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything script)
 {
 	StartTrace1(ResultMapper.DoPutStream, NotNull(key));
 	bool retval = true;
@@ -686,7 +686,7 @@ bool ResultMapper::DoFinalPutAny(const char *key, Anything value, Context &ctx)
 	return true;
 }
 
-bool ResultMapper::DoFinalPutStream(const char *key, istream &is, Context &ctx)
+bool ResultMapper::DoFinalPutStream(const char *key, std::istream &is, Context &ctx)
 {
 	StartTrace1(ResultMapper.DoFinalPutStream, NotNull(key));
 

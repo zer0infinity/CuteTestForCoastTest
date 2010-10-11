@@ -38,7 +38,7 @@ LoopBackDAImplTest::~LoopBackDAImplTest()
 
 void LoopBackDAImplTest::setUp ()
 {
-	iostream *Ios = System::OpenStream("LoopBackDAImplTest", "any");
+	std::iostream *Ios = System::OpenStream("LoopBackDAImplTest", "any");
 	if ( Ios ) {
 		fStdContextAny.Import((*Ios));
 		delete Ios;

@@ -84,7 +84,7 @@ public:
 
 	//! parse filename with extension .html for insertion into cache
 	virtual Anything Load(const char *filename);
-	virtual void BuildCache(Anything &cache, istream &reader, const char *filenamebody = "NO_FILE");
+	virtual void BuildCache(Anything &cache, std::istream &reader, const char *filenamebody = "NO_FILE");
 
 private:
 	TemplateParser *fParser;

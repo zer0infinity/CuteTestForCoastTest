@@ -16,11 +16,8 @@
 #include "WPMStatHandler.h"
 #include "Dbg.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //--- c-library modules used ---------------------------------------------------
+#include <iomanip>
 
 //---- ThreadPoolManager ---------------------------------------------------------
 ThreadPoolManager::ThreadPoolManager(const char *name)
@@ -184,9 +181,9 @@ bool ThreadPoolManager::AwaitReady(long secs)
 		++msgCount;
 		if ( (msgCount % 5) == 0 ) {
 			OStringStream os;
-			os << "MaxSecToWait: " << setw(4) << secs <<
-			   "  SecsWaited: "	 << setw(4) << msgCount <<
-			   "  Pending requests: " <<  setw(6) <<  lCurrRequests << endl;
+			os << "MaxSecToWait: " << std::setw(4) << secs <<
+			   "  SecsWaited: "	 << std::setw(4) << msgCount <<
+			   "  Pending requests: " <<  std::setw(6) <<  lCurrRequests << std::endl;
 			SystemLog::Info( os.str() );
 		}
 	}
@@ -612,9 +609,9 @@ bool WorkerPoolManager::AwaitEmpty(long sec)
 		++msgCount;
 		if ( (msgCount % 5) == 0 ) {
 			OStringStream os;
-			os << "MaxSecToWait: " << setw(4) << sec <<
-			   "  SecsWaited: "	 << setw(4) << msgCount <<
-			   "  Pending requests: " <<  setw(6) <<  lCurrRequests << endl;
+			os << "MaxSecToWait: " << std::setw(4) << sec <<
+			   "  SecsWaited: "	 << std::setw(4) << msgCount <<
+			   "  Pending requests: " <<  std::setw(6) <<  lCurrRequests << std::endl;
 			SystemLog::Info( os.str() );
 		}
 	}

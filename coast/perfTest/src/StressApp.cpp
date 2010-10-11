@@ -16,10 +16,8 @@
 #include "Stresser.h"
 #include "Dbg.h"
 
-#if defined(ONLY_STD_IOSTREAM)
+#include <iomanip>
 #include <algorithm>
-using namespace std;
-#endif
 
 RegisterApplication(StressApp);
 
@@ -55,6 +53,7 @@ int StressApp::DoRun()
 void StressApp::ShowResult(long lTime)
 {
 	StartTrace(StressApp.ShowResult);
+	using namespace std;
 
 	unsigned long totTr = 0;
 	unsigned long totSteps = 0;
@@ -67,7 +66,7 @@ void StressApp::ShowResult(long lTime)
 	// get the result from all users
 	{
 		OStringStream strCout(&buf);
-		strCout << "\nResult:" << endl;
+		strCout << "\nResult:" << std::endl;
 		Anything results;
 		TraceAny(fResult, "fResult");
 		if (!fResult.LookupPath(results, "Results")) {
@@ -89,13 +88,19 @@ void StressApp::ShowResult(long lTime)
 			double avgtime = anzTr ? (double(sum) / double(anzTr)) : 0;
 
 			// show summary for this run
-			strCout << "ID: " << setw(3) << setiosflags(ios::right) << i << " Time: " << setw(4) << setiosflags(ios::right | ios::fixed) << setprecision(1) << (double(sum) / 1000.0) << "s Trx: " << anzTr << " Steps: " << anzSteps << " Trx/sec: " << setiosflags(ios::fixed) << setprecision(2) << trxpsec;
-			strCout << " AverageTime: " << setiosflags(ios::fixed) << setprecision(1) << avgtime << "ms MaxTime: " << itopia_max << "ms MinTime: " << itopia_min << "ms";
+			strCout << "ID: " << setw(3) << setiosflags(ios::right) << i
+					<< " Time: " << setw(4) << setiosflags(ios::right | ios::fixed) << setprecision(1) << (double(sum) / 1000.0) << "s"
+					<< " Trx: " << anzTr
+					<< " Steps: " << anzSteps
+					<< " Trx/sec: " << setiosflags(ios::fixed) << setprecision(2) << trxpsec;
+			strCout << " AverageTime: " << setiosflags(ios::fixed) << setprecision(1) << avgtime << "ms"
+					<< " MaxTime: " << itopia_max << "ms"
+					<< " MinTime: " << itopia_min << "ms";
 
 			if ( err > 0 ) {
 				strCout << " Errors: " << err;
 			}
-			strCout << endl;
+			strCout << std::endl;
 
 			// create nice printable anything with useful information
 			Anything details, errors, infos;
@@ -132,7 +137,7 @@ void StressApp::ShowResult(long lTime)
 			}
 			TraceAny(printDetails, "printDetails");
 			if (!printDetails.IsNull()) {
-				strCout << printDetails << endl;
+				strCout << printDetails << std::endl;
 			}
 
 			// add this result to the totals
@@ -146,13 +151,18 @@ void StressApp::ShowResult(long lTime)
 
 		double totTrxpsec = totSum ? (double(totTr) / (double(totSum) / 1000.0)) : 0;
 		double totAvgtime = totTr ? (double(totSum) / double(totTr)) : 0;
-		strCout << "\nTotal:" << endl;
-		strCout << " Time: " << setw(5) << setiosflags(ios::right | ios::fixed) << setprecision(1) << (double(totSum) / 1000.0) << "s Trx: " << totTr << " Steps: " << totSteps << " Trx/sec: " << setiosflags(ios::fixed) << setprecision(2) << totTrxpsec;
-		strCout << " AverageTime: " << setiosflags(ios::fixed) << setprecision(1) << totAvgtime << "ms MaxTime: " << totMax << "ms MinTime: " << totMin << "ms";
+		strCout << "\nTotal:" << std::endl;
+		strCout << " Time: " << setw(5) << setiosflags(ios::right | ios::fixed) << setprecision(1) << (double(totSum) / 1000.0) << "s"
+				<< " Trx: " << totTr
+				<< " Steps: " << totSteps
+				<< " Trx/sec: " << setiosflags(ios::fixed) << setprecision(2) << totTrxpsec;
+		strCout << " AverageTime: " << setiosflags(ios::fixed) << setprecision(1) << totAvgtime << "ms"
+				<< " MaxTime: " << totMax << "ms"
+				<< " MinTime: " << totMin << "ms";
 		if ( totErr > 0 ) {
 			strCout << " Errors: " << totErr;
 		}
-		strCout << endl << endl;
+		strCout << std::endl << std::endl;
 	}
 
 	String fn = fConfig["ResultFile"].AsCharPtr("time.txt");
@@ -160,7 +170,7 @@ void StressApp::ShowResult(long lTime)
 
 	if (os) {
 		os->write(buf, buf.Length());
-		*os << "-----------------------------------------" << endl << endl;
+		*os << "-----------------------------------------" << std::endl << std::endl;
 		delete os;
 		os = 0;
 	}

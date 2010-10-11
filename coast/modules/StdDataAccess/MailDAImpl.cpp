@@ -25,7 +25,7 @@ class EXPORTDECL_STDDATAACCESS SMTPState: public NotCloned
 public:
 
 	// apply the smtp protocol
-	static bool SendMail(iostream &Ios, Context &ctx, ParameterMapper *in, ResultMapper *out);
+	static bool SendMail(std::iostream &Ios, Context &ctx, ParameterMapper *in, ResultMapper *out);
 
 	// register a mail protocol state (state pattern)
 	static void Register(const char *name, SMTPState *r);
@@ -45,16 +45,16 @@ protected:
 	};
 
 	// handle this protocol state with the given data
-	virtual SMTPState *HandleState(Anything fMsgData, iostream &Ios);
+	virtual SMTPState *HandleState(Anything fMsgData, std::iostream &Ios);
 
 	// produce the input for smtp server and flush the stream
-	virtual bool DoProduceMsg(Anything &context, ostream &os);
+	virtual bool DoProduceMsg(Anything &context, std::ostream &os);
 
 	// produce the input for smtp server
-	virtual bool ProduceMsg(Anything &context, ostream &os) = 0;
+	virtual bool ProduceMsg(Anything &context, std::ostream &os) = 0;
 
 	// consume the reply
-	virtual bool ConsumeReply(Anything &context, istream &is);
+	virtual bool ConsumeReply(Anything &context, std::istream &is);
 
 	// return the expected status number for this state
 	virtual long DoGetStatus()	{
@@ -70,7 +70,7 @@ protected:
 	virtual const char *NextOkState(Anything &result) = 0;
 
 	// consume the rest of the reply line
-	void ConsumeTillEol(istream &is, String &msg);
+	void ConsumeTillEol(std::istream &is, String &msg);
 
 	static const String CRLF;
 
@@ -82,7 +82,7 @@ class EXPORTDECL_STDDATAACCESS MailFROMState: public SMTPState
 public:
 	MailFROMState(const char *name);
 	virtual ~MailFROMState();
-	virtual bool ProduceMsg(Anything &context, ostream &os);
+	virtual bool ProduceMsg(Anything &context, std::ostream &os);
 
 	// next state if the step succeeded
 	virtual const char *NextOkState(Anything &result)	{
@@ -95,9 +95,9 @@ class EXPORTDECL_STDDATAACCESS MailSTARTState: public SMTPState
 public:
 	MailSTARTState(const char *name);
 	virtual ~MailSTARTState();
-	virtual SMTPState *HandleState(Anything fMsgData, iostream &Ios);
-	virtual bool ProduceMsg(Anything &context, ostream &os);
-	virtual bool ConsumeReply(Anything &context, istream &is);
+	virtual SMTPState *HandleState(Anything fMsgData, std::iostream &Ios);
+	virtual bool ProduceMsg(Anything &context, std::ostream &os);
+	virtual bool ConsumeReply(Anything &context, std::istream &is);
 
 	// next state if the step succeeded
 	virtual const char *NextOkState(Anything &result)	{
@@ -111,8 +111,8 @@ public:
 	MailRCPTState(const char *name);
 	virtual ~MailRCPTState();
 
-	virtual SMTPState *HandleState(Anything fMsgData, iostream &Ios);
-	virtual bool ProduceMsg(Anything &context, ostream &os);
+	virtual SMTPState *HandleState(Anything fMsgData, std::iostream &Ios);
+	virtual bool ProduceMsg(Anything &context, std::ostream &os);
 
 	// next state if the step succeeded
 	virtual const char *NextOkState(Anything &result);
@@ -125,7 +125,7 @@ public:
 	MailDATAState(const char *name);
 	virtual ~MailDATAState();
 
-	virtual bool ProduceMsg(Anything &context, ostream &os);
+	virtual bool ProduceMsg(Anything &context, std::ostream &os);
 
 	// return the expected status number
 	virtual long DoGetStatus()	{
@@ -144,7 +144,7 @@ public:
 	MailSENDState(const char *name);
 	virtual ~MailSENDState();
 
-	virtual bool ProduceMsg(Anything &context, ostream &os);
+	virtual bool ProduceMsg(Anything &context, std::ostream &os);
 
 	// next state if the step succeeded
 	virtual const char *NextOkState(Anything &result)	{
@@ -152,7 +152,7 @@ public:
 		return "MailQUITState";
 	}
 protected:
-	void ProduceMultipartMsg(Anything &context, ostream &os);
+	void ProduceMultipartMsg(Anything &context, std::ostream &os);
 protected:
 	static const String BOUNDARY;
 };
@@ -163,9 +163,9 @@ public:
 	MailERRORState(const char *name);
 	virtual ~MailERRORState();
 
-	virtual SMTPState *HandleState(Anything context, iostream &is);
+	virtual SMTPState *HandleState(Anything context, std::iostream &is);
 
-	virtual bool ProduceMsg(Anything &context, ostream &os);
+	virtual bool ProduceMsg(Anything &context, std::ostream &os);
 	virtual const char *NextOkState(Anything &)	{
 		return "MailENDState";
 	}
@@ -177,9 +177,9 @@ public:
 	MailQUITState(const char *name);
 	virtual ~MailQUITState();
 
-	virtual SMTPState *HandleState(Anything context, iostream &is);
+	virtual SMTPState *HandleState(Anything context, std::iostream &is);
 
-	virtual bool ProduceMsg(Anything &context, ostream &os);
+	virtual bool ProduceMsg(Anything &context, std::ostream &os);
 	virtual const char *NextOkState(Anything &)	{
 		return "MailENDState";
 	}
@@ -195,10 +195,10 @@ public:
 	MailENDState(const char *name) : SMTPState(name) {};
 	virtual ~MailENDState() {};
 
-	virtual bool ProduceMsg(Anything &context, ostream &os)	{
+	virtual bool ProduceMsg(Anything &context, std::ostream &os)	{
 		return true;
 	}
-	virtual SMTPState *HandleState(Anything context, iostream &reply) {
+	virtual SMTPState *HandleState(Anything context, std::iostream &reply) {
 		return this;
 	}
 	virtual bool IsEndState() {
@@ -231,7 +231,7 @@ RegisterSMTPState(MailENDState);
 
 const String SMTPState::CRLF("\x0D\x0A");
 
-bool SMTPState::SendMail(iostream &Ios, Context &ctx, ParameterMapper *in, ResultMapper *out)
+bool SMTPState::SendMail(std::iostream &Ios, Context &ctx, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(MailDAImpl.SendMail);
 	SMTPState *st = SMTPState::FindSMTPState("MailSTARTState");
@@ -255,7 +255,7 @@ bool SMTPState::SendMail(iostream &Ios, Context &ctx, ParameterMapper *in, Resul
 }
 
 // returns next valid state
-SMTPState *SMTPState::HandleState(Anything fMsgData, iostream &Ios)
+SMTPState *SMTPState::HandleState(Anything fMsgData, std::iostream &Ios)
 {
 	String msg;
 
@@ -267,7 +267,7 @@ SMTPState *SMTPState::HandleState(Anything fMsgData, iostream &Ios)
 	return FindSMTPState(NextErrorState()); ;
 }
 
-bool SMTPState::DoProduceMsg(Anything &fMsgData, ostream &os)
+bool SMTPState::DoProduceMsg(Anything &fMsgData, std::ostream &os)
 {
 	StartTrace(SMTPState.DoProduceMsg);
 	bool retVal = ProduceMsg(fMsgData, os);
@@ -278,7 +278,7 @@ bool SMTPState::DoProduceMsg(Anything &fMsgData, ostream &os)
 	return retVal && os.good();
 }
 
-bool SMTPState::ConsumeReply(Anything &context, istream &is)
+bool SMTPState::ConsumeReply(Anything &context, std::istream &is)
 {
 	//Check status of reply
 	String msg;
@@ -301,7 +301,7 @@ bool SMTPState::ConsumeReply(Anything &context, istream &is)
 	return true;
 }
 
-void SMTPState::ConsumeTillEol(istream &is, String &msg)
+void SMTPState::ConsumeTillEol(std::istream &is, String &msg)
 {
 	StartTrace(SMTPState.ConsumeTillEol);
 
@@ -328,7 +328,7 @@ MailSTARTState::~MailSTARTState()
 }
 
 // returns next valid state
-SMTPState *MailSTARTState::HandleState(Anything fMsgData, iostream &Ios)
+SMTPState *MailSTARTState::HandleState(Anything fMsgData, std::iostream &Ios)
 {
 	// smtp server sends reply after connection
 	String msg;
@@ -337,7 +337,7 @@ SMTPState *MailSTARTState::HandleState(Anything fMsgData, iostream &Ios)
 	return SMTPState::HandleState(fMsgData, Ios);
 }
 
-bool MailSTARTState::ProduceMsg(Anything &context, ostream &os)
+bool MailSTARTState::ProduceMsg(Anything &context, std::ostream &os)
 {
 	os << "HELO ";
 	os << context["Helo"].AsCharPtr(DEF_UNKNOWN);
@@ -347,7 +347,7 @@ bool MailSTARTState::ProduceMsg(Anything &context, ostream &os)
 	return (os.good() != 0);
 }
 
-bool MailSTARTState::ConsumeReply(Anything &context, istream &is)
+bool MailSTARTState::ConsumeReply(Anything &context, std::istream &is)
 {
 	return SMTPState::ConsumeReply(context, is);
 }
@@ -360,7 +360,7 @@ MailFROMState::~MailFROMState()
 {
 }
 
-bool MailFROMState::ProduceMsg(Anything &context, ostream &os)
+bool MailFROMState::ProduceMsg(Anything &context, std::ostream &os)
 {
 	os << "MAIL FROM: ";
 	if ( context.IsDefined("From") ) {
@@ -382,7 +382,7 @@ MailRCPTState::~MailRCPTState()
 }
 
 // returns next valid state
-SMTPState *MailRCPTState::HandleState(Anything fMsgData, iostream &Ios)
+SMTPState *MailRCPTState::HandleState(Anything fMsgData, std::iostream &Ios)
 {
 	Anything rcpts(fMsgData["To"]);
 
@@ -408,7 +408,7 @@ SMTPState *MailRCPTState::HandleState(Anything fMsgData, iostream &Ios)
 	return this;
 }
 
-bool MailRCPTState::ProduceMsg(Anything &context, ostream &os)
+bool MailRCPTState::ProduceMsg(Anything &context, std::ostream &os)
 {
 	os << "RCPT TO: ";
 	if ( context.IsDefined("To") ) {
@@ -432,7 +432,7 @@ const char *MailRCPTState::NextOkState(Anything &result)
 MailDATAState::MailDATAState(const char *name) : SMTPState(name) {}
 MailDATAState::~MailDATAState() {}
 
-bool MailDATAState::ProduceMsg(Anything &context, ostream &os)
+bool MailDATAState::ProduceMsg(Anything &context, std::ostream &os)
 {
 	os << "DATA";
 	os << CRLF;
@@ -444,7 +444,7 @@ MailSENDState::MailSENDState(const char *name) : SMTPState(name) {}
 MailSENDState::~MailSENDState() {}
 
 const String MailSENDState::BOUNDARY("------MULTI-PART-DELIMITER---");
-bool MailSENDState::ProduceMsg(Anything &context, ostream &os)
+bool MailSENDState::ProduceMsg(Anything &context, std::ostream &os)
 {
 	os << "From: ";
 	os << context["From"].AsCharPtr("");
@@ -474,7 +474,7 @@ bool MailSENDState::ProduceMsg(Anything &context, ostream &os)
 	return (!!os);
 }
 
-void MailSENDState::ProduceMultipartMsg(Anything &context, ostream &os)
+void MailSENDState::ProduceMultipartMsg(Anything &context, std::ostream &os)
 {
 	// create multipart message (i.e. header & body)
 
@@ -522,7 +522,7 @@ void MailSENDState::ProduceMultipartMsg(Anything &context, ostream &os)
 MailERRORState::MailERRORState(const char *name) : SMTPState(name) {}
 MailERRORState::~MailERRORState() {}
 
-bool MailERRORState::ProduceMsg(Anything &context, ostream &os)
+bool MailERRORState::ProduceMsg(Anything &context, std::ostream &os)
 {
 	os << "QUIT";
 	os << CRLF;
@@ -531,7 +531,7 @@ bool MailERRORState::ProduceMsg(Anything &context, ostream &os)
 	return (!!os);
 }
 
-SMTPState *MailERRORState::HandleState(Anything context, iostream &Ios)
+SMTPState *MailERRORState::HandleState(Anything context, std::iostream &Ios)
 {
 	DoProduceMsg(context, Ios);
 	return SMTPState::FindSMTPState(NextOkState(context["Result"]));
@@ -540,7 +540,7 @@ SMTPState *MailERRORState::HandleState(Anything context, iostream &Ios)
 MailQUITState::MailQUITState(const char *name) : SMTPState(name) {}
 MailQUITState::~MailQUITState() {}
 
-bool MailQUITState::ProduceMsg(Anything &context, ostream &os)
+bool MailQUITState::ProduceMsg(Anything &context, std::ostream &os)
 {
 	os << "QUIT";
 	os << CRLF;
@@ -548,7 +548,7 @@ bool MailQUITState::ProduceMsg(Anything &context, ostream &os)
 	return (!!os);
 }
 
-SMTPState *MailQUITState::HandleState(Anything context, iostream &Ios)
+SMTPState *MailQUITState::HandleState(Anything context, std::iostream &Ios)
 {
 	DoProduceMsg(context, Ios);
 	return SMTPState::FindSMTPState(NextOkState(context["Result"]));
@@ -586,7 +586,7 @@ bool MailDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out)
 	Trace("Address<" << address << "," << port << ">");
 
 	Connector csc(address, port, timeout);
-	iostream *Ios = csc.GetStream();
+	std::iostream *Ios = csc.GetStream();
 	if ( Ios ) {
 		result = SMTPState::SendMail(*Ios, ctx, in, out);
 	} else {

@@ -26,7 +26,7 @@ public:
 
 protected:
 	// utility
-	void Dump(ostream &os, const Anything &data, const String &str);
+	void Dump(std::ostream &os, const Anything &data, const String &str);
 };
 
 #endif

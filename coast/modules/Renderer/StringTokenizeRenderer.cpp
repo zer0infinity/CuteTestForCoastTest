@@ -23,7 +23,7 @@ StringTokenizeRenderer::StringTokenizeRenderer(const char *name) : Renderer(name
 
 StringTokenizeRenderer::~StringTokenizeRenderer() { }
 
-void StringTokenizeRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
+void StringTokenizeRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(StringTokenizeRenderer.RenderAll);
 	TraceAny(config, "config");

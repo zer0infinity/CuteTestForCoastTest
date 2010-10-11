@@ -32,13 +32,13 @@ public:
 	//! \param ctx the thread context of the invocation
 	//! \param config ignored
 	//! \return returns true if the mapping was successful otherwise false
-	virtual bool DoPutStream(const char *key, istream &is, Context &ctx, ROAnything config);
+	virtual bool DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything config);
 
 protected:
 	//!immediately output a valid HTTP response line and header
 	//! synthesizes response line to OK if no indication
 	//! is given in context
-	void PutResponseLineAndHeader(ostream &os, Context &ctx);
+	void PutResponseLineAndHeader(std::ostream &os, Context &ctx);
 
 private:
 	StreamTransferMapper();

@@ -18,10 +18,6 @@
 #include "System.h"
 #include "Dbg.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //--- c-library modules used ---------------------------------------------------
 #if defined(WIN32)
 #include <stdio.h>
@@ -407,7 +403,7 @@ AppLogChannel::~AppLogChannel()
 		LockUnlockEntry me(fChannelMutex);
 		if ( (fBufferItems > 1L) && (fItemsWritten > 0L) ) {
 			Trace("fLogStream state before logging: " << (long)fLogStream->rdstate());
-			(*fLogStream) << fBuffer << flush;
+			(*fLogStream) << fBuffer << std::flush;
 			Trace("fLogStream state after logging: " << (long)fLogStream->rdstate());
 			String msg;
 			msg << " AppLogChannel: [" << fName << "] flushing [" << fItemsWritten << "] " <<
@@ -473,7 +469,7 @@ bool AppLogChannel::LogAll(Context &ctx, AppLogModule::eLogLevel iLevel, const R
 				if ( fBufferItems == 1L ) {
 					LockUnlockEntry me(fChannelMutex);
 					Trace("fLogStream rdstate before logging: " << (long)fLogStream->rdstate());
-					(*fLogStream) << logMsg << flush;
+					(*fLogStream) << logMsg << std::flush;
 					Trace("fLogStream rdstate after logging: " << (long)fLogStream->rdstate());
 					return (!!(*fLogStream));
 				} else {
@@ -483,7 +479,7 @@ bool AppLogChannel::LogAll(Context &ctx, AppLogModule::eLogLevel iLevel, const R
 						++fItemsWritten;
 						if ( ( fItemsWritten % fBufferItems ) == 0L ) {
 							Trace("fLogStream rdstate before logging: " << (long)fLogStream->rdstate());
-							(*fLogStream) << fBuffer << flush;
+							(*fLogStream) << fBuffer << std::flush;
 							Trace("fLogStream rdstate after logging: " << (long)fLogStream->rdstate());
 							fBuffer.Trim(0L);
 							fItemsWritten = 0L;
@@ -542,7 +538,7 @@ bool AppLogChannel::GetLogDirectories(ROAnything channel, String &logdir, String
 	return bGoAhead;
 }
 
-ostream *AppLogChannel::OpenLogStream(ROAnything channel, String &logfileName)
+std::ostream *AppLogChannel::OpenLogStream(ROAnything channel, String &logfileName)
 {
 	StartTrace(AppLogChannel.OpenLogStream);
 	String logdir, rotatedir;
@@ -553,9 +549,9 @@ ostream *AppLogChannel::OpenLogStream(ROAnything channel, String &logfileName)
 	logfileName = channel["FileName"].AsCharPtr();
 
 	Trace("rotating [" << logfileName << "]");
-	ostream *os = NULL;
+	std::ostream *os = NULL;
 	if ( bGoAhead && RotateLog(logdir, rotatedir, logfileName) ) {
-		os = System::OpenOStream(logfileName, NULL, ios::app, true);
+		os = System::OpenOStream(logfileName, NULL, std::ios::app, true);
 	}
 	Trace(((os) ? " succeeded" : " failed"));
 	return os;
@@ -609,7 +605,7 @@ bool AppLogChannel::Rotate(bool overrideDoNotRotateLogs)
 	bool bSuccess = true;
 	// check if this channel must be rotated
 	TraceAny(GetChannelInfo(), "channel info");
-	ostream *pStream = NULL;
+	std::ostream *pStream = NULL;
 	{
 		LockUnlockEntry me(fChannelMutex);
 		pStream = fLogStream;
@@ -633,7 +629,7 @@ bool AppLogChannel::Rotate(bool overrideDoNotRotateLogs)
 	return bSuccess;
 }
 
-void AppLogChannel::WriteHeader(ostream &os)
+void AppLogChannel::WriteHeader(std::ostream &os)
 {
 	StartTrace(AppLogChannel.WriteHeader);
 	ROAnything header = GetChannelInfo()["Header"];
@@ -648,7 +644,7 @@ void AppLogChannel::WriteHeader(ostream &os)
 		}
 	}
 	if ( szh > 0 ) {
-		os << endl;
+		os << std::endl;
 	}
 	Trace("os state " << (long)os.rdstate());
 }

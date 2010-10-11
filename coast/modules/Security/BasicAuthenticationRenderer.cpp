@@ -24,7 +24,7 @@ BasicAuthenticationRenderer::BasicAuthenticationRenderer(const char *name) : Ren
 
 BasicAuthenticationRenderer::~BasicAuthenticationRenderer() { }
 
-void BasicAuthenticationRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
+void BasicAuthenticationRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(BasicAuthenticationRenderer.RenderAll);
 	// see RFC 2617 for details

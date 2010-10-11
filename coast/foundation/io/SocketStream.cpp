@@ -80,10 +80,8 @@ iosITOSocket::iosITOSocket(Socket *s, long timeout, long sockbufsz, int mode )
 
 //---- SocketStream -------------------------------------------------------------------
 SocketStream::SocketStream(Socket *s, long timeout, long sockbufsz)
-	: iosITOSocket(s, timeout, sockbufsz, ios::in | ios::out)
-#if defined(ONLY_STD_IOSTREAM)
-	, iostream(&fSocketBuf)
-#endif
+	: iosITOSocket(s, timeout, sockbufsz, std::ios::in | std::ios::out)
+	, std::iostream(&fSocketBuf)
 {
 }
 
@@ -117,8 +115,8 @@ TimeoutModifier::~TimeoutModifier()
 
 //---- SocketStreamBuf -------------------------------------------------------------------
 SocketStreamBuf::SocketStreamBuf(Socket *psocket, long timeout, long sockbufsz, int mode)
-	: fReadBufStorage(mode &ios::in ? sockbufsz : 0L)
-	, fWriteBufStorage(mode &ios::out ? sockbufsz : 0L)
+	: fReadBufStorage(mode &std::ios::in ? sockbufsz : 0L)
+	, fWriteBufStorage(mode &std::ios::out ? sockbufsz : 0L)
 	, fSocket(psocket)
 	, fReadCount(0)
 	, fWriteCount(0)
@@ -136,10 +134,10 @@ SocketStreamBuf::SocketStreamBuf(const SocketStreamBuf &ssbuf)
 {
 	int mode = 0;
 	if (fReadBufStorage.Capacity() > 0) {
-		mode |= ios::in;
+		mode |= std::ios::in;
 	}
 	if (fWriteBufStorage.Capacity() > 0) {
-		mode |= ios::out;
+		mode |= std::ios::out;
 	}
 	xinit();
 }
@@ -173,11 +171,7 @@ int SocketStreamBuf::overflow( int c )
 	}
 
 	if (c != EOF && (pptr() < epptr())) { // guard against recursion
-#if defined(__GNUG__) && !defined(ONLY_STD_IOSTREAM) /* only gnu defined xput_char() std uses sputc() */
-		xput_char(c);	// without check
-#else
 		sputc(c);
-#endif
 	}
 	return 0L;  // return 0 if successful
 } // overflow
@@ -248,7 +242,7 @@ long SocketStreamBuf::DoWrite(const char *buf, long len)
 {
 	long bytesSent = 0;
 
-	iostream *Ios = fSocket ? fSocket->GetStream() : 0; // neeed for errorhandling
+	std::iostream *Ios = fSocket ? fSocket->GetStream() : 0; // neeed for errorhandling
 
 	while (len > bytesSent &&  Ios && Ios->good()) {
 		long nout = 0;
@@ -261,7 +255,7 @@ long SocketStreamBuf::DoWrite(const char *buf, long len)
 				continue;
 			}
 		} else if (fSocket->HadTimeout()) {
-			Ios->clear(ios::failbit);
+			Ios->clear(std::ios::failbit);
 			break;
 		}
 		String logMsg("socket on send: ");
@@ -271,7 +265,7 @@ long SocketStreamBuf::DoWrite(const char *buf, long len)
 			   << " <" << SystemLog::LastSysError() << ">" << " transmitted: " << bytesSent;
 
 		SystemLog::Error(logMsg);
-		Ios->clear(ios::badbit);
+		Ios->clear(std::ios::badbit);
 	}
 
 	if ( bytesSent > 0 ) {
@@ -289,7 +283,7 @@ long SocketStreamBuf::DoRead(char *buf, long len) const
 	long bytesRead = EOF; // assume EOF is negative
 
 	if (fSocket) {
-		iostream *Ios = fSocket->GetStream();
+		std::iostream *Ios = fSocket->GetStream();
 		if (fSocket->IsReadyForReading() ) {
 			do {
 				bytesRead = recv(fSocket->GetFd(), buf, len, 0);
@@ -299,7 +293,7 @@ long SocketStreamBuf::DoRead(char *buf, long len) const
 				String msg("Socket Error: <");
 				msg << (long)errno << ">=" << SystemLog::SysErrorMsg(errno);
 				SystemLog::Error(msg);
-				Ios->clear(ios::badbit);
+				Ios->clear(std::ios::badbit);
 			} else if ( bytesRead == 0 ) {
 #if defined(STREAM_TRACE)
 				String msg("Socket:    end of data (read)              on file descriptor: ");
@@ -310,7 +304,7 @@ long SocketStreamBuf::DoRead(char *buf, long len) const
 				// streambuf::underflow() returning eof, if no more bytes are available
 			}
 		} else {
-			Ios->clear(fSocket->HadTimeout() ? ios::failbit : ios::badbit);
+			Ios->clear(fSocket->HadTimeout() ? std::ios::failbit : std::ios::badbit);
 		}
 #ifdef STREAM_TRACE
 		if ( bytesRead > 0 ) {
@@ -321,7 +315,7 @@ long SocketStreamBuf::DoRead(char *buf, long len) const
 	return bytesRead;
 }
 
-ostream  &operator<<(ostream &os, SocketStreamBuf *ssbuf)
+std::ostream  &operator<<(std::ostream &os, SocketStreamBuf *ssbuf)
 {
 	StartTrace(ostream.socketstreambuf);
 	if (ssbuf) {

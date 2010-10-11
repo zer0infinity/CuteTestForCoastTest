@@ -20,10 +20,6 @@
 #include "System.h"
 #include "Dbg.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //---- HTTPMapperTest ----------------------------------------------------------------
 HTTPMapperTest::HTTPMapperTest(TString tname) : TestCaseType(tname)
 {
@@ -54,7 +50,7 @@ void HTTPMapperTest::FDTest1()
 	String result;
 	result = PrepareResults(dummy["TestFDPost1Result"]);
 	assertEqual(result, httpOutput);
-	os << flush;
+	os << std::flush;
 	Trace("Resulting httpRequest: " << httpOutput);
 	Trace("Expected  httpRequest: " << result);
 }
@@ -80,7 +76,7 @@ void HTTPMapperTest::FDTest2()
 	String result;
 	result = PrepareResults(dummy["TestFDPost2Result"]);
 	assertEqual(result, httpOutput);
-	os << flush;
+	os << std::flush;
 	Trace("Resulting httpRequest: " << httpOutput);
 	Trace("Expected  httpRequest: " << result);
 }
@@ -126,7 +122,7 @@ void HTTPMapperTest::FDTest4()
 	String result;
 	result = PrepareResults(dummy["TestFDGet4Result"]);
 	assertEqual(result, httpOutput);
-	os << flush;
+	os << std::flush;
 	Trace("Resulting httpRequest: " << httpOutput);
 	Trace("Expected  httpRequest: " << result);
 
@@ -134,7 +130,7 @@ void HTTPMapperTest::FDTest4()
 
 void HTTPMapperTest::GetTestInput(Anything &testInput, const char *testname)
 {
-	iostream *Ios = System::OpenStream(testname, "any");
+	std::iostream *Ios = System::OpenStream(testname, "any");
 	if ( Ios ) {
 		testInput.Import((*Ios));
 		delete Ios;
@@ -156,11 +152,7 @@ void HTTPMapperTest::HTTPBodyMapperBadStream()
 {
 	String strBuf("Bad\nBody\n");
 	StringStream is(strBuf);
-#if defined(WIN32) && !defined(ONLY_STD_IOSTREAM)
-	is.clear(ios::failbit | ios::badbit | is.rdstate());
-#else
-	is.setstate(ios::failbit | ios::badbit);
-#endif
+	is.setstate(std::ios::failbit | std::ios::badbit);
 	HTTPBodyResultMapper bm("testhttpbodymapper");
 	bm.Initialize("ResultMapper");
 	Context dummyctx;

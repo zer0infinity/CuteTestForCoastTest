@@ -19,7 +19,7 @@ FormattedStringRenderer::FormattedStringRenderer(const char *name) : Renderer(na
 
 FormattedStringRenderer::~FormattedStringRenderer() { }
 
-void FormattedStringRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void FormattedStringRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	StartTrace(FormattedStringRenderer.RenderAll);
 	TraceAny(config, "config");

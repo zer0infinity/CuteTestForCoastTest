@@ -19,12 +19,10 @@
 //--- standard modules used ----------------------------------------------------
 #include "Resolver.h"
 
-using namespace std;
-
 //--- c-library modules used ---------------------------------------------------
 
 // utility
-static void Dump(ostream &os, const Anything &data, const String &str);
+static void Dump(std::ostream &os, const Anything &data, const String &str);
 
 URLUtilsTest::URLUtilsTest (TString tname) : TestCaseType(tname) {};
 URLUtilsTest::~URLUtilsTest() {};
@@ -1077,13 +1075,13 @@ void URLUtilsTest::DecodeAllTest()
 	t_assert( 0 == Request[ 1][ 1][0L].AsCharPtr() );
 }
 
-void Dump(ostream &os, const Anything &data, const String &str)
+void Dump(std::ostream &os, const Anything &data, const String &str)
 {
 #if 0
-	os << endl << "----------------------------------" << endl << "Input: " << str << endl;
+	os << std::endl << "----------------------------------" << std::endl << "Input: " << str << std::endl;
 	data.PrintOn(os);
-	os << endl;
-	os << "----------------------------------" << endl;
+	os << std::endl;
+	os << "----------------------------------" << std::endl;
 #endif
 }
 
@@ -1101,7 +1099,7 @@ void URLUtilsTest::HandleURITest()
 	t_assert(query["param2"] == "value2");
 	t_assert(query.GetSize() == 3);
 
-	Dump(cerr, query, uriQuery);
+	Dump(std::cerr, query, uriQuery);
 
 	query = Anything();
 
@@ -1112,7 +1110,7 @@ void URLUtilsTest::HandleURITest()
 
 	t_assert(query.Contains("cgi"));
 	t_assert(query.GetSize() == 1);
-	Dump(cerr, query, uriQuery);
+	Dump(std::cerr, query, uriQuery);
 
 	query = Anything();
 
@@ -1123,7 +1121,7 @@ void URLUtilsTest::HandleURITest()
 
 	t_assert(query.Contains("cgi"));
 	t_assert(query.GetSize() == 1);
-	Dump(cerr, query, uriQuery);
+	Dump(std::cerr, query, uriQuery);
 
 	query = Anything();
 
@@ -1138,7 +1136,7 @@ void URLUtilsTest::HandleURITest()
 	t_assert(query["param2"] == "value2");
 	t_assert(query.GetSize() == 3);
 
-	Dump(cerr, query, uriQuery);
+	Dump(std::cerr, query, uriQuery);
 
 	query = Anything();
 
@@ -1153,7 +1151,7 @@ void URLUtilsTest::HandleURITest()
 	assertEqual("%45", query["param2"].AsCharPtr(""));
 	t_assert(query.GetSize() == 3);
 
-	Dump(cerr, query, uriPath1);
+	Dump(std::cerr, query, uriPath1);
 }
 
 void URLUtilsTest::HandleURI2Test()
@@ -1180,7 +1178,7 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(!String::CaselessCompare(testHost, query["ServerName"].AsCharPtr()));
 	assertCharPtrEqual("/part1/part2/part3", query["Path"].AsCharPtr() );
 
-	Dump(cerr, query, uriQuery);
+	Dump(std::cerr, query, uriQuery);
 	//---------------------------------------------------------------------
 	// builds on previous // NO query.Free();
 
@@ -1201,7 +1199,7 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(!String::CaselessCompare(testHost, query["ServerName"].AsCharPtr()));
 	assertCharPtrEqual("/part1/part2/../part2.1/part3.1", query["Path"].AsCharPtr() );
 
-	Dump(cerr, query, uriQuery);
+	Dump(std::cerr, query, uriQuery);
 	//---------------------------------------------------------------------
 	// builds on previous // NO query.Free();
 
@@ -1222,7 +1220,7 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(!String::CaselessCompare(testHost, query["ServerName"].AsCharPtr()));
 	assertCharPtrEqual( "/part1/part2/../part2.1/part3.2/part4.2", query["Path"].AsCharPtr());
 
-	Dump(cerr, query, uriQuery);
+	Dump(std::cerr, query, uriQuery);
 	//---------------------------------------------------------------------
 	// builds on previous // NO query.Free();
 
@@ -1243,7 +1241,7 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(!String::CaselessCompare(testHost, query["ServerName"].AsCharPtr()));
 	assertCharPtrEqual( "/part1.1/part2.2", query["Path"].AsCharPtr());
 
-	Dump(cerr, query, uriQuery);
+	Dump(std::cerr, query, uriQuery);
 
 	//---------------------------------------------------------------------
 	// builds on previous // NO query.Free();
@@ -1265,7 +1263,7 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(!String::CaselessCompare(testHost, query["ServerName"].AsCharPtr()));
 	assertCharPtrEqual( "/part1.1/../../../../part2.2/part3.2", query["Path"].AsCharPtr());
 
-	Dump(cerr, query, uriQuery);
+	Dump(std::cerr, query, uriQuery);
 	//---------------------------------------------------------------------
 	// builds on previous // NO query.Free();
 	// Protocol change->new protocol, new default Port
@@ -1286,7 +1284,7 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(!String::CaselessCompare(testHost, query["ServerName"].AsCharPtr()));
 	assertCharPtrEqual( "/part2.2/part3.2", query["Path"].AsCharPtr());
 
-	Dump(cerr, query, uriQuery);
+	Dump(std::cerr, query, uriQuery);
 	//---------------------------------------------------------------------
 	// builds on previous // NO query.Free();
 	// domain change
@@ -1307,7 +1305,7 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(!String::CaselessCompare(testHost, query["ServerName"].AsCharPtr()));
 	assertCharPtrEqual( "/", query["Path"].AsCharPtr());
 
-	Dump(cerr, query, uriQuery);
+	Dump(std::cerr, query, uriQuery);
 	//---------------------------------------------------------------------
 	// builds on previous // NO query.Free();
 	// domain change
@@ -1328,7 +1326,7 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(!String::CaselessCompare(testHost, query["ServerName"].AsCharPtr()));
 	assertCharPtrEqual( "/part2.2/part3.2", query["Path"].AsCharPtr());
 
-	Dump(cerr, query, uriQuery);
+	Dump(std::cerr, query, uriQuery);
 	//---------------------------------------------------------------------
 	// builds on previous // NO query.Free();
 	// domain change
@@ -1349,7 +1347,7 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(!String::CaselessCompare(testHost, query["ServerName"].AsCharPtr()));
 	assertCharPtrEqual( "/part2.2/part3.2", query["Path"].AsCharPtr());
 
-	Dump(cerr, query, uriQuery);
+	Dump(std::cerr, query, uriQuery);
 	//---------------------------------------------------------------------
 	// builds on previous // NO query.Free();
 	// domain change
@@ -1370,7 +1368,7 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(!String::CaselessCompare(testHost, query["ServerName"].AsCharPtr()));
 	assertCharPtrEqual( "/part2.2/part3.2", query["Path"].AsCharPtr());
 
-	Dump(cerr, query, uriQuery);
+	Dump(std::cerr, query, uriQuery);
 	//---------------------------------------------------------------------
 	// builds on previous // NO query.Free();
 	// domain change
@@ -1391,7 +1389,7 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(!String::CaselessCompare(testHost, query["ServerName"].AsCharPtr()));
 	assertCharPtrEqual( "/part2.2/part3.2", query["Path"].AsCharPtr());
 
-	Dump(cerr, query, uriQuery);
+	Dump(std::cerr, query, uriQuery);
 	//---------------------------------------------------------------------
 	// builds on previous // NO query.Free();
 	// domain change
@@ -1412,7 +1410,7 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(!String::CaselessCompare(testHost, query["ServerName"].AsCharPtr()));
 	assertCharPtrEqual( "/part2.2/part3.2", query["Path"].AsCharPtr());
 
-	Dump(cerr, query, uriQuery);
+	Dump(std::cerr, query, uriQuery);
 	//---------------------------------------------------------------------
 	// builds on previous // NO query.Free();
 	// IP address directly given as domain...
@@ -1433,7 +1431,7 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(!String::CaselessCompare(testHostIp, query["ServerName"].AsCharPtr()));
 	assertCharPtrEqual( "/part2.2/part3.2", query["Path"].AsCharPtr());
 
-	Dump(cerr, query, uriQuery);
+	Dump(std::cerr, query, uriQuery);
 
 	//---------------------------------------------------------------------
 	// builds? on previous // NO query.Free();
@@ -1454,7 +1452,7 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(!String::CaselessCompare(testHostIp, query["ServerName"].AsCharPtr()));
 	assertCharPtrEqual( "/part2.2/part3.3", query["Path"].AsCharPtr());
 
-	Dump(cerr, query, uriQuery);
+	Dump(std::cerr, query, uriQuery);
 
 	//---------------------------------------------------------------------
 	// builds? on previous // NO query.Free();
@@ -1477,7 +1475,7 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(!String::CaselessCompare(testHostIp, query["ServerName"].AsCharPtr()));
 	assertCharPtrEqual( "/base/part3.2", query["Path"].AsCharPtr());
 
-	Dump(cerr, query, uriQuery);
+	Dump(std::cerr, query, uriQuery);
 
 	//---------------------------------------------------------------------
 	// builds? on previous // NO query.Free();
@@ -1500,7 +1498,7 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(!String::CaselessCompare(testHost, query["ServerName"].AsCharPtr()));
 	assertCharPtrEqual( "/base/part3.2", query["Path"].AsCharPtr());
 
-	Dump(cerr, query, uriQuery);
+	Dump(std::cerr, query, uriQuery);
 
 	//---------------------------------------------------------------------
 	// builds? on previous // NO query.Free();
@@ -1523,7 +1521,7 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(!String::CaselessCompare(testHost, query["ServerName"].AsCharPtr()));
 	assertCharPtrEqual( "/base/part3.2", query["Path"].AsCharPtr());
 
-	Dump(cerr, query, uriQuery);
+	Dump(std::cerr, query, uriQuery);
 	//---------------------------------------------------------------------
 	// builds? on previous // NO query.Free();
 	// domain change
@@ -1545,7 +1543,7 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(!String::CaselessCompare(testHost, query["ServerName"].AsCharPtr()));
 	assertCharPtrEqual( "/base/part2.2/part3.2", query["Path"].AsCharPtr());
 
-	Dump(cerr, query, uriQuery);
+	Dump(std::cerr, query, uriQuery);
 	//---------------------------------------------------------------------
 	// Mike: baseHREF must always be a full URI, if not what do browsers do? ignore it??
 	// Thats what we do here
@@ -1570,7 +1568,7 @@ void URLUtilsTest::HandleURI2Test()
 	t_assert(!String::CaselessCompare(testHost, query["ServerName"].AsCharPtr()));
 	assertCharPtrEqual( "/base/part2.2/part3.4", query["Path"].AsCharPtr());
 
-	Dump(cerr, query, uriQuery);
+	Dump(std::cerr, query, uriQuery);
 }
 
 void URLUtilsTest::TrimBlanksTest ()

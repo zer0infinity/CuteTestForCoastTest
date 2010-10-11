@@ -26,15 +26,9 @@
 //#define IOSTREAM_NUM_CONVERSION
 //#define IOSTREAM_NUM_CONVERSION_STRSTREAM
 
-#if defined(ONLY_STD_IOSTREAM)
 #include <limits>	// for numeric_limits
 #if defined(IOSTREAM_NUM_CONVERSION_STRSTREAM)
 #include <strstream>
-#endif
-using namespace std;
-#else
-#include <float.h>	// for DBL_DIG
-#include <stdio.h>
 #endif
 
 #if defined(__SUNPRO_CC)
@@ -46,11 +40,9 @@ using namespace std;
 const long cStrAllocMinimum = 32; // minimum size of buffer, tuning param for optimizing
 const long cStrAllocLimit = 4096; // cStrAllocMinimum < StrAllocLimit
 const long cStrAllocIncrement =  1024;
-#if defined(ONLY_STD_IOSTREAM)
+
 static const int giDblDigits = std::numeric_limits<double>::digits10;
-#else
-static const int giDblDigits = DBL_DIG;
-#endif
+
 #if !defined(IOSTREAM_NUM_CONVERSION)
 static const int giFmtSize = 10;
 static char gpcFmtLow[giFmtSize] = { 0 };
@@ -178,7 +170,7 @@ String::String(const String &s, Allocator *a)
 	}
 }
 
-String &String::Append(istream &is, long length, char delim)
+String &String::Append(std::istream &is, long length, char delim)
 // reads at most length chars until delim
 // semantics like istream.get(char *, len, delim)
 {
@@ -326,7 +318,7 @@ String &String::Append(const void *s, long len)
 }
 
 // PS: implement similar of IStream!
-String &String::Append(istream &is, long length)
+String &String::Append(std::istream &is, long length)
 {
 	if (length > 0) {
 		Set(Length(), 0, length); // adjust capacity // PT: now just capacity
@@ -393,15 +385,15 @@ String String::DumpAsHex(long dumpwidth, const char *pcENDL) const
 	return strResult;
 }
 
-ostream &String::DumpAsHex(ostream &os, long dumpwidth) const
+std::ostream &String::DumpAsHex(std::ostream &os, long dumpwidth) const
 {
 	if (Length() > 0) {
 		String strBuf = DumpAsHex(dumpwidth), strToken;
 		StringTokenizer aTok(strBuf, '\n');
 		while ( aTok.NextToken(strToken) ) {
-			os << strToken << endl;
+			os << strToken << std::endl;
 		}
-		os << flush;
+		os << std::flush;
 	}
 	return os;
 }
@@ -523,11 +515,8 @@ void String::DoubleToString(const double &number, String &strBuf)
 #endif
 		out << setiosflags(ios::left);
 		// current number of decimal digits for double is 15
-#if defined(ONLY_STD_IOSTREAM)
 		const int iDblDigits = std::numeric_limits<double>::digits10;
-#else
-	const int iDblDigits = DBL_DIG;
-#endif
+
 		if ( number < 1e+16 ) {
 			out << setiosflags(ios::fixed);
 		}
@@ -958,7 +947,7 @@ void String::ToASCII()
 // delivers
 // "Hello World\x0A"
 // on stdout
-ostream &String::IntPrintOn(ostream &os, const char quote) const
+std::ostream &String::IntPrintOn(std::ostream &os, const char quote) const
 {
 	if (quote) {
 		os.put(quote);
@@ -1003,7 +992,7 @@ ostream &String::IntPrintOn(ostream &os, const char quote) const
 // PS: post CR:
 // unmasked newline characters also terminate a string
 // check if this "feature" has been used by projects?
-long String::IntReadFrom(istream &is, const char quote)
+long String::IntReadFrom(std::istream &is, const char quote)
 {
 	long newlinecounter = 0;
 	if (GetImpl()) {
@@ -1355,7 +1344,7 @@ bool StringTokenizer2::HasMoreTokens(long start, long &end)
 	return start < l;
 }
 
-istream &operator>>(istream &is, String &s)
+std::istream &operator>>(std::istream &is, String &s)
 {
 	int aChar;
 
@@ -1366,7 +1355,7 @@ istream &operator>>(istream &is, String &s)
 	s.Set(0, 0, cStrAllocMinimum);		// empty string reserve cStrAllocMinimum chars, tunable param
 	if (is.good() && s.GetImpl()) {
 		// sanity checks
-		is >> ws;	// skips whitespace
+		is >> std::ws;	// skips whitespace
 		while ((aChar = is.get()) != EOF) {
 			if (isspace( (unsigned char) aChar)) {
 				is.putback(char(aChar));
@@ -1397,7 +1386,7 @@ istream &operator>>(istream &is, String &s)
 	return is;
 }
 
-istream &getline(istream &is, String &s, char c)
+std::istream &getline(std::istream &is, String &s, char c)
 {
 	char aChar = 0;
 
@@ -1417,7 +1406,7 @@ istream &getline(istream &is, String &s, char c)
 			// love to set up their own standards.
 			// Watcoms iostream sets the fail bit,
 			// when an empty line is read.
-			if (is.rdstate() & ios::failbit) {
+			if (is.rdstate() & std::ios::failbit) {
 				is.clear();
 			} else {
 				break;    // eof or bad
@@ -1480,7 +1469,7 @@ unsafe_ostream &operator<<(unsafe_ostream &os, const String &s)
 }
 #endif
 
-ostream &operator<<(ostream &os, const String &s)
+std::ostream &operator<<(std::ostream &os, const String &s)
 {
 //#if !(defined(__SUNPRO_CC) && (__SUNPRO_CC > 0x4ff))
 //	if (!os.opfx())  // see ANSI draft rev. 5
@@ -1488,7 +1477,7 @@ ostream &operator<<(ostream &os, const String &s)
 //#endif
 	size_t len = s.Length();
 	size_t width = os.width();
-	int left = ((os.flags() & ios::left) != 0);
+	int left = ((os.flags() & std::ios::left) != 0);
 
 	if (left) {
 		os.write((const char *)s, len);    // AB: use cast to apply operator const char *

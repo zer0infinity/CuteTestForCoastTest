@@ -34,7 +34,7 @@ protected:
 	bool DoXMLTest(const char *expect, ROAnything foroutput);
 	// utility
 	void DoCheck(Anything testCases, bool expectedResult, String description);
-	void Dump(ostream &os, const Anything &data, const String &str);
+	void Dump(std::ostream &os, const Anything &data, const String &str);
 };
 
 #endif

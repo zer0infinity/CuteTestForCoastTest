@@ -10,39 +10,35 @@
 #include "TextTestResult.h"
 
 //--- standard modules used ----------------------------------------------------
-
-#if defined(ONLY_STD_IOSTREAM)
 #include <iostream>
-using namespace std;
-#endif
 
 void TextTestResult::addError (TestLocation *loc)
 {
 	TestResult::addError (loc);
-	cerr << "E";
+	std::cerr << "E";
 }
 
 void TextTestResult::addFailure (TestLocation *loc)
 {
 	TestResult::addFailure (loc);
-	cerr << "F";
+	std::cerr << "F";
 }
 
 void TextTestResult::startTest (Test *test)
 {
 	TestResult::startTest (test);
 	fStartTime = elapsedTime();
-	cerr << "--" << test->toString() << "--";
+	std::cerr << "--" << test->toString() << "--";
 }
 
 void TextTestResult::endTest (Test *test)
 {
 	TestResult::endTest (test);
-	cerr << " (" << (elapsedTime() - fStartTime) << "ms)";
-	cerr << endl;
+	std::cerr << " (" << (elapsedTime() - fStartTime) << "ms)";
+	std::cerr << std::endl;
 }
 
-void TextTestResult::printCauses(ostream &stream, TestLocList &causes)
+void TextTestResult::printCauses(std::ostream &stream, TestLocList &causes)
 /* in: stream: where to write
 	   causes: what to write
  what: print the causes sequentially;
@@ -60,18 +56,18 @@ void TextTestResult::printCauses(ostream &stream, TestLocList &causes)
 				<< cause->getLineNumber()
 				<< ": "
 				<< cause->getMessage()
-				<< endl;
+				<< std::endl;
 		++i;
 	}
 }
 
-void TextTestResult::printErrors (ostream &stream)
+void TextTestResult::printErrors (std::ostream &stream)
 {
 	if (testErrors () != 0) {
 		if (testErrors () == 1) {
-			stream << "There was " << testErrors () << " error: " << endl;
+			stream << "There was " << testErrors () << " error: " << std::endl;
 		} else {
-			stream << "There were " << testErrors () << " errors: " << endl;
+			stream << "There were " << testErrors () << " errors: " << std::endl;
 		}
 		// if
 
@@ -79,30 +75,30 @@ void TextTestResult::printErrors (ostream &stream)
 	} // if
 }
 
-void TextTestResult::logSuccesses(ostream &stream)
+void TextTestResult::logSuccesses(std::ostream &stream)
 /* in: stream: the stream to write all the successes to
  what: writes all successes on a stream, at some point the format may be parseable
 */
 {
-	stream << testSuccesses() << " assertions completed successfully:" << endl;
+	stream << testSuccesses() << " assertions completed successfully:" << std::endl;
 
 	printCauses(stream, successes());
 } // logSuccesses
 
-void TextTestResult::printFailures (ostream &stream)
+void TextTestResult::printFailures (std::ostream &stream)
 {
 	if ( testFailures () != 0 ) {
 		if (testFailures () == 1) {
-			stream << "There was " << testFailures () << " failure: " << endl;
+			stream << "There was " << testFailures () << " failure: " << std::endl;
 		} else {
-			stream << "There were " << testFailures () << " failures: " << endl;
+			stream << "There were " << testFailures () << " failures: " << std::endl;
 		}
 
 		printCauses(stream, failures());
 	}
 }
 
-void TextTestResult::print (ostream &stream)
+void TextTestResult::print (std::ostream &stream)
 {
 	printHeader (stream);
 	printErrors (stream);
@@ -110,22 +106,22 @@ void TextTestResult::print (ostream &stream)
 
 }
 
-void TextTestResult::printHeader (ostream &stream)
+void TextTestResult::printHeader (std::ostream &stream)
 {
 	if (wasSuccessful ())
-		cout << "OK (" << runTests () << " tests and "
-			 << testSuccesses() << " assertions in " << elapsedTime() << " ms)" << endl;
+		std::cout << "OK (" << runTests () << " tests and "
+			 << testSuccesses() << " assertions in " << elapsedTime() << " ms)" << std::endl;
 	else
-		cout << endl
-			 << "!!!FAILURES!!!" << endl
-			 << "Test Results:" << endl
+		std::cout << std::endl
+			 << "!!!FAILURES!!!" << std::endl
+			 << "Test Results:" << std::endl
 			 << "Run:  "
 			 << runTests ()
 			 << "   Failures: "
 			 << testFailures ()
 			 << "   Errors: "
 			 << testErrors ()
-			 << endl
-			 << "(" << testSuccesses() << " assertions ran successfully in " << elapsedTime() << " ms)" << endl;
+			 << std::endl
+			 << "(" << testSuccesses() << " assertions ran successfully in " << elapsedTime() << " ms)" << std::endl;
 
 }

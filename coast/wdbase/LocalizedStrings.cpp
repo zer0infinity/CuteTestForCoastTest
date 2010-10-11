@@ -97,7 +97,7 @@ bool LocalizationModule::Finis()
 bool LocalizationModule::ReadFromFile(Anything &config, const char *filename)
 {
 	StartTrace(LocalizationModule.ReadFromFile);
-	istream *ifp = System::OpenStream(filename, "any");
+	std::istream *ifp = System::OpenStream(filename, "any");
 	if (ifp == 0) {
 		String logMsg;
 		SystemLog::Error(logMsg << "LocalizationModule::ReadFromFile: can't open file " << filename << ".any");

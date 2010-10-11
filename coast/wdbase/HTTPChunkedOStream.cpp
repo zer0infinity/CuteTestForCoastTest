@@ -12,15 +12,11 @@
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //--- c-library modules used ---------------------------------------------------
 #include <ctype.h>
 
 //---- HTTPChunkedStreamBuf ----------------------------------------------------------------
-HTTPChunkedStreamBuf::HTTPChunkedStreamBuf(ostream &os, long chunklength, Allocator *alloc)
+HTTPChunkedStreamBuf::HTTPChunkedStreamBuf(std::ostream &os, long chunklength, Allocator *alloc)
 	: fAllocator(alloc ? alloc : Storage::Current())
 	, fStore(chunklength, fAllocator)
 	, fOs(&os)
@@ -58,9 +54,9 @@ int HTTPChunkedStreamBuf::sync()
 #if defined(WIN32)
 		long old = fOs->flags();
 #else
-		ios::fmtflags old = fOs->flags();
+		std::ios::fmtflags old = fOs->flags();
 #endif
-		(*fOs) << hex << len << ENDL;
+		(*fOs) << std::hex << len << ENDL;
 		fOs->flags(old);
 		fOs->write((const char *)fStore, len);
 		(*fOs) << ENDL ;

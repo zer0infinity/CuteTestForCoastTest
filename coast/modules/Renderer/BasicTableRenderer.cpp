@@ -180,7 +180,7 @@ bool BasicTableRenderer::CanUseInvertedHeaders(Context &c)
 	return invertHeaders;
 }
 
-void BasicTableRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void BasicTableRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	MethodTimer(BasicTableRenderer.RenderAll, "", c); 		// support for timing
 	StartTrace(BasicTableRenderer.Render);
@@ -283,12 +283,12 @@ void BasicTableRenderer::RenderAll(ostream &reply, Context &c, const ROAnything 
 	reply << "</TABLE>\n</TD></TR>\n</TABLE>\n";
 }
 
-void BasicTableRenderer::DoPrintEmptySection(ostream &reply, Context &c,
+void BasicTableRenderer::DoPrintEmptySection(std::ostream &reply, Context &c,
 		const ROAnything &config, const ROAnything &sectionConfig,  int &row)
 {
 }
 
-void BasicTableRenderer::PrintBodySection(const ROAnything &config, int &row, ostream &reply,
+void BasicTableRenderer::PrintBodySection(const ROAnything &config, int &row, std::ostream &reply,
 		Context &c, const ROAnything &sectionConfig, const Anything &sectionData)
 {
 	// a table may consist of several sections: these individual sections
@@ -498,7 +498,7 @@ void BasicTableRenderer::CleanupRowAccessors(RowAccessor *accessors, long size)
 	}
 }
 
-void BasicTableRenderer::PrintRow(int &row, ostream &reply, Context &c,
+void BasicTableRenderer::PrintRow(int &row, std::ostream &reply, Context &c,
 								  RowAccessor *accessors, long rowSize, ROAnything &rowColors, bool invertHeaders)
 {
 	PrintNewLine(row, reply, rowColors, invertHeaders);
@@ -545,7 +545,7 @@ void BasicTableRenderer::PrintRow(int &row, ostream &reply, Context &c,
 	reply << "</TR>\n";
 }
 
-void BasicTableRenderer::PrintElement(ostream &reply, Context &c, RowAccessor &accessor)
+void BasicTableRenderer::PrintElement(std::ostream &reply, Context &c, RowAccessor &accessor)
 {
 	Renderer *r = accessor.GetRenderer();
 
@@ -557,7 +557,7 @@ void BasicTableRenderer::PrintElement(ostream &reply, Context &c, RowAccessor &a
 	}
 }
 
-void BasicTableRenderer::PrintNewLine(int &row, ostream &reply, ROAnything &rowColors, bool invertHeaders)
+void BasicTableRenderer::PrintNewLine(int &row, std::ostream &reply, ROAnything &rowColors, bool invertHeaders)
 {
 	if (!rowColors.IsNull()) {
 		const char *rowColor = GetColor(row++, rowColors, invertHeaders);
@@ -604,7 +604,7 @@ RegisterRenderer(SequenceRenderer);
 
 SequenceRenderer::SequenceRenderer(const char *name) : Renderer(name) {}
 
-void SequenceRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void SequenceRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	Renderer::Render(reply, c, config);
 }

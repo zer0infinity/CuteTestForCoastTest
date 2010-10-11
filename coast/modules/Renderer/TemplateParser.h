@@ -35,7 +35,7 @@ class EXPORTDECL_RENDERER TemplateParser
 public:
 	TemplateParser() {}
 	virtual ~TemplateParser() {}
-	Anything Parse(istream &reader, const char *filename = "NO_FILE", long startline = 1L, Allocator *a = Storage::Current(), const ROAnything roaParserConfig = ROAnything());
+	Anything Parse(std::istream &reader, const char *filename = "NO_FILE", long startline = 1L, Allocator *a = Storage::Current(), const ROAnything roaParserConfig = ROAnything());
 
 protected:
 	virtual void DoParse();
@@ -74,7 +74,7 @@ protected:
 	void PutBack(char c);
 
 	Anything fCache;
-	istream *fReader;
+	std::istream *fReader;
 	String	fFileName;
 	long	fLine;
 	ROAnything froaConfig;

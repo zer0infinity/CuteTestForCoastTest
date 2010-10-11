@@ -39,7 +39,7 @@ bool ReadXMLFileDAImpl::Exec( Context &context, ParameterMapper *in, ResultMappe
 {
 	StartTrace(ReadXMLFileDAImpl.Exec);
 	bool retVal = false;
-	istream *Ios = GetFileStream(context, in);
+	std::istream *Ios = GetFileStream(context, in);
 	if (Ios) {
 		GenericXMLParser p;
 		Anything result = p.Parse(*Ios);

@@ -38,7 +38,7 @@ void AnyUtilsTest::CompareTest()
 {
 	Anything testConfig2;
 	const char *myFilename = "config/anyutilstest1";
-	iostream *ifp = System::OpenStream(myFilename, "any");
+	std::iostream *ifp = System::OpenStream(myFilename, "any");
 
 	if (ifp == 0) {
 		String eMsg = "Can't open config file ";
@@ -123,7 +123,7 @@ void AnyUtilsTest::MergeTest()
 	StartTrace(AnyUtilsTest.MergeTest);
 	Anything testConfig;
 	const char *myFilename = "AnyMergeTest";
-	iostream *ifp = System::OpenStream(myFilename, "any");
+	std::iostream *ifp = System::OpenStream(myFilename, "any");
 	if (ifp == 0) {
 		String eMsg = "Can't open config file ";
 		eMsg << myFilename << ".any";

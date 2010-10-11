@@ -45,8 +45,8 @@ bool WriteFileDAImpl::Exec( Context &context, ParameterMapper *in, ResultMapper 
 
 	// we need some special logic for std-ios because there is no more ios::noreplace flag...
 	// check if neither trunc nor app flag is set (this is noreplace mode)
-	if ( ( GetMode(context, in) & (ios::trunc | ios::app ) ) == 0 ) {
-		istream *ifp = System::OpenIStream(filename, extension);
+	if ( ( GetMode(context, in) & (std::ios::trunc | std::ios::app ) ) == 0 ) {
+		std::istream *ifp = System::OpenIStream(filename, extension);
 		if (ifp != NULL) {
 			delete ifp;
 			String strErr("File exists! [");
@@ -55,7 +55,7 @@ bool WriteFileDAImpl::Exec( Context &context, ParameterMapper *in, ResultMapper 
 			return false;
 		}
 	}
-	ostream *fp = GetFileStream(context, in);
+	std::ostream *fp = GetFileStream(context, in);
 	if (!fp) {
 		String strErr("Open for writing of [");
 		SYSERROR(strErr << filename << (extension.Length() ? "." : "") << extension << "] failed!");
@@ -71,16 +71,16 @@ bool WriteFileDAImpl::Exec( Context &context, ParameterMapper *in, ResultMapper 
 System::openmode WriteFileDAImpl::DoGetMode(ROAnything roaModes)
 {
 	StartTrace(WriteFileDAImpl.DoGetMode);
-	System::openmode mode = FileDAImpl::DoGetMode(roaModes) | ios::out;
+	System::openmode mode = FileDAImpl::DoGetMode(roaModes) | std::ios::out;
 	Trace("mode so far:" << (long)mode);
 	if ( roaModes.Contains("truncate") ) {
-		mode |= ios::trunc;
+		mode |= std::ios::trunc;
 		Trace("truncating existing file");
 	} else if ( roaModes.Contains("append") ) {
-		mode |= ios::app;
+		mode |= std::ios::app;
 		Trace("appending to existing file");
 	} else { // ( roaModes.Contains("noreplace") )
-		mode &= ~(ios::app | ios::trunc);
+		mode &= ~(std::ios::app | std::ios::trunc);
 		Trace("not overwriting existing file (default)");
 	}
 	Trace("new mode:" << (long)mode);

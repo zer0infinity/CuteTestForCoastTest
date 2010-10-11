@@ -110,13 +110,13 @@ public:
 protected:
 
 	//! render the protocol specific error msg
-	virtual void DoError(ostream &reply, const String &msg, Context &ctx);
+	virtual void DoError(std::ostream &reply, const String &msg, Context &ctx);
 };
 
 //--- TestHTTPProcessor ----------------------------------------------------------
 RegisterRequestProcessor(TestHTTPProcessor);
 
-void TestHTTPProcessor::DoError(ostream &reply, const String &msg, Context &ctx)
+void TestHTTPProcessor::DoError(std::ostream &reply, const String &msg, Context &ctx)
 {
 	reply << "HTTP/1.1 200 OK" << ENDL;
 	reply << "Content-type: text/html" << ENDL << ENDL;

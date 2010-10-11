@@ -18,10 +18,6 @@
 //--- standard modules used ----------------------------------------------------
 #include "Socket.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //--- c-library modules used ---------------------------------------------------
 #if !defined(WIN32)
 #include <sys/poll.h>
@@ -249,8 +245,8 @@ void LeaderFollowerPoolTest::ProcessTwoEvents()
 	String reply2;
 
 	if (t_assert(c1.GetStream() != NULL) && t_assert(c2.GetStream() != NULL)) {
-		(*c1.GetStream()) << "hallo" << endl;
-		(*c2.GetStream()) << "hallo" << endl;
+		(*c1.GetStream()) << "hallo" << std::endl;
+		(*c2.GetStream()) << "hallo" << std::endl;
 		t_assert(!!(*c1.GetStream()));
 		t_assert(!!(*c2.GetStream()));
 		(*c1.GetStream()) >> reply1;
@@ -275,9 +271,9 @@ void LeaderFollowerPoolTest::ProcessManyEvents()
 	if (t_assert(c1.GetStream() != NULL) &&
 		t_assert(c2.GetStream() != NULL) &&
 		t_assert(c3.GetStream() != NULL)) {
-		(*c1.GetStream()) << "hallo" << endl;
-		(*c2.GetStream()) << "hallo" << endl;
-		(*c3.GetStream()) << "hallo" << endl;
+		(*c1.GetStream()) << "hallo" << std::endl;
+		(*c2.GetStream()) << "hallo" << std::endl;
+		(*c3.GetStream()) << "hallo" << std::endl;
 		t_assert(!!(*c1.GetStream()));
 		t_assert(!!(*c2.GetStream()));
 		t_assert(!!(*c3.GetStream()));
@@ -301,7 +297,7 @@ void LeaderFollowerPoolTest::ProcessOneEvent()
 	String reply1;
 
 	if ( t_assert(c1.GetStream() != NULL) ) {
-		(*c1.GetStream()) << "hallo" << endl;
+		(*c1.GetStream()) << "hallo" << std::endl;
 		t_assert(!!(*c1.GetStream()));
 		(*c1.GetStream()) >> reply1;
 		t_assert(!!(*c1.GetStream()));
@@ -317,7 +313,7 @@ bool LeaderFollowerPoolTest::EventProcessed(Socket *socket)
 		String request;
 		(*socket->GetStream()) >> request;
 		assertEqual("hallo", request);
-		(*socket->GetStream()) << "HostReply" << endl;
+		(*socket->GetStream()) << "HostReply" << std::endl;
 		return true;
 	}
 	return false;

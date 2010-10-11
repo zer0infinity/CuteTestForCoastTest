@@ -26,14 +26,7 @@ typedef int bool;
 #endif
 #endif
 
-#if defined(ONLY_STD_IOSTREAM)
 #include <iosfwd>
-using std::istream;
-using std::ostream;
-#else
-class istream;
-class ostream;
-#endif
 typedef int Unicode;
 
 //---- TString --------------------------------------------------------------
@@ -117,10 +110,10 @@ public:
 	operator const char *() const;
 
 protected:
-	friend istream &operator>>(istream &is, TString &s);
-	friend ostream  &operator<<(ostream &os, const TString &s);
+	friend std::istream &operator>>(std::istream &is, TString &s);
+	friend std::ostream  &operator<<(std::ostream &os, const TString &s);
 
-	friend istream  &getline(istream &is, TString &s, char c);
+	friend std::istream  &getline(std::istream &is, TString &s, char c);
 
 	void Set(long start, const char *s, long l);
 

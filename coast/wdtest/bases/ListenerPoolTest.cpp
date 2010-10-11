@@ -15,10 +15,6 @@
 //--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //--- standard modules used ----------------------------------------------------
 
 class TestCallBack : public AcceptorCallBack
@@ -41,7 +37,7 @@ void TestCallBack::CallBack(Socket *socket)
 {
 	StartTrace(TestCallBack.CallBack);
 
-	iostream *Ios = socket->GetStream();
+	std::iostream *Ios = socket->GetStream();
 
 	if (Ios) {
 		fReceiver->Receive(Ios, socket);
@@ -50,7 +46,7 @@ void TestCallBack::CallBack(Socket *socket)
 	delete socket;
 }
 
-void TestReceiver::Receive(iostream *Ios, Socket *socket)
+void TestReceiver::Receive(std::iostream *Ios, Socket *socket)
 {
 	StartTrace(TestReceiver.Receive);
 
@@ -61,7 +57,7 @@ void TestReceiver::Receive(iostream *Ios, Socket *socket)
 	String msg = toImport["MessageToSend"].AsString();
 	Ios->flush();
 	fResult.Append(msg);
-	*Ios << "Ok " << flush;
+	*Ios << "Ok " << std::flush;
 	DoChecks(toImport, socket);
 }
 
@@ -151,12 +147,12 @@ void ListenerPoolTest::DoSendReceive(Connector *c, String msg)
 {
 	StartTrace(ListenerPoolTest.DoSendReceive);
 
-	iostream *Ios = c->GetStream();
+	std::iostream *Ios = c->GetStream();
 	String errorMsg = msg;
 	errorMsg  << msg << " connect failed";
 	t_assertm(Ios != 0, (const char *)errorMsg);
 	if (Ios) {
-		*Ios << msg << endl;
+		*Ios << msg << std::endl;
 		t_assert(!!(*Ios));
 		String reply;
 		*Ios >> reply;
@@ -169,7 +165,7 @@ void ListenerPoolTest::DoSendReceive(Connector *c, Anything toSend)
 {
 	StartTrace(ListenerPoolTest.DoSendReceive);
 
-	iostream *Ios = c->GetStream();
+	std::iostream *Ios = c->GetStream();
 	t_assertm(Ios != 0, "connect failed.");
 	TraceAny(toSend, "toSend:");
 	if (Ios) {
@@ -185,14 +181,14 @@ void ListenerPoolTest::DoSendReceive(Connector *c, Anything toSend)
 void ListenerPoolTest::DoSendReceiveWithFailure(Connector *c, String msg, bool iosGoodAfterSend, bool iosGoodBeforeSend)
 {
 	StartTrace(ListenerPoolTest.DoSendReceive);
-	iostream *Ios = c->GetStream();
+	std::iostream *Ios = c->GetStream();
 	if ( iosGoodBeforeSend ) {
-		t_assertm(Ios != (iostream *) NULL, "Expected iostream not to be 0");
+		t_assertm(Ios != (std::iostream *) NULL, "Expected iostream not to be 0");
 	} else {
-		t_assertm(Ios == (iostream *) NULL, "Expected iostream to be 0");
+		t_assertm(Ios == (std::iostream *) NULL, "Expected iostream to be 0");
 	}
 	if (Ios) {
-		*Ios << msg << endl;
+		*Ios << msg << std::endl;
 		if (iosGoodAfterSend) {
 			t_assertm(!!(*Ios), "Expected iostream state to be good after send");
 		} else {
@@ -207,11 +203,11 @@ void ListenerPoolTest::DoSendReceiveWithFailure(Connector *c, String msg, bool i
 void ListenerPoolTest::DoSendReceiveWithFailure(Connector *c, Anything toSend, bool iosGoodAfterSend, bool iosGoodBeforeSend)
 {
 	StartTrace(ListenerPoolTest.DoSendReceive);
-	iostream *Ios = c->GetStream();
+	std::iostream *Ios = c->GetStream();
 	if ( iosGoodBeforeSend ) {
-		t_assertm(Ios != (iostream *) NULL, "Expected iostream not to be 0");
+		t_assertm(Ios != (std::iostream *) NULL, "Expected iostream not to be 0");
 	} else {
-		t_assertm(Ios == (iostream *) NULL, "Expected iostream to be 0");
+		t_assertm(Ios == (std::iostream *) NULL, "Expected iostream to be 0");
 	}
 	if (Ios) {
 		toSend.Export(*Ios);

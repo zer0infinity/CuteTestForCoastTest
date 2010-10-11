@@ -57,33 +57,33 @@ class EXPORTDECL_RENDERER URLPrinter : public Renderer
 public:
 	URLPrinter(const char *name);
 	URLPrinter(const char *name, char cmdSep, char argSep, char entrySep);
-	void RenderAll(ostream &reply, Context &c, const ROAnything &data);
+	void RenderAll(std::ostream &reply, Context &c, const ROAnything &data);
 
 protected:
 	//! template method called by RenderAll
 	/*! calls GetState wich collects the link state from the context then RenderPublicState and then RenderPrivateState
 	*/
-	virtual void RenderState(ostream &reply, Context &c, const ROAnything &config);
+	virtual void RenderState(std::ostream &reply, Context &c, const ROAnything &config);
 
 	//! render public and private information seperately
-	void RenderScriptName(ostream &reply, Context &context);
+	void RenderScriptName(std::ostream &reply, Context &context);
 	//! renders "beginning" of URL depending on some general configuration setting ( UseBaseURL, BaseAddress, ServicePrefix )
 	/*! The specific configuration slot BaseAddr and content of the environment passed by the HTTP server also generates adr= and port= if given in the "linkstate"
 	*/
-	virtual void RenderPublicState(ostream &reply, Context &c, const ROAnything &config, Anything &state);
-	void RenderPublicPartOfURL(ostream &reply, Context &c, const ROAnything &config, Anything &state);
+	virtual void RenderPublicState(std::ostream &reply, Context &c, const ROAnything &config, Anything &state);
+	void RenderPublicPartOfURL(std::ostream &reply, Context &c, const ROAnything &config, Anything &state);
 	//! renders the "private" and usually encoded part of the state put into the URL
 	/*! Different link generation contexts require different names of the parameter (X, X1 and X2) these parameter names are known by the Coast gateway program, that decodes them. the default implemenation is empty.
 	*/
-	virtual void RenderPrivateState(ostream &reply, Context &c, const ROAnything &config, Anything &state);
+	virtual void RenderPrivateState(std::ostream &reply, Context &c, const ROAnything &config, Anything &state);
 
 	//! build up additional private state per link
 	/*! It uses the following data structure to derive what parts of the context should be put into the state, and what kind of action should be triggered by the generated URL. The /Params tag allows either explicitely or anonymously to generate paramter string values by arbitrary renderer specifications anonymous parameters are named /P# within the state where # is the position within the /Params list. The /Params mechanism allows to add in detail the amount of state passed via a specific URL and specify this locally at the place where the URL is defined.
 	*/
-	virtual void BuildPrivateState(ostream &reply, Context &c, const ROAnything &config,  Anything &state);
+	virtual void BuildPrivateState(std::ostream &reply, Context &c, const ROAnything &config,  Anything &state);
 
 	//! encodes state and appends under argName
-	void AppendEncodedState(ostream &reply, Context &c, const Anything &state, const char *argName);
+	void AppendEncodedState(std::ostream &reply, Context &c, const Anything &state, const char *argName);
 
 	//! seperators for different kind of URLs
 	char ArgSep();
@@ -113,7 +113,7 @@ public:
 	FullURLPrinter(const char *name);
 
 protected:
-	void RenderPrivateState(ostream &reply, Context &c, const ROAnything &config, Anything &state);
+	void RenderPrivateState(std::ostream &reply, Context &c, const ROAnything &config, Anything &state);
 };
 
 //---- BaseURLPrinter -------------------------------------------------------
@@ -131,8 +131,8 @@ public:
 	BaseURLPrinter(const char *name);
 
 protected:
-	void RenderPrivateState(ostream &reply, Context &c, const ROAnything &config, Anything &state);
-	void RenderPublicState(ostream &reply, Context &c, const ROAnything &config, Anything &state);
+	void RenderPrivateState(std::ostream &reply, Context &c, const ROAnything &config, Anything &state);
+	void RenderPublicState(std::ostream &reply, Context &c, const ROAnything &config, Anything &state);
 };
 
 //---- BaseURLRenderer -------------------------------------------------------
@@ -145,7 +145,7 @@ class EXPORTDECL_RENDERER BaseURLRenderer : public BaseURLPrinter
 {
 public:
 	BaseURLRenderer(const char *name);
-	void RenderAll(ostream &reply, Context &c, const ROAnything &data);
+	void RenderAll(std::ostream &reply, Context &c, const ROAnything &data);
 };
 
 //---- SimpleURLPrinter -------------------------------------------------------
@@ -162,8 +162,8 @@ public:
 	SimpleURLPrinter(const char *name);
 
 protected:
-	void RenderState(ostream &reply, Context &c, const ROAnything &config);
-	void RenderPrivateState(ostream &reply, Context &c, const ROAnything &config, Anything &state);
+	void RenderState(std::ostream &reply, Context &c, const ROAnything &config);
+	void RenderPrivateState(std::ostream &reply, Context &c, const ROAnything &config, Anything &state);
 };
 
 //---- URLRenderer -------------------------------------------------------
@@ -193,7 +193,7 @@ class EXPORTDECL_RENDERER URLRenderer : public Renderer
 public:
 	URLRenderer(const char *name);
 
-	void RenderAll(ostream &reply, Context &c, const ROAnything &data);
+	void RenderAll(std::ostream &reply, Context &c, const ROAnything &data);
 
 	//! create base-URL safe intra page link to 'id'
 	//! \note a temporary slot named 'ABSOLUTE_URL' is created in tmpStore
@@ -237,7 +237,7 @@ class EXPORTDECL_RENDERER LinkRenderer : public Renderer
 public:
 	LinkRenderer(const char *name);
 
-	void RenderAll(ostream &reply, Context &c, const ROAnything &data);
+	void RenderAll(std::ostream &reply, Context &c, const ROAnything &data);
 };
 
 //--- inlines -------------------------

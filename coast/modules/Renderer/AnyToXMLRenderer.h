@@ -32,24 +32,24 @@ public:
 	~AnyToXMLRenderer();
 
 	//! The well known Renderer main method
-	virtual void RenderAll(ostream &reply, Context &c, const ROAnything &config);
+	virtual void RenderAll(std::ostream &reply, Context &c, const ROAnything &config);
 
 private:
 	//!transforms an Anything into XML
 	//! \param reply where the XML gets written to
 	//! \param input Anything that gets converted to XML. Must have at least one slot and this must have a slotname, which is equal to the XML's toplevel element. Further slots are neglected.
-	void RenderXML(ostream &reply, ROAnything &input);
+	void RenderXML(std::ostream &reply, ROAnything &input);
 
 	//!transforms a list of named items
 	//! \param reply where the XML gets written to
 	//! \param list Anything that forms the list of named elements
-	void RenderNamedChilds(ostream &reply, ROAnything &list);
+	void RenderNamedChilds(std::ostream &reply, ROAnything &list);
 
 	//!transfroms unnamed items of a list using the parent supplied tag
 	//! \param reply where the XML gets written to
 	//! \param slotname XML tag applied to each item
 	//! \param list Anything that forms the list of unnamed elements
-	void RenderUnnamedChilds(ostream &reply, String &tag, ROAnything &list);
+	void RenderUnnamedChilds(std::ostream &reply, String &tag, ROAnything &list);
 
 	//!Checks if a ROAnything consists of a list of unnamed childs
 	//! \param element the ROAnything that gets checked

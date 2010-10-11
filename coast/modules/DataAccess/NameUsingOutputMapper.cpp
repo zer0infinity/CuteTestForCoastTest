@@ -34,7 +34,7 @@ bool NameUsingOutputMapper::DoPutAny(const char *key, Anything value, Context &c
 	return true;
 }
 
-bool NameUsingOutputMapper::DoPutStream(const char *key, istream &is, Context &ctx, ROAnything config)
+bool NameUsingOutputMapper::DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything config)
 {
 	String strBuf;
 	{

@@ -21,7 +21,7 @@ EscapeRenderer::EscapeRenderer(const char *name) : Renderer(name) { }
 
 EscapeRenderer::~EscapeRenderer() { }
 
-void EscapeRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void EscapeRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	StartTrace(EscapeRenderer.RenderAll);
 

@@ -19,10 +19,6 @@
 #include "System.h"
 #include "Dbg.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //--- c-library modules used ---------------------------------------------------
 
 //---- FlowControllerTest ----------------------------------------------------------------
@@ -36,10 +32,10 @@ void FlowControllerTest::setUp ()
 {
 	StressAppTest::setUp();
 
-	istream *ifp = System::OpenStream("FlowControllerTestConfig", "any");
+	std::istream *ifp = System::OpenStream("FlowControllerTestConfig", "any");
 	if (ifp == 0) {
 		String logMsg;
-		cerr << logMsg << "FlowControllerTest:setUp : can't open file FlowControllerTestConfig.any" << endl;
+		std::cerr << logMsg << "FlowControllerTest:setUp : can't open file FlowControllerTestConfig.any" << std::endl;
 		return;
 	}
 	fConfig.Import(*ifp);

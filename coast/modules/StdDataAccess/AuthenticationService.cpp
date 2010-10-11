@@ -34,7 +34,7 @@ AuthenticationService::~AuthenticationService()
 	StartTrace(AuthenticationService.Dtor);
 }
 
-void AuthenticationService::DoHandleService( ostream &os, Context &ctx )
+void AuthenticationService::DoHandleService( std::ostream &os, Context &ctx )
 {
 	StartTrace(AuthenticationService.DoHandleService);
 	if ( DoCheck(ctx) ) {
@@ -99,7 +99,7 @@ bool AuthenticationService::AuthenticateUser( Context &ctx, String &name, String
 	return ret;
 }
 
-void AuthenticationService::ForwardToMainHandler( ostream &os, Context &ctx )
+void AuthenticationService::ForwardToMainHandler( std::ostream &os, Context &ctx )
 {
 	StartTrace(AuthenticationService.ForwardToMainHandler);
 
@@ -113,7 +113,7 @@ void AuthenticationService::ForwardToMainHandler( ostream &os, Context &ctx )
 	}
 }
 
-void AuthenticationService::Produce401Response( ostream &os, Context &ctx )
+void AuthenticationService::Produce401Response( std::ostream &os, Context &ctx )
 {
 	StartTrace(AuthenticationService.Produce401Response);
 

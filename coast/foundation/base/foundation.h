@@ -19,12 +19,7 @@
 #else
 #define STR_TRACE	""
 #endif
-#if defined(ONLY_STD_IOSTREAM)
-#define STR_IOVERSION	"_STDIO"
-#else
-#define STR_IOVERSION	""
-#endif
-#define COAST_BUILDFLAGS		STR_MODE STR_TRACE STR_IOVERSION
+#define COAST_BUILDFLAGS	STR_MODE STR_TRACE
 
 #if defined(__GNUG__)
 #define COAST_COMPILER		"GCC_"  __VERSION__

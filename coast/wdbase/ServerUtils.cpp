@@ -276,11 +276,11 @@ void HandleRequest::DoTerminationRequestHook(ROAnything workloadArgs)
 	// terminate running request by setting bad bit on stream
 	if (fClientSocket) {
 		Trace("client socket still active");
-		iostream *Ios = fClientSocket->GetStream();
+		std::iostream *Ios = fClientSocket->GetStream();
 		Trace("");
 		if (Ios && !!(*Ios)) {
 			Trace("setting badbit on stream to terminate me");
-			Ios->clear(ios::badbit | Ios->rdstate());
+			Ios->clear(std::ios::badbit | Ios->rdstate());
 		}
 	}
 }

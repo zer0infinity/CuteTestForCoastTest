@@ -20,10 +20,6 @@
 #include "AnyUtils.h"
 #include "Timers.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //--- c-library modules used ---------------------------------------------------
 
 //---- ConfiguredActionTest ----------------------------------------------------------------
@@ -71,7 +67,7 @@ void ConfiguredActionTest::TestCases()
 	long sz = testCases.GetSize();
 	for (long i = 0; i < sz; ++i) {
 		if ( i > 0 ) {
-			cerr << ".";
+			std::cerr << ".";
 		}
 		String testCaseName = testCases.SlotName(i);
 		DoTest(PrepareConfig(testCases[i]), testCaseName);

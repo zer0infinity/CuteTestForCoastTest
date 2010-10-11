@@ -25,7 +25,7 @@ DecimalFormatRenderer::DecimalFormatRenderer(const char *name) : Renderer(name) 
 
 DecimalFormatRenderer::~DecimalFormatRenderer() { }
 
-void DecimalFormatRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
+void DecimalFormatRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(DecimalFormatRenderer.RenderAll);
 

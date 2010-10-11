@@ -24,7 +24,7 @@ HTTPProtocolReplyRenderer::HTTPProtocolReplyRenderer(const char *name) : Rendere
 
 HTTPProtocolReplyRenderer::~HTTPProtocolReplyRenderer() { }
 
-void HTTPProtocolReplyRenderer::EvilSideEffects(Context &ctx, ROAnything &realConfig, const String &httpVersion, String statusStr, long status, ostream &reply)
+void HTTPProtocolReplyRenderer::EvilSideEffects(Context &ctx, ROAnything &realConfig, const String &httpVersion, String statusStr, long status, std::ostream &reply)
 {
 	if (statusStr.AsLong(-1L) < 0) {
 		ctx.GetTmpStore()["HTTPStatus"]["ResponseCode"] = 200L;
@@ -39,7 +39,7 @@ void HTTPProtocolReplyRenderer::EvilSideEffects(Context &ctx, ROAnything &realCo
 	}
 }
 
-void HTTPProtocolReplyRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
+void HTTPProtocolReplyRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(HTTPProtocolReplyRenderer.RenderAll);
 

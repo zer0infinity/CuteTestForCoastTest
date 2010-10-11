@@ -30,7 +30,7 @@ void AnyToXMLTest::setUp()
 {
 	String configFilename("AnyToXMLTestConfig");
 
-	istream *ifp = System::OpenStream(configFilename, "any");
+	std::istream *ifp = System::OpenStream(configFilename, "any");
 
 	if (ifp) {
 		fConfig.Import(*ifp, configFilename);

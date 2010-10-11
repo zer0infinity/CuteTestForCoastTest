@@ -97,7 +97,7 @@ void Socket::AppendToClientInfo(const char *slot, const ROAnything &info)
 	TraceAny(fClientInfo, "after appending");
 }
 
-iostream *Socket::GetStream()
+std::iostream *Socket::GetStream()
 {
 	StartTrace1(Socket.GetStream, "fd:" << GetFd());
 
@@ -107,7 +107,7 @@ iostream *Socket::GetStream()
 	return fStream;
 }
 
-iostream *Socket::DoMakeStream()
+std::iostream *Socket::DoMakeStream()
 {
 	StartTrace1(Socket.DoMakeStream, "fd:" << GetFd());
 
@@ -722,7 +722,7 @@ Socket *Connector::Use()
 	return fSocket;
 }
 
-iostream *Connector::GetStream()
+std::iostream *Connector::GetStream()
 {
 	StartTrace(Connector.GetStream);
 	Socket *psocket = Use();

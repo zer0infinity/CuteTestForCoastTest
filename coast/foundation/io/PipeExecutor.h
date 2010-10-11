@@ -12,10 +12,6 @@
 #include "config_foundation.h"
 #include "Anything.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using std::iostream;
-#endif
-
 //---- forward declaration -----------------------------------------------
 class EXPORTDECL_FOUNDATION Pipe;
 
@@ -42,11 +38,11 @@ public:
 	//--- public api
 	/*! Get iostream for reading/writing to called program, connected to programs stdin(0) and stdout(1)
 		\return returns 0 if something went wrong */
-	iostream *GetStream();
+	std::iostream *GetStream();
 
 	/*! Get istream for reading stderr output of called program, only valid if bOpenStreamForStderr was set to true in ctor.
 		\return returns 0 if something went wrong or bOpenStreamForStderr was set to false in ctor */
-	istream *GetStderr();
+	std::istream *GetStderr();
 
 	/*! Provide hook for clients to switch off stdin, so that they can
 		read safely from stdout of the client program, otherwise

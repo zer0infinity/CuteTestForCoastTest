@@ -43,22 +43,22 @@ MmapMagicFlags::MmapMagicFlags(int omode, int syncflag )
 	, fSyscallOpenMode(0)
 {
 	// adjust mode to output if append or at-end implies it
-	if (omode & (ios::ate | ios::app)) {
-		omode |= ios::out;
+	if (omode & (std::ios::ate | std::ios::app)) {
+		omode |= std::ios::out;
 	}
 	// set it for read only input
-	if (omode & ios::in) {
+	if (omode & std::ios::in) {
 		fSyscallOpenMode = O_RDONLY;
 		fProtection = eRead;
 	}
-	if (omode & ios::out) {
-		if (!(omode & (ios::app | ios::ate))) {
+	if (omode & std::ios::out) {
+		if (!(omode & (std::ios::app | std::ios::ate))) {
 			// comply with fstream, truncate if not appending
-			omode |= ios::trunc;
+			omode |= std::ios::trunc;
 		}
 		fSyscallOpenMode = O_RDWR | O_CREAT;
 		fProtection |= eWrite;
-		if (omode & ios::trunc) {
+		if (omode & std::ios::trunc) {
 			fSyscallOpenMode |= O_TRUNC;
 		}
 	}
@@ -123,12 +123,12 @@ void MmapStreamBuf::close()
 	setg(0, 0, 0);
 }
 
-MmapStreamBuf *MmapStreamBuf::open(const char *path, int mode/*= ios::in*/, int prot/*=0666*/)
+MmapStreamBuf *MmapStreamBuf::open(const char *path, int mode/*= std::ios::in*/, int prot/*=0666*/)
 {
 	// do the nasty work of setting up the stuff.
 	if (path) {
 		fFl = MmapMagicFlags(mode, fFl.GetSyncFlag());
-		if (fFl.GetIOSMode() & ios::trunc) {
+		if (fFl.GetIOSMode() & std::ios::trunc) {
 			fLength = 0;
 			fMapOffset = 0;
 		}
@@ -136,12 +136,12 @@ MmapStreamBuf *MmapStreamBuf::open(const char *path, int mode/*= ios::in*/, int 
 		if (fd >= 0) {
 			if (0 <= (fLength = lseek(fd, 0, SEEK_END))) {
 				fFileLength = fLength;
-				// PS: here we could optimize in case of ios::app
+				// PS: here we could optimize in case of std::ios::app
 				// and reserve up to the current block-size, however
 				// this overhead only occurs for the first time write
 				if (xinit(fd)) {
 					// fix for _M_mode initialisation problem of gcc 3.2
-					if ( (fFileLength == 0) && (mode & ios::out) ) {
+					if ( (fFileLength == 0) && (mode & std::ios::out) ) {
 						reserve(16L);
 					}
 					return this;
@@ -344,15 +344,15 @@ MmapStreamBuf::pos_type MmapStreamBuf::seekpos(MmapStreamBuf::pos_type p, MmapSt
 	if (long(p) > long(fLength)) {
 		// we need to enlarge the file
 		// we can only if we write
-		if (! (mode & ios::out) || !reserve((long)p)) {
+		if (! (mode & std::ios::out) || !reserve((long)p)) {
 			// OOPS we got a problem
 			return pos_type(EOF);
 		}
 	}
-	if (mode & ios::in) {
+	if (mode & std::ios::in) {
 		setg(fFl.IsReadable() ? (char *)fAddr : (char *)fAddr + fFileLength - fMapOffset, fAddr + p, (char *)fAddr + fFileLength - fMapOffset);
 	}
-	if (mode & ios::out) {
+	if (mode & std::ios::out) {
 		if (fFl.IsIosApp()) {
 			// do this on a best try basis
 			if (p < fFileLength && fFileLength > 0) {
@@ -408,13 +408,13 @@ MmapStreamBuf::pos_type MmapStreamBuf::seekoff(MmapStreamBuf::off_type of, MmapS
 {
 	//sync(); // will adjust fFileLength if needed
 	long pos = long(of);
-	if (dir == ios::cur) {
-		pos += long((mode & ios::in ? gptr() : pptr()) - (char *)fAddr + fMapOffset);
-	} else if (dir == ios::end && fFileLength > 0) {
+	if (dir == std::ios::cur) {
+		pos += long((mode & std::ios::in ? gptr() : pptr()) - (char *)fAddr + fMapOffset);
+	} else if (dir == std::ios::end && fFileLength > 0) {
 		pos += long(fFileLength);
 	}
-//	pos += (dir == ios::cur) ? long((mode&ios::in ? gptr() : pptr())-(char*)fAddr) :
-//			(dir == ios::end && fFileLength >0) ? long(fFileLength) : 0L;
+//	pos += (dir == std::ios::cur) ? long((mode&std::ios::in ? gptr() : pptr())-(char*)fAddr) :
+//			(dir == std::ios::end && fFileLength >0) ? long(fFileLength) : 0L;
 	if (pos < 0L ) {
 		return pos_type(EOF);
 	}
@@ -432,11 +432,11 @@ void MmapStreambase::open(const char *name, int omode, int prot)
 	if (this->is_open()) {
 		this->close();
 	}
-	ios::init(&fMmapBuf);
-	ios::clear(); // clear all flags, for std::iostream must be done after init!
+	std::ios::init(&fMmapBuf);
+	std::ios::clear(); // clear all flags, for std::iostream must be done after init!
 	if (&fMmapBuf != fMmapBuf.open(name, omode, prot)) {
 		// recognize the error
-		ios::clear(ios::eofbit | ios::badbit); // set eof and bad stream bits
+		std::ios::clear(std::ios::eofbit | std::ios::badbit); // set eof and bad stream bits
 	}
 }
 

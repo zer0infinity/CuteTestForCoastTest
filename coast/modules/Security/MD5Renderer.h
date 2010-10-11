@@ -31,7 +31,7 @@ public:
 	//--- constructors
 	MD5Renderer(const char *name);
 	~MD5Renderer();
-	virtual void RenderAll(ostream &reply, Context &ctx, const ROAnything &config);
+	virtual void RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config);
 };
 
 #endif

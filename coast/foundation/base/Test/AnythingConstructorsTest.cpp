@@ -21,9 +21,6 @@
 
 //--- c-library modules used ---------------------------------------------------
 #include <cstring>
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
 
 //---- AnythingConstructorsTest ---------------------------------------------------------
 

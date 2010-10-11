@@ -31,7 +31,7 @@ public:
 	// \param reply the stream where the rendered output is written on.
 	// \param ctx the context the renderer runs within.
 	// \param config the configuration of the renderer.
-	virtual void RenderAll(ostream &reply, Context &ctx, const ROAnything &config);
+	virtual void RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config);
 
 	//! Returns the default reason phrase for a given http status code
 	//! If the status code is unknown, the string "Unknown Error" is returned.
@@ -42,7 +42,7 @@ public:
 private:
 	//! Stuff that does not belong here but is probably relied on in obscure places
 	static void EvilSideEffects(Context &ctx, ROAnything &realConfig,
-								const String &httpVersion, String statusStr, long status, ostream &reply);
+								const String &httpVersion, String statusStr, long status, std::ostream &reply);
 
 	static Anything InitStatusCodeMap();
 	static Anything fgStatusCodeMap;

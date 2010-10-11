@@ -39,7 +39,7 @@ public:
 	void TestPredicateSet();
 
 	//!test pathological loop case in REBitSet::Set()
-	void GeneratePosixSet(ostream &cppfile, const char *name, REBitSet::Predicate predicate);
+	void GeneratePosixSet(std::ostream &cppfile, const char *name, REBitSet::Predicate predicate);
 	void GeneratePosixSets();
 };
 

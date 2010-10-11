@@ -45,7 +45,7 @@ public:
 
 protected:
 	virtual System::openmode DoGetMode(ROAnything roaModes) {
-		return (FileDAImpl::DoGetMode(roaModes) | ios::in);
+		return (FileDAImpl::DoGetMode(roaModes) | std::ios::in);
 	}
 
 private:

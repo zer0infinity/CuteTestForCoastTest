@@ -58,7 +58,7 @@ bool CgiParams::DoGetAny(const char *key, Anything &value, Context &ctx,  ROAnyt
 	return URI2FileNameMapper::DoGetAny(key, value, ctx, config);
 }
 
-bool CgiParams::DoGetStream(const char *key, ostream &os, Context &ctx,  ROAnything config)
+bool CgiParams::DoGetStream(const char *key, std::ostream &os, Context &ctx,  ROAnything config)
 {
 	StartTrace1(CgiParams.DoGetStream, "( \"" << NotNull(key) << "\" , ostream &os, Context &ctx, const ROAnything &config)");
 	String k(key); // for easier comparison

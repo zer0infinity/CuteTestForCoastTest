@@ -48,26 +48,26 @@ protected:
 	static bool IsZipEncodingAcceptedByClient(Context &ctx);
 
 	//!read the input arguments from the stream and generate an anything
-	virtual void DoReadInput(iostream &ios, Context &ctx);
+	virtual void DoReadInput(std::iostream &ios, Context &ctx);
 
 	//!read in the request body from a POST if any
-	virtual void ReadRequestBody(iostream &ios, Anything &request, MIMEHeader &header, Context &ctx);
+	virtual void ReadRequestBody(std::iostream &ios, Anything &request, MIMEHeader &header, Context &ctx);
 	//!set some client info needed for verification
 	virtual void SetWDClientInfo(Context &ctx);
 	//!parse the cookie string into an anything
 	virtual Anything ParseCookie(const String &line);
 
 	//!process the arguments and generate a reply
-	virtual void DoProcessRequest(ostream &reply, Context &ctx);
+	virtual void DoProcessRequest(std::ostream &reply, Context &ctx);
 
 	//! render the protocol specific status
-	virtual void DoRenderProtocolStatus(ostream &os, Context &ctx);
+	virtual void DoRenderProtocolStatus(std::ostream &os, Context &ctx);
 
 	//! checks if the connection should keep-alive after the request has processed
 	virtual bool DoKeepConnectionAlive(Context &ctx);
 
 	//! render the protocol specific error msg
-	virtual void DoError(ostream &reply, const String &msg, Context &ctx);
+	virtual void DoError(std::ostream &reply, const String &msg, Context &ctx);
 
 	//! Log the error to Security.log
 	Anything DoLogError(long errcode, const String &reason, const String &line, const Anything &clientInfo, const String &msg, Anything &request, const char *who);

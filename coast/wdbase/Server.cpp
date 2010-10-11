@@ -404,7 +404,7 @@ bool Server::IsReady(bool ready, long timeout)
 
 //---- process a request ---------------------------------------------
 
-void Server::ProcessRequest(ostream &reply, Context &ctx)
+void Server::ProcessRequest(std::ostream &reply, Context &ctx)
 {
 	StartTrace(Server.ProcessRequest);
 	if ( fDispatcher ) {
@@ -539,7 +539,7 @@ int Server::DoWritePIDFile(const String &pidFilePath, pid_t lPid)
 {
 	StartTrace(Server.WritePIDFile);
 
-	ostream *os = System::OpenOStream(pidFilePath, 0);
+	std::ostream *os = System::OpenOStream(pidFilePath, 0);
 
 	if ( os ) {
 		Trace("PID File<" << pidFilePath << "> opened");

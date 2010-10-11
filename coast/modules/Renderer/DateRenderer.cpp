@@ -26,7 +26,7 @@ DateRenderer::DateRenderer(const char *name)
 {
 }
 
-void DateRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
+void DateRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(DateRenderer.Render);
 	TraceAny(config, "config");

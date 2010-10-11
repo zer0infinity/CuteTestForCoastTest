@@ -38,7 +38,7 @@ public:
 	IFAObject *Clone(Allocator *a) const;
 
 	virtual bool DoPutAny(const char *key, Anything value, Context &ctx, ROAnything config);
-	virtual bool DoPutStream(const char *key, istream &is, Context &ctx, ROAnything config);
+	virtual bool DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything config);
 
 protected:
 	virtual Anything GetDestination(Context &ctx, ROAnything config);

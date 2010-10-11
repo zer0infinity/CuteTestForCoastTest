@@ -18,9 +18,6 @@
 //--- standard modules used ----------------------------------------------------
 #include "SecurityModule.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
 //---- TestService ----------------------------------------------------------
 //:simple stub class to test service dispatcher
 class AuthTestService : public ServiceHandler
@@ -38,7 +35,7 @@ public:
 
 protected:
 	//:
-	virtual void DoHandleService(ostream &os, Context &ctx) {
+	virtual void DoHandleService(std::ostream &os, Context &ctx) {
 		os << "test ok";
 	}
 };

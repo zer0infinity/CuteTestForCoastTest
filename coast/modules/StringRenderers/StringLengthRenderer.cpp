@@ -23,7 +23,7 @@ StringLengthRenderer::StringLengthRenderer(const char *name) : Renderer(name) { 
 
 StringLengthRenderer::~StringLengthRenderer() { }
 
-void StringLengthRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
+void StringLengthRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(StringLengthRenderer.RenderAll);
 

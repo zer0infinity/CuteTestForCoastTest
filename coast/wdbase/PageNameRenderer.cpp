@@ -22,7 +22,7 @@ PageNameRenderer::PageNameRenderer(const char *name) : Renderer(name) { }
 
 PageNameRenderer::~PageNameRenderer() { }
 
-void PageNameRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void PageNameRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	StartTrace(PageNameRenderer.RenderAll);
 

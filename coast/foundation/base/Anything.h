@@ -267,20 +267,20 @@ public:
 	/*! serialize content to external format
 		\param os ostream to write to
 		\param pretty if true creates output with newlines */
-	ostream &PrintOn(ostream &os, bool pretty = true) const;
-	friend EXPORTDECL_FOUNDATION inline ostream &operator<< (ostream &os, const Anything &a);
-	friend EXPORTDECL_FOUNDATION inline istream &operator>> (istream &is, Anything &a);
+	std::ostream &PrintOn(std::ostream &os, bool pretty = true) const;
+	friend EXPORTDECL_FOUNDATION inline std::ostream &operator<< (std::ostream &os, const Anything &a);
+	friend EXPORTDECL_FOUNDATION inline std::istream &operator>> (std::istream &is, Anything &a);
 
 	/*! serialize content to ostream in external format
 		\param os ostream to write to
 		\param level  number of tabs to insert in front of main structure */
-	void Export(ostream &os, int level = 0) const;
+	void Export(std::ostream &os, int level = 0) const;
 
 	/*! import Anything from istream, fname is a hint for the error handler if an error occurs
 		\param is istream to read from
 		\param fname name of the file, if reading from a file, used for error handling
 		\return true if the reading was successful, false if an syntax error occurred */
-	bool Import(istream &is, const char *fname = 0);
+	bool Import(std::istream &is, const char *fname = 0);
 
 	//!RefCount accessor for debugging
 	long RefCount() const;
@@ -899,10 +899,10 @@ public:
 	IFAObject *AsIFAObject(IFAObject *dflt = 0) const;
 
 	// output only
-	ostream &PrintOn(ostream &os, bool pretty = true) const;
-	friend EXPORTDECL_FOUNDATION inline ostream &operator<< (ostream &os, const ROAnything &a);
+	std::ostream &PrintOn(std::ostream &os, bool pretty = true) const;
+	friend EXPORTDECL_FOUNDATION inline std::ostream &operator<< (std::ostream &os, const ROAnything &a);
 
-	void Export(ostream &fp, int level = 0) const;
+	void Export(std::ostream &fp, int level = 0) const;
 
 	void Accept(AnyVisitor &v, long lIdx = -1, const char *slotname = 0) const;
 
@@ -959,11 +959,11 @@ inline bool Anything::IsNull() const
 {
 	return (GetImpl() == 0);
 }
-inline ostream &operator<< (ostream &os, const Anything &a)
+inline std::ostream &operator<< (std::ostream &os, const Anything &a)
 {
 	return a.PrintOn(os);
 }
-inline istream &operator>> (istream &is, Anything &a)
+inline std::istream &operator>> (std::istream &is, Anything &a)
 {
 	a.Import(is);
 	return is;
@@ -1022,7 +1022,7 @@ inline bool ROAnything::IsNull() const
 	return (fAnyImp == 0);
 }
 
-inline ostream &operator<< (ostream &os, const ROAnything &a)
+inline std::ostream &operator<< (std::ostream &os, const ROAnything &a)
 {
 	return a.PrintOn(os);
 }

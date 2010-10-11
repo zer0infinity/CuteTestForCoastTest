@@ -83,7 +83,7 @@ public:
 	 * \param ctx the context for this call
 	 * \param conf further mapper configuration script
 	 */
-	bool DoGetStream(const char *key, ostream &os, Context &ctx,  ROAnything conf);
+	bool DoGetStream(const char *key, std::ostream &os, Context &ctx,  ROAnything conf);
 private:
 	bool DoInitialize();
 	bool DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const;
@@ -91,8 +91,8 @@ private:
 	HTTPHeaderParameterMapper();
 	HTTPHeaderParameterMapper(const HTTPHeaderParameterMapper &);
 	HTTPHeaderParameterMapper &operator=(const HTTPHeaderParameterMapper &);
-	void HandleOneLineForHeaderField(ostream &os, const String &slotname, ROAnything rvalue);
-	bool HandleMoreLinesForHeaderField(ostream &os, const String &slotname, ROAnything rvalue);
+	void HandleOneLineForHeaderField(std::ostream &os, const String &slotname, ROAnything rvalue);
+	bool HandleMoreLinesForHeaderField(std::ostream &os, const String &slotname, ROAnything rvalue);
 };
 
 // ------------------------- HTTPBodyResultMapper -------------------------
@@ -107,10 +107,10 @@ public:
 		return new (a) HTTPBodyResultMapper(fName);
 	}
 
-	bool DoFinalPutStream(const char *key, istream &is, Context &ctx);
+	bool DoFinalPutStream(const char *key, std::istream &is, Context &ctx);
 
 protected:
-	virtual void ReadBody(String &body, istream &is, Context &ctx);
+	virtual void ReadBody(String &body, std::istream &is, Context &ctx);
 
 private:
 	HTTPBodyResultMapper();
@@ -130,7 +130,7 @@ public:
 		return new (a) HTTPBodyParameterMapper(fName);
 	}
 
-	bool DoFinalGetStream(const char *key, ostream &os, Context &ctx);
+	bool DoFinalGetStream(const char *key, std::ostream &os, Context &ctx);
 
 private:
 	HTTPBodyParameterMapper();

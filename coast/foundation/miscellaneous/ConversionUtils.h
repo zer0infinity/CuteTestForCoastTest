@@ -63,7 +63,7 @@ namespace ConversionUtils
 	}
 
 	template<typename valueType>
-	inline istream &GetValueFromStream(istream &stream, valueType &lValue, OrderType order = eLSB2MSB)
+	inline std::istream &GetValueFromStream(std::istream &stream, valueType &lValue, OrderType order = eLSB2MSB)
 	{
 		const long lValSize = sizeof(valueType);
 		char pBuf[sizeof(valueType)];

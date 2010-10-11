@@ -17,9 +17,6 @@
 
 //--- standard modules used ----------------------------------------------------
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
 
 SocketStreamTest::SocketStreamTest(TString tname)
 	: TestCaseType(tname)
@@ -45,7 +42,7 @@ void SocketStreamTest::tearDown ()
 void SocketStreamTest::simpleRead()
 {
 	simpleWrite(); // send request to http server
-	iostream *Ios = fConnector->GetStream();
+	std::iostream *Ios = fConnector->GetStream();
 	t_assert( Ios != NULL ); // http server doesn't run if assert fails
 	if ( Ios ) {
 		String str;
@@ -79,12 +76,12 @@ void SocketStreamTest::simpleWrite()
 		//!@FIXME is it really useful that Connector and Stream have the same timeout
 		assertEqual(1000L, sock->GetTimeout());
 		sock->SetTimeout(15L * 1000L); // increase timeout for reading and writing on the stream
-		iostream *Ios = fConnector->GetStream();
+		std::iostream *Ios = fConnector->GetStream();
 		if ( t_assert( Ios != NULL ) ) {
 			assertEqual(15 * 1000L, fConnector->Use()->GetTimeout());
 			// make sure Ios is valid
 			if (t_assert(!!(*Ios))) {
-				(*Ios) << "GET / HTTP/1.0" << ENDL << ENDL << flush;
+				(*Ios) << "GET / HTTP/1.0" << ENDL << ENDL << std::flush;
 				// make sure Ios is valid
 				if (t_assert(!!(*Ios))) {
 					// Test counted bytes of this write:
@@ -107,7 +104,7 @@ void SocketStreamTest::timeoutTest()
 		t_assert(socket->IsReadyForWriting());
 		SocketStream Ios(socket);
 		t_assert(!!Ios); // make sure Ios is valid
-		Ios << "GET / HTTP/1.0" << ENDL << ENDL << flush; //PS??
+		Ios << "GET / HTTP/1.0" << ENDL << ENDL << std::flush; //PS??
 		t_assert(!!Ios); // make sure is valid
 		String str;
 		{
@@ -118,7 +115,7 @@ void SocketStreamTest::timeoutTest()
 		assertEqualm(0L, str.Length(), "OOPS not Timeout");
 		t_assert(!(!!Ios));
 		if (!t_assert( str.SubString(0, 4) != "HTTP"  )) {
-			cerr << str << endl << flush;    // test first line of reply by http server should timeout
+			std::cerr << str << std::endl << std::flush;    // test first line of reply by http server should timeout
 		}
 	}
 	delete socket;// SocketStream otherwise is destructed after socket is deleted!!!

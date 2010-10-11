@@ -15,13 +15,9 @@
 #include "TextTestResult.h"
 
 //--- c-library modules used ---------------------------------------------------
-#if defined(ONLY_STD_IOSTREAM)
 #include <iostream>
 #include <fstream>
-using namespace std;
-#else
-#include <fstream.h>
-#endif
+
 #include <fcntl.h>
 #if !defined(WIN32)
 #include <unistd.h>
@@ -35,28 +31,28 @@ using namespace std;
 
 void TestRunner::usage(const char *progname)
 {
-	cout << "Usage: " << progname << " [Options] testNames ... " << endl
+	std::cout << "Usage: " << progname << " [Options] testNames ... " << std::endl
 		 << "testName must be the name of a registered TestSuite "
-		 << "(usually the name of a subclass of TestCase)." << endl
-		 << "Options:" << endl
-		 << "   -h         This help message" << endl
-		 << "   -list      List the tests available in this program " << endl
-		 << "   -log file  Write the successful tests to \"file\"" << endl
-		 << "   -wait      Wait for user input for each subsequent test" << endl
-		 << "   -all       Run all the available tests (plus the individually specified ones!)" << endl
-		 << "   -out file  write stdout to file instead of usual stdout" << endl
-		 << "   -err file  write stderr to file instead of usual stderr (aka /dev/null)" << endl;
+		 << "(usually the name of a subclass of TestCase)." << std::endl
+		 << "Options:" << std::endl
+		 << "   -h         This help message" << std::endl
+		 << "   -list      List the tests available in this program " << std::endl
+		 << "   -log file  Write the successful tests to \"file\"" << std::endl
+		 << "   -wait      Wait for user input for each subsequent test" << std::endl
+		 << "   -all       Run all the available tests (plus the individually specified ones!)" << std::endl
+		 << "   -out file  write stdout to file instead of usual stdout" << std::endl
+		 << "   -err file  write stderr to file instead of usual stderr (aka /dev/null)" << std::endl;
 } // usage
 
 void TestRunner::listTests()
 /* what: list the available tests of the program
 */
 {
-	cout << "Available Tests: " << endl;
+	std::cout << "Available Tests: " << std::endl;
 
 	Test *test;
 	for ( test = fMappings->first(); test != 0 ;  test = fMappings->next() ) {
-		cout << "\t" << test->getClassName() << endl;
+		std::cout << "\t" << test->getClassName() << std::endl;
 	}
 
 } // listTests
@@ -76,10 +72,7 @@ void TestRunner::setLogToFileNamed(const char *name)
  what: opens the named file and sets the stream
 */
 {
-#ifdef fstream
-#undef fstream
-#endif
-	fLogStream = new fstream(name, ios::out);
+	fLogStream = new std::fstream(name, std::ios::out);
 } // setLogToFileNamed
 
 TestRunner::TestRunner () : fWait(false), fLogStream(0),
@@ -117,12 +110,12 @@ void TestRunner::run (int ac, const char **av)
 				++i;
 				int outfile = open(av[i], O_RDWR | O_CREAT | O_TRUNC, 0660);
 				if (outfile > 0) {	// make it stdout
-					cout << "redirecting output to " << av[i] << endl;
+					std::cout << "redirecting output to " << av[i] << std::endl;
 					close(1);
 					dup(outfile);	// ignore possible errors for now
 					close(outfile);
 				} else {
-					cout << "output redirection failed" << endl;
+					std::cout << "output redirection failed" << std::endl;
 				} // if
 			} // if
 			continue;
@@ -131,12 +124,12 @@ void TestRunner::run (int ac, const char **av)
 				++i;
 				int outfile = open(av[i], O_RDWR | O_CREAT | O_TRUNC, 0660);
 				if (outfile > 0) {	// make it stdout
-					cerr << "redirecting errors to " << av[i] << endl;
+					std::cerr << "redirecting errors to " << av[i] << std::endl;
 					close(2);
 					dup(outfile);	// ignore possible errors for now
 					close(outfile);
 				} else {
-					cerr << "error redirection failed" << endl;
+					std::cerr << "error redirection failed" << std::endl;
 				} // if
 			} // if
 			continue;
@@ -161,7 +154,7 @@ void TestRunner::run (int ac, const char **av)
 		} // for
 
 		if ( !test ) {
-			cout << "Test " << testCase << " not found." << endl;
+			std::cout << "Test " << testCase << " not found." << std::endl;
 			return;
 		}
 	}
@@ -176,10 +169,10 @@ TestRunner::~TestRunner ()
 	long testsRun = fNumberOfSuccesses + fNumberOfFailures;
 
 	if (testsRun != 0) {
-		cout << testsRun << " assertions run in "
+		std::cout << testsRun << " assertions run in "
 			 << fElapsedTime.Diff() << " ms, " << fNumberOfFailures
 			 << " failures; " << (fNumberOfSuccesses * 100) / testsRun
-			 << "% complete" << endl;
+			 << "% complete" << std::endl;
 	} // if
 
 	if ( fLogStream != 0 ) {
@@ -194,18 +187,18 @@ void TestRunner::run (Test *test)
 {
 	TextTestResult	result;
 
-	cout << "Running " << test->getClassName() << endl;
+	std::cout << "Running " << test->getClassName() << std::endl;
 
 	test->run (&result);
 
-	cout << result << endl;
+	std::cout << result << std::endl;
 	if (0 != fLogStream) {
 		result.logSuccesses(*fLogStream);
 	} // if
 
 	if (fWait) {
-		cout << "<RETURN> to continue" << endl;
-		cin.get ();
+		std::cout << "<RETURN> to continue" << std::endl;
+		std::cin.get ();
 
 	} // if
 	fNumberOfSuccesses = fNumberOfSuccesses + result.successes().size();

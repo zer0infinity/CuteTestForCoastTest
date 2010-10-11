@@ -21,10 +21,6 @@
 #include "StringStream.h"
 #include "Dbg.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //--- c-library modules used ---------------------------------------------------
 #if defined(WIN32)
 #include <io.h>
@@ -51,14 +47,14 @@ public:
 		StartTrace(EBCDICEchoMsgCallBack.CallBack);
 		if (socket != 0) { // might be 0 if we run out of memory, not likely
 			StringStream is(&fLastRequest);
-			iostream *Ios = socket->GetStream();
+			std::iostream *Ios = socket->GetStream();
 
 			if (Ios != 0) {
-				is << Ios->rdbuf() << flush;
+				is << Ios->rdbuf() << std::flush;
 				if (fReplyMessage.Length() > 0) {
-					(*Ios) << fReplyMessage << flush;
+					(*Ios) << fReplyMessage << std::flush;
 				} else {
-					(*Ios) << fLastRequest << flush;
+					(*Ios) << fLastRequest << std::flush;
 				} // if
 			} // if
 			socket->ShutDownWriting();
@@ -180,11 +176,11 @@ void ConnectorAcceptorTest::basicOperation() {
 		Socket *socket = conn.MakeSocket();
 		t_assert( socket != 0 );
 		if (socket != 0) {
-			iostream *Ios = socket->GetStream();
+			std::iostream *Ios = socket->GetStream();
 			t_assert( Ios != 0 );
 			if (Ios != 0) {
 				String input("ABC");
-				(*Ios) << input << flush;
+				(*Ios) << input << std::flush;
 				Trace("written:<" << input << ">");
 				t_assert(!!(*Ios));
 				socket->ShutDownWriting();
@@ -196,7 +192,7 @@ void ConnectorAcceptorTest::basicOperation() {
 					StringStream os(&reply);
 					t_assert(Ios->rdbuf() != 0);
 					Trace("reading reply...");
-					os << Ios->rdbuf() << flush;
+					os << Ios->rdbuf() << std::flush;
 					t_assert(!!(*Ios));
 				}
 				Trace("reply read:<" << reply << ">");
@@ -220,18 +216,18 @@ void ConnectorAcceptorTest::basicOperationWithAllocator() {
 		Socket *socket = conn.MakeSocket();
 		t_assert( socket != 0 );
 		if (socket != 0) {
-			iostream *Ios = socket->GetStream();
+			std::iostream *Ios = socket->GetStream();
 			t_assert( Ios != 0 );
 			if (Ios != 0) {
 				String input("ABC");
-				(*Ios) << input << flush;
+				(*Ios) << input << std::flush;
 				t_assert(!!(*Ios));
 				socket->ShutDownWriting();
 				t_assert(!!(*Ios));
 
 				StringStream reply;
 				t_assert(Ios->rdbuf() != 0);
-				reply << Ios->rdbuf() << flush;
+				reply << Ios->rdbuf() << std::flush;
 				t_assert(!!(*Ios));
 				assertEqual(input, reply.str());
 				String inEBCDIC(fCallBack->GetLastRequest());
@@ -252,16 +248,16 @@ void ConnectorAcceptorTest::differentReply() {
 		Socket *socket = conn.MakeSocket();
 		t_assert( socket != 0 );
 		if (socket != 0) {
-			iostream *Ios = socket->GetStream();
+			std::iostream *Ios = socket->GetStream();
 			t_assert( Ios != 0 );
 			if (Ios != 0) {
 				String EBCDICReply("\xC3\xC4\xC5\xC6");
 				fCallBack->SetReplyMessage(EBCDICReply);
 				String input("ABC");
-				(*Ios) << input << flush;
+				(*Ios) << input << std::flush;
 				socket->ShutDownWriting();
 				StringStream reply;
-				reply << Ios->rdbuf() << flush;
+				reply << Ios->rdbuf() << std::flush;
 
 				assertEqual("CDEF", reply.str());
 			} // if

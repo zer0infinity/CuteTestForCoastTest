@@ -17,7 +17,7 @@
 #include "HTTPStreamStack.h"
 
 //---- HTTPStreamStack ----------------------------------------------------------------
-HTTPStreamStack::HTTPStreamStack(ostream &output, bool chunked, bool zipEnc) :
+HTTPStreamStack::HTTPStreamStack(std::ostream &output, bool chunked, bool zipEnc) :
 	fOutput(output),
 	fTopOfStack(&output),
 	fChunker(0),
@@ -41,7 +41,7 @@ HTTPStreamStack::HTTPStreamStack(ostream &output, bool chunked, bool zipEnc) :
 	fOutput << ENDL;
 };
 
-ostream &HTTPStreamStack::GetBodyStream()
+std::ostream &HTTPStreamStack::GetBodyStream()
 {
 	return *fTopOfStack;
 }

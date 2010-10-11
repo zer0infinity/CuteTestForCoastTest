@@ -99,7 +99,7 @@ public:
 		return fgcSingletons[index&fgcSubSetMask];
 	}
 	//!auxiliary to generate ascii/hex representation useful for inclusion in programs
-	friend EXPORTDECL_REGEX ostream &operator<<(ostream & , const REBitSet &s);
+	friend EXPORTDECL_REGEX std::ostream &operator<<(std::ostream & , const REBitSet &s);
 };
 
 #endif  /* REBitSet */

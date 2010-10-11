@@ -28,7 +28,7 @@ public:
 	GetThisHostNameRenderer(const char *name);
 	~GetThisHostNameRenderer();
 
-	virtual void RenderAll(ostream &reply, Context &ctx, const ROAnything &config);
+	virtual void RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config);
 };
 
 #endif

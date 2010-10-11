@@ -24,11 +24,8 @@
 #include "Context.h"
 #include "AnyIterators.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //--- c-library modules used ---------------------------------------------------
+#include <iomanip>
 
 //---- CleanSessions ----------------------------------------------------------
 //: triggers cleanup of sessions
@@ -97,7 +94,7 @@ SessionListManager::SessionListManager(const char *name)
 	long hostid = ::gethostid();
 	long pid = System::getpid();
 #endif
-	ss << hex << hostid << "!" << dec << (unsigned long) abs(pid);
+	ss << std::hex << hostid << "!" << std::dec << (unsigned long) abs(pid);
 }
 
 SessionListManager::~SessionListManager()
@@ -472,9 +469,9 @@ long SessionListManager::CleanupSessions(Context &ctx, bool forceLock)
 			// Disabled: Kept under SLM control, but no more accesible (avoid destruction of session
 			//           objects still in use by requests)
 			OStringStream os;
-			os	<< "Sessions now Active   : <" << setw(7) << szActiveAfter << ">  " <<
-				"Deleted  : <" << setw(7) << (szActiveBefore - szActiveAfter) << ">  " <<
-				"Disabled : <" << setw(9) << szDisabled << ">" << endl;
+			os	<< "Sessions now Active   : <" << std::setw(7) << szActiveAfter << ">  " <<
+				"Deleted  : <" << std::setw(7) << (szActiveBefore - szActiveAfter) << ">  " <<
+				"Disabled : <" << std::setw(9) << szDisabled << ">" << std::endl;
 			SystemLog::WriteToStderr(os.str());
 		}
 	}

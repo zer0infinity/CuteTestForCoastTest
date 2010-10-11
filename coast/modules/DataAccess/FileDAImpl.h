@@ -45,7 +45,7 @@ protected:
 	virtual System::openmode DoGetMode(ROAnything roaModes);
 
 	bool GetFileName(String &filename, String &ext, Context &context, ParameterMapper *in);
-	iostream *GetFileStream(Context &context, ParameterMapper *in);
+	std::iostream *GetFileStream(Context &context, ParameterMapper *in);
 	System::openmode GetMode(Context &context, ParameterMapper *in);
 
 private:

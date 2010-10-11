@@ -16,11 +16,9 @@
 #include "Dbg.h"
 #include "System.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //--- c-library modules used ---------------------------------------------------
+#include <iomanip>
+
 #if !defined(WIN32)
 #include <sys/poll.h>
 #include <sys/select.h>
@@ -177,9 +175,9 @@ bool LeaderFollowerPool::InitReactor(ROAnything args)
 			}
 			// start the accept loop
 			OStringStream os;
-			os << setw(20) <<  args.SlotName(i) << " Accepting requests from: " <<
+			os << std::setw(20) <<  args.SlotName(i) << " Accepting requests from: " <<
 			   acceptor->GetAddress() << " port: " << acceptor->GetPort() << " backlog: " <<
-			   acceptor->GetBacklog() << endl;
+			   acceptor->GetBacklog() << std::endl;
 			SystemLog::WriteToStderr(os.str());
 			fReactor->RegisterHandle(acceptor);
 		} else {

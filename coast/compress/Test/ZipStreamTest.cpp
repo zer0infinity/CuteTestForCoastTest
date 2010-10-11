@@ -17,12 +17,6 @@
 
 //--- standard modules used ----------------------------------------------------
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#else
-#include <stdlib.h>
-#endif
-
 //--- c-modules used -----------------------------------------------------------
 #include "gzio.h"
 
@@ -75,13 +69,13 @@ void ZipStreamTest::GzipHdrWriteTest()
 	t_assert(os.flush() != NULL);
 	assertEqual(0L, os.str().Length());
 
-	zos << flush;
+	zos << std::flush;
 
 	// header must be written after first byte streamd to stream
 	assertEqual(10L, os.str().Length());
 	GzipHdr aHeader;
 	StringStream streamHeader;
-	streamHeader << aHeader << flush;
+	streamHeader << aHeader << std::flush;
 
 	String writtenHeader = os.str();
 	writtenHeader.Trim(10);
@@ -195,7 +189,7 @@ void ZipStreamTest::WriteHeaderInfoTest()
 		if ( roaConfig.IsDefined("Content") ) {
 			zos << roaConfig["Content"].AsString();
 		}
-		zos << flush;
+		zos << std::flush;
 		zos.close();
 		assertEqualRaw(strCprs, stream.str());
 	}
@@ -233,7 +227,7 @@ void ZipStreamTest::SetCompressionTest()
 {
 	StartTrace(ZipStreamTest.SetCompressionTest);
 	String strFileName("MultCprsTest");
-	ostream *os = Coast::System::OpenOStream (strFileName, "gz", ios::binary);
+	std::ostream *os = Coast::System::OpenOStream (strFileName, "gz", std::ios::binary);
 	if (!t_assert(os != NULL)) {
 		return;
 	}
@@ -243,9 +237,9 @@ void ZipStreamTest::SetCompressionTest()
 	zos << ZipStream::setComment("Hello, this is my comment");
 	zos << ZipStream::setModificationTime(TimeStamp("20041224012345"));
 	zos << ZipStream::setHeaderCRC();
-	zos << content << flush;
+	zos << content << std::flush;
 	for (long lCprs = 0L; lCprs < Z_BEST_COMPRESSION; ++lCprs) {
-		zos << ZipStream::setCompression(lCprs) << content << flush;
+		zos << ZipStream::setCompression(lCprs) << content << std::flush;
 	}
 	t_assert(!!zos);
 	zos.close();
@@ -254,7 +248,7 @@ void ZipStreamTest::SetCompressionTest()
 	// should check for consistency of the file
 	VerifyFile(String(strFileName) << ".gz");
 
-	istream *is = Coast::System::OpenIStream(strFileName, "gz", ios::binary);
+	std::istream *is = Coast::System::OpenIStream(strFileName, "gz", std::ios::binary);
 	if (!t_assert(is != NULL)) {
 		return;
 	}
@@ -288,7 +282,7 @@ void ZipStreamTest::GzipZlibTest()
 
 	VerifyFile("tt.gz");
 }
-static String ReadStream(istream &is)
+static String ReadStream(std::istream &is)
 {
 	StartTrace(ZipStreamTest.ReadStream);
 
@@ -310,7 +304,7 @@ void ZipStreamTest::GzipLongFileCheck()
 {
 	StartTrace(ZipStreamTest.GzipLongFileCheck);
 
-	istream *is = Coast::System::OpenIStream("longpage", "html");
+	std::istream *is = Coast::System::OpenIStream("longpage", "html");
 	if (!t_assertm((is != NULL), "file longpage.html not found")) {
 		return;
 	}
@@ -339,13 +333,13 @@ void ZipStreamTest::GzipLongFileCheck()
 void ZipStreamTest::GzipSimpleFileCheck()
 {
 	StartTrace(ZipStreamTest.GzipSimpleFileCheck);
-	ostream *os = Coast::System::OpenOStream ("testzip", "gz", ios::binary);
+	std::ostream *os = Coast::System::OpenOStream ("testzip", "gz", std::ios::binary);
 	if (!t_assert(os != NULL)) {
 		return;
 	}
 	ZipOStream zos(*os);
 	t_assert(!!zos);
-	zos << content << flush;
+	zos << content << std::flush;
 	t_assert(!!zos);
 	zos.close();
 	delete os;
@@ -353,7 +347,7 @@ void ZipStreamTest::GzipSimpleFileCheck()
 	// should check for consistency of the file
 	VerifyFile("testzip.gz");
 
-	istream *is = Coast::System::OpenIStream("testzip", "gz", ios::binary);
+	std::istream *is = Coast::System::OpenIStream("testzip", "gz", std::ios::binary);
 	if (!t_assert(is != NULL)) {
 		return;
 	}
@@ -374,18 +368,18 @@ void ZipStreamTest::GzipSimpleFileCheck()
 void ZipStreamTest::GzipEmptyFile()
 {
 	StartTrace(ZipStreamTest.GzipEmptyFile);
-	ostream *os = Coast::System::OpenOStream ("empty", "gz", ios::binary);
+	std::ostream *os = Coast::System::OpenOStream ("empty", "gz", std::ios::binary);
 	if (!t_assert(os != NULL)) {
 		return;
 	}
 	ZipOStream zos(*os);
 	t_assert(!!zos);
-	zos << "" << flush;
+	zos << "" << std::flush;
 	t_assert(!!zos);
 	zos.close();
 	delete os;
 
-	istream *is = Coast::System::OpenIStream("empty", "gz", ios::binary);
+	std::istream *is = Coast::System::OpenIStream("empty", "gz", std::ios::binary);
 	if (!t_assert(is != NULL)) {
 		return;
 	}
@@ -483,7 +477,7 @@ void ZipStreamTest::GzipBigFileCheck()
 			inFile[i] = (char) rand();
 		}
 	}
-	ostream *os = Coast::System::OpenOStream("big", "gz", ios::binary);
+	std::ostream *os = Coast::System::OpenOStream("big", "gz", std::ios::binary);
 	if (!t_assert(os != NULL)) {
 		return;
 	}
@@ -495,7 +489,7 @@ void ZipStreamTest::GzipBigFileCheck()
 
 	char outFile[sizeof(inFile)];
 
-	istream *is = Coast::System::OpenIStream("big", "gz", ios::binary);
+	std::istream *is = Coast::System::OpenIStream("big", "gz", std::ios::binary);
 	if (!t_assert(is != NULL)) {
 		return ;
 	}
@@ -520,7 +514,7 @@ void ZipStreamTest::GzipBigFileCheck()
 	}
 	delete is;
 
-	istream *is2 = Coast::System::OpenIStream("big", "gz", ios::binary);
+	std::istream *is2 = Coast::System::OpenIStream("big", "gz", std::ios::binary);
 	if (!t_assert(is2 != NULL)) {
 		return ;
 	}
@@ -563,7 +557,7 @@ void ZipStreamTest::GzipCorruptInputCheck()
 void ZipStreamTest::StringGetlineTest()
 {
 	StartTrace(ZipStreamTest.StringGetlineTest);
-	istream *is = Coast::System::OpenIStream("tt", "gz", ios::binary);
+	std::istream *is = Coast::System::OpenIStream("tt", "gz", std::ios::binary);
 	if (!t_assert(is != NULL)) {
 		return ;
 	}
@@ -586,18 +580,18 @@ void ZipStreamTest::StringGetlineTest()
 void ZipStreamTest::StringEmptyFileGetlineTest()
 {
 	StartTrace(ZipStreamTest.StringEmptyFileGetlineTest);
-	ostream *os = Coast::System::OpenOStream ("empty2", "gz", ios::binary);
+	std::ostream *os = Coast::System::OpenOStream ("empty2", "gz", std::ios::binary);
 	if (!t_assert(os != NULL)) {
 		return;
 	}
 	ZipOStream zos(*os);
 	t_assert(!!zos);
-	zos << "" << flush;
+	zos << "" << std::flush;
 	t_assert(!!zos);
 	zos.close();
 	delete os;
 
-	istream *is = Coast::System::OpenIStream("empty2", "gz", ios::binary);
+	std::istream *is = Coast::System::OpenIStream("empty2", "gz", std::ios::binary);
 	if (!t_assert(is != NULL)) {
 		return ;
 	}

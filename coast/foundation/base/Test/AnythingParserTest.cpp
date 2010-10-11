@@ -81,7 +81,7 @@ void AnythingParserTest::checkImportExport( Anything any, String fileName )
 
 void AnythingParserTest::writeResult( String *input , long nrOfElt, const char *path, const char *ext )
 {
-	ostream		*os = System::OpenOStream( path, ext, ios::trunc);
+	std::ostream *os = System::OpenOStream( path, ext, std::ios::trunc);
 	if ( os ) {
 		Anything emptyAny1, anyTest, anyTests;
 
@@ -835,7 +835,7 @@ void AnythingParserTest::parseMixedAnything ()
 	anyAnew["H"] = 1234;
 	anyAnew["I"] = "String";
 
-	ostream *osHlp = System::OpenOStream("tmp/AnyTest", "txt", ios::trunc);
+	std::ostream *osHlp = System::OpenOStream("tmp/AnyTest", "txt", std::ios::trunc);
 	if ( osHlp ) {
 		*osHlp << anyAnew;
 		delete osHlp;
@@ -843,7 +843,7 @@ void AnythingParserTest::parseMixedAnything ()
 		assertEqual("'write tmp/AnyTest.txt'", "'could not write tmp/AnyTest.txt'" );
 	}
 
-	istream *isHlp = System::OpenIStream("tmp/AnyTest", "txt");
+	std::istream *isHlp = System::OpenIStream("tmp/AnyTest", "txt");
 	if ( !isHlp ) {
 		assertEqual("'read tmp/AnyTest.txt'", "'could not read tmp/AnyTest.txt'" );
 	} else {	// if ( isHlp )
@@ -851,7 +851,7 @@ void AnythingParserTest::parseMixedAnything ()
 		anyHlp.Import( *isHlp );
 		delete isHlp;
 
-		ostream *osNew = System::OpenOStream("tmp/AnyTestNew", "txt", ios::trunc);
+		std::ostream *osNew = System::OpenOStream("tmp/AnyTestNew", "txt", std::ios::trunc);
 		if ( osNew ) {
 			*osNew << anyHlp;
 			delete osNew;
@@ -1190,7 +1190,7 @@ void AnythingParserTest::parseTestFiles() {
 	Anything emptyAny1, anyHlp, anyTest, anyTests;
 
 	for ( testCnt = 0; testCnt < 21; testCnt++ ) {
-		istream *is = System::OpenStream( (const char *)fileNames[testCnt], "txt" );
+		std::istream *is = System::OpenStream( (const char *)fileNames[testCnt], "txt" );
 		if ( is ) {
 			// Lese die Anything-Datei ein
 			Anything any0;
@@ -1203,7 +1203,7 @@ void AnythingParserTest::parseTestFiles() {
 			// Schreibe das Ergebnis in eine Datei
 			String tmp = "tmp/";
 			tmp.Append(fileNames[testCnt]);
-			ostream *os = System::OpenOStream( (const char *)tmp, "res", ios::trunc );
+			std::ostream *os = System::OpenOStream( (const char *)tmp, "res", std::ios::trunc );
 			if ( os ) {
 				*os << AnythingParserTest::anyOutput;
 				delete os;

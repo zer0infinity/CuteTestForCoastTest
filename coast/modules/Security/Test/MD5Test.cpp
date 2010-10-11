@@ -18,11 +18,8 @@
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //--- c-library modules used ---------------------------------------------------
+#include <iomanip>
 
 MD5Test::MD5Test(TString tname) : TestCaseType(tname)
 {};
@@ -48,7 +45,7 @@ String hexhash(MD5Signer &md5, const char *s)
 	md5.DoHash(s, hash);
 	OStringStream os;
 	for (long i = 0 ; i < hash.Length(); i++) {
-		os << hex <<  setw(2) << setfill('0') << (int)(unsigned char)hash[i];
+		os << std::hex <<  std::setw(2) << std::setfill('0') << (int)(unsigned char)hash[i];
 	}
 	return os.str();
 }

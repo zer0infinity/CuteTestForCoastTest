@@ -20,11 +20,6 @@
 #include "DiffTimer.h"
 
 //--- c-modules used -----------------------------------------------------------
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#else
-#include <stdlib.h>
-#endif
 
 //---- AnyBuiltInSortTest ----------------------------------------------------------------
 AnyBuiltInSortTest::AnyBuiltInSortTest(TString tstrName) : TestCaseType(tstrName)
@@ -152,7 +147,7 @@ void AnyBuiltInSortTest::SortMany()
 	t_assertm(checksorted(a, true), "should be random");
 	DiffTimer dt;
 	a.SortByKey();
-	cerr << "sorting of " << size << " took " << dt.Diff() << " ms.\n";
+	std::cerr << "sorting of " << size << " took " << dt.Diff() << " ms.\n";
 	t_assertm(checksorted(a), "should be sorted");
 	assertEqual(size, a.GetSize());
 	for (i = 0; i < size; i++) {
@@ -162,11 +157,11 @@ void AnyBuiltInSortTest::SortMany()
 	}
 	dt.Reset();
 	a.SortByKey();
-	cerr << "sorting of sorted " << size << " took " << dt.Diff() << " ms.\n";
+	std::cerr << "sorting of sorted " << size << " took " << dt.Diff() << " ms.\n";
 	// now sort b by using the legacy SlotNameSorter...several orders of magnitude slower.
 	dt.Reset();
 	SlotnameSorter::Sort(b);
-	cerr << "Slogname sorting of " << size << " took " << dt.Diff() << " ms.\n";
+	std::cerr << "Slogname sorting of " << size << " took " << dt.Diff() << " ms.\n";
 	assertAnyEqual(a, b);
 }
 
@@ -190,7 +185,7 @@ void AnyBuiltInSortTest::SortManyStringValues()
 	t_assertm(checksortedbyvalue(a, true), "should be random");
 	DiffTimer dt;
 	a.SortByStringValues();
-	cerr << "sorting of " << size << " took " << dt.Diff() << " ms.\n";
+	std::cerr << "sorting of " << size << " took " << dt.Diff() << " ms.\n";
 	t_assertm(checksortedbyvalue(a), "should be sorted");
 	assertEqual(size, a.GetSize());
 }

@@ -61,7 +61,7 @@ ServiceDispatcher::~ServiceDispatcher()
 	StartTrace(ServiceDispatcher.Dtor);
 }
 
-void ServiceDispatcher::Dispatch2Service(ostream &reply, Context &ctx)
+void ServiceDispatcher::Dispatch2Service(std::ostream &reply, Context &ctx)
 {
 	StartTrace(ServiceDispatcher.Dispatch2Service);
 	ctx.Push("ServiceDispatcher", this);

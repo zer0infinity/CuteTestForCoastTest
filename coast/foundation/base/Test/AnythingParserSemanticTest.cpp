@@ -109,7 +109,7 @@ void AnythingParserSemanticTest::checkImportExport( Anything any, String fileNam
 
 void AnythingParserSemanticTest::writeResult( String *input , long nrOfElt, char *path, char *ext )
 {
-	ostream		*os = System::OpenOStream( path, ext, ios::trunc);
+	std::ostream *os = System::OpenOStream( path, ext, std::ios::trunc);
 	if ( os ) {
 		Anything emptyAny1, anyTest, anyTests;
 

@@ -40,7 +40,7 @@ private:
 // adapts ios to a SSL Socket Stream buffer
 //
 
-class EXPORTDECL_SSL iosITOSSLSocket : virtual public ios
+class EXPORTDECL_SSL iosITOSSLSocket : virtual public std::ios
 {
 public:
 	iosITOSSLSocket(SSL *ctx, SSLSocket *ssl, long timeout = 300 * 1000);
@@ -66,28 +66,24 @@ private:
 	// (see comment in iostream.h)
 }; // iosIFASocket
 
-class  EXPORTDECL_SSL ISSLSocketStream : public iosITOSSLSocket, public istream
+class  EXPORTDECL_SSL ISSLSocketStream : public iosITOSSLSocket, public std::istream
 {
 public:
 	ISSLSocketStream(SSL *ctx, SSLSocket *ssl, long timeout = 300 * 1000)
 		: iosITOSSLSocket(ctx, ssl, timeout)
-#if defined(ONLY_STD_IOSTREAM)
-		, istream(&fSSLSockBuf)
-#endif
+		, std::istream(&fSSLSockBuf)
 	{ } // read from s
 
 	~ISSLSocketStream() { }
 }; // iSSLSocketStream
 
-class  EXPORTDECL_SSL OSSLSocketStream : public iosITOSSLSocket, public ostream
+class  EXPORTDECL_SSL OSSLSocketStream : public iosITOSSLSocket, public std::ostream
 {
 public:
 
 	OSSLSocketStream(SSL *ctx, SSLSocket *ssl, long timeout = 300 * 1000)
 		: iosITOSSLSocket(ctx, ssl, timeout)
-#if defined(ONLY_STD_IOSTREAM)
-		, ostream(&fSSLSockBuf)
-#endif
+		, std::ostream(&fSSLSockBuf)
 	{  }
 
 	~OSSLSocketStream() { }
@@ -97,14 +93,12 @@ private:
 
 }; // OSSLSocketStream
 
-class  EXPORTDECL_SSL SSLSocketStream : public iosITOSSLSocket, public iostream
+class  EXPORTDECL_SSL SSLSocketStream : public iosITOSSLSocket, public std::iostream
 {
 public:
 	SSLSocketStream(SSL *ctx, SSLSocket *ssl, long timeout = 300 * 1000)
 		: iosITOSSLSocket(ctx, ssl, timeout)
-#if defined(ONLY_STD_IOSTREAM)
-		, iostream(&fSSLSockBuf)
-#endif
+		, std::iostream(&fSSLSockBuf)
 	{ }
 
 	~SSLSocketStream() { }

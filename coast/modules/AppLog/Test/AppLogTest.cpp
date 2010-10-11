@@ -567,7 +567,7 @@ void AppLogTest::CheckFile(Context &ctx, const char *channelname, String expecte
 		strLogFilename << System::Sep() << roaChannelConfig["FileName"].AsCharPtr();
 		t_assertm( System::IsRegularFile(strLogFilename), "expected log file to be there");
 
-		iostream *fp = System::OpenIStream(strLogFilename, NULL);
+		std::iostream *fp = System::OpenIStream(strLogFilename, NULL);
 		if ( t_assertm(fp != NULL, name()) ) {
 			String fileContent;
 			char c;
@@ -586,7 +586,7 @@ void AppLogTest::CheckFileAfterChannelTermination(Context &ctx, const char *strL
 	StartTrace(AppLogTest.CheckFileAfterChannelTermination);
 	t_assertm( System::IsRegularFile(strLogFilename), "expected log file to be there");
 
-	iostream *fp = System::OpenIStream(strLogFilename, NULL);
+	std::iostream *fp = System::OpenIStream(strLogFilename, NULL);
 	if ( t_assertm(fp != NULL, name()) ) {
 		String fileContent;
 		char c;

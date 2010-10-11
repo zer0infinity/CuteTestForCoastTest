@@ -12,14 +12,10 @@
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 namespace NSStringStream {
-	bool PlainCopyStream2Stream(istream *streamSrc, ostream &streamDest, long &copiedBytes, long lBytes2Copy) {
+	bool PlainCopyStream2Stream(std::istream *streamSrc, std::ostream &streamDest, long &copiedBytes, long lBytes2Copy) {
 		StartTrace(StringStream.PlainCopyStream2Stream);
-		streamsize szReadSize = 0;
+		std::streamsize szReadSize = 0;
 		Trace("Bytes to copy: " << lBytes2Copy);
 		String sBuf(lBytes2Copy);
 		char *buf = (char *) (const char *) sBuf;

@@ -49,9 +49,9 @@ class EXPORTDECL_RENDERER FormRenderer: public HTMLTemplateRenderer
 public:
 	FormRenderer(const char *name);
 
-	static void PrintFormBegin(ostream &reply, Context &context, const ROAnything &config);
-	static void PrintFormEnd(ostream &reply, Context &context);
-	void RenderAll(ostream &reply, Context &context, const ROAnything &config);
+	static void PrintFormBegin(std::ostream &reply, Context &context, const ROAnything &config);
+	static void PrintFormEnd(std::ostream &reply, Context &context);
+	void RenderAll(std::ostream &reply, Context &context, const ROAnything &config);
 protected:
 	class TemplateParser *GetParser();
 };
@@ -80,12 +80,12 @@ class EXPORTDECL_RENDERER FieldRenderer : public Renderer
 {
 public:
 	FieldRenderer(const char *name);
-	void RenderAll(ostream &reply, Context &context, const ROAnything &config);
+	void RenderAll(std::ostream &reply, Context &context, const ROAnything &config);
 
 protected:
-	virtual void RenderName(ostream &reply, Context &context, const ROAnything &config);
-	virtual void RenderType(ostream &reply, Context &context, const ROAnything &config) {}
-	virtual void RenderOptions(ostream &reply, Context &context, const ROAnything &config);
+	virtual void RenderName(std::ostream &reply, Context &context, const ROAnything &config);
+	virtual void RenderType(std::ostream &reply, Context &context, const ROAnything &config) {}
+	virtual void RenderOptions(std::ostream &reply, Context &context, const ROAnything &config);
 };
 
 //---- SelectBoxRenderer ---------------------------------------------------------------
@@ -184,13 +184,13 @@ class EXPORTDECL_RENDERER SelectBoxRenderer : public FieldRenderer
 {
 public:
 	SelectBoxRenderer(const char *name);
-	virtual void RenderAll(ostream &reply, Context &context, const ROAnything &config);
+	virtual void RenderAll(std::ostream &reply, Context &context, const ROAnything &config);
 protected:
-	virtual void RenderType(ostream &, Context &, const ROAnything &) { }
+	virtual void RenderType(std::ostream &, Context &, const ROAnything &) { }
 	// Renderers SELECT Tag attributes
-	virtual void RenderOptions(ostream &reply, Context &context, const ROAnything &config);
+	virtual void RenderOptions(std::ostream &reply, Context &context, const ROAnything &config);
 	// Renderes the <OPTION> list using a ListRenderer
-	virtual void RenderOptionList(ostream &reply, Context &context, const ROAnything &config, String listname);
+	virtual void RenderOptionList(std::ostream &reply, Context &context, const ROAnything &config, String listname);
 	virtual bool IsMultipleSelect(Context &context, const ROAnything &config);
 };
 
@@ -225,7 +225,7 @@ protected:
 		\param entryRendererConfig renderer configuration for the entry
 		\param listItem current list item data as shortcut (instead of using ctx.Lookup )
 		\param anyRenderState anything to carry information between different calls */
-	virtual void RenderEntry(ostream &reply, Context &ctx, const ROAnything &config, const ROAnything &entryRendererConfig, const ROAnything &listItem, Anything &anyRenderState);
+	virtual void RenderEntry(std::ostream &reply, Context &ctx, const ROAnything &config, const ROAnything &entryRendererConfig, const ROAnything &listItem, Anything &anyRenderState);
 
 	/*! Get the EntryHeader to be rendered
 		\param config the configuration of the renderer
@@ -262,7 +262,7 @@ protected:
 		\param entryHeader renderer configuration for the entry header
 		\param listItem current list item data as shortcut (instead of using ctx.Lookup )
 		\param anyRenderState anything to carry information between different calls */
-	virtual void RenderEntryHeader(ostream &reply, Context &ctx, const ROAnything &entryHeader, const ROAnything &listItem, Anything &anyRenderState);
+	virtual void RenderEntryHeader(std::ostream &reply, Context &ctx, const ROAnything &entryHeader, const ROAnything &listItem, Anything &anyRenderState);
 
 	/*! renders a entry footer using the given configuration
 		\param reply stream to generate output on
@@ -270,11 +270,11 @@ protected:
 		\param entryFooter renderer configuration for the entry footer
 		\param listItem current list item data as shortcut (instead of using ctx.Lookup )
 		\param anyRenderState anything to carry information between different calls */
-	virtual void RenderEntryFooter(ostream &reply, Context &ctx, const ROAnything &entryFooter, const ROAnything &listItem, Anything &anyRenderState);
+	virtual void RenderEntryFooter(std::ostream &reply, Context &ctx, const ROAnything &entryFooter, const ROAnything &listItem, Anything &anyRenderState);
 
-	virtual void RenderValue(ostream &reply, Context &c, const ROAnything &config, const ROAnything &valueConfig, const ROAnything &listItem);
-	virtual void RenderSelected(ostream &reply, Context &c, const ROAnything &config, const ROAnything &selectedConfig, const ROAnything &listItem);
-	virtual void RenderText(ostream &reply, Context &c, const ROAnything &config, const ROAnything &textConfig, const ROAnything &listItem);
+	virtual void RenderValue(std::ostream &reply, Context &c, const ROAnything &config, const ROAnything &valueConfig, const ROAnything &listItem);
+	virtual void RenderSelected(std::ostream &reply, Context &c, const ROAnything &config, const ROAnything &selectedConfig, const ROAnything &listItem);
+	virtual void RenderText(std::ostream &reply, Context &c, const ROAnything &config, const ROAnything &textConfig, const ROAnything &listItem);
 
 };
 
@@ -291,7 +291,7 @@ class EXPORTDECL_RENDERER PulldownMenuRenderer : public SelectBoxRenderer
 public:
 	PulldownMenuRenderer(const char *name);
 protected:
-	virtual void RenderOptions(ostream &reply, Context &context, const ROAnything &config);
+	virtual void RenderOptions(std::ostream &reply, Context &context, const ROAnything &config);
 };
 
 //---- CheckboxRenderer ---------------------------------------------------------------
@@ -325,10 +325,10 @@ class EXPORTDECL_RENDERER CheckBoxRenderer : public FieldRenderer
 public:
 	CheckBoxRenderer(const char *name);
 protected:
-	virtual void RenderType(ostream &reply, Context &, const ROAnything &) {
+	virtual void RenderType(std::ostream &reply, Context &, const ROAnything &) {
 		reply << "CHECKBOX";
 	}
-	virtual void RenderOptions(ostream &reply, Context &context, const ROAnything &config);
+	virtual void RenderOptions(std::ostream &reply, Context &context, const ROAnything &config);
 };
 
 //---- RadioButtonRenderer ---------------------------------------------------------------
@@ -395,10 +395,10 @@ class EXPORTDECL_RENDERER RadioButtonRenderer : public FieldRenderer
 public:
 	RadioButtonRenderer(const char *name);
 protected:
-	virtual void RenderType(ostream &reply, Context &, const ROAnything &) {
+	virtual void RenderType(std::ostream &reply, Context &, const ROAnything &) {
 		reply << "RADIO";
 	}
-	virtual void RenderOptions(ostream &reply, Context &context, const ROAnything &config);
+	virtual void RenderOptions(std::ostream &reply, Context &context, const ROAnything &config);
 };
 
 //---- HiddenFieldRenderer ---------------------------------------------------------------
@@ -427,10 +427,10 @@ class EXPORTDECL_RENDERER HiddenFieldRenderer : public FieldRenderer
 public:
 	HiddenFieldRenderer(const char *name);
 protected:
-	virtual void RenderType(ostream &reply, Context &, const ROAnything &) {
+	virtual void RenderType(std::ostream &reply, Context &, const ROAnything &) {
 		reply << "HIDDEN";
 	}
-	virtual void RenderOptions(ostream &reply, Context &context, const ROAnything &config);
+	virtual void RenderOptions(std::ostream &reply, Context &context, const ROAnything &config);
 };
 
 //---- ButtonRenderer ---------------------------------------------------------------
@@ -467,11 +467,11 @@ class EXPORTDECL_RENDERER ButtonRenderer : public FieldRenderer
 public:
 	ButtonRenderer(const char *name);
 protected:
-	virtual void RenderName(ostream &reply, Context &context, const ROAnything &config);
-	virtual void RenderType(ostream &reply, Context &, const ROAnything &) {
+	virtual void RenderName(std::ostream &reply, Context &context, const ROAnything &config);
+	virtual void RenderType(std::ostream &reply, Context &, const ROAnything &) {
 		reply << "SUBMIT";
 	}
-	virtual void RenderOptions(ostream &reply, Context &context, const ROAnything &config);
+	virtual void RenderOptions(std::ostream &reply, Context &context, const ROAnything &config);
 };
 
 //---- ImageButtonRenderer ---------------------------------------------------------------
@@ -524,11 +524,11 @@ class EXPORTDECL_RENDERER ImageButtonRenderer : public FieldRenderer
 public:
 	ImageButtonRenderer(const char *name);
 protected:
-	virtual void RenderName(ostream &reply, Context &context, const ROAnything &config);
-	virtual void RenderType(ostream &reply, Context &, const ROAnything &) {
+	virtual void RenderName(std::ostream &reply, Context &context, const ROAnything &config);
+	virtual void RenderType(std::ostream &reply, Context &, const ROAnything &) {
 		reply << "IMAGE";
 	}
-	virtual void RenderOptions(ostream &reply, Context &context, const ROAnything &config);
+	virtual void RenderOptions(std::ostream &reply, Context &context, const ROAnything &config);
 };
 
 //---- ResetButtonRenderer ---------------------------------------------------------------
@@ -556,7 +556,7 @@ public:
 	ResetButtonRenderer(const char *name);
 
 protected:
-	virtual void RenderType(ostream &reply, Context &, const ROAnything &) {
+	virtual void RenderType(std::ostream &reply, Context &, const ROAnything &) {
 		reply << "RESET";
 	}
 };
@@ -596,8 +596,8 @@ public:
 	TextFieldRenderer(const char *name) : FieldRenderer(name) {}
 
 protected:
-	virtual void RenderType(ostream &reply, Context &context, const ROAnything &config);
-	virtual void RenderOptions(ostream &reply, Context &context, const ROAnything &config);
+	virtual void RenderType(std::ostream &reply, Context &context, const ROAnything &config);
+	virtual void RenderOptions(std::ostream &reply, Context &context, const ROAnything &config);
 };
 
 //---- TextAreaRenderer --------------------------------------------------------------
@@ -633,10 +633,10 @@ class EXPORTDECL_RENDERER TextAreaRenderer : public FieldRenderer
 {
 public:
 	TextAreaRenderer(const char *name);
-	virtual void RenderAll(ostream &reply, Context &context, const ROAnything &config);
+	virtual void RenderAll(std::ostream &reply, Context &context, const ROAnything &config);
 
 protected:
-	virtual void RenderType(ostream &, Context &, const ROAnything &) { }
+	virtual void RenderType(std::ostream &, Context &, const ROAnything &) { }
 
 };
 
@@ -656,7 +656,7 @@ class EXPORTDECL_RENDERER FieldNameRenderer : public Renderer
 public:
 	FieldNameRenderer(const char *name);
 
-	void RenderAll(ostream &reply, Context &context, const ROAnything &config);
+	void RenderAll(std::ostream &reply, Context &context, const ROAnything &config);
 };
 
 //---- FileBrowseRenderer --------------------------------------------------------------
@@ -668,7 +668,7 @@ public:
 	FileBrowseRenderer(const char *name);
 
 protected:
-	virtual void RenderType(ostream &reply, Context &, const ROAnything &) {
+	virtual void RenderType(std::ostream &reply, Context &, const ROAnything &) {
 		reply << "FILE";
 	}
 };

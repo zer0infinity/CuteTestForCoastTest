@@ -19,7 +19,7 @@ public:
 	RequestLineRenderer(const char *name);
 	~RequestLineRenderer();
 
-	virtual void RenderAll(ostream &reply, Context &c, const ROAnything &config);
+	virtual void RenderAll(std::ostream &reply, Context &c, const ROAnything &config);
 };
 
 #endif		//ifndef _RequestLineRenderer_H

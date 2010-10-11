@@ -41,8 +41,8 @@ public:
 	~TestContextFlagRenderer();
 
 	//! Render output onto \em reply based on \c long lookup of rendered \c FlagName slot
-	/*! @copydetails Renderer::RenderAll(ostream &, Context &, const ROAnything &) */
-	virtual void RenderAll(ostream &reply, Context &ctx, const ROAnything &config);
+	/*! @copydetails Renderer::RenderAll(std::ostream &, Context &, const ROAnything &) */
+	virtual void RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config);
 };
 
 #endif

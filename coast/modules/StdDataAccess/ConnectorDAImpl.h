@@ -51,7 +51,7 @@ public:
 
 protected:
 	virtual bool DoExec(Socket *pSocket, Context &context, ParameterMapper *, ResultMapper *);
-	virtual bool SendInput(iostream *Ios, Socket *s, long lCheckReadyTimeout, long lSocketStreamTimeout, Context &context, ParameterMapper *, ResultMapper *);
+	virtual bool SendInput(std::iostream *Ios, Socket *s, long lCheckReadyTimeout, long lSocketStreamTimeout, Context &context, ParameterMapper *, ResultMapper *);
 	virtual bool HandleError(Socket *s, const char *streamText, Context &context, ParameterMapper *, ResultMapper *);
 
 private:

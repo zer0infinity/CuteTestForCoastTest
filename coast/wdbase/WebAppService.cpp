@@ -29,7 +29,7 @@ WebAppService::~WebAppService()
 {
 }
 
-void WebAppService::DoHandleService(ostream &reply, Context &ctx)
+void WebAppService::DoHandleService(std::ostream &reply, Context &ctx)
 {
 	StartTrace(WebAppService.DoHandleService);
 
@@ -83,7 +83,7 @@ void WebAppService::PrepareRequest(Context &ctx)
 	}
 }
 
-bool WebAppService::VerifyRequest(ostream &, Context &ctx)
+bool WebAppService::VerifyRequest(std::ostream &, Context &ctx)
 {
 	Anything args(ctx.GetRequest());
 	if (args.IsNull()) {

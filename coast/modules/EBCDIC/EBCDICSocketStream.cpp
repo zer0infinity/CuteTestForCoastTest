@@ -17,7 +17,7 @@
 //---- EBCDICSocketStream ------------------------------------------------------
 EBCDICSocketStream::EBCDICSocketStream(Socket *s, long timeout, long sockbufsz)
 	: iosCoastEBCDICSocket(s, timeout, sockbufsz)
-	, iostream(rdbuf())
+	, std::iostream(rdbuf())
 { }
 
 EBCDICSocketStream::~EBCDICSocketStream()

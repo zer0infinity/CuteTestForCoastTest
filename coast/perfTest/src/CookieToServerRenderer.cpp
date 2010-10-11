@@ -26,7 +26,7 @@ CookieToServerRenderer::~CookieToServerRenderer()
 {
 }
 
-void CookieToServerRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void CookieToServerRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	StartTrace(CookieToServerRenderer.Render);
 	//TraceAny(config, "config");
@@ -44,7 +44,7 @@ void CookieToServerRenderer::RenderAll(ostream &reply, Context &c, const ROAnyth
 	OutputCookies( explicitDomainName, reply, c );
 }
 
-void CookieToServerRenderer::OutputCookies(const String &explicitDomainName, ostream &reply, Context &c )
+void CookieToServerRenderer::OutputCookies(const String &explicitDomainName, std::ostream &reply, Context &c )
 {
 	StartTrace(CookieToServerRenderer.OutputCookies);
 

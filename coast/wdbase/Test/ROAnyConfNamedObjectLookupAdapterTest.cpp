@@ -20,10 +20,6 @@
 
 //--- c-modules used -----------------------------------------------------------
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 RegCacheImpl(TestConfNamedObj);				// FindTestConfNamedObj()
 RegisterTestConfNamedObj(TestConfNamedObj);
 
@@ -59,9 +55,9 @@ void ROAnyConfNamedObjectLookupAdapterTest::LookupTest()
 	assertEqual("bar", la.Lookup("hank", "X"));
 	assertEqual("bar", la.Lookup("compo@site", "X", '@'));
 	t_assert(31416L == la.Lookup("long", 0L));
-	cerr << "testConfNamedObject" << "1" << endl;
+	std::cerr << "testConfNamedObject" << "1" << std::endl;
 	assertEqual("X", la.Lookup("fox", "X"));
-	cerr << "testConfNamedObject" << "2" << endl;
+	std::cerr << "testConfNamedObject" << "2" << std::endl;
 
 	//Test lookups aiming at the ConfiguredNamedObject's config
 	assertEqual("FromConfigString", la.Lookup("FromConfigString", "X"));

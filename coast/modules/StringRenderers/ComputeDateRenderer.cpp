@@ -42,7 +42,7 @@ long ComputeDateRenderer::GetMonthIndex( String month )
 	return idx;
 }
 
-void ComputeDateRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
+void ComputeDateRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(ComputeDateRenderer.RenderAll);
 	TraceAny(config, "config");

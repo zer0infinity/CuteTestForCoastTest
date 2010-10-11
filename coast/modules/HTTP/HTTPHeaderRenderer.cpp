@@ -23,7 +23,7 @@ HTTPHeaderRenderer::HTTPHeaderRenderer(const char *name) : Renderer(name) { }
 
 HTTPHeaderRenderer::~HTTPHeaderRenderer() { }
 
-void HTTPHeaderRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
+void HTTPHeaderRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(HTTPHeaderRenderer.RenderAll);
 	String slotname;
@@ -36,7 +36,7 @@ void HTTPHeaderRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnythin
 	RenderHeader(reply, ctx, ctx.Lookup(slotname));
 }
 
-void HTTPHeaderRenderer::RenderHeader(ostream &reply, Context &ctx, const ROAnything &config)
+void HTTPHeaderRenderer::RenderHeader(std::ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(HTTPHeaderRenderer.RenderHeader);
 	for (long i = 0, sz = config.GetSize(); i < sz; ++i) {
@@ -57,7 +57,7 @@ void HTTPHeaderRenderer::RenderHeader(ostream &reply, Context &ctx, const ROAnyt
 	}
 }
 
-void HTTPHeaderRenderer::RenderValues(ostream &reply, Context &ctx, const ROAnything &config)
+void HTTPHeaderRenderer::RenderValues(std::ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(HTTPHeaderRenderer.RenderValues);
 	Render(reply, ctx, config[0L]);
@@ -67,7 +67,7 @@ void HTTPHeaderRenderer::RenderValues(ostream &reply, Context &ctx, const ROAnyt
 	}
 }
 
-void HTTPHeaderRenderer::RenderMultipleLineHeaderField(ostream &reply, Context &ctx, const String &slot, const ROAnything &config)
+void HTTPHeaderRenderer::RenderMultipleLineHeaderField(std::ostream &reply, Context &ctx, const String &slot, const ROAnything &config)
 {
 	StartTrace(HTTPHeaderRenderer.RenderMultipleLineHeaderField);
 	for (long i = 0, sz = config.GetSize(); i < sz; ++i) {
@@ -78,7 +78,7 @@ void HTTPHeaderRenderer::RenderMultipleLineHeaderField(ostream &reply, Context &
 }
 
 //SOP's spike for MIMEHeader Symmetry
-//void HTTPHeaderRenderer::RenderValues(ostream &reply, Context &ctx, const ROAnything &config)
+//void HTTPHeaderRenderer::RenderValues(std::ostream &reply, Context &ctx, const ROAnything &config)
 //{
 //	//?? use quotes? and comma , ?
 //	if (config.SlotName(0L))

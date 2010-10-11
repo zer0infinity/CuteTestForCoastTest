@@ -21,7 +21,7 @@ RegisterRenderer(ListSizeRenderer);
 
 ListSizeRenderer::ListSizeRenderer(const char *name) : Renderer(name) { }
 
-void ListSizeRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
+void ListSizeRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(ListSizeRenderer.RenderAll);
 

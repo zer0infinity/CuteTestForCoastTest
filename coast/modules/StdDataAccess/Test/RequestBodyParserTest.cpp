@@ -44,7 +44,7 @@ RequestBodyParserTest::~RequestBodyParserTest()
 void RequestBodyParserTest::ReadMultiPartPost()
 {
 	StartTrace(RequestBodyParserTest.ReadMultiPartPost);
-	iostream *is = System::OpenStream("MultiPartBody.txt", 0);
+	std::iostream *is = System::OpenStream("MultiPartBody.txt", 0);
 
 	t_assertm(is != 0, "expected 'MultiPartBody.txt' to be there");
 	if ( is ) {
@@ -106,42 +106,38 @@ void RequestBodyParserTest::ReadToBoundaryTestWithStreamFailure()
 		StringStream tiss(strInput);
 		MIMEHeader mh;
 		RequestBodyParser sm(mh, tiss);
-#if defined(WIN32) && !defined(ONLY_STD_IOSTREAM)
-		int iState = tiss.rdstate();
-#else
-		ios::iostate iState = tiss.rdstate();
-#endif
+		std::ios::iostate iState = tiss.rdstate();
 		Trace("original iState:" << (long)(iState));
 
 		// test failbit detection
-		tiss.clear(ios::failbit | iState);
-		Trace("iState with failbit:" << (long)(iState | ios::failbit));
+		tiss.clear(std::ios::failbit | iState);
+		Trace("iState with failbit:" << (long)(iState | std::ios::failbit));
 		bool res = sm.ReadToBoundary(&tiss, cConfig["Boundary"].AsCharPtr(), result);
 		assertEqualm("", result, cName);
 		assertEqualm(false, res, cName);
-		iState = tiss.rdstate() ^ ios::failbit;
+		iState = tiss.rdstate() ^ std::ios::failbit;
 		Trace("iState failbit cleared:" << (long)iState);
 		tiss.clear(iState);
 
 		// test badbit detection
-		iState = iState | ios::badbit;
+		iState = iState | std::ios::badbit;
 		tiss.clear(iState);
 		Trace("iState with badbit:" << (long)iState);
 		res = sm.ReadToBoundary(&tiss, cConfig["Boundary"].AsCharPtr(), result);
 		assertEqualm("", result, cName);
 		assertEqualm(false, res, cName);
-		iState = tiss.rdstate() ^ ios::badbit;
+		iState = tiss.rdstate() ^ std::ios::badbit;
 		Trace("iState badbit cleared:" << (long)iState);
 		tiss.clear(iState);
 
 		// test eofbit detection
-		iState = iState | ios::eofbit;
+		iState = iState | std::ios::eofbit;
 		tiss.clear(iState);
 		Trace("iState with eofbit:" << (long)iState);
 		res = sm.ReadToBoundary(&tiss, cConfig["Boundary"].AsCharPtr(), result);
 		assertEqualm("", result, cName);
 		assertEqualm(false, res, cName);
-		iState = tiss.rdstate() ^ ios::eofbit;
+		iState = tiss.rdstate() ^ std::ios::eofbit;
 		Trace("iState eofbit cleared:" << (long)iState);
 		tiss.clear(iState);
 

@@ -12,30 +12,16 @@
 #include "config_foundation.h"
 #include "ITOString.h"
 
-#if defined(ONLY_STD_IOSTREAM)
 #include <cstdio>
 #include <iostream>
 #include <iomanip>
-using std::istream;
-using std::ostream;
-using std::iostream;
-using std::ios;
-using std::streambuf;
-#else
-#if !defined(WIN32)
-#include <streambuf.h>
-#endif
-#include <cstdio.h>
-#include <iostream.h>
-#include <iomanip.h>
-#endif
 
 class Pipe;
 
 const int cPipeStreamBufferSize = 8024;
 //---- PipeStreamBuf -------------------------------------------------------------------
 //! streambuf implementation for sockets
-class EXPORTDECL_FOUNDATION PipeStreamBuf : public streambuf
+class EXPORTDECL_FOUNDATION PipeStreamBuf : public std::streambuf
 {
 public:
 	/*! constructor takes socket object and timeout
@@ -43,7 +29,7 @@ public:
 		\param timeout the timeout for a read or write operation uses Pipe->IsReady... Method
 		\param sockbufsz initial internal read/write buffer size
 		\param mode is the pipe reading, writing or both, default: in/out */
-	PipeStreamBuf(Pipe *pipe, long timeout = 500, long sockbufsz = cPipeStreamBufferSize, int mode = ios::out | ios::in);
+	PipeStreamBuf(Pipe *pipe, long timeout = 500, long sockbufsz = cPipeStreamBufferSize, int mode = std::ios::out | std::ios::in);
 	PipeStreamBuf(const PipeStreamBuf &ssbuf);
 
 	//! destructor flushes the buffer and empties put and get areas
@@ -62,29 +48,22 @@ public:
 	}
 
 	//! canonical output operator for PipeStreamBufs
-	friend EXPORTDECL_FOUNDATION ostream &operator<<(ostream &os, PipeStreamBuf *ssbuf);
-#if defined(ONLY_STD_IOSTREAM)
+	friend EXPORTDECL_FOUNDATION std::ostream &operator<<(std::ostream &os, PipeStreamBuf *ssbuf);
+
 protected: // seekxxx are protected in the std..
-	typedef std::streambuf::pos_type	pos_type;
-	typedef std::streambuf::off_type	off_type;
-	typedef std::ios::seekdir	seekdir;
-	typedef std::ios::openmode	openmode;
-#else
-	typedef streampos pos_type;
-	typedef	streamoff off_type;
-	typedef int 	openmode;
-	typedef ios::seek_dir seekdir;
-#endif
+	typedef std::streambuf::pos_type pos_type;
+	typedef std::streambuf::off_type off_type;
+	typedef std::ios::seekdir seekdir;
+	typedef std::ios::openmode openmode;
 
 	//! standard iostream behavior, adjust put or get position absolutely
-	virtual pos_type seekpos(pos_type pos, openmode mode = ios::in | ios::out);
+	virtual pos_type seekpos(pos_type pos, openmode mode = std::ios::in | std::ios::out);
 	//! standard iostream behavior, adjust put or get position relatively
-	virtual pos_type seekoff(off_type off, seekdir dir, openmode mode = ios::in | ios::out);
+	virtual pos_type seekoff(off_type off, seekdir dir, openmode mode = std::ios::in | std::ios::out);
 
-protected:
 	PipeStreamBuf() { }
 	/*! no buffer setting needed, because we carry our own buffer, a String object */
-	streambuf *setbuf(char *, int) {
+	std::streambuf *setbuf(char *, int) {
 		return this;
 	}
 
@@ -151,10 +130,10 @@ protected:
 
 //---- iosCoastPipe -------------------------------------------------------------------
 //! adapts ios to a Pipe Stream buffer
-class EXPORTDECL_FOUNDATION iosCoastPipe : virtual public ios
+class EXPORTDECL_FOUNDATION iosCoastPipe : virtual public std::ios
 {
 public:
-	iosCoastPipe(Pipe *s, long timeout = 500, long sockbufsz = cPipeStreamBufferSize, int mode = ios::in | ios::out )
+	iosCoastPipe(Pipe *s, long timeout = 500, long sockbufsz = cPipeStreamBufferSize, int mode = std::ios::in | std::ios::out )
 		: fPipeBuf(s, timeout, sockbufsz, mode) {
 		init(&fPipeBuf);
 	}
@@ -169,12 +148,12 @@ protected:
 	iosCoastPipe();
 	//! the buffer with its underlying string
 	PipeStreamBuf fPipeBuf;
-	// void autoflush()  { flags(flags() | ios::unitbuf); } don't ever use this sh... with sockets
+	// void autoflush()  { flags(flags() | std::ios::unitbuf); } don't ever use this sh... with sockets
 };
 
 //---- IPipeStream -------------------------------------------------------------------
 //! istream for sockets
-class  EXPORTDECL_FOUNDATION IPipeStream : public iosCoastPipe, public istream
+class  EXPORTDECL_FOUNDATION IPipeStream : public iosCoastPipe, public std::istream
 {
 public:
 	/*! constructor creates iosCoastPipe
@@ -182,10 +161,8 @@ public:
 		\param timeout the timeout for read operations
 		\param bufsz initial internal read/write buffer size */
 	IPipeStream(Pipe *p, long timeout = 500, long bufsz = cPipeStreamBufferSize)
-		: iosCoastPipe(p, timeout, bufsz, ios::in)
-#if defined(ONLY_STD_IOSTREAM)
-		, istream(&fPipeBuf)
-#endif
+		: iosCoastPipe(p, timeout, bufsz, std::ios::in)
+		, std::istream(&fPipeBuf)
 	{}
 
 	~IPipeStream() { }
@@ -198,7 +175,7 @@ private:
 
 //---- OPipeStream -------------------------------------------------------------------
 //! ostream for sockets
-class  EXPORTDECL_FOUNDATION OPipeStream : public iosCoastPipe, public ostream
+class  EXPORTDECL_FOUNDATION OPipeStream : public iosCoastPipe, public std::ostream
 {
 public:
 	/*! constructor creates iosCoastPipe
@@ -206,10 +183,8 @@ public:
 		\param timeout the timeout for write operations
 		\param bufsz initial internal pipe buffer size */
 	OPipeStream(Pipe *s, long timeout = 500, long bufsz = cPipeStreamBufferSize)
-		: iosCoastPipe(s, timeout, bufsz, ios::out)
-#if defined(ONLY_STD_IOSTREAM)
-		, ostream(&fPipeBuf)
-#endif
+		: iosCoastPipe(s, timeout, bufsz, std::ios::out)
+		, std::ostream(&fPipeBuf)
 	{}
 
 	//! destructor does nothing
@@ -223,7 +198,7 @@ private:
 
 //---- PipeStream -------------------------------------------------------------------
 //! iostream for sockets
-class  EXPORTDECL_FOUNDATION PipeStream : public iosCoastPipe, public iostream
+class  EXPORTDECL_FOUNDATION PipeStream : public iosCoastPipe, public std::iostream
 {
 public:
 	/*! constructor creates iosCoastPipe

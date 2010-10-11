@@ -18,11 +18,8 @@
 #include "WPMStatHandler.h"
 #include "Dbg.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //--- c-library modules used ---------------------------------------------------
+#include <iomanip>
 
 LFListenerPool::LFListenerPool(RequestReactor *reactor)
 	: LeaderFollowerPool(reactor)
@@ -206,9 +203,9 @@ bool RequestReactor::AwaitEmpty(long sec)
 			++msgCount;						// message interval count
 			if ((msgCount % 5) == 0) {      // tell us the story.
 				OStringStream os;
-				os << "MaxSecToWait: " << setw(4) << sec <<
-				   "  SecsWaited: "	 << setw(4) << msgCount <<
-				   "  Pending requests: " <<  setw(6) <<  parallelRequests << endl;
+				os << "MaxSecToWait: " << std::setw(4) << sec <<
+				   "  SecsWaited: "	<< std::setw(4) << msgCount <<
+				   "  Pending requests: " << std::setw(6) << parallelRequests << std::endl;
 				SystemLog::WriteToStderr(os.str());
 			}
 		}

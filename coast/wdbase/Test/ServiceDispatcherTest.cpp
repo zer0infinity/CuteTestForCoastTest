@@ -39,7 +39,7 @@ public:
 
 protected:
 	//:does nothing
-	virtual void DoHandleService(ostream &os, Context &ctx);
+	virtual void DoHandleService(std::ostream &os, Context &ctx);
 
 };
 
@@ -144,7 +144,7 @@ TestService::~TestService()
 {
 }
 
-void TestService::DoHandleService(ostream &reply, Context &ctx)
+void TestService::DoHandleService(std::ostream &reply, Context &ctx)
 {
 	StartTrace(TestService.DoHandleService);
 }

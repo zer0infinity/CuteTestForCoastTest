@@ -35,7 +35,7 @@ public:
 	AnythingContentRenderer(const char *name);
 	~AnythingContentRenderer();
 
-	virtual void RenderAll(ostream &reply, Context &ctx, const ROAnything &config);
+	virtual void RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config);
 };
 
 #endif		//ifndef _AnythingContentRenderer_H

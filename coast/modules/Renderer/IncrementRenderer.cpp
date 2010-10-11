@@ -18,7 +18,7 @@
 RegisterRenderer(IncrementRenderer);
 IncrementRenderer::IncrementRenderer(const char *name) : Renderer(name) {}
 
-void IncrementRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void IncrementRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	StartTrace(IncrementRenderer.Render);
 	TraceAny(config, "config");

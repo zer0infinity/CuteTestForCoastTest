@@ -112,7 +112,7 @@ LoopbackProcessor::LoopbackProcessor(const char *processorName)
 	StartTrace(LoopbackProcessor.LoopbackProcessor);
 }
 
-void LoopbackProcessor::DoReadInput(iostream &Ios, Context &ctx)
+void LoopbackProcessor::DoReadInput(std::iostream &Ios, Context &ctx)
 {
 	StartTrace(LoopbackProcessor.DoReadInput);
 	Anything request;
@@ -120,7 +120,7 @@ void LoopbackProcessor::DoReadInput(iostream &Ios, Context &ctx)
 	ctx.Push("Request", request);
 }
 
-void LoopbackProcessor::DoProcessRequest(ostream &reply, Context &ctx)
+void LoopbackProcessor::DoProcessRequest(std::ostream &reply, Context &ctx)
 {
 	StartTrace(LoopbackProcessor.DoProcessRequest);
 	Anything request;

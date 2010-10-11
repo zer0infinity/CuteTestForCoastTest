@@ -204,9 +204,9 @@ protected:
 	bool GetLogDirectories(ROAnything channel, String &logdir, String &rotatedir);
 	bool RotateLog(const String &logdirName, const String &rotatedirName, String &logfileName);
 
-	ostream *OpenLogStream(ROAnything channel, String &logfileName);
+	std::ostream *OpenLogStream(ROAnything channel, String &logfileName);
 
-	void WriteHeader(ostream &os);
+	void WriteHeader(std::ostream &os);
 
 	virtual void DoCreateLogMsg(Context &ctx, AppLogModule::eLogLevel iLevel, String &logMsg, const ROAnything &config);
 
@@ -216,7 +216,7 @@ protected:
 
 private:
 	//! stream where logs are written to
-	ostream *fLogStream;
+	std::ostream *fLogStream;
 	//! information about the log stream
 	Anything fChannelInfo;
 	//! Don't write empty lines

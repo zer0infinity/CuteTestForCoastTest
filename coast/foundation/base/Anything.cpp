@@ -74,7 +74,7 @@ class EXPORTDECL_FOUNDATION InputContext
 {
 public:
 	// constructor
-	InputContext(istream &is, const char *fname = 0)
+	InputContext(std::istream &is, const char *fname = 0)
 		: fIs(is)
 		, fLine(1)
 		, fFileName(fname) { }
@@ -104,7 +104,7 @@ public:
 	long &LineRef() {
 		return fLine;
 	}
-	istream &StreamRef() {
+	std::istream &StreamRef() {
 		return fIs;
 	}
 	const String &FileName() {
@@ -112,7 +112,7 @@ public:
 	}
 
 private:
-	istream &fIs;
+	std::istream &fIs;
 	long fLine;
 	String fFileName;
 };
@@ -1213,7 +1213,7 @@ void Anything::SortByAnyComparer(const AnyComparer &ac)
 class SimpleAnyPrinter: public AnyVisitor
 {
 protected:
-	ostream &fOs;
+	std::ostream &fOs;
 	void PrintKey(const String &s) { // no copy for efficiency
 		bool needquote = false;
 
@@ -1248,7 +1248,7 @@ protected:
 	}
 
 public:
-	SimpleAnyPrinter(ostream &os): fOs(os) {}
+	SimpleAnyPrinter(std::ostream &os): fOs(os) {}
 	virtual void	VisitNull(long lIdx, const char *slotname) {
 		fOs.put('*');
 	}
@@ -1313,7 +1313,7 @@ protected:
 	}
 
 public:
-	PrettyAnyPrinter(ostream &os, long level = 0): SimpleAnyPrinter(os), fLevel(level) {}
+	PrettyAnyPrinter(std::ostream &os, long level = 0): SimpleAnyPrinter(os), fLevel(level) {}
 };
 class XrefAnyPrinter : public PrettyAnyPrinter
 {
@@ -1343,7 +1343,7 @@ protected:
 	}
 
 public:
-	XrefAnyPrinter(ostream &os, long level = 0): PrettyAnyPrinter(os, level) {
+	XrefAnyPrinter(std::ostream &os, long level = 0): PrettyAnyPrinter(os, level) {
 	}
 	//!@FIXME take mechanics from IntPrintOnWithRef to this class.
 	virtual void	VisitCharPtr(const String &value, const AnyImpl *id, long lIdx, const char *slotname) {
@@ -1378,7 +1378,7 @@ public:
 		}
 	}
 };
-ostream &Anything::PrintOn(ostream &os, bool pretty) const
+std::ostream &Anything::PrintOn(std::ostream &os, bool pretty) const
 {
 	if (pretty) {
 		PrettyAnyPrinter p(os);
@@ -1390,7 +1390,7 @@ ostream &Anything::PrintOn(ostream &os, bool pretty) const
 	return os;
 }
 
-void Anything::Export(ostream &os, int level) const
+void Anything::Export(std::ostream &os, int level) const
 {
 	if (! ! os) {
 		XrefAnyPrinter pp(os, level);
@@ -1404,7 +1404,7 @@ long Anything::RefCount() const
 	return (GetImpl()) ? GetImpl()->RefCount() : 0L;
 }
 
-bool Anything::Import(istream &is, const char *fname)
+bool Anything::Import(std::istream &is, const char *fname)
 {
 	if (! !is) {
 		InputContext context(is, fname);
@@ -1905,7 +1905,7 @@ bool ROAnything::Contains(const char *k) const
 	return false;
 }
 
-ostream &ROAnything::PrintOn(ostream &os, bool pretty) const
+std::ostream &ROAnything::PrintOn(std::ostream &os, bool pretty) const
 {
 	if (pretty) {
 		PrettyAnyPrinter p(os);
@@ -1917,7 +1917,7 @@ ostream &ROAnything::PrintOn(ostream &os, bool pretty) const
 	return os;
 }
 
-void ROAnything::Export(ostream &os, int level) const
+void ROAnything::Export(std::ostream &os, int level) const
 {
 	if (! ! os) {
 		XrefAnyPrinter pp(os, level);
@@ -2249,7 +2249,7 @@ void AnythingParser::ImportIncludeAny(Anything &element, const String &url)
 			fileName.TrimFront(3);
 		}
 
-		iostream *pStream = System::OpenStream(fileName, "");
+		std::iostream *pStream = System::OpenStream(fileName, "");
 		if (pStream) {
 			if ( element.Import(*pStream, fileName) && queryString.Length() > 0 ) {
 				Anything anyLevel = escapedQueryStringToAny(queryString);

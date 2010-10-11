@@ -12,28 +12,12 @@
 //--- c-library modules used ---------------------------------------------------
 #include <cstdlib>
 #include <cstdio>
-
-#if defined(ONLY_STD_IOSTREAM)
 #include <sstream>
 #include <iostream>
 #include <cstdio>
-using namespace std;
-#else
-#if !defined(WIN32)
-#include <strstream.h>
-#else
-#include <iostream.h>
-#endif
-#include <stdio.h>
-#include <ctype.h>
-#endif
 
 #if defined(__370__) || defined(_ARCH_COM)
 #include <stdlib.h>
-#else
-#if !defined(ONLY_STD_IOSTREAM)
-#include <malloc.h>
-#endif
 #endif
 
 //---- TString ----------------------------------------------------------------
@@ -49,7 +33,7 @@ void TString::alloc(long capacity)
 	fCont = (char *) calloc(fCapacity, sizeof( char ));
 	if (!fCont) {
 		//--- allocation failed
-		cerr << "FATAL: TString::alloc calloc failed. I will crash :-(" << endl << flush;
+		std::cerr << "FATAL: TString::alloc calloc failed. I will crash :-(" << std::endl << std::flush;
 	}
 }
 
@@ -432,11 +416,11 @@ unsafe_ostream &operator<<(unsafe_ostream &os, const TString &s)
 }
 #endif
 
-ostream &operator<<(ostream &os, const TString &s)
+std::ostream &operator<<(std::ostream &os, const TString &s)
 {
 	size_t len = s.Length();
 	size_t width = os.width();
-	int left = ((os.flags() & ios::left) != 0);
+	int left = ((os.flags() & std::ios::left) != 0);
 
 	if (left) {
 		os.write((const char *)s, len);    // AB: use cast to apply operator const char *

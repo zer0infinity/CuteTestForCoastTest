@@ -18,7 +18,7 @@
 RegisterRenderer(AppletRenderer);
 AppletRenderer::AppletRenderer(const char *name) : Renderer(name) {}
 
-void AppletRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void AppletRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	StartTrace(AppletRenderer.Render);
 	TraceAny(config, "config");

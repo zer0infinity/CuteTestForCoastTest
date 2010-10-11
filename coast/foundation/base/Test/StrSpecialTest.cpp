@@ -39,7 +39,7 @@ void StrSpecialTest::umlauteTest()
 {
 	// standard query case
 	Anything test;
-	istream *is = System::OpenStream("UmlautTest", "any");
+	std::istream *is = System::OpenStream("UmlautTest", "any");
 	t_assert(is != 0);
 
 	if (is) {

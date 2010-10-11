@@ -35,7 +35,7 @@ public:
 	//! \param is the stream to be parsed
 	//! \param ctx the context of the invocation
 	//! \return returns true if the mapping was successful otherwise false
-	virtual bool DoPutStream(const char *key, istream &is, Context &ctx,  ROAnything config);
+	virtual bool DoPutStream(const char *key, std::istream &is, Context &ctx,  ROAnything config);
 	//fix parsed date fields
 	static void CorrectDateFormats(Anything &header);
 	static void SuppressHeaders(Anything &header, ROAnything &suppresslist);

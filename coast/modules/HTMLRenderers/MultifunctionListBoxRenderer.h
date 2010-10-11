@@ -82,9 +82,9 @@
 		/SearchButton			optional, when slot is defined show "Suchen"
 		/ClearButton			optional, when slot is defined show "Clear"
 		/SaveButton				optional, when slot is defined show "Speichern"
-		/ResetButton			optional, when slot is defined show "Änderungen zurücksetzen"
-		/AddButton				optional, when slot is defined show "Hinzufügen"
-		/DeleteButton			optional, when slot is defined show "Löschen"
+		/ResetButton			optional, when slot is defined show "ï¿½nderungen zurï¿½cksetzen"
+		/AddButton				optional, when slot is defined show "Hinzufï¿½gen"
+		/DeleteButton			optional, when slot is defined show "Lï¿½schen"
 		/PrintButton			optional, when slot is defined show "Drucken"
 		/ExportButton			optional, when slot is defined show "Exportieren"
 
@@ -181,7 +181,7 @@ public:
 	//!param: reply - out - the stream where the rendered output is written on.
 	//!param: c - the context the renderer runs within.
 	//!param: config - the configuration of the renderer.
-	virtual void RenderAll(ostream &reply, Context &c, const ROAnything &config);
+	virtual void RenderAll(std::ostream &reply, Context &c, const ROAnything &config);
 
 	static bool IsHiddenField(Context &c, const ROAnything &toCheckConfig);
 	static bool IsEditableField(Context &c, const ROAnything &toCheckConfig);
@@ -195,30 +195,30 @@ public:
 	static void GetDataType(String &dataType, Context &c, const ROAnything &config);
 
 private:
-	void RenderStyleSheet(ostream &reply, Context &c, const ROAnything &config);
-	void RenderHeader(ostream &reply, Context &c, const ROAnything &config, long &nColumns);
-	void RenderBoxRow(ostream &reply, Context &c, const ROAnything &config, const long &nColumns);
-	void RenderColumnInputFields(ostream &reply, Context &c, const ROAnything &config, const long &nColumns);
-	void RenderAdditionalFilters(ostream &reply, Context &c, const ROAnything &config, const long &nColumns);
-	void RenderStatusMessage(ostream &reply, Context &c, const ROAnything &config, const long &nColumns);
-	void RenderNavigation(ostream &reply, Context &c, const ROAnything &config);
-	bool DoRenderButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config, const String &strButtonName);
-	void RenderScripts(ostream &reply, Context &c, const ROAnything &config);
-	void RenderPrintScripts(ostream &reply, Context &c, const ROAnything &config);
-	void RenderHiddenFieldsForEdit(ostream &reply, Context &c, const ROAnything &config);
+	void RenderStyleSheet(std::ostream &reply, Context &c, const ROAnything &config);
+	void RenderHeader(std::ostream &reply, Context &c, const ROAnything &config, long &nColumns);
+	void RenderBoxRow(std::ostream &reply, Context &c, const ROAnything &config, const long &nColumns);
+	void RenderColumnInputFields(std::ostream &reply, Context &c, const ROAnything &config, const long &nColumns);
+	void RenderAdditionalFilters(std::ostream &reply, Context &c, const ROAnything &config, const long &nColumns);
+	void RenderStatusMessage(std::ostream &reply, Context &c, const ROAnything &config, const long &nColumns);
+	void RenderNavigation(std::ostream &reply, Context &c, const ROAnything &config);
+	bool DoRenderButton(std::ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config, const String &strButtonName);
+	void RenderScripts(std::ostream &reply, Context &c, const ROAnything &config);
+	void RenderPrintScripts(std::ostream &reply, Context &c, const ROAnything &config);
+	void RenderHiddenFieldsForEdit(std::ostream &reply, Context &c, const ROAnything &config);
 	void RenderBoxName(String &boxName, Context &c, const ROAnything &config);
 	void RenderFormName(String &formName, Context &c, const ROAnything &config);
 
-	bool RenderPrevButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
-	bool RenderNextButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
-	bool RenderSearchButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
-	bool RenderClearButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
-	bool RenderPrintButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
-	bool RenderExportButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
-	bool RenderSaveButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
-	bool RenderResetButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
-	bool RenderAddButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
-	bool RenderDeleteButton(ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
+	bool RenderPrevButton(std::ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
+	bool RenderNextButton(std::ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
+	bool RenderSearchButton(std::ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
+	bool RenderClearButton(std::ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
+	bool RenderPrintButton(std::ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
+	bool RenderExportButton(std::ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
+	bool RenderSaveButton(std::ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
+	bool RenderResetButton(std::ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
+	bool RenderAddButton(std::ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
+	bool RenderDeleteButton(std::ostream &reply, Context &c, const ROAnything &navConfig, const ROAnything &config);
 
 	bool Lookup(const ROAnything &nameConfig, Context &c, const ROAnything &config, Anything &result);
 
@@ -233,9 +233,9 @@ public:
 	~HeaderListRenderer() {};
 
 protected:
-	void RenderEntry(ostream &reply, Context &c, const ROAnything &config, const ROAnything &entryRendererConfig, const ROAnything &listItem, Anything &anyRenderState);
-	void DoRenderSortIcons(ostream &reply, Context &c, const ROAnything &config, const ROAnything &listItem);
-	void RenderSortIcon(ostream &reply, Context &c, const ROAnything &config, String strSortString, String strSortOrder, const ROAnything &imageConfig);
+	void RenderEntry(std::ostream &reply, Context &c, const ROAnything &config, const ROAnything &entryRendererConfig, const ROAnything &listItem, Anything &anyRenderState);
+	void DoRenderSortIcons(std::ostream &reply, Context &c, const ROAnything &config, const ROAnything &listItem);
+	void RenderSortIcon(std::ostream &reply, Context &c, const ROAnything &config, String strSortString, String strSortOrder, const ROAnything &imageConfig);
 	bool IsSortableColumn(Context &c, const ROAnything &toCheckConfig);
 };
 

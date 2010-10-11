@@ -69,7 +69,7 @@ public:
 		\param reply stream to generate output on
 		\param ctx Context to be used for output generation
 		\param config configuration which drives the output generation */
-	void RenderAll(ostream &reply, Context &ctx, const ROAnything &config);
+	void RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config);
 
 protected:
 	/*! gets the List Data from context
@@ -112,13 +112,13 @@ protected:
 		\param reply stream to generate output on
 		\param ctx Context to be used for output generation
 		\param listHeader renderer configuration for the header */
-	virtual void RenderListHeader(ostream &reply, Context &ctx, const ROAnything &listHeader);
+	virtual void RenderListHeader(std::ostream &reply, Context &ctx, const ROAnything &listHeader);
 
 	/*! renders a list footer using the given configuration
 		\param reply stream to generate output on
 		\param ctx Context to be used for output generation
 		\param listFooter renderer configuration for the footer */
-	virtual void RenderListFooter(ostream &reply, Context &ctx, const ROAnything &listFooter);
+	virtual void RenderListFooter(std::ostream &reply, Context &ctx, const ROAnything &listFooter);
 
 	/*! renders a list entry using the given configuration
 		\param reply stream to generate output on
@@ -127,7 +127,7 @@ protected:
 		\param entryRendererConfig renderer configuration for the entry
 		\param listItem current list item data as shortcut (instead of using ctx.Lookup )
 		\param anyRenderState anything to carry information between different calls */
-	virtual void RenderEntry(ostream &reply, Context &ctx, const ROAnything &config, const ROAnything &entryRendererConfig, const ROAnything &listItem, Anything &anyRenderState);
+	virtual void RenderEntry(std::ostream &reply, Context &ctx, const ROAnything &config, const ROAnything &entryRendererConfig, const ROAnything &listItem, Anything &anyRenderState);
 
 	/*! renders a entry header using the given configuration
 		\param reply stream to generate output on
@@ -135,7 +135,7 @@ protected:
 		\param entryHeader renderer configuration for the entry header
 		\param listItem current list item data as shortcut (instead of using ctx.Lookup )
 		\param anyRenderState anything to carry information between different calls */
-	virtual void RenderEntryHeader(ostream &reply, Context &ctx, const ROAnything &entryHeader, const ROAnything &listItem, Anything &anyRenderState);
+	virtual void RenderEntryHeader(std::ostream &reply, Context &ctx, const ROAnything &entryHeader, const ROAnything &listItem, Anything &anyRenderState);
 
 	/*! renders a entry footer using the given configuration
 		\param reply stream to generate output on
@@ -143,7 +143,7 @@ protected:
 		\param entryFooter renderer configuration for the entry footer
 		\param listItem current list item data as shortcut (instead of using ctx.Lookup )
 		\param anyRenderState anything to carry information between different calls */
-	virtual void RenderEntryFooter(ostream &reply, Context &ctx, const ROAnything &entryFooter, const ROAnything &listItem, Anything &anyRenderState);
+	virtual void RenderEntryFooter(std::ostream &reply, Context &ctx, const ROAnything &entryFooter, const ROAnything &listItem, Anything &anyRenderState);
 };
 
 #endif		// ifndef _LISTRENDERER_H

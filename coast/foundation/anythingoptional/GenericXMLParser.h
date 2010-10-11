@@ -34,7 +34,7 @@ public:
 	//! \param filename for giving convenient error messages when reading from a real file
 	//! \param startline the line number when starting the parsing for convenient error messages
 	//! \param a the allocator to use, provide Storage::Global() for config data
-	Anything Parse(istream &reader, const char *filename = "NO_FILE", long startline = 1L, Allocator *a = Storage::Current());
+	Anything Parse(std::istream &reader, const char *filename = "NO_FILE", long startline = 1L, Allocator *a = Storage::Current());
 protected:
 	virtual void DoParse(String endTag, Anything &tag);
 	virtual Anything ParseComment();
@@ -70,7 +70,7 @@ protected:
 	virtual bool IsEof();
 	virtual void PutBack(char c);
 	Anything fParseTree;
-	istream *fReader;
+	std::istream *fReader;
 	String	fFileName;
 	long	fLine;
 };
@@ -78,14 +78,14 @@ protected:
 class EXPORTDECL_FOUNDATION GenericXMLPrinter
 {
 public:
-	static void PrintXml(ostream &os, ROAnything domany);
-	static void DoPrintXml(ostream &os, ROAnything domany);
-	static void DoPrintXmlTag(ostream &os, const String &tag, ROAnything attributes);
-	static void DoPrintXmlPI(ostream &os, const String &pitag, ROAnything subdomany);
-	static void DoPrintXmlComment(ostream &os, ROAnything subdomany);
-	static void DoPrintXmlCdata(ostream &os, ROAnything subdomany);
-	static void DoPrintXmlDtd(ostream &os, ROAnything subdomany);
-	static void DoPrintXmlSubDtd(ostream &os, ROAnything subdomany);
+	static void PrintXml(std::ostream &os, ROAnything domany);
+	static void DoPrintXml(std::ostream &os, ROAnything domany);
+	static void DoPrintXmlTag(std::ostream &os, const String &tag, ROAnything attributes);
+	static void DoPrintXmlPI(std::ostream &os, const String &pitag, ROAnything subdomany);
+	static void DoPrintXmlComment(std::ostream &os, ROAnything subdomany);
+	static void DoPrintXmlCdata(std::ostream &os, ROAnything subdomany);
+	static void DoPrintXmlDtd(std::ostream &os, ROAnything subdomany);
+	static void DoPrintXmlSubDtd(std::ostream &os, ROAnything subdomany);
 };
 
 #endif

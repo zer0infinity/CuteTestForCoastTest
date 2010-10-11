@@ -21,7 +21,7 @@ SetLanguageRenderer::SetLanguageRenderer(const char *name) : Renderer(name) { }
 
 SetLanguageRenderer::~SetLanguageRenderer() { }
 
-void SetLanguageRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void SetLanguageRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	StartTrace(SetLanguageRenderer.RenderAll);
 	TraceAny(config, "config");

@@ -18,7 +18,7 @@
 
 RegisterParameterMapper(HTTPHeaderParameterMapper);
 
-void HTTPHeaderParameterMapper::HandleOneLineForHeaderField(ostream &os, const String &slotname, ROAnything rvalue)
+void HTTPHeaderParameterMapper::HandleOneLineForHeaderField(std::ostream &os, const String &slotname, ROAnything rvalue)
 {
 	StartTrace(HTTPHeaderParameterMapper.HandleOneLineForHeaderFields);
 
@@ -37,7 +37,7 @@ void HTTPHeaderParameterMapper::HandleOneLineForHeaderField(ostream &os, const S
 	os << ENDL;
 }
 
-bool HTTPHeaderParameterMapper::HandleMoreLinesForHeaderField(ostream &os, const String &slotname, ROAnything rvalue)
+bool HTTPHeaderParameterMapper::HandleMoreLinesForHeaderField(std::ostream &os, const String &slotname, ROAnything rvalue)
 {
 	StartTrace(HTTPHeaderParameterMapper.HandleMoreLinesForHeaderField);
 
@@ -110,7 +110,7 @@ bool HTTPHeaderParameterMapper::DoLookup(const char *key, ROAnything &result, ch
 	return bValueFound;
 }
 
-bool HTTPHeaderParameterMapper::DoGetStream(const char *key, ostream &os, Context &ctx, ROAnything info)
+bool HTTPHeaderParameterMapper::DoGetStream(const char *key, std::ostream &os, Context &ctx, ROAnything info)
 {
 	StartTrace1(HTTPHeaderParameterMapper.DoGetStream, "Key:<" << NotNull(key) << ">");
 
@@ -159,7 +159,7 @@ bool HTTPHeaderParameterMapper::DoGetStream(const char *key, ostream &os, Contex
 RegisterResultMapper(HTTPBodyResultMapper);
 RegisterResultMapperAlias(HTTPBodyMapper, HTTPBodyResultMapper);
 
-bool HTTPBodyResultMapper::DoFinalPutStream(const char *key, istream &is, Context &ctx)
+bool HTTPBodyResultMapper::DoFinalPutStream(const char *key, std::istream &is, Context &ctx)
 {
 	StartTrace(HTTPBodyResultMapper.DoFinalPutStream);
 	DAAccessTimer(HTTPBodyResultMapper.DoFinalPutStream, "", ctx);
@@ -170,7 +170,7 @@ bool HTTPBodyResultMapper::DoFinalPutStream(const char *key, istream &is, Contex
 	return DoFinalPutAny(key, body, ctx);
 }
 
-void HTTPBodyResultMapper::ReadBody(String &body, istream &is, Context &ctx)
+void HTTPBodyResultMapper::ReadBody(String &body, std::istream &is, Context &ctx)
 {
 	StartTrace(HTTPBodyResultMapper.ReadBody);
 
@@ -190,7 +190,7 @@ void HTTPBodyResultMapper::ReadBody(String &body, istream &is, Context &ctx)
 
 RegisterParameterMapper(HTTPBodyParameterMapper);
 RegisterParameterMapperAlias(HTTPBodyMapper, HTTPBodyParameterMapper);
-bool HTTPBodyParameterMapper::DoFinalGetStream(const char *key, ostream &os, Context &ctx)
+bool HTTPBodyParameterMapper::DoFinalGetStream(const char *key, std::ostream &os, Context &ctx)
 {
 	StartTrace1(HTTPBodyParameterMapper.DoFinalGetStream, NotNull(key));
 

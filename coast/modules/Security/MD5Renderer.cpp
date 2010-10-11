@@ -25,7 +25,7 @@ MD5Renderer::MD5Renderer(const char *name) : Renderer(name) { }
 
 MD5Renderer::~MD5Renderer() { }
 
-void MD5Renderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
+void MD5Renderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(MD5Renderer.RenderAll);
 	String textToHash, resultingHash, b64EncodedText;

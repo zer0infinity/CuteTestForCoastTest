@@ -19,10 +19,6 @@
 #include "Dbg.h"
 #include "SSLSocket.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //--- c-modules used -----------------------------------------------------------
 
 //---- SSLObjectManagerTest ----------------------------------------------------------------
@@ -62,7 +58,7 @@ void SSLObjectManagerTest::UsePassedInCtxTest()
 							 cConfig["Config"]["SessionResumption"].AsBool(0));
 
 			SSLConnector sc(ca, sa, Anything(), sslctx, (const char *) NULL, 0L, cConfig["Config"]["UseThreadLocalMemory"].AsLong(0L));
-			iostream *s1 = sc.GetStream();
+			std::iostream *s1 = sc.GetStream();
 			Socket *s = sc.Use();
 			Anything clientInfo = sc.ClientInfo();
 			TraceAny(clientInfo, "clientInfo");
@@ -71,7 +67,7 @@ void SSLObjectManagerTest::UsePassedInCtxTest()
 			if (t_assert(s1 != NULL) && t_assert(s != NULL)) {
 				assertEqual(cConfig["Results"]["IsCertCheckPassed"].AsBool(1), s->IsCertCheckPassed(cConfig["Config"]));
 				TraceAny(s->ClientInfo(), "peer info");
-				(*s1) << "GET / HTTP/1.0" << ENDL << ENDL << flush;
+				(*s1) << "GET / HTTP/1.0" << ENDL << ENDL << std::flush;
 				String reply;
 				getline(*s1, reply);
 				t_assert(!!(*s1));
@@ -102,7 +98,7 @@ void SSLObjectManagerTest::ReUseCreatedCtxTest()
 							 cConfig["Config"]["SessionResumption"].AsBool(0));
 
 			SSLConnector sc(ca, sa, Anything(), NULL, (const char *) NULL, 0L, cConfig["Config"]["UseThreadLocalMemory"].AsLong(0L));
-			iostream *s1 = sc.GetStream();
+			std::iostream *s1 = sc.GetStream();
 			Socket *s = sc.Use();
 			Anything clientInfo = sc.ClientInfo();
 			TraceAny(clientInfo, "clientInfo");
@@ -112,7 +108,7 @@ void SSLObjectManagerTest::ReUseCreatedCtxTest()
 			if (t_assert(s1 != NULL) && t_assert(s != NULL)) {
 				assertEqual(cConfig["Results"]["IsCertCheckPassed"].AsBool(1), s->IsCertCheckPassed(cConfig["Config"]));
 				TraceAny(s->ClientInfo(), "peer info");
-				(*s1) << "GET / HTTP/1.0" << ENDL << ENDL << flush;
+				(*s1) << "GET / HTTP/1.0" << ENDL << ENDL << std::flush;
 				String reply;
 				getline(*s1, reply);
 				t_assert(!!(*s1));
@@ -136,7 +132,7 @@ void SSLObjectManagerTest::SessionResumptionWithMinimumConfigTest()
 		for (long ii = 0; ii < cConfig["Config"]["Runs"].AsLong(255); ii++) {
 			Trace("At run index: " << ii);
 			SSLConnector sc(cConfig["Config"]);
-			iostream *s1 = sc.GetStream();
+			std::iostream *s1 = sc.GetStream();
 			Socket *s = sc.Use();
 			Anything clientInfo(sc.ClientInfo());
 			TraceAny(clientInfo, "clientInfo for iteration " << ii);
@@ -151,7 +147,7 @@ void SSLObjectManagerTest::SessionResumptionWithMinimumConfigTest()
 			}
 			if (t_assert(s1 != NULL) && t_assert(s != NULL)) {
 				assertEqual(cConfig["Results"]["IsCertCheckPassed"].AsBool(1), s->IsCertCheckPassed(cConfig["Config"]));
-				(*s1) << "GET / HTTP/1.0" << ENDL << ENDL << flush;
+				(*s1) << "GET / HTTP/1.0" << ENDL << ENDL << std::flush;
 				String reply;
 				getline(*s1, reply);
 				t_assert(!!(*s1));
@@ -184,7 +180,7 @@ void SSLObjectManagerTest::SessionResumptionTest()
 							 cConfig["Config"]["SessionResumption"].AsBool(0));
 
 			SSLConnector sc(ca, sa, Anything(), sslctx, (const char *) NULL, 0L, cConfig["Config"]["UseThreadLocalMemory"].AsLong(0L));
-			iostream *s1 = sc.GetStream();
+			std::iostream *s1 = sc.GetStream();
 			Socket *s = sc.Use();
 			Anything clientInfo(sc.ClientInfo());
 			TraceAny(clientInfo, "clientInfo for iteration " << ii);
@@ -199,7 +195,7 @@ void SSLObjectManagerTest::SessionResumptionTest()
 			}
 			if (t_assert(s1 != NULL) && t_assert(s != NULL)) {
 				assertEqual(cConfig["Results"]["IsCertCheckPassed"].AsBool(1), s->IsCertCheckPassed(cConfig["Config"]));
-				(*s1) << "GET / HTTP/1.0" << ENDL << ENDL << flush;
+				(*s1) << "GET / HTTP/1.0" << ENDL << ENDL << std::flush;
 				String reply;
 				getline(*s1, reply);
 				t_assert(!!(*s1));
@@ -232,7 +228,7 @@ void SSLObjectManagerTest::NoSessionResumptionTest()
 							 cConfig["Config"]["SessionResumption"].AsBool(0));
 
 			SSLConnector sc(ca, sa, Anything(), sslctx, (const char *) NULL, 0L, cConfig["Config"]["UseThreadLocalMemory"].AsLong(0L));
-			iostream *s1 = sc.GetStream();
+			std::iostream *s1 = sc.GetStream();
 			Socket *s = sc.Use();
 			Anything clientInfo(sc.ClientInfo());
 			TraceAny(clientInfo, "clientInfo");
@@ -241,7 +237,7 @@ void SSLObjectManagerTest::NoSessionResumptionTest()
 			assertEqual(0, clientInfo["SSL"]["SessionIsResumed"].AsLong(1));
 			if (t_assert(s1 != NULL) && t_assert(s != NULL)) {
 				assertEqual(cConfig["Results"]["IsCertCheckPassed"].AsBool(1), s->IsCertCheckPassed(cConfig["Config"]));
-				(*s1) << "GET / HTTP/1.0" << ENDL << ENDL << flush;
+				(*s1) << "GET / HTTP/1.0" << ENDL << ENDL << std::flush;
 				String reply;
 				getline(*s1, reply);
 				t_assert(!!(*s1));
@@ -269,11 +265,11 @@ void SSLObjectManagerTest::GetDefaultCtxTest()
 			SSLSocketArgs sa;
 
 			SSLConnector sc(ca, sa, Anything());
-			iostream *s1 = sc.GetStream();
+			std::iostream *s1 = sc.GetStream();
 			Socket *s = sc.Use();
 			if (t_assert(s1 != NULL) && t_assert(s != NULL)) {
 				TraceAny(s->ClientInfo(), "peer info");
-				(*s1) << "GET / HTTP/1.0" << ENDL << ENDL << flush;
+				(*s1) << "GET / HTTP/1.0" << ENDL << ENDL << std::flush;
 				String reply;
 				getline(*s1, reply);
 				t_assert(!!(*s1));

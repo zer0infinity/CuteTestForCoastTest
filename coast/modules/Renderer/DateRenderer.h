@@ -54,7 +54,7 @@ class EXPORTDECL_RENDERER DateRenderer : public Renderer
 public:
 	DateRenderer(const char *name);
 
-	void RenderAll(ostream &reply, Context &c, const ROAnything &data);
+	void RenderAll(std::ostream &reply, Context &c, const ROAnything &data);
 
 private:
 	const size_t gcMaxDateArraySize;

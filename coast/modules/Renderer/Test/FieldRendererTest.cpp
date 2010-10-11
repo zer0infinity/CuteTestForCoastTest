@@ -17,10 +17,6 @@
 
 //--- standard modules used ----------------------------------------------------
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //--- c-library modules used ---------------------------------------------------
 #if defined(WIN32)
 #include <time.h>
@@ -61,7 +57,7 @@ void FieldRendererTest::RenderConf()
 
 void FieldRendererTest::PrintResult()
 {
-	cerr << endl << (const char *)fCurrentTestMethod << " :   " << (const char *)fReply.str() << endl;
+	std::cerr << std::endl << (const char *)fCurrentTestMethod << " :   " << (const char *)fReply.str() << std::endl;
 }
 
 void FieldRendererTest::ConfigureField0()

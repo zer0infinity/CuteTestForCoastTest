@@ -21,10 +21,6 @@
 
 //--- c-modules used -----------------------------------------------------------
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //---- HTTPChunkedOStreamTest ----------------------------------------------------------------
 HTTPChunkedOStreamTest::HTTPChunkedOStreamTest(TString tstrName) : TestCaseType(tstrName)
 {
@@ -42,7 +38,7 @@ void HTTPChunkedOStreamTest::OverflowTest()
 	StringStream s;
 	HTTPChunkedOStream os(s, 10);
 	os << "0123456789ABCDEF";
-	s << flush;
+	s << std::flush;
 	assertCharPtrEqual("a\r\n0123456789\r\n", s.str());
 	os.close();
 	assertCharPtrEqual("a\r\n0123456789\r\n6\r\nABCDEF\r\n0\r\n\r\n", s.str());
@@ -64,7 +60,7 @@ void HTTPChunkedOStreamTest::SimpleWithClose()
 	StartTrace(HTTPChunkedOStreamTest.SimpleWithClose);
 	StringStream s;
 	HTTPChunkedOStream os(s);
-	os << "foo" << flush;
+	os << "foo" << std::flush;
 	t_assert(os.good());
 	assertCharPtrEqual("3\r\nfoo\r\n", s.str());
 	os.close();
@@ -77,7 +73,7 @@ void HTTPChunkedOStreamTest::SimpleFlush()
 
 	StringStream s;
 	HTTPChunkedOStream os(s);
-	os << "foo" << flush;
+	os << "foo" << std::flush;
 	t_assert(os.good());
 	assertCharPtrEqual("3\r\nfoo\r\n", s.str());
 
@@ -91,7 +87,7 @@ void HTTPChunkedOStreamTest::HexManipulator()
 	HTTPChunkedOStream os(s);
 	os << "foo" ;
 	os.close();
-	s << 10 << flush;
+	s << 10 << std::flush;
 	t_assert(os.good());
 	assertCharPtrEqual("3\r\nfoo\r\n0\r\n\r\n10", s.str());
 }

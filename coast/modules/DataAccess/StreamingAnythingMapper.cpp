@@ -15,16 +15,12 @@
 #include "Timers.h"
 #include "SystemLog.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //--- c-library modules used ---------------------------------------------------
 
 //---- AnythingToStreamMapper ----------------------------------------------------------------
 RegisterParameterMapper(AnythingToStreamMapper);
 
-bool AnythingToStreamMapper::DoFinalGetStream(const char *key, ostream &os, Context &ctx)
+bool AnythingToStreamMapper::DoFinalGetStream(const char *key, std::ostream &os, Context &ctx)
 {
 	StartTrace1(AnythingToStreamMapper.DoFinalGetStream, NotNull(key));
 	if ( key ) {
@@ -36,7 +32,7 @@ bool AnythingToStreamMapper::DoFinalGetStream(const char *key, ostream &os, Cont
 
 		if ( !anyValue.IsNull() ) {
 			DAAccessTimer(AnythingToStreamMapper.DoFinalGetStream, "exporting to stream", ctx);
-			os << anyValue << flush;
+			os << anyValue << std::flush;
 			TraceAny(anyValue, "written to stream:");
 			return true;
 		}
@@ -48,7 +44,7 @@ bool AnythingToStreamMapper::DoFinalGetStream(const char *key, ostream &os, Cont
 //---- StreamToAnythingMapper ----------------------------------------------------------------
 RegisterResultMapper(StreamToAnythingMapper);
 
-bool StreamToAnythingMapper::DoPutStream(const char *key, istream &is, Context &ctx, ROAnything script)
+bool StreamToAnythingMapper::DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything script)
 {
 	StartTrace1(StreamToAnythingMapper.DoPutStream, NotNull(key));
 	Anything anyResult;

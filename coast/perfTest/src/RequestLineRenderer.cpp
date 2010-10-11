@@ -14,10 +14,6 @@
 #include "SecurityModule.h"
 #include "Dbg.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //---- RequestLineRenderer ---------------------------------------------------------
 RegisterRenderer(RequestLineRenderer);
 
@@ -31,7 +27,7 @@ RequestLineRenderer::~RequestLineRenderer()
 	StartTrace(RequestLineRenderer.Dtor);
 }
 
-void RequestLineRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void RequestLineRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	StartTrace(RequestLineRenderer.RenderAll);
 	SubTraceAny(TraceConfig, config, "config");
@@ -203,5 +199,5 @@ void RequestLineRenderer::RenderAll(ostream &reply, Context &c, const ROAnything
 #endif
 	}
 	Trace("request [" << buffer << "]");
-	reply << buffer << flush;
+	reply << buffer << std::flush;
 }

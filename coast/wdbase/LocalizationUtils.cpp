@@ -111,7 +111,7 @@ const char *LocalizationUtils::FindLanguageKey(Context &c, const char *dftLang)
 // PS: three loops should happen, i think
 // PS: should be able to read gifs etc as well.
 
-static istream *tryopen(String &absolutepath, const char *rdir, const char *tdir, const char *langdir, const char *filename, const char *ext = 0)
+static std::istream *tryopen(String &absolutepath, const char *rdir, const char *tdir, const char *langdir, const char *filename, const char *ext = 0)
 {
 	absolutepath = rdir;
 	absolutepath << tdir << (System::Sep());
@@ -122,10 +122,10 @@ static istream *tryopen(String &absolutepath, const char *rdir, const char *tdir
 	return System::OpenIStream(absolutepath, ext ? ext : "html");
 }
 
-istream *LocalizationUtils::OpenStream(Context &c, const char *filename, String &absoluteFileName)
+std::istream *LocalizationUtils::OpenStream(Context &c, const char *filename, String &absoluteFileName)
 {
 	StartTrace(LocalizationUtils.OpenStream);
-	istream *fp = 0;
+	std::istream *fp = 0;
 	const char *lang = c.Language();
 	Trace("using language [" << NotNull(lang) << "]");
 	// default language has been set if no language set explicitly

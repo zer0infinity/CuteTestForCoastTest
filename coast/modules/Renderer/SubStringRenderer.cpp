@@ -26,7 +26,7 @@ SubStringRenderer::~SubStringRenderer()
 {
 }
 
-void SubStringRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
+void SubStringRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(SubStringRenderer.RenderAll);
 

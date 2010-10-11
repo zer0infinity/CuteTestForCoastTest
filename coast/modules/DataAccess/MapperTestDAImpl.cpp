@@ -13,10 +13,6 @@
 #include "StringStream.h"
 #include "Dbg.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 RegisterDataAccessImpl(MapperTestDAImpl);
 
 MapperTestDAImpl::MapperTestDAImpl(const char *name) : DataAccessImpl(name)
@@ -90,13 +86,13 @@ bool MapperTestDAImpl::Exec( Context &context, ParameterMapper *input, ResultMap
 						bPutCode = output->Put(config[i].AsCharPtr(), aTestVal, context);
 						StringStream Ios(inputStr);
 						aTestVal.PrintOn(Ios);
-						Ios << flush;
+						Ios << std::flush;
 						Trace("From [" << slotname << "] to [" << config[i].AsCharPtr() << "]: [" << inputStr << "]");
 					}
 				} else if (strMode.Compare("StringStream") == 0) {
 					StringStream Ios(inputStr);
 					bGetCode = input->Get(slotname, Ios, context);
-					Ios << flush;
+					Ios << std::flush;
 					if (bGetCode) {
 						bPutCode = output->Put(config[i].AsCharPtr(), Ios, context);
 						Trace("From [" << slotname << "] to [" << config[i].AsCharPtr() << "]: [" << inputStr << "]");

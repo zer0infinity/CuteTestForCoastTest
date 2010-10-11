@@ -52,10 +52,10 @@ public:
 
 protected:
 	//!read the input arguments from the stream and generate an anything
-	virtual void DoReadInput(iostream &Ios, Context &ctx);
+	virtual void DoReadInput(std::iostream &Ios, Context &ctx);
 
 	//!process the arguments and generate a reply
-	virtual void DoProcessRequest(ostream &reply, Context &ctx);
+	virtual void DoProcessRequest(std::ostream &reply, Context &ctx);
 
 private:
 	LoopbackProcessor(const LoopbackProcessor &);

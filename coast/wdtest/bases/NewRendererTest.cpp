@@ -20,10 +20,6 @@
 #include "Page.h"
 #include "Role.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //---- NewRendererTest ----------------------------------------------------------------
 NewRendererTest::NewRendererTest(TString tname)
 	: TestCaseType(tname)
@@ -59,7 +55,7 @@ void NewRendererTest::TestCases()
 			aEntryIterator.SlotName(slotToCheck);
 			Trace("current testslot [" << slotToCheck << "]");
 			if ( ( GetConfig()["RunOnly"].GetSize() == 0L ) || GetConfig()["RunOnly"].Contains((const char *)slotToCheck) ) {
-				cerr << ".";
+				std::cerr << ".";
 				TString message;
 				message << getConfigFileName() << ".any:0 at " << name();
 				if (slotToCheck.Length()) {

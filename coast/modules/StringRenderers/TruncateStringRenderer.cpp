@@ -20,7 +20,7 @@ TruncateStringRenderer::TruncateStringRenderer(const char *name) : Renderer(name
 
 TruncateStringRenderer::~TruncateStringRenderer() { }
 
-void TruncateStringRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void TruncateStringRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	StartTrace(TruncateStringRenderer.RenderAll);
 

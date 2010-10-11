@@ -88,7 +88,7 @@ public:
 		return new (a) XMLBodyMapper(fName);
 	}
 
-	bool DoFinalPutStream(const char *key, istream &is, Context &ctx);
+	bool DoFinalPutStream(const char *key, std::istream &is, Context &ctx);
 private:
 	XMLBodyMapper();
 	XMLBodyMapper(const XMLBodyMapper &);

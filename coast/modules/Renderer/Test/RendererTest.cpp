@@ -14,10 +14,6 @@
 
 //--- standard modules used ----------------------------------------------------
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 RendererTest::RendererTest(TString tname) : TestCaseType(tname),
 	fContext(Anything(), Anything(), 0, 0, 0, 0), fReply(), fConfig()
 {};
@@ -42,12 +38,12 @@ Test *RendererTest::suite ()
 
 void RendererTest::printResult( const char *str0, const char *str1 )
 {
-	cerr << endl << "  " << str0 << " :  " << str1 << endl;
+	std::cerr << std::endl << "  " << str0 << " :  " << str1 << std::endl;
 }
 
 void RendererTest::printReplyBody( const char *MethodeName )
 {
 	String nameBuffer(MethodeName);
 
-	cerr << nameBuffer << " :  " <<  fReply.str() << endl;
+	std::cerr << nameBuffer << " :  " <<  fReply.str() << std::endl;
 }

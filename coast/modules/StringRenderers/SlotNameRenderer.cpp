@@ -19,7 +19,7 @@ SlotNameRenderer::SlotNameRenderer(const char *name) : Renderer(name) { }
 
 SlotNameRenderer::~SlotNameRenderer() { }
 
-void SlotNameRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void SlotNameRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	StartTrace(SlotNameRenderer.RenderAll);
 

@@ -18,7 +18,7 @@
 //---- HTMLTreeMapper -----------------------------------------------------------
 RegisterResultMapper(HTMLTreeMapper);
 
-bool HTMLTreeMapper::DoPutStream(const char *, istream &is, Context &ctx, ROAnything)
+bool HTMLTreeMapper::DoPutStream(const char *, std::istream &is, Context &ctx, ROAnything)
 {
 	// ignore key and config
 	StartTrace(HTMLTreeMapper.DoPutStream);
@@ -40,7 +40,7 @@ bool HTMLTreeMapper::DoPutStream(const char *, istream &is, Context &ctx, ROAnyt
 //---- HTMLTreeAndSortedTagsMapper -----------------------------------------------------------
 RegisterResultMapper(HTMLTreeAndSortedTagsMapper);
 
-bool HTMLTreeAndSortedTagsMapper::DoPutStream(const char *, istream &is, Context &ctx, ROAnything)
+bool HTMLTreeAndSortedTagsMapper::DoPutStream(const char *, std::istream &is, Context &ctx, ROAnything)
 {
 
 	// ignore key and config

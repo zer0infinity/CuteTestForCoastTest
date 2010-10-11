@@ -22,7 +22,7 @@ TailRenderer::TailRenderer(const char *name) : Renderer(name) { }
 
 TailRenderer::~TailRenderer() { }
 
-void TailRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void TailRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	StartTrace(TailRenderer.RenderAll);
 

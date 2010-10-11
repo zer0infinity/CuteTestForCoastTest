@@ -21,7 +21,7 @@
 #include <ctype.h>
 
 //---- GenericXMLParser ----------------------------------------------------------------
-Anything GenericXMLParser::Parse(istream &reader, const char *filename, long startline, Allocator *a)
+Anything GenericXMLParser::Parse(std::istream &reader, const char *filename, long startline, Allocator *a)
 {
 	StartTrace(GenericXMLParser.Parse);
 	fReader = &reader;
@@ -642,7 +642,7 @@ void GenericXMLParser::Error(const char *msg)
 	m << "\n";
 	SystemLog::WriteToStderr(m);
 }
-void GenericXMLPrinter::PrintXml(ostream &os, ROAnything domany)
+void GenericXMLPrinter::PrintXml(std::ostream &os, ROAnything domany)
 {
 	for (long i = 0, sz = domany.GetSize(); i < sz; ++i) {
 		if (!domany.SlotName(i)) {
@@ -651,7 +651,7 @@ void GenericXMLPrinter::PrintXml(ostream &os, ROAnything domany)
 		}
 	}
 }
-void GenericXMLPrinter::DoPrintXml(ostream &os, ROAnything subdomany)
+void GenericXMLPrinter::DoPrintXml(std::ostream &os, ROAnything subdomany)
 {
 	if (subdomany.GetType() == AnyArrayType) {
 		String tag = subdomany.SlotName(0L);
@@ -679,7 +679,7 @@ void GenericXMLPrinter::DoPrintXml(ostream &os, ROAnything subdomany)
 		os << subdomany.AsString();
 	}
 }
-void GenericXMLPrinter::DoPrintXmlTag(ostream &os, const String &tag, ROAnything attributes)
+void GenericXMLPrinter::DoPrintXmlTag(std::ostream &os, const String &tag, ROAnything attributes)
 {
 	os << '<' << tag ;
 	for (long i = 0L, sz = attributes.GetSize(); i < sz; ++i) {
@@ -688,28 +688,28 @@ void GenericXMLPrinter::DoPrintXmlTag(ostream &os, const String &tag, ROAnything
 	os << '>';
 }
 
-void GenericXMLPrinter::DoPrintXmlPI(ostream &os, const String &pitag, ROAnything subdomany)
+void GenericXMLPrinter::DoPrintXmlPI(std::ostream &os, const String &pitag, ROAnything subdomany)
 {
 	os << '<' << pitag << subdomany[0L].AsString() << "?>";
 	if (subdomany.GetSize() > 1L) {
 		os << "<!-- error in DOM anything input, processing instruction additional slots -->";
 	}
 }
-void GenericXMLPrinter::DoPrintXmlComment(ostream &os, ROAnything subdomany)
+void GenericXMLPrinter::DoPrintXmlComment(std::ostream &os, ROAnything subdomany)
 {
 	os << "<!--" << subdomany[0L].AsString() << "-->";
 	if (subdomany.GetSize() > 1L) {
 		os << "<!-- error in DOM anything input, comment additional slots -->";
 	}
 }
-void GenericXMLPrinter::DoPrintXmlCdata(ostream &os, ROAnything subdomany)
+void GenericXMLPrinter::DoPrintXmlCdata(std::ostream &os, ROAnything subdomany)
 {
 	os << "<![CDATA[" << subdomany[0L].AsString() << "]]>";
 	if (subdomany.GetSize() > 1L) {
 		os << "<!-- error in DOM anything input, CDATA additional slots -->";
 	}
 }
-void GenericXMLPrinter::DoPrintXmlDtd(ostream &os, ROAnything subdomany)
+void GenericXMLPrinter::DoPrintXmlDtd(std::ostream &os, ROAnything subdomany)
 {
 	os << "<!DOCTYPE " << subdomany[0L].AsString(); // root node
 	if (!subdomany[1L].IsNull()) {
@@ -730,7 +730,7 @@ void GenericXMLPrinter::DoPrintXmlDtd(ostream &os, ROAnything subdomany)
 	}
 }
 
-void GenericXMLPrinter::DoPrintXmlSubDtd(ostream &os, ROAnything subdomany)
+void GenericXMLPrinter::DoPrintXmlSubDtd(std::ostream &os, ROAnything subdomany)
 {
 	if (subdomany.GetType() == AnyArrayType) {
 		String tag = subdomany.SlotName(0L);

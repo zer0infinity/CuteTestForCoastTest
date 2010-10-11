@@ -24,7 +24,7 @@ TimeStampRenderer::TimeStampRenderer(const char *name) : Renderer(name) { }
 
 TimeStampRenderer::~TimeStampRenderer() { }
 
-void TimeStampRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
+void TimeStampRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(TimeStampRenderer.RenderAll);
 	ROAnything roaUxTimeSpec;

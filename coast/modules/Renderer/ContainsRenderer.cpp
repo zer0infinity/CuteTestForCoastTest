@@ -19,7 +19,7 @@ ContainsRenderer::ContainsRenderer(const char *name) : Renderer(name) { }
 
 ContainsRenderer::~ContainsRenderer() { }
 
-void ContainsRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void ContainsRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	StartTrace(ContainsRenderer.RenderAll);
 

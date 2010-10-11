@@ -16,7 +16,7 @@
 //--- interface include --------------------------------------------------------
 #include "RequestBodyParser.h"
 
-RequestBodyParser::RequestBodyParser(MIMEHeader &mainheader, istream &input)
+RequestBodyParser::RequestBodyParser(MIMEHeader &mainheader, std::istream &input)
 	: fInput(input), fHeader(mainheader)
 {
 	StartTrace(RequestBodyParser.Ctor);
@@ -107,7 +107,7 @@ void RequestBodyParser::Decode(String str, Anything &result)
 	URLUtils::DecodeAll(result);
 }
 
-bool RequestBodyParser::ReadToBoundary(istream *is, const String &bound, String &body)
+bool RequestBodyParser::ReadToBoundary(std::istream *is, const String &bound, String &body)
 {
 	StartTrace1(RequestBodyParser.ReadToBoundary, "bound: <" << bound << ">");
 	if ( !is ) {
@@ -166,7 +166,7 @@ bool RequestBodyParser::ReadToBoundary(istream *is, const String &bound, String 
 	return false; // was return true
 }
 
-bool RequestBodyParser::ParseMultiPart(istream *is, const String &bound)
+bool RequestBodyParser::ParseMultiPart(std::istream *is, const String &bound)
 {
 	// assume next on input is bound and a line separator
 	StartTrace(RequestBodyParser.ParseMultiPart);

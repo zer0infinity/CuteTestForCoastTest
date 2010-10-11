@@ -34,8 +34,8 @@ public:
 	ConditionalRenderer(const char *name);
 
 	//! Render result to stream based on existence of rendered ContextCondition string in Context
-	/*! @copydoc Renderer::RenderAll(ostream &, Context &, const ROAnything &) */
-	void RenderAll(ostream &reply, Context &ctx, const ROAnything &config);
+	/*! @copydoc Renderer::RenderAll(std::ostream &, Context &, const ROAnything &) */
+	void RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config);
 
 protected:
 	/*! TestCondition does the actual testing. Result of test is returned via res. Errors are signaled using the value "Error".
@@ -71,8 +71,8 @@ public:
 	SwitchRenderer(const char *name);
 
 	//! Render result to stream based on evaluation of ContextLookupName
-	/*! @copydoc Renderer::RenderAll(ostream &, Context &, const ROAnything &) */
-	void RenderAll(ostream &reply, Context &ctx, const ROAnything &config);
+	/*! @copydoc Renderer::RenderAll(std::ostream &, Context &, const ROAnything &) */
+	void RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config);
 };
 
 #endif	//not defined _ConditionalRenderers_H

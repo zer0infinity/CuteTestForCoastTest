@@ -363,7 +363,7 @@ class EXPORTDECL_RENDERER BasicTableRenderer : public Renderer
 {
 public:
 	BasicTableRenderer(const char *name);
-	void RenderAll(ostream &reply, Context &c, const ROAnything &config);
+	void RenderAll(std::ostream &reply, Context &c, const ROAnything &config);
 
 protected:
 	//! the renderer allows special renderers to be addressed using an
@@ -375,13 +375,13 @@ protected:
 	virtual void DoSetRowDataCache(const Anything &) {}
 
 	//! building blocks for the rendering process
-	void PrintBodySection(const ROAnything &config, int &row, ostream &reply, Context &c, const ROAnything &repBody, const Anything &repData);
-	void PrintRow(int &row, ostream &reply, Context &c, RowAccessor *accessors, long rowSize, ROAnything &rowColors, bool invertHeaders = true);
-	void PrintNewLine(int &row, ostream &reply, ROAnything &rowColors, bool invertHeaders);
-	void PrintElement(ostream &reply, Context &c, RowAccessor &accessor);
+	void PrintBodySection(const ROAnything &config, int &row, std::ostream &reply, Context &c, const ROAnything &repBody, const Anything &repData);
+	void PrintRow(int &row, std::ostream &reply, Context &c, RowAccessor *accessors, long rowSize, ROAnything &rowColors, bool invertHeaders = true);
+	void PrintNewLine(int &row, std::ostream &reply, ROAnything &rowColors, bool invertHeaders);
+	void PrintElement(std::ostream &reply, Context &c, RowAccessor &accessor);
 
 	//! hook method to do something special if section is empty
-	virtual void DoPrintEmptySection(ostream &reply, Context &c, const ROAnything &config, const ROAnything &sectionConfig,  int &row);
+	virtual void DoPrintEmptySection(std::ostream &reply, Context &c, const ROAnything &config, const ROAnything &sectionConfig,  int &row);
 
 	//! within a body section always the same renderers are used for the
 	//! creation of the different columns.. the following methods perform some caching
@@ -412,7 +412,7 @@ class EXPORTDECL_RENDERER SequenceRenderer : public Renderer
 {
 public:
 	SequenceRenderer(const char *name);
-	virtual void RenderAll(ostream &reply, Context &c, const ROAnything &config);
+	virtual void RenderAll(std::ostream &reply, Context &c, const ROAnything &config);
 };
 
 #endif		//not defined _BasicTableRenderer_H

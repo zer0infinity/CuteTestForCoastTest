@@ -19,11 +19,9 @@
 #include "URLUtils.h"
 #include "Dbg.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //--- c-library modules used ---------------------------------------------------
+#include <iomanip>
+
 #if !defined(WIN32)
 // used for dynamic load of libraries
 #include <dlfcn.h>
@@ -241,7 +239,7 @@ bool AppBooter::Boot(Anything &args) // access the intial config file
 		// log first event
 		SystemLog::Info("started");
 		OStringStream os;
-		os <<  setw(20) << "" << " I will be using " << numberOfCpus << " cpus !\n";
+		os <<  std::setw(20) << "" << " I will be using " << numberOfCpus << " cpus !\n";
 		os.flush();
 		SystemLog::WriteToStderr(os.str());
 
@@ -275,7 +273,7 @@ void AppBooter::Halt(const Anything &config)
 bool AppBooter::ReadFromFile(Anything &config, const char *filename)
 {
 	StartTrace1(AppBooter.ReadFromFile, "filename<" << NotNull(filename) << ">");
-	istream *ifp = System::OpenStream(filename, "any");
+	std::istream *ifp = System::OpenStream(filename, "any");
 	if (ifp == 0) {
 		String logMsg;
 		SystemLog::Error(logMsg << "AppBooter::ReadFromFile: can't open file " << NotNull(filename) << ".any. Are COAST_ROOT/COAST_PATH correctly set?");

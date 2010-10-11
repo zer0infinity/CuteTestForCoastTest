@@ -24,7 +24,7 @@ Base64WDRenderer::Base64WDRenderer(const char *name) : Renderer(name) { }
 
 Base64WDRenderer::~Base64WDRenderer() { }
 
-void Base64WDRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
+void Base64WDRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(Base64WDRenderer.RenderAll);
 

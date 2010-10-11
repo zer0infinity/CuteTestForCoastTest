@@ -32,7 +32,7 @@ static void TrimMessage(String &message)
 	}
 }
 
-bool HTTPResponseMapper::DoPutStream(const char *key, istream &is, Context &ctx, ROAnything conf)
+bool HTTPResponseMapper::DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything conf)
 {
 	StartTrace1(HTTPResponseMapper.DoPutStream, NotNull(key));
 	// ignore the key, assume a correct response line. Ignore conf, too.

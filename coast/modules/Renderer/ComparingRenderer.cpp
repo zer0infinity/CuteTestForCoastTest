@@ -20,7 +20,7 @@ ComparingRenderer::ComparingRenderer(const char *name)
 
 ComparingRenderer::~ComparingRenderer() { }
 
-void ComparingRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void ComparingRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	StartTrace(ComparingRenderer.RenderAll);
 	String listDataName;

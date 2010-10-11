@@ -18,10 +18,6 @@
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //---- Base64RendererTest ----------------------------------------------------------------
 Base64RendererTest::Base64RendererTest(TString tname) : TestCaseType(tname)
 {
@@ -55,7 +51,7 @@ void Base64RendererTest::RenderAllTest()
 		String str;
 		StringStream aStream(str);
 		aRenderer.RenderAll(aStream, ctx, anyConfig);
-		aStream << flush;
+		aStream << std::flush;
 		assertEqual("//9hbHBoYnVzaHlvdXJzZWxmLyYjPw==", str);
 	}
 }

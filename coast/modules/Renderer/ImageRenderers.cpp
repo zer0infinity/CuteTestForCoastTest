@@ -21,7 +21,7 @@ ImageLocationRenderer::ImageLocationRenderer(const char *name) : Renderer(name)
 {
 }
 
-bool ImageLocationRenderer::RenderPathAndFilename(ostream &reply, Context &c,
+bool ImageLocationRenderer::RenderPathAndFilename(std::ostream &reply, Context &c,
 		const ROAnything &config)
 {
 	ROAnything name;
@@ -49,7 +49,7 @@ bool ImageLocationRenderer::RenderPathAndFilename(ostream &reply, Context &c,
 	return false;
 }
 
-void ImageLocationRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void ImageLocationRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	StartTrace(ImageLocationRenderer.Render);
 	TraceAny(config, "config");
@@ -65,7 +65,7 @@ ImageRenderer::ImageRenderer(const char *name) : ImageLocationRenderer(name)
 {
 }
 
-void ImageRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void ImageRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	StartTrace(ImageRenderer.Render);
 	TraceAny(config, "config");
@@ -85,7 +85,7 @@ RegisterRenderer(FigureRenderer);
 
 FigureRenderer::FigureRenderer(const char *name) : ImageRenderer(name) {}
 
-void FigureRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void FigureRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	StartTrace(FigureRenderer.Render);
 	TraceAny(config, "config");

@@ -883,7 +883,7 @@ EAlign HTMLParser::LookupAlign(const char *key)
 }
 
 //---- AAT_HTMLReader ---------------------------------------------------------------------------
-AAT_HTMLReader::AAT_HTMLReader(istream *fp)
+AAT_HTMLReader::AAT_HTMLReader(std::istream *fp)
 	: fFile(fp)
 {
 }

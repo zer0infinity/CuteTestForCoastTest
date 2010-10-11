@@ -21,7 +21,7 @@ RegisterRenderer(StringRenderer);
 StringRenderer::StringRenderer(const char *name) : Renderer(name)
 {
 }
-void StringRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void StringRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	StartTrace(StringRenderer.Render);
 	TraceAny(config, "config");
@@ -38,7 +38,7 @@ RegisterRenderer(LanguageSwitchRenderer);
 LanguageSwitchRenderer::LanguageSwitchRenderer(const char *name) : Renderer(name)
 {
 }
-void LanguageSwitchRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void LanguageSwitchRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	StartTrace(LanguageSwitchRenderer.Render);
 	TraceAny(config, "config");

@@ -15,9 +15,7 @@
 #include "MemHeader.h"
 #include "InitFinisManagerFoundation.h"
 
-#if defined(ONLY_STD_IOSTREAM)
 #include <algorithm>
-#endif
 
 //--- c-library modules used ---------------------------------------------------
 #include <cstring>
@@ -204,29 +202,8 @@ MemTracker *Storage::MakeMemTracker(const char *name, bool bThreadSafe)
 	return Storage::DoMakeMemTracker(name);
 }
 
-#if (defined(__GNUG__)  && __GNUC__ < 3)|| defined (__370__)
-#include <new.h>
-#elif (defined(__GNUG__)  && __GNUC__ >=3) || (defined(__SUNPRO_CC) && __SUNPRO_CC >= 0x500) || (defined(WIN32) && defined(ONLY_STD_IOSTREAM))
-#include <new>
-#else
-void *operator new(size_t size, void *vp)
-{
-	Assert(size > 0);
-	if (vp == 0) {
-		return ::calloc(size, sizeof(char));
-	}
-	return vp;
-}
-#endif
 
-#if defined(WIN32) && (_MSC_VER >= 1200) && !defined(ONLY_STD_IOSTREAM)// VC6 or greater
-void operator delete(void *ptr, void *vp)
-{
-	if (ptr) {
-		::free(ptr);
-	}
-}
-#endif
+#include <new>
 
 //---- Storage ------------------------------------------
 Allocator *Storage::fgGlobalPool = 0;

@@ -22,7 +22,7 @@ LookupRenderer::LookupRenderer(const char *name) : Renderer(name)
 {
 }
 
-void LookupRenderer::RenderAll(ostream &reply, Context &context, const ROAnything &config)
+void LookupRenderer::RenderAll(std::ostream &reply, Context &context, const ROAnything &config)
 {
 	StartTrace(LookupRenderer.Render);
 	TraceAny(config, "config");

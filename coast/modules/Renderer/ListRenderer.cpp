@@ -25,7 +25,7 @@ ListRenderer::~ListRenderer()
 {
 }
 
-void ListRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
+void ListRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(ListRenderer.RenderAll);
 	TraceAny(config, "config");
@@ -147,31 +147,31 @@ void ListRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &con
 	}
 }
 
-void ListRenderer::RenderListHeader(ostream &reply, Context &ctx, const ROAnything &listHeader)
+void ListRenderer::RenderListHeader(std::ostream &reply, Context &ctx, const ROAnything &listHeader)
 {
 	StartTrace(ListRenderer.RenderListHeader);
 	Render(reply, ctx, listHeader);
 }
 
-void ListRenderer::RenderListFooter(ostream &reply, Context &ctx, const ROAnything &listFooter)
+void ListRenderer::RenderListFooter(std::ostream &reply, Context &ctx, const ROAnything &listFooter)
 {
 	StartTrace(ListRenderer.RenderListFooter);
 	Render(reply, ctx, listFooter);
 }
 
-void ListRenderer::RenderEntry(ostream &reply, Context &ctx, const ROAnything &config, const ROAnything &entryRendererConfig, const ROAnything &listItem, Anything &anyRenderState)
+void ListRenderer::RenderEntry(std::ostream &reply, Context &ctx, const ROAnything &config, const ROAnything &entryRendererConfig, const ROAnything &listItem, Anything &anyRenderState)
 {
 	StartTrace(ListRenderer.RenderEntry);
 	Render(reply, ctx, entryRendererConfig);
 }
 
-void ListRenderer::RenderEntryHeader(ostream &reply, Context &ctx, const ROAnything &entryHeader, const ROAnything &listItem, Anything &anyRenderState)
+void ListRenderer::RenderEntryHeader(std::ostream &reply, Context &ctx, const ROAnything &entryHeader, const ROAnything &listItem, Anything &anyRenderState)
 {
 	StartTrace(ListRenderer.RenderEntryHeader);
 	Render(reply, ctx, entryHeader);
 }
 
-void ListRenderer::RenderEntryFooter(ostream &reply, Context &ctx, const ROAnything &entryFooter, const ROAnything &listItem, Anything &anyRenderState)
+void ListRenderer::RenderEntryFooter(std::ostream &reply, Context &ctx, const ROAnything &entryFooter, const ROAnything &listItem, Anything &anyRenderState)
 {
 	StartTrace(ListRenderer.RenderEntryFooter);
 	Render(reply, ctx, entryFooter);

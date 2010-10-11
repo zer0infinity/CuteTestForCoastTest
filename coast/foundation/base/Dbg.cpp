@@ -105,7 +105,7 @@ namespace {
 	}
 
 	void InitTracing(String const& strFilename = fgDbgAnyName) {
-		istream *ifp = System::OpenStream(strFilename, "any");
+		std::istream *ifp = System::OpenStream(strFilename, "any");
 		if (ifp) {
 			Anything anyDebugContext;
 			if ( anyDebugContext.Import(*ifp, strFilename) ) {
@@ -176,7 +176,7 @@ namespace {
 				fStream << "  ";
 			}
 		}
-		ostream &GetStream() {
+		std::ostream &GetStream() {
 			return fStream;
 		}
 

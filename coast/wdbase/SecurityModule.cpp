@@ -135,7 +135,7 @@ bool SecurityItem::DoLoadKeyFile(const char *name, String &key)
 	// search file with path
 	// open file with relative path
 	String resolvedFileName =  System::GetFilePath(name, (const char *)0);
-	iostream *Ios = System::OpenIStream(resolvedFileName, "");
+	std::iostream *Ios = System::OpenIStream(resolvedFileName, "");
 	if ( Ios ) {
 		String sBuf(4096);
 		char *buf = (char *)(const char *) sBuf;

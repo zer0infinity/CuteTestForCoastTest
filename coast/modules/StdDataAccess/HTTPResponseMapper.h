@@ -28,7 +28,7 @@ public:
 	//! \param ctx the thread context of the invocation
 	//! \param conf not used
 	//! \return returns true if the mapping was successful otherwise false
-	virtual bool DoPutStream(const char *key, istream &is, Context &ctx, ROAnything conf);
+	virtual bool DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything conf);
 
 private:
 	HTTPResponseMapper();

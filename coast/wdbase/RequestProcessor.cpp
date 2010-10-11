@@ -43,7 +43,7 @@ void RequestProcessor::ProcessRequest(Context &ctx)
 	StartTrace(RequestProcessor.ProcessRequest);
 	ctx.SetServer(fServer);
 	Socket *socket = ctx.GetSocket();
-	iostream *Ios = 0;
+	std::iostream *Ios = 0;
 
 	if ( socket != (Socket *) NULL ) {
 		ROAnything timeout;
@@ -121,19 +121,19 @@ bool RequestProcessor::DoKeepConnectionAlive(Context &ctx)
 	return false;
 }
 
-void RequestProcessor::RenderProtocolStatus(ostream &os, Context &ctx)
+void RequestProcessor::RenderProtocolStatus(std::ostream &os, Context &ctx)
 {
 	StartTrace(RequestProcessor.RenderProtocolStatus);
 	GetCurrentRequestProcessor(ctx)->DoRenderProtocolStatus(os, ctx);
 }
 
-void RequestProcessor::Error(ostream &reply, const String &msg, Context &ctx)
+void RequestProcessor::Error(std::ostream &reply, const String &msg, Context &ctx)
 {
 	StartTrace(RequestProcessor.Error);
 	GetCurrentRequestProcessor(ctx)->DoError(reply, msg, ctx);
 }
 
-void RequestProcessor::DoReadInput(iostream &Ios, Context &ctx)
+void RequestProcessor::DoReadInput(std::iostream &Ios, Context &ctx)
 {
 	Anything args;
 	args.Import(Ios);
@@ -141,13 +141,13 @@ void RequestProcessor::DoReadInput(iostream &Ios, Context &ctx)
 	ctx.PushRequest(args);
 }
 
-void RequestProcessor::DoProcessRequest(ostream &reply, Context &ctx)
+void RequestProcessor::DoProcessRequest(std::ostream &reply, Context &ctx)
 {
 	StartTrace(RequestProcessor.DoProcessRequest);
 	fServer->ProcessRequest(reply, ctx);
 }
 
-void RequestProcessor::DoWriteOutput(iostream &Ios, ostream &reply, Context &ctx)
+void RequestProcessor::DoWriteOutput(std::iostream &Ios, std::ostream &reply, Context &ctx)
 {
 	StartTrace(RequestProcessor.DoWriteOutput);
 	// dump the reply object onto the
@@ -158,12 +158,12 @@ void RequestProcessor::DoWriteOutput(iostream &Ios, ostream &reply, Context &ctx
 	Ios.flush();
 }
 
-void RequestProcessor::DoRenderProtocolStatus(ostream &os, Context &ctx)
+void RequestProcessor::DoRenderProtocolStatus(std::ostream &os, Context &ctx)
 {
 	// unknown protocol -> no status
 }
 
-void RequestProcessor::DoError(ostream &reply, const String &msg, Context &ctx)
+void RequestProcessor::DoError(std::ostream &reply, const String &msg, Context &ctx)
 {
 	// unknown protocol -> no error msg
 }

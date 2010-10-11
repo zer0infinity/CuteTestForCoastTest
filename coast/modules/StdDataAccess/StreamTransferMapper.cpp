@@ -19,13 +19,13 @@
 //---- StreamTransferMapper ------------------------------------------------------------------
 RegisterResultMapper(StreamTransferMapper);
 
-bool StreamTransferMapper::DoPutStream(const char *key, istream &is, Context &ctx, ROAnything config)
+bool StreamTransferMapper::DoPutStream(const char *key, std::istream &is, Context &ctx, ROAnything config)
 {
 	StartTrace(StreamTransferMapper.DoPutStream);
 
 	String cmp("HTTPBody");
 	if (cmp == key) {
-		iostream *os = ctx.GetStream();
+		std::iostream *os = ctx.GetStream();
 		if (os) {
 			PutResponseLineAndHeader(*os, ctx);
 			(*os) << is.rdbuf();
@@ -38,7 +38,7 @@ bool StreamTransferMapper::DoPutStream(const char *key, istream &is, Context &ct
 	return ResultMapper::DoPutStream(key, is, ctx, config);
 }
 
-void StreamTransferMapper::PutResponseLineAndHeader(ostream &os, Context &ctx)
+void StreamTransferMapper::PutResponseLineAndHeader(std::ostream &os, Context &ctx)
 {
 	StartTrace(StreamTransferMapper.PutResponseLineAndHeader);
 	Anything tmpStore(ctx.GetTmpStore());

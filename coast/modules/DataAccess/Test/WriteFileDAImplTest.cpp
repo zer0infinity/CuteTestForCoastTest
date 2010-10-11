@@ -16,10 +16,6 @@
 #include "Context.h"
 #include "AnyIterators.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //--- c-library modules used ---------------------------------------------------
 #if defined(WIN32)
 #include <io.h>
@@ -46,10 +42,10 @@ bool WriteFileDAImplTest::CompareResult(TString strResult)
 {
 	StartTrace(WriteFileDAImplTest.CompareResult);
 	bool bRet = false;
-	iostream *fp = Coast::System::OpenStream("WriteTestFile", "txt");
+	std::iostream *fp = Coast::System::OpenStream("WriteTestFile", "txt");
 	if (t_assert(fp != 0)) {
 		OStringStream os;
-		os << fp->rdbuf() << flush;
+		os << fp->rdbuf() << std::flush;
 		bRet = assertEqual(strResult, os.str());
 	}
 	return bRet;

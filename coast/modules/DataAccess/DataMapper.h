@@ -22,7 +22,7 @@ public:
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const;
 
-	virtual bool DoGetStream(const char *key, ostream &os, Context &ctx, ROAnything info);
+	virtual bool DoGetStream(const char *key, std::ostream &os, Context &ctx, ROAnything info);
 
 protected:
 	virtual void Pad(String &value, long length, char pad);
@@ -42,7 +42,7 @@ public:
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const;
 
-	virtual bool DoGetStream(const char *key, ostream &os, Context &ctx, ROAnything config);
+	virtual bool DoGetStream(const char *key, std::ostream &os, Context &ctx, ROAnything config);
 
 private:
 	UpperCaseMapper();
@@ -63,7 +63,7 @@ public:
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const;
 
-	virtual bool DoGetStream(const char *key, ostream &os, Context &ctx, ROAnything config);
+	virtual bool DoGetStream(const char *key, std::ostream &os, Context &ctx, ROAnything config);
 
 private:
 	LookupMapper();
@@ -83,7 +83,7 @@ public:
 	//needed, because we are non-eager when retrieving an Anything (why?)
 	virtual bool Get(const char *key, Anything &value, Context &ctx);
 	virtual bool DoGetAny(const char *key, Anything &value, Context &ctx, ROAnything info);
-	virtual bool DoGetStream(const char *key, ostream &os, Context &ctx, ROAnything info);
+	virtual bool DoGetStream(const char *key, std::ostream &os, Context &ctx, ROAnything info);
 
 private:
 	RendererMapper();

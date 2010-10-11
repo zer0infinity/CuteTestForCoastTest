@@ -33,7 +33,7 @@ XMLEscapeRenderer::XMLEscapeRenderer(const char *name) : Renderer(name) { }
 
 XMLEscapeRenderer::~XMLEscapeRenderer() { }
 
-void XMLEscapeRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
+void XMLEscapeRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(XMLEscapeRenderer.RenderAll);
 	String input(Renderer::RenderToString(ctx, config));
@@ -60,7 +60,7 @@ XMLUnescapeRenderer::XMLUnescapeRenderer(const char *name) : Renderer(name) { }
 
 XMLUnescapeRenderer::~XMLUnescapeRenderer() { }
 
-void XMLUnescapeRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
+void XMLUnescapeRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(XMLUnescapeRenderer.RenderAll);
 	String input(Renderer::RenderToString(ctx, config));

@@ -22,10 +22,10 @@ public:
 	//! \param output http output stream. Header separator has not been rendered yet.
 	//! \param chunked true if chunked encoding is needed
 	//! \param zipEnc true if gzip encoding is needed
-	HTTPStreamStack(ostream &output, bool chunked, bool zipEnc);
+	HTTPStreamStack(std::ostream &output, bool chunked, bool zipEnc);
 
 	//! Returns the ostream where the http body can be rendered to
-	ostream &GetBodyStream();
+	std::ostream &GetBodyStream();
 
 	~HTTPStreamStack();
 
@@ -33,10 +33,10 @@ private:
 	// use careful, you inhibit subclass use
 	//--- private class api
 	//--- private member variables
-	ostream &fOutput;
-	ostream *fTopOfStack;
-	ostream *fChunker;
-	ostream *fZipper;
+	std::ostream &fOutput;
+	std::ostream *fTopOfStack;
+	std::ostream *fChunker;
+	std::ostream *fZipper;
 };
 
 #endif

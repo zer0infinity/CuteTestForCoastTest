@@ -10,15 +10,8 @@
 #define _SYSTEMBASE_H
 
 #include "config_foundation.h"
-#include "ITOString.h"
+class String;
 class Anything;
-
-#if defined(ONLY_STD_IOSTREAM)
-#include <iostream>
-using std::iostream;
-#else
-#include <iostream.h>
-#endif
 
 #include <time.h> // for LocalTime parameters struct tm
 #if defined(WIN32)

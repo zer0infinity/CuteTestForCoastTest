@@ -72,13 +72,13 @@ PipeExecutor::~PipeExecutor()
 	}
 }
 
-iostream *PipeExecutor::GetStream()
+std::iostream *PipeExecutor::GetStream()
 {
 	StartTrace(PipeExecutor.GetStream);
 	return fPipe ? fPipe->GetStream() : 0;
 }
 
-istream *PipeExecutor::GetStderr()
+std::istream *PipeExecutor::GetStderr()
 {
 	StartTrace(PipeExecutor.GetStderr);
 	return fStderr ? fStderr->GetStream() : 0;

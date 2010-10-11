@@ -110,12 +110,12 @@ private:
 	}
 	/Streaming					optional, 0L/1L/2L/3L, default 0L, defining streaming mode
 								0L or default: no streaming used, using Get(FromSlot, String, Context)
-								1L: ParameterMapper->Get using StringStream, eg. Get(FromSlot, ostream, Context, ROAnything)
+								1L: ParameterMapper->Get using StringStream, eg. Get(FromSlot, std::ostream, Context, ROAnything)
 									ResultMapper->Put using String, eg. Put(ToSlot, String, Context)
 								2L: ParameterMapper->Get using String, eg. Get(FromSlot, String, Context)
-									ResultMapper->Put using StringStream, eg. Put(ToSlot, istream, Context, ROAnything)
-								3L: ParameterMapper->Get using StringStream, eg. Get(FromSlot, ostream, Context, ROAnything)
-									ResultMapper->Put using StringStream, eg. Put(ToSlot, istream, Context, ROAnything)
+									ResultMapper->Put using StringStream, eg. Put(ToSlot, std::istream, Context, ROAnything)
+								3L: ParameterMapper->Get using StringStream, eg. Get(FromSlot, std::ostream, Context, ROAnything)
+									ResultMapper->Put using StringStream, eg. Put(ToSlot, std::istream, Context, ROAnything)
 }
 @endcode
  */

@@ -24,7 +24,7 @@ StringReplaceRenderer::~StringReplaceRenderer()
 {
 }
 
-void StringReplaceRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void StringReplaceRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	StartTrace(StringReplaceRenderer.RenderAll);
 

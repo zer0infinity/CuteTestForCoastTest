@@ -22,7 +22,7 @@ CallRenderer::CallRenderer(const char *name) : Renderer(name) { }
 
 CallRenderer::~CallRenderer() { }
 
-void CallRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
+void CallRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(CallRenderer.RenderAll);
 	Anything params;

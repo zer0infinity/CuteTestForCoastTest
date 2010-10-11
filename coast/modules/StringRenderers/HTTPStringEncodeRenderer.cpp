@@ -24,7 +24,7 @@ HTTPStringEncodeRenderer::HTTPStringEncodeRenderer(const char *name) : Renderer(
 
 HTTPStringEncodeRenderer::~HTTPStringEncodeRenderer() { }
 
-void HTTPStringEncodeRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
+void HTTPStringEncodeRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(HTTPStringEncodeRenderer.RenderAll);
 	String str(32L);

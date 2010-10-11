@@ -19,7 +19,7 @@ MultiDimNavigationRenderer::MultiDimNavigationRenderer(const char *name) : Rende
 
 MultiDimNavigationRenderer::~MultiDimNavigationRenderer() { }
 
-void MultiDimNavigationRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void MultiDimNavigationRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	StartTrace(MultiDimNavigationRenderer.RenderAll);
 

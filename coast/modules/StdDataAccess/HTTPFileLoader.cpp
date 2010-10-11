@@ -141,9 +141,9 @@ bool HTTPFileLoader::ProcessFile(const String &filename, Context &context, Param
 	StartTrace1(HTTPFileLoader.ProcessFile, "Filename: >" << filename << "<");
 
 	bool retVal = true;
-	iostream *Ios = 0;
+	std::iostream *Ios = 0;
 	String ext;
-	Ios = System::OpenStream(filename, ext, ios::in | ios::binary);
+	Ios = System::OpenStream(filename, ext, std::ios::in | std::ios::binary);
 	if (Ios) {
 		Trace("Stream opened ok");
 		retVal = out->Put("ResponseCode", 200L, context) && retVal;
@@ -162,7 +162,7 @@ bool HTTPFileLoader::ProcessFile(const String &filename, Context &context, Param
 			Trace("file [" << filename << "] has size (stat): " << (l_long)ulFileSize);
 			retVal = out->Put("content-length", (long)ulFileSize, context) && retVal;
 		}
-		retVal = out->Put("HTTPBody", (*(istream *)Ios), context) && retVal;
+		retVal = out->Put("HTTPBody", (*(std::istream *)Ios), context) && retVal;
 		delete Ios;
 	} else {
 		retVal = false;

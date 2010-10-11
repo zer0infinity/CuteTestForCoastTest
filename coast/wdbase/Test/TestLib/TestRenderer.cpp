@@ -23,7 +23,7 @@ TestRenderer::TestRenderer(const char *name) : Renderer(name) { }
 
 TestRenderer::~TestRenderer() { }
 
-void TestRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
+void TestRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(TestRenderer.RenderAll);
 	reply << "output from TestRenderer";

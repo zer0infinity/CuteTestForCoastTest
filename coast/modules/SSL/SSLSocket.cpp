@@ -130,7 +130,7 @@ void SSLSocket::SessionResumptionHookSetSession(SSL *ssl, SSL_SESSION *sslSessio
 	return;
 }
 
-iostream *SSLSocket::DoMakeStream()
+std::iostream *SSLSocket::DoMakeStream()
 {
 	StartTrace(SSLSocket.DoMakeStream);
 	Anything &sslinfo = fClientInfo["SSL"];

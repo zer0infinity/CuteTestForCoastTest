@@ -79,16 +79,16 @@ System::openmode FileDAImpl::DoGetMode(ROAnything roaModes)
 	if ( roaModes.Contains("text") ) {
 		Trace("text mode");
 	} else if ( roaModes.Contains("binary") ) {
-		mode |= ios::binary;
+		mode |= std::ios::binary;
 		Trace("binary mode");
 	}
 	return mode;
 }
 
-iostream *FileDAImpl::GetFileStream(Context &context, ParameterMapper *in)
+std::iostream *FileDAImpl::GetFileStream(Context &context, ParameterMapper *in)
 {
 	StartTrace(FileDAImpl.GetFileStream);
-	iostream *pStream = NULL;
+	std::iostream *pStream = NULL;
 	String filename, ext;
 	if (GetFileName(filename, ext, context, in)) {
 		System::openmode mode = GetMode(context, in);

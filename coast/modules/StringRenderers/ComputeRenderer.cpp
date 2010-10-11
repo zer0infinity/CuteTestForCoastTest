@@ -20,7 +20,7 @@ ComputeRenderer::ComputeRenderer(const char *name) : Renderer(name)
 {
 }
 
-void ComputeRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
+void ComputeRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(ComputeRenderer.RenderAll);
 	TraceAny(config, "config");

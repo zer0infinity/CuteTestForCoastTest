@@ -20,10 +20,6 @@
 #include "Resolver.h"
 #include "PoolAllocator.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //--- c-library modules used ---------------------------------------------------
 #if defined(WIN32)
 #include <io.h>
@@ -81,7 +77,7 @@ void SSLConnectorTest::allocatorConstructorTest()
 		if (t_assert(socket != NULL) && t_assertm(&pa == socket->GetAllocator(), "allocator should match")) {
 			long socketfd = socket->GetFd();
 			t_assert(socketfd > 0);
-			iostream *Ios = socket->GetStream();
+			std::iostream *Ios = socket->GetStream();
 			t_assert(Ios != NULL);
 		}
 	}
@@ -94,7 +90,7 @@ void SSLConnectorTest::allocatorConstructorTest()
 		if (t_assert(socket != NULL) && t_assertm(Storage::Global() == socket->GetAllocator(), "allocator should match")) {
 			long socketfd = socket->GetFd();
 			t_assert(socketfd > 0);
-			iostream *Ios = socket->GetStream();
+			std::iostream *Ios = socket->GetStream();
 			t_assert(Ios != NULL);
 		}
 	}
@@ -151,14 +147,14 @@ void SSLConnectorTest::getStreamTest()
 	// less than one second(1000) unreliable on marvin (solaris)
 	for (long timeout = 0; timeout <= 2000; timeout += 1000) {
 		SSLConnector sslConnector(GetConfig()["InternalSSLhost"]["ip"].AsString(), GetConfig()["InternalSSLhost"]["port"].AsLong(), timeout);
-		iostream *s1 = sslConnector.GetStream();
+		std::iostream *s1 = sslConnector.GetStream();
 		TString markfailuretimeout("timeout = ");
 		markfailuretimeout << timeout;
 		t_assertm( s1 != NULL , markfailuretimeout);	// these fail without HTTPS Server
 		if (!s1) {
 			continue;
 		}
-		(*s1) << "GET / HTTP/1.0" << ENDL << ENDL << flush;
+		(*s1) << "GET / HTTP/1.0" << ENDL << ENDL << std::flush;
 		String s;
 		getline(*s1, s);
 		t_assert(!!(*s1));

@@ -38,7 +38,7 @@ class EXPORTDECL_RENDERER LanguageSwitchRenderer : public Renderer
 public:
 	LanguageSwitchRenderer(const char *name);
 
-	void RenderAll(ostream &reply, Context &c, const ROAnything &config);
+	void RenderAll(std::ostream &reply, Context &c, const ROAnything &config);
 };
 
 //---- StringRenderer --------------------------------------------------------------
@@ -66,7 +66,7 @@ class EXPORTDECL_RENDERER StringRenderer : public Renderer
 public:
 	StringRenderer(const char *name);
 
-	void RenderAll(ostream &reply, Context &c, const ROAnything &config);
+	void RenderAll(std::ostream &reply, Context &c, const ROAnything &config);
 };
 
 #endif

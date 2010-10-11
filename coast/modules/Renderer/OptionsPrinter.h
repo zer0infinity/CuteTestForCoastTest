@@ -41,7 +41,7 @@ public:
 	//! regular ctor for prototype incarnation in registry
 	OptionsPrinter(const char *name);
 	~OptionsPrinter();
-	void RenderAll(ostream &reply, Context &c, const ROAnything &data);
+	void RenderAll(std::ostream &reply, Context &c, const ROAnything &data);
 };
 
 #endif		//ifndef _OPTIONSPRINTER_H

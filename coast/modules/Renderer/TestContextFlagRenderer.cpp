@@ -22,7 +22,7 @@ TestContextFlagRenderer::TestContextFlagRenderer(const char *name) : Renderer(na
 
 TestContextFlagRenderer::~TestContextFlagRenderer() { }
 
-void TestContextFlagRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
+void TestContextFlagRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(TestContextFlagRenderer.RenderAll);
 

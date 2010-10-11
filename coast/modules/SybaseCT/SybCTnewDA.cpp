@@ -20,9 +20,7 @@
 #include "System.h"
 #include "TimeStamp.h"
 
-#if defined(ONLY_STD_IOSTREAM)
 #include <algorithm>
-#endif
 
 //--- c-library modules used ---------------------------------------------------
 #include <climits>

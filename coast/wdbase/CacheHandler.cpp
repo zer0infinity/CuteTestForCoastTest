@@ -54,7 +54,7 @@ Anything SimpleAnyLoader::Load(const char *key)
 {
 	StartTrace1(SimpleAnyLoader.Load, "trying to load <" << NotNull(key) << ">");
 	Anything toLoad(Storage::Global());
-	istream *ifp = System::OpenStream(key, "any");
+	std::istream *ifp = System::OpenStream(key, "any");
 
 	if (ifp) {
 		// found

@@ -37,7 +37,7 @@ public:
 	//! \param reply out - the stream where the rendered output is written on.
 	//! \param ctx the context the renderer runs within.
 	//! \param config the configuration of the renderer.
-	virtual void RenderAll(ostream &reply, Context &ctx, const ROAnything &config);
+	virtual void RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config);
 };
 
 #endif

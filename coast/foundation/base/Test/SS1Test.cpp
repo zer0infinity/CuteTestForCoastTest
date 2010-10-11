@@ -15,10 +15,6 @@
 //--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //--- c-library modules used ---------------------------------------------------
 
 SS1Test::SS1Test(TString tname)
@@ -44,7 +40,7 @@ void SS1Test::SimpleTest()
 	{
 		OStringStream os(&out);
 
-		os << "something very small" << flush;
+		os << "something very small" << std::flush;
 		assertEqual("something very small", out);
 		assertEqual(32, out.Capacity());
 		assertEqual(20, out.Length());

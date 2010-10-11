@@ -44,7 +44,7 @@ public:
 	IFAObject *Clone(Allocator *a) const;
 
 	//! deprecated- use Prepare and Render
-	virtual void Start(ostream &reply, Context &context);
+	virtual void Start(std::ostream &reply, Context &context);
 
 	//! do Preprocessing which will in fact execute all relevant Actions
 	/*! otherwise return false and set a transition where to go
@@ -56,7 +56,7 @@ public:
 	virtual bool Prepare(String &transition, Context &c);
 
 	//!generates page content by using subclass page rendering hooks
-	virtual void Render(ostream &reply, Context &c);
+	virtual void Render(std::ostream &reply, Context &c);
 
 	//!postprocessing of a request coming from this page
 	virtual bool Finish(String &action, Context &context);
@@ -74,25 +74,25 @@ protected:
 	virtual void Preprocess(Context &c);
 
 	//! render protocol status line
-	virtual void RenderProtocolStatus(ostream &reply, Context &c);
+	virtual void RenderProtocolStatus(std::ostream &reply, Context &c);
 	//! render protocol header lines
-	virtual void RenderProtocolHeader(ostream &reply, Context &c);
+	virtual void RenderProtocolHeader(std::ostream &reply, Context &c);
 	//! renders protocol body using "PageLayout" tag or subclass api sequence of Header, Title, Body, Footer to render HTML content
-	virtual void RenderProtocolBody(ostream &reply, Context &c);
+	virtual void RenderProtocolBody(std::ostream &reply, Context &c);
 	//! render the tail e.g. debug output
-	virtual void RenderProtocolTail(ostream &reply, Context &c);
+	virtual void RenderProtocolTail(std::ostream &reply, Context &c);
 
 	//! render HTML Title
-	virtual void Title(ostream &reply, Context &c);
+	virtual void Title(std::ostream &reply, Context &c);
 	//!render HTML Header
-	virtual void Header(ostream &reply, Context &c);
+	virtual void Header(std::ostream &reply, Context &c);
 	//!render HTML Body
-	virtual void Body(ostream &reply, Context &c);
+	virtual void Body(std::ostream &reply, Context &c);
 	//!renders HTML end tags
-	virtual void Footer(ostream &reply, Context &c);
+	virtual void Footer(std::ostream &reply, Context &c);
 
 	//! Mime output
-	virtual void Mime(ostream &reply, Context &c);
+	virtual void Mime(std::ostream &reply, Context &c);
 
 	friend class PreprocessAction;
 private:

@@ -23,7 +23,7 @@ HTMLEscapeRenderer::HTMLEscapeRenderer(const char *name) : Renderer(name) { }
 
 HTMLEscapeRenderer::~HTMLEscapeRenderer() { }
 
-void HTMLEscapeRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
+void HTMLEscapeRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(HTMLEscapeRenderer.RenderAll);
 

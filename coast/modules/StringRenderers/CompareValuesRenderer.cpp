@@ -19,7 +19,7 @@ CompareValuesRenderer::CompareValuesRenderer(const char *name) : Renderer(name) 
 
 CompareValuesRenderer::~CompareValuesRenderer() { }
 
-void CompareValuesRenderer::RenderAll(ostream &reply, Context &c, const ROAnything &config)
+void CompareValuesRenderer::RenderAll(std::ostream &reply, Context &c, const ROAnything &config)
 {
 	StartTrace(CompareValuesRenderer.RenderAll);
 

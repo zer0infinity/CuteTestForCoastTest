@@ -58,7 +58,7 @@ class TestReceiver
 {
 public:
 	TestReceiver(): fMutex("MMMM") {}
-	void Receive(iostream *Ios, Socket *socket);
+	void Receive(std::iostream *Ios, Socket *socket);
 	Anything GetResult();
 	Anything GetFailures();
 	void DoChecks(Anything &toImport, Socket *socket);

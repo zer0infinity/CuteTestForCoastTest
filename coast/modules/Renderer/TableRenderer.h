@@ -72,13 +72,13 @@ class EXPORTDECL_RENDERER TableRenderer : public Renderer
 public:
 	TableRenderer( const char *name );
 
-	void RenderAll(ostream &reply, Context &c, const ROAnything &config);
+	void RenderAll(std::ostream &reply, Context &c, const ROAnything &config);
 
 private:
-	void PrintRow(ostream &reply, Context &c, const ROAnything &row);
+	void PrintRow(std::ostream &reply, Context &c, const ROAnything &row);
 	const char *GetColor(long index, const ROAnything &config);
-	void PrintControls(ostream &reply, Context &c, long start, long rowsperpage, long size);
-	void PrintHeader(ostream &reply, Context &c, const ROAnything &tbColHeader);
+	void PrintControls(std::ostream &reply, Context &c, long start, long rowsperpage, long size);
+	void PrintHeader(std::ostream &reply, Context &c, const ROAnything &tbColHeader);
 };
 
 //---- ItemRenderer ---------------------------------------------------------------
@@ -96,7 +96,7 @@ class EXPORTDECL_RENDERER ItemRenderer : public Renderer
 public:
 	ItemRenderer(const char *name);
 
-	void RenderAll(ostream &reply, Context &c, const ROAnything &config);
+	void RenderAll(std::ostream &reply, Context &c, const ROAnything &config);
 };
 
 #endif

@@ -24,7 +24,7 @@ FileLoadRenderer::FileLoadRenderer(const char *name) : Renderer(name) { }
 
 FileLoadRenderer::~FileLoadRenderer() { }
 
-void FileLoadRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything &config)
+void FileLoadRenderer::RenderAll(std::ostream &reply, Context &ctx, const ROAnything &config)
 {
 	StartTrace(FileLoadRenderer.RenderAll);
 
@@ -41,7 +41,7 @@ void FileLoadRenderer::RenderAll(ostream &reply, Context &ctx, const ROAnything 
 		}
 		return;
 	}
-	iostream *is = System::OpenStream(fileName, String(), ios::in | ios::binary);
+	std::iostream *is = System::OpenStream(fileName, String(), std::ios::in | std::ios::binary);
 	if (!is ) {
 		if ( !quiet ) {
 			reply << "FileLoadRenderer: File " << fileName << " not found.";

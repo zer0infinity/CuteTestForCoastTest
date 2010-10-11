@@ -19,10 +19,6 @@
 #include "StringStream.h"
 #include "Dbg.h"
 
-#if defined(ONLY_STD_IOSTREAM)
-using namespace std;
-#endif
-
 //--- c-library modules used ---------------------------------------------------
 
 #define MILISEC 1000000 /* 1 million nanoseconds */
@@ -149,27 +145,27 @@ void ThreadsTest::ThreadObjectReuseTest()
 								assertEqual(3L, t.fCount);			// did it properly run three times
 							} else {
 								assertEqual(3L, t.fCount);
-								cerr << "/";
+								std::cerr << "/";
 								break;
 							}
 						} else {
-							cerr << "ç";
+							std::cerr << "ï¿½";
 						}
 					} else {
 						assertEqual(2L, t.fCount);
-						cerr << "#";
+						std::cerr << "#";
 						break;
 					}
 				} else {
-					cerr << "@";
+					std::cerr << "@";
 				}
 			} else {
 				assertEqual(1L, t.fCount);
-				cerr << "%";
+				std::cerr << "%";
 				break;
 			}
 		} else {
-			cerr << "-";
+			std::cerr << "-";
 		}
 	}
 }

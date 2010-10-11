@@ -54,18 +54,18 @@ public:
 	XMLTagParser() {};
 	~XMLTagParser() {};
 
-	Anything DoParse(istream &Is);
+	Anything DoParse(std::istream &Is);
 
 private:
-	void ProcessElement(istream &Is, TagToken &Tag, Anything Result);
-	Anything ProcessContent(istream &Is, TagToken &Tag);
-	TagToken ReadNextTag(istream &Is, String &LeadingText);
-	bool ParseTag(istream &Is, String &Tag);
-	bool ReadToExpectedChar(char ExpectedChar, istream &Is, String &Content);
+	void ProcessElement(std::istream &Is, TagToken &Tag, Anything Result);
+	Anything ProcessContent(std::istream &Is, TagToken &Tag);
+	TagToken ReadNextTag(std::istream &Is, String &LeadingText);
+	bool ParseTag(std::istream &Is, String &Tag);
+	bool ReadToExpectedChar(char ExpectedChar, std::istream &Is, String &Content);
 
 };
 
-Anything XMLTagParser::DoParse(istream &Is)
+Anything XMLTagParser::DoParse(std::istream &Is)
 {
 	StartTrace(XMLTagParser.DoParse);
 
@@ -80,7 +80,7 @@ Anything XMLTagParser::DoParse(istream &Is)
 	return result;
 }
 
-void XMLTagParser::ProcessElement(istream &Is, TagToken &Tag, Anything Result)
+void XMLTagParser::ProcessElement(std::istream &Is, TagToken &Tag, Anything Result)
 {
 	StartTrace(XMLTagParser.ProcessElement);
 
@@ -101,7 +101,7 @@ void XMLTagParser::ProcessElement(istream &Is, TagToken &Tag, Anything Result)
 	TraceAny(Result, "Result");
 }
 
-Anything XMLTagParser::ProcessContent(istream &Is, TagToken &Tag)
+Anything XMLTagParser::ProcessContent(std::istream &Is, TagToken &Tag)
 {
 	StartTrace(XMLTagParser.ProcessContent);
 
@@ -134,7 +134,7 @@ Anything XMLTagParser::ProcessContent(istream &Is, TagToken &Tag)
 
 }
 
-TagToken XMLTagParser::ReadNextTag(istream &Is, String &LeadingText)
+TagToken XMLTagParser::ReadNextTag(std::istream &Is, String &LeadingText)
 {
 	StartTrace(XMLTagParser.ReadNextTag);
 
@@ -147,7 +147,7 @@ TagToken XMLTagParser::ReadNextTag(istream &Is, String &LeadingText)
 	return TagToken(tag);
 }
 
-bool XMLTagParser::ParseTag(istream &Is, String &Tag)
+bool XMLTagParser::ParseTag(std::istream &Is, String &Tag)
 {
 	StartTrace(XMLTagParser.ParseTag);
 	String tagContent;
@@ -159,7 +159,7 @@ bool XMLTagParser::ParseTag(istream &Is, String &Tag)
 	return false;
 }
 
-bool XMLTagParser::ReadToExpectedChar(char ExpectedChar, istream &Is, String &Content)
+bool XMLTagParser::ReadToExpectedChar(char ExpectedChar, std::istream &Is, String &Content)
 {
 	StartTrace(XMLTagParser.ReadToExpectedChar);
 	char c;
@@ -178,7 +178,7 @@ bool XMLTagParser::ReadToExpectedChar(char ExpectedChar, istream &Is, String &Co
 RegisterResultMapper(XMLBodyMapper);
 
 // --- Put API
-bool XMLBodyMapper::DoFinalPutStream(const char *key, istream &is, Context &ctx)
+bool XMLBodyMapper::DoFinalPutStream(const char *key, std::istream &is, Context &ctx)
 {
 	StartTrace(XMLBodyMapper.DoPutStream);
 

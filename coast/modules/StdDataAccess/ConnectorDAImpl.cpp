@@ -166,7 +166,7 @@ Socket *ConnectorDAImpl::RecreateSocket(Anything &anyParams, Context &context, P
 			Trace("socket recreated");
 			long retCode;
 			if ( s->IsReadyForReading(0, retCode) ) {
-				iostream *pIos = s->GetStream();
+				std::iostream *pIos = s->GetStream();
 				pIos->peek();
 				if ( !pIos->good() ) {
 					Trace("stream is bad, destroying recreated socket");
@@ -192,7 +192,7 @@ bool ConnectorDAImpl::DoExec(Socket *pSocket, Context &context, ParameterMapper 
 	lSocketTimeout *= 1000L;
 	lSocketStreamTimeout *= 1000L;
 	lCheckReadyTimeout *= 1000L;
-	iostream *pIos = NULL;
+	std::iostream *pIos = NULL;
 	if ( pSocket ) {
 		if ( bTcpNoDelay ) {
 			pSocket->SetNoDelay();
@@ -237,7 +237,7 @@ bool ConnectorDAImpl::DoExec(Socket *pSocket, Context &context, ParameterMapper 
 	return false;
 }
 
-bool ConnectorDAImpl::SendInput(iostream *pIos, Socket *s, long lCheckReadyTimeout, long lSocketStreamTimeout, Context &context, ParameterMapper *in, ResultMapper *out)
+bool ConnectorDAImpl::SendInput(std::iostream *pIos, Socket *s, long lCheckReadyTimeout, long lSocketStreamTimeout, Context &context, ParameterMapper *in, ResultMapper *out)
 {
 	StartTrace(ConnectorDAImpl.SendInput);
 

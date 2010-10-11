@@ -34,10 +34,10 @@ public:
 	CookieToServerRenderer(const char *name);
 	~CookieToServerRenderer();
 
-	virtual void RenderAll(ostream &reply, Context &c, const ROAnything &config);
+	virtual void RenderAll(std::ostream &reply, Context &c, const ROAnything &config);
 
 private:
-	void OutputCookies(const String &explicitDomainName, ostream &reply, Context &c );
+	void OutputCookies(const String &explicitDomainName, std::ostream &reply, Context &c );
 };
 
 #endif		//ifndef _CookieToServerRenderer_H
