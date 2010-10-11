@@ -100,22 +100,24 @@ inline std::istream &operator>> (std::istream &is, unsigned __int64 &value)
 
 #include "StringStreamBuf.h"
 
+
 //! istream for Strings, read input from a string
 template
 <
 typename BufferType
 >
-class  EXPORTDECL_FOUNDATION IStringStreamTmpl : public StringStreambase< typename Loki::fooTypeTraits<BufferType>::ConstPlainTypePtr, Loki::Int2Type<NSStringStream::eIn> >, public istream
+
+class  EXPORTDECL_FOUNDATION IStringStreamTmpl : public StringStreambase< typename Coast::TypeTraits::fooTypeTraits<BufferType>::ConstPlainTypePtr, Coast::TypeTraits::Int2Type<NSStringStream::eIn> > , public istream
 {
 public:
 	typedef IStringStreamTmpl<BufferType> ThisClassType;
-	typedef typename Loki::fooTypeTraits<BufferType>::ConstPlainTypePtr IntBufType;
-	typedef typename Loki::Int2Type< NSStringStream::eIn > IoDirType;
+	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::ConstPlainTypePtr IntBufType;
+	typedef typename Coast::TypeTraits::Int2Type<NSStringStream::eIn> IoDirType;
 	typedef StringStreambase< IntBufType, IoDirType > StreamBaseType;
-	typedef typename Loki::fooTypeTraits<IntBufType>::ConstPlainTypeRef ConstPlainTypeRef;
-	typedef typename Loki::fooTypeTraits<IntBufType>::ConstPlainTypePtr ConstPlainTypePtr;
-	typedef typename Loki::fooTypeTraits<IntBufType>::PlainType PlainType;
-	typedef typename Loki::fooTypeTraits<IntBufType>::ConstPlainType ConstPlainType;
+	typedef typename Coast::TypeTraits::fooTypeTraits<IntBufType>::ConstPlainTypeRef ConstPlainTypeRef;
+	typedef typename Coast::TypeTraits::fooTypeTraits<IntBufType>::ConstPlainTypePtr ConstPlainTypePtr;
+	typedef typename Coast::TypeTraits::fooTypeTraits<IntBufType>::PlainType PlainType;
+	typedef typename Coast::TypeTraits::fooTypeTraits<IntBufType>::ConstPlainType ConstPlainType;
 
 public:
 	/*! ctor, take String pointed to by s to read the input direct input taken from string
@@ -234,15 +236,15 @@ template
 <
 typename BufferType
 >
-class  EXPORTDECL_FOUNDATION OStringStreamTmpl : public StringStreambase< typename Loki::fooTypeTraits<BufferType>::PlainTypePtr, Loki::Int2Type<NSStringStream::eOut> >, public ostream
+class  EXPORTDECL_FOUNDATION OStringStreamTmpl : public StringStreambase< typename Coast::TypeTraits::fooTypeTraits<BufferType>::PlainTypePtr, Coast::TypeTraits::Int2Type<NSStringStream::eOut> > , public ostream
 {
 public:
 	typedef OStringStreamTmpl<BufferType> ThisClassType;
-	typedef typename Loki::fooTypeTraits<BufferType>::PlainTypePtr IntBufType;
-	typedef typename Loki::Int2Type<NSStringStream::eOut> IoDirType;
+	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::PlainTypePtr IntBufType;
+	typedef typename Coast::TypeTraits::Int2Type<NSStringStream::eOut> IoDirType;
 	typedef StringStreambase< IntBufType, IoDirType > StreamBaseType;
-	typedef typename Loki::fooTypeTraits<BufferType>::PlainTypeRef PlainTypeRef;
-	typedef typename Loki::fooTypeTraits<BufferType>::PlainTypePtr PlainTypePtr;
+	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::PlainTypeRef PlainTypeRef;
+	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::PlainTypePtr PlainTypePtr;
 
 public:
 	//! ctor, allocate new string object internally for output
@@ -286,17 +288,17 @@ template
 typename BufferType
 >
 class EXPORTDECL_FOUNDATION StringStreamTmpl
-	: public StringStreambase< typename Loki::fooTypeTraits<BufferType>::PlainTypePtr, typename Loki::Int2Type<NSStringStream::eOut> >
+	: public StringStreambase< typename Coast::TypeTraits::fooTypeTraits<BufferType>::PlainTypePtr, typename Coast::TypeTraits::Int2Type<NSStringStream::eOut> >
 	, public iostream
 {
 public:
 	typedef StringStreamTmpl<BufferType> ThisClassType;
-	typedef typename Loki::fooTypeTraits<BufferType>::PlainTypePtr IntBufType;
-	typedef typename Loki::Int2Type<NSStringStream::eOut> IoDirType;
+	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::PlainTypePtr IntBufType;
+	typedef typename Coast::TypeTraits::Int2Type<NSStringStream::eOut> IoDirType;
 	typedef StringStreambase< IntBufType, IoDirType > StreamBaseType;
-	typedef typename Loki::fooTypeTraits<BufferType>::PlainTypeRef PlainTypeRef;
-	typedef typename Loki::fooTypeTraits<BufferType>::ConstPlainTypeRef ConstPlainTypeRef;
-	typedef typename Loki::fooTypeTraits<BufferType>::PlainTypePtr PlainTypePtr;
+	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::PlainTypeRef PlainTypeRef;
+	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::ConstPlainTypeRef ConstPlainTypeRef;
+	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::PlainTypePtr PlainTypePtr;
 public:
 	//! ctor, allocate new string object internally for in/output
 	explicit StringStreamTmpl(int mode = ios::out | ios::in)

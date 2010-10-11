@@ -68,7 +68,7 @@ public:
 	{
 	public:
 		typedef AnyLookupInterfaceAdapter<ContainerType> LookupAdapterType;
-		typedef typename Loki::fooTypeTraits<ContainerType>::ConstPlainTypeRef ConstContainerTypeRef;
+		typedef const typename boost_or_tr1::remove_const<ContainerType>::type ConstContainerTypeRef;
 
 		/* Constructor of PushPopEntry. An object of this class can be used where some content must be temporarily pushed onto the Contexts lookup stack. The current implementation uses AnyLookupInterfaceAdapter to wrap the given [RO]Anything.
 			\param ctx Context to operate on
