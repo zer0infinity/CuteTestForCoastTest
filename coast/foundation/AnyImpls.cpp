@@ -85,7 +85,7 @@ void AnyImpl::operator delete(void *d)
 
 AnyImpl *AnyImpl::DeepClone(Allocator *a, Anything &xreftable) const
 {
-	return const_cast<AnyImpl*>(this)->DoDeepClone(a, xreftable); //!@FIXME: HUM: remove as soon as DoDeepClone are const
+	return this->DoDeepClone(a, xreftable);
 }
 
 //---- AnyLongImpl -----------------------------------------------------------------
@@ -1193,7 +1193,7 @@ void AnyArrayImpl::PrintHash() //const
 AnyImpl *AnyArrayImpl::DoDeepClone(Allocator *a, Anything &xreftable) const
 {
 	String adr(ThisToHex(a), a);
-	Anything &refEntry = xreftable[adr];
+	Anything &refEntry = xreftable[adr]; // if (! xreftable.IsDefined(adr)) xreftable[adr] = IFAObject*(0);
 	AnyImpl *res = reinterpret_cast<AnyImpl *>(refEntry.AsIFAObject(0));
 	aimplStartTrace1(AnyArrayImpl.DoDeepClone, "adr: " << adr << ", refEntry: " << reinterpret_cast<l_long>(res));
 	if (res != NULL) {
@@ -1205,8 +1205,9 @@ AnyImpl *AnyArrayImpl::DoDeepClone(Allocator *a, Anything &xreftable) const
 	aimplTrace("stored xref entry for adr: " << adr << " is " << reinterpret_cast<l_long>(ret));
 	long count = this->GetSize();
 	for (long i = 0 ; i < count; ++i) {
-		aimplTrace("slotname " << i << " [" << this->SlotName(i) << "] type: " << (long)(this->At(i).GetType()) << " adr: " << this->At(i).GetImpl()->ThisToHex(a));
-		ret->At(this->SlotName(i)) = this->At(i).DeepClone(a, xreftable);
+		AnyArrayImpl* nonconstthis = const_cast<AnyArrayImpl*>(this); //!@FIXME: HUM: remove as soon as we fixed ref problems
+		aimplTrace("slotname " << i << " [" << this->SlotName(i) << "] type: " << (long)(nonconstthis->At(i).GetType()) << " adr: " << nonconstthis->At(i).GetImpl()->ThisToHex(a));
+		ret->At(this->SlotName(i)) = nonconstthis->At(i).DeepClone(a, xreftable); //!@FIXME: HUM: remove as soon as we fixed ref problems
 	}
 	return ret;
 }
