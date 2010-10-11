@@ -82,11 +82,11 @@ public:
 		return specificSync(IoDirType());
 	}
 
-	int specificSync(boost_or_tr1::mpl::int_<NSStringStream::eIn>) {
+	int specificSync(Coast::TypeTraits::Int2Type<NSStringStream::eIn>) {
 		return 0;
 	}
 
-	int specificSync(boost_or_tr1::mpl::int_<NSStringStream::eOut>) {
+	int specificSync(Coast::TypeTraits::Int2Type<NSStringStream::eOut>) {
 		AdjustStringLength(IoDirType());
 		return 0;
 	}
@@ -261,10 +261,10 @@ private:
 	}
 
 	/*! auxiliary operation to keep track of really output bytes, terminate string */
-	void AdjustStringLength(boost_or_tr1::mpl::int_<NSStringStream::eIn>) {
+	void AdjustStringLength(Coast::TypeTraits::Int2Type<NSStringStream::eIn>) {
 	}
 
-	void AdjustStringLength(boost_or_tr1::mpl::int_<NSStringStream::eOut>) {
+	void AdjustStringLength(Coast::TypeTraits::Int2Type<NSStringStream::eOut>) {
 		if (pbase() && (fOpenMode & ios::out)) {
 			Assert(pptr() && pptr() >= start());
 			long newlen = pptr() - pbase();
@@ -327,11 +327,11 @@ private:
 		return true; // space is still available, false alarm
 	}
 
-	bool doreserve( long newlength, boost_or_tr1::mpl::int_<NSStringStream::eIn>) {
+	bool doreserve( long newlength, Coast::TypeTraits::Int2Type<NSStringStream::eIn>) {
 		return false;
 	}
 
-	bool doreserve( long newlength, boost_or_tr1::mpl::int_<NSStringStream::eOut>) {
+	bool doreserve( long newlength, Coast::TypeTraits::Int2Type<NSStringStream::eOut>) {
 		AdjustStringLength(IoDirType());
 		Assert((pptr() - pbase()) == fStore->Length());
 		long putoffset = 0; // remember offsets if we readjust the mmap/file

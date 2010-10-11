@@ -107,12 +107,12 @@ template
 typename BufferType
 >
 
-class  EXPORTDECL_FOUNDATION IStringStreamTmpl : public StringStreambase< typename Coast::TypeTraits::fooTypeTraits<BufferType>::ConstPlainTypePtr, boost_or_tr1::mpl::int_<NSStringStream::eIn> > , public istream
+class  EXPORTDECL_FOUNDATION IStringStreamTmpl : public StringStreambase< typename Coast::TypeTraits::fooTypeTraits<BufferType>::ConstPlainTypePtr, Coast::TypeTraits::Int2Type<NSStringStream::eIn> > , public istream
 {
 public:
 	typedef IStringStreamTmpl<BufferType> ThisClassType;
 	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::ConstPlainTypePtr IntBufType;
-	typedef typename boost_or_tr1::mpl::int_<NSStringStream::eIn> IoDirType;
+	typedef typename Coast::TypeTraits::Int2Type<NSStringStream::eIn> IoDirType;
 	typedef StringStreambase< IntBufType, IoDirType > StreamBaseType;
 	typedef typename Coast::TypeTraits::fooTypeTraits<IntBufType>::ConstPlainTypeRef ConstPlainTypeRef;
 	typedef typename Coast::TypeTraits::fooTypeTraits<IntBufType>::ConstPlainTypePtr ConstPlainTypePtr;
@@ -236,12 +236,12 @@ template
 <
 typename BufferType
 >
-class  EXPORTDECL_FOUNDATION OStringStreamTmpl : public StringStreambase< typename Coast::TypeTraits::fooTypeTraits<BufferType>::PlainTypePtr, boost_or_tr1::mpl::int_<NSStringStream::eOut> > , public ostream
+class  EXPORTDECL_FOUNDATION OStringStreamTmpl : public StringStreambase< typename Coast::TypeTraits::fooTypeTraits<BufferType>::PlainTypePtr, Coast::TypeTraits::Int2Type<NSStringStream::eOut> > , public ostream
 {
 public:
 	typedef OStringStreamTmpl<BufferType> ThisClassType;
 	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::PlainTypePtr IntBufType;
-	typedef typename boost_or_tr1::mpl::int_<NSStringStream::eOut> IoDirType;
+	typedef typename Coast::TypeTraits::Int2Type<NSStringStream::eOut> IoDirType;
 	typedef StringStreambase< IntBufType, IoDirType > StreamBaseType;
 	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::PlainTypeRef PlainTypeRef;
 	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::PlainTypePtr PlainTypePtr;
@@ -288,13 +288,13 @@ template
 typename BufferType
 >
 class EXPORTDECL_FOUNDATION StringStreamTmpl
-	: public StringStreambase< typename Coast::TypeTraits::fooTypeTraits<BufferType>::PlainTypePtr, typename boost_or_tr1::mpl::int_<NSStringStream::eOut> >
+	: public StringStreambase< typename Coast::TypeTraits::fooTypeTraits<BufferType>::PlainTypePtr, typename Coast::TypeTraits::Int2Type<NSStringStream::eOut> >
 	, public iostream
 {
 public:
 	typedef StringStreamTmpl<BufferType> ThisClassType;
 	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::PlainTypePtr IntBufType;
-	typedef typename boost_or_tr1::mpl::int_<NSStringStream::eOut> IoDirType;
+	typedef typename Coast::TypeTraits::Int2Type<NSStringStream::eOut> IoDirType;
 	typedef StringStreambase< IntBufType, IoDirType > StreamBaseType;
 	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::PlainTypeRef PlainTypeRef;
 	typedef typename Coast::TypeTraits::fooTypeTraits<BufferType>::ConstPlainTypeRef ConstPlainTypeRef;

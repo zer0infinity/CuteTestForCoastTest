@@ -45,13 +45,13 @@ private:
 		enum DeleteFuncSelector { Reftype, Pointertype };
 		enum { delAlgo = (boost_or_tr1::is_pointer<Tp>::value) ? Pointertype : Reftype };
 
-		void DoDeleteObject(const ListTypeValueType &newObjPtr, boost_or_tr1::mpl::int_<Reftype> ) {};
-		void DoDeleteObject(const ListTypeValueType &newObjPtr, boost_or_tr1::mpl::int_<Pointertype> ) {
+		void DoDeleteObject(const ListTypeValueType &newObjPtr, Coast::TypeTraits::Int2Type<Reftype> ) {};
+		void DoDeleteObject(const ListTypeValueType &newObjPtr, Coast::TypeTraits::Int2Type<Pointertype> ) {
 			StatTrace(ObjectList.DoDeleteObject, "deleting element:" << (long)newObjPtr, Storage::Current());
 			delete newObjPtr;
 		}
 		void operator() (Tp pElement) {
-			DoDeleteObject(pElement, boost_or_tr1::mpl::int_<delAlgo>() );
+			DoDeleteObject(pElement, Coast::TypeTraits::Int2Type<delAlgo>() );
 		}
 	};
 

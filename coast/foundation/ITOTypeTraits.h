@@ -20,7 +20,7 @@ namespace boost_or_tr1 = std::tr1;
 namespace boost_or_tr1 = std;
 #else
 #include <boost/type_traits.hpp>
-#include <boost/mpl/int.hpp>
+#include <boost/mpl/if.hpp>
 namespace boost_or_tr1 = boost;
 #endif
 
@@ -30,6 +30,11 @@ namespace Coast
 	namespace TypeTraits
 	{
 		struct NullType {};
+
+	    template <int v>
+	    struct Int2Type {
+	        enum { value = v };
+	    };
 
 		template <typename T>
 		class TypeTraits
