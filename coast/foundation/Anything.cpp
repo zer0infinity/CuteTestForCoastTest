@@ -1665,11 +1665,11 @@ ROAnything::ROAnything(const ROAnything &a)
 Anything ROAnything::DeepClone(Allocator *a) const
 {
 	anyStartTrace(ROAnything.DeepClone);
-	MetaThing xref(a);
+	Anything xref(a);
 	if (fAnyImp) {
 		return fAnyImp->DeepClone(a, xref);
 	} else {
-		return a;
+		return Anything(a);
 	}
 }
 

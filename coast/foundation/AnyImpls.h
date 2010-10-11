@@ -77,10 +77,7 @@ public:
 		return fRefCount;
 	}
 
-	String ThisToHex(Allocator *a = Storage::Current()) const {
-		String hexStr(a);
-		return hexStr.Append(reinterpret_cast<unsigned long>(this));
-	}
+	String ThisToHex(Allocator *a = Storage::Current()) const;
 
 	static void *operator new(size_t size, Allocator *a);
 
@@ -379,8 +376,8 @@ public:
 	AnyIndTable(long initCapacity, Allocator *a);
 	~AnyIndTable();
 
-	long At(long); //const/non-const overload
-	long At(long)const; //const/non-const overload
+	long At(long);
+	long At(long)const;
 	// return -1 if slot could not be found
 	long FindAt(long slot); //const
 	void Remove(long slot);
@@ -430,10 +427,10 @@ public:
 
 	~AnyArrayImpl();
 
-	Anything &At(long i);//const/non-const overload
+	Anything &At(long i);
 	Anything At(long i)const;
 
-	Anything &operator[](long i) //const/nont-const overload
+	Anything &operator[](long i)
 	{
 		return At(i);
 	}
@@ -455,10 +452,10 @@ public:
 
 	long FindIndex(const long lIdx);//const
 
-	Anything &At(const char *key);//const/non-const overload
-	Anything At(const char *key) const;//const/non-const overload
+	Anything &At(const char *key);
+	Anything At(const char *key) const;
 
-	Anything &operator[](const char *key)//const/non-const overload
+	Anything &operator[](const char *key)
 	{
 		return At(key);
 	}
@@ -488,15 +485,15 @@ public:
 
 	const String &VisitSlotName(long slot);//const
 
-	virtual bool IsEqual(AnyImpl const *) const				{
+	virtual bool IsEqual(AnyImpl const *) const {
 		return false;
 	}
 
-	void PrintKeys();//const
+	void PrintKeys() const;
 
-	void PrintHash();//const
+	void PrintHash() const;
 
-	long IntAt(long at)	//const ev. non-const overload
+	long IntAt(long at)
 	{
 		return fInd->At(at);
 	}
@@ -535,7 +532,7 @@ public:
 	const String &Key(long slot) const;
 
 	//!works with index into fContents
-	const Anything &IntValue(long at); //const/non-const?
+	const Anything &IntValue(long at) const;
 
 	//!works with index into fContents
 	const String &IntKey(long at) ; //const/non-const?

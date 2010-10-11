@@ -68,6 +68,10 @@
 		/SlotCopierTest					0
 		/SlotPutterTest					0
 	}
+	/AnyImpl {
+		/MainSwitch						20
+		/EnableAll						20
+	}
 	/AnyArrayImpl {
 		/MainSwitch						20
 		/EnableAll						20
