@@ -379,7 +379,7 @@ public:
 	long At(long);
 	long At(long)const;
 	// return -1 if slot could not be found
-	long FindAt(long slot); //const
+	long FindAt(long slot) const;
 	void Remove(long slot);
 
 	static void *operator new(size_t size, Allocator *a);
@@ -448,9 +448,9 @@ public:
 
 	long Contains(const char *k)const;
 
-	long FindIndex(const char *k, long sizehint = -1, u_long hashhint = 0);//const
+	long FindIndex(const char *k, long sizehint = -1, u_long hashhint = 0)const;
 
-	long FindIndex(const long lIdx);//const
+	long FindIndex(const long lIdx) const;
 
 	Anything &At(const char *key);
 	Anything At(const char *key) const;
@@ -483,7 +483,7 @@ public:
 
 	const char *SlotName(long slot)const;
 
-	const String &VisitSlotName(long slot);//const
+	const String &VisitSlotName(long slot)const;
 
 	virtual bool IsEqual(AnyImpl const *) const {
 		return false;

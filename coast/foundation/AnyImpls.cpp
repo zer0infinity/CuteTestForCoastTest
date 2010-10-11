@@ -620,7 +620,6 @@ void AnyIndTable::Expand(long slot)
 	InitIndices(slot, old);
 
 	fAllocator->Free(old);
-//	delete [] old;
 }
 
 void AnyIndTable::InsertReserve(long pos, long size)
@@ -680,7 +679,7 @@ void AnyIndTable::InitIndices(long slot, long *ot)
 	fSize = slot + 1;
 }
 
-long AnyIndTable::At(long slot) //const/non-const overload?
+long AnyIndTable::At(long slot)
 {
 	Assert( slot >= 0 );
 
@@ -709,7 +708,7 @@ long AnyIndTable::At(long slot) const
 	return -1; //see what happens with that, may be zero PS 2010!
 }
 
-long AnyIndTable::FindAt(long slot) //const
+long AnyIndTable::FindAt(long slot) const
 {
 	Assert( slot >= 0 );
 
@@ -863,7 +862,7 @@ const char *AnyArrayImpl::AsCharPtr(const char *, long &buflen) const
 Anything &AnyArrayImpl::At(long slot) //const/non-const overload
 {
 	// return an address of an anything residing at slot
-	// expand the buffers as necessary to fullfill the request
+	// expand the buffers as necessary to fulfill the request
 	long newsz = slot + 1;
 	// check for logical expansion
 	if ( (newsz > fSize) ) {
@@ -882,8 +881,8 @@ Anything AnyArrayImpl::At(long slot) const
 {
 	// return an address of an anything
 	// residing at slot
-	// expand the buffers as necessary to fullfill
-	// the request
+	// DO NOT expand the buffers as necessary to fulfill
+	// the request, but throw instead, if out of range
 	if (slot < fSize && slot < fCapacity){
 		long at = IntAt(slot);
 		return fContents[IntAtBuf(at)][IntAtSlot(at)].Value();
@@ -945,7 +944,7 @@ Anything AnyArrayImpl::operator [](const char *key) const
 	return At(key);
 }
 
-long AnyArrayImpl::FindIndex(const char *key, long sizehint, u_long hashhint) //const
+long AnyArrayImpl::FindIndex(const char *key, long sizehint, u_long hashhint) const
 {
 	// find the index of an anything given
 	// its key. It returns -1 if not defined
@@ -958,7 +957,7 @@ long AnyArrayImpl::FindIndex(const char *key, long sizehint, u_long hashhint) //
 	return fKeys->At(key, sizehint, hashhint);
 }
 
-long AnyArrayImpl::FindIndex(const long lIdx) //const
+long AnyArrayImpl::FindIndex(const long lIdx) const
 {
 	// find the index of an anything given
 	// its index. It returns -1 if not defined
@@ -1050,7 +1049,7 @@ const char *AnyArrayImpl::SlotName(long slot)const
 	const String &k = Key(slot);
 	return (k.Length() > 0) ? k.cstr() : reinterpret_cast<const char *>(0);
 }
-const String &AnyArrayImpl::VisitSlotName(long slot) //const
+const String &AnyArrayImpl::VisitSlotName(long slot) const
 {
 	// calculate the slot name given an
 	// index
