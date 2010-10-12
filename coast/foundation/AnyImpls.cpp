@@ -134,7 +134,7 @@ AnyImpl *AnyLongImpl::DoDeepClone(Allocator *a, Anything &xreftable) const
 	String adr = ThisToHex();
 	Anything &refEntry = xreftable[adr];
 	AnyLongImpl *res = reinterpret_cast<AnyLongImpl *>(refEntry.AsIFAObject(0));
-	aimplStartTrace1(AnyLongImpl.DoDeepClone, "adr: " << adr << ", refEntry: " << (res?res->ThisToHex():"0"));
+	aimplStartTrace1(AnyLongImpl.DoDeepClone, "my-a:&" << (long)MyAllocator() << " a:&" << (long)a << " adr: " << adr << ", refEntry: " << (res?res->ThisToHex():"0"));
 	if (res != 0) {
 		aimplTraceAny(refEntry, "found existing entry, adding reference");
 		res->Ref(); // do not forget to count
@@ -170,7 +170,7 @@ AnyImpl *AnyObjectImpl::DoDeepClone(Allocator *a, Anything &xreftable) const
 	String adr = ThisToHex();
 	Anything &refEntry = xreftable[adr];
 	AnyObjectImpl *res = reinterpret_cast<AnyObjectImpl *>(refEntry.AsIFAObject(0));
-	aimplStartTrace1(AnyObjectImpl.DoDeepClone, "adr: " << adr << ", refEntry: " << (res?res->ThisToHex():"0"));
+	aimplStartTrace1(AnyObjectImpl.DoDeepClone, "my-a:&" << (long)MyAllocator() << " a:&" << (long)a << " adr: " << adr << ", refEntry: " << (res?res->ThisToHex():"0"));
 	if (res != 0) {
 		aimplTraceAny(refEntry, "found existing entry, adding reference");
 		res->Ref(); // do not forget to count
@@ -217,7 +217,7 @@ AnyImpl *AnyDoubleImpl::DoDeepClone(Allocator *a, Anything &xreftable) const
 	String adr = ThisToHex();
 	Anything &refEntry = xreftable[adr];
 	AnyDoubleImpl *res = reinterpret_cast<AnyDoubleImpl *>(refEntry.AsIFAObject(0));
-	aimplStartTrace1(AnyDoubleImpl.DoDeepClone, "adr: " << adr << ", refEntry: " << (res?res->ThisToHex():"0"));
+	aimplStartTrace1(AnyDoubleImpl.DoDeepClone, "my-a:&" << (long)MyAllocator() << " a:&" << (long)a << " adr: " << adr << ", refEntry: " << (res?res->ThisToHex():"0"));
 	if (res != 0) {
 		aimplTraceAny(refEntry, "found existing entry, adding reference");
 		res->Ref(); // do not forget to count
@@ -256,7 +256,7 @@ AnyImpl *AnyBinaryBufImpl::DoDeepClone(Allocator *a, Anything &xreftable) const
 	String adr = ThisToHex();
 	Anything &refEntry = xreftable[adr];
 	AnyBinaryBufImpl *res = reinterpret_cast<AnyBinaryBufImpl *>(refEntry.AsIFAObject(0));
-	aimplStartTrace1(AnyBinaryBufImpl.DoDeepClone, "adr: " << adr << ", refEntry: " << (res?res->ThisToHex():"0"));
+	aimplStartTrace1(AnyBinaryBufImpl.DoDeepClone, "my-a:&" << (long)MyAllocator() << " a:&" << (long)a << " adr: " << adr << ", refEntry: " << (res?res->ThisToHex():"0"));
 	if (res != 0) {
 		aimplTraceAny(refEntry, "found existing entry, adding reference");
 		res->Ref(); // do not forget to count
@@ -313,7 +313,7 @@ AnyImpl *AnyStringImpl::DoDeepClone(Allocator *a, Anything &xreftable) const
 	String adr = ThisToHex();
 	Anything &refEntry = xreftable[adr];
 	AnyStringImpl *res = reinterpret_cast<AnyStringImpl *>(refEntry.AsIFAObject(0));
-	aimplStartTrace1(AnyStringImpl.DoDeepClone, "fString [" << this->fString << "], adr: " << adr << ", refEntry: " << (res?res->ThisToHex():"0"));
+	aimplStartTrace1(AnyStringImpl.DoDeepClone, "my-a:&" << (long)MyAllocator() << " a:&" << (long)a << " fString [" << this->fString << "], adr: " << adr << ", refEntry: " << (res?res->ThisToHex():"0"));
 	if (res != 0) {
 		res->Ref(); // do not forget to count
 		return res;
@@ -879,9 +879,8 @@ Anything &AnyArrayImpl::At(long slot) //const/non-const overload
 }
 Anything AnyArrayImpl::At(long slot) const
 {
-	// return an address of an anything
-	// residing at slot
-	// DO NOT expand the buffers as necessary to fulfill
+	// return an address of an anything residing at slot
+	// DO NOT expand the buffers as necessary to fulfill
 	// the request, but throw instead, if out of range
 	if (slot < fSize && slot < fCapacity){
 		long at = IntAt(slot);
@@ -925,9 +924,7 @@ Anything &AnyArrayImpl::At(const char *key) //const/non-const overload!
 }
 Anything AnyArrayImpl::At(const char *key) const///non-const overload!
 {
-	// calculate the adress of an anything
-	// given its key
-
+	// calculate the adress of an anything given its key
 	long slot = -1;
 	if ( fKeys ) {
 		// find index of key or return -1
@@ -936,7 +933,6 @@ Anything AnyArrayImpl::At(const char *key) const///non-const overload!
 	if (slot < 0) {
 		return Anything();
 	}
-
 	return fContents[IntAtBuf(slot)][IntAtSlot(slot)].Value();
 }
 Anything AnyArrayImpl::operator [](const char *key) const
@@ -1206,7 +1202,7 @@ AnyImpl *AnyArrayImpl::DoDeepClone(Allocator *a, Anything &xreftable) const
 	String adr = ThisToHex();
 	Anything &refEntry = xreftable[adr];
 	AnyArrayImpl *res = reinterpret_cast<AnyArrayImpl *>(refEntry.AsIFAObject(0));
-	aimplStartTrace1(AnyArrayImpl.DoDeepClone, "adr: " << adr << ", refEntry: " << (res?res->ThisToHex():"0"));
+	aimplStartTrace1(AnyArrayImpl.DoDeepClone, "my-a:&" << (long)MyAllocator() << " a:&" << (long)a << " adr: " << adr << ", refEntry: " << (res?res->ThisToHex():"0"));
 	if (res != 0) {
 		res->Ref(); // do not forget to count
 		return res;
@@ -1216,10 +1212,10 @@ AnyImpl *AnyArrayImpl::DoDeepClone(Allocator *a, Anything &xreftable) const
 	aimplTrace("stored xref entry for adr: " << adr << " is " << res->ThisToHex());
 	long count = this->GetSize();
 	for (long i = 0 ; i < count; ++i) {
-		AnyArrayImpl* nonconstthis = const_cast<AnyArrayImpl*>(this); //!@FIXME: HUM: remove as soon as we fixed ref problems
-		aimplTrace("slotname " << i << " [" << this->SlotName(i) << "] type: " << (long)(nonconstthis->At(i).GetType()) << " adr: " << nonconstthis->At(i).GetImpl()->ThisToHex());
-		res->At(this->SlotName(i)) = nonconstthis->At(i).DeepClone(a, xreftable); //!@FIXME: HUM: remove as soon as we fixed ref problems
-//		res->At(this->SlotName(i)) = this->At(i).DeepClone(a, xreftable);
+//		AnyArrayImpl* nonconstthis = const_cast<AnyArrayImpl*>(this); //!@FIXME: HUM: remove as soon as we fixed ref problems
+//		aimplTrace("slotname " << i << " [" << this->SlotName(i) << "] type: " << (long)(nonconstthis->At(i).GetType()) << " adr: " << nonconstthis->At(i).GetImpl()->ThisToHex());
+//		res->At(this->SlotName(i)) = nonconstthis->At(i).DeepClone(a, xreftable); //!@FIXME: HUM: remove as soon as we fixed ref problems
+		res->At(this->SlotName(i)) = this->At(i).DeepClone(a, xreftable);
 	}
 	return res;
 }
