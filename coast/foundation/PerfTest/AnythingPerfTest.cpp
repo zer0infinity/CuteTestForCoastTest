@@ -6,19 +6,17 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
-
 //--- interface include --------------------------------------------------------
 #include "AnythingPerfTest.h"
+
+//--- test modules used --------------------------------------------------------
+#include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
 #include "Dbg.h"
 #include "PoolAllocator.h"
 #include "System.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 //---- AnythingPerfTest ----------------------------------------------------------------
 AnythingPerfTest::AnythingPerfTest(TString tstrName)
