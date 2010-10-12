@@ -378,8 +378,6 @@ public:
 
 	long At(long);
 	long At(long)const;
-	// return -1 if slot could not be found
-	long FindAt(long slot) const;
 	void Remove(long slot);
 
 	static void *operator new(size_t size, Allocator *a);

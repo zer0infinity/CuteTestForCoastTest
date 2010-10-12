@@ -717,24 +717,11 @@ long AnyIndTable::At(long slot)
 }
 long AnyIndTable::At(long slot) const
 {
-	Assert( slot >= 0 );
-
 	// check for capacity overflow
-	if ( slot < fCapacity && slot < fSize ) {
+	if ( slot >= 0 && slot < fCapacity && slot < fSize ) {
 		return fIndexTable[slot];
 	}
 	return -1; //see what happens with that, may be zero PS 2010!
-}
-
-long AnyIndTable::FindAt(long slot) const
-{
-	Assert( slot >= 0 );
-
-	// check for capacity overflow
-	if ( slot < fCapacity && slot < fSize) {
-		return fIndexTable[slot];
-	}
-	return -1L;
 }
 
 void AnyIndTable::Remove(long slot)
@@ -977,7 +964,7 @@ long AnyArrayImpl::FindIndex(const long lIdx) const
 	}
 
 	// return index from indexarray
-	return fInd->FindAt(lIdx);
+	return static_cast<const AnyIndTable*>(fInd)->At(lIdx);
 }
 
 long AnyArrayImpl::Contains(const char *k) const
