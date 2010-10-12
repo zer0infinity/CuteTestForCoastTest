@@ -37,17 +37,16 @@
 #endif
 
 // disable tracing if requested, even if in COAST_TRACE mode, eg. performance tests
-#define COAST_DISABLE_TRACE
-#if !defined(COAST_TRACE) || defined(COAST_DISABLE_TRACE)
-#define _StatTrace(trigger, msg, allocator)
-#define _StartTrace(trigger)
-#define _StartTrace1(trigger, msg)
-#define _Trace(msg);
-#else
+#if defined(COAST_TRACE) && 0
 #define _StatTrace(trigger, msg, allocator) 	StatTrace(trigger, msg, allocator)
 #define _StartTrace(trigger)					StartTrace(trigger)
 #define _StartTrace1(trigger, msg)				StartTrace1(trigger, msg)
 #define _Trace(msg)								Trace(msg);
+#else
+#define _StatTrace(trigger, msg, allocator)
+#define _StartTrace(trigger)
+#define _StartTrace1(trigger, msg)
+#define _Trace(msg);
 #endif
 
 //---- STLStorage ----------------------------------------------------------

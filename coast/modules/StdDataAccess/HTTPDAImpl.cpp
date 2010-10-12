@@ -27,23 +27,20 @@ using namespace std;
 #endif
 
 //--- HTTPDAImpl -----------------------------------------------------
-RegisterDataAccessImpl(HTTPDAImpl);
+RegisterDataAccessImpl( HTTPDAImpl);
 
-HTTPDAImpl::HTTPDAImpl(const char *name) : DataAccessImpl(name)
-{
+HTTPDAImpl::HTTPDAImpl(const char *name) :
+	DataAccessImpl(name) {
 }
 
-HTTPDAImpl::~HTTPDAImpl()
-{
+HTTPDAImpl::~HTTPDAImpl() {
 }
 
-IFAObject *HTTPDAImpl::Clone() const
-{
+IFAObject *HTTPDAImpl::Clone() const {
 	return new HTTPDAImpl(fName);
 }
 
-String HTTPDAImpl::GenerateErrorMessage(const char *msg, Context &context)
-{
+String HTTPDAImpl::GenerateErrorMessage(const char *msg, Context &context) {
 	ROAnything appPref(context.Lookup("URIPrefix2ServiceMap"));
 	Anything anyPrefix = appPref.SlotName(appPref.FindValue(fName));
 
@@ -55,26 +52,22 @@ String HTTPDAImpl::GenerateErrorMessage(const char *msg, Context &context)
 	return errorMsg;
 }
 
-bool HTTPDAImpl::Exec( Context &context, ParameterMapper *in, ResultMapper *out)
-{
+bool HTTPDAImpl::Exec(Context &context, ParameterMapper *in, ResultMapper *out) {
 	StartTrace(HTTPDAImpl.Exec);
 
 	ConnectorParams cps(context, in);
 	Trace( "Address<" << cps.IPAddress() << "> Port[" << cps.Port() << "] SSL(" << ((cps.UseSSL()) ? "yes" : "no") << ")" );
 
-	if ( cps.UseSSL() ) {
+	if (cps.UseSSL()) {
 		TraceAny(context.Lookup("SSLModuleCfg"), "SSLModuleCfg");
 		ConnectorArgs ca(cps.IPAddress(), cps.Port(), cps.Timeout());
-		SSLSocketArgs sa(context.Lookup("VerifyCertifiedEntity").AsBool(0),
-						 context.Lookup("CertVerifyString").AsString(),
-						 context.Lookup("CertVerifyStringIsFilter").AsBool(0),
-						 context.Lookup("SessionResumption").AsBool(0));
+		SSLSocketArgs sa(context.Lookup("VerifyCertifiedEntity").AsBool(0), context.Lookup("CertVerifyString").AsString(), context.Lookup(
+				"CertVerifyStringIsFilter").AsBool(0), context.Lookup("SessionResumption").AsBool(0));
 
 		Trace(sa.ShowState());
 
-		SSLConnector sslcsc (ca, sa, context.Lookup("SSLModuleCfg"),
-							 (SSL_CTX *)context.Lookup("SSLContext").AsIFAObject(0),
-							 NULL, 0L, cps.UseThreadLocal());
+		SSLConnector sslcsc(ca, sa, context.Lookup("SSLModuleCfg"), (SSL_CTX *) context.Lookup("SSLContext").AsIFAObject(0), NULL, 0L,
+				cps.UseThreadLocal());
 		return DoExec(&sslcsc, &cps, context, in, out);
 	} else {
 		Connector csc(cps.IPAddress(), cps.Port(), cps.Timeout(), cps.UseThreadLocal());
@@ -83,8 +76,7 @@ bool HTTPDAImpl::Exec( Context &context, ParameterMapper *in, ResultMapper *out)
 	return false;
 }
 
-bool HTTPDAImpl::DoExec(Connector *csc, ConnectorParams *cps, Context &context, ParameterMapper *in, ResultMapper *out)
-{
+bool HTTPDAImpl::DoExec(Connector *csc, ConnectorParams *cps, Context &context, ParameterMapper *in, ResultMapper *out) {
 	StartTrace(HTTPDAImpl.DoExec);
 
 #ifdef RECORD
@@ -100,15 +92,15 @@ bool HTTPDAImpl::DoExec(Connector *csc, ConnectorParams *cps, Context &context, 
 		s = csc->Use();
 		// Store client info
 		context.GetTmpStore()["ClientInfoBackends"] = csc->ClientInfo();
-		if ( s ) {
+		if (s) {
 			Ios = csc->GetStream();
-			if ( cps->UseSSL() ) {
-				if ( s->IsCertCheckPassed(context.Lookup("SSLModuleCfg")) == false ) {
+			if (cps->UseSSL()) {
+				if (s->IsCertCheckPassed(context.Lookup("SSLModuleCfg")) == false) {
 					return false;
 				}
 			}
 		}
-		if (! Ios ) {
+		if (!Ios) {
 			out->Put("Error", GenerateErrorMessage("Connection to ", context), context);
 			return false;
 		}
@@ -116,17 +108,17 @@ bool HTTPDAImpl::DoExec(Connector *csc, ConnectorParams *cps, Context &context, 
 	{
 		DAAccessTimer(HTTPDAImpl.DoExec, " writing", context);
 
-		if ( !SendInput(Ios, s, cps->Timeout(), context, in, out) || !(*Ios)) {
+		if (!SendInput(Ios, s, cps->Timeout(), context, in, out) || !(*Ios)) {
 			return false;
 		}
 	}
 	{
 		DAAccessTimer(HTTPDAImpl.DoExec, " reading", context);
-		bool bPutSuccess= out->Put("Output", *Ios, context);
+		bool bPutSuccess = out->Put("Output", *Ios, context);
 		OStringStream ostr;
 		context.DebugStores(0, ostr, true);
 		SubTrace(Stores, ostr.str());
-		if ( !bPutSuccess ){
+		if (!bPutSuccess) {
 			out->Put("Error", GenerateErrorMessage("Receiving reply of ", context), context);
 		}
 		return bPutSuccess;
@@ -143,11 +135,11 @@ bool HTTPDAImpl::ReadReply( String &theReply, Context &context, iostream *Ios )
 		}
 		return true;
 	} else {
-		return false ;
+		return false;
 	}
 }
 
-bool HTTPDAImpl::RenderReply( String &theReply, Context &context, ResultMapper *out  )
+bool HTTPDAImpl::RenderReply( String &theReply, Context &context, ResultMapper *out )
 {
 	IStringStream is(theReply);
 
@@ -233,11 +225,11 @@ bool HTTPDAImpl::DoExecRecord(Connector *csc, ConnectorParams *cps, Context &con
 		result = false;
 	}
 
-#ifdef COAST_TRACE
-	String infoMsg = "\r\nReply from server ";
-	infoMsg << theReply;
-	SystemLog::Info( infoMsg ); // perhaps enable this line with an entry in RequestLineRenderer.any.... future
-#endif
+	if ( TriggerEnabled(HTTPDAImpl.DoExecRecordOrTest) ) {
+		String infoMsg = "\r\nReply from server ";
+		infoMsg << theReply;
+		SystemLog::Info( infoMsg ); // perhaps enable this line with an entry in RequestLineRenderer.any.... future
+	}
 
 	if (! RenderReply( theReply, context, out ) ) {
 		return false;
@@ -246,7 +238,7 @@ bool HTTPDAImpl::DoExecRecord(Connector *csc, ConnectorParams *cps, Context &con
 	// write out recording
 	Anything conv = Anything( recording.GetSize() );
 	String index = conv.AsString();
-//	TestConfigRecordingSoFar[index][slotName]= tmpStore;
+	//	TestConfigRecordingSoFar[index][slotName]= tmpStore;
 
 	recording[index]["Request"] = request;
 	recording[index]["Reply"] = theReply;
@@ -256,8 +248,7 @@ bool HTTPDAImpl::DoExecRecord(Connector *csc, ConnectorParams *cps, Context &con
 }
 #endif
 
-bool HTTPDAImpl::SendInput(iostream *Ios, Socket *s, long timeout, Context &context, ParameterMapper *in, ResultMapper *out)
-{
+bool HTTPDAImpl::SendInput(iostream *Ios, Socket *s, long timeout, Context &context, ParameterMapper *in, ResultMapper *out) {
 	StartTrace(HTTPDAImpl.SendInput);
 	//XXX: this section should probably be conditional
 	long uploadSize = context.Lookup("PostContentLengthToStream", -1L);
@@ -274,28 +265,24 @@ bool HTTPDAImpl::SendInput(iostream *Ios, Socket *s, long timeout, Context &cont
 		} else {
 			uploadSize = 0L;
 		}
-	}
-	Trace("Request.BodyLength:" << uploadSize);
+	} Trace("Request.BodyLength:" << uploadSize);
 	context.GetTmpStore()["Request"]["BodyLength"] = uploadSize;
-#ifdef COAST_TRACE
-	Trace("Debug Version");
-	if ( TriggerEnabled(HTTPDAImpl.SendInput) ) {
+	if (TriggerEnabled(HTTPDAImpl.SendInput)) {
 		String request(16384L);
 		{
 			OStringStream os(request);
-			if ( !in->Get("Input", os, context) ) {
+			if (!in->Get("Input", os, context)) {
 				Trace("getting Input failed, content so far:" << request);
 				out->Put("Error", GenerateErrorMessage("Input Collection of ", context), context);
 				return false;
 			}
-		}
-		Trace("Request:" << request);
+		} Trace("Request:" << request);
 
 		Anything tmpStore(context.GetTmpStore());
 		tmpStore["Mapper"]["RequestMade"] = request;
 
 		if (Ios) {
-			if ( s->IsReadyForWriting() ) {
+			if (s->IsReadyForWriting()) {
 				Trace("sending input");
 				s->SetNoDelay();
 				(*Ios) << request;
@@ -308,21 +295,17 @@ bool HTTPDAImpl::SendInput(iostream *Ios, Socket *s, long timeout, Context &cont
 				return false;
 			}
 		}
-	} else
-#endif
-	{
-		Trace("NOT Debug Version");
+	} else {
 		return DoSendInput(Ios, s, timeout, context, in, out);
 	}
 	return false;
 }
 
-bool HTTPDAImpl::DoSendInput(iostream *Ios, Socket *s, long timeout, Context &context, ParameterMapper *in, ResultMapper *out)
-{
+bool HTTPDAImpl::DoSendInput(iostream *Ios, Socket *s, long timeout, Context &context, ParameterMapper *in, ResultMapper *out) {
 	StartTrace(HTTPDAImpl.DoSendInput);
 
-	if ( Ios ) {
-		if ( s->IsReadyForWriting() ) {
+	if (Ios) {
+		if (s->IsReadyForWriting()) {
 			s->SetNoDelay();
 			bool retCode = in->Get("Input", *Ios, context);
 			Ios->flush();

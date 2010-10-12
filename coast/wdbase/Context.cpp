@@ -31,76 +31,41 @@ const String Context::DebugStoreSeparator("<!-- separator 54353021345321784456 -
 
 //---- Context ------------------------------------------------------------------
 Context::Context() :
-	fSession(0),
-	fSessionStoreGlobal(MetaThing(Storage::Global()), Storage::Global()),
-	fSessionStoreCurrent(MetaThing(Storage::Current()), Storage::Current()),
-	fStackSz(0),
-	fStoreSz(0),
-	fRequest(),
-	fSocket(0),
-	fMockStream(0),
-	fCopySessionStore(false)
-{
+	fSession(0), fSessionStoreGlobal(MetaThing(Storage::Global()), Storage::Global()), fSessionStoreCurrent(MetaThing(Storage::Current()),
+			Storage::Current()), fStackSz(0), fStoreSz(0), fRequest(), fSocket(0), fMockStream(0), fCopySessionStore(false) {
 	InitTmpStore();
 }
 Context::Context(Anything &request) :
-	fSession(0),
-	fSessionStoreGlobal(MetaThing(Storage::Global()), Storage::Global()),
-	fSessionStoreCurrent(MetaThing(Storage::Current()), Storage::Current()),
-	fStackSz(0),
-	fStoreSz(0),
-	fRequest(request),
-	fSocket(0),
-	fMockStream(0),
-	fCopySessionStore(false)
+	fSession(0), fSessionStoreGlobal(MetaThing(Storage::Global()), Storage::Global()), fSessionStoreCurrent(MetaThing(Storage::Current()),
+			Storage::Current()), fStackSz(0), fStoreSz(0), fRequest(request), fSocket(0), fMockStream(0), fCopySessionStore(false)
 
 {
 	InitTmpStore();
 	fLanguage = LocalizationUtils::FindLanguageKey(*this, Lookup("Language", "E"));
 }
-Context::Context(Socket *socket)  :
-	fSession(0),
-	fSessionStoreGlobal(MetaThing(Storage::Global()), Storage::Global()),
-	fSessionStoreCurrent(MetaThing(Storage::Current()), Storage::Current()),
-	fStackSz(0),
-	fStoreSz(0),
-	fSocket(socket),
-	fMockStream(0),
-	fCopySessionStore(false)
-{
+Context::Context(Socket *socket) :
+	fSession(0), fSessionStoreGlobal(MetaThing(Storage::Global()), Storage::Global()), fSessionStoreCurrent(MetaThing(Storage::Current()),
+			Storage::Current()), fStackSz(0), fStoreSz(0), fSocket(socket), fMockStream(0), fCopySessionStore(false) {
 	// the arguments we get for this request
-	if ( fSocket ) {
+	if (fSocket) {
 		fRequest["ClientInfo"] = fSocket->ClientInfo();
 	}
 	InitTmpStore();
 	fLanguage = LocalizationUtils::FindLanguageKey(*this, Lookup("Language", "E"));
 }
-Context::Context(iostream *stream)  :
-	fSession(0),
-	fSessionStoreGlobal(MetaThing(Storage::Global()), Storage::Global()),
-	fSessionStoreCurrent(MetaThing(Storage::Current()), Storage::Current()),
-	fStackSz(0),
-	fStoreSz(0),
-	fSocket(0),
-	fMockStream(stream),
-	fCopySessionStore(false)
-{
+Context::Context(iostream *stream) :
+	fSession(0), fSessionStoreGlobal(MetaThing(Storage::Global()), Storage::Global()), fSessionStoreCurrent(MetaThing(Storage::Current()),
+			Storage::Current()), fStackSz(0), fStoreSz(0), fSocket(0), fMockStream(stream), fCopySessionStore(false) {
 	// the arguments we get for this request
 	InitTmpStore();
 	fLanguage = LocalizationUtils::FindLanguageKey(*this, Lookup("Language", "E"));
 }
-Context::Context(const Anything &env, const Anything &query, Server *server, Session *s, Role *role, Page *page)
-	:	fSession(0), // don't initialize because InitSession would interpret it as same session and not increment
-		// session's ref count while the destructor decrements it. Init(s) does the needed intitialization
-		// while InitSession handels the refcounting correctly.
-		fSessionStoreGlobal(MetaThing(Storage::Global()), Storage::Global()),
-		fSessionStoreCurrent(MetaThing(Storage::Current()), Storage::Current()),
-		fStackSz(0),
-		fStoreSz(0),
-		fSocket(0),
-		fMockStream(0),
-		fCopySessionStore(false)
-{
+Context::Context(const Anything &env, const Anything &query, Server *server, Session *s, Role *role, Page *page) :
+	fSession(0), // don't initialize because InitSession would interpret it as same session and not increment
+			// session's ref count while the destructor decrements it. Init(s) does the needed intitialization
+			// while InitSession handels the refcounting correctly.
+			fSessionStoreGlobal(MetaThing(Storage::Global()), Storage::Global()), fSessionStoreCurrent(MetaThing(Storage::Current()),
+					Storage::Current()), fStackSz(0), fStoreSz(0), fSocket(0), fMockStream(0), fCopySessionStore(false) {
 	InitSession(s);
 	InitTmpStore();
 	fRequest["env"] = env;
@@ -111,8 +76,7 @@ Context::Context(const Anything &env, const Anything &query, Server *server, Ses
 	fLanguage = LocalizationUtils::FindLanguageKey(*this, Lookup("Language", "E"));
 }
 
-Context::~Context()
-{
+Context::~Context() {
 	if (fSession) {
 		LockSession();
 		// SOP: should we resynch store again, or should PutInStore take care?
@@ -121,13 +85,12 @@ Context::~Context()
 	}
 }
 
-void Context::InitSession(Session *s)
-{
+void Context::InitSession(Session *s) {
 	// Make a copy of the session store if fCopySessionStore is on. Reference the session to
 	// inhibit premature destruction of session object.
 	StartTrace1(Context.InitSession, String() << (long)(void *)this);
 
-	bool sessionIsDifferent =  (s != fSession);
+	bool sessionIsDifferent = (s != fSession);
 	ROAnything contextAny;
 	if (Lookup("Context", contextAny)) {
 		fCopySessionStore = contextAny["CopySessionStore"].AsBool(false);
@@ -147,7 +110,7 @@ void Context::InitSession(Session *s)
 			if (sessionIsDifferent) {
 				fSession->Ref();
 				Trace("After fSession->Ref() id: [" << fSession->GetId() <<
-					  "] refCount: [" << fSession->GetRefCount() << "]");
+						"] refCount: [" << fSession->GetRefCount() << "]");
 			}
 			if (fCopySessionStore) {
 				fSessionStoreCurrent = fSession->GetStoreGlobal().DeepClone(fSessionStoreCurrent.GetAllocator());
@@ -182,99 +145,81 @@ void Context::InitSession(Session *s)
 	}
 }
 
-void Context::InitTmpStore()
-{
+void Context::InitTmpStore() {
 	MetaThing tmp;
 	Push("tmp", tmp);
 }
 
-Session *Context::GetSession() const
-{
+Session *Context::GetSession() const {
 	return fSession;
 }
 
-const char *Context::GetSessionId() const
-{
+const char *Context::GetSessionId() const {
 	return (fSession) ? fSession->GetId() : 0;
 }
 
-void Context::SetServer(Server *server)
-{
+void Context::SetServer(Server *server) {
 	Replace("Server", server);
 }
 
-Server *Context::GetServer() const
-{
+Server *Context::GetServer() const {
 	return SafeCast(Find("Server"), Server);
 }
 
-void Context::SetRole(Role *role)
-{
+void Context::SetRole(Role *role) {
 	Replace("Role", role);
 }
 
-Role *Context::GetRole() const
-{
+Role *Context::GetRole() const {
 	return SafeCast(Find("Role"), Role);
 }
 
-void Context::SetPage(Page *p)
-{
+void Context::SetPage(Page *p) {
 	StatTrace(Context.SetPage, "New Page [" << (p?p->GetName():"null") << "]", Storage::Current());
 	Replace("Page", p);
 }
 
-Page *Context::GetPage() const
-{
+Page *Context::GetPage() const {
 	return SafeCast(Find("Page"), Page);
 }
 
-void Context::SetQuery(const Anything &query)
-{
+void Context::SetQuery(const Anything &query) {
 	fRequest["query"] = query;
 }
 
-Anything &Context::GetQuery()
-{
+Anything &Context::GetQuery() {
 	return fRequest["query"];
 }
 
-Anything &Context::GetEnvStore()
-{
+Anything &Context::GetEnvStore() {
 	return fRequest["env"];
 }
 
-Anything &Context::GetRoleStoreGlobal()
-{
+Anything &Context::GetRoleStoreGlobal() {
 	return GetSessionStore()["RoleStore"];
 }
 
-Anything &Context::GetSessionStore()
-{
+Anything &Context::GetSessionStore() {
 	StartTrace1(Context.GetSessionStore, "fCopySessionStore: " << ( fCopySessionStore ? "true" : "false") );
 	return fCopySessionStore ? fSessionStoreCurrent : fSessionStoreGlobal;
 }
 
-Anything &Context::GetTmpStore()
-{
+Anything &Context::GetTmpStore() {
 	StartTrace(Context.GetTmpStore);
 	const char *key = "tmp";
 	long index = -1L;
 	return IntGetStore(key, index);
 }
 
-void Context::CollectLinkState(Anything &a)
-{
+void Context::CollectLinkState(Anything &a) {
 	Role *r = GetRole();
 	if (r) {
 		r->CollectLinkState(a, *this);
 	}
 }
 
-void Context::DebugStores(const char *msg, ostream &reply, bool printAny)
-{
-#ifdef COAST_TRACE
-	if ( msg ) {
+void Context::DebugStores(const char *msg, ostream &reply, bool printAny) {
+	if (msg) {
 		reply << "+++++++++++++++++++" << NotNull(msg) << "+++++++++++++++++++++++++\n";
 	}
 	Session *s = fSession;
@@ -298,57 +243,52 @@ void Context::DebugStores(const char *msg, ostream &reply, bool printAny)
 	reply << "Role:           " << rName << "\n\n";
 
 	// show Lookup stack on html page
-	if ( TriggerEnabled(Context.HTMLWDDebug.LookupStack) || printAny ) {
+	if (TriggerEnabled(Context.HTMLWDDebug.LookupStack) || printAny) {
 		reply << "Lookup stack #refs:" << fLookupStack.RefCount() << '\n' << fLookupStack << '\n';
 	}
 
 	// show tmp store on html page
-	if ( TriggerEnabled(Context.HTMLWDDebug.TmpStore) || printAny ) {
+	if (TriggerEnabled(Context.HTMLWDDebug.TmpStore) || printAny) {
 		reply << "Tmp store #refs:" << fStore.RefCount() << '\n' << fStore << '\n';
 	}
 
 	// show session store on html page
-	if ( fSession  ) {
+	if (fSession) {
 		fSession->HTMLDebugStore(reply);
 	}
 
 	// show request store on html page
-	if ( TriggerEnabled(Context.HTMLWDDebug.EnvStore) || printAny ) {
+	if (TriggerEnabled(Context.HTMLWDDebug.EnvStore) || printAny) {
 		reply << "Request #refs:" << fRequest.RefCount() << '\n' << fRequest << '\n';
 	}
-	if ( msg ) {
+	if (msg) {
 		reply << "-------------------" << NotNull(msg) << "-------------------------\n";
 	}
 	reply.flush();
-#endif
 }
 
-void Context::HTMLDebugStores(ostream &reply)
-{
-#ifdef COAST_TRACE
-	if ( TriggerEnabled(Context.HTMLWDDebug) ) {
+void Context::HTMLDebugStores(ostream &reply) {
+	if (TriggerEnabled(Context.HTMLWDDebug)) {
 		reply << DebugStoreSeparator;
 		reply << "<hr>\n<pre>\n";
 		DebugStores(0, reply);
 		reply << "</pre>\n";
 	}
-#endif
 }
 
-Anything &Context::IntGetStore(const char *key, long &index)
-{
+Anything &Context::IntGetStore(const char *key, long &index) {
 	StartTrace1(Context.IntGetStore, "key:<" << NotNull(key) << ">");
 	TraceAny(fStore, "fStore and size:" << fStoreSz);
 	index = fStoreSz;
-	while ( index >= 0 ) {
+	while (index >= 0) {
 		index = FindIndex(fStore, key, index);
-		if ( index >= 0 ) {
+		if (index >= 0) {
 			// matching entry found, check if it is of correct type
-			if ( fStore["Stack"][index].GetType() != AnyObjectType ) {
+			if (fStore["Stack"][index].GetType() != AnyObjectType) {
 				TraceAny(fStore["Stack"][index], "found top element of key [" << key << "] at index:" << index);
 				return fStore["Stack"][index];
 			} else {
-				SYSWARNING("IntGetStore entry at [" << key << "] is not of expected Anything-type!")
+				SYSWARNING("IntGetStore entry at [" << key << "] is not of expected Anything-type!");
 			}
 		}
 		--index;
@@ -356,14 +296,13 @@ Anything &Context::IntGetStore(const char *key, long &index)
 	return fEmpty;
 }
 
-bool Context::GetStore(const char *key, Anything &result)
-{
+bool Context::GetStore(const char *key, Anything &result) {
 	StartTrace1(Context.GetStore, "key:<" << NotNull(key) << ">");
 
-	if ( key ) {
+	if (key) {
 		long index = -1;
 		result = IntGetStore(key, index);
-		if ( index >= 0 ) {
+		if (index >= 0) {
 			return true;
 		}
 		if (strcmp(key, "Session") == 0) {
@@ -374,25 +313,24 @@ bool Context::GetStore(const char *key, Anything &result)
 			result = GetRoleStoreGlobal();
 			return true;
 		}
-	}
-	Trace("failed");
+	} Trace("failed");
 	return false;
 }
 
-bool Context::Push(const char *key, LookupInterface *li)
-{
+bool Context::Push(const char *key, LookupInterface *li) {
 	StartTrace1(Context.Push, "key:<" << NotNull(key) << "> li:&" << (long)li);
-	if ( key && li ) {
+	if (key && li) {
 		Trace( "TypeId of given LookupInterface:" << typeid(*li).name());
-		bool bIsLookupAdapter = ( ( typeid(*li) == typeid(AnyLookupInterfaceAdapter<Anything>) ) || ( typeid(*li) == typeid(AnyLookupInterfaceAdapter<ROAnything>) ) );
-		if ( bIsLookupAdapter ) {
+		bool bIsLookupAdapter = ((typeid(*li) == typeid(AnyLookupInterfaceAdapter<Anything> )) || (typeid(*li)
+								== typeid(AnyLookupInterfaceAdapter<ROAnything> )));
+		if (bIsLookupAdapter) {
 			fStore["Keys"].Append(key);
-			fStore["Stack"].Append((IFAObject *)li);
+			fStore["Stack"].Append((IFAObject *) li);
 			++fStoreSz;
 			TraceAny(fStore, "fStore and size:" << fStoreSz);
 		} else {
 			fLookupStack["Keys"].Append(key);
-			fLookupStack["Stack"].Append((IFAObject *)li);
+			fLookupStack["Stack"].Append((IFAObject *) li);
 			++fStackSz;
 			TraceAny(fLookupStack, "fLookupStack and size:" << fStackSz);
 		}
@@ -401,10 +339,9 @@ bool Context::Push(const char *key, LookupInterface *li)
 	return false;
 }
 
-bool Context::Pop(String &key)
-{
+bool Context::Pop(String &key) {
 	StartTrace(Context.Pop);
-	if ( fStackSz > 0 ) {
+	if (fStackSz > 0) {
 		--fStackSz;
 		key = fLookupStack["Keys"][fStackSz].AsString();
 		fLookupStack["Stack"].Remove(fStackSz);
@@ -415,12 +352,11 @@ bool Context::Pop(String &key)
 	return false;
 }
 
-bool Context::Push(const char *key, Anything &store)
-{
+bool Context::Push(const char *key, Anything &store) {
 	StartTrace1(Context.Push, "key:<" << NotNull(key) << ">");
 	TraceAny(store, "Store to put:");
 
-	if ( key && ( store.GetType() != AnyNullType ) ) {
+	if (key && (store.GetType() != AnyNullType)) {
 		// EnsureArrayImpl is needed to be able to extend existing stack entries by reference
 		// without this conversion, a problem would arise when a simple value was pushed which got extended by other values
 		//  -> only the simple value would persist
@@ -434,10 +370,9 @@ bool Context::Push(const char *key, Anything &store)
 	return false;
 }
 
-bool Context::PopStore(String &key)
-{
+bool Context::PopStore(String &key) {
 	StartTrace(Context.PopStore);
-	if ( fStoreSz > 1 ) { // never pop the tmp store at "fStore.tmp:0"
+	if (fStoreSz > 1) { // never pop the tmp store at "fStore.tmp:0"
 		--fStoreSz;
 		key = fStore["Keys"][fStoreSz].AsString();
 		fStore["Stack"].Remove(fStoreSz);
@@ -448,51 +383,46 @@ bool Context::PopStore(String &key)
 	return false;
 }
 
-void Context::Push(Session *s)
-{
+void Context::Push(Session *s) {
 	StartTrace1(Context.Push, "session");
 	InitSession(s);
 }
 
-void Context::PushRequest(const Anything &request)
-{
+void Context::PushRequest(const Anything &request) {
 	StartTrace1(Context.PushRequest, "request");
 	fRequest = request;
 	TraceAny(fRequest, "Request: ");
 }
 
-LookupInterface *Context::Find(const char *key) const
-{
+LookupInterface *Context::Find(const char *key) const {
 	StartTrace1(Context.Find, "key:<" << NotNull(key) << ">");
 
 	TraceAny(fLookupStack, "fLookupStack and size:" << fStackSz);
 
 	long index = FindIndex(fLookupStack, key);
-	if ( index >= 0 ) {
+	if (index >= 0) {
 		Trace("found at fLookupStack[Stack][" << index << "]<" << NotNull(key) << ">");
 		// no Safecast here, because a LookupInterface is not an IFAObject
-		LookupInterface *li = (LookupInterface *)fLookupStack["Stack"][index].AsIFAObject(0);
+		LookupInterface *li = (LookupInterface *) fLookupStack["Stack"][index].AsIFAObject(0);
 		return li;
-	}
-	Trace("<" << NotNull(key) << "> not found");
+	} Trace("<" << NotNull(key) << "> not found");
 	return 0;
 }
 
-long Context::FindIndex(const Anything &anyStack, const char *key, long lStartIdx) const
-{
+long Context::FindIndex(const Anything &anyStack, const char *key, long lStartIdx) const {
 	StartTrace1(Context.FindIndex, "key:<" << NotNull(key) << ">");
 
 	long result = -1;
 
-	if ( key ) {
+	if (key) {
 		long sz = anyStack["Keys"].GetSize();
-		if ( lStartIdx < 0 || lStartIdx > sz ) {
+		if (lStartIdx < 0 || lStartIdx > sz) {
 			lStartIdx = sz;
 		}
-		for (long i = lStartIdx; --i >= 0; ) {
+		for (long i = lStartIdx; --i >= 0;) {
 			// if ( anyStack["Keys"][i].AsString().IsEqual(key) )
 			// another unnice workaround to find some microseconds...
-			if ( strcmp(anyStack["Keys"][i].AsCharPtr(), key) == 0 ) {
+			if (strcmp(anyStack["Keys"][i].AsCharPtr(), key) == 0) {
 				result = i;
 				break;
 			}
@@ -501,72 +431,61 @@ long Context::FindIndex(const Anything &anyStack, const char *key, long lStartId
 	return result;
 }
 
-long Context::Remove(const char *key)
-{
+long Context::Remove(const char *key) {
 	StartTrace(Context.Remove);
-	if ( !key ) {
+	if (!key) {
 		return -1;
-	}
-	TraceAny(fLookupStack, "fLookupStack and size before:" << fStackSz);
+	} TraceAny(fLookupStack, "fLookupStack and size before:" << fStackSz);
 
 	long index = FindIndex(fLookupStack, key);
-	if ( index >= 0 ) {
+	if (index >= 0) {
 		fLookupStack["Stack"].Remove(index);
 		fLookupStack["Keys"].Remove(index);
 		--fStackSz;
-	}
-	TraceAny(fLookupStack, "fLookupStack and size after:" << fStackSz);
+	} TraceAny(fLookupStack, "fLookupStack and size after:" << fStackSz);
 	return index;
 }
 
-void Context::Replace(const char *key, LookupInterface *li)
-{
+void Context::Replace(const char *key, LookupInterface *li) {
 	StartTrace(Context.Replace);
-	if ( !key || !li ) {
+	if (!key || !li) {
 		return;
 	}
 
 	TraceAny(fLookupStack, "fLookupStack and size before:" << fStackSz);
 
 	long index = FindIndex(fLookupStack, key);
-	if ( index >= 0 ) {
-		fLookupStack["Stack"][index] = (IFAObject *)li;
+	if (index >= 0) {
+		fLookupStack["Stack"][index] = (IFAObject *) li;
 	} else {
 		Push(key, li);
-	}
-	TraceAny(fLookupStack, "fLookupStack and size after:" << fStackSz);
+	} TraceAny(fLookupStack, "fLookupStack and size after:" << fStackSz);
 }
 
-bool Context::DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const
-{
+bool Context::DoLookup(const char *key, ROAnything &result, char delim, char indexdelim) const {
 	StartTrace1(Context.DoLookup, "key:<" << NotNull(key) << ">");
 
-	if (LookupStack(key, result, delim, indexdelim)		||
-		LookupStores(key, result, delim, indexdelim)	||
-		LookupLocalized(key, result, delim, indexdelim)	||
-		LookupObjects(key, result, delim, indexdelim)	||
-		LookupRequest(key, result, delim, indexdelim) ) {
+	if (LookupStack(key, result, delim, indexdelim) || LookupStores(key, result, delim, indexdelim) || LookupLocalized(key, result, delim,
+			indexdelim) || LookupObjects(key, result, delim, indexdelim) || LookupRequest(key, result, delim, indexdelim)) {
 		Trace("found");
 		return true;
-	}
-	Trace("failed");
+	} Trace("failed");
 	return false;
 }
 
-bool Context::LookupStack(const char *key, ROAnything &result, char delim, char indexdelim) const
-{
+bool Context::LookupStack(const char *key, ROAnything &result, char delim, char indexdelim) const {
 	StartTrace1(Context.LookupStack, "key:<" << NotNull(key) << ">");
 
 	TraceAny(fStore, "fStore and size:" << fStoreSz);
-	for ( long i = ((ROAnything)fStore)["Stack"].GetSize(); --i >= 0; ) {
-		if ( fStore["Stack"][i].GetType() == AnyObjectType ) {
-			LookupInterface *li = (LookupInterface *)fStore["Stack"][i].AsIFAObject(0);
-			if ( li && li->Lookup(key, result, delim, indexdelim) ) {
+	for (long i = ((ROAnything) fStore)["Stack"].GetSize(); --i >= 0;) {
+		if (fStore["Stack"][i].GetType() == AnyObjectType) {
+			LookupInterface *li = (LookupInterface *) fStore["Stack"][i].AsIFAObject(0);
+			if (li && li->Lookup(key, result, delim, indexdelim)) {
 				TraceAny(result, "found through LookupInterface at " << fStore["Keys"][i].AsString() << ':' << i << '.' << key );
 				return true;
 			}
 		} else {
-			if ( ((ROAnything)fStore)["Stack"][i].LookupPath(result, key, delim, indexdelim) ) {
+			if (((ROAnything) fStore)["Stack"][i].LookupPath(result, key, delim, indexdelim)) {
 				TraceAny(result, "found at " << fStore["Keys"][i].AsString() << ':' << i << '.' << key );
 				return true;
 			}
@@ -575,10 +494,9 @@ bool Context::LookupStack(const char *key, ROAnything &result, char delim, char 
 	return false;
 }
 
-bool Context::LookupStores(const char *key, ROAnything &result, char delim, char indexdelim) const
-{
+bool Context::LookupStores(const char *key, ROAnything &result, char delim, char indexdelim) const {
 	StartTrace1(Context.LookupStores, "key:<" << NotNull(key) << ">");
-	if ( fCopySessionStore ) {
+	if (fCopySessionStore) {
 		if (ROAnything(fSessionStoreCurrent)["RoleStore"].LookupPath(result, key, delim, indexdelim)) {
 			Trace("found in RoleStore [Current]");
 			return true;
@@ -596,87 +514,72 @@ bool Context::LookupStores(const char *key, ROAnything &result, char delim, char
 			Trace("found in SessionStore [Global]");
 			return true;
 		}
-	}
-	Trace("failed");
+	} Trace("failed");
 	return false;
 }
 
-bool Context::LookupObjects(const char *key, ROAnything &result, char delim, char indexdelim) const
-{
+bool Context::LookupObjects(const char *key, ROAnything &result, char delim, char indexdelim) const {
 	StartTrace1(Context.LookupObjects, "key:<" << NotNull(key) << ">");
 	TraceAny(fLookupStack, "fLookupStack and size:" << fStackSz);
-
-	for ( long i = ((ROAnything)fLookupStack)["Stack"].GetSize(); --i >= 0; ) {
-		if ( fLookupStack["Stack"][i].GetType() == AnyObjectType ) {
+	for (long i = ((ROAnything) fLookupStack)["Stack"].GetSize(); --i >= 0;) {
+		if (fLookupStack["Stack"][i].GetType() == AnyObjectType) {
 			Trace("checking LookupInterface (&" << (long)fLookupStack["Stack"][i].AsIFAObject(0) << ") at " <<
-				  fLookupStack["Keys"][i].AsString() << ':' << i);
-			LookupInterface *li = (LookupInterface *)fLookupStack["Stack"][i].AsIFAObject(0);
-			if ( li->Lookup(key, result, delim, indexdelim) ) {
+					fLookupStack["Keys"][i].AsString() << ':' << i);
+			LookupInterface *li = (LookupInterface *) fLookupStack["Stack"][i].AsIFAObject(0);
+			if (li->Lookup(key, result, delim, indexdelim)) {
 				Trace("value found");
 				return true;
-			}
-			Trace("value not found");
+			} Trace("value not found");
 		}
 	}
 	return false;
 }
 
-bool Context::LookupRequest(const char *key, ROAnything &result, char delim, char indexdelim) const
-{
+bool Context::LookupRequest(const char *key, ROAnything &result, char delim, char indexdelim) const {
 	bool bRet(false);
-	if ( ! ( bRet = ROAnything(fRequest)["env"].LookupPath(result, key, delim, indexdelim) ) ) {
-		if ( ! ( bRet = ROAnything(fRequest)["query"].LookupPath(result, key, delim, indexdelim) ) ) {
+	if (!(bRet = ROAnything(fRequest)["env"].LookupPath(result, key, delim, indexdelim))) {
+		if (!(bRet = ROAnything(fRequest)["query"].LookupPath(result, key, delim, indexdelim))) {
 			bRet = ROAnything(fRequest).LookupPath(result, key, delim, indexdelim);
 		}
-	}
-	StatTrace(Context.LookupRequest, "key:<" << NotNull(key) << "> " << (bRet ? "" : "not ") << "found", Storage::Current());
+	} StatTrace(Context.LookupRequest, "key:<" << NotNull(key) << "> " << (bRet ? "" : "not ") << "found", Storage::Current());
 	return bRet;
 }
 
-bool Context::LookupLocalized(const char *key, ROAnything &result, char delim, char indexdelim) const
-{
+bool Context::LookupLocalized(const char *key, ROAnything &result, char delim, char indexdelim) const {
 	StartTrace1(Context.LookupLocalized, "key:<" << NotNull(key) << ">");
 	LocalizedStrings *ls = LocalizedStrings::LocStr();
 	if (ls && ls->Lookup(key, result, delim, indexdelim)) {
 		Trace(key << " found in LocalizedStrings");
 		return true;
-	}
-	Trace("failed");
+	} Trace("failed");
 	return false;
 }
 
-Anything &Context::GetRequest()
-{
+Anything &Context::GetRequest() {
 	return fRequest;
 }
 
-Socket *Context::GetSocket()
-{
+Socket *Context::GetSocket() {
 	return fSocket;
 }
 
-iostream *Context::GetStream()
-{
+iostream *Context::GetStream() {
 	return (fSocket) ? fSocket->GetStream() : fMockStream;
 }
 
-long Context::GetReadCount()
-{
+long Context::GetReadCount() {
 	return (fSocket) ? fSocket->GetReadCount() : 0;
 }
 
-long Context::GetWriteCount()
-{
+long Context::GetWriteCount() {
 	return (fSocket) ? fSocket->GetWriteCount() : 0;
 }
 
-bool Context::Process(String &token)
-{
+bool Context::Process(String &token) {
 	return Action::ExecAction(token, *this, Lookup(token));
 }
 
-bool Context::UnlockSession()
-{
+bool Context::UnlockSession() {
 	if (fSession && fCopySessionStore && fSession->IsLockedByMe()) {
 		fSession->fMutex.Unlock();
 		return true;
@@ -684,8 +587,7 @@ bool Context::UnlockSession()
 	return false;
 }
 
-void Context::LockSession()
-{
+void Context::LockSession() {
 	if (fSession && fCopySessionStore) {
 		fSession->fMutex.Lock();
 	}

@@ -24,22 +24,20 @@
 using namespace std;
 #endif
 
-// disable tracing if requested, even if in COAST_TRACE mode, eg. performance tests
-//#define WD_DISABLE_TRACE
-#if !defined(COAST_TRACE) || defined(WD_DISABLE_TRACE)
-#define aimplStatTrace(trigger, msg, allocator)
-#define aimplStartTrace(trigger)
-#define aimplStartTrace1(trigger, msg)
-#define aimplTrace(msg)
-#define aimplStatTraceAny(trigger, any, msg, allocator)
-#define aimplTraceAny(any, msg)
-#else
+#if defined(COAST_TRACE)
 #define aimplStatTrace(trigger, msg, allocator) 	StatTrace(trigger, msg, allocator)
 #define aimplStartTrace(trigger)					StartTrace(trigger)
 #define aimplStartTrace1(trigger, msg)			StartTrace1(trigger, msg)
 #define aimplTrace(msg)							Trace(msg);
 #define aimplStatTraceAny(trigger, any, msg, allocator) StatTraceAny(trigger, any, msg, allocator);
 #define aimplTraceAny(any, msg)					TraceAny(any, msg);
+#else
+#define aimplStatTrace(trigger, msg, allocator)
+#define aimplStartTrace(trigger)
+#define aimplStartTrace1(trigger, msg)
+#define aimplTrace(msg)
+#define aimplStatTraceAny(trigger, any, msg, allocator)
+#define aimplTraceAny(any, msg)
 #endif
 
 static const String fgStrEmpty(Storage::Global()); //avoid temporary

@@ -30,20 +30,18 @@
 #include <stdlib.h>
 #endif
 
-// disable tracing if requested, even if in COAST_TRACE mode, eg. performance tests
-//#define WD_DISABLE_TRACE
-#if !defined(COAST_TRACE) || defined(WD_DISABLE_TRACE)
-#define anyStatTrace(trigger, msg, allocator)
-#define anyStartTrace(trigger)
-#define anyStartTrace1(trigger, msg)
-#define anyTrace(msg)
-#define anyTraceAny(any, msg)
-#else
+#if defined(COAST_TRACE)
 #define anyStatTrace(trigger, msg, allocator) 	StatTrace(trigger, msg, allocator)
 #define anyStartTrace(trigger)					StartTrace(trigger)
 #define anyStartTrace1(trigger, msg)			StartTrace1(trigger, msg)
 #define anyTrace(msg)							Trace(msg);
 #define anyTraceAny(any, msg)					TraceAny(any, msg);
+#else
+#define anyStatTrace(trigger, msg, allocator)
+#define anyStartTrace(trigger)
+#define anyStartTrace1(trigger, msg)
+#define anyTrace(msg)
+#define anyTraceAny(any, msg)
 #endif
 
 static const String fgStrEmpty(Storage::Global()); //avoid temporary

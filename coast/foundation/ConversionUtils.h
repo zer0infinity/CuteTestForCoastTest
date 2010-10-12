@@ -12,9 +12,6 @@
 #include "foundation.h"
 
 #include "ITOString.h"
-#if defined(COAST_TRACE)
-#include "StringStream.h"
-#endif
 #include "Dbg.h"
 
 namespace ConversionUtils

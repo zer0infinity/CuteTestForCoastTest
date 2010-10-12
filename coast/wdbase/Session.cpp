@@ -278,11 +278,9 @@ void Session::PutInStore(const char *key, const Anything &a)
 
 void Session::HTMLDebugStore(ostream &reply, bool printAny)
 {
-#ifdef COAST_TRACE
-	if ( TriggerEnabled( "Session.HTMLSessionStore") || printAny ) {
+	if ( TriggerEnabled(Session.HTMLSessionStore) || printAny ) {
 		reply << "Session Store #refs:" << fStore.RefCount() << '\n' << fStore << '\n';
 	}
-#endif
 }
 
 void Session::RemoveFromStore(const char *key)

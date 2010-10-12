@@ -5,10 +5,8 @@
  * This library/application is free software; you can redistribute and/or modify it under the terms of
  * the license that is included with this library/application in the file license.txt.
  */
-
 //--- interface include --------------------------------------------------------
 #include "Role.h"
-
 //--- standard modules used ----------------------------------------------------
 #include "Session.h"
 #include "Registry.h"
@@ -16,24 +14,19 @@
 #include "SystemLog.h"
 #include "Dbg.h"
 #include "AnyIterators.h"
-
 #include <typeinfo>
 #include <cstring>
-
 //---- RolesModule -----------------------------------------------------------
 RegisterModule(RolesModule);
 
-RolesModule::RolesModule(const char *name)
-	: WDModule(name)
-{
+RolesModule::RolesModule(const char *name) :
+	WDModule(name) {
 }
 
-RolesModule::~RolesModule()
-{
+RolesModule::~RolesModule() {
 }
 
-bool RolesModule::Init(const ROAnything config)
-{
+bool RolesModule::Init(const ROAnything config) {
 	if (config.IsDefined("Roles")) {
 		HierarchyInstaller hi("Role");
 		return RegisterableObject::Install(config["Roles"], "Role", &hi);
@@ -41,82 +34,73 @@ bool RolesModule::Init(const ROAnything config)
 	return false;
 }
 
-bool RolesModule::ResetFinis(const ROAnything config)
-{
+bool RolesModule::ResetFinis(const ROAnything config) {
 	AliasTerminator at("Role");
 	return RegisterableObject::ResetTerminate("Role", &at);
 }
 
-bool RolesModule::Finis()
-{
+bool RolesModule::Finis() {
 	return StdFinis("Role", "Roles");
 }
-
 //---- Role --------------------------------------------------------------------------
 RegisterRole(Role);
 
-Role::Role(const char *name) : HierarchConfNamed(name)
-{
+Role::Role(const char *name) :
+	HierarchConfNamed(name) {
 }
 
-Role::~Role()
-{
+Role::~Role() {
 	StatTrace(Role.Misc, "~Role: <" << fName << ">", Storage::Current());
 }
 
-IFAObject *Role::Clone() const
-{
+IFAObject *Role::Clone() const {
 	return new Role(fName);
 }
 
-bool Role::Init(Context &)
-{
+bool Role::Init(Context &) {
 	StatTrace(Role.Init, fName << ": abstract - nothing to init, returning true", Storage::Current());
 	return true;
 }
 
-void Role::Finis(Session &, Role *)
-{
+void Role::Finis(Session &, Role *) {
 	StatTrace(Role.Finis, fName << ": abstract - nothing to do", Storage::Current());
 }
 
-bool Role::Synchronize(Context &) const
-{
+bool Role::Synchronize(Context &) const {
 	StatTrace(Role.Synchronize, fName << ": abstract returning true", Storage::Current());
 	return true;
 }
 
-bool Role::CheckLevel(const String &queryRoleName) const
-{
+bool Role::CheckLevel(const String &queryRoleName) const {
 	StartTrace1(Role.CheckLevel, "my role name [" << fName << "], query-role to check for [" << queryRoleName << "]");
 	bool bLevelOk = false;
-	if ( !( bLevelOk = fName.IsEqual(queryRoleName) ) ) {
-#if defined(COAST_TRACE)
-// the following code would be nice to see role relations
-// -> but we need to re-authenticate as soon as the role names are different
-		// names are not equal, check for their relation
-		long lThisLevel = GetRoleLevel( this );
-		Role *pQRole = Role::FindRole(queryRoleName);
-		if ( pQRole ) {
-			long lQRoleLevel = GetRoleLevel( pQRole );
-			Trace("my role level:" << lThisLevel << " query-role level:" << lQRoleLevel);
-			// if the roles are on the same level, they cannot be related
-			if ( lThisLevel != lQRoleLevel ) {
-				if ( lQRoleLevel > lThisLevel ) {
-					// check if current role is a parent of the query-role
-					Role *pRole = pQRole;
-					String strRoleName;
-					while ( !bLevelOk && pRole && ( pRole = (Role*)pRole->GetSuper() ) && pRole ) {
-						pRole->GetName(strRoleName);
-						bLevelOk = strRoleName.IsEqual(fName);
-						Trace("role [" << strRoleName << "]" << (bLevelOk ? " is parent" : ""));
+	if (!(bLevelOk = fName.IsEqual(queryRoleName))) {
+		if (TriggerEnabled(Role.CheckLevel)) {
+			// the following code would be nice to see role relations
+			// -> but we need to re-authenticate as soon as the role names are different
+			// names are not equal, check for their relation
+			long lThisLevel = GetRoleLevel(this);
+			Role *pQRole = Role::FindRole(queryRoleName);
+			if (pQRole) {
+				long lQRoleLevel = GetRoleLevel(pQRole);
+				Trace("my role level:" << lThisLevel << " query-role level:" << lQRoleLevel);
+				// if the roles are on the same level, they cannot be related
+				if (lThisLevel != lQRoleLevel) {
+					if (lQRoleLevel > lThisLevel) {
+						// check if current role is a parent of the query-role
+						Role *pRole = pQRole;
+						String strRoleName;
+						while (!bLevelOk && pRole && (pRole = (Role*) pRole->GetSuper()) && pRole) {
+							pRole->GetName(strRoleName);
+							bLevelOk = strRoleName.IsEqual(fName);
+							Trace("role [" << strRoleName << "]" << (bLevelOk ? " is parent" : ""));
+						}
 					}
 				}
 			}
+			// reset to false because it is not intended to be used like this at the moment
+			bLevelOk = false;
 		}
-		// reset to false because it is not intended to be used like this at the moment
-		bLevelOk = false;
-#endif
 	}
 	return bLevelOk;
 }
@@ -135,8 +119,7 @@ long Role::GetRoleLevel(const Role *pRole) {
 		} catch (std::bad_cast& bc) {
 			SYSINFO("bad_cast caught: " << bc.what());
 		}
-	}
-	Trace("Role <" << strRoleName << "> has Level " << lLevel);
+	} Trace("Role <" << strRoleName << "> has Level " << lLevel);
 	return lLevel;
 }
 
@@ -144,8 +127,7 @@ long Role::GetTimeout() const {
 	return Lookup("SessionTimeout", 60L);
 }
 
-void Role::PrepareTmpStore(Context &c)
-{
+void Role::PrepareTmpStore(Context &c) {
 	// now extract state from URL into TmpStore
 	StartTrace1(Role.PrepareTmpStore, fName << ":");
 	ROAnything stateFullList;
@@ -165,7 +147,7 @@ void Role::PrepareTmpStore(Context &c)
 				bool stateAlreadyDefined = tmpStore.IsDefined(stateName);
 				stateAlreadyDefined = stateAlreadyDefined && (strlen(tmpStore[stateName].AsCharPtr("")) > 0);
 
-				if ( !stateAlreadyDefined ) {
+				if (!stateAlreadyDefined) {
 					if (query.IsDefined(stateName) && !query[stateName].IsNull()) {
 						tmpStore[stateName] = query[stateName];
 					}
@@ -175,8 +157,7 @@ void Role::PrepareTmpStore(Context &c)
 					}
 				}
 			}
-		}
-		TraceAny(tmpStore, "Tempstore after");
+		} TraceAny(tmpStore, "Tempstore after");
 	}
 }
 
@@ -199,8 +180,7 @@ bool Role::GetNewPageName(Context &c, String &transition, String &pagename) cons
 			newpagename = entry["Page"].AsCharPtr(0);
 		} else {
 			newpagename = entry[0L].AsCharPtr(0);
-		}
-		Trace("returning newPageName: <" << NotNull(newpagename) << ">");
+		} Trace("returning newPageName: <" << NotNull(newpagename) << ">");
 		if (newpagename) {
 			pagename = newpagename;
 			if (entry.GetSize() > 1) {
@@ -218,8 +198,7 @@ bool Role::GetNewPageName(Context &c, String &transition, String &pagename) cons
 	return false;
 }
 
-bool Role::GetNextActionConfig(ROAnything &entry, String &transition, String &pagename) const
-{
+bool Role::GetNextActionConfig(ROAnything &entry, String &transition, String &pagename) const {
 	StartTrace(Role.GetNextActionConfig);
 	// get the action page map from the role's configuration file
 	// map inheritance is not needed explicitly but realized using hierarchic configured objects
@@ -228,28 +207,25 @@ bool Role::GetNextActionConfig(ROAnything &entry, String &transition, String &pa
 	Trace("trying [" << index << "]");
 	if (!Lookup(index, entry)) {
 		String defaultindex("Map.Default.");
-		defaultindex  << transition;
+		defaultindex << transition;
 		Trace("trying [" << defaultindex << "]");
 		Lookup(defaultindex, entry);
 	}
 	return !entry.IsNull();
 }
 
-bool Role::IsStayOnSamePageToken(String &transition) const
-{
+bool Role::IsStayOnSamePageToken(String &transition) const {
 	StartTrace1(Role.IsStayOnSamePageToken, "checking token <" << transition << ">");
 	ROAnything tokens;
 	bool bIsStayToken(false);
-	if ( transition == "StayOnSamePage" || ( Lookup("StayOnSamePageTokens", tokens) && tokens.Contains(transition) ) ) {
+	if (transition == "StayOnSamePage" || (Lookup("StayOnSamePageTokens", tokens) && tokens.Contains(transition))) {
 		transition = "PreprocessAction";
-		bIsStayToken=true;
-	}
-	Trace("resulting token <" << transition << "> is " << (bIsStayToken?"":"not ") << "to StayOnSamePage");
+		bIsStayToken = true;
+	} Trace("resulting token <" << transition << "> is " << (bIsStayToken?"":"not ") << "to StayOnSamePage");
 	return bIsStayToken;
 }
 
-void Role::CollectLinkState(Anything &stateIn, Context &c)
-{
+void Role::CollectLinkState(Anything &stateIn, Context &c) {
 	StartTrace(Role.CollectLinkState);
 
 	// copy selected fields from TmpStore into Link
@@ -276,16 +252,14 @@ void Role::CollectLinkState(Anything &stateIn, Context &c)
 	}
 }
 
-bool Role::TransitionAlwaysOK(const String &transition) const
-{
+bool Role::TransitionAlwaysOK(const String &transition) const {
 	return (transition == "Logout");
 }
 
-String Role::GetRequestRoleName(Context &ctx)
-{
+String Role::GetRequestRoleName(Context &ctx) {
 	String name;
 	Anything query = ctx.GetQuery();
-	if ( query.IsDefined("role") ) {
+	if (query.IsDefined("role")) {
 		name = query["role"].AsString(name);
 		StatTrace(Role.GetRequestRoleName, "got query role <" << name << ">", Storage::Current());
 	} else {
@@ -298,8 +272,7 @@ String Role::GetRequestRoleName(Context &ctx)
 // this method verifies the authentication level of role
 // if everything is ok it let's the subclass verify the
 // detailed parameters of the query in DoVerify
-bool Role::Verify(Context &c, String &transition, String &pagename) const
-{
+bool Role::Verify(Context &c, String &transition, String &pagename) const {
 	StartTrace1(Role.Verify, "Rolename <" << fName << "> currentpage= <" << pagename << ">, transition= <" << transition << ">");
 	// if the action is always possible (e.g. logout) no further checking
 	// is necessary
@@ -313,7 +286,7 @@ bool Role::Verify(Context &c, String &transition, String &pagename) const
 
 	// check the level of the role it is defined in the config
 	// assuming some levels of roles (e.g. Guest < Customer < PaymentCustomer)
-	if ( CheckLevel(name) ) {
+	if (CheckLevel(name)) {
 		// We have the right role level
 		// let's check the query parameters
 		Trace("role level is OK");
@@ -326,13 +299,13 @@ bool Role::Verify(Context &c, String &transition, String &pagename) const
 	return false;
 }
 
-bool Role::DoVerify(Context &, String &, String &) const
-{
+bool Role::DoVerify(Context &, String &, String &) const {
 	StatTrace(Role.DoVerify, "not overridden for <" << fName << ">, returning true", Storage::Current());
 	return true;
 }
 
-RegCacheImpl(Role);	// FindRole()
+RegCacheImpl(Role)
+; // FindRole()
 
 String Role::GetDefaultRoleName(Context &ctx) {
 	String ret;
