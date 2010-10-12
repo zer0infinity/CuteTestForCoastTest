@@ -874,8 +874,8 @@ Anything &AnyArrayImpl::At(long slot) //const/non-const overload
 		}
 	}
 	// calculate the adress of the anything
-	long at = IntAt(slot);
-	return fContents[IntAtBuf(at)][IntAtSlot(at)].Value();
+	slot = IntAt(slot);
+	return fContents[IntAtBuf(slot)][IntAtSlot(slot)].Value();
 }
 Anything const& AnyArrayImpl::At(long slot) const
 {
@@ -904,22 +904,19 @@ Anything &AnyArrayImpl::At(const char *key)
 		slot = fKeys->At(key);
 	}
 
-	long at;
-
 	if (slot < 0) {
 		// key doesn't exist so append this key in the key array
 		// with the according slot
 		slot = fKeys->Append(key, fSize);
-		at = IntAt(slot);
+		slot = IntAt(slot);
 		// set the key in the any key assoc structure
-		fContents[IntAtBuf(at)][IntAtSlot(at)].SetKey(key);
+		fContents[IntAtBuf(slot)][IntAtSlot(slot)].SetKey(key);
 
 		// return the element found
 		// this creates a new element
 		return At(fSize);
 	}
 	// the element already exists the slot is an internal slot
-	at = IntAt(slot);
 	return fContents[IntAtBuf(slot)][IntAtSlot(slot)].Value();
 }
 
