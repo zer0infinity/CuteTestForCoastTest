@@ -10,7 +10,6 @@
 #include "AuthenticationService.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
 #include "SystemLog.h"
 #include "SecurityModule.h"
 #include "HTTPProtocolReplyRenderer.h"

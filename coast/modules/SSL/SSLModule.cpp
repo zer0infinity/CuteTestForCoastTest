@@ -11,12 +11,14 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
-#include "System.h"
+#include "SystemFile.h"
 #include "SSLSocket.h"
 #include "SSLAPI.h"
 #include "DiffTimer.h"
 #include "Dbg.h"
 #include "AnyLookupInterfaceAdapter.h"
+
+using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
 

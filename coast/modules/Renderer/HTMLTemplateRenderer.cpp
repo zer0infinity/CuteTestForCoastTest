@@ -10,7 +10,6 @@
 #include "HTMLTemplateRenderer.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
 #include "Timers.h"
 #include "LocalizationUtils.h"
 #include "HTMLTemplateCacheLoader.h"

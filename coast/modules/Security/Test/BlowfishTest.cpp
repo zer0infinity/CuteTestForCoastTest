@@ -16,7 +16,7 @@
 #include "TestSuite.h"
 #include "Dbg.h"
 #include "Base64.h"
-#include "System.h"
+#include "SystemFile.h"
 #include "StringStream.h"
 
 /* Lets use the DES test vectors :-) */
@@ -364,9 +364,9 @@ void BlowfishTest::cbcCrossPlatform()
 //		result[index] = bfcbcBase64Encoded;
 //	}
 //	TraceAny(result,"result");
-//	String resolvedFileName =  System::GetFilePath("CBCResult.any", (const char *)0);
+//	String resolvedFileName =  Coast::System::GetFilePath("CBCResult.any", (const char *)0);
 //	Trace("resolved FileName: " << resolvedFileName);
-//	ostream *os0 = System::OpenOStream(resolvedFileName,"", ios::out);
+//	ostream *os0 = Coast::System::OpenOStream(resolvedFileName,"", ios::out);
 //	if ( os0 )
 //	{
 //		result.Export( *os0, 0 );
@@ -380,7 +380,7 @@ void BlowfishTest::cbcCrossPlatform()
 	// End cbcResult generation code
 
 	Anything cbcResult;
-	t_assert(System::LoadConfigFile(cbcResult, "CBCResult", "any"));
+	t_assert(Coast::System::LoadConfigFile(cbcResult, "CBCResult", "any"));
 	t_assert(!cbcResult.IsNull());
 	for ( index = highbound; index >= lowbound; index-- ) {
 		reference.Append((char) index);

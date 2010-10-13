@@ -16,7 +16,6 @@
 #include "LookupRenderers.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
 
 ContextLookupRendererTest::ContextLookupRendererTest (TString tname)
 	: TestCaseType(tname)

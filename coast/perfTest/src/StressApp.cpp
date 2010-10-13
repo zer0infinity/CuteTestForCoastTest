@@ -11,7 +11,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
-#include "System.h"
+#include "SystemFile.h"
 #include "DiffTimer.h"
 #include "Stresser.h"
 #include "Dbg.h"
@@ -167,7 +167,7 @@ void StressApp::ShowResult(long lTime)
 	}
 
 	String fn = fConfig["ResultFile"].AsCharPtr("time.txt");
-	ostream *os = System::OpenOStream( fn, 0, ios::out | ios::app );
+	ostream *os = Coast::System::OpenOStream( fn, 0, ios::out | ios::app );
 
 	if (os) {
 		os->write(buf, buf.Length());

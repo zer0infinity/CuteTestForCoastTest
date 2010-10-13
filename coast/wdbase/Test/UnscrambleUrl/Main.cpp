@@ -7,7 +7,6 @@
  */
 
 //--- interface include -------------------------------------------------------
-#include "System.h"
 #include <fstream>
 //--- standard modules used ----------------------------------------------------
 #include "WDModule.h"

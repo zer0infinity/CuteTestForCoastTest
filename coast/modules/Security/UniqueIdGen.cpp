@@ -15,7 +15,7 @@
 #include "Dbg.h"
 #include "MD5.h"
 #include "SystemAPI.h"
-#include "System.h"
+#include "SystemBase.h"
 #include "DiffTimer.h"
 #include "StringStream.h"
 
@@ -58,7 +58,7 @@ String UniqueIdGen::GetUniqueId(const String &additionalToken)
 	unsigned long random = lrand48();
 	unsigned long hrt = GetHRTIME();
 	long hostid = ::gethostid();
-	long pid = System::getpid();
+	long pid = Coast::System::getpid();
 	char buf[1024];
 	memset(buf, '\0', 1024L);
 	snprintf(buf, sizeof(buf), "%lu_%lu_%ld_%ld_%lu", ms, hrt, hostid, pid, random);

@@ -10,12 +10,14 @@
 #include "URI2FileNameMapper.h"
 
 //--- project modules used -----------------------------------------------------
-#include "System.h"
+#include "SystemFile.h"
 
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 
 //--- c-modules used -----------------------------------------------------------
+
+using namespace Coast;
 
 //---- URI2FileNameMapper ------------------------------------------------------------------
 RegisterParameterMapper(URI2FileNameMapper);

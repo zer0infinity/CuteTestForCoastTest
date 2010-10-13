@@ -10,7 +10,6 @@
 #include "ReadXMLFileDAImpl.h"
 
 //--- project modules used -----------------------------------------------------
-#include "System.h"
 #include "GenericXMLParser.h"
 
 //--- standard modules used ----------------------------------------------------

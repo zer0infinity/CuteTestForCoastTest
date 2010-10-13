@@ -11,7 +11,8 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
-#include "System.h"
+#include "SystemBase.h"
+#include "SystemFile.h"
 #include "ServerPoolsManagerInterface.h"
 #include "Registry.h"
 #include "ServerUtils.h"
@@ -21,6 +22,8 @@
 #include "RequestBlocker.h"
 #include "Dbg.h"
 #include "AnyIterators.h"
+
+using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
 #include <cstring>

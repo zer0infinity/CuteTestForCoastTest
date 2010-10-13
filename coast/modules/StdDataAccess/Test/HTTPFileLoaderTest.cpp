@@ -18,7 +18,6 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
-#include "System.h"
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------

@@ -17,7 +17,7 @@
 #include "SystemLog.h"
 #include "StringStream.h"
 #include "Timers.h"
-#include "System.h"
+#include "SystemBase.h"
 #include "TimeStamp.h"
 
 #include <algorithm>
@@ -362,7 +362,7 @@ bool SybCTnewDA::Open(DaParams &params, String user, String password, String ser
 
 					// Set Host-Name
 					String hostName;
-					if ( (retcode == CS_SUCCEED) && System::HostName( hostName ) ) {
+					if ( (retcode == CS_SUCCEED) && Coast::System::HostName( hostName ) ) {
 						Trace("setting hostname to [" << hostName << "]");
 						if ( (retcode = ct_con_props(fConnection, CS_SET, CS_HOSTNAME, (char *)(const char *)hostName, CS_NULLTERM, NULL)) != CS_SUCCEED ) {
 							Warning(params, "Open: setting hostname failed");

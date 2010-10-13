@@ -14,7 +14,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
-#include "System.h"
+#include "SystemFile.h"
 #include "Context.h"
 
 XMLBodyMapperTest::XMLBodyMapperTest(TString tname)
@@ -27,7 +27,7 @@ XMLBodyMapperTest::~XMLBodyMapperTest() {};
 void XMLBodyMapperTest::setUp ()
 {
 	String configFilename("XMLBodyMapperTestConfig");
-	std::istream *ifp = System::OpenStream(configFilename, "any");
+	std::istream *ifp = Coast::System::OpenStream(configFilename, "any");
 
 	if (ifp) {	// found
 		fConfig.Import(*ifp, configFilename);

@@ -10,7 +10,7 @@
 #include "CgiParams.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
+#include "SystemFile.h"
 #include "Dbg.h"
 #include "Renderer.h"
 
@@ -84,7 +84,7 @@ bool CgiParams::ResolveInvalidFile(String &path, String &uri, String &value, Con
 	if ( ixslash >= 1) {
 		String pgm = path;
 		pgm << uri.SubString(0, ixslash - 1);
-		if (System::IsRegularFile(pgm)) {
+		if (Coast::System::IsRegularFile(pgm)) {
 			value = pgm;
 			// should store additional arguments in query....here?
 			return true;

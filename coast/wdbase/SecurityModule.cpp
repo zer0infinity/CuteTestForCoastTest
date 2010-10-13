@@ -14,7 +14,7 @@
 #include "Registry.h"
 #include "SystemLog.h"
 #include "Dbg.h"
-#include "System.h"
+#include "SystemFile.h"
 #include "DiffTimer.h" /* for GetHRTIME() */
 
 #include <stdlib.h>
@@ -134,8 +134,8 @@ bool SecurityItem::DoLoadKeyFile(const char *name, String &key)
 	StartTrace1(SecurityItem.DoLoadKeyFile, name);
 	// search file with path
 	// open file with relative path
-	String resolvedFileName =  System::GetFilePath(name, (const char *)0);
-	std::iostream *Ios = System::OpenIStream(resolvedFileName, "");
+	String resolvedFileName =  Coast::System::GetFilePath(name, (const char *)0);
+	std::iostream *Ios = Coast::System::OpenIStream(resolvedFileName, "");
 	if ( Ios ) {
 		String sBuf(4096);
 		char *buf = (char *)(const char *) sBuf;

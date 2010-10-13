@@ -6,7 +6,10 @@
 #include "Scheduler.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
+#include "SystemBase.h"
+#include "ITOString.h"
+
+using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
 #include <ctype.h>

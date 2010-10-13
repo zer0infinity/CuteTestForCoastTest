@@ -19,10 +19,12 @@
 #include "MIMEHeader.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
+#include "SystemFile.h"
 #include "Dbg.h"
 #include "Renderer.h"
 #include "SystemLog.h"
+
+using namespace Coast;
 
 //---- RequestBodyParserTest ----------------------------------------------------------------
 RequestBodyParserTest::RequestBodyParserTest(TString tname)

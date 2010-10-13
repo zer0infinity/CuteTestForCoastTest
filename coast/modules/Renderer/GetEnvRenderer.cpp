@@ -12,7 +12,7 @@
 //--- project modules used -----------------------------------------------------
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
+#include "SystemBase.h"
 #include "Dbg.h"
 
 //--- c-modules used -----------------------------------------------------------
@@ -31,7 +31,7 @@ ROAnything GetEnvRenderer::DoLookup(Context &context, const char *name, char del
 {
 	StartTrace1(GetEnvRenderer.DoLookup, "LookupName [" << NotNull(name) << "]");
 	Anything anyEnv;
-	System::GetProcessEnvironment(anyEnv);
+	Coast::System::GetProcessEnvironment(anyEnv);
 	context.GetTmpStore()["_GetEnvRenderer_"] = anyEnv;
 	ROAnything roaResult;
 	((ROAnything)anyEnv).LookupPath(roaResult, name, delim, indexdelim);

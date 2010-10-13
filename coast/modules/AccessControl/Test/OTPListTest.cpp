@@ -17,7 +17,6 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-#include "System.h"
 #include "WDModule.h"
 #include "AccessController.h"
 

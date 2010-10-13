@@ -11,7 +11,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
-#include "System.h"
+#include "SystemBase.h"
 #include "SSLSocketStream.h"
 #include "Resolver.h" // to verify host name versus certificate
 #include "SSLSocketUtils.h"
@@ -629,7 +629,7 @@ Socket *SSLConnector::MakeSocket(bool doClose)
 			Anything clientInfo;
 			clientInfo["REMOTE_ADDR"] = fIPAddress;
 			clientInfo["REMOTE_PORT"] = fPort;
-			System::SetCloseOnExec(GetFd());
+			Coast::System::SetCloseOnExec(GetFd());
 			s = DoMakeSocket(fSSLSocketArgs, GetFd(), clientInfo, doClose);
 		}
 		if (GetFd() >= 0 && ! s) {

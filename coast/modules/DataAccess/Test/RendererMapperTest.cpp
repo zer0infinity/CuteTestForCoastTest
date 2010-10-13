@@ -14,7 +14,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
-#include "System.h"
+#include "SystemFile.h"
 #include "DataMapper.h"
 
 //---- RendererMapperTest ----------------------------------------------------------------
@@ -81,7 +81,7 @@ void RendererMapperTest::GetOnAnyTest()
 
 void RendererMapperTest::setUp ()
 {
-	std::iostream *Ios = System::OpenStream("StdContext", "any");
+	std::iostream *Ios = Coast::System::OpenStream("StdContext", "any");
 	if ( Ios ) {
 		fStdContextAny.Import((*Ios));
 		delete Ios;

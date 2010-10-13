@@ -18,7 +18,6 @@
 //--- standard modules used ----------------------------------------------------
 #include "DiffTimer.h"
 #include "SystemLog.h"
-#include "System.h"
 #include "Dbg.h"
 
 //---- SybCTnewDATest ----------------------------------------------------------------

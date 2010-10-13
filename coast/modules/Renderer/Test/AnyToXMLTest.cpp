@@ -9,7 +9,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "StringStream.h"
-#include "System.h"
+#include "SystemFile.h"
 #include "Context.h"
 
 //--- test modules used --------------------------------------------------------
@@ -30,7 +30,7 @@ void AnyToXMLTest::setUp()
 {
 	String configFilename("AnyToXMLTestConfig");
 
-	std::istream *ifp = System::OpenStream(configFilename, "any");
+	std::istream *ifp = Coast::System::OpenStream(configFilename, "any");
 
 	if (ifp) {
 		fConfig.Import(*ifp, configFilename);

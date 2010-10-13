@@ -16,7 +16,7 @@
 #include "FlowControllerTest.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
+#include "SystemFile.h"
 #include "Dbg.h"
 #include <iostream>
 
@@ -33,7 +33,7 @@ void FlowControllerTest::setUp ()
 {
 	StressAppTest::setUp();
 
-	std::istream *ifp = System::OpenStream("FlowControllerTestConfig", "any");
+	std::istream *ifp = Coast::System::OpenStream("FlowControllerTestConfig", "any");
 	if (ifp == 0) {
 		String logMsg;
 		std::cerr << logMsg << "FlowControllerTest:setUp : can't open file FlowControllerTestConfig.any" << std::endl;

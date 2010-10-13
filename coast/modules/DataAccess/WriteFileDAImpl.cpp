@@ -11,9 +11,11 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
-#include "System.h"
+#include "SystemFile.h"
 #include "SystemLog.h"
 #include "Dbg.h"
+
+using namespace Coast;
 
 //--- WriteFileDAImpl -----------------------------------------------------
 RegisterDataAccessImpl(WriteFileDAImpl);

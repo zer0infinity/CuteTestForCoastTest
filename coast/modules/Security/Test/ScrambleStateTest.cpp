@@ -15,7 +15,7 @@
 #include "SecurityModule.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
+#include "SystemFile.h"
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
@@ -39,7 +39,7 @@ ScrambleStateTest::~ScrambleStateTest()
 
 void ScrambleStateTest::setUp ()
 {
-	std::iostream *Ios = System::OpenStream("ScrambleStateTest", "any");
+	std::iostream *Ios = Coast::System::OpenStream("ScrambleStateTest", "any");
 	if ( Ios ) {
 		fStdContextAny.Import((*Ios));
 		delete Ios;

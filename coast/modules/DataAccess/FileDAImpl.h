@@ -12,7 +12,7 @@
 //--- superclass interface ---
 #include "config_dataaccess.h"
 #include "DataAccessImpl.h"
-#include "System.h"
+#include "SystemFile.h"
 
 //---- FileDAImpl ----------------------------------------------------------
 //! Abstract DataAccess for reading file from disk, see FileDAImpl relatives for concrete implementations
@@ -42,11 +42,11 @@ public:
 
 protected:
 	//! override to specify different file access modes
-	virtual System::openmode DoGetMode(ROAnything roaModes);
+	virtual Coast::System::openmode DoGetMode(ROAnything roaModes);
 
 	bool GetFileName(String &filename, String &ext, Context &context, ParameterMapper *in);
 	std::iostream *GetFileStream(Context &context, ParameterMapper *in);
-	System::openmode GetMode(Context &context, ParameterMapper *in);
+	Coast::System::openmode GetMode(Context &context, ParameterMapper *in);
 
 private:
 	// constructor

@@ -16,7 +16,9 @@
 #include "LocalizationUtilsTest.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
+#include "SystemFile.h"
+
+using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
 

@@ -16,7 +16,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-#include "System.h"
+#include "SystemBase.h"
 #include "Context.h"
 #include "Renderer.h"
 
@@ -36,7 +36,7 @@ GetEnvRendererTest::~GetEnvRendererTest()
 void GetEnvRendererTest::EnvTest()
 {
 	StartTrace(GetEnvRendererTest.EnvTest);
-	String user = System::EnvGet("USER");
+	String user = Coast::System::EnvGet("USER");
 	Context ctx;
 	Anything config;
 	config["GetEnvRenderer"] = "USER";

@@ -16,8 +16,10 @@
 #include "URI2FileNameTest.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
+#include "SystemFile.h"
 #include "Dbg.h"
+
+using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
 

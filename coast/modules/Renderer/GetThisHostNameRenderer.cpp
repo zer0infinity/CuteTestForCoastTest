@@ -12,7 +12,7 @@
 //--- project modules used -----------------------------------------------------
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
+#include "SystemBase.h"
 #include "Dbg.h"
 #include "Resolver.h"
 
@@ -29,7 +29,7 @@ void GetThisHostNameRenderer::RenderAll(std::ostream &reply, Context &ctx, const
 {
 	StartTrace(GetThisHostNameRenderer.RenderAll);
 	String thisHostName;
-	if ( System::HostName(thisHostName) ) {
+	if ( Coast::System::HostName(thisHostName) ) {
 		String thisHostIp(Resolver::DNS2IPAddress(thisHostName));
 		String thisHostDns(Resolver::IPAddress2DNS(thisHostIp));
 		Trace("hostname [" << thisHostName << "] ip [" << thisHostIp << "] dns [" << thisHostDns << "]");

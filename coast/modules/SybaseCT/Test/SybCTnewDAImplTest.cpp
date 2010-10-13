@@ -16,7 +16,7 @@
 #include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
+#include "SystemFile.h"
 #include "TimeStamp.h"
 #include "Dbg.h"
 
@@ -48,7 +48,7 @@ void SybCTnewDAImplTest::tearDown()
 	// set initialized state back here
 	if ( fbWasInitialized ) {
 		Anything anyConfig;
-		if ( t_assert(System::LoadConfigFile(anyConfig, "Config")) ) {
+		if ( t_assert(Coast::System::LoadConfigFile(anyConfig, "Config")) ) {
 			t_assert(SybCTnewDAImpl::Init(anyConfig));
 		}
 	}

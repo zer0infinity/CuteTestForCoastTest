@@ -13,7 +13,6 @@
 #include "Dbg.h"
 #include "Context.h"
 #include "LDAPDAICachePolicyModule.h"
-#include "System.h"
 
 //---- CallLDAPDAICacheAction ---------------------------------------------------------------
 RegisterAction(CallLDAPDAICacheAction);

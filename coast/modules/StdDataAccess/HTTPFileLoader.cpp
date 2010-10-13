@@ -11,7 +11,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
-#include "System.h"
+#include "SystemFile.h"
 #include "Renderer.h"
 #include "Dbg.h"
 
@@ -143,7 +143,7 @@ bool HTTPFileLoader::ProcessFile(const String &filename, Context &context, Param
 	bool retVal = true;
 	std::iostream *Ios = 0;
 	String ext;
-	Ios = System::OpenStream(filename, ext, std::ios::in | std::ios::binary);
+	Ios = Coast::System::OpenStream(filename, ext, std::ios::in | std::ios::binary);
 	if (Ios) {
 		Trace("Stream opened ok");
 		retVal = out->Put("ResponseCode", 200L, context) && retVal;
@@ -158,7 +158,7 @@ bool HTTPFileLoader::ProcessFile(const String &filename, Context &context, Param
 		retVal = out->Put("content-type", String(context.Lookup(ctquery, "text/plain")), context) && retVal;
 
 		ul_long ulFileSize = 0ULL;
-		if ( System::GetFileSize(filename, ulFileSize) ) {
+		if ( Coast::System::GetFileSize(filename, ulFileSize) ) {
 			Trace("file [" << filename << "] has size (stat): " << (l_long)ulFileSize);
 			retVal = out->Put("content-length", (long)ulFileSize, context) && retVal;
 		}

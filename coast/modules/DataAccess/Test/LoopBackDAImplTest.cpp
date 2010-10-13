@@ -16,7 +16,7 @@
 #include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
+#include "SystemFile.h"
 #include "Dbg.h"
 
 //---- LoopBackDAImplTest ----------------------------------------------------------------
@@ -38,7 +38,7 @@ LoopBackDAImplTest::~LoopBackDAImplTest()
 
 void LoopBackDAImplTest::setUp ()
 {
-	std::iostream *Ios = System::OpenStream("LoopBackDAImplTest", "any");
+	std::iostream *Ios = Coast::System::OpenStream("LoopBackDAImplTest", "any");
 	if ( Ios ) {
 		fStdContextAny.Import((*Ios));
 		delete Ios;

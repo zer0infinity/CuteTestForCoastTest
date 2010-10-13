@@ -12,7 +12,7 @@
 #include "SessionListManager.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
+#include "SystemBase.h"
 #include "URLFilter.h"
 #include "TraceLocks.h"
 #include "Session.h"
@@ -92,7 +92,7 @@ SessionListManager::SessionListManager(const char *name)
 	long pid = GetCurrentProcessId();
 #else
 	long hostid = ::gethostid();
-	long pid = System::getpid();
+	long pid = Coast::System::getpid();
 #endif
 	ss << std::hex << hostid << "!" << std::dec << (unsigned long) abs(pid);
 }

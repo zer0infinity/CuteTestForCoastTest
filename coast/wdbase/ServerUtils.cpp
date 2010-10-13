@@ -16,7 +16,7 @@
 #include "Server.h"
 #include "RequestProcessor.h"
 #include "Timers.h"
-#include "System.h"
+#include "SystemBase.h"
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
@@ -166,11 +166,11 @@ void InterruptHandler::Run()
 
 	// the just wait for the signal to happen
 	Trace("Thread: " << Thread::MyId());
-	Trace("Pid: " << (long)System::getpid());
+	Trace("Pid: " << (long)Coast::System::getpid());
 	Trace("Server [" << (fServer ? (const char *)(fServer->fName) : "no-name") << "]");
 
 	if ( fServer ) {
-		fServer->WritePIDFile(System::getpid());
+		fServer->WritePIDFile(Coast::System::getpid());
 	}
 
 	sigset_t set;

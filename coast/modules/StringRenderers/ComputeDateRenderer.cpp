@@ -10,7 +10,6 @@
 #include "ComputeDateRenderer.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
 #include "TimeStamp.h"
 #include "Dbg.h"
 

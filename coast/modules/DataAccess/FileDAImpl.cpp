@@ -10,10 +10,12 @@
 #include "FileDAImpl.h"
 
 //--- project modules used -----------------------------------------------------
-#include "System.h"
+#include "SystemFile.h"
 
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
+
+using namespace Coast;
 
 //--- FileDAImpl -----------------------------------------------------
 RegisterDataAccessImpl(FileDAImpl);

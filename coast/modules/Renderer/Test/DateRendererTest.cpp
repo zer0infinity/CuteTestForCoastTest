@@ -16,7 +16,9 @@
 #include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
+#include "SystemBase.h"
+
+using namespace Coast;
 
 DateRendererTest::DateRendererTest (TString tname)
 	: RendererTest(tname)

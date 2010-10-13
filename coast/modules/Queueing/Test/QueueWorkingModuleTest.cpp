@@ -19,7 +19,6 @@
 #include "Queue.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
 #include "Dbg.h"
 
 //--- c-modules used -----------------------------------------------------------

@@ -44,7 +44,7 @@ public:
 	virtual bool Exec(Context &c, ParameterMapper *, ResultMapper *);
 
 protected:
-	virtual System::openmode DoGetMode(ROAnything roaModes) {
+	virtual Coast::System::openmode DoGetMode(ROAnything roaModes) {
 		return (FileDAImpl::DoGetMode(roaModes) | std::ios::in);
 	}
 

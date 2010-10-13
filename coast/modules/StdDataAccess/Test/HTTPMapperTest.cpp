@@ -17,7 +17,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
-#include "System.h"
+#include "SystemFile.h"
 #include "Dbg.h"
 
 //---- HTTPMapperTest ----------------------------------------------------------------
@@ -130,7 +130,7 @@ void HTTPMapperTest::FDTest4()
 
 void HTTPMapperTest::GetTestInput(Anything &testInput, const char *testname)
 {
-	std::iostream *Ios = System::OpenStream(testname, "any");
+	std::iostream *Ios = Coast::System::OpenStream(testname, "any");
 	if ( Ios ) {
 		testInput.Import((*Ios));
 		delete Ios;

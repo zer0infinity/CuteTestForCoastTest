@@ -18,7 +18,9 @@
 //--- standard modules used ----------------------------------------------------
 #include "PoolAllocator.h"
 #include "Dbg.h"
-#include "System.h"
+#include "SystemBase.h"
+
+using namespace Coast;
 
 //--- c-modules used -----------------------------------------------------------
 

@@ -14,7 +14,7 @@
 #include "Socket.h"
 #include "SystemLog.h"
 #include "Dbg.h"
-#include "System.h"
+#include "SystemBase.h"
 
 //--- c-library modules used ---------------------------------------------------
 #include <iomanip>
@@ -334,7 +334,7 @@ Acceptor *HandleSet::WaitForEvents(long timeout)
 	if (0 == retCode ) {
 		return 0;    // timeout, no error
 	}
-	while ( retCode < 0 && System::SyscallWasInterrupted()) {
+	while ( retCode < 0 && Coast::System::SyscallWasInterrupted()) {
 #if defined(USE_SELECT)
 		retCode = select(maxfd + 1, &rfds, 0, 0, &tv);
 #else

@@ -12,11 +12,13 @@
 //--- project modules used -----------------------------------------------------
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
+#include "SystemFile.h"
 #include "Renderer.h"
 #include "Context.h"
 #include "Dbg.h"
 #include "Timers.h"
+
+using namespace Coast;
 
 //--- c-modules used -----------------------------------------------------------
 

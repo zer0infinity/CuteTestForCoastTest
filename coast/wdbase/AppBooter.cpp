@@ -11,13 +11,15 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
-#include "System.h"
+#include "SystemFile.h"
 #include "SystemLog.h"
 #include "Application.h"
 #include "Registry.h"
 #include "WDModule.h"
 #include "URLUtils.h"
 #include "Dbg.h"
+
+using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
 #include <iomanip>

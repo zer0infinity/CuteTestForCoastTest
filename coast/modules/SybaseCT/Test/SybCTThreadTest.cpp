@@ -22,7 +22,6 @@
 #include "DataAccess.h"
 #include "DiffTimer.h"
 #include "Timers.h"
-#include "System.h"
 
 //--- c-modules used -----------------------------------------------------------
 

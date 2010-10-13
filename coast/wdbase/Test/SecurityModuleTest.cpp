@@ -14,8 +14,10 @@
 //--- module under test --------------------------------------------------------
 #include "SecurityModule.h"
 //--- std modules used
-#include "System.h"
+#include "SystemFile.h"
 #include "Dbg.h"
+
+using namespace Coast;
 
 //---- SecurityModuleTest ----------------------------------------------------------------
 Test *SecurityModuleTest::suite ()

@@ -9,7 +9,6 @@
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
 #include "StringStreamSocket.h"
-#include "System.h"
 #include "Context.h"
 #include "URLUtils.h"
 #include "MIMEHeader.h"

@@ -10,8 +10,10 @@
 #include "DateRenderer.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
+#include "SystemBase.h"
 #include "Dbg.h"
+
+using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
 #include <cstdlib>

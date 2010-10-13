@@ -10,7 +10,6 @@
 #include "ReadFileDAImpl.h"
 
 //--- project modules used -----------------------------------------------------
-#include "System.h"
 
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"

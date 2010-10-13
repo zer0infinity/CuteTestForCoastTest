@@ -15,8 +15,11 @@
 #include "Registry.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
 #include "Dbg.h"
+
+#include "SystemBase.h"
+#include "SystemFile.h"
+using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
 #if defined(WIN32)

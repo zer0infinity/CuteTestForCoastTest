@@ -16,12 +16,14 @@
 #include "RegexTest.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
+#include "SystemFile.h"
 #include "StringStream.h"
 #include "RECompiler.h"
 #include "PoolAllocator.h"
 #include "TestTimer.h"
 #include "Dbg.h"
+
+using namespace Coast;
 
 //---- RegexTest ----------------------------------------------------------------
 RegexTest::RegexTest(TString tstrName) : TestCaseType(tstrName)

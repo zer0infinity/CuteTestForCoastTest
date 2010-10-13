@@ -11,7 +11,6 @@
 
 #include "Anything.h"
 #include "StringStream.h"
-#include "System.h"
 #include "Context.h"
 
 //---- baseclass include -------------------------------------------------

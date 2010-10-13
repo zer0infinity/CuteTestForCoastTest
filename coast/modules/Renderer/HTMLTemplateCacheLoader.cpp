@@ -10,10 +10,12 @@
 #include "HTMLTemplateCacheLoader.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
+#include "SystemFile.h"
 #include "TemplateParser.h"
 #include "HTMLTemplateRenderer.h"
 #include "Dbg.h"
+
+using namespace Coast;
 
 //--- c-modules used -----------------------------------------------------------
 

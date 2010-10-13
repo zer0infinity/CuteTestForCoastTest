@@ -17,7 +17,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-#include "System.h"
+#include "SystemFile.h"
 #include "DataAccess.h"
 
 //--- c-modules used -----------------------------------------------------------
@@ -85,7 +85,7 @@ void FileAccessControllerTests::FileUDACTest()
 	assertAnyEqual(GetConfig()["FileContent"]["UDACTest"], c.GetTmpStore()["FileContent"]);
 
 	// clean up
-	System::IO::unlink("config/FileTestUserDB.any");
+	Coast::System::IO::unlink("config/FileTestUserDB.any");
 }
 
 // -------------------- TDAC Tests ----------------------
@@ -132,7 +132,7 @@ void FileAccessControllerTests::FileTDACTest()
 	assertAnyEqual(GetConfig()["FileContent"]["TDACTest"], c.GetTmpStore()["FileContent"]);
 
 	// clean up
-	System::IO::unlink("config/FileTestActerDB.any");
+	Coast::System::IO::unlink("config/FileTestActerDB.any");
 }
 
 // -------------------- EDAC Tests ----------------------
@@ -202,7 +202,7 @@ void FileAccessControllerTests::FileEDACTest()
 	assertAnyEqual(GetConfig()["FileContent"]["EDACTest"], c.GetTmpStore()["FileContent"]);
 
 	// clean up
-	System::IO::unlink("config/FileTestRightsDB.any");
+	Coast::System::IO::unlink("config/FileTestRightsDB.any");
 }
 
 // ------------------------- suite ------------------------------

@@ -11,7 +11,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
-#include "System.h"
+#include "SystemFile.h"
 #include "StringStream.h"
 #include "Dbg.h"
 
@@ -97,7 +97,7 @@ bool LocalizationModule::Finis()
 bool LocalizationModule::ReadFromFile(Anything &config, const char *filename)
 {
 	StartTrace(LocalizationModule.ReadFromFile);
-	std::istream *ifp = System::OpenStream(filename, "any");
+	std::istream *ifp = Coast::System::OpenStream(filename, "any");
 	if (ifp == 0) {
 		String logMsg;
 		SystemLog::Error(logMsg << "LocalizationModule::ReadFromFile: can't open file " << filename << ".any");

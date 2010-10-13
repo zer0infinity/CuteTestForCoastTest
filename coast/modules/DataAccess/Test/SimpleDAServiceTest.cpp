@@ -16,7 +16,6 @@
 #include "SimpleDataAccessService.h"
 
 //--- standard modules used ----------------------------------------------------
-#include "System.h"
 #include "StringStream.h"
 #include "ServiceDispatcher.h"
 #include "RequestProcessor.h"

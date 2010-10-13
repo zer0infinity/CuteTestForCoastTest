@@ -19,7 +19,6 @@
 #include "SocketStream.h"
 #include "Dbg.h"
 #include "SystemLog.h"
-#include "System.h"
 #include "DataAccess.h"
 
 //--- c-modules used -----------------------------------------------------------

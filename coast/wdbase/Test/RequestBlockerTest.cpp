@@ -20,7 +20,7 @@
 //--- modules under test -----------------------------------------------------
 #include "RequestBlocker.h"
 
-#include "System.h"
+#include "SystemBase.h"
 
 class RBRunner: public Thread
 {
@@ -82,7 +82,7 @@ void RequestBlockerTest::QueryRB(bool compare, bool checkIt, TString tname)
 	} else {
 		RequestBlocker::RB()->IsBlocked();
 	}
-	System::MicroSleep(1); // slow down runner should ensure no false positives for 5,6
+	Coast::System::MicroSleep(1); // slow down runner should ensure no false positives for 5,6
 }
 
 void RequestBlockerTest::RBTest()

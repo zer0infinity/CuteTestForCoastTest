@@ -14,7 +14,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "Threads.h"
-#include "System.h"
+#include "SystemFile.h"
 #include "SystemLog.h"
 #include "AnyUtils.h"
 #include "Dbg.h"
@@ -54,7 +54,7 @@ Anything SimpleAnyLoader::Load(const char *key)
 {
 	StartTrace1(SimpleAnyLoader.Load, "trying to load <" << NotNull(key) << ">");
 	Anything toLoad(Storage::Global());
-	std::istream *ifp = System::OpenStream(key, "any");
+	std::istream *ifp = Coast::System::OpenStream(key, "any");
 
 	if (ifp) {
 		// found

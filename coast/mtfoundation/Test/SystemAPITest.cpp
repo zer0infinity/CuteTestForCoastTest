@@ -17,7 +17,8 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
-#include "System.h"
+#include "SystemBase.h"
+#include "Anything.h"
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
@@ -113,7 +114,7 @@ static bool AssertMessageIntoAny(Anything &resultany, bool condition, const char
 
 void TestSleep( int sleepTimeInMiliseconds )
 {
-	System::MicroSleep(1000L * sleepTimeInMiliseconds);
+	Coast::System::MicroSleep(1000L * sleepTimeInMiliseconds);
 }
 
 void SystemAPITest::PrintResult(Anything result )

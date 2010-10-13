@@ -17,7 +17,7 @@
 #include "SystemLog.h"
 #include "Scheduler.h"
 #include "SSLAPI.h"
-#include "System.h"
+#include "SystemFile.h"
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
@@ -1267,7 +1267,7 @@ void HttpFlowController::GenerateMultipartContent( String &fieldName, ROAnything
 	// Content-Body:
 	if ( fieldConfig.IsDefined( slotForFile ) ) {
 		// Get File content with given Filename for this body:
-		std::iostream *pS = System::OpenIStream( fieldFilename, "", std::ios::in, true ); // path will be resolved..
+		std::iostream *pS = Coast::System::OpenIStream( fieldFilename, "", std::ios::in, true ); // path will be resolved..
 		if (pS) {
 			int c;
 			while ( (c = pS->get() ) != EOF ) {

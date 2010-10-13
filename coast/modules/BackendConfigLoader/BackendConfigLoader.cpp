@@ -23,9 +23,10 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
-#include "System.h"
+#include "SystemFile.h"
 #include "Dbg.h"
 #include "Policy.h"
+using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
 #if defined(WIN32)

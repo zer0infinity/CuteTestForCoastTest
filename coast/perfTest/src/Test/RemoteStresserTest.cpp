@@ -15,7 +15,6 @@
 //--- standard modules used ----------------------------------------------------
 #include "Server.h"
 #include "Dbg.h"
-#include "System.h"
 
 //--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
