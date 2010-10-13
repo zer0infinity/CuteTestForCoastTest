@@ -16,6 +16,7 @@
 #include "SystemLog.h"
 #include "Dbg.h"
 #include <algorithm>
+#include <iostream>
 
 //--- c-modules used -----------------------------------------------------------
 #include <cstring>

@@ -16,6 +16,7 @@
 #include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
+#include <iostream>
 
 //--- c-library modules used ---------------------------------------------------
 #if defined(WIN32)

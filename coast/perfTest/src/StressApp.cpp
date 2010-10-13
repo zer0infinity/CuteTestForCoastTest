@@ -16,6 +16,7 @@
 #include "Stresser.h"
 #include "Dbg.h"
 
+#include <iostream>
 #include <iomanip>
 #include <algorithm>
 

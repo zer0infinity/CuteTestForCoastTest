@@ -13,6 +13,7 @@
 #include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
+#include <iostream>
 
 //--- module under test --------------------------------------------------------
 

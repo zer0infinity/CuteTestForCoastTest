@@ -18,6 +18,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "System.h"
 #include "Dbg.h"
+#include <iostream>
 
 //--- c-library modules used ---------------------------------------------------
 

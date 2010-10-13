@@ -13,6 +13,7 @@
 #include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
+#include <iostream>
 
 RendererTest::RendererTest(TString tname) : TestCaseType(tname),
 	fContext(Anything(), Anything(), 0, 0, 0, 0), fReply(), fConfig()

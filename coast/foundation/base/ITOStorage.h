@@ -12,7 +12,7 @@
 #include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include "foundation.h"			// for definition of own types
 #include <sys/types.h>
-#include <iostream>
+#include <iosfwd>
 #include <cstdlib>
 #include <deque>
 

@@ -18,6 +18,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "Resolver.h"
+#include <iostream>
 
 //--- c-library modules used ---------------------------------------------------
 

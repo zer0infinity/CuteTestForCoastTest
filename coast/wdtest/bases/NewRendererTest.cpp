@@ -19,6 +19,7 @@
 #include "Session.h"
 #include "Page.h"
 #include "Role.h"
+#include <iostream>
 
 //---- NewRendererTest ----------------------------------------------------------------
 NewRendererTest::NewRendererTest(TString tname)

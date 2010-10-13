@@ -19,6 +19,7 @@
 #include "StringStream.h"
 #include "TestAction.h"
 #include "Dbg.h"
+#include <iostream>
 
 //--- c-library modules used ---------------------------------------------------
 

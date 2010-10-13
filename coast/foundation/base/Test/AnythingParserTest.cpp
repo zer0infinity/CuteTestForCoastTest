@@ -9,15 +9,16 @@
 //--- interface include --------------------------------------------------------
 #include "AnythingParserTest.h"
 
+//--- test modules used --------------------------------------------------------
+#include "TestSuite.h"
+
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
 #include "SystemFile.h"
 #include "IFAObject.h"
+#include <iostream>
 
 using namespace Coast;
-
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
 
 //--- c-library modules used ---------------------------------------------------
 #include <ctype.h>

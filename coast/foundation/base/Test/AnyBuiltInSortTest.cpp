@@ -18,6 +18,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 #include "DiffTimer.h"
+#include <iostream>
 
 //--- c-modules used -----------------------------------------------------------
 

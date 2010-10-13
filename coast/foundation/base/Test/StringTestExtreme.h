@@ -11,8 +11,9 @@
 
 #include "TestCase.h"
 
-//---- forward declaration -----------------------------------------------
 #include "ITOString.h"
+#include <string>
+
 //---- StringTestExtreme -----------------------------------------------------------
 //!testcases for String
 class StringTestExtreme : public TestFramework::TestCase

@@ -15,6 +15,7 @@
 //--- standard modules used ----------------------------------------------------
 #include "SystemFile.h"
 #include "StringStream.h"
+#include <iostream>
 
 using namespace Coast;
 
