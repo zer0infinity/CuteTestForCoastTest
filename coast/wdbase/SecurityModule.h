@@ -25,8 +25,6 @@ public:
 	SecurityItem(const char *name) : HierarchConfNamed(name) { }
 	virtual ~SecurityItem() {}
 
-	//doesn't implement clone since this class is somehow abstract
-	virtual IFAObject *Clone() const = 0;
 	virtual void InitKey(const String &key) {} // deliberately non-const! useful for Scrambler and Signer
 	virtual void DoEncode(String &scrambledText, const String &cleartext) const {
 		scrambledText = cleartext;
@@ -76,8 +74,9 @@ class EXPORTDECL_WDBASE Scrambler :  public SecurityItem
 public:
 	Scrambler(const char *name);
 	virtual ~Scrambler();
-	IFAObject *Clone() const {
-		return new Scrambler(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) Scrambler(fName);
 	}
 
 	static void Scramble(const char *scramblername, String &scrambledText, const String &cleartext);
@@ -101,8 +100,9 @@ public:
 	Signer();
 	Signer(const char *name);
 	virtual ~Signer();
-	IFAObject *Clone() const {
-		return new Signer(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) Signer(fName);
 	}
 
 	static void Sign(const char *encodername, String &encodedText, const String &cleartext);
@@ -125,8 +125,9 @@ class EXPORTDECL_WDBASE Encoder : public SecurityItem
 public:
 	Encoder(const char *name);
 	virtual ~Encoder();
-	IFAObject *Clone() const {
-		return new Encoder(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) Encoder(fName);
 	}
 
 	static bool GetEncoderName(String &encodername, const String &encodedText);
@@ -148,8 +149,9 @@ class EXPORTDECL_WDBASE Compressor :  public SecurityItem
 public:
 	Compressor(const char *name);
 	virtual ~Compressor();
-	IFAObject *Clone() const {
-		return new Compressor(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) Compressor(fName);
 	}
 
 	//!initialize compressor with config if necessary

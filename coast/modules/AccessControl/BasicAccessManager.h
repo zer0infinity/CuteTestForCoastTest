@@ -44,8 +44,9 @@ public:
 	//--- constructors
 	BasicAccessManager(const char *name) : AccessManager(name) {}
 	~BasicAccessManager() {}
-	IFAObject *Clone() const {
-		return new BasicAccessManager(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) BasicAccessManager(fName);
 	}
 
 	//! check if given id is a valid user id

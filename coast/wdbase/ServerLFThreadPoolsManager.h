@@ -21,9 +21,9 @@ public:
 	ServerLFThreadPoolsManager(const char *ServerThreadPoolsManagerName);
 	virtual ~ServerLFThreadPoolsManager();
 
-	//!cloning interface
-	IFAObject *Clone() const {
-		return new ServerLFThreadPoolsManager(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) ServerLFThreadPoolsManager(fName);
 	}
 
 	//! initialize the managed thread pools

@@ -66,10 +66,10 @@ Page::~Page()
 {
 }
 
-IFAObject *Page::Clone() const
+IFAObject *Page::Clone(Allocator *a) const
 {
 	StartTrace(Page.Clone);
-	return new Page(fName);
+	return new (a) Page(fName);
 }
 
 void Page::Mime(ostream &reply, Context &c)

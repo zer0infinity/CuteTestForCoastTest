@@ -41,8 +41,9 @@ class TestScrambler: public Scrambler
 public:
 	TestScrambler(const char *name): Scrambler(name), fKey("") {}
 	virtual ~TestScrambler() {}
-	IFAObject *Clone() const {
-		return new TestScrambler(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) TestScrambler(fName);
 	}
 	virtual void InitKey(const String &key) {
 		fKey = key;

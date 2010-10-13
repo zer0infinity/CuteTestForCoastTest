@@ -22,8 +22,9 @@ public:
 	StressProcessor(const char *name);
 	virtual ~StressProcessor();
 
-	virtual IFAObject *Clone() const {
-		return new StressProcessor(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) StressProcessor(fName);
 	}
 
 	//--- public api

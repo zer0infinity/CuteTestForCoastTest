@@ -35,11 +35,9 @@ public:
 		  fCheckHeaderFields(true),
 		  fRejectRequestsWithInvalidHeaders(false) {}
 
-	virtual ~HTTPProcessor()	{ }
-
-	//! support for prototypes is required
-	virtual IFAObject *Clone() const {
-		return new HTTPProcessor(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) HTTPProcessor(fName);
 	}
 
 	//!configure request processor with server object

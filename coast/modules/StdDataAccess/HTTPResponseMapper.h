@@ -20,8 +20,8 @@ class EXPORTDECL_STDDATAACCESS HTTPResponseMapper : public ResultMapper
 public:
 	//--- constructors
 	HTTPResponseMapper(const char *name);
-	//--- support for prototype
-	IFAObject *Clone() const;
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const;
 	//! reads a http response from istream and puts it under Mapper.HTTPResponse
 	//! \param key not used
 	//! \param is the stream to be read

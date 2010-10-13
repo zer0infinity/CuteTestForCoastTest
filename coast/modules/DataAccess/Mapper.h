@@ -50,7 +50,8 @@ class EXPORTDECL_DATAACCESS ParameterMapper : public HierarchConfNamed
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	ParameterMapper(const char *name);
-	IFAObject *Clone() const;
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const;
 
 	//---- registry api
 	RegCacheDef(ParameterMapper);	// FindParameterMapper()
@@ -236,8 +237,9 @@ public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	EagerParameterMapper(const char *name): ParameterMapper(name) {}
 	EagerParameterMapper(const char *name, ROAnything config);
-	IFAObject *Clone() const {
-		return new EagerParameterMapper(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) EagerParameterMapper(fName);
 	}
 
 protected:
@@ -268,7 +270,8 @@ class EXPORTDECL_DATAACCESS ResultMapper : public HierarchConfNamed
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	ResultMapper(const char *name);
-	IFAObject *Clone() const;
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const;
 
 	//---- registry api
 	RegCacheDef(ResultMapper);	// FindResultMapper()
@@ -446,8 +449,9 @@ public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	EagerResultMapper(const char *name): ResultMapper(name) {}
 	EagerResultMapper(const char *name, ROAnything config);
-	IFAObject *Clone() const {
-		return new EagerResultMapper(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) EagerResultMapper(fName);
 	}
 
 protected:
@@ -475,8 +479,9 @@ class EXPORTDECL_DATAACCESS RootMapper : public ResultMapper
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	RootMapper(const char *name) : ResultMapper(name) {}
-	IFAObject *Clone() const {
-		return new RootMapper(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) RootMapper(fName);
 	}
 
 protected:
@@ -518,8 +523,9 @@ class EXPORTDECL_DATAACCESS ConfigMapper : public EagerParameterMapper
 public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	ConfigMapper(const char *name) : EagerParameterMapper(name) {};
-	IFAObject *Clone() const {
-		return new ConfigMapper(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) ConfigMapper(fName);
 	};
 
 protected:

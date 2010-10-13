@@ -63,9 +63,9 @@ public:
 	LDAPAbstractDAI(const char *name) : DataAccessImpl(name) {};
 	~LDAPAbstractDAI() {};
 
-	//! should never be called, because this class is supposed to be abstract
-	IFAObject *Clone() const {
-		return new LDAPAbstractDAI(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) LDAPAbstractDAI(fName);
 	};
 
 	//! executes the transaction
@@ -172,9 +172,9 @@ public:
 	LDAPModifyDAI(const char *name) : LDAPAbstractDAI(name) {};
 	~LDAPModifyDAI() {};
 
-	//! returns a new TRX object
-	IFAObject *Clone() const {
-		return new LDAPModifyDAI(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) LDAPModifyDAI(fName);
 	};
 
 protected:
@@ -243,9 +243,9 @@ public:
 	LDAPAddDAI(const char *name) : LDAPModifyDAI(name) {};
 	~LDAPAddDAI() {};
 
-	//! returns a new TRX object
-	IFAObject *Clone() const {
-		return new LDAPAddDAI(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) LDAPAddDAI(fName);
 	};
 
 protected:
@@ -290,9 +290,9 @@ public:
 	LDAPCompareDAI(const char *name) : LDAPAbstractDAI(name) {};
 	~LDAPCompareDAI() {};
 
-	//! returns a new TRX object
-	IFAObject *Clone() const {
-		return new LDAPCompareDAI(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) LDAPCompareDAI(fName);
 	};
 
 protected:
@@ -331,9 +331,9 @@ public:
 	LDAPDeleteDAI(const char *name) : LDAPAbstractDAI(name) {};
 	~LDAPDeleteDAI() {};
 
-	//! returns a new TRX object
-	IFAObject *Clone() const {
-		return new LDAPDeleteDAI(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) LDAPDeleteDAI(fName);
 	};
 
 protected:
@@ -374,9 +374,9 @@ public:
 	LDAPSearchDAI(const char *name) : LDAPAbstractDAI(name) {};
 	~LDAPSearchDAI() {};
 
-	//! returns a new TRX object
-	IFAObject *Clone() const {
-		return new LDAPSearchDAI(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) LDAPSearchDAI(fName);
 	};
 
 protected:

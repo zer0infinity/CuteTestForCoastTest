@@ -21,8 +21,9 @@ public:
 	~HTMLTreeMapper() {};
 
 //-- Cloning interface
-	IFAObject *Clone() const {
-		return new HTMLTreeMapper(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) HTMLTreeMapper(fName);
 	}
 
 	//! reads an HTML document from istream
@@ -49,8 +50,9 @@ public:
 	~HTMLTreeAndSortedTagsMapper() {};
 
 //-- Cloning interface
-	IFAObject *Clone() const {
-		return new HTMLTreeAndSortedTagsMapper(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) HTMLTreeAndSortedTagsMapper(fName);
 	}
 
 	//! reads an HTML document from istream

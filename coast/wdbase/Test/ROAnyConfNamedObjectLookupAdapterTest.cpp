@@ -133,7 +133,7 @@ TestConfNamedObj::TestConfNamedObj(const char *name) : ConfNamedObject(name)
 	StartTrace(TestConfNamedObj.TestConfNamedObj);
 }
 
-IFAObject *TestConfNamedObj::Clone() const
+IFAObject *TestConfNamedObj::Clone(Allocator *a) const
 {
 	StartTrace(TestConfNamedObj.Clone);
 	// SINGLETON, see NotConed object

@@ -22,8 +22,8 @@ DummyHTTPDAImpl::DummyHTTPDAImpl(const char *name) :
 DummyHTTPDAImpl::~DummyHTTPDAImpl() {
 }
 
-IFAObject *DummyHTTPDAImpl::Clone() const {
-	return new DummyHTTPDAImpl(fName);
+IFAObject *DummyHTTPDAImpl::Clone(Allocator *a) const {
+	return new (a) DummyHTTPDAImpl(fName);
 }
 
 bool DummyHTTPDAImpl::Exec(Context &context, ParameterMapper *in, ResultMapper *out) {

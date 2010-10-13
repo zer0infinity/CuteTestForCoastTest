@@ -30,8 +30,8 @@ DummyDAImpl::DummyDAImpl(const char *name) :
 DummyDAImpl::~DummyDAImpl() {
 }
 
-IFAObject *DummyDAImpl::Clone() const {
-	return new DummyDAImpl(fName);
+IFAObject *DummyDAImpl::Clone(Allocator *a) const {
+	return new (a) DummyDAImpl(fName);
 }
 
 bool DummyDAImpl::HandleError(const char *msg, Context &context) {

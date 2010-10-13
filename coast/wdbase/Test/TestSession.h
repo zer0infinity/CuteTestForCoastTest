@@ -43,9 +43,9 @@ public:
 	TestSessionFactory(const char *testSessionFactoryName, SessionListManagerTest *slmt = 0);
 	~TestSessionFactory();
 
-	//!Cloning interface
-	IFAObject *Clone() const {
-		return new TestSessionFactory(fName, fTest);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) TestSessionFactory(fName, fTest);
 	}
 	//!allocation protocol for session allocation
 	virtual Session *DoMakeSession(Context &ctx);

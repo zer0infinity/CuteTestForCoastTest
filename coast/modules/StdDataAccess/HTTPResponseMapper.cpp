@@ -20,9 +20,9 @@ HTTPResponseMapper::HTTPResponseMapper(const char *name) : ResultMapper(name)
 	StartTrace(HTTPResponseMapper.Ctor);
 }
 
-IFAObject *HTTPResponseMapper::Clone() const
+IFAObject *HTTPResponseMapper::Clone(Allocator *a) const
 {
-	return new HTTPResponseMapper(fName);
+	return new (a) HTTPResponseMapper(fName);
 }
 static void TrimMessage(String &message)
 {

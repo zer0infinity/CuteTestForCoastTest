@@ -22,9 +22,9 @@ RenderedKeyMapper::RenderedKeyMapper(const char *name)
 	StartTrace(RenderedKeyMapper.Ctor);
 }
 
-IFAObject *RenderedKeyMapper::Clone() const
+IFAObject *RenderedKeyMapper::Clone(Allocator *a) const
 {
-	return new RenderedKeyMapper(fName);
+	return new (a) RenderedKeyMapper(fName);
 }
 
 bool RenderedKeyMapper::DoPutAny(const char *key, Anything value, Context &ctx, ROAnything script)
@@ -55,9 +55,9 @@ RenderedKeyParameterMapper::RenderedKeyParameterMapper(const char *name)
 	StartTrace(RenderedKeyParameterMapper.Ctor);
 }
 
-IFAObject *RenderedKeyParameterMapper::Clone() const
+IFAObject *RenderedKeyParameterMapper::Clone(Allocator *a) const
 {
-	return new RenderedKeyParameterMapper(fName);
+	return new (a) RenderedKeyParameterMapper(fName);
 }
 
 bool RenderedKeyParameterMapper::DoGetAny(const char *key, Anything &value, Context &ctx, ROAnything script)

@@ -83,8 +83,9 @@ public:
 	XMLBodyMapper(const char *name) : ResultMapper(name) { }
 	~XMLBodyMapper()	{ }
 
-	IFAObject *Clone() const {
-		return new XMLBodyMapper(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) XMLBodyMapper(fName);
 	}
 
 	bool DoFinalPutStream(const char *key, istream &is, Context &ctx);

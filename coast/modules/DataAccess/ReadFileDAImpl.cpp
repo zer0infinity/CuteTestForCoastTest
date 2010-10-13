@@ -29,9 +29,9 @@ ReadFileDAImpl::~ReadFileDAImpl()
 {
 }
 
-IFAObject *ReadFileDAImpl::Clone() const
+IFAObject *ReadFileDAImpl::Clone(Allocator *a) const
 {
-	return new ReadFileDAImpl(fName);
+	return new (a) ReadFileDAImpl(fName);
 }
 
 bool ReadFileDAImpl::Exec( Context &context, ParameterMapper *in, ResultMapper *out)

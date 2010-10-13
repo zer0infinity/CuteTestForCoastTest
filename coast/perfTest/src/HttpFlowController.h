@@ -34,9 +34,9 @@ public:
 	};
 	virtual bool AnalyseReply(Context &ctx);
 
-	//-- Cloning interface
-	IFAObject *Clone() const {
-		return new HttpFlowController(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) HttpFlowController(fName);
 	}
 
 protected:

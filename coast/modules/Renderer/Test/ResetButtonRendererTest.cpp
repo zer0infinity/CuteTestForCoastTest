@@ -23,7 +23,7 @@
 
 ResetButtonRendererTest::ResetButtonRendererTest (TString tname) : FieldRendererTest(tname)
 {
-	fFieldRenderer = new ResetButtonRenderer("ResetButtonRenderer");
+	fFieldRenderer = new (Storage::Global()) ResetButtonRenderer("ResetButtonRenderer");
 };
 
 ResetButtonRendererTest::~ResetButtonRendererTest()

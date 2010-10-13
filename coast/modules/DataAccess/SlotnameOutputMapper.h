@@ -119,8 +119,9 @@ class EXPORTDECL_DATAACCESS SlotnameOutputMapper : public NameUsingOutputMapper
 {
 public:
 	SlotnameOutputMapper(const char *name) : NameUsingOutputMapper(name) {};
-	IFAObject *Clone() const {
-		return new SlotnameOutputMapper(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) SlotnameOutputMapper(fName);
 	};
 
 	virtual bool DoPutAny(const char *key, Anything value, Context &ctx, ROAnything config);

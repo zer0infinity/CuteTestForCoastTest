@@ -27,9 +27,9 @@ CompareValuesMapper::CompareValuesMapper(const char *name)
 	StartTrace(CompareValuesMapper.Ctor);
 }
 
-IFAObject *CompareValuesMapper::Clone() const
+IFAObject *CompareValuesMapper::Clone(Allocator *a) const
 {
-	return new CompareValuesMapper(fName);
+	return new (a) CompareValuesMapper(fName);
 }
 
 bool CompareValuesMapper::DoPutAny(const char *key, Anything value, Context &ctx, ROAnything script)

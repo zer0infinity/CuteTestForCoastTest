@@ -22,8 +22,9 @@ public:
 	SimpleTestApp(const char *AppName);
 	~SimpleTestApp();
 
-	IFAObject *Clone() const {
-		return new SimpleTestApp(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) SimpleTestApp(fName);
 	}
 
 	//!set the test that drives the booter
@@ -62,8 +63,9 @@ public:
 	SimpleTestServer(const char *AppName);
 	~SimpleTestServer();
 
-	IFAObject *Clone() const {
-		return new SimpleTestServer(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) SimpleTestServer(fName);
 	}
 
 	//!set the test that drives the booter

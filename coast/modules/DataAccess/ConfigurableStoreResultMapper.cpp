@@ -17,8 +17,8 @@ ConfigurableStoreResultMapper::ConfigurableStoreResultMapper(const char *name) :
 	StartTrace(ConfigurableStoreResultMapper.Ctor);
 }
 
-IFAObject *ConfigurableStoreResultMapper::Clone() const {
-	return new ConfigurableStoreResultMapper(fName);
+IFAObject *ConfigurableStoreResultMapper::Clone(Allocator *a) const {
+	return new (a) ConfigurableStoreResultMapper(fName);
 }
 
 void ConfigurableStoreResultMapper::DoGetDestinationAny(const char *key, Anything &targetAny, Context &ctx) {

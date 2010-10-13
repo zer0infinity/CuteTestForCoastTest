@@ -11,6 +11,7 @@
 
 #include "config_foundation.h"	// for definition of EXPORTDECL_FOUNDATION
 #include "foundation.h"
+#include "AllocatorNewDelete.h"
 
 class String;
 
@@ -18,10 +19,8 @@ class String;
 //! This is the abstract root class for all IFAObjects
 /*! It defines the cloning API IFAObject.Clone(), that is needed for the prototype pattern.
  */
-class EXPORTDECL_FOUNDATION IFAObject {
+class EXPORTDECL_FOUNDATION IFAObject : public Coast::AllocatorNewDelete {
 public:
-	IFAObject() {
-	}
 	/*! virtual destructor to nicely cleanup derived types */
 	virtual ~IFAObject() {
 	}
@@ -29,7 +28,15 @@ public:
 	/*! Support for prototype pattern
 	 * @return Baseclass pointer to cloned instance of a derived type
 	 */
-	virtual IFAObject *Clone() const = 0;
+	IFAObject *Clone() const {
+		return Clone(Storage::Current());
+	}
+
+	/*! Support for prototype pattern
+	 * @param a Allocator passed in to allocate new objects with if required
+	 * @return Baseclass pointer to cloned instance of a derived type
+	 */
+	virtual IFAObject *Clone(Allocator *a) const = 0;
 };
 
 //---- NamedObject ----------------------------------------------------------

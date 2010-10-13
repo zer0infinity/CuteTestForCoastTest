@@ -18,8 +18,9 @@ class EXPORTDECL_SECURITY BlowfishScrambler :  public Scrambler
 public:
 	BlowfishScrambler(const char *name);
 
-	IFAObject *Clone() const {
-		return new BlowfishScrambler(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) BlowfishScrambler(fName);
 	}
 	// Scramble a string of any length. Mode used is blowfish ECB mode.
 	// See SSLeavy blowfish header file for further explanations.
@@ -75,8 +76,9 @@ class EXPORTDECL_SECURITY BlowfishCBCScrambler : public BlowfishScrambler
 public:
 	BlowfishCBCScrambler(const char *name): BlowfishScrambler(name), fIvec0(0), fIvec1(0) {}
 
-	IFAObject *Clone() const {
-		return new BlowfishCBCScrambler(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) BlowfishCBCScrambler(fName);
 	}
 protected:
 	//! pad to BF_BLOCK bytes, Coast default is to append 0-bytes plus a counting byte

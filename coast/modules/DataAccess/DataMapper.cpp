@@ -21,9 +21,9 @@ FixedSizeMapper::FixedSizeMapper(const char *name) : EagerParameterMapper(name)
 {
 }
 
-IFAObject *FixedSizeMapper::Clone() const
+IFAObject *FixedSizeMapper::Clone(Allocator *a) const
 {
-	return new FixedSizeMapper(fName);
+	return new (a) FixedSizeMapper(fName);
 }
 
 void FixedSizeMapper::Pad(String &value, long length, char pad)
@@ -66,9 +66,9 @@ UpperCaseMapper::UpperCaseMapper(const char *name) : EagerParameterMapper(name)
 {
 }
 
-IFAObject *UpperCaseMapper::Clone() const
+IFAObject *UpperCaseMapper::Clone(Allocator *a) const
 {
-	return new UpperCaseMapper(fName);
+	return new (a) UpperCaseMapper(fName);
 }
 
 bool UpperCaseMapper::DoGetStream(const char *key, ostream &os, Context &ctx, ROAnything info)
@@ -89,9 +89,9 @@ RendererMapper::RendererMapper(const char *name) : EagerParameterMapper(name)
 {
 }
 
-IFAObject *RendererMapper::Clone() const
+IFAObject *RendererMapper::Clone(Allocator *a) const
 {
-	return new RendererMapper(fName);
+	return new (a) RendererMapper(fName);
 }
 
 bool RendererMapper::DoGetStream(const char *key, ostream &os, Context &ctx, ROAnything info)
@@ -139,9 +139,9 @@ LookupMapper::LookupMapper(const char *name) : EagerParameterMapper(name)
 {
 }
 
-IFAObject *LookupMapper::Clone() const
+IFAObject *LookupMapper::Clone(Allocator *a) const
 {
-	return new LookupMapper(fName);
+	return new (a) LookupMapper(fName);
 }
 
 static const char *gcSlotName =		"LookupName";

@@ -192,8 +192,9 @@ public:
 
 	static String GenTimeStamp(const String &format);
 
-	IFAObject *Clone() const {
-		return new AppLogChannel("ClonedAppLogChannel");
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) AppLogChannel("ClonedAppLogChannel");
 	}
 
 	RegCacheDef(AppLogChannel);

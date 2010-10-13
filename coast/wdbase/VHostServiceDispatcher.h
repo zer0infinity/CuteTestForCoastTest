@@ -19,9 +19,9 @@ public:
 	virtual ~VHostServiceDispatcher() {
 	}
 
-	//!cloning interface
-	IFAObject *Clone() const {
-		return new VHostServiceDispatcher(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) VHostServiceDispatcher(fName);
 	}
 
 	ServiceHandler *FindServiceHandler(Context &ctx);

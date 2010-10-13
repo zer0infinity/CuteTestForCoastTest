@@ -22,8 +22,9 @@ public:
 	ServerManagement(const char *name);
 	bool DoAction(String &action, Context &c);
 
-	IFAObject *Clone() const {
-		return new ServerManagement(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) ServerManagement(fName);
 	}
 };
 

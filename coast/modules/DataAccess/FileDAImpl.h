@@ -37,8 +37,8 @@ public:
 	FileDAImpl(const char *name);
 	~FileDAImpl();
 
-	//! returns a new TRX object
-	IFAObject *Clone() const;
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const;
 
 protected:
 	//! override to specify different file access modes

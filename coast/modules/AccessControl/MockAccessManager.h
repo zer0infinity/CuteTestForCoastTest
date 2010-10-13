@@ -61,8 +61,9 @@ public:
 	//--- constructors
 	MockAccessManager(const char *name) : AccessManager(name) {}
 	~MockAccessManager() {}
-	IFAObject *Clone() const {
-		return new MockAccessManager(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) MockAccessManager(fName);
 	}
 
 	//! check if user exists in AcceptUsers list

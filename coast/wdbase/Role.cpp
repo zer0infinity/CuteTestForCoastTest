@@ -53,8 +53,8 @@ Role::~Role() {
 	StatTrace(Role.Misc, "~Role: <" << fName << ">", Storage::Current());
 }
 
-IFAObject *Role::Clone() const {
-	return new Role(fName);
+IFAObject *Role::Clone(Allocator *a) const {
+	return new (a) Role(fName);
 }
 
 bool Role::Init(Context &) {

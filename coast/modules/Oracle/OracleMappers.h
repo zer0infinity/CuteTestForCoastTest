@@ -64,7 +64,8 @@ protected:
 	/*! Clone interface implementation
 	 * @return Pointer to IFAObject base class
 	 */
-	IFAObject *Clone() const;
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const;
 private:
 	OracleParameterMapper();
 	OracleParameterMapper(const OracleParameterMapper &);
@@ -127,7 +128,8 @@ protected:
 	/*! Clone interface implementation
 	 * @return Pointer to IFAObject base class
 	 */
-	IFAObject *Clone() const;
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const;
 
 private:
 	OracleResultMapper();

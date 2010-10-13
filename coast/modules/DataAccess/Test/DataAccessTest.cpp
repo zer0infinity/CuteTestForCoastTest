@@ -92,8 +92,9 @@ public:
 	SessionUnlockTestDAImpl(const char *name): DataAccessImpl(name) {}
 	~SessionUnlockTestDAImpl() {}
 
-	IFAObject *Clone() const {
-		return new SessionUnlockTestDAImpl(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) SessionUnlockTestDAImpl(fName);
 	}
 	virtual bool Exec(Context &c, ParameterMapper *input, ResultMapper *output) {
 		c.GetTmpStore()["session"] = c.GetSession()->IsLockedByMe() ? "LOCKED" : "unlocked";

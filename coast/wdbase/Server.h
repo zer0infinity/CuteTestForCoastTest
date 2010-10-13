@@ -62,9 +62,9 @@ public:
 	Server(const char *serverName);
 	~Server();
 
-	//!support for prototype pattern
-	IFAObject *Clone() const {
-		return new Server(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) Server(fName);
 	}
 
 	//!setup blocking and calls DoGlobalReinit
@@ -225,9 +225,9 @@ public:
 	MasterServer(const char *name);
 	~MasterServer();
 
-	//!support for prototype pattern
-	IFAObject *Clone() const {
-		return new MasterServer(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) MasterServer(fName);
 	}
 
 	//! life-cycle of the server init run terminate

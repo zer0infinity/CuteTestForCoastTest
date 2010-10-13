@@ -40,9 +40,9 @@ public:
 
 	//!registry interface
 	RegCacheDef(ServiceDispatcher);	// FindServiceDispatcher()
-	//!cloning interface
-	IFAObject *Clone() const {
-		return new ServiceDispatcher(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) ServiceDispatcher(fName);
 	}
 
 	//!dispatches control to a service handler
@@ -75,9 +75,9 @@ public:
 	RendererDispatcher(const char *RendererDispatcherName);
 	virtual ~RendererDispatcher();
 
-	//!cloning interface
-	IFAObject *Clone() const {
-		return new RendererDispatcher(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) RendererDispatcher(fName);
 	}
 
 	//!uses a table to map uri prefixes to service name; renders entry found, if nothing matches, renders "DefaultService"

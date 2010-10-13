@@ -24,9 +24,9 @@ CgiParams::CgiParams(const char *name) : URI2FileNameMapper(name)
 	StartTrace(CgiParams.Ctor);
 }
 
-IFAObject *CgiParams::Clone() const
+IFAObject *CgiParams::Clone(Allocator *a) const
 {
-	return new CgiParams(fName);
+	return new (a) CgiParams(fName);
 }
 
 void CgiParams::AddToEnvironment(Context &ctx, Anything &env, ROAnything additionalenv)

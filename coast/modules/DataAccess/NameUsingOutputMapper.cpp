@@ -20,9 +20,9 @@ NameUsingOutputMapper::NameUsingOutputMapper(const char *name) : EagerResultMapp
 {
 }
 
-IFAObject *NameUsingOutputMapper::Clone() const
+IFAObject *NameUsingOutputMapper::Clone(Allocator *a) const
 {
-	return new NameUsingOutputMapper(fName);
+	return new (a) NameUsingOutputMapper(fName);
 }
 
 bool NameUsingOutputMapper::DoPutAny(const char *key, Anything value, Context &ctx, ROAnything config)

@@ -30,9 +30,9 @@ ReadXMLFileDAImpl::~ReadXMLFileDAImpl()
 {
 }
 
-IFAObject *ReadXMLFileDAImpl::Clone() const
+IFAObject *ReadXMLFileDAImpl::Clone(Allocator *a) const
 {
-	return new ReadXMLFileDAImpl(fName);
+	return new (a) ReadXMLFileDAImpl(fName);
 }
 
 bool ReadXMLFileDAImpl::Exec( Context &context, ParameterMapper *in, ResultMapper *out)

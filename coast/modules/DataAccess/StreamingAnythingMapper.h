@@ -65,9 +65,9 @@ public:
 	//! empty dtor
 	~StreamToAnythingMapper() {}
 
-	//! Cloning API
-	IFAObject *Clone() const {
-		return new StreamToAnythingMapper(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) StreamToAnythingMapper(fName);
 	}
 
 	/*! reads from istream an Anything and puts it according to key
@@ -101,9 +101,9 @@ public:
 	//! empty dtor
 	~AnythingToStreamMapper() {}
 
-	//! Cloning API
-	IFAObject *Clone() const {
-		return new AnythingToStreamMapper(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) AnythingToStreamMapper(fName);
 	}
 
 	/*! write to the ostream os an Anything according to key

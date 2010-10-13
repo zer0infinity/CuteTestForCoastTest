@@ -31,9 +31,9 @@ public:
 		: ServiceHandler(serviceHandlerName) { }
 	~AuthTestService() {}
 
-	//:cloning interface
-	IFAObject *Clone() const {
-		return new AuthTestService(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) AuthTestService(fName);
 	}
 
 protected:

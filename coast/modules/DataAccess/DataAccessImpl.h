@@ -70,8 +70,8 @@ public:
 	//! Name of the configuration Anything file
 	static const char* gpcConfigFileName;
 
-	/*! @copydoc IFAObject::Clone() */
-	IFAObject *Clone() const;
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const;
 
 	//!protocol provided to implement data access
 	/*! @param ctx The context in which the transaction takes place
@@ -125,8 +125,8 @@ public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	LoopBackDAImpl(const char *name) : DataAccessImpl(name) {}
 
-	/*! @copydoc IFAObject::Clone() */
-	IFAObject *Clone() const;
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const;
 
 	//! Loopback specific implementation of the data access
 	/*! @copydetails DataAccessImpl::Exec() */

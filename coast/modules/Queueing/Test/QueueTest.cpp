@@ -450,7 +450,7 @@ void QueueTest::ConsumerTerminationTest()
 {
 	StartTrace(QueueTest.ConsumerTerminationTest);
 	{
-		AnyQueueType *pProductQueue = new AnyQueueType("pProductQueue", 2);
+		AnyQueueType *pProductQueue = new (Storage::Global()) AnyQueueType("pProductQueue", 2);
 		ConsumerTerminationThread aConsumer(*pProductQueue);
 		{
 			Anything anyProduct;
@@ -473,7 +473,7 @@ void QueueTest::ConsumerTerminationTest()
 		t_assert(aConsumer.CheckState(Thread::eTerminated, 10));
 	}
 	{
-		AnyQueueType *pProductQueue = new AnyQueueType("pProductQueue", 2);
+		AnyQueueType *pProductQueue = new (Storage::Global()) AnyQueueType("pProductQueue", 2);
 		ConsumerTerminationThread aConsumer(*pProductQueue);
 		{
 			Anything anyProduct;

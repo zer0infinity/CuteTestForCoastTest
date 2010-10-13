@@ -23,7 +23,7 @@
 
 CheckBoxRendererTest::CheckBoxRendererTest (TString tname) : FieldRendererTest(tname)
 {
-	fFieldRenderer = new CheckBoxRenderer("CheckBoxRendererTest");
+	fFieldRenderer = new (Storage::Global()) CheckBoxRenderer("CheckBoxRendererTest");
 };
 
 CheckBoxRendererTest::~CheckBoxRendererTest()

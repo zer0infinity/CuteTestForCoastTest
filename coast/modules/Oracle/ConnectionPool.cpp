@@ -126,7 +126,7 @@ namespace Coast
 					}
 					fpStatEvtHandlerPool = StatEvtHandlerPtrType( new WPMStatHandler( nrOfConnections ) );
 					if ( !fpPeriodicAction ) {
-						fpPeriodicAction = new PeriodicAction( "OracleCheckCloseOpenedConnectionsAction",
+						fpPeriodicAction = new (Storage::Global()) PeriodicAction( "OracleCheckCloseOpenedConnectionsAction",
 															   lCloseConnectionTimeout );
 						fpPeriodicAction->Start();
 					}

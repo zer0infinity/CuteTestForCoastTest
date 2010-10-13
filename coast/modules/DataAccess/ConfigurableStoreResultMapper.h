@@ -22,8 +22,8 @@ public:
 	/*! constructor
 		\param name the objects name */
 	ConfigurableStoreResultMapper(const char *name);
-	//! support for prototype
-	IFAObject *Clone() const;
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const;
 
 protected:
 	//! Looks up the Anything at key in Context using Slotfinder

@@ -32,9 +32,9 @@ public:
 	TestService(const char *serviceHandlerName);
 	~TestService();
 
-	//:cloning interface
-	IFAObject *Clone() const {
-		return new TestService(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) TestService(fName);
 	}
 
 protected:

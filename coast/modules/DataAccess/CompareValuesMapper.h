@@ -77,8 +77,8 @@ class EXPORTDECL_DATAACCESS CompareValuesMapper : public ResultMapper
 public:
 	//--- constructors
 	CompareValuesMapper(const char *name);
-	//--- support for prototype
-	IFAObject *Clone() const;
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const;
 
 protected:
 	//! Major hook for subclasses that want to do something with their config passed as script. The default is to interpret the script and put a value for every script item used. Recursion will be stopped by DoFinalPutAny which places its value under slot key below given DoGetDestinationSlot()

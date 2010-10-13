@@ -36,8 +36,9 @@ public:
 	virtual Anything Run(long id);
 
 //-- Cloning interface
-	IFAObject *Clone() const {
-		return new RemoteStresser(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) RemoteStresser(fName);
 	}
 
 };

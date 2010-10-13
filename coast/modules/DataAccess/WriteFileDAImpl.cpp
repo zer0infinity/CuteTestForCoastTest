@@ -29,11 +29,10 @@ WriteFileDAImpl::~WriteFileDAImpl()
 	StartTrace(WriteFileDAImpl.Dtor);
 }
 
-IFAObject *WriteFileDAImpl::Clone() const
+IFAObject *WriteFileDAImpl::Clone(Allocator *a) const
 {
 	StartTrace(WriteFileDAImpl.Clone);
-
-	return new WriteFileDAImpl(fName);
+	return new (a) WriteFileDAImpl(fName);
 }
 
 bool WriteFileDAImpl::Exec( Context &context, ParameterMapper *in, ResultMapper *out)

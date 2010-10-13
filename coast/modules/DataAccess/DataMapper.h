@@ -19,7 +19,8 @@ class EXPORTDECL_DATAACCESS FixedSizeMapper : public EagerParameterMapper
 public:
 	FixedSizeMapper(const char *name);
 
-	IFAObject *Clone() const;			// support for prototype
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const;
 
 	virtual bool DoGetStream(const char *key, ostream &os, Context &ctx, ROAnything info);
 
@@ -38,7 +39,8 @@ class EXPORTDECL_DATAACCESS UpperCaseMapper : public EagerParameterMapper
 public:
 	UpperCaseMapper(const char *name);
 
-	IFAObject *Clone() const;			// support for prototype
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const;
 
 	virtual bool DoGetStream(const char *key, ostream &os, Context &ctx, ROAnything config);
 
@@ -58,7 +60,8 @@ class EXPORTDECL_DATAACCESS LookupMapper : public EagerParameterMapper
 public:
 	LookupMapper(const char *name);
 
-	IFAObject *Clone() const;			// support for prototype
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const;
 
 	virtual bool DoGetStream(const char *key, ostream &os, Context &ctx, ROAnything config);
 
@@ -74,7 +77,8 @@ class EXPORTDECL_DATAACCESS RendererMapper : public EagerParameterMapper
 public:
 	RendererMapper(const char *name);
 
-	IFAObject *Clone() const;			// support for prototype
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const;
 
 	//needed, because we are non-eager when retrieving an Anything (why?)
 	virtual bool Get(const char *key, Anything &value, Context &ctx);

@@ -40,8 +40,8 @@ public:
 	//!destructor does nothing
 	~Page();
 
-	//!cloning api for prototypes
-	IFAObject *Clone() const;
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const;
 
 	//! deprecated- use Prepare and Render
 	virtual void Start(ostream &reply, Context &context);

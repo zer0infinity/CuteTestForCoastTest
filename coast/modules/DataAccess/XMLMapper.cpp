@@ -11,12 +11,8 @@
 //--- interface include --------------------------------------------------------
 #include "XMLMapper.h"
 
-//--- project modules used -----------------------------------------------------
-
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- XMLMapper ------------------------------------------------------------------
 RegisterResultMapper(XMLMapper);
@@ -26,10 +22,10 @@ XMLMapper::XMLMapper(const char *name) : ResultMapper(name)
 	StartTrace(XMLMapper.Ctor);
 }
 
-IFAObject *XMLMapper::Clone() const
+IFAObject *XMLMapper::Clone(Allocator *a) const
 {
 	StartTrace(XMLMapper.Clone);
-	return new XMLMapper(fName);
+	return new (a) XMLMapper(fName);
 }
 
 // ignores its config altogether, operates on the fConfig

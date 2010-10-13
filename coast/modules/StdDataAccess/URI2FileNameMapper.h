@@ -30,8 +30,9 @@ class EXPORTDECL_STDDATAACCESS URI2FileNameMapper : public ParameterMapper
 public:
 	//--- constructors
 	URI2FileNameMapper(const char *name) : ParameterMapper(name) {};
-	IFAObject *Clone() const {
-		return new URI2FileNameMapper(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) URI2FileNameMapper(fName);
 	};
 
 	bool DoFinalGetAny(const char *key, Anything &value, Context &ctx);

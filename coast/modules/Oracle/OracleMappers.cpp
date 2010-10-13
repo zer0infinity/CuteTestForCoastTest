@@ -20,10 +20,10 @@ OracleParameterMapper::OracleParameterMapper( const char *name ) :
 	StatTrace(OracleParameterMapper.Ctor, name, Storage::Current());
 }
 
-IFAObject *OracleParameterMapper::Clone() const
+IFAObject *OracleParameterMapper::Clone(Allocator *a) const
 {
 	StatTrace(OracleParameterMapper.Clone, fName, Storage::Current());
-	return new OracleParameterMapper( fName );
+	return new (a) OracleParameterMapper( fName );
 }
 
 bool OracleParameterMapper::DoGetAny( const char *key, Anything &value, Context &ctx, ROAnything script )
@@ -47,10 +47,10 @@ OracleResultMapper::OracleResultMapper( const char *name ) :
 	StatTrace(OracleResultMapper.Ctor, name, Storage::Current());
 }
 
-IFAObject *OracleResultMapper::Clone() const
+IFAObject *OracleResultMapper::Clone(Allocator *a) const
 {
 	StatTrace(OracleResultMapper.Clone, fName, Storage::Current());
-	return new OracleResultMapper( fName );
+	return new (a) OracleResultMapper( fName );
 }
 
 bool OracleResultMapper::DoPutAny( const char *key, Anything value, Context &ctx, ROAnything script )

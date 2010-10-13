@@ -26,9 +26,9 @@ LoggingMapper::LoggingMapper(const char *name)
 	StartTrace(LoggingMapper.Ctor);
 }
 
-IFAObject *LoggingMapper::Clone() const
+IFAObject *LoggingMapper::Clone(Allocator *a) const
 {
-	return new LoggingMapper(fName);
+	return new (a) LoggingMapper(fName);
 }
 
 bool LoggingMapper::DoPutAny(const char *key, Anything value, Context &ctx, ROAnything script)

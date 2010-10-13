@@ -59,9 +59,9 @@ public:
 	MockOTPList(const char *name) : OTPList(name) {};
 	~MockOTPList() {};
 
-	//-- Cloning interface
-	IFAObject *Clone() const {
-		return new MockOTPList(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) MockOTPList(fName);
 	}
 
 	//! return true always (no matter what arguments are), if NO config is present.

@@ -161,7 +161,8 @@ bool SessionListManager::ResetInit(const ROAnything config)
 		String m;
 		m << "\tLaunching new session cleaner";
 		SystemLog::WriteToStderr(m);
-		fSessionCleaner = new PeriodicAction(cleanerAction, cleanerWait);		// periodically clean up sessions
+		// periodically clean up sessions
+		fSessionCleaner = new (Storage::Global()) PeriodicAction(cleanerAction, cleanerWait);
 		fSessionCleaner->Start();
 		m = "";
 		m << " done" << "\n";
@@ -180,7 +181,7 @@ Session *SessionListManager::DoMakeSession(Context &ctx)
 	if ( fSessionFactory ) {
 		return fSessionFactory->DoMakeSession(ctx);
 	}
-	return new Session("Session");
+	return new (Storage::Global()) Session("Session");
 }
 
 Session *SessionListManager::MakeSession(Context &ctx)
@@ -760,7 +761,7 @@ Session *SessionFactory::DoMakeSession(Context &ctx)
 {
 	StartTrace(SessionFactory.DoMakeSession);
 	Trace("fName: " << fName);
-	return new Session(fName);
+	return new (Storage::Global()) Session(fName);
 }
 
 Session *SessionFactory::DoPrepareSession(Context &ctx, Session *session, bool &isBusy)

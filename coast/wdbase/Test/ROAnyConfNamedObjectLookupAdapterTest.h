@@ -50,7 +50,8 @@ public:
 	TestConfNamedObj(const char *name);
 	~TestConfNamedObj() {} ;
 
-	IFAObject *Clone() const ;
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const ;
 	RegCacheDef(TestConfNamedObj);	// FindTestConfNamedObj()
 
 protected:

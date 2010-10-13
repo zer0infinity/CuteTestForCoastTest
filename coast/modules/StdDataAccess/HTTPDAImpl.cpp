@@ -36,8 +36,8 @@ HTTPDAImpl::HTTPDAImpl(const char *name) :
 HTTPDAImpl::~HTTPDAImpl() {
 }
 
-IFAObject *HTTPDAImpl::Clone() const {
-	return new HTTPDAImpl(fName);
+IFAObject *HTTPDAImpl::Clone(Allocator *a) const {
+	return new (a) HTTPDAImpl(fName);
 }
 
 String HTTPDAImpl::GenerateErrorMessage(const char *msg, Context &context) {

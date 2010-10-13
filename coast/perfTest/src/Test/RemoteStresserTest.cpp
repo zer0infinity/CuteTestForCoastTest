@@ -45,11 +45,11 @@ void RemoteStresserTest::setUp ()
 {
 	StressAppTest::setUp();
 	if (!fStressServer) {
-		fStressServer = new Server("StressServer");
+		fStressServer = new (Storage::Global()) Server("StressServer");
 		fStressServer->GetConfig();
 		fStressServer->Initialize("Server");
 
-		fServerRunner = new ServerThread(fStressServer);
+		fServerRunner = new (Storage::Global()) ServerThread(fStressServer);
 		if (fStressServer && fServerRunner) {
 			bool bSuccess = fServerRunner->Start();
 			fServerRunner->CheckState(Thread::eStarted);

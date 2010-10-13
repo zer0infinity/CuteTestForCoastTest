@@ -22,8 +22,9 @@ class EXPORTDECL_STDDATAACCESS StreamTransferMapper : public ResultMapper
 public:
 	//--- constructors
 	StreamTransferMapper(const char *name) : ResultMapper(name) {};
-	IFAObject *Clone() const {
-		return new StreamTransferMapper(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) StreamTransferMapper(fName);
 	};
 
 	//! \param key the name defines kind of input for the value

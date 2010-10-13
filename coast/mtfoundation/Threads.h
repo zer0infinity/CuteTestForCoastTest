@@ -805,9 +805,9 @@ private:
 	template< class WorkerParamType >
 	bool SetRunningState(ERunningState state, WorkerParamType args);
 
-	/*! cloning interface of object, disallow clones for now
-		\return NULL in any case */
-	virtual IFAObject *Clone() const {
+	//! disallow clones for now
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
 		return (IFAObject *)0;
 	}
 

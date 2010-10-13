@@ -31,8 +31,8 @@ public:
 	SybCTnewDAImpl(const char *name);
 	~SybCTnewDAImpl();
 
-	// returns a new TRX object
-	IFAObject *Clone() const;
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const;
 
 	//: executes the transaction
 	//!param: c - The context of the transaction

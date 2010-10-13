@@ -148,7 +148,7 @@ bool AppLogModule::MakeChannels(const char *servername, const Anything &config)
 				}
 				AppLogChannel *pChannel = NULL, *pCloneChannel = AppLogChannel::FindAppLogChannel(channel["ChannelClass"].AsString("AppLogChannel"));
 				if ( pCloneChannel ) {
-					pChannel = SafeCast(pCloneChannel->Clone(), AppLogChannel);
+					pChannel = SafeCast(pCloneChannel->Clone(Storage::Global()), AppLogChannel);
 					if ( pChannel ) {
 						pChannel->InitClone(strChannelName, channel);
 					}
@@ -227,12 +227,10 @@ bool AppLogModule::DoRotateLogs()
 
 bool AppLogModule::StartLogRotator(const char *rotateTime, long lRotateSecond,  const char *everyNSecondsTime, long lEveryNSeconds, bool isGmTime)
 {
-	fRotator = new LogRotator(rotateTime, everyNSecondsTime,  lRotateSecond, lEveryNSeconds, isGmTime);
-
+	fRotator = new (Storage::Global()) LogRotator(rotateTime, everyNSecondsTime,  lRotateSecond, lEveryNSeconds, isGmTime);
 	if (fRotator) {
 		return fRotator->Start();
 	}
-
 	return false;
 }
 

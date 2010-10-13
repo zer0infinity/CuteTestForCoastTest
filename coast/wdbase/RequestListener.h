@@ -39,9 +39,9 @@ public:
 
 	//!registry interface
 	RegCacheDef(AcceptorFactory);	// FindAcceptorFactory()
-	//! Cloning interface
-	IFAObject *Clone() const {
-		return new AcceptorFactory(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) AcceptorFactory(fName);
 	}
 	//!hook to provide factory functionality
 	virtual Acceptor *MakeAcceptor(AcceptorCallBack *ac);

@@ -31,8 +31,9 @@ class UnscrambleUrl : public Application
 {
 public:
 	UnscrambleUrl(const char *n) : Application(n) {}
-	IFAObject *Clone() const {
-		return new UnscrambleUrl(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) UnscrambleUrl(fName);
 	}
 
 	int GlobalInit(int argc, char *argv[], const Anything &config) {

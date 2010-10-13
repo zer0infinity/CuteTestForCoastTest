@@ -27,9 +27,9 @@ public:
 	WebAppService(const char *serviceHandlerName);
 	virtual ~WebAppService();
 
-	//!cloning interface
-	IFAObject *Clone() const {
-		return new WebAppService(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) WebAppService(fName);
 	}
 
 protected:

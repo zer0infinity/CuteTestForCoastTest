@@ -27,8 +27,8 @@ class EXPORTDECL_STDDATAACCESS HTTPMimeHeaderMapper : public EagerResultMapper
 public:
 	//--- constructors
 	HTTPMimeHeaderMapper(const char *name);
-	//--- support for prototype
-	IFAObject *Clone() const;
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const;
 
 	//! reads from istream a MIME header storing it under Mapper.HTTPHeader
 	//! \param key not used

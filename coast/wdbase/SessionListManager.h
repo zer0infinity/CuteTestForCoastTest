@@ -43,9 +43,9 @@ public:
 
 	//! registry interface
 	RegCacheDef(SessionFactory);	// FindSessionFactory()
-	//!Cloning interface
-	IFAObject *Clone() const {
-		return new SessionFactory(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) SessionFactory(fName);
 	}
 	//!allocation protocol for session allocation
 	virtual Session *DoMakeSession(Context &ctx);

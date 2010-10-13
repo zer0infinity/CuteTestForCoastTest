@@ -109,9 +109,9 @@ public:
 	FakeAcceptorFactory(const char *name): AcceptorFactory(name) {};
 	~FakeAcceptorFactory() {};
 
-	//-- Cloning interface
-	IFAObject *Clone() const {
-		return new FakeAcceptorFactory(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) FakeAcceptorFactory(fName);
 	}
 
 	Acceptor *MakeAcceptor(AcceptorCallBack *ac) {

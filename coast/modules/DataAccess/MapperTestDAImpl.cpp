@@ -23,9 +23,9 @@ MapperTestDAImpl::MapperTestDAImpl(const char *name) : DataAccessImpl(name)
 {
 }
 
-IFAObject *MapperTestDAImpl::Clone() const
+IFAObject *MapperTestDAImpl::Clone(Allocator *a) const
 {
-	return new MapperTestDAImpl(fName);
+	return new (a) MapperTestDAImpl(fName);
 }
 
 bool MapperTestDAImpl::Exec( Context &context, ParameterMapper *input, ResultMapper *output)

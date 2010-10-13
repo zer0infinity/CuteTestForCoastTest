@@ -303,8 +303,8 @@ public:
 	}
 
 	//! Cloning of a queue is not allowed.
-	/*! \return pointer to clone, in this case this will always be null */
-	virtual IFAObject *Clone() const {
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
 		return NULL;
 	}
 

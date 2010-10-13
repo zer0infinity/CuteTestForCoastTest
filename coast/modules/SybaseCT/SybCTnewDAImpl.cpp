@@ -44,10 +44,10 @@ SybCTnewDAImpl::~SybCTnewDAImpl()
 	StartTrace(SybCTnewDAImpl.~SybCTnewDAImpl);
 }
 
-IFAObject *SybCTnewDAImpl::Clone() const
+IFAObject *SybCTnewDAImpl::Clone(Allocator *a) const
 {
 	StartTrace(SybCTnewDAImpl.Clone);
-	return new SybCTnewDAImpl(fName);
+	return new (a) SybCTnewDAImpl(fName);
 }
 
 bool SybCTnewDAImpl::Init(ROAnything config)
@@ -78,11 +78,11 @@ bool SybCTnewDAImpl::Init(ROAnything config)
 			fgpResourcesSema = new Semaphore(nrOfSybCTs);
 			String server, user;
 			for ( long i = 0; i < nrOfSybCTs; ++i ) {
-				SybCTnewDA *pCT = new SybCTnewDA(fg_cs_context);
+				SybCTnewDA *pCT = new (Storage::Global()) SybCTnewDA(fg_cs_context);
 				IntDoPutbackConnection(pCT, false, server, user);
 			}
 			if ( !fgpPeriodicAction ) {
-				fgpPeriodicAction = new PeriodicAction("SybCheckCloseOpenedConnectionsAction", lCloseConnectionTimeout);
+				fgpPeriodicAction = new (Storage::Global()) PeriodicAction("SybCheckCloseOpenedConnectionsAction", lCloseConnectionTimeout);
 				fgpPeriodicAction->Start();
 			}
 			fgInitialized = true;

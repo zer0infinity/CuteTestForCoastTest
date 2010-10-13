@@ -139,9 +139,8 @@ public:
 	OracleDAImpl( const char *name );
 	~OracleDAImpl();
 
-	//! Return a copy of this OracleDAImpl
-	/*! @copydoc IFAObject::Clone() */
-	IFAObject *Clone() const;
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const;
 
 	//! Implementation of oracle data access
 	/*! @copydetails DataAccessImpl::Exec() */

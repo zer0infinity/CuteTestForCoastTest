@@ -27,9 +27,9 @@ public:
 	SimpleDataAccessService(const char *serviceHandlerName);
 	~SimpleDataAccessService();
 
-	//!cloning interface
-	IFAObject *Clone() const {
-		return new SimpleDataAccessService(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) SimpleDataAccessService(fName);
 	}
 
 protected:

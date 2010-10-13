@@ -26,8 +26,9 @@ class EXPORTDECL_ACCESSCONTROL FileUDAC : public UserDataAccessController
 public:
 	// constructors
 	FileUDAC(const char *name) : UserDataAccessController(name), fUserDataMutex("fUserdataMutex") {}
-	IFAObject *Clone() const {
-		FileUDAC *fudac = new FileUDAC(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		FileUDAC *fudac = new (a) FileUDAC(fName);
 		// prevent deletion by terminators
 		fudac->MarkStatic();
 		return fudac;
@@ -66,8 +67,9 @@ class EXPORTDECL_ACCESSCONTROL FileTDAC : public TokenDataAccessController
 public:
 	// constructors
 	FileTDAC(const char *name) : TokenDataAccessController(name), fTokenDataMutex("fTokenDataMutex") {}
-	IFAObject *Clone() const {
-		FileTDAC *ftdac = new FileTDAC(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		FileTDAC *ftdac = new (a) FileTDAC(fName);
 		// prevent deletion by terminators
 		ftdac->MarkStatic();
 		return ftdac;
@@ -98,8 +100,9 @@ class EXPORTDECL_ACCESSCONTROL FileEDAC : public EntityDataAccessController
 public:
 	// constructors
 	FileEDAC(const char *name) : EntityDataAccessController(name), fEntityDataMutex("fEntityDataMutex") {}
-	IFAObject *Clone() const {
-		FileEDAC *fedac = new FileEDAC(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		FileEDAC *fedac = new (a) FileEDAC(fName);
 		// prevent deletion by terminators
 		fedac->MarkStatic();
 		return fedac;
@@ -154,8 +157,9 @@ class EXPORTDECL_ACCESSCONTROL MockUDAC : public FileUDAC
 public:
 	MockUDAC(const char *name) : FileUDAC(name) {};
 	virtual ~MockUDAC() {}
-	IFAObject *Clone() const {
-		return new MockUDAC(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) MockUDAC(fName);
 	}
 
 protected:
@@ -201,8 +205,9 @@ class EXPORTDECL_ACCESSCONTROL MockTDAC : public FileTDAC
 public:
 	MockTDAC(const char *name) : FileTDAC(name) {};
 	virtual ~MockTDAC() {}
-	IFAObject *Clone() const {
-		return new MockTDAC(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) MockTDAC(fName);
 	}
 
 protected:
@@ -251,8 +256,9 @@ class EXPORTDECL_ACCESSCONTROL MockEDAC : public FileEDAC
 public:
 	MockEDAC(const char *name) : FileEDAC(name) {};
 	virtual ~MockEDAC() {}
-	IFAObject *Clone() const {
-		return new MockEDAC(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) MockEDAC(fName);
 	}
 
 protected:

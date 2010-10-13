@@ -44,8 +44,9 @@ public:
 
 	/*! Cloning interface
 		\return Instance of this class */
-	IFAObject *Clone() const {
-		return new DataAccessStresser(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) DataAccessStresser(fName);
 	}
 };
 

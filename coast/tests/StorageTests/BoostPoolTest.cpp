@@ -660,7 +660,7 @@ public:
 	Thread *DoAllocThread(long i, ROAnything args) {
 		StartTrace(TestMethodWorkerThreadPool.DoAllocThread);
 		TraceAny(args, "Init-Arguments");
-		return new TestMethodWorkerThread<funcType, innerFunc, cleanupFunc>(fFunc, fInnerFunc, fCleanupFunc);
+		return new (Storage::Global()) TestMethodWorkerThread<funcType, innerFunc, cleanupFunc>(fFunc, fInnerFunc, fCleanupFunc);
 	}
 
 	ROAnything DoGetInitConfig(long i, ROAnything args) {

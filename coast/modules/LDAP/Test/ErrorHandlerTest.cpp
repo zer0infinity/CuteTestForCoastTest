@@ -36,9 +36,9 @@ void ErrorHandlerTest::setUp ()
 {
 	StartTrace(ErrorHandlerTest.setUp);
 	fCtx = new Context();
-	fPut = new RootMapper(name());
+	fPut = new (Storage::Global()) RootMapper(name());
 	t_assert( fPut && fPut->Initialize("ParameterMapper") );
-	fGet = new ParameterMapper(name());
+	fGet = new (Storage::Global()) ParameterMapper(name());
 	t_assert( fGet && fGet->Initialize("ResultMapper") );
 	t_assert(GetConfig().IsDefined("Modules"));
 }

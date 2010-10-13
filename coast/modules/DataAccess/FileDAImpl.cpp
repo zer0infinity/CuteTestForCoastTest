@@ -15,8 +15,6 @@
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
 
-//--- c-modules used -----------------------------------------------------------
-
 //--- FileDAImpl -----------------------------------------------------
 RegisterDataAccessImpl(FileDAImpl);
 
@@ -29,9 +27,9 @@ FileDAImpl::~FileDAImpl()
 {
 }
 
-IFAObject *FileDAImpl::Clone() const
+IFAObject *FileDAImpl::Clone(Allocator *a) const
 {
-	return new FileDAImpl(fName);
+	return new (a) FileDAImpl(fName);
 }
 
 bool FileDAImpl::GetFileName(String &filename, String &ext, Context &context, ParameterMapper *in)

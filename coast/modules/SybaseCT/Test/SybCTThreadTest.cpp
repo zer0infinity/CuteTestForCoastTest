@@ -110,7 +110,7 @@ void SybCTThreadTest::DoTest(const char *goodDAName, const char *failDAName)
 	SybTestThread **threadArray = new SybTestThread*[nThreads];
 	long i = 0;
 	for (i = 0; i < nThreads; i++) {
-		threadArray[i] = new SybTestThread(*this, i, goodDAName, failDAName);
+		threadArray[i] = new (Storage::Global()) SybTestThread(*this, i, goodDAName, failDAName);
 		threadArray[i]->Start(MT_Storage::MakePoolAllocator(lPoolSize, lPoolBuckets, i));
 	}
 	for (i = 0; i < nThreads; i++) {

@@ -36,9 +36,9 @@ ConnectorDAImpl::~ConnectorDAImpl()
 {
 }
 
-IFAObject *ConnectorDAImpl::Clone() const
+IFAObject *ConnectorDAImpl::Clone(Allocator *a) const
 {
-	return new ConnectorDAImpl(fName);
+	return new (a) ConnectorDAImpl(fName);
 }
 
 bool ConnectorDAImpl::Exec( Context &context, ParameterMapper *in, ResultMapper *out)

@@ -156,11 +156,11 @@ protected:
 
 //!creates static variable of type RegisterableObjectInstaller
 #define RegisterObject(name, category) \
-	static RegisterableObjectInstaller _NAME3_(name,category,Registerer) (_QUOTE_(name), _QUOTE_(category), new name(_QUOTE_(name)))
+	static RegisterableObjectInstaller _NAME3_(name,category,Registerer) (_QUOTE_(name), _QUOTE_(category), new (Storage::Global()) name(_QUOTE_(name)))
 
 //!creates static variable of type RegisterableObjectInstaller with a short name
 #define RegisterShortName(sname, name, instname) \
-	static RegisterableObjectInstaller _NAME3_(sname,instname,Registerer) (_QUOTE_(sname), _QUOTE_(instname), new name(_QUOTE_(sname)))
+	static RegisterableObjectInstaller _NAME3_(sname,instname,Registerer) (_QUOTE_(sname), _QUOTE_(instname), new (Storage::Global()) name(_QUOTE_(sname)))
 
 //!creates definition for a Find method for category
 #define RegCacheDef(category) 										\
@@ -208,9 +208,8 @@ public:
 	{}
 
 	//! Public api to return reference to this object instead of cloning, e.g. like a singleton
-	/*! @return pseudo clone of this, like a singleton
-	 */
-	IFAObject *Clone() const {
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
 		NotCloned *nonconst_this = (NotCloned *) this;
 		return nonconst_this;
 	}

@@ -29,8 +29,9 @@ class TestAccessManager : public AccessManager
 {
 public:
 	TestAccessManager(const char *name) : AccessManager(name) {}
-	IFAObject *Clone() const {
-		return new TestAccessManager(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) TestAccessManager(fName);
 	}
 	virtual bool Validate(String &uid) {
 		return false;
@@ -60,8 +61,9 @@ class MyAccessManager : public TestAccessManager
 {
 public:
 	MyAccessManager(const char *name) : TestAccessManager(name) {}
-	IFAObject *Clone() const {
-		return new MyAccessManager(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) MyAccessManager(fName);
 	}
 };
 RegisterAccessManager(MyAccessManager);

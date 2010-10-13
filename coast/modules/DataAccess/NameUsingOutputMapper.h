@@ -34,7 +34,8 @@ class EXPORTDECL_DATAACCESS NameUsingOutputMapper : public EagerResultMapper
 {
 public:
 	NameUsingOutputMapper(const char *name);
-	IFAObject *Clone() const;			// support for prototype
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const;
 
 	virtual bool DoPutAny(const char *key, Anything value, Context &ctx, ROAnything config);
 	virtual bool DoPutStream(const char *key, istream &is, Context &ctx, ROAnything config);

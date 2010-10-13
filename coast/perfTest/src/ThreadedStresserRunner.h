@@ -60,8 +60,9 @@ public:
 	//!	}</PRE>
 	virtual Anything Run(long id);
 //-- Cloning interface
-	IFAObject *Clone() const {
-		return new ThreadedStresserRunner(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) ThreadedStresserRunner(fName);
 	}
 
 protected:

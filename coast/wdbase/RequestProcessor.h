@@ -23,9 +23,9 @@ public:
 	RequestProcessor(const char *processorName);
 	virtual ~RequestProcessor()	{ }
 
-	//! support for prototypes is required
-	virtual IFAObject *Clone() const {
-		return new RequestProcessor(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) RequestProcessor(fName);
 	}
 
 	//!configure request processor with server object

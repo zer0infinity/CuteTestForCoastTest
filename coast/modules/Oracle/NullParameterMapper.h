@@ -64,7 +64,8 @@ protected:
 	/*! Clone interface implementation
 	 * @return Pointer to IFAObject base class
 	 */
-	IFAObject *Clone() const;
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const;
 private:
 	NullParameterMapper();
 	NullParameterMapper(const NullParameterMapper &);

@@ -59,10 +59,10 @@ DataAccessImpl::DataAccessImpl(const char *name) :
 	HierarchConfNamed(name) {
 }
 
-IFAObject *DataAccessImpl::Clone() const
+IFAObject *DataAccessImpl::Clone(Allocator *a) const
 {
 	Assert(false);
-	return new DataAccessImpl(fName);
+	return new (a) DataAccessImpl(fName);
 }
 
 //--- Send/Receive
@@ -101,9 +101,9 @@ bool DataAccessImpl::DoGetConfigName(const char *category, const char *objName, 
 //---- LoopBackDAImpl ------------------------------------------------------
 RegisterDataAccessImpl(LoopBackDAImpl);
 
-IFAObject *LoopBackDAImpl::Clone() const
+IFAObject *LoopBackDAImpl::Clone(Allocator *a) const
 {
-	return new LoopBackDAImpl(fName);
+	return new (a) LoopBackDAImpl(fName);
 }
 
 bool LoopBackDAImpl::Exec(Context &c, ParameterMapper *input, ResultMapper *output)

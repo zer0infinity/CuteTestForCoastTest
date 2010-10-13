@@ -42,8 +42,9 @@ public:
 	// the first registered one
 	static Application *GetGlobalApplication(String &applicationName);
 
-	IFAObject *Clone() const {
-		return new Application(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) Application(fName);
 	}
 
 protected:

@@ -18,8 +18,9 @@ class EXPORTDECL_SECURITY MD5Signer :  public Signer
 public:
 	MD5Signer(const char *name);
 	~MD5Signer();
-	IFAObject *Clone() const {
-		return new MD5Signer(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) MD5Signer(fName);
 	}
 	void InitKey(const String &key);
 	//!calculate plain MD5 hash value, no signing

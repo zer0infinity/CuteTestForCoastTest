@@ -1233,12 +1233,9 @@ void AnythingParserTest::parseTestFiles() {
 class myObject : public IFAObject
 {
 public:
-	myObject() {}
-	virtual ~myObject() {}
-
-	//! support for prototypes is required
-	virtual IFAObject *Clone() const {
-		return (IFAObject *)this;
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return (IFAObject*)this;
 	}
 };
 

@@ -121,7 +121,7 @@ void MTStorageTest2::twoThreadTest()
 {
 	StartTrace1(MTStorageTest2.twoThreadTest, "ThrdId: " << Thread::MyId());
 	assertEqualm(0, fPool->CurrentlyAllocated(), "expected fPool to be empty");
-	DataProviderThread *t1 = new DataProviderThread(fPool);
+	DataProviderThread *t1 = new (Storage::Global()) DataProviderThread(fPool);
 	t1->Start(fPool);
 
 	// wait for other thread to finish
@@ -140,7 +140,7 @@ void MTStorageTest2::twoThreadAssignmentTest()
 {
 	StartTrace1(MTStorageTest2.twoThreadAssignmentTest, "ThrdId: " << Thread::MyId());
 	l_long l = fGlobal->CurrentlyAllocated();
-	DataProviderThread *t1 = new DataProviderThread(fPool);
+	DataProviderThread *t1 = new (Storage::Global()) DataProviderThread(fPool);
 	t1->Start(fPool);
 
 	// wait for other thread to finish
@@ -162,7 +162,7 @@ void MTStorageTest2::twoThreadCopyConstructorTest()
 {
 	StartTrace1(MTStorageTest2.twoThreadCopyConstructorTest, "ThrdId: " << Thread::MyId());
 	l_long l = fGlobal->CurrentlyAllocated();
-	DataProviderThread *t1 = new DataProviderThread(fPool);
+	DataProviderThread *t1 = new (Storage::Global()) DataProviderThread(fPool);
 	t1->Start(fPool);
 
 	// wait for other thread to finish
@@ -183,7 +183,7 @@ void MTStorageTest2::twoThreadCopyConstructorTest()
 void MTStorageTest2::twoThreadArrayAccessTest()
 {
 	StartTrace1(MTStorageTest2.twoThreadArrayAccessTest, "ThrdId: " << Thread::MyId());
-	DataProviderThread *t1 = new DataProviderThread(fPool);
+	DataProviderThread *t1 = new (Storage::Global()) DataProviderThread(fPool);
 	l_long l = fGlobal->CurrentlyAllocated();
 	{
 		t1->Start(fPool);
@@ -225,7 +225,7 @@ void MTStorageTest2::reusePoolTest()
 	}
 	MT_Storage::RefAllocator(pa);	// need to refcount poolstorage
 	assertEqualm(1L, pa->RefCnt(), "expected refcnt to be 1");
-	DataProviderThread *t1 = new DataProviderThread(pa);
+	DataProviderThread *t1 = new (Storage::Global()) DataProviderThread(pa);
 	assertEqualm(2L, pa->RefCnt(), "expected refcnt to be 2");
 
 	// do some work
@@ -238,7 +238,7 @@ void MTStorageTest2::reusePoolTest()
 	assertEqualm(1L, pa->RefCnt(), "expected refcnt to be 1");
 
 	// do it again
-	t1 = new DataProviderThread(pa);
+	t1 = new (Storage::Global()) DataProviderThread(pa);
 	assertEqualm(2L, pa->RefCnt(), "expected refcnt to be 2");
 
 	// do some work

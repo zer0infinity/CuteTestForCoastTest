@@ -72,9 +72,9 @@ public:
 	HTTPHeaderParameterMapper(const char *name) : ParameterMapper(name) { }
 	~HTTPHeaderParameterMapper()	{ }
 
-	//! support for prototype pattern, implements standard api
-	IFAObject *Clone() const {
-		return new HTTPHeaderParameterMapper(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) HTTPHeaderParameterMapper(fName);
 	}
 
 	/*! Render http header fields, look'd up in the Context using the given key and render not suppressed headers onto os
@@ -102,8 +102,9 @@ public:
 	HTTPBodyResultMapper(const char *name) : ResultMapper(name) { }
 	~HTTPBodyResultMapper()	{ }
 
-	IFAObject *Clone() const {
-		return new HTTPBodyResultMapper(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) HTTPBodyResultMapper(fName);
 	}
 
 	bool DoFinalPutStream(const char *key, istream &is, Context &ctx);
@@ -124,8 +125,9 @@ public:
 	HTTPBodyParameterMapper(const char *name) : ParameterMapper(name) { }
 	~HTTPBodyParameterMapper()	{ }
 
-	IFAObject *Clone() const {
-		return new HTTPBodyParameterMapper(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) HTTPBodyParameterMapper(fName);
 	}
 
 	bool DoFinalGetStream(const char *key, ostream &os, Context &ctx);

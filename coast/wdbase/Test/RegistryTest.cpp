@@ -43,7 +43,7 @@ void RegistryTest::InstallAliases ( )
 	StartTrace(RegistryTest.InstallAliases);
 	{
 		// Insert regular objects into the registry
-		NotCloned *a = new NotCloned(""), *b = new NotCloned("");
+		NotCloned *a = new (Storage::Global()) NotCloned(""), *b = new (Storage::Global()) NotCloned("");
 		// these must be on the heap, implicit assumption of Registry
 		fRegistry->RegisterRegisterableObject( "A", a );
 		fRegistry->RegisterRegisterableObject( "B", b );
@@ -72,7 +72,7 @@ void RegistryTest::InstallAliases ( )
 	}
 	{
 		// Insert regular objects into the registry
-		NotCloned *a = new NotCloned(""), *b = new NotCloned("");
+		NotCloned *a = new (Storage::Global()) NotCloned(""), *b = new (Storage::Global()) NotCloned("");
 		// these must be on the heap, implicit assumption of Registry
 		fRegistry->RegisterRegisterableObject( "A", a );
 		fRegistry->RegisterRegisterableObject( "B", b );
@@ -107,7 +107,7 @@ void RegistryTest::InstallErroneousAliases ( )
 {
 	StartTrace(RegistryTest.InstallErroneousAliases);
 	// Insert regular objects into the registry
-	NotCloned *a = new NotCloned(""), *b = new NotCloned("");
+	NotCloned *a = new (Storage::Global()) NotCloned(""), *b = new (Storage::Global()) NotCloned("");
 	// these must be on the heap, implicit assumption of Registry
 	fRegistry->RegisterRegisterableObject( "A", a );
 	fRegistry->RegisterRegisterableObject( "B", b );
@@ -145,8 +145,8 @@ void RegistryTest::InstallHierarchy ( )
 {
 	StartTrace(RegistryTest.InstallHierarchy);
 	// Insert regular objects into the registry
-	Page *a = new Page("A"), *b = new Page("B"), *c = new Page("C");
-	Page *d = new Page("D");
+	Page *a = new (Storage::Global()) Page("A"), *b = new (Storage::Global()) Page("B"), *c = new (Storage::Global()) Page("C");
+	Page *d = new (Storage::Global()) Page("D");
 
 	fRegistry->RegisterRegisterableObject( "A", a );
 	fRegistry->RegisterRegisterableObject( "B", b );
@@ -227,7 +227,7 @@ void RegistryTest::TerminateTest()
 	StartTrace(RegistryTest.TerminateTest);
 	NotCloned a("terminate1");
 	a.MarkStatic();
-	NotCloned *b = new NotCloned("terminate2");
+	NotCloned *b = new (Storage::Global()) NotCloned("terminate2");
 
 	Registry *r = Registry::GetRegistry("TerminateTest");
 	t_assert(r != 0);
@@ -253,8 +253,9 @@ class TestPage: public Page
 public:
 	TestPage(const char *name) : Page(name) {}
 	~TestPage() {}
-	IFAObject *Clone() const {
-		return new TestPage("TestPage");
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) TestPage("TestPage");
 	}
 };
 
@@ -265,8 +266,8 @@ void RegistryTest::InstallHierarchyConfig()
 	Registry *registry = Registry::GetRegistry( "InstallerResetTest" );
 
 	// generate test pages which are initially there
-	Page *a = new Page("Page");
-	Page *b = new TestPage("TestPage");
+	Page *a = new (Storage::Global()) Page("Page");
+	Page *b = new (Storage::Global()) TestPage("TestPage");
 
 	// initially registered pages
 	registry->RegisterRegisterableObject("Page", a);

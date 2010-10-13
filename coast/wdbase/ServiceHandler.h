@@ -39,9 +39,6 @@ public:
 	//!registry interface
 	RegCacheDef(ServiceHandler);	// FindServiceHandler()
 
-	//!no objects of this class can be generated
-//!	IFAObject *Clone() const { return new ServiceHandler(fName); }
-
 	//!handles requested service
 	void HandleService(ostream &os, Context &ctx);
 

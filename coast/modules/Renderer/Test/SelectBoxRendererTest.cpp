@@ -20,7 +20,7 @@
 SelectBoxRendererTest::SelectBoxRendererTest (TString tname)
 	: FieldRendererTest(tname)
 {
-	fFieldRenderer = new SelectBoxRenderer("SelectBoxRenderer");
+	fFieldRenderer = new (Storage::Global()) SelectBoxRenderer("SelectBoxRenderer");
 }
 
 SelectBoxRendererTest::~SelectBoxRendererTest()

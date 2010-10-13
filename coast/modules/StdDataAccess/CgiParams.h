@@ -21,7 +21,8 @@ public:
 	//--- constructors
 	CgiParams(const char *name);
 
-	IFAObject *Clone() const;			// support for prototype
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const;
 
 	//! fills value with a CGI environment on key "cgienv" otherwise delegates up
 	//! environment values are rendered per slot and thus can be renderer configs

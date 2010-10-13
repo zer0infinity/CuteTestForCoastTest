@@ -19,8 +19,9 @@ class EXPORTDECL_PERFTEST SortedTagsHTMLMapper : public ResultMapper
 public:
 	SortedTagsHTMLMapper(const char *SortedTagsHTMLMapperName) : ResultMapper(SortedTagsHTMLMapperName) {};
 	~SortedTagsHTMLMapper() {}
-	IFAObject *Clone() const {
-		return new SortedTagsHTMLMapper(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) SortedTagsHTMLMapper(fName);
 	}
 
 	//! reads an HTML document from istream

@@ -176,7 +176,7 @@ CacheHandler *CacheHandler::Get()
 		LockUnlockEntry me(*fgCacheHandlerMutex);
 		// test again if changed while waiting for mutex
 		if ( !fgCacheHandler ) {
-			fgCacheHandler = new CacheHandler();
+			fgCacheHandler = new (Storage::Global()) CacheHandler();
 		}
 	}
 	return fgCacheHandler;

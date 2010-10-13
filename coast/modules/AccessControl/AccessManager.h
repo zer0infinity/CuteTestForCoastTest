@@ -48,7 +48,8 @@ public:
 	//--- constructors
 	AccessManager(const char *name) : HierarchConfNamed(name) {}
 	virtual ~AccessManager() {}
-	IFAObject *Clone() const {
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
 		Assert(false);    // do not instantiate
 		return 0;
 	}

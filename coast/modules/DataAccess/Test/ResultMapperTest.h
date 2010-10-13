@@ -18,8 +18,9 @@ class PathTestMapper : public ResultMapper
 public:
 	PathTestMapper(const char *name): ResultMapper(name) {}
 	virtual ~PathTestMapper() {}
-	IFAObject *Clone() const {
-		return new PathTestMapper(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) PathTestMapper(fName);
 	}
 
 protected:

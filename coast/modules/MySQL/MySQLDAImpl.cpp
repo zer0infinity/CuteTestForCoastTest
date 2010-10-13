@@ -25,9 +25,9 @@ MySQLDAImpl::~MySQLDAImpl()
 {
 }
 
-IFAObject *MySQLDAImpl::Clone() const
+IFAObject *MySQLDAImpl::Clone(Allocator *a) const
 {
-	return new MySQLDAImpl(fName);
+	return new (a) MySQLDAImpl(fName);
 }
 
 bool MySQLDAImpl::Exec( Context &context, ParameterMapper *in, ResultMapper *out)

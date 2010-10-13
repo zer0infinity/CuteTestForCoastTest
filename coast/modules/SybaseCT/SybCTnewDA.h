@@ -62,7 +62,8 @@ class EXPORTDECL_SYBASECT SybCTnewDA : public IFAObject
 		Allocator	*fAllocator;
 	} EX_COLUMN_DATA;
 
-	IFAObject *Clone() const {
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
 		return NULL;
 	};
 

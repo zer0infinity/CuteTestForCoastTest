@@ -25,9 +25,9 @@ HTTPMimeHeaderMapper::HTTPMimeHeaderMapper(const char *name)
 	StartTrace(HTTPMimeHeaderMapper.Ctor);
 }
 
-IFAObject *HTTPMimeHeaderMapper::Clone() const
+IFAObject *HTTPMimeHeaderMapper::Clone(Allocator *a) const
 {
-	return new HTTPMimeHeaderMapper(fName);
+	return new (a) HTTPMimeHeaderMapper(fName);
 }
 
 bool HTTPMimeHeaderMapper::DoPutStream(const char *, istream &is, Context &ctx,  ROAnything config)

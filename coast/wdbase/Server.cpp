@@ -432,7 +432,8 @@ RequestProcessor *Server::MakeProcessor()
 		// shut down the server
 		PrepareShutdown(-1);
 	} else {
-		rp = (RequestProcessor *)rp->Clone(); // create processor that is connected to this server
+		// create processor that is connected to this server
+		rp = (RequestProcessor *)rp->Clone(Storage::Global());
 		rp->Init(this);
 	}
 	return rp;

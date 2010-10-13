@@ -44,8 +44,8 @@ public:
 	/*! @copydoc RegisterableObject::RegisterableObject(const char *) */
 	MapperTestDAImpl(const char *name);
 
-	/*! @copydoc IFAObject::Clone() */
-	IFAObject *Clone() const;
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const;
 
 	//! Loopback like implementation of the data access
 	/*! @copydetails DataAccessImpl::Exec() */

@@ -20,8 +20,9 @@ public:
 	AuthenticationService();
 	AuthenticationService(const char *authenticationServiceHandlerName);
 	~AuthenticationService();
-	IFAObject *Clone() const {
-		return new AuthenticationService(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) AuthenticationService(fName);
 	}
 
 protected:

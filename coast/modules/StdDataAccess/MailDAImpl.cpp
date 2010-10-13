@@ -568,9 +568,9 @@ MailDAImpl::~MailDAImpl()
 {
 }
 
-IFAObject *MailDAImpl::Clone() const
+IFAObject *MailDAImpl::Clone(Allocator *a) const
 {
-	return new MailDAImpl(fName);
+	return new (a) MailDAImpl(fName);
 }
 
 bool MailDAImpl::Exec( Context &ctx, ParameterMapper *in, ResultMapper *out)

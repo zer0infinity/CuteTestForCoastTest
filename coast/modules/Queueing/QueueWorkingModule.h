@@ -332,7 +332,7 @@ private:
 				fpQAllocator = pAlloc;
 			}
 		}
-		fpQueue = new QueueType(GetName(), lQueueSize, pAlloc);
+		fpQueue = new (pAlloc) QueueType(GetName(), lQueueSize, pAlloc);
 		fFailedPutbackMessages.clear();
 	}
 

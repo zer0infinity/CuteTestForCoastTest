@@ -29,9 +29,9 @@ CgiCaller::~CgiCaller()
 
 }
 
-IFAObject *CgiCaller::Clone() const
+IFAObject *CgiCaller::Clone(Allocator *a) const
 {
-	return new CgiCaller(fName);
+	return new (a) CgiCaller(fName);
 }
 
 bool CgiCaller::GenReplyHeader(Context &context, ParameterMapper *in, ResultMapper *out)

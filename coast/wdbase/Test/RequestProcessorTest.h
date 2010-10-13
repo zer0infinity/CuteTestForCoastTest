@@ -45,9 +45,9 @@ public:
 	LoopbackProcessor(const char *processorName);
 	virtual ~LoopbackProcessor()	{ }
 
-	//! support for prototypes is required
-	virtual IFAObject *Clone() const {
-		return new LoopbackProcessor(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) LoopbackProcessor(fName);
 	}
 
 protected:

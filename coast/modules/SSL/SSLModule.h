@@ -50,9 +50,9 @@ public:
 	SSLAcceptorFactory(const char *SSLAcceptorFactoryName);
 	~SSLAcceptorFactory();
 
-	//-- Cloning interface
-	IFAObject *Clone() const {
-		return new SSLAcceptorFactory(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) SSLAcceptorFactory(fName);
 	}
 
 	Acceptor *MakeAcceptor(AcceptorCallBack *ac);

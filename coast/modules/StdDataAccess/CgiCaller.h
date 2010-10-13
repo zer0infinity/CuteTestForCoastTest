@@ -24,8 +24,8 @@ public:
 	CgiCaller(const char *name);
 	~CgiCaller();
 
-	//! returns a new TRX object
-	IFAObject *Clone() const;
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const;
 
 protected:
 	virtual bool GenReplyHeader(Context &context, ParameterMapper *in, ResultMapper *out);

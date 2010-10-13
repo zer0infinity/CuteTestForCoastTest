@@ -22,8 +22,9 @@ class DummyROIFAObj: public IFAObject
 {
 public:
 	DummyROIFAObj(const char *tst = "foo") { }
-	IFAObject *Clone() const {
-		return new DummyROIFAObj("dummy");
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) DummyROIFAObj("dummy");
 	}
 };
 

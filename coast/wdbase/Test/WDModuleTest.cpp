@@ -107,10 +107,10 @@ void WDModuleTest::InstallTest()
 	// set up the correct WDModule registry
 	Registry *wdmoduleTestRegistry = Registry::GetRegistry("WDModule");
 	t_assert(wdmoduleTestRegistry != 0);
-	wdmoduleTestRegistry->RegisterRegisterableObject("TestModuleTrue", new TestModuleTrue);
+	wdmoduleTestRegistry->RegisterRegisterableObject("TestModuleTrue", new (Storage::Global()) TestModuleTrue);
 	t_assert(WDModule::Install(Anything()) == 0);
 
-	wdmoduleTestRegistry->RegisterRegisterableObject("TestModuleFalse", new TestModuleFalse);
+	wdmoduleTestRegistry->RegisterRegisterableObject("TestModuleFalse", new (Storage::Global()) TestModuleFalse);
 	t_assert(WDModule::Install(Anything()) == 0); // since it is not mandatory
 
 	// simple configuration
@@ -129,10 +129,10 @@ void WDModuleTest::Install2Test()
 	// set up the correct WDModule registry
 	Registry *wdmoduleTestRegistry = Registry::GetRegistry("WDModule");
 	t_assert(wdmoduleTestRegistry != 0);
-	wdmoduleTestRegistry->RegisterRegisterableObject("TestModuleTrue", new TestModuleTrue);
+	wdmoduleTestRegistry->RegisterRegisterableObject("TestModuleTrue", new (Storage::Global()) TestModuleTrue);
 	t_assert(WDModule::Install(Anything()) == 0);
 
-	wdmoduleTestRegistry->RegisterRegisterableObject("TestModuleFalse", new TestModuleFalse);
+	wdmoduleTestRegistry->RegisterRegisterableObject("TestModuleFalse", new (Storage::Global()) TestModuleFalse);
 	t_assert(WDModule::Install(Anything()) == 0); // since it is not mandatory
 
 	// simple configuration
@@ -150,11 +150,11 @@ void WDModuleTest::TerminateTest()
 	// set up the correct WDModule registry
 	Registry *wdmoduleTestRegistry = Registry::GetRegistry("WDModule");
 	t_assert(wdmoduleTestRegistry != 0);
-	wdmoduleTestRegistry->RegisterRegisterableObject("TestModuleTrue", new TestModuleTrue);
+	wdmoduleTestRegistry->RegisterRegisterableObject("TestModuleTrue", new (Storage::Global()) TestModuleTrue);
 	t_assert(WDModule::Terminate(Anything()) == 0);
 	t_assert(!wdmoduleTestRegistry->Find("TestModuleTrue"));
 
-	wdmoduleTestRegistry->RegisterRegisterableObject("TestModuleFalse", new TestModuleFalse);
+	wdmoduleTestRegistry->RegisterRegisterableObject("TestModuleFalse", new (Storage::Global()) TestModuleFalse);
 	t_assert(WDModule::Terminate(Anything()) == 0); // since it is not mandatory
 	t_assert(!wdmoduleTestRegistry->Find("TestModuleFalse"));
 
@@ -162,13 +162,13 @@ void WDModuleTest::TerminateTest()
 	Anything config;
 	config["Modules"]["TestModuleTrue"] = "TestModuleTrue";
 	config["Modules"]["TestModuleFalse"] = "TestModuleFalse";
-	wdmoduleTestRegistry->RegisterRegisterableObject("TestModuleTrue", new TestModuleTrue);
-	wdmoduleTestRegistry->RegisterRegisterableObject("TestModuleFalse", new TestModuleFalse);
+	wdmoduleTestRegistry->RegisterRegisterableObject("TestModuleTrue", new (Storage::Global()) TestModuleTrue);
+	wdmoduleTestRegistry->RegisterRegisterableObject("TestModuleFalse", new (Storage::Global()) TestModuleFalse);
 	t_assertm(WDModule::Terminate(config) == 0, "expected to succeed, since it is not mandatory"); //
 
 	config["Modules"]["TestModuleFalse"]["Mandatory"] = true;
-	wdmoduleTestRegistry->RegisterRegisterableObject("TestModuleTrue", new TestModuleTrue);
-	wdmoduleTestRegistry->RegisterRegisterableObject("TestModuleFalse", new TestModuleFalse);
+	wdmoduleTestRegistry->RegisterRegisterableObject("TestModuleTrue", new (Storage::Global()) TestModuleTrue);
+	wdmoduleTestRegistry->RegisterRegisterableObject("TestModuleFalse", new (Storage::Global()) TestModuleFalse);
 	t_assertm(WDModule::Terminate(config) == -1, "expected to fail, since it is mandatory"); //
 }
 
@@ -176,11 +176,11 @@ void WDModuleTest::ResetTest()
 {
 	// set up the correct WDModule registry
 	Registry *wdmoduleTestRegistry = Registry::GetRegistry("WDModule");
-	wdmoduleTestRegistry->RegisterRegisterableObject("TestModuleTrue", new TestModuleTrue);
+	wdmoduleTestRegistry->RegisterRegisterableObject("TestModuleTrue", new (Storage::Global()) TestModuleTrue);
 	t_assert(WDModule::Reset(Anything(), Anything()) == 0);
 	t_assert(wdmoduleTestRegistry->Find("TestModuleTrue") == 0);
 
-	wdmoduleTestRegistry->RegisterRegisterableObject("TestModuleFalse", new TestModuleFalse);
+	wdmoduleTestRegistry->RegisterRegisterableObject("TestModuleFalse", new (Storage::Global()) TestModuleFalse);
 	t_assert(WDModule::Reset(Anything(), Anything()) == 0); // since it is not mandatory
 	t_assert(wdmoduleTestRegistry->Find("TestModuleFalse") == 0);
 
@@ -196,8 +196,8 @@ void WDModuleTest::ResetWithDiffConfigsTest()
 	// set up the correct WDModule registry
 	Registry *wdmoduleTestRegistry = Registry::GetRegistry("WDModule");
 
-	WDModule *testmodulold = new TestModuleTrue;
-	WDModule *testmodulnew = new TestModuleTrue;
+	WDModule *testmodulold = new (Storage::Global()) TestModuleTrue;
+	WDModule *testmodulnew = new (Storage::Global()) TestModuleTrue;
 	testmodulold->MarkStatic(); // so it is not deleted in reset
 	testmodulnew->MarkStatic(); // so it is not deleted in reset
 

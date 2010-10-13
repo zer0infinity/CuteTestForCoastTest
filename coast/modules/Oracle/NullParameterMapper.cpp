@@ -21,10 +21,10 @@ NullParameterMapper::NullParameterMapper( const char *name ) :
 	StatTrace(NullParameterMapper.Ctor, name, Storage::Current());
 }
 
-IFAObject *NullParameterMapper::Clone() const
+IFAObject *NullParameterMapper::Clone(Allocator *a) const
 {
 	StatTrace(NullParameterMapper.Clone, fName, Storage::Current());
-	return new NullParameterMapper( fName );
+	return new (a) NullParameterMapper( fName );
 }
 
 bool NullParameterMapper::DoGetAny( const char *key, Anything &value, Context &ctx, ROAnything script )

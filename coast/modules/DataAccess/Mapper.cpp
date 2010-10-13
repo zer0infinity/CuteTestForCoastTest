@@ -70,9 +70,9 @@ ParameterMapper::ParameterMapper(const char *name) :
 	HierarchConfNamed(name) {
 }
 
-IFAObject *ParameterMapper::Clone() const
+IFAObject *ParameterMapper::Clone(Allocator *a) const
 {
-	return new ParameterMapper(fName);
+	return new (a) ParameterMapper(fName);
 }
 
 bool ParameterMapper::DoLoadConfig(const char *category)
@@ -427,9 +427,9 @@ ResultMapper::ResultMapper(const char *name) :
 	HierarchConfNamed(name) {
 }
 
-IFAObject *ResultMapper::Clone() const
+IFAObject *ResultMapper::Clone(Allocator *a) const
 {
-	return new ResultMapper(fName);
+	return new (a) ResultMapper(fName);
 }
 
 ROAnything ResultMapper::DoSelectScript(const char *key, ROAnything script, Context &ctx) const

@@ -23,7 +23,7 @@
 
 HiddenFieldRendererTest::HiddenFieldRendererTest (TString tname) : FieldRendererTest(tname)
 {
-	fFieldRenderer = new HiddenFieldRenderer("HiddenFieldRendererTest");
+	fFieldRenderer = new (Storage::Global()) HiddenFieldRenderer("HiddenFieldRendererTest");
 };
 
 HiddenFieldRendererTest::~HiddenFieldRendererTest()

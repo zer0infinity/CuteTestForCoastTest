@@ -26,9 +26,9 @@ HTTPFileLoader::~HTTPFileLoader()
 {
 }
 
-IFAObject *HTTPFileLoader::Clone() const
+IFAObject *HTTPFileLoader::Clone(Allocator *a) const
 {
-	return new HTTPFileLoader(fName);
+	return new (a) HTTPFileLoader(fName);
 }
 
 bool HTTPFileLoader::GenReplyStatus(Context &context, ParameterMapper *in, ResultMapper *out)

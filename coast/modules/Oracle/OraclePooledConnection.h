@@ -24,7 +24,7 @@
  * such an object is first requested for OraclePooledConnection::Open, it will allocate the needed resources
  * like an environment and a connection which can then be used to process oracle database requests.
  */
-class EXPORTDECL_COASTORACLE OraclePooledConnection: public IFAObject, public Coast::AllocatorNewDelete
+class EXPORTDECL_COASTORACLE OraclePooledConnection: public IFAObject
 {
 	OracleEnvironmentPtr fEnvironment;
 	OracleConnectionPtr fConnection;
@@ -92,8 +92,8 @@ public:
 	}
 
 protected:
-	//! returns nothing, object not to clone
-	IFAObject *Clone() const {
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
 		return NULL;
 	}
 };

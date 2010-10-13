@@ -72,8 +72,9 @@ public:
 //---- registry interface
 	RegCacheDef(FlowController);	// FindFlowController()
 //-- Cloning interface
-	IFAObject *Clone() const {
-		return new FlowController(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) FlowController(fName);
 	}
 
 protected:

@@ -60,7 +60,7 @@ TestThreadPool::~TestThreadPool()
 Thread *TestThreadPool::DoAllocThread(long i, ROAnything args)
 {
 	StartTrace(TestThreadPool.DoAllocThread);
-	return new TestThread;
+	return new (Storage::Global()) TestThread;
 }
 
 bool TestThreadPool::AllThreadsStarted()
@@ -89,7 +89,7 @@ TerminateTestThreadPool::TerminateTestThreadPool()
 
 Thread *TerminateTestThreadPool::DoAllocThread(long i, ROAnything args)
 {
-	return new TerminateMeTestThread;
+	return new (Storage::Global()) TerminateMeTestThread;
 }
 
 //---- TestWorker -----------------------------------------------

@@ -22,9 +22,9 @@ public:
 	TableCompressor(const char *name);
 	~TableCompressor();
 
-	//!support for prototypes
-	IFAObject *Clone() const {
-		return new TableCompressor(fName);
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const {
+		return new (a) TableCompressor(fName);
 	}
 
 	//!initializes the internal fMap with the mapping, reversemapping, and value mapping tables

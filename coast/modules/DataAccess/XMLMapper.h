@@ -42,8 +42,8 @@ class EXPORTDECL_DATAACCESS XMLMapper : public ResultMapper
 public:
 	//--- constructors
 	XMLMapper(const char *name);
-	//--- support for prototype
-	IFAObject *Clone() const;
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const;
 	// ignores the SelectScript-Hook, operates directly on fConfig (FIXME?)
 	virtual bool DoPutAny(const char *key, Anything value, Context &ctx, ROAnything);
 

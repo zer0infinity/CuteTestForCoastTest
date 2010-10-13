@@ -105,8 +105,8 @@ public:
 	static long GetRoleLevel(const Role *pRole);
 
 protected:
-	//! mandatory operation
-	IFAObject *Clone() const;
+	/*! @copydoc IFAObject::Clone(Allocator *) */
+	IFAObject *Clone(Allocator *a) const;
 
 	/*! security API hooks for subclasses
 		Checks role levels by name. Default implementation uses the role hierarchy to find mismatches.

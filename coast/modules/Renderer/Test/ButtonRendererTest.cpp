@@ -23,7 +23,7 @@
 
 ButtonRendererTest::ButtonRendererTest (TString tname) : FieldRendererTest(tname)
 {
-	fFieldRenderer = new ButtonRenderer("ButtonRenderer");
+	fFieldRenderer = new (Storage::Global()) ButtonRenderer("ButtonRenderer");
 };
 
 ButtonRendererTest::~ButtonRendererTest()

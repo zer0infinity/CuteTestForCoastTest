@@ -146,7 +146,7 @@ Registry *Registry::MakeRegistry(const char *category)
 	msg.Append(NotNull(category)).Append('>');
 	SystemLog::Info(msg);
 
-	Registry *r = new Registry(category);
+	Registry *r = new (Storage::Global()) Registry(category);
 	GetRegTable()[category] = Anything(r, Storage::Global()); // r stored as pointer to IFAObject (AB)
 	return r;
 }

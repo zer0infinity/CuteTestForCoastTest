@@ -42,10 +42,10 @@ OracleDAImpl::~OracleDAImpl()
 	StatTrace(OracleDAImpl.~OracleDAImpl, "nothing to do", Storage::Current());
 }
 
-IFAObject *OracleDAImpl::Clone() const
+IFAObject *OracleDAImpl::Clone(Allocator *a) const
 {
 	StatTrace(OracleDAImpl.Clone, fName, Storage::Current());
-	return new OracleDAImpl( fName );
+	return new (a) OracleDAImpl( fName );
 }
 
 String prefixResultSlot( String const &strPrefix, String const &strSlotName )

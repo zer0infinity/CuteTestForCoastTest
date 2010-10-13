@@ -251,5 +251,5 @@ Thread *ListenerPool::DoAllocThread(long i, ROAnything args)
 	if (!fCallBackFactory) {
 		return 0;
 	}
-	return new ListenerThread(fCallBackFactory->MakeCallBack());
+	return new (Storage::Global()) ListenerThread(fCallBackFactory->MakeCallBack());
 }

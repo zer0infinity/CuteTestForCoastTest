@@ -21,9 +21,9 @@ FilterFieldsMapper::FilterFieldsMapper(const char *name)
 	StartTrace(FilterFieldsMapper.Ctor);
 }
 
-IFAObject *FilterFieldsMapper::Clone() const
+IFAObject *FilterFieldsMapper::Clone(Allocator *a) const
 {
-	return new FilterFieldsMapper(fName);
+	return new (a) FilterFieldsMapper(fName);
 }
 
 bool FilterFieldsMapper::DoPutAny(const char *key, Anything value, Context &ctx, ROAnything script)

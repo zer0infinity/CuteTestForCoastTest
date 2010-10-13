@@ -6,24 +6,24 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
+//--- interface include --------------------------------------------------------
+#include "ImageButtonRendererTest.h"
+
+//--- module under test --------------------------------------------------------
+#include "FormRenderer.h"
+
+//--- test modules used --------------------------------------------------------
+#include "TestSuite.h"
+
 //--- standard modules used ----------------------------------------------------
 #include "Anything.h"
 #include "StringStream.h"
 #include "Context.h"
 #include "Renderer.h"
 
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
-
-//--- module under test --------------------------------------------------------
-#include "FormRenderer.h"
-
-//--- interface include --------------------------------------------------------
-#include "ImageButtonRendererTest.h"
-
 ImageButtonRendererTest::ImageButtonRendererTest (TString tname) : FieldRendererTest(tname)
 {
-	fFieldRenderer = new ImageButtonRenderer("ImageButtonRenderer");
+	fFieldRenderer = new (Storage::Global()) ImageButtonRenderer("ImageButtonRenderer");
 };
 
 ImageButtonRendererTest::~ImageButtonRendererTest()
