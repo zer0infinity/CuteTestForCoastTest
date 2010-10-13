@@ -19,10 +19,6 @@
 
 //--- c-library modules used ---------------------------------------------------
 #include <cstring>
-#if defined(__SUNPRO_CC)
-#include <stdlib.h>
-#include <strings.h>
-#endif
 
 #ifdef __370__
 extern "C" void finalize();

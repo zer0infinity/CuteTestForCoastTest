@@ -9,21 +9,12 @@
 #ifndef IT_TESTFW_TString_H
 #define IT_TESTFW_TString_H
 
-#if defined(__370__) || defined(_ARCH_COM) || defined(WIN32) || defined(__SUNPRO_CC) || __GNUC__ >= 3
+#if __GNUC__ >= 3
 #include <string.h>
 #endif
 
 #if defined(__370__)
 typedef long l_long;
-#endif
-#if defined(__370__) || defined(_ARCH_COM) || (defined(__SUNPRO_CC) && __SUNPRO_CC < 0x500)
-typedef int bool;
-#ifndef true
-#define true (bool)1
-#endif
-#ifndef false
-#define false (bool)0
-#endif
 #endif
 
 #include <iosfwd>

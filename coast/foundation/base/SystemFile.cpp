@@ -29,9 +29,6 @@
 #include <dirent.h>  // directory access
 #include <sys/statvfs.h>
 #endif
-#if defined(__SUNPRO_CC)
-#include <sys/types.h>
-#endif
 
 namespace {
 	//!contains the systems path seperator

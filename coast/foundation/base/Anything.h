@@ -549,13 +549,11 @@ public:
 	AnyKeyAssoc &operator=(const AnyKeyAssoc &aka);
 
 	// new[] is needed to properly initialize instance variables (i.e. Anything)
-#if !defined(OPERATOR_NEW_ARRAY_NOT_SUPPORTED)
 	static void *operator new[](size_t size, Allocator *a);
 #if defined(WIN32) && (_MSC_VER >= 1200) // VC6 or greater
 	static void operator delete[](void *ptr, Allocator *a);
 #endif
 	static void operator delete[](void *ptr);
-#endif
 
 private:
 	Anything 	fValue;

@@ -62,12 +62,7 @@ MmapMagicFlags::MmapMagicFlags(int omode, int syncflag )
 			fSyscallOpenMode |= O_TRUNC;
 		}
 	}
-#if defined(__SUNPRO_CC) && __SUNPRO_CC<0x500
-	// brain dead iostream library from sun requires this hack, alway have files
-	// writable. bad luck if a file is accessible read only.... :-(
-	fSyscallOpenMode |= O_RDWR;
-	fProtection |= eWrite;
-#endif
+
 	fOpenMode = omode;
 }
 

@@ -16,10 +16,6 @@
 
 //--- c-modules used -----------------------------------------------------------
 #include <cstring>
-#if defined(__SUNPRO_CC)
-#include <strings.h>
-#include <stdlib.h>
-#endif
 
 //---- InitFinisManager ----------------------------------------------------------
 InitFinisManager::InitFinisManager(unsigned int uiPriority)

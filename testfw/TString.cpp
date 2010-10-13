@@ -375,47 +375,6 @@ long TString::DiffDumpAsHex(TString &outbuf, const TString &strRight) const
 	return lDiffPos;
 }
 
-// We don't use ostream directly because of the locking overhead. Because of
-// a compiler weakness we have to undef ostream, so we can define operator<<
-// for both types of streams.
-// Otherwise operator<< wouldn't compile when using cout, cerr or clog
-#if defined(__SUNPRO_CC) && !defined(__STD_OSTREAM__) && ( __SUNPRO_CC < 0x500 )
-
-#undef ostream
-unsafe_ostream &operator<<(unsafe_ostream &os, const TString &s)
-{
-
-	if (!os.opfx()) { // see ANSI draft rev. 5
-		return os;
-	}
-
-	size_t len = s.Length();
-	size_t width = os.width();
-	int left = ((os.flags() & ios::left) != 0);
-
-	if (left) {
-		os.write((const char *)s, len);    // AB: use cast to apply operator const char *
-	}
-
-	if (width && width > len) {
-		size_t padlen = width - len;
-		char c = os.fill();
-
-		while (--padlen >= 0) {
-			os.put(c);
-		}
-		os.width(0); // the iostream documentation states this behaviour
-	}
-	if (!left) {
-		os.write((const char *)s, len);    // AB: use cast to apply operator const char *
-	}
-
-	os.osfx();
-
-	return os;
-}
-#endif
-
 std::ostream &operator<<(std::ostream &os, const TString &s)
 {
 	size_t len = s.Length();

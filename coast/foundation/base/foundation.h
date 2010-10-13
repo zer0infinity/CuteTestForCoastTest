@@ -25,16 +25,6 @@
 #define COAST_COMPILER		"GCC_"  __VERSION__
 #elif defined(WIN32) && defined(_MSC_VER)
 #define COAST_COMPILER		"MSC_" _MSC_VER
-#elif defined(__SUNPRO_CC)
-#if ( __SUNPRO_CC >= 0x500 ) && ( __SUNPRO_CC < 0x580 )
-#define COAST_COMPILER	"SunCC_5.7"
-#elif ( __SUNPRO_CC >= 0x580 ) && ( __SUNPRO_CC < 0x590 )
-#define COAST_COMPILER	"SunCC_5.8"
-#elif ( __SUNPRO_CC >= 0x590 ) && ( __SUNPRO_CC < 0x600 )
-#define COAST_COMPILER	"SunCC_5.9"
-#else
-#define COAST_COMPILER		"SunCC_4.x"
-#endif
 #else
 #define COAST_COMPILER		"CompilerUnknown"
 #endif
@@ -58,62 +48,6 @@ extern int syslog_assert(const char *, long, const char *);
 	((void)((expr) || syslog_assert(__FILE__, __LINE__, _QUOTE_(expr))))
 #else
 #define Assert(expr)
-#endif
-
-// handle legacy compilers that do not have bool as a separate type
-#if ((defined(__SUNPRO_CC) && (__SUNPRO_CC <= 0x4ff)) || defined(_ARCH_COM) || defined(__370__))
-#define BOOL_NOT_SUPPORTED /* use this define for masking interfaces */
-typedef int bool;
-#if !defined(true)
-#define true ((bool)1)
-#define false ((bool)0)
-#endif
-#endif
-
-// another legacy compiler problem
-#if defined(__SUNPRO_CC) && ( __SUNPRO_CC < 0x500 )
-#define OPERATOR_NEW_ARRAY_NOT_SUPPORTED
-#endif
-
-// use unsafe_...streams, because they don't use locking
-#if defined(__SUNPRO_CC) && ( __SUNPRO_CC < 0x500 )
-#if !defined(__STD_ISTREAM__)
-class unsafe_fstream;
-#define ios unsafe_ios
-#define iostream unsafe_iostream
-#define istream unsafe_istream
-#define ostream unsafe_ostream
-#define fstream unsafe_fstream
-#include "UnsafeFStream.h"
-
-// PS: add defines for names for our Streambufs to be unsafe
-// buffer base() and end ebuf() are no longer supported by std iostream, so
-// we should recognize their use in old code somehow
-//#define base() base_unlocked()
-//#define ebuf() ebuf_unlocked()
-//#define blen() blen_unlocked()
-#define pbase()	pbase_unlocked()
-#define pptr()	pptr_unlocked()
-#define epptr()	epptr_unlocked()
-#define eback()	eback_unlocked()
-#define gptr()	gptr_unlocked()
-#define egptr()   egptr_unlocked()
-#define setp(a,b)	setp_unlocked((a), (b))
-#define setg(a,b,c)	setg_unlocked((a),(b),(c))
-#define pbump(a)	pbump_unlocked(a)
-#define gbump(a)	gbump_unlocked(a)
-//#define setb(a,b,c)	setb_unlocked((a),(b),(c) )
-//#define setb(a,b)    setb_unlocked((a),(b))
-// unbuffered might be obsolete, allocate might not be used
-#define unbuffered(a)	unbuffered_unlocked(a)
-#define unbuffered()	unbuffered_unlocked()
-#define allocate()	allocate_unlocked()
-#else
-// deal with std iostream and std namespace for SunCC 5.0
-using std::streampos;
-using std::streamoff;
-using std::ws;
-#endif
 #endif
 
 // general settings

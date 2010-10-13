@@ -27,11 +27,6 @@
 #include <sys/utsname.h>
 #include <sys/statvfs.h>
 #endif
-#if defined(__SUNPRO_CC)
-#include <time.h>
-#include <limits.h>
-#include <sys/types.h>
-#endif
 
 //---- System --------------------------------------------------------------------------
 

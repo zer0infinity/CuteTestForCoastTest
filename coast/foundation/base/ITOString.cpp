@@ -20,9 +20,7 @@
 //	#include "a2ee2a.h"
 #endif
 #include <ctype.h>
-#if defined(_AIX) || defined(__SUNPRO_CC)
-#include <strings.h>
-#endif
+
 //#define IOSTREAM_NUM_CONVERSION
 //#define IOSTREAM_NUM_CONVERSION_STRSTREAM
 
@@ -31,10 +29,6 @@
 #include <strstream>
 #endif
 
-#if defined(__SUNPRO_CC)
-#include <stdio.h>
-#include <stdlib.h>
-#endif
 //---- String ----------------------------------------------------------------
 // tunable parameters for string implementation
 const long cStrAllocMinimum = 32; // minimum size of buffer, tuning param for optimizing
@@ -1348,10 +1342,6 @@ std::istream &operator>>(std::istream &is, String &s)
 {
 	int aChar;
 
-#if !(defined(__SUNPRO_CC) && (__SUNPRO_CC > 0x4ff))
-
-//	is.ipfx(1);         //  see ANSI draft rev. 5
-#endif
 	s.Set(0, 0, cStrAllocMinimum);		// empty string reserve cStrAllocMinimum chars, tunable param
 	if (is.good() && s.GetImpl()) {
 		// sanity checks
@@ -1375,13 +1365,6 @@ std::istream &operator>>(std::istream &is, String &s)
 	if (is.eof() && s.Length() != 0) {
 		is.clear();
 	}
-
-//#if defined(__SC__) || defined(__linux__)
-//	// do nothing; call below produces segmentation fault on linux
-//#else
-//#if !(defined(__SUNPRO_CC) && (__SUNPRO_CC > 0x4ff))
-//	is.isfx();
-//#endif
 
 	return is;
 }
@@ -1428,53 +1411,8 @@ std::istream &getline(std::istream &is, String &s, char c)
 	return is;
 }
 
-// CR #8
-// We don't use ostream directly because of the locking overhead. Because of
-// a compiler weakness we have to undef ostream, so we can define operator<<
-// for both types of streams.
-// Otherwise operator<< wouldn't compile when using cout, cerr or clog
-#if defined(__SUNPRO_CC) && !defined(__STD_OSTREAM__) && ( __SUNPRO_CC < 0x500 )
-#undef ostream
-unsafe_ostream &operator<<(unsafe_ostream &os, const String &s)
-{
-
-	if (!os.opfx()) { // see ANSI draft rev. 5
-		return os;
-	}
-
-	size_t len = s.Length();
-	size_t width = os.width();
-	int left = ((os.flags() & ios::left) != 0);
-
-	if (left) {
-		os.write((const char *)s, len);    // AB: use cast to apply operator const char *
-	}
-
-	if (width && width > len) {
-		size_t padlen = width - len;
-		char c = os.fill();
-
-		while (--padlen >= 0) {
-			os.put(c);
-		}
-		os.width(0); // the iostream documentation states this behaviour
-	}
-	if (!left) {
-		os.write((const char *)s, len);    // AB: use cast to apply operator const char *
-	}
-
-	os.osfx();
-
-	return os;
-}
-#endif
-
 std::ostream &operator<<(std::ostream &os, const String &s)
 {
-//#if !(defined(__SUNPRO_CC) && (__SUNPRO_CC > 0x4ff))
-//	if (!os.opfx())  // see ANSI draft rev. 5
-//		return os;
-//#endif
 	size_t len = s.Length();
 	size_t width = os.width();
 	int left = ((os.flags() & std::ios::left) != 0);
@@ -1496,12 +1434,5 @@ std::ostream &operator<<(std::ostream &os, const String &s)
 		os.write((const char *)s, len);    // AB: use cast to apply operator const char *
 	}
 
-//#if !(defined(__SUNPRO_CC) && (__SUNPRO_CC > 0x4ff))
-//	os.osfx();
-//#endif
 	return os;
 }
-
-#if defined(__SUNPRO_CC) && !defined(__STD_OSTREAM__) && ( __SUNPRO_CC < 0x500 )
-#define ostream unsafe_ostream
-#endif

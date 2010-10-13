@@ -647,14 +647,7 @@ AnyArrayImpl::~AnyArrayImpl() {
 	if (fContents) {
 		// free the buffers themselves
 		for (int j = 0; j < fNumOfBufs; ++j) {
-#if defined(OPERATOR_NEW_ARRAY_NOT_SUPPORTED)
-			for ( int k = 0; k < fBufSize; ++k) {
-				fContents[j][k].~AnyKeyAssoc();
-			}
-			fAllocator->Free(fContents[j]);
-#else
 			delete [] (fContents[j]);
-#endif
 		}
 		// free the buffer Ptr
 		MyAllocator()->Free(fContents);
@@ -912,11 +905,7 @@ void AnyArrayImpl::Expand(long newsize) {
 	if (allocOk) {
 		for (long i = numOfExistingBufs; i < fNumOfBufs && allocOk; ++i) {
 			Assert(MyAllocator() != 0);
-#if defined(OPERATOR_NEW_ARRAY_NOT_SUPPORTED)
-			fContents[i] = (AnyKeyAssoc *)MyAllocator()->Calloc(fBufSize, sizeof(AnyKeyAssoc));
-#else
 			fContents[i] = new (MyAllocator()) AnyKeyAssoc[fBufSize];
-#endif
 			if (fContents[i] == 0) {
 				static const char crashmsg[] =
 						"FATAL: AnyArrayImpl::Expand calloc failed (assigning memory to increased pointer buffers).\nI will crash :-(\n";
@@ -956,11 +945,7 @@ void AnyArrayImpl::AllocMemory() {
 		// must not use calloc to ensure proper initialization of Anything instance variables
 		Assert(MyAllocator() != 0);
 
-#if defined(OPERATOR_NEW_ARRAY_NOT_SUPPORTED)
-		fContents[i] = (AnyKeyAssoc *)MyAllocator()->Calloc(fBufSize, sizeof(AnyKeyAssoc));
-#else
 		fContents[i] = new (MyAllocator()) AnyKeyAssoc[fBufSize];		// (MyAllocator());
-#endif
 		if ( fContents[i] == 0 ) {
 			String msg("Memory allocation failed!");
 			SYSERROR(msg);
@@ -1013,11 +998,7 @@ void AnyArrayImpl::MergeByComparer(long lo, long hi, long m, const AnyIntCompare
 	}
 	long i, j, k;
 	long const sz = m - lo + 1;
-#if ( defined(WIN32) && (_MSC_VER <= 1200) ) || ( defined(__SUNPRO_CC) && ( __SUNPRO_CC <= 0x590 ) )
-	long *a = new long[sz];		// temporary array of lower half
-#else
 	long a[sz];					// temporary array of lower half
-#endif
 	for (k = 0, i = lo; i <= m && k < sz; ++i, ++k) {
 		a[k] = IntAt(i);
 	} Assert(k == sz); Assert(i > m);
@@ -1041,10 +1022,9 @@ void AnyArrayImpl::MergeByComparer(long lo, long hi, long m, const AnyIntCompare
 		fInd->SetIndex(i, a[k]);
 		++i;
 		++k;
-	} Assert(i == j); Assert(k == sz);
-#if ( defined(WIN32) && (_MSC_VER <= 1200) ) || ( defined(__SUNPRO_CC) && ( __SUNPRO_CC <= 0x590 ) )
-	delete[] a;
-#endif
+	}
+	Assert(i == j);
+	Assert(k == sz);
 }
 
 void AnyArrayImpl::MergeSortByComparer(long low, long high, const AnyIntCompare &comparer) {

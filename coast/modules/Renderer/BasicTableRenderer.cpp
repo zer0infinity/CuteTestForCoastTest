@@ -84,10 +84,10 @@ public:
 	}
 
 	RowAccessor &operator=(const RowAccessor &aka);
-#if !defined(OPERATOR_NEW_ARRAY_NOT_SUPPORTED)
+
 	static void *operator new[](size_t size, Allocator *a) throw();
 	static void operator delete[](void *ptr);
-#endif
+
 protected:
 	const Anything GetIntConfig()	const				{
 		return fConfig;
@@ -121,8 +121,6 @@ RowAccessor &RowAccessor::operator=(const RowAccessor &ra)
 	return *this;
 }
 
-#if !defined(OPERATOR_NEW_ARRAY_NOT_SUPPORTED)
-
 void *RowAccessor::operator new[](size_t size, Allocator *a) throw()
 {
 	if (a) {
@@ -143,7 +141,6 @@ void RowAccessor::operator delete[](void *ptr)
 	}
 	return;
 }
-#endif
 
 //---- BasicTableRenderer -------------------------------------------------------------------
 
@@ -366,11 +363,7 @@ RowAccessor *BasicTableRenderer::SetupRowAccessors(const ROAnything &conf, Conte
 	(*rowSize) = rowMeta.GetSize();
 
 	Allocator *wdallocator = Storage::Global();
-#if defined(OPERATOR_NEW_ARRAY_NOT_SUPPORTED)
-	RowAccessor *accessors = (RowAccessor *) wdallocator->Calloc(sizeof(RowAccessor), *rowSize,);
-#else
 	RowAccessor *accessors = new (wdallocator) RowAccessor[(*rowSize)];
-#endif
 
 	for (long i = 0; i < (*rowSize); ++i) {
 		ROAnything elmt = rowMeta[i];				// meta for one element
@@ -489,12 +482,7 @@ RowAccessor *BasicTableRenderer::SetupRowAccessors(const ROAnything &conf, Conte
 void BasicTableRenderer::CleanupRowAccessors(RowAccessor *accessors, long size)
 {
 	if ( accessors ) {
-#if !defined(OPERATOR_NEW_ARRAY_NOT_SUPPORTED)
 		delete [] accessors;
-#else
-		Allocator *wdallocator = Storage::Global();
-		wdallocator->Free(accessors);
-#endif
 	}
 }
 

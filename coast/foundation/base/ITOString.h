@@ -339,21 +339,8 @@ public:
 		use getline() function for reading lines */
 	friend EXPORTDECL_FOUNDATION std::istream &operator>>(std::istream &is, String &s);
 
-// We don't use ostream directly because of the locking overhead. Because of
-// a compiler weakness we have to undef ostream, so we can define operator<<
-// for both types of streams.
-// Otherwise operator<< wouldn't compile when using cerr, cerr or clog
-#if defined(__SUNPRO_CC) && !defined(__STD_OSTREAM__) && ( __SUNPRO_CC < 0x500 )
-#undef ostream
-	friend unsafe_ostream  &operator<<(unsafe_ostream &os, const String &s);
-#endif
-
 	//! canonical output operator for strings
 	friend EXPORTDECL_FOUNDATION std::ostream  &operator<<(std::ostream &os, const String &s);
-
-#if defined(__SUNPRO_CC) && !defined(__STD_OSTREAM__) && ( __SUNPRO_CC < 0x500 )
-#define ostream unsafe_ostream
-#endif
 
 	//! function for reading strings from a stream up to a delimiter
 	/*! \param is istream read from
@@ -410,11 +397,8 @@ protected:
 		fStringImpl->fLength += incr;
 	}
 
-#if defined(__SUNPRO_CC) && ( __SUNPRO_CC <= 0x580 )
-public:
-#else
 	template< typename BufType, typename IoDirType > friend class StringStreamBuf; // we directly operate on fCont, fCapacity, fLength
-#endif
+
 	const String::StringImpl *GetImpl() const {
 		return fStringImpl;
 	}

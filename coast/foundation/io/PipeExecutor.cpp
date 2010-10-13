@@ -31,10 +31,6 @@ using namespace Coast;
 #include <fcntl.h>
 #include <signal.h> /* for kill() */
 #include <errno.h>
-#if defined(__SUNPRO_CC)
-#include <stdio.h>
-#include <strings.h>
-#endif
 
 //---- PipeExecutor ----------------------------------------------------------------
 PipeExecutor::PipeExecutor(const String &cmd, Anything env, const char *wd, long lExecTimeout, bool bOpenStreamForStderr)

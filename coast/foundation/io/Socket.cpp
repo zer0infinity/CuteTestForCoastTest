@@ -35,10 +35,6 @@ using namespace Coast;
 #include <fcntl.h>
 #endif
 
-#if defined(_AIX) || defined(__SUNPRO_CC)
-#include <strings.h>
-#endif
-
 #define socklen_type socklen_t
 
 #if !defined(INADDR_NONE)

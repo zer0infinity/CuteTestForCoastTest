@@ -24,9 +24,6 @@ using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
 #include <fcntl.h>
-#if defined(__SUNPRO_CC)
-#include <stdlib.h>
-#endif
 
 #include "boost/bind.hpp"
 

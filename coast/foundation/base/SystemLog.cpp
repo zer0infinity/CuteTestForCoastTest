@@ -24,10 +24,6 @@ using namespace Coast;
 #if !defined(WIN32)
 #include <syslog.h>
 #endif
-#if defined(__SUNPRO_CC)
-#include <strings.h>
-#include <stdio.h>
-#endif
 
 //--- SystemLog ----------------------------------------------------------
 SystemLog *SystemLog::fgSysLog = 0;

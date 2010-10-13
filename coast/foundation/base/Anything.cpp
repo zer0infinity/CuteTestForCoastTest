@@ -27,11 +27,6 @@ using namespace Coast;
 #include <cstring>
 #include <algorithm>
 #include <functional>
-#if defined(__SUNPRO_CC)
-#include <stdio.h>
-#include <strings.h>
-#include <stdlib.h>
-#endif
 
 #if defined(COAST_TRACE)
 #define anyStatTrace(trigger, msg, allocator) 	StatTrace(trigger, msg, allocator)
@@ -2299,7 +2294,6 @@ String Anything::CompareForTestCases(const ROAnything &expected, const ROAnythin
 }
 
 //---- AnyKeyAssoc --------------------------------------------------
-#if !defined(OPERATOR_NEW_ARRAY_NOT_SUPPORTED)
 void *AnyKeyAssoc::operator new[](size_t size, Allocator *a)
 {
 
@@ -2340,7 +2334,7 @@ void AnyKeyAssoc::operator delete[](void *ptr)
 	}
 	return;
 }
-#endif
+
 AnyKeyAssoc::AnyKeyAssoc(const Anything &value, const char *key)
 	: fValue(value)
 	, fKey(key, -1, value.GetAllocator())

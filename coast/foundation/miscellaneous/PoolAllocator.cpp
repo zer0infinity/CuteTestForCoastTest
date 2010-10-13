@@ -20,13 +20,11 @@
 //--- c-library modules used ---------------------------------------------------
 #include <cstring>
 
-#if !defined(__SUNPRO_CC) ||  __SUNPRO_CC < 0x500
 extern void *operator new(size_t size, void *vp);
 #if defined(WIN32) && (_MSC_VER >= 1200) // VC6 or greater
 extern void operator delete(void *ptr, void *vp);
 #endif
 extern void operator delete(void *ptr);
-#endif
 
 //! smallest size of allocation unit: 16UL for the usable memory block
 static const u_long fgMinPayloadSize = 16UL;
