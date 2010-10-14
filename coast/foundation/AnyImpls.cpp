@@ -131,18 +131,22 @@ void AnyLongImpl::Accept(AnyVisitor &v, long lIdx, const char *slotname) const
 
 AnyImpl *AnyLongImpl::DoDeepClone(Allocator *a, Anything &xreftable) const
 {
-	String adr = ThisToHex();
-	Anything &refEntry = xreftable[adr];
-	AnyLongImpl *res = reinterpret_cast<AnyLongImpl *>(refEntry.AsIFAObject(0));
-	aimplStartTrace1(AnyLongImpl.DoDeepClone, "my-a:&" << (long)MyAllocator() << " a:&" << (long)a << " adr: " << adr << ", refEntry: " << (res?res->ThisToHex():"0"));
-	if (res != 0) {
-		aimplTraceAny(refEntry, "found existing entry, adding reference");
-		res->Ref(); // do not forget to count
-		return res;
+	AnyLongImpl *res = 0;
+	if ( RefCount() > 1L ) {
+		String adr = ThisToHex();
+		Anything &refEntry = xreftable[adr];
+		res = reinterpret_cast<AnyLongImpl *>(refEntry.AsIFAObject(0));
+		aimplStartTrace1(AnyLongImpl.DoDeepClone, "my-a:&" << (long)MyAllocator() << " a:&" << (long)a << " adr: " << adr << ", refEntry: " << (res?res->ThisToHex():"0"));
+		if (res != 0) {
+			res->Ref(); // do not forget to count
+			return res;
+		}
+		res =  new ((a) ? a : Storage::Current()) AnyLongImpl(this->fLong, this->fBuf, a);
+		refEntry = reinterpret_cast<IFAObject *>(res);
+		aimplTrace("stored xref entry for adr: " << adr << " is " << res->ThisToHex());
+	} else {
+		res =  new ((a) ? a : Storage::Current()) AnyLongImpl(this->fLong, this->fBuf, a);
 	}
-	res =  new ((a) ? a : Storage::Current()) AnyLongImpl(this->fLong, this->fBuf, a);
-	refEntry = reinterpret_cast<IFAObject *>(res);
-	aimplTrace("stored xref entry for adr: " << adr << " is " << res->ThisToHex());
 	return res;
 }
 
@@ -167,18 +171,22 @@ String AnyObjectImpl::AsString(const char *) const
 
 AnyImpl *AnyObjectImpl::DoDeepClone(Allocator *a, Anything &xreftable) const
 {
-	String adr = ThisToHex();
-	Anything &refEntry = xreftable[adr];
-	AnyObjectImpl *res = reinterpret_cast<AnyObjectImpl *>(refEntry.AsIFAObject(0));
-	aimplStartTrace1(AnyObjectImpl.DoDeepClone, "my-a:&" << (long)MyAllocator() << " a:&" << (long)a << " adr: " << adr << ", refEntry: " << (res?res->ThisToHex():"0"));
-	if (res != 0) {
-		aimplTraceAny(refEntry, "found existing entry, adding reference");
-		res->Ref(); // do not forget to count
-		return res;
+	AnyObjectImpl *res = 0;
+	if ( RefCount() > 1L ) {
+		String adr = ThisToHex();
+		Anything &refEntry = xreftable[adr];
+		res = reinterpret_cast<AnyObjectImpl *>(refEntry.AsIFAObject(0));
+		aimplStartTrace1(AnyObjectImpl.DoDeepClone, "my-a:&" << (long)MyAllocator() << " a:&" << (long)a << " adr: " << adr << ", refEntry: " << (res?res->ThisToHex():"0"));
+		if (res != 0) {
+			res->Ref(); // do not forget to count
+			return res;
+		}
+		res = new ((a) ? a : Storage::Current()) AnyObjectImpl(this->fObject, a);
+		refEntry = reinterpret_cast<IFAObject *>(res);
+		aimplTrace("stored xref entry for adr: " << adr << " is " << res->ThisToHex());
+	} else {
+		res = new ((a) ? a : Storage::Current()) AnyObjectImpl(this->fObject, a);
 	}
-	res = new ((a) ? a : Storage::Current()) AnyObjectImpl(this->fObject, a);
-	refEntry = reinterpret_cast<IFAObject *>(res);
-	aimplTrace("stored xref entry for adr: " << adr << " is " << res->ThisToHex());
 	return res;
 }
 
@@ -214,18 +222,22 @@ const char *AnyDoubleImpl::AsCharPtr(const char *dflt, long &buflen) const
 
 AnyImpl *AnyDoubleImpl::DoDeepClone(Allocator *a, Anything &xreftable) const
 {
-	String adr = ThisToHex();
-	Anything &refEntry = xreftable[adr];
-	AnyDoubleImpl *res = reinterpret_cast<AnyDoubleImpl *>(refEntry.AsIFAObject(0));
-	aimplStartTrace1(AnyDoubleImpl.DoDeepClone, "my-a:&" << (long)MyAllocator() << " a:&" << (long)a << " adr: " << adr << ", refEntry: " << (res?res->ThisToHex():"0"));
-	if (res != 0) {
-		aimplTraceAny(refEntry, "found existing entry, adding reference");
-		res->Ref(); // do not forget to count
-		return res;
+	AnyDoubleImpl *res = 0;
+	if ( RefCount() > 1L ) {
+		String adr = ThisToHex();
+		Anything &refEntry = xreftable[adr];
+		res = reinterpret_cast<AnyDoubleImpl *>(refEntry.AsIFAObject(0));
+		aimplStartTrace1(AnyDoubleImpl.DoDeepClone, "my-a:&" << (long)MyAllocator() << " a:&" << (long)a << " adr: " << adr << ", refEntry: " << (res?res->ThisToHex():"0"));
+		if (res != 0) {
+			res->Ref(); // do not forget to count
+			return res;
+		}
+		res = new ((a) ? a : Storage::Current()) AnyDoubleImpl(this->fDouble, this->fBuf, a);
+		refEntry = reinterpret_cast<IFAObject *>(res);
+		aimplTrace("stored xref entry for adr: " << adr << " is " << res->ThisToHex());
+	} else {
+		res = new ((a) ? a : Storage::Current()) AnyDoubleImpl(this->fDouble, this->fBuf, a);
 	}
-	res = new ((a) ? a : Storage::Current()) AnyDoubleImpl(this->fDouble, this->fBuf, a);
-	refEntry = reinterpret_cast<IFAObject *>(res);
-	aimplTrace("stored xref entry for adr: " << adr << " is " << res->ThisToHex());
 	return res;
 }
 
@@ -253,18 +265,22 @@ void AnyBinaryBufImpl::Accept(AnyVisitor &v, long lIdx, const char *slotname) co
 
 AnyImpl *AnyBinaryBufImpl::DoDeepClone(Allocator *a, Anything &xreftable) const
 {
-	String adr = ThisToHex();
-	Anything &refEntry = xreftable[adr];
-	AnyBinaryBufImpl *res = reinterpret_cast<AnyBinaryBufImpl *>(refEntry.AsIFAObject(0));
-	aimplStartTrace1(AnyBinaryBufImpl.DoDeepClone, "my-a:&" << (long)MyAllocator() << " a:&" << (long)a << " adr: " << adr << ", refEntry: " << (res?res->ThisToHex():"0"));
-	if (res != 0) {
-		aimplTraceAny(refEntry, "found existing entry, adding reference");
-		res->Ref(); // do not forget to count
-		return res;
+	AnyBinaryBufImpl *res = 0;
+	if ( RefCount() > 1L ) {
+		String adr = ThisToHex();
+		Anything &refEntry = xreftable[adr];
+		res = reinterpret_cast<AnyBinaryBufImpl *>(refEntry.AsIFAObject(0));
+		aimplStartTrace1(AnyBinaryBufImpl.DoDeepClone, "my-a:&" << (long)MyAllocator() << " a:&" << (long)a << " adr: " << adr << ", refEntry: " << (res?res->ThisToHex():"0"));
+		if (res != 0) {
+			res->Ref(); // do not forget to count
+			return res;
+		}
+		res = new ((a) ? a : Storage::Current()) AnyBinaryBufImpl((this->fBuf.cstr()), this->fBuf.Length(), a);
+		refEntry = reinterpret_cast<IFAObject *>(res);
+		aimplTrace("stored xref entry for adr: " << adr << " is " << res->ThisToHex());
+	} else {
+		res = new ((a) ? a : Storage::Current()) AnyBinaryBufImpl((this->fBuf.cstr()), this->fBuf.Length(), a);
 	}
-	res = new ((a) ? a : Storage::Current()) AnyBinaryBufImpl((this->fBuf.cstr()), this->fBuf.Length(), a);
-	refEntry = reinterpret_cast<IFAObject *>(res);
-	aimplTrace("stored xref entry for adr: " << adr << " is " << res->ThisToHex());
 	return res;
 }
 
@@ -310,17 +326,22 @@ void AnyStringImpl::Accept(AnyVisitor &v, long lIdx, const char *slotname) const
 
 AnyImpl *AnyStringImpl::DoDeepClone(Allocator *a, Anything &xreftable) const
 {
-	String adr = ThisToHex();
-	Anything &refEntry = xreftable[adr];
-	AnyStringImpl *res = reinterpret_cast<AnyStringImpl *>(refEntry.AsIFAObject(0));
-	aimplStartTrace1(AnyStringImpl.DoDeepClone, "my-a:&" << (long)MyAllocator() << " a:&" << (long)a << " fString [" << this->fString << "], adr: " << adr << ", refEntry: " << (res?res->ThisToHex():"0"));
-	if (res != 0) {
-		res->Ref(); // do not forget to count
-		return res;
+	AnyStringImpl *res = 0;
+	if ( RefCount() > 1L ) {
+		String adr = ThisToHex();
+		Anything &refEntry = xreftable[adr];
+		res = reinterpret_cast<AnyStringImpl *>(refEntry.AsIFAObject(0));
+		aimplStartTrace1(AnyStringImpl.DoDeepClone, "my-a:&" << (long)MyAllocator() << " a:&" << (long)a << " fString [" << this->fString << "], adr: " << adr << ", refEntry: " << (res?res->ThisToHex():"0"));
+		if (res != 0) {
+			res->Ref(); // do not forget to count
+			return res;
+		}
+		res = new ((a) ? a : Storage::Current()) AnyStringImpl(this->fString, a);
+		refEntry = reinterpret_cast<IFAObject *>(res);
+		aimplTrace("stored xref entry for adr: " << adr << " is " << res->ThisToHex());
+	} else {
+		res = new ((a) ? a : Storage::Current()) AnyStringImpl(this->fString, a);
 	}
-	res = new ((a) ? a : Storage::Current()) AnyStringImpl(this->fString, a);
-	refEntry = reinterpret_cast<IFAObject *>(res);
-	aimplTrace("stored xref entry for adr: " << adr << " is " << res->ThisToHex());
 	return res;
 }
 
@@ -1178,17 +1199,22 @@ void AnyArrayImpl::PrintHash() const
 
 AnyImpl *AnyArrayImpl::DoDeepClone(Allocator *a, Anything &xreftable) const
 {
-	String adr = ThisToHex();
-	Anything &refEntry = xreftable[adr];
-	AnyArrayImpl *res = reinterpret_cast<AnyArrayImpl *>(refEntry.AsIFAObject(0));
-	aimplStartTrace1(AnyArrayImpl.DoDeepClone, "my-a:&" << (long)MyAllocator() << " a:&" << (long)a << " adr: " << adr << ", refEntry: " << (res?res->ThisToHex():"0"));
-	if (res != 0) {
-		res->Ref(); // do not forget to count
-		return res;
+	AnyArrayImpl *res = 0;
+	if ( RefCount() > 1L ) {
+		String adr = ThisToHex();
+		Anything &refEntry = xreftable[adr];
+		res = reinterpret_cast<AnyArrayImpl *>(refEntry.AsIFAObject(0));
+		aimplStartTrace1(AnyArrayImpl.DoDeepClone, "my-a:&" << (long)MyAllocator() << " a:&" << (long)a << " adr: " << adr << ", refEntry: " << (res?res->ThisToHex():"0"));
+		if (res != 0) {
+			res->Ref(); // do not forget to count
+			return res;
+		}
+		res = new ((a) ? a : Storage::Current()) AnyArrayImpl(a);
+		refEntry = reinterpret_cast<IFAObject *>(res);
+		aimplTrace("stored xref entry for adr: " << adr << " is " << res->ThisToHex());
+	} else {
+		res = new ((a) ? a : Storage::Current()) AnyArrayImpl(a);
 	}
-	res = new ((a) ? a : Storage::Current()) AnyArrayImpl(a);
-	refEntry = reinterpret_cast<IFAObject *>(res);
-	aimplTrace("stored xref entry for adr: " << adr << " is " << res->ThisToHex());
 	long count = this->GetSize();
 	for (long i = 0 ; i < count; ++i) {
 		res->At(this->SlotName(i)) = this->At(i).DeepClone(a, xreftable);
