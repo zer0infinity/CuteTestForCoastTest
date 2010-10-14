@@ -125,7 +125,7 @@ bool AliasInstaller::DoInstall(const ROAnything installerSpec, Registry *r)
 
 								// installs a clone or a simple alias
 								// depending on subclass of Registerable
-								RegisterableObject *reg = (RegisterableObject *)t->Clone();
+								RegisterableObject *reg = (RegisterableObject *)t->Clone(Storage::Global());
 								Trace("\talias <" << alias << ">");
 								reg->Register(alias, GetCategory());
 								reg->Initialize(GetCategory());

@@ -174,7 +174,7 @@ ConfNamedObject *ConfNamedObject::ConfiguredClone(const char *category, const ch
 ConfNamedObject *ConfNamedObject::DoConfiguredClone(const char *category, const char *name, bool bInitializeConfig)
 {
 	StartTrace1(ConfNamedObject.DoConfiguredClone, "cat <" << NotNull(category) << "> name <" << fName << ">");
-	ConfNamedObject *cno = (ConfNamedObject *)this->Clone();
+	ConfNamedObject *cno = (ConfNamedObject *)this->Clone(Storage::Global());
 	if ( cno ) {
 		cno->SetName(name);
 		cno->fCategory = fCategory;

@@ -26,17 +26,17 @@ public:
 	}
 
 	/*! Support for prototype pattern
+	 * @param a Allocator passed in to allocate new objects with if required
+	 * @return Baseclass pointer to cloned instance of a derived type
+	 */
+	virtual IFAObject *Clone(Allocator *a) const = 0;
+private:
+	/*! Support for prototype pattern
 	 * @return Baseclass pointer to cloned instance of a derived type
 	 */
 	IFAObject *Clone() const {
 		return Clone(Storage::Current());
 	}
-
-	/*! Support for prototype pattern
-	 * @param a Allocator passed in to allocate new objects with if required
-	 * @return Baseclass pointer to cloned instance of a derived type
-	 */
-	virtual IFAObject *Clone(Allocator *a) const = 0;
 };
 
 //---- NamedObject ----------------------------------------------------------
