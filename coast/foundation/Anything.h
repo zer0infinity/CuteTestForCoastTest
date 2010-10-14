@@ -90,6 +90,10 @@ public:
 	//! Constructs an Anything of type eObject
 	Anything(IFAObject *, Allocator *a = Storage::Current());
 
+	struct MetaMarker{};
+	//! constructs a "MetaThing" by using a marker type together with the allocator
+	Anything(MetaMarker m,Allocator *a = Storage::Current());
+
 	//! Copy constructor
 	Anything(const Anything &any, Allocator *a = Storage::Current());
 

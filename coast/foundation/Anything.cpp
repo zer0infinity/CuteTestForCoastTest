@@ -829,6 +829,10 @@ Anything::Anything(const Anything &any, Allocator *a) : fAnyImp(0)
 		SetAllocator(a);    // remember allocator or make it sane in case of errors
 	}
 }
+Anything::Anything(MetaMarker m, Allocator *a):fAnyImp(new ((a) ? a : Storage::Current()) AnyArrayImpl(a))
+{
+	SetAllocator(a);
+}
 
 Anything::~Anything()
 {
@@ -1523,7 +1527,7 @@ void Anything::Accept(AnyVisitor &v, long lIdx, const char *slotname) const
 	}
 }
 
-//-- implement STL support functionality of class Anyting
+//-- implement STL support functionality of class Anything
 
 Anything::iterator Anything::begin()
 {

@@ -577,10 +577,9 @@ void AnythingTest::String2LongConversion()
 
 void AnythingTest::AsCharPtrBufLen()
 {
-	// test AsCharPtr(const char *dft, long &buflen)
-
 	//--- AnyArrayImpl
-	MetaThing anyArray;
+	Anything anyArray=Anything(Anything::MetaMarker());
+
 	long arraylen;
 	anyArray.AsCharPtr("", arraylen);
 	assertEqual(12, arraylen); // strlen("AnyArrayImpl")
