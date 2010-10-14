@@ -7,8 +7,6 @@
  */
 
 #include "AllocatorNewDelete.h"
-#include "ITOString.h"
-#include "Dbg.h"
 
 namespace Coast
 {
