@@ -30,11 +30,6 @@
 #include <io.h>
 #endif
 
-#ifdef PURE_LEAK
-// use purify api functions to trace memory usage
-#include <purify.h>
-#endif
-
 //---- ServerReInitInstaller ------------------------------------------------------
 /*! alias installer installs the same object with different names in the registry */
 class EXPORTDECL_WDBASE ServerReInitInstaller : public InstallerPolicy
