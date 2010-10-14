@@ -45,7 +45,7 @@
 #endif
 
 static const String fgStrEmpty(Storage::Global()); //avoid temporary
-static const Anything fgAnyEmpty(Storage::Global()); // avoid temporary
+
 //--- auxiliary calculating hash value and the length of the key
 long IFAHash(const char *key, long &len, char stop1, char stop2)
 //long DoIFAHash(const unsigned char *key, long &len, unsigned char stop1, unsigned char stop2)

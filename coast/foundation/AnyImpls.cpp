@@ -20,6 +20,7 @@
 //--- c-modules used -----------------------------------------------------------
 #include <cstring>
 #include <cstdlib>
+#include <stdexcept>
 #if defined(ONLY_STD_IOSTREAM)
 using namespace std;
 #endif
@@ -708,7 +709,7 @@ Anything const& AnyArrayImpl::At(long slot) const {
 	if (slot >= 0) {
 		return fContents[IntAtBuf(slot)][IntAtSlot(slot)].Value();
 	}
-	return fgAnyEmpty; //!@FIXME: should throw an exception
+	throw std::out_of_range("AnyArrayImpl::At(long)");
 }
 
 Anything const& AnyArrayImpl::operator [](long slot) const {
@@ -748,10 +749,10 @@ Anything const& AnyArrayImpl::At(const char *key) const {
 		// find index of key or return -1
 		slot = fKeys->At(key);
 	}
-	if (slot < 0) {
-		return fgAnyEmpty; //!@FIXME: should throw an exception
+	if (slot >= 0) {
+		return fContents[IntAtBuf(slot)][IntAtSlot(slot)].Value();
 	}
-	return fContents[IntAtBuf(slot)][IntAtSlot(slot)].Value();
+	throw std::out_of_range("AnyArrayImpl::At(const char*)");
 }
 
 Anything const& AnyArrayImpl::operator [](const char *key) const {
@@ -847,7 +848,7 @@ const Anything &AnyArrayImpl::IntValue(long at) const {
 	if (at >= 0 && at < fCapacity) {
 		return fContents[IntAtBuf(at)][IntAtSlot(at)].Value();
 	}
-	return fgAnyEmpty; //!@FIXME: should throw an exception
+	throw std::out_of_range("AnyArrayImpl::IntValue");
 }
 
 const char *AnyArrayImpl::SlotName(long slot) const {
