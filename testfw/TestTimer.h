@@ -20,27 +20,6 @@ typedef __int64 HRTESTTIME;
 #include <sys/times.h>
 typedef hrtime_t 		HRTESTTIME;
 #define GetHRTESTTIME()		gethrtime()
-#elif defined(_AIX)
-#include <time.h>
-#include <sys/time.h>
-#include <sys/systemcfg.h>
-
-typedef long long int HRTESTTIME;
-
-//! return the current time in nanoseconds
-inline HRTESTTIME nanoSecondTime()
-{
-	timebasestruct_t timeBase;
-
-	read_real_time(&timeBase, sizeof(timeBase));
-	time_base_to_time(&timeBase, sizeof(timeBase));
-
-	long long int result = ((long long int)timeBase.tb_high) * 1000000000;
-	result += timeBase.tb_low;
-	return result;
-} // nanoSecondTime
-
-#define GetHRTESTTIME()		nanoSecondTime()
 #else
 #include <time.h>
 #include <sys/times.h>
