@@ -835,7 +835,7 @@ const String &AnyArrayImpl::Key(long slot) const {
 	return fgStrEmpty;
 }
 
-const String &AnyArrayImpl::IntKey(long at) //const
+const String &AnyArrayImpl::IntKey(long at) const
 {
 	if (at >= 0 && at < fCapacity) {
 		return fContents[IntAtBuf(at)][IntAtSlot(at)].Key();

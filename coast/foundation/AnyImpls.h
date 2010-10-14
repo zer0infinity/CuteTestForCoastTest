@@ -495,7 +495,7 @@ public:
 	const Anything &IntValue(long at) const;
 
 	//!works with index into fContents
-	const String &IntKey(long at);
+	const String &IntKey(long at) const;
 
 	//!interface for internal comparing during sort
 	class EXPORTDECL_FOUNDATION AnyIntCompare
