@@ -1452,7 +1452,7 @@ bool Anything::LookupPath(Anything &result, const char *path, char delimSlot, ch
 		if (!tokPtr || *tokPtr == delimSlot) {
 			return false;
 		}
-		const Anything *c = this; // pointers are faster!
+		Anything c = *this;
 		do {
 			register long lIdx = -1;
 			if (*tokPtr == delimIdx) {
@@ -1468,7 +1468,7 @@ bool Anything::LookupPath(Anything &result, const char *path, char delimSlot, ch
 					return false; // not a valid number
 				}
 				// check if index is defined
-				if (lIdx >= c->GetSize() || (*c)[lIdx].IsNull()) {
+				if (lIdx >= c.GetSize() || c[lIdx].IsNull()) {
 					return false;
 				}
 			} else if (*tokPtr) {
@@ -1482,20 +1482,18 @@ bool Anything::LookupPath(Anything &result, const char *path, char delimSlot, ch
 				long keylen = 0;
 				long h = IFAHash(tokPtr, keylen, delimSlot, delimIdx);
 				// find the index with precalculated hash and sizes
-				if ((lIdx = c->FindIndex(tokPtr, keylen, h)) < 0) {
+				if ((lIdx = c.FindIndex(tokPtr, keylen, h)) < 0) {
 					return false;
 				}
 				tokPtr += keylen;
 			} else {
 				return false;
 			}
-			c = &(c->DoGetAt(lIdx));
-		} while (c && *tokPtr != '\0');
+			c = c.DoGetAt(lIdx);
+		} while (*tokPtr != '\0');
 		// we got it
-		if (c) {
-			result = *c;
-			return true;
-		}
+		result = c;
+		return true;
 	}
 	return false;
 }
