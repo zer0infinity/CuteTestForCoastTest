@@ -65,7 +65,6 @@ void LDAPErrorHandler::HandleUnbindError(LDAP *handle)
 	msg << TimeStamp::Now().AsStringWithZ();
 	if ( handle ) {
 		ldap_get_option(handle, LDAP_OPT_ERROR_NUMBER, &rc);
-		String msg;
 		msg << " LdapCode: [" << rc << "] LdapMsg: [" << ldap_err2string(rc) << "] ldap_unbind";
 	} else {
 		msg << " LdapCode: [no valid handle] LdapMsg: [no valid handle] ldap_unbind";
@@ -225,7 +224,7 @@ String LDAPErrorHandler::RetryStateAsString(eRetryState retryState)
 			return "eNoRetry";
 			break;
 		default:
-			return "Unknown!";
 			break;
 	}
+	return "Unknown!";
 }
