@@ -46,10 +46,10 @@ static const Anything fgAnyEmpty(Storage::Global()); // avoid temporary
 //---- AnyImpl --------------------------------------------------------------
 
 String AnyImpl::ThisToHex(Allocator *a) const {
-	const size_t iBufSize = 100;
-	char pcBuf[iBufSize] = { 0 };
-	int iSize = snprintf(pcBuf, iBufSize, "%08lx", reinterpret_cast<unsigned long int>(this));
-	String hexStr(pcBuf, iSize, a);
+	char buf[1+2*(sizeof(this)>4?sizeof(long long):4)];
+	static char const *const fmt = (sizeof(this)>4)?"%016.16llx":"%08.8lx"; // assume large pointers are 64bit = 8 Bytes large
+	int iSize=snprintf(buf,sizeof(buf),fmt,this);
+	String hexStr(buf, iSize, a);
 	aimplStatTrace(AnyImpl.ThisToHex, "converted number is " << hexStr, Storage::Current());
 	return hexStr;
 }

@@ -17,8 +17,7 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
-
-//--- c-modules used -----------------------------------------------------------
+#include "StringStream.h"
 
 //---- AnyImplsTest ----------------------------------------------------------------
 AnyImplsTest::AnyImplsTest(TString tstrName) : TestCaseType(tstrName)
@@ -117,13 +116,25 @@ void AnyImplsTest::DoubleToStringTest()
 	}
 }
 
+void AnyImplsTest::ThisToHexTest()
+{
+	StartTrace(AnyImplsTest.ThisToHexTest);
+	{
+		AnyImpl *d=new(Storage::Current())AnyLongImpl(123L, Storage::Current());
+		String res = d->ThisToHex();
+		assertCompare(sizeof(void *)*2L,equal_to,static_cast<unsigned long>(res.Length()));
+		StringStream os;
+		os << std::hex << std::setw(sizeof(d)*2)<<std::setfill('0')<<std::noshowbase<<reinterpret_cast<unsigned long long>(static_cast<void*>(d));
+		assertCharPtrEqual(os.str(),res);
+	}
+}
+
 // builds up a suite of testcases, add a line for each testmethod
 Test *AnyImplsTest::suite ()
 {
 	StartTrace(AnyImplsTest.suite);
 	TestSuite *testSuite = new TestSuite;
-
 	ADD_CASE(testSuite, AnyImplsTest, DoubleToStringTest);
-
+	ADD_CASE(testSuite, AnyImplsTest, ThisToHexTest);
 	return testSuite;
 }

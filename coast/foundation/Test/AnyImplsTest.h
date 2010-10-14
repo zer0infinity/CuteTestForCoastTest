@@ -36,6 +36,7 @@ public:
 
 	//! describe this testcase
 	void DoubleToStringTest();
+	void ThisToHexTest();
 };
 
 #endif
