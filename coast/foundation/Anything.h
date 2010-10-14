@@ -498,8 +498,8 @@ protected:
 	friend struct Sorter;
 
 	Anything(AnyImpl *);
-	AnyImpl *GetImpl(); // TODO: this is a loophole that discards const-ness
-	AnyImpl const *GetImpl()const; // TODO: this is a loophole that discards const-ness
+	AnyImpl *GetImpl(); // TODO: this is a loophole that discards const-ness
+	AnyImpl const *GetImpl()const; // TODO: this is a loophole that discards const-ness
 	Allocator *GetImplAllocator() const ;
 	union {
 		AnyImpl *fAnyImp;

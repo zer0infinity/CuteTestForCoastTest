@@ -2159,7 +2159,7 @@ bool AnythingParser::MakeSimpleAny(AnythingToken &tok, Anything &any)
 			break;
 			// long impl.
 		case AnythingToken::eDecimalNumber:
-			any = atol(tok.Text().cstr()); // correct? should this be atol(tok.Text().cstr())?
+			any = atol(tok.Text().cstr()); // correct? should this be atol(tok.Text().cstr())?
 			break;
 		case AnythingToken::eOctalNumber:
 			any = static_cast<long>(strtoul(tok.Text().cstr(), 0, 8)); // AB: use explicit cast to make g++ happy
