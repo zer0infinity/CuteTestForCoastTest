@@ -424,17 +424,16 @@ class EXPORTDECL_FOUNDATION AnyArrayImpl : public AnyImpl
 
 public:
 	AnyArrayImpl(Allocator *a);
-
 	~AnyArrayImpl();
 
 	Anything &At(long i);
-	Anything At(long i)const;
+	Anything const& At(long i)const;
 
 	Anything &operator[](long i)
 	{
 		return At(i);
 	}
-	Anything operator[](long i) const;
+	Anything const& operator[](long i) const;
 	void Expand(long c);
 
 	void InsertReserve(long pos, long size);
@@ -453,13 +452,13 @@ public:
 	long FindIndex(const long lIdx) const;
 
 	Anything &At(const char *key);
-	Anything At(const char *key) const;
+	Anything const& At(const char *key) const;
 
 	Anything &operator[](const char *key)
 	{
 		return At(key);
 	}
-	Anything operator[](const char *key)const;
+	Anything const& operator[](const char *key)const;
 
 	const char *AsCharPtr(const char *) const;
 

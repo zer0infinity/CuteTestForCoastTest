@@ -890,7 +890,7 @@ Anything &AnyArrayImpl::At(long slot) //const/non-const overload
 	long at = IntAt(slot);
 	return fContents[IntAtBuf(at)][IntAtSlot(at)].Value();
 }
-Anything AnyArrayImpl::At(long slot) const
+Anything const& AnyArrayImpl::At(long slot) const
 {
 	// return an address of an anything residing at slot
 	// DO NOT expand the buffers as necessary to fulfill
@@ -899,9 +899,9 @@ Anything AnyArrayImpl::At(long slot) const
 	if (slot >= 0){
 		return fContents[IntAtBuf(slot)][IntAtSlot(slot)].Value();
 	}
-	return Anything();
+	return fgAnyEmpty; //!@FIXME: should throw an exception
 }
-Anything AnyArrayImpl::operator [](long slot)const
+Anything const& AnyArrayImpl::operator [](long slot)const
 {
 	return At(slot);
 }
@@ -935,7 +935,8 @@ Anything &AnyArrayImpl::At(const char *key)
 	at = IntAt(slot);
 	return fContents[IntAtBuf(slot)][IntAtSlot(slot)].Value();
 }
-Anything AnyArrayImpl::At(const char *key) const
+
+Anything const& AnyArrayImpl::At(const char *key) const
 {
 	// calculate the adress of an anything given its key
 	long slot = -1;
@@ -944,11 +945,12 @@ Anything AnyArrayImpl::At(const char *key) const
 		slot = fKeys->At(key);
 	}
 	if (slot < 0) {
-		return Anything();
+		return fgAnyEmpty; //!@FIXME: should throw an exception
 	}
 	return fContents[IntAtBuf(slot)][IntAtSlot(slot)].Value();
 }
-Anything AnyArrayImpl::operator [](const char *key) const
+
+Anything const& AnyArrayImpl::operator [](const char *key) const
 {
 	return At(key);
 }
@@ -1045,7 +1047,7 @@ const Anything &AnyArrayImpl::IntValue(long at) const
 	if (at >= 0 && at < fCapacity) {
 		return fContents[IntAtBuf(at)][IntAtSlot(at)].Value();
 	}
-	return fgAnyEmpty;
+	return fgAnyEmpty; //!@FIXME: should throw an exception
 }
 const char *AnyArrayImpl::SlotName(long slot)const
 {
