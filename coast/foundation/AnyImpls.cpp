@@ -508,7 +508,7 @@ void AnyKeyTable::Rehash(long newCap)
 	fAllocator->Free(ot);
 }
 
-void AnyKeyTable::PrintHash() //const
+void AnyKeyTable::PrintHash() const
 {
 	for (long i = 0; i < fCapacity; ++i) {
 		if ( fHashTable[i] > -1 ) {
@@ -533,9 +533,6 @@ void *AnyKeyTable::operator new(size_t size, Allocator *a)
 void AnyKeyTable::operator delete(void *d, Allocator *a)
 {
 	if (d) {
-//#if defined(PURE_LEAK) || defined(__linux__)
-//		a = (a ? a : Storage::Current());
-//#endif
 		if (a) {
 			a->Free(d);
 		} else {
@@ -730,7 +727,6 @@ void AnyIndTable::Remove(long slot)
 	for (long i = slot; i < fSize - 1; ++i) {
 		fIndexTable[i] = fIndexTable[i+1];
 	}
-
 	--fSize;
 }
 void AnyIndTable::Swap(long l, long r)
@@ -751,7 +747,7 @@ void AnyIndTable::SetIndex(long slot, long idx)
 	}
 }
 
-void AnyIndTable::PrintTable() //const
+void AnyIndTable::PrintTable() const
 {
 	String m("IndexTable: \n");
 	for ( long i = 0; i < fSize; ++i) {
@@ -773,9 +769,6 @@ void *AnyIndTable::operator new(size_t size, Allocator *a)
 void AnyIndTable::operator delete(void *d, Allocator *a)
 {
 	if (d) {
-//#if defined(PURE_LEAK) || defined(__linux__)
-//		a = (a ? a : Storage::Current());
-//#endif
 		if (a) {
 			a->Free(d);
 		} else {
@@ -814,8 +807,7 @@ AnyArrayImpl::AnyArrayImpl(Allocator *a)
 	, fBufSize(4)
 	, fNumOfBufs(0)
 {
-	// allocate a default size structure
-	// without keys
+	// allocate a default size structure without keys
 	fCapacity = AdjustCapacity(fCapacity);
 	AllocMemory();
 }
@@ -882,9 +874,9 @@ Anything AnyArrayImpl::At(long slot) const
 	// return an address of an anything residing at slot
 	// DO NOT expand the buffers as necessary to fulfill
 	// the request, but throw instead, if out of range
-	if (slot < fSize && slot < fCapacity){
-		long at = IntAt(slot);
-		return fContents[IntAtBuf(at)][IntAtSlot(at)].Value();
+	slot = IntAt(slot);
+	if (slot >= 0){
+		return fContents[IntAtBuf(slot)][IntAtSlot(slot)].Value();
 	}
 	return Anything();
 }
@@ -893,7 +885,7 @@ Anything AnyArrayImpl::operator [](long slot)const
 	return At(slot);
 }
 
-Anything &AnyArrayImpl::At(const char *key) //const/non-const overload!
+Anything &AnyArrayImpl::At(const char *key)
 {
 	long slot = -1;
 	if ( !fKeys ) {
@@ -922,7 +914,7 @@ Anything &AnyArrayImpl::At(const char *key) //const/non-const overload!
 	at = IntAt(slot);
 	return fContents[IntAtBuf(slot)][IntAtSlot(slot)].Value();
 }
-Anything AnyArrayImpl::At(const char *key) const///non-const overload!
+Anything AnyArrayImpl::At(const char *key) const
 {
 	// calculate the adress of an anything given its key
 	long slot = -1;
@@ -988,17 +980,13 @@ long AnyArrayImpl::Contains(const char *k) const
 
 void AnyArrayImpl::Remove(long slot)
 {
-	// remove an anything from the internal
-	// structures
+	// remove an anything from the internal structures
 
 	// check the slot range
 	if (slot >= 0 && slot < fSize) {
 		// delete the internal key assoc
 		// at slot index
 		long at = IntAt(slot);
-//#if defined(PURE_LEAK) || defined(__linux__)
-//		MyAllocator() ? MyAllocator() : Storage::Current();
-//#endif
 		fContents[IntAtBuf(at)][IntAtSlot(at)] = AnyKeyAssoc(MyAllocator());	// reset it to initial empty assoc
 
 		// remove the slot from the index array
@@ -1040,16 +1028,13 @@ const Anything &AnyArrayImpl::IntValue(long at) const
 }
 const char *AnyArrayImpl::SlotName(long slot)const
 {
-	// calculate the slot name given an
-	// index
+	// calculate the slot name given an index
 	const String &k = Key(slot);
 	return (k.Length() > 0) ? k.cstr() : reinterpret_cast<const char *>(0);
 }
 const String &AnyArrayImpl::VisitSlotName(long slot) const
 {
-	// calculate the slot name given an
-	// index
-
+	// calculate the slot name given an index
 	// first check the range
 	if (slot >= 0 && slot < fSize) {
 		long at = IntAt(slot);
@@ -1106,9 +1091,6 @@ void AnyArrayImpl::Expand(long newsize)
 	if (allocOk) {
 		for (long i = numOfExistingBufs; i < fNumOfBufs && allocOk; ++i) {
 			Assert(MyAllocator() != 0);
-			//#if defined(PURE_LEAK) || defined(__linux__)
-			//			MyAllocator() = MyAllocator() ? MyAllocator() : Storage::Current();
-			//#endif
 #if defined(OPERATOR_NEW_ARRAY_NOT_SUPPORTED)
 			fContents[i] = (AnyKeyAssoc *)MyAllocator()->Calloc(fBufSize, sizeof(AnyKeyAssoc));
 #else
@@ -1153,9 +1135,6 @@ void AnyArrayImpl::AllocMemory()
 	for (long i = 0; i < fNumOfBufs; ++i) {
 		// must not use calloc to ensure proper initialization of Anything instance variables
 		Assert(MyAllocator() != 0);
-//#if defined(PURE_LEAK) || defined(__linux__)
-//		MyAllocator() = MyAllocator() ? MyAllocator() : Storage::Current();
-//#endif
 
 #if defined(OPERATOR_NEW_ARRAY_NOT_SUPPORTED)
 		fContents[i] = (AnyKeyAssoc *)MyAllocator()->Calloc(fBufSize, sizeof(AnyKeyAssoc));
@@ -1212,9 +1191,6 @@ AnyImpl *AnyArrayImpl::DoDeepClone(Allocator *a, Anything &xreftable) const
 	aimplTrace("stored xref entry for adr: " << adr << " is " << res->ThisToHex());
 	long count = this->GetSize();
 	for (long i = 0 ; i < count; ++i) {
-//		AnyArrayImpl* nonconstthis = const_cast<AnyArrayImpl*>(this); //!@FIXME: HUM: remove as soon as we fixed ref problems
-//		aimplTrace("slotname " << i << " [" << this->SlotName(i) << "] type: " << (long)(nonconstthis->At(i).GetType()) << " adr: " << nonconstthis->At(i).GetImpl()->ThisToHex());
-//		res->At(this->SlotName(i)) = nonconstthis->At(i).DeepClone(a, xreftable); //!@FIXME: HUM: remove as soon as we fixed ref problems
 		res->At(this->SlotName(i)) = this->At(i).DeepClone(a, xreftable);
 	}
 	return res;

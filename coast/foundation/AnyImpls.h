@@ -347,7 +347,7 @@ public:
 
 	long At(const char *key, long hashhint = -1, u_long hashhint1 = 0	) const;
 
-	void PrintHash();//const
+	void PrintHash() const;
 
 	static void *operator new(size_t size, Allocator *a);
 	static void operator delete(void *d);
@@ -397,7 +397,7 @@ protected:
 	void InitEmpty(long oldCap, long newCap);
 	void Expand(long slot);
 	void Clear();
-	void PrintTable();
+	void PrintTable()const;
 
 private:
 	long *fIndexTable;
