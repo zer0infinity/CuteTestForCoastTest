@@ -556,11 +556,19 @@ private:
 };
 
 // convenience macros for AnyImpl simplification
-#define IsLongImpl(anyimpl) ((anyimpl) && (AnyLongType)==(anyimpl)->GetType())
-#define LongImpl(anyimpl) ((AnyLongImpl*)(anyimpl))
-#define IsObjectImpl(anyimpl) ((anyimpl) && (AnyObjectType)==(anyimpl)->GetType())
-#define ObjectImpl(anyimpl) ((AnyObjectImpl*)(anyimpl))
-#define IsArrayImpl(anyimpl) ((anyimpl) && (AnyArrayType)==(anyimpl)->GetType())
-#define ArrayImpl(anyimpl) ((AnyArrayImpl*)(anyimpl))
+template <typename AsImpl>
+inline AsImpl const *DynamicAsImpl(AnyImpl const *anyimpl){
+	return dynamic_cast<AsImpl const *>(anyimpl);
+}
+template <typename AsImpl>
+inline AsImpl  *DynamicAsImpl(AnyImpl  *anyimpl){
+	return dynamic_cast<AsImpl  *>(anyimpl);
+}
+#define LongImpl(anyimpl) (DynamicAsImpl<AnyLongImpl>(anyimpl))
+#define IsLongImpl(anyimpl) (LongImpl(anyimpl)!=0)
+#define ObjectImpl(anyimpl) (DynamicAsImpl<AnyObjectImpl>(anyimpl))
+#define IsObjectImpl(anyimpl) (ObjectImpl(anyimpl) !=0)
+#define ArrayImpl(anyimpl) (DynamicAsImpl<AnyArrayImpl>(anyimpl))
+#define IsArrayImpl(anyimpl) (ArrayImpl(anyimpl) !=0)
 
 #endif

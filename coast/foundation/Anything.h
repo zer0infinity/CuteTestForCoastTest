@@ -479,18 +479,27 @@ protected:
 	// same impl for both value inserts
 	iterator do_insert(iterator pos, size_type n, const value_type &v);
 	//!changes fAnyImp from simple type to array
-	void Expand() const;
+	void Expand();
 	//!makes room for insert() implementation, moves elements eventually from slot to slot+size
 	void InsertReserve(long slot, long sz);
 
 	//!get Anything at i; create necessary entries if i is out of range
-	Anything &DoAt(long i) const;
+	Anything& DoAt(long i);
 
 	//!get Anything at i after check that i is a valid index
-	Anything &DoGetAt(long i) const;
+	Anything& DoGetAt(long i);
 
 	//!get Anything at s create entry if necessary
-	Anything &DoAt(const char *s) const;
+	Anything& DoAt(const char *s);
+
+	//!get Anything at i; return dummy in case of non-existance
+	Anything const &DoAt(long i) const;
+
+	//!get Anything at i after check that i is a valid index
+	Anything const &DoGetAt(long i) const;
+
+	//!get Anything at s return dummy if not found
+	Anything const &DoAt(const char *s) const;
 
 	/*! Clones this Anything and all its content recursively.
 		\return the copy of this Anything */
@@ -521,8 +530,7 @@ class EXPORTDECL_FOUNDATION AnyKeyAssoc
 public:
 	AnyKeyAssoc(const Anything &value, const char *key = 0);
 	AnyKeyAssoc(const AnyKeyAssoc &aka);
-	AnyKeyAssoc();
-	~AnyKeyAssoc();
+	AnyKeyAssoc(){}
 	void Init(Allocator *a);
 	Anything &Value() {
 		return fValue;
@@ -552,7 +560,6 @@ public:
 private:
 	Anything 	fValue;
 	String 		fKey;
-	Allocator 	*fAllocator;
 };
 
 //---- SlotFinder -----------------------------------------------------------

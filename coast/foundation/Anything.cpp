@@ -945,22 +945,21 @@ String Anything::AsString(const char *dflt) const
 	return dflt;
 }
 
-void Anything::Expand() const
+void Anything::Expand()
 {
 	if (GetType() != AnyArrayType) {
-		Anything *nonConstThis = (Anything *)this;
-		Allocator *al = nonConstThis->GetAllocator();
+		Allocator *al = this->GetAllocator();
 		Assert(al != 0);
 		AnyArrayImpl *a = new ((al) ? al : Storage::Current()) AnyArrayImpl(al);
 		if ( a && GetType() != AnyNullType ) {
 			a->At(0L) = *this; // this semantic is different from the Java version
 		}
-		if (nonConstThis->GetImpl()) {
-			nonConstThis->GetImpl()->Unref();
+		if (this->GetImpl()) {
+			this->GetImpl()->Unref();
 		}
-		nonConstThis->fAnyImp = a;
+		this->fAnyImp = a;
 		if (0 == a) {
-			nonConstThis->SetAllocator(al); // remember allocator in case of insanity or no memory
+			this->SetAllocator(al); // remember allocator in case of insanity or no memory
 		}
 	}
 }
@@ -983,7 +982,7 @@ const Anything &Anything::At(const char *k) const
 	return DoAt(k);
 }
 
-Anything &Anything::DoAt(long i) const
+Anything  &Anything::DoAt(long i)
 {
 	Assert(i >= 0);
 	if ( i > 0 || GetType() == AnyNullType ) {
@@ -994,20 +993,36 @@ Anything &Anything::DoAt(long i) const
 	}
 	return DoGetAt(i);
 }
+Anything const &Anything::DoAt(long i) const
+{
+	Assert(i >= 0);
+	return DoGetAt(i);
+}
 
-Anything &Anything::DoGetAt(long i) const
+Anything  &Anything::DoGetAt(long i)
 {
 	if ( GetType() != AnyArrayType ) {
 		// if the type is not an AnyArrayType
 		// just return this
-		return *(Anything *)this;
+		return *this;
 	}
 	// double check for the index range since in a productive version
-	// Assert does expand to nothing
+	// Assert does expand to nothing --> should use size_t instead of long for indices
+	return ArrayImpl(GetImpl())->At((i >= 0) ? i : 0);
+}
+Anything const &Anything::DoGetAt(long i) const
+{
+	if ( GetType() != AnyArrayType ) {
+		// if the type is not an AnyArrayType
+		// just return this
+		return *this;
+	}
+	// double check for the index range since in a productive version
+	// Assert does expand to nothing --> should use size_t instead of long for indices
 	return ArrayImpl(GetImpl())->At((i >= 0) ? i : 0);
 }
 
-Anything &Anything::DoAt(const char *k) const
+Anything &Anything::DoAt(const char *k)
 {
 	long i;
 	if (k && (*k != 0)) {
@@ -1016,6 +1031,16 @@ Anything &Anything::DoAt(const char *k) const
 			Assert(AnyArrayType == GetImpl()->GetType());
 			return ArrayImpl(GetImpl())->At(k);
 		} else {
+			return this->DoAt(i);
+		}
+	}
+	return this->DoAt(GetSize());
+}
+Anything const &Anything::DoAt(const char *k)const
+{
+	long i;
+	if (k && (*k != 0)) {
+		if ( (i = FindIndex(k)) != -1L) {
 			return this->DoAt(i);
 		}
 	}
@@ -1480,7 +1505,7 @@ Allocator *Anything::GetAllocator() const
 	if (GetImpl()) {
 		return GetImplAllocator();
 	}
-	return (Allocator *)(bits&~0x01);
+	return reinterpret_cast<Allocator *>(bits&~0x01);
 }
 
 bool Anything::SetAllocator(Allocator *a)
@@ -1514,7 +1539,7 @@ AnyImpl  *Anything::GetImpl()
 	if (bits & 0x01) {
 		return 0;
 	} else {
-		return fAnyImp;
+		return const_cast<AnyImpl*>(fAnyImp); // TODO: silently throws away constness!!!!
 	}
 }
 
@@ -1594,9 +1619,7 @@ void Anything::swap(Anything &that)
 	// we use an anonymous union of pointers and bits. this could be dangerous....
 	Assert(sizeof(bits) == sizeof(fAnyImp));
 	Assert(sizeof(fAnyImp) == sizeof(fAlloc));
-	AnyImpl *tmp = this->fAnyImp;
-	this->fAnyImp = that.fAnyImp;
-	that.fAnyImp = tmp;
+	std::swap(this->fAnyImp,that.fAnyImp);
 }
 
 Anything::iterator Anything::do_insert(iterator pos, size_type n, const value_type &v)
@@ -2320,28 +2343,16 @@ void AnyKeyAssoc::operator delete[](void *ptr)
 AnyKeyAssoc::AnyKeyAssoc(const Anything &value, const char *key)
 	: fValue(value)
 	, fKey(key, -1, value.GetAllocator())
-	, fAllocator(value.GetAllocator())
 {
 }
 AnyKeyAssoc::AnyKeyAssoc(const AnyKeyAssoc &aka)
 	: fValue(aka.fValue)
 	, fKey(aka.fKey)
-	, fAllocator(aka.fValue.GetAllocator())
 {
 }
 // used when allocating arrays... CAUTION: elements then must be initialized manually with Init()!
-AnyKeyAssoc::AnyKeyAssoc()
-	: fValue(static_cast<Allocator *>(0))
-	, fKey(static_cast<Allocator *>(0))
-	, fAllocator(0)
-{
-}
-AnyKeyAssoc::~AnyKeyAssoc()
-{
-}
 void AnyKeyAssoc::Init(Allocator *a)
 {
-	fAllocator = a;
 	fValue.SetAllocator(a);
 	fKey.SetAllocator(a);
 }
