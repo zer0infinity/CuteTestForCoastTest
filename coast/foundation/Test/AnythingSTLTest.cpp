@@ -3,8 +3,8 @@
 
 #include "TestSuite.h"
 
-AnythingSTLTest::AnythingSTLTest(TString name)
-	: TestCaseType(name)
+AnythingSTLTest::AnythingSTLTest(TString tname)
+	: TestCaseType(tname)
 {
 }
 

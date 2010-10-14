@@ -23,7 +23,7 @@ using namespace std;
 #endif
 
 //---- MD5RendererTest ----------------------------------------------------------------
-MD5RendererTest::MD5RendererTest(TString name) : TestCaseType(name)
+MD5RendererTest::MD5RendererTest(TString tname) : TestCaseType(tname)
 {
 	StartTrace(MD5RendererTest.Ctor);
 }

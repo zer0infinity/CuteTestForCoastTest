@@ -23,7 +23,7 @@ using namespace std;
 #endif
 
 //---- Base64RendererTest ----------------------------------------------------------------
-Base64RendererTest::Base64RendererTest(TString name) : TestCaseType(name)
+Base64RendererTest::Base64RendererTest(TString tname) : TestCaseType(tname)
 {
 	StartTrace(Base64RendererTest.Ctor);
 }
