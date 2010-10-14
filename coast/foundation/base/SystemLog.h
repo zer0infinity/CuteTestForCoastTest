@@ -163,17 +163,6 @@ protected:
 
 	HANDLE fLogHandle;
 };
-#elif defined(__370__)
-//! implementation of SystemLog api for System/370; just uses cerr
-class S370SysLog: public SystemLog
-{
-public:
-	S370SysLog() { }
-	~S370SysLog() { }
-
-protected:
-	virtual void DoSystemLevelLog(eLogLevel level, const char *msg);
-};
 #else
 //! implementation for Unix syslog api
 class UnixSysLog : public SystemLog

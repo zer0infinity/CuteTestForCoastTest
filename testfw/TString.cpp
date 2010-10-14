@@ -16,10 +16,6 @@
 #include <iostream>
 #include <cstdio>
 
-#if defined(__370__) || defined(_ARCH_COM)
-#include <stdlib.h>
-#endif
-
 //---- TString ----------------------------------------------------------------
 const long cStrAllocLimit = 4096;
 const long cStrAllocIncrement =  1024;

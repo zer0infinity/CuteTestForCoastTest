@@ -9,12 +9,8 @@
 #ifndef _Socket_H
 #define _Socket_H
 
-#if defined(__370__)
-#define SOCKET_ERROR sock_errno()
-#else
 #if !defined(WIN32)
 #define SOCKET_ERROR errno
-#endif
 #endif
 
 #include "config_foundation.h"

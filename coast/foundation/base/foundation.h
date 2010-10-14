@@ -55,12 +55,7 @@ typedef unsigned long u_long;
 
 // handle l_long and ul_long as type
 // also define macros to correctly declare literals
-#ifdef __370__
-typedef long l_long;
-typedef unsigned long ul_long;
-#define UINT64_LITERAL(n) n ## ul
-#define INT64_LITERAL(n) n ## l
-#elif defined(WIN32)		// already defined above!
+#if defined(WIN32)		// already defined above!
 typedef __int64 l_long;
 typedef unsigned __int64 ul_long;
 #define UINT64_LITERAL(n) n ## ui64

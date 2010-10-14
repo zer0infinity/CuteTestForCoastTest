@@ -922,11 +922,7 @@ namespace Coast {
 				struct dirent *direntp = (dirent *)calloc(1, sizeof(dirent) + _POSIX_PATH_MAX);
 				struct dirent *direntpSave = direntp;
 				int ret;
-		#ifndef __370__
 				while ( ((ret = readdir_r( fp, direntp, &direntp )) == 0) && (direntp) )
-		#else
-			while ( (direntp = readdir(fp)) )
-		#endif
 				{
 					String name = direntp->d_name;
 					Trace("current entry [" << name << "]");

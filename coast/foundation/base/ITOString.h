@@ -105,9 +105,8 @@ public:
 	static void DoubleToString(const double &number, String &strBuf);
 
 	//! append extra long number as decimal
-#ifndef __370__
 	String &Append(const l_long &number);
-#endif
+
 	//! append extra long unsigned number as decimal
 	String &Append(const u_long &number);
 
@@ -158,11 +157,9 @@ public:
 	String &operator << (double d)				{
 		return Append(d);
 	}
-#ifndef __370__
 	String &operator << (l_long ll)				{
 		return Append(ll);
 	}
-#endif
 
 #if defined(WIN32)
 	String &operator << (u_long ul)				{
@@ -279,18 +276,6 @@ public:
 	//! this is done inplace using ctype.h - classification islower()
 	//! \return *this after the conversion
 	String &ToUpper();
-#ifdef __370__
-	//! convert all characters from EBCDIC to ASCII
-	//! \pre the character encoding is currently EBCDIC
-	//! this is done inplace using our special functions
-	//! do not know what happens to charachters not representable by ASCII
-	void ToASCII();
-	//! convert all characters from ASCII to EBCDIC
-	//! \pre the character encoding is currently ASCII
-	//! this is done inplace using our special functions
-	//! do not know what happens to charachters not representable by EBCDIC
-	void ToEBCDIC();
-#endif
 
 	//! debug operation, places String internals onto Syslog
 	void Dump() const;

@@ -98,14 +98,6 @@ namespace Coast {
 								bWrite ? &writefds  : NULL,
 								bArg  ? &exceptfds : NULL,
 								timeout >= 0 ? &t : 0);
-		//		#ifdef __370__
-		//			int sockFd[1];
-		//			sockFd[0] = (int)fd;
-		//			if( event == POLLIN )
-		//			retCode = select(sockFd,1,0,0,timeout);
-		//
-		//			else  if( event == POLLOUT )
-		//			retCode = select(sockFd,0,1,0,timeout);
 		}
 
 		bool IsReadyForReading(int fd, long timeout) {

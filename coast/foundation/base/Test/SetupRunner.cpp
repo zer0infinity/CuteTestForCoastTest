@@ -37,19 +37,14 @@
 #include "AnythingIteratorTest.h"
 #include "AnythingSTLTest.h"
 
-#ifndef __370__
 #if !defined(WIN32)
 #include "MmapTest.h"
 #endif
 #include "StringStreamTest.h"
-#endif
 
 void setupRunner(TestRunner &runner)
 {
-#if !defined(__370__)
 	ADD_SUITE(runner, StringTokenizerTest);
-	// removed because of name clash
-#endif
 	ADD_SUITE(runner, StringTokenizer2Test);
 	ADD_SUITE(runner, StringTest);
 	ADD_SUITE(runner, AnyImplsTest);
@@ -62,12 +57,8 @@ void setupRunner(TestRunner &runner)
 	ADD_SUITE(runner, AnythingParserSemanticTest);
 	ADD_SUITE(runner, AnythingParserTest);
 	ADD_SUITE(runner, StrSpecialTest);
-#if !defined(__370__) && !defined(WIN32)
 	ADD_SUITE(runner, MmapTest);
-#endif
-#if !defined(__370__)
 	ADD_SUITE(runner, StringStreamTest);
-#endif
 	ADD_SUITE(runner, DbgTest);
 	ADD_SUITE(runner, ROSimpleAnythingTest);
 	ADD_SUITE(runner, SysLogTest);

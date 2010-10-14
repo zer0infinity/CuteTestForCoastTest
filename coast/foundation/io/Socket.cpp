@@ -26,12 +26,10 @@ using namespace Coast;
 #else
 #include <errno.h> /* PS wg. SUNCC5 */
 #include <sys/socket.h>
-#if !defined(__370__)
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netinet/tcp.h>		/* TCP_NODELAY */
 #include <sys/poll.h>
-#endif
 #include <fcntl.h>
 #endif
 

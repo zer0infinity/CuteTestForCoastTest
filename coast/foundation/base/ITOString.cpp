@@ -16,9 +16,6 @@
 
 //--- c-library modules used ---------------------------------------------------
 #include <cstring>
-#ifdef __370__
-//	#include "a2ee2a.h"
-#endif
 #include <ctype.h>
 
 //#define IOSTREAM_NUM_CONVERSION
@@ -415,7 +412,6 @@ String &String::Append(const long &number)
 	return *this;
 }
 
-#ifndef __370__
 String &String::Append(const l_long &number)
 {
 #if !defined(IOSTREAM_NUM_CONVERSION)
@@ -446,7 +442,6 @@ String &String::Append(const l_long &number)
 #endif
 	return *this;
 }
-#endif
 
 String &String::Append(const u_long &number)
 {
@@ -820,18 +815,7 @@ void String::ReplaceAt( long pos, const char *s, long len)
 long String::CaselessCompare(const char *s1, const char *s2)
 {
 	if ((0 != s1) && ( 0 != s2)) {
-#if !defined(__370__) && !defined(WIN32)
 		return strcasecmp(s1, s2);
-#else
-		{
-			// atraxis - edwin
-			String string1 = s1;             // atraxis - edwin
-			String string2 = s2;             // atraxis - edwin
-			string1.ToUpper();               // atraxis - edwin
-			string2.ToUpper();               // atraxis - edwin
-			return(strcmp(string1, string2)); // atraxis - edwin
-		}                                  // atraxis - edwin
-# endif
 	} else if (s1 != 0) {
 		return 1;    // only s1 is there
 	} else if (s2 != 0) {
@@ -916,22 +900,6 @@ bool String::PrependWith(long newLength, const char fill)
 	}
 	return (fillTo >= 0);
 }
-
-#ifdef __370__
-void String::ToEBCDIC()
-{
-	if (GetImpl())
-		ascii2ebcdic((void *)(const char *)GetContent(), (const void *)(const char *)GetContent(),
-					 Length());
-} // ToEBCDIC
-
-void String::ToASCII()
-{
-	if (GetImpl())
-		ebcdic2ascii((void *)(const char *)GetContent(), (const void *)(const char *)GetContent(),
-					 Length());
-} // ToASCII
-#endif
 
 // CR #16
 // internal IO routines with masking and embedding in quote characters

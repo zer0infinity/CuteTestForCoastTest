@@ -270,68 +270,36 @@ void AnythingParserTest::parseSimpleTypeDouble ()
 	t_assert( anyTest.GetType() == AnyDoubleType );
 	t_assert( anyTest.GetSize() == 1 );
 
-#ifndef __370__
 	String input1 = "1.0123456789E+300";
-#else
-	String input1 = "1.0123456789E+30";
-#endif
-
 	IStringStream is1(input1);
 	anyTest.Import( is1 );
-#ifndef __370__
-	t_assert( anyTest.AsDouble() == 1.0123456789E+300 );
-#else
-	t_assert( anyTest.AsDouble() == 1.0123456789E+30 );
-#endif
 
+	t_assert( anyTest.AsDouble() == 1.0123456789E+300 );
 	t_assert( anyTest.GetType() == AnyDoubleType );
 	t_assert( anyTest.GetSize() == 1 );
 
-#ifndef __370__
 	String input3 = "-1.0123456789E+300";
-#else
-	String input3 = "-1.0123456789E+30";
-#endif
 	IStringStream is3(input3);
 	anyTest.Import( is3 );
-#ifndef __370__
+
 	t_assert( anyTest.AsDouble() == -1.0123456789E+300 );
-#else
-	t_assert( anyTest.AsDouble() == -1.0123456789E+30 );
-#endif
 
 	t_assert( anyTest.GetType() == AnyDoubleType );
 	t_assert( anyTest.GetSize() == 1 );
 
-#ifndef __370__
 	String input4 		= "1.0123456789E-300";
-#else
-	String input4 		= "1.0123456789E-30";
-#endif
 	IStringStream is4(input4);
 	anyTest.Import( is4 );
-#ifndef __370__
-	t_assert( anyTest.AsDouble() == 1.0123456789E-300 );
-#else
-	t_assert( anyTest.AsDouble() == 1.0123456789E-30 );
-#endif
 
+	t_assert( anyTest.AsDouble() == 1.0123456789E-300 );
 	t_assert( anyTest.GetType() == AnyDoubleType );
 	t_assert( anyTest.GetSize() == 1 );
 
-#ifndef __370__
 	String input5 		= "-1.0123456789E-300";
-#else
-	String input5 		= "-1.0123456789E-30";
-#endif
 	IStringStream is5(input5);
 	anyTest.Import( is5 );
-#ifndef __370__
-	t_assert( anyTest.AsDouble() == -1.0123456789E-300 );
-#else
-	t_assert( anyTest.AsDouble() == -1.0123456789E-30 );
-#endif
 
+	t_assert( anyTest.AsDouble() == -1.0123456789E-300 );
 	t_assert( anyTest.GetType() == AnyDoubleType );
 	t_assert( anyTest.GetSize() == 1 );
 

@@ -13,10 +13,6 @@
 #include <string.h>
 #endif
 
-#if defined(__370__)
-typedef long l_long;
-#endif
-
 #include <iosfwd>
 typedef int Unicode;
 

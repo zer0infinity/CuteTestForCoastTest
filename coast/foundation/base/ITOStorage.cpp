@@ -20,10 +20,6 @@
 //--- c-library modules used ---------------------------------------------------
 #include <cstring>
 
-#ifdef __370__
-extern "C" void finalize();
-#endif
-
 #include <stdio.h>
 #if defined(WIN32)
 #define snprintf	_snprintf
@@ -447,14 +443,6 @@ size_t GlobalAllocator::Free(void *vp)
 	}
 	return sz;
 }
-
-#ifdef __370__
-// need a C-function as the linker cannot resolve C++ here
-void finalize()
-{
-	Storage::Finalize();
-}
-#endif
 
 Allocator *TestStorageHooks::Global()
 {

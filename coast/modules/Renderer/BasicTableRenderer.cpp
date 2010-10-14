@@ -15,9 +15,6 @@
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
-#ifdef _ARCH_COM
-#include <stdlib.h>
-#endif
 
 //---- RowAccessor -------------------------------------------------------------------
 // utility class used by BasicTableRenderer to cache the renderers/configuration data

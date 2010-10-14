@@ -20,9 +20,7 @@
 
 //--- c-library modules used ---------------------------------------------------
 #if !defined(WIN32)
-#if !defined(__370__)
 #include <netinet/in.h>		// for INADDR_ANY
-#endif
 #include <fcntl.h>
 #endif
 

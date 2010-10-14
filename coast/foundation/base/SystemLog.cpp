@@ -62,8 +62,6 @@ void SystemLog::Init(const char *appId)
 		// there is always only one syslog channel per application
 #if defined(WIN32)
 		fgSysLog = new Win32SysLog(appId);
-#elif defined(__370__)
-		fgSysLog = new S370SysLog();
 #else
 		fgSysLog = new UnixSysLog(appId);
 #endif
@@ -336,11 +334,6 @@ void Win32SysLog::DoSystemLevelLog(eLogLevel level, const char *logMsg)
 			break;
 	}
 	::ReportEvent(fLogHandle, evtType, 0, 0, 0, 2, 0, str, 0);
-}
-#elif defined(__370__)
-void S370SysLog::DoSystemLevelLog(eLogLevel level, const char *msg)
-{
-	cerr << "level " << level << ": " << logMsg << endl;
 }
 #else
 UnixSysLog::UnixSysLog(const char *appId)
