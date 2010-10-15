@@ -338,7 +338,7 @@ Anything OracleDAImpl::getMappedInputValues( ParameterMapper *pmapIn, OracleStat
 
 	long lBufferSize( glStringBufferSize );
 	pmapIn->Get( "StringBufferSize", lBufferSize, ctx );
-	MetaThing anyMappedInputValues;
+	Anything anyMappedInputValues = Anything(Anything::ArrayMarker());
 	for (long lIdx = 0; lIdx < lIterations; ++lIdx) {
 		Context::PushPopEntry<Anything> aEntry(ctx, "ArrayValues", anyArrayValues[lIdx]);
 		Anything anyRow;

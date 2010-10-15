@@ -102,7 +102,7 @@ public:
 	{
 		friend class StatementDescriptionTest;
 		ROAnything fRBuf;
-		MetaThing fWBuf;
+		Anything fWBuf;
 		Description(const Description &);
 		Description &operator=(const Description &);
 	public:
@@ -183,7 +183,7 @@ public:
 				return fWBuf[slotname];
 			}
 		};
-		Description() {}
+		Description() : fWBuf(Anything::ArrayMarker()) {}
 		~Description() {}
 		/*! Retrieve the number of slots in this Anything
 			\return The number of slots in this Anything */
@@ -214,7 +214,7 @@ public:
 			ROAnything roaR( fRBuf[slot] );
 			Anything anyW;
 			if ( !fWBuf.IsDefined(slot) ) {
-				fWBuf[slot] = MetaThing(fWBuf.GetAllocator());
+				fWBuf[slot] = Anything(Anything::ArrayMarker(),fWBuf.GetAllocator());
 			}
 			anyW = fWBuf[slot];
 			Element aElt(roaR, anyW);

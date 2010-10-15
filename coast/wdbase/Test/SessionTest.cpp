@@ -161,7 +161,7 @@ void SessionTest::DoFindNextPageLogin ()
 		TraceAny(c.GetTmpStore(), "Tempstore");
 
 		t = "LoginOK";
-		args["query"] = MetaThing();
+		args["query"] = Anything(Anything::ArrayMarker());
 		args["query"]["action"] = t;
 		args["query"]["page"] = p;
 		args["query"]["delayedIndex"] = "0";
@@ -334,7 +334,7 @@ void SessionTest::InfoTest()
 			expectedInfo["Last"] = s.GetAccessTime();
 			expectedInfo["Timeout"] = s.GetTimeout(ctx);
 			expectedInfo["Referenced"] = s.GetRefCount();
-			expectedInfo["SessionStore"]["RoleStore"] = MetaThing();
+			expectedInfo["SessionStore"]["RoleStore"] = Anything(Anything::ArrayMarker());
 			TraceAny(expectedInfo, "expected:");
 			t_assertm(s.Info(resultedInfo, ctx), "expected info to succeed");
 			assertAnyEqual(expectedInfo, resultedInfo);

@@ -827,7 +827,7 @@ Anything::Anything(const Anything &any, Allocator *a) : fAnyImp(0)
 		SetAllocator(a);    // remember allocator or make it sane in case of errors
 	}
 }
-Anything::Anything(MetaMarker m, Allocator *a):fAnyImp(new ((a) ? a : Storage::Current()) AnyArrayImpl(a))
+Anything::Anything(ArrayMarker m, Allocator *a):fAnyImp(new ((a) ? a : Storage::Current()) AnyArrayImpl(a))
 {
 	SetAllocator(a);
 }
@@ -875,7 +875,7 @@ void Anything::EnsureArrayImpl(Anything &anyToEnsure)
 	if ( anyToEnsure.GetType() != AnyArrayType ) {
 		anyTrace("is not array");
 		// behave friendly if current slot is not an array impl, eg don't lose current entry
-		MetaThing expander(anyToEnsure.GetAllocator());
+		Anything expander = Anything(Anything::ArrayMarker(),anyToEnsure.GetAllocator());
 		if ( !anyToEnsure.IsNull() ) {
 			anyTrace("was not Null");
 			expander.Append(anyToEnsure);
@@ -1652,15 +1652,6 @@ Anything::iterator Anything::do_insert(iterator pos, size_type n, const value_ty
 	return pos;
 }
 
-// metathing is always an array
-MetaThing::MetaThing(Allocator *a) : Anything(new ((a) ? a : Storage::Current()) AnyArrayImpl(a))
-{
-}
-
-TrickyThing::TrickyThing(Allocator *a) : Anything(new ((a) ? a : Storage::Current()) AnyArrayImpl(a))
-{
-}
-
 //---- ROAnything ---------------------------------------------------------------------
 
 ROAnything::ROAnything() : fAnyImp(0)
@@ -2051,7 +2042,7 @@ bool AnythingParser::DoParseSequence(Anything &any, ParserXrefHandler &xrefs)
 	Allocator *a = (any.GetAllocator()) ? any.GetAllocator() : Storage::Current();
 	bool ok = true;
 	// we need to make it an array
-	any = MetaThing(a);
+	any = Anything(Anything::ArrayMarker(),a);
 	do {
 		Anything element(a);
 		String key;
@@ -2318,13 +2309,13 @@ void SlotFinder::Operate(Anything &source, Anything &dest, String destSlotname, 
 		if (destSlotname.Length()) {
 			if ( !dest.IsDefined(destSlotname) || dest[destSlotname].IsNull() ) {
 				Trace("adding slot [" << destSlotname << "]");
-				dest[destSlotname] = MetaThing(dest.GetAllocator());
+				dest[destSlotname] = Anything(Anything::ArrayMarker(),dest.GetAllocator());
 			}
 			dest = dest[destSlotname];
 		} else {
 			if (!dest.IsDefined(destIdx)) {
 				Trace("adding indexslot [" << destIdx << "]");
-				dest[destIdx] = MetaThing(dest.GetAllocator());
+				dest[destIdx] = Anything(Anything::ArrayMarker(),dest.GetAllocator());
 			}
 			dest = dest.At(destIdx);
 		}
@@ -2344,7 +2335,7 @@ bool SlotFinder::IntOperate(Anything &dest, String &destSlotname, long &destIdx,
 			if ( IntOperate(dest, s, destIdx, delim, indexdelim) ) {
 				// ensure that we have a valid anything
 				if (dest[s].GetType() == AnyNullType) {
-					dest[s] = MetaThing(dest.GetAllocator());
+					dest[s] = Anything(Anything::ArrayMarker(),dest.GetAllocator());
 				}
 				dest = dest[s];
 				SubTraceAny(TraceAny, dest, "dest so far");
@@ -2369,7 +2360,7 @@ bool SlotFinder::IntOperate(Anything &dest, String &destSlotname, long &destIdx,
 		if (destSlotname.Length()) {
 			// ensure that we have a valid anything
 			if (dest[destIdx].GetType() == AnyNullType) {
-				dest[destIdx] = MetaThing(dest.GetAllocator());
+				dest[destIdx] = Anything(Anything::ArrayMarker(),dest.GetAllocator());
 			}
 			// adjusting dest anything with slotindex
 			dest = dest[destIdx];
@@ -2391,7 +2382,7 @@ bool SlotFinder::IntOperate(Anything &dest, String &destSlotname, long &destIdx,
 		if (keepOn) {
 			if ( !dest.IsDefined(k) || dest[k].IsNull() ) {
 				// insert non-existing slots on the fly
-				dest[k] = MetaThing(dest.GetAllocator());
+				dest[k] = Anything(Anything::ArrayMarker(),dest.GetAllocator());
 			}
 		} else {
 			destSlotname = k;

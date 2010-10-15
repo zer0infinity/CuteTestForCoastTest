@@ -117,7 +117,7 @@ void Registry::RemoveAliases(RegisterableObject *obj)
 Anything &Registry::GetTable()
 {
 	if ( !fTable && !fgFinalize ) {
-		fTable = new MetaThing(Storage::Global());
+		fTable = new Anything(Anything::ArrayMarker(),Storage::Global());
 	}
 	static Anything fake; // just to let the compiler be happy
 	if ( fgFinalize || !fTable ) {
@@ -199,7 +199,7 @@ Anything &Registry::GetRegTable()
 	// during installation phase, which causes it to fail
 	static Anything fake; // just to let the compiler be happy
 	if ( !fgRegistryArray && !fgFinalize ) {
-		fgRegistryArray = new MetaThing(Storage::Global()); // this is the registry of Registry s
+		fgRegistryArray = new Anything(Anything::ArrayMarker(),Storage::Global()); // this is the registry of Registry s
 	}
 	if ( fgFinalize || !fgRegistryArray ) {
 		return fake;

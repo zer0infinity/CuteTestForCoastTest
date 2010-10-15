@@ -37,7 +37,7 @@ URI2FileNameTest::~URI2FileNameTest()
 void URI2FileNameTest::Uri2FilenameTest()
 {
 	StartTrace(URI2FileNameTest.Uri2FilenameTest);
-	MetaThing env;
+	Anything env = Anything(Anything::ArrayMarker());
 	Anything content;
 	content["env"] = env;
 	Context ctx(content);

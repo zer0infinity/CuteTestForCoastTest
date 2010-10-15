@@ -18,7 +18,7 @@
 //--- module under test --------------------------------------------------------
 
 FormRendererTest::FormRendererTest (TString tname) : TestCaseType(tname),
-	fEnvironment(), fRole("FRTestRole"),
+	fEnvironment(Anything::ArrayMarker()), fRole("FRTestRole"),
 	fContext( fEnvironment, Anything(), 0, 0, &fRole, 0 ),
 	fFormRenderer("FormRenderer")
 {

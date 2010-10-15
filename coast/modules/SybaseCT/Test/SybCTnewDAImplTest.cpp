@@ -87,7 +87,7 @@ void SybCTnewDAImplTest::InitTest()
 {
 	StartTrace(SybCTnewDAImplTest.InitTest);
 	Anything anyCfg, anyTmp;
-	anyCfg["SybaseModule"] = MetaThing();
+	anyCfg["SybaseModule"] = Anything(Anything::ArrayMarker());
 	anyTmp = anyCfg["SybaseModule"];
 	if ( t_assert(SybCTnewDAImpl::Init(anyCfg)) ) {
 		assertEqualm(5L, SybCTnewDAImpl::fgListOfSybCT["Size"].AsLong(-1L), "default coded size should be 5");
@@ -95,7 +95,7 @@ void SybCTnewDAImplTest::InitTest()
 		t_assert(SybCTnewDAImpl::Finis());
 		t_assertm(SybCTnewDAImpl::fgpPeriodicAction == NULL, "expected PeriodicAction to be terminated");
 	}
-	anyTmp["SybCTnewDAImpl"] = MetaThing();
+	anyTmp["SybCTnewDAImpl"] = Anything(Anything::ArrayMarker());
 	anyTmp = anyTmp["SybCTnewDAImpl"];
 	anyTmp["ParallelQueries"] = 2L;
 	if ( t_assert(SybCTnewDAImpl::Init(anyCfg)) ) {

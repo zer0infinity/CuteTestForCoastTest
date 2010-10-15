@@ -19,7 +19,6 @@ class EXPORTDECL_STDDATAACCESS ConnectorParams
 {
 public:
 	ConnectorParams(Context &ctx, ParameterMapper *pMapper);
-	~ConnectorParams();
 
 	String Name();
 	bool UseSSL();
@@ -30,7 +29,7 @@ public:
 	bool UseThreadLocal();
 
 private:
-	MetaThing fParams;
+	Anything fParams;
 	Context::PushPopEntry<Anything> fParamEntry;
 	ConnectorParams();
 	ConnectorParams(const ConnectorParams &);

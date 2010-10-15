@@ -64,7 +64,7 @@ void HTTPProcessor::DoReadInput(std::iostream &Ios, Context &ctx)
 
 	Anything args(ctx.GetRequest());
 	args["env"] = request;
-	args["query"] = MetaThing();
+	args["query"] = Anything(Anything::ArrayMarker());
 	ctx.PushRequest(args);
 
 	// prepare the environment for the framework

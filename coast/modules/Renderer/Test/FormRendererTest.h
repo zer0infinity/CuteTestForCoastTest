@@ -32,7 +32,7 @@ public:
 
 protected:
 	Anything		fConfig;
-	MetaThing		fEnvironment;
+	Anything		fEnvironment;
 	TestRole		fRole;
 	Context			fContext;
 	OStringStream	fReply;

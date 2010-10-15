@@ -62,7 +62,7 @@ void StatementDescriptionTest::DescriptionElementShadowTest()
 	Anything anyDefaultVals;
 	anyDefaultVals["Name"] = "NameDefault";
 	anyDefaultVals["Idx"] = 11L;
-	MetaThing anyVals;
+	Anything anyVals = Anything(Anything::ArrayMarker());
 	ROAnything roaDefaults(anyDefaultVals);
 	OracleStatement::Description::Element aFilledElt(roaDefaults, anyVals);
 	t_assert( !aFilledElt.fWBuf.IsNull() );

@@ -74,7 +74,7 @@ Anything DataAccessStresser::Run(long id)
 			ROAnything roaInfoMessage;
 			if ( Lookup("InfoMessage", roaInfoMessage) && roaInfoMessage.GetSize() ) {
 				TraceAny(roaInfoMessage, "slots to Output");
-				MetaThing metaInfo;
+				Anything metaInfo = Anything(Anything::ArrayMarker());
 				results["InfoMessageCtr"][strStepNr] = metaInfo;
 				SlotCopier::Operate(ctx.GetTmpStore(), metaInfo, roaInfoMessage);
 				TraceAny(metaInfo, "copied slots");

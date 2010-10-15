@@ -15,7 +15,7 @@
 #include "Dbg.h"
 
 #include <string.h>	// for strlen
-MetaThing OracleConnection::fgDescriptionCache( Storage::Global() );
+Anything OracleConnection::fgDescriptionCache( Anything::ArrayMarker(), Storage::Global() );
 ROAnything OracleConnection::fgDescriptionCacheRO( fgDescriptionCache );
 RWLock OracleConnection::fgDescriptionLock( "OracleDescriptorLock", Storage::Global() );
 

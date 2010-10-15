@@ -59,7 +59,7 @@ void HTTPHeaderRendererTest::SingleLineMultiValue()
 	StartTrace(HTTPHeaderRendererTest.SingleLineMultiValue);
 	HTTPHeaderRenderer r("");
 	Context c;
-	MetaThing values;
+	Anything values = Anything(Anything::ArrayMarker());
 	values.Append("NTLM");
 	values.Append("Negotiate");
 	values.Append("Basic");

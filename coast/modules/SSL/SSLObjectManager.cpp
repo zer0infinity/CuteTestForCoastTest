@@ -43,8 +43,8 @@ SSLObjectManager::SSLObjectManager(const char *name)
 	: WDModule(name)
 	, fSSLCtxStoreMutex("SSLCtxStoreMutex")
 	, fSSLSessionIdStoreMutex("SSLSessionIdStoreMutex")
-	, fSSLCtxStore(Storage::Global())
-	, fSSLSessionIdStore(Storage::Global())
+	, fSSLCtxStore(Anything::ArrayMarker(), Storage::Global())
+	, fSSLSessionIdStore(Anything::ArrayMarker(), Storage::Global())
 {
 	StartTrace1(SSLObjectManager.SSLObjectManager, "Name:<" << NotNull(name) << ">");
 	SystemLog::Info("SSLObjectManager: <unblocked>");
@@ -186,7 +186,7 @@ bool SSLObjectManager::Finis()
 				}
 			}
 		}
-		fSSLCtxStore = MetaThing(fSSLCtxStore.GetAllocator());
+		fSSLCtxStore = Anything(Anything::ArrayMarker(),fSSLCtxStore.GetAllocator());
 	}
 	{
 		TraceAny(fSSLSessionIdStore, "fSSLSessionIdStore");
@@ -204,7 +204,7 @@ bool SSLObjectManager::Finis()
 				}
 			}
 		}
-		fSSLSessionIdStore = MetaThing(fSSLSessionIdStore.GetAllocator());
+		fSSLSessionIdStore = Anything(Anything::ArrayMarker(),fSSLSessionIdStore.GetAllocator());
 	}
 	return true;
 }
@@ -212,7 +212,7 @@ bool SSLObjectManager::Finis()
 void SSLObjectManager::EmptySessionIdStore()
 {
 	StartTrace(SSLObjectManager.EmptySessionIdStore);
-	fSSLSessionIdStore = MetaThing(fSSLSessionIdStore.GetAllocator());
+	fSSLSessionIdStore = Anything(Anything::ArrayMarker(),fSSLSessionIdStore.GetAllocator());
 }
 
 bool SSLObjectManager::ResetFinis(const ROAnything )

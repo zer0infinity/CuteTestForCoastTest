@@ -48,9 +48,9 @@ void CallRendererTest::LookupCallTest()
 	fConfig["Renderer"] = "MyLookup";
 	fConfig["Parameters"]["myparam"] = "Peter was here";
 	fConfig["Parameters"]["myparam2"] = "Peter was here too";
-	MetaThing mylookup;
+	Anything mylookup = Anything(Anything::ArrayMarker());
 	mylookup.Append("A Test ");
-	MetaThing spec;
+	Anything spec = Anything(Anything::ArrayMarker());
 	spec.Append("myparam");
 	mylookup["ContextLookupRenderer"] = spec;
 	TraceAny(mylookup, "mylookup");

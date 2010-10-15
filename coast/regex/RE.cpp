@@ -328,11 +328,11 @@ bool RE::MatchAt(long i)
 	Assert(i >= 0);
 	if (i >= 0) {
 		// Initialize start pointer, paren cache and paren count
-		fRegisters = MetaThing();
+		fRegisters = Anything(Anything::ArrayMarker());
 		SetStartRegister(0, i);
 
 		// Allocate backref arrays (unless optimizations indicate otherwise)
-		fBackRefs = MetaThing();
+		fBackRefs = Anything(Anything::ArrayMarker());
 
 		// Match against string
 		long idx;
@@ -342,7 +342,7 @@ bool RE::MatchAt(long i)
 		}
 	}
 	// Didn't match
-	fRegisters = MetaThing();
+	fRegisters = Anything(Anything::ArrayMarker());
 	return false;
 }
 
@@ -354,7 +354,7 @@ bool RE::ContainedIn(const String &search, long i)
 	Trace("search : " << search);
 	Trace("start  : " << i);
 
-	fRegisters = MetaThing();
+	fRegisters = Anything(Anything::ArrayMarker());
 	if (fProgram.GetSize() <= 0) {
 		Trace("No RE program to run!");
 		Assert(fProgram.GetSize() > 0);

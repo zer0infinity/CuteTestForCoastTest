@@ -381,7 +381,7 @@ void HTMLParser::ParseTag(int type, Unicode c)
 // PS: limit is checked in ParseName (<72)
 	Meter(HTMLParser.ParseTag);
 	StartTrace(HTMLParser.ParseTag);
-	MetaThing node;
+	Anything node = Anything(Anything::ArrayMarker());
 
 	if (type != '/') {
 		// if not an end tag, increase stack size in ..Writer

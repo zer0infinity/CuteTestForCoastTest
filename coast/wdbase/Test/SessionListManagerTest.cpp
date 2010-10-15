@@ -512,7 +512,7 @@ void SessionListManagerTest::SessionListInfoTest()
 	Session *s;
 	SessionListManager *sessionListManager = SafeCast(WDModule::FindWDModule("SessionListManager"), SessionListManager);
 	Anything expectedSessionListInfo;
-	Anything resultedSessionListInfo = MetaThing();
+	Anything resultedSessionListInfo = Anything(Anything::ArrayMarker());
 	if (   t_assertm(sessionListManager != 0, "expected SessionListManager module to be there") ) {
 		s = sessionListManager->CreateSession(sessionId, ctx);
 		expectedSessionListInfo["List"][sessionId]["id"] = sessionId;
@@ -548,7 +548,7 @@ void SessionListManagerTest::GetASessionsInfoTest()
 	SessionListManager *sessionListManager = SafeCast(WDModule::FindWDModule("SessionListManager"), SessionListManager);
 	sessionListManager->fMaxSessionsAllowed = 3;
 	Anything expected;
-	Anything resultedSessionListInfo = MetaThing();
+	Anything resultedSessionListInfo = Anything(Anything::ArrayMarker());
 	if (   t_assertm(sessionListManager != 0, "expected SessionListManager module to be there") ) {
 		s1 = sessionListManager->CreateSession(sessionId1, ctx);
 		t_assertm(s1->Info(expected[sessionId1], ctx), "Expected session info to be available");

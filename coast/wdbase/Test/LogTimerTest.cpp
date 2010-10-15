@@ -39,7 +39,7 @@ void LogTimerTest::MethodTimerTest()
 	TimeLoggingModule::fgDoTiming = true;
 	String msg("Test MethodTimer");
 	{
-		MetaThing expected;
+		Anything expected = Anything(Anything::ArrayMarker());
 		MethodTimer(NoResult, msg, ctx);
 		assertAnyEqual(expected, ctx.GetTmpStore());
 	}
@@ -66,7 +66,7 @@ void LogTimerTest::MethodTimerTest()
 		TraceAny(ctx.GetTmpStore(), "TmpStore");
 	}
 	{
-		ctx.GetTmpStore() = MetaThing();
+		ctx.GetTmpStore() = Anything(Anything::ArrayMarker());
 		Anything setup;
 		setup["EnabledValues"]["Method"]["Test"] = true;
 		setup["SimulatedValues"]["Method"]["Test"] = 10;
@@ -95,7 +95,7 @@ void LogTimerTest::MethodTimerTest()
 		assertAnyEqual(expected, ctx.GetTmpStore());
 	}
 	{
-		ctx.GetTmpStore() = MetaThing();
+		ctx.GetTmpStore() = Anything(Anything::ArrayMarker());
 		Anything setup;
 		setup["EnabledValues"]["Method"]["Test"]["SubA"] = true;
 		setup["EnabledValues"]["Method"]["Test"]["SubB"] = true;

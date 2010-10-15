@@ -577,7 +577,7 @@ void AnythingTest::String2LongConversion()
 void AnythingTest::AsCharPtrBufLen()
 {
 	//--- AnyArrayImpl
-	Anything anyArray=Anything(Anything::MetaMarker());
+	Anything anyArray=Anything(Anything::ArrayMarker());
 
 	long arraylen;
 	anyArray.AsCharPtr("", arraylen);

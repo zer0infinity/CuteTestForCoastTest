@@ -214,7 +214,7 @@ protected:
 	//!guard for sessions list a very central lock; be careful using it
 	Mutex fSessionsMutex;
 	//!list of active sessions in the system
-	MetaThing fSessions;
+	Anything fSessions;
 	//!list of disabled sessions they will be deleted when they timeout
 	Anything fDisabledSessions;
 

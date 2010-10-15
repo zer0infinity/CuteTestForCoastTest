@@ -218,7 +218,7 @@ void SybCTnewDAImpl::IntDoPutbackConnection(SybCTnewDA *&pSyb, bool bIsOpen, con
 		TimeStamp aStamp;
 		Anything anyTimeStamp(Storage::Global());
 		if ( !fgListOfSybCT.LookupPath(anyTimeStamp, "Open") ) {
-			anyTimeStamp = MetaThing(Storage::Global());
+			anyTimeStamp = Anything(Anything::ArrayMarker(),Storage::Global());
 			fgListOfSybCT["Open"] = anyTimeStamp;
 		}
 		Anything anyToStore(Storage::Global());

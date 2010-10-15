@@ -24,7 +24,7 @@ using namespace Coast;
 
 LocalizationUtilsTest::LocalizationUtilsTest (TString tname)
 	: TestCaseType(tname)
-	, fContext( MetaThing(), Anything(), 0, 0, 0, 0 )
+	, fContext( Anything(Anything::ArrayMarker()), Anything(), 0, 0, 0, 0 )
 {
 }
 

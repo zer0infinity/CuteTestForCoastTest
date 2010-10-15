@@ -72,7 +72,7 @@ Anything XMLTagParser::DoParse(std::istream &Is)
 	String garbageTilTheFirstTag;
 	TagToken tagToken = ReadNextTag(Is, garbageTilTheFirstTag);
 
-	MetaThing result;
+	Anything result = Anything(Anything::ArrayMarker());
 	if (tagToken.IsValid() && !tagToken.IsEndTag()) {
 		ProcessElement(Is, tagToken, result);
 		TraceAny(result, "DoParse Result");
@@ -121,7 +121,7 @@ Anything XMLTagParser::ProcessContent(std::istream &Is, TagToken &Tag)
 			}
 		} else {
 			if (result.IsNull()) {
-				MetaThing anyArray;
+				Anything anyArray = Anything(Anything::ArrayMarker());
 				result = anyArray;
 			}
 			ProcessElement(Is, nextToken, result);

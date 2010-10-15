@@ -80,7 +80,7 @@ bool HTTPHeaderParameterMapper::DoInitialize()
 	SuppressListToUpper(roaSuppressList, suppresslist);
 	TraceAny(suppresslist, "suppress list to cache");
 	if ( !suppresslist.IsNull() ) {
-		MetaThing toCache;
+		Anything toCache = Anything(Anything::ArrayMarker());
 		toCache[gsSuppressName] = suppresslist;
 		CacheHandler *cache= CacheHandler::Get();
 		AnythingLoaderPolicy loader(toCache);

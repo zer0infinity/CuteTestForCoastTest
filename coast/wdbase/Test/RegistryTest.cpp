@@ -57,7 +57,7 @@ void RegistryTest::InstallAliases ( )
 
 		Anything args;
 		args["A"] = "NewA";				// regular case
-		args["B"] = MetaThing();		// create empty installer spec { }
+		args["B"] = Anything(Anything::ArrayMarker());		// create empty installer spec { }
 		TraceAny(args, "spec to alias-install");
 		t_assertm( fRegistry->Install( args, &policy ), "installation of aliases should succeed");
 		t_assert( fRegistry->Find( "NewA" ) == a );
@@ -87,7 +87,7 @@ void RegistryTest::InstallAliases ( )
 		Anything args;
 		args["A"].Append("NewA");		// multiple aliases to same RegisterableObject
 		args["A"].Append("SecondA");
-		args["B"] = MetaThing();		// create empty installer spec { }
+		args["B"] = Anything(Anything::ArrayMarker());		// create empty installer spec { }
 		TraceAny(args, "spec to alias-install");
 		t_assertm( fRegistry->Install( args, &policy ), "installation of aliases should succeed");
 		t_assert( fRegistry->Find( "NewA" ) == a );
@@ -124,7 +124,7 @@ void RegistryTest::InstallErroneousAliases ( )
 	t_assertm( !fRegistry->Install( args, &policy ), "installation of aliases should fail");
 
 	args = Anything();
-	args["A"][0L] = MetaThing();	// create empty installer spec at index 0
+	args["A"][0L] = Anything(Anything::ArrayMarker());	// create empty installer spec at index 0
 	TraceAny(args, "spec to empty sub-any");
 	t_assertm( !fRegistry->Install( args, &policy ), "installation of non-string aliases should fail");
 
@@ -169,7 +169,7 @@ void RegistryTest::InstallHierarchy ( )
 	args["B"]["NewB"] = "SubB";		// hierarchical structure
 	args["B"]["NewB"].Append("SecondSubB");
 	args["C"]["NewC"] = "SubC";	// only one page in substructure
-	args["D"]["NewD"]["SubD"] = MetaThing();	// no page in substructure
+	args["D"]["NewD"]["SubD"] = Anything(Anything::ArrayMarker());	// no page in substructure
 	args["Z"] = "NewZ";				// base not present
 	fRegistry->Install( args, &policy );
 	t_assert( fRegistry->Find( "NewA" ) != 0 );

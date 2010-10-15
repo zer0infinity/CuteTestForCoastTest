@@ -209,7 +209,7 @@ class StateTransitionTestThread: public TerminateMeTestThread
 {
 public:
 	StateTransitionTestThread(bool willStart=true)
-		: TerminateMeTestThread(willStart), fStates() {};
+		: TerminateMeTestThread(willStart), fStates(Anything::ArrayMarker()) {};
 	virtual ~StateTransitionTestThread() {};
 	bool DoStartRequestedHook(ROAnything args) {
 		fStates.Append(eStartRequested);
@@ -235,7 +235,7 @@ public:
 		fStates.Append(eTerminated);
 	};
 
-	MetaThing fStates;
+	Anything fStates;
 };
 
 void ThreadsTest::ThreadStateTransitionTest()

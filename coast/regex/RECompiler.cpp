@@ -107,7 +107,7 @@ long RECompiler::AppendNode(long opcode, long opdata)
 {
 	StartTrace(RECompiler.AppendNode);
 	// Add new node at end
-	MetaThing instr(fInstruction.GetAllocator());
+	Anything instr = Anything(Anything::ArrayMarker(),fInstruction.GetAllocator());
 	instr[RE::offsetOpcode] = opcode;
 	instr[RE::offsetOpdata] = opdata;
 	instr[RE::offsetNext] = opcode == 0L;
@@ -713,7 +713,7 @@ long RECompiler::terminal(bool &isnullable)
 Anything RECompiler::CopyProgram(long from, long len)
 {
 	StartTrace(RECompiler.CopyProgram);
-	MetaThing res(fInstruction.GetAllocator());
+	Anything res = Anything(Anything::ArrayMarker(),fInstruction.GetAllocator());
 
 	for (long i = from; i < from + len; ++i) {
 		res.Append(fInstruction[i].DeepClone());
@@ -1025,7 +1025,7 @@ Anything RECompiler::compile(const String &pat)
 	fPattern = pat;                         // Save fPattern in instance variable
 	fPatternIdx = 0;               // Set parsing index to the first character
 	fNofParentheses = 0, fMaskOfClosedParentheses = 0;        // Set paren level to 1 (the implicit outer fNofParentheses)
-	fInstruction = MetaThing();
+	fInstruction = Anything(Anything::ArrayMarker());
 
 	Trace("fPattern:" << fPattern);
 

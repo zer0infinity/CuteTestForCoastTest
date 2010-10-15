@@ -146,7 +146,7 @@ void FileAccessControllerTests::doTestEDAC(EntityDataAccessController *edac)
 		groups.Append("coffee");
 		groups.Append("movies");
 		Anything allowed;
-		MetaThing empty;
+		Anything empty = Anything(Anything::ArrayMarker());
 
 		// empty group
 		t_assert(edac->GetAllowedEntitiesForGroup(guest, allowed));

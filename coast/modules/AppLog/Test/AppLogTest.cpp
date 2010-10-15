@@ -462,7 +462,7 @@ void AppLogTest::TimeLoggingActionTest()
 			ctx.SetServer(server);
 			{
 				String msg("AppLogTimeTest");
-				ctx.GetTmpStore() = MetaThing();
+				ctx.GetTmpStore() = Anything(Anything::ArrayMarker());
 				Anything expected;
 				Anything dataA, dataB, dataBA, dataBB, dataBAA, dataC, *data;
 				dataA[TimeLogger::eTime] = 10L;

@@ -642,7 +642,7 @@ Anything TemplateParser::RenderTagAsLiteral(String &tagName, Anything &tagAttrib
 Anything TemplateParser::ProcessFormTag(const String &tagName, Anything &tagAttributes, const String &body, long startline)
 {
 	StartTrace(TemplateParser.ProcessFormTag);
-	MetaThing result;
+	Anything result = Anything(Anything::ArrayMarker());
 	Anything &formrenderer = result["FormRenderer"];
 	TraceAny(tagAttributes, "given attributes");
 #define MVATTR(name,def) \

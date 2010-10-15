@@ -57,7 +57,7 @@ Session::Session(const char *name)
 	, fRefCount(0L)
 {
 	StartTrace(Session.Session);
-	fStore["RoleStore"] = MetaThing(fStore.GetAllocator());
+	fStore["RoleStore"] = Anything(Anything::ArrayMarker(),fStore.GetAllocator());
 }
 
 Session::~Session()

@@ -63,7 +63,7 @@ private:
 	//! OCI user session handle
 	UsrHandleType fUsrhp;
 
-	static MetaThing fgDescriptionCache;
+	static Anything fgDescriptionCache;
 	static ROAnything fgDescriptionCacheRO;
 	static RWLock fgDescriptionLock;
 

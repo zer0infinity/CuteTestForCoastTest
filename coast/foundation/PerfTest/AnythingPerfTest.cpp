@@ -157,8 +157,8 @@ void AnythingPerfTest::DoFunctorTest(T value, const char *pName, LoopFunctor pFu
 		(this->*pFunc)("Null-Any", a, iterations);
 	}
 	{
-		MetaThing m(&p);
-		(this->*pFunc)("MetaThing", m, iterations);
+		Anything m = Anything(Anything::ArrayMarker(),&p);
+		(this->*pFunc)("Anything::ArrayMarker()", m, iterations);
 	}
 //	p.Refresh();
 	{

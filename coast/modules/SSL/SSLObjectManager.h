@@ -78,10 +78,10 @@ protected:
 	Mutex fSSLSessionIdStoreMutex;
 
 	//!The Anything containing the SSL Context objects
-	MetaThing fSSLCtxStore;
+	Anything fSSLCtxStore;
 
 	//!The Anything containing the SSL sessionId strigs
-	MetaThing fSSLSessionIdStore;
+	Anything fSSLSessionIdStore;
 
 private:
 	SSLObjectManager(const SSLObjectManager &);

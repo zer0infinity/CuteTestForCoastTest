@@ -96,7 +96,7 @@ protected:
 	//!accessor to the registry's representation
 	Anything &GetTable();
 	//!Anything holding the registered objects for this registry s category
-	MetaThing *fTable;
+	Anything *fTable;
 
 private:
 	// don't use these

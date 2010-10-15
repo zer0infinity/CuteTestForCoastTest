@@ -134,7 +134,7 @@ bool MockAccessManager::GetAllowedEntitiesFor(Anything who, Anything &allowed)
 		return true;
 	} else {
 		Trace("User/role/group '" << whoStr << "' not defined in rights list.");
-		allowed = MetaThing();
+		allowed = Anything(Anything::ArrayMarker());
 		return false;
 	}
 }

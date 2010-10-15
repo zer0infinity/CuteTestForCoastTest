@@ -354,14 +354,14 @@ protected:
 	//! cache of the stack size
 	long fStackSz;
 
+	//! cache of the store size
+	long fStoreSz;
+
 	//! the contexts store
-	MetaThing fStore;
+	Anything fStore;
 
 	//! the empty return value
 	Anything fEmpty;
-
-	//! cache of the store size
-	long fStoreSz;
 
 	//! the request read
 	Anything fRequest;

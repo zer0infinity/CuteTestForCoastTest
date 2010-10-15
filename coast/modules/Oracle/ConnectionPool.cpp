@@ -322,7 +322,7 @@ namespace Coast
 				TimeStamp aStamp;
 				Anything anyTimeStamp( fListOfConnections.GetAllocator() );
 				if ( !fListOfConnections.LookupPath( anyTimeStamp, "Open" ) ) {
-					anyTimeStamp = MetaThing( fListOfConnections.GetAllocator() );
+					anyTimeStamp = Anything(Anything::ArrayMarker(), fListOfConnections.GetAllocator() );
 					fListOfConnections["Open"] = anyTimeStamp;
 				}
 				Anything anyToStore( fListOfConnections.GetAllocator() );

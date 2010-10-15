@@ -740,7 +740,7 @@ bool Thread::RegisterCleaner(CleanupHandler *handler)
 	StartTrace1(Thread.RegisterCleaner, "CallId: " << MyId());
 	Anything *handlerList = 0;
 	if (!GETTLSDATA(fgCleanerKey, handlerList, Anything)) {
-		handlerList = new MetaThing(Storage::Global());
+		handlerList = new Anything(Anything::ArrayMarker(),Storage::Global());
 		if (!SETTLSDATA(fgCleanerKey, handlerList)) {
 			// failed: immediately destroy Anything to avoid leak..
 			delete handlerList;
@@ -930,8 +930,8 @@ MutexCountTableCleaner MutexCountTableCleaner::fgCleaner;
 bool MutexCountTableCleaner::DoCleanup()
 {
 	StatTrace(MutexCountTableCleaner.DoCleanup, "ThrdId: " << Thread::MyId(), Storage::Global());
-	MetaThing *countarray = 0;
-	if (GETTLSDATA(Mutex::fgCountTableKey, countarray, MetaThing)) {
+	Anything *countarray = 0;
+	if (GETTLSDATA(Mutex::fgCountTableKey, countarray, Anything)) {
 		// as the countarray behavior changed, mutex entries which were used by the thread
 		//  are still listed but should all have values of 0
 		long lSize((*countarray).GetSize());
@@ -1003,9 +1003,9 @@ Mutex::~Mutex()
 
 long Mutex::GetCount()
 {
-	MetaThing *countarray = 0;
+	Anything *countarray = 0;
 	long lCount = 0L;
-	GETTLSDATA(fgCountTableKey, countarray, MetaThing);
+	GETTLSDATA(fgCountTableKey, countarray, Anything);
 	if (countarray) {
 		StatTraceAny(Mutex.GetCount, (*countarray), "countarray", Storage::Current());
 		lCount = ((ROAnything)(*countarray))[fMutexId].AsLong(0L);
@@ -1017,11 +1017,11 @@ long Mutex::GetCount()
 bool Mutex::SetCount(long newCount)
 {
 	StatTrace(Mutex.SetCount, "CallId: " << Thread::MyId() << " newCount: " << newCount, Storage::Current());
-	MetaThing *countarray = 0;
-	GETTLSDATA(fgCountTableKey, countarray, MetaThing);
+	Anything *countarray = 0;
+	GETTLSDATA(fgCountTableKey, countarray, Anything);
 
 	if (!countarray && newCount > 0) {
-		countarray = new MetaThing(Storage::Global());
+		countarray = new Anything(Anything::ArrayMarker(),Storage::Global());
 		Thread::RegisterCleaner(&MutexCountTableCleaner::fgCleaner);
 		if (!SETTLSDATA(fgCountTableKey, countarray)) {
 			SystemLog::Error("Mutex::SetCount: could not store recursive locking structure in TLS!");

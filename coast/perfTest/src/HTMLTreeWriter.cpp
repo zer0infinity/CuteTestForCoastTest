@@ -17,7 +17,7 @@
 HTMLTreeWriter::HTMLTreeWriter()
 	: fContentText("")
 {
-	fStructure = MetaThing();
+	fStructure = Anything(Anything::ArrayMarker());
 	fStructPos["Tree"] = fStructure;
 	fStructPos["Tag"] = "";
 }
@@ -107,14 +107,14 @@ void HTMLTreeWriter::NewTag(String &tagname)
 
 		addText();
 		Anything theNew;
-		theNew[tagname] = MetaThing();
+		theNew[tagname] = Anything(Anything::ArrayMarker());
 		addAttrs(theNew[tagname]);
 
 		fStructPos["Tree"]["Content"].Append(theNew);
 		Anything toStack;
 
 		fStack.Append(fStructPos);
-		fStructPos = MetaThing();
+		fStructPos = Anything(Anything::ArrayMarker());
 		fStructPos["Tree"] = theNew[tagname];
 		fStructPos["Tag"] = tagname;
 	}

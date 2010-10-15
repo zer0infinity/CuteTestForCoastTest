@@ -66,7 +66,7 @@ void ContextTest::EmptyConstructorTest ()
 {
 	// accessor tests
 	Anything empty;
-	MetaThing tmpStore;
+	Anything tmpStore = Anything(Anything::ArrayMarker());
 	Anything result;
 	String popStoreKey("noStore");
 
@@ -400,7 +400,7 @@ void ContextTest::SimplePushPop()
 	assertEqual("yes", ctx.Lookup("foo").AsCharPtr("yes"));
 
 	//define an initial content of a store
-	MetaThing request;
+	Anything request = Anything(Anything::ArrayMarker());
 	request["header"]["HOST"] = "sentosa";
 	request["header"]["URI"] = "/";
 	request["body"] = "test&it&now";
@@ -433,7 +433,7 @@ void ContextTest::SimplePushWithEmptyStore()
 	assertEqual("yes", ctx.Lookup("foo").AsCharPtr("yes"));
 
 	//define an initial content of a store which is empty but already an array
-	MetaThing request;
+	Anything request = Anything(Anything::ArrayMarker());
 	String popStoreKey;
 	ctx.Push("StoreTest.request", request);
 
@@ -472,8 +472,8 @@ void ContextTest::MoreThanOnePush()
 	Context ctx;
 
 	//define an initial content of a store which is empty but already an array
-	MetaThing request;
-	MetaThing env;
+	Anything request = Anything(Anything::ArrayMarker());
+	Anything env = Anything(Anything::ArrayMarker());
 	String popStoreKey;
 	ctx.Push("Store.request", request);
 
@@ -530,7 +530,7 @@ void ContextTest::MoreThanOnePushWithSameKey()
 	Context ctx;
 
 	//define an initial content of a store which is empty but already an array
-	MetaThing request;
+	Anything request = Anything(Anything::ArrayMarker());
 	Anything env;
 	String popStoreKey;
 	ctx.Push("Store.request", request);
@@ -608,8 +608,8 @@ void ContextTest::MoreThanOnePushWithSameKeyPrefix()
 	Context ctx;
 
 	//define an initial content of a store which is empty but already an array
-	MetaThing request0;
-	MetaThing request1;
+	Anything request0 = Anything(Anything::ArrayMarker());
+	Anything request1 = Anything(Anything::ArrayMarker());
 	Anything env;
 	String popStoreKey;
 	ctx.Push("Store", request0);
@@ -690,7 +690,7 @@ void ContextTest::SessionPushTest()
 		Session s(0);
 		{
 			Anything sessionStore;
-			MetaThing emptyStore;
+			Anything emptyStore = Anything(Anything::ArrayMarker());
 			Context ctx;
 
 			// session store is always there even without session
@@ -738,7 +738,7 @@ void ContextTest::SessionPushTest()
 			// flag set.
 
 			Anything sessionStore;
-			MetaThing emptyStore;
+			Anything emptyStore = Anything(Anything::ArrayMarker());
 			Context ctx;
 			Anything env;
 			env["Context"]["CopySessionStore"] = true;
@@ -786,7 +786,7 @@ void ContextTest::SessionPushTest()
 			// Session should be unlocked from then on.
 
 			Anything sessionStore;
-			MetaThing emptyStore;
+			Anything emptyStore = Anything(Anything::ArrayMarker());
 			Context ctx;
 			Anything env;
 			env["Context"]["CopySessionStore"] = true;
@@ -810,7 +810,7 @@ void ContextTest::SessionPushTest()
 			// Session should be locked from then on.
 
 			Anything sessionStore;
-			MetaThing emptyStore;
+			Anything emptyStore = Anything(Anything::ArrayMarker());
 			Context ctx;
 			Anything env;
 

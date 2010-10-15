@@ -200,7 +200,7 @@ bool BasicAccessManager::GetAllowedEntitiesFor(Anything who, Anything &allowed)
 		Anything groups;
 		if ( !udac->GetGroups(who.AsCharPtr(), groups) ) {
 			Trace("WARNING: No groups given for user '" << who.AsCharPtr() << "'");
-			allowed = MetaThing().DeepClone();
+			allowed = Anything(Anything::ArrayMarker());
 		}
 		return edac->GetAllowedEntitiesForGroups(groups, allowed);
 	}

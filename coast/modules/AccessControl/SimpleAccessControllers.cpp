@@ -270,7 +270,7 @@ bool FileEDAC::GetAllowedEntitiesForGroup(String group, Anything &allowed)
 	Trace("group = " << group);
 	if ( !fEntityData.IsDefined(group) ) {
 		Trace("unknown group '" << group << "' - no permissible entities available");
-		allowed = MetaThing().DeepClone();
+		allowed = Anything(Anything::ArrayMarker());
 		return false;
 	}
 
@@ -289,7 +289,7 @@ bool FileEDAC::GetAllowedEntitiesForGroups(Anything groups, Anything &allowed)
 	TraceAny(groups, "groups =");
 
 	Anything parts;
-	allowed = MetaThing().DeepClone();
+	allowed = Anything(Anything::ArrayMarker());
 	String entity;
 
 	for (long i = 0; i < groups.GetSize(); i++) {

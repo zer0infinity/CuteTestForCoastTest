@@ -1075,7 +1075,7 @@ CS_RETCODE SybCTnewDA_servermsg_handler(CS_CONTEXT *context, CS_CONNECTION *conn
 		}
 		if ( bFuncCode ) {
 			Anything anyData, anyRef;
-			anyData["Messages"] = MetaThing();
+			anyData["Messages"] = Anything(Anything::ArrayMarker());
 			anyRef = anyData["Messages"];
 			CS_MSGNUM lMsgNumber = srvmsg->msgnumber;
 			anyRef["MsgNumber"] = (long)lMsgNumber;
@@ -1139,7 +1139,7 @@ CS_RETCODE SybCTnewDA_clientmsg_handler(CS_CONTEXT *context, CS_CONNECTION *conn
 		}
 		if ( bFuncCode ) {
 			Anything anyData, anyRef;
-			anyData["Messages"] = MetaThing();
+			anyData["Messages"] = Anything(Anything::ArrayMarker());
 			anyRef = anyData["Messages"];
 			CS_MSGNUM lMsgNumber = errmsg->msgnumber;
 			anyRef["MsgNumber"] = (long)lMsgNumber;

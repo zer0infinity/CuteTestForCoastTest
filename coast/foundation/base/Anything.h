@@ -16,7 +16,6 @@
 #include <iterator>
 
 class EXPORTDECL_FOUNDATION AnyImpl;
-class EXPORTDECL_FOUNDATION MetaThing;
 class EXPORTDECL_FOUNDATION ROAnything;
 class EXPORTDECL_FOUNDATION IFAObject;
 class EXPORTDECL_FOUNDATION AnyVisitor;
@@ -90,9 +89,9 @@ public:
 	//! Constructs an Anything of type eObject
 	Anything(IFAObject *, Allocator *a = Storage::Current());
 
-	struct MetaMarker{};
-	//! constructs a "MetaThing" by using a marker type together with the allocator
-	Anything(MetaMarker m,Allocator *a = Storage::Current());
+	struct ArrayMarker{};
+	//! constructs an ArrayImpl Anything by using a marker type together with the allocator
+	Anything(ArrayMarker m,Allocator *a = Storage::Current());
 
 	//! Copy constructor
 	Anything(const Anything &any, Allocator *a = Storage::Current());
@@ -505,7 +504,7 @@ protected:
 		\return the copy of this Anything */
 	Anything DeepClone(Allocator *a, Anything &xref) const;
 
-	friend class AnyArrayImpl;
+	friend class AnyArrayImpl; //!@FIXME: needed because of DeepClone(Allocator,Anything) above from within AnyArrayImpl
 	friend class ROAnything;
 	friend struct Sorter;
 
@@ -712,15 +711,6 @@ public:
 	static void Sort(Anything &toSort, EMode mode = asc);
 };
 
-//---- MetaThing -----------------------------------------------------------------------
-/*! An Anything which starts life as an Array
- */
-class EXPORTDECL_FOUNDATION MetaThing : public Anything
-{
-public:
-	MetaThing(Allocator *a = Storage::Current());
-};
-
 //---- TrickyThing -----------------------------------------------------------------------
 /*! TrickyThing is a special Anything that is used exclusively for documentation purposes.
 	Under special circumstances the memory management employed for Anythings may lead to
@@ -761,7 +751,10 @@ class EXPORTDECL_FOUNDATION TrickyThing : public Anything
 public:
 	/*! constructor used for tricky member variables of long-lived classes
 		typically those using global allocators */
-	TrickyThing(Allocator *a = Storage::Current());
+	TrickyThing(Allocator *a = Storage::Current()) :
+		Anything(Anything::ArrayMarker(),a) {
+	}
+
 	/*! constructor used for tricky Anything using potentially a different allocator
 		be careful if the memory of the tricky thing is short lived!!!
 		\param any the tricky Anything we use its allocator for reference semantics */

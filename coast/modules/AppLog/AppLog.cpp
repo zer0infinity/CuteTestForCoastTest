@@ -115,7 +115,7 @@ bool AppLogModule::Finis()
 			}
 		}
 	}
-	fLogConnections = MetaThing();
+	fLogConnections = Anything(Anything::ArrayMarker());
 	fgAppLogModule = 0L;
 	return true;
 }

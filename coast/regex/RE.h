@@ -105,8 +105,8 @@ public:
 	void setProgram(Anything program) {
 		fProgram = program["program"];
 		fPrefix = program["prefix"].AsCharPtr("");
-		fRegisters = MetaThing();
-		fBackRefs = MetaThing();
+		fRegisters = Anything(Anything::ArrayMarker());
+		fBackRefs = Anything(Anything::ArrayMarker());
 	}
 	//!was the given pattern compilable
 	bool IsValid() const {

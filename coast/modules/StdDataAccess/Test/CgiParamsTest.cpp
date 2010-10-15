@@ -36,7 +36,7 @@ void CgiParamsTest::EnvironTest()
 	CgiParams cgip("testcgi");
 	t_assert(cgip.Initialize("ParameterMapper"));
 
-	MetaThing env;
+	Anything env = Anything(Anything::ArrayMarker());
 	Anything content;
 	content["env"] = env;
 	Context ctx(content);

@@ -37,7 +37,7 @@ using namespace Coast;
 RegisterModule(BackendConfigLoaderModule);
 
 BackendConfigLoaderModule *BackendConfigLoaderModule::fgBackendConfigLoaderModule = 0;
-Anything BackendConfigLoaderModule::backendConfigurations = MetaThing(Storage::Global());
+Anything BackendConfigLoaderModule::backendConfigurations = Anything(Anything::ArrayMarker(),Storage::Global());
 
 BackendConfigLoaderModule::BackendConfigLoaderModule(const char *name)
 	: WDModule(name)

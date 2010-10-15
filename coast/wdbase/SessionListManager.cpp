@@ -79,6 +79,7 @@ SessionListManager::SessionListManager(const char *name)
 	: WDModule(name)
 	, fSessionCleaner(0)
 	, fSessionsMutex("Sessions")
+	, fSessions(Anything::ArrayMarker())
 	, fNextIdMutex("SessionId")
 	, fNextId(-9999)
 	, fMaxSessionsAllowed(-8888)
@@ -536,14 +537,14 @@ void SessionListManager::ForcedSessionCleanUp(Context &ctx)
 		Trace(logMsg);
 		SystemLog::Info(logMsg);
 		DoDeleteSessions(fSessions, ctx);
-		fSessions = MetaThing();
+		fSessions = Anything(Anything::ArrayMarker(), fSessions.GetAllocator());
 
 		logMsg = "Force deleting ";
 		logMsg << fDisabledSessions.GetSize() << " disabled Sessions";
 		Trace(logMsg);
 		SystemLog::Info(logMsg);
 		DoDeleteSessions(fDisabledSessions, ctx);
-		fDisabledSessions = MetaThing();
+		fDisabledSessions = Anything(Anything::ArrayMarker(), fDisabledSessions.GetAllocator());
 	}
 }
 
@@ -678,7 +679,7 @@ bool SessionListManager::SessionListInfo(Anything &sessionListInfo, Context &ctx
 	StartTrace(SessionListManager.SessionListInfo);
 	TRACE_LOCK_START("SessionListInfo");
 	if (fSessionsMutex.TryLock()) {
-		sessionListInfo["List"] = MetaThing();
+		sessionListInfo["List"] = Anything(Anything::ArrayMarker());
 		ctx.GetTmpStore()["SessionInfo"] = sessionListInfo["List"];
 		Session *originalSession = ctx.GetSession();
 		long szSessionListSize = fSessions.GetSize();
@@ -731,7 +732,7 @@ bool SessionListManager::GetASessionsInfo(Anything &sessionInfo, const String &s
 		originalSession->Ref();
 		originalSession->fMutex.Unlock();
 	}
-	sessionInfo = MetaThing();
+	sessionInfo = Anything(Anything::ArrayMarker());
 	ctx.GetTmpStore()["SessionInfo"] = sessionInfo;
 	bool ret = s->GetSessionInfo(sessionInfo, ctx, "SessionInfo");
 	ctx.Push(originalSession);

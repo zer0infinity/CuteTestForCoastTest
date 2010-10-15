@@ -223,7 +223,7 @@ bool AppBooter::Boot(Anything &args) // access the intial config file
 		THRSETCONCURRENCY(numberOfCpus);			// macro for sun os
 	}
 	//--- setting default environment
-	MetaThing config;
+	Anything config = Anything(Anything::ArrayMarker());
 	bool ret = ReadFromFile(config, PrepareBootFileLoading(args));
 	if (ret) {
 		// block signals caught by interrupt handlers
