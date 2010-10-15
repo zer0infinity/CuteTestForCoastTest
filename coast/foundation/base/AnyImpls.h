@@ -376,7 +376,7 @@ private:
 	AnyIndTable & operator=(AnyIndTable const &);
 };
 
-class EXPORTDECL_FOUNDATION AnyKeyAssoc;
+class AnyKeyAssoc;
 class EXPORTDECL_FOUNDATION AnyComparer;
 //---- AnyArrayImpl -----------------------------------------------------------------
 class EXPORTDECL_FOUNDATION AnyArrayImpl : public AnyImpl

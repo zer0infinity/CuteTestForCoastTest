@@ -211,6 +211,73 @@ IFAObject *AnyStringImpl::Clone(Allocator *a) const {
 	return new ((a) ? a : Storage::Current()) AnyStringImpl(this->fString, a);
 }
 
+//---- AnyKeyAssoc --------------------------------------------------
+class AnyKeyAssoc {
+public:
+	AnyKeyAssoc(const Anything &value, const char *key = 0) :
+		fValue(value), fKey(key, -1, value.GetAllocator()) {
+	}
+	AnyKeyAssoc(const AnyKeyAssoc &aka) :
+		fValue(aka.fValue), fKey(aka.fKey) {
+	}
+	AnyKeyAssoc() {
+	}
+	// used when allocating arrays... CAUTION: elements then must be initialized manually with Init()!
+	void Init(Allocator *a) {
+		fValue.SetAllocator(a);
+		fKey.SetAllocator(a);
+	}
+	Anything &Value() {
+		return fValue;
+	}
+	const Anything &Value() const {
+		return fValue;
+	}
+	const String &Key() const {
+		return fKey;
+	}
+	void SetKey(const char *key) {
+		fKey = key;
+	}
+	void SetValue(const Anything &val) {
+		fValue = val;
+	}
+	AnyKeyAssoc &operator=(const AnyKeyAssoc &aka) {
+		fValue = aka.Value();
+		if (aka.Key()) {
+			fKey = aka.Key();
+		}
+		return *this;
+	}
+
+	// new[] is needed to properly initialize instance variables (i.e. Anything)
+	static void *operator new[](size_t size, Allocator *a) {
+		if (a) {
+			void *mem = a->Calloc(1, size + Coast::Memory::AlignedSize<Allocator *>::value);
+			(reinterpret_cast<Allocator **> (mem))[0L] = a; // remember address of responsible Allocator
+			return reinterpret_cast<char *> (mem) + Coast::Memory::AlignedSize<Allocator *>::value; // needs cast because of pointer arithmetic
+		} else { //SOP: untested, make compiler happy
+			size += Coast::Memory::AlignedSize<Allocator *>::value;
+			return reinterpret_cast<char *> (::operator new(size)) + Coast::Memory::AlignedSize<Allocator *>::value;
+		}
+	}
+	static void operator delete[](void *ptr) {
+		if (ptr) {
+			void *realPtr = reinterpret_cast<char *> (ptr) - Coast::Memory::AlignedSize<Allocator *>::value;
+			Allocator *a = reinterpret_cast<Allocator **> (realPtr)[0L]; // retrieve Allocator
+			if (a)
+				a->Free(realPtr);
+			else
+				::operator delete(realPtr);
+		}
+		return;
+	}
+
+private:
+	Anything fValue;
+	String fKey;
+};
+
 //---- AnyKeyTable --------------------------------------------------
 #define LOADFACTOR 0.75
 

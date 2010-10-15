@@ -507,7 +507,6 @@ protected:
 
 	friend class AnyArrayImpl;
 	friend class ROAnything;
-	friend class AnyKeyAssoc;
 	friend struct Sorter;
 
 	Anything(AnyImpl *);
@@ -523,42 +522,6 @@ protected:
 };
 
 EXPORTDECL_FOUNDATION long IFAHash(const char *key, long &len, char stop1 = '\0', char stop2 = '\0');
-
-//---- AnyKeyAssoc --------------------------------------------------
-class EXPORTDECL_FOUNDATION AnyKeyAssoc
-{
-public:
-	AnyKeyAssoc(const Anything &value, const char *key = 0);
-	AnyKeyAssoc(const AnyKeyAssoc &aka);
-	AnyKeyAssoc(){}
-	void Init(Allocator *a);
-	Anything &Value() {
-		return fValue;
-	}
-	const Anything &Value() const {
-		return fValue;
-	}
-	const String &Key() {
-		return fKey;
-	}
-	const String &Key() const	 {
-		return fKey;
-	}
-	void SetKey(const char *key);
-	void SetValue(const Anything &val);
-	AnyKeyAssoc &operator=(const AnyKeyAssoc &aka);
-
-	// new[] is needed to properly initialize instance variables (i.e. Anything)
-	static void *operator new[](size_t size, Allocator *a);
-#if defined(WIN32) && (_MSC_VER >= 1200) // VC6 or greater
-	static void operator delete[](void *ptr, Allocator *a);
-#endif
-	static void operator delete[](void *ptr);
-
-private:
-	Anything 	fValue;
-	String 		fKey;
-};
 
 //---- SlotFinder -----------------------------------------------------------
 /*! Use this class to get a slot from an Anything according to configuration
