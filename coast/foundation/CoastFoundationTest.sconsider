@@ -2,15 +2,21 @@ import SConsider
 
 Import('*')
 
+# this is a meta package which executes the runners defined in the configured packages 
+
+tests = [
+         'CoastFoundationBaseTest',
+         'CoastFoundationIOTest',
+         'CoastFoundationAnythingOptionalTest',
+         'CoastFoundationMiscellaneousTest',
+         'CoastFoundationTimeTest',
+]
+
 buildSettings = {
     packagename : {
-        'requires' : [
-                      'CoastFoundationBaseTest',
-                      'CoastFoundationIOTest',
-                      'CoastFoundationAnythingOptionalTest',
-                      'CoastFoundationMiscellaneousTest',
-                      'CoastFoundationTimeTest',
-                      ],
+        'requires' : tests,
+        'targetType' : 'ComposedRunner',
+        'sourceFiles': tests,
     },
 }
 
