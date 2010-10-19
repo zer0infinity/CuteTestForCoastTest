@@ -10,6 +10,7 @@
 #include "SystemFile.h"
 #include "SystemBase.h"
 #include "MmapStream.h"
+#include "InitFinisManagerFoundation.h"
 
 //--- standard modules used ----------------------------------------------------
 #include "SystemLog.h"
@@ -49,6 +50,25 @@ namespace {
 
 	//!contains a search path list that is ':' delimited, it is used to search for files
 	String fgPathList(0L, Storage::Global());
+
+	class EXPORTDECL_FOUNDATION PathInitializer : public InitFinisManagerFoundation
+	{
+	public:
+		PathInitializer(unsigned int uiPriority)
+			: InitFinisManagerFoundation(uiPriority) {
+			IFMTrace("PathInitializer created\n");
+		}
+
+		virtual void DoInit() {
+			IFMTrace("PathInitializer::DoInit\n");
+			Coast::System::InitPath();
+		}
+		virtual void DoFinis() {
+			IFMTrace("PathInitializer::DoFinis\n");
+		}
+	};
+
+	PathInitializer *psgPathInitializer = new PathInitializer(1);
 
 	//! checks existence of a path using stat
 	/*! \param path file or directory path
@@ -162,11 +182,6 @@ namespace {
 		\return the location of the file found (empty if file was not found) */
 	String searchFilePath(const char *name, const char *path) {
 		StartTrace(System.searchFilePath);
-
-		// init the rootdir and pathlist environment if necessary
-		if ( fgPathList.Length() == 0L ) {
-			Coast::System::InitPath();
-		}
 
 		StringTokenizer st(path, ':');
 		String dirpath, filepath;
@@ -856,19 +871,11 @@ namespace Coast {
 
 		const char *GetRootDir()
 		{
-			if ( fgRootDir.Length() == 0 ) {
-				InitPath();
-			}
-
 			return (const char *) fgRootDir;
 		}
 
 		const char *GetPathList()
 		{
-			if ( fgPathList.Length() == 0 ) {
-				InitPath();
-			}
-
 			return (const char *) fgPathList;
 		}
 
