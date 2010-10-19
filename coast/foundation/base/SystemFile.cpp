@@ -17,10 +17,9 @@
 #include "Dbg.h"
 
 //--- c-library modules used ---------------------------------------------------
-#include <climits>
 #include <errno.h>
 #include <cstring>
-
+#include <climits>
 #include <fstream>
 
 #if defined(WIN32)

@@ -20,10 +20,9 @@
 #include "SystemBase.h"
 #include "TimeStamp.h"
 
-#include <algorithm>
-
 //--- c-library modules used ---------------------------------------------------
-#include <climits>
+#include <algorithm>
+#include <limits>
 #include <cstring>
 
 //---- SybCTnewDA ----------------------------------------------------------------
@@ -725,7 +724,7 @@ CS_RETCODE SybCTnewDA::DoFetchData(DaParams &params, CS_COMMAND *cmd, const CS_I
 	}
 	// calculate max amount of rows to read without exceeding a given memory limit
 	if (lMaxResultSize == 0) {
-		lMaxRows = LONG_MAX;
+		lMaxRows = std::numeric_limits<long>::max();
 	} else {
 		lMaxRows = (lMaxResultSize * 1024) / rowsize;
 	}

@@ -20,10 +20,6 @@
 using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
-#include <ctype.h>
-#include <string.h>
-#include <climits>
-#include <float.h>
 
 StringTestExtreme::StringTestExtreme (TString tname)
 	: TestCaseType(tname)

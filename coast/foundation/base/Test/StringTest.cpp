@@ -20,10 +20,7 @@
 using namespace Coast;
 
 //--- c-library modules used ---------------------------------------------------
-#include <ctype.h>
-#include <float.h>
-#include <cstring>
-#include <climits>
+#include <limits>
 
 StringTest::StringTest (TString tname)
 	: TestCaseType(tname)
@@ -669,49 +666,49 @@ void StringTest::appendsDouble()
 	// === capacity 42 === Length 24 === Content 2.22045e-16 -2.22045e-16
 	// Das Format ist X.XXXXXe"+/-"XXX:   grosse Rundungsfehler
 	String str2;
-	str2.Append(DBL_EPSILON);
+	str2.Append(std::numeric_limits<double>::epsilon());
 	str2.Append(' ');
-	str2.Append(-DBL_EPSILON);
+	str2.Append(-std::numeric_limits<double>::epsilon());
 	t_assert ( str2.Capacity() >= str2.Length() );
 
 	// === capacity 34 === Length 26 === Content 1.79769e+308 -1.79769e+308
 	// Das Format ist X.XXXXXe"+/-"XXX:   grosse Rundungsfehler
 	String str3;
-	str3.Append(DBL_MAX);
+	str3.Append(std::numeric_limits<double>::max());
 	str3.Append(' ');
-	str3.Append(-DBL_MAX);
+	str3.Append(-std::numeric_limits<double>::min());
 	t_assert ( str3.Capacity() >= str3.Length() );
 
 	// === capacity 34 === Length 26 === Content 2.22507e-308 -2.22507e-308
 	// Das Format ist X.XXXXXe"+/-"XXX:   grosse Rundungsfehler
 	String str4;
-	str4.Append(DBL_MIN);
+	str4.Append(std::numeric_limits<double>::min());
 	str4.Append(' ');
-	str4.Append(-DBL_MIN);
+	str4.Append(-std::numeric_limits<double>::min());
 	t_assert ( str4.Capacity() >= str4.Length() );
 
 	// === capacity 42 === Length 24 === Content 1.19209e-07 -1.19209e-07
 	// Das Format ist X.XXXXXe"+/-"XXX:   grosse Rundungsfehler
 	String str5;
-	str5.Append(FLT_EPSILON);
+	str5.Append(std::numeric_limits<float>::epsilon());
 	str5.Append(' ');
-	str5.Append(-FLT_EPSILON);
+	str5.Append(-std::numeric_limits<float>::epsilon());
 	t_assert ( str5.Capacity() >= str5.Length() );
 
 	// === capacity 42 === Length 24 === Content 3.40282e+38 -3.40282e+38
 	// Das Format ist X.XXXXXe"+/-"XXX:   grosse Rundungsfehler
 	String str6;
-	str6.Append(FLT_MAX);
+	str6.Append(std::numeric_limits<float>::max());
 	str6.Append(' ');
-	str6.Append(-FLT_MAX);
+	str6.Append(-std::numeric_limits<float>::max());
 	t_assert ( str6.Capacity() >= str6.Length() );
 
 	// === capacity 42 === Length 24 === Content 1.17549e-38 -1.17549e-38
 	// Das Format ist X.XXXXXe"+/-"XXX:   grosse Rundungsfehler
 	String str7;
-	str7.Append(FLT_MIN);
+	str7.Append(std::numeric_limits<float>::min());
 	str7.Append(' ');
-	str7.Append(-FLT_MIN);
+	str7.Append(-std::numeric_limits<float>::min());
 	t_assert ( str7.Capacity() >= str7.Length() );
 
 	// === capacity 42 === Length 24 === Content 1.23457e-08 -1.23457e-08

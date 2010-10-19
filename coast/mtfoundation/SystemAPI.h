@@ -13,7 +13,7 @@
 #include "foundation.h"
 
 #if defined(WIN32)
-#include <climits>
+#include <limits>
 #include <process.h>
 #include <winbase.h>
 #include <time.h>
@@ -54,7 +54,7 @@ int EXPORTDECL_MTFOUNDATION doWaitObject(HANDLE h, HANDLE m, long time);
 #define SEMA						HANDLE
 #define SEMAPTR						HANDLE*
 #define GETSEMAPTR(sema)			(HANDLE*)&sema
-#define CREATESEMA(sema, count)		((sema= ::CreateSemaphore(NULL, count, LONG_MAX, NULL)) != NULL)
+#define CREATESEMA(sema, count)		((sema= ::CreateSemaphore(NULL, count, std::numeric_limits<long>::max(), NULL)) != NULL)
 #define DELETESEMA(sema)			(::CloseHandle(sema) != 0)
 #define LOCKSEMA(sema)				(doWaitObject(sema, 0, INFINITE) == WAIT_OBJECT_0)
 #ifdef TRACE_LOCK_UNLOCK
