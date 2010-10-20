@@ -12,17 +12,17 @@
 //---- baseclass include -------------------------------------------------
 #include "WDBaseTestPolicies.h"
 
-//---- RequestReaderTest ----------------------------------------------------
-class RequestReaderTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
+//---- HTTPRequestReaderTest ----------------------------------------------------
+class HTTPRequestReaderTest: public TestFramework::TestCaseWithGlobalConfigDllAndModuleLoading {
 public:
 	//--- constructors
 
 	//! TestCase constructor
 	//! \param name name of the test
-	RequestReaderTest(TString tstrName);
+	HTTPRequestReaderTest(TString tstrName);
 
 	//! destroys the test case
-	~RequestReaderTest();
+	~HTTPRequestReaderTest();
 
 	//--- public api
 

@@ -86,8 +86,8 @@ protected:
 	bool		fCheckHeaderFields;
 	bool		fRejectRequestsWithInvalidHeaders;
 	friend class HTTPProcessorTest;
-	friend class RequestReaderTest;
-	friend class RequestReader;
+	friend class HTTPRequestReaderTest;
+	friend class HTTPRequestReader;
 private:
 	HTTPProcessor(const HTTPProcessor &);
 	HTTPProcessor &operator=(const HTTPProcessor &);

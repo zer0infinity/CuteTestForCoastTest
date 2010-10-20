@@ -7,7 +7,7 @@
  */
 
 //--- interface include --------------------------------------------------------
-#include "RequestReader.h"
+#include "HTTPRequestReader.h"
 
 //--- standard modules used ----------------------------------------------------
 #include "Dbg.h"
@@ -18,16 +18,16 @@
 
 //--- c-library modules used ---------------------------------------------------
 
-//---- RequestReader -----------------------------------------------------------
-RequestReader::RequestReader(HTTPProcessor *p, MIMEHeader &header)
+//---- HTTPRequestReader -----------------------------------------------------------
+HTTPRequestReader::HTTPRequestReader(HTTPProcessor *p, MIMEHeader &header)
 	: fProc(p), fHeader(header), fRequestBufferSize(0), fFirstLine(true)
 {
-	StartTrace(RequestReader.RequestReader);
+	StartTrace(HTTPRequestReader.HTTPRequestReader);
 }
 
-bool RequestReader::ReadLine(std::iostream &Ios, String &line, const Anything &clientInfo, bool &hadError)
+bool HTTPRequestReader::ReadLine(std::iostream &Ios, String &line, const Anything &clientInfo, bool &hadError)
 {
-	StartTrace(RequestReader.ReadLine);
+	StartTrace(HTTPRequestReader.ReadLine);
 	char c;
 	const char eol = '\n';
 	line = "";
@@ -62,9 +62,9 @@ bool RequestReader::ReadLine(std::iostream &Ios, String &line, const Anything &c
 	return false;
 }
 
-bool RequestReader::ReadRequest(std::iostream &Ios, const Anything &clientInfo)
+bool HTTPRequestReader::ReadRequest(std::iostream &Ios, const Anything &clientInfo)
 {
-	StartTrace(RequestReader.ReadRequest);
+	StartTrace(HTTPRequestReader.ReadRequest);
 	String line;
 
 	Trace("======================= reading input ==================");
@@ -111,9 +111,9 @@ bool RequestReader::ReadRequest(std::iostream &Ios, const Anything &clientInfo)
 	return ret;
 }
 
-bool RequestReader::CheckReqLineSize(std::iostream &Ios, long lineLength, const String &line, const Anything &clientInfo)
+bool HTTPRequestReader::CheckReqLineSize(std::iostream &Ios, long lineLength, const String &line, const Anything &clientInfo)
 {
-	StartTrace(RequestReader.CheckReqLineSize);
+	StartTrace(HTTPRequestReader.CheckReqLineSize);
 	if (lineLength > fProc->fLineSizeLimit) {
 		String msg;
 		msg << "CheckReqLineSize: Request line too Large : [" << lineLength << "] (max " << fProc->fLineSizeLimit << ")";
@@ -122,9 +122,9 @@ bool RequestReader::CheckReqLineSize(std::iostream &Ios, long lineLength, const 
 	return true;
 }
 
-bool RequestReader::CheckReqBufferSize(std::iostream &Ios, long lineLength, const String &line, const Anything &clientInfo)
+bool HTTPRequestReader::CheckReqBufferSize(std::iostream &Ios, long lineLength, const String &line, const Anything &clientInfo)
 {
-	StartTrace(RequestReader.CheckReqBufferSize);
+	StartTrace(HTTPRequestReader.CheckReqBufferSize);
 	if (lineLength > fProc->fRequestSizeLimit) {
 		String msg;
 		msg << "CheckReqBufferSize: Request too large : [" << lineLength << "] (max " << fProc->fRequestSizeLimit << ")";
@@ -133,9 +133,9 @@ bool RequestReader::CheckReqBufferSize(std::iostream &Ios, long lineLength, cons
 	return true;
 }
 
-bool RequestReader::CheckReqURISize(std::iostream &Ios, long lineLength, const String &line, const Anything &clientInfo)
+bool HTTPRequestReader::CheckReqURISize(std::iostream &Ios, long lineLength, const String &line, const Anything &clientInfo)
 {
-	StartTrace(RequestReader.CheckReqURISize);
+	StartTrace(HTTPRequestReader.CheckReqURISize);
 	if (lineLength > fProc->fURISizeLimit) {
 		String msg("Request-URI Too Long [");
 		msg << lineLength << "].";
@@ -145,9 +145,9 @@ bool RequestReader::CheckReqURISize(std::iostream &Ios, long lineLength, const S
 	return true;
 }
 
-bool RequestReader::HandleFirstLine(std::iostream &Ios, String &line, const Anything &clientInfo)
+bool HTTPRequestReader::HandleFirstLine(std::iostream &Ios, String &line, const Anything &clientInfo)
 {
-	StartTrace(RequestReader.HandleFirstLine);
+	StartTrace(HTTPRequestReader.HandleFirstLine);
 	long llen = line.Length();
 	if (line == ENDL || !(line[long(llen-2)] == '\r' && line[long(llen-1)] == '\n')) {
 		return DoHandleError(Ios, 400, "No request header/body", line, clientInfo);
@@ -163,9 +163,9 @@ bool RequestReader::HandleFirstLine(std::iostream &Ios, String &line, const Anyt
 	return true;
 }
 
-bool RequestReader::ParseRequest(std::iostream &Ios, String &line, const Anything &clientInfo)
+bool HTTPRequestReader::ParseRequest(std::iostream &Ios, String &line, const Anything &clientInfo)
 {
-	StartTrace(RequestReader.ParseRequest);
+	StartTrace(HTTPRequestReader.ParseRequest);
 	Trace("Line:<" << line << ">");
 	StringTokenizer st(line, ' ');
 	String tok;
@@ -237,9 +237,9 @@ bool RequestReader::ParseRequest(std::iostream &Ios, String &line, const Anythin
 	return true;
 }
 
-bool RequestReader::VerifyUrlPath(std::iostream &Ios, String &urlPath, const Anything &clientInfo)
+bool HTTPRequestReader::VerifyUrlPath(std::iostream &Ios, String &urlPath, const Anything &clientInfo)
 {
-	StartTrace(RequestReader.VerifyUrlPath);
+	StartTrace(HTTPRequestReader.VerifyUrlPath);
 
 	URLUtils::URLCheckStatus eUrlCheckStatus = URLUtils::eOk;
 	String urlPathOrig = urlPath;
@@ -278,9 +278,9 @@ bool RequestReader::VerifyUrlPath(std::iostream &Ios, String &urlPath, const Any
 	return true;
 }
 
-bool RequestReader::VerifyUrlArgs(String &urlArgs)
+bool HTTPRequestReader::VerifyUrlArgs(String &urlArgs)
 {
-	StartTrace(RequestReader.VerifyUrlArgs);
+	StartTrace(HTTPRequestReader.VerifyUrlArgs);
 	// Are all character which must be URL-encoded really encoded?
 	if (URLUtils::CheckUrlArgEncoding(urlArgs, fProc->fCheckUrlArgEncodingOverride) == false) {
 		return false;
@@ -288,16 +288,16 @@ bool RequestReader::VerifyUrlArgs(String &urlArgs)
 	return true;
 }
 
-Anything RequestReader::GetRequest()
+Anything HTTPRequestReader::GetRequest()
 {
 	fRequest["header"] = fHeader.GetInfo();
 	return fRequest;
 }
 
 // handle error
-bool RequestReader::DoHandleError(std::iostream &Ios, long errcode, const String &reason, const String &line, const Anything &clientInfo, bool reject, const String &msg)
+bool HTTPRequestReader::DoHandleError(std::iostream &Ios, long errcode, const String &reason, const String &line, const Anything &clientInfo, bool reject, const String &msg)
 {
-	StartTrace(RequestReader.DoHandleError);
+	StartTrace(HTTPRequestReader.DoHandleError);
 	Trace("Errcode: [" << errcode << "] Message: [" << msg << "] Faulty line: [" << line << "] reject: [" << reject << "]");
 	if ( reject == true ) {
 		if ( !!Ios ) {
@@ -321,9 +321,9 @@ bool RequestReader::DoHandleError(std::iostream &Ios, long errcode, const String
 	return ret;
 }
 
-void RequestReader::DoLogError(long errcode, const String &reason, const String &line, const Anything &clientInfo, const String &msg)
+void HTTPRequestReader::DoLogError(long errcode, const String &reason, const String &line, const Anything &clientInfo, const String &msg)
 {
-	StartTrace(RequestReader.DoLogError);
+	StartTrace(HTTPRequestReader.DoLogError);
 	Anything request = GetRequest();
-	fProc->DoLogError(errcode, reason, line, clientInfo, msg, request, "RequestReader");
+	fProc->DoLogError(errcode, reason, line, clientInfo, msg, request, "HTTPRequestReader");
 }

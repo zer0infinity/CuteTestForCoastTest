@@ -25,10 +25,10 @@
 #include "AuthenticationServiceTest.h"
 #include "HTTPFileLoaderTest.h"
 #include "MIMEHeaderTest.h"
-#include "RequestBodyParserTest.h"
+#include "HTTPPostRequestBodyParserTest.h"
 #include "HTTPProtocolReplyRendererTest.h"
 #include "NewRendererTest.h"
-#include "RequestReaderTest.h"
+#include "HTTPRequestReaderTest.h"
 #include "ConnectorDAImplTest.h"
 #include "URI2FileNameTest.h"
 
@@ -40,8 +40,8 @@ void setupRunner(TestRunner &runner)
 	ADD_SUITE(runner, URI2FileNameTest);
 	ADD_SUITE(runner, CgiCallerTest);
 
-	ADD_SUITE(runner, RequestReaderTest);
-	ADD_SUITE(runner, RequestBodyParserTest);
+	ADD_SUITE(runner, HTTPRequestReaderTest);
+	ADD_SUITE(runner, HTTPPostRequestBodyParserTest);
 	ADD_SUITE(runner, HTTPMapperTest);
 	ADD_SUITE(runner, XMLBodyMapperTest);
 	ADD_SUITE(runner, HTTPResponseMapperTest);

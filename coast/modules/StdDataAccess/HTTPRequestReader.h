@@ -13,13 +13,13 @@
 #include "HTTPProcessor.h"
 #include "MIMEHeader.h"
 
-//--- RequestReader ----------------------------------------------------------
+//--- HTTPRequestReader ----------------------------------------------------------
 //! Policy object to read HTTP Requests unscramble URL Variables
-class EXPORTDECL_STDDATAACCESS RequestReader
+class EXPORTDECL_STDDATAACCESS HTTPRequestReader
 {
 public:
 	//!reads request from ios on behalf of processor
-	RequestReader(HTTPProcessor *p, MIMEHeader &header);
+	HTTPRequestReader(HTTPProcessor *p, MIMEHeader &header);
 
 	//!read a request and handle error throug ios
 	bool ReadRequest(std::iostream &Ios, const Anything &clientInfo = Anything());

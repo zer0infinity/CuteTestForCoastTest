@@ -11,8 +11,8 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "Timers.h"
-#include "RequestBodyParser.h"
-#include "RequestReader.h"
+#include "HTTPPostRequestBodyParser.h"
+#include "HTTPRequestReader.h"
 #include "Server.h"
 #include "HTTPProtocolReplyRenderer.h"
 #include "AnyIterators.h"
@@ -52,9 +52,9 @@ void HTTPProcessor::DoReadInput(std::iostream &Ios, Context &ctx)
 	StartTrace(HTTPProcessor.DoReadInput);
 
 	MIMEHeader header; // no super header
-	RequestReader reader(this, header);
+	HTTPRequestReader reader(this, header);
 	{
-		MethodTimer(RequestReader.ReadRequest, "Reading request", ctx);
+		MethodTimer(HTTPRequestReader.ReadRequest, "Reading request", ctx);
 		if (! reader.ReadRequest(Ios, ctx.GetRequest()["ClientInfo"]) ) {
 			return;    // this was an error that forbids to process any further
 		}
@@ -78,13 +78,13 @@ void HTTPProcessor::ReadRequestBody(std::iostream &Ios, Anything &request, MIMEH
 {
 	StartTrace(HTTPProcessor.ReadRequestBody);
 	if ( request["REQUEST_METHOD"] == "POST" ) {
-		RequestBodyParser sm(header, Ios);
+		HTTPPostRequestBodyParser sm(header, Ios);
 		sm.Parse();
 		if (fCheckHeaderFields && header.AreSuspiciosHeadersPresent() ) {
 			Anything erreanousRequest(ctx.GetRequest());
 			ctx.GetTmpStore()["ReadRequestBodyError"] =
 				DoLogError(400, "Possible SSL Renegotiation attack. A multipart mime header (in POST) contains a GET/POST request",
-						   ctx.GetRequest()["REQUEST_URI"].AsString(), ctx.GetRequest()["ClientInfo"], "", erreanousRequest, "RequestBodyParser");
+						   ctx.GetRequest()["REQUEST_URI"].AsString(), ctx.GetRequest()["ClientInfo"], "", erreanousRequest, "HTTPPostRequestBodyParser");
 		}
 		request["REQUEST_BODY"] = sm.GetContent();
 		request["WHOLE_REQUEST_BODY"] = sm.GetUnparsedContent();

@@ -14,17 +14,17 @@
 #include "Dbg.h"
 
 //--- interface include --------------------------------------------------------
-#include "RequestBodyParser.h"
+#include "HTTPPostRequestBodyParser.h"
 
-RequestBodyParser::RequestBodyParser(MIMEHeader &mainheader, std::istream &input)
+HTTPPostRequestBodyParser::HTTPPostRequestBodyParser(MIMEHeader &mainheader, std::istream &input)
 	: fInput(input), fHeader(mainheader)
 {
-	StartTrace(RequestBodyParser.Ctor);
+	StartTrace(HTTPPostRequestBodyParser.Ctor);
 }
 
-bool RequestBodyParser::Parse()
+bool HTTPPostRequestBodyParser::Parse()
 {
-	StartTrace(RequestBodyParser.Parse);
+	StartTrace(HTTPPostRequestBodyParser.Parse);
 	TraceAny(fHeader.GetInfo(), "Header: ");
 	fIn = &fInput;
 
@@ -37,9 +37,9 @@ bool RequestBodyParser::Parse()
 	}
 }
 
-bool RequestBodyParser::ParseBody()
+bool HTTPPostRequestBodyParser::ParseBody()
 {
-	StartTrace(RequestBodyParser.ParseBody);
+	StartTrace(HTTPPostRequestBodyParser.ParseBody);
 	long contentLength = fHeader.GetContentLength();
 	String bodyStr;
 	ROAnything contenttype;
@@ -95,9 +95,9 @@ bool RequestBodyParser::ParseBody()
 	return readSuccess;
 }
 
-void RequestBodyParser::Decode(String str, Anything &result)
+void HTTPPostRequestBodyParser::Decode(String str, Anything &result)
 {
-	StartTrace(RequestBodyParser.Decode);
+	StartTrace(HTTPPostRequestBodyParser.Decode);
 	// add a sanity check and remove trailing \r\n in case
 	long slen = str.Length();
 	if (slen >= 2 && '\r' == str[(long)(slen-2)] && '\n' == str[(long)(slen-1)]) {
@@ -107,9 +107,9 @@ void RequestBodyParser::Decode(String str, Anything &result)
 	URLUtils::DecodeAll(result);
 }
 
-bool RequestBodyParser::ReadToBoundary(std::istream *is, const String &bound, String &body)
+bool HTTPPostRequestBodyParser::ReadToBoundary(std::istream *is, const String &bound, String &body)
 {
-	StartTrace1(RequestBodyParser.ReadToBoundary, "bound: <" << bound << ">");
+	StartTrace1(HTTPPostRequestBodyParser.ReadToBoundary, "bound: <" << bound << ">");
 	if ( !is ) {
 		return true;
 	}
@@ -166,10 +166,10 @@ bool RequestBodyParser::ReadToBoundary(std::istream *is, const String &bound, St
 	return false; // was return true
 }
 
-bool RequestBodyParser::ParseMultiPart(std::istream *is, const String &bound)
+bool HTTPPostRequestBodyParser::ParseMultiPart(std::istream *is, const String &bound)
 {
 	// assume next on input is bound and a line separator
-	StartTrace(RequestBodyParser.ParseMultiPart);
+	StartTrace(HTTPPostRequestBodyParser.ParseMultiPart);
 	bool endReached = false;
 
 	// ignore value of shouldbeempty
@@ -189,7 +189,7 @@ bool RequestBodyParser::ParseMultiPart(std::istream *is, const String &bound)
 				partInfo["header"] = hinner.GetInfo();
 				TraceAny(hinner.GetInfo(), "Header: ");
 
-				RequestBodyParser part(hinner, innerpart);
+				HTTPPostRequestBodyParser part(hinner, innerpart);
 				part.Parse(); // if we found a boundary, could we unget it?
 
 				partInfo["body"] = part.GetContent();

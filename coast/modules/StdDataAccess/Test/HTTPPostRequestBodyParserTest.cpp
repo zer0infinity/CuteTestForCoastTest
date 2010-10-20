@@ -7,13 +7,13 @@
  */
 
 //--- interface include --------------------------------------------------------
-#include "RequestBodyParserTest.h"
+#include "HTTPPostRequestBodyParserTest.h"
 
 //--- test modules used --------------------------------------------------------
 #include "TestSuite.h"
 
 //--- module under test --------------------------------------------------------
-#include "RequestBodyParser.h"
+#include "HTTPPostRequestBodyParser.h"
 
 //--- project modules used -----------------------------------------------------
 #include "MIMEHeader.h"
@@ -26,26 +26,26 @@
 
 using namespace Coast;
 
-//---- RequestBodyParserTest ----------------------------------------------------------------
-RequestBodyParserTest::RequestBodyParserTest(TString tname)
+//---- HTTPPostRequestBodyParserTest ----------------------------------------------------------------
+HTTPPostRequestBodyParserTest::HTTPPostRequestBodyParserTest(TString tname)
 	: TestCaseType(tname)
 {
-	StartTrace(RequestBodyParserTest.RequestBodyParserTest);
+	StartTrace(HTTPPostRequestBodyParserTest.HTTPPostRequestBodyParserTest);
 }
 
-TString RequestBodyParserTest::getConfigFileName()
+TString HTTPPostRequestBodyParserTest::getConfigFileName()
 {
-	return "RequestBodyParserTestConfig";
+	return "HTTPPostRequestBodyParserTestConfig";
 }
 
-RequestBodyParserTest::~RequestBodyParserTest()
+HTTPPostRequestBodyParserTest::~HTTPPostRequestBodyParserTest()
 {
-	StartTrace(RequestBodyParserTest.Dtor);
+	StartTrace(HTTPPostRequestBodyParserTest.Dtor);
 }
 
-void RequestBodyParserTest::ReadMultiPartPost()
+void HTTPPostRequestBodyParserTest::ReadMultiPartPost()
 {
-	StartTrace(RequestBodyParserTest.ReadMultiPartPost);
+	StartTrace(HTTPPostRequestBodyParserTest.ReadMultiPartPost);
 	std::iostream *is = System::OpenStream("MultiPartBody.txt", 0);
 
 	t_assertm(is != 0, "expected 'MultiPartBody.txt' to be there");
@@ -53,7 +53,7 @@ void RequestBodyParserTest::ReadMultiPartPost()
 		MIMEHeader mh;
 		t_assertm(mh.DoReadHeader(*is, 4096, 4096), "expected global header parsing to succeed");
 
-		RequestBodyParser sm(mh, *is);
+		HTTPPostRequestBodyParser sm(mh, *is);
 		t_assert(sm.Parse());
 		Anything expected;
 		Anything result = sm.GetContent();
@@ -74,7 +74,7 @@ void RequestBodyParserTest::ReadMultiPartPost()
 		MIMEHeader mh;
 		t_assertm(mh.DoReadHeader(*is, 4096, 4096), "expected global header parsing to succeed");
 
-		RequestBodyParser sm(mh, *is);
+		HTTPPostRequestBodyParser sm(mh, *is);
 		t_assert(sm.Parse());
 		String unparsedContent = sm.GetUnparsedContent();
 		delete is;
@@ -94,9 +94,9 @@ void RequestBodyParserTest::ReadMultiPartPost()
 	}
 }
 
-void RequestBodyParserTest::ReadToBoundaryTestWithStreamFailure()
+void HTTPPostRequestBodyParserTest::ReadToBoundaryTestWithStreamFailure()
 {
-	StartTrace(RequestBodyParserTest.ReadToBoundaryTestWithStreamFailure);
+	StartTrace(HTTPPostRequestBodyParserTest.ReadToBoundaryTestWithStreamFailure);
 
 	ROAnything cConfig;
 	AnyExtensions::Iterator<ROAnything, ROAnything, TString> aEntryIterator(GetTestCaseConfig());
@@ -107,7 +107,7 @@ void RequestBodyParserTest::ReadToBoundaryTestWithStreamFailure()
 		Trace("input to parse [" << strInput << "]");
 		StringStream tiss(strInput);
 		MIMEHeader mh;
-		RequestBodyParser sm(mh, tiss);
+		HTTPPostRequestBodyParser sm(mh, tiss);
 		std::ios::iostate iState = tiss.rdstate();
 		Trace("original iState:" << (long)(iState));
 
@@ -151,7 +151,7 @@ void RequestBodyParserTest::ReadToBoundaryTestWithStreamFailure()
 	}
 }
 
-void RequestBodyParserTest::ReadToBoundaryTest()
+void HTTPPostRequestBodyParserTest::ReadToBoundaryTest()
 {
 	Context ctx;
 	ROAnything cConfig;
@@ -162,7 +162,7 @@ void RequestBodyParserTest::ReadToBoundaryTest()
 		String result, strIn(Renderer::RenderToString(ctx, cConfig["Input"]));
 		IStringStream tiss(strIn);
 		MIMEHeader mh;
-		RequestBodyParser sm(mh, tiss);
+		HTTPPostRequestBodyParser sm(mh, tiss);
 
 		bool res = sm.ReadToBoundary(&tiss, cConfig["Boundary"].AsString(), result);
 		assertEqualm(Renderer::RenderToString(ctx, cConfig["ExpectedResult"]), result, cName);
@@ -179,7 +179,7 @@ void RequestBodyParserTest::ReadToBoundaryTest()
 		}
 	}
 
-	StartTrace(RequestBodyParserTest.ReadMultiPartPost);
+	StartTrace(HTTPPostRequestBodyParserTest.ReadMultiPartPost);
 	String testinput, testinput1;
 	String testboundary("980");
 	String result;
@@ -194,7 +194,7 @@ void RequestBodyParserTest::ReadToBoundaryTest()
 		{
 			IStringStream is(testinput);
 			MIMEHeader mh;
-			RequestBodyParser sm(mh, is);
+			HTTPPostRequestBodyParser sm(mh, is);
 
 			t_assertm(!sm.ReadToBoundary(&is, testboundary, result), "expected end reached with simple input");
 			assertEqual("some content1", result);
@@ -206,7 +206,7 @@ void RequestBodyParserTest::ReadToBoundaryTest()
 		{
 			IStringStream is(testinput);
 			MIMEHeader mh;
-			RequestBodyParser sm(mh, is);
+			HTTPPostRequestBodyParser sm(mh, is);
 			sm.ReadToBoundary(&is, testboundary, result);
 			String unparsedContent;
 			unparsedContent = sm.GetUnparsedContent();
@@ -225,7 +225,7 @@ void RequestBodyParserTest::ReadToBoundaryTest()
 		{
 			IStringStream is(testinput);
 			MIMEHeader mh;
-			RequestBodyParser sm(mh, is);
+			HTTPPostRequestBodyParser sm(mh, is);
 
 			t_assertm(!sm.ReadToBoundary(&is, testboundary, result), "expected  end not reached with simple input");
 			assertEqual("some content1", result);
@@ -237,7 +237,7 @@ void RequestBodyParserTest::ReadToBoundaryTest()
 		{
 			IStringStream is(testinput);
 			MIMEHeader mh;
-			RequestBodyParser sm(mh, is);
+			HTTPPostRequestBodyParser sm(mh, is);
 			sm.ReadToBoundary(&is, testboundary, result);
 			String unparsedContent;
 			unparsedContent = sm.GetUnparsedContent();
@@ -252,9 +252,9 @@ void RequestBodyParserTest::ReadToBoundaryTest()
 	}
 }
 
-void RequestBodyParserTest::ParseMultiPartTest()
+void HTTPPostRequestBodyParserTest::ParseMultiPartTest()
 {
-	StartTrace(RequestBodyParserTest.ParseMultiPartTest);
+	StartTrace(HTTPPostRequestBodyParserTest.ParseMultiPartTest);
 	String testinput, testinput1;
 	String testboundary("---------------------------210003122518197");
 	Anything result;
@@ -286,7 +286,7 @@ void RequestBodyParserTest::ParseMultiPartTest()
 	{
 		IStringStream is(testinput);
 		MIMEHeader mh;
-		RequestBodyParser sm(mh, is);
+		HTTPPostRequestBodyParser sm(mh, is);
 
 		assertAnyEqualm(Anything(), sm.GetContent(), "expected fContent to be empty" );
 		t_assert(sm.ParseMultiPart(&is, testboundary));
@@ -294,7 +294,7 @@ void RequestBodyParserTest::ParseMultiPartTest()
 	{
 		IStringStream is(testinput1);
 		MIMEHeader mh;
-		RequestBodyParser sm(mh, is);
+		HTTPPostRequestBodyParser sm(mh, is);
 		sm.ParseMultiPart(&is, testboundary);
 
 		// see RFC 1806 for details about the content disposition header
@@ -305,13 +305,13 @@ void RequestBodyParserTest::ParseMultiPartTest()
 }
 
 // builds up a suite of testcases, add a line for each testmethod
-Test *RequestBodyParserTest::suite ()
+Test *HTTPPostRequestBodyParserTest::suite ()
 {
-	StartTrace(RequestBodyParserTest.suite);
+	StartTrace(HTTPPostRequestBodyParserTest.suite);
 	TestSuite *testSuite = new TestSuite;
-	ADD_CASE(testSuite, RequestBodyParserTest, ReadToBoundaryTest);
-	ADD_CASE(testSuite, RequestBodyParserTest, ReadToBoundaryTestWithStreamFailure);
-	ADD_CASE(testSuite, RequestBodyParserTest, ParseMultiPartTest);
-	ADD_CASE(testSuite, RequestBodyParserTest, ReadMultiPartPost);
+	ADD_CASE(testSuite, HTTPPostRequestBodyParserTest, ReadToBoundaryTest);
+	ADD_CASE(testSuite, HTTPPostRequestBodyParserTest, ReadToBoundaryTestWithStreamFailure);
+	ADD_CASE(testSuite, HTTPPostRequestBodyParserTest, ParseMultiPartTest);
+	ADD_CASE(testSuite, HTTPPostRequestBodyParserTest, ReadMultiPartPost);
 	return testSuite;
 }

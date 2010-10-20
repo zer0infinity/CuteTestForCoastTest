@@ -12,7 +12,7 @@
 #include "Context.h"
 #include "URLUtils.h"
 #include "MIMEHeader.h"
-#include "RequestBodyParser.h"
+#include "HTTPPostRequestBodyParser.h"
 #include "Dbg.h"
 #include "Server.h"
 
@@ -308,7 +308,7 @@ void HTTPProcessorTest::DoReadMinimalInputTest()
 	tmpStore = DoReadMinimalInputTestHelper(fds, uri, expected);
 	TraceAny(tmpStore, "tmpStore");
 	assertEqual("Possible SSL Renegotiation attack. A multipart mime header (in POST) contains a GET/POST request",
-				tmpStore["ReadRequestBodyError"]["RequestBodyParser"]["Reason"].AsString());
+				tmpStore["ReadRequestBodyError"]["HTTPPostRequestBodyParser"]["Reason"].AsString());
 
 	// Log header attack only
 	fds.fCheckHeaderFields	= true;

@@ -112,7 +112,7 @@
 		/MainSwitch	400
 		/EnableAll	400
 	}
-	/RequestBodyParser {
+	/HTTPPostRequestBodyParser {
 		/MainSwitch	500
 		/EnableAll	500
 	}

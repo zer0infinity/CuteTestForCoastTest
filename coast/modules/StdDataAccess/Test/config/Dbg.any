@@ -29,11 +29,11 @@
 		/MainSwitch						11
 		/EnableAll						11
 	}
-	/RequestBodyParser {
+	/HTTPPostRequestBodyParser {
 		/MainSwitch						200
 		/EnableAll						200
 	}
-	/RequestBodyParserTest {
+	/HTTPPostRequestBodyParserTest {
 		/MainSwitch						0
 		/EnableAll						200
 	}
@@ -122,11 +122,11 @@
 		/MainSwitch						10
 		/EnableAll						20
 	}
-	/RequestReader {
+	/HTTPRequestReader {
 		/MainSwitch						200
 		/EnableAll						201
 	}
-	/RequestReaderTest {
+	/HTTPRequestReaderTest {
 		/MainSwitch						200
 		/EnableAll						201
 	}

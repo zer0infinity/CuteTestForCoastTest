@@ -18,11 +18,11 @@ class MIMEHeader;
 //! where content-disposition gives us a hint for decoding
 //! decodes bodies according to normal browser POST requests
 //! only works for multipart-form data
-class EXPORTDECL_STDDATAACCESS RequestBodyParser
+class EXPORTDECL_STDDATAACCESS HTTPPostRequestBodyParser
 {
 public:
 	//! ctor requires a header for parameters on length and decoding
-	RequestBodyParser(MIMEHeader &mainheader, std::istream &input);
+	HTTPPostRequestBodyParser(MIMEHeader &mainheader, std::istream &input);
 
 	//! do the parsing, read everything
 	bool Parse();
@@ -50,15 +50,15 @@ protected:
 	void Decode(String str, Anything &result);
 
 private:
-	RequestBodyParser();
-	RequestBodyParser(const RequestBodyParser &);
+	HTTPPostRequestBodyParser();
+	HTTPPostRequestBodyParser(const HTTPPostRequestBodyParser &);
 	std::istream	&fInput;	// to parse from
 	std::istream	*fIn;	// to parse from
 	MIMEHeader &fHeader;
 	Anything fContent;
 	String fUnparsedContent;
 
-	friend class RequestBodyParserTest;
+	friend class HTTPPostRequestBodyParserTest;
 };
 
 #endif
