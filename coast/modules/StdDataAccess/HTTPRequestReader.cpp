@@ -10,16 +10,14 @@
 #include "HTTPRequestReader.h"
 
 //--- standard modules used ----------------------------------------------------
+#include "HTTPProcessor.h"
+#include "MIMEHeader.h"
+#include "Context.h"
 #include "Dbg.h"
-#include "AppLog.h"
-#include "Server.h"
-#include "AppBooter.h"
 #include "StringStream.h"
 
-//--- c-library modules used ---------------------------------------------------
-
 //---- HTTPRequestReader -----------------------------------------------------------
-HTTPRequestReader::HTTPRequestReader(HTTPProcessor *p, MIMEHeader &header)
+HTTPRequestReader::HTTPRequestReader(HTTPProcessor &p, MIMEHeader &header)
 	: fProc(p), fHeader(header), fRequestBufferSize(0), fFirstLine(true)
 {
 	StartTrace(HTTPRequestReader.HTTPRequestReader);
@@ -33,8 +31,8 @@ bool HTTPRequestReader::ReadLine(std::iostream &Ios, String &line, const Anythin
 	line = "";
 	hadError = false;
 	long counter = 0;
-	long maxLineSz = fProc->fLineSizeLimit;
-	Trace("======================= reading input ==================");
+	long maxLineSz = fProc.fLineSizeLimit;
+	Trace("======================= reading line ==================");
 	while ( Ios.get(c).good() ) {
 		// read in characterwise
 		line << c;
@@ -52,7 +50,7 @@ bool HTTPRequestReader::ReadLine(std::iostream &Ios, String &line, const Anythin
 #endif
 			fRequestBufferSize += counter;
 			Trace("fRequestBufferSize:" << fRequestBufferSize);
-			Trace("maxReqSz:" << fProc->fRequestSizeLimit);
+			Trace("maxReqSz:" << fProc.fRequestSizeLimit);
 			Trace("fRequestBuffer.Length():" << fRequestBuffer.Length());
 			bool ret = CheckReqBufferSize(Ios, fRequestBufferSize, line, clientInfo);
 			ret == false ? hadError = true : hadError = false;
@@ -67,7 +65,7 @@ bool HTTPRequestReader::ReadRequest(std::iostream &Ios, const Anything &clientIn
 	StartTrace(HTTPRequestReader.ReadRequest);
 	String line;
 
-	Trace("======================= reading input ==================");
+	Trace("======================= reading request ==================");
 	bool hadError = false;
 	bool doContinue = ReadLine(Ios, line, clientInfo, hadError);
 	bool ret = true;
@@ -92,14 +90,14 @@ bool HTTPRequestReader::ReadRequest(std::iostream &Ios, const Anything &clientIn
 		// handle request lines
 		fHeader.DoParseHeaderLine(line);
 	}
-	if ( fProc->fCheckHeaderFields && fHeader.AreSuspiciosHeadersPresent() ) {
+	if ( fProc.fCheckHeaderFields && fHeader.AreSuspiciosHeadersPresent() ) {
 		String tmp;
 		OStringStream oss(tmp);
 		fHeader.GetInfo().PrintOn(oss, false);
 		oss.flush();
 		line.Append(" ");
 		line.Append(tmp);
-		ret = DoHandleError(Ios, 400, "Possible SSL Renegotiation attack. A header contains a GET/POST request", line, clientInfo, fProc->fRejectRequestsWithInvalidHeaders);
+		ret = DoHandleError(Ios, 400, "Possible SSL Renegotiation attack. A header contains a GET/POST request", line, clientInfo, fProc.fRejectRequestsWithInvalidHeaders);
 	} else if ( fRequestBufferSize == 0 ) {
 		ret =  DoHandleError(Ios, 400, "Empty request", line, clientInfo);
 	}
@@ -114,9 +112,9 @@ bool HTTPRequestReader::ReadRequest(std::iostream &Ios, const Anything &clientIn
 bool HTTPRequestReader::CheckReqLineSize(std::iostream &Ios, long lineLength, const String &line, const Anything &clientInfo)
 {
 	StartTrace(HTTPRequestReader.CheckReqLineSize);
-	if (lineLength > fProc->fLineSizeLimit) {
+	if (lineLength > fProc.fLineSizeLimit) {
 		String msg;
-		msg << "CheckReqLineSize: Request line too Large : [" << lineLength << "] (max " << fProc->fLineSizeLimit << ")";
+		msg << "CheckReqLineSize: Request line too Large : [" << lineLength << "] (max " << fProc.fLineSizeLimit << ")";
 		return DoHandleError(Ios, 413, msg, line, clientInfo);
 	}
 	return true;
@@ -125,9 +123,9 @@ bool HTTPRequestReader::CheckReqLineSize(std::iostream &Ios, long lineLength, co
 bool HTTPRequestReader::CheckReqBufferSize(std::iostream &Ios, long lineLength, const String &line, const Anything &clientInfo)
 {
 	StartTrace(HTTPRequestReader.CheckReqBufferSize);
-	if (lineLength > fProc->fRequestSizeLimit) {
+	if (lineLength > fProc.fRequestSizeLimit) {
 		String msg;
-		msg << "CheckReqBufferSize: Request too large : [" << lineLength << "] (max " << fProc->fRequestSizeLimit << ")";
+		msg << "CheckReqBufferSize: Request too large : [" << lineLength << "] (max " << fProc.fRequestSizeLimit << ")";
 		return DoHandleError(Ios, 413, msg, line, clientInfo);
 	}
 	return true;
@@ -136,7 +134,7 @@ bool HTTPRequestReader::CheckReqBufferSize(std::iostream &Ios, long lineLength, 
 bool HTTPRequestReader::CheckReqURISize(std::iostream &Ios, long lineLength, const String &line, const Anything &clientInfo)
 {
 	StartTrace(HTTPRequestReader.CheckReqURISize);
-	if (lineLength > fProc->fURISizeLimit) {
+	if (lineLength > fProc.fURISizeLimit) {
 		String msg("Request-URI Too Long [");
 		msg << lineLength << "].";
 
@@ -244,10 +242,10 @@ bool HTTPRequestReader::VerifyUrlPath(std::iostream &Ios, String &urlPath, const
 	URLUtils::URLCheckStatus eUrlCheckStatus = URLUtils::eOk;
 	String urlPathOrig = urlPath;
 	// Are all chars which must be URL-encoded really encoded?
-	if (URLUtils::CheckUrlEncoding(urlPath, fProc->fCheckUrlEncodingOverride) == false) {
+	if (URLUtils::CheckUrlEncoding(urlPath, fProc.fCheckUrlEncodingOverride) == false) {
 		return DoHandleError(Ios, 400, "Not all unsafe chars URL encoded", urlPathOrig, clientInfo);
 	}
-	if (fProc->fUrlExhaustiveDecode) {
+	if (fProc.fUrlExhaustiveDecode) {
 		urlPath = URLUtils::ExhaustiveUrlDecode(urlPath, eUrlCheckStatus, false);
 	} else {
 		urlPath = URLUtils::urlDecode(urlPath, eUrlCheckStatus, false);
@@ -256,17 +254,17 @@ bool HTTPRequestReader::VerifyUrlPath(std::iostream &Ios, String &urlPath, const
 		// We are done, invalid request
 		return DoHandleError(Ios, 400, "Encoded char above 0x255 detected", urlPathOrig, clientInfo);
 	}
-	if ( URLUtils::CheckUrlPathContainsUnsafeChars(urlPath, fProc->fCheckUrlPathContainsUnsafeCharsOverride,
-			fProc->fCheckUrlPathContainsUnsafeCharsAsciiOverride,
-			!(fProc->fCheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii)) ) {
+	if ( URLUtils::CheckUrlPathContainsUnsafeChars(urlPath, fProc.fCheckUrlPathContainsUnsafeCharsOverride,
+			fProc.fCheckUrlPathContainsUnsafeCharsAsciiOverride,
+			!(fProc.fCheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii)) ) {
 		return DoHandleError(Ios, 400, "Decoded URL path contains unsafe char", urlPathOrig, clientInfo);
 	}
 	// "path" part of URL had to be normalized. This may indicate an attack.
 	String normalizedUrl =  URLUtils::CleanUpUriPath(urlPath);
 	if ( urlPath.Length() !=  normalizedUrl.Length() ) {
-		if ( fProc->fFixDirectoryTraversial ) {
+		if ( fProc.fFixDirectoryTraversial ) {
 			// alter the original url
-			urlPathOrig = URLUtils::urlEncode(normalizedUrl, fProc->fURLEncodeExclude);
+			urlPathOrig = URLUtils::urlEncode(normalizedUrl, fProc.fURLEncodeExclude);
 			DoLogError(0, "Directory traversial attack detected and normalized. Request not rejected because of config settings",
 					   urlPathOrig, clientInfo, "");
 		} else {
@@ -282,13 +280,13 @@ bool HTTPRequestReader::VerifyUrlArgs(String &urlArgs)
 {
 	StartTrace(HTTPRequestReader.VerifyUrlArgs);
 	// Are all character which must be URL-encoded really encoded?
-	if (URLUtils::CheckUrlArgEncoding(urlArgs, fProc->fCheckUrlArgEncodingOverride) == false) {
+	if (URLUtils::CheckUrlArgEncoding(urlArgs, fProc.fCheckUrlArgEncodingOverride) == false) {
 		return false;
 	}
 	return true;
 }
 
-Anything HTTPRequestReader::GetRequest()
+Anything const& HTTPRequestReader::GetRequest()
 {
 	fRequest["header"] = fHeader.GetInfo();
 	return fRequest;
@@ -305,7 +303,7 @@ bool HTTPRequestReader::DoHandleError(std::iostream &Ios, long errcode, const St
 
 			Anything tmpStore = ctx.GetTmpStore();
 			tmpStore["HTTPStatus"]["ResponseCode"] = errcode;
-			fProc->DoError(Ios, msg, ctx);
+			fProc.DoError(Ios, msg, ctx);
 
 			Ios << ENDL;
 			Ios.flush();
@@ -325,5 +323,5 @@ void HTTPRequestReader::DoLogError(long errcode, const String &reason, const Str
 {
 	StartTrace(HTTPRequestReader.DoLogError);
 	Anything request = GetRequest();
-	fProc->DoLogError(errcode, reason, line, clientInfo, msg, request, "HTTPRequestReader");
+	fProc.DoLogError(errcode, reason, line, clientInfo, msg, request, "HTTPRequestReader");
 }

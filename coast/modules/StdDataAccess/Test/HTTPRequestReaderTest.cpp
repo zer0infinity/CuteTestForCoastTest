@@ -16,6 +16,9 @@
 #include "TestSuite.h"
 
 //--- standard modules used ----------------------------------------------------
+#include "Context.h"
+#include "HTTPProcessor.h"
+#include "MIMEHeader.h"
 #include "Dbg.h"
 #include "StringStream.h"
 #include "StringStreamSocket.h"
@@ -61,7 +64,7 @@ void HTTPRequestReaderTest::CleanupRequestLineTest() {
 		httpProc.fCheckHeaderFields = cConfig["CheckHeaderFields"].AsLong(1);
 		httpProc.fRejectRequestsWithInvalidHeaders = cConfig["RejectRequestsWithInvalidHeaders"].AsLong(1);
 
-		HTTPRequestReader reader(&httpProc, header);
+		HTTPRequestReader reader(httpProc, header);
 		String uri(cConfig["RequestLine"].AsString());
 		StringStreamSocket ss(uri);
 		reader.ReadRequest(*(ss.GetStream()), ss.ClientInfo());
@@ -91,7 +94,7 @@ void HTTPRequestReaderTest::ReadMinimalInputTest() {
 		httpProc.fURISizeLimit = cConfig["UriSizeLimit"].AsLong(0);
 		httpProc.fCheckHeaderFields = cConfig["CheckHeaderFields"].AsLong(1);
 		httpProc.fRejectRequestsWithInvalidHeaders = cConfig["RejectRequestsWithInvalidHeaders"].AsLong(1);
-		HTTPRequestReader reader(&httpProc, header);
+		HTTPRequestReader reader(httpProc, header);
 
 		String uri(cConfig["RequestLine"].AsString());
 		StringStreamSocket ss(uri);

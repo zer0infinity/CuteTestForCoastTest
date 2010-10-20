@@ -10,8 +10,11 @@
 #define _REQUESTREADER_H
 
 #include "config_stddataaccess.h"
-#include "HTTPProcessor.h"
-#include "MIMEHeader.h"
+#include "Anything.h"
+#include <iosfwd>
+
+class HTTPProcessor;
+class MIMEHeader;
 
 //--- HTTPRequestReader ----------------------------------------------------------
 //! Policy object to read HTTP Requests unscramble URL Variables
@@ -19,13 +22,13 @@ class EXPORTDECL_STDDATAACCESS HTTPRequestReader
 {
 public:
 	//!reads request from ios on behalf of processor
-	HTTPRequestReader(HTTPProcessor *p, MIMEHeader &header);
+	HTTPRequestReader(HTTPProcessor &p, MIMEHeader &header);
 
 	//!read a request and handle error throug ios
 	bool ReadRequest(std::iostream &Ios, const Anything &clientInfo = Anything());
 
 	//!get the resulting anything if read request was successful
-	Anything GetRequest();
+	Anything const& GetRequest();
 
 protected:
 	//!read the one input line stream and check it against limits,
@@ -59,7 +62,7 @@ protected:
 	void DoLogError(long errcode, const String &reason, const String &line, const Anything &clientInfo, const String &msg);
 
 	//!the processor we are working for
-	HTTPProcessor *fProc;
+	HTTPProcessor &fProc;
 
 	//!product output a request anything
 	Anything fRequest;

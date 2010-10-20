@@ -13,13 +13,13 @@
 #include "Timers.h"
 #include "HTTPPostRequestBodyParser.h"
 #include "HTTPRequestReader.h"
+#include "HTTPProcessor.h"
+#include "MIMEHeader.h"
 #include "Server.h"
 #include "HTTPProtocolReplyRenderer.h"
 #include "AnyIterators.h"
 #include "AppBooter.h"
 #include "AppLog.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 RegisterRequestProcessor(HTTPProcessor);
 
@@ -52,7 +52,7 @@ void HTTPProcessor::DoReadInput(std::iostream &Ios, Context &ctx)
 	StartTrace(HTTPProcessor.DoReadInput);
 
 	MIMEHeader header; // no super header
-	HTTPRequestReader reader(this, header);
+	HTTPRequestReader reader(*this, header);
 	{
 		MethodTimer(HTTPRequestReader.ReadRequest, "Reading request", ctx);
 		if (! reader.ReadRequest(Ios, ctx.GetRequest()["ClientInfo"]) ) {
