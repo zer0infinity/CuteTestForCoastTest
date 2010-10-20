@@ -163,10 +163,11 @@ void HTTPMimeHeaderMapper::StoreCookies(ROAnything const header, Context &ctx) {
 	const String valueSlotName("_value_");
 	const String attrSlotName("_attrs_");
 	const String cookieID("set-cookie");
-	const char cookieEnd = ';';
-	String destSlotname("StoredCookies.");
+	static const char cookieEnd = ';';
+	static const char cookie_path_sep = '=';
+	String destSlotname("StoredCookies");
 	const String backendName(ctx.Lookup("Backend.Name", ""));
-	destSlotname.Append(backendName);
+	destSlotname.Append(cookie_path_sep).Append(backendName);
 
 	String strKeyValue(64L), strCookie(128L), strKey(32L), strValue(64L);
 	ROAnything roaCookie;
@@ -198,13 +199,13 @@ void HTTPMimeHeaderMapper::StoreCookies(ROAnything const header, Context &ctx) {
 		}
 		if ( anyNamedCookie.GetSize() > 0 && cookieName.Length() ) {
 			String strStructured(destSlotname);
-			strStructured.Append(".Structured.").Append(cookieName);
+			strStructured.Append(cookie_path_sep).Append("Structured").Append(cookie_path_sep).Append(cookieName);
 			TraceAny(anyNamedCookie, "storing named cookie at [" << strStructured << "]");
-			StorePutter::Operate(anyNamedCookie, ctx, "Session", strStructured);
+			StorePutter::Operate(anyNamedCookie, ctx, "Session", strStructured,true,cookie_path_sep);
 		}
 	}
 	//!@FIXME: this part should be factored out into separate mapper
-	ROAnything anyCookies = ctx.Lookup(String(destSlotname).Append(".Structured"));
+	ROAnything anyCookies = ctx.Lookup(String(destSlotname).Append(cookie_path_sep).Append("Structured"), cookie_path_sep);
 	if ( anyCookies.GetSize() > 0 ) {
 		TraceAny(anyCookies, "prepared cookie values");
 		String plainCookieString(256L), cookieName(32L);
@@ -220,7 +221,7 @@ void HTTPMimeHeaderMapper::StoreCookies(ROAnything const header, Context &ctx) {
 		}
 		Anything anyPlainString(plainCookieString);
 		Trace("plain cookie string [" << plainCookieString << "]");
-		StorePutter::Operate(anyPlainString, ctx, "Session", String(destSlotname).Append(".Plain"));
+		StorePutter::Operate(anyPlainString, ctx, "Session", String(destSlotname).Append(cookie_path_sep).Append("Plain"), false, cookie_path_sep);
 	}
 	TraceAny(ctx.Lookup("StoredCookies"), "cookies from context");
 }
