@@ -180,6 +180,7 @@ namespace STLStorage
 			// print message and deallocate memory with global delete
 			size_t sz(fAllocator->Free((void *)p));
 			_StartTrace1(STLAllocator.deallocate, "num:" << (long)num << " of sizeof(T):" << (long)sizeof(T) << " sz:" << (long)sz);
+			(void) sz; // avoid unused variable warning
 		}
 
 		Allocator *fAllocator;

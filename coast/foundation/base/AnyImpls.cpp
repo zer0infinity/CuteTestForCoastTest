@@ -808,8 +808,8 @@ Anything const& AnyArrayImpl::At(const char *key) const {
 		slot = fKeys->At(key);
 	}
 	if (slot >= 0) {
-	return fContents[IntAtBuf(slot)][IntAtSlot(slot)].Value();
-}
+		return fContents[IntAtBuf(slot)][IntAtSlot(slot)].Value();
+	}
 	throw std::out_of_range("AnyArrayImpl::At(const char*)");
 }
 

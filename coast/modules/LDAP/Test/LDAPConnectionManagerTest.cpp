@@ -89,7 +89,7 @@ void LDAPConnectionManagerTest::ConnectionManagerTest()
 	}
 }
 
-LDAP *LDAPConnectionManagerTest::CreateBadConnectionHandle(const String &name, String &badConnectionPoolId, long &maxBadConnections)
+LDAP *LDAPConnectionManagerTest::CreateBadConnectionHandle(const String &tname, String &badConnectionPoolId, long &maxBadConnections)
 {
 	StartTrace(LDAPConnectionManagerTest.CreateBadConnectionHandle);
 	ParameterMapper pm("ConnectionTestParameterMapper");
@@ -104,7 +104,7 @@ LDAP *LDAPConnectionManagerTest::CreateBadConnectionHandle(const String &name, S
 							params["BindPW"].AsString(),
 							params["ConnectionTimeout"].AsLong() * 1000L);
 
-	maxBadConnections = GetConfig()[name]["LDAPMaxConnections"].AsLong(5L);
+	maxBadConnections = GetConfig()[tname]["LDAPMaxConnections"].AsLong(5L);
 
 	String da("DataAccess_TestAutoRebindBadConnection");
 	Context ctx;

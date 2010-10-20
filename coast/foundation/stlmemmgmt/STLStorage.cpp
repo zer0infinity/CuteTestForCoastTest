@@ -29,6 +29,7 @@ namespace STLStorage
 	{
 		size_t sz(Storage::Global()->Free(block));
 		_StatTrace(BoostPoolUserAllocatorGlobal.free, "@" << (long)block << " sz:" << (long)sz, Storage::Global());
+		(void) sz; // avoid unused variable warning
 	}
 
 	char *BoostPoolUserAllocatorCurrent::malloc(const size_type bytes)
@@ -42,5 +43,6 @@ namespace STLStorage
 	{
 		size_t sz(Storage::Current()->Free(block));
 		_StatTrace(BoostPoolUserAllocatorCurrent.free, "@" << (long)block << " sz:" << (long)sz, Storage::Current());
+		(void) sz; // avoid unused variable warning
 	}
 };
