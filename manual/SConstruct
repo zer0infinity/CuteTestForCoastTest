@@ -9,7 +9,7 @@ import shutil
 import build_config
 
 env = Environment(ENV = os.environ)
-env = SConscript('aux/SConscript', 'env')
+env = SConscript('auxiliary/SConscript', 'env')
 
 
 class LatexBuilder(object):
@@ -182,7 +182,7 @@ def copy_images():
 
     config = ConfigParser.ConfigParser()
     config.optionxform = str # makes sure option names are delivered case sensitive
-    config.read("aux/img_mappings.cfg")
+    config.read("auxiliary/img_mappings.cfg")
 
     for chapter in config.sections():
         for mapping in config.options(chapter):
