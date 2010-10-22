@@ -42,6 +42,9 @@ public:
 	//! request for termination of pool
 	virtual void RequestTermination();
 
+	Reactor* GetReactor() {
+		return fReactor;
+	}
 protected:
 	virtual bool InitReactor(ROAnything args);
 
@@ -139,6 +142,8 @@ public:
 
 protected:
 	virtual void DoProcessEvent(Socket *) = 0;
+
+private:
 	HandleSet fHandleSet;
 };
 

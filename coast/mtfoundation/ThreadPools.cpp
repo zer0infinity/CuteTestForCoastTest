@@ -562,7 +562,10 @@ void WorkerPoolManager::Update(tObservedPtr pObserved, tArgsRef roaUpdateArgs)
 long WorkerPoolManager::ResourcesUsed()
 {
 	// accessor to current active requests
-	return fpStatEvtHandler->GetCurrentParallelRequests();
+	if ( fpStatEvtHandler.get() ) {
+		return fpStatEvtHandler->GetCurrentParallelRequests();
+	}
+	return 0L;
 }
 
 void WorkerPoolManager::BlockRequests()
@@ -601,7 +604,7 @@ bool WorkerPoolManager::AwaitEmpty(long sec)
 	// but wait at most sec seconds
 	DiffTimer aTimer(DiffTimer::eSeconds);
 	int msgCount = 0;
-	long lCurrRequests( fpStatEvtHandler->GetCurrentParallelRequests() );
+	long lCurrRequests = fpStatEvtHandler.get() ? fpStatEvtHandler->GetCurrentParallelRequests() : 0L;
 	// check for active requests
 	while ( fpStatEvtHandler.get() && ( lCurrRequests > 0 ) && ( aTimer.Diff() < sec ) ) {
 		Thread::Wait(1);						// wait for 1 second
@@ -615,7 +618,7 @@ bool WorkerPoolManager::AwaitEmpty(long sec)
 			SystemLog::Info( os.str() );
 		}
 	}
-	lCurrRequests = fpStatEvtHandler->GetCurrentParallelRequests();
+	lCurrRequests = fpStatEvtHandler.get() ? fpStatEvtHandler->GetCurrentParallelRequests() : 0L;
 	if ( lCurrRequests > 0 ) {
 		SYSWARNING("Still " << lCurrRequests << " working threads after waiting for " << msgCount << "s");
 	}
@@ -629,11 +632,11 @@ WorkerThread *WorkerPoolManager::FindNextRunnable(long lFindWorkerHint)
 	// this code when no slot is empty;
 	WorkerThread *hs( NULL );
 	bool bIsReady( false );
-	long lCurrRequests( fpStatEvtHandler->GetCurrentParallelRequests() );
+	long lCurrRequests = fpStatEvtHandler.get() ? fpStatEvtHandler->GetCurrentParallelRequests() : 0L;
 	while ( ( GetPoolSize() <= lCurrRequests ) || fBlockRequestHandling ) {
 		// release mutex and wait for condition
 		fCond.TimedWait( fMutex, 0, 100000 );
-		lCurrRequests = fpStatEvtHandler->GetCurrentParallelRequests();
+		lCurrRequests = fpStatEvtHandler.get() ? fpStatEvtHandler->GetCurrentParallelRequests() : 0L;
 	}
 	Assert( GetPoolSize() > lCurrRequests );
 	Trace("I slipped past the Critical Region and there are " << lCurrRequests << " requests in work and " << ( GetPoolSize() - lCurrRequests ) << " free workers");
