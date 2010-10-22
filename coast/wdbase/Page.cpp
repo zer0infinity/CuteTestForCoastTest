@@ -6,8 +6,6 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
-//#define PAGE_TRACING // output whole rendered page, incl. protocol header
-
 //--- interface include --------------------------------------------------------
 #include "Page.h"
 
@@ -18,10 +16,8 @@
 #include "Registry.h"
 #include "HTTPStreamStack.h"
 #include "RequestProcessor.h"
+#include "Server.h"
 #include "Dbg.h"
-#ifdef PAGE_TRACING
-#include "SystemLog.h"
-#endif
 
 //---- PagesModule -----------------------------------------------------------
 RegisterModule(PagesModule);
@@ -133,100 +129,98 @@ void Page::Preprocess(Context &c)
 	StatTrace(Page.Preprocess, fName << ":", Storage::Current());
 }
 
-void Page::Render(std::ostream &reply, Context &c)
+void Page::Render(std::ostream &reply, Context &ctx)
 {
-	StartTrace1(Page.RenderNew, "<" << fName << ">");
-	MethodTimer(Page.Render, "", c);
-#ifdef PAGE_TRACING
-	String dbg;
-	OStringStream replyInt(dbg);
-	RenderProtocolStatus(replyInt, c);
-	RenderProtocolHeader(replyInt, c);
-	replyInt << ENDL;
-	RenderProtocolBody(replyInt, c);
-	RenderProtocolTail(replyInt, c);
-
-	SystemLog::WriteToStderr(String("Page::Render\n") <<
-							 "------------ start -----------\n" << dbg <<
-							 "------------  end ------------\n");
-#endif
+	StartTrace1(Page.Render, "<" << fName << ">");
+	MethodTimer(Page.Render, "", ctx);
+	if (TriggerEnabled(Page.Render.TracePage)) {
+		String dbg;
+		OStringStream replyInt(dbg);
+		RenderProtocolStatus(replyInt, ctx);
+		RenderProtocolHeader(replyInt, ctx);
+		replyInt << ENDL;
+		RenderProtocolBody(replyInt, ctx);
+		RenderProtocolTail(replyInt, ctx);
+		SystemLog::WriteToStderr(String("Page::Render\n") << "------------ start -----------\n" << dbg
+				<< "------------  end ------------\n");
+	}
 	//SOP: try if we can get better responsiveness releasing the session
-	SessionReleaser slr(c);
+	SessionReleaser slr(ctx);
 	slr.Use();
 
-	RenderProtocolStatus(reply, c);
-	RenderProtocolHeader(reply, c);
+	RenderProtocolStatus(reply, ctx);
+	RenderProtocolHeader(reply, ctx);
 
 	bool zip = false;
-	if (c.Lookup("ClientAcceptsGzipEnc").AsBool(false)) {
-		ROAnything contentEncoding = c.Lookup("ContentGzipEncoding");
+	if (ctx.Lookup("ClientAcceptsGzipEnc").AsBool(false)) {
+		ROAnything contentEncoding = ctx.Lookup("ContentGzipEncoding");
 		//!@FIXME leu: sometimes we have "Content-type: text/html; someotherstuff"
-		String contentType = c.Lookup("content-type").AsString("text/html");
+		String contentType = ctx.Lookup("content-type").AsString("text/html");
 		if (contentEncoding[contentType].AsBool(false)) {
 			zip = true;
 		}
 	}
 
-	HTTPStreamStack stackStream(reply, RequestProcessor::KeepConnectionAlive(c), zip);
+	HTTPStreamStack stackStream(reply, RequestProcessor::KeepConnectionAlive(ctx), zip);
 	std::ostream &output = stackStream.GetBodyStream();
 
-	RenderProtocolBody(output, c);
-	RenderProtocolTail(output, c);
+	RenderProtocolBody(output, ctx);
+	RenderProtocolTail(output, ctx);
 
 	String token("PostRender");
-	ProcessToken(token, c);
+	ProcessToken(token, ctx);
 }
 
-void Page::RenderProtocolStatus(std::ostream &reply, Context &c)
+void Page::RenderProtocolStatus(std::ostream &reply, Context &ctx)
 {
 	StartTrace1(Page.RenderProtocolStatus, "<" << fName << ">");
-	RequestProcessor::RenderProtocolStatus(reply, c);
+	RequestProcessor::RenderProtocolStatus(reply, ctx);
 }
 
-void Page::RenderProtocolHeader(std::ostream &reply, Context &c)
+void Page::RenderProtocolHeader(std::ostream &reply, Context &ctx)
 {
 	StartTrace1(Page.RenderProtocolStatus, "<" << fName << ">");
 
 	// this part is optional
-	ROAnything httpHeader(c.Lookup("HTTPHeader"));
+	ROAnything httpHeader(ctx.Lookup("HTTPHeader"));
 
 	if (! httpHeader.IsNull()) {
-		Renderer::Render(reply, c, httpHeader);
+		Renderer::Render(reply, ctx, httpHeader);
 	} else {
 		// legacy
-		Mime(reply, c);
+		Mime(reply, ctx);
 	}
 }
 
-void Page::RenderProtocolBody(std::ostream &reply, Context &c)
+void Page::RenderProtocolBody(std::ostream &reply, Context &ctx)
 {
 	StartTrace1(Page.RenderProtocolBody, "<" << fName << ">");
 
-	ROAnything pagelayout(c.Lookup("PageLayout"));
+	ROAnything pagelayout(ctx.Lookup("PageLayout"));
 
 	if (!pagelayout.IsNull()) {
-		Renderer::Render(reply, c, pagelayout);
+		Renderer::Render(reply, ctx, pagelayout);
 	} else {
-		Header(reply, c);
+		Header(reply, ctx);
 
 		reply << "<hr>\n";
-		Title(reply, c);
+		Title(reply, ctx);
 
-		Body(reply, c);
+		Body(reply, ctx);
 		reply << "<hr>\n";
-		Footer(reply, c);
+		Footer(reply, ctx);
 	}
 }
 
-void Page::RenderProtocolTail(std::ostream &reply, Context &c)
+void Page::RenderProtocolTail(std::ostream &reply, Context &ctx)
 {
 	StartTrace1(Page.RenderProtocolTail, "<" << fName << ">");
 	//!@FIXME: this is a temporary workaround to only render Debug output onto html pages
 	OStringStream ostr;
-	RenderProtocolHeader(ostr, c);
+	RenderProtocolHeader(ostr, ctx);
 	if ( ostr.str().Contains("text/html") ) {
 		// we render optional debug output
-		c.HTMLDebugStores(reply);
+		ctx.HTMLDebugStores(reply);
 	}
 }
 

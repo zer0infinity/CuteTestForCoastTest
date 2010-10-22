@@ -18,8 +18,6 @@
 #include "SystemLog.h"
 #include "Dbg.h"
 
-//--- c-library modules used ---------------------------------------------------
-
 //--- RequestProcessor ----------------------------------------------------------
 RegCacheImpl(RequestProcessor);	// FindRequestProcessor()
 RegisterRequestProcessor(RequestProcessor);
@@ -31,8 +29,7 @@ RequestProcessor::RequestProcessor(const char *processorName)
 	StartTrace(RequestProcessor.RequestProcessor);
 }
 
-void RequestProcessor::Init(Server *server)
-{
+void RequestProcessor::Init(Server *server) {
 	StartTrace(RequestProcessor.Init);
 	fServer = server;
 }
@@ -90,19 +87,17 @@ RequestProcessor *RequestProcessor::GetCurrentRequestProcessor(Context &ctx)
 	return RequestProcessor::FindRequestProcessor(requestProcessor);
 }
 
-void RequestProcessor::ForceConnectionClose(Context &ctx)
-{
+void RequestProcessor::ForceConnectionClose(Context &ctx) {
 	ctx.GetTmpStore()["Keep-Alive"] = 0L;
 }
 
-bool RequestProcessor::KeepConnectionAlive(Context &ctx)
-{
+bool RequestProcessor::KeepConnectionAlive(Context &ctx) {
 	bool retVal = false;
 	StatTrace(RequestProcessor.KeepConnectionAlive, "PersistentConnections:" << (ctx.Lookup("PersistentConnections").AsBool(false) ? "true" : "false"), Storage::Current());
-	if ( ctx.Lookup("PersistentConnections").AsBool(false) ) {
+	if (ctx.Lookup("PersistentConnections").AsBool(false)) {
 		// first check if we already know the result
 		ROAnything lookupAny;
-		if (ctx.Lookup("Keep-Alive", lookupAny) && !lookupAny.IsNull() ) {
+		if (ctx.Lookup("Keep-Alive", lookupAny) && !lookupAny.IsNull()) {
 			retVal = lookupAny.AsBool();
 		} else {
 			// let the current RequestProcessor decide
@@ -114,14 +109,12 @@ bool RequestProcessor::KeepConnectionAlive(Context &ctx)
 	return retVal;
 }
 
-bool RequestProcessor::DoKeepConnectionAlive(Context &ctx)
-{
+bool RequestProcessor::DoKeepConnectionAlive(Context &ctx) {
 	// default is to close connection after request
 	return false;
 }
 
-void RequestProcessor::RenderProtocolStatus(std::ostream &os, Context &ctx)
-{
+void RequestProcessor::RenderProtocolStatus(std::ostream &os, Context &ctx) {
 	StartTrace(RequestProcessor.RenderProtocolStatus);
 	GetCurrentRequestProcessor(ctx)->DoRenderProtocolStatus(os, ctx);
 }
@@ -132,22 +125,19 @@ void RequestProcessor::Error(std::ostream &reply, const String &msg, Context &ct
 	GetCurrentRequestProcessor(ctx)->DoError(reply, msg, ctx);
 }
 
-void RequestProcessor::DoReadInput(std::iostream &Ios, Context &ctx)
-{
+void RequestProcessor::DoReadInput(std::iostream &Ios, Context &ctx) {
 	Anything args;
 	args.Import(Ios);
 	StatTraceAny(RequestProcessor.DoReadInput, args, "request arguments", Storage::Current());
 	ctx.PushRequest(args);
 }
 
-void RequestProcessor::DoProcessRequest(std::ostream &reply, Context &ctx)
-{
+void RequestProcessor::DoProcessRequest(std::ostream &reply, Context &ctx) {
 	StartTrace(RequestProcessor.DoProcessRequest);
 	fServer->ProcessRequest(reply, ctx);
 }
 
-void RequestProcessor::DoWriteOutput(std::iostream &Ios, std::ostream &reply, Context &ctx)
-{
+void RequestProcessor::DoWriteOutput(std::iostream &Ios, std::ostream &reply, Context &ctx) {
 	StartTrace(RequestProcessor.DoWriteOutput);
 	// dump the reply object onto the
 	// socket stream
@@ -157,8 +147,7 @@ void RequestProcessor::DoWriteOutput(std::iostream &Ios, std::ostream &reply, Co
 	Ios.flush();
 }
 
-void RequestProcessor::DoRenderProtocolStatus(std::ostream &os, Context &ctx)
-{
+void RequestProcessor::DoRenderProtocolStatus(std::ostream &os, Context &ctx) {
 	// unknown protocol -> no status
 }
 

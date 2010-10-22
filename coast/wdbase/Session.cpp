@@ -438,26 +438,26 @@ void Session::RenderNextPage(std::ostream &reply, Context &ctx, const ROAnything
 	}
 }
 
-void Session::DoRenderNextPage(std::ostream &reply, Context &context)
+void Session::DoRenderNextPage(std::ostream &reply, Context &ctx)
 {
 	StartTrace(Session.DoRenderNextPage);
 
-	context.SetRole(GetRole(context));
+	ctx.SetRole(GetRole(ctx));
 
 	String transition, currentpage;
-	SetupContext(context, transition, currentpage);
+	SetupContext(ctx, transition, currentpage);
 
-	DoFindNextPage(context, transition, currentpage);
+	DoFindNextPage(ctx, transition, currentpage);
 
 	Page *newPage = Page::FindPage(currentpage);
 	// lets hope we got a new page
 	if (newPage) {
 		// Now Start a new page...
-		newPage->Start(reply, context);
+		newPage->Start(reply, ctx);
 	} else {
-		String msg("Session::RenderNextPage: Page [");
+		String msg("Session::DoRenderNextPage: Page [");
 		msg << currentpage << "] not found.";
-		RequestProcessor::Error(reply, msg, context);
+		RequestProcessor::Error(reply, msg, ctx);
 		String logMsg(fId);
 		logMsg << " Session::RenderNextPage: newPage == 0";
 		SYSWARNING(logMsg);

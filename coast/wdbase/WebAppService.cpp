@@ -14,21 +14,12 @@
 #include "Session.h"
 #include "SessionListManager.h"
 #include "RequestProcessor.h"
+#include "Server.h"
 #include "URLUtils.h"
 #include "Dbg.h"
 
-//--- c-library modules used ---------------------------------------------------
-
 RegisterServiceHandler(WebAppService);
 //---- WebAppService ----------------------------------------------------------------
-WebAppService::WebAppService(const char *name) : ServiceHandler(name)
-{
-}
-
-WebAppService::~WebAppService()
-{
-}
-
 void WebAppService::DoHandleService(std::ostream &reply, Context &ctx)
 {
 	StartTrace(WebAppService.DoHandleService);

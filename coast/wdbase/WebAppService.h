@@ -24,8 +24,9 @@ class EXPORTDECL_WDBASE WebAppService : public ServiceHandler
 	friend class WebAppServiceTest;
 public:
 	//!standard named object constructor
-	WebAppService(const char *serviceHandlerName);
-	virtual ~WebAppService();
+	WebAppService(const char *name) :
+		ServiceHandler(name) {
+	}
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {

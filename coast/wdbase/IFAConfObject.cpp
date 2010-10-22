@@ -258,7 +258,7 @@ bool ConfNamedObject::DoLookup(const char *key, ROAnything &result, char delim, 
 	StartTrace1(ConfNamedObject.DoLookup, "key: <" << NotNull(key) << ">" << " Name: <" << fName << ">" );
 	bool bSuccess(IsConfigLoaded());
 	if ( !bSuccess ) {
-		SystemLog::Warning(String("ConfNamedObject::DoLookup: failed, object <") << fName << "> of registry category <" << fCategory << "> not initialized!\n");
+		SystemLog::Warning(String("ConfNamedObject::DoLookup: key [") << NotNull(key) << "] failed, object <" << fName << "> of registry category <" << fCategory << "> not initialized!\n");
 	} else {
 		bSuccess = fConfig.LookupPath(result, key, delim, indexdelim);
 	}

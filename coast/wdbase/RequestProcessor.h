@@ -21,7 +21,6 @@ class EXPORTDECL_WDBASE RequestProcessor : public RegisterableObject
 public:
 	//!named object shared by all requests
 	RequestProcessor(const char *processorName);
-	virtual ~RequestProcessor()	{ }
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {

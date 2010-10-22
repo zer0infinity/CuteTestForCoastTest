@@ -29,7 +29,6 @@ public:
 		: fContainer(container)
 		, fstrBaseKey(pcBaseKey)
 	{}
-	~AnyLookupInterfaceAdapter() {}
 
 protected:
 	ROAnything fContainer;
@@ -74,7 +73,6 @@ public:
 		: BaseClassType(ro) {
 		fCfno = cfno;
 	}
-	~ROAnyConfNamedObjectLookupAdapter() {}
 
 protected:
 	ConfNamedObject *fCfno;
