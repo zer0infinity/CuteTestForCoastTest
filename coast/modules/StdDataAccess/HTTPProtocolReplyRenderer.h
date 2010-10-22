@@ -24,8 +24,9 @@ class EXPORTDECL_STDDATAACCESS HTTPProtocolReplyRenderer : public Renderer
 {
 public:
 	//--- constructors
-	HTTPProtocolReplyRenderer(const char *name);
-	~HTTPProtocolReplyRenderer();
+	HTTPProtocolReplyRenderer(const char *name) :
+		Renderer(name) {
+	}
 
 	//! Renders a valid HTTP reply line on <I>reply </I>
 	// \param reply the stream where the rendered output is written on.

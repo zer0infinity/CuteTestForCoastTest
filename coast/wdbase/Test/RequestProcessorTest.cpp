@@ -38,11 +38,11 @@ void RequestProcessorTest::InitTest()
 	StartTrace(RequestProcessorTest.InitTest);
 	RequestProcessor rp("test");
 
-	t_assertm(!rp.fServer, "expected fServer to be null");
+	t_assertm(!rp.GetServer(), "expected fServer to be null");
 	rp.Init(Server::FindServer("Server"));
-	t_assertm(rp.fServer != 0, "expected fServer not to be null");
+	t_assertm(rp.GetServer() != 0, "expected fServer not to be null");
 	rp.Init(0);
-	t_assertm(!rp.fServer, "expected fServer to be null");
+	t_assertm(!rp.GetServer(), "expected fServer to be null");
 }
 
 void RequestProcessorTest::ProcessRequestTest()

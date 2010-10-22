@@ -96,6 +96,8 @@ public:
 	//! factory method to create a custom request processor that processes events
 	RequestProcessor *MakeProcessor();
 
+	RequestProcessor* GetRequestProcessor();
+
 	//!check if server is ready and running
 	bool IsReady(bool ready, long timeout);
 

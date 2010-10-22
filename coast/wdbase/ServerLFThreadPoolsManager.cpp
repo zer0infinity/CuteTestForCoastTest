@@ -71,6 +71,16 @@ bool ServerLFThreadPoolsManager::SetupLFPool(Server *server)
 	return fLFPool->Init(fThreadPoolSz, listenerPoolConfig, usePoolStorage);
 }
 
+RequestProcessor* ServerLFThreadPoolsManager::DoGetRequestProcessor() {
+	if ( fLFPool && fLFPool->GetReactor() ) {
+		RequestReactor* pReactor = dynamic_cast<RequestReactor*>(fLFPool->GetReactor());
+		if ( pReactor ) {
+			return pReactor->GetRequestProcessor();
+		}
+	}
+	return 0;
+}
+
 int ServerLFThreadPoolsManager::ReInit(Server *server)
 {
 	StartTrace(ServerLFThreadPoolsManager.ReInit);

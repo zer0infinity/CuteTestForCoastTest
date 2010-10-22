@@ -11,18 +11,13 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "RequestProcessor.h"
+#include "Server.h"
 #include "Dbg.h"
-
-//--- c-modules used -----------------------------------------------------------
 
 //---- HTTPProtocolReplyRenderer ---------------------------------------------------------------
 RegisterRenderer(HTTPProtocolReplyRenderer);
 
 Anything HTTPProtocolReplyRenderer::fgStatusCodeMap = InitStatusCodeMap();
-
-HTTPProtocolReplyRenderer::HTTPProtocolReplyRenderer(const char *name) : Renderer(name) { }
-
-HTTPProtocolReplyRenderer::~HTTPProtocolReplyRenderer() { }
 
 void HTTPProtocolReplyRenderer::EvilSideEffects(Context &ctx, ROAnything &realConfig, const String &httpVersion, String statusStr, long status, std::ostream &reply)
 {

@@ -37,7 +37,7 @@ void RequestProcessor::Init(Server *server) {
 void RequestProcessor::ProcessRequest(Context &ctx)
 {
 	StartTrace(RequestProcessor.ProcessRequest);
-	ctx.SetServer(fServer);
+	ctx.SetServer(GetServer());
 	Socket *socket = ctx.GetSocket();
 	std::iostream *Ios = 0;
 
@@ -81,10 +81,14 @@ void RequestProcessor::ProcessRequest(Context &ctx)
 	}
 }
 
-RequestProcessor *RequestProcessor::GetCurrentRequestProcessor(Context &ctx)
-{
-	String requestProcessor(ctx.Lookup("RequestProcessor", "RequestProcessor"));
-	return RequestProcessor::FindRequestProcessor(requestProcessor);
+namespace {
+	RequestProcessor *GetCurrentRequestProcessor(Context &ctx) {
+		RequestProcessor *pProc = 0;
+		((ctx.GetServer() && (pProc = ctx.GetServer()->GetRequestProcessor())) || (pProc = RequestProcessor::FindRequestProcessor(
+				ctx.Lookup("RequestProcessor", "RequestProcessor")))
+				|| (pProc = RequestProcessor::FindRequestProcessor("RequestProcessor")));
+		return pProc;
+	}
 }
 
 void RequestProcessor::ForceConnectionClose(Context &ctx) {
@@ -134,7 +138,9 @@ void RequestProcessor::DoReadInput(std::iostream &Ios, Context &ctx) {
 
 void RequestProcessor::DoProcessRequest(std::ostream &reply, Context &ctx) {
 	StartTrace(RequestProcessor.DoProcessRequest);
-	fServer->ProcessRequest(reply, ctx);
+	if (GetServer()) {
+		GetServer()->ProcessRequest(reply, ctx);
+	}
 }
 
 void RequestProcessor::DoWriteOutput(std::iostream &Ios, std::ostream &reply, Context &ctx) {

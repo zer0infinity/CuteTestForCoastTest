@@ -6,6 +6,14 @@
  * the license that is included with this library/application in the file license.txt.
  */
 
+//--- interface include --------------------------------------------------------
+#include "HTTPProcessorTest.h"
+
+#include "HTTPProcessor.h"
+
+//--- test modules used --------------------------------------------------------
+#include "TestSuite.h"
+
 //--- standard modules used ----------------------------------------------------
 #include "StringStream.h"
 #include "StringStreamSocket.h"
@@ -15,37 +23,29 @@
 #include "HTTPPostRequestBodyParser.h"
 #include "Dbg.h"
 #include "Server.h"
+#include "AnyLookupInterfaceAdapter.h"
 
-//--- test modules used --------------------------------------------------------
-#include "TestSuite.h"
-
-//--- interface include --------------------------------------------------------
-#include "HTTPProcessorTest.h"
-
-static String common =
-	String("") << "</head><body bgcolor=\"silver\">\n"
-	<< "<center>\n<h1>Page not found.</h1>\nPress the back button to return to the previous page!<br><br>\n"
-	<< "<FORM><input type=button value=\"Back\" onClick=\"javascript:history.back(1)\"></FORM>\n</center>\n</body></html>";
+namespace {
+	const String common = String() << "</head><body bgcolor=\"silver\">\n"
+			<< "<center>\n<h1>Page not found.</h1>\nPress the back button to return to the previous page!<br><br>\n"
+			<< "<FORM><input type=button value=\"Back\" onClick=\"javascript:history.back(1)\"></FORM>\n</center>\n</body></html>";
+}
 
 //---- HTTPProcessorTest ----------------------------------------------------------------
-HTTPProcessorTest::HTTPProcessorTest(TString tname)
-	: TestCaseType(tname)
-{
+HTTPProcessorTest::HTTPProcessorTest(TString tname) :
+	TestCaseType(tname) {
 	StartTrace(HTTPProcessorTest.HTTPProcessorTest);
 }
 
-TString HTTPProcessorTest::getConfigFileName()
-{
+TString HTTPProcessorTest::getConfigFileName() {
 	return "HTTPProcessorTestConfig";
 }
 
-HTTPProcessorTest::~HTTPProcessorTest()
-{
+HTTPProcessorTest::~HTTPProcessorTest() {
 	StartTrace(HTTPProcessorTest.Dtor);
 }
 
-void HTTPProcessorTest::setUp ()
-{
+void HTTPProcessorTest::setUp() {
 	StartTrace(HTTPProcessorTest.setUp);
 
 	fArgTemplate["env"]["REMOTE_ADDR"] = "127.0.0.1";

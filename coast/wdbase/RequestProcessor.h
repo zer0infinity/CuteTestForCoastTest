@@ -46,6 +46,9 @@ public:
 	//! render the protocol specific error msg
 	static void Error(std::ostream &reply, const String &msg, Context &ctx);
 
+	Server* GetServer() {
+		return fServer;
+	}
 	//! registry api
 	RegCacheDef(RequestProcessor);	// FindRequestProcessor()
 
@@ -83,10 +86,6 @@ protected:
 	friend class RequestProcessorTest;
 
 private:
-	//! get the current type of "RequestProcessor" from the context
-	//! warning: the returned object is an unitialized clone of the
-	//! prtototype that was registered.
-	static RequestProcessor *GetCurrentRequestProcessor(Context &ctx);
 
 	RequestProcessor(const RequestProcessor &);
 	RequestProcessor &operator=(const RequestProcessor &);

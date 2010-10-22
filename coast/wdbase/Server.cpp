@@ -437,6 +437,13 @@ RequestProcessor *Server::MakeProcessor()
 	return rp;
 }
 
+RequestProcessor* Server::GetRequestProcessor() {
+	if ( fPoolManager ) {
+		return fPoolManager->GetRequestProcessor();
+	}
+	return 0;
+}
+
 void Server::PrepareShutdown(int retCode)
 {
 	StartTrace(Server.PrepareShutdown);

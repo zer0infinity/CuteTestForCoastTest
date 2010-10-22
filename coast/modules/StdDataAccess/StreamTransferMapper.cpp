@@ -12,9 +12,8 @@
 //--- standard modules used ----------------------------------------------------
 #include "Renderer.h"
 #include "RequestProcessor.h"
+#include "Server.h"
 #include "Dbg.h"
-
-//--- c-library modules used ---------------------------------------------------
 
 //---- StreamTransferMapper ------------------------------------------------------------------
 RegisterResultMapper(StreamTransferMapper);

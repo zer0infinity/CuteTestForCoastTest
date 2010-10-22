@@ -71,10 +71,15 @@ public:
 	//!register an acceptor in the HandleSet and set it to nonblocking
 	virtual void RegisterHandle(Acceptor *acceptor);
 
+	RequestProcessor* GetRequestProcessor() {
+		return fProcessor;
+	}
+
 protected:
 	//!get the statistics gathered so far in item
 	void DoGetStatistic(Anything &item);
 
+private:
 	//! strategy for processing requests with regard to protocol (e.g. http)
 	RequestProcessor *fProcessor;
 

@@ -14,6 +14,7 @@
 #include "WDModule.h"
 
 class Server;
+class RequestProcessor;
 
 //---- ServerPoolsManagerInterfacesModule -----------------------------------------------------------
 class EXPORTDECL_WDBASE ServerPoolsManagerInterfacesModule : public WDModule
@@ -36,6 +37,10 @@ public:
 
 	//!registry interface
 	RegCacheDef(ServerPoolsManagerInterface);	// FindServerThreadPoolsManager()
+
+	RequestProcessor* GetRequestProcessor() {
+		return DoGetRequestProcessor();
+	}
 
 	//! initialize the managed thread pools
 	virtual int Init(Server *server) = 0;
@@ -72,6 +77,8 @@ protected:
 	bool fReady, fbInTermination;
 
 private:
+	virtual RequestProcessor* DoGetRequestProcessor() = 0;
+
 	//!guard ready flag
 	Mutex fMutex;
 	//!synchronize ready changes

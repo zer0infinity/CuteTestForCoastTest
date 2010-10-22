@@ -58,6 +58,7 @@ protected:
 	long fThreadPoolSz;
 
 private:
+	virtual RequestProcessor* DoGetRequestProcessor();
 	// block the following default elements of this class
 	// because they're not allowed to be used
 	ServerLFThreadPoolsManager();

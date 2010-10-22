@@ -10,10 +10,9 @@
 #define _SimpleDataAccessService_h_
 
 #include "config_dataaccess.h"
+
 //---- baseclass include -------------------------------------------------
 #include "ServiceHandler.h"
-
-//---- forward declaration -----------------------------------------------
 
 //---- SimpleDataAccessService ----------------------------------------------------------
 //!single line description of the class
@@ -24,8 +23,9 @@ class EXPORTDECL_DATAACCESS SimpleDataAccessService : public ServiceHandler
 {
 public:
 	//!standard named object constructor
-	SimpleDataAccessService(const char *serviceHandlerName);
-	~SimpleDataAccessService();
+	SimpleDataAccessService(const char *name) :
+		ServiceHandler(name) {
+	}
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {

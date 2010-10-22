@@ -17,6 +17,7 @@
 #include "Role.h"
 #include "Page.h"
 #include "RequestProcessor.h"
+#include "Server.h"
 #include "Renderer.h"
 #include "LocalizationUtils.h"
 #include "Dbg.h"

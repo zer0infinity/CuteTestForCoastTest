@@ -126,6 +126,13 @@ int ServerThreadPoolsManager::SetupThreadPool(bool reinit, Server *server)
 	return -1;
 }
 
+RequestProcessor* ServerThreadPoolsManager::DoGetRequestProcessor() {
+	if (fActiveRequests) {
+		return fActiveRequests->GetRequestProcessor();
+	}
+	return 0;
+}
+
 int ServerThreadPoolsManager::ReInit(Server *server)
 {
 	StartTrace(ServerThreadPoolsManager.ReInit);

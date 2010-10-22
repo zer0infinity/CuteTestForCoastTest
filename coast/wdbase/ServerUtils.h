@@ -95,6 +95,9 @@ public:
 	RequestThreadsManager(String name);
 	~RequestThreadsManager();
 
+	RequestProcessor* GetRequestProcessor() {
+		return fProcessor;
+	}
 protected:
 	//!check if the presently pool may be re-initalized
 	virtual bool CanReInitPool();

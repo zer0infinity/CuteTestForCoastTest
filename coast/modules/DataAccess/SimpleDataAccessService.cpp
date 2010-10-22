@@ -14,20 +14,13 @@
 #include "Renderer.h"
 #include "DataAccess.h"
 #include "RequestProcessor.h"
+#include "Server.h"
 #include "Dbg.h"
 
 //---- SimpleDataAccessService -----------------------------------------------------------
 RegisterServiceHandler(SimpleDataAccessService);
 
 //---- SimpleDataAccessService ----------------------------------------------------------------
-SimpleDataAccessService::SimpleDataAccessService(const char *name) : ServiceHandler(name)
-{
-}
-
-SimpleDataAccessService::~SimpleDataAccessService()
-{
-}
-
 void SimpleDataAccessService::DoHandleService(std::ostream &reply, Context &ctx)
 {
 	StartTrace(SimpleDataAccessService.DoHandleService);
