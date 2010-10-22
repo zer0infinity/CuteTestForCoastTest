@@ -19,7 +19,7 @@ MIMEHeader::MIMEHeader(URLUtils::NormalizeTag normalizeKey, MIMEHeader::ProcessM
 	: fBoundaryChecked(false)
 	, fNormalizeKey(normalizeKey)
 	, fSplitHeaderFields(splitHeaderFields)
-	, fAreSuspiciosHeadersPresent(false)
+	, fAreSuspiciousHeadersPresent(false)
 {
 	StartTrace(MIMEHeader.Ctor);
 }
@@ -70,9 +70,9 @@ MIMEHeader::ProcessMode MIMEHeader::GetDoSplitHeaderFieldsState(const String &fi
 
 bool MIMEHeader::DoParseHeaderLine(String &line)
 {
-	StartTrace1(MIMEHeader.DoParseHeaderLine, "Line: <<" << line << "\n>>");
-
+	StartTrace1(MIMEHeader.DoParseHeaderLine, "Line: <<" << line << ">>");
 	TrimEOL(line);
+	if ( !line.Length() ) return true;
 	String fieldname;
 	GetNormalizedFieldName(line, fieldname);
 	String fieldNameUpperCase(fieldname);
@@ -157,28 +157,29 @@ bool MIMEHeader::ParseField(String &line, MIMEHeader::ProcessMode splitHeaderFie
 	return (fieldname.Length() > 0);
 }
 
-bool MIMEHeader::CheckValues(String &value)
+bool MIMEHeader::CheckValues(String const &value)
 {
-	StartTrace(MIMEHeader.CheckValues);
+	StartTrace1(MIMEHeader.CheckValues, "value [" << value << "]");
 	String work(value);
 	work.ToUpper();
-	bool ret = work.StartsWith("GET") || work.StartsWith("POST");
-	if (ret) {
-		fAreSuspiciosHeadersPresent = true;
+	bool postOrGetValue = work.StartsWith("GET") || work.StartsWith("POST");
+	if (postOrGetValue) {
+		Trace("value starts with either POST or GET which is suspicious");
+		SetSuspiciousHeadersPresent(true);
 	}
-	return ret;
+	return postOrGetValue;
 }
 
-bool MIMEHeader::AreSuspiciosHeadersPresent()
+bool MIMEHeader::AreSuspiciousHeadersPresent() const
 {
-	StartTrace(MIMEHeader.AreSuspiciosHeadersPresent);
-	return fAreSuspiciosHeadersPresent;
+	StatTrace(MIMEHeader.AreSuspiciousHeadersPresent, (fAreSuspiciousHeadersPresent ? "true":"false"), Storage::Current());
+	return fAreSuspiciousHeadersPresent;
 }
 
-void MIMEHeader::SetAreSuspiciosHeadersPresent(bool newValue)
+void MIMEHeader::SetSuspiciousHeadersPresent(bool newValue)
 {
-	StartTrace(MIMEHeader.SetAreSuspiciosHeadersPresent);
-	fAreSuspiciosHeadersPresent = newValue;
+	StatTrace(MIMEHeader.SetSuspiciousHeadersPresent, newValue ? "true":"false", Storage::Current());
+	fAreSuspiciousHeadersPresent = newValue;
 }
 
 bool MIMEHeader::IsMultiPart()
@@ -194,7 +195,6 @@ bool MIMEHeader::IsMultiPart()
 void MIMEHeader::CheckMultipartBoundary(const String &contenttype)
 {
 	StartTrace1(MIMEHeader.CheckMultipartBoundary, "Content-type: <" << contenttype << ">");
-
 	if ((contenttype.Length() >= 9) && (contenttype.Contains("multipart") != -1)) {
 		const char *boundaryTag = "BOUNDARY";
 		long index = contenttype.Contains("boundary=");
@@ -206,15 +206,15 @@ void MIMEHeader::CheckMultipartBoundary(const String &contenttype)
 	}
 }
 
-const String &MIMEHeader::GetBoundary()
+const String &MIMEHeader::GetBoundary() const
 {
 	StartTrace(MIMEHeader.GetBoundary);
 	return fBoundary;
 }
 
-long MIMEHeader::GetContentLength()
+long MIMEHeader::GetContentLength() const
 {
-	StartTrace(MIMEHeader.GetContentLength);
+	StatTrace(MIMEHeader.GetContentLength, "length: " << ROAnything(fHeader)["CONTENT-LENGTH"].AsLong(-1), Storage::Current());
 	// inhibit side-effect if not set
 	return ROAnything(fHeader)["CONTENT-LENGTH"].AsLong(-1);
 }

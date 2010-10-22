@@ -80,7 +80,7 @@ void HTTPProcessor::ReadRequestBody(std::iostream &Ios, Anything &request, MIMEH
 	if ( request["REQUEST_METHOD"] == "POST" ) {
 		HTTPPostRequestBodyParser sm(header, Ios);
 		sm.Parse();
-		if (fCheckHeaderFields && header.AreSuspiciosHeadersPresent() ) {
+		if (fCheckHeaderFields && header.AreSuspiciousHeadersPresent() ) {
 			Anything erreanousRequest(ctx.GetRequest());
 			ctx.GetTmpStore()["ReadRequestBodyError"] =
 				DoLogError(400, "Possible SSL Renegotiation attack. A multipart mime header (in POST) contains a GET/POST request",

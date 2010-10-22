@@ -196,8 +196,8 @@ bool HTTPPostRequestBodyParser::ParseMultiPart(std::istream *is, const String &b
 				fContent.Append(partInfo);
 			}
 			// Communicate with "Main" header
-			if (hinner.AreSuspiciosHeadersPresent() ) {
-				fHeader.SetAreSuspiciosHeadersPresent(true);
+			if (hinner.AreSuspiciousHeadersPresent() ) {
+				fHeader.SetSuspiciousHeadersPresent(true);
 			}
 		}
 	}

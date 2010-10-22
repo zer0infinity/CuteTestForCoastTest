@@ -52,12 +52,12 @@ public:
 
 	//! return the cached boundary string that separate multipart MIME messages
 	//! is only useful if Content-Type is multipart/form-data
-	const String &GetBoundary();
+	const String &GetBoundary() const;
 
 	//! special case for the canonical "content-length" header field
 	//! only valid if set
 	//! \return returns the length as set in the header or -1 if none set
-	long	GetContentLength();
+	long GetContentLength() const;
 
 	// the complete header information as an Anything
 	Anything GetInfo() {
@@ -77,10 +77,10 @@ public:
 	long GetNormalizedFieldName(String &line, String &fieldname);
 
 	// Detect headers with suspicious content
-	bool AreSuspiciosHeadersPresent();
+	bool AreSuspiciousHeadersPresent() const;
 
 	// Set the flag externally, ussed for main MIMEHeader and "Inner" MIMEHeaders (multipart mime headers)
-	void SetAreSuspiciosHeadersPresent(bool newValue);
+	void SetSuspiciousHeadersPresent(bool newValue);
 
 protected:
 	//! parse a line with fieldname ": " value
@@ -102,7 +102,7 @@ protected:
 	MIMEHeader::ProcessMode GetDoSplitHeaderFieldsState(const String &fieldNameUpperCase);
 
 	// Check headerfield value for POST or GET content
-	bool CheckValues(String &value);
+	bool CheckValues(String const& value);
 
 	//!contains the request/reply header
 	Anything fHeader;
@@ -112,7 +112,7 @@ protected:
 	bool fBoundaryChecked;
 	URLUtils::NormalizeTag fNormalizeKey;
 	ProcessMode fSplitHeaderFields;
-	bool fAreSuspiciosHeadersPresent;
+	bool fAreSuspiciousHeadersPresent;
 
 private:
 	MIMEHeader(const MIMEHeader &);

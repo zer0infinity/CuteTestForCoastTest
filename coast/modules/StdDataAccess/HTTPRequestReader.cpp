@@ -90,7 +90,7 @@ bool HTTPRequestReader::ReadRequest(std::iostream &Ios, const Anything &clientIn
 		// handle request lines
 		fHeader.DoParseHeaderLine(line);
 	}
-	if ( fProc.fCheckHeaderFields && fHeader.AreSuspiciosHeadersPresent() ) {
+	if ( fProc.fCheckHeaderFields && fHeader.AreSuspiciousHeadersPresent() ) {
 		String tmp;
 		OStringStream oss(tmp);
 		fHeader.GetInfo().PrintOn(oss, false);

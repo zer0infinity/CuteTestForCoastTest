@@ -106,7 +106,7 @@ void MIMEHeaderTest::SimpleHeaderTest()
 		assertEqualm("", mh.Lookup("NotThere", ""), "expected 'NotThere' to be emtpy");
 
 		assertAnyEqual(result, mh.GetInfo());
-		t_assertm(!(mh.AreSuspiciosHeadersPresent()), "Expected no suspicious headers.");
+		t_assertm(!(mh.AreSuspiciousHeadersPresent()), "Expected no suspicious headers.");
 	}
 	{
 		MIMEHeader mh(URLUtils::eUpshift, MIMEHeader::eDoNotSplitHeaderFields);
@@ -121,7 +121,7 @@ void MIMEHeaderTest::SimpleHeaderTest()
 		t_assertm(mh.GetContentLength() == -1, "expected -1, since field is not set");
 		assertEqualm("", mh.Lookup("NotThere", ""), "expected 'NotThere' to be emtpy");
 
-		t_assertm(!(mh.AreSuspiciosHeadersPresent()), "Expected no suspicious headers.");
+		t_assertm(!(mh.AreSuspiciousHeadersPresent()), "Expected no suspicious headers.");
 		assertAnyEqual(result1, mh.GetInfo());
 	}
 }
@@ -171,7 +171,7 @@ void MIMEHeaderTest::SetCookieTest()
 		t_assertm(mh.GetContentLength() == -1, "expected -1, since field is not set");
 		assertEqualm("", mh.Lookup("NotThere", ""), "expected 'NotThere' to be emtpy");
 
-		t_assertm(!(mh.AreSuspiciosHeadersPresent()), "Expected no suspicious headers.");
+		t_assertm(!(mh.AreSuspiciousHeadersPresent()), "Expected no suspicious headers.");
 		assertAnyEqual(result, mh.GetInfo());
 	}
 	Anything anyCookie2;
@@ -192,7 +192,7 @@ void MIMEHeaderTest::SetCookieTest()
 		t_assertm(mh.GetContentLength() == -1, "expected -1, since field is not set");
 		assertEqualm("", mh.Lookup("NotThere", ""), "expected 'NotThere' to be emtpy");
 
-		t_assertm(!(mh.AreSuspiciosHeadersPresent()), "Expected no suspicious headers.");
+		t_assertm(!(mh.AreSuspiciousHeadersPresent()), "Expected no suspicious headers.");
 		assertAnyEqual(result, mh.GetInfo());
 	}
 }
@@ -349,7 +349,7 @@ void MIMEHeaderTest::MultiPartHeaderTest()
 		assertEqualm("", mh.Lookup("NotThere", ""), "expected 'NotThere' to be emtpy");
 
 		assertAnyEqual(result, mh.GetInfo());
-		t_assertm(!(mh.AreSuspiciosHeadersPresent()), "Expected no suspicious headers.");
+		t_assertm(!(mh.AreSuspiciousHeadersPresent()), "Expected no suspicious headers.");
 		TraceAny(mh.GetInfo(), "mh.GetInfo()");
 	}
 	{
@@ -365,7 +365,7 @@ void MIMEHeaderTest::MultiPartHeaderTest()
 		t_assertm(mh.GetContentLength() == 542, "expected 542, since field should be set");
 		assertEqualm("", mh.Lookup("NotThere", ""), "expected 'NotThere' to be emtpy");
 
-		t_assertm(!(mh.AreSuspiciosHeadersPresent()), "Expected no suspicious headers.");
+		t_assertm(!(mh.AreSuspiciousHeadersPresent()), "Expected no suspicious headers.");
 		assertAnyEqual(result1, mh.GetInfo());
 	}
 	{
@@ -381,7 +381,7 @@ void MIMEHeaderTest::MultiPartHeaderTest()
 		t_assertm(mh.GetContentLength() == 542, "expected 542, since field should be set");
 		assertEqualm("", mh.Lookup("NotThere", ""), "expected 'NotThere' to be emtpy");
 
-		t_assertm(!(mh.AreSuspiciosHeadersPresent()), "Expected no suspicious headers.");
+		t_assertm(!(mh.AreSuspiciousHeadersPresent()), "Expected no suspicious headers.");
 		assertAnyEqual(result2, mh.GetInfo());
 	}
 	{
@@ -397,7 +397,7 @@ void MIMEHeaderTest::MultiPartHeaderTest()
 		t_assertm(mh.GetContentLength() == 542, "expected 542, since field should be set");
 		assertEqualm("", mh.Lookup("NotThere", ""), "expected 'NotThere' to be emtpy");
 
-		t_assertm(!(mh.AreSuspiciosHeadersPresent()), "Expected no suspicious headers.");
+		t_assertm(!(mh.AreSuspiciousHeadersPresent()), "Expected no suspicious headers.");
 		assertAnyEqual(result3, mh.GetInfo());
 	}
 
@@ -436,7 +436,7 @@ void MIMEHeaderTest::PartHeaderTest()
 		t_assertm(mh.GetContentLength() == -1, "expected -1, since field is not set");
 		assertEqualm("", mh.Lookup("NotThere", ""), "expected 'NotThere' to be emtpy");
 		assertEqualm("application/x-unknown-content-type-hfile", mh.Lookup("CONTENT-TYPE", ""), "expected Content-type to be set");
-		t_assertm(!(mh.AreSuspiciosHeadersPresent()), "Expected no suspicious headers.");
+		t_assertm(!(mh.AreSuspiciousHeadersPresent()), "Expected no suspicious headers.");
 		assertAnyEqual(result, mh.GetInfo());
 	}
 }
@@ -484,7 +484,7 @@ void MIMEHeaderTest::BadHeadersTest()
 		assertEqualm("", mh.Lookup("NotThere", ""), "expected 'NotThere' to be emtpy");
 
 		assertAnyEqual(result1, mh.GetInfo());
-		t_assertm((mh.AreSuspiciosHeadersPresent()), "Expected suspicious headers.");
+		t_assertm((mh.AreSuspiciousHeadersPresent()), "Expected suspicious headers.");
 	}
 	{
 		MIMEHeader mh;
@@ -500,7 +500,7 @@ void MIMEHeaderTest::BadHeadersTest()
 		assertEqualm("", mh.Lookup("NotThere", ""), "expected 'NotThere' to be emtpy");
 
 		assertAnyEqual(result2, mh.GetInfo());
-		t_assertm((mh.AreSuspiciosHeadersPresent()), "Expected suspicious headers.");
+		t_assertm((mh.AreSuspiciousHeadersPresent()), "Expected suspicious headers.");
 	}
 }
 
