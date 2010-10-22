@@ -12,6 +12,7 @@
 #include "config_stddataaccess.h"
 #include "RequestProcessor.h"
 
+class Context;
 class MIMEHeader;
 
 //--- HTTPProcessor ----------------------------------------------------------
@@ -19,21 +20,9 @@ class MIMEHeader;
 class EXPORTDECL_STDDATAACCESS HTTPProcessor : public RequestProcessor
 {
 public:
-	HTTPProcessor(const char *processorName)
-		: RequestProcessor(processorName),
-		  fLineSizeLimit(4096),
-		  fRequestSizeLimit(5120),
-		  fURISizeLimit(271),	// limit URI size to 255 per default since most of the proxies and some browsers won't handle more
-		  fCheckUrlEncodingOverride(),
-		  fCheckUrlPathContainsUnsafeCharsOverride(),
-		  fCheckUrlPathContainsUnsafeCharsAsciiOverride(),
-		  fCheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii(0),
-		  fCheckUrlArgEncodingOverride(),
-		  fUrlExhaustiveDecode(0),
-		  fFixDirectoryTraversial(0),
-		  fURLEncodeExclude("/?"),
-		  fCheckHeaderFields(true),
-		  fRejectRequestsWithInvalidHeaders(false) {}
+	HTTPProcessor(const char *processorName) :
+		RequestProcessor(processorName) {
+	}
 
 	/*! @copydoc IFAObject::Clone(Allocator *) */
 	IFAObject *Clone(Allocator *a) const {
@@ -43,15 +32,16 @@ public:
 	//!configure request processor with server object
 	virtual void Init(Server *server);
 
-protected:
 	//! checks request headers if zip-encoding is accepted by client
 	static bool IsZipEncodingAcceptedByClient(Context &ctx);
+
+protected:
+	//!read in the request body from a POST if any
+	virtual void ReadRequestBody(std::iostream &ios, Anything &request, MIMEHeader &header, Context &ctx);
 
 	//!read the input arguments from the stream and generate an anything
 	virtual void DoReadInput(std::iostream &ios, Context &ctx);
 
-	//!read in the request body from a POST if any
-	virtual void ReadRequestBody(std::iostream &ios, Anything &request, MIMEHeader &header, Context &ctx);
 	//!set some client info needed for verification
 	virtual void SetWDClientInfo(Context &ctx);
 	//!parse the cookie string into an anything
@@ -66,28 +56,12 @@ protected:
 	//! checks if the connection should keep-alive after the request has processed
 	virtual bool DoKeepConnectionAlive(Context &ctx);
 
+	//! Log the error to Security.log
+	virtual Anything DoLogError(Context& ctx, long errcode, const String &reason, const String &line, const Anything &clientInfo, const String &msg, Anything &request, const char *who);
+
 	//! render the protocol specific error msg
 	virtual void DoError(std::ostream &reply, const String &msg, Context &ctx);
 
-	//! Log the error to Security.log
-	Anything DoLogError(long errcode, const String &reason, const String &line, const Anything &clientInfo, const String &msg, Anything &request, const char *who);
-
-	long 		fLineSizeLimit;
-	long 		fRequestSizeLimit;
-	long 		fURISizeLimit;
-	String		fCheckUrlEncodingOverride;
-	String		fCheckUrlPathContainsUnsafeCharsOverride;
-	String		fCheckUrlPathContainsUnsafeCharsAsciiOverride;
-	long		fCheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii;
-	String		fCheckUrlArgEncodingOverride;
-	long		fUrlExhaustiveDecode;
-	long		fFixDirectoryTraversial;
-	String		fURLEncodeExclude;
-	bool		fCheckHeaderFields;
-	bool		fRejectRequestsWithInvalidHeaders;
-	friend class HTTPProcessorTest;
-	friend class HTTPRequestReaderTest;
-	friend class HTTPRequestReader;
 private:
 	HTTPProcessor(const HTTPProcessor &);
 	HTTPProcessor &operator=(const HTTPProcessor &);

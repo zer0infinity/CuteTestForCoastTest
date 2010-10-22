@@ -22,10 +22,8 @@
 RegCacheImpl(RequestProcessor);	// FindRequestProcessor()
 RegisterRequestProcessor(RequestProcessor);
 
-RequestProcessor::RequestProcessor(const char *processorName)
-	: RegisterableObject(processorName)
-	, fServer(0), fErrors()
-{
+RequestProcessor::RequestProcessor(const char *processorName) :
+	RegisterableObject(processorName), fServer(0) {
 	StartTrace(RequestProcessor.RequestProcessor);
 }
 
@@ -123,8 +121,12 @@ void RequestProcessor::RenderProtocolStatus(std::ostream &os, Context &ctx) {
 	GetCurrentRequestProcessor(ctx)->DoRenderProtocolStatus(os, ctx);
 }
 
-void RequestProcessor::Error(std::ostream &reply, const String &msg, Context &ctx)
-{
+Anything RequestProcessor::LogError(Context& ctx, long errcode, const String &reason, const String &line, const Anything &clientInfo, const String &msg, Anything &request, const char *who) {
+	StartTrace(RequestProcessor.LogError);
+	return GetCurrentRequestProcessor(ctx)->DoLogError(ctx, errcode, reason, line, clientInfo, msg, request, who);
+}
+
+void RequestProcessor::Error(std::ostream &reply, const String &msg, Context &ctx) {
 	StartTrace(RequestProcessor.Error);
 	GetCurrentRequestProcessor(ctx)->DoError(reply, msg, ctx);
 }
@@ -157,7 +159,12 @@ void RequestProcessor::DoRenderProtocolStatus(std::ostream &os, Context &ctx) {
 	// unknown protocol -> no status
 }
 
-void RequestProcessor::DoError(std::ostream &reply, const String &msg, Context &ctx)
-{
+Anything RequestProcessor::DoLogError(Context& ctx, long errcode, const String &reason, const String &line, const Anything &clientInfo,
+		const String &msg, Anything &request, const char *who) {
+	// unknown protocol -> no error logging
+	return Anything();
+}
+
+void RequestProcessor::DoError(std::ostream &reply, const String &msg, Context &ctx) {
 	// unknown protocol -> no error msg
 }

@@ -13,8 +13,9 @@
 #include "Anything.h"
 #include <iosfwd>
 
-class HTTPProcessor;
+class RequestProcessor;
 class MIMEHeader;
+class Context;
 
 //--- HTTPRequestReader ----------------------------------------------------------
 //! Policy object to read HTTP Requests unscramble URL Variables
@@ -22,56 +23,53 @@ class EXPORTDECL_STDDATAACCESS HTTPRequestReader
 {
 public:
 	//!reads request from ios on behalf of processor
-	HTTPRequestReader(HTTPProcessor &p, MIMEHeader &header);
+	HTTPRequestReader(RequestProcessor *p, MIMEHeader &header);
 
 	//!read a request and handle error throug ios
-	bool ReadRequest(std::iostream &Ios, const Anything &clientInfo = Anything());
+	bool ReadRequest(Context &ctx, std::iostream &Ios, const Anything &clientInfo = Anything());
 
 	//!get the resulting anything if read request was successful
 	Anything const& GetRequest();
 
-protected:
+private:
 	//!read the one input line stream and check it against limits,
 	//! my generate an error reply in case of "attacks"
-	bool ReadLine(std::iostream &Ios, String &line, const Anything &clientInfo, bool &hadError);
+	bool ReadLine(Context &ctx, std::iostream &Ios, String &line, const Anything &clientInfo, bool &hadError);
 	//!handle the the request line by line
-	bool ParseRequest(std::iostream &Ios, String &line, const Anything &clientInfo);
+	bool ParseRequest(Context &ctx, std::iostream &Ios, String &line, const Anything &clientInfo);
 
 	//!handle the first line of a request containing GET/POST
-	bool HandleFirstLine(std::iostream &Ios, String &line, const Anything &clientInfo);
+	bool HandleFirstLine(Context &ctx, std::iostream &Ios, String &line, const Anything &clientInfo);
 
 	//!check the length of the request, handle error if necessary
-	bool CheckReqLineSize(std::iostream &Ios, long lineLength, const String &line, const Anything &clientInfo);
+	bool CheckReqLineSize(Context &ctx, std::iostream &Ios, long lineLength, const String &line, const Anything &clientInfo);
 
 	//!check the length of a single request line, handle error if necessary
-	bool CheckReqBufferSize(std::iostream &Ios, long lineLength, const String &line, const Anything &clientInfo);
+	bool CheckReqBufferSize(Context &ctx, std::iostream &Ios, long lineLength, const String &line, const Anything &clientInfo);
 
 	//!check the size of the request uri
-	bool CheckReqURISize(std::iostream &Ios, long lineLength, const String &line, const Anything &clientInfo);
+	bool CheckReqURISize(Context &ctx, std::iostream &Ios, long lineLength, const String &line, const Anything &clientInfo);
 
 	//!Verify t RFC 1738 compliance
-	bool VerifyUrlPath(std::iostream &Ios, String &urlPath, const Anything &clientInfo);
+	bool VerifyUrlPath(Context &ctx, std::iostream &Ios, String &urlPath, const Anything &clientInfo);
 
 	//!Verify t RFC 1738 compliance
-	bool VerifyUrlArgs(String &urlArgs);
+	bool VerifyUrlArgs(Context &ctx, String &urlArgs);
 
 	//!writes back http error codes with html msg
-	bool DoHandleError(std::iostream &Ios, long errcode, const String &reason, const String &line, const Anything &clientInfo, bool reject = true, const String & = String("Page not found."));
+	bool DoHandleError(Context &ctx, std::iostream &Ios, long errcode, const String &reason, const String &line, const Anything &clientInfo, bool reject = true, const String & = String("Page not found."));
 
 	//!Logs  the error if SecurityLog is defined in AppLog config
-	void DoLogError(long errcode, const String &reason, const String &line, const Anything &clientInfo, const String &msg);
+	void LogError(Context &ctx, long errcode, const String &reason, const String &line, const Anything &clientInfo, const String &msg);
 
 	//!the processor we are working for
-	HTTPProcessor &fProc;
+	RequestProcessor *fProc;
 
 	//!product output a request anything
 	Anything fRequest;
 
 	//!subpart of output a header, containing all http headers
 	MIMEHeader &fHeader;
-
-	//!contains the current request only really used when tracing
-	String fRequestBuffer;
 
 	//!contains the current requests size
 	long fRequestBufferSize;

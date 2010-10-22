@@ -11,51 +11,34 @@
 
 //--- standard modules used ----------------------------------------------------
 #include "Timers.h"
-#include "HTTPPostRequestBodyParser.h"
 #include "HTTPRequestReader.h"
-#include "HTTPProcessor.h"
+#include "HTTPPostRequestBodyParser.h"
+#include "HTTPProtocolReplyRenderer.h"
 #include "MIMEHeader.h"
 #include "Server.h"
-#include "HTTPProtocolReplyRenderer.h"
 #include "AnyIterators.h"
-#include "AppBooter.h"
 #include "AppLog.h"
+#include "AnythingUtils.h"
 
 RegisterRequestProcessor(HTTPProcessor);
 
-//:configure request processor with server object
-void HTTPProcessor::Init(Server *server)
-{
-	if ( server ) {
-		fRequestSizeLimit = server->Lookup("RequestSizeLimit", fRequestSizeLimit);
-		fLineSizeLimit = server->Lookup("LineSizeLimit", fLineSizeLimit);
-		fURISizeLimit = server->Lookup("URISizeLimit", fURISizeLimit);
-		fCheckUrlEncodingOverride = server->Lookup("CheckUrlEncodingOverride", fCheckUrlEncodingOverride);
-		fCheckUrlPathContainsUnsafeCharsOverride = server->Lookup("CheckUrlPathContainsUnsafeCharsOverride", fCheckUrlPathContainsUnsafeCharsOverride);
-		fCheckUrlPathContainsUnsafeCharsAsciiOverride = server->Lookup("CheckUrlPathContainsUnsafeCharsAsciiOverride", fCheckUrlPathContainsUnsafeCharsAsciiOverride);
-		fCheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii = server->Lookup("CheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii", fCheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii);
-		fCheckUrlArgEncodingOverride = server->Lookup("CheckUrlArgEncodingOverride", fCheckUrlArgEncodingOverride);
-		fUrlExhaustiveDecode = server->Lookup("URLExhaustiveDecode", fUrlExhaustiveDecode);
-		fFixDirectoryTraversial = server->Lookup("FixDirectoryTraversial", fFixDirectoryTraversial);
-		fURLEncodeExclude = server->Lookup("URLEncodeExclude", fURLEncodeExclude);
-		fCheckHeaderFields = server->Lookup("CheckHeaderFields", (long) fCheckHeaderFields);
-		fRejectRequestsWithInvalidHeaders = server->Lookup("RejectRequestsWithInvalidHeaders", (long) fRejectRequestsWithInvalidHeaders);
-
-	}
+// configure request processor with server object
+void HTTPProcessor::Init(Server *server) {
 	RequestProcessor::Init(server);
 }
-
-//#define REQ_TRACING
 
 void HTTPProcessor::DoReadInput(std::iostream &Ios, Context &ctx)
 {
 	StartTrace(HTTPProcessor.DoReadInput);
 
-	MIMEHeader header; // no super header
-	HTTPRequestReader reader(*this, header);
+	Anything anyProcessorName = GetName();
+	Context::PushPopEntry<Anything> aRPEntry(ctx, "RPName", anyProcessorName, "RequestProcessor");
+
+	MIMEHeader header;
+	HTTPRequestReader reader(this, header);
 	{
 		MethodTimer(HTTPRequestReader.ReadRequest, "Reading request", ctx);
-		if (! reader.ReadRequest(Ios, ctx.GetRequest()["ClientInfo"]) ) {
+		if (! reader.ReadRequest(ctx, Ios, ctx.GetRequest()["ClientInfo"]) ) {
 			return;    // this was an error that forbids to process any further
 		}
 	}
@@ -74,26 +57,24 @@ void HTTPProcessor::DoReadInput(std::iostream &Ios, Context &ctx)
 	SubTraceAny(request, request, "Arguments:");
 }
 
-void HTTPProcessor::ReadRequestBody(std::iostream &Ios, Anything &request, MIMEHeader &header, Context &ctx)
-{
+void HTTPProcessor::ReadRequestBody(std::iostream &Ios, Anything &request, MIMEHeader &header, Context &ctx) {
 	StartTrace(HTTPProcessor.ReadRequestBody);
-	if ( request["REQUEST_METHOD"] == "POST" ) {
+	if (request["REQUEST_METHOD"] == "POST") {
+		const char *pcSubSlotName = "HTTPPostRequestBodyParser";
 		HTTPPostRequestBodyParser sm(header, Ios);
 		sm.Parse();
-		if (fCheckHeaderFields && header.AreSuspiciousHeadersPresent() ) {
-			Anything erreanousRequest(ctx.GetRequest());
-			ctx.GetTmpStore()["ReadRequestBodyError"] =
-				DoLogError(400, "Possible SSL Renegotiation attack. A multipart mime header (in POST) contains a GET/POST request",
-						   ctx.GetRequest()["REQUEST_URI"].AsString(), ctx.GetRequest()["ClientInfo"], "", erreanousRequest, "HTTPPostRequestBodyParser");
+		if (ctx.Lookup("CheckHeaderFields", 1L) && header.AreSuspiciousHeadersPresent()) {
+			Anything erreanousRequest(ctx.GetRequest()), anyError;
+			String strStoreAt("ReadRequestBodyError");
+			strStoreAt.Append('.').Append(pcSubSlotName);
+			anyError = LogError(ctx, 400,
+					"Possible SSL Renegotiation attack. A multipart mime header (in POST) contains a GET/POST request",
+					erreanousRequest["REQUEST_URI"].AsString(), erreanousRequest["ClientInfo"], "", erreanousRequest, pcSubSlotName);
+			StorePutter::Operate(anyError, ctx, "Tmp", strStoreAt);
 		}
 		request["REQUEST_BODY"] = sm.GetContent();
 		request["WHOLE_REQUEST_BODY"] = sm.GetUnparsedContent();
-
-#ifdef REQ_TRACING
-		SystemLog::WriteToStderr(String("Body: ") << request["REQUEST_BODY"] << "\n");
-#endif
-		TraceAny(request["REQUEST_BODY"], "Body");
-		TraceAny(request["WHOLE_REQUEST_BODY"], "Whole Body");
+		TraceAny(request["REQUEST_BODY"], "Body"); TraceAny(request["WHOLE_REQUEST_BODY"], "Whole Body");
 	} else {
 		request["header"]["CONTENT-LENGTH"] = 0L;
 	}
@@ -184,30 +165,20 @@ void HTTPProcessor::DoRenderProtocolStatus(std::ostream &os, Context &ctx)
 	r.RenderAll( os, ctx, ROAnything());
 }
 
-Anything HTTPProcessor::DoLogError(long errcode, const String &reason, const String &line, const Anything &clientInfo, const String &msg, Anything &request, const char *who)
+Anything HTTPProcessor::DoLogError(Context& ctx, long errcode, const String &reason, const String &line, const Anything &clientInfo, const String &msg, Anything &request, const char *who)
 {
 	StartTrace(HTTPProcessor.DoLogError);
 	TraceAny(clientInfo, "client info:");
 	// define SecurityLog according to the AppLog rules if you want to see this output.
-	Context ctx;
-	Anything tmp = ctx.GetTmpStore();
-	tmp[who]["REMOTE_ADDR"] = clientInfo["REMOTE_ADDR"];
-	tmp[who]["HTTPS"] = clientInfo["HTTPS"];
-	tmp[who]["Request"] = request;
-	tmp[who]["HttpStatusCode"]	=  errcode;
-	tmp[who]["HttpResponseMsg"] = msg;
-	tmp[who]["Reason"] = reason;
-	tmp[who]["FaultyRequestLine"] = line;
-	fErrors[who] = tmp[who];
-	Application *pApp = NULL;
-	Server *pServer = NULL;
-	String strServerName;
-	pApp = AppBooter().FindApplication(Application::GetConfig(), strServerName);
-	TraceAny(tmp[who], "global server, aka 'MasterServer', is [" << strServerName << "]");
-	pServer = SafeCast(pApp, Server);
-	if ( pServer ) {
-		ctx.SetServer(pServer);
-	}
+	Anything tmp;
+	tmp["REMOTE_ADDR"] = clientInfo["REMOTE_ADDR"];
+	tmp["HTTPS"] = clientInfo["HTTPS"];
+	tmp["Request"] = request;
+	tmp["HttpStatusCode"]	=  errcode;
+	tmp["HttpResponseMsg"] = msg;
+	tmp["Reason"] = reason;
+	tmp["FaultyRequestLine"] = line;
+	StorePutter::Operate(tmp, ctx, "Tmp", who);
 	AppLogModule::Log(ctx, "SecurityLog", AppLogModule::eERROR);
 	return tmp;
 }
@@ -215,6 +186,7 @@ Anything HTTPProcessor::DoLogError(long errcode, const String &reason, const Str
 //! render the protocol specific error msg
 void HTTPProcessor::DoError(std::ostream &reply, const String &msg, Context &ctx)
 {
+	StartTrace1(HTTPProcessor.DoError, "message [" << msg << "]");
 	ROAnything httpStatus = ctx.Lookup("HTTPStatus");
 	long errorCode(httpStatus["ResponseCode"].AsLong(400L));
 	String errorMsg(HTTPProtocolReplyRenderer::DefaultReasonPhrase(errorCode));
@@ -229,6 +201,5 @@ void HTTPProcessor::DoError(std::ostream &reply, const String &msg, Context &ctx
 	reply << "<FORM><input type=button value=\"Back\" onClick=\"javascript:history.back(1)\"></FORM>\n";
 	reply << "</center>\n";
 	ctx.HTMLDebugStores(reply);
-
 	reply << "</body></html>\n";
 }

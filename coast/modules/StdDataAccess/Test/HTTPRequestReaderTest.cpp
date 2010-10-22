@@ -43,37 +43,25 @@ void HTTPRequestReaderTest::CleanupRequestLineTest() {
 
 	ROAnything cConfig;
 	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
+	RequestProcessor *httpProc = HTTPProcessor::FindRequestProcessor("HTTPProcessor");
 	while (aEntryIterator.Next(cConfig)) {
+		Anything anyParams = cConfig.DeepClone();
+		AnyLookupInterfaceAdapter<Anything> lia(anyParams);
 		Context ctx;
-		MIMEHeader header;
-		HTTPProcessor httpProc("HTTPProc");
-		httpProc.fLineSizeLimit = cConfig["LineSizeLimit"].AsLong(4096L);
-		httpProc.fURISizeLimit = cConfig["URISizeLimit"].AsLong(1024L);
-		httpProc.fRequestSizeLimit = cConfig["RequestSizeLimit"].AsLong(5120L);
-		httpProc.fCheckUrlEncodingOverride = cConfig["CheckUrlEncodingOverride"].AsString();
-		httpProc.fCheckUrlPathContainsUnsafeCharsOverride = cConfig["CheckUrlPathContainsUnsafeCharsOverride"].AsString();
-		httpProc.fCheckUrlPathContainsUnsafeCharsAsciiOverride = cConfig["CheckUrlPathContainsUnsafeCharsAsciiOverride"].AsString();
-		httpProc.fCheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii
-				= cConfig["CheckUrlPathContainsUnsafeCharsDoNotCheckExtendedAscii"].AsLong(0);
-		httpProc.fCheckUrlArgEncodingOverride = cConfig["CheckUrlArgEncodingOverride"].AsString();
-		httpProc.fUrlExhaustiveDecode = cConfig["URLExhaustiveDecode"].AsLong(0);
-		httpProc.fFixDirectoryTraversial = cConfig["FixDirectoryTraversial"].AsLong(0);
-		httpProc.fURLEncodeExclude = cConfig["URLEncodeExclude"].AsString("/?");
-		httpProc.fURLEncodeExclude = cConfig["URLEncodeExclude"].AsString("/?");
-		httpProc.fURLEncodeExclude = cConfig["URLEncodeExclude"].AsString("/?");
-		httpProc.fCheckHeaderFields = cConfig["CheckHeaderFields"].AsLong(1);
-		httpProc.fRejectRequestsWithInvalidHeaders = cConfig["RejectRequestsWithInvalidHeaders"].AsLong(1);
+		ctx.Push("tempargs", &lia);
 
+		MIMEHeader header;
 		HTTPRequestReader reader(httpProc, header);
-		String uri(cConfig["RequestLine"].AsString());
+
+		String uri = cConfig["RequestLine"].AsString();
 		StringStreamSocket ss(uri);
-		reader.ReadRequest(*(ss.GetStream()), ss.ClientInfo());
+		reader.ReadRequest(ctx, *(ss.GetStream()), ss.ClientInfo());
 		Anything request(reader.GetRequest());
 		TraceAny(request, "request:");
-		long hasErrors = httpProc.HasErrors();
-		Anything errors = httpProc.GetErrors();
+		ROAnything errors = ctx.Lookup("HTTPRequestReader");
+		long hasErrors = errors.GetSize() ? 1L : 0L;
 		assertEqualm(cConfig["HasErrors"].AsLong(0), hasErrors, TString("failed at idx:") << aEntryIterator.Index());
-		assertEqualm(cConfig["Reason"].AsString(), errors["HTTPRequestReader"]["Reason"].AsString(""), TString("failed at idx:") << aEntryIterator.Index());
+		assertEqualm(cConfig["Reason"].AsString(), errors["Reason"].AsString(""), TString("failed at idx:") << aEntryIterator.Index());
 		assertEqualm(cConfig["ExpectedRequest"].AsString(), request["REQUEST_URI"].AsString(), TString("failed at idx:") << aEntryIterator.Index());
 		Trace("Resulting REQUEST_URI: " << request["REQUEST_URI"].AsString());
 	}
@@ -82,25 +70,24 @@ void HTTPRequestReaderTest::CleanupRequestLineTest() {
 void HTTPRequestReaderTest::ReadMinimalInputTest() {
 	StartTrace(HTTPRequestReaderTest.ReadMinimalInputTest);
 
-	// Fill ts object
 	ROAnything cConfig;
 	AnyExtensions::Iterator<ROAnything> aEntryIterator(GetTestCaseConfig());
+	RequestProcessor *httpProc = HTTPProcessor::FindRequestProcessor("HTTPProcessor");
 	while (aEntryIterator.Next(cConfig)) {
+		Anything anyParams = cConfig.DeepClone();
+		AnyLookupInterfaceAdapter<Anything> lia(anyParams);
 		Context ctx;
+		ctx.Push("tempargs", &lia);
+
 		MIMEHeader header;
-		HTTPProcessor httpProc("HTTPProc");
-		httpProc.fRequestSizeLimit = cConfig["RequestSizeLimit"].AsLong(0);
-		httpProc.fLineSizeLimit = cConfig["LineSizeLimit"].AsLong(0);
-		httpProc.fURISizeLimit = cConfig["UriSizeLimit"].AsLong(0);
-		httpProc.fCheckHeaderFields = cConfig["CheckHeaderFields"].AsLong(1);
-		httpProc.fRejectRequestsWithInvalidHeaders = cConfig["RejectRequestsWithInvalidHeaders"].AsLong(1);
 		HTTPRequestReader reader(httpProc, header);
 
 		String uri(cConfig["RequestLine"].AsString());
+		Trace("Request to process [" << uri << "]");
 		StringStreamSocket ss(uri);
-		bool ret(reader.ReadRequest(*(ss.GetStream()), ss.ClientInfo()));
+		bool ret(reader.ReadRequest(ctx, *(ss.GetStream()), ss.ClientInfo()));
 		t_assertm(cConfig["Expected"]["Return"].AsBool(0) == ret, TString("failed at idx:") << aEntryIterator.Index());
-		Trace("Returning: " << uri);
+		Trace("response [" << uri << "]");
 		Anything request(reader.GetRequest());
 
 		if (cConfig["Expected"].IsDefined("REQUEST_METHOD")) {
@@ -108,7 +95,6 @@ void HTTPRequestReaderTest::ReadMinimalInputTest() {
 		}
 
 		if (cConfig["Expected"].IsDefined("FirstResponseLine")) {
-			Trace("!!");
 			StringTokenizer2 st(uri, "\r\n");
 			String tok;
 			st.NextToken(tok);

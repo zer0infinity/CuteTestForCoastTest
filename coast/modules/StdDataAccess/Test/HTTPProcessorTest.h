@@ -12,8 +12,8 @@
 //---- baseclass include -------------------------------------------------
 #include "FoundationTestTypes.h"
 
-//--- module under test --------------------------------------------------------
-#include "HTTPProcessor.h"
+class RequestProcessor;
+class Context;
 
 //---- HTTPProcessorTest ----------------------------------------------------------
 //!Test the HTTPProcessor
@@ -60,9 +60,8 @@ public:
 
 protected:
 
-	void testDoReadInputWithCfg(HTTPProcessor &fds, String expected, const bool expectedRequest = true);
 	void BuildResult(String &reply, String &fullreply, String result);
-	Anything DoReadMinimalInputTestHelper(HTTPProcessor &fds, String &uri, String &expected);
+	Anything DoReadMinimalInputTestHelper(RequestProcessor *httpProcessor, Anything const& anyParams, String uri, String const& expected, Anything &anyRequest);
 	Anything fArgTemplate;	// an argument template used to initialize args
 };
 

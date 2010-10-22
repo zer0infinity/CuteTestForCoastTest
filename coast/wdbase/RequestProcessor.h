@@ -43,6 +43,9 @@ public:
 	//! render the protocol specific status
 	static void RenderProtocolStatus(std::ostream &os, Context &ctx);
 
+	//! Log the error to Security.log
+	static Anything LogError(Context& ctx, long errcode, const String &reason, const String &line, const Anything &clientInfo, const String &msg, Anything &request, const char *who);
+
 	//! render the protocol specific error msg
 	static void Error(std::ostream &reply, const String &msg, Context &ctx);
 
@@ -68,24 +71,15 @@ protected:
 	//! checks if the connection should keep-alive after the request has processed
 	virtual bool DoKeepConnectionAlive(Context &ctx);
 
+	//! Log the error to Security.log
+	virtual Anything DoLogError(Context& ctx, long errcode, const String &reason, const String &line, const Anything &clientInfo, const String &msg, Anything &request, const char *who);
+
 	//! render the protocol specific error msg
 	virtual void DoError(std::ostream &reply, const String &msg, Context &ctx);
 
+private:
 	//!the server we use as callback for application functionality
 	Server *fServer;
-	Anything fErrors;
-
-	//!get the resulting anything if read request was successful
-	Anything GetErrors() {
-		return fErrors;
-	};
-	bool	 HasErrors() {
-		return fErrors.GetSize() > 0 ? true : false;
-	};
-
-	friend class RequestProcessorTest;
-
-private:
 
 	RequestProcessor(const RequestProcessor &);
 	RequestProcessor &operator=(const RequestProcessor &);

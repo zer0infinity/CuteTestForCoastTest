@@ -22,10 +22,9 @@
 
 		{
 			/RequestLine 	"GET /alibaba HTTP/1.0\r\nX-Evil: GET /gaga HTTP/1.0\r\n\r\n"
-			/UriSizeLimit		271
+			/URISizeLimit		271
 			/LineSizeLimit		4096
 			/RequestSizeLimit	5120
-			/DoURLDecoding		1
 			/URLEncodeExclude   "/?"
 			/CheckHeaderFields	1
 			/RejectRequestsWithInvalidHeaders 0
@@ -37,10 +36,9 @@
 		}
 		{
 			/RequestLine 	"GET /alibaba HTTP/1.0\r\nX-Evil: GET /gaga HTTP/1.0\r\n\r\n"
-			/UriSizeLimit		271
+			/URISizeLimit		271
 			/LineSizeLimit		4096
 			/RequestSizeLimit	5120
-			/DoURLDecoding		1
 			/URLEncodeExclude   "/?"
 			/CheckHeaderFields	1
 			/RejectRequestsWithInvalidHeaders 1
@@ -52,10 +50,9 @@
 		}
 		{
 			/RequestLine 	"GET /alibaba HTTP/1.0\r\nX-Evil: POST\r\n\r\n"
-			/UriSizeLimit		271
+			/URISizeLimit		271
 			/LineSizeLimit		4096
 			/RequestSizeLimit	5120
-			/DoURLDecoding		1
 			/URLEncodeExclude   "/?"
 			/CheckHeaderFields	1
 			/RejectRequestsWithInvalidHeaders 1
@@ -67,10 +64,9 @@
 		}
 		{
 			/RequestLine 	"GET /alibaba HTTP/1.0\r\nX-Evil: vGET\r\n\r\n"
-			/UriSizeLimit		271
+			/URISizeLimit		271
 			/LineSizeLimit		4096
 			/RequestSizeLimit	5120
-			/DoURLDecoding		1
 			/URLEncodeExclude   "/?"
 			/CheckHeaderFields	1
 			/RejectRequestsWithInvalidHeaders 1
@@ -82,10 +78,9 @@
 		}
 		{
 			/RequestLine 	"GET /alibaba HTTP/1.0\r\nX-Evil: vGET /gaga HTTP1.0\r\n\r\n"
-			/UriSizeLimit		271
+			/URISizeLimit		271
 			/LineSizeLimit		4096
 			/RequestSizeLimit	5120
-			/DoURLDecoding		1
 			/URLEncodeExclude   "/?"
 			/CheckHeaderFields	1
 			/RejectRequestsWithInvalidHeaders 1
@@ -97,10 +92,9 @@
 		}
 		{
 			/RequestLine "\r\n\r\n"
-			/UriSizeLimit		271
+			/URISizeLimit		271
 			/LineSizeLimit		4096
-			/RequestSizeLimit	5120
-			/DoURLDecoding		1
+			/RequestSizeLimit	5121
 			/URLEncodeExclude   "/?"
 			/CheckHeaderFields	1
 			/RejectRequestsWithInvalidHeaders 1
@@ -112,10 +106,9 @@
 		}
 		{
 			/RequestLine "GET  HTTP/1.0\r\n\r\n"
-			/UriSizeLimit		271
+			/URISizeLimit		271
 			/LineSizeLimit		4096
 			/RequestSizeLimit	5120
-			/DoURLDecoding		1
 			/URLEncodeExclude   "/?"
 			/CheckHeaderFields	1
 			/RejectRequestsWithInvalidHeaders 1
@@ -127,10 +120,9 @@
 		}
 		{
 			/RequestLine "GET  HTTP/1.0\r\n\r\n"
-			/UriSizeLimit		8
+			/URISizeLimit		8
 			/LineSizeLimit		4096
 			/RequestSizeLimit	5120
-			/DoURLDecoding		1
 			/URLEncodeExclude   "/?"
 			/CheckHeaderFields	1
 			/RejectRequestsWithInvalidHeaders 1
@@ -142,10 +134,9 @@
 		}
 		{
 			/RequestLine "GET  HTTP/1.0\r\n\r\n"
-			/UriSizeLimit		271
+			/URISizeLimit		271
 			/LineSizeLimit		8
 			/RequestSizeLimit	5120
-			/DoURLDecoding		1
 			/URLEncodeExclude   "/?"
 			/CheckHeaderFields	1
 			/RejectRequestsWithInvalidHeaders 1
@@ -157,10 +148,9 @@
 		}
 		{
 			/RequestLine "GET  HTTP/1.0\r\n\r\n"
-			/UriSizeLimit		271
+			/URISizeLimit		271
 			/LineSizeLimit		4096
 			/RequestSizeLimit	8
-			/DoURLDecoding		1
 			/URLEncodeExclude   "/?"
 			/CheckHeaderFields	1
 			/RejectRequestsWithInvalidHeaders 1
@@ -172,10 +162,9 @@
 		}
 		{
 			/RequestLine "xxGET  HTTP/1.0\r\n\r\n"
-			/UriSizeLimit		271
+			/URISizeLimit		271
 			/LineSizeLimit		4096
 			/RequestSizeLimit	5120
-			/DoURLDecoding		1
 			/URLEncodeExclude   "/?"
 			/CheckHeaderFields	1
 			/RejectRequestsWithInvalidHeaders 1
@@ -1040,6 +1029,7 @@
 		{
 			/RequestLine "GET /HIKU/X1=b64-Qmxvd2Zpc2hTY3JhbWJsZXIwLXX96LrMgzOhIOcV7UOg61cdj1zWDFjS-5Sc5kBT1Ny3DnBw$AqWARyPsxgNSEL-CKTFYIxOYDvUe-kVh8T8seKxEXwt1Jz3jbhFRL8F2H-dTzBQNREXwEb0vgSAbokMbTV2sKe3OMUycbR1XMJltJBBQmCLJftLOTB2BykamEifZr6HLCbpBWo=/X2=b64-Qmxvd2Zpc2hTY3JhbWJsZXIwLXX96LrMgzOh6cFdF2$cQwDVlebcVn528YGqxQD87Rx6mVExoiV0QSqQa8fhbZBIEgvJZkK9KM-1FHwMOVDED$OX$P747922UaPe2z0w-hc7Zbikt4J5lXw6LnMMxbVpUpY6Eq2GMZiX$BJHK6ShTTPp-pNtVJQH1bycxbhjYIGK-RUKctRb9GBGE7BQjs3YnjLtZgfCZb23LbVBp$VAMNaQGIDBcLj8s$wSRyukoU0zIaMNBRY40OrmY-Kbn-QdFfgpqrrn87NhvKa0LUwxDM97kKF9Huct16OuXMz3d43TdbHxcWPNG2JtamCFBlu99ef4auFCb5$irXyZVVAMja38EkcrpKFNM5ACilatcPTSo$l1LKcXgjLrsKOtWrR7i6T-Ycd8fSFk9CGQ6QXjGvrFDYatzRVKzzr5I5LwdoMvyye287qoJk-9lVnamBAh-A85YK3buLyily958HqK7dlaDJDpllUN4MsntvO6qCZPvZVZ2pgQIfgPOWCt27i8opcvefB6iu3ZVT$TewEFDpPOrThqpUvt8CMzljEkhjLNZTHUrlcV3vlEKro9ndQe6uxNFVGn32lwQz9NXNC02s8DBEJepA$Su1OW7BKBXusyGtZkElbWACaYuDdeN5c6VIesEOWsLhAacnJPII689AK3xKwnLV7KFjTIdGBp-eBmIsHnRwCLzFHhDFJ$eiUUMfxTcKZPD6iJf3kKALE4C6bdkUluWVZMElzMd4E161n1 HTTP/1.0\r\n"
 			/CheckUrlEncodingOverride	"$-_.+/?%;="
+			/URISizeLimit			2048
 			/URLEncodeExclude			"/?;"
 			/ExpectedRequest		"/HIKU/X1=b64-Qmxvd2Zpc2hTY3JhbWJsZXIwLXX96LrMgzOhIOcV7UOg61cdj1zWDFjS-5Sc5kBT1Ny3DnBw$AqWARyPsxgNSEL-CKTFYIxOYDvUe-kVh8T8seKxEXwt1Jz3jbhFRL8F2H-dTzBQNREXwEb0vgSAbokMbTV2sKe3OMUycbR1XMJltJBBQmCLJftLOTB2BykamEifZr6HLCbpBWo=/X2=b64-Qmxvd2Zpc2hTY3JhbWJsZXIwLXX96LrMgzOh6cFdF2$cQwDVlebcVn528YGqxQD87Rx6mVExoiV0QSqQa8fhbZBIEgvJZkK9KM-1FHwMOVDED$OX$P747922UaPe2z0w-hc7Zbikt4J5lXw6LnMMxbVpUpY6Eq2GMZiX$BJHK6ShTTPp-pNtVJQH1bycxbhjYIGK-RUKctRb9GBGE7BQjs3YnjLtZgfCZb23LbVBp$VAMNaQGIDBcLj8s$wSRyukoU0zIaMNBRY40OrmY-Kbn-QdFfgpqrrn87NhvKa0LUwxDM97kKF9Huct16OuXMz3d43TdbHxcWPNG2JtamCFBlu99ef4auFCb5$irXyZVVAMja38EkcrpKFNM5ACilatcPTSo$l1LKcXgjLrsKOtWrR7i6T-Ycd8fSFk9CGQ6QXjGvrFDYatzRVKzzr5I5LwdoMvyye287qoJk-9lVnamBAh-A85YK3buLyily958HqK7dlaDJDpllUN4MsntvO6qCZPvZVZ2pgQIfgPOWCt27i8opcvefB6iu3ZVT$TewEFDpPOrThqpUvt8CMzljEkhjLNZTHUrlcV3vlEKro9ndQe6uxNFVGn32lwQz9NXNC02s8DBEJepA$Su1OW7BKBXusyGtZkElbWACaYuDdeN5c6VIesEOWsLhAacnJPII689AK3xKwnLV7KFjTIdGBp-eBmIsHnRwCLzFHhDFJ$eiUUMfxTcKZPD6iJf3kKALE4C6bdkUluWVZMElzMd4E161n1"
 		}

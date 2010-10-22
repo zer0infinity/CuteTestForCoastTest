@@ -7,7 +7,7 @@
 #-----------------------------------------------------------------------------------------------------
 {
 	/LowerBound		0
-	/UpperBound		211
+	/UpperBound		2211
 	/DumpAnythings  1
 
 	/Registry {
@@ -21,29 +21,41 @@
 		/MainSwitch						0
 		/EnableAll						10
 	}
+	/Context {
+		/MainSwitch						0
+		/EnableAll						10
+
+	}
+	/LookupInterface {
+		/MainSwitch						0
+		/EnableAll						101
+	}
 	/TerminationPolicy {
 		/MainSwitch						0
 		/EnableAll						10
 	}
 	/DataAccessImpl {
 		/MainSwitch						11
-		/EnableAll						11
+		/EnableAll						0
+		/DoLoadConfig					-10
 	}
 	/HTTPPostRequestBodyParser {
 		/MainSwitch						200
 		/EnableAll						200
 	}
 	/HTTPPostRequestBodyParserTest {
-		/MainSwitch						0
+		/MainSwitch						200
 		/EnableAll						200
 	}
 	/ParameterMapper {
 		/MainSwitch						10
-		/EnableAll						10
+		/EnableAll						0
+		/DoLoadConfig					-10
 	}
 	/ResultMapper {
 		/MainSwitch						10
-		/EnableAll						10
+		/EnableAll						0
+		/DoLoadConfig					-10
 	}
 	/MapperTestDAImpl {
 		/MainSwitch						10
@@ -55,7 +67,7 @@
 	}
 	/HTTPMimeHeaderMapper {
 		/MainSwitch						10
-		/EnableAll						0
+		/EnableAll						10
 	}
 	/HTTPMimeHeaderMapperTest {
 		/MainSwitch						10
@@ -114,6 +126,10 @@
 		/MainSwitch						210
 		/EnableAll						210
 	}
+	/RequestProcessor {
+		/MainSwitch						310
+		/EnableAll						320
+	}
 	/HTTPProcessor {
 		/MainSwitch						310
 		/EnableAll						320
@@ -121,6 +137,14 @@
 	/HTTPProcessorTest {
 		/MainSwitch						10
 		/EnableAll						20
+	}
+	/MIMEHeader {
+		/MainSwitch						200
+		/EnableAll						201
+	}
+	/MIMEHeaderTest {
+		/MainSwitch						200
+		/EnableAll						201
 	}
 	/HTTPRequestReader {
 		/MainSwitch						200
@@ -239,6 +263,14 @@
 		/EnableAll			20
 	}
 	/Resolver {
+		/MainSwitch			20
+		/EnableAll			20
+	}
+	/StorePutter {
+		/MainSwitch			20
+		/EnableAll			20
+	}
+	/SlotPutter {
 		/MainSwitch			20
 		/EnableAll			20
 	}
